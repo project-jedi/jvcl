@@ -1,5 +1,5 @@
 ##Package: MM
-##Status: Generated
+##Status: Completed (extracted from JvImageWindow.dtx)
 ----------------------------------------------------------------------------------------------------
 @@JvImageSquare.pas
 Summary
@@ -11,135 +11,74 @@ Author
 @@TJvImageSquare
 <TITLEIMG TJvImageSquare>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Graphics.Shape
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A control that can display an image from an imagelist.
 Description
-  Write here a description
+  Use TJvImageSquare when you need a control that can display an image from an imagelist. By setting the
+  Images and ImageIndex properties, the control displays the selected image in it's client area.
+
+  Use properties like Color, HiColor and BorderStyle to modify the control's appearance. Use ShowClick
+  to alter it's behavior.
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.BorderStyle
 Summary
-  Write here a summary (1 line)
+  Specifies whether the control has a border.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use BorderStyle to get or set whether the control has a border.
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.HiColor
 Summary
-  Write here a summary (1 line)
+  Specifies the background color to use when hot tracking.
 Description
-  Write here a description
+  Use HiColor to specify the color to use when the mouse is hovering over the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Color
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.ImageIndex
 Summary
-  Write here a summary (1 line)
+  Specifies the index of the image to display from the image list.
 Description
-  Write here a description
+  Use ImageIndex to specify the image to display in the control. The icon with
+  the specified index is drawn using Images. To not display an image, set ImageIndex to -1.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Images
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.Images
 Summary
-  Write here a summary (1 line)
+  Specifies an imagelist to retrieve the displayed image from.
 Description
-  Write here a description
+  Set Images to an imagelist where the component should retrieve the image to display. Images
+  in combination with the ImageIndex property determines what image to display.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvImageSquare.MouseDown
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-  This is a protected member, you don't have to describe these
-Parameters
-  Button - Description for this parameter
-  Shift  - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvImageSquare.MouseUp
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-  This is a protected member, you don't have to describe these
-Parameters
-  Button - Description for this parameter
-  Shift  - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvImageSquare.Notification
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-  This is a protected member, you don't have to describe these
-Parameters
-  AComponent - Description for this parameter
-  Operation  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.OnMouseEnter
 Summary
-  Occurs when the mouse pointer moves over the <xxx>.
+  Occurs when the mouse pointer moves over the control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
-  <xxx>.
+  \Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
+  control.
 See Also
-  HotTrack, OnMouseLeave
+  OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.OnMouseLeave
 Summary
-  Occurs when the mouse pointer moves off the <xxx>.
+  Occurs when the mouse pointer moves off the control.
 Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  <xxx>. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  \Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  control. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  HotTrack, OnMouseEnter
-----------------------------------------------------------------------------------------------------
-@@TJvImageSquare.Paint
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-  This is a protected member, you don't have to describe these
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvImageSquare.PaintFrame
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnMouseEnter
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.ShowClick
 Summary
-  Write here a summary (1 line)
+  Specifies if mouse clicks are shown visually.
 Description
-  Write here a description
+  Use ShowClick to specify whether mouse clinks are shown or not. if ShowClick is true, a small,
+  double-line frame with a white background is drawn around the image when the user clicks with
+  the mouse.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Click, OnClick

@@ -1,5 +1,5 @@
 ##Package: PageComps
-##Status: Completed (p3) <Weird code in TJvCustomPageListTreeView.PageLinks (rb)>
+##Status: Completed (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvPageListTreeView.pas
 Summary
@@ -487,7 +487,7 @@ Description
   at run-time, type cast the tree node to TJvPageIndexNode and set it's PageIndex property.
   Example:
   <CODE>
-    TJvPageIndexNode(Jv
+    TJvPageIndexNode(JvCustomPageListTreeView1.Items[SomeIndex]).PageIndex := SomePageIndex;
   </CODE>
   The linking will only have effect if the PageList property has been assigned.
 See Also

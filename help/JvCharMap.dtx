@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Incomplete
+##Status: Completed, needs review
 ----------------------------------------------------------------------------------------------------
 @@JvCharMap.pas
 Summary
@@ -56,12 +56,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCharMapRange.OnChange
 Summary
-  Write here a summary (1 line)
+  Occurs when the current focus changes.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Write a handler for the OnChange event to take specific action when the user selects another grid cell in the control.
 ----------------------------------------------------------------------------------------------------
 @@TJvCharMapRange.StartChar
 Summary
@@ -217,9 +214,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCharMap.CellSize
 Summary
-  Retruns the current ize of a grid cell.
+  Returns the current size of a grid cell.
 Description
-  Call CellSize to learn the current size of a grid cell. The size of a grid cell is autmatically adjusted
+  Call CellSize to learn the current size of a grid cell. The size of a grid cell is automatically adjusted
   to accomodate the size of the currently selected font.
 Return value
   A TSize value where cx is the width and cy is the height of a cell.
@@ -240,7 +237,7 @@ Description
 Summary
   Defines the nuber fo columns to display in the gird.
 Description
-  Use Clumns to read and change the number of columns in the grid. The number of rows is autmatically
+  Use Columns to read and change the number of columns in the grid. The number of rows is automatically
   adjusted to accomodate the currently selected character range.
 See Also
   CharRange
@@ -312,7 +309,7 @@ See Also
 Summary
   Determines whether a shadow is drawn behind the zoom panel.
 Description
-  Set ShowShaodw to true to show a drop shadow behind the zom panel. On systems that supports it, the shadow
+  Set ShowShadow to true to show a drop shadow behind the zoom panel. On systems that supports it, the shadow
   is alpha blended. On other systems, it is drawn black.
 See Also
   ShadowSize
