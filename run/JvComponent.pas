@@ -68,6 +68,7 @@ type
   {$IFDEF USE_DXGETTEXT}
   public
     constructor Create(AOwner: TComponent); override;
+    procedure RefreshTranslation; virtual;
   {$ENDIF USE_DXGETTEXT}
   end;
 
@@ -96,6 +97,12 @@ begin
   inherited Create(AOwner);
   TranslateComponent(Self);
 end;
+
+procedure TJvForm.RefreshTranslation;
+begin
+  ReTranslateComponent(self);
+end;
+
 {$ENDIF USE_DXGETTEXT}
 
 {$IFDEF VCL}
@@ -146,5 +153,11 @@ begin
 end;
 
 {$ENDIF VCL}
+
+{$IFDEF USE_DXGETTEXT}
+initialization
+  AddDomainForResourceString('jvcl');
+
+{$ENDIF USE_DXGETTEXT}
 
 end.
