@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-11-28
+Last Modified: 2003-11-30
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -30,6 +30,10 @@ Known Issues:
   {$WARN UNSAFE_TYPE OFF}
   {$WARN UNSAFE_CODE OFF}
   {$WARN UNSAFE_CAST OFF}
+  {$WARN UNIT_PLATFORM OFF}
+{$ENDIF}
+{$IFDEF VER140}
+  {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
 
 unit FrmMake;
@@ -77,6 +81,11 @@ uses
 
 {$R *.dfm}
 
+{const
+  JclDccOptions =   // -LN, -LE are not possible because they are overwritten
+    '-I"' + JclIncludePaths + '" ' +    // see BuildHelpers
+    '-U"' + JclUnitPaths + '"';}
+
 function Has(Text: string; const Values: array of string): Boolean;
 var
   i: Integer;
@@ -97,6 +106,7 @@ type
     FAction: string;
     FCurLine: string;
     FMaxPackages: Integer;
+    FException: Exception;
 
     function GetAborted: Boolean;
 
@@ -111,6 +121,9 @@ type
     procedure IncTargetProgress;
     procedure InitPkgProgressBar;
     procedure IncPkgProgressBar;
+    function CompilePackageGroup(const BpgFilename, IncludePaths,
+      UnitPaths, SourcePaths, OutDir, LibOutDir: string;
+      IsJcl: Boolean): Boolean;
   protected
     procedure Execute; override;
 
@@ -180,7 +193,7 @@ begin
     FormMake.MemoLog.SelAttributes.Style := [fsBold];
     FormMake.MemoLog.SelLength := 0;
   end
-  else if Has(FCurLine, ['hint: ', 'hinweis: ', 'suggérer: ']) then
+  else if Has(FCurLine, ['hint: ', 'hinweis: ', 'suggestion: ']) then
   begin
     FormMake.MemoLog.SelStart := FormMake.MemoLog.SelStart - Length(FCurLine) - 2;
     FormMake.MemoLog.SelLength := Length(FCurLine);
@@ -213,7 +226,14 @@ end;
 
 procedure TMakeThread.ExceptionError;
 begin
-  Application.HandleException(Self);
+  FCurLine := '';
+  UpdateCurLine;
+  FCurLine := '---------------------------------------------------------------';
+  UpdateCurLine;
+  FCurLine := Format('JVCL 3 Package Installer: Exception: [%s] %s',
+    [Exception(FException).ClassName, Exception(FException).Message]);
+  UpdateCurLine;
+  Application.ShowException(FException);
 end;
 
 procedure TMakeThread.Execute;
@@ -221,70 +241,186 @@ var i: Integer;
 begin
   if Terminated then Exit;
   try
-    for i := 0 to TargetList.Count - 1 do
-    begin
-      FTarget := TargetList[i];
-      if FTarget.CompileFor then
+    try
+      for i := 0 to TargetList.Count - 1 do
       begin
-        FAction := 'Compiling packages...';
-        Synchronize(UpdateTarget);
-        FError := not MakeTarget;
-        if (not FError) and (not Aborted) then
+        FTarget := TargetList[i];
+        if FTarget.CompileFor then
         begin
-          FAction := 'Installing packages...';
-          Synchronize(UpdateAction);
-          FTarget.RegistryInstall;
-          Synchronize(IncTargetProgress);
+          FAction := 'Compiling packages...';
+          Synchronize(UpdateTarget);
+          FError := not MakeTarget;
+          if (not FError) and (not Aborted) then
+          begin
+            FAction := 'Installing packages...';
+            Synchronize(UpdateAction);
+            FTarget.RegistryInstall;
+            Synchronize(IncTargetProgress);
+          end;
         end;
+        FTarget := nil;
+        if (Aborted) or (FError) then
+          Break;
       end;
-      FTarget := nil;
-      if (Aborted) or (FError) then
-        Break;
+    except
+      on E: Exception do
+      begin
+        FException := E;
+        FError := True;
+        Synchronize(ExceptionError);
+      end;
     end;
-  except
-    on E: Exception do
-    begin
-      FError := True;
-      Synchronize(ExceptionError);
+  finally
+    Terminate;
+    Synchronize(Finished);
+  end;
+end;
+
+function TMakeThread.CompilePackageGroup(const BpgFilename, IncludePaths,
+  UnitPaths, SourcePaths, OutDir, LibOutDir: string; IsJcl: Boolean): Boolean;
+var
+  PrepareBpgData: TPrepareBpgData;
+  Build, Options, DcpOptions, StartDir: string;
+  JclMakeFilename: string;
+  Files: TStrings;
+  PackageList: TPackageList;
+  i: Integer;
+begin
+  Result := True;
+
+  StartDir := ExtractFileDir(BpgFilename);
+  if FTarget.Build then Build := '-B ' else Build := '';
+
+  Options := Build;
+  if IncludePaths <> '' then Options := Options + Format('-I"%s" ', [IncludePaths]);
+  if UnitPaths <> '' then Options := Options + Format('-U"%s" ', [UnitPaths]);
+  if OutDir <> '' then Options := Options + Format('-N"%s" ', [OutDir]);
+
+  DcpOptions := Options;
+ // Add source paths to "Options" but not to "DcpOptions"
+  if SourcePaths <> '' then Options := Options + Format('-U"%s" ', [SourcePaths]);
+
+  SetEnvironmentVariable('DCCOPT', nil); // used by Delphi
+  SetEnvironmentVariable('DCC32', nil); // used by BCB
+  SetEnvironmentVariable('ROOT', PChar(FTarget.RootDir));
+  SetEnvironmentVariable('DCPDIR', Pointer(FTarget.DcpDir));
+  if FTarget.IsBCB then
+    SetEnvironmentVariable('BPLDIR', PChar(FTarget.DcpDir)) // corrected by MoveBCBFiles
+  else
+    SetEnvironmentVariable('BPLDIR', Pointer(FTarget.BplDir));
+
+
+  if FTarget.IsDelphi then
+    SetEnvironmentVariable('DCCOPT', Pointer(Options))
+  else
+    SetEnvironmentVariable('DCC32', PChar('dcc32 -Q ' + Options));
+
+ // create make file
+  PrepareBpgData := PrepareBpg(BpgFilename, FTarget);
+  try
+    FMaxPackages := PrepareBpgData.Make.Projects.Count;
+    if (FTarget.IsBCB) and (IsJcl) then FMaxPackages := FMaxPackages * 2; // include DCP creation steps
+    Synchronize(InitPkgProgressBar);
+
+   // compile
+    Result := CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
+      Build + '-f"' + ChangeFileExt(BpgFilename, '.mak') + '"', StartDir,
+      CaptureLine) = 0;
+    if FTarget.IsBCB then
+      MoveBCBFiles(LibOutDir, FTarget); // move .lib, .bpi to DcpDir, .bpl to BplDir and deletes .tds
+  finally
+    SetEnvironmentVariable('DCCOPT', nil);
+    SetEnvironmentVariable('DCC32', nil);
+
+    PrepareBpgData.Cleaning := Result;
+    PrepareBpgData.Free;
+  end;
+
+  if (Result) and (FTarget.IsBCB) and IsJcl then
+  begin
+   // *****
+   // C++BUILDER .dcp creation
+   // *****
+    // create Delphi packages for BCB .dcp compilation
+    Files := TStringList.Create; // files that were created
+    try
+      if IsJcl then
+        PackageList := CreateJclPackageList(FTarget)
+      else
+        PackageList := FTarget.Packages; // WRONG. contains only design-time packages and have generic names instead of BCB x.0 names
+      try
+        for i := 0 to PackageList.Count - 1 do
+          CreateDelphiPackageForBCB(PackageList[i], Files, IsJcl);
+      finally
+        if isJcl then
+          PackageList.Free;
+      end;
+
+      JclMakeFilename := ChangeFileExt(BpgFilename, '') + 'dcp.mak';
+     // create make file
+      PrepareBpgData := PrepareDcpBpg(JclMakeFilename, Files, FTarget, IsJcl);
+      try
+        PrepareBpgData.CreatedFiles.AddStrings(Files);
+        SetEnvironmentVariable('DCCOPT', Pointer(DcpOptions));
+
+       // compile
+        Result := CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
+          '-B -f"' + JclMakeFilename + '"', StartDir, // hard coded "-B"
+          CaptureLine) = 0;
+      finally
+        SetEnvironmentVariable('DCCOPT', nil);
+        PrepareBpgData.Cleaning := Result;
+        PrepareBpgData.Free;
+      end;
+    finally
+      Files.Free;
     end;
   end;
-  Terminate;
-  Synchronize(Finished);
+
 end;
 
 function TMakeThread.MakeTarget: Boolean;
 var
-  PrepareBpgData: TPrepareBpgData;
+  JclBpgFilename, Prefix: string;
 begin
   Result := False;
   if Aborted then Exit;
- // create make file
-  PrepareBpgData := PrepareBpg(JVCLPackageDir + '\' + FTarget.BpgName,
-    FTarget.SearchPaths, FTarget.LibDir, FTarget.BplDir, FTarget.DcpDir);
-  try
-    FMaxPackages := PrepareBpgData.Make.Projects.Count;
-    Synchronize(InitPkgProgressBar);
+  Result := True;
 
-    if FTarget.Build then
-      SetEnvironmentVariable('DCCOPT', '-B')
-    else
-      SetEnvironmentVariable('DCCOPT', nil);
+  if FTarget.InstallJcl then
+  begin
+    if FTarget.IsDelphi then Prefix := '' else Prefix := 'C';
+    JclBpgFilename := 'JclPackages' + Prefix + IntToStr(FTarget.MajorVersion) + '0.bpg';
 
-    SetEnvironmentVariable('ROOT', PChar(FTarget.RootDir));
-    SetEnvironmentVariable('DCPDIR', Pointer(FTarget.DcpDir));
-    SetEnvironmentVariable('BPLDIR', Pointer(FTarget.BplDir));
-    Result := CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"', '-f"' + ChangeFileExt(FTarget.BpgName, '.mak') + '"', JVCLPackageDir,
-      CaptureLine) = 0;
-  finally
-    PrepareBpgData.Cleaning := Result;
-    PrepareBpgData.Free;
+    Result := CompilePackageGroup(
+      JCLPackageDir + '\' + JclBpgFilename,
+      JclIncludePaths,
+      JclLibDir + '\' + FTarget.JclDirName + ';' + FTarget.DcpDir,
+      JclSourcePaths,
+      JclLibDir + '\' + FTarget.JclDirName,
+      JCLPackageDir + '\' + FTarget.JclDirName,
+      True);
+{    if Result then
+      FTarget.RegistryJclInstall;}
+  end;
+
+  if Result then
+  begin
+    Result := CompilePackageGroup(
+      JVCLPackageDir + '\' + FTarget.BpgName,
+      JVCLIncludePaths,
+      JVCLDir + '\' + FTarget.LibDir + ';' + FTarget.DcpDir + ';' + FTarget.BplDir,
+      JVCLSourcePaths,
+      JVCLDir + '\' + FTarget.LibDir,
+      FTarget.DcpDir,
+      False);
   end;
 end;
 
 procedure TMakeThread.CaptureLine(const Line: string; var Aborted: Boolean);
 begin
   Aborted := Self.Aborted;
-  FCurLine := Line;
+  FCurLine := TrimRight(Line);
   if StartsWith(Line, 'Compiling package: ') then
     FAction := 'Compiling ' + ChangeFileExt(Copy(Line, 20, MaxInt), '');
   Synchronize(UpdateCurLine);
@@ -383,7 +519,8 @@ begin
   if (MemoLog.CaretPos.Y > 0) and (MemoLog.CaretPos.Y < MemoLog.Lines.Count) then
   begin
     S := MemoLog.Lines[MemoLog.CaretPos.Y];
-    if StartsWith(S, JVCLDir + '\') then
+    if StartsWith(S, JVCLDir + '\') or
+       ((JCLDir <> '') and (StartsWith(S, JCLDir + '\'))) then
     begin
       ps := Pos('(', S);
       if ps > 0 then

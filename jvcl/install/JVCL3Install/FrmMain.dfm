@@ -25,6 +25,7 @@ object FormMain: TFormMain
     Height = 13
     Caption = 'Installed Delphi/BCB &Versions:'
     FocusControl = ListViewTargets
+    OnClick = LblVersionsClick
   end
   object LblPackages: TLabel
     Left = 208
@@ -33,6 +34,7 @@ object FormMain: TFormMain
     Height = 13
     Caption = '&Design-time Packages:'
     FocusControl = ListViewPackages
+    OnClick = LblPackagesClick
   end
   object ImageOpen: TImage
     Left = 152
@@ -87,8 +89,8 @@ object FormMain: TFormMain
     Visible = False
   end
   object imgProjectJEDI: TImage
-    Left = 37
-    Top = 450
+    Left = 43
+    Top = 460
     Width = 116
     Height = 31
     Cursor = crHandPoint
@@ -249,7 +251,7 @@ object FormMain: TFormMain
     Left = 8
     Top = 200
     Width = 5
-    Height = 57
+    Height = 77
     Shape = bsRightLine
   end
   object Bevel2: TBevel
@@ -273,6 +275,13 @@ object FormMain: TFormMain
     Height = 9
     Shape = bsTopLine
   end
+  object Bevel5: TBevel
+    Left = 12
+    Top = 276
+    Width = 17
+    Height = 9
+    Shape = bsTopLine
+  end
   object PanelBottom: TPanel
     Left = 0
     Top = 495
@@ -280,7 +289,7 @@ object FormMain: TFormMain
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
-    TabOrder = 6
+    TabOrder = 7
     object BevelTop: TBevel
       Left = 0
       Top = 0
@@ -514,7 +523,7 @@ object FormMain: TFormMain
   end
   object CheckBoxClearJVCLPalette: TCheckBox
     Left = 16
-    Top = 228
+    Top = 268
     Width = 185
     Height = 17
     Hint = 
@@ -523,7 +532,7 @@ object FormMain: TFormMain
     Caption = 'Clean JVCL component palettes'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 3
+    TabOrder = 5
     OnClick = CheckBoxClearJVCLPaletteClick
   end
   object CheckBoxBuild: TCheckBox
@@ -542,11 +551,11 @@ object FormMain: TFormMain
   end
   object GroupBoxOptions: TGroupBox
     Left = 8
-    Top = 280
+    Top = 296
     Width = 193
     Height = 161
     Caption = ' JVCL.INC - Options (global) '
-    TabOrder = 5
+    TabOrder = 6
     object BtnAdvancedOptions: TBitBtn
       Left = 88
       Top = 128
@@ -589,20 +598,28 @@ object FormMain: TFormMain
       Width = 169
       Height = 17
       Hint = 
-        'JVCL 3 supports Windows XP theming. For Delphi/BCB 5 and 6'#13#10'you ' +
-        'need the ThemeManager (http://www.delphigems.com) and'#13#10'a modifie' +
-        'd ThemeManager package (see JVCL readme.htm)'
+        'Activate this if you have Mike Lischke'#39's Theme Manager'#13#10'(http://' +
+        'www.lischke-online.de) installed and available and'#13#10'you are usin' +
+        'g Delphi/BCB 6 or below. The ThemeManager'#13#10'package must be compi' +
+        'led as "never-build package".'#13#10'For more information see readme.h' +
+        'tm'
       Caption = '&XP Theme Support'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
+      OnClick = CheckBoxOptThemingClick
     end
     object CheckBoxOptRegGlobalDsgnEditor: TCheckBox
       Left = 8
       Top = 48
       Width = 169
       Height = 17
+      Hint = 
+        'Enable this if you want to register property and component'#13#10'edit' +
+        'ors included in JVCL for non-JVCL components as well.'
       Caption = '&Register global design editors'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 2
     end
     object CheckBoxOptDxgettext: TCheckBox
@@ -610,7 +627,12 @@ object FormMain: TFormMain
       Top = 72
       Width = 169
       Height = 17
+      Hint = 
+        'Enable this if you want to use the dxgettext'#13#10'(http://dxgettext.' +
+        'sourceforge.net) translation tool.'
       Caption = 'Dxge&ttext is installed'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 3
     end
     object CheckBoxOptJvGIF: TCheckBox
@@ -618,7 +640,12 @@ object FormMain: TFormMain
       Top = 96
       Width = 169
       Height = 17
+      Hint = 
+        'This enables GIF image support. Deactivate this if you '#13#10'are usi' +
+        'ng another GIF image support library.'
       Caption = 'Use Jv&GIF'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 4
     end
   end
@@ -634,6 +661,24 @@ object FormMain: TFormMain
     ParentShowHint = False
     ShowHint = True
     TabOrder = 4
+    OnClick = CheckBoxClearJVCLPaletteClick
+  end
+  object CheckBoxInstallJcl: TCheckBox
+    Left = 16
+    Top = 228
+    Width = 185
+    Height = 17
+    Hint = 'Install the JCL packages that are needed by the JVCL 3.'
+    Caption = 'Install JCL'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
     OnClick = CheckBoxClearJVCLPaletteClick
   end
   object ImageListPackages: TImageList

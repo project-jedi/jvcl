@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-11-28
+Last Modified: 2003-11-30
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -37,7 +37,7 @@ Known Issues:
 unit CoreData;
 interface
 uses
-  Windows, SysUtils, Classes, Contnrs, Registry;
+  Windows, SysUtils, Classes, Contnrs, Registry, JvSimpleXML;
 
 type
   TPackageList = class;
@@ -60,12 +60,14 @@ type
     FSearchPath: string;
     FKnownPackages: TStrings;
     FIsJVCLInstalled: Boolean;
+    FIsJCLInstalled: Boolean;
 
     FCompileFor: Boolean;
     FNeedsUpdate: Boolean;
     FClearJVCLPalette: Boolean;
     FBuild: Boolean;
     FDeveloperInstall: Boolean;
+    FInstallJcl: Boolean;
 
     function GetSymbol: string;
     function GetMajorVersion: Integer;
@@ -77,6 +79,10 @@ type
 
     function AddRemovePaths(const Paths: string; const NewPaths: array of string;
       Add: Boolean): string;
+    function GetJclDirName: string;
+    function GetIsBCB: Boolean;
+    function GetIsDelphi: Boolean;
+    function GetJVCLDirName: string;
   protected
     procedure ClearPalette(reg: TRegistry; const Name: string);
     procedure DoClearJVCLPalette;
@@ -84,7 +90,7 @@ type
     procedure UpdateKnownPackage;
     procedure AddRemoveJVCLPaths(Add: Boolean);
 
-    procedure ReadData; // reads data from the registry
+    procedure ReadData;
   public
     constructor Create(ATargetList: TTargetList);
     destructor Destroy; override;
@@ -94,6 +100,7 @@ type
     procedure UninstallOldJVCL;
 
     function ExpandDirMacros(const Path: string): string;
+    function IsTargetFor(const Targets: string): Boolean;
 
     property Executable: string read FExecutable;
     property RegKey: string read FRegKey;
@@ -105,8 +112,12 @@ type
     property VersionType: string read FVersionType;
     property LastUpdate: Integer read FLastUpdate;
     property DisplayName: string read GetDisplayName;
+    property IsBCB: Boolean read GetIsBCB;
+    property IsDelphi: Boolean read GetIsDelphi;
     property Symbol: string read GetSymbol;
     property BpgName: string read GetBpgName;
+    property JclDirName: string read GetJclDirName; // c5, c6, d5, d6, d7(, k3)
+    property JVCLDirName: string read GetJVCLDirName; // directory in Packages\
     property LibDir: string read GetLibDir; // relative to $(JVCL)
 
     property SearchPaths: string read FSearchPath;
@@ -114,13 +125,15 @@ type
     property DcpDir: string read FDcpDir;
     property KnownPackages: TStrings read FKnownPackages;
     property IsJVCLInstalled: Boolean read FIsJVCLInstalled;
-    property IsOldJVCLInstalled: Integer read GetIsOldJVCLInstalled; // 1, 2
+    property IsOldJVCLInstalled: Integer read GetIsOldJVCLInstalled; // JVCL 1 or 2
+    property IsJCLInstalled: Boolean read FIsJCLInstalled;
 
     property CompileFor: Boolean read FCompileFor write FCompileFor;
     property NeedsUpdate: Boolean read FNeedsUpdate write FNeedsUpdate;
     property ClearJVCLPalette: Boolean read FClearJVCLPalette write FClearJVCLPalette;
     property Build: Boolean read FBuild write FBuild;
     property DeveloperInstall: Boolean read FDeveloperInstall write FDeveloperInstall;
+    property InstallJcl: Boolean read FInstallJcl write FInstallJcl;
 
     property Packages: TPackageList read FPackages;
     property TargetList: TTargetList read FTargetList;
@@ -147,20 +160,38 @@ type
   private
     FName: string;
     FTargets: string;
+    FCondition: string;
   public
-    constructor Create(const AName, ATargets: string);
+    constructor Create(const AName, ATargets, ACondition: string);
     property Name: string read FName;
     property Targets: string read FTargets;
+    property Condition: string read FCondition;
+  end;
+
+  TContainsFile = class(TObject)
+  private
+    FName: string;
+    FTargets: string;
+    FFormName: string;
+    FCondition: string;
+  public
+    constructor Create(const AName, ATargets, AFormName, ACondition: string);
+    property Name: string read FName;
+    property Targets: string read FTargets;
+    property FormName: string read FFormName;
+    property Condition: string read FCondition;
   end;
 
   TPackageInfo = class(TObject)
   private
     FPackageList: TPackageList;
-    
+    FXmlDir: string; // depends on IsJclPackage and set in Create
+
     FName: string;
     FDisplayName: string;
     FDescription: string;
     FRequires: TObjectList;
+    FContains: TObjectList;
     FRequiresDB: Boolean;
     FIsInstalled: Boolean;
 
@@ -171,10 +202,12 @@ type
     function GetRequires(Index: Integer): TRequirePkg;
     function GetTarget: TTargetInfo;
     function GetBplName: string;
+    function GetContainCount: Integer;
+    function GetContains(Index: Integer): TContainsFile;
   protected
     procedure ReadXmlPackage;
   public
-    constructor Create(const AName: string; APackageList: TPackageList);
+    constructor Create(const AName, AXmlDir: string; APackageList: TPackageList);
     destructor Destroy; override;
 
     function DependsOn(PackageInfo: TPackageInfo): Boolean;
@@ -186,6 +219,8 @@ type
     property RequireCount: Integer read GetRequireCount;
     property Requires[Index: Integer]: TRequirePkg read GetRequires;
     property RequiresDB: Boolean read FRequiresDB;
+    property ContaionCount: Integer read GetContainCount;
+    property Contains[Index: Integer]: TContainsFile read GetContains;
     property IsInstalled: Boolean read FIsInstalled;
 
     property Install: Boolean read FInstall write SetInstall;
@@ -214,9 +249,14 @@ type
 
 var
   TargetList: TTargetList;
+
   JVCLDir: string;
   JVCLPackageDir: string;
   JVCLPackageXmlDir: string;
+
+  JCLDir: string;
+  JCLPackageDir: string;
+  JCLPackageXmlDir: string; // only runtime packages
 
 procedure SplitPaths(const Paths: string; List: TStrings);
 function CombinePaths(List: TStrings): string;
@@ -224,7 +264,11 @@ function StartsWith(const Text, StartText: string): Boolean;
 function ReadStringFromFile(const Filename: string): string;
 function SubStr(const Text: string; StartIndex, EndIndex: Integer): string;
 function IsDelphiRunning: Boolean;
+function FindCmdSwitch(const Switch: string): Boolean;
 
+function MoveFile(const Source, Dest: string): Boolean;
+
+function CreateJclPackageList(Target: TTargetInfo): TPackageList;
 
 implementation
 
@@ -242,11 +286,11 @@ const
     '$(JVCL)\run', '$(JVCL)\design'
   );
 
-function GetPackageGroupName(Target: TTargetInfo): string;
+function GetPackageGroupDir(Target: TTargetInfo): string;
 begin
   with Target do
   begin
-    if FProductName = 'Delphi' then
+    if IsDelphi then
       Result := 'D' + IntToStr(MajorVersion)
     else
       Result := 'BCB' + IntToStr(MajorVersion);
@@ -256,20 +300,122 @@ begin
         Result := Result + 'Per'
       else
         Result := Result + 'Std';
-
-    Result := Result + ' Packages.bpg';
   end;
+end;
+
+function GetPackageGroupName(Target: TTargetInfo): string;
+begin
+  Result := GetPackageGroupDir(Target) + ' Packages.bpg';
 end;
 
 function GetBplNameFrom(const PkgName: string; Target: TTargetInfo): string;
 begin
-  if Target.ProductName = 'Delphi' then
+  if Target.IsDelphi then
     Result := PkgName + 'D' + IntToStr(Target.MajorVersion) + 'D.bpl'
   else
     Result := PkgName + 'C' + IntToStr(Target.MajorVersion) + 'D.bpl';
 end;
 
 // -----------------------------------------------------------------------------
+
+function CreateJclPackageList(Target: TTargetInfo): TPackageList;
+var
+  Item: TPackageInfo;
+  LibVer: string;
+begin
+  Result := TPackageList.Create(Target);
+  try
+   // prefix is added in BuildHelpers.CreateDelphiPackageForBCB
+    if Target.MajorVersion < 6 then LibVer := '50' else LibVer := '';
+
+    Item := TPackageInfo.Create('Jcl' + LibVer + '-R', JCLPackageXmlDir, Result);
+    Result.FItems.Add(Item);
+
+    if Target.MajorVersion > 5 then
+    begin
+      Item := TPackageInfo.Create('JclVcl-R', JCLPackageXmlDir, Result);
+      Result.FItems.Add(Item);
+
+      Item := TPackageInfo.Create('JclVClx-R', JCLPackageXmlDir, Result);
+      Result.FItems.Add(Item);
+    end;
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
+
+function FindCmdSwitch(const Switch: string): Boolean;
+var i: Integer;
+begin
+  Result := True;
+  for i := 1 to ParamCount do
+    if CompareText(Switch, ParamStr(i)) = 0 then
+      Exit;
+  Result := False;
+end;
+
+function IsUNCPath(const Filename: string): Boolean;
+begin
+  Result := Copy(Filename, 1, 2) = PathDelim + PathDelim;
+end;
+
+function GetUNCShare(const Filename: string): string;
+var nps: Integer;
+begin // nur für WIN-Dateisystem
+  Result := '';
+  if Filename = '' then exit;
+  if IsUNCPath(Filename) then // UNC-Pfad
+  begin
+    Result := Copy(Filename, 3, Length(Filename));
+    nps := pos(PathDelim, Result);
+    Delete(Result, 1, nps); // Rechnername entfernen
+    Result := Copy(Result, 1, pos(PathDelim, Result) - 1); // Share extrahieren
+    Result := Copy(Filename, 1, nps + 2) + Result;
+   end else Result := Copy(Filename, 1, 2);
+end;
+
+function CopyOneFile(const SourceFileName, DestFileName: string): Boolean;
+begin
+  Result := Windows.CopyFile(PChar(SourceFileName), PChar(DestFileName), False);
+end;
+
+function MoveFile(const Source, Dest: string): Boolean;
+var CopyNecessary: Boolean;
+begin
+  Result := False;
+  if (Source = '') or (Dest = '') or (not FileExists(Source)) then Exit;
+  if CompareText(Source, Dest) = 0 then
+  begin
+    Result := True;
+    Exit;
+  end;
+
+  ForceDirectories(ExtractFilePath(Dest)); // Ordner erstellen
+  if FileExists(Dest) then
+  begin
+    SetFileAttributes(PChar(Dest), 0);
+    DeleteFile(Dest);
+  end;
+
+  CopyNecessary := True;
+ // ? gleiches Laufwerk
+  if CompareText(GetUNCShare(Source), GetUNCShare(Dest)) = 0 then
+     CopyNecessary := not RenameFile(Source, Dest);
+
+  if CopyNecessary then
+  begin
+    if CopyOneFile(Source, Dest) then
+    begin
+      SetFileAttributes(PChar(Source), 0);
+      DeleteFile(Source);
+      Result := True;
+    end;
+  end
+  else
+    Result := True;
+end;
 
 function IsVersionNumber(const S: string): Boolean;
 var
@@ -506,7 +652,7 @@ begin
       begin
         if StartsWith(AnsiLowerCase(NewPaths[DirIndex]), AnsiLowerCase(RootDir) + '\') then
         begin
-          if FProductName = 'Delphi' then
+          if IsDelphi then
             List.Add('$(DELPHI)' + Copy(NewPaths[DirIndex], 1 + Length(RootDir), MaxInt))
           else
             List.Add('$(BCB)' + Copy(NewPaths[DirIndex], 1 + Length(RootDir), MaxInt));
@@ -630,11 +776,7 @@ end;
 
 function TTargetInfo.GetSymbol: string;
 begin
-  if FProductName = 'Delphi' then
-    Result := 'D'
-  else
-    Result := 'C';
-
+  if IsDelphi then Result := 'D' else Result := 'C';
   Result := Result + IntToStr(MajorVersion);
 
   if IsPersonal then
@@ -693,6 +835,14 @@ begin
  // do not call ReadData here
 end;
 
+function TTargetInfo.GetJclDirName: string;
+begin
+  if IsDelphi then
+    Result := 'd' + IntToStr(MajorVersion)
+  else
+    Result := 'c' + IntToStr(MajorVersion);
+end;
+
 function TTargetInfo.GetLibDir: string;
 begin
   Result := 'lib' + IntToStr(MajorVersion);
@@ -702,6 +852,7 @@ procedure TTargetInfo.ReadData;
 var
   reg: TRegistry;
   i: Integer;
+  JclFileName: string;
 begin
   reg := TRegistry.Create;
   try
@@ -722,7 +873,6 @@ begin
         if reg.ValueExists(Format('Update #%d', [i])) then
           FLastUpdate := i;
 
-      FCompileFor := True;
       reg.CloseKey;
 
      // ****
@@ -752,6 +902,22 @@ begin
     reg.Free;
   end;
   GetKnownPackages;
+
+  FCompileFor := True;
+
+ // check for JCL:
+  if IsDelphi then
+    JclFileName := 'DJcl' + IntToStr(MajorVersion) + '0'
+  else
+    JclFileName := 'CJcl' + IntToStr(MajorVersion) + '0';
+  FIsJCLInstalled := (FileExists(FBplDir + '\' + JclFileName + '.bpl')) and
+                     (FileExists(FBplDir + '\' + JclFileName + '.dcp'));
+
+ // Jcl is not installed and we have a JCL directory
+  FInstallJcl := ((not IsJCLInstalled) or (IsOldJVCLInstalled <> 0))
+                 and (JCLDir <> '');
+
+  FCompileFor := FCompileFor and not ((not FIsJCLInstalled) and (JCLDir = ''));
 end;
 
 function TTargetInfo.GetDisplayName: string;
@@ -842,7 +1008,7 @@ begin
       OldDir := BplDir;
     OldDir := ExpandDirMacros(OldDir);
 
-    if FProductName = 'Delphi' then
+    if IsDelphi then
       VerName := IntToStr(MajorVersion) + '0'
     else
       VerName := IntToStr(MajorVersion) + '0C';
@@ -889,6 +1055,29 @@ begin
   Result := 0;
 end;
 
+function TTargetInfo.IsTargetFor(const Targets: string): Boolean;
+begin
+  if Targets = 'all' then
+    Result := True
+  else
+    Result := Pos(',' + AnsiLowerCase(Symbol) + ',', ',' + AnsiLowerCase(Targets) + ',') > 0;
+end;
+
+function TTargetInfo.GetIsBCB: Boolean;
+begin
+  Result := not GetIsDelphi;
+end;
+
+function TTargetInfo.GetIsDelphi: Boolean;
+begin
+  Result := FProductName = 'Delphi';
+end;
+
+function TTargetInfo.GetJVCLDirName: string;
+begin
+  Result := GetPackageGroupDir(Self);
+end;
+
 { TTargetList }
 
 constructor TTargetList.Create;
@@ -925,26 +1114,33 @@ begin
     reg := TRegistry.Create;
     try
       reg.RootKey := HKEY_LOCAL_MACHINE;
-     // obtain Delphi Targets
-      if reg.OpenKeyReadOnly(cDelphiKeyName) then
+
+      if not FindCmdSwitch('-NoDelphi') then
       begin
-        reg.GetKeyNames(Names);
-        for i := 0 to Names.Count - 1 do
+       // obtain Delphi Targets
+        if reg.OpenKeyReadOnly(cDelphiKeyName) then
         begin
-          if IsVersionNumber(Names[i]) then
-            ReadTargetData(cDelphiKeyName + '\' + Names[i], 'Delphi', Names[i]);
+          reg.GetKeyNames(Names);
+          for i := 0 to Names.Count - 1 do
+          begin
+            if IsVersionNumber(Names[i]) then
+              ReadTargetData(cDelphiKeyName + '\' + Names[i], 'Delphi', Names[i]);
+          end;
+          reg.CloseKey;
         end;
-        reg.CloseKey;
       end;
 
-     // obtain BCB Targets
-      if reg.OpenKeyReadOnly(cBCBKeyName) then
+      if not FindCmdSwitch('-NoBCB') then
       begin
-        reg.GetKeyNames(Names);
-        for i := 0 to Names.Count - 1 do
-          if IsVersionNumber(Names[i]) then
-            ReadTargetData(cBCBKeyName + '\' + Names[i], 'C++Builder', Names[i]);
-        reg.CloseKey;
+       // obtain BCB Targets
+        if reg.OpenKeyReadOnly(cBCBKeyName) then
+        begin
+          reg.GetKeyNames(Names);
+          for i := 0 to Names.Count - 1 do
+            if IsVersionNumber(Names[i]) then
+              ReadTargetData(cBCBKeyName + '\' + Names[i], 'C++Builder', Names[i]);
+          reg.CloseKey;
+        end;
       end;
     finally
       reg.Free;
@@ -985,24 +1181,46 @@ end;
 
 { TRequirePkg }
 
-constructor TRequirePkg.Create(const AName, ATargets: string);
+constructor TRequirePkg.Create(const AName, ATargets, ACondition: string);
 begin
   inherited Create;
   FName := AName;
   FTargets := ATargets;
+  FCondition := ACondition;
+end;
+
+{ TContainsFile }
+
+constructor TContainsFile.Create(const AName, ATargets, AFormName,
+  ACondition: string);
+begin
+  inherited Create;
+  FName := AName;
+  FTargets := ATargets;
+  FFormName := AFormName;
+  FCondition := ACondition;
 end;
 
 { TPackageInfo }
 
-constructor TPackageInfo.Create(const AName: string; APackageList: TPackageList);
+constructor TPackageInfo.Create(const AName, AXmlDir: string; APackageList: TPackageList);
 begin
   inherited Create;
   FPackageList := APackageList;
   FName := AName;
   FRequires := TObjectList.Create;
+  FContains := TObjectList.Create;
   FInstall := True;
+  FXmlDir := AXmlDir;
 
   ReadXmlPackage; // fills FDisplayName, FDescription, FRequires
+end;
+
+destructor TPackageInfo.Destroy;
+begin
+  FRequires.Free;
+  FContains.Free;
+  inherited Destroy;
 end;
 
 function TPackageInfo.DependsOn(PackageInfo: TPackageInfo): Boolean;
@@ -1013,24 +1231,25 @@ begin
   begin
     if CompareText(PackageInfo.Name, Requires[i].Name) = 0 then
     begin
-      if Requires[i].Targets = 'all' then
-        Result := True
-      else
-        Result := Pos(',' + Target.Symbol + ',', ',' + Requires[i].Targets + ',') > 0;
+      Result := Target.IsTargetFor(Requires[i].Targets);
       Exit;
     end;
   end;
 end;
 
-destructor TPackageInfo.Destroy;
-begin
-  FRequires.Free;
-  inherited Destroy;
-end;
-
 function TPackageInfo.GetBplName: string;
 begin
   Result := GetBplNameFrom(FDisplayName, Target);
+end;
+
+function TPackageInfo.GetContainCount: Integer;
+begin
+  Result := FContains.Count;
+end;
+
+function TPackageInfo.GetContains(Index: Integer): TContainsFile;
+begin
+  Result := TContainsFile(FContains.Items[Index]);
 end;
 
 function TPackageInfo.GetRequireCount: Integer;
@@ -1050,63 +1269,70 @@ end;
 
 procedure TPackageInfo.ReadXmlPackage;
 var
-  S: string;
-  i, ps: Integer;
-  RequirePkgName, RequireTarget, PkgName: string;
+  i: Integer;
+  RequirePkgName, RequireTarget, PkgName,
+  ContainsFileName, FormName, Condition: string;
+  xml: TJvSimpleXML;
+  RootNode : TJvSimpleXmlElemClassic;
+  RequiredNode: TJvSimpleXmlElem;
+  PackageNode: TJvSimpleXmlElem;
+  ContainsNode: TJvSimpleXmlElem;
+  FileNode: TJvSimpleXmlElem;
 begin
   FRequires.Clear;
+  FRequiresDB := False;
 
- // ***
- // (ahuser) Maybe we should use JvSimpleXml.pas here, but I do not want to
- //          depend on JVCL/JCL code.
- // ***
+  xml := TJvSimpleXML.Create(nil);
+  try
+    xml.LoadFromFile(FXmlDir + '\' + FName + '.xml');
+    RootNode := xml.Root;
+    RequiredNode := RootNode.Items.ItemNamed['Requires'];
+    ContainsNode := rootNode.Items.ItemNamed['Contains'];
 
-  S := ReadStringFromFile(JVCLPackageXmlDir + '\' + FName + '.xml');
+    FDisplayName := RootNode.Properties.ItemNamed['Name'].Value;
+    FDescription := RootNode.Items.ItemNamed['Description'].Value;
 
-  ps := Pos('<Package Name="', S);
-  if ps > 0 then
-  begin
-    Delete(S, 1, ps + 14);
-    ps := Pos('"', S);
-    FDisplayName := Copy(S, 1, ps - 1);
-  end;
-
-  ps := Pos('<Description>', S);
-  if ps > 0 then
-  begin
-    Delete(S, 1, ps + 12);
-    ps := Pos('</Description>', S);
-    FDescription := Copy(S, 1, ps - 1);
-  end;
-
-  repeat
-    ps := Pos('<Package Name="', S);
-    if ps = 0 then
-      Break; // -> leave
-    Delete(S, 1, ps + 14);
-    ps := Pos('"', S);
-    RequirePkgName := Copy(S, 1, ps - 1);
-
-    if Pos('dcldb', AnsiLowerCase(RequirePkgName)) > 0 then
-      FRequiresDB := True;
-
-   // require only designtime packages
-    if (Copy(RequirePkgName, 1, 2) = 'Jv') and (Pos('-D', RequirePkgName) > 0) then
+   // requires
+    for i := 0 to RequiredNode.Items.Count -1 do
     begin
-      ps := Pos('Targets="', S);
-      if (ps > 0) and (ps < Pos('<Package Name="', S)) then
-      begin
-        Delete(S, 1, ps + 8);
-        ps := Pos('"', S);
-        RequireTarget := Copy(S, 1, ps - 1);
-      end
-      else
+      PackageNode := RequiredNode.Items[i];
+      RequirePkgName := PackageNode.Properties.ItemNamed['Name'].Value;
+      if Pos('dcldb', AnsiLowerCase(RequirePkgName)) > 0 then
+        FRequiresDB := True;
+
+     // require only designtime packages
+{      if StartsWith(RequirePkgName, 'Jv') and (Pos('-D', RequirePkgName) > 0) then
+      begin}
+        RequireTarget := PackageNode.Properties.ItemNamed['Targets'].Value;
+        if RequireTarget = '' then
+          RequireTarget := 'all';
+        Condition := PackageNode.Properties.ItemNamed['Condition'].Value;
+
+       // add new require item
+        FRequires.Add(TRequirePkg.Create(RequirePkgName, RequireTarget, Condition));
+{      end;}
+    end;
+
+   // contains
+    for i := 0 to ContainsNode.Items.Count -1 do
+    begin
+      FileNode := ContainsNode.Items[i];
+      ContainsFileName := FileNode.Properties.ItemNamed['Name'].Value;
+
+      RequireTarget := FileNode.Properties.ItemNamed['Targets'].Value;
+      if RequireTarget = '' then
         RequireTarget := 'all';
 
+      FormName := FileNode.Properties.ItemNamed['Formname'].Value;
+      Condition := FileNode.Properties.ItemNamed['Condition'].Value;
+
      // add new require item
-      FRequires.Add(TRequirePkg.Create(RequirePkgName, RequireTarget));
+      FContains.Add(TContainsFile.Create(ContainsFileName, RequireTarget, FormName, Condition));
     end;
-  until False;
+
+  finally
+    xml.Free;
+  end;
 
  // not installed or an older version of the package already installed
   PkgName := BplName;
@@ -1211,7 +1437,7 @@ begin
       begin
         Item := nil;
         try
-          Item := TPackageInfo.Create(ChangeFileExt(sr.Name, ''), Self);
+          Item := TPackageInfo.Create(ChangeFileExt(sr.Name, ''), JVCLPackageXmlDir, Self);
           FItems.Add(Item);
         except
           Item.Free;
@@ -1236,6 +1462,19 @@ initialization
 
   JVCLPackageDir := JVCLDir + '\packages';
   JVCLPackageXmlDir := JVCLPackageDir + '\xml';
+
+  JCLDir := ExtractFileDir(JVCLDir) + '\jcl';
+  if DirectoryExists(JCLDir) then
+  begin
+    JCLPackageDir := JCLDir + '\packages';
+    JCLPackageXmlDir := JCLPackageDir + '\xml'; 
+  end
+  else
+  begin
+    JCLDir := '';
+    JCLPackageDir := '';
+    JCLPackageXmlDir := '';
+  end;
 
   TargetList := TTargetList.Create;
 
