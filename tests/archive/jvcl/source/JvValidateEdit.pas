@@ -781,7 +781,7 @@ end;
 
 function TJvCustomValidateEdit.BaseToInt(BaseValue: string; Base: Byte): Integer;
 var
-  i: Cardinal;
+  i: integer;
 
   function BaseCharToInt(BaseChar: Char): integer;
   begin
@@ -798,7 +798,7 @@ begin
 
   Result := 0;
   for i := 1 to Length(BaseValue) do
-    Result := Result + Trunc(BaseCharToInt(BaseValue[i]) * Power(Base, Length(BaseValue)-i));
+    Inc(Result,Trunc(BaseCharToInt(BaseValue[i]) * Power(Base, Length(BaseValue)-i)));
 end;
 
 function TJvCustomValidateEdit.IntToBase(NewValue, Base: Byte):
