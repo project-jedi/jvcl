@@ -43,7 +43,8 @@ uses
   JvConsts in '..\..\common\JvConsts.pas',
   JvResources in '..\..\run\JvResources.pas',
   JvTypes in '..\..\run\JvTypes.pas',
-  JVCLVer in '..\..\run\JVCLVer.pas';
+  JVCLVer in '..\..\run\JVCLVer.pas',
+  HtHint in 'HtHint.pas';
 
 {$R *.res}
 

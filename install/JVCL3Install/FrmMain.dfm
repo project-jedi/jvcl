@@ -348,12 +348,13 @@ object FormMain: TFormMain
     RowSelect = True
     ParentShowHint = False
     PopupMenu = PopupMenuPackages
-    ShowHint = False
+    ShowHint = True
     SmallImages = ImageListPackages
     SortType = stText
     TabOrder = 8
     ViewStyle = vsReport
     OnChange = ListViewPackagesChange
+    OnInfoTip = ListViewPackagesInfoTip
   end
   object ListViewTargets: TListView
     Left = 8
