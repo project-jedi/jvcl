@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>BCB Compatibility Guide</title>
-  <link rel="STYLESHEET" type="text/css" href="default.css">
+  <link href="default.css" type="text/css" rel="STYLESHEET">
 </head>
 <body>
 <h2>BCB Compatibility Guide</h2>
@@ -118,9 +118,8 @@ before the closing quote, add the recommended flag (preceded by a
 space)
 as indicated in the table below:<br>
 </p>
-<table
- style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;"
- border="1" cellspacing="1" cellpadding="1">
+<table cellpadding="1" cellspacing="1" border="1"
+ style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;">
   <tbody>
     <tr>
       <td
@@ -139,7 +138,7 @@ flag<br>
     <tr>
       <td style="vertical-align: top; width: 30%;">AccCtrl.dcu<br>
       </td>
-      <td style="vertical-align: top; width: 35%;">-LUvcl50.dcp<br>
+      <td style="vertical-align: top; width: 35%;">-LUvcl50<br>
       </td>
       <td style="vertical-align: top;"><br>
       </td>
@@ -147,17 +146,17 @@ flag<br>
     <tr>
       <td style="vertical-align: top; width: 30%;">FiltEdit.dcu<small><sup>*</sup></small><br>
       </td>
-      <td style="vertical-align: top; width: 35%;">-LUdclstd50.dcu<br>
+      <td style="vertical-align: top; width: 35%;">-LUdclstd50<br>
       </td>
-      <td style="vertical-align: top;">-LUdclstd.dcp<br>
+      <td style="vertical-align: top;">-LUdclstd<br>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top; width: 30%;">DesignIntf.dcu<small><sup>*</sup></small><br>
       </td>
-      <td style="vertical-align: top; width: 35%;">-LUdsnide50.dcp<br>
+      <td style="vertical-align: top; width: 35%;">-LUdsnide50<br>
       </td>
-      <td style="vertical-align: top;">-LUDesignIde.dcp<br>
+      <td style="vertical-align: top;">-LUDesignIde<br>
       </td>
     </tr>
   </tbody>
@@ -187,9 +186,8 @@ supported by BCB.<br>
 This is because a bpi file is missing from the requires node of the
 package your are trying to build. The table below indicates the name of
 the bpi files you need to add for different missing obj files<br>
-<table
- style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;"
- border="1" cellspacing="1" cellpadding="1">
+<table cellpadding="1" cellspacing="1" border="1"
+ style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;">
   <tbody>
     <tr>
       <td

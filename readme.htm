@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Release Notes for JEDI VCL</title>
-  <link rel="STYLESHEET" type="text/css" href="default.css">
+  <link href="default.css" type="text/css" rel="STYLESHEET">
 </head>
 <body>
 <h1>Release Notes for JEDI VCL</h1>
@@ -72,6 +72,9 @@ Personal Edition</p>
 C++Builder 6 Personal Edition</p>
 <p>&nbsp;&nbsp;&nbsp; <b>\k2</b> - packages for Kylix 2</p>
 <p>&nbsp;&nbsp;&nbsp; <b>\k3</b> - packages for&nbsp;Kylix 3</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\xml</b> - Source xml files for the packages.
+All the packages are generated from these files.<br>
+</p>
 <p>&nbsp; <b>\Resources</b> - contains res, dcr and other resource
 files used at either run or design time</p>
 <p>&nbsp; <b>\run</b> - contains units used at run-time</p>
@@ -126,7 +129,7 @@ package also has a matching design-time package with the registration
 code and any design-time editors required by the run-time package. The
 following packages are currently available:</p>
 <p>
-<table border="0" width="100%" cellpadding="2" cellspacing="2">
+<table cellspacing="2" cellpadding="2" width="100%" border="0">
   <tbody>
     <tr>
       <th>Package</th>
@@ -1221,11 +1224,11 @@ JvComputerInfo.pas.</p>
 naming&nbsp;standard in JVCL&nbsp;affects both classes, types and unit
 names. The following section explains the new naming convention
 enforced in JVCL:</p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <p>&nbsp;</p>
 </blockquote>
 <p><strong>General</strong></p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <ul>
     <li>All files have a "Jv" prefix (capital "J", lower case "v") and
 we use "Camel Casing" for the file name
@@ -1245,7 +1248,7 @@ whereas a unit containing a TJvEditor control would be named
   <p>&nbsp;</p>
 </blockquote>
 <p><strong>Using the word "Form" in filenames</strong></p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <p>All forms (units with DFM's) are suffixed with the word "Form"
 regardless of whether they contain a dialog or a form (i.e
 JvDualListForm.pas). The word "Form" can also be used as a prefix if
@@ -1254,7 +1257,7 @@ itself (i.e JvFormMagnet.pas) </p>
   <p>&nbsp;</p>
 </blockquote>
 <p><strong>Using the word "Dialog" in filenames</strong></p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <p>The word "Dialog" in a unit name signifies that the unit contains
 a component that has no UI at designtime but shows a form or dialog at
 run time (i.e JvObjectPickerDialog.pas). At the moment, "Dlg" and
@@ -1262,14 +1265,14 @@ run time (i.e JvObjectPickerDialog.pas). At the moment, "Dlg" and
   <p>&nbsp;</p>
 </blockquote>
 <p><strong>Using the words "Const" and "Consts" in filenames</strong></p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <p>The words "Const" and "Consts" are only used in units that
 contains just type, resourcestring and const declarations and no code
 (i.e JvConsts.pas). </p>
   <p><strong></strong>&nbsp;</p>
 </blockquote>
 <p><strong>Using the words "Util" and "Utils" in filenames</strong></p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <p>The word "Util" and "Utils" are only used in units that contains
 support routines and classes of more general use (i.e JvJVCLUtils.pas).
 Classes in util type units should never be installable. </p>
@@ -1311,7 +1314,7 @@ coupling and simplifies maintenance and future restructuring. </p>
   <p><strong></strong>&nbsp;</p>
 </blockquote>
 <p><strong>Registration units</strong></p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <p>Each design package have it's own registration unit with a
 Register procedure. The unit is named with the same base name as the
 package but with a "Reg" suffix (i.e the reg file for the "JvCore"
@@ -1327,7 +1330,7 @@ JvCoreReg.pas is in \resources\JvCoreReg.dcr). </p>
   <p>&nbsp;</p>
 </blockquote>
 <p><strong>Palette images color coding</strong></p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <p>All component icons have a common background and an upper case
 yellow "J" in a rectangle in the bottom right corner of the image. The
 background color of the&nbsp;rectangle identifies the type of component
