@@ -185,6 +185,20 @@ function TrimRightW(const S: WideString): WideString;
 {**** files routines}
 procedure SetDelimitedText(List: TStrings; const Text: string; Delimiter: Char);
 
+{$IFNDEF COMPILER6_UP}
+type
+  TValueSign = -1..1;
+
+const
+  NegativeValue = Low(TValueSign);
+  ZeroValue = 0;
+  PositiveValue = High(TValueSign);
+
+function Sign(const AValue: Integer): TValueSign; overload;
+function Sign(const AValue: Int64): TValueSign; overload;
+function Sign(const AValue: Double): TValueSign; overload;
+{$ENDIF}
+
 {$IFDEF MSWINDOWS}
 { GetWinDir returns Windows folder name }
 function GetWinDir: TFileName;
@@ -2428,6 +2442,38 @@ begin
 end;
 {$ENDIF}
 end;
+
+{$IFNDEF COMPILER6_UP}
+function Sign(const AValue: Integer): TValueSign;
+begin
+  if AValue < 0 then
+    Result := NegativeValue
+  else if AValue > 0 then
+    Result := PositiveValue
+  else
+    Result := ZeroValue;
+end;
+
+function Sign(const AValue: Int64): TValueSign;
+begin
+  if AValue < 0 then
+    Result := NegativeValue
+  else if AValue > 0 then
+    Result := PositiveValue
+  else
+    Result := ZeroValue;
+end;
+
+function Sign(const AValue: Double): TValueSign;
+begin
+  if ((PInt64(@AValue)^ and $7FFFFFFFFFFFFFFF) = $0000000000000000) then
+    Result := ZeroValue
+  else if ((PInt64(@AValue)^ and $8000000000000000) = $8000000000000000) then
+    Result := NegativeValue
+  else
+    Result := PositiveValue;
+end;
+{$ENDIF !COMPILER6_UP}
 
 function GetComputerName: string;
 {$IFDEF MSWINDOWS}
