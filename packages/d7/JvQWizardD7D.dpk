@@ -24,6 +24,7 @@ package JvQWizardD7D;
 {$DESCRIPTION 'JVCLX Wizard Design Time Package'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
+{$DEFINE VisualCLX}
 
 requires
   JvQWizardD7R,
@@ -31,9 +32,14 @@ requires
   JvQCoreD7D,
   rtl,
   designide,
-  visualclx;
+  visualclx,
+  DJcl,
+  dclclxstd,
+  visualdbclx;
 
 contains
-  JvQWizardReg in '..\..\qdesign\JvQWizardReg.pas';
+  JvQWizardReg in '..\..\qdesign\JvQWizardReg.pas',
+  JvQWizardEditorForm in '..\..\qdesign\JvQWizardEditorForm.pas' {JvWizardPageListEditor},
+  JvQWizardAboutInfoForm in '..\..\qdesign\JvQWizardAboutInfoForm.pas' {JvWizardAboutDialog};
 
 end.

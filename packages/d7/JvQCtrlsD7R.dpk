@@ -30,7 +30,9 @@ requires
   JvQCoreD7R,
   JvQStdCtrlsD7R,
   JvQSystemD7R,
-  rtl;
+  rtl,
+  visualclx,
+  DJcl;
 
 contains
   JvQClock in '..\..\qrun\JvQClock.pas',
@@ -58,6 +60,7 @@ contains
   JvQaScrollText in '..\..\qrun\JvQaScrollText.pas',
   JvQBehaviorLabel in '..\..\qrun\JvQBehaviorLabel.pas',
   JvQButtons in '..\..\qrun\JvQButtons.pas',
-  JvQCaptionPanel in '..\..\qrun\JvQCaptionPanel.pas';
+  JvQCaptionPanel in '..\..\qrun\JvQCaptionPanel.pas',
+  JvQRollOut in '..\..\qrun\JvQRollOut.pas';
 
 end.

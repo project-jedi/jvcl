@@ -52,13 +52,13 @@ uses
   JvQImage, JvQLabel, JvQRadioButton, JvQRadioGroup,
   JvQScrollBar, JvQShape, JvQControlBar,
   JvQTabControl, JvQBitBtn, JvQPickDate,
-  JvQPanel, JvQProgressEditor, JvQDsgnEditors;
+  JvQPanel, JvQImageList, JvQProgressEditor, JvQDsgnEditors;
 
 {$IFDEF MSWINDOWS}
 {$R ..\resources\JvStdCtrlsReg.dcr}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../resources/JvStdCtrlsReg.dcr}
+{$R ../Resources/JvStdCtrlsReg.dcr}
 {$ENDIF LINUX}
 
 procedure Register;
@@ -75,7 +75,7 @@ begin
     TJvMaskEdit, TJvCalcEdit, TJvComboEdit,
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit]);
   RegisterComponents(RsPaletteListComboTree, [TJvCalendar]);
-  RegisterComponents(RsPaletteImageAnimator, [TJvImage]);
+  RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
   RegisterComponents(RsPaletteBarPanel, [TJvTabControl, TJvControlBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel,
     TJvBevel {TJvTransparentPanel}]);

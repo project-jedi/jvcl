@@ -71,8 +71,6 @@ procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin
-  RegisterComponents('Dialogs', [TOpenPictureDialog, TSavePictureDialog]);
-
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent  ,
     TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]);
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
@@ -117,7 +115,7 @@ begin
   RegisterActions(RsJVCLActionsCategory, [TJvSendMailAction, TJvWebAction], TJvStandardActions);
   RegisterZoom;
 
-  RegisterComponents('Dialogs', [TOpenPictureDialog, TSavePictureDialog, TPrinterSetupDialog]);
+  RegisterComponents(RsPaletteDialog, [TOpenPictureDialog, TSavePictureDialog, TPrinterSetupDialog]);
 
   end;
 

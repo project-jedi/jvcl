@@ -53,13 +53,13 @@ uses
   Classes,
   
   DesignIntf, DesignEditors,
-  
+
   {$IFDEF USEJVCL}
   JvQDsgnConsts,
   {$ELSE}
   JvQWizardAboutInfoForm,
   {$ENDIF USEJVCL}
-  JvQWizard, JvQWizardRouteMapNodes, JvQWizardRouteMapSteps;
+  JvQWizard, JvQWizardRouteMapNodes, JvQWizardRouteMapSteps, JvQWizardEditorForm;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvWizardReg.dcr}
@@ -82,24 +82,24 @@ begin
     TJvWizardRouteMapNodes]);
   RegisterClasses([TJvWizardCustomPage, TJvWizardWelcomePage,
     TJvWizardInteriorPage]);
-//  RegisterComponentEditor(TJvWizard, TJvWizardComponentEditor);
-//  RegisterComponentEditor(TJvWizardCustomPage, TJvWizardComponentEditor);
-//  RegisterComponentEditor(TJvWizardWelcomePage, TJvWizardComponentEditor);
-//  RegisterComponentEditor(TJvWizardInteriorPage, TJvWizardComponentEditor);
-//  RegisterPropertyEditor(TypeInfo(TJvWizardCustomPage), TJvWizard, cActivePage,
-//    TJvWizardActivePageProperty);
-//  RegisterPropertyEditor(TypeInfo(TJvWizardWelcomePage), TJvWizard, cActivePage,
-//    TJvWizardActivePageProperty);
-//  RegisterPropertyEditor(TypeInfo(TJvWizardInteriorPage), TJvWizard, cActivePage,
-//    TJvWizardActivePageProperty);
+  RegisterComponentEditor(TJvWizard, TJvWizardComponentEditor);
+  RegisterComponentEditor(TJvWizardCustomPage, TJvWizardComponentEditor);
+  RegisterComponentEditor(TJvWizardWelcomePage, TJvWizardComponentEditor);
+  RegisterComponentEditor(TJvWizardInteriorPage, TJvWizardComponentEditor);
+  RegisterPropertyEditor(TypeInfo(TJvWizardCustomPage), TJvWizard, cActivePage,
+    TJvWizardActivePageProperty);
+  RegisterPropertyEditor(TypeInfo(TJvWizardWelcomePage), TJvWizard, cActivePage,
+    TJvWizardActivePageProperty);
+  RegisterPropertyEditor(TypeInfo(TJvWizardInteriorPage), TJvWizard, cActivePage,
+    TJvWizardActivePageProperty);
   // Added By Steve Forbes
   {$IFNDEF USEJVCL}
   RegisterPropertyEditor(TypeInfo(TJvWizardAboutInfoForm), nil, 'About',
     TJvWizardAboutDialogProperty);
   {$ENDIF USEJVCL}
   // JvWizard Page List Editor
-//  RegisterPropertyEditor(TypeInfo(TJvWizardPageList), TJvWizard, cPages,
-//    TJvWizardPageListProperty);
+  RegisterPropertyEditor(TypeInfo(TJvWizardPageList), TJvWizard, cPages,
+    TJvWizardPageListProperty);
 end;
 
 end.

@@ -21,7 +21,7 @@ All Rights Reserved.
 Contributor(s):
 Peter Thörnqvist - converted to JVCL naming conventions on 2003-07-11
 
-Last Modified: 2002-01-29
+Last Modified: 2003-02-22
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -56,8 +56,10 @@ uses
   QGraphics, QControls, QForms, QDialogs, Types, QTypes,
   QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus, QWindows,
   
-  
+
   DesignIntf, DesignEditors,
+
+  ClxDesignWindows,
 
   JvQWizard;
 
@@ -91,7 +93,7 @@ type
     procedure Edit; override;
   end;
 
-  TJvWizardPageListEditor = class(TDesignWindow)
+  TJvWizardPageListEditor = class(TClxDesignWindow)
     tbrWizardPages: TToolBar;
     lbxWizardPages: TListBox;
     btnAddWelcomePage: TToolButton;
