@@ -138,7 +138,8 @@ type
 
 //  TFontDialogDevice = (fdScreen, fdPrinter, fdBoth); { already in Dialogs }
   TJvFontComboOption = (foAnsiOnly, foTrueTypeOnly, foFixedPitchOnly,
-    foNoOEMFonts, foOEMFontsOnly, foScalableOnly,foWysiWyg);
+    foNoOEMFonts, foOEMFontsOnly, foScalableOnly,foWysiWyg,foDisableVerify);
+  // foDisableVerify: if true, allows you to insert a font name that doesn't exist (by assigning to FontName
   TJvFontComboOptions = set of TJvFontComboOption;
 
   TJvFontComboBox = class(TJvCustomComboBox)
@@ -780,6 +781,8 @@ end;
 procedure TJvFontComboBox.SetFontName(const Value: string);
 begin
   ItemIndex := Items.IndexOf(Value);
+  if (ItemIndex = -1) and (foDisableVerify in Options) then
+    ItemIndex := Items.AddObject(Value,TObject(TRUETYPE_FONTTYPE));
 end;
 
 end.
