@@ -46,9 +46,9 @@ interface
 uses
   Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Dialogs,
   Classes, // (ahuser) "Classes" after "Forms" (D5 warning)
-  Menus, ComCtrls, CommCtrl, StdActns,
+  Menus, ComCtrls, CommCtrl, StdActns, ImgList, Buttons,
   JclBase,
-  JvComponent, JvExControls, JvExComCtrls;
+  JvJVCLUtils, JvComponent, JvExControls, JvExComCtrls;
 
 const
   JvDefPageControlBorder = 4;
@@ -231,41 +231,149 @@ type
     hsPreferChildren // use subitems hints unless empty then use main control hint
     );
 
+  // painters that can be used to draw the tabs of a TPageControl or TTabControl
+  TJvTabControlPainter = class(TJvComponent)
+  private
+    FClients: TList;
+  protected
+    // descendants must override and implement this method
+    procedure DrawTab(AControl: TCustomTabControl; Canvas: TCanvas;
+      Images: TCustomImageList; ImageIndex: Integer; const Caption: string;
+      const Rect: TRect; Active, Enabled: Boolean); virtual; abstract;
+    procedure Change; virtual;
+    procedure RegisterChange(AControl: TCustomTabControl);
+    procedure UnRegisterChange(AControl: TCustomTabControl);
+  public
+    destructor Destroy; override;
+  end;
+
+  TJvTabDefaultPainter = class(TJvTabControlPainter)
+  private
+    FActiveFont: TFont;
+    FDisabledFont: TFont;
+    FInactiveFont: TFont;
+    FInactiveColorTo: TColor;
+    FActiveColorTo: TColor;
+    FDisabledColorTo: TColor;
+    FInactiveColorFrom: TColor;
+    FActiveColorFrom: TColor;
+    FDisabledColorFrom: TColor;
+    FActiveGradientDirection: TFillDirection;
+    FInactiveGradientDirection: TFillDirection;
+    FDisabledGradientDirection: TFillDirection;
+    FGlyphLayout: TButtonLayout;
+    FDivider: boolean;
+    FShowFocus: boolean;
+    procedure SetActiveFont(const Value: TFont);
+    procedure SetDisabledFont(const Value: TFont);
+    procedure SetInactiveFont(const Value: TFont);
+    procedure SetActiveColorFrom(const Value: TColor);
+    procedure SetActiveColorTo(const Value: TColor);
+    procedure SetActiveGradientDirection(const Value: TFillDirection);
+    procedure SetDisabledColorFrom(const Value: TColor);
+    procedure SetDisabledColorTo(const Value: TColor);
+    procedure SetDisabledGradientDirection(const Value: TFillDirection);
+    procedure SetInactiveColorFrom(const Value: TColor);
+    procedure SetInactiveColorTo(const Value: TColor);
+    procedure SetInactiveGradientDirection(const Value: TFillDirection);
+    function IsActiveFontStored: Boolean;
+    function IsInactiveFontStored: boolean;
+    function IsDisabledFontStored: boolean;
+    procedure SetGlyphLayout(const Value: TButtonLayout);
+    procedure SetDivider(const Value: boolean);
+    procedure SetShowFocus(const Value: boolean);
+  protected
+    procedure DrawTab(AControl: TCustomTabControl; Canvas: TCanvas;
+      Images: TCustomImageList; ImageIndex: Integer; const Caption: string;
+      const Rect: TRect; Active, Enabled: Boolean); override;
+    procedure DoFontChange(Sender: TObject);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property ActiveFont: TFont read FActiveFont write SetActiveFont stored IsActiveFontStored;
+    property ActiveColorFrom: TColor read FActiveColorFrom write SetActiveColorFrom default clWhite;
+    property ActiveColorTo: TColor read FActiveColorTo write SetActiveColorTo default clBtnFace;
+    property ActiveGradientDirection: TFillDirection read FActiveGradientDirection write SetActiveGradientDirection default fdTopToBottom;
+    property InactiveFont: TFont read FInactiveFont write SetInactiveFont stored IsInactiveFontStored;
+    property InactiveColorFrom: TColor read FInactiveColorFrom write SetInactiveColorFrom default $D7D7D7;
+    property InactiveColorTo: TColor read FInactiveColorTo write SetInactiveColorTo default $ADADAD;
+    property InactiveGradientDirection: TFillDirection read FInactiveGradientDirection write SetInactiveGradientDirection default fdTopToBottom;
+    property DisabledFont: TFont read FDisabledFont write SetDisabledFont stored IsDisabledFontStored;
+    property DisabledColorFrom: TColor read FDisabledColorFrom write SetDisabledColorFrom default clBtnFace;
+    property DisabledColorTo: TColor read FDisabledColorTo write SetDisabledColorTo default clBtnFace;
+    property DisabledGradientDirection: TFillDirection read FDisabledGradientDirection write SetDisabledGradientDirection default fdTopToBottom;
+    property GlyphLayout: TButtonLayout read FGlyphLayout write SetGlyphLayout default blGlyphLeft;
+    property Divider: boolean read FDivider write SetDivider default False;
+    property ShowFocus:boolean read FShowFocus write SetShowFocus default False;
+  end;
+
+  TJvTabOutlookPainter = class(TJvTabDefaultPainter)
+  protected
+    procedure DrawTab(AControl: TCustomTabControl; Canvas: TCanvas;
+      Images: TCustomImageList; ImageIndex: Integer; const Caption: string;
+      const Rect: TRect; Active, Enabled: Boolean); override;
+  end;
+
+  TJvTabControl = class(TJvExTabControl)
+  private
+    FTabPainter: TJvTabControlPainter;
+{$IFDEF VCL}
+    procedure CMDialogKey(var Msg: TWMKey); message CM_DIALOGKEY;
+{$ENDIF VCL}
+    procedure SetTabPainter(const Value: TJvTabControlPainter); // not WantKeys
+  protected
+{$IFDEF VisualCLX}
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+{$ENDIF VisualCLX}
+    procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property TabPainter: TJvTabControlPainter read FTabPainter write SetTabPainter;
+    property HintColor;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnParentColorChange;
+    property Color;
+  end;
+
   TJvPageControl = class(TJvExPageControl)
   private
     FClientBorderWidth: TBorderWidth;
     FHideAllTabs: Boolean;
-    FDrawTabShadow: Boolean;
     FHandleGlobalTab: Boolean;
     FHintSource: TJvHintSource;
     FReduceMemoryUse: Boolean;
+    FTabPainter: TJvTabControlPainter;
     procedure SetClientBorderWidth(const Value: TBorderWidth);
     procedure TCMAdjustRect(var Msg: TMessage); message TCM_ADJUSTRECT;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
-    procedure SetDrawTabShadow(const Value: Boolean);
     procedure SetHideAllTabs(const Value: Boolean);
     function FormKeyPreview: Boolean;
     procedure SetReduceMemoryUse(const Value: Boolean);
+    procedure SetTabPainter(const Value: TJvTabControlPainter);
   protected
+
     function HintShow(var HintInfo: THintInfo): Boolean; override;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
 
     procedure Loaded; override;
-    procedure DrawDefaultTab(TabIndex: Integer; const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
-    procedure DrawShadowTab(TabIndex: Integer; const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
     procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
     function CanChange: Boolean; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTabImages;
   published
+    property TabPainter: TJvTabControlPainter read FTabPainter write SetTabPainter;
     property HintSource: TJvHintSource read FHintSource write FHintSource default hsDefault;
     property HandleGlobalTab: Boolean read FHandleGlobalTab write FHandleGlobalTab default False;
-    property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default
-      JvDefPageControlBorder;
+    property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default JvDefPageControlBorder;
+    property ParentColor;
     property ReduceMemoryUse: Boolean read FReduceMemoryUse write SetReduceMemoryUse default False;
-    property DrawTabShadow: Boolean read FDrawTabShadow write SetDrawTabShadow default False;
     property HideAllTabs: Boolean read FHideAllTabs write SetHideAllTabs default False;
     property HintColor;
     property OnMouseEnter;
@@ -447,7 +555,7 @@ type
 implementation
 
 uses
-  JclSysUtils, JclStrings, JvJCLUtils, JvTypes;
+  Math, JclSysUtils, JclStrings, JvJCLUtils, JvTypes;
 
 const
   TVIS_CHECKED = $2000;
@@ -932,6 +1040,449 @@ begin
   end;
 end;
 
+// === TJvTabControlPainter ====================================================
+
+procedure TJvTabControlPainter.Change;
+var
+  I: integer;
+begin
+  if FClients <> nil then
+    for I := 0 to FClients.Count - 1 do
+      TCustomTabControl(FClients[i]).Invalidate;
+end;
+
+destructor TJvTabControlPainter.Destroy;
+begin
+  if FClients <> nil then
+    while FClients.Count > 0 do
+      UnRegisterChange(TCustomTabControl(FClients.Last));
+  FreeAndNil(FClients);
+  inherited;
+end;
+
+procedure TJvTabControlPainter.RegisterChange(AControl: TCustomTabControl);
+begin
+  if FClients = nil then
+    FClients := TList.Create;
+  if AControl <> nil then
+  begin
+    FClients.Add(AControl);
+    AControl.Invalidate;
+  end;
+end;
+
+procedure TJvTabControlPainter.UnRegisterChange(AControl: TCustomTabControl);
+begin
+  if FClients <> nil then
+  begin
+    FClients.Remove(AControl);
+    if (AControl <> nil) and not (csDestroying in AControl.ComponentState) then
+      AControl.Invalidate;
+  end;
+end;
+
+// === TJvTabDefaultPainter ====================================================
+
+constructor TJvTabDefaultPainter.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FActiveFont := TFont.Create;
+  FActiveFont.Assign(Screen.IconFont);
+  FActiveFont.Style := [fsBold];
+  FActiveFont.OnChange := DoFontChange;
+  FActiveColorFrom := clWhite;
+  FActiveColorTo := clBtnFace;
+  FActiveGradientDirection := fdTopToBottom;
+
+  FDisabledFont := TFont.Create;
+  FDisabledFont.Assign(Screen.IconFont);
+  FDisabledFont.Color := clGrayText;
+  FDisabledFont.OnChange := DoFontChange;
+  FDisabledColorFrom := clBtnFace;
+  FDisabledColorTo := clBtnFace;
+  FDisabledGradientDirection := fdTopToBottom;
+
+  FInactiveFont := TFont.Create;
+  FInactiveFont.Assign(Screen.IconFont);
+  FInactiveFont.OnChange := DoFontChange;
+  FInactiveColorFrom := $D7D7D7;
+  FInactiveColorTo := $ADADAD;
+  FInactiveGradientDirection := fdTopToBottom;
+  FGlyphLayout := blGlyphLeft;
+end;
+
+destructor TJvTabDefaultPainter.Destroy;
+begin
+  FActiveFont.Free;
+  FDisabledFont.Free;
+  FInactiveFont.Free;
+  inherited;
+end;
+
+procedure TJvTabDefaultPainter.DoFontChange(Sender: TObject);
+begin
+  Change;
+end;
+type
+  TWinControlAccess = class(TWinControl);
+
+procedure TJvTabDefaultPainter.DrawTab(AControl: TCustomTabControl; Canvas: TCanvas; Images: TCustomImageList; ImageIndex: Integer; const Caption: string; const Rect: TRect; Active, Enabled: Boolean);
+var
+  TextRect, ImageRect: TRect;
+  SaveState: integer;
+  procedure DrawDivider(X,Y, X1, Y1: integer);
+  begin
+    Canvas.Pen.Color := clBtnShadow;
+    Canvas.MoveTo(X, Y);
+    Canvas.LineTo(X1, Y1);
+    Canvas.Pen.Color := clHighlightText;
+    Canvas.MoveTo(X + 1,Y + 1);
+    Canvas.LineTo(X1 + 1, Y1 + 1);
+  end;
+begin
+  TextRect := Rect;
+  ImageRect := Rect;
+  if not Enabled then
+  begin
+    GradientFillRect(Canvas, TextRect, DisabledColorFrom, DisabledColorTo, DisabledGradientDirection, 255);
+    Canvas.Font := DisabledFont;
+  end
+  else if Active then
+  begin
+    GradientFillRect(Canvas, TextRect, ActiveColorFrom, ActiveColorTo, ActiveGradientDirection, 255);
+    Canvas.Font := ActiveFont;
+  end
+  else
+  begin
+    GradientFillRect(Canvas, TextRect, InactiveColorFrom, InactiveColorTo, InactiveGradientDirection, 255);
+    Canvas.Font := InactiveFont;
+  end;
+  if Assigned(Images) then
+  begin // GlyphLayout is only used if we have images
+    case GlyphLayout of
+      blGlyphLeft:
+        begin
+          Inc(ImageRect.Left, 4);
+          ImageRect.Right := ImageRect.Left + Images.Width + 4;
+          TextRect.Left := ImageRect.Right;
+        end;
+      blGlyphRight:
+        begin
+          Dec(ImageRect.Right, 4);
+          ImageRect.Left := ImageRect.Right - Images.Width - 4;
+          TextRect.Right := ImageRect.Left;
+        end;
+      blGlyphTop:
+        begin
+          Dec(ImageRect.Bottom, RectHeight(Rect) div 2);
+          TextRect.Top := ImageRect.Bottom;
+          if Divider and (Caption <> '') then
+            DrawDivider(Rect.Left + 4 + Ord(Active), Rect.Top + RectHeight(Rect) div 2, Rect.Right - 4 - Ord(Active), Rect.Top + RectHeight(Rect) div 2);
+        end;
+      blGlyphBottom:
+        begin
+          Inc(ImageRect.Top, RectHeight(Rect) div 2);
+          TextRect.Bottom := ImageRect.Top;
+          if Divider and (Caption <> '') then
+            DrawDivider(Rect.Left + 4 + Ord(Active), Rect.Top + RectHeight(Rect) div 2, Rect.Right - 4 - Ord(Active), Rect.Top + RectHeight(Rect) div 2);
+        end;
+    end;
+    InflateRect(ImageRect,-(RectWidth(ImageRect) - Images.Width) div 2,-(RectHeight(ImageRect) - Images.Height) div 2);
+    SaveState := SaveDC(Canvas.Handle);
+    try
+      Images.Draw(Canvas, ImageRect.Left, ImageRect.Top, ImageIndex, Enabled);
+    finally
+      RestoreDC(Canvas.Handle, SaveState);
+    end;
+  end;
+  if Caption <> '' then
+  begin
+//    InflateRect(TextRect, -2, -2);
+    SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
+    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), TextRect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+  end;
+  if Active and ShowFocus then
+  begin
+    TextRect := Rect;
+    InflateRect(TextRect, -3, -3);
+    Canvas.DrawFocusRect(TextRect);
+  end;
+end;
+
+procedure TJvTabDefaultPainter.SetActiveColorFrom(const Value: TColor);
+begin
+  if FActiveColorFrom <> Value then
+  begin
+    FActiveColorFrom := Value;
+    Change;
+  end;
+end;
+
+procedure TJvTabDefaultPainter.SetActiveFont(const Value: TFont);
+begin
+  FActiveFont.Assign(Value);
+end;
+
+procedure TJvTabDefaultPainter.SetActiveColorTo(const Value: TColor);
+begin
+  if FActiveColorTo <> Value then
+  begin
+    FActiveColorTo := Value;
+    Change;
+  end;
+end;
+
+procedure TJvTabDefaultPainter.SetActiveGradientDirection(
+  const Value: TFillDirection);
+begin
+  if FActiveGradientDirection <> Value then
+  begin
+    FActiveGradientDirection := Value;
+    Change;
+  end;
+end;
+
+procedure TJvTabDefaultPainter.SetDisabledColorFrom(const Value: TColor);
+begin
+  if FDisabledColorFrom <> Value then
+  begin
+    FDisabledColorFrom := Value;
+    Change;
+  end;
+end;
+
+procedure TJvTabDefaultPainter.SetDisabledColorTo(const Value: TColor);
+begin
+  if FDisabledColorTo <> Value then
+  begin
+    FDisabledColorTo := Value;
+    Change;
+  end;
+end;
+
+procedure TJvTabDefaultPainter.SetDisabledFont(const Value: TFont);
+begin
+  FDisabledFont.Assign(Value);
+end;
+
+procedure TJvTabDefaultPainter.SetDisabledGradientDirection(
+  const Value: TFillDirection);
+begin
+  if FDisabledGradientDirection <> Value then
+  begin
+    FDisabledGradientDirection := Value;
+    Change;
+  end;
+end;
+
+procedure TJvTabDefaultPainter.SetInactiveColorFrom(const Value: TColor);
+begin
+  if FInactiveColorFrom <> Value then
+  begin
+    FInactiveColorFrom := Value;
+    Change;
+  end;
+end;
+
+procedure TJvTabDefaultPainter.SetInactiveColorTo(const Value: TColor);
+begin
+  if FInactiveColorTo <> Value then
+  begin
+    FInactiveColorTo := Value;
+    Change;
+  end;
+end;
+
+procedure TJvTabDefaultPainter.SetInactiveFont(const Value: TFont);
+begin
+  FInactiveFont.Assign(Value);
+end;
+
+procedure TJvTabDefaultPainter.SetInactiveGradientDirection(const Value: TFillDirection);
+begin
+  if FInactiveGradientDirection <> Value then
+  begin
+    FInactiveGradientDirection := Value;
+    Change;
+  end;
+end;
+
+function TJvTabDefaultPainter.IsActiveFontStored: Boolean;
+begin
+  Result := true;
+end;
+
+function TJvTabDefaultPainter.IsDisabledFontStored: boolean;
+begin
+  Result := true;
+end;
+
+function TJvTabDefaultPainter.IsInactiveFontStored: boolean;
+begin
+  Result := true;
+end;
+
+// === TJvTabOutlookPainter ====================================================
+
+procedure TJvTabOutlookPainter.DrawTab(AControl: TCustomTabControl;
+  Canvas: TCanvas; Images: TCustomImageList; ImageIndex: Integer;
+  const Caption: string; const Rect: TRect; Active, Enabled: Boolean);
+var
+  R: TRect;
+  SaveState: integer;
+begin
+  R := Rect;
+  InflateRect(R, 0, -1);
+  if not Enabled then
+  begin
+    GradientFillRect(Canvas, R, DisabledColorFrom, DisabledColorTo, DisabledGradientDirection, 255);
+    Canvas.Font := DisabledFont;
+  end
+  else if Active then
+  begin
+    GradientFillRect(Canvas, R, ActiveColorFrom, ActiveColorTo, ActiveGradientDirection, 255);
+    Canvas.Font := ActiveFont;
+  end
+  else
+  begin
+    GradientFillRect(Canvas, R, InactiveColorFrom, InactiveColorTo, InactiveGradientDirection, 255);
+    Canvas.Font := InactiveFont;
+  end;
+  if Assigned(Images) then
+  begin
+    SaveState := SaveDC(Canvas.Handle);
+    try
+      Images.Draw(Canvas, R.Left + ((R.Right - R.Left) - Images.Width) div 2, R.Top + (R.Bottom - R.Top) div 4 - Images.Height div 2, ImageIndex, Enabled);
+    finally
+      RestoreDC(Canvas.Handle, SaveState);
+    end;
+  end;
+  OffsetRect(R, 0, (R.Bottom - R.Top) div 2);
+  Canvas.Pen.Color := clGrayText;
+  if Active then
+  begin
+    Canvas.MoveTo(R.Left + 4, R.Top);
+    Canvas.LineTo(R.Right - 5, R.Top);
+    Canvas.Pen.Color := clHighlightText;
+    Canvas.MoveTo(R.Left + 5, R.Top + 1);
+    Canvas.LineTo(R.Right - 4, R.Top + 1);
+    OffsetRect(R, 0, 2);
+  end
+  else
+  begin
+    Canvas.MoveTo(R.Left + 1, R.Top + 1);
+    Canvas.LineTo(R.Right - 2, R.Top + 1);
+    Canvas.Pen.Color := clHighlightText;
+    Canvas.MoveTo(R.Left + 2, R.Top + 2);
+    Canvas.LineTo(R.Right - 1, R.Top + 2);
+    OffsetRect(R, 0, 3);
+  end;
+  R.Bottom := Rect.Bottom;
+  if Caption <> '' then
+  begin
+    SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
+    InflateRect(R, -2, -2);
+    if not Enabled then
+    begin
+      Canvas.Font := DisabledFont;
+      DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_CENTER);
+      OffsetRect(R, 1, 1);
+      Canvas.Font.Color := clHighlightText;
+      DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_CENTER);
+    end
+    else
+      DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_CENTER);
+  end;
+end;
+
+// === TJvTabControl ========================================================
+
+constructor TJvTabControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+{$IFDEF VisualCLX}
+  InputKeys := [ikTabs];
+{$ENDIF VisualCLX}
+end;
+
+{$IFDEF VCL}
+
+procedure TJvTabControl.CMDialogKey(var Msg: TWMKey);
+begin
+  if (Msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) and
+    IsChild(Handle, Windows.GetFocus) then
+  begin
+    if GetKeyState(VK_SHIFT) < 0 then
+    begin
+      if TabIndex = 0 then
+        TabIndex := Tabs.Count - 1
+      else
+        TabIndex := TabIndex - 1;
+    end
+    else
+      TabIndex := (TabIndex + 1) mod Tabs.Count;
+    Msg.Result := 1;
+  end
+  else
+    inherited;
+end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+
+procedure TJvTabControl.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_TAB) and (ssCtrl in Shift) then
+  begin
+    if ssShift in Shift then
+    begin
+      if TabIndex = 0 then
+        TabIndex := Tabs.Count - 1
+      else
+        TabIndex := TabIndex - 1;
+    end
+    else
+      TabIndex := (TabIndex + 1) mod Tabs.Count;
+    Key := 0;
+  end
+  else
+    inherited KeyDown(Key, Shift);
+end;
+{$ENDIF VisualCLX}
+
+procedure TJvTabControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean);
+begin
+  if Assigned(TabPainter) then
+    TabPainter.DrawTab(Self, Canvas, Images, TabIndex, Tabs[TabIndex], Rect, TabIndex = Self.TabIndex, Enabled)
+  else
+    inherited;
+end;
+
+procedure TJvTabControl.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = TabPainter) then
+    TabPainter := nil;
+
+end;
+
+procedure TJvTabControl.SetTabPainter(const Value: TJvTabControlPainter);
+begin
+  if FTabPainter <> Value then
+  begin
+    if FTabPainter <> nil then
+      FTabPainter.UnRegisterChange(Self);
+    FTabPainter := Value;
+    if FTabPainter <> nil then
+    begin
+      FTabPainter.FreeNotification(Self);
+      FTabPainter.RegisterChange(Self);
+    end;
+    Invalidate;
+  end;
+end;
+
 // === TJvPageControl ========================================================
 
 constructor TJvPageControl.Create(AOwner: TComponent);
@@ -981,102 +1532,26 @@ begin
   Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
-procedure TJvPageControl.DrawDefaultTab(TabIndex: Integer;
-  const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
-var
-  i, ImageIndex, RealIndex: Integer;
-  R: TRect;
-  S: string;
-begin
-  RealIndex := 0;
-  i := 0;
-  while i <= TabIndex+RealIndex do
-  begin
-    if not Pages[i].TabVisible then Inc(RealIndex);
-    Inc(i);
-  end;
-  RealIndex := RealIndex + TabIndex; 
-  if RealIndex >= PageCount then Exit;
-
-  if not Pages[RealIndex].Enabled then
-    Canvas.Font.Color := clGrayText;
-  if Active then
-    Canvas.Font.Style := [fsBold];
-  if not DefaultDraw then
-    Exit;
-  R := Rect;
-  Canvas.FillRect(R);
-  ImageIndex := GetImageIndex(TabIndex);
-  if (ImageIndex >= 0) and Assigned(Images) then
-  begin
-    SaveDC(Canvas.Handle);
-    Images.Draw(Canvas, Rect.Left + 4, Rect.Top + 2,
-      ImageIndex, Pages[RealIndex].Enabled);
-    // images.draw fouls the canvas colors if it draws
-    // the image disabled, thus the SaveDC/RestoreDC
-    RestoreDC(Canvas.Handle, -1);
-    R.Left := R.Left + Images.Width + 4;
-  end;
-  S := Pages[RealIndex].Caption;
-  InflateRect(R, -2, -2);
-  // (p3) TODO: draw rotated when TabPosition in tbLeft, tbRight
-  DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_LEFT or DT_TOP);
-end;
-
-procedure TJvPageControl.DrawShadowTab(TabIndex: Integer;
-  const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
-var
-  i, ImageIndex, RealIndex: Integer;
-  R: TRect;
-  S: string;
-begin
-  RealIndex := 0;
-  i := 0;
-  while i <= TabIndex+RealIndex do
-  begin
-    if not Pages[i].TabVisible then Inc(RealIndex);
-    Inc(i);
-  end;
-  RealIndex := RealIndex + TabIndex; 
-  if RealIndex >= PageCount then Exit;
-
-  if not Pages[RealIndex].Enabled then
-    Canvas.Font.Color := clGrayText;
-  if not Active then
-  begin
-    with Canvas do
-    begin
-      Brush.Color := clInactiveCaption;
-      Font.Color := clInactiveCaptionText;
-    end;
-  end;
-  if not DefaultDraw then
-    Exit;
-  R := Rect;
-  Canvas.FillRect(R);
-  ImageIndex := GetImageIndex(TabIndex);
-  if (ImageIndex >= 0) and Assigned(Images) then
-  begin
-    SaveDC(Canvas.Handle);
-    Images.Draw(Canvas, Rect.Left + 4, Rect.Top + 2,
-      ImageIndex, Pages[RealIndex].Enabled);
-    RestoreDC(Canvas.Handle, -1);
-    R.Left := R.Left + Images.Width + 4;
-  end;
-  S := Pages[RealIndex].Caption;
-  InflateRect(R, -2, -2);
-  DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_LEFT or DT_TOP);
-end;
-
 procedure TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect;
   Active: Boolean);
-var DefaultDraw:boolean;
+var
+  i, RealIndex: Integer;
 begin
-  DefaultDraw := not Assigned(OnDrawTab) or (csDesigning in ComponentState);
-  if DrawTabShadow then
-    DrawShadowTab(TabIndex, Rect, Active, DefaultDraw)
+  if TabPainter <> nil then
+  begin
+    RealIndex := 0;
+    i := 0;
+    while i <= TabIndex + RealIndex do
+    begin
+      if not Pages[i].TabVisible then Inc(RealIndex);
+      Inc(i);
+    end;
+    RealIndex := RealIndex + TabIndex;
+    if RealIndex < PageCount then
+      TabPainter.DrawTab(Self, Canvas, Images, Pages[RealIndex].ImageIndex, Pages[RealIndex].Caption, Rect, Active, Pages[RealIndex].Enabled);
+  end
   else
-    DrawDefaultTab(TabIndex, Rect, Active, DefaultDraw);
+    inherited;
 end;
 
 procedure TJvPageControl.Loaded;
@@ -1091,15 +1566,6 @@ begin
   begin
     FClientBorderWidth := Value;
     RecreateWnd;
-  end;
-end;
-
-procedure TJvPageControl.SetDrawTabShadow(const Value: Boolean);
-begin
-  if FDrawTabShadow <> Value then
-  begin
-    FDrawTabShadow := Value;
-    Invalidate;
   end;
 end;
 
@@ -1142,7 +1608,7 @@ end;
 procedure TJvPageControl.WMLButtonDown(var Msg: TWMLButtonDown);
 var
   hi: TTCHitTestInfo;
-  TabIndex: Integer;
+  i, TabIndex, RealIndex: Integer;
 begin
   if csDesigning in ComponentState then
   begin
@@ -1153,13 +1619,97 @@ begin
   hi.pt.y := Msg.YPos;
   hi.flags := 0;
   TabIndex := Perform(TCM_HITTEST, 0, Longint(@hi));
-  if (TabIndex >= 0) and ((hi.flags and TCHT_ONITEM) <> 0) then
-    if not Pages[TabIndex].Enabled then
+  i := 0;
+  RealIndex := 0;
+  while i <= TabIndex + RealIndex do
+  begin
+    if not Pages[i].TabVisible then Inc(RealIndex);
+    Inc(i);
+  end;
+  RealIndex := RealIndex + TabIndex;
+  if (RealIndex < PageCount) and (RealIndex >= 0) and ((hi.flags and TCHT_ONITEM) <> 0) then
+    if not Pages[RealIndex].Enabled then
     begin
       Msg.Result := 0;
       Exit;
     end;
   inherited;
+end;
+
+function TJvPageControl.HintShow(var HintInfo: THintInfo): Boolean;
+var
+  TabNo: Integer;
+  Tab: TTabsheet;
+begin
+  Result := inherited HintShow(HintInfo);
+
+  if FHintSource = hsDefault then
+    Exit;
+
+  if Result then
+    Exit;
+  (*
+      hsDefault,    // use default hint behaviour (i.e as regular control)
+      hsForceMain,  // use the main controls hint even if subitems have hints
+      hsForceChildren, // always use subitems hints even if empty and main control has hint
+      hsPreferMain, // use main control hint unless empty then use subitems hints
+      hsPreferChildren // use subitems hints unless empty then use main control hint
+      );
+  *)
+
+  if Result or (Self <> HintInfo.HintControl) then
+    Exit; // strange, hint requested by other component. Why should we deal with it?
+  with HintInfo.CursorPos do
+    TabNo := IndexOfTabAt(X, Y); // X&Y are expected in Client coordinates
+
+  if (TabNo >= 0) and (TabNo < PageCount) then
+    Tab := Pages[TabNo]
+  else
+    Tab := nil;
+  if (FHintSource = hsForceMain) or ((FHintSource = hsPreferMain) and (GetShortHint(Hint) <> '')) then
+    HintInfo.HintStr := GetShortHint(Hint)
+  else if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and
+    (GetShortHint(Tab.Hint) <> ''))) then
+    HintInfo.HintStr := GetShortHint(Tab.Hint)
+end;
+
+type
+  THackTabSheet = class(TTabSheet);
+
+function TJvPageControl.CanChange: Boolean;
+begin
+  Result := inherited CanChange;
+  if Result and (ActivePage <> nil) and ReduceMemoryUse then
+    THackTabSheet(ActivePage).DestroyHandle;
+end;
+
+procedure TJvPageControl.SetReduceMemoryUse(const Value: Boolean);
+begin
+  FReduceMemoryUse := Value;
+end;
+
+procedure TJvPageControl.SetTabPainter(const Value: TJvTabControlPainter);
+begin
+  if FTabPainter <> Value then
+  begin
+    if FTabPainter <> nil then
+      FTabPainter.UnRegisterChange(Self);
+    FTabPainter := Value;
+    if FTabPainter <> nil then
+    begin
+      FTabPainter.FreeNotification(Self);
+      FTabPainter.RegisterChange(Self);
+    end;
+    Invalidate;
+  end;
+end;
+
+procedure TJvPageControl.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = TabPainter) then
+    TabPainter := nil;
 end;
 
 // === TJvTrackBar ===========================================================
@@ -1788,72 +2338,6 @@ begin
     FOnVScroll(Self);
 end;
 
-// === TJvIPAddressValues ====================================================
-
-procedure TJvIPAddressValues.Change;
-begin
-  if Assigned(FOnChange) then
-    FOnChange(Self);
-end;
-
-function TJvIPAddressValues.Changing(Index: Integer; Value: Byte): Boolean;
-begin
-  Result := True;
-  if Assigned(FOnChanging) then
-    FOnChanging(Self, Index, Value, Result);
-end;
-
-function TJvIPAddressValues.GetValue: Cardinal;
-begin
-  Result := MAKEIPADDRESS(FValues[0], FValues[1], FValues[2], FValues[3]);
-end;
-
-function TJvIPAddressValues.GetValues(Index: Integer): Byte;
-begin
-  Result := FValues[Index];
-end;
-
-procedure TJvIPAddressValues.SetValue(const AValue: Cardinal);
-var
-  FChange: Boolean;
-begin
-  FChange := False;
-  if GetValue <> AValue then
-  begin
-    if Changing(0, FIRST_IPADDRESS(AValue)) then
-    begin
-      FValues[0] := FIRST_IPADDRESS(AValue);
-      FChange := True;
-    end;
-    if Changing(1, SECOND_IPADDRESS(AValue)) then
-    begin
-      FValues[1] := SECOND_IPADDRESS(AValue);
-      FChange := True;
-    end;
-    if Changing(2, THIRD_IPADDRESS(AValue)) then
-    begin
-      FValues[2] := THIRD_IPADDRESS(AValue);
-      FChange := True;
-    end;
-    if Changing(3, FOURTH_IPADDRESS(AValue)) then
-    begin
-      FValues[3] := FOURTH_IPADDRESS(AValue);
-      FChange := True;
-    end;
-    if FChange then
-      Change;
-  end;
-end;
-
-procedure TJvIPAddressValues.SetValues(Index: Integer; Value: Byte);
-begin
-  if (Index >= Low(FValues)) and (Index <= High(FValues)) and (FValues[Index] <> Value) then
-  begin
-    FValues[Index] := Value;
-    Change;
-  end;
-end;
-
 function TJvTreeView.GetItemHeight: Integer;
 begin
   if HandleAllocated then
@@ -1951,58 +2435,98 @@ begin
     SendMessage(Handle, TVM_SETUNICODEFORMAT, Integer(Value), 0);
 end;
 
-function TJvPageControl.HintShow(var HintInfo: THintInfo): Boolean;
+// === TJvIPAddressValues ====================================================
+
+procedure TJvIPAddressValues.Change;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+function TJvIPAddressValues.Changing(Index: Integer; Value: Byte): Boolean;
+begin
+  Result := True;
+  if Assigned(FOnChanging) then
+    FOnChanging(Self, Index, Value, Result);
+end;
+
+function TJvIPAddressValues.GetValue: Cardinal;
+begin
+  Result := MAKEIPADDRESS(FValues[0], FValues[1], FValues[2], FValues[3]);
+end;
+
+function TJvIPAddressValues.GetValues(Index: Integer): Byte;
+begin
+  Result := FValues[Index];
+end;
+
+procedure TJvIPAddressValues.SetValue(const AValue: Cardinal);
 var
-  TabNo: Integer;
-  Tab: TTabsheet;
+  FChange: Boolean;
 begin
-  Result := inherited HintShow(HintInfo);
-
-  if FHintSource = hsDefault then
-    Exit;
-
-  if Result then
-    Exit;
-  (*
-      hsDefault,    // use default hint behaviour (i.e as regular control)
-      hsForceMain,  // use the main controls hint even if subitems have hints
-      hsForceChildren, // always use subitems hints even if empty and main control has hint
-      hsPreferMain, // use main control hint unless empty then use subitems hints
-      hsPreferChildren // use subitems hints unless empty then use main control hint
-      );
-  *)
-
-  if Result or (Self <> HintInfo.HintControl) then
-    Exit; // strange, hint requested by other component. Why should we deal with it?
-  with HintInfo.CursorPos do
-    TabNo := IndexOfTabAt(X, Y); // X&Y are expected in Client coordinates
-
-  if (TabNo >= 0) and (TabNo < PageCount) then
-    Tab := Pages[TabNo]
-  else
-    Tab := nil;
-  if (FHintSource = hsForceMain) or ((FHintSource = hsPreferMain) and (GetShortHint(Hint) <> '')) then
-    HintInfo.HintStr := GetShortHint(Hint)
-  else if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and
-    (GetShortHint(Tab.Hint) <> ''))) then
-    HintInfo.HintStr := GetShortHint(Tab.Hint)
+  FChange := False;
+  if GetValue <> AValue then
+  begin
+    if Changing(0, FIRST_IPADDRESS(AValue)) then
+    begin
+      FValues[0] := FIRST_IPADDRESS(AValue);
+      FChange := True;
+    end;
+    if Changing(1, SECOND_IPADDRESS(AValue)) then
+    begin
+      FValues[1] := SECOND_IPADDRESS(AValue);
+      FChange := True;
+    end;
+    if Changing(2, THIRD_IPADDRESS(AValue)) then
+    begin
+      FValues[2] := THIRD_IPADDRESS(AValue);
+      FChange := True;
+    end;
+    if Changing(3, FOURTH_IPADDRESS(AValue)) then
+    begin
+      FValues[3] := FOURTH_IPADDRESS(AValue);
+      FChange := True;
+    end;
+    if FChange then
+      Change;
+  end;
 end;
 
-type
-  THackTabSheet = class(TTabSheet);
-
-function TJvPageControl.CanChange: Boolean;
+procedure TJvIPAddressValues.SetValues(Index: Integer; Value: Byte);
 begin
-  Result := inherited CanChange;
-  if Result and (ActivePage <> nil) and ReduceMemoryUse then
-    THackTabSheet(ActivePage).DestroyHandle;
+  if (Index >= Low(FValues)) and (Index <= High(FValues)) and (FValues[Index] <> Value) then
+  begin
+    FValues[Index] := Value;
+    Change;
+  end;
 end;
 
-procedure TJvPageControl.SetReduceMemoryUse(const Value: Boolean);
+procedure TJvTabDefaultPainter.SetGlyphLayout(const Value: TButtonLayout);
 begin
-  FReduceMemoryUse := Value;
+  if FGlyphLayout <> Value then
+  begin
+    FGlyphLayout := Value;
+    Change;
+  end;
 end;
 
+procedure TJvTabDefaultPainter.SetDivider(const Value: boolean);
+begin
+  if FDivider <> Value then
+  begin
+    FDivider := Value;
+    Change;
+  end;
+end;
+
+procedure TJvTabDefaultPainter.SetShowFocus(const Value: boolean);
+begin
+  if FShowFocus <> Value then
+  begin
+    FShowFocus := Value;
+    Change;
+  end;
+end;
 
 end.
 
