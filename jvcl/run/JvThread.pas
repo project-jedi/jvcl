@@ -48,12 +48,11 @@ type
     FSender: TObject;
     FException: Exception;
     FExceptionAddr: Pointer;
-    fSynchMsg : String;
-    fSynchAType: TMsgDlgType;
-    fSynchAButtons: TMsgDlgButtons;
-    fSynchHelpCtx: Longint;
-    fSynchMessageDlgResult : Word;
-    fIsRunning : Boolean;
+    FSynchMsg: string;
+    FSynchAType: TMsgDlgType;
+    FSynchAButtons: TMsgDlgButtons;
+    FSynchHelpCtx: Longint;
+    FSynchMessageDlgResult: Word;
     procedure ExceptionHandler;
   protected
     procedure InternalMessageDlg;
@@ -385,19 +384,18 @@ end;
 
 procedure TJvBaseThread.InternalMessageDlg;
 begin
-  fSynchMessageDlgResult := MessageDlg (fSynchMsg, fSynchAType, fSynchAButtons, fSynchHelpCtx);
+  FSynchMessageDlgResult := MessageDlg (FSynchMsg, FSynchAType, FSynchAButtons, FSynchHelpCtx);
 end;
 
 function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 begin
-  fSynchMsg := Msg;
-  fSynchAType:= AType;
-  fSynchAButtons:= AButtons;
-  fSynchHelpCtx:= HelpCtx;
+  FSynchMsg := Msg;
+  FSynchAType:= AType;
+  FSynchAButtons:= AButtons;
+  FSynchHelpCtx:= HelpCtx;
   Synchronize (InternalMessageDlg);
-  Result := fSynchMessageDlgResult;
+  Result := FSynchMessageDlgResult;
 end;
-
 
 procedure TJvBaseThread.ExceptionHandler;
 begin
@@ -435,10 +433,11 @@ initialization
   SyncMtx := CreateMutex(nil, False, 'VCLJvThreadMutex');
 
 finalization
+  CloseHandle(SyncMtx);
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  CloseHandle(SyncMtx);
 
 end.
 
