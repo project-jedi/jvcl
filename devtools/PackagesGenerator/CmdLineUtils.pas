@@ -11,12 +11,14 @@ uses Classes, SysUtils, GenerateUtils, JclStrings;
 
 procedure Help;
 begin
-  WriteLn('pg - JVCL Package generator');
+  WriteLn('pg - Jedi Package generator');
   WriteLn;
   WriteLn(#9'-h'#9#9'prints this help message');
   WriteLn(#9'-d'#9#9'Generates the DOFs files where applicable');
   WriteLn(#9'-p=PATH'#9#9'the path to packages');
-  WriteLn(#9'-t=TARGETS'#9'comma separated list of targets or the word all');
+  WriteLn(#9'-t=TARGETS'#9'comma separated list of targets');
+  WriteLn(#9'-r=PREFIX'#9'Prefix to use for package name generation');
+  WriteLn(#9'-f=FORMAT'#9'Format of generated package name');
 end;
 
 procedure Error(Msg : string);
@@ -37,6 +39,8 @@ var
   I : Integer;
   targetList : string;
   packagesPath : string;
+  prefix : string;
+  Format : string;
   curParam : string;
   targets : TStringList;
   packages : TStringList;
@@ -54,6 +58,14 @@ begin
       begin
         packagesPath := Copy(curParam, 4, Length(ParamStr(i)));
       end
+      else if AnsiSameText(Copy(curParam, 2, 1), 'r') then
+      begin
+        prefix := Copy(curParam, 4, Length(ParamStr(i)));
+      end
+      else if AnsiSameText(Copy(curParam, 2, 1), 'f') then
+      begin
+        format := Copy(curParam, 4, Length(ParamStr(i)));
+      end
       else if AnsiSameText(Copy(curParam, 2, 1), 'h') then
       begin
         Help;
@@ -65,12 +77,14 @@ begin
       Error('You must indicate the path to the packages')
     else if targetList = '' then
       Error('You must indicate a target list')
+    else if prefix = '' then
+      Error('You must indicate a prefix')
+    else if format = '' then
+      Error('You must indicate a format')
     else
     begin
-      if AnsiSameText(targetList, 'all') then
-        EnumerateTargets(packagesPath, targets)
-      else
-        StrToStrings(targetList, ',', targets, False);
+      StrToStrings(targetList, ',', targets, False);
+      ExpandTargets(targets);
 
       packages := TStringList.Create;
       try
@@ -78,6 +92,8 @@ begin
         Generate(packages,
                  targets,
                  packagesPath,
+                 prefix,
+                 Format,
                  WriteMsg,
                  FindCmdLineSwitch('d', ['-', '/'], True));
       finally
