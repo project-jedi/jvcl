@@ -227,6 +227,7 @@ begin
       for i := 0 to FCurrentProjectGroup.Count - 1 do
         if CompareText(FCurrentProjectGroup.Packages[i].TargetName, S) = 0 then
         begin
+          S := S + '  (' + FCurrentProjectGroup.Packages[i].Info.Description + ')';
           DoPackageProgress(FCurrentProjectGroup.Packages[i], S, FPkgIndex - 1, FPkgCount);
           Exit;
         end;
@@ -367,7 +368,12 @@ begin
         end;
         Exit;
       end;
+     // clean
+      CaptureExecute('"' + Data.Targets[i].Make + '"', Args + ' -s CleanJcl',
+                     Data.JVCLPackagesDir + '\bin', CaptureLine);
+
       DeleteFile(ErrorFileName);
+
       DoTargetProgress(Data.TargetConfig[i], 0, 100);
       DoPackageProgress(nil, '', 0, 100);
     end;
