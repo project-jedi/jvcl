@@ -198,19 +198,15 @@ Known Issues:
     - fixed: GetSelStart returned caret position
     - converted editor to Unicode
     - workaround: TWideStringList.Destroy does not set FOnChange/FOnChanging to nil before calling Clear
+    - fixed: ecBackspace with BackSpaceUnindents=True may destroy the line
+    - fixed a bug in InsertText
+    - optmimized ExpandTabs
+    - LinesAnsi returns a TAnsiToWideStringList
 
 }
 
-{$IFDEF COMPLIB_VCL}
- {$DEFINE VCL}
-{$ENDIF}
-{$IFDEF LINUX}
- {$UNDEF VCL}
- {$DEFINE VisualCLX}
-{$ENDIF}
-
-{$IFDEF VisualCLX}
-  VisualCLX is not implemented yet
+{$IFDEF COMPLIB_CLX}
+  VISUALCLX is not implemented yet
 {$ENDIF}
 
 unit JvEditor;
@@ -227,7 +223,7 @@ const
   {max symbols per row for scrollbar}
   GutterRightMargin = 2;
 
-{$IFDEF VCL}
+{$IFDEF COMPLIB_VCL}
   WM_EDITCOMMAND = WM_USER + $101;
 {$ELSE}
   WM_EDITCOMMAND = CM_BASE + $101;
@@ -461,7 +457,7 @@ type
   private
     { internal objects }
     FLines: TJvEditorStrings;
-    FLinesANSI: TStrings; // only for ObjectInspector
+    FLinesAnsi: TAnsiToWideStrings;
     scbHorz: TJvControlScrollBar95;
     scbVert: TJvControlScrollBar95;
     EditorClient: TJvEditorClient;
@@ -582,7 +578,7 @@ type
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure WMUndo(var Msg: TMessage); message WM_UNDO;
 
-{$IFDEF VCL}
+{$IFDEF COMPLIB_VCL}
     // (p3) added to be compatible with JvFixedEditPopup
     procedure WMClear(var Msg: TMessage); message WM_CLEAR;
     procedure EMSetReadOnly(var Msg: TMessage); message EM_SETREADONLY;
@@ -632,14 +628,20 @@ type
     procedure AdjustPersistentBlockSelection(X, Y: Integer;
       Mode: TAdjustPersistentBlockMode; Args: array of Integer);
     procedure AdjustSelLineMode(Restore: Boolean);
-    function GetLinesANSI: TStrings;
-    procedure SetLinesANSI(const Value: TStrings);
+    function GetLinesAnsi: TStrings;
+    procedure SetLinesAnsi(Value: TStrings);
   protected
     LineAttrs: TLineAttrs;
+
     procedure Resize; override;
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Loaded; override;
+    {$IFDEF COMPLIB_CLX}
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+      const MousePos: TPoint): Boolean; override;
+    {$ENDIF}
     procedure Paint; override;
     procedure ScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode; var
       ScrollPos: Integer);
@@ -656,7 +658,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseWheel(X, Y: Integer; WheelDelta: Integer; Shift: TShiftState); dynamic;
+    procedure MouseWheel(Shift: TShiftState; WheelDelta: Integer; const MousePos: TPoint); dynamic;
     procedure DblClick; override;
 
     procedure DoPaste; dynamic;
@@ -664,8 +666,8 @@ type
     procedure DoCut; dynamic;
     procedure DoEnter; override;
     procedure DoExit; override;
-    procedure CursorChanged; {$IFDEF VisualCLX} override; {$ELSE} dynamic; {$ENDIF}
-    procedure FontChanged; {$IFDEF VisualCLX} override; {$ELSE} dynamic; {$ENDIF}
+    procedure CursorChanged; {$IFDEF COMPLIB_CLX} override; {$ELSE} dynamic; {$ENDIF}
+    procedure FontChanged; {$IFDEF COMPLIB_CLX} override; {$ELSE} dynamic; {$ENDIF}
 
     procedure DrawRightMargin;
     procedure PaintSelection;
@@ -718,9 +720,6 @@ type
     procedure IFixedPopupIntf.Copy = ClipboardCopy;
     procedure IFixedPopupIntf.Paste = ClipboardPaste;
     procedure IFixedPopupIntf.Delete = DeleteSelected;
-
-    procedure Redo;
-    function CanRedo: Boolean;
   public
     BookMarks: TBookMarks;
     constructor Create(AOwner: TComponent); override;
@@ -734,6 +733,8 @@ type
     function CanSelectAll: Boolean; { IFixedPopupIntf }
 
     procedure Undo;
+    procedure Redo;
+    function CanRedo: Boolean;
 
     procedure ClipboardCopy;
     procedure ClipboardPaste;
@@ -793,12 +794,12 @@ type
     property GroupUndo: Boolean read FGroupUndo write FGroupUndo default True;
     property UndoAfterSave: Boolean read FUndoAfterSave write FUndoAfterSave;
     property Recording: Boolean read FRecording;
-    property UseFixedPopup:boolean read FUseFixedPopup write FUseFixedPopup; 
+    property UseFixedPopup:boolean read FUseFixedPopup write FUseFixedPopup;
 
   public { published in descendants }
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Lines: TWideStrings read GetLines write SetLines;
-    property LinesANSI: TStrings read GetLinesANSI write SetLinesANSI; // only for ObjectInspector.
+    property LinesAnsi: TStrings read GetLinesAnsi write SetLinesAnsi stored False; // this is only a redirected list
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property Cursor default crIBeam;
     property Color default clWindow;
@@ -852,7 +853,7 @@ type
   published
     property BorderStyle;
     property Lines;
-    property LinesANSI;
+    property LinesAnsi;
     property ScrollBars;
     property GutterWidth;
     property GutterColor;
@@ -1168,6 +1169,11 @@ type
     procedure Undo; override;
   end;
 
+  TJvBackspaceUnindentUndo = class(TJvDeleteUndo)
+  public
+    procedure Undo; override;
+  end;
+
   TJvReplaceUndo = class(TJvCaretUndo)
   private
     FBegX: Integer;
@@ -1224,25 +1230,6 @@ type
 
 var
   BlockTypeFormat: Integer;
-{$IFNDEF COMPILER6_UP}
-type
-  TValueSign = -1..1;
-
-const                             
-  NegativeValue = Low(TValueSign);
-  ZeroValue = 0;
-  PositiveValue = High(TValueSign);
-
-function Sign(const AValue: Integer): TValueSign; overload;
-begin
-  Result := ZeroValue;
-  if AValue < 0 then
-    Result := NegativeValue
-  else if AValue > 0 then
-    Result := PositiveValue;
-end;
-
-{$ENDIF}
 
 procedure Err;
 begin
@@ -1585,7 +1572,7 @@ var
 begin
   Inc(X); // increment for string functions
   if Y < 0 then Y := 0;
-  while Y > Count do Add('');
+  while Y >= Count do Add('');
 
   BegLine := Strings[Y];
   EndLine := System.Copy(BegLine, X, MaxInt);
@@ -1604,7 +1591,8 @@ begin
   try
     P := PWideChar(Text);
     F := P;
-    while (P[0] <> #0) and (P[0] <> #10) and (P[0] <> #13) do Inc(P);
+    while (P[0] <> #0) and (P[0] <> #10) and (P[0] <> #13) and
+          (P[0] <> WideLineSeparator) do Inc(P);
 
     SetString(s, F, P - F);
 
@@ -1617,7 +1605,8 @@ begin
       if P[0] = #10 then Inc(P);
       F := P;
 
-      while (P[0] <> #0) and (P[0] <> #10) and (P[0] <> #13) do Inc(P);
+      while (P[0] <> #0) and (P[0] <> #10) and (P[0] <> #13) and
+            (P[0] <> WideLineSeparator) do Inc(P);
       SetString(S, F, P - F);
       Inc(Y);
       Insert(Y, S);
@@ -1688,8 +1677,8 @@ begin
     F := P;
     while P[0] <> #0 do
     begin
-//      while not (P[0] in [#0, #10, #13]) do Inc(P);
-      while (P[0] <> #0) and (P[0] <> #10) and (P[0] <> #13) do Inc(P);
+      while (P[0] <> #0) and (P[0] <> #10) and (P[0] <> #13) and
+            (P[0] <> WideLineSeparator) do Inc(P);
       SetString(S, F, P - F);
 
       while Y >= Count do Add('');
@@ -1878,6 +1867,8 @@ end;
 destructor TJvCustomEditor.Destroy;
 begin
   FLines.Free;
+  if Assigned(FLinesAnsi) then
+    FLinesAnsi.Free;
   scbHorz.Free;
   scbVert.Free;
   EditorClient.Free;
@@ -1894,8 +1885,6 @@ procedure TJvCustomEditor.Loaded;
 begin
   inherited Loaded;
   UpdateEditorSize;
-  {  Rows := FLines.Count;
-    Cols := Max_X; }
 end;
 
 {************** Handle otrisovkoj [translated] ***************}
@@ -1951,8 +1940,6 @@ end;
 
 procedure TJvCustomEditor.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
-{  inherited;
-  Msg.Result := 1;}
   Msg.Result := 0; // no background erase
 end;
 
@@ -2007,7 +1994,7 @@ begin
   if Msg.Keys and MK_LBUTTON <> 0 then Include(Shift, ssLeft);
   if Msg.Keys and MK_RBUTTON <> 0 then Include(Shift, ssRight);
   if Msg.Keys and MK_MBUTTON <> 0 then Include(Shift, ssMiddle);
-  MouseWheel(Msg.XPos, Msg.YPos, Msg.WheelDelta, Shift);
+  MouseWheel(Shift, Msg.WheelDelta, Point(Msg.XPos, Msg.YPos));
 end;
 
 
@@ -2047,7 +2034,7 @@ procedure TJvCustomEditor.CursorChanged;
 var
   P: TPoint;
 begin
-{$IFDEF VisualCLX}
+{$IFDEF COMPLIB_CLX}
   inherited;
 {$ENDIF}
   GetCursorPos(P);
@@ -2058,7 +2045,7 @@ end;
 
 procedure TJvCustomEditor.FontChanged;
 begin
-{$IFDEF VisualCLX}
+{$IFDEF COMPLIB_CLX}
   inherited;
 {$ENDIF}
   if HandleAllocated then
@@ -2186,9 +2173,9 @@ begin
           FFontCache.Delete(i);
           Break; // create a new font instance
 
-          ********************************
-          *** handled by CMFontChanged ***
-          ********************************
+          **************************************************
+          *** handled by FontChanged -> UpdateEditorSize ***
+          **************************************************
        end;}
        Exit;
     end;
@@ -2287,7 +2274,8 @@ begin
             TUnicodeCanvas(Canvas).TextRectW(R, R.Left - FCellRect.Width, R.Top, Ch);
           end
           else
-            ExtTextOutW(Canvas.Handle, R.Left, R.Top, 0, nil, PWideChar(Ch), Length(Ch), @MyDi[0]);
+            TUnicodeCanvas(Canvas).ExtTextOutW(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @MyDi[0]);
+//            Windows.ExtTextOutW(Canvas.Handle, R.Left, R.Top, 0, nil, PWideChar(Ch), Length(Ch), @MyDi[0]);
           i := jC - 1;
         end;
     end
@@ -2396,7 +2384,10 @@ begin
     end;
 end;
 
-procedure TJvCustomEditor.MouseWheel(X, Y: Integer; WheelDelta: Integer; Shift: TShiftState);
+procedure TJvCustomEditor.MouseWheel(Shift: TShiftState; WheelDelta: Integer;
+  const MousePos: TPoint);
+var
+  WheelDirection: Integer;
 begin
   if ssShift in Shift then
   begin
@@ -2409,8 +2400,9 @@ begin
   else
   if ssCtrl in Shift then
   begin
+    if WheelDelta < 0 then WheelDirection := -1 else WheelDirection := 1;
    // Ctrl+Wheel: scrollbar large change
-    scbVert.Position := scbVert.Position - Sign(WheelDelta) * scbVert.LargeChange;
+    scbVert.Position := scbVert.Position - WheelDirection * scbVert.LargeChange;
     Scroll(True, scbVert.Position);
   end
   else
@@ -2420,6 +2412,23 @@ begin
     Scroll(True, scbVert.Position);
   end;
 end;
+
+{$IFDEF COMPLIB_CLX}
+function TJvCustomEditor.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+begin
+{  case QEvent_type(Event) of
+    QEventType_
+  end;}
+  Result := inherited EventFilter(Sender, Event);
+end;
+
+function TJvCustomEditor.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+  const MousePos: TPoint): Boolean;
+begin
+  MouseWheel(Shift, WheelDelta, MousePos);
+  Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
+end;
+{$ENDIF}
 
 procedure TJvCustomEditor.ScrollBarScroll(Sender: TObject; ScrollCode:
   TScrollCode; var ScrollPos: Integer);
@@ -2448,7 +2457,7 @@ begin
       { it is optimized [translated] }
       OldFTopRow := FTopRow;
       FTopRow := ScrollPos;
-{$IFDEF VCL}
+{$IFDEF COMPLIB_VCL}
       if Abs((OldFTopRow - ScrollPos) * FCellRect.Height) < EditorClient.Height
         then
       begin
@@ -2477,7 +2486,7 @@ begin
       { it is not optimized [translated] }
       OldFLeftCol := FLeftCol;
       FLeftCol := ScrollPos;
-{$IFDEF VCL}
+{$IFDEF COMPLIB_VCL}
       if Abs((OldFLeftCol - ScrollPos) * FCellRect.Width) < EditorClient.Width then
       begin
         R := EditorClient.ClientRect;
@@ -3313,8 +3322,12 @@ begin
                 X := FCaretX - 1;
 
               S := Copy(FLines[FCaretY], X + 1, FCaretX - X);
+
               { --- UNDO --- }
-              TJvBackspaceUndo.Create(Self, FCaretX, FCaretY, S);
+              if X = FCaretX - 1 then
+                TJvBackspaceUndo.Create(Self, FCaretX, FCaretY, S)
+              else
+                TJvBackspaceUnindentUndo.Create(Self, FCaretX, FCaretY, S);
               CaretUndo := False;
               { --- /UNDO --- }
 
@@ -3408,19 +3421,14 @@ begin
           end;
         end;
       ecTab, ecBackTab:
-        if not FReadOnly then
         begin
-          if FSelection.Selected then
+          X := GetTabStop(FCaretX, FCaretY, ACommand = ecTab);
+          if not FReadOnly then
           begin
-            if ACommand = ecTab then
-              PostCommand(ecIndent)
-            else
-              PostCommand(ecUnindent);
-          end
-          else
-          begin
+            if FSelection.Selected then
+              if (ACommand = ecTab) and (FInsertMode) then
+                DeleteSelected;
             ReLine;
-            X := GetTabStop(FCaretX, FCaretY, ACommand = ecTab);
             if (ACommand = ecTab) and FInsertMode then
             begin
               S := FLines[FCaretY];
@@ -3435,9 +3443,9 @@ begin
               PaintLine(FCaretY, -1, -1);
               Changed;
             end;
-              { else }
-              { move cursor - oh yes!, it's allready moved: X := GetTabStop(..); }
           end;
+          { else }
+          { move cursor - oh yes!, it's allready moved: X := GetTabStop(..); }
         end;
       ecIndent:
         if not FReadOnly and FSelection.Selected then
@@ -4710,6 +4718,12 @@ begin
   SetUnSelected;
 end;
 
+function TJvCustomEditor.IsEmptySelection: Boolean;
+begin
+  with FSelection do
+    Result := Selected and (SelBegX = SelEndX) and (SelBegY = SelEndY);
+end;
+
 procedure TJvCustomEditor.RemoveSelectedBlock;
 begin
   if FSelection.Selected then
@@ -4881,19 +4895,46 @@ end;
 
 function TJvCustomEditor.ExpandTabs(const S: WideString): WideString;
 var
-  i: Integer;
+  ps, i: Integer;
   Sp: WideString;
+  Tabs, LenSp: Integer;
+  P: PWideChar;
 begin
-  { very slow and not complete implementation - NEED TO OPTIMIZE ! }
-  if Pos(#9, S) > 0 then
+  ps := Pos(#9, S);
+  if ps > 0 then
   begin
+   // How may Tab chars?
+    Tabs := 1;
+    for i := ps + 1 to Length(S) do
+      if S[i] = #9 then Inc(Tabs);
+
     Sp := SpacesW(GetDefTabStop(0, True));
-    Result := '';
-    for i := 1 to Length(S) do
-      if S[i] = #9 then
-        Result := Result + Sp
-      else
-        Result := Result + S[i];
+    LenSp := Length(Sp);
+
+   // needed memory
+    SetLength(Result, Length(S) - Tabs + Tabs * LenSp);
+    P := PWideChar(Result);
+
+   // copy the chars before the #9
+    if ps > 1 then
+    begin
+      MoveWideChar(S[1], P[0], ps - 1);
+      Inc(P, ps - 1);
+    end;
+
+    for i := ps to Length(S) do
+    begin
+      if S[i] <> #9 then
+      begin
+        P[0] := S[i];
+        Inc(P);
+      end
+      else if LenSp > 0 then
+      begin
+        MoveWideChar(Sp[1], P[0], LenSp);
+        Inc(P, LenSp);
+      end;
+    end;
   end
   else
     Result := S;
@@ -4901,19 +4942,46 @@ end;
 
 function TJvCustomEditor.ExpandTabsAnsi(const S: AnsiString): AnsiString;
 var
-  i: Integer;
+  ps, i: Integer;
   Sp: AnsiString;
+  Tabs, LenSp: Integer;
+  P: PChar;
 begin
-  { very slow and not complete implementation - NEED TO OPTIMIZE ! }
-  if Pos(#9, S) > 0 then
+  ps := Pos(#9, S);
+  if ps > 0 then
   begin
+   // How may Tab chars?
+    Tabs := 1;
+    for i := ps + 1 to Length(S) do
+      if S[i] = #9 then Inc(Tabs);
+
     Sp := Spaces(GetDefTabStop(0, True));
-    Result := '';
-    for i := 1 to Length(S) do
-      if S[i] = #9 then
-        Result := Result + Sp
-      else
-        Result := Result + S[i];
+    LenSp := Length(Sp);
+
+   // needed memory
+    SetLength(Result, Length(S) - Tabs + Tabs * LenSp);
+    P := PChar(Result);
+
+   // copy the chars before the #9
+    if ps > 1 then
+    begin
+      Move(S[1], P[0], ps - 1);
+      Inc(P, ps - 1);
+    end;
+
+    for i := ps to Length(S) do
+    begin
+      if S[i] <> #9 then
+      begin
+        P[0] := S[i];
+        Inc(P);
+      end
+      else if LenSp > 0 then
+      begin
+        Move(Sp[1], P[0], LenSp);
+        Inc(P, LenSp);
+      end;
+    end;
   end
   else
     Result := S;
@@ -5478,7 +5546,7 @@ procedure TJvCustomEditor.ValidateEditBuffer;
 begin
   if FPEditBuffer = nil then
   begin
-    FEditBuffer := Lines.Text;
+    FEditBuffer := FLines.Text;
     FPEditBuffer := PWideChar(FEditBuffer);
     FEditBufferSize := Length(FEditBuffer);
   end;
@@ -5774,7 +5842,9 @@ begin
         ((UndoClass = LastUndo.ClassType) or
         (LastUndo is TJvDeleteTrailUndo) or
         (LastUndo is TJvReLineUndo) or
-        (Compound > 0)) do
+        (Compound > 0)) or
+        ((UndoClass = TJvBackspaceUndo) and
+        (LastUndo is TJvBackspaceUnindentUndo)) do
       begin
         if LastUndo.ClassType = TJvBeginCompoundUndo then
         begin
@@ -5803,7 +5873,7 @@ begin
       end;
       if not FJvEditor.Modified then IsOnlyCaret := True;
 
-     // paint selection  
+     // paint selection
       if not CompareMem(@Selection, @FJvEditor.FSelection, SizeOf(TJvSelectionRec)) then
         FJvEditor.PaintSelection;
 
@@ -5880,7 +5950,11 @@ end;
 
 function TUndoBuffer.CanRedo: Boolean;
 begin
+{
   Result := FPtr < Count;
+}
+  Result := False;
+  ClearRedo;
 end;
 
 //=== TUndo ==================================================================
@@ -6206,6 +6280,32 @@ begin
       FJvEditor.SetCaretInternal(0, FCaretY + 1)
     else
       FJvEditor.SetCaretInternal(FCaretX, FCaretY);
+  end;
+end;
+
+procedure TJvBackspaceUnindentUndo.Undo;
+var
+  Text: WideString;
+begin
+  Text := '';
+  with UndoBuffer do
+  begin
+    while (FPtr >= 0) and not IsNewGroup(Self) do
+    begin
+      Text := Text + TJvDeleteUndo(LastUndo).FText;
+      Dec(FPtr);
+      if not FJvEditor.FGroupUndo then
+        Break;
+    end;
+    Inc(FPtr);
+  end;
+
+  with TJvDeleteUndo(UndoBuffer.Items[UndoBuffer.FPtr]) do
+  begin
+    FJvEditor.FLines.InsertText(FCaretX - Length(Text), FCaretY, Text);
+    FJvEditor.TextModified(FCaretX - Length(Text), FCaretY, maInsert, Text);
+ // set caret on last backspace undo's position
+    FJvEditor.SetCaretInternal(FCaretX, FCaretY);
   end;
 end;
 
@@ -6972,7 +7072,7 @@ begin
     Msg.Result := 0
   else
   begin
-    S := Lines.Text; // convert to ANSI
+    S := FLines.Text; // convert to ANSI
     Msg.Result := Min(Length(S) + 1, Msg.TextMax);
     Move(S[1], Msg.Text^, Msg.Result);
   end;
@@ -7016,22 +7116,20 @@ begin
   FUndoBuffer.Undo;
 end;
 
-function TJvCustomEditor.GetLinesANSI: TStrings;
+function TJvCustomEditor.GetLinesAnsi: TStrings;
 begin
-  if FLinesANSI = nil then
-    FLinesANSI := TStringList.Create;
-  FLinesANSI.Assign(FLines);
-  Result := FLinesANSI;
+  if FLinesAnsi = nil then
+   // create redirected "Ansi to Unicode" list
+    FLinesAnsi := TAnsiToWideStrings.Create(FLines);
+  Result := FLinesAnsi;
 end;
 
-procedure TJvCustomEditor.SetLinesANSI(const Value: TStrings);
+procedure TJvCustomEditor.SetLinesAnsi(Value: TStrings);
 begin
-  if Assigned(FLinesANSI) then
-    FreeAndNil(FLinesANSI);
-  FLines.Assign(Value);
+  FLines.Assign(Value); // assign to the WideString list
 end;
 
-{$IFDEF VCL}
+{$IFDEF COMPLIB_VCL}
 type
   TWinControlAccess = class(TWinControl);
 
@@ -7056,12 +7154,6 @@ begin
     Message.Result := DefWindowProc(Handle, Msg, WParam, LParam);
 end;
 {$ENDIF}
-
-function TJvCustomEditor.IsEmptySelection: Boolean;
-begin
-  with FSelection do
-    Result := Selected and (SelBegX = SelEndX) and (SelBegY = SelEndY);
-end;
 
 end.
 
