@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Windows,
-  JvGenStore;
+  JvAppStore;
 
 type
   TJvAppRegistryStore = class(TJvCustomAppStore)
@@ -55,7 +55,7 @@ const
     'HKEY_DYN_DATA'
   );
 
-//===TJvAppRegistryStore=================================================================================
+//===TJvAppRegistryStore============================================================================
 
 function TJvAppRegistryStore.GetApplicationRoot: string;
 begin
