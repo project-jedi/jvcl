@@ -49,7 +49,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Active: Boolean read FActive write FActive default True;
+    // (p3) default here should be false!!!
+    property Active: Boolean read FActive write FActive; // default true;
   end;
 
 implementation
@@ -59,12 +60,16 @@ implementation
 constructor TJvAutoSizeCompo.Create(AOwner: TComponent);
 begin
   inherited;
-  FActive := True;
-  FForm := TForm(GetParentForm(TControl(AOwner)));
-  FOldWidth := FForm.Width;
-  FOldHeight := FForm.Height;
-  FResize := FForm.OnResize;
-  FForm.OnResize := Resize;
+  // (p3) dangerous: can create problems without user being aware
+//  FActive := True;
+  FForm := GetParentForm(TControl(AOwner)) as TForm;
+  if FForm <> nil then
+  begin
+    FOldWidth := FForm.Width;
+    FOldHeight := FForm.Height;
+    FResize := FForm.OnResize;
+    FForm.OnResize := Resize;
+  end;
 end;
 {**************************************************}
 
@@ -72,6 +77,7 @@ destructor TJvAutoSizeCompo.Destroy;
 begin
   if FForm <> nil then
     FForm.OnResize := nil;
+  FForm := nil;
   inherited;
 end;
 {**************************************************}
@@ -81,8 +87,12 @@ var
   WidthRatio, HeightRatio: Double;
   CompIndex: Integer;
 begin
-  if FActive then
+  if FForm = nil then
+    FForm := GetParentForm(Owner as TControl) as TForm;
+  if FActive and (FForm <> nil) then
   begin
+    // (p3) this code is slightly dangerous: no sanity checks -
+    // values can become really large or really small
     if (FOldWidth <> 0) and (FOldHeight <> 0) then
     begin
       WidthRatio := FForm.Width / FOldWidth;
