@@ -45,14 +45,14 @@ type
   TJvID3Text = class(TJvID3Persistent)
   private
     FDummyList: TStrings;
-    function GetDateTime(const FrameID: TJvID3FrameID): TDateTime;
-    function GetList(const FrameID: TJvID3FrameID): TStrings;
-    function GetNumber(const FrameID: TJvID3FrameID): Cardinal;
-    function GetText(const FrameID: TJvID3FrameID): string;
-    procedure SetDateTime(const FrameID: TJvID3FrameID; const Value: TDateTime);
-    procedure SetList(const FrameID: TJvID3FrameID; const Value: TStrings);
-    procedure SetNumber(const FrameID: TJvID3FrameID; const Value: Cardinal);
-    procedure SetText(const FrameID: TJvID3FrameID; const Value: string);
+    function GetDateTime(const FrameID: Integer{TJvID3FrameID}): TDateTime;
+    function GetList(const FrameID: Integer{TJvID3FrameID}): TStrings;
+    function GetNumber(const FrameID: Integer{TJvID3FrameID}): Cardinal;
+    function GetText(const FrameID: Integer{TJvID3FrameID}): string;
+    procedure SetDateTime(const FrameID: Integer{TJvID3FrameID}; const Value: TDateTime);
+    procedure SetList(const FrameID: Integer{TJvID3FrameID}; const Value: TStrings);
+    procedure SetNumber(const FrameID: Integer{TJvID3FrameID}; const Value: Cardinal);
+    procedure SetText(const FrameID: Integer{TJvID3FrameID}; const Value: string);
   public
     constructor Create(AController: TJvID3Controller);
     destructor Destroy; override;
@@ -111,8 +111,8 @@ type
 
   TJvID3Web = class(TJvID3Persistent)
   private
-    function GetText(const FrameID: TJvID3FrameID): string;
-    procedure SetText(const FrameID: TJvID3FrameID; const Value: string);
+    function GetText(const FrameID: Integer{TJvID3FrameID}): string;
+    procedure SetText(const FrameID: Integer{TJvID3FrameID}; const Value: string);
   published
     { Do not store dummies }
     property Artist: string index fiWWWArtist read GetText write SetText stored False;
@@ -171,8 +171,8 @@ type
   private
     FPictures: array[TJvID3PictureType] of TPicture;
     FUpdating: Boolean;
-    function GetPicture(const AType: TJvID3PictureType): TPicture;
-    procedure SetPicture(const AType: TJvID3PictureType; const Value: TPicture);
+    function GetPicture(const AType: Integer{TJvID3PictureType}): TPicture;
+    procedure SetPicture(const AType: Integer{TJvID3PictureType}; const Value: TPicture);
     procedure PictureChanged(Sender: TObject);
     procedure PictureToFrame(const AType: TJvID3PictureType);
     procedure RetrievePictures;
@@ -207,8 +207,8 @@ type
 
   TJvID3PicturesDesc = class(TJvID3Persistent)
   private
-    function GetText(const AType: TJvID3PictureType): string;
-    procedure SetText(const AType: TJvID3PictureType; const Value: string);
+    function GetText(const AType: Integer{TJvID3PictureType}): string;
+    procedure SetText(const AType: Integer{TJvID3PictureType}; const Value: string);
   published
     property Other: string index ptOther read GetText write SetText stored False;
     property FileIcon: string index ptFileIcon read GetText write SetText stored False;
@@ -412,21 +412,21 @@ begin
   inherited Destroy;
 end;
 
-function TJvID3Text.GetDateTime(const FrameID: TJvID3FrameID): TDateTime;
+function TJvID3Text.GetDateTime(const FrameID: Integer{TJvID3FrameID}): TDateTime;
 var
   Frame: TJvID3TimestampFrame;
 begin
-  Frame := TJvID3TimestampFrame.Find(FController, FrameID);
+  Frame := TJvID3TimestampFrame.Find(FController, TJvID3FrameID(FrameID));
   if Assigned(Frame) then
     Result := Frame.Value
   else
     Result := 0;
 end;
 
-function TJvID3Text.GetList(const FrameID: TJvID3FrameID): TStrings;
+function TJvID3Text.GetList(const FrameID: Integer{TJvID3FrameID}): TStrings;
 begin
   if FController.Active then
-    Result := TJvID3SimpleListFrame.FindOrCreate(FController, FrameID).List
+    Result := TJvID3SimpleListFrame.FindOrCreate(FController, TJvID3FrameID(FrameID)).List
   else
   begin
     Result := FDummyList;
@@ -434,72 +434,72 @@ begin
   end;
 end;
 
-function TJvID3Text.GetNumber(const FrameID: TJvID3FrameID): Cardinal;
+function TJvID3Text.GetNumber(const FrameID: Integer{TJvID3FrameID}): Cardinal;
 var
   Frame: TJvID3NumberFrame;
 begin
-  Frame := TJvID3NumberFrame.Find(FController, FrameID);
+  Frame := TJvID3NumberFrame.Find(FController, TJvID3FrameID(FrameID));
   if Assigned(Frame) then
     Result := Frame.Value
   else
     Result := 0;
 end;
 
-function TJvID3Text.GetText(const FrameID: TJvID3FrameID): string;
+function TJvID3Text.GetText(const FrameID: Integer{TJvID3FrameID}): string;
 var
   Frame: TJvID3TextFrame;
 begin
-  Frame := TJvID3TextFrame.Find(FController, FrameID);
+  Frame := TJvID3TextFrame.Find(FController, TJvID3FrameID(FrameID));
   if Assigned(Frame) then
     Result := Frame.Text
   else
     Result := '';
 end;
 
-procedure TJvID3Text.SetDateTime(const FrameID: TJvID3FrameID;
+procedure TJvID3Text.SetDateTime(const FrameID: Integer{TJvID3FrameID};
   const Value: TDateTime);
 begin
   if FController.Active then
-    TJvID3TimestampFrame.FindOrCreate(FController, FrameID).Value := Value;
+    TJvID3TimestampFrame.FindOrCreate(FController, TJvID3FrameID(FrameID)).Value := Value;
 end;
 
-procedure TJvID3Text.SetList(const FrameID: TJvID3FrameID;
+procedure TJvID3Text.SetList(const FrameID: Integer{TJvID3FrameID};
   const Value: TStrings);
 begin
   if FController.Active then
-    TJvID3SimpleListFrame.FindOrCreate(FController, FrameID).List.Assign(Value);
+    TJvID3SimpleListFrame.FindOrCreate(FController, TJvID3FrameID(FrameID)).List.Assign(Value);
 end;
 
-procedure TJvID3Text.SetNumber(const FrameID: TJvID3FrameID;
+procedure TJvID3Text.SetNumber(const FrameID: Integer{TJvID3FrameID};
   const Value: Cardinal);
 begin
   if FController.Active then
-    TJvID3NumberFrame.FindOrCreate(FController, FrameID).Value := Value;
+    TJvID3NumberFrame.FindOrCreate(FController, TJvID3FrameID(FrameID)).Value := Value;
 end;
 
-procedure TJvID3Text.SetText(const FrameID: TJvID3FrameID; const Value: string);
+procedure TJvID3Text.SetText(const FrameID: Integer{TJvID3FrameID}; const Value: string);
 begin
   if FController.Active then
-    TJvID3TextFrame.FindOrCreate(FController, FrameID).Text := Value;
+    TJvID3TextFrame.FindOrCreate(FController, TJvID3FrameID(FrameID)).Text := Value;
 end;
 
 //=== TJvID3Web ==============================================================
 
-function TJvID3Web.GetText(const FrameID: TJvID3FrameID): string;
+function TJvID3Web.GetText(const FrameID: Integer{TJvID3FrameID}): string;
 var
   Frame: TJvID3URLFrame;
 begin
-  Frame := TJvID3URLFrame.Find(FController, FrameID);
+  Frame := TJvID3URLFrame.Find(FController, TJvID3FrameID(FrameID));
   if Assigned(Frame) then
     Result := Frame.URL
   else
     Result := '';
 end;
 
-procedure TJvID3Web.SetText(const FrameID: TJvID3FrameID; const Value: string);
+procedure TJvID3Web.SetText(const FrameID: Integer{TJvID3FrameID}; const Value: string);
 begin
   if FController.Active then
-    TJvID3URLFrame.FindOrCreate(FController, FrameID).URL := Value;
+    TJvID3URLFrame.FindOrCreate(FController, TJvID3FrameID(FrameID)).URL := Value;
 end;
 
 //=== TJvID3UDText ===========================================================
@@ -704,9 +704,9 @@ begin
   inherited Destroy;
 end;
 
-function TJvID3Pictures.GetPicture(const AType: TJvID3PictureType): TPicture;
+function TJvID3Pictures.GetPicture(const AType: Integer{TJvID3PictureType}): TPicture;
 begin
-  Result := FPictures[AType];
+  Result := FPictures[TJvID3PictureType(AType)];
 end;
 
 procedure TJvID3Pictures.PictureChanged(Sender: TObject);
@@ -771,10 +771,10 @@ begin
   end;
 end;
 
-procedure TJvID3Pictures.SetPicture(const AType: TJvID3PictureType;
+procedure TJvID3Pictures.SetPicture(const AType: Integer{TJvID3PictureType};
   const Value: TPicture);
 begin
-  FPictures[AType].Assign(Value);
+  FPictures[TJvID3PictureType(AType)].Assign(Value);
   //ChangePicture(AType);
 end;
 
@@ -992,22 +992,22 @@ end;
 
 //=== TJvIdPicturesDesc ======================================================
 
-function TJvID3PicturesDesc.GetText(const AType: TJvID3PictureType): string;
+function TJvID3PicturesDesc.GetText(const AType: Integer{TJvID3PictureType}): string;
 var
   Frame: TJvID3PictureFrame;
 begin
-  Frame := TJvID3PictureFrame.Find(FController, AType);
+  Frame := TJvID3PictureFrame.Find(FController, TJvID3PictureType(AType));
   if Assigned(Frame) then
     Result := Frame.Description
   else
     Result := '';
 end;
 
-procedure TJvID3PicturesDesc.SetText(const AType: TJvID3PictureType;
+procedure TJvID3PicturesDesc.SetText(const AType: Integer{TJvID3PictureType};
   const Value: string);
 begin
   if FController.Active then
-    TJvID3PictureFrame.FindOrCreate(FController, AType).Description := Value;
+    TJvID3PictureFrame.FindOrCreate(FController, TJvID3PictureType(AType)).Description := Value;
 end;
 
 { TJvID3Persistent }
