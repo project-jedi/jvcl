@@ -2425,11 +2425,6 @@ end;
 procedure TJvTreeView.RebuildFromMenu;
 var
   i: integer;
-  function StripHotKey(const S: string): string;
-  begin
-    // poor mans stripper ;)
-    Result := StringReplace(StringReplace(StringReplace(S, '&&', #1, [rfReplaceAll]), '&', '', [rfReplaceAll]), #1, '&', [rfReplaceAll]);
-  end;
   procedure MakeSubMenu(AParent: TTreeNode; AMenuItem: TMenuItem);
   var
     i: integer;
@@ -2437,7 +2432,7 @@ var
   begin
     if (AMenuItem.Caption <> '-') and (AMenuItem.Caption <> '') then
     begin
-      ANode := Items.AddChildObject(AParent, StripHotKey(AMenuItem.Caption), TObject(AMenuItem));
+      ANode := Items.AddChildObject(AParent, StripMenuHotKey(AMenuItem.Caption), TObject(AMenuItem));
       ANode.ImageIndex := AMenuItem.ImageIndex;
       ANode.SelectedIndex := AMenuItem.ImageIndex;
       for i := 0 to AMenuItem.Count - 1 do

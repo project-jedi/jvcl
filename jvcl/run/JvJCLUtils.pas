@@ -811,6 +811,8 @@ function SafeStrToDate(const Ps: string): TDateTime;
 function SafeStrToTime(const Ps: string): TDateTime;
 
 function StrDelete(const psSub, psMain: string): string;
+// strips hotkeys from string, i.e removes singel '&' and reduces '&&' to '&'
+function StripMenuHotKey(const S:string):string;
 
 type
   TTime = TDateTime;
@@ -7300,6 +7302,34 @@ begin
     Result := StrDeleteChars(Result, liPos, Length(psSub));
     liPos := StrIPos(psSub, Result);
   end;
+end;
+
+function StripMenuHotKey(const S:string):string;
+var i,j:integer;
+begin
+  Result := S;
+  if Result = '' then Exit;
+  i := 1;
+  j := 1;
+  while i <= Length(S) do
+  begin
+    if (S[i] = '&') then
+    begin
+      if (i < Length(S)) and (S[i+1] = '&') then
+      begin
+        Result[j] := '&';
+        Inc(j);
+        Inc(i);
+      end;
+    end
+    else
+    begin
+      Result[j] := S[i];
+      Inc(j);
+    end;
+    Inc(i);
+  end;
+  SetLength(Result,j-1);
 end;
 
 function TimeOnly(pcValue: TDateTime): TTime;
