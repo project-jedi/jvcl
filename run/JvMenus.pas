@@ -193,7 +193,7 @@ type
 
     FChangeLinks : TObjectList;
     FCanvas: TControlCanvas;
-    FJvMenuItemPainter : TJvCustomMenuItemPainter;
+    FItemPainter : TJvCustomMenuItemPainter;
 
     procedure SetImages(Value: TImageList);
     procedure ImageListChange(Sender: TObject);
@@ -244,19 +244,21 @@ type
     // get the canvas of the menu
     property Canvas: TCanvas read GetCanvas;
   published
-    property AboutJVCL      : TJVCLAboutInfo           read FAboutJVCL          write FAboutJVCL         stored False;
-    property Cursor         : TCursor                  read FCursor             write FCursor            default crDefault;
-    property DisabledImages : TImageList               read FDisabledImages     write SetDisabledImages;
-    property HotImages      : TImageList               read FHotImages          write SetHotImages;
-    property Images         : TImageList               read FImages             write SetImages;
-    property ImageMargin    : TJvImageMargin           read FImageMargin        write FImageMargin;
-    property ImageSize      : TJvMenuImageSize             read FImageSize          write FImageSize;
-    property ItemPainter    : TJvCustomMenuItemPainter read FJvMenuItemPainter;
+    // Style MUST BE before ItemPainter for the properties of the
+    // painter to be correctly read from the DFM file.
+    property Style          : TJvMenuStyle             read FStyle          write SetStyle           default msStandard;
+    property AboutJVCL      : TJVCLAboutInfo           read FAboutJVCL      write FAboutJVCL         stored False;
+    property Cursor         : TCursor                  read FCursor         write FCursor            default crDefault;
+    property DisabledImages : TImageList               read FDisabledImages write SetDisabledImages;
+    property HotImages      : TImageList               read FHotImages      write SetHotImages;
+    property Images         : TImageList               read FImages         write SetImages;
+    property ImageMargin    : TJvImageMargin           read FImageMargin    write FImageMargin;
+    property ImageSize      : TJvMenuImageSize         read FImageSize      write FImageSize;
+    property ItemPainter    : TJvCustomMenuItemPainter read FItemPainter    write FItemPainter;
     property OwnerDraw stored False;
-    property ShowCheckMarks : Boolean                  read FShowCheckMarks     write FShowCheckMarks    default False;
-    property Style          : TJvMenuStyle             read FStyle              write SetStyle           default msStandard;
-    property TextMargin     : Integer                  read FTextMargin         write FTextMargin        default 0;
-    property TextVAlignment : TJvVerticalAlignment     read FTextVAlignment     write FTextVAlignment    default vaMiddle;
+    property ShowCheckMarks : Boolean                  read FShowCheckMarks write FShowCheckMarks    default False;
+    property TextMargin     : Integer                  read FTextMargin     write FTextMargin        default 0;
+    property TextVAlignment : TJvVerticalAlignment     read FTextVAlignment write FTextVAlignment    default vaMiddle;
 
     property OnGetImageIndex: TItemImageEvent read FOnGetImageIndex write FOnGetImageIndex;
     property OnGetDisabledImageIndex: TItemImageEvent read FOnGetDisabledImageIndex write FOnGetDisabledImageIndex;
@@ -302,7 +304,7 @@ type
     FPopupPoint: TPoint;
     FParentBiDiMode: Boolean;
     FCanvas: TControlCanvas;
-    FJvMenuItemPainter : TJvCustomMenuItemPainter;
+    FItemPainter : TJvCustomMenuItemPainter;
 
     procedure SetImages(Value: TImageList);
     procedure ImageListChange(Sender: TObject);
@@ -318,6 +320,9 @@ type
     procedure WMDrawItem(var Message: TWMDrawItem); message WM_DRAWITEM;
     procedure WMMeasureItem(var Message: TWMMeasureItem); message WM_MEASUREITEM;
     procedure SetBiDiModeFromPopupControl;
+
+    procedure WriteState(Writer: TWriter); override;
+    procedure ReadState(Reader: TReader); override;
 
     procedure Loaded; override;
     function UseRightToLeftAlignment: Boolean;
@@ -343,19 +348,21 @@ type
       State: TMenuOwnerDrawState);
     property Canvas: TCanvas read GetCanvas;
   published
-    property AboutJVCL      : TJVCLAboutInfo           read FAboutJVCL          write FAboutJVCL         stored False;
-    property Cursor         : TCursor                  read FCursor             write FCursor            default crDefault;
-    property DisabledImages : TImageList               read FDisabledImages     write SetDisabledImages;
-    property HotImages      : TImageList               read FHotImages          write SetHotImages;
-    property ImageMargin    : TJvImageMargin           read FImageMargin        write FImageMargin;
-    property Images         : TImageList               read FImages             write SetImages;
-    property ImageSize      : TJvMenuImageSize             read FImageSize          write FImageSize;
-    property ItemPainter    : TJvCustomMenuItemPainter read FJvMenuItemPainter;
+    // Style MUST BE before ItemPainter for the properties of the
+    // painter to be correctly read from the DFM file.
+    property Style          : TJvMenuStyle             read FStyle          write SetStyle           default msStandard;
+    property AboutJVCL      : TJVCLAboutInfo           read FAboutJVCL      write FAboutJVCL         stored False;
+    property Cursor         : TCursor                  read FCursor         write FCursor            default crDefault;
+    property DisabledImages : TImageList               read FDisabledImages write SetDisabledImages;
+    property HotImages      : TImageList               read FHotImages      write SetHotImages;
+    property ImageMargin    : TJvImageMargin           read FImageMargin    write FImageMargin;
+    property Images         : TImageList               read FImages         write SetImages;
+    property ImageSize      : TJvMenuImageSize         read FImageSize      write FImageSize;
+    property ItemPainter    : TJvCustomMenuItemPainter read FItemPainter    write FItemPainter;
     property OwnerDraw stored False;
-    property ShowCheckMarks : Boolean                  read FShowCheckMarks     write FShowCheckMarks    default False;
-    property Style          : TJvMenuStyle             read FStyle              write SetStyle           default msStandard;
-    property TextMargin     : Integer                  read FTextMargin         write FTextMargin        default 0;
-    property TextVAlignment : TJvVerticalAlignment     read FTextVAlignment     write FTextVAlignment    default vaMiddle;
+    property ShowCheckMarks : Boolean                  read FShowCheckMarks write FShowCheckMarks    default False;
+    property TextMargin     : Integer                  read FTextMargin     write FTextMargin        default 0;
+    property TextVAlignment : TJvVerticalAlignment     read FTextVAlignment write FTextVAlignment    default vaMiddle;
 
     property OnGetImageIndex: TItemImageEvent read FOnGetImageIndex write FOnGetImageIndex;
     property OnGetDisabledImageIndex: TItemImageEvent read FOnGetDisabledImageIndex write FOnGetDisabledImageIndex;
@@ -506,6 +513,9 @@ type
     procedure DrawLeftMargin(ARect: TRect); virtual;
     procedure DefaultDrawLeftMargin(ARect: TRect; StartColor, EndColor: TColor);
 
+//    property Tag;
+//    property Name;
+    
     // properties read or calculated from the properties of the
     // menu to which the painter is linked
     property Canvas          : TCanvas              read GetCanvas;
@@ -799,7 +809,7 @@ begin
   FChangeLinks := TObjectList.Create(false);
   FImageMargin := TJvImageMargin.Create;
   FImageSize := TJvMenuImageSize.Create;
-  FJvMenuItemPainter := CreateMenuItemPainterFromStyle(FStyle, self);
+  FItemPainter := CreateMenuItemPainterFromStyle(FStyle, self);
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
   FDisabledImageChangeLink := TChangeLink.Create;
@@ -816,7 +826,7 @@ begin
   FImageChangeLink.Free;
   FHotImageChangeLink.Free;
   FDisabledImageChangeLink.Free;
-  FJvMenuItemPainter.Free;
+  FItemPainter.Free;
   FChangeLinks.Free;
   FImageMargin.Free;
   FImageSize.Free;
@@ -935,10 +945,10 @@ begin
     FStyle := Value;
 
     // delete the old painter
-    FJvMenuItemPainter.Free;
+    FItemPainter.Free;
 
     // create a new painter according to the style
-    FJvMenuItemPainter := CreateMenuItemPainterFromStyle(Value, Self);
+    FItemPainter := CreateMenuItemPainterFromStyle(Value, Self);
 
     // refresh
     RefreshMenu(IsOwnerDrawMenu);
@@ -978,7 +988,7 @@ begin
     GetItemParams(Item, State, Canvas.Font, BackColor, Graphic, NumGlyphs);
     ImageIndex := Item.ImageIndex;
     GetImageIndex(Item, State, ImageIndex);}
-    FJvMenuItemPainter.Paint(Item, Rect, State);
+    FItemPainter.Paint(Item, Rect, State);
   end;
 end;
 
@@ -992,7 +1002,7 @@ begin
 {    if Assigned(FOnDrawItem) then
       FOnDrawItem(Self, Item, Rect, State)
     else}
-      FJvMenuItemPainter.Paint(Item, Rect, State);
+      FItemPainter.Paint(Item, Rect, State);
   end;
 end;
 
@@ -1113,7 +1123,7 @@ begin
         ImageIndex := Item.ImageIndex;
         GetImageIndex(Item, [], ImageIndex);}
 
-        FJvMenuItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
+        FItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
 {        MenuMeasureItem(Self, Item, Canvas, FShowCheckMarks, Graphic,
           NumGlyphs, Integer(itemWidth), Integer(itemHeight), FMinTextOffset,
             FImages, ImageIndex);}
@@ -1289,7 +1299,7 @@ begin
   FImageMargin := TJvImageMargin.Create;
   FImageSize := TJvMenuImageSize.Create;
   PopupList.Add(Self);
-  FJvMenuItemPainter := CreateMenuItemPainterFromStyle(FStyle, self);
+  FItemPainter := CreateMenuItemPainterFromStyle(FStyle, self);
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
   FDisabledImageChangeLink := TChangeLink.Create;
@@ -1309,7 +1319,7 @@ begin
   FHotImageChangeLink.Free;
   FImageMargin.Free;
   FImageSize.Free;
-  FJvMenuItemPainter.Free;
+  FItemPainter.Free;
   PopupList.Remove(Self);
   inherited Destroy;
   // (rom) destroy Canvas AFTER inherited Destroy
@@ -1490,10 +1500,10 @@ begin
     FStyle := Value;
 
     // delete the old painter
-    FJvMenuItemPainter.Free;
+    FItemPainter.Free;
 
     // create a new painter according to the style
-    FJvMenuItemPainter := CreateMenuItemPainterFromStyle(Value, Self);
+    FItemPainter := CreateMenuItemPainterFromStyle(Value, Self);
 
     RefreshMenu(IsOwnerDrawMenu);
   end;
@@ -1504,7 +1514,7 @@ procedure TJvPopupMenu.DefaultDrawItem(Item: TMenuItem; Rect: TRect;
 begin
   if Canvas.Handle <> 0 then
   begin
-    FJvMenuItemPainter.Paint(Item, Rect, State);
+    FItemPainter.Paint(Item, Rect, State);
   end;
 end;
 
@@ -1518,7 +1528,7 @@ begin
 {    if Assigned(FOnDrawItem) then
       FOnDrawItem(Self, Item, Rect, State)
     else}
-      FJvMenuItemPainter.Paint(Item, Rect, State);
+      FItemPainter.Paint(Item, Rect, State);
   end;
 end;
 
@@ -1604,7 +1614,7 @@ begin
         if Item.Default then
           Canvas.Font.Style := Canvas.Font.Style + [fsBold];
 
-        FJvMenuItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
+        FItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
         MeasureItem(Item, Integer(itemWidth), Integer(itemHeight));
       finally
         ReleaseDC(0, Canvas.Handle);
@@ -1633,11 +1643,23 @@ begin
   TextVAlignment    := JvMainMenu.TextVAlignment;
 end;
 
+procedure TJvPopupMenu.ReadState(Reader: TReader);
+begin
+//  Reader.ReadComponent(FJvMenuItemPainter);
+  inherited;
+end;
+
+procedure TJvPopupMenu.WriteState(Writer: TWriter);
+begin
+  inherited;
+//  Writer.WriteComponent(FJvMenuItemPainter);
+end;
+
 { TJvCustomMenuItemPainter }
 
 constructor TJvCustomMenuItemPainter.Create(Menu: TMenu);
 begin
-  inherited Create;
+  inherited Create; //(nil);
 
   // affect default values that are not 0
   FImageBackgroundColor := DefaultImageBackgroundColor;
