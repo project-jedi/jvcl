@@ -23,7 +23,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Menus, ComCtrls, ToolWin, JvDockControlForm, JvDockTree,
-  JvDockVCStyle, JvDockDelphiStyle, JvDockVIDStyle, JvDockVSNetStyle,
+  JvDockVCStyle, JvDockDelphiStyle, JvDockVIDStyle, JvDockVSNetStyle, JvDockVIDVCStyle, 
   JvDockSupportClass
   {$IFDEF USEJVCL}
   , JvComponent, JvAppRegistryStorage, JvAppIniStorage, JvAppXmlStorage
@@ -79,6 +79,8 @@ type
     SaveToXmlFile: TMenuItem;
     LoadFromXmlFile: TMenuItem;
     ToolButton1: TToolButton;
+    JvDockVIDVCStyle1: TJvDockVIDVCStyle;
+    ToolButton2: TToolButton;
     procedure DelphiStyleClick(Sender: TObject);
     procedure VCStyleClick(Sender: TObject);
     procedure VIDStyleClick(Sender: TObject);
@@ -112,6 +114,7 @@ type
     procedure SaveToXmlFileClick(Sender: TObject);
     procedure LoadFromXmlFileClick(Sender: TObject);
     procedure CloseAllClick(Sender: TObject);
+    procedure ToolButton2Click(Sender: TObject);
   private
     { Private declarations }
     {$IFDEF USEJVCL}
@@ -122,7 +125,8 @@ type
     FForm1Count,
       FForm2Count,
       FForm3Count,
-      FForm4Count: Integer;
+      FForm4Count,
+      FForm5Count: Integer;
     procedure AddItemToShowDockMenu(AForm: TForm);
     procedure ShowDockWindowMenuClick(Sender: TObject);
     procedure ShowDockStatus(Sender: TObject);
@@ -140,7 +144,8 @@ var
 implementation
 
 uses
-  frmDelphiStyle, frmVCStyle, frmVIDStyle, frmVSNetStyle, JvDockSupportProc;
+  frmDelphiStyle, frmVCStyle, frmVIDStyle, frmVSNetStyle, JvDockSupportProc,
+  frmVIDVCStyle;
 
 {$R *.DFM}
 
@@ -190,10 +195,6 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  FForm1Count := 0;
-  FForm2Count := 0;
-  FForm3Count := 0;
-  FForm4Count := 0;
   TopDocked.Checked := lbDockServer1.TopDock;
   BottomDocked.Checked := lbDockServer1.BottomDock;
   LeftDocked.Checked := lbDockServer1.LeftDock;
@@ -540,6 +541,18 @@ begin
     TForm(aMenuItem.Tag).Free;
     ShowWindow_Menu.Delete(0);
   end;
+end;
+
+procedure TMainForm.ToolButton2Click(Sender: TObject);
+var
+  Form: TForm5;
+begin
+  Form := TForm5.Create(Self);
+  Form.Caption := Form.Caption + ' _ ' + IntToStr(FForm5Count);
+  Inc(FForm5Count);
+  AddItemToShowDockMenu(Form);
+  ShowDockStatus(JvDockVIDVCStyle1);
+
 end;
 
 end.

@@ -1,7 +1,7 @@
 object MainForm: TMainForm
   Left = 228
   Top = 269
-  Width = 430
+  Width = 586
   Height = 341
   Anchors = []
   Caption = 'Main Window'
@@ -25,7 +25,7 @@ object MainForm: TMainForm
   object ToolBar1: TToolBar
     Left = 0
     Top = 0
-    Width = 422
+    Width = 578
     Height = 26
     Anchors = []
     AutoSize = True
@@ -71,8 +71,15 @@ object MainForm: TMainForm
       ImageIndex = 3
       OnClick = DockForm4Click
     end
-    object ToolButton1: TToolButton
+    object ToolButton2: TToolButton
       Left = 290
+      Top = 0
+      Caption = 'VIDVC Style'
+      ImageIndex = 5
+      OnClick = ToolButton2Click
+    end
+    object ToolButton1: TToolButton
+      Left = 370
       Top = 0
       Caption = 'Close All'
       ImageIndex = 4
@@ -82,7 +89,7 @@ object MainForm: TMainForm
   object StatusBar1: TStatusBar
     Left = 0
     Top = 276
-    Width = 422
+    Width = 578
     Height = 19
     Panels = <>
     SimplePanel = False
@@ -90,7 +97,7 @@ object MainForm: TMainForm
   object Memo1: TMemo
     Left = 0
     Top = 26
-    Width = 422
+    Width = 578
     Height = 250
     Align = alClient
     Font.Charset = ANSI_CHARSET
@@ -242,7 +249,7 @@ object MainForm: TMainForm
     BottomSplitterStyle.Cursor = crVSplit
     BottomSplitterStyle.ParentColor = False
     BottomSplitterStyle.Size = 4
-    DockStyle = JvDockDelphiStyle1
+    DockStyle = JvDockVIDVCStyle1
     Left = 32
     Top = 48
   end
@@ -384,6 +391,45 @@ object MainForm: TMainForm
     ChannelOption.ShowImage = True
     ChannelOption.HideHoldTime = 1000
     Left = 128
+    Top = 112
+  end
+  object JvDockVIDVCStyle1: TJvDockVIDVCStyle
+    ConjoinServerOption.GrabbersSize = 18
+    ConjoinServerOption.SplitterWidth = 4
+    ConjoinServerOption.ActiveFont.Charset = ANSI_CHARSET
+    ConjoinServerOption.ActiveFont.Color = clWhite
+    ConjoinServerOption.ActiveFont.Height = -11
+    ConjoinServerOption.ActiveFont.Name = 'Tahoma'
+    ConjoinServerOption.ActiveFont.Style = [fsBold]
+    ConjoinServerOption.InactiveFont.Charset = ANSI_CHARSET
+    ConjoinServerOption.InactiveFont.Color = 13160660
+    ConjoinServerOption.InactiveFont.Height = -11
+    ConjoinServerOption.InactiveFont.Name = 'Tahoma'
+    ConjoinServerOption.InactiveFont.Style = [fsBold]
+    ConjoinServerOption.TextAlignment = taRightJustify
+    ConjoinServerOption.ActiveTitleStartColor = 6956042
+    ConjoinServerOption.ActiveTitleEndColor = clSkyBlue
+    ConjoinServerOption.InactiveTitleStartColor = clGray
+    ConjoinServerOption.InactiveTitleEndColor = clSilver
+    ConjoinServerOption.TextEllipsis = True
+    ConjoinServerOption.SystemInfo = False
+    TabServerOption.HotTrack = True
+    TabServerOption.TabPosition = tpBottom
+    TabServerOption.ActiveSheetColor = clBtnFace
+    TabServerOption.InactiveSheetColor = clBtnShadow
+    TabServerOption.ActiveFont.Charset = DEFAULT_CHARSET
+    TabServerOption.ActiveFont.Color = clWindowText
+    TabServerOption.ActiveFont.Height = -11
+    TabServerOption.ActiveFont.Name = 'MS Sans Serif'
+    TabServerOption.ActiveFont.Style = []
+    TabServerOption.InactiveFont.Charset = DEFAULT_CHARSET
+    TabServerOption.InactiveFont.Color = clWhite
+    TabServerOption.InactiveFont.Height = -11
+    TabServerOption.InactiveFont.Name = 'MS Sans Serif'
+    TabServerOption.InactiveFont.Style = []
+    TabServerOption.HotTrackColor = clBlue
+    TabServerOption.ShowTabImages = True
+    Left = 216
     Top = 112
   end
 end

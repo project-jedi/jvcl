@@ -27,6 +27,7 @@
     <File Name="..\..\run\JvDockTree.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDockVCStyle.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDockVIDStyle.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockVIDVCStyle.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDockVSNetStyle.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>

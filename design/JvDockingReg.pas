@@ -54,12 +54,12 @@ uses
   {$ENDIF USEJVCL}
   JvDockControlForm, JvDockPropertyEditors,
   JvDockVIDStyle, JvDockDelphiStyle,
-  JvDockVCStyle, JvDockVSNetStyle;
+  JvDockVCStyle, JvDockVIDVCStyle, JvDockVSNetStyle;
 
 procedure Register;
 begin
   RegisterComponents(RsPaletteDocking, [TJvDockServer, TJvDockClient,
-    TJvDockDelphiStyle,TJvDockVCStyle, TJvDockVIDStyle,TJvDockVSNetStyle]);
+    TJvDockDelphiStyle,TJvDockVCStyle, TJvDockVIDStyle, TJvDockVIDVCStyle, TJvDockVSNetStyle]);
   {$IFNDEF USEJVCL}
   RegisterComponentEditor(TJvDockBaseControl, TJvDockControlEditor);
   RegisterComponentEditor(TJvDockBasicStyle, TJvDockStyleEditor);
