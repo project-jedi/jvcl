@@ -84,7 +84,7 @@ begin
     TJvSpinEdit, TJvIPAddress]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
   RegisterComponents(RsPaletteBarPanel, [
-    TJvPageControl,  TJvTabControl, TJvTabDefaultPainter, 
+    TJvPageControl,  
     TJvProgressBar, TJvStatusBar, TJvToolBar, TJvControlBar, TJvCoolBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvSecretPanel {TJvTransparentPanel}]);
