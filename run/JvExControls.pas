@@ -450,6 +450,7 @@ type
   protected
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
+    procedure PaintRequest; override;
   {$ENDIF VisualCLX}
   end;
   TJvExPubGraphicControl = class(TJvExGraphicControl)
@@ -465,6 +466,9 @@ type
   {$ENDIF VCL}
   end;
   
+
+  {$UNDEF CONSTRUCTORCODE}
+  {$DEFINE CONSTRUCTORCODE DoubleBuffered := True;}
   TJvExCustomControl = class(TCustomControl,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
@@ -580,6 +584,9 @@ type
   {$ENDIF VCL}
   end;
   
+  {$UNDEF CONSTRUCTORCODE}
+  {$DEFINE CONSTRUCTORCODE}
+
   TJvExHintWindow = class(THintWindow,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
@@ -1166,6 +1173,7 @@ end;
 {$IFDEF VisualCLX}
 
 type
+  TOpenControl = class(TControl);
   TOpenWidgetControl = class(TWidgetControl);
   TOpenCustomEdit = class(TCustomEdit);
   TOpenCustomMaskEdit = class(TCustomMaskEdit);
@@ -1229,10 +1237,10 @@ begin
   else
     Result := TWidgetControlPainting.Create(Instance, Canvas, EventRegion);
 
-  Canvas.Brush.Color := Instance.Color;
-  QPainter_setFont(Canvas.Handle, Instance.Font.Handle);
-  QPainter_setPen(Canvas.Handle, Instance.Font.FontPen);
-  Canvas.Font.Assign(Instance.Font);
+  Canvas.Brush.Color := TOpenControl(Instance).Color;
+  QPainter_setFont(Canvas.Handle, TOpenControl(Instance).Font.Handle);
+  QPainter_setPen(Canvas.Handle, TOpenControl(Instance).Font.FontPen);
+  Canvas.Font.Assign(TOpenControl(Instance).Font);
 end;
 
 procedure WidgetControl_PaintBackground(Instance: TWidgetControl; Canvas: TCanvas);
@@ -1337,10 +1345,9 @@ end;
 
 procedure TWidgetControl_ColorChanged(Instance: TWidgetControl);
 var
-  Bmp: TBitmap;
   TC: QColorH;
 begin
-  with Instance do
+  with TOpenWidgetControl(Instance) do
   begin
     HandleNeeded;
     if Bitmap.Empty then
@@ -1348,20 +1355,11 @@ begin
       Palette.Color := Color;
       Brush.Color := Color;
       TC := QColor(Color);
-      QWidget_setBackgroundColor(TC);
+      QWidget_setBackgroundColor(Instance.Handle, TC);
       QColor_destroy(TC);
     end;
-
-    Bmp := TBitmap.Create;
-    try
-      Bmp.Assign(Bitmap);
-      Bitmap.Width := 0;
-      Bitmap.Height := 0;
-      inherited ColorChanged;
-    finally
-      Bitmap.Assign(Bmp);
-      Bmp.Free;
-    end;
+    NotifyControls(CM_PARENTCOLORCHANGED);
+    Invalidate;
   end;
 end;
 
@@ -2134,6 +2132,20 @@ begin
     TextChanged;
   end;
 end;
+
+procedure TJvExGraphicControl.PaintRequest;
+begin
+  Canvas.Start;
+  try
+    Canvas.Brush.Color := Color;
+    QPainter_setFont(Canvas.Handle, Font.Handle);
+    QPainter_setPen(Canvas.Handle, Font.FontPen);
+    Canvas.Font.Assign(Font);
+    inherited PaintRequest;
+  finally
+    Canvas.Stop;
+  end;
+end;
 {$ENDIF VisualCLX}
 
 
@@ -2663,7 +2675,6 @@ end;
 // *****************************************************************************
 
 type
-  TOpenControl = class(TControl);
   PBoolean = ^Boolean;
   PPointer = ^Pointer;
 
