@@ -222,7 +222,7 @@ type
     property Canvas: TCanvas read GetCanvas;
   published
     //Polaris
-    property AlwaysShowPopup default True;
+    property AlwaysShowPopup default False;
     property Align;
     property Action;
     property AutoSelect;
@@ -338,7 +338,7 @@ type
     property Canvas: TCanvas read GetCanvas;
   published
     // Polaris
-    property AlwaysShowPopup default True;
+    property AlwaysShowPopup default False;
     property DateAutoBetween;
     property MinDate;
     property MaxDate;
@@ -479,7 +479,7 @@ type
     property Value;
   published
     //Polaris
-    property AlwaysShowPopup default True;
+    property AlwaysShowPopup default False;
     property Align;
     property DecimalPlaceRound;
 
@@ -1153,7 +1153,7 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   inherited ReadOnly := True;
   AlwaysEnableButton := True;
-  AlwaysShowPopup := True;
+  AlwaysShowPopup := False;
 end;
 
 destructor TJvDBComboEdit.Destroy;
@@ -1425,7 +1425,7 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   Self.OnAcceptDate := AfterPopup;
   AlwaysEnableButton := True;
-  AlwaysShowPopup := True;
+  AlwaysShowPopup := False;
   inherited ReadOnly := True;
   UpdateMask;
 end;
@@ -1763,7 +1763,7 @@ begin
   FDataLink.OnEditingChange := EditingChange;
   FDataLink.OnUpdateData := UpdateFieldData;
   inherited ReadOnly := True;
-  AlwaysShowPopup := True;
+  AlwaysShowPopup := False;
   AlwaysEnableButton := True;
 end;
 
