@@ -200,7 +200,7 @@ Known Issues:
     - workaround: TWideStringList.Destroy does not set FOnChange/FOnChanging to nil before calling Clear
     - fixed: ecBackspace with BackSpaceUnindents=True may destroy the line
     - fixed a bug in InsertText
-    - optmimized ExpandTabs
+    - optimized ExpandTabs
     - LinesAnsi returns a TAnsiToWideStringList
 
 }
