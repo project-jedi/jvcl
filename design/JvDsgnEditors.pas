@@ -647,7 +647,7 @@ end;
 
 function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList, paSortList, paMultiSelect, paRevertable];
+  Result := [paValueList, paMultiSelect, paRevertable];
 end;
 
 function TJvDefaultImageIndexProperty.GetValue: string;
@@ -752,7 +752,7 @@ end;
 
 function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList, paSortList, paMultiselect];
+  Result := [paValueList, paMultiSelect, paRevertable];
 end;
 
 function TJvDefaultImageIndexProperty.GetValue: string;
