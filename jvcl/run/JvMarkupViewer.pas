@@ -27,9 +27,6 @@ Known Issues:
 
 unit JvMarkupViewer;
 
-// (rom) is this needed?
-{$OBJEXPORTALL On}
-
 interface
 
 uses
