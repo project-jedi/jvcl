@@ -25,6 +25,10 @@
  page, located at http://www.delphi-jedi.org
 
  RECENT CHANGES:
+    Apr 23, 2004, Marcel Bestebroer:
+      - Added OnItemValueError event, which is fired when an exception occurs
+        during the Item's Apply method. If no handler is assigned, the
+        exception will be raised, otherwise the event handler is called.
     Apr 16, 2004, Marcel Bestebroer:
       - Fixed an issue regarding resizable items or items with non-default
         sizes in combination with the .Net painter.
@@ -267,6 +271,8 @@ type
   TJvInspConfSectionEvent = procedure(var SectionName: string; var Parse: Boolean) of object;
   TJvInspConfKeyEvent = procedure(const SectionName: string; var ItemName: string; var ATypeInfo: PTypeInfo; var Allow:
     Boolean) of object;
+  TInspectorValueErrorEvent = procedure(Sender: TObject; Item: TJvCustomInspectorItem;
+    ExceptObject: Exception) of object;
 
   EJvInspector = class(EJVCLException);
   EJvInspectorItem = class(EJvInspector);
@@ -334,6 +340,7 @@ type
     FOnEditorKeyUp: TKeyEvent;
     FOnEditorMouseDown: TOnJvInspectorMouseDown;
     FOnItemEdit : TOnJvInspectorItemEdit;
+    FOnItemValueError: TInspectorValueErrorEvent;
 
     FInspectObject: TObject;
     procedure SetInspectObject(const Value: TObject);
@@ -358,6 +365,7 @@ type
     procedure DoDataValueChanged(const Data: TJvCustomInspectorData); virtual;
     procedure DoItemSelected; virtual;
     procedure DoItemValueChanged(const Item: TJvCustomInspectorItem); virtual;
+    function DoItemValueError(Item: TJvCustomInspectorItem): Boolean; virtual;
     function GetAfterDataCreate: TInspectorDataEvent; virtual;
     function GetAfterItemCreate: TInspectorItemEvent; virtual;
     function GetBandFor(const ItemIdx: Integer): Integer; virtual;
@@ -493,6 +501,7 @@ type
     property OnEditorKeyUp: TKeyEvent read FOnEditorKeyUp write FOnEditorKeyUp;
     property OnEditorMouseDown: TOnJvInspectorMouseDown read FOnEditorMouseDown write FOnEditorMouseDown;
     property OnItemEdit : TOnJvInspectorItemEdit read FOnItemEdit write FOnItemEdit;
+    property OnItemValueError: TInspectorValueErrorEvent read FOnItemValueError write FOnItemValueError;
   public
     constructor Create(AOwner: TComponent); override;
     procedure BeforeDestruction; override;
@@ -546,7 +555,8 @@ type
     property OnDataValueChanged;
     property OnItemSelected;
     property OnItemValueChanged;
-    property OnItemEdit; // NEW!       
+    property OnItemValueError;
+    property OnItemEdit;
 
     // Standard control events
     property OnEnter;
@@ -2633,6 +2643,18 @@ procedure TJvCustomInspector.DoItemValueChanged(const Item: TJvCustomInspectorIt
 begin
   if Assigned(FOnItemValueChanged) then
     FOnItemValueChanged(Self, Item);
+end;
+
+function TJvCustomInspector.DoItemValueError(Item: TJvCustomInspectorItem): Boolean;
+var
+  E: Exception;
+begin
+  Result := True;
+  E := ExceptObject as Exception;
+  if Assigned(FOnItemValueError) then
+    OnItemValueError(Self, Item, E)
+  else
+    Result := False;
 end;
 
 function TJvCustomInspector.GetAfterDataCreate: TInspectorDataEvent;
@@ -5160,7 +5182,12 @@ var
 begin
   if Editing and (EditCtrl <> nil) and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) then
   begin
-    DisplayValue := EditCtrl.Text;
+    try
+      DisplayValue := EditCtrl.Text;
+    except
+      if not Inspector.DoItemValueError(Self) then
+        raise;
+    end;
     InvalidateItem;
     if EditCtrl <> nil then
     begin
@@ -6838,7 +6865,8 @@ begin
       CloseUp(False);
     if not CancelEdits and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) then
     begin
-      DisplayValue := EditCtrl.Text;
+      Apply;
+//      DisplayValue := EditCtrl.Text;
       InvalidateItem;
     end;
     FreeAndNil(FListBox);
