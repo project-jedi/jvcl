@@ -4061,8 +4061,8 @@ end;
 
 procedure TJvDrawImage.ColorPicked(AColor: TColor);
 begin
-  if assigned(OnColorPicked) then
-    OnColorPicked(Self, AColor);
+  if Assigned(FOnColorPicked) then
+    FOnColorPicked(Self, AColor);
 end;
 
 procedure TJvDrawImage.SetOnColorPicked(const Value: TColorPicked);

@@ -2164,6 +2164,7 @@ begin
     ResizeStyle := TJvDockSplitterStyle(Source).ResizeStyle;
     Size := TJvDockSplitterStyle(Source).Size;
   end;
+  // (rom) else missing? This should trigger AssignTo.
   inherited Assign(Source);
 end;
 
@@ -4570,6 +4571,7 @@ begin
   if Source is TJvDockBasicServerOption then
   begin
   end;
+  // (rom) else missing?
   inherited Assign(Source);
 end;
 
@@ -4597,6 +4599,7 @@ begin
     FTabPosition := TJvDockBasicTabServerOption(Source).FTabPosition;
     FHotTrack := TJvDockBasicTabServerOption(Source).FHotTrack;
   end;
+  // (rom) else missing?
   inherited Assign(Source);
 end;
 
@@ -4674,6 +4677,7 @@ begin
     FGrabbersSize := TJvDockBasicConjoinServerOption(Source).FGrabbersSize;
     FSplitterWidth := TJvDockBasicConjoinServerOption(Source).FSplitterWidth;
   end;
+  // (rom) else missing?
   inherited Assign(Source);
 end;
 

@@ -547,22 +547,25 @@ end;
 
 procedure TJvCustomItemViewerOptions.Assign(Source: TPersistent);
 begin
-  if (Source is TJvCustomItemViewerOptions) and (Source <> Self) then
+  if Source is TJvCustomItemViewerOptions then
   begin
-    FWidth := TJvCustomItemViewerOptions(Source).Width;
-    FHeight := TJvCustomItemViewerOptions(Source).Height;
-    FVertSpacing := TJvCustomItemViewerOptions(Source).VertSpacing;
-    FHorzSpacing := TJvCustomItemViewerOptions(Source).HorzSpacing;
-    FScrollBar := TJvCustomItemViewerOptions(Source).ScrollBar;
-    FAutoCenter := TJvCustomItemViewerOptions(Source).AutoCenter;
-    FSmooth := TJvCustomItemViewerOptions(Source).Smooth;
-    FTracking := TJvCustomItemViewerOptions(Source).Tracking;
-    FHotTrack := TJvCustomItemViewerOptions(Source).HotTrack;
-    FMultiSelect := TJvCustomItemViewerOptions(Source).MultiSelect;
-    BrushPattern.FEvenColor := BrushPattern.EvenColor;
-    BrushPattern.FOddColor := BrushPattern.OddColor;
-    BrushPattern.FActive := BrushPattern.Active;
-    Change;
+    if Source <> Self then
+    begin
+      FWidth := TJvCustomItemViewerOptions(Source).Width;
+      FHeight := TJvCustomItemViewerOptions(Source).Height;
+      FVertSpacing := TJvCustomItemViewerOptions(Source).VertSpacing;
+      FHorzSpacing := TJvCustomItemViewerOptions(Source).HorzSpacing;
+      FScrollBar := TJvCustomItemViewerOptions(Source).ScrollBar;
+      FAutoCenter := TJvCustomItemViewerOptions(Source).AutoCenter;
+      FSmooth := TJvCustomItemViewerOptions(Source).Smooth;
+      FTracking := TJvCustomItemViewerOptions(Source).Tracking;
+      FHotTrack := TJvCustomItemViewerOptions(Source).HotTrack;
+      FMultiSelect := TJvCustomItemViewerOptions(Source).MultiSelect;
+      BrushPattern.FEvenColor := BrushPattern.EvenColor;
+      BrushPattern.FOddColor := BrushPattern.OddColor;
+      BrushPattern.FActive := BrushPattern.Active;
+      Change;
+    end;
   end
   else
     inherited Assign(Source);

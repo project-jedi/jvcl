@@ -186,9 +186,9 @@ begin
     Directory := TJvChangeItem(Source).Directory;
     Actions := TJvChangeItem(Source).Actions;
     IncludeSubTrees := TJvChangeItem(Source).IncludeSubTrees;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvChangeItem.SetSubTrees(const Value: Boolean);
@@ -270,9 +270,9 @@ begin
     Clear;
     for I := 0 to TJvChangeItems(Source).Count - 1 do
       Add.Assign(TJvChangeItems(Source)[I]);
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 //=== TJvChangeNotify ========================================================
