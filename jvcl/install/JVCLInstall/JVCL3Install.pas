@@ -116,7 +116,11 @@ type
 implementation
 
 uses
-  PgIDESelection, CmdLineUtils, InstallerConsts;
+  PgIDESelection, CmdLineUtils,
+  {$IFDEF USE_DXGETTEXT}
+  gnugettext,
+  {$ENDIF USE_DXGETTEXT}
+  InstallerConsts;
 
 var
   WelcomeText: string;
@@ -338,10 +342,14 @@ begin
       begin
         Lines.LoadFromFile(Filename);
         WelcomeText := Trim(Lines.Text);
-        Delete(WelcomeText, Length(WelcomeText) - 1, 2);
+//        Delete(WelcomeText, Length(WelcomeText) - 1, 2);
       end;
       if WelcomeText = '' then
-        WelcomeText := SWelcomeText;
+        WelcomeText := LoadLongResString(@SWelcomeText); // just in case the welcome text gets longer than 1024 characters
+
+      {$IFDEF USE_DXGETTEXT}
+      WelcomeText := dgettext('JVCLInstall',WelcomeText);
+      {$ENDIF USE_DXGETTEXT}
     finally
       Lines.Free;
     end;
