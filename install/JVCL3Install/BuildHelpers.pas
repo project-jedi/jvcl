@@ -11,19 +11,19 @@ the specific language governing rights and limitations under the License.
 The Original Code is: BuildHelpers.pas, released on 2003-11-28.
 
 The Initial Developer of the Original Code is Andreas Hausladen [Andreas.Hausladen@gmx.de]
-Portions created by Andreas Hausladen are Copyright (C) 2003 Andreas Hausladen.
+Portions created by Andreas Hausladen are Copyright (C) 2003-2004 Andreas Hausladen.
 All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-12-01
+Last Modified: 2004-01-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit BuildHelpers;
 interface
@@ -80,7 +80,7 @@ function GetReturnPath(const Dir: string): string;
 function FastStringReplace(const Text, SearchText, ReplaceText: string;
   ReplaceAll, IgnoreCase: Boolean): string;
 procedure CreateCfgFile(const Filename, SearchPaths, LibDir: string);
-function PrepareBpg(const Filename: string; Target: TTargetInfo): TPrepareBpgData;
+function PrepareBpg(const Filename: string; Target: TTargetInfo; IsJcl: Boolean): TPrepareBpgData;
  // PrepareBpg creates Filename{.bpg->.mak) and the needed cfg files.
  // returns the number of Projects to compile (PROJECTS=xxx)"
 function PrepareDcpBpg(const MakeFilename: string; Files: TStrings;
@@ -278,7 +278,8 @@ end;
 
 procedure CreateMakeFile(Make: TMakeFile; const Path, MakeFileName,
   SearchPaths, LibDir, BplDir, DcpDir: string;
-  CreatedFiles: TStrings; BCBTarget: Boolean; MajorVersion: Integer);
+  CreatedFiles: TStrings; BCBTarget: Boolean; MajorVersion: Integer;
+  IsJcl: Boolean; const PackageGeneratorTarget: string);
 var
   Lines: TStrings;
   i, ActIndex: Integer;
@@ -312,9 +313,26 @@ begin
       Lines.Add(#9 + Make.Projects[Make.Projects.Count - 1] + ' \');
     Lines.Add('');
     Lines.Add('#------------------------------------------------------------------------------#');
-    Lines.Add('default: $(PROJECTS)');
+    if IsJcl then
+      Lines.Add('default: $(PROJECTS)')
+    else
+      Lines.Add('default: GENERATEPACKAGES $(PROJECTS)');
     Lines.Add('#------------------------------------------------------------------------------#');
     Lines.Add('');
+    if not IsJcl then
+    begin
+      Lines.Add('GENERATEPACKAGES: ..\devtools\bin\pg.exe');
+      Lines.Add(#9'@cd ..\devtools\bin');
+      Lines.Add(#9'@pg.exe -t=' + PackageGeneratorTarget);
+      Lines.Add(#9'@cd ..\..\packages');
+      Lines.Add('');
+      Lines.Add('..\devtools\bin\pg.exe: ');
+      Lines.Add(#9'@echo Compiling package: Packages Generator');
+      Lines.Add(#9'@cd ..\devtools');
+      Lines.Add(#9'@make pg.exe');
+      Lines.Add(#9'@cd ..\packages');
+      Lines.Add('');
+    end;
 
     for i := 0 to Make.TargetCount - 1 do
     begin
@@ -363,7 +381,7 @@ begin
   end;
 end;
 
-function PrepareBpg(const Filename: string; Target: TTargetInfo): TPrepareBpgData;
+function PrepareBpg(const Filename: string; Target: TTargetInfo; IsJcl: Boolean): TPrepareBpgData;
 var
   Make: TMakeFile;
   i: Integer;
@@ -387,7 +405,8 @@ begin
 
       CreateMakeFile(Make, ExtractFilePath(FileName), ChangeFileExt(FileName, '.mak'),
         Target.SearchPaths, Target.LibDir, Target.BplDir, Target.DcpDir,
-        Result.FCreatedFiles, Target.IsBCB, Target.MajorVersion);
+        Result.FCreatedFiles, Target.IsBCB, Target.MajorVersion, IsJcl,
+        Target.PackageGeneratorTarget);
     finally
       // Make.Free; done in Result.Destroy by the caller
     end;
@@ -428,7 +447,8 @@ begin
 
       CreateMakeFile(Make, ExtractFilePath(MakeFileName), MakeFileName,
         Target.SearchPaths, Target.LibDir, Target.BplDir, Target.DcpDir,
-        Result.FCreatedFiles, Target.IsBCB, Target.MajorVersion);
+        Result.FCreatedFiles, Target.IsBCB, Target.MajorVersion, IsJcl,
+        Target.PackageGeneratorTarget);
     finally
       // Make.Free; done in Result.Destroy by the caller
     end;

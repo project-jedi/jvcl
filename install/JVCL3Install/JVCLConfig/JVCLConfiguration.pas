@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-12-01
+Last Modified: 2004-01-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JVCLConfiguration;
 
@@ -170,7 +170,7 @@ function TJVCLConfig.GetEnabled(Index: string): Boolean;
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do
+  for I := 0 to ItemCount - 1 do
     if CompareText(Index, Items[I].Name) = 0 then
     begin
       Result := Items[I].Enabled;

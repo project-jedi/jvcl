@@ -12,6 +12,7 @@ object FormMain: TFormMain
   OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -458,7 +459,7 @@ object FormMain: TFormMain
     Left = 8
     Top = 24
     Width = 209
-    Height = 121
+    Height = 105
     Checkboxes = True
     Columns = <
       item
@@ -485,14 +486,14 @@ object FormMain: TFormMain
   end
   object GroupBoxOptions: TGroupBox
     Left = 8
-    Top = 296
+    Top = 304
     Width = 209
-    Height = 161
+    Height = 153
     Caption = ' JVCL.INC - Options (global) '
     TabOrder = 2
     object BtnAdvancedOptions: TBitBtn
       Left = 104
-      Top = 128
+      Top = 120
       Width = 99
       Height = 25
       Caption = '&Advanced...'
@@ -598,16 +599,16 @@ object FormMain: TFormMain
   end
   object Panel1: TPanel
     Left = 8
-    Top = 144
+    Top = 128
     Width = 214
-    Height = 145
+    Height = 169
     BevelOuter = bvNone
     TabOrder = 5
     object Bevel1: TBevel
       Left = 0
       Top = 0
       Width = 5
-      Height = 117
+      Height = 153
       Shape = bsRightLine
     end
     object Bevel2: TBevel
@@ -663,6 +664,13 @@ object FormMain: TFormMain
     object Bevel7: TBevel
       Left = 4
       Top = 116
+      Width = 17
+      Height = 9
+      Shape = bsTopLine
+    end
+    object Bevel8: TBevel
+      Left = 4
+      Top = 152
       Width = 17
       Height = 9
       Shape = bsTopLine
@@ -778,6 +786,20 @@ object FormMain: TFormMain
       ShowHint = True
       TabOrder = 7
       OnClick = CheckBoxClearJVCLPaletteClick
+    end
+    object CheckBoxPersonalEdition: TCheckBox
+      Left = 8
+      Top = 144
+      Width = 177
+      Height = 17
+      Hint = 
+        'If this option is active the PersonalEdition packages'#13#10'will be c' +
+        'ompiled.'
+      Caption = 'Standard/Personal edition'
+      Enabled = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 8
     end
   end
   object ImageListPackages: TImageList
