@@ -29,14 +29,14 @@ unit JvIconListForm;
 interface
 
 uses
-  Classes, Graphics,
+  Classes,
   {$IFDEF VCL}
-  Windows, Messages, Forms, Controls, Dialogs,
+  Windows, Messages, Forms, Controls, Dialogs, Graphics,
   StdCtrls, ExtCtrls, ExtDlgs, ImgList, ComCtrls, ToolWin,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QForms, QControls, QDialogs, QStdCtrls, QExtCtrls, QExtDlgs,
-  QImgList, QComCtrls, QToolWin, ClxEditors,
+  QImgList, QComCtrls, QGraphics, QToolWin, ClxEditors,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors,
@@ -101,7 +101,13 @@ type
     procedure ValidateImage;
     procedure CheckEnablePaste;
     procedure LoadAniFile;
+    {$IFDEF VCL}
     procedure WMActivate(var Msg: TWMActivate); message WM_ACTIVATE;
+    {$ENDIF VCL}
+  protected
+    {$IFDEF VisualCLX}
+    procedure Activate; override;
+    {$ENDIF VisualCLX}
   public
     Modified: Boolean;
   end;
@@ -139,6 +145,45 @@ uses
 const
   sSlot = 'Slot%d';
   sImage = 'Image%d';
+
+{$IFDEF VisualCLX}
+type
+  TOpenIcon = class(TIcon);
+
+function Bmp2Icon(bmp: TBitmap): TIcon;
+begin
+  Result := TIcon.Create;
+  Result.Assign(bmp);
+end;
+
+function Icon2Bmp(Ico: TIcon): TBitmap;
+begin
+  Result := TBitmap.Create;
+  TOpenIcon(Ico).AssignTo(Result);
+end;
+
+procedure CopyIconToClipboard(Ico: TIcon; TransparentColor: TColor);
+var
+  bmp: TBitmap;
+begin
+  bmp := Icon2Bmp(Ico);
+  Clipboard.Assign(Bmp);
+end;
+
+function CreateIconFromClipboard: TIcon;
+var
+  bmp: TBitmap;
+begin
+  Result := nil;
+  bmp := TBitmap.create;
+  try
+    bmp.Assign(Clipboard);
+    Result := Bmp2Icon(bmp);
+  except
+    bmp.Free;
+  end;
+end;
+{$ENDIF VisualCLX}
 
 procedure EditIconList(IconList: TJvIconList);
 begin
@@ -230,7 +275,12 @@ end;
 
 procedure TIconListDialog.CheckEnablePaste;
 begin
+  {$IFDEF VCL}
   Paste.Enabled := Clipboard.HasFormat(CF_ICON);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Paste.Enabled := Clipboard.Provides('image/delphi.bitmap')
+  {$ENDIF VisualCLX}
 end;
 
 procedure TIconListDialog.SetSelectedIndex(Index: Integer; Force: Boolean);
@@ -372,7 +422,12 @@ procedure TIconListDialog.PasteClick(Sender: TObject);
 var
   Ico: TIcon;
 begin
+  {$IFDEF VCL}
   if Clipboard.HasFormat(CF_ICON) then
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if Clipboard.Provides('image/delphi.bitmap') then
+  {$ENDIF VisualCLX}
   begin
     Ico := CreateIconFromClipboard;
     try
@@ -383,12 +438,23 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TIconListDialog.WMActivate(var Msg: TWMActivate);
 begin
   if Msg.Active <> WA_INACTIVE then
     CheckEnablePaste;
   inherited;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TIconListDialog.Activate;
+begin
+  if Focused then
+    CheckEnablePaste;
+  inherited;
+end;
+{$ENDIF VisualCLX}
 
 procedure TIconListDialog.ClearClick(Sender: TObject);
 begin
