@@ -16,8 +16,9 @@ All Rights Reserved.
 
 Contributor(s):
 Zinvob
+boerema
 
-Last Modified: 2002-11-19
+Last Modified: 2003-03-17
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -67,10 +68,10 @@ type
   published
     property Caption: TCaption read FCaption write SetCaption;
     property InfoLabel: TCaption read FInfoLabel write SetInfoLabel;
-    property ProgressMin: Integer Index 0 read FProgressMin write SetProgress;
-    property ProgressMax: Integer Index 1 read FProgressMax write SetProgress;
-    property ProgressStep: Integer Index 2 read FProgressStep write SetProgress;
-    property ProgressPosition: Integer Index 3 read FProgressPosition write SetProgress;
+    property ProgressMin: Integer index 0 read FProgressMin write SetProgress;
+    property ProgressMax: Integer index 1 read FProgressMax write SetProgress;
+    property ProgressStep: Integer index 2 read FProgressStep write SetProgress;
+    property ProgressPosition: Integer index 3 read FProgressPosition write SetProgress;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
   end;
 
@@ -95,7 +96,7 @@ begin
   { if linker error occured with message "unresolved external 'System::RaiseList'" try
     comment this function implementation, compile,
     then uncomment and compile again. }
-  {$IFDEF COMPLIB_VCL}
+{$IFDEF COMPLIB_VCL}
   if RaiseList <> nil then
   begin
     Result := PRaiseFrame(RaiseList)^.ExceptObject;
@@ -103,12 +104,12 @@ begin
   end
   else
     Result := nil;
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF LINUX}
+{$ENDIF COMPLIB_VCL}
+{$IFDEF LINUX}
   // XXX: changing exception in stack frame is not supported on Kylix
   Writeln('ChangeTopException');
   Result := E;
-  {$ENDIF LINUX}
+{$ENDIF LINUX}
 end;
 {$ENDIF BCB3}
 
@@ -122,13 +123,13 @@ type
 
 procedure TJvProgressForm.Execute;
 begin
-  {$IFDEF BCB}
+{$IFDEF BCB}
   if not Assigned(FForm) then
     FForm := TJvProgressFormForm.CreateNew(Owner, 1);
-  {$ELSE}
+{$ELSE}
   if not Assigned(FForm) then
-    FForm := TJvProgressFormForm.CreateNew(Owner);
-  {$ENDIF}
+    FForm := TJvProgressFormForm.CreateNew(Self);
+{$ENDIF}
   try
     FForm.Caption := Caption;
     with FForm do
@@ -142,8 +143,16 @@ begin
     with FProgressBar do
     begin
       Parent := FForm;
-      Min := FProgressMin;
-      Max := FProgressMax;
+      if FProgressMin > Max then
+      begin
+        Max := FProgressMax;
+        Min := FProgressMin;
+      end
+      else
+      begin
+        Min := FProgressMin;
+        Max := FProgressMax;
+      end;
       SetBounds(8, 38, 292, 18);
       if FProgressStep = 0 then
         FProgressStep := 1;
@@ -201,13 +210,13 @@ begin
     except
       on E: Exception do
       begin
-        {$IFNDEF BCB3}
+{$IFNDEF BCB3}
         (Owner as TJvProgressForm).FException := E;
         ChangeTopException(nil);
-        {$ENDIF BCB3}
-        {$IFDEF BCB3}
+{$ENDIF BCB3}
+{$IFDEF BCB3}
         (Owner as TJvProgressForm).FException := Exception.Create(E.Message);
-        {$ENDIF BCB3}
+{$ENDIF BCB3}
       end;
     end;
   finally
@@ -233,20 +242,29 @@ procedure TJvProgressForm.SetProgress(Index: Integer; AValue: Integer);
 begin
   case Index of
     0:
-      FProgressMin := AValue;
+      begin
+        FProgressMin := AValue;
+        if FForm <> nil then
+          FProgressBar.Min := FProgressMin;
+      end;
     1:
-      FProgressMax := AValue;
+      begin
+        FProgressMax := AValue;
+        if FForm <> nil then
+          FProgressBar.Max := FProgressMax;
+      end;
     2:
-      FProgressStep := AValue;
+      begin
+        FProgressStep := AValue;
+        if FForm <> nil then
+          FProgressBar.Step := FProgressStep;
+      end;
     3:
-      FProgressPosition := AValue;
-  end;
-  if FForm <> nil then
-  begin
-    FProgressBar.Min := FProgressMin;
-    FProgressBar.Max := FProgressMax;
-    FProgressBar.Step := FProgressStep;
-    FProgressBar.Position := FProgressPosition;
+      begin
+        FProgressPosition := AValue;
+        if FForm <> nil then
+          FProgressBar.Position := FProgressPosition;
+      end;
   end;
 end;
 
