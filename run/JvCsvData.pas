@@ -49,6 +49,11 @@ Description:
       more information.
 
 Known Issues and Updates:
+  Feb 10, 2003 - Merged local JvCsvData-1.20a.pas changes.
+                 New just-in-time-csv-header parsing fixes long standing
+                 bug for tables which are generated from TStrings already
+                 in memory instead of ones loaded from files on disk.
+
   Nov 17, 2003 - Now implements TDataSet.Locate!!! (needs more testing)
   Sept 26, 2003 - Obones made C++Builder fixes.
   Sept 24, 2003 -
@@ -157,7 +162,7 @@ uses
   DB;
 
 const
-  MaxCalcDataOffset = 128; // 128 bytes per record for Calculated Field Data.
+  MaxCalcDataOffset = 256; // 128 bytes per record for Calculated Field Data.
 //  JvCsvSep = ','; // converted to property Separator
   MAXCOLUMNS = 80;
   DEFAULT_CSV_STR_FIELD = 80;
@@ -303,6 +308,7 @@ type
 
     FEmptyRowStr: string; // A string of just separators (used to add a new empty row)
     FHeaderRow: string; // first row of CSV file.
+    FPendingCsvHeaderParse:Boolean; // NEW FEB 2004 WP.
     FTableName: string; // CSV File Name
     FAppendedFieldCount: Integer; // Number of fields not in the file on disk, appended to file as NULLs during import.
     FRecordPos: Integer;
@@ -477,7 +483,7 @@ type
     function GetUserData(recno: Integer): Pointer;
     procedure SetUserData(recno: Integer; newValue: Pointer);
 
-    function GetCsvHeader: string;
+    function GetCsvHeader: string; // NEW FEB 2004 WP
 
     {  Additional Public methods }
     procedure OpenWith(Strings: TStrings); virtual;
@@ -503,6 +509,9 @@ type
 
     { Row Access as String }
     function GetRowAsString(const Index: Integer): string; virtual;
+
+    function CurrentRowAsString: string; virtual; // Return any row by index, special: -1 means last row NEW.
+
       // Return any row by index, special: -1 means last row
     function GetColumnsAsString: string; virtual;
     { Row Append one String }
@@ -562,6 +571,8 @@ type
        Not recommended behaviour, except when absolutely necessary! }
     property EnquoteBackslash: Boolean read FEnquoteBackslash write FEnquoteBackslash default False;
 
+    property HeaderRow:String read FHeaderRow; // first row of CSV file.
+
      { Additional Events }
     property OnSpecialData: TJvCsvOnSpecialData read FOnSpecialData write FOnSpecialData;
     property OnGetFieldData: TJvCsvOnGetFieldData read FOnGetFieldData write FOnGetFieldData;
@@ -620,6 +631,8 @@ type
     property OnSetFieldData;
     property TimeZoneCorrection;
     property EnquoteBackslash;
+    property HeaderRow;
+
   end;
 
 { CSV String Processing Functions }
@@ -1554,7 +1567,7 @@ begin
     begin
       // (rom) no OutputDebugString in production code
       {$IFDEF DEBUGINFO_ON}
-      OutputDebugString('JvCsvData.SetFieldData: Invalid field.Offset in Calculated or Lookup field.');
+      OutputDebugString(PChar('JvCsvData.pas: '+Name+'.SetFieldData( Field='+Field.FieldName+',...): Invalid field.Offset in Calculated or Lookup field. '));
       {$ENDIF DEBUGINFO_ON}
       Exit;
     end;
@@ -1575,6 +1588,14 @@ begin
     Exit;
 
   PhysicalLocation := CsvColumnData^.FPhysical;
+  // ----- BUG FIX FEB 2004 WP (Location #1 of 2)
+  if (PhysicalLocation<0) and FPendingCsvHeaderParse then begin
+    FPendingCsvHeaderParse := false; // Just-in-time-CSV-header-parsing fixes a long standing bug.
+    ProcessCsvHeaderRow;
+    PhysicalLocation := CsvColumnData^.FPhysical;
+  end;
+  // ----- end
+
 
   if PhysicalLocation < 0 then
     Exit;
@@ -1834,6 +1855,16 @@ begin
     Exit;
   end;
   PhysicalLocation := CsvColumnData^.FPhysical;
+  // ----- BUG FIX FEB 2004 WP (Location #2 of 2)  
+  if (PhysicalLocation<0) and FPendingCsvHeaderParse then begin
+        FPendingCsvHeaderParse := false; // Just In Time!
+        ProcessCsvHeaderRow;
+        PhysicalLocation := CsvColumnData^.FPhysical;
+  end;
+  // ---
+
+
+
   if PhysicalLocation < 0 then
   begin // does it really exist in the CSV Row?
     JvCsvDatabaseError(FTableName, Format(RsEPhysicalLocationOfCSVField, [Field.FieldName]));
@@ -2281,6 +2312,8 @@ end;
 // and write changes to the file.
 
 procedure TJvCustomCsvDataSet.Flush;
+var
+ filename:String;
 begin
   if Length(FTableName) = 0 then
     raise EJvCsvDataSetError.Create(RsETableNameNotSet);
@@ -2295,7 +2328,8 @@ begin
       JvCsvBackupPreviousFiles(GetFileName, FAutoBackupCount);
     end;
     // Now write new file.
-    ExportCsvFile(GetFileName);
+    filename := GetFilename;
+    ExportCsvFile(filename);
     FFileDirty := False;
   end;
 end;
@@ -2465,39 +2499,34 @@ end;
 
 { During the parsing stage only, we have the contents of the file loaded in memory
   as a TString LIst. This creates that TString List. }
-
 function TJvCustomCsvDataSet.GetFileName: string;
-//var
-// ufilename:String;
-// FullyQualified:Boolean;
 begin
-  Result := ExpandUNCFilename(FTableName);
-  if not FileExists(Result) then
-    Result := IncludeTrailingPathDelimiter(FInitialWorkingDirectory) + ExtractFileName(FTableName);
-// FullyQualified := False;
-// if Length(FTableName)=0 then Exit;
-// ufilename := UpperCase(FTableName);
-//  if Length(ufilename)>2 then begin
-//      if  ( ufilename[1] >= 'A' ) and ( ufilename[2]<='Z' ) then begin
-//          if ufilename[2] = ':' then
-//              FullyQualified := True;
-//      end else if ufilename[1] = '\' then begin
-//              FullyQualified := True;
-//      end;
-//  end;
-//  if FullyQualified then
-//      result := FTableName
-//  else
-//      result :=  FInitialWorkingDirectory+'\'+FTableName;
+   // If FTableName is not set, you can't save or load a file, fire an exception:
+   Assert(Length(FTableName)<>0,'TJvCustomCsvDataSet.GetFileName - TableName property is not set');
+
+   if (Length(FTableName)>2) and (FTableName[1]='.') and IsPathDelimiter(FTableName,2) then begin // reasonably portable, okay?
+     // Design-time local paths that don't move if the current working
+     // directory moves.  These paths reference the directory the program
+     // starts in.  To use this at design time you have to enter the
+     // table name as '.\Subdirectory\Filename.csv' (or './subdir/...' on Kylix)
+     result := IncludeTrailingPathDelimiter(FInitialWorkingDirectory) +   FTableName;  // SPECIAL CASE.
+   end else begin
+     Result := ExpandUNCFilename(FTableName); // Expand using current working directory to full path name. DEFAULT BEHAVIOR.
+   end;
 end;
 
 function TJvCustomCsvDataSet.InternalLoadFileStrings: Boolean;
 begin
   Result := False;
-  if not FileExists(FTableName) then
-    Exit;
-  if not FLoadsFromFile then
-    Exit;
+  // BUGFIX: Problem with tables with LoadsFromFile would not load at all. FEB 2004.
+  if (FLoadsFromFile) and (not FileExists(FTableName)) then
+    Exit; // We can return immediately ONLY if there is no file to load,
+          // otherwise this routine is parsing already-loaded data, and we should NOT
+          // return, or we won't get our data in the table. -WP.
+
+  //if not FLoadsFromFile then
+   // Exit;
+
   if Assigned(FCsvFileAsStrings) then
   begin
     if FCsvFileAsStrings.Count > 0 then
@@ -2507,7 +2536,10 @@ begin
 
   try // open data file
     FCsvFileAsStrings := TStringlist.Create;
-    FCsvFileAsStrings.LoadFromFile(GetFilename);
+
+    if FLoadsFromFile then // The IF condition here is NEW!
+       FCsvFileAsStrings.LoadFromFile(GetFilename);
+
     if FCsvFileAsStrings.Count > 0 then
       Result := True; // it worked!
   except
@@ -3104,8 +3136,11 @@ procedure TJvCustomCsvDataSet.AppendWith(Strings: TStrings);
 begin
 
   //Active := False;
-  if FHasHeaderRow then
+  if FHasHeaderRow then begin
     FHeaderRow := Strings[0];
+    FPendingCsvHeaderParse := true; // NEW: Just-in-time-CSV-header-parsing.
+  end;
+
   AssignFromStrings(Strings); // parse strings
   // Refresh.
   // DataEvent(deDataSetChange, 0);
@@ -3204,6 +3239,11 @@ begin
 
       { return string}
   Result := GetCsvRowItem(FData.GetRowPtr(GetIndex), Column);
+end;
+
+function TJvCustomCsvDataSet.CurrentRowAsString: string; //virtual;
+begin
+  result := GetRowAsString( RecNo );
 end;
 
 function TJvCustomCsvDataSet.GetRowAsString(const Index: Integer): string;
