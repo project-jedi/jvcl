@@ -34,10 +34,12 @@ unit JvSegmentedLEDDisplay;
 interface
 
 uses
-  Classes, Graphics,
+  Classes, Graphics, Windows,
+  {$IFDEF VisualCLX}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  {$ENDIF VisualCLX}
   JclBase,
   JvComponent, JvTypes;
 
