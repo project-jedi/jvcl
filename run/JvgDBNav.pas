@@ -32,12 +32,17 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, Graphics, DBCtrls,
-  JVCLVer, JvgTypes, JvgCommClasses, JvgUtils;
+  {$IFDEF USEJVCL}
+  JVCLVer,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses, JvgUtils;
 
 type
   TJvgDBNavigator = class(TDBNavigator)
   private
+    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     //      FNewWndProc: Pointer;
     //    procedure CMMouseMove(var Message: TMessage); message CM_MOUSEMOVE;
     //    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
@@ -53,18 +58,24 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF USEJVCL}
   end;
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
   JvThemes;
+{$ENDIF USEJVCL}
 
 constructor TJvgDBNavigator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF USEJVCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF USEJVCL}
   //  FocusControl := Controls[0];
   //  HookFocusControlWndProc;
 end;
@@ -98,9 +109,6 @@ begin
 
             SetPixel(DC, 2, 2, 0);
     //    BitBlt( DC, 0,0,10,10,TNavButton(Controls[0]).Glyph.Canvas.Handle,0,0, SRCCOPY);
-    begin
-
-    end;
   finally
     if Msg.DC = 0 then
       EndPaint(Handle, PS);

@@ -33,10 +33,17 @@ interface
 uses
   Windows, Messages, Classes, Controls, Graphics, Forms,
   StdCtrls, ExtCtrls, SysUtils, Mask,
-  JvgTypes, JvgCommClasses, JvgUtils, JvMaskEdit, Jvg3DColors;
+  {$IFDEF USEJVCL}
+  JvMaskEdit,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses, JvgUtils, Jvg3DColors;
 
 type
+  {$IFDEF USEJVCL}
   TJvgMaskEdit = class(TJvMaskEdit)
+  {$ELSE}
+  TJvgMaskEdit = class(TMaskEdit)
+  {$ENDIF USEJVCL}
   private
     FScrollBars: TScrollStyle;
     FAlignment: TAlignment;

@@ -33,13 +33,19 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, Graphics,
+  {$IFDEF USEJVCL}
   StdCtrls, ExtCtrls, Grids, DBGrids, ImgList,
   JVCLVer;
+  {$ELSE}
+  StdCtrls, ExtCtrls, Grids, DBGrids, ImgList;
+  {$ENDIF USEJVCL}
 
 type
   TJvgDBGrid = class(TDBGrid)
   private
+    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FCaptionTextAlignment: TAlignment;
     FAutoColumnSize: Boolean;
     FCaptionHeight: Integer;
@@ -71,7 +77,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF USEJVCL}
     property AutoColumnSize: Boolean read FAutoColumnSize write SetAutoColumnSize default True;
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
     property CaptionHeight: Integer read FCaptionHeight write SetCaptionHeight default 17;
@@ -302,6 +310,7 @@ procedure TJvgDBGrid.UpdateSize;
 var
   Msg: TWMSize;
 begin
+  // (rom) uninitialized
   WMSize(Msg);
 end;
 
