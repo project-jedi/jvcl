@@ -248,6 +248,11 @@ begin
   formNameAndType := fileNode.Properties.ItemNamed['FormName'].Value;
   incFileName := fileNode.Properties.ItemNamed['Name'].Value;
 
+  // ensure that the path separator stored in the xml file is
+  // replaced by the one for the system we are running on
+  StrReplace(incFileName, '/', '\', [rfReplaceAll]);
+  StrReplace(incFileName, '\', PathSeparator, [rfReplaceAll]);
+
   if Pos(':', formNameAndType) = 0 then
   begin
     formName := formNameAndType;
@@ -294,7 +299,7 @@ begin
     StrReplace(Lines, '%FORMTYPE%', formType, [rfReplaceAll]);
     StrReplace(Lines, '%FORMNAMEANDTYPE%', formNameAndType, [rfReplaceAll]);
     StrReplace(Lines, '%FORMPATHNAME%',
-               StrEnsureSuffix('\', ExtractFilePath(incFileName))+GetUnitName(incFileName),
+               StrEnsureSuffix(PathSeparator, ExtractFilePath(incFileName))+GetUnitName(incFileName),
                [rfReplaceAll]);
   end;
 end;
@@ -424,7 +429,7 @@ begin
     else
       OutFileName := OutFileName + '-R';
 
-    OutFileName := path + target + '\' +
+    OutFileName := path + target + PathSeparator +
                    ExpandPackageName(OutFileName, target, prefix, format)+
                    Extension;
 
@@ -647,7 +652,7 @@ var
   target : string;
 begin
   GCallBack := CallBack;
-  path := StrEnsureSuffix('\', path);
+  path := StrEnsureSuffix(PathSeparator, path);
   // for all targets
   EnsureTargets(targets);
   i := 0;
@@ -656,7 +661,7 @@ begin
     target := targets[i];
     SendMsg('Generating packages for ' + target);
     // find all template files for that target
-    if FindFirst(path+target+'\template.*', 0, rec) = 0 then
+    if FindFirst(path+target+PathSeparator+'template.*', 0, rec) = 0 then
     begin
       repeat
         template := TStringList.Create;
@@ -665,12 +670,12 @@ begin
           // apply the template for all packages
           for j := 0 to packages.Count-1 do
           begin
-            templateFileName := path+target+'\'+rec.Name;
+            templateFileName := path+target+PathSeparator+rec.Name;
             template.LoadFromFile(templateFileName);
             xml := TJvSimpleXml.Create(nil);
             try
               xml.Options := [sxoAutoCreate];
-              xmlName := path+'xml\'+packages[j]+'.xml';
+              xmlName := path+'xml'+PathSeparator+packages[j]+'.xml';
               xml.LoadFromFile(xmlName);
               persoTarget := ApplyTemplateAndSave(
                                    path,
@@ -692,10 +697,10 @@ begin
               if persoTarget <> '' then
               begin
                 SendMsg(#9'Regenerating for '+persoTarget);
-                if FileExists(path+persoTarget+'\'+rec.Name) then
+                if FileExists(path+persoTarget+PathSeparator+rec.Name) then
                 begin
                   SendMsg(#9+persoTarget+ ' template used instead');
-                  template.LoadFromFile(path+persoTarget+'\'+rec.Name);
+                  template.LoadFromFile(path+persoTarget+PathSeparator+rec.Name);
                 end;
 
                 ApplyTemplateAndSave(
@@ -731,7 +736,7 @@ begin
     SendMsg('Calling MakeDofs.bat');
     ShellExecute(0,
                 '',
-                PChar(StrEnsureSuffix('\', ExtractFilePath(ParamStr(0))) + 'MakeDofs.bat'),
+                PChar(StrEnsureSuffix(PathSeparator, ExtractFilePath(ParamStr(0))) + 'MakeDofs.bat'),
                 '',
                 PChar(ExtractFilePath(ParamStr(0))),
                 SW_SHOW);
@@ -743,7 +748,7 @@ var
   rec : TSearchRec;
 begin
   targets.Clear;
-  if FindFirst(StrEnsureSuffix('\', Path)+'*.*', faDirectory, rec) = 0 then
+  if FindFirst(StrEnsureSuffix(PathSeparator, Path)+'*.*', faDirectory, rec) = 0 then
   begin
     repeat
       if ((rec.Attr and faDirectory) <> 0) and
@@ -764,7 +769,7 @@ var
   rec : TSearchRec;
 begin
   packages.Clear;
-  if FindFirst(StrEnsureSuffix('\', path) +'xml\*.xml', 0, rec) = 0 then
+  if FindFirst(StrEnsureSuffix(PathSeparator, path) +'xml'+PathSeparator+'*.xml', 0, rec) = 0 then
   begin
     repeat
       packages.Add(PathExtractFileNameNoExt(rec.Name));
