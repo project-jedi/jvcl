@@ -399,6 +399,8 @@ type
     procedure ParseUrl(Value: string; Protocol: string; var Host: string; var FileName: string);
   public
     constructor Create(Grabber: TJvCustomUrlGrabber); virtual;
+    procedure DoProgress;
+
     property Status: DWORD read FStatus write FStatus;
   end;
 
@@ -760,6 +762,11 @@ begin
   inherited Create(True);
   FContinue := True;
   FGrabber := Grabber;
+end;
+
+procedure TJvCustomUrlGrabberThread.DoProgress;
+begin
+  Synchronize(Progress);
 end;
 
 procedure TJvCustomUrlGrabberThread.Ended;
