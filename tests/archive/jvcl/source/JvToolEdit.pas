@@ -135,6 +135,8 @@ type
     procedure SetButtonWidth(Value: Integer);
     function GetButtonHint: string;
     procedure SetButtonHint(const Value: string);
+    function GetButtonFlat: Boolean;
+    procedure SetButtonFlat(const Value: Boolean);
     function GetDirectInput: Boolean;
     procedure SetDirectInput(Value: Boolean);
     procedure SetReadOnly(Value: Boolean);
@@ -207,6 +209,7 @@ type
     property PopupAlign: TPopupAlign read FPopupAlign write FPopupAlign default epaRight;
     property PopupVisible: Boolean read GetPopupVisible;
     property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
+    property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -224,6 +227,7 @@ type
     property AutoSelect;
     property BorderStyle;
     property ButtonHint;
+    property ButtonFlat;
     property CharCase;
     property ClickKey;
     property Color;
@@ -410,6 +414,7 @@ type
       stored IsCustomTitle;
     property AutoSelect;
     property ButtonHint;
+    property ButtonFlat;
     property BorderStyle;
     property CharCase;
     property ClickKey;
@@ -511,6 +516,7 @@ type
     property MultipleDirs: Boolean read FMultipleDirs write FMultipleDirs default False;
     property AutoSelect;
     property ButtonHint;
+    property ButtonFlat;
     property BorderStyle;
     property CharCase;
     property ClickKey;
@@ -691,6 +697,7 @@ type
     property BlanksChar;
     property BorderStyle;
     property ButtonHint;
+    property ButtonFlat;
     property CalendarHints;
     property CheckOnExit;
     property ClickKey;
@@ -1348,6 +1355,16 @@ end;
 procedure TJvCustomComboEdit.SetButtonHint(const Value: string);
 begin
   FButton.Hint := Value;
+end;
+
+function TJvCustomComboEdit.GetButtonFlat: Boolean;
+begin
+  result := FButton.Flat;
+end;
+
+procedure TJvCustomComboEdit.SetButtonFlat(const Value: Boolean);
+begin
+  FButton.Flat := Value;
 end;
 
 function TJvCustomComboEdit.GetGlyph: TBitmap;
