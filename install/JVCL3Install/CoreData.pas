@@ -16,21 +16,14 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-11-30
+Last Modified: 2003-12-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{.$I JVCL.INC}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$IFDEF VER150}
- // Delphi 7 .NET preview warnings
-  {$WARN UNSAFE_TYPE OFF}
-  {$WARN UNSAFE_CODE OFF}
-  {$WARN UNSAFE_CAST OFF}
-{$ENDIF}
+{$I JVCL.INC}
 
 {.$define DoNotTouchRegistry}
 
@@ -270,6 +263,9 @@ function IsDelphiRunning: Boolean;
 function FindCmdSwitch(const Switch: string): Boolean;
 
 function MoveFile(const Source, Dest: string): Boolean;
+{$IFNDEF COMPILER6_UP}
+function DirectoryExists(const Dir: string): Boolean;
+{$ENDIF}
 
 function CreateJclPackageList(Target: TTargetInfo): TPackageList;
 
@@ -369,7 +365,7 @@ end;
 
 function IsUNCPath(const Filename: string): Boolean;
 begin
-  Result := Copy(Filename, 1, 2) = PathDelim + PathDelim;
+  Result := Copy(Filename, 1, 2) = '\\';
 end;
 
 function GetUNCShare(const Filename: string): string;
@@ -380,9 +376,9 @@ begin // nur für WIN-Dateisystem
   if IsUNCPath(Filename) then // UNC-Pfad
   begin
     Result := Copy(Filename, 3, Length(Filename));
-    nps := pos(PathDelim, Result);
+    nps := pos('\', Result);
     Delete(Result, 1, nps); // Rechnername entfernen
-    Result := Copy(Result, 1, pos(PathDelim, Result) - 1); // Share extrahieren
+    Result := Copy(Result, 1, pos('\', Result) - 1); // Share extrahieren
     Result := Copy(Filename, 1, nps + 2) + Result;
    end else Result := Copy(Filename, 1, 2);
 end;
@@ -403,7 +399,7 @@ begin
     Exit;
   end;
 
-  ForceDirectories(ExtractFilePath(Dest)); // Ordner erstellen
+  //ForceDirectories(ExtractFilePath(Dest)); // Ordner erstellen
   if FileExists(Dest) then
   begin
     SetFileAttributes(PChar(Dest), 0);
@@ -427,6 +423,15 @@ begin
   else
     Result := True;
 end;
+
+{$IFNDEF COMPILER6_UP}
+function DirectoryExists(const Dir: string): Boolean;
+var Attr: Integer;
+begin
+  Attr := Integer(GetFileAttributes(PChar(Dir)));
+  Result := (Attr <> -1) and (Attr and FILE_ATTRIBUTE_DIRECTORY <> 0);
+end;
+{$ENDIF}
 
 function IsVersionNumber(const S: string): Boolean;
 var

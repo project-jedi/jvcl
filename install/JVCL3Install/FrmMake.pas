@@ -16,23 +16,15 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-11-30
+Last Modified: 2003-12-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{.$I JVCL.INC}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$IFDEF VER150}
- // Delphi 7 .NET preview warnings
-  {$WARN UNSAFE_TYPE OFF}
-  {$WARN UNSAFE_CODE OFF}
-  {$WARN UNSAFE_CAST OFF}
-  {$WARN UNIT_PLATFORM OFF}
-{$ENDIF}
-{$IFDEF VER140}
+{$I JVCL.INC}
+{$IFDEF COMPILER6_UP}
   {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
 
