@@ -15,7 +15,7 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
+Last Modified: 2004-03-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -37,6 +37,7 @@ type
   TCheckUserEvent = function(UsersTable: TTable;
     const Password: string): Boolean of object;
 
+
   TJvDBSecurity = class(TJvCustomLogin)
   private
     FDatabase: TDatabase;
@@ -45,6 +46,7 @@ type
     FSelectAlias: Boolean;
     FOnCheckUser: TCheckUserEvent;
     FOnChangePassword: TChangePasswordEvent;
+    FOnLoginFailure: TJvDBLoginEvent;
     procedure SetDatabase(Value: TDatabase);
     procedure SetUsersTableName(const Value: TFileName);
     function GetLoginNameField: string;
@@ -79,6 +81,7 @@ type
     property OnUnlock;
     property OnUnlockApp;
     property OnIconDblClick;
+    property OnLoginFailure:TJvDBLoginEvent read FOnLoginFailure write FOnLoginFailure;
   end;
 
 implementation
@@ -168,7 +171,7 @@ begin
     IconClick := DoIconDblClick;
   Result := LoginDialog(Database, AttemptNumber, UsersTableName,
     LoginNameField, MaxPasswordLen, DoCheckUser, IconClick, UserName,
-    AppStorage, AppStoragePath, SelectAlias);
+    AppStorage, AppStoragePath, SelectAlias,FOnLoginFailure );
 end;
 
 function TJvDBSecurity.ChangePassword: Boolean;
