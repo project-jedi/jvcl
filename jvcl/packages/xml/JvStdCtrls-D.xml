@@ -26,7 +26,7 @@
     <File Name="..\..\design\JvProgressEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvStdCtrlsReg.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\qdesign\JvQStdCtrlsReg.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQStdDsgEditors.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQStdDsgnEditors.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qdesign\JvQDateTimeForm.pas" Targets="allclx" Formname="frmSelectDateTimeDlg" Condition=""/>
   </Contains>
 </Package>
