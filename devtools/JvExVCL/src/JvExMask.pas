@@ -38,8 +38,19 @@ uses
   JvThemes, JvExControls;
 
 type
-  JV_WINCONTROL_EVENTS(CustomMaskEdit)
-  JV_WINCONTROL_EVENTS(MaskEdit)
+  JV_WINCONTROL_EVENTS_FEATURE_BEGIN(CustomMaskEdit)
+  private
+    FBeepOnError: Boolean;
+  protected
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError;
+  JV_WINCONTROL_EVENTS_FEATURE_END(CustomMaskEdit)
+
+  JV_WINCONTROL_EVENTS_FEATURE_BEGIN(MaskEdit)
+  private
+    FBeepOnError: Boolean;
+  protected
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError;
+  JV_WINCONTROL_EVENTS_FEATURE_END(CustomMaskEdit)
 
 implementation
 
