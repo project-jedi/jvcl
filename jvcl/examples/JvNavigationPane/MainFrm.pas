@@ -5,8 +5,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvOutlookBar, ComCtrls, CheckLst, JvComponent, JvNavigationPane, ImgList, Menus,
-  JvPageList, JvExControls;
+  Dialogs, StdCtrls, JvOutlookBar, ComCtrls, CheckLst, JvComponent,
+  JvNavigationPane, ImgList, Menus, JvPageList, JvExControls, ExtCtrls;
 
 type
   TForm1 = class(TForm)
@@ -40,10 +40,11 @@ type
     procedure ShowCloseButton1Click(Sender: TObject);
   private
     { Private declarations }
+    procedure DoToolMouseDown(Sender:TObject; Button:TMouseButton; Shift:TShiftState; X, Y: integer);
+    procedure DoToolMouseMove(Sender:TObject; Shift:TShiftState; X, Y:integer);
     procedure DoToolPanelClose(Sender: TObject);
     procedure DoToolButtonClick(Sender:TObject; Index:integer);
     procedure DoToolEndDock(Sender, Target: TObject; X, Y: Integer);
-    procedure DoToolUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
   public
     { Public declarations }
     NP:TJvNavigationPane;
@@ -65,6 +66,7 @@ var
   GH:TJvNavPanelHeader;
   N:TTreeNode;
   R:TRect;
+  i:integer;
   function StripAccel(const S:string):string;
   begin
     // quick and dirty ;-)
@@ -85,6 +87,7 @@ begin
 //  NP.BorderWidth := 2;
   NP.Align := alLeft;
   JvOutlookSplitter1.Left := 225;
+  JvOutlookSplitter1.MinSize := 220;
   NP.DropDownMenu := PopupMenu1;
   NP.SmallImages := SmallImages;
   NP.LargeImages := LargeImages;
@@ -101,7 +104,7 @@ begin
   GH.ImageIndex := -1;
   GH.Caption := StripAccel(Page.Caption);
   GH.StyleManager := JvNavPaneStyleManager1;
-  // use a button here instad of the icon:
+  // use a button here instead of the icon:
   with TJvNavIconButton.Create(Self) do
   begin
     Parent := GH;
@@ -351,24 +354,20 @@ begin
 
   NT := TJvNavPaneToolPanel.Create(Self);
   NT.DragKind := dkDock;
-  NT.DragMode := dmAutomatic;
+//  NT.DragMode := dmAutomatic;
   NT.Parent := Self;
   NT.Align := alClient;
   NT.Caption := 'Sample Tool Panel';
   NT.StyleManager := JvNavPaneStyleManager1;
   NT.Images := ToolImages;
   NT.DropDownMenu := PopupMenu1;
-  NT.Buttons.Add.ImageIndex := 0;
+  for i := 0 to ToolImages.Count  - 1 do
+    NT.Buttons.Add.ImageIndex := i;
   NT.OnButtonClick := DoToolButtonClick;
+  NT.OnMouseDown := DoToolMouseDown;
+  NT.OnMouseMove := DoToolMouseMove;
   NT.OnEndDock := DoToolEndDock;
-  NT.OnUnDock := DoToolUnDock;
 
-  with NT.Buttons.Add do
-  begin
-    ImageIndex := 1;
-//    Enabled := false;
-  end;
-  NT.Buttons.Add.ImageIndex := 2;
   NT.CloseButton := false;
   NT.OnClose := DoToolPanelClose;
   // now, set the real start theme:
@@ -440,6 +439,7 @@ begin
   ShowCloseButton1.Checked := not ShowCloseButton1.Checked;
   NT.CloseButton := ShowCloseButton1.Checked;
 end;
+
 type
   THackForm = class(TCustomForm);
 
@@ -456,11 +456,22 @@ begin
     NT.Align := alClient;
 end;
 
-procedure TForm1.DoToolUnDock(Sender: TObject; Client: TControl;
-  NewTarget: TWinControl; var Allow: Boolean);
+procedure TForm1.DoToolMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: integer);
 begin
-  // 
+  if phtGrabber in NT.GetHitTestInfoAt(X,Y) then
+    NT.BeginDrag(false);
+end;
+
+procedure TForm1.DoToolMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: integer);
+begin
+  if phtGrabber in NT.GetHitTestInfoAt(X,Y) then
+    NT.Cursor := crSize
+  else
+    NT.Cursor := crDefault;
 end;
 
 end.
+
 
