@@ -1422,7 +1422,7 @@ end;
 
 procedure TJvCustomComboEdit.DoChange;
 begin
-  Change;
+  inherited Change;
 end;
 
 procedure TJvCustomComboEdit.DoClick;
