@@ -1,0 +1,72 @@
+package JvQCoreK3R;
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCLX Core Runtime Package'}
+{$LIBPREFIX ''}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+{$DEFINE ANIMATE}
+
+requires
+  visualclx,
+  rtl,
+  DJcl;
+
+contains
+  JvQConsts in '../../qcommon/JvQConsts.pas',
+  JvQComponent in '../../qrun/JvQComponent.pas',
+  JvQDsgnIntf in '../../qrun/JvQDsgnIntf.pas',
+  JvQJCLUtils in '../../qrun/JvQJCLUtils.pas',
+  JvQJVCLAboutForm in '../../qrun/JvQJVCLAboutForm.pas' {JvJVCLAboutForm},
+  JvQJVCLUtils in '../../qrun/JvQJVCLUtils.pas',
+  JvQMaxPixel in '../../qrun/JvQMaxPixel.pas',
+  JvQMouseTimer in '../../qrun/JvQMouseTimer.pas',
+  JvQProgressUtils in '../../qrun/JvQProgressUtils.pas',
+  JvQPropertyStore in '../../qrun/JvQPropertyStore.pas',
+  JvQPropertyStorage in '../../qrun/JvQPropertyStorage.pas',
+  JvQThemes in '../../qrun/JvQThemes.pas',
+  JvQTypes in '../../qrun/JvQTypes.pas',
+  JvQActions in '../../qrun/JvQActions.pas',
+  JvQAppIniStorage in '../../qrun/JvQAppIniStorage.pas',
+  JvQAppStorage in '../../qrun/JvQAppStorage.pas',
+  JvQBaseDlg in '../../qrun/JvQBaseDlg.pas',
+  JvQCaret in '../../qrun/JvQCaret.pas',
+  JvQResources in '../../qrun/JvQResources.pas',
+  JvQExControls in '../../qrun/JvQExControls.pas',
+  JvQExStdCtrls in '../../qrun/JvQExStdCtrls.pas',
+  JvQExExtCtrls in '../../qrun/JvQExExtCtrls.pas',
+  JvQExComCtrls in '../../qrun/JvQExComCtrls.pas',
+  JvQExForms in '../../qrun/JvQExForms.pas',
+  JvQExCheckLst in '../../qrun/JvQExCheckLst.pas',
+  JvQExMask in '../../qrun/JvQExMask.pas',
+  JvQExGrids in '../../qrun/JvQExGrids.pas',
+  JvQExButtons in '../../qrun/JvQExButtons.pas',
+  QWindows in '../../qcommon/QWindows.pas',
+  QWinCursors in '../../qcommon/QWinCursors.pas',
+  QExtDlgs in '../../qcommon/QExtDlgs.pas',
+  QToolWin in '../../qcommon/QToolWin.pas',
+  JvQWStrUtils in '../../qcommon/JvQWStrUtils.pas',
+  JVQCLVer in '../../qrun/JVQCLVer.pas',
+  JvQFinalize in '../../qcommon/JvQFinalize.pas';
+
+end.

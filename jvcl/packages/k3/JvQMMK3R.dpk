@@ -1,0 +1,60 @@
+package JvQMMK3R;
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCLX Multimedia and Image Components Runtime Package'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+{$DEFINE VisualCLX}
+
+requires
+  JvQCoreD7R,
+  JvQCtrlsD7R,
+  JvQSystemD7R,
+  rtl,
+  visualclx;
+
+contains
+  JvQBmpAnimator in '..\..\qrun\JvQBmpAnimator.pas',
+  JvQGradient in '..\..\qrun\JvQGradient.pas',
+  JvQGradientHeaderPanel in '..\..\qrun\JvQGradientHeaderPanel.pas',
+  JvQIconList in '..\..\qrun\JvQIconList.pas',
+  JvQId3v1 in '..\..\qrun\JvQId3v1.pas',
+  JvQId3v2 in '..\..\qrun\JvQId3v2.pas',
+  JvQID3v2Base in '..\..\qrun\JvQID3v2Base.pas',
+  JvQId3v2Types in '..\..\qrun\JvQId3v2Types.pas',
+  JvQImageRotate in '..\..\qrun\JvQImageRotate.pas',
+  JvQImageTransform in '..\..\qrun\JvQImageTransform.pas',
+  JvQImageSquare in '..\..\qrun\JvQImageSquare.pas',
+  JvQSlider in '..\..\qrun\JvQSlider.pas',
+  JvQSpecialImage in '..\..\qrun\JvQSpecialImage.pas',
+  JvQSpecialProgress in '..\..\qrun\JvQSpecialProgress.pas',
+  JvQSplashWindow in '..\..\qrun\JvQSplashWindow.pas',
+  JvQStarfield in '..\..\qrun\JvQStarfield.pas',
+  JvQWaitingGradient in '..\..\qrun\JvQWaitingGradient.pas',
+  JvQWaitingProgress in '..\..\qrun\JvQWaitingProgress.pas',
+  JvQWavePlayer in '..\..\qrun\JvQWavePlayer.pas',
+  JvQAni in '..\..\qrun\JvQAni.pas',
+  JvQAnimatedImage in '..\..\qrun\JvQAnimatedImage.pas',
+  JvQQtKeySelectionFrame in '..\..\qrun\JvQQtKeySelectionFrame.pas' {JvQtKeySelectionFrame: TFrame};
+
+end.
