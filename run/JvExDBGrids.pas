@@ -38,23 +38,11 @@ unit JvExDBGrids;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, DBGrids,
-  {$ENDIF VCl}
-  {$IFDEF VisualCLX}
-  Types, Qt, QGraphics, QControls, QForms, QDBGrids, QWindows,
-  {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
-{$IFDEF VCL}
  {$DEFINE NeedMouseEnterLeave}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
- {$IF not declared(PatchedVCLX)}
-  {$DEFINE NeedMouseEnterLeave}
- {$IFEND}
-{$ENDIF VisualCLX}
 
 type
   TJvExCustomDBGrid = class(TCustomDBGrid, IJvWinControlEvents, IJvControlEvents, IPerformControl)
@@ -164,7 +152,13 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+  {$IFDEF VisualCLX}
+  private
+    FCanvas: TCanvas;
+  protected
+    procedure Paint; virtual;
+    property Canvas: TCanvas read FCanvas;
+  {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -290,7 +284,13 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+  {$IFDEF VisualCLX}
+  private
+    FCanvas: TCanvas;
+  protected
+    procedure Paint; virtual;
+    property Canvas: TCanvas read FCanvas;
+  {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -594,71 +594,39 @@ asm
         JMP     DefaultDoPaintBackground
 end;
   
-{$IFDEF VCL}
 constructor TJvExCustomDBGrid.Create(AOwner: TComponent);
 begin
   {$IFDEF VisualCLX}
   WindowProc := WndProc;
   {$ENDIF VisualCLX}
   inherited Create(AOwner);
-  FHintColor := Application.HintColor;
-  
-end;
-
-destructor TJvExCustomDBGrid.Destroy;
-begin
-  
-  inherited Destroy;
-end;
- 
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-constructor TJvExCustomDBGrid.Create(AOwner: TComponent);
-begin
-  WindowProc := WndProc;
-  inherited Create(AOwner);
+  {$IFDEF VisualCLX}
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
   InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged;
-  
-  DoubleBuffered := True;
+  {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
+
+{$IFDEF VisualCLX}
+procedure TJvExCustomDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
+
+procedure TJvExCustomDBGrid.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
+end;
+{$ENDIF VisualCLX}
 
 destructor TJvExCustomDBGrid.Destroy;
 begin
-  
   inherited Destroy;
 end;
   
-procedure TJvExCustomDBGrid.ColorChanged;
-begin
-  WidgetControl_ColorChanged(Self);
-end;
-
-function TJvExCustomDBGrid.GetDoubleBuffered: Boolean;
-begin
-  Result := FDoubleBuffered;
-end;
-
-procedure TJvExCustomDBGrid.SetDoubleBuffered(Value: Boolean);
-begin
-  if Value <> FDoubleBuffered then
-  begin
-    if Value then
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
-    else
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
-    FDoubleBuffered := Value;
-  end;
-end;
-
-procedure TJvExCustomDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  CustomControl_Painting(Self, Canvas, EventRegion);
-end;
- 
-  
-{$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExDBGrid.Dispatch(var Msg);
 asm
@@ -941,70 +909,38 @@ asm
         JMP     DefaultDoPaintBackground
 end;
   
-{$IFDEF VCL}
 constructor TJvExDBGrid.Create(AOwner: TComponent);
 begin
   {$IFDEF VisualCLX}
   WindowProc := WndProc;
   {$ENDIF VisualCLX}
   inherited Create(AOwner);
-  FHintColor := Application.HintColor;
-  
-end;
-
-destructor TJvExDBGrid.Destroy;
-begin
-  
-  inherited Destroy;
-end;
- 
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-constructor TJvExDBGrid.Create(AOwner: TComponent);
-begin
-  WindowProc := WndProc;
-  inherited Create(AOwner);
+  {$IFDEF VisualCLX}
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
   InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged;
-  
-  DoubleBuffered := True;
+  {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
+
+{$IFDEF VisualCLX}
+procedure TJvExDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
+
+procedure TJvExDBGrid.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
+end;
+{$ENDIF VisualCLX}
 
 destructor TJvExDBGrid.Destroy;
 begin
-  
   inherited Destroy;
 end;
   
-procedure TJvExDBGrid.ColorChanged;
-begin
-  WidgetControl_ColorChanged(Self);
-end;
-
-function TJvExDBGrid.GetDoubleBuffered: Boolean;
-begin
-  Result := FDoubleBuffered;
-end;
-
-procedure TJvExDBGrid.SetDoubleBuffered(Value: Boolean);
-begin
-  if Value <> FDoubleBuffered then
-  begin
-    if Value then
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
-    else
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
-    FDoubleBuffered := Value;
-  end;
-end;
-
-procedure TJvExDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  CustomControl_Painting(Self, Canvas, EventRegion);
-end;
- 
-  
-{$ENDIF VisualCLX}
 
 end.

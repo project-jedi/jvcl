@@ -733,6 +733,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  CONSTRUCTOR_CODE
 end;
 
 {$IFDEF VisualCLX}
