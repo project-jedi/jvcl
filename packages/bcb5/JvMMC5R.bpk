@@ -16,7 +16,7 @@
       ..\..\dcu\JvSpecialImage.obj ..\..\dcu\JvSpecialProgress.obj 
       ..\..\dcu\JvSplashWindow.obj ..\..\dcu\JvStarfield.obj 
       ..\..\dcu\JvVirtualKeySelectionFrame.obj ..\..\dcu\JvWaitingGradient.obj 
-      ..\..\dcu\JvWaitingProgress.obj ..\..\dcu\VFW.obj ..\..\dcu\JvMMC5R.obj"/>
+      ..\..\dcu\JvWaitingProgress.obj ..\..\dcu\JvMMC5R.obj"/>
     <RESFILES value="JvMMC5R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
