@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright © 1997-2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):
+Contributor(s): Michael Beck [mbeck@bigfoot.com]
 
 Last Modified: 2002-05-26
 
@@ -79,7 +79,7 @@ type
 
   TJvCaptionPanel = class(TJvCustomPanel)
   private
-    FButtonArray: array [TJvCapBtnStyle] of TJvCapBtn;
+    FButtonArray: array[TJvCapBtnStyle] of TJvCapBtn;
     FButtonClick: TJvCapBtnEvent;
     FDrawPosition: TJvDrawPosition;
     FCaptionWidth: Integer;
@@ -94,12 +94,15 @@ type
     FBevel: Integer;
     FDragging: Boolean;
     FEndDrag: TNotifyEvent;
-    FFont: TFont;
+    FCaptionFont: TFont;
     FOnStartAutoDrag: TJvAutoDragStartEvent;
+    FOutlookLook: Boolean;
+    FCaptionOffsetSmall: Integer;
+    FCaptionOffsetLarge: Integer;
     {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
     FAnchorPos: TPoint;
     {$ENDIF}
-    procedure SetFont(Value: TFont);
+    procedure SetCaptionFont(Value: TFont);
     procedure SetCaptionColor(Value: TColor);
     procedure SetFlat(Value: Boolean);
     procedure SetButtons(Value: TJvCapBtnStyles);
@@ -108,6 +111,8 @@ type
     procedure DrawRotatedText(Rotation: Integer);
     procedure DrawButtons;
     procedure WMSize(var Msg: TWMNoParams); message WM_SIZE;
+    procedure SetOutlookLook(const Value: Boolean);
+    procedure DoCaptionFontChange(Semder:TObject);
   protected
     procedure Paint; override;
 
@@ -131,7 +136,7 @@ type
     property Caption: string read FCaption write SetCaption;
     property CaptionColor: TColor read FCaptionColor write SetCaptionColor default clActiveCaption;
     property CaptionPosition: TJvDrawPosition read FDrawPosition write SeTJvDrawPosition default dpLeft;
-    property CaptionFont: TFont read FFont write SetFont;
+    property CaptionFont: TFont read FCaptionFont write SetCaptionFont;
     property Color;
     property Cursor;
     property DragCursor;
@@ -142,6 +147,7 @@ type
     property FullRepaint;
     property Hint;
     property Locked;
+    property OutlookLook: Boolean read FOutlookLook write SetOutlookLook;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -167,6 +173,8 @@ type
   end;
 
 implementation
+
+//=== TJvCapBtn ==============================================================
 
 constructor TJvCapBtn.Create(AOwner: TComponent);
 begin
@@ -312,8 +320,7 @@ begin
 
   if not Enabled then
     Flags := Flags or DFCS_INACTIVE
-  else
-  if FDown and FMouseDown and Enabled then
+  else if FDown and FMouseDown and Enabled then
     Flags := Flags or DFCS_PUSHED;
   if FFlat then
     Flags := Flags or DFCS_FLAT;
@@ -326,13 +333,14 @@ begin
     R := ClientRect;
     if FDown and FMouseDown then
       Frame3D(Canvas, R, clBtnShadow, clBtnHighLight, 1)
-    else
-    if FInside then
+    else if FInside then
       Frame3D(Canvas, R, clBtnHighLight, clBtnShadow, 1)
     else
       Frame3D(Canvas, R, clBtnFace, clBtnFace, 1);
   end;
 end;
+
+//=== TJvCaptionPanel ========================================================
 
 constructor TJvCaptionPanel.Create(AOwner: TComponent);
 var
@@ -340,11 +348,12 @@ var
 begin
   inherited Create(AOwner);
   DoubleBuffered := True;
-  FFont := TFont.Create;
-  FFont.Name := 'Arial';
-  FFont.Size := 10;
-  FFont.Style := [fsBold];
-  FFont.Color := clWhite;
+  FCaptionFont := TFont.Create;
+  FCaptionFont.Name := 'MS Shell Dlg 2';
+  FCaptionFont.Size := 10;
+  FCaptionFont.Style := [fsBold];
+  FCaptionFont.Color := clWhite;
+  FCaptionFont.OnChange := DoCaptionFontChange;
   FDrawPosition := dpLeft;
   FCaptionWidth := GetSystemMetrics(SM_CYCAPTION);
   FOffset := 8;
@@ -360,17 +369,21 @@ begin
   end;
   FButtons := [];
   BorderStyle := bsSingle;
+
+  FCaptionOffsetSmall := 2;
+  FCaptionOffsetLarge := 3;
+  FOutlookLook := False;
 end;
 
 destructor TJvCaptionPanel.Destroy;
 begin
-  FFont.Free;
+  FCaptionFont.Free;
   inherited Destroy;
 end;
 
-procedure TJvCaptionPanel.SetFont(Value: TFont);
+procedure TJvCaptionPanel.SetCaptionFont(Value: TFont);
 begin
-  FFont.Assign(Value);
+  FCaptionFont.Assign(Value);
   Invalidate;
 end;
 
@@ -415,6 +428,7 @@ begin
   end;
 end;
 
+
 procedure TJvCaptionPanel.SeTJvDrawPosition(Value: TJvDrawPosition);
 begin
   if FDrawPosition <> Value then
@@ -428,13 +442,13 @@ procedure TJvCaptionPanel.AlignControls(AControl: TControl; var Rect: TRect);
 begin
   case FDrawPosition of //
     dpLeft:
-      Rect := Classes.Rect(FCaptionWidth + 2, 0, ClientWidth, ClientHeight);
+      Rect := Classes.Rect(FCaptionWidth + FCaptionOffsetSmall, 0, ClientWidth, ClientHeight);
     dpTop:
-      Rect := Classes.Rect(0, FCaptionWidth + 2, ClientWidth, ClientHeight);
+      Rect := Classes.Rect(0, FCaptionWidth + FCaptionOffsetSmall, ClientWidth, ClientHeight);
     dpRight:
-      Rect := Classes.Rect(0, 0, ClientWidth - FCaptionWidth - 2, ClientHeight);
+      Rect := Classes.Rect(0, 0, ClientWidth - FCaptionWidth - FCaptionOffsetSmall, ClientHeight);
     dpBottom:
-      Rect := Classes.Rect(0, 0, ClientWidth, ClientHeight - FCaptionWidth - 2);
+      Rect := Classes.Rect(0, 0, ClientWidth, ClientHeight - FCaptionWidth - FCaptionOffsetSmall);
   end; //case
   inherited AlignControls(AControl, Rect);
 end;
@@ -454,6 +468,7 @@ procedure TJvCaptionPanel.Paint;
 var
   Rotation: Integer;
   R: TRect;
+  FlatOffset:Integer;
 begin
   R := ClientRect;
   with Canvas do
@@ -462,8 +477,22 @@ begin
     FillRect(R);
     Brush.Color := FCaptionColor;
   end;
-  FBevel := 2;
+  FBevel := FCaptionOffsetSmall;
   Rotation := 0;
+
+  FlatOffset := Ord(FlatButtons);
+
+  if FOutlookLook then
+  begin
+    if CaptionPosition = dpLeft then
+      FCaptionWidth := GetSystemMetrics(SM_CYCAPTION) - 3 + FlatOffset
+    else if CaptionPosition = dpRight then
+      FCaptionWidth := GetSystemMetrics(SM_CYCAPTION) - 4 + FlatOffset
+    else
+      FCaptionWidth := GetSystemMetrics(SM_CYCAPTION) - 5 + FlatOffset
+  end
+  else
+    FCaptionWidth := GetSystemMetrics(SM_CYCAPTION);
 
   case FDrawPosition of
     dpLeft:
@@ -499,11 +528,16 @@ begin
   R := FCaptionRect;
   tH := ((R.Bottom - R.Top) - Canvas.TextHeight(FCaption)) div 2;
   tW := ((R.Right - R.Left) - Canvas.TextHeight(FCaption)) div 2;
+  if FOutlookLook then
+  begin
+    Dec(th,1);
+    Dec(tw,1);
+  end;
   with Canvas do
   begin
     tf := TFont.Create;
     try
-      tf.Assign(FFont);
+      tf.Assign(CaptionFont);
       GetObject(tf.Handle, sizeof(lf), @lf);
       lf.lfEscapement := Rotation * 10;
       lf.lfOrientation := Rotation * 10;
@@ -558,13 +592,13 @@ begin
 
   case FDrawPosition of
     dpLeft:
-      R := Rect(FCaptionRect.Left + 2, FCaptionRect.Top + 2, 0, 0);
+      R := Rect(FCaptionRect.Left + FCaptionOffsetSmall, FCaptionRect.Top + FCaptionOffsetSmall, 0, 0);
     dpTop:
-      R := Rect(FCaptionRect.Right - FWidth - 2, FCaptionRect.Top + 3, 0, 0);
+      R := Rect(FCaptionRect.Right - FWidth - FCaptionOffsetSmall, FCaptionRect.Top + FCaptionOffsetLarge, 0, 0);
     dpRight:
-      R := Rect(FCaptionRect.Left + 2, FCaptionRect.Bottom - FHeight - 2, 0, 0);
+      R := Rect(FCaptionRect.Left + FCaptionOffsetSmall, FCaptionRect.Bottom - FHeight - FCaptionOffsetSmall, 0, 0);
     dpBottom:
-      R := Rect(FCaptionRect.Right - FWidth - 2, FCaptionRect.Top + 3, 0, 0);
+      R := Rect(FCaptionRect.Right - FWidth - FCaptionOffsetSmall, FCaptionRect.Top + FCaptionOffsetLarge, 0, 0);
   end;
 
   if capClose in FButtons then
@@ -574,13 +608,13 @@ begin
     FButtonArray[capClose].Visible := True;
     case FDrawPosition of
       dpLeft:
-        OffsetRect(R, 0, FHeight + 2);
+        OffsetRect(R, 0, FHeight + FCaptionOffsetSmall);
       dpTop:
-        OffsetRect(R, -FWidth - 2, 0);
+        OffsetRect(R, -FWidth - FCaptionOffsetSmall, 0);
       dpRight:
-        OffsetRect(R, 0, -FHeight - 2);
+        OffsetRect(R, 0, -FHeight - FCaptionOffsetSmall);
       dpBottom:
-        OffsetRect(R, -FWidth - 2, 0);
+        OffsetRect(R, -FWidth - FCaptionOffsetSmall, 0);
     end;
   end
   else
@@ -729,6 +763,28 @@ begin
   inherited;
   if FDragging then
     MouseUp(mbLeft, [], Msg.XCursor, Msg.YCursor);
+end;
+
+procedure TJvCaptionPanel.SetOutlookLook(const Value: Boolean);
+begin
+  FOutlookLook := Value;
+
+  if FOutlookLook then
+  begin
+    FCaptionOffsetSmall := 0;
+    FCaptionOffsetLarge := 0;
+  end
+  else
+  begin
+    FCaptionOffsetSmall := 2;
+    FCaptionOffsetLarge := 3;
+  end;
+  Invalidate;
+end;
+
+procedure TJvCaptionPanel.DoCaptionFontChange(Semder: TObject);
+begin
+  Invalidate;
 end;
 
 end.
