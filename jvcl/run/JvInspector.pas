@@ -3875,7 +3875,10 @@ begin
     MaxIdx := BandStarts.Count - (ClientWidth div BandWidth);
     if MaxIdx < 0 then
       MaxIdx := 0;
-    MaxIdx := Integer(BandStarts[MaxIdx]);
+    if MaxIdx >= BandStarts.Count then
+      MaxIdx := BandStarts.Count - 1;
+    if MaxIdx <> -1 then
+      MaxIdx := Integer(BandStarts[MaxIdx]);
   end
   else
     MaxIdx := Succ(YToIdx(ImageHeight - ClientHeight));
