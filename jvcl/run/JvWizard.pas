@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Peter Thörnqvist - converted to JVCL naming conventions on 2003-07-11
 
-Last Modified: 2003-07-11
+Last Modified: 2004-02-03
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -368,9 +368,14 @@ type
   private
     FWizard: TJvWizard;
     FAlignment: TJvWizardLeftRight;
+    {$IFDEF VCL}
     procedure CMVisibleChanged(var Msg: TMessage); message CM_VISIBLECHANGED;
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    {$ENDIF VCL}
   protected
+    {$IFDEF VisualCLX}
+    procedure VisibleChanged; override;
+    {$ENDIF VisualCLX}
     property Wizard: TJvWizard read FWizard write FWizard;
     property Alignment: TJvWizardLeftRight read FAlignment write FAlignment;
   public
@@ -422,14 +427,21 @@ type
     function GetPageCount: Integer;
     procedure SetAlign(Value: TJvWizardAlign);
     procedure SetPageIndex(Value: Integer);
+    {$IFDEF VCL}
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    {$ENDIF VCL}
     procedure DoAddPage(const APage: TJvWizardCustomPage);
     procedure DoDeletePage(const APage: TJvWizardCustomPage);
     procedure DoUpdatePage(const APage: TJvWizardCustomPage);
     procedure DoActivatePage(const APage: TJvWizardCustomPage);
     procedure DoMovePage(const APage: TJvWizardCustomPage; const OldIndex: Integer);
   protected
+    {$IFDEF VCL}
     procedure SetParent(AParent: TWinControl); override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure SetParent(const ParentA: TWidgetControl); override;
+    {$ENDIF VisualCLX}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     function PageAtPos(Pt: TPoint): TJvWizardCustomPage; virtual;
@@ -664,19 +676,26 @@ type
     procedure SetEnabledButtons(Value: TJvWizardButtonSet);
     procedure SetVisibleButtons(Value: TJvWizardButtonSet);
     procedure ImageChanged(Sender: TObject);
-
+    {$IFDEF VCL}
     // (ahuser) Do not convert to JvExVCL: This package is USEJVCL'ed
     procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-
+    {$ENDIF VCL}
     function GetSubtitle: TJvWizardPageTitle;
     function GetTitle: TJvWizardPageTitle;
     procedure SetSubtitle(const Value: TJvWizardPageTitle);
     procedure SetTitle(const Value: TJvWizardPageTitle);
   protected
+    {$IFDEF VisualCLX}
+    procedure FontChanged; override;
+    procedure TextChanged; override;
+    procedure EnabledChanged; override;
+    {$ENDIF VisualCLX}
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    {$ENDIF VCL}
     procedure ReadState(Reader: TReader); override;
     procedure AdjustClientRect(var Rect: TRect); override;
     procedure Paint; override;
@@ -815,9 +834,11 @@ type
     function GetPageCount: Integer;
     procedure RepositionButtons;
     procedure UpdateButtonsStatus;
+    {$IFDEF VCL}
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMGetDlgCode(var Message: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    {$ENDIF VCL}
     function FindNextEnabledPage(PageIndex: Integer; const Step: Integer = 1;
       CheckDisable: Boolean = True): TJvWizardCustomPage;  // Nonn
     function GetBackButtonClick: TNotifyEvent;
@@ -1021,6 +1042,7 @@ begin
   Anchors := [akRight, akBottom];
 end;
 
+{$IFDEF VCL}
 procedure TJvWizardButtonControl.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
   inherited;
@@ -1029,8 +1051,14 @@ begin
     Msg.Result := 1;
   end;
 end;
+{$ENDIF VCL}
 
+{$IFDEF VisualCLX}
+procedure TJvWizardButtonControl.VisibleChanged;
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvWizardButtonControl.CMVisibleChanged(var Msg: TMessage);
+{$ENDIF VCL}
 begin
   inherited;
   if Assigned(FWizard) then
@@ -1261,7 +1289,12 @@ begin
   end;
   if ID <> 0 then
   begin
+    {$IFDEF VCL}
     Application.HelpContext(ID);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Application.HelpContext := ID;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -1384,7 +1417,9 @@ begin
   Width := 145;
   Visible := True;
   FPages := TList.Create;
+  {$IFDEF VCL}
   DoubleBuffered := True;
+  {$ENDIF VCL}
 end;
 
 destructor TJvWizardRouteMapControl.Destroy;
@@ -1498,10 +1533,12 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvWizardRouteMapControl.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
   Msg.Result := 1;
 end;
+{$ENDIF VCL}
 
 function TJvWizardRouteMapControl.PageAtPos(Pt: TPoint): TJvWizardCustomPage;
 begin
@@ -1527,10 +1564,20 @@ begin
   inherited;
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvWizardRouteMapControl.SetParent(const ParentA: TWidgetControl);
+var
+  i: Integer;
+  AParent: TWidgetControl;
+begin
+  AParent:= ParentA;
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvWizardRouteMapControl.SetParent(AParent: TWinControl);
 var
   i: Integer;
 begin
+{$ENDIF VCL}
   if Assigned(AParent) then
   begin
     if not ((AParent is TJvWizard) or (AParent is TJvWizardCustomPage)) then
@@ -1542,7 +1589,7 @@ begin
       AParent := TJvWizardCustomPage(AParent).Wizard;
     end;
   end;
-  inherited;
+  inherited SetParent(AParent);
   if Assigned(AParent) then
   begin
     FWizard := TJvWizard(AParent);
@@ -1680,8 +1727,9 @@ var
   AGraphic: TGraphic;
 begin
   AGraphic := FPicture.Graphic;
-  if Assigned(AGraphic) and
-    not ((AGraphic is TMetaFile) or (AGraphic is TIcon)) then
+  if Assigned(AGraphic) and not
+     ({$IFDEF VCL}(AGraphic is TMetaFile) or{$ENDIF VCL}
+     (AGraphic is TIcon)) then
   begin
     AGraphic.Transparent := Value;
   end;
@@ -2070,7 +2118,7 @@ begin
         begin
           ImageRect := GetImageRect(AImages, R);
           { YW - R is the area where the title and subtitle paint to. }
-          AImages.Draw(ACanvas, ImageRect.Left, ImageRect.Top, FImageIndex, True);
+          AImages.Draw(ACanvas, ImageRect.Left, ImageRect.Top, FImageIndex{$IFDEF VCL}, True{$ENDIF});
         end;
       end;
       { YW - Draw Title }
@@ -2265,7 +2313,9 @@ begin
     into memory, then move image memory to the screen at once. }
   FEnabledButtons := bkAllButtons;
   FVisibleButtons := [bkBack, bkNext, bkCancel];
+  {$IFDEF VCL}
   DoubleBuffered := True;
+  {$ENDIF VCL}
   FEnableJumpToPage := True; // Nonn
 end;
 
@@ -2281,6 +2331,7 @@ begin
   inherited;
 end;
 
+{$IFDEF VCL}
 procedure TJvWizardCustomPage.CreateParams(var Params: TCreateParams);
 begin
   inherited;
@@ -2289,6 +2340,7 @@ begin
     Style := Style and not (CS_HREDRAW or CS_VREDRAW);
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvWizardCustomPage.AdjustClientRect(var Rect: TRect);
 begin
@@ -2314,7 +2366,12 @@ begin
     EnabledButtons := EnabledButtons - tmpSet;
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvWizardCustomPage.EnabledChanged;
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvWizardCustomPage.CMEnabledChanged(var Message: TMessage);
+{$ENDIF VCL}
 var
   NextPage: TJvWizardCustomPage;
 begin
@@ -2340,7 +2397,12 @@ begin
   end;
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvWizardCustomPage.TextChanged;
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvWizardCustomPage.CMTextChanged(var Message: TMessage);
+{$ENDIF VCL}
 begin
   Invalidate;
   if Assigned(FWizard) and Assigned(FWizard.FRouteMap) then
@@ -2349,7 +2411,12 @@ begin
   end;
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvWizardCustomPage.FontChanged;
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvWizardCustomPage.CMFontChanged(var Message: TMessage);
+{$ENDIF VCL}
 begin
   FHeader.AdjustTitleFont;
   inherited;
@@ -2403,10 +2470,12 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvWizardCustomPage.WMEraseBkgnd(var Message: TWmEraseBkgnd);
 begin
   Message.Result := 1;
 end;
+{$ENDIF VCL}
 
 procedure TJvWizardCustomPage.Paint;
 var
@@ -2437,8 +2506,14 @@ begin
     begin
       Canvas.Brush.Style := bsClear;
       Canvas.Font.Assign(Font);
+      {$IFDEF VCL}
       DrawText(Canvas.Handle, PChar(Caption), -1, ARect,
         DT_SINGLELINE + DT_CENTER + DT_VCENTER);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      DrawTextW(Canvas.Handle, PWideChar(Caption), -1, ARect,
+        DT_SINGLELINE + DT_CENTER + DT_VCENTER);
+      {$ENDIF VisualCLX}
     end;
   finally
     FDrawing := False;
@@ -2614,6 +2689,9 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
   CreateNavigateButtons;
+  {$IFDEF VisualCLX}
+  InputKeys := [ikAll];
+  {$ENDIF VisualCLX}
 end;
 
 destructor TJvWizard.Destroy;
@@ -2923,10 +3001,12 @@ begin
     ActivePage := nil;
 end;
 
+{$IFDEF VCL}
 procedure TJvWizard.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
   Message.Result := 1;
 end;
+{$ENDIF}
 
 procedure TJvWizard.Paint;
 var
@@ -3025,6 +3105,7 @@ begin
   Result := FPages.Count;
 end;
 
+{$IFDEF VCL}
 procedure TJvWizard.CMDesignHitTest(var Message: TCMDesignHitTest);
 var
   Pt: TPoint;
@@ -3035,6 +3116,7 @@ begin
     Message.Result := 1;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvWizard.AdjustClientRect(var Rect: TRect);
 begin
@@ -3050,10 +3132,12 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvWizard.WMGetDlgCode(var Message: TWMGetDlgCode);
 begin
   Message.Result := DLGC_WANTALLKEYS or DLGC_WANTARROWS;
 end;
+{$ENDIF VCL}
 
 procedure TJvWizard.UpdateButtonsStatus;
 var

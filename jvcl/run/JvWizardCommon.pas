@@ -49,7 +49,7 @@ uses
   Windows, Controls, Graphics,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QGraphics, QWindows, Types,
+  QControls, QGraphics, QWindows,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Types,
@@ -204,7 +204,12 @@ end;
 procedure JvWizardDrawTiled(ACanvas: TCanvas; AGraphic: TGraphic; ARect: TRect);
 var
   AWidth, AHeight: Integer;
+  {$IFDEF VCL}
   Bmp: Graphics.TBitmap;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Bmp: QGraphics.TBitmap;
+  {$ENDIF VisualCLX}
 begin
 
   if not Assigned(AGraphic) or (AGraphic.Width = 0) or (AGraphic.Height = 0) then
@@ -212,7 +217,7 @@ begin
   // Create a temporary bitmap to draw into. This is both to speed things up a bit
   // and also to clip the image to the ARect param (using Draw doesn't clip the image,
   // but it does support auto-detecting transparency)
-  Bmp := Graphics.TBitmap.Create;
+  Bmp := {Graphics.}TBitmap.Create;
   try
     Bmp.Width := ARect.Right - ARect.Left;
     Bmp.Height := ARect.Bottom - ARect.Top;

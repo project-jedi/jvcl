@@ -35,7 +35,7 @@ uses
   Graphics, Controls, ExtCtrls, ImgList,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QExtCtrls, QImgList,
+  Types, QGraphics, QControls, QExtCtrls, QImgList, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent;
@@ -62,7 +62,12 @@ type
     function GetCustomShapeAtPos(X, Y: Integer): TJvCustomDiagramShape;
     property CanProcessMouseMsg: Boolean read FCanProcessMouseMsg
       write FCanProcessMouseMsg;
+    {$IFDEF VCL}
     procedure SetParent(AParent: TWinControl); override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure SetParent(const AParent: TWidgetControl); override;
+    {$ENDIF VisualCLX}
     procedure SetSelected(Value: Boolean); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property MultiSelect: Boolean read FMultiSelect write FMultiSelect;
@@ -153,9 +158,14 @@ type
     procedure SetFont(Value: TFont);
     procedure FontChange(Sender: TObject);
   protected
-    procedure SetAutoSize(Value: Boolean); override;
+    procedure SetAutoSize(Value: Boolean);{$IFDEF VCL} override;{$ENDIF}
     procedure RefreshText;
+    {$IFDEF VCL}
     procedure SetParent(AParent: TWinControl); override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure SetParent(const AParent: TWidgetControl); override;
+    {$ENDIF VisualCLX}
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -473,7 +483,12 @@ begin
   end;
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvCustomDiagramShape.SetParent(const AParent: TWidgetControl);
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvCustomDiagramShape.SetParent(AParent: TWinControl);
+{$ENDIF VCL}
 begin
   inherited SetParent(AParent);
   if Assigned(FCaption) then
@@ -1168,7 +1183,12 @@ begin
   RefreshText;
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvTextShape.SetParent(const AParent: TWidgetControl);
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvTextShape.SetParent(AParent: TWinControl);
+{$ENDIF VCL}
 begin
   inherited SetParent(AParent);
   RefreshText;
@@ -1263,7 +1283,9 @@ begin
   Canvas.Pen := OldPen;
 
   // Draw the bitmap
+  {$IFDEF VCL}
   FImages.DrawingStyle := dsTransparent;
+  {$ENDIF VCL}
   FImages.Draw(Canvas, 0, 0, FImageIndex);
 end;
 
