@@ -472,14 +472,6 @@ function HugeOffset(HugePtr: Pointer; Amount: Longint): Pointer;
 procedure HugeMove(Base: Pointer; Dst, Src, Size: Longint);
 procedure HMemCpy(DstPtr, SrcPtr: Pointer; Amount: Longint);
 
-{ Standard Windows colors that are not defined by Delphi }
-
-const
-  clCream = TColor($A6CAF0);
-  clMoneyGreen = TColor($C0DCC0);
-  clSkyBlue = TColor($FFFBF0);
-  clMedGray = TColor($A4A0A0);
-
 const
   WaitCursor: TCursor = crHourGlass;
 

@@ -73,7 +73,7 @@ type
 
 implementation
 uses
- JvColorButton;
+  JvColorButton, JvTypes;
 
 {.$R *.DFM}
 
@@ -204,6 +204,7 @@ begin
   MakeColorButtons;
 end;
 
+
 procedure TJvClrFrm.MakeColorButtons;
 const
   cColorArray: array [0..19] of TColor =
@@ -211,7 +212,7 @@ const
    clRed, clMaroon, clYellow, clOlive,
    clLime, clGreen, clAqua, clTeal,
    clBlue, clNavy, clFuchsia, clPurple,
-   13554646, 16239525, 16251903, 10855077);
+   clMoneyGreen, clSkyBlue, clCream, clMedGray);
 var
   i,X,Y:integer;
 begin
