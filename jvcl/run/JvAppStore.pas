@@ -356,9 +356,6 @@ uses
   JclStrings, JclRTTI,
   JvPropertyStore, JvTypes;
 
-type
-  TJvOpenPropertyStore = class(TJvCustomPropertyStore);
-
 procedure UpdateGlobalPath(GlobalPaths, NewPaths: TStrings);
 var
   I: Integer;
@@ -1238,7 +1235,7 @@ begin
         begin
           SubObj := GetObjectProp(PersObj, PropName);
           if SubObj is TStrings then
-            ReadStringList(PropPath, TStrings(GetOrdProp(PersObj, PropName)), ClearFirst)
+            ReadStringList(PropPath, TStrings(SubObj), ClearFirst)
           else
           if (SubObj is TPersistent) and Recursive then
           begin
@@ -1307,7 +1304,7 @@ begin
         begin
           SubObj := GetObjectProp(PersObj, PropName);
           if SubObj is TStrings then
-            WriteStringList(PropPath, TStrings(GetOrdProp(PersObj, PropName)))
+            WriteStringList(PropPath, TStrings(SubObj))
           else
           if (SubObj is TPersistent) and Recursive then
           begin
