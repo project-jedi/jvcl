@@ -43,7 +43,7 @@ unit JvDBDateTimePicker;
 interface
 
 uses
-  Windows, Classes, DB, DBCtrls,
+  Windows, Messages, Classes, Controls, DB, DBCtrls,
   JvDateTimePicker;
 
 type
@@ -53,6 +53,7 @@ type
     FBeepOnError: Boolean;
     FTrimValue: Boolean;
     FIsReadOnly: Boolean;
+    FPaintControl: TPaintControl;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetReadOnly: Boolean;
@@ -60,7 +61,11 @@ type
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure EditingChange(Sender: TObject);
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
     function IsDateAndTimeField: Boolean;
     // Adding capability to edit
     procedure DoExit; override;
@@ -90,8 +95,10 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, ComCtrls, Controls,
+  SysUtils, ComCtrls, CommCtrl, 
   JvConsts;
+
+//=== { TJvDBDateTimePicker } ================================================
 
 ///////////////////////////////////////////////////////////////////////////
 //constructor TJvDBDateTimePicker.Create
@@ -116,6 +123,7 @@ begin
   OnDropDown := CalendarOnDropDown;
   FBeepOnError := True;
   FTrimValue := True;
+  FPaintControl := TPaintControl.Create(Self, DATETIMEPICK_CLASS);
 end;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -132,10 +140,61 @@ destructor TJvDBDateTimePicker.Destroy;
 begin
   OnCloseUp := nil;
   OnDropDown := nil;
+  FPaintControl.Free;
   FDataLink.OnDataChange := nil;
   FDataLink.OnUpdateData := nil;
   FDataLink.Free;
+  FDataLink := nil;
   inherited Destroy;
+end;
+
+///////////////////////////////////////////////////////////////////////////
+//procedure    : TJvDBDateTimePicker.CalendarOnCloseUp
+//Parameter    : Sender as TObject
+//Descriptions : To set the dataset into edit mode, when the user
+//               closing up the Calendar.
+//Revision     : October 18, 2000 ekosbg att bigfoot dott com
+///////////////////////////////////////////////////////////////////////////
+
+procedure TJvDBDateTimePicker.CalendarOnCloseUp(Sender: TObject);
+begin
+  FDataLink.Edit;
+end;
+
+///////////////////////////////////////////////////////////////////////////
+//procedure    : TJvDBDateTimePicker.CalendarOnDropDown
+//Parameter    : Sender as TObject
+//Descriptions : To set the dataset into edit mode, when the user
+//               dropping down the Calendar.
+//Revision     : October 18, 2000 ekosbg att bigfoot dott com
+///////////////////////////////////////////////////////////////////////////
+
+procedure TJvDBDateTimePicker.CalendarOnDropDown(Sender: TObject);
+begin
+  FDataLink.Edit;
+end;
+
+///////////////////////////////////////////////////////////////////////////
+//procedure TJvDBDateTimePicker.Change;
+//Description : We should maintain the changes in TJvDBDateTimePicker to
+//              datalink, in order to notify datalink that it was changed.
+//Revision    : August 30, 2000
+//Author      : -ekosbg-
+///////////////////////////////////////////////////////////////////////////
+
+procedure TJvDBDateTimePicker.Change;
+begin
+  // call method modified
+  FDataLink.Edit;
+//  FDataLink.Modified;
+  // we still need parent code
+  inherited Change;
+  UpdateData(Self);
+end;
+
+procedure TJvDBDateTimePicker.CMGetDataLink(var Msg: TMessage);
+begin
+  Msg.Result := Integer(FDataLink);
 end;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -177,6 +236,33 @@ begin
 end;
 
 ///////////////////////////////////////////////////////////////////////////
+//procedure TJvDBDateTimePicker.DoExit
+//Description : User action , She/He leave the control.......
+//              We should tell to database that is leave and database
+//             should be updated using datalink value
+//Revision    : August 30, 2000
+//Author      : -ekosbg-
+///////////////////////////////////////////////////////////////////////////
+
+procedure TJvDBDateTimePicker.DoExit;
+begin
+  // trapping in exception
+  try
+    // Changes should Reflect database
+    FDataLink.UpdateRecord;
+  except
+    // Only got an error the focus will not leave the control
+    SetFocus;
+  end;
+  // We needs the method behavior from parents of DoExit;
+  inherited DoExit;
+end;
+
+procedure TJvDBDateTimePicker.EditingChange(Sender: TObject);
+begin
+  FIsReadOnly := not FDataLink.Editing;
+end;
+
 //function TJvDBDateTimePicker.GetDataField
 //Return Value : String
 //Description  : The function retrieve for fieldname from specified
@@ -204,32 +290,17 @@ begin
   Result := FDataLink.DataSource;
 end;
 
-///////////////////////////////////////////////////////////////////////////
-//procedure TJvDBDateTimePicker.SetDataField
-//Parameter    : Value as String
-//Description  : The procedure is handling the capability to set the
-//               DataField property
-//Revision     : August 30, 2000
-//Author       : -ekosbg-
-///////////////////////////////////////////////////////////////////////////
-
-procedure TJvDBDateTimePicker.SetDataField(Value: string);
+function TJvDBDateTimePicker.GetReadOnly: Boolean;
 begin
-  FDataLink.FieldName := Value;
+  Result := FDataLink.ReadOnly;
 end;
 
-///////////////////////////////////////////////////////////////////////////
-//procedure TJvDBDateTimePicker.SetDataSource
-//Parameter    : Value as TDataSource
-//Description  : The procedure is handling the capability to set the
-//               DataSource property
-//Revision     : August 30, 2000
-//Author       : -ekosbg-
-///////////////////////////////////////////////////////////////////////////
-
-procedure TJvDBDateTimePicker.SetDataSource(Value: TDataSource);
+function TJvDBDateTimePicker.IsDateAndTimeField: Boolean;
 begin
-  FDataLink.DataSource := Value;
+  with FDataLink do
+    Result := (Field <> nil) and
+      (Field.DataType in [ftDateTime {$IFDEF COMPILER6_UP}, ftTimeStamp {$ENDIF}]) and
+      not TrimValue;
 end;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -328,45 +399,45 @@ begin
   end;
 end;
 
-///////////////////////////////////////////////////////////////////////////
-//procedure TJvDBDateTimePicker.DoExit
-//Description : User action , She/He leave the control.......
-//              We should tell to database that is leave and database
-//             should be updated using datalink value
-//Revision    : August 30, 2000
-//Author      : -ekosbg-
-///////////////////////////////////////////////////////////////////////////
-
-procedure TJvDBDateTimePicker.DoExit;
+procedure TJvDBDateTimePicker.Notification(AComponent: TComponent;
+  Operation: TOperation);
 begin
-  // trapping in exception
-  try
-    // Changes should Reflect database
-    FDataLink.UpdateRecord;
-  except
-    // Only got an error the focus will not leave the control
-    SetFocus;
-  end;
-  // We needs the method behavior from parents of DoExit;
-  inherited DoExit;
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (FDataLink <> nil) and
+    (AComponent = DataSource) then DataSource := nil;
 end;
 
 ///////////////////////////////////////////////////////////////////////////
-//procedure TJvDBDateTimePicker.Change;
-//Description : We should maintain the changes in TJvDBDateTimePicker to
-//              datalink, in order to notify datalink that it was changed.
-//Revision    : August 30, 2000
-//Author      : -ekosbg-
+//procedure TJvDBDateTimePicker.SetDataField
+//Parameter    : Value as String
+//Description  : The procedure is handling the capability to set the
+//               DataField property
+//Revision     : August 30, 2000
+//Author       : -ekosbg-
 ///////////////////////////////////////////////////////////////////////////
 
-procedure TJvDBDateTimePicker.Change;
+procedure TJvDBDateTimePicker.SetDataField(Value: string);
 begin
-  // call method modified
-  FDataLink.Edit;
-//  FDataLink.Modified;
-  // we still need parent code
-  inherited Change;
-  UpdateData(Self);
+  FDataLink.FieldName := Value;
+end;
+
+///////////////////////////////////////////////////////////////////////////
+//procedure TJvDBDateTimePicker.SetDataSource
+//Parameter    : Value as TDataSource
+//Description  : The procedure is handling the capability to set the
+//               DataSource property
+//Revision     : August 30, 2000
+//Author       : -ekosbg-
+///////////////////////////////////////////////////////////////////////////
+
+procedure TJvDBDateTimePicker.SetDataSource(Value: TDataSource);
+begin
+  FDataLink.DataSource := Value;
+end;
+
+procedure TJvDBDateTimePicker.SetReadOnly(Value: Boolean);
+begin
+  FDataLink.ReadOnly := Value;
 end;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -406,53 +477,33 @@ begin
   end;
 end;
 
-///////////////////////////////////////////////////////////////////////////
-//procedure    : TJvDBDateTimePicker.CalendarOnCloseUp
-//Parameter    : Sender as TObject
-//Descriptions : To set the dataset into edit mode, when the user
-//               closing up the Calendar.
-//Revision     : October 18, 2000 ekosbg att bigfoot dott com
-///////////////////////////////////////////////////////////////////////////
-
-procedure TJvDBDateTimePicker.CalendarOnCloseUp(Sender: TObject);
+procedure TJvDBDateTimePicker.WMPaint(var Msg: TWMPaint);
+var
+  D: TDateTime;
+  ST: TSystemTime;
 begin
-  FDataLink.Edit;
-end;
+  if not (csPaintCopy in ControlState) then inherited else
+  begin
+    if Kind = dtkDate then
+    begin
+      if IsDateAndTimeField then
+        D := FDataLink.Field.AsDateTime
+      else
+        D := Trunc(FDataLink.Field.AsDateTime);
+    end
+    else
+    begin
+      if IsDateAndTimeField then
+        D := FDataLink.Field.AsDateTime
+      else
+        D := Frac(FDataLink.Field.AsDateTime);
+    end;
 
-///////////////////////////////////////////////////////////////////////////
-//procedure    : TJvDBDateTimePicker.CalendarOnDropDown
-//Parameter    : Sender as TObject
-//Descriptions : To set the dataset into edit mode, when the user
-//               dropping down the Calendar.
-//Revision     : October 18, 2000 ekosbg att bigfoot dott com
-///////////////////////////////////////////////////////////////////////////
-
-procedure TJvDBDateTimePicker.CalendarOnDropDown(Sender: TObject);
-begin
-  FDataLink.Edit;
-end;
-
-function TJvDBDateTimePicker.IsDateAndTimeField: Boolean;
-begin
-  with FDataLink do
-    Result := (Field <> nil) and
-      (Field.DataType in [ftDateTime {$IFDEF COMPILER6_UP}, ftTimeStamp {$ENDIF}]) and
-      not TrimValue;
-end;
-
-procedure TJvDBDateTimePicker.EditingChange(Sender: TObject);
-begin
-  FIsReadOnly := not FDataLink.Editing;
-end;
-
-function TJvDBDateTimePicker.GetReadOnly: Boolean;
-begin
-  Result := FDataLink.ReadOnly;
-end;
-
-procedure TJvDBDateTimePicker.SetReadOnly(Value: Boolean);
-begin
-  FDataLink.ReadOnly := Value;
+    DateTimeToSystemTime(D, ST);
+    DateTime_SetSystemTime(FPaintControl.Handle, GDT_VALID, ST);
+    SendMessage(FPaintControl.Handle, WM_ERASEBKGND, Msg.DC, 0);
+    SendMessage(FPaintControl.Handle, WM_PAINT, Msg.DC, 0);
+  end;
 end;
 
 end.
