@@ -72,6 +72,8 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    procedure Assign(Source: TPersistent); override;
+
     procedure Parse;
     procedure LoadFromFile(const AFilename: string); override;
     procedure LoadFromStream(Stream: TStream); override;
@@ -264,6 +266,12 @@ procedure TJVCLConfig.LoadFromFile(const AFilename: string);
 begin
   inherited LoadFromFile(AFilename);
   FFilename := AFilename;
+end;
+
+procedure TJVCLConfig.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  Parse;
 end;
 
 end.

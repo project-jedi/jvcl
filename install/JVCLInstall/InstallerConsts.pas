@@ -62,7 +62,7 @@ resourcestring
 
 const
   sWelcomeFilename = '%s\Install\JVCLInstall\welcome.txt';
-  sMPLHomepage = 'http://www.mozilla.org/MPL/MPL-1.1.html';
+  sMPLFile = 'help\MPL-1.1.html';
 
   // sJclRootDirXx is used to find the "$(JVCL)\..\JCL" directory
   sJclRootDirName = '%s\Jcl';                                  // do not localize
@@ -151,10 +151,14 @@ resourcestring
 resourcestring
   RsAllTargets = 'All versions';
   RsCannotOpen = 'Cannot open %s';
-  
+  RsReadReadmeForXPThemingInfo = 'Please read the readme.htm for details about XP theming with Delphi/C++Builder 5 and 6.'#10 +
+              'Do you want to open readme.htm ?';
+  RsErrorOpeningReadmeHTM = 'Cannot open file readme.htm';
+
 const
   SInstallHTM = 'help\install.htm'; // do not localize
   SBCBGuideAnchor = 'AddJVCLPathToBCB'; // do not localize
+  SReadmeHTM = 'readme.htm'; // do not localize
 
  // PgIDESelection.pas
 resourcestring
