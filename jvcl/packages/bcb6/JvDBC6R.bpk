@@ -12,7 +12,7 @@
       ..\..\dcu\JvDBQueryParamsForm.obj ..\..\dcu\JvDBRadioPanel.obj 
       ..\..\dcu\JvDBRemoteLogin.obj ..\..\dcu\JvDBRichEdit.obj 
       ..\..\dcu\JvDBSpinEdit.obj ..\..\dcu\JvDBTreeView.obj 
-      ..\..\dcu\JvDBUtils.obj ..\..\dcu\JvDBConsts.obj"/>
+      ..\..\dcu\JvDBUtils.obj ..\..\dcu\JvDBConsts.obj ..\..\dcu\JvDBLookupComboEdit.obj"/>
     <RESFILES value="JvDBC6R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -76,6 +76,7 @@
       <FILE FILENAME="..\..\run\JvDBSpinEdit.pas" FORMNAME="" UNITNAME="JvDBSpinEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvDBTreeView.pas" FORMNAME="" UNITNAME="JvDBTreeView" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvDBUtils.pas" FORMNAME="" UNITNAME="JvDBUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvDBLookupComboEdit.pas" FORMNAME="" UNITNAME="JvDBLookupComboEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="dbrtl.bpi" FORMNAME="" UNITNAME="dbrtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcldb.bpi" FORMNAME="" UNITNAME="vcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
