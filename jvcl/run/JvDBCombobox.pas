@@ -561,7 +561,6 @@ var
 begin
   Result := '';
   if FDataLink.Field <> nil then
-  begin
     if FEnableValues then
     begin
       I := Values.IndexOf(FDataLink.Field.Text);
@@ -570,7 +569,6 @@ begin
     end
     else
       Result := FDataLink.Field.Text;
-  end;
 end;
 
 function TJvDBComboBox.GetComboText: string;

@@ -60,12 +60,10 @@ type
     procedure SetFindStyle(const Value: TJvEditFindStyle);
     procedure SetIgnoreCase(const Value: Boolean);
     procedure FTimerTimer(Sender: TObject);
-    procedure AFilterRecord(DataSet: TDataSet;
-      var Accept: Boolean);
+    procedure AFilterRecord(DataSet: TDataSet; var Accept: Boolean);
   protected
     procedure Change; override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function DateVal: Boolean;
     function IsDate(s1: string): Boolean;
     function GetDateDelimiter: string;
@@ -154,7 +152,7 @@ begin
     FDataLink.DataSet.Filtered := FOldFiltered;
   end;
   FDataLink.Control := nil;
-  DataSource:=nil;
+  DataSource := nil;
   FDataLink.Free;
   FDataLink := nil;
   inherited Destroy;

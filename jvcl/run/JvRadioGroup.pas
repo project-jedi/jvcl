@@ -161,17 +161,17 @@ begin
       else
         R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
       Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
-      {$IFDEF _VCL}
+      {$IFDEF VCL}
       DrawText(Handle, PChar(Text), Length(Text), R, Flags or DT_CALCRECT);
       Brush.Color := Color;
       DrawText(Handle, PChar(Text), Length(Text), R, Flags);
       {$ENDIF VCL}
-//      {$IFDEF VisualCLX}
+      {$IFDEF VisualCLX}
       DrawText(Canvas, Text, Length(Text), R, Flags or DT_CALCRECT);
       Brush.Color := Color;
       SetBkMode(Handle, OPAQUE);
       DrawText(Canvas, Text, Length(Text), R, Flags);
-//      {$ENDIF VisualCLX}
+      {$ENDIF VisualCLX}
     end;
   end;
 end;
