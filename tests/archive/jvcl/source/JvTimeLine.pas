@@ -204,7 +204,7 @@ type
     //--FMouseDown: Boolean;
     FNewHeight: Integer;
     FOldX: Integer;
-    FOldHint: string;
+//    FOldHint: string;
     FStyle: TJvTimeLineStyle;
     FScrollArrows: TJvScrollArrows;
     FTimeItems: TJvTimeItems;
