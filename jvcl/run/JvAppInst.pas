@@ -23,22 +23,26 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
 
 unit JvAppInst;
+
 interface
+
 uses
-  Windows, Messages, SysUtils, Forms, Classes, Controls, JclAppInst;
+  Windows, Messages, SysUtils, Forms, Classes, Controls,
   { Classes must be after Forms for Delphi 5 compatibility. }
+  JclAppInst;
 
 type
   TJvAppInstDataKind = TJclAppInstDataKind; // = Integer
 
   TInstanceChangeEvent = procedure(Sender: TObject; ProcessId: Cardinal) of object;
   TUserNotifyEvent = procedure(Sender: TObject; Param: Integer) of object;
-  TDataAvailableEvent = procedure(Sender: TObject; Kind: TJvAppInstDataKind; Data: Pointer; Size: Integer) of object;
+  TDataAvailableEvent = procedure(Sender: TObject; Kind: TJvAppInstDataKind;
+    Data: Pointer; Size: Integer) of object;
     { Data contains the date and is released when the function returns }
   TCmdLineReceivedEvent = procedure(Sender: TObject; CmdLine: TStrings) of object;
 
@@ -46,45 +50,37 @@ type
     UniqueAppIdGuidStr you must call JclAppInst.JclAppInstances in the
     initialization section of a unit or before the forms are created (OnCreate
     is too late).
-
     This class is not thread safe. }
   TJvAppInstances = class(TComponent)
   private
     FHandle: THandle;
-
     FOnInstanceCreated: TInstanceChangeEvent;
     FOnInstanceDestroyed: TInstanceChangeEvent;
     FOnUserNotify: TUserNotifyEvent;
     FOnDataAvailable: TDataAvailableEvent;
     FOnCmdLineReceived: TCmdLineReceivedEvent;
     FOnRejected: TNotifyEvent;
-
     FAutoActivate: Boolean;
     FMaxInstances: Integer;
     FActive: Boolean;
     FSendCmdLine: Boolean;
-
     function GetAppInstances: TJclAppInstances;
   protected
     procedure Loaded; override;
     procedure WndProc(var Msg: TMessage); virtual;
-
     procedure DoInstanceCreated(ProcessId: Cardinal); virtual;
     procedure DoInstanceDestroyed(ProcessId: Cardinal); virtual;
     procedure DoUserNotify(Param: Integer); virtual;
     procedure DoDataAvailable(Kind: TJvAppInstDataKind; Data: Pointer; Size: Integer); virtual;
     procedure DoCmdLineReceived(CmdLine: TStrings); virtual;
     procedure DoRejected; virtual;
-
     property Handle: THandle read FHandle;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure Check;
     procedure UserNotify(Param: Integer);
     function SendData(DataKind: TJclAppInstDataKind;  Data: Pointer; Size: Integer): Boolean;
-
     property AppInstances: TJclAppInstances read GetAppInstances;
   published
     property Active: Boolean read FActive write FActive default True;
@@ -96,7 +92,6 @@ type
     property SendCmdLine: Boolean read FSendCmdLine write FSendCmdLine default True;
      { SendCmdLine: True means that the second process instance sends it's
        CmdLine to the first instance before it terminates. }
-
     property OnInstanceCreated: TInstanceChangeEvent read FOnInstanceCreated write FOnInstanceCreated;
     property OnInstanceDestroyed: TInstanceChangeEvent read FOnInstanceDestroyed write FOnInstanceDestroyed;
     property OnUserNotify: TUserNotifyEvent read FOnUserNotify write FOnUserNotify;
@@ -116,9 +111,23 @@ implementation
 const
   sAppInstancesWindowClassName = 'JvAppInstances_WindowClass'; // do not localize
 
-{ --- AllocateHWndEx --- }
-function StdWndProc(Window: HWND; Message, WParam: Longint;
-  LParam: Longint): Longint; stdcall;
+//=== AllocateHWndEx =========================================================
+
+const
+  cUtilWindowExClass: TWndClass = (
+    style: 0;
+    lpfnWndProc: nil;
+    cbClsExtra: 0;
+    cbWndExtra: SizeOf(TMethod);
+    hInstance: 0;
+    hIcon: 0;
+    hCursor: 0;
+    hbrBackground: 0;
+    lpszMenuName: nil;
+    lpszClassName: 'TPUtilWindowEx');
+
+function StdWndProc(Window: HWND; Message, WParam: WPARAM;
+  LParam: LPARAM): LRESULT; stdcall;
 var
   Msg: TMessage;
   WndProc: TWndMethod;
@@ -137,19 +146,6 @@ begin
   else
     Result := DefWindowProc(Window, Message, WParam, LParam);
 end;
-
-const
-  cUtilWindowExClass: TWndClass = (
-    style: 0;
-    lpfnWndProc: nil;
-    cbClsExtra: 0;
-    cbWndExtra: SizeOf(TMethod);
-    hInstance: 0;
-    hIcon: 0;
-    hCursor: 0;
-    hbrBackground: 0;
-    lpszMenuName: nil;
-    lpszClassName: 'TPUtilWindowEx');
 
 function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): HWND;
 var
@@ -177,8 +173,7 @@ begin
   if Assigned(Method) then
   begin
     SetWindowLong(Result, 0, Longint(TMethod(Method).Code));
-    SetWindowLong(Result, 4, Longint(TMethod(Method).Data));
-
+    SetWindowLong(Result, SizeOf(TMethod(Method).Code), Longint(TMethod(Method).Data));
     SetWindowLong(Result, GWL_WNDPROC, Longint(@StdWndProc));
   end;
 end;
@@ -187,13 +182,11 @@ procedure DeallocateHWndEx(Wnd: HWND);
 begin
   DestroyWindow(Wnd);
 end;
-{ --- /AllocateHWndEx --- }
 
+//=== TJvAppInstances ========================================================
 
 var
   FirstJvAppInstance: Boolean;
-
-{ TJvAppInstances }
 
 constructor TJvAppInstances.Create(AOwner: TComponent);
 begin
@@ -224,10 +217,8 @@ end;
 
 procedure TJvAppInstances.Check;
 begin
-  if (FActive) and not (csDesigning in ComponentState) then
-  begin
+  if Active and not (csDesigning in ComponentState) then
     if FMaxInstances > 0 then
-    begin
       if AppInstances.InstanceCount > FMaxInstances then
       begin
         DoRejected;
@@ -246,8 +237,6 @@ begin
         Application := nil;
         AppInstances.KillInstance;
       end;
-    end;
-  end;
 end;
 
 procedure TJvAppInstances.DoCmdLineReceived(CmdLine: TStrings);
@@ -306,7 +295,7 @@ var
   Kind: TJvAppInstDataKind;
   Data: Pointer;
   Size: Integer;
-  CmdLine: TStrings;
+  CmdLine: TStringList;
 begin
   if Active then
   begin
@@ -327,7 +316,8 @@ begin
       begin
         Kind := ReadMessageCheck(Msg, Handle);
         case Kind of
-          AppInstDataKindNoData: ; // do nothing
+          AppInstDataKindNoData:
+            ; // do nothing
           AppInstCmdLineDataKind:
             begin
               if Assigned(FOnCmdLineReceived) then
@@ -353,7 +343,7 @@ begin
             end;
           end;
           Exit;
-        end; // case
+        end;
       end;
     except
       on E: Exception do
