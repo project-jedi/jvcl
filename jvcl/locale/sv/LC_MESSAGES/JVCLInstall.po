@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2005-01-08 02:18\n"
+"POT-Creation-Date: 2005-02-13 17:45\n"
 "PO-Revision-Date: 2004-12-18 19:04+0100\n"
 "Last-Translator: Peter Thörnqvist <peter3@peter3.com>\n"
 "Language-Team: JVCL Localization\n"
@@ -12,112 +12,112 @@ msgstr ""
 #  Programmer's name for it: RsPackagesAreUpToDate
 #  Programmer's name for it: RsPackagesAreUpToDate
 #. Programmer's name for it: RsPackagesAreUpToDate
-#: Compile.pas:149
+#: Compile.pas:150
 msgid "Packages are up to date"
 msgstr "Paketen är aktuella"
 
 #  Programmer's name for it: RsCompilingJCL
 #  Programmer's name for it: RsCompilingJCL
 #. Programmer's name for it: RsCompilingJCL
-#: Compile.pas:157
+#: Compile.pas:158
 msgid "Compiling JCL dcp files..."
 msgstr "Kompilerar JCL dcp-filer..."
 
 #  Programmer's name for it: RsErrorCompilingJclDcpFiles
 #  Programmer's name for it: RsErrorCompilingJclDcpFiles
 #. Programmer's name for it: RsErrorCompilingJclDcpFiles
-#: Compile.pas:158
+#: Compile.pas:159
 msgid "Error while compiling .dcp files for JCL."
 msgstr "Fel uppstod när dcp-filer för JCL kompilerades."
 
 #  Programmer's name for it: RsGeneratingTemplates
 #  Programmer's name for it: RsGeneratingTemplates
 #. Programmer's name for it: RsGeneratingTemplates
-#: Compile.pas:159
+#: Compile.pas:160
 msgid "Generating templates..."
 msgstr "Skapar mallar..."
 
 #  Programmer's name for it: RsGeneratingPackages
 #  Programmer's name for it: RsGeneratingPackages
 #. Programmer's name for it: RsGeneratingPackages
-#: Compile.pas:160
+#: Compile.pas:161
 msgid "Generating packages..."
 msgstr "Skapar paket..."
 
 #  Programmer's name for it: RsGeneratingResources
 #  Programmer's name for it: RsGeneratingResources
 #. Programmer's name for it: RsGeneratingResources
-#: Compile.pas:161
+#: Compile.pas:162
 msgid "Generating resources..."
 msgstr "Skapar resurser..."
 
 #  Programmer's name for it: RsCompilingPackages
 #  Programmer's name for it: RsCompilingPackages
 #. Programmer's name for it: RsCompilingPackages
-#: Compile.pas:162
+#: Compile.pas:163
 msgid "Compiling packages..."
 msgstr "Kompilerar paket..."
 
 #  Programmer's name for it: RsDeletingFiles
 #  Programmer's name for it: RsCopyingFiles
 #. Programmer's name for it: RsCopyingFiles
-#: Compile.pas:163
+#: Compile.pas:164
 msgid "Copying files..."
 msgstr "Tar bort filer..."
 
 #  Programmer's name for it: RsCompiling
 #  Programmer's name for it: RsCopyingFile
 #. Programmer's name for it: RsCopyingFile
-#: Compile.pas:164
+#: Compile.pas:165
 msgid "Copying %s"
 msgstr "Kompilerar: %s"
 
 #  Programmer's name for it: RsFinished
 #  Programmer's name for it: RsFinished
 #. Programmer's name for it: RsFinished
-#: Compile.pas:165
+#: Compile.pas:166
 msgid "Finished."
 msgstr "Klar."
 
 #  Programmer's name for it: RsAbortedByUser
 #  Programmer's name for it: RsAbortedByUser
 #. Programmer's name for it: RsAbortedByUser
-#: Compile.pas:167
+#: Compile.pas:168
 msgid "Aborted by User"
 msgstr "Avbröts av användaren"
 
 #  Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
 #  Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
 #. Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
-#: Compile.pas:168
+#: Compile.pas:169
 msgid "Error loading devtools\\bin\\pgEdit.xml"
 msgstr "Kan inte öppna devtools\\bin\\pgEdit.xml"
 
 #  Programmer's name for it: RsErrorGeneratingPackages
 #  Programmer's name for it: RsErrorGeneratingPackages
 #. Programmer's name for it: RsErrorGeneratingPackages
-#: Compile.pas:169
+#: Compile.pas:170
 msgid "Error while generating packages for %s"
 msgstr "Fel uppstod när paket genererades för %s"
 
 #  Programmer's name for it: RsErrorGeneratingTemplates
 #  Programmer's name for it: RsErrorGeneratingTemplates
 #. Programmer's name for it: RsErrorGeneratingTemplates
-#: Compile.pas:170
+#: Compile.pas:171
 msgid "Error while generating templates."
 msgstr "Fel uppstod när mallar genererades."
 
 #  Programmer's name for it: RsErrorCompilingResources
 #  Programmer's name for it: RsErrorCompilingResources
 #. Programmer's name for it: RsErrorCompilingResources
-#: Compile.pas:171
+#: Compile.pas:172
 msgid "Error while compiling resources."
 msgstr "Fel uppstod när resurser kompilerades."
 
 #  Programmer's name for it: RsErrorGeneratingTemplatesForDir
 #  Programmer's name for it: RsErrorGeneratingTemplatesForDir
 #. Programmer's name for it: RsErrorGeneratingTemplatesForDir
-#: Compile.pas:172
+#: Compile.pas:173
 msgid "Error generating templates for the %s directory."
 msgstr "Fel uppstod när mallar för %s mappen genererades."
 
@@ -125,12 +125,12 @@ msgstr "Fel uppstod när mallar för %s mappen genererades."
 #  Programmer's name for it: RsErrorCompilingPackages
 #. this must not be the doubt of the installer
 #. Programmer's name for it: RsErrorCompilingPackages
-#: Compile.pas:173
+#: Compile.pas:174
 msgid "An error occured while compiling the packages."
 msgstr "Fel uppstod när paketen kompilerades."
 
 #. Programmer's name for it: RsCommandNotFound
-#: Compile.pas:175
+#: Compile.pas:176
 #, fuzzy
 msgid ""
 "Command could not be executed.\n"
@@ -1004,7 +1004,7 @@ msgstr "Ett fel uppstod."
 #  Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
-#: InstallerConsts.pas:85 JVCLData.pas:309
+#: InstallerConsts.pas:85 JVCLData.pas:310
 msgid "Complete."
 msgstr "Klar."
 
@@ -1438,37 +1438,37 @@ msgstr "Vill du verkligen avbryta installationen?"
 
 #  Programmer's name for it: RsNoJVCLFound
 #. Programmer's name for it: RsNoJVCLFound
-#: JVCLData.pas:302
+#: JVCLData.pas:303
 msgid "No JVCL directory found. Application terminated."
 msgstr "Kan inte hitta JVCL-mappen. Programmet avslutas."
 
 #  Programmer's name for it: RsJVCLInstaller
 #. Programmer's name for it: RsJVCLInstaller
-#: JVCLData.pas:303
+#: JVCLData.pas:304
 msgid "JVCL Installer"
 msgstr "JVCL-installeraren"
 
 #  Programmer's name for it: RsCleaningPalette
 #. Programmer's name for it: RsCleaningPalette
-#: JVCLData.pas:305
+#: JVCLData.pas:306
 msgid "Cleaning Palette..."
 msgstr "Rensar paletten..."
 
 #  Programmer's name for it: RsCleaningPathLists
 #. Programmer's name for it: RsCleaningPathLists
-#: JVCLData.pas:306
+#: JVCLData.pas:307
 msgid "Cleaning Path lists..."
 msgstr "Rensar sökvägar..."
 
 #  Programmer's name for it: RsUnregisteringPackages
 #. Programmer's name for it: RsUnregisteringPackages
-#: JVCLData.pas:307
+#: JVCLData.pas:308
 msgid "Unregistering packages..."
 msgstr "Avregistrerar paket..."
 
 #  Programmer's name for it: RsDeletingFiles
 #. Programmer's name for it: RsDeletingFiles
-#: JVCLData.pas:308
+#: JVCLData.pas:309
 msgid "Deleting files..."
 msgstr "Tar bort filer..."
 
@@ -1521,19 +1521,6 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Hemsida för Jedi Visual Component Library"
 
-#  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage....Cursor
-#  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage....Cursor
-#~ msgid ""
-#~ "http://dxgettext.sourceforge.net|Download from <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
-#~ "<c:red>The gnugettext.pas unit will be added to the contains list\n"
-#~ "of the JvCore-R package. That means that you cannot add\n"
-#~ "it to another package."
-#~ msgstr ""
-#~ "http://dxgettext.sourceforge.net|Ladda ner från <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
-#~ "<c:red>gnugettext.pas kommer att läggas till i\n"
-#~ "paketet JvCore-R. Detta betyder att du inte kan ha det i ett annat\n"
-#~ "paket också."
-
 #  FrameConfigPage..GroupBoxJvclInc..CheckBoxDxgettextSupport..Caption
 #  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage..Caption
 #~ msgid "dxgettext &support (not required)"
@@ -1548,3 +1535,16 @@ msgstr "Hemsida för Jedi Visual Component Library"
 #  FormJvclIncConfig..Label1....AutoSize
 #~ msgid "jvcl.inc changes are global to all installed Delphi/BCB versions."
 #~ msgstr "Ändringar i jvcl.inc gäller alla installerade versioner av Delphi/BCB."
+
+#  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage....Cursor
+#  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage....Cursor
+#~ msgid ""
+#~ "http://dxgettext.sourceforge.net|Download from <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
+#~ "<c:red>The gnugettext.pas unit will be added to the contains list\n"
+#~ "of the JvCore-R package. That means that you cannot add\n"
+#~ "it to another package."
+#~ msgstr ""
+#~ "http://dxgettext.sourceforge.net|Ladda ner från <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
+#~ "<c:red>gnugettext.pas kommer att läggas till i\n"
+#~ "paketet JvCore-R. Detta betyder att du inte kan ha det i ett annat\n"
+#~ "paket också."

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2005-01-08 02:18\n"
+"POT-Creation-Date: 2005-02-13 17:45\n"
 "PO-Revision-Date: 2004-12-30 02:07+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -13,7 +13,7 @@ msgstr ""
 #  Programmer's name for it: RsPackagesAreUpToDate
 #  Programmer's name for it: RsPackagesAreUpToDate
 #. Programmer's name for it: RsPackagesAreUpToDate
-#: Compile.pas:149
+#: Compile.pas:150
 msgid "Packages are up to date"
 msgstr "Packages sind bereits aktuell."
 
@@ -21,21 +21,21 @@ msgstr "Packages sind bereits aktuell."
 #  Programmer's name for it: RsCompilingJCL
 #  Programmer's name for it: RsCompilingJCL
 #. Programmer's name for it: RsCompilingJCL
-#: Compile.pas:157
+#: Compile.pas:158
 msgid "Compiling JCL dcp files..."
 msgstr "JCL dcp Dateien kompilieren..."
 
 #  Programmer's name for it: RsErrorCompilingJclDcpFiles
 #  Programmer's name for it: RsErrorCompilingJclDcpFiles
 #. Programmer's name for it: RsErrorCompilingJclDcpFiles
-#: Compile.pas:158
+#: Compile.pas:159
 msgid "Error while compiling .dcp files for JCL."
 msgstr "Es trat ein Fehler beim Kompilieren der .dcp Dateien für die JCL auf."
 
 #  Programmer's name for it: RsGeneratingTemplates
 #  Programmer's name for it: RsGeneratingTemplates
 #. Programmer's name for it: RsGeneratingTemplates
-#: Compile.pas:159
+#: Compile.pas:160
 msgid "Generating templates..."
 msgstr "Templates generieren..."
 
@@ -43,7 +43,7 @@ msgstr "Templates generieren..."
 #  Programmer's name for it: RsGeneratingPackages
 #  Programmer's name for it: RsGeneratingPackages
 #. Programmer's name for it: RsGeneratingPackages
-#: Compile.pas:160
+#: Compile.pas:161
 msgid "Generating packages..."
 msgstr "Packagedateien generieren..."
 
@@ -51,7 +51,7 @@ msgstr "Packagedateien generieren..."
 #  Programmer's name for it: RsGeneratingResources
 #  Programmer's name for it: RsGeneratingResources
 #. Programmer's name for it: RsGeneratingResources
-#: Compile.pas:161
+#: Compile.pas:162
 msgid "Generating resources..."
 msgstr "Resourcedateien generieren..."
 
@@ -59,7 +59,7 @@ msgstr "Resourcedateien generieren..."
 #  Programmer's name for it: RsCompilingPackages
 #  Programmer's name for it: RsCompilingPackages
 #. Programmer's name for it: RsCompilingPackages
-#: Compile.pas:162
+#: Compile.pas:163
 msgid "Compiling packages..."
 msgstr "Packages kompilieren..."
 
@@ -67,59 +67,59 @@ msgstr "Packages kompilieren..."
 #  Programmer's name for it: RsCopyingFiles
 #  Programmer's name for it: RsCopyingFiles
 #. Programmer's name for it: RsCopyingFiles
-#: Compile.pas:163
+#: Compile.pas:164
 msgid "Copying files..."
 msgstr "Dateien werden kopiert..."
 
 #  Programmer's name for it: RsCompiling
 #  Programmer's name for it: RsCopyingFile
 #. Programmer's name for it: RsCopyingFile
-#: Compile.pas:164
+#: Compile.pas:165
 msgid "Copying %s"
 msgstr "Kopiere %s"
 
 #  Programmer's name for it: RsFinished
 #  Programmer's name for it: RsFinished
 #. Programmer's name for it: RsFinished
-#: Compile.pas:165
+#: Compile.pas:166
 msgid "Finished."
 msgstr "Fertig."
 
 #  Programmer's name for it: RsAbortedByUser
 #  Programmer's name for it: RsAbortedByUser
 #. Programmer's name for it: RsAbortedByUser
-#: Compile.pas:167
+#: Compile.pas:168
 msgid "Aborted by User"
 msgstr "Abbruch durch den Benutzer"
 
 #  Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
 #. Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
-#: Compile.pas:168
+#: Compile.pas:169
 msgid "Error loading devtools\\bin\\pgEdit.xml"
 msgstr "Fehler beim Laden der Datei devtools\\bin\\pgEdit.xml"
 
 #  Programmer's name for it: RsErrorGeneratingPackages
 #  Programmer's name for it: RsErrorGeneratingPackages
 #. Programmer's name for it: RsErrorGeneratingPackages
-#: Compile.pas:169
+#: Compile.pas:170
 msgid "Error while generating packages for %s"
 msgstr "Es trat ein Fehler beim Erzeugen der Packages für %s auf."
 
 #  Programmer's name for it: RsErrorGeneratingTemplates
 #. Programmer's name for it: RsErrorGeneratingTemplates
-#: Compile.pas:170
+#: Compile.pas:171
 msgid "Error while generating templates."
 msgstr "Es trat ein Fehler beim Generieren der Templates auf."
 
 #  Programmer's name for it: RsErrorCompilingResources
 #. Programmer's name for it: RsErrorCompilingResources
-#: Compile.pas:171
+#: Compile.pas:172
 msgid "Error while compiling resources."
 msgstr "Es trat ein Fehler beim Kompilieren der Resourcedateien auf."
 
 #  Programmer's name for it: RsErrorGeneratingTemplatesForDir
 #. Programmer's name for it: RsErrorGeneratingTemplatesForDir
-#: Compile.pas:172
+#: Compile.pas:173
 msgid "Error generating templates for the %s directory."
 msgstr "Es trat ein Fehler beim Generieren der Templates für das Verzeichnis %s auf."
 
@@ -133,12 +133,12 @@ msgstr "Es trat ein Fehler beim Generieren der Templates für das Verzeichnis %s
 #  Programmer's name for it: RsErrorCompilingPackages
 #. this must not be the doubt of the installer
 #. Programmer's name for it: RsErrorCompilingPackages
-#: Compile.pas:173
+#: Compile.pas:174
 msgid "An error occured while compiling the packages."
 msgstr "Es trat ein Fehler während des Kompiliervorgangs auf."
 
 #. Programmer's name for it: RsCommandNotFound
-#: Compile.pas:175
+#: Compile.pas:176
 msgid ""
 "Command could not be executed.\n"
 "\n"
@@ -1099,7 +1099,7 @@ msgstr "Es trat ein Fehler auf."
 #  Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
-#: InstallerConsts.pas:85 JVCLData.pas:309
+#: InstallerConsts.pas:85 JVCLData.pas:310
 msgid "Complete."
 msgstr "Fertig."
 
@@ -1608,27 +1608,27 @@ msgstr "Wollen Sie die Installation wirklich abbrechen?"
 
 #  Programmer's name for it: RsNoJVCLFound
 #. Programmer's name for it: RsNoJVCLFound
-#: JVCLData.pas:302
+#: JVCLData.pas:303
 msgid "No JVCL directory found. Application terminated."
 msgstr "Das JVCL Verzeichnis wurde nicht gefunden. Die Anwendung wird beendet."
 
 #  Programmer's name for it: RsJVCLInstaller
 #. Programmer's name for it: RsJVCLInstaller
-#: JVCLData.pas:303
+#: JVCLData.pas:304
 msgid "JVCL Installer"
 msgstr "JVCL Installer"
 
 #  Programmer's name for it: RsCleaningPalette
 #  Programmer's name for it: RsCleaningPalette
 #. Programmer's name for it: RsCleaningPalette
-#: JVCLData.pas:305
+#: JVCLData.pas:306
 msgid "Cleaning Palette..."
 msgstr "Komponentenpalette wird bereinigt..."
 
 #  Programmer's name for it: RsCleaningPathLists
 #  Programmer's name for it: RsCleaningPathLists
 #. Programmer's name for it: RsCleaningPathLists
-#: JVCLData.pas:306
+#: JVCLData.pas:307
 msgid "Cleaning Path lists..."
 msgstr "Pfad-Listen werden bereinigt..."
 
@@ -1636,13 +1636,13 @@ msgstr "Pfad-Listen werden bereinigt..."
 #  Programmer's name for it: RsUnregisteringPackages
 #  Programmer's name for it: RsUnregisteringPackages
 #. Programmer's name for it: RsUnregisteringPackages
-#: JVCLData.pas:307
+#: JVCLData.pas:308
 msgid "Unregistering packages..."
 msgstr "Packages werden deinstalliert..."
 
 #  Programmer's name for it: RsDeletingFiles
 #. Programmer's name for it: RsDeletingFiles
-#: JVCLData.pas:308
+#: JVCLData.pas:309
 msgid "Deleting files..."
 msgstr "Dateien werden gelöscht..."
 
@@ -1699,12 +1699,6 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 #: Main.dfm:64
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Jedi Visual Component Library Homepage"
-
-#  FrameInstall..LblTarget..Caption
-#  FramePackageSelection..LblTarget..Caption
-#  FrameUninstall..LblTarget..Caption
-#~ msgid "LblTarget"
-#~ msgstr "LblTarget"
 
 #  FormJvclIncConfig..TitlePanel..Label4..Font.Name
 #~ msgid "Verdana"
@@ -1768,11 +1762,17 @@ msgstr "Jedi Visual Component Library Homepage"
 #~ msgid "MS Sans Serif"
 #~ msgstr "MS Sans Serif"
 
-#  FrameDirEditBrowse..BtnDirBrowse..Caption
-#~ msgid "..."
-#~ msgstr "..."
+#  FrameInstall..LblTarget..Caption
+#  FramePackageSelection..LblTarget..Caption
+#  FrameUninstall..LblTarget..Caption
+#~ msgid "LblTarget"
+#~ msgstr "LblTarget"
 
 #  FormMain..JvWizard..LblHomepage..Font.Name
 #  FrameInstall..RichEditLog..Font.Name
 #~ msgid "Arial"
 #~ msgstr "Arial"
+
+#  FrameDirEditBrowse..BtnDirBrowse..Caption
+#~ msgid "..."
+#~ msgstr "..."

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2005-01-08 02:18\n"
+"POT-Creation-Date: 2005-02-13 17:45\n"
 "PO-Revision-Date: 2004-12-17 22:12+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -10,93 +10,93 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Programmer's name for it: RsPackagesAreUpToDate
-#: Compile.pas:149
+#: Compile.pas:150
 msgid "Packages are up to date"
 msgstr "Los paquetes estan al dia"
 
 #. Programmer's name for it: RsCompilingJCL
-#: Compile.pas:157
+#: Compile.pas:158
 msgid "Compiling JCL dcp files..."
 msgstr "Compilando archivos dcp de JCL..."
 
 #. Programmer's name for it: RsErrorCompilingJclDcpFiles
-#: Compile.pas:158
+#: Compile.pas:159
 msgid "Error while compiling .dcp files for JCL."
 msgstr "Error mientras se compilaban archivos .dcp de JCL"
 
 #. Programmer's name for it: RsGeneratingTemplates
-#: Compile.pas:159
+#: Compile.pas:160
 msgid "Generating templates..."
 msgstr "Generando plantillas..."
 
 #. Programmer's name for it: RsGeneratingPackages
-#: Compile.pas:160
+#: Compile.pas:161
 msgid "Generating packages..."
 msgstr "Generando paquetes..."
 
 #. Programmer's name for it: RsGeneratingResources
-#: Compile.pas:161
+#: Compile.pas:162
 msgid "Generating resources..."
 msgstr "Generando recursos..."
 
 #. Programmer's name for it: RsCompilingPackages
-#: Compile.pas:162
+#: Compile.pas:163
 msgid "Compiling packages..."
 msgstr "Compilando paquetes..."
 
 #. Programmer's name for it: RsCopyingFiles
-#: Compile.pas:163
+#: Compile.pas:164
 msgid "Copying files..."
 msgstr "Copiando archivos..."
 
 #. Programmer's name for it: RsCopyingFile
-#: Compile.pas:164
+#: Compile.pas:165
 msgid "Copying %s"
 msgstr "Copiando %s"
 
 #. Programmer's name for it: RsFinished
-#: Compile.pas:165
+#: Compile.pas:166
 msgid "Finished."
 msgstr "Finalizado."
 
 #. Programmer's name for it: RsAbortedByUser
-#: Compile.pas:167
+#: Compile.pas:168
 msgid "Aborted by User"
 msgstr "Abortado por el usuario"
 
 #. Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
-#: Compile.pas:168
+#: Compile.pas:169
 msgid "Error loading devtools\\bin\\pgEdit.xml"
 msgstr "Error cargando devtools\\bin\\pgEdit.xml"
 
 #. Programmer's name for it: RsErrorGeneratingPackages
-#: Compile.pas:169
+#: Compile.pas:170
 msgid "Error while generating packages for %s"
 msgstr "Error mientras se generaban paquetes para %s"
 
 #. Programmer's name for it: RsErrorGeneratingTemplates
-#: Compile.pas:170
+#: Compile.pas:171
 msgid "Error while generating templates."
 msgstr "Error mientras se generaban plantillas."
 
 #. Programmer's name for it: RsErrorCompilingResources
-#: Compile.pas:171
+#: Compile.pas:172
 msgid "Error while compiling resources."
 msgstr "Error mientras se compilaban recursos."
 
 #. Programmer's name for it: RsErrorGeneratingTemplatesForDir
-#: Compile.pas:172
+#: Compile.pas:173
 msgid "Error generating templates for the %s directory."
 msgstr "Error generando plantillas para la carpeta %s"
 
 #. this must not be the doubt of the installer
 #. Programmer's name for it: RsErrorCompilingPackages
-#: Compile.pas:173
+#: Compile.pas:174
 msgid "An error occured while compiling the packages."
 msgstr "Un error ocurrio mientras se compilaban los paquetes."
 
 #. Programmer's name for it: RsCommandNotFound
-#: Compile.pas:175
+#: Compile.pas:176
 msgid ""
 "Command could not be executed.\n"
 "\n"
@@ -848,7 +848,7 @@ msgstr "Ha ocurrido un error."
 
 #. Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
-#: InstallerConsts.pas:85 JVCLData.pas:309
+#: InstallerConsts.pas:85 JVCLData.pas:310
 msgid "Complete."
 msgstr "Completado."
 
@@ -1209,32 +1209,32 @@ msgid "Do you really want to cancel the installation?"
 msgstr "¿ Realmente desea cancelar la instalacion ?"
 
 #. Programmer's name for it: RsNoJVCLFound
-#: JVCLData.pas:302
+#: JVCLData.pas:303
 msgid "No JVCL directory found. Application terminated."
 msgstr "No se encontro carpeta JVCL. Aplicacion terminada."
 
 #. Programmer's name for it: RsJVCLInstaller
-#: JVCLData.pas:303
+#: JVCLData.pas:304
 msgid "JVCL Installer"
 msgstr "Instalador JVCL"
 
 #. Programmer's name for it: RsCleaningPalette
-#: JVCLData.pas:305
+#: JVCLData.pas:306
 msgid "Cleaning Palette..."
 msgstr "Limpiando paleta..."
 
 #. Programmer's name for it: RsCleaningPathLists
-#: JVCLData.pas:306
+#: JVCLData.pas:307
 msgid "Cleaning Path lists..."
 msgstr "Limpiando listas de Paths..."
 
 #. Programmer's name for it: RsUnregisteringPackages
-#: JVCLData.pas:307
+#: JVCLData.pas:308
 msgid "Unregistering packages..."
 msgstr "Desregistrando paquetes..."
 
 #. Programmer's name for it: RsDeletingFiles
-#: JVCLData.pas:308
+#: JVCLData.pas:309
 msgid "Deleting files..."
 msgstr "Eliminando archivos..."
 
@@ -1279,17 +1279,6 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Sitio web oficial de Libreria de Componentes Visual JEDI"
 
-#~ msgid ""
-#~ "http://dxgettext.sourceforge.net|Download from <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
-#~ "<c:red>The gnugettext.pas unit will be added to the contains list\n"
-#~ "of the JvCore-R package. That means that you cannot add\n"
-#~ "it to another package."
-#~ msgstr ""
-#~ "http://dxgettext.sourceforge.net|Descargar desde <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
-#~ "<c:red>El archivo gnugettext.pas sera agregado a la lista de contenidos\n"
-#~ "de el paquete JvCore-R. Eso significa que no puede agregarlo\n"
-#~ "en otro paquete."
-
 #~ msgid "dxgettext &support (not required)"
 #~ msgstr "&soporte dxgettext (no requerido)"
 
@@ -1323,8 +1312,19 @@ msgstr "Sitio web oficial de Libreria de Componentes Visual JEDI"
 #~ msgid "jvcl.inc changes are global to all installed Delphi/BCB versions."
 #~ msgstr "Cambios en jvcl.inc son globales a todas las versiones de Delphi/BCB instaladas."
 
-#~ msgid "http://projectjedi.sourceforge.net"
-#~ msgstr "http://projectjedi.sourceforge.net"
+#~ msgid ""
+#~ "http://dxgettext.sourceforge.net|Download from <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
+#~ "<c:red>The gnugettext.pas unit will be added to the contains list\n"
+#~ "of the JvCore-R package. That means that you cannot add\n"
+#~ "it to another package."
+#~ msgstr ""
+#~ "http://dxgettext.sourceforge.net|Descargar desde <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
+#~ "<c:red>El archivo gnugettext.pas sera agregado a la lista de contenidos\n"
+#~ "de el paquete JvCore-R. Eso significa que no puede agregarlo\n"
+#~ "en otro paquete."
 
 #~ msgid "TJv"
 #~ msgstr "TJv"
+
+#~ msgid "http://projectjedi.sourceforge.net"
+#~ msgstr "http://projectjedi.sourceforge.net"
