@@ -25,6 +25,9 @@
  page, located at http://www.delphi-jedi.org
 
  RECENT CHANGES:
+    May 23, 2004, Markus Spoettl:
+      - Added DrawNameEndEllipsis property to Painter (1745)
+      - Fixed list-deactivate bugs (1651) and list drop-down bug 1672
     May 3, 2004, Marcel Bestebroer:
       - Additional checks for value list location and size.
       - Correction list width calculation for non-ownerdrawn value lists.
@@ -621,6 +624,7 @@ type
     FSelectedColor: TColor;
     FSelectedTextColor: TColor;
     FValueColor: TColor;
+    FDrawNameEndEllipsis: BOOLEAN;
   protected
     procedure ApplyNameFont; virtual;
     procedure ApplyValueFont; virtual;
@@ -644,6 +648,7 @@ type
     function GetSelectedColor: TColor; virtual;
     function GetSelectedTextColor: TColor; virtual;
     function GetValueColor: TColor; virtual;
+    function GetDrawNameEndEllipsis: BOOLEAN; virtual;
     function GetValueHeight(const AItem: TJvCustomInspectorItem): Integer; virtual;
     procedure HideEditor; virtual;
     procedure InitializeColors; virtual;
@@ -666,6 +671,7 @@ type
     procedure SetupItem; virtual;
     procedure SetupRects; virtual;
     procedure SetValueColor(const Value: TColor); virtual;
+    procedure SetDrawNameEndEllipsis(Value: BOOLEAN); virtual;
     procedure TeardownItem; virtual;
     property ButtonImage: TBitmap read FButtonImage write FButtonImage;
     property Canvas: TCanvas read FCanvas write FCanvas;
@@ -692,6 +698,7 @@ type
     property DividerColor: TColor read GetDividerColor write SetDividerColor;
     property NameColor: TColor read GetNameColor write SetNameColor;
     property ValueColor: TColor read GetValueColor write SetValueColor;
+    property DrawNameEndEllipsis: BOOLEAN read GetDrawNameEndEllipsis write SetDrawNameEndEllipsis;
   end;
 
   TJvInspectorBorlandNETBasePainter = class(TJvInspectorPainter)
@@ -846,6 +853,7 @@ type
     procedure Edit; virtual;
     procedure EditChange(Sender: TObject); virtual;
     procedure EditFocusLost(Sender: TObject); dynamic;
+    procedure EditKillFocus(Sender: TObject);
     procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
       virtual;
     procedure EditMouseDown(Sender: TObject; Button: TMouseButton;
@@ -907,6 +915,8 @@ type
     procedure ListExit(Sender: TObject); virtual;
     procedure ListMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); virtual;
+    procedure ListValueSelect(Sender: TObject); virtual;
+    procedure ListDeactivate(Sender: TObject); virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); virtual;
@@ -4456,6 +4466,11 @@ begin
   Result := FValueColor;
 end;
 
+function TJvInspectorPainter.GetDrawNameEndEllipsis: BOOLEAN;
+begin
+  Result := FDrawNameEndEllipsis;
+end;
+
 function TJvInspectorPainter.GetValueHeight(const AItem: TJvCustomInspectorItem): Integer;
 var
   TmpCanvas: TCanvas;
@@ -4724,6 +4739,16 @@ begin
   if Value <> ValueColor then
   begin
     FValueColor := Value;
+    if not Initializing and not Loading then
+      Inspector.Invalidate;
+  end;
+end;
+
+procedure TJvInspectorPainter.SetDrawNameEndEllipsis(Value: BOOLEAN);
+begin
+  if Value <> DrawNameEndEllipsis then
+  begin
+    FDrawNameEndEllipsis := Value;
     if not Initializing and not Loading then
       Inspector.Invalidate;
   end;
@@ -5462,6 +5487,8 @@ var
 begin
   if DroppedDown then
   begin
+    if (GetCaptureControl = ListBox) then
+        SetCaptureControl(nil);
     if Inspector.HandleAllocated then
       Inspector.ShowScrollBars(SB_BOTH, False);
     {$IFDEF VCL}
@@ -5631,8 +5658,9 @@ begin
             MH := IH;
         end;
       end
-      else
+      else begin
         MH := IH;
+      end;
       TListBox(ListBox).ItemHeight := MH;
     end;
     if ListBox.Items.Count < DropDownCount then
@@ -5674,7 +5702,7 @@ begin
       P.X := Screen.Width - Listbox.Width;
     {$IFDEF VCL}
     SetWindowPos(ListBox.Handle, HWND_TOP, P.X, Y, 0, 0,
-      SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
+      SWP_NOSIZE or {SWP_NOACTIVATE or }SWP_SHOWWINDOW);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     ListBox.Left := Rects[iprValueArea].Left;
@@ -5689,10 +5717,12 @@ begin
     InvalidateItem;
     {$IFDEF VCL}
     Windows.SetFocus(EditCtrl.Handle);
+    SetCaptureControl(ListBox);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     EditCtrl.SetFocus;
     {$ENDIF VisualCLX}
+    Inspector.Selecting := FALSE;
   end;
 end;
 
@@ -5744,6 +5774,11 @@ begin
     Inspector.Invalidate;
 end;
 
+procedure TJvCustomInspectorItem.EditKillFocus(Sender: TObject);
+begin
+  if (DroppedDown) then
+    CloseUp(FALSE);
+end;
 procedure TJvCustomInspectorItem.EditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -5876,8 +5911,10 @@ begin
     EditWndPrc(Msg);
   case Msg.Msg of
     WM_GETDLGCODE:
+      begin
       if Inspector.WantTabs then
         Msg.Result := Msg.Result or DLGC_WANTTAB;
+      end;
   end;
 end;
 {$ENDIF VCL}
@@ -6219,6 +6256,15 @@ begin
     CloseUp(PtInRect(ListBox.ClientRect, Point(X, Y)));
 end;
 
+procedure TJvCustomInspectorItem.ListValueSelect(Sender: TObject);
+begin
+    CloseUp(TRUE);
+end;
+
+procedure TJvCustomInspectorItem.ListDeactivate(Sender: TObject);
+begin
+    CloseUp(FALSE);
+end;
 procedure TJvCustomInspectorItem.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
@@ -6228,11 +6274,13 @@ begin
       CloseUp(False)
     else
     begin
-      Inspector.MouseCapture := True;
       Tracking := True;
       TrackButton(X, Y);
       if (iifValueList in Flags) then
-        DropDown;
+        DropDown
+      else begin
+        Inspector.MouseCapture := True;
+        end;
     end;
   end
   else
@@ -6331,10 +6379,12 @@ end;
 procedure TJvCustomInspectorItem.SetAutoUpdate(const Value: Boolean);
 begin
   if Value <> AutoUpdate then
+  begin
     if Value then
       Flags := Flags + [iifAutoUpdate]
     else
       Flags := Flags - [iifAutoUpdate];
+  end;
 end;
 
 procedure TJvCustomInspectorItem.SetDisplayIndex(const Value: Integer);
@@ -6419,10 +6469,12 @@ end;
 procedure TJvCustomInspectorItem.SetExpanded(Value: Boolean);
 begin
   if Value <> Expanded then
+  begin
     if Value then
       Flags := Flags + [iifExpanded]
     else
       Flags := Flags - [iifExpanded];
+  end;
 end;
 
 procedure TJvCustomInspectorItem.SetFlags(const Value: TInspectorItemFlags);
@@ -6506,10 +6558,12 @@ end;
 procedure TJvCustomInspectorItem.SetHidden(Value: Boolean);
 begin
   if Value <> Hidden then
+  begin
     if Value then
       Flags := Flags + [iifHidden]
     else
       Flags := Flags - [iifHidden];
+  end;
 end;
 
 procedure TJvCustomInspectorItem.SetInspector(const AInspector: TJvCustomInspector);
@@ -6521,10 +6575,12 @@ end;
 procedure TJvCustomInspectorItem.SetMultiline(const Value: Boolean);
 begin
   if Value <> Multiline then
+  begin
     if Value then
       Flags := Flags + [iifMultiline]
     else
       Flags := Flags - [iifMultiline];
+  end;
 end;
 
 procedure TJvCustomInspectorItem.SetOnCompare(const Value: TInspectorItemSortCompare);
@@ -6841,7 +6897,15 @@ var
   ARect: TRect;
 begin
   ARect := Rects[iprName];
-  ACanvas.TextRect(ARect, ARect.Left, ARect.Top, DisplayName);
+  if (Inspector.Painter <> nil) and (Inspector.Painter.DrawNameEndEllipsis) then
+  begin
+    ARect.Right := ARect.Right - 2;
+    DrawText(ACanvas, PChar(DisplayName), -1, ARect, DT_END_ELLIPSIS);
+  end
+  else
+  begin
+    ACanvas.TextRect(ARect, ARect.Left, ARect.Top, DisplayName);
+  end;
 end;
 
 procedure TJvCustomInspectorItem.DrawValue(const ACanvas: TCanvas);
@@ -6883,7 +6947,7 @@ begin
         {$IFDEF VisualCLX}
         ACanvas.Start;
         {$ENDIF VisualCLX}
-        DrawTextEx(ACanvas, S, Length(S), ARect, DT_EDITCONTROL or DT_WORDBREAK, nil);
+        DrawTextEx(ACanvas, PChar(S), Length(S), ARect, DT_EDITCONTROL or DT_WORDBREAK, nil);
         {$IFDEF VisualCLX}
         ACanvas.Stop;
         {$ENDIF VisualCLX}
@@ -6961,6 +7025,104 @@ begin
 end; }
 {.$ENDIF VCL}
 
+type
+    TJvInspectorListBox = class(TJvPopupListBox)
+      private
+        FOnValueSelect: TNotifyEvent;
+        FOnDeactivate: TNotifyEvent;
+        FNCClick: BOOLEAN;
+        FClicking: BOOLEAN;
+        FItem: TJvCustomInspectorItem;
+      protected
+        procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+        procedure Mouseup(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+      public
+        property OnValueSelect: TNotifyEvent read FOnValueSelect write FOnValueSelect;
+        property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
+        property Item: TJvCustomInspectorItem read FItem write FItem;
+        end;
+
+procedure TJvInspectorListBox.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var r: TRect;
+    pt: TPoint;
+begin
+    r := Rect(0, 0, Width, Height);
+    pt := Point(X,Y);
+
+    if (PtInRect(r, pt)) then begin
+        if (not PtInRect(ClientRect, pt)) then
+            FNCClick := TRUE;
+        FClicking := TRUE;
+        inherited MouseDown(Button, Shift, X, Y);
+        end
+    else begin
+        FOnDeactivate(Self);
+        end;
+end;
+
+procedure TJvInspectorListBox.Mouseup(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var r: TRect;
+    pt: TPoint;
+begin
+    r := Rect(0, 0, Width, Height);
+    pt := Point(X,Y);
+
+    if (FNCClick) then
+        inherited MouseUp(Button, Shift, X, Y)
+    else if (FClicking) then begin
+        if (PtInRect(ClientRect, pt)) then
+            FOnValueSelect(Self)
+        else
+            FOnDeactivate(Self)
+        end
+    else begin
+        // MouseUps where FClicking is FALSE
+        // have originated in the item that
+        // opened the list, let it know that
+        // the mouse has gone up again.
+        FItem.MouseUp(Button, Shift, X, Y);
+        end;
+
+    FClicking := FALSE;
+    FNCClick := FALSE;
+end;
+
+
+type
+    TJvInspectorMemo = class(TMemo)
+      private
+        FOnKillFocus: TNotifyEvent;
+      protected
+        procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
+      public
+        property OnKillFocus: TNotifyEvent read FOnKillFocus write FOnKillFocus;
+        end;
+
+    TJvInspectorEdit = class(TEdit)
+      private
+        FOnKillFocus: TNotifyEvent;
+      protected
+        procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
+      public
+        property OnKillFocus: TNotifyEvent read FOnKillFocus write FOnKillFocus;
+        end;
+
+procedure TJvInspectorMemo.WMKillFocus(var msg: TWMKillFocus);
+begin
+    inherited;
+    if (Assigned(FOnKillFocus)) then begin
+        FOnKillFocus(Self);
+        end;
+end;
+
+procedure TJvInspectorEdit.WMKillFocus(var msg: TWMKillFocus);
+begin
+    inherited;
+    if (Assigned(FOnKillFocus)) then begin
+        FOnKillFocus(Self);
+        end;
+end;
+
 procedure TJvCustomInspectorItem.InitEdit;
 var
   Edit: TEdit;
@@ -6971,7 +7133,8 @@ begin
   begin
     if Multiline then
     begin
-      Memo := TMemo.Create(Inspector);
+      //Memo := TMemo.Create(Inspector);
+      Memo := TJvInspectorMemo.Create(Inspector);
       Memo.OnContextPopup := Inspector.FOnEditorContextPopup;
       Memo.OnKeyUp := Inspector.FOnEditorKeyUp;
       Memo.OnKeyPress := Inspector.FOnEditorKeyPress;
@@ -6979,6 +7142,7 @@ begin
       Memo.WantReturns := False;
       Memo.ScrollBars := ssVertical;
       Memo.OnExit := EditFocusLost;
+      TJvInspectorMemo(Memo).OnKillFocus := EditKillFocus;
       {.$IFDEF VCL}
       { marcelb: removed this stuff; it's not needed at all (especially with the new SaveValues
         method) and it has the weird side effect of selecting the next item.
@@ -6995,11 +7159,13 @@ begin
     end
     else
     begin
-      Edit := TEdit.Create(Inspector);
+      //Edit := TEdit.Create(Inspector);
+      Edit := TJvInspectorEdit.Create(Inspector);
       Edit.OnContextPopup := Inspector.FOnEditorContextPopup;
       Edit.OnKeyUp := Inspector.FOnEditorKeyUp;
       Edit.OnKeyPress := Inspector.FOnEditorKeyPress;
       Edit.OnExit := EditFocusLost;
+      TJvInspectorEdit(Edit).OnKillFocus := EditKillFocus;
       {.$IFDEF VCL}
       { marcelb: removed this stuff; it's not needed at all (especially with the new SaveValues
         method) and it has the weird side effect of selecting the next item.
@@ -7035,7 +7201,8 @@ begin
     if iifValueList in Flags then
     begin
       {$IFDEF VCL}
-      FListBox := TJvPopupListBox.Create(Inspector);
+//      FListBox := TJvPopupListBox.Create(Inspector);
+      FListBox := TJvInspectorListBox.Create(Inspector);
       ListBox.Visible := False;
       ListBox.Parent := EditCtrl;
       TListBox(ListBox).IntegralHeight := not (iifOwnerDrawListVariable in Flags);
@@ -7045,7 +7212,10 @@ begin
       ListBox.Visible := False;
       ListBox.Parent := EditCtrl.Parent;
       {$ENDIF VisualCLX}
-      TListBox(ListBox).OnMouseUp := ListMouseUp;
+//      TListBox(ListBox).OnMouseUp := ListMouseUp;
+      TJvInspectorListBox(ListBox).OnValueSelect := ListValueSelect;
+      TJvInspectorListBox(ListBox).OnDeactivate := ListDeactivate;
+      TJvInspectorListBox(ListBox).Item := Self;
 
       TListBox(ListBox).ItemHeight := 11;
       if (iifOwnerDrawListFixed in Flags) or (iifOwnerDrawListMaxHeight in Flags) then
@@ -7945,10 +8115,16 @@ begin
     Result := FloatToStr(Data.AsFloat);
   except
     on E: EConvertError do
+    begin
       if Data is TJvInspectorCustomConfData then
+      begin
         Result := (Data as TJvInspectorCustomConfData).ForceString // INI Display Workaround.
+      end
       else
+      begin
         Result := '0'; // Inspector component doesn't handle this exception well, so mask it. workaround. WAP
+      end;
+    end;
   end;
 end;
 
@@ -8207,19 +8383,23 @@ end;
 procedure TJvInspectorSetItem.SetEditString(const Value: Boolean);
 begin
   if Value <> EditString then
+  begin
     if Value then
       ItemSetFlags := ItemSetFlags + [isfEditString]
     else
       ItemSetFlags := ItemSetFlags - [isfEditString];
+  end;
 end;
 
 procedure TJvInspectorSetItem.SetRenderAsCategory(const Value: Boolean);
 begin
   if Value <> RenderAsCategory then
+  begin
     if Value then
       ItemSetFlags := ItemSetFlags + [isfRenderAsCategory]
     else
       ItemSetFlags := ItemSetFlags - [isfRenderAsCategory];
+  end;
 end;
 
 procedure TJvInspectorSetItem.SetFlags(const Value: TInspectorItemFlags);
@@ -8472,19 +8652,23 @@ end;
 procedure TJvInspectorClassItem.SetRenderAsCategory(const Value: Boolean);
 begin
   if Value <> RenderAsCategory then
+  begin
     if Value then
       ItemClassFlags := ItemClassFlags + [icfRenderAsCategory]
     else
       ItemClassFlags := ItemClassFlags - [icfRenderAsCategory];
+  end;
 end;
 
 procedure TJvInspectorClassItem.SetShowClassName(const Value: Boolean);
 begin
   if Value <> ShowClassName then
+  begin
     if Value then
       ItemClassFlags := ItemClassFlags + [icfShowClassName]
     else
       ItemClassFlags := ItemClassFlags - [icfShowClassName];
+  end;
 end;
 
 //=== TJvInspectorComponentItem ==============================================
@@ -11454,6 +11638,7 @@ begin
         end;
       end;
     tkChar, tkWChar:
+      begin
       if Length(S) > 1 then
         Result := StrToInt(Copy(S, 2, Length(S)))
       else
@@ -11461,6 +11646,7 @@ begin
         Result := Ord(S[1])
       else
         Result := 0;
+      end;
     tkEnumeration:
       Result := GetEnumValue(TypeInfo, S);
     tkSet:
@@ -11547,10 +11733,12 @@ begin
   CheckWriteAccess;
   case TypeInfo.Kind of
     tkString:
+      begin
       if Length(Value) < GetTypeData(TypeInfo).MaxLength then
         WriteValue(Value)
       else
         raise EJvInspectorData.CreateRes(@RsEJVInspDataStrTooLong);
+      end;
     tkLString, tkWString:
       WriteValue(Value)
   else
@@ -11812,12 +12000,16 @@ var
 begin
   Result := nil;
   for I := Pred(Count) downto 0 do
+  begin
     if Items[I].IsMatch(ADataObj) then
+    begin
       if Result = nil then
         Result := Items[I]
       else
       if Compare(ADataObj, Result, Items[I]) < 0 then
         Result := Items[I];
+    end;
+  end;
   if (Result = nil) or (Result.MatchPercent(ADataObj) <> 100) then
   begin
     ParDataClass := TJvInspectorDataClass(DataClass.ClassParent);
@@ -12185,10 +12377,12 @@ begin
   end;
 
   if PropertyName <> '' then
+  begin
     if AnsiSameText(PropertyName, ADataObj.Name) then
       Inc(RetVal, 8)
     else
       Exit;
+  end;
 
   if PropertyType <> nil then
   begin
