@@ -5512,7 +5512,6 @@ procedure TJvRichEditStrings.DoImport(AConverter: TJvConversion);
 var
   EditStream: TEditStream;
   TextType: Longint;
-  Count: LResult;
 begin
   with EditStream do
   begin
@@ -5543,11 +5542,11 @@ begin
   end;
   if smSelection in Mode then
     TextType := TextType or SFF_SELECTION;
-  Count := SendMessage(FRichEdit.Handle, EM_STREAMIN, TextType, Longint(@EditStream));
+  SendMessage(FRichEdit.Handle, EM_STREAMIN, TextType, Longint(@EditStream));
 
   if not AConverter.UserCancel then
   begin
-    if ((EditStream.dwError <> 0) or (Count = 0)) and AConverter.ReTry then
+    if (EditStream.dwError <> 0) and AConverter.Retry then
     begin
       if (TextType and SF_RTF) = SF_RTF then
         TextType := SF_TEXT
@@ -5887,13 +5886,15 @@ const
   CRTFHeaderSize = Length(CRTFHeader);
 var
   SavedPosition: Int64;
-  Buffer: array [0..CRTFHeaderSize - 1] of Char;
+  Buffer: array [0..CRTFHeaderSize] of Char; // + #0
 begin
   SavedPosition := AStream.Position;
   try
+    Buffer[CRTFHeaderSize] := #0;
+
     Result :=
       (AStream.Read(Buffer, CRTFHeaderSize) = CRTFHeaderSize) and
-      (StrIComp(CRTFHeader, Buffer) = 0);
+      (StrIComp(PChar(CRTFHeader), Buffer) = 0);
   finally
     AStream.Position := SavedPosition;
   end;
