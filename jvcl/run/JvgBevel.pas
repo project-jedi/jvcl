@@ -47,8 +47,6 @@ type
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FBevelInner: TPanelBevel;
     FBevelOuter: TPanelBevel;
@@ -69,12 +67,10 @@ type
     procedure SetBevelPenStyle(Value: TPenStyle);
     procedure SetBevelPenWidth(Value: Word);
     procedure SetInteriorOffset(Value: Word);
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
   protected
-    procedure MouseEnter(AControl: TControl); dynamic;
-    procedure MouseLeave(AControl: TControl); dynamic;
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
@@ -113,8 +109,8 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property VertLines: TJvgBevelLines read FVertLines write FVertLines;
     property HorLines: TJvgBevelLines read FHorLines write FHorLines;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
@@ -231,45 +227,25 @@ begin
   DrawLines(R_, fldVertical, VertLines);
 end;
 
-procedure TJvgBevel.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  MouseEnter(Self);
-end;
-
 procedure TJvgBevel.MouseEnter(AControl: TControl);
 begin
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvgBevel.CMMouseLeave(var Msg: TMessage);
-begin
   inherited;
-  MouseLeave(Self);
 end;
 
 procedure TJvgBevel.MouseLeave(AControl: TControl);
 begin
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     FOver := False;
     Application.HintColor := FSaved;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited;
 end;
 
 procedure TJvgBevel.CMParentColorChanged(var Msg: TMessage);
