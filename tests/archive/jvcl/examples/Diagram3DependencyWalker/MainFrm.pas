@@ -111,6 +111,9 @@ type
     ToolButton2: TToolButton;
     acSaveDiagram: TAction;
     acOpenDiagram: TAction;
+    acParseUnit: TAction;
+    Parseunit1: TMenuItem;
+    N8: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure SbMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -140,6 +143,7 @@ type
     procedure acOpenDiagramExecute(Sender: TObject);
     procedure sbMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure acParseUnitExecute(Sender: TObject);
   private
     { Private declarations }
     FPrintFormat: TPrintFormat;
@@ -150,7 +154,7 @@ type
 
     procedure LoadSettings;
     procedure SaveSettings;
-
+    function FindUnit(const Filename:string;const DefaultExt:string='.pas'):string;
     procedure Clear;
     procedure CreatePrintOut(Strings: TStrings; AFormat: TPrintFormat = pfText);
     function GetFileShape(const Filename: string): TJvBitmapShape;
@@ -181,7 +185,7 @@ var
 
 implementation
 uses
-  JCLParseUses, Clipbrd, StatsFrm, ShellAPI, PrintFrm;
+  JCLParseUses, Clipbrd, StatsFrm, ShellAPI, PrintFrm, Registry;
 
 
 {$R *.dfm}
@@ -232,6 +236,23 @@ begin
   AControl.Perform(WM_SETREDRAW, Ord(not Suspend), 0);
   if not Suspend then
     RedrawWindow(AControl.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or RDW_INVALIDATE or RDW_UPDATENOW or RDW_ALLCHILDREN);
+end;
+
+function GetDelphiLibPath(Version:integer):string;
+const
+  cLibPath:PChar = '\Software\Borland\Delphi\%d.0\Library';
+var ALibPath:string;
+begin
+  ALibPath := Format(cLibPath,[Version]);
+  with TRegistry.Create(KEY_READ) do // defaults to HKCU - just what we want
+  try
+    if OpenKeyReadOnly(ALibPath) and KeyExists('Search Path') then
+      Result := ReadString('Search Path')
+    else
+      Result := '';
+  finally
+    Free;
+  end;
 end;
 
 // (p3) copy Strings.Objects to TList
@@ -441,7 +462,7 @@ var
   i: integer;
   AFilename: string;
 begin
-  AFilename := ChangeFileExt(ExtractFilename(Filename), '');
+  AFilename := FindUnit(Filename);
   i := FFileShapes.IndexOf(AFilename);
   if i < 0 then
   begin
@@ -451,6 +472,7 @@ begin
     Result.Hint := AFilename;
     Result.ShowHint := True;
     Result.OnClick := DoShapeClick;
+    Result.OnDblClick := acParseUnitExecute;
     Result.OnMouseDown := DoShapeMouseDown;
 
     Result.PopupMenu := popShape;
@@ -461,7 +483,7 @@ begin
     Result.Caption.Parent := sb;
     Result.Caption.Enabled := false;
     Result.Caption.Tag := integer(Result);
-    Result.Caption.Text := AFilename;
+    Result.Caption.Text := ChangeFileExt(ExtractFilename(AFilename), '');
     Result.Caption.AlignCaption(taLeftJustify);
     Result.BringToFront;
     i := FFileShapes.AddObject(AFilename, Result);
@@ -549,14 +571,14 @@ var
   i: integer;
   AFilename, ErrMsg: string;
 begin
-  AFilename := ChangeFileExt(ExtractFileName(Filename), '');
+  AFilename := FindUnit(Filename); 
   if InSkipList(AFilename) then
     Exit;
   AUsesIntf := TStringlist.Create;
   AUsesImpl := TStringlist.Create;
   FTop := cStartY;
   try
-    if not GetUses(Filename, AUsesIntf, AUsesImpl, ErrMsg) then
+    if not GetUses(AFilename, AUsesIntf, AUsesImpl, ErrMsg) then
       Errors.Add(Format('%s: %s', [AFilename, ErrMsg]));
     // add the actual file
     FS := GetFileShape(AFilename);
@@ -565,13 +587,13 @@ begin
     for i := 0 to AUsesIntf.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
-      Connect(FS, GetFileShape(ChangeFileExt(ExtractFileName(AUsesIntf[i]), '')), true);
+      Connect(FS, GetFileShape(AUsesIntf[i]),true);
       Inc(FTop, cOffsetY);
     end;
     for i := 0 to AUsesImpl.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
-      Connect(FS, GetFileShape(ChangeFileExt(ExtractFileName(AUsesImpl[i]), '')), false);
+      Connect(FS, GetFileShape(AUsesImpl[i]),false);
       Inc(FTop, cOffsetY);
     end;
   finally
@@ -602,6 +624,20 @@ begin
     SuspendRedraw(sb, false);
   end;
   StatusBar1.Panels[0].Text := Format(SParsedStatusFmt, [Files.Count, FFileShapes.Count]);
+end;
+
+// (p3) tries to find Filename and return it's full path and filename
+// if it fails, the original Filename is returned instead
+function TfrmMain.FindUnit(const Filename: string;const DefaultExt:string='.pas'): string;
+begin
+  Result := ExpandUNCFileName(Filename);
+  if FileExists(Result) then Exit;
+  Result := ChangeFileExt(Result,DefaultExt);
+  if FileExists(Result) then Exit;
+  Result := ExtractFilePath(dlgSelectFiles.FileName) + ExtractFileName(Result);
+  if FileExists(Result) then Exit;
+  // TODO: check system paths and Delphi paths as well 
+  Result := Filename;
 end;
 
 // (p3) removes all shapes and links
@@ -938,7 +974,7 @@ begin
   acDelShape.Enabled := FSelected <> nil;
   acUnitStats.Enabled := acDelShape.Enabled;
   acAddToSkipList.Enabled := acDelShape.Enabled;
-
+  acParseUnit.Enabled := acDelShape.Enabled;
 end;
 
 procedure TfrmMain.Load(Storage: TCustomIniFile);
@@ -1005,6 +1041,8 @@ end;
 procedure TfrmMain.acUnitStatsExecute(Sender: TObject);
 var
   AShape: TJvCustomDiagramShape;
+  i:integer;
+  S:string;
   UsedByStrings, UsesStrings: TStringlist;
 begin
   AShape := FSelected;
@@ -1024,7 +1062,12 @@ begin
       UsedByStrings.Add(SNone);
     if UsesStrings.Count < 1 then
       UsesStrings.Add(SNone);
-    TfrmUnitStats.Execute(ChangeFileExt(AShape.Caption.Text, cPascalExt), UsedByStrings, UsesStrings);
+    i := FFileShapes.IndexOfObject(AShape);
+    if i > -1 then
+      S := FFileShapes[i]
+    else
+      S := ChangeFileExt(AShape.Caption.Text, cPascalExt);
+    TfrmUnitStats.Execute(S, UsedByStrings, UsesStrings);
   finally
     UsedByStrings.Free;
     UsesStrings.Free;
@@ -1248,6 +1291,35 @@ begin
     FSelected.Selected := false;
   FSelected := nil;
 end;
+
+procedure TfrmMain.acParseUnitExecute(Sender: TObject);
+var Errors:TStringList;i:integer;
+begin
+  WaitCursor;
+  i := FFileShapes.IndexOfObject(FSelected);
+  if i < 0 then
+  begin
+    if FSelected <> nil then
+      ShowMessageFmt('Unit %s not found!',[FSelected.Caption.Text])
+    else
+      ShowMessage('Unit not found!');
+    Exit;
+  end;
+
+  Errors := TStringlist.Create;
+  try
+    ParseUnit(FFileShapes[i],Errors);
+      if Errors.Count > 0 then
+      begin
+        ShowMessageFmt(SParseErrorsFmt, [Errors.Text]);
+        // copy to clipboard as well
+        Clipboard.SetTextBuf(PChar(Errors.Text));
+      end;
+  finally
+    Errors.Free;
+  end;
+end;
+
 
 end.
 

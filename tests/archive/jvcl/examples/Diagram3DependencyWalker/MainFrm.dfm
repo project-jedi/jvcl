@@ -1102,7 +1102,7 @@ object frmMain: TfrmMain
     Left = 120
     Top = 56
     Bitmap = {
-      494C010106000900040020002000FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010106000900040020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000006000000001001000000000000060
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1922,7 +1922,8 @@ object frmMain: TfrmMain
       00003F87FC003F87FF803F87FF803F8700100FF700000FF7FFF00FF7FFF00FF7
       001E01FF000001FFFFFE01FFFFFE01FF801FC0BFFC01C0BFFFFFC0BFFFFFC0BF
       801FF887FC01F887FFFFF887FFFFF887E03FFF87FC79FF87FFFFFF87FFFFFF87
-      F87FFFC7FCFFFFC7FFFFFFC7FFFFFFC7}
+      F87FFFC7FCFFFFC7FFFFFFC7FFFFFFC700000000000000000000000000000000
+      000000000000}
   end
   object popSkipList: TPopupMenu
     Left = 168
@@ -2106,10 +2107,22 @@ object frmMain: TfrmMain
       Caption = 'Open Diagram...'
       OnExecute = acOpenDiagramExecute
     end
+    object acParseUnit: TAction
+      Category = 'Shapes'
+      Caption = 'Parse unit'
+      OnExecute = acParseUnitExecute
+    end
   end
   object popShape: TPopupMenu
     Left = 168
     Top = 104
+    object Parseunit1: TMenuItem
+      Action = acParseUnit
+      Default = True
+    end
+    object N8: TMenuItem
+      Caption = '-'
+    end
     object Addtoskiplist1: TMenuItem
       Action = acAddToSkipList
     end

@@ -34,7 +34,7 @@ class procedure TfrmUnitStats.Execute(const UnitName: string; UsedByStrings,
 begin
   with self.Create(Application) do
   try
-    Caption := Format(Caption,[UnitName]);
+    Caption := Format(Caption,[ExtractFilename(UnitName)]);
     edName.Text := UnitName;
     reUsed.Lines := UsedByStrings;
     reUses.Lines := UsesStrings;
