@@ -19,6 +19,7 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -33,21 +34,17 @@ unit JvQFormPlacement;
 interface
 
 uses
-  SysUtils, Classes,
   
   RTLConsts, Variants,
   
+  SysUtils, Classes,
   
   
-  QControls, QForms, QGrids, QWindows,
+  QControls, QForms, Types, QWindows,
   
-  JvQAppStorage, JvQComponent, JvQTypes;
+  JvQAppStorage, JvQComponent, JvQJVCLUtils, JvQTypes;
 
 type
-  TPlacementOption = (fpState, fpPosition, fpActiveControl);
-  TPlacementOptions = set of TPlacementOption;
-  TPlacementOperation = (poSave, poRestore);
-
   TJvIniLink = class;
 
   TJvFormPlacement = class;
@@ -90,14 +87,15 @@ type
     FSaveFormShow: TNotifyEvent;
     FSaveFormDestroy: TNotifyEvent;
     FSaveFormCloseQuery: TCloseQueryEvent;
+    
+    FSaveFormConstrainedResize: TConstrainedResizeEvent;
+    
     FOnSavePlacement: TNotifyEvent;
     FOnRestorePlacement: TNotifyEvent;
     procedure SetAppStoragePath(Value: string);
     procedure SetEvents;
     procedure RestoreEvents;
-    procedure SetHook;
-    procedure ReleaseHook;
-    procedure CheckToggleHook;
+    
     function CheckMinMaxInfo: Boolean;
     procedure MinMaxInfoModified;
     procedure SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
@@ -107,10 +105,13 @@ type
     procedure AddLink(ALink: TJvIniLink);
     procedure NotifyLinks(Operation: TPlacementOperation);
     procedure RemoveLink(ALink: TJvIniLink);
-    
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
+    
+    procedure FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight,
+      MaxWidth, MaxHeight: Integer);
+    
     function GetForm: TForm;
   protected
     procedure Loaded; override;
@@ -119,8 +120,7 @@ type
     procedure SavePlacement; virtual;
     procedure RestorePlacement; virtual;
     property Form: TForm read GetForm;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -132,13 +132,12 @@ type
     function ReadInteger(const Ident: string; Default: Longint): Longint;
     procedure WriteInteger(const Ident: string; Value: Longint);
     procedure EraseSections;
-
   published
     property Active: Boolean read FActive write FActive default True;
     property AppStorage: TJvCustomAppStorage read FAppStorage write FAppStorage;
     property AppStoragePath: string read FAppStoragePath write SetAppStoragePath;
     property MinMaxInfo: TJvWinMinMaxInfo read FWinMinMaxInfo write SetWinMinMaxInfo;
-    property Options: TPlacementOptions read FOptions write FOptions default [fpState, fpPosition];
+    property Options: TPlacementOptions read FOptions write FOptions default [fpState, fpSize, fpLocation];
     property PreventResize: Boolean read FPreventResize write SetPreventResize default False;
     property Version: Integer read FVersion write FVersion default 0;
     property OnSavePlacement: TNotifyEvent read FOnSavePlacement
@@ -161,8 +160,7 @@ type
     procedure SetStoredValue(const Name: string; Value: Variant);
     function GetDefaultStoredValue(const Name: string;
       Default: Variant): Variant;
-    procedure SetDefaultStoredValue(const Name: string; Default: Variant;
-      const Value: Variant);
+    procedure SetDefaultStoredValue(const Name: string; Default: Variant; const Value: Variant);
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -248,334 +246,16 @@ type
     property StoredValue[const Name: string]: Variant read GetStoredValue write SetStoredValue;
   end;
 
-{--------------------------- AppStorage Helper --------------------------------}
-// used by JvGrid.pas:
-procedure InternalSaveGridLayout(Grid: TCustomGrid;
-  const AppStorage: TJvCustomAppStorage; const StorePath: string);
-procedure InternalRestoreGridLayout(Grid: TCustomGrid;
-  const AppStorage: TJvCustomAppStorage; const StorePath: string);
-
-// There are many unused functions. If you are missing one of them, reactivate
-// them.
-{------------------------------------------------------------------------------}
-
 implementation
 
 uses
-  
-  
-  QConsts,
-  
-  JvQJVCLUtils, JvQJCLUtils, JvQPropertyStorage;
+  Consts,
+  JvQJCLUtils, JvQPropertyStorage;
 
 const
   siActiveCtrl = 'ActiveControl'; // do not localize
   siVisible = 'Visible'; // do not localize
   siVersion = 'FormVersion'; // do not localize
-
-{==============================================================================}
-{=========================== AppStorage Helper ================================}
-{==============================================================================}
-
-{ The following strings should not be localized }
-const
-  siFlags = 'Flags';
-  siShowCmd = 'ShowCmd';
-  siMinMaxPos = 'MinMaxPos';
-  siNormPos = 'NormPos';
-  siPixels = 'PixelsPerInch';
-  siMDIChild = 'MDI Children';
-  siListCount = 'Count';
-  siItem = 'Item%d';
-
-type
-  {*******************************************************}
-  { !! ATTENTION Nasty implementation                     }
-  {*******************************************************}
-  {                                                       }
-  { This class definition was copied from FORMS.PAS.      }
-  { It is needed to access some private fields of TForm.  }
-  {                                                       }
-  { Any changes in the underlying classes may cause       }
-  { errors in this implementation!                        }
-  {                                                       }
-  {*******************************************************}
-
-  TJvNastyForm = class(TScrollingWinControl)
-  public
-    FActiveControl: TWinControl;
-    FFocusedControl: TWinControl;
-    FBorderIcons: TBorderIcons;
-    FBorderStyle: TFormBorderStyle;
-    FSizeChanging: Boolean;
-    FWindowState: TWindowState; { !! }
-  end;
-
-  TOpenComponent = class(TComponent);
-
-function CrtResString: string;
-begin
-  Result := Format('(%dx%d)', [GetSystemMetrics(SM_CXSCREEN),
-    GetSystemMetrics(SM_CYSCREEN)]);
-end;
-
-function ReadPosStr(AppStorage: TJvCustomAppStorage; const Path: string): string;
-begin
-  if AppStorage.ValueStored(Path + CrtResString) then
-    Result := AppStorage.ReadString(Path + CrtResString)
-  else
-    Result := AppStorage.ReadString(Path);
-end;
-
-procedure WritePosStr(AppStorage: TJvCustomAppStorage; const Path, Value: string);
-begin
-  AppStorage.WriteString(Path + CrtResString, Value);
-  AppStorage.WriteString(Path, Value);
-end;
-
-
-procedure InternalSaveFormPlacement(Form: TForm;
-  const AppStorage: TJvCustomAppStorage; const StorePath: string;
-  SaveState: Boolean = True; SavePosition: Boolean = True);
-var
-  Placement: TWindowPlacement;
-begin
-  if not (SaveState or SavePosition) then
-    Exit;
-  Placement.Length := SizeOf(TWindowPlacement);
-  GetWindowPlacement(Form.Handle, @Placement);
-  with Placement, TForm(Form) do
-  begin
-    if (Form = Application.MainForm) and AppMinimized then
-      ShowCmd := SW_SHOWMINIMIZED;
-    
-    if SaveState then
-      AppStorage.WriteInteger(StorePath + '\' + siShowCmd, ShowCmd);
-    if SavePosition then
-    begin
-      AppStorage.WriteInteger(StorePath + '\' + siFlags, Flags);
-      AppStorage.WriteInteger(StorePath + '\' + siPixels, Screen.PixelsPerInch);
-      WritePosStr(AppStorage, StorePath + '\' + siMinMaxPos, Format('%d,%d,%d,%d',
-        [ptMinPosition.X, ptMinPosition.Y, ptMaxPosition.X, ptMaxPosition.Y]));
-      WritePosStr(AppStorage, StorePath + '\' + siNormPos, Format('%d,%d,%d,%d',
-        [rcNormalPosition.Left, rcNormalPosition.Top, rcNormalPosition.Right,
-        rcNormalPosition.Bottom]));
-    end;
-  end;
-end;
-
-procedure InternalRestoreFormPlacement(Form: TForm;
-  const AppStorage: TJvCustomAppStorage; const StorePath: string;
-  LoadState: Boolean = True; LoadPosition: Boolean = True);
-const
-  Delims = [',', ' '];
-var
-  PosStr: string;
-  Placement: TWindowPlacement;
-  WinState: TWindowState;
-  DataFound: Boolean;
-begin
-  if not (LoadState or LoadPosition) then
-    Exit;
-  Placement.Length := SizeOf(TWindowPlacement);
-  GetWindowPlacement(Form.Handle, @Placement);
-  with Placement, TForm(Form) do
-  begin
-    if not IsWindowVisible(Form.Handle) then
-      ShowCmd := SW_HIDE;
-    if LoadPosition then
-    begin
-      DataFound := False;
-      AppStorage.ReadInteger(StorePath + '\' + siFlags, Flags);
-      PosStr := ReadPosStr(AppStorage, StorePath + '\' + siMinMaxPos);
-      if PosStr <> '' then
-      begin
-        DataFound := True;
-        ptMinPosition.X := StrToIntDef(ExtractWord(1, PosStr, Delims), 0);
-        ptMinPosition.Y := StrToIntDef(ExtractWord(2, PosStr, Delims), 0);
-        ptMaxPosition.X := StrToIntDef(ExtractWord(3, PosStr, Delims), 0);
-        ptMaxPosition.Y := StrToIntDef(ExtractWord(4, PosStr, Delims), 0);
-      end;
-      PosStr := ReadPosStr(AppStorage, StorePath + '\' + siNormPos);
-      if PosStr <> '' then
-      begin
-        DataFound := True;
-        rcNormalPosition.Left := StrToIntDef(ExtractWord(1, PosStr, Delims),
-          Left);
-        rcNormalPosition.Top := StrToIntDef(ExtractWord(2, PosStr, Delims),
-          Top);
-        rcNormalPosition.Right := StrToIntDef(ExtractWord(3, PosStr, Delims),
-          Left + Width);
-        rcNormalPosition.Bottom := StrToIntDef(ExtractWord(4, PosStr, Delims),
-          Top + Height);
-      end;
-      DataFound := DataFound and (Screen.PixelsPerInch = AppStorage.ReadInteger(
-        StorePath + '\' + siPixels, Screen.PixelsPerInch));
-      if DataFound then
-      begin
-        
-        
-        if not (BorderStyle in [fbsSizeable, fbsSizeToolWin]) then
-        
-          rcNormalPosition := Rect(rcNormalPosition.Left,
-            rcNormalPosition.Top,
-            rcNormalPosition.Left + Width, rcNormalPosition.Top + Height);
-        if rcNormalPosition.Right > rcNormalPosition.Left then
-        begin
-          if (Position in [poScreenCenter, poDesktopCenter]) and
-            not (csDesigning in ComponentState) then
-          begin
-            TOpenComponent(Form).SetDesigning(True);
-            try
-              Position := poDesigned;
-            finally
-              TOpenComponent(Form).SetDesigning(False);
-            end;
-          end;
-          SetWindowPlacement(Handle, @Placement);
-        end;
-      end;
-    end;
-    if LoadState then
-    begin
-      WinState := wsNormal;
-      { default maximize MDI main form }
-      if ((Application.MainForm = Form) or
-        (Application.MainForm = nil)) and ((FormStyle = fsMDIForm) or
-        ((FormStyle = fsNormal) and (Position = poDefault))) then
-        WinState := wsMaximized;
-      ShowCmd := AppStorage.ReadInteger(StorePath + '\' + siShowCmd, SW_HIDE);
-      case ShowCmd of
-        SW_SHOWNORMAL, SW_RESTORE, SW_SHOW:
-          WinState := wsNormal;
-        SW_MINIMIZE, SW_SHOWMINIMIZED, SW_SHOWMINNOACTIVE:
-          WinState := wsMinimized;
-        SW_MAXIMIZE:
-          WinState := wsMaximized;
-      end;
-      
-        WindowState := WinState;
-    end;
-    Update;
-  end;
-end;
-
-procedure InternalSaveGridLayout(Grid: TCustomGrid;
-  const AppStorage: TJvCustomAppStorage; const StorePath: string);
-var
-  i: Longint;
-begin
-  for i := 0 to TDrawGrid(Grid).ColCount - 1 do
-    AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, Format(siItem,
-      [i])]),
-      TDrawGrid(Grid).ColWidths[i]);
-end;
-
-procedure InternalRestoreGridLayout(Grid: TCustomGrid;
-  const AppStorage: TJvCustomAppStorage; const StorePath: string);
-var
-  i: Longint;
-begin
-  for i := 0 to TDrawGrid(Grid).ColCount - 1 do
-    TDrawGrid(Grid).ColWidths[i] :=
-      AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath,
-      Format(siItem, [i])]), TDrawGrid(Grid).ColWidths[i]);
-end;
-
-{ not used by JVCL
-
-procedure RestoreGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorage);
-begin
-  InternalRestoreGridLayout(Grid, AppStorage, GetDefaultSection(Grid));
-end;
-
-procedure SaveGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorage);
-begin
-  InternalSaveGridLayout(Grid, AppStorage, GetDefaultSection(Grid));
-end;
-
-
-procedure InternalSaveMDIChildren(MainForm: TForm;
-  const AppStorage: TJvCustomAppStorage; const StorePath: string);
-var
-  i: Integer;
-begin
-  if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
-    raise EInvalidOperation.Create(SNoMDIForm);
-  AppStorage.DeleteSubTree(AppStorage.ConcatPaths([StorePath, siMDIChild]));
-  if MainForm.MDIChildCount > 0 then
-  begin
-    AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
-      siListCount]),
-        MainForm.MDIChildCount);
-    for i := 0 to MainForm.MDIChildCount - 1 do
-      AppStorage.WriteString(AppStorage.ConcatPaths([StorePath, siMDIChild,
-        Format(siItem, [i])]),
-          MainForm.MDIChildren[i].ClassName);
-  end;
-end;
-
-procedure InternalRestoreMDIChildren(MainForm: TForm;
-  const AppStorage: TJvCustomAppStorage; const StorePath: string);
-var
-  i: Integer;
-  Count: Integer;
-  FormClass: TFormClass;
-begin
-  if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
-    raise EInvalidOperation.Create(SNoMDIForm);
-  StartWait;
-  try
-    Count := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
-      siListCount]), 0);
-    if Count > 0 then
-    begin
-      for i := 0 to Count - 1 do
-      begin
-        FormClass :=
-          TFormClass(GetClass(AppStorage.ReadString(AppStorage.ConcatPaths([StorePath,
-          siMDIChild, Format(siItem, [i])]), '')));
-        if FormClass <> nil then
-          InternalFindShowForm(FormClass, '', False);
-      end;
-    end;
-  finally
-    StopWait;
-  end;
-end;
-
-procedure SaveMDIChildren(MainForm: TForm; const AppStorage: TJvCustomAppStorage);
-begin
-  InternalSaveMDIChildren(MainForm, AppStorage, '');
-end;
-
-procedure RestoreMDIChildren(MainForm: TForm; const AppStorage:
-  TJvCustomAppStorage);
-begin
-  InternalRestoreMDIChildren(MainForm, AppStorage, '');
-end;
-
-procedure SaveFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
-  SaveState,
-  SavePosition: Boolean);
-begin
-  InternalSaveFormPlacement(Form, AppStorage, GetDefaultSection(Form), SaveState,
-    SavePosition);
-end;
-
-procedure RestoreFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
-  LoadState,
-  LoadPosition: Boolean);
-begin
-  InternalRestoreFormPlacement(Form, AppStorage, GetDefaultSection(Form),
-    LoadState, LoadPosition);
-end;
-}
-
-{==============================================================================}
-{==============================================================================}
-{==============================================================================}
-
 
 //=== TJvFormPlacement =======================================================
 
@@ -584,7 +264,7 @@ begin
   inherited Create(AOwner);
   FActive := True;
   if AOwner is TForm then
-    FOptions := [fpState, fpPosition]
+    FOptions := [fpState, fpSize, fpLocation]
   else
     FOptions := [];
   
@@ -600,10 +280,10 @@ begin
   FLinks.Free;
   if not (csDesigning in ComponentState) then
   begin
-    ReleaseHook;
+    
     RestoreEvents;
   end;
-//  FWinMinMaxInfo.Free;
+  FWinMinMaxInfo.Free;
   inherited Destroy;
 end;
 
@@ -617,7 +297,7 @@ begin
   begin
     if Loading then
       SetEvents;
-    CheckToggleHook;
+    
   end;
 end;
 
@@ -657,8 +337,8 @@ end;
 
 procedure TJvFormPlacement.SetAppStoragePath(Value: string);
 begin
-  if (Value <> '') and (AnsiLastChar(Value) <> PathDelim) then
-    Value := Value + PathDelim;
+  if (Value <> '') and (AnsiLastChar(Value) <> '\') then
+    Value := Value + '\';
   if Value <> AppStoragePath then
     FAppStoragePath := Value;
 end;
@@ -675,6 +355,10 @@ begin
       OnCloseQuery := FormCloseQuery;
       FSaveFormDestroy := OnDestroy;
       OnDestroy := FormDestroy;
+      
+      FSaveFormConstrainedResize := OnConstrainedResize;
+      OnConstrainedResize := FormConstrainedResize;
+      
       FDefMaximize := (biMaximize in BorderIcons);
     end;
     if FPreventResize then
@@ -690,26 +374,13 @@ begin
       OnShow := FSaveFormShow;
       OnCloseQuery := FSaveFormCloseQuery;
       OnDestroy := FSaveFormDestroy;
+      
+      OnConstrainedResize := FSaveFormConstrainedResize;
+      
     end;
 end;
 
-procedure TJvFormPlacement.SetHook;
-begin
-  
-end;
 
-procedure TJvFormPlacement.ReleaseHook;
-begin
-  
-end;
-
-procedure TJvFormPlacement.CheckToggleHook;
-begin
-  if CheckMinMaxInfo or PreventResize then
-    SetHook
-  else
-    ReleaseHook;
-end;
 
 function TJvFormPlacement.CheckMinMaxInfo: Boolean;
 begin
@@ -719,8 +390,7 @@ end;
 procedure TJvFormPlacement.MinMaxInfoModified;
 begin
   UpdatePlacement;
-  if not (csLoading in ComponentState) then
-    CheckToggleHook;
+  
 end;
 
 procedure TJvFormPlacement.SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
@@ -770,13 +440,47 @@ begin
     FSaveFormDestroy(Sender);
 end;
 
+
+procedure TJvFormPlacement.FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight,
+  MaxWidth, MaxHeight: Integer);
+begin
+  if FPreventResize and (Owner is TCustomForm) then
+  begin
+    if FWinMinMaxInfo.MinTrackWidth <> 0 then
+      MinWidth := FWinMinMaxInfo.MinTrackWidth;
+    if FWinMinMaxInfo.MinTrackHeight <> 0 then
+      MinHeight := FWinMinMaxInfo.MinTrackHeight;
+    {
+    if FWinMinMaxInfo.MaxTrackWidth <> 0 then
+      ptMaxTrackSize.X := FWinMinMaxInfo.MaxTrackWidth;
+    if FWinMinMaxInfo.MaxTrackHeight <> 0 then
+      ptMaxTrackSize.Y := FWinMinMaxInfo.MaxTrackHeight;
+    }
+
+    if FWinMinMaxInfo.MaxSizeWidth <> 0 then
+      MaxWidth := FWinMinMaxInfo.MaxSizeWidth;
+    if FWinMinMaxInfo.MaxSizeHeight <> 0 then
+      MaxHeight := FWinMinMaxInfo.MaxSizeHeight;
+
+    if FWinMinMaxInfo.MaxPosLeft <> 0 then
+      if TCustomForm(Owner).Left > FWinMinMaxInfo.MaxPosLeft then
+        TCustomForm(Owner).Left := FWinMinMaxInfo.MaxPosLeft;
+    if FWinMinMaxInfo.MaxPosTop <> 0 then
+      if TCustomForm(Owner).Top > FWinMinMaxInfo.MaxPosTop then
+        TCustomForm(Owner).Top := FWinMinMaxInfo.MaxPosTop;
+  end;
+  if Assigned(FSaveFormConstrainedResize) then
+    FSaveFormConstrainedResize(Sender, MinWidth, MinHeight, MaxWidth, MaxHeight);
+end;
+
+
 procedure TJvFormPlacement.UpdatePlacement;
 const
   
   
   Metrics: array[fbsSingle..fbsSizeToolWin] of TSysMetrics =
-    (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME, SM_CXBORDER, SM_CXFRAME);
   
+    (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME, SM_CXBORDER, SM_CXFRAME);
 var
   Placement: TWindowPlacement;
 begin
@@ -824,8 +528,7 @@ begin
     finally
       Active := IsActive;
     end;
-    if not (csLoading in ComponentState) then
-      CheckToggleHook;
+    
   end;
 end;
 
@@ -855,10 +558,9 @@ procedure TJvFormPlacement.SavePlacement;
 begin
   if Owner is TCustomForm then
   begin
-    if Options * [fpState, fpPosition] <> [] then
+    if Options <> [fpActiveControl] then
     begin
-      InternalSaveFormPlacement(Form, AppStorage, AppStoragePath, fpState in Options,
-        fpPosition in Options);
+      JvJVCLUtils.InternalSaveFormPlacement(Form, AppStorage, AppStoragePath, Options);
       AppStorage.WriteInteger(AppStoragePath + siVisible, Ord(FDestroying));
       if (fpActiveControl in Options) and (Form.ActiveControl <> nil) then
         AppStorage.WriteString(AppStoragePath + siActiveCtrl, Form.ActiveControl.Name);
@@ -871,8 +573,7 @@ procedure TJvFormPlacement.RestorePlacement;
 begin
   if Owner is TCustomForm then
   begin
-    InternalRestoreFormPlacement(Form, AppStorage, AppStoragePath, fpState in Options,
-      fpPosition in Options);
+    JvJVCLUtils.InternalRestoreFormPlacement(Form, AppStorage, AppStoragePath, Options);
   end;
   NotifyLinks(poRestore);
 end;
@@ -1237,7 +938,7 @@ procedure TJvStoredValue.SetDisplayName(const Value: string);
 begin
   if (Value <> '') and (AnsiCompareText(Value, FName) <> 0) and
     (Collection is TJvStoredValues) and (TJvStoredValues(Collection).IndexOf(Value) >= 0) then
-    raise EJVCLException.Create(SDuplicateString);
+    raise EJVCLException.CreateRes(@SDuplicateString);
   FName := Value;
   inherited;
 end;

@@ -135,7 +135,7 @@ type
 
 
 const
-  CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
+  CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
 
 
 type
@@ -771,7 +771,7 @@ begin
   end;
 end;
 
-{$IFDEF _COMPILER6}
+{$IFDEF COMPILER6}
 
 // redirect Kylix 3 / Delphi 7 function names to Delphi 6 available function
 {$IF not declared(PatchedVCLX)}

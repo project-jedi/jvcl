@@ -54,7 +54,7 @@ unit JvQTimerList;
 interface
 
 uses
-  Windows, Messages, Classes;
+  Windows, Messages, SysUtils, Classes;
 
 const
   DefaultInterval = 1000;
@@ -169,7 +169,11 @@ type
 implementation
 
 uses
-  Consts, Forms, SysUtils, Math,
+  
+  
+  QConsts,
+  
+  Math,
   JvQJVCLUtils, JvQResources, JvQTypes;
 
 const
@@ -334,7 +338,10 @@ begin
         else
           UpdateTimer;
       except
-        Application.HandleException(Self);
+        
+        
+        ApplicationHandleException(Self);
+        
       end
       else
         Result := DefWindowProc(FWndHandle, Msg, WParam, LParam);
@@ -370,7 +377,7 @@ begin
         if SetTimer(FWndHandle, 1, TimerInterval, nil) = 0 then
         begin
           Events.Deactivate;
-          raise EOutOfResources.Create(SNoTimers);
+          raise EOutOfResources.CreateRes(@SNoTimers);
         end;
     end;
   end;
@@ -427,7 +434,7 @@ end;
 constructor TJvTimerEvents.Create(AOwner: TPersistent);
 begin
   if not (AOwner is TJvTimerList) then
-    raise EJVCLException.Create(RsEOwnerMustBeTJvTimerList);
+    raise EJVCLException.CreateRes(@RsEOwnerMustBeTJvTimerList);
   inherited Create(AOwner, TJvTimerEvent);
   FParent := TJvTimerList(AOwner);
 end;
