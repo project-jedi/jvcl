@@ -33,7 +33,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Buttons, StdCtrls,
-  JvSpeedButton, JvCustomBox, JvDirectoryBox, JvSearchFile, JvComponent;
+  JvSpeedButton, JvToolEdit, JvSearchFile, JvComponent, Mask;
 
 type
   TfoWallpaperChooser = class(TForm)
@@ -41,15 +41,16 @@ type
     BUSpeedButton1: TJvSpeedButton;
     BUSpeedButton2: TJvSpeedButton;
     BUSearchFile1: TJvSearchFile;
-    BUDirectoryBox1: TJvDirectoryBox;
+    BUDirectoryBox1: TJvDirectoryEdit;
     Label1: TLabel;
     ScrollBox1: TScrollBox;
     BUSpeedButton3: TJvSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure BUDirectoryBox1Opened(Sender: TObject; Value: string);
     procedure BUSearchFile1Found(Sender: TObject; Path: string);
     procedure BUSpeedButton3Click(Sender: TObject);
+    procedure BUDirectoryBox1AfterDialog(Sender: TObject; var Name: String;
+      var Action: Boolean);
   private
     FList: TList;
     FLastBtn: TSpeedButton;
@@ -82,17 +83,6 @@ end;
 
 {******************************************************}
 
-procedure TfoWallpaperChooser.BUDirectoryBox1Opened(Sender: TObject;
-  Value: string);
-var
-  i: Integer;
-begin
-  for i := 0 to FList.Count - 1 do
-    TSpeedButton(FList.Items[i]).Free;
-  FList.Clear;
-  FLastBtn := nil;
-  BUSearchFile1.Execute(Value);
-end;
 
 {******************************************************}
 
@@ -157,6 +147,19 @@ begin
   Image.Assign(nil);
   if Assigned(OnGlyph) then
     OnGlyph(nil);
+end;
+
+procedure TfoWallpaperChooser.BUDirectoryBox1AfterDialog(Sender: TObject;
+  var Name: String; var Action: Boolean);
+var
+  i: Integer;
+begin
+  for i := 0 to FList.Count - 1 do
+    TSpeedButton(FList.Items[i]).Free;
+  FList.Clear;
+  FLastBtn := nil;
+  { TODO : Test if this works }
+  BUSearchFile1.Execute(Name);
 end;
 
 end.

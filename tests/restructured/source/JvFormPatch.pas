@@ -32,8 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Buttons, StdCtrls,
-  JvSpeedButton, JvCustomBox, JvFileNameBox;
+  Buttons, StdCtrls, JvSpeedButton, JvToolEdit, Mask;
 
 type
   TfoPatch = class(TForm)
@@ -44,8 +43,8 @@ type
     Label2: TLabel;
     Label3: TLabel;
     Edit1: TEdit;
-    BUFileNameBox1: TJvFileNameBox;
-    BUFileNameBox2: TJvFileNameBox;
+    BUFileNameBox1: TJvFileNameEdit;
+    BUFileNameBox2: TJvFileNameEdit;
     procedure BUButton1Click(Sender: TObject);
   private
     FPos: Integer;
