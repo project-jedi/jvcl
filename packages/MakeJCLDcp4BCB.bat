@@ -30,19 +30,19 @@ del %TEMP%\dummy.bat
 
 
 : get rid of the quotes around ROOT, DCPDIR and JCLDIR
-if EXIST ..\devtools\bin\NoQuotes.exe then goto NoQuotesExists
+if EXIST ..\devtools\bin\NoQuotes.exe goto NoQuotesExists
 cd ..\devtools\NoQuotes
 dcc32.exe -e..\bin NoQuotes.dpr
-cd ..\bin
+cd ..\..\packages
+
 :NoQuotesExists
-NoQuotes ROOT %ROOT%
+..\devtools\bin\NoQuotes ROOT %ROOT%
 Call NoQuotesBatch.bat
-if not %DCPDIR%!==! NoQuotes DCPDIR %DCPDIR%
+if not %DCPDIR%!==! ..\devtools\bin\NoQuotes DCPDIR %DCPDIR%
 Call NoQuotesBatch.bat
-NoQuotes JCLDIR %JCLDIR%
+..\devtools\bin\NoQuotes JCLDIR %JCLDIR%
 Call NoQuotesBatch.bat
 del /f NoQuotesBatch.bat
-cd ..\..\packages
 
 if %DCPDIR%!==! set DCPDIR=%ROOT%\Projects\Bpl
 
@@ -61,29 +61,30 @@ cd ..\packages
 : ensure we have pg.exe
 if EXIST ..\devtools\bin\pg.exe goto PgExists
 cd ..\devtools\PackagesGenerator
-dcc32.exe -e..\bin -I"..\..\Common" -n"..\Dcu" -R"..\..\Run;..\..\Common;%JCLDIR%\source\common;%JCLDIR%\source\windows;..\..\..\jcl\source\vcl;..\..\..\jcl\sour
-ce\visclx;..\..\Archive;..\Dcu" -u"..\..\Run;..\Common;..\..\Common;..\..\..\jcl
-\source;..\..\..\jcl\source\common;..\..\..\jcl\source\windows;..\..\..\jcl\sour
-ce\vcl;..\..\..\jcl\source\visclx;..\..\Archive;..\Dcu" -q -w -h -m pg.dprecho.
-cd ..\packages
+dcc32.exe -e..\bin -I"..\..\Common;%JCLDIR%\source" -n"..\Dcu" -U"..\..\Run;..\..\Common;%JCLDIR%\source\common;%JCLDIR%\source\windows;%JCLDIR%\source\vcl;%JCLDIR%\source\visclx;..\Dcu" -q -w -h -m pg.dpr
+echo.
+cd ..\..\packages
 
 :PgExists
 
 : copy the required files into the JCL packages dir
+echo Copying template...
 copy /D /Y .\jcldcpdpk%VERSION%.tpl "%JCLDIR%\packages\c%VERSION%\template.dpk"
+echo.
 
 : generate the packages from the xml files
 
 ..\devtools\bin\pg -m=JCL -p="%JCLDIR%\Packages" -t=c%VERSION% -x=..\devtools\bin\pgEdit.xml
+echo.
 
 cd %JCLDIR%\packages\c%VERSION%
 
-echo %JCLDIR%
-echo %ROOT%
-echo %VERSION%
+echo Compiling the JCL dcp files...
 : compile the generated packages
-for %%f in ("C*.dpk") do %ROOT%\bin\dcc32 -I"..\..\source" -I"..\..\source\common" -U"..\..\source\common" -U"..\..\source\windows" -U"..\..\source\vcl" -U"%JCLDIR%\source\visclx" "%%f"
+for %%f in ("C*.dpk") do %ROOT%\bin\dcc32 -I"..\..\source;..\..\source\common" -U"..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx" "%%f"
+echo.
 
+echo Copying dcp files...
 : copy the resulting files where they should go
 for %%f in (*.dcp) do xcopy /y %%f "%DCPDIR%\"
 
