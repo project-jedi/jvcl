@@ -48,13 +48,14 @@ type
   published
     property Text: string read FValue write SetValue;
     property Html: string read FHtml write SetHtml;
-    function CharToHtml(Ch: Char): string;
     function TextToHtml(Text: string): string;
     function HtmlToText(Text: string): string;
   end;
 
 function StringToHtml(Value: string): string;
 function HtmlToString(Value: string): string;
+function CharToHtml(Ch: Char): string;
+
 
 implementation
 
@@ -147,20 +148,7 @@ const
     (Ch: 'ÿ'; Html: '&#255;')
     );
 
-  {**************************************************}
 
-function TJvStrToHtml.CharToHtml(Ch: Char): string;
-var
-  I: Integer;
-begin
-  for I := Low(Conversions) to High(Conversions) do
-    if Conversions[I].Ch = Ch then
-    begin
-      Result := Conversions[I].Html;
-      Exit;
-    end;
-  Result := Ch;
-end;
 
 {**************************************************}
 
@@ -174,12 +162,8 @@ end;
 {**************************************************}
 
 function TJvStrToHtml.HtmlToText(Text: string): string;
-var
-  I: Integer;
 begin
-  Result := '';
-  for I := 1 to Length(Text) do
-    Result := Result + CharToHtml(Text[I]);
+  Result := HTMLToString(Text);
 end;
 
 {**************************************************}
@@ -199,6 +183,13 @@ end;
 {**************************************************}
 
 function TJvStrToHtml.TextToHtml(Text: string): string;
+begin
+  Result := StringToHTML(Text);
+end;
+
+{**************************************************}
+
+function StringToHtml(Value: string): string;
 var
   i: Integer;
 begin
@@ -210,26 +201,26 @@ end;
 
 {**************************************************}
 
-// (rom) this is silly. Better base the component methods on the functions.
-
-function StringToHtml(Value: string): string;
+function HtmlToString(Value: string): string;
+var
+  I: Integer;
 begin
-  with TJvStrToHtml.Create(nil) do
-  begin
-    Result := TextToHtml(Value);
-    Free;
-  end;
+  Result := '';
+  for I := 1 to Length(Text) do
+    Result := Result + CharToHtml(Text[I]);
 end;
 
-{**************************************************}
-
-function HtmlToString(Value: string): string;
+function CharToHtml(Ch: Char): string;
+var
+  I: Integer;
 begin
-  with TJvStrToHtml.Create(nil) do
-  begin
-    Result := HtmlToText(Value);
-    Free;
-  end;
+  for I := Low(Conversions) to High(Conversions) do
+    if Conversions[I].Ch = Ch then
+    begin
+      Result := Conversions[I].Html;
+      Exit;
+    end;
+  Result := Ch;
 end;
 
 end.
