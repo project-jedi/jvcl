@@ -3,8 +3,9 @@ unit Unit1;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,JvTimeLine,
-  ComCtrls, StdCtrls, ExtCtrls, Menus, ImgList, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  JvTimeLine,  ComCtrls, StdCtrls, ExtCtrls, Menus, ImgList, JvComponent;
+
 type
   TForm1 = class(TForm)
     ImageList1: TImageList;
@@ -95,11 +96,6 @@ type
     procedure TimeLine1DrawItem(Sender: TObject; Canvas: TCanvas;
       Item: TJvTimeItem; var R: TRect);
     procedure dtpFirstDateChange(Sender: TObject);
-    procedure TimeLine1MouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure TimeLine1DragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
-    procedure TimeLine1DragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure btnColorClick(Sender: TObject);
     procedure Up1Click(Sender: TObject);
     procedure Down1Click(Sender: TObject);
@@ -114,11 +110,16 @@ type
     procedure ColorBtnClick(Sender: TObject);
     procedure Disable1Click(Sender: TObject);
     procedure TimeLine1ItemClick(Sender: TObject; Item: TJvTimeItem);
-    procedure TimeLine1DblClick(Sender: TObject);
+    procedure TimeLine1ItemMoved(Sender: TObject; Item: TJvTimeItem;
+      NewStartDate: TDateTime);
+    procedure TimeLine1DragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure TimeLine1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure TimeLine1DragDrop(Sender, Source: TObject; X, Y: Integer);
   private
     { Private declarations }
     FCurColor:TColor;
-    DeltaX,DeltaY:integer;
   public
     { Public declarations }
   end;
@@ -374,7 +375,7 @@ begin
   Stream.Read(ch,1);
   while ch <> #27 do
   begin
-    AppendStr(S,ch);
+    S := S + ch;
     Stream.Read(ch,1);
   end;
 
@@ -406,24 +407,27 @@ procedure TForm1.TimeLine1DrawItem(Sender: TObject; Canvas: TCanvas;
   Item: TJvTimeItem; var R: TRect);
 var S:string;
 begin
-  Canvas.Brush.Color := clBlack;
-  Canvas.FrameRect(R);
+//  Canvas.Brush.Color := clBlack;
+//  Canvas.FrameRect(R);
 
-  Canvas.Brush.Color := RGB(Random(255),Random(255),Random(255));
+//  Canvas.Brush.Color := RGB(Random(255),Random(255),Random(255));
   Canvas.FillRect(R);
   if TimeLine1.Images <> nil then
   begin
+    TimeLine1.Images.Draw(Canvas,R.Left,R.Top,Item.ImageIndex);
+{
     if Item.Selected then
       TimeLine1.Images.Draw(Canvas,R.Left,R.Top,Random(TimeLine1.Images.Count))
     else
       TimeLine1.Images.Draw(Canvas,R.Right - TimeLine1.Images.Width,R.Top,Item.ImageIndex);
+    }
   end;
 
-  if (Random > 0.5) and Item.Selected then
-    S := strrev(Item.Caption)
-  else
+//  if (Random > 0.5) and Item.Selected then
+//    S := strrev(Item.Caption)
+//  else
     S := Item.Caption;
-  Canvas.Font.Color := Canvas.Brush.Color xor clWhite;
+//  Canvas.Font.Color := Canvas.Brush.Color xor clWhite;
   DrawText(Canvas.Handle,PChar(' ' + S),-1,R,DT_LEFT or DT_BOTTOM or DT_SINGLELINE);
 end;
 
@@ -431,38 +435,6 @@ procedure TForm1.dtpFirstDateChange(Sender: TObject);
 begin
   TimeLine1.FirstVisibleDate := dtpFirstDate.Date;
   dtpFirstDate.Date := TimeLine1.FirstVisibleDate;
-end;
-
-procedure TForm1.TimeLine1MouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  if (Button = mbLeft) and (TimeLine1.Selected <> nil) then
-    TimeLine1.BeginDrag(False);
-end;
-
-procedure TForm1.TimeLine1DragOver(Sender, Source: TObject; X, Y: Integer;
-  State: TDragState; var Accept: Boolean);
-begin
-  Accept := Sender = Source;
-  if Accept then
-    Caption := Format('Current date: %s',[DateToStr(TimeLine1.DateAtPos(X))]);
-end;
-
-procedure TForm1.TimeLine1DragDrop(Sender, Source: TObject; X, Y: Integer);
-var aDate:TDateTime;S:string;
-begin
-   if (Sender = Source) and Assigned(TimeLine1.Selected) then
-   begin
-     aDate := TimeLine1.DateAtPos(X);
-     S := DateToStr(aDate);
-     { make sure the user really intended to do the drag to this date: }
-     if InputQuery('Confirm move',Format('Move "%s" to new date:',[TimeLine1.Selected.Caption]),S) then
-     begin
-       TimeLine1.Selected.Date := StrToDate(S);
-       TimeLine1.Selected.Level := TimeLine1.LevelAtPos(Y);
-     end;
-   end;
-   TimeLine1.EndDrag(Sender = Source);
 end;
 
 procedure TForm1.btnColorClick(Sender: TObject);
@@ -594,18 +566,38 @@ begin
   Caption := Item.Caption;
 end;
 
-procedure TForm1.TimeLine1DblClick(Sender: TObject);
+procedure TForm1.TimeLine1ItemMoved(Sender: TObject; Item: TJvTimeItem;
+  NewStartDate: TDateTime);
 var S:string;
 begin
-{ Doesn't work - drag image appears - what's up ? }
-  if TimeLine1.Selected <> nil then
+  if TimeLine1.Dragging then Exit;
+  S := DateToStr(NewStartDate);
+  if InputQuery('Confirm move',Format('Move "%s" to new date:',[Item.Caption]),S) then
+     Item.Date := StrToDate(S);
+end;
+
+procedure TForm1.TimeLine1DragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  Accept := Sender = Source;
+end;
+
+procedure TForm1.TimeLine1MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if (ssCtrl in Shift) and (Button = mbLeft) and not (TimeLine1.DragMode = dmAutomatic) then
+    TimeLine1.BeginDrag(Mouse.DragImmediate,Mouse.DragThreshold);
+end;
+
+procedure TForm1.TimeLine1DragDrop(Sender, Source: TObject; X, Y: Integer);
+var S:string;
+begin
+  if (Sender = Source) and (TimeLine1.Selected <> nil) then
   begin
-   S := DateToStr(TimeLine1.Selected.Date);
-   if InputQuery('Confirm move',Format('Move "%s" to new date:',[TimeLine1.Selected.Caption]),S) then
-     TimeLine1.Selected.Date := StrToDate(S);
+    S := DateToStr(TimeLine1.DateAtPos(X));
+    if InputQuery('Confirm move',Format('Move "%s" to new date:',[TimeLine1.Selected.Caption]),S) then
+       TimeLine1.Selected.Date := StrToDate(S);
   end;
-  TimeLine1.EndDrag(false);
-  CancelDrag;
 end;
 
 end.

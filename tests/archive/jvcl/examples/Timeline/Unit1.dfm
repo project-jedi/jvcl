@@ -58,7 +58,6 @@ object Form1: TForm1
     TabOrder = 0
     OnMouseDown = TimeLine1MouseDown
     OnMouseMove = TimeLine1MouseMove
-    OnDblClick = TimeLine1DblClick
     OnClick = TimeLine1Click
     OnDragOver = TimeLine1DragOver
     OnDragDrop = TimeLine1DragDrop
@@ -239,6 +238,10 @@ object Form1: TForm1
     OnDrawItem = TimeLine1DrawItem
     OnSaveItem = TimeLine1SaveItem
     OnLoadItem = TimeLine1LoadItem
+    OnItemMoved = TimeLine1ItemMoved
+    DesignSize = (
+      688
+      196)
   end
   object Panel2: TPanel
     Left = 0
