@@ -980,7 +980,12 @@ var
 begin
   if csDestroying in ComponentState then
     Exit;
-  if Enabled then
+  { PaintEdit does not work well when the edit is themed (and ThemedPassword=true),
+    as a workaround check if the disabled colors are set to the default so
+    the edit can paint itself (We must check both colors, although only
+    DisabledTextColor is passed on to PaintEdit; PaintEdit triggers a
+    DoEraseBackground call) }
+  if Enabled or ((DisabledTextColor = clGrayText) and (DisabledColor = clWindow)) then
     inherited
   else
   begin
