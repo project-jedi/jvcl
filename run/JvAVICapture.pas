@@ -514,20 +514,20 @@ type
     // published properties, refer to the field and methods descriptions for details
     property AudioFormat: TJvAudioFormat read FAudioFormat;
     property CaptureSettings: TJvCaptureSettings read FCaptureSettings;
-    property DriverIndex: TJvDriverIndex read FDriverIndex write SetDriverIndex;
+    property DriverIndex: TJvDriverIndex read FDriverIndex write SetDriverIndex default -1;
     property FileName: TFileName read GetFileName write SetFileName;
-    property FileSizeAlloc: Cardinal read FFileSizeAlloc write SetFileSizeAlloc;
+    property FileSizeAlloc: Cardinal read FFileSizeAlloc write SetFileSizeAlloc default 0;
     property MCIDevice: string read GetMCIDevice write SetMCIDevice;
-    property NoFile: Boolean read FNoFile write SetNoFile;
-    property Overlaying: Boolean read FOverlaying write SetOverlaying;
-    property PreviewFrameDelay: Cardinal read FPreviewFrameDelay write SetPreviewFrameDelay;
+    property NoFile: Boolean read FNoFile write SetNoFile default False;
+    property Overlaying: Boolean read FOverlaying write SetOverlaying default False;
+    property PreviewFrameDelay: Cardinal read FPreviewFrameDelay write SetPreviewFrameDelay default 50;
     property PreviewFPS: Double read GetPreviewFPS write SetPreviewFPS;
-    property Previewing: Boolean read FPreviewing write SetPreviewing;
+    property Previewing: Boolean read FPreviewing write SetPreviewing default False;
     property ScrollPos: TJvScrollPos read FScrollPos write SetScrollPos;
     property Title: string read FTitle write SetTitle;
-    property UsedEvents: TJvUsedEvents read FUsedEvents write SetUsedEvents;
-    property VideoLeft: Integer read FVideoLeft write SetVideoLeft;
-    property VideoTop: Integer read FVideoTop write SetVideoTop;
+    property UsedEvents: TJvUsedEvents read FUsedEvents write SetUsedEvents default [];
+    property VideoLeft: Integer read FVideoLeft write SetVideoLeft default 0;
+    property VideoTop: Integer read FVideoTop write SetVideoTop default 0;
     // inherited properties getting published
     property AutoSize;
     property ParentShowHint;
@@ -1016,6 +1016,12 @@ begin
   FScrollPos := TJvScrollPos.Create;
   // Not connected yet
   FDriverIndex := -1;
+  FFileSizeAlloc := 0;
+  FOverlaying := False;
+  FPreviewing := False;
+  FUsedEvents := [];
+  FVideoLeft := 0;
+  FVideoTop := 0;
   FDrivers := TStringList.Create;
   // Preview frame delay = 50ms between frames (20 frames per second)
   FPreviewFrameDelay := 50;
@@ -1084,7 +1090,7 @@ begin
   FPalette.FHWnd := FHWnd;
   FVideoFormat.FHWnd := FHWnd;
   // sets the callbacks
-  UsedEvents := fUsedEvents;
+  UsedEvents := FUsedEvents;
 end;
 
 procedure TJvAVICapture.DestroyWindowHandle;
@@ -1714,7 +1720,7 @@ var
   P: TPoint;
 begin
   P.X := Value;
-  P.Y := FVideoTop;
+  P.Y := VideoTop;
   if capSetScrollPos(FHWnd, @P) then
     FVideoLeft := Value;
 end;
@@ -1723,7 +1729,7 @@ procedure TJvAVICapture.SetVideoTop(const Value: Integer);
 var
   P: TPoint;
 begin
-  P.X := FVideoLeft;
+  P.X := VideoLeft;
   P.Y := Value;
   if capSetScrollPos(FHWnd, @P) then
     FVideoTop := Value;

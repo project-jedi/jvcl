@@ -20,10 +20,8 @@
   <Contains>
     <File Name="..\..\run\JvZlibMultiple.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCabFile.pas" Targets="windows" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCaesarCipher.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCipher.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvGenetic.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSerialMaker.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvVigenereCipher.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvXorCipher.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
