@@ -1890,14 +1890,12 @@ begin
   begin
     Visible := False;
     SetBounds(R.Right - 23, R.Top + 25, 16, 16);
-    SetZorder(True);
   end;
 
   with FDwnArrow do
   begin
     Visible := False;
     SetBounds(R.Right - 23, R.Bottom - 23, 16, 16);
-    SetZorder(True);
   end;
 
   if Assigned(Parent) and (Parent is TJvLookOut) then
@@ -1905,7 +1903,11 @@ begin
     FManager := TJvLookOut(Parent);
     FOnCollapse := FManager.FOnCollapse;
   end;
-
+  if GetParentForm(self) <> nil then
+  begin
+    FUpArrow.SetZorder(True);
+    FDwnArrow.SetZorder(True);
+  end;
 end;
 
 procedure TJvLookOutPage.Click;
