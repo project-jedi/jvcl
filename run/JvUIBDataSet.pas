@@ -152,9 +152,7 @@ type
     property BufferChunks;
     property Transaction;
     property Database;
-{$IFDEF COMPILER6_UP}
     property UniDirectional;
-{$ENDIF}
     property OnClose;
     property OnError;
     property SQL;
@@ -181,7 +179,7 @@ begin
   if DefaultFields then
     CreateFields;
   BindFields (True);
-  FStatement.Execute;
+  FStatement.Open(False);
   FCurrentRecord := -1;
   FComplete := False;
   FRecordBufferSize := FRecordSize + sizeof (TUIBBookMark);
@@ -442,14 +440,18 @@ begin
 end;
 
 procedure TJvUIBCustomDataSet.InternalInitFieldDefs;
-var i: Integer;
+var
+  i: Integer;
 {$IFDEF FPC}
-    aName    : string;
-    FieldNo  : Integer;
-    Required : Boolean;
-    DataType : TFieldType;
-    Size     : Word;
-    Precision: Integer;
+  aName    : string;
+  FieldNo  : Integer;
+  Required : Boolean;
+  DataType : TFieldType;
+  Size     : Word;
+  Precision: Integer;
+{$ELSE}
+  count  : Integer;
+  TmpName: string;
 {$ENDIF}
 begin
   FStatement.Prepare;
@@ -459,19 +461,30 @@ begin
   FieldDefs.Clear;
   try
     for i := 0 to FStatement.Fields.FieldCount - 1 do
-    with {$IFNDEF FPC}FieldDefs.AddFieldDef,{$ENDIF}FStatement.Fields do
+    with {$IFNDEF FPC} FieldDefs.AddFieldDef,{$ENDIF} FStatement.Fields do
     begin
-      {$IFNDEF FPC}
-      Name := AliasName[i];
-      {$ELSE}
+    {$IFNDEF FPC}
+      count := 1;
+      TmpName := AliasName[i];
+      while TDefCollection(Collection).IndexOf(TmpName) >= 0 do
+      begin
+        TmpName := TmpName + inttostr(count);
+        inc(count);
+      end;
+      Name := TmpName;
+    {$ELSE}
       AName := AliasName[i];
       Precision:=-1;
-      {$ENDIF}
+    {$ENDIF}
       FieldNo := i;
       Required := not IsNullable[i];
       case FieldType[i] of
         uftNumeric:
           begin
+          {$IFDEF FPC}
+             DataType := ftFloat;
+          {$ELSE}
+
             case SQLType[i] of
               SQL_SHORT:
                 begin
@@ -512,6 +525,7 @@ begin
             else
               //raise
             end;
+          {$ENDIF}
           end;
         uftChar,
         uftCstring,
@@ -525,7 +539,7 @@ begin
         uftFloat,
         uftDoublePrecision: DataType := ftFloat;
         uftTimestamp: DataType := ftDateTime;
-        uftBlob :
+        uftBlob, uftBlobId:
           begin
             if Data.sqlvar[i].SqlSubType = 1 then
               DataType := ftMemo else
@@ -534,7 +548,12 @@ begin
           end;
         uftDate : DataType := ftDate;
         uftTime : DataType := ftTime;
-        uftInt64: DataType := ftLargeint;
+        uftInt64:
+        {$IFDEF FPC}
+          DataType := ftInteger; // :(
+        {$ELSE}
+          DataType := ftLargeint;
+        {$ENDIF}
       {$IFDEF IB7_UP}
         uftBoolean: DataType := ftBoolean;
       {$ENDIF}
@@ -578,7 +597,6 @@ begin
     Result := True;
     Exit;
   end;
-
   FieldType := FStatement.Fields.FieldType[FieldNo];
   with FStatement.Fields.Data.sqlvar[FieldNo] do
   case FieldType of
@@ -593,7 +611,11 @@ begin
                   {$IFDEF COMPILER5_UP}
                     CurrToBcd(PSmallint(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
                   {$ELSE}
-                     PCurrency(Buffer)^ := PSmallint(sqldata)^/scaledivisor[sqlscale];
+                    {$IFDEF FPC}
+                       PExtended(Buffer)^ := PSmallint(sqldata)^/scaledivisor[sqlscale];
+                    {$ELSE}
+                       PCurrency(Buffer)^ := PSmallint(sqldata)^/scaledivisor[sqlscale];
+                    {$ENDIF}
                   {$ENDIF}
                 {$ENDIF}
                 end;
@@ -605,7 +627,11 @@ begin
                   {$IFDEF COMPILER5_UP}
                     CurrToBcd(PInteger(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
                   {$ELSE}
-                    PCurrency(Buffer)^ := PInteger(sqldata)^/scaledivisor[sqlscale];
+                    {$IFDEF FPC}
+                      PExtended(Buffer)^ := PInteger(sqldata)^/scaledivisor[sqlscale];
+                    {$ELSE}
+                      PCurrency(Buffer)^ := PInteger(sqldata)^/scaledivisor[sqlscale];
+                    {$ENDIF}
                   {$ENDIF}
                 {$ENDIF}
                 end;
@@ -618,11 +644,16 @@ begin
                   {$IFDEF COMPILER5_UP}
                     CurrToBcd(PInt64(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
                   {$ELSE}
-                    PCurrency(Buffer)^ := PInt64(sqldata)^/scaledivisor[sqlscale];
+                    {$IFDEF FPC}
+                      PExtended(Buffer)^ := PInt64(sqldata)^/scaledivisor[sqlscale];
+                    {$ELSE}
+                      PCurrency(Buffer)^ := PInt64(sqldata)^/scaledivisor[sqlscale];
+                    {$ENDIF}
                   {$ENDIF}
                 {$ENDIF}
                 end;
-              SQL_DOUBLE: PDouble(Buffer)^ := PDouble(sqldata)^;
+              SQL_DOUBLE:
+                PDouble(Buffer)^ := PDouble(sqldata)^;
             else
               raise Exception.Create(EUIB_UNEXPECTEDCASTERROR);
             end;
@@ -640,14 +671,20 @@ begin
           end;
         uftSmallint: PSmallint(Buffer)^ := PSmallint(sqldata)^;
         uftInteger : PInteger(Buffer)^ := PInteger(sqldata)^;
-        uftFloat: PDouble(Buffer)^ := PSingle(sqldata)^;
-        uftDoublePrecision: PDouble(Buffer)^ := PDouble(sqldata)^;
+        uftFloat:
+            PDouble(Buffer)^ := PSingle(sqldata)^;
+        uftDoublePrecision:
+            PDouble(Buffer)^ := PDouble(sqldata)^;
         uftTimestamp:
           begin
-            DecodeTimeStamp(PIscTimeStamp(sqldata),  TTimeStamp(Buffer^));
-            Double(Buffer^) := TimeStampToMSecs(TTimeStamp(Buffer^));
+            {$IFDEF FPC}
+              DecodeTimeStamp(PIscTimeStamp(sqldata), PDouble(Buffer)^);
+            {$ELSE}
+              DecodeTimeStamp(PIscTimeStamp(sqldata),  TTimeStamp(Buffer^));
+              Double(Buffer^) := TimeStampToMSecs(TTimeStamp(Buffer^));
+            {$ENDIF}
           end;
-        uftBlob :
+        uftBlob, uftBlobId:
           begin
             if Buffer <> nil then
             begin
@@ -655,11 +692,31 @@ begin
               TStream(Buffer).Seek(0, soFromBeginning);
             end;
           end;
-        uftDate: PInteger(Buffer)^ := DecodeSQLDate(PInteger(sqldata)^) + 693594;
-        uftTime: PInteger(Buffer)^ := PCardinal(sqldata)^ div 10;
-        uftInt64: PInt64(Buffer)^ := PInt64(sqldata)^;
+        uftDate:
+          {$IFDEF FPC}
+            DecodeSQLDate(PInteger(sqldata)^, PDouble(Buffer)^);
+          {$ELSE}
+            PInteger(Buffer)^ := DecodeSQLDate(PInteger(sqldata)^) + 693594;
+          {$ENDIF}
+        uftTime:
+          {$IFDEF FPC}
+            PDouble(Buffer)^ := PCardinal(sqldata)^ / 864000000;
+          {$ELSE}
+            PInteger(Buffer)^ := PCardinal(sqldata)^ div 10;
+          {$ENDIF}
+        uftInt64:
+          {$IFDEF FPC}
+            PInteger(Buffer)^ := PInt64(sqldata)^;
+          {$ELSE}
+            PInt64(Buffer)^ := PInt64(sqldata)^;
+          {$ENDIF}
       {$IFDEF IB7_UP}
-        uftBoolean: WordBool(Buffer^) := PSmallInt(sqldata)^ = ISC_TRUE;
+        uftBoolean:
+          {$IFDEF FPC}
+            Boolean(Buffer^) := PSmallInt(sqldata)^ = ISC_TRUE;
+          {$ELSE}
+            WordBool(Buffer^) := PSmallInt(sqldata)^ = ISC_TRUE;
+          {$ENDIF}
       {$ENDIF}
       else
         raise EUIBError.Create(EUIB_UNEXPECTEDERROR);
