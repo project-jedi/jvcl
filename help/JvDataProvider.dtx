@@ -1,1379 +1,2177 @@
 ##Package: Core
-##Locked by: Marcel Bestebroer
+##Status: Generated
 ----------------------------------------------------------------------------------------------------
 @@JvDataProvider.pas
-<GROUP JVCL.FileRef>
 Summary
-  Contains the interface declarations of the DataProvider mechanism.
+  Contains the TJvDataProviderImpl component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  Marcel Bestebroer, Remko Bonte, Peter Thörnqvist
+  Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
-@@TClassArray
-<TITLE TClassArray type>
+@@DisabledTextRect
+<TITLE DisabledTextRect procedure>
 Summary
-  Dynamic TClass array.
+  Write here a summary (1 line)
 Description
-  TClassArray is a dynamic array of TClass pointers (class references). It's used primarily for the
-  IJvDataProvider.ConsumerClasses method to retrieve a list of consumer services to instantiate.
-See Also
-  IJvDataProvider.ConsumerClasses
-----------------------------------------------------------------------------------------------------
-@@TDataItemState
-<TITLE TDataItemState type>
-Summary
-  Type used to specify the state of a Data Item.
-Description
-  The TDataItemState type ise used to specify a specific state for a Data Item. For each setting
-  (Enabled, Visible and Checked) this type specifies if that settings is off, on, indetermined or
-  not used.
-See Also
-  IJvDataItemStates
-@@TDataItemState.disFalse
-  Specifies the setting is False or 'off'.
-@@TDataItemState.disTrue
-  Specifies the setting is True or 'on'.
-@@TDataItemState.disIndeterminate
-  Specifies the setting is 'indetermined' (neither False/off nor True/on).
-@@TDataItemState.disNotUsed
-  Specifies the setting is not used by this item.
-----------------------------------------------------------------------------------------------------
-@@TDataProviderChangeReason
-<TITLE TDataProviderChangeReason type>
-Summary
-  Type used to specify the change reason.
-Description
-  The TDataProviderChangeReason type is used to specify the reason why the
-  ProviderChanging/ProviderChanged methods are called.
-See Also
-  IJvDataProvider.Changing, IJvDataProvider.Changed, IJvDataProviderNotify
-@@TDataProviderChangeReason.pcrAdd
-  An item is about to be added or has just been added. The Source parameter will refer to the
-  IJvDataItems where the item is about to be added to (DataProviderChanging) or refers to the
-  IJvDataItem that has just been added (DataProviderChanged).
-@@TDataProviderChangeReason.pcrDelete
-  An item is about to be deleted or has just been deleted. The Source parameter will refer to the
-  IJvDataItem that is about to be deleted (DataProviderChanging) or refers to the IJvDataItems where
-  the item has been just removed from (DataProviderChanging). Note that any sub items are implicitly
-  also deleted, but there will be no additional calls to DataProviderChanging/DataProviderChanged
-  for them.
-@@TDataProviderChangeReason.pcrUpdateItem
-  An item is about to be changed or has just been changed. The Source parameter will refer to the
-  IJvDataItem that is about to change or has just changed. In general this change reason means that
-  one of the item's properties is changing, which also includes the properties of support
-  interfaces.
-@@TDataProviderChangeReason.pcrUpdateItems
-  An item list is about to be changed or has just been changed. The Source parameter will refer to
-  the IJvDataItems that is about to change or has just changed. In general this change reason means
-  that either the items list is about to be cleared (or has been cleared) or any of the items list
-  support interface's properties is changing (or has changed).
-@@TDataProviderChangeReason.pcrDestroy
-  The IJvDataProvider is destroying. This reason will only occur in the DataProviderChanging
-  notification.
-@@TDataProviderChangeReason.pcrContextAdd
-  A context is about to be added or has just been added. Source refers to the context the new
-  context is added to (or nil if the context is added at the root) or the context that has just been
-  added.
-@@TDataProviderChangeReason.pcrContextDelete
-  A context is about to be deleted or has just been deleted. Source refers to the context about to
-  be deleted or the context where a context has just been removed from (or nil if a context at the
-  root was deleted).
-@@TDataProviderChangeReason.pcrContextUpdate
-  A context is about to be changed or has just been changed. Source refers to the context changing
-  or changed. It usually signals the context name is changing or has changed.
-----------------------------------------------------------------------------------------------------
-@@TJvDataContextID
-<TITLE TJvDataContextID type>
-Summary
-  Type used to link the context selection editor to.
-Description
-  The TJvDataContextID type is used in the consumer services to allow linking a design time editor
-  to the Context property.
-----------------------------------------------------------------------------------------------------
-@@TJvDataItemID
-<TITLE TJvDataItemID type>
-Summary
-  Type used to link the item selection editor to.
-Description
-  The TJvDataItemID type is used in the consumer services to allow linking a design time editor to
-  the Item property.
-----------------------------------------------------------------------------------------------------
-@@TProviderDrawState
-<TITLE TProviderDrawState type>
-Summary
-  Type used to specify the draw state for the provider based rendering mechanism.
-Description
-  The TProviderDrawState type is used to specify the draw state for the provider based rendering
-  mechanism. It mostly follows the TOwnerDrawState type but adds a 'hot' state to the values.
-@@TProviderDrawState.pdsSelected
-  The item is currently selected.
-@@TProviderDrawState.pdsGrayed
-  The item is grayed out.
-@@TProviderDrawState.pdsDisabled
-  The item is disabled.
-@@TProviderDrawState.pdsChecked
-  The item is checked.
-@@TProviderDrawState.pdsFocused
-  The item has the focus.
-@@TProviderDrawState.pdsDefault
-  The item is the default item.
-@@TProviderDrawState.pdsHot
-  The item is hot (i.e. the mouse is hovering over it).
-----------------------------------------------------------------------------------------------------
-@@TProviderDrawStates
-<TITLE TProviderDrawStates type>
-<COMBINE TProviderDrawState>
-----------------------------------------------------------------------------------------------------
-@@IJvDataProvider
-Summary
-  Data Provider server interface.
-Description
-  IJvDataProvider is the main Data Provider interface. A component that is to function as a Data
-  Provider should always support this interface.
-  The interface provides methods that:
-  * allows registration/unregistration of change notifications
-  * allows retrieval of the root items list.
-  * allows change notification (both before and after changing)
-  * selection of current consumer/context
-  * various administrative tasks (destruction of consumer, specification of consumer service
-    extensions, allow provider designer and/or context manager).
-  Although any component could function as a Data Provider, it's often wise to use the JVCL provided
-  base classes (in the JvDataProviderImpl unit) to write new Data Providers as these classes deal
-  with most of the basics of the Data Provider mechanism so you can focus on writing the actual
-  provider.
-----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.RegisterChangeNotify
-Summary
-  Register a change notification callback interface.
-Description
-  RegisterChangeNotify is used to register a IJvDataProviderNotify interface. The methods of this
-  interface are called in response to changes at the provider. Usually the IJvDataProviderNotify
-  interface is handled by the consumer to update it's control as needed.
+  Write here a description
 Parameters
-  ANotify - Notification interface to register. If the specified reference is already registered,
-            nothing will happen.
+  ACanvas - Description for this parameter
+  ARect   - Description for this parameter
+  Left    - Description for this parameter
+  Top     - Description for this parameter
+  Text    - Description for this parameter
 See Also
-  UnregisterChangeNotify, IJvDataProviderNotify
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.UnregisterChangeNotify
+@@DP_FindItemsImages
+<TITLE DP_FindItemsImages function>
 Summary
-  Unregister a change notification callback interface.
+  Write here a summary (1 line)
 Description
-  UnregisterChangeNotify is used to unregister a IJvDataProviderNotify interface.
+  Write here a description
 Parameters
-  ANotify - Notification interface to unregister. If the specified reference is not registered,
-            nothing will happen.
+  AItem  - Description for this parameter
+  Images - Description for this parameter
 See Also
-  RegisterChangeNotify, IJvDataProviderNotify
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.GetItems
+@@DP_FindItemsIntf
+<TITLE DP_FindItemsIntf function>
 Summary
-  Retrieves the list of root items.
+  Write here a summary (1 line)
 Description
-  GetItems retrieves the IJvDataItems instance containing the list of root items. Each Data Provider
-  has to have an IJvDataItems instance so you can safely assume that GetItems will never return a
-  nil reference.
-
-  Note that it's common for the IJvDataProvider instance to support the IJvDataItems interface as
-  well. This means that if dpvMe contains a reference to IJvDataProvider that:
-<CODE>
-  dpvMe.QueryInterface(IJvDataItems, disRoot)
-</CODE>
-  will be the same as:
-<CODE>
-  disRoot := dpvMe.GetItems
-</CODE>
-See Also
-  IJvDataItems
-----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.Changing
-Summary
-  Will notify all registered notifiers a change is about to occur.
-Description
-  Call Changing to notify all registered change notifiers (IvDataProviderNotify instances registered
-  by a call to RegisterChangeNotify) a change is about to occur.
+  Write here a description
 Parameters
-  ChangeReason  - Reason why the change notification is used.
-  Source  -       Reference to an interface instance linked to the change. See the description of
-                  TDataProviderChangeReason to see the expected interface instances in each case.
+  AItem - Description for this parameter
+  IID   - Description for this parameter
+  Obj   - Description for this parameter
 See Also
-  Changed, RegisterChangeNotify, IJvDataProviderNotify
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.Changed
+@@DP_FindItemsRenderer
+<TITLE DP_FindItemsRenderer function>
 Summary
-  Will notify all registered notifiers a change has occured.
+  Write here a summary (1 line)
 Description
-  Call Changed to notify all registered change notifiers (IvDataProviderNotify instances registered
-  by a call to RegisterChangeNotify) a change has occured.
+  Write here a description
 Parameters
-  ChangeReason  - Reason why the change notification is used.
-  Source  -       Reference to an interface instance linked to the change. See the description of
-                  TDataProviderChangeReason to see the expected interface instances in each case.
+  AItem    - Description for this parameter
+  Renderer - Description for this parameter
 See Also
-  Changing, RegisterChangeNotify, IJvDataProviderNotify
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.ConsumerClasses
+@@DP_GenItemsList
+<TITLE DP_GenItemsList procedure>
 Summary
-  Retrieves a list of consumer service extension classes needed by the provider.
+  Write here a summary (1 line)
 Description
-  ConsumerClasses will retrieve a list of consumer service extension classes the provider needs to
-  be used properly.
-  
-  The list may be depending on the currently selected consumer and/or context, e.g. a consumer that
-  can only handle a single item at a time will require a consumer service extension that allows the
-  application developer to select the item to use.
-----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.SelectConsumer
-Summary
-  Selects a new consumer.
-Description
-  SelectConsumer selects a new consumer as the active consumer. The current consumer is pushed onto
-  a stack. Use ReleaseConsumer to return to it. When the provider is created no consumer is
-  selected.
-See Also
-  SelectedConsumer, ReleaseConsumer, SelectContext
-----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.SelectedConsumer
-Summary
-  Returns the last selected (currently active) consumer.
-Description
-  SelectedConsumer returns the currently active consumer. If no consumer is active it will return
-  nil.
-See Also
-  SelectConsumer, ReleaseConsumer, SelectedContext
-----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.ReleaseConsumer
-Summary
-  Deselects the current consumer, reselecting any previous selected consumer.
-Description
-  ReleaseConsumer deselects the currently active consumer, reactivating the consumer that was active
-  before it.
-See Also
-  SelectConsumer, SelectedConsumer, ReleaseContext
-----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.SelectContext
-Summary
-  Selects a new context.
-Description
-  SelectContext selects a new context as the active context. The current context is pushed onto
-  a stack. Use ReleaseContext to return to it. When the provider is created no context is
-  selected.
-See Also
-  SelectedContext, ReleaseContext, SelectConsumer
-----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.SelectedContext
-Summary
-  Returns the last selected (currently active) context.
-Description
-  SelectedContext returns the currently active context. If no context is active it will return
-  nil.
-See Also
-  SelectContext, ReleaseContext, SelectedConsumer
-----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.ReleaseContext
-Summary
-  Deselects the current context, reselecting any previous selected context.
-Description
-  ReleaseContext deselects the currently active context, reactivating the context that was active
-  before it.
-See Also
-  SelectContext, SelectedContext, ReleaseConsumer
-----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.ContextDestroying
-Summary
-  Called when a context is about to be destroyed.
-Description
-  ContextDestroying is called whenever a context is about to be destroyed. It's generally used to
-  notify all items a specific context (and all of it's child contexts) will be no longer available
-  so context specific data for these items can be destroyed. Usually this will be done by
-  redirecting the call to the root items list (GetItems). In addition ContextDestroying will clean
-  up the selected context stack and nilling any reference to the context and/or any of it's child
-  contexts (they are not removed from the stack as a ReleaseContext may follow later).
+  Write here a description
 Parameters
-  Context - Context about to be destroyed.
+  RootList - Description for this parameter
+  ItemList - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.ConsumerDestroying
+@@DP_OwnerDrawStateToProviderDrawState
+<TITLE DP_OwnerDrawStateToProviderDrawState function>
 Summary
-  Called when a consumer is about to be destroyed.
+  Write here a summary (1 line)
 Description
-  ConsumerDestroying is called whenever a consumer that used this provider is about to be destroyed.
-  It's generally used to clean-up the selected consumer stack and making any reference to that
-  consumer nil (it will not remove the references from the stack, as it might be possible a
-  ReleaseConsumer call will follow it later).
+  Write here a description
 Parameters
-  Consumer  - Consumer about to be destroyed.
-----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.AllowProviderDesigner
-Summary
-  Specifies if the provider allows it's tree to be designed at design time.
-Description
-  AllowProviderDesigner signals if the provider allows it's tree to be designed at design time. It's
-  used by the component editor to enable/disable the 'Tree designer...' menu item.
+  State - Description for this parameter
 See Also
-  AllowContextManager
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataProvider.AllowContextManager
+@@DP_ReleaseConsumerContext
+<TITLE DP_ReleaseConsumerContext procedure>
 Summary
-  Specifies if the provider allows it's contexts to be managed at design time.
+  Write here a summary (1 line)
 Description
-  AllowContextManager signals if the provider allows it's context tree to be designed at design
-  time. It's used by the component editor to enable/disable the 'Context manager...' menu item.
-See Also
-  AllowProviderDesigner
-----------------------------------------------------------------------------------------------------
-@@IJvDataProviderNotify
-Summary
-  Consumer interface to respond to changes at the provider.
-Description
-  IJvDataProviderNotify is consumer-side interface who's methods are called in response to changes
-  at the provider.
-
-  A consumer that wishes to be notified of changes occuring at the provider will register this
-  reference at the provider by calling the provider's
-  <LINK IJvDataProvider.RegisterChangeNotify, RegisterChangeNotify> method. If the consumer is no
-  longer interested in changes at a provider (i.e. another provider is selected or the consumer is
-  destroying), the <LINK IJvDataProvider.UnregisterChangeNotify, UnregisterChangeNotify> method
-  should be called.
-
-  Note that it's perfectly legal to register the same change notification for multiple providers. In
-  all cases a registered callback should eventually be unregistered before this object is destroyed.
-  The only exception is when a provider is destroying or has been destroyed; in that case the
-  callback is implicitly unregistered.
-See Also
-  IJvDataProvider.RegisterChangeNotify
-----------------------------------------------------------------------------------------------------
-@@IJvDataProviderNotify.DataProviderChanging
-Summary
-  Called when a change is about to occur at the provider.
-Description
-  DataProviderChanging is called whenever a change is about to occur at the provider (i.e. the
-  provider's <LINK IJvDataProvider.Changing, Changing> method is called).
+  Write here a description
 Parameters
-  ADataProvider - The provider that is issuing the notification.
-  AReason       - The reason of the change as passed on to the provider's
-                  <LINK IJvDataProvider.Changing, Changing> method.
-  Source        - Reference to the object the change is for as passed on to the provider's
-                  <LINK IJvDataProvider.Changing, Changing> method.
+  Provider - Description for this parameter
 See Also
-  IJvDataProvider.Changing
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataProviderNotify.DataProviderChanged
+@@DP_SelectConsumerContext
+<TITLE DP_SelectConsumerContext procedure>
 Summary
-  Called when a change has occured at the provider.
+  Write here a summary (1 line)
 Description
+  Write here a description
 Parameters
-  ADataProvider - The provider that is issuing the notification.
-  AReason       - The reason of the change as passed on to the provider's
-                  <LINK IJvDataProvider.Changed, Changed> method.
-  Source        - Reference to the object the change is for as passed on to the provider's
-                  <LINK IJvDataProvider.Changed, Changed> method.
+  Provider - Description for this parameter
+  Consumer - Description for this parameter
+  Context  - Description for this parameter
 See Also
-  IJvDataProvider.Changed
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItems
+@@GetContextPath
+<TITLE GetContextPath function>
 Summary
-  List of IJvDataItem objects.
+  Write here a summary (1 line)
 Description
-  IJvDataItems represents the list of IJvDataItem objects. The interface is supported by
-  IJvDataProvider and might be supported for individual IJvDataItem instances if a specific item
-  contains sub items.
-
-  The IJvDataItems interface provides methods that:
-  * Allow retrieval of the number of items
-  * All retrieval of an item based on it's index, it's ID (or ID-path) or an index path.
-  * Determine the parent item that owns this list.
-  * Determine the provider to which the item belongs.
-  * Retrieve a reference to the TObject instance that implements this object.
-  * Determine if the items are generated dynamically upon requesting them
-  * Take action when a context is destroying.
-See Also
-  IJvDataProvider, IJvDataItem
-----------------------------------------------------------------------------------------------------
-@@IJvDataItems.GetCount
-Summary
-  Retrieves the number of items in the list.
-Description
-  GetCount retrieves the number of items that are in the list.
-See Also
-  Count
-----------------------------------------------------------------------------------------------------
-@@IJvDataItems.GetItem
-Summary
-  Retrieve an item from the list.
-Description
-  GetItem retrieves a Data Item from the list given it's index. The first item in the list has an
-  Index value of 0.
+  Write here a description
 Parameters
-  Index - 0-based index of the item to retrieve. The possible values range from 0 .. Count-1.
+  Context - Description for this parameter
 See Also
-  Count, Item, GetItemByID, GetItemByIndexPath
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItems.GetItemByID
+@@GetItemIDPath
+<TITLE GetItemIDPath function>
 Summary
-  Retrieve an item from the list given it's ID (or ID path).
+  Write here a summary (1 line)
 Description
-  GetItemByID retrieves a Data Item from the list given it's ID or ID-path. Each item will be
-  initiated with an ID value which should be unique throughout the tree - although this is not
-  enforced - and this method allows to retrieve an item given that ID.
-
-  The path is always considered relative to this list. If the ID string starts with a backslash (or
-  forwardslash; both are allowed), the path is considered from the root of the provider
-  (GetProvider.GetItems).
-
-  Each '..\' is considered as '1 level up the tree'.
-
-  As soon as a term in the path can't be retrieved the entire result will be nil. This can happen
-  when to many '..\' terms appear or one of the ID's in the path can't be found.
+  Write here a description
 Parameters
-  ID  - The ID or ID-path of the item to retrieve.
+  Item - Description for this parameter
 See Also
-  GetItem, GetItemByIndexPath, IJvDataItem.GetID
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItems.GetItemByIndexPath
+@@GetItemIndexPath
+<TITLE GetItemIndexPath function>
 Summary
-  Retrieve an item from the list given it's index path.
+  Write here a summary (1 line)
 Description
-  GetItemByIndexPath retrieves a Data Item from the list given it's index path. If the specified
-  item could not be found the method returns nil.
-
-  Each integer in the array is considered to be an index into a list of items. The first integer
-  refers to the IJvDataItems instance on which this method is called. If more index values follow,
-  the item is queried for a IJvDataItems interface. If one is not found the end result will be nil,
-  otherwise the next index is applied to the new found item list.
-
-  This process will be repeated until the entire path has been completed, or a specified index
-  fell out of the range for the list on which to apply it (in which case nil will be returned.
+  Write here a description
 Parameters
-  IndexPath - array of item index values considered to be the path to the item to retrieve.
+  Item - Description for this parameter
 See Also
-  GetItem, GetItemByIDPath, IJvDataItem.GetIndex
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItems.GetParent
+@@GetUniqueCtxName
+<TITLE GetUniqueCtxName function>
 Summary
-  Reference to the parent item.
+  Write here a summary (1 line)
 Description
-  GetParent is a reference to the parent item for this list or nil if this is the root list (i.e.
-  implemented at the IJvDataProvider level).
-See Also
-  Parent, GetProvider, IJvDataItem, IJvDataProvider, IJvDataProvider.GetItems
-----------------------------------------------------------------------------------------------------
-@@IJvDataItems.GetProvider
-Summary
-  Reference to the data provider instance.
-Description
-  GetProvider is a reference to the provider owning this list.
-See Also
-  Provider, GetParent, IJvDataProvider
-----------------------------------------------------------------------------------------------------
-@@IJvDataItems.GetImplementer
-Summary
-  Reference to the implementing object.
-Description
-  GetImplementer returns a reference to the TObject instance implementing the IJvDataItems
-  interface. This method should be used with care, as you can never be sure which object implements
-  the interface. Callers should never assume a specific object unless it is enforced in the
-  implementation of the various objects.
-----------------------------------------------------------------------------------------------------
-@@IJvDataItems.IsDynamic
-Summary
-  Determines if the items are dynamic.
-Description
-  IsDynamic determines if the items list creates an IJvDataItem when it's requested and should
-  therefor be disposed of once the last reference goes out of scope.
-
-  The implementation object of IJvDataItem should reimplement IUnknown._AddRef and IUnknown._Release
-  to ignore reference counting if this method returns False.
-----------------------------------------------------------------------------------------------------
-@@IJvDataItems.ContextDestroying
-Summary
-  Called when a context is about to be destroyed.
-Description
-  ContextDestroying is called whenever a context is about to be destroyed. It's generally used to
-  notify all items a specific context (and all of it's child contexts) will be no longer available
-  so context specific data for these items can be destroyed.
-
-  The implementation of this method should simply iterate over it's item list and call each
-  IJvDataItem instance's <LINK IJvDataItem.ContextDestroying, ContextDestroying> method.
+  Write here a description
 Parameters
-  Context - Context about to be destroyed,
-----------------------------------------------------------------------------------------------------
-@@IJvDataItems.Count
-Summary
-  Number of items in the list.
-Description
-  Count indicates the number of items in the list.
+  Contexts - Description for this parameter
+  Prefix   - Description for this parameter
 See Also
-  Items, GetCount
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItems.Items
+@@HexBytes
+<TITLE HexBytes function>
 Summary
-  Array of list items.
+  Write here a summary (1 line)
 Description
-  Items is the array of IJvDataItem instances. The first item in the array has an Index value of 0.
-  The index ranges from 0 .. Count-1.
+  Write here a description
 Parameters
-  Index - 0-based index of the item to retrieve.
+  Buf    - Description for this parameter
+  Length - Description for this parameter
 See Also
-  Count, GetItem
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItems.Parent
+@@TAfterCreateSubSvcEvent
+<TITLE TAfterCreateSubSvcEvent type>
+<COMBINE TJvDataConsumer.AfterCreateSubSvc>
+----------------------------------------------------------------------------------------------------
+@@TAggregatedPersistent
 Summary
-  Reference to the parent item.
+  Write here a summary (1 line)
 Description
-  Parent is a reference to the parent item or nil if this list is the root list (i.e. implemented at
-  the IJvDataProvider level.
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TAggregatedPersistent.Controller
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 See Also
-  Provider, GetParent
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItems.Provider
+@@TAggregatedPersistent.GetInterface
 Summary
-  Reference to the data provider instance.
+  Write here a summary (1 line)
 Description
-  Provider is a reference to the data provider instance.
-See Also
-  Parent, GetProvider
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemsImages
-Summary
-  Support interface for IJvDataItems to specify image lists for the items.
-Description
-  IJvDataItemsImages is an optional supporting interface for IJvDataItems that allows to specify
-  which image list is to be used for an item.
-
-  The support interface is used whenever an Data Item supports IJvDataItemImage. Depending on the
-  implementation of the rendering code, the IJvDataItemsImages must be supported in the direct list
-  owner of an item or can be supported anywhere up the item tree.
-
-  The interface provides three different image lists:
-  * an image list for disabled state.
-  * an image list for "hot" items.
-  * a normal image list.
-
-  The normal image list must be set. If an item is disabled but there's no disabled image list,
-  the normal image will used but drawn in a grayed-out/disabled state.
-
-  If an item is "hot" (e.g. the mouse hovers over it) but there's no "hot" image list, the normal
-  image list will be used.
-See Also
-  IJvDataItems, IJvDataItemImage
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemsImages.GetDisabledImages
-Summary
-  Retrieves the image list for disabled items.
-Description
-  GetDisabledImages retrieves the image list for disabled items. It's the DisabledImages property
-  read method.
-See Also
-  DisabledImages, SetDisabledImages
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemsImages.SetDisabledImages
-Summary
-  Specifies the image list for disabled items.
-Description
-  SetDisabledImages specifies the image list to use for disabled items. It's the DisabledImages
-  property write method.
+  Write here a description
 Parameters
-  Value - Image list to use for disabled items.
+  IID - Description for this parameter
+  Obj - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  DisabledImages, GetDisabledImages
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsImages.GetHotImages
+@@TAggregatedPersistentEx
 Summary
-  Retrieves the image list for "hot" items.
+  Write here a summary (1 line)
 Description
-  GetDisabledImages retrieves the image list for "hot" items. It's the HotImages property
-  read method.
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TAggregatedPersistentEx.AfterConstruction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 See Also
-  HotImages, SetHotImages
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsImages.SetHotImages
+@@TAggregatedPersistentEx.BeforeDestruction
 Summary
-  Specifies the image list for "hot" items.
+  Write here a summary (1 line)
 Description
-  SetDisabledImages specifies the image list to use for "hot" items. It's the HotImages
-  property write method.
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TAggregatedPersistentEx.Owner
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TAggregatedPersistentExClass
+<TITLE TAggregatedPersistentExClass type>
+Summary
+  Defines the metaclass for TAggregatedPersistentEx.
+Description
+  TAggregatedPersistentExClass is the metaclass for TAggregatedPersistentEx. Its value is the class reference for
+  TAggregatedPersistentEx or for one of its descendants.
+----------------------------------------------------------------------------------------------------
+@@TBeforeCreateSubSvcEvent
+<TITLE TBeforeCreateSubSvcEvent type>
+<COMBINE TJvDataConsumer.BeforeCreateSubSvc>
+----------------------------------------------------------------------------------------------------
+@@TExtensibleInterfacedPersistent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TExtensibleInterfacedPersistent.AfterConstruction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TExtensibleInterfacedPersistent.BeforeDestruction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TExtensibleInterfacedPersistent.GetInterface
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Parameters
-  Value - Image list to use for "hot" items.
+  IID - Description for this parameter
+  Obj - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  HotImages, GetHotImages
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsImages.GetImages
+@@TExtensibleInterfacedPersistent.NewInstance
 Summary
-  Retrieves the image list for normal items.
+  Write here a summary (1 line)
 Description
-  GetImages retrieves the image list for normal items. It's the Images property read method.
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Return value
+  Describe here what the function returns
 See Also
-  Images, SetImages
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsImages.SetImages
+@@TExtensibleInterfacedPersistent.RefCount
 Summary
-  Specifies the image list for normal items.
+  Write here a summary (1 line)
 Description
-  SetImages specifies the image list to use for normal items. It's the Images property write method.
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataContext
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataContexts
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataContexts.DsgnContext
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataContextsManager
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItem.AfterConstruction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItem.ID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItem.Implementer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItem.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItemClass
+<TITLE TJvBaseDataItemClass type>
+Summary
+  Defines the metaclass for TJvBaseDataItem.
+Description
+  TJvBaseDataItemClass is the metaclass for TJvBaseDataItem. Its value is the class reference for
+  TJvBaseDataItem or for one of its descendants.
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItemImageImpl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItemRenderer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItems
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItems.BeforeDestruction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItemsImagesImpl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItemsListManagement
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItemsManagement
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItemsRenderer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItemStates
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItemSubItems
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItemSubItems.BeforeDestruction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItemSubItems.GetInterface
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
-  Value - Image list to use for normal items.
+  IID - Description for this parameter
+  Obj - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  Images, GetImages
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsImages.DisabledImages
+@@TJvBaseDataItemSubItems.Items
 Summary
-  \Get or set the image list to use for disabled items.
+  Write here a summary (1 line)
 Description
-  DisabledImages contains a list of bitmaps that can be rendered with an item if that item or the
-  control it's rendered in is in a disabled state. Read DisabledImages to retrieve the list of
-  bitmaps currently used or set DisabledImages to a new list of bitmaps to use.
-
-  If an item or the control is disabled but DisabledImages is not assigned, the rendering code will
-  normally use the normal image list (specified by Images) and render that bitmap in a
-  greyed-out/disabled state.
+  Write here a description
 See Also
-  Images, HotImages, GetDisabledImage, SetDisabledImages.
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsImages.HotImages
+@@TJvBaseDataItemTextImpl
 Summary
-  \Get or set the image list to use for "hot" items.
+  Write here a summary (1 line)
 Description
-  HotImages contains a list of bitmaps that can be rendered with an item if that item is "hot" (e.g.
-  the mouse is hovering over it). Read HotImages to retrieve the list of bitmaps currently used or
-  set HotImages to a new list of bitmaps to use.
-
-  If an item is "hot" but HotImages is not assigned, the rendering code will normally use the normal
-  image list (specified by Images).
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseDataItemTextImpl.Caption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 See Also
-  Images, DisabledImages, GetHotImage, SetHotImages.
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsImages.Images
+@@TJvBaseFixedDataContext
 Summary
-  Get or set the image list to use for normal items.
+  Write here a summary (1 line)
 Description
-  Images contains a list of bitmaps that can be rendered with an item. Read Images to retrieve the
-  list of bitmaps currently used or set Images to a new list of bitmaps to use.
-
-  Normally an item's state, as well as drawing state determine which image list will be used (this
-  one, DisabledImages or HotImages). If one of the other two image lists is not assigned but should
-  have been used in the drawing process, this list will be used instead.
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvBaseManagedDataContext
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvConsumerStrings
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvConsumerStrings.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 See Also
-  DisabledImages, HotImages, GetImages, SetImages
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsRenderer
+@@TJvConsumerStrings.Consumer
 Summary
-  Support interface for IJvDataItems that handles rendering and measuring of it's items and their
-  sub items.
+  Write here a summary (1 line)
 Description
-  IJvDataItemsRenderer is an optional supporting interface for IJvDataItems that can handle the
-  rendering and measuring of the items in the list.
-
-  The interface provides methods to:
-  * Draw an item given it's index.
-  * Measure an item given it's index.
-  * Draw the specified IJvDataItem instance.
-  * Measure the specified IJvDataItem instance.
-  * Determine the average item size.
-
-  Some implementations of this interface will first check if the item to render or measure supports
-  the IJvDataItemRenderer interface; if it does, it will redirect the operation to that
-  implementation instead of handling it itself.
-
-  Consumers generally handle rendering/measuring in the following way:
-  * Check if the item supports the IJvDataItemRenderer interface. If it does, use that one to
-    perform the rendering/,easuring.
-  * Check for the closest IJvDataItemsRenderer interface (the direct owning IJvDataItems list or
-    any of the lists in it's parent chain). If it finds one, that one is used to perform the
-    rendering/measuring.
-  * Handle the rendering at the consumer side. This means all items are considered equal and usually
-    only IJvDataItemText and optionally IJvDataItemImage (and the corresponding IJvDataItemsImages)
-    are used. The entire rendering/measuing is then consumer (control) dependant and the provider
-    tree may no longer look uniform in different consumers/clients.
+  Write here a description
 See Also
-  IJvDataItems, IJvDataItemRenderer
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsRenderer.DrawItemByIndex
+@@TJvConsumerStrings.Delete
 Summary
-  Draw an item given it's index.
+  Write here a summary (1 line)
 Description
-  DrawItemByIndex draws the item specified by the Index parameter. Depending on the implementation
-  the method might first check if the item to draw supports the IJvDataItemRenderer interface; if it
-  does, the drawing is handled by that interface instead.
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
-  ACanvas - Canvas to render to. On entry to this method, it is assumed the canvas brush, pen and
-            font are initialized to the proper values.
-  ARect -   Rectangle in which to draw the item in. On exit this will be set to the textual part of
-            the item.
-  Index -   Index into the items array of the item to render.
-  State -   Draw states to consider during drawing. This might be needed to determine which image
-            list and/or image index to use.
+  Index - Description for this parameter
 See Also
-  DrawItem, MeasureItemByIndex
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsRenderer.MeasureItemByIndex
+@@TJvConsumerStrings.Insert
 Summary
-  Measure an item given it's index.
+  Write here a summary (1 line)
 Description
-  MeasureItemByIndex measures the item specified by the Index parameter. Depending on the
-  implementation the method might first check if the item to measure supports the
-  IJvDataItemRenderer interface; if it does, the measuring is handled by that interface instead.
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
-  ACanvas - Canvas to measure on. On entry to this method, it is assumed the canvas brush, pen and
-            font are initialized to the proper values.
-  Index -   Index into the items array of the item to measure.
+  Index - Description for this parameter
+  S     - Description for this parameter
 See Also
-  MeasureItem, DrawItemByIndex, AvgItemSize
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsRenderer.DrawItem
+@@TJvCustomDataConsumerViewList
 Summary
-  Draw an item.
+  Write here a summary (1 line)
 Description
-  DrawItem draws the item specified by the Item parameter. Depending on the implementation
-  the method might first check if the item to draw supports the IJvDataItemRenderer interface; if it
-  does, the drawing is handled by that interface instead.
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataConsumerViewList.AutoExpandLevel
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataConsumerViewList.ChildIndexOfID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Parameters
-  ACanvas - Canvas to render to. On entry to this method, it is assumed the canvas brush, pen and
-            font are initialized to the proper values.
-  ARect -   Rectangle in which to draw the item in. On exit this will be set to the textual part of
-            the item.
-  Item -    The Data Item to render.
-  State -   Draw states to consider during drawing. This might be needed to determine which image
-            list and/or image index to use.
+  ID - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  DrawItemByIndex, MeasureItem
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsRenderer.MeasureItem
+@@TJvCustomDataConsumerViewList.ChildIndexOfItem
 Summary
-  Measure an item.
+  Write here a summary (1 line)
 Description
-  MeasureItem measures the item specified by the Item parameter. Depending on the implementation the
-  method might first check if the item to measure supports the IJvDataItemRenderer interface; if it
-  does, the measuring is handled by that interface instead.
+  Write here a description
 Parameters
-  ACanvas - Canvas to measure on. On entry to this method, it is assumed the canvas brush, pen and
-            font are initialized to the proper values.
-  Item -    The Data Item to measure.
+  Item - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  MeasureItemByIndex, DrawItem, AvgItemSize
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsRenderer.AvgItemSize
+@@TJvCustomDataConsumerViewList.Count
 Summary
-  Determines the average item size.
+  Write here a summary (1 line)
 Description
-  AvgItemSize determines the average size of the items in the list. It depends on the implementation
-  how this value is determined (either by iterating over the items and calculate the real average
-  or by assuming data depending on current font, etc).
-
-  The value returned should be considered a rough indication, not an exact value. It's possible that
-  either the width, height or both are educated guesses based on the current select font.
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataConsumerViewList.ExpandOnNewItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataConsumerViewList.ExpandTreeTo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Parameters
-  ACanvas - Canvas to measure on. On entry to this method, it is assumed the canvas brush, pen and
-            font are initialized to the proper values.
+  Item - Description for this parameter
 See Also
-  MeasureItemByIndex, MeasureItem
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsManagement
+@@TJvCustomDataConsumerViewList.IndexOfID
 Summary
-  Support interface for IJvDataItems that handles item management.
+  Write here a summary (1 line)
 Description
-  IJvDataItemsManagement is an optional supporting interface for IJvDataItems that manages the item
-  list.
-
-  The interface provides methods to:
-  * Add a specific item to the list.
-  * Create and add a new item to the list.
-  * Empty the list of items.
-  * Delete an item given it's index or given the item instance.
-
-  This interface is needed if the provider tree designer should be able to add/delete items to/from
-  the list.
-See Also
-  IJvDataItems, IJvDataItemsDesigner
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemsManagement.Add
-Summary
-  Add an item to the list.
-Description
-  Add adds the specified Data Item to the list of items.
+  Write here a description
 Parameters
-  Item - The item to add.
+  ID - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  New, Delete, Remove
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsManagement.New
+@@TJvCustomDataConsumerViewList.IndexOfItem
 Summary
-  Create and add a new item to the list.
+  Write here a summary (1 line)
 Description
-  New creates and adds a new Data Item to the list of items. What type of item is created depends
-  on the implementation but usually is a generic type the item list is intended for.
-See Also
-  Add
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemsManagement.Clear
-Summary
-  Empties the list of items.
-Description
-  Clear empties the list of items.
-See Also
-  Delete, Remove
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemsManagement.Delete
-Summary
-  Delete an item given an index.
-Description
-  Delete deletes the item specified by the Index parameter.
-
-  If the item list is a static list (i.e. IJvDataItems.IsDynamic returns False) there is a chance
-  the item being deleted is still referenced outside the provider. Using that reference might then
-  lead to Acces Violations.
-
-  If the item list is a dynamic list (i.e. IJvDataItems.IsDynamic returns True) the deletion will
-  normally be performed (i.e. the reference is removed from the list) but the item might still be
-  referenced and usable after this fact. This will lead to the strange situation of
-  IJvDataItem.GetItems referring to the IJvDataItems interface, but the list no longer contains that
-  item.
+  Write here a description
 Parameters
-  Index - Index of the item to delete.
+  Item - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  Remove, Add
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsManagement.Remove
+@@TJvCustomDataConsumerViewList.Item
 Summary
-  Delete an item given it's reference.
+  Write here a summary (1 line)
 Description
-  Remove deletes the item specified by the Item parameter. Upon entry the parameter will be nilled
-  (to dereference the item). This will avoid Access Violations when the caller's reference to the
-  item goes out of scope and reference counting is performed.
-
-  If the item list is a static list (i.e. IJvDataItems.IsDynamic returns False) there is still a
-  chance the item being deleted is still referenced outside the provider. Using that reference might
-  then lead to Acces Violations.
-
-  If the item list is a dynamic list (i.e. IJvDataItems.IsDynamic returns True) the deletion will
-  normally be performed (i.e. the reference is removed from the list) but the item might still be
-  referenced and usable after this fact. This will lead to the strange situation of
-  IJvDataItem.GetItems referring to the IJvDataItems interface, but the list no longer contains that
-  item.
+  Write here a description
 Parameters
-  Item - Reference to the item to delete.
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  Delete, Add
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsDesigner
+@@TJvCustomDataConsumerViewList.ItemGroupInfo
 Summary
-  Support interface for IJvDataItems that handles item design at the item list level.
+  Write here a summary (1 line)
 Description
-  IJvDataItemsDesigner is an optional supporting interface for IJvDataItems that is used solely by
-  the Data Provider Tree Designer. It generates a list of item types that can be added. Upon
-  selection from the menu the requested item is created by the NewByKind method and is then added
-  to the list by using the IJvDataItemsManagement.Add method.
-
-  IJvDataItemsDesigner is only usable if IJvDataItemsManagement is also supported by IJvDataItems.
-  If this is not the case, the new items can't be added to the list which makes it quite useless.
-See Also
-  IJvDataItemsManagement, IJvDataItems, IJvDataItemDesigner
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemsDesigner.GetCount
-Summary
-  Returns the number of item kinds.
-Description
-  GetCount returns the number of item kinds this designer can generate.
-See Also
-  GetKind, NewByKind
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemsDesigner.GetKind
-Summary
-  Retrieve the menu caption for an item kind.
-Description
-  GetKind will retrieve a caption (usable for the designer menu) for a given item kind. The first
-  item kind has an index of 0, so the valid range of Index is 0..GetCount-1.
-
-  If an invalid index is specified, the function returns False (Caption is undefined in this case).
+  Write here a description
 Parameters
-  Index -   Index of the item kind for which to retrieve the catpion. Index is a 0-based value. If
-            the specified index is invalid the function will return nil.
-  Caption - If the function returns True, this parameter will return the caption for the menu item
-            to generate.
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  GetCount
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemsDesigner.NewByKind
+@@TJvCustomDataConsumerViewList.ItemHasChildren
 Summary
-  Creates a specific type of Data Item.
+  Write here a summary (1 line)
 Description
-  NewByKind will create a new Data Item instance with properties and supporting interface depending
-  on the kind specified.
-
-  Which item type is created depends solely on the implementation of the interface.
+  Write here a description
 Parameters
-  Kind -  Index of the item type to create. This is a 0-based value. If the specified index is
-          invalid the function either returns nil or generates an exception (depending on the
-          implementation).
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  GetCount
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItem
+@@TJvCustomDataConsumerViewList.ItemIsExpanded
 Summary
-  Single Data Item.
+  Write here a summary (1 line)
 Description
-  IJvDataItem is the main interface for a single Data Item. A reference to this interface is
-  returned whenever an item is requested from the item list.
-
-  IJvDataItem only provides in some basic 'administrative' tasks and information. For Data Items to
-  be generally usable they will usally also support and implement IJvDataItemText and optionally
-  IJvDataItemImage, IJvDataItemBasicAction.
-
-  In addition some implementation may support implementation specific interface (e.g. an item
-  representing a color might support an interface that allows access to the TColor value). Which
-  interfaces are supported completely depends on what type of item you are dealing with.
-
-  A Data Item may also support IJvDataItems (a list of Data Items) which means the item supports
-  sub items.
-----------------------------------------------------------------------------------------------------
-@@IJvDataItem.GetItems
-Summary
-  Retrieves the reference to the IJvDataItems owner of this item.
-Description
-  GetItems retrieves the reference to the IJvDataItems owner of this item. It's the Items property's
-  read method.
-See Also
-  Items, GetIndex, IsParentOf
-----------------------------------------------------------------------------------------------------
-@@IJvDataItem.GetIndex
-Summary
-  Retrieves the item's index in the owning list.
-Description
-  GetIndex retrieves the item's index in the owning list (represented by the Items property).
-See Also
-  Items
-----------------------------------------------------------------------------------------------------
-@@IJvDataItem.GetImplementer
-Summary
-  Reference to the implementing object.
-Description
-  GetImplementer returns a reference to the TObject instance implementing the IJvDataItem
-  interface. This method should be used with care, as you can never be sure which object implements
-  the interface. Callers should never assume a specific object unless it is enforced in the
-  implementation of the various objects.
-----------------------------------------------------------------------------------------------------
-@@IJvDataItem.GetID
-Summary
-  Retrieves the ID value of the Data Item.
-Description
-  GetID will retrieve the item's (usually unique) ID value. The ID value can be used to search for
-  a specific item if it's not known where in the tree that item resided.
-
-  Normally the ID will be unique throughout the tree. There can be situations where this is not the
-  case. Never assume the ID is unique and always usable to retrieve a specific item.
-----------------------------------------------------------------------------------------------------
-@@IJvDataItem.ContextDestroying
-Summary
-  Called when a context is about to be destroyed.
-Description
-  ContextDestroying is called whenever a context is about to be destroyed. It's generally used to
-  remove context-specific data relating to this context (or child contexts) from the item.
+  Write here a description
 Parameters
-  Context - Context about to be destroyed,
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItem.IsParentOf
+@@TJvCustomDataConsumerViewList.ItemLevel
 Summary
-  Determines if the item is an ancestor of another item.
+  Write here a summary (1 line)
 Description
-  IsParentOf determines if the item is an ancestor of the specified item. If the item specified by
-  AnItem has this item as it's parent the function will return True.
-
-  If this is not the case but DirectParent is set to False, the entire parent chain is scanned. If
-  during this iterating process this item is indeed found, the function will return True.
-
-  If either DirectParent was set to True or this item is not an ancestor of the specified item the
-  function will return False.
+  Write here a description
 Parameters
-  AnItem -        The item to check the parent chain of.
-  DirectParent -  Flag to control if only the direct parent
-                  (<LINK Items, Items>.<LINK IJvDataItems.Parent, Parent>) is checked
-                  (DirectParent=True), or if the entire parent chain is scanned
-                  (DirectParent=False).
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  Items, IJvDataItems.Parent
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItem.IsDeletable
+@@TJvCustomDataConsumerViewList.ItemParent
 Summary
-  Determines if the item may be removed from the list.
+  Write here a summary (1 line)
 Description
-  IsDeletable determines if the item is allowed to be removed from the <LINK Items, items list>. If
-  the item is allowed to be removed the function will return True, False otherwise.
-
-  IsDeletable is used in those cases where the provider generates a number of fixed items that
-  should never be deleted. In most cases IsDeletable will be context-dependant, i.e. the item can't
-  be deleted from the context-less item tree, but is deletable from a context-specific tree.
-----------------------------------------------------------------------------------------------------
-@@IJvDataItem.Items
-Summary
-  Reference to the items list owner of this item.
-Description
-  Items is a reference to the IJvDataItems owner of this item.
-
-  Every item belongs to an item list. Which item list might be dependant on which context is
-  currently active.
-
-  The Items property is also the only way to determine the parent item of this item. This can be
-  done with Items.Parent
-See Also
-  Index, IsParentOf, IJvDataItems.Parent
-----------------------------------------------------------------------------------------------------
-@@IJvDataItem.Implementer
-Summary
-  Reference to the implementing object.
-Description
-  GetImplementer returns a reference to the TObject instance implementing the IJvDataItem
-  interface. This method should be used with care, as you can never be sure which object implements
-  the interface. Callers should never assume a specific object unless it is enforced in the
-  implementation of the various objects.
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemImage
-Summary
-  Data Item support interface for adding image support to an item.
-Description
-  IJvDataItemImage is a supporting interface for IJvDataItem that adds image support to an item. For
-  this interface to be useful, some things have to be taken care of:
-  * The IJvDataItems owner of the item (or any of the IJvDataItems owners in the parent chain) must
-    support the IJvDataItemsImages interface and atleast have a valid image list assigned to it's
-    <LINK IJvDataItemsImages.Images, Images> property.
-  * The rendering code must be able to handle images. Rendering may be handled at the item itself
-    (IJvDataItemRenderer supported by this item), by the item list owner of this item of any item in
-    the parent chain (IJvDataItemsRenderer supported by an IJvDataItems implementation) or at the
-    consumer (client control). The JEDI-VCL provides generic render implementations of which some
-    do support image.
-
-  The interface provides properties to manage:
-  * The position of the image in relation to the caption
-  * Which image to use in normal cases
-  * which image to use when the item is selected/has focus.
-See Also
-  IJvDataItemsImages, IJvDataItem
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemImage.GetAlignment
-Summary
-  Retrieves the position of the image
-Description
-  GetAlignment retrieves the position of image with respect to the text. GetAlignment is the
-  Alignment property's read method.
-See Also
-  SetAlignment, Alignment
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemImage.SetAlignment
-Summary
-  Sets the position of the image
-Description
-  SetAlignment sets the position of image with respect to the text. SetAlignment is the Alignment
-  property's write method.
+  Write here a description
 Parameters
-  Value - New image position. See description for the \Alignment property to determine the end
-          result of each value.
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  GetAlignment, Alignment
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemImage.GetImageIndex
+@@TJvCustomDataConsumerViewList.ItemParentIndex
 Summary
-  Retrieves the index into the image list of the image to render.
+  Write here a summary (1 line)
 Description
-  GetImageIndex retrieves the index into the image list of the image to render. GetImageIndex is the
-  ImageIndex property's read method.
-See Also
-  SetImageIndex, ImageIndex
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemImage.SetImageIndex
-Summary
-  Sets the index into the image list of the image to render.
-Description
-  SetImageIndex sets the index into the image list of the image to render. SetImageIndex is the
-  ImageIndex property's write method.
+  Write here a description
 Parameters
-  Index - New index of the image to use.
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  SetImageIndex, ImageIndex
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemImage.GetSelectedIndex
+@@TJvCustomDataConsumerViewList.ItemSibling
 Summary
-  Retrieves the index into the image list of the image to render when the item is selected.
+  Write here a summary (1 line)
 Description
-  GetSelectedIndex retrieves the index into the image list of the image to render when the item is
-  selected or has focus. GetSelectedIndex is the SelectedIndex property's read method.
-See Also
-  SetSelectedIndex, SelectedIndex
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemImage.SetSelectedIndex
-Summary
-  Sets the index into the image list of the image to render when the item is selected.
-Description
-  SetSelectedIndex sets the index into the image list of the image to render when the item is
-  selected or has focus. SetSelectedIndex is the SelectedIndex property's write method.
+  Write here a description
 Parameters
-  Value - New index of the image to use.
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  GetSelectedIndex, SelectedIndex
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemImage.Alignment
+@@TJvCustomDataConsumerViewList.ItemSiblingIndex
 Summary
-  Specifies the position of the image.
+  Write here a summary (1 line)
 Description
-  Alignment specifies the position of the image with respect to the text. Read Alignment to retrieve
-  the currently used alignment for the image or set Alignment to a new value.
-
-  Note that consumers/renderers are not required to use the setting of this property when they
-  render the item. Those that do usually follow these 'rules':
-  <TABLE>
-    Value             Rendering result
-    =====             ================
-    taLeftJustify     The image is placed to the left of the text, the item is aligned to the left
-                        of the control.
-    taCenter          The image is placed above the text, the item is centered horizontally in the
-                        control.
-    taRightJustify    The image is placed to the right of the text, the item is aligned to the right
-                        of the control.
-  </TABLE>
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemImage.ImageIndex
-Summary
-  Specifies the index into the image list of the image to render.
-Description
-  ImageIndex specifies the index into the image list of the image to render. Read ImageIndex to
-  retrieve the currently used image or set ImageIndex to a new index.
-
-  Setting this property to -1 will leave the item without any image.
-
-  The image specified by this property is only used when the item is not selected unless
-  SelectedIndex is not specified, in which case the image specified by ImageIndex is always used.
-See Also
-  SelectedIndex
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemImage.SelectedIndex
-Summary
-  Specifies the index into the image list of the image to render when the item is selected.
-Description
-  SelectedIndex specifies the index into the image list of the image to render when the item is
-  selected. Read SelectedIndex to retrieve the currently used image or set SelectedIndex to a new
-  index.
-
-  When this property is set to -1, the value for ImageIndex is used instead.
-See Also
-  ImageIndex
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemBasicAction
-Summary
-  Data Item support interface for responding to an item being selected/double clicked.
-Description
-  IJvDataItemBasicAction is a supporting interface for IJvDataItem that adds the capability of
-  executing a task if the item is selected or double-clicked by the control.
-
-  Some items will have a specific task linked to them, e.g. a control applet provider might have
-  an action linked to each item that will execute that control applet. In other cases a provider
-  might provide a way to link a user event to each individual item (using a separate interface)
-  which will then be called through this interface from the consumer.
-
-  The interface provides in a single method that will perform an action linked to the item.
-See Also
-  IJvDataItem
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemBasicAction.Execute
-Summary
-  Performs a task linked to the item.
-Description
-  Execute performs a task linked to the item. It's usually called by the consumer when an item is
-  either selected or double-clicked (depending on the control).
-
-  The Sender parameter is usually set to the control that initiated the task.
-
-  The return value will be False if nothing happened (i.e. the consumer may trigger an OnClick event
-  to give the user the possibility to take action) and set to True when the action was executed (in
-  this case the control will usually not trigger an OnClick event; this is solely at the consumers
-  discretion though).
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates
-Summary
-  Data Item support interface for keeping item states at the provider side.
-Description
-  IJvDataItemStates is a supporting interface for IJvDataItem that adds the capability of keeping
-  the Enabled, Checked and Visible states for an item at the provider side.
-
-  Each of the states can be one of "False", "True", "Indetermined" or "Not used". The consumer is
-  responsible of setting the appropiate rendering options based on these settings but is not
-  required to handle them. In addition a consumer may override the setting of the item at it's
-  discretion.
-See Also
-  IJvDataItem
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Get_Enabled
-Summary
-  Retrieves the enabled state.
-Description
-  Get_Enabled retrieves the enabled state of the item. Get_Enabled is the Enabled property's read
-  method.
-See Also
-  Set_Enabled, Enabled
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Set_Enabled
-Summary
-  Sets the enabled state.
-Description
-  Set_Enabled sets the enabled state of the item. Set_Enabled is the Enabled property's write
-  method.
+  Write here a description
 Parameters
-  Value - New state.
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  Get_Enabled, Enabled
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Get_Checked
+@@TJvCustomDataConsumerViewList.LevelIndent
 Summary
-  Retrieves the checked state.
+  Write here a summary (1 line)
 Description
-  Get_Checked retrieves the checked state of the item. Get_Checked is the Checked property's read
-  method.
+  Write here a description
 See Also
-  Set_Checked, Checked
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Set_Checked
+@@TJvCustomDataConsumerViewList.SubItem@IJvDataItem@Integer
 Summary
-  Sets the checked state.
+  Write here a summary (1 line)
 Description
-  Set_Checked sets the checked state of the item. Set_Checked is the Checked property's write
-  method.
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
-  Value - New state.
+  Parent - Description for this parameter
+  Index  - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  Get_Checked, Checked
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Get_Visible
+@@TJvCustomDataConsumerViewList.SubItem@Integer@Integer
 Summary
-  Retrieves the visible state.
+  Write here a summary (1 line)
 Description
-  Get_Visible retrieves the visible state of the item. Get_Visible is the Visible property's read
-  method.
-See Also
-  Set_Visible, Visible
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Set_Visible
-Summary
-  Sets the visible state.
-Description
-  Set_Visible sets the visible state of the item. Set_Visible is the Visible property's write
-  method.
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
-  Value - New state.
+  Parent - Description for this parameter
+  Index  - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  Get_Visible, Visible
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Enabled
+@@TJvCustomDataConsumerViewList.SubItemIndex@IJvDataItem@Integer
 Summary
-  Specifies if the item is enabled.
+  Write here a summary (1 line)
 Description
-  Enabled specifies if the item is enabled. Read Enabled to read the setting or set it to a new
-  value.
-
-  If Enabled is set to disFalse the item should be rendered in a disabled state. If an action is
-  linked to the item (through the IJvDataItemBasicAction interface), it should not be executed.
-
-  For any other setting of Enabled, the consumer specifies the actual setting of Enabled.
-See Also
-  IJvDataItemBasicAction
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Checked
-Summary
-  Specifies if the item is checked.
-Description
-  Checked specifies if the item is checked. Read Checked to read the setting or set it to a new
-  value.
-
-  If Checked is set to disIndetermined the item's checkbox should be rendered in a gray state.
-
-  If Checked is set to disNotUsed the consumer determines the checked state.
-----------------------------------------------------------------------------------------------------
-@@IJvDataItemStates.Visible
-Summary
-  Specifies if the item is visible.
-Description
-  Visible specifies if the item is visible. Read Visible to read the setting or set it to a new
-  value.
-
-  If Visible is set to disIndetermined or disNotUsed, the setting is considered True in most cases
-  (depends on the consumer).
-
-  The consumer service <LINK IJvDataConsumerViewList, view list extension> will consider this state
-  to determine if the item is to be added to the tree.
-See Also
-  IJvDataConsumerViewList
-----------------------------------------------------------------------------------------------------
-@@IJvDataContextSensitive
-Summary
-  Context sensitive data manager.
-Description
-  IJvDataContextSensitive is a supporting interface for IJvDataItems, IJvDataItem and any other
-  IJvDataItem support interface.
-
-  It provides in methods that allow settings for a context to be reverted back to the ancestor
-  context (or context-less) settings and to determine if the info is specifically set for the
-  currently active context or taken from an ancestor context or context-less state.
-See Also
-  IJvDataItems, IJvDataItem, IJvDataItemText, IJvDataItemImage, IJvDataItemStates, IJvDataContext
-----------------------------------------------------------------------------------------------------
-@@IJvDataContextSensitive.RevertToAncestor
-Summary
-  Reverts the settings back to the ancestor context settings.
-Description
-  RevertToAncestor reverts the settings back to the settings for the ancestor context or
-  context-less state.
-
-  It does this by simply removing any settings for the currently active context. If there were no
-  settings for the currently active context, nothing will happen.
-See Also
-  IsEqualToAncestor
-----------------------------------------------------------------------------------------------------
-@@IJvDataContextSensitive.IsEqualToAncestor
-Summary
-  Determines if the settings are inherited from the ancestor context.
-Description
-  IsEqualToAncestor determines if the settings are inherited from an ancestor context or are
-  specifically set for the currently active context.
-
-  If the settings are set for the currently active context the method will return False, otherwise
-  True will be returned.
-See Also
-  RevertToAncestor
-----------------------------------------------------------------------------------------------------
-@@IJvDataConsumer
-Summary
-  Provider client interface.
-Description
-  IJvDataConsumer is the main provider client interface. It is implemented by all components and
-  controls that are able to obtain there information from a Data Provider.
-
-  The interface only provides two "administrative" methods: retrieve the VCL component the consumer
-  interface belongs to and determine which Data Provider Attributes apply to this consumer.
-
-  Consumer may support additional interfaces (commonly referred to as "Consumer Extensions") to
-  support other settings.
-
-  Data Providers are generally not concerned about the consumer that is using them. The only notable
-  exception is the <LINK IJvDataProvider.ConsumerClasses, ConsumerClasses> method; this method will
-  use the AttributeApplies method to determine which extensions are needed.
-
-  Other cases when Data Providers are interested in the consumer are those providers that allow
-  additional settings for each individual consumer (usually by providing a Provider specific
-  Consumer Extension).
-See Also
-  IJvDataProvider
-----------------------------------------------------------------------------------------------------
-@@IJvDataConsumer.VCLComponent
-Summary
-  Retrieves a reference to the VCL component.
-Description
-  VCLComponent retrieves a reference to the VCL component that functions as a consumer.
-----------------------------------------------------------------------------------------------------
-@@IJvDataConsumer.AttributeApplies
-Summary
-  Determines if a attribute applies to the consumer.
-Description
-  AttributeApplies determines if the specified attribute applies to the consumer. The method is
-  primarily used by the <LINK IJvDataProvider, data provider>'s
-  <LINK IJvDataProvider.ConsumerClasses, ConsumerClasses> method to build the list of consumer
-  extensions.
-
-  If an attribute applies the function should return True, otherwise False should be returned.
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
 Parameters
-  Attr -  Attribute to check.
-
+  Parent - Description for this parameter
+  Index  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataConsumerViewList.SubItemIndex@Integer@Integer
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Parent - Description for this parameter
+  Index  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataConsumerViewList.ToggleItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataItemRenderer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataItemsImages
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataItemsImages.DisabledImages
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataItemsImages.HotImages
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataItemsImages.Images
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataItemsRenderer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataItemStates
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataItemStates.Checked
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataItemStates.Enabled
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataItemStates.Visible
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataItemsTextRenderer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataItemTextRenderer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataProvider
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataProvider.BeforeDestruction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataProvider.Contexts
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataProvider.DataContextsImpl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataProvider.DataItemsImpl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataProvider.GetInterface
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  IID - Description for this parameter
+  Obj - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDataProvider.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.AfterCreateSubSvc
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  SubSvc - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.BeforeCreateSubSvc
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender      - Description for this parameter
+  SubSvcClass - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.Context
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.ContextIntf
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.Enter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.IsLoading
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.ItemSelected
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.Leave
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.Loaded
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.NeedContextFixup
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.NeedExtensionFixups
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.OnChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Reason - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.OnProviderChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.OnProviderChanging
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.Provider
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.ProviderIntf
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.ServerCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.Servers
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  I - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.SetContextIntf
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumer.SetProviderIntf
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerAggregatedObject
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerAggregatedObjectClass
+<TITLE TJvDataConsumerAggregatedObjectClass type>
+Summary
+  Defines the metaclass for TJvDataConsumerAggregatedObject.
+Description
+  TJvDataConsumerAggregatedObjectClass is the metaclass for TJvDataConsumerAggregatedObject. Its value is the class reference for
+  TJvDataConsumerAggregatedObject or for one of its descendants.
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerChangeEvent
+<TITLE TJvDataConsumerChangeEvent type>
+<COMBINE TJvDataConsumer.OnChanged>
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerChangeReason
+<TITLE TJvDataConsumerChangeReason type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvDataConsumerChangeReason.ccrProviderSelected
+  Description for ccrProviderSelected
+@@TJvDataConsumerChangeReason.ccrProviderChanged
+  Description for ccrProviderChanged
+@@TJvDataConsumerChangeReason.ccrViewChanged
+  Description for ccrViewChanged
+@@TJvDataConsumerChangeReason.ccrContextChanged
+  Description for ccrContextChanged
+@@TJvDataConsumerChangeReason.ccrOther
+  Description for ccrOther
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyItem.Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyItem.List
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyItem.Notifier
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyList.Add@IJvDataConsumer
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  AConsumer - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyList.Add@TComponent
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  AComponent - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyList.Clients
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  I - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyList.Delete@IJvDataConsumer
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  AConsumer - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyList.Delete@Integer
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyList.Delete@TComponent
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  AComponent - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyList.IndexOf@IJvDataConsumer
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  AConsumer - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyList.IndexOf@TComponent
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  AComponent - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyList.NotifyItems
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  I - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerClientNotifyList.Server
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerContext
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerContext.Context
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerContext.ContextIntf
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerItemSelect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerItemSelect.GetItemIntf
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerItemSelect.Item
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerItemSelect.SetItemIntf
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerServerNotify
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerServerNotify.Clients
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.ChildIndexOfID
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  ID - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.ChildIndexOfItem
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Item - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.Count
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.IndexOfID
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  ID - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.IndexOfItem
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Item - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.Item
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.ItemHasChildren
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.ItemIsExpanded
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.ItemLevel
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.ItemParent
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.ItemParentIndex
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.ItemSibling
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.ItemSiblingIndex
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.SubItem
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Parent - Description for this parameter
+  Index  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.SubItem
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Parent - Description for this parameter
+  Index  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.SubItemIndex
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Parent - Description for this parameter
+  Index  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.SubItemIndex
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Parent - Description for this parameter
+  Index  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.ToggleItem
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataContext
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataContextClass
+<TITLE TJvDataContextClass type>
+Summary
+  Defines the metaclass for TJvBaseDataContext.
+Description
+  TJvDataContextClass is the metaclass for TJvBaseDataContext. Its value is the class reference for
+  TJvBaseDataContext or for one of its descendants.
+----------------------------------------------------------------------------------------------------
+@@TJvDataContexts
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataContextsClass
+<TITLE TJvDataContextsClass type>
+Summary
+  Defines the metaclass for TJvBaseDataContexts.
+Description
+  TJvDataContextsClass is the metaclass for TJvBaseDataContexts. Its value is the class reference for
+  TJvBaseDataContexts or for one of its descendants.
+----------------------------------------------------------------------------------------------------
+@@TJvDataContextsManagerClass
+<TITLE TJvDataContextsManagerClass type>
+Summary
+  Defines the metaclass for TJvBaseDataContextsManager.
+Description
+  TJvDataContextsManagerClass is the metaclass for TJvBaseDataContextsManager. Its value is the class reference for
+  TJvBaseDataContextsManager or for one of its descendants.
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemAggregatedObject
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemContextTextImpl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemContextTextImpl.IsEqualToAncestor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemContextTextImpl.RevertToAncestor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemImageImpl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemImageImpl.Alignment
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemImageImpl.ImageIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemImageImpl.SelectedIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemsAggregatedObject
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemsClass
+<TITLE TJvDataItemsClass type>
+Summary
+  Defines the metaclass for TJvBaseDataItems.
+Description
+  TJvDataItemsClass is the metaclass for TJvBaseDataItems. Its value is the class reference for
+  TJvBaseDataItems or for one of its descendants.
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemsList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemsList.List
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemTextImpl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemTextImpl.Caption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataItemTextImplClass
+<TITLE TJvDataItemTextImplClass type>
+Summary
+  Defines the metaclass for TJvBaseDataItemTextImpl.
+Description
+  TJvDataItemTextImplClass is the metaclass for TJvBaseDataItemTextImpl. Its value is the class reference for
+  TJvBaseDataItemTextImpl or for one of its descendants.
+----------------------------------------------------------------------------------------------------
+@@TJvDataProviderContexts
+<TITLE TJvDataProviderContexts type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = type Integer; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataProviderItemID
+<TITLE TJvDataProviderItemID type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = type string; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataProviderTree
+<TITLE TJvDataProviderTree type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = type Integer; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderBaseRender
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderBaseRender.Canvas
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderBaseRender.Draw
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AItem   - Description for this parameter
+  ACanvas - Description for this parameter
+  ARect   - Description for this parameter
+  AState  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderBaseRender.Item
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderBaseRender.Measure
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AItem   - Description for this parameter
+  ACanvas - Description for this parameter
+  AState  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderBaseRender.State
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderImgAndTextRender
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderImgAndTextRender.Alignment
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderImgAndTextRender.HasDisabledImage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderImgAndTextRender.HasImage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderImgAndTextRender.ImageIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderImgAndTextRender.Images
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderTextOnlyRender
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderTextOnlyRender.HasNoText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderTextOnlyRender.Text
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDP_ProviderTextOnlyRender.TextRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFixedDataContext
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvManagedDataContext
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvProviderNotification
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvProviderNotification.OnChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvProviderNotification.OnChanging
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvProviderNotification.Provider
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TProviderNotifyEvent
+<TITLE TProviderNotifyEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvDataConsumer.OnProviderChanged
+    TJvDataConsumer.OnProviderChanging
+    TJvProviderNotification.OnChanged
+    TJvProviderNotification.OnChanging
+Parameters
+  ADataProvider - Description for this parameter
+  AReason       - Description for this parameter
+  Source        - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+---------------------------------------------------------------------------------------------------
+@@TViewListItem
+<TITLE TViewListItem type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TViewListItem.ItemID
+  Description for ItemID
+@@TViewListItem.Flags
+  Description for Flags
+----------------------------------------------------------------------------------------------------
+@@TViewListItems
+<TITLE TViewListItems type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = array of TViewListItem; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
