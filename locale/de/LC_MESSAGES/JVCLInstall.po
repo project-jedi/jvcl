@@ -363,13 +363,6 @@ msgstr "jvcl.inc Änderungen wirken sich auf alle installierenen Delphi und BCB 
 msgid "&Close"
 msgstr "&Schließen"
 
-#  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
-#  Programmer's name for it: RsJediHomepage
-#: Helpers/MainConfig.dfm:104
-#: InstallerConsts.pas:183
-msgid "http://projectjedi.sourceforge.net"
-msgstr "http://projectjedi.sourceforge.net"
-
 #  FormJvclIncConfig..TitlePanel..Label4..Caption
 #: Helpers/MainConfig.dfm:113
 msgid "Project JEDI   JVCL 3 Installer - jvcl.inc Editor"
@@ -414,11 +407,6 @@ msgstr "Fertig."
 #: Compile.pas:146
 msgid "Compiling JCL dcp files..."
 msgstr "JCL dcp Dateien kompilieren..."
-
-#  Programmer's name for it: RsGeneratePackages
-#: Compile.pas:147
-msgid "[Generating: Packages]"
-msgstr "[Generating: Packages]"
 
 #  Programmer's name for it: RsAbortedByUser
 #: Compile.pas:149

@@ -308,13 +308,6 @@ msgstr ""
 msgid "&Close"
 msgstr ""
 
-#. FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
-#. Programmer's name for it: RsJediHomepage
-#: Helpers/MainConfig.dfm:104
-#: InstallerConsts.pas:183
-msgid "http://projectjedi.sourceforge.net"
-msgstr ""
-
 #. FormJvclIncConfig..TitlePanel..Label4..Caption
 #: Helpers/MainConfig.dfm:113
 msgid "Project JEDI   JVCL 3 Installer - jvcl.inc Editor"
@@ -358,11 +351,6 @@ msgstr ""
 #. Programmer's name for it: RsCompilingJCL
 #: Compile.pas:146
 msgid "Compiling JCL dcp files..."
-msgstr ""
-
-#. Programmer's name for it: RsGeneratePackages
-#: Compile.pas:147
-msgid "[Generating: Packages]"
 msgstr ""
 
 #. Programmer's name for it: RsAbortedByUser
