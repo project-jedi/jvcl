@@ -195,7 +195,9 @@ end;
 function TJvInspectorDBData.GetAsOrdinal: Int64;
 begin
   CheckReadAccess;
-  if TypeInfo.Kind in [tkInteger, tkChar, tkEnumeration, tkSet, tkWChar, tkClass] then
+  if Field is TBooleanField then
+    Result := Ord(TBooleanField(Field).AsBoolean)
+  else if TypeInfo.Kind in [tkInteger, tkChar, tkEnumeration, tkSet, tkWChar, tkClass] then
   begin
     if GetTypeData(TypeInfo).OrdType = otULong then
       Result := Cardinal(Field.AsInteger)
@@ -309,7 +311,9 @@ var
   MaxValue: Int64;
 begin
   CheckWriteAccess;
-  if TypeInfo.Kind in [tkInteger, tkChar, tkEnumeration, tkWChar] then
+  if Field is TBooleanField then
+    TBooleanField(Field).AsBoolean := Value <> 0
+  else if TypeInfo.Kind in [tkInteger, tkChar, tkEnumeration, tkWChar] then
   begin
     case GetTypeData(TypeInfo).OrdType of
       otSByte:
