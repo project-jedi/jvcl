@@ -62,8 +62,6 @@ uses
 {*****************************************************}
 
 constructor TJvDragDrop.Create(AOwner: TComponent);
-var
-  WinCtl: TWinControl;
 begin
   inherited;
   FAccept := True;
