@@ -52,7 +52,7 @@ type
     function _Release: Integer; stdcall;
     { IJvAppStorageHandler }
     procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
-    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string); 
+    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
 
     { List item reader used in the call to ReadList. }
     procedure ReadListItem(Sender: TJvCustomAppStorage; const Path: string;
@@ -84,8 +84,9 @@ type
     property Selected;
     property SubItems;
   end;
+
   // (rom) Why that? C++ Builder should need this class.
-  {$EXTERNALSYM TJvListItem}
+{$EXTERNALSYM TJvListItem}
 
   TJvListView = class(TJvExListView)
   private
@@ -101,16 +102,19 @@ type
     FImageChangeLink: TChangeLink;
     FHeaderImages: TCustomImageList;
     FAutoSelect: Boolean;
+    FPicture: TPicture;
+    procedure DoPictureChange(Sender: TObject);
+    procedure SetPicture(const Value: TPicture);
     procedure SetHeaderImages(const Value: TCustomImageList);
     procedure UpdateHeaderImages(HeaderHandle: Integer);
     procedure WmAutoSelect(var Message: TMessage); message WM_AUTOSELECT;
-    {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
     function GetItemIndex: Integer;
     procedure SetItemIndex(const Value: Integer);
-    {$ENDIF !COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
   protected
     function CreateListItem: TListItem; override;
-    function CreateListItems: TListItems; {$IFDEF COMPILER6_UP}override;{$ENDIF COMPILER6_UP}
+    function CreateListItems: TListItems; {$IFDEF COMPILER6_UP} override; {$ENDIF COMPILER6_UP}
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
@@ -125,6 +129,8 @@ type
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
 
     procedure InsertItem(Item: TListItem); override;
+    function IsCustomDrawn(Target: TCustomDrawTarget; Stage: TCustomDrawStage): Boolean; {$IFDEF COMPILER6_UP} override; {$ENDIF COMPILER6_UP}
+    function CustomDraw(const ARect: TRect; Stage: TCustomDrawStage): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -138,10 +144,10 @@ type
     procedure SaveToCSV(FileName: string; Separator: Char = ';');
     procedure LoadFromCSV(FileName: string; Separator: Char = ';');
     procedure SetSmallImages(const Value: TCustomImageList);
-    {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
     procedure SelectAll;
     procedure DeleteSelected;
-    {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
     procedure UnselectAll;
     procedure InvertSelection;
     function MoveUp(Index: Integer; Focus: Boolean = True): Integer;
@@ -153,13 +159,14 @@ type
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
     procedure SetFocus; override;
-    {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
     property ItemIndex: Integer read GetItemIndex write SetItemIndex;
-    {$ENDIF !COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
   published
     property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
     property HintColor;
+    property Picture: TPicture read FPicture write SetPicture;
     property HeaderImages: TCustomImageList read FHeaderImages write SetHeaderImages;
     property SortMethod: TJvSortMethod read FSortMethod write FSortMethod default smAutomatic;
     property SortOnClick: Boolean read FSortOnClick write FSortOnClick default True;
@@ -178,11 +185,11 @@ type
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
   Math,
-  JvConsts, JvResources;
+  JvJCLUtils, JvConsts, JvResources;
 
 //=== { TJvListItem } ========================================================
 
@@ -300,11 +307,14 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := DoHeaderImagesChange;
   FAutoSelect := True;
+  FPicture := TPicture.Create;
+  FPicture.OnChange := DoPictureChange;
 end;
 
 destructor TJvListView.Destroy;
 begin
   FImageChangeLink.Free;
+  FPicture.Free;
   inherited Destroy;
 end;
 
@@ -391,78 +401,78 @@ var
       if Trim(First) = '' then
         Result := False
       else
-      if Trim(Second) = '' then
-        Result := True
-      else
-      begin
-        case SortType of
-          smAlphabetic:
-            Result := First > Second;
-          smNonCaseSensitive:
-            Result := UpperCase(First) > UpperCase(Second);
-          smNumeric:
-            begin
-              try
-                I := StrToFloat(First);
-                J := StrToFloat(Second);
-                Result := I > J;
-              except
-                try
-                  l := StrToInt64(First);
-                except
-                  l := 0;
-                end;
-                try
-                  m := StrToInt64(Second);
-                except
-                  m := 0;
-                end;
-                Result := l > m;
-              end;
-            end;
-          smDate:
-            begin
-              d := StrToDate(First);
-              e := StrToDate(Second);
-              Result := d > e;
-            end;
-          smTime:
-            begin
-              d := StrToTime(First);
-              e := StrToTime(Second);
-              Result := d > e;
-            end;
-          smDateTime:
-            begin
-              d := StrToDateTime(First);
-              e := StrToDateTime(Second);
-              Result := d > e;
-            end;
-          smCurrency:
-            begin
-              a := StrToCurr(First);
-              b := StrToCurr(Second);
-              Result := a > b;
-            end;
-          smAutomatic:
-            begin
-              int1 := FirstNonAlpha(First);
-              int2 := FirstNonAlpha(Second);
-              if (int1 <> 0) and (int2 <> 0) then
+        if Trim(Second) = '' then
+          Result := True
+        else
+        begin
+          case SortType of
+            smAlphabetic:
+              Result := First > Second;
+            smNonCaseSensitive:
+              Result := UpperCase(First) > UpperCase(Second);
+            smNumeric:
               begin
-                st := Copy(First, 1, int1);
-                st2 := Copy(Second, 1, int2);
                 try
-                  Result := StrToFloat(st) > StrToFloat(st2);
+                  I := StrToFloat(First);
+                  J := StrToFloat(Second);
+                  Result := I > J;
                 except
-                  Result := First > Second;
+                  try
+                    l := StrToInt64(First);
+                  except
+                    l := 0;
+                  end;
+                  try
+                    m := StrToInt64(Second);
+                  except
+                    m := 0;
+                  end;
+                  Result := l > m;
                 end;
-              end
-              else
-                Result := First > Second;
-            end;
+              end;
+            smDate:
+              begin
+                d := StrToDate(First);
+                e := StrToDate(Second);
+                Result := d > e;
+              end;
+            smTime:
+              begin
+                d := StrToTime(First);
+                e := StrToTime(Second);
+                Result := d > e;
+              end;
+            smDateTime:
+              begin
+                d := StrToDateTime(First);
+                e := StrToDateTime(Second);
+                Result := d > e;
+              end;
+            smCurrency:
+              begin
+                a := StrToCurr(First);
+                b := StrToCurr(Second);
+                Result := a > b;
+              end;
+            smAutomatic:
+              begin
+                int1 := FirstNonAlpha(First);
+                int2 := FirstNonAlpha(Second);
+                if (int1 <> 0) and (int2 <> 0) then
+                begin
+                  st := Copy(First, 1, int1);
+                  st2 := Copy(Second, 1, int2);
+                  try
+                    Result := StrToFloat(st) > StrToFloat(st2);
+                  except
+                    Result := First > Second;
+                  end;
+                end
+                else
+                  Result := First > Second;
+              end;
+          end;
         end;
-      end;
     end;
 
   begin
@@ -486,10 +496,10 @@ var
           if IsBigger(S1, S2, SortKind) then
             Result := 1
           else
-          if IsBigger(S2, S1, SortKind) then
-            Result := -1
-          else
-            Result := 0;
+            if IsBigger(S2, S1, SortKind) then
+              Result := -1
+            else
+              Result := 0;
         end;
     else
       {sort by Column}
@@ -502,20 +512,20 @@ var
             Result := -1;
         end
         else
-        if I > i2.SubItems.Count then
-          Result := 1
-        else
-        begin
-          S1 := i1.SubItems[I - 1];
-          S2 := i2.SubItems[I - 1];
-          if IsBigger(S1, S2, SortKind) then
+          if I > i2.SubItems.Count then
             Result := 1
           else
-          if IsBigger(S2, S1, SortKind) then
-            Result := -1
-          else
-            Result := 0;
-        end;
+          begin
+            S1 := i1.SubItems[I - 1];
+            S2 := i2.SubItems[I - 1];
+            if IsBigger(S1, S2, SortKind) then
+              Result := 1
+            else
+              if IsBigger(S2, S1, SortKind) then
+                Result := -1
+              else
+                Result := 0;
+          end;
       end;
     end;
   end;
@@ -551,7 +561,7 @@ end;
 
 function TJvListView.CreateListItems: TListItems;
 begin
-  Result := TJvListItems.Create (Self);
+  Result := TJvListItems.Create(Self);
 end;
 
 function TJvListView.GetItemPopup(Node: TListItem): TPopupMenu;
@@ -580,13 +590,13 @@ end;
 
 procedure TJvListView.LoadFromStream(Stream: TStream);
 var
-  Buf: array [0..100] of Char;
+  Buf: array[0..100] of Char;
   Start: Integer;
 
   procedure LoadOldStyle(Stream: TStream);
   var
     I, J, K: Integer;
-    Buf: array [0..100] of Byte;
+    Buf: array[0..100] of Byte;
     st: string;
     ch1, checks: Boolean;
     t: TListItem;
@@ -646,7 +656,7 @@ var
     Options: Byte;
     st: string;
     t: TListItem;
-    Buf: array [0..2048] of Char;
+    Buf: array[0..2048] of Char;
   begin
     try
       Self.Items.BeginUpdate;
@@ -736,7 +746,7 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
     I, J, K: Integer;
     b, c, d, e: Byte;
     st: string;
-    Buf: array [0..1000] of Byte;
+    Buf: array[0..1000] of Byte;
   begin
     b := 0;
     c := 1;
@@ -788,7 +798,7 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
     LV_HASCHECKBOXES = $80;
     // hs-    LV_CHECKED = $8000;
   var
-    Buf: array [0..100] of Char;
+    Buf: array[0..100] of Char;
     // hs-    I, J: Word;
     I: Integer;
     J: SmallInt;
@@ -956,6 +966,7 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
+
 procedure TJvListView.SelectAll;
 var
   I: Integer;
@@ -1003,6 +1014,7 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
+
 procedure TJvListView.DeleteSelected;
 var
   I: Integer;
@@ -1027,7 +1039,7 @@ end;
 
 function TJvListView.GetColumnsOrder: string;
 var
-  Res: array [0..cColumnsHandled - 1] of Integer;
+  Res: array[0..cColumnsHandled - 1] of Integer;
   I: Integer;
 begin
   ListView_GetColumnOrderArray(Columns.Owner.Handle, Columns.Count, @Res[0]);
@@ -1044,7 +1056,7 @@ end;
 
 procedure TJvListView.SetColumnsOrder(const Order: string);
 var
-  Res: array [0..cColumnsHandled - 1] of Integer;
+  Res: array[0..cColumnsHandled - 1] of Integer;
   I, J: Integer;
   st: string;
 begin
@@ -1098,10 +1110,10 @@ begin
     if AComponent = HeaderImages then
       HeaderImages := nil
     else
-    if not (csDestroying in ComponentState) and (AComponent is TPopupMenu) then
-      for I := 0 to Items.Count - 1 do
-        if TJvListItem(Items[I]).PopupMenu = AComponent then
-          TJvListItem(Items[I]).PopupMenu := nil;
+      if not (csDestroying in ComponentState) and (AComponent is TPopupMenu) then
+        for I := 0 to Items.Count - 1 do
+          if TJvListItem(Items[I]).PopupMenu = AComponent then
+            TJvListItem(Items[I]).PopupMenu := nil;
 end;
 
 procedure TJvListView.CreateWnd;
@@ -1124,11 +1136,11 @@ begin
 //      WP.rcNormalPosition.Bottom := WP.rcNormalPosition.Top + HeaderImages.Height + 3;
     end
     else
-    if ComponentState * [csLoading, csDestroying] = [] then
-    begin
-      Header_SetImageList(HeaderHandle, 0);
+      if ComponentState * [csLoading, csDestroying] = [] then
+      begin
+        Header_SetImageList(HeaderHandle, 0);
 //      WP.rcNormalPosition.Bottom := WP.rcNormalPosition.Top + 17;
-    end;
+      end;
     // the problem with resizing the header is that there doesn't seem to be an easy way of telling the listview about it...
 //    SetWindowPlacement(HeaderHandle, @WP);
     UpdateColumns;
@@ -1184,7 +1196,7 @@ begin
   with Message do
   begin
     lv := TListItem(WParam);
-    if Assigned(lv) and (items.IndexOf(lv) >=0 ) and (LParam = 1) then
+    if Assigned(lv) and (items.IndexOf(lv) >= 0) and (LParam = 1) then
     begin
       lv.Selected := True;
       lv.Focused := True;
@@ -1285,6 +1297,98 @@ begin
     PostMessage(Handle, WM_AUTOSELECT, Integer(Items[0]), 1);
 end;
 
+
+function TJvListView.IsCustomDrawn(Target: TCustomDrawTarget; Stage: TCustomDrawStage): Boolean;
+begin
+  Result := inherited IsCustomDrawn(Target, Stage) or ((Stage = cdPrePaint) and (Picture.Graphic <> nil) and not Picture.Graphic.Empty)
+end;
+
+
+function TJvListView.CustomDraw(const ARect: TRect; Stage: TCustomDrawStage): Boolean;
+var
+  BmpXPos, BmpYPos: Integer; // X and Y position for bitmap
+  ItemRect: TRect; // List item bounds rectangle
+  TopOffset: Integer; // Y pos where bmp drawing starts
+  Bmp: TBitmap;
+  function GetHeaderHeight: Integer;
+  var
+    Header: HWND; // header window handle
+    Pl: TWindowPlacement; // header window placement
+  begin
+    // Get header window
+    Header := SendMessage(Handle, LVM_GETHEADER, 0, 0);
+    // Get header window placement
+    FillChar(Pl, SizeOf(Pl), 0);
+    Pl.length := SizeOf(Pl);
+    GetWindowPlacement(Header, @Pl);
+    // Calculate header window height
+    Result := Pl.rcNormalPosition.Bottom - Pl.rcNormalPosition.Top;
+  end;
+begin
+  Result := inherited CustomDraw(ARect, Stage);
+
+  if Result and (Stage = cdPrePaint) and (FPicture <> nil) and (FPicture.Graphic <> nil) and not
+    FPicture.Graphic.Empty and (FPicture.Graphic.Width > 0) and (FPicture.Graphic.Height > 0) then
+  begin
+    Bmp := TBitmap.Create;
+    try
+      Bmp.Width := ClientWidth;
+      Bmp.Height := ClientHeight;
+      Bmp.Canvas.Brush.Color := Self.Color;
+      Bmp.Canvas.FillRect(ClientRect);
+
+    // Get top offset where drawing starts
+      if Items.Count > 0 then
+      begin
+        ListView_GetItemRect(Handle, 0, ItemRect, LVIR_BOUNDS);
+        TopOffset := ListView_GetTopIndex(Handle) * (ItemRect.Bottom - ItemRect.Top);
+      end
+      else
+        TopOffset := 0;
+      if ViewStyle = vsReport then
+        BmpYPos := ARect.Top - TopOffset + GetHeaderHeight
+      else
+        BmpYPos := 0;
+      // Draw the image
+      while BmpYPos < ARect.Bottom do
+      begin
+        // draw image across width of display
+        BmpXPos := ARect.Left;
+        while BmpXPos < ARect.Right do
+        begin
+//      DrawIconEx draws alpha-blended icons better (on XP) but gives problems with selecting in the listview
+//      if Picture.Graphic is TIcon then
+//        DrawIconEx(Canvas.Handle, BmpXPos, BmpYPos, Picture.Icon.Handle, 0, 0, 0, 0, DI_NORMAL)
+//      else
+          Bmp.Canvas.Draw(BmpXPos, BmpYPos, Picture.Graphic);
+          Inc(BmpXPos, Picture.Graphic.Width);
+        end;
+        // move to next row
+        Inc(BmpYPos, Picture.Graphic.Height);
+      end;
+      BitBlt(Canvas, 0, 0, ClientWidth, ClientHeight, Bmp.Canvas, 0, 0, SRCCOPY);
+    // Ensure that the items are drawn transparently
+      SetBkMode(Canvas.Handle, TRANSPARENT);
+      ListView_SetTextBkColor(Handle, CLR_NONE);
+      ListView_SetBKColor(Handle, CLR_NONE);
+    finally
+      Bmp.Free;
+    end;
+  end;
+end;
+
+procedure TJvListView.SetPicture(const Value: TPicture);
+begin
+  FPicture.Assign(Value);
+end;
+
+procedure TJvListView.DoPictureChange(Sender: TObject);
+begin
+//  if (Picture.Graphic <> nil) and not Picture.Graphic.Empty then
+//    Picture.Graphic.Transparent := true;
+  Invalidate;
+end;
+
 {$IFNDEF COMPILER6_UP}
 
 function TJvListView.GetItemIndex: Integer;
@@ -1310,7 +1414,8 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
+    );
+
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
