@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 367
-  Top = 255
+  Left = 335
+  Top = 178
   Width = 471
   Height = 386
   Caption = 'JVCL Conversion Utility'
@@ -24,6 +24,7 @@ object frmMain: TfrmMain
     Height = 295
     ActivePage = tbsFiles
     Align = alClient
+    TabIndex = 0
     TabOrder = 0
     object tbsFiles: TTabSheet
       BorderWidth = 2
