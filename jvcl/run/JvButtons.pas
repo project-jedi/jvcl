@@ -207,9 +207,10 @@ type
   TJvaColorButton = class(TBitBtn)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     FGlyphDrawer: TJvButtonGlyph;
     FOnPaint: TPaintButtonEvent;
+    function GetCanvas: TCanvas;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
   protected
     IsFocused: Boolean;
@@ -218,7 +219,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
-    property Canvas: TCanvas read FCanvas;
+    property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Color;
@@ -1446,16 +1447,20 @@ begin
   inherited Create(AOwner);
   FGlyphDrawer := TJvButtonGlyph.Create;
   FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
+  FCanvas.Control := Self;
 end;
 
 destructor TJvaColorButton.Destroy;
 begin
-  FGlyphDrawer.Free;
-  TControlCanvas(FCanvas).Free;
-  FGlyphDrawer := nil;
-  FCanvas := nil;
+  FreeAndNil(FGlyphDrawer);
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FreeAndNil(FCanvas);
+end;
+
+function TJvaColorButton.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
 end;
 
 procedure TJvaColorButton.SetButtonStyle(ADefault: Boolean);
@@ -1502,7 +1507,7 @@ var
   R: TRect;
   Flags: Longint;
 begin
-  if Canvas.Handle = 0 then
+  if FCanvas.Handle = 0 then
     Exit;
 
   R := ClientRect;
@@ -1536,7 +1541,7 @@ begin
   end
   else
   begin
-    DrawFrameControl(Canvas.Handle, R, DFC_BUTTON, Flags);
+    DrawFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
     FCanvas.Pen.Style := psSolid;
     FCanvas.Pen.Color := Color {clBtnShadow};
     FCanvas.Pen.Width := 1;
@@ -1562,7 +1567,7 @@ begin
     R := ClientRect;
     InflateRect(R, -4, -4);
     FCanvas.Pen.Color := clWindowFrame;
-    FCanvas.Brush.Color := Color {clBtnFace};
+    FCanvas.Brush.Color := Color;  {clBtnFace}
     DrawFocusRect(FCanvas.Handle, R);
   end;
 

@@ -44,7 +44,8 @@ type
     FMultiLine: Boolean;
     FWordWrap: Boolean;
     FOnAfterPaint: TNotifyEvent;
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
+    function GetCanvas: TCanvas;
     procedure SetScrollBars(Value: TScrollStyle);
     procedure SetAlignment(Value: TAlignment);
     procedure SetMultiLine(Value: Boolean);
@@ -55,7 +56,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint(var Msg: TWMPaint); message WM_PAINT;
-    property Canvas: TCanvas read FCanvas write FCanvas;
+    property Canvas: TCanvas read GetCanvas;
   published
     property AutoSelect;
     property AutoSize;
@@ -111,7 +112,7 @@ constructor TJvgMaskEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self; //...i can draw now! :)
+  FCanvas.Control := Self; //...i can draw now! :)
 
   FScrollBars := ssNone;
   FAlignment := taLeftJustify;
@@ -125,8 +126,9 @@ end;
 
 destructor TJvgMaskEdit.Destroy;
 begin
-  FCanvas.Free;
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
 end;
 
 procedure TJvgMaskEdit.Paint(var Msg: TWMPaint);
@@ -147,6 +149,11 @@ begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or cMultiLine[FMultiLine] or WS_CLIPCHILDREN
     or cAlignments[FAlignment] or cScrollBar[FScrollBars] or cWordWraps[FWordWrap];
+end;
+
+function TJvgMaskEdit.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
 end;
 
 procedure TJvgMaskEdit.SetScrollBars(Value: TScrollStyle);

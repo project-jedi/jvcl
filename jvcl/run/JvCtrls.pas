@@ -244,8 +244,9 @@ end;
 destructor TJvCustomImageButton.Destroy;
 begin
   FreeAndNil(FImageChangeLink);
-  FreeAndNil(FCanvas);
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FreeAndNil(FCanvas);
 end;
 
 procedure TJvCustomImageButton.CreateParams(var Params: TCreateParams);

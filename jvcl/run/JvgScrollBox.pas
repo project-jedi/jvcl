@@ -86,10 +86,7 @@ var
   DC: HDC;
   R: TRect;
   IHeight, IWidth, SavedIHeight, x_, y_, XOffset, YOffset, SavedYOffset: Integer;
-  Canvas: TCanvas;
 begin
-  Canvas := nil;
-
   if BufferedDraw and (Buffer = nil) then
     Buffer := TBitmap.Create;
 
@@ -109,18 +106,19 @@ begin
       Exit;
 
     if FBack.Width <= 8 then
-      with Canvas do
-      begin
-        Canvas := TCanvas.Create;
-        Handle := Msg.DC;
-        //    Pen.Color := clWindow;
-        //    Brush.Color := clWindow;
-        //    Brush.Style := bsCross;
-        Brush.Bitmap := FBack;
-        FillRect(ClientRect);
-        Handle := 0;
-        Msg.Result := 1;
-      end
+      with TCanvas.Create do
+        try
+          Handle := Msg.DC;
+          //    Pen.Color := clWindow;
+          //    Brush.Color := clWindow;
+          //    Brush.Style := bsCross;
+          Brush.Bitmap := FBack;
+          FillRect(ClientRect);
+          Handle := 0;
+          Msg.Result := 1;
+        finally
+          Free;
+        end
     else
     begin
       //  Sendmessage(self.Handle, WM_SETREDRAW, 0, 0);
@@ -156,8 +154,6 @@ begin
   finally
     if Assigned(FOnEraseBkgndEvent) then
       FOnEraseBkgndEvent(Self, DC);
-    if Assigned(Canvas) then
-      Canvas.Free;
     if BufferedDraw then
       ApplyBuffer(Msg.DC);
   end;

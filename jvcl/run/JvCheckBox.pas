@@ -50,7 +50,7 @@ type
     FOver: boolean;
     FAutoSize: boolean;
     FAssociated: TControl;
-    FControlCanvas: TControlCanvas;
+    FCanvas: TControlCanvas;
     FHotTrackFontOptions: TJvTrackFOntOptions;
     FWordWrap: boolean;
     procedure SetHotFont(const Value: TFont);
@@ -59,7 +59,6 @@ type
     procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
     procedure SetWordWrap(const Value: boolean);
   protected
-    property Canvas: TCanvas read GetCanvas;
     procedure SetAutoSize(Value: boolean);
 {$IFDEF COMPILER6_UP} override;
 {$ENDIF}
@@ -71,18 +70,19 @@ type
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
-    procedure CMTextchanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CMFontchanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
+    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure CalcAutoSize; virtual;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Loaded; override;
     procedure Toggle; override;
     procedure Click; override;
     procedure SetChecked(Value: boolean); override;
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+    property Canvas: TCanvas read GetCanvas;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored false;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Associated: TControl read FAssociated write SetAssociated;
     property AutoSize: boolean read FAutoSize write SetAutoSize default true;
     property HotTrack: boolean read FHotTrack write FHotTrack default false;
@@ -108,6 +108,8 @@ uses
 constructor TJvCheckBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FCanvas := TControlCanvas.Create;
+  FCanvas.Control := Self;
   FHotTrack := false;
   FHotFont := TFont.Create;
   FFontSave := TFont.Create;
@@ -123,8 +125,9 @@ destructor TJvCheckBox.Destroy;
 begin
   FHotFont.Free;
   FFontSave.Free;
-  FControlCanvas.Free;
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
 end;
 
 procedure TJvCheckBox.Toggle;
@@ -251,21 +254,16 @@ end;
 
 function TJvCheckBox.GetCanvas: TCanvas;
 begin
-  if FControlCanvas = nil then
-  begin
-    FControlCanvas := TControlCanvas.Create;
-    FControlCanvas.Control := Self;
-  end;
-  Result := FControlCanvas;
+  Result := FCanvas;
 end;
 
-procedure TJvCheckBox.CMTextchanged(var Message: TMessage);
+procedure TJvCheckBox.CMTextChanged(var Message: TMessage);
 begin
   inherited;
   CalcAutoSize;
 end;
 
-procedure TJvCheckBox.CMFontchanged(var Message: TMessage);
+procedure TJvCheckBox.CMFontChanged(var Message: TMessage);
 begin
   inherited;
   CalcAutoSize;
@@ -284,12 +282,12 @@ begin
   ASize := GetDefaultCheckBoxSize;
     // add some spacing
   Inc(ASize.cy, 4);
-  Canvas.Font := Font;
+  FCanvas.Font := Font;
   R := Rect(0, 0, ClientWidth, ClientHeight);
     // This is slower than GetTextExtentPoint but it does consider hotkeys
   if Caption <> '' then
   begin
-    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
+    DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R, Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
   end

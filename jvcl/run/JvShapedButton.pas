@@ -139,7 +139,7 @@ begin
   bm := Tbitmap.create;
   SetBounds(Left, Top, 65, 65);
   FCanvas := TCanvas.Create;
-  FHotcolor := clBlue;
+  FHotColor := clBlue;
   FFlatborderColor := clWhite;
   FButtonShape := jvSTriangleUp; //TODO: Change to Left Arrow
 end;
@@ -147,7 +147,8 @@ end;
 destructor TJvShapedButton.Destroy;
 begin
   inherited Destroy;
-  bm.free;
+  bm.Free;
+  // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Free;
 end;
 
@@ -465,7 +466,7 @@ begin
     if IsFocused or OdsFocus or ActionFocus then
       DrawFocusRect(Rect);
   end; // with bm.Canvas and if DrawEntire
-  Fcanvas.Draw(0, 0, bm);
+  FCanvas.Draw(0, 0, bm);
   FCanvas.Handle := 0;
   Msg.Result := 1; // message handled
 end;
@@ -669,7 +670,7 @@ begin
     if IsFocused or OdsFocus or ActionFocus then
       DrawFocusRect(Rect);
   end; // with bm.Canvas and if DrawEntire
-  Fcanvas.Draw(0, 0, bm);
+  FCanvas.Draw(0, 0, bm);
   FCanvas.Handle := 0;
   Msg.Result := 1; // message handled
 end;
@@ -813,7 +814,7 @@ begin
     if IsFocused or OdsFocus or ActionFocus then
       DrawFocusRect(Rect);
   end; // with bm.Canvas and if DrawEntire
-  Fcanvas.Draw(0, 0, bm);
+  FCanvas.Draw(0, 0, bm);
   FCanvas.Handle := 0;
   Msg.Result := 1; // message handled
 end;
@@ -955,7 +956,7 @@ begin
     if IsFocused or OdsFocus or ActionFocus then
       DrawFocusRect(Rect);
   end; // with bm.Canvas and if DrawEntire
-  Fcanvas.Draw(0, 0, bm);
+  FCanvas.Draw(0, 0, bm);
   FCanvas.Handle := 0;
   Msg.Result := 1; // message handled
 end;
@@ -1097,7 +1098,7 @@ begin
     if IsFocused or OdsFocus or ActionFocus then
       DrawFocusRect(Rect);
   end; // with bm.Canvas and if DrawEntire
-  Fcanvas.Draw(0, 0, bm);
+  FCanvas.Draw(0, 0, bm);
   FCanvas.Handle := 0;
   Msg.Result := 1; // message handled
 end;
@@ -1244,7 +1245,7 @@ begin
     if IsFocused or OdsFocus or ActionFocus then
       DrawFocusRect(Rect);
   end; // with bm.Canvas and if DrawEntire
-  Fcanvas.Draw(0, 0, bm);
+  FCanvas.Draw(0, 0, bm);
   FCanvas.Handle := 0;
   Msg.Result := 1; // message handled
 end;
@@ -1583,7 +1584,7 @@ begin
     if IsFocused or OdsFocus or ActionFocus then
       DrawFocusRect(Rect);
   end; // with bm.Canvas and if DrawEntire
-  Fcanvas.Draw(0, 0, bm);
+  FCanvas.Draw(0, 0, bm);
   FCanvas.Handle := 0;
   Msg.Result := 1; // message handled
 end;
@@ -1741,7 +1742,7 @@ begin
     if IsFocused or OdsFocus or ActionFocus then
       DrawFocusRect(Rect);
   end; // with bm.Canvas and if DrawEntire
-  Fcanvas.Draw(0, 0, bm);
+  FCanvas.Draw(0, 0, bm);
   FCanvas.Handle := 0;
   Msg.Result := 1; // message handled
 end;
@@ -2158,7 +2159,7 @@ begin
     if IsFocused or OdsFocus or ActionFocus then
       DrawFocusRect(Rect);
   end; // with bm.Canvas and if DrawEntire
-  Fcanvas.Draw(0, 0, bm);
+  FCanvas.Draw(0, 0, bm);
   FCanvas.Handle := 0;
   Msg.Result := 1; // message handled
 end;
@@ -2308,7 +2309,7 @@ begin
     if IsFocused or OdsFocus or ActionFocus then
       DrawFocusRect(Rect);
   end; // with bm.Canvas and if DrawEntire
-  Fcanvas.Draw(0, 0, bm);
+  FCanvas.Draw(0, 0, bm);
   FCanvas.Handle := 0;
   Msg.Result := 1; // message handled
 end;
@@ -2463,7 +2464,7 @@ begin
     if IsFocused or OdsFocus or ActionFocus then
       DrawFocusRect(Rect);
   end; // with bm.Canvas and if DrawEntire
-  Fcanvas.Draw(0, 0, bm);
+  FCanvas.Draw(0, 0, bm);
   FCanvas.Handle := 0;
   Msg.Result := 1; // message handled
 end;
@@ -2610,7 +2611,7 @@ begin
     if IsFocused or OdsFocus or ActionFocus then
       DrawFocusRect(Rect);
   end; // with bm.Canvas and if DrawEntire
-  Fcanvas.Draw(0, 0, bm);
+  FCanvas.Draw(0, 0, bm);
   FCanvas.Handle := 0;
   Msg.Result := 1; // message handled
 end;

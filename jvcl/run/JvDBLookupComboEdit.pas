@@ -60,11 +60,10 @@ type
     procedure ActiveChange(Sender: TObject);
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
+    function GetCanvas: TCanvas;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
-
-
     function GetTextMargins: TPoint;
     procedure ResetMaxLength;
     procedure SetDataField(const Value: string);
@@ -96,6 +95,7 @@ type
     function UpdateAction(Action: TBasicAction): Boolean; override;
 //    function UseRightToLeftAlignment: Boolean; override;
     property Field: TField read GetField;
+    property Canvas: TCanvas read GetCanvas;
   published
     property Anchors;
     property AutoSelect;
@@ -169,6 +169,8 @@ begin
   inherited Create(AOwner);
 //  inherited ReadOnly := True;
   ControlStyle := ControlStyle + [csReplicatable];
+  FCanvas := TControlCanvas.Create;
+  FCanvas.Control := Self;
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := DataChange;
@@ -181,8 +183,9 @@ destructor TJvDBLookupComboEdit.Destroy;
 begin
   FDataLink.Free;
   FDataLink := nil;
-  FCanvas.Free;
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
 end;
 
 procedure TJvDBLookupComboEdit.Loaded;
@@ -299,6 +302,11 @@ procedure TJvDBLookupComboEdit.SetReadOnly(Value: Boolean);
 begin
   inherited SetReadOnly(Value);
   FDataLink.ReadOnly := Value;
+end;
+
+function TJvDBLookupComboEdit.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
 end;
 
 function TJvDBLookupComboEdit.GetField: TField;
@@ -433,11 +441,6 @@ begin
 { Since edit controls do not handle justification unless multi-line (and
   then only poorly) we will draw right and center justify manually unless
   the edit has the focus. }
-  if FCanvas = nil then
-  begin
-    FCanvas := TControlCanvas.Create;
-    FCanvas.Control := Self;
-  end;
   DC := Message.DC;
   if DC = 0 then DC := BeginPaint(Handle, PS);
   FCanvas.Handle := DC;
@@ -472,7 +475,8 @@ begin
       else
         Left := (ClientWidth - TextWidth(S)) div 2;
       end;
-      if SysLocale.MiddleEast then UpdateTextFlags;
+      if SysLocale.MiddleEast then
+        UpdateTextFlags;
       TextRect(R, Left, Margins.Y, S);
     end;
   finally

@@ -59,7 +59,7 @@ type
 
   TJvgCustomTreeView = class(TJvCustomTreeView)
   private
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     FWallpaper: TBitmap;
     FBoldSelection: boolean;
     FBevel: TJvgBevelOptions;
@@ -73,7 +73,8 @@ type
     fPaintingNow: boolean;
     FOptions: TglTreeViewOptions;
     isEditing_: boolean;
-    procedure Paint(var Message: TWMPaint); message WM_PAINT;
+    function GetCanvas: TCanvas;
+    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
     procedure SetWallpaper(Value: TBitmap);
     function GetWallpaper: TBitmap;
     procedure SetBoldSelection(Value: boolean);
@@ -86,12 +87,12 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure UpdateFlatScrollBar; virtual;
+    property Canvas: TCanvas read GetCanvas;
   public
     fDefaultPainting: boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    property Canvas: TCanvas read FCanvas;
     procedure SetNodeBoldState(Node: TTreeNode; fBold: boolean);
     procedure SetNodeState_(ItemID: HTreeItem; stateMask, State: UINT);
   protected
@@ -299,7 +300,7 @@ constructor TJvgCustomTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self; //...i can draw now! :)
+  FCanvas.Control := Self; //...i can draw now! :)
   FBevel := TJvgBevelOptions.Create;
   FHotTrack := False;
   FCheckboxes := False;
@@ -316,12 +317,9 @@ begin
   inherited Destroy;
   FCanvas.Free;
   FBevel.Free;
-  if Assigned(FWallpaper) then
-    FWallpaper.Free;
-  if Assigned(FMask) then
-    FMask.Free;
-  if Assigned(FGradient) then
-    FGradient.Free;
+  FWallpaper.Free;
+  FMask.Free;
+  FGradient.Free;
 end;
 
 procedure TJvgCustomTreeView.Assign(Source: TPersistent);
@@ -350,6 +348,11 @@ begin
   end;
 end;
 
+function TJvgCustomTreeView.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
+end;
+
 procedure TJvgCustomTreeView.CMDesignHitTest(var Message: TCMDesignHitTest);
 begin
   if htOnButton in GetHitTestInfoAt(Message.XPos, Message.YPos) then
@@ -374,7 +377,7 @@ begin
   end;
 end;
 
-procedure TJvgCustomTreeView.Paint(var Message: TWMPaint);
+procedure TJvgCustomTreeView.WMPaint(var Message: TWMPaint);
 var
   x, y, IWidth, IHeight: integer;
   r: TRect;
@@ -392,7 +395,7 @@ var
       R := Selected.DisplayRect(true);
       dec(R.Right);
       dec(r.Bottom);
-      DrawBoxEx(Canvas.Handle, r, FBevel.Sides, FBevel.Inner, FBevel.Outer,
+      DrawBoxEx(FCanvas.Handle, r, FBevel.Sides, FBevel.Inner, FBevel.Outer,
         FBevel.Bold, 0, true);
     end;
   end;
@@ -414,7 +417,7 @@ begin
     Bmp := TBitmap.Create;
     Bmp2 := TBitmap.Create;
     mask := CreateBitmap(IWidth, IHeight, 1, 1, nil);
-    MaskDC := CreateCompatibleDC(Canvas.handle);
+    MaskDC := CreateCompatibleDC(FCanvas.handle);
     OldMask := SelectObject(MaskDC, Mask);
 
     bmp.Width := IWidth;
@@ -438,13 +441,13 @@ begin
     inherited;
     DrawBevel;
     //  BitBlt( bmp.Canvas.Handle, 0, 0, IWidth, IHeight, FWallpaper.Canvas.Handle, 0,0, SRCCOPY );
-      //SetBkMode(Canvas.handle,TRANSPARENT);
+      //SetBkMode(FCanvas.handle,TRANSPARENT);
       //InvalidateRect(handle,@r,false);
     //  inherited;
     //  bmp2.Width := Width; bmp2.Height := Height;
     //  self.PaintWindow(bmp2.Canvas.Handle);
     //exit;
-    BitBlt(bmp2.Canvas.Handle, 0, 0, IWidth, IHeight, Canvas.handle, 0, 0,
+    BitBlt(bmp2.Canvas.Handle, 0, 0, IWidth, IHeight, FCanvas.handle, 0, 0,
       SRCCOPY);
 
     OldBkColor := SetBkColor(bmp2.Canvas.handle, ColorToRGB(Color));
@@ -453,7 +456,7 @@ begin
 
     BitBlt(bmp.Canvas.Handle, 0, 0, IWidth, IHeight, MaskDC, 0, 0, SRCAND);
 
-    {put mask on canvas to change background color to white}
+    {put mask on FCanvas to change background color to white}
     if Color <> clWhite then
       BitBlt(bmp2.Canvas.Handle, 0, 0, IWidth, IHeight, MaskDC, 0, 0,
         SRCPAINT);
@@ -463,7 +466,7 @@ begin
 
     BitBlt(bmp2.Canvas.handle, 0, 0, IWidth, IHeight, bmp.Canvas.Handle, 0, 0,
       SRCAND);
-    BitBlt(Canvas.handle, 0, 0, IWidth, IHeight, bmp2.Canvas.Handle, 0, 0,
+    BitBlt(FCanvas.handle, 0, 0, IWidth, IHeight, bmp2.Canvas.Handle, 0, 0,
       SRCCOPY);
     DeleteObject(SelectObject(MaskDC, OldMask));
     DeleteDC(MaskDC);

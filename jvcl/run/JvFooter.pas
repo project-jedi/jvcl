@@ -40,7 +40,6 @@ type
 
   TJvFooterBtn = class(TJvBitBtn)
   private
-    FCanvas: TCanvas;
     FAlignment: TAlignment;
     FButtonIndex: Integer;
     FSpaceInterval: Integer;
@@ -54,7 +53,6 @@ type
     procedure SetParent(AParent: TWinControl); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taRightJustify;
     property ButtonIndex: Integer read GetButtonIndex write SetButtonIndex;
@@ -149,17 +147,10 @@ const
 constructor TJvFooterBtn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FCanvas := TCanvas.Create;
   FAlignment := taRightJustify;
   FSpaceInterval := 6;
   Width := 74;
   Height := 23;
-end;
-
-destructor TJvFooterBtn.Destroy;
-begin
-  FCanvas.Free;
-  inherited Destroy;
 end;
 
 function TJvFooterBtn.GetButtonIndex: Integer;

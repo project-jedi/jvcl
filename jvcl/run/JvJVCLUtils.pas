@@ -308,9 +308,9 @@ procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
 
 {$IFDEF VCL}
 type
-  TJvScreenCanvas = class(TCanvas)
+  TJvDesktopCanvas = class(TCanvas)
   private
-    FDeviceContext: HDC;
+    FDC: HDC;
   protected
     procedure CreateHandle; override;
   public
@@ -2822,30 +2822,30 @@ end;
 
 {$IFDEF VCL}
 
-destructor TJvScreenCanvas.Destroy;
+destructor TJvDesktopCanvas.Destroy;
 begin
   FreeHandle;
   inherited Destroy;
 end;
 
-procedure TJvScreenCanvas.CreateHandle;
+procedure TJvDesktopCanvas.CreateHandle;
 begin
-  if FDeviceContext = 0 then
-    FDeviceContext := GetDC(0);
-  Handle := FDeviceContext;
+  if FDC = 0 then
+    FDC := GetWindowDC(GetDesktopWindow);
+  Handle := FDC;
 end;
 
-procedure TJvScreenCanvas.FreeHandle;
+procedure TJvDesktopCanvas.FreeHandle;
 begin
-  if FDeviceContext <> 0 then
+  if FDC <> 0 then
   begin
     Handle := 0;
-    ReleaseDC(0, FDeviceContext);
-    FDeviceContext := 0;
+    ReleaseDC(GetDesktopWindow, FDC);
+    FDC := 0;
   end;
 end;
 
-procedure TJvScreenCanvas.SetOrigin(X, Y: Integer);
+procedure TJvDesktopCanvas.SetOrigin(X, Y: Integer);
 var
   FOrigin: TPoint;
 begin

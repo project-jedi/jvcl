@@ -38,7 +38,7 @@ uses
 type
   TJvgSpeedButton = class(TSpeedButton)
   private
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     fMouseEnter: boolean;
     FColor: TColor;
     IsDown: boolean;
@@ -52,6 +52,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    function GetCanvas: TCanvas;
     procedure SetControl(const Value: TControl);
     procedure SetFrame(const Value: boolean);
     procedure SetCaptionLabel(const Value: TLabel);
@@ -72,6 +73,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Click; override;
+    property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
       false;
@@ -91,7 +93,6 @@ type
     FStyle: TJvgSpeedButtonStyle;
     FStyleActive: TJvgSpeedButtonStyle;
     FStylePushed: TJvgSpeedButtonStyle;
-
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure SetColor(const Value: TColor);
@@ -115,22 +116,13 @@ type
     property ActiveColor: TColor read GetActiveColor write SetActiveColor stored false;
   end;
 
-procedure Register;
-
 implementation
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-
-procedure Register;
-begin
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-//________________________________________________________ Methods _
 
 constructor TJvgSpeedButton.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self; //...i can draw now! :)
+  FCanvas.Control := Self; //...i can draw now! :)
   //..defaults
   FColor := IncColor(GetSysColor(COLOR_BTNFACE), 30);
   FActiveColor := IncColor(FColor, 10);
@@ -139,8 +131,9 @@ end;
 
 destructor TJvgSpeedButton.Destroy;
 begin
+  inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Free;
-  inherited;
 end;
 
 procedure TJvgSpeedButton.Paint;
@@ -154,7 +147,7 @@ begin
     Exit;
   end;
   if SystemColorDepth < 16 then
-    FColor := GetNearestColor(Canvas.Handle, FColor);
+    FColor := GetNearestColor(FCanvas.Handle, FColor);
 
   R := ClientRect;
 
@@ -169,33 +162,36 @@ begin
     InflateRect(R, -1, -1);
   dec(R.Right);
   dec(R.Bottom);
-  DrawBoxEx(Canvas.Handle, R, ALLGLSIDES, bvNone, BevelOuter, false,
+  DrawBoxEx(FCanvas.Handle, R, ALLGLSIDES, bvNone, BevelOuter, false,
     iif(fMouseEnter, ActiveColor, Color), false);
 
-  SetBkMode(Canvas.Handle, integer(Transparent));
+  if Transparent then
+    SetBkMode(FCanvas.Handle, Windows.TRANSPARENT)
+  else
+    SetBkMode(FCanvas.Handle, Windows.OPAQUE);
 
-  Canvas.Font.Assign(Font);
+  FCanvas.Font.Assign(Font);
   if not Enabled then
-    Canvas.Font.Color := clGrayText;
+    FCanvas.Font.Color := clGrayText;
   if Assigned(Glyph) then
     Inc(R.Left, Glyph.Width);
 
   if IsDown then
     OffsetRect(R, 1, 1);
-  DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or
+  DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or
     DT_CENTER or DT_VCENTER);
 
   R := ClientRect;
-  Canvas.Brush.Color := 0;
+  FCanvas.Brush.Color := 0;
   if FFrame then
   begin
-    Canvas.Font.Color := FFrameColor;
-    Canvas.FrameRect(R);
+    FCanvas.Font.Color := FFrameColor;
+    FCanvas.FrameRect(R);
   end;
 
   if Assigned(Glyph) then
-    CreateBitmapExt(Canvas.Handle, Glyph, ClientRect, (Width - Glyph.Width -
-      Canvas.TextWidth(Caption)) div 2 + integer(IsDown) - 1 - Spacing, 1 +
+    CreateBitmapExt(FCanvas.Handle, Glyph, ClientRect, (Width - Glyph.Width -
+      FCanvas.TextWidth(Caption)) div 2 + integer(IsDown) - 1 - Spacing, 1 +
       (Height - Glyph.Height) div 2 + integer(IsDown),
       fwoNone, fdsDefault,
       true, GetTransparentColor(Glyph, ftcLeftBottomPixel), 0);
@@ -216,6 +212,11 @@ begin
   fMouseEnter := false;
   if IsDown or (Color <> ActiveColor) then
     Invalidate;
+end;
+
+function TJvgSpeedButton.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
 end;
 
 procedure TJvgSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -351,7 +352,7 @@ begin
 
   with _Style do
   begin
-    R := DrawBoxEx( Canvas.Handle, R, Bevel.Sides, Bevel.Inner, Bevel.Outer, Bevel.Bold, Color, Gradient.Active );
+    R := DrawBoxEx(Canvas.Handle, R, Bevel.Sides, Bevel.Inner, Bevel.Outer, Bevel.Bold, Color, Gradient.Active );
     if Gradient.Active then
     begin
       inc(R.Right); inc(R.Bottom);
@@ -365,7 +366,7 @@ begin
 
   Canvas.Font.Assign(_Style.Font);
   if IsDown then offset := 1 else offset := 0;
-  ExtTextOutExt( Canvas.Handle, R.Left+offset+(R.Right - R.Left -Canvas.TextWidth(Caption)) div 2, R.Top+offset+(R.Bottom - R.Top - Canvas.TextHeight(Caption)) div 2, R, Caption,
+  ExtTextOutExt(Canvas.Handle, R.Left+offset+(R.Right - R.Left -Canvas.TextWidth(Caption)) div 2, R.Top+offset+(R.Bottom - R.Top - Canvas.TextHeight(Caption)) div 2, R, Caption,
   		 TextStyle, false{ fcoDelineatedText in Options},
 		 false, _Style.Font.Color, _Style.DelineateColor,
 		 _Style.HighlightColor, _Style.ShadowColor,

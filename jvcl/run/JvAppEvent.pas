@@ -706,8 +706,9 @@ begin
   {$ENDIF VCL}
   if (Self <> nil) and (AppList <> nil) then
     AppList.RemoveEvents(Self);
-  FCanvas.Free;
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
 end;
 
 procedure TJvAppEvents.Loaded;
@@ -731,8 +732,7 @@ var
 begin
   BeginPaint(Application.Handle, PS);
   try
-    if FCanvas <> nil then
-      FCanvas.Free;
+    FreeAndNil(FCanvas);
     FCanvas := TCanvas.Create;
     try
       Canvas.Handle := PS.hDC;
@@ -742,8 +742,7 @@ begin
       if Assigned(FOnPaintIcon) then
         FOnPaintIcon(Self);
     finally
-      FCanvas.Free;
-      FCanvas := nil;
+      FreeAndNil(FCanvas);
     end;
   finally
     EndPaint(Application.Handle, PS);

@@ -485,20 +485,20 @@ end;
 procedure TJvPageSetupDialog.WMPaintPage(var Msg: TMessage);
 var
   PaintRect: TRect;
-  PaintCanvas: TCanvas;
+  Canvas: TCanvas;
 begin
   if Msg.LParam <> 0 then
     PaintRect := PRect(Msg.LParam)^
   else
     PaintRect := Rect(0, 0, 0, 0);
 
-  PaintCanvas := TCanvas.Create;
-  PaintCanvas.Handle := HDC(Msg.WParam);
+  Canvas := TCanvas.Create;
+  Canvas.Handle := HDC(Msg.WParam);
   try
     Msg.Result := Ord(DoPaint(FInitPaper, FInitFlags, FPageSetupRec,
-      FPaintWhat, PaintCanvas, PaintRect));
+      FPaintWhat, Canvas, PaintRect));
   finally
-    PaintCanvas.Free;
+    Canvas.Free;
   end;
 end;
 

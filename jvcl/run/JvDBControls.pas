@@ -86,7 +86,7 @@ type
     var Offset: integer; var DeafaultDrawText,
     DefaultDrawSortMarker: boolean) of object;
 
- {NEW IN JVCL3.0 - Enhanced DBEdit/DBMaskEdit }
+  {NEW IN JVCL3.0 - Enhanced DBEdit/DBMaskEdit }
   TJvDBMaskEdit = class(TJvCustomMaskEdit) // same base as TJvMaskEdit, plus data aware.
   private
     {Standard data-aware crap}
@@ -100,12 +100,12 @@ type
       // value of text in the edit control at the time
       // that keyboard focus enters the control:
     FOriginalValue : String;
-      // Validation/event.
-    FOnAcceptNewValue : TJvDbAcceptValueEvent;
-
+    // Validation/event.
+    FOnAcceptNewValue: TJvDbAcceptValueEvent;
     procedure ActiveChange(Sender: TObject);
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
+    function GetCanvas: TCanvas;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
@@ -124,8 +124,6 @@ type
     procedure CMExit(var Message: TCMExit); message CM_EXIT;
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT; 
     procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
-
-
   protected
     procedure Change; override;
     function EditCanModify: Boolean; override;
@@ -142,6 +140,7 @@ type
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
     property Field: TField read GetField;
+    property Canvas: TCanvas read GetCanvas;
   published
     { Here are the common designtime properties, exactly like the VCL TDBEdit  }
     property Anchors;
@@ -380,8 +379,6 @@ type
     property BeepOnError:Boolean read FBeepOnError write FBeepOnError default true; // WAP.
   end;
 
-
-
   TJvDBComboEdit = class(TJvCustomComboEdit)
   private
     FDataLink: TFieldDataLink;
@@ -389,6 +386,7 @@ type
     FFocused: Boolean;
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
+    function GetCanvas: TCanvas;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
@@ -421,6 +419,7 @@ type
     function UseRightToLeftAlignment: Boolean; override;
     property Button;
     property Field: TField read GetField;
+    property Canvas: TCanvas read GetCanvas;
   published
     //Polaris
     property Align;
@@ -496,6 +495,7 @@ type
     FCanvas: TControlCanvas;
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
+    function GetCanvas: TCanvas;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
@@ -534,6 +534,7 @@ type
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
     property Field: TField read GetField;
+    property Canvas: TCanvas read GetCanvas;
   published
     // Polaris
     property DateAutoBetween;
@@ -939,6 +940,8 @@ constructor TJvDBMaskEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csReplicatable];
+  FCanvas := TControlCanvas.Create;
+  FCanvas.Control := Self;
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := DataChange;
@@ -946,7 +949,7 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   FDataLink.OnActiveChange := ActiveChange;
   // new stuff that isn't in the VCL version.
-  FBeepOnError  := true;
+  FBeepOnError := True;
   inherited ReadOnly := True;
 end;
 
@@ -954,8 +957,9 @@ destructor TJvDBMaskEdit.Destroy;
 begin
   FDataLink.Free;
   FDataLink := nil;
-  FCanvas.Free;
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
 end;
 
 procedure TJvDBMaskEdit.Loaded;
@@ -1056,6 +1060,11 @@ begin
   if not (csDesigning in ComponentState) then
     ResetMaxLength;
   FDataLink.FieldName := Value;
+end;
+
+function TJvDBMaskEdit.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
 end;
 
 function TJvDBMaskEdit.GetReadOnly: Boolean;
@@ -1237,11 +1246,6 @@ begin
   Data Aware Controls drawing themselves into their own internal
   canvas, for purpose of being displayed in a DBControl Grid:
 }
-  if FCanvas = nil then
-  begin
-    FCanvas := TControlCanvas.Create;
-    FCanvas.Control := Self;
-  end;
   DC := Message.DC;
   if DC = 0 then DC := BeginPaint(Handle, PS);
   FCanvas.Handle := DC;
@@ -1276,7 +1280,8 @@ begin
       else
         Left := (ClientWidth - TextWidth(S)) div 2;
       end;
-      if SysLocale.MiddleEast then UpdateTextFlags;
+      if SysLocale.MiddleEast then
+        UpdateTextFlags;
       TextRect(R, Left, Margins.Y, S);
     end;
   finally
@@ -2828,6 +2833,8 @@ constructor TJvDBComboEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csReplicatable];
+  FCanvas := TControlCanvas.Create;
+  FCanvas.Control := Self;
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := DataChange;
@@ -2841,8 +2848,9 @@ destructor TJvDBComboEdit.Destroy;
 begin
   FDataLink.Free;
   FDataLink := nil;
-  FCanvas.Free;
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
 end;
 
 procedure TJvDBComboEdit.Loaded;
@@ -2915,6 +2923,11 @@ procedure TJvDBComboEdit.Change;
 begin
   FDataLink.Modified;
   inherited Change;
+end;
+
+function TJvDBComboEdit.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
 end;
 
 function TJvDBComboEdit.GetDataSource: TDataSource;
@@ -3087,6 +3100,8 @@ constructor TJvDBDateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csReplicatable];
+  FCanvas := TControlCanvas.Create;
+  FCanvas.Control := Self;
   FInReset := False; // Polaris
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
@@ -3103,8 +3118,9 @@ destructor TJvDBDateEdit.Destroy;
 begin
   FDataLink.Free;
   FDataLink := nil;
-  FCanvas.Free;
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
 end;
 
 procedure TJvDBDateEdit.AfterPopup(Sender: TObject; var Date: TDateTime;
@@ -3211,6 +3227,11 @@ begin
   if not Formatting then
     FDataLink.Modified;
   inherited Change;
+end;
+
+function TJvDBDateEdit.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
 end;
 
 function TJvDBDateEdit.GetDataSource: TDataSource;

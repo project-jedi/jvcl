@@ -53,7 +53,7 @@ type
   private
     FItems: TStrings;
     FBorderStyle: TBorderStyle;
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     FColumns: Integer;
     FItemHeight: Integer;
     FStyle: TListBoxStyle;
@@ -73,6 +73,7 @@ type
     FOnGetItemWidth: TGetItemWidthEvent;
     procedure ResetHorizontalExtent;
     procedure SetHorizontalExtent;
+    function GetCanvas: TCanvas;
     function GetAutoScroll: Boolean;
     function GetItemHeight: Integer; virtual;
     function GetItemIndex: Integer;
@@ -144,7 +145,7 @@ type
     procedure DefaultDrawText(X, Y: Integer; const S: string);
     function ItemAtPos(Pos: TPoint; Existing: Boolean): Integer;
     function ItemRect(Index: Integer): TRect;
-    property Canvas: TCanvas read FCanvas;
+    property Canvas: TCanvas read GetCanvas;
     property Items: TStrings read FItems write SetItems;
     property ItemIndex: Integer read GetItemIndex write SetItemIndex;
     property SelCount: Integer read GetSelCount;
@@ -422,7 +423,7 @@ begin
   FItems := CreateItemList;
   TJvListBoxStrings(FItems).ListBox := Self;
   FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
+  FCanvas.Control := Self;
   FItemHeight := 16;
   FBorderStyle := bsSingle;
   FExtendedSelect := True;
@@ -430,7 +431,6 @@ end;
 
 destructor TJvxCustomListBox.Destroy;
 begin
-  // (rom) inherited moved to end
   // (ahuser) moved inherited to the top otherwise it will raise an AV in csDesigning
   inherited Destroy;
   FCanvas.Free;
@@ -441,6 +441,11 @@ end;
 function TJvxCustomListBox.CreateItemList: TStrings;
 begin
   Result := TJvListBoxStrings.Create;
+end;
+
+function TJvxCustomListBox.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
 end;
 
 function TJvxCustomListBox.GetItemData(Index: Integer): Longint;
@@ -482,12 +487,12 @@ begin
       {if (FTabChar > #0) then
         for I := 1 to Length(S) do
           if S[I] = FTabChar then S[I] := #9;}
-      ATabWidth := Round((TabWidth * Canvas.TextWidth('0')) * 0.25);
-      Result := LoWord(GetTabbedTextExtent(Canvas.Handle, @S[1], Length(S),
+      ATabWidth := Round((TabWidth * FCanvas.TextWidth('0')) * 0.25);
+      Result := LoWord(GetTabbedTextExtent(FCanvas.Handle, @S[1], Length(S),
         1, ATabWidth));
     end
     else
-      Result := Canvas.TextWidth(S);
+      Result := FCanvas.TextWidth(S);
   end;
 end;
 
@@ -885,7 +890,7 @@ begin
       WM_SETFONT:
         begin
           inherited WndProc(Msg);
-          Canvas.Font.Assign(Self.Font);
+          FCanvas.Font.Assign(Self.Font);
           ResetHorizontalExtent;
           Exit;
         end;
@@ -1039,12 +1044,12 @@ procedure TJvxCustomListBox.DefaultDrawText(X, Y: Integer; const S: string);
 var
   ATabWidth: Longint;
 begin
-  TControlCanvas(FCanvas).UpdateTextFlags;
+  FCanvas.UpdateTextFlags;
   if FTabWidth = 0 then
     FCanvas.TextOut(X, Y, S)
   else
   begin
-    ATabWidth := Round((TabWidth * Canvas.TextWidth('0')) * 0.25);
+    ATabWidth := Round((TabWidth * FCanvas.TextWidth('0')) * 0.25);
     TabbedTextOut(FCanvas.Handle, X, Y, @S[1], Length(S), 1, ATabWidth, X);
   end;
 end;
@@ -1064,7 +1069,7 @@ begin
       else
         Dec(Rect.Right, 2);
       DefaultDrawText(Rect.Left, Max(Rect.Top, (Rect.Bottom +
-        Rect.Top - Canvas.TextHeight('Wy')) div 2), Items[Index]);
+        Rect.Top - FCanvas.TextHeight('Wy')) div 2), Items[Index]);
     end;
   end;
 end;
@@ -1551,8 +1556,8 @@ begin
   if (Style = lbStandard) or ((Style = lbOwnerDrawFixed) and
     not Assigned(FOnDrawItem)) then
   begin
-    Canvas.Font := Font;
-    H := Max(Canvas.TextHeight('Wg'), FCheckHeight);
+    FCanvas.Font := Font;
+    H := Max(FCanvas.TextHeight('Wg'), FCheckHeight);
     if Style = lbOwnerDrawFixed then
       H := Max(H, FItemHeight);
     Perform(LB_SETITEMHEIGHT, 0, H);
@@ -1583,9 +1588,9 @@ begin
     DrawCheck(R, GetState(Index), EnabledItem[Index]);
     if not EnabledItem[Index] then
       if odSelected in State then
-        Canvas.Font.Color := clInactiveCaptionText
+        FCanvas.Font.Color := clInactiveCaptionText
       else
-        Canvas.Font.Color := clGrayText;
+        FCanvas.Font.Color := clGrayText;
   end;
   if (Style = lbStandard) and Assigned(FOnDrawItem) then
   begin
@@ -1626,15 +1631,15 @@ begin
   DrawRect.Top := R.Top + (R.Bottom - R.Top - FCheckHeight) div 2;
   DrawRect.Right := DrawRect.Left + FCheckWidth;
   DrawRect.Bottom := DrawRect.Top + FCheckHeight;
-  SaveColor := Canvas.Brush.Color;
+  SaveColor := FCanvas.Brush.Color;
   AssignBitmapCell(CheckBitmap, FDrawBitmap, 6, 3,
     CheckImages[AState, FCheckKind, Enabled]);
-  Canvas.Brush.Color := Self.Color;
+  FCanvas.Brush.Color := Self.Color;
   try
-    Canvas.BrushCopy(DrawRect, FDrawBitmap, Bounds(0, 0, FCheckWidth,
+    FCanvas.BrushCopy(DrawRect, FDrawBitmap, Bounds(0, 0, FCheckWidth,
       FCheckHeight), CheckBitmap.TransparentColor and not PaletteMask);
   finally
-    Canvas.Brush.Color := SaveColor;
+    FCanvas.Brush.Color := SaveColor;
   end;
 end;
 

@@ -137,7 +137,7 @@ function TJvSystemPopup.HandleWndProc(var Msg: TMessage): Boolean;
 var
   SaveIndex: Integer;
   MenuItem: TMenuItem;
-  Canvas: TCanvas;
+  Canvas: TControlCanvas;
   DC: HDC;
 begin
   Result := False;
@@ -203,7 +203,7 @@ begin
                   RestoreDC(DC, SaveIndex);
                 end;
               finally
-                Canvas.Free;
+                Free;
               end;
             finally
               ReleaseDC(Application.Handle, DC);

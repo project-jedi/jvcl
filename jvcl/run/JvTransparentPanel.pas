@@ -118,22 +118,20 @@ begin
 end;
 
 procedure TJvTransparentPanel.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
-var
-  Canvas: TCanvas;
 begin
   if csDesigning in ComponentState then
     inherited
   else
   begin
     CaptureBackground;
-    Canvas := TCanvas.Create;
-    try
-      Canvas.Handle := Msg.DC;
-      Canvas.Draw(0, 0, FBackground);
-    finally
-      Canvas.Handle := 0;
-      Canvas.Free;
-    end;
+    with TCanvas.Create do
+      try
+        Handle := Msg.DC;
+        Draw(0, 0, FBackground);
+      finally
+        Handle := 0;
+        Free;
+      end;
     Msg.Result := 1;
   end;
 end;

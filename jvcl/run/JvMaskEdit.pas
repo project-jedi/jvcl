@@ -452,29 +452,25 @@ begin
 end;
 
 procedure TJvCustomMaskEdit.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
-var
-  Canvas: TCanvas;
 begin
   if Enabled then
     inherited
   else
-  begin
-    Canvas := TCanvas.Create;
-    try
-      Canvas.Handle := Msg.DC;
-      SaveDC(Msg.DC);
+    with TCanvas.Create do
       try
-        Canvas.Brush.Color := FDisabledColor;
-        Canvas.Brush.Style := bsSolid;
-        Canvas.Fillrect(clientrect);
-        Msg.Result := 1;
+        Handle := Msg.DC;
+        SaveDC(Msg.DC);
+        try
+          Brush.Color := FDisabledColor;
+          Brush.Style := bsSolid;
+          FillRect(ClientRect);
+          Msg.Result := 1;
+        finally
+          RestoreDC(Msg.DC, -1);
+        end;
       finally
-        RestoreDC(Msg.DC, -1);
+        Free;
       end;
-    finally
-      Canvas.Free;
-    end;
-  end;
 end;
 
 procedure TJvCustomMaskEdit.WMSetFocus(var Msg: TMessage);

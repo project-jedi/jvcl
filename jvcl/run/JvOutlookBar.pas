@@ -407,8 +407,9 @@ end;
 
 destructor TJvOutlookBarEdit.Destroy;
 begin
-  FCanvas.Free;
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
 end;
 
 procedure TJvOutlookBarEdit.EditAccept;
@@ -506,7 +507,7 @@ begin
 (*
   DC := GetWindowDC(Handle);
   try
-    Canvas.Handle := DC;
+    FCanvas.Handle := DC;
     Windows.GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
     MapWindowPoints(0, Handle, RW, 2);
@@ -515,16 +516,16 @@ begin
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
 
-    Canvas.Brush.Color := clBlack;
-    Windows.FrameRect(DC,RW,Canvas.Brush.Handle);
+    FCanvas.Brush.Color := clBlack;
+    Windows.FrameRect(DC,RW,FCanvas.Brush.Handle);
     InflateRect(RW,-1,-1);
 
-{    Canvas.Brush.Color := clBlack;
-    Windows.FrameRect(DC,RW,Canvas.Brush.Handle);
+{    FCanvas.Brush.Color := clBlack;
+    Windows.FrameRect(DC,RW,FCanvas.Brush.Handle);
     InflateRect(RW,-1,-1);
 
-    Canvas.Brush.Color := clBlack;
-    Windows.FrameRect(DC,RW,Canvas.Brush.Handle);
+    FCanvas.Brush.Color := clBlack;
+    Windows.FrameRect(DC,RW,FCanvas.Brush.Handle);
     InflateRect(RW,-1,-1); }
 
     { Erase parts not drawn }
@@ -1059,7 +1060,7 @@ begin
 
     Details := ThemeServices.GetElementDetails(Button);
 
-    ThemeServices.DrawElement(Canvas.Handle, Details, ClientRect, nil); //@ClipRect);
+    ThemeServices.DrawElement(FCanvas.Handle, Details, ClientRect, nil); //@ClipRect);
   end
   else
     inherited Paint;
@@ -1263,11 +1264,11 @@ begin
       begin
         ClipRect := R;
         InflateRect(R, 1, 1);
-        ThemeServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
+        ThemeServices.DrawElement(FCanvas.Handle, Details, R, @ClipRect);
         InflateRect(R, -1, -1);
       end
       else
-        ThemeServices.DrawElement(Canvas.Handle, Details, R);
+        ThemeServices.DrawElement(FCanvas.Handle, Details, R);
 
       { Determine text color }
       if FPressedPageBtn = I then
@@ -1280,7 +1281,7 @@ begin
 
       with Details do
         GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LColor);
-      Canvas.Font.Color := LColor;
+      FCanvas.Font.Color := LColor;
     end
     else
     {$ENDIF}
@@ -1334,7 +1335,7 @@ begin
     for I := Pages[Index].TopButtonIndex to Pages[Index].Buttons.Count - 1 do
     begin
       Canvas.Font := Pages[Index].Font;
-//      Canvas.Rectangle(R);  // DEBUG
+//      FCanvas.Rectangle(R);  // DEBUG
       {$IFDEF JVCLThemesEnabled}
       if ThemeServices.ThemesEnabled then
         Canvas.Font.Color := ThemedColor;
@@ -1351,7 +1352,7 @@ begin
               LargeImages.Draw(Canvas, R.Left + ((R.Right - R.Left) - LargeImages.Width) div 2, R.Top + 4,
                 Pages[Index].Buttons[I].ImageIndex);
             R3 := GetButtonTextRect(ActivePageIndex, I);
-//          Canvas.Rectangle(R3);  // DEBUG
+//          FCanvas.Rectangle(R3);  // DEBUG
             DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
               DT_EXPANDTABS or DT_SINGLELINE or DT_CENTER or DT_VCENTER or DT_NOPREFIX);
           end;
@@ -1360,7 +1361,7 @@ begin
             if SmallImages <> nil then
               SmallImages.Draw(Canvas, R.Left + 2, R.Top + 2, Pages[Index].Buttons[I].ImageIndex);
             R3 := GetButtonTextRect(ActivePageIndex, I);
-//          Canvas.Rectangle(R3);  // DEBUG
+//          FCanvas.Rectangle(R3);  // DEBUG
             DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
               DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP or DT_NOPREFIX);
           end;
@@ -1470,11 +1471,11 @@ begin
       begin
         ClipRect := R;
         InflateRect(R, 1, 1);
-        ThemeServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
+        ThemeServices.DrawElement(FCanvas.Handle, Details, R, @ClipRect);
         InflateRect(R, -1, -1);
       end
       else
-        ThemeServices.DrawElement(Canvas.Handle, Details, R);
+        ThemeServices.DrawElement(FCanvas.Handle, Details, R);
 
       { Determine text color }
       if FPressedPageBtn = I then
@@ -1487,7 +1488,7 @@ begin
 
       with Details do
         GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LColor);
-      Canvas.Font.Color := LColor;
+      FCanvas.Font.Color := LColor;
     end
     else
     {$ENDIF}
@@ -1687,7 +1688,7 @@ begin
     ClipRect := R;
     InflateRect(R, 1, 0);
     Details := ThemeServices.GetElementDetails(ttbButtonHot);
-    ThemeServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
+    ThemeServices.DrawElement(FCanvas.Handle, Details, R, @ClipRect);
   end
   else
   {$ENDIF}
@@ -1827,7 +1828,7 @@ begin
       Details := ThemeServices.GetElementDetails(ttbButtonPressed)
     else
       Details := ThemeServices.GetElementDetails(ttbButtonHot);
-    ThemeServices.DrawElement(Canvas.Handle, Details, R);
+    ThemeServices.DrawElement(FCanvas.Handle, Details, R);
   end
   else
   {$ENDIF}
