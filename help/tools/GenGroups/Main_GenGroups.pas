@@ -654,7 +654,7 @@ end;
 procedure TGroupInfo.AppendToFile(const TopicOrder: Integer);
 begin
   FileSL.Add('@@$' + ParentGroupID + '.' + GroupID);
-  FileSL.Add('<GROUP ' + ParentGroupID(Parent = nil) + '>');
+  FileSL.Add('<GROUP $' + ParentGroupID(Parent = nil) + '>');
   FileSL.Add('<TOPICORDER ' + IntToStr(TopicOrder) + '>');
   FileSL.Add('<TITLE ' + GroupTitle + '>');
   AddDescription;
@@ -962,6 +962,8 @@ begin
       I := Length(GroupString) + 1;
     ThisName := Trim(Copy(GroupString, 1, I - 1));
     Delete(GroupString, 1, I);
+    if Copy(ThisName, 1, 1) = '$' then
+      Delete(ThisName, 1, 1);
     GroupString := Trim(GroupString);
     if AnsiSameText(Copy(ThisName, 1, 5), 'JVCL.') then
       Grp := GroupInfo.Locate(Copy(ThisName, 6, Length(ThisName) - 5))
@@ -1039,7 +1041,7 @@ begin
   I := Index + 1;
   while I < MaxI do
   begin
-    if AnsiSameText(Trim(FileSL[I]), '<GROUP JVCL.FileRef>') then
+    if AnsiSameText(Trim(FileSL[I]), '<GROUP $JVCL.FileRef>') then
       Exit;
     Inc(I);
   end;
@@ -1245,7 +1247,7 @@ begin
     FormatDateTime('dd-mm-yyyy "at" hh:nn:ss', Now), 94, ' ') + ' ##');
   FileSL.Add(StringOfChar('#', 100));
   FileSL.Add('@@$JVCL.FuncRef');
-  FileSL.Add('<GROUP JVCL>');
+  FileSL.Add('<GROUP $JVCL>');
   FileSL.Add('<TITLE Functional Reference>');
   FileSL.Add('Description');
   FileSL.Add('  JEDI-VCL consists of many components and controls for all sorts of things. To help you find the');
