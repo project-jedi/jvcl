@@ -41,9 +41,8 @@ uses
   FiltEdit, RTLConsts, DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$ELSE}
   LibIntf, DsgnIntf,
-  {$ENDIF}
-  ImgEdit, ImgList
-  ;
+  {$ENDIF COMPILER6_UP}
+  ImgEdit, ImgList;
 
 type
   TJvHintProperty = class(TStringProperty)
@@ -54,9 +53,9 @@ type
 
   TJvFilenameProperty = class(TStringProperty)
   protected
-    procedure OnDialogShow(Sender: TObject);virtual;
-    function GetFilter:string;virtual;
-    function GetOptions:TOpenOptions;virtual;
+    procedure OnDialogShow(Sender: TObject); virtual;
+    function GetFilter: string; virtual;
+    function GetOptions: TOpenOptions; virtual;
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
@@ -65,9 +64,8 @@ type
 
   TJvExeNameProperty = class(TJvFilenameProperty)
   protected
-    function GetFilter:string;override;
+    function GetFilter: string; override;
   end;
-
 
   TJvDirectoryProperty = class(TStringProperty)
   public
@@ -88,8 +86,8 @@ type
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
     {$ELSE}
     procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
-    {$ENDIF}
-    function GetStringsName:string;virtual;
+    {$ENDIF COMPILER6_UP}
+    function GetStringsName: string; virtual;
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -142,7 +140,7 @@ type
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean);
   end;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 
   {$IFDEF COMPILER5}
   TJvDefaultImageIndexProperty = class(TIntegerProperty)
@@ -162,7 +160,7 @@ type
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean); override;
   end;
-  {$ENDIF}
+  {$ENDIF COMPILER5}
 
   TJvNosortEnumProperty = class(TEnumProperty)
   public
@@ -202,73 +200,76 @@ type
   end;
 
 
-resourcestring
-  sAllFiles = 'All files (*.*)|*.*';
-  sStripFilePath = '&Strip file path';
-  sExecutableFilesexeexeAllFiles = 'Executable files (*.exe)|*.exe|All files (*.*)|*.*';
-
 implementation
-uses
-  FileCtrl, TypInfo, Math, Dlgs, Consts, 
-  JvTypes, JvStringsForm, JvDateTimeForm, JvConsts;
 
-resourcestring
-  SItems = 'Items';
-  SFmtEditProperty = '%s Editor...';
+uses
+  FileCtrl, TypInfo, Math, Dlgs, Consts,
+  JvTypes, JvStringsForm, JvDateTimeForm, JvConsts, JvDsgnConsts;
+
+const
+  cMaxInt    = 'MaxInt';
+  cMinInt    = 'MinInt';
+  cMaxLong   = 'MaxLong';
+  cMinLong   = 'MinLong';
+  cMaxShort  = 'MaxShort';
+  cMinShort  = 'MinShort';
+  cMaxWord   = 'MaxWord';
+  cFilename  = '(Filename)';
+  cDirectory = '(Directory)';
 
 function ValueName(E: Extended): string;
 begin
   if E = High(Integer) then
-    Result := 'MaxInt'
+    Result := cMaxInt
   else
   if E = Low(Integer) then
-    Result := 'MinInt'
+    Result := cMinInt
   else
   if E = High(Longint) then
-    Result := 'MaxLong'
+    Result := cMaxLong
   else
   if E = Low(Longint) then
-    Result := 'MinLong'
+    Result := cMinLong
   else
   if E = High(ShortInt) then
-    Result := 'MaxShort'
+    Result := cMaxShort
   else
   if E = Low(ShortInt) then
-    Result := 'MinShort'
+    Result := cMinShort
   else
   if E = High(Word) then
-    Result := 'MaxWord'
+    Result := cMaxWord
   else
     Result := '';
 end;
 
 function StrToValue(const S: string): Longint;
 begin
-  if CompareText(S, 'MaxLong') = 0 then
+  if CompareText(S, cMaxLong) = 0 then
     Result := High(Longint)
   else
-  if CompareText(S, 'MinLong') = 0 then
+  if CompareText(S, cMinLong) = 0 then
     Result := Low(Longint)
   else
-  if CompareText(S, 'MaxInt') = 0 then
+  if CompareText(S, cMaxInt) = 0 then
     Result := High(Integer)
   else
-  if CompareText(S, 'MinInt') = 0 then
+  if CompareText(S, cMinInt) = 0 then
     Result := Low(Integer)
   else
-  if CompareText(S, 'MaxShort') = 0 then
+  if CompareText(S, cMaxShort) = 0 then
     Result := High(ShortInt)
   else
-  if CompareText(S, 'MinShort') = 0 then
+  if CompareText(S, cMinShort) = 0 then
     Result := Low(ShortInt)
   else
-  if CompareText(S, 'MaxWord') = 0 then
+  if CompareText(S, cMaxWord) = 0 then
     Result := High(Word)
   else
     Result := 0;
 end;
   
-//=== TJvFilenameProperty ======================================================
+//=== TJvFilenameProperty ====================================================
 
 procedure TJvFilenameProperty.Edit;
 begin
@@ -292,7 +293,7 @@ end;
 
 function TJvFilenameProperty.GetFilter: string;
 begin
-  Result := sAllFiles;
+  Result := SAllFiles;
 end;
 
 function TJvFilenameProperty.GetOptions: TOpenOptions;
@@ -304,20 +305,21 @@ function TJvFilenameProperty.GetValue: string;
 begin
   Result := inherited GetValue;
   if Result = '' then
-    Result := '(Filename)';
+    Result := cFilename;
 end;
 
-//=== TJvDirectoryProperty ==========================================================
+//=== TJvDirectoryProperty ===================================================
 
 procedure TJvDirectoryProperty.Edit;
 var
   AName, FolderName: string;
-  C:TPersistent;
+  C: TPersistent;
 begin
   C := GetComponent(0);
   if C is TComponent then
     AName := TComponent(C).Name
-  else if C is TCollectionItem then
+  else
+  if C is TCollectionItem then
     AName := TCollectionItem(C).GetNamePath
   else
     AName := C.ClassName;
@@ -334,10 +336,10 @@ function TJvDirectoryProperty.GetValue: string;
 begin
   Result := inherited GetValue;
   if Result = '' then
-    Result := '(Directory)';
+    Result := cDirectory;
 end;
 
-//=== TJvHintProperty ==========================================================
+//=== TJvHintProperty ========================================================
 
 function TJvHintProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -372,7 +374,7 @@ begin
   end;
 end;
 
-//=== TJvStringsProperty =======================================================
+//=== TJvStringsProperty =====================================================
 
 procedure TJvStringsProperty.Edit;
 var
@@ -408,7 +410,7 @@ begin
 end;
 
 
-//=== TJvStringsProperty =======================================================
+//=== TJvStringsProperty =====================================================
 
 {$IFDEF COMPILER6_UP}
 procedure TJvStringsEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
@@ -428,13 +430,13 @@ var
   PropName: string;
 begin
   PropName := PropertyEditor.GetName;
-  if SameText(PropName, 'Items') then
+  if SameText(PropName, SItems) then
   begin
     PropertyEditor.Edit;
     Continue := False;
   end;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvStringsEditor.ExecuteVerb(Index: Integer);
 begin
@@ -452,7 +454,7 @@ end;
 function TJvStringsEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := Format(SFmtEditProperty,[GetStringsName])
+    Result := Format(SFmtEditProperty, [GetStringsName])
   else
     Result := '';
 end;
@@ -462,7 +464,7 @@ begin
   Result := 1;
 end;
 
-//=== TJvDateTimeExProperty ====================================================
+//=== TJvDateTimeExProperty ==================================================
 
 procedure TJvDateTimeExProperty.Edit;
 var
@@ -483,7 +485,7 @@ begin
   Result := inherited GetAttributes + [paDialog];
 end;
 
-//=== TJvDateExProperty ========================================================
+//=== TJvDateExProperty ======================================================
 
 procedure TJvDateExProperty.Edit;
 var
@@ -504,7 +506,7 @@ begin
   Result := inherited GetAttributes + [paDialog];
 end;
 
-//=== TJvTimeExProperty ========================================================
+//=== TJvTimeExProperty ======================================================
 
 procedure TJvTimeExProperty.Edit;
 var
@@ -514,10 +516,10 @@ begin
   if D = 0.0 then
     D := Now
   else // (p3) we need the date part or we might get a "Must be in ShowCheckBox mode" error 
-    D := SysUtils.Date + frac(D);
+    D := SysUtils.Date + Frac(D);
   if TFrmSelectDateTimeDlg.SelectDateTime(D, dstTime) then
   begin
-    SetFloatValue(frac(D)); // (p3) only return the time portion
+    SetFloatValue(Frac(D)); // (p3) only return the time portion
     Designer.Modified;
   end;
 end;
@@ -532,11 +534,15 @@ end;
 {$IFDEF COMPILER6_UP}
 
 function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
+const
+  cImageList = 'ImageList';
+  cImages = 'Images';
 begin
-  if TypInfo.GetPropInfo(GetComponent(0), 'ImageList') <> nil then
-    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), 'ImageList'))
-  else if TypInfo.GetPropInfo(GetComponent(0), 'Images') <> nil then
-    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), 'Images'))
+  if TypInfo.GetPropInfo(GetComponent(0), cImageList) <> nil then
+    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), cImageList))
+  else
+  if TypInfo.GetPropInfo(GetComponent(0), cImages) <> nil then
+    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), cImages))
   else
     Result := nil;
 end;
@@ -628,16 +634,20 @@ begin
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
 
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 {$IFDEF COMPILER5}
 
 function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
+const
+  cImageList = 'ImageList';
+  cImages = 'Images';
 begin
-  if TypInfo.GetPropInfo(GetComponent(0), 'ImageList') <> nil then
-    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), 'ImageList'))
-  else if TypInfo.GetPropInfo(GetComponent(0), 'Images') <> nil then
-    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), 'Images'))
+  if TypInfo.GetPropInfo(GetComponent(0), cImageList) <> nil then
+    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), cImageList))
+  else
+  if TypInfo.GetPropInfo(GetComponent(0), cImages) <> nil then
+    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), cImages))
   else
     Result := nil;
 end;
@@ -649,7 +659,7 @@ end;
 
 function TJvDefaultImageIndexProperty.GetValue: string;
 begin
-  Result := intToStr(GetOrdValue);
+  Result := IntToStr(GetOrdValue);
 end;
 
 procedure TJvDefaultImageIndexProperty.SetValue(const Value: string);
@@ -722,7 +732,7 @@ begin
   inherited PropDrawValue(ACanvas, ARect, ASelected);
 end;
 
-{$ENDIF}
+{$ENDIF COMPILER5}
 
 //=== TJvShortCutProperty ======================================================
 
@@ -736,7 +746,7 @@ begin
   try
     Result := ShortCutToText(GetOrdValue);
     if Result = '' then
-      Result := '(None)';
+      Result := SNone;
   except
     Result := inherited GetValue;
   end;
@@ -747,7 +757,7 @@ var
   Key: word;
   Shift: TShiftState;
 begin
-  Proc('(None)');
+  Proc(SNone);
 
   Shift := [ssCtrl];
   for Key := Ord('A') to Ord('Z') do
@@ -807,14 +817,14 @@ end;
 
 procedure TJvFilenameProperty.OnDialogShow(Sender: TObject);
 begin
-  SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(sStripFilePath));
+  SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(SStripFilePath));
 end;
 
 //=== TJvExeNameProperty =====================================================
 
 function TJvExeNameProperty.GetFilter: string;
 begin
-  Result := sExecutableFilesexeexeAllFiles;
+  Result := SExecutableFilesExeExeAllFiles;
 end;
 
 //=== TJvIntegerProperty =====================================================

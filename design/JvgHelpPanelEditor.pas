@@ -33,12 +33,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, comctrls,
+  ExtCtrls, ComCtrls,
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignWindows, DesignEditors
+  DesignIntf, DesignWindows, DesignEditors;
   {$ELSE}
-  Dsgnintf
-  {$ENDIF};
+  DsgnIntf;
+  {$ENDIF COMPILER6_UP}
 
 type
   TJvgHelpPanelEditor = class(TComponentEditor)
@@ -47,49 +47,40 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-
-resourcestring
-  sRTFAndTextFilesrtftxtrtftxt = 'RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt';
-  sLoadRTFFile = 'Load RTF file';
-  sPreviewRTFText = 'Preview RTF text';
-
 implementation
-uses JvgHelpPanel, JvgRTFPreviewForm;
-{ TJvgHelpPanelEditor }
+
+uses
+  JvgHelpPanel, JvgRTFPreviewForm, JvDsgnConsts;
 
 procedure TJvgHelpPanelEditor.ExecuteVerb(Index: Integer);
 var
   OpenDialog: TOpenDialog;
   ms: TMemoryStream;
 begin
-  inherited;
+  // inherited ExecuteVerb(Index);
   case Index of
     0:
       begin
         OpenDialog := TOpenDialog.Create(nil);
-        OpenDialog.Filter := sRTFAndTextFilesrtftxtrtftxt;
+        OpenDialog.Filter := SRTFAndTextFilesrtftxtrtftxt;
         if OpenDialog.Execute then
-        begin
           (Component as TJvgHelpPanel).Strings.LoadFromFile(OpenDialog.FileName);
-        end;
         OpenDialog.Free;
       end;
     1:
-      begin
+      try
+        JvgRTFPreview := TJvgRTFPreview.Create(nil);
+        ms := TMemoryStream.Create;
         try
-          JvgRTFPreview := TJvgRTFPreview.Create(nil);
-          ms := TMemoryStream.Create;
-          try
-            (Component as TJvgHelpPanel).Strings.SaveToStream(ms);
-            ms.Position := 0;
-            JvgRTFPreview.Rich.Lines.LoadFromStream(ms);
-            JvgRTFPreview.ShowModal;
-          finally
-            ms.Free;
-          end;
+          (Component as TJvgHelpPanel).Strings.SaveToStream(ms);
+          ms.Position := 0;
+          JvgRTFPreview.Rich.Lines.LoadFromStream(ms);
+          JvgRTFPreview.ShowModal;
         finally
-          JvgRTFPreview.Free;
+          ms.Free;
         end;
+      finally
+        JvgRTFPreview.Free;
       end;
   end;
 end;
@@ -97,8 +88,10 @@ end;
 function TJvgHelpPanelEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := sLoadRTFFile;
-    1: Result := sPreviewRTFText;
+    0:
+      Result := SLoadRTFFile;
+    1:
+      Result := SPreviewRTFText;
   end;
 end;
 
