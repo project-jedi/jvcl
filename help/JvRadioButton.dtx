@@ -45,16 +45,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvRadioButton.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the <xxx>.
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor
-  assign it a new TColor value.
-See Also
-  HotTrack
-----------------------------------------------------------------------------------------------------
 @@TJvRadioButton.HotTrack
 Summary
   Specifies whether the <xxx> is highlighted when the mouse passes over it.
@@ -83,12 +73,10 @@ Description
   HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
   the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
   changes in Font are copied to HotTrackFont except Color changes.
-  
   Note that hoFollowFont must be included for any properties to be copied at all.
-  
   To implement the HotTrackFontOptions property in a new control, you should perform the following steps:
     * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default value
+    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set it's default value
       to be DefaultTrackFontOptions (defined in JvTypes).
     * Set the default value in the constructor.
     * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in JvJVCLUtils)
@@ -123,12 +111,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvRadioButton.OnParentColorChange
-Summary
-  Occurs when the color property for the parent of the control changes.
-Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvRadioButton.ReadOnly
 Summary

@@ -14,38 +14,23 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TExportFieldEvent
-<TITLE TExportFieldEvent type>
-<COMBINE TJvgCommonExport.OnExportField>
-----------------------------------------------------------------------------------------------------
-@@TExportRecordEvent
-<TITLE TExportRecordEvent type>
-<COMBINE TJvgCommonExport.OnExportRecord>
-----------------------------------------------------------------------------------------------------
-@@TGetCaptionEvent
-<TITLE TGetCaptionEvent type>
-<COMBINE TJvgCommonExport.OnGetCaption>
-----------------------------------------------------------------------------------------------------
-@@TGetLineFontEvent
-<TITLE TGetLineFontEvent type>
+@@TJvCreateDataset
+<TITLE TJvCreateDataset type>
 Summary
   Write here a summary (1 line)
 Description
   This type is used by (for reference):
-    TJvgExportExcel.OnGetFooterLineFont
-    TJvgExportExcel.OnGetHeaderLineFont
-    TJvgExportExcel.OnGetSubHeaderLineFont
+    TJvgExportDataset.OnCreateDest
+    TJvgExportDataset.OnSaveDest
 Parameters
-  Sender - Description for this parameter
-  LineNo - Description for this parameter
-  Value  - Description for this parameter
-  Font   - Description for this parameter
+  Sender  - Description for this parameter
+  DataSet - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TglExportCaptions
-<TITLE TglExportCaptions type>
+@@TJvExportCaptions
+<TITLE TJvExportCaptions type>
 Summary
   Write here a summary (1 line)
 Description
@@ -53,12 +38,40 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-@@TglExportCaptions.fecDisplayLabels
+@@TJvExportCaptions.fecDisplayLabels
   Description for fecDisplayLabels
-@@TglExportCaptions.fecFieldNames
+@@TJvExportCaptions.fecFieldNames
   Description for fecFieldNames
-@@TglExportCaptions.fecNone
+@@TJvExportCaptions.fecNone
   Description for fecNone
+----------------------------------------------------------------------------------------------------
+@@TJvExportFieldEvent
+<TITLE TJvExportFieldEvent type>
+<COMBINE TJvgCommonExport.OnExportField>
+----------------------------------------------------------------------------------------------------
+@@TJvExportGetValue
+<TITLE TJvExportGetValue type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvgCommonExport.OnGetCaption
+    TJvgCommonExport.OnGetTableName
+Parameters
+  Sender  - Description for this parameter
+  Field   - Description for this parameter
+  Caption - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvExportProgressEvent
+<TITLE TJvExportProgressEvent type>
+<COMBINE TJvgCommonExport.OnProgress>
+----------------------------------------------------------------------------------------------------
+@@TJvExportRecordEvent
+<TITLE TJvExportRecordEvent type>
+<COMBINE TJvgCommonExport.OnExportRecord>
 ----------------------------------------------------------------------------------------------------
 @@TJvgCommonExport
 Summary
@@ -122,6 +135,7 @@ Description
   Write here a description
 Parameters
   Sender      - Description for this parameter
+  DataSet     - Description for this parameter
   AllowExport - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
@@ -132,9 +146,30 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvgCommonExport.OnGetTableName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvgCommonExport.OnProgress
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Parameters
-  Sender  - Description for this parameter
-  Caption - Description for this parameter
+  Sender   - Description for this parameter
+  Min      - Description for this parameter
+  Max      - Description for this parameter
+  Position - Description for this parameter
+  Msg      - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -157,8 +192,26 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvgExportDBETable
-<TITLEIMG TJvgExportDBETable>
+@@TJvGetLineFontEvent
+<TITLE TJvGetLineFontEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvgExportExcel.OnGetFooterLineFont
+    TJvgExportExcel.OnGetHeaderLineFont
+    TJvgExportExcel.OnGetSubHeaderLineFont
+Parameters
+  Sender - Description for this parameter
+  LineNo - Description for this parameter
+  Value  - Description for this parameter
+  Font   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvgExportDataset
+<TITLEIMG TJvgExportDataset>
 JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
@@ -167,7 +220,7 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvgExportDBETable.Execute
+@@TJvgExportDataset.Execute
 Summary
   Write here a summary (1 line)
 Description
@@ -176,7 +229,16 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvgExportDBETable.TableType
+@@TJvgExportDataset.OnCreateDest
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvgExportDataset.OnSaveDest
 Summary
   Write here a summary (1 line)
 Description
@@ -250,6 +312,15 @@ See Also
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.FooterFont
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvgExportExcel.ForceTextFormat
 Summary
   Write here a summary (1 line)
 Description
@@ -357,13 +428,3 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvgExportXML
-<TITLEIMG TJvgExportXML>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description

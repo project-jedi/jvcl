@@ -8,6 +8,14 @@ Summary
 Author
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
+@@TFileAfterWriteEvent
+<TITLE TFileAfterWriteEvent type>
+<COMBINE TJvZlibMultiple.OnDecompressedFile>
+----------------------------------------------------------------------------------------------------
+@@TFileBeforeWriteEvent
+<TITLE TFileBeforeWriteEvent type>
+<COMBINE TJvZlibMultiple.OnDecompressingFile>
+----------------------------------------------------------------------------------------------------
 @@TFileEvent
 <TITLE TFileEvent type>
 Summary
@@ -16,8 +24,6 @@ Description
   This type is used by (for reference):
     TJvZlibMultiple.OnCompressedFile
     TJvZlibMultiple.OnCompressingFile
-    TJvZlibMultiple.OnDecompressedFile
-    TJvZlibMultiple.OnDecompressingFile
 Parameters
   Sender   - Description for this parameter
   FileName - Description for this parameter
@@ -105,9 +111,10 @@ Summary
 Description
   Write here a description
 Parameters
-  FileName  - Description for this parameter
-  Directory - Description for this parameter
-  Overwrite - Description for this parameter
+  FileName      - Description for this parameter
+  Directory     - Description for this parameter
+  Overwrite     - Description for this parameter
+  RelativePaths - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -118,9 +125,10 @@ Summary
 Description
   Write here a description
 Parameters
-  Stream    - Description for this parameter
-  Directory - Description for this parameter
-  Overwrite - Description for this parameter
+  Stream        - Description for this parameter
+  Directory     - Description for this parameter
+  Overwrite     - Description for this parameter
+  RelativePaths - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -148,6 +156,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender   - Description for this parameter
+  FileName - Description for this parameter
+  FileSize - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -157,6 +169,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender    - Description for this parameter
+  FileName  - Description for this parameter
+  WriteFile - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
