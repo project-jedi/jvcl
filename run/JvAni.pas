@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2003-10-24
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -382,7 +382,11 @@ type
     dwImageOffset: LongInt;
   end;
 var
+{$IFDEF COMPLIB_VCL}
   p: Integer;
+{$ELSE}
+  Mstream : TMemoryStream ;
+{$ENDIF}
   Len: Integer;
   IconHeader: TIconHeader;
 begin
@@ -390,29 +394,32 @@ begin
     if FIndex <> Value then
     begin
       FIndex := Value;
-    {$IFDEF COMPLIB_VCL}
-      if FCurrentIcon.Handle <> 0 then
-        DestroyIcon(FCurrentIcon.Handle);
-    {$ELSE}
+    {$IFDEF COMPLIB_CLX}
       if not FCurrentIcon.Empty then
         FCurrentIcon.Assign(nil);
     {$ENDIF}
+    {$IFDEF COMPLIB_VCL}
+      if FCurrentIcon.Handle <> 0 then
+        DestroyIcon(FCurrentIcon.Handle);
       p := Integer(FImage.Memory);
+    {$ENDIF}
       FImage.Position := Integer(FImages[FIndex]);
       FImage.Read(Len, SizeOf(Len));
       FImage.Read(IconHeader, SizeOf(IconHeader));
       FImage.Position := FImage.Position + (SizeOf(TIconDirEntry) * IconHeader.NumIcons);
       Dec(Len, SizeOf(IconHeader) + (SizeOf(TIconDirEntry) * IconHeader.NumIcons));
-      Inc(p, FImage.Position);
-
     {$IFDEF COMPLIB_VCL}
+      Inc(p, FImage.Position);
       p := CreateIconFromResource(Pointer(p), Len, True, $30000);
       FCurrentIcon.Handle := p;
     {$ENDIF}
     {$IFDEF COMPLIB_CLX}
-      // FCurrentIcon.LoadFromResourceName();
+      MStream := TMemoryStream.Create;
+      MStream.CopyFrom(FImage, Len);
+      MStream.Position := 0; // set start 
+      FCurrentIcon.LoadFromStream(MStream);
+      MStream.Free;
     {$ENDIF}
-
       Changed(Self);
     end;
 end;

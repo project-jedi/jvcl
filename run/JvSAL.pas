@@ -16,20 +16,27 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2000-06-15
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I JVCL.INC}
+{$I jvcl.inc}
+
 unit JvSAL;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF COMPLIB_VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  QGraphics, QControls, QForms, QDialogs,
+  {$ENDIF}
   JvSALHashList, JvStrings;
 
 const
@@ -155,9 +162,14 @@ type
     property OnGetUnit: TOnGetUnitEvent read FonGetUnit write SetonGetUnit;
   end;
 
+implementation
+
+uses
+  JvTypes;
 
 resourcestring
   sBooleanStackOverflow = 'boolean stack overflow';
+  sBooleanStackUnderflow = 'boolean stack underflow';
   sProgramStopped = 'program stopped';
   sUnterminatedIncludeDirectiveNears = 'unterminated include directive near %s';
   sOngetUnitEventHandlerIsNotAssigned = 'ongetUnit event handler is not assigned';
@@ -175,13 +187,6 @@ resourcestring
   sReturnStackOverflow = 'return stack overflow';
   sCouldNotFindEndOfProcedure = 'could not find end of procedure';
 
-implementation
-
-uses
-  JvConsts, JvTypes;
-
-const
-  tab = chr(9);
 
 { TJvAtom }
 
@@ -220,7 +225,7 @@ function TJvSAL.boolPop: boolean;
 begin
   dec(bsp);
   if bsp < 0 then
-    raise exception.create('boolean stack underflow');
+    raise Exception.Create(sBooleanStackUnderflow);
   result := bstack[bsp];
 end;
 
@@ -238,8 +243,8 @@ begin
   FAtoms := TJvAtoms.Create;
   Procs := TJvSALHashList.Create(ITinyHash, HashSecondaryOne, sameText);
   FUnits := TStringlist.create;
-  FCaption := 'SAL';
-  FuseDirective := 'use::';
+  FCaption := 'SAL'; // do not localize
+  FuseDirective := 'use::'; // do not localize
   FBeginOfComment := '{';
   FEndOfComment := '}';
   fStringDelim := '"';
@@ -360,7 +365,7 @@ begin
       a := TJvAtom.Create;
       a.Value := token;
       a.actor := xValue;
-      atoms.AddObject('literal', a);
+      atoms.AddObject('literal', a); // do not localize
     end
     else
     begin
@@ -385,19 +390,19 @@ begin
         a := TJvAtom.Create;
         a.Value := fv;
         a.actor := xValue;
-        atoms.AddObject('literal', a);
+        atoms.AddObject('literal', a); // do not localize
       except //
-        if pos('proc-', token) = 1 then
+        if pos('proc-', token) = 1 then // do not localize
         begin // begin of procedure
-          if pos('end-proc', s) = 0 then
+          if pos('end-proc', s) = 0 then // do not localize
             raise exception.createFmt(sUnterminatedProcedureNears, [s]);
           apo(token, xbosub);
         end
-        else if token = 'end-proc' then
+        else if token = 'end-proc' then // do not localize
           apo(token, xeosub)
         else if copy(token, length(token) - 1, 2) = '()' then
           apo(token, xproc) // proc call
-        else if pos('var-', token) = 1 then
+        else if pos('var-', token) = 1 then // do not localize
         begin // define variable
           if atoms.IndexOf(token) <> -1 then
             raise exception.CreateFmt(sVariablesAllreadyDefineds, [token, s]);
@@ -408,7 +413,7 @@ begin
         else if token[1] = '$' then
         begin // variable value
           // find address
-          i := atoms.IndexOf('var-' + copy(token, 2, maxint));
+          i := atoms.IndexOf('var-' + copy(token, 2, maxint)); // do not localize
           if i = -1 then
             raise exception.CreateFmt(sVariablesIsNotYetDefineds, [token, s]);
           a := TJvAtom.create;
@@ -435,7 +440,7 @@ begin
     s := atoms[i];
     if copy(s, length(s) - 1, 2) = '()' then
     begin
-      s := 'proc-' + copy(s, 1, length(s) - 2);
+      s := 'proc-' + copy(s, 1, length(s) - 2); // do not localize
       p := atoms.indexof(s);
       if p = -1 then
         raise exception.CreateFmt(sUndefinedProcedures, [s]);
@@ -555,7 +560,7 @@ begin
   repeat
     op := atoms[pc];
     inc(fpc);
-    if op = 'end-proc' then exit;
+    if op = 'end-proc' then exit; // do not localize
   until pc >= c;
   raise exception.Create(sCouldNotFindEndOfProcedure);
 end;

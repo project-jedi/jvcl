@@ -378,14 +378,16 @@ function VarXml: TVarType;
 function SimpleXmlEncode(const Value: string): string;
 procedure SimpleXmlDecode(var Value: string; TrimMultiple: Boolean = True);
 
+implementation
+
+uses
+  JvTypes;
+
 resourcestring
   RS_INVALID_SimpleXml = 'Invalid XML file';
 {$IFNDEF COMPILER6_UP}
   SInvalidBoolean = '''%s'' is not a valid Boolean value';
 {$ENDIF COMPILER6_UP}
-
-
-resourcestring
   sInvalidXMLElementUnexpectedCharacte = 'Invalid XML Element: Unexpected character in properties declaration ("%s" found).';
   sInvalidXMLElementUnexpectedCharacte_ = 'Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found.';
   sUnexpectedValueForLPos = 'Unexpected value for lPos';
@@ -403,29 +405,20 @@ resourcestring
   sInvalidStylesheetUnexpectedEndOfDat = 'Invalid Stylesheet: Unexpected end of data';
   sInvalidDocumentUnexpectedTextInFile = 'Invalid Document: Unexpected text in file prolog.';
 
-implementation
-
-uses
-  JvConsts, JvTypes;
 
 const
   cBufferSize = 8192;
-
-{$IFDEF COMPILER6_UP}
-var
-  XmlVariant: TXmlVariant = nil;
-{$ENDIF}
-var
-  GSorts: TList = nil;
-{$IFNDEF COMPILER6_UP}
-
-var
-  TrueBoolStrs: array of string;
-  FalseBoolStrs: array of string;
-
-const
   DefaultTrueBoolStr = 'True'; // DO NOT LOCALIZE
   DefaultFalseBoolStr = 'False'; // DO NOT LOCALIZE
+
+var
+{$IFDEF COMPILER6_UP}
+  XmlVariant: TXmlVariant = nil;
+{$ENDIF}
+  GSorts: TList = nil;
+{$IFNDEF COMPILER6_UP}
+  TrueBoolStrs: array of string;
+  FalseBoolStrs: array of string;
 
 {$ENDIF COMPILER6_UP}
 
@@ -2872,10 +2865,12 @@ initialization
   XmlVariant := TXmlVariant.Create;
 {$ENDIF}
   GSorts := TList.Create;
+  
 finalization
 {$IFDEF COMPILER6_UP}
   FreeAndNil(XmlVariant);
 {$ENDIF}
   FreeAndNil(GSorts);
+
 end.
 

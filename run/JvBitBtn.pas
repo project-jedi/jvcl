@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -24,15 +24,20 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvBitBtn;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Buttons, Menus,
-  JVCLVer, JvTypes;
+  SysUtils, Classes,
+{$IFDEF COMPLIB_VCL}
+  Windows, Messages, Graphics, Controls, Forms, Buttons, Menus,
+{$ELSE}
+  QGraphics, QControls, QForms, QButtons, QMenus,
+{$ENDIF}
+  JVCLVer;
 
 type
   TJvBitBtn = class(TBitBtn)
@@ -55,11 +60,18 @@ type
     procedure SetHotFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
+{$IFDEF COMPLIB_VCL}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-
+{$ENDIF}
+{$IFDEF COMPLIB_CLX}
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
+    procedure ParentColorChanged; override;
+    procedure FontChanged; override;
+{$ENDIF}
   public
     procedure Click; override;
     constructor Create(AOwner: TComponent); override;
@@ -110,11 +122,19 @@ begin
   if FDropDown <> nil then
   begin
     FDropDown.Popup(GetClientOrigin.x, GetClientOrigin.y + Height);
+{$IFDEF COMPLIB_VCL}
     Perform(CM_MOUSELEAVE, 0, 0);
+{$ELSE}
+    MouseLeave(Self);
+{$ENDIF}
   end;
 end;
 
+{$IFDEF COMPLIB_VCL}
 procedure TJvBitBtn.CMParentColorChanged(var Msg: TMessage);
+{$ELSE}
+procedure TJvBitBtn.ParentColorChanged;
+{$ENDIF}
 begin
   inherited;
   if Assigned(FOnParentColorChanged) then
@@ -126,7 +146,11 @@ begin
   FGlyph.Assign(Value);
 end;
 
+{$IFDEF COMPLIB_VCL}
 procedure TJvBitBtn.CMMouseEnter(var Msg: TMessage);
+{$ELSE}
+procedure TJvBitBtn.MouseEnter(AControl: TControl);
+{$ENDIF}
 begin
   // for D7...
   if csDesigning in ComponentState then
@@ -151,7 +175,11 @@ begin
     FOnMouseEnter(Self);
 end;
 
+{$IFDEF COMPLIB_VCL}
 procedure TJvBitBtn.CMMouseLeave(var Msg: TMessage);
+{$ELSE}
+procedure TJvBitBtn.MouseLeave(AControl: TControl);
+{$ENDIF}
 begin
   // for D7...
   if csDesigning in ComponentState then
@@ -179,11 +207,16 @@ begin
   if FHotTrackFontOptions <> Value then
   begin
     FHotTrackFontOptions := Value;
-    UpdateTrackFont(HotTrackFont, Font,FHotTrackFontOptions);
+    UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   end;
 end;
 
+{$IFDEF COMPLIB_CLX}
+procedure TJvBitBtn.FontChanged;
+{$ENDIF}
+{$IFDEF COMPLIB_VCL}
 procedure TJvBitBtn.CMFontChanged(var Message: TMessage);
+{$ENDIF}
 begin
   inherited;
   UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);

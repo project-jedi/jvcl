@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-06-22
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -33,9 +33,9 @@ unit JvXMLDatabase;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, Dialogs, Math,
+  SysUtils, Classes, Contnrs, Math,
   {$IFDEF COMPILER6_UP}DateUtils, {$ENDIF}
-  JvTypes, JvComponent, JvSimpleXML;
+  JvTypes, JvComponent, JvSimpleXml;
 
 type
   TJvXMLDatabase = class;
@@ -447,7 +447,6 @@ var
                 lValue := Condition
               else
               begin
-                //ShowMessage(Condition); //Debug only
                 if (Condition='daysbetweennow') then
                 begin
                   inc(AIndex, 2); // (
