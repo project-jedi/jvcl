@@ -186,7 +186,7 @@ type
 implementation
 
 uses
-  Math;
+  Math, JvThemes;
 
 const
   cInitTime = 360;
@@ -480,6 +480,7 @@ begin
   if AOwner is TWinControl then
     Parent := TWinControl(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls];
+  IncludeThemeStyle(Self, [csParentBackground]);
   FScrollDirection := sdHorizontal;
   BevelInner := bvRaised;
   BevelOuter := bvNone;

@@ -314,7 +314,7 @@ var
 implementation
 
 uses
-  JvDsgnIntf;
+  JvDsgnIntf, JvThemes;
 
 { Cursors resources }
 {$R ..\resources\JvScrollMax.res}
@@ -540,6 +540,7 @@ constructor TJvScrollMaxBand.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csSetCaption, csAcceptsControls];
+  IncludeThemeStyle(Self, [csParentBackground]);
   Height := 50;
   FExpandedHeight := 50;
   ParentColor := True;
@@ -1051,6 +1052,7 @@ constructor TJvScrollMax.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csSetCaption, csAcceptsControls];
+  IncludeThemeStyle(Self, [csParentBackground]);
   Caption := '';
   Width := 250;
   Height := 150;
@@ -1069,6 +1071,7 @@ begin
     Align := alClient;
     Parent := Self;
     ControlStyle := ControlStyle + [csAcceptsControls];
+    IncludeThemeStyle(FPnlEdit, [csParentBackground]);
     ParentColor := True;
   end;
   FScrollBar := TJvPanelScrollBar.Create(Self);

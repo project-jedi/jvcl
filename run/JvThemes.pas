@@ -948,15 +948,21 @@ constructor TThemeHook.Create(AControl: TControl);
 begin
   inherited Create;
   FControl := AControl;
-  FOrgWndProc := FControl.WindowProc;
-  FControl.FreeNotification(ThemeHookComponent);
-  FControl.WindowProc := WndProc;
+  if not (csDesigning in FControl.ComponentState) then
+  begin
+    FOrgWndProc := FControl.WindowProc;
+    FControl.FreeNotification(ThemeHookComponent);
+    FControl.WindowProc := WndProc;
+  end;
 end;
 
 procedure TThemeHook.DeleteHook;
 begin
-  FControl.WindowProc := FOrgWndProc;
-  FControl.RemoveFreeNotification(ThemeHookComponent);
+  if not (csDesigning in FControl.ComponentState) then
+  begin
+    FControl.WindowProc := FOrgWndProc;
+    FControl.RemoveFreeNotification(ThemeHookComponent);
+  end;
   ThemeHooks.RecreationList.Remove(FControl);
   FControl := nil;
   ThemeHooks.Enter;

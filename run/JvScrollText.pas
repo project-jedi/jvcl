@@ -100,12 +100,16 @@ type
 
 implementation
 
+uses
+  JvThemes;
+
 resourcestring
   RC_TestText = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 constructor TJvScrollText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  IncludeThemeStyle(Self, [csParentBackground]);
   Width := 200;
   Height := 150;
   FActive := False;
