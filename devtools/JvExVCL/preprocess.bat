@@ -1,8 +1,6 @@
 @echo off
 
 SET OUTDIR=..\..\..\run
-SET QOUTDIR=..\..\..\qrun
-
 
 cd src
 
@@ -14,8 +12,6 @@ dpp.exe .\%FILE%.pas -I..\..\..\common >NUL
 
 if "%FILE%" == ".\build" GOTO ALL
 
-
-if "%FILE%" == "JvExComboEdits" SET OUTDIR=%QOUTDIR%
 move %FILE%.i.pas %OUTDIR%\%FILE%.pas
 
 
@@ -33,11 +29,9 @@ move JvExForms.i.pas %OUTDIR%\JvExForms.pas
 move JvExGrids.i.pas %OUTDIR%\JvExGrids.pas
 move JvExMask.i.pas %OUTDIR%\JvExMask.pas
 move JvExStdCtrls.i.pas %OUTDIR%\JvExStdCtrls.pas
-move JvExComboEdits.i.pas %QOUTDIR%\JvExComboEdits.pas
 
 cd ..
 
 :LEAVE
 SET FILE=
 SET OUTDIR=
-SET QOUTDIR=
