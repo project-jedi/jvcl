@@ -35,5 +35,6 @@
     <File Name="..\..\design\JvDBMemDatasetEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDBReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDBEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBGridExportEditors.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
