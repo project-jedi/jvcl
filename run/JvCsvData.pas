@@ -1234,7 +1234,7 @@ var
 
 begin
   Result := False;
-  Count := StrSplit(KeyFields, Separator, Chr(0), KeyFieldArray, 20);
+  Count := StrSplit(KeyFields, ';', Chr(0), KeyFieldArray, 20);
   if not ((VarType(KeyValues) and varArray) > 0) then Exit;
   lo := VarArrayLowBound(KeyValues, 1);
   hi := VarArrayHighBound(KeyValues, 1);
@@ -3231,7 +3231,12 @@ var
   CsvFieldName: string;
   ColNum, t: Integer;
 begin
-  if not ValidateHeaderRow then Exit;
+  if not ValidateHeaderRow then
+  begin
+    for t := 0 to FCsvColumns.Count - 1 do
+      PCsvColumn(FCsvColumns.Get(t))^.FPhysical := t;
+    Exit;
+  end;
   FAppendedFieldCount := 0;
    //  Columns Not Yet Found:
   for t := 0 to FCsvColumns.Count - 1 do
