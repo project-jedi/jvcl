@@ -1702,7 +1702,8 @@ type
     constructor Create(const ACapacity: Integer);
     function Push(const Canvas: TCanvas): Integer;
     procedure Pop(const Canvas: TCanvas; Index: Integer = -2);
-    procedure Peek(const Canvas: TCanvas; Index: Integer = -2);
+//    procedure Peek(const Canvas: TCanvas; Index: Integer = -2); make Delphi 5 compiler happy // andreas
+
     property Capacity write ChangeCapacity;
     property Top: Integer read FTop write FTop;
   end;
@@ -1768,12 +1769,13 @@ begin
   FTop := Pred(Index);
 end;
 
+(* make Delphi 5 compiler happy // andreas
 procedure TCanvasStack.Peek(const Canvas: TCanvas; Index: Integer = -2);
 begin
   if Index = -1 then
     Index := FTop;
   TCanvasState(Items[Index]).ApplyTo(Canvas);
-end;
+end;*)
 
 //=== TCanvasState ===========================================================
 
@@ -1920,7 +1922,7 @@ type
     // Adds a new data instance. If an instance pointing to the same data exists the given instance is destroyed and the registered instance returned
     function Add(Instance: TJvCustomInspectorData): TJvCustomInspectorData;
     // Deletes a data instance and all items referencing it. All other data instances are notified.
-    procedure Delete(Instance: TJvCustomInspectorData);
+//    procedure Delete(Instance: TJvCustomInspectorData); make Delphi 5 compiler happy // andreas
     // Deletes all data instances and items referencing them. No notification is issued to the data instances as they will be removed also.
     procedure Clear;
     // Locates a data instance that references the same data as the given instance. The index is returned or -1 if no instance was found.
@@ -1975,10 +1977,12 @@ begin
   end;
 end;
 
+(* make Delphi 5 compiler happy // andreas
 procedure TJvInspDataReg.Delete(Instance: TJvCustomInspectorData);
 begin
   Instance.Free;
 end;
+*)
 
 procedure TJvInspDataReg.Clear;
 var
@@ -8047,8 +8051,8 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure AddMethod(const Name: string; const MethodAddr: Pointer);
-    procedure DeleteMethod(const Name: string); overload;
-    procedure DeleteMethod(const MethodAddr: Pointer); overload;
+//    procedure DeleteMethod(const Name: string); overload;
+//    procedure DeleteMethod(const MethodAddr: Pointer); overload;
     procedure DeleteMethod(const Index: Integer); overload;
     procedure Clear;
     function IndexOf(const Name: string): Integer; overload;
@@ -8092,6 +8096,7 @@ begin
     Methods.Objects[I] := TObject(MethodAddr);
 end;
 
+(* make Delphi 5 compiler happy // andreas
 procedure TInstanceItem.DeleteMethod(const Name: string);
 var
   I: Integer;
@@ -8109,6 +8114,7 @@ begin
   if I <> -1 then
     DeleteMethod(I);
 end;
+*)
 
 procedure TInstanceItem.DeleteMethod(const Index: Integer);
 begin
