@@ -48,7 +48,7 @@ uses Classes,
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvgReportEditorForm, JvgAlignForm, JvgAlignFunction, JvgReportParamEditorForm,
-  JvgBitBtn, JvgRuler, JvgReport, JvgCaption, JvgCGI, JvgReportParamsForm,
+  JvgBitBtn, JvgRuler, JvgReport, JvgCaption, JvgCGI, JvgReportParamsEditor, JvgReportParamsForm,
   JvgRichEditUtils, JvgCommClasses, JvgRttiUtils, JvgScrollBox,
   JvgConstSysRequirements, JvgCrossTable, JvgShade, JvgDBNav, JvgDigits,
   JvgDrawTab, JvgEdit, JvgExceptionHandler, JvgExport, JvgShadowEditor,
