@@ -1155,6 +1155,8 @@ begin
       begin
         if (ACommand = ecSelPrevWord) and IsNewSelection then
           SetSel1(CaretX, CaretY);
+        if Y >= FLines.Count then
+          Exit;
 
         S := FLines[Y];
         B := False;
@@ -1210,6 +1212,8 @@ begin
         if Y >= FLines.Count then
         begin
           Y := FLines.Count - 1;
+          if Y < 0 then
+            Exit;
           X := Length(FLines[Y]);
         end;
         S := FLines[Y];

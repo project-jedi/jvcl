@@ -214,9 +214,11 @@ const
 
   {$IFDEF VCL}
   WM_EDITCOMMAND = WM_USER + $101;
+  WM_COMPOUND = WM_USER + $102;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   WM_EDITCOMMAND = CM_BASE + $101;
+  WM_COMPOUND = CM_BASE + $102;
   {$ENDIF VisualCLX}
 
 type
@@ -665,6 +667,7 @@ type
     {$IFDEF VCL}
     { internal message processing }
     procedure WMEditCommand(var Msg: TMessage); message WM_EDITCOMMAND;
+    procedure WMCompound(var Msg: TMessage); message WM_COMPOUND;
 
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
@@ -892,6 +895,8 @@ type
 
     procedure BeginCompound;
     procedure EndCompound;
+    procedure PostBeginCompound;
+    procedure PostEndCompound;
 
     property LeftCol: Integer read FLeftCol;
     property TopRow: Integer read FTopRow;
@@ -2447,6 +2452,15 @@ end;
 procedure TJvCustomEditorBase.WMEditCommand(var Msg: TMessage);
 begin
   Command(Msg.WParam);
+  Msg.Result := Ord(True);
+end;
+
+procedure TJvCustomEditorBase.WMCompound(var Msg: TMessage);
+begin
+  if Msg.WParam = 0 then
+    BeginCompound
+  else
+    EndCompound;
   Msg.Result := Ord(True);
 end;
 
@@ -5233,6 +5247,16 @@ begin
   TJvEndCompoundUndo.Create(Self);
   {--- /UNDO ---}
   Dec(FCompound);
+end;
+
+procedure TJvCustomEditorBase.PostBeginCompound;
+begin
+  PostMessage(Handle, WM_COMPOUND, 0, 0);
+end;
+
+procedure TJvCustomEditorBase.PostEndCompound;
+begin
+  PostMessage(Handle, WM_COMPOUND, 1, 0);
 end;
 
 procedure TJvCustomEditorBase.SetBracketHighlighting(Value: TJvBracketHighlighting);
