@@ -161,8 +161,8 @@ type
   protected
     procedure Paint; override;
     procedure TextChanged; override;
-
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure RequestAlign; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -218,6 +218,7 @@ type
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
     {$ENDIF VCL}
+    procedure RequestAlign; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -3611,6 +3612,17 @@ end;
 
 {$ENDIF VCL}
 
+procedure TJvOutlookSplitter.RequestAlign;
+begin
+  if (Cursor = crSizeWE) or (Cursor = crSizeNS) then
+  begin
+    if Align in [alLeft, alRight] then
+      Cursor := crSizeWE
+    else
+      Cursor := crSizeNS;
+  end;
+end;
+
 //=== { TJvNavPanelHeader } ==================================================
 
 constructor TJvNavPanelHeader.Create(AOwner: TComponent);
@@ -4038,6 +4050,17 @@ begin
       {$IFDEF VisualCLX}
       QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VisualCLX}
+  end;
+end;
+
+procedure TJvNavPanelDivider.RequestAlign;
+begin
+  if (Cursor = crSizeWE) or (Cursor = crSizeNS) then
+  begin
+    if Align in [alLeft, alRight] then
+      Cursor := crSizeWE
+    else
+      Cursor := crSizeNS;
   end;
 end;
 
@@ -5374,8 +5397,6 @@ begin
     PictureChanged(Self)
   end;
 end;
-
-
 
 procedure TJvCustomNavPaneToolPanel.AdjustClientRect(var Rect: TRect);
 begin
