@@ -651,7 +651,7 @@ procedure TJvColorComboBox.DoGetDisplayName(Index: integer; AColor: TColor;
   var DisplayName: string);
 begin
   if Assigned(FOnGetDisplayName) then
-    FOnGetDisplayName(self, Index, AColor, DisplayName);
+    FOnGetDisplayName(self, Index, AColor, DisplayName)
   else
     DisplayName := GetColorName(AColor, DisplayName);
 end;
