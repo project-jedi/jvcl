@@ -30,11 +30,6 @@ Known Issues:
 
 {$DEFINE RA_QR3H}
 
-// {$IFDEF RA_QR2}
-// {$DEFINE COMPILER3}
-// {$UNDEF RA_QR3H}
-// {$ENDIF RA_QR2}
-
 unit JvInterpreter_Quickrpt;
 
 interface

@@ -33,9 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  {$IFNDEF COMPILER3}
   ImgList,
-  {$ENDIF}
   JvTFUtils, JvTFManager;
 
 {$I JVCL.INC}
@@ -444,11 +442,7 @@ type
     FCells : TJvTFGlanceCells;
     FStartDate: TDate;
     FOriginDate: TDate;
-    {$IFDEF COMPILER3}
-    FCellPics : TImageList;
-    {$ELSE}
     FCellPics : TCustomImageList;
-    {$ENDIF}
 
     FTitleAttr : TJvTFGlanceMainTitle;
     FAllowCustomDates : Boolean;
@@ -485,11 +479,7 @@ type
     procedure SetCellAttr(Value : TJvTFGlanceCellAttr);
     procedure SeTJvTFSelCellAttr(Value : TJvTFGlanceCellAttr);
     procedure SetViewer(Value : TJvTFGlanceViewer);
-    {$IFDEF COMPILER3}
-    procedure SeTJvTFCellPics(Value: TImageList);
-    {$ELSE}
     procedure SeTJvTFCellPics(Value: TCustomImageList);
-    {$ENDIF}
 
     procedure SeTJvTFHintProps(Value: TJvTFHintProps);
     procedure SetSchedNames(Value: TStrings);
@@ -624,11 +614,7 @@ type
     property Sel : TJvTFGlanceSelList read FSel write FSel;
     function DateIsSelected(aDate : TDate) : Boolean;
     function CellIsSelected(aCell: TJvTFGlanceCell) : Boolean;
-    {$IFDEF COMPILER3}
-    procedure SelectCell(aCell: TJvTFGlanceCell; Clear : Boolean); virtual;
-    {$ELSE}
     procedure SelectCell(aCell: TJvTFGlanceCell; Clear : Boolean = True); virtual;
-    {$ENDIF}
     procedure DeselectCell(aCell: TJvTFGlanceCell); virtual;
     procedure BeginSelUpdate;
     procedure EndSelUpdate;
@@ -650,11 +636,7 @@ type
     property TitleAttr: TJvTFGlanceMainTitle read FTitleAttr write SetTitleAttr;
     property CellAttr : TJvTFGlanceCellAttr read FCellAttr write SetCellAttr;
     property SelCellAttr : TJvTFGlanceCellAttr read FSelCellAttr write SeTJvTFSelCellAttr;
-    {$IFDEF COMPILER3}
-    property CellPics : TImageList read FCellPics write SeTJvTFCellPics;
-    {$ELSE}
     property CellPics : TCustomImageList read FCellPics write SeTJvTFCellPics;
-    {$ENDIF}
 
     property Viewer : TJvTFGlanceViewer read FViewer write SetViewer;
 
@@ -686,11 +668,9 @@ type
     Property ParentCtl3D;
     Property TabStop default True;
     Property TabOrder;
-    {$IFNDEF COMPILER3}
     property Anchors;
     property Constraints;
     property DragKind;
-    {$ENDIF}
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -712,12 +692,10 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFNDEF COMPILER3}
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
     property OnStartDrag;
   end;
 
@@ -2067,26 +2045,6 @@ begin
   FCellAttr.Assign(Value);
 end;
 
-{$IFDEF COMPILER3}
-procedure TJvTFCustomGlance.SeTJvTFCellPics(Value: TImageList);
-begin
-  If Value <> FCellPics Then
-    Begin
-      If Assigned(FCellPics) Then
-        FCellPics.UnregisterChanges(FImageChangeLink);
-
-      FCellPics := Value;
-
-      If Assigned(FCellPics) Then
-        Begin
-          FCellPics.RegisterChanges(FImageChangeLink);
-          FCellPics.FreeNotification(Self);
-        End;
-
-      Invalidate;
-    End;
-end;
-{$ELSE}
 procedure TJvTFCustomGlance.SeTJvTFCellPics(Value: TCustomImageList);
 begin
   If Value <> FCellPics Then
@@ -2105,7 +2063,6 @@ begin
       Invalidate;
     End;
 end;
-{$ENDIF}
 
 procedure TJvTFCustomGlance.SetCells(Value: TJvTFGlanceCells);
 begin

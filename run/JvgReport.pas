@@ -760,7 +760,7 @@ begin
   begin
     if not Assigned(Parent) then
       exit;
-    OLEContainer := TOLEContainer.Create(parent.parent); //{$IFDEF COMPILER3_UP} Parent {$ELSE} Owner {$ENDIF} );
+    OLEContainer := TOLEContainer.Create(parent.parent);
     OLEContainer.AutoVerbMenu := false;
     OLEContainer.BorderStyle := bsNone;
     OLEContainer.Color := clWhite;

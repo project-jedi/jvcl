@@ -79,8 +79,6 @@ implementation
 uses
   JvConsts;
 
-{$IFNDEF BCB3}
-
 function ChangeTopException(E: TObject): TObject;
 type
   PRaiseFrame = ^TRaiseFrame;
@@ -113,7 +111,6 @@ begin
   Result := E;
 {$ENDIF LINUX}
 end;
-{$ENDIF BCB3}
 
 {##################### From JvUtils unit #####################}
 
@@ -213,13 +210,8 @@ begin
     except
       on E: Exception do
       begin
-{$IFNDEF BCB3}
         (Owner as TJvProgressComponent).FException := E;
         ChangeTopException(nil);
-{$ENDIF BCB3}
-{$IFDEF BCB3}
-        (Owner as TJvProgressComponent).FException := Exception.Create(E.Message);
-{$ENDIF BCB3}
       end;
     end;
   finally

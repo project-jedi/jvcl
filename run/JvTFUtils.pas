@@ -66,21 +66,12 @@ function FirstOfMonth(aDate : TDateTime) : TDateTime;
 function GetDayOfNthDOW(Year, Month, DOW, N: Word): Word;
 function GetWeeksInMonth(Year, Month: Word; StartOfWeek: Integer): Word;
 
-{$IFDEF COMPILER3}
-procedure IncBorlDOW(var BorlDOW: Integer; N: Integer);
-procedure IncDOW(var DOW: TTFDayOfWeek; N: Integer);
-procedure IncDays(var aDate : TDateTime; N: Integer);
-procedure IncWeeks(var aDate: TDateTime; N: Integer);
-procedure IncMonths(var aDate: TDateTime; N: Integer);
-procedure IncYears(var aDate: TDateTime; N: Integer);
-{$ELSE}
 procedure IncBorlDOW(var BorlDOW: Integer; N: Integer = 1);
 procedure IncDOW(var DOW: TTFDayOfWeek; N: Integer = 1);
 procedure IncDays(var aDate : TDateTime; N: Integer = 1);
 procedure IncWeeks(var aDate: TDateTime; N: Integer = 1);
 procedure IncMonths(var aDate: TDateTime; N: Integer = 1);
 procedure IncYears(var aDate: TDateTime; N: Integer = 1);
-{$ENDIF}
 
 function EndOfMonth(aDate: TDateTime) : TDateTime;
 function IsFirstOfMonth(aDate : TDateTime) : Boolean;

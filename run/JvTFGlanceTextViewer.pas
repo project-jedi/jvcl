@@ -126,11 +126,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    {$IFDEF COMPILER3}
-    procedure PaintTo(aCanvas: TCanvas; DrawInfo: TJvTFGlTxtVwDrawInfo);
-    {$ELSE}
     procedure PaintTo(aCanvas: TCanvas; DrawInfo: TJvTFGlTxtVwDrawInfo); overload;
-    {$ENDIF}
 
     property Viewer : TJvTFGlanceTextViewer read FViewer;
     property GlanceControl : TJvTFCustomGlance read GetGlanceControl;
@@ -255,9 +251,7 @@ begin
   If AOwner is TJvTFGlanceTextViewer Then
     FViewer := TJvTFGlanceTextViewer(AOwner);
 
-  {$IFNDEF COMPILER3}
   DoubleBuffered := True;
-  {$ENDIF}
 
   FReplicating := True;
   FMouseLine := -1;
