@@ -460,6 +460,8 @@ type
     procedure AdjustClientRect(var Rect: TRect); override;
     procedure CreatePanel; virtual;
     procedure Change; override;
+    procedure DoRemoveDockClient(Client: TControl); override;
+
     procedure CustomDockOver(Source: TJvDockDragDockObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
     procedure CustomGetSiteInfo(Source: TJvDockDragDockObject; Client: TControl; var InfluenceRect: TRect;
@@ -485,6 +487,8 @@ type
     property ActiveVIDPage: TJvDockVIDTabSheet read GetActiveVIDPage write SetActiveVIDPage;
     destructor Destroy; override;
     procedure DockDrop(Source: TDragDockObject; X, Y: Integer); override;
+    function DoUnDock(NewTarget: TWinControl;  Client: TControl): Boolean; override;
+
     procedure UpdateCaption(Exclude: TControl); override;
     procedure Resize; override;
     property Pages[Index: Integer]: TJvDockVIDTabSheet read GetPage;
@@ -2534,6 +2538,12 @@ begin
 end;
 
 // TJvDockVIDTabPageControl ==================================================
+function TJvDockVIDTabPageControl.DoUnDock(NewTarget: TWinControl;  Client: TControl): Boolean;
+begin
+  Result := inherited DoUnDock(NewTarget, Client);
+  if Assigned(parentForm) then 
+    ParentForm.Caption := ActivePage.Caption;
+end;
 
 constructor TJvDockVIDTabPageControl.Create(AOwner: TComponent);
 begin
@@ -2722,10 +2732,26 @@ begin
   end;
 end;
 
+procedure TJvDockVIDTabPageControl.DoRemoveDockClient(Client: TControl);
+begin
+  inherited DoRemoveDockClient(Client);
+  if Assigned(ParentForm) then begin
+    ParentForm.Caption := ActivePage.Caption; {bugfix FEB 14, 2005 - WPostma.}
+  end;
+end;
+
 procedure TJvDockVIDTabPageControl.Change;
 begin
+  Assert(Assigned(ParentForm));
   inherited Change;
+
+    { During closing/undocking of a form,
+      ActivePage is actually going to be wrong.
+      See above in DoRemoveDockClient for where we fix
+      this problem. }
   ParentForm.Caption := ActivePage.Caption;
+
+
   if ParentForm.HostDockSite is TJvDockCustomPanel then
   begin
     if ParentForm.Visible and ParentForm.CanFocus then
