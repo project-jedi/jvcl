@@ -31,13 +31,20 @@ requires
 
 contains
   JvQDualListForm in '../../qrun/JvQDualListForm.pas' {JvDualListForm},
+  JvQExceptionForm in '../../qrun/JvQExceptionForm.pas' {JvErrorDialog},
   JvQFindReplace in '../../qrun/JvQFindReplace.pas',
+  JvQImageDlg in '../../qrun/JvQImageDlg.pas',
+  JvQParameterList in '../../qrun/JvQParameterList.pas',
+  JvQParameterListParameter in '../../qrun/JvQParameterListParameter.pas',
   JvQProgressComponent in '../../qrun/JvQProgressComponent.pas',
   JvQProgressDialog in '../../qrun/JvQProgressDialog.pas',
   JvQProgressForm in '../../qrun/JvQProgressForm.pas' {frmProgress},
+  JvQSelectDirectory in '../../qrun/JvQSelectDirectory.pas',
   JvQTipOfDay in '../../qrun/JvQTipOfDay.pas',
-  JvQDualList in '../../qrun/JvQDualList.pas',
   JvQCommonExecDlg in '../../qrun/JvQCommonExecDlg.pas',
-  JvQImageDlg in '../../qrun/JvQImageDlg.pas';
+  JvQDSADialogs in '../../qrun/JvQDSADialogs.pas',
+  JvQDualList in '../../qrun/JvQDualList.pas',
+  JvQDesktopAlert in '../../qrun/JvQDesktopAlert.pas',
+  JvQDesktopAlertForm in '../../qrun/JvQDesktopAlertForm.pas';
 
 end.
