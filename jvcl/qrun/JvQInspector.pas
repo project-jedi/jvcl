@@ -1820,15 +1820,15 @@ uses
   
   
   
-  QQDialogs, QQForms, QQButtons, QQConsts,
-  
-  QJclRTTI, QJclLogic,
-  JvQJCLUtils, JvQJVCLUtils, JvQThemes, JvQResources, QJclStrings;
+  QDialogs, QForms, QButtons, QConsts,
+
+  JclRTTI, JclLogic,
+  JvQJCLUtils, JvQJVCLUtils, JvQThemes, JvQResources, JclStrings;
 
 // BCB Type Info support
 var
   TypeInfoHelpersList : TClassList;
-    
+
 function TypeInfoFromName(TypeName : string): PTypeInfo;
 var
   I : Integer;

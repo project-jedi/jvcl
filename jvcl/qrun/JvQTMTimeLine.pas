@@ -42,7 +42,7 @@ uses
   
   Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,
   
-  JvQComponent, JvQExControls;
+  JvQComponent, JvQExControls, JvQResources;
 
 type
   TDate = TDateTime;
@@ -325,7 +325,7 @@ type
 implementation
 
 uses
-  Consts,
+  QConsts,
   JvQJVCLUtils, JvQThemes;
 
 {$IFDEF MSWINDOWS}
@@ -1221,7 +1221,7 @@ begin
   ClearImages;
   ClearObjects;
   if not ReadMagic(Stream) then
-    raise EStreamError.Create(SInvalidImage);
+    raise EStreamError.Create(RSInvalidImage);
   FDateImages.Text := ReadStr(Stream);
   for I := 0 to FDateImages.Count - 1 do
     FDateImages.Objects[I] := TObject(ReadInt(Stream));
