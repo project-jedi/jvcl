@@ -161,7 +161,7 @@ function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
 implementation
 
 uses
-  Registry, Consts, IniFiles,
+  Consts, IniFiles,
   JvJCLUtils, JvJVCLUtils, JvResources, JvConsts;
 
 {$R *.dfm}
