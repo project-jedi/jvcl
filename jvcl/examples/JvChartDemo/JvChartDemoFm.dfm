@@ -22,7 +22,7 @@ object JvChartDemoForm: TJvChartDemoForm
     Left = 124
     Top = 35
     Width = 597
-    Height = 408
+    Height = 400
     Align = alClient
     Options.XAxisValuesPerDivision = 10
     Options.XAxisDateTimeMode = False
@@ -32,6 +32,7 @@ object JvChartDemoForm: TJvChartDemoForm
     Options.YOrigin = 0
     Options.YStartOffset = 42
     Options.PrimaryYAxis.YMax = 20.000000000000000000
+    Options.PrimaryYAxis.YDivisions = 20
     Options.PrimaryYAxis.YLegendDecimalPlaces = 1
     Options.SecondaryYAxis.YMax = 140.000000000000000000
     Options.SecondaryYAxis.YLegendDecimalPlaces = 0
@@ -64,7 +65,7 @@ object JvChartDemoForm: TJvChartDemoForm
   object Splitter1: TSplitter
     Left = 121
     Top = 35
-    Height = 408
+    Height = 400
   end
   object PanelTop: TPanel
     Left = 0
@@ -331,7 +332,7 @@ object JvChartDemoForm: TJvChartDemoForm
     Left = 0
     Top = 35
     Width = 121
-    Height = 408
+    Height = 400
     Align = alLeft
     Color = clBtnFace
     Font.Charset = OEM_CHARSET
@@ -411,6 +412,11 @@ object JvChartDemoForm: TJvChartDemoForm
       object DateTimeAxisMode: TMenuItem
         Caption = 'Date/Time Axis Mode'
         OnClick = DateTimeAxisModeClick
+      end
+      object MenuNegValueTest: TMenuItem
+        AutoCheck = True
+        Caption = 'Use Positive and Negative Demo Values (-20..+20)'
+        OnClick = MenuNegValueTestClick
       end
       object MenuSecondaryAxisMode: TMenuItem
         Caption = '&Plot Markers+Values using Alternate Scale (0-120%)'

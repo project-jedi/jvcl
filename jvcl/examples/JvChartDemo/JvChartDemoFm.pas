@@ -77,6 +77,7 @@ type
     PrinterSetupDialog1: TPrinterSetupDialog;
     PrintDialog1: TPrintDialog;
     MenuSecondaryAxisMode: TMenuItem;
+    MenuNegValueTest: TMenuItem;
     procedure FormResize(Sender: TObject);
     procedure ButtonLineClick(Sender: TObject);
     procedure ButtonBarChartClick(Sender: TObject);
@@ -110,6 +111,7 @@ type
     procedure MenuSecondaryAxisModeClick(Sender: TObject);
     procedure ListBox1DblClick(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);
+    procedure MenuNegValueTestClick(Sender: TObject);
   private
 
       // Our waveform generator uses the following as state-variables:
@@ -118,6 +120,7 @@ type
      Fhgt, Fhg0, Fhg2p: Double;
      FStatHgt,FStatHg0:TStatArray;
      Fdt,Fds:Double;
+     FNegValueFlag :Boolean;
 
   protected
     procedure _Generate;
@@ -153,6 +156,11 @@ procedure TJvChartDemoForm._Generate;
 begin
         FHgt := Abs(Random(80)+(Random(((FGenerationIndex div foo) mod foo1) * 250) * 5 + 9500));
         FHg0 := Abs(Random(280)+Random(((FGenerationIndex div foo) mod foo2) * 650)*5 + 1003);
+        if FNegValueFlag then begin
+          if (Random(80) > 75) or (FGenerationIndex=2) then begin
+              FHg0 := -1 * FHg0; // Generate a negative value! (just to show what it looks like)
+          end;
+        end;
         Inc(FGenerationIndex);
 end;
 
@@ -188,8 +196,12 @@ begin
     // Set Data.Value[Pen, Series] := dataValue ...
     Chart.Data.Value[0, I] := FStatHgt.Average /1000;
 
-    // Test blanks on big chart, show missing data:
-     Chart.Data.Value[1, I] := FStatHg0.Average/1000;
+    if FHg0<0 then begin
+         Chart.Data.Value[1, I] := FHg0/1000; // Don't show average with negative samples or my negative demo ability goes away (averaged out!)
+    end else begin
+      // Test blanks on big chart, show missing data:
+      Chart.Data.Value[1, I] := FStatHg0.Average/1000;
+    end;
 
     Fhg2p := ( FStatHgt.Average - FStatHg0.Average)/1000;
     if Fhg2p < 0.0 then
@@ -310,6 +322,11 @@ begin
     XAxisHeader := 'Date/Time';
     YAxisHeader := 'Readings (ng/m3)';
 
+        if FNegValueFlag then begin
+            PrimaryYAxis.YMin := -20;
+            PrimaryYAxis.YMax := 20;
+        end else
+             PrimaryYAxis.YMin := 0;
     // Try out the pen styles:
       if ChartKind = ckChartStackedBar then
          PenStyle[0] := psClear // THIS IS HOW YOU TEMPORARILY HIDE ONE PEN!
@@ -318,14 +335,18 @@ begin
     PenStyle[1] := psDash;
     PenStyle[2] := psDot;
 
+
+    
     if MenuSecondaryAxisMode.Checked then begin
         PenCount := 4; // Add a pen for right side demo.
         SecondaryYAxis.YMax := 140; // Example shows Q/A percentage. Experimental results
                                     // results are compared to expected results, and the
                                     // response percentage, is plotted from 0% to 140%
                                     // of expected value.
-        SecondaryYAxis.YMin := 0;
+
         SecondaryYAxis.YLegendDecimalPlaces := 2;
+
+
         PenSecondaryAxisFlag[3] := True; // Move pen index 3 (Fourth pen) to secondary axis.
         PenMarkerKind[3] := pmkDiamond;
         PenValueLabels[3] := true; // Label with text.
@@ -357,8 +378,9 @@ begin
     
     //ChartKind := ckChartLine;
   end;
-    Chart.AutoFormatGraph;
-    //Chart.PlotGraph;
+//    Chart.AutoFormatGraph;
+  Chart.PlotGraph;
+  
    //Chart.ResizeChartCanvas;
 end;
 
@@ -457,11 +479,9 @@ end;
 
 procedure TJvChartDemoForm.Button4Click(Sender: TObject);
 begin
-//   Chart.SetYMaxMin(10000,0);
-//  Chart.Options.YMax := 10000;
-//  Chart.Options.YMin := 10000;
-  Chart.AutoFormatGraph;
-//   Chart.PlotGraph;
+
+//  Chart.AutoFormatGraph;  WAP Removed. BAD CODE.
+   Chart.PlotGraph;
 end;
 
 procedure TJvChartDemoForm.ButtonDeltaAverageClick(Sender: TObject);
@@ -607,6 +627,12 @@ procedure TJvChartDemoForm.ListBox1Click(Sender: TObject);
 begin
 Chart.CursorPosition := ListBox1.ItemIndex; // Highlight one sample.
 
+end;
+
+procedure TJvChartDemoForm.MenuNegValueTestClick(Sender: TObject);
+begin
+  FNegValueFlag := MenuNegValueTest.Checked;
+   NewValues; 
 end;
 
 end.
