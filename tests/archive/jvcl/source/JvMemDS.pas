@@ -1472,7 +1472,7 @@ begin
         First;
       end;
       // move back to where we started from
-      if BookMarkValid(DB) then
+      if (DB <> nil) and BookMarkValid(DB) then
       begin
         GotoBookMark(DB);
         FreeBookMark(DB);
@@ -1483,7 +1483,7 @@ begin
     end;
   finally
     // move back to where we started from
-    if Source.BookmarkValid(SB) then
+    if (SB <> nil) and Source.BookmarkValid(SB) then
     begin
       Source.GotoBookmark(SB);
       Source.FreeBookmark(SB);
@@ -1542,12 +1542,12 @@ begin
         Dest.First;
       end;
     finally
-      if BookmarkValid(SB) then
+      if (SB <> nil) and BookmarkValid(SB) then
       begin
         GotoBookmark(SB);
         FreeBookMark(SB);
       end;
-      if Dest.BookmarkValid(DB) then
+      if (DB <> nil) and Dest.BookmarkValid(DB) then
       begin
         Dest.GotoBookmark(DB);
         Dest.FreeBookmark(DB);
