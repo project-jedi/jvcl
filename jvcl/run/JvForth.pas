@@ -1951,7 +1951,7 @@ begin
   if aMethod = 'get' then
     ProcVariable
   else
-    raise EJvJanScriptError.CreateResFmt(@RsEUnrecognizeExternalVariableMethodss, [AName, amethod]);
+    raise EJvJanScriptError.CreateResFmt(@RsEUnrecognizedExternalVariableMethodss, [AName, amethod]);
 end;
 
 procedure TJvForthScript.ProcIntVar;
@@ -1999,7 +1999,7 @@ begin
   if aMethod = 'save' then
     ProcVarSave
   else
-    raise EJvJanScriptError.CreateResFmt(@RsEUnrecognizeInternalVariableMethodss, [AName, amethod]);
+    raise EJvJanScriptError.CreateResFmt(@RsEUnrecognizedInternalVariableMethodss, [AName, amethod]);
 end;
 
 procedure TJvForthScript.procSystem;
@@ -2014,7 +2014,7 @@ begin
   if aMethod = 'get' then
     procSysGet
   else
-    raise EJvJanScriptError.CreateResFmt(@RsEUnrecognizeSystemMethodss, [AName, amethod]);
+    raise EJvJanScriptError.CreateResFmt(@RsEUnrecognizedSystemMethodss, [AName, amethod]);
 end;
 
 procedure TJvForthScript.ProcVarDec;

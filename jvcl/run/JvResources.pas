@@ -724,9 +724,9 @@ resourcestring
   RsEVariablesNotDefined_ = 'variable %s not defined';
   RsESystemsNotDefined = 'System %s not defined';
   RsECanNotAssignSystems = 'can not assign System %s';
-  RsEUnrecognizeExternalVariableMethodss = 'unrecognize external variable method %s.%s';
-  RsEUnrecognizeInternalVariableMethodss = 'unrecognize internal variable method %s.%s';
-  RsEUnrecognizeSystemMethodss = 'unrecognize system method %s.%s';
+  RsEUnrecognizedExternalVariableMethodss = 'unrecognized external variable method %s.%s';
+  RsEUnrecognizedInternalVariableMethodss = 'unrecognized internal variable method %s.%s';
+  RsEUnrecognizedSystemMethodss = 'unrecognized system method %s.%s';
   RsEFilesDoesNotExist = 'File %s does not exist';
   RsECanNotSaveToFiles = 'Can not save to file %s';
   RsEXMLSelectionIsEmpty = 'XML selection is empty';
