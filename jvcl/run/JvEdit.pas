@@ -520,7 +520,7 @@ begin
     else
       S := StrFillChar(PasswordChar, Length(Text));
     Canvas := nil;
-    if not PaintEdit(Self, S, FAlignment, False, 0, FDisabledTextColor,
+    if not PaintEdit(Self, S, FAlignment, False, {0,} FDisabledTextColor,
        Focused, Canvas, Msg) then
       inherited;
     Canvas.Free;
