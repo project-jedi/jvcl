@@ -1,7 +1,7 @@
 package JVCL200_R70Personal;
 
 {$R *.res}
-{$ALIGN ON}
+{$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -37,7 +37,6 @@ requires
 contains
   JvAddPrinter in '..\source\JvAddPrinter.pas',
   JvAlarms in '..\source\JvAlarms.pas',
-  JvAngleLabel in '..\source\JvAngleLabel.pas',
   JvAni in '..\source\JvAni.pas',
   JvAnimate in '..\source\JvAnimate.pas',
   JvAnimTitle in '..\source\JvAnimTitle.pas',
@@ -48,7 +47,6 @@ contains
   JvBevel in '..\source\JvBevel.pas',
   JvBitBtn in '..\source\JvBitBtn.pas',
   JvBehaviorLabel in '..\source\JvBehaviorLabel.pas',
-  JvBouncingLabel in '..\source\JvBouncingLabel.pas',
   JvBreatheSkin in '..\source\JvBreatheSkin.pas',
   JvBrowseFolder in '..\source\JvBrowseFolder.pas',
   JvButton in '..\source\JvButton.pas',
