@@ -38,11 +38,11 @@ type
   TJvPlaylist = class(TJvListBox)
   private
     FShowNumbers: Boolean;
-    FItems: TStringList;
+    FItems: TStrings;
     FShowExtension: Boolean;
     FRefresh: Boolean;
     procedure SetShowNumbers(const Value: Boolean);
-    procedure SetItems(const Value: TStringList);
+    procedure SetItems(const Value: TStrings);
     procedure SetShowExtension(const Value: Boolean);
   protected
     procedure LBDeleteString(var Msg: TMessage); message LB_DELETESTRING;
@@ -53,8 +53,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure AddItem(Item: string; AObject: TObject);
-      {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure AddItem(Item: string; AObject: TObject); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure AddItems(Value: TStrings);
     function GetItem(Index: Integer): string;
     procedure DeleteDeadFiles;
@@ -71,7 +70,7 @@ type
   published
     property ShowNumbers: Boolean read FShowNumbers write SetShowNumbers default False;
     property ShowExtension: Boolean read FShowExtension write SetShowExtension default False;
-    property Items: TStringList read FItems write SetItems;
+    property Items: TStrings read FItems write SetItems;
   end;
 
 implementation
@@ -83,7 +82,7 @@ begin
   FShowExtension := False;
   FRefresh := False;
   FItems := TStringList.Create;
-  FItems.OnChange := ItemsChanged;
+  TStringList(FItems).OnChange := ItemsChanged;
 end;
 
 destructor TJvPlaylist.Destroy;
@@ -144,12 +143,12 @@ end;
 
 procedure TJvPlaylist.SortByPath;
 begin
-  FItems.Sort;
+  TStringList(FItems).Sort;
 end;
 
 procedure TJvPlaylist.SortByPathInverted;
 begin
-  FItems.Sort;
+  TStringList(FItems).Sort;
   ReverseOrder;
 end;
 
@@ -240,7 +239,7 @@ begin
   end;
 end;
 
-procedure TJvPlaylist.SetItems(const Value: TStringList);
+procedure TJvPlaylist.SetItems(const Value: TStrings);
 begin
   FItems.Assign(Value);
   Refresh;
@@ -265,9 +264,9 @@ begin
   inherited;
   if not FRefresh then
   begin
-    Items.OnChange := nil;
+    TStringList(FItems).OnChange := nil;
     Items.Delete(LongInt(Msg.WParam));
-    Items.OnChange := ItemsChanged;
+    TStringList(FItems).OnChange := ItemsChanged;
   end;
 end;
 
@@ -289,7 +288,7 @@ begin
     end;
     Exit;
   end;
-  Items.OnChange := nil;
+  TStringList(FItems).OnChange := nil;
   FRefresh := True;
   if (Items.Count > 0) and (SelCount > 0) and not Selected[Items.Count - 1] then
   begin
@@ -305,7 +304,7 @@ begin
     end;
   end;
   FRefresh := False;
-  Items.OnChange := ItemsChanged;
+  TStringList(FItems).OnChange := ItemsChanged;
   Refresh;
 end;
 
@@ -322,7 +321,7 @@ begin
     end;
     Exit;
   end;
-  Items.OnChange := nil;
+  TStringList(FItems).OnChange := nil;
   FRefresh := True;
   if (Items.Count > 0) and (SelCount > 0) and not Selected[0] then
   begin
@@ -338,7 +337,7 @@ begin
     end;
   end;
   FRefresh := False;
-  Items.OnChange := ItemsChanged;
+  TStringList(FItems).OnChange := ItemsChanged;
   Refresh;
 end;
 
