@@ -708,7 +708,7 @@ type
     property DialogFrameHeight: integer index SM_CYDLGFRAME read GetMetrics write SetMetric stored False;
     property DoubleClickWidth: integer index SM_CXDOUBLECLK read GetMetrics write SetMetric stored False;
     property DoubleClickHeight: integer index SM_CYDOUBLECLK read GetMetrics write SetMetric stored False;
-    property DoubleClickTime: integer read GetDoubleClickTime write SetDoubleClickTime;
+    property DoubleClickTime: integer read GetDoubleClickTime write SetDoubleClickTime stored False;
 
     property DragWidth: integer index SM_CXDRAG read GetMetrics write SetMetric stored False;
     property DragHeight: integer index SM_CYDRAG read GetMetrics write SetMetric stored False;
