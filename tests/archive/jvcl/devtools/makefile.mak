@@ -30,6 +30,7 @@ JTouch.exe \
 crlf.exe \
 MakeDOF.exe \
 MakeRC.exe \
+dc.exe \
 MakePNG.exe \
 Res2BMP.exe \
 ErrLook.exe \
@@ -65,6 +66,12 @@ crlf.exe: JvAdjustLineBreaks\crlf.dpr
   cd JvAdjustLineBreaks
   $(DCC) $&.dpr
   cd ..
+
+dc.exe: DFMCleaner\dc.dpr
+  cd DFMCleaner
+  $(DCC) $&.dpr
+  cd ..
+
 # these are put last because they are most likely to fail (needs additional units from other libraries)
 MakePNG.exe: MakePNG\MakePNG.dpr
   cd MakePNG

@@ -53,7 +53,7 @@ MakeDOF always scans subdirs and overwrites any existing files.
 
 JConvert:
 =========
-JConvert converts DFm files from/to binary format just like the convert.exe supplied with Delphi. The difference is that JConvert only converts DFM's that needs to be converted: if a file is already in text format and that is what you want, the file will not be changed. Another difference is the -c(heck) option: with this set, the program reports how many DFM's would have been converted but doesn't actually convert anything.
+JConvert converts DFM files from/to binary format just like the convert.exe supplied with Delphi. The difference is that JConvert only converts DFM's that needs to be converted: if a file is already in text format and that is what you want, the file will not be changed. Another difference is the -c(heck) option: with this set, the program reports how many DFM's would have been converted but doesn't actually convert anything.
 
 JTouch:
 =======
@@ -75,8 +75,15 @@ ErrLook:
 =======
 A Delphi clone of Visual Studio's ErrLook utility (to look up error codes) with some enhancements. See the supplied help file for more info. NOTE: needs the HTMLHlp.pas from http://delphi-jedi.org (API Library Files)
 
+dc:
+===
+Removes unsupported properties from DFMs by reading a skiplist with the properties to remove. 
 
+Command-line:
 
+dc.exe <options> <filemask> <filemask>
 
-
-
+where <options> can be:
+-i - replace in-line (output overwrites input). If not given, output uses input's filename but with a "txt" extension
+-s - recurse into sub-folders
+-f<filename> - read skiplist from <filename>, REQUIRED. Do not preceed filename with spaces!
