@@ -36,6 +36,7 @@ uses
   JVCL3Install in 'JVCL3Install.pas',
   PageBuilder in 'PageBuilder.pas',
   DelphiData in 'DelphiData.pas',
+  JCLData in 'JCLData.pas',
   JVCLData in 'JVCLData.pas',
   AHCompBrowseFolderDlg in 'Helpers\AHCompBrowseFolderDlg.pas',
   PgIDESelection in 'Pages\PgIDESelection.pas',

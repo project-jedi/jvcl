@@ -242,10 +242,10 @@ object FrameConfigPage: TFrameConfigPage
       Width = 233
       Height = 17
       Hint = 
-        'Check this option if you do not want to register'#13#10'the designtime' +
-        ' package into the IDE.'
+        'Check this option if you want to register'#13#10'the designtime packag' +
+        'es into the IDE.'
       AllowGrayed = True
-      Caption = 'No &IDE registration'
+      Caption = '&IDE registration'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2

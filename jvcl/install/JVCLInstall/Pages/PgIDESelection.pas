@@ -31,9 +31,8 @@ unit PgIDESelection;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, Dialogs, ExtCtrls,
-  Core, JVCL3Install, DelphiData, JVCLData,
-  Windows;
+  Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, Dialogs,
+  ExtCtrls, Core, JVCL3Install, DelphiData, JVCLData, JCLData;
 
 type
   { A page where the user can choose for which IDE he wants to install the JVCL.
@@ -169,14 +168,14 @@ begin
       Lbl.Cursor := crHandPoint;
       Lbl.OnClick := Installer.DoHomepageClick;
     end
-    else if Config.MissingJCL and (Installer.JCLDir = '') then
+    else if (Config.MissingJCL and (Installer.JCLDir = '')) or Config.OutdatedJCL then
     begin
       Control.Enabled := False;
       Control.Checked := False;
 
       Lbl.Font.Color := clBlue;
       Lbl.Font.Style := [fsUnderline];
-      Lbl.Caption := RsJCLVersionRequired;
+      Lbl.Caption := Format(RsJCLVersionRequired, [JCLVersion]);
       Lbl.Hint := RsDownloadOrSelectJclDir;
       Lbl.Cursor := crHandPoint;
       Lbl.OnClick := Installer.DoHomepageClick;
@@ -217,7 +216,8 @@ var
 begin
   if Installer.InstallType <> itUninstall then
     with TFrameDirEditBrowse.Build(RsJCLDirectoryCaption, Installer.JCLDir,
-                                   JCLDirChanged, nil, Client, RsJCLDirectorySelectionBtnHint) do
+           JCLDirChanged, nil, Client,
+           Format(RsJCLDirectorySelectionBtnHint, [JCLVersion])) do
       Align := alBottom
   else
   begin
@@ -286,7 +286,7 @@ begin
     end;
   end
   else
-    MessageDlg(RsNoJclVersionFound, mtError, [mbOk], 0);
+    MessageDlg(Format(RsNoJclVersionFound, [JCLVersion]), mtError, [mbOk], 0);
 end;
 
 procedure TIDESelectionPage.DoInstallJcl(Sender: TObject);

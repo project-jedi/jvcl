@@ -40,6 +40,7 @@ function CompareFileAge(const Filename1Fmt: string; const Args1: array of const;
 function GetReturnPath(const Dir: string): string;
 function FileExists(const Filename: string): Boolean;
 function DirectoryExists(const Dir: string): Boolean;
+function Path(const APath: string): string; // converts each '\' to PathDelim
 
 function FollowRelativeFilename(const RootDir: string; RelFilename: string): string;
 function CutFirstDirectory(var Dir: string): string;
@@ -145,6 +146,16 @@ var
 begin
   Attr := GetFileAttributes(PChar(Dir));
   Result := (Attr <> $FFFFFFFF) and (Attr and FILE_ATTRIBUTE_DIRECTORY <> 0);
+end;
+
+function Path(const APath: string): string;
+var
+  i: Integer;
+begin
+  Result := APath;
+  for i := 1 to Length(Result) do
+    if Result[i] = '\' then
+      Result[i] := PathDelim;
 end;
 
 function CutFirstDirectory(var Dir: string): string;

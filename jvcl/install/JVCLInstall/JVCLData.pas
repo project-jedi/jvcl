@@ -33,10 +33,13 @@ interface
 uses
   Windows, Registry, SysUtils, Classes, Contnrs,
   JVCLConfiguration, DelphiData, PackageUtils, Intf, GenerateUtils,
-  IniFiles;
+  IniFiles, JCLData;
 
 const
   PackageGeneratorFile = 'devtools\bin\pgEdit.xml';
+  DefaultJCLVersion = '1.92';
+  DefaultJCLIdentifyDirs = '\source\windows\win32api'; // ;-separated list
+  DefaultJCLIdentifyFiles = '\source\common\JvBase.pas'; // ;-separated list
 
 type
   TJVCLData = class;
@@ -55,6 +58,7 @@ type
     FInstalledJVCLVersion: Integer;
     FJCLDir: string;
     FMissingJCL: Boolean;
+    FOutdatedJCL: Boolean;
     FCompiledJCL: Boolean;
     FInstallJVCL: Boolean;
     FHppDir: string;
@@ -77,6 +81,7 @@ type
     function GetDxgettextDir: string;
     function GetDeveloperInstall: Boolean;
     function GetGenerateMapFiles: Boolean;
+    procedure SetJCLDir(const Value: string);
   private
     { ITargetConfig }
     function GetInstance: TObject;
@@ -156,6 +161,10 @@ type
       // MissingJCL is True when no JCL is installed and no JCL directoy was
       // found that could be installed.
 
+    property OutdatedJCL: Boolean read FOutdatedJCL;
+      // OutdatedJCL is True if no jcl\source\common\windows\win32api directory
+      // exists which means that the JCL is too old for the JVCL.
+
     property CompiledJCL: Boolean read FCompiledJCL;
       // CompiledJCL is True if D/CJcl.dcp and D/CJclVcl.dcp exist for this
       // target.
@@ -199,7 +208,7 @@ type
       // CleanPalettes specifies if the JVCL components should be removed from
       // the component palettes before installation.
 
-    property JCLDir: string read GetJCLDir write FJCLDir;
+    property JCLDir: string read GetJCLDir write SetJCLDir;
       // JCLDir specifies the directory where the JCL is.
 
     property HppDir: string read GetHppDir write FHppDir;
@@ -305,6 +314,16 @@ begin
   finally
     Reg.Free;
   end;
+end;
+
+function FixBackslashBackslash(const Dir: string): string;
+var
+  ps: Integer;
+begin
+  Result := Dir;
+  ps := Pos('\\', Result);
+  if ps > 0 then
+    Delete(Result, ps, 1);
 end;
 
 { TJVCLData }
@@ -586,32 +605,58 @@ procedure TTargetConfig.Init;
 
   function FindJCL(List: TStrings): string;
   var
-    i: Integer;
-    S: string;
+    i, jclIndex, BrowseIndex, ps: Integer;
+    Dir: string;
+    Identify: Boolean;
   begin
     Result := '';
     for i := 0 to List.Count - 1 do
     begin
-      S := Target.ExpandDirMacros(List[i]);
-      if EndsWith(S, '\source\common', True) then
+      Dir := Target.ExpandDirMacros(List[i]);
+
+      for BrowseIndex := 0 to High(JCLBrowsePaths) do
       begin
-        if FileExists(S + '\JclBase.pas') then
+        // obtain the assumed JCL root directory
+        Identify := False;
+        if EndsWith(JCLBrowsePaths[BrowseIndex], '\', False) then
         begin
-          Result := ExtractFileDir(ExtractFileDir(S));
-          FMissingJCL := False;
-          Break;
+          ps := Pos(LowerCase(Path(JCLBrowsePaths[BrowseIndex])), LowerCase(Dir));
+          if ps > 0 then
+          begin
+            Delete(Dir, ps, MaxInt);
+            Identify := True;
+          end;
+        end
+        else
+        if EndsWith(Dir, Path(JCLBrowsePaths[BrowseIndex]), True) then
+        begin
+          Dir := ExtractFileDir(ExtractFileDir(Dir));
+          Identify := True;
         end;
-      end
-      else
-      if EndsWith(S, '\lib\', True) then
-      begin
-        if FileExists(ExtractFileDir(S) + '\source\common\JclBase.pas') then
+
+        if Identify then
         begin
-          Result := ExtractFileDir(S);
           FMissingJCL := False;
-          Break;
+          // Check if the assumed JCL directory contains the files that identify
+          // the JCL.
+          for jclIndex := 0 to High(JCLIdentify) do
+            if not FileExists(Dir + Path(JCLIdentify[jclIndex])) then
+            begin
+              FMissingJCL := True;
+              Break;
+            end;
+
+          if not FMissingJCL then
+          begin
+            Result := Dir;
+            Break;
+          end;
+
         end;
       end;
+
+      if Result <> '' then
+        Break;
     end;
   end;
 
@@ -620,6 +665,7 @@ var
 begin
   FInstallMode := [];
   FCompiledJCL := False;
+  FOutdatedJCL := False;
 
  // identify JVCL version
   FInstalledJVCLVersion := 0;
@@ -644,9 +690,9 @@ begin
   FMissingJCL := True;
   if FJCLDir = '' then
   begin
-    FJCLDir := FindJCL(Target.BrowsingPaths);
+    SetJCLDir(FindJCL(Target.BrowsingPaths));
     if FJCLDir = '' then
-      FJCLDir := FindJCL(Target.SearchPaths);
+      SetJCLDir(FindJCL(Target.SearchPaths));
   end;
 
   // Check for the JCL bpl file, that's the most reliable way to find
@@ -665,11 +711,15 @@ begin
 
   if (Target.IsBCB and
       FileExists(Format('%s\CJcl%s.dcp', [BplDir, S])) and
-      FileExists(Format('%s\CJclVcl%s.dcp', [BplDir, S]))) or
+      FileExists(Format('%s\CJclVcl%s.dcp', [BplDir, S])))
+
+     or
 
      (not Target.IsBCB and
       FileExists(Format('%s\DJcl%s.dcp', [BplDir, S])) and
-      FileExists(Format('%s\DJclVcl%s.dcp', [BplDir, S]))) then
+      FileExists(Format('%s\DJclVcl%s.dcp', [BplDir, S])))
+      
+     then
   begin
     FCompiledJCL := True;
 
@@ -957,6 +1007,38 @@ begin
       Result := Result + '\delphi5'; // do not localize
 end;
 
+procedure TTargetConfig.SetJCLDir(const Value: string);
+var
+  i: Integer;
+begin
+  if Value <> FJCLDir then
+  begin
+    FJCLDir := Value;
+
+    // Check if the JCL is outdated
+    FOutdatedJCL := False;
+    for i := 0 to High(JCLIdentifyOutdated) do
+    begin
+      if JCLIdentifyOutdated[i][1] = '+' then
+      begin
+        if not FileExists(FJCLDir + Path(Copy(JCLIdentifyOutdated[i], 2, MaxInt))) then
+        begin
+          FOutdatedJCL := True;
+          Break;
+        end;
+      end
+      else if JCLIdentifyOutdated[i][1] = '-' then
+      begin
+        if FileExists(FJCLDir + Path(Copy(JCLIdentifyOutdated[i], 2, MaxInt))) then
+        begin
+          FOutdatedJCL := True;
+          Break;
+        end;
+      end;
+    end;
+  end;
+end;
+
 procedure TTargetConfig.Save;
 var
   Kind: TPackageGroupKind;
@@ -1010,10 +1092,10 @@ begin
   Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini'));
   try
     if JCLDir = '' then
-      JCLDir := Ini.ReadString(Target.DisplayName, 'JCLDir', JCLDir); // do not localize
-    HppDir := Ini.ReadString(Target.DisplayName, 'HPPDir', HppDir);   // do not localize
-    BplDir := Ini.ReadString(Target.DisplayName, 'BPLDir', BplDir);   // do not localize
-    DcpDir := Ini.ReadString(Target.DisplayName, 'DCPDir', DcpDir);   // do not localize
+      JCLDir := ExcludeTrailingPathDelimiter(Ini.ReadString(Target.DisplayName, 'JCLDir', JCLDir)); // do not localize
+    HppDir := ExcludeTrailingPathDelimiter(Ini.ReadString(Target.DisplayName, 'HPPDir', HppDir));   // do not localize
+    BplDir := ExcludeTrailingPathDelimiter(Ini.ReadString(Target.DisplayName, 'BPLDir', BplDir));   // do not localize
+    DcpDir := ExcludeTrailingPathDelimiter(Ini.ReadString(Target.DisplayName, 'DCPDir', DcpDir));   // do not localize
     DeveloperInstall := Ini.ReadBool(Target.DisplayName, 'DeveloperInstall', DeveloperInstall); // do not localize
     CleanPalettes := Ini.ReadBool(Target.DisplayName, 'CleanPalettes', CleanPalettes); // do not localize
     GenerateMapFiles := Ini.ReadBool(Target.DisplayName, 'GenerateMapFiles', GenerateMapFiles); // do not localize
@@ -1023,6 +1105,12 @@ begin
         Include(Mode, Kind);
     InstallMode := Mode;
     //AutoDependencies := Ini.ReadBool(Target.DisplayName, 'AutoDependencies', AutoDependencies);
+
+    // fix "Delphi\\Projects" bug
+    HppDir := FixBackslashBackslash(HppDir);
+    BplDir := FixBackslashBackslash(BplDir);
+    DcpDir := FixBackslashBackslash(DcpDir);
+
   finally
     Ini.Free;
   end;
