@@ -619,7 +619,10 @@ begin
       UpdateDisplay;
     end
     else
-      Release;
+    begin
+      if not (csDestroying in ComponentState) then
+        Release;
+    end;
   end;
 end;
 
