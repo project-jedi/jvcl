@@ -114,6 +114,7 @@ type
     function Add(const Name: string; const Value: Boolean): TJvSimpleXmlElem; overload;
     function Add(const Name: string; const Value: TStream): TJvSimpleXmlElem; overload;
     function Add(Value: TJvSimpleXmlElem): TJvSimpleXmlElem; overload;
+    function AddFirst(const Name: string): TJvSimpleXmlElem;
     procedure Clear;virtual;
     procedure Delete(const Index: Integer);overload;
     procedure Delete(const Name: string);overload;
@@ -998,8 +999,17 @@ end;
 procedure TJvSimpleXmlElems.AddChildFirst(var Value: TJvSimpleXmlElem);
 begin
   CreateElems;
-  FElems.AddObject(Value.Name,Value)
+  FElems.InsertObject(0,Value.Name,Value)
 end;
+{*************************************************}
+
+function TJvSimpleXmlElems.AddFirst(const Name: string): TJvSimpleXmlElem;
+begin
+  result := TJvSimpleXmlElem.Create(Parent);
+  result.FName := Name; //Directly set parent to avoid notification 
+  AddChildFirst(result);
+end;
+
 {*************************************************}
 
 procedure TJvSimpleXmlElems.BinaryValue(const Name: string;
@@ -1589,6 +1599,7 @@ begin
     end;
   end;
 end;
+
 
 
 initialization
