@@ -57,9 +57,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -86,10 +86,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -110,8 +106,13 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   {$ENDIF VisualCLX}
+  private
+    FBeepOnError: Boolean;
+  protected
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError;
   end;
   
+
   TJvExMaskEdit = class(TMaskEdit, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -131,9 +132,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -160,10 +161,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -184,6 +181,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   {$ENDIF VisualCLX}
+  private
+    FBeepOnError: Boolean;
+  protected
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError;
   end;
   
 
@@ -282,12 +283,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExCustomMaskEdit.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomMaskEdit.MouseEnter(Control: TControl);
@@ -496,12 +491,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExMaskEdit.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExMaskEdit.MouseEnter(Control: TControl);

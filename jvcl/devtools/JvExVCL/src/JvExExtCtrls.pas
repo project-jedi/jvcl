@@ -47,10 +47,21 @@ type
   JV_WINCONTROL_EVENTS(CustomRadioGroup)
   JV_WINCONTROL_EVENTS(RadioGroup)
   JV_CONTROL_EVENTS(Splitter)
-{$DEFINE REINTRODUCE_HITTEST}
-  JV_CUSTOMCONTROL_EVENTS(CustomControlBar)
-  JV_CUSTOMCONTROL_EVENTS(ControlBar)
-{$UNDEF REINTRODUCE_HITTEST}
+
+  JV_CUSTOMCONTROL_EVENTS_FEATURE_BEGIN(CustomControlBar)
+  {$IFDEF VisualCLX}
+  protected
+    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
+  {$ENDIF VisualCLX}
+  JV_CUSTOMCONTROL_EVENTS_FEATURE_END(CustomControlBar)
+
+  JV_CUSTOMCONTROL_EVENTS_FEATURE_BEGIN(ControlBar)
+  {$IFDEF VisualCLX}
+  protected
+    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
+  {$ENDIF VisualCLX}
+  JV_CUSTOMCONTROL_EVENTS_FEATURE_END(ControlBar)
+  
 {$IFDEF VCL}
   JV_CUSTOMCONTROL_EVENTS(Page)
   JV_CUSTOMCONTROL_EVENTS(Notebook)
@@ -75,10 +86,25 @@ JV_CUSTOMCONTROL_EVENTS_IMPL(Panel)
 JV_WINCONTROL_EVENTS_IMPL(CustomRadioGroup)
 JV_WINCONTROL_EVENTS_IMPL(RadioGroup)
 JV_CONTROL_EVENTS_IMPL(Splitter)
-{$DEFINE REINTRODUCE_HITTEST}
-JV_CUSTOMCONTROL_EVENTS_IMPL(CustomControlBar)
-JV_CUSTOMCONTROL_EVENTS_IMPL(ControlBar)
-{$UNDEF REINTRODUCE_HITTEST}
+
+JV_CUSTOMCONTROL_EVENTS_IMPL_FEATURE_BEGIN(CustomControlBar)
+{$IFDEF VisualCLX}
+function TJvExCustomControlBar.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
+end;
+{$ENDIF VisualCLX}
+JV_CUSTOMCONTROL_EVENTS_IMPL_FEATURE_END(CustomControlBar)
+
+JV_CUSTOMCONTROL_EVENTS_IMPL_FEATURE_BEGIN(ControlBar)
+{$IFDEF VisualCLX}
+function TJvExControlBar.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
+end;
+{$ENDIF VisualCLX}
+JV_CUSTOMCONTROL_EVENTS_IMPL_FEATURE_END(ControlBar)
+
 {$IFDEF VCL}
 JV_CUSTOMCONTROL_EVENTS_IMPL(Page)
 JV_CUSTOMCONTROL_EVENTS_IMPL(Notebook)

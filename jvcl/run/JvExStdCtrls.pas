@@ -57,9 +57,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -86,10 +86,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -131,9 +127,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -160,10 +156,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -206,9 +198,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   public
     procedure Dispatch(var Msg); override;
@@ -222,10 +214,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -258,9 +246,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   public
     procedure Dispatch(var Msg); override;
@@ -274,10 +262,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -311,9 +295,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -340,10 +324,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -385,9 +365,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -414,10 +394,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -459,9 +435,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -488,10 +464,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -533,9 +505,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -562,10 +534,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -609,9 +577,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -638,10 +606,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -685,9 +649,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -714,10 +678,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -759,9 +719,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -788,10 +748,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -833,9 +789,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -862,10 +818,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -907,9 +859,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -936,10 +888,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -981,9 +929,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -1010,10 +958,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -1055,9 +999,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -1084,10 +1028,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -1129,9 +1069,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -1158,10 +1098,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -1203,9 +1139,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -1232,10 +1168,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -1277,9 +1209,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -1306,10 +1238,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -1351,9 +1279,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -1380,10 +1308,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -1426,9 +1350,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -1455,10 +1379,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -1500,9 +1420,9 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -1529,10 +1449,6 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -1652,12 +1568,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExCustomGroupBox.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomGroupBox.MouseEnter(Control: TControl);
@@ -1866,12 +1776,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExGroupBox.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExGroupBox.MouseEnter(Control: TControl);
@@ -2081,12 +1985,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExCustomLabel.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomLabel.MouseEnter(Control: TControl);
@@ -2203,12 +2101,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExLabel.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExLabel.MouseEnter(Control: TControl);
@@ -2326,12 +2218,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExCustomEdit.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomEdit.MouseEnter(Control: TControl);
@@ -2540,12 +2426,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExEdit.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExEdit.MouseEnter(Control: TControl);
@@ -2754,12 +2634,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExCustomMemo.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomMemo.MouseEnter(Control: TControl);
@@ -2968,12 +2842,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExMemo.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExMemo.MouseEnter(Control: TControl);
@@ -3184,12 +3052,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExCustomCombo.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomCombo.MouseEnter(Control: TControl);
@@ -3400,12 +3262,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExCustomComboBox.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomComboBox.MouseEnter(Control: TControl);
@@ -3614,12 +3470,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExComboBox.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExComboBox.MouseEnter(Control: TControl);
@@ -3828,12 +3678,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExButtonControl.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExButtonControl.MouseEnter(Control: TControl);
@@ -4042,12 +3886,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExButton.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExButton.MouseEnter(Control: TControl);
@@ -4256,12 +4094,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExCustomCheckBox.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomCheckBox.MouseEnter(Control: TControl);
@@ -4470,12 +4302,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExCheckBox.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCheckBox.MouseEnter(Control: TControl);
@@ -4684,12 +4510,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExRadioButton.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExRadioButton.MouseEnter(Control: TControl);
@@ -4898,12 +4718,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExCustomListBox.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomListBox.MouseEnter(Control: TControl);
@@ -5112,12 +4926,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExListBox.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExListBox.MouseEnter(Control: TControl);
@@ -5326,12 +5134,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExScrollBar.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExScrollBar.MouseEnter(Control: TControl);
@@ -5541,12 +5343,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExCustomStaticText.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomStaticText.MouseEnter(Control: TControl);
@@ -5755,12 +5551,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvExStaticText.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvExStaticText.MouseEnter(Control: TControl);
