@@ -268,6 +268,7 @@ const
   IgnorePropertyList: array [1..14] of PChar =
    (
     'AboutJVCL',
+    'AppStorage',
     'AppStoragePath',
     'AutoLoad',
     'ClearBeforeLoad',
