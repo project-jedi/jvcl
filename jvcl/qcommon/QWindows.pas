@@ -35,7 +35,6 @@ Known Issues:
   - Covers only a small part of the Windows APIs
   - Not all functionality is supported
 {-----------------------------------------------------------------------------}
-
 unit QWindows;
 
 interface
@@ -46,8 +45,6 @@ uses
   {$ENDIF LINUX}
   Types, StrUtils, SysUtils, Classes, Math, Contnrs, SyncObjs, QDialogs,
   QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QButtons;
-
-//{$DEFINE DEBUG}
 
 const
   { Windows VK_ keycodes to Qt key }
@@ -263,10 +260,10 @@ function DrawTextBiDiModeFlags(Flags: Longint): Longint;
 procedure ChangeBiDiModeAlignment(var Alignment: TAlignment);
 function UseRightToLeftAlignment: Boolean;
 var
-  NewStyleControls: boolean = true;
+  NewStyleControls: Boolean = True;
 { colors }
 function GetSysColor(SysColor: Integer): TColorRef;
-function SetSysColor(RefColor: TColor; TrueColor: TColorRef): boolean;
+function SetSysColor(RefColor: TColor; TrueColor: TColorRef): Boolean;
 function SetSysColors(Elements: Integer; const lpaElements;
   const lpaRgbValues): LongBool;
 
@@ -878,9 +875,9 @@ function DrawTextEx(Handle: QPainterH; var Text: WideString; Len: Integer;
 function DrawTextEx(Handle: QPainterH; Text: PChar; Len: Integer;
   var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
-  x,y, w, h: integer; WinFlags: Integer; Angle: integer): Integer;  overload;
+  x,y, w, h: Integer; WinFlags: Integer; Angle: Integer): Integer;  overload;
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
-  var R: TRect; WinFlags: Integer; Angle: integer): Integer; overload;
+  var R: TRect; WinFlags: Integer; Angle: Integer): Integer; overload;
 
 const
   { DrawText format (windows) flags }
@@ -1210,7 +1207,7 @@ function SetDoubleClickTime(Interval: Cardinal): LongBool;
 function ReleaseCapture: LongBool;
 function SetCapture(Widget: QWidgetH): QWidgetH;
 function GetCapture: QWidgetH;
-function SetCursor(Handle: QCursorH; Save: boolean = false): QCursorH;
+function SetCursor(Handle: QCursorH; Save: Boolean = False): QCursorH;
 function Win2QtAlign(Flags: Integer): Integer;
 function QtStdAlign(Flags: Integer): Word;
 
@@ -1218,18 +1215,12 @@ function IsCharAlpha(Ch: Char): LongBool;
 function IsCharAlphaNumeric(Ch: Char): LongBool;
 
 { Message }
-//  (ahuser) Do not rename PostMsg/SendMsg to PostMessage/SendMessage because
-//  it is easier to find non-working PostMessage/SendMessage calls when the
-//  compiler give you an error at these positions.
 function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Longint;
  { Limitation: Handle must be a TWidgetControl derived class handle }
-function PostMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
- { SendMsg synchronizes with the main thread }
-function SendMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
-function SendMsg(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 function PostMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
+ { SendMsg synchronizes with the main thread }
 function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
-
+function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 
 function SetTimer(Wnd: QWidgetH; IDEvent, Elapse: Cardinal;
   TimerFunc: Pointer): Cardinal; overload;
@@ -1292,22 +1283,22 @@ procedure OutputDebugString(lpOutputString: PChar);
 
 function GetCurrentProcess: THandle;
 
-function TerminateThread(ThreadID: TThreadID; RetVal: integer): LongBool;
+function TerminateThread(ThreadID: TThreadID; RetVal: Integer): LongBool;
 //
 // The Windows API's  SuspendThread & ResumeThread are functions.
 // With QWindows / Linux these are procedures
 //
 procedure SuspendThread(ThreadID: TThreadID);
 procedure ResumeThread(ThreadID: TThreadID);
-function GetThreadPolicy(ThreadID: TThreadID): integer;
-procedure SetThreadPolicy(ThreadID: TThreadID; value: integer);
-function GetThreadPriority(ThreadID: TThreadID): integer;
-function SetThreadPriority(ThreadID: TThreadID; priority: integer):LongBool;
+function GetThreadPolicy(ThreadID: TThreadID): Integer;
+procedure SetThreadPolicy(ThreadID: TThreadID; value: Integer);
+function GetThreadPriority(ThreadID: TThreadID): Integer;
+function SetThreadPriority(ThreadID: TThreadID; priority: Integer): LongBool;
 
 const
   THREAD_PRIORITY_ERROR_RETURN = 255;
 type
-  TThreadPriority = integer;
+  TThreadPriority = Integer;
 
 
 // virtual memory handling
@@ -1330,7 +1321,7 @@ function ReadProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
   lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesRead: Longword): LongBool;
 function WriteProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
   lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesWritten: Longword): LongBool;
-procedure FlushInstructionCache(PID: cardinal; OrgCalProc: Pointer; size: integer);
+procedure FlushInstructionCache(PID: cardinal; OrgCalProc: Pointer; size: Integer);
 
 
 { Limitations:
@@ -1494,46 +1485,44 @@ end;
 {---------------------------------------}
 
 // used internally
+
 procedure MapPainterLP(Handle: QPainterH; var x, y: Integer); overload;
-var
-  Pt: TPoint;
 begin
-  Pt := Point(x, y);
-  QPainter_xForm(Handle, PPoint(@Pt), PPoint(@Pt));
-  x := Pt.x;
-  y := Pt.y;
-end;
-
-procedure MapPainterLP(Handle: QPainterH; var Pt: TPoint); overload;
-begin
-  QPainter_xForm(Handle, PPoint(@Pt), PPoint(@Pt));
-end;
-
-procedure MapPainterLP(Handle: QPainterH; var R: TRect); overload;
-begin
-  QPainter_xForm(Handle, PRect(@R), PRect(@R));
+  QWMatrix_map(QPainter_worldMatrix(Handle), x, y, @x, @y);
 end;
 
 procedure MapPainterLP(Handle: QPainterH; var x0, y0, x1, y1: Integer); overload;
 var
-  R: TRect;
+  Matrix: QWMatrixH;
 begin
-  R := Rect(x0, y0, x1, y1);
-  QPainter_xForm(Handle, PRect(@R), PRect(@R));
-  x0 := R.Left;
-  y0 := R.Top;
-  x1 := R.Right;
-  y1 := R.Bottom;
+  Matrix := QPainter_worldMatrix(Handle);
+  QWMatrix_map(Matrix, x0, y0, @x0, @y0);
+  QWMatrix_map(Matrix, x1, y1, @x1, @y1);
+end;
+
+procedure MapPainterLP(Handle: QPainterH; var Pt: TPoint); overload;
+begin
+  QWMatrix_map(QPainter_worldMatrix(Handle), PPoint(@Pt), PPoint(@Pt));
+end;
+
+procedure MapPainterLP(Handle: QPainterH; var R: TRect); overload;
+begin
+  QWMatrix_map(QPainter_worldMatrix(Handle), PRect(@R), PRect(@R));
 end;
 
 procedure MapPainterLPwh(Handle: QPainterH; var Width, Height: Integer); overload;
 var
-  R: TRect;
+  Matrix: QWMatrixH;
 begin
-  R := Rect(0, 0, Width, Height);
-  QPainter_xForm(Handle, PRect(@R), PRect(@R));
-  Width := R.Right - R.Left;
-  Height := R.Bottom - R.Top;
+  Matrix := QPainter_worldMatrix(Handle);
+
+  Matrix := QWMatrix_create(QWMatrix_m11(Matrix), QWMatrix_m12(Matrix),
+    QWMatrix_m21(Matrix), QWMatrix_m22(Matrix), 0, 0);  // no translation
+  try
+    QWMatrix_map(Matrix, Width, Height, @Width, @Height);
+  finally
+    QWMatrix_destroy(Matrix);
+  end;
 end;
 
 function CreateMappedRegion(Handle: QPainterH; Region: QRegionH): QRegionH;
@@ -1592,7 +1581,6 @@ begin
       finally
         QBitmap_destroy(Bmp2);
       end;
-
     finally
       QBitmap_destroy(Bmp1);
     end;
@@ -1709,15 +1697,15 @@ begin
   Result := False;
 end;
 
-function GetSysColor(SysColor: integer): TColorRef;
+function GetSysColor(SysColor: Integer): TColorRef;
 begin
   if (SysColor >= 0) and (SysColor <= COLOR_ENDCOLORS) then
     SysColor := GetSysColor( Win2TColor[SysColor] );
   case SysColor of
-  clInfoBk:
-    Result := TColorRef(Application.HintColor);
-  clDeskTop:
-    Result := TColorRef(QColorColor(QWidget_BackgroundColor(QApplication_desktop)));
+    clInfoBk:
+      Result := TColorRef(Application.HintColor);
+    clDeskTop:
+      Result := TColorRef(QColorColor(QWidget_BackgroundColor(QApplication_desktop)));
   else
     Result := TColorRef(Application.Palette.GetColor(SysColor));
   end;
@@ -1729,49 +1717,49 @@ const
     crText, crBrightText, crButtonText, crBase, crBackground, crShadow,
     crHighlight, crHighlightText, crNoRole);
 
-function SetSysColor(RefColor: TColor; TrueColor: TColorRef): boolean;
+function SetSysColor(RefColor: TColor; TrueColor: TColorRef): Boolean;
 var
   QC: QColorH;
 begin
   with Application.Palette do
     if (TrueColor >= TColor(0)) and (TrueColor <= TColor($FFFFFF)) then
     begin
-      Result := true;
+      Result := True;
       case RefColor of
-      clNormalHighlightedText..clNormalForeground:
-        SetColor(cgInactive, ColorRoles[-(RefColor+cloNormal)], TrueColor);
-      clDisabledHighlightedText..clDisabledForeground:
-        SetColor(cgDisabled, ColorRoles[-(RefColor+cloDisabled)], TrueColor);
-      clActiveNoRole..clActiveForeground:
-        SetColor(cgActive, ColorRoles[-(RefColor+cloActive)], TrueColor);
-      clInfoBk:
-        begin
-          Application.HintColor := TrueColor;
+        clNormalHighlightedText..clNormalForeground:
           SetColor(cgInactive, ColorRoles[-(RefColor+cloNormal)], TrueColor);
-        end;
-      clDeskTop:
-        begin
-          QC := QColor(TrueColor);
-          QWidget_setBackGroundColor(QApplication_desktop, QC);
-          QColor_destroy(QC);
+        clDisabledHighlightedText..clDisabledForeground:
           SetColor(cgDisabled, ColorRoles[-(RefColor+cloDisabled)], TrueColor);
-        end;
-      else   // case
+        clActiveNoRole..clActiveForeground:
+          SetColor(cgActive, ColorRoles[-(RefColor+cloActive)], TrueColor);
+        clInfoBk:
+          begin
+            Application.HintColor := TrueColor;
+            SetColor(cgInactive, ColorRoles[-(RefColor+cloNormal)], TrueColor);
+          end;
+        clDeskTop:
+          begin
+            QC := QColor(TrueColor);
+            QWidget_setBackGroundColor(QApplication_desktop, QC);
+            QColor_destroy(QC);
+            SetColor(cgDisabled, ColorRoles[-(RefColor+cloDisabled)], TrueColor);
+          end;
+      else
         Result := False
       end;
     end
     else  // if
-      Result := false;   // only rgb values are accepted
+      Result := False;   // only rgb values are accepted
 end;
 
 function SetSysColors(Elements: Integer; const lpaElements;
   const lpaRgbValues): LongBool;
 var
-  i: integer;
+  i: Integer;
   refcolor : PColor;
   realcolor : PColor;
 begin
-  Result := true;
+  Result := True;
   refcolor := PColor(lpaElements);
   realcolor := PColor(lpaRGBvalues);
   Application.Palette.BeginUpdate;
@@ -1779,7 +1767,7 @@ begin
   begin
     if not SetSysColor( refcolor^, realcolor^)
     then
-      Result := false;
+      Result := False;
     inc(refcolor);
     inc(realcolor);
   end;
@@ -1893,7 +1881,7 @@ const
   GuiFont: array[Boolean] of WideString = ('MS Sans Serife', 'Tahoma');
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  SystemFont: WideString = 'Fixed';   // asn: is not always true
+  SystemFont: WideString = 'Fixed';   // asn: is not always True
   GuiFont: array[Boolean] of WideString = ('Verdana', 'Verdana');
 //asn:  in JVCL units Helvetica is used. Why introduce another?
 //  GuiFont: array[Boolean] of WideString = ('Helvetica', 'Helvetica');
@@ -2514,11 +2502,11 @@ begin
               BitBlt(TempDc, 0, 0, Width, Height, SrcDC, XSrc, YSrc, RasterOp_AndRop); {PSa}
               Result := BitBlt(DestDc, X, Y, Width, Height, tempDC, XSrc, YSrc, RasterOp_CopyROP);
             except
-              Result := false;
+              Result := False;
             end;
             QPainter_destroy(tempDC);
           except
-            Result := false;
+            Result := False;
           end;
         end;
 
@@ -2570,12 +2558,11 @@ begin
      // Windows's BitBlt uses logical units
       d_dx := X;d_dy := Y;d_dw := Width;d_dh := Height;
       d_sx := XSrc; d_sy := YSrc;d_sw := Width; d_sh := Height;
-      {$IFDEF DEBUG}
+
       MapPainterLP(DestDC, d_dx, d_dy);
       MapPainterLPwh(DestDC, d_dw, d_dh);
       MapPainterLP(SrcDC, d_sx, d_sy);
       MapPainterLPwh(SrcDC, d_sw, d_sh);
-      {$ENDIF DEBUG}
 
       if (d_dw = d_sw) and (d_dh = d_sh) then // device bitBlt possible
         Qt.bitBlt(QPainter_device(DestDC), d_dx, d_dy, QPainter_device(SrcDC),
@@ -2612,12 +2599,12 @@ begin
  // Windows's StretchBlt uses logical units
   d_sx := sx;d_sy := sy;d_sw := sw;d_sh := sh;
   d_dx := dx;d_dy := dy;d_dw := dw;d_dh := dh;
-  {$IFDEF DEBUG}
+
   MapPainterLP(DestDC, d_dx, d_dy);
   MapPainterLPwh(DestDC, d_dw, d_dh);
   MapPainterLP(SrcDC, d_sx, d_sy);
   MapPainterLPwh(SrcDC, d_sw, d_sh);
-  {$ENDIF DEBUG}
+
   if (d_dw = d_sw) and (d_dh = d_sh) then // device bitBlt possible
     Result := BitBlt(DestDC, dx, dy, dw, dh, SrcDC, sx, sy, WinRop)
   else
@@ -2702,7 +2689,7 @@ begin
            Handle, R1.Left, R1.Top, SRCCOPY);
   end
   else
-    Result := false;    // asn: or true ?
+    Result := False;    // asn: or True ?
   if (Rgn <> nil) or  (Update <> nil) then
   begin
     rg1 := CreateRectRgnIndirect(Scroll);
@@ -3733,7 +3720,7 @@ begin
     Result := True;
   end
   else
-    Result := false;
+    Result := False;
 end;
 
 function SetCapture(Widget: QWidgetH): QWidgetH;
@@ -3749,7 +3736,7 @@ begin
   Result := QWidget_mouseGrabber;
 end;
 
-function SetCursor(Handle: QCursorH; Save: boolean): QCursorH;
+function SetCursor(Handle: QCursorH; Save: Boolean): QCursorH;
 begin
   Result := QApplication_overrideCursor;
   if Handle <> nil then
@@ -3849,18 +3836,13 @@ var
 begin
   DC := QWidget_to_QPaintDevice(QApplication_desktop);
   case GetDeviceCaps(DC, BITSPIXEL) of
-  1:
-    Result := pf1bit;
-  8:
-    Result := pf8bit;
-  16:
-    Result := pf16bit;
-  24:
-    Result := pf24bit;
-  32:
-    Result := pf32bit;
+     1: Result := pf1bit;
+     8: Result := pf8bit;
+    16: Result := pf16bit;
+    24: Result := pf24bit;
+    32: Result := pf32bit;
   else
-    result := pfCustom;
+    Result := pfCustom;
   end;
 end;
 
@@ -3996,7 +3978,7 @@ end;
 
 function CenterRect(InnerRect, OuterRect: TRect): TRect;
 var
-  w,h : integer;
+  w,h : Integer;
 begin
   w := InnerRect.Right - InnerRect.Left;
   h := InnerRect.Bottom - InnerRect.Top;
@@ -4033,9 +4015,9 @@ begin
           dR.Bottom := R3.Top;
       end;
     end;
-    Result := true; // asn: return value ?
+    Result := True; // asn: return value ?
   except
-    Result := false;
+    Result := False;
   end;
 end;
 
@@ -4478,7 +4460,7 @@ begin
 end;
 
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
-  var R: TRect; WinFlags: Integer; Angle: integer): Integer;
+  var R: TRect; WinFlags: Integer; Angle: Integer): Integer;
 var
   R2: TRect;
 begin
@@ -4497,7 +4479,7 @@ begin
 end;
 
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
-  x,y, w, h: integer; WinFlags: Integer; Angle: integer): Integer;
+  x,y, w, h: Integer; WinFlags: Integer; Angle: Integer): Integer;
 var
   R2: TRect;
 begin
@@ -4906,7 +4888,7 @@ var
   Font: QFontH;
   Size: TSize;
   QC: QColorH;
-  oBkMode: integer;
+  oBkMode: Integer;
   MaskPainter, Painter: QPainterH;
   MaskBitmap: QBitmapH;
   Pixmap: QPixmapH;
@@ -5305,6 +5287,8 @@ var
     Y1 := R.Top;
     X2 := R.Right;
     Y2 := R.Bottom;
+    ColorLeftTop := clNone;
+    ColorRightBottom := clNone;
 
     if Outer then
     begin
@@ -6171,20 +6155,20 @@ begin
   Result := THandle(0);
 end;
 
-function CheckThreadError(ErrCode: Integer): integer;
+function CheckThreadError(ErrCode: Integer): Integer;
 begin
   if ErrCode <> 0 then
     raise EThread.CreateResFmt(@SQThreadError, [SysErrorMessage(ErrCode), ErrCode]);
   Result := ErrCode;
 end;
 
-function TerminateThread(ThreadID: TThreadID; RetVal: integer): LongBool;
+function TerminateThread(ThreadID: TThreadID; RetVal: Integer): LongBool;
 begin
   case RetVal of
-  0:
-    Result := CheckThreadError(pthread_kill(ThreadID, SIGQUIT)) = 0;
-  130:
-    Result := CheckThreadError(pthread_kill(ThreadID, SIGABRT)) = 0; /// CTRL_C
+    0:
+      Result := CheckThreadError(pthread_kill(ThreadID, SIGQUIT)) = 0;
+    130:
+      Result := CheckThreadError(pthread_kill(ThreadID, SIGABRT)) = 0; /// CTRL_C
   else
     Result := CheckThreadError(pthread_kill(ThreadID, SIGKILL))= 0; // unmaskable
   end;
@@ -6200,14 +6184,14 @@ begin
   CheckThreadError(pthread_kill(ThreadID, SIGCONT));
 end;
 
-function GetThreadPolicy(ThreadID: TThreadID): integer;
+function GetThreadPolicy(ThreadID: TThreadID): Integer;
 var
   SP: TSchedParam;
 begin
   CheckThreadError(pthread_getschedparam(ThreadID, Result, SP));
 end;
 
-procedure SetThreadPolicy(ThreadID: TThreadID; value: integer);
+procedure SetThreadPolicy(ThreadID: TThreadID; value: Integer);
 var
   SP: TSchedParam;
 begin
@@ -6230,10 +6214,10 @@ begin
     Result := SP.sched_priority;
 end;
 
-function SetThreadPriority(ThreadID: TThreadID; priority: integer): LongBool; 	// handle to the thread
+function SetThreadPriority(ThreadID: TThreadID; priority: Integer): LongBool; 	// handle to the thread
 var
   SP: TSchedParam;
-  P: integer;
+  P: Integer;
 begin
   if priority <> GetThreadPriority(ThreadID) then
   begin
@@ -6243,7 +6227,7 @@ begin
     Result := errno = 0;
   end
   else
-    Result := true;
+    Result := True;
 end;
 
 
@@ -6326,7 +6310,7 @@ begin
   end;
 end;
 
-procedure FlushInstructionCache(PID: cardinal; OrgCalProc: Pointer; size: integer);
+procedure FlushInstructionCache(PID: cardinal; OrgCalProc: Pointer; size: Integer);
 asm
         JMP     @@Exit
 // 64 Bytes:
@@ -6552,7 +6536,7 @@ function semtimedop(semid: Integer; sops: PSemaphoreBuffer;
 var
   sem: TSemaphoreBuffer;
   psem: PSemaphoreBuffer;
-  i: integer;
+  i: Integer;
   WaitTicks, StartTicks: cardinal;
 begin
   if timeout = nil then
@@ -6584,7 +6568,7 @@ begin
             then
               Sleep(10) // try again
             else
-              exit;    // no wait allowed or other error
+              Exit;    // no wait allowed or other error
           end;
         end; // while
 
@@ -7144,9 +7128,9 @@ end;
 function WaitForMultipleObjects(Count: Cardinal; Handles: PWOHandleArray;
   WaitAll: LongBool; Milliseconds: Cardinal): Cardinal;
 var
-  i: integer;
+  i: Integer;
   startticks: int64;
-  ticks: integer;
+  ticks: Integer;
 begin
   startticks := GetTickCount;
   Result := WAIT_OBJECT_0;
@@ -7158,7 +7142,7 @@ begin
       if ticks < 0 then
       begin
         Result := WAIT_TIMEOUT;
-        exit;
+        Exit;
       end
       else
       begin
@@ -7166,33 +7150,33 @@ begin
         if Result <> WAIT_OBJECT_0 then
         begin
           Inc(Result, i);
-          exit;
+          Exit;
         end;
       end;
     end;
   end
   else
   begin  //
-    while true do
+    while True do
     begin
       for i := 0 to Count-1 do
       begin
         Result := WaitForSingleObject(Handles[i], 0);
         case Result of
-        WAIT_FAILED, WAIT_ABANDONED, WAIT_OBJECT_0:
-          begin
-            Inc(Result, i);
-            exit;
-          end;
+          WAIT_FAILED, WAIT_ABANDONED, WAIT_OBJECT_0:
+            begin
+              Inc(Result, i);
+              Exit;
+            end;
         else
-          if (startticks-GetTickCount) > MilliSeconds then
+          if (startticks - GetTickCount) > MilliSeconds then
           begin
             Result := WAIT_TIMEOUT;
-            exit;
+            Exit;
           end;
         end;
       end;
-      Sleep(10);
+      Sleep(5);
     end;
   end;
 end;
@@ -7361,7 +7345,7 @@ var
 begin
   gettimeofday(TimeVal, nil);
   Result := 1000 * (TimeVal.tv_sec - StartTimeVal.tv_sec) +
-    (TimeVal.tv_usec- StartTimeVal.tv_usec) div 1000;
+    (TimeVal.tv_usec - StartTimeVal.tv_usec) div 1000;
 end;
 
 procedure InitGetTickCount;
@@ -7573,11 +7557,6 @@ begin
 end;
 
 function PostMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
-begin
-  Result := PostMsg(Handle, Msg, WParam, LParam);
-end;
-
-function PostMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
 var
   M: PMessageData;
   Control: TWidgetControl;
@@ -7605,17 +7584,12 @@ begin
   end;
 end;
 
-function SendMsg(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer;
+function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer;
 begin
-  Result := SendMsg(AControl.Handle, Msg, WParam, LParam);
+  Result := SendMessage(AControl.Handle, Msg, WParam, LParam);
 end;
 
 function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer;
-begin
-  Result := SendMsg(Handle, Msg, WParam, LParam);
-end;
-
-function SendMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer;
 var
   Event: QCustomEventH;
   M: TMessageData;
@@ -7665,6 +7639,7 @@ end;
 
 var
   TimerList: TObjectList = nil;
+  TimerCritSect: TRTLCriticalSection;
 
 type
   TTimerProc = procedure(hwnd: HWND; uMsg: Cardinal; idEvent: Cardinal;
@@ -7693,7 +7668,12 @@ destructor TTimerItem.Destroy;
 begin
   if FTimerId <> 0 then
     KillTimer;
-  TimerList.Extract(Self);
+  EnterCriticalSection(TimerCritSect);
+  try
+    TimerList.Extract(Self);
+  finally
+    LeaveCriticalSection(TimerCritSect);
+  end;
   inherited Destroy;
 end;
 
@@ -7781,6 +7761,7 @@ begin
   if ((Wnd = nil) and (TimerFunc = nil)) or
      ((IDEvent = 0) and (TimerFunc = nil)) then
     Exit;
+  EnterCriticalSection(TimerCritSect);
   try
     Item := TTimerItem.FindTimerItem(Wnd, IDEvent);
     if Item = nil then
@@ -7793,6 +7774,7 @@ begin
   except
     Result := 0;
   end;
+  LeaveCriticalSection(TimerCritSect);
 end;
 
 function SetTimer(Wnd: Cardinal; IDEvent, Elapse: Cardinal;
@@ -7806,6 +7788,7 @@ var
   Item: TTimerItem;
 begin
   Result := False;
+  EnterCriticalSection(TimerCritSect);
   try
     Item := TTimerItem.FindTimerItem(Wnd, IDEvent);
     if Item <> nil then
@@ -7816,6 +7799,7 @@ begin
   except
     Result := False;
   end;
+  LeaveCriticalSection(TimerCritSect);
 end;
 
 function KillTimer(Wnd: Cardinal; IDEvent: Longword): LongBool;
@@ -8130,6 +8114,7 @@ initialization
   {$ENDIF LINUX}
   GlobalCaret := TEmulatedCaret.Create;
   InitializeCriticalSection(SockObjectListCritSect);
+  InitializeCriticalSection(TimerCritSect);
 
 finalization
   GlobalCaret.Free;
@@ -8139,6 +8124,7 @@ finalization
     QObject_hook_destroy(AppEventFilterHook);
   FreePainterInfos;
   DeleteCriticalSection(SockObjectListCritSect);
+  DeleteCriticalSection(TimerCritSect);
   {$IFDEF LINUX}
   WaitObjectList.Free;
   {$ENDIF LINUX}
