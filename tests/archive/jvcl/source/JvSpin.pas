@@ -15,9 +15,6 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Contributor(s):
-kcang
-
 Last Modified: 2002-07-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -32,13 +29,13 @@ unit JvSpin;
 
 interface
 
-uses{$IFDEF WIN32}Windows, ComCtrls, {$ELSE}WinTypes, WinProcs, {$ENDIF}
+uses {$IFDEF WIN32} Windows, ComCtrls, {$ELSE} WinTypes, WinProcs, {$ENDIF}
   Controls, ExtCtrls, Classes, Graphics, Messages, Forms, StdCtrls, Menus,
-  SysUtils;
+  SysUtils, JvEdit, Dialogs;
 
 type
 
-  { TJvSpinButton }
+{ TJvSpinButton }
 
   TSpinButtonState = (sbNotDown, sbTopDown, sbBottomDown);
 
@@ -112,7 +109,7 @@ type
 {$ENDIF}
   end;
 
-  { TJvxSpinEdit }
+{ TJvSpinEdit }
 
 {$IFDEF CBUILDER}
   TValueType = (vtInt, vtFloat, vtHex);
@@ -124,7 +121,7 @@ type
   TSpinButtonKind = (bkStandard, bkDiagonal);
 {$ENDIF}
 
-  TJvxSpinEdit = class(TCustomEdit)
+  TJvSpinEdit = class(TJvCustomEdit)
   private
     FAlignment: TAlignment;
     FMinValue: Extended;
@@ -132,6 +129,7 @@ type
     FIncrement: Extended;
     FDecimal: Byte;
     FChanging: Boolean;
+    FOldValue : Extended;
     FEditorEnabled: Boolean;
     FValueType: TValueType;
     FButton: TJvSpinButton;
@@ -142,6 +140,7 @@ type
 {$IFDEF WIN32}
     FButtonKind: TSpinButtonKind;
     FUpDown: TCustomUpDown;
+    FThousands: Boolean;
     function GetButtonKind: TSpinButtonKind;
     procedure SetButtonKind(Value: TSpinButtonKind);
     procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
@@ -149,6 +148,7 @@ type
     function GetMinHeight: Integer;
     procedure GetTextHeight(var SysHeight, Height: Integer);
     function GetValue: Extended;
+    function TryGetValue(var Value: Extended): Boolean;
     function CheckValue(NewValue: Extended): Extended;
     function GetAsInteger: Longint;
     function IsIncrementStored: Boolean;
@@ -170,11 +170,13 @@ type
     procedure CMExit(var Message: TCMExit); message CM_EXIT;
     procedure WMPaste(var Message: TWMPaste); message WM_PASTE;
     procedure WMCut(var Message: TWMCut); message WM_CUT;
+    procedure WMMouseWheel(var Message: TWMMouseWheel); message WM_MOUSEWHEEL;
     procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
 {$IFDEF COMPILER4_UP}
     procedure CMBiDiModeChanged(var Message: TMessage); message CM_BIDIMODECHANGED;
+    procedure SetThousands(const Value: Boolean);
 {$ENDIF}
   protected
     procedure Change; override;
@@ -183,11 +185,11 @@ type
     procedure DownClick(Sender: TObject); virtual;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
-    procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure CreateParams(var Params: TCreateParams); override;
     property AsInteger: Longint read GetAsInteger write SetAsInteger default 0;
     property Text;
   published
@@ -204,8 +206,9 @@ type
     property MaxValue: Extended read FMaxValue write FMaxValue stored IsMaxStored;
     property MinValue: Extended read FMinValue write FMinValue stored IsMinStored;
     property ValueType: TValueType read FValueType write SetValueType
-      default{$IFDEF CBUILDER}vtInt{$ELSE}vtInteger{$ENDIF};
+      default {$IFDEF CBUILDER} vtInt {$ELSE} vtInteger {$ENDIF};
     property Value: Extended read GetValue write SetValue stored IsValueStored;
+    property Thousands : Boolean read FThousands write SetThousands default False;
     property AutoSelect;
     property AutoSize;
     property BorderStyle;
@@ -223,10 +226,10 @@ type
     property ParentBiDiMode;
 {$ENDIF}
 {$IFDEF WIN32}
-{$IFNDEF VER90}
+  {$IFNDEF VER90}
     property ImeMode;
     property ImeName;
-{$ENDIF}
+  {$ENDIF}
 {$ENDIF}
     property MaxLength;
     property ParentColor;
@@ -267,16 +270,27 @@ type
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
+    property AboutJVCL;
+    property HideSelection;
+    property HotTrack;
+{$IFDEF WIN32}
+  {$IFDEF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+  {$ENDIF}
+{$ENDIF}
   end;
 
 implementation
 
-uses{$IFDEF WIN32}CommCtrl, {$ENDIF}JvVCLUtils;
+uses {$IFDEF WIN32} CommCtrl, {$ENDIF} JvVCLUtils;
 
 {$IFDEF WIN32}
-{$R *.Res}
+ {$R *.Res}
 {$ELSE}
-{$R *.R16}
+ {$R *.R16}
 {$ENDIF}
 
 const
@@ -285,9 +299,9 @@ const
 
 const
   InitRepeatPause = 400; { pause before repeat timer (ms) }
-  RepeatPause = 100;
+  RepeatPause     = 100;
 
-  { TJvSpinButton }
+{ TJvSpinButton }
 
 constructor TJvSpinButton.Create(AOwner: TComponent);
 begin
@@ -331,10 +345,8 @@ end;
 
 procedure TJvSpinButton.SetUpGlyph(Value: TBitmap);
 begin
-  if Value <> nil then
-    FUpBitmap.Assign(Value)
-  else
-    FUpBitmap.Handle := LoadBitmap(HInstance, sSpinUpBtn);
+  if Value <> nil then FUpBitmap.Assign(Value)
+  else FUpBitmap.Handle := LoadBitmap(HInstance, sSpinUpBtn);
 end;
 
 function TJvSpinButton.GetDownGlyph: TBitmap;
@@ -344,10 +356,8 @@ end;
 
 procedure TJvSpinButton.SetDownGlyph(Value: TBitmap);
 begin
-  if Value <> nil then
-    FDownBitmap.Assign(Value)
-  else
-    FDownBitmap.Handle := LoadBitmap(HInstance, sSpinDownBtn);
+  if Value <> nil then FDownBitmap.Assign(Value)
+  else FDownBitmap.Handle := LoadBitmap(HInstance, sSpinDownBtn);
 end;
 
 procedure TJvSpinButton.SetDown(Value: TSpinButtonState);
@@ -356,16 +366,14 @@ var
 begin
   OldState := FDown;
   FDown := Value;
-  if OldState <> FDown then
-    Repaint;
+  if OldState <> FDown then Repaint;
 end;
 
 procedure TJvSpinButton.SetFocusControl(Value: TWinControl);
 begin
   FFocusControl := Value;
 {$IFDEF WIN32}
-  if Value <> nil then
-    Value.FreeNotification(Self);
+  if Value <> nil then Value.FreeNotification(Self);
 {$ENDIF}
 end;
 
@@ -382,8 +390,7 @@ begin
   if not Enabled and not (csDesigning in ComponentState) then
     FDragging := False;
   if (FNotDownBtn.Height <> Height) or (FNotDownBtn.Width <> Width) or
-    FInvalidate then
-    DrawAllBitmap;
+    FInvalidate then DrawAllBitmap;
   FInvalidate := False;
   with Canvas do
     case FDown of
@@ -408,8 +415,7 @@ var
 begin
   ABitmap.Height := Height;
   ABitmap.Width := Width;
-  with ABitmap.Canvas do
-  begin
+  with ABitmap.Canvas do begin
     R := Bounds(0, 0, Width, Height);
     Pen.Width := 1;
     Brush.Color := clBtnFace;
@@ -421,40 +427,30 @@ begin
     MoveTo(-1, Height);
     LineTo(Width, -1);
     { top button }
-    if ADownState = sbTopDown then
-      Pen.Color := clBtnShadow
-    else
-      Pen.Color := clBtnHighlight;
+    if ADownState = sbTopDown then Pen.Color := clBtnShadow
+    else Pen.Color := clBtnHighlight;
     MoveTo(1, Height - 4);
     LineTo(1, 1);
     LineTo(Width - 3, 1);
-    if ADownState = sbTopDown then
-      Pen.Color := clBtnHighlight
-    else
-      Pen.Color := clBtnShadow;
-    if ADownState <> sbTopDown then
-    begin
+    if ADownState = sbTopDown then Pen.Color := clBtnHighlight
+      else Pen.Color := clBtnShadow;
+    if ADownState <> sbTopDown then begin
       MoveTo(1, Height - 3);
       LineTo(Width - 2, 0);
     end;
     { bottom button }
-    if ADownState = sbBottomDown then
-      Pen.Color := clBtnHighlight
-    else
-      Pen.Color := clBtnShadow;
+    if ADownState = sbBottomDown then Pen.Color := clBtnHighlight
+      else Pen.Color := clBtnShadow;
     MoveTo(2, Height - 2);
     LineTo(Width - 2, Height - 2);
     LineTo(Width - 2, 1);
-    if ADownState = sbBottomDown then
-      Pen.Color := clBtnShadow
-    else
-      Pen.Color := clBtnHighlight;
+    if ADownState = sbBottomDown then Pen.Color := clBtnShadow
+      else Pen.Color := clBtnHighlight;
     MoveTo(2, Height - 2);
     LineTo(Width - 1, 1);
     { top glyph }
     dRect := 1;
-    if ADownState = sbTopDown then
-      Inc(dRect);
+    if ADownState = sbTopDown then Inc(dRect);
     R := Bounds(Round((Width / 4) - (FUpBitmap.Width / 2)) + dRect,
       Round((Height / 4) - (FUpBitmap.Height / 2)) + dRect, FUpBitmap.Width,
       FUpBitmap.Height);
@@ -490,8 +486,7 @@ begin
     end;
     }
     BrushCopy(R, FDownBitmap, RSrc, FDownBitmap.TransparentColor);
-    if ADownState = sbBottomDown then
-    begin
+    if ADownState = sbBottomDown then begin
       Pen.Color := clBtnShadow;
       MoveTo(3, Height - 2);
       LineTo(Width - 1, 2);
@@ -508,21 +503,17 @@ end;
 
 procedure TJvSpinButton.TopClick;
 begin
-  if Assigned(FOnTopClick) then
-  begin
+  if Assigned(FOnTopClick) then begin
     FOnTopClick(Self);
-    if not (csLButtonDown in ControlState) then
-      FDown := sbNotDown;
+    if not (csLButtonDown in ControlState) then FDown := sbNotDown;
   end;
 end;
 
 procedure TJvSpinButton.BottomClick;
 begin
-  if Assigned(FOnBottomClick) then
-  begin
+  if Assigned(FOnBottomClick) then begin
     FOnBottomClick(Self);
-    if not (csLButtonDown in ControlState) then
-      FDown := sbNotDown;
+    if not (csLButtonDown in ControlState) then FDown := sbNotDown;
   end;
 end;
 
@@ -530,31 +521,25 @@ procedure TJvSpinButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if (Button = mbLeft) and Enabled then
-  begin
+  if (Button = mbLeft) and Enabled then begin
     if (FFocusControl <> nil) and FFocusControl.TabStop and
       FFocusControl.CanFocus and (GetFocus <> FFocusControl.Handle) then
-      FFocusControl.SetFocus;
-    if FDown = sbNotDown then
-    begin
+        FFocusControl.SetFocus;
+    if FDown = sbNotDown then begin
       FLastDown := FDown;
-      if Y > (-(Height / Width) * X + Height) then
-      begin
+      if Y > (-(Height/Width) * X + Height) then begin
         FDown := sbBottomDown;
         BottomClick;
       end
-      else
-      begin
+      else begin
         FDown := sbTopDown;
         TopClick;
       end;
-      if FLastDown <> FDown then
-      begin
+      if FLastDown <> FDown then begin
         FLastDown := FDown;
         Repaint;
       end;
-      if FRepeatTimer = nil then
-        FRepeatTimer := TTimer.Create(Self);
+      if FRepeatTimer = nil then FRepeatTimer := TTimer.Create(Self);
       FRepeatTimer.OnTimer := TimerExpired;
       FRepeatTimer.Interval := InitRepeatPause;
       FRepeatTimer.Enabled := True;
@@ -568,41 +553,28 @@ var
   NewState: TSpinButtonState;
 begin
   inherited MouseMove(Shift, X, Y);
-  if FDragging then
-  begin
-    if (X >= 0) and (X <= Width) and (Y >= 0) and (Y <= Height) then
-    begin
+  if FDragging then begin
+    if (X >= 0) and (X <= Width) and (Y >= 0) and (Y <= Height) then begin
       NewState := FDown;
-      if Y > (-(Width / Height) * X + Height) then
-      begin
-        if (FDown <> sbBottomDown) then
-        begin
-          if FLastDown = sbBottomDown then
-            FDown := sbBottomDown
-          else
-            FDown := sbNotDown;
-          if NewState <> FDown then
-            Repaint;
+      if Y > (-(Width / Height) * X + Height) then begin
+        if (FDown <> sbBottomDown) then begin
+          if FLastDown = sbBottomDown then FDown := sbBottomDown
+          else FDown := sbNotDown;
+          if NewState <> FDown then Repaint;
         end;
       end
-      else
-      begin
-        if (FDown <> sbTopDown) then
-        begin
-          if (FLastDown = sbTopDown) then
-            FDown := sbTopDown
-          else
-            FDown := sbNotDown;
-          if NewState <> FDown then
-            Repaint;
+      else begin
+        if (FDown <> sbTopDown) then begin
+          if (FLastDown = sbTopDown) then FDown := sbTopDown
+          else FDown := sbNotDown;
+          if NewState <> FDown then Repaint;
         end;
       end;
-    end
-    else if FDown <> sbNotDown then
-    begin
-      FDown := sbNotDown;
-      Repaint;
-    end;
+    end else
+      if FDown <> sbNotDown then begin
+        FDown := sbNotDown;
+        Repaint;
+      end;
   end;
 end;
 
@@ -610,11 +582,9 @@ procedure TJvSpinButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
-  if FDragging then
-  begin
+  if FDragging then begin
     FDragging := False;
-    if (X >= 0) and (X <= Width) and (Y >= 0) and (Y <= Height) then
-    begin
+    if (X >= 0) and (X <= Width) and (Y >= 0) and (Y <= Height) then begin
       FDown := sbNotDown;
       FLastDown := sbNotDown;
       Repaint;
@@ -625,13 +595,9 @@ end;
 procedure TJvSpinButton.TimerExpired(Sender: TObject);
 begin
   FRepeatTimer.Interval := RepeatPause;
-  if (FDown <> sbNotDown) and MouseCapture then
-  begin
+  if (FDown <> sbNotDown) and MouseCapture then begin
     try
-      if FDown = sbBottomDown then
-        BottomClick
-      else
-        TopClick;
+      if FDown = sbBottomDown then BottomClick else TopClick;
     except
       FRepeatTimer.Enabled := False;
       raise;
@@ -642,8 +608,7 @@ end;
 function DefBtnWidth: Integer;
 begin
   Result := GetSystemMetrics(SM_CXVSCROLL);
-  if Result > 15 then
-    Result := 15;
+  if Result > 15 then Result := 15;
 end;
 
 {$IFDEF WIN32}
@@ -680,16 +645,12 @@ end;
 
 procedure TJvUpDown.ScrollMessage(var Message: TWMVScroll);
 begin
-  if Message.ScrollCode = SB_THUMBPOSITION then
-  begin
-    if not FChanging then
-    begin
+  if Message.ScrollCode = SB_THUMBPOSITION then begin
+    if not FChanging then begin
       FChanging := True;
       try
-        if Message.Pos > 0 then
-          Click(btNext)
-        else if Message.Pos < 0 then
-          Click(btPrev);
+        if Message.Pos > 0 then Click(btNext)
+        else if Message.Pos < 0 then Click(btPrev);
         if HandleAllocated then
           SendMessage(Handle, UDM_SETPOS, 0, 0);
       finally
@@ -712,17 +673,19 @@ end;
 procedure TJvUpDown.WMSize(var Message: TWMSize);
 begin
   inherited;
-  if Width <> DefBtnWidth then
-    Width := DefBtnWidth;
+  if Width <> DefBtnWidth then Width := DefBtnWidth;
 end;
 {$ENDIF WIN32}
 
-{ TJvxSpinEdit }
+{ TJvSpinEdit }
 
-constructor TJvxSpinEdit.Create(AOwner: TComponent);
+constructor TJvSpinEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FChanging := true;
   Text := '0';
+  FThousands:= False;
+  FOldValue:= 0;
   ControlStyle := ControlStyle - [csSetCaption];
   FIncrement := 1.0;
   FDecimal := 2;
@@ -732,22 +695,21 @@ begin
 {$ENDIF}
   FArrowKeys := True;
   RecreateButton;
+  FChanging := false;
 end;
 
-destructor TJvxSpinEdit.Destroy;
+destructor TJvSpinEdit.Destroy;
 begin
   Destroying;
   FChanging := True;
-  if FButton <> nil then
-  begin
+  if FButton <> nil then begin
     FButton.Free;
     FButton := nil;
     FBtnWindow.Free;
     FBtnWindow := nil;
   end;
 {$IFDEF WIN32}
-  if FUpDown <> nil then
-  begin
+  if FUpDown <> nil then begin
     FUpDown.Free;
     FUpDown := nil;
   end;
@@ -755,10 +717,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvxSpinEdit.RecreateButton;
+procedure TJvSpinEdit.RecreateButton;
 begin
-  if (csDestroying in ComponentState) then
-    Exit;
+  if (csDestroying in ComponentState) then Exit;
   FButton.Free;
   FButton := nil;
   FBtnWindow.Free;
@@ -766,25 +727,20 @@ begin
 {$IFDEF WIN32}
   FUpDown.Free;
   FUpDown := nil;
-  if GetButtonKind = bkStandard then
-  begin
+  if GetButtonKind = bkStandard then begin
     FUpDown := TJvUpDown.Create(Self);
-    with TJvUpDown(FUpDown) do
-    begin
+    with TJvUpDown(FUpDown) do begin
       Visible := True;
       SetBounds(0, 0, DefBtnWidth, Self.Height);
 {$IFDEF COMPILER4_UP}
-      if (BiDiMode = bdRightToLeft) then
-        Align := alLeft
-      else
+      if (BiDiMode = bdRightToLeft) then Align := alLeft else
 {$ENDIF}
-        Align := alRight;
+      Align := alRight;
       Parent := Self;
       OnClick := UpDownClick;
     end;
   end
-  else
-  begin
+  else begin
 {$ENDIF}
     FBtnWindow := TWinControl.Create(Self);
     FBtnWindow.Visible := True;
@@ -802,7 +758,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TJvxSpinEdit.SetArrowKeys(Value: Boolean);
+procedure TJvSpinEdit.SetArrowKeys(Value: Boolean);
 begin
   FArrowKeys := Value;
 {$IFDEF WIN32}
@@ -811,33 +767,28 @@ begin
 end;
 
 {$IFDEF WIN32}
-
-function TJvxSpinEdit.GetButtonKind: TSpinButtonKind;
+function TJvSpinEdit.GetButtonKind: TSpinButtonKind;
 begin
-  if NewStyleControls then
-    Result := FButtonKind
-  else
-    Result := bkDiagonal;
+  if NewStyleControls then Result := FButtonKind
+  else Result := bkDiagonal;
 end;
 
-procedure TJvxSpinEdit.SetButtonKind(Value: TSpinButtonKind);
+procedure TJvSpinEdit.SetButtonKind(Value: TSpinButtonKind);
 var
   OldKind: TSpinButtonKind;
 begin
   OldKind := FButtonKind;
   FButtonKind := Value;
-  if OldKind <> GetButtonKind then
-  begin
+  if OldKind <> GetButtonKind then begin
     RecreateButton;
     ResizeButton;
     SetEditRect;
   end;
 end;
 
-procedure TJvxSpinEdit.UpDownClick(Sender: TObject; Button: TUDBtnType);
+procedure TJvSpinEdit.UpDownClick(Sender: TObject; Button: TUDBtnType);
 begin
-  if TabStop and CanFocus then
-    SetFocus;
+  if TabStop and CanFocus then SetFocus;
   case Button of
     btNext: UpClick(Sender);
     btPrev: DownClick(Sender);
@@ -845,56 +796,46 @@ begin
 end;
 {$ENDIF WIN32}
 
-function TJvxSpinEdit.GetButtonWidth: Integer;
+function TJvSpinEdit.GetButtonWidth: Integer;
 begin
 {$IFDEF WIN32}
-  if FUpDown <> nil then
-    Result := FUpDown.Width
-  else
-{$ENDIF}if FButton <> nil then
-      Result := FButton.Width
-    else
-      Result := DefBtnWidth;
+  if FUpDown <> nil then Result := FUpDown.Width else
+{$ENDIF}
+  if FButton <> nil then Result := FButton.Width
+  else Result := DefBtnWidth;
 end;
 
-procedure TJvxSpinEdit.ResizeButton;
+procedure TJvSpinEdit.ResizeButton;
 {$IFDEF WIN32}
 var
   R: TRect;
 {$ENDIF}
 begin
 {$IFDEF WIN32}
-  if FUpDown <> nil then
-  begin
+  if FUpDown <> nil then begin
     FUpDown.Width := DefBtnWidth;
-{$IFDEF COMPILER4_UP}
-    if (BiDiMode = bdRightToLeft) then
-      FUpDown.Align := alLeft
-    else
-{$ENDIF}
-      FUpDown.Align := alRight;
+ {$IFDEF COMPILER4_UP}
+    if (BiDiMode = bdRightToLeft) then FUpDown.Align := alLeft else
+ {$ENDIF}
+    FUpDown.Align := alRight;
   end
-  else if FButton <> nil then
-  begin { bkDiagonal }
+  else if FButton <> nil then begin { bkDiagonal }
     if NewStyleControls and Ctl3D and (BorderStyle = bsSingle) then
       R := Bounds(Width - Height - 1, -1, Height - 3, Height - 3)
     else
       R := Bounds(Width - Height, 0, Height, Height);
-{$IFDEF COMPILER4_UP}
-    if (BiDiMode = bdRightToLeft) then
-    begin
-      if NewStyleControls and Ctl3D and (BorderStyle = bsSingle) then
-      begin
+ {$IFDEF COMPILER4_UP}
+    if (BiDiMode = bdRightToLeft) then begin
+      if NewStyleControls and Ctl3D and (BorderStyle = bsSingle) then begin
         R.Left := -1;
         R.Right := Height - 4;
       end
-      else
-      begin
+      else begin
         R.Left := 0;
         R.Right := Height;
       end;
     end;
-{$ENDIF}
+ {$ENDIF}
     with R do
       FBtnWindow.SetBounds(Left, Top, Right - Left, Bottom - Top);
     FButton.SetBounds(0, 0, FBtnWindow.Width, FBtnWindow.Height);
@@ -908,78 +849,82 @@ begin
 {$ENDIF}
 end;
 
-procedure TJvxSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TJvSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
   if ArrowKeys and (Key in [VK_UP, VK_DOWN]) then
   begin
-    if Key = VK_UP then
-      UpClick(Self)
-    else if Key = VK_DOWN then
-      DownClick(Self);
+    if Key = VK_UP then UpClick(Self)
+    else if Key = VK_DOWN then DownClick(Self);
     Key := 0;
-  end
-  // added by kcang Chrysanth Software - 2002-01-21
-  else if not FEditorEnabled and (Key = VK_DELETE) then
-  begin
-    Key := 0;
-    MessageBeep(0)
   end;
 end;
 
-procedure TJvxSpinEdit.Change;
+procedure TJvSpinEdit.Change;
+var
+  v : Extended;
+  s : Integer;
 begin
-  if not FChanging then
+  if FChanging then
+    Exit;
+
+  FChanging:= True;
+  s:= SelStart;
+  try
+    if Text <> '' then
+      if TryGetValue(v) then SetValue(v)
+      else SetValue(FOldValue);
+  finally
+    FChanging:= False;
+  end;
+
+  if Value <> FOldValue then
     inherited Change;
+
+  SelStart:= s;
+  FOldValue:= Value;
 end;
 
-procedure TJvxSpinEdit.KeyPress(var Key: Char);
+procedure TJvSpinEdit.KeyPress(var Key: Char);
 begin
-  if not IsValidChar(Key) then
-  begin
+  if not IsValidChar(Key) then begin
     Key := #0;
     MessageBeep(0)
   end;
-  if Key <> #0 then
-  begin
+  if Key <> #0 then begin
     inherited KeyPress(Key);
-    if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) then
-    begin
+    if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) then begin
       { must catch and remove this, since is actually multi-line }
       GetParentForm(Self).Perform(CM_DIALOGKEY, Byte(Key), 0);
-      if Key = Char(VK_RETURN) then
-        Key := #0;
+      if Key = Char(VK_RETURN) then Key := #0;
     end;
   end;
 end;
 
-function TJvxSpinEdit.IsValidChar(Key: Char): Boolean;
+function TJvSpinEdit.IsValidChar(Key: Char): Boolean;
 var
   ValidChars: set of Char;
 begin
   ValidChars := ['+', '-', '0'..'9'];
-  if ValueType = vtFloat then
-  begin
+  if ValueType = vtFloat then begin
     if Pos(DecimalSeparator, Text) = 0 then
       ValidChars := ValidChars + [DecimalSeparator];
     if Pos('E', AnsiUpperCase(Text)) = 0 then
       ValidChars := ValidChars + ['e', 'E'];
   end
-  else if ValueType = vtHex then
-  begin
+  else if ValueType = vtHex then begin
     ValidChars := ValidChars + ['A'..'F', 'a'..'f'];
   end;
   Result := (Key in ValidChars) or (Key < #32);
   if not FEditorEnabled and Result and ((Key >= #32) or
-    (Key = Char(VK_BACK)) or (Key = Char(VK_DELETE))) then
-    Result := False;
+    (Key = Char(VK_BACK)) or (Key = Char(VK_DELETE))) then Result := False;
 end;
 
-procedure TJvxSpinEdit.CreateParams(var Params: TCreateParams);
+procedure TJvSpinEdit.CreateParams(var Params: TCreateParams);
 const
 {$IFDEF COMPILER4_UP}
   Alignments: array[Boolean, TAlignment] of DWORD =
-  ((ES_LEFT, ES_RIGHT, ES_CENTER), (ES_RIGHT, ES_LEFT, ES_CENTER));
+    ((ES_LEFT, ES_RIGHT, ES_CENTER), (ES_RIGHT, ES_LEFT, ES_CENTER));
 {$ELSE}
   Alignments: array[TAlignment] of Longint = (ES_LEFT, ES_RIGHT, ES_CENTER);
 {$ENDIF}
@@ -987,42 +932,40 @@ begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or ES_MULTILINE or WS_CLIPCHILDREN or
 {$IFDEF COMPILER4_UP}
-  Alignments[UseRightToLeftAlignment, FAlignment];
+    Alignments[UseRightToLeftAlignment, FAlignment];
 {$ELSE}
-  Alignments[FAlignment];
+    Alignments[FAlignment];
 {$ENDIF}
 end;
 
-procedure TJvxSpinEdit.CreateWnd;
+procedure TJvSpinEdit.CreateWnd;
 begin
   inherited CreateWnd;
   SetEditRect;
 end;
 
-procedure TJvxSpinEdit.SetEditRect;
+procedure TJvSpinEdit.SetEditRect;
 var
   Loc: TRect;
 begin
 {$IFDEF COMPILER4_UP}
   if (BiDiMode = bdRightToLeft) then
     SetRect(Loc, GetButtonWidth + 1, 0, ClientWidth - 1,
-      ClientHeight + 1)
-  else
+      ClientHeight + 1) else
 {$ENDIF COMPILER4_UP}
-    SetRect(Loc, 0, 0, ClientWidth - GetButtonWidth - 2, ClientHeight + 1);
+  SetRect(Loc, 0, 0, ClientWidth - GetButtonWidth - 2, ClientHeight + 1);
   SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
 end;
 
-procedure TJvxSpinEdit.SetAlignment(Value: TAlignment);
+procedure TJvSpinEdit.SetAlignment(Value: TAlignment);
 begin
-  if FAlignment <> Value then
-  begin
+  if FAlignment <> Value then begin
     FAlignment := Value;
     RecreateWnd;
   end;
 end;
 
-procedure TJvxSpinEdit.WMSize(var Message: TWMSize);
+procedure TJvSpinEdit.WMSize(var Message: TWMSize);
 var
   MinHeight: Integer;
 begin
@@ -1032,14 +975,13 @@ begin
     not display the text }
   if Height < MinHeight then
     Height := MinHeight
-  else
-  begin
+  else begin
     ResizeButton;
     SetEditRect;
   end;
 end;
 
-procedure TJvxSpinEdit.GetTextHeight(var SysHeight, Height: Integer);
+procedure TJvSpinEdit.GetTextHeight(var SysHeight, Height: Integer);
 var
   DC: HDC;
   SaveFont: HFont;
@@ -1055,25 +997,22 @@ begin
   Height := Metrics.tmHeight;
 end;
 
-function TJvxSpinEdit.GetMinHeight: Integer;
+function TJvSpinEdit.GetMinHeight: Integer;
 var
   I, H: Integer;
 begin
   GetTextHeight(I, H);
-  if I > H then
-    I := H;
-  Result := H + {$IFNDEF WIN32}(I div 4) + {$ENDIF}
-  (GetSystemMetrics(SM_CYBORDER) * 4) + 1;
+  if I > H then I := H;
+  Result := H + {$IFNDEF WIN32} (I div 4) + {$ENDIF}
+    (GetSystemMetrics(SM_CYBORDER) * 4) + 1;
 end;
 
-procedure TJvxSpinEdit.UpClick(Sender: TObject);
+procedure TJvSpinEdit.UpClick(Sender: TObject);
 var
   OldText: string;
 begin
-  if ReadOnly then
-    MessageBeep(0)
-  else
-  begin
+  if ReadOnly then MessageBeep(0)
+  else begin
     FChanging := True;
     try
       OldText := inherited Text;
@@ -1081,24 +1020,20 @@ begin
     finally
       FChanging := False;
     end;
-    if CompareText(inherited Text, OldText) <> 0 then
-    begin
+    if CompareText(inherited Text, OldText) <> 0 then begin
       Modified := True;
       Change;
     end;
-    if Assigned(FOnTopClick) then
-      FOnTopClick(Self);
+    if Assigned(FOnTopClick) then FOnTopClick(Self);
   end;
 end;
 
-procedure TJvxSpinEdit.DownClick(Sender: TObject);
+procedure TJvSpinEdit.DownClick(Sender: TObject);
 var
   OldText: string;
 begin
-  if ReadOnly then
-    MessageBeep(0)
-  else
-  begin
+  if ReadOnly then MessageBeep(0)
+  else begin
     FChanging := True;
     try
       OldText := inherited Text;
@@ -1106,19 +1041,16 @@ begin
     finally
       FChanging := False;
     end;
-    if CompareText(inherited Text, OldText) <> 0 then
-    begin
+    if CompareText(inherited Text, OldText) <> 0 then begin
       Modified := True;
       Change;
     end;
-    if Assigned(FOnBottomClick) then
-      FOnBottomClick(Self);
+    if Assigned(FOnBottomClick) then FOnBottomClick(Self);
   end;
 end;
 
 {$IFDEF COMPILER4_UP}
-
-procedure TJvxSpinEdit.CMBiDiModeChanged(var Message: TMessage);
+procedure TJvSpinEdit.CMBiDiModeChanged(var Message: TMessage);
 begin
   inherited;
   ResizeButton;
@@ -1126,148 +1058,151 @@ begin
 end;
 {$ENDIF}
 
-procedure TJvxSpinEdit.CMFontChanged(var Message: TMessage);
+procedure TJvSpinEdit.CMFontChanged(var Message: TMessage);
 begin
   inherited;
   ResizeButton;
   SetEditRect;
 end;
 
-procedure TJvxSpinEdit.CMCtl3DChanged(var Message: TMessage);
+procedure TJvSpinEdit.CMCtl3DChanged(var Message: TMessage);
 begin
   inherited;
   ResizeButton;
   SetEditRect;
 end;
 
-procedure TJvxSpinEdit.CMEnabledChanged(var Message: TMessage);
+procedure TJvSpinEdit.CMEnabledChanged(var Message: TMessage);
 begin
   inherited;
 {$IFDEF WIN32}
-  if FUpDown <> nil then
-  begin
+  if FUpDown <> nil then begin
     FUpDown.Enabled := Enabled;
     ResizeButton;
   end;
 {$ENDIF}
-  if FButton <> nil then
-    FButton.Enabled := Enabled;
+  if FButton <> nil then FButton.Enabled := Enabled;
 end;
 
-procedure TJvxSpinEdit.WMPaste(var Message: TWMPaste);
+procedure TJvSpinEdit.WMPaste(var Message: TWMPaste);
 begin
   if not FEditorEnabled or ReadOnly then
     Exit;
   inherited;
 end;
 
-procedure TJvxSpinEdit.WMCut(var Message: TWMCut);
+procedure TJvSpinEdit.WMCut(var Message: TWMCut);
 begin
-  if not FEditorEnabled or ReadOnly then
-    Exit;
+  if not FEditorEnabled or ReadOnly then Exit;
   inherited;
 end;
 
-procedure TJvxSpinEdit.CMExit(var Message: TCMExit);
+procedure TJvSpinEdit.CMExit(var Message: TCMExit);
 begin
   inherited;
-  if CheckValue(Value) <> Value then
-    SetValue(Value);
+  if CheckValue(Value) <> Value then SetValue(Value);
 end;
 
-procedure TJvxSpinEdit.CMEnter(var Message: TMessage);
+procedure TJvSpinEdit.CMEnter(var Message: TMessage);
 begin
-  if AutoSelect and not (csLButtonDown in ControlState) then
-    SelectAll;
+  if AutoSelect and not (csLButtonDown in ControlState) then SelectAll;
   inherited;
 end;
 
-function TJvxSpinEdit.GetValue: Extended;
+function TJvSpinEdit.GetValue: Extended;
+begin
+  TryGetValue(Result);
+end;
+
+function TJvSpinEdit.TryGetValue(var Value : Extended) : Boolean;
+var s : string;
 begin
   try
-    if ValueType = vtFloat then
-      Result := StrToFloat(Text)
-    else if ValueType = vtHex then
-      Result := StrToInt('$' + Text)
-    else
-      Result := StrToInt(Text);
+    s:= StringReplace(Text, ThousandSeparator, '', [rfReplaceAll]);
+    if ValueType = vtFloat then Value := StrToFloat(s)
+    else if ValueType = vtHex then Value := StrToInt('$' + Text)
+    else Value:= StrToInt(s);
+    Result:= True;
   except
-    if ValueType = vtFloat then
-      Result := FMinValue
-    else
-      Result := Trunc(FMinValue);
+    if ValueType = vtFloat then Value:= FMinValue
+    else Value:= Trunc(FMinValue);
+    Result:= False;
   end;
 end;
 
-procedure TJvxSpinEdit.SetValue(NewValue: Extended);
+procedure TJvSpinEdit.SetValue(NewValue: Extended);
+var ff : TFloatFormat;
 begin
+  if Thousands then
+    ff:= ffNumber
+  else
+    ff:= ffFixed;
+
   if ValueType = vtFloat then
-    Text := FloatToStrF(CheckValue(NewValue), ffFixed, 15, FDecimal)
+    Text := FloatToStrF(CheckValue(NewValue), ff, 15, FDecimal)
   else if ValueType = vtHex then
     Text := IntToHex(Round(CheckValue(NewValue)), 1)
   else
-    Text := IntToStr(Round(CheckValue(NewValue)));
+    Text := FloatToStrF(CheckValue(NewValue), ff, 15, 0);
 end;
 
-function TJvxSpinEdit.GetAsInteger: Longint;
+function TJvSpinEdit.GetAsInteger: Longint;
 begin
   Result := Trunc(GetValue);
 end;
 
-procedure TJvxSpinEdit.SetAsInteger(NewValue: Longint);
+procedure TJvSpinEdit.SetAsInteger(NewValue: Longint);
 begin
   SetValue(NewValue);
 end;
 
-procedure TJvxSpinEdit.SetValueType(NewType: TValueType);
+procedure TJvSpinEdit.SetValueType(NewType: TValueType);
 begin
-  if FValueType <> NewType then
-  begin
+  if FValueType <> NewType then begin
     FValueType := NewType;
     Value := GetValue;
-    if FValueType in [{$IFDEF CBUILDER}vtInt{$ELSE}vtInteger{$ENDIF}, vtHex] then
+    if FValueType in [{$IFDEF CBUILDER} vtInt {$ELSE} vtInteger {$ENDIF}, vtHex] then
     begin
       FIncrement := Round(FIncrement);
-      if FIncrement = 0 then
-        FIncrement := 1;
+      if FIncrement = 0 then FIncrement := 1;
     end;
+    if FValueType = vtHex then
+      Thousands:= False;
   end;
 end;
 
-function TJvxSpinEdit.IsIncrementStored: Boolean;
+function TJvSpinEdit.IsIncrementStored: Boolean;
 begin
   Result := FIncrement <> 1.0;
 end;
 
-function TJvxSpinEdit.IsMaxStored: Boolean;
+function TJvSpinEdit.IsMaxStored: Boolean;
 begin
   Result := (MaxValue <> 0.0);
 end;
 
-function TJvxSpinEdit.IsMinStored: Boolean;
+function TJvSpinEdit.IsMinStored: Boolean;
 begin
   Result := (MinValue <> 0.0);
 end;
 
-function TJvxSpinEdit.IsValueStored: Boolean;
+function TJvSpinEdit.IsValueStored: Boolean;
 begin
   Result := (GetValue <> 0.0);
 end;
 
-procedure TJvxSpinEdit.SetDecimal(NewValue: Byte);
+procedure TJvSpinEdit.SetDecimal(NewValue: Byte);
 begin
-  if FDecimal <> NewValue then
-  begin
+  if FDecimal <> NewValue then begin
     FDecimal := NewValue;
     Value := GetValue;
   end;
 end;
 
-function TJvxSpinEdit.CheckValue(NewValue: Extended): Extended;
+function TJvSpinEdit.CheckValue(NewValue: Extended): Extended;
 begin
   Result := NewValue;
-  if (FMaxValue <> FMinValue) then
-  begin
+  if (FMaxValue <> FMinValue) then begin
     if NewValue < FMinValue then
       Result := FMinValue
     else if NewValue > FMaxValue then
@@ -1275,5 +1210,18 @@ begin
   end;
 end;
 
-end.
+procedure TJvSpinEdit.SetThousands(const Value: Boolean);
+begin
+  if ValueType <> vtHex then
+    FThousands := Value;
+end;
 
+procedure TJvSpinEdit.WMMouseWheel(var Message: TWMMouseWheel);
+begin
+  if Message.WheelDelta>0 then
+    UpClick(nil)
+  else
+    DownClick(nil);
+end;
+
+end.
