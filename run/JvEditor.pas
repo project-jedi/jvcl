@@ -6883,7 +6883,7 @@ begin
      PLongint(Msg.WParam)^ := LSelStart;
    if Pointer(Msg.LParam) <> nil then
      PLongint(Msg.LParam)^ := LSelEnd;
-   if (LSelEnd > 65.535) or (LSelStart > 65.535) then
+   if (LSelEnd > 65535) or (LSelStart > 65535) then
      Msg.Result := -1
    else
    begin
