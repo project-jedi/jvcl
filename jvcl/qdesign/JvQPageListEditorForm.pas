@@ -71,6 +71,7 @@ type
     procedure acDeleteUpdate(Sender: TObject);
     procedure lbPagesClick(Sender: TObject);
     procedure alEditorUpdate(Action: TBasicAction; var Handled: Boolean);
+    procedure lbPagesKeyPress(Sender: TObject; var Key: Char);
   private
     FPageList: TJvCustomPageList;
     procedure SetPageList(const Value: TJvCustomPageList);
@@ -264,13 +265,13 @@ procedure TfrmPageListEditor.SelectPage(const Index: Integer);
 var
   Page: TJvCustomPageAccess;
 begin
-  if Assigned(FPageList) and Active then
+  if Assigned(FPageList) {and Active} then
   begin
     Page := nil;
     if (Index >= 0) and (Index < FPageList.PageCount) then
       Page := TJvCustomPageAccess(FPageList.Pages[Index]);
-    Designer.SelectComponent(Page);
     PageList.ActivePage := Page;
+    Designer.SelectComponent(Page);
     Designer.Modified;
   end;
 end;
@@ -320,6 +321,17 @@ begin
   acMoveDown.Enabled :=
     (lbPages.ItemIndex <> -1) and
     (lbPages.ItemIndex < lbPages.Items.Count - 1);
+end;
+
+procedure TfrmPageListEditor.lbPagesKeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  if lbPages.ItemIndex <> -1 then
+  begin
+    SelectPage(lbPages.ItemIndex);
+    ActivateInspector(Key);
+    Key := #0;
+  end;
 end;
 
 end.
