@@ -302,6 +302,34 @@ type
     procedure ControlSetScrollBars(Value: TScrollStyle);
   end;
 
+  TJvDynControlVCLRichEdit = class (TRichEdit, IUnknown, IJvDynControl,
+    IJvDynControlData, IJvDynControlItems, IJvDynControlMemo, IJvDynControlReadOnly)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    procedure ControlSetSorted(Value: Boolean);
+    procedure ControlSetItems(Value: TStrings);
+    function ControlGetItems: TStrings;
+
+    procedure ControlSetWantTabs(Value: Boolean);
+    procedure ControlSetWantReturns(Value: Boolean);
+    procedure ControlSetWordWrap(Value: Boolean);
+    procedure ControlSetScrollBars(Value: TScrollStyle);
+  end;
+
+
   TJvDynControlVCLRadioGroup = class (TRadioGroup, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlItems, IJvDynControlRadioGroup)
   public
@@ -1477,6 +1505,96 @@ begin
   ScrollBars := Value;
 end;
 
+//=== { TJvDynControlVCLRichEdit } ===============================================
+
+procedure TJvDynControlVCLRichEdit.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlVCLRichEdit.ControlSetReadOnly(Value: Boolean);
+begin
+  ReadOnly := Value;
+end;
+
+procedure TJvDynControlVCLRichEdit.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlVCLRichEdit.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+
+procedure TJvDynControlVCLRichEdit.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlVCLRichEdit.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlVCLRichEdit.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  OnChange := Value;
+end;
+
+procedure TJvDynControlVCLRichEdit.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlVCLRichEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlVCLRichEdit.ControlSetValue(Value: Variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlVCLRichEdit.ControlGetValue: Variant;
+begin
+  Result := Text;
+end;
+
+procedure TJvDynControlVCLRichEdit.ControlSetSorted(Value: Boolean);
+begin
+end;
+
+procedure TJvDynControlVCLRichEdit.ControlSetItems(Value: TStrings);
+begin
+  Lines.Assign(Value);
+end;
+
+function TJvDynControlVCLRichEdit.ControlGetItems: TStrings;
+begin
+  Result := Lines;
+end;
+
+procedure TJvDynControlVCLRichEdit.ControlSetWantTabs(Value: Boolean);
+begin
+  WantTabs := Value;
+end;
+
+procedure TJvDynControlVCLRichEdit.ControlSetWantReturns(Value: Boolean);
+begin
+  WantReturns := Value;
+end;
+
+procedure TJvDynControlVCLRichEdit.ControlSetWordWrap(Value: Boolean);
+begin
+  WordWrap := Value;
+end;
+
+procedure TJvDynControlVCLRichEdit.ControlSetScrollBars(Value: TScrollStyle);
+begin
+  ScrollBars := Value;
+end;
+
 //=== { TJvDynControlVCLRadioGroup } =========================================
 
 procedure TJvDynControlVCLRadioGroup.ControlSetDefaultProperties;
@@ -2256,6 +2374,7 @@ begin
   RegisterControlType(jctDirectoryEdit, TJvDynControlVCLDirectoryEdit);
   RegisterControlType(jctFileNameEdit, TJvDynControlVCLFileNameEdit);
   RegisterControlType(jctMemo, TJvDynControlVCLMemo);
+  RegisterControlType(jctRichEdit, TJvDynControlVCLRichEdit);
   RegisterControlType(jctButtonEdit, TJvDynControlVCLButtonEdit);
 end;
 

@@ -32,7 +32,7 @@ uses
   Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
   Buttons, Dialogs, FileCtrl,
   JvMaskEdit, JvDateTimePicker, JvBitBtn, JvCheckBox, JvBaseEdits,
-  JvLabel, JvListBox, JvMemo, JvPanel, JvRadioGroup, JvToolEdit,
+  JvLabel, JvListBox, JvMemo, JvRichEdit, JvPanel, JvRadioGroup, JvToolEdit,
   JvScrollBox, JvStaticText, JvComboBox, JvImage, JvSpin, JvCheckListBox,
   JvDynControlEngine, JvDynControlEngineIntf, JvGroupBox;
 
@@ -287,6 +287,33 @@ type
   end;
 
   TJvDynControlJVCLMemo = class(TJvMemo, IUnknown, IJvDynControl,
+    IJvDynControlData, IJvDynControlItems, IJvDynControlMemo, IJvDynControlReadOnly)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetReadOnly(Value: Boolean);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    procedure ControlSetSorted(Value: Boolean);
+    procedure ControlSetItems(Value: TStrings);
+    function ControlGetItems: TStrings;
+
+    procedure ControlSetWantTabs(Value: Boolean);
+    procedure ControlSetWantReturns(Value: Boolean);
+    procedure ControlSetWordWrap(Value: Boolean);
+    procedure ControlSetScrollBars(Value: TScrollStyle);
+  end;
+
+  TJvDynControlJVCLRichEdit = class(TJvRichEdit, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlItems, IJvDynControlMemo, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
@@ -1463,6 +1490,95 @@ begin
   ScrollBars := Value;
 end;
 
+//=== { TJvDynControlJVCLRichEdit } ==============================================
+
+procedure TJvDynControlJVCLRichEdit.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetReadOnly(Value: Boolean);
+begin
+  ReadOnly := Value;
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  OnChange := Value;
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;                                             
+
+procedure TJvDynControlJVCLRichEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetValue(Value: Variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlJVCLRichEdit.ControlGetValue: Variant;
+begin
+  Result := Text;
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetSorted(Value: Boolean);
+begin
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetItems(Value: TStrings);
+begin
+  Lines.Assign(Value);
+end;
+
+function TJvDynControlJVCLRichEdit.ControlGetItems: TStrings;
+begin
+  Result := Lines;
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetWantTabs(Value: Boolean);
+begin
+  WantTabs := Value;
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetWantReturns(Value: Boolean);
+begin
+  WantReturns := Value;
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetWordWrap(Value: Boolean);
+begin
+  WordWrap := Value;
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetScrollBars(Value: TScrollStyle);
+begin
+  ScrollBars := Value;
+end;
+
 //=== { TJvDynControlJVCLRadioGroup } ========================================
 
 procedure TJvDynControlJVCLRadioGroup.ControlSetDefaultProperties;
@@ -2242,6 +2358,7 @@ begin
   RegisterControlType(jctDirectoryEdit, TJvDynControlJVCLDirectoryEdit);
   RegisterControlType(jctFileNameEdit, TJvDynControlJVCLFileNameEdit);
   RegisterControlType(jctMemo, TJvDynControlJVCLMemo);
+  RegisterControlType(jctRichEdit, TJvDynControlJVCLRichEdit);
   RegisterControlType(jctButtonEdit, TJvDynControlJVCLButtonEdit);
 end;
 
