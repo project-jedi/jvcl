@@ -48,7 +48,6 @@ type
     FMinValue: Extended;
     FMaxValue: Extended;
     FDecimalPlaces: Cardinal;
-    FBeepOnError: Boolean;
     FCheckOnExit: Boolean;
     FZeroEmpty: Boolean;
     FFormatOnEditing: Boolean;
@@ -60,7 +59,6 @@ type
 
     procedure SetFocused(Value: Boolean);
     procedure SetAlignment(Value: TAlignment);
-    procedure SetBeepOnError(Value: Boolean);
     procedure SetDisplayFormat(const Value: string);
     function GetDisplayFormat: string;
     procedure SetDecimalPlaces(Value: Cardinal);
@@ -80,6 +78,8 @@ type
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
   protected
+    procedure SetBeepOnError(Value: Boolean); override;
+
     procedure EnabledChanged; override;
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -100,10 +100,8 @@ type
     procedure CheckRange;
     procedure UpdateData;
     procedure UpdatePopup; virtual;
-    procedure DoBeepOnError; virtual;
     property Formatting: Boolean read FFormatting;
     property Alignment: TAlignment read FAlignment write SetAlignment default taRightJustify;
-    property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
     property CheckOnExit: Boolean read FCheckOnExit write FCheckOnExit default False;
     property ImageKind default ikDefault;
     property ButtonWidth default 21; //Polaris 20;
@@ -353,7 +351,6 @@ begin
   ControlStyle := ControlStyle - [csSetCaption];
   FDecimalPlaceRound := False; // Polaris
   MaxLength := 0;
-  FBeepOnError := True;
   FAlignment := taRightJustify;
   FDisplayFormat := DefaultDisplayFormat;
   FDecimalPlaces := 2;
@@ -475,9 +472,9 @@ end;
 
 procedure TJvCustomNumEdit.SetBeepOnError(Value: Boolean);
 begin
-  if FBeepOnError <> Value then
+  if BeepOnError <> Value then
   begin
-    FBeepOnError := Value;
+    inherited SetBeepOnError(Value);
     UpdatePopup;
   end;
 end;
@@ -640,12 +637,6 @@ procedure TJvCustomNumEdit.UpdatePopup;
 begin
   if FPopup <> nil then
     SetupPopupCalculator(FPopup, DefCalcPrecision, BeepOnError);
-end;
-
-procedure TJvCustomNumEdit.DoBeepOnError;
-begin
-  if BeepOnError then
-    SysUtils.Beep;
 end;
 
 function TJvCustomNumEdit.GetValue: Extended;

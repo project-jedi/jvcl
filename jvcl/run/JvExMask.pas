@@ -113,7 +113,9 @@ type
   private
     FBeepOnError: Boolean;
   protected
-    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
+    procedure DoBeepOnError; dynamic;
+    procedure SetBeepOnError(Value: Boolean); virtual;
+    property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
   end;
   
 
@@ -184,7 +186,9 @@ type
   private
     FBeepOnError: Boolean;
   protected
-    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
+    procedure DoBeepOnError; dynamic;
+    procedure SetBeepOnError(Value: Boolean); virtual;
+    property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
   end;
   
 
@@ -392,6 +396,19 @@ begin
 end;
 {$ENDIF VisualCLX}
   
+procedure TJvExCustomMaskEdit.DoBeepOnError;
+begin
+  if BeepOnError then
+    SysUtils.Beep;
+end;
+
+procedure TJvExCustomMaskEdit.SetBeepOnError(Value: Boolean);
+begin
+  FBeepOnError := Value;
+end;
+
+
+
 
 {$IFDEF VCL}
 procedure TJvExMaskEdit.VisibleChanged;
@@ -590,6 +607,17 @@ begin
 end;
 {$ENDIF VisualCLX}
   
+procedure TJvExMaskEdit.DoBeepOnError;
+begin
+  if BeepOnError then
+    SysUtils.Beep;
+end;
+
+procedure TJvExMaskEdit.SetBeepOnError(Value: Boolean);
+begin
+  FBeepOnError := Value;
+end;
+
 
 {$UNDEF CONSTRUCTOR_CODE} // undefine at file end
 end.
