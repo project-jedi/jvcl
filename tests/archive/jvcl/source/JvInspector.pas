@@ -32,7 +32,7 @@ interface
 
 uses
   SysUtils, Windows, Classes, Contnrs, TypInfo, Controls, StdCtrls, Graphics,
-  Messages, IniFiles;
+  Messages, IniFiles, JVCLVer;
 
 {$A+,B-,C+,E-,F-,G+,H+,I+,J+,K-,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Z1}
 {$I jedi.inc}
@@ -166,6 +166,7 @@ type
     FUseBands: Boolean;
     FVisible: TStrings;
     FWantTabs: Boolean;
+    FAboutJVCL: TJVCLAboutInfo;
   protected
     function CalcImageHeight: Integer; virtual;
     function CalcItemIndex(X, Y: Integer; var Rect: TRect): Integer; virtual;
@@ -176,7 +177,7 @@ type
       var ItemClass: TJvInspectorItemClass); virtual;
     function DoBeforeItemSelect(const NewItem: TJvCustomInspectorItem): Boolean; virtual;
     procedure DoItemSelected; virtual;
-    function GetAboutMe: string; virtual;
+//    function GetAboutMe: string; virtual;
     function GetAfterDataCreate: TInspectorDataEvent; virtual;
     function GetAfterItemCreate: TInspectorItemEvent; virtual;
     function GetBandFor(const ItemIdx: Integer): Integer; virtual;
@@ -221,7 +222,7 @@ type
     procedure RemoveNotifySort(const Item: TJvCustomInspectorItem); virtual;
     procedure Resize; override;
     function ScrollfactorV: Extended; virtual;
-    procedure SetAboutMe(const Value: string); virtual;
+//    procedure SetAboutMe(const Value: string); virtual;
     procedure SetAfterDataCreate(const Value: TInspectorDataEvent); virtual;
     procedure SetAfterItemCreate(const Value: TInspectorItemEvent); virtual;
     procedure SetBandWidth(Value: Integer); virtual;
@@ -297,7 +298,9 @@ type
     function FocusedItem: TJvCustomInspectorItem; virtual;
     function VisibleIndex(const AItem: TJvCustomInspectorItem): Integer; virtual;
   published
-    property AboutMe: string read GetAboutMe write SetAboutMe stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    
+//    property AboutMe: string read GetAboutMe write SetAboutMe stored False;
   end;
 
   TJvInspector = class(TJvCustomInspector)
@@ -356,6 +359,7 @@ type
     FSelectedColor: TColor;
     FSelectedTextColor: TColor;
     FValueColor: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
   protected
     procedure ApplyNameFont; virtual;
     procedure ApplyValueFont; virtual;
@@ -418,6 +422,7 @@ type
     property SelectedColor: TColor read GetSelectedColor write SetSelectedColor;
     property SelectedTextColor: TColor read GetSelectedTextColor write SetSelectedTextColor;
   published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property BackgroundColor: TColor read GetBackgroundColor write SetBackgroundColor;
     property CategoryColor: TColor read GetCategoryColor write SetCategoryColor;
     property CategoryTextColor: TColor read GetCategoryTextColor write SetCategoryTextColor;
@@ -1697,10 +1702,12 @@ begin
     FOnItemSelected(Self);
 end;
 
+{
 function TJvCustomInspector.GetAboutMe: string;
 begin
   Result := Format('%s %d.%.2d', [ClassName, Version div 100, Version mod 100]);
 end;
+}
 
 function TJvCustomInspector.GetAfterDataCreate: TInspectorDataEvent;
 begin
@@ -2314,9 +2321,11 @@ begin
 		Result := 1;
 end;
 
+{
 procedure TJvCustomInspector.SetAboutMe(const Value: string);
 begin
 end;
+}
 
 procedure TJvCustomInspector.SetAfterDataCreate(
   const Value: TInspectorDataEvent);
@@ -7172,6 +7181,7 @@ end;
 constructor TJvInspectorPropData.Create(const AParent: TJvCustomInspectorItem;
   const AInstance: TObject; const PropInfo: PPropInfo);
 begin
+  Assert(PropInfo <> nil,'PropInfo nil in TJvInspectorPropData.Create');
   inherited Create;
   Init(PropInfo.Name, PropInfo.PropType^);
   Instance := AInstance;
