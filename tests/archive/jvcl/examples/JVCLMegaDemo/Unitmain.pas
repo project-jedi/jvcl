@@ -231,6 +231,13 @@ var
   aFileStringList : TStringList;
   SearchPathExpr  : string;
 begin
+  if ModuleOfAddr(TheFormArray[FormID].ClassInfo) = '' then
+  begin
+    MessageDlg('This functionality is disabled unless'+#13+#10+
+               'you build the demo from the Delphi IDE'+#13+#10+
+               'with map file generation enabled.', mtWarning, [mbOK], 0);
+    Exit;
+  end;
 
   // uses the function 'ModuleOfAddr' from JclDebug unit to get the unit name
   SearchPathExpr := ExtractFilePath(Application.ExeName) +
