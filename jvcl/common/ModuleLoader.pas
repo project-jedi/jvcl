@@ -33,8 +33,6 @@ unit ModuleLoader;
 
 interface
 
-{$WEAKPACKAGEUNIT ON} // (ahuser) why is it a weak package unit?
-
 {$IFDEF MSWINDOWS}
 
 uses
