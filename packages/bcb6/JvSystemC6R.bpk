@@ -21,6 +21,7 @@
       ..\..\dcu\JvSimpleXml.obj ..\..\dcu\JvSoundControl.obj 
       ..\..\dcu\JvSystemColors.obj ..\..\dcu\JvThread.obj 
       ..\..\dcu\JvThreadTimer.obj ..\..\dcu\JvTimer.obj 
+      ..\..\dcu\JvAppInst.obj
       ..\..\dcu\JvTimerList.obj ..\..\dcu\JvWndProcHook.obj ..\..\dcu\Ras32.obj"/>
     <RESFILES value="JvSystemC6R.res"/>
     <IDLFILES value=""/>
@@ -104,6 +105,7 @@
       <FILE FILENAME="..\..\run\JvTimer.pas" FORMNAME="" UNITNAME="JvTimer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvTimerList.pas" FORMNAME="" UNITNAME="JvTimerList" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvWndProcHook.pas" FORMNAME="" UNITNAME="JvWndProcHook" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvAppInst.pas" FORMNAME="" UNITNAME="JvAppInst" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\common\Ras32.pas" FORMNAME="" UNITNAME="Ras32" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
