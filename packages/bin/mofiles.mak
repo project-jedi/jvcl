@@ -10,12 +10,17 @@ MAKE = "$(ROOT)\bin\make.exe" -l+
 
 #-------------------------------------------------------------------------------
 
-LANGUAGES=de es fr it nl pl ro ru sv
+LANGUAGES=bg de es fr it nl pl ro ru sv
 
 #-------------------------------------------------------------------------------
 
 default: $(LANGUAGES)
 
+
+bg:
+	echo Generating: $&
+	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\JVCLInstall.mo $&\LC_MESSAGES\JVCLInstall.po >NUL
+	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\jvcl.mo $&\LC_MESSAGES\jvcl.po >NUL
 
 de:
 	echo Generating: $&
