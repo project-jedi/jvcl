@@ -24,6 +24,9 @@ const
 type
   THaakType = (htParens, htBracket);
   TModuleType = (mtLibrary, mtUnit);
+  TDtxParseOption = (dpoLinks, dpoParameters, dpoDefaultText);
+  TDtxParseOptions = set of TDtxParseOption;
+
   TBasicParser = class(TObject)
   private
     FStream: TStream;
@@ -273,7 +276,7 @@ type
     property DoRecapitalize: Boolean read GetDoRecapitalize;
   end;
 
-  TDtxCompareErrorFlag = (defNoPackageTag, defPackageTagNotFilled,
+  TDtxCompareErrorFlag = (defNoPackageTag, defPackageTagNotFilled, 
     defNoStatusTag, defEmptySeeAlso, defNoAuthor, defHasTocEntryError, defUnknownTag);
   TDtxCompareErrorFlags = set of TDtxCompareErrorFlag;
 
@@ -313,6 +316,7 @@ type
     procedure DtxSort;
 
     procedure FillWithDtxHeaders(Dest: TStrings);
+    procedure CombineWithPasList(APasItems: TPasItems);
     procedure ConstructSkipList;
 
     function IndexOfReferenceName(ReferenceName: string): Integer;
@@ -347,6 +351,12 @@ type
     FJVCLInfoErrors: TJVCLInfoErrors;
     FIsRegisteredComponent: Boolean;
     FIsFileInfo: Boolean;
+    FLinks: TStrings;
+    FPasObj: TAbstractItem;
+  protected
+    procedure AddLink(const ALink: string);
+    procedure AddParam(const AParam: string);
+    procedure ClearLinks;
   public
     constructor Create(const ATag: string); virtual;
     destructor Destroy; override;
@@ -355,6 +365,7 @@ type
     property IsFileInfo: Boolean read FIsFileInfo write FIsFileInfo;
     property Tag: string read FTag write FTag;
     property Parameters: TStrings read FParameters;
+    property Links: TStrings read FLinks;
     property Title: string read FTitle write FTitle;
     property Combine: string read FCombine write FCombine;
     property CombineWith: string read FCombineWith write FCombineWith;
@@ -363,6 +374,7 @@ type
     property HasJVCLInfo: Boolean read FHasJVCLInfo write FHasJVCLInfo;
     property IsRegisteredComponent: Boolean read FIsRegisteredComponent write FIsRegisteredComponent;
     property JVCLInfoErrors: TJVCLInfoErrors read FJVCLInfoErrors write FJVCLInfoErrors;
+    property PasObj: TAbstractItem read FPasObj write FPasObj;
   end;
 
   TDtxCompareParser = class(TBasicParser)
@@ -374,24 +386,26 @@ type
     FTags: TStrings;
     FSkipList: TStrings;
     FCollectData: Boolean;
+    FOptions: TDtxParseOptions;
     function GetDtxCompareTokenType: TDtxCompareTokenType;
+    function GetPackage: string;
   protected
     function ReadNextToken: Char; override;
 
     function Parse: Boolean;
 
     procedure ReadAuthor;
-    procedure ReadCombine(Item: TDtxHelpItem);
-    procedure ReadCombineWith(Item: TDtxHelpItem);
+    function ReadLink(out Link: string): Boolean;
+    procedure ReadItem(Item: TDtxHelpItem);
     procedure ReadFileInfo;
     procedure ReadHasTocEntry(Item: TDtxHelpItem);
     procedure ReadHelpTopic(Item: TDtxHelpItem);
     procedure ReadJVCLINFO(Item: TDtxHelpItem);
     procedure ReadPackage;
     procedure ReadSkip;
-    procedure ReadParameters(List: TStrings);
+    procedure ReadParameters(Item: TDtxHelpItem);
     procedure ReadRest;
-    procedure ReadSeeAlso;
+    procedure ReadSeeAlso(Item: TDtxHelpItem);
     procedure ReadStartBlock;
     procedure ReadStatus;
     procedure ReadOther;
@@ -402,6 +416,7 @@ type
     constructor Create; override;
     destructor Destroy; override;
 
+    property Package: string read GetPackage;
     function Execute(const AFileName: string): Boolean;
     property CollectData: Boolean read FCollectData write FCollectData;
     property List: TDtxItems read FList;
@@ -409,6 +424,7 @@ type
     property Errors: TDtxCompareErrorFlags read FErrors;
     property DefaultTexts: TDefaultTexts read FDefaultTexts;
     property SkipList: TStrings read FSkipList write FSkipList;
+    property Options: TDtxParseOptions read FOptions write FOptions;
   end;
 
   TDpkParser = class(TDelphiParser)
@@ -612,23 +628,6 @@ begin
     Result := '@@' + S
   else
     Result := S;
-end;
-
-function RemoveStartEndCRLF(const S: string): string;
-var
-  I, J: Integer;
-begin
-  I := 1;
-  J := Length(S);
-  while (I <= J) and (S[I] in [#10, #13]) do
-    Inc(I);
-  while (I <= J) and (S[J] in [#10, #13]) do
-    Dec(J);
-
-  if I > J then
-    Result := ''
-  else
-    Result := Copy(S, I, J - I + 1);
 end;
 
 function RemoveSepLines(const S: string): string;
@@ -5223,6 +5222,7 @@ begin
   inherited;
   FList := TDtxItems.Create;
   FTags := TStringList.Create;
+  FOptions := [dpoParameters, dpoDefaultText];
 end;
 
 destructor TDtxCompareParser.Destroy;
@@ -5276,6 +5276,19 @@ begin
     Result := ctText;
 end;
 
+function TDtxCompareParser.GetPackage: string;
+var
+  I: Integer;
+begin
+  for I := 0 to FList.Count - 1 do
+    if (FList[I] is TDtxStartItem) and (TDtxStartItem(FList[I]).Symbol = dssPackage) then
+    begin
+      Result := RemoveStartEndCRLF(TDtxStartItem(FList[I]).Data);
+      Exit;
+    end;
+  Result := '';
+end;
+
 function TDtxCompareParser.Parse: Boolean;
 begin
   FErrors := [defNoPackageTag, defNoStatusTag, defNoAuthor];
@@ -5293,40 +5306,6 @@ begin
   LowNextToken;
   if CompareTokenType = ctText then
     Exclude(FErrors, defNoAuthor);
-end;
-
-procedure TDtxCompareParser.ReadCombine(Item: TDtxHelpItem);
-var
-  S: string;
-begin
-  if Item = nil then
-    ErrorStr('ReadCombine, Item = nil');
-  LowNextToken;
-  if CompareTokenType = ctText then
-  begin
-    S := TokenString;
-    if (S > '') and (S[Length(S)] = '>') then
-      Delete(S, Length(S), 1);
-    Item.Combine := S;
-    LowNextToken;
-  end;
-end;
-
-procedure TDtxCompareParser.ReadCombineWith(Item: TDtxHelpItem);
-var
-  S: string;
-begin
-  if Item = nil then
-    ErrorStr('ReadCombineWith, Item = nil');
-  LowNextToken;
-  if CompareTokenType = ctText then
-  begin
-    S := TokenString;
-    if (S > '') and (S[Length(S)] = '>') then
-      Delete(S, Length(S), 1);
-    Item.CombineWith := S;
-    LowNextToken;
-  end;
 end;
 
 procedure TDtxCompareParser.ReadFileInfo;
@@ -5393,6 +5372,7 @@ var
   Check: string;
   LTokenString: string;
   LastWasSee, CurrentIsSee: Boolean;
+  Link: string;
 begin
   { PRE  : Token = first token after @@SomeHelpTag
     POST : Token = toEof or Token = @@SomeHelpTag
@@ -5404,7 +5384,7 @@ begin
   while (Token <> toEof) and (CompareTokenType <> ctHelpTag) do
   begin
     LastWasSee := CurrentIsSee;
-    CurrentIsSee := FLastWasNewLine and (CompareTokenType = ctText) and TokenSymbolIsExact('Also');
+    CurrentIsSee := FLastWasNewLine and (CompareTokenType = ctText) and TokenSymbolIsExact('See');
 
     { We use continue, otherwise the code becomes unreadable }
     if CompareTokenType <> ctText then
@@ -5417,18 +5397,21 @@ begin
 
     LTokenString := TokenString;
 
-    { check defaults }
-    if Check = '' then
-      Check := LTokenString
-    else
-      Check := Check + ' ' + LTokenString;
-    CheckDefaultText(Check);
-    if Check = '' then
-      Check := LTokenString;
+    if dpoDefaultText in Options then
+    begin
+      { check defaults }
+      if Check = '' then
+        Check := LTokenString
+      else
+        Check := Check + ' ' + LTokenString;
+      CheckDefaultText(Check);
+      if Check = '' then
+        Check := LTokenString;
+    end;
 
     if LastWasSee and (CompareStr(LTokenString, 'Also') = 0) then
     begin
-      ReadSeeAlso;
+      ReadSeeAlso(Item);
       Continue;
     end;
 
@@ -5444,12 +5427,33 @@ begin
     if LTokenString[1] = '<' then
     begin
       { Special tokens that start with a '<' }
+      if SameText(LTokenString, '<LINK') or SameText(LTokenString, '<ALIAS') then
+      begin
+        LowNextToken;
 
-      if SameText(LTokenString, '<COMBINE') then
-        ReadCombine(Item)
+        if dpoLinks in Options then
+        begin
+          if ReadLink(Link) then
+            Item.AddLink(Link);
+          LowNextToken;
+        end;
+      end
+      else
+        if SameText(LTokenString, '<COMBINE') then
+      begin
+        LowNextToken;
+        if ReadLink(Link) then
+          Item.Combine := Link;
+        LowNextToken;
+      end
       else
         if SameText(LTokenString, '<COMBINEWith') then
-        ReadCombineWith(Item)
+      begin
+        LowNextToken;
+        if ReadLink(Link) then
+          Item.CombineWith := Link;
+        LowNextToken;
+      end
       else
         if SameText(LTokenString, '<HASTOCENTRY') then
         ReadHasTocEntry(Item)
@@ -5462,9 +5466,8 @@ begin
     end
     else
     begin
-
       if CompareStr(LTokenString, 'Parameters') = 0 then
-        ReadParameters(Item.Parameters)
+        ReadParameters(Item)
       else
         if SameText(LTokenString, 'JVCLInfo') then
         ReadJVCLINFO(Item)
@@ -5473,6 +5476,11 @@ begin
         LowNextToken;
     end;
   end;
+end;
+
+procedure TDtxCompareParser.ReadItem(Item: TDtxHelpItem);
+begin
+
 end;
 
 procedure TDtxCompareParser.ReadJVCLINFO(Item: TDtxHelpItem);
@@ -5521,6 +5529,36 @@ begin
 
   if not GroupFound then
     Include(Item.FJVCLInfoErrors, jieNoGroup);
+end;
+
+function TDtxCompareParser.ReadLink(out Link: string): Boolean;
+var
+  NewPart: string;
+  P: Integer;
+begin
+  Link := '';
+
+  { identifier can have spaces, such as
+    DSAMessageDlgEx@integer@string@string@TGraphic@array of string@array of integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine
+
+    we just look if we have a '>' at the end, if not keep reading }
+
+  while CompareTokenType = ctText do
+  begin
+    { 'SomeLink>,' is possible }
+    NewPart := TokenString;
+    P := Pos('>', NewPart);
+    if P > 0 then
+    begin
+      Link := Link + Copy(NewPart, 1, P - 1);
+      Result := True;
+      Exit;
+    end;
+    Link := Link + NewPart + ' ';
+
+    LowNextToken;
+  end;
+  Result := False;
 end;
 
 function TDtxCompareParser.ReadNextToken: Char;
@@ -5613,7 +5651,7 @@ begin
   end;
 end;
 
-procedure TDtxCompareParser.ReadParameters(List: TStrings);
+procedure TDtxCompareParser.ReadParameters(Item: TDtxHelpItem);
 var
   Check: string;
 
@@ -5647,7 +5685,8 @@ begin
   begin
     while not FLastWasNewLine and (Token <> toEof) do
     begin
-      CheckDefaultText;
+      if dpoDefaultText in Options then
+        CheckDefaultText;
       LowNextToken;
     end;
 
@@ -5665,14 +5704,15 @@ begin
 
     if SameText(S, 'See') and SameText(TokenString, 'Also') then
     begin
-      ReadSeeAlso;
+      ReadSeeAlso(Item);
       Break;
     end;
 
     if (Token <> toSymbol) or (TokenSymbolIn(['-', toColon]) < 0) then
       Continue;
 
-    List.Add(S);
+    if dpoParameters in Options then
+      Item.AddParam(S);
   end;
 end;
 
@@ -5708,11 +5748,70 @@ begin
   end;
 end;
 
-procedure TDtxCompareParser.ReadSeeAlso;
+procedure TDtxCompareParser.ReadSeeAlso(Item: TDtxHelpItem);
+const
+  CCheckWordCount = 3;
+  CCheckWords: array[0..CCheckWordCount - 1] of string = ('list', 'here', 'other');
+var
+  Link: string;
+  State: Integer;
+  { 0 = first
+    1 = first = 'List'
+    2 = second = 'here'
+    -1 = other
+  }
 begin
   LowNextToken;
   if CompareTokenType <> ctText then
+  begin
     Include(FErrors, defEmptySeeAlso);
+    Exit;
+  end;
+
+  if not (dpoLinks in Options) then
+  begin
+    { skip }
+    while (Token <> toEof) and (CompareTokenType = ctText) do
+      LowNextToken;
+  end
+  else
+  begin
+    State := 0;
+    while (Token <> toEof) and (CompareTokenType = ctText) do
+    begin
+      if (State >= 0) and (State < CCheckWordCount) then
+      begin
+        if TokenSymbolIs(CCheckWords[State]) then
+          Inc(State)
+        else
+          State := -1;
+        if State = CCheckWordCount then
+        begin
+          Item.ClearLinks;
+          if dpoDefaultText in Options then
+            Include(FDefaultTexts, dtRemoveSeeAlso);
+
+          { skip rest }
+          while (Token <> toEof) and (CompareTokenType = ctText) do
+            LowNextToken;
+          Exit;
+        end;
+      end;
+
+      if TokenSymbolIn(['<ALIAS', '<LINK']) >= 0 then
+      begin
+        State := -1;
+        LowNextToken;
+        if not ReadLink(Link) then
+          Exit;
+        Item.AddLink(Link);
+      end
+      else
+        Item.AddLink(TokenString);
+
+      LowNextToken;
+    end;
+  end;
 end;
 
 procedure TDtxCompareParser.ReadSkip;
@@ -5819,6 +5918,34 @@ end;
 
 //=== TDtxHelpItem ===========================================================
 
+procedure TDtxHelpItem.AddLink(const ALink: string);
+var
+  P: Integer;
+begin
+  if not Assigned(FLinks) then
+    FLinks := TStringList.Create;
+  P := Pos(',', ALink);
+  if P <= 0 then
+    P := Pos('>', ALink);
+  if P > 0 then
+    FLinks.Add(Copy(ALink, 1, P - 1))
+  else
+    FLinks.Add(ALink);
+end;
+
+procedure TDtxHelpItem.AddParam(const AParam: string);
+begin
+  if not Assigned(FParameters) then
+    FParameters := TStringList.Create;
+  FParameters.Add(AParam);
+end;
+
+procedure TDtxHelpItem.ClearLinks;
+begin
+  if Assigned(FLinks) then
+    FLinks.Clear;
+end;
+
 function TDtxHelpItem.CompareWith(AItem: TDtxBaseItem): Integer;
 const
   CBoolInt: array[Boolean] of Integer = (0, -1);
@@ -5840,6 +5967,7 @@ end;
 constructor TDtxHelpItem.Create(const ATag: string);
 begin
   FParameters := TStringList.Create;
+  FLinks := TStringList.Create;
   FTag := ATag;
   FHasTocEntry := True;
 end;
@@ -5847,6 +5975,7 @@ end;
 destructor TDtxHelpItem.Destroy;
 begin
   FParameters.Free;
+  FLinks.Free;
   inherited;
 end;
 
@@ -5859,6 +5988,22 @@ begin
 end;
 
 //=== TDtxItems ==============================================================
+
+procedure TDtxItems.CombineWithPasList(APasItems: TPasItems);
+var
+  I: Integer;
+  HelpItem: TDtxHelpItem;
+  Index: Integer;
+begin
+  for I := 0 to Count - 1 do
+    if Items[I] is TDtxHelpItem then
+    begin
+      HelpItem := TDtxHelpItem(Items[I]);
+      Index := APasItems.IndexOfReferenceName(HelpItem.Tag);
+      if Index >= 0 then
+        HelpItem.PasObj := APasItems[Index];
+    end;
+end;
 
 procedure TDtxItems.ConstructSkipList;
 var

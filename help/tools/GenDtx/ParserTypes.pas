@@ -61,7 +61,7 @@ type
     cdResource, cdRUNONLY, cdRTTI,
     cdREFERENCEINFO, cdDEFINITIONINFO, cdTYPEDADDRESS, cdUNDEF, cdVarStringChecking,
     cdWarningMessages, cdWarnings, cdWeakPackaging, cdStackFrames,
-    cdWriteableTypedConstants);
+    cdWriteableTypedConstants, cdSomeWeirdUndocumentedSwitch);
 
   TSwitchCompilerDirectiveArgument = (scda1, scda2, scda4, scda8, scdaON, scdaOFF,
     scdaOther);
@@ -80,7 +80,7 @@ const
     cdOptimization, cdOverflowChecking, cdSAFEDIVIDE, cdRangeChecking, cdReal48Compatibility,
     cdRUNONLY, cdRTTI, cdREFERENCEINFO, cdDEFINITIONINFO, cdTYPEDADDRESS,
     cdVarStringChecking, cdWarningMessages, cdWarnings, cdWeakPackaging,
-    cdStackFrames, cdWriteableTypedConstants];
+    cdStackFrames, cdWriteableTypedConstants, cdSomeWeirdUndocumentedSwitch];
 
 type
   TPropertySpecifier = (psIndex, psRead, psWrite, psStored, psDefault, psNoDefault, psImplements);
@@ -148,7 +148,9 @@ type
     procedure RemoveTrivialComments(Classes: TStrings);
   public
     function IndexOfName(const SimpleName: string): Integer;
+    { TODO : Change name }
     function IndexOfReferenceName(ReferenceName: string): Integer;
+    function IndexOfLinkName(Link: string): Integer;
 
     procedure SortImplementation;
     procedure OnlyCapitalization;
@@ -204,6 +206,7 @@ type
     function GetIndex: Integer;
     function GetNext: TAbstractItem;
     function GetPrevious: TAbstractItem;
+    function GetLinkName: string; virtual;
   protected
     procedure CheckTypeList;
     procedure AddCombine(AItem: TAbstractItem);
@@ -232,6 +235,7 @@ type
     function DtxCombineStr: string;
 
     property TypeList: TPasItems read FTypeList;
+    property LinkName: string read GetLinkName;
     { Simple name,   zonder . zonder @ }
     property SimpleName: string read FSimpleName write FSimpleName;
     { Reference name       met @ met . }
@@ -440,6 +444,7 @@ type
     function GetIndentation: Integer; override;
     function GetPasSortOnIndex: Boolean; override;
     function GetRealParamList: TStrings; override;
+    function GetLinkName: string; override;
     function GetReferenceName: string; override;
     function GetSection: TDelphiSection; override;
   public
@@ -480,6 +485,7 @@ type
     FIsClassMethod: Boolean;
     function GetIndentation: Integer; override;
     function GetRealParamList: TStrings; override;
+    function GetLinkName: string; override;
     function GetReferenceName: string; override;
     function GetAddDescriptionString: string; override;
     function GetSection: TDelphiSection; override;
@@ -505,6 +511,7 @@ type
     procedure SetItem(Index: Integer; const Value: TAbstractItem);
     function GetDelphiType: TDelphiType; override;
     function GetSection: TDelphiSection; override;
+    function GetClassString: string; override;
   public
     constructor Create(const AName: string); override;
     destructor Destroy; override;
@@ -665,6 +672,7 @@ type
   end;
 
 function StrToCompilerDirective(const S: string): TCompilerDirective;
+function StripLeading(const S: string): string;
 
 implementation
 
@@ -695,12 +703,12 @@ const
   CTitleType = '%s type';
   CTitleVariable = '%s variable';
 
-  CIFDEFFmt = '{$xIFDEF %s}'#13#10;
-  CIFNDEFFmt = '{$xIFNDEF %s}'#13#10;
+  CIFDEFFmt = '{$IFDEF %s}'#13#10;
+  CIFNDEFFmt = '{$IFNDEF %s}'#13#10;
 
-  CEndFmt = '{$xENDIF %s}'#13#10;
+  CEndFmt = '{$ENDIF %s}'#13#10;
 
-  CCompilerDirectives: array[0..84] of TCompilerDirectiveRec = (
+  CCompilerDirectives: array[0..89] of TCompilerDirectiveRec = (
     {0}(S: 'A'; M: cdAlignFields),
     (S: 'ALIGN'; M: cdAlignFields),
     (S: 'APPTYPE'; M: cdApplicationType),
@@ -722,6 +730,7 @@ const
     (S: 'EXTENDEDSYNTAX'; M: cdExtendedSyntax),
     (S: 'EXTENSION'; M: cdExecutableExtension),
     (S: 'EXTERNALSYM'; M: cdExternalSymbols),
+    (S: 'F'; M: cdSomeWeirdUndocumentedSwitch),
     (S: 'G'; M: cdImportedData),
     (S: 'H'; M: cdLongStrings),
     (S: 'HINTS'; M: cdHints),
@@ -748,8 +757,10 @@ const
     (S: 'M'; M: cdRTTI { or cdMemoryAllocationSize}),
     (S: 'MAXSTACKSIZE'; M: cdMAXSTACKSIZE),
     (S: 'MESSAGE'; M: cdMESSAGE),
+    (S: 'METHODINFO'; M: cdSomeWeirdUndocumentedSwitch),
     (S: 'MINENUMSIZE'; M: cdMinimumEnumSize),
     (S: 'MINSTACKSIZE'; M: cdMINSTACKSIZE),
+    (S: 'N'; M: cdSomeWeirdUndocumentedSwitch),
     (S: 'NODEFINE'; M: cdNODEFINE),
     (S: 'NOINCLUDE'; M: cdNOINCLUDE),
     (S: 'O'; M: cdOptimization),
@@ -766,6 +777,7 @@ const
     (S: 'RESOURCE'; M: cdResource),
     (S: 'RESOURCERESERVE'; M: cdReservedAddressSpace), //linux
     (S: 'RUNONLY'; M: cdRUNONLY),
+    (S: 'S'; M: cdSomeWeirdUndocumentedSwitch),
     (S: 'SAFEDIVIDE'; M: cdSAFEDIVIDE),
     (S: 'STACKFRAMES'; M: cdStackFrames),
     (S: 'T'; M: cdTYPEDADDRESS),
@@ -783,6 +795,7 @@ const
     (S: 'X'; M: cdExtendedSyntax),
     (S: 'Y'; M: cdREFERENCEINFO),
     (S: 'YD'; M: cdDEFINITIONINFO),
+    (S: 'Z'; M: cdSomeWeirdUndocumentedSwitch),
     (S: 'Z1'; M: cdMinimumEnumSize),
     (S: 'Z2'; M: cdMinimumEnumSize),
     (S: 'Z4'; M: cdMinimumEnumSize)
@@ -935,6 +948,7 @@ begin
   Result := IgnoreList.IndexOf(Copy(ReferenceName, 1, P - 1)) >= 0;
 end;
 
+{ TODO: Change Name }
 function StripLeading(const S: string): string;
 begin
   if (Length(S) > 1) and (S[1] = '@') and (S[2] = '@') then
@@ -1227,6 +1241,11 @@ begin
   Result := '';
 end;
 
+function TAbstractItem.GetLinkName: string;
+begin
+  Result := ReferenceName;
+end;
+
 function TAbstractItem.GetNext: TAbstractItem;
 begin
   CheckTypeList;
@@ -1429,6 +1448,11 @@ begin
   Result := 0;
 end;
 
+function TBaseFuncItem.GetLinkName: string;
+begin
+  Result := inherited GetReferenceName;
+end;
+
 function TBaseFuncItem.GetPasSortOnIndex: Boolean;
 begin
   Result := IsLocal;
@@ -1497,6 +1521,11 @@ destructor TClassItem.Destroy;
 begin
   FList.Free;
   inherited;
+end;
+
+function TClassItem.GetClassString: string;
+begin
+  Result := SimpleName;
 end;
 
 function TClassItem.GetDelphiType: TDelphiType;
@@ -2297,6 +2326,11 @@ begin
   Result := 0;
 end;
 
+function TParamClassMethodItem.GetLinkName: string;
+begin
+  Result := inherited GetReferenceName;
+end;
+
 function TParamClassMethodItem.GetRealParamList: TStrings;
 begin
   Result := FParams;
@@ -2617,6 +2651,17 @@ end;
 function TPasItems.GetItem(Index: Integer): TAbstractItem;
 begin
   Result := TAbstractItem(inherited Items[Index]);
+end;
+
+function TPasItems.IndexOfLinkName(Link: string): Integer;
+begin
+  Link := StripLeading(Link);
+
+  Result := 0;
+  while (Result < Count) and not SameText(Items[Result].LinkName, Link) do
+    Inc(Result);
+  if Result >= Count then
+    Result := -1;
 end;
 
 function TPasItems.IndexOfName(const SimpleName: string): Integer;

@@ -16,6 +16,7 @@ procedure DiffLists(Source1, Source2, InBoth, NotInSource1, NotInSource2: TStrin
   const CaseSensitive: Boolean = False);
 procedure ExcludeList(Source, RemoveList: TStrings; const CaseSensitive: Boolean = False);
 procedure EnsureEndingCRLF(var S: string);
+function RemoveStartEndCRLF(const S: string): string;
 
 implementation
 
@@ -134,6 +135,23 @@ begin
   end
   else
     Result := AFileName;
+end;
+
+function RemoveStartEndCRLF(const S: string): string;
+var
+  I, J: Integer;
+begin
+  I := 1;
+  J := Length(S);
+  while (I <= J) and (S[I] in [#10, #13]) do
+    Inc(I);
+  while (I <= J) and (S[J] in [#10, #13]) do
+    Dec(J);
+
+  if I > J then
+    Result := ''
+  else
+    Result := Copy(S, I, J - I + 1);
 end;
 
 //=== TCaseSensitiveStringList ===============================================

@@ -156,6 +156,10 @@ type
     procedure JvFormStorage1RestorePlacement(Sender: TObject);
     procedure JvFormStorage1SavePlacement(Sender: TObject);
     procedure actCheckDtxFilesDialogExecute(Sender: TObject);
+    procedure lsbSourceDrawItem(Control: TWinControl; Index: Integer;
+      Rect: TRect; State: TOwnerDrawState);
+    procedure lsbDestDrawItem(Control: TWinControl; Index: Integer;
+      Rect: TRect; State: TOwnerDrawState);
   private
     FMainCtrl: TMainCtrl;
     function ProcessFilesAvailable: Boolean;
@@ -200,7 +204,7 @@ const
   CCheckPasFilesID = 5;
   CCheckCasingInPasFilesID = 6;
 
-//=== Local procedures =======================================================
+  //=== Local procedures =======================================================
 
 function DelTreeEx(const Path: string): Boolean;
 var
@@ -730,4 +734,30 @@ begin
   end;
 end;
 
+const
+  CFileStatusColors: array[TFileStatus] of TColor = (clGreen, clRed, clBlack);
+
+procedure TfrmMain.lsbSourceDrawItem(Control: TWinControl; Index: Integer;
+  Rect: TRect; State: TOwnerDrawState);
+begin
+  with Control as TListBox do
+  begin
+    Canvas.FillRect(Rect);
+    Canvas.Font.Color := CFileStatusColors[TFileStatus(Items.Objects[Index])];
+    Canvas.TextOut(Rect.Left + 2, Rect.Top, Items[Index])
+  end;
+end;
+
+procedure TfrmMain.lsbDestDrawItem(Control: TWinControl; Index: Integer;
+  Rect: TRect; State: TOwnerDrawState);
+begin
+  with Control as TListBox do
+  begin
+    Canvas.FillRect(Rect);
+    Canvas.Font.Color := CFileStatusColors[TFileStatus(Items.Objects[Index])];
+    Canvas.TextOut(Rect.Left + 2, Rect.Top, Items[Index])
+  end;
+end;
+
 end.
+

@@ -20,7 +20,7 @@ object frmDtxRename: TfrmDtxRename
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
-    TabOrder = 0
+    TabOrder = 2
     DesignSize = (
       581
       41)
@@ -58,245 +58,6 @@ object frmDtxRename: TfrmDtxRename
       Top = 0
       Height = 402
     end
-    object PageControl1: TPageControl
-      Left = 203
-      Top = 0
-      Width = 378
-      Height = 402
-      ActivePage = tshRename
-      Align = alClient
-      TabOrder = 0
-      object tshAdd: TTabSheet
-        Caption = 'Add'
-        object lsbAdd: TListBox
-          Left = 33
-          Top = 0
-          Width = 337
-          Height = 374
-          Style = lbVirtualOwnerDraw
-          Align = alClient
-          ItemHeight = 13
-          MultiSelect = True
-          TabOrder = 0
-          OnData = lsbAddData
-          OnDrawItem = lsbAddDrawItem
-        end
-        object Panel1: TPanel
-          Left = 0
-          Top = 0
-          Width = 33
-          Height = 374
-          Align = alLeft
-          BevelOuter = bvNone
-          TabOrder = 1
-          object btnIncludeAll: TButton
-            Left = 4
-            Top = 85
-            Width = 21
-            Height = 28
-            Action = actAddIncludeAll
-            TabOrder = 0
-          end
-          object btnExclude: TButton
-            Left = 4
-            Top = 114
-            Width = 21
-            Height = 28
-            Action = actAddInclude
-            TabOrder = 1
-          end
-          object btnInclude: TButton
-            Left = 4
-            Top = 143
-            Width = 21
-            Height = 28
-            Action = actAddExclude
-            TabOrder = 2
-          end
-          object btnExcludeAll: TButton
-            Left = 4
-            Top = 172
-            Width = 21
-            Height = 28
-            Action = actAddExcludeAll
-            TabOrder = 3
-          end
-        end
-      end
-      object tshRename: TTabSheet
-        Caption = 'Rename'
-        ImageIndex = 1
-        DesignSize = (
-          370
-          374)
-        object lsbRename: TListBox
-          Left = 0
-          Top = 216
-          Width = 285
-          Height = 158
-          Style = lbVirtual
-          Anchors = [akLeft, akTop, akRight, akBottom]
-          ItemHeight = 13
-          MultiSelect = True
-          TabOrder = 0
-          OnData = lsbRenameData
-        end
-        object lsbSource2: TListBox
-          Left = 0
-          Top = 0
-          Width = 370
-          Height = 177
-          Style = lbVirtualOwnerDraw
-          Align = alTop
-          ItemHeight = 13
-          TabOrder = 1
-          OnData = lsbSourceData
-          OnDrawItem = lsbSourceDrawItem
-        end
-        object Button5: TButton
-          Left = 120
-          Top = 184
-          Width = 75
-          Height = 25
-          Action = actRenameInclude
-          TabOrder = 2
-        end
-        object Button8: TButton
-          Left = 292
-          Top = 216
-          Width = 75
-          Height = 25
-          Action = actRenameExclude
-          Anchors = [akTop, akRight]
-          TabOrder = 3
-        end
-        object Button9: TButton
-          Left = 292
-          Top = 248
-          Width = 75
-          Height = 25
-          Action = actRenameExcludeAll
-          Anchors = [akTop, akRight]
-          TabOrder = 4
-        end
-      end
-      object tshSkip: TTabSheet
-        Caption = 'Skip'
-        ImageIndex = 2
-        object lsbSkip: TListBox
-          Left = 33
-          Top = 0
-          Width = 337
-          Height = 374
-          Style = lbVirtualOwnerDraw
-          Align = alClient
-          ItemHeight = 13
-          MultiSelect = True
-          TabOrder = 0
-          OnData = lsbSkipData
-          OnDrawItem = lsbSkipDrawItem
-        end
-        object Panel2: TPanel
-          Left = 0
-          Top = 0
-          Width = 33
-          Height = 374
-          Align = alLeft
-          BevelOuter = bvNone
-          TabOrder = 1
-          object Button1: TButton
-            Left = 4
-            Top = 85
-            Width = 21
-            Height = 28
-            Action = actSkipIncludeAll
-            TabOrder = 0
-          end
-          object Button2: TButton
-            Left = 4
-            Top = 114
-            Width = 21
-            Height = 28
-            Action = actSkipInclude
-            TabOrder = 1
-          end
-          object Button3: TButton
-            Left = 4
-            Top = 143
-            Width = 21
-            Height = 28
-            Action = actSkipExclude
-            TabOrder = 2
-          end
-          object Button4: TButton
-            Left = 4
-            Top = 172
-            Width = 21
-            Height = 28
-            Action = actSkipExcludeAll
-            TabOrder = 3
-          end
-        end
-      end
-      object tshDelete: TTabSheet
-        Caption = 'Delete'
-        ImageIndex = 3
-        object lsbDelete: TListBox
-          Left = 33
-          Top = 0
-          Width = 337
-          Height = 374
-          Style = lbVirtualOwnerDraw
-          Align = alClient
-          ItemHeight = 13
-          MultiSelect = True
-          TabOrder = 0
-          OnData = lsbDeleteData
-          OnDrawItem = lsbDeleteDrawItem
-        end
-        object Panel5: TPanel
-          Left = 0
-          Top = 0
-          Width = 33
-          Height = 374
-          Align = alLeft
-          BevelOuter = bvNone
-          TabOrder = 1
-          object Button10: TButton
-            Left = 4
-            Top = 85
-            Width = 21
-            Height = 28
-            Action = actDelIncludeAll
-            TabOrder = 0
-          end
-          object Button11: TButton
-            Left = 4
-            Top = 114
-            Width = 21
-            Height = 28
-            Action = actDelInclude
-            TabOrder = 1
-          end
-          object Button12: TButton
-            Left = 4
-            Top = 143
-            Width = 21
-            Height = 28
-            Action = actDelExclude
-            TabOrder = 2
-          end
-          object Button13: TButton
-            Left = 4
-            Top = 172
-            Width = 21
-            Height = 28
-            Action = actDelExcludeAll
-            TabOrder = 3
-          end
-        end
-      end
-    end
     object pnlSource: TPanel
       Left = 0
       Top = 0
@@ -304,7 +65,7 @@ object frmDtxRename: TfrmDtxRename
       Height = 402
       Align = alLeft
       BevelOuter = bvNone
-      TabOrder = 1
+      TabOrder = 0
       object lsbSource: TListBox
         Left = 0
         Top = 0
@@ -398,6 +159,298 @@ object frmDtxRename: TfrmDtxRename
         end
       end
     end
+    object Panel8: TPanel
+      Left = 203
+      Top = 0
+      Width = 378
+      Height = 402
+      Align = alClient
+      BevelOuter = bvNone
+      TabOrder = 1
+      object PageControl1: TPageControl
+        Left = 0
+        Top = 52
+        Width = 378
+        Height = 350
+        ActivePage = tshRename
+        Align = alClient
+        TabOrder = 1
+        object tshAdd: TTabSheet
+          Caption = 'Add'
+          object lsbAdd: TListBox
+            Left = 33
+            Top = 0
+            Width = 337
+            Height = 322
+            Style = lbVirtualOwnerDraw
+            Align = alClient
+            ItemHeight = 13
+            MultiSelect = True
+            TabOrder = 1
+            OnData = lsbAddData
+            OnDrawItem = lsbAddDrawItem
+          end
+          object Panel1: TPanel
+            Left = 0
+            Top = 0
+            Width = 33
+            Height = 322
+            Align = alLeft
+            BevelOuter = bvNone
+            TabOrder = 0
+            object btnIncludeAll: TButton
+              Left = 4
+              Top = 85
+              Width = 21
+              Height = 28
+              Action = actAddIncludeAll
+              TabOrder = 0
+            end
+            object btnExclude: TButton
+              Left = 4
+              Top = 114
+              Width = 21
+              Height = 28
+              Action = actAddInclude
+              TabOrder = 1
+            end
+            object btnInclude: TButton
+              Left = 4
+              Top = 143
+              Width = 21
+              Height = 28
+              Action = actAddExclude
+              TabOrder = 2
+            end
+            object btnExcludeAll: TButton
+              Left = 4
+              Top = 172
+              Width = 21
+              Height = 28
+              Action = actAddExcludeAll
+              TabOrder = 3
+            end
+          end
+        end
+        object tshRename: TTabSheet
+          Caption = 'Rename'
+          ImageIndex = 1
+          DesignSize = (
+            370
+            322)
+          object lsbRename: TListBox
+            Left = 0
+            Top = 216
+            Width = 285
+            Height = 106
+            Style = lbVirtual
+            Anchors = [akLeft, akTop, akRight, akBottom]
+            ItemHeight = 13
+            MultiSelect = True
+            TabOrder = 2
+            OnData = lsbRenameData
+          end
+          object lsbSource2: TListBox
+            Left = 0
+            Top = 0
+            Width = 370
+            Height = 177
+            Style = lbVirtualOwnerDraw
+            Align = alTop
+            ItemHeight = 13
+            TabOrder = 0
+            OnData = lsbSourceData
+            OnDrawItem = lsbSourceDrawItem
+          end
+          object Button5: TButton
+            Left = 120
+            Top = 184
+            Width = 75
+            Height = 25
+            Action = actRenameInclude
+            TabOrder = 1
+          end
+          object Button8: TButton
+            Left = 292
+            Top = 216
+            Width = 75
+            Height = 25
+            Action = actRenameExclude
+            Anchors = [akTop, akRight]
+            TabOrder = 3
+          end
+          object Button9: TButton
+            Left = 292
+            Top = 248
+            Width = 75
+            Height = 25
+            Action = actRenameExcludeAll
+            Anchors = [akTop, akRight]
+            TabOrder = 4
+          end
+        end
+        object tshSkip: TTabSheet
+          Caption = 'Skip'
+          ImageIndex = 2
+          object lsbSkip: TListBox
+            Left = 33
+            Top = 0
+            Width = 337
+            Height = 322
+            Style = lbVirtualOwnerDraw
+            Align = alClient
+            ItemHeight = 13
+            MultiSelect = True
+            TabOrder = 1
+            OnData = lsbSkipData
+            OnDrawItem = lsbSkipDrawItem
+          end
+          object Panel2: TPanel
+            Left = 0
+            Top = 0
+            Width = 33
+            Height = 322
+            Align = alLeft
+            BevelOuter = bvNone
+            TabOrder = 0
+            object Button1: TButton
+              Left = 4
+              Top = 85
+              Width = 21
+              Height = 28
+              Action = actSkipIncludeAll
+              TabOrder = 0
+            end
+            object Button2: TButton
+              Left = 4
+              Top = 114
+              Width = 21
+              Height = 28
+              Action = actSkipInclude
+              TabOrder = 1
+            end
+            object Button3: TButton
+              Left = 4
+              Top = 143
+              Width = 21
+              Height = 28
+              Action = actSkipExclude
+              TabOrder = 2
+            end
+            object Button4: TButton
+              Left = 4
+              Top = 172
+              Width = 21
+              Height = 28
+              Action = actSkipExcludeAll
+              TabOrder = 3
+            end
+          end
+        end
+        object tshDelete: TTabSheet
+          Caption = 'Delete'
+          ImageIndex = 3
+          object lsbDelete: TListBox
+            Left = 33
+            Top = 0
+            Width = 337
+            Height = 322
+            Style = lbVirtualOwnerDraw
+            Align = alClient
+            ItemHeight = 13
+            MultiSelect = True
+            TabOrder = 1
+            OnData = lsbDeleteData
+            OnDrawItem = lsbDeleteDrawItem
+          end
+          object Panel5: TPanel
+            Left = 0
+            Top = 0
+            Width = 33
+            Height = 322
+            Align = alLeft
+            BevelOuter = bvNone
+            TabOrder = 0
+            object Button10: TButton
+              Left = 4
+              Top = 85
+              Width = 21
+              Height = 28
+              Action = actDelIncludeAll
+              TabOrder = 0
+            end
+            object Button11: TButton
+              Left = 4
+              Top = 114
+              Width = 21
+              Height = 28
+              Action = actDelInclude
+              TabOrder = 1
+            end
+            object Button12: TButton
+              Left = 4
+              Top = 143
+              Width = 21
+              Height = 28
+              Action = actDelExclude
+              TabOrder = 2
+            end
+            object Button13: TButton
+              Left = 4
+              Top = 172
+              Width = 21
+              Height = 28
+              Action = actDelExcludeAll
+              TabOrder = 3
+            end
+          end
+        end
+      end
+      object Panel9: TPanel
+        Left = 0
+        Top = 0
+        Width = 378
+        Height = 52
+        Align = alTop
+        BevelOuter = bvNone
+        TabOrder = 0
+        DesignSize = (
+          378
+          52)
+        object Label1: TLabel
+          Left = 8
+          Top = 8
+          Width = 53
+          Height = 13
+          Caption = 'Unit status:'
+        end
+        object cmbUnitStatus: TComboBox
+          Left = 8
+          Top = 24
+          Width = 313
+          Height = 21
+          Anchors = [akLeft, akTop, akRight]
+          ItemHeight = 13
+          TabOrder = 0
+          Text = 'cmbUnitStatus'
+          Items.Strings = (
+            'Completed'
+            'Incomplete'
+            'Locked by ...'
+            'Partial documented'
+            'Review')
+        end
+        object Button14: TButton
+          Left = 328
+          Top = 24
+          Width = 43
+          Height = 21
+          Action = actResetUnitStatus
+          Anchors = [akTop, akRight]
+          TabOrder = 1
+        end
+      end
+    end
   end
   object Panel6: TPanel
     Left = 0
@@ -406,7 +459,7 @@ object frmDtxRename: TfrmDtxRename
     Height = 33
     Align = alTop
     BevelOuter = bvNone
-    TabOrder = 2
+    TabOrder = 0
     object ToolBar2: TToolBar
       Left = 0
       Top = 0
@@ -609,6 +662,10 @@ object frmDtxRename: TfrmDtxRename
       Caption = '<<'
       OnExecute = actDelExcludeAllExecute
       OnUpdate = DeleteHasItems
+    end
+    object actResetUnitStatus: TAction
+      Caption = 'Reset'
+      OnExecute = actResetUnitStatusExecute
     end
   end
   object JvAppRegistryStore1: TJvAppRegistryStorage

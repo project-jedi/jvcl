@@ -46,10 +46,12 @@ object frmMain: TfrmMain
       Top = 64
       Width = 233
       Height = 169
+      Style = lbOwnerDrawFixed
       ItemHeight = 13
       MultiSelect = True
       Sorted = True
       TabOrder = 1
+      OnDrawItem = lsbSourceDrawItem
     end
     object btnInclude: TButton
       Left = 246
@@ -88,10 +90,12 @@ object frmMain: TfrmMain
       Top = 64
       Width = 226
       Height = 169
+      Style = lbOwnerDrawFixed
       ItemHeight = 13
       MultiSelect = True
       Sorted = True
       TabOrder = 6
+      OnDrawItem = lsbDestDrawItem
     end
     object Button2: TButton
       Left = 400

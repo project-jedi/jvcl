@@ -382,7 +382,7 @@ begin
       AncestorName := ValueFromIndex(AIn2, -Index-1)
 //      AncestorName := AIn2.ValueFromIndex[-Index - 1]
     else
-      AncestorName := ValueFromIndex(AIn2, Index);
+      AncestorName := ValueFromIndex(AIn1, Index);
 //      AncestorName := AIn1.ValueFromIndex[Index];
     Index := AOut.IndexOf(AncestorName);
     AOut.Objects[I] := TObject(Index);
@@ -586,7 +586,7 @@ end;
 
 function TSettings.FileNameToPackage(const AFileName: string): string;
 begin
-  Result := FFilesInPackages.Values[ChangeFileExt(AFileName, '')];
+  Result := FFilesInPackages.Values[ChangeFileExt(ExtractFileName(AFileName), '')];
   if Result = '' then
     Result := '??';
 end;

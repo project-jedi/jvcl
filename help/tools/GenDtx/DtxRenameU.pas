@@ -95,6 +95,8 @@ type
     procedure SetShowNotInDtx(const Value: Boolean);
     procedure SetShowNotInDtxOptional(const Value: Boolean);
     procedure SetShowNotInPas(const Value: Boolean);
+    function GetUnitStatus: string;
+    procedure SetUnitStatus(Value: string);
   protected
     procedure UpdateFilteredSkipList;
     procedure UpdateFilteredAddList;
@@ -139,6 +141,7 @@ type
     procedure Init;
     procedure Apply;
 
+    property UnitStatus: string read GetUnitStatus write SetUnitStatus;
     property DtxList: TDtxItems read FDtxList write FDtxList;
     property PasList: TPasItems read FPasList write FPasList;
 
@@ -176,25 +179,6 @@ type
   TfrmDtxRename = class(TForm)
     Panel3: TPanel;
     Panel4: TPanel;
-    PageControl1: TPageControl;
-    tshAdd: TTabSheet;
-    lsbAdd: TListBox;
-    Panel1: TPanel;
-    btnIncludeAll: TButton;
-    btnExclude: TButton;
-    btnInclude: TButton;
-    btnExcludeAll: TButton;
-    tshRename: TTabSheet;
-    lsbRename: TListBox;
-    lsbSource2: TListBox;
-    Button5: TButton;
-    tshSkip: TTabSheet;
-    lsbSkip: TListBox;
-    Panel2: TPanel;
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
-    Button4: TButton;
     Button6: TButton;
     Button7: TButton;
     ActionList1: TActionList;
@@ -240,10 +224,34 @@ type
     lblInPasInDtxCount: TLabel;
     lblOptionalInDtxCount: TLabel;
     lblOptionalNotInDtxCount: TLabel;
-    Button8: TButton;
-    Button9: TButton;
     actRenameExcludeAll: TAction;
     actRenameExclude: TAction;
+    actDelInclude: TAction;
+    actDelExclude: TAction;
+    actDelIncludeAll: TAction;
+    actDelExcludeAll: TAction;
+    Panel8: TPanel;
+    PageControl1: TPageControl;
+    tshAdd: TTabSheet;
+    lsbAdd: TListBox;
+    Panel1: TPanel;
+    btnIncludeAll: TButton;
+    btnExclude: TButton;
+    btnInclude: TButton;
+    btnExcludeAll: TButton;
+    tshRename: TTabSheet;
+    lsbRename: TListBox;
+    lsbSource2: TListBox;
+    Button5: TButton;
+    Button8: TButton;
+    Button9: TButton;
+    tshSkip: TTabSheet;
+    lsbSkip: TListBox;
+    Panel2: TPanel;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
     tshDelete: TTabSheet;
     lsbDelete: TListBox;
     Panel5: TPanel;
@@ -251,10 +259,11 @@ type
     Button11: TButton;
     Button12: TButton;
     Button13: TButton;
-    actDelInclude: TAction;
-    actDelExclude: TAction;
-    actDelIncludeAll: TAction;
-    actDelExcludeAll: TAction;
+    Panel9: TPanel;
+    Label1: TLabel;
+    cmbUnitStatus: TComboBox;
+    Button14: TButton;
+    actResetUnitStatus: TAction;
     procedure actAddExcludeAllExecute(Sender: TObject);
     procedure actAddExcludeExecute(Sender: TObject);
     procedure actAddIncludeAllExecute(Sender: TObject);
@@ -313,6 +322,7 @@ type
       Rect: TRect; State: TOwnerDrawState);
     procedure AddHasItems(Sender: TObject);
     procedure BothSourceHasSelItems(Sender: TObject);
+    procedure actResetUnitStatusExecute(Sender: TObject);
   private
     FList: TRenameCtrl;
     FShowColors: Boolean;
@@ -329,9 +339,12 @@ type
     procedure InitLabels;
     procedure UpdateCounters;
     procedure UpdateListBoxStyles;
+    procedure UpdateUnitStatus;
 
     procedure LoadOptions;
     procedure SaveOptions;
+
+    procedure Apply;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -854,7 +867,7 @@ begin
 
     Result := ShowModal = mrOk;
     if Result then
-      FList.Apply;
+      Apply;
 
     SaveOptions;
   finally
@@ -881,6 +894,7 @@ begin
 
   InitLabels;
   UpdateListBoxStyles;
+  UpdateUnitStatus;
 
   Caption := Format('Updating %s', [ChangeFileExt(ExtractFileName(FList.PasList.FileName), '')]);
 end;
@@ -1370,7 +1384,7 @@ begin
     for I := 0 to FDtxList.SkipList.Count - 1 do
       AddToSkipList_NF(FSourceList.IndexOf(FDtxList.SkipList[I]));
 
-//    FOriginalSourceList.Assign(FSourceList);
+    //    FOriginalSourceList.Assign(FSourceList);
 
     ConstructRenames;
   finally
@@ -1629,6 +1643,20 @@ begin
   Result := FFilteredSourceList[Index];
 end;
 
+function TRenameCtrl.GetUnitStatus: string;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := FDtxList.Count - 1 downto 0 do
+    if (FDtxList.Items[I] is TDtxStartItem) and
+      (TDtxStartItem(FDtxList.Items[I]).Symbol = dssStatus) then
+    begin
+      Result := RemoveStartEndCRLF(TDtxStartItem(FDtxList.Items[I]).Data);
+      Exit;
+    end;
+end;
+
 function TRenameCtrl.InAddList(const S: string): Boolean;
 begin
   Result := FAddList.IndexOf(S) >= 0;
@@ -1794,6 +1822,30 @@ begin
   end;
 end;
 
+procedure TRenameCtrl.SetUnitStatus(Value: string);
+var
+  I: Integer;
+  Item: TDtxStartItem;
+begin
+  Value := Trim(Value);
+  EnsureEndingCRLF(Value);
+
+  for I := FDtxList.Count - 1 downto 0 do
+    if (FDtxList.Items[I] is TDtxStartItem) and
+      (TDtxStartItem(FDtxList.Items[I]).Symbol = dssStatus) then
+    begin
+      TDtxStartItem(FDtxList.Items[I]).Data := Value;
+      Exit;
+    end;
+
+  { Create new }
+  Item := TDtxStartItem.Create;
+  Item.Symbol := dssStatus;
+  Item.Data := Value;
+
+  FDtxList.Add(Item);
+end;
+
 function TRenameCtrl.SkipIndex(const FilterSkipIndex: Integer): Integer;
 begin
   if FilterSkipIndex < 0 then
@@ -1919,4 +1971,21 @@ begin
     TAction(Sender).Enabled := (lsbSource.ItemIndex >= 0) and (lsbSource2.ItemIndex >= 0);
 end;
 
+procedure TfrmDtxRename.Apply;
+begin
+  FList.UnitStatus := cmbUnitStatus.Text;
+  FList.Apply;
+end;
+
+procedure TfrmDtxRename.UpdateUnitStatus;
+begin
+  cmbUnitStatus.Text := FList.UnitStatus;
+end;
+
+procedure TfrmDtxRename.actResetUnitStatusExecute(Sender: TObject);
+begin
+  UpdateUnitStatus;
+end;
+
 end.
+
