@@ -397,8 +397,11 @@ type
     FSource: string;
     FUsesList: TNameArray;
   public
+    function UsesList: TNameArray;
+
     property Source: string read FSource;
-    property UsesList: TNameArray read FUsesList;
+    // Removed because BCB doesn't support it
+    //property UsesList: TNameArray read FUsesList;
   end;
 
   TJvInterpreterMethod = class(TJvInterpreterIdentifier)
@@ -7816,6 +7819,13 @@ begin
   TVarData(V).VType := varEmpty;
   if FTyp <> 0 then
     V := Var2Type(V, FTyp);
+end;
+
+{ TJvInterpreterSrcUnit }
+
+function TJvInterpreterSrcUnit.UsesList: TNameArray;
+begin
+  Result := FUsesList;
 end;
 
 initialization
