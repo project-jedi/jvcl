@@ -34,12 +34,9 @@ unit JvOfficeColorForm;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   {$IFDEF VCL}
-  Graphics, Controls, Forms,
+  Windows, Messages, Graphics, Controls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, Types, Qt, QGraphics, QControls, QStdCtrls, QForms, QExtCtrls,

@@ -31,9 +31,10 @@ unit JvThemes;
 
 interface
 uses
-  {$IFDEF MSWINDOWS}
+  SysUtils, Classes,
+
+  {$IFDEF VCL}
   Windows, Messages,
-  {$ENDIF MSWINDOWS}
   {$IFDEF JVCLThemesEnabled}
   Contnrs,
   {$IFDEF COMPILER7_UP}
@@ -42,13 +43,13 @@ uses
   ThemeSrv,
   {$ENDIF COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-  {$IFDEF VCL}
   Controls, StdCtrls, Graphics, Buttons,
   {$ENDIF VCL}
+
   {$IFDEF VisualCLX}
   QControls, QForms, QGraphics, QButtons, Types, QWindows,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
+
   JvFinalize;
 
 const

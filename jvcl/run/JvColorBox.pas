@@ -49,11 +49,8 @@ unit JvColorBox;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Forms, Graphics, Controls, Dialogs, ExtCtrls, StdCtrls, Buttons, Menus,
+  Windows, Messages, Forms, Graphics, Controls, Dialogs, ExtCtrls, StdCtrls, Buttons, Menus,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QForms, QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, QButtons,

@@ -33,12 +33,9 @@ unit JvContentScroller;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   {$IFDEF VCL}
-  Graphics, Controls, Forms, Dialogs, ExtCtrls,
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls, QTypes,

@@ -30,12 +30,9 @@ unit JvBitBtn;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   {$IFDEF VCL}
-  Graphics, Controls, Forms, Buttons, Menus,
+  Windows, Messages, Graphics, Controls, Forms, Buttons, Menus,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QButtons, QMenus,
