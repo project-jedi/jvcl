@@ -28,78 +28,88 @@ unit JvDynControlEngine;
 
 interface
 
-uses  Classes, Controls, Forms, StdCtrls, Graphics, Buttons,
+uses
+  Classes, Controls, Forms, StdCtrls, Graphics, Buttons,
   JvDynControlEngine_Interface;
 
 type
-  tJvDynControlType = (
-    jctLabel,
-    jctStaticText,
-    jctPanel,
-    jctScrollbox,
-    jctEdit,
-    jctCheckbox,
-    jctComboBox,
-    jctGroupBox,
-    jctImage,
-    jctRadioGroup,
-    jctMemo,
-    jctListBox,
-    jctDateTimeEdit,
-    jctDateEdit,
-    jctTimeEdit,
-    jctIntegerEdit,
-    jctDoubleEdit,
-    jctDirectoryEdit,
-    jctFileNameEdit,
-    jctButton,
-    jctForm);
+  TJvDynControlType =
+   (jctLabel,jctStaticText, jctPanel, jctScrollBox,
+    jctEdit, jctCheckbox, jctComboBox, jctGroupBox, jctImage, jctRadioGroup,
+    jctMemo, jctListBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit,
+    jctIntegerEdit, jctDoubleEdit, jctDirectoryEdit, jctFileNameEdit,
+    jctButton, jctForm);
 
-  tJvDynControlEngine = class (TPersistent)
+  TJvDynControlEngine = class(TPersistent)
   private
-    fRegisteredControlTypes : array [tJvDynControlType] of TControlClass;
+    FRegisteredControlTypes: array [TJvDynControlType] of TControlClass;
     function GetPropName(Instance: TPersistent; Index: Integer): string;
     function GetPropCount(Instance: TPersistent): Integer;
   protected
-    procedure SetPropertyValue(const aPersistent : TPersistent; const aPropertyName : string; const aValue : variant);
-    function GetPropertyValue(const aPersistent : TPersistent; const aPropertyName : string) : variant;
+    procedure SetPropertyValue(const APersistent: TPersistent; const APropertyName: string; const AValue: Variant);
+    function GetPropertyValue(const APersistent: TPersistent; const APropertyName: string): Variant;
   public
     constructor Create; virtual;
     destructor Destroy; override;
-    function CreateControl(aControlType : tJvDynControlType; aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tControl; virtual;
-    function CreateControlClass(aControlClass : tControlClass; aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tControl; virtual;
-    function CreateLabelControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aCaption : string; aFocusControl : TWinControl) : tControl; virtual;
-    function CreateStaticTextControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aCaption : string) : tWinControl; virtual;
-    function CreatePanelControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aCaption : string; aAlign : TAlign) : tWinControl; virtual;
-    function CreateScrollBoxControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl; virtual;
-    function CreateEditControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl; virtual;
-    function CreateCheckboxControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aCaption : string) : tWinControl; virtual;
-    function CreateComboBoxControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aItems : TStringList) : tWinControl; virtual;
-    function CreateGroupBoxControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aCaption : string) : tWinControl; virtual;
-    function CreateImageControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl; virtual;
-    function CreateRadioGroupControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aCaption : string; aItems : TStrings; aItemIndex : integer = 0) : tWinControl; virtual;
-//          function CreatePageControlControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl; virtual;
-    function CreateMemoControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl; virtual;
-    function CreateListBoxControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aItems : TStringList) : tWinControl; virtual;
-    function CreateDateTimeControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl; virtual;
-    function CreateDateControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl; virtual;
-    function CreateTimeControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl; virtual;
-    function CreateIntegerControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl; virtual;
-    function CreateDoubleControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl; virtual;
-    function CreateDirectoryControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl; virtual;
-    function CreateFileNameControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl; virtual;
-    function CreateButton(aOwner : TComponent; aParentControl : tWinControl; aButtonName : string; aCaption : string; aHint : string; aOnClick : TNotifyEvent; aDefault : boolean = false; aCancel : boolean = false) : TButton; virtual;
-    function CreateForm(aCaption : string; aHint : string) : tCustomForm; virtual;
+    function CreateControl(AControlType: TJvDynControlType; AOwner: TComponent;
+      AParentControl: TWinControl; AControlName: string): TControl; virtual;
+    function CreateControlClass(AControlClass: TControlClass; AOwner: TComponent;
+      AParentControl: TWinControl; AControlName: string): TControl; virtual;
+    function CreateLabelControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string; ACaption: string; AFocusControl: TWinControl): TControl; virtual;
+    function CreateStaticTextControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string; ACaption: string): TWinControl; virtual;
+    function CreatePanelControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string; ACaption: string; AAlign: TAlign): TWinControl; virtual;
+    function CreateScrollBoxControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string): TWinControl; virtual;
+    function CreateEditControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string): TWinControl; virtual;
+    function CreateCheckboxControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string; ACaption: string): TWinControl; virtual;
+    function CreateComboBoxControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string; AItems: TStrings): TWinControl; virtual;
+    function CreateGroupBoxControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string; ACaption: string): TWinControl; virtual;
+    function CreateImageControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string): TWinControl; virtual;
+    function CreateRadioGroupControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string; ACaption: string; AItems: TStrings;
+      AItemIndex: Integer = 0): TWinControl; virtual;
+    // function CreatePageControlControl(AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TWinControl; virtual;
+    function CreateMemoControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string): TWinControl; virtual;
+    function CreateListBoxControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string; AItems: TStrings): TWinControl; virtual;
+    function CreateDateTimeControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string): TWinControl; virtual;
+    function CreateDateControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string): TWinControl; virtual;
+    function CreateTimeControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string): TWinControl; virtual;
+    function CreateIntegerControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string): TWinControl; virtual;
+    function CreateDoubleControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string): TWinControl; virtual;
+    function CreateDirectoryControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string): TWinControl; virtual;
+    function CreateFileNameControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string): TWinControl; virtual;
+    function CreateButton(AOwner: TComponent; AParentControl: TWinControl;
+      AButtonName: string; ACaption: string; AHint: string;
+      AOnClick: TNotifyEvent; ADefault: Boolean = False;
+      ACancel: Boolean = False): TButton; virtual;
+    function CreateForm(ACaption: string; AHint: string): TCustomForm; virtual;
 
-    procedure RegisterControl(const aDynControlType : tJvDynControlType; aControlClass : TControlClass); virtual;
+    procedure RegisterControl(const ADynControlType: TJvDynControlType;
+      AControlClass: TControlClass); virtual;
 
-    procedure SetControlCaption(aControl : IJvDynControl; Value : string);
-    procedure SetControlTabOrder(aControl : IJvDynControl; Value : integer);
+    procedure SetControlCaption(AControl: IJvDynControl; Value: string);
+    procedure SetControlTabOrder(AControl: IJvDynControl; Value: Integer);
 
-    procedure SetControlOnEnter(aControl : IJvDynControl; Value : TNotifyEvent);
-    procedure SetControlOnExit(aControl : IJvDynControl; Value : TNotifyEvent);
-    procedure SetControlOnClick(aControl : IJvDynControl; Value : TNotifyEvent);
-  published
+    procedure SetControlOnEnter(AControl: IJvDynControl; Value: TNotifyEvent);
+    procedure SetControlOnExit(AControl: IJvDynControl; Value: TNotifyEvent);
+    procedure SetControlOnClick(AControl: IJvDynControl; Value: TNotifyEvent);
   end;
 
 {$IFNDEF COMPILER6_UP}
@@ -107,20 +117,30 @@ function Supports(Instance: TObject; const Intf: TGUID): Boolean; overload;
 function Supports(AClass: TClass; const Intf: TGUID): Boolean; overload;
 {$ENDIF COMPILER6_UP}
 function IntfCast(Instance: TObject; const Intf: TGUID): IUnknown;
-procedure SetDefaultDynControlEngine(aEngine : tJvDynControlEngine);
-function DefaultDynControlEngine : tJvDynControlEngine;
+procedure SetDefaultDynControlEngine(AEngine: TJvDynControlEngine);
+function DefaultDynControlEngine: TJvDynControlEngine;
+
+resourcestring
+  SIntfCastError = 'SIntfCastError';
 
 implementation
 
-uses {$IFDEF COMPILER6_UP}
-     Variants,
-     {$ENDIF}
-     TypInfo, SysUtils, JvTypes, JVDynControlEngine_VCL;
+uses
+  TypInfo, SysUtils,
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  JvTypes, JVDynControlEngine_VCL;
+
+resourcestring
+  SUnsupportedControlClass = 'TJvDynControlEngine.RegisterControl: Unsupported ControlClass';
+  SNoRegisteredControlClass = 'TJvDynControlEngine.CreateControl: No Registered ControlClass';
 
 var
-  fDefaultDynControlEngine : tJvDynControlEngine;
+  GlobalDefaultDynControlEngine: TJvDynControlEngine = nil;
 
 {$IFNDEF COMPILER6_UP}
+
 function Supports(Instance: TObject; const Intf: TGUID): Boolean;
 begin
   Result := Instance.GetInterfaceEntry(Intf) <> nil;
@@ -130,63 +150,67 @@ function Supports(AClass: TClass; const Intf: TGUID): Boolean;
 begin
   Result := AClass.GetInterfaceEntry(Intf) <> nil;
 end;
+
 {$ENDIF COMPILER6_UP}
 
 function IntfCast(Instance: TObject; const Intf: TGUID): IUnknown;
 begin
   if not Supports(Instance, Intf, Result) then
-    raise EIntfCastError.Create('SIntfCastError');
+    raise EIntfCastError.Create(SIntfCastError);
 end;
 
-constructor tJvDynControlEngine.Create;
+constructor TJvDynControlEngine.Create;
 begin
   inherited Create;
 end;
 
-destructor tJvDynControlEngine.Destroy;
+destructor TJvDynControlEngine.Destroy;
 begin
   inherited Destroy;
 end;
 
-procedure tJvDynControlEngine.RegisterControl(const aDynControlType : tJvDynControlType; aControlClass : TControlClass);
+procedure TJvDynControlEngine.RegisterControl(const ADynControlType: TJvDynControlType;
+  AControlClass: TControlClass);
 var
-  Valid : boolean;
+  Valid: Boolean;
 begin
-  fRegisteredControlTypes[aDynControlType] := nil;
-  Valid := Supports(aControlClass, IJvDynControl);
-  case aDynControlType of
-    jctButton : Valid   := Valid and Supports(aControlClass, IJvDynControlButton);
-    jctPanel : Valid    := Valid and Supports(aControlClass, IJvDynControlPanel);
-    jctLabel : Valid    := Valid and Supports(aControlClass, IJvDynControlLabel);
-    jctMemo : Valid     := Valid and Supports(aControlClass, IJvDynControlItems) and Supports(aControlClass, IJvDynControlData) and Supports(aControlClass, IJvDynControlMemo);
-    jctRadioGroup,
-    jctCombobox : Valid := Valid and Supports(aControlClass, IJvDynControlItems) and Supports(aControlClass, IJvDynControlData);
-    jctEdit,
-    jctIntegerEdit,
-    jctDoubleEdit,
-    jctFilenameEdit,
-    jctDirectoryEdit,
-    jctCheckBox,
-    jctDateTimeEdit,
-    jctDateEdit,
-    jctTimeEdit : Valid := Valid and Supports(aControlClass, IJvDynControlData);
+  FRegisteredControlTypes[ADynControlType] := nil;
+  Valid := Supports(AControlClass, IJvDynControl);
+  case ADynControlType of
+    jctButton:
+      Valid := Valid and Supports(AControlClass, IJvDynControlButton);
+    jctPanel:
+      Valid := Valid and Supports(AControlClass, IJvDynControlPanel);
+    jctLabel:
+      Valid := Valid and Supports(AControlClass, IJvDynControlLabel);
+    jctMemo:
+      Valid := Valid and
+        Supports(AControlClass, IJvDynControlItems) and
+        Supports(AControlClass, IJvDynControlData) and
+        Supports(AControlClass, IJvDynControlMemo);
+    jctRadioGroup, jctComboBox:
+      Valid := Valid and
+        Supports(AControlClass, IJvDynControlItems) and
+        Supports(AControlClass, IJvDynControlData);
+    jctEdit, jctIntegerEdit, jctDoubleEdit, jctFilenameEdit, jctDirectoryEdit,
+    jctCheckBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit:
+      Valid := Valid and Supports(AControlClass, IJvDynControlData);
   end;
   if Valid then
-    fRegisteredControlTypes[aDynControlType] := aControlClass
+    FRegisteredControlTypes[ADynControlType] := AControlClass
   else
-    raise EJvclException.Create('tJvDynControlEngine.RegisterControl : Unsupported ControlClass');
+    raise EJvclException.Create(SUnsupportedControlClass);
 end;
 
-function tJvDynControlEngine.GetPropCount(Instance: TPersistent): Integer;
+function TJvDynControlEngine.GetPropCount(Instance: TPersistent): Integer;
 var
   Data: PTypeData;
 begin
-  Data   := GetTypeData(Instance.Classinfo);
+  Data := GetTypeData(Instance.ClassInfo);
   Result := Data^.PropCount;
 end;
 
-
-function tJvDynControlEngine.GetPropName(Instance: TPersistent; Index: Integer): string;
+function TJvDynControlEngine.GetPropName(Instance: TPersistent; Index: Integer): string;
 var
   PropList: PPropList;
   PropInfo: PPropInfo;
@@ -194,348 +218,379 @@ var
 begin
   Result := '';
   Data := GetTypeData(Instance.ClassInfo);
-  GetMem(PropList, Data^.PropCount * Sizeof(PPropInfo));
+  GetMem(PropList, Data^.PropCount * SizeOf(PPropInfo));
   try
     GetPropInfos(Instance.ClassInfo, PropList);
     PropInfo := PropList^[Index];
     Result := PropInfo^.Name;
   finally
-    FreeMem(PropList, Data^.PropCount * Sizeof(PPropInfo));
+    FreeMem(PropList, Data^.PropCount * SizeOf(PPropInfo));
   end;
 end;
 
-
-procedure tJvDynControlEngine.SetPropertyValue(const aPersistent : TPersistent; const aPropertyName : string; const aValue : variant);
-var Index : Integer;
-    PropName : String;
-    SubObj: TObject;
-    p: Integer;
-    SearchName: String;
-    LastName: String;
+procedure TJvDynControlEngine.SetPropertyValue(const APersistent: TPersistent;
+  const APropertyName: string; const AValue: Variant);
+var
+  Index: Integer;
+  PropName: string;
+  SubObj: TObject;
+  P: Integer;
+  SearchName: string;
+  LastName: string;
 begin
-  SearchName := trim(aPropertyName);
-  p := Pos('.', SearchName);
-  IF p > 0 THEN
+  SearchName := Trim(APropertyName);
+  P := Pos('.', SearchName);
+  if P > 0 then
   begin
-    LastName := trim(Copy (SearchName, p+1, Length(SearchName)-p));
-    SearchName := trim(Copy (SearchName, 1, p-1));
+    LastName := Trim(Copy(SearchName, P + 1, Length(SearchName) - P));
+    SearchName := Trim(Copy(SearchName, 1, P - 1));
   end
   else
-    lastname := '';
-  for Index := 0 to GetPropCount(aPersistent) - 1 do
+    LastName := '';
+  for Index := 0 to GetPropCount(APersistent) - 1 do
   begin
-    PropName := Uppercase(GetPropName(aPersistent, Index));
-    if not (Uppercase(SearchName) = PropName) then
-      continue;
-    case PropType(aPersistent, PropName) of
+    PropName := UpperCase(GetPropName(APersistent, Index));
+    if not (UpperCase(SearchName) = PropName) then
+      Continue;
+    case PropType(APersistent, PropName) of
       tkLString, tkWString, tkString:
-        SetStrProp(aPersistent, PropName, VarToStr(aValue));
-      tkEnumeration,
-      tkSet,
-      tkChar, tkInteger:
-        SetOrdProp(aPersistent, PropName, aValue);
+        SetStrProp(APersistent, PropName, VarToStr(AValue));
+      tkEnumeration, tkSet, tkChar, tkInteger:
+        SetOrdProp(APersistent, PropName, AValue);
 //      tkInt64:
-//        SetInt64Prop(aPersistent, PropName, aValue);
+//        SetInt64Prop(APersistent, PropName, AValue);
       tkFloat:
-        SetFloatProp(aPersistent, PropName, aValue);
+        SetFloatProp(APersistent, PropName, AValue);
       tkClass:
         begin
-          SubObj := GetObjectProp(aPersistent, PropName);
+          SubObj := GetObjectProp(APersistent, PropName);
           if SubObj is TStrings then
-            TStrings(SubObj).Text := aValue
-          else if (SubObj is TPersistent) AND (LastName <> '') then
-            SetPropertyValue(tPersistent(SubObj), LastName, aValue);
+            TStrings(SubObj).Text := AValue
+          else
+          if (SubObj is TPersistent) and (LastName <> '') then
+            SetPropertyValue(TPersistent(SubObj), LastName, AValue);
         end;
     end;
   end;
 end;
 
-function tJvDynControlEngine.GetPropertyValue(const aPersistent : TPersistent; const aPropertyName : string) : variant;
-var Index : Integer;
-    PropName : String;
-    SubObj: TObject;
-    p: Integer;
-    SearchName: String;
-    LastName: String;
+function TJvDynControlEngine.GetPropertyValue(const APersistent: TPersistent;
+  const APropertyName: string): Variant;
+var
+  Index: Integer;
+  PropName: string;
+  SubObj: TObject;
+  P: Integer;
+  SearchName: string;
+  LastName: string;
 begin
-  SearchName := trim(aPropertyName);
-  p := Pos('.', SearchName);
-  IF p > 0 THEN
+  SearchName := Trim(APropertyName);
+  P := Pos('.', SearchName);
+  if P > 0 then
   begin
-    LastName := trim(Copy (SearchName, p+1, Length(SearchName)-p));
-    SearchName := trim(Copy (SearchName, 1, p-1));
+    LastName := Trim(Copy(SearchName, P + 1, Length(SearchName) - P));
+    SearchName := Trim(Copy(SearchName, 1, P - 1));
   end
   else
-    lastname := '';
-  for Index := 0 to GetPropCount(aPersistent) - 1 do
+    LastName := '';
+  for Index := 0 to GetPropCount(APersistent) - 1 do
   begin
-    PropName := Uppercase(GetPropName(aPersistent, Index));
-    if not (Uppercase(SearchName) = PropName) then
-      continue;
-    case PropType(aPersistent, PropName) of
+    PropName := UpperCase(GetPropName(APersistent, Index));
+    if not (UpperCase(SearchName) = PropName) then
+      Continue;
+    case PropType(APersistent, PropName) of
       tkLString, tkWString, tkString:
-        Result := GetStrProp(aPersistent, PropName);
-      tkEnumeration,
-      tkSet,
-      tkChar, tkInteger:
-        Result := GetOrdProp(aPersistent, PropName);
+        Result := GetStrProp(APersistent, PropName);
+      tkEnumeration, tkSet, tkChar, tkInteger:
+        Result := GetOrdProp(APersistent, PropName);
       tkInt64:
         {$IFDEF COMPILER6_UP}
-        Result := GetInt64Prop(aPersistent, PropName);
-        {$ELSE}
+        Result := GetInt64Prop(APersistent, PropName);
+       {$ELSE}
         Result := Null;
-        {$ENDIF}
+       {$ENDIF}
       tkFloat:
-        Result := GetFloatProp(aPersistent, PropName);
+        Result := GetFloatProp(APersistent, PropName);
       tkClass:
         begin
-          SubObj := GetObjectProp(aPersistent, PropName);
+          SubObj := GetObjectProp(APersistent, PropName);
           if SubObj is TStrings then
             Result := TStrings(SubObj).Text
-          else if (SubObj is TPersistent) AND (LastName <> '') then
-            Result := GetPropertyValue(tPersistent(SubObj), LastName);
+          else
+          if (SubObj is TPersistent) and (LastName <> '') then
+            Result := GetPropertyValue(TPersistent(SubObj), LastName);
         end;
     end;
   end;
 end;
 
-function tJvDynControlEngine.CreateControl(aControlType : tJvDynControlType; aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tControl;
+function TJvDynControlEngine.CreateControl(AControlType: TJvDynControlType;
+  AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
 var
-  Control : tControl;
+  Control: TControl;
 begin
-  if Assigned(fRegisteredControlTypes[aControlType]) then
-    Result := CreateControlClass(fRegisteredControlTypes[aControlType], aOwner, aParentControl, aControlName)
-  else if aControlType = jctForm then
+  if Assigned(FRegisteredControlTypes[AControlType]) then
+    Result := CreateControlClass(FRegisteredControlTypes[AControlType], AOwner,
+      AParentControl, AControlName)
+  else
+  if AControlType = jctForm then
   begin
-    Result := tControl(TForm.Create(aOwner));
-    if aControlName <> '' then
-      Result.Name := aControlName;
+    Result := TControl(TForm.Create(AOwner));
+    if AControlName <> '' then
+      Result.Name := AControlName;
   end
   else
     Result := nil;
   if Result = nil then
-    raise EJvclException.Create('tJvDynControlEngine.CreateControl : No Registered ControlClass');
+    raise EJvclException.Create(SNoRegisteredControlClass);
 end;
 
-function tJvDynControlEngine.CreateControlClass(aControlClass : tControlClass; aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tControl;
+function TJvDynControlEngine.CreateControlClass(AControlClass: TControlClass;
+  AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
 var
   DynCtrl: IJvDynControl;
 begin
-  Result := tControl(aControlClass.Create(aOwner));
+  Result := TControl(AControlClass.Create(AOwner));
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create('SIntfCastError');
+    raise EIntfCastError.Create(SIntfCastError);
   with DynCtrl do
     ControlSetDefaultProperties;
-  if Assigned(aParentControl) then
-    Result.Parent := aParentControl;
-  if aControlName <> '' then
-    Result.Name := aControlName;
+  if Assigned(AParentControl) then
+    Result.Parent := AParentControl;
+  if AControlName <> '' then
+    Result.Name := AControlName;
 end;
 
-function tJvDynControlEngine.CreateLabelControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aCaption : string; aFocusControl : TWinControl) : tControl;
+function TJvDynControlEngine.CreateLabelControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string; ACaption: string;
+  AFocusControl: TWinControl): TControl;
 var
   DynCtrl: IJvDynControl;
 begin
-  Result := CreateControl(jctLabel, aOwner, aParentControl, aControlName);
+  Result := CreateControl(jctLabel, AOwner, AParentControl, AControlName);
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create('SIntfCastError');
+    raise EIntfCastError.Create(SIntfCastError);
   with DynCtrl do
-    ControlSetCaption(aCaption);
+    ControlSetCaption(ACaption);
   with DynCtrl as IJvDynControlLabel do
-    ControlSetFocusControl(aFocusControl);
+    ControlSetFocusControl(AFocusControl);
 end;
 
-function tJvDynControlEngine.CreateStaticTextControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aCaption : string) : tWinControl;
+function TJvDynControlEngine.CreateStaticTextControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string; ACaption: string): TWinControl;
 var
   DynCtrl: IJvDynControl;
 begin
-  Result := tWinControl(CreateControl(jctStaticText, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctStaticText, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create('SIntfCastError');
+    raise EIntfCastError.Create(SIntfCastError);
   with DynCtrl do
-    ControlSetCaption(aCaption);
+    ControlSetCaption(ACaption);
 end;
 
-
-function tJvDynControlEngine.CreatePanelControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aCaption : string; aAlign : TAlign) : tWinControl;
+function TJvDynControlEngine.CreatePanelControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string;
+  ACaption: string; AAlign: TAlign): TWinControl;
 var
   DynCtrl: IJvDynControl;
 begin
-  Result := tWinControl(CreateControl(jctPanel, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctPanel, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create('SIntfCastError');
+    raise EIntfCastError.Create(SIntfCastError);
   with DynCtrl do
-    ControlSetCaption(aCaption);
-  Result.Align := aAlign;
+    ControlSetCaption(ACaption);
+  Result.Align := AAlign;
 end;
 
-function tJvDynControlEngine.CreateScrollBoxControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl;
+function TJvDynControlEngine.CreateScrollBoxControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string): TWinControl;
 begin
-  Result := tWinControl(CreateControl(jctScrollBox, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctScrollBox, AOwner, AParentControl, AControlName));
 end;
 
-function tJvDynControlEngine.CreateEditControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl;
+function TJvDynControlEngine.CreateEditControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string): TWinControl;
 begin
-  Result := tWinControl(CreateControl(jctEdit, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctEdit, AOwner, AParentControl, AControlName));
 end;
 
-function tJvDynControlEngine.CreateCheckboxControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aCaption : string) : tWinControl;
+function TJvDynControlEngine.CreateCheckboxControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string; ACaption: string): TWinControl;
 var
   DynCtrl: IJvDynControl;
 begin
-  Result := tWinControl(CreateControl(jctCheckBox, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctCheckBox, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create('SIntfCastError');
+    raise EIntfCastError.Create(SIntfCastError);
   with DynCtrl do
-    ControlSetCaption(aCaption);
+    ControlSetCaption(ACaption);
 end;
 
-function tJvDynControlEngine.CreateComboBoxControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aItems : TStringList) : tWinControl;
+function TJvDynControlEngine.CreateComboBoxControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string; AItems: TStrings): TWinControl;
 var
   DynCtrl: IJvDynControl;
   DynCtrlItems: IJvDynControlItems;
 begin
-  Result := tWinControl(CreateControl(jctComboBox, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctComboBox, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create('SIntfCastError');
+    raise EIntfCastError.Create(SIntfCastError);
   if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
-    raise EIntfCastError.Create('SIntfCastError');
-  DynCtrlItems.Items := aItems;  
+    raise EIntfCastError.Create(SIntfCastError);
+  // (rom) better Assign?
+  DynCtrlItems.Items := AItems;
 end;
 
-function tJvDynControlEngine.CreateGroupBoxControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aCaption : string) : tWinControl;
+function TJvDynControlEngine.CreateGroupBoxControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string; ACaption: string): TWinControl;
 var
   DynCtrl: IJvDynControl;
 begin
-  Result := tWinControl(CreateControl(jctGroupBox, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctGroupBox, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create('SIntfCastError');
+    raise EIntfCastError.Create(SIntfCastError);
   with DynCtrl do
-    ControlSetCaption(aCaption);
+    ControlSetCaption(ACaption);
 end;
 
-function tJvDynControlEngine.CreateImageControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl;
+function TJvDynControlEngine.CreateImageControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string): TWinControl;
 begin
-  Result := tWinControl(CreateControl(jctImage, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctImage, AOwner, AParentControl, AControlName));
 end;
 
-function tJvDynControlEngine.CreateRadioGroupControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aCaption : string; aItems : TStrings; aItemIndex : integer = 0) : tWinControl;
+function TJvDynControlEngine.CreateRadioGroupControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string;
+  ACaption: string; AItems: TStrings; AItemIndex: Integer = 0): TWinControl;
 var
   DynCtrl: IJvDynControl;
 begin
-  Result := tWinControl(CreateControl(jctRadioGroup, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctRadioGroup, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create('SIntfCastError');
+    raise EIntfCastError.Create(SIntfCastError);
   with DynCtrl do
-    ControlSetCaption(aCaption);
+    ControlSetCaption(ACaption);
   with DynCtrl as iJvDynControlItems do
-    Items := aItems;
+    Items := AItems;
   with DynCtrl as iJvDynControlData do
-    Value := aItemIndex;
+    Value := AItemIndex;
 end;
 
-//function tJvDynControlEngine.CreatePageControlControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl;
+//function TJvDynControlEngine.CreatePageControlControl(AOwner : TComponent; AParentControl : TWinControl; AControlName : string) : TWinControl;
 //begin
-//  Result := tWinControl(CreateControl (jctPageControl, aOwner, aParentControl, aControlName));
+//  Result := TWinControl(CreateControl (jctPageControl, AOwner, AParentControl, AControlName));
 //end;
 
-function tJvDynControlEngine.CreateMemoControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl;
+function TJvDynControlEngine.CreateMemoControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string): TWinControl;
 begin
-  Result := tWinControl(CreateControl(jctMemo, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctMemo, AOwner, AParentControl, AControlName));
 end;
 
-function tJvDynControlEngine.CreateListBoxControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aItems : TStringList) : tWinControl;
+function TJvDynControlEngine.CreateListBoxControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string; AItems: TStrings): TWinControl;
 var
   DynCtrl: IJvDynControl;
 begin
-  Result := tWinControl(CreateControl(jctListBox, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctListBox, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create('SIntfCastError');
+    raise EIntfCastError.Create(SIntfCastError);
+  // (rom) better Assign?
   with DynCtrl as iJvDynControlItems do
-    Items := aItems;
+    Items := AItems;
 end;
 
-function tJvDynControlEngine.CreateDateTimeControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl;
+function TJvDynControlEngine.CreateDateTimeControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string): TWinControl;
 begin
-  Result := tWinControl(CreateControl(jctDateTimeEdit, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctDateTimeEdit, AOwner, AParentControl, AControlName));
 end;
 
-function tJvDynControlEngine.CreateDateControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl;
+function TJvDynControlEngine.CreateDateControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string): TWinControl;
 begin
-  Result := tWinControl(CreateControl(jctDateEdit, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctDateEdit, AOwner, AParentControl, AControlName));
 end;
 
-function tJvDynControlEngine.CreateTimeControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl;
+function TJvDynControlEngine.CreateTimeControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string): TWinControl;
 begin
-  Result := tWinControl(CreateControl(jctTimeEdit, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctTimeEdit, AOwner, AParentControl, AControlName));
 end;
 
-function tJvDynControlEngine.CreateIntegerControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl;
+function TJvDynControlEngine.CreateIntegerControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string): TWinControl;
 begin
-  Result := tWinControl(CreateControl(jctIntegerEdit, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctIntegerEdit, AOwner, AParentControl, AControlName));
 end;
 
-function tJvDynControlEngine.CreateDoubleControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl;
+function TJvDynControlEngine.CreateDoubleControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string): TWinControl;
 begin
-  Result := tWinControl(CreateControl(jctDoubleEdit, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctDoubleEdit, AOwner, AParentControl, AControlName));
 end;
 
-function tJvDynControlEngine.CreateDirectoryControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl;
+function TJvDynControlEngine.CreateDirectoryControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string): TWinControl;
 begin
-  Result := tWinControl(CreateControl(jctDirectoryEdit, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctDirectoryEdit, AOwner, AParentControl, AControlName));
 end;
 
-function tJvDynControlEngine.CreateFileNameControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string) : tWinControl;
+function TJvDynControlEngine.CreateFileNameControl(AOwner: TComponent;
+  AParentControl: TWinControl; AControlName: string): TWinControl;
 begin
-  Result := tWinControl(CreateControl(jctFileNameEdit, aOwner, aParentControl, aControlName));
+  Result := TWinControl(CreateControl(jctFileNameEdit, AOwner, AParentControl, AControlName));
 end;
 
-function tJvDynControlEngine.CreateButton(aOwner : TComponent; aParentControl : tWinControl; aButtonName : string; aCaption : string; aHint : string; aOnClick : TNotifyEvent; aDefault : boolean = false; aCancel : boolean = false) : TButton;
+function TJvDynControlEngine.CreateButton(AOwner: TComponent;
+  AParentControl: TWinControl; AButtonName: string; ACaption: string;
+  AHint: string; AOnClick: TNotifyEvent; ADefault: Boolean = False;
+  ACancel: Boolean = False): TButton;
 begin
-  Result      := TButton(CreateControl(jctButton, aOwner, aParentControl, aButtonName));
-  Result.Hint := aHint;
-  Result.Caption := aCaption;
-  Result.Default := aDefault;
-  Result.Cancel := aCancel;
-  Result.OnClick := aOnClick;
+  Result := TButton(CreateControl(jctButton, AOwner, AParentControl, AButtonName));
+  Result.Hint := AHint;
+  Result.Caption := ACaption;
+  Result.Default := ADefault;
+  Result.Cancel := ACancel;
+  Result.OnClick := AOnClick;
 end;
 
-function tJvDynControlEngine.CreateForm(aCaption : string; aHint : string) : tCustomForm;
+function TJvDynControlEngine.CreateForm(ACaption: string; AHint: string): TCustomForm;
 begin
-  Result      := tCustomForm(CreateControl(jctForm, Application, nil, ''));
-  Result.Hint := aHint;
+  Result := TCustomForm(CreateControl(jctForm, Application, nil, ''));
+  Result.Hint := AHint;
 end;
 
-procedure tJvDynControlEngine.SetControlCaption(aControl : IJvDynControl; Value : string);
-begin
-end;
-
-procedure tJvDynControlEngine.SetControlTabOrder(aControl : IJvDynControl; Value : integer);
-begin
-end;
-
-procedure tJvDynControlEngine.SetControlOnEnter(aControl : IJvDynControl; Value : TNotifyEvent);
-begin
-end;
-
-procedure tJvDynControlEngine.SetControlOnExit(aControl : IJvDynControl; Value : TNotifyEvent);
+procedure TJvDynControlEngine.SetControlCaption(AControl: IJvDynControl; Value: string);
 begin
 end;
 
-procedure tJvDynControlEngine.SetControlOnClick(aControl : IJvDynControl; Value : TNotifyEvent);
+procedure TJvDynControlEngine.SetControlTabOrder(AControl: IJvDynControl; Value: Integer);
 begin
 end;
 
-
-procedure SetDefaultDynControlEngine(aEngine : tJvDynControlEngine);
+procedure TJvDynControlEngine.SetControlOnEnter(AControl: IJvDynControl; Value: TNotifyEvent);
 begin
-  if aEngine is tJvDynControlEngine then
-    fDefaultDynControlEngine := aEngine;
 end;
 
-function DefaultDynControlEngine : tJvDynControlEngine;
+procedure TJvDynControlEngine.SetControlOnExit(AControl: IJvDynControl; Value: TNotifyEvent);
 begin
-  Result := fDefaultDynControlEngine;
+end;
+
+procedure TJvDynControlEngine.SetControlOnClick(AControl: IJvDynControl; Value: TNotifyEvent);
+begin
+end;
+
+procedure SetDefaultDynControlEngine(AEngine: TJvDynControlEngine);
+begin
+  if AEngine is TJvDynControlEngine then
+    GlobalDefaultDynControlEngine := AEngine;
+end;
+
+function DefaultDynControlEngine: TJvDynControlEngine;
+begin
+  Result := GlobalDefaultDynControlEngine;
 end;
 
 end.
+

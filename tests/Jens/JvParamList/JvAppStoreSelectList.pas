@@ -102,7 +102,6 @@ resourcestring
   SDeleteSettings = 'Delete Settings';
   SOk = '&Ok';
   SCancel = '&Cancel';
-  SIntfCastError = 'SIntfCastError';
   SLoad = '&Load';
   SSave = '&Save';
   SDelete = '&Delete';
@@ -211,6 +210,7 @@ begin
   Operation := AOperation;
   FreeAndNil(FSelectDialog);
 
+  // (rom) this may fail if DynControlEngine is nil
   FSelectDialog := TForm(DynControlEngine.CreateForm('', ''));
 
   with SelectDialog do
@@ -235,6 +235,7 @@ begin
         SelectDialog.Caption := SDeleteSettings;
     end;
 
+  // (rom) this may fail if DynControlEngine is nil
   MainPanel := DynControlEngine.CreatePanelControl(Self, SelectDialog, 'MainPanel', '', alClient);
   ButtonPanel := DynControlEngine.CreatePanelControl(Self, SelectDialog, 'ButtonPanel', '', alBottom);
 
