@@ -32,8 +32,18 @@ unit JvBaseDsgnToolbarFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ActnList, Menus, ImgList, ToolWin, ComCtrls, ExtCtrls,
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, Controls, Forms, Dialogs, ActnList, Menus, ImgList, ToolWin,
+  ComCtrls, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, QActnList, QMenus, QImgList,
+  QComCtrls, QExtCtrls,
+  {$ENDIF VisualCLX}
   JvBaseDsgnFrame;
 
 type
@@ -63,8 +73,10 @@ type
 
 implementation
 
+{$IFDEF MSWINDOWS}
 uses
   Registry;
+{$ENDIF MSWINDOWS}  
 
 {$R *.dfm}
 
@@ -127,9 +139,9 @@ var
 begin
   LastVisibleSep := -1;
   ButtonSinceLastSep := False;
-  for I := 0 to tbrToolbar.ButtonCount - 1 do
+  for I := 0 to tbrToolbar.{$IFDEF VLC}ButtonCount{$ELSE}ControlCount{$ENDIF} - 1 do
   begin
-    CurItem := TControl(tbrToolbar.Buttons[I]);
+    CurItem := TControl(tbrToolbar.{$IFDEF VLC}Buttons{$ELSE}Controls{$ENDIF}[I]);
     if (CurItem is TToolButton) and (TToolButton(CurItem).Style = tbsSeparator) then
     begin
       CurItem.Visible := ButtonSinceLastSep;
@@ -145,7 +157,7 @@ begin
       ButtonSinceLastSep := ButtonSinceLastSep or CurItem.Visible;
   end;
   if (LastVisibleSep >= 0) and not ButtonSinceLastSep then
-    tbrToolbar.Buttons[LastVisibleSep].Visible := False;
+    tbrToolbar.{$IFDEF VLC}Buttons{$ELSE}Controls{$ENDIF}[LastVisibleSep].Visible := False;
   { For some reason a divider may be drawn while it's invisible. Calling Invalidate didn't help but
     changing the ButtonWidth seems to work. Look into this issue; may have a different cause,
     possibly in this method. }
@@ -186,10 +198,37 @@ begin
   ShowToolbar(not aiShowToolbar.Checked);
 end;
 
+{$IFDEF VisualCLX}
+function GetToolBarRowCount(tb: TToolBar): Integer;
+var
+  I, Width: Integer;
+begin
+  Result := 1;
+  if tb.Wrapable then
+  begin
+    Width := 0;
+    for I := 0 to tb.ControlCount - 1 do
+    begin
+      Inc(Width, tb.Controls[I].Width);
+      if Width >= tb.ClientWidth then
+      begin
+        Inc(Result);
+        Width := tb.Controls[I].Width;
+      end;
+    end;
+  end;
+end;
+{$ENDIF VisualCLX}
+
 procedure TfmeJvBaseToolbarDesign.spToolbarCanResize(Sender: TObject;
   var NewSize: Integer; var Accept: Boolean);
 begin
+{$IFDEF VCL}
   Accept := tbrToolbar.RowCount = 1;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+  Accept := GetToolBarRowCount(tbrToolbar) = 1;
+{$ENDIF VisualCLX}
   if Accept then
   begin
     if NewSize > 36 then
