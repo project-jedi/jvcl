@@ -2,7 +2,7 @@ unit JvParameterListMainForm;
 
 interface
 
-{.$DEFINE INCLUDE_DEVEXP_CX}
+{$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
@@ -18,7 +18,7 @@ uses
   ExtCtrls, JvFormPlacement, JvComponent, JvAppStore,
   JvAppRegistryStore, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
   JvCombobox, CheckLst, ShlObj, ExtDlgs, JvImage,
-  JvMaskEdit, JvSpin, JvBaseEdits, JvGroupBox;
+  JvMaskEdit, JvSpin, JvBaseEdits, JvGroupBox, cxButtonEdit;
 
 type
   TForm1 = class (TForm)
@@ -80,6 +80,7 @@ type
     StaticText2: TStaticText;
     StaticText3: TStaticText;
     StaticText4: TStaticText;
+    cxButtonEdit1: TcxButtonEdit;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -203,11 +204,21 @@ begin
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvEditParameter.Create(ParameterList);
-    with Parameter do
+    with tjvEditParameter(Parameter) do
     begin
       SearchName := 'EditTest';
       Caption    := 'EditTest';
 //      AsString   := Edit1.Text;
+      EditMask   := '09999';
+    end;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvEditParameter.Create(ParameterList);
+    with tjvEditParameter(Parameter) do
+    begin
+      SearchName := 'PasswordTest';
+      Caption    := 'PasswordTest';
+//      AsString   := Edit1.Text;
+      PasswordChar := '*';
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvCheckboxParameter.Create(ParameterList);
@@ -238,6 +249,14 @@ begin
       SearchName := 'IntegerTestSpin';
       Caption    := 'IntegerTest Spin';
       EditorType := netSpin;
+    end;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvButtonEditParameter.Create(ParameterList);
+    with tjvButtonEditParameter(Parameter) do
+    begin
+      SearchName := 'ButtonEditTest';
+      Caption    := 'ButtonEditTest';
+      OnButtonClick := Button5Click;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvFileNameParameter.Create(ParameterList);
