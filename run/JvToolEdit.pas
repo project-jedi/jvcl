@@ -171,9 +171,7 @@ type
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CNCtlColor(var Msg: TMessage); message CN_CTLCOLOREDIT;
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
-    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
-    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure WMClear(var Msg: TWMClear); message WM_CLEAR;
     procedure WMCopy(var Msg: TWMCopy); message WM_COPY; // RDB
@@ -189,6 +187,8 @@ type
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
     FPopup: TCustomControl;
+    procedure DoKillFocus(FocusedControl: TWinControl); override;
+    procedure DoSetFocus(FocusedControl: TWinControl); override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure DoEnter; override;
@@ -2146,9 +2146,9 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.WMKillFocus(var Msg: TWMKillFocus);
+procedure TJvCustomComboEdit.DoKillFocus(FocusedControl: TWinControl);
 begin
-  inherited;
+  inherited DoKillFocus(FocusedControl);
   FFocused := False;
   PopupCloseUp(FPopup, False);
 end;
@@ -2229,9 +2229,9 @@ begin
   inherited;
 end;
 
-procedure TJvCustomComboEdit.WMSetFocus(var Msg: TMessage);
+procedure TJvCustomComboEdit.DoSetFocus(FocusedControl: TWinControl);
 begin
-  inherited;
+  inherited DoSetFocus(FocusedControl);
   FFocused := True;
   SetShowCaret;
 end;

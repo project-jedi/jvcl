@@ -38,22 +38,22 @@ interface
 
 uses
   Classes, Windows, Messages, Controls, StdCtrls, Forms,
-  JvTypes;
+  JvTypes, JvExForms;
 
 type
-  TJvCustomDropDownForm = class(TCustomForm)
+  TJvCustomDropDownForm = class(TJvExCustomForm)
   private
     FEntering: Boolean;
     FCloseOnLeave: Boolean;
     FLeaving: Boolean;
     FOnKillFocus: TJvFocusChangeEvent;
     FOnSetFocus: TJvFocusChangeEvent;
-    procedure WMKillFocus(var AMessage: TMessage); message WM_KILLFOCUS;
-    procedure WMSetFocus(var AMessage: TMessage); message WM_SETFOCUS;
   protected
     function GetEdit: TCustomEdit;
-    procedure DoSetFocus(const APreviousControl: TWinControl); dynamic;
-    procedure DoKillFocus(const ANextControl: TWinControl); virtual;
+    procedure DoSetFocus(APreviousControl: TWinControl); override;
+    procedure DoKillFocus(ANextControl: TWinControl); override;
+    procedure DoSetFocusEvent(const APreviousControl: TWinControl); dynamic;
+    procedure DoKillFocusEvent(const ANextControl: TWinControl); dynamic;
     procedure DoClose(var Action: TCloseAction); override;
     procedure DoShow; override;
     procedure CreateParams(var AParams: TCreateParams); override;
@@ -143,23 +143,24 @@ begin
   Result := TCustomEdit(Owner);
 end;
 
-procedure TJvCustomDropDownForm.WMKillFocus(var AMessage: TMessage);
+procedure TJvCustomDropDownForm.DoKillFocus(ANextControl: TWinControl);
 begin
-  if IsChildWindow(AMessage.WParam, Self.Handle) then
-    inherited
+  if ContainsControl(ANextControl) then
+  //if (ANextControl <> nil) and IsChildWindow(ANextControl.Handle, Self.Handle) then
+    inherited DoKillFocus(ANextControl)
   else
   begin
     FLeaving := True;
     try
-      inherited;
-      DoKillFocus(FindControl(AMessage.WParam));
+      inherited DoKillFocus(ANextControl);
+      DoKillFocusEvent(ANextControl);
     finally
       FLeaving := False;
     end;
   end;
 end;
 
-procedure TJvCustomDropDownForm.DoKillFocus(const ANextControl: TWinControl);
+procedure TJvCustomDropDownForm.DoKillFocusEvent(const ANextControl: TWinControl);
 begin
   if Assigned(FOnKillFocus) then
     FOnKillFocus(Self, ANextControl);
@@ -167,23 +168,24 @@ begin
     Close;
 end;
 
-procedure TJvCustomDropDownForm.WMSetFocus(var AMessage: TMessage);
+procedure TJvCustomDropDownForm.DoSetFocus(APreviousControl: TWinControl);
 begin
-  if IsChildWindow(AMessage.WParam, Self.Handle) then
-    inherited
+  if ContainsControl(APreviousControl) then
+  //if (APreviousControl <> nil) and IsChildWindow(APreviousControl.Handle, Self.Handle) then
+    inherited DoSetFocus(APreviousControl)
   else
   begin
     FEntering := True;
     try
-      inherited;
-      DoSetFocus(FindControl(AMessage.WParam));
+      inherited DoSetFocus(APreviousControl);
+      DoSetFocusEvent(APreviousControl);
     finally
       FEntering := False;
     end;
   end;
 end;
 
-procedure TJvCustomDropDownForm.DoSetFocus(const APreviousControl: TWinControl);
+procedure TJvCustomDropDownForm.DoSetFocusEvent(const APreviousControl: TWinControl);
 begin
   if Assigned(FOnSetFocus) then
     FOnSetFocus(Self, APreviousControl);

@@ -142,18 +142,16 @@ type
     procedure EnforceMinValue;
     {$IFDEF VCL}
     procedure CMChanged(var Message: TMessage); message CM_CHANGED;
-    procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
-    procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMPaste(var Message: TWMPaste); message WM_PASTE;
     procedure SetText(const NewValue: TCaption);
     function GetText: TCaption;
     {$ENDIF VCL}
   protected
+    procedure DoKillFocus(FocusedControl: TWinControl); override;
+    procedure DoSetFocus(FocusedControl: TWinControl); override;
     {$IFDEF VisualCLX}
     procedure SetText(const NewValue: TCaption); override;
     procedure TextChanged; override; // -> CMChanged
-    procedure DoEnter; override;
-    procedure DoExit; override;
     {$ENDIF VisualCLX}
     property CheckChars: string read FCheckChars write SetCheckChars;
     property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces;
@@ -749,27 +747,17 @@ begin
 end;
 
 
-{$IFDEF VCL}
-procedure TJvCustomValidateEdit.WMSetFocus(var Message: TWMSetFocus);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvCustomValidateEdit.DoEnter;
-{$ENDIF VisualCLX}
+procedure TJvCustomValidateEdit.DoSetFocus(FocusedControl: TWinControl);
 begin
   EnterText := FEditText;
   DisplayText;
-  inherited;
+  inherited DoSetFocus(FocusedControl);
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomValidateEdit.WMKillFocus(var Message: TWMKillFocus);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvCustomValidateEdit.DoExit;
-{$ENDIF VisualCLX}
+procedure TJvCustomValidateEdit.DoKillFocus(FocusedControl: TWinControl);
 begin
   EditText := inherited Text;
-  inherited;
+  inherited DoKillFocus(FocusedControl);
 end;
 
 procedure TJvCustomValidateEdit.ChangeText(const NewValue: string);

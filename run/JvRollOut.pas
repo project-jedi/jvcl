@@ -136,8 +136,8 @@ type
     FOnCollapse: TNotifyEvent;
     FColors: TJvRollOutColors;
     FImageOptions: TJvRollOutImageOptions;
-    FToggleAnywhere: boolean;
-    FShowFocus: boolean;
+    FToggleAnywhere: Boolean;
+    FShowFocus: Boolean;
     FTabStops: TStringlist;
 
     procedure SetGroupIndex(Value: Integer);
@@ -157,11 +157,9 @@ type
     procedure DrawButtonFrame;
     procedure UpdateGroup;
     procedure CMExpanded(var Msg: TMessage); message CM_EXPANDED;
-    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
-    procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure ChangeHeight(NewHeight: Integer);
     procedure ChangeWidth(NewWidth: Integer);
-    procedure SetShowFocus(const Value: boolean);
+    procedure SetShowFocus(const Value: Boolean);
   protected
     // Sets or gets the TabStop value of child controls depending on the value of Collapsed.
     // When Collapsed is true, calls GetChildTabStops.
@@ -182,6 +180,8 @@ type
     // Normally, you don't need to call this method.
     procedure ClearChildTabStops;
 
+    procedure DoKillFocus(FocusedControl: TWinControl); override;
+    procedure DoSetFocus(FocusedControl: TWinControl); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -207,8 +207,8 @@ type
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property ImageOptions: TJvRollOutImageOptions read FImageOptions write FImageOptions;
     property Placement: TJvPlacement read FPlacement write SetPlacement default plTop;
-    property ShowFocus: boolean read FShowFocus write SetShowFocus default true;
-    property ToggleAnywhere: boolean read FToggleAnywhere write FToggleAnywhere default true;
+    property ShowFocus: Boolean read FShowFocus write SetShowFocus default true;
+    property ToggleAnywhere: Boolean read FToggleAnywhere write FToggleAnywhere default true;
 
     property OnCollapse: TNotifyEvent read FOnCollapse write FOnCollapse;
     property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
@@ -216,7 +216,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    function MouseIsOnButton: boolean;
+    function MouseIsOnButton: Boolean;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure Collapse; virtual;
     procedure Expand; virtual;
@@ -225,9 +225,9 @@ type
   TJvRollOutAction = class(TAction)
   private
     FRollOut: TJvCustomRollOut;
-    FLinkCheckedToCollapsed: boolean;
+    FLinkCheckedToCollapsed: Boolean;
     procedure SetRollOut(const Value: TJvCustomRollOut);
-    procedure SetLinkCheckedToCollapsed(const Value: boolean);
+    procedure SetLinkCheckedToCollapsed(const Value: Boolean);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
@@ -240,7 +240,7 @@ type
     destructor Destroy; override;
   published
     property RollOut: TJvCustomRollOut read FRollOut write SetRollOut;
-    property LinkCheckedToCollapsed: boolean read FLinkCheckedToCollapsed write SetLinkCheckedToCollapsed;
+    property LinkCheckedToCollapsed: Boolean read FLinkCheckedToCollapsed write SetLinkCheckedToCollapsed;
   end;
 
   TJvRollOut = class(TJvCustomRollOut)
@@ -1052,7 +1052,7 @@ begin
   Colors.Color := Color;
 end;
 
-function TJvCustomRollOut.MouseIsOnButton: boolean;
+function TJvCustomRollOut.MouseIsOnButton: Boolean;
 var
   P: TPoint;
   R: TRect;
@@ -1065,21 +1065,21 @@ begin
   Result := PtInRect(R, P);
 end;
 
-procedure TJvCustomRollOut.WmKillFocus(var Msg: TMessage);
+procedure TJvCustomRollOut.DoKillFocus(FocusedControl: TWinControl);
 begin
   CheckChildTabStops;
-  inherited;
+  inherited DoKillFocus(FocusedControl);
   Invalidate;
 end;
 
-procedure TJvCustomRollOut.WmSetFocus(var Msg: TMessage);
+procedure TJvCustomRollOut.DoSetFocus(FocusedControl: TWinControl); 
 begin
   CheckChildTabStops;
-  inherited;
+  inherited DoSetFocus(FocusedControl);
   Invalidate;
 end;
 
-procedure TJvCustomRollOut.SetShowFocus(const Value: boolean);
+procedure TJvCustomRollOut.SetShowFocus(const Value: Boolean);
 begin
   if FShowFocus <> Value then
   begin
@@ -1200,7 +1200,7 @@ begin
     RollOut := nil;
 end;
 
-procedure TJvRollOutAction.SetLinkCheckedToCollapsed(const Value: boolean);
+procedure TJvRollOutAction.SetLinkCheckedToCollapsed(const Value: Boolean);
 begin
   if FLinkCheckedToCollapsed <> Value then
   begin

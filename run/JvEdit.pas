@@ -101,8 +101,6 @@ type
     {$IFDEF VCL}
     function GetText: string;
     procedure SetText(const Value: string);
-    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
-    procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
     procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
@@ -124,10 +122,10 @@ type
     {$IFDEF VisualCLX}
     procedure EMGetRect(var Msg: TMessage); message EM_GETRECT;
     procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
-    procedure DoEnter; override;
-    procedure DoExit; override;
     procedure Paint; override;
     {$ENDIF VisualCLX}
+    procedure DoSetFocus(APreviousControl: TWinControl); override;
+    procedure DoKillFocus(ANextControl: TWinControl); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure EnabledChanged; override;
     procedure ParentColorChanged; override;
@@ -615,26 +613,16 @@ begin
   FCaret.Assign(Value);
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomEdit.WMSetFocus(var Msg: TMessage);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvCustomEdit.DoEnter;
-{$ENDIF VisualCLX}
+procedure TJvCustomEdit.DoSetFocus(APreviousControl: TWinControl);
 begin
-  inherited;
+  inherited DoSetFocus(APreviousControl);
   FCaret.CreateCaret;
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomEdit.WMKillFocus(var Msg: TMessage);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvCustomEdit.DoExit;
-{$ENDIF VisualCLX}
+procedure TJvCustomEdit.DoKillFocus(ANextControl: TWinControl);
 begin
   FCaret.DestroyCaret;
-  inherited;
+  inherited DoKillFocus(ANextControl);
 end;
 
 procedure TJvCustomEdit.EnabledChanged;

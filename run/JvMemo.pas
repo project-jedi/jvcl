@@ -73,8 +73,6 @@ type
     procedure SetHotTrack(const Value: Boolean);
     procedure CaretChanged(Sender: TObject); dynamic;
     procedure SetCaret(const Value: TJvCaret);
-    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
-    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
@@ -90,6 +88,8 @@ type
     procedure SetReadOnly(const Value: Boolean);
     procedure SetClipboardCommands(const Value: TJvClipboardCommands);
   protected
+    procedure DoKillFocus(FocusedControl: TWinControl); override;
+    procedure DoSetFocus(FocusedControl: TWinControl); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -381,9 +381,9 @@ begin
   FCaret.Assign(Value);
 end;
 
-procedure TJvCustomMemo.WMSetFocus(var Msg: TMessage);
+procedure TJvCustomMemo.DoSetFocus(FocusedControl: TWinControl);
 begin
-  inherited;
+  inherited DoSetFocus(FocusedControl);
   FCaret.CreateCaret;
   if FHideCaret then
     Windows.HideCaret(Handle);
@@ -424,12 +424,12 @@ begin
     FHideCaret := Value;
 end;
 
-procedure TJvCustomMemo.WMKillFocus(var Msg: TWMKillFocus);
+procedure TJvCustomMemo.DoKillFocus(FocusedControl: TWinControl);
 begin
   if FHideCaret then
     ShowCaret(Handle);
   FCaret.DestroyCaret;
-  inherited;
+  inherited DoKillFocus(FocusedControl);
 end;
 
 procedure TJvCustomMemo.WndProc(var Msg: TMessage);
