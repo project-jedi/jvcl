@@ -671,7 +671,7 @@ function PtInRectExclusive(R:TRect;Pt:TPoint):boolean;
 
 {$IFDEF USE_FOUR_DIGIT_YEAR}
 var
-  FourDigitYear: Boolean;
+  FourDigitYear: Boolean = true;
 {$ELSE}
 function FourDigitYear: Boolean;
 {$ENDIF USE_FOUR_DIGIT_YEAR}
