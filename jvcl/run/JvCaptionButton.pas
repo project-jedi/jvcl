@@ -292,7 +292,7 @@ uses
   CommCtrl, Buttons, SysUtils,
   JvThemes,
   {$IFDEF JVCLThemesEnabled}
-  UxTheme, JvJVCLUtils,
+  UxTheme, JvJVCLUtils, JvJCLUtils, 
   {$ENDIF JVCLThemesEnabled}
   JvDsgnIntf;
 
