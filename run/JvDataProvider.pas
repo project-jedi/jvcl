@@ -19,7 +19,7 @@ Contributor(s):
   Remko Bonte
   Peter Thörnqvist
 
-Last Modified: 2004-01-21
+Last Modified: 2004-02-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -5053,7 +5053,7 @@ begin
   else
     // Apparantly this item is at the root of the view; retrieve the proper IJvDataItems reference
     Items := RootItems;
-  if Supports(RootItems, IJvDataIDSearch, Finder) then
+  if Supports(Items, IJvDataIDSearch, Finder) then
     Result := Finder.Find(FViewItems[Index].ItemID, False);
   {$ENDIF ViewList_UseFinder}
 end;
@@ -5074,7 +5074,12 @@ begin
 end;
 
 function TJvDataConsumerViewList.ItemParent(Index: Integer): IJvDataItem;
+var
+  ParIdx: Integer;
 begin
+  ParIdx := ItemParentIndex(Index);
+  if ParIdx >= 0 then
+    Result := Item(ParIdx);
 end;
 
 function TJvDataConsumerViewList.ItemParentIndex(Index: Integer): Integer;
