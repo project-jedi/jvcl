@@ -987,7 +987,7 @@ RightIndent=0
 VSpaceBefore=0
 VSpaceAfter=0
 Alignment=0
-NoLineBreak=1
+NoLineBreak=0
 Layout_TargetContainer=-1
 
 [{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Elements\-29]
@@ -1822,6 +1822,7 @@ Showing_11=1
 OutputFile=output\WinHELP\JVCL.rtf
 HLPFilename=
 CreatePrintableDocumentation=0
+HelpCompiler=C:\Program Files\Borland\Delphi7\help\tools\hcrtf.exe
 
 [{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Help Project]
 HelpProjectFileAutomatic=1
