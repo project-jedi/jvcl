@@ -151,7 +151,7 @@ begin
   {$IFDEF COMPILER6_UP}
   Result := Screen.MonitorFromPoint(APoint);
   {$ELSE}
-  H := MultiMon.MonitorFromPoint(APoint,MONITOR_DEFAULTTOPRIMARY);
+  H := MultiMon.MonitorFromPoint(APoint,MONITOR_DEFAULTTONEAREST);
   Result := nil;
   for i := 0 to Screen.MonitorCount - 1 do
     if Screen.Monitors[i].Handle = H then
