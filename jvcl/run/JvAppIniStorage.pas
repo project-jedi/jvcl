@@ -41,9 +41,11 @@ type
   // for INI type storage, descendents will actually implement
   // the writing to a file or anything else
   TJvCustomAppIniStorage = class(TJvCustomAppMemoryFileStorage)
-  protected
+  private
     FIniFile: TMemIniFile;
     FDefaultSection: string;
+    function CalcDefaultSection(Section: string): string;
+  protected
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
     function DefaultExtension : string; override;
@@ -100,9 +102,7 @@ implementation
 
 uses
   SysUtils,
-  JvTypes,
-  JvConsts,  // For PathDelim under D5 and BCB5
-  JvResources;
+  JvTypes, JvConsts, JvResources; // JvConsts or PathDelim under D5 and BCB5
 
 const
   cNullDigit = '0';
@@ -111,7 +111,7 @@ const
   cSectionHeaderEnd = ']';
   cKeyValueSeparator = '=';
 
-{ (ahsuer) make Delphi 5 compiler happy
+{ (ahuser) make Delphi 5 compiler happy
 function AnsiSameTextShortest(S1, S2: string): Boolean;
 begin
   if Length(S1) > Length(S2) then
@@ -364,61 +364,47 @@ begin
 end;
 
 
+function TJvCustomAppIniStorage.CalcDefaultSection(Section: string): string;
+begin
+  // Changed by Jens Fudickar to support DefaultSections; Similar to ReadValue
+  // (rom) made it a private method
+  if (Section = '') or (Section[1] = '.') then
+    Result := DefaultSection + Section
+  else
+    Result := Section;
+  if (Result = '') or (Result[1] = '.') then
+    raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
+end;
+
 function TJvCustomAppIniStorage.ValueExists(const Section, Key: string): Boolean;
-var
-  ASection: string;
 begin
   if IniFile <> nil then
   begin
     if AutoReload and not IsUpdating then
       Reload;
-    // Changed by Jens Fudickar to support DefaultSections; Similar to ReadValue
-    if (Section = '') or (Section[1] = '.') then
-      ASection := DefaultSection + Section
-    else
-      ASection := Section;
-    if (ASection = '') or (ASection[1] = '.') then
-      raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
-    // End of Change
-    Result := IniFile.ValueExists(ASection, Key);
+    Result := IniFile.ValueExists(CalcDefaultSection(Section), Key);
   end
   else
     Result := False;
 end;
 
 function TJvCustomAppIniStorage.ReadValue(const Section, Key: string): string;
-var
-  ASection: string;
 begin
   if IniFile <> nil then
   begin
     if AutoReload and not IsUpdating then
       Reload;
-    if (Section = '') or (Section[1] = '.') then
-      ASection := DefaultSection + Section
-    else
-      ASection := Section;
-    if (ASection = '') or (ASection[1] = '.') then
-      raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
-    Result := IniFile.ReadString(ASection, Key, '');
+    Result := IniFile.ReadString(CalcDefaultSection(Section), Key, '');
   end
   else
     Result := '';
 end;
 
 procedure TJvCustomAppIniStorage.WriteValue(const Section, Key, Value: string);
-var
-  ASection: string;
 begin
   if IniFile <> nil then
   begin
-    if (Section = '') or (Section[1] = '.') then
-      ASection := DefaultSection + Section
-    else
-      ASection := Section;
-    if (ASection = '') or (ASection[1] = '.') then
-      raise EJVCLAppStorageError.CreateRes(@RsEWriteValueFailed);
-    IniFile.WriteString(ASection, Key, Value);
+    IniFile.WriteString(CalcDefaultSection(Section), Key, Value);
     if AutoFlush and not IsUpdating then
       Flush;
   end;
@@ -455,30 +441,23 @@ end;
 
 procedure TJvCustomAppIniStorage.RemoveValue(const Section, Key: string);
 var
-  ASection: string;
+  LSection: string;
 begin
   if IniFile <> nil then
   begin
     if AutoReload and not IsUpdating then
       Reload;
-    // Changed by Jens Fudickar to support DefaultSections; Similar to ReadValue
-    if (Section = '') or (Section[1] = '.') then
-      ASection := DefaultSection + Section
-    else
-      ASection := Section;
-    if (ASection = '') or (ASection[1] = '.') then
-      raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
-    // End of Change
-    if IniFile.ValueExists(ASection, Key) then
+    LSection := CalcDefaultSection(Section);
+    if IniFile.ValueExists(LSection, Key) then
     begin
-      IniFile.DeleteKey(ASection, Key);
+      IniFile.DeleteKey(LSection, Key);
       if AutoFlush and not IsUpdating then
         Flush;
     end
     else
-    if IniFile.SectionExists(ASection + '\' + Key) then
+    if IniFile.SectionExists(LSection + '\' + Key) then
     begin
-      IniFile.EraseSection(ASection + '\' + Key);
+      IniFile.EraseSection(LSection + '\' + Key);
       if AutoFlush and not IsUpdating then
         Flush;
     end;
@@ -557,7 +536,6 @@ begin
   Result := 'ini';
 end;
 
-
 //=== { TJvAppIniFileStorage } ===============================================
 
 procedure TJvAppIniFileStorage.Flush;
@@ -574,7 +552,6 @@ begin
   if FileExists(FullFileName) and not IsUpdating then
     IniFile.Rename(FullFileName, True);
 end;
-
 
 end.
 

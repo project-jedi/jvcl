@@ -211,6 +211,16 @@ uses
   TypInfo,
   JvJCLUtils, JvExExtCtrls, JvThemes, JvResources;
 
+const
+  cArrowWidth = 'ArrowWidth';
+  cDragBarHeight = 'DragBarHeight';
+  cDragBarHint = 'DragBarHint';
+  cDragBarSpace = 'DragBarSpace';
+  cDragCaption = 'DragCaption';
+  cEdgeWidth = 'EdgeWidth';
+  cOtherCaption = 'OtherCaption';
+  cShowDragBar = 'ShowDragBar';
+
 type
   TColorSpeedButtonAccessProtected = class(TJvColorSpeedButton);
   TJvOfficeColorFormAccessProtected = class(TJvOfficeColorForm);
@@ -581,15 +591,15 @@ begin
   if not FColorsForm.Visible then
   begin
     FArrowButton.Down := False;
-  {$IFDEF VCL}
-     FMainButton.Perform(CM_MOUSELEAVE, 0, 0);
-     FArrowButton.Perform(CM_MOUSELEAVE, 0, 0);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
+    {$IFDEF VCL}
+    FMainButton.Perform(CM_MOUSELEAVE, 0, 0);
+    FArrowButton.Perform(CM_MOUSELEAVE, 0, 0);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     TColorSpeedButtonAccessProtected(FArrowButton).MouseLeave(FArrowButton);
     TColorSpeedButtonAccessProtected(FMainButton).MouseLeave(FMainButton);
-  {$ENDIF VisualCLX}
-  end
+    {$ENDIF VisualCLX}
+  end;
 end;
 
 procedure TJvCustomOfficeColorButton.DoFormKillFocus(Sender: TObject);
@@ -625,15 +635,14 @@ begin
   if FColorsForm.ToolWindowStyle then
   begin
     FArrowButton.Down := False;
-  {$IFDEF VCL}
-     FMainButton.Perform(CM_MOUSELEAVE, 0, 0);
-     FArrowButton.Perform(CM_MOUSELEAVE, 0, 0);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}      
+    {$IFDEF VCL}
+    FMainButton.Perform(CM_MOUSELEAVE, 0, 0);
+    FArrowButton.Perform(CM_MOUSELEAVE, 0, 0);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     TColorSpeedButtonAccessProtected(FArrowButton).MouseLeave(FArrowButton);
     TColorSpeedButtonAccessProtected(FMainButton).MouseLeave(FMainButton);
-  {$ENDIF VisualCLX}
-
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -641,14 +650,14 @@ procedure TJvCustomOfficeColorButton.DoButtonMouseEnter(Sender: TObject);
 begin
   if FFlat and Enabled then
   begin
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     FMainButton.Perform(CM_MOUSEENTER, 0, 0);
     FArrowButton.Perform(CM_MOUSEENTER, 0, 0);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     TColorSpeedButtonAccessProtected(FMainButton).MouseEnter(FMainButton);
     TColorSpeedButtonAccessProtected(FArrowButton).MouseEnter(FArrowButton);
-  {$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -660,13 +669,13 @@ begin
     begin
       if FColorsForm.Visible then
       {$IFDEF VCL}
-         FMainButton.Perform(CM_MOUSEENTER, 0, 0)
-       else
-         FArrowButton.Perform(CM_MOUSELEAVE, 0, 0);
+        FMainButton.Perform(CM_MOUSEENTER, 0, 0)
+      else
+        FArrowButton.Perform(CM_MOUSELEAVE, 0, 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
         TColorSpeedButtonAccessProtected(FMainButton).MouseEnter(FMainButton)
-       else
+      else
         TColorSpeedButtonAccessProtected(FArrowButton).MouseLeave(FArrowButton);
       {$ENDIF VisualCLX}
     end
@@ -675,9 +684,9 @@ begin
     begin
       if not FColorsForm.Visible then
       {$IFDEF VCL}
-         FMainButton.Perform(CM_MOUSELEAVE, 0, 0)
-       else
-         FArrowButton.Perform(CM_MOUSEENTER, 0, 0);
+        FMainButton.Perform(CM_MOUSELEAVE, 0, 0)
+      else
+        FArrowButton.Perform(CM_MOUSEENTER, 0, 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
         TColorSpeedButtonAccessProtected(FMainButton).MouseLeave(FMainButton)
@@ -729,7 +738,7 @@ end;
 procedure TJvCustomOfficeColorButton.PropertiesChanged(Sender: TObject;
   PropName: string);
 begin
-  if Cmp(PropName, 'ShowDragBar') then
+  if Cmp(PropName, cShowDragBar) then
   begin
     if FColorsForm.ShowDragBar <> Properties.ShowDragBar then
       FColorsForm.ShowDragBar := Properties.ShowDragBar;
@@ -738,28 +747,28 @@ begin
       AdjustColorForm;
   end
   else
-  if Cmp(PropName, 'DragCaption') then
+  if Cmp(PropName, cDragCaption) then
     FColorsForm.Caption := Properties.DragCaption
   else
-  if Cmp(PropName, 'DragBarHeight') then
+  if Cmp(PropName, cDragBarHeight) then
   begin
     FColorsForm.DragBarHeight := Properties.DragBarHeight;
     AdjustColorForm;
   end
   else
-  if Cmp(PropName, 'DragBarHint') then
+  if Cmp(PropName, cDragBarHint) then
     FColorsForm.DragBarHint := Properties.DragBarHint
   else
-  if Cmp(PropName, 'DragBarSpace') then
+  if Cmp(PropName, cDragBarSpace) then
   begin
     FColorsForm.DragBarSpace := Properties.DragBarSpace;
     AdjustColorForm;
   end
   else
-  if Cmp(PropName, 'ArrowWidth') then
+  if Cmp(PropName, cArrowWidth) then
     AdjustSize
   else
-  if Cmp(PropName, 'EdgeWidth') then
+  if Cmp(PropName, cEdgeWidth) then
     FMainButton.EdgeWidth := Properties.EdgeWidth
   else
   begin
@@ -773,9 +782,9 @@ procedure TJvCustomOfficeColorButton.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
   //Hint: next 3 for compatible old version
-  Filer.DefineProperty('ArrowWidth', ReadArrowWidth, nil, True);
-  Filer.DefineProperty('EdgeWidth', ReadEdgeWidth, nil, True);
-  Filer.DefineProperty('OtherCaption', ReadOtherCaption, nil, True);
+  Filer.DefineProperty(cArrowWidth, ReadArrowWidth, nil, True);
+  Filer.DefineProperty(cEdgeWidth, ReadEdgeWidth, nil, True);
+  Filer.DefineProperty(cOtherCaption, ReadOtherCaption, nil, True);
 end;
 
 procedure TJvCustomOfficeColorButton.ReadArrowWidth(Reader: TReader);
@@ -827,7 +836,7 @@ begin
   if FArrowWidth <> Value then
   begin
     FArrowWidth := Value;
-    Changed('ArrowWidth');
+    Changed(cArrowWidth);
   end;
 end;
 
@@ -836,7 +845,7 @@ begin
   if FDragBarHeight <> Value then
   begin
     FDragBarHeight := Value;
-    Changed('DragBarHeight');
+    Changed(cDragBarHeight);
   end;
 end;
 
@@ -845,7 +854,7 @@ begin
   if FDragBarSpace <> Value then
   begin
     FDragBarSpace := Value;
-    Changed('DragBarSpace');
+    Changed(cDragBarSpace);
   end;
 end;
 
@@ -854,7 +863,7 @@ begin
   if FDragBarHint<>Value then
   begin
     FDragBarHint := Value;
-    Changed('DragBarHint');
+    Changed(cDragBarHint);
   end;
 end;
 
@@ -863,7 +872,7 @@ begin
   if FDragCaption <> Value then
   begin
     FDragCaption := Value;
-    Changed('DragCaption');
+    Changed(cDragCaption);
   end;
 end;
 
@@ -872,7 +881,7 @@ begin
   if FEdgeWidth <> Value then
   begin
     FEdgeWidth := Value;
-    Changed('EdgeWidth');
+    Changed(cEdgeWidth);
   end;
 end;
 
@@ -881,7 +890,7 @@ begin
   if FShowDragBar <> Value then
   begin
     FShowDragBar := Value;
-    Changed('ShowDragBar');
+    Changed(cShowDragBar);
   end;
 end;
 

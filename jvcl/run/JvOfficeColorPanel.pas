@@ -302,6 +302,16 @@ implementation
 uses
   JvJCLUtils, JvResources;
 
+const
+  cAutoCaption = 'AutoCaption';
+  cAutoColor = 'AutoColor';
+  cAutoHint = 'AutoHint';
+  cOtherCaption = 'OtherCaption';
+  cOtherHint = 'OtherHint';
+  cShowAutoButton = 'ShowAutoButton';
+  cShowColorHint = 'ShowColorHint';
+  cShowOtherButton = 'ShowOtherButton';
+
 //=== { TJvOfficeColorPanelProperties } ======================================
 
 constructor TJvOfficeColorPanelProperties.Create;
@@ -388,7 +398,7 @@ begin
   if FAutoColor<>Value then
   begin
     FAutoColor := Value;
-    Changed('AutoColor');
+    Changed(cAutoColor);
   end;
 end;
 
@@ -464,7 +474,7 @@ begin
   if FShowAutoButton <> Value then
   begin
     FShowAutoButton := Value;
-    Changed('ShowAutoButton');
+    Changed(cShowAutoButton);
   end;
 end;
 
@@ -473,7 +483,7 @@ begin
   if FShowColorHint <> Value then
   begin
     FShowColorHint := Value;
-    Changed('ShowColorHint');
+    Changed(cShowColorHint);
   end;
 end;
 
@@ -482,7 +492,7 @@ begin
   if FShowOtherButton <> Value then
   begin
     FShowOtherButton := Value;
-    Changed('ShowOtherButton');
+    Changed(cShowOtherButton);
   end;
 end;
 
@@ -494,25 +504,25 @@ begin
       if FAutoCaption <> Value then
       begin
         FAutoCaption := Value;
-        Changed('AutoCaption');
+        Changed(cAutoCaption);
       end;
     Tag_OtherCaption:
       if FOtherCaption <> Value then
       begin
         FOtherCaption := Value;
-        Changed('OtherCaption');
+        Changed(cOtherCaption);
       end;
     Tag_AutoHint:
       if FAutoHint <> Value then
       begin
         FAutoHint := Value;
-        Changed('AutoHint');
+        Changed(cAutoHint);
       end;
     Tag_OtherHint:
       if FAutoHint <> Value then
       begin
         FOtherHint := Value;
-        Changed('OtherHint');
+        Changed(cOtherHint);
       end;
   end;
 end;
@@ -974,31 +984,31 @@ var
   I: Integer;
 begin
   LFlag := False;
-  if Cmp(PropName, 'ShowAutoButton') or Cmp(PropName, 'ShowOtherButton') then
+  if Cmp(PropName, cShowAutoButton) or Cmp(PropName, cShowOtherButton) then
     LFlag := True
   else
-  if Cmp(PropName, 'AutoCaption') then
+  if Cmp(PropName, cAutoCaption) then
   begin
     if Properties.AutoCaption = '' then
       Properties.ShowAutoButton := False;
   end
   else
-  if Cmp(PropName, 'OtherCaption') then
+  if Cmp(PropName, cOtherCaption) then
   begin
     if Properties.OtherCaption = '' then
       Properties.ShowOtherButton := False;
   end
   else
-  if Cmp(PropName, 'AutoHint') then
+  if Cmp(PropName, cAutoHint) then
     FAutoButton.Hint := Properties.AutoHint
   else
-  if Cmp(PropName, 'OtherHint') then
+  if Cmp(PropName, cOtherHint) then
     FOtherButton.Hint := Properties.OtherHint
   else
-  if Cmp(PropName, 'AutoColor') then
+  if Cmp(PropName, cAutoColor) then
     FAutoButton.ButtonColor := Properties.AutoColor
   else
-  if Cmp(PropName, 'ShowColorHint') then
+  if Cmp(PropName, cShowColorHint) then
   begin
     FAutoButton.ShowHint :=  Properties.ShowColorHint;
     FOtherButton.ShowHint :=  Properties.ShowColorHint;
@@ -1047,7 +1057,7 @@ end;
 
 constructor TJvColorSpeedButton.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FButtonColor := clDefault;
 end;
 

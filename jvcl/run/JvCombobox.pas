@@ -53,7 +53,7 @@ type
   TJvComboBoxStrings = class(TCustomComboBoxStrings)
   {$ELSE}
   TJvComboBoxStrings = class(TStrings)
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   private
     {$IFDEF COMPILER5}
     FComboBox: TJvCustomComboBox;
@@ -1350,13 +1350,13 @@ end;
 
 procedure TJvCustomComboBox.DoEnter;
 begin
-  inherited;
+  inherited DoEnter;
   DoEmptyValueEnter;
 end;
 
 procedure TJvCustomComboBox.DoExit;
 begin
-  inherited;
+  inherited DoExit;
   DoEmptyValueExit;
 end;
 
@@ -1591,6 +1591,13 @@ end;
 // SPM - Ported backward from Delphi 7 and modified:
 
 procedure TJvCustomComboBox.KeyPress(var Key: Char);
+var
+  StartPos: DWORD;
+  EndPos: DWORD;
+  OldText: string;
+  SaveText: string;
+  Msg: TMsg;
+  LastByte: Integer;
 
   function HasSelectedText(var StartPos, EndPos: DWORD): Boolean;
   begin
@@ -1611,13 +1618,6 @@ procedure TJvCustomComboBox.KeyPress(var Key: Char);
     SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam(StartPos, StartPos));
   end;
 
-var
-  StartPos: DWORD;
-  EndPos: DWORD;
-  OldText: string;
-  SaveText: string;
-  Msg: TMsg;
-  LastByte: Integer;
 begin
   inherited KeyPress(Key);
   if not AutoComplete then
@@ -1707,7 +1707,7 @@ end;
 procedure TJvCustomComboBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
   if not (csLoading in ComponentState) and (MeasureStyle = cmsStandard) and
-      not IsProviderSelected then
+    not IsProviderSelected then
     PerformMeasureItem(Index, Height);
 end;
 
