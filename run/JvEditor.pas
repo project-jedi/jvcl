@@ -1394,6 +1394,7 @@ begin
   inherited Create;
   NormalizationForm := nfNone;
   OnChange := StringsChanged;
+  SaveUnicode := False;
 end;
 
 destructor TJvEditorStrings.Destroy;
