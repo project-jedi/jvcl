@@ -314,6 +314,7 @@ contains
   JvObjPickerComp in '..\source\JvObjPickerComp.pas',
   JvListBox in '..\source\JvListBox.pas',
   JvImageDrawThread in '..\source\JvImageDrawThread.pas',
-  JvHidControllerClass in '..\source\JvHidControllerClass.pas';
+  JvHidControllerClass in '..\source\JvHidControllerClass.pas',
+  JvAnalogClock in '..\source\JvAnalogClock.pas';
 
 end.
