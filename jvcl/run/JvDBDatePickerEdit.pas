@@ -193,18 +193,24 @@ end;
 
 procedure TJvCustomDBDatePickerEdit.DataChange(Sender: TObject);
 begin
-  if FDataLink.Field <> nil then
+  if IsLinked then
     Self.Date := FDataLink.Field.AsDateTime;
 end;
 
 function TJvCustomDBDatePickerEdit.GetDataField: string;
 begin
-  Result := FDataLink.FieldName;
+  if FDataLink <> nil then
+    Result := FDataLink.FieldName
+  else
+    Result := '';
 end;
 
 function TJvCustomDBDatePickerEdit.GetDataSource: TDataSource;
 begin
-  Result := FDataLink.DataSource;
+  if FDataLink <> nil then
+    Result := FDataLink.DataSource
+  else
+    Result := nil;
 end;
 
 function TJvCustomDBDatePickerEdit.IsEmpty: Boolean;
@@ -308,7 +314,7 @@ end;
 
 function TJvCustomDBDatePickerEdit.ValidateDate(const ADate: TDateTime): Boolean;
 begin
-  result := (not IsLinked) or (FDataLink.DataSet.IsEmpty)
+  Result := (not IsLinked) or (FDataLink.DataSet.IsEmpty)
     or ((not Focused) and (FDataLink.DataSet.State = dsInsert) and FDataLink.Field.IsNull)
     or (inherited ValidateDate(ADate));
 end;
@@ -326,15 +332,18 @@ end;
 
 function TJvCustomDBDatePickerEdit.EditCanModify: Boolean;
 begin
-  result := (not IsLinked) or FDataLink.Edit;
+  Result := (not IsLinked) or FDataLink.Edit;
 end;
 
 procedure TJvCustomDBDatePickerEdit.SetChecked(const AValue: Boolean);
 begin
-  if EditCanModify then
-    inherited SetChecked(AValue)
-  else
-    UpdateDisplay;
+  if AValue <> Checked then
+  begin
+    if EditCanModify then
+      inherited SetChecked(AValue)
+    else
+      UpdateDisplay;
+  end;
 end;
 
 procedure TJvCustomDBDatePickerEdit.WMCut(var AMessage: TMessage);
