@@ -75,6 +75,7 @@
 |- Miscel=Miscellaneous=This group contains components and controls that we were unable to categorize (yet).
 |- Multimedia=Multimedia=JVCL provides a number of components and controls that deal with multimedia (audio and video, but also player controlling).
 |   |- Audio=Audio=JVCL provides a number of components and controls that deal with audio.
+|   |- Players=Players=JVCL provides a number of components and controls that deal with multimedia players (such as WinAMP).
 |   |- Video=Video=JVCL provides a number of components and controls that deal with video.
 |- PagesAndTabs=Pages and tabs=JVCL provides a number of controls that enhance the TPageControl/TTabSheet and TNoteBook controls found in the Borland VCL.
 |- PanelsBevelsAndGroups=Panels, bevels and group boxes=JVCL provides a number of panels, bevels and group box controls.
@@ -87,6 +88,7 @@
     |   |- Alarms=Alarms=JVCL provides a number of components to schedule events.
     |   |- Timers=Timers=JVCL provides a number of components to time events.
     |- FilesAndFolders=Files and folders=JVCL provides a number of components to manage files and folders.
+    |- Encryption=Encryption and encoding=JVCL provides a number of components that allow you to encrypt/decrypt or encode/decode strings or data.
     |- LibProcAndThread=Libraries, processes and threads=JVCL provides a number of components and controls to control/manage libraries, processes and threads.
         |- Libraries=Libraries=JVCL provides a number of components to control library files (.DLLs).
         |- Processes=Processes=JVCL provides a number of components and controls to create and/or control processes.
