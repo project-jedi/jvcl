@@ -293,7 +293,7 @@ type
       X, Y: Integer); override;
     procedure FontChanged; override;
     procedure AdjustBounds; {$IFDEF VCL}override;{$ENDIF}
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure SetAutoSize(Value: Boolean); override;
     {$IFDEF VCL}
     procedure Paint; override;
     {$ELSE}
