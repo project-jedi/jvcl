@@ -109,6 +109,7 @@ contains
   JvgListBox in '..\..\run\JvgListBox.pas',
   JvgPage in '..\..\run\JvgPage.pas',
   JvgProgress in '..\..\run\JvgProgress.pas',
-  JvgReport in '..\..\run\JvgReport.pas';
+  JvgReport in '..\..\run\JvgReport.pas',
+  JvgReportParamsEditor in '..\..\run\JvgReportParamsEditor.pas';
 
 end.
