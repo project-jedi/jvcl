@@ -11,6 +11,12 @@ dxgettext -q -b .\ 1>tmp1.txt 2>tmp2.txt
 if errorlevel 1 goto nodxgettext
 
 : test the existence of SetPoHeader
+if exist ..\devtools\bin\SetPoHeader.exe goto nextSetPoHeader
+cd ..\devtools
+make -s SetPoHeader.exe
+cd ..\locale
+
+:nextSetPoHeader
 if not exist ..\devtools\bin\SetPoHeader.exe goto noSetPoHeader
 
 : first, extract all strings
