@@ -24,7 +24,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-{$I JVCL.INC}
 
 unit JvCtlReg;
 
@@ -45,9 +44,9 @@ uses{$IFDEF WIN32}Windows, {$ELSE}WinTypes, {$ENDIF}Classes, SysUtils,
 
   TypInfo, Controls, Graphics, ExtCtrls, Tabs, Dialogs, Forms,
 {$IFDEF COMPILER3_UP}DsnConst, ExtDlgs, {$ELSE}LibConst, {$ENDIF}
-{$IFDEF DCS}
+{$IFNDEF DelphiPersonalEdition}
 {$IFDEF COMPILER4_UP}ImgEdit, {$ENDIF}{$IFDEF WIN32}ImgList, {$ENDIF}
-{$ENDIF DCS}
+{$ENDIF DelphiPersonalEdition}
 {$IFDEF WIN32}JvRichEd, {$ENDIF}Menus, FiltEdit, StdCtrls, Buttons,
   JvxConst, JvxCtrls, JvGrids, JvCurrEdit, JvToolEdit, JvHintProp, JvDateUtil,
   JvPickDate, JvSplit, JvxSlider, JvxClock, JvxAnimate, JvSpin, Consts,
@@ -393,7 +392,7 @@ begin
   Result := inherited GetVerbCount + 2;
 end;
 
-{$IFDEF DCS}
+{$IFNDEF DelphiPersonalEdition}
 {$IFDEF WIN32}
 
 type
@@ -476,9 +475,9 @@ begin
 {$IFDEF COMPILER3_UP}
     0: Result := SImageListEditor;
 {$ELSE}
-    0: Result := LoadStr(SImageEditor);
+    0: Result := SImageEditor;
 {$ENDIF}
-    1: Result := LoadStr(srSaveImageList);
+    1: Result := srSaveImageList;
   else
     Result := '';
   end;
@@ -490,7 +489,7 @@ begin
 end;
 
 {$ENDIF WIN32}
-{$ENDIF DCS}
+{$ENDIF DelphiPersonalEdition}
 
 { TJvWeekDayProperty }
 
@@ -592,7 +591,7 @@ begin
   RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
   RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
 {$IFDEF WIN32}
-{$IFDEF DCS}
+{$IFNDEF DelphiPersonalEdition}
   RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
   RegisterComponentEditor(TImageList, TJvImageListEditor);
 {$ENDIF}

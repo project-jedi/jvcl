@@ -48,7 +48,7 @@ implementation
 {.$ENDIF}
 
 uses TypInfo, JvxConst, JvDBCtrl, JvLookup, JvxLogin, JvDBComb, JvVCLUtils,
-{$IFNDEF COMPILER3_UP}DBTables, {$ENDIF}{$IFDEF DCS}JvSelDSFrm, {$ENDIF}
+{$IFNDEF COMPILER3_UP}DBTables, {$ENDIF}{$IFNDEF DelphiPersonalEdition}JvSelDSFrm, {$ENDIF}
 {$IFDEF COMPILER3_UP}JvMemDS, {$ENDIF}{$IFDEF WIN32}JvDBRichEd, {$ENDIF}
   Consts, LibHelp, JvDsgn;
 
@@ -83,7 +83,7 @@ begin
   end;
 end;
 
-{$IFDEF DCS}
+{$IFNDEF DelphiPersonalEdition}
 {$IFDEF COMPILER3_UP}
 
 { TJvMemoryDataEditor }
@@ -102,7 +102,7 @@ begin
 end;
 
 {$ENDIF COMPILER3_UP}
-{$ENDIF DCS}
+{$ENDIF DelphiPersonalEdition}
 
 { Designer registration }
 
@@ -136,9 +136,9 @@ begin
     TJvFieldProperty);
 {$IFDEF COMPILER3_UP}
   RegisterPropertyEditor(TypeInfo(Integer), TJvDBGrid, 'RowsHeight', nil);
-{$IFDEF DCS}
+{$IFNDEF DelphiPersonalEdition}
   RegisterComponentEditor(TJvMemoryData, TJvMemoryDataEditor);
-{$ENDIF DCS}
+{$ENDIF DelphiPersonalEdition}
 {$ENDIF COMPILER3_UP}
 
 end;

@@ -24,7 +24,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-{$I JVCL.INC}
 
 unit JvBDEReg;
 
@@ -52,7 +51,7 @@ implementation
 
 uses TypInfo, JvDBLists, JvxConst, JvDBQBE, JvDBFilter, JvDBIndex, JvDBPrgrss,
   JvxLogin, JvDBSecur, JvQuery, JvVCLUtils, JvDbExcpt, JvDsgn,
-{$IFDEF DCS}JvSelDSFrm, {$ENDIF}{$IFDEF Jv_MIDAS}JvRemLog, {$ENDIF}
+{$IFNDEF DelphiPersonalEdition}JvSelDSFrm, {$ENDIF}{$IFDEF Jv_MIDAS}JvRemLog, {$ENDIF}
 {$IFDEF COMPILER3_UP}JvQBndDlg, {$ELSE}
 {$IFNDEF WIN32}JvQBndDlg, {$ELSE}JvQBindDlg, {$ENDIF}{$ENDIF}
   Consts, LibHelp, JvMemTable;
@@ -272,7 +271,7 @@ begin
   end;
 end;
 
-{$IFDEF DCS}
+{$IFNDEF DelphiPersonalEdition}
 
 { TJvMemoryTableEditor }
 
@@ -289,7 +288,7 @@ begin
     TJvMemoryTable(Dest).CopyStructure(Source);
 end;
 
-{$ENDIF DCS}
+{$ENDIF DelphiPersonalEdition}
 
 { Designer registration }
 
@@ -337,7 +336,7 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvDBSecurity,
     'LoginNameField', TLoginNameFieldProperty);
 
-{$IFDEF DCS}
+{$IFNDEF DelphiPersonalEdition}
   RegisterComponentEditor(TJvMemoryTable, TJvMemoryTableEditor);
 {$ENDIF}
 
