@@ -1233,9 +1233,9 @@ begin
       tkClass:
         begin
           if (TPersistent(GetOrdProp(PersObj, PropName)) is TStrings) then
-            ReadStringList(PropPath, TStrings(GetOrdProp(PersObj, PropName)), True)
+            ReadStringList(PropPath, TStrings(GetOrdProp(PersObj, PropName)), ClearFirst)
           else if (TPersistent(GetOrdProp(PersObj, PropName)) is TPersistent) and Recursive then
-            ReadPersistent(PropPath, TPersistent(GetOrdProp(PersObj, PropName)), True);
+            ReadPersistent(PropPath, TPersistent(GetOrdProp(PersObj, PropName)), ClearFirst);
         end;
     end;
   end;
