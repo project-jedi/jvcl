@@ -116,20 +116,12 @@ function MakeValidMask(const Mask: string): string;
 
 implementation
 uses
-  JvTypes
+  JvTypes, JclStrings
 {$IFNDEF DELPHI6_UP}
   ,FileCtrl
 {$ENDIF}
   ;
 
-{ adds backslash to end of path if not already there }
-
-function AddPathBackslash(Path: string): string;
-begin
-  Result := Path;
-  if (Length(Path) > 1) and (AnsiLastChar(Path) <> '\') then
-    Result := Path + '\';
-end;
 
 function MakeValidMask(const Mask: string): string;
 const
@@ -227,7 +219,7 @@ begin
       TStringlist(FItems).Duplicates := dupIgnore;
     end;
   end;
-  FPath := AddPathBackSlash(FPath);
+  FPath := IncludeTrailingPathDelimiter(FPath);
   FindAllMasks(FPath, FMaskList, FFlags);
   SetDrive(CurDrive);
   DoClose;
@@ -252,25 +244,16 @@ begin
 end;
 
 procedure TJvSearchFiles.BuildMaskList;
-var tmp: string; i: integer;
+var i:integer;
 begin
-  FMaskList.Clear;
-  if FMask = '' then
-    Exit;
-  tmp := FMask;
-  i := 1;
-  while i <= Length(tmp) do
+  StrToStrings(FMask,FMaskDelim,FMaskList,false);
+  for i := FMaskList.Count - 1 downto 0 do
   begin
-    if tmp[i] = FMaskDelim then
-    begin
-      FMaskList.Add(Copy(tmp, 1, i - 1));
-      tmp := Copy(tmp, i + 1, MaxInt);
-      i := 0;
-    end;
-    Inc(i);
+    // trim and remove empties
+    FMaskList[i] := trim(FMaskList[i]);
+    if FMaskList[i] = '' then
+      FMaskList.Delete(i);
   end;
-  if tmp <> '' then
-    FMaskList.Add(tmp);
 end;
 
 procedure TJvSearchFiles.SetOptions(Value: TJvSearchOptions);
