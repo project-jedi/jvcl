@@ -63,7 +63,7 @@
         <alias name="Linux" value="k2,k3"/>
       </aliases>
     </model>
-    <Model Name="JCL" format="%t%p%n" prefix="Jcl" packages="" incfile="">
+    <Model Name="JCL" format="%e%p%n,%e%p%n%v0" prefix="Jcl" packages="" incfile="">
       <targets>
         <target name="c5"/>
         <target name="c6"/>
