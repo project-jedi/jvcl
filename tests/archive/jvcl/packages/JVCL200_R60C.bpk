@@ -149,7 +149,7 @@
       ..\lib6\JvJVCLAbout.obj ..\lib6\JvCaret.obj ..\lib6\ObjSel.obj 
       ..\lib6\Ras32.obj ..\lib6\Winamp.obj ..\lib6\JvValidateEdit.obj 
       ..\lib6\JvBehaviorLabel.obj ..\lib6\JvProgressDialog.obj 
-      ..\lib6\JvProgressFrm.obj"/>
+      ..\lib6\JvProgressFrm.obj ..\lib6\JvID3v2Base.obj"/>
     <RESFILES value="jvcl200_R60C.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -163,17 +163,24 @@
       ..\source\JvFormProgress.dfm ..\Source\JvHLEdPropDlg.dfm 
       ..\source\JvJVCLAbout.dfm ..\source\JvProgressFrm.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="bcb2kaxserver.lib indy.lib dbxcds.lib dclocx.lib soaprtl.lib nmfast.lib 
-      dbexpress.lib inetdbxpress.lib inetdbbde.lib dsnapcon.lib dsnapcrba.lib 
-      visualdbclx.lib teeqr.lib dss.lib tee.lib teedb.lib teeui.lib bdecds.lib 
-      cds.lib ibxpress.lib vcldbx.lib adortl.lib wininet.lib"/>
+    <LIBRARIES value="cxGridUtilsVCLC6.lib cxExportVCLC6.lib cxGridVCLC6.lib cxDataC6.lib 
+      cxEditorsVCLC6.lib dxThemeC6.lib cxLibraryVCLC6.lib dxsbC6.lib 
+      dxBarExtDBItemsC6.lib dxBarExtItemsC6.lib dxBarDBNavC6.lib dxBarC6.lib 
+      dxComnC6.lib bcb2kaxserver.lib indy.lib dbxcds.lib dclocx.lib soaprtl.lib 
+      nmfast.lib dbexpress.lib inetdbxpress.lib inetdbbde.lib dsnapcon.lib 
+      dsnapcrba.lib visualdbclx.lib teeqr.lib dss.lib tee.lib teedb.lib 
+      teeui.lib bdecds.lib cds.lib ibxpress.lib vcldbx.lib adortl.lib wininet.lib"/>
     <SPARELIBS value="wininet.lib vcldb.lib adortl.lib bdertl.lib vcldbx.lib ibxpress.lib 
       cds.lib bdecds.lib qrpt.lib teeui.lib teedb.lib tee.lib dss.lib teeqr.lib 
       visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib 
       inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib 
-      dbxcds.lib indy.lib bcb2kaxserver.lib CJCL60.lib rtl.lib"/>
+      dbxcds.lib indy.lib bcb2kaxserver.lib CJCL60.lib rtl.lib dxComnC6.lib 
+      dxBarC6.lib dxBarDBNavC6.lib dxBarExtItemsC6.lib dxBarExtDBItemsC6.lib 
+      dxsbC6.lib cxLibraryVCLC6.lib dxThemeC6.lib cxEditorsVCLC6.lib 
+      cxDataC6.lib cxGridVCLC6.lib cxExportVCLC6.lib cxGridUtilsVCLC6.lib"/>
     <PACKAGES value="rtl.bpi vcl.bpi vclx.bpi vcljpg.bpi inet.bpi vcldb.bpi bdertl.bpi qrpt.bpi 
-      CJCL60.bpi vclsmp.bpi dbrtl.bpi bcbsmp.bpi bcbie.bpi"/>
+      CJCL60.bpi vclsmp.bpi dbrtl.bpi bcbsmp.bpi bcbie.bpi JVCL200_D60C.bpi 
+      designide.bpi dcldb.bpi designdgm.bpi dclstd.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\source;..\common"/>
     <PATHRC value=".;"/>
@@ -185,7 +192,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JVCL200_R60C.cpp"/>
     <INCLUDEPATH value="..\source;&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;$(BCB)\include;$(BCB)\include\vcl;..\common"/>
-    <LIBPATH value="..\source;$(BCB)\Projects\Lib;..\lib6;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;&quot;V:\code library\source&quot;;..\common;$(BCB)\Lib\Psdk"/>
+    <LIBPATH value="&quot;C:\Program Files\Developer Express Inc\ExpressQuantumGrid 4\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\ExpressDataController\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\ExpressEditors Library 4\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\XP Theme Manager\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\CX Library\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\ExpressBars\C++Builder 6\Lib&quot;;&quot;C:\Program Files\Developer Express Inc\ExpressCommon\C++Builder 6\Lib&quot;;..\source;$(BCB)\Projects\Lib;..\lib6;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;&quot;V:\code library\source&quot;;..\common;$(BCB)\Lib\Psdk"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -604,7 +611,13 @@
       <FILE FILENAME="..\source\JvBehaviorLabel.pas" FORMNAME="" UNITNAME="JvBehaviorLabel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvProgressDialog.pas" FORMNAME="" UNITNAME="JvProgressDialog" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvProgressFrm.pas" FORMNAME="frmProgress" UNITNAME="JvProgressFrm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvID3v2Base.pas" FORMNAME="" UNITNAME="JvID3v2Base" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JVCL200_D60C.bpi" FORMNAME="" UNITNAME="JVCL200_D60C" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\dcldb.bpi" FORMNAME="" UNITNAME="dcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\designdgm.bpi" FORMNAME="" UNITNAME="designdgm" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

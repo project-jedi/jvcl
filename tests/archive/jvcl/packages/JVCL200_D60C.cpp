@@ -25,6 +25,8 @@ USEFORMNS("..\source\JvBandObjectDLLWizardForm.pas", Jvbandobjectdllwizardform, 
 USEFORMNS("..\source\JvPluginParams.pas", Jvpluginparams, frmPluginParams);
 USEFORMNS("..\source\JvActnRes.pas", Jvactnres, JvStandardActions); /* TDataModule: File Type */
 USEFORMNS("..\source\JvScheduleEditor.pas", Jvscheduleeditor, FrmScheduleEditor);
+USEFORMNS("..\source\JvID3v2Editor.pas", Jvid3v2editor, JvID3FramesEditor);
+USEFORMNS("..\source\JvID3v2Define.pas", Jvid3v2define, JvID3DefineDlg);
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
