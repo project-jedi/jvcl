@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 351
-  Top = 156
+  Left = 306
+  Top = 126
   Width = 630
   Height = 270
   Caption = 'JvValidators demo'
@@ -14,6 +14,9 @@ object frmMain: TfrmMain
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  DesignSize = (
+    622
+    243)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -94,6 +97,7 @@ object frmMain: TfrmMain
     Max = 200
     Position = -1
     TabOrder = 4
+    Wrap = False
   end
   object btnCheck: TButton
     Left = 381
@@ -184,8 +188,40 @@ object frmMain: TfrmMain
   object JvValidators1: TJvValidators
     ValidationSummary = JvValidationSummary1
     ErrorProvider = JvErrorProvider1
-    Left = 264
+    OnValidateFailed = JvValidators1ValidateFailed
+    Left = 258
     Top = 104
+    object JvRequiredFieldValidator1: TJvRequiredFieldValidator
+      Valid = True
+      ControlToValidate = edRequired
+      PropertyToValidate = 'Text'
+      Enabled = True
+      ErrorMessage = 'Value in edRequired cannot be empty'
+    end
+    object JvCustomValidator1: TJvCustomValidator
+      Valid = True
+      ControlToValidate = edRequired10Chars
+      Enabled = True
+      ErrorMessage = 'Value in "edRequired10Chars" requires at least 10 characters'
+      OnValidate = JvCustomValidator1Validate
+    end
+    object JvRegularExpressionValidator1: TJvRegularExpressionValidator
+      Valid = True
+      ControlToValidate = edRegExpr
+      PropertyToValidate = 'Text'
+      Enabled = True
+      ErrorMessage = 'Value in "edRegExpr" does not match "A.B.C."'
+      ValidationExpression = '^A.B.C.*'
+    end
+    object JvRangeValidator1: TJvRangeValidator
+      Valid = True
+      ControlToValidate = udRange0to100
+      PropertyToValidate = 'Position'
+      Enabled = True
+      ErrorMessage = 'Value in "udRange0to100" must be between 0 and 100'
+      MinimumValue = 0
+      MaximumValue = 100
+    end
   end
   object JvErrorProvider1: TJvErrorProvider
     ImageIndex = 0
@@ -193,6 +229,7 @@ object frmMain: TfrmMain
     Top = 104
   end
   object JvValidationSummary1: TJvValidationSummary
+    OnChange = JvValidationSummary1Change
     Left = 328
     Top = 104
   end
