@@ -2929,7 +2929,6 @@ begin
       end;
       X := X + Width;
     end;
-    bmp.savetofile('BrushCopy.bmp');
     DstCanvas.Stop;
     Canvas.Stop;
     Free;
