@@ -50,14 +50,15 @@ uses
   JvTypes, JvDsgnConsts, JvJCLUtils, JVCLVer, JvComponent,
   JvActions, JvActnResForm, JvJVCLAboutForm, JvDsgnEditors, JvIDEZoom,
   JvJVCLAboutEditor, JvBaseDlg, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor,
-  JvAppIniStorage, JvBackgrounds,
+  JvAppIniStorage,
   {$IFDEF MSWINDOWS}
-  JvAppRegistryStorage, JvContextProvider,
-  JvColorProviderEditors, JvDataProviderEditors, JvDataProvider,
-  JvDataProviderIntf, JvBackgroundEditors,
+  JvAppRegistryStorage, 
   {$ENDIF MSWINDOWS}
+  JvContextProvider,
+  JvColorProviderEditors, JvDataProviderEditors, JvDataProvider,
+  JvDataProviderIntf, JvColorProvider, 
   {$IFDEF VCL}
-  JvColorProvider,
+	JvColorEditor, JvBackgrounds,  JvBackgroundEditors,
   {$ENDIF VCL}
   JvAppStorage, JvAppStorageSelectList;
 
@@ -77,15 +78,18 @@ begin
   {$ENDIF COMPILER7_UP}
 
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent]);
-  {$IFDEF MSWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [TJvContextProvider,
-    TJvColorProvider, TJvColorMappingProvider, TJvBackground]);
+    TJvColorProvider, TJvColorMappingProvider
+    {$IFDEF VCL}, TJvBackground {$ENDIF}
+    ]);
+  {$IFDEF MSWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
   {$ENDIF MSWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
     TJvAppIniFileStorage, TJvAppStorageSelectList]);
 
-  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
+  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil,
+  'AboutJVCL'{$IFDEF VisualCLX} + 'X'{$ENDIF} , TJVCLAboutDialogProperty);
 
   // The TJvPersistent class needs an editor for D5 and BCB5, but for
   // all other compilers, it doesn't need anything as it is declared as
@@ -148,10 +152,10 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvColorProviderAddColorStyle), nil, '', TJvColorProviderAddColorStyleEditor);
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
-
+  {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(TJvBackgroundClients), TJvBackground,
     'Clients', TJvClientsProperty);
-
+  {$ENDIF}
   RegisterActions(RsJVCLActionsCategory, [{$IFDEF MSWINDOWS} TJvSendMailAction, {$ENDIF} TJvWebAction], TJvStandardActions);
   RegisterZoom;
 end;
