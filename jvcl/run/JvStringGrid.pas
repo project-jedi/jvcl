@@ -145,6 +145,8 @@ type
     procedure MoveColumn(FromIndex, ToIndex: Integer);
     procedure MoveRow(FromIndex, ToIndex: Longint);
 
+    procedure ClearSelection; // Clears selection rectangle!
+
     property InplaceEditor;
     // Calculates and sets the width of a specific column or all columns if Index < 0
     // based on the text in the affected Cells.
@@ -1285,6 +1287,20 @@ begin
     for I := 0 to RowCount - 1 do
       RowHeights[I] := -1;
 end;
+
+
+procedure TJvStringGrid.ClearSelection; // Clears selection rectangle!
+var
+ s:TGridRect;
+begin
+  s.Left := -1;
+  s.Top := -1;
+  s.Right := -1;
+  s.Bottom := -1;
+  Self.Selection  := s;
+  Refresh;
+end;
+
 
 procedure TJvStringGrid.ShowAll(AWidth, AHeight: Integer);
 var
