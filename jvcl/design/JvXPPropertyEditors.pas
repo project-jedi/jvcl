@@ -33,16 +33,13 @@ interface
 uses
   Classes, SysUtils,
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors,
-  {$IFDEF VCL}
-  VCLEditors,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  JvQDsgnEditors,
-  {$ENDIF VisualCLX}
+  DesignIntf, DesignEditors, VCLEditors,
   {$ELSE}
   Contnrs, DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  {$IFDEF VisualCLX}
+  JvQDsgnEditors,
+  {$ENDIF VisualCLX}
   Windows, Forms, ImgList, ActnList, Graphics,
   TypInfo;
 
@@ -53,6 +50,7 @@ type
   //TDesignerSelectionList = TComponentList;
   {$ENDIF COMPILER6_UP}
 
+  {$IFDEF VCL}
   TJvXPCustomImageIndexPropertyEditor = class(TIntegerProperty
     {$IFDEF COMPILER6_UP}, ICustomPropertyListDrawing {$ENDIF})
   public
@@ -68,6 +66,14 @@ type
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
       const ARect: TRect; ASelected: Boolean); {$IFNDEF COMPILER6_UP} override; {$ENDIF}
   end;
+  {$ENDIF VCL} 
+
+  {$IFDEF VisualCLX}
+  TJvXPCustomImageIndexPropertyEditor = class(TJvDefaultImageIndexProperty)
+  public
+    function GetImageListAt(Index: Integer): TCustomImageList; virtual;
+  end;
+  {$ENDIF VisualCLX}
 
   TJvXPItemImageIndexPropertyEditor = class(TJvXPCustomImageIndexPropertyEditor)
   public
@@ -111,14 +117,16 @@ type
 
 //=== { TJvXPCustomImageIndexPropertyEditor } ================================
 
-function TJvXPCustomImageIndexPropertyEditor.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paMultiSelect, paValueList, paRevertable];
-end;
-
 function TJvXPCustomImageIndexPropertyEditor.GetImageListAt(Index: Integer): TCustomImageList;
 begin
   Result := nil;
+end;
+
+{$IFDEF VCL}
+
+function TJvXPCustomImageIndexPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paValueList, paRevertable];
 end;
 
 procedure TJvXPCustomImageIndexPropertyEditor.GetValues(Proc: TGetStrProc);
@@ -131,6 +139,7 @@ begin
     for I := 0 to ImgList.Count -1 do
       Proc(IntToStr(I));
 end;
+
 
 procedure TJvXPCustomImageIndexPropertyEditor.ListDrawValue(const Value: string;
   ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
@@ -170,6 +179,8 @@ begin
   if Assigned(ImgList) then
     Inc(AWidth, ImgList.Width);
 end;
+
+{$ENDIF VCL}
 
 //=== { TJvXPItemImageIndexPropertyEditor } ==================================
 
