@@ -403,6 +403,7 @@ begin
     begin
       Brush.Color := clBlack;
       
+      
       FrameRect(Canvas, GetClientRect);
       
     end;

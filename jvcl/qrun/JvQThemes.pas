@@ -51,6 +51,7 @@ const
 
 type
   
+  
   TCMDenySubClassing = record
     Msg: Integer;
     Result: Integer;
@@ -66,6 +67,7 @@ type
 
 type
   
+   
    
   TThemeStyle = set of (csNeedsBorderPaint, csParentBackground);
    

@@ -42,6 +42,7 @@ interface
 
 uses
   
+  
   Types, QWindows, QControls, QExtCtrls,
   
   SysUtils;
@@ -110,6 +111,7 @@ begin
   if FCurrentControl <> nil then
   try
     
+    
     FCurrentControl.MouseLeave(FCurrentControl);
     
   except
@@ -146,6 +148,7 @@ begin
       if Assigned(FCurrentControl.Parent) then
         MapWindowPoints(FCurrentControl.Parent.Handle, HWND_DESKTOP, R, 2);
       if not PtInRect(R, Pt) then
+        
         
         FCurrentControl.MouseLeave(FCurrentControl);
         

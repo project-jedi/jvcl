@@ -54,7 +54,7 @@ uses
   JvQExComboEdits,
   
   SysUtils, Classes,
-  
+
   RTLConsts, Variants,
   
   JvQComponent, JvQSpeedButton, JvQJCLUtils, JvQTypes, JvQExControls, JvQExMask;
@@ -270,7 +270,6 @@ type
     property PopupVisible: Boolean read GetPopupVisible;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
   public
-    NewStyleControls: boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoClick;
@@ -806,14 +805,7 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 implementation
 
 uses
-  {$IFDEF MSWINDOWS}
-  ShellAPI,
-  {$ENDIF MSWINDOWS}
-  
-  
-  QConsts,
-  
-  Math,
+  ShellAPI, Consts, Math, 
   JvQThemes, JvQResources, JvQJVCLUtils, JvQPickDate,
   
   JvQConsts;
@@ -1256,7 +1248,7 @@ begin
   GetTextMetrics(DC, Metrics);
   SelectObject(DC, SaveFont);
   ReleaseDC(0, DC);
-  if NewStyleControls then
+  if false then //NewStyleControls then
   begin
     
     
@@ -1895,7 +1887,7 @@ begin
 
   
 
-  if NewStyleControls and (BorderStyle = bsSingle) then
+  if false then //NewStyleControls and (BorderStyle = bsSingle) then
   begin
     
     
@@ -2026,7 +2018,7 @@ procedure TJvCustomComboEdit.UpdateBtnBounds;
 var
   BtnRect: TRect;
 begin
-  if NewStyleControls then
+  if false then //NewStyleControls then
     
     begin
       if BorderStyle = bsSingle then
@@ -2976,10 +2968,9 @@ begin
     if FState <> rbsDown then
       with Canvas do
       begin
-
-//        if NewStyleControls then
-//          Pen.Color := clBtnFace
-//        else
+        if false then//NewStyleControls then
+          Pen.Color := clBtnFace
+        else
           Pen.Color := clBtnShadow;
         MoveTo(0, 0);
         LineTo(0, Self.Height - 1);

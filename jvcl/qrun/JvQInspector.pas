@@ -60,7 +60,8 @@ uses
   SysUtils, Classes, Contnrs, TypInfo, IniFiles,
   
   
-  Qt, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QWindows, JvQExExtCtrls,
+  Qt, QTypes, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QWindows,
+  JvQExExtCtrls,
   
   JvQComponent, JvQTypes, JvQExControls;
 
@@ -208,6 +209,7 @@ type
   TOnJvInspectorMouseDown = procedure(Sender: TJvCustomInspector; Item: TJvCustomInspectorItem; Button: TMouseButton;
     Shift: TShiftState; X, Y: Integer) of object;
 
+  
   
   TJvCustomInspector = class(TJvExCustomPanel)
   
@@ -672,6 +674,7 @@ type
     procedure DoAfterItemCreate; virtual;
     function DoCompare(const Item: TJvCustomInspectorItem): Integer; virtual;
     
+    
     procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
       State: TOwnerDrawState; var Handled: Boolean); virtual;
     
@@ -1093,6 +1096,7 @@ type
 
   TJvInspectorFontNameItem = class(TJvInspectorStringItem)
   protected
+    
     
     procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
       State: TOwnerDrawState; var Handled: Boolean); override;
@@ -1828,7 +1832,7 @@ uses
 // BCB Type Info support
 var
   TypeInfoHelpersList : TClassList;
-
+    
 function TypeInfoFromName(TypeName : string): PTypeInfo;
 var
   I : Integer;
@@ -2049,6 +2053,7 @@ var
 function TInspReg.ApplicationDeactivate(var Msg: TMessage): Boolean;
 var
   I: Integer;
+
 
 var
   A: TCMActivate;
@@ -3440,6 +3445,7 @@ begin
       of an enumerated item's combobox }
     ShowScrollBars(SB_VERT, Round((DrawHeight) / ScFactor) >= Round(ClHeight / ScFactor));
     
+    
     with FVertScrollBar do
     begin
       Min := 0;
@@ -3465,6 +3471,7 @@ begin
     BCount := BandStarts.Count;
     BPerPage := ClientWidth div BandWidth;
     ShowScrollBars(SB_HORZ, BCount > BPerPage);
+    
     
     with FHorzScrollBar do
     begin
@@ -4817,10 +4824,12 @@ begin
     if Inspector.HandleAllocated then
       Inspector.ShowScrollBars(SB_BOTH, False);
     
+    
     Mouse.Capture := nil;
     
     if ListBox.ItemIndex > -1 then
       ListValue := ListBox.Items[ListBox.ItemIndex];
+    
     
     ListBox.Hide;
     
@@ -4868,6 +4877,7 @@ begin
   else
     Result := 0;
 end;
+
 
 
 procedure TJvCustomInspectorItem.DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
@@ -4967,6 +4977,7 @@ begin
     if P.X + Listbox.Width > Screen.Width then
       P.X := Screen.Width - Listbox.Width;
     
+    
     ListBox.Left := Rects[iprValueArea].Left;
     if (Rects[iprValueArea].Bottom + ListBox.Height) <= ListBox.parent.Height
     then
@@ -4979,8 +4990,9 @@ begin
     FDroppedDown := True;
     InvalidateItem;
     
+    
     EditCtrl.SetFocus;
-     
+    
   end;
 end;
 
@@ -5432,6 +5444,7 @@ begin
       begin
         StopTracking;
         
+        
         Event := QMouseEvent_create(QEventType_MouseButtonPress,
           @ListPos, Integer(ButtonState_LeftButton), Integer(ButtonState_LeftButton));
         try
@@ -5784,6 +5797,7 @@ begin
   begin
     Pressed := NewState;
     
+    
     Inspector.InvalidateRect(R, False);
     
   end;
@@ -5962,6 +5976,7 @@ begin
       if Pressed then
         BFlags := DFCS_FLAT or DFCS_PUSHED;
       
+      
       DrawFrameControl(ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLDOWN);
       
     end
@@ -6038,6 +6053,7 @@ begin
       if not (iifMultiLine in Flags) then
         ACanvas.TextRect(ARect, ARect.Left, ARect.Top, S)
       else
+        
         
         ACanvas.Start;
         DrawTextEx(ACanvas.Handle, PChar(S), Length(S), ARect, DT_EDITCONTROL or
@@ -6145,15 +6161,13 @@ begin
     if iifValueList in Flags then
     begin
       
+      
       FListBox := TListBox.Create(Inspector);
-      
       ListBox.Visible := False;
-      
-      
       ListBox.Parent := EditCtrl.Parent;
       
       TListBox(ListBox).OnMouseUp := ListMouseUp;
-      
+
       TListBox(ListBox).ItemHeight := 11;
       if iifOwnerDrawListFixed in Flags then
         TListBox(ListBox).Style := lbOwnerDrawFixed
@@ -7776,6 +7790,7 @@ end;
 //=== TJvInspectorFontNameItem ===============================================
 
 
+
 procedure TJvInspectorFontNameItem.DoDrawListItem(Control: TObject;
   Index: Integer; Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
 
@@ -7906,6 +7921,7 @@ var
   Bool: Boolean;
   ARect: TRect;
   
+  
   Rgn, SaveRgn: QRegionH;
   
   HasRgn: Boolean;
@@ -7927,6 +7943,7 @@ begin
     OffsetRect(ARect, 2, 0);
     ARect.Right := ARect.Left + 13;
     ARect.Bottom := ARect.Top + 13;
+    
     
     SaveRgn := QPainter_clipRegion(ACanvas.Handle);
     HasRgn := QPainter_hasClipping(ACanvas.Handle);
@@ -7959,6 +7976,7 @@ begin
         end;
     finally
       { restore previous clipping region }
+      
       
       QPainter_setClipRegion(ACanvas.Handle, SaveRgn);
       QPainter_setClipping(ACanvas.Handle, HasRgn);
@@ -11126,9 +11144,7 @@ begin
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorInt64Item, tkInt64));
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorClassItem, tkClass));
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorTMethodItem, tkMethod));
-    
-    Add(TJvInspectorTCaptionRegItem.Create(TJvInspectorStringItem, TypeInfo(WideString)));
-    
+    Add(TJvInspectorTCaptionRegItem.Create(TJvInspectorStringItem, TypeInfo(TCaption)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorFontItem, TypeInfo(TFont)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorBooleanItem, TypeInfo(Boolean)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorBooleanItem, TypeInfo(BYTEBOOL)));

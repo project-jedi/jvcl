@@ -1364,6 +1364,7 @@ begin
       Brush.Color := clWhite;
       FillRect(Rect(0, 0, Images.Width, Images.Height));
       
+      
       Images.Draw(Bmp.Canvas, 0, 0, Index, itMask);
       
     end;
@@ -2454,6 +2455,7 @@ var
   ppf: IPersistFile;
   wnd: Windows.HWND;
 begin
+  
   
   wnd := QWidget_winId(HWND);
   
@@ -4633,6 +4635,7 @@ end;
 
 function GetDefaultCheckBoxSize: TSize;
 begin
+  
   
   Result.cx := 12;
   Result.cy := 12;

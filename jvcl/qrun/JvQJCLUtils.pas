@@ -914,6 +914,7 @@ uses
   ComObj, ShellAPI, MMSystem, Registry,
   {$ENDIF MSWINDOWS}
   
+  
   QConsts,
   
   JclStrings, JclSysInfo;
@@ -2980,9 +2981,7 @@ begin
   try
     Canvas.Handle := DC;
     Result := Canvas.TextHeight(AStr);
-    
-    Canvas.Handle := nil;
-    
+    Canvas.Handle := NullHandle;
   finally
     ReleaseDC(HWND_DESKTOP, DC);
     Canvas.Free;
@@ -3000,9 +2999,7 @@ begin
   try
     Canvas.Handle := DC;
     Result := Canvas.TextWidth(AStr);
-    
-    Canvas.Handle := nil;
-    
+    Canvas.Handle := NullHandle;
   finally
     ReleaseDC(HWND_DESKTOP, DC);
     Canvas.Free;

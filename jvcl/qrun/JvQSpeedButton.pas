@@ -527,7 +527,7 @@ var
   NewStyle: Boolean;
 begin
   Result := Client;
-  NewStyle := (Style = bsNew); // or (NewStyleControls} and (Style = bsAutoDetect));
+  NewStyle := (Style = bsNew) ;//or (NewStyleControls and (Style = bsAutoDetect));
   if IsDown then
   begin
     if NewStyle then
@@ -869,7 +869,13 @@ begin
   if Visible then
     UpdateTracking;
 end;
+(*)
+procedure TJvCustomSpeedButton.PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
+  AState: TJvButtonState; DrawMark: Boolean);
+begin
 
+end;
+(*)
 constructor TJvCustomSpeedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -925,6 +931,7 @@ begin
       { Calling Click might open a new window or something which will remove
         the focus; if the new window is modal then UpdateTracking won't be
         called until the window is closed, thus: }
+      
       
       MouseLeave(Self);
       

@@ -391,6 +391,7 @@ begin
   FOffset := 8;
   FAutoDrag := True;
   
+  
   FCaptionColor := clActiveHighlight;
   
   FFlat := False;
@@ -467,6 +468,7 @@ begin
   if FDrawPosition <> Value then
   begin
     FDrawPosition := Value;
+    
     
     RecreateWidget;
     
@@ -777,12 +779,13 @@ begin
     SetZOrder(True);
     FDragging := True;
     ReleaseCapture;
+   
     
     
     SetMouseGrabControl(Self);
     
     FAnchorPos := Point(X, Y);
-    
+   
   end;
 end;
 

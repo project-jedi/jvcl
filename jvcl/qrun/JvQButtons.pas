@@ -73,8 +73,8 @@ interface
 uses
   
   
-  QTypes, QGraphics, QControls, QForms, QExtCtrls, QStdCtrls, QMenus, QButtons,
-  QImgList, QWindows, Types,
+  Types, QGraphics, QControls, QForms, QExtCtrls, QStdCtrls, QMenus, QButtons,
+  QImgList, QWindows, QTypes,
 
   SysUtils, Classes,
   JvQComponent, JvQExButtons;
@@ -90,7 +90,7 @@ type
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
     FColor: TColor;
-
+    
     procedure GlyphChanged(Sender: TObject);
     procedure SetGlyph(Value: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);

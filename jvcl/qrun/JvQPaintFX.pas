@@ -177,6 +177,7 @@ resourcestring
 
 const
   
+  
   bpp = 4;
   
 
