@@ -91,7 +91,7 @@ constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
   TLookOutImageIndexProperty = class(TIntegerProperty)
     function GetAttributes: TPropertyAttributes;override;
     procedure GetValues(Proc:TGetStrProc);override;
-    {$IFNDEF Delphi6_UP }
+    {$IFNDEF COMPILER6_UP }
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
       var AWidth: Integer); override;
     procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
@@ -346,7 +346,7 @@ begin
   end;
 end;
 
-{$IFNDEF Delphi6_UP }
+{$IFNDEF COMPILER6_UP }
 procedure TLookOutImageIndexProperty.ListDrawValue(const Value: string;
   ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
 var btn:TJvLookOutButton;R:TRect;
