@@ -5,7 +5,7 @@
                      Andreas Hausladen (Andreas.Hausladen@gmx.de)
  All rights reserved.
 
- Version 0.5
+ Version 0.7
   Description: Qt based wrappers for common MS Windows API's
   Purpose: Reduce coding effort for porting VCL based components to VisualCLX
            compatible components
@@ -29,7 +29,7 @@
  THE SOFTWARE.
 --------------------------------------------------------------------------------
 
-Last Modified: 2004-01-11
+Last Modified: 2004-01-14
 
 Known Issues:
   - Covers only a small part of the Windows APIs
@@ -189,6 +189,7 @@ type
     Y: Longint;
   end;
   PSize = ^TSize;
+
   TTime = TDateTime;
   TDate = TDateTime;
 
@@ -291,6 +292,8 @@ function IsRectEmpty(R: TRect): LongBool;
 function EqualRect(R1, R2: TRect): LongBool;
 function UnionRect(var Dst: TRect; R1, R2: TRect): LongBool;
 function CopyRect(var Dst: TRect; const Src: TRect): LongBool;
+// asn: TODO:
+// function SubtractRect(var dR: TRect; const R1, R2: TRect): LongBool;
 
 type
   TRGBQuad = packed record
@@ -4077,7 +4080,9 @@ begin
   Result := DrawText(Handle, WText, Len, R, WinFlags);
   if (DT_MODIFYSTRING and WinFlags <> 0) and (Text <> nil) then
   begin
-    Move(WText[1], Text^, Length(WText) * SizeOf(WideChar));
+// asn: Length returns the # bytes
+//    Move(WText[1], Text^, Length(WText) * SizeOf(WideChar));
+    Move(WText[1], Text^, Length(WText));
     //WStrCopy(Text, PChar(AText));
   end;
 end;
@@ -4391,6 +4396,18 @@ begin
   end;
 end;
 
+function GetColorGroup( uState: LongWord): QColorGroupH;
+begin
+  if uState and DFCS_INACTIVE <> 0
+  then
+    Result := Application.Palette.ColorGroup(cgDisabled)
+  else if uState and DFCS_HOT <> 0
+  then
+    Result := Application.Palette.ColorGroup(cgActive)
+  else
+    Result := Application.Palette.ColorGroup(cgInActive);
+end;
+
 function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType, uState: Longword): LongBool;
 const
   Mask = $00FF;
@@ -4547,9 +4564,6 @@ begin
 
         DFC_SCROLL:
           begin
-            // not implemented
-            raise Exception.Create('not implemented');
-
             case uState and Mask of
               DFCS_SCROLLCOMBOBOX:
                 begin
@@ -4569,41 +4583,89 @@ begin
                   Result := True;
                 end;
               DFCS_SCROLLUP:
-                if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
                 begin
-                  {if uState and DFCS_INACTIVE <> 0 then
-                    ScrollBar := tsArrowBtnUpDisabled
+                  if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0
+                  then
+                    QStyle_drawArrow(Application.Style.Handle, Handle,
+                                   ArrowType_UpArrow,
+                                   uState and DFCS_PUSHED <> 0,
+                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                                   GetColorGroup(uState),
+                                   uState and DFCS_INACTIVE <> 0,
+                                   QPainter_brush(handle))
                   else
-                  if uState and DFCS_PUSHED <> 0 then
-                    ScrollBar := tsArrowBtnUpPressed
-                  else
-                  if uState and DFCS_HOT <> 0 then
-                    ScrollBar := tsArrowBtnUpHot
-                  else
-                    ScrollBar := tsArrowBtnUpNormal;
+                    QStyle_drawArrow(Application.Style.Handle, Handle,
+                                   ArrowType_UpArrow,
+                                   uState and DFCS_PUSHED <> 0,
+                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                                   GetColorGroup(uState),
+                                   uState and DFCS_INACTIVE <> 0,
+                                   nil);
 
-                  Details := ThemeServices.GetElementDetails(ScrollBar);
-                  ThemeServices.DrawElement(DC, Details, R);}
                   Result := True;
                 end;
               DFCS_SCROLLDOWN:
-                if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
                 begin
-                  {if uState and DFCS_INACTIVE <> 0 then
-                    ScrollBar := tsArrowBtnDownDisabled
+                  if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
+                    QStyle_drawArrow(Application.Style.Handle, Handle,
+                                   ArrowType_DownArrow,
+                                   uState and DFCS_PUSHED <> 0,
+                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                                   GetColorGroup(uState),
+                                   uState and DFCS_INACTIVE <> 0,
+                                   QPainter_brush(handle))
                   else
-                  if uState and DFCS_PUSHED <> 0 then
-                    ScrollBar := tsArrowBtnDownPressed
-                  else
-                  if uState and DFCS_HOT <> 0 then
-                    ScrollBar := tsArrowBtnDownHot
-                  else
-                    ScrollBar := tsArrowBtnDownNormal;
-
-                  Details := ThemeServices.GetElementDetails(ScrollBar);
-                  ThemeServices.DrawElement(DC, Details, R);}
+                    QStyle_drawArrow(Application.Style.Handle, Handle,
+                                     ArrowType_DownArrow,
+                                     uState and DFCS_PUSHED <> 0,
+                                     R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                                     GetColorGroup(uState),
+                                     uState and DFCS_INACTIVE <> 0,
+                                     nil);
                   Result := True;
                 end;
+              DFCS_SCROLLLEFT:
+                begin
+                  if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
+                    QStyle_drawArrow(Application.Style.Handle, Handle,
+                                   ArrowType_LeftArrow,
+                                   uState and DFCS_PUSHED <> 0,
+                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                                   GetColorGroup(uState),
+                                   uState and DFCS_INACTIVE <> 0,
+                                   QPainter_brush(handle))
+                  else
+                    QStyle_drawArrow(Application.Style.Handle, Handle,
+                                   ArrowType_LeftArrow,
+                                   uState and DFCS_PUSHED <> 0,
+                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                                   GetColorGroup(uState),
+                                   uState and DFCS_INACTIVE <> 0,
+                                   nil);
+                  Result := True;
+                end;
+              DFCS_SCROLLRIGHT:
+                begin
+                  if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
+                    QStyle_drawArrow(Application.Style.Handle, Handle,
+                                   ArrowType_RightArrow,
+                                   uState and DFCS_PUSHED <> 0,
+                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                                   GetColorGroup(uState),
+                                   uState and DFCS_INACTIVE <> 0,
+                                   QPainter_brush(handle))
+                  else
+                    QStyle_drawArrow(Application.Style.Handle, Handle,
+                                   ArrowType_RightArrow,
+                                   uState and DFCS_PUSHED <> 0,
+                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                                   GetColorGroup(uState),
+                                   uState and DFCS_INACTIVE <> 0,
+                                   nil);
+                  Result := True;
+                end;
+              else
+                raise Exception.Create('not implemented');
             end;
           end; // DFC_SCROLL
 
@@ -4798,7 +4860,6 @@ begin
     Result := False;
   end;
 end;
-
 
 function GetCurrentPositionEx(Handle: QPainterH; pos: PPoint): LongBool;
 begin
