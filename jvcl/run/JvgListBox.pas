@@ -328,7 +328,7 @@ begin
       R.Right := R.Right - FGlyphs.Width;
   with Msg.MeasureItemStruct^ do
   begin
-    DrawText(Canvas.Handle, PChar(Items[itemID]),
+    Windows.DrawText(Canvas.Handle, PChar(Items[itemID]),
       Length(Items[itemID]), R, DT_CALCRECT or WordBreak[fboWordWrap in Options]);
     if R.Bottom = 0 then
       R.Bottom := 14;

@@ -194,7 +194,7 @@ begin
     Dec(R.Bottom, 5);
 
     TargetCanvas.Font.Assign(CaptionFont);
-    DrawText(TargetCanvas.Handle, PChar(Caption), Length(Caption), R,
+    Windows.DrawText(TargetCanvas.Handle, PChar(Caption), Length(Caption), R,
       DT_SINGLELINE);
 
     Inc(R.Top, CanvasMaxTextHeight(TargetCanvas));
@@ -202,11 +202,11 @@ begin
 
     TargetCanvas.Font.Assign(CommentFont);
     SR := R;
-    DrawText(TargetCanvas.Handle, PChar(Comment), Length(Comment), SR,
+    Windows.DrawText(TargetCanvas.Handle, PChar(Comment), Length(Comment), SR,
       DT_WORDBREAK or DT_CALCRECT);
 
     OffsetRect(SR, 0, (R.Bottom - SR.Bottom) div 2);
-    DrawText(TargetCanvas.Handle, PChar(Comment), Length(Comment), SR,
+    Windows.DrawText(TargetCanvas.Handle, PChar(Comment), Length(Comment), SR,
       DT_WORDBREAK);
 
     if Assigned(FGlyph) and (FGlyph.Width > 0) then
@@ -232,7 +232,7 @@ begin
 
       TargetCanvas.Font.Assign(SymbolFont);
       SetBkMode(TargetCanvas.Handle, TRANSPARENT);
-      DrawText(TargetCanvas.Handle, PChar(Symbol), Length(FSymbol), SR,
+      Windows.DrawText(TargetCanvas.Handle, PChar(Symbol), Length(FSymbol), SR,
         DT_SINGLELINE or DT_CENTER or DT_VCENTER);
     end;
 

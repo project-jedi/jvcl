@@ -343,7 +343,7 @@ begin
     Inc(ARect.Left, Style.Interspace);
     SetTextColor(Canvas.Handle, ColorToRGB(Style.FontColor));
     SetBkMode(Canvas.Handle, TRANSPARENT);
-    DrawText(Canvas.Handle, PChar(Cells[ACol, ARow]), length(Cells[ACol,
+    Windows.DrawText(Canvas.Handle, PChar(Cells[ACol, ARow]), Length(Cells[ACol,
       ARow]), R, aAlignments[CellTextAlignment] or DT_WORDBREAK or
         DT_CALCRECT);
 
@@ -358,7 +358,7 @@ begin
     end;
 
     ARect.Top := ARect.Top + Max(0, (ARect.Bottom - R.Bottom) div 2);
-    DrawText(Canvas.Handle, PChar(Cells[ACol, ARow]), length(Cells[ACol,
+    Windows.DrawText(Canvas.Handle, PChar(Cells[ACol, ARow]), length(Cells[ACol,
       ARow]), ARect, aAlignments[CellTextAlignment] or aWordWrap[fsgWordWrap in
         FExtOptions]);
     SetTextColor(Canvas.Handle, ColorToRGB(Font.Color));
@@ -369,10 +369,10 @@ begin
     Canvas.FillRect(ARect);
     Inc(ARect.Left, 2);
     R := ARect;
-    DrawText(Canvas.Handle, PChar(Cells[ACol, ARow]), length(Cells[ACol,
+    Windows.DrawText(Canvas.Handle, PChar(Cells[ACol, ARow]), length(Cells[ACol,
       ARow]), R, DT_LEFT or DT_WORDBREAK or DT_CALCRECT);
     ARect.Top := ARect.Top + Max(0, (ARect.Bottom - R.Bottom) div 2);
-    DrawText(Canvas.Handle, PChar(Cells[ACol, ARow]), length(Cells[ACol,
+    Windows.DrawText(Canvas.Handle, PChar(Cells[ACol, ARow]), length(Cells[ACol,
       ARow]), ARect, DT_LEFT or DT_WORDBREAK)
   end; //  else inherited;
   // DefaultDrawing := True;
@@ -591,7 +591,7 @@ begin
       if length(Cells[I, MemoCell.Y]) = 0 then
         continue;
 
-      DrawText(Canvas.Handle, PChar(Cells[I, MemoCell.Y]), length(Cells[I,
+      Windows.DrawText(Canvas.Handle, PChar(Cells[I, MemoCell.Y]), length(Cells[I,
         MemoCell.Y]), R, DT_WORDBREAK or DT_CALCRECT);
       h := R.Bottom - R.Top;
       if h > maxHeight then

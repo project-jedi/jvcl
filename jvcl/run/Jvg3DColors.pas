@@ -67,14 +67,12 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-
 implementation
 
 uses
   Math,
   {$IFDEF USEJVCL}
-  JvConsts,
-  JvResources,
+  JvConsts, JvResources,
   {$ENDIF USEJVCL}
   JvgUtils, JvgTypes;
 

@@ -420,7 +420,7 @@ begin
     begin
       SetBkMode(Canvas.Handle, TRANSPARENT);
       SetTextColor(Canvas.Handle, FColor);
-      DrawText(Canvas.Handle, PChar(sPrintText), Length(sPrintText), RCalc,
+      Windows.DrawText(Canvas.Handle, PChar(sPrintText), Length(sPrintText), RCalc,
         DT_CALCRECT or DT_WordBREAK);
       R_.Top := R_.Top + max(0, (R_.Bottom - R_.Top - (RCalc.Bottom -
         RCalc.Top)) div 2);

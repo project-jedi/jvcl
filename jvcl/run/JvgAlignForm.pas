@@ -38,10 +38,17 @@ uses
   {$IFDEF VisualCLX}
   QControls, QForms, QStdCtrls, QExtCtrls,
   {$ENDIF VisualCLX}
-  JvgTypes, JvComponent;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgTypes;
 
 type
+  {$IFDEF USEJVCL}
   TAlignForm = class(TJvForm)
+  {$ELSE}
+  TAlignForm = class(TForm)
+  {$ENDIF USEJVCL}
     g_Horz: TRadioGroup;
     g_Vert: TRadioGroup;
     B_Ok: TButton;

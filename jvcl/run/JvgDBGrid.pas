@@ -201,7 +201,7 @@ begin
   end;
 
   SetBkMode(Canvas.Handle, TRANSPARENT);
-  DrawText(Canvas.Handle, PChar(Str), -1, R,
+  Windows.DrawText(Canvas.Handle, PChar(Str), -1, R,
     cAlignments[FCaptionTextAlignment] or DT_WORDBREAK or DT_CALCRECT);
 
   if FCaptionHeight < 0 then
@@ -212,7 +212,7 @@ begin
   RowHeights[0] := CaptionHeight_;
 
   ARect.Top := ARect.Top + Max(0, (ARect.Bottom - R.Bottom) div 2);
-  DrawText(Canvas.Handle, PChar(Str), -1, ARect,
+  Windows.DrawText(Canvas.Handle, PChar(Str), -1, ARect,
     cAlignments[FCaptionTextAlignment] or DT_WORDBREAK);
 end;
 

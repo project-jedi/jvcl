@@ -153,7 +153,7 @@ begin
       Alignment_ := ftaLeftJustify;
   end;
   Rect := ClientRect;
-  DrawText(Canvas.Handle, PChar(Caption), Length(Caption), Rect,
+  Windows.DrawText(Canvas.Handle, PChar(Caption), Length(Caption), Rect,
     DT_EXPANDTABS or WordWraps[WordWrap] or Alignments[Alignment_]);
 end;
 
@@ -265,7 +265,7 @@ begin
     Rect := ClientRect;
     DC := GetDC(0);
     Canvas.Handle := DC;
-    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), Rect,
+    Windows.DrawText(Canvas.Handle, PChar(Caption), Length(Caption), Rect,
       DT_EXPANDTABS or DT_CALCRECT or WordWraps[WordWrap]);
     Canvas.Handle := 0;
     ReleaseDC(0, DC);

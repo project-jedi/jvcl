@@ -140,6 +140,14 @@ function DeleteObject(P1: HGDIOBJ): BOOL; stdcall;
 function SameFileName(const Fn1, Fn2: string): Boolean;
 {$ENDIF COMPILER5}
 
+{$IFNDEF USEJVCL}
+function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer;
+  var R: TRect; WinFlags: Integer): Integer; overload;
+function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect;
+  WinFlags: Integer): Integer; overload;
+function PtInRectExclusive(R: TRect; Pt: TPoint): Boolean;
+{$ENDIF USEJVCL}
+
 implementation
 
 uses
@@ -370,47 +378,47 @@ begin
       begin
         SetTextColor(DC, ColorToRGB(HighlightColor));
         OffsetRect(R, -1, -1);
-        DrawText(DC, PChar(Text), Length(Text), R, Flags);
+        Windows.DrawText(DC, PChar(Text), Length(Text), R, Flags);
         SetTextColor(DC, ColorToRGB(ShadowColor));
         OffsetRect(R, 2, 2);
-        DrawText(DC, PChar(Text), Length(Text), R, Flags);
+        Windows.DrawText(DC, PChar(Text), Length(Text), R, Flags);
         SetTextColor(DC, ColorToRGB(FontColor));
         OffsetRect(R, -1, -1);
-        DrawText(DC, PChar(Text), Length(Text), R, Flags);
+        Windows.DrawText(DC, PChar(Text), Length(Text), R, Flags);
       end;
     fstRecessed:
       begin
         SetTextColor(DC, ColorToRGB(ShadowColor));
         OffsetRect(R, -1, -1);
-        DrawText(DC, PChar(Text), Length(Text), R, Flags);
+        Windows.DrawText(DC, PChar(Text), Length(Text), R, Flags);
         SetTextColor(DC, ColorToRGB(HighlightColor));
         OffsetRect(R, 2, 2);
-        DrawText(DC, PChar(Text), Length(Text), R, Flags);
+        Windows.DrawText(DC, PChar(Text), Length(Text), R, Flags);
         SetTextColor(DC, ColorToRGB(FontColor));
         OffsetRect(R, -1, -1);
-        DrawText(DC, PChar(Text), Length(Text), R, Flags);
+        Windows.DrawText(DC, PChar(Text), Length(Text), R, Flags);
       end;
     fstPushed:
       begin
         SetTextColor(DC, ColorToRGB(HighlightColor));
-        DrawText(DC, PChar(Text), Length(Text), R, Flags);
+        Windows.DrawText(DC, PChar(Text), Length(Text), R, Flags);
         SetTextColor(DC, ColorToRGB(ShadowColor));
         OffsetRect(R, -1, -1);
-        DrawText(DC, PChar(Text), Length(Text), R, Flags);
+        Windows.DrawText(DC, PChar(Text), Length(Text), R, Flags);
       end;
     fstShadow:
       begin
         SetTextColor(DC, ColorToRGB(ShadowColor));
         OffsetRect(R, 2, 2);
-        DrawText(DC, PChar(Text), Length(Text), R, Flags);
+        Windows.DrawText(DC, PChar(Text), Length(Text), R, Flags);
         SetTextColor(DC, ColorToRGB(FontColor));
         OffsetRect(R, -2, -2);
-        DrawText(DC, PChar(Text), Length(Text), R, Flags);
+        Windows.DrawText(DC, PChar(Text), Length(Text), R, Flags);
       end;
   else
     begin
       SetTextColor(DC, ColorToRGB(FontColor));
-      DrawText(DC, PChar(Text), Length(Text), R, Flags);
+      Windows.DrawText(DC, PChar(Text), Length(Text), R, Flags);
     end;
   end;
   SelectObject(DC, OldFont);
@@ -1733,7 +1741,7 @@ begin
     Exit;
   if Alignment <> ftaBroadwise then
   begin
-    DrawText(Canvas.Handle, PChar(Text), Length(Text), R,
+    Windows.DrawText(Canvas.Handle, PChar(Text), Length(Text), R,
       DT_EXPANDTABS or WordWraps[WordWrap] or Alignments[Alignment]);
     Exit;
   end;
@@ -2107,6 +2115,29 @@ asm
         POP     ESI
         POP     EDI
 end;
+
+{$IFNDEF USEJVCL}
+
+function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer;
+  var R: TRect; WinFlags: Integer): Integer; overload;
+begin
+  Result := Windows.DrawText(Canvas.Handle, Text, Len, R, WinFlags);
+end;
+
+function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect;
+  WinFlags: Integer): Integer; overload;
+begin
+  Result := DrawText(Canvas, PChar(Text), Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified
+end;
+
+function PtInRectExclusive(R: TRect; Pt: TPoint): Boolean;
+begin
+  R.Left := R.Left + 1;
+  R.Top := R.Top + 1;
+  Result := PtInRect(R, Pt);
+end;
+
+{$ENDIF USEJVCL}
 
 end.
 

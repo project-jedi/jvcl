@@ -42,7 +42,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, CommCtrl, ExtCtrls,
+  {$IFDEF USEJVCL}
   JVCLVer,
+  {$ENDIF USEJVCL}
   JvgTypes, JvgCommClasses;
 
 type
@@ -52,7 +54,9 @@ type
 
   TJvgAskListBox = class(TCustomListBox)
   private
+    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FAutoTransparentColor: TglAutoTransparentColor;
     FWallpaper: TBitmap;
     FWallpaperImage: TImage;
@@ -120,7 +124,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF USEJVCL}
     property Align;
     property BorderStyle;
     property Color;
@@ -178,9 +184,8 @@ type
 implementation
 
 uses
-  JvConsts, JvJCLUtils,
   {$IFDEF USEJVCL}
-  JvResources,
+  JvConsts, JvJCLUtils, JvResources,
   {$ENDIF USEJVCL}
   JvgUtils;
 
@@ -188,7 +193,7 @@ uses
 resourcestring
   RsYes = 'yes';
   RsNo = 'no';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 constructor TJvgAskListBox.Create(AOwner: TComponent);
 begin
@@ -465,7 +470,7 @@ begin
   Canvas.Brush.Color := ItemStyle.BtnColor;
   for I := 1 to Buttons.Count do // draw buttons
   begin
-    if PtInRectExclusive(BtnRect,MouseClickPoint) then
+    if PtInRectExclusive(BtnRect, MouseClickPoint) then
     begin
       if I = FPushedButton[Index] then
         FPushedButton[Index] := 0 //...none pushed

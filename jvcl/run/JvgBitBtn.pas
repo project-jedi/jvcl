@@ -32,12 +32,18 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, Graphics, ExtCtrls, Buttons, Forms,
-  JVCLVer, JvgTypes, JvgCommClasses, JvgUtils, JvExButtons;
+  {$IFDEF USEJVCL}
+  JVCLVer, JvExButtons,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses, JvgUtils;
 
 type
+  {$IFDEF USEJVCL}
   TJvgBitBtn = class(TJvExBitBtn)
+  {$ELSE}
+  TJvgBitBtn = class(TBitBtn)
+  {$ENDIF USEJVCL}
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FCanvas: TControlCanvas;
     function GetCanvas: TCanvas;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
@@ -48,11 +54,12 @@ type
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF USEJVCL}
     property HintColor;
     property OnParentColorChange;
     property OnMouseEnter;
     property OnMouseLeave;
+    {$ENDIF USEJVCL}
   end;
 
 implementation
@@ -92,7 +99,11 @@ begin
   FCanvas.Handle := DrawItemStruct.hDC;
   R := ClientRect;
   IsDown := DrawItemStruct.itemState and ODS_SELECTED <> 0;
+  {$IFDEF USEJVCL}
   if (not MouseOver) and (not IsDown) then
+  {$ELSE}
+  if not IsDown then
+  {$ENDIF USEJVCL}
     with FCanvas do
       if not Focused and not Default then
       begin
