@@ -1252,7 +1252,7 @@ type
     function IsAssigned: Boolean; virtual; abstract;
     function IsInitialized: Boolean; virtual; abstract;
     class function ItemRegister: TJvInspectorRegister; virtual;
-    class function New: TJvCustomInspectorData; virtual;
+    class function New: TJvCustomInspectorData; 
     function NewItem(const AParent: TJvCustomInspectorItem): TJvCustomInspectorItem; virtual;
     procedure SetAsSet(const Buf); virtual; abstract;
     property AsFloat: Extended read GetAsFloat write SetAsFloat;
