@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s):  Warren Postma (warrenpstma@hotmail.com)
 
-Last Modified: 2003-04-26
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -25,6 +23,7 @@ description : TJvCsvDataSet data access component. Design time unit - editor for
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

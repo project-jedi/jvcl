@@ -17,13 +17,12 @@ All Rights Reserved.
 Contributor(s):
 Stefaan Lesage - converted to use new OTA
 
-Last Modified: 2003-07-14
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

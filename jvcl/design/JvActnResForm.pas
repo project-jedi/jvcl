@@ -15,8 +15,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified:
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -24,6 +22,7 @@ description :
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
