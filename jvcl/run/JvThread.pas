@@ -67,15 +67,6 @@ type
     property OnFinishAll: TNotifyEvent read FOnFinishAll write FOnFinishAll;
   end;
 
-  TJvHideThread = class(TThread)
-  private
-    FExecuteEvent: TJvNotifyParamsEvent;
-    FParams: Pointer;
-  public
-    constructor Create(Event: TJvNotifyParamsEvent; Params: Pointer); virtual;
-    procedure Execute; override;
-  end;
-
 // Cannot be synchronized to the MainThread (VCL)
 procedure Synchronize(Method: TNotifyEvent);
 procedure SynchronizeParams(Method: TJvNotifyParamsEvent; P: Pointer);
@@ -104,6 +95,21 @@ begin
     ReleaseMutex(SyncMtx);
   end;
 end;
+
+type
+  TJvHideThread = class(TThread)
+  private
+    FExecuteEvent: TJvNotifyParamsEvent;
+    FParams: Pointer;
+    FSender: TObject;
+    FException: Exception;
+    FExceptionAddr: Pointer;
+    procedure ExceptionHandler;
+  public
+    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent;
+      Params: Pointer); virtual;
+    procedure Execute; override;
+  end;
 
 //=== TJvThread ==============================================================
 
@@ -134,7 +140,7 @@ begin
   if Assigned(FOnExecute) then
   begin
     Inc(FThreadCount);
-    HideThread := TJvHideThread.Create(FOnExecute, P);
+    HideThread := TJvHideThread.Create(Self, FOnExecute, P);
     try
       HideThread.FreeOnTerminate := FFreeOnTerminate;
       HideThread.OnTerminate := DoTerminate;
@@ -202,16 +208,31 @@ end;
 
 //=== TJvHideThread ==========================================================
 
-constructor TJvHideThread.Create(Event: TJvNotifyParamsEvent; Params: Pointer);
+constructor TJvHideThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer);
 begin
   inherited Create(True);
+  FSender := Sender;
   FExecuteEvent := Event;
   FParams := Params;
 end;
 
+procedure TJvHideThread.ExceptionHandler;
+begin
+  ShowException(FException, FExceptionAddr);
+end;
+
 procedure TJvHideThread.Execute;
 begin
-  FExecuteEvent(nil, FParams);
+  try
+    FExecuteEvent(FSender, FParams);
+  except
+    on E: Exception do
+    begin
+      FException := E;
+      FExceptionAddr := ExceptAddr;
+      Self.Synchronize(ExceptionHandler);
+    end;
+  end;
 end;
 
 initialization

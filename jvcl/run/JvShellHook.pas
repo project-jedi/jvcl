@@ -30,6 +30,7 @@ Description:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvShellHook;
 

@@ -34,7 +34,9 @@ interface
 
 uses
   SysUtils, Classes, Contnrs, Math,
-  {$IFDEF COMPILER6_UP}DateUtils, {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DateUtils,
+  {$ENDIF COMPILER6_UP}
   JvTypes, JvComponent, JvSimpleXml;
 
 type
