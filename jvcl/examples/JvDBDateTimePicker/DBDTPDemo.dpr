@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvDBDateTimePickerMainForm, JvDBDateTimePickerMainForm);
-  Application.CreateForm(TJvDBDateTimePickerMainForm, JvDBDateTimePickerMainForm);
   Application.Run;
 end.

@@ -12,6 +12,5 @@ begin
   Application.Initialize;
   Application.Title := '(DSA)MessageDlg(Ex) editor';
   Application.CreateForm(TDSADialogsMainForm, DSADialogsMainForm);
-  Application.CreateForm(TDSADialogsMainForm, DSADialogsMainForm);
   Application.Run;
 end.

@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvZLibMultipleMainForm, JvZLibMultipleMainForm);
-  Application.CreateForm(TJvZLibMultipleMainForm, JvZLibMultipleMainForm);
   Application.Run;
 end.

@@ -12,6 +12,5 @@ begin
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TAboutBox, AboutBox);
-  Application.CreateForm(TAboutBox, AboutBox);
   Application.Run;
 end.

@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvSystemPopup2MainForm, JvSystemPopup2MainForm);
-  Application.CreateForm(TJvSystemPopup2MainForm, JvSystemPopup2MainForm);
   Application.Run;
 end.

@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TOLBarMainForm, OLBarMainForm);
-  Application.CreateForm(TOLBarMainForm, OLBarMainForm);
   Application.Run;
 end.

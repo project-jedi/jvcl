@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvSpecialProgressMainForm, JvSpecialProgressMainForm);
-  Application.CreateForm(TJvSpecialProgressMainForm, JvSpecialProgressMainForm);
   Application.Run;
 end.

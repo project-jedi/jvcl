@@ -12,6 +12,5 @@ begin
   Application.Initialize;
   Application.Title := 'TJvLinkLabel Demo';
   Application.CreateForm(TJvLinkLabelMainForm, JvLinkLabelMainForm);
-  Application.CreateForm(TJvLinkLabelMainForm, JvLinkLabelMainForm);
   Application.Run;
 end.

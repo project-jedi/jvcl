@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvDataEmbeddedMainForm, JvDataEmbeddedMainForm);
-  Application.CreateForm(TJvDataEmbeddedMainForm, JvDataEmbeddedMainForm);
   Application.Run;
 end.

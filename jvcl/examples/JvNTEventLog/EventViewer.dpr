@@ -9,7 +9,6 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvNTEventLogMainForm, JvNTEventLogMainForm);
-  Application.CreateForm(TJvNTEventLogMainForm, JvNTEventLogMainForm);
   Application.Run;
 end.
 

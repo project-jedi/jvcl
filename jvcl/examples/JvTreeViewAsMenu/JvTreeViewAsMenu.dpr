@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvTreeViewAsMenuMainForm, JvTreeViewAsMenuMainForm);
-  Application.CreateForm(TJvTreeViewAsMenuMainForm, JvTreeViewAsMenuMainForm);
   Application.Run;
 end.

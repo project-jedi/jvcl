@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvTranslatorMainForm, JvTranslatorMainForm);
-  Application.CreateForm(TJvTranslatorMainForm, JvTranslatorMainForm);
   Application.Run;
 end.

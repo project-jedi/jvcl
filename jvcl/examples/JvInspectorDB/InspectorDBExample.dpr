@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvInspectorDBDemoMainForm, JvInspectorDBDemoMainForm);
-  Application.CreateForm(TJvInspectorDBDemoMainForm, JvInspectorDBDemoMainForm);
   Application.Run;
 end.

@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TProfiler32MainForm, Profiler32MainForm);
-  Application.CreateForm(TProfiler32MainForm, Profiler32MainForm);
   Application.Run;
 end.
