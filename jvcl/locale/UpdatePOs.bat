@@ -7,7 +7,7 @@ echo Update JVCL PO template file and the translations derived from it
 echo Current languages: %LANGUAGES%
 
 : test the existence of dxgettext
-dxgettext -q -b .\ 1>tmp1.txt 2>tmp2.txt
+dxgettext -q -b. >tmp1.txt 2>tmp2.txt
 if errorlevel 1 goto nodxgettext
 
 : test the existence of SetPoHeader
@@ -21,20 +21,21 @@ if not exist ..\devtools\bin\SetPoHeader.exe goto noSetPoHeader
 
 : first, extract all strings
 echo Extracting strings...
-dxgettext -q -o ..\common -b ..\common --delphi
+: dxgettext -q -o ..\common -b ..\common --delphi
 dxgettext -q -o ..\run -b ..\run --delphi
 
 : then merge all the generated po files into one
 echo Merging files...
-msgcat ..\run\default.po ..\common\default.po -o default.po
+copy ..\run\default.po default.po
+: msgcat ..\run\default.po ..\common\default.po -o default.po
 
 : ensure uniqueness
-msguniq -u --use-first default.po -o jvcl.po
+msguniq -u --no-wrap default.po -o jvcl.po
 
 : remove translations that needs to be ignored
 echo Removing strings that do not require translation...
 if not exist ignore.po msgmkignore jvcl.po -o ignore.po
-msgremove jvcl.po -i ignore.po -o default.po
+msgremove --no-wrap jvcl.po -i ignore.po -o default.po
 
 : merge with existing jvcl.po file
 echo Updating existing translations...
@@ -51,7 +52,8 @@ FOR %%l IN (%LANGUAGES%) DO call UpdateLanguage.bat %%l
 
 : cleanup
 echo Cleaning up...
-del ..\common\default.po ..\run\default.po default.po
+del ..\run\default.po default.po
+: del ..\common\default.po ..\run\default.po default.po
 
 goto end
 
