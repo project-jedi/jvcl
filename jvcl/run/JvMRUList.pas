@@ -105,6 +105,8 @@ type
     procedure SetItemData(const P: Pointer);
     function GetActive: Boolean;
     procedure SetActive(const Value: Boolean);
+    function GetItemDataAsPChar: PChar;
+    function GetItemDataAsPWideChar: pWideChar;
   protected
     function InternalGetItem(Index: Integer; FireEvent: Boolean = True): Boolean;
     procedure ReCreateList;
@@ -118,8 +120,8 @@ type
     procedure Open;
     function ItemDataSize: Integer;
     property ItemDataAsPointer: Pointer read FItemData.P;
-    property ItemDataAsPChar: PChar read FItemData.S;
-    property ItemDataAsPWideChar: pWideChar read FItemData.Ws;
+    property ItemDataAsPChar: PChar read GetItemDataAsPChar;
+    property ItemDataAsPWideChar: pWideChar read GetItemDataAsPWideChar;
     property ItemIndex: Integer read FItemIndex;
 
     constructor Create(AOwner: TComponent); override;
@@ -691,6 +693,16 @@ begin
     else
       Close;
   end;
+end;
+
+function TJvMRUList.GetItemDataAsPChar: PChar;
+begin
+  Result := FItemData.S;
+end;
+
+function TJvMRUList.GetItemDataAsPWideChar: pWideChar;
+begin
+  Result := FItemData.Ws;
 end;
 
 initialization
