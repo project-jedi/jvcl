@@ -14,6 +14,8 @@ object frmMain: TfrmMain
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
+  Position = poScreenCenter
+  OnCloseQuery = FormCloseQuery
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13

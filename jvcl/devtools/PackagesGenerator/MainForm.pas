@@ -111,6 +111,7 @@ type
     procedure actKnownExecute(Sender: TObject);
     procedure mnuUpClick(Sender: TObject);
     procedure mnuDownClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
     { Private declarations }
     Changed : Boolean; // true if current file has changed
@@ -118,6 +119,7 @@ type
     procedure LoadPackagesList;
     procedure LoadPackage;
     procedure MoveLine(sg : TStringGrid; direction : Integer);
+    function IsOkToChange : Boolean;
   public
     { Public declarations }
     constructor Create(AOwner : TComponent); override;
@@ -279,7 +281,7 @@ begin
     if PathIsAbsolute(jdePackagesLocation.Text) then
       PackagesDir := jdePackagesLocation.Text
     else
-      PackagesDir := PathNoInsideRelative(StrEnsureSuffix('\', extractfilepath(Application.exename))+jdePackagesLocation.Text);
+      PackagesDir := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir)+jdePackagesLocation.Text);
     for i := 0 to odlAddFiles.Files.Count-1 do
     begin
       row := jsgFiles.InsertRow(jsgFiles.RowCount-1);
@@ -380,8 +382,15 @@ begin
 end;
 
 procedure TfrmMain.LoadPackagesList;
+var
+  path : string;
 begin
-  EnumeratePackages(jdePackagesLocation.Text, jlbList.Items);
+  if PathIsAbsolute(jdePackagesLocation.Text) then
+    path := jdePackagesLocation.Text
+  else
+    path := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir)+jdePackagesLocation.Text);
+    
+  EnumeratePackages(path, jlbList.Items);
   jlbList.ItemIndex := 0;
   LoadPackage;
 end;
@@ -403,7 +412,7 @@ begin
   if PathIsAbsolute(jdePackagesLocation.Text) then
     FileName := jdePackagesLocation.Text
   else
-    FileName := PathNoInsideRelative(StrEnsureSuffix('\', ExtractFilePath(Application.ExeName)) + jdePackagesLocation.Text);
+    FileName := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir) + jdePackagesLocation.Text);
   FileName := FileName + '\xml\' + ledName.Text;
   if rbtDesign.Checked then
     FileName := FileName + '-D.xml'
@@ -494,7 +503,7 @@ begin
   if PathIsAbsolute(jdePackagesLocation.Text) then
     xmlFileName := jdePackagesLocation.Text
   else
-    xmlFileName := PathNoInsideRelative(StrEnsureSuffix('\', ExtractFilePath(Application.ExeName)) + jdePackagesLocation.Text);
+    xmlFileName := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir) + jdePackagesLocation.Text);
   xmlFileName := xmlFileName + '\xml\';
   if rbtDesign.Checked then
     xmlFileName := xmlFileName + jlbList.Items[jlbList.ItemIndex] + '.xml'
@@ -566,28 +575,31 @@ var
   targets : TStringList;
   i : Integer;
 begin
-  if PathIsAbsolute(jdePackagesLocation.Text) then
-    path := jdePackagesLocation.Text
-  else
-    path := PathNoInsideRelative(StrEnsureSuffix('\', ExtractFilePath(Application.ExeName)) + jdePackagesLocation.Text);
-
-  frmTargets.Path := path;
-  if frmTargets.ShowModal = mrOk then
+  if IsOkToChange then
   begin
-    targets := TStringList.Create;
-    try
-      for i := 0 to frmTargets.clbBuilds.Items.Count - 1 do
-      begin
-        with frmTargets.clbBuilds do
-        begin
-          if Checked[i] then
-            targets.Add(Items[i]);
-        end;
-      end;
+    if PathIsAbsolute(jdePackagesLocation.Text) then
+      path := jdePackagesLocation.Text
+    else
+      path := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir) + jdePackagesLocation.Text);
 
-      Generate(jlbList.Items, targets, path);
-    finally
-      targets.Free;
+    frmTargets.Path := path;
+    if frmTargets.ShowModal = mrOk then
+    begin
+      targets := TStringList.Create;
+      try
+        for i := 0 to frmTargets.clbBuilds.Items.Count - 1 do
+        begin
+          with frmTargets.clbBuilds do
+          begin
+            if Checked[i] then
+              targets.Add(Items[i]);
+          end;
+        end;
+
+        Generate(jlbList.Items, targets, path, nil);
+      finally
+        targets.Free;
+      end;
     end;
   end;
 end;
@@ -616,14 +628,20 @@ end;
 
 procedure TfrmMain.actPrevPackageExecute(Sender: TObject);
 begin
-  jlbList.ItemIndex := jlbList.ItemIndex - 1;
-  LoadPackage;
+  if IsOkToChange then
+  begin
+    jlbList.ItemIndex := jlbList.ItemIndex - 1;
+    LoadPackage;
+  end;
 end;
 
 procedure TfrmMain.actNextPackageExecute(Sender: TObject);
 begin
-  jlbList.ItemIndex := jlbList.ItemIndex + 1;
-  LoadPackage;
+  if IsOkToChange then
+  begin
+    jlbList.ItemIndex := jlbList.ItemIndex + 1;
+    LoadPackage;
+  end;
 end;
 
 procedure TfrmMain.actMainToolbarUpdate(Sender: TObject);
@@ -686,6 +704,31 @@ begin
   begin
     MoveLine((ActiveControl as TInPlaceEdit).Parent as TStringGrid, +1);
   end;
+end;
+
+function TfrmMain.IsOkToChange: Boolean;
+begin
+  if Changed then
+  begin
+    Result := True;
+    case Application.MessageBox(
+          'The values for this package have been changed.'#13#10 + 
+          'Do you want to save before the next action ?',
+          'Package has changed',
+          MB_ICONQUESTION or MB_YESNOCANCEL) of
+      MRYES:
+        actSave.Execute;
+      MRCANCEL:
+        Result := False;
+    end;
+  end
+  else
+    Result := True;
+end;
+
+procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  CanClose := IsOkToChange;
 end;
 
 end.

@@ -45,13 +45,13 @@ OutputDir=..\bin
 UnitOutputDir=..\dcu
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=
-Packages=vcl;rtl;dbrtl;adortl;vcldb;vclx;bdertl;vcldbx;ibxpress;dsnap;cds;bdecds;qrpt;teeui;teedb;tee;dss;teeqr;visualclx;visualdbclx;dsnapcrba;dsnapcon;VclSmp;vclshlctrls;vclie;xmlrtl;inet;inetdbbde;inetdbxpress;inetdb;nmfast;webdsnap;websnap;soaprtl;dbexpress;dbxcds;indy;dclOffice2k;tdbf_d6r;IcsDel60;ConnectionManagerComponents;DJCL60;JvCoreD6R
+SearchPath=$(DELPHI)\Lib\Debug
+Packages=vcl;rtl;dbrtl;adortl;vcldb;vclx;bdertl;vcldbx;ibxpress;dsnap;cds;bdecds;qrpt;teeui;teedb;tee;dss;teeqr;visualclx;visualdbclx;dsnapcrba;dsnapcon;VclSmp;vclshlctrls;vclie;xmlrtl;inet;inetdbbde;inetdbxpress;inetdb;nmfast;webdsnap;websnap;soaprtl;dbexpress;dbxcds;indy;dclOffice2k;tdbf_d6r;IcsDel60;ConnectionManagerComponents;DJCL60;JvCoreD6R;JvStdCtrlsD6R;JvCtrlsD6R;JvCustomD6R;JvCmpD6R;JvMMD6R;JvSystemD6R
 Conditionals=
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
-RunParams=/h
+RunParams=/g
 HostApplication=
 Launcher=
 UseLauncher=0
@@ -85,12 +85,6 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=
-[Excluded Packages]
-C:\PROG\DELPHI6\PROJECTS\BPL\JvStdCtrlsD6D.bpl=JVCL Standard Controls
-c:\prog\delphi6\Projects\Bpl\JvCtrlsD6D.bpl=JVCL Visual Controls
-c:\prog\delphi6\Projects\Bpl\JvCustomD6D.bpl=JVCL Custom Controls
-c:\prog\delphi6\Projects\Bpl\JvMMD6D.bpl=JVCL Multimedia and Image Components
-c:\prog\delphi6\Projects\Bpl\JvSystemD6D.bpl=JVCL System Components
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;

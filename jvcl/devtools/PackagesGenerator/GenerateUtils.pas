@@ -4,15 +4,29 @@ interface
 
 uses Classes;
 
-procedure Generate(packages : TStrings; targets : TStrings; path : string);
+type
+  TGenerateCallback = procedure (msg : string);
+
+procedure Generate(packages : TStrings; targets : TStrings; path : string; callback : TGenerateCallback);
 
 procedure EnumerateTargets(Path : string; targets : TStrings);
 
 procedure EnumeratePackages(Path : string; packages : TStrings);
 
+var
+  StartupDir : string;
+
 implementation
 
 uses SysUtils, JclSysUtils, JclStrings, JclFileUtils, JvSimpleXml;
+
+var GCallBack : TGenerateCallBack;
+
+procedure SendMsg(Msg : string);
+begin
+  if Assigned(GCallBack) then
+    GCallBack(Msg);
+end;
 
 function targetToSuffix(target : string) : string;
 begin
@@ -197,6 +211,8 @@ begin
   packSuffix := targetToSuffix(target);
   outFile := TStringList.Create;
 
+  SendMsg('Applying template to ' + package + ' in ' + target);
+
   try
     // read the xml file
     rootNode := xml.Root;
@@ -354,7 +370,7 @@ begin
   end;
 end;
 
-procedure Generate(packages : TStrings; targets : TStrings; path : string);
+procedure Generate(packages : TStrings; targets : TStrings; path : string; callback : TGenerateCallback);
 var
   rec : TSearchRec;
   i : Integer;
@@ -363,6 +379,7 @@ var
   xml : TJvSimpleXml;
   template : TStringList;
 begin
+  GCallBack := CallBack;
   path := StrEnsureSuffix('\', path);
   // for all targets
   for i := 0 to targets.Count - 1 do
@@ -436,5 +453,8 @@ begin
   end;
   FindClose(rec);
 end;
+
+initialization
+  StartupDir := GetCurrentDir;
 
 end.
