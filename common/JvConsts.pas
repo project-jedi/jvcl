@@ -348,8 +348,8 @@ resourcestring
   SPaletteHMIIndicator = 'Jv HMI Indicators';
   SPaletteHMINonVisual = 'Jv HMI Non-Visual';
   SPaletteHMIControls = 'Jv HMI Controls';
-
   SPaletteBDE = 'Jv BDE Components';
+  SPaletteMTThreads   = 'Jv Threading';
 
   { for RegisterActions }
   srJVCLActions     = 'JVCL';
