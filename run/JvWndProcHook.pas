@@ -94,18 +94,37 @@ uses
   Forms;
 
 type
+  PPJvHookInfo = ^PJvHookInfo;
   PJvHookInfo = ^TJvHookInfo;
   TJvHookInfo = record
     Hook: TJvControlHook;
     Next: PJvHookInfo;
   end;
 
+  PHookInfoList = ^THookInfoList;
+  THookInfoList = array[0..MaxInt div 4 - 1] of PJvHookInfo;
+
   TJvWndProcHook = class;
 
   TJvHookInfos = class(TObject)
   private
-    FFirst: array [TJvHookOrder] of PJvHookInfo;
-    FLast: array [TJvHookOrder] of PJvHookInfo;
+    FFirst: array[TJvHookOrder] of PJvHookInfo;
+    FLast: array[TJvHookOrder] of PJvHookInfo;
+    { FStack is filled with HookInfos that are being processed in WindowProc
+      procedures. On entrance of the WindowProc the size increases, on exit it
+      decreases. Thus when a message is send inside a hook handler, the stack
+      size increases.
+
+      We use a stack to be able to register and unregister hooks inside hook
+      handlers, see \dev\DUnit for some examples.
+
+      The odd members in the stack are hoBeforeMsg hooks, the even members in
+      the list are hoAftermsg hooks
+    }
+    FStack: PHookInfoList;
+    FStackCapacity: Integer;
+    FStackCount: Integer;
+
     FHandle: HWND;
     FControl: TControl;
     FControlDestroyed: Boolean;
@@ -117,6 +136,9 @@ type
     procedure WindowProc(var Msg: TMessage);
     procedure HookControl;
     procedure UnHookControl;
+
+    procedure IncDepth;
+    procedure DecDepth;
   public
     constructor Create(AControl: TControl); overload;
     constructor Create(AHandle: HWND); overload;
@@ -360,7 +382,8 @@ begin
   if not Assigned(HookInfos) then
   begin
     HookInfos := TJvHookInfos.Create(AHandle);
-    FHookInfos.Add(HookInfos);
+    HookInfos.Controller := Self;
+    {FHookInfos.Add(HookInfos);}
   end;
   HookInfos.Add(Order, Hook);
 
@@ -413,6 +436,7 @@ end;
 procedure TJvHookInfos.Add(const Order: TJvHookOrder; Hook: TJvControlHook);
 var
   HookInfo: PJvHookInfo;
+  I: Integer;
 begin
   New(HookInfo);
   HookInfo.Hook := Hook;
@@ -426,6 +450,18 @@ begin
     FLast[Order].Next := HookInfo;
 
   FLast[Order] := HookInfo;
+
+  { Update the stack }
+  if Order = hoBeforeMsg then
+    I := 0
+  else
+    I := 1;
+  while I < FStackCount * 2 do
+  begin
+    if FStack[I] = nil then
+      FStack[I] := HookInfo;
+    Inc(I, 2);
+  end;
 
   HookControl;
 end;
@@ -460,6 +496,9 @@ begin
   FControl := AControl;
   FillChar(FFirst, SizeOf(FFirst), 0);
   FillChar(FLast, SizeOf(FLast), 0);
+  FillChar(FStack, SizeOf(FStack), 0);
+  FillChar(FStackCapacity, SizeOf(FStackCapacity), 0);
+  FillChar(FStackCount, SizeOf(FStackCount), 0);
 end;
 
 constructor TJvHookInfos.Create(AHandle: HWND);
@@ -468,12 +507,22 @@ begin
   FHandle := AHandle;
   FillChar(FFirst, SizeOf(FFirst), 0);
   FillChar(FLast, SizeOf(FLast), 0);
+  FillChar(FStack, SizeOf(FStack), 0);
+  FillChar(FStackCapacity, SizeOf(FStackCapacity), 0);
+  FillChar(FStackCount, SizeOf(FStackCount), 0);
+end;
+
+procedure TJvHookInfos.DecDepth;
+begin
+  if FStackCount > 0 then
+    Dec(FStackCount);
 end;
 
 procedure TJvHookInfos.Delete(const Order: TJvHookOrder; Hook: TJvControlHook);
 var
   HookInfo: PJvHookInfo;
   PrevHookInfo: PJvHookInfo;
+  I: Integer;
 begin
   HookInfo := FFirst[Order];
   PrevHookInfo := nil;
@@ -499,6 +548,18 @@ begin
     FLast[Order] := PrevHookInfo;
   if FFirst[Order] = HookInfo then
     FFirst[Order] := HookInfo.Next;
+
+  { Update the stack }
+  if Order = hoBeforeMsg then
+    I := 0
+  else
+    I := 1;
+  while I < FStackCount * 2 do
+  begin
+    if FStack[I] = HookInfo then
+      FStack[I] := HookInfo.Next;
+    Inc(I, 2);
+  end;
 
   Dispose(HookInfo);
 
@@ -527,10 +588,10 @@ begin
       FFirst[Order] := HookInfo.Next;
       Dispose(HookInfo);
     end;
+  FreeMem(FStack);
 
   inherited Destroy;
 end;
-
 
 procedure TJvHookInfos.HookControl;
 begin
@@ -553,6 +614,18 @@ begin
     {$ENDIF}
     FHooked := True;
   end;
+end;
+
+procedure TJvHookInfos.IncDepth;
+begin
+  if FStackCount >= FStackCapacity then
+  begin
+    { Upsize the stack }
+    Inc(FStackCapacity);
+    FStackCapacity := FStackCapacity * 2;
+    ReallocMem(FStack, 2 * FStackCapacity * SizeOf(Pointer));
+  end;
+  Inc(FStackCount);
 end;
 
 procedure TJvHookInfos.SetController(const Value: TJvWndProcHook);
@@ -595,7 +668,10 @@ end;
 
 procedure TJvHookInfos.WindowProc(var Msg: TMessage);
 var
-  HookInfo: PJvHookInfo;
+  TmpHookInfo: PJvHookInfo;
+  { Current is used to travel through the hook infos; Current^ points to the
+    current hook info (and might be nil) }
+  CurrentHookInfo: PPJvHookInfo; // (rb) I think this var could be eliminated with code optimalization
 begin
   { An object can now report for every possible message that he has
     handled that message, thus preventing the original control from
@@ -605,40 +681,68 @@ begin
 
   Msg.Result := 0;
 
-  HookInfo := FFirst[hoBeforeMsg];
-  while Assigned(HookInfo) do
-  begin
-    if HookInfo.Hook(Msg) or FControlDestroyed then
+  IncDepth;
+  // (rb) Don't know what the performance impact of a try..finally is.
+  try
+    { The even members in the stack are hoBeforeMsg hooks }
+    CurrentHookInfo := @FStack[2 * (FStackCount - 1)];
+    CurrentHookInfo^ := FFirst[hoBeforeMsg];
+    while Assigned(CurrentHookInfo^) do
+    begin
+      TmpHookInfo := CurrentHookInfo^;
+      { We retrieve the next hook info *before* the call to Hook(), because,
+        see (I) }
+      CurrentHookInfo^ := CurrentHookInfo^.Next;
+      if TmpHookInfo.Hook(Msg) or FControlDestroyed then
+        Exit;
+      { CurrentHookInfo^ may now be changed because of register/unregister calls
+        inside HookInfo.Hook(Msg). }
+    end;
+
+    { Maybe only exit here (before the original control handles the message),
+      thus enabling all hooks to respond to the message? Otherwise if you
+      have 2 components of the same class, that hook a control, then only 1 will
+      get the message }
+
+    if TMethod(FOldWndProc).Data <> nil then
+      FOldWndProc(Msg)
+    else
+      if TMethod(FOldWndProc).Code <> nil then
+      Msg.Result := CallWindowProc(TMethod(FOldWndProc).Code, Handle, Msg.Msg,
+        Msg.WParam, Msg.LParam);
+
+    if FControlDestroyed then
       Exit;
-    HookInfo := HookInfo.Next;
+
+    { The odd members in the list are hoAftermsg hooks }
+    CurrentHookInfo := @FStack[2 * FStackCount - 1];
+    CurrentHookInfo^ := FFirst[hoAfterMsg];
+    while Assigned(CurrentHookInfo^) do
+    begin
+      TmpHookInfo := CurrentHookInfo^;
+      CurrentHookInfo^ := CurrentHookInfo^.Next;
+      if TmpHookInfo.Hook(Msg) or FControlDestroyed then
+        Exit;
+    end;
+  finally
+    DecDepth;
+    if (Control = nil) and (Msg.Msg = WM_DESTROY) then
+      // Handle is being destroyed: remove all hooks on this window
+      ControlDestroyed;
   end;
 
-  { Maybe only exit here (before the original control handles the message),
-    thus enabling all hooks to respond to the message? Otherwise if you
-    have 2 components of the same class, that hook a control, then only 1 will
-    get the message }
+  { (I)
+         HookInfos before                                HookInfos after
+         call to Hook()                                  call to Hook()
 
-  if TMethod(FOldWndProc).Data <> nil then
-    FOldWndProc(Msg)
-  else
-  if TMethod(FOldWndProc).Code <> nil then
-    Msg.Result := CallWindowProc(TMethod(FOldWndProc).Code, Handle, Msg.Msg,
-      Msg.WParam, Msg.LParam);
-
-  if FControlDestroyed then
-    Exit;
-
-  HookInfo := FFirst[hoAfterMsg];
-  while Assigned(HookInfo) do
-  begin
-    if HookInfo.Hook(Msg) or FControlDestroyed then
-      Exit;
-    HookInfo := HookInfo.Next;
-  end;
-
-  if (Control = nil) and (Msg.Msg = WM_DESTROY) then
-    // Handle is being destroyed: remove all hooks on this window
-    ControlDestroyed;
+        |----------|  If CurrentHookInfo^ point to A     |----------|
+     -->| hook A   |  (arrow) and hook A deletes itself  | hook B   |<--
+        |----------|  then after the call to Hook,       |----------|
+        | hook B   |  CurrentHookInfo^ point to B. If we | hook C   |
+        |----------|  then call Next, CurrentHookInfo^   |----------|
+        | hook C   |  points to C (should be B)
+        |----------|
+      }
 end;
 
 //=== TJvWindowHook ==========================================================
@@ -661,7 +765,7 @@ procedure TJvWindowHook.DefineProperties(Filer: TFiler);
 
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineProperty('IsForm', ReadForm, WriteForm,DoWrite);
+  Filer.DefineProperty('IsForm', ReadForm, WriteForm, DoWrite);
 end;
 
 destructor TJvWindowHook.Destroy;
@@ -705,7 +809,7 @@ begin
       Control := nil
         { Correct? }
     else
-    if (Owner = AComponent) or (Owner = nil) then
+      if (Owner = AComponent) or (Owner = nil) then
       Control := nil;
   end;
 end;
@@ -757,7 +861,7 @@ begin
     if Assigned(Value) and not Assigned(FAfterMessage) then
       WndProcHook.RegisterWndProc(FControl, DoAfterMessage, hoAfterMsg)
     else
-    if not Assigned(Value) and Assigned(FAfterMessage) then
+      if not Assigned(Value) and Assigned(FAfterMessage) then
       WndProcHook.UnRegisterWndProc(FControl, DoAfterMessage, hoAfterMsg);
   end;
   FAfterMessage := Value;
@@ -771,7 +875,7 @@ begin
     if Assigned(Value) and not Assigned(FBeforeMessage) then
       WndProcHook.RegisterWndProc(FControl, DoBeforeMessage, hoBeforeMsg)
     else
-    if not Assigned(Value) and Assigned(FBeforeMessage) then
+      if not Assigned(Value) and Assigned(FBeforeMessage) then
       WndProcHook.UnRegisterWndProc(FControl, DoBeforeMessage, hoBeforeMsg);
   end;
   FBeforeMessage := Value;
@@ -838,7 +942,7 @@ procedure TJvReleaser.DefaultHandler(var Msg);
 begin
   with TMessage(Msg) do
     if FHandle <> 0 then
-      Result := CallWindowProc(@DefWindowProc, FHandle, Msg, wParam, lParam);
+      Result := CallWindowProc(@DefWindowProc, FHandle, Msg, WParam, LParam);
 end;
 
 destructor TJvReleaser.Destroy;
@@ -853,9 +957,9 @@ begin
   if FHandle <> 0 then
     {$IFDEF COMPILER6_UP}
     Classes.DeallocateHWnd(FHandle);
-    {$ELSE}
+  {$ELSE}
     DeallocateHWnd(FHandle);
-    {$ENDIF}
+  {$ENDIF}
 
   inherited Destroy;
 end;
@@ -864,10 +968,10 @@ function TJvReleaser.GetHandle: HWND;
 begin
   if FHandle = 0 then
     {$IFDEF COMPILER6_UP}
-    FHandle := Classes.AllocateHwnd(WndProc);
-    {$ELSE}
-    FHandle := AllocateHwnd(WndProc);
-    {$ENDIF}
+    FHandle := Classes.AllocateHWnd(WndProc);
+  {$ELSE}
+    FHandle := AllocateHWnd(WndProc);
+  {$ENDIF}
   Result := FHandle;
 end;
 
