@@ -75,9 +75,12 @@ type
     FOnSaveProgress: TProgress;
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
+    FFixedFont: TFont;
     procedure GMActivateCell(var Msg: TGMActivateCell); message GM_ACTIVATECELL;
     procedure SetAlignment(const Value: TAlignment);
     procedure WMCommand(var Msg: TWMCommand); message WM_COMMAND;
+    procedure SetFixedFont(const Value: TFont);
+    procedure DoFixedFontChange(Sender: TObject);
   protected
     function CreateEditor: TInplaceEdit; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -98,6 +101,8 @@ type
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
     function GetCellAlignment(AColumn, ARow: Longint;
       State: TGridDrawState): TAlignment; virtual;
     procedure DefaultDrawCell(AColumn, ARow: Longint;
@@ -107,6 +112,35 @@ type
     procedure InvalidateCol(AColumn: Integer);
     procedure InvalidateRow(ARow: Integer);
     property InplaceEditor;
+    // Calculates and sets the width of a specific column or all columns if Index < 0
+    // based on the content in the affected Cells.
+    // MinWidth is the minimum width of the column(s). If MinWidth is < 0,
+    // DefaultColWidth is used instead
+    procedure AutoSizeCol(Index, MinWidth: integer);
+    // Inserts a new row at the specified Index and moves all existing rows >= Index down one step
+    // Returns the inserted row as a TStrings
+    function InsertRow(Index: integer): TStrings;
+    // Inserts a new column at the specified Index and moves all existing columns >= Index to the right
+    // Returns the inserted column as a TStrings
+    function InsertCol(Index: integer): TStrings;
+    // Removes the row at Index and moves all rows > Index up one step
+    procedure RemoveRow(Index: integer);
+    // Removes the column at Index and moves all cols > Index to the left
+    procedure RemoveCol(Index: integer);
+    // Hides the row at Index by setting it's height = -1
+    // Calling this method repeatedly does nothing
+    procedure HideRow(Index: integer);
+    // Shows the row at Index by setting it's height to AHeight
+    // if AHeight <= 0, DefaultRowHeight is used instead
+    procedure ShowRow(Index, AHeight: integer);
+    // Hides the column at Index by setting it's width = -1
+    // Calling this method repeatedly does nothing
+    procedure HideCol(Index: integer);
+    // Shows the column at Index by setting it's width to AWidth
+    // If AWidth <= 0, DefaultColWidth is used instead
+    procedure ShowCol(Index, AWidth: integer);
+    // Removes the content in the Cells but does not remove any rows or columns
+    procedure Clear;
     procedure SortGrid(Column: Integer; Ascending: Boolean = True; Fixed: Boolean = False;
       SortType: TJvSortType = stClassic; BlankTop: Boolean = True);
     procedure SaveToFile(FileName: string);
@@ -119,6 +153,7 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Alignment: TAlignment read FAlignment write SetAlignment;
+    property FixedFont: TFont read FFixedFont write SetFixedFont;
     property OnExitCell: TExitCellEvent read FOnExitCell write FOnExitCell;
     property OnSetCanvasProperties: TDrawCellEvent read FSetCanvasProperties write FSetCanvasProperties;
     property OnGetCellAlignment: TGetCellAlignmentEvent read FGetCellAlignment write FGetCellAlignment;
@@ -134,6 +169,8 @@ type
   end;
 
 implementation
+uses
+  Math;
 
 //=== TExInplaceEdit =========================================================
 
@@ -150,7 +187,7 @@ type
 
 procedure TExInplaceEdit.CreateParams(var Params: TCreateParams);
 const
-  Flags: array [TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
+  Flags: array[TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or Flags[TJvStringGrid(Grid).Alignment];
@@ -174,9 +211,18 @@ end;
 constructor TJvStringGrid.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FFixedFont := TFont.Create;
+  FFixedFont.Assign(Font);
+  FFixedFont.OnChange := DoFixedFontChange;
   FHintColor := clInfoBk;
   FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
+end;
+
+destructor TJvStringGrid.Destroy;
+begin
+  FreeAndNil(FFixedFont);
+  inherited;
 end;
 
 procedure TJvStringGrid.CMCtl3DChanged(var Msg: TMessage);
@@ -414,8 +460,7 @@ begin
     for I := 1 to Length(St) do
       if St[I] = '"' then
         J := (J + 1) mod 2
-      else
-      if St[I] = Separator then
+      else if St[I] = Separator then
         if J = 0 then
           Inc(L);
     if ColCount < L then
@@ -463,7 +508,7 @@ end;
 procedure TJvStringGrid.LoadFromStream(Stream: TStream);
 var
   Col, Rom, I, Count: Integer;
-  Buffer: array [0..1024] of Byte;
+  Buffer: array[0..1024] of Byte;
   St: string;
 begin
   Col := 0;
@@ -595,7 +640,7 @@ end;
 procedure TJvStringGrid.SaveToStream(Stream: TStream);
 var
   I, J, K: Integer;
-  St: array [0..1000] of Char;
+  St: array[0..1000] of Char;
   Stt: string;
   A, B: Byte;
 begin
@@ -641,15 +686,16 @@ end;
 procedure TJvStringGrid.DefaultDrawCell(AColumn, ARow: Integer; Rect: TRect;
   State: TGridDrawState);
 const
-  Flags: array [TAlignment] of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  Flags: array[TAlignment] of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER);
 var
   S: string;
 begin
+  if RowHeights[ARow] < Canvas.TextHeight('Wq') then Exit;
   Canvas.FillRect(Rect);
   S := Cells[AColumn, ARow];
   if Length(S) > 0 then
   begin
-    InflateRect(rect, -2, -2);
+    InflateRect(Rect, -2, -2);
     DrawText(Canvas.Handle, PChar(S), Length(S), rect,
       DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER or
       Flags[GetCellAlignment(AColumn, ARow, state)]);
@@ -659,6 +705,8 @@ end;
 procedure TJvStringGrid.DrawCell(AColumn, ARow: Integer; Rect: TRect;
   State: TGridDrawState);
 begin
+  if (AColumn < FixedCols) or (ARow < FixedRows) then
+    Canvas.Font := FixedFont;
   if Assigned(OnDrawCell) then
     inherited DrawCell(AColumn, ARow, Rect, State)
   else
@@ -754,10 +802,164 @@ procedure TJvStringGrid.WMCommand(var Msg: TWMCommand);
 begin
   if EditorMode and (Msg.Ctl = InplaceEditor.Handle) then
     inherited
-  else
-  if Msg.Ctl <> 0 then
+  else if Msg.Ctl <> 0 then
     Msg.Result := SendMessage(Msg.Ctl, CN_COMMAND, TMessage(Msg).WParam, TMessage(Msg).LParam);
 end;
 
+function TJvStringGrid.InsertCol(Index: integer): TStrings;
+var
+  i: integer;
+  AStr: TStrings;
+begin
+  ColCount := ColCount + 1;
+  if (Index < 0) then
+    Index := 0;
+  if Index >= ColCount then
+    Index := ColCount - 1;
+  Result := Cols[Index];
+  if ColCount = 1 then Exit;
+  for i := ColCount - 2 downto Index do
+  begin
+    AStr := Cols[i];
+    Cols[i + 1] := AStr;
+  end;
+  Result := Cols[Index];
+  Result.Clear;
+end;
+
+function TJvStringGrid.InsertRow(Index: integer): TStrings;
+var
+  i: integer;
+  AStr: TStrings;
+begin
+  RowCount := RowCount + 1;
+  if (Index < 0) then
+    Index := 0;
+  if Index >= RowCount then
+    Index := RowCount - 1;
+  Result := Rows[Index];
+  if RowCount = 1 then Exit;
+  for i := RowCount - 2 downto Index do
+  begin
+    AStr := Rows[i];
+    Rows[i + 1] := AStr;
+  end;
+  Result.Clear;
+end;
+
+procedure TJvStringGrid.RemoveCol(Index: integer);
+var
+  i: integer;
+  AStr: TStrings;
+begin
+  if (Index < 0) then
+    Index := 0;
+  if Index >= ColCount then
+    Index := ColCount - 1;
+  for i := Index + 1 to ColCount - 1 do
+  begin
+    AStr := Cols[i];
+    Cols[i - 1] := AStr;
+  end;
+  if ColCount > 1 then
+    ColCount := ColCount - 1;
+end;
+
+procedure TJvStringGrid.RemoveRow(Index: integer);
+var
+  i: integer;
+  AStr: TStrings;
+begin
+  if (Index < 0) then
+    Index := 0;
+  if Index >= RowCount then
+    Index := RowCount - 1;
+  for i := Index + 1 to RowCount - 1 do
+  begin
+    AStr := Rows[i];
+    Rows[i - 1] := AStr;
+  end;
+  if RowCount > 1 then
+    RowCount := RowCount - 1;
+end;
+
+procedure TJvStringGrid.Clear;
+var
+  i: integer;
+begin
+  for i := 0 to ColCount - 1 do
+    Cols[i].Clear;
+end;
+
+procedure TJvStringGrid.HideCol(Index: integer);
+begin
+  ColWidths[Index] := -1;
+end;
+
+procedure TJvStringGrid.HideRow(Index: integer);
+begin
+  RowHeights[Index] := -1;
+end;
+
+procedure TJvStringGrid.ShowCol(Index, AWidth: integer);
+begin
+  if AWidth <= 0 then
+    AWidth := DefaultColWidth;
+  ColWidths[Index] := AWidth;
+end;
+
+procedure TJvStringGrid.ShowRow(Index, AHeight: integer);
+begin
+  if AHeight <= 0 then
+    AHeight := DefaultRowHeight;
+  RowHeights[Index] := AHeight;
+
+end;
+
+procedure TJvStringGrid.SetFixedFont(const Value: TFont);
+begin
+  FFixedFont.Assign(Value);
+end;
+
+procedure TJvStringGrid.DoFixedFontChange(Sender: TObject);
+begin
+  Invalidate;
+end;
+
+procedure TJvStringGrid.AutoSizeCol(Index, MinWidth: integer);
+var
+  i, j, AColWidth: integer;
+  ASize: TSize;
+begin
+  if (Index >= 0) and (Index < ColCount) then
+  begin
+    if MinWidth < 0 then
+      AColWidth := DefaultColWidth
+    else
+      AColWidth := MinWidth;
+    for j := 0 to RowCount - 1 do
+    begin
+      if GetTextExtentPoint32(Canvas.Handle, PChar(Cells[Index, j]), Length(Cells[Index, j]), ASize) then
+        AColWidth := Max(AColWidth, ASize.cx + 8);
+    end;
+    ColWidths[Index] := AColWidth;
+  end
+  else
+  begin
+    for i := 0 to ColCount - 1 do
+    begin
+      if MinWidth < 0 then
+        AColWidth := DefaultColWidth
+      else
+        AColWidth := MinWidth;
+      for j := 0 to RowCount - 1 do
+      begin
+        if GetTextExtentPoint32(Canvas.Handle, PChar(Cells[i, j]), Length(Cells[i, j]), ASize) then
+          AColWidth := Max(AColWidth, ASize.cx + 8);
+      end;
+      ColWidths[i] := AColWidth;
+    end;
+  end;
+end;  
 end.
 
