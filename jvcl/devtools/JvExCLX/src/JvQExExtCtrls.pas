@@ -236,4 +236,6 @@ begin
 end;
 *)
 
+UNITVERSION
+
 end.

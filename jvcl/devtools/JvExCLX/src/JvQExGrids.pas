@@ -75,4 +75,6 @@ end;
 
 JV_CUSTOMCONTROL_IMPL(StringGrid)
 
+UNITVERSION
+
 end.

@@ -45,4 +45,6 @@ implementation
 
 JV_WINCONTROL_IMPL(CheckListBox)
 
+UNITVERSION
+
 end.
