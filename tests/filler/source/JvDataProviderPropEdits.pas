@@ -68,11 +68,18 @@ type
   end;
 {$ENDIF COMPILER6_UP}
 
-
   TJvDataProviderTreeProperty = class(TEnumProperty)
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
+  end;
+
+  TJvDataProviderItemIDProperty = class(TEnumProperty)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
   end;
@@ -148,12 +155,131 @@ procedure TJvDataProviderTreeProperty.SetValue(const Value: string);
 begin
 end;
 
+{ TJvDataProviderItemIDProperty }
+
+function TJvDataProviderItemIDProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := inherited GetAttributes - [paMultiSelect, paSortList];
+end;
+
+procedure TJvDataProviderItemIDProperty.GetValues(Proc: TGetStrProc);
+type
+  TStackItem = record
+    Items: IJvDataItems;
+    Idx: Integer;
+  end;
+var
+  ItemsStack: array of TStackItem;
+  PI: PPropInfo;
+  Provider: IJvDataProvider;
+  CurItems: IJvDataItems;
+  CurIdx: Integer;
+  TempItems: IJvDataItems;
+begin
+  SetLength(ItemsStack, 0);
+  PI := TypInfo.GetPropInfo(GetComponent(0), 'Provider');
+  if PI <> nil then
+  begin
+    TComponent(TypInfo.GetOrdProp(GetComponent(0), PI)).GetInterface(IJvDataProvider, Provider);
+    if Supports(Provider, IJvDataItems, CurItems) then
+    begin
+      CurIdx := 0;
+      while CurItems <> nil do
+      begin
+        while CurIdx < CurItems.Count do
+        begin
+          Proc(CurItems.Items[CurIdx].GetID);
+          if Supports(CurItems.Items[CurIdx], IJvDataItems, TempItems) then
+          begin
+            SetLength(ItemsStack, Length(ItemsStack) + 1);
+            with ItemsStack[High(ItemsStack)] do
+            begin
+              Items := CurItems;
+              Idx := CurIdx + 1;
+              CurItems := TempItems;
+              Tempitems := nil;
+              CurIdx := 0;
+            end;
+          end
+          else
+            Inc(CurIdx);
+        end;
+        if Length(ItemsStack) > 0 then
+        begin
+          with ItemsStack[High(ItemsStack)] do
+          begin
+            CurItems := Items;
+            CurIdx := Idx;
+          end;
+          SetLength(ItemsStack, High(ItemsStack));
+        end
+        else
+          CurItems := nil;
+      end;
+    end;
+  end;
+end;
+
+function TJvDataProviderItemIDProperty.GetValue: string;
+begin
+  {$IFNDEF COMPILER6_UP}
+  Result := GetStrValue;
+  {$ELSE}
+  Result := IJvDataItem(GetIntfValue).GetID;
+  {$ENDIF COMPILER6_UP}
+end;
+
+procedure TJvDataProviderItemIDProperty.SetValue(const Value: string);
+var
+  PI: PPropInfo;
+  Provider: IJvDataProvider;
+  Item: IJvDataItem;
+begin
+  PI := TypInfo.GetPropInfo(GetComponent(0), 'Provider');
+  if PI <> nil then
+  begin
+    TComponent(TypInfo.GetOrdProp(GetComponent(0), PI)).GetInterface(IJvDataProvider, Provider);
+    {$IFNDEF COMPILER6_UP}
+    if Value = '' then
+      SetStrValue('')
+    else if (Provider = nil) and (Value = '') then
+      SetStrValue('')
+    else if (Provider <> nil) then
+    begin
+      Item := (Provider.GetItems as IJvDataIDSearch).FindByID(Value, True);
+      if Item <> nil then
+        SetStrValue(Item.GetID)
+      else
+        raise EPropertyError.CreateRes(@SInvalidPropertyValue);
+    end
+    else
+      raise EPropertyError.CreateRes(@SInvalidPropertyValue);
+    {$ELSE}
+    if Value = '' then
+      SetIntfValue(nil)
+    else if (Provider = nil) and (Value = '') then
+      SetIntfValue(nil)
+    else if (Provider <> nil) then
+    begin
+      Item := (Provider.GetItems as IJvDataIDSearch).FindByID(Value, True);
+      if Item <> nil then
+        SetIntfValue(Item)
+      else
+        raise EPropertyError.CreateRes(@SInvalidPropertyValue);
+    end
+    else
+      raise EPropertyError.CreateRes(@SInvalidPropertyValue);
+    {$ENDIF COMPILER6_UP}
+  end;
+end;
+
 procedure RegDataProviderPropEdits;
 begin
 {$IFNDEF COMPILER6_UP}
   RegisterPropertyEditor(TypeInfo(TComponent), TComponent, 'Provider', TJvDataProviderProperty);
 {$ENDIF COMPILER6_UP}
   RegisterPropertyEditor(TypeInfo(TJvDataProviderTree), TComponent, '', TJvDataProviderTreeProperty);
+  RegisterPropertyEditor(TypeInfo({$IFDEF COMPILER6_UP}IJvDataItem{$ELSE}TJvDataProviderItemID{$ENDIF}), TPersistent, '', TJvDataProviderItemIDProperty);
 end;
 
 end.

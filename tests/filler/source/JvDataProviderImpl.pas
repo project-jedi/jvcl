@@ -354,6 +354,7 @@ type
 
   // Generic data provider implementation
   TJvDataProviderTree = type Integer;
+  TJvDataProviderItemID = type string;
   TJvCustomDataProvider = class(TJvComponent, {$IFNDEF COMPILER6_UP}IInterfaceComponentReference, {$ENDIF}
     IJvDataProvider, IJvDataItems)
   private

@@ -109,13 +109,16 @@ type
   TJvProvidedLabel = class(TJvLabel, IJvDataProviderNotify)
   private
     FProvider: IJvDataprovider;
-    FIndex: Integer;
+    FItemID: string;
     procedure SetProvider(const Value: IJvDataProvider);
     {$IFNDEF COMPILER6_UP}
     function GetProviderComp: TComponent;
     procedure SetProviderComp(Value: TComponent);
     {$ENDIF COMPILER6_UP}
-    procedure SetIndex(const Value: Integer);
+    function GetItem: IJvDataItem;
+    procedure SetItem(Value: IJvDataItem);
+    function GetItemID: TJvDataProviderItemID;
+    procedure SetItemID(Value: TJvDataProviderItemID);
   protected
     { Direct link to actual provider interface. This is done to aid in the implementation (less
       IFDEF's in the code; always refer to ProviderIntf and it's working in all Delphi versions). }
@@ -125,17 +128,19 @@ type
     procedure UpdateCaption;
     function GetLabelCaption: string; override;
     procedure DoDrawText(var Rect: TRect; Flags: Word); override;
+
+    property ItemIntf: IJvDataItem read GetItem write SetItem;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     {$IFDEF COMPILER6_UP}
     property Provider: IJvDataProvider read FProvider write SetProvider;
+    property Item: IJvDataItem read GetItem write SetItem;
     {$ELSE}
     property Provider: TComponent read GetProviderComp write SetProviderComp;
+    property Item: TJvDataProviderItemID read GetItemID write SetItemID;
     {$ENDIF COMPILER6_UP}
-    property Index: Integer read FIndex write SetIndex;
-
     property Align;
     property Alignment;
     property Anchors;
@@ -392,7 +397,7 @@ end;
 constructor TJvProvidedLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FIndex := -1;
+  FItemID := '';
 end;
 
 destructor TJvProvidedLabel.Destroy;
@@ -442,21 +447,32 @@ end;
 procedure TJvProvidedLabel.DoDrawText(var Rect: TRect; Flags: Word);
 var
   Tmp: TSize;
-  Renderer: IJvDataItemsRenderer;
+  TmpItem: IJvDataItem;
+  ItemsRenderer: IJvDataItemsRenderer;
+  ItemRenderer: IJvDataItemRenderer;
 begin
-  if (ProviderIntf <> nil) and Supports(ProviderIntf, IJvDataItemsRenderer, Renderer) and
-    (FIndex >= 0) and (FIndex < (ProviderIntf as IJvDataItems).Count) then
+  TmpItem := GetItem;
+  if (TmpItem <> nil) and (Supports(TmpItem.Items, IJvDataItemsRenderer, ItemsRenderer) or
+    Supports(TmpItem, IJvDataItemRenderer, ItemRenderer)) then
   begin
     Canvas.Brush.Color := Color;
     Canvas.Font := Font;
     if (Flags and DT_CALCRECT <> 0) then
     begin
-      Tmp := Renderer.MeasureItemByIndex(Canvas, FIndex);
+      if ItemsRenderer <> nil then
+        Tmp := ItemsRenderer.MeasureItem(Canvas, TmpItem)
+      else
+        Tmp := ItemRenderer.Measure(Canvas);
       Rect.Right := Tmp.cx;
       Rect.Bottom := Tmp.cy;
     end
     else
-      Renderer.DrawItemByIndex(Canvas, Rect, FIndex, []);
+    begin
+      if ItemsRenderer <> nil then
+        ItemsRenderer.DrawItem(Canvas, Rect, TmpItem, [])
+      else
+        ItemRenderer.Draw(Canvas, Rect, []);
+    end;
   end
   else
     inherited DoDrawText(Rect, Flags);
@@ -482,10 +498,9 @@ end;
 
 function TJvProvidedLabel.GetLabelCaption: string;
 var
-  Itemtext: IJvDataItemText;
+  ItemText: IJvDataItemText;
 begin
-  if (ProviderIntf <> nil) and (FIndex >= 0) and (FIndex < (ProviderIntf as IJvDataItems).Count) and
-      Supports((ProviderIntf as IJvDataItems).Items[FIndex], IJvDataItemText, ItemText) then
+  if (GetItem <> nil) and Supports(GetItem, IJvDataItemText, ItemText) then
     Result := ItemText.Caption
   else
     Result := inherited GetLabelCaption;
@@ -499,7 +514,7 @@ begin
   if Assigned(FProvider) then
   begin
     FProvider.UnregisterChangeNotify(Self);
-    FIndex := -1;
+    FItemID := '';
   end;
 
   FProvider := Value;
@@ -509,11 +524,32 @@ begin
   UpdateCaption;
 end;
 
-procedure TJvProvidedLabel.SetIndex(const Value: Integer);
+function TJvProvidedLabel.GetItem: IJvDataItem;
 begin
-  if Value <> FIndex then
+  if (FItemID = '') or (ProviderIntf = nil) then
+    Result := nil
+  else
+    Result := (ProviderIntf as IJvDataIDSearch).FindByID(FItemID, True);
+end;
+
+procedure TJvProvidedLabel.SetItem(Value: IJvDataItem);
+begin
+  if Value = nil then
+    SetItemID('')
+  else
+    SetItemID(Value.GetID);
+end;
+
+function TJvProvidedLabel.GetItemID: TJvDataProviderItemID;
+begin
+  Result := FItemID;
+end;
+
+procedure TJvProvidedLabel.SetItemID(Value: TJvDataProviderItemID);
+begin
+  if Value <> FItemID then
   begin
-    FIndex := Value;
+    FItemID := Value;
     UpdateCaption;
   end;
 end;
@@ -521,16 +557,22 @@ end;
 procedure TJvProvidedLabel.UpdateCaption;
 var
   tmp: TSize;
-  Renderer: IJvDataItemsRenderer;
+  ItemsRenderer: IJvDataItemsRenderer;
+  ItemRenderer: IJvDataItemRenderer;
 begin
-  if AutoSize and (ProviderIntf <> nil) and
-    Supports(ProviderIntf, IJvDataItemsRenderer, Renderer) then
+  if AutoSize and (GetItem <> nil) and (
+    Supports(GetItem.Items, IJvDataItemsRenderer, ItemsRenderer) or
+    Supports(GetItem, IJvDataItemRenderer, ItemRenderer)) then
   begin
-    tmp := Renderer.MeasureItemByIndex(Canvas, Index);
+    if ItemsRenderer <> nil then
+      tmp := ItemsRenderer.MeasureItem(Canvas, GetItem)
+    else
+      tmp := ItemRenderer.Measure(Canvas);
     if (tmp.cy <> 0)  then
       ClientHeight := tmp.cy;
     if tmp.cx <> 0 then
       ClientWidth := tmp.cx + LeftMargin + RightMargin + 4;
+    Invalidate;
   end
   else
     Perform(CM_TEXTCHANGED, 0, 0);
