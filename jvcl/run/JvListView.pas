@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2004-02-09
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -75,7 +75,7 @@ type
     function CreateListItem: TListItem; override;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure WMNotify(var Msg: TWMNotify); message CN_NOTIFY;
+//    procedure WMNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -167,6 +167,8 @@ begin
   FImageChangeLink.OnChange := DoHeaderImagesChange;
 end;
 
+(*
+// (p3) this code isn't needed since it was only used to show the popup menu
 procedure TJvListView.WMNotify(var Msg: TWMNotify);
 var
   Node: TListItem;
@@ -182,7 +184,7 @@ begin
         begin
           Node := GetItemAt(x, y);
           if Assigned(Node) then
-            Selected := Node;
+            Selected := Node
           // (Salvatore) JvListview does it for us! We don't need the following lines anymore
           // if (Selected <> nil) and (NMHDR^.code = NM_RCLICK) then
           //   TJvListItem(Selected).PopupMenu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
@@ -190,6 +192,7 @@ begin
     end;
   end;
 end;
+*)
 
 procedure TJvListView.WMHScroll(var Msg: TWMHScroll);
 begin
