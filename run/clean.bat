@@ -1,1 +1,1 @@
-del *.dcu
+del *.dcu *.ddp

@@ -13,7 +13,11 @@ object frmSelectDateTimeDlg: TfrmSelectDateTimeDlg
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  PopupMenu = PopupMenu1
   OnCreate = FormCreate
+  DesignSize = (
+    254
+    144)
   PixelsPerInch = 96
   TextHeight = 13
   object lblDate: TLabel
@@ -81,5 +85,21 @@ object frmSelectDateTimeDlg: TfrmSelectDateTimeDlg
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 3
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 120
+    Top = 40
+    object mnuNow: TMenuItem
+      Caption = 'Now'
+      OnClick = mnuNowClick
+    end
+    object mnuDate: TMenuItem
+      Caption = 'Date'
+      OnClick = mnuDateClick
+    end
+    object mnuTime: TMenuItem
+      Caption = 'Time'
+      OnClick = mnuTimeClick
+    end
   end
 end

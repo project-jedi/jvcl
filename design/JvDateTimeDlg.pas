@@ -36,7 +36,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF}
-  SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls;
+  SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls, Menus;
 
 type
   { define the different types of date and time combinations supported by the dialog }
@@ -49,7 +49,14 @@ type
     dtpTime: TDateTimePicker;
     btnOK: TButton;
     btnCancel: TButton;
+    PopupMenu1: TPopupMenu;
+    mnuNow: TMenuItem;
+    mnuDate: TMenuItem;
+    mnuTime: TMenuItem;
     procedure FormCreate(Sender: TObject);
+    procedure mnuNowClick(Sender: TObject);
+    procedure mnuDateClick(Sender: TObject);
+    procedure mnuTimeClick(Sender: TObject);
   public
     class function SelectDateTime(var ADate: TDateTime; AType: TDateSelectType): Boolean;
   end;
@@ -72,11 +79,13 @@ var
 begin
   F := Self.Create(Application);
   try
-    F.dtpDate.Date := ADate;
-    F.dtpTime.Time := ADate;
+    F.dtpDate.Date := trunc(ADate);
+    F.dtpTime.Time := frac(ADate);
     case AType of
       dstDate:
         begin
+          F.mnuDate.Visible := false;
+          F.mnuTime.Visible := false;
           F.Caption := SSelectDate;
           F.lblTime.Visible := False;
           F.dtpTime.Visible := False;
@@ -84,6 +93,8 @@ begin
         end;
       dstTime:
         begin
+          F.mnuTime.Visible := false;
+          F.mnuDate.Visible := false;
           F.Caption := SSelectTime;
           F.lblDate.Visible := False;
           F.dtpDate.Visible := False;
@@ -103,6 +114,22 @@ end;
 procedure TFrmSelectDateTimeDlg.FormCreate(Sender: TObject);
 begin
   Caption := SSelectDateTime;
+end;
+
+procedure TFrmSelectDateTimeDlg.mnuNowClick(Sender: TObject);
+begin
+  dtpDate.Date := Now;
+  dtpTime.Time := frac(Now);
+end;
+
+procedure TFrmSelectDateTimeDlg.mnuDateClick(Sender: TObject);
+begin
+  dtpDate.Date := Date;
+end;
+
+procedure TFrmSelectDateTimeDlg.mnuTimeClick(Sender: TObject);
+begin
+  dtpTime.Time := frac(Now);
 end;
 
 end.
