@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Peter Thörnqvist.
 
-Last Modified: 2002-12-24
+Last Modified: 2003-11-10
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -689,8 +689,13 @@ begin
   FDateFormat := AValue;
   ParseFigures(FDateFigures, FDateFormat);
   FMask := DateFormatToEditMask(FDateFormat);
-  Text := EmptyStr;
-  EditMask := FMask;
+  BeginInternalChange;
+  try
+    Text := EmptyStr;
+    EditMask := FMask;
+  finally
+    EndInternalChange;
+  end;
   UpdateDisplay;
 end;
 
@@ -903,13 +908,7 @@ end;
 procedure TJvCustomDatePickerEdit.CreateWnd;
 begin
   inherited;
-  BeginInternalChange;
-  try
-    SetDateFormat(ShortDateFormat);
-    EditMask := FMask;
-  finally
-    EndInternalChange;
-  end;
+  SetDateFormat(ShortDateFormat);
 end;
 
 end.
