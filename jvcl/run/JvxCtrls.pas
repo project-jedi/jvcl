@@ -55,7 +55,8 @@ uses
   {$ENDIF}
   Messages, Classes, Controls, Graphics, StdCtrls, ExtCtrls, Forms,
   Buttons, Menus, IniFiles, ImgList,
-  JvAppStore, JvTimer, JvConsts, JvFormPlacement, JvComponent, JVCLVer, JvTypes,
+  JvAppStore, JvTimer, JvConsts, JvFormPlacement, JvComponent, JVCLVer,
+  JvTypes,
   JvDataProvider, JvDataProviderImpl;
 
 type

@@ -52,6 +52,10 @@ const
   JvDefPageControlBorder = 4;
   TVM_SETLINECOLOR = TV_FIRST + 40;
   TVM_GETLINECOLOR = TV_FIRST + 41;
+{$IFDEF BCB6}
+  {$EXTERNALSYM TVM_SETLINECOLOR}
+  {$EXTERNALSYM TVM_GETLINECOLOR}
+{$ENDIF}
 
 type
   TJvIPAddress = class;
@@ -314,7 +318,7 @@ type
     procedure SetBold(const Value: Boolean);
     procedure SetPopupMenu(const Value: TPopupMenu);
   public
-    constructor CreateEnh(AOwner: TTreeNodes);
+    class function CreateEnh(AOwner: TTreeNodes) : TJvTreeNode;
     property Checked: Boolean read GetChecked write SetChecked;
     property Bold: Boolean read GetBold write SetBold;
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
@@ -1154,10 +1158,10 @@ end;
 
 // === TJvTreeNode ===========================================================
 
-constructor TJvTreeNode.CreateEnh(AOwner: TTreeNodes);
+class function TJvTreeNode.CreateEnh(AOwner: TTreeNodes) : TJvTreeNode;
 begin
-  inherited Create(AOwner);
-  FPopupMenu := TPopupMenu.Create(AOwner.Owner);
+  Result := Create(AOwner);
+  Result.FPopupMenu := TPopupMenu.Create(AOwner.Owner);
 end;
 
 procedure TJvTreeNode.SetPopupMenu(const Value: TPopupMenu);
