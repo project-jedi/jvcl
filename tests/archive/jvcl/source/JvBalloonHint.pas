@@ -838,7 +838,7 @@ begin
   FOptions := [boShowCloseBtn];
   FApplicationHintOptions := [ahShowHeaderInHint, ahShowIconInHint];
   FDefaultIcon := ikInformation;
-  FDefaultBalloonPosition := bpRightDown;
+  FDefaultBalloonPosition := bpAuto;
   FDefaultImageIndex := -1;
   FCustomAnimationTime := 100;
   FCustomAnimationStyle := atBlend;
