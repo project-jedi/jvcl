@@ -37,9 +37,9 @@ unit JvQLookOut;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QButtons,
-  QMenus, QImgList, QTypes, QWindows, 
+  SysUtils, Classes, 
+  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QButtons, QMenus, QImgList, 
+  QTypes, QWindows, 
   JvQTypes, JvQConsts, JvQComponent, JvQThemes, JvQExControls, JvQExButtons;
 
 const
@@ -473,8 +473,8 @@ type
 
 implementation
 
-uses  
-  QActnList; 
+uses
+  QActnList;
 
 const
   cSpeed = 20;
@@ -797,7 +797,7 @@ begin
   FDown := True;
   //  inherited MouseDown(Button, Shift, X, Y);
   if Assigned(OnMouseDown) then
-    OnMousedown(Self, Button, Shift, X, y);
+    OnMouseDown(Self, Button, Shift, X, Y);
   if Parent is TJvLookOutPage then
     FAutoRepeat := TJvLookOutPage(Parent).AutoRepeat;
   if FAutoRepeat then
@@ -819,7 +819,7 @@ procedure TJvDwnArrowBtn.MouseUp(Button: TMouseButton; Shift: TShiftState;
 begin
   //  inherited MouseUp(Button, Shift, X, Y);
   if Assigned(OnMouseUp) then
-    OnMouseUp(Self, Button, Shift, X, y);
+    OnMouseUp(Self, Button, Shift, X, Y);
   FDown := False;
   (Parent as TJvLookOutPage).DownArrowClick(Self);
   //  Parent.ScrollBy(0,-50);
@@ -1299,8 +1299,8 @@ begin
   begin
     if (csDesigning in ComponentState) and not Visible then
     begin
-      Canvas.Brush.Style := bsBDiagonal;  
-      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle); 
+      Canvas.Brush.Style := bsBDiagonal;
+      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
       Canvas.Brush.Style := bsSolid;
     end
     else
@@ -1311,8 +1311,8 @@ begin
     end
     else
     begin { fill it up! }
-      Canvas.Brush.Color := FFillColor;  
-      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle); 
+      Canvas.Brush.Color := FFillColor;
+      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
     end;
 
     if FDown then
@@ -1321,18 +1321,18 @@ begin
         Frame3D(Canvas, R, cl3DDkShadow, clBtnFace, 1)
       else
       if FButtonBorder = bbLight then
-        Frame3D(Canvas, R, clBtnShadow, clBtnHighLight, 1)
+        Frame3D(Canvas, R, clBtnShadow, clBtnHighlight, 1)
       else
-        Frame3D(Canvas, R, cl3DDkShadow, clBtnHighLight, 1)
+        Frame3D(Canvas, R, cl3DDkShadow, clBtnHighlight, 1)
     end
     else
       case FButtonBorder of
         bbDark:
           Frame3D(Canvas, R, clBtnFace, cl3DDkShadow, 1);
         bbLight:
-          Frame3D(Canvas, R, clBtnHighLight, clBtnShadow, 1);
+          Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1);
       else
-        Frame3D(Canvas, R, clBtnHighLight, cl3DDkShadow, 1);
+        Frame3D(Canvas, R, clBtnHighlight, cl3DDkShadow, 1);
       end;
   end;
 end;
@@ -1540,7 +1540,11 @@ procedure TJvCustomLookOutButton.VisibleChanged;
 begin
   inherited VisibleChanged;
   if not (csCreating in ControlState) then
+  begin
     Invalidate;
+    if Parent is TJvLookOutPage then
+      TJvLookOutPage(Parent).ScrollChildren(0);
+  end;
 end;
 
 //=== TJvExpressButton =======================================================
@@ -2222,8 +2226,8 @@ begin
 
   { draw top caption }
   R := GetClientRect;
-  R.Bottom := cHeight;  
-  SetBkMode(DC, QWindows.Transparent); 
+  R.Bottom := cHeight;
+  SetBkMode(DC, QWindows.Transparent);
   if FCaption <> '' then
   begin
     if not Enabled then
@@ -2614,9 +2618,8 @@ var
   RC, RW: TRect;
 begin
   DC := GetWindowDC(Handle);
-  try  
-    QWindows. 
-    GetClientRect(Handle, RC);
+  try
+    QWindows.GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
     MapWindowPoints(NullHandle, Handle, RW, 2);
     OffsetRect(RC, -RW.Left, -RW.Top);
@@ -2628,12 +2631,10 @@ begin
     end
     else
     begin
-      Canvas.Brush.Color := Color;  
-      QWindows. 
-      FrameRect(DC, RW, Canvas.Brush.Handle);
-      InflateRect(RW, -1, -1);  
-      QWindows. 
-      FrameRect(DC, RW, Canvas.Brush.Handle);
+      Canvas.Brush.Color := Color;
+      QWindows.FrameRect(DC, RW, Canvas.Brush.Handle);
+      InflateRect(RW, -1, -1);
+      QWindows.FrameRect(DC, RW, Canvas.Brush.Handle);
       InflateRect(RW, 1, 1);
     end;
     { Erase parts not drawn }
@@ -2826,9 +2827,8 @@ var
   RC, RW: TRect;
 begin
   DC := GetWindowDC(Handle);
-  try  
-    QWindows. 
-    GetClientRect(Handle, RC);
+  try
+    QWindows.GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
     MapWindowPoints(NullHandle, Handle, RW, 2);
     OffsetRect(RC, -RW.Left, -RW.Top);

@@ -31,7 +31,7 @@
 unit JvQUIBLib;
 
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 {$ALIGN ON}
 {$MINENUMSIZE 4}

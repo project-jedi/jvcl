@@ -115,6 +115,7 @@ end;
 
 
 
+
 procedure TJvSyncSplitter.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin

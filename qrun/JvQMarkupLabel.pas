@@ -38,7 +38,7 @@ interface
 
 uses  
   Types, QGraphics, QControls, QWindows, 
-  SysUtils, Classes, QTypes,
+  SysUtils, Classes,
   JvQComponent, JvQMarkupCommon;
 
 type
@@ -46,7 +46,7 @@ type
   private
     FElementStack: TJvHTMLElementStack;
     FTagStack: TJvHTMLElementStack;
-    FText: TCaption;
+    FText: string;
     FMarginLeft: Integer;
     FMarginRight: Integer;
     FMarginTop: Integer;
@@ -56,14 +56,14 @@ type
     procedure RenderHTML;
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
+    procedure SetText(const Value: string);  reintroduce; 
     procedure SetMarginLeft(const Value: Integer);
     procedure SetMarginRight(const Value: Integer);
     procedure SetMarginTop(const Value: Integer);
     procedure SetAlignment(const Value: TAlignment);
     procedure DoReadBackColor(Reader: TReader);
   protected
-    procedure SetText(const Value: TCaption); override;
-    procedure FontChanged; override;
+    procedure FontChanged; override; 
     procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -75,8 +75,8 @@ type
     property MarginLeft: Integer read FMarginLeft write SetMarginLeft default 5;
     property MarginRight: Integer read FMarginRight write SetMarginRight default 5;
     property MarginTop: Integer read FMarginTop write SetMarginTop default 5;
-    property Text: TCaption read FText write SetText;
-    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property Text: string read FText write SetText;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify; 
     property Align;
     property Font;
 
@@ -575,7 +575,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvMarkupLabel.SetText(const Value: TCaption);
+procedure TJvMarkupLabel.SetText(const Value: string);
 var
   S: string;
 begin

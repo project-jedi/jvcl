@@ -33,10 +33,10 @@ unit JvQParameterList;
 interface
 
 uses
-  Classes, SysUtils,  
-  QStdCtrls, QExtCtrls, Types, QGraphics, QForms, QControls, QDialogs, QComCtrls,  
+  Classes, SysUtils,
+  QStdCtrls, QExtCtrls, Types, QGraphics, QForms, QControls, QDialogs, QComCtrls, 
   Variants, 
-  JvQTypes, JvQDynControlEngine, JvQDynControlEngineIntf, JvQDSADialogs,
+  JvQTypes, JvQDynControlEngine, JvQDynControlEngineIntf, JvQDsaDialogs,
   JvQComponent, JvQPanel, JvQPropertyStore, JvQAppStorage, JvQAppStorageSelectList;
 
 type
@@ -803,7 +803,11 @@ end;
 procedure TJvBaseParameter.SetWinControlData(Value: Variant);
 begin
   if Assigned(JvDynControlData) then
-    JvDynControlData.ControlValue := Value;
+    try
+      JvDynControlData.ControlValue := Value;
+    except 
+      on e:EVariantTypeCastError do 
+    end;
 end;
 
 function TJvBaseParameter.GetDynControlEngine: TJvDynControlEngine;
@@ -1359,8 +1363,7 @@ begin
      //            break;
      //          end   {*** IF Uppercase(TJvBaseParameter(Objects[I]).SearchName) = Uppercase(ASearchName) THEN ***}
      //          else
-    else
-    if UpperCase(Parameters[I].SearchName) = UpperCase(SearchName) then
+    else if UpperCase(Parameters[I].SearchName) = UpperCase(SearchName) then
     begin
       Parameter := Parameters[I];
       if Parameter is TJvArrangeParameter then
@@ -1671,8 +1674,7 @@ function TJvParameterList.GetCurrentWidth: Integer;
 begin
   if Width > 0 then
     Result := Width
-  else
-  if Assigned(ArrangePanel) then
+  else if Assigned(ArrangePanel) then
     if ArrangePanel.Align in [alTop, alBottom, alClient] then
       Result := ArrangePanel.ArrangeWidth
     else
@@ -1687,8 +1689,7 @@ function TJvParameterList.GetCurrentHeight: Integer;
 begin
   if Height > 0 then
     Result := Height
-  else
-  if Assigned(ArrangePanel) then
+  else if Assigned(ArrangePanel) then
   begin
     if ArrangePanel.Align in [alleft, alRight, alClient] then
       Result := ArrangePanel.ArrangeHeight

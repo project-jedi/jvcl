@@ -39,8 +39,9 @@ unit JvQWizardRouteMapList;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, Types, QWindows, QImgList,  
+  SysUtils, Classes,
+  QWindows, QMessages, Types, QGraphics, QControls, QForms, 
+  QImgList,  
   JvQTypes, JvQConsts, JvQJVCLUtils, 
   JvQWizard;
 
@@ -99,8 +100,8 @@ type
     function PageAtPos(Pt: TPoint): TJvWizardCustomPage; override;
     procedure Paint; override;
     procedure Loaded; override; 
-    procedure CursorChanged; override; 
-    procedure FontChanged; override; 
+    procedure CursorChanged;  override; 
+    procedure FontChanged;  override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -332,9 +333,10 @@ begin
               end;
           end;
           if not Pages[PageIndex].Enabled then
-          begin  
-            QWindows.SetBkColor(ACanvas.Handle, BkColor);
-            QWindows.SetTextColor(ACanvas.Handle, ColorToRGB(clGrayText)); 
+          begin
+            // (p3) TImageList changes the canvas colors when drawing disabled images, so we reset them explicitly
+            Windows.SetBkColor(ACanvas.Handle, BkColor);
+            QWindows.SetTextColor(ACanvas.Handle, ColorToRGB(clGrayText));
           end;
         end;
       end
@@ -356,7 +358,7 @@ begin
       end;
       if (ItemText <> itNone) and ((ARect.Bottom - ARect.Top) > abs(ACanvas.Font.Height)) then
         DrawText(ACanvas.Handle, PChar(S), Length(S), ARect,
-          cAlignment[Alignment] or cWordWrap[ItemText = itSubtitle] or DT_VCENTER or DT_EDITCONTROL or DT_END_ELLIPSIS);
+          cAlignment[Alignment] or cWordWrap[ItemText = itSubtitle] or DT_VCENTER or DT_EDITCONTROL or  DT_END_ELLIPSIS);
       if not TextOnly and HotTrack and (HotTrackBorder > 0) and PtInRect(AOrigRect, MousePos) then
       begin
         ACanvas.Brush.Style := bsClear;

@@ -38,9 +38,6 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, // GetCurrentThreadID => Linux: System.pas
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  Libc,
-  {$ENDIF LINUX}
   QMessages, Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
   JvQComponent, JvQBaseDlg, JvQAppStorage;
 

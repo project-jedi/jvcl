@@ -36,11 +36,10 @@ interface
 
 uses
   SysUtils, Classes,
-
+  QWindows, QMessages, Types, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls,
   {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}  
-  QWindows, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, Types,
+  ComObj,
+  {$ENDIF MSWINDOWS}
   JvQLabel, JvQComponent, JvQExControls;
 
 type
@@ -68,6 +67,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure DetailsBtnClick(Sender: TObject);
     procedure ErrorInfo(var LogicalAddress: Pointer; var ModuleName: string);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     FDetails: Boolean;
     FDetailsHeight: Integer;
@@ -126,11 +126,10 @@ begin
       if NewStyleControls then
         Application.ShowException(E)
       else
-    if MessageDlg(RsReplaceExistingDatabase, mtConfirmation, [mbYes, mbNo], 0) = mrNo then
-        MessageDlg(E.Message + '.', mtError, [mbOK], 0);
+        MessageDlg(Application.Title, E.Message + '.', mtError, [mbOk], 0);
     end;
   except
-    { ignore any exceptions }
+    { ignore any exceptions };
   end;
   Application.RestoreTopMosts;
 end;
@@ -278,6 +277,13 @@ end;
 procedure TJvErrorDialog.DetailsBtnClick(Sender: TObject);
 begin
   SetShowDetails(not FDetails);
+end;
+
+procedure TJvErrorDialog.FormKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+
+begin
+
 end;
 
 end.

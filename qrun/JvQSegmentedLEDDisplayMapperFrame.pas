@@ -41,7 +41,7 @@ uses
   {$IFDEF USE_DXGETTEXT}
   JvQGnugettext,
   {$ENDIF USE_DXGETTEXT}
-  JvQComponent, JvQSegmentedLEDDisplay, JvQExControls, QTypes;
+  JvQComponent, JvQSegmentedLEDDisplay, JvQExControls;
 
 type
   TfmeJvSegmentedLEDDisplayMapper = class(TFrame)
@@ -206,8 +206,8 @@ begin
   with TSaveDialog.Create(Application) do
   try
     InitialDir := LastSaveFolder;
-    Options := [ofOverwritePrompt, ofNoChangeDir, ofPathMustExist,
-       ofEnableSizing];
+    Options := [ofOverwritePrompt, ofNoChangeDir, ofNoValidate, ofPathMustExist,
+      ofShareAware, ofNoReadOnlyReturn, ofNoTestFileCreate, ofEnableSizing];
     Filter := RsSegmentedLEDDisplayMappingFilessdms;
     FilterIndex := 0;
     FileName := FLastSaveFileName;
@@ -344,7 +344,7 @@ begin
     try
       InitialDir := LastOpenFolder;
       Options := [ofNoChangeDir, ofPathMustExist, ofFileMustExist,
-         ofEnableSizing];
+        ofShareAware, ofNoNetworkButton, ofNoLongNames, ofEnableSizing];
       Filter := RsSegmentedLEDDisplayMappingFilessdms;
       FilterIndex := 0;
       if Execute then

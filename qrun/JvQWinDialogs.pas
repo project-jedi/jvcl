@@ -846,11 +846,17 @@ begin
   BrowseInfo.pidlRoot := ItemIDList;
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
-  BrowseInfo.ulFlags := BIF_RETURNONLYFSDIRS; 
+  BrowseInfo.ulFlags := BIF_RETURNONLYFSDIRS;
+  {$IFDEF WINDOWS}
+  WindowList := DisableTaskWindows(0);
+  {$ENDIF WINDOWS}
   try
     ItemSelected := SHBrowseForFolder(BrowseInfo);
     Result := ItemSelected <> nil;
-  finally 
+  finally
+    {$IFDEF MSWINDOWS}
+    EnableTaskWindows(WindowList);
+    {$ENDIF MSWINDOWS}
   end;
 
   if Result then

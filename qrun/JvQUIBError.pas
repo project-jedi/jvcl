@@ -29,7 +29,7 @@
 
 unit JvQUIBError;
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 interface
 {$IFDEF USE_IBERROR_H}

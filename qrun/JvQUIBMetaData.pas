@@ -28,7 +28,7 @@
 { Class needed to read MetaData. }
 
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 unit JvQUIBMetaData;
 

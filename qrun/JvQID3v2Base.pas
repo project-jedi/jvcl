@@ -39,8 +39,8 @@ unit JvQID3v2Base;
 interface
 
 uses
-  Classes, SysUtils, Windows, 
-  JclUnicode,
+  Classes, SysUtils,  
+  JvQWStrUtils, 
   JvQComponent, JvQID3v2Types, JvQID3v1;
 
 const

@@ -76,9 +76,7 @@ type
     property Checked: Boolean read GetChecked write SetChecked;
     property ShowCheckBox: Boolean read GetShowCheckBox write SetShowCheckBox default False;
     property OnCheckClick: TNotifyEvent read FOnCheckClick write FOnCheckClick; 
-    property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
-
-
+    property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -95,9 +93,7 @@ type
     property ClipboardCommands;
     property Color;
     property Constraints;
-    property Cursor;
-//    property DisabledColor;
-//    property DisabledTextColor;
+    property Cursor; 
     property DragMode;
     property EditMask;
     property Enabled;
@@ -215,7 +211,6 @@ begin
         Parent := Self.ClientArea;
         Align := alLeft; 
         Width := 15;
-        Height := Self.ClientHeight - 2;
         Anchors := [akLeft, akTop, akBottom];
         Alignment := taLeftJustify;
         TabStop := False;
@@ -319,16 +314,9 @@ begin
   { propagate to child controls: }
   if ShowCheckBox then
     FCheck.Enabled := Self.Enabled;
-  inherited EnabledChanged;
+  inherited EnabledChanged; 
   if assigned(FOnEnabledChanged) then
-     FOnEnabledChanged(self);
+     FOnEnabledChanged(self); 
 end;
 
-(*
-procedure TJvCustomCheckedMaskEdit.DoKillFocusEvent(const ANextControl: TWinControl);
-begin
-  if ANextControl <> FCheck then
-    inherited DoKillFocusEvent(ANextControl);
-end;
-*)
 end.

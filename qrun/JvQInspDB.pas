@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {******************************************************************************
 
@@ -35,11 +36,8 @@ unit JvQInspDB;
 interface
 
 uses
-  SysUtils, Classes, DB, TypInfo, 
-  
-  
-  QDBCtrls,
-  
+  SysUtils, Classes, DB, TypInfo,   
+  QDBCtrls, 
   JvQInspector, JvQFinalize;
 
 type
@@ -111,11 +109,8 @@ function GetFieldName(const AField: TField): string;
 
 implementation
 
-uses
-  
-  
-  QConsts,
-  
+uses  
+  QConsts, 
   JvQResources;
 
 const
@@ -197,7 +192,7 @@ begin
   if TypeInfo.Kind = tkFloat then
     Result := Field.AsFloat
   else
-    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
+    raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 function TJvInspectorDBData.GetAsInt64: Int64;
@@ -206,13 +201,13 @@ begin
   if TypeInfo.Kind = tkInt64 then
     Result := TLargeIntField(Field).AsLargeInt
   else
-    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
+    raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 function TJvInspectorDBData.GetAsMethod: TMethod;
 begin
   CheckReadAccess;
-  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+  raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 function TJvInspectorDBData.GetAsOrdinal: Int64;
@@ -229,7 +224,7 @@ begin
       Result := Field.AsInteger;
   end
   else
-    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
+    raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
 end;
 
 function TJvInspectorDBData.GetAsString: string;
@@ -238,7 +233,7 @@ begin
   if TypeInfo.Kind in [tkString, tkLString, tkWString] then
     Result := Field.AsString
   else
-    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
+    raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 function TJvInspectorDBData.GetDataSource: TDataSource;
@@ -308,7 +303,7 @@ begin
     Field.AsFloat := Value;
   end
   else
-    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
+    raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 procedure TJvInspectorDBData.SetAsInt64(const Value: Int64);
@@ -320,13 +315,13 @@ begin
     TLargeIntField(Field).AsLargeInt := Value;
   end
   else
-    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
+    raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 procedure TJvInspectorDBData.SetAsMethod(const Value: TMethod);
 begin
   CheckWriteAccess;
-  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+  raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 procedure TJvInspectorDBData.SetAsOrdinal(const Value: Int64);
@@ -349,7 +344,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           DataLink.Edit;
           Field.AsInteger := Shortint(Value)
         end;
@@ -358,7 +353,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           DataLink.Edit;
           Field.AsInteger := Byte(Value)
         end;
@@ -367,7 +362,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           DataLink.Edit;
           Field.AsInteger := Smallint(Value)
         end;
@@ -376,7 +371,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           DataLink.Edit;
           Field.AsInteger := Word(Value)
         end;
@@ -385,7 +380,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           DataLink.Edit;
           Field.AsInteger := Integer(Value)
         end;
@@ -394,7 +389,7 @@ begin
           MinValue := Longword(GetTypeData(TypeInfo).MinValue);
           MaxValue := Longword(GetTypeData(TypeInfo).MaxValue);
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           DataLink.Edit;
           Field.AsInteger := Integer(Value)
         end;
@@ -407,7 +402,7 @@ begin
     Field.AsInteger := Integer(Value);
   end
   else
-    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
+    raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
 end;
 
 procedure TJvInspectorDBData.SetAsString(const Value: string);
@@ -419,7 +414,7 @@ begin
     Field.AsString := Value;
   end
   else
-    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
+    raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 procedure TJvInspectorDBData.SetDataSource(const Value: TDataSource);
@@ -478,7 +473,7 @@ var
 begin
   CheckReadAccess;
   if TypeInfo.Kind <> tkSet then
-    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
+    raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
   CompType := GetTypeData(TypeInfo).CompType^;
   EnumMin := GetTypeData(CompType).MinValue;
   EnumMax := GetTypeData(CompType).MaxValue;
@@ -582,7 +577,7 @@ var
 begin
   CheckWriteAccess;
   if TypeInfo.Kind <> tkSet then
-    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
+    raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
   CompType := GetTypeData(TypeInfo).CompType^;
   EnumMin := GetTypeData(CompType).MinValue;
   EnumMax := GetTypeData(CompType).MaxValue;

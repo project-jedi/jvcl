@@ -41,10 +41,10 @@ uses
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  SysUtils, Classes,
-  QForms, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QMenus, QDialogs,
-  QComCtrls, QImgList, QGrids, 
+  SysUtils, Classes, 
   Qt, QTypes, QWinCursors, QWindows, 
+  QForms, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QMenus, QDialogs,
+  QComCtrls, QImgList, QGrids,
   IniFiles,
   {$IFNDEF NO_JCL}
   JclBase,
@@ -1759,13 +1759,9 @@ begin
     Result := IDOK;
   end;
 end;
-(*
-function MsgDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons;
-  HelpCtx: Longint): Word;
-begin
-  Result := MessageDlg(Msg, AType, AButtons, HelpCtx);
-end;
-*)
+
+
+
 { Gradient fill procedure - displays a gradient beginning with a chosen    }
 { color and ending with another chosen color. Based on TGradientFill       }
 { component source code written by Curtis White, cwhite@teleport.com.      }

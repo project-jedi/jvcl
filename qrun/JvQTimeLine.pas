@@ -41,9 +41,9 @@ unit JvQTimeLine;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
-  QImgList, Types, QWindows,   
+  SysUtils, Classes, 
+  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QImgList, 
+  QWindows,   
   JvQComponent;
 
 const
@@ -1040,6 +1040,7 @@ end;
 
 
 
+
 procedure TJvCustomTimeLine.CreateWidget;
 var
   I: TJvScrollArrow;
@@ -1061,7 +1062,6 @@ begin
       FArrows[I].UpdatePlacement;
   end;
 end;
-
 
 
 procedure TJvCustomTimeLine.UpdateOffset;
@@ -1109,7 +1109,7 @@ begin
   FArrows[scrollUp].Visible :=
     (scrollUp in ScrollArrows) and (FTopLevel > 0);
   FArrows[scrollDown].Visible :=
-    (scrollDown in ScrollArrows) and (FNewHeight >= Height);
+    (scrollDown in ScrollArrows) and (FNewHeight >= Height) ;
 end;
 
 procedure TJvCustomTimeLine.SetBorderStyle(Value: TBorderStyle);
@@ -1911,7 +1911,7 @@ begin
           R.Top, R.Left + Item.ImageOffset + FImages.Width,
           R.Top + FImages.Height));
         with FImages do
-          Draw(ACanvas, R.Left + Item.ImageOffset, R.Top, Item.ImageIndex, itImage, Item.Enabled);
+          Draw(ACanvas, R.Left + Item.ImageOffset, R.Top, Item.ImageIndex,  itImage,  Item.Enabled);
       end;
       Inc(R.Top, FImages.Height + 4); { adjust top to make room for text drawing }
     end;
@@ -2033,7 +2033,7 @@ begin
   FNewHeight := 0;
   for I := 0 to FTimeItems.Count - 1 do
     UpdateItem(I, Canvas);
-  if (Align in [alTop, alBottom, alNone]) and
+  if  (Align in [alTop, alBottom, alNone]) and
     (Height <> FNewHeight + FScrollHeight + 2) and (Items.Count > 0) then
   begin
     Height := FNewHeight + FScrollHeight + 2;
@@ -2520,16 +2520,16 @@ begin
   FOldHint := Value;
 end;
 
-// initialization
-//  SystemParametersInfo(SPI_GETKEYBOARDDELAY,0,@FInitRepeatPause,0);
-//  SystemParametersInfo(SPI_GETKEYBOARDSPEED,0,@FRepeatPause,0);
-
-
 
 procedure TJvCustomTimeLine.RecreateWnd;
 begin
   RecreateWidget;
 end;
+
+
+// initialization
+//  SystemParametersInfo(SPI_GETKEYBOARDDELAY, 0, @FInitRepeatPause, 0);
+//  SystemParametersInfo(SPI_GETKEYBOARDSPEED, 0, @FRepeatPause, 0);
 
 end.
 

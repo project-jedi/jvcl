@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,12 +34,9 @@ unit JvQSpeedbarSetupForm;
 interface
 
 uses
-  SysUtils,  Classes,
-  
-  
-  Types, QGraphics, QControls, QForms, QStdCtrls,
-  QGrids, QExtCtrls, QWindows,
-  
+  SysUtils,  Classes, 
+  Types, QGraphics, QControls, QForms, QStdCtrls, QGrids, QExtCtrls, 
+  QWindows, 
   JvQConsts, JvQSpeedBar, JvQSpeedButton, JvQComponent;
 
 type
@@ -96,17 +94,10 @@ procedure ShowSpeedbarSetupWindow(Speedbar: TJvSpeedBar; HelpCtx: THelpContext);
 implementation
 
 uses
-  Math,
-  
-  
-  QConsts,
-  
+  Math, QConsts,
   JvQJVCLUtils, JvQTypes, JvQResources;
 
-
-
 {$R *.xfm}
-
 
 function FindEditor(Speedbar: TJvSpeedBar): TJvSpeedbarSetupWindow;
 var
@@ -288,11 +279,8 @@ begin
   if CheckSpeedBar then
     if Row < FSpeedbar.SectionCount then
       DrawCellText(Sender as TDrawGrid, Col, Row,
-        FSpeedbar.Sections[Row].Caption, Rect, taLeftJustify, vaCenterJustify,
-          
-          
-          False);
-          
+        FSpeedbar.Sections[Row].Caption, Rect, taLeftJustify, vaCenterJustify,  
+          False); 
 end;
 
 procedure TJvSpeedbarSetupWindow.ButtonsListMouseDown(Sender: TObject;
@@ -404,11 +392,8 @@ var
 begin
   I := CurrentSection;
   if (I >= 0) and (Row < FSpeedbar.ItemsCount(I)) then
-    DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage,
-      
-      
-      False);
-      
+    DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage,  
+      False); 
 end;
 
 procedure TJvSpeedbarSetupWindow.CloseBtnClick(Sender: TObject);
@@ -417,11 +402,8 @@ begin
 end;
 
 procedure TJvSpeedbarSetupWindow.HelpBtnClick(Sender: TObject);
-begin
-  
-  
-  Application.HelpSystem.ShowContextHelp(HelpContext, Application.HelpFile);
-  
+begin  
+  Application.HelpSystem.ShowContextHelp(HelpContext, Application.HelpFile); 
 end;
 
 procedure TJvSpeedbarSetupWindow.FormShow(Sender: TObject);

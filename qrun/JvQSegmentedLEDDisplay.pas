@@ -39,11 +39,11 @@ unit JvQSegmentedLEDDisplay;
 interface
 
 uses
+  Classes, Types, QGraphics, QWindows, 
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS} 
-  Classes, Types, QGraphics, QWindows, 
-  JclBase, QTypes,
+  JclBase,
   JvQComponent, JvQTypes;
 
 // Additional color values for unlit color settings (TUnlitColor type)
@@ -97,15 +97,15 @@ type
     FSegmentThickness: Integer;
     FSegmentUnlitColor: TUnlitColor;
     FSlant: TSlantAngle;
-    FText: TCaption;
+    FText: string; 
     FAutoSize: boolean;
-    procedure SetAutoSize(Value: boolean);
+    procedure SetAutoSize(Value: boolean); 
   protected
     procedure DefineProperties(Filer: TFiler); override;
     procedure Loaded; override;
     procedure Paint; override;
-    function GetText: TCaption; override;
-    procedure SetText(const Value: TCaption); override;
+    function GetText: string;
+    procedure SetText(Value: string);
     procedure SetDigitHeight(Value: Integer);
     procedure SetDigits(Value: TJvSegmentedLEDDigits);
     procedure SetDigitSpacing(Value: Integer);
@@ -129,8 +129,8 @@ type
     procedure InvalidateDigits;
     procedure InvalidateView;
     procedure UpdateText;
-    procedure UpdateBounds;
-    property AutoSize: boolean read FAutoSize write SetAutoSize default True;
+    procedure UpdateBounds;  
+    property AutoSize: boolean read FAutoSize write SetAutoSize default True; 
     property CharacterMapper: TJvSegmentedLEDCharacterMapper read FCharacterMapper;
     property DigitClass: TJvSegmentedLEDDigitClass read FDigitClass write SetDigitClass;
     // Solely needed for design time support of DigitClass
@@ -145,7 +145,7 @@ type
     property SegmentThickness: Integer read FSegmentThickness write SetSegmentThickness default 2;
     property SegmentUnlitColor: TUnlitColor read FSegmentUnlitColor write SetSegmentUnlitColor default clDefaultLitColor;
     property Slant: TSlantAngle read FSlant write SetSlant default 0;
-    property Text: TCaption read GetText write SetText;
+    property Text: string read GetText write SetText;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -530,12 +530,12 @@ begin
     Digits[I].Paint;
 end;
 
-function TJvCustomSegmentedLEDDisplay.GetText: TCaption;
+function TJvCustomSegmentedLEDDisplay.GetText: string;
 begin
   Result := FText;
 end;
 
-procedure TJvCustomSegmentedLEDDisplay.SetText(const Value: TCaption);
+procedure TJvCustomSegmentedLEDDisplay.SetText(Value: string);
 begin
   if Value <> Text then
     PrimSetText(Value);
@@ -1186,7 +1186,7 @@ begin
         begin
           Rgn := CreatePolygonRgn(SegPts[0], Length(SegPts), WINDING);
           try
-            if Rgn <> nil then
+            if Rgn <> 0 then
               Result := PtInRegion(Rgn, Pt.X, Pt.Y)
             else
               Result := False;
@@ -1200,7 +1200,7 @@ begin
         begin
           Rgn := CreateEllipticRgn(SegPts[0].X, SegPts[0].Y, SegPts[1].X, SegPts[1].Y);
           try
-            if Rgn <> nil then
+            if Rgn <> 0 then
               Result := PtInRegion(Rgn, Pt.X, Pt.Y)
             else
               Result := False;

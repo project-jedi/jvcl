@@ -40,10 +40,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  Qt,
-  {$ENDIF LINUX}
-  QControls, QStdCtrls, QDialogs, QExtCtrls, QForms, Types, QGraphics,
+  QControls, QStdCtrls, QDialogs, QExtCtrls, QForms, Types, QGraphics, 
   QWindows, QClipbrd, 
   JclBase,
   JvQConsts, JvQComponent, JvQTypes, JvQDynControlEngine, JvQFinalize;
@@ -220,15 +217,11 @@ const
 
 // Additional values for DefaultButton, CancelButton and HelpButton parameters
 
-
-type
-  TMsgDlgBtn =
-    ( mbNone, mbOk, mbCancel, mbYes, mbNo, mbAbort, mbRetry, mbIgnore, mbHelp,
-     mbAll, mbNoToAll, mbYesToAll);
-  TMsgDlgButtons = set of TMsgDlgBtn;
-
 const
+  mbNone = TMsgDlgBtn(-1);
   mbDefault = TMsgDlgBtn(-2);
+
+
 
 procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const ADynControlEngine: TJvDynControlEngine = nil);
@@ -254,17 +247,17 @@ function MessageDlg(const Caption, Msg: string; const Picture: TGraphic; const B
 function MessageDlgEx(const Msg: string; const DlgType: TMsgDlgType; const Buttons: array of string;
   const Results: array of Integer; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
   const Timeout: Integer = 0; const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  const HelpButton: Integer = 0;
+  const HelpButton: Integer = -1;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 function MessageDlgEx(const Caption, Msg: string; const DlgType: TMsgDlgType; const Buttons: array of string;
   const Results: array of Integer; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
   const Timeout: Integer = 0; const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  const HelpButton: Integer = 0;
+  const HelpButton: Integer = -1;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 function MessageDlgEx(const Caption, Msg: string; const Picture: TGraphic; const Buttons: array of string;
   const Results: array of Integer; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
   const Timeout: Integer = 0; const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  const HelpButton: Integer = 0;
+  const HelpButton: Integer = -1;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 
 //--------------------------------------------------------------------------------------------------
@@ -522,7 +515,7 @@ end;
 
 procedure TDSAMessageForm.HelpButtonClick(Sender: TObject);
 begin
-  CancelAutoClose;
+  CancelAutoClose;  
   Application.ContextHelp(HelpContext); 
 end;
 
@@ -720,7 +713,7 @@ begin
       else
         SetRect(TextRect, 0, 0, Screen.Width div 2, 0);  
       DrawText(Canvas, Msg, Length(Msg) + 1, TextRect,
-        DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+        DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly); 
 
       IconTextWidth := TextRect.Right;
       IconTextHeight := TextRect.Bottom;
@@ -738,7 +731,7 @@ begin
         SetRect(TempRect, 0, 0, Screen.Width div 2, 0);  
         DrawText(Canvas, Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)]),
           Length(Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)])) + 1, TempRect,
-          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly); 
         TimeoutTextWidth := TempRect.Right;
       end
       else
@@ -1527,12 +1520,12 @@ const
   
   // TMsgDlgType = (mtCustom, mtInformation, mtWarning, mtError, mtConfirmation);
   ButtonCaptions: array [TMsgDlgBtn] of string =
-   ( '', SMsgDlgOK, SMsgDlgCancel, SMsgDlgYes,
-    SMsgDlgNo, SMsgDlgAbort, SMsgDlgRetry, SMsgDlgIgnore, SMsgDlgHelp,
+   (SMsgDlgHelp, SMsgDlgOK, SMsgDlgCancel, SMsgDlgYes,
+    SMsgDlgNo, SMsgDlgAbort, SMsgDlgRetry, SMsgDlgIgnore,
     SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll);
   ModalResults: array [TMsgDlgBtn] of Integer =
-   (0, mrOk, mrCancel, mrYes, mrNo, mrAbort, mrRetry, mrIgnore, 0, mrAll, mrNoToAll,
-    mrYesToAll);
+   (0, mrOk, mrCancel, mrYes, mrNo, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
+    mrYesToAll); 
 
 function DlgCaption(const DlgType: TMsgDlgType): string;
 begin
@@ -1545,7 +1538,7 @@ begin
   if IconIDs[DlgType] <> nil then
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  if IconIDs[DlgType] <> QMessageBoxIcon_NoIcon then
+  if IconIDs[DlgType] <> nil then
   {$ENDIF LINUX}
   begin
     Result := TIcon.Create;
