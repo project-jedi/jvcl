@@ -64,9 +64,10 @@ begin
       TJvSystemColors, TJvAppDdeCmd, TJvPerfStat95]);
   RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase,
     TJvRas32, TJvCommStatus]);
-  RegisterComponents(RsPaletteNonVisual, [TJvFormStorage, TJvFormStorageSelectList, 
-      TJvSearchFiles, TJvMRUList, TJvMRUManager, TJvShellHook, TJvWindowHook,
-      TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList, TJvAppXMLStorage]);
+  RegisterComponents(RsPaletteNonVisual, [TJvSearchFiles, TJvMRUList, TJvMRUManager, 
+      TJvShellHook, TJvWindowHook, TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList]);
+  RegisterComponents(RsPalettePersistence, [TJvFormStorage, TJvFormStorageSelectList,
+      TJvAppXMLStorage]);
 
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);

@@ -54,9 +54,9 @@ const
   BaseClass: TClass = TComponent;
 begin
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent,
-    TJvContextProvider, TJvColorProvider, TJvColorMappingProvider,
-    TJvAppStorage, TJvAppRegistryStorage, TJvAppIniFileStorage, 
-    TJvAppStorageSelectList]);
+    TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]);
+  RegisterComponents(RsPalettePersistence, [TJvAppStorage, 
+    TJvAppRegistryStorage, TJvAppIniFileStorage, TJvAppStorageSelectList]);
 
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
