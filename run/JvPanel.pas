@@ -209,7 +209,7 @@ type
     property Enabled;
     property Font;
     {$IFDEF JVCLThemesEnabled}
-    property ParentBackground;
+    property ParentBackground default True;
     {$ENDIF JVCLThemesEnabled}
     property ParentColor;
     property ParentFont;

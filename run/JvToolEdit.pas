@@ -179,7 +179,6 @@ type
     procedure WMCopy(var Msg: TWMCopy); message WM_COPY; // RDB
     procedure WMUndo(var Msg: TWMUndo); message WM_UNDO; // RDB
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT; // RDB
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND; // RDB
     {$IFDEF JVCLThemesEnabled}
     procedure WMNCPaint(var Msg: TWMNCPaint); message WM_NCPAINT;
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
@@ -193,6 +192,7 @@ type
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure DoEnter; override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     class function DefaultImageIndex: TImageIndex; virtual;
     class function DefaultImages: TCustomImageList; virtual;
     function AcceptPopup(var Value: Variant): Boolean; virtual;
@@ -2121,28 +2121,24 @@ begin
   inherited;
 end;
 
-procedure TJvCustomComboEdit.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvCustomComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
+  Result := True;
   if csDestroying in ComponentState then
     Exit;
   if Enabled then
-    inherited
+    Result := inherited DoPaintBackground(Canvas, Param)
   else
-    with TCanvas.Create do
+  begin
+    SaveDC(Canvas.Handle);
     try
-      Handle := Msg.DC;
-      SaveDC(Msg.DC);
-      try
-        Brush.Color := FDisabledColor;
-        Brush.Style := bsSolid;
-        FillRect(ClientRect);
-        Msg.Result := 1;
-      finally
-        RestoreDC(Msg.DC, -1);
-      end;
+      Canvas.Brush.Color := FDisabledColor;
+      Canvas.Brush.Style := bsSolid;
+      Canvas.FillRect(ClientRect);
     finally
-      Free;
+      RestoreDC(Canvas.Handle, -1);
     end;
+  end;
 end;
 
 procedure TJvCustomComboEdit.WMKillFocus(var Msg: TWMKillFocus);

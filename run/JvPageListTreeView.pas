@@ -220,7 +220,7 @@ type
     property OnMouseLeave;
     property OnParentColorChange;
     {$IFDEF JVCLThemesEnabled}
-    property ParentBackground;
+    property ParentBackground default True;
     {$ENDIF JVCLThemesEnabled}
   end;
 
@@ -619,7 +619,7 @@ type
     property OnStartDrag;
     property OnUnDock;
     {$IFDEF JVCLThemesEnabled}
-    property ParentBackground;
+    property ParentBackground default True;
     {$ENDIF JVCLThemesEnabled}
   end;
 

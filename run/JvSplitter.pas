@@ -42,15 +42,11 @@ type
     FSaved: TColor;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
-    {$IFDEF JVCLThemesEnabled}
-    function GetParentBackground: Boolean;
-    {$ENDIF JVCLThemesEnabled}
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
     {$IFDEF JVCLThemesEnabled}
-    procedure SetParentBackground(Value: Boolean); virtual;
     procedure Paint; override;
     {$ENDIF JVCLThemesEnabled}
   public
@@ -63,7 +59,7 @@ type
     property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     {$IFDEF JVCLThemesEnabled}
-    property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
+    property ParentBackground default True;
     {$ENDIF JVCLThemesEnabled}
   end;
 
@@ -140,22 +136,6 @@ begin
   end
   else
     inherited Paint;
-end;
-
-function TJvSplitter.GetParentBackground: Boolean;
-begin
-  Result := csParentBackground in GetThemeStyle(Self);
-end;
-
-procedure TJvSplitter.SetParentBackground(Value: Boolean);
-begin
-  if Value <> GetParentBackground then
-  begin
-    if Value then
-      IncludeThemeStyle(Self, [csParentBackground])
-    else
-      ExcludeThemeStyle(Self, [csParentBackground]);
-  end;
 end;
 
 {$ENDIF JVCLThemesEnabled}

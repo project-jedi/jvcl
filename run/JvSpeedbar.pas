@@ -34,7 +34,7 @@ uses
   Graphics, Forms, ImgList, ActnList, ExtCtrls, Grids, IniFiles,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvSpeedButton, JvAppStorage, JvConsts, JvTypes, JvFormPlacement,
   JvComponent, JvThemes, JvExControls;
 
@@ -261,8 +261,8 @@ type
     property OnStartDock;
     property OnResize;
   {$IFDEF JVCLThemesEnabled}
-    property ParentBackground;
-  {$ENDIF}
+    property ParentBackground default True;
+  {$ENDIF JVCLThemesEnabled}
   end;
 
   TJvSpeedItem = class(TComponent)

@@ -90,9 +90,9 @@ type
     property Enabled;
     property Font;
     property ParentBiDiMode;
-    {$IFDEF COMPILER7_UP}
+    {$IFDEF JVCLThemesEnabled}
     property ParentBackground;
-    {$ENDIF COMPILER7_UP}
+    {$ENDIF JVCLThemesEnabled}
     property ParentColor;
     property ParentFont;
     property ParentShowHint;

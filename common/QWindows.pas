@@ -650,11 +650,6 @@ function GetTextExtentPoint32W(Handle: QPainterH; pText: PWideChar; Len: Integer
 function FrameRect(Handle: QPainterH; const R: TRect; Brush: QBrushH): LongBool; overload;
 procedure FrameRect(Canvas: TCanvas; const R: TRect); overload;
 function DrawFocusRect(Handle: QPainterH; const R: TRect): LongBool;
-function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType, uState: Longword): LongBool;
-  { missing DrawFrameControl flags:
-      DFC_SCROLL: all
-      DFC_BUTTON: all except DFCS_PUSHBUTTON
-      DFC_POPUPMENU: all  }
 function InvertRect(Handle: QPainterH; const R: TRect): LongBool;
 function Rectangle(Handle: QPainterH; Left, Top, Right, Bottom: Integer): LongBool;
 function RoundRect(Handle: QPainterH; Left, Top, Right, Bottom, X3, Y3: Integer): LongBool;
@@ -674,6 +669,14 @@ const
 //  DI_COMPAT    = 4;   not supported
   DI_DEFAULTSIZE = 8;
 
+function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType,
+  uState: Longword): LongBool;
+  { missing DrawFrameControl flags:
+      DFC_SCROLL: all
+      DFC_BUTTON: all except DFCS_PUSHBUTTON
+      DFC_POPUPMENU: all  }
+function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
+  Flags: Cardinal): LongBool;
 
 const
   { flags for DrawFrameControl }
@@ -717,6 +720,49 @@ const
   DFCS_ADJUSTRECT = $2000;
   DFCS_FLAT = $4000;
   DFCS_MONO = $8000;
+
+  { 3D border styles }
+  BDR_RAISEDOUTER = 1;
+  BDR_SUNKENOUTER = 2;
+  BDR_RAISEDINNER = 4;
+  BDR_SUNKENINNER = 8;
+
+  BDR_OUTER = BDR_SUNKENOUTER or BDR_RAISEDOUTER;
+  BDR_INNER = BDR_SUNKENINNER or BDR_SUNKENOUTER;
+  BDR_RAISED = BDR_RAISEDINNER or BDR_RAISEDOUTER;
+  BDR_SUNKEN = BDR_SUNKENINNER or BDR_SUNKENOUTER;
+
+  EDGE_RAISED = BDR_RAISEDOUTER or BDR_RAISEDINNER;
+  EDGE_SUNKEN = BDR_SUNKENOUTER or BDR_SUNKENINNER;
+  EDGE_ETCHED = BDR_SUNKENOUTER or BDR_RAISEDINNER;
+  EDGE_BUMP = BDR_RAISEDOUTER or BDR_SUNKENINNER;
+
+  { Border flags }
+  BF_LEFT = 1;
+  BF_TOP = 2;
+  BF_RIGHT = 4;
+  BF_BOTTOM = 8;
+
+  BF_TOPLEFT = BF_TOP or BF_LEFT;
+  BF_TOPRIGHT = BF_TOP or BF_RIGHT;
+  BF_BOTTOMLEFT = BF_BOTTOM or BF_LEFT;
+  BF_BOTTOMRIGHT = BF_BOTTOM or BF_RIGHT;
+  BF_RECT = BF_TOPLEFT or BF_BOTTOMRIGHT;
+
+  BF_DIAGONAL = $10;
+
+  { For diagonal lines, the BF_RECT flags specify the end point of the}
+  { vector bounded by the rectangle parameter.}
+  BF_DIAGONAL_ENDTOPRIGHT = BF_DIAGONAL or BF_TOP or BF_RIGHT;
+  BF_DIAGONAL_ENDTOPLEFT = BF_DIAGONAL or BF_TOP or BF_LEFT;
+  BF_DIAGONAL_ENDBOTTOMLEFT = BF_DIAGONAL or BF_BOTTOM or BF_LEFT;
+  BF_DIAGONAL_ENDBOTTOMRIGHT = BF_DIAGONAL or BF_BOTTOM or BF_RIGHT;
+
+  BF_MIDDLE = $800;   { Fill in the middle }
+  BF_SOFT = $1000;    { For softer buttons }
+  BF_ADJUST = $2000;  { Calculate the space left over }
+  BF_FLAT = $4000;    { For flat rather than 3D borders }
+  BF_MONO = $8000;    { For monochrome borders }
 
 
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
@@ -4638,6 +4684,113 @@ begin
   DFCS_MONO = $8000;
 *)
 end;
+
+function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
+  Flags: Cardinal): LongBool;
+var
+  PenOuter, PenInner: QPenH; // references to PenDark or PenLight
+  Brush: QBrushH;
+  ColorDark, ColorLight: TColor;
+  ClientRect: TRect;
+  X1, Y1, X2, Y2: Integer;
+
+  procedure DrawLine(X1, Y1, X2, Y2: Integer; Pen: QPenH);
+  begin
+    QPainter_setPen(Handle, Pen);
+    QPainter_moveTo(Handle, X1, Y1);
+    QPainter_lineTo(Handle, X2, Y2);
+  end;
+
+begin
+  Result := False;
+  if Handle = nil then
+    Exit;
+  try
+    ClientRect := Rect;
+    InflateRect(ClientRect, -2, -2);
+    QPainter_save(Handle);
+    try
+      ColorDark := clGray;
+      ColorLight := clWhite;
+      if Flags and BF_FLAT <> 0 then
+        ColorLight := clSilver;
+      if Flags and BF_MONO <> 0 then
+      begin
+        ColorDark := clBlack;
+        ColorLight := clWhite;
+      end;
+
+      if Edge and BDR_RAISEDOUTER <> 0 then
+        PenOuter := CreatePen(PS_SOLID, 1, ColorDark)
+      else if Edge and BDR_SUNKENOUTER <> 0 then
+        PenOuter := CreatePen(PS_SOLID, 1, ColorLight)
+      else
+        PenOuter := nil;
+
+      if Edge and BDR_RAISEDINNER <> 0 then
+        PenInner := CreatePen(PS_SOLID, 1, ColorDark)
+      else if Edge and BDR_SUNKENINNER <> 0 then
+        PenInner := CreatePen(PS_SOLID, 1, ColorLight)
+      else
+        PenInner := nil;
+
+      try
+        X1 := Rect.Left;
+        Y1 := Rect.Top;
+        X2 := Rect.Right;
+        Y2 := Rect.Bottom - 1;
+
+{        if Flags and BF_DIAGONAL = 0 then
+        begin
+          if Flags and BF_LEFT <> 0 then
+          begin
+            DrawLine(X1, Y1,
+          end;
+          if Flags and BF_RIGHT <> 0 then
+          begin
+            DrawLine(Rect.Right - Offset, Rect.Top + 1 - Offset, Rect.Right - Offset, Rect.Bottom - Offset, Pen);
+          end;
+          if Flags and BF_TOP <> 0 then
+          begin
+          end;
+          if Flags and BF_BOTTOM <> 0 then
+          begin
+          end;
+        end
+        else
+        begin
+          // diagonal
+        end;}
+      finally
+        if Assigned(PenOuter) then
+          DeleteObject(PenOuter);
+        if Assigned(PenInner) then
+          DeleteObject(PenInner);
+      end;
+
+      if Flags and BF_MIDDLE <> 0 then
+      begin
+       // fill interior rect
+        Brush := CreateSolidBrush(ColorLight);
+        try
+          FillRect(Handle, ClientRect, Brush);
+        finally
+          DeleteObject(Brush);
+        end;
+      end;
+
+      if Flags and BF_ADJUST <> 0 then
+        Rect := ClientRect;
+
+      Result := True;
+    finally
+      QPainter_restore(Handle);
+    end;
+  except
+    Result := False;
+  end;
+end;
+
 
 function GetCurrentPositionEx(Handle: QPainterH; pos: PPoint): LongBool;
 begin

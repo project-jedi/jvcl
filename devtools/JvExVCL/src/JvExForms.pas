@@ -29,13 +29,20 @@ unit JvExForms;
 interface
 uses
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms,
+  Windows, Messages, Graphics, Controls, Forms, ToolWin,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms,
+  Qt, QGraphics, QControls, QForms, QToolWin,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvThemes, JvExControls;
+
+{$IFDEF VisualCLX}
+type
+  TToolWindow = class(TWidgetControl)
+  
+  end;
+{$ENDIF VisualCLX}
 
 type
   JV_WINCONTROL_EVENTS(ScrollingWinControl)
@@ -44,6 +51,7 @@ type
   JV_WINCONTROL_EVENTS(Frame)
   JV_CUSTOMCONTROL_EVENTS(CustomForm) // do not implement Painting()
   JV_CUSTOMCONTROL_EVENTS(Form) // do not implement Painting()
+  JV_WINCONTROL_EVENTS(ToolWindow)
 
 implementation
 
@@ -53,5 +61,6 @@ JV_WINCONTROL_EVENTS_IMPL(CustomFrame)
 JV_WINCONTROL_EVENTS_IMPL(Frame)
 JV_CUSTOMCONTROL_EVENTS_IMPL(CustomForm)
 JV_CUSTOMCONTROL_EVENTS_IMPL(Form)
+JV_WINCONTROL_EVENTS_IMPL(ToolWindow)
 
 end.
