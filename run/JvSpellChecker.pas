@@ -305,8 +305,10 @@ procedure TJvDefaultSpellChecker.BuildTables;
 var
   AFile: TextFile;
   Value: string;
+  LastValue: string;
   SoundexVal: TSoundex;
   I: Integer;
+  N: Integer;
 begin
   ClearTables;
   if FileExists(Dictionary) then
@@ -318,6 +320,13 @@ begin
         Readln(AFile, Value);
         if Value <> '' then
         begin
+          // (rom) simple compession for dictionary
+          N := Ord(Value[1]) - Ord('0');
+          Value := Copy(Value, 2, Length(Value) - 1);
+          if N > 0 then
+            Value := Copy(LastValue, 1, N) + Value;
+          LastValue := Value;
+
           Value := AnsiLowerCase(Value);
           StrAddRef(Value);
           AddWord(Value);
@@ -527,8 +536,7 @@ begin
   Result := FOnCanIgnore;
 end;
 
-procedure TJvDefaultSpellChecker.SetCanIgnore(
-  const Value: TJvSpellCheckIgnoreEvent);
+procedure TJvDefaultSpellChecker.SetCanIgnore(const Value: TJvSpellCheckIgnoreEvent);
 begin
   FOnCanIgnore := Value;
 end;
