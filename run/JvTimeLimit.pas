@@ -36,7 +36,7 @@ uses
   Controls, Dialogs, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QDialogs, QForms,
+  QControls, QDialogs, QForms, QWindows,
   {$ENDIF VisualCLX}
   JvComponent;
 
