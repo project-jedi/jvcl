@@ -59,19 +59,6 @@ uses
 
 {$R *.DFM}
 
-resourcestring
-  SHelpText = sLineBreak +
-    'Band Name' + sLineBreak +
-    'Enter a band name, e.g. MyBand.' + sLineBreak +
-    'This will be the class name of the band object.' + sLineBreak +
-    'No need to prefix it with ''T'' as it will be generated.' + sLineBreak + sLineBreak +
-    'Description' + sLineBreak +
-    'Enter a menuitem text, e.g. &My Band' + sLineBreak +
-    'This text will appear in the Explorer Bar or Toolbars menu.' + sLineBreak + sLineBreak +
-    'Band Type' + sLineBreak +
-    'Select the type of band object to create.';
-
-
 procedure TzWizardForm.OKClick(Sender: TObject);
 begin
   with EditBandName do

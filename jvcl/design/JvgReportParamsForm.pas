@@ -33,19 +33,16 @@ interface
 
 uses
   Windows, Messages,
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Grids, JvgStringGrid,
-  StdCtrls,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Grids,
+  StdCtrls, Buttons, ExtCtrls, Mask,
   {$IFDEF COMPILER6_UP}
-  DesignIntf,
-  DesignEditors,
-  PropertyCategories,
+  DesignIntf, DesignEditors, PropertyCategories,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvgReport, Buttons, ExtCtrls, Mask, JvComponent;
+  JvgStringGrid, JvgReport, JvComponent;
 
 type
-
   TJvgRepParamsEditor = class(TComponentEditor)
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -59,37 +56,32 @@ type
     BitBtn2: TBitBtn;
     BitBtn1: TBitBtn;
   private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
 var
   ReportParamsForm: TJvgReportParamsForm;
 
-
-resourcestring
-  sEditParams = 'Edit params...';
-
 implementation
+
 uses
-  JvgReportParamsEditor;
+  JvgReportParamsEditor, JvDsgnConsts;
 
 {$R *.DFM}
-
-//----------- TglReportParams_Editor
 
 procedure TJvgRepParamsEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-    0: TJvgReportParamsEditor(Component).Edit;
+    0:
+      TJvgReportParamsEditor(Component).Edit;
   end;
 end;
 
 function TJvgRepParamsEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := sEditParams;
+    0:
+      Result := SEditParams;
   end;
 end;
 

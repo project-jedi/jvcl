@@ -33,9 +33,9 @@ unit JvgLogicItemEditorForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvgLogics,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Buttons, Menus, ComCtrls, ToolWin,
-  JvComponent;
+  JvgLogics, JvComponent;
 
 type
   TJvgLogicItemEditor = class(TJvForm)
@@ -103,84 +103,83 @@ type
   private
     Logics: TJvgLogics;
     LogicElement: TJvgLogicElement;
-    StopIndex: integer;
+    StopIndex: Integer;
   public
-    function Execute(Logics: TJvgLogics; LogicElement: TJvgLogicElement): boolean;
+    function Execute(ALogics: TJvgLogics; ALogicElement: TJvgLogicElement): Boolean;
   end;
 
 var
   fLogicItemEditor: TJvgLogicItemEditor;
 
-
-resourcestring
-  sLogicElements = 'Logic Element: %s';
-  sNotDefined = '[ not defined ]';
-
 implementation
+
+uses
+  JvDsgnConsts;
 
 {$R *.DFM}
 
-{ TJvgLogicItemEditor }
+const
+  cLocalColor = $E0E0E0;
 
-function TJvgLogicItemEditor.Execute(Logics: TJvgLogics; LogicElement: TJvgLogicElement): boolean;
+function TJvgLogicItemEditor.Execute(ALogics: TJvgLogics; ALogicElement: TJvgLogicElement): Boolean;
 var
-  i: integer;
+  I: Integer;
 begin
-  Caption := Format(sLogicElements, [LogicElement.Caption]);
-  self.Logics := Logics;
-  self.LogicElement := LogicElement;
+  Caption := Format(SLogicElements, [ALogicElement.Caption]);
+  Logics := ALogics;
+  LogicElement := ALogicElement;
 
   StopIndex := 10000;
 
   LB.Items.Clear;
 
-  for i := 0 to LogicElement.LogicVariants.Count - 1 do
+  for I := 0 to LogicElement.LogicVariants.Count - 1 do
     LB.Items.Add('1');
 
   cbExpr.Items.Clear;
-  cbExpr.Items.Add('[RESULT]');
-  for i := 0 to Logics.Dictionary.Count - 1 do
-    cbExpr.Items.Add('[' + Logics.Dictionary.Names[i] + ']');
+  cbExpr.Items.Add(SResult);
+  for I := 0 to Logics.Dictionary.Count - 1 do
+    cbExpr.Items.Add('[' + Logics.Dictionary.Names[I] + ']');
 
   cbExpr.Text := LogicElement.Expression;
-  cbRule.ItemIndex := integer(LogicElement.Rule);
+  cbRule.ItemIndex := Integer(LogicElement.Rule);
   eValue.Text := LogicElement.Value;
   mTrue.Text := LogicElement.TrueResult;
   mFalse.Text := LogicElement.FalseResult;
 
-  Result := ShowModal = mrOK;
-
-  if not Result then exit;
-
-  LogicElement.Expression := cbExpr.Text;
-  LogicElement.Rule := TLogicRule(cbRule.ItemIndex);
-  LogicElement.Value := eValue.Text;
-  LogicElement.TrueResult := mTrue.Text;
-  LogicElement.FalseResult := mFalse.Text;
+  Result := ShowModal = mrOk;
+  if Result then
+  begin
+    LogicElement.Expression := cbExpr.Text;
+    LogicElement.Rule := TLogicRule(cbRule.ItemIndex);
+    LogicElement.Value := eValue.Text;
+    LogicElement.TrueResult := mTrue.Text;
+    LogicElement.FalseResult := mFalse.Text;
+  end;
 end;
 
 procedure TJvgLogicItemEditor.Button1Click(Sender: TObject);
 begin
-  ModalResult := mrOK;
+  ModalResult := mrOk;
 end;
 
 procedure TJvgLogicItemEditor.Button2Click(Sender: TObject);
 begin
-  ModalResult := mrCANCEL;
+  ModalResult := mrCancel;
 end;
 
 procedure TJvgLogicItemEditor.FormCreate(Sender: TObject);
 var
-  i: TLogicRule;
+  I: TLogicRule;
   Item: TMenuItem;
 begin
-  for i := low(TLogicRule) to high(TLogicRule) do
+  for I := Low(TLogicRule) to High(TLogicRule) do
   begin
-    cbRule.items.Add(LogicRuleLabels[i]);
-    Item := NewItem(LogicRuleLabels[i], 0, false, true, nil, 255, '');
+    cbRule.items.Add(LogicRuleLabels[I]);
+    Item := NewItem(LogicRuleLabels[I], 0, False, True, nil, 255, '');
     pmRule.Items.Add(Item);
   end;
-  TB.Color := $E0E0E0;
+  TB.Color := cLocalColor;
 end;
 
 procedure TJvgLogicItemEditor.LBMeasureItem(Control: TWinControl;
@@ -189,7 +188,8 @@ begin
   Height := 100;
 end;
 
-procedure TJvgLogicItemEditor.LBDrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
+procedure TJvgLogicItemEditor.LBDrawItem(Control: TWinControl; Index: Integer;
+  Rect: TRect; State: TOwnerDrawState);
 var
   R: TRect;
   Expression: string;
@@ -200,7 +200,7 @@ begin
   with LB.Canvas do
   begin
     if odSelected in State then
-      Brush.Color := $E0E0E0
+      Brush.Color := cLocalColor
     else
       Brush.Color := clWindow;
 
@@ -209,7 +209,8 @@ begin
     TrueResult := LogicElement.LogicVariants[Index].TrueResult;
     FalseResult := LogicElement.LogicVariants[Index].FalseResult;
 
-    if (TrueResult <> '') and (FalseResult <> '') then StopIndex := Index;
+    if (TrueResult <> '') and (FalseResult <> '') then
+      StopIndex := Index;
 
     FillRect(Rect);
     SetBkMode(Handle, TRANSPARENT);
@@ -223,20 +224,20 @@ begin
 
     Font.Color := $00007171;
     R := Bounds(Rect.Left + 130, Rect.Top + 3, 120, 20);
-    DrawText(Handle, PChar(Expression), length(Expression), R, DT_SINGLELINE);
+    DrawText(Handle, PChar(Expression), Length(Expression), R, DT_SINGLELINE);
 
     if StopIndex < Index then
       Font.Color := clSilver
     else
       Font.Color := clGray;
     R := Bounds(Rect.Left + 20, Rect.Top + 20, 120, 20);
-    DrawText(Handle, PChar(LogicRuleLabels[TLogicRule(cbRule.ItemIndex)]), length(LogicRuleLabels[TLogicRule(cbRule.ItemIndex)]), R, DT_SINGLELINE);
+    DrawText(Handle, PChar(LogicRuleLabels[TLogicRule(cbRule.ItemIndex)]), Length(LogicRuleLabels[TLogicRule(cbRule.ItemIndex)]), R, DT_SINGLELINE);
 
     if TLogicRule(cbRule.ItemIndex) <> ltNotEmpty then
     begin
       Font.Color := $00804000;
       R := Bounds(Rect.Left + 130, Rect.Top + 20, 120, 20);
-      DrawText(Handle, PChar(Value), length(Value), R, DT_SINGLELINE);
+      DrawText(Handle, PChar(Value), Length(Value), R, DT_SINGLELINE);
     end;
 
     if StopIndex < Index then
@@ -248,7 +249,7 @@ begin
 
     Font.Color := clGreen;
     R := Bounds(Rect.Left + 130, Rect.Top + 37, 120, 20);
-    DrawText(Handle, PChar(TrueResult), length(TrueResult), R, DT_SINGLELINE);
+    DrawText(Handle, PChar(TrueResult), Length(TrueResult), R, DT_SINGLELINE);
 
     Font.Color := clGray;
     R := Bounds(Rect.Left + 15, Rect.Top + 53, 120, 20);
@@ -256,7 +257,7 @@ begin
 
     Font.Color := $00404080;
     R := Bounds(Rect.Left + 130, Rect.Top + 53, 120, 20);
-    DrawText(Handle, PChar(FalseResult), length(FalseResult), R, DT_SINGLELINE);
+    DrawText(Handle, PChar(FalseResult), Length(FalseResult), R, DT_SINGLELINE);
 
     Brush.Color := clGray;
     R := Classes.Rect(Rect.Left + 10, Rect.Bottom - 1, Rect.Right - 10, Rect.Bottom);
@@ -301,12 +302,12 @@ end;
 
 procedure TJvgLogicItemEditor.spRuleClick(Sender: TObject);
 var
-  pt: TPoint;
+  Pt: TPoint;
 begin
-  pt.X := spRule.Left;
-  pt.Y := spRule.Top + spRule.Height;
-  pt := spRule.ClientToScreen(pt);
-  pmRule.Popup(pt.X, pt.Y);
+  Pt.X := spRule.Left;
+  Pt.Y := spRule.Top + spRule.Height;
+  Pt := spRule.ClientToScreen(Pt);
+  pmRule.Popup(Pt.X, Pt.Y);
 end;
 
 procedure TJvgLogicItemEditor.cbExprChange(Sender: TObject);
@@ -318,19 +319,21 @@ procedure TJvgLogicItemEditor.ToolButton1Click(Sender: TObject);
 begin
   with LogicElement.LogicVariants.Add do
   begin
-    Value := sNotDefined;
-    TrueResult := sNotDefined;
-    FalseResult := sNotDefined;
+    Value := SNotDefined;
+    TrueResult := SNotDefined;
+    FalseResult := SNotDefined;
   end;
   LB.Items.Add('1');
 end;
 
 procedure TJvgLogicItemEditor.mTrueChange(Sender: TObject);
 begin
-  if LB.ItemIndex = -1 then exit;
-  LogicElement.LogicVariants[LB.ItemIndex].Value := eValue.Text;
-  LogicElement.LogicVariants[LB.ItemIndex].TrueResult := mTrue.Text;
-  LogicElement.LogicVariants[LB.ItemIndex].FalseResult := mFalse.Text;
+  if LB.ItemIndex <> -1 then
+  begin
+    LogicElement.LogicVariants[LB.ItemIndex].Value := eValue.Text;
+    LogicElement.LogicVariants[LB.ItemIndex].TrueResult := mTrue.Text;
+    LogicElement.LogicVariants[LB.ItemIndex].FalseResult := mFalse.Text;
+  end;
 end;
 
 end.

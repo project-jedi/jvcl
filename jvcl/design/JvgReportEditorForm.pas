@@ -33,21 +33,17 @@ unit JvgReportEditorForm;
 interface
 
 uses
-  Windows, Mask, Spin, Menus,ExtCtrls, StdCtrls, Buttons, ComCtrls, Controls, Dialogs, Forms,
-  Classes, Sysutils, Graphics,Imglist,
-  JvgReport, JvgCaption, JvgBevel, JvgPage, Printers, JvgLabel, JvgRuler,
-  JvgListBox, JvgReportParamEditorForm,
+  Windows, Mask, Spin, Menus, ExtCtrls, StdCtrls, Buttons, ComCtrls, Controls,
+  Dialogs, Forms, Classes, SysUtils, Graphics, ImgList, Printers,
   {$IFDEF COMPILER6_UP}
-  DesignIntf,
-  DesignEditors,
-  PropertyCategories,
+  DesignIntf, DesignEditors, PropertyCategories,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvComponent;
+  JvgReport, JvgCaption, JvgBevel, JvgPage, JvgLabel, JvgRuler,
+  JvgListBox, JvgReportParamEditorForm, JvComponent;
 
 type
-
   TJvgRepProperty = class(TPropertyEditor)
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
@@ -218,17 +214,22 @@ type
       Shift: TShiftState);
     procedure CheckBox1Click(Sender: TObject);
   private
-    ReportParamEditor: TJvgReportParamEditor;
-
-    fMouseDown, fCanUndo, fSkipSizeUpdate: boolean;
-    UndoPosShift, SelectedControlLastPos: TPoint;
-    ControlPos, SelPt, Grid, Step: TPoint;
-    ScrollBox: TJvgRepScrollBox;
-    SelectedControl: TJvgReportItem;
-    fSelection: boolean;
-    SelectionRect: TRect;
+    FReportParamEditor: TJvgReportParamEditor;
+    FMouseDown: Boolean;
+    FCanUndo: Boolean;
+    FSkipSizeUpdate: Boolean;
+    FUndoPosShift: TPoint;
+    FSelectedControlLastPos: TPoint;
+    FControlPos: TPoint;
+    FSelPt: TPoint;
+    FGrid: TPoint;
+    FStep: TPoint;
+    FScrollBox: TJvgRepScrollBox;
+    FSelectedControl: TJvgReportItem;
+    FSelection: Boolean;
+    FSelectionRect: TRect;
     procedure RemakeComponentsList;
-    procedure read(FileName: string; ParentWnd: TWinControl);
+    procedure Read(FileName: string; ParentWnd: TWinControl);
     procedure Save(FileName: string);
     procedure OnMouseDown_(Sender: TObject; Button: TMouseButton; Shift:
       TShiftState; X, Y: Integer);
@@ -239,8 +240,8 @@ type
     procedure OnResize_(Sender: TObject);
     procedure OnDrawScrollBox(Sender: TObject);
     procedure UpdatePageSize;
-    procedure ResizeReportControls(l, t, w, h: integer; fUseParamsAsShifts:
-      boolean);
+    procedure ResizeReportControls(l, t, w, h: Integer;
+      fUseParamsAsShifts: Boolean);
     procedure ShowComponentPos(Control: TControl);
     procedure AssignEventsToAllComponents;
     procedure UpdateToolBar(Control: TJvgReportItem);
@@ -257,48 +258,44 @@ type
 
   TJvgPublicControlClass = class of TJvgPublicControl;
 
-const
-  IGNORE_VALUE = 65536;
 var
   glRepEditor: TJvgReportEditorForm;
   Form2: TComponent;
 
-
-resourcestring
-  sEditReport = 'Edit report...';
-  sPreviewReport = 'Preview report...';
-  sDeleteObject = 'Delete object?';
-  sConfirm = 'Confirm';
-  sPagePreview = 'Page Preview';
-
 implementation
-uses JvgTypes,
-  JvgUtils, {PrintR,} { ConfirmF, AboutF,}
-  JvgAlignFunction,
-  JvgAlignForm;
-{$R *.DFM}
-//----------- common proc
 
-procedure ShowReportEditor(JvgReport: TComponent; fEdit: boolean);
+uses
+  JvgTypes, JvgUtils, JvgAlignFunction, JvgAlignForm, JvDsgnConsts;
+
+{$R *.DFM}
+
+const
+  IGNORE_VALUE = 65536;
+
+//=== common proc ============================================================
+
+procedure ShowReportEditor(JvgReport: TComponent; AEdit: Boolean);
 var
   Dialog: TJvgReportEditorForm;
   Report: TJvgReport;
 begin
   Dialog := TJvgReportEditorForm.Create(Application);
-  if JvgReport is TJvgReport then
-    Report := TJvgReport(JvgReport)
-  else
-    Report := TJvgReportEditor(JvgReport).Report;
-  if Report = nil then
-    exit;
-  if fEdit then
-    Dialog.Edit(Report)
-  else
-    Dialog.Preview(Report);
-  Dialog.free;
+  try
+    if JvgReport is TJvgReport then
+      Report := TJvgReport(JvgReport)
+    else
+      Report := TJvgReportEditor(JvgReport).Report;
+    if Report <> nil then
+      if AEdit then
+        Dialog.Edit(Report)
+      else
+        Dialog.Preview(Report);
+  finally
+    Dialog.Free;
+  end;
 end;
 
-//----------- TJvgComponentListProperty
+//=== TJvgComponentListProperty ==============================================
 
 function TJvgRepProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -312,23 +309,28 @@ end;
 
 procedure TJvgRepProperty.Edit;
 begin
-  ShowReportEditor(TJvgReport(GetComponent(0)), true);
+  ShowReportEditor(TJvgReport(GetComponent(0)), True);
 end;
-//----------- TJvgReportCompEditor
+
+//=== TJvgReportCompEditor ===================================================
 
 procedure TJvgReportCompEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-    0: ShowReportEditor(Component, true);
-    1: ShowReportEditor(Component, false);
+    0:
+      ShowReportEditor(Component, True);
+    1:
+      ShowReportEditor(Component, False);
   end;
 end;
 
 function TJvgReportCompEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := sEditReport;
-    1: Result := sPreviewReport;
+    0:
+      Result := SEditReport;
+    1:
+      Result := SPreviewReport;
   end;
 end;
 
@@ -336,134 +338,141 @@ function TJvgReportCompEditor.GetVerbCount: Integer;
 begin
   Result := 2;
 end;
-//----------- TJvgReportEditor
 
-procedure TJvgReportEditor.Notification(AComponent: TComponent; Operation:
-  TOperation);
+//=== TJvgReportEditor =======================================================
+
+procedure TJvgReportEditor.Notification(AComponent: TComponent;
+  Operation: TOperation);
 begin
   if (AComponent = Report) and (Operation = opRemove) then
     Report := nil;
-  inherited;
+  inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvgReportEditor.Preview;
 begin
-  ShowReportEditor(self, false);
+  ShowReportEditor(Self, False);
 end;
 
 procedure TJvgReportEditor.Edit;
 begin
-  ShowReportEditor(self, true);
+  ShowReportEditor(Self, True);
 end;
-//----------- TJvgReportEditorForm
+
+//== TJvgReportEditorForm ====================================================
 
 procedure TJvgReportEditorForm.Preview(JvgReport: TJvgReport);
 begin
-  PC.Visible := false;
-  ScrollBox.Enabled := false;
+  PC.Visible := False;
+  FScrollBox.Enabled := False;
   Component := JvgReport;
   ShowModal;
 end;
 
 procedure TJvgReportEditorForm.Edit(JvgReport: TJvgReport);
 begin
-  PC.Visible := true;
-  ScrollBox.Enabled := true;
+  PC.Visible := True;
+  FScrollBox.Enabled := True;
   Component := JvgReport;
   ShowModal;
 end;
 
-procedure TJvgReportEditorForm.OnMouseDown_(Sender: TObject; Button:
-  TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TJvgReportEditorForm.OnMouseDown_(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  pt: TPoint;
-  i: integer;
+  Pt: TPoint;
+  I: Integer;
 begin
   if TControl(Sender).Cursor <> crDefault then
-    exit;
+    Exit;
   ActiveControl := nil;
-  fCanUndo := false;
-  if (B_Label.Down) or (B_Bevel.Down) or (sb_OLE.Down) or (ssCtrl in Shift) then
+  FCanUndo := False;
+  if B_Label.Down or B_Bevel.Down or sb_OLE.Down or (ssCtrl in Shift) then
   begin
-    ScrollBox_MouseDown(Sender, Button, Shift, X + TControl(Sender).Left, Y +
-      TControl(Sender).Top);
-    exit;
+    ScrollBox_MouseDown(Sender, Button, Shift, X + TControl(Sender).Left,
+      Y + TControl(Sender).Top);
+    Exit;
   end;
   ScrollBox_MouseDown(Sender, Button, Shift, X, Y);
   if Button = mbLeft then
   begin
-    fMouseDown := true;
+    FMouseDown := True;
     TControl(Sender).Tag := 1;
-    ControlPos.x := X;
-    ControlPos.y := Y;
+    FControlPos.X := X;
+    FControlPos.Y := Y;
   end
-  else if Button = mbRight then
+  else
+  if Button = mbRight then
   begin
     OnMouseDown_(Sender, mbLeft, Shift, X, Y);
-    pt.x := X;
-    pt.y := Y;
-    pt := SelectedControl.ClientToScreen(pt);
-    N_Linktofile.Enabled := SelectedControl.ContainOLE;
-    N_OLESize.Enabled := SelectedControl.ContainOLE;
-    case SelectedControl.OLESizeMode of
-      0: N_Clip.Checked := true;
-      1: N_Center.Checked := true;
-      2: N_Scale.Checked := true;
-      3: N_Stretch.Checked := true;
-      4: N_AutoSize.Checked := true;
+    Pt.X := X;
+    Pt.Y := Y;
+    Pt := FSelectedControl.ClientToScreen(Pt);
+    N_Linktofile.Enabled := FSelectedControl.ContainOLE;
+    N_OLESize.Enabled := FSelectedControl.ContainOLE;
+    case FSelectedControl.OLESizeMode of
+      0:
+        N_Clip.Checked := True;
+      1:
+        N_Center.Checked := True;
+      2:
+        N_Scale.Checked := True;
+      3:
+        N_Stretch.Checked := True;
+      4:
+        N_AutoSize.Checked := True;
     end;
 
-    PM_Control.Popup(pt.X, pt.Y);
+    PM_Control.Popup(Pt.X, Pt.Y);
     OnMouseUp_(Sender, Button, Shift, X, Y);
   end;
 
-  if Assigned(SelectedControl) then
+  if Assigned(FSelectedControl) then
     if ssShift in Shift then
     begin
       TJvgReportItem(Sender).Selected := not TJvgReportItem(Sender).Selected;
-      fMouseDown := false;
-      if SelectedControl = Sender then
-        exit;
+      FMouseDown := False;
+      if FSelectedControl = Sender then
+        Exit;
     end
     else
     begin
       if TJvgReportItem(Sender).Selected then
-        exit;
-      with ScrollBox do
-        for i := 0 to ControlCount - 1 do
-          if (Controls[i] is TJvgReportItem) and
-            TJvgReportItem(Controls[i]).Selected then
-            TJvgReportItem(Controls[i]).Selected := false;
-      SelectedControl.Selected := false;
-      SelectedControl.Invalidate;
+        Exit;
+      with FScrollBox do
+        for I := 0 to ControlCount - 1 do
+          if (Controls[I] is TJvgReportItem) and
+            TJvgReportItem(Controls[I]).Selected then
+            TJvgReportItem(Controls[I]).Selected := False;
+      FSelectedControl.Selected := False;
+      FSelectedControl.Invalidate;
     end;
 
-  SelectedControl := TJvgReportItem(Sender);
-  SelectedControl.Selected := true;
+  FSelectedControl := TJvgReportItem(Sender);
+  FSelectedControl.Selected := True;
 
-  UpdateToolBar(SelectedControl);
-  SelectedControlLastPos.X := SelectedControl.Left;
-  SelectedControlLastPos.Y := SelectedControl.Top;
-
+  UpdateToolBar(FSelectedControl);
+  FSelectedControlLastPos.X := FSelectedControl.Left;
+  FSelectedControlLastPos.Y := FSelectedControl.Top;
 end;
 
 procedure TJvgReportEditorForm.OnMouseUp_(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   ScrollBox_MouseUp(Sender, Button, Shift, X, Y);
-  fMouseDown := false;
-  if not Assigned(SelectedControl) then
-    exit;
-  UndoPosShift.X := SelectedControlLastPos.X - SelectedControl.Left;
-  UndoPosShift.Y := SelectedControlLastPos.Y - SelectedControl.Top;
-  fCanUndo := true;
-  //if not Assigned(SelectedControl) then exit;
-  //if TControl(Sender).Tag = 0 then exit;
+  FMouseDown := False;
+  if not Assigned(FSelectedControl) then
+    Exit;
+  FUndoPosShift.X := FSelectedControlLastPos.X - FSelectedControl.Left;
+  FUndoPosShift.Y := FSelectedControlLastPos.Y - FSelectedControl.Top;
+  FCanUndo := True;
+  //if not Assigned(FSelectedControl) then Exit;
+  //if TControl(Sender).Tag = 0 then Exit;
 {  DrawFocusRect( TControl(Sender).Parent.Handle, FocusRect );
   R := Rect( 0, 0, Screen.Width, Screen.Height );
   ClipCursor( @R );
-  TControl(Sender).Left := TControl(Sender).Left + X - ControlPos.x;
-  TControl(Sender).Top := TControl(Sender).Top + Y - ControlPos.y;
+  TControl(Sender).Left := TControl(Sender).Left + X - FControlPos.X;
+  TControl(Sender).Top := TControl(Sender).Top + Y - FControlPos.Y;
   if TControl(Sender).Tag = 2 then//...was moved
     TJvgReportItem(Sender).RepaintBorder;}
   TControl(Sender).Tag := 0;
@@ -472,33 +481,33 @@ end;
 procedure TJvgReportEditorForm.OnMouseMove_(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
 var
-  i: integer;
+  I: Integer;
 begin
-  if fSelection then
+  if FSelection then
     ScrollBox_MouseMove(Sender, Shift, X, Y);
   if sb_FixAllMoving.Down then
-    exit;
-  //  if TControl(Sender).Tag = 0 then exit;
-  if not fMouseDown then
-    exit;
-  with ScrollBox do
-    for i := 0 to ControlCount - 1 do
-      if (Controls[i] is TJvgReportItem) then
-        with TJvgReportItem(Controls[i]) do
-          if Selected and not bool(Fixed) then
+    Exit;
+  //  if TControl(Sender).Tag = 0 then Exit;
+  if not FMouseDown then
+    Exit;
+  with FScrollBox do
+    for I := 0 to ControlCount - 1 do
+      if Controls[I] is TJvgReportItem then
+        with TJvgReportItem(Controls[I]) do
+          if Selected and (Fixed = 0) then
           begin
-            Left := ((Left + X - ControlPos.x) div Step.X) * Step.X;
-            Top := ((Top + Y - ControlPos.y) div Step.Y) * Step.Y;
+            Left := ((Left + X - FControlPos.X) div FStep.X) * FStep.X;
+            Top := ((Top + Y - FControlPos.Y) div FStep.Y) * FStep.Y;
           end;
-  fSkipSizeUpdate := true;
-  ShowComponentPos(SelectedControl);
-  //TControl(Sender).Left := TControl(Sender).Left + X - ControlPos.x;
-  //TControl(Sender).Top := TControl(Sender).Top + Y - ControlPos.y;
+  FSkipSizeUpdate := True;
+  ShowComponentPos(FSelectedControl);
+  //TControl(Sender).Left := TControl(Sender).Left + X - FControlPos.X;
+  //TControl(Sender).Top := TControl(Sender).Top + Y - FControlPos.Y;
   {
   TControl(Sender).Tag := 2;//...on moving
   DC := GetDC( TControl(Sender).Parent.Handle );
   DrawFocusRect( DC, FocusRect );
-  FocusRect := Bounds( TControl(Sender).Left+X-ControlPos.x, TControl(Sender).Top+Y-ControlPos.y,  SelectedControl.Width, SelectedControl.Height );
+  FocusRect := Bounds( TControl(Sender).Left+X-FControlPos.X, TControl(Sender).Top+Y-FControlPos.Y,  FSelectedControl.Width, FSelectedControl.Height );
   DrawFocusRect( DC, FocusRect );
   ReleaseDC( TControl(Sender).Parent.Handle, DC );
   }
@@ -506,27 +515,27 @@ end;
 
 procedure TJvgReportEditorForm.OnResize_(Sender: TObject);
 begin
-  fSkipSizeUpdate := true;
-  if Sender = SelectedControl then
+  FSkipSizeUpdate := True;
+  if Sender = FSelectedControl then
     ShowComponentPos(TControl(Sender));
 end;
 
-procedure TJvgReportEditorForm.read(FileName: string; ParentWnd: TWinControl);
+procedure TJvgReportEditorForm.Read(FileName: string; ParentWnd: TWinControl);
 begin
-  ScrollBox.HorzScrollBar.Position := 0;
-  ScrollBox.VertScrollBar.Position := 0;
-  SelectedControl := nil;
+  FScrollBox.HorzScrollBar.Position := 0;
+  FScrollBox.VertScrollBar.Position := 0;
+  FSelectedControl := nil;
   UpdateToolBar(nil);
   Component.LoadFromFile(FileName);
-  Component.CreateReport(ParentWnd, true);
+  Component.CreateReport(ParentWnd, True);
   AssignEventsToAllComponents;
   RemakeComponentsList;
 end;
 
 procedure TJvgReportEditorForm.Save(FileName: string);
 begin
-  ScrollBox.HorzScrollBar.Position := 0;
-  ScrollBox.VertScrollBar.Position := 0;
+  FScrollBox.HorzScrollBar.Position := 0;
+  FScrollBox.VertScrollBar.Position := 0;
   Component.SaveToFile(FileName);
 end;
 
@@ -534,7 +543,7 @@ procedure TJvgReportEditorForm.OpenClick(Sender: TObject);
 begin
   OpenDialog1.InitialDir := ExtractFilePath(ParamStr(0));
   if OpenDialog1.Execute then
-    Read(OpenDialog1.FileName, ScrollBox);
+    Read(OpenDialog1.FileName, FScrollBox);
 end;
 
 procedure TJvgReportEditorForm.Save1Click(Sender: TObject);
@@ -544,29 +553,28 @@ begin
     Save(SaveDialog1.FileName);
 end;
 
-procedure TJvgReportEditorForm.ScrollBox_MouseDown(Sender: TObject; Button:
-  TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TJvgReportEditorForm.ScrollBox_MouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Compon: TJvgReportItem;
   R: TRect;
-  pt: TPoint;
+  Pt: TPoint;
 begin
   if ssCtrl in Shift then
   begin
-    SelectionRect := Rect(0, 0, 0, 0);
-    SelPt.X := X - ScrollBox.HorzScrollBar.Position;
-    SelPt.Y := Y - ScrollBox.VertScrollBar.Position;
-    SelPt := ScrollBox.ClientToScreen(SelPt);
-    fSelection := true;
+    FSelectionRect := Rect(0, 0, 0, 0);
+    FSelPt.X := X - FScrollBox.HorzScrollBar.Position;
+    FSelPt.Y := Y - FScrollBox.VertScrollBar.Position;
+    FSelPt := FScrollBox.ClientToScreen(FSelPt);
+    FSelection := True;
   end;
-  if (B_Label.Down) or (B_Bevel.Down) or (sb_OLE.Down) then
+  if B_Label.Down or B_Bevel.Down or sb_OLE.Down then
   begin
     Compon := Component.AddComponent;
     with Compon do
     begin
-      Left := X - ScrollBox.HorzScrollBar.Position;
-      Top := Y - ScrollBox.VertScrollBar.Position;
+      Left := X - FScrollBox.HorzScrollBar.Position;
+      Top := Y - FScrollBox.VertScrollBar.Position;
       if B_Label.Down then
       begin
         Text := 'Label'; // do not localize
@@ -580,71 +588,65 @@ begin
       OnMouseMove := OnMouseMove_;
       OnResize := OnResize_;
       ContainOLE := sb_OLE.Down;
-      B_Label.Down := false;
-      B_Bevel.Down := false;
-      sb_OLE.Down := false;
+      B_Label.Down := False;
+      B_Bevel.Down := False;
+      sb_OLE.Down := False;
       RemakeComponentsList;
     end;
   end
   else
   begin
-    R := ScrollBox.ClientRect;
-    pt.x := 0;
-    pt.y := 0;
-    pt := ScrollBox.ClientToScreen(pt);
-    OffsetRect(R, pt.x, pt.y);
+    R := FScrollBox.ClientRect;
+    Pt.X := 0;
+    Pt.Y := 0;
+    Pt := FScrollBox.ClientToScreen(Pt);
+    OffsetRect(R, Pt.X, Pt.Y);
     ClipCursor(@R);
   end;
 end;
 
-procedure TJvgReportEditorForm.ScrollBox_MouseMove(Sender: TObject; Shift:
-  TShiftState;
-  X, Y: Integer);
+procedure TJvgReportEditorForm.ScrollBox_MouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
 var
   DC: HDC;
-  pt: TPoint;
+  Pt: TPoint;
 begin
-
-  if not fSelection then
-    exit;
+  if not FSelection then
+    Exit;
   DC := GetDC(0);
-  DrawFocusRect(DC, SelectionRect);
-  Pt.X := X - ScrollBox.HorzScrollBar.Position;
-  Pt.Y := Y - ScrollBox.VertScrollBar.Position;
-  pt := ScrollBox.ClientToScreen(pt);
-  SelectionRect := Bounds(min(SelPt.X, pt.X), min(SelPt.Y, pt.Y), abs(SelPt.X -
-    pt.X), abs(SelPt.Y - pt.Y));
-  DrawFocusRect(DC, SelectionRect);
+  DrawFocusRect(DC, FSelectionRect);
+  Pt.X := X - FScrollBox.HorzScrollBar.Position;
+  Pt.Y := Y - FScrollBox.VertScrollBar.Position;
+  Pt := FScrollBox.ClientToScreen(Pt);
+  FSelectionRect := Bounds(Min(FSelPt.X, Pt.X), Min(FSelPt.Y, Pt.Y),
+    Abs(FSelPt.X - Pt.X), Abs(FSelPt.Y - Pt.Y));
+  DrawFocusRect(DC, FSelectionRect);
   ReleaseDC(0, DC);
 end;
 
-procedure TJvgReportEditorForm.ScrollBox_MouseUp(Sender: TObject; Button:
-  TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TJvgReportEditorForm.ScrollBox_MouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   DC: HDC;
   R: TRect;
-  i: integer;
+  I: Integer;
 begin
-  if fSelection then
+  if FSelection then
   begin
     DC := GetDC(0);
-    DrawFocusRect(DC, SelectionRect);
+    DrawFocusRect(DC, FSelectionRect);
     ReleaseDC(0, DC);
-    fSelection := false;
+    FSelection := False;
     //...select all in rect
     with Component.ParentWnd do
-      for i := 0 to ControlCount - 1 do
-        if Controls[i] is TJvgReportItem then
-          with TJvgReportItem(Controls[i]) do
+      for I := 0 to ControlCount - 1 do
+        if Controls[I] is TJvgReportItem then
+          with TJvgReportItem(Controls[I]) do
           begin
             R := ClientRect;
-            OffsetRect(R, ClientOrigin.x, ClientOrigin.y);
-            if IntersectRect(R, R, SelectionRect) then
-              Selected := true
-            else
-              Selected := false;
+            OffsetRect(R, ClientOrigin.X, ClientOrigin.Y);
+            Selected := IntersectRect(R, R, FSelectionRect);
           end;
-
   end;
   R := Rect(0, 0, Screen.Width, Screen.Height);
   ClipCursor(@R);
@@ -656,31 +658,31 @@ var
 begin
   R := Rect(0, 0, Screen.Width, Screen.Height);
   ClipCursor(@R);
-  ScrollBox := TJvgRepScrollBox.Create(self);
-  ScrollBox.Align := alClient;
-  //  ScrollBox.Color := clWhite;
-  ShapeSize.Parent := ScrollBox;
-  ScrollBox.OnDraw := OnDrawScrollBox;
-  ScrollBox.Parent := P_Main;
-  ScrollBox.Tag := 1; //...1 - draw report controls with dot bevel
-  ScrollBox.OnMouseDown := ScrollBox_MouseDown;
-  //  ScrollBox.VertScrollBar.Tracking := true;
-  //  ScrollBox.HorzScrollBar.Tracking := true;
-  ShapeSize.Parent := ScrollBox;
+  FScrollBox := TJvgRepScrollBox.Create(Self);
+  FScrollBox.Align := alClient;
+  //  FScrollBox.Color := clWhite;
+  ShapeSize.Parent := FScrollBox;
+  FScrollBox.OnDraw := OnDrawScrollBox;
+  FScrollBox.Parent := P_Main;
+  FScrollBox.Tag := 1; //...1 - draw report controls with dot bevel
+  FScrollBox.OnMouseDown := ScrollBox_MouseDown;
+  //  FScrollBox.VertScrollBar.Tracking := True;
+  //  FScrollBox.HorzScrollBar.Tracking := True;
+  ShapeSize.Parent := FScrollBox;
   ShapeSize.Left := 0;
   ShapeSize.Top := 0;
   //  LaccReport := TJvgReport.Create;
-  Grid.X := 8;
-  Grid.Y := 8;
-  Step.X := 1;
-  Step.Y := 1;
-  {  HRuler := TJvgRuler.Create(self);
+  FGrid.X := 8;
+  FGrid.Y := 8;
+  FStep.X := 1;
+  FStep.Y := 1;
+  {  HRuler := TJvgRuler.Create(Self);
     HRuler.Orientation := goHorizontal;
     HRuler.Parent := P_HRuler;
     HRuler.Top := 0;
     HRuler.Height := P_HRuler.Height;
 
-    VRuler := TJvgRuler.Create(self);
+    VRuler := TJvgRuler.Create(Self);
     VRuler.Orientation := goVertical;
     VRuler.Parent := P_VRuler;
     VRuler.Top := 0;
@@ -690,36 +692,40 @@ end;
 procedure TJvgReportEditorForm.Edit1Change(Sender: TObject);
 begin
   Memo1.Text := TMemo(Sender).Text;
-  if Assigned(SelectedControl) then
-    SelectedControl.Text := TMemo(Sender).Text;
+  if Assigned(FSelectedControl) then
+    FSelectedControl.Text := TMemo(Sender).Text;
 end;
 
 procedure TJvgReportEditorForm.Memo1Change(Sender: TObject);
 begin
   Edit1.Text := TMemo(Sender).Text;
-  if Assigned(SelectedControl) then
-    SelectedControl.Text := TMemo(Sender).Text;
+  if Assigned(FSelectedControl) then
+    FSelectedControl.Text := TMemo(Sender).Text;
 end;
 
 procedure TJvgReportEditorForm.SB_LeftClick(Sender: TObject);
 begin
-  if Assigned(SelectedControl) then
-    with SelectedControl do
+  if Assigned(FSelectedControl) then
+    with FSelectedControl do
       case TControl(Sender).Tag of
-        1: SideLeft := 1 - SideLeft;
-        2: SideRight := 1 - SideRight;
-        3: SideTop := 1 - SideTop;
-        4: SideBottom := 1 - SideBottom;
+        1:
+          SideLeft := 1 - SideLeft;
+        2:
+          SideRight := 1 - SideRight;
+        3:
+          SideTop := 1 - SideTop;
+        4:
+          SideBottom := 1 - SideBottom;
         5:
           begin
             SideLeft := 0;
             SideTop := 0;
             SideRight := 0;
             SideBottom := 0;
-            SB_Left.Down := false;
-            SB_Top.Down := false;
-            SB_Right.Down := false;
-            SB_Bottom.Down := false;
+            SB_Left.Down := False;
+            SB_Top.Down := False;
+            SB_Right.Down := False;
+            SB_Bottom.Down := False;
           end;
       else
         begin
@@ -727,47 +733,48 @@ begin
           SideTop := 1;
           SideRight := 1;
           SideBottom := 1;
-          SB_Left.Down := true;
-          SB_Top.Down := true;
-          SB_Right.Down := true;
-          SB_Bottom.Down := true;
+          SB_Left.Down := True;
+          SB_Top.Down := True;
+          SB_Right.Down := True;
+          SB_Bottom.Down := True;
         end;
       end;
 end;
 
 procedure TJvgReportEditorForm.FontComboBox1Change(Sender: TObject);
 begin
-  if not Assigned(SelectedControl) then
-    exit;
-  //-----!  SelectedControl.FName := TFontComboBox(Sender).FontName;
+  // (rom) following two lines disabled
+  //if not Assigned(FSelectedControl) then
+  //  Exit;
+  //-----!  FSelectedControl.FName := TFontComboBox(Sender).FontName;
 end;
 
 procedure TJvgReportEditorForm.RxSpinEdit1Change(Sender: TObject);
 begin
-  if not Assigned(SelectedControl) then
-    exit;
-  SelectedControl.FSize := trunc(TSpinEdit(Sender).Value);
+  if Assigned(FSelectedControl) then
+    FSelectedControl.FSize := Trunc(TSpinEdit(Sender).Value);
 end;
 
 procedure TJvgReportEditorForm.ColorComboBox1Change(Sender: TObject);
 begin
-  if not Assigned(SelectedControl) then
-    exit;
-  //-----!  SelectedControl.FColor := TColorComboBox(Sender).ColorValue;
+  // (rom) following two lines disabled
+  //if not Assigned(FSelectedControl) then
+  //  Exit;
+  //-----!  FSelectedControl.FColor := TColorComboBox(Sender).ColorValue;
 end;
 
 procedure TJvgReportEditorForm.FormShow(Sender: TObject);
 begin
-  Component.OwnerWnd := self;
-  Component.ParentWnd := ScrollBox;
+  Component.OwnerWnd := Self;
+  Component.ParentWnd := FScrollBox;
   if Component.FReportList.Count > 0 then
-    Component.CreateReport(ScrollBox, true);
+    Component.CreateReport(FScrollBox, True);
   //  Randomize;
   UpdatePageSize;
   AssignEventsToAllComponents;
   RemakeComponentsList;
-  //  ShapeSize.Width := Printer.PageWidth;//f_PrintReport.CBReport1.Width;
-  //  ShapeSize.Height := Printer.PageHeight;//f_PrintReport.CBReport1.Height;
+  //  ShapeSize.Width := Printer.PageWidth; //f_PrintReport.CBReport1.Width;
+  //  ShapeSize.Height := Printer.PageHeight; //f_PrintReport.CBReport1.Height;
 end;
 
 procedure TJvgReportEditorForm.sb_BookClick(Sender: TObject);
@@ -784,72 +791,74 @@ end;
 
 procedure TJvgReportEditorForm.N1Click(Sender: TObject);
 begin
-  ScrollBox.RemoveControl(SelectedControl);
-  ScrollBox.InsertControl(SelectedControl);
+  FScrollBox.RemoveControl(FSelectedControl);
+  FScrollBox.InsertControl(FSelectedControl);
 end;
 
 procedure TJvgReportEditorForm.sb_FontBoldClick(Sender: TObject);
 begin
-  if not Assigned(SelectedControl) then
-    exit;
-  with SelectedControl do
-    case TControl(Sender).Tag of
-      1: FStyle := FStyle xor 1;
-      2: FStyle := FStyle xor 2;
-      3: FStyle := FStyle xor 4;
-    end;
+  if Assigned(FSelectedControl) then
+    with FSelectedControl do
+      case TControl(Sender).Tag of
+        1:
+          FStyle := FStyle xor 1;
+        2:
+          FStyle := FStyle xor 2;
+        3:
+          FStyle := FStyle xor 4;
+      end;
 end;
 
 procedure TJvgReportEditorForm.sb_AlignLClick(Sender: TObject);
 begin
-  if not Assigned(SelectedControl) then
-    exit;
-  SelectedControl.Alignment := TControl(Sender).Tag;
+  if Assigned(FSelectedControl) then
+    FSelectedControl.Alignment := TControl(Sender).Tag;
 end;
 
 procedure TJvgReportEditorForm.sbFontColorClick(Sender: TObject);
 var
-  i: integer;
+  I: Integer;
 begin
-  if not Assigned(SelectedControl) then
-    exit;
+  if not Assigned(FSelectedControl) then
+    Exit;
   with ColorDialog1 do
   begin
     case TControl(Sender).Tag of
-      0: Color := SelectedControl.FColor;
-      1: Color := SelectedControl.BkColor;
+      0:
+        Color := FSelectedControl.FColor;
+      1:
+        Color := FSelectedControl.BkColor;
     else
-      Color := SelectedControl.BvColor;
+      Color := FSelectedControl.BvColor;
     end;
 
     if Execute then
-      for i := 0 to ScrollBox.ControlCount - 1 do
-        if ScrollBox.Controls[i] is TJvgReportItem then
-          with TJvgReportItem(ScrollBox.Controls[i]) do
-            if TJvgReportItem(ScrollBox.Controls[i]).Selected then
+      for I := 0 to FScrollBox.ControlCount - 1 do
+        if FScrollBox.Controls[I] is TJvgReportItem then
+          with TJvgReportItem(FScrollBox.Controls[I]) do
+            if TJvgReportItem(FScrollBox.Controls[I]).Selected then
               case TControl(Sender).Tag of
-                0: TJvgReportItem(ScrollBox.Controls[i]).FColor :=
-                  Color;
-                1: TJvgReportItem(ScrollBox.Controls[i]).BkColor :=
-                  Color;
+                0:
+                  TJvgReportItem(FScrollBox.Controls[I]).FColor := Color;
+                1:
+                  TJvgReportItem(FScrollBox.Controls[I]).BkColor := Color;
               else
-                TJvgReportItem(ScrollBox.Controls[i]).BvColor := Color;
+                TJvgReportItem(FScrollBox.Controls[I]).BvColor := Color;
               end;
   end;
 end;
 
 procedure TJvgReportEditorForm.N_DeleteObjectClick(Sender: TObject);
 begin
-  if Assigned(SelectedControl) then
+  if Assigned(FSelectedControl) then
   begin
-    if Windows.MessageBox(0, PChar(sDeleteObject), PChar(sConfirm), MB_OKCANCEL) <> IDOK then
-      exit;
-
-    if SelectedControl.ContainOLE then
-      ScrollBox.RemoveControl(SelectedControl.OLEContainer);
-    ScrollBox.RemoveControl(SelectedControl);
-    SelectedControl.Free;
-    SelectedControl := nil;
+    if Windows.MessageBox(0, PChar(SDeleteObject), PChar(SConfirm), MB_OKCANCEL) <> IDOK then
+      Exit;
+    if FSelectedControl.ContainOLE then
+      FScrollBox.RemoveControl(FSelectedControl.OLEContainer);
+    FScrollBox.RemoveControl(FSelectedControl);
+    FSelectedControl.Free;
+    FSelectedControl := nil;
     RemakeComponentsList;
   end;
 end;
@@ -867,26 +876,26 @@ end;
 
 procedure TJvgReportEditorForm.RemakeComponentsList;
 var
-  i: integer;
+  I: Integer;
 begin
   cb_Components.Items.Clear;
-  for i := 0 to ScrollBox.ControlCount - 1 do
-    if ScrollBox.Controls[i] is TJvgReportItem then
-      cb_Components.Items.Add(TJvgReportItem(ScrollBox.Controls[i]).CompName);
+  for I := 0 to FScrollBox.ControlCount - 1 do
+    if FScrollBox.Controls[I] is TJvgReportItem then
+      cb_Components.Items.Add(TJvgReportItem(FScrollBox.Controls[I]).CompName);
   cb_Components.Text := '';
   lb_Params.Items.Clear;
-  for i := 0 to Component.ParamNames.Count - 1 do
-    lb_Params.Items.Add(Component.ParamNames[i]);
+  for I := 0 to Component.ParamNames.Count - 1 do
+    lb_Params.Items.Add(Component.ParamNames[I]);
 end;
 
 procedure TJvgReportEditorForm.UpdatePageSize;
 const
-  Sizes: array[boolean, 1..2] of integer = ((21, 29),
-    (29, 21));
+  Sizes: array [Boolean, 1..2] of Integer =
+    ((21, 29), (29, 21));
 begin
-  ShapeSize.Width := round(Sizes[Printer.Orientation = poLandscape][1] *
+  ShapeSize.Width := Round(Sizes[Printer.Orientation = poLandscape][1] *
     GetDeviceCaps(Canvas.Handle, LOGPIXELSX) * 1.541 * 2.54 / 10);
-  ShapeSize.Height := round(Sizes[Printer.Orientation = poLandscape][2] *
+  ShapeSize.Height := Round(Sizes[Printer.Orientation = poLandscape][2] *
     GetDeviceCaps(Canvas.Handle, LOGPIXELSY) * 1.541 * 2.54 / 10);
   HRuler.Width := ShapeSize.Width + 10;
   VRuler.Height := ShapeSize.Height + 10;
@@ -895,124 +904,128 @@ end;
 procedure TJvgReportEditorForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
-  l, t, w, h: integer;
+  l, t, w, h: Integer;
 begin
   w := 0;
   h := 0;
-  if (Shift = [ssCtrl]) and (chr(Key) = 'Z') and fCanUndo then
+  if (Shift = [ssCtrl]) and (Chr(Key) = 'Z') and FCanUndo then
   begin
-    fCanUndo := false;
-    ResizeReportControls(UndoPosShift.X, UndoPosShift.Y, 0, 0, true);
+    FCanUndo := False;
+    ResizeReportControls(FUndoPosShift.X, FUndoPosShift.Y, 0, 0, True);
   end;
 
   if Assigned(ActiveControl) then
-    exit;
+    Exit;
   l := 0;
   t := 0;
   case Key of
-    VK_UP: if Shift = [ssShift] then
+    VK_UP:
+      if Shift = [ssShift] then
         h := -1
-      else if Shift = [ssCtrl] then
+      else
+      if Shift = [ssCtrl] then
         t := -1;
-    VK_DOWN: if Shift = [ssShift] then
+    VK_DOWN:
+      if Shift = [ssShift] then
         h := 1
-      else if Shift = [ssCtrl] then
+      else
+      if Shift = [ssCtrl] then
         t := 1;
-    VK_LEFT: if Shift = [ssShift] then
+    VK_LEFT:
+      if Shift = [ssShift] then
         w := -1
-      else if Shift = [ssCtrl] then
+      else
+      if Shift = [ssCtrl] then
         l := -1;
-    VK_RIGHT: if Shift = [ssShift] then
+    VK_RIGHT:
+      if Shift = [ssShift] then
         w := 1
-      else if Shift = [ssCtrl] then
+      else
+      if Shift = [ssCtrl] then
         l := 1;
   else
-    exit;
+    Exit;
   end;
-  ResizeReportControls(l, t, w, h, true);
+  ResizeReportControls(l, t, w, h, True);
 
 end;
 
 procedure TJvgReportEditorForm.sb_FixMovingClick(Sender: TObject);
 var
-  i: integer;
+  I: Integer;
 begin
-  with ScrollBox do
-    for i := 0 to ControlCount - 1 do
-      if (Controls[i] is TJvgReportItem) and
-        TJvgReportItem(Controls[i]).Selected then
-        TJvgReportItem(Controls[i]).Fixed := integer(sb_FixMoving.Down);
+  with FScrollBox do
+    for I := 0 to ControlCount - 1 do
+      if (Controls[I] is TJvgReportItem) and
+        TJvgReportItem(Controls[I]).Selected then
+        TJvgReportItem(Controls[I]).Fixed := Ord(sb_FixMoving.Down);
 end;
 
 procedure TJvgReportEditorForm.N_AutoSizeClick(Sender: TObject);
 begin
-  SelectedControl.OLESizeMode := TMenuItem(Sender).Tag;
+  FSelectedControl.OLESizeMode := TMenuItem(Sender).Tag;
 end;
 
 procedure TJvgReportEditorForm.sb_SnapToGridClick(Sender: TObject);
 begin
   if sb_SnapToGrid.Down then
   begin
-    Step.X := Grid.X;
-    Step.Y := Grid.Y;
+    FStep.X := FGrid.X;
+    FStep.Y := FGrid.Y;
   end
   else
   begin
-    Step.X := 1;
-    Step.Y := 1;
+    FStep.X := 1;
+    FStep.Y := 1;
   end;
 end;
 
 procedure TJvgReportEditorForm.se_SizeChange(Sender: TObject);
 begin
-  if (not fMouseDown) and not fSkipSizeUpdate then
+  if (not FMouseDown) and (not FSkipSizeUpdate) then
     ResizeReportControls(se_Left.Value, IGNORE_VALUE,
-      IGNORE_VALUE, IGNORE_VALUE,
-      false {fUseParamsAsShifts});
-  ShowComponentPos(SelectedControl);
-  fSkipSizeUpdate := false;
+      IGNORE_VALUE, IGNORE_VALUE, False {fUseParamsAsShifts});
+  ShowComponentPos(FSelectedControl);
+  FSkipSizeUpdate := False;
 end;
 
 procedure TJvgReportEditorForm.se_TopChange(Sender: TObject);
 begin
-  if (not fMouseDown) and not fSkipSizeUpdate then
+  if (not FMouseDown) and (not FSkipSizeUpdate) then
     ResizeReportControls(IGNORE_VALUE, se_Top.Value,
-      IGNORE_VALUE, IGNORE_VALUE,
-      false {fUseParamsAsShifts});
-  ShowComponentPos(SelectedControl);
-  fSkipSizeUpdate := false;
+      IGNORE_VALUE, IGNORE_VALUE, False {fUseParamsAsShifts});
+  ShowComponentPos(FSelectedControl);
+  FSkipSizeUpdate := False;
 end;
 
 procedure TJvgReportEditorForm.se_WidthChange(Sender: TObject);
 begin
-  if (not fMouseDown) and not fSkipSizeUpdate then
+  if (not FMouseDown) and (not FSkipSizeUpdate) then
     ResizeReportControls(IGNORE_VALUE, IGNORE_VALUE,
-      se_Width.Value, IGNORE_VALUE,
-      false {fUseParamsAsShifts});
-  ShowComponentPos(SelectedControl);
-  fSkipSizeUpdate := false;
+      se_Width.Value, IGNORE_VALUE, False {fUseParamsAsShifts});
+  ShowComponentPos(FSelectedControl);
+  FSkipSizeUpdate := False;
 end;
 
 procedure TJvgReportEditorForm.se_HeightChange(Sender: TObject);
 begin
-  if (not fMouseDown) and not fSkipSizeUpdate then
+  if (not FMouseDown) and (not FSkipSizeUpdate) then
     ResizeReportControls(IGNORE_VALUE, IGNORE_VALUE,
-      IGNORE_VALUE, se_Height.Value,
-      false {fUseParamsAsShifts});
-  ShowComponentPos(SelectedControl);
-  fSkipSizeUpdate := false;
+      IGNORE_VALUE, se_Height.Value, False {fUseParamsAsShifts});
+  ShowComponentPos(FSelectedControl);
+  FSkipSizeUpdate := False;
 end;
 
-procedure TJvgReportEditorForm.ResizeReportControls(l, t, w, h: integer;
-  fUseParamsAsShifts: boolean);
+procedure TJvgReportEditorForm.ResizeReportControls(l, t, w, h: Integer;
+  fUseParamsAsShifts: Boolean);
 var
-  i: integer;
+  I: Integer;
 begin
-  with ScrollBox do
-    for i := 0 to ControlCount - 1 do
-      if (Controls[i] is TJvgReportItem) then
-        with TJvgReportItem(Controls[i]) do
-          if Selected and not bool(Fixed) then
+  with FScrollBox do
+    for I := 0 to ControlCount - 1 do
+      if Controls[I] is TJvgReportItem then
+        with TJvgReportItem(Controls[I]) do
+          if Selected and (Fixed = 0) then
             if fUseParamsAsShifts then
             begin
               if l < IGNORE_VALUE then
@@ -1039,40 +1052,41 @@ end;
 
 procedure TJvgReportEditorForm.cb_ComponentsChange(Sender: TObject);
 var
-  i: integer;
+  I: Integer;
 begin
-  if Assigned(SelectedControl) then
-    if SelectedControl.CompName = cb_Components.Text then
-      exit;
-  with ScrollBox do
-    for i := 0 to ControlCount - 1 do
-      if (Controls[i] is TJvgReportItem) then
-        if TJvgReportItem(Controls[i]).CompName = cb_Components.Text then
+  if Assigned(FSelectedControl) then
+    if FSelectedControl.CompName = cb_Components.Text then
+      Exit;
+  with FScrollBox do
+    for I := 0 to ControlCount - 1 do
+      if Controls[I] is TJvgReportItem then
+        if TJvgReportItem(Controls[I]).CompName = cb_Components.Text then
         begin
-          OnMouseDown_(Controls[i], mbLeft, [], 0, 0);
-          OnMouseUp_(Controls[i], mbLeft, [], 0, 0);
-          exit;
+          OnMouseDown_(Controls[I], mbLeft, [], 0, 0);
+          OnMouseUp_(Controls[I], mbLeft, [], 0, 0);
+          Exit;
         end;
 end;
 
 procedure TJvgReportEditorForm.ShowComponentPos(Control: TControl);
 begin
-  if Component = nil then
-    exit;
-  se_Left.Value := Control.Left;
-  se_Top.Value := Control.Top;
-  se_Width.Value := Control.Width;
-  se_Height.Value := Control.Height;
+  if Component <> nil then
+  begin
+    se_Left.Value := Control.Left;
+    se_Top.Value := Control.Top;
+    se_Width.Value := Control.Width;
+    se_Height.Value := Control.Height;
+  end;
 end;
 
 procedure TJvgReportEditorForm.AssignEventsToAllComponents;
 var
-  i: integer;
+  I: Integer;
 begin
   with Component.ParentWnd do
-    for i := 0 to ControlCount - 1 do
-      if (Controls[i] is TJvgReportItem) then
-        with TJvgReportItem(Controls[i]) do
+    for I := 0 to ControlCount - 1 do
+      if Controls[I] is TJvgReportItem then
+        with TJvgReportItem(Controls[I]) do
         begin
           OnMouseDown := OnMouseDown_;
           OnMouseUp := OnMouseUp_;
@@ -1081,33 +1095,31 @@ begin
         end;
 end;
 
-function CanAlignControl(Control: TControl): boolean;
+function CanAlignControl(Control: TControl): Boolean;
 begin
   Result := (Control is TJvgReportItem) and
-    (bool(TJvgReportItem(Control).Selected))
-    and (not bool(TJvgReportItem(Control).Fixed));
+    TJvgReportItem(Control).Selected and
+    (TJvgReportItem(Control).Fixed = 0);
 end;
 
 procedure TJvgReportEditorForm.N4Click(Sender: TObject);
 begin
   if not Assigned(AlignForm) then
     AlignForm := TAlignForm.Create(nil);
-  if AlignForm.ShowModal = mrOK then
+  if AlignForm.ShowModal = mrOk then
     AlignControlsInWindow(Component.ParentWnd, CanAlignControl,
       AlignForm.Horz, AlignForm.Vert);
 end;
 
 procedure TJvgReportEditorForm.sb_BevelBoldClick(Sender: TObject);
 var
-  i: integer;
+  I: Integer;
 begin
   with Component.ParentWnd do
-    for i := 0 to ControlCount - 1 do
-      if (Controls[i] is TJvgReportItem) and
-        bool(TJvgReportItem(Controls[i]).Selected) then
-        TJvgReportItem(Controls[i]).PenWidth := 1 +
-          integer(sb_BevelBold.Down);
-
+    for I := 0 to ControlCount - 1 do
+      if (Controls[I] is TJvgReportItem) and
+        TJvgReportItem(Controls[I]).Selected then
+        TJvgReportItem(Controls[I]).PenWidth := 1 + Ord(sb_BevelBold.Down);
 end;
 
 procedure TJvgReportEditorForm.UpdateToolBar(Control: TJvgReportItem);
@@ -1123,7 +1135,7 @@ begin
     P_Font.Enabled := Assigned(Control);
     P_SBar.Enabled := Assigned(Control);
     if not Assigned(Control) then
-      exit;
+      Exit;
     Edit1.Text := Text;
     Memo1.Text := Text;
     FontComboBox1.Text := FName;
@@ -1135,49 +1147,50 @@ begin
     SB_Right.Down := SideRight = 1;
     SB_Bottom.Down := SideBottom = 1;
     case Alignment of
-      1: sb_AlignL.Down := true;
-      2: sb_AlignR.Down := true;
-      3: sb_AlignC.Down := true;
-      4: sb_AlignW.Down := true;
+      1:
+        sb_AlignL.Down := True;
+      2:
+        sb_AlignR.Down := True;
+      3:
+        sb_AlignC.Down := True;
+      4:
+        sb_AlignW.Down := True;
     end;
-    sb_FixMoving.Down := bool(Fixed);
-    sb_FontBold.Down := boolean(FStyle and 1);
-    sb_FontItalic.Down := boolean(FStyle and 2);
-    sb_FontUnderline.Down := boolean(FStyle and 4);
+    sb_FixMoving.Down := Fixed <> 0;
+    sb_FontBold.Down := (FStyle and 1) <> 0;
+    sb_FontItalic.Down := (FStyle and 2) <> 0;
+    sb_FontUnderline.Down := (FStyle and 4) <> 0;
     FE_OLE.Text := OLELinkToFile;
     FE_OLE.Enabled := ContainOLE;
-    sb_BevelBold.Down := bool(PenWidth - 1);
-    fSkipSizeUpdate := true;
+    sb_BevelBold.Down := (PenWidth - 1) <> 0;
+    FSkipSizeUpdate := True;
     ShowComponentPos(Control);
 
     cb_Components.Text := CompName;
-
   end;
 end;
 
 procedure TJvgReportEditorForm.FormClose(Sender: TObject; var Action:
   TCloseAction);
 begin
-  if Assigned(AlignForm) then
-    AlignForm.Free;
-  if Assigned(ReportParamEditor) then
-    ReportParamEditor.Free;
-  ScrollBox.HorzScrollBar.Position := 0;
-  ScrollBox.VertScrollBar.Position := 0;
+  AlignForm.Free;
+  FReportParamEditor.Free;
+  FScrollBox.HorzScrollBar.Position := 0;
+  FScrollBox.VertScrollBar.Position := 0;
   Component.Save;
 end;
 
 procedure TJvgReportEditorForm.FE_OLEChange(Sender: TObject);
 var
-  str: string;
+  S: string;
 begin
-  if (not Assigned(SelectedControl)) or (not FileExists(FE_OLE.Text)) then
-    exit;
-  str := FE_OLE.Text;
+  if (not Assigned(FSelectedControl)) or (not FileExists(FE_OLE.Text)) then
+    Exit;
+  S := FE_OLE.Text;
   if ExtractFilePath(Name) = ExtractFilePath(ParamStr(0)) then
-    str := ExtractFileName(Name);
-  if SelectedControl.OLELinkToFile <> str then
-    SelectedControl.OLELinkToFile := str;
+    S := ExtractFileName(Name);
+  if FSelectedControl.OLELinkToFile <> S then
+    FSelectedControl.OLELinkToFile := S;
 end;
 
 procedure TJvgReportEditorForm.SpeedButton1Click(Sender: TObject);
@@ -1190,99 +1203,97 @@ procedure TJvgReportEditorForm.sb_PrintClick(Sender: TObject);
 begin
   if Assigned(Component) and (Component.ComponentList.Count > 0) then
     Component.Print;
-  Component.OwnerWnd := self;
-  Component.ParentWnd := ScrollBox;
+  Component.OwnerWnd := Self;
+  Component.ParentWnd := FScrollBox;
 end;
 
 procedure TJvgReportEditorForm.sb_PreviewClick(Sender: TObject);
 var
   Form: TForm;
   Image: TImage;
-  bmp: TBitmap;
+  Bmp: TBitmap;
   R: TRect;
-  i, W, H: integer;
+  I, W, H: Integer;
 begin
   if not Assigned(Component) then
-    exit;
+    Exit;
   Form := TForm.Create(nil);
-  Form.Caption := sPagePreview;
+  Form.Caption := SPagePreview;
   Image := TImage.Create(Form);
-  bmp := TBitmap.Create;
+  Bmp := TBitmap.Create;
   Image.Parent := Form;
-  H := SantimsToPixels(Form.Canvas.Handle, 29, true);
-  W := SantimsToPixels(Form.Canvas.Handle, 21, false);
+  H := SantimsToPixels(Form.Canvas.Handle, 29, True);
+  W := SantimsToPixels(Form.Canvas.Handle, 21, False);
   //  Image.Width := W+8;
   //  Image.Height := H+8;
   Image.Left := 0;
   Image.Top := 0;
-  bmp.Width := W + 7;
-  bmp.Height := H + 7;
+  Bmp.Width := W + 7;
+  Bmp.Height := H + 7;
   try
-    //    bmp.Canvas.Brush.Color := clWhite;
-    //    R := Image.ClientRect; bmp.Canvas.FillRect( R );
+    //    Bmp.Canvas.Brush.Color := clWhite;
+    //    R := Image.ClientRect; Bmp.Canvas.FillRect( R );
 
     with Component do
-      for i := 0 to ComponentList.Count - 1 do
-        with TJvgReportItem(ComponentList[i]) do
+      for I := 0 to ComponentList.Count - 1 do
+        with TJvgReportItem(ComponentList[I]) do
         begin
-          PaintTo(bmp.Canvas);
+          PaintTo(Bmp.Canvas);
           if ContainOle then
-            OLEContainer.PaintTo(bmp.Canvas.Handle, Left, Top);
+            OLEContainer.PaintTo(Bmp.Canvas.Handle, Left, Top);
         end;
 
-    bmp.Canvas.Brush.Color := clBtnFace;
-    R := Bounds(bmp.Width - 7, 0, 7, bmp.Height - 7);
-    bmp.Canvas.FillRect(R);
-    R := Bounds(0, bmp.Height - 7, bmp.Width - 7, 7);
-    bmp.Canvas.FillRect(R);
-    bmp.Canvas.Brush.Color := 0;
-    R := Bounds(bmp.Width - 7, 7, 7, bmp.Height - 7);
-    bmp.Canvas.FillRect(R);
-    R := Bounds(7, bmp.Height - 7, bmp.Width - 7, 7);
-    bmp.Canvas.FillRect(R);
+    Bmp.Canvas.Brush.Color := clBtnFace;
+    R := Bounds(Bmp.Width - 7, 0, 7, Bmp.Height - 7);
+    Bmp.Canvas.FillRect(R);
+    R := Bounds(0, Bmp.Height - 7, Bmp.Width - 7, 7);
+    Bmp.Canvas.FillRect(R);
+    Bmp.Canvas.Brush.Color := 0;
+    R := Bounds(Bmp.Width - 7, 7, 7, Bmp.Height - 7);
+    Bmp.Canvas.FillRect(R);
+    R := Bounds(7, Bmp.Height - 7, Bmp.Width - 7, 7);
+    Bmp.Canvas.FillRect(R);
 
-    Image.Picture.bitmap := bmp;
-    Image.Stretch := true;
+    Image.Picture.bitmap := Bmp;
+    Image.Stretch := True;
     Image.Width := W div 2;
     Image.Height := H div 2;
     Form.ClientWidth := Image.Width;
     Form.ClientHeight := Image.Height;
 
-    bmp.Free;
-    bmp := nil;
+    Bmp.Free;
+    Bmp := nil;
     Form.ShowModal;
   finally
-    if Assigned(bmp) then
-      bmp.Free;
+    Bmp.Free;
     Form.Free;
   end;
 end;
 
 procedure TJvgReportEditorForm.SpeedButton2Click(Sender: TObject);
 begin
-  if not Assigned(ReportParamEditor) then
-    ReportParamEditor := TJvgReportParamEditor.Create(nil);
-  ReportParamEditor.ShowModal;
+  if not Assigned(FReportParamEditor) then
+    FReportParamEditor := TJvgReportParamEditor.Create(nil);
+  FReportParamEditor.ShowModal;
 end;
 
 procedure TJvgReportEditorForm.cb_ComponentsKeyDown(Sender: TObject; var Key:
   Word; Shift: TShiftState);
 begin
-  if (Key = VK_RETURN) then
+  if Key = VK_RETURN then
   begin
-    SelectedControl.CompName := trim(cb_Components.Text);
+    FSelectedControl.CompName := Trim(cb_Components.Text);
     RemakeComponentsList;
-    cb_Components.Text := SelectedControl.CompName;
+    cb_Components.Text := FSelectedControl.CompName;
   end;
-  if (Key = VK_ESCAPE) then
-    cb_Components.Text := SelectedControl.CompName;
-
+  if Key = VK_ESCAPE then
+    cb_Components.Text := FSelectedControl.CompName;
 end;
 
 procedure TJvgReportEditorForm.CheckBox1Click(Sender: TObject);
 begin
-  if Assigned(SelectedControl) then
-    SelectedControl.Transparent := integer(TCheckBox(Sender).Checked);
+  if Assigned(FSelectedControl) then
+    FSelectedControl.Transparent := Ord(TCheckBox(Sender).Checked);
 end;
 
 end.

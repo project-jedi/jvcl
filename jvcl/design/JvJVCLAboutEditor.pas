@@ -46,18 +46,14 @@ type
     function GetValue: string; override;
   end;
 
-
-resourcestring
-  sVersions = 'Version %s';
-
 implementation
 
 uses
-  JvJVCLAboutForm, JVCLVer;
+  JvJVCLAboutForm, JVCLVer, JvDsgnConsts;
 
 procedure TJVCLAboutDialogProperty.Edit;
 begin
-  TJvJVCLAboutForm.Execute(false);
+  TJvJVCLAboutForm.Execute(False);
 end;
 
 function TJVCLAboutDialogProperty.GetAttributes: TPropertyAttributes;
@@ -67,7 +63,7 @@ end;
 
 function TJVCLAboutDialogProperty.GetValue: string;
 begin
-  Result := Format(sVersions, [JVCL_VERSIONSTRING]);
+  Result := Format(SVersions, [JVCL_VERSIONSTRING]);
 end;
 
 end.

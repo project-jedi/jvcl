@@ -31,9 +31,8 @@ unit JvImagePreviewForm;
 interface
 
 uses
-  Windows,
-  SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls, FileCtrl,
-  Buttons,
+  Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls,
+  FileCtrl, Buttons,
   JvPicClip, JvFormPlacement, JvAppStore, JvAppRegistryStore, JvComponent;
 
 type
@@ -83,16 +82,13 @@ implementation
 
 uses
   Math,
-  JvConsts, JvJVCLUtils;
+  JvConsts, JvJVCLUtils, JvDsgnConsts;
 
 {$R *.DFM}
 
+// (rom) this needs explanation
 {$I+}
 {$D-}
-
-resourcestring
-  SAllFiles = 'All files';
-  SPreview = 'Preview';
 
 function SelectImage(var AFileName: string; const Extensions, Filter: string): Boolean;
 var
@@ -106,7 +102,7 @@ begin
     begin
       if Length(Filter) > 0 then
         FilterCombo.Filter := Filter + '|';
-      FilterCombo.Filter := FilterCombo.Filter + SAllFiles + ' (*.*)|*.*';
+      FilterCombo.Filter := FilterCombo.Filter + SAllFilesFilter;
     end;
     ErrMode := SetErrorMode(SEM_NOOPENFILEERRORBOX or SEM_FAILCRITICALERRORS);
     try
@@ -130,7 +126,7 @@ type
 
 function ValidPicture(Pict: TPicture): Boolean;
 begin
-  Result := (Pict.Graphic <> nil) and not (Pict.Graphic.Empty) and
+  Result := (Pict.Graphic <> nil) and (not Pict.Graphic.Empty) and
     (Pict.Width > 0) and (Pict.Height > 0);
 end;
 
@@ -173,7 +169,7 @@ begin
     end;
     ImageName.Caption := Format('%s (%d x %d)',
       [AnsiLowerCase(ExtractFilename(FileListBox.Filename)),
-      Image.Picture.Width, Image.Picture.Height]);
+       Image.Picture.Width, Image.Picture.Height]);
   except
     Image.Picture.Assign(nil);
     ImageName.Caption := '';
@@ -263,7 +259,7 @@ end;
 
 procedure TImageForm.PreviewKeyPress(Sender: TObject; var Key: Char);
 begin
-  if Key = #27 then
+  if Ord(Key) = VK_ESCAPE then
     TForm(Sender).Close;
 end;
 
@@ -277,10 +273,10 @@ begin
   PreviewForm := TForm.CreateNew(Self, 0);
   {$ELSE}
   PreviewForm := TForm.CreateNew(Self);
-  {$ENDIF}
+  {$ENDIF CBUILDER}
   with PreviewForm do
   try
-    Caption := SPreview;
+    Caption := SPreviewText;
     BorderStyle := bsSizeToolWin;
     Icon := Self.Icon;
     KeyPreview := True;

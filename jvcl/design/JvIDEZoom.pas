@@ -38,12 +38,21 @@ uses
 procedure RegisterZoom;
 
 
-resourcestring
-  sZoomEditWindow = 'Zoom Edit Window';
-
 implementation
 
+uses
+  JvDsgnConsts;
+
+const
+  cAppBuilder = 'AppBuilder';
+  cJvZoomEditor = 'JvZoomEditor';
+  cJvZoomEditor2 = 'JvZoomEditor2';
+  cViewsMenu = 'ViewsMenu';
+  cViewNewEditorItem = 'ViewNewEditorItem';
+  cTEditWindow = 'TEditWindow';
+
 type
+  // (rom) What is this?
   {$UNDEF COMPILER5_UP}
   {$IFDEF COMPILER5_UP}
   TJvEEditorZoom = class(TNotifierObject, IUnknown, IOTAKeyboardBinding)
@@ -65,13 +74,13 @@ var
   F: TForm;
   MenuItem: TMenuItem;
 begin
-  F := Application.FindComponent('AppBuilder') as TForm;
+  F := Application.FindComponent(cAppBuilder) as TForm;
   if F <> nil then
   begin
-    MenuItem := F.FindComponent('JvZoomEditor') as TMenuItem;
+    MenuItem := F.FindComponent(cJvZoomEditor) as TMenuItem;
     if MenuItem <> nil then
       MenuItem.Free;
-    MenuItem := F.FindComponent('JvZoomEditor2') as TMenuItem;
+    MenuItem := F.FindComponent(cJvZoomEditor2) as TMenuItem;
     if MenuItem <> nil then
       MenuItem.Free;
   end;
@@ -85,23 +94,22 @@ var
   Zoom: TJvEEditorZoom;
 begin
   Unregister;
-  Zoom := nil; {avoid warning}
-  F := Application.FindComponent('AppBuilder') as TForm;
+  Zoom := nil;
+  F := Application.FindComponent(cAppBuilder) as TForm;
   if F <> nil then
   begin
-    // ShowMessage('Found AppBuilder');
-    ViewsMenu := F.FindComponent('ViewsMenu') as TMenuItem;
+    ViewsMenu := F.FindComponent(cViewsMenu) as TMenuItem;
     if ViewsMenu = nil then
       Exit; {error}
     MenuItem := TMenuItem.Create(F);
     with MenuItem do
     begin
-      Caption := sZoomEditWindow;
-      ShortCut := Menus.ShortCut(ord('Z'), [ssAlt]);
-      Name := 'JvZoomEditor';
+      Caption := SZoomEditWindow;
+      ShortCut := Menus.ShortCut(Ord('Z'), [ssAlt]);
+      Name := cJvZoomEditor;
       OnClick := Zoom.Zoom;
     end;
-    ViewNewEditorItem := F.FindComponent('ViewNewEditorItem') as TMenuItem;
+    ViewNewEditorItem := F.FindComponent(cViewNewEditorItem) as TMenuItem;
     if ViewNewEditorItem <> nil then
       ViewsMenu.Insert(ViewNewEditorItem.MenuIndex + 1, MenuItem)
     else
@@ -111,9 +119,9 @@ begin
     with MenuItem do
     begin
       ShortCut := Menus.ShortCut(Ord('1'), [ssAlt]);
-      Name := 'JvZoomEditor2';
+      Name := cJvZoomEditor2;
       OnClick := Zoom.Zoom;
-      Visible := false;
+      Visible := False;
     end;
     ViewsMenu.Add(MenuItem);
   end;
@@ -129,11 +137,11 @@ var
  // MenuItem: TMenuItem;
 begin
   F := Screen.ActiveForm;
-  if not F.ClassNameIs('TEditWindow') then
+  if not F.ClassNameIs(cTEditWindow) then
   begin
     F := nil;
     for I := 0 to Screen.FormCount - 1 do
-      if Screen.Forms[I].ClassNameIs('TEditWindow') then
+      if Screen.Forms[I].ClassNameIs(cTEditWindow) then
       begin
         F := Screen.Forms[I];
         Break;
@@ -144,9 +152,9 @@ begin
       F.WindowState := wsMaximized
     else
       F.WindowState := wsNormal;
- { MenuItem := F.FindComponent('JvZoomEditor') as TMenuItem;
+ { MenuItem := F.FindComponent(cJvZoomEditor) as TMenuItem;
   if MenuItem <> nil then
-    MenuItem.ShortCut := Menus.ShortCut(ord('Z'), [ssAlt]); }
+    MenuItem.ShortCut := Menus.ShortCut(Ord('Z'), [ssAlt]); }
 end;
 
 {$IFDEF COMPILER5_UP}

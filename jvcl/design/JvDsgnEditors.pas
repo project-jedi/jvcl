@@ -293,7 +293,7 @@ end;
 
 function TJvFilenameProperty.GetFilter: string;
 begin
-  Result := SAllFiles;
+  Result := SAllFilesFilter;
 end;
 
 function TJvFilenameProperty.GetOptions: TOpenOptions;

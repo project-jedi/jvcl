@@ -95,12 +95,6 @@ uses
 
 {$R *.dfm}
 
-resourcestring
-  SYouHaventActuallyChangedAnythingIfY = 'You haven''t actually changed anything. If you ' +
-    'made changes and didn''t click Modify, the changes have ' +
-    'not been made yet. (Click no, to go back.) ' + sLineBreak +
-    'Are you sure you want to close the CSV Fields editor? ';
-
 procedure TJvCsvDefStrDialog.UpdateCsvStr;
 var
   I: Integer;

@@ -33,40 +33,40 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, comctrls
-  {$IFDEF COMPILER6_UP}, DesignIntf, DesignWindows, DesignEditors{$ELSE}, dsgnintf{$ENDIF};
+  ExtCtrls, ComCtrls,
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignWindows, DesignEditors;
+  {$ELSE}
+  DsgnIntf;
+  {$ENDIF}
 
 type
-
   TJvgShadowEditor = class(TComponentEditor)
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
 
-
-resourcestring
-  sUpdateAllEditControl = 'Update all edit control';
-
 implementation
-uses StdCtrls, JvgShadow;
 
-{ TJvgShadowEditor }
+uses
+  StdCtrls,
+  JvgShadow, JvDsgnConsts;
 
 procedure TJvgShadowEditor.ExecuteVerb(Index: Integer);
 var
-  sl: TStringList;
-  i: integer;
-  sNewName: string;
+  Sl: TStringList;
+  I: Integer;
+  NewName: string;
   Shadow: TJvgShadow;
 
   procedure UpdateIt(Edit: TCustomEdit);
   var
     Sh: TJvgShadow;
-    i, NewNameIndex: integer;
-    fExists: boolean;
+    I, NewNameIndex: Integer;
+    Exists: Boolean;
   begin
-    if sl.IndexOf(Edit.Name) <> -1 then exit;
+    if Sl.IndexOf(Edit.Name) <> -1 then exit;
 
     TEdit(Edit).BorderStyle := bsNone;
     Sh := TJvgShadow.Create(Component.Owner);
@@ -80,35 +80,34 @@ var
 
     NewNameIndex := 0;
     repeat
-      fExists := false;
-      inc(NewNameIndex);
-      sNewName := 'JvgShadow' + IntToStr(NewNameIndex);
-      for i := 0 to (Shadow.Owner as TForm).ControlCount - 1 do
+      Exists := False;
+      Inc(NewNameIndex);
+      NewName := 'JvgShadow' + IntToStr(NewNameIndex);
+      for I := 0 to (Shadow.Owner as TForm).ControlCount - 1 do
       begin
-        fExists := CompareText((Shadow.Owner as TForm).Controls[i].Name, sNewName) = 0;
-        if fExists then break;
+        Exists := CompareText((Shadow.Owner as TForm).Controls[I].Name, NewName) = 0;
+        if Exists then
+          Break;
       end;
-    until not fExists;
+    until not Exists;
 
-    Sh.Name := sNewName;
+    Sh.Name := NewName;
   end;
 
 begin
   case Index of
     0:
       begin
-        sl := TStringList.Create;
+        Sl := TStringList.Create;
         Shadow := Component as TJvgShadow;
-        for i := 0 to Shadow.Parent.ControlCount - 1 do
-          if (Shadow.Parent.Controls[i] is TJvgShadow) and ((Shadow.Parent.Controls[i] as TJvgShadow).Control <> nil) then
-            sl.Add((Shadow.Parent.Controls[i] as TJvgShadow).Control.Name);
+        for I := 0 to Shadow.Parent.ControlCount - 1 do
+          if (Shadow.Parent.Controls[I] is TJvgShadow) and ((Shadow.Parent.Controls[I] as TJvgShadow).Control <> nil) then
+            Sl.Add((Shadow.Parent.Controls[I] as TJvgShadow).Control.Name);
 
-        for i := 0 to Shadow.Parent.ControlCount - 1 do
-          if Shadow.Parent.Controls[i] is TCustomEdit then
-          begin
-            UpdateIt(Shadow.Parent.Controls[i] as TCustomEdit);
-          end;
-        sl.Free;
+        for I := 0 to Shadow.Parent.ControlCount - 1 do
+          if Shadow.Parent.Controls[I] is TCustomEdit then
+            UpdateIt(Shadow.Parent.Controls[I] as TCustomEdit);
+        Sl.Free;
       end;
   end;
 end;
@@ -116,7 +115,8 @@ end;
 function TJvgShadowEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := sUpdateAllEditControl;
+    0:
+      Result := SUpdateAllEditControl;
   end;
 end;
 
