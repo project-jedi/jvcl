@@ -56,6 +56,7 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FAboutJVCL: TJVCLAboutInfo;
+    FBufferBmp:TBitmap;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
@@ -71,11 +72,13 @@ type
     procedure SetTextVisible(const Value: Boolean);
     procedure SetTransparent(const Value: Boolean);
     procedure FontChanged(Sender: TObject);
+
   protected
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
     property Maximum: Integer read FMaximum write SetMaximum default 100;
@@ -120,6 +123,8 @@ implementation
 constructor TJvSpecialProgress.Create(AOwner: TComponent);
 begin
   inherited;
+  FBufferBmp := TBitmap.Create;
+
   ControlStyle := ControlStyle + [csOpaque];  // SMM 20020604
   FMaximum := 100;
   FMinimum := 0;
@@ -143,6 +148,7 @@ end;
 
 destructor TJvSpecialProgress.Destroy;
 begin
+  FBufferBmp.Free;
   FFont.Free;
   inherited;
 end;
@@ -166,6 +172,12 @@ var
   FRed, FGreen, FBlue: Real;
   FStart, FEnd: TColor;
 begin
+  FbufferBmp.Width := 0;
+  FbufferBmp.Height := 0;
+  FbufferBmp.Width := Width;
+  FbufferBmp.Height := Height;
+  FBufferBmp.Canvas.Font := Font;
+  FBufferBmp.Canvas.Brush.Color := Color;
   if FStartColor < 0 then
     FStart := GetSysColor(FStartColor and not $80000000)
   else
@@ -178,7 +190,7 @@ begin
   savetaille := 0;
   if FMaximum <> FMinimum then
   begin
-    taille := (Width - 2) * FPosition div (FMaximum - FMinimum);
+    taille := (Width - 2) * (FPosition - FMinimum) div (FMaximum - FMinimum);
     savetaille := taille;
 
     if taille <> 0 then
@@ -187,9 +199,9 @@ begin
       begin
         if FSolid then
         begin
-          Canvas.Brush.Color := FStart;
-          Canvas.Brush.Style := bsSolid;
-          Canvas.FillRect(Rect(1, 1, 1 + Taille, Height - 1));
+          FbufferBmp.Canvas.Brush.Color := FStart;
+          FbufferBmp.Canvas.Brush.Style := bsSolid;
+          FbufferBmp.Canvas.FillRect(Rect(1, 1, 1 + Taille, Height - 1));
         end
         else
         begin
@@ -199,11 +211,11 @@ begin
           begin
             Dec(taille, taille div FWidth);
             savetaille := taille;
-            Canvas.Brush.Color := FStart;
-            Canvas.Brush.Style := bsSolid;
+            FbufferBmp.Canvas.Brush.Color := FStart;
+            FbufferBmp.Canvas.Brush.Style := bsSolid;
             while Taille > 0 do
             begin
-              Canvas.FillRect(Rect(FLeft, 1, FLeft + FWidth, Height - 1));
+              FbufferBmp.Canvas.FillRect(Rect(FLeft, 1, FLeft + FWidth, Height - 1));
               Dec(Taille, FWidth);
               Inc(FLeft, FWidth + 1);
             end;
@@ -212,19 +224,19 @@ begin
       end
       else
       begin
-            //Draw a gradient
+        //Draw a gradient
         if FSolid then
         begin
           Red := (GetRValue(FEnd) - GetRValue(FStart)) / taille;
           Green := (GetGValue(FEnd) - GetGValue(FStart)) / taille;
           Blue := (GetBValue(FEnd) - GetBValue(FStart)) / taille;
-          Canvas.Brush.Style := bsSolid;
+          FbufferBmp.Canvas.Brush.Style := bsSolid;
           for i := 1 to taille do
           begin
-            Canvas.Brush.Color := RGB(Round(GetRValue(FStart) + ((i - 1) * Red)),
+            FbufferBmp.Canvas.Brush.Color := RGB(Round(GetRValue(FStart) + ((i - 1) * Red)),
               Round(GetGValue(FStart) + ((i - 1) * Green)),
               Round(GetBValue(FStart) + ((i - 1) * Blue)));
-            Canvas.FillRect(Rect(i, 1, i + 1, Height - 1));
+            FbufferBmp.Canvas.FillRect(Rect(i, 1, i + 1, Height - 1));
           end;
         end
         else
@@ -243,16 +255,16 @@ begin
           FBlue := GetBValue(FStart);
           taille := taille - FWidth;
 
-          Canvas.Brush.Style := bsSolid;
+          FbufferBmp.Canvas.Brush.Style := bsSolid;
           while Taille > 0 do
           begin
             for i := 0 to FWidth - 1 do
             begin
-              Canvas.Brush.Color := RGB(Round(FRed), Round(FGreen), Round(FBlue));
+              FbufferBmp.Canvas.Brush.Color := RGB(Round(FRed), Round(FGreen), Round(FBlue));
               FRed := FRed + Red;
               FBlue := FBlue + Blue;
               FGreen := FGreen + Green;
-              Canvas.FillRect(Rect(FLeft + i, 1, FLeft + i + 1, Height - 1));
+              FbufferBmp.Canvas.FillRect(Rect(FLeft + i, 1, FLeft + i + 1, Height - 1));
             end;
             Dec(Taille, FWidth);
             Inc(FLeft, FWidth + 1);
@@ -266,31 +278,34 @@ begin
 
   { SMM 20020604
     Only paint the background that remains. }
-  if not (FTransparent) then
+  if not (FTransparent) and (taille < Width) then
   begin
-    Canvas.Brush.Color := FColor;
-    Canvas.Brush.style := bsSolid;
-    Canvas.FillRect(Rect(taille + 1, 1, Width - 1, Height - 1));
+    FbufferBmp.Canvas.Brush.Color := FColor;
+    FbufferBmp.Canvas.Brush.style := bsSolid;
+    FbufferBmp.Canvas.FillRect(Rect(taille, 0, Width, Height));
   end;
 
    //Draw text ?
   if FTextVisible then
   begin
+    FbufferBmp.Canvas.Font := TextFont;
     if FMaximum = FMinimum then
       st := '0%'
     else
       st := IntToStr(FPosition * 100 div (FMaximum - FMinimum)) + '%';
     if FCentered then
       taille := Width;
-    FLeft := (taille - Canvas.TextWidth(st)) div 2;
+    FLeft := (taille - FbufferBmp.Canvas.TextWidth(st)) div 2;
     if FLeft < 0 then
       FLeft := 0;
-    FTop := (Height - Canvas.TextHeight(st)) div 2;
+    FTop := (Height - FbufferBmp.Canvas.TextHeight(st)) div 2;
     if FTop < 0 then FTop := 0;
-    Canvas.Brush.Color := clNone;
-    Canvas.Brush.Style := bsClear;
-    Canvas.TextOut(FLeft, FTop, st);
+    SetBkMode(FbufferBmp.Canvas.Handle,Windows.TRANSPARENT);
+//    FbufferBmp.Canvas.Brush.Color := clNone;
+//    FbufferBmp.Canvas.Brush.Style := bsClear;
+    FbufferBmp.Canvas.TextOut(FLeft, FTop, st);
   end;
+  BitBlt(Canvas.Handle,0,0,ClientWidth,ClientHeight,FbufferBmp.Canvas.Handle,0,0,SRCCOPY);
 end;
 
 {**************************************************}
@@ -465,5 +480,6 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
+
 
 end.
