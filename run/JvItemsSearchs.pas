@@ -161,8 +161,11 @@ function TJvItemsSearchs.SearchSubString(Items: TStrings; Value: string;
   CaseSensitive: Boolean; StartIndex: Integer): Integer;
 var
   I: Integer;
+  HasLooped: Boolean;
 begin
   Result := 0;
+  I := 0;
+  HasLooped := False;
   if CaseSensitive then
   begin
     while not HasLooped or (I <= StartIndex) do
