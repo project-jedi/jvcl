@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-12-05
+Last Modified: 2004-02-08
 
 Known Issues:
 ----------------------------------------------------------------------------}
@@ -27,7 +27,7 @@ interface
 
 uses
   SysUtils, Classes,
-  QDialogs, QPrinters;
+  QDialogs, QPrinters, QConst;
 
 type
   TOpenPictureDialog = class(TOpenDialog)
@@ -95,26 +95,14 @@ type
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
   end;
 
-procedure Register;
-
 implementation
 
 const
   DefaultFilter =
     'Supported (*.bmp *.png *.xpm *.ico)|*.bmp;*.png;*.xpm*.ico' + '|' +
     'Bitmaps (*.bmp *.png *.xpm)|*.bmp;*.png;*.xpm' + '|' +
-    'Icons (*.ico)|*.ico'  + '|' +
-    'All Files (*)|*';
+    'Icons (*.ico)|*.ico'  + '|' + SDefaultFilter;
   DefaultExt = '*.bmp';
-
-procedure Register;
-const
-  Dialogs = 'Dialogs';
-begin
-  RegisterComponents(Dialogs, [TOpenPictureDialog]);
-  RegisterComponents(Dialogs, [TSavePictureDialog]);
-  RegisterComponents(Dialogs, [TPrinterSetupDialog]);
-end;
 
 //=== TOpenPictureDialog =====================================================
 
