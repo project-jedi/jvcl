@@ -83,6 +83,8 @@ type
     procedure UpdateData(Sender: TObject);
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
+    function GetReadOnly: Boolean; reintroduce;   
+    procedure SetReadOnly(Value: Boolean); reintroduce;   
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -91,8 +93,6 @@ type
     procedure DoUndo; override;
     procedure Change; override;
     function EditCanModify: Boolean; override;
-    function GetReadOnly: Boolean; override;   
-    procedure SetReadOnly(Value: Boolean); override;   
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure Loaded; override;
@@ -193,6 +193,8 @@ type
     procedure UpdateData(Sender: TObject);
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    function GetReadOnly: Boolean; reintroduce;
+    procedure SetReadOnly(Value: Boolean); reintroduce;
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -200,8 +202,6 @@ type
     procedure DoClipboardPaste; override;
     procedure Change; override;
     function EditCanModify: Boolean; override;
-    function GetReadOnly: Boolean; override;
-    procedure SetReadOnly(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure Loaded; override;
@@ -305,6 +305,8 @@ type
     procedure AfterPopup(Sender: TObject; var Date: TDateTime; var Action: Boolean);
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    function GetReadOnly: Boolean; reintroduce;
+    procedure SetReadOnly(Value: Boolean); reintroduce;
   protected
     procedure DoExit; override;
     procedure DoClipboardCut; override;
@@ -313,8 +315,6 @@ type
     procedure ApplyDate(Value: TDateTime); override;
     procedure Change; override;
     function EditCanModify: Boolean; override;
-    function GetReadOnly: Boolean; override;
-    procedure SetReadOnly(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -323,6 +323,7 @@ type
     procedure SetDate(Value: TDateTime); override;
     function IsValidDate(Value: TDateTime): Boolean;
     // Polaris
+    procedure PopupDropDown(DisableEdit: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -439,6 +440,8 @@ type
     procedure SetDefaultParams(Value: Boolean);
     procedure UpdateFieldData(Sender: TObject);
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
+    function GetReadOnly: Boolean; reintroduce;
+    procedure SetReadOnly(Value: Boolean); reintroduce;
   protected
     procedure DoExit; override;
     procedure DoClipboardCut; override;
@@ -450,8 +453,6 @@ type
     procedure DataChanged; override; //Polaris
 
     function EditCanModify: Boolean; override;
-    function GetReadOnly: Boolean; override;
-    procedure SetReadOnly(Value: Boolean); override;
     function IsValidChar(Key: Char): Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
@@ -461,6 +462,7 @@ type
     //Polaris
     procedure Loaded; override;
     //Polaris
+    procedure PopupDropDown(DisableEdit: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -690,7 +692,7 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   FDataLink.OnActiveChange := ActiveChange;
   // new stuff that isn't in the VCL version.
-  inherited SetReadOnly(True);
+  inherited ReadOnly := True;
 end;
 
 destructor TJvDBMaskEdit.Destroy;
@@ -878,7 +880,7 @@ end;
 
 procedure TJvDBMaskEdit.EditingChange(Sender: TObject);
 begin
-  inherited SetReadOnly(not FDataLink.Editing);
+  inherited ReadOnly := not FDataLink.Editing;
 end;
 
 procedure TJvDBMaskEdit.UpdateData(Sender: TObject);
@@ -911,7 +913,7 @@ begin
   SetFocused(True);
   inherited DoEnter;
   if SysLocale.FarEast and FDataLink.CanModify then
-    inherited SetReadOnly(False);
+    inherited ReadOnly := False;
 end;
 
 procedure TJvDBMaskEdit.DoExit;
@@ -1143,7 +1145,7 @@ begin
   FDataLink.OnDataChange := DataChange;
   FDataLink.OnEditingChange := EditingChange;
   FDataLink.OnUpdateData := UpdateData;
-  inherited SetReadOnly(True);
+  inherited ReadOnly := True;
   AlwaysEnableButton := True;
 end;
 
@@ -1312,7 +1314,7 @@ end;
 
 procedure TJvDBComboEdit.EditingChange(Sender: TObject);
 begin
-  inherited SetReadOnly(not FDataLink.Editing);
+  inherited ReadOnly := not FDataLink.Editing;
 end;
 
 procedure TJvDBComboEdit.UpdateData(Sender: TObject);
@@ -1338,7 +1340,7 @@ begin
   SetFocused(True);
   inherited DoEnter;
   if SysLocale.FarEast and FDataLink.CanModify then
-    inherited SetReadOnly(False);
+    inherited ReadOnly := False;
 end;
 
 procedure TJvDBComboEdit.DoExit;
@@ -1416,7 +1418,7 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   Self.OnAcceptDate := AfterPopup;
   AlwaysEnableButton := True;
-  inherited SetReadOnly(True);
+  inherited ReadOnly := True;
   UpdateMask;
 end;
 
@@ -1537,6 +1539,13 @@ begin
   inherited Change;
 end;
 
+procedure TJvDBDateEdit.PopupDropDown(DisableEdit: Boolean);
+begin
+  if not ReadOnly then
+    FDataLink.Edit;
+  inherited PopupDropDown(DisableEdit);
+end;
+
 function TJvDBDateEdit.GetCanvas: TCanvas;
 begin
   Result := FCanvas;
@@ -1618,7 +1627,7 @@ end;
 
 procedure TJvDBDateEdit.EditingChange(Sender: TObject);
 begin
-  inherited SetReadOnly(not FDataLink.Editing);
+  inherited ReadOnly := not FDataLink.Editing;
   if FDataLink.Editing and DefaultToday and (FDataLink.Field <> nil) and
     (FDataLink.Field.AsDateTime = NullDate) then
     FDataLink.Field.AsDateTime := SysUtils.Now;
@@ -1745,7 +1754,7 @@ begin
   FDataLink.OnDataChange := DataChange;
   FDataLink.OnEditingChange := EditingChange;
   FDataLink.OnUpdateData := UpdateFieldData;
-  inherited SetReadOnly(True);
+  inherited ReadOnly := True;
   AlwaysEnableButton := True;
 end;
 
@@ -1842,6 +1851,13 @@ begin
     Precision := TFloatField(FDataLink.Field).Precision;
   if FPopup <> nil then
     SetupPopupCalculator(FPopup, Precision, BeepOnError);
+end;
+
+procedure TJvDBCalcEdit.PopupDropDown(DisableEdit: Boolean);
+begin
+  if not ReadOnly then
+    FDataLink.Edit;
+  inherited PopupDropDown(DisableEdit);
 end;
 
 function TJvDBCalcEdit.EditCanModify: Boolean;
@@ -2070,7 +2086,7 @@ end;
 
 procedure TJvDBCalcEdit.EditingChange(Sender: TObject);
 begin
-  inherited SetReadOnly(not FDataLink.Editing);
+  inherited ReadOnly := not FDataLink.Editing;
 end;
 
 procedure TJvDBCalcEdit.UpdateFieldData(Sender: TObject);
