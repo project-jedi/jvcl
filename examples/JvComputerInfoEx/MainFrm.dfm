@@ -47,7 +47,6 @@ object frmMain: TfrmMain
         TabOrder = 0
         WantReturns = False
         WordWrap = False
-        Zoom = 100
       end
     end
     object TabSheet2: TTabSheet
@@ -89,7 +88,7 @@ object frmMain: TfrmMain
         BevelKind = bkTile
         BevelInner = bvNone
         RelativeDivider = True
-        Divider = 46
+        Divider = 45
         ItemHeight = 16
         Painter = JvInspectorBorlandPainter1
         ReadOnly = False
@@ -119,7 +118,6 @@ object frmMain: TfrmMain
     end
   end
   object JvComputerInfoEx1: TJvComputerInfoEx
-    Metrics.DoubleClickTime = 64548680
     OnDeviceAdded = JvComputerInfoEx1DeviceAdded
     OnDeviceRemoved = JvComputerInfoEx1DeviceRemoved
     OnSettingChange = JvComputerInfoEx1SettingChange
