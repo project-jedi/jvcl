@@ -26,7 +26,7 @@ Known Issues:
 
 unit JvSearchFiles;
 
-{$I JEDI.INC}
+{$I JVCL.INC}
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}
