@@ -80,8 +80,7 @@ var
   transFileName : string;
 begin
 
-  transFileName := ExtractFilePath(Application.ExeName);
-  transFileName := transFileName + 'French.xml';
+  transFileName := '..\examples\JvTranslator\Translations\French.xml';
   if not FileExists(transFileName) then
     MessageDlg('File not found: ' + transFileName, mtError, [mbOK], 0)
   else
@@ -93,8 +92,7 @@ var
   transFileName : string;
 begin
 
-  transFileName := ExtractFilePath(Application.ExeName);
-  transFileName := transFileName + 'English.xml';
+  transFileName := '..\examples\JvTranslator\Translations\English.xml';
   if not FileExists(transFileName) then
     MessageDlg('File not found: ' + transFileName, mtError, [mbOK], 0)
   else

@@ -1,17 +1,25 @@
 object JvTranslatorMainForm: TJvTranslatorMainForm
   Left = 368
   Top = 147
-  Width = 458
-  Height = 407
+  Width = 449
+  Height = 403
   Caption = 'JvTranslator'
   Color = clBtnFace
+  Constraints.MinHeight = 230
+  Constraints.MinWidth = 345
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
+  DesignSize = (
+    441
+    369)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -25,7 +33,8 @@ object JvTranslatorMainForm: TJvTranslatorMainForm
     Left = 8
     Top = 16
     Width = 123
-    Height = 321
+    Height = 341
+    Anchors = [akLeft, akTop, akBottom]
     Indent = 19
     TabOrder = 0
     Items.Data = {
@@ -43,19 +52,21 @@ object JvTranslatorMainForm: TJvTranslatorMainForm
     TabOrder = 1
   end
   object Button1: TButton
-    Left = 340
-    Top = 262
+    Left = 355
+    Top = 301
     Width = 75
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'French'
     TabOrder = 2
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 340
-    Top = 292
+    Left = 355
+    Top = 331
     Width = 75
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'English'
     TabOrder = 3
     OnClick = Button2Click
@@ -70,15 +81,15 @@ object JvTranslatorMainForm: TJvTranslatorMainForm
     OnClick = Button3Click
   end
   object JvTranslator1: TJvTranslator
-    Left = 270
-    Top = 36
+    Left = 232
+    Top = 8
   end
   object Variables: TJvTranslatorStrings
-    Left = 330
-    Top = 38
+    Left = 296
+    Top = 8
   end
   object JvTranslator2: TJvTranslator
-    Left = 272
-    Top = 96
+    Left = 264
+    Top = 8
   end
 end

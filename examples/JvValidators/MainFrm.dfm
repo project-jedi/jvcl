@@ -1,19 +1,25 @@
 object frmMain: TfrmMain
   Left = 306
   Top = 126
-  Width = 630
-  Height = 270
+  Width = 599
+  Height = 274
   Caption = 'JvValidators demo'
   Color = clBtnFace
   Constraints.MinHeight = 270
   Constraints.MinWidth = 560
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
+  DesignSize = (
+    591
+    240)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -98,7 +104,7 @@ object frmMain: TfrmMain
   end
   object btnCheck: TButton
     Left = 381
-    Top = 206
+    Top = 210
     Width = 156
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -108,7 +114,7 @@ object frmMain: TfrmMain
   end
   object btnProviderCheck: TButton
     Left = 6
-    Top = 206
+    Top = 210
     Width = 161
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -119,8 +125,8 @@ object frmMain: TfrmMain
   object reResults: TRichEdit
     Left = 272
     Top = 32
-    Width = 337
-    Height = 163
+    Width = 306
+    Height = 167
     Cursor = crArrow
     TabStop = False
     Anchors = [akLeft, akTop, akRight, akBottom]
@@ -174,7 +180,7 @@ object frmMain: TfrmMain
   end
   object btnValSum: TButton
     Left = 174
-    Top = 206
+    Top = 210
     Width = 200
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -198,6 +204,7 @@ object frmMain: TfrmMain
     object JvCustomValidator1: TJvCustomValidator
       Valid = True
       ControlToValidate = edRequired10Chars
+      PropertyToValidate = 'Text'
       Enabled = True
       ErrorMessage = 'Value in "edRequired10Chars" requires at least 10 characters'
       OnValidate = JvCustomValidator1Validate

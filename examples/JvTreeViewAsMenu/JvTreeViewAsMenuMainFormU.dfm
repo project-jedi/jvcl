@@ -5,12 +5,15 @@ object JvTreeViewAsMenuMainForm: TJvTreeViewAsMenuMainForm
   Height = 408
   Caption = 'JvTreeViewAsMenu (using JvTreeView and JvPageControl)'
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -19,9 +22,9 @@ object JvTreeViewAsMenuMainForm: TJvTreeViewAsMenuMainForm
     Width = 516
     Height = 48
     Caption = 
-      'Here you see a combination of an JvTreeView (left) and an JvPage' +
-      'Control'#13#10'and they are synchronized via the PageControl property ' +
-      'of the JvTreeView.'#13#10'This can uses as an replacment for a menu'
+      'Here you see a combination of a JvTreeView (left) and a JvPageCo' +
+      'ntrol'#13#10'and they are synchronized via the PageControl property of' +
+      ' the JvTreeView.'#13#10'This can be used as a replacement for a menu'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -115,7 +118,7 @@ object JvTreeViewAsMenuMainForm: TJvTreeViewAsMenuMainForm
       00020000000554686972641F0000000000000000000000FFFFFFFFFFFFFFFF00
       0000000000000006466F757274681E0000000000000000000000FFFFFFFFFFFF
       FFFF0000000000000000054669667468}
-    LineColor = -16777216
+    LineColor = 13160660
     PageControl = JvPageControl1
     OnPageChanged = JvTreeView1PageChanged
   end

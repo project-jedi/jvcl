@@ -180,6 +180,7 @@ begin
   sl.Hint         := 'Double-click a date to edit it''s memo content.'#13#10'Right-click to display pop-up menu.';
   dtpSelDate.Date     := Date;
   dtpFirstDate.Date   := Date-7;
+  dtpImageDate.Date   := Date+7;
   udDayWidth.Position := sl.DayWidth;
   chkReadOnly.Checked := sl.ReadOnly;
   sl.Date := dtpFirstDate.Date;

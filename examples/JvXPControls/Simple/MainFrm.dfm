@@ -1,18 +1,25 @@
 object frmMain: TfrmMain
   Left = 291
   Top = 290
+  BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'frmMain'
   ClientHeight = 191
   ClientWidth = 456
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
+  DesignSize = (
+    456
+    191)
   PixelsPerInch = 96
   TextHeight = 13
   object cntHeader: TJvXPContainer
@@ -20,10 +27,10 @@ object frmMain: TfrmMain
     Top = 0
     Width = 456
     Height = 15
-    Align = alTop
-    OnMouseDown = cntHeaderMouseDown
     Caption = 'cntHeader'
     OnPaint = cntHeaderPaint
+    Align = alTop
+    OnMouseDown = cntHeaderMouseDown
     object btnClose: TJvXPToolButton
       Left = 0
       Top = 0
@@ -36,13 +43,13 @@ object frmMain: TfrmMain
     Top = 24
     Width = 121
     Height = 161
-    Anchors = [akLeft, akTop, akBottom]
     BoundColor = 16251903
     BoundLines = [blLeft, blTop, blRight, blBottom]
     Caption = 'cntNetPanel'
     Color = 16251903
     ParentColor = False
     OnPaint = cntNetPanelPaint
+    Anchors = [akLeft, akTop, akBottom]
     object lbBrowse: TLabel
       Left = 8
       Top = 24
@@ -148,47 +155,47 @@ object frmMain: TfrmMain
       Top = 1
       Width = 119
       Height = 15
-      Align = alTop
       Alignment = taLeftJustify
       Caption = 'ToDo-List'
       Color = 14936557
       ParentColor = False
       ShowCaption = True
       Spacing = 34
+      Align = alTop
       object btnLeft: TJvXPToolButton
         Left = 0
         Top = 0
+        ToolType = ttArrowLeft
         Align = alLeft
         StyleManager = styleOffice
-        ToolType = ttArrowLeft
       end
       object btnRight: TJvXPToolButton
         Left = 15
         Top = 0
+        ToolType = ttArrowRight
         Align = alLeft
         StyleManager = styleOffice
-        ToolType = ttArrowRight
       end
     end
   end
   object btnOK: TJvXPButton
     Left = 296
     Top = 160
-    Anchors = [akTop, akRight]
-    OnClick = btnCloseClick
     Caption = '&OK'
     TabOrder = 2
     Default = True
     ModalResult = 1
+    Anchors = [akTop, akRight]
+    OnClick = btnCloseClick
   end
   object btnCancel: TJvXPButton
     Left = 376
     Top = 160
-    Anchors = [akTop, akRight]
     Caption = '&Cancel'
     TabOrder = 3
     Cancel = True
     ModalResult = 2
+    Anchors = [akTop, akRight]
   end
   object btn1: TJvXPButton
     Left = 136
@@ -226,39 +233,39 @@ object frmMain: TfrmMain
     Top = 72
     Width = 313
     Height = 17
-    Anchors = [akLeft, akTop, akRight]
-    OnClick = chkToogleEnableClick
     Caption = '&Toogle Enable-Mode'
     TabOrder = 8
+    Anchors = [akLeft, akTop, akRight]
+    OnClick = chkToogleEnableClick
   end
   object chkOfficeStyle: TJvXPCheckbox
     Left = 136
     Top = 162
     Width = 121
     Height = 17
-    OnClick = chkOfficeStyleClick
-    StyleManager = styleOffice
     Caption = 'Office Style'
     TabOrder = 9
     Checked = True
+    StyleManager = styleOffice
+    OnClick = chkOfficeStyleClick
   end
   object chk1: TJvXPCheckbox
     Left = 136
     Top = 104
     Width = 121
     Height = 17
-    StyleManager = styleOffice
     Caption = 'Additional Check1'
     TabOrder = 10
+    StyleManager = styleOffice
   end
   object chk2: TJvXPCheckbox
     Left = 136
     Top = 128
     Width = 121
     Height = 17
-    StyleManager = styleOffice
     Caption = 'Additional Check2'
     TabOrder = 11
+    StyleManager = styleOffice
   end
   object dxToolButton1: TJvXPToolButton
     Left = 300
@@ -268,26 +275,26 @@ object frmMain: TfrmMain
   object dxToolButton2: TJvXPToolButton
     Left = 316
     Top = 129
-    StyleManager = styleOffice
     ToolType = ttMaximize
+    StyleManager = styleOffice
   end
   object dxToolButton3: TJvXPToolButton
     Left = 332
     Top = 129
-    StyleManager = styleOffice
     ToolType = ttMinimize
+    StyleManager = styleOffice
   end
   object dxToolButton4: TJvXPToolButton
     Left = 364
     Top = 129
-    StyleManager = styleOffice
     ToolType = ttPopup
+    StyleManager = styleOffice
   end
   object dxToolButton5: TJvXPToolButton
     Left = 348
     Top = 129
-    StyleManager = styleOffice
     ToolType = ttRestore
+    StyleManager = styleOffice
   end
   object styleOffice: TJvXPStyleManager
     Theme = OfficeXP

@@ -7,13 +7,17 @@ object TimelineMainForm: TTimelineMainForm
   ClientHeight = 508
   ClientWidth = 712
   Color = clSilver
+  Constraints.MinHeight = 500
+  Constraints.MinWidth = 700
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
-  Position = poScreenCenter
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
@@ -248,6 +252,9 @@ object TimelineMainForm: TTimelineMainForm
     OnSaveItem = TimeLine1SaveItem
     OnLoadItem = TimeLine1LoadItem
     OnItemMoved = TimeLine1ItemMoved
+    DesignSize = (
+      708
+      221)
   end
   object Panel2: TPanel
     Left = 0
