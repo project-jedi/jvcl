@@ -285,6 +285,10 @@ begin
     Add('DeleteBeforeStore');
     Add('IgnoreLastLoadTime');
     Add('IgnoreProperties');
+    Add('OnBeforeLoadProperties');
+    Add('OnAfterLoadProperties');
+    Add('OnBeforeStoreProperties');
+    Add('OnAfterStoreProperties');
   end;
 end;
 
@@ -506,7 +510,7 @@ begin
   if Assigned(FOnBeforeLoadProperties) then
     FOnBeforeLoadProperties(Self);
   LoadData;
-  AppStorage.ReadPersistent(AppStoragePath, Self, True, False, CombinedIgnoreList);
+  AppStorage.ReadPersistent(AppStoragePath, Self, True, True, CombinedIgnoreList);
   if Assigned(FOnAfterLoadProperties) then
     FOnAfterLoadProperties(Self);
 end;
