@@ -140,7 +140,7 @@ begin
 
   if ListBoxFields.ItemIndex>=0 then begin
         selectedText := ListBoxFields.Items[ListboxFields.ItemIndex];
-        Count := StrSplit(selectedText,':',SubFields, 2); // Look for Colon
+        Count := StrSplit(selectedText,':',Chr(0),SubFields, 2); // Look for Colon
   end else begin
         Count := 0;
         selectedText := '';
@@ -192,7 +192,7 @@ begin
  SetLength(Fields,MAXCOLUMNS); { MAXCOLUMNS is a constant from CsvDataSource.pas }
  EditCsvStr.Text := aCsvStr;
  if length(FielddefStr)>0 then
-    Count := StrSplit(fielddefstr,',',Fields, MAXCOLUMNS)
+    Count := StrSplit(fielddefstr,',',Chr(0),Fields, MAXCOLUMNS)
  else
     Count := 0;
     
