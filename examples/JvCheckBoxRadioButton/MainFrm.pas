@@ -11,7 +11,6 @@ type
   TForm1 = class(TForm)
     chkShowToolTips: TJvCheckBox;
     edPrefix: TJvEdit;
-    chkShowPrefix: TJvCheckBox;
     btnEdit: TSpeedButton;
     rbOption1: TJvRadioButton;
     rbOption2: TJvRadioButton;
@@ -23,6 +22,7 @@ type
     lblInfo: TJvLabel;
     lblPrefix: TJvLabel;
     ImageList1: TImageList;
+    chkShowPrefix: TJvCheckBox;
     procedure btnEditClick(Sender: TObject);
   private
     { Private declarations }

@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 600
-  Top = 178
+  Left = 453
+  Top = 128
   Anchors = [akRight, akBottom]
   BorderStyle = bsDialog
   Caption = 'JvCheckbox and JvRadioButton Demo'
@@ -23,6 +23,7 @@ object Form1: TForm1
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = '&Edit...'
+    Enabled = False
     OnClick = btnEditClick
   end
   object lblOption1: TJvLabel
@@ -108,8 +109,10 @@ object Form1: TForm1
     Checked = True
     State = cbChecked
     TabOrder = 0
-    LinkedControls.Strings = (
-      'chkShowPrefix')
+    LinkedControls = <
+      item
+        Control = chkShowPrefix
+      end>
     HotTrack = True
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
@@ -134,24 +137,6 @@ object Form1: TForm1
     TabOrder = 1
     Text = 'Hint:'
   end
-  object chkShowPrefix: TJvCheckBox
-    Left = 30
-    Top = 110
-    Width = 131
-    Height = 17
-    Cursor = crUpArrow
-    Caption = 'Show &prefix in tooltips:'
-    TabOrder = 2
-    LinkedControls.Strings = (
-      'edPrefix'
-      'lblPrefix')
-    HotTrack = True
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Shell Dlg 2'
-    HotTrackFont.Style = [fsBold]
-  end
   object rbOption1: TJvRadioButton
     Left = 230
     Top = 84
@@ -161,7 +146,7 @@ object Form1: TForm1
     Alignment = taLeftJustify
     Caption = 'Option &1:'
     Checked = True
-    TabOrder = 3
+    TabOrder = 2
     TabStop = True
     HotTrack = True
     HotTrackFont.Charset = DEFAULT_CHARSET
@@ -180,7 +165,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Alignment = taLeftJustify
     Caption = 'Option &2:'
-    TabOrder = 4
+    TabOrder = 3
     HotTrack = True
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clNavy
@@ -198,7 +183,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Alignment = taLeftJustify
     Caption = 'Option &3:'
-    TabOrder = 5
+    TabOrder = 4
     HotTrack = True
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clNavy
@@ -218,7 +203,7 @@ object Form1: TForm1
     BevelOuter = bvLowered
     Caption = ' '
     Color = clWindow
-    TabOrder = 6
+    TabOrder = 5
     object lblInfo: TJvLabel
       Left = 14
       Top = 16
@@ -244,6 +229,28 @@ object Form1: TForm1
       HotTrackFont.Style = []
       ImageIndex = 0
     end
+  end
+  object chkShowPrefix: TJvCheckBox
+    Left = 30
+    Top = 110
+    Width = 131
+    Height = 17
+    Cursor = crUpArrow
+    Caption = 'Show &prefix in tooltips:'
+    TabOrder = 6
+    LinkedControls = <
+      item
+        Control = edPrefix
+      end
+      item
+        Control = lblPrefix
+      end>
+    HotTrack = True
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -11
+    HotTrackFont.Name = 'MS Shell Dlg 2'
+    HotTrackFont.Style = [fsBold]
   end
   object ImageList1: TImageList
     Left = 64
