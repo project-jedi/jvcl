@@ -107,7 +107,7 @@ type
     StaticText2: TStaticText;
     StaticText3: TStaticText;
     StaticText4: TStaticText;
-    JvAppXMLStorage: TJvAppXMLStorage;
+    JvAppXMLStorage: TJvAppXMLFileStorage;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);

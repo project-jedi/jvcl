@@ -1933,7 +1933,6 @@ object Form1: TForm1
     Top = 53
   end
   object JvFormStorage1: TJvFormStorage
-    AppStorage = JvAppXMLStorage
     AppStoragePath = 'Form\'
     StoredProps.Strings = (
       'AutoHeightCheckBox.Checked'
@@ -1956,7 +1955,6 @@ object Form1: TForm1
     Top = 3
   end
   object JvFormStorage2: TJvFormStorage
-    AppStorage = JvAppXMLStorage
     AppStoragePath = 'Form\'
     StoredProps.Strings = (
       'AutoHeightCheckBox.Checked'
@@ -1978,10 +1976,11 @@ object Form1: TForm1
     Left = 520
     Top = 38
   end
-  object JvAppXMLStorage: TJvAppXMLStorage
+  object JvAppXMLStorage: TJvAppXMLFileStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     FileName = 'JvParameterListDemo.xml'
+    AsString = '<?xml version="1.0" encoding="iso-8859-1"?>'#13#10'<Configuration/>'#13#10
     RootNodeName = 'Configuration'
     Left = 275
     Top = 10

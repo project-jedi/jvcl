@@ -67,7 +67,7 @@ begin
   RegisterComponents(RsPaletteNonVisual, [TJvSearchFiles, TJvMRUList, TJvMRUManager, 
       TJvShellHook, TJvWindowHook, TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList]);
   RegisterComponents(RsPalettePersistence, [TJvFormStorage, TJvFormStorageSelectList,
-      TJvAppXMLStorage]);
+      TJvAppXMLFileStorage]);
 
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);
