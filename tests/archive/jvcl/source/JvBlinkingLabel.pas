@@ -38,30 +38,30 @@ type
   TJvBlinkingLabel = class(TJvLabel)
   private
     FBlinking: Boolean;
+    FShowing: Boolean;
     FTimer: TTimer;
     FDelay: Cardinal;
     FBlink: Integer;
     procedure SetBlinking(Value: Boolean);
-    procedure SetDelay(Value: Cardinal);
     procedure OnBlink(Sender: TObject);
   protected
+    function GetLabelText: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property Blinking: Boolean read FBlinking write SetBlinking default True;
-    property BlinkingDelay: Cardinal read FDelay write SetDelay default 400;
+    property BlinkingDelay: Cardinal read FDelay write FDelay default 400;
     property BlinkingTime: Integer read FBlink write FBlink default 200;
   end;
 
 implementation
 
-{**************************************************}
-
 constructor TJvBlinkingLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FBlinking := True;
+  FShowing := True;
   FDelay := 400;
   FBlink := 200;
   FTimer := TTimer.Create(Self);
@@ -70,8 +70,6 @@ begin
   FTimer.Enabled := FBlinking;
 end;
 
-{**************************************************}
-
 destructor TJvBlinkingLabel.Destroy;
 begin
   FTimer.Enabled := False;
@@ -79,33 +77,34 @@ begin
   inherited Destroy;
 end;
 
-{**************************************************}
+function TJvBlinkingLabel.GetLabelText: string;
+begin
+  if FShowing then
+    Result := Caption
+  else
+    Result := '';
+end;
 
 procedure TJvBlinkingLabel.SetBlinking(Value: Boolean);
 begin
-  FBlinking := Value;
-  FTimer.Enabled := Value;
-  if not Value then
-    Visible := True;
+  if Value <> FBlinking then
+  begin
+    FBlinking := Value;
+    FTimer.Interval := BlinkingTime;
+    FTimer.Enabled := Value;
+    FShowing := True;
+    Invalidate;
+  end;
 end;
-
-{**************************************************}
-
-procedure TJvBlinkingLabel.SetDelay(Value: Cardinal);
-begin
-  FDelay := Value;
-  FTimer.Interval := Value;
-end;
-
-{**************************************************}
 
 procedure TJvBlinkingLabel.OnBlink(Sender: TObject);
 begin
-  Visible := not Visible;
-  if not Visible then
+  FShowing := not FShowing;
+  if not FShowing then
     FTimer.Interval := FDelay
   else
     FTimer.Interval := FBlink;
+  Invalidate;
 end;
 
 end.
