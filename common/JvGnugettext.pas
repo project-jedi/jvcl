@@ -601,7 +601,7 @@ begin
             if mode = 0 then
             begin
               if c <= $FFFF then
-                Result := Result + Chr(c)
+                Result := Result + WideChar(c)
               else
               begin
                 if dummychar = #0 then
@@ -2586,13 +2586,16 @@ begin
     fs.WriteBuffer(marker[1], Length(marker)); 
   end; 
 
-  // Copy the memorystream contents to the file
-  DebugLog.Seek(0, soFromBeginning); 
-  fs.CopyFrom(DebugLog, 0); 
+  if DebugLog <> nil then
+  begin
+    // Copy the memorystream contents to the file
+    DebugLog.Seek(0, soFromBeginning);
+    fs.CopyFrom(DebugLog, 0);
 
-  // Make DebugLog point to the filestream
-  FreeAndNil(DebugLog); 
-  DebugLog := fs; 
+    // Make DebugLog point to the filestream
+    FreeAndNil(DebugLog);
+  end;
+  DebugLog := fs;
 end; 
 
 procedure TGnuGettextInstance.DebugWriteln(Line: AnsiString);
