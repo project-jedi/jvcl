@@ -64,6 +64,7 @@ type
     FPrefix: string;
     FAppStorage: TJvCustomAppStorage;
     FAppStoragePath: string;
+    {
     function StoreIntegerProperty(PropInfo: PPropInfo): string;
     function StoreCharProperty(PropInfo: PPropInfo): string;
     function StoreEnumProperty(PropInfo: PPropInfo): string;
@@ -90,6 +91,7 @@ type
     procedure LoadClassProperty(const S: string; PropInfo: PPropInfo);
     procedure LoadStringsProperty(const S: string; PropInfo: PPropInfo);
     procedure LoadComponentProperty(const S: string; PropInfo: PPropInfo);
+    }
     function CreateInfoList(AComponent: TComponent; StoredList: TStrings): TStrings;
     procedure FreeInfoLists(Info: TStrings);
   protected
@@ -293,8 +295,8 @@ begin
 end;
 
 procedure TJvPropertyStorage.LoadAnyProperty(PropInfo: PPropInfo);
-var
-  S, Def: string;
+//var
+//  S, Def: string;
 begin
   try
     if PropInfo <> nil then
@@ -362,8 +364,8 @@ begin
 end;
 
 procedure TJvPropertyStorage.StoreAnyProperty(PropInfo: PPropInfo);
-var
-  S: string;
+//var
+//  S: string;
 begin
   if PropInfo <> nil then
   begin
@@ -399,6 +401,7 @@ begin
   end;
 end;
 
+{
 function TJvPropertyStorage.StoreIntegerProperty(PropInfo: PPropInfo): string;
 begin
   Result := IntToStr(GetOrdProp(FObject, PropInfo));
@@ -799,6 +802,7 @@ begin
     Loader.Free;
   end;
 end;
+}
 
 procedure TJvPropertyStorage.StoreProperties(PropList: TStrings);
 var

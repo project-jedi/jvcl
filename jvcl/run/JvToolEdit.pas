@@ -41,8 +41,10 @@ uses
   Windows, Messages,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
+  {$IFDEF COMPILER7_UP}
   // Autocompletion only for VCL
   ShlObj,
+  {$ENDIF COMPILER7_UP}
   {$ENDIF VCL}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,
   Buttons, FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
@@ -146,11 +148,13 @@ type
   TJvCustomComboEditActionLinkClass = class of TJvCustomComboEditActionLink;
 
   {$IFDEF VCL}
+  {$IFDEF COMPILER7_UP}
   TJvAutoCompleteOption = (acoAutoSuggest, acoAutoAppend, acoSearch,
     acoFilterPrefixes, acoUseTab, acoUpDownKeyDropsList, acoRTLReading);
   TJvAutoCompleteOptions = set of TJvAutoCompleteOption;
   TJvAutoCompleteFileOption = (acfFileSystem, acfFileSysDirs, acfURLHistory, acfURLMRU);
   TJvAutoCompleteFileOptions = set of TJvAutoCompleteFileOption;
+  {$ENDIF COMPILER7_UP}
   {$ENDIF VCL}
 
   {$IFDEF VCL}
@@ -182,15 +186,17 @@ type
     FSavedButtonWidth: Integer;
     {$IFDEF VCL}
     FAlignment: TAlignment;
+    {$IFDEF COMPILER7_UP}
     FAutoCompleteIntf: IAutoComplete;
     FAutoCompleteItems: TStrings;
     FAutoCompleteOptions: TJvAutoCompleteOptions;
     FAutoCompleteSource: IUnknown;
-    function GetFlat: Boolean;
-    procedure ReadCtl3D(Reader: TReader);
-    procedure SetAlignment(Value: TAlignment);
     procedure SetAutoCompleteItems(Strings: TStrings);
     procedure SetAutoCompleteOptions(const Value: TJvAutoCompleteOptions);
+    {$ENDIF COMPILER7_UP}
+    procedure SetAlignment(Value: TAlignment);
+    function GetFlat: Boolean;
+    procedure ReadCtl3D(Reader: TReader);
     procedure SetFlat(const Value: Boolean);
     {$ENDIF VCL}
     function BtnWidthStored: Boolean;
@@ -291,9 +297,11 @@ type
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+    {$IFDEF COMPILER7_UP}
     procedure CreateAutoComplete; virtual;
     procedure UpdateAutoComplete; virtual;
     function GetAutoCompleteSource: IUnknown; virtual;
+    {$ENDIF COMPILER7_UP}
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure CreateWidget; override;
@@ -326,8 +334,10 @@ type
     {$ENDIF VisualCLX}
     property AlwaysEnableButton: Boolean read FAlwaysEnableButton write FAlwaysEnableButton default False;
     {$IFDEF VCL}
+    {$IFDEF COMPILER7_UP}
     property AutoCompleteItems: TStrings read FAutoCompleteItems write SetAutoCompleteItems;
     property AutoCompleteOptions: TJvAutoCompleteOptions read FAutoCompleteOptions write SetAutoCompleteOptions;
+    {$ENDIF COMPILER7_UP}
     {$ENDIF VCL}
     property Button: TJvEditButton read FButton;
     property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat;
@@ -383,8 +393,10 @@ type
     property AutoSelect;
     property AutoSize;
     {$IFDEF VCL}
+    {$IFDEF COMPILER7_UP}
     property AutoCompleteItems;
     property AutoCompleteOptions;
+    {$ENDIF COMPILER7_UP}
     property BiDiMode;
     property DragCursor;
     property DragKind;
@@ -468,14 +480,16 @@ type
     FOnAfterDialog: TExecOpenDialogEvent;
     {$IFDEF VCL}
     FAcceptFiles: Boolean;
-    FAutoCompleteFileOptions: TJvAutoCompleteFileOptions;
+    {$IFDEF COMPILER7_UP}
     FMRUList: IUnknown;
     FHistoryList: IUnknown;
     FFileSystemList: IUnknown;
+    FAutoCompleteFileOptions: TJvAutoCompleteFileOptions;
     FAutoCompleteSourceIntf: IUnknown;
+    procedure SetAutoCompleteFileOptions(const Value: TJvAutoCompleteFileOptions);
+    {$ENDIF COMPILER7_UP}
     procedure SetDragAccept(Value: Boolean);
     procedure SetAcceptFiles(Value: Boolean);
-    procedure SetAutoCompleteFileOptions(const Value: TJvAutoCompleteFileOptions);
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DROPFILES;
     {$IFDEF JVCLThemesEnabled}
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
@@ -485,8 +499,10 @@ type
     {$IFDEF VCL}
     procedure CreateHandle; override;
     procedure DestroyWindowHandle; override;
+    {$IFDEF COMPILER7_UP}
     procedure UpdateAutoComplete; override;
     function GetAutoCompleteSource: IUnknown; override;
+    {$ENDIF COMPILER7_UP}
     {$ENDIF VCL}
     function GetLongName: string; virtual; abstract;
     function GetShortName: string; virtual; abstract;
@@ -497,9 +513,11 @@ type
     procedure DisableSysErrors;
     procedure EnableSysErrors;
     {$IFDEF VCL}
+    {$IFDEF COMPILER7_UP}
     property AutoCompleteFileOptions: TJvAutoCompleteFileOptions read FAutoCompleteFileOptions write
       SetAutoCompleteFileOptions;
     property AutoCompleteOptions default [acoAutoSuggest];
+    {$ENDIF COMPILER7_UP}
     {$ENDIF VCL}
     property ImageKind default ikDefault;
     property MaxLength;
@@ -577,8 +595,10 @@ type
       default dkOpen;
     property DefaultExt: TFileExt read GetDefaultExt write SetDefaultExt;
     {$IFDEF VCL}
+    {$IFDEF COMPILER7_UP}
     property AutoCompleteOptions;
     property AutoCompleteFileOptions default [acfFileSystem];
+    {$ENDIF COMPILER7_UP}
     property Flat;
     { (rb) Obsolete; added 'stored False', eventually remove }
     property FileEditStyle: TFileEditStyle read GetFileEditStyle write SetFileEditStyle stored False;
@@ -683,7 +703,9 @@ type
     property DialogKind: TDirDialogKind read FDialogKind write FDialogKind default dkVCL;
     property DialogText: string read FDialogText write FDialogText;
     {$IFDEF VCL}
+    {$IFDEF COMPILER7_UP}
     property AutoCompleteFileOptions default [acfFileSystem, acfFileSysDirs];
+    {$ENDIF COMPILER7_UP}
     property Flat;
     property DialogOptions: TSelectDirOpts read FOptions write FOptions default [];
     {$ENDIF VCL}
@@ -1105,6 +1127,7 @@ type
     function Remove(punk: IUnknown): HRESULT; stdcall;
   end;
 
+  {$IFDEF COMPILER7_UP}
   TAutoCompleteSource = class(TInterfacedObject, IEnumString)
   private
     FComboEdit: TJvCustomComboEdit;
@@ -1119,6 +1142,7 @@ type
   public
     constructor Create(AComboEdit: TJvCustomComboEdit; const StartIndex: Integer); virtual;
   end;
+  {$ENDIF COMPILER7_UP}
 
 type
   { TDateHook is used to only have 1 hook per application for monitoring
@@ -1672,18 +1696,20 @@ end;
 
 //=== TAutoCompleteSource ====================================================
 
-function TAutoCompleteSource.Clone(out enm: IEnumString): HRESULT;
-begin
-  { Save state }
-  enm := TAutoCompleteSource.Create(FComboEdit, FCurrentIndex);
-  Result := S_OK;
-end;
+{$IFDEF COMPILER7_UP}
 
 constructor TAutoCompleteSource.Create(AComboEdit: TJvCustomComboEdit; const StartIndex: Integer);
 begin
   inherited Create;
   FComboEdit := AComboEdit;
   FCurrentIndex := StartIndex;
+end;
+
+function TAutoCompleteSource.Clone(out enm: IEnumString): HRESULT;
+begin
+  { Save state }
+  enm := TAutoCompleteSource.Create(FComboEdit, FCurrentIndex);
+  Result := S_OK;
 end;
 
 function TAutoCompleteSource.Next(celt: Integer; out elt;
@@ -1749,6 +1775,8 @@ begin
   end;
 end;
 
+{$ENDIF COMPILER7_UP}
+
 //=== { TDateHook } ==========================================================
 
 procedure TDateHook.Add;
@@ -1805,6 +1833,80 @@ end;
 {$ENDIF VCL}
 
 //=== { TJvCustomComboEdit } =================================================
+
+constructor TJvCustomComboEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csCaptureMouse];
+  //  AutoSize := False;   // Polaris
+  Height := 21;
+  FDirectInput := True;
+  FClickKey := scAltDown;
+  FPopupAlign := epaRight;
+  FBtnControl := TWinControl.Create(Self);
+  with FBtnControl do
+    ControlStyle := ControlStyle + [csReplicatable];
+  FBtnControl.Width := DefEditBtnWidth;
+  FBtnControl.Height := 17;
+  FBtnControl.Visible := True;
+  {$IFDEF VCL}
+  FBtnControl.Parent := Self;
+  {$IFDEF COMPILER6_UP}
+  FBtnControl.Align := alCustom;
+  {$ELSE}
+  FBtnControl.Align := alRight;
+  {$ENDIF COMPILER6_UP}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FBtnControl.Parent := Self.ClientArea;
+  FBtnControl.Left := Self.ClientArea.Width - DefEditBtnWidth;
+  Anchors := [akRight, akTop, akBottom];
+  {$ENDIF VisualCLX}
+  FButton := TJvEditButton.Create(Self);
+  FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
+  FButton.Visible := True;
+  FButton.Parent := FBtnControl;
+  FButton.Align := alClient;
+  TJvEditButton(FButton).OnClick := EditButtonClick;
+  FAlwaysEnableButton := False;
+  (* ++ RDB ++ *)
+  FDisabledColor := clWindow;
+  FDisabledTextColor := clGrayText;
+  FGroupIndex := -1;
+  FStreamedButtonWidth := -1;
+  FImageKind := ikCustom;
+  FImageIndex := -1;
+  FNumGlyphs := 1;
+  {$IFDEF VCL}
+  {$IFDEF COMPILER7_UP}
+  FAutoCompleteItems := TStringList.Create;
+  FAutoCompleteOptions := [];
+  CoInitialize(nil);
+  {$ENDIF COMPILER7_UP}
+  {$ENDIF VCL}
+  inherited OnKeyDown := LocalKeyDown;
+  (* -- RDB -- *)
+end;
+
+destructor TJvCustomComboEdit.Destroy;
+begin
+  PopupCloseUp(Self, False);
+  FButton.OnClick := nil;
+  {$IFDEF VCL}
+  {$IFDEF COMPILER7_UP}
+  FAutoCompleteSource := nil;
+  FAutoCompleteItems.Free;
+  FAutoCompleteIntf := nil;
+  {$ENDIF COMPILER7_UP}
+  {$ENDIF VCL}
+  inherited Destroy;
+  {$IFDEF VCL}
+  {$IFDEF COMPILER7_UP}
+  // call after WM_DESTROY
+  CoUninitialize;
+  {$ENDIF COMPILER7_UP}
+  {$ENDIF VCL}
+end;
 
 function TJvCustomComboEdit.AcceptPopup(var Value: Variant): Boolean;
 begin
@@ -1978,60 +2080,9 @@ end;
 
 {$ENDIF VCL}
 
-constructor TJvCustomComboEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csCaptureMouse];
-  //  AutoSize := False;   // Polaris
-  Height := 21;
-  FDirectInput := True;
-  FClickKey := scAltDown;
-  FPopupAlign := epaRight;
-  FBtnControl := TWinControl.Create(Self);
-  with FBtnControl do
-    ControlStyle := ControlStyle + [csReplicatable];
-  FBtnControl.Width := DefEditBtnWidth;
-  FBtnControl.Height := 17;
-  FBtnControl.Visible := True;
-  {$IFDEF VCL}
-  FBtnControl.Parent := Self;
-  {$IFDEF COMPILER6_UP}
-  FBtnControl.Align := alCustom;
-  {$ELSE}
-  FBtnControl.Align := alRight;
-  {$ENDIF COMPILER6_UP}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FBtnControl.Parent := Self.ClientArea;
-  FBtnControl.Left := Self.ClientArea.Width - DefEditBtnWidth;
-  Anchors := [akRight, akTop, akBottom];
-  {$ENDIF VisualCLX}
-  FButton := TJvEditButton.Create(Self);
-  FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
-  FButton.Visible := True;
-  FButton.Parent := FBtnControl;
-  FButton.Align := alClient;
-  TJvEditButton(FButton).OnClick := EditButtonClick;
-  FAlwaysEnableButton := False;
-  (* ++ RDB ++ *)
-  FDisabledColor := clWindow;
-  FDisabledTextColor := clGrayText;
-  FGroupIndex := -1;
-  FStreamedButtonWidth := -1;
-  FImageKind := ikCustom;
-  FImageIndex := -1;
-  FNumGlyphs := 1;
-  {$IFDEF VCL}
-  FAutoCompleteItems := TStringList.Create;
-  FAutoCompleteOptions := [];
-  CoInitialize(nil);
-  {$ENDIF VCL}
-  inherited OnKeyDown := LocalKeyDown;
-  (* -- RDB -- *)
-end;
-
 {$IFDEF VCL}
 
+{$IFDEF COMPILER7_UP}
 procedure TJvCustomComboEdit.CreateAutoComplete;
 begin
   if HandleAllocated and not (csDesigning in ComponentState) and
@@ -2041,13 +2092,14 @@ begin
     if Succeeded(CoCreateInstance(CLSID_AutoComplete, nil, CLSCTX_INPROC_SERVER,
       IID_IAutoComplete, FAutoCompleteIntf)) then
     begin
-      { Initialize the autocomplete object. } 
+      { Initialize the autocomplete object. }
       FAutoCompleteIntf.Init(Self.Handle, GetAutoCompleteSource, nil, nil);
     end
     else
       FAutoCompleteIntf := nil;
   end;
 end;
+{$ENDIF COMPILER7_UP}
 
 procedure TJvCustomComboEdit.CreateParams(var Params: TCreateParams);
 const
@@ -2078,21 +2130,27 @@ begin
   inherited CreateWnd;
   UpdateControls;
   UpdateMargins;
+  {$IFDEF COMPILER7_UP}
   if AutoCompleteOptions <> [] then
   begin
     CreateAutoComplete;
     UpdateAutoComplete;
   end;
+  {$ENDIF COMPILER7_UP}
 end;
 {$ENDIF VCL}
 
 {$IFDEF COMPILER6_UP}
+{$IFDEF VCL}
 procedure TJvCustomComboEdit.CustomAlignPosition(Control: TControl;
-  var NewLeft, NewTop, NewWidth, NewHeight: Integer; var AlignRect: TRect
-  {$IFDEF VCL}
-  ; AlignInfo: TAlignInfo
-  {$ENDIF VCL}
-  );
+  var NewLeft, NewTop, NewWidth, NewHeight: Integer;
+  var AlignRect: TRect; AlignInfo: TAlignInfo);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvCustomComboEdit.CustomAlignPosition(Control: TControl;
+  var NewLeft, NewTop, NewWidth, NewHeight: Integer;
+  var AlignRect: TRect ; AlignInfo: TAlignInfo);
+{$ENDIF VisualCLX}
 begin
   if Control = FBtnControl then
     UpdateBtnBounds(NewLeft, NewTop, NewWidth, NewHeight);
@@ -2120,22 +2178,6 @@ begin
   Filer.DefineProperty('GlyphKind', ReadGlyphKind, nil, False);
   {$IFDEF VCL}
   Filer.DefineProperty('Ctl3D', ReadCtl3D, nil, False);
-  {$ENDIF VCL}
-end;
-
-destructor TJvCustomComboEdit.Destroy;
-begin
-  PopupCloseUp(Self, False);
-  FButton.OnClick := nil;
-  {$IFDEF VCL}
-  FAutoCompleteSource := nil;
-  FAutoCompleteItems.Free;
-  FAutoCompleteIntf := nil;
-  {$ENDIF VCL}
-  inherited Destroy;
-  {$IFDEF VCL}
-  // call after WM_DESTROY
-  CoUninitialize;
   {$ENDIF VCL}
 end;
 
@@ -2252,10 +2294,12 @@ begin
 end;
 
 {$IFDEF VCL}
+{$IFDEF COMPILER7_UP}
 function TJvCustomComboEdit.GetAutoCompleteSource: IUnknown;
 begin
   Result := TAutoCompleteSource.Create(Self, 0);
 end;
+{$ENDIF COMPILER7_UP}
 {$ENDIF VCL}
 
 function TJvCustomComboEdit.GetButtonFlat: Boolean;
@@ -2741,6 +2785,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomComboEdit.SetAlignment(Value: TAlignment);
 begin
   if FAlignment <> Value then
@@ -2749,6 +2794,8 @@ begin
     RecreateWnd;
   end;
 end;
+
+{$IFDEF COMPILER7_UP}
 
 procedure TJvCustomComboEdit.SetAutoCompleteItems(Strings: TStrings);
 begin
@@ -2766,6 +2813,9 @@ begin
     UpdateAutoComplete;
   end;
 end;
+
+{$ENDIF COMPILER7_UP}
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
@@ -3038,6 +3088,7 @@ begin
 end;
 
 {$IFDEF VCL}
+{$IFDEF COMPILER7_UP}
 procedure TJvCustomComboEdit.UpdateAutoComplete;
 const
   cAutoCompleteOptionValues: array [TJvAutoCompleteOption] of DWORD =
@@ -3063,6 +3114,7 @@ begin
     end;
   end;
 end;
+{$ENDIF COMPILER7_UP}
 {$ENDIF VCL}
 
 {$IFDEF COMPILER6_UP}
@@ -3343,6 +3395,74 @@ end;
 
 //=== { TJvCustomDateEdit } ==================================================
 
+constructor TJvCustomDateEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  // Polaris
+  FDateAutoBetween := True;
+  FMinDate := NullDate;
+  FMaxDate := NullDate;
+
+  FBlanksChar := ' ';
+  FTitle := RsDateDlgCaption;
+  {$IFDEF VCL}
+  FPopupColor := clMenu;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FPopupColor := clWindow;
+  {$ENDIF VisualCLX}
+  //  FDefNumGlyphs := 2;
+  FStartOfWeek := Mon;
+  FWeekends := [Sun];
+  FWeekendColor := clRed;
+  FYearDigits := dyDefault;
+  FCalendarHints := TStringList.Create;
+  FCalendarHints.OnChange := CalendarHintsChanged;
+  {$IFDEF VCL}
+  DateHook.Add;
+  {$ENDIF VCL}
+
+  ControlState := ControlState + [csCreating];
+  try
+    UpdateFormat;
+    {$IFDEF DEFAULT_POPUP_CALENDAR}
+    FPopup := TJvPopupWindow(CreatePopupCalendar(Self,
+      {$IFDEF VCL}
+      BiDiMode,
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      bdLeftToRight,
+      {$ENDIF VisualCLX}
+      // Polaris
+      FMinDate, FMaxDate));
+    TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
+    TJvPopupWindow(FPopup).Color := FPopupColor;
+    {$ENDIF DEFAULT_POPUP_CALENDAR}
+    ImageKind := ikDefault; { force update }
+  finally
+    ControlState := ControlState - [csCreating];
+  end;
+end;
+
+destructor TJvCustomDateEdit.Destroy;
+begin
+  {$IFDEF VCL}
+  DateHook.Delete;
+  {$ENDIF VCL}
+
+  if FPopup is TJvPopupWindow then
+  begin
+    TJvPopupWindow(FPopup).OnCloseUp := nil;
+    FPopup.Parent := nil;
+  end;
+  FPopup.Free;
+  FPopup := nil;
+  FCalendarHints.OnChange := nil;
+  FCalendarHints.Free;
+  FCalendarHints := nil;
+  inherited Destroy;
+end;
+
 function TJvCustomDateEdit.AcceptPopup(var Value: Variant): Boolean;
 var
   d: TDateTime;
@@ -3425,55 +3545,6 @@ begin
   end;
 end;
 
-constructor TJvCustomDateEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  // Polaris
-  FDateAutoBetween := True;
-  FMinDate := NullDate;
-  FMaxDate := NullDate;
-
-  FBlanksChar := ' ';
-  FTitle := RsDateDlgCaption;
-  {$IFDEF VCL}
-  FPopupColor := clMenu;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FPopupColor := clWindow;
-  {$ENDIF VisualCLX}
-  //  FDefNumGlyphs := 2;
-  FStartOfWeek := Mon;
-  FWeekends := [Sun];
-  FWeekendColor := clRed;
-  FYearDigits := dyDefault;
-  FCalendarHints := TStringList.Create;
-  FCalendarHints.OnChange := CalendarHintsChanged;
-  {$IFDEF VCL}
-  DateHook.Add;
-  {$ENDIF VCL}
-
-  ControlState := ControlState + [csCreating];
-  try
-    UpdateFormat;
-    {$IFDEF DEFAULT_POPUP_CALENDAR}
-    FPopup := TJvPopupWindow(CreatePopupCalendar(Self,
-      {$IFDEF VCL}
-      BiDiMode,
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      bdLeftToRight,
-      {$ENDIF VisualCLX}
-      // Polaris
-      FMinDate, FMaxDate));
-    TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
-    TJvPopupWindow(FPopup).Color := FPopupColor;
-    {$ENDIF DEFAULT_POPUP_CALENDAR}
-    ImageKind := ikDefault; { force update }
-  finally
-    ControlState := ControlState - [csCreating];
-  end;
-end;
-
 {$IFDEF VisualCLX}
 procedure TJvCustomDateEdit.CreateWidget;
 begin
@@ -3507,25 +3578,6 @@ begin
   end;
 
   Result := GDateImageIndex;
-end;
-
-destructor TJvCustomDateEdit.Destroy;
-begin
-  {$IFDEF VCL}
-  DateHook.Delete;
-  {$ENDIF VCL}
-
-  if FPopup is TJvPopupWindow then
-  begin
-    TJvPopupWindow(FPopup).OnCloseUp := nil;
-    FPopup.Parent := nil;
-  end;
-  FPopup.Free;
-  FPopup := nil;
-  FCalendarHints.OnChange := nil;
-  FCalendarHints.Free;
-  FCalendarHints := nil;
-  inherited Destroy;
 end;
 
 procedure TJvCustomDateEdit.DoExit;
@@ -3972,7 +4024,9 @@ begin
   inherited Create(AOwner);
   {$IFDEF VCL}
   FOptions := [];
+  {$IFDEF COMPILER7_UP}
   FAutoCompleteFileOptions := [acfFileSystem, acfFileSysDirs];
+  {$ENDIF COMPILER7_UP}
   {$ENDIF VCL}
 end;
 
@@ -4124,20 +4178,20 @@ end;
 
 //=== { TJvEditButton } ======================================================
 
-procedure TJvEditButton.Click;
-begin
-  if not FNoAction then
-    inherited Click
-  else
-    FNoAction := False;
-end;
-
 constructor TJvEditButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FStandard := True; // Polaris
   ControlStyle := ControlStyle + [csReplicatable];
   ParentShowHint := True;
+end;
+
+procedure TJvEditButton.Click;
+begin
+  if not FNoAction then
+    inherited Click
+  else
+    FNoAction := False;
 end;
 
 function TJvEditButton.GetGlyph: TBitmap;
@@ -4265,6 +4319,24 @@ end;
 
 //=== { TJvFileDirEdit } =====================================================
 
+constructor TJvFileDirEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  {$IFDEF VCL}
+  OEMConvert := True;
+  FAcceptFiles := True;
+  {$IFDEF COMPILER7_UP}
+  FAutoCompleteOptions := [acoAutoSuggest];
+  {$ENDIF COMPILER7_UP}
+  {$ENDIF VCL}
+  ControlState := ControlState + [csCreating];
+  try
+    ImageKind := ikDefault; { force update }
+  finally
+    ControlState := ControlState - [csCreating];
+  end;
+end;
+
 procedure TJvFileDirEdit.ClearFileList;
 begin
 end;
@@ -4281,22 +4353,6 @@ begin
     Button.ImageIndex := DefaultImageIndex;
 end;
 {$ENDIF JVCLThemesEnabled}
-
-constructor TJvFileDirEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  {$IFDEF VCL}
-  OEMConvert := True;
-  FAcceptFiles := True;
-  FAutoCompleteOptions := [acoAutoSuggest];
-  {$ENDIF VCL}
-  ControlState := ControlState + [csCreating];
-  try
-    ImageKind := ikDefault; { force update }
-  finally
-    ControlState := ControlState - [csCreating];
-  end;
-end;
 
 {$IFDEF VCL}
 
@@ -4347,13 +4403,14 @@ end;
 
 {$IFDEF VCL}
 
+{$IFDEF COMPILER7_UP}
 function TJvFileDirEdit.GetAutoCompleteSource: IUnknown;
 begin
   if Failed(CoCreateInstance(CLSID_ACLMulti, nil, CLSCTX_INPROC_SERVER, IID_IUnknown, FAutoCompleteSourceIntf)) then
     FAutoCompleteSourceIntf := nil;
-
   Result := FAutoCompleteSourceIntf;
 end;
+{$ENDIF COMPILER7_UP}
 
 procedure TJvFileDirEdit.SetAcceptFiles(Value: Boolean);
 begin
@@ -4364,8 +4421,8 @@ begin
   end;
 end;
 
-procedure TJvFileDirEdit.SetAutoCompleteFileOptions(
-  const Value: TJvAutoCompleteFileOptions);
+{$IFDEF COMPILER7_UP}
+procedure TJvFileDirEdit.SetAutoCompleteFileOptions(const Value: TJvAutoCompleteFileOptions);
 begin
   if FAutoCompleteFileOptions <> Value then
   begin
@@ -4375,6 +4432,7 @@ begin
       UpdateAutoComplete;
   end;
 end;
+{$ENDIF COMPILER7_UP}
 
 procedure TJvFileDirEdit.SetDragAccept(Value: Boolean);
 begin
@@ -4382,6 +4440,7 @@ begin
     DragAcceptFiles(Handle, Value);
 end;
 
+{$IFDEF COMPILER7_UP}
 procedure TJvFileDirEdit.UpdateAutoComplete;
 var
   ObjMgr: IObjMgr;
@@ -4445,6 +4504,7 @@ begin
 
   inherited UpdateAutoComplete;
 end;
+{$ENDIF COMPILER7_UP}
 
 procedure TJvFileDirEdit.WMDropFiles(var Msg: TWMDropFiles);
 var
@@ -4476,19 +4536,21 @@ end;
 
 //=== { TJvFilenameEdit } ====================================================
 
-procedure TJvFilenameEdit.ClearFileList;
-begin
-  FDialog.Files.Clear;
-end;
-
 constructor TJvFilenameEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAddQuotes := True;
   {$IFDEF VCL}
+  {$IFDEF COMPILER7_UP}
   FAutoCompleteFileOptions := [acfFileSystem];
+  {$ENDIF COMPILER7_UP}
   {$ENDIF VCL}
   CreateEditDialog;
+end;
+
+procedure TJvFilenameEdit.ClearFileList;
+begin
+  FDialog.Files.Clear;
 end;
 
 procedure TJvFilenameEdit.CreateEditDialog;
@@ -4775,12 +4837,6 @@ end;
 
 //=== { TJvPopupWindow } =====================================================
 
-procedure TJvPopupWindow.CloseUp(Accept: Boolean);
-begin
-  if Assigned(FCloseUp) then
-    FCloseUp(Self, Accept);
-end;
-
 constructor TJvPopupWindow.Create(AOwner: TComponent);
 begin
   // (p3) have to use CreateNew for VCL as well since there is no dfm
@@ -4795,6 +4851,12 @@ begin
   // use same size on small and large font:
   Scaled := False;
   {$ENDIF VCL}
+end;
+
+procedure TJvPopupWindow.CloseUp(Accept: Boolean);
+begin
+  if Assigned(FCloseUp) then
+    FCloseUp(Self, Accept);
 end;
 
 {$IFDEF VCL}
