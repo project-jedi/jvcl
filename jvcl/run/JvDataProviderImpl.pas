@@ -840,6 +840,10 @@ type
   TJvDataConsumerAggregatedObject = class(TAggregatedPersistentEx)
   protected
     StreamedInWithoutProvider: Boolean;
+    procedure DataProviderChanging(ADataProvider: IJvDataProvider;
+      AReason: TDataProviderChangeReason; Source: IUnknown); virtual;
+    procedure DataProviderChanged(ADataProvider: IJvDataProvider;
+      AReason: TDataProviderChangeReason; Source: IUnknown); virtual;
     { Called when the Provider/Context are set and NotifyFixups has been called earlier. It doesn't
       matter which sub service called NotifyFixups, all services are notified if the
       provider/context are set. }
@@ -906,20 +910,15 @@ type
   private
     FItemID: TJvDataItemID;
     FItem: IJvDataItem;
-    FNotifier: TJvProviderNotification;
   protected
     procedure Fixup; override;
-    procedure ProviderChanging; override;
-    procedure ProviderChanged; override;
     function GetItem: TJvDataItemID;
     procedure SetItem(Value: TJvDataItemID);
     procedure DataProviderChanging(ADataProvider: IJvDataProvider;
-      AReason: TDataProviderChangeReason; Source: IUnknown);
+      AReason: TDataProviderChangeReason; Source: IUnknown); override;
     procedure DataProviderChanged(ADataProvider: IJvDataProvider;
-      AReason: TDataProviderChangeReason; Source: IUnknown);
+      AReason: TDataProviderChangeReason; Source: IUnknown); override;
   public
-    constructor Create(AOwner: TExtensibleInterfacedPersistent); override;
-    destructor Destroy; override;
     function GetItemIntf: IJvDataItem;
     procedure SetItemIntf(Value: IJvDataItem);
   published
@@ -931,7 +930,6 @@ type
   private
     FAutoExpandLevel: Integer;
     FExpandOnNewItem: Boolean;
-    FNotifier: TJvProviderNotification;
     FLevelIndent: Integer;
   protected
     function KeepOnProviderChange: Boolean; override;
@@ -940,9 +938,9 @@ type
     procedure ContextChanged; override;
     procedure ViewChanged(AExtension: TJvDataConsumerAggregatedObject); override;
     procedure DataProviderChanging(ADataProvider: IJvDataProvider;
-      AReason: TDataProviderChangeReason; Source: IUnknown);
+      AReason: TDataProviderChangeReason; Source: IUnknown); override;
     procedure DataProviderChanged(ADataProvider: IJvDataProvider;
-      AReason: TDataProviderChangeReason; Source: IUnknown);
+      AReason: TDataProviderChangeReason; Source: IUnknown); override;
     function InternalItemSibling(ParentIndex: Integer; var ScanIndex: Integer): Integer;
     function Get_AutoExpandLevel: Integer;
     procedure Set_AutoExpandLevel(Value: Integer);
@@ -968,7 +966,6 @@ type
     procedure RebuildView; virtual;
   public
     constructor Create(AOwner: TExtensibleInterfacedPersistent); override;
-    destructor Destroy; override;
     procedure ExpandTreeTo(Item: IJvDataItem); virtual;
     { Toggles an item's expanded state. If an item becomes expanded, the item's sub item as present
       in the IJvDataItems instance will be added; if an item becomes collapsed the sub items are
@@ -4038,16 +4035,24 @@ end;
 
 procedure TJvDataConsumer.DataProviderChanging(const ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
+var
+  I: Integer;
 begin
   DoProviderChanging(ADataProvider, AReason, Source);
+  for I := 0 to ExtensionCount - 1 do
+    Extension(I).DataProviderChanging(ADataProvider, AReason, Source);
   if AReason = pcrDestroy then
     Provider := nil;
 end;
 
 procedure TJvDataConsumer.DataProviderChanged(const ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
+var
+  I: Integer;
 begin
   DoProviderChanged(ADataProvider, AReason, Source);
+  for I := 0 to ExtensionCount - 1 do
+    Extension(I).DataProviderChanged(ADataProvider, AReason, Source);
   if AReason = pcrFullRefresh then
     ViewChanged(nil)
   else
@@ -4181,6 +4186,16 @@ end;
 
 { TJvDataConsumerAggregatedObject }
 
+procedure TJvDataConsumerAggregatedObject.DataProviderChanging(ADataProvider: IJvDataProvider;
+  AReason: TDataProviderChangeReason; Source: IUnknown);
+begin
+end;
+
+procedure TJvDataConsumerAggregatedObject.DataProviderChanged(ADataProvider: IJvDataProvider;
+  AReason: TDataProviderChangeReason; Source: IUnknown);
+begin
+end;
+
 procedure TJvDataConsumerAggregatedObject.Fixup;
 begin
 end;
@@ -4289,18 +4304,6 @@ procedure TJvDataConsumerItemSelect.Fixup;
 begin
   SetItem(FItemID);
   FItemID := '';
-  if FNotifier <> nil then
-    FNotifier.Provider := ConsumerImpl.ProviderIntf;
-end;
-
-procedure TJvDataConsumerItemSelect.ProviderChanging;
-begin
-end;
-
-procedure TJvDataConsumerItemSelect.ProviderChanged;
-begin
-  if FNotifier <> nil then
-    FNotifier.Provider := ConsumerImpl.ProviderIntf;
 end;
 
 function TJvDataConsumerItemSelect.GetItem: TJvDataItemID;
@@ -4375,21 +4378,6 @@ procedure TJvDataConsumerItemSelect.DataProviderChanged(ADataProvider: IJvDataPr
 begin
 end;
 
-constructor TJvDataConsumerItemSelect.Create(AOwner: TExtensibleInterfacedPersistent);
-begin
-  inherited Create(AOwner);
-  FNotifier := TJvProviderNotification.Create;
-  FNotifier.OnChanging := DataProviderChanging;
-  FNotifier.OnChanged := DataProviderChanged;
-  FNotifier.Provider := ConsumerImpl.ProviderIntf;
-end;
-
-destructor TJvDataConsumerItemSelect.Destroy;
-begin
-  FreeAndNil(FNotifier);
-  inherited Destroy;
-end;
-
 function TJvDataConsumerItemSelect.GetItemIntf: IJvDataItem;
 begin
   Result := FItem;
@@ -4401,7 +4389,6 @@ begin
   begin
     FItem := Value;
     NotifyViewChanged;
-//    Changed;
   end;
 end;
 
@@ -4419,8 +4406,6 @@ end;
 
 procedure TJvCustomDataConsumerViewList.ProviderChanged;
 begin
-  if FNotifier <> nil then
-    FNotifier.Provider := ConsumerImpl.ProviderIntf;
   RebuildView;
 end;
 
@@ -4437,7 +4422,6 @@ end;
 procedure TJvCustomDataConsumerViewList.DataProviderChanging(ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
 var
-  Item: IJvDataItem;
   ItemIdx: Integer;
 begin
   case AReason of
@@ -4448,11 +4432,9 @@ begin
         begin
           ConsumerImpl.Enter;
           try
-            Item := (ConsumerImpl.ProviderIntf.GetItems as IJvDataIDSearch).Find(
-              IJvDataItem(Source).GetID, True);
-            if (Item <> nil) then
+            if IJvDataItem(Source) <> nil then
             begin
-              ItemIdx := IndexOfItem(Item);
+              ItemIdx := IndexOfItem(IJvDataItem(Source));
               if ItemIdx >= 0 then
               begin
                 DeleteItem(ItemIdx);
@@ -4470,7 +4452,6 @@ end;
 procedure TJvCustomDataConsumerViewList.DataProviderChanged(ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
 var
-  Item: IJvDataItem;
   ParItem: IJvDataItem;
   ParIdx: Integer;
 begin
@@ -4482,11 +4463,9 @@ begin
         begin
           ConsumerImpl.Enter;
           try
-            Item := (ConsumerImpl.ProviderIntf.GetItems as IJvDataIDSearch).Find(
-              IJvDataItem(Source).GetID, True);
-            if (Item <> nil) then
+            if IJvDataItem(Source) <> nil then
             begin
-              ParItem := Item.GetItems.GetParent;
+              ParItem := IJvDataItem(Source).GetItems.GetParent;
               if ParItem <> nil then
               begin
                 ParIdx := IndexOfItem(ParItem);
@@ -4502,18 +4481,19 @@ begin
                   begin
                     // Expand parent item; will retrieve all sub items, including the newly added item
                     if not ItemHasChildren(ParIdx) then
-                      UpdateItemFlags(ParIdx, vifHasChildren + vifCanHaveChildren, vifHasChildren + vifCanHaveChildren);
+                      UpdateItemFlags(ParIdx, vifHasChildren + vifCanHaveChildren,
+                        vifHasChildren + vifCanHaveChildren);
                     ToggleItem(ParIdx);
                   end
                   else if ItemIsExpanded(ParIdx) then
                     // parent is expanded, add the new item to the view.
-                    AddChildItem(ParIdx, Item);
+                    AddChildItem(ParIdx, IJvDataItem(Source));
                 end;
               end
               else
               begin
                 // Item at the root; always add it
-                AddChildItem(-1, IJvDataItem(Item));
+                AddChildItem(-1, IJvDataItem(Source));
                 NotifyViewChanged;
               end;
             end;
@@ -4605,19 +4585,9 @@ end;
 constructor TJvCustomDataConsumerViewList.Create(AOwner: TExtensibleInterfacedPersistent);
 begin
   inherited Create(AOwner);
-  FNotifier := TJvProviderNotification.Create;
-  FNotifier.OnChanging := DataProviderChanging;
-  FNotifier.OnChanged := DataProviderChanged;
-  FNotifier.Provider := ConsumerImpl.ProviderIntf;
   FLevelIndent := 16;
   if ConsumerImpl.ProviderIntf <> nil then
     RebuildView;
-end;
-
-destructor TJvCustomDataConsumerViewList.Destroy;
-begin
-  FreeAndNil(FNotifier);
-  inherited Destroy;
 end;
 
 procedure TJvCustomDataConsumerViewList.ExpandTreeTo(Item: IJvDataItem);
@@ -5388,7 +5358,7 @@ initialization
     // Item related
     TJvBaseDataItem, TJvDataItemTextImpl, TJvDataItemImageImpl,
     // Consumer related
-    TJvDataConsumer, TJvDataConsumerItemSelect, 
+    TJvDataConsumer, TJvDataConsumerItemSelect,
     // Context list related
     TJvDataContexts,
     // Context related
