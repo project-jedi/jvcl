@@ -3,8 +3,8 @@ object Form4: TForm4
   Top = 142
   BorderStyle = bsDialog
   Caption = 'Form4'
-  ClientHeight = 517
-  ClientWidth = 770
+  ClientHeight = 331
+  ClientWidth = 642
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,4 +16,10 @@ object Form4: TForm4
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object Timer1: TTimer
+    Interval = 400
+    OnTimer = Timer1Timer
+    Left = 45
+    Top = 25
+  end
 end

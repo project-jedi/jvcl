@@ -3,7 +3,7 @@ unit JvLEDDisplays;
 interface
 
 uses
-  SysUtils, Windows, Classes, Graphics,
+  SysUtils, Windows, Classes, Graphics, Messages,
   JvComponent;
 
 
@@ -93,6 +93,7 @@ type
     FDigitHeight: Integer;
     FDigits: TList;
     FDigitWidth: Integer;
+    FImg: TBitmap;
     FKind: TJvSegmentLEDKind;
     FSegmentWidth: Integer;
     FSpacing: Integer;
@@ -118,6 +119,8 @@ type
     property Kind: TJvSegmentLEDKind read FKind write SetKind;
     property SegmentWidth: Integer read FSegmentWidth write FSegmentWidth;
     property Spacing: Integer read FSpacing write FSpacing;
+
+    procedure WMEraseBkGnd(var M: TMessage); message WM_ERASEBKGND;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -156,7 +159,7 @@ type
     procedure SetSegmentState(I: Integer; Value: Boolean);
     procedure SetUseDP(Value: Boolean);
 
-    procedure Paint;
+    procedure Paint(ACanvas: TCanvas);
 
     procedure SetChar7(Ch: Char);
     procedure SetChar16(Ch: Char);
@@ -178,11 +181,49 @@ implementation
 uses
   contnrs;
 
+const
+  MapChToSeg7: string =
+    ' =|0=ABCDEF|1=BC|2=ABDEG|3=ABCDG|4=BCFG|5=ACDFG|6=ACDEFG|7=ABC|8=ABCDEFG|9=ABCDFG|' +
+    'A=ABCEFG|a=ABCEFG|B=CDEFG|b=CDEFG|C=ADEF|c=DEG|D=BCDEG|d=BCDEG|E=ADEFG|e=ADEFG|' +
+    'F=AEFG|f=AEFG|H=BCEFG|h=CEFG|L=DEF|l=DEF|O=CDEG|o=CDEG|P=ABEFG|p=ABEFG|R=EG|r=EG|' +
+    '''=F|"=BF|'#248'=ABFG|-=G';
+
+  MapChToSeg16: string =
+    ' =|0=ABCDEF|1=BC|2=ABDEG|3=ABCDG|4=BCFG|5=ACDFG|6=ACDEFG|7=ABC|8=ABCDEFG|9=ABCDFG|' +
+    #0'=ABCDEFKN|'#4'=FGJM|''=J|"=BJ|'#248'=A2BJG2|-=G|+=GJM|(=KL|)=HN|*=GHJKLMN|/=KN|\=HL|' +
+    'A=ABCEFG|B=ABCDG2JM|C=ADEF|D=ABCDJM|E=ADEFG1|F=AEFG1|G=ACDEFG2|H=BCEFG|I=ADJM|J=ABCDE|' +
+    'K=EFG1KL|L=EFD|M=BCEFHK|N=BCEFHL|O=ABCDEF|P=ABEFG|Q=ABCDEFL|R=ABEFGL|S=ACDFG|T=AJM|' +
+    'U=BCDEF|V=EFKN|W=BCEFLN|X=HKLN|Y=HKM|Z=ADKN';
+
+  SegNames14: array[0..13] of string = (
+    'A',  'B',  'C',  'D',  'E',  'F', 'G1',
+    'G2', 'H',  'J',  'K',  'L',  'M',  'N'
+  );
+
+  SegNames16: array[0..15] of string = (
+    'A1', 'A2', 'B',  'C',  'D1', 'D2', 'E',  'F',
+    'G1', 'G2', 'H',  'J',  'K',  'L',  'M',  'N'
+  );
+  
 function TextIndex(const Str: string; const Strings: array of string; const PartialAllowed: Boolean = False): Integer;
 begin
   Result := High(Strings);
   while (Result > -1) and not AnsiSameText(Str, Strings[Result]) and (not PartialAllowed or not AnsiSameText(Str, Copy(Strings[Result], 1, Length(Str)))) do
     Dec(Result);
+end;
+
+function CharToSegString(const Ch: Char; const SegData: string): string;
+var
+  IStart: Integer;
+  IEnd: Integer;
+begin
+  IStart := Pos(Ch + '=', SegData);
+  if IStart = 0 then
+    raise Exception.Create('Invalid character ''' + Ch + '''');
+  IEnd := IStart + 2;
+  While (IEnd <= Length(SegData)) and (SegData[IEnd] <> '|') do
+    Inc(IEnd);
+  Result := Copy(SegData, IStart + 2, IEnd - IStart - 2);
 end;
 
 function TJvCustomSegmentLEDDisplay.GetDigit(I: Integer): TJvSegmentLEDDigit;
@@ -211,8 +252,8 @@ begin
       while Value > DigitCount do
         FDigits.Add(TJvSegmentLEDDigit.Create(Self, DigitCount));
 //    CountChanged;
-    Width := DigitCount * DigitWidth;
-    Height := DigitHeight;
+    ClientWidth := DigitCount * DigitWidth;
+    ClientHeight := DigitHeight;
     Invalidate;
   end;
 end;
@@ -256,8 +297,24 @@ procedure TJvCustomSegmentLEDDisplay.Paint;
 var
   I: Integer;
 begin
-  for I := 0 to DigitCount - 1 do
-    Digit[I].Paint;
+  if not (csDestroying in ComponentState) then
+  begin
+    FImg.Handle := CreateCompatibleBitmap(Canvas.Handle, ClientWidth, ClientHeight);
+    with FImg.Canvas do
+    begin
+      Brush.Color := Color;
+      Pen.Color := Color;
+      Rectangle(0, 0, ClientWidth + 1, ClientHeight + 1);
+    end;
+    for I := 0 to DigitCount - 1 do
+      Digit[I].Paint(FImg.Canvas);
+    BitBlt(Canvas.Handle, 0, 0, ClientWidth, ClientHeight, FImg.Canvas.Handle, 0, 0, SRCCOPY);
+  end;
+end;
+
+procedure TJvCustomSegmentLEDDisplay.WMEraseBkGnd(var M: TMessage);
+begin
+  M.Result := 1;
 end;
 
 constructor TJvCustomSegmentLEDDisplay.Create(AOwner: TComponent);
@@ -267,12 +324,14 @@ begin
   FDigitHeight := 40;
   FDigitWidth := 24;
   FSpacing := 2;
-  FSegmentWidth := 2; 
+  FSegmentWidth := 2;
+  FImg := TBitmap.Create;
 end;
 
 destructor TJvCustomSegmentLEDDisplay.Destroy;
 begin
   FDigits.Free;
+  FImg.Free;
   inherited Destroy;
 end;
 
@@ -289,23 +348,15 @@ begin
   end
   else
     DigitCount := Length(S);
+  if Length(S) < DigitCount then
+    S := S + StringOfChar(' ', DigitCount - Length(S));
   for I := 0 to DigitCount - 1 do
     Digit[I].SetChar(S[I + 1]);
+  Invalidate;
 end;
 
 //===TJvSegmentLEDDigit=============================================================================
 
-const
-  SegNames14: array[0..13] of string = (
-    'A',  'B',  'C',  'D',  'E',  'F', 'G1',
-    'G2', 'H',  'J',  'K',  'L',  'M',  'N'
-  );
-const
-  SegNames16: array[0..15] of string = (
-    'A1', 'A2', 'B',  'C',  'D1', 'D2', 'E',  'F',
-    'G1', 'G2', 'H',  'J',  'K',  'L',  'M',  'N'
-  );
-  
 function TJvSegmentLEDDigit.GetSegments: string;
 var
   I: Integer;
@@ -421,7 +472,7 @@ begin
   end;
 end;
 
-procedure TJvSegmentLEDDigit.Paint;
+procedure TJvSegmentLEDDigit.Paint(ACanvas: TCanvas);
 var
   S,
   SX,
@@ -442,17 +493,17 @@ var
     begin
       if StateOn then
       begin
-        Canvas.Brush.Color := ColorOn;
-        Canvas.Pen.Color := ColorOn;
+        ACanvas.Brush.Color := ColorOn;
+        ACanvas.Pen.Color := ColorOn;
       end
       else
       begin
-        Canvas.Brush.Color := ColorOff;
-        Canvas.Pen.Color := ColorOff;
+        ACanvas.Brush.Color := ColorOff;
+        ACanvas.Pen.Color := ColorOff;
       end;
     end;
   end;
-  
+
 begin
   with Display do
   begin
@@ -470,13 +521,8 @@ begin
   X6 := Z1 - X3 - Z;
   X7 := Z1 + X3 + Z;
 
-  with Display.Canvas do
+  with ACanvas do
   begin
-    Brush.Color := Display.Color;
-    Pen.Color := Display.Color;
-
-    Rectangle(SX - S, 0, SX - S + Display.DigitWidth, Display.DigitHeight);
-
     if Display.Kind in [slk7, slk14] then
     begin
       InitColor(FSegments[0]);
@@ -668,79 +714,12 @@ end;
 
 procedure TJvSegmentLEDDigit.SetChar7(Ch: Char);
 begin
-  if not (Upcase(Ch) in [' ', '0' .. '9', 'A' .. 'F', 'H', 'L', 'O', 'P', 'R', '''', '"', #248, '-']) then
-    raise Exception.Create('Invalid character ''' + Ch + '''');
-  FSegments[0] := (Upcase(Ch) in ['0', '2', '3', '5' .. '9', 'A', 'E', 'F', 'P', #248]) or (Ch = 'C'); // a
-  FSegments[1] := UpCase(Ch) in ['0' .. '4', '7' .. '9', 'A', 'D', 'H', 'P', '"', #248]; // b
-  FSegments[2] := UpCase(Ch) in ['0', '1', '3' .. '9', 'A', 'B', 'D', 'H', 'O']; // c
-  FSegments[3] := UpCase(Ch) in ['0', '2', '3', '5', '6', '8', '9', 'B' .. 'E', 'L', 'O']; // d
-  FSegments[4] := UpCase(Ch) in ['0', '2', '6', '8', 'A' .. 'F', 'H', 'L', 'O', 'P', 'R']; // e
-  FSegments[5] := (UpCase(Ch) in ['0', '4' .. '6', '8', '9', 'A', 'B', 'E', 'F', 'H', 'L', 'P', '''', '"', #248]) or (Ch = 'C'); // f
-  FSegments[6] := Ch in ['2' .. '6', '8', '9', 'A', 'B', 'D' .. 'F', 'a' .. 'f', 'H', 'h', 'O', 'o', 'P', 'p', 'R', 'r', #248, '-']; // g
+  Segments := CharToSegString(Ch, MapChToSeg7);
 end;
 
-const
-  ChMapToSegStr: array[#0.. #255] of string = (
-    'ABCDEFKN', '0',        '0',        '0',        'FGJM',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '',         '0',        'BJ',
-    '0',        '0',        '0',        '0',        'J',
-    'KL',       'HN',       'GHJKLMN',  'GJM',      '0',
-    'G',        '0',        'KN',       'ABCDEF',   'BC',
-    'ABDEG',    'ABCDG',    'BCFG',     'ACDFG',    'ACDEFG',
-    'ABC',      'ABCDEFG',  'ABCDFG',   '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    'ABCEFG',   'ABCDG2JM', 'ADEF',     'ABCDJM',   'ADEFG1',
-    'AEFG1',     'ACDEFG2',  'BCEFG',    'ADJM',     'ABCDE',
-    'EFG1KL',   'EFD',      'BCEFHK',   'BCEFHL',   'ABCDEF',
-    'ABEFG',    'ABCDEFL',  'ABEFGL',   'ACDFG',    'AJM',
-    'BCDEF',    'EFKN',     'BCEFLN',   'HKLN',     'HKM',
-    'ADKN',     '0',        'HL',       '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        'A2BG2J',   '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0'
-  );
-  
 procedure TJvSegmentLEDDigit.SetChar16(Ch: Char);
 begin
-  if ChMapToSegStr[Ch] = '0' then
-    raise Exception.Create('Invalid character')
-  else
-    Segments := ChMapToSegStr[Ch];
+  Segments := CharToSegString(Ch, MapChToSeg16);
 end;
 
 constructor TJvSegmentLEDDigit.Create(ADisplay: TJvCustomSegmentLEDDisplay; ADigitIndex: Integer);
@@ -753,8 +732,6 @@ end;
 
 procedure TJvSegmentLEDDigit.SetChar(const Ch: Char);
 begin
-{  if Ch < ' ' then
-    raise Exception.Create('Invalid character');}
   if Display.Kind = slk7 then
     SetChar7(Ch)
   else

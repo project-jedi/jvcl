@@ -4,13 +4,16 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvLEDDisplays;
+  JvLEDDisplays, ExtCtrls;
 
 type
   TForm4 = class(TForm)
+    Timer1: TTimer;
     procedure FormCreate(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   private
     { Private declarations }
+    JVCLOn: Boolean;
     FLEDDisplay: TJvSegmentLEDDisplay;
     FLEDDisplay16: TJvSegmentLEDDisplay;
     FLEDDisplay16_2: TJvSegmentLEDDisplay;
@@ -32,16 +35,15 @@ const
   clOrangeOff = $00004264;
   clLimeOff = $00006400;
   clRedOff = $00000064;
-  
+
 procedure TForm4.FormCreate(Sender: TObject);
 begin
   FLEDDisplay := TJvSegmentLEDDisplay.Create(Self);
   with FLEDDisplay do
   begin
-    DigitHeight := 40;
-    DigitWidth := 24;
+    DigitHeight := 32;
+    DigitWidth := 20;
     SegmentWidth := 2;
-    DigitCount := 5;
     Color := clBlack;
     ColorOn := clRed;
     ColorOff := clRedOff;
@@ -54,8 +56,8 @@ begin
   FLEDDisplay16 := TJvSegmentLEDDisplay.Create(Self);
   with FLEDDisplay16 do
   begin
-    DigitHeight := 88;
-    DigitWidth := 48;
+    DigitHeight := 64;
+    DigitWidth := 40;
     SegmentWidth := 2;
     Kind := slk16;
     Color := clBlack;
@@ -69,8 +71,8 @@ begin
   FLEDDisplay16_2 := TJvSegmentLEDDisplay.Create(Self);
   with FLEDDisplay16_2 do
   begin
-    DigitHeight := 88;
-    DigitWidth := 48;
+    DigitHeight := 64;
+    DigitWidth := 40;
     SegmentWidth := 2;
     Kind := slk16;
     Color := clBlack;
@@ -84,8 +86,8 @@ begin
   FLEDDisplay16_3 := TJvSegmentLEDDisplay.Create(Self);
   with FLEDDisplay16_3 do
   begin
-    DigitHeight := 88;
-    DigitWidth := 48;
+    DigitHeight := 64;
+    DigitWidth := 40;
     SegmentWidth := 2;
     Kind := slk16;
     Color := clBlack;
@@ -93,14 +95,14 @@ begin
     ColorOff := clLimeOff;
     Top := FLEDDisplay16_2.Top + FLEDDisplay16_2.Height;// + 16;
     Parent := Self;
-    DisplayString('QRSTUVWXYZ +-()*'{#248'+*()/'}, True);
+    DisplayString('QRSTUVWXYZ +-()*', True);
   end;
 
   FLEDDisplayJVCL := TJvSegmentLEDDisplay.Create(Self);
   with FLEDDisplayJVCL do
   begin
-    DigitHeight := 196;
-    DigitWidth := 96;
+    DigitHeight := 88;
+    DigitWidth := 64;
     SegmentWidth := 4;
     Kind := slk14;
     Color := clBlack;
@@ -108,8 +110,23 @@ begin
     ColorOff := clOrangeOff;
     Top := FLEDDisplay16_3.Top + FLEDDisplay16_3.Height + 8;
     Parent := Self;
-    DisplayString('JEDI-VCL', True);
+    DisplayString(' JEDI-VCL ', True);
+    JVCLOn := True;
   end;
+end;
+
+procedure TForm4.Timer1Timer(Sender: TObject);
+begin
+  if JVCLOn then
+  begin
+    FLEDDisplayJVCL.DisplayString('');
+    JVCLOn := False;
+  end
+  else
+  begin
+    FLEDDisplayJVCL.DisplayString(' JEDI-VCL');
+    JVCLOn := True;
+  end
 end;
 
 end.
