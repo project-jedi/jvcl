@@ -153,8 +153,6 @@ type
     function GetDefaultStoredValue(const Name: string;
       Default: Variant): Variant;
     procedure SetDefaultStoredValue(const Name: string; Default: Variant; const Value: Variant);
-    procedure DoReadOptions(Reader: TReader);
-    procedure DoWriteOptions(Writer: TWriter);
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -163,8 +161,6 @@ type
     procedure SaveProperties; virtual;
     procedure RestoreProperties; virtual;
     procedure WriteState(Writer: TWriter); override;
-    procedure DefineProperties(Filer: TFiler); override;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1139,30 +1135,6 @@ begin
   while (i > 0) and (Result[i] = '\') do
     Dec(i);
   SetLength(Result,i);
-end;
-
-procedure TJvFormStorage.DoReadOptions(Reader:TReader);
-var EnumName:string;
-begin
-  if Reader.NextValue = vaSet then
-  begin
-    EnumName := Reader.ReadStr;
-    if Pos('fpPosition',EnumName) > 0 then
-    begin
-      Options := Options + [fpSize, fpLocation];
-    end;
-  end;
-end;
-
-procedure TJvFormStorage.DoWriteOptions(Writer:TWriter);
-begin
-  inherited;
-end;
-
-procedure TJvFormStorage.DefineProperties(Filer: TFiler);
-begin
-  Filer.DefineProperty('Options',DoReadOptions, DoWriteOptions, true);
-  inherited;
 end;
 
 end.
