@@ -14,10 +14,10 @@ JVCLInfo
   GROUP=JVCL.FormsAndApp.Application.HotKeys
   FLAG=Component
 Summary
-  Registers an application wide hot key combination.
+  Registers a system wide hot key combination.
 Description
-  The TJvApplicationHotKey components allows you to register an application wide hot key
-  combination. When that key combination is pressed an event is generated.
+  The TJvApplicationHotKey components allows you to register a system wide hot key
+  combination. When the key combination is pressed an event is generated.
 
   To use this component you should:
 
@@ -71,7 +71,7 @@ Summary
 Description
   \Write an OnHotKeyRegisterFailed event handler to respond when the registration of a hot key
   combination failed. The registration fails if the keystrokes specified for the hot key have already
-  been registered by another hot key.
+  been registered by another application.
 
   Change the \HotKey parameter to a new combination to try to register this new combination. By not
   changing \HotKey you cancel the registration attempt for this hot key.
