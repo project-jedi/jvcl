@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2003-11-16:
+- Updated the package generator // olivier
+- Finished creating the xml files for all packages. // olivier
 2003-11-15:
 - Changed the xml format for the packages generator so that it's easier to read. // olivier
 2003-11-13:
