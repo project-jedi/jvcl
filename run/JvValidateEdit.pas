@@ -95,8 +95,9 @@ type
     FDisplayPrefix: string;
     FDisplaySuffix: string;
     FCriticalPoints: TJvValidateEditCriticalPoints;
-    StandardFontColor: TColor;
+    FStandardFontColor: TColor;
     FAutoAlignment: Boolean;
+    FOldFontChange:TNotifyEvent;
     procedure SetText(NewValue: TCaption);
     function GetText: TCaption;
     procedure DisplayText;
@@ -277,7 +278,8 @@ begin
   FHasMinValue := False;
   FHasMaxValue := False;
   FZeroEmpty := False;
-  StandardFontColor := Font.Color;
+  FStandardFontColor := Font.Color;
+  FOldFontChange := Font.OnChange;
   Font.OnChange := FontChange;
 end;
 
@@ -906,19 +908,19 @@ procedure TJvCustomValidateEdit.SetFontColor;
 begin
   Font.OnChange := nil;
   case FCriticalPoints.CheckPoints of
-    cpNone: Font.Color := StandardFontColor;
+    cpNone: Font.Color := FStandardFontColor;
     cpMaxValue:
       if AsFloat > FCriticalPoints.MaxValue then
         Font.Color := FCriticalPoints.ColorAbove
       else
-        Font.Color := StandardFontColor;
+        Font.Color := FStandardFontColor;
     cpBoth:
       if AsFloat > FCriticalPoints.MaxValue then
         Font.Color := FCriticalPoints.ColorAbove
       else if AsFloat < FCriticalPoints.MinValue then
         Font.Color := FCriticalPoints.ColorBelow
       else
-        Font.Color := StandardFontColor;
+        Font.Color := FStandardFontColor;
   end;
   Font.OnChange := FontChange;
   Invalidate;
@@ -926,7 +928,9 @@ end;
 
 procedure TJvCustomValidateEdit.FontChange(Sender: TObject);
 begin
-  StandardFontColor := Font.Color;
+  FStandardFontColor := Font.Color;
+  if Assigned(FOldFontChange) then
+    FOldFontChange(Sender);
 end;
 
 procedure TJvCustomValidateEdit.EnforceMaxValue;
