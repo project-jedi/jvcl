@@ -488,7 +488,8 @@ type
     property OnItemValueChanged;
     property OnItemEdit; // NEW!       
 
-    //property OnEnter;
+    property OnEnter;
+    property OnExit;
     property OnContextPopup;
     property OnKeyDown;
     property OnKeyPress;
