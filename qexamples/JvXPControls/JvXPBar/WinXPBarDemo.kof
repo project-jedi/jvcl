@@ -5,4 +5,4 @@ UnsafeCast=0
 [Directories]
 OutputDir=../../bin
 UnitOutputDir=../../dcu
-SearchPath=../../../qrun;../../../qcommon;../../../common
+SearchPath=../../../qrun:../../../qcommon:../../../common
