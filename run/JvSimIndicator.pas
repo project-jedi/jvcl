@@ -31,10 +31,17 @@ unit JvSimIndicator;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Graphics, Controls, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QExtCtrls,
+  {$ENDIF VisualCLX}
+  JvComponent;
 
 type
-  TJvSimIndicator = class(TGraphicControl)
+  TJvSimIndicator = class(TJvGraphicControl)
   private
     FValue: Integer;
     FMaximum: Integer;
