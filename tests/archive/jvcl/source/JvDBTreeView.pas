@@ -578,10 +578,12 @@ begin
   if not Value then HideEditor;
   if not AllFieldsValid then exit;
   //if ( csDesigning in ComponentState ) then Exit;
-  if ValidDataSet then begin
+  if ValidDataSet then
+  begin
     RefreshChild(nil);
     oldRecCount := FDataLink.DataSet.RecordCount;
-  end else if FUpdateLock = 0 then
+  end
+  else if FUpdateLock = 0 then
     Items.Clear;
 end;
 
@@ -614,8 +616,8 @@ var
   PV : string;
   i : integer;
 begin
-  CheckDataSet;
-  if UpdateLocked then exit;
+//  CheckDataSet;
+  if not ValidDataSet or UpdateLocked then exit;
   inc(FUpdateLock);
   with FDataLink.DataSet do begin
     BK := GetBookmark;
