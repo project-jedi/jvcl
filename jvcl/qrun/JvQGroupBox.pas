@@ -124,6 +124,7 @@ begin
         Inc(R.Top);
         Brush.Color := clBtnHighlight;
         
+        
         QWindows.FrameRect(Canvas, R);
         
         OffsetRect(R, -1, -1);

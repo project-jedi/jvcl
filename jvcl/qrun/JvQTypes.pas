@@ -39,11 +39,11 @@ unit JvQTypes;
 interface
 
 uses
-  
-  
-  Qt, QTypes, Types, QControls, QForms, QGraphics, QWindows,
-  
   SysUtils, Classes,
+  
+  
+  Qt, QTypes, Types, QControls, QForms, QGraphics, QWindows, JvQWStrUtils,
+  
   JvQConsts, JvQResources;
 
 const
@@ -90,7 +90,10 @@ type
     Result: Longint;
   end;
 
+  
+  
   TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit
+  
 
   PJvRGBArray = ^TJvRGBArray;
   TJvRGBArray = array [0..MaxPixelCount - 1] of TJvRGBTriple;
@@ -137,6 +140,8 @@ type
     TakeText: Integer;
   end;
 
+  
+
   TJvGradientStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
   //  TOnDelete = procedure(Sender: TObject; Path: string) of object;
   TJvParentEvent = procedure(Sender: TObject; ParentWindow: THandle) of object;
@@ -168,6 +173,8 @@ type
 
   //  TCoordChanged = procedure(Sender: TObject; Coord: string) of object;
   TJvNotifyParamsEvent = procedure(Sender: TObject; Params: Pointer) of object;
+
+  
 
   TJvAnimation = (anLeftRight, anRightLeft, anRightAndLeft, anLeftVumeter, anRightVumeter);
   TJvAnimations = set of TJvAnimation;
@@ -254,15 +261,12 @@ const
   DefaultTrackFontOptions = [hoFollowFont, hoPreserveColor, hoPreserveStyle];
 
 type
-
-
-
-
-
-  THintString = WideString;
-  THintStringList = TWideStringList;
-
   
+  
+  THintString = WideString;
+  THintStringList = TWStringList;
+  
+
 type
   // from JvListView.pas
   TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);

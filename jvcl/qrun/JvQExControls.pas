@@ -51,6 +51,7 @@ uses
 
 
 
+
  {$IF not declared(PatchedVCLX)}
   
  {$IFEND}
@@ -120,7 +121,7 @@ type
   end;
 
 const
-  CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
+  CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
 
 type
   { Add IJvDenySubClassing to the base class list if the control should not
@@ -552,7 +553,7 @@ begin
   end;
 end;
 
-{$IFDEF _COMPILER7}
+{$IFDEF COMPILER6}
 // redirect Kylix 3 / Delphi 7 function names to Delphi 6 available function
 {$IF not declared(PatchedVCLX)}
 type

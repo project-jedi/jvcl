@@ -233,14 +233,13 @@ function FindFormByClassName(FormClassName: string): TForm;
 function AppMinimized: Boolean;
 function IsForegroundTask: Boolean;
 
-(*)
+
 { Works like InputQuery but displays 2 edits. If PasswordChar <> #0, the second edit's PasswordChar is set }
 function DualInputQuery(const ACaption, Prompt1, Prompt2:string;
   var AValue1, AValue2:string; PasswordChar:char=#0):boolean;
 
 { Works like InputQuery but set the edit's PasswordChar to PasswordChar. If PasswordChar = #0, works exactly like InputQuery }
 function InputQueryPassword(const ACaption, APrompt: string; PasswordChar:char; var Value: string): Boolean;
-(*)
 
 { returns the sum of pc.Left, pc.Width and piSpace}
 function ToRightOf(const pc: TControl; piSpace: Integer = 0): Integer;
@@ -315,9 +314,7 @@ function IniStrToStr(const Str: string): string;
 
 function StringToFontStyles(const Styles: string): TFontStyles;
 function FontStylesToString(Styles: TFontStyles): string;
-(*)
 function FontToString(Font: TFont): string;
-(*)
 function StringToFont(const Str: string) : TFont;
 function RectToStr(Rect: TRect): string;
 function StrToRect(const Str: string; const Def: TRect): TRect;
@@ -1200,10 +1197,12 @@ begin
         TransparentColor := clWhite
       else
         TransparentColor := ColorToRGB(TransparentColor);
+      
+      
       StretchBltTransparent(Dest.Handle, DstX, DstY, DstW, DstH,
         Bitmap.Canvas.Handle, SrcX, SrcY, SrcW, Srch,
-         0, 
-        TransparentColor);
+        0, TransparentColor);
+      
     end;
     
     Bitmap.Canvas.Stop;
@@ -1639,7 +1638,10 @@ begin
   TCustomControlHack(AForm).DestroyHandle;
   with AForm do
   begin
-    BorderStyle :=  fbsNone ;
+    
+    
+    BorderStyle := fbsNone;
+    
     BorderIcons := [];
     Parent := AControl;
   end;
@@ -2356,7 +2358,7 @@ end;
 {$ENDIF LINUX}
 
 
-(*)
+
 function DualInputQuery(const ACaption, Prompt1, Prompt2:string;
   var AValue1, AValue2:string; PasswordChar:char=#0):boolean;
 var
@@ -2464,7 +2466,7 @@ begin
     AForm.Free;
   end;
 end;
-(*)
+
 procedure CenterHor(Parent: TControl; MinLeft: Integer; Controls: array of
   TControl);
 var
@@ -4932,14 +4934,14 @@ begin
   if Pos('S', UpperCase(Styles)) > 0 then
     Include(Result, fsStrikeOut);
 end;
-(*)
+
 function FontToString(Font: TFont): string;
 begin
   with Font do
     Result := Format('%s,%d,%s,%d,%s,%d', [Name, Size,
       FontStylesToString(Style), Ord(Pitch), ColorToString(Color),Charset]);
 end;
-(*)
+
 
 Function StringToFont(const Str: string): TFont;
 const
@@ -4968,6 +4970,10 @@ begin
           result.Pitch := TFontPitch(StrToIntDef(S, Ord(result.Pitch)));
         5:
           result.Color := StringToColor(S);
+        {$IFDEF COMPILER3_UP}
+        6:
+          result.Charset := TFontCharset(StrToIntDef(S, result.Charset));
+        {$ENDIF}
       end;
     end;
   finally

@@ -40,7 +40,10 @@ interface
 
 uses
   Classes, SysUtils,
-  JclUnicode,
+  
+  
+  JvQWStrUtils,
+  
   JvQComponent, JvQID3v2Types, JvQID3v1;
 
 const
@@ -1197,7 +1200,7 @@ function NiceGenreToGenre(const ANiceGenre: string): string;
 implementation
 
 uses
-  QGraphics, Windows,
+  Graphics, Windows,
   
   JclBase, JclFileUtils, JclLogic, JclDateTime,
   JvQConsts, JvQResources;

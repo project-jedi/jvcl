@@ -44,19 +44,19 @@ unit JvQToolEdit;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  
+  
+  RTLConsts, Variants,
   
   
   Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
   QMask, QImgList, QActnList, QExtDlgs, QComboEdits, QWindows, Types,
   JvQExComboEdits,
   
-  SysUtils, Classes,
-
-  RTLConsts, Variants,
-
   JvQComponent, JvQSpeedButton, JvQJCLUtils, JvQTypes, JvQExControls, JvQExMask,
   JvQFinalize;
 
@@ -804,9 +804,9 @@ implementation
 uses
   ShellAPI, Math,
   
-  
   QConsts,
-
+  
+  
   JvQThemes, JvQResources, JvQJVCLUtils, JvQPickDate,
   JvQConsts;
 
@@ -1525,7 +1525,6 @@ begin
     if PopupVisible then
     begin
       //Polaris      PopupCloseUp(FPopup, Key = Char(VK_RETURN));
-//      PopupCloseUp(FPopup, Key <> Char(VK_ESCAPE));
       PopupCloseUp(FPopup, Key <> #27);
       Key := #0;
     end
@@ -1536,7 +1535,6 @@ begin
       
       TCustomFormHack(GetParentForm(Self)).NeedKey(Integer(Key), [], WideChar(Key));
       
-//      if Key = Char(VK_RETURN) then
       if Key = #13 then
       begin
         inherited KeyPress(Key);
@@ -2222,6 +2220,7 @@ begin
   FBlanksChar := ' ';
   FTitle := RsDateDlgCaption;
   
+  
   FPopupColor := clWindow;
   
   //  FDefNumGlyphs := 2;
@@ -2414,7 +2413,7 @@ end;
 function TJvCustomDateEdit.FourDigitYear: Boolean;
 begin
   Result := (FYearDigits = dyFour) or ((FYearDigits = dyDefault) and
-    JvQJCLUtils.FourDigitYear);
+   JvQJCLUtils.FourDigitYear);
 end;
 
 function TJvCustomDateEdit.GetCalendarStyle: TCalendarStyle;
