@@ -93,7 +93,7 @@ uses
 
   //Utils
   JvDirectories, JvMemoryInfos, JvSerialMaker, JvThread, JvRegistry,
-  JvApplication, JvAlarms, JvKeyboardStates, JvDragDrop, JvSearchFile,
+  JvApplication, JvAlarms, JvKeyboardStates, JvDragDrop, 
 
   //Utils 2
   JvMru, JvRas32, JvSystemPopup, JvMousePositionner,
@@ -175,7 +175,7 @@ procedure RegPropEds;
 begin
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess, '', TJvExeNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess, 'CurrentDirectory', TJvDirectoryProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvFileTreeScan, 'RootDirectory', TJvDirectoryProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvSearchFiles, 'RootDirectory', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(TJvImgBtnKind), TJvImgBtn, 'Kind', TJvNosortEnumProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvPerfStatItem, 'PerfStatKey', TJvPerfStatProperty);
   RegisterPropertyEditor(TypeInfo(TStream), TJvDataEmbedded, 'Data', TJvDataEmbeddedEditor);
@@ -563,9 +563,7 @@ begin
       TJvXorCipher,
       TJvGenetic,
 
-    TJvFileTreeScan,
       TJvSearchFiles,
-      TJvSearchFile,
       TJvLogFile,
       TJvCabFile,
       TJvProfiler,
