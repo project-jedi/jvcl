@@ -29,7 +29,6 @@
     <File Name="..\..\run\JvFindFiles.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFindReplace.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvImageDlg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvImageForm.pas" Targets="all" Formname="FormImg" Condition=""/>
     <File Name="..\..\run\JvLoginForm.pas" Targets="all" Formname="JvLoginForm" Condition=""/>
     <File Name="..\..\run\JvObjectPickerDialog.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPageSetup.pas" Targets="all" Formname="" Condition=""/>
