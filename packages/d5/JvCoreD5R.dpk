@@ -1,6 +1,7 @@
 package JvCoreD5R;
 
-{$R *.res}
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -45,6 +46,8 @@ contains
   JvActions in '..\..\run\JvActions.pas',
   JvMouseTimer in '..\..\run\JvMouseTimer.pas',
   JvDsgnIntf in '..\..\run\JvDsgnIntf.pas',
-  JvActnResForm in '..\..\design\JvActnResForm.pas' {JvStandardActions: TDataModule};
+  JvActnResForm in '..\..\design\JvActnResForm.pas' {JvStandardActions: TDataModule},
+  JvDataProviderImpl in '..\..\run\JvDataProviderImpl.pas',
+  JvDataProvider in '..\..\run\JvDataProvider.pas';
 
 end.
