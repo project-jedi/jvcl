@@ -111,7 +111,6 @@ type
     FLastExecute: Longint;
     FParentList: TJvTimerList;
     FRepeatCount: Integer;
-    FLoading: Boolean;
     FOnTimer: TNotifyEvent;
     FName: string;
     function GetAsSeconds: Cardinal;
@@ -119,12 +118,8 @@ type
     procedure SetRepeatCount(Value: Integer);
     procedure SetEnabled(Value: Boolean);
     procedure SetInterval(Value: Longint);
-    procedure UpdateInterval;
-    procedure UpdateEnabled;
   protected
     function GetDisplayName: String; override;
-    procedure Loaded; virtual;
-    property Loading: Boolean read FLoading;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -158,7 +153,6 @@ type
     procedure SetSorted(const Value: Boolean);
   protected
     procedure DoTimer(Event: TJvTimerEvent); dynamic;
-    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -191,12 +185,18 @@ constructor TJvTimerEvent.Create(ACollection: TCollection);
 begin
   FHandle := INVALID_HANDLE_VALUE;
   inherited Create(ACollection);
-  FLoading := True;
   FCycled := True;
   FRepeatCount := 0;
   FEnabled := True;
   FExecCount := 0;
-  FInterval := DefaultInterval;
+
+  // Do not set FInterval directly or the timer would never trigger
+  // if its Interval is left to its default value. This is because
+  // the default value for Enabled is True. If it were False, then
+  // the user would have to set Enable to True and thus trigger the
+  // creation of the timer.
+  Interval := DefaultInterval;
+  
   FLastExecute := GetTickCount;
 end;
 
@@ -206,47 +206,23 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvTimerEvent.Loaded;
-begin
-  FLoading := False;
-
-  UpdateInterval;
-  UpdateEnabled;
-end;
-
-procedure TJvTimerEvent.UpdateInterval;
-begin
-  if FParentList <> nil then
-    with FParentList do
-    begin
-      Events.CalculateInterval(GetTickCount);
-      UpdateTimer;
-    end;
-end;
-
-procedure TJvTimerEvent.UpdateEnabled;
-begin
-  if FEnabled then
-  begin
-    FExecCount := 0;
-    FLastExecute := GetTickCount;
-    if FParentList <> nil then
-      with FParentList do
-      begin
-        Events.CalculateInterval(GetTickCount);
-        UpdateTimer;
-        Events.Activate;
-      end;
-  end;
-end;
-
 procedure TJvTimerEvent.SetEnabled(Value: Boolean);
 begin
   if Value <> FEnabled then
   begin
     FEnabled := Value;
-    if not FLoading then
-      UpdateEnabled;
+    if FEnabled then
+    begin
+      FExecCount := 0;
+      FLastExecute := GetTickCount;
+      if FParentList <> nil then
+        with FParentList do
+        begin
+          Events.CalculateInterval(GetTickCount);
+          UpdateTimer;
+          Events.Activate;
+        end;
+    end;
   end;
 end;
 
@@ -255,8 +231,12 @@ begin
   if Value <> FInterval then
   begin
     FInterval := Value;
-    if not FLoading then
-      UpdateInterval;
+    if FParentList <> nil then
+      with FParentList do
+      begin
+        Events.CalculateInterval(GetTickCount);
+        UpdateTimer;
+      end;
   end;
 end;
 
@@ -317,15 +297,6 @@ begin
   Events.Clear;
   FEvents.Free;
   inherited Destroy;
-end;
-
-procedure TJvTimerList.Loaded;
-var
-  I: Integer;
-begin
-  inherited Loaded;
-  for I := 0 to Events.Count - 1 do
-    Events[I].Loaded;
 end;
 
 { Create a new timer event and returns a handle }
