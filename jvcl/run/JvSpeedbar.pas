@@ -728,9 +728,12 @@ end;
 procedure TJvSpeedBarButton.VisibleChanged;
 begin
   if Visible then
-    ControlStyle := ControlStyle + [csOpaque]
+  begin
+    ControlStyle := ControlStyle - [csNoDesignVisible];
+    Invalidate;
+  end
   else
-    ControlStyle := ControlStyle - [csOpaque];
+    ControlStyle := ControlStyle + [csNoDesignVisible];
   inherited;
 end;
 
