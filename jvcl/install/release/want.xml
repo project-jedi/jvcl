@@ -4,8 +4,8 @@
   <property name="version.major"    value="3"/>
   <property name="version.minor"    value="0"/>
   <property name="version.release"  value="0"/>
-  <property name="version.build"    value="BETA1"/>
-  <property name="jclversion"       value="190" />
+  <property name="version.build"    value="RC1"/>
+  <property name="jclversion"       value="194-Build1758" />
   <property name="version"          value="${version.major}.${version.minor}.${version.release}.${version.build}"/>
   <property name="shortversion"     value="${version.major}${version.minor}${version.release}${version.build}"/>
   <!-- JVCL releases -->
