@@ -32,7 +32,8 @@ unit JvZoom;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  JVCLVer;
 
 type
   TJvZoom = class(TCustomControl)
@@ -195,7 +196,7 @@ begin
   if P.X < X then
   begin
     Dx := (P.X - X - 1) * 100 div FZoomLevel;
-    P.X := X
+    P.X := X;
   end
   else
   if P.X + X > Screen.Width then
@@ -283,7 +284,7 @@ begin
   //On resize, refresh it
   inherited;
   { Forget the old point; thus force repaint }
-  FLastPoint := Point(High(LongInt), High(LongInt));
+  FLastPoint := Point(MaxLongint, MaxLongint);
   PaintMe(Self);
 end;
 

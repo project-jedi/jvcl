@@ -142,8 +142,8 @@ type
 constructor TJvxSplitter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
-    csOpaque, csDoubleClicks];
+  ControlStyle := [csCaptureMouse, csClickEvents,
+    csOpaque, csDoubleClicks];  // csAcceptsControls
   Width := 185;
   Height := DefWidth;
   FSizing := False;

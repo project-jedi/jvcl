@@ -291,8 +291,8 @@ constructor TJvCustomSlider.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlState := ControlState + [csCreating];
-  ControlStyle := [csClickEvents, csCaptureMouse, csAcceptsControls,
-    csDoubleClicks, csOpaque];
+  ControlStyle := [csClickEvents, csCaptureMouse,
+    csDoubleClicks, csOpaque];  // csAcceptsControls
   IncludeThemeStyle(Self, [csParentBackground]);
   Width := 150;
   Height := 40;
