@@ -51,16 +51,17 @@ resourcestring NOT_CONNECTED = 'Not connected';
 type
   // The video format used by the video device
   TJvVideoFormat = class (TPersistent)
-  private
+  protected
     FHwnd        : HWND;            // the AVICap window using this format
     FWidth       : Cardinal;        // width of the image
     FHeight      : Cardinal;        // height of the image
     FBitDepth    : Cardinal;        // bits per pixel (8-16-24-32...)
     FPixelFormat : TPixelFormat;    // pixel format (RGB, BGR, YUV...)
     FCompression : Integer;         // compression used
+    
   public
     property Width       : Cardinal     read FWidth;
-    property Height      : Cardinal     read FHeight;     
+    property Height      : Cardinal     read FHeight;
     property BitDepth    : Cardinal     read FBitDepth;
     property PixelFormat : TPixelFormat read FPixelFormat;
     property Compression : Integer      read FCompression;
@@ -71,16 +72,15 @@ type
 
   // The audio format used by the device
   TJvAudioFormat = class (TPersistent)
-  private
-    FHwnd : HWND;                // the AVICap window using this format
   protected
+    FHwnd : HWND;                // the AVICap window using this format
     FFormatTag      : Cardinal;  // the format tag (PCM or others...)
     FChannels       : Cardinal;  // number of channels (usually 1 or 2)
     FSamplesPerSec  : Cardinal;  // number of samples per second in the stream
     FAvgBytesPerSec : Cardinal;  // the average number of bytes per second
     FBlockAlign     : Cardinal;  // size of the block to align on
     FBitsPerSample  : Cardinal;  // number of bits per sample
-    FSize           : Cardinal;  // size of the extra data
+    FExtraSize      : Cardinal;  // size of the extra data
     FExtra          : Pointer;   // extra data for formats other than PCM
 
   public
@@ -97,7 +97,7 @@ type
     procedure FillWaveFormatEx(var wfex : PWAVEFORMATEX);
 
     // run-time only property, see FSize
-    property Size : Cardinal read FSize write FSize;
+    property ExtraSize : Cardinal read FExtraSize write FExtraSize;
     // run-time only property, see FExtra
     property Extra : Pointer read FExtra write FExtra;
 
@@ -122,11 +122,11 @@ type
 
   // the capture settings to use to save a video stream to an AVI file
   TJvCaptureSettings = class (TPersistent)
-  private
+  protected
     // the AVICap window that will use these settings and from which
     // we will get the values when we update them
     FHwnd : HWND;
-  protected
+    
     // if true, the API will popup a confirmation window when starting the
     // capture session allowing the user to choose to continue or not.
     FConfirmCapture           : Boolean;
@@ -314,20 +314,20 @@ type
   TJvAVICapture = class;
 
   // the event triggered in case of an error
-  // Sender is the TJvAVICapture component triggerring the event
+  // Sender is the TJvAVICapture component triggering the event
   // nErr is the error number
   // str is the string associated with that error
   TOnError = procedure (Sender : TJvAVICapture; nErr : Integer; str : string) of object;
 
   // the event triggered in case of a status change (use it to follow progress)
-  // Sender is the TJvAVICapture component triggerring the event
+  // Sender is the TJvAVICapture component triggering the event
   // nId is the id of the status change (see win32 API for more details)
   // str is the string associated with that status change
   TOnStatus = procedure (Sender : TJvAVICapture; nId : Integer; str : string) of object;
 
   // the event triggerred when the driver is yielding. a good place to put a
   // call to Application.ProcessMessages
-  // Sender is the TJvAVICapture component triggerring the event
+  // Sender is the TJvAVICapture component triggering the event
   TOnYield = procedure (Sender : TJvAVICapture) of object;
 
   // the event trigerred when a frame is ready to be written to disk during streaming capture
@@ -846,18 +846,18 @@ begin
     FAvgBytesPerSec := info.nAvgBytesPerSec;
     FBlockAlign     := info.nBlockAlign;
     FBitsPerSample  := info.wBitsPerSample;
-    FSize           := info.cbSize;
+    FExtraSize      := info.cbSize;
 
     // if there is extra data, save it too
-    if FSize > 0 then
+    if FExtraSize > 0 then
     begin
       // if there was extra data saved before, free it before
       if FExtra <> nil then
       begin
         FreeMem(FExtra);
       end;
-      GetMem(FExtra, Size);
-      CopyMemory(FExtra, (PChar(@info))+sizeof(TWAVEFORMATEX), FSize);
+      GetMem(FExtra, ExtraSize);
+      CopyMemory(FExtra, (PChar(@info))+sizeof(TWAVEFORMATEX), FExtraSize);
     end;
   end;
 end;
@@ -892,17 +892,17 @@ begin
       end;
     else 
       begin
-        GetMem(wfex, sizeof(TWAVEFORMATEX)+FSize);
+        GetMem(wfex, sizeof(TWAVEFORMATEX)+FExtraSize);
         wfex^.wFormatTag := FFormatTag;
         wfex^.nChannels := FChannels;
         wfex^.nSamplesPerSec := FSamplesPerSec;
         wfex^.nAvgBytesPerSec := FAvgBytesPerSec;
         wfex^.nBlockAlign := FBlockAlign;
         wfex^.wBitsPerSample := FBitsPerSample;
-        wfex^.cbSize := FSize;
-        
+        wfex^.cbSize := FExtraSize;
+
         // copy Extra to the end of the structure
-        CopyMemory((PChar(@wfex))+sizeof(TWAVEFORMATEX), FExtra, FSize);
+        CopyMemory((PChar(@wfex))+sizeof(TWAVEFORMATEX), FExtra, FExtraSize);
      end;
   end;
 end;
