@@ -256,7 +256,6 @@ type
     procedure SetSelectedPage(const Value: Integer);
     procedure SetTopRow(Value: Integer);
     procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure CalcScrollRange;
@@ -271,6 +270,7 @@ type
     procedure SetHideScrollBars(const Value: Boolean);
     function IsPageMode: Boolean;
   protected
+    procedure Resize; override;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
@@ -281,7 +281,8 @@ type
     procedure DrawPages(ACanvas: TCanvas; Offset: TPoint);
     procedure DrawShadow(ACanvas: TCanvas; APageRect: TRect);
     procedure Paint; override;
-    procedure DoDrawPreviewPage(PageIndex: Integer; Canvas: TCanvas; PageRect, PrintRect: TRect); dynamic;
+    procedure DoDrawPreviewPage(PageIndex: Integer; Canvas: TCanvas;
+      PageRect, PrintRect: TRect); dynamic;
     function DoAddPage(AMetaFile: TMetaFile; PageIndex: Integer): Boolean; dynamic;
 
     property TopRow: Integer read GetTopRow write SetTopRow;
@@ -318,7 +319,8 @@ type
     function Add: TMetaFile;
     procedure Delete(Index: Integer);
     procedure Clear;
-    procedure PrintRange(const APrinter: IJvPrinter; StartPage, EndPage, Copies: Integer; Collate: Boolean);
+    procedure PrintRange(const APrinter: IJvPrinter; StartPage, EndPage,
+      Copies: Integer; Collate: Boolean);
     procedure First;
     procedure Last;
     procedure Next;
@@ -432,7 +434,7 @@ type
   protected
     procedure Execute; override;
   public
-    constructor Create(Delay:Integer; HintWindow:THintWindow);
+    constructor Create(Delay:Integer; HintWindow: THintWindow);
   end;
 
 // use our own InRange since D5 doesn't have it
@@ -1227,11 +1229,11 @@ begin
   Result := True;
 end;
 
-procedure TJvCustomPreviewControl.WMSize(var Message: TWMSize);
+procedure TJvCustomPreviewControl.Resize;
 var
   tmpRow: Integer;
 begin
-  inherited;
+  inherited Resize;
   tmpRow := TopRow; // workaround...
   Change;
   if IsPageMode then

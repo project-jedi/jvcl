@@ -77,7 +77,6 @@ type
     FTextMargins: TJvTextMargins;
     FWordWrap: Boolean;
     FHotTrackFontOptions: TJvTrackFOntOptions;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure SetAlignment(Value: TAlignment);
     procedure SetBorderStyle(Value: TStaticBorderStyle);
     procedure SetFocusControl(Value: TWinControl);
@@ -90,6 +89,7 @@ type
     procedure DoMarginsChange(Sender: TObject);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
   protected
+    procedure Resize; override;
     procedure Loaded; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -474,9 +474,9 @@ begin
   DrawText(aDC, PChar(Caption), Length(Caption), ARect, Result or DT_CALCRECT);
 end;
 
-procedure TJvCustomStaticText.WMSize(var Msg: TWMSize);
+procedure TJvCustomStaticText.Resize;
 begin
-  inherited;
+  inherited Resize;
   Invalidate;
 end;
 

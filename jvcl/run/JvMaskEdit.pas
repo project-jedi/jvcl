@@ -89,6 +89,10 @@ type
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
     procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
     {$ENDIF VCL}
+    function DoAllowUndo: Boolean; dynamic;
+    function DoAllowPaste: Boolean; dynamic;
+    function DoAllowCopy: Boolean; dynamic;
+    function DoAllowCut: Boolean; dynamic;
     {$IFDEF VisualCLX}
     procedure SetText(const Value: TCaption); override;
     {$ENDIF VisualCLX}
@@ -112,6 +116,7 @@ type
     procedure CopyToClipboard; override;
     procedure CutToClipboard; override;
     procedure PasteFromClipboard; override;
+    procedure Undo; override;
     {$ENDIF VisualCLX}
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -360,60 +365,78 @@ end;
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.WMCopy(var Msg: TWMCopy);
 begin
-  if caCopy in ClipboardCommands then
+  if DoAllowCopy then
     inherited;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvCustomMaskEdit.CopyToClipboard;
-begin
-  if caCopy in ClipboardCommands then
-    inherited CopyToClipboard;
-end;
-{$ENDIF VisualCLX}
-
-{$IFDEF VCL}
 procedure TJvCustomMaskEdit.WMCut(var Msg: TWMCut);
 begin
-  if caCut in ClipboardCommands then
+  if DoAllowCut then
     inherited;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvCustomMaskEdit.CutToClipboard;
-begin
-  if caCut in ClipboardCommands then
-    inherited CutToClipboard;
-end;
-{$ENDIF VisualCLX}
-
-{$IFDEF VCL}
 procedure TJvCustomMaskEdit.WMPaste(var Msg: TWMPaste);
 begin
-  if caPaste in ClipboardCommands then
+  if DoAllowPaste then
     inherited;
   UpdateEdit;
 end;
+
+procedure TJvCustomMaskEdit.WMUndo(var Msg: TWMUndo);
+begin
+  if DoAllowUndo then
+    inherited;
+end;
 {$ENDIF VCL}
 
+function TJvCustomMaskEdit.DoAllowUndo: Boolean;
+begin
+  Result := caUndo in ClipboardCommands;
+end;
+
+function TJvCustomMaskEdit.DoAllowPaste: Boolean;
+begin
+  Result := caPaste in ClipboardCommands;
+end;
+
+function TJvCustomMaskEdit.DoAllowCopy: Boolean;
+begin
+  Result := caCopy in ClipboardCommands;
+end;
+
+function TJvCustomMaskEdit.DoAllowCut: Boolean;
+begin
+  Result := caCut in ClipboardCommands;
+end;
+
 {$IFDEF VisualCLX}
+procedure TJvCustomMaskEdit.Undo;
+begin
+  if DoAllowUndo then
+    inherited Undo;
+end;
+
+procedure TJvCustomMaskEdit.CopyToClipboard;
+begin
+  if DoAllowCopy then
+    inherited CopyToClipboard;
+end;
+
+procedure TJvCustomMaskEdit.CutToClipboard;
+begin
+  if DoAllowCut then
+    inherited CutToClipboard;
+end;
+
 procedure TJvCustomMaskEdit.PasteFromClipboard;
 begin
-  if caPaste in ClipboardCommands then
+  if DoAllowPaste then
     inherited PasteFromClipboard;
   UpdateEdit;
 end;
 {$ENDIF VisualCLX}
 
 {$IFDEF VCL}
-
-procedure TJvCustomMaskEdit.WMUndo(var Msg: TWMUndo);
-begin
-  if caUndo in ClipboardCommands then
-    inherited;
-end;
 
 procedure TJvCustomMaskEdit.WMPaint(var Msg: TWMPaint);
 const

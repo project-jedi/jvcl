@@ -71,7 +71,7 @@ type
     procedure DrawItem(Index: integer; Rect: TRect;
       State: TOwnerDrawState); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    procedure Resize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X: integer; Y: integer); override;
     procedure MouseMove(Shift: TShiftState; X: integer; Y: integer);
@@ -589,9 +589,9 @@ begin
   end;
 end;
 
-procedure TJvComboListBox.WMSize(var Message: TWMSize);
+procedure TJvComboListBox.Resize;
 begin
-  inherited;
+  inherited Resize;                     
   Invalidate;
 end;
 

@@ -41,7 +41,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   ExtCtrls, StdCtrls, ImgList,
-  JvComponent, JVCLVer, JvComboBox;
+  JvComponent, JVCLVer, JvComboBox, JvExControls, JvExStdCtrls;
 
 type
   TJvButtonColors = (fsLighter, fsLight, fsMedium, fsDark, fsDarker);
@@ -84,7 +84,7 @@ type
     function GetDisplayName: string; override;
 
     function IsFontStored : Boolean;
-    procedure FontChanged(Sender: TObject);
+    procedure FontChange(Sender: TObject);
   public
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
@@ -215,7 +215,7 @@ type
     property OnStartDrag;
   end;
 
-  TJvImageListBox = class(TCustomListBox)
+  TJvImageListBox = class(TJvExCustomListBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FImageList: TCustomImageList;
@@ -231,7 +231,6 @@ type
     function GetCanvas: TCanvas;
     procedure SetColorHighlight(Value: TColor);
     procedure SetColorHighlightText(Value: TColor);
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure ResetItemHeight;
     procedure SetImageList(Value: TCustomImageList);
     procedure SetAlignment(Value: TAlignment);
@@ -240,6 +239,7 @@ type
     procedure DrawCenteredGlyph(Index: Integer; R: TRect; State: TOwnerDrawState);
     procedure SetItems(const Value: TJvImageItems);
   protected
+    procedure FontChanged; override;
     procedure ImageListChange(Sender: TObject);
     procedure CreateWnd; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -247,7 +247,7 @@ type
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure Resize; override;
 
     function GetImageWidth(Index : Integer) : Integer;
     function GetImageHeight(Index : Integer) : Integer;
@@ -1299,9 +1299,9 @@ begin
   Height := Max(GetItemHeight(Font) + 4, GetImageHeight(Index) + 4);
 end;
 
-procedure TJvImageListBox.CMFontChanged(var Msg: TMessage);
+procedure TJvImageListBox.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   ResetItemHeight;
   RecreateWnd;
 end;
@@ -1339,9 +1339,9 @@ begin
   end;
 end;
 
-procedure TJvImageListBox.WMSize(var Msg: TWMSize);
+procedure TJvImageListBox.Resize;
 begin
-  inherited;
+  inherited Resize;
   Invalidate;
 end;
 
@@ -1387,7 +1387,7 @@ begin
     if not Assigned(FFont) then
     begin
       FFont := TFont.Create;
-      FFont.OnChange := FontChanged;
+      FFont.OnChange := FontChange;
       FFont.Assign((TJvImageItems(Collection).GetOwner as TJvImageListBox).Font);
     end;
     Result := FFont;
@@ -1405,7 +1405,7 @@ begin
   (TJvImageItems(Collection).GetOwner as TJvImageListBox).Invalidate;
 end;
 
-procedure TJvImageItem.FontChanged(Sender: TObject);
+procedure TJvImageItem.FontChange(Sender: TObject);
 begin
   if not (puFont in FListPropertiesUsed) then
     (TJvImageItems(Collection).GetOwner as TJvImageListBox).Invalidate;

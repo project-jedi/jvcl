@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Clipbrd, Forms,
-  StdCtrls, ExtCtrls, Menus, Grids;
+  StdCtrls, ExtCtrls, Menus, Grids, JvExControls, JvExForms, JvExGrids;
 
 type
   TClipboardViewFormat = (cvDefault, cvEmpty, cvUnknown, cvText, cvBitmap,
@@ -40,7 +40,7 @@ type
   TJvOnImageEvent = procedure(Sender: TObject; Image: TBitmap) of object;
   TJvOnTextEvent = procedure(Sender: TObject; AText: string) of object;
 
-  TJvCustomClipboardViewer = class(TScrollBox)
+  TJvCustomClipboardViewer = class(TJvExScrollBox)
   private
     FWndNext: HWND;
     FChained: Boolean;
@@ -51,7 +51,6 @@ type
     FOnText: TJvOnTextEvent;
     function IsEmptyClipboard: Boolean;
     procedure ForwardMessage(var Msg: TMessage);
-    procedure WMSize(var Msg: TMessage); message WM_SIZE;
     procedure WMDestroyClipboard(var Msg: TMessage); message WM_DESTROYCLIPBOARD;
     procedure WMChangeCBChain(var Msg: TWMChangeCBChain); message WM_CHANGECBCHAIN;
     procedure WMDrawClipboard(var Msg: TMessage); message WM_DRAWCLIPBOARD;
@@ -59,6 +58,7 @@ type
     procedure SetViewFormat(Value: TClipboardViewFormat);
     function GetClipboardFormatNames(Index: Integer): string;
   protected
+    procedure Resize; override;
     procedure CreateWnd; override;
     procedure DestroyWindowHandle; override;
     procedure DoImage(Image:TBitmap);dynamic;
@@ -233,7 +233,7 @@ const
   NumPaletteEntries = 256;
 
 type
-  TJvPaletteGrid = class(TDrawGrid)
+  TJvPaletteGrid = class(TJvExDrawGrid)
   private
     FPaletteEntries: array [0..NumPaletteEntries - 1] of TPaletteEntry;
     FPalette: HPALETTE;
@@ -248,7 +248,7 @@ type
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect;
       AState: TGridDrawState); override;
     function SelectCell(ACol, ARow: Longint): Boolean; override;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -417,9 +417,9 @@ begin
   end;
 end;
 
-procedure TJvPaletteGrid.WMSize(var Msg: TWMSize);
+procedure TJvPaletteGrid.Resize;
 begin
-  inherited;
+  inherited Resize;
   UpdateSize;
 end;
 
@@ -622,9 +622,9 @@ begin
     FOnChange(Self);
 end;
 
-procedure TJvCustomClipboardViewer.WMSize(var Msg: TMessage);
+procedure TJvCustomClipboardViewer.Resize;
 begin
-  inherited;
+  inherited Resize;
   if (FPaintControl <> nil) and (FPaintControl is TControl) then
     CenterControl(TControl(FPaintControl));
 end;

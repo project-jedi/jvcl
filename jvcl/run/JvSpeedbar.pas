@@ -441,7 +441,7 @@ type
     property Index: Integer read GetIndex write SetIndex stored False;
   end;
 
-  TJvBtnControl = class(TCustomControl)
+  TJvBtnControl = class(TJvCustomControl)
   private
     FImage: TJvButtonImage;
     FSpacing: Integer;
@@ -459,10 +459,10 @@ type
     procedure SetNumGlyphs(Value: TJvNumGlyphs);
     procedure SetGlyph(Value: TBitmap);
     procedure SetWordWrap(Value: Boolean);
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
+    procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -3074,9 +3074,10 @@ begin
   FImage.Alignment := Value;
 end;
 
-procedure TJvBtnControl.WMSize(var Msg: TWMSize);
+procedure TJvBtnControl.Resize;
 begin
   FImage.ButtonSize := Point(ClientWidth, ClientHeight);
+  inherited Resize;
 end;
 
 procedure TJvBtnControl.Paint;

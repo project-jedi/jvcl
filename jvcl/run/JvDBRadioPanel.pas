@@ -36,7 +36,7 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, ExtCtrls, StdCtrls, Forms,
-  DBCtrls, DB,
+  DBCtrls, DB,      
   JvComponent;
 
 type
@@ -77,8 +77,8 @@ type
     procedure SetItemIndex(Value: Integer);
     procedure UpdateButtons;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
+    procedure Resize; override;
     procedure DoExit; override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
@@ -603,9 +603,9 @@ begin
   Result := inherited UseRightToLeftAlignment;
 end;
 
-procedure TJvDBRadioPanel.WMSize(var Msg: TWMSize);
+procedure TJvDBRadioPanel.Resize;
 begin
-  inherited;
+  inherited Resize;
   ArrangeButtons;
 end;
 

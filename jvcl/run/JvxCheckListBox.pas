@@ -200,8 +200,8 @@ type
     function GetCheckedIndex: Integer;
     procedure SetCheckedIndex(Value: Integer);
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
   protected
+    procedure FontChanged; override;
     function CreateItemList: TStrings; override;
     procedure DrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
@@ -1543,9 +1543,9 @@ begin
   Result := FAllowGrayed and (FCheckKind in [ckCheckBoxes, ckCheckMarks]);
 end;
 
-procedure TJvxCheckListBox.CMFontChanged(var Msg: TMessage);
+procedure TJvxCheckListBox.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   ResetItemHeight;
 end;
 

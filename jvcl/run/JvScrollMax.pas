@@ -520,7 +520,8 @@ type
   TJvBandBtn = class(TJvNoFrameButton)
   private
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+  protected
+    procedure FontChanged; override;
   end;
 
 procedure TJvBandBtn.CMDesignHitTest(var Msg: TCMDesignHitTest);
@@ -528,9 +529,9 @@ begin
   Msg.Result := 1;
 end;
 
-procedure TJvBandBtn.CMFontChanged(var Msg: TMessage);
+procedure TJvBandBtn.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   if Parent <> nil then
     with Parent as TJvScrollMaxBand do
     begin

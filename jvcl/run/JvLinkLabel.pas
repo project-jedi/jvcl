@@ -88,9 +88,6 @@ type
     procedure SetCaption(const Value: TCaption);
     function GetTransparent: Boolean;
     function IsActiveLinkNodeClicked: Boolean;
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure SetAutoHeight(const Value: Boolean);
     procedure SetMarginHeight(const Value: Integer);
     procedure SetMarginWidth(const Value: Integer);
@@ -99,6 +96,9 @@ type
     procedure SetLayout(AValue: TTextLayout);     // Bianconi
   protected
     FNodeTree: TNodeTree;
+    procedure TextChanged; override;
+    procedure FontChanged; override;
+    procedure MouseLeave(Control: TControl); override;
     procedure Paint; override;
     function CreateParser: IParser; virtual;
     function CreateRenderer: IRenderer; virtual;
@@ -245,7 +245,7 @@ begin
   end;
 end;
 
-procedure TJvCustomLinkLabel.CMFontChanged(var Msg: TMessage);
+procedure TJvCustomLinkLabel.FontChanged;
 
   procedure ClearWordInfo;
   var
@@ -257,22 +257,24 @@ procedure TJvCustomLinkLabel.CMFontChanged(var Msg: TMessage);
   end;
 
 begin
-  inherited;
+  inherited FontChanged;
   SynchronizeRootAndFont;
   ClearWordInfo;
   Invalidate;
 end;
 
-procedure TJvCustomLinkLabel.CMMouseLeave(var Msg: TMessage);
+procedure TJvCustomLinkLabel.MouseLeave(Control: TControl);
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
+  inherited MouseLeave(Control);;
   if FHotLinks and not IsActiveLinkNodeClicked then
     DeactivateActiveLinkNode;
 end;
 
-procedure TJvCustomLinkLabel.CMTextChanged(var Msg: TMessage);
+procedure TJvCustomLinkLabel.TextChanged;
 begin
-  inherited;
+  inherited TextChanged;
   Invalidate;
 end;
 

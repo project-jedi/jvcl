@@ -61,11 +61,11 @@ type
     FLarge: Integer;
     FDisplayName: string;
     FDirList: TJvDirectoryListBox;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure ResetItemHeight;
     procedure SetImageSize(Value: TJvImageSize);
     procedure SetOffset(Value: Integer);
   protected
+    procedure FontChanged; override;
     procedure CreateWnd; override;
     procedure SetDrive(Value: Char);
     procedure SetDriveTypes(Value: TJvDriveTypes);
@@ -144,12 +144,12 @@ type
     FImageAlign: TJvImageAlign;
     FOnChange: TNotifyEvent;
     procedure SetImageAlign(Value: TJvImageAlign);
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure ResetItemHeight;
     procedure SetImageSize(Value: TJvImageSize);
     procedure SetOffset(Value: Integer);
-    procedure WMSize(var Msg: TWMNoParams); message WM_SIZE;
   protected
+    procedure Resize; override;
+    procedure FontChanged; override;
     procedure SetDrive(Value: Char);
     procedure SetDriveTypes(Value: TJvDriveTypes);
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
@@ -269,7 +269,6 @@ type
     procedure SetFileListBox(Value: TJvFileListBox);
     procedure SetDirLabel(Value: TLabel);
     procedure SetDirLabelCaption;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure SetDrive(Value: Char);
     procedure DriveChange(NewDrive: Char);
     procedure SetDir(const NewDirectory: string);
@@ -281,6 +280,7 @@ type
     FImages: TImageList;
     FDirectory: string;
     FOnChange: TNotifyEvent;
+    procedure FontChanged; override;
     procedure Change; virtual;
     procedure DblClick; override;
     procedure ReadBitmaps; virtual;
@@ -563,9 +563,9 @@ begin
   Height := ItemHeight;
 end;
 
-procedure TJvDriveCombo.CMFontChanged(var Msg: TMessage);
+procedure TJvDriveCombo.FontChanged; 
 begin
-  inherited;
+  inherited FontChanged;
   ResetItemHeight;
   RecreateWnd;
 end;
@@ -882,9 +882,9 @@ begin
   end;
 end;
 
-procedure TJvDriveList.CMFontChanged(var Msg: TMessage);
+procedure TJvDriveList.FontChanged; 
 begin
-  inherited;
+  inherited FontChanged;
   ResetItemHeight;
   RecreateWnd;
 end;
@@ -959,9 +959,9 @@ begin
   end;
 end;
 
-procedure TJvDriveList.WMSize(var Msg: TWMNoParams);
+procedure TJvDriveList.Resize;
 begin
-  inherited;
+  inherited Resize;
   Invalidate;
 end;
 
@@ -1329,9 +1329,9 @@ begin
   ItemIndex := DirLevel(Directory);
 end;
 
-procedure TJvDirectoryListBox.CMFontChanged(var Msg: TMessage);
+procedure TJvDirectoryListBox.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   ResetItemHeight;
 end;
 

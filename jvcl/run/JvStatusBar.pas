@@ -81,15 +81,14 @@ type
     FHiddenControls: array of TControl;
     {$IFDEF VCL}
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-    procedure WMSize(var Msg: TMessage); message WM_SIZE;
     {$ENDIF VCL}
   protected
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
+    procedure Resize; override;
     {$IFDEF VisualCLX}
     procedure Paint; override;
-    procedure BoundsChanged; override;
     {$ENDIF VisualCLX}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -133,17 +132,18 @@ begin
     WindowClass.Style := WindowClass.Style and not CS_HREDRAW;
 end;
 
-{$IFDEF VCL}
 
-procedure TJvStatusBar.WMSize(var Msg: TMessage);
+procedure TJvStatusBar.Resize;
 begin
-  inherited;
+  inherited Resize;
   Realign;
   {$IFDEF COMPILER6_UP}
   MovePanelControls;
   {$ENDIF COMPILER6_UP}
   Invalidate; //Force full redraw, cause it's a lot buggy on XP without that!!!
 end;
+
+{$IFDEF VCL}
 
 procedure TJvStatusBar.WMPaint(var Msg: TWMPaint);
 begin
@@ -157,21 +157,11 @@ end;
 
 {$IFDEF VisualCLX}
 
-procedure TJvStatusBar.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  Realign;
-  {$IFDEF COMPILER6_UP}
-  MovePanelControls;
-  {$ENDIF COMPILER6_UP}
-  Invalidate; //Force full redraw, cause it's a lot buggy on XP without that!!!
-end;
-
 procedure TJvStatusBar.Paint;
 begin
-  if FAutoHintShown then
-    DefaultHandler(Msg)
-  else
+  {if FAutoHintShown then
+    DefaultHandler(Msg) // VisualCLX has no DefaultHandler
+  else}
     inherited Paint;
 end;
 

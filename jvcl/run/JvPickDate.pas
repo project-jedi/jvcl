@@ -170,7 +170,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     function SelectCell(ACol, ARow: Longint): Boolean; override;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure NextMonth;
@@ -706,7 +706,7 @@ begin
   CalendarUpdate(False);
 end;
 
-procedure TJvCalendar.WMSize(var Msg: TWMSize);
+procedure TJvCalendar.Resize;
 var
   GridLinesH, GridLinesW: Integer;
 begin
@@ -715,8 +715,9 @@ begin
     GridLinesW := 6 * GridLineWidth
   else
     GridLinesW := 0;
-  DefaultColWidth := (Msg.Width - GridLinesW) div 7;
-  DefaultRowHeight := (Msg.Height - GridLinesH) div 7;
+  DefaultColWidth := (Width - GridLinesW) div 7;
+  DefaultRowHeight := (Height - GridLinesH) div 7;
+  inherited Resize;
 end;
 
 //=== TJvLocCalendar =========================================================

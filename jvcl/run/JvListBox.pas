@@ -183,7 +183,6 @@ type
     procedure LBDeleteString(var Msg: TMessage); message LB_DELETESTRING;
     { Override CN_DRAWITEM handling to be able to switch off focus rect. }
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure SetAlignment(const Value: TAlignment);
     procedure SetMultiline(const Value: Boolean);
     procedure SetSelectedColor(const Value: TColor);
@@ -197,6 +196,7 @@ type
     procedure SetBackground(const Value: TJvListBoxBackground);
     function GetLimitToClientWidth: Boolean;
   protected
+    procedure FontChanged; override;
     function GetItemsClass: TJvListBoxStringsClass; virtual;
     procedure BeginRedraw;
     procedure EndRedraw;
@@ -727,11 +727,11 @@ begin
   inherited Changed; // (marcelb): I added this, 'caus I assume it needs to be called.
 end;
 
-procedure TJvCustomListBox.CMFontChanged(var Msg: TMessage);
+procedure TJvCustomListBox.FontChanged;
 const
   CShowFocusRect: array [Boolean] of Integer = (0, 2);
 begin
-  inherited;
+  inherited FontChanged;
   Canvas.Font := Font;
   if Style <> lbStandard then
     ItemHeight := CanvasMaxTextHeight(Canvas) + CShowFocusRect[ShowFocusRect];
