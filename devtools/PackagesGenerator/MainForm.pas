@@ -8,7 +8,7 @@ uses
   JvStatusBar, ExtCtrls, JvSplitter, StdCtrls, JvListBox, JvCtrls,
   JvControlBar, ImgList, ActnList, JvComponent, JvBaseDlg, JvBrowseFolder,
   Mask, JvToolEdit, AppEvnts, Grids, JvGrids, JvFormPlacement, JvAppStore,
-  JvStringGrid, JvAppXmlStore, JvAppIniStore;
+  JvStringGrid, JvAppXmlStore;
 
 type
   TfrmMain = class(TForm)
