@@ -167,7 +167,7 @@ type
     property Strings: TStrings read FStrings write SetStrings;
   end;
 
-  TJvMultiStringHolderCollection = class(TCollection)
+  TJvMultiStringHolderCollection = class(TOwnedCollection)
   protected
     function GetItem(Index: Integer): TJvMultiStringHolderCollectionItem;
     procedure SetItem(Index: Integer; Value: TJvMultiStringHolderCollectionItem);
@@ -904,7 +904,7 @@ end;
 constructor TJvMultiStringHolder.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FMultipleStrings := TJvMultiStringHolderCollection.Create(TJvMultiStringHolderCollectionItem);
+  FMultipleStrings := TJvMultiStringHolderCollection.Create(Self, TJvMultiStringHolderCollectionItem);
 end;
 
 destructor TJvMultiStringHolder.Destroy;
