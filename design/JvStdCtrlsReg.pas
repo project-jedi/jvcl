@@ -152,7 +152,7 @@ begin
     {$IFDEF VCL}
     TJvFontComboBox, TJvTextListBox, TJvxCheckListBox,
     TJvDateTimePicker,
-    TJvMonthCalendar, {TJvMonthCalendar2,}
+    TJvMonthCalendar, TJvMonthCalendar2,
     {$ENDIF VCL}
     TJvDrawGrid, TJvStringGrid]);
   RegisterComponents(RsPaletteScrollerTracker, [
