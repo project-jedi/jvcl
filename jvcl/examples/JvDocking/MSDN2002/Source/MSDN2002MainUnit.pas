@@ -268,8 +268,8 @@ type
     procedure LoadToolFormLayout;    // load previous layout
     procedure SaveToolFormLayout;    // save current layout
     procedure CreateVSNETPageControl;
-    procedure SafeExecWB(ACommand:TOleEnum);
-    function BrowserSupports(ACommand:TOleEnum):boolean;
+//    procedure SafeExecWB(ACommand:TOleEnum);
+//    function BrowserSupports(ACommand:TOleEnum):boolean;
     procedure DoCommandStateChange(Sender: TObject; Command: Integer;
       Enable: WordBool);
   public
@@ -295,8 +295,8 @@ type
 
 procedure TMSDN2002.CreateXPMenu;
 begin
-  with TXPMenu.Create(Self) do
-    Active := True;
+  with TJvMainMenu.Create(Self) do
+    ;//Active := True;
 end;
 
 procedure TMSDN2002.AutoHide_ItemClick(Sender: TObject);
