@@ -1183,7 +1183,7 @@ begin
     GradientFillRect(Canvas, TextRect, InactiveColorFrom, InactiveColorTo, InactiveGradientDirection, 255);
     Canvas.Font := InactiveFont;
   end;
-  if Assigned(Images) then
+  if Assigned(Images) and (ImageIndex >= 0) and (ImageIndex < Images.Count) then
   begin // GlyphLayout is only used if we have images
     case GlyphLayout of
       blGlyphLeft:
