@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-03-27
+- Rewrite of TJvTrayIcon; Added OnContextPopup // remkobonte
 2004-03-26
 - New build system for the JVCL 3. See jvcl3\packages\bin // ahuser
 2004-03-23
@@ -14,6 +16,8 @@ Changelog for JVCL 3.0
 - JvLocalFileUrlGrabber introduced  // obones (from peter3)
 2004-03-19
 - The menu item painters are now autonomous components, compatibility is preserved // obones
+2004-03-16
+- JvToolEdit.pas: restored functionality of Glyph property // remkobonte
 2004-03-12
 - Many corrections for BCB5 support // obones
 2004-02-26
