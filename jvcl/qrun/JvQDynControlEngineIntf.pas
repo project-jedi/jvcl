@@ -27,21 +27,15 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-
-
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-
+{$I crossplatform.inc}
 
 unit JvQDynControlEngineIntf;
 
 interface
 
 uses
-  Classes,  
-  QControls, QForms, QStdCtrls, QExtCtrls, QGraphics, QButtons, 
-  QFileCtrls, 
-  QDialogs, 
+  Classes, QControls, QForms, QStdCtrls, QExtCtrls, Types, QGraphics, QButtons, QDialogs,   
+  QFileCtrls,  
   SysUtils;
 
 type
@@ -181,6 +175,20 @@ type
     ['{EB2435FE-D9A6-4D33-9F01-589D0C93C6AC}']
     procedure ControlSetOnDblClick(Value: TNotifyEvent);
   end;
+
+  IJvDynControlCheckListBox = interface
+    ['{9C50DD6C-E147-4719-A4E9-7F11AD45606C}']
+    procedure ControlSetAllowGrayed(Value: Boolean);
+    procedure ControlSetChecked(Index: Integer; Value: Boolean);
+    procedure ControlSetItemEnabled(Index: Integer; Value: Boolean);
+    procedure ControlSetHeader(Index: Integer; Value: Boolean);
+    procedure ControlSetState(Index: Integer; Value: TCheckBoxState);
+    function ControlGetChecked(Index: Integer): Boolean;
+    function ControlGetItemEnabled(Index: Integer): Boolean;
+    function ControlGetHeader(Index: Integer): Boolean;
+    function ControlGetState(Index: Integer): TCheckBoxState;
+  end;
+
 
 implementation
 

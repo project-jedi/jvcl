@@ -856,6 +856,26 @@ type
     procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE; 
     procedure SetParentStyleManager(const Value: Boolean);
     procedure SetBackground(const Value: TJvNavPaneBackgroundImage);
+    function GetSplitterClick: TNotifyEvent;
+    function GetSplitterDblClick: TNotifyEvent;
+    function GetSplitterMouseDown: TMouseEvent;
+    function GetSplitterMouseEnter: TNotifyEvent;
+    function GetSplitterMouseLeave: TNotifyEvent;
+    function GetSplitterMouseMove: TMouseMoveEvent;
+    function GetSplitterMouseUp: TMouseEvent;
+    procedure SetSplitterClick(const Value: TNotifyEvent);
+    procedure SetSplitterDblClick(const Value: TNotifyEvent);
+    procedure SetSplitterMouseDown(const Value: TMouseEvent);
+    procedure SetSplitterMouseEnter(const Value: TNotifyEvent);
+    procedure SetSplitterMouseLeave(const Value: TNotifyEvent);
+    procedure SetSplitterMouseMove(const Value: TMouseMoveEvent);
+    procedure SetSplitterMouseUp(const Value: TMouseEvent);
+    function GetSplitterCanResize: TCanResizeEvent;
+    function GetSplitterMoved: TNotifyEvent;
+    function GetSplitterPaint: TNotifyEvent;
+    procedure SetSplitterCanResize(const Value: TCanResizeEvent);
+    procedure SetSplitterMoved(const Value: TNotifyEvent);
+    procedure SetSplitterPaint(const Value: TNotifyEvent);
   protected
     function IsColorsStored: Boolean;
     function IsNavPanelFontStored: Boolean;
@@ -903,12 +923,27 @@ type
     property SmallImages: TCustomImageList read GetSmallImages write SetSmallImages;
     property SplitterHeight: Integer read GetSplitterHeight write SetSplitterHeight default 7;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
+    property Splitter:TJvOutlookSplitter read FSplitter;
+    property IconPanel:TJvIconPanel read FIconPanel;
     property OnDropDownMenu: TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
+
+    property OnSplitterCanResize: TCanResizeEvent read GetSplitterCanResize write SetSplitterCanResize;
+    property OnSplitterMoved: TNotifyEvent read GetSplitterMoved write SetSplitterMoved;
+    property OnSplitterPaint: TNotifyEvent read GetSplitterPaint write SetSplitterPaint;
+    property OnSplitterClick:TNotifyEvent read GetSplitterClick write SetSplitterClick;
+    property OnSplitterMouseEnter:TNotifyEvent read GetSplitterMouseEnter write SetSplitterMouseEnter;
+    property OnSplitterMouseLeave:TNotifyEvent read GetSplitterMouseLeave write SetSplitterMouseLeave;
+    property OnSplitterDblClick:TNotifyEvent read GetSplitterDblClick write SetSplitterDblClick;
+    property OnSplitterMouseDown:TMouseEvent read GetSplitterMouseDown write SetSplitterMouseDown;
+    property OnSplitterMouseMove:TMouseMoveEvent read GetSplitterMouseMove write SetSplitterMouseMove;
+    property OnSplitterMouseUp:TMouseEvent read GetSplitterMouseUp write SetSplitterMouseUp;
   end;
 
   TJvNavigationPane = class(TJvCustomNavigationPane)
   public
     property NavPages;
+    property Splitter;
+    property IconPanel;
   published
     property ActivePage;
     //    property Alignment;
@@ -965,6 +1000,17 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnResize;
+
+    property OnSplitterCanResize;
+    property OnSplitterMoved;
+    property OnSplitterPaint;
+    property OnSplitterClick;
+    property OnSplitterMouseEnter;
+    property OnSplitterMouseLeave;
+    property OnSplitterDblClick;
+    property OnSplitterMouseDown;
+    property OnSplitterMouseMove;
+    property OnSplitterMouseUp;
   end;
 
   TJvNavStyleLink = class(TObject)
@@ -1245,6 +1291,7 @@ begin
   FIconPanel.Parent := Self;
   FIconPanel.Align := alBottom;
   FIconPanel.OnDropDownMenu := DoDropDownMenu;
+
   FNavPanelFont := TFont.Create;
   FNavPanelHotTrackFont := TFont.Create;  
   FNavPanelFont.Assign(Application.Font); 
@@ -1261,7 +1308,9 @@ begin
     OnCanResize := DoSplitterCanResize;
     Parent := Self;
   end;
-  FParentStyleManager := True;
+  FParentStyleManager := True; 
+  FIconPanel.SetSubComponent(True);
+  FSplitter.SetSubComponent(True); 
 end;
 
 destructor TJvCustomNavigationPane.Destroy;
@@ -1730,6 +1779,152 @@ end;
 function TJvCustomNavigationPane.IsColorsStored: Boolean;
 begin
   Result := (StyleManager = nil) or (StyleManager.Theme = nptCustom);
+end;
+
+function TJvCustomNavigationPane.GetSplitterClick: TNotifyEvent;
+begin
+  if FSplitter <> nil then
+    Result := FSplitter.OnClick
+  else
+    Result := nil;
+end;
+
+function TJvCustomNavigationPane.GetSplitterDblClick: TNotifyEvent;
+begin
+  if FSplitter <> nil then
+    Result := FSplitter.OnDblClick
+  else
+    Result := nil;
+end;
+
+function TJvCustomNavigationPane.GetSplitterMouseDown: TMouseEvent;
+begin
+  if FSplitter <> nil then
+    Result := FSplitter.OnMouseDown
+  else
+    Result := nil;
+end;
+
+function TJvCustomNavigationPane.GetSplitterMouseEnter: TNotifyEvent;
+begin
+  if FSplitter <> nil then
+    Result := FSplitter.OnMouseEnter
+  else
+    Result := nil;
+end;
+
+function TJvCustomNavigationPane.GetSplitterMouseLeave: TNotifyEvent;
+begin
+  if FSplitter <> nil then
+    Result := FSplitter.OnMouseLeave
+  else
+    Result := nil;
+end;
+
+function TJvCustomNavigationPane.GetSplitterMouseMove: TMouseMoveEvent;
+begin
+  if FSplitter <> nil then
+    Result := FSplitter.OnMouseMove
+  else
+    Result := nil;
+end;
+
+function TJvCustomNavigationPane.GetSplitterMouseUp: TMouseEvent;
+begin
+  if FSplitter <> nil then
+    Result := FSplitter.OnMouseUp
+  else
+    Result := nil;
+end;
+
+function TJvCustomNavigationPane.GetSplitterCanResize: TCanResizeEvent;
+begin
+  if FSplitter <> nil then
+    Result := FSplitter.OnCanResize
+  else
+    Result := nil;
+end;
+
+function TJvCustomNavigationPane.GetSplitterMoved: TNotifyEvent;
+begin
+  if FSplitter <> nil then
+    Result := FSplitter.OnMoved
+  else
+    Result := nil;
+end;
+
+function TJvCustomNavigationPane.GetSplitterPaint: TNotifyEvent;
+begin
+  if FSplitter <> nil then
+    Result := FSplitter.OnPaint
+  else
+    Result := nil;
+end;
+
+procedure TJvCustomNavigationPane.SetSplitterCanResize(const Value: TCanResizeEvent);
+begin
+  if FSplitter <> nil then
+    FSplitter.OnCanResize := Value;
+end;
+
+procedure TJvCustomNavigationPane.SetSplitterMoved(const Value: TNotifyEvent);
+begin
+  if FSplitter <> nil then
+    FSplitter.OnMoved := Value;
+end;
+
+procedure TJvCustomNavigationPane.SetSplitterPaint(const Value: TNotifyEvent);
+begin
+  if FSplitter <> nil then
+    FSplitter.OnPaint := Value;
+end;
+
+procedure TJvCustomNavigationPane.SetSplitterClick(const Value: TNotifyEvent);
+begin
+  if FSplitter <> nil then
+    FSplitter.OnClick := Value;
+end;
+
+procedure TJvCustomNavigationPane.SetSplitterDblClick(
+  const Value: TNotifyEvent);
+begin
+  if FSplitter <> nil then
+    FSplitter.OnDblClick := Value;
+end;
+
+procedure TJvCustomNavigationPane.SetSplitterMouseDown(
+  const Value: TMouseEvent);
+begin
+  if FSplitter <> nil then
+    FSplitter.OnMouseDown := Value;
+end;
+
+procedure TJvCustomNavigationPane.SetSplitterMouseEnter(
+  const Value: TNotifyEvent);
+begin
+  if FSplitter <> nil then
+    FSplitter.OnMouseEnter := Value;
+end;
+
+procedure TJvCustomNavigationPane.SetSplitterMouseLeave(
+  const Value: TNotifyEvent);
+begin
+  if FSplitter <> nil then
+    FSplitter.OnMouseLeave := Value;
+end;
+
+procedure TJvCustomNavigationPane.SetSplitterMouseMove(
+  const Value: TMouseMoveEvent);
+begin
+  if FSplitter <> nil then
+    FSplitter.OnMouseMove := Value;
+end;
+
+procedure TJvCustomNavigationPane.SetSplitterMouseUp(
+  const Value: TMouseEvent);
+begin
+  if FSplitter <> nil then
+    FSplitter.OnMouseUp := Value;
 end;
 
 //=== TJvNavIconButton ======================================================

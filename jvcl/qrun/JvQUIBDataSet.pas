@@ -28,7 +28,7 @@
 unit JvQUIBDataSet;
 
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 interface
 

@@ -42,8 +42,8 @@ interface
 
 uses
   SysUtils, Classes, 
-  QComCtrls, QControls, QExtCtrls, Types, QGraphics, QForms,
-  QComboEdits, QWindows, JvQExComboEdits, QComCtrlsEx,
+  QComCtrls, QControls, QExtCtrls, Types, QGraphics, QForms, 
+  QComboEdits, QWindows, JvQExComboEdits, QComCtrlsEx, 
   JvQEdit, JvQExMask, JvQMaskEdit, JvQComponent;
 
 type
@@ -119,7 +119,7 @@ type
   TJvCheckOption = (coCheckOnChange, coCheckOnExit, coCropBeyondLimit);
   TJvCheckOptions = set of TJvCheckOption;
   
-  TJvCustomSpinEdit = class(TJvExCustomComboMaskEdit)
+  TJvCustomSpinEdit = class(TJvExCustomComboMaskEdit) 
   private
     FCheckMaxValue: Boolean;
     FCheckMinValue: Boolean;
@@ -1036,21 +1036,21 @@ begin
       if BiDiMode = bdRightToLeft then
         Align := alLeft
       else
-        Align := alRight;
-      Parent := Self .ClientArea;
+        Align := alRight;  
+      Parent := Self.ClientArea; 
       OnClick := UpDownClick;
     end;
   end
   else
   begin
     FBtnWindow := TWinControl.Create(Self);
-    FBtnWindow.Visible := True;
-    FBtnWindow.Parent := Self .ClientArea;
+    FBtnWindow.Visible := True;  
+    FBtnWindow.Parent := Self.ClientArea; 
     if FButtonKind <> bkClassic then
       FBtnWindow.SetBounds(0, 0, DefBtnWidth, Height)
     else
-      FBtnWindow.SetBounds(0, 0, Height, Height);
-    FBtnWindow.Align := alRight;
+      FBtnWindow.SetBounds(0, 0, Height, Height); 
+    FBtnWindow.Align := alRight; 
     FButton := TJvSpinButton.Create(Self);
     FButton.Visible := True;
     if FButtonKind = bkClassic then
@@ -1192,8 +1192,7 @@ begin
   //Polaris
   if BiDiMode = bdRightToLeft then
   begin
-    SetRect(Loc, GetButtonWidth + 1, 0, ClientWidth - 1,
-      ClientHeight + 1); 
+    SetRect(Loc, GetButtonWidth + 1, 0, ClientWidth - 1, ClientHeight + 1); 
   end
   else
   begin

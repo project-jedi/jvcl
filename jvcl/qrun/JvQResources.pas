@@ -1192,6 +1192,9 @@ resourcestring
   RsEInvalidReduction = 'Invalid reduction';
   RsEBadTokenState = 'Bad token state';
   RsTreeViewFiles = 'TreeView Files';
+  RsNewNode = 'new node';
+  RsNew = 'new';
+  RsRecalculateErr = 'Error in: %s';
 
 //=== JvJoystick.pas =========================================================
 resourcestring

@@ -59,8 +59,8 @@ unit JvQLabel;
 
 interface
 
-uses  
-  Qt, QGraphics, QControls, QForms, QStdCtrls, QImgList, Types, QWindows, 
+uses
+  QWindows, QMessages, Types, QGraphics, QControls, QForms, QStdCtrls, QImgList,
   SysUtils, Classes,
   JvQTypes, JvQComponent, JvQConsts, JvQExControls, JvQDataProvider, JvQDataProviderIntf;
 
@@ -485,7 +485,9 @@ end;
 
 
 
-
+//
+// TODO: replace TextOutAngle by DrawText(...., Angle) (asn)
+//
 procedure TJvCustomLabel.DrawAngleText(var Rect: TRect; Flags: Word; HasImage: Boolean;
   ShadowSize: Byte; ShadowColor: TColorRef; ShadowPos: TShadowPosition);
 const // (ahuser) no function known for these
@@ -505,10 +507,7 @@ begin
     StrCopy(Text, ' ');
 
   Canvas.Start;
-  //  QPainter_save(Canvas.Handle);
   try
-    //    QPainter_rotate(Canvas.Handle, -(Angle div 2));
-
     Phi := Angle * Pi / 180;
     if not AutoSize then
     begin
@@ -546,8 +545,6 @@ begin
       end;
     end;
 
-    //    QPainter_translate(Canvas.Handle, TextX, TextY);
-    //    QPainter_rotate(Canvas.Handle, -(Angle {div 2}));
     if CalcRect then
     begin
       Rect.Right := Rect.Left + w;
@@ -574,7 +571,6 @@ begin
         TextOutAngle(Canvas, Angle, TextX, TextY, Text);
     end;
   finally
-    //    QPainter_restore(Canvas.Handle);
     Canvas.Stop;
   end;
 end;
@@ -603,7 +599,7 @@ begin
       if RoundedFrame = 0 then
       begin
         Brush.Color := FrameColor;
-        FrameRect(Canvas, ClientRect);
+        FrameRect( Canvas,  ClientRect);
       end
       else
       begin

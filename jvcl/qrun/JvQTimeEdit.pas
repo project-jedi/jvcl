@@ -44,6 +44,8 @@ type
     function GetTimeField : TTimeField;
     function GetDelta(value: TTimeField) : TDateTime;
   protected
+    function GetValue: Extended; override;
+    procedure SetValue(NewValue: Extended); override;
     procedure IncrementValue ; //override;
     procedure DecrementValue ; //override;
   public
@@ -142,12 +144,12 @@ type
 implementation
 
 
-Constructor TJvTimeSpin.create( AOwner: TComponent);
+Constructor TJvTimeSpin.create(AOwner: TComponent);
 begin
   inherited;
   EditMask := '!90:00:00;1; ';
-  Text := FormatDateTime(LongTimeFormat, 0.5);
   ValueType := vtFloat;
+  Text := FormatDateTime(LongTimeFormat, 0.5);
   MinValue := 0.0;
   MaxValue := 1.0;
 end;
@@ -163,6 +165,16 @@ begin
     result := StrToTime( EditText )
   else
     Result := 0.5 ;
+end;
+
+function TJvTimeSpin.GetValue: Extended;
+begin
+  result := getTime;
+end;
+
+procedure TJvTimeSpin.SetValue(NewValue: Extended);
+begin
+  setTime(NewValue);
 end;
 
 procedure TJvTimeSpin.IncrementValue ;

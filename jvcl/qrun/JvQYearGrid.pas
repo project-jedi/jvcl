@@ -182,11 +182,11 @@ type
     procedure DrawCell(ACol, ARow: Integer; Rect: TRect; State: TGridDrawState); override;
     function SelectCell(ACol, ARow: Integer): Boolean; override;
     procedure DblClick; override;
-    procedure SetAutoSize(Value: Boolean); {$IFDEF USECUSTOMGRID}override;{$ENDIF USECUSTOMGRID}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF USECUSTOMGRID} override; {$ENDIF}
     procedure UpdateAllSizes;
     procedure AdjustBounds;
     procedure Loaded; override;
-    procedure SetParent(const AParent: TWinControl); override;
+    procedure SetParent( const  AParent: TWinControl); override;
 
     // Those three methods are used to provide support for reading
     // the GridYear property from DFM files that were using
@@ -225,46 +225,46 @@ type
     procedure Find;
 
   published
-    property HTMLBorder    : Boolean                read FHTMLBorder     write SetHTMLBorder;
-    property HTMLFontName  : string                 read FHTMLFontName   write SetHTMLFontName;
-    property BorderColor   : TColor                 read FBorderColor    write SetBorderColor    default JvDefaultBorderColor;
-    property BookMarkColor : TColor                 read FBookMarkColor  write SetBookMarkColor  default clYellow;
-    property Orientation   : TJvYearGridOrientation read FOrientation    write SetOrientation    default yoHorizontal;
-    property FirstDayOfWeek: TJvWeekDay             read FFirstDayOfWeek write SetFirstDayOfWeek default wdMonday;
+    property HTMLBorder: Boolean read FHTMLBorder write SetHTMLBorder;
+    property HTMLFontName: string read FHTMLFontName write SetHTMLFontName;
+    property BorderColor: TColor read FBorderColor write SetBorderColor    default JvDefaultBorderColor;
+    property BookMarkColor: TColor read FBookMarkColor write SetBookMarkColor  default clYellow;
+    property Orientation: TJvYearGridOrientation read FOrientation write SetOrientation    default yoHorizontal;
+    property FirstDayOfWeek: TJvWeekDay read FFirstDayOfWeek write SetFirstDayOfWeek default wdMonday;
 
-    property Year    : Integer read FYear     write SetYear;
-    property YearFile: string  read FYearFile write FYearFile;
+    property Year: Integer read FYear write SetYear;
+    property YearFile: string read FYearFile write FYearFile;
 
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property AutoSizeOptions: TJvAutoSizeOptions read FAutoSizeOptions write SetAutoSizeOptions;
 
-    property FirstColWidth : Integer read GetFirstColWidth  write SetFirstColWidth;
+    property FirstColWidth: Integer read GetFirstColWidth write SetFirstColWidth;
     property FirstRowHeight: Integer read GetFirstRowHeight write SetFirstRowHeight;
  
     property CellMargins: TJvRect read FCellMargins write SetCellMargins; 
 
-    property WeekendDays : TJvWeekDaySet read FWeekendDays write SetWeekendDays;
+    property WeekendDays: TJvWeekDaySet read FWeekendDays write SetWeekendDays;
 
     property MonthNamesAlignment: TAlignment read FMonthNamesAlignment write SetMonthNamesAlignment default taLeftJustify;
-    property DayNamesAlignment  : TAlignment read FDayNamesAlignment   write SetDayNamesAlignment   default taLeftJustify;
-    property DaysAlignment      : TAlignment read FDaysAlignment       write SetDaysAlignment       default taLeftJustify;
-    property YearAlignment      : TAlignment read FYearAlignment       write SetYearAlignment       default taLeftJustify;
+    property DayNamesAlignment: TAlignment read FDayNamesAlignment write SetDayNamesAlignment   default taLeftJustify;
+    property DaysAlignment: TAlignment read FDaysAlignment write SetDaysAlignment       default taLeftJustify;
+    property YearAlignment: TAlignment read FYearAlignment write SetYearAlignment       default taLeftJustify;
 
     {$IFDEF USECUSTOMGRID}
     property OnSelectCell;
     property OnDrawCell;
     {$ELSE}
     property OnSelectCell: TSelectCellEvent read FOnSelectCell write FOnSelectCell;
-    property OnDrawCell  : TDrawCellEvent   read FOnDrawCell   write FOnDrawCell;
+    property OnDrawCell: TDrawCellEvent read FOnDrawCell write FOnDrawCell;
     {$ENDIF USECUSTOMGRID}
 
-    property OnYearChanged : TOnYearChanged   read FOnYearChanged  write SetYearChanged;
-    property OnSelectDate  : TOnSelectDate    read FOnSelectDate   write SetSelectDate;
-    property OnInfoChanging: TOnInfoChanging  read FOnInfoChanging write SetInfoChanging;
+    property OnYearChanged: TOnYearChanged read FOnYearChanged  write SetYearChanged;
+    property OnSelectDate: TOnSelectDate read FOnSelectDate write SetSelectDate;
+    property OnInfoChanging: TOnInfoChanging read FOnInfoChanging write SetInfoChanging;
     property OnDblClick;
     property OnClick;
 
-    property DefaultColWidth : Integer read GetDefaultColWidth  write SetDefaultColWidth  default 16;
+    property DefaultColWidth: Integer read GetDefaultColWidth write SetDefaultColWidth  default 16;
     property DefaultRowHeight: Integer read GetDefaultRowHeight write SetDefaultRowHeihgt default 18;
 
     property ScrollBars;
@@ -922,7 +922,6 @@ begin
   Command := AFile;
   Params := '';
   WorkDir := '';  
-  // (rom) i doubt that ShellExecute is a Linux function
   ShellExecute(HWND_DESKTOP, 'open', PChar(Command),
     PChar(Params), PChar(WorkDir), SW_SHOWNORMAL); 
 end;
@@ -1267,14 +1266,10 @@ begin
   if AutoSize then
   begin
     if aoFirstRow in AutoSizeOptions then
-    begin
-      RowHeights[0] := GetHighestTextInRow(0) + CellMargins.Top + CellMargins.Bottom;
-    end;
-    
+      RowHeights[0] := GetHighestTextInRow(0)  + CellMargins.Top + CellMargins.Bottom ;
+
     if aoFirstColumn in AutoSizeOptions then
-    begin
-      ColWidths[0] := GetLargestTextInColumn(0) + CellMargins.Left + CellMargins.Right; 
-    end;
+      ColWidths[0] := GetLargestTextInColumn(0)  + CellMargins.Left + CellMargins.Right ;
 
     if aoRows in AutoSizeOptions then
     begin
@@ -1289,7 +1284,7 @@ begin
       end;
         
       for I := 1 to RowCount-1 do
-        RowHeights[I] := MaxValue + CellMargins.Top + CellMargins.Bottom;
+        RowHeights[I] := MaxValue  + CellMargins.Top + CellMargins.Bottom ;
     end;
 
     if aoColumns in AutoSizeOptions then
@@ -1305,7 +1300,7 @@ begin
       end;
 
       for I := 1 to ColCount-1 do
-        ColWidths[I] := MaxValue + CellMargins.Left + CellMargins.Top;
+        ColWidths[I] := MaxValue  + CellMargins.Left + CellMargins.Top ;
     end;
   end;
 end;
@@ -1345,7 +1340,7 @@ begin
   AdjustBounds;
 end;
 
-procedure TJvYearGrid.SetParent(const AParent: TWinControl);
+procedure TJvYearGrid.SetParent( const  AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if Parent <> nil then
@@ -1495,11 +1490,15 @@ var
   function GetTextLeft(Alignment: TAlignment): Integer;
   begin
     case Alignment of
-      taRightJustify: Result := Rect.Right - SWidth - CellMargins.Right;
-      taCenter      : Result := Rect.Left + (Rect.Right-Rect.Left - SWidth- CellMargins.Left - CellMargins.Right + 2) div 2;
-      else            Result := Rect.Left+ CellMargins.Left;
+      taRightJustify:
+        Result := Rect.Right - SWidth  - CellMargins.Right ;
+      taCenter:
+        Result := Rect.Left + (Rect.Right-Rect.Left - SWidth  - CellMargins.Left - CellMargins.Right  + 2) div 2;
+    else
+      Result := Rect.Left  + CellMargins.Left ;
     end;
   end;
+
 begin
   ColRowToDayMonthIndex(ACol, ARow, DayIndex, MonthIndex);
 
@@ -1549,4 +1548,3 @@ begin
 end;
 
 end.
-

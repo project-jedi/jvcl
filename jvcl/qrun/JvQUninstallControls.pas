@@ -36,8 +36,7 @@ unit JvQUninstallControls;
 interface
 
 uses
-  Windows, SysUtils, Classes,  
-  QGraphics, QControls, QStdCtrls, 
+  Windows, SysUtils, Classes, Types, QGraphics, QControls, QStdCtrls,
   JvQComponent, JvQTypes;
 
 type

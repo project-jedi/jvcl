@@ -109,7 +109,6 @@ end;
 
 
 
-
 procedure TJvStatusBar.Paint;
 begin
   {if FAutoHintShown then
@@ -117,7 +116,6 @@ begin
   else}
     inherited Paint;
 end;
-
 
 
 function TJvStatusBar.ExecuteAction(Action: TBasicAction): Boolean;

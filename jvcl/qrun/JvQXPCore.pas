@@ -411,7 +411,7 @@ end;
 procedure TJvXPCustomControl.BorderChanged;
 begin
   // delegate message "BorderChanged" to hook.
-//  inherited BorderChanged;
+  inherited BorderChanged;
   HookBorderChanged;
 end;
 
@@ -425,7 +425,7 @@ end;
 procedure TJvXPCustomControl.FocusChanged;
 begin
   // delegate message "FocusChanged" to hook.
-  //inherited FocusChanged;
+  inherited FocusChanged;
   HookFocusedChanged;
 end;
 

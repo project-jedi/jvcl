@@ -13,7 +13,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JVCLVer.PAS, released on 2001-02-28.
+The Original Code is: JVCLXVer.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Joe Doe .
 Portions created by Joe Doe are Copyright (C) 1999 Joe Doe.

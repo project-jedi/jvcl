@@ -8,14 +8,13 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JVCLVer.PAS, released on 2001-02-28.
+The Original Code is: JVCLXVer.PAS, released on 2004-05-28.
 
-The Initial Developer of the Original Code is Joe Doe .
-Portions created by Joe Doe are Copyright (C) 1999 Joe Doe.
-Portions created by XXXX Corp. are Copyright (C) 1998, 1999 XXXX Corp.
+The Initial Developer of the Original Code is André Snepvangers .
+Portions created by André Snepvangers are Copyright (C) 2004 André Snepvangers.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck att bigfoot dott com].
+Contributor(s): 
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

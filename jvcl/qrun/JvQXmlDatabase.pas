@@ -31,7 +31,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
+{$I jvcl.Inc}
 
 unit JvQXmlDatabase;
 

@@ -35,15 +35,13 @@ unit JvQSlider;
 interface
 
 uses
-  SysUtils, Classes,
-  QWindows, QMessages,
-  Types, QGraphics, QControls, QExtCtrls,
+  SysUtils, Classes, QWindows, QMessages, Types, QGraphics, QControls, QExtCtrls,
   JvQComponent;
 
 type
   TJvSlider = class(TJvCustomControl)
   private 
-    FAutoSize: boolean; 
+    FAutoSize: Boolean; 
     FImageRuler: TBitmap;
     FImageThumb: TBitmap;
     FThumb1: TBitmap;
@@ -78,7 +76,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
-    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
+    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; 
   published
     property ImageRuler: TBitmap read FImageRuler write SetImageRuler;
     property ImageThumb: TBitmap read FImageThumb write SetImageThumb;
@@ -92,7 +90,7 @@ type
     property TabOrder;
     property Width default 191;
     property Height default 11;  
-    property AutoSize: boolean read FAutoSize write FAutoSize default True; 
+    property AutoSize: Boolean read FAutoSize write FAutoSize default True; 
     property Horizontal: Boolean read FHorizontal write FHorizontal default True;
     property Maximum: Integer read FMaximum write SetMaximum default 100;
     property Position: Integer read FPosition write SetPosition default 0;
@@ -378,6 +376,7 @@ begin
   Calculate;
   FTimer.Free;
 end;
+
 
 
 function TJvSlider.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;

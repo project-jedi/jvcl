@@ -56,8 +56,8 @@ interface
 
 uses
   Classes, SysUtils,
-  QWindows, QControls, Types, QGraphics, QForms, QImgList, QActnList, QExtCtrls,
-  Qt, JvQTypes, QTypes, QMessages,
+  QWindows, QMessages, QControls, Types, QGraphics, QForms, QImgList, QActnList, QExtCtrls, 
+  Qt, JvQTypes, QTypes, 
   JvQConsts, JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -1838,7 +1838,7 @@ begin
       FVisibleItems[Index].DrawItem(Self, Canvas, ItemRect, State, ShowItemFrame, Bitmap);
   finally
     Bitmap.Free; 
-    Stop;
+    Stop; 
   end;
 end;
 
@@ -1863,7 +1863,7 @@ begin
     FillRect(Rect);
     Dec(Rect.Top, FHeaderHeight);
 
-    { draw header }
+    { draw header }  
     FillGradient(Handle, Bounds(0, Rect.Top, Width, FHeaderHeight),
       32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal); 
 

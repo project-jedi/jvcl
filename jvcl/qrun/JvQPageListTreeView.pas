@@ -90,7 +90,7 @@ type
     FItems: TJvPageIndexNodes;
     FPageList: IPageList;
     FPageDefault: Integer;
-    FLinks: TJvPageLinks;
+    FLinks: TJvPageLinks; 
     procedure SetPageDefault(const Value: Integer);
     procedure SetLinks(const Value: TJvPageLinks);
     procedure SetPageList(const Value: IPageList);
@@ -98,19 +98,19 @@ type
     procedure SetItems(const Value: TJvPageIndexNodes);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function CreateNode: TTreeNode;
-    function CreateNodes: TTreeNodes;
-    function CanChange(Node: TTreeNode): Boolean; dynamic;
+    function CreateNode: TTreeNode; override;
+    function CreateNodes: TTreeNodes;  override; 
+    function CanChange(Node: TTreeNode): Boolean; override;
     procedure Change(Node: TTreeNode); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property PageDefault: Integer read FPageDefault write SetPageDefault;
-    property PageLinks: TJvPageLinks read FLinks write SetLinks;
-    property PageList: IPageList read FPageList write SetPageList;
+    property PageLinks: TJvPageLinks read FLinks write SetLinks; 
+    property PageList: IPageList read FPageList write SetPageList; 
   protected
     property AutoExpand default True;
-    property ShowButtons default False;
+    property ShowButtons default False; 
     property ReadOnly default True;
     property Items: TJvPageIndexNodes read GetItems write SetItems;
   end;
@@ -175,10 +175,10 @@ type
     FLastSelected: TTreeNode;
     procedure Delete(Node: TTreeNode); override;
 
-    procedure DoGetImageIndex(Node: TCustomViewItem); override;
-    procedure DoGetSelectedIndex(Node: TTreeNode); override;
-    procedure GetImageIndex(Node: TTreeNode); dynamic;
-    procedure GetSelectedIndex(Node: TTreeNode); dynamic;
+    procedure DoGetImageIndex(Sender: TObject; Node: TTreeNode);
+    procedure DoGetSelectedIndex(Sender: TObject; Node: TTreeNode);
+    procedure GetImageIndex(Node: TTreeNode); override;
+    procedure GetSelectedIndex(Node: TTreeNode); override;
     function CanChange(Node: TTreeNode): Boolean; override;
     procedure Change(Node: TTreeNode); override;
     procedure ResetPreviousNode(NewNode: TTreeNode); virtual;
@@ -198,7 +198,7 @@ type
   TJvPageListTreeView = class(TJvCustomPageListTreeView)
   published
     property AutoExpand;
-    property ShowButtons;
+    property ShowButtons; 
     property ReadOnly;
     property PageDefault;
     property PageLinks;
@@ -209,7 +209,7 @@ type
     property OnParentColorChange;
 
     property Align;
-    property Anchors;
+    property Anchors; 
     property BorderStyle;
     property Color;
     property Constraints;
@@ -233,10 +233,10 @@ type
     property OnClick;
     property OnCollapsed;
     property OnCollapsing;
-//    property OnCompare;
+    property OnCompare;
     property OnContextPopup; 
-//    property OnCustomDraw;
-//    property OnCustomDrawItem;
+    property OnCustomDraw;
+    property OnCustomDrawItem;
     property OnDblClick;
     property OnDeletion;
     property OnDragDrop;
@@ -277,15 +277,15 @@ type
     property Align;
     property Anchors; 
     property BorderStyle;
-//    property BorderWidth;
-//    property ChangeDelay;
+    property BorderWidth;
+    property ChangeDelay;
     property Color;
     property Constraints;
     property DragMode;
     property Enabled;
     property Font;
-//    property HideSelection;
-//    property HotTrack;
+    property HideSelection;
+    property HotTrack;
     property Images;
     property Indent;
     // don't use!
@@ -295,32 +295,28 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-//    property RightClickSelect;
+    property RightClickSelect;
     property RowSelect;
     property ShowHint;
-//    property ShowRoot;
+    property ShowRoot;
     property SortType;
-//    property StateImages;
+    property StateImages;
     property TabOrder;
     property TabStop default True;
-//    property ToolTips;
+    property ToolTips;
     property Visible;
-//    property OnAdvancedCustomDraw;
-//    property OnAdvancedCustomDrawItem;
+    property OnAdvancedCustomDraw;
+    property OnAdvancedCustomDrawItem;
     property OnChange;
     property OnChanging;
     property OnClick;
     property OnCollapsed;
     property OnCollapsing;
-//    property OnCompare;
-//    property OnContextPopup;
-    property OnInsert;
-
-//    property OnCreateNodeClass;
-//    property OnCustomDraw;
-    property OnCustomDrawBranch;
-    property OnCustomDrawSubItem;
-
+    property OnCompare;
+    property OnContextPopup; 
+    property OnAddition;
+    property OnCreateNodeClass; 
+    property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
     property OnDeletion;
@@ -348,7 +344,7 @@ type
 
 implementation
 
-uses
+uses 
   QForms;
 
 type
@@ -452,7 +448,7 @@ end;
 
 function TJvCustomPageListTreeView.CanChange(Node: TTreeNode): Boolean;
 begin
-  Result := true; //inherited CanChange(Node);
+  Result := inherited CanChange(Node);
   if Result and Assigned(Node) and Assigned(FPageList) then
     Result := FPageList.CanChange(TJvPageIndexNode(Node).PageIndex);
 end;
@@ -645,12 +641,12 @@ begin
   FNodeImages := TJvSettingsTreeImages.Create;
   FNodeImages.TreeView := Self;
   AutoExpand := True;
-  ShowButtons := False;
+  ShowButtons := False; 
   ReadOnly := True;
   // we need to assign to these since the TTreeView checks if they are assigned
   // and won't call GetImageIndex without them
-//  inherited OnGetImageIndex := DoGetImageIndex;
-//  inherited OnGetSelectedIndex := DoGetSelectedIndex;
+  inherited OnGetImageIndex := DoGetImageIndex;
+  inherited OnGetSelectedIndex := DoGetSelectedIndex;
 end;
 
 destructor TJvCustomSettingsTreeView.Destroy;
@@ -694,18 +690,20 @@ begin
     FLastSelected := nil;
 end;
 
-procedure TJvCustomSettingsTreeView.DoGetImageIndex(Node: TCustomViewItem);
+procedure TJvCustomSettingsTreeView.DoGetImageIndex(Sender: TObject;
+  Node: TTreeNode);
 begin
   if Assigned(FOnGetImageIndex) then
-    FOnGetImageIndex(Self, TTreeNode(Node))
+    FOnGetImageIndex(Sender, Node)
   else
-    GetImageIndex(TTreeNode(Node));
+    GetImageIndex(Node);
 end;
 
-procedure TJvCustomSettingsTreeView.DoGetSelectedIndex(Node: TTreeNode);
+procedure TJvCustomSettingsTreeView.DoGetSelectedIndex(Sender: TObject;
+  Node: TTreeNode);
 begin
   if Assigned(FOnGetSelectedIndex) then
-    FOnGetSelectedIndex(Self, Node)
+    FOnGetSelectedIndex(Sender, Node)
   else
     GetSelectedIndex(Node);
 end;

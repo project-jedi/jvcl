@@ -171,16 +171,11 @@ begin
   ThreadNameInfo.FName := PChar(FName);
   ThreadNameInfo.FThreadID := $FFFFFFFF;
   ThreadNameInfo.FFlags := 0;
-  {$IFDEF MSWINDOWS}
   try
     RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord),
       @ThreadNameInfo);
   except
-  end;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  // TODO
-  {$ENDIF LINUX}
+  end; 
 end;
 
 //=== TMTThread ==============================================================
