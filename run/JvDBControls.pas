@@ -395,7 +395,6 @@ type
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure SetFocused(Value: Boolean);
-    procedure SetReadOnly(Value: Boolean);
     procedure UpdateData(Sender: TObject);
     procedure WMCut(var Msg: TMessage); message WM_CUT;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
@@ -407,6 +406,7 @@ type
     procedure Change; override;
     function EditCanModify: Boolean; override;
     function GetReadOnly: Boolean; override;
+    procedure SetReadOnly(Value: Boolean);override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure Loaded; override;
@@ -501,7 +501,6 @@ type
     function GetField: TField;
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
-    procedure SetReadOnly(Value: Boolean);
     procedure UpdateData(Sender: TObject);
     procedure AfterPopup(Sender: TObject; var Date: TDateTime; var Action: Boolean);
     procedure WMCut(var Msg: TMessage); message WM_CUT;
@@ -514,6 +513,7 @@ type
     procedure AcceptValue(const Value: Variant); override;
     procedure ApplyDate(Value: TDateTime); override;
     function GetReadOnly: Boolean; override;
+    procedure SetReadOnly(Value: Boolean);override;
     procedure Change; override;
     function EditCanModify: Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -639,7 +639,6 @@ type
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure SetDefaultParams(Value: Boolean);
-    procedure SetReadOnly(Value: Boolean);
     procedure UpdateFieldData(Sender: TObject);
     procedure WMCut(var Msg: TMessage); message WM_CUT;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
@@ -650,6 +649,7 @@ type
     procedure AcceptValue(const Value: Variant); override;
     function GetDisplayText: string; override;
     function GetReadOnly: Boolean; override;
+    procedure SetReadOnly(Value: Boolean);override;
     procedure Change; override;
 
     procedure DataChanged; override; //Polaris

@@ -134,7 +134,6 @@ type
     procedure SetButtonFlat(const Value: Boolean);
     function GetDirectInput: Boolean;
     //    procedure SetDirectInput(Value: Boolean);  // Polaris
-    procedure SetReadOnly(Value: Boolean);
     procedure SetAlignment(Value: TAlignment);
     function IsCustomGlyph: Boolean;
     function BtnWidthStored: Boolean;
@@ -180,6 +179,7 @@ type
     procedure CreateWnd; override;
     function EditCanModify: Boolean; override;
     function GetReadOnly: Boolean; virtual;
+    procedure SetReadOnly(Value: Boolean);virtual;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;

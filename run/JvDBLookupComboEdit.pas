@@ -8,7 +8,8 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvDBLookupComboEdit.PAS, released on 2003-09-18.
+The Original Code is: JvDBLookupEdit.PAS, released on 2003-09-18.
+The Code was modified to: JvDBLookupComboEdit.PAS, released on 2003-10-20.
 
 The Initial Developers of the Original Code are: Michael Habbe
 Copyright (c) 2003 Michael Habbe
@@ -22,6 +23,20 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+=============
+
+It must inherit from JvLookupEdit, because the new structure in JVCL3 produced
+(in my environment) stack-overflow-errors, which "kicked" Delphi out of the
+memory with only the message "Danger. Stack-Overflow. Save your work and restart
+Delphi.". (The message is in German and i never saw it before!?)
+
+I find out the problem in line 286 "or inherited ReadOnly;", when i uncommented
+it, Delphi works, but i can modify the dataset, although i set ReadOnly to True.
+
+As aforesaid, the component works in my Delphi with JVCL2, but as soon as i
+inherit it with JVCL3 from JvDBLookupEdit, the specified errors occur.
+
+Michael Habbe [2003-10-20]
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -30,14 +45,13 @@ unit JvDBLookupComboEdit;
 
 interface
 
-uses Windows, SysUtils, Messages, Classes, Controls, Forms, Graphics, Menus,
-     StdCtrls, ExtCtrls, Mask, Buttons, ComCtrls, Db, DBCtrls, JvDBLookup;
+uses Windows, SysUtils, Messages, Classes, Controls, Forms, Graphics, {Menus,}
+     StdCtrls, {ExtCtrls, Mask,} Buttons, {ComCtrls,} Db, DBCtrls, JvDBLookup;
 
 type
-
 { TJvDBLookupComboEdit }
 
-  TJvDBLookupComboEdit = class(TJvDBLookupEdit) // TCustomMaskEdit)
+  TJvDBLookupComboEdit = class(TJvDBLookupEdit)
   private
     FDataLink: TFieldDataLink;
     FCanvas: TControlCanvas;
@@ -49,12 +63,13 @@ type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
+
+
     function GetTextMargins: TPoint;
     procedure ResetMaxLength;
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure SetFocused(Value: Boolean);
-    procedure SetReadOnly(Value: Boolean);
     procedure UpdateData(Sender: TObject);
     procedure WMCut(var Message: TMessage); message WM_CUT;
     procedure WMPaste(var Message: TMessage); message WM_PASTE;
@@ -64,7 +79,8 @@ type
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
     procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
   protected
-    function GetReadOnly: Boolean; override;
+    function GetReadOnly: Boolean;override;  // suppress the warning
+    procedure SetReadOnly(Value: Boolean);override;
     procedure Change; override;
     function EditCanModify: Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -82,8 +98,8 @@ type
     property Field: TField read GetField;
   published
     property Anchors;
-//    property AutoSelect;
-//    property AutoSize;
+    property AutoSelect;
+    property AutoSize;
     property BiDiMode;
     property BorderStyle;
     property CharCase;
@@ -105,7 +121,7 @@ type
     property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
-//    property PasswordChar;
+    property PasswordChar;
     property PopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property ShowHint;
@@ -276,11 +292,12 @@ end;
 
 function TJvDBLookupComboEdit.GetReadOnly: Boolean;
 begin
-  Result := FDataLink.ReadOnly;
+  Result := FDataLink.ReadOnly or inherited GetReadOnly;
 end;
 
 procedure TJvDBLookupComboEdit.SetReadOnly(Value: Boolean);
 begin
+  inherited SetReadOnly(Value);
   FDataLink.ReadOnly := Value;
 end;
 
