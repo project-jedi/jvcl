@@ -23,14 +23,14 @@ object frmMain: TfrmMain
     Left = 161
     Top = 0
     Width = 3
-    Height = 330
+    Height = 337
     Cursor = crHSplit
   end
   object Memo1: TMemo
     Left = 164
     Top = 0
     Width = 374
-    Height = 330
+    Height = 337
     Align = alClient
     ScrollBars = ssBoth
     TabOrder = 0
@@ -40,7 +40,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 161
-    Height = 330
+    Height = 337
     Align = alLeft
     BevelOuter = bvLowered
     TabOrder = 1

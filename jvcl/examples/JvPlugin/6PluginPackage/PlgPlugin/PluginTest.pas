@@ -29,26 +29,29 @@ unit PluginTest;
 interface
 
 uses
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Dialogs,
-   Forms,
-   JvPlugin,
-   JvPlgIntf;
+  Windows,
+  Messages,
+  SysUtils,
+  Classes,
+  Dialogs,
+  Forms,
+  JvPlugin,
+  JvPlgIntf;
 
 type
   TTest = class(TJvPlugin, IMyPluginInterface)
     procedure JvPluginDestroy(Sender: TObject);
   private
     { Private declarations }
+    FMainApp:IMyMainAppInterface;
   public
     { Public declarations }
-    Procedure ShowPlug(Sender : TObject);
+    procedure ShowPlug(Sender: TObject);
+    procedure Init(const MainApp: IMyMainAppInterface);
+
   end;
 
-function RegisterPlugin : TTest; stdcall;
+function RegisterPlugin: TTest; stdcall;
 
 exports
   RegisterPlugin;
@@ -63,7 +66,8 @@ uses ufrmPluginForm;
 // you must set the type below to the same type. (Delphi changes
 // the declaration, but not the procedure itself. Both the return
 // type and the type created must be the same as the declared type above.
-function RegisterPlugin : TTest;
+
+function RegisterPlugin: TTest;
 begin
   Result := TTest.Create(nil);
 end;
@@ -72,16 +76,27 @@ end;
 
 procedure TTest.ShowPlug(Sender: TObject);
 begin
-     if frmPluginForm=nil then
-        frmPluginForm:=TfrmPluginForm.Create(Application);
+  if frmPluginForm = nil then
+  begin
+    frmPluginForm := TfrmPluginForm.Create(Application);
+    frmPluginForm.MainApp := FMainApp;
+  end;
 
-     frmPluginForm.Show;
-     //ShowMessage('ShowPlug was called');
+  frmPluginForm.Show;
+  //ShowMessage('ShowPlug was called');
 end;
 
 procedure TTest.JvPluginDestroy(Sender: TObject);
 begin
-     FreeAndNil(frmPluginForm);
+  FreeAndNil(frmPluginForm);
+end;
+
+procedure TTest.Init(const MainApp: IMyMainAppInterface);
+begin
+  FMainApp := MainApp;
+  if frmPluginForm <> nil then
+    frmPluginForm.MainApp := MainApp;
 end;
 
 end.
+
