@@ -250,7 +250,7 @@ type
     property OnStartDock;
 
   end;
-
+  TJvDriveChangeError = procedure (Sender:TObject;NewDrive:char) of object;
   TJvDirectoryListBox = class(TJvCustomListBox)
   private
     FFileList: TJvFileListBox;
@@ -264,6 +264,7 @@ type
     { (rb) Probably better to switch the values in FDisplayNames and the values
            in Items, see comment at TJvCustomListBox.LBAddString }
     FDisplayNames: TStringList;
+    FOnDriveChangeError: TJvDriveChangeError;
     function GetDrive: Char;
     procedure SetFileListBox(Value: TJvFileListBox);
     procedure SetDirLabel(Value: TLabel);
@@ -291,6 +292,7 @@ type
     procedure KeyPress(var Key: Char); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Click; override;
+    function DoDriveChangeError(NewDrive:char):boolean;virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -336,6 +338,7 @@ type
     property TabStop;
     property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnDriveChangeError:TJvDriveChangeError read FOnDriveChangeError write FOnDriveChangeError;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
@@ -1039,6 +1042,13 @@ begin
   inherited Destroy;
 end;
 
+function TJvDirectoryListBox.DoDriveChangeError(NewDrive: char): boolean;
+begin
+  Result := Assigned(FOnDriveChangeError);
+  if Result then
+    FOnDriveChangeError(self,NewDrive);
+end;
+
 procedure TJvDirectoryListBox.DriveChange(NewDrive: Char);
 var
   OldMode: Cardinal;
@@ -1050,7 +1060,14 @@ begin
     begin
       OldMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
       try
-        ChDir(NewDrive + ':');
+        try
+          ChDir(NewDrive + ':');
+        except
+          if not DoDriveChangeError(NewDrive) then
+            raise
+          else
+            Exit;
+        end;
         GetDir(0, FDirectory); { store correct directory name }
         GetVolumeInformation(PChar(NewDrive + ':\'), nil, 0, nil, MLength, VolFlags, nil, 0);
         FPreserveCase := VolFlags and (FS_CASE_IS_PRESERVED or FS_CASE_SENSITIVE) <> 0;
