@@ -18,14 +18,20 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
+@@TJvAppXMLFileStorage.AutoFlush
+Summary
+  If set to True, the Flush method will be called whenever a modification is made to the
+  in memory file
+See Also
+  Flush
+----------------------------------------------------------------------------------------------------
 @@TJvAppXMLFileStorage.Flush
 Summary
   Write here a summary (1 line)
 Description
   This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AutoFlush
 ----------------------------------------------------------------------------------------------------
 @@TJvAppIniFileStorage.OnGetFileName
 Summary
@@ -400,9 +406,8 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppXMLStorage.Xml
 Summary
-  Write here a summary (1 line)
+  The in memory XML file object
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This is provided if you want to access directly the XML file object, for instance if you
+  share it with other components. Be very careful not to break anything while doing so.
+
