@@ -235,6 +235,7 @@ type
     FCollapseButton: TBitmap;
     FDivider: Integer;
     FDraggingDivider: Boolean;
+    FDividerDragBandX: Integer;
     FExpandButton: TBitmap;
     FImageHeight: Integer;
     FItemHeight: Integer;
@@ -386,6 +387,7 @@ type
     property Divider: Integer read GetDivider write SetDivider;
     property DividerAbs: Integer read GetDividerAbs write SetDividerAbs;
     property DraggingDivider: Boolean read FDraggingDivider write FDraggingDivider;
+    property DividerDragBandX: Integer read FDividerDragBandX write FDividerDragBandX;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
     property ImageHeight: Integer read GetImageHeight;
     property LockCount: Integer read GetLockCount;
@@ -2939,7 +2941,10 @@ begin
   begin
     // Check divider dragging
     if (XB >= Pred(DividerAbs)) and (XB <= Succ(DividerAbs)) then
-      DraggingDivider := True
+    begin
+      DraggingDivider := True;
+      DividerDragBandX := BandIdx * BWidth;
+    end
         // Check row sizing
     else
     if (ItemIndex < VisibleCount) and (Y >= Pred(ItemRect.Bottom)) and
@@ -3006,7 +3011,13 @@ begin
     BWidth := ClientWidth;
     BandIdx := -1;
   end;
-  XB := X mod BWidth;
+  if UseBands and not DraggingDivider then
+    XB := X mod BWidth
+  else
+  if UseBands and DraggingDivider then
+    XB := X - DividerDragBandX
+  else
+    XB := X;
   if DraggingDivider then
     DividerAbs := XB
   else
