@@ -14,7 +14,7 @@ The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov
 Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s):
+Contributor(s):                
 Zinvob
 boerema
 
@@ -125,7 +125,7 @@ procedure TJvProgressForm.Execute;
 begin
 {$IFDEF BCB}
   if not Assigned(FForm) then
-    FForm := TJvProgressFormForm.CreateNew(Owner, 1);
+    FForm := TJvProgressFormForm.CreateNew(Self, 1);
 {$ELSE}
   if not Assigned(FForm) then
     FForm := TJvProgressFormForm.CreateNew(Self);
