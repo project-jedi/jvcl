@@ -101,21 +101,27 @@ type
   published
     property Action;
     property Align;
+    property Anchors;
+    property Constraints;
+
     property AutoGray: Boolean read FAutoGray write SetAutoGray default True;
     property BorderWidth: Cardinal read FBorderSize write SetBorderWidth default 1;
     property Caption;
     property Color;
+    property DropDownMenu;
     property Down;
     property Enabled;
     property Font;
-    property Flat;
+    property HotTrack;
+    property HotTrackFont;
+    property HotTrackFontOptions;
+
     property FrameStyle: TJvFrameStyle read FOutline write SetFrameStyle default fsExplorer;
     property Glyph: TBitmap read FGlyph write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs default 1;
     property Offset: Integer read FOffset write FOffset default 1;
     property ParentFont;
     property ParentShowHint;
-    property DropDownMenu;
     property PopupMenu;
     property ShowHint;
     property ShowPressed: Boolean read FShowPressed write FShowPressed default True;
@@ -160,8 +166,6 @@ type
     FImList: TImageList;
     FOutline: TJvFrameStyle;
     FWordWrap: Boolean;
-    FHiFont: TFont;
-    procedure SetHiFont(Value: TFont);
     procedure SetAutoGray(Value: Boolean);
     procedure SetGrayList(Value: TImageList);
     procedure SetActiveList(Value: TImageList);
@@ -205,8 +209,10 @@ type
     property Down;
     property Enabled;
     property Font;
+    property HotTrack;
+    property HotTrackFont;
+    property HotTrackFontOptions;
 
-    property HiFont: TFont read FHiFont write SetHiFont;
     property FrameStyle: TJvFrameStyle read FOutline write SetFrameStyle default fsExplorer;
     property ActiveImage: TImageList read FActiveList write SetActiveList;
     property ActiveIndex: Integer read FActiveIndex write SetActiveIndex default -1;
@@ -419,6 +425,7 @@ begin
   FOffset := 1;
   FBorderSize := 1;
   FTransparent := True;
+  Flat := True;
 
   FImList := TImageList.Create(self);
   FGlyph := TBitmap.Create;
@@ -507,7 +514,7 @@ begin
   if FOutline <> Value then
   begin
     FOutline := Value;
-    Flat := FOutline = fsExplorer;
+    Flat := FTransparent;
     Invalidate;
   end;
 end;
@@ -517,6 +524,7 @@ begin
   if FTransparent <> Value then
   begin
     FTransparent := Value;
+    Flat := FTransparent;
     Invalidate;
   end;
 end;
@@ -618,7 +626,7 @@ begin
     end
     else
     begin
-      FDrawIt := ((bsMouseInside in MouseStates) and Flat) or not Flat or (csDesigning in ComponentState);
+      FDrawIt := ((bsMouseInside in MouseStates) and Transparent) or not Transparent or (csDesigning in ComponentState);
       case FrameStyle of
         fsNone:
           if csDesigning in ComponentState then
@@ -719,7 +727,10 @@ var
   DC: THandle; { Col:TColor; }
   TmpRect: TRect;
 begin
-  Canvas.Font := Self.Font;
+  if (bsMouseInside in MouseStates) and HotTrack then
+    Canvas.Font := HotTrackFont
+  else
+    Canvas.Font := Self.Font;
   DC := Canvas.Handle; { reduce calls to GetHandle }
 
   if FWordWrap then
@@ -769,7 +780,10 @@ begin
     DrawDisabledText(DC, PChar(Caption), -1, TmpRect, Flags)
   else
   begin
-    SetTextColor(DC, ColorToRGB(Self.Font.Color));
+    if (bsMouseInside in MouseStates) and HotTrack then
+      SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
+    else
+      SetTextColor(DC, ColorToRGB(Self.Font.Color));
     DrawText(DC, PChar(Caption), -1, TmpRect, Flags);
   end;
 end;
@@ -889,12 +903,11 @@ constructor TJvTransparentButton2.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   AllowAllUp := True;
-  FHiFont := TFont.Create;
-  FHiFont.Assign(Font);
   FAutoGray := True;
   FShowPressed := True;
   FBorderSize := 1;
   FTransparent := True;
+  Flat := True;
   FGrayLink := TChangeLink.Create;
   FGrayLink.OnChange := GlyphChanged;
   FActiveLink := TChangeLink.Create;
@@ -921,7 +934,6 @@ begin
   FDisabledLink.Free;
   FDownLink.Free;
   FImList.Free;
-  FHiFont.Free;
   inherited Destroy;
 end;
 
@@ -990,12 +1002,6 @@ begin
     Bmp.Free;
   end;
   Repaint;
-end;
-
-procedure TJvTransparentButton2.SetHiFont(Value: TFont);
-begin
-  FHiFont.Assign(Value);
-  Invalidate;
 end;
 
 procedure TJvTransparentButton2.SetAutoGray(Value: Boolean);
@@ -1096,7 +1102,7 @@ begin
   if FOutline <> Value then
   begin
     FOutline := Value;
-    Flat := FOutline = fsExplorer;
+    Flat := FTransparent;
     Invalidate;
   end;
 end;
@@ -1106,6 +1112,7 @@ begin
   if FTransparent <> Value then
   begin
     FTransparent := Value;
+    Flat := FTransparent;
     Invalidate;
   end;
 end;
@@ -1286,7 +1293,8 @@ begin
           Frame3D(Canvas, TmpRect, clBtnHighlight, cl3DDkShadow, 1);
       end;
     end;
-    if (FHiFont <> Font) and (Caption <> '') then
+    //
+    if (HotTrackFont <> Font) and (Caption <> '') then
     begin
       InflateRect(TmpRect, 1, 1);
       DrawTheText(TmpRect, Canvas);
@@ -1346,8 +1354,8 @@ var
   DC: THandle; { Col:TColor; }
   TmpRect: TRect;
 begin
-  if (bsMouseInside in MouseStates) then
-    Canvas.Font := FHiFont
+  if (bsMouseInside in MouseStates) and HotTrack then
+    Canvas.Font := HotTrackFont
   else
     Canvas.Font := Self.Font;
   DC := Canvas.Handle; { reduce calls to GetHandle }
@@ -1403,9 +1411,8 @@ begin
     OffsetRect(TmpRect, -1, -1);
     SetTextColor(DC, ColorToRGB(clBtnShadow));
   end
-  else
-  if (bsMouseInside in MouseStates) then
-    SetTextColor(DC, ColorToRGB(FHiFont.Color))
+  else if (bsMouseInside in MouseStates) and HotTrack then
+    SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
   else
     SetTextColor(DC, ColorToRGB(Self.Font.Color));
 
