@@ -217,7 +217,7 @@ var
 begin
   if Installer.InstallType <> itUninstall then
     with TFrameDirEditBrowse.Build(RsJCLDirectoryCaption, Installer.JCLDir,
-                                   JCLDirChanged, nil, Client) do
+                                   JCLDirChanged, nil, Client, RsJCLDirectorySelectionBtnHint) do
       Align := alBottom
   else
   begin

@@ -25,7 +25,6 @@ object FrameDirEditBrowse: TFrameDirEditBrowse
     Top = 24
     Width = 279
     Height = 21
-    Color = clBtnFace
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -34,6 +33,7 @@ object FrameDirEditBrowse: TFrameDirEditBrowse
     ParentFont = False
     ReadOnly = True
     TabOrder = 0
+    OnEnter = EditDirectoryEnter
   end
   object BtnJCLDirBrowse: TButton
     Left = 288

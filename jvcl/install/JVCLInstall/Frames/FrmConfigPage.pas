@@ -89,7 +89,7 @@ type
 implementation
 
 uses
-  InstallerConsts, Core, MainConfig, Main, Utils;
+  InstallerConsts, Core, MainConfig, Main, Utils, Math;
 
 {$R *.dfm}
 
@@ -138,9 +138,15 @@ end;
 procedure TFrameConfigPage.Init;
 var
   i: Integer;
+  x: Integer;
 begin
   Inc(FInitializing);
   try
+    x := BtnEditJvclInc.BoundsRect.Right;
+    BtnEditJvclInc.Width := Max(BtnEditJvclInc.Width, LblOptionsFor.Canvas.TextWidth(BtnEditJvclInc.Caption) + 16);
+    BtnEditJvclInc.Left := BtnEditJvclInc.Left - (BtnEditJvclInc.BoundsRect.Right - x);
+
+
     ImageListTargets.Clear;
 
     FrameDirEditBrowseBPL.OnChange := BplDirChanged;

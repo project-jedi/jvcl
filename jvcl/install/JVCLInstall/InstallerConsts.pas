@@ -32,15 +32,15 @@ resourcestring
 
  // JVCL3Install.pas
   SWelcomeText =
-    'The JEDI Visual Component Library (JVCL) consists of a large collection (currently ca. 500)'#10 +
-    'visual and non-visual components which can be instantly reused in your Delphi, Kylix and'#10 +
+    'The JEDI Visual Component Library (JVCL) consists of a huge collection (currently ca. 500)'#10 +
+    'of visual and non-visual components which can be instantly reused in your Delphi, Kylix and'#10 +
     'C++ Builder projects.'#10 +
     ''#10 +
-    'The library is built upon code donated from the JEDI community. It is reformatted to achieve'#10 +
+    'The library is built upon code donated from the Delphi community. It is reformatted to achieve'#10 +
     'a common look-and-feel, tested, documented and merged into the library. The library is grouped'#10 +
     'into several categories such as Enhanced Standard, Visual, Non-Visual, Data Aware and many,'#10 +
     'many more. The library is released to the public under the terms of the Mozilla Public License'#10 +
-    '(MPL) and as such can be freely used in both freeware, shareware, open source and commercial'#10 +
+    '(MPL 1.1) and as such can be freely used in both freeware, shareware, open source and commercial'#10 +
     'projects.'#10 +
     ''#10 +
     'Source code files included in the JVCL have a header which explicitly states the license (as'#10 +
@@ -50,16 +50,20 @@ resourcestring
   RsInstallerName = 'JVCL 3  Installation';
 
   RsInstallerTitle = 'JVCL 3 Installation';
-  RsWelcomePageSubTitle = 'Welcome to the JVCL 3 installation program.';
-  RsNoDelphiBcbInstalled = 'No Delphi or BCB is installed. The installer terminates.';
-  RsDelphiBcbRunning = 'Delphi or BCB is running. Terminate the IDE and restart the installer.';
+  RsWelcomePageSubTitle = 'Welcome to the JVCL 3 installation application';
+  RsNoDelphiBcbInstalled = 'No Delphi or C++Builder is installed. The installer terminates.';
+  RsDelphiBcbRunning = 'Delphi or C++Builder is running. Terminate the IDE and restart the installer.';
 
-  RsInstallMode = 'New installation / Upgrade from an older version|Change package selection.';
+  RsInstallMode = 'New installation / Upgrade from an older version|Allows the selection of packages that should be installed.';
   RsUpdateMode = 'Compile already installed packages / Update IDE|';
-  RsUninstallMode = 'Uninstall JVCL';
+  RsUninstallMode = 'Uninstall JVCL|Uninstall all JVCL packages and unregister'#10 +
+    'it from Delphi/C++ Builder';
+
+  RsShowMPL = 'Show MPL 1.1'; // the button's width is set to 8+TextWidth+8
 
 const
   sWelcomeFilename = '%s\Install\JVCLInstall\welcome.txt';
+  sMPLHomepage = 'http://www.mozilla.org/MPL/MPL-1.1.html';
 
   // sJclRootDirXx is used to find the "$(JVCL)\..\JCL" directory
   sJclRootDirName = '%s\Jcl';                                  // do not localize
@@ -68,11 +72,11 @@ const
  // PgUninstall.pas
 resourcestring
   RsUninstallPageTitle = 'Uninstalling JVCL 3';
-  RsUninstallPageSubTitle = 'Uninstalling the JVCL 3 from the selected Delphi and BCB versions.';
+  RsUninstallPageSubTitle = 'Uninstalling the JVCL 3 from the selected Delphi and C++Builder versions';
 
  // FrmDirEditBrowse.pas
 resourcestring
-  RsSelectJCLDir = 'Select the directory where the JCL source is.';
+  RsSelectJCLDir = 'Select the directory where the JCL 1.9 source is.';
   RsNoDirectoryButton = 'No directory';
 
  // FrmInstall.pas
@@ -96,19 +100,19 @@ resourcestring
  // PgInstall.pas
 resourcestring
   RsInstallPageTitle = 'Compiling packages';
-  RsInstallPageSubTitle = 'The selected packages are compiling for the selected Delphi and BCB versions.';
+  RsInstallPageSubTitle = 'The selected packages are compiling for the selected Delphi and C++Builder versions';
 
  // PgPackageSelection.pas
 resourcestring
   RsPackageSelectionPageTitle = 'Select packages';
-  RsPackageSelectionPageSubTitle = 'Select all packages for the target IDEs which should be installed.';
+  RsPackageSelectionPageSubTitle = 'Select all packages for the target IDEs which should be installed';
 
  // PgSummary.pas
 resourcestring
   RsSummaryPageTitle = 'Summary';
-  RsSummaryPageSubTitleInstall = 'The following actions will be done through installation.';
-  RsSummaryPageSubTitleUpdate = 'The following actions will be done through the update.';
-  RsSummaryPageSubTitleUninstall = 'The following actions will be done through uninstallation.';
+  RsSummaryPageSubTitleInstall = 'The following actions will be done through installation';
+  RsSummaryPageSubTitleUpdate = 'The following actions will be done through the update';
+  RsSummaryPageSubTitleUninstall = 'The following actions will be done through uninstallation';
 
   RsInstallForTarget = 'Install JVCL 3 for';
   RsInstallForFrameworks = 'Install for frameworks:';
@@ -156,12 +160,12 @@ const
  // PgIDESelection.pas
 resourcestring
   RsSelectionPageTitle = 'Choose IDE targets';
-  RsSelectionPageSubTitleInstall = 'Select all target IDEs where the JVCL should be installed.';
-  RsSelectionPageSubTitleUpdate = 'Select all target IDEs where the JVCL should be updated.';
-  RsSelectionPageSubTitleUninstall = 'Select all target IDEs from which the JVCL should be uninstalled.';
+  RsSelectionPageSubTitleInstall = 'Select all target IDEs where the JVCL should be installed';
+  RsSelectionPageSubTitleUpdate = 'Select all target IDEs where the JVCL should be updated';
+  RsSelectionPageSubTitleUninstall = 'Select all target IDEs from which the JVCL should be uninstalled';
 
   RsErrorInstallingJCL = 'Cannot start the JCL Installer.';
-  RsDelphiBCBUpdateRequired = 'Delphi/BCB update required';
+  RsDelphiBCBUpdateRequired = 'Delphi/C++Builder update required';
   RsDownloadUpdatesFrom = 'Download from';
   RsJCLVersionRequired = 'JCL 1.9 or higher required';
   RsDownloadOrSelectJclDir = 'Download or select a JCL directory.|' +
@@ -172,6 +176,7 @@ resourcestring
 
   RsJCLDirectoryCaption = '&JCL directory:';
   RsDeleteJVCLFilesCaption = '&Delete JVCL files (dcu,bpl,dcp, obj,bpi,lib,tds)';
+  RsJCLDirectorySelectionBtnHint = 'Select JCL 1.90 installation directory...';
 
  // Main.pas
 resourcestring

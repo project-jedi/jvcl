@@ -169,6 +169,8 @@ type
       { rebuilds the current page and triggers OnPageRecreate. }
     procedure Translate(Component: TComponent);
       { translates the formular/frame }
+    procedure ForcedFinish;
+      { sets the installer to the finished mode. }
   end;
 
   TPackageInstaller = class(TComponent, IPackageInstaller)
@@ -180,6 +182,7 @@ type
     FOnPageRecreate: TNotifyEvent;
     FOnUpdateNavigation: TNotifyEvent;
     FOnTranslate: TNotifyEvent;
+    FOnFinished: TNotifyEvent;
 
     function GetPage: IInstallerPage;
     function GetNextPage: IInstallerPage;
@@ -189,6 +192,7 @@ type
     procedure UpdatePages;
     procedure RebuildPage;
     procedure Translate(Component: TComponent);
+    procedure ForcedFinish;
   public
     constructor Create(AInstaller: IInstaller); reintroduce;
     destructor Destroy; override;
@@ -212,6 +216,7 @@ type
     property OnPageRecreate: TNotifyEvent read FOnPageRecreate write FOnPageRecreate;
     property OnUpdateNavigation: TNotifyEvent read FOnUpdateNavigation write FOnUpdateNavigation;
     property OnTranslate: TNotifyEvent read FOnTranslate write FOnTranslate;
+    property OnFinished: TNotifyEvent read FOnFinished write FOnFinished;
   end;
 
 var
@@ -354,6 +359,12 @@ procedure TPackageInstaller.Translate(Component: TComponent);
 begin
   if Assigned(FOnTranslate) then
     FOnTranslate(Component);
+end;
+
+procedure TPackageInstaller.ForcedFinish;
+begin
+  if Assigned(FOnFinished) then
+    FOnFinished(Self);
 end;
 
 initialization

@@ -99,7 +99,7 @@ type
   end;
 
   { Welcome page that shows a text field and the install types }
-  TWelcomePage = class(TInstallerPage, IWelcomePage)
+  TWelcomePage = class(TInstallerPage, IWelcomePage, IUserDefinedPage)
   public
     { IInstallerPage }
     function NextPage: IInstallerPage; override;
@@ -111,6 +111,8 @@ type
     procedure SetSelectedOption(Index: Integer);
     function GetSelectedOption: Integer;
     procedure SetupRadioButton(Index: Integer; Control: TRadioButton);
+    { IUserDefinedPage }
+    function SetupPage(Client: TWinControl): TWinControl;
   end;
 
 implementation
@@ -216,7 +218,7 @@ var
   S: string;
   ps: Integer;
 begin
-  S := TLabel(Sender).Hint;
+  S := TWinControl(Sender).Hint;
   ps := Pos('|', S);
   if ps <> 0 then
     Delete(S, 1, ps);
@@ -306,7 +308,6 @@ begin
   else
     Options.Add('');
 
-
   Options.Add('');
   if Installer.Data.IsJVCLInstalledAnywhere(1) then
     Options.Add(RsUninstallMode)
@@ -348,13 +349,37 @@ begin
         WelcomeText := LoadLongResString(@SWelcomeText); // just in case the welcome text gets longer than 1024 characters
 
       {$IFDEF USE_DXGETTEXT}
-      WelcomeText := dgettext('JVCLInstall',WelcomeText);
+      WelcomeText := dgettext('JVCLInstall', WelcomeText);
       {$ENDIF USE_DXGETTEXT}
     finally
       Lines.Free;
     end;
   end;
   Result := WelcomeText;
+end;
+
+function TWelcomePage.SetupPage(Client: TWinControl): TWinControl;
+var
+  Btn: TButton;
+  Canvas: TControlCanvas;
+begin
+  Result := nil;
+  Btn := TButton.Create(Client);
+
+  Canvas := TControlCanvas.Create;
+  try
+    Canvas.Control := Client;
+    Btn.Width := Canvas.TextWidth(RsShowMPL) + 16;
+  finally
+    Canvas.Free;
+  end;
+
+  Btn.Left := Client.Width - Btn.Width - 8;
+  Btn.Top := TWinControl(Client.FindComponent('piPageMemo')).BoundsRect.Bottom + 8; // do not localize
+  Btn.Parent := Client;
+  Btn.Caption := RsShowMPL;
+  Btn.Hint := '|' + sMPLHomepage;
+  Btn.OnClick := Installer.DoHomepageClick;
 end;
 
 procedure TWelcomePage.Title(var Title, SubTitle: WideString);

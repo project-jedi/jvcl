@@ -74,6 +74,7 @@ type
     procedure SetInstallMode(const Value: TInstallMode);
     function GetFrameworkCount: Integer;
     function GetDxgettextDir: string;
+    function GetDeveloperInstall: Boolean;
   private
     { ITargetConfig }
     function GetInstance: TObject;
@@ -186,7 +187,7 @@ type
       // if AutoDependencies it True the make file for the project groups will
       // contain auto dependency information for faster compilation.
 
-    property DeveloperInstall: Boolean read FDeveloperInstall write FDeveloperInstall;
+    property DeveloperInstall: Boolean read GetDeveloperInstall write FDeveloperInstall;
       // DevelopInstall: add the \run directory to the library path.
 
     property CleanPalettes: Boolean read FCleanPalettes write FCleanPalettes;
@@ -893,6 +894,11 @@ begin
     if Frameworks.Items[Target.IsPersonal, Kind] <> nil then
       Inc(Result);
   end;
+end;
+
+function TTargetConfig.GetDeveloperInstall: Boolean;
+begin
+  Result := FDeveloperInstall;
 end;
 
 function TTargetConfig.GetDxgettextDir: string;

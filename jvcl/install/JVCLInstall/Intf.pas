@@ -57,6 +57,7 @@ type
     function GetDebugUnits: Boolean;
     function GetBuild: Boolean;
     function GetCompileOnly: Boolean;
+    function GetDeveloperInstall: Boolean;
 
     function GetTarget: TCompileTarget;
     function GetJVCLPackagesXmlDir: string;
@@ -76,6 +77,7 @@ type
     property DebugUnits: Boolean read GetDebugUnits;
     property Build: Boolean read GetBuild;
     property CompileOnly: Boolean read GetCompileOnly;
+    property DeveloperInstall: Boolean read GetDeveloperInstall;
 
     property UnitOutDir: string read GetUnitOutDir;
     property JCLDir: string read GetJCLDir;

@@ -129,9 +129,9 @@ object FrameConfigPage: TFrameConfigPage
       OnClick = CheckBoxXPThemingClick
     end
     object BtnEditJvclInc: TButton
-      Left = 93
+      Left = 152
       Top = 130
-      Width = 140
+      Width = 81
       Height = 25
       Caption = 'Edit jvcl.inc'
       TabOrder = 5

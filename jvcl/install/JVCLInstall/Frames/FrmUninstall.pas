@@ -93,7 +93,7 @@ begin
   try
    // find files to delete
     FindFiles(TargetConfig.UnitOutDir, '*.*', True, List, // do not localize
-      ['.dcu', '.obj']);                                  // do not localize
+      ['.dcu', '.obj', '.xfm', '.dfm']);                  // do not localize
     FindFiles(TargetConfig.BplDir, 'Jv*.*', True, List,   // do not localize
       ['.bpl', '.dcp', '.tds']);                          // do not localize
     if TargetConfig.Target.IsBCB then
