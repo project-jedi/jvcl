@@ -48,9 +48,10 @@ type
     procedure FormCreate(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
     procedure About1Click(Sender: TObject);
-    procedure uilPluginManagerNewCommand(Sender: TObject; ACaption, AHint,
-      AData: String; ABitmap: TBitmap; AEvent: TNotifyEvent);
     procedure SendMessagetoPlugins1Click(Sender: TObject);
+    procedure uilPluginManagerNewCommand(Sender: TObject; ACaption, AHint,
+      AData: String; AShortCut: TShortCut; ABitmap: TBitmap;
+      AEvent: TNotifyEvent);
   private
     { Private declarations }
   public
@@ -79,8 +80,15 @@ begin
    ShowMessage('A simple host application for demoing JEDI plug-ins.'#13#10#13#10'(c) 1999, Unlimited Intelligence Limited.');
 end;
 
+
+procedure TForm1.SendMessagetoPlugins1Click(Sender: TObject);
+begin
+   uilPluginManager.SendMessage(1000, InputBox('Enter message to send to plugin', 'Message', 'Your message here'));
+end;
+
 procedure TForm1.uilPluginManagerNewCommand(Sender: TObject; ACaption,
-  AHint, AData: String; ABitmap: TBitmap; AEvent: TNotifyEvent);
+  AHint, AData: String; AShortCut: TShortCut; ABitmap: TBitmap;
+  AEvent: TNotifyEvent);
 var
    Item : TMenuItem;
 begin
@@ -102,11 +110,6 @@ begin
    end;    // with
    Inc(NumButtons);
 
-end;
-
-procedure TForm1.SendMessagetoPlugins1Click(Sender: TObject);
-begin
-   uilPluginManager.SendMessage(1000, InputBox('Enter message to send to plugin', 'Message', 'Your message here'));
 end;
 
 end.

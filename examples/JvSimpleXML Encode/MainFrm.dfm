@@ -5,24 +5,32 @@ object Form1: TForm1
   Height = 523
   Caption = 'JvSimpleXML Demo (test XML encoding and decoding)'
   Color = clBtnFace
+  Constraints.MinHeight = 400
+  Constraints.MinWidth = 420
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
   object pnlBottom: TPanel
     Left = 0
-    Top = 266
+    Top = 259
     Width = 437
     Height = 230
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    DesignSize = (
+      437
+      230)
     object Label2: TLabel
       Left = 6
       Top = 8
@@ -81,10 +89,13 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 437
-    Height = 266
+    Height = 259
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    DesignSize = (
+      437
+      259)
     object Label1: TLabel
       Left = 6
       Top = 12

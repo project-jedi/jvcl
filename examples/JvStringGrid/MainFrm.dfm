@@ -1,16 +1,21 @@
 object Form1: TForm1
-  Left = 193
-  Top = 107
+  Left = 247
+  Top = 137
   Width = 568
   Height = 366
   Caption = 'JvStringGrid Demo'
   Color = clBtnFace
+  Constraints.MinHeight = 360
+  Constraints.MinWidth = 500
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -18,7 +23,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 293
-    Height = 339
+    Height = 332
     Align = alClient
     ColCount = 2
     FixedCols = 0
@@ -37,10 +42,13 @@ object Form1: TForm1
     Left = 293
     Top = 0
     Width = 267
-    Height = 339
+    Height = 332
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 1
+    DesignSize = (
+      267
+      332)
     object Label1: TLabel
       Left = 24
       Top = 24

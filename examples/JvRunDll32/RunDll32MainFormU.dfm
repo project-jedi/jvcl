@@ -4,16 +4,23 @@ object RunDll32MainForm: TRunDll32MainForm
   BorderStyle = bsDialog
   Caption = 'RunDLL32 demo'
   ClientHeight = 219
-  ClientWidth = 508
+  ClientWidth = 422
   Color = clBtnFace
+  Constraints.MinHeight = 250
+  Constraints.MinWidth = 430
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'LMS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
+  DesignSize = (
+    422
+    219)
   PixelsPerInch = 96
   TextHeight = 14
   object Label1: TLabel
@@ -56,7 +63,7 @@ object RunDll32MainForm: TRunDll32MainForm
   object edModule: TEdit
     Left = 8
     Top = 32
-    Width = 458
+    Width = 372
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
@@ -66,7 +73,7 @@ object RunDll32MainForm: TRunDll32MainForm
   object edFunc: TEdit
     Left = 8
     Top = 72
-    Width = 489
+    Width = 403
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 2
@@ -75,14 +82,14 @@ object RunDll32MainForm: TRunDll32MainForm
   object edCmdLine: TEdit
     Left = 8
     Top = 112
-    Width = 489
+    Width = 403
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 3
     Text = 'desk.cpl,,3'
   end
   object chkWait: TCheckBox
-    Left = 24
+    Left = 8
     Top = 144
     Width = 137
     Height = 17
@@ -90,7 +97,7 @@ object RunDll32MainForm: TRunDll32MainForm
     TabOrder = 4
   end
   object btnBrowse: TButton
-    Left = 473
+    Left = 387
     Top = 32
     Width = 21
     Height = 21
@@ -100,7 +107,7 @@ object RunDll32MainForm: TRunDll32MainForm
     OnClick = btnBrowseClick
   end
   object btnRun: TButton
-    Left = 423
+    Left = 337
     Top = 144
     Width = 75
     Height = 25
@@ -121,7 +128,7 @@ object RunDll32MainForm: TRunDll32MainForm
     OnClick = btnInfoClick
   end
   object btnInternal: TButton
-    Left = 423
+    Left = 337
     Top = 176
     Width = 75
     Height = 25

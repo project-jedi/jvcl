@@ -30,14 +30,14 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, ClipBrd;
+  ExtCtrls, StdCtrls, ClipBrd, Buttons;
 
 type
   TJvScreenCaptureMainForm = class(TForm)
-    Button1: TButton;
     Image1: TImage;
-    Button2: TButton;
-    TaskBar: TCheckBox;
+    Panel1: TPanel;
+    Button1: TBitBtn;
+    Button2: TBitBtn;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
   end;
@@ -57,7 +57,7 @@ var
   B: TBitmap;
 begin
    b := TBitmap.Create;
-   ScreenShot(B, TaskBar.Checked);
+   ScreenShot(B);
    Self.Image1.Picture.Bitmap.Assign(B);
    B.Free;
 end;

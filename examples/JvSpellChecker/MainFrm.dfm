@@ -1,10 +1,13 @@
 object frmMain: TfrmMain
-  Left = 192
-  Top = 107
-  Width = 870
-  Height = 600
+  Left = 353
+  Top = 156
+  Width = 535
+  Height = 398
   Caption = 'JvSpellChecker Demo'
   Color = clBtnFace
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 320
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -12,13 +15,15 @@ object frmMain: TfrmMain
   Font.Style = []
   Menu = mmMain
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object reText: TRichEdit
     Left = 0
     Top = 0
-    Width = 862
-    Height = 535
+    Width = 527
+    Height = 325
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -34,8 +39,8 @@ object frmMain: TfrmMain
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 535
-    Width = 862
+    Top = 325
+    Width = 527
     Height = 19
     Panels = <
       item

@@ -5,12 +5,20 @@ object Form1: TForm1
   Height = 357
   Caption = 'JvSimpleXML validator'
   Color = clBtnFace
+  Constraints.MinHeight = 300
+  Constraints.MinWidth = 400
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
+  DesignSize = (
+    456
+    323)
   PixelsPerInch = 96
   TextHeight = 13
   object reXML: TRichEdit
@@ -63,6 +71,9 @@ object Form1: TForm1
     BevelOuter = bvLowered
     Color = clWindow
     TabOrder = 0
+    DesignSize = (
+      456
+      65)
     object Label1: TLabel
       Left = 18
       Top = 22
@@ -91,7 +102,7 @@ object Form1: TForm1
   end
   object sbResults: TStatusBar
     Left = 0
-    Top = 311
+    Top = 304
     Width = 456
     Height = 19
     Panels = <

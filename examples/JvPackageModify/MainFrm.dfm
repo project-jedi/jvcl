@@ -5,14 +5,22 @@ object frmMain: TfrmMain
   Height = 484
   Caption = 'Package modifier'
   Color = clBtnFace
+  Constraints.MinHeight = 480
+  Constraints.MinWidth = 430
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  DesignSize = (
+    424
+    450)
   PixelsPerInch = 96
   TextHeight = 13
   object PageControl1: TPageControl
@@ -22,6 +30,7 @@ object frmMain: TfrmMain
     Height = 389
     ActivePage = tabOptions
     Anchors = [akLeft, akTop, akRight, akBottom]
+    TabIndex = 0
     TabOrder = 0
     object tabOptions: TTabSheet
       Caption = 'Options'
@@ -237,6 +246,9 @@ object frmMain: TfrmMain
     object tabFiles: TTabSheet
       Caption = 'Files'
       ImageIndex = 1
+      DesignSize = (
+        398
+        361)
       object reFiles: TRichEdit
         Left = 8
         Top = 16

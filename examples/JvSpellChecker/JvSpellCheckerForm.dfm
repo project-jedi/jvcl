@@ -6,6 +6,7 @@ object frmSpellChecker: TfrmSpellChecker
   ClientHeight = 334
   ClientWidth = 384
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -14,8 +15,12 @@ object frmSpellChecker: TfrmSpellChecker
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   Position = poMainFormCenter
+  Scaled = False
   OnCreate = FormCreate
   OnShow = FormShow
+  DesignSize = (
+    384
+    334)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

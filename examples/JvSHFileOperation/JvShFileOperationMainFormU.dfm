@@ -7,14 +7,22 @@ object JvShFileOperationMainForm: TJvShFileOperationMainForm
   ClientHeight = 512
   ClientWidth = 607
   Color = clBtnFace
+  Constraints.MinHeight = 500
+  Constraints.MinWidth = 615
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   ShowHint = True
   OnCreate = FormCreate
+  DesignSize = (
+    607
+    512)
   PixelsPerInch = 96
   TextHeight = 13
   object JvLabel1: TLabel
@@ -129,6 +137,9 @@ object JvShFileOperationMainForm: TJvShFileOperationMainForm
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Options: '
     TabOrder = 6
+    DesignSize = (
+      356
+      257)
     object Label1: TLabel
       Left = 16
       Top = 200

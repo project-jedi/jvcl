@@ -1,17 +1,20 @@
 object Form1: TForm1
   Left = 544
   Top = 277
-  AutoScroll = False
+  BorderStyle = bsSingle
   Caption = 'LoadOLEDragCursors Demo'
   ClientHeight = 348
   ClientWidth = 460
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -23,6 +26,9 @@ object Form1: TForm1
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    DesignSize = (
+      460
+      56)
     object Button1: TButton
       Left = 171
       Top = 12
@@ -42,6 +48,9 @@ object Form1: TForm1
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    DesignSize = (
+      460
+      292)
     object Panel7: TPanel
       Left = 0
       Top = 246

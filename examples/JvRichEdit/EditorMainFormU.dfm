@@ -6,6 +6,9 @@ object EditorMainForm: TEditorMainForm
   ActiveControl = FontName
   Caption = 'Rich Edit 2.0 Demo'
   Color = clBtnFace
+  Constraints.MinHeight = 280
+  Constraints.MinWidth = 550
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -14,7 +17,8 @@ object EditorMainForm: TEditorMainForm
   FormStyle = fsMDIForm
   Menu = MainMenu
   OldCreateOrder = True
-  Position = poDefault
+  Position = poDesktopCenter
+  Scaled = False
   OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -108,7 +112,7 @@ object EditorMainForm: TEditorMainForm
     Left = 0
     Top = 88
     Width = 546
-    Height = 126
+    Height = 121
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -129,7 +133,7 @@ object EditorMainForm: TEditorMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 214
+    Top = 209
     Width = 546
     Height = 19
     Panels = <
@@ -302,7 +306,7 @@ object EditorMainForm: TEditorMainForm
       Width = 175
       Height = 22
       DroppedDownWidth = 175
-      FontName = 'Arial'
+      FontName = '@Arial Unicode MS'
       Device = fdBoth
       ItemIndex = 0
       Options = [foWysiWyg]
@@ -314,7 +318,7 @@ object EditorMainForm: TEditorMainForm
       Left = 182
       Top = 6
       Width = 42
-      Height = 24
+      Height = 21
       Alignment = taRightJustify
       ButtonKind = bkStandard
       Decimal = 0
