@@ -11,64 +11,90 @@ Author
 @@DigitClassList
 <TITLE DigitClassList function>
 Summary
-  Write here a summary (1 line)
+  Reference to the list of registered digit classes.
 Description
-  Write here a description
+  DigitClassList returns a reference to the (thread-safe) list of registered digit classes. It's
+  primary use is for design time editing: the DigitClass property shows a list of available digit
+  classes you can choose from.
+
+  You should never modify this list directly. Always use one of the Register/Unregister functions to
+  manipulate it.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RegisterSegmentedLEDDigitClass, RegisterSegmentedLEDDigitClasses,
+  UnregisterSegmentedLEDDigitClass, UnregisterSegmentedLEDDigitClasses,
+  UnregisterModuleSegmentedLEDDigitClasses, TJvCustomSegmentedLEDDisplay.DigitClass,
+  TJvCustomSegmentedLEDDisplay.DigitClassName
 ----------------------------------------------------------------------------------------------------
 @@IdentToUnlitColor
 <TITLE IdentToUnlitColor function>
 Summary
-  Write here a summary (1 line)
+  Translates an unlit color literal into a \TUnlitColor value.
 Description
-  Write here a description
+  IdentToUnlitColor translates an unlit color literal into a TUnlitColor. Because TUnlitColor allows
+  for two additional values which should be accesible from the Object Inspector this method is
+  needed to perform the translation from the string literal into the actual value.
+
+  If the string literal does not represent one of the two additional values, the StringToColor
+  function is called.
 Parameters
-  Ident - Description for this parameter
-  Int   - Description for this parameter
+  Ident - String literal representing a color
+  Int   - Ordinal value of the color represented by the Ident value.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UnlitColorToIdent, StringToColor, TUnlitColor
 ----------------------------------------------------------------------------------------------------
 @@RegisterSegmentedLEDDigitClass
 <TITLE RegisterSegmentedLEDDigitClass procedure>
 Summary
-  Write here a summary (1 line)
+  Registers a segmented LED digit class with the system.
 Description
-  Write here a description
+  RegisterSegmentedLEDDigitClass registers the specified segmented LED digit class with the system.
+
+  If the class is already registered an exception will be raised.
+
+  The class will also be registered with the streaming system (RegisterClass is called).
 Parameters
-  DigitClass - Description for this parameter
+  DigitClass - Digit class to be registered.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RegisterSegmentedLEDDigitClasses,
+  UnregisterSegmentedLEDDigitClass, UnregisterSegmentedLEDDigitClasses,
+  UnregisterModuleSegmentedLEDDigitClasses, TJvCustomSegmentedLEDDisplay.DigitClass,
+  TJvCustomSegmentedLEDDisplay.DigitClassName
 ----------------------------------------------------------------------------------------------------
 @@RegisterSegmentedLEDDigitClasses
 <TITLE RegisterSegmentedLEDDigitClasses procedure>
 Summary
-  Write here a summary (1 line)
+  Registers a number of segmented LED digit classes with the system.
 Description
-  Write here a description
+  RegisterSegmentedLEDDigitClasses registers the specified segmented LED digit classes with the
+  system.
+
+  If a class is already registered an exception will be raised.
+
+  Each class will also be registered with the streaming system (RegisterClass is called).
 Parameters
-  DigitClasses - Description for this parameter
+  DigitClasses - array of digit classes to register.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RegisterSegmentedLEDDigitClass,
+  UnregisterSegmentedLEDDigitClass, UnregisterSegmentedLEDDigitClasses,
+  UnregisterModuleSegmentedLEDDigitClasses, TJvCustomSegmentedLEDDisplay.DigitClass,
+  TJvCustomSegmentedLEDDisplay.DigitClassName
 ----------------------------------------------------------------------------------------------------
 @@T7SegColonUsage
 <TITLE T7SegColonUsage type>
 Summary
-  Write here a summary (1 line)
+  Determines colon usage for the 7-segmented LED digit.
 Description
-  Write here a description
+  The T7SegColonUsage type is used to specify the colon usage for the 7-segmented LED digit.
 @@T7SegColonUsage.scuNone
-  Description for scuNone
+  No colon is rendered.
 @@T7SegColonUsage.scuLowOnly
-  Description for scuLowOnly
+  Only the low dot of the colon is rendered. This can be used to simulate certain HP calculators
+  that used this dot as a decimal separator symbol.
 @@T7SegColonUsage.scuFull
-  Description for scuFull
+  Renders the entire colon. Note that each colon dot can be set on or off individual.
 @@T7SegColonUsage.scuColonOnly
-  Description for scuColonOnly
+  Renders the entire colon but hides the other segments. Can be used to render a colon digit in a
+  clock for example. 
 ----------------------------------------------------------------------------------------------------
 @@TJv7SegmentedLEDCharacterMapper
 <TITLEIMG TJv7SegmentedLEDCharacterMapper>
@@ -76,9 +102,24 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Character mapper for the 7-segmented LED digit.
 Description
-  Write here a description
+  TJv7SegmentedLEDCharacterMapper is the character mapper used for the
+  <LINK TJv7SegmentedLEDDigit, 7-segmented LED digit>. It provides default mappings for the
+  following characters and symbols:
+
+  * all numbers
+  * minus (hyphen)
+  * A..F (both upper as well as lower case, where C and c are rendered differently, but others are
+    rendered the same for upper or lower case)
+  * H (different upper and lower case)
+  * L, O, P, R, Y (equal upper and lower case versions)
+  * U (different upper and lower case version)
+  * '
+  * "
+  * #176 and #248 (both may represent the degree symbol: °)
+See Also
+  TJvBaseSegmentedLEDCharacterMapper, TJv7SegmentedLEDDigit
 ----------------------------------------------------------------------------------------------------
 @@TJv7SegmentedLEDDigit
 Summary
@@ -97,48 +138,94 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseSegmentedLEDCharacterMapper
 Summary
-  Write here a summary (1 line)
+  Basic character mapping class.
 Description
-  Write here a description
+  TJvBaseSegmentedLEDCharacterMapper is the basic character mapping class. For each digit class a
+  character mapper class is created which will contain the default mapping (note: sometimes digit
+  classes may share the same mapper, for example when two digit classes have other style segments
+  but segment layout remains the same).
+
+  The class provides in methods to map a text to it's segment representation.
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseSegmentedLEDCharacterMapper.CurDigit
 Summary
-  Write here a summary (1 line)
+  Current digit for which we are mapping.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CurDigit is a reference to the digit we are currently mapping text for.
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseSegmentedLEDCharacterMapper.MapText
 Summary
-  Write here a summary (1 line)
+  Maps a text into it's segment representation.
 Description
-  Write here a description
+  MapText is the primary method for the TJvBaseSegmentedLEDCharacterMapper class.
+
+  It initializes various flags and data and then calls PrimMapText to map the text starting at the
+  specified text pointer into it's segments representation and updates the specified digit
+  accordingly.
+
+  On return from this method, the specified digit is updated and the text pointer is advanced to
+  the text start for the next digit.
+
+  The mapping string can contain:
+  * a single character, except for [. The mapping for this character is applied to the digit.
+  * control string between []. Between these two brackets you can modify the segment modifier flag,
+    map a character and control individual segments.
+
+  List of control items:
+  <TABLE>
+    Control item            Description
+    ============            ===========
+    &<I>Character</I>       Maps a single character and adds/removes the segments to/from the digit.
+                              Note that you are allowed to specify multiple & and # items for a
+                              single digit to "merge" two or more characters.
+    #<I>ASCII value</I>     Maps the character specified by the ordinal value and add/removes the
+                              segments to/from the digit. Note that you allowed to specify multiple
+                              # and & items for a single digit to "merge" two or more characters.
+    +                       Sets the segment modifier to "add": merge new segments with existing
+                              segments.
+    -                       Sets the segment modifier to "remove": remove new segments from the
+                              existing segments.
+    <I>Segment name(s)</I>  Adds/removes the specified segments to/from the digit. Segment names may
+                              be separated by a comma.
+  </TABLE>
+
+  Control items may be separated by a semicolon.
+
+  Note: since the open bracket "[" is used to signal the start of a control items, you can only map
+  it by specifying <B>[&[]</B> in the map text.
+
+  Note: characters that can not be mapped are interpreted as an empty digit (i.e. has no influence
+  on the digit) and will effectively be skipped.
 Parameters
-  Text   - Description for this parameter
-  ADigit - Description for this parameter
+  Text   - Points to the text to map. On exit of the method, Text will point to the text to map for
+            the next digit.
+  ADigit - Reference to the digit to map for. In some cases certain digit properties may influence
+            the actual mapping applied.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PrimMapText, CUrDigit
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseSegmentedLEDCharacterMapper.SegMapRemoves
 Summary
-  Write here a summary (1 line)
+  Flag indicating if new segments are added or removed from the segment list.
 Description
-  Write here a description
+  The SegMapRemoves indicates if new segments are added (default) or removed from the segment list
+  for the digit.
+
+  This flag is manipulated by the mapping string when it comes across a + or - symbol within the
+  control item markers ([ and ]). 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MapText
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseSegmentedLEDCharacterMapper.TextForDigit
 Summary
-  Write here a summary (1 line)
+  Contains the mapping text for the digit.
 Description
-  Write here a description
+  TextForDigit keeps track of the applied mapping texts. Upon completion of the mapping this
+  property will contain a slightly optimized version of the original mapping text (i.e. a #65
+  control item will be rewritten as a &A; mappings that did not result in any change will not be
+  present in this property).
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MapText
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseSegmentedLEDDigit
 Summary
