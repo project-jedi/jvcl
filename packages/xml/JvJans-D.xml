@@ -8,7 +8,7 @@
   <C6Libs/>
   <Requires>
     <Package Name="JvJans-R" Targets="all" Condition=""/>
-    <Package Name="JvCore-D" Targets="linux" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="vclsmp50" Targets="C5" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
