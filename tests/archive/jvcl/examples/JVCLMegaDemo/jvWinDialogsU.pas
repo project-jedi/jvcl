@@ -31,7 +31,7 @@ type
     Button19: TButton;
     Button20: TButton;
     Button21: TButton;
-    JvBrowseFolder1: TJvBrowseFolder;
+    JvBrowseFolder1: TJvBrowseForFolderDialog;
     JvSelectDirectory1: TJvSelectDirectory;
     JvOrganizeFavoritesDialog1: TJvOrganizeFavoritesDialog;
     JvComputerNameDialog1: TJvComputerNameDialog;

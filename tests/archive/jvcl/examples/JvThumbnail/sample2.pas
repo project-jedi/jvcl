@@ -3,8 +3,9 @@ unit sample2;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, FileCtrl, ComCtrls, JvBaseThumbnail, JvThumbImage, JvThumbNails ;
+  Classes, Controls, Forms, 
+  StdCtrls, ExtCtrls, FileCtrl, ComCtrls, JvThumbImage, JvThumbNails,
+  JvBaseThumbnail;
 
 type
   TForm2 = class(TForm)

@@ -3,9 +3,9 @@ unit main;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, FileCtrl, ComCtrls, Spin, JvThumbNails, JvBaseThumbnail,
-  JvSpecialProgress, JvThumbViews;
+  Classes, Controls, Forms, 
+  StdCtrls, ExtCtrls, FileCtrl, ComCtrls, Spin, JvThumbNails, 
+  JvSpecialProgress, JvThumbViews, JvBaseThumbnail;
 
 type
   TForm1 = class(TForm)
@@ -146,7 +146,6 @@ end;
 
 procedure TForm1.SpinEdit1Change(Sender: TObject);
 begin
-
   if spinedit1.Text <> '' then thumbview1.ThumbGap := spinedit1.Value;
 end;
 

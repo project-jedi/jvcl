@@ -31,7 +31,7 @@ type
     CheckBox7: TCheckBox;
     CheckBox8: TCheckBox;
     ComboBox1: TComboBox;
-    JvBrowseFolder1: TJvBrowseFolder;
+    JvBrowseFolder1: TJvBrowseForFolderDialog;
     procedure Button1Click(Sender: TObject);
     procedure JvBrowseFolder1Change(Sender: TObject; Directory: String);
   private

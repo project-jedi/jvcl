@@ -35,6 +35,8 @@ type
     procedure JvSearchFile1BeginScanDir(Sender: TObject;
       const AName: String);
     procedure OptionsChange(Sender: TObject);
+    procedure Sort1Click(Sender: TObject);
+    procedure Clear1Click(Sender: TObject);
   private
     { Private declarations }
     procedure AddSearchTextToComboBox;
@@ -62,7 +64,6 @@ begin
     AddSearchTextToComboBox;
     JvSearchFile1.Files.Clear;
     JvSearchFile1.Directories.Clear;
-
     JvSearchFile1.FileParams.FileMasks.Text := edFileMask.Text;
     if chkRecursive.Checked then
       JvSearchFile1.DirOption := doIncludeSubDirs
@@ -139,6 +140,25 @@ begin
   rbExclude.Enabled := rbInclude.Enabled;
   StatusBar1.Panels[0].Text := 'Ready';
   StatusBar1.Update;
+end;
+
+procedure TMainFrm.Sort1Click(Sender: TObject);
+var S:TStringlist;
+begin
+  S := TStringlist.Create;
+  try
+   S.Assign(reFoundFiles.Lines);
+   S.Sort;
+   while (S.Count > 0) and (S[0] = '') do S.Delete(0);
+   reFoundFiles.Lines := S;
+  finally
+    S.Free;
+  end;
+end;
+
+procedure TMainFrm.Clear1Click(Sender: TObject);
+begin
+  reFoundFiles.Clear;
 end;
 
 procedure TMainFrm.AddSearchTextToComboBox;

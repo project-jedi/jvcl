@@ -27,17 +27,17 @@ implementation
 
 procedure TfrTransparentForm.FormActivate(Sender: TObject);
 begin
-  JvTransparentForm1.Enable := true;
+  JvTransparentForm1.Active := true;
 end;
 
 procedure TfrTransparentForm.FormDeactivate(Sender: TObject);
 begin
-  JvTransparentForm1.Enable := FALSE;
+  JvTransparentForm1.Active := false;
 end;
 
 procedure TfrTransparentForm.Button1Click(Sender: TObject);
 begin
-  close;
+  Close;
 end;
 
 

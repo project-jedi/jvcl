@@ -8,15 +8,15 @@ uses
   ActnList, PersistSettings, DepWalkConsts, ToolWin, Buttons, PersistForm;
 
 type
-(*
-  // (p3) interposer class for TListBox that implements IPersistSettings (for the skiplist)
-  TListBox = class(StdCtrls.TListBox, IUnknown, IPersistSettings)
-  private
-    {IPersistSettings}
-    procedure Load(Storage: TCustomIniFile);
-    procedure Save(Storage: TCustomIniFile);
-  end;
- *)
+  (*
+    // (p3) interposer class for TListBox that implements IPersistSettings (for the skiplist)
+    TListBox = class(StdCtrls.TListBox, IUnknown, IPersistSettings)
+    private
+      {IPersistSettings}
+      procedure Load(Storage: TCustomIniFile);
+      procedure Save(Storage: TCustomIniFile);
+    end;
+   *)
   TfrmMain = class(TfrmPersistable)
     StatusBar1: TStatusBar;
     mmMain: TMainMenu;
@@ -188,7 +188,6 @@ type
     FFileShapes, FLoadedFiles, FSearchPaths: TStringlist;
     FInitialDir: string;
     FLeft, FTop: integer;
-    FSelected: TJvCustomDiagramShape;
     FOffsetX, FOffsetY: integer;
     FReload: boolean;
     FIntfLineColor, FImplLineColor, FIntfSelColor, FImplSelColor: TColor;
@@ -198,7 +197,7 @@ type
     procedure SaveSettings;
     function FindUnit(const Filename: string; const DefaultExt: string = '.pas'): string;
     procedure GetSearchPaths;
-    procedure Clear(ClearAll:boolean);
+    procedure Clear(ClearAll: boolean);
     procedure CreatePrintOut(Strings: TStrings; AFormat: TPrintFormat = pfText);
     function GetFileShape(const Filename: string; var IsNew: boolean): TJvBitmapShape;
     procedure ParseUnits(Files, Errors: TStrings);
@@ -220,12 +219,13 @@ type
     procedure DoFocusingRect(Sender: TObject; ARect: TRect; Shift: TShiftState; var Continue: boolean);
     procedure SetSelected(const Value: TJvCustomDiagramShape);
     procedure ShowInlineStats(AShape: TJvCustomDiagramShape);
+    function GetSelected: TJvCustomDiagramShape;
   protected
     procedure Load(Storage: TPersistStorage); override;
     procedure Save(Storage: TPersistStorage); override;
   public
     { Public declarations }
-    property Selected: TJvCustomDiagramShape read FSelected write SetSelected;
+    property Selected: TJvCustomDiagramShape read GetSelected write SetSelected;
   end;
 
 var
@@ -245,7 +245,6 @@ uses
   JvFunctions,
 {$ENDIF}
   OptionsFrm;
-
 
 {$R *.dfm}
 
@@ -325,7 +324,7 @@ begin
         Strings.AddObject(ChangeFileExt(Shape.Caption.Text, Ext), Shape);
 end;
 
-// (p3) retrievs the shapes that connects to AShape and store their name and pointers in Strings
+// (p3) retrieves the shapes that connects to AShape and store their name and pointers in Strings
 
 procedure UsedByUnits(AShape: TJvCustomDiagramShape; Strings: TStrings; const Ext: string = cPascalExt);
 var i: integer;
@@ -346,7 +345,7 @@ var i: integer;
 begin
   for i := 0 to Parent.ControlCount - 1 do
     if (Parent.Controls[i] is TJvCustomDiagramShape) and TJvCustomDiagramShape(Parent.Controls[i]).Selected and
-    // don't be fooled by captions (they are also TJvCustomDiagramShape):
+      // don't be fooled by captions (they are also TJvCustomDiagramShape):
     not (TJvCustomDiagramShape(Parent.Controls[i]).Caption = nil) then
     begin
       Result := TJvCustomDiagramShape(Parent.Controls[i]);
@@ -406,7 +405,6 @@ function SortImplCompare(Item1, Item2: Pointer): integer;
 begin
   Result := -SortIntfCompare(Item1, Item2);
 end;
-
 
 { TfrmMain }
 
@@ -475,7 +473,8 @@ begin
           C.LineColor := FImplSelColor
         else
           Changed := false;
-        if Changed then C.Invalidate;
+        if Changed then
+          C.Invalidate;
       end
       else // reset to standard color
       begin
@@ -486,14 +485,15 @@ begin
           C.LineColor := FImplLineColor
         else
           Changed := false;
-        if Changed then C.Invalidate;
+        if Changed then
+          C.Invalidate;
       end;
     end;
   end;
   if Changed then
   begin
     AShape.Parent.Repaint;
-//    AShape.BringToFront;
+    //    AShape.BringToFront;
   end;
 end;
 
@@ -693,11 +693,14 @@ function TfrmMain.FindUnit(const Filename: string; const DefaultExt: string = '.
 var i: integer;
 begin
   Result := ExpandUNCFileName(Filename);
-  if FileExists(Result) then Exit;
+  if FileExists(Result) then
+    Exit;
   Result := ChangeFileExt(Result, DefaultExt);
-  if FileExists(Result) then Exit;
+  if FileExists(Result) then
+    Exit;
   Result := ExtractFilePath(dlgSelectFiles.FileName) + ExtractFileName(Result);
-  if FileExists(Result) then Exit;
+  if FileExists(Result) then
+    Exit;
 
   if FSearchPaths = nil then
     GetSearchPaths;
@@ -714,7 +717,7 @@ end;
 
 // (p3) removes all shapes and links
 
-procedure TfrmMain.Clear(ClearAll:boolean);
+procedure TfrmMain.Clear(ClearAll: boolean);
 // var i: integer;
 begin
   WaitCursor;
@@ -725,7 +728,7 @@ begin
   TJvCustomDiagramShape.DeleteAllShapes(sb);
   FLeft := cStartX;
   FTop := cStartY;
-  Selected := nil;
+//  Selected := nil;
   StatusBar1.Panels[0].Text := SStatusReady;
 end;
 
@@ -743,7 +746,7 @@ end;
 
 procedure TfrmMain.LoadSkipList;
 var
-//  i: integer;
+  //  i: integer;
   AFilename: string;
 begin
   AFilename := ExtractFilePath(Application.Exename) + 'SkipList.txt';
@@ -751,12 +754,12 @@ begin
   begin
     lbSkipList.Sorted := false;
     lbSkipList.Items.LoadFromFile(AFilename);
-{    for i := lbSkipList.Items.Count - 1 downto 0 do
-    begin
-      lbSkipList.Items[i] := ExtractFileName(ChangeFileExt(lbSkipList.Items[i], ''));
-      if lbSkipList.Items[i] = '' then
-        lbSkipList.Items.Delete(i);
-    end; }
+    {    for i := lbSkipList.Items.Count - 1 downto 0 do
+        begin
+          lbSkipList.Items[i] := ExtractFileName(ChangeFileExt(lbSkipList.Items[i], ''));
+          if lbSkipList.Items[i] = '' then
+            lbSkipList.Items.Delete(i);
+        end; }
     lbSkipList.Sorted := true;
   end;
 end;
@@ -988,7 +991,7 @@ end;
 
 procedure TfrmMain.CreateDiagramBitmap(Bmp: TBitmap);
 begin
-    // add some extra pixels around the edges...
+  // add some extra pixels around the edges...
   bmp.Width := Max(sb.ClientWidth, sb.HorzScrollBar.Range) + 10;
   bmp.Height := Max(sb.ClientHeight, sb.VertScrollBar.Range) + 10;
   bmp.Canvas.Brush.Color := sb.Color;
@@ -1026,9 +1029,9 @@ end;
 procedure TfrmMain.DoShapeMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   inherited;
-  Selected := Sender as TJvCustomDiagramShape;
   if Button = mbLeft then
-    HighLightConnectors(Selected);
+    HighLightConnectors(Sender as TJvCustomDiagramShape);
+  ShowInlineStats(Sender as TJvCustomDiagramShape);
 end;
 
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -1180,7 +1183,8 @@ begin
   AShape := Selected;
   if AShape = nil then
     AShape := TJvCustomDiagramShape(popShape.PopupComponent);
-  if AShape = nil then Exit;
+  if AShape = nil then
+    Exit;
 
   // (p3) collect the stats for the file
   // since we can't guarantee that the file can be found
@@ -1210,16 +1214,18 @@ procedure TfrmMain.acDelShapeExecute(Sender: TObject);
 var AShape: TJvCustomDiagramShape;
   i: integer;
 begin
-  // (p3) Can't use TJvCustomDiagramShape.DeleteSelecetdShapes here since
+  // (p3) Can't use TJvCustomDiagramShape.DeleteSelectedShapes here since
   // we need to remove the item from the FFileShapes list as well:
   AShape := Selected;
   if (AShape <> nil) and YesNo(SConfirmDelete, Format(SDelSelItemFmt, [AShape.Caption.Text])) then
   begin
-    i := FFileShapes.IndexOfObject(AShape);
-    if i > -1 then
-      FFileShapes.Delete(i);
-    Selected := nil;
-    AShape.Free;
+    repeat
+      i := FFileShapes.IndexOfObject(AShape);
+      if i > -1 then
+        FFileShapes.Delete(i);
+      AShape.Free;
+      AShape := Selected;
+    until AShape = nil;
   end;
 end;
 
@@ -1232,7 +1238,8 @@ var
   AFileName: string;
   Ini: TPersistStorage;
 begin
-  if not TfrmPrint.Execute then Exit;
+  if not TfrmPrint.Execute then
+    Exit;
   Ini := GetStorage;
   try
     FPrintFormat := TPrintFormat(Ini.ReadInteger('Printing', 'Print Format', Ord(FPrintFormat)));
@@ -1388,11 +1395,10 @@ procedure TfrmMain.sbMouseDown(Sender: TObject; Button: TMouseButton;
 begin
   inherited;
   SetCaptureControl(sb);
-// (p3) unselect any selected shape
-  if Selected <> nil then
-    Selected.Selected := false;
+  // (p3) unselect any selected shape
   Selected := nil;
-  if sb.CanFocus then sb.SetFocus;
+  if sb.CanFocus then
+    sb.SetFocus;
   FDrawing := false;
   if Button = mbLeft then
   begin
@@ -1426,7 +1432,8 @@ procedure TfrmMain.sbMouseMove(Sender: TObject; Shift: TShiftState; X,
 var DC: HDC;
 begin
   inherited;
-  if not FDrawing then Exit;
+  if not FDrawing then
+    Exit;
   DC := GetDC(sb.Handle);
   try
     // erase previous rect
@@ -1524,14 +1531,15 @@ end;
 // (p3) do a recursive parse of a unit
 
 procedure TfrmMain.acParseUnitExecute(Sender: TObject);
-var Errors: TStringList; i, aCount: integer;
+var Errors: TStringList; i, aCount: integer;AShape:TJvCustomDiagramShape;
 begin
   WaitCursor;
-  i := FFileShapes.IndexOfObject(Selected);
+  AShape := Selected;
+  i := FFileShapes.IndexOfObject(AShape);
   if i < 0 then
   begin
-    if Selected <> nil then
-      ShowMessageFmt(SFileNotFoundFmt, [Selected.Caption.Text])
+    if AShape <> nil then
+      ShowMessageFmt(SFileNotFoundFmt, [AShape.Caption.Text])
     else
       ShowMessage(SUnitNotFound);
     Exit;
@@ -1545,7 +1553,7 @@ begin
     if Errors.Count > 0 then
     begin
       ShowMessageFmt(SParseErrorsFmt, [Errors.Text]);
-        // copy to clipboard as well
+      // copy to clipboard as well
       Clipboard.SetTextBuf(PChar(Errors.Text));
     end;
     if aCount = FFileShapes.Count then // nothing happended, so reset FLeft
@@ -1566,7 +1574,6 @@ begin
       ShowMessage(SRestartForNewOptions);
   end;
 end;
-
 
 procedure TfrmMain.acUnitViewExecute(Sender: TObject);
 var AFilename: string;
@@ -1601,9 +1608,9 @@ begin
   reStatistics.Lines.Clear;
   if AShape <> nil then
   begin
-  // (p3) collect the stats for the file
-  // since we can't guarantee that the file can be found
-  // on the system, only collect what we know explicitly (name, links):
+    // (p3) collect the stats for the file
+    // since we can't guarantee that the file can be found
+    // on the system, only collect what we know explicitly (name, links):
     UsedByStrings := TStringlist.Create;
     UsesStrings := TStringlist.Create;
     try
@@ -1632,16 +1639,18 @@ begin
   end;
   // scroll to top:
   reStatistics.SelStart := 0;
-  SendMessage(reStatistics.Handle,EM_SCROLLCARET,0,0);
+  SendMessage(reStatistics.Handle, EM_SCROLLCARET, 0, 0);
 end;
 
 procedure TfrmMain.SetSelected(const Value: TJvCustomDiagramShape);
 begin
-  if FSelected <> Value then
+  if Value <> nil then
   begin
-    FSelected := Value;
-    ShowInlineStats(FSelected);
-  end;
+    Value.Selected := true;
+    ShowInlineStats(Value);
+  end
+  else
+    TJvCustomDiagramShape.UnselectAllShapes(sb);
 end;
 
 procedure TfrmMain.acNoSortExecute(Sender: TObject);
@@ -1659,7 +1668,7 @@ begin
     if Errors.Count > 0 then
     begin
       ShowMessageFmt(SParseErrorsFmt, [Errors.Text]);
-        // copy to clipboard as well
+      // copy to clipboard as well
       Clipboard.SetTextBuf(PChar(Errors.Text));
     end;
   finally
@@ -1667,6 +1676,17 @@ begin
   end;
 end;
 
+function TfrmMain.GetSelected: TJvCustomDiagramShape;
+var i: integer;
+begin
+  Result := nil;
+  for i := 0 to sb.ControlCount - 1 do
+    if (sb.Controls[i] is TJvBitmapShape) and TJvBitmapShape(sb.Controls[i]).Selected then
+    begin
+      Result := TJvCustomDiagramShape(sb.Controls[i]);
+      Exit;
+    end;
+end;
 
 end.
 

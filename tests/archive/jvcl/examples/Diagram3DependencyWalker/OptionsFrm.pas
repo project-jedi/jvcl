@@ -33,7 +33,7 @@ type
     btnDelete: TButton;
     alOptions: TActionList;
     Label9: TLabel;
-    JvBrowseFolder1: TJvBrowseFolder;
+    JvBrowseFolder1: TJvBrowseForFolderDialog;
     acReplace: TAction;
     acAdd: TAction;
     acDelete: TAction;
@@ -155,7 +155,7 @@ end;
 {$UNDEF RPLUS}
 {$IFOPT R+}
 {$R-}
-{$DEFINE RPLUS}
+{$DEFINE RPLUS}                
 {$ENDIF}
 procedure TEdit.WMPaste(var Msg: TMessage);
 var S: string; V, C: integer;

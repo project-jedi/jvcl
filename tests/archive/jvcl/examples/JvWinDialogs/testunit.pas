@@ -9,7 +9,7 @@ uses
 type
   TForm1 = class(TForm)
     OrganizeFavoritesDialog: TjvOrganizeFavoritesDialog;
-    BrowseFolderDialog: TJvBrowseFolder;
+    BrowseFolderDialog: TJvBrowseForFolderDialog;
     ControlPanel: TjvControlPanelDialog;
     AppletDialog: TjvAppletDialog;
     ChangeIconDialog: TjvChangeIconDialog;

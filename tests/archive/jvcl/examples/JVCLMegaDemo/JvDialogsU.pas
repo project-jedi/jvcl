@@ -33,10 +33,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvComponent, JvBaseDlg, JvPasswordForm, StdCtrls, JvExchListboxes,
-  JvLoginDlg, JvNagScreen, JvSerialDlg, JvImageDlg,
+  JvLoginDlg, JvNagScreen, JvImageDlg,
   JvProgressDlg, JvCommonDialogD, JvDiskPrompt, JvCopyError,
   JvDeleteError, JvPageSetup, JvPageSetupTitled, JvSHFmt, JvObjPickerComp,
-  JvCalc, JvTipOfDay;
+  JvCalc, JvTipOfDay, JvSerialDlg;
 
 type
   TJvDialogs = class(TFrame)

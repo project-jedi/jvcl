@@ -364,7 +364,7 @@ object Form1: TForm1
     Left = 612
     Top = 44
   end
-  object JvBrowseFolder1: TJvBrowseFolder
+  object JvBrowseFolder1: TJvBrowseForFolderDialog
     RootDirectory = fdRootFolder
     Left = 196
     Top = 368
@@ -497,7 +497,7 @@ object Form1: TForm1
     Left = 616
     Top = 288
   end
-  object JvBrowseFolder2: TJvBrowseFolder
+  object JvBrowseFolder2: TJvBrowseForFolderDialog
     RootDirectory = fdRootFolder
     Left = 616
     Top = 336

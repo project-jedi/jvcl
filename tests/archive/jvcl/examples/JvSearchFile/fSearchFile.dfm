@@ -160,7 +160,6 @@ object MainFrm: TMainFrm
         Text = 'Ready'
         Width = 50
       end>
-    SimplePanel = False
   end
   object chkClearList: TCheckBox
     Left = 24
@@ -184,11 +183,11 @@ object MainFrm: TMainFrm
   end
   object JvSearchFile1: TJvSearchFiles
     DirOption = doExcludeInvalidDirs
-    DirParams.LastChangeAfter = 29221
-    DirParams.LastChangeBefore = 29221
+    DirParams.LastChangeAfter = 29221.000000000000000000
+    DirParams.LastChangeBefore = 29221.000000000000000000
     FileParams.SearchTypes = [stFileMask]
-    FileParams.LastChangeAfter = 29221
-    FileParams.LastChangeBefore = 29221
+    FileParams.LastChangeAfter = 29221.000000000000000000
+    FileParams.LastChangeBefore = 29221.000000000000000000
     OnBeginScanDir = JvSearchFile1BeginScanDir
     OnFindFile = JvSearchFile1FindFile
     Left = 234

@@ -13,7 +13,7 @@ type
   TForm1 = class(TForm)
     JvFormatDrive1: TJvFormatDrive;
     JvFindFiles1: TJvFindFilesDialog;
-    JvBrowseFolder1: TJvBrowseFolder;   //TJvShellAbout;
+    JvBrowseFolder1: TJvBrowseForFolderDialog;   //TJvShellAbout;
     JvSelectDirectory1: TJvSelectDirectory;
     JvConnectNetwork1: TJvConnectNetwork;
     JvDisconnectNetwork1: TJvDisconnectNetwork;
@@ -71,7 +71,7 @@ type
     Button34: TButton;
     JvPageSetupDialog1: TJvPageSetupDialog;
     JvPageSetupTitledDialog1: TJvPageSetupTitledDialog;
-    JvBrowseFolder2: TJvBrowseFolder;
+    JvBrowseFolder2: TJvBrowseForFolderDialog;
     JvOrganizeFavoritesDialog1: TJvOrganizeFavoritesDialog;
     JvControlPanelDialog1: TJvControlPanelDialog;
     JvAppletDialog1: TJvAppletDialog;

@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 176
   Width = 789
   Height = 614
-  Caption = 'Form1'
+  Caption = 'JvThumbView Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,9 +18,10 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 781
-    Height = 568
+    Height = 563
     ActivePage = TabSheet1
     Align = alClient
+    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'ThumbView Component'
@@ -28,7 +29,7 @@ object Form1: TForm1
         Left = 153
         Top = 46
         Width = 3
-        Height = 494
+        Height = 489
         Cursor = crHSplit
       end
       object Panel1: TPanel
@@ -64,7 +65,7 @@ object Form1: TForm1
           Hint = 'Change the thumbgup to change the space between the thumbnails '
           Alignment = taCenter
           AutoSize = False
-          Caption = 'THumbGup'
+          Caption = 'Gap:'
           ParentShowHint = False
           ShowHint = True
         end
@@ -76,7 +77,7 @@ object Form1: TForm1
           Hint = 'Change the selected to select the Nth element in the list.'
           Alignment = taCenter
           AutoSize = False
-          Caption = 'Selected'
+          Caption = 'Selected:'
           ParentShowHint = False
           ShowHint = True
         end
@@ -227,7 +228,7 @@ object Form1: TForm1
         Left = 0
         Top = 46
         Width = 153
-        Height = 494
+        Height = 489
         Align = alLeft
         BevelOuter = bvNone
         Caption = 'Panel2'
@@ -236,7 +237,7 @@ object Form1: TForm1
           Left = 0
           Top = 0
           Width = 153
-          Height = 303
+          Height = 298
           Hint = 
             'Set the directory property to the directory where your images lo' +
             'cated and wach the thumbview creating this thumbs'
@@ -247,7 +248,7 @@ object Form1: TForm1
         end
         object RadioGroup1: TRadioGroup
           Left = 0
-          Top = 303
+          Top = 298
           Width = 153
           Height = 86
           Hint = 
@@ -266,7 +267,7 @@ object Form1: TForm1
         end
         object RadioGroup2: TRadioGroup
           Left = 0
-          Top = 389
+          Top = 384
           Width = 153
           Height = 105
           Hint = 
@@ -289,14 +290,14 @@ object Form1: TForm1
         Left = 156
         Top = 46
         Width = 617
-        Height = 494
+        Height = 489
         Align = alClient
         BevelOuter = bvNone
         Caption = 'Panel3'
         TabOrder = 2
         object Panel4: TPanel
           Left = 0
-          Top = 478
+          Top = 473
           Width = 617
           Height = 16
           Hint = 
@@ -308,11 +309,11 @@ object Form1: TForm1
           ShowHint = True
           TabOrder = 0
         end
-        object THumbview1: TJVTHumbview
+        object THumbview1: TJvThumbView
           Left = 0
           Top = 0
           Width = 617
-          Height = 478
+          Height = 473
           HorzScrollBar.Tracking = True
           VertScrollBar.Tracking = True
           Align = alClient
@@ -350,22 +351,23 @@ object Form1: TForm1
   end
   object Panel5: TPanel
     Left = 0
-    Top = 568
+    Top = 563
     Width = 781
-    Height = 19
+    Height = 24
     Align = alBottom
+    BorderWidth = 2
     TabOrder = 1
     object Bevel1: TBevel
-      Left = 1
-      Top = 1
-      Width = 291
-      Height = 19
-      Anchors = [akLeft, akTop, akRight, akBottom]
-    end
-    object JvSpecialProgress1: TJvSpecialProgress
       Left = 3
       Top = 3
-      Width = 287
+      Width = 291
+      Height = 18
+      Align = alLeft
+    end
+    object JvSpecialProgress1: TJvSpecialProgress
+      Left = 5
+      Top = 5
+      Width = 284
       Height = 13
       EndColor = clNavy
       Step = 0
@@ -375,7 +377,6 @@ object Form1: TForm1
       TextFont.Height = -11
       TextFont.Name = 'MS Sans Serif'
       TextFont.Style = []
-      Anchors = [akLeft, akTop, akRight, akBottom]
       HintColor = clBtnFace
     end
   end

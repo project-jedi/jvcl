@@ -202,7 +202,7 @@ object Form1: TForm1
         'Templates')
     end
   end
-  object JvBrowseFolder1: TJvBrowseFolder
+  object JvBrowseFolder1: TJvBrowseForFolderDialog
     Position = fpScreenCenter
     RootDirectory = fdRootFolder
     Title = 'Titre de mes deux'

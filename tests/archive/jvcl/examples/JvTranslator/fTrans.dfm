@@ -74,7 +74,7 @@ object Form1: TForm1
     Top = 36
   end
   object Variables: TJvTranslatorStrings
-    Left = 314
+    Left = 330
     Top = 38
   end
   object JvTranslator2: TJvTranslator

@@ -588,7 +588,7 @@ object frmOptions: TfrmOptions
       OnExecute = acUnselectAllExecute
     end
   end
-  object JvBrowseFolder1: TJvBrowseFolder
+  object JvBrowseFolder1: TJvBrowseForFolderDialog
     Options = [odFileSystemDirectoryOnly, odStatusAvailable, odNewDialogStyle]
     Position = fpFormCenter
     RootDirectory = fdRootFolder

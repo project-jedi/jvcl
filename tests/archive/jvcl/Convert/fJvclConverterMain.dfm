@@ -74,7 +74,6 @@ object frmMain: TfrmMain
         Height = 263
         Align = alClient
         KeyOptions = [keyEdit, keyAdd]
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goThumbTracking]
         TabOrder = 0
         TitleCaptions.Strings = (
           'Text to Find'

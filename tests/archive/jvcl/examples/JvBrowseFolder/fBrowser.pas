@@ -8,7 +8,7 @@ uses
 
 type
   TForm1 = class(TForm)
-    JvBrowseFolder1: TJvBrowseFolder;
+    JvBrowseFolder1: TJvBrowseForFolderDialog;
     Button1: TButton;
     GroupBox1: TGroupBox;
     Edit1: TEdit;

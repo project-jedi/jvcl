@@ -3,7 +3,7 @@ object Form2: TForm2
   Top = 176
   Width = 770
   Height = 502
-  Caption = 'Form2'
+  Caption = 'JvThumbNail Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -303,6 +303,7 @@ object Form2: TForm2
       Top = 144
       Width = 518
       Height = 330
+      AutoSize = True
       IgnoreMouse = False
       Angle = AT0
       Zoom = 0

@@ -193,7 +193,7 @@ object JvWinDialogs: TJvWinDialogs
     TabOrder = 20
     OnClick = Button21Click
   end
-  object JvBrowseFolder1: TJvBrowseFolder
+  object JvBrowseFolder1: TJvBrowseForFolderDialog
     RootDirectory = fdRootFolder
     Title = 'Browser thru folders'
     StatusText = 'Status of operation'

@@ -134,7 +134,7 @@ object Form1: TForm1
     Left = 16
     Top = 12
   end
-  object BrowseFolderDialog: TJvBrowseFolder
+  object BrowseFolderDialog: TJvBrowseForFolderDialog
     RootDirectory = fdRootFolder
     Title = 'Select Folder'
     Left = 16
