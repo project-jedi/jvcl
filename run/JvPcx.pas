@@ -255,7 +255,7 @@ var
   ByteLine: PByteArray;
   Line: PJvRGBArray;
   Palette256: TPcxPalette256;
-  Buffer: array [0..MaxPixelCount - 1] of Byte;
+  Buffer: array [0..MaxPixelCount] of Byte;
   Buffer2, Buffer3, Buffer4: PByteArray; // position in Buffer
   B: Byte;
   ByteNum, BitNum: Integer;
@@ -447,7 +447,7 @@ var
   X, Y: Integer;
   ByteLine: PByteArray;
   Line: PJvRGBArray;
-  Buffer: array [0..MaxPixelCount - 1] of Byte;
+  Buffer: array [0..MaxPixelCount] of Byte;
   Buffer2, Buffer3, Buffer4: PByteArray; // position in Buffer
   Palette256: TPcxPalette256;
   BytesPerRasterLine: Integer;
