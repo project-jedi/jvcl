@@ -32,7 +32,8 @@ requires
   rtl,
   visualclx,
   DJclVClx,
-  DJcl;
+  DJcl,
+  vcl;
 
 contains
   JvQXmlDatabase in '../../qrun/JvQXmlDatabase.pas',
@@ -42,6 +43,8 @@ contains
   JvQTimer in '../../qrun/JvQTimer.pas',
   JvQAppXmlStorage in '../../qrun/JvQAppXmlStorage.pas',
   JvQFormPlacement in '../../qrun/JvQFormPlacement.pas',
-  JvQFormPlacementSelectList in '../../qrun/JvQFormPlacementSelectList.pas';
+  JvQFormPlacementSelectList in '../../qrun/JvQFormPlacementSelectList.pas',
+  JvQThread in '../../qrun/JvQThread.pas',
+  JvQThreadTimer in '../../qrun/JvQThreadTimer.pas';
 
 end.

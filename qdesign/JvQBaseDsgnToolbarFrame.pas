@@ -43,9 +43,9 @@ uses
   
   
   QGraphics, QControls, QForms, QDialogs, QActnList, QMenus, QImgList,
-  QComCtrls, QExtCtrls, Types,
+  QComCtrls, QExtCtrls, Types, JvQConsts,
   
-  JvQBaseDsgnFrame;
+  JvQBaseDsgnFrame, QTypes;
 
 type
   TfmeJvBaseToolbarDesign = class(TfmeJvBaseDesign)
@@ -80,7 +80,7 @@ uses
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 uses
-  IniFiles;
+  JVQRegistryIniFile;
 {$ENDIF LINUX}
 
 
@@ -108,7 +108,7 @@ procedure TfmeJvBaseToolbarDesign.StoreSettings;
 begin
   if RegKey <> '' then
     {$IFDEF LINUX}
-    with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
+    with TJvRegistryIniFile.Create('') do
     {$ENDIF LINUX}
     {$IFDEF MSWINDOWS}
     with TRegistry.Create do
@@ -133,7 +133,7 @@ procedure TfmeJvBaseToolbarDesign.RestoreSettings;
 begin
   if RegKey <> '' then
     {$IFDEF LINUX}
-    with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
+    with TJvRegistryIniFile.Create('') do
     {$ENDIF LINUX}
     {$IFDEF MSWINDOWS}
     with TRegistry.Create do

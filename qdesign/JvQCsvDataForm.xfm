@@ -3,8 +3,8 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   Top = 246
   Width = 442
   Height = 300
-  HorzScrollBar.Range = 442
   VertScrollBar.Range = 257
+  HorzScrollBar.Range = 442
   ActiveControl = EditFieldName
   Anchors = [akLeft, akRight, akBottom]
   Caption = 'JvCsvDataSet.CSVFieldDef Editor'
@@ -12,7 +12,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   Constraints.MinHeight = 300
   Constraints.MinWidth = 442
   Font.Color = clText
-  Font.Height = 13
+  Font.Height = 11
   Font.Name = 'Helvetica'
   Font.Pitch = fpVariable
   Font.Style = []
@@ -32,7 +32,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
-  PixelsPerInch = 113
+  PixelsPerInch = 96
   object SpeedButtonAdd: TSpeedButton
     Left = 8
     Top = 196
@@ -149,37 +149,37 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   object Label1: TLabel
     Left = 9
     Top = 228
-    Width = 80
-    Height = 15
+    Width = 67
+    Height = 14
     Anchors = [akLeft, akBottom]
     Caption = 'CSVFieldDef='
   end
   object Label2: TLabel
     Left = 12
     Top = 48
-    Width = 66
-    Height = 15
+    Width = 55
+    Height = 14
     Caption = 'Field Types'
   end
   object Label3: TLabel
     Left = 8
     Top = 4
-    Width = 64
-    Height = 15
+    Width = 52
+    Height = 14
     Caption = 'Field Name'
   end
   object LabelFieldLen: TLabel
     Left = 156
     Top = 4
-    Width = 38
-    Height = 15
+    Width = 33
+    Height = 14
     Caption = 'Length'
   end
   object Label5: TLabel
     Left = 256
     Top = 4
-    Width = 34
-    Height = 15
+    Width = 28
+    Height = 14
     Caption = 'Fields'
   end
   object LabelKey: TLabel
@@ -192,8 +192,8 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   object EditCsvStr: TEdit
     Left = 96
     Top = 226
-    Width = 321
-    Height = 23
+    Width = 345
+    Height = 26
     TabStop = False
     Anchors = [akLeft, akBottom]
     BorderStyle = bsNone
@@ -228,7 +228,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
     Width = 225
     Height = 129
     Anchors = [akLeft, akTop, akBottom]
-    ItemHeight = 15
+    ItemHeight = 14
     Items.Strings = (
       'Boolean (0 or 1 only)'
       'String (String with Maximum Length)'
@@ -245,14 +245,14 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
     Left = 8
     Top = 20
     Width = 137
-    Height = 23
+    Height = 22
     TabOrder = 0
   end
   object EditFieldLength: TEdit
     Left = 156
     Top = 20
     Width = 77
-    Height = 23
+    Height = 22
     TabOrder = 1
   end
   object ListBoxFields: TListBox
@@ -261,7 +261,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
     Width = 181
     Height = 169
     Anchors = [akLeft, akTop, akRight]
-    ItemHeight = 15
+    ItemHeight = 14
     TabOrder = 2
     OnClick = ListBoxFieldsClick
     OnKeyUp = ListBoxFieldsKeyUp

@@ -27,18 +27,13 @@ package JvQNetK3R;
 {$DEFINE VisualCLX}
 
 requires
-  JvQCoreD7R;
+  JvQCoreK3R;
 
 contains
-  JvQUrlListGrabber in '..\..\qrun\JvQUrlListGrabber.pas',
-  JvQFormToHtml in '..\..\qrun\JvQFormToHtml.pas',
-  JvQFtpGrabber in '..\..\qrun\JvQFtpGrabber.pas',
-  JvQHtmlParser in '..\..\qrun\JvQHtmlParser.pas',
-  JvQHttpGrabber in '..\..\qrun\JvQHttpGrabber.pas',
-  JvQMultiHttpGrabber in '..\..\qrun\JvQMultiHttpGrabber.pas',
-  JvQRgbToHtml in '..\..\qrun\JvQRgbToHtml.pas',
-  JvQStringListToHtml in '..\..\qrun\JvQStringListToHtml.pas',
-  JvQStrToHtml in '..\..\qrun\JvQStrToHtml.pas',
-  JvQUrlGrabbers in '..\..\qrun\JvQUrlGrabbers.pas';
+  JvQFormToHtml in '../../qrun/JvQFormToHtml.pas',
+  JvQHtmlParser in '../../qrun/JvQHtmlParser.pas',
+  JvQRgbToHtml in '../../qrun/JvQRgbToHtml.pas',
+  JvQStringListToHtml in '../../qrun/JvQStringListToHtml.pas',
+  JvQStrToHtml in '../../qrun/JvQStrToHtml.pas';
 
 end.

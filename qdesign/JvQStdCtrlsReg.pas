@@ -1,7 +1,3 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
-
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -49,17 +45,15 @@ uses
   JvQMaskEdit, JvQBaseEdits, JvQCalc, JvQToolEdit,
   JvQBevel, JvQCheckBox, JvQSpeedButton,
   JvQGroupBox, JvQHeaderControl,
-  JvQImage, {JvQLabel,} JvQRadioButton, JvQRadioGroup,
+  JvQImage, JvQRadioButton, JvQRadioGroup,
+  {$IFDEF MSWINDOWS}
+  JvQLabel,
+  {$ENDIF MSWINDOWS}
   JvQScrollBar, JvQShape, JvQControlBar,
   JvQTabControl, JvQBitBtn, JvQPickDate, JvQStringGrid,
   JvQPanel, JvQImageList, JvQProgressEditor, JvQDsgnEditors;
 
-{$IFDEF MSWINDOWS}
-{$R ..\resources\JvStdCtrlsReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvStdCtrlsReg.dcr}
-{$ENDIF LINUX}
 
 procedure Register;
 const
@@ -78,7 +72,10 @@ begin
   RegisterComponents(RsPaletteBarPanel, [TJvTabControl, TJvControlBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvTransparentPanel]);
-//  RegisterComponents(RsPaletteLabel, [TJvLabel]);
+  {$IFDEF MSWINDOWS}
+  RegisterComponents(RsPaletteLabel, [TJvLabel]);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
+  {$ENDIF MSWINDOWS}
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar]);
   RegisterComponents(RsPaletteListComboTree, [TJvStringGrid]);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
@@ -90,7 +87,6 @@ begin
 //  RegisterPropertyEditor(TypeInfo(TJvImgBtnKind), TJvImgBtn, 'Kind', TJvNosortEnumProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedButton, 'Caption', TJvHintProperty);
 //  RegisterPropertyEditor(TypeInfo(TWStringList), '', 'Hints', TJvHintProperty);
-//  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
 end;
 
 end.

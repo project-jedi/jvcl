@@ -71,10 +71,6 @@ DebugCWD=
 /mnt/win_c/CVSCheckout/dev/jvcl3/packages/k3/bplJvQJansK3D.so=JVCLX Jans Components
 /mnt/win_c/CVSCheckout/dev/jvcl3/packages/k3/bplJvQCustomK3D.so=JVCLX Custom Controls
 
-[HistoryLists\hlConditionals]
-Count=1
-Item0=VisualCLX
-
 [HistoryLists\hlSearchPath]
 Count=1
 Item0=../../common:../../qcommon:../../qrun
@@ -89,5 +85,5 @@ Item0=$(DELPHI)/bin
 
 [HistoryLists\hlDCPOutput]
 Count=1
-Item0=$(DELPHI)/lib
+Item0=$(DELPHI)/bin
 
