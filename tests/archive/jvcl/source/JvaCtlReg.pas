@@ -46,9 +46,7 @@ uses
   JvButtons, JvComponentPanel, JvScrollMax,
   JvEditor, JvHLEditor, JvHLEdPropDlg, JvaScrollText, JvHTHintEditor,
   {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPILER3_UP}
   JvIDEZoom,
-  {$ENDIF COMPILER3_UP}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
   {$IFDEF COMPLIB_VCL}
@@ -253,9 +251,7 @@ begin
   {$ENDIF COMPLIB_CLX}
 
   {Zoom unit}
-  {$IFDEF COMPILER3_UP}
   RegisterZoom;
-  {$ENDIF COMPILER3_UP}
 
   {$IFDEF COMPILER5}
   RegisterPropertiesInCategory(TJvEditorCategory, TJvCustomEditor,

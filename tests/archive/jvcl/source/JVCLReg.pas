@@ -39,7 +39,7 @@ implementation
 uses
   SysUtils, Classes, Graphics, Controls, ExtCtrls,
   ToolsApi, ActnList, Dialogs, ExptIntf,
-  {$IFDEF COMPILER5}
+  {$IFNDEF COMPILER6_UP}
   DsgnIntf,
   {$ENDIF}
   {$IFDEF COMPILER6_UP}
@@ -215,9 +215,11 @@ begin
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvLookoutButton, 'ImageIndex', TLookOutImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvExpressButton, 'ImageIndex', TLookOutImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvChangeItem, 'Directory', TDirectoryPropertyEditor);
+  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterPropertyEditor(TypeInfo(TDate), nil, '', TDateExProperty);
   RegisterPropertyEditor(TypeInfo(TTime), nil, '', TTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimeExProperty);
+  {$ENDIF}
 
   {Thumbview.filter editor}
   RegisterPropertyEditor(TypeInfo(string), TJvThumbView, 'Filter', TFilterProperty);
@@ -232,12 +234,14 @@ end;
 procedure RegCompEds;
 begin
   RegisterComponentEditor(TJvMail, TJvMailEditor);
-  RegisterComponentEditor(TCommonDialog, TJvOpenDialogEditor);
+//  RegisterComponentEditor(TCommonDialog, TJvOpenDialogEditor);
+  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
+  {$ENDIF}
   RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
-  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
   RegisterComponentEditor(TJvLookOut, TLookOutEditor);
   RegisterComponentEditor(TJvLookOutPage, TLookOutPageEditor);

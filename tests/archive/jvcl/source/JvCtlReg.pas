@@ -36,9 +36,6 @@ procedure Register;
 implementation
 
 uses
-  {$IFNDEF WIN32}
-  WinTypes,
-  {$ENDIF}
   Classes, SysUtils,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
@@ -46,22 +43,12 @@ uses
   LibIntf, DsgnIntf,
   {$ENDIF}
   TypInfo, Controls, Graphics, ExtCtrls, Tabs, Dialogs, Forms,
-  {$IFDEF COMPILER3_UP}
   DsnConst, ExtDlgs,
-  {$ELSE}
-  LibConst,
-  {$ENDIF}
   {$IFNDEF DelphiPersonalEdition}
-  {$IFDEF COMPILER4_UP}
   ImgEdit,
-  {$ENDIF}
-  {$IFDEF WIN32}
   ImgList,
-  {$ENDIF}
   {$ENDIF DelphiPersonalEdition}
-  {$IFDEF WIN32}
   JvRichEd,
-  {$ENDIF}
   Menus, FiltEdit, StdCtrls,
   JvxDConst, JvxCtrls, JvGrids, JvCurrEdit, JvToolEdit, JvDateUtil,
   JvPickDate, JvSplit, JvxSlider, JvxClock, JvxAnimate, JvSpin,
@@ -71,85 +58,6 @@ uses
   {$ENDIF}
   JvHints, JvExcptDlg,
   JvFileUtil, JvDsgn;
-
-{$IFNDEF COMPILER3_UP}
-
-//=== TJvDateProperty ========================================================
-
-type
-  TJvDateProperty = class(TFloatProperty)
-  public
-    function GetValue: string; override;
-    procedure SetValue(const Value: string); override;
-  end;
-
-function TJvDateProperty.GetValue: string;
-begin
-  if GetFloatValue = NullDate then
-    Result := ''
-  else
-    Result := FormatDateTime(ShortDateFormat, GetFloatValue);
-end;
-
-procedure TJvDateProperty.SetValue(const Value: string);
-begin
-  if Value = '' then
-    SetFloatValue(NullDate)
-  else
-    SetFloatValue(StrToDateFmt(ShortDateFormat, Value));
-end;
-
-//=== TJvModalResultProperty =================================================
-
-type
-  TJvModalResultProperty = class(TModalResultProperty)
-  public
-    function GetValue: string; override;
-    procedure GetValues(Proc: TGetStrProc); override;
-    procedure SetValue(const Value: string); override;
-  end;
-
-const
-  ModalResults: array [mrAll..mrYesToAll] of PChar =
-    ('mrAll', 'mrNoToAll', 'mrYesToAll');
-
-function TJvModalResultProperty.GetValue: string;
-var
-  CurValue: Longint;
-begin
-  CurValue := GetOrdValue;
-  case CurValue of
-    Low(ModalResults)..High(ModalResults):
-      Result := ModalResults[CurValue];
-  else
-    Result := inherited GetValue;
-  end;
-end;
-
-procedure TJvModalResultProperty.GetValues(Proc: TGetStrProc);
-var
-  I: Integer;
-begin
-  inherited GetValues(Proc);
-  for I := Low(ModalResults) to High(ModalResults) do
-    Proc(ModalResults[I]);
-end;
-
-procedure TJvModalResultProperty.SetValue(const Value: string);
-var
-  I: Integer;
-begin
-  if Value <> '' then
-    for I := Low(ModalResults) to High(ModalResults) do
-      if CompareText(ModalResults[I], Value) = 0 then
-      begin
-        SetOrdValue(I);
-        Exit;
-      end;
-  inherited SetValue(Value);
-end;
-
-{$ENDIF COMPILER3_UP}
 
 function ValueName(E: Extended): string;
 begin
@@ -240,11 +148,7 @@ type
 
 function TJvFloatProperty.GetValue: string;
 const
-  {$IFDEF WIN32}
   Precisions: array [TFloatType] of Integer = (7, 15, 18, 18, 18);
-  {$ELSE}
-  Precisions: array [TFloatType] of Integer = (7, 15, 18, 18);
-  {$ENDIF}
 begin
   Result := ValueName(GetFloatValue);
   if Result = '' then
@@ -425,8 +329,6 @@ end;
 //=== TJvImageListEditor =====================================================
 
 {$IFNDEF DelphiPersonalEdition}
-{$IFDEF WIN32}
-
 type
   TJvImageListEditor = class(TComponentEditor)
   private
@@ -445,11 +347,7 @@ var
 begin
   if ImageList.Count > 0 then
   begin
-    {$IFDEF COMPILER3_UP}
     SaveDlg := TSavePictureDialog.Create(Application);
-    {$ELSE}
-    SaveDlg := TSaveDialog.Create(Application);
-    {$ENDIF}
     with SaveDlg do
     try
       Options := [ofHideReadOnly, ofOverwritePrompt];
@@ -470,14 +368,12 @@ begin
             Canvas.FillRect(Bounds(0, 0, Width, Height));
             for I := 0 to ImageList.Count - 1 do
               ImageList.Draw(Canvas, ImageList.Width * I, 0, I);
-            {$IFDEF COMPILER3_UP}
             HandleType := bmDIB;
             if PixelFormat in [pf15bit, pf16bit] then
             try
               PixelFormat := pf24bit;
             except
             end;
-            {$ENDIF}
           end;
           Bitmap.SaveToFile(FileName);
         finally
@@ -507,13 +403,8 @@ end;
 function TJvImageListEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    {$IFDEF COMPILER3_UP}
     0:
       Result := SImageListEditor;
-    {$ELSE}
-    0:
-      Result := SImageEditor;
-    {$ENDIF}
     1:
       Result := srSaveImageList;
   else
@@ -526,7 +417,6 @@ begin
   Result := 2;
 end;
 
-{$ENDIF WIN32}
 {$ENDIF DelphiPersonalEdition}
 
 //=== TJvWeekDayProperty =====================================================
@@ -547,11 +437,7 @@ const
   cCaption = 'Caption';
   cHint = 'Hint';
 const
-  {$IFDEF COMPILER3_UP}
-  BaseClass: TClass = TPersistent;
-  {$ELSE}
   BaseClass: TClass = TComponent;
-  {$ENDIF}
 begin
   RegisterComponents(srJvCompositesPalette,
     [TJvComboEdit, TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvCalcEdit]);
@@ -561,9 +447,7 @@ begin
   RegisterComponents(srJvControlsPalette, [TJvTextListBox,
     TJvxCheckListBox, TJvxSplitter, TJvxSlider,
     TJvxLabel,
-    {$IFDEF WIN32}
     TJvxRichEdit,
-    {$ENDIF}
     TJvxClock, TJvAnimatedImage, TJvxDrawGrid, TJvxSpeedButton,
     {$IFDEF USE_JV_GIF}
     TJvGIFAnimator,
@@ -571,27 +455,17 @@ begin
     TJvSpinButton,
     TJvSwitch, TJvDice]);
   {$IFDEF CBUILDER}
-  {$IFNDEF COMPILER35_UP} { C++Builder 1.0 }
-  RegisterComponents(ResStr(srAdditionalPalette), [TScroller]);
-  {$ELSE}
-  RegisterComponents(ResStr(srSamplesPalette), [TScroller]);
-  {$ENDIF}
+    RegisterComponents(ResStr(srSamplesPalette), [TScroller]);
   {$ELSE}
   RegisterComponents(ResStr(srSamplesPalette), [TScroller]);
   {$ENDIF}
 
-  {$IFDEF COMPILER3_UP}
   RegisterNonActiveX([TJvCustomComboEdit, TJvCustomDateEdit, TJvCustomNumEdit,
     TJvFileDirEdit, TJvxCustomListBox, TJvxRichEdit], axrComponentOnly);
   RegisterNonActiveX([TScroller], axrComponentOnly);
-  {$ENDIF COMPILER3_UP}
 
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
-  {$IFDEF COMPILER3_UP}
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, cText, nil);
-  {$ELSE}
-  RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, cText, TStringProperty);
-  {$ENDIF}
   RegisterPropertyEditor(TypeInfo(string), TJvFileDirEdit, cText, TStringProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomDateEdit, cText, TStringProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'Filter', TFilterProperty);
@@ -599,22 +473,20 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvDirectoryEdit, cText, TJvDirNameProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirNameProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'DirectoryName', TJvDirNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TMenuItem, cHint, TStringProperty);
-  RegisterPropertyEditor(TypeInfo(string), BaseClass, cHint, THintProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomComboEdit, 'ButtonHint', THintProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvxCheckListBox, 'Items', TJvCheckItemsProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
-  {$IFDEF COMPILER3_UP}
+  RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
   RegisterPropertyEditor(TypeInfo(TCursor), TJvxSplitter, 'Cursor', nil);
-  {$ELSE}
-  RegisterPropertyEditor(TypeInfo(TDateTime), TPersistent, '', TJvDateProperty);
-  RegisterPropertyEditor(TypeInfo(TModalResult), TPersistent, '', TJvModalResultProperty);
-  {$ENDIF}
 
-  RegisterPropertyEditor(TypeInfo(TCaption), TLabel, cCaption, THintProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvxLabel, cCaption, THintProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvxSpeedButton, cCaption, THintProperty);
+  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+  RegisterPropertyEditor(TypeInfo(string), TMenuItem, cHint, TStringProperty);
+  RegisterPropertyEditor(TypeInfo(string), BaseClass, cHint, THintProperty);
+
+  RegisterPropertyEditor(TypeInfo(TCaption), TLabel, cCaption, THintProperty);
 
   RegisterPropertyEditor(TypeInfo(Integer), BaseClass, '', TJvIntegerProperty);
   RegisterPropertyEditor(TypeInfo(ShortInt), BaseClass, '', TJvIntegerProperty);
@@ -627,19 +499,15 @@ begin
   RegisterPropertyEditor(TypeInfo(Single), BaseClass, '', TJvFloatProperty);
   RegisterPropertyEditor(TypeInfo(Double), BaseClass, '', TJvFloatProperty);
   RegisterPropertyEditor(TypeInfo(Extended), BaseClass, '', TJvFloatProperty);
-  {$IFDEF WIN32}
   RegisterPropertyEditor(TypeInfo(Currency), BaseClass, '', TJvFloatProperty);
+    {$IFNDEF DelphiPersonalEdition}
+      RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
+      RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
+      RegisterComponentEditor(TImageList, TJvImageListEditor);
+    {$ENDIF}
+    RegisterJvColors;
   {$ENDIF}
 
-  RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
-  RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
-  {$IFDEF WIN32}
-  {$IFNDEF DelphiPersonalEdition}
-  RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
-  RegisterComponentEditor(TImageList, TJvImageListEditor);
-  {$ENDIF}
-  {$ENDIF}
-  RegisterJvColors;
 end;
 
 end.

@@ -60,18 +60,10 @@ type
   end;
 
 const
-  {$IFDEF WIN32}
   clInfoBk16 = TColor($02E1FFFF);
   clNone16 = TColor($02FFFFFF);
   ColorCount = 3;
-  {$ELSE}
-  ColorCount = 5;
-  {$ENDIF}
   Colors: array [0..ColorCount - 1] of TColorEntry = (
-    {$IFNDEF WIN32}
-    (Value: clInfoBk; Name: 'clInfoBk'),
-    (Value: clNone; Name: 'clNone'),
-    {$ENDIF}
     (Value: clCream; Name: 'clCream'),
     (Value: clMoneyGreen; Name: 'clMoneyGreen'),
     (Value: clSkyBlue; Name: 'clSkyBlue'));
@@ -140,13 +132,11 @@ var
   Color: TColor;
 begin
   Color := TColor(GetOrdValue);
-  {$IFDEF WIN32}
   if Color = clNone16 then
     Color := clNone
   else
     if Color = clInfoBk16 then
-    Color := clInfoBk;
-  {$ENDIF}
+      Color := clInfoBk;
   Result := JvColorToString(Color);
 end;
 
@@ -204,7 +194,9 @@ end;
 
 procedure RegisterJvColors;
 begin
+  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
+  {$ENDIF}
 end;
 
 end.

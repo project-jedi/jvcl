@@ -44,12 +44,6 @@ procedure Register;
 
 implementation
 
-{.$IFDEF WIN32}
-{.$R *.Res}
-{.$ELSE}
-{.$R *.D16}
-{.$ENDIF}
-
 uses
   TypInfo,
   JvDBLists, JvDBQBE, JvDBFilter, JvDBIndex, JvDBPrgrss,
@@ -60,18 +54,8 @@ uses
   {$IFDEF Jv_MIDAS}
   JvRemLog,
   {$ENDIF}
-  {$IFDEF COMPILER3_UP}
   JvQBndDlg,
-  {$ELSE}
-  {$IFNDEF WIN32}
-  JvQBndDlg,
-  {$ELSE}
-  JvQBindDlg,
-  {$ENDIF}
-  {$ENDIF}
   Consts, LibHelp, JvMemTable, JvxDConst;
-
-{$IFDEF WIN32}
 
 //=== TJvSessionNameProperty =================================================
 
@@ -86,8 +70,6 @@ begin
   Sessions.GetSessionNames(List);
 end;
 
-{$ENDIF WIN32}
-
 //=== TJvDatabaseNameProperty ================================================
 
 type
@@ -97,12 +79,9 @@ type
   end;
 
 procedure TJvDatabaseNameProperty.GetValueList(List: TStrings);
-{$IFDEF WIN32}
 var
   S: TSession;
-{$ENDIF}
 begin
-  {$IFDEF WIN32}
   if (GetComponent(0) is TDBDataSet) then
     (GetComponent(0) as TDBDataSet).DBSession.GetDatabaseNames(List)
   else
@@ -113,9 +92,6 @@ begin
       S := Session;
     S.GetDatabaseNames(List);
   end;
-  {$ELSE}
-  Session.GetDatabaseNames(List);
-  {$ENDIF}
 end;
 
 //=== TJvTableNameProperty ===================================================
@@ -130,110 +106,10 @@ type
 
 procedure TJvTableNameProperty.GetValueList(List: TStrings);
 begin
-  {$IFDEF WIN32}
   (GetComponent(0) as TJvCustomTableItems).DBSession.GetTableNames((GetComponent(0)
     as TJvCustomTableItems).DatabaseName, '', True, False, List);
-  {$ELSE}
-  Session.GetTableNames((GetComponent(0) as TJvCustomTableItems).DatabaseName,
-    '', True, False, List);
-  {$ENDIF WIN32}
 end;
 
-{$IFNDEF COMPILER4_UP}
-
-{$IFNDEF DELPHI2}
-{$IFNDEF BCB1}
-function EditQueryParams(DataSet: TDataSet; List: TParams): Boolean;
-begin
-  Result := JvQBndDlg.EditQueryParams(DataSet, List, hcDQuery);
-end;
-{$ENDIF}
-{$ENDIF}
-
-//=== TJvParamsProperty ======================================================
-
-type
-  TJvParamsProperty = class(TPropertyEditor)
-  public
-    procedure Edit; override;
-    function GetValue: string; override;
-    function GetAttributes: TPropertyAttributes; override;
-  end;
-
-function TJvParamsProperty.GetValue: string;
-var
-  Params: TParams;
-begin
-  Params := TParams(Pointer(GetOrdValue));
-  if Params.Count > 0 then
-    {$IFDEF WIN32}
-    Result := Format('(%s)', [GetPropInfo.Name])
-    {$ELSE}
-    Result := Format('(%s)', [GetPropInfo^.Name])
-    {$ENDIF}
-  else
-    Result := ResStr(srNone);
-end;
-
-function TJvParamsProperty.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paMultiSelect, paDialog];
-end;
-
-procedure TJvParamsProperty.Edit;
-var
-  List, Params: TParams;
-  Query: TDataSet;
-  QueryCreated: Boolean;
-  I: Integer;
-begin
-  QueryCreated := False;
-  if GetComponent(0) is TDataSet then
-    Query := GetComponent(0) as TDataSet
-  else
-  begin
-    Query := TQuery.Create(GetComponent(0) as TComponent);
-    QueryCreated := True;
-  end;
-  try
-    Params := TParams(GetOrdProp(GetComponent(0), GetPropInfo));
-    if QueryCreated then
-      TQuery(Query).Params := Params;
-    List := TParams.Create;
-    try
-      List.Assign(Params);
-      if EditQueryParams(Query, List) {$IFDEF WIN32} and
-        not List.IsEqual(Params) {$ENDIF} then
-      begin
-        {$IFDEF WIN32}
-        Modified;
-        {$ELSE}
-        if Designer <> nil then
-          Designer.Modified;
-        {$ENDIF}
-        Query.Close;
-        for I := 0 to PropCount - 1 do
-        begin
-          Params := TParams(GetOrdProp(GetComponent(I),
-            TypInfo.GetPropInfo(GetComponent(I).ClassInfo,
-            {$IFDEF WIN32}
-            GetPropInfo.Name)));
-           {$ELSE}
-            GetPropInfo^.Name)));
-           {$ENDIF}
-          Params.AssignValues(List);
-        end;
-      end;
-    finally
-      List.Free;
-    end;
-  finally
-    if QueryCreated then
-      Query.Free;
-  end;
-end;
-
-{$ENDIF COMPILER4_UP}
 
 //=== TJvUserTableNameProperty ===============================================
 
@@ -251,13 +127,8 @@ begin
   Security := GetComponent(0) as TJvDBSecurity;
   if Security.Database <> nil then
   begin
-    {$IFDEF WIN32}
     Security.Database.Session.GetTableNames(Security.Database.DatabaseName,
       '*.*', True, False, List);
-    {$ELSE}
-    Session.GetTableNames(Security.Database.DatabaseName, '*.*',
-      True, False, List);
-    {$ENDIF}
   end;
 end;
 
@@ -315,11 +186,9 @@ const
   cParams = 'Params';
   cSessionName = 'SessionName';
 begin
-  {$IFDEF COMPILER4_UP}
   { Database Components are excluded from the STD SKU }
   if GDAL = LongWord(-16) then
     Exit;
-  {$ENDIF}
 
   { Data aware components and controls }
   RegisterComponents(srJvDataAccessPalette, [TJvQuery, TJvSQLScript,
@@ -342,11 +211,9 @@ begin
   {$ENDIF USE_OLD_DBLISTS}
   {$ENDIF CBUILDER}
 
-  {$IFDEF COMPILER3_UP}
   RegisterNonActiveX([TJvQuery, TJvSQLScript, TJvMemoryTable, TJvQBEQuery,
     TJvDBFilter, TJvDBIndexCombo, TJvDBProgress, TJvDBSecurity, TJvBDEItems,
       TJvDatabaseItems, TJvTableItems], axrComponentOnly);
-  {$ENDIF COMPILER3_UP}
 
   { Property and component editors for data aware controls }
 
@@ -356,32 +223,19 @@ begin
     'UsersTableName', TJvUserTableNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBSecurity,
     'LoginNameField', TLoginNameFieldProperty);
-
+  
   {$IFNDEF DelphiPersonalEdition}
   RegisterComponentEditor(TJvMemoryTable, TJvMemoryTableEditor);
   {$ENDIF}
 
-  {$IFNDEF COMPILER4_UP}
-  RegisterPropertyEditor(TypeInfo(TParams), TJvQBEQuery, cParams,
-    TJvParamsProperty);
-  RegisterPropertyEditor(TypeInfo(TParams), TJvQuery, 'Macros',
-    TJvParamsProperty);
-  RegisterPropertyEditor(TypeInfo(TParams), TJvSQLScript, cParams,
-    TJvParamsProperty);
-  {$ENDIF}
-
   RegisterPropertyEditor(TypeInfo(string), TJvSQLScript, 'DatabaseName',
     TJvDatabaseNameProperty);
-  {$IFDEF WIN32}
   RegisterPropertyEditor(TypeInfo(string), TJvCustomBDEItems, cSessionName,
     TJvSessionNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvSQLScript, cSessionName,
     TJvSessionNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBProgress, cSessionName,
     TJvSessionNameProperty);
-  {$ELSE}
-  DbErrorIntercept;
-  {$ENDIF WIN32}
 end;
 
 end.

@@ -1,3 +1,5 @@
+2003-02-28:
+- Added IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS check to registration units to conditionally register property and component editors that overrides default editors for non-JVCL components or for standard properties. The define is in JVCL.INC and it is disabled by default. To enable, remove the dot (.) in the define
 2002-12-24
 - Properly separated a TJvCustomMaskEdit out of TJvMaskEdit at last
 - Made TJvCustomCheckedMaskEdit a descendant of TJvCustomMaskEdit

@@ -46,13 +46,8 @@ uses
   JvGIF, JvGIFCtrl,
   {$ENDIF}
   JvxCtrls,
-  {$IFDEF COMPILER3_UP}
-  {JvResExp, }
-  {$ENDIF}
   JvMenus, JvMRUList,
-  {$IFDEF WIN32}
   JvNotify, JvGrdCpt, JvGradEdit,
-  {$ENDIF}
   JvPictEdit, JvWndProcHook, JvPicClip, JvPlacemnt, JvPresrDsn, JvMinMaxEd, JvDualList,
   JvClipView, JvSpeedbar, JvSbEdit, JvDataConv, JvCalc, JvPageMngr, JvPgMngrEd, JvMrgMngr,
   JvStrHlder, JvAppEvent, JvVCLUtils, JvTimerLst, JvTimLstEd, JvIcoList, JvIcoLEdit,
@@ -114,11 +109,7 @@ var
   Component: TComponent;
   Form: TComponent;
 begin
-  {$IFDEF WIN32}
   Component := Designer.GetComponent(Value);
-  {$ELSE}
-  Component := Designer.Root.FindComponent(Value);
-  {$ENDIF}
   Form := Designer.{$IFDEF COMPILER6_UP} Root {$ELSE} Form {$ENDIF};
   if ((Component = nil) or not (Component is GetTypeData(GetPropType)^.ClassType)) and
     (CompareText(Form.Name, Value) = 0) then
@@ -137,16 +128,13 @@ begin
     TJvFormPlacement, TJvWindowHook, TJvAppEvents, TJvSpeedBar, TJvCalculator,
       TJvTimerList, TJvPageManager, TJvMergeManager, TJvMRUManager, TJvSecretPanel,
       TJvStrHolder, TJvMainMenu, TJvPopupMenu,
-      {$IFDEF WIN32} TJvFolderMonitor, {$ENDIF} TJvxClipboardViewer,
-      {$IFDEF WIN32} TJvxGradientCaption, {$ENDIF} TJvDualListDialog
-      {$IFNDEF COMPILER4_UP}, TJvConverter {$ENDIF}]);
+      TJvFolderMonitor, TJvxClipboardViewer,
+      TJvxGradientCaption, TJvDualListDialog]);
 
-  {$IFDEF COMPILER3_UP}
   RegisterNonActiveX([TJvPicClip, TJvFormPlacement, TJvFormStorage, TJvWindowHook,
     TJvDualListDialog, TJvSecretPanel, TJvSpeedBar, TJvxClipboardViewer,
       TJvPageManager, TJvMergeManager, TJvMRUManager, TJvAppEvents, TJvTimerList,
       TJvFolderMonitor, TJvxGradientCaption], axrComponentOnly);
-  {$ENDIF COMPILER3_UP}
 
   RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
   RegisterComponentEditor(TJvStrHolder, TJvStringsEditor);
@@ -172,30 +160,22 @@ begin
   RegisterComponentEditor(TJvTimerList, TJvTimersCollectionEditor);
   RegisterPropertyEditor(TypeInfo(TList), TJvTimerList, 'Events', TJvTimersItemListProperty);
   RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
-  {$IFDEF COMPILER4_UP}
   RegisterPropertyEditor(TypeInfo(Boolean), TJvMainMenu, 'OwnerDraw', nil);
   RegisterPropertyEditor(TypeInfo(Boolean), TJvPopupMenu, 'OwnerDraw', nil);
-  {$ENDIF}
 
   {$IFDEF USE_JV_GIF}
   RegisterComponentEditor(TJvGIFAnimator, TJvGraphicsEditor);
   {$ENDIF}
+  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+  RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);
+  RegisterPropertyEditor(TypeInfo(TGraphic), nil, '', TJvGraphicPropertyEditor);
+  RegisterComponentEditor(TImage, TJvGraphicsEditor);
+  {$ENDIF}
 
-//  RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);
-//  RegisterPropertyEditor(TypeInfo(TGraphic), nil, '', TJvGraphicPropertyEditor);
-//  RegisterComponentEditor(TImage, TJvGraphicsEditor);
-
-  {$IFDEF WIN32}
   RegisterComponentEditor(TJvxGradientCaption, TGradientCaptionEditor);
-  {$IFNDEF COMPILER3_UP}
-  RegisterPropertyEditor(TypeInfo(TJvCaptionList), TJvxGradientCaption, '', TGradientCaptionsProperty);
-  {$ENDIF}
-  {$ENDIF}
 
-  {$IFDEF COMPILER3_UP}
   { Project Resource Expert }
   //mb RegisterResourceExpert;
-  {$ENDIF}
 end;
 
 end.
