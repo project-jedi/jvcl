@@ -58,12 +58,14 @@ type
     cbControl: TComboBox;
     btnOK: TButton;
     btnCancel: TButton;
+    cbxFillCell: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure lbSelectedClick(Sender: TObject);
     procedure cbControlClick(Sender: TObject);
     procedure sbAddClick(Sender: TObject);
     procedure sbDeleteClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure cbxFillCellClick(Sender: TObject);
   private
     procedure SetControl(Name: string);
   public
@@ -167,6 +169,7 @@ begin
     cbControl.Enabled := True;
     cbControl.Color := clWindow;
     SetControl(JvDBGridControls.Items[lbSelected.ItemIndex].ControlName);
+    cbxFillCell.Checked := JvDBGridControls.Items[lbSelected.ItemIndex].FitCell;
   end
   else
   begin
@@ -181,6 +184,12 @@ begin
     JvDBGridControls.Items[lbSelected.ItemIndex].ControlName := cbControl.Text;
 end;
 
+procedure TfmGridProp.cbxFillCellClick(Sender: TObject);
+begin
+  if lbSelected.ItemIndex >= 0 then
+    JvDBGridControls.Items[lbSelected.ItemIndex].FitCell := cbxFillCell.Checked;
+end;
+
 procedure TfmGridProp.sbAddClick(Sender: TObject);
 begin
   if lbFields.ItemIndex >= 0 then
@@ -189,7 +198,10 @@ begin
     begin
       lbSelected.Items.Add(lbFields.Items[lbFields.ItemIndex]);
       with JvDBGridControls.Add do
+      begin
         FieldName := lbFields.Items[lbFields.ItemIndex];
+        FitCell := True;
+      end;
     end
     else
       MessageDlg(Format(RsJvDBGridAlreadyAdded,

@@ -118,6 +118,20 @@ object fmGridProp: TfmGridProp
       TabOrder = 1
       OnClick = cbControlClick
     end
+    object cbxFillCell: TCheckBox
+      Left = 160
+      Top = 80
+      Width = 97
+      Height = 17
+      Hint = 
+        'If ticked, the control will be resized to fit the current cell, ' +
+        'otherwise it will be displayed at design size.'
+      Caption = 'Fill Cell'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+      OnClick = cbxFillCellClick
+    end
   end
   object btnOK: TButton
     Left = 365
