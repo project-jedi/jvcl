@@ -88,6 +88,7 @@ type
     FRasValidateEntryName: TRasValidateEntryName;
     FRasCreatePhonebookEntry: TRasCreatePhonebookEntry;
     FRasEditPhonebookEntry: TRasEditPhonebookEntry;
+    FKeepConnected: boolean;
     function GetPhoneBook: TStringList;
     procedure WndProc(var Msg: TMessage);
     procedure SetIndex(const Value: Integer);
@@ -102,6 +103,7 @@ type
     property Domain: string read FDomain write FDomain;
     property CallBackNumber: string read FCallBack write FCallBack;
   published
+    property KeepConnected:boolean read FKeepConnected write FKeepConnected;
     property PhoneBook: TStringList read GetPhoneBook;
     property EntryIndex: Integer read FIndex write SetIndex default -1;
     property PhoneBookPath: TFileName read FPath write FPath;
@@ -206,7 +208,8 @@ begin
   if FDll <> 0 then
   begin
     try
-      HangUp;
+     if not KeepConnected then
+        HangUp;
     except
     end;
     FreeLibrary(FDll);
