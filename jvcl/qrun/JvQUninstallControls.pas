@@ -59,7 +59,7 @@ type
     function GetProperties: TStrings;
     function GetHKey: HKEY;
     function GetHKeyName: string;
-    procedure SetSorted(const Value: boolean);
+    procedure SetSorted(const Value: Boolean);
   protected  
     procedure CreateWidget; override; 
   public
@@ -127,7 +127,7 @@ type
     function GetProperties: TStrings;
     function GetHKey: HKEY;
     function GetHKeyName: string;
-    procedure SetSorted(const Value: boolean);
+    procedure SetSorted(const Value: Boolean);
   protected  
     procedure CreateWidget; override; 
   public
@@ -188,7 +188,8 @@ const
   cUninstallString = 'UninstallString';
   cDisplayName = 'DisplayName';
 
-  FKey: array[TJvUCBDisplayMode] of DWORD = (HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE);
+  FKey: array [TJvUCBDisplayMode] of DWORD =
+    (HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE);
 
 type
   TJvUninstallInfo = class(TObject)
@@ -196,13 +197,13 @@ type
     FSection: string;
     FHKey: HKEY;
     FProperties: TStringList;
-    FHKEYName: string;
+    FHKeyName: string;
     function GetProperties: TStrings;
 //    procedure SetProperties(const Value: TStrings); make Delphi 5 compiler happy // andreas
   public
     destructor Destroy; override;
     property HKey: HKEY read FHKey write FHKey;
-    property HKEYName: string read FHKEYName write FHKEYName;
+    property HKeyName: string read FHKeyName write FHKeyName;
     property Section: string read FSection write FSection;
     property Properties: TStrings read GetProperties {write SetProperties // make Delphi 5 compiler happy // andreas};
   end;
@@ -248,7 +249,7 @@ var
     I: Integer;
   begin
     Result := '';
-    for I := 0 to Min(sizeof(Buffer), BufSize) - 1 do
+    for I := 0 to Min(SizeOf(Buffer), BufSize) - 1 do
       Result := Result + ' ' + IntToHex(Buffer[I], 2);
   end;
 
@@ -284,7 +285,7 @@ begin
             end;
           rdInteger:
             begin
-              GetData(Ident, @Len, sizeof(Len), RegData);
+              GetData(Ident, @Len, SizeOf(Len), RegData);
               Result := IntToStr(Len);
             end;
           rdBinary:
@@ -292,8 +293,8 @@ begin
               Len := GetDataSize(Ident);
               if Len > 0 then
               begin
-                GetData(Ident, @Buffer, sizeof(Buffer), RegData);
-                Result := BufToStr(Buffer, Min(Len, sizeof(buffer)));
+                GetData(Ident, @Buffer, SizeOf(Buffer), RegData);
+                Result := BufToStr(Buffer, Min(Len, SizeOf(Buffer)));
               end
               else
                 Result := '';
@@ -336,7 +337,7 @@ var
     ExpandEnvironmentStrings(PChar(S), PChar(Result), Length(Result));
   end;
 
-  procedure ReadProperties(Reg: TSafeRegIniFile; const Section: string; ShowEmptyValues: boolean; Items, Props: TStrings);
+  procedure ReadProperties(Reg: TSafeRegIniFile; const Section: string; ShowEmptyValues: Boolean; Items, Props: TStrings);
   var
     I: Integer;
     Tmp: string;
@@ -344,16 +345,16 @@ var
     Reg.OpenKeyReadOnly(Section);
     for I := 0 to Items.Count - 1 do
     begin
-      Tmp := Reg.ReadString('', Items[i], '');
+      Tmp := Reg.ReadString('', Items[I], '');
       if (Tmp <> '') or ShowEmptyValues then
         Props.Add(Format('%s=%s', [Items[I], Tmp]));
     end;
     Reg.CloseKey;
   end;
 
-  function DMToStr(DM: TJvUCBDisplayMode): string;
+  function DMToStr(Dm: TJvUCBDisplayMode): string;
   begin
-    case DM of
+    case Dm of
       hkCurrentUser:
         Result := 'HKEY_CURRENT_USER';
       hkLocalMachine:
@@ -532,7 +533,7 @@ begin
     Result := TJvUninstallInfo(Items.Objects[ItemIndex]).HKeyName;
 end;
 
-procedure TJvUninstallComboBox.SetSorted(const Value: boolean);
+procedure TJvUninstallComboBox.SetSorted(const Value: Boolean);
 var
   S: string;
 begin
@@ -678,7 +679,7 @@ begin
     Result := TJvUninstallInfo(Items.Objects[ItemIndex]).HKeyName;
 end;
 
-procedure TJvUninstallListBox.SetSorted(const Value: boolean);
+procedure TJvUninstallListBox.SetSorted(const Value: Boolean);
 var
   S: string;
 begin

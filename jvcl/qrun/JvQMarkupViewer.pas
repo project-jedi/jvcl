@@ -35,8 +35,9 @@ unit JvQMarkupViewer;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QForms, QControls, QStdCtrls, Types, QWindows, QTypes, 
+  SysUtils, Classes,
+  Types, QWindows, QMessages, QGraphics, QForms, QControls, QStdCtrls, 
+  QTypes, 
   JvQComponent, JvQMarkupCommon;
 
 type
@@ -49,30 +50,29 @@ type
     PageBottom: Integer;
     FElementStack: TJvHTMLElementStack;
     FTagStack: TJvHTMLElementStack;
-    FText: TCaption;
     FBackColor: TColor;
     FMarginLeft: Integer;
     FMarginRight: Integer;
-    FMarginTop: Integer;
+    FMarginTop: Integer; 
     procedure ParseHTML(s: string);
     procedure RenderHTML;
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
     procedure SetBackColor(const Value: TColor);
-    procedure SetText(const Value: TCaption);
     procedure SetMarginLeft(const Value: Integer);
     procedure SetMarginRight(const Value: Integer);
     procedure SetMarginTop(const Value: Integer);
     procedure ScrollViewer(Sender: TObject);
-  protected  
-    procedure CreateWidget; override; 
+  protected
+    procedure CreateWnd; override; 
+    procedure SetText(const Value: TCaption); override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
   published
-    property Align;
-    property Text: TCaption read FText write SetText;
+    property Align;  
+    property Text: TCaption read GetText write SetText; 
     property BackColor: TColor read FBackColor write SetBackColor;
     property MarginLeft: Integer read FMarginLeft write SetMarginLeft default 5;
     property MarginRight: Integer read FMarginRight write SetMarginRight default 5;
@@ -151,12 +151,9 @@ begin
   end;
 end;
 
-
-
-procedure TJvMarkupViewer.CreateWidget;
+procedure TJvMarkupViewer.CreateWnd;
 begin
-  inherited CreateWidget;
-
+  inherited CreateWnd;
   FScrollBar := TScrollBar.Create(Self);
   FScrollBar.Kind := sbVertical;
   FScrollBar.Parent := Self;
@@ -572,15 +569,17 @@ procedure TJvMarkupViewer.SetText(const Value: TCaption);
 var
   s: string;
 begin
-  if Value <> FText then
+
+
+  if Value <> GetText then
     Exit;
+
   s := Value;
   s := StringReplace(s, sLineBreak, ' ', [rfReplaceAll]);
   s := TrimRight(s);
   ParseHTML(s);
-  HTMLElementDimensions;
-  FText := s;
-  Invalidate;
+  HTMLElementDimensions;  
+  inherited SetText(s); 
 end;
 
 end.

@@ -821,20 +821,20 @@ var
   I: Integer;
   MemStream: TMemoryStream;
   TagRIFF, TagLIST, Tag: TJvAniTag;
-  Id: TJvFourCC;
+  ID: TJvFourCC;
 begin
   MemStream := TMemoryStream.Create;
   try
     StartWriteChunk(MemStream, TagRIFF, FOURCC_RIFF);
 
-    SetFOURCC(Id, FOURCC_ACON);
-    MemStream.Write(Id, SizeOf(TJvFourCC));
+    SetFOURCC(ID, FOURCC_ACON);
+    MemStream.Write(ID, SizeOf(TJvFourCC));
 
     if (Title <> '') or (Author <> '') then
     begin
       StartWriteChunk(MemStream, TagLIST, FOURCC_LIST);
-      SetFOURCC(Id, FOURCC_INFO);
-      MemStream.Write(Id, SizeOf(TJvFourCC));
+      SetFOURCC(ID, FOURCC_INFO);
+      MemStream.Write(ID, SizeOf(TJvFourCC));
       if Title <> '' then
       begin
         StartWriteChunk(MemStream, Tag, FOURCC_INAM);
@@ -867,8 +867,8 @@ begin
     end;
 
     StartWriteChunk(MemStream, TagLIST, FOURCC_LIST);
-    SetFOURCC(Id, FOURCC_fram);
-    MemStream.Write(Id, SizeOf(TJvFourCC));
+    SetFOURCC(ID, FOURCC_fram);
+    MemStream.Write(ID, SizeOf(TJvFourCC));
     for I := 0 to IconCount - 1 do
     begin
       StartWriteChunk(MemStream, Tag, FOURCC_icon);

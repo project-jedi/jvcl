@@ -40,7 +40,7 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QMessages, Types, QGraphics, QControls, QForms, 
+  Types, QWindows, QMessages, QGraphics, QControls, QForms, 
   Qt, QStdCtrls, QExtCtrls, 
   JvQComponent, JvQLabel, JvQOfficeColorPanel;
 

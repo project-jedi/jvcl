@@ -20,7 +20,8 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-  Todo integrate with KDE/Gnome = *.desktop
+  TODO: Complete TJvRegistryIniFile methods.
+  TODO: Integrate with Linux *.desktop support or KDE/GNOME integration
 -----------------------------------------------------------------------------}
 // $Id$
 {$I linuxonly.inc}
@@ -46,6 +47,7 @@ type
     FIniFile: TIniFile;
     function GetFilename: string;
     procedure SetRoot(Value: string);
+    function GetRoot: string;
   protected
     //
     //  Keyname to IniFile/Section conversion:
@@ -64,7 +66,6 @@ type
       out section: string; AllowCreate: boolean = false): boolean; dynamic;
   public
     LazyWrite: boolean;
-  //    constructor Create; override;
     constructor Create(const Root: string); overload;
     destructor Destroy; override;
     function OpenKey(const Key: string; AllowCreate: boolean): boolean;
@@ -97,7 +98,7 @@ type
     procedure WriteTime(const Ident: string; Value: TDateTime);
     property CurrentKey: string read FSection;
     property CurrentRoot: string read GetFilename;
-    property RootKey: string read FHKEY write SetRoot;
+    property RootKey: string read GetRoot write SetRoot;
   end;
 
   TRegistry = TJvRegistryIniFile;  // asn: Let see what happens!!
@@ -127,7 +128,7 @@ begin
   then
     FHKey := Root
   else
-    FHKey := HKEY_CURRENT_USER; //+ '/.' + ExtractFileName(Application.ExeName));
+    FHKey := HKEY_CURRENT_USER;
 end;
 
 destructor TJvRegistryIniFile.Destroy;
@@ -151,6 +152,13 @@ begin
   end;
 end;
 
+function TJvRegistryIniFile.GetRoot: string;
+begin
+  if FHKEY = '' then
+    FHKEY := HKEY_CURRENT_USER;
+  Result := FHKEY;
+end;
+
 function TJvRegistryIniFile.GetFilename: string;
 begin
   Result := FIniFile.FileName;
@@ -168,7 +176,7 @@ begin
   try
     strlist.Delimiter := PathDelim;
     strlist.DelimitedText := Key;
-    Ininame := FHKEY;
+    Ininame := RootKey;
     i := 0;
     while (i < strlist.Count) and
       ( FileExists(IniName + PathDelim + strlist[i]) or

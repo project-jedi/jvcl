@@ -116,7 +116,7 @@ type
     function GenerateTicket: TMTTicket;
     procedure Log(const Msg: string);
     procedure TryRemoveThread(Thread: TMTThread);
-    function InternalActiveThreads(RaiseID: LongWord): Integer;
+    function InternalActiveThreads(RaiseID: Longword): Integer;
   protected
     procedure OnThreadFinished(Thread: TMTThread);
   public
@@ -173,14 +173,11 @@ begin
   ThreadNameInfo.FFlags := 0;
   {$IFDEF MSWINDOWS}
   try
-    RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord),
+    RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(Longword),
       @ThreadNameInfo);
   except
   end;
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  // TODO !!
-  {$ENDIF LINUX}
 end;
 
 //=== { TMTThread } ==========================================================
@@ -404,7 +401,7 @@ var
 begin
   if FManager.AcquireThread(Ticket, SelfRef) then
   try
-    if GetCurrentThreadId = MainThreadID then
+    if GetCurrentThreadID = MainThreadID then
     begin
       while Status <> tsFinished do
       begin
@@ -489,7 +486,7 @@ end;
 //         1 = True
 //        -1 = RaiseID found and active
 
-function TMTManager.InternalActiveThreads(RaiseID: LongWord): Integer;
+function TMTManager.InternalActiveThreads(RaiseID: Longword): Integer;
 var
   I: Integer;
 begin

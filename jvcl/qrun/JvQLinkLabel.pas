@@ -61,7 +61,6 @@ type
 
   TJvCustomLinkLabel = class(TJvGraphicControl, IDynamicNodeHandler)
   private
-    FCaption: TCaption;
     FText: TStringList;
     FRenderer: IRenderer;
     FActiveLinkNode: TLinkNode;
@@ -76,7 +75,7 @@ type
     FOnLinkClick: TLinkClickEvent;
     FOnDynamicTagInit: TDynamicTagInitEvent;
     FParser: IParser;
-    FLayout: TTextLayout;  // Bianconi
+    FLayout: TTextLayout;  // Bianconi 
     procedure SetTransparent(const Value: Boolean);
     function GetLinkColor: TColor;
     function GetLinkStyle: TFontStyles;
@@ -91,7 +90,7 @@ type
     procedure SetLinkColorHot(const Value: TColor);
     procedure ActivateLinkNodeAtPos(const P: TPoint; State: TLinkState);
     procedure DeactivateActiveLinkNode;
-    procedure HandleDynamicNode(out Source: string; const Node: TDynamicNode); 
+    procedure HandleDynamicNode(out Source: string; const Node: TDynamicNode);
     function GetTransparent: Boolean;
     function IsActiveLinkNodeClicked: Boolean;
     procedure SetAutoHeight(const Value: Boolean);
@@ -102,8 +101,7 @@ type
     procedure SetLayout(AValue: TTextLayout);     // Bianconi
   protected
     FNodeTree: TNodeTree; 
-    procedure SetText(const Value: TCaption); override;
-    function GetText: TCaption; override; 
+    procedure SetText(const Value: TCaption); override; 
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure Paint; override;
@@ -120,7 +118,8 @@ type
     procedure DoLinkClicked(LinkNumber: Integer; LinkText: string); virtual;
     procedure DoDynamicTagInit(out Source: string; Number: Integer); virtual;
     property Parser: IParser read FParser;
-    property Renderer: IRenderer read FRenderer; 
+    property Renderer: IRenderer read FRenderer;  
+    property Caption: TCaption read GetText write SetText; 
     property Text: TStrings read GetStrings write SetStrings;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;                // Bianconi
@@ -565,21 +564,13 @@ begin
   end;
 end;
 
-
-function TJvCustomLinkLabel.GetText: TCaption;
-begin
-  Result := FText.Text;
-end;
-
-
 procedure TJvCustomLinkLabel.SetText(const Value: TCaption);
 begin
-  if Value <> FCaption then
-  begin 
-    inherited SetText(Value); 
-    FCaption := Value;
-    Text.Clear;
-    Text.Add(FCaption);
+  if Value <> Caption then
+  begin
+    Text.Clear; 
+    inherited SetText(Value);  
+    Text.Add(Caption);
     FActiveLinkNode := nil; // We're about to free the tree containing the node it's pointing to
     FNodeTree.Free;
     ResetNodeCount;
@@ -660,8 +651,7 @@ end;
 
 procedure TJvCustomLinkLabel.SetStrings(const Value: TStrings);
 begin
-  FText.Assign(Value);
-  SetText(FText.Text);
+  FText.Assign(Value); inherited SetText(FText.Text);
 end;
 
 // Bianconi

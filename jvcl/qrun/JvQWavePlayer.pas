@@ -35,7 +35,7 @@ unit JvQWavePlayer;
 interface
 
 uses
-  QWindows, SysUtils, Classes, MMSystem,
+  Types, QWindows, SysUtils, Classes, MMSystem,
   JvQTypes, JvQComponent;
 
 type

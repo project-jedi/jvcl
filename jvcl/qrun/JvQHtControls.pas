@@ -115,7 +115,7 @@ uses
   ShellAPI,
   {$ENDIF MSWINDOWS} 
   Qt, 
-  QWindows, QMessages, Types, QGraphics, QControls, QStdCtrls, QDialogs,
+  Types, QWindows, QMessages, QGraphics, QControls, QStdCtrls, QDialogs,
   JvQExStdCtrls;
 
 type

@@ -340,7 +340,8 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QMessages, QControls, QForms, Types, QGraphics, QButtons, QImgList,  
+  QWindows, QMessages, QControls, QForms, QGraphics, QButtons, QImgList, 
+  Types,  
   JvQComponent, JvQThemes, 
   JvQWizardCommon;
 

@@ -35,7 +35,7 @@ unit JvQBitBtn;
 interface
 
 uses
-  QWindows, QMessages, Classes, QGraphics, QControls, QMenus,
+  Types, QWindows, QMessages, Classes, QGraphics, QControls, QMenus,
   JvQTypes, JvQExButtons;
 
 type

@@ -69,6 +69,9 @@ type
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -128,6 +131,9 @@ type
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -229,58 +235,6 @@ function TJvExCustomDBGrid.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-
-procedure TJvExCustomDBGrid.MouseEnter(Control: TControl);
-begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
-  inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
-end;
-
-procedure TJvExCustomDBGrid.MouseLeave(Control: TControl);
-begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
-  inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
-end;
-
-procedure TJvExCustomDBGrid.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-function TJvExCustomDBGrid.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-var
-  Mesg: TMessage;
-begin
-  Mesg.Result := 0;
-  if Self <> nil then
-  begin
-    Mesg.Msg := Msg;
-    Mesg.WParam := WParam;
-    Mesg.LParam := LParam;
-    WindowProc(Mesg);
-  end;
-  Result := Mesg.Result;
-end;
-
-procedure TJvExCustomDBGrid.WndProc(var Msg: TMessage);
-begin
-  Dispatch(Msg);
-end;
-
-function TJvExCustomDBGrid.IsRightToLeft: Boolean;
-begin
-  Result := False;
-end;
 function TJvExCustomDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -293,68 +247,20 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
-procedure TJvExCustomDBGrid.MouseEnter(Control: TControl);
+
+procedure TJvExCustomDBGrid.RecreateWnd;
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
-  inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
+  RecreateWidget;
 end;
 
-procedure TJvExCustomDBGrid.MouseLeave(Control: TControl);
+procedure TJvExCustomDBGrid.CreateWidget;
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
-  inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
+  CreateWnd;
 end;
 
-procedure TJvExCustomDBGrid.ParentColorChanged;
+procedure TJvExCustomDBGrid.CreateWnd;
 begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-function TJvExCustomDBGrid.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-var
-  Mesg: TMessage;
-begin
-  Mesg.Result := 0;
-  if Self <> nil then
-  begin
-    Mesg.Msg := Msg;
-    Mesg.WParam := WParam;
-    Mesg.LParam := LParam;
-    WindowProc(Mesg);
-  end;
-  Result := Mesg.Result;
-end;
-
-procedure TJvExCustomDBGrid.WndProc(var Msg: TMessage);
-begin
-  Dispatch(Msg);
-end;
-
-function TJvExCustomDBGrid.IsRightToLeft: Boolean;
-begin
-  Result := False;
-end;
-function TJvExCustomDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
-begin
-  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
-    inherited NeedKey(Key, Shift, KeyText));
-end;
-
-procedure TJvExCustomDBGrid.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  DoBoundsChanged;
+  inherited CreateWidget;
 end;
 procedure TJvExCustomDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -378,7 +284,10 @@ begin
     if Value then
       QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
     else
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+      if assigned(Bitmap) and not Bitmap.Empty then
+        QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_FixedPixmap)
+      else
+        QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
     FDoubleBuffered := Value;
     if not (csCreating in ControlState) then
       Invalidate;
@@ -486,57 +395,6 @@ function TJvExDBGrid.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-procedure TJvExDBGrid.MouseEnter(Control: TControl);
-begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
-  inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
-end;
-
-procedure TJvExDBGrid.MouseLeave(Control: TControl);
-begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
-  inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
-end;
-
-procedure TJvExDBGrid.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-function TJvExDBGrid.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-var
-  Mesg: TMessage;
-begin
-  Mesg.Result := 0;
-  if Self <> nil then
-  begin
-    Mesg.Msg := Msg;
-    Mesg.WParam := WParam;
-    Mesg.LParam := LParam;
-    WindowProc(Mesg);
-  end;
-  Result := Mesg.Result;
-end;
-
-procedure TJvExDBGrid.WndProc(var Msg: TMessage);
-begin
-  Dispatch(Msg);
-end;
-
-function TJvExDBGrid.IsRightToLeft: Boolean;
-begin
-  Result := False;
-end;
 function TJvExDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -549,68 +407,20 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
-procedure TJvExDBGrid.MouseEnter(Control: TControl);
+
+procedure TJvExDBGrid.RecreateWnd;
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
-  inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
+  RecreateWidget;
 end;
 
-procedure TJvExDBGrid.MouseLeave(Control: TControl);
+procedure TJvExDBGrid.CreateWidget;
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
-  inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
+  CreateWnd;
 end;
 
-procedure TJvExDBGrid.ParentColorChanged;
+procedure TJvExDBGrid.CreateWnd;
 begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-function TJvExDBGrid.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-var
-  Mesg: TMessage;
-begin
-  Mesg.Result := 0;
-  if Self <> nil then
-  begin
-    Mesg.Msg := Msg;
-    Mesg.WParam := WParam;
-    Mesg.LParam := LParam;
-    WindowProc(Mesg);
-  end;
-  Result := Mesg.Result;
-end;
-
-procedure TJvExDBGrid.WndProc(var Msg: TMessage);
-begin
-  Dispatch(Msg);
-end;
-
-function TJvExDBGrid.IsRightToLeft: Boolean;
-begin
-  Result := False;
-end;
-function TJvExDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
-begin
-  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
-    inherited NeedKey(Key, Shift, KeyText));
-end;
-
-procedure TJvExDBGrid.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  DoBoundsChanged;
+  inherited CreateWidget;
 end;
 procedure TJvExDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -634,7 +444,10 @@ begin
     if Value then
       QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
     else
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+      if assigned(Bitmap) and not Bitmap.Empty then
+        QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_FixedPixmap)
+      else
+        QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
     FDoubleBuffered := Value;
     if not (csCreating in ControlState) then
       Invalidate;

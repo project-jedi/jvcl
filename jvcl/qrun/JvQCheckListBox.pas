@@ -40,7 +40,7 @@ unit JvQCheckListBox;
 interface
 
 uses
-  QWindows, QMessages, SysUtils, Classes, QControls,
+  Types, QWindows, QMessages, SysUtils, Classes, QControls,
   JvQExCheckLst;
 
 type

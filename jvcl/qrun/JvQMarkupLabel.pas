@@ -39,6 +39,7 @@ interface
 uses  
   Types, QGraphics, QControls, QWindows, 
   SysUtils, Classes,
+  QTypes,
   JvQComponent, JvQMarkupCommon;
 
 type
@@ -46,17 +47,15 @@ type
   private
     FElementStack: TJvHTMLElementStack;
     FTagStack: TJvHTMLElementStack;
-    FText: string;
     FMarginLeft: Integer;
     FMarginRight: Integer;
     FMarginTop: Integer;
-    FAlignment: TAlignment;
+    FAlignment: TAlignment; 
     procedure Refresh;
-    procedure ParseHTML(s: string);
+    procedure ParseHTML(S: string);
     procedure RenderHTML;
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
-    procedure SetText(const Value: string);  reintroduce; 
     procedure SetMarginLeft(const Value: Integer);
     procedure SetMarginRight(const Value: Integer);
     procedure SetMarginTop(const Value: Integer);
@@ -65,6 +64,7 @@ type
   protected
     procedure FontChanged; override; 
     procedure DefineProperties(Filer: TFiler); override;
+    procedure SetText(const Value: TCaption); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -75,16 +75,15 @@ type
     property MarginLeft: Integer read FMarginLeft write SetMarginLeft default 5;
     property MarginRight: Integer read FMarginRight write SetMarginRight default 5;
     property MarginTop: Integer read FMarginTop write SetMarginTop default 5;
-    property Text: string read FText write SetText;
-    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify; 
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;  
+    property Text: TCaption read GetText write SetText; 
     property Align;
     property Font;
-
     property Anchors;
     property Enabled;
     property Color default clBtnFace;   // Duplicates BackColor
     property Constraints;
-    property ParentColor default true;
+    property ParentColor default True;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -121,7 +120,7 @@ begin
   FMarginRight := 5;
   FMarginTop := 5;
   Color := clBtnFace;
-  ParentColor := true;
+  ParentColor := True;
 end;
 
 destructor TJvMarkupLabel.Destroy;
@@ -178,7 +177,7 @@ end;
 
 procedure TJvMarkupLabel.Refresh;
 begin
-  ParseHTML(FText);
+  ParseHTML(Text);
   HTMLElementDimensions;
   Invalidate;
 end;
@@ -210,11 +209,12 @@ var
   var
     VV: string;
   begin
-    Result := false;
-    if Length(V) < 2 then Exit;
+    Result := False;
+    if Length(V) < 2 then
+      Exit;
     if not (V[1] in ['#','$']) then
     begin
-      // allow the use of both "clBlack" and "Black" 
+      // allow the use of both "clBlack" and "Black"
       if Pos('cl',AnsiLowerCase(V)) = 1 then
         VV := V
       else
@@ -460,7 +460,7 @@ begin
   Y := MarginTop;
   iSol := 0;
   PendingBreak := False;
-  PendingCount := -1; 
+  PendingCount := -1;
   repeat
     I := iSol;
     ATotalWidth := AClientWidth;
@@ -472,10 +472,10 @@ begin
       El := TJvHTMLElement(FElementStack.Items[I]);
       if El.BreakLine then
       begin
-        if not PendingBreak and (PendingCount <> i) then
+        if not PendingBreak and (PendingCount <> I) then
         begin
           PendingBreak := True;
-          PendingCount := i;
+          PendingCount := I;
           iEol := I;
           Break;
         end
@@ -494,7 +494,7 @@ begin
         repeat
           El.Breakup(Canvas, ATotalWidth);
           Inc(ATotalWidth, 5);
-        until lSolText <> El.Soltext;
+        until lSolText <> El.SolText;
       end;
       if El.SolText <> '' then
       begin
@@ -575,16 +575,16 @@ begin
   Invalidate;
 end;
 
-procedure TJvMarkupLabel.SetText(const Value: string);
+procedure TJvMarkupLabel.SetText(const Value: TCaption);
 var
-  S: string;
+  S: TCaption;
 begin
-  if Value = FText then
+  if Value = GetText then
     Exit;
   S := Value;
   S := StringReplace(S, SLineBreak, ' ', [rfReplaceAll]);
   S := TrimRight(S);
-  FText := S;
+  inherited SetText(S);
   Refresh;
 end;
 

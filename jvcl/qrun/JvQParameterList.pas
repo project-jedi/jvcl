@@ -352,7 +352,7 @@ type
     { validates the data of all parameters without filling the data into
      the parameters }
     function ValidateDataAtWinControls: Boolean;
-    {deletes alll Parameters from the Parameterlist}
+    {deletes all Parameters from the ParameterList}
     procedure Clear;
     { count of parameters }
     property Count: Integer read GetCount;
@@ -757,7 +757,7 @@ begin
   else
   begin
     S := AsVariant;
-    Result := UpperCase(s) = cTrue;
+    Result := UpperCase(S) = cTrue;
   end;
 end;
 
@@ -819,7 +819,7 @@ end;
 
 procedure TJvBaseParameter.SetSearchName (Value : string);
 begin
-  fSearchName := Trim(Value);
+  FSearchName := Trim(Value);
 end;
 
 function TJvBaseParameter.GetDynControlEngine: TJvDynControlEngine;
@@ -986,7 +986,7 @@ begin
   inherited Create(AOwner);
   FMessages := TJvParameterListMessages.Create;
   FParameterListPropertyStore := TJvParameterListPropertyStore.Create(nil);
-  FParameterListPropertyStore.Parameterlist := Self;
+  FParameterListPropertyStore.ParameterList := Self;
   FIntParameterList := TStringList.Create;
   FDynControlEngine := DefaultDynControlEngine;
   FArrangeSettings := TJvArrangeSettings.Create(nil);
@@ -1005,7 +1005,7 @@ begin
   ArrangePanel := nil;
   FMaxWidth := 600;
   FMaxHeight := 400;
-  fOkbuttonVisible := True;
+  FOkButtonVisible := True;
   FCancelButtonVisible := True;
   FHistoryEnabled := False;
   FLastHistoryName := '';
@@ -1681,7 +1681,7 @@ function TJvParameterList.AddObject(const S: string; AObject: TObject): Integer;
 begin
   if not (AObject is TJvBaseParameter) then
     raise EJVCLException.CreateRes(@RsEAddObjectWrongObjectType);
-  if TJvBaseParameter(AOBject).SearchName = '' then
+  if TJvBaseParameter(AObject).SearchName = '' then
     raise EJVCLException.CreateRes(@RsEAddObjectSearchNameNotDefined);
   if IntParameterList.IndexOf(S) >= 0 then
     raise Exception.CreateResFmt(@RsEAddObjectDuplicateSearchNamesNotAllowed, [S]);
@@ -1733,7 +1733,7 @@ begin
   else
   if Assigned(ArrangePanel) then
   begin
-    if ArrangePanel.Align in [alleft, alRight, alClient] then
+    if ArrangePanel.Align in [alLeft, alRight, alClient] then
       Result := ArrangePanel.ArrangeHeight
     else
       Result := ArrangePanel.Height;
