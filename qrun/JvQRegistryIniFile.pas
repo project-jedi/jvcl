@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvRegIni.PAS, released on 2004-03-16.
+The Original Code is: JvQRegstryIniFile.PAS, released on 2004-05-27.
 
 The Initial Developer of the Original Code is: André Snepvangers [asn att xs4all dott nl]
 Copyright (c) 2004 André Snepvangers
@@ -20,9 +20,11 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-  Under construction.
+  Todo integrate with KDE/Gnome = *.desktop 
 -----------------------------------------------------------------------------}
 // $Id$
+
+{$I linuxonly.inc}
 
 unit JvQRegistryIniFile;
 
@@ -30,7 +32,6 @@ interface
 
 uses
   Classes, SysUtils, IniFiles;
-
 
 //
 // returns user homedir (string!)
@@ -99,7 +100,7 @@ type
     property RootKey: string read FHKEY write SetRoot;
   end;
 
-  TRegIniFile = TJvRegistryIniFile;
+  TRegistry = TJvRegistryIniFile;  // !!
 
 implementation
 
@@ -162,36 +163,50 @@ var
   i : integer;
 begin
   // TODO allowcreate
+  Result := false;
   strlist := TStringList.Create;
-  strlist.Delimiter := '/';
-  strlist.DelimitedText := Key;
-  Ininame := FHKEY;
-  i := 0;
-  while (i < strlist.Count) and FileExists(IniName + PathDelim + strlist[i]) do
-  begin
-    IniName := IniName + PathDelim + strlist[i];
-    inc(i);
-  end;
-  if i < strList.Count then
-  begin
-    Section := strList[i];
-    inc(i);
-    while i < strlist.count do
+  try
+    strlist.Delimiter := PathDelim;
+    strlist.DelimitedText := Key;
+    Ininame := FHKEY;
+    i := 0;
+    while (i < strlist.Count) and
+      ( FileExists(IniName + PathDelim + strlist[i]) or
+      ( (strlist[i][1] = '.') and AllowCreate))
+    do
     begin
-      Section := Section + PathDelim + strlist[i];
+      IniName := IniName + PathDelim + strlist[i];
       inc(i);
+    end;
+    if not FileExists(IniName)  then
+    begin
+      if Not AllowCreate then
+        Exit
+      else
+        ForceDirectories(ExtractFileDir(IniName));
+    end;
+    if i < strList.Count then
+    begin
+      Section := strList[i];
+      inc(i);
+      while i < strlist.count do
+      begin
+        Section := Section + PathDelim + strlist[i];
+        inc(i);
+      end;
     end
-  end
-  else
-    Section := '' ;
-  strlist.free;
-  Result := (FileExists(IniName) or AllowCreate) and not DirectoryExists(IniName);
+    else
+      Section := '' ;
+  finally
+    strlist.free;
+  end;
+  Result := FileExists(IniName) or AllowCreate;
 end;
 
 function TJvRegistryIniFile.OpenKey(const Key: string; AllowCreate: boolean): boolean;
 begin
   Result := Key2IniSection(Key, FIniName, FSection, AllowCreate);
-  if Result = false then exit;
+  if Result then
   try
     FIniFile := TIniFile.Create(FIniName);
     Result := FIniFile.SectionExists(FSection) or AllowCreate;
