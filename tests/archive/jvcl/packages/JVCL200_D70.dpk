@@ -23,6 +23,7 @@ Known Issues:
 package JVCL200_D70;
 
 {$R *.res}
+{$R '..\Resources\JvCsvDataDsgn.dcr'}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -139,6 +140,8 @@ contains
   JvScrollMaxEditor in '..\Source\JvSCrollMaxEditor.pas',
   JvHLEditEditor in '..\Source\JvHLEditEditor.pas',
   JvBDEEditors in '..\Source\JvBDEEditors.pas',
-  JvDBEditors in '..\Source\JvDBEditors.pas';
+  JvDBEditors in '..\Source\JvDBEditors.pas',
+  JvCsvDataDefStrDsgn in '..\source\JvCsvDataDefStrDsgn.pas' {JvCsvDefStrDialog},
+  JvCsvDataDsgn in '..\source\JvCsvDataDsgn.pas';
 
 end.

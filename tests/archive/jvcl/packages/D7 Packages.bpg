@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = DJCL70.bpl JVCL200_R70.bpl JVCL200_D70.bpl
+PROJECTS = JVCL200_R70.bpl JVCL200_D70.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -19,9 +19,6 @@ JVCL200_D70.bpl: JVCL200_D70.dpk
   $(DCC)
 
 JVCL200_R70.bpl: JVCL200_R70.dpk
-  $(DCC)
-
-DJCL70.bpl: ..\..\JCL\packages\DJCL70.dpk
   $(DCC)
 
 

@@ -444,6 +444,8 @@ contains
   JvProgressDialog in '..\source\JvProgressDialog.pas',
   JvProgressFrm in '..\source\JvProgressFrm.pas' { frmProgress },
   ObjSel in '..\common\ObjSel.pas',
-  JvValidateEdit in '..\Source\JvValidateEdit.pas';
+  JvValidateEdit in '..\Source\JvValidateEdit.pas',
+  JvCsvData in '..\source\JvCsvData.pas',
+  JvCsvParse in '..\source\JvCsvParse.pas';
 
 end.
