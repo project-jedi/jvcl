@@ -27,8 +27,8 @@ object Mainform: TMainform
   TextHeight = 13
   object JvNetscapeSplitter1: TJvNetscapeSplitter
     Left = 225
-    Top = 176
-    Height = 575
+    Top = 166
+    Height = 585
     Hint = 'click me to have more '#13#10'space for the current demo'
     Align = alLeft
     MinSize = 10
@@ -55,7 +55,7 @@ object Mainform: TMainform
     Left = 0
     Top = 0
     Width = 900
-    Height = 43
+    Height = 33
     Align = alTop
     BevelOuter = bvNone
     Color = clWhite
@@ -64,9 +64,9 @@ object Mainform: TMainform
       Left = 0
       Top = 0
       Width = 900
-      Height = 43
+      Height = 33
       Style = grVertical
-      StartColor = 16048865
+      StartColor = 14471352
       EndColor = 11572372
     end
     object JvNavPanelButton2: TJvNavPanelButton
@@ -74,7 +74,7 @@ object Mainform: TMainform
       Left = 2
       Top = 0
       Width = 112
-      Height = 40
+      Height = 30
       Caption = 'Info'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -95,10 +95,10 @@ object Mainform: TMainform
     end
     object JvNavPanelButton3: TJvNavPanelButton
       Tag = 8
-      Left = 88
+      Left = 116
       Top = 0
       Width = 112
-      Height = 40
+      Height = 30
       Hint = 'shows a special Seach form'#13#10'where one can search for'#13#10'Demos'
       Caption = 'Search'
       Font.Charset = DEFAULT_CHARSET
@@ -120,11 +120,11 @@ object Mainform: TMainform
     end
     object JvNavPanelBtnIdePageCtrl: TJvNavPanelButton
       Tag = 8
-      Left = 200
+      Left = 232
       Top = 0
-      Width = 112
-      Height = 40
-      Caption = 'IDE View'
+      Width = 155
+      Height = 30
+      Caption = 'Component Palette'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -143,10 +143,10 @@ object Mainform: TMainform
       OnClick = JvNavPanelBtnIdePageCtrlClick
     end
     object JvNavPanelBtnLoadFormInIDE: TJvNavPanelButton
-      Left = 312
+      Left = 390
       Top = 0
       Width = 112
-      Height = 40
+      Height = 30
       Hint = 
         'Loads the MainForm of the'#13#10'current Demo in the Delphi IDE.'#13#10'This' +
         ' feature uses JclDebug from the'#13#10'JEDI Code Library. To get it wo' +
@@ -170,10 +170,10 @@ object Mainform: TMainform
       OnClick = btnLoadIdeClick
     end
     object JvNavPanelBtnJumpHelp: TJvNavPanelButton
-      Left = 424
+      Left = 508
       Top = 0
       Width = 112
-      Height = 40
+      Height = 30
       Hint = 'Jump to the Help Topic of the'#13#10'currently seen JVCL Component'
       Caption = 'Jump to Help'
       Font.Charset = DEFAULT_CHARSET
@@ -194,10 +194,10 @@ object Mainform: TMainform
       OnClick = JvNavPanelBtnJumpHelpClick
     end
     object JvNavPanelBtnExit: TJvNavPanelButton
-      Left = 536
+      Left = 624
       Top = 0
-      Width = 112
-      Height = 40
+      Width = 101
+      Height = 30
       Hint = 'Leave the Demo. Don'#180't know '#13#10'why you want this, but anyway'
       Caption = 'Exit'
       Font.Charset = DEFAULT_CHARSET
@@ -216,30 +216,6 @@ object Mainform: TMainform
       ImageIndex = 1
       Images = LargeImages
       OnClick = JvNavPanelBtnExitClick
-    end
-    object JvNavPanelButton1: TJvNavPanelButton
-      Left = 648
-      Top = 0
-      Width = 139
-      Height = 40
-      Hint = 'Leave the Demo. Don'#180't know '#13#10'why you want this, but anyway'
-      Caption = 'Exception Demo'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'Tahoma'
-      HotTrackFont.Style = [fsBold]
-      ParentFont = False
-      StyleManager = JvNavPaneStyleMan
-      ParentStyleManager = False
-      ImageIndex = 21
-      Images = LargeImages
-      OnClick = JvNavPanelButton1Click
     end
   end
   object aJvImgBtn: TJvImgBtn
@@ -262,9 +238,9 @@ object Mainform: TMainform
   end
   object sbxWinXPBar: TScrollBox
     Left = 0
-    Top = 176
+    Top = 166
     Width = 225
-    Height = 575
+    Height = 585
     HorzScrollBar.Smooth = True
     HorzScrollBar.Style = ssFlat
     HorzScrollBar.Tracking = True
@@ -287,7 +263,7 @@ object Mainform: TMainform
       Left = 0
       Top = 145
       Width = 225
-      Height = 430
+      Height = 440
       AutoSize = True
       BorderWidth = 4
       Caption = 'JvXPContainer1'
@@ -563,7 +539,7 @@ object Mainform: TMainform
             Width = 186
             Height = 16
             Cursor = crHandPoint
-            Hint = 'JvMegaDemoAllDemoForms.ini '
+            Hint = 'JvMegaDemoCompsTabs.ini'
             Caption = 'Open JvMegaDemoCompsTabs.ini'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clNavy
@@ -763,14 +739,14 @@ object Mainform: TMainform
           Left = 4
           Top = 36
           Width = 209
-          Height = 45
+          Height = 5
           Align = alClient
           BevelOuter = bvNone
           Color = clInfoBk
           TabOrder = 0
           DesignSize = (
             209
-            45)
+            5)
           object JvLabel2: TJvLabel
             Left = 8
             Top = 8
@@ -788,7 +764,7 @@ object Mainform: TMainform
             Left = 7
             Top = 48
             Width = 188
-            Height = 16
+            Height = 0
             Anchors = [akLeft, akTop, akRight, akBottom]
             Color = clInfoBk
             ItemHeight = 13
@@ -826,10 +802,10 @@ object Mainform: TMainform
   end
   object JvXPBarIDE: TJvXPBar
     Left = 0
-    Top = 43
+    Top = 33
     Width = 900
     Height = 133
-    Caption = 'IDE View'
+    Caption = 'Component Palette'
     Colors.BorderColor = 9845
     Colors.BodyColor = clWindow
     Colors.GradientFrom = 11572372
@@ -1059,7 +1035,7 @@ object Mainform: TMainform
     Left = 828
     Top = 312
     Bitmap = {
-      494C010117001800040018001400FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010117001800040018001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       00000000000036000000280000006000000078000000010020000000000000B4
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -2548,7 +2524,8 @@ object Mainform: TMainform
       01000000C00003F0000F800001000000C00007F0001F800001000000C00007F8
       001F800001000000E0000FF8003F800001000000F0001FFC007F800083000000
       F8007FFE00FFC03FFF000000FE00FFFF83FFFFFFFF000000FF01FFFFFFFFFFFF
-      FF000800FFC3FFFFFFFFFFFFFF000080}
+      FF000800FFC3FFFFFFFFFFFFFF00008000000000000000000000000000000000
+      000000000000}
   end
   object JvLookupAutoCompl: TJvLookupAutoComplete
     Edit = JvEdtCompSearch
@@ -2569,7 +2546,7 @@ object Mainform: TMainform
     Left = 830
     Top = 350
     Bitmap = {
-      494C010127002C00040010001000FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010127002C00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000040000000B0000000010020000000000000B0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -4025,6 +4002,7 @@ object Mainform: TMainform
       0000001FF003F6CF0000000FE003F6B700000007E003F6B700000003E003F8B7
       00000001E003FE8F000000002003FE3F0000001FE002FF7F0000001FE003FE3F
       0000001FE003FEBF00008FF1E003FC9F0000FFF9E003FDDF0000FF75FFFFFDDF
-      C003FF8FBF7DFDDFFF7FFFFF7F7EFFFF}
+      C003FF8FBF7DFDDFFF7FFFFF7F7EFFFF00000000000000000000000000000000
+      000000000000}
   end
 end

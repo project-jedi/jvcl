@@ -82,7 +82,6 @@ type
     JvLabel4: TJvLabel;
     JvLabel5: TJvLabel;
     StatusBar: TJvStatusBar;
-    JvNavPanelButton1: TJvNavPanelButton;
     JvNetscapeSplitter1: TJvNetscapeSplitter;
     JvGradient1: TJvGradient;
     SmallImages: TImageList;
@@ -696,7 +695,7 @@ begin
   // check if aFileName is a real filename
   if (pos('http', aFileName) = 0) and (pos('mailto', aFileName) = 0) then
   begin
-    aFileName := ExtractFileDir(Application.ExeName) + '\' + aFileName;
+    aFileName := ExtractFileDir(Application.ExeName) + '\Data\' + aFileName;
     if not FileExists(aFilename) then
     begin
       MessageDlg('File ''' + aFilename + ''' could not be found!', mtError, [mbOK], 0);
