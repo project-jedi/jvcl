@@ -106,6 +106,24 @@ type
 {$ENDIF}
   );
 
+
+const
+  CharacterSetStr : array[TCharacterSet] of string = (
+    'NONE', 'ASCII', 'BIG_5', 'CYRL', 'DOS437', 'DOS850', 'DOS852', 'DOS857',
+    'DOS860', 'DOS861', 'DOS863', 'DOS865', 'EUCJ_0208', 'GB_2312', 'ISO8859_1',
+    'ISO8859_2', 'KSC_5601', 'NEXT', 'OCTETS', 'SJIS_0208', 'UNICODE_FSS',
+    'WIN1250', 'WIN1251', 'WIN1252', 'WIN1253', 'WIN1254'
+{$IFDEF FB15_UP}
+    ,'DOS737', 'DOS775', 'DOS858', 'DOS862', 'DOS864', 'DOS866', 'DOS869',
+    'WIN1255', 'WIN1256', 'WIN1257', 'ISO8859_3', 'ISO8859_4', 'ISO8859_5',
+    'ISO8859_6', 'ISO8859_7', 'ISO8859_8', 'ISO8859_9', 'ISO8859_13'
+{$ENDIF}
+{$IFDEF IB71_UP}
+    ,'ISO8859_15', 'KOI8R'
+{$ENDIF}
+    );
+
+  function StrToCharacterSet(const CharacterSet: string): TCharacterSet;
   function CreateDBParams(Params: String; Delimiter: Char = ';'): string;
 
 //******************************************************************************
@@ -340,6 +358,7 @@ type
     procedure AllocateDataBuffer;
     function GetBlobIndex(const Index: Word): Word;
     function GetEof: boolean;
+    function GetUniqueRelationName: string;
   protected
     function GetAsString(const Index: Word): String; override;
     function GetAsWideString(const Index: Word): WideString; override;
@@ -371,6 +390,7 @@ type
     property RecordCount: Integer read GetRecordCount;
     property CurrentRecord: Integer read GetCurrentRecord write GetRecord;
     property BufferChunks: Cardinal read FBufferChunks;
+    property UniqueRelationName: string read GetUniqueRelationName;
 
     property SqlName[const Index: Word]: string read GetSqlName;
     property RelName[const Index: Word]: string read GetRelName;
@@ -678,7 +698,7 @@ type
 //  {$ENDIF}
 
 
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
 function TryStrToInt(const S: string; out Value: Integer): Boolean;
 {$ENDIF}
 
@@ -697,7 +717,7 @@ end;
 // Errors handling
 //******************************************************************************
 
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
 
 function TryStrToInt(const S: string; out Value: Integer): Boolean;
 var
@@ -809,7 +829,7 @@ type
   end;
 
 var
-  
+
   DPBInfos : array[1..isc_dpb_Max_Value] of TDPBInfo =
    ((Name: 'cdd_pathname';           ParamType: prIgno), // not implemented
     (Name: 'allocation';             ParamType: prIgno), // not implemented
@@ -890,7 +910,7 @@ var
 {$ENDIF}
 
 {$IFDEF YF867_UP}
-   ,(Name: 'numeric_scale_reduction';ParamType: prNone) 
+   ,(Name: 'numeric_scale_reduction';ParamType: prNone)
 {$ENDIF}
 
 {$IFDEF IB7_UP}
@@ -1049,6 +1069,18 @@ var
       UnLock;
     end;
   end;
+
+  function StrToCharacterSet(const CharacterSet: string): TCharacterSet;
+  var
+    len: Integer;
+  begin
+    len := length(CharacterSet);
+    for Result := low(TCharacterSet) to High(TCharacterSet) do
+      if (len = Length(CharacterSetStr[Result])) and
+        (CompareText(CharacterSetStr[Result], CharacterSet) = 0) then
+          Exit;
+    raise EUIBError.CreateFmt('CharacterSet %s not Found', [CharacterSet]);
+  end;  
 
 //******************************************************************************
 // Transaction
@@ -3221,6 +3253,20 @@ begin
     TestSize := (RealItemSize * FItemsInPage) + PageSizeAdjustment;
   end;
   FPageSize := TestSize;
+end;
+
+function TSQLResult.GetUniqueRelationName: string;
+var
+  i: integer;
+begin
+  result := '';
+  if FXSQLDA.sqln > 1 then
+    for i := 0 to FXSQLDA.sqln - 2 do
+      if not ((FXSQLDA.sqlvar[i].RelNameLength = FXSQLDA.sqlvar[i+1].RelNameLength) and
+        (CompareText(FXSQLDA.sqlvar[i].RelName, FXSQLDA.sqlvar[i+1].RelName) = 0)) then
+          exit;
+  if FXSQLDA.sqln > 0 then
+    SetString(Result, FXSQLDA.sqlvar[0].RelName, FXSQLDA.sqlvar[0].RelNameLength);
 end;
 
 function TSQLParams.GetFieldName(const Index: Word): string;

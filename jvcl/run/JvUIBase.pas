@@ -49,7 +49,7 @@ SysUtils, SyncObjs;
 
 (* Basic data types *)
 type
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
 {$IFNDEF FPC}
   PPointer = ^Pointer;
   PPChar   = ^PChar;
