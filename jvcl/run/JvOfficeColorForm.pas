@@ -8,20 +8,19 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvColorForm.PAS, released on 2002-05-26.
+The Original Code is: JvOfficeColorForm.PAS, released on 2004-02-26.
 
-The Initial Developer of the Original Code is Peter Th鰎nqvist [peter3 at sourceforge dot net]
-Portions created by Peter Th鰎nqvist are Copyright (C) 2002 Peter Th鰎nqvist.
+The Initial Developer of the Original Code is dejoy [dejoy att ynl dott gov dott cn]
+Portions created by Peter Th鰎nqvist are Copyright (C) 2004 Peter Th鰎nqvist.
 All Rights Reserved.
 
 Contributor(s):
-dejoy(dejoy att ynl dott gov dott cn)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Description:
-  Color form for the @link(TJvColorButton) component
+  Color form for the @link(TJvOfficeColorButton) component
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -106,10 +105,10 @@ type
     procedure SetShowDragBar(const Value: Boolean);
     procedure SetDragBarHint(const Value: string);
   protected
-    DropDownMoved: Boolean; //移动过
-    DropDownMoving: Boolean; //正在移动
-    MoveEnd: Boolean; //移动完毕
-    MoveStart: Boolean; //开始移动
+    DropDownMoved: Boolean;
+    DropDownMoving: Boolean;
+    MoveEnd: Boolean;
+    MoveStart: Boolean;
     procedure Resize; override;
     procedure VisibleChanged; override;
     procedure AdjustColorForm;
