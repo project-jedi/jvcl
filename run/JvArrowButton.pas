@@ -37,12 +37,7 @@ interface
 
 uses
   SysUtils, Classes, Menus,
-  {$IFDEF VCL}
   Windows, Messages, Controls, Forms, Graphics, Buttons, CommCtrl,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QControls, QForms, QGraphics, QButtons, QImgList,
-  {$ENDIF VisualCLX}
   JvClxUtils, JvComponent;
 
 type
@@ -86,8 +81,6 @@ type
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   protected
     FState: TButtonState;
     function GetPalette: HPALETTE; override;
@@ -97,6 +90,8 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure Paint; override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1222,12 +1217,9 @@ begin
   end;
 end;
 
-procedure TJvArrowButton.CMMouseEnter(var Msg: TMessage);
+procedure TJvArrowButton.MouseEnter(Control: TControl);
 begin
   inherited;
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
   if FFlat and not FMouseInControl and Enabled then
   begin
     FMouseInControl := True;
@@ -1239,7 +1231,7 @@ begin
   {$ENDIF JVCLThemesEnabled}
 end;
 
-procedure TJvArrowButton.CMMouseLeave(var Msg: TMessage);
+procedure TJvArrowButton.MouseLeave(Control: TControl);
 begin
   inherited;
   if FFlat and FMouseInControl and Enabled then

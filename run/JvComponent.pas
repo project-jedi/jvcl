@@ -278,13 +278,15 @@ end;
 procedure TJvCustomControl.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
-  MouseEnter(Self);
+  if not (csDesigning in ComponentState) then
+    MouseEnter(Self);
 end;
 
 procedure TJvCustomControl.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
-  MouseLeave(Self);
+  if not (csDesigning in ComponentState) then
+    MouseLeave(Self);
 end;
 
 procedure TJvCustomControl.MouseEnter(Control: TControl);

@@ -307,8 +307,8 @@ type
     procedure SetBehavior(const Value: TJvLabelBehaviorName);
     procedure SetOptions(const Value: TJvLabelBehavior);
     {$IFDEF VCL}
-    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     {$ENDIF}
@@ -581,7 +581,7 @@ end;
 procedure TJvCustomBehaviorLabel.MouseEnter(AControl: TControl);
 {$ENDIF}
 {$IFDEF VCL}
-procedure TJvCustomBehaviorLabel.MouseEnter(var Msg: TMessage);
+procedure TJvCustomBehaviorLabel.CMMouseEnter(var Msg: TMessage);
 {$ENDIF}
 begin
   inherited;
@@ -593,7 +593,7 @@ end;
 procedure TJvCustomBehaviorLabel.MouseLeave(AControl: TControl);
 {$ENDIF}
 {$IFDEF VCL}
-procedure TJvCustomBehaviorLabel.MouseLeave(var Msg: TMessage);
+procedure TJvCustomBehaviorLabel.CMMouseLeave(var Msg: TMessage);
 {$ENDIF}
 begin
   inherited;
