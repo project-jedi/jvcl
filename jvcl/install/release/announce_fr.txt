@@ -1,25 +1,26 @@
 To:
-nzn.fr.delphi
+news://news.vienneinfo.org/nzn.fr.delphi
+news://news.delphinautes.be/delphi
 Developpez.com (delphi@redaction-developpez.com)
 
 
 Sujet: 
-ANN: JVCL 3 BETA est disponible
+ANN: JVCL 3 BETA 2 est disponible
 Corps:
-L'équipe JVCL est fière d'annoncer la sortie d'une version beta de la biliothèque de composants JVCL version 3.
+L'équipe JVCL est fière d'annoncer la sortie d'une deuxième version beta de la biliothèque de composants JVCL version 3.
 
-La JVCL est une bibliothèque comprenant environ 500 composants visuels et non-visuels pour Delphi 5, 6, 7; C++Builder 5, 6 et (bientôt) Kylix 3. JVCL est distribué sous license Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html), est entièrement gratuite pour toute utilisation (open source, shareware ou commerciale) et inclus le code source de tous les composants.
+La JVCL est une bibliothèque comprenant environ 500 composants visuels et non-visuels pour Delphi 5, 6, 7; C++Builder 5, 6 et Kylix 3. La JVCL est distribué sous license Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html), est entièrement gratuite pour toute utilisation (open source, shareware ou commerciale) et inclus le code source de tous les composants.
 
 Cette version contient des modifications, additions et corrections de bugs trop nombreuses pour être toutes listées ici, mais voici les plus importantes:
 
 - Support de Delphi 5,6 et 7
 - Support de C++ Builder 5 et 6
-- Support partiel de Kylix 3
+- Support de Kylix 3
 - La structure monolithique de la JVCL 2.10 a été remplacée par une série de paquets plus petits et spécialisés. 
 - Les fichiers ont été renommés et réarrangés suivant une convention et une structure de répertoire plus logiques, rendant plus simple la recherche d'information.
 - De nombreux composants ont été fusionnés. En conséquence il n'y a presque plus de doublons dans la JVCL.
 - L'installation complète contient un outil pour convertir la plupart de votre source de la JVCL 2.10 vers la JVCL 3, rendant la migration plus simple.
-- De nombreux nouveaux components et bibliothèques ont été ajoutés, parmi lesquels UIB, Globus, KWizard, DockPresident, Managed Threads, UIL Time Framework, dxPack II, Jans Components, Print Preview (aperçu avant impression), un contrôle LED, un Treeview checkbox/radiobutton et une base de données XML.
+- De nombreux nouveaux components et bibliothèques ont été ajoutés, parmi lesquels UIB, Globus, KWizard, DockPresident, Managed Threads, UIL Time Framework, dxPack II, Jans Components, Composants Ultim DB, Print Preview (aperçu avant impression), un contrôle LED, un Treeview checkbox/radiobutton et une base de données XML.
 - Un générateur de paquets génère les paquets pour tous les environnements supportés à partir de fichiers XML.
 - Un nouvel installeur qui comprend et détecte automatiquement les dépendances, installant ce dont vous avez besoin pour chaque environnement supporté.
 - Support amélioré pour les thèmes sous Windows XP.
@@ -38,7 +39,7 @@ Cette sortie est disponible en quatre distributions :
 Nous fournirons dans un proche avenir des téléchargements séparés pour les paquets qui peuvent être installés par eux-mêmes (JvUIB, JvWizard, JvGlobus, JvManagedThreads, JvDocking, JvXPCtrls et JvDotNetCtrls)
 Pour télécharger la JVCL 3, veuillez vous rendre à http://sourceforge.net/projects/jvcl et cliquez sur le lien "Files" ou directement à cette adresse: http://sourceforge.net/project/showfiles.php?group_id=45786
 
-La version actuelle est JVCL 3.00 BETA 1.
+La version actuelle est JVCL 3.00 BETA 2.
 
 
 
