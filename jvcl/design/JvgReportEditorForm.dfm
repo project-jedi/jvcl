@@ -1,6 +1,6 @@
 object JvgReportEditorForm: TJvgReportEditorForm
-  Left = 232
-  Top = 154
+  Left = 180
+  Top = 125
   Width = 634
   Height = 480
   Caption = 'Globus  Report Editor'
@@ -170,7 +170,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object PC: TJvgPageControl
+  object PC: TPageControl
     Left = 0
     Top = 0
     Width = 626
@@ -188,36 +188,6 @@ object JvgReportEditorForm: TJvgReportEditorForm
     TabOrder = 0
     TabStop = False
     TabWidth = 18
-    TabStyle.Borders = [fsdLeft, fsdTop, fsdRight, fsdBottom]
-    TabStyle.BevelInner = bvRaised
-    TabStyle.BevelOuter = bvNone
-    TabStyle.Bold = False
-    TabStyle.BackgrColor = clBtnShadow
-    TabStyle.Font.Charset = DEFAULT_CHARSET
-    TabStyle.Font.Color = clWindowText
-    TabStyle.Font.Height = -11
-    TabStyle.Font.Name = 'Arial'
-    TabStyle.Font.Style = []
-    TabStyle.CaptionHAlign = fhaCenter
-    TabStyle.GlyphHAlign = fhaCenter
-    TabStyle.Gradient.Active = False
-    TabStyle.Gradient.Orientation = fgdHorizontal
-    TabSelectedStyle.Borders = [fsdLeft, fsdTop, fsdRight, fsdBottom]
-    TabSelectedStyle.BevelInner = bvNone
-    TabSelectedStyle.BevelOuter = bvNone
-    TabSelectedStyle.Bold = False
-    TabSelectedStyle.BackgrColor = clBtnFace
-    TabSelectedStyle.Font.Charset = DEFAULT_CHARSET
-    TabSelectedStyle.Font.Color = clWindowText
-    TabSelectedStyle.Font.Height = -11
-    TabSelectedStyle.Font.Name = 'Arial'
-    TabSelectedStyle.Font.Style = []
-    TabSelectedStyle.CaptionHAlign = fhaCenter
-    TabSelectedStyle.Gradient.Active = False
-    TabSelectedStyle.Gradient.Orientation = fgdHorizontal
-    TabsPosition = fsdRight
-    Options = [ftoAutoFontDirection, ftoExcludeGlyphs]
-    FontDirection = fldUpDown
     object TabSheet1: TTabSheet
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -228,8 +198,8 @@ object JvgReportEditorForm: TJvgReportEditorForm
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 596
-        Height = 50
+        Width = 618
+        Height = 28
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
@@ -242,22 +212,20 @@ object JvgReportEditorForm: TJvgReportEditorForm
           Style = bsRaised
         end
         object P_Sides: TPanel
-          Left = 426
+          Left = 448
           Top = 0
           Width = 170
-          Height = 50
+          Height = 28
           Align = alRight
           BevelOuter = bvNone
           Enabled = False
           TabOrder = 0
-          object glBevel2: TJvgBevel
+          object glBevel2: TBevel
             Left = 0
             Top = 0
             Width = 170
+            Height = 28
             Align = alClient
-            BevelBold = True
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
           object Bevel5: TBevel
             Left = 96
@@ -557,18 +525,16 @@ object JvgReportEditorForm: TJvgReportEditorForm
           Left = 0
           Top = 0
           Width = 154
-          Height = 50
+          Height = 28
           Align = alLeft
           BevelOuter = bvNone
           TabOrder = 1
-          object glBevel1: TJvgBevel
+          object glBevel1: TBevel
             Left = 0
             Top = 0
             Width = 154
+            Height = 28
             Align = alClient
-            BevelBold = True
-            Gradient.Active = False
-            Gradient.Orientation = fgdHorizontal
           end
           object Bevel2: TBevel
             Left = 77
@@ -877,26 +843,27 @@ object JvgReportEditorForm: TJvgReportEditorForm
         object P_Font: TPanel
           Left = 154
           Top = 0
-          Width = 272
-          Height = 50
+          Width = 294
+          Height = 28
           Align = alClient
           BevelOuter = bvNone
           Enabled = False
           TabOrder = 2
           object Panel3: TPanel
-            Left = 155
+            Left = 177
             Top = 0
             Width = 117
-            Height = 50
+            Height = 28
             Align = alRight
             BevelOuter = bvNone
             TabOrder = 0
             object RxSpinEdit1: TUpDown
-              Left = 74
-              Top = 21
-              Width = 43
-              Height = 22
+              Left = 95
+              Top = 24
+              Width = 15
+              Height = 21
               Hint = 'Font size'
+              Associate = Edit2
               Min = 1
               Max = 200
               ParentShowHint = False
@@ -925,24 +892,30 @@ object JvgReportEditorForm: TJvgReportEditorForm
               Text = 'ColorComboBox1'
               OnChange = ColorComboBox1Change
             end
+            object Edit2: TEdit
+              Left = 74
+              Top = 24
+              Width = 21
+              Height = 21
+              AutoSize = False
+              TabOrder = 3
+              Text = '2'
+            end
           end
           object Panel6: TPanel
             Left = 0
             Top = 0
-            Width = 155
-            Height = 50
+            Width = 177
+            Height = 28
             Align = alClient
             BevelOuter = bvNone
             TabOrder = 1
-            object glBevel3: TJvgBevel
+            object glBevel3: TBevel
               Left = 0
               Top = 0
-              Width = 155
+              Width = 177
               Height = 20
               Align = alClient
-              BevelBold = True
-              Gradient.Active = False
-              Gradient.Orientation = fgdHorizontal
             end
             object sbFontColor: TSpeedButton
               Left = 2
@@ -1008,8 +981,8 @@ object JvgReportEditorForm: TJvgReportEditorForm
             end
             object Panel7: TPanel
               Left = 0
-              Top = 20
-              Width = 155
+              Top = -2
+              Width = 177
               Height = 30
               Align = alBottom
               BevelOuter = bvNone
@@ -1026,7 +999,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
               object Edit1: TMemo
                 Left = 0
                 Top = 13
-                Width = 155
+                Width = 177
                 Height = 17
                 Align = alBottom
                 Lines.Strings = (
@@ -1042,8 +1015,8 @@ object JvgReportEditorForm: TJvgReportEditorForm
       end
       object P_SBar: TPanel
         Left = 0
-        Top = 50
-        Width = 596
+        Top = 28
+        Width = 618
         Height = 20
         Align = alBottom
         BevelOuter = bvNone
@@ -1063,7 +1036,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
           ParentFont = False
         end
         object Panel5: TPanel
-          Left = 240
+          Left = 262
           Top = 0
           Width = 356
           Height = 20
@@ -1297,7 +1270,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
       object glLabel1: TLabel
         Left = 0
         Top = 0
-        Width = 596
+        Width = 618
         Height = 12
         Align = alTop
         Caption = '   Parameters'
@@ -1308,46 +1281,16 @@ object JvgReportEditorForm: TJvgReportEditorForm
         Font.Style = []
         ParentFont = False
       end
-      object lb_Params: TJvgListBox
+      object lb_Params: TListBox
         Left = 0
         Top = 12
-        Width = 596
-        Height = 58
+        Width = 618
+        Height = 36
         Align = alClient
         BorderStyle = bsNone
         Color = clBtnFace
+        ItemHeight = 13
         TabOrder = 0
-        ItemStyle.Gradient.Active = False
-        ItemStyle.Gradient.Orientation = fgdHorizontal
-        ItemStyle.Color = clBtnFace
-        ItemStyle.DelineateColor = clBlack
-        ItemStyle.Font.Charset = DEFAULT_CHARSET
-        ItemStyle.Font.Color = clWindowText
-        ItemStyle.Font.Height = -11
-        ItemStyle.Font.Name = 'MS Sans Serif'
-        ItemStyle.Font.Style = []
-        ItemStyle.Bevel.Inner = bvLowered
-        ItemStyle.Bevel.Outer = bvNone
-        ItemStyle.Bevel.Bold = False
-        ItemStyle.TextStyle = fstNone
-        ItemSelStyle.Gradient.Active = False
-        ItemSelStyle.Gradient.Orientation = fgdHorizontal
-        ItemSelStyle.Color = clBtnFace
-        ItemSelStyle.DelineateColor = clBlack
-        ItemSelStyle.Font.Charset = DEFAULT_CHARSET
-        ItemSelStyle.Font.Color = clWindowText
-        ItemSelStyle.Font.Height = -11
-        ItemSelStyle.Font.Name = 'MS Sans Serif'
-        ItemSelStyle.Font.Style = []
-        ItemSelStyle.Bevel.Inner = bvRaised
-        ItemSelStyle.Bevel.Outer = bvLowered
-        ItemSelStyle.Bevel.Bold = False
-        ItemSelStyle.TextStyle = fstNone
-        ItemHeight = 17
-        TransparentColor = clOlive
-        Options = [fboExcludeGlyphs, fboHotTrack, fboWordWrap]
-        ChangeGlyphColor.FromColor = clBlack
-        ChangeGlyphColor.ToColor = clWhite
       end
     end
   end
@@ -1359,22 +1302,11 @@ object JvgReportEditorForm: TJvgReportEditorForm
     Align = alTop
     BevelOuter = bvLowered
     TabOrder = 1
-    object HRuler: TJvgRuler
-      Left = 17
-      Top = 0
-      Width = 550
-      Height = 16
-    end
-    object glBevel4: TJvgBevel
+    object glBevel4: TBevel
       Left = -1
       Top = -2
       Width = 19
       Height = 20
-      BevelOuter = bvRaised
-      Gradient.FromColor = clBtnFace
-      Gradient.ToColor = clBtnFace
-      Gradient.Active = True
-      Gradient.Orientation = fgdHorizontal
     end
   end
   object P_Main: TPanel
@@ -1426,13 +1358,6 @@ object JvgReportEditorForm: TJvgReportEditorForm
       Align = alLeft
       BevelOuter = bvLowered
       TabOrder = 1
-      object VRuler: TJvgRuler
-        Left = 1
-        Top = 0
-        Width = 15
-        Height = 231
-        Orientation = goVertical
-      end
     end
   end
   object OpenDialog1: TOpenDialog

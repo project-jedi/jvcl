@@ -37,53 +37,49 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvCompEditorTemplateForm, JvgSpeedButton, JvgPage, JvgTypes,
-  JvgSplit, JvgWizardHeader, JvgShadow,
-  JvgGroupBox, JvgLabel, JvgCheckBox, JvgImage, JvExControls, JvComponent;
+  JvCompEditorTemplateForm, JvgTypes,
+  JvgLabel;
 
 type
   TJvgLabelEditorDlg = class(TJvgCompEditorTemplate)
     pnlPanel1: TPanel;
-    JvgLabelTest: TJvgLabel;
-    splJvgSplitter1: TJvgSplitter;
+    splJvgSplitter1: TSplitter;
     tbsTabSheet1: TTabSheet;
     OpenPictureDialog1: TOpenPictureDialog;
     JvColorDialog1: TColorDialog;
-    gbxGradient: TJvgGroupBox;
-    JvgLabel11: TJvgLabel;
-    lblGradientPercentFilling: TJvgLabel;
-    JvgLabel12: TJvgLabel;
-    JvgLabel1: TJvgLabel;
-    JvgLabel6: TJvgLabel;
-    JvgLabel9: TJvgLabel;
-    cbxGradientActive: TJvgCheckBox;
-    cbxGradientBufferedDraw: TJvgCheckBox;
+    gbxGradient: TGroupBox;
+    JvgLabel11: TLabel;
+    lblGradientPercentFilling: TLabel;
+    JvgLabel12: TLabel;
+    JvgLabel1: TLabel;
+    JvgLabel6: TLabel;
+    JvgLabel9: TLabel;
+    cbxGradientActive: TCheckBox;
+    cbxGradientBufferedDraw: TCheckBox;
     cbxGradientOrientation: TComboBox;
     cbtnGradientColorTo: TComboBox;
     cbtnGradientColorFrom: TComboBox;
     sbarGradientPercentFilling: TScrollBar;
-    JvgGroupBox3: TJvgGroupBox;
-    JvgShadow1: TJvgShadow;
+    JvgGroupBox3: TGroupBox;
     sbtnBtnNewBackgroundImage: TSpeedButton;
     bvlBevel1: TBevel;
     imgBackground: TImage;
-    cbxActiveBackground: TJvgCheckBox;
-    JvgGroupBox6: TJvgGroupBox;
-    JvgShadow2: TJvgShadow;
+    cbxActiveBackground: TCheckBox;
+    JvgGroupBox6: TGroupBox;
     sbtnBtnNewTextureImage: TSpeedButton;
     bvlBevel2: TBevel;
     imgTexture: TImage;
-    cbxActiveTexture: TJvgCheckBox;
-    JvgGroupBox2: TJvgGroupBox;
-    JvgLabel20: TJvgLabel;
-    JvgLabel19: TJvgLabel;
-    JvgLabel18: TJvgLabel;
-    JvgLabel17: TJvgLabel;
-    JvgLabel16: TJvgLabel;
-    JvgLabel15: TJvgLabel;
-    JvgLabel14: TJvgLabel;
-    JvgLabel13: TJvgLabel;
-    JvgLabel10: TJvgLabel;
+    cbxActiveTexture: TCheckBox;
+    JvgGroupBox2: TGroupBox;
+    JvgLabel20: TLabel;
+    JvgLabel19: TLabel;
+    JvgLabel18: TLabel;
+    JvgLabel17: TLabel;
+    JvgLabel16: TLabel;
+    JvgLabel15: TLabel;
+    JvgLabel14: TLabel;
+    JvgLabel13: TLabel;
+    JvgLabel10: TLabel;
     cbtnText: TComboBox;
     cbtnTextActive: TComboBox;
     cbtnTextDisabled: TComboBox;
@@ -93,49 +89,48 @@ type
     cbtnBackgroundActive: TComboBox;
     cbtnDelineate: TComboBox;
     cbtnDelineateActive: TComboBox;
-    gbxPassiveStyle: TJvgGroupBox;
-    cbxPassiveNormal: TJvgCheckBox;
-    cbxPassivePushed: TJvgCheckBox;
-    cbxPassiveRaised: TJvgCheckBox;
-    cbxPassiveShadow: TJvgCheckBox;
-    cbxPassiveRecessed: TJvgCheckBox;
-    cbxPassiveVolumentric: TJvgCheckBox;
-    gbxActiveStyle: TJvgGroupBox;
-    cbxActiveNormal: TJvgCheckBox;
-    cbxActivePushed: TJvgCheckBox;
-    cbxActiveRaised: TJvgCheckBox;
-    cbxActiveShadow: TJvgCheckBox;
-    cbxActiveRecessed: TJvgCheckBox;
-    cbxActiveVolumetric: TJvgCheckBox;
-    gbxDisabledStyle: TJvgGroupBox;
-    cbxDisabledNormal: TJvgCheckBox;
-    cbxDisabledPushed: TJvgCheckBox;
-    cbxDisabledRaised: TJvgCheckBox;
-    cbxDisabledShadow: TJvgCheckBox;
-    cbxDisabledRecessed: TJvgCheckBox;
-    cbxDisabledVolumentric: TJvgCheckBox;
-    JvgGroupBox1: TJvgGroupBox;
-    cbxBold: TJvgCheckBox;
-    cbxItalic: TJvgCheckBox;
-    cbxUnderline: TJvgCheckBox;
-    cbxStrikeOut: TJvgCheckBox;
-    gbxLabelDirection: TJvgGroupBox;
-    sbtnLabelDirectionDown: TJvgSpeedButton;
-    sbtnLabelDirectionUp: TJvgSpeedButton;
-    JvgLabel5: TJvgLabel;
-    sbtnLabelDirectionLeft: TJvgSpeedButton;
-    sbtnLabelDirectionRight: TJvgSpeedButton;
-    JvgGroupBox4: TJvgGroupBox;
-    lblFontSize: TJvgLabel;
-    lblShadowDepth: TJvgLabel;
-    JvgLabel2: TJvgLabel;
-    JvgLabel3: TJvgLabel;
+    gbxPassiveStyle: TGroupBox;
+    cbxPassiveNormal: TCheckBox;
+    cbxPassivePushed: TCheckBox;
+    cbxPassiveRaised: TCheckBox;
+    cbxPassiveShadow: TCheckBox;
+    cbxPassiveRecessed: TCheckBox;
+    cbxPassiveVolumentric: TCheckBox;
+    gbxActiveStyle: TGroupBox;
+    cbxActiveNormal: TCheckBox;
+    cbxActivePushed: TCheckBox;
+    cbxActiveRaised: TCheckBox;
+    cbxActiveShadow: TCheckBox;
+    cbxActiveRecessed: TCheckBox;
+    cbxActiveVolumetric: TCheckBox;
+    gbxDisabledStyle: TGroupBox;
+    cbxDisabledNormal: TCheckBox;
+    cbxDisabledPushed: TCheckBox;
+    cbxDisabledRaised: TCheckBox;
+    cbxDisabledShadow: TCheckBox;
+    cbxDisabledRecessed: TCheckBox;
+    cbxDisabledVolumentric: TCheckBox;
+    JvgGroupBox1: TGroupBox;
+    cbxBold: TCheckBox;
+    cbxItalic: TCheckBox;
+    cbxUnderline: TCheckBox;
+    cbxStrikeOut: TCheckBox;
+    gbxLabelDirection: TGroupBox;
+    sbtnLabelDirectionDown: TSpeedButton;
+    sbtnLabelDirectionUp: TSpeedButton;
+    JvgLabel5: TLabel;
+    sbtnLabelDirectionLeft: TSpeedButton;
+    sbtnLabelDirectionRight: TSpeedButton;
+    JvgGroupBox4: TGroupBox;
+    lblFontSize: TLabel;
+    lblShadowDepth: TLabel;
+    JvgLabel2: TLabel;
+    JvgLabel3: TLabel;
     sbarShadowDepth: TScrollBar;
     sbarFontSize: TScrollBar;
     cbxFont: TComboBox;
     imglBrushes: TImageList;
     cbxBrushStyle: TComboBox;
-    procedure JvgCheckBox13AfterPaint(Sender: TObject);
     procedure tbarFontSizeChange(Sender: TObject);
     procedure cbxBoldClick(Sender: TObject);
     procedure cbxItalicClick(Sender: TObject);
@@ -160,9 +155,7 @@ type
   private
     FColorItems: TStrings;
     FLabelSource: TJvgLabel;
-    FCurrentPassiveCheckBox: TJvgCheckBox;
-    FCurrentActiveCheckBox: TJvgCheckBox;
-    FCurrentDisabledCheckBox: TJvgCheckBox;
+    FLabel:TJvgLabel;
     procedure LabelChanged;
     procedure SetTextStyle(TextKind: Integer; TextStyle: TglTextStyle);
     procedure GetColorValuesProc(const S: string);
@@ -251,77 +244,57 @@ begin
   Result := 1;
 end;
 
-procedure TJvgLabelEditorDlg.JvgCheckBox13AfterPaint(Sender: TObject);
-begin
-  if Sender is TJvgCheckBox then
-    if TJvgCheckBox(Sender).Checked then
-      TJvgCheckBox(Sender).TextStyles.Passive := fstNone
-    else
-      TJvgCheckBox(Sender).TextStyles.Passive := fstPushed;
-end;
-
 procedure TJvgLabelEditorDlg.tbarFontSizeChange(Sender: TObject);
 begin
-  JvgLabelTest.Font.Size := sbarFontSize.Position;
+  FLabel.Font.Size := sbarFontSize.Position;
   lblFontSize.Caption := IntToStr(sbarFontSize.Position);
   LabelChanged;
 end;
 
 procedure TJvgLabelEditorDlg.LabelChanged;
 begin
-  JvgLabelTest.Invalidate;
+  FLabel.Invalidate;
 end;
 
 procedure TJvgLabelEditorDlg.cbxBoldClick(Sender: TObject);
 begin
   if cbxBold.Checked then
-    JvgLabelTest.Font.Style := JvgLabelTest.Font.Style + [fsBold]
+    FLabel.Font.Style := FLabel.Font.Style + [fsBold]
   else
-    JvgLabelTest.Font.Style := JvgLabelTest.Font.Style - [fsBold];
+    FLabel.Font.Style := FLabel.Font.Style - [fsBold];
   LabelChanged;
 end;
 
 procedure TJvgLabelEditorDlg.cbxItalicClick(Sender: TObject);
 begin
   if cbxItalic.Checked then
-    JvgLabelTest.Font.Style := JvgLabelTest.Font.Style + [fsItalic]
+    FLabel.Font.Style := FLabel.Font.Style + [fsItalic]
   else
-    JvgLabelTest.Font.Style := JvgLabelTest.Font.Style - [fsItalic];
+    FLabel.Font.Style := FLabel.Font.Style - [fsItalic];
   LabelChanged;
 end;
 
 procedure TJvgLabelEditorDlg.cbxUnderlineClick(Sender: TObject);
 begin
   if cbxUnderline.Checked then
-    JvgLabelTest.Font.Style := JvgLabelTest.Font.Style + [fsUnderline]
+    FLabel.Font.Style := FLabel.Font.Style + [fsUnderline]
   else
-    JvgLabelTest.Font.Style := JvgLabelTest.Font.Style - [fsUnderline];
+    FLabel.Font.Style := FLabel.Font.Style - [fsUnderline];
   LabelChanged;
 end;
 
 procedure TJvgLabelEditorDlg.cbxStrikeOutClick(Sender: TObject);
 begin
   if cbxStrikeOut.Checked then
-    JvgLabelTest.Font.Style := JvgLabelTest.Font.Style + [fsStrikeOut]
+    FLabel.Font.Style := FLabel.Font.Style + [fsStrikeOut]
   else
-    JvgLabelTest.Font.Style := JvgLabelTest.Font.Style - [fsStrikeOut];
+    FLabel.Font.Style := FLabel.Font.Style - [fsStrikeOut];
   LabelChanged;
 end;
 
 procedure TJvgLabelEditorDlg.cbxActiveNormalClick(Sender: TObject);
 begin
-  if Sender is TJvgCheckBox then
-  begin
-    if FCurrentActiveCheckBox <> nil then
-    begin
-      FCurrentActiveCheckBox.TextStyles.Passive := fstPushed;
-      FCurrentActiveCheckBox.Invalidate;
-    end;
-    TJvgCheckBox(Sender).TextStyles.Passive := fstRaised;
-    FCurrentActiveCheckBox := TJvgCheckBox(Sender);
-  end;
-
-  SetTextStyle(0, IntToTextStyle(TJvgCheckBox(Sender).Tag));
+  SetTextStyle(0, IntToTextStyle(TCheckBox(Sender).Tag));
   LabelChanged;
 end;
 
@@ -329,46 +302,24 @@ procedure TJvgLabelEditorDlg.SetTextStyle(TextKind: Integer; TextStyle: TglTextS
 begin
   case Integer(TextKind) of
     0:
-      JvgLabelTest.TextStyles.Active := TextStyle;
+      FLabel.TextStyles.Active := TextStyle;
     1:
-      JvgLabelTest.TextStyles.Disabled := TextStyle;
+      FLabel.TextStyles.Disabled := TextStyle;
     2:
-      JvgLabelTest.TextStyles.Passive := TextStyle;
+      FLabel.TextStyles.Passive := TextStyle;
   end;
   LabelChanged;
 end;
 
 procedure TJvgLabelEditorDlg.cbxPassiveNormalClick(Sender: TObject);
 begin
-  if Sender is TJvgCheckBox then
-  begin
-    if FCurrentPassiveCheckBox <> nil then
-    begin
-      FCurrentPassiveCheckBox.TextStyles.Passive := fstPushed;
-      FCurrentPassiveCheckBox.Invalidate;
-    end;
-    TJvgCheckBox(Sender).TextStyles.Passive := fstRaised;
-    FCurrentPassiveCheckBox := TJvgCheckBox(Sender);
-  end;
-
-  SetTextStyle(1, IntToTextStyle(TJvgCheckBox(Sender).Tag));
+  SetTextStyle(1, IntToTextStyle(TCheckBox(Sender).Tag));
   LabelChanged;
 end;
 
 procedure TJvgLabelEditorDlg.cbxDisabledNormalClick(Sender: TObject);
 begin
-  if Sender is TJvgCheckBox then
-  begin
-    if FCurrentDisabledCheckBox <> nil then
-    begin
-      FCurrentDisabledCheckBox.TextStyles.Passive := fstPushed;
-      FCurrentDisabledCheckBox.Invalidate;
-    end;
-    TJvgCheckBox(Sender).TextStyles.Passive := fstRaised;
-    FCurrentDisabledCheckBox := TJvgCheckBox(Sender);
-  end;
-
-  SetTextStyle(2, IntToTextStyle(TJvgCheckBox(Sender).Tag));
+  SetTextStyle(2, IntToTextStyle(TCheckBox(Sender).Tag));
   LabelChanged;
 end;
 
@@ -379,23 +330,23 @@ begin
   begin
     case Tag of
       1:
-        JvgLabelTest.Colors.Text := GetItemsColor(Items, ItemIndex, JvgLabelTest.Colors.Text);
+        FLabel.Colors.Text := GetItemsColor(Items, ItemIndex, FLabel.Colors.Text);
       2:
-        JvgLabelTest.Colors.TextActive := GetItemsColor(Items, ItemIndex, JvgLabelTest.Colors.TextActive);
+        FLabel.Colors.TextActive := GetItemsColor(Items, ItemIndex, FLabel.Colors.TextActive);
       3:
-        JvgLabelTest.Colors.TextDisabled := GetItemsColor(Items, ItemIndex, JvgLabelTest.Colors.TextDisabled);
+        FLabel.Colors.TextDisabled := GetItemsColor(Items, ItemIndex, FLabel.Colors.TextDisabled);
       4:
-        JvgLabelTest.Colors.HighLight := GetItemsColor(Items, ItemIndex, JvgLabelTest.Colors.HighLight);
+        FLabel.Colors.HighLight := GetItemsColor(Items, ItemIndex, FLabel.Colors.HighLight);
       5:
-        JvgLabelTest.Colors.Shadow := GetItemsColor(Items, ItemIndex, JvgLabelTest.Colors.Shadow);
+        FLabel.Colors.Shadow := GetItemsColor(Items, ItemIndex, FLabel.Colors.Shadow);
       6:
-        JvgLabelTest.Colors.Background := GetItemsColor(Items, ItemIndex, JvgLabelTest.Colors.Background);
+        FLabel.Colors.Background := GetItemsColor(Items, ItemIndex, FLabel.Colors.Background);
       7:
-        JvgLabelTest.Colors.BackgroundActive := GetItemsColor(Items, ItemIndex, JvgLabelTest.Colors.BackgroundActive);
+        FLabel.Colors.BackgroundActive := GetItemsColor(Items, ItemIndex, FLabel.Colors.BackgroundActive);
       8:
-        JvgLabelTest.Colors.Delineate := GetItemsColor(Items, ItemIndex, JvgLabelTest.Colors.Delineate);
+        FLabel.Colors.Delineate := GetItemsColor(Items, ItemIndex, FLabel.Colors.Delineate);
       9:
-        JvgLabelTest.Colors.DelineateActive := GetItemsColor(Items, ItemIndex, JvgLabelTest.Colors.DelineateActive);
+        FLabel.Colors.DelineateActive := GetItemsColor(Items, ItemIndex, FLabel.Colors.DelineateActive);
     end;
   end;
   LabelChanged;
@@ -405,7 +356,7 @@ procedure TJvgLabelEditorDlg.sbarGradientPercentFillingChange(Sender: TObject);
 begin
   if Sender is TScrollBar then
   begin
-    JvgLabelTest.Gradient.PercentFilling := TScrollBar(Sender).Position;
+    FLabel.Gradient.PercentFilling := TScrollBar(Sender).Position;
     lblGradientPercentFilling.Caption := IntToStr(TScrollBar(Sender).Position);
     LabelChanged;
   end;
@@ -416,28 +367,28 @@ begin
   with TComboBox(Sender)do
     case Tag of
     1:
-      JvgLabelTest.Gradient.FromColor := GetItemsColor(Items, ItemIndex, JvgLabelTest.Gradient.FromColor);
+      FLabel.Gradient.FromColor := GetItemsColor(Items, ItemIndex, FLabel.Gradient.FromColor);
     2:
-      JvgLabelTest.Gradient.ToColor := GetItemsColor(Items, ItemIndex, JvgLabelTest.Gradient.ToColor);
+      FLabel.Gradient.ToColor := GetItemsColor(Items, ItemIndex, FLabel.Gradient.ToColor);
   end;
   LabelChanged;
 end;
 
 procedure TJvgLabelEditorDlg.cbxGradientActiveClick(Sender: TObject);
 begin
-  JvgLabelTest.Gradient.Active := TJvgCheckBox(Sender).Checked;
+  FLabel.Gradient.Active := TCheckBox(Sender).Checked;
   LabelChanged;
 end;
 
 procedure TJvgLabelEditorDlg.cbxGradientBufferedDrawClick(Sender: TObject);
 begin
-  JvgLabelTest.Gradient.BufferedDraw := TJvgCheckBox(Sender).Checked;
+  FLabel.Gradient.BufferedDraw := TCheckBox(Sender).Checked;
   LabelChanged;
 end;
 
 procedure TJvgLabelEditorDlg.cbxGradientOrientationChange(Sender: TObject);
 begin
-  with JvgLabelTest.Gradient do
+  with FLabel.Gradient do
     case TComboBox(Sender).ItemIndex of
       0:
         Orientation := fgdHorizontal;
@@ -459,13 +410,13 @@ end;
 
 procedure TJvgLabelEditorDlg.sbtnLabelDirectionRightClick(Sender: TObject);
 begin
-  JvgLabelTest.Direction := TglLabelDir(TJvgSpeedButton(Sender).Tag);
+  FLabel.Direction := TglLabelDir(TSpeedButton(Sender).Tag);
   LabelChanged;
 end;
 
 procedure TJvgLabelEditorDlg.cbxBrushStyleChange(Sender: TObject);
 begin
-  JvgLabelTest.Gradient.BrushStyle := TBrushStyle(TComboBox(Sender).ItemIndex);
+  FLabel.Gradient.BrushStyle := TBrushStyle(TComboBox(Sender).ItemIndex);
   LabelChanged;
 end;
 
@@ -478,13 +429,13 @@ begin
         begin
           imgBackground.Picture.LoadFromFile(OpenPictureDialog1.FileName);
           if cbxActiveBackground.Checked then
-            JvgLabelTest.Background := imgBackground.Picture.Bitmap;
+            FLabel.Background := imgBackground.Picture.Bitmap;
         end;
       1:
         begin
           imgTexture.Picture.LoadFromFile(OpenPictureDialog1.FileName);
           if cbxActiveTexture.Checked then
-            JvgLabelTest.Texture := imgTexture.Picture.Bitmap;
+            FLabel.Texture := imgTexture.Picture.Bitmap;
         end;
     end;
   end;
@@ -493,31 +444,31 @@ end;
 
 procedure TJvgLabelEditorDlg.cbxActiveBackgroundClick(Sender: TObject);
 begin
-  case TJvgCheckBox(Sender).Tag of
+  case TCheckBox(Sender).Tag of
     0:
-      if TJvgCheckBox(Sender).Checked then
-        JvgLabelTest.Background := imgBackground.Picture.Bitmap
+      if TCheckBox(Sender).Checked then
+        FLabel.Background := imgBackground.Picture.Bitmap
       else
-        JvgLabelTest.Background := nil;
+        FLabel.Background := nil;
     1:
-      if TJvgCheckBox(Sender).Checked then
-        JvgLabelTest.Texture := imgTexture.Picture.Bitmap
+      if TCheckBox(Sender).Checked then
+        FLabel.Texture := imgTexture.Picture.Bitmap
       else
-        JvgLabelTest.Texture := nil;
+        FLabel.Texture := nil;
   end;
   LabelChanged;
 end;
 
 procedure TJvgLabelEditorDlg.sbarShadowDepthChange(Sender: TObject);
 begin
-  JvgLabelTest.Illumination.ShadowDepth := sbarShadowDepth.Position;
+  FLabel.Illumination.ShadowDepth := sbarShadowDepth.Position;
   lblShadowDepth.Caption := IntToStr(sbarShadowDepth.Position);
   LabelChanged;
 end;
 
 procedure TJvgLabelEditorDlg.cbxFontChange(Sender: TObject);
 begin
-  JvgLabelTest.Font.Name := TFontName(cbxFont.Items[cbxFont.ItemIndex]);
+  FLabel.Font.Name := TFontName(cbxFont.Items[cbxFont.ItemIndex]);
   LabelChanged;
 end;
 
@@ -526,44 +477,44 @@ begin
   inherited UpdateComponent;
   with FLabelSource do
   begin
-    if (JvgLabelTest.Background <> nil) and (cbxActiveBackground.Checked) then
-      Background.Assign(JvgLabelTest.Background)
+    if (FLabel.Background <> nil) and (cbxActiveBackground.Checked) then
+      Background.Assign(FLabel.Background)
     else
       Background := nil;
 
     if (imgTexture.Picture <> nil) and (cbxActiveTexture.Checked) then
-      Texture.Assign(JvgLabelTest.Texture)
+      Texture.Assign(FLabel.Texture)
     else
       Texture := nil;
 
-    Colors.Background := JvgLabelTest.Colors.Background;
-    Colors.BackgroundActive := JvgLabelTest.Colors.BackgroundActive;
-    Colors.Delineate := JvgLabelTest.Colors.Delineate;
-    Colors.DelineateActive := JvgLabelTest.Colors.DelineateActive;
-    Colors.HighLight := JvgLabelTest.Colors.HighLight;
-    Colors.Shadow := JvgLabelTest.Colors.Shadow;
-    Colors.Text := JvgLabelTest.Colors.Text;
-    Colors.TextActive := JvgLabelTest.Colors.TextActive;
-    Colors.TextDisabled := JvgLabelTest.Colors.TextDisabled;
+    Colors.Background := FLabel.Colors.Background;
+    Colors.BackgroundActive := FLabel.Colors.BackgroundActive;
+    Colors.Delineate := FLabel.Colors.Delineate;
+    Colors.DelineateActive := FLabel.Colors.DelineateActive;
+    Colors.HighLight := FLabel.Colors.HighLight;
+    Colors.Shadow := FLabel.Colors.Shadow;
+    Colors.Text := FLabel.Colors.Text;
+    Colors.TextActive := FLabel.Colors.TextActive;
+    Colors.TextDisabled := FLabel.Colors.TextDisabled;
 
-    Direction := JvgLabelTest.Direction;
+    Direction := FLabel.Direction;
 
-    Font.Name := JvgLabelTest.Font.Name;
-    Font.Size := JvgLabelTest.Font.Size;
-    Font.Style := JvgLabelTest.Font.Style;
+    Font.Name := FLabel.Font.Name;
+    Font.Size := FLabel.Font.Size;
+    Font.Style := FLabel.Font.Style;
 
-    Gradient.Active := JvgLabelTest.Gradient.Active;
-    Gradient.BrushStyle := JvgLabelTest.Gradient.BrushStyle;
-    Gradient.BufferedDraw := JvgLabelTest.Gradient.BufferedDraw;
-    Gradient.FromColor := JvgLabelTest.Gradient.FromColor;
-    Gradient.Orientation := JvgLabelTest.Gradient.Orientation;
-    Gradient.PercentFilling := JvgLabelTest.Gradient.PercentFilling;
-    Gradient.ToColor := JvgLabelTest.Gradient.ToColor;
+    Gradient.Active := FLabel.Gradient.Active;
+    Gradient.BrushStyle := FLabel.Gradient.BrushStyle;
+    Gradient.BufferedDraw := FLabel.Gradient.BufferedDraw;
+    Gradient.FromColor := FLabel.Gradient.FromColor;
+    Gradient.Orientation := FLabel.Gradient.Orientation;
+    Gradient.PercentFilling := FLabel.Gradient.PercentFilling;
+    Gradient.ToColor := FLabel.Gradient.ToColor;
 
-    Illumination.ShadowDepth := JvgLabelTest.Illumination.ShadowDepth;
-    TextStyles.Active := JvgLabelTest.TextStyles.Active;
-    TextStyles.Disabled := JvgLabelTest.TextStyles.Disabled;
-    TextStyles.Passive := JvgLabelTest.TextStyles.Passive;
+    Illumination.ShadowDepth := FLabel.Illumination.ShadowDepth;
+    TextStyles.Active := FLabel.TextStyles.Active;
+    TextStyles.Disabled := FLabel.TextStyles.Disabled;
+    TextStyles.Passive := FLabel.TextStyles.Passive;
   end;
   Result := True;
 end;
@@ -571,6 +522,10 @@ end;
 constructor TJvgLabelEditorDlg.Create(AOwner: TComponent; LabelSource: TJvgLabel);
 begin
   inherited Create(AOwner);
+  FLabel := TJvgLabel.Create(Self);
+  FLabel.Align := alClient;
+  FLabel.Caption := 'JvLabelTest';
+  FLabel.Parent := pnlPanel1;
   FLabelSource := LabelSource;
 end;
 
@@ -579,24 +534,6 @@ procedure TJvgLabelEditorDlg.InitializeEditor;
   procedure LoadGlyph(CheckBoxGlyph: TBitmap; Glyph: string);
   begin
     CheckBoxGlyph.LoadFromResourceName(HInstance, Glyph);
-  end;
-
-  procedure LoadCheckBoxGlyph(CheckBox: TJvgCheckBox; GlyphKind: Integer);
-  begin
-    case GlyphKind of
-      0: //Square
-        begin
-          LoadGlyph(CheckBox.GlyphDisabled, 'GLYPHDISABLEDSQUARE');
-          LoadGlyph(CheckBox.GlyphOff, 'GLYPHOFFSQUARE');
-          LoadGlyph(CheckBox.GlyphOn, 'GLYPHONSQUARE');
-        end;
-      1: //Circle
-        begin
-          LoadGlyph(CheckBox.GlyphDisabled, 'GLYPHDISABLED');
-          LoadGlyph(CheckBox.GlyphOff, 'GLYPHOFF');
-          LoadGlyph(CheckBox.GlyphOn, 'GLYPHON');
-        end;
-    end;
   end;
 
 begin
@@ -610,37 +547,6 @@ begin
 
   // Square Checkboxes
 
-  LoadCheckBoxGlyph(cbxBold, 0);
-  LoadCheckBoxGlyph(cbxItalic, 0);
-  LoadCheckBoxGlyph(cbxUnderline, 0);
-  LoadCheckBoxGlyph(cbxStrikeOut, 0);
-  LoadCheckBoxGlyph(cbxGradientActive, 0);
-  LoadCheckBoxGlyph(cbxGradientBufferedDraw, 0);
-  LoadCheckBoxGlyph(cbxActiveBackground, 0);
-  LoadCheckBoxGlyph(cbxActiveTexture, 0);
-
-  //circle Checkboxes
-
-  LoadCheckBoxGlyph(cbxPassiveNormal, 1);
-  LoadCheckBoxGlyph(cbxPassivePushed, 1);
-  LoadCheckBoxGlyph(cbxPassiveRaised, 1);
-  LoadCheckBoxGlyph(cbxPassiveShadow, 1);
-  LoadCheckBoxGlyph(cbxPassiveRecessed, 1);
-  LoadCheckBoxGlyph(cbxPassiveVolumentric, 1);
-
-  LoadCheckBoxGlyph(cbxActiveNormal, 1);
-  LoadCheckBoxGlyph(cbxActivePushed, 1);
-  LoadCheckBoxGlyph(cbxActiveRaised, 1);
-  LoadCheckBoxGlyph(cbxActiveShadow, 1);
-  LoadCheckBoxGlyph(cbxActiveRecessed, 1);
-  LoadCheckBoxGlyph(cbxActiveVolumetric, 1);
-
-  LoadCheckBoxGlyph(cbxDisabledNormal, 1);
-  LoadCheckBoxGlyph(cbxDisabledPushed, 1);
-  LoadCheckBoxGlyph(cbxDisabledRaised, 1);
-  LoadCheckBoxGlyph(cbxDisabledShadow, 1);
-  LoadCheckBoxGlyph(cbxDisabledRecessed, 1);
-  LoadCheckBoxGlyph(cbxDisabledVolumentric, 1);
 
   sbarFontSize.Position := FLabelSource.Font.Size;
   sbarShadowDepth.Position := FLabelSource.Illumination.ShadowDepth;
@@ -719,13 +625,13 @@ begin
   if FLabelSource.Background <> nil then
   begin
     imgBackground.Picture.Bitmap.Assign(FLabelSource.Background);
-    JvgLabelTest.Background.Assign(imgBackground.Picture.Bitmap);
+    FLabel.Background.Assign(imgBackground.Picture.Bitmap);
   end;
 
   if FLabelSource.Texture <> nil then
   begin
     imgTexture.Picture.Bitmap.Assign(FLabelSource.Texture);
-    JvgLabelTest.Texture.Assign(imgTexture.Picture.Bitmap);
+    FLabel.Texture.Assign(imgTexture.Picture.Bitmap);
   end;
 
   LabelChanged;

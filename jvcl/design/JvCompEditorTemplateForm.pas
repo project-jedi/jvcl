@@ -44,21 +44,16 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvgCheckBox, JvgLanguageLoader, JvgLabel, JvgGroupBox, JvgTab, JvgPage,
-  JvgShadow, JvgWizardHeader, JvgBitBtn, JvgSpeedButton, JvgSplit,
-  JvComponent, JvExControls;
+  JvComponent;
 
 type
   TJvgCompEditorTemplate = class(TJvForm)
     pnMain: TPanel;
     pnBottom: TPanel;
-    glShadowOK: TJvgShadow;
-    glShadowCancel: TJvgShadow;
-    btnCancel1: TSpeedButton;
-    btnOK1: TSpeedButton;
-    pgMain: TJvgPageControl;
+    btnCancel1: TButton;
+    btnOK1: TButton;
+    pgMain: TPageControl;
     tabMain: TTabSheet;
-    hwJVCLCompEditor: TJvgWizardHeader;
     procedure FormShow(Sender: TObject);
     procedure btnCancel1Click(Sender: TObject); virtual;
     procedure btnOK1Click(Sender: TObject); virtual;

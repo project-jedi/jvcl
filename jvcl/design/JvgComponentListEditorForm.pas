@@ -63,10 +63,10 @@ type
     Bevel3: TBevel;
     Bevel4: TBevel;
     lvSel: TListView;
-    pbAdd: TBitBtn;
-    pbRemove: TBitBtn;
-    BitBtn3: TBitBtn;
-    BitBtn4: TBitBtn;
+    pbAdd: TButton;
+    pbRemove: TButton;
+    BitBtn3: TButton;
+    BitBtn4: TButton;
     ImageList1: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
