@@ -50,7 +50,7 @@ uses
   Variants,
 {$ENDIF}
   Windows, Messages, SysUtils, Classes, Controls, Dialogs, Graphics,
-  CommCtrl, ComCtrls, ExtCtrls, Db;
+  CommCtrl, ComCtrls, ExtCtrls, DB;
 
 type
   TJvDBTreeNode = class;
@@ -956,16 +956,24 @@ begin
 end;
 
 procedure TCustomJvDBTreeView.Change(Node: TTreeNode);
+var OldState:TDataSetState;
 begin
   if ValidDataSet and Assigned(Node) and not InDataScrolled and
     (FUpdateLock = 0) and
     (FDataLink.DataSet.State in [dsBrowse, dsEdit, dsInsert]) then
   begin
+    OldState := FDataLink.DataSet.State;
     Inc(FUpdateLock);
     try
       Change2(Node);
     finally
       Dec(FUpdateLock);
+    end;
+    case OldState of
+      dsEdit:
+        FDataLink.DataSet.Edit;
+      dsInsert:
+        FDataLink.DataSet.Insert;
     end;
   end;
   inherited Change(Node);
