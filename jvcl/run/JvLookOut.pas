@@ -474,6 +474,7 @@ type
     procedure DrawTopButton; override;
     procedure Paint; override;
     procedure CreateWnd; override;
+    procedure AlignControls(Control: TControl; var Rect: TRect); override;
     {$IFDEF VCL}
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
     {$ENDIF VCL}
@@ -2767,22 +2768,12 @@ begin
   end;
 end;
 
-{
-procedure TJvExpress.SetButton(Index: Integer; Value: TJvExpressButton);
+procedure TJvExpress.AlignControls(Control: TControl; var Rect: TRect);
 begin
-  inherited SetButton(Index,Value);
+  // TJvLookoutPage adjusts the rects top, so move it back
+  Dec(Rect.Top, cHeight);
+  inherited AlignControls(Control, Rect);
 end;
-
-function TJvExpress.GetButton(Index: Integer): TJvExpressButton;
-begin
-  Result := TJvExpressButton(inherited GetButton(Index));
-end;
-
-function TJvExpress.GetButtonCount: Integer;
-begin
-  inherited GetButtonCount;
-end;
-}
 
 procedure TJvExpress.CalcArrows;
 var
