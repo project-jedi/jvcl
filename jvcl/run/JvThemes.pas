@@ -40,7 +40,7 @@ uses
   Controls, StdCtrls, Graphics, Buttons,
 {$ENDIF}
 {$IFDEF COMPLIB_CLX}
-  QControls, QGraphics, QButtons,
+  QControls, QForms, QGraphics, QButtons,
 {$ENDIF}
   SysUtils, Classes;
 
@@ -753,7 +753,7 @@ procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; NeedsParentBackground: Boolean = True); overload;
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; Color: TColor; NeedsParentBackground: Boolean = True); overload;
-{$IFDEF MSWINDOWS}
+{$IFDEF COMPLIB_VCL}
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
   Brush: HBRUSH; NeedsParentBackground: Boolean = True);  overload;
 
@@ -765,7 +765,12 @@ function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect;
 procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint;
   R: PRect = nil); overload;
 procedure PerformEraseBackground(Control: TControl; DC: HDC; R: PRect = nil); overload;
-{$ENDIF MSWINDOWS}
+{$ENDIF COMPLIB_VCL}
+
+{$IFDEF COMPLIB_CLX}
+type
+  TButtonStyle = (bsAutoDetect, bsWin31, bsNew);
+{$ENDIF}
 
 { DrawThemedButtonFace draws a themed button when theming is enabled. }
 function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: TRect;
@@ -826,7 +831,7 @@ begin
   end;
 end;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF COMPLIB_VCL}
 
 procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint; R: PRect = nil);
 var
@@ -1002,7 +1007,7 @@ begin
     Result := DrawFrameControl(DC, Rect, uType, uState);
 end;
 
-{$ENDIF MSWINDOWS}
+{$ENDIF COMPLIB_VCL}
 
 function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: TRect;
   BevelWidth: Integer; Style: TButtonStyle; IsRounded, IsDown,
@@ -1036,7 +1041,12 @@ begin
   end
   else
 {$ENDIF}
+{$IFDEF COMPLIB_VCL}
   Result := DrawButtonFace(Canvas, Client, BevelWidth, Style, IsRounded, IsDown, IsFocused);
+{$ENDIF}
+{$IFDEF COMPLIB_CLX}
+  Result := DrawButtonFace(Canvas, Client, BevelWidth, IsDown, IsFocused);
+{$ENDIF}
 end;
 
 function IsMouseOver(Control: TControl): Boolean;
