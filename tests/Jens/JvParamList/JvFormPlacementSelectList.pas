@@ -34,7 +34,7 @@ uses
   JvFormPlacement, JvAppStoreSelectList;
 
 type
-  TJvFormStorageSelectList = class(TJvAppStoreSelectList)
+  TJvFormStorageSelectList = class (TJvAppStoreSelectList)
   private
     FFormStorage: TJvFormStorage;
   protected
@@ -49,7 +49,7 @@ type
     procedure RestoreFormStorage(ACaption: string = '');
     procedure SaveFormStorage(ACaption: string = '');
   published
-    property FormStorage: TJvFormStorage read GetFormStorage write SetFormStorage;
+    property FormStorage: TJvFormStorage Read GetFormStorage Write SetFormStorage;
   end;
 
 implementation
@@ -85,7 +85,6 @@ function TJvFormStorageSelectList.GetAppStore: TJvCustomAppStore;
 begin
   if Assigned(FFormStorage) then
     Result := FFormStorage.AppStorage
-  // (rom) otherwise Result may be undefined
   else
     Result := nil;
 end;
@@ -124,4 +123,3 @@ begin
 end;
 
 end.
-

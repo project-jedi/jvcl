@@ -2,7 +2,7 @@ unit JvParameterListMainForm;
 
 interface
 
-{$DEFINE INCLUDE_DEVEXP_CX}
+{.$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
@@ -18,7 +18,7 @@ uses
   ExtCtrls, JvFormPlacement, JvComponent, JvAppStore,
   JvAppRegistryStore, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
   JvCombobox, CheckLst, cxCheckListBox, ShlObj, cxShellCommon,
-  cxShellComboBox, cxButtonEdit;
+  cxShellComboBox, cxButtonEdit, ExtDlgs, JvImage;
 
 type
   TForm1 = class(TForm)
@@ -47,11 +47,7 @@ type
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
     HistoryEnabledCheckBox: TCheckBox;
-    Panel1: TPanel;
-    cxRadioGroup1: TcxRadioGroup;
-    cxShellComboBox1: TcxShellComboBox;
-    cxButtonEdit1: TcxButtonEdit;
-    OpenDialog1: TOpenDialog;
+    Image1: TImage;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -193,6 +189,17 @@ begin
       ItemList.Add ('Listbox Test&3');
       Height := 80;
       Width := 80;
+    End;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvImageParameter.Create(ParameterList);
+    With tjvImageParameter(Parameter) Do
+    Begin
+      Picture := Image1.Picture;
+      SearchName := 'PictureTest';
+      Caption := 'PictureTest';
+//      AutoSize := True;
+      Height := 220;
+      Width := 280;
     End;
     ParameterList.AddParameter(Parameter);
     ParameterList.AutoHeight := AutoHeightCheckBox.Checked;

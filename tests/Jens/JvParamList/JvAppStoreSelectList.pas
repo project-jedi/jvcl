@@ -36,7 +36,7 @@ uses
 type
   TJvAppStoreSelectListOperation = (sloLoad, sloStore, sloManage);
 
-  TJvAppStoreSelectList = class(TJvComponent)
+  TJvAppStoreSelectList = class (TJvComponent)
   private
     FSelectDialog: TForm;
     FListBox: TWinControl;
@@ -50,45 +50,43 @@ type
     FDynControlEngine: TJvDynControlEngine;
     FSelectList: TStringList;
     FOperation: TJvAppStoreSelectListOperation;
-    FCheckEntries: Boolean;
-    // (rom) maybe protected and virtual
-    function GetSelectList: TStrings;
-    procedure SetSelectList(const Value: TStrings);
+    FCheckEntries: boolean;
   protected
+    function GetSelectList: TStrings; virtual;
+    procedure SetSelectList(const Value: TStrings); virtual;
     function GetAppStore: TJvCustomAppStore; virtual;
     procedure SetAppStore(Value: TJvCustomAppStore); virtual;
     procedure SetSelectPath(Value: string);
     function GetDynControlEngine: TJvDynControlEngine; virtual;
     procedure SetDynControlEngine(Value: TJvDynControlEngine); virtual;
     procedure CreateDialog(AOperation: TJvAppStoreSelectListOperation; ACaption: string = '');
-    // (rom) Change these names! This is not a TForm and On is reserved for events.
-    procedure OnOkButtonClick(Sender: TObject);
-    procedure OnCancelButtonClick(Sender: TObject);
-    procedure OnListBoxChange(Sender: TObject);
+    procedure DialogOnOkButtonClick(Sender: TObject);
+    procedure DialogOnCancelButtonClick(Sender: TObject);
+    procedure DialogOnListBoxChange(Sender: TObject);
     procedure SelectFormDestroying(Sender: TObject);
 
     procedure LoadSelectList;
     procedure StoreSelectList;
-    property SelectDialog: TForm read FSelectDialog write FSelectDialog;
-    property ListBox: TWinControl read FListBox write FListBox;
-    property IListBoxItems: IJvDynControlItems read FIListBoxItems write FIListBoxItems;
-    property IListBoxData: IJvDynControlData read FIListBoxData write FIListBoxData;
-    property ComboBox: TWinControl read FComboBox write FComboBox;
-    property IComboBoxItems: IJvDynControlItems read FIComboBoxItems write FIComboBoxItems;
-    property IComboBoxData: IJvDynControlData read FIComboBoxData write FIComboBoxData;
-    property SelectList: TStrings read GetSelectList write GetSelectList;
-    property Operation: TJvAppStoreSelectListOperation read FOperation write FOperation;
+    property SelectDialog: TForm Read FSelectDialog Write FSelectDialog;
+    property ListBox: TWinControl Read FListBox Write FListBox;
+    property IListBoxItems: IJvDynControlItems Read FIListBoxItems Write FIListBoxItems;
+    property IListBoxData: IJvDynControlData Read FIListBoxData Write FIListBoxData;
+    property ComboBox: TWinControl Read FComboBox Write FComboBox;
+    property IComboBoxItems: IJvDynControlItems Read FIComboBoxItems Write FIComboBoxItems;
+    property IComboBoxData: IJvDynControlData Read FIComboBoxData Write FIComboBoxData;
+    property SelectList: TStrings Read GetSelectList Write SetSelectList;
+    property Operation: TJvAppStoreSelectListOperation Read FOperation Write FOperation;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetSelectPath(AOperation: TJvAppStoreSelectListOperation; ACaption: string = ''): string;
     procedure ManageSelectList(ACaption: string = '');
-    property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write SetDynControlEngine;
+    property DynControlEngine: TJvDynControlEngine Read GetDynControlEngine Write SetDynControlEngine;
   published
-    property AppStore: TJvCustomAppStore read GetAppStore write SetAppStore;
-    property SelectPath: string read FSelectPath write SetSelectPath;
-    property CheckEntries: Boolean read FCheckEntries write FCheckEntries default True;
+    property AppStore: TJvCustomAppStore Read GetAppStore Write SetAppStore;
+    property SelectPath: string Read FSelectPath Write SetSelectPath;
+    property CheckEntries: boolean Read FCheckEntries Write FCheckEntries default true;
   end;
 
 implementation
@@ -100,17 +98,17 @@ resourcestring
   SLoadSettings = 'Load Settings';
   SSaveSettings = 'Save Settings';
   SDeleteSettings = 'Delete Settings';
-  SOk = '&Ok';
+  SOk     = '&Ok';
   SCancel = '&Cancel';
-  SLoad = '&Load';
-  SSave = '&Save';
+  SLoad   = '&Load';
+  SSave   = '&Save';
   SDelete = '&Delete';
 
 constructor TJvAppStoreSelectList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FSelectList := TStringList.Create;
-  FCheckEntries := True;
+  FSelectList   := TStringList.Create;
+  FCheckEntries := true;
   FSelectDialog := nil;
 end;
 
@@ -133,7 +131,7 @@ begin
   Result := FSelectList;
 end;
 
-procedure SetSelectList(const Value: TStrings);
+procedure TJvAppStoreSelectList.SetSelectList(const Value: TStrings);
 begin
   FSelectList.Assign(Value);
 end;
@@ -166,7 +164,7 @@ begin
   FDynControlEngine := Value;
 end;
 
-procedure TJvAppStoreSelectList.OnOkButtonClick(Sender: TObject);
+procedure TJvAppStoreSelectList.DialogOnOkButtonClick(Sender: TObject);
 var
   Value: string;
 begin
@@ -176,14 +174,14 @@ begin
       SelectDialog.ModalResult := mrOk;
 end;
 
-procedure TJvAppStoreSelectList.OnCancelButtonClick(Sender: TObject);
+procedure TJvAppStoreSelectList.DialogOnCancelButtonClick(Sender: TObject);
 begin
   SelectDialog.ModalResult := mrCancel;
 end;
 
-procedure TJvAppStoreSelectList.OnListBoxChange(Sender: TObject);
+procedure TJvAppStoreSelectList.DialogOnListBoxChange(Sender: TObject);
 var
-  Index: Integer;
+  Index: integer;
 begin
   Index := IListBoxData.Value;
   if (Index >= 0) and (Index < IListBoxItems.Items.Count) then
@@ -193,24 +191,25 @@ end;
 procedure TJvAppStoreSelectList.SelectFormDestroying(Sender: TObject);
 begin
   FIComboBoxItems := nil;
-  FIComboBoxData := nil;
-  FIListBoxItems := nil;
-  FIListBoxData := nil;
+  FIComboBoxData  := nil;
+  FIListBoxItems  := nil;
+  FIListBoxData   := nil;
 end;
 
-procedure TJvAppStoreSelectList.CreateDialog(AOperation: TJvAppStoreSelectListOperation;
-  ACaption: string = '');
+procedure TJvAppStoreSelectList.CreateDialog(AOperation: TJvAppStoreSelectListOperation; ACaption: string = '');
 var
   MainPanel, ButtonPanel, ListBoxPanel, ComboBoxPanel: TWinControl;
   OkButton, CancelButton: tWinControl;
-  ITmpPanel: IJVDynControlPanel;
-  ITmpControl: IJvDynControl;
+  ITmpPanel:    IJVDynControlPanel;
+  ITmpControl:  IJvDynControl;
   ITmpComboBox: IJvDynControlComboBox;
 begin
+  if not Assigned(DynControlEngine) then
+    raise Exception.Create('TJvAppStoreSelectList.CreateDialog : DynControlEngine Not Defined!');
+
   Operation := AOperation;
   FreeAndNil(FSelectDialog);
 
-  // (rom) this may fail if DynControlEngine is nil
   FSelectDialog := TForm(DynControlEngine.CreateForm('', ''));
 
   with SelectDialog do
@@ -219,7 +218,7 @@ begin
     DefaultMonitor := dmActiveForm;
     FormStyle := fsNormal;
     BorderStyle := bsDialog;
-    Position := poScreenCenter;
+    Position  := poScreenCenter;
     OnDestroy := SelectFormDestroying;
   end;
 
@@ -235,21 +234,19 @@ begin
         SelectDialog.Caption := SDeleteSettings;
     end;
 
-  // (rom) this may fail if DynControlEngine is nil
-  MainPanel := DynControlEngine.CreatePanelControl(Self, SelectDialog, 'MainPanel', '', alClient);
+  MainPanel   := DynControlEngine.CreatePanelControl(Self, SelectDialog, 'MainPanel', '', alClient);
   ButtonPanel := DynControlEngine.CreatePanelControl(Self, SelectDialog, 'ButtonPanel', '', alBottom);
 
-  OkButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'OkButton', SOk, '', OnOkButtonClick, True, False);
+  OkButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'OkButton', SOk, '', DialogOnOkButtonClick, true, false);
   if Operation <> sloStore then
     OkButton.Enabled := SelectList.Count > 0;
-  CancelButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'CancelButton', SCancel, '', OnCancelButtonClick,
-    False, True);
+  CancelButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'CancelButton', SCancel, '', DialogOnCancelButtonClick, false, true);
   ButtonPanel.Height := OkButton.Height + 10;
   CancelButton.Top := 5;
   CancelButton.Left := ButtonPanel.Width - 5 - CancelButton.Width;
   CancelButton.Anchors := [akTop, akRight];
-  OkButton.Top := 5;
-  OkButton.Left := CancelButton.Left - 10 - OkButton.Width;
+  OkButton.Top     := 5;
+  OkButton.Left    := CancelButton.Left - 10 - OkButton.Width;
   OkButton.Anchors := [akTop, akRight];
 
   ComboBoxPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ComboBoxPanel', '', alBottom);
@@ -269,15 +266,15 @@ begin
   if not Supports(ComboBox, IJvDynControlData, FIComboBoxData) then
     raise EIntfCastError.Create(SIntfCastError);
 
-  IComboBoxItems.ControlSetSorted(True);
+  IComboBoxItems.ControlSetSorted(true);
   if Supports(ComboBox, IJvDynControlComboBox, ITmpComboBox) then
     case AOperation of
       sloLoad:
-        ITmpComboBox.ControlSetNewEntriesAllowed(False);
+        ITmpComboBox.ControlSetNewEntriesAllowed(false);
       sloStore:
-        ITmpComboBox.ControlSetNewEntriesAllowed(True);
+        ITmpComboBox.ControlSetNewEntriesAllowed(true);
       sloManage:
-        ITmpComboBox.ControlSetNewEntriesAllowed(False);
+        ITmpComboBox.ControlSetNewEntriesAllowed(false);
     end;
 
   IComboBoxData.Value := '';
@@ -286,15 +283,15 @@ begin
   Supports(ListBox, IJvDynControlItems, FIListBoxItems);
   Supports(ListBox, IJvDynControlData, FIListBoxData);
   with IListBoxItems as IJvDynControl do
-    ControlSetOnClick(OnListBoxChange);
+    ControlSetOnClick(DialogOnListBoxChange);
   with IListBoxItems as IJvDynControlData do
-    ControlSetOnChange(OnListBoxChange);
+    ControlSetOnChange(DialogOnListBoxChange);
   if Supports(ListBox.ClassType, IJvDynControlDblClick) then
     with IListBoxItems as IJvDynControlDblClick do
-      ControlSetOnDblClick(OnOkButtonClick);
+      ControlSetOnDblClick(DialogOnOkButtonClick);
 
   ComboBoxPanel.Height := ComboBox.Height + 10;
-  ListBox.Align := alClient;
+  ListBox.Align  := alClient;
   ComboBox.Align := alClient;
 
   if not Supports(OkButton, IJvDynControl, ITmpControl) then
@@ -310,8 +307,7 @@ begin
     end;
 end;
 
-function TJvAppStoreSelectList.GetSelectPath(AOperation: TJvAppStoreSelectListOperation;
-  ACaption: string = ''): string;
+function TJvAppStoreSelectList.GetSelectPath(AOperation: TJvAppStoreSelectListOperation; ACaption: string = ''): string;
 begin
   try
     LoadSelectList;
@@ -324,23 +320,23 @@ begin
           // (rom) probably needs PathDelim throughout the files
           Result := SelectPath + '\' + IComboBoxData.Value;
         sloStore:
+        begin
+          if SelectList.IndexOf(IComboBoxData.Value) < 0 then
           begin
-            if SelectList.IndexOf(IComboBoxData.Value) < 0 then
-            begin
-              SelectList.Add(IComboBoxData.Value);
-              StoreSelectList;
-            end;
-            Result := SelectPath + '\' + IComboBoxData.Value;
+            SelectList.Add(IComboBoxData.Value);
+            StoreSelectList;
           end;
+          Result := SelectPath + '\' + IComboBoxData.Value;
+        end;
         sloManage:
+        begin
+          if SelectList.IndexOf(IComboBoxData.Value) >= 0 then
           begin
-            if SelectList.IndexOf(IComboBoxData.Value) >= 0 then
-            begin
-              SelectList.Delete(SelectList.IndexOf(IComboBoxData.Value));
-              StoreSelectList;
-            end;
-            Result := SelectPath + '\' + IComboBoxData.Value;
+            SelectList.Delete(SelectList.IndexOf(IComboBoxData.Value));
+            StoreSelectList;
           end;
+          Result := SelectPath + '\' + IComboBoxData.Value;
+        end;
       end;
     end;
   finally
@@ -355,11 +351,11 @@ end;
 
 procedure TJvAppStoreSelectList.LoadSelectList;
 var
-  I: Integer;
+  I: integer;
 begin
   if not Assigned(AppStore) then
     Exit;
-  AppStore.ReadStringList(SelectPath, FSelectList, True);
+  AppStore.ReadStringList(SelectPath, FSelectList, true);
   if CheckEntries then
     for I := FSelectList.Count - 1 downto 0 do
       if not AppStore.PathExists(SelectPath + '\' + FSelectList[I]) then
@@ -368,7 +364,7 @@ end;
 
 procedure TJvAppStoreSelectList.StoreSelectList;
 var
-  I: Integer;
+  I: integer;
 begin
   if not Assigned(AppStore) then
     Exit;
@@ -380,4 +376,3 @@ begin
 end;
 
 end.
-

@@ -437,8 +437,7 @@ begin
     raise EIntfCastError.Create(SIntfCastError);
   if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
     raise EIntfCastError.Create(SIntfCastError);
-  // (rom) better Assign?
-  DynCtrlItems.Items := AItems;
+  DynCtrlItems.ControlSetItems(AItems);
 end;
 
 function TJvDynControlEngine.CreateGroupBoxControl(AOwner: TComponent;
@@ -495,9 +494,8 @@ begin
   Result := TWinControl(CreateControl(jctListBox, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
     raise EIntfCastError.Create(SIntfCastError);
-  // (rom) better Assign?
   with DynCtrl as iJvDynControlItems do
-    Items := AItems;
+    ControlSetItems(AItems);
 end;
 
 function TJvDynControlEngine.CreateDateTimeControl(AOwner: TComponent;

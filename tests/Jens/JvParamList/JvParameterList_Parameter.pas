@@ -29,10 +29,10 @@ unit JvParameterList_Parameter;
 interface
 
 uses Classes, SysUtils, StdCtrls, ExtCtrls, Graphics, Forms, Controls,
-     {$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-     {$ENDIF}
-  Dialogs, ComCtrls,
+  {$ENDIF}
+  FileCtrl, Dialogs, ComCtrls,
   JvPanel, JvPropertyStore, JvParameterList, jvDynControlEngine,
   JvDynControlEngine_Interface;
 
@@ -49,339 +49,351 @@ type
     property ReloadValuefromRegistry;
     property ReadOnly;
   public
-    constructor Create(AParameterList : TJvParameterList); override;
-    function Validate(var fData : variant) : boolean; override;
+    constructor Create(AParameterList: TJvParameterList); override;
+    function Validate(var fData: variant): boolean; override;
   end;
 
   tJvParameterLabelArrangeMode = (lamBefore, lamAbove);
 
   TJvBasePanelEditParameter = class (tJvBaseParameter)
   private
-    fLabelControl : tControl;
-    fFramePanel : tWinControl;
-    fLabelArrangeMode : tJvParameterLabelArrangeMode;
-    fLabelWidth : integer;
-    fEditWidth : integer;
-    fRightSpace : integer;
+    fLabelControl: tControl;
+    fFramePanel: tWinControl;
+    fLabelArrangeMode: tJvParameterLabelArrangeMode;
+    fLabelWidth: integer;
+    fEditWidth: integer;
+    fRightSpace: integer;
   protected
-    procedure Notification(AComponent : TComponent; Operation : TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ArrangeLabelAndWinControlOnPanel; virtual;
-    procedure CreateLabelControl(aParameterParent : TWinControl); virtual;
-    procedure CreateFramePanel(aParameterParent : TWinControl); virtual;
-    procedure CreateWinControl(aParameterParent : TWinControl); virtual; abstract;
-    property LabelControl : TControl Read fLabelControl Write fLabelControl;
-    property FramePanel : tWinControl Read fFramePanel Write fFramePanel;
+    procedure CreateLabelControl(aParameterParent: TWinControl); virtual;
+    procedure CreateFramePanel(aParameterParent: TWinControl); virtual;
+    procedure CreateWinControl(aParameterParent: TWinControl); virtual; abstract;
+    property LabelControl: TControl Read fLabelControl Write fLabelControl;
+    property FramePanel: tWinControl Read fFramePanel Write fFramePanel;
   public
-    constructor Create(AParameterList : TJvParameterList); override;
-    procedure Assign(Source : TPersistent); override;
-    procedure SetEnabled(Value : boolean); override;
-    procedure CreateWinControlOnParent(ParameterParent : TWinControl); override;
+    constructor Create(AParameterList: TJvParameterList); override;
+    procedure Assign(Source: TPersistent); override;
+    procedure SetEnabled(Value: boolean); override;
+    procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   published
-    property LabelArrangeMode : tJvParameterLabelArrangeMode Read fLabelArrangeMode Write fLabelArrangeMode;
-    property LabelWidth : integer Read fLabelWidth Write fLabelWidth;
-    property EditWidth : integer Read fEditWidth Write fEditWidth;
-    property RightSpace : integer Read fRightSpace Write fRightSpace;
+    property LabelArrangeMode: tJvParameterLabelArrangeMode Read fLabelArrangeMode Write fLabelArrangeMode;
+    property LabelWidth: integer Read fLabelWidth Write fLabelWidth;
+    property EditWidth: integer Read fEditWidth Write fEditWidth;
+    property RightSpace: integer Read fRightSpace Write fRightSpace;
   end;
 
   TJvArrangeParameter = class (TJvNoDataParameter)
   private
-    fArrangeSettings : tJvArrangeSettings;
+    fArrangeSettings: tJvArrangeSettings;
   protected
-    procedure SetArrangeSettings(Value : TJvArrangeSettings);
+    procedure SetArrangeSettings(Value: TJvArrangeSettings);
   public
-    constructor Create(AParameterList : TJvParameterList); override;
+    constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
-    procedure Assign(Source : TPersistent); override;
+    procedure Assign(Source: TPersistent); override;
   published
-    property ArrangeSettings : TJvArrangeSettings Read FArrangeSettings Write SetArrangeSettings;
+    property ArrangeSettings: TJvArrangeSettings Read FArrangeSettings Write SetArrangeSettings;
     property Color;
   end;
 
   TJvPanelParameter = class (TJvArrangeParameter)
   private
-    fBevelInner : TPanelBevel;
-    fBevelOuter : TPanelBevel;
+    fBevelInner: TPanelBevel;
+    fBevelOuter: TPanelBevel;
+    fBevelWidth: integer;
+    fBorderStyle: TBorderStyle;
+    fBorderWidth: integer;
   protected
-    function GetParameterNameExt : string; override;
+    function GetParameterNameExt: string; override;
   public
-    constructor Create(AParameterList : TJvParameterList); override;
-    procedure Assign(Source : TPersistent); override;
-    procedure CreateWinControlOnParent(ParameterParent : TWinControl); override;
+    constructor Create(AParameterList: TJvParameterList); override;
+    procedure Assign(Source: TPersistent); override;
+    procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   published
-    property BevelInner : TPanelBevel Read fBevelInner Write fBevelInner;
-    property BevelOuter : TPanelBevel Read fBevelOuter Write fBevelOuter;
+    property BevelInner: TPanelBevel Read fBevelInner Write fBevelInner;
+    property BevelOuter: TPanelBevel Read fBevelOuter Write fBevelOuter;
+    property BevelWidth: integer Read fBevelWidth Write fBevelWidth;
+    property BorderStyle: TBorderStyle Read fBorderStyle Write fBorderStyle;
+    property BorderWidth: integer Read fBorderWidth Write fBorderWidth;
   end;
 
   TJvGroupBoxParameter = class (TJvArrangeParameter)
   private
   protected
-    function GetParameterNameExt : string; override;
+    function GetParameterNameExt: string; override;
   public
-    procedure CreateWinControlOnParent(ParameterParent : TWinControl); override;
+    procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   end;
 
-  TJvImageParameter = class (TJvNoDataParameter)
+  TJvImageParameter = class (TJvBasePanelEditParameter)
   private
-    fAutoSize : boolean;
-    fCenter : boolean;
-    fIncrementalDisplay : boolean;
-    fTransparent : boolean;
-    fStretch : boolean;
-    fPicture : TPicture;
+    fAutoSize: boolean;
+    fCenter: boolean;
+    fIncrementalDisplay: boolean;
+    fTransparent: boolean;
+    fStretch: boolean;
+    fPicture: TPicture;
   protected
-    procedure SetPicture(Value : TPicture);
-    function GetParameterNameExt : string; override;
+    procedure SetPicture(Value: TPicture);
+    function GetParameterNameExt: string; override;
+    procedure CreateWinControl(aParameterParent: TWinControl); override;
   public
-    constructor Create(AParameterList : TJvParameterList); override;
+    constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
-    procedure Assign(Source : TPersistent); override;
-    procedure CreateWinControlOnParent(ParameterParent : TWinControl); override;
+    procedure Assign(Source: TPersistent); override;
   published
-    property AutoSize : boolean Read fAutoSize Write fAutoSize;
-    property Center : boolean Read fCenter Write fCenter;
-    property IncrementalDisplay : boolean Read fIncrementalDisplay Write fIncrementalDisplay;
-    property Transparent : boolean Read fTransparent Write fTransparent;
-    property Stretch : boolean Read fStretch Write fStretch;
-    property Picture : TPicture Read fPicture Write SetPicture;
+    property AutoSize: boolean Read fAutoSize Write fAutoSize;
+    property Center: boolean Read fCenter Write fCenter;
+    property IncrementalDisplay: boolean Read fIncrementalDisplay Write fIncrementalDisplay;
+    property Transparent: boolean Read fTransparent Write fTransparent;
+    property Stretch: boolean Read fStretch Write fStretch;
+    property Picture: TPicture Read fPicture Write SetPicture;
   end;
 
   TJvLabelParameter = class (TJvNoDataParameter)
   private
   protected
   public
-    procedure CreateWinControlOnParent(ParameterParent : TWinControl); override;
+    procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   end;
 
   TJvCheckboxParameter = class (tJvBaseParameter)
   private
   protected
   public
-    procedure CreateWinControlOnParent(ParameterParent : TWinControl); override;
+    procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   end;
 
   TJvEditParameter = class (TJvBasePanelEditParameter)
   private
-    fEditMask : string;
-    fPasswordChar : char;
+    fEditMask: string;
+    fPasswordChar: char;
   protected
-    function GetParameterNameExt : string; override;
-    procedure CreateWinControl(aParameterParent : TWinControl); override;
+    function GetParameterNameExt: string; override;
+    procedure CreateWinControl(aParameterParent: TWinControl); override;
 
   public
-    constructor Create(AParameterList : TJvParameterList); override;
-    procedure Assign(Source : TPersistent); override;
+    constructor Create(AParameterList: TJvParameterList); override;
+    procedure Assign(Source: TPersistent); override;
   published
-    property EditMask : string Read fEditMask Write fEditMask;
-    property PasswordChar : char Read fPasswordChar Write fPasswordChar;
+    property EditMask: string Read fEditMask Write fEditMask;
+    property PasswordChar: char Read fPasswordChar Write fPasswordChar;
   end;
 
   TJvIntegerEditParameter = class (TJvEditParameter)
   private
-    fMinValue : integer;
-    fMaxValue : integer;
+    fMinValue: integer;
+    fMaxValue: integer;
   protected
   public
-    constructor Create(AParameterList : TJvParameterList); override;
-    procedure Assign(Source : TPersistent); override;
-    function Validate(var fData : variant) : boolean; override;
+    constructor Create(AParameterList: TJvParameterList); override;
+    procedure Assign(Source: TPersistent); override;
+    function Validate(var fData: variant): boolean; override;
   published
-    property MinValue : integer Read fMinValue Write fMinValue;
-    property MaxValue : integer Read fMaxValue Write fMaxValue;
+    property MinValue: integer Read fMinValue Write fMinValue;
+    property MaxValue: integer Read fMaxValue Write fMaxValue;
   end;
 
   TJvDoubleEditParameter = class (TJvEditParameter)
   private
-    fMinValue : double;
-    fMaxValue : double;
+    fMinValue: double;
+    fMaxValue: double;
   protected
   public
-    constructor Create(AParameterList : TJvParameterList); override;
-    procedure Assign(Source : TPersistent); override;
-    function Validate(var fData : variant) : boolean; override;
+    constructor Create(AParameterList: TJvParameterList); override;
+    procedure Assign(Source: TPersistent); override;
+    function Validate(var fData: variant): boolean; override;
   published
-    property MinValue : double Read fMinValue Write fMinValue;
-    property MaxValue : double Read fMaxValue Write fMaxValue;
+    property MinValue: double Read fMinValue Write fMinValue;
+    property MaxValue: double Read fMaxValue Write fMaxValue;
   end;
 
 
-  tJvFileNameParameterMode = (fnpOpen, fnpOpenPicture, fnpSave, fnpSavePicture);
-
   TJvFileNameParameter = class (TJvBasePanelEditParameter)
   private
-    fMode : tJvFileNameParameterMode;
-    fDefaultExt : string;
-    fFilter : string;
-    fFilterIndex : integer;
-    fInitialDir : string;
-    foptions : TOpenOptions;
-    fTitle : string;
-    procedure FileNameSelectButtonClick(Sender : TObject);
+    fDefaultExt: string;
+    fFilter: string;
+    fFilterIndex: integer;
+    fInitialDir: string;
+    fDialogOptions: TOpenOptions;
+    fDialogTitle: string;
+    fDialogKind: TJvDynControlFileNameDialogKind;
   protected
-    function GetParameterNameExt : string; override;
-    procedure CreateWinControl(aParameterParent : TWinControl); override;
+    function GetParameterNameExt: string; override;
+    procedure CreateWinControl(aParameterParent: TWinControl); override;
   public
-    procedure Assign(Source : TPersistent); override;
-    function Validate(var fData : variant) : boolean; override;
+    procedure Assign(Source: TPersistent); override;
+    function Validate(var fData: variant): boolean; override;
   published
-    property Mode : tJvFileNameParameterMode Read fMode Write fMode;
-    property FileName : string Read GetAsString Write SetAsString;
-    property DefaultExt : string Read fDefaultExt Write fDefaultExt;
-    property Filter : string Read fFilter Write fFilter;
-    property FilterIndex : integer Read fFilterIndex Write fFilterIndex;
-    property InitialDir : string Read fInitialDir Write fInitialDir;
-    property options : TOpenOptions Read foptions Write foptions;
-    property Title : string Read fTitle Write fTitle;
+    property FileName: string Read GetAsString Write SetAsString;
+    property DefaultExt: string Read fDefaultExt Write fDefaultExt;
+    property Filter: string Read fFilter Write fFilter;
+    property FilterIndex: integer Read fFilterIndex Write fFilterIndex;
+    property InitialDir: string Read fInitialDir Write fInitialDir;
+    property DialogOptions: TOpenOptions Read fDialogOptions Write fDialogOptions;
+    property DialogTitle: string Read fDialogTitle Write fDialogTitle;
+    property DialogKind: TJvDynControlFileNameDialogKind Read fDialogKind Write fDialogKind;
   end;
 
   TJvDirectoryParameter = class (TJvBasePanelEditParameter)
   private
-    fInitialDir : string;
-    fTitle : string;
-    procedure FileNameSelectButtonClick(Sender : TObject);
+    fInitialDir: string;
+    fDialogTitle: string;
+    fDialogOptions: TSelectDirOpts;
   protected
-    function GetParameterNameExt : string; override;
-    procedure CreateWinControl(aParameterParent : TWinControl); override;
+    function GetParameterNameExt: string; override;
+    procedure CreateWinControl(aParameterParent: TWinControl); override;
   public
-    procedure Assign(Source : TPersistent); override;
-    function Validate(var fData : variant) : boolean; override;
+    procedure Assign(Source: TPersistent); override;
+    function Validate(var fData: variant): boolean; override;
   published
-    property Directory : string Read GetAsString Write SetAsString;
-    property InitialDir : string Read fInitialDir Write fInitialDir;
-    property Title : string Read fTitle Write fTitle;
+    property Directory: string Read GetAsString Write SetAsString;
+    property InitialDir: string Read fInitialDir Write fInitialDir;
+    property DialogTitle: string Read fDialogTitle Write fDialogTitle;
+    property DialogOptions: TSelectDirOpts Read fDialogOptions Write fDialogOptions;
   end;
 
 
   TJvListParameter = class (TJvBasePanelEditParameter)
   private
-    fItemList : TStringList;
-    fItemIndex : integer;
-    fSorted : boolean;
+    fItemList: TStringList;
+    fItemIndex: integer;
+    fSorted: boolean;
   protected
-    procedure SetItemList(Value : TStringList);
-    procedure SetItemIndex(Value : integer);
-    procedure SetAsString(Value : string); override;
-    procedure SetAsInteger(Value : integer); override;
-    function GetAsInteger : integer; override;
+    procedure SetItemList(Value: TStringList);
+    procedure SetItemIndex(Value: integer);
+    procedure SetAsString(Value: string); override;
+    procedure SetAsInteger(Value: integer); override;
+    function GetAsInteger: integer; override;
   public
-    constructor Create(AParameterList : TJvParameterList); override;
+    constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
-    procedure Assign(Source : TPersistent); override;
-    procedure SearchItemIndex(Search : string);
+    procedure Assign(Source: TPersistent); override;
+    procedure SearchItemIndex(Search: string);
     procedure GetData; override;
     procedure SetData; override;
   published
-    property ItemList : TStringList Read fItemList Write SetItemList;
-    property ItemIndex : integer Read fItemIndex Write SetItemIndex;
-    property Sorted : boolean Read fSorted Write fSorted;
+    property ItemList: TStringList Read fItemList Write SetItemList;
+    property ItemIndex: integer Read fItemIndex Write SetItemIndex;
+    property Sorted: boolean Read fSorted Write fSorted;
   end;
 
   TJvRadioGroupParameter = class (TJvListParameter)
   private
-    fColumns : integer;
+    fColumns: integer;
   protected
   public
-    procedure Assign(Source : TPersistent); override;
-    procedure CreateWinControlOnParent(ParameterParent : TWinControl); override;
+    procedure Assign(Source: TPersistent); override;
+    procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   published
-    property Columns : integer Read fColumns Write fColumns;
+    property Columns: integer Read fColumns Write fColumns;
   end;
 
   TJvComboBoxParameterStyle = (cpsListEdit, cpsListFixed);
 
   TJvComboBoxParameter = class (TJvListParameter)
   private
-    fSorted : boolean;
-    fNewEntriesAllowed : boolean;
+    fSorted: boolean;
+    fNewEntriesAllowed: boolean;
   protected
-    function GetParameterNameExt : string; override;
-    procedure CreateWinControl(aParameterParent : TWinControl); override;
+    function GetParameterNameExt: string; override;
+    procedure CreateWinControl(aParameterParent: TWinControl); override;
 
   public
     procedure GetData; override;
     procedure SetData; override;
-    procedure Assign(Source : TPersistent); override;
+    procedure Assign(Source: TPersistent); override;
   published
-    property Sorted : boolean Read fSorted Write fSorted;
-    property NewEntriesAllowed : boolean Read fNewEntriesAllowed Write fNewEntriesAllowed;
+    property Sorted: boolean Read fSorted Write fSorted;
+    property NewEntriesAllowed: boolean Read fNewEntriesAllowed Write fNewEntriesAllowed;
   end;
 
   TJvListBoxParameter = class (TJvListParameter)
   private
-    fsorted : boolean;
+    fsorted: boolean;
   protected
-    function GetParameterNameExt : string; override;
-    function GetWinControlData : variant; override;
-    procedure SetWinControlData(Value : variant); override;
-    procedure CreateWinControl(aParameterParent : TWinControl); override;
+    function GetParameterNameExt: string; override;
+    function GetWinControlData: variant; override;
+    procedure SetWinControlData(Value: variant); override;
+    procedure CreateWinControl(aParameterParent: TWinControl); override;
 
   public
-    constructor Create(AParameterList : TJvParameterList); override;
+    constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
-    procedure Assign(Source : TPersistent); override;
+    procedure Assign(Source: TPersistent); override;
   published
-    property Sorted : boolean Read fSorted Write fSorted;
+    property Sorted: boolean Read fSorted Write fSorted;
   end;
 
   TJvDateTimeParameter = class (TJvBasePanelEditParameter)
   private
-    fCalAlignment : TDTCalAlignment;
-    fDateFormat : TDTDateFormat;
-    fDateMode : TDTDateMode;
-    fKind : TDateTimeKind;
-    fMaxDate : TDate;
-    fMinDate : TDate;
+    fCalAlignment: TDTCalAlignment;
+    fDateFormat: TDTDateFormat;
+    fDateMode: TDTDateMode;
+    fKind: TDateTimeKind;
+    fMaxDate: TDate;
+    fMinDate: TDate;
   protected
-    function GetParameterNameExt : string; override;
-    procedure CreateWinControl(aParameterParent : TWinControl); override;
+    function GetParameterNameExt: string; override;
+    procedure CreateWinControl(aParameterParent: TWinControl); override;
   public
-    procedure Assign(Source : TPersistent); override;
+    procedure Assign(Source: TPersistent); override;
   published
-    property CalAlignment : TDTCalAlignment Read fCalAlignment Write fCalAlignment;
-    property DateFormat : TDTDateFormat Read fDateFormat Write fDateFormat;
-    property DateMode : TDTDateMode Read fDateMode Write fDateMode;
-    property Kind : TDateTimeKind Read fKind Write fKind;
-    property MaxDate : TDate Read fMaxDate Write fMaxDate;
-    property MinDate : TDate Read fMinDate Write fMinDate;
+    property CalAlignment: TDTCalAlignment Read fCalAlignment Write fCalAlignment;
+    property DateFormat: TDTDateFormat Read fDateFormat Write fDateFormat;
+    property DateMode: TDTDateMode Read fDateMode Write fDateMode;
+    property Kind: TDateTimeKind Read fKind Write fKind;
+    property MaxDate: TDate Read fMaxDate Write fMaxDate;
+    property MinDate: TDate Read fMinDate Write fMinDate;
   end;
 
   TJvMemoParameter = class (TJvBasePanelEditParameter)
   private
-    fWordWrap : boolean;
-    fWantTabs : boolean;
-    fWantReturns : boolean;
-    fScrollBars : TScrollStyle;
-    fFontName : string;
+    fWordWrap: boolean;
+    fWantTabs: boolean;
+    fWantReturns: boolean;
+    fScrollBars: TScrollStyle;
+    fFontName: string;
   protected
-    function GetParameterNameExt : string; override;
+    function GetParameterNameExt: string; override;
   public
-    constructor Create(AParameterList : TJvParameterList); override;
+    constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
     procedure GetData; override;
     procedure SetData; override;
-    procedure Assign(Source : TPersistent); override;
-    procedure CreateWinControl(aParameterParent : TWinControl); override;
+    procedure Assign(Source: TPersistent); override;
+    procedure CreateWinControl(aParameterParent: TWinControl); override;
   published
-    property WordWrap : boolean Read fWordWrap Write fWordWrap;
-    property WantTabs : boolean Read fWantTabs Write fWantTabs;
-    property WantReturns : boolean Read fWantReturns Write fWantReturns;
-    property ScrollBars : TScrollStyle Read fScrollBars Write fScrollBars;
-    property FontName : string Read fFontName Write fFontName;
+    property WordWrap: boolean Read fWordWrap Write fWordWrap;
+    property WantTabs: boolean Read fWantTabs Write fWantTabs;
+    property WantReturns: boolean Read fWantReturns Write fWantReturns;
+    property ScrollBars: TScrollStyle Read fScrollBars Write fScrollBars;
+    property FontName: string Read fFontName Write fFontName;
   end;
 
 
 implementation
 
+resourcestring
+  ErrParameterMustBeEntered      = 'Parameter %s must be entered!';
+  ErrParameterIsNotAValidNumber  = 'Parameter %s : %s is not a valid number-value!';
+  ErrParameterMustBeBetween      = 'Parameter %s : %s must be between %s and %s!';
+  ErrParameterFileDoesNotExist   = 'Parameter %s : The file "%s" does not exist!';
+  ErrParameterFileExistOverwrite = 'Parameter %s : The file "%s" exists! Overwrite ?';
+  ErrParameterDirectoryNotExist  = 'Parameter %s : The directory "%s" does not exist!';
+
  {*****************************************************************************}
  {* TJvNoDataParameter                                                           *}
  {*****************************************************************************}
 
-constructor TJvNoDataParameter.Create(AParameterList : TJvParameterList);
+constructor TJvNoDataParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   ReloadValuefromRegistry := false;
 end;   {*** Constructor TJvNoDataParameter.Create ***}
 
-function TJvNoDataParameter.Validate(var fData : variant) : boolean;
+function TJvNoDataParameter.Validate(var fData: variant): boolean;
 begin
   Result := true;
 end;   {*** Function TJvNoDataParameter.Validate ***}
@@ -391,7 +403,7 @@ end;   {*** Function TJvNoDataParameter.Validate ***}
  {* TJvBasePanelEditParameter                                                           *}
  {*****************************************************************************}
 
-constructor TJvBasePanelEditParameter.Create(AParameterList : TJvParameterList);
+constructor TJvBasePanelEditParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   fLabelArrangeMode := lamAbove;
@@ -400,7 +412,7 @@ begin
   fRightSpace := 0;
 end;   {*** Constructor TJvNoDataParameter.Create ***}
 
-procedure TJvBasePanelEditParameter.CreateWinControlOnParent(ParameterParent : TWinControl);
+procedure TJvBasePanelEditParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
   CreateFramePanel(ParameterParent);
 
@@ -411,7 +423,7 @@ begin
   ArrangeLabelAndWinControlOnPanel;
 end;   {*** Procedure TJvBasePanelEditParameter.CreateWinControlOnParent ***}
 
-procedure TJvBasePanelEditParameter.Notification(AComponent : TComponent; Operation : TOperation);
+procedure TJvBasePanelEditParameter.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (AComponent = fFramePanel) and (Operation = opRemove) then
@@ -420,7 +432,7 @@ begin
     fLabelControl := nil;
 end;   {*** procedure tBaseOraToolForm.Notification ***}
 
-procedure TJvBasePanelEditParameter.CreateFramePanel(aParameterParent : TWinControl);
+procedure TJvBasePanelEditParameter.CreateFramePanel(aParameterParent: TWinControl);
 begin
   FramePanel := DynControlEngine.CreatePanelControl(Self, aParameterParent, GetParameterName + 'Panel', '', alNone);
   if FramePanel is TPanel then
@@ -438,7 +450,7 @@ begin
   FramePanel.Visible := true;
 end;
 
-procedure TJvBasePanelEditParameter.CreateLabelControl(aParameterParent : TWinControl);
+procedure TJvBasePanelEditParameter.CreateLabelControl(aParameterParent: TWinControl);
 begin
   if Caption = '' then
     Exit;
@@ -557,14 +569,14 @@ begin
   end;
 end;
 
-procedure TJvBasePanelEditParameter.SetEnabled(Value : boolean);
+procedure TJvBasePanelEditParameter.SetEnabled(Value: boolean);
 begin
   inherited SetEnabled(Value);
   if Assigned(LabelControl) then
     LabelControl.Enabled := Value;
 end;
 
-procedure TJvBasePanelEditParameter.Assign(Source : TPersistent);
+procedure TJvBasePanelEditParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   LabelArrangeMode := TJvBasePanelEditParameter(Source).LabelArrangeMode;
@@ -577,7 +589,7 @@ end;
  {* TJvLabelParameter                                                           *}
  {*****************************************************************************}
 
-procedure TJvLabelParameter.CreateWinControlOnParent(ParameterParent : TWinControl);
+procedure TJvLabelParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
   WinControl := DynControlEngine.CreateStaticTextControl(Self, ParameterParent, GetParameterName, Caption);
 end;   {*** Procedure TJvLabelParameter.CreateWinControlOnParent ***}
@@ -586,7 +598,7 @@ end;   {*** Procedure TJvLabelParameter.CreateWinControlOnParent ***}
  {* TJvImageParameter                                                           *}
  {*****************************************************************************}
 
-constructor TJvImageParameter.Create(AParameterList : TJvParameterList);
+constructor TJvImageParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   fPicture    := TPicture.Create;
@@ -603,12 +615,12 @@ begin
   inherited Destroy;
 end;   {*** Destructor TJvImageParameter.Destroy ***}
 
-procedure TJvImageParameter.SetPicture(Value : TPicture);
+procedure TJvImageParameter.SetPicture(Value: TPicture);
 begin
   fPicture.Assign(Value);
 end;  {*** procedure TJvImageParameter.SetPicture ***}
 
-procedure TJvImageParameter.Assign(Source : TPersistent);
+procedure TJvImageParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   Picture     := TJvImageParameter(Source).Picture;
@@ -619,50 +631,33 @@ begin
   Transparent := TJvImageParameter(Source).Transparent;
 end;   {*** Procedure TJvImageParameter.Assign ***}
 
-function TJvImageParameter.GetParameterNameExt : string;
+function TJvImageParameter.GetParameterNameExt: string;
 begin
   Result := 'Image';
 end;   {*** function TJvImageParameter.GetParameterNameExt ****}
 
-procedure TJvImageParameter.CreateWinControlOnParent(ParameterParent : TWinControl);
+procedure TJvImageParameter.CreateWinControl(aParameterParent: TWinControl);
 var
-  Panel : TPanel;
-  Image : TImage;
+  ITmpImage: IJvDynControlImage;
 begin
-  Panel      := TPanel.Create(ParameterParent.Owner);
-  Panel.Name := GetParameterNameBase;
-  if TabOrder >= 0 then
-    Panel.TabOrder := TabOrder;
-  Panel.Bevelinner := bvNone;
-  Panel.BevelOuter := bvNone;
-  Panel.Parent := ParameterParent;
-  Panel.Visible := true;
-  Caption    := '';
-  Image      := TImage.Create(ParameterParent.Owner);
-  Image.Name := GetParameterName;
-  WinControl := Panel;
-  Image.Parent := Panel;
-  Image.Visible := true;
-  Image.AutoSize := AutoSize;
-  Image.Center := Center;
-  Image.IncrementalDisplay := IncrementalDisplay;
-  Image.Stretch := Stretch;
-  Image.Transparent := Transparent;
-  Image.Picture.Assign(Picture);
-  if Width > 0 then
-    Image.Width := Width;
-  if Height > 0 then
-    Image.Height := Height;
-  Image.Width := Width;
-  Image.Height := Height;
-end;   {*** Procedure TJvImageParameter.CreateWinControlOnParent ***}
-
+  WinControl := DynControlEngine.CreateImageControl(Self, aParameterParent, GetParameterName);
+  if Supports(WinControl, IJvDynControlImage, ITmpImage) then
+    with ITmpImage do
+    begin
+      ControlSetPicture(Picture);
+      ControlSetAutoSize(AutoSize);
+      ControlSetIncrementalDisplay(IncrementalDisplay);
+      ControlSetCenter(Center);
+      ControlSetStretch(Stretch);
+      ControlSetTransparent(Transparent);
+    end;
+end;
 
  {*****************************************************************************}
  {* TJvArrangeParameter                                                           *}
  {*****************************************************************************}
 
-constructor TJvArrangeParameter.Create(AParameterList : TJvParameterList);
+constructor TJvArrangeParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   fArrangeSettings := tJvArrangeSettings.Create(nil);
@@ -674,12 +669,12 @@ begin
   inherited Destroy;
 end;   {*** destructor TJvArrangeParameter.Destroy ***}
 
-procedure TJvArrangeParameter.Assign(Source : TPersistent);
+procedure TJvArrangeParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
 end;   {*** Procedure TJvArrangeParameter.Assign ***}
 
-procedure TJvArrangeParameter.SetArrangeSettings(Value : TJvArrangeSettings);
+procedure TJvArrangeParameter.SetArrangeSettings(Value: TJvArrangeSettings);
 begin
   fArrangeSettings.Assign(Value);
 end;   {*** Procedure TJvArrangeParameter.SetArrangeSettings ***}
@@ -689,70 +684,53 @@ end;   {*** Procedure TJvArrangeParameter.SetArrangeSettings ***}
  {* TJvPanelParameter                                                           *}
  {*****************************************************************************}
 
-constructor TJvPanelParameter.Create(AParameterList : TJvParameterList);
+constructor TJvPanelParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
-  bevelInner := bvNone;
-  bevelOuter := bvNone;
+  bevelInner  := bvNone;
+  bevelOuter  := bvNone;
+  BevelWidth  := 1;
+  BorderStyle := bsNone;
+  BorderWidth := 0;
 end;   {*** Constructor TJvPanelParameter.Create ***}
 
-procedure TJvPanelParameter.Assign(Source : TPersistent);
+procedure TJvPanelParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   bevelInner := TJvPanelParameter(Source).bevelInner;
   bevelOuter := TJvPanelParameter(Source).bevelOuter;
 end;   {*** Procedure TJvPanelParameter.Assign ***}
 
-function TJvPanelParameter.GetParameterNameExt : string;
+function TJvPanelParameter.GetParameterNameExt: string;
 begin
   Result := 'Panel';
 end;   {*** function TJvPanelParameter.GetParameterNameExt ****}
 
-procedure TJvPanelParameter.CreateWinControlOnParent(ParameterParent : TWinControl);
+procedure TJvPanelParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 var
-  Panel : tJvPanel;
+  iTmpPanel: IJvDynControlPanel;
 begin
-  Panel      := tJvPanel.Create(ParameterParent.Owner);
-  Panel.Name := GetParameterName;
-  WinControl := Panel;
-  if TabOrder >= 0 then
-    Panel.TabOrder := TabOrder;
-  Panel.ArrangeSettings := ArrangeSettings;
-  Panel.BevelInner := BevelInner;
-  Panel.BevelOuter := BevelOuter;
-  Panel.Parent     := ParameterParent;
-  Panel.Caption    := Caption;
-  Panel.Visible    := true;
-  Panel.Color      := Color;
-  if Width > 0 then
-    Panel.Width := Width;
-  if Height > 0 then
-    Panel.Height := Height;
+  WinControl := DynControlEngine.CreatePanelControl(Self, ParameterParent, GetParameterName, Caption, alNone);
+  if Supports(WinControl, IJvDynControlPanel, iTmpPanel) then
+    iTmpPanel.ControlSetBorder(BevelInner, BevelOuter, BevelWidth, BorderStyle, BorderWidth);
 end;   {*** Procedure TJvPanelParameter.CreateWinControlOnParent ***}
 
  {*****************************************************************************}
  {* TJvGroupBoxParameter                                                        *}
  {*****************************************************************************}
 
-function TJvGroupBoxParameter.GetParameterNameExt : string;
+function TJvGroupBoxParameter.GetParameterNameExt: string;
 begin
   Result := 'GroupBoxPanel';
 end;   {*** function TJvGroupBoxParameter.GetParameterNameExt ****}
 
 
-procedure TJvGroupBoxParameter.CreateWinControlOnParent(ParameterParent : TWinControl);
+procedure TJvGroupBoxParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 var
-  GroupBox : TGroupBox;
-  Panel :    tJvPanel;
+  GroupBox: TWinControl;
+  Panel:    TJvPanel;
 begin
-  GroupBox      := TGroupBox.Create(ParameterParent.Owner);
-  GroupBox.Name := GetParameterNameBase;
-  if TabOrder >= 0 then
-    GroupBox.TabOrder := TabOrder;
-  GroupBox.Parent := ParameterParent;
-  GroupBox.Caption := Caption;
-  GroupBox.Visible := true;
-  GroupBox.Color   := Color;
+  GroupBox := DynControlEngine.CreateGroupBoxControl(Self, ParameterParent, GetParameterName, Caption);
   if Width > 0 then
     GroupBox.Width := Width;
   if Height > 0 then
@@ -775,7 +753,7 @@ end;   {*** Procedure TJvGroupBoxParameter.CreateWinControlOnParent ***}
  {* TJvListParameter                                                            *}
  {*****************************************************************************}
 
-constructor TJvListParameter.Create(AParameterList : TJvParameterList);
+constructor TJvListParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   fItemList := TStringList.Create;
@@ -788,27 +766,27 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvListParameter.SetAsString(Value : string);
+procedure TJvListParameter.SetAsString(Value: string);
 var
-  i : integer;
+  i: integer;
 begin
   i := ItemList.IndexOf(Value);
   if (i >= 0) and (i < ItemList.Count) then
     ItemIndex := i;
 end;
 
-procedure TJvListParameter.SetAsInteger(Value : integer);
+procedure TJvListParameter.SetAsInteger(Value: integer);
 begin
   if (Value >= 0) and (Value < ItemList.Count) then
     ItemIndex := Value;
 end;
 
-function TJvListParameter.GetAsInteger : integer;
+function TJvListParameter.GetAsInteger: integer;
 begin
   Result := ItemIndex;
 end;
 
-procedure TJvListParameter.SetItemList(Value : TStringList);
+procedure TJvListParameter.SetItemList(Value: TStringList);
 begin
   fItemList.Assign(Value);
   if not Assigned(Value) then
@@ -817,7 +795,7 @@ begin
     AsVariant := ItemList[ItemIndex];
 end;   {*** Procedure tJvBaseParameter.SetAsDate ***}
 
-procedure TJvListParameter.SetItemIndex(Value : integer);
+procedure TJvListParameter.SetItemIndex(Value: integer);
 begin
   if Value >= ItemList.Count then
     fItemIndex := ItemList.Count - 1
@@ -827,7 +805,7 @@ begin
     AsVariant := ItemList[Value];
 end;   {*** Procedure tJvBaseParameter.SetAsDate ***}
 
-procedure TJvListParameter.Assign(Source : TPersistent);
+procedure TJvListParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   ItemList.Assign(TJvListParameter(Source).Itemlist);
@@ -835,9 +813,9 @@ begin
   Sorted    := TJvListParameter(Source).Sorted;
 end;   {*** Procedure TJvListParameter.SetAsDate ***}
 
-procedure TJvListParameter.SearchItemIndex(Search : string);
+procedure TJvListParameter.SearchItemIndex(Search: string);
 var
-  i : integer;
+  i: integer;
 begin
   fItemIndex := -1;
   for i := 0 to ItemList.Count - 1 do
@@ -871,15 +849,15 @@ end;   {*** procedure TJvListParameter.SetData ***}
  {*****************************************************************************}
 
 
-procedure TJvRadioGroupParameter.Assign(Source : TPersistent);
+procedure TJvRadioGroupParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   Columns := TJvRadioGroupParameter(Source).Columns;
 end;   {*** Procedure TJvRadioGroupParameter.SetAsDate ***}
 
-procedure TJvRadioGroupParameter.CreateWinControlOnParent(ParameterParent : TWinControl);
+procedure TJvRadioGroupParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 var
-  iTmpRadioGroup : IJvDynControlRadioGroup;
+  iTmpRadioGroup: IJvDynControlRadioGroup;
 begin
   WinControl := DynControlEngine.CreateRadioGroupControl(Self, ParameterParent, GetParameterName, Caption, ItemList);
   JvDynControlData.ControlSetOnChange(HandleEnableDisable);
@@ -892,7 +870,7 @@ end;   {*** Procedure TJvRadioGroupParameter.CreateWinControlOnParent ***}
  {* TJvCheckBoxParameter                                                           *}
  {*****************************************************************************}
 
-procedure TJvCheckBoxParameter.CreateWinControlOnParent(ParameterParent : TWinControl);
+procedure TJvCheckBoxParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
   WinControl := DynControlEngine.CreateCheckBoxControl(Self, ParameterParent, GetParameterName, Caption);
   JvDynControl.ControlSetOnClick(HandleEnableDisable);
@@ -903,14 +881,14 @@ end;   {*** Procedure TJvCheckBoxParameter.CreateWinControlOnParent ***}
  {* TJvComboBoxParameter                                                      *}
  {*****************************************************************************}
 
-procedure TJvComboBoxParameter.Assign(Source : TPersistent);
+procedure TJvComboBoxParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   Sorted := TJvComboBoxParameter(Source).Sorted;
   NewEntriesAllowed := TJvComboBoxParameter(Source).NewEntriesAllowed;
 end;   {*** Procedure TJvComboBoxParameter.SetAsDate ***}
 
-function TJvComboBoxParameter.GetParameterNameExt : string;
+function TJvComboBoxParameter.GetParameterNameExt: string;
 begin
   Result := 'ComboBox';
 end;   {*** function TJvComboBoxParameter.GetParameterNameExt ****}
@@ -928,10 +906,10 @@ begin
     WinControlData := Value;
 end;
 
-procedure TJvComboBoxParameter.CreateWinControl(aParameterParent : TWinControl);
+procedure TJvComboBoxParameter.CreateWinControl(aParameterParent: TWinControl);
 var
-  ITmpComboBox : IJvDynControlComboBox;
-  ITmpItems :    IJvDynControlItems;
+  ITmpComboBox: IJvDynControlComboBox;
+  ITmpItems:    IJvDynControlItems;
 begin
   WinControl := DynControlEngine.CreateComboBoxControl(Self, aParameterParent, GetParameterName, ItemList);
   JvDynControlData.ControlSetOnChange(HandleEnableDisable);
@@ -946,7 +924,7 @@ end;
  {* TJvListBoxParameter                                                      *}
  {*****************************************************************************}
 
-constructor TJvListBoxParameter.Create(AParameterList : TJvParameterList);
+constructor TJvListBoxParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
 end;
@@ -956,20 +934,20 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvListBoxParameter.Assign(Source : TPersistent);
+procedure TJvListBoxParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   Sorted := TJvListBoxParameter(Source).Sorted;
 end;   {*** Procedure TJvListBoxParameter.SetAsDate ***}
 
-function TJvListBoxParameter.GetParameterNameExt : string;
+function TJvListBoxParameter.GetParameterNameExt: string;
 begin
   Result := 'ListBox';
 end;   {*** function TJvListBoxParameter.GetParameterNameExt ****}
 
-procedure TJvListBoxParameter.CreateWinControl(aParameterParent : TWinControl);
+procedure TJvListBoxParameter.CreateWinControl(aParameterParent: TWinControl);
 var
-  ITmpItems : IJvDynControlItems;
+  ITmpItems: IJvDynControlItems;
 begin
   WinControl := DynControlEngine.CreateListBoxControl(Self, aParameterParent, GetParameterName, ItemList);
   JvDynControlData.ControlSetOnChange(HandleEnableDisable);
@@ -978,14 +956,14 @@ begin
 end;
 
 
-function TJvListBoxParameter.GetWinControlData : variant;
+function TJvListBoxParameter.GetWinControlData: variant;
 var
-  i : integer;
+  i: integer;
 begin
   Result := inherited GetWinControlData;
 end;   {*** function TJvListBoxParameter.GetWinControlData ***}
 
-procedure TJvListBoxParameter.SetWinControlData(Value : variant);
+procedure TJvListBoxParameter.SetWinControlData(Value: variant);
 begin
   inherited SetWinControlData(Value);
 end;   {*** procedure TJvListBoxParameter.SetWinControlData ***}
@@ -995,7 +973,7 @@ end;   {*** procedure TJvListBoxParameter.SetWinControlData ***}
  {* TJvDateTimeParameter                                                      *}
  {*****************************************************************************}
 
-procedure TJvDateTimeParameter.Assign(Source : TPersistent);
+procedure TJvDateTimeParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   CalAlignment := TJvDateTimeParameter(Source).CalAlignment;
@@ -1006,13 +984,13 @@ begin
   MinDate := TJvDateTimeParameter(Source).MinDate;
 end;   {*** Procedure TJvDateTimeParameter.SetAsDate ***}
 
-function TJvDateTimeParameter.GetParameterNameExt : string;
+function TJvDateTimeParameter.GetParameterNameExt: string;
 begin
   Result := 'DateTime';
 end;   {*** function TJvDateTimeParameter.GetParameterNameExt ****}
 
 
-procedure TJvDateTimeParameter.CreateWinControl(aParameterParent : TWinControl);
+procedure TJvDateTimeParameter.CreateWinControl(aParameterParent: TWinControl);
 begin
   WinControl := DynControlEngine.CreateDateTimeControl(Self, aParameterParent, GetParameterName);
  //  DateTime.CalAlignment:= CalAlignment;
@@ -1028,7 +1006,7 @@ end;
  {*****************************************************************************}
  {* TJvEditParameter                                                            *}
  {*****************************************************************************}
-constructor TJvEditParameter.Create(AParameterList : TJvParameterList);
+constructor TJvEditParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   fPasswordChar := #0;
@@ -1039,7 +1017,7 @@ begin
   fRightSpace   := 0;
 end;   {*** Constructor tJvBaseParameter.Create ***}
 
-procedure TJvEditParameter.Assign(Source : TPersistent);
+procedure TJvEditParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   EditMask     := TJvEditParameter(Source).EditMask;
@@ -1050,13 +1028,13 @@ begin
   RightSpace   := TJvEditParameter(Source).RightSpace;
 end;   {*** Procedure TJvEditParameter.SetAsDate ***}
 
-function TJvEditParameter.GetParameterNameExt : string;
+function TJvEditParameter.GetParameterNameExt: string;
 begin
   Result := 'MaskEdit';
 end;   {*** function TJvEditParameter.GetParameterNameExt ****}
 
 
-procedure TJvEditParameter.CreateWinControl(aParameterParent : TWinControl);
+procedure TJvEditParameter.CreateWinControl(aParameterParent: TWinControl);
 begin
   WinControl := DynControlEngine.CreateEditControl(Self, aParameterParent, GetParameterName);
   JvDynControl.ControlSetOnExit(HandleEnableDisable);
@@ -1071,7 +1049,7 @@ end;
  {* TJvIntegerEditParameter                                                            *}
  {*****************************************************************************}
 
-constructor TJvIntegerEditParameter.Create(AParameterList : TJvParameterList);
+constructor TJvIntegerEditParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   Required := true;
@@ -1079,16 +1057,16 @@ begin
   MaxValue := High(integer);
 end;
 
-procedure TJvIntegerEditParameter.Assign(Source : TPersistent);
+procedure TJvIntegerEditParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   MinValue := TJvIntegerEditParameter(Source).MinValue;
   MaxValue := TJvIntegerEditParameter(Source).MaxValue;
 end;   {*** procedure TJvIntegerEditParameter.Assign***}
 
-function TJvIntegerEditParameter.Validate(var fData : variant) : boolean;
+function TJvIntegerEditParameter.Validate(var fData: variant): boolean;
 var
-  i : integer;
+  i: integer;
 begin
   if not Enabled then
   begin
@@ -1099,7 +1077,7 @@ begin
   if VarIsNull(fData) or (fData = '') then
     if Required then
     begin
-      MessageDlg('Parameter ' + Caption + ' must be entered!', mtError, [mbOK], 0);
+      MessageDlg(Format(ErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
       exit;
     end   {*** IF Required AND (s = '') THEN ***}
     else
@@ -1110,11 +1088,11 @@ begin
   try
     i := fData;
   except
-    MessageDlg('"' + fdata + '" is not a valid Number!', mtError, [mbOK], 0);
+    MessageDlg(Format(ErrParameterIsNotAValidNumber, [Caption, fData]), mtError, [mbOK], 0);
     exit;
   end;
   if (i < MinValue) or (i > MaxValue) then
-    MessageDlg('"' + fdata + '" must be between ' + IntToStr(MinValue) + ' and ' + IntToStr(MaxValue) + '!', mtError, [mbOK], 0)
+    MessageDlg(Format(ErrParameterMustBeBetween, [Caption, fData, IntToStr(MinValue), IntToStr(MaxValue)]), mtError, [mbOK], 0)
   else
     Result := true;
 end;   {*** function TJvIntegerEditParameter.Validate ***}
@@ -1123,7 +1101,7 @@ end;   {*** function TJvIntegerEditParameter.Validate ***}
  {* TJvDoubleEditParameter                                                            *}
  {*****************************************************************************}
 
-constructor TJvDoubleEditParameter.Create(AParameterList : TJvParameterList);
+constructor TJvDoubleEditParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   Required := true;
@@ -1131,16 +1109,16 @@ begin
   MaxValue := 1E10;
 end;
 
-procedure TJvDoubleEditParameter.Assign(Source : TPersistent);
+procedure TJvDoubleEditParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   MinValue := TJvDoubleEditParameter(Source).MinValue;
   MaxValue := TJvDoubleEditParameter(Source).MaxValue;
 end;   {*** procedure TJvDoubleEditParameter.Assign***}
 
-function TJvDoubleEditParameter.Validate(var fData : variant) : boolean;
+function TJvDoubleEditParameter.Validate(var fData: variant): boolean;
 var
-  i : double;
+  i: double;
 begin
   if not Enabled then
   begin
@@ -1151,7 +1129,7 @@ begin
   if VarIsNull(fData) then
     if Required then
     begin
-      MessageDlg('Parameter ' + Caption + ' must be entered!', mtError, [mbOK], 0);
+      MessageDlg(Format(ErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
       exit;
     end   {*** IF Required AND (s = '') THEN ***}
     else
@@ -1162,11 +1140,11 @@ begin
   try
     i := fData;
   except
-    MessageDlg('"' + fdata + '" is not a valid Number!', mtError, [mbOK], 0);
+    MessageDlg(Format(ErrParameterIsNotAValidNumber, [Caption, fData]), mtError, [mbOK], 0);
     exit;
   end;
   if (i < MinValue) or (i > MaxValue) then
-    MessageDlg('"' + fdata + '" must be between ' + floattostr(MinValue) + ' and ' + floattostr(MaxValue) + '!', mtError, [mbOK], 0)
+    MessageDlg(Format(ErrParameterMustBeBetween, [Caption, fData, FloatToStr(MinValue), FloatToStr(MaxValue)]), mtError, [mbOK], 0)
   else
     Result := true;
 end;   {*** function TJvDoubleEditParameter.Validate ***}
@@ -1176,143 +1154,43 @@ end;   {*** function TJvDoubleEditParameter.Validate ***}
  {* tJvFileNameParameter                                                            *}
  {*****************************************************************************}
 
-procedure tJvFileNameParameter.Assign(Source : TPersistent);
+procedure tJvFileNameParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  Mode    := tJvFileNameParameter(Source).Mode;
-  DefaultExt := tJvFileNameParameter(Source).DefaultExt;
-  Filter  := tJvFileNameParameter(Source).Filter;
+  DialogKind  := tJvFileNameParameter(Source).DialogKind;
+  DefaultExt  := tJvFileNameParameter(Source).DefaultExt;
+  Filter      := tJvFileNameParameter(Source).Filter;
   FilterIndex := tJvFileNameParameter(Source).FilterIndex;
-  InitialDir := tJvFileNameParameter(Source).InitialDir;
-  Options := tJvFileNameParameter(Source).Options;
-  Title   := tJvFileNameParameter(Source).Title;
+  InitialDir  := tJvFileNameParameter(Source).InitialDir;
+  DialogOptions := tJvFileNameParameter(Source).DialogOptions;
+  DialogTitle := tJvFileNameParameter(Source).DialogTitle;
 end;   {*** Procedure tJvFileNameParameter.SetAsDate ***}
 
-procedure tJvFileNameParameter.FileNameSelectButtonClick(Sender : TObject);
-var
-  FileNameParameter : tJvFileNameParameter;
-  Dialog :    TOpenDialog;
-  EditField : TEdit;
-begin
- //  IF NOT (Sender IS TSpeedButton) THEN
- //    Exit;
-//  IF NOT (ParentParameterList.ParamByIndex(TSpeedButton(Sender).Tag) IS tJvFileNameParameter) THEN
- //    Exit;
- //  IF NOT Assigned (WinControl) THEN
- //    Exit;
- //  IF NOT (WinControl IS TEdit) THEN
- //    Exit;
- //  IF NOT Enabled THEN
- //    Exit;
- //  EditField := TEdit(WinControl);
-//  FileNameParameter := tJvFileNameParameter(ParentParameterList.ParamByIndex(TSpeedButton(Sender).Tag));
- //  WITH FileNameParameter DO
- //  BEGIN
- //    CASE Mode OF
- //      fnpOpenPicture : Dialog := TOpenPictureDialog.Create(TSpeedButton(Sender).Owner);
- //      fnpOpen : Dialog := TOpenDialog.Create(TSpeedButton(Sender).Owner);
- //      fnpSavePicture : Dialog := TSavePictureDialog.Create(TSpeedButton(Sender).Owner);
- //      fnpSave : Dialog := TSaveDialog.Create(TSpeedButton(Sender).Owner);
- //    ELSE
- //      Exit;
- //    END;   {*** CASE Mode OF ***}
- //    try
- //      Dialog.FileName := EditField.Text;
- //      Dialog.DefaultExt := DefaultExt;
- //      Dialog.Filter := Filter;
- //      Dialog.FilterIndex := FilterIndex;
- //      Dialog.InitialDir := InitialDir;
- //      Dialog.Options := Options;
- //      Dialog.Title := Title;
- //      IF Dialog.Execute THEN
- //        EditField.Text := Dialog.FileName;
- //    finally
- //      dialog.free;
- //    end;
- //  END;   {*** WITH FileNameParamter DO ***}
-end;   {*** procedure tJvFileNameParameter.FileNameSelectButtonClick ***}
-
-function tJvFileNameParameter.GetParameterNameExt : string;
+function tJvFileNameParameter.GetParameterNameExt: string;
 begin
   Result := 'FileNameEdit';
 end;   {*** function tJvFileNameParameter.GetParameterNameExt ****}
 
-
-procedure tJvFileNameParameter.CreateWinControl(aParameterParent : TWinControl);
+procedure tJvFileNameParameter.CreateWinControl(aParameterParent: TWinControl);
+var
+  ITmpControlFileName: IJvDynControlFileName;
 begin
   WinControl := DynControlEngine.CreateFileNameControl(Self, aParameterParent, GetParameterName);
   JvDynControl.ControlSetOnExit(HandleEnableDisable);
+  if Supports(WinControl, IJvDynControlFileName, ITmpControlFileName) then
+    with ITmpControlFileName do
+    begin
+      ControlSetDialogKind(DialogKind);
+      ControlSetDefaultExt(DefaultExt);
+      ControlSetFilter(Filter);
+      ControlSetFilterIndex(FilterIndex);
+      ControlSetInitialDir(InitialDir);
+      ControlSetDialogOptions(DialogOptions);
+      ControlSetDialogTitle(DialogTitle);
+    end;
 end;
 
-
-//Procedure tJvFileNameParameter.CreateWinControlOnParent (ParameterParent : TWinControl);
- //VAR Panel : TPanel;
- //    EditLabel : TLabel;
- //    FileNameEdit : TEdit;
- //    FileNameBtn : tSpeedButton;
- //BEGIN
- //  Panel := TPanel.Create (ParameterParent.Owner);
- //  Panel.Name := GetParameterNameBase;
- //  IF TabOrder >= 0 THEN
- //    Panel.TabOrder := TabOrder;
- //  Panel.Bevelinner := bvNone;
- //  Panel.BevelOuter := bvNone;
- //  Panel.Parent := ParameterParent;
- //  IF Width > 0 THEN
- //    Panel.Width := Width;
- //  IF Height > 0 THEN
- //    Panel.Height := Height;
- //  Panel.Visible := True;
- //  Panel.Caption := '';
- //  EditLabel := TLabel.Create(ParameterParent.Owner);
- //  EditLabel.Name := GetParameterNameBase+'Label';
- //  EditLabel.Parent := Panel;
- //  EditLabel.Width := Panel.Width;
- //  EditLabel.Visible := True;
- //  EditLabel.Caption := Caption;
- //  FileNameEdit := TEdit.Create(ParameterParent.Owner);
- //  FileNameEdit.Name := GetParameterName;
- //  FileNameEdit.OnChange := HandleEnableDisable;
- //  WinControl := FileNameEdit;
- //  FileNameEdit.Parent := Panel;
- //  FileNameEdit.Top := EditLabel.Height+4;
- //  FileNameEdit.Width := Panel.Width-30;
- //  FileNameEdit.Visible := True;
- //  FileNameEdit.Text := AsString;
- //  FileNameEdit.Enabled := Enabled;
- //  FileNameEdit.ReadOnly := ReadOnly;
- //  IF Height > EditLabel.Height+5 THEN
- //    FileNameEdit.Height := Height - (EditLabel.Height+5);
- //  EditLabel.FocusControl := FileNameEdit;
- //  FileNameBtn := tSpeedButton.Create(ParameterParent.Owner);
- //  FileNameBtn.Name := GetParameterNameBase+'Button';
- //  FileNameBtn.Caption := '...';
- //  FileNameBtn.parent := Panel;
- //  FileNameBtn.Height := FileNameEdit.Height;
- //  FileNameBtn.Width := FileNameEdit.Height;
- //  FileNameBtn.Left := FileNameEdit.Left+FilenameEdit.Width+5;
- //  FileNameBtn.Top := FileNameEdit.Top;
- //  FileNameBtn.Visible := True;
- //  FileNameBtn.Tag := Nr;
- //  FileNameBtn.Enabled := Enabled AND NOT ReadOnly;
- //  FileNameBtn.OnClick := FileNameSelectButtonClick;
- //end;   {*** Procedure TFileNameCreateObjectOnParent ***}
-
-
-function tJvFileNameParameter.Validate(var fData : variant) : boolean;
-
-  function ExistDir(dir : string) : boolean;
-  var
-    curDir : string;
-  begin
-    {$I-}
-    GetDir(0, curDir);
-    ChDir(dir);
-    Result := IoResult = 0;
-    chdir(curDir);
-    {$i+}
-  end;   {*** ExistDir ***}
-
+function tJvFileNameParameter.Validate(var fData: variant): boolean;
 begin
   if not Enabled then
   begin
@@ -1326,7 +1204,7 @@ begin
   if Required then
     if fData = '' then
     begin
-      MessageDlg('Parameter ' + Caption + ' must be entered!', mtError, [mbOK], 0);
+      MessageDlg(Format(ErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
       Exit;
     end;   {*** IF NOT Result THEN ***}
   if fData <> '' then
@@ -1336,24 +1214,24 @@ begin
           fData := fData + DefaultExt
         else
           fData := fData + '.' + DefaultExt;
-  if ofFileMustExist in Options then
+  if ofFileMustExist in DialogOptions then
     if not FileExists(fData) then
     begin
-      MessageDlg(Format('The file "%s" does not exist!', [fData]), mtError, [mbOK], 0);
+      MessageDlg(Format(ErrParameterFileDoesNotExist, [Caption, fData]), mtError, [mbOK], 0);
       Exit;
     end;   {*** IF NOT Result THEN ***}
-  if ofOverwritePrompt in Options then
+  if ofOverwritePrompt in DialogOptions then
     if FileExists(fData) then
     begin
-      if MessageDlg(Format('The file "%s" exists! Overwrite ?', [fData]), mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+      if MessageDlg(Format(ErrParameterFileExistOverwrite, [Caption, fData]), mtConfirmation, [mbYes, mbNo], 0) = mrNo then
         Exit;
     end;   {*** IF NOT Result THEN ***}
-  if ofPathMustExist in Options then
+  if ofPathMustExist in DialogOptions then
   begin
     if ExtractFilePath(fData) <> '' then
-      if not ExistDir(ExtractFilePath(fData)) then
+      if not DirectoryExists(ExtractFilePath(fData)) then
       begin
-        MessageDlg(Format('The directory "%s" does not exist!', [ExtractFilePath(fData)]), mtError, [mbOK], 0);
+        MessageDlg(Format(ErrParameterDirectoryNotExist, [Caption, ExtractFilePath(fData)]), mtError, [mbOK], 0);
         Exit;
       end;   {*** IF NOT Result THEN ***}
   end;   {*** IF ofPathMustExist THEN ***}
@@ -1364,138 +1242,35 @@ end;  {*** function tJvFileNameParameter.Validate ***}
  {* tJvDirectoryParameter                                                            *}
  {*****************************************************************************}
 
-procedure tJvDirectoryParameter.Assign(Source : TPersistent);
+procedure tJvDirectoryParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  InitialDir := tJvDirectoryParameter(Source).InitialDir;
-  Title      := tJvDirectoryParameter(Source).Title;
+  InitialDir    := tJvDirectoryParameter(Source).InitialDir;
+  DialogOptions := tJvDirectoryParameter(Source).DialogOptions;
+  DialogTitle   := tJvDirectoryParameter(Source).DialogTitle;
 end;   {*** Procedure tJvDirectoryParameter.SetAsDate ***}
 
-procedure tJvDirectoryParameter.FileNameSelectButtonClick(Sender : TObject);
-var
-  DirectoryParameter : tJvDirectoryParameter;
-  Dialog :    TOpenDialog;
-  EditField : TEdit;
+function tJvDirectoryParameter.GetParameterNameExt: string;
 begin
- //  IF NOT (Sender IS TSpeedButton) THEN
- //    Exit;
-//  IF NOT (ParentParameterList.ParamByIndex(TSpeedButton(Sender).Tag) IS tJvDirectoryParameter) THEN
- //    Exit;
- //  IF NOT Assigned (WinControl) THEN
- //    Exit;
- //  IF NOT (WinControl IS TEdit) THEN
- //    Exit;
- //  IF NOT Enabled THEN
- //    Exit;
- //  EditField := TEdit(WinControl);
-//  DirectoryParameter := tJvDirectoryParameter(ParentParameterList.ParamByIndex(TSpeedButton(Sender).Tag));
- //  WITH DirectoryParameter DO
- //  BEGIN
- //    CASE Mode OF
- //      fnpOpenPicture : Dialog := TOpenPictureDialog.Create(TSpeedButton(Sender).Owner);
- //      fnpOpen : Dialog := TOpenDialog.Create(TSpeedButton(Sender).Owner);
- //      fnpSavePicture : Dialog := TSavePictureDialog.Create(TSpeedButton(Sender).Owner);
- //      fnpSave : Dialog := TSaveDialog.Create(TSpeedButton(Sender).Owner);
- //    ELSE
- //      Exit;
- //    END;   {*** CASE Mode OF ***}
- //    try
- //      Dialog.FileName := EditField.Text;
- //      Dialog.DefaultExt := DefaultExt;
- //      Dialog.Filter := Filter;
- //      Dialog.FilterIndex := FilterIndex;
- //      Dialog.InitialDir := InitialDir;
- //      Dialog.Options := Options;
- //      Dialog.Title := Title;
- //      IF Dialog.Execute THEN
- //        EditField.Text := Dialog.FileName;
- //    finally
- //      dialog.free;
- //    end;
- //  END;   {*** WITH FileNameParamter DO ***}
-end;   {*** procedure tJvDirectoryParameter.FileNameSelectButtonClick ***}
-
-function tJvDirectoryParameter.GetParameterNameExt : string;
-begin
-  Result := 'FileNameEdit';
+  Result := 'DirectoryEdit';
 end;   {*** function tJvDirectoryParameter.GetParameterNameExt ****}
 
-
-procedure tJvDirectoryParameter.CreateWinControl(aParameterParent : TWinControl);
+procedure tJvDirectoryParameter.CreateWinControl(aParameterParent: TWinControl);
+var
+  ITmpControlDirectory: IJvDynControlDirectory;
 begin
   WinControl := DynControlEngine.CreateDirectoryControl(Self, aParameterParent, GetParameterName);
   JvDynControl.ControlSetOnExit(HandleEnableDisable);
+  if Supports(WinControl, IJvDynControlDirectory, ITmpControlDirectory) then
+    with ITmpControlDirectory do
+    begin
+      ControlSetDialogTitle(DialogTitle);
+      ControlSetDialogOptions(DialogOptions);
+      ControlSetInitialDir(InitialDir);
+    end;
 end;
 
-
-//Procedure tJvDirectoryParameter.CreateWinControlOnParent (ParameterParent : TWinControl);
- //VAR Panel : TPanel;
- //    EditLabel : TLabel;
- //    FileNameEdit : TEdit;
- //    FileNameBtn : tSpeedButton;
- //BEGIN
- //  Panel := TPanel.Create (ParameterParent.Owner);
- //  Panel.Name := GetParameterNameBase;
- //  IF TabOrder >= 0 THEN
- //    Panel.TabOrder := TabOrder;
- //  Panel.Bevelinner := bvNone;
- //  Panel.BevelOuter := bvNone;
- //  Panel.Parent := ParameterParent;
- //  IF Width > 0 THEN
- //    Panel.Width := Width;
- //  IF Height > 0 THEN
- //    Panel.Height := Height;
- //  Panel.Visible := True;
- //  Panel.Caption := '';
- //  EditLabel := TLabel.Create(ParameterParent.Owner);
- //  EditLabel.Name := GetParameterNameBase+'Label';
- //  EditLabel.Parent := Panel;
- //  EditLabel.Width := Panel.Width;
- //  EditLabel.Visible := True;
- //  EditLabel.Caption := Caption;
- //  FileNameEdit := TEdit.Create(ParameterParent.Owner);
- //  FileNameEdit.Name := GetParameterName;
- //  FileNameEdit.OnChange := HandleEnableDisable;
- //  WinControl := FileNameEdit;
- //  FileNameEdit.Parent := Panel;
- //  FileNameEdit.Top := EditLabel.Height+4;
- //  FileNameEdit.Width := Panel.Width-30;
- //  FileNameEdit.Visible := True;
- //  FileNameEdit.Text := AsString;
- //  FileNameEdit.Enabled := Enabled;
- //  FileNameEdit.ReadOnly := ReadOnly;
- //  IF Height > EditLabel.Height+5 THEN
- //    FileNameEdit.Height := Height - (EditLabel.Height+5);
- //  EditLabel.FocusControl := FileNameEdit;
- //  FileNameBtn := tSpeedButton.Create(ParameterParent.Owner);
- //  FileNameBtn.Name := GetParameterNameBase+'Button';
- //  FileNameBtn.Caption := '...';
- //  FileNameBtn.parent := Panel;
- //  FileNameBtn.Height := FileNameEdit.Height;
- //  FileNameBtn.Width := FileNameEdit.Height;
- //  FileNameBtn.Left := FileNameEdit.Left+FilenameEdit.Width+5;
- //  FileNameBtn.Top := FileNameEdit.Top;
- //  FileNameBtn.Visible := True;
- //  FileNameBtn.Tag := Nr;
- //  FileNameBtn.Enabled := Enabled AND NOT ReadOnly;
- //  FileNameBtn.OnClick := FileNameSelectButtonClick;
- //end;   {*** Procedure TFileNameCreateObjectOnParent ***}
-
-
-function tJvDirectoryParameter.Validate(var fData : variant) : boolean;
-
-  function ExistDir(dir : string) : boolean;
-  var
-    curDir : string;
-  begin
-    {$I-}
-    GetDir(0, curDir);
-    ChDir(dir);
-    Result := IoResult = 0;
-    chdir(curDir);
-    {$i+}
-  end;   {*** ExistDir ***}
-
+function tJvDirectoryParameter.Validate(var fData: variant): boolean;
 begin
   if not Enabled then
   begin
@@ -1504,43 +1279,18 @@ begin
   end;   {*** IF NOT Enabled THEN ***}
   Result := false;
   fData  := trim(fData);
- //  IF fData = DefaultExt THEN
- //    fData := '';
   if Required then
     if fData = '' then
     begin
-      MessageDlg('Parameter ' + Caption + ' must be entered!', mtError, [mbOK], 0);
+      MessageDlg(Format(ErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
       Exit;
     end;   {*** IF NOT Result THEN ***}
- //  IF fData <> '' THEN
- //    IF ExtractFileExt (fData) = '' THEN
- //     IF DefaultExt <> '' THEN
- //       IF DefaultExt[1] = '.' THEN
- //         fData := fData + DefaultExt
- //       ELSE
- //         fData := fData + '.' + DefaultExt;
- //  IF ofFileMustExist IN Options THEN
- //    IF Not FileExists (fData) THEN
- //    BEGIN
- //      MessageDlg (Format ('The file "%s" does not exist!',[fData]), mtError,[mbok], 0);
- //      Exit;
- //    END;   {*** IF NOT Result THEN ***}
- //  IF ofOverwritePrompt IN Options THEN
- //    IF FileExists (fData) THEN
- //    BEGIN
- //      IF MessageDlg (Format ('The file "%s" exists! Overwrite ?',[fData]),
- //                     mtConfirmation,[mbyes, mbno], 0)= mrNo THEN
- //        Exit;
- //    END;   {*** IF NOT Result THEN ***}
- //  IF ofPathMustExist IN Options THEN
- //  BEGIN
- //    IF ExtractFilePath (fData) <> '' THEN
- //      IF Not ExistDir (ExtractFilePath (fData)) THEN
- //      BEGIN
-//        MessageDlg (Format ('The directory "%s" does not exist!',[ExtractFilePath (fData)]), mtError,[mbok], 0);
- //        Exit;
- //      END;   {*** IF NOT Result THEN ***}
- //  END;   {*** IF ofPathMustExist THEN ***}
+  if not DirectoryExists(fData) then
+    if not (sdAllowCreate in DialogOptions) then
+    begin
+      MessageDlg(Format(ErrParameterDirectoryNotExist, [Caption, ExtractFilePath(fData)]), mtError, [mbOK], 0);
+      Exit;
+    end;
   Result := true;
 end;  {*** function tJvDirectoryParameter.Validate ***}
 
@@ -1549,7 +1299,7 @@ end;  {*** function tJvDirectoryParameter.Validate ***}
  {* TJvMemoParameter                                                            *}
  {*****************************************************************************}
 
-constructor TJvMemoParameter.Create(AParameterList : TJvParameterList);
+constructor TJvMemoParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   ScrollBars  := ssNone;
@@ -1563,20 +1313,20 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvMemoParameter.Assign(Source : TPersistent);
+procedure TJvMemoParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
 end;   {*** Procedure TJvMemoParameter.SetAsDate ***}
 
-function TJvMemoParameter.GetParameterNameExt : string;
+function TJvMemoParameter.GetParameterNameExt: string;
 begin
   Result := 'Memo';
 end;   {*** function TJvMemoParameter.GetParameterNameExt ****}
 
 
-procedure TJvMemoParameter.CreateWinControl(aParameterParent : TWinControl);
+procedure TJvMemoParameter.CreateWinControl(aParameterParent: TWinControl);
 var
-  Memo : tWinControl;
+  Memo: tWinControl;
 begin
   WinControl := DynControlEngine.CreateMemoControl(Self, aParameterParent, GetParameterName);
   JvDynControl.ControlSetOnExit(HandleEnableDisable);
