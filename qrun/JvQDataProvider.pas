@@ -71,7 +71,6 @@ type
   TJvDataConsumerClientNotifyList = class;
   TJvDataConsumerClientNotifyItem = class;
 
-
   // Class references
   TAggregatedPersistentExClass = class of TAggregatedPersistentEx;
   TJvDataItemTextImplClass = class of TJvBaseDataItemTextImpl;
@@ -1963,7 +1962,8 @@ end;
 
 procedure TExtensibleInterfacedPersistent.BeforeDestruction;
 begin
-  if RefCount <> 0 then RunError(2);
+  if RefCount <> 0 then
+    RunError(2);
   inherited BeforeDestruction;
 end;
 
@@ -2624,7 +2624,8 @@ end;
 
 procedure TJvCustomDataItemStates.Set_Enabled(Value: TDataItemState);
 begin
-  if Value = disNotUsed then Exit;
+  if Value = disNotUsed then
+    Exit;
   if Value <> Get_Enabled then
   begin
     Item.GetItems.Provider.Changing(pcrUpdateItem, Item);
@@ -2640,7 +2641,8 @@ end;
 
 procedure TJvCustomDataItemStates.Set_Checked(Value: TDataItemState);
 begin
-  if Value = disNotUsed then Exit;
+  if Value = disNotUsed then
+    Exit;
   if Value <> Get_Checked then
   begin
     Item.GetItems.Provider.Changing(pcrUpdateItem, Item);
@@ -2656,7 +2658,8 @@ end;
 
 procedure TJvCustomDataItemStates.Set_Visible(Value: TDataItemState);
 begin
-  if Value = disNotUsed then Exit;
+  if Value = disNotUsed then
+    Exit;
   if Value <> Get_Visible then
   begin
     Item.GetItems.Provider.Changing(pcrUpdateItem, Item);
@@ -2783,7 +2786,8 @@ begin
     TJvDataItemsList(ItemsImpl).List.Delete(Index);
     Items.Provider.Changed(pcrDelete, nil);
   end
-  else if Items.GetItem(Index) <> nil then
+  else
+  if Items.GetItem(Index) <> nil then
     raise EJVCLDataItems.Create(RsEItemCanNotBeDeleted);
 end;
 
@@ -3395,7 +3399,8 @@ procedure TJvCustomDataProvider.ReleaseConsumer;
 begin
   if (FConsumerStack <> nil) and (FConsumerStack.Count > 0) then
     FConsumerStack.Delete(0)
-  else if FConsumerStack <> nil then
+  else
+  if FConsumerStack <> nil then
     raise EJVCLDataProvider.Create(RsEConsumerStackIsEmpty);
 end;
 
@@ -3417,7 +3422,8 @@ procedure TJvCustomDataProvider.ReleaseContext;
 begin
   if (FContextStack <> nil) and (FContextStack.Count > 0) then
     FContextStack.Delete(0)
-  else if FContextStack <> nil then
+  else
+  if FContextStack <> nil then
     raise EJVCLDataProvider.Create(RsEContextStackIsEmpty);
 end;
 
@@ -4566,7 +4572,8 @@ begin
                         vifHasChildren + vifCanHaveChildren);
                     ToggleItem(ParIdx);
                   end
-                  else if ItemIsExpanded(ParIdx) then
+                  else
+                  if ItemIsExpanded(ParIdx) then
                   begin
                     // parent is expanded, add the new item to the view.
                     AddChildItem(ParIdx, IJvDataItem(Source));

@@ -46,14 +46,17 @@ uses
   
   Qt, QWindows,
   
-  JvQCLVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
+  JVQCLVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
 
 type
   TJvComponent = class(TComponent)
   private
     FAboutJVCL: TJVCLAboutInfo;
   published
-    property  AboutJVCLX : TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    
+    
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    
   end;
 
   TJvGraphicControl = class(TJvExGraphicControl);

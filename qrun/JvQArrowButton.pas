@@ -963,7 +963,7 @@ begin
     
     
     repeat
-      Application.ProcessMessages
+      Application.ProcessMessages;
     until IsWindowVisible(FPopup.Handle) = False;
     
   end;

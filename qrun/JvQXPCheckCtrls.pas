@@ -82,6 +82,9 @@ type
     property BoundLines;
     property Checked;
     property Spacing;
+    property ParentColor;
+    property Color;
+
 
     //property BevelInner;
     //property BevelOuter;
@@ -231,7 +234,7 @@ begin
   begin
     // clear background.
     Rect := GetClientRect;
-    Brush.Color := TJvXPWinControl(Parent).Color;
+    Brush.Color := Color;
     FillRect(Rect);
     // draw designtime rect.
     if csDesigning in ComponentState then
@@ -260,8 +263,11 @@ begin
     // draw caption.
     SetBkMode(Handle, Transparent);
     Font.Assign(Self.Font);
-    Inc(Rect.Left, FCheckSize + 4 + FSpacing);
-    JvXPPlaceText(Self, Canvas, Caption, Font, Enabled, True, taLeftJustify, True, Rect);
+    
+    begin
+      Inc(Rect.Left, FCheckSize + 4 + FSpacing);
+      JvXPPlaceText(Self, Canvas, Caption, Font, Enabled, True, taLeftJustify, True, Rect);
+    end;
    end;
 end;
 
@@ -276,11 +282,10 @@ var
   procedure DrawGradient(const Bitmap: TBitmap);
   begin
     
-
-    BitBlt(Canvas, R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
-      FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas, 0, 0, SRCCOPY);
-
-
+    
+      BitBlt(Canvas, R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
+        FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas, 0, 0, SRCCOPY);
+    
   end;
 
 begin
@@ -297,8 +302,8 @@ begin
       Pen.Color := dxColor_Chk_Enb_Border_WXP
     else
       Pen.Color := dxColor_BorderLineOXP;
-    Rectangle(Bounds(R.Left + 2, (ClientHeight - FCheckSize) div 2,
-      FCheckSize, FCheckSize));
+
+      Rectangle(Bounds(R.Left + 2, (ClientHeight - FCheckSize) div 2,FCheckSize, FCheckSize));
 
     // draw background.
     case Theme of
@@ -308,10 +313,12 @@ begin
           begin
             if ClipW <> 0 then
               DrawGradient(FHlGradient);
-            BitBlt(Canvas, R.Left + 3 + ClipW, (ClientHeight - FCheckSize) div 2 + 1 +
-              ClipW, FCheckSize - 2 - ClipW * 2, FCheckSize - 2 - ClipW * 2,
-              FBgGradient.Canvas, 0, 0, SRCCOPY);
-
+            
+            
+              BitBlt(Canvas, R.Left + 3 + ClipW, (ClientHeight - FCheckSize) div 2 + 1 +
+                ClipW, FCheckSize - 2 - ClipW * 2, FCheckSize - 2 - ClipW * 2,
+                FBgGradient.Canvas, 0, 0, SRCCOPY);
+            
           end
           else
             DrawGradient(FCkGradient);
@@ -324,8 +331,9 @@ begin
               Brush.Color := dxColor_BgOXP
             else
               Brush.Color := dxColor_BgCkOXP;
-            FillRect(Bounds(R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
-              FCheckSize - 2, FCheckSize - 2));
+            
+              FillRect(Bounds(R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
+                FCheckSize - 2, FCheckSize - 2))
           end;
         end;
     end;
@@ -344,7 +352,7 @@ begin
         else
         if (dsClicked in DrawState) and (dsHighlight in DrawState) then
           JvXPColorizeBitmap(Bitmap, clWhite);
-        Draw(FCheckSize div 2 - 1, (ClientHeight - FCheckSize) div 2 + 3, Bitmap);
+          Draw(FCheckSize div 2 - 1, (ClientHeight - FCheckSize) div 2 + 3, Bitmap);
       finally
         Bitmap.Free;
       end;

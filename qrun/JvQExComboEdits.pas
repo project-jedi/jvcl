@@ -79,7 +79,7 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
-//  published // asn: change to public in final
+  published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   
   private
@@ -173,7 +173,7 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
-//  published // asn: change to public in final
+  published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   
   private
@@ -268,7 +268,7 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
-//  published // asn: change to public in final
+  published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   
   private
@@ -369,7 +369,7 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
-//  published // asn: change to public in final
+  published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   
   private

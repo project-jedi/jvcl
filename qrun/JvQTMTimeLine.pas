@@ -41,6 +41,9 @@ uses
   
   Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,
   
+  {$IFDEF BCB}
+  JvQTypes, // TDate / TTime macros
+  {$ENDIF BCB}
   JvQComponent, JvQExControls;
 
 
@@ -49,7 +52,6 @@ resourcestring
 
 
 type
-  TDate = TDateTime;
   TJvTLSelFrame = class(TPersistent)
   private
     FVisible: Boolean;
@@ -236,7 +238,10 @@ type
     property LeftButton;
     
   published
+    
+    
     property AboutJVCLX;
+    
     // gets / sets the borderstyle of the control and the scroll-buttons
     property BorderStyle;
     // gets / sets the width of the buttons
@@ -456,7 +461,6 @@ begin
   Font.Height := 11;
   {$ENDIF LINUX}
 
-
   FLeftBtn := TSpeedButton.Create(Self);
   with FLeftBtn do
   begin
@@ -502,6 +506,8 @@ begin
   FChangeLink.Free;
   FMonthFont.Free;
   FSelection.Free;
+  FDateImages.Free;
+  FObjects.Free;
   inherited Destroy;
 end;
 

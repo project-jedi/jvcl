@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -18,13 +18,12 @@ All Rights Reserved.
 Contributor(s):
 Jens Fudickar [jens dott fudickar att oratool dott de]
 
-Last Modified: 2003-12-17
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -432,6 +431,7 @@ end;
 procedure TJvDynControlVCLMaskEdit.ControlSetPasswordChar(Value: Char);
 begin
   
+  
   if Value = #0 then
     EchoMode := emNormal
   else
@@ -524,6 +524,7 @@ type
 
 procedure TJvDynControlVCLButtonEdit.ControlSetPasswordChar(Value: Char);
 begin
+  
   
   if Value = #0 then
     TOpenMaskEdit(FEditControl).EchoMode := emNormal
@@ -769,17 +770,19 @@ end;
 procedure TJvDynControlVCLDirectoryEdit.DefaultOnButtonClick(Sender: TObject);
 var
   
+  
   Dir: WideString;
   
 begin
   Dir := ControlGetValue;
   
-   {$IFDEF MSWINDOWS}
+  
+  {$IFDEF MSWINDOWS}
   if SelectDirectory('', '', Dir) then
-   {$ENDIF MSWINDOWS}
-   {$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   if SelectDirectory('', '/', Dir, False) then
-   {$ENDIF LINUX}
+  {$ENDIF LINUX}
   
     ControlSetValue(Dir);
 end;

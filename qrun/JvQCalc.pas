@@ -131,7 +131,7 @@ uses
 {$R ..\Resources\JvCalc.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvCalc.Res}
+{$R ../Resources/JvCalc.res}
 {$ENDIF LINUX}
 
 type
@@ -344,8 +344,7 @@ type
     FOnCalcKey: TKeyPressEvent;
     FOnDisplayChange: TNotifyEvent;
     FControl: TControl;
-    procedure SetText(const Value: string);
-      reintroduce;
+    procedure SetText(const Value: string);  reintroduce; 
     procedure CheckFirst;
     procedure CalcKey(Key: Char);
     procedure Clear;

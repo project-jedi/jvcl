@@ -34,9 +34,6 @@ unit JvQButton;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   
   
@@ -62,6 +59,7 @@ type
     FHotTrack: Boolean;
     FHotFont: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
+    FOnDropDownMenu: TContextPopupEvent;
     function GetPattern: TBitmap;
     procedure SetFlat(const Value: Boolean);
     procedure SetDown(Value: Boolean);
@@ -110,6 +108,7 @@ type
     property Down: Boolean read FDown write SetDown default False;
     property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
     procedure Click; override;
+    property OnDropDownMenu:TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
   public
 
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
@@ -126,6 +125,7 @@ type
     FWordWrap: Boolean;
     FForceSameSize: Boolean;
     FHotTrackFontOptions: TJvTrackFontOptions;
+    FOnDropDownMenu: TContextPopupEvent;
     procedure SetHotFont(const Value: TFont);
     procedure SetWordWrap(const Value: Boolean);
     procedure SetForceSameSize(const Value: Boolean);
@@ -147,6 +147,7 @@ type
       DefaultTrackFontOptions;
     property HintColor;
     property OnParentColorChange;
+    property OnDropDownMenu:TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -317,8 +318,10 @@ begin
   if InsideBtn(X, Y) then
   begin
     FStates := [bsMouseDown, bsMouseInside];
+
     RepaintBackground;
   end;
+  SetCaptureControl(Self);
   Tmp := ClientToScreen(Point(0, Height));
   DoDropDownMenu(Button, Shift, Tmp.X, Tmp.Y);
 end;
@@ -345,7 +348,9 @@ end;
 procedure TJvCustomGraphicButton.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if not Enabled or Down then
+  if GetCaptureControl = Self then
+    ReleaseCapture;
+  if not Enabled then
     Exit;
   inherited MouseUp(Button, Shift, X, Y);
   Exclude(FStates, bsMouseDown);
@@ -353,7 +358,9 @@ begin
 end;
 
 function TJvCustomGraphicButton.DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean;
+var
 
+  Handled:boolean;
 begin
   Result := (Button = mbLeft) and (DropDownMenu <> nil);
   if Result then
@@ -365,7 +372,15 @@ begin
       paCenter:
         Inc(X, Width div 2);
     end;
-    DropDownMenu.Popup(X, Y);
+    if Assigned(FOnDropDownMenu) then
+      FOnDropDownMenu(Self, Point(X,Y), Handled)
+    else
+      Handled := False;
+
+    if not Handled then
+      DropDownMenu.Popup(X, Y)
+    else
+      Exit;
     
     
     repeat
@@ -407,15 +422,17 @@ begin
     if FDown and not AllowAllUp then
       Exit;
     FDown := Value;
-    if FDown then
-    begin
-      Include(FStates, bsMouseDown);
+    // don't set bsMouseDown when Down is true: it is not the same
+//    if FDown then
+//    begin
+//      Include(FStates, bsMouseDown);
 
       {     Click; }{ uncomment and see what happens... }
-    end
-    else
-      Exclude(FStates, bsMouseDown);
+//    end
+//    else
+//      Exclude(FStates, bsMouseDown);
     UpdateExclusive;
+    Invalidate;
   end;
 end;
 
@@ -507,7 +524,7 @@ begin
       if Sender.Down and Down then
       begin
         FDown := False;
-        Exclude(FStates, bsMouseDown);
+//        Exclude(FStates, bsMouseDown);
         RepaintBackground;
       end;
       FAllowAllUp := Sender.AllowAllUp;
@@ -559,16 +576,27 @@ begin
 end;
 
 procedure TJvCustomButton.Click;
+var
+  Handled:Boolean;
+  MousePos:TPoint;
 begin
   inherited Click;
+  MousePos := Point(GetClientOrigin.X, GetClientOrigin.Y + Height);
   if FDropDownMenu <> nil then
   begin
     FDropDownMenu.PopupComponent := Self;
-    FDropDownMenu.Popup(GetClientOrigin.X, GetClientOrigin.Y + Height);
-    
-    
-    MouseLeave(Self);
-    
+    if Assigned(FOnDropDownMenu) then
+      FOnDropDownMenu(Self, MousePos, Handled)
+    else
+      Handled := False;
+    if not Handled then
+    begin
+      FDropDownMenu.Popup(MousePos.X, MousePos.Y);
+      
+      
+      MouseLeave(Self);
+      
+    end;
   end;
 end;
 
@@ -686,9 +714,9 @@ begin
   if (Parent <> nil) and Parent.HandleAllocated then
   begin
     R := BoundsRect;
-    Parent.InvalidateRect(R, True);
+    InvalidateRect(Parent.Handle,@R, True);
   end;
-  Invalidate;
+  Repaint;
 end;
 
 // == TJvDropDownButton ===================================================
@@ -732,8 +760,7 @@ begin
   begin
     
     Canvas.Start;
-    RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
-
+    
     DrawFrameControl(Canvas.Handle, PaintRect, DFC_SCROLL, DrawFlags);
 
     

@@ -456,7 +456,8 @@ begin
     if FArrowButton.Down then
       FArrowButton.Down := False;
     FColorFormDropDown := False;
-  end else
+  end
+  else
   begin
     if FColorsForm.ColorPanel.ClickColorButton = cbctOtherButton then
       FColorsForm.FormStyle := fsNormal;

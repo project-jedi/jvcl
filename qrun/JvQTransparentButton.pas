@@ -324,13 +324,11 @@ begin
       Brush.Color := clBtnHighlight;
       SetTextColor(Handle, clBlack);
       SetBkColor(Handle, clWhite);
-      MonoBmp.Canvas.Start;
       BitBlt(Handle, 1, 1, W + 1, H + 1, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
       Brush.Color := clBtnShadow;
       SetTextColor(Handle, clBlack);
       SetBkColor(Handle, clWhite);
       BitBlt(Handle, 0, 0, W, H, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-      MonoBmp.Canvas.Stop;
     end;
     Bmp.Assign(TmpImage);
   finally
@@ -693,8 +691,11 @@ end;
 
 { just like DrawText, but draws disabled instead }
 
-function DrawDisabledText(DC: HDC; lpString:  PWideChar ;
+
+
+function DrawDisabledText(DC: HDC; lpString: PWideChar;
   nCount: Integer; var lpRect: TRect; uFormat: Integer): Integer;
+
 var
   OldCol: Integer;
 begin

@@ -143,9 +143,9 @@ type
     FOnDecryptPropertyValue: TJvAppStorageCryptEvent;
     FCryptEnabledStatus: Integer;
     FAutoFlush: Boolean;
-    FUpdateCount:integer;
+    FUpdateCount: Integer;
     FAutoReload: Boolean;
-    function GetUpdating: boolean;
+    function GetUpdating: Boolean;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     //Returns the property count of an instance
@@ -324,10 +324,9 @@ type
     procedure Reload; virtual;
     procedure BeginUpdate;
     procedure EndUpdate;
-    property IsUpdating:boolean read GetUpdating;
-    property AutoFlush  : Boolean read FAutoFlush  write FAutoFlush  default False;
-    property AutoReload : Boolean read FAutoReload write FAutoReload default False;
-
+    property IsUpdating: Boolean read GetUpdating;
+    property AutoFlush: Boolean read FAutoFlush write FAutoFlush default False;
+    property AutoReload: Boolean read FAutoReload write FAutoReload default False;
     class function ConcatPaths(const Paths: array of string): string;
     { Resolve a path to it's actual used storage backend and root path. }
     procedure ResolvePath(InPath: string; out TgtStore: TJvCustomAppStorage; out TgtPath: string);
@@ -1574,7 +1573,8 @@ begin
           else
             OrdValue := ReadIntegerInt(Path, OrdValue);
         end
-        else if TypeInfo.Kind = tkEnumeration then
+        else
+        if TypeInfo.Kind = tkEnumeration then
         begin
           // Usage of an invalid identifier to signal the value does not exist
           OrdValue := GetEnumValue(TypeInfo, ReadStringInt(Path, cInvalidIdentifier));
@@ -2384,7 +2384,7 @@ begin
     FUpdateCount := 0;
 end;
 
-function TJvCustomAppStorage.GetUpdating: boolean;
+function TJvCustomAppStorage.GetUpdating: Boolean;
 begin
   Result := FUpdateCount <> 0;
 end;

@@ -26,6 +26,17 @@ located at http://jvcl.sourceforge.net
 Description:
   A wrapper for the Find[First/Next]ChangeNotification API calls.
 
+Changes:
+  //dierk schmid 2004-4-28
+  -- TJvChangeNotify: Put property "active" from public to published section
+     (cause I always forget to set this property in runtime to true)
+  -- TJvChangeNotify.SetActive: Exit if csDesigning in ComponentState (Active is now published)
+  -- TJvChangeItem.SetDir: Exception not when csDesigning in ComponentState
+     (cause, it was impossible to reset in designtime the directory property)
+  -- Same TJvChangeNotify.CheckActive: Exception not when csDesigning+csloading in ComponentState
+  -- added procedure TJvChangeNotify.Loaded; override;
+
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
@@ -39,7 +50,7 @@ interface
 
 uses
   SysUtils, Classes,
-  Windows, 
+  Windows,
   
   
   QGraphics, QControls, QForms, QDialogs,
@@ -125,11 +136,12 @@ type
     procedure DoThreadTerminate(Sender:TObject);
   protected
     procedure Change(Item: TJvChangeItem); virtual;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Active: Boolean read FActive write SetActive default False;
   published
+    property Active: Boolean read FActive write SetActive default False;
     property Notifications: TJvChangeItems read FCollection write SetCollection;
     property CheckInterval: Integer read FInterval write SetInterval default 100;
     property OnChangeNotify: TJvNotifyEvent read FNotify write FNotify;
@@ -203,9 +215,13 @@ end;
 
 procedure TJvChangeItem.SetDir(const Value: string);
 begin
-  if (Length(Value) = 0) or not DirectoryExists(Value) then
-    raise EJVCLException.CreateFmt(RsEFmtInvalidPath, [Value]);
-  FDir := Value;
+  if FDir <> Value then
+  begin
+    if not (csDesigning in FParent.FOwner.ComponentState) and
+           ((Length(Value) = 0) or not DirectoryExists(Value)) then
+      raise EJVCLException.CreateFmt(RsEFmtInvalidPath, [Value]);
+    FDir := Value;
+  end;
 end;
 
 function TJvChangeItem.GetDisplayName: string;
@@ -286,7 +302,8 @@ end;
 
 procedure TJvChangeNotify.CheckActive(const Name: string);
 begin
-  if Active then
+  if Active and
+     not ((csDesigning in ComponentState) or (csLoading in ComponentState)) then   //active is now published
     raise EJVCLException.CreateFmt(RsEFmtCannotChangeName, [Name]);
 end;
 
@@ -344,66 +361,81 @@ var
   I: Integer;
   S: string;
 begin
-  if (csDesigning in ComponentState) or (FActive = Value) then
-    Exit;
 
-  FActive := Value;
-  if FActive then
+  If (FActive <> Value) then
   begin
-    FillChar(FNotifyArray, SizeOf(TJvNotifyArray), INVALID_HANDLE_VALUE);
-    for I := 0 to FCollection.Count - 1 do
+    FActive := Value;
+    if (csDesigning in ComponentState) then Exit;   //active is now published
+
+    if FActive then
     begin
-      Flags := 0;
-      { convert TJvChangeActions to bitfields }
-      for cA := Low(TJvChangeAction) to High(TJvChangeAction) do
-        if cA in FCollection[I].Actions then
-          Flags := Flags or (cActions[cA]);
-      S := FCollection[I].Directory;
-      if (Length(S) = 0) or not DirectoryExists(S) then
-        raise EJVCLException.CreateFmt(RsEFmtInvalidPathAtIndex, [S, I]);
-      FNotifyArray[I] := FindFirstChangeNotification(PChar(S),
-        BOOL(FCollection[I].IncludeSubTrees), Flags);
-      if FNotifyArray[I] = INVALID_HANDLE_VALUE then
-        NotifyError(FCollection[I].Directory);
-    end;
+      FillChar(FNotifyArray, SizeOf(TJvNotifyArray), INVALID_HANDLE_VALUE);
+      for I := 0 to FCollection.Count - 1 do
+      begin
+        Flags := 0;
+        { convert TJvChangeActions to bitfields }
+        for cA := Low(TJvChangeAction) to High(TJvChangeAction) do
+          if cA in FCollection[I].Actions then
+            Flags := Flags or (cActions[cA]);
+        S := FCollection[I].Directory;
+        if (Length(S) = 0) or not DirectoryExists(S) then
+          raise EJVCLException.CreateFmt(RsEFmtInvalidPathAtIndex, [S, I]);
+        FNotifyArray[I] := FindFirstChangeNotification(PChar(S),
+          BOOL(FCollection[I].IncludeSubTrees), Flags);
+        if FNotifyArray[I] = INVALID_HANDLE_VALUE then
+          NotifyError(FCollection[I].Directory);
+      end;
+      if FThread <> nil then
+      begin
+        FThread.Terminate;
+        FThread.WaitFor;
+        FreeAndNil(FThread);
+      end;
+      FThread := TJvChangeThread.Create(FNotifyArray, FCollection.Count, FInterval);
+      FThread.OnChangeNotify := DoThreadChangeNotify;
+      FThread.OnTerminate := DoThreadTerminate;
+      FThread.Resume;
+    end
+    else
     if FThread <> nil then
     begin
       FThread.Terminate;
-      FThread.WaitFor;
-      FreeAndNil(FThread);
+      FThread := nil;
+  //    FThread.WaitFor;
+  //    FreeAndNil(FThread);
     end;
-    FThread := TJvChangeThread.Create(FNotifyArray, FCollection.Count, FInterval);
-    FThread.OnChangeNotify := DoThreadChangeNotify;
-    FThread.OnTerminate := DoThreadTerminate;
-    FThread.Resume;
-  end
-  else if (FThread <> nil) then
-  begin
-    FThread.Terminate;
-    FThread := nil;
-//    FThread.WaitFor;
-//    FreeAndNil(FThread);
-  end;
 
-  {
-    while FActive do
-    begin
-      i := WaitForMultipleObjects(FCollection.Count, @FNotifyArray, False, FInterval);
-      if (i >= 0) and (i < FCollection.Count) then
+    {
+      while FActive do
       begin
-        try
-          Change(FCollection.Items[i]);
-        finally
-          Assert(FindNextChangeNotification(FNotifyArray[i]));
-        end;
-      end
-      else
-        Application.ProcessMessages;
-    end;
-  for i := 0 to FCollection.Count - 1 do // Iterate
-    FindCloseChangeNotification(FNotifyArray[i]);
-    }
+        i := WaitForMultipleObjects(FCollection.Count, @FNotifyArray, False, FInterval);
+        if (i >= 0) and (i < FCollection.Count) then
+        begin
+          try
+            Change(FCollection.Items[i]);
+          finally
+            Assert(FindNextChangeNotification(FNotifyArray[i]));
+          end;
+        end
+        else
+          Application.ProcessMessages;
+      end;
+    for i := 0 to FCollection.Count - 1 do // Iterate
+      FindCloseChangeNotification(FNotifyArray[i]);
+      }
+  end;
 end;
+
+procedure TJvChangeNotify.Loaded;
+begin
+  inherited Loaded;
+  if FActive then
+  begin
+    FActive := False;
+    SetActive(True);
+  end;
+end;
+
 
 //=== TJvChangeThread ========================================================
 
@@ -459,6 +491,7 @@ begin
   if Assigned(FNotify) then
     FNotify(Self, FIndex);
 end;
+
 
 end.
 
