@@ -612,6 +612,7 @@ end;
 
 procedure TfrmMain.acDupeWarningExecute(Sender: TObject);
 begin
+  acDupeWarning.Checked := not acDupeWarning.Checked;
   FResponses.Sorted := acDupeWarning.Checked;
 end;
 

@@ -29,7 +29,7 @@ unit MainSpeedFrm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Grids, JvStringGrid, JvExGrids;
 
 type
@@ -67,12 +67,11 @@ var
 
 implementation
 uses
-  JvSimpleXML, JvJVCLUtils, ShellAPI, utilsSort;
+  JvSimpleXML, JvJVCLUtils, ShellAPI;
 
 {$R *.dfm}
 
 function StringFromFile(const FileName: string; var FileSize: Int64): string;
-var S:TStringlist;
 begin
   with TFileStream.Create(FileName, fmOpenRead) do
   try

@@ -108,6 +108,7 @@ object frmMain: TfrmMain
           RowSelect = True
           TabOrder = 0
           ViewStyle = vsReport
+          ColumnsOrder = '0=-2,1=490'
           AutoClipboardCopy = False
         end
       end
@@ -154,7 +155,7 @@ object frmMain: TfrmMain
       Items.Data = {
         010000001F0000001500000015000000FFFFFFFFFFFFFFFF0000000000000000
         06537572766579}
-      LineColor = clScrollBar
+      LineColor = 13160660
     end
   end
   object sbStatus: TJvStatusBar
@@ -172,6 +173,7 @@ object frmMain: TfrmMain
       item
         Width = 50
       end>
+    SimplePanel = False
   end
   object mmMain: TMainMenu
     Images = il16
@@ -218,7 +220,6 @@ object frmMain: TfrmMain
       end
       object acDupeWarning1: TMenuItem
         Action = acDupeWarning
-        AutoCheck = True
       end
     end
     object Help1: TMenuItem
@@ -295,7 +296,6 @@ object frmMain: TfrmMain
     end
     object acDupeWarning: TAction
       Category = 'View'
-      AutoCheck = True
       Caption = 'Don'#39't add duplicates'
       Checked = True
       OnExecute = acDupeWarningExecute

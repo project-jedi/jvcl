@@ -68,7 +68,6 @@ uses
   JvFrameEmpty, hello, JvLabelsU, JvFormsU, JvDialogsU, JvButtonsU, JvDateTimeU,
   JvPanelsU, JvChoosersU, JvUtilsU, JvControlsU, JvSearchFiles, JvWinDialogsU,
   JvEditsU, JvAniMainFormU,
-  MonthCalendarMainFormU,
   JvSearchFileMainFormU, JvNTEventLogMainFormU, JvMruListMainFormU,
   JvLogFileMainFormU, InstallLabelMainFormU, 
   JvDBDateTimePickerMainFormU, ContentScrollerMainFormU, JvDataEmbeddedMainFormU,
@@ -115,7 +114,7 @@ begin
      7 : TheFormArray[ID] := TJvEdits.Create(nil);
      8 : TheFormArray[ID] := TSearchingFormMain.Create(nil);
      9 : TheFormArray[ID] := TJvPanelsFrm.Create(nil);
-    10 : TheFormArray[ID] := TMonthCalendarMainForm.Create(nil);
+//    10 : TheFormArray[ID] := TMonthCalendarMainForm.Create(nil);
     11 : TheFormArray[ID] := TJvSearchFileMainForm.Create(nil);
     12 : TheFormArray[ID] := TJvDateTimeFrm.Create(nil);
     13 : TheFormArray[ID] := TJvChoosersFrm.Create(nil);
