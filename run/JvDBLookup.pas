@@ -2114,7 +2114,7 @@ begin
     FRecordCount = #records in link buffer (<> #records in table)
   }
   { Check whether the list is completely filled.. }
-  if FRecordCount >= (FRowCount - Ord(EmptyRowVisible)) then
+  if (FRecordCount >= (FRowCount - Ord(EmptyRowVisible))) and FLookupLink.Active then
   begin
     { ..if so, display a scrollbar }
     Max := 4;
