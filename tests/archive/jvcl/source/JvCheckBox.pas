@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvCheckBox;
 
-
-
 interface
 
 uses
@@ -39,6 +37,7 @@ uses
 type
   TJvCheckBox = class(TCheckBox)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FOnMouseEnter: TNotifyEvent;
     FColor: TColor;
     FSaved: TColor;
@@ -52,14 +51,13 @@ type
     FOver: Boolean;
     FAutoSave: TJvAutoSave;
     FAutoSize: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     FAssociated: TControl;
     procedure SetHotFont(const Value: TFont);
     function GetCaption: TCaption;
     procedure SetCaption(const Value: TCaption);
     procedure SetAssociated(const Value: TControl);
   protected
-    procedure SetAutoSize(Value: Boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -95,7 +93,7 @@ implementation
 
 constructor TJvCheckBox.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FHotTrack := False;
   FHotFont := TFont.Create;
   FFontSave := TFont.Create;
@@ -109,9 +107,19 @@ end;
 
 {**************************************************}
 
+destructor TJvCheckBox.Destroy;
+begin
+  FAutoSave.Free;
+  FHotFont.Free;
+  FFontSave.Free;
+  inherited Destroy;
+end;
+
+{**************************************************}
+
 procedure TJvCheckBox.Toggle;
 begin
-  inherited;
+  inherited Toggle;
   FAutoSave.SaveValue(Checked);
   if Assigned(FAssociated) then
     FAssociated.Enabled := Checked;
@@ -147,7 +155,8 @@ end;
 procedure TJvCheckBox.CMMouseEnter(var Msg: TMessage);
 begin
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
@@ -168,7 +177,8 @@ end;
 procedure TJvCheckBox.CMMouseLeave(var Msg: TMessage);
 begin
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
@@ -182,16 +192,6 @@ end;
 
 {**************************************************}
 
-destructor TJvCheckBox.Destroy;
-begin
-  FAutoSave.Free;
-  FHotFont.Free;
-  FFontSave.Free;
-  inherited;
-end;
-
-{**************************************************}
-
 procedure TJvCheckBox.SetHotFont(const Value: TFont);
 begin
   FHotFont.Assign(Value);
@@ -201,12 +201,12 @@ end;
 
 procedure TJvCheckBox.Loaded;
 var
-  b: Boolean;
+  B: Boolean;
 begin
   inherited;
-  if FAutoSave.LoadValue(b) then
+  if FAutoSave.LoadValue(B) then
   begin
-    Checked := b;
+    Checked := B;
     if Assigned(FOnRestored) then
       FOnRestored(Self);
   end;
@@ -251,7 +251,7 @@ end;
 
 procedure TJvCheckBox.SetChecked(Value: Boolean);
 begin
-  inherited;
+  inherited SetChecked(Value);
   if Assigned(FAssociated) then
     FAssociated.Enabled := Value;
 end;
@@ -260,7 +260,7 @@ end;
 
 procedure TJvCheckBox.Click;
 begin
-  inherited;
+  inherited Click;
   if Assigned(FAssociated) then
     FAssociated.Enabled := Checked;
 end;

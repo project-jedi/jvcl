@@ -39,29 +39,17 @@ unit JvCheckedMaskEdit;
 interface
 
 uses
-  Classes,
-  Controls,
-  Graphics,
-  StdCtrls,
-  Messages,
-  Mask,
-  JvMaskEdit,
-  JvTypes,
-  JVCLVer;
-
+  Classes, Controls, Graphics, StdCtrls, Messages, Mask,
+  JvMaskEdit, JvTypes, JVCLVer;
 
 type
   TJvCustomCheckedMaskEdit = class(TJvCustomMaskEdit)
   private
     FCheck: TCheckBox;
     FInternalChange: Boolean;
-
     FOnCheckClick: TNotifyEvent;
-
     procedure CheckClick(Sender: TObject);
-
     function GetShowCheckbox: Boolean;
-
   protected
     procedure DoCheckClick; dynamic;
     procedure DoCtl3DChanged; override;
@@ -84,16 +72,13 @@ type
     procedure BeginInternalChange;
     procedure EndInternalChange;
     function InternalChanging: Boolean;
-
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-
   protected
     property Checked: Boolean read GetChecked write SetChecked;
     property ShowCheckbox: Boolean read GetShowCheckbox write SetShowCheckbox default False;
-
     property OnCheckClick: TNotifyEvent read FOnCheckClick write FOnCheckClick;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
   TJvCheckedMaskEdit = class(TJvCustomCheckedMaskEdit)
@@ -164,16 +149,12 @@ type
 implementation
 
 uses
-  Windows,
-  Forms,
-  SysUtils;
-
-{ TLucaCheckedMaskEdit }
+  Windows, Forms, SysUtils;
 
 constructor TJvCustomCheckedMaskEdit.Create(AOwner: TComponent);
 begin
   inherited;
-  FCheck := NIL;
+  FCheck := nil;
   FInternalChange := False;
 
   AutoSize := False;
@@ -183,35 +164,35 @@ end;
 
 procedure TJvCustomCheckedMaskEdit.CreateParams(var AParams: TCreateParams);
 begin
-  inherited;
+  inherited CreateParams(AParams);
   {ensure the child controls do not overlap}
   AParams.Style := AParams.Style or WS_CLIPCHILDREN;
 end;
 
 procedure TJvCustomCheckedMaskEdit.CreateWnd;
 begin
-  inherited;
+  inherited CreateWnd;
   UpdateControls;
 end;
 
 destructor TJvCustomCheckedMaskEdit.Destroy;
 begin
-  if(ShowCheckbox) then
-    FCheck.OnClick := NIL;
-  inherited;
+  if ShowCheckbox then
+    FCheck.OnClick := nil;
+  inherited Destroy;
 end;
 
 function TJvCustomCheckedMaskEdit.GetChecked: Boolean;
 begin
-  if(ShowCheckbox) then
-    result := FCheck.Checked
+  if ShowCheckbox then
+    Result := FCheck.Checked
   else
-    result := False; //should this really be the default?
+    Result := False; //should this really be the default?
 end;
 
 procedure TJvCustomCheckedMaskEdit.SetChecked(const AValue: Boolean);
 begin
-  if(ShowCheckbox) and(FCheck.Checked <> AValue) then
+  if ShowCheckbox and (FCheck.Checked <> AValue) then
   begin
     FCheck.Checked := AValue;
     Change;
@@ -223,23 +204,23 @@ end;
 
 function TJvCustomCheckedMaskEdit.GetShowCheckbox: Boolean;
 begin
-  result := Assigned(FCheck);
+  Result := Assigned(FCheck);
 end;
 
 procedure TJvCustomCheckedMaskEdit.SetShowCheckbox(const AValue: Boolean);
 begin
   {The checkbox will only get instantiated when ShowCheckbox is set to True;
    setting it to false frees the checkbox.}
-  if(ShowCheckbox <> AValue) then
+  if ShowCheckbox <> AValue then
   begin
-    if(AValue) then
+    if AValue then
     begin
-      FCheck := TCheckbox.Create(Self);
-      with(FCheck) do
+      FCheck := TCheckBox.Create(Self);
+      with FCheck do
       begin
         Parent := Self;
 //        Align:= alLeft;
-        if(HotTrack) then
+        if HotTrack then
           Left := 1;
         Top := 1;
         Width := 15;
@@ -252,9 +233,7 @@ begin
       end;
     end
     else
-    begin
       FreeAndNil(FCheck);
-    end;
   end;
   UpdateControls;
 end;
@@ -269,7 +248,6 @@ begin
   lLeft := 0;
   lRight := 0;
   GetInternalMargins(lLeft, lRight);
-
   SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN or EC_LEFTMARGIN, MakeLong(lLeft, lRight));
 end;
 
@@ -277,7 +255,7 @@ procedure TJvCustomCheckedMaskEdit.GetInternalMargins( var ALeft, ARight: Intege
 begin
   {This gets called by UpodateControls and should be overridden by descendants
    that add additional child controls.}
-  if(ShowCheckBox) then
+  if ShowCheckBox then
     ALeft := FCheck.Left + FCheck.Width;
 end;
 
@@ -286,15 +264,13 @@ begin
   {Overridden to suppress change handling during internal operations. If
    descendants override Change again it is their responsibility to repeat the
    check for InternalChanging.}
-  if(InternalChanging) then
-    Exit;
-
-  inherited;
+  if not InternalChanging then
+    inherited Change;
 end;
 
 procedure TJvCustomCheckedMaskEdit.Resize;
 begin
-  inherited;
+  inherited Resize;
   UpdateControls;
 end;
 
@@ -320,53 +296,50 @@ end;
 
 function TJvCustomCheckedMaskEdit.InternalChanging: Boolean;
 begin
-  result := FInternalChange;
+  Result := FInternalChange;
 end;
 
 procedure TJvCustomCheckedMaskEdit.CheckClick(Sender: TObject);
 begin
-  //call SetChecked to allow descendants to validate the new value:
+  // call SetChecked to allow descendants to validate the new value:
   Checked := FCheck.Checked;
   DoCheckClick;
 end;
 
 procedure TJvCustomCheckedMaskEdit.DoCheckClick;
 begin
-  if(Assigned(OnCheckClick)) then
+  if Assigned(OnCheckClick) then
     OnCheckClick(Self);
 end;
 
 procedure TJvCustomCheckedMaskEdit.DoCtl3DChanged;
 begin
-  inherited;
-
-  {propagate to child conrols:}
-  if(ShowCheckbox) then
+  inherited DoCtl3DChanged;
+  { propagate to child conrols: }
+  if ShowCheckbox then
   begin
     FCheck.Ctl3D := Self.Ctl3D;
-    //adjust layout quirks:
-    if(Self.Ctl3d) then
+    // adjust layout quirks:
+    if Self.Ctl3d then
       FCheck.Left := 0
     else
       FCheck.Left := 1;
   end;
-
   UpdateControls;
 end;
 
 procedure TJvCustomCheckedMaskEdit.DoEnabledChanged;
 begin
-  {propagate to child controls:}
-  if( ShowCheckbox) then
+  { propagate to child controls: }
+  if ShowCheckbox then
     FCheck.Enabled := Self.Enabled;
-
-  inherited;
+  inherited DoEnabledChanged;
 end;
 
 procedure TJvCustomCheckedMaskEdit.DoKillFocus(const ANextControl: TWinControl);
 begin
-  if(ANextControl <> FCheck) then
-    inherited;
+  if ANextControl <> FCheck then
+    inherited DoKillFocus(ANextControl);
 end;
 
 end.

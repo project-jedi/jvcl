@@ -28,13 +28,11 @@ Known Issues:
 
 unit JvButtonShaped;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, JvButton;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  JvButton;
 
 type
   TJvButtonShaped = class(TJvButton)
@@ -52,6 +50,7 @@ type
   end;
 
 implementation
+
 uses
   JvFunctions;
 
@@ -59,7 +58,7 @@ uses
 
 constructor TJvButtonShaped.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FShape := TBitmap.Create;
   FWorking := False;
 end;
@@ -70,9 +69,8 @@ procedure TJvButtonShaped.CreateWnd;
 begin
   if not FShape.Empty then
   begin
-    inherited;
-    // (rom) what is this? Better call SetShape if correct
-    Shape := Shape;
+    inherited CreateWnd;
+    SetShape(Shape);
   end;
 end;
 
@@ -81,7 +79,7 @@ end;
 destructor TJvButtonShaped.Destroy;
 begin
   FShape.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {*******************************************************}
@@ -100,3 +98,4 @@ begin
 end;
 
 end.
+

@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvCaesarCipher;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, JvTypes, JvComponent;
+  Windows, SysUtils, Classes,
+  JvTypes, JvComponent;
 
 type
   TJvCaesarCipher = class(TJvComponent)
@@ -41,10 +40,10 @@ type
     Fn: Byte;
     FDecoded: string;
     FEncoded: string;
-    procedure SetDecoded(st: string);
-    procedure SetEncoded(st: string);
-    function Crypt(St: string; n: Byte): string;
-    function CryptByte(Ch, n: Byte): Byte;
+    procedure SetDecoded(St: string);
+    procedure SetEncoded(St: string);
+    function Crypt(St: string; N: Byte): string;
+    function CryptByte(Ch, N: Byte): Byte;
   published
     property N: Byte read Fn write Fn;
     property Encoded: string read Fencoded write SetEncoded;
@@ -59,82 +58,83 @@ implementation
 
 {***********************************************************}
 
-function TJvCaesarCipher.CryptByte(Ch, n: Byte): Byte;
+function TJvCaesarCipher.CryptByte(Ch, N: Byte): Byte;
 var
-  j: Integer;
+  J: Integer;
 begin
-  j := Ch + n;
-  if j < 0 then
-    j := 256 - j
-  else if j > 256 then
-    j := j - 256;
-  Result := j;
+  J := Ch + N;
+  if J < 0 then
+    J := 256 - J
+  else
+    if J > 256 then
+    J := J - 256;
+  Result := J;
 end;
 
 {***********************************************************}
 
-function TJvCaesarCipher.Crypt(St: string; n: Byte): string;
+function TJvCaesarCipher.Crypt(St: string; N: Byte): string;
 var
-  i: Integer;
+  I: Integer;
 begin
   // (rom) optimized for speed
   SetLength(Result, Length(St));
-  for i := 1 to Length(st) do
-    Result[i] := Char(CryptByte(Byte(St[i]), n));
+  for I := 1 to Length(St) do
+    Result[I] := Char(CryptByte(Byte(St[I]), N));
 end;
 
 {***********************************************************}
 
-procedure TJvCaesarCipher.SetDecoded(st: string);
+procedure TJvCaesarCipher.SetDecoded(St: string);
 begin
-  FDecoded := st;
-  FEncoded := Crypt(st, Fn);
+  FDecoded := St;
+  FEncoded := Crypt(St, Fn);
 end;
 
 {***********************************************************}
 
-procedure TJvCaesarCipher.SetEncoded(st: string);
+procedure TJvCaesarCipher.SetEncoded(St: string);
 begin
-  FEncoded := st;
-  FDecoded := Crypt(st, -Fn);
+  FEncoded := St;
+  FDecoded := Crypt(St, -Fn);
 end;
 
 {***********************************************************}
 
 procedure TJvCaesarCipher.Decode(It: TStrings);
 var
-  i: Integer;
+  I: Integer;
 begin
   // (rom) fixed loop to start at 0 instead of 1
-  for i := 0 to It.Count - 1 do
-    It[i] := Crypt(It[i], -Fn);
+  for I := 0 to It.Count-1 do
+    It[I] := Crypt(It[I], -Fn);
 end;
 
 {***********************************************************}
 
-procedure TJvCaesarCipher.Encode(it: TStrings);
+procedure TJvCaesarCipher.Encode(It: TStrings);
 var
-  i: Integer;
+  I: Integer;
 begin
   // (rom) fixed loop to start at 0 instead of 1
-  for i := 0 to It.Count - 1 do
-    It[i] := Crypt(It[i], Fn);
+  for I := 0 to It.Count - 1 do
+    It[I] := Crypt(It[I], Fn);
 end;
 
 {***********************************************************}
 
 function TJvCaesarCipher.DecodeStream(Value: TStream): TStream;
 var
-  buffer: array[0..1024] of Byte;
-  i, count: Integer;
+  Buffer: array [0..1024] of Byte;
+  I, Count: Integer;
 begin
   Result := TMemoryStream.Create;
   while Value.Position < Value.Size do
   begin
-    count := Value.Read(buffer, 1024);
-    for i := 0 to count - 1 do
-      buffer[i] := CryptByte(buffer[i], -Fn);
-    Result.Write(buffer, count);
+    Count := Value.Read(Buffer, 1024);
+    for I := 0 to Count - 1 do
+      Buffer[I] := CryptByte(Buffer[I], -Fn);
+    Result.Write(Buffer, Count);
   end;
 end;
 
@@ -142,17 +142,18 @@ end;
 
 function TJvCaesarCipher.EncodeStream(Value: TStream): TStream;
 var
-  buffer: array[0..1024] of Byte;
-  i, count: Integer;
+  Buffer: array [0..1024] of Byte;
+  I, Count: Integer;
 begin
   Result := TMemoryStream.Create;
   while Value.Position < Value.Size do
   begin
-    count := Value.Read(buffer, 1024);
-    for i := 0 to count - 1 do
-      buffer[i] := CryptByte(buffer[i], Fn);
-    Result.Write(buffer, count);
+    Count := Value.Read(Buffer, 1024);
+    for I := 0 to Count - 1 do
+      Buffer[I] := CryptByte(Buffer[I], Fn);
+    Result.Write(Buffer, Count);
   end;
 end;
 
 end.
+

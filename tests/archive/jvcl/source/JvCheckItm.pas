@@ -12,7 +12,7 @@ The Original Code is: JvCheckItm.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,22 +25,26 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
-
 unit JvCheckItm;
 
 interface
 
-uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF} Messages,
-  SysUtils, Classes, Controls, Forms, Menus, Graphics, StdCtrls, JvPlacemnt,
-  Dialogs, JvxCtrls, ExtCtrls,
- {$IFDEF COMPILER6_UP}RTLConsts,DesignIntf, VCLEditors, DesignEditors,{$ELSE}DsgnIntf,{$ENDIF}
-  CheckLst, JvComponent;
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  Messages, SysUtils, Classes, Controls, Forms, Menus, Graphics,
+  StdCtrls, Dialogs, CheckLst,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, DesignIntf, VCLEditors, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF}
+  JvPlacemnt, JvxCtrls, ExtCtrls, JvComponent;
 
 type
-
-{ TJvCheckItemEditor }
-
   TJvCheckItemEditor = class(TForm)
   private
     FEdit: TEdit;
@@ -52,29 +56,24 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-{ TJvCheckItemsEditor }
-
   TJvCheckItemsEditor = class(TForm)
-    Panel2: TPanel;
-    DeleteBtn: TButton;
-    NewBtn: TButton;
-    EditBtn: TButton;
-    Panel3: TPanel;
-    CancelBtn: TButton;
-    Panel1: TPanel;
-    OkBtn: TButton;
     Popup: TPopupMenu;
-    AddListBtn: TButton;
     cbGrayedItem: TMenuItem;
     cbCheckedItem: TMenuItem;
     cbUncheckedItem: TMenuItem;
     N2: TMenuItem;
     EnabledItem: TMenuItem;
-    ClearBtn: TButton;
-    CheckList: TJvxCheckListBox;
-    UpBtn: TButton;
-    DownBtn: TButton;
     FormPlacement: TJvFormStorage;
+    OkBtn: TButton;
+    CancelBtn: TButton;
+    DownBtn: TButton;
+    UpBtn: TButton;
+    ClearBtn: TButton;
+    AddListBtn: TButton;
+    DeleteBtn: TButton;
+    NewBtn: TButton;
+    EditBtn: TButton;
+    CheckList: TJvxCheckListBox;
     procedure EditBtnClick(Sender: TObject);
     procedure NewBtnClick(Sender: TObject);
     procedure DeleteBtnClick(Sender: TObject);
@@ -98,8 +97,6 @@ type
     procedure CheckButtons;
   end;
 
-{ CheckItems property editor }
-
   TJvCheckItemsProperty = class(TClassProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
@@ -111,13 +108,17 @@ implementation
 {$R *.DFM}
 
 {$IFDEF WIN32}
- {$D-}
+{$D-}
 {$ENDIF}
 
-uses {$IFDEF COMPILER3_UP} JvStrLEdit, {$ELSE} StrEdit, {$ENDIF} Consts, JvConst,
-  JvVCLUtils, JvBoxProcs;
-
-{ TJvCheckItemsProperty }
+uses
+  Consts,
+  {$IFDEF COMPILER3_UP}
+  JvStrLEdit,
+  {$ELSE}
+  StrEdit,
+  {$ENDIF}
+  JvConst, JvVCLUtils, JvBoxProcs;
 
 function TJvCheckItemsProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -133,14 +134,17 @@ begin
     Comp := Self.GetComponent(0);
     if Comp is TComponent then
       Caption := TComponent(Comp).Name + '.' + Self.GetName
-    else Caption := Self.GetName;
-    if Comp is TJvxCheckListBox then begin
+    else
+      Caption := Self.GetName;
+    if Comp is TJvxCheckListBox then
+    begin
       CheckList.AllowGrayed := TJvxCheckListBox(Comp).AllowGrayed;
       CheckList.Sorted := TJvxCheckListBox(Comp).Sorted;
       CheckList.CheckKind := TJvxCheckListBox(Comp).CheckKind;
     end;
     CheckList.Items := TStrings(GetOrdValue);
-    if ShowModal = mrOk then SetOrdValue(LongInt(CheckList.Items));
+    if ShowModal = mrOk then
+      SetOrdValue(LongInt(CheckList.Items));
   finally
     Free;
   end;
@@ -150,11 +154,11 @@ end;
 
 constructor TJvCheckItemEditor.Create(AOwner: TComponent);
 begin
-{$IFDEF CBUILDER}
+  {$IFDEF CBUILDER}
   inherited CreateNew(AOwner, 0);
-{$ELSE}
+  {$ELSE}
   inherited CreateNew(AOwner);
-{$ENDIF}
+  {$ENDIF}
   { Form definitions }
   {Left := 354;
   Top := 338;}
@@ -170,7 +174,8 @@ begin
   Position := poScreenCenter;
   { FEdit }
   FEdit := TEdit.Create(Self);
-  with FEdit do begin
+  with FEdit do
+  begin
     Parent := Self;
     Left := 8;
     Top := 12;
@@ -180,7 +185,8 @@ begin
   end;
   { FOkBtn }
   FOkBtn := TButton.Create(Self);
-  with FOkBtn do begin
+  with FOkBtn do
+  begin
     Parent := Self;
     Left := 168;
     Top := 60;
@@ -193,7 +199,8 @@ begin
   end;
   { FCancelBtn }
   FCancelBtn := TButton.Create(Self);
-  with FCancelBtn do begin
+  with FCancelBtn do
+  begin
     Parent := Self;
     Left := 246;
     Top := 60;
@@ -206,7 +213,8 @@ begin
   end;
   { FCheckBox }
   FComboBox := TComboBox.Create(Self);
-  with FComboBox do begin
+  with FComboBox do
+  begin
     Parent := Self;
     Style := csDropDownList;
     Items.Add('Unchecked');
@@ -219,7 +227,8 @@ begin
   end;
   { FEnableBox }
   FEnableBox := TCheckBox.Create(Self);
-  with FEnableBox do begin
+  with FEnableBox do
+  begin
     Parent := Self;
     Left := 104;
     Top := 40;
@@ -231,16 +240,15 @@ begin
   end;
 end;
 
-{ TJvCheckItemsEditor }
-
 procedure TJvCheckItemsEditor.FormCreate(Sender: TObject);
 begin
-{$IFDEF WIN32}
-  with FormPlacement do begin
+  {$IFDEF WIN32}
+  with FormPlacement do
+  begin
     UseRegistry := True;
     IniFileName := SDelphiKey;
   end;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvCheckItemsEditor.CheckButtons;
@@ -248,8 +256,8 @@ begin
   DeleteBtn.Enabled := CheckList.ItemIndex >= 0;
   EditBtn.Enabled := DeleteBtn.Enabled;
   UpBtn.Enabled := CheckList.ItemIndex > 0;
-  DownBtn.Enabled := (CheckList.ItemIndex < CheckList.Items.Count - 1)
-    and (CheckList.ItemIndex >= 0);
+  DownBtn.Enabled := (CheckList.ItemIndex < CheckList.Items.Count - 1) and
+    (CheckList.ItemIndex >= 0);
 end;
 
 procedure TJvCheckItemsEditor.EditBtnClick(Sender: TObject);
@@ -260,7 +268,8 @@ begin
   if I >= 0 then
     with TJvCheckItemEditor.Create(Application) do
     try
-      if Screen.PixelsPerInch <> 96 then begin { scale to screen res }
+      if Screen.PixelsPerInch <> 96 then
+      begin { scale to screen res }
         ScaleBy(Screen.PixelsPerInch, 96);
         { The ScaleBy method does not scale the font well, so set the
           font back to the original info. }
@@ -272,7 +281,8 @@ begin
       FEdit.Text := CheckList.Items[I];
       FComboBox.ItemIndex := Integer(CheckList.State[I]);
       FEnableBox.Checked := CheckList.EnabledItem[I];
-      if ShowModal = mrOk then begin
+      if ShowModal = mrOk then
+      begin
         CheckList.Items[I] := FEdit.Text;
         CheckList.State[I] := TCheckBoxState(FComboBox.ItemIndex);
         CheckList.EnabledItem[I] := FEnableBox.Checked;
@@ -292,7 +302,8 @@ begin
     FEdit.Text := '';
     FComboBox.ItemIndex := Integer(clbDefaultState);
     FEnableBox.Checked := clbDefaultEnabled;
-    if ShowModal = mrOk then begin
+    if ShowModal = mrOk then
+    begin
       Index := CheckList.Items.Add(FEdit.Text);
       CheckList.State[Index] := TCheckBoxState(FComboBox.ItemIndex);
       CheckList.EnabledItem[Index] := FEnableBox.Checked;
@@ -305,7 +316,8 @@ end;
 
 procedure TJvCheckItemsEditor.DeleteBtnClick(Sender: TObject);
 begin
-  if CheckList.ItemIndex >= 0 then begin
+  if CheckList.ItemIndex >= 0 then
+  begin
     CheckList.Items.Delete(CheckList.ItemIndex);
     CheckButtons;
   end;
@@ -334,12 +346,16 @@ begin
   cbGrayedItem.Checked := False;
   cbCheckedItem.Checked := False;
   cbUncheckedItem.Checked := False;
-  if Enable then begin
+  if Enable then
+  begin
     EnabledItem.Checked := CheckList.EnabledItem[CheckList.ItemIndex];
     case CheckList.State[CheckList.ItemIndex] of
-      cbChecked: cbCheckedItem.Checked := True;
-      cbUnchecked: cbUncheckedItem.Checked := True;
-      cbGrayed: cbGrayedItem.Checked := True;
+      cbChecked:
+        cbCheckedItem.Checked := True;
+      cbUnchecked:
+        cbUncheckedItem.Checked := True;
+      cbGrayed:
+        cbGrayedItem.Checked := True;
     end;
   end;
 end;
@@ -349,21 +365,22 @@ var
   I: LongInt;
 begin
   with TJvStrEditDlg.Create(Application) do
-    try
-{$IFDEF WIN32}
-{$IFNDEF COMPILER3_UP}
-      CodeWndBtn.Visible := False;
-{$ENDIF}
-{$ENDIF}
-      if ShowModal = mrOk then begin
-        for I := 0 to Memo.Lines.Count - 1 do
-          if Memo.Lines[I] <> '' then
-            CheckList.Items.Add(Memo.Lines[I]);
-        CheckButtons;
-      end;
-    finally
-      Free;
+  try
+    {$IFDEF WIN32}
+    {$IFNDEF COMPILER3_UP}
+    CodeWndBtn.Visible := False;
+    {$ENDIF}
+    {$ENDIF}
+    if ShowModal = mrOk then
+    begin
+      for I := 0 to Memo.Lines.Count - 1 do
+        if Memo.Lines[I] <> '' then
+          CheckList.Items.Add(Memo.Lines[I]);
+      CheckButtons;
     end;
+  finally
+    Free;
+  end;
 end;
 
 procedure TJvCheckItemsEditor.cbGrayedItemClick(Sender: TObject);
@@ -396,8 +413,11 @@ var
   OldIndex, NewIndex: Integer;
 begin
   OldIndex := CheckList.ItemIndex;
-  if Sender = UpBtn then NewIndex := OldIndex - 1
-  else {if Sender = DownBtn then} NewIndex := OldIndex + 1;
+  if Sender = UpBtn then
+    NewIndex := OldIndex - 1
+  else
+  {if Sender = DownBtn then}
+    NewIndex := OldIndex + 1;
   CheckList.Items.Move(OldIndex, NewIndex);
   CheckList.ItemIndex := NewIndex;
   CheckButtons;
@@ -410,19 +430,24 @@ var
 begin
   case Key of
     VK_DELETE:
-      if ssCtrl in Shift then begin
+      if ssCtrl in Shift then
+      begin
         DeleteBtnClick(nil);
         Key := 0;
       end;
     VK_INSERT:
-      if Shift = [] then begin
+      if Shift = [] then
+      begin
         AddListBtnClick(nil);
         Key := 0;
       end;
     VK_DOWN, VK_UP:
-      if (ssCtrl in Shift) then begin
-        if Key = VK_DOWN then Incr := 1
-        else Incr := -1;
+      if (ssCtrl in Shift) then
+      begin
+        if Key = VK_DOWN then
+          Incr := 1
+        else
+          Incr := -1;
         BoxMoveFocusedItem(CheckList, CheckList.ItemIndex + Incr);
         CheckButtons;
         Key := 0;
@@ -433,7 +458,8 @@ end;
 procedure TJvCheckItemsEditor.CheckListDragDrop(Sender, Source: TObject; X,
   Y: Integer);
 begin
-  if Source = CheckList then begin
+  if Source = CheckList then
+  begin
     BoxMoveFocusedItem(CheckList, CheckList.ItemAtPos(Point(X, Y), True));
     CheckButtons;
   end;
@@ -443,9 +469,12 @@ procedure TJvCheckItemsEditor.CheckListDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
 begin
   BoxDragOver(CheckList, Source, X, Y, State, Accept, CheckList.Sorted);
-  if State = dsDragLeave then CheckList.DragCursor := crDrag
-  else if (State = dsDragEnter) and (CheckList.SelCount > 1) then
+  if State = dsDragLeave then
+    CheckList.DragCursor := crDrag
+  else
+  if (State = dsDragEnter) and (CheckList.SelCount > 1) then
     CheckList.DragCursor := crMultiDrag;
 end;
 
 end.
+

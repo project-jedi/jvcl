@@ -35,15 +35,14 @@ unit JvCheckListBox;
 
 interface
 
-
-
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, checklst, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, CheckLst, Controls, Forms,
   JvItemsSearchs, JVCLVer;
 
 type
-  TJvCheckListBox = class(TCheckListbox)
+  TJvCheckListBox = class(TCheckListBox)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FEffect: Boolean;
     FOnMouseEnter: TNotifyEvent;
     FColor: TColor;
@@ -58,7 +57,6 @@ type
     FOnHScroll: TNotifyEvent;
     FOnVScroll: TNotifyEvent;
     FItemSearchs: TJvItemsSearchs;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetHScroll(const Value: Boolean);
     procedure RefreshH;
     procedure SetEffect(const Value: Boolean);
@@ -82,7 +80,7 @@ type
     function DeleteExactString(Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
 
-    procedure SelectAll;{$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure SelectAll; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure UnselectAll;
     procedure InvertSelection;
     procedure CheckAll;
@@ -90,7 +88,7 @@ type
     procedure InvertCheck;
     function GetChecked: TStringList;
     function GetUnChecked: TStringList;
-    procedure DeleteSelected;{$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure DeleteSelected; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure SaveToFile(FileName: TFileName);
     procedure LoadFromFile(FileName: TFileName);
     procedure LoadFromStream(Stream: TStream);
@@ -113,13 +111,13 @@ type
 implementation
 
 type
-  //Used for the load/save methods
+  // Used for the load/save methods
   TCheckListRecord = record
     Checked: Boolean;
     StringSize: Integer;
   end;
 
-  {**************************************************}
+{**************************************************}
 
 constructor TJvCheckListBox.Create(AOwner: TComponent);
 begin
@@ -145,7 +143,7 @@ end;
 
 procedure TJvCheckListBox.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
+  inherited CreateParams(Params);
   with Params do
     if FScroll then
       Style := Style or WS_HSCROLL
@@ -157,13 +155,13 @@ end;
 
 procedure TJvCheckListBox.RefreshH;
 var
-  i: Integer;
+  I: Integer;
   ItemWidth: Word;
 begin
   FMaxWidth := 0;
-  for i := 0 to Items.Count - 1 do
+  for I := 0 to Items.Count - 1 do
   begin
-    ItemWidth := Canvas.TextWidth(Items[i] + ' ');
+    ItemWidth := Canvas.TextWidth(Items[I] + ' ');
     if FMaxWidth < ItemWidth then
       FMaxWidth := ItemWidth;
   end;
@@ -189,7 +187,7 @@ begin
         ItemWidth := Canvas.TextWidth(Items[Msg.wParam] + ' ');
         if ItemWidth = FMaxWidth then
         begin
-          inherited;
+          inherited WndProc(Msg);
           RefreshH;
           Exit;
         end;
@@ -201,13 +199,13 @@ begin
       end;
     WM_SETFONT:
       begin
-        inherited;
+        inherited WndProc(Msg);
         Canvas.Font.Assign(Font);
         RefreshH;
         Exit;
       end;
   end;
-  inherited;
+  inherited WndProc(Msg);
 end;
 
 {***********************************************}
@@ -245,7 +243,8 @@ begin
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
+    if csDesigning in ComponentState then
+      Exit;
     Application.HintColor := FColor;
     if FEffect then
       Ctl3d := True;
@@ -259,24 +258,25 @@ end;
 
 procedure TJvCheckListBox.WMHScroll(var Msg: TWMHScroll);
 var
-  scrollpos: Integer;
-  r: TRect;
+  ScrollPos: Integer;
+  R: TRect;
 begin
   inherited;
   // (p3) what does this code do, really?
-  if msg.ScrollCode <> SB_ENDSCROLL then
+  if Msg.ScrollCode <> SB_ENDSCROLL then
   begin
-    scrollpos := GetScrollPos(handle, SB_HORZ);
-    if scrollpos < 20 then
+    ScrollPos := GetScrollPos(Handle, SB_HORZ);
+    if ScrollPos < 20 then
     begin
-      r := ClientRect;
-      r.Right := r.left + 20;
-      InvalidateRect(handle, @r, false);
+      R := ClientRect;
+      R.Right := R.Left + 20;
+      InvalidateRect(Handle, @R, False);
     end;
   end;
   if Assigned(FOnHScroll) then
     FOnHScroll(Self);
 end;
+
 {**************************************************}
 
 procedure TJvCheckListBox.WMVScroll(var Msg: TWMVScroll);
@@ -353,88 +353,88 @@ end;
 
 procedure TJvCheckListBox.SelectAll;
 var
-  i: Integer;
+  I: Integer;
 begin
   // (rom) simplified
   if MultiSelect then
-    for i := 0 to Items.Count - 1 do
-      Selected[i] := True;
+    for I := 0 to Items.Count - 1 do
+      Selected[I] := True;
 end;
 
 {**************************************************}
 
 procedure TJvCheckListBox.UnselectAll;
 var
-  i: Integer;
+  I: Integer;
 begin
   if MultiSelect then
-    for i := 0 to Items.Count - 1 do
-      Selected[i] := False;
+    for I := 0 to Items.Count - 1 do
+      Selected[I] := False;
 end;
 
 {**************************************************}
 
 procedure TJvCheckListBox.InvertSelection;
 var
-  i: Integer;
+  I: Integer;
 begin
   if MultiSelect then
-    for i := 0 to Items.Count - 1 do
-      Selected[i] := not Selected[i];
+    for I := 0 to Items.Count - 1 do
+      Selected[I] := not Selected[I];
 end;
 
 {**************************************************}
 
 procedure TJvCheckListBox.CheckAll;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Items.Count - 1 do
-    Checked[i] := True;
+  for I := 0 to Items.Count - 1 do
+    Checked[v] := True;
 end;
 
 {**************************************************}
 
 procedure TJvCheckListBox.UnCheckall;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Items.Count - 1 do
-    Checked[i] := False;
+  for I := 0 to Items.Count - 1 do
+    Checked[I] := False;
 end;
 
 {**************************************************}
 
 procedure TJvCheckListBox.InvertCheck;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Items.Count - 1 do
-    Checked[i] := not Checked[i];
+  for I := 0 to Items.Count - 1 do
+    Checked[I] := not Checked[I];
 end;
 
 {**************************************************}
 
 function TJvCheckListBox.GetChecked: TStringList;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := TStringList.Create;
-  for i := 0 to Items.Count - 1 do
-    if Checked[i] then
-      Result.AddObject(Items[i], Items.Objects[i]);
+  for I := 0 to Items.Count - 1 do
+    if Checked[I] then
+      Result.AddObject(Items[I], Items.Objects[I]);
 end;
 
 {**************************************************}
 
 function TJvCheckListBox.GetUnChecked: TStringList;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := TStringList.Create;
-  for i := 0 to Items.Count - 1 do
-    if not Checked[i] then
-      Result.AddObject(Items[i], Items.Objects[i]);
+  for I := 0 to Items.Count - 1 do
+    if not Checked[I] then
+      Result.AddObject(Items[I], Items.Objects[I]);
 end;
 
 {**************************************************}
@@ -453,8 +453,7 @@ end;
 procedure TJvCheckListBox.LoadFromStream(Stream: TStream);
 var
   CheckLst: TCheckListRecord;
-  st: string;
-  buf: array[0..1024] of Char;
+  Buf: array [0..1023] of Char;
 begin
   Items.Clear;
   while Stream.Position + SizeOf(TCheckListRecord) <= Stream.Size do
@@ -462,10 +461,9 @@ begin
     Stream.Read(CheckLst, SizeOf(TCheckListRecord));
     if Stream.Position + CheckLst.StringSize <= Stream.Size then
     begin
-      Stream.Read(buf, CheckLst.StringSize);
-      buf[CheckLst.StringSize] := #0;
-      st := buf;
-      Checked[Items.Add(st)] := CheckLst.Checked;
+      Stream.Read(Buf, CheckLst.StringSize);
+      Buf[CheckLst.StringSize] := #0;
+      Checked[Items.Add(Buf)] := CheckLst.Checked;
     end;
   end;
 end;
@@ -485,18 +483,18 @@ end;
 
 procedure TJvCheckListBox.SaveToStream(Stream: TStream);
 var
+  I, J: Integer;
   CheckLst: TCheckListRecord;
-  buf: array[1..1024] of Char;
-  i, j: Integer;
+  Buf: array [1..1023] of Char;
 begin
-  for i := 0 to Items.Count - 1 do
+  for I := 0 to Items.Count - 1 do
   begin
-    CheckLst.Checked := Checked[i];
-    CheckLst.StringSize := Length(Items[i]);
+    CheckLst.Checked := Checked[I];
+    CheckLst.StringSize := Length(Items[I]);
     Stream.Write(CheckLst, SizeOf(TCheckListRecord));
-    for j := 1 to Length(Items[i]) do
-      buf[j] := Items[i][j];
-    Stream.Write(buf, CheckLst.StringSize);
+    for J := 1 to Length(Items[I]) do
+      Buf[J] := Items[I][J];
+    Stream.Write(Buf, CheckLst.StringSize);
   end;
 end;
 
@@ -504,22 +502,23 @@ end;
 
 procedure TJvCheckListBox.DeleteSelected;
 var
-  i: Integer;
+  I: Integer;
 begin
   if MultiSelect then
   begin
-    for i := Items.Count - 1 downto 0 do
-      if Selected[i] then
-        Items.Delete(i);
+    for I := Items.Count - 1 downto 0 do
+      if Selected[I] then
+        Items.Delete(I);
   end
-  else if ItemIndex <> -1 then
+  else
+  if ItemIndex <> -1 then
   begin
-    i := ItemIndex;
-    Items.Delete(i);
-    if i > 0 then
-      Dec(i);
+    I := ItemIndex;
+    Items.Delete(I);
+    if I > 0 then
+      Dec(I);
     if Items.Count > 0 then
-      ItemIndex := i;
+      ItemIndex := I;
   end;
 end;
 

@@ -12,7 +12,7 @@ The Original Code is: JvChPswDlg.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,15 +25,17 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
-
 unit JvChPswDlg;
-
 
 interface
 
 uses
-  SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
+  SysUtils,
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
   Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Buttons,
   DBTables, DB;
 
@@ -55,7 +57,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure PswdChange(Sender: TObject);
   private
-    { Private declarations }
     FAttempt: Integer;
     FEnableEmpty: Boolean;
     procedure ClearEdits;
@@ -63,7 +64,6 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
-    { Public declarations }
     Database: TDatabase;
     AttemptNumber: Integer;
     UsersTableName: string;
@@ -79,7 +79,9 @@ function ChangePasswordDialog(Database: TDatabase; AttemptNumber: Integer;
 
 implementation
 
-uses Consts, JvxConst, JvVCLUtils;
+uses
+  Consts,
+  JvxConst, JvVCLUtils;
 
 {$R *.DFM}
 
@@ -114,8 +116,6 @@ begin
     Screen.Cursor := SaveCursor;
   end;
 end;
-
-{ TJvChPswdForm }
 
 procedure TJvChPswdForm.CreateParams(var Params: TCreateParams);
 begin
@@ -157,52 +157,60 @@ begin
   Ok := False;
   Inc(FAttempt);
   try
-    if not (FAttempt > AttemptNumber) then begin
-      if UsersTableName <> '' then Table := TTable.Create(Self)
-      else Table := nil;
+    if not (FAttempt > AttemptNumber) then
+    begin
+      if UsersTableName <> '' then
+        Table := TTable.Create(Self)
+      else
+        Table := nil;
       try
         Error := peOther;
-        if Table <> nil then begin
+        if Table <> nil then
+        begin
           Table.DatabaseName := Database.DatabaseName;
-{$IFDEF WIN32}
+          {$IFDEF WIN32}
           Table.SessionName := Database.SessionName;
-{$ENDIF}
+          {$ENDIF}
           Table.TableName := UsersTableName;
           Table.IndexFieldNames := UserNameField;
           Table.Open;
-          if Table.FindKey([LoginName]) then begin
+          if Table.FindKey([LoginName]) then
+          begin
             if NewPswd.Text <> ConfirmNewPswd.Text then
               Error := peMismatch
-            else begin
-              if Assigned(OnChangePassword) then
-                Ok := OnChangePassword(Table, OldPswd.Text, NewPswd.Text);
-            end;
-          end;
-        end
-        else begin
-          if NewPswd.Text <> ConfirmNewPswd.Text then
-            Error := peMismatch
-          else begin
+            else
             if Assigned(OnChangePassword) then
               Ok := OnChangePassword(Table, OldPswd.Text, NewPswd.Text);
           end;
+        end
+        else
+        begin
+          if NewPswd.Text <> ConfirmNewPswd.Text then
+            Error := peMismatch
+          else
+          if Assigned(OnChangePassword) then
+            Ok := OnChangePassword(Table, OldPswd.Text, NewPswd.Text);
         end;
         if Ok then
           MessageDlg(SPasswordChanged, mtInformation, [mbOk], 0)
         else
-          if Error = peMismatch then
-            MessageDlg(SPasswordsMismatch, mtError, [mbOk], 0)
-          else MessageDlg(SPasswordNotChanged, mtError, [mbOk], 0);
+        if Error = peMismatch then
+          MessageDlg(SPasswordsMismatch, mtError, [mbOk], 0)
+        else
+          MessageDlg(SPasswordNotChanged, mtError, [mbOk], 0);
       finally
-        if Table <> nil then Table.Free;
+        if Table <> nil then
+          Table.Free;
       end;
     end;
   finally
-    if Ok then ModalResult := mrOk
-    else begin
-      if FAttempt > AttemptNumber then ModalResult := mrCancel
-      else ModalResult := mrNone;
-    end;
+    if Ok then
+      ModalResult := mrOk
+    else
+    if FAttempt > AttemptNumber then
+      ModalResult := mrCancel
+    else
+      ModalResult := mrNone;
   end;
 end;
 
@@ -217,3 +225,4 @@ begin
 end;
 
 end.
+

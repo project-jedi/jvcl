@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvChrono;
 
-
-
 interface
 
 uses
@@ -56,7 +54,7 @@ implementation
 procedure TJvChrono.StartTimer;
 begin
   FPause := 0;
-  Fstart := Time;
+  FStart := Time;
 end;
 
 {***********************************************}

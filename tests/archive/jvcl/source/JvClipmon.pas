@@ -24,6 +24,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}
@@ -36,12 +37,17 @@ unit JvClipMon;
 
 interface
 
-
-uses Messages, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  SysUtils, Classes{, JvComponent};
+uses
+  Messages,
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  SysUtils, Classes, JvComponent;
 
 type
-  TJvClipboardMonitor = class(TComponent)
+  TJvClipboardMonitor = class(TJvComponent)
   private
     FWindowHandle: HWnd;
     FNextWindow: HWnd;
@@ -62,26 +68,31 @@ type
   end;
 
 procedure SaveClipboardToStream(Format: Word; Stream: TStream);
-procedure LoadClipboardFromStream(Format: Word; Stream: TStream; Size: Longint);
+function LoadClipboardFromStream(Stream: TStream): Word;
 
 implementation
 
-uses Forms, Clipbrd;
-
-{ Stream routines }
+uses
+  Forms, Clipbrd;
 
 procedure SaveClipboardToStream(Format: Word; Stream: TStream);
 var
   Buffer: Pointer;
   Data: THandle;
+  Size: Longint;
 begin
   Clipboard.Open;
   try
     Data := GetClipboardData(Format);
-    if Data = 0 then Exit;
+    if Data = 0 then
+      Exit;
     Buffer := GlobalLock(Data);
     try
-      Stream.Write(Buffer^, GlobalSize(Data));
+      // (rom) added handling of Format and Size!
+      Size := GlobalSize(Data);
+      Stream.Write(Format, SizeOf(Word));
+      Stream.Write(Size, SizeOf(Longint));
+      Stream.Write(Buffer^, Size);
     finally
       GlobalUnlock(Data);
     end;
@@ -90,23 +101,29 @@ begin
   end;
 end;
 
-procedure LoadClipboardFromStream(Format: Word; Stream: TStream; Size: Longint);
+function LoadClipboardFromStream(Stream: TStream): Word;
 var
-  Len: Longint;
+  Size: Longint;
   Buffer: Pointer;
   Data: THandle;
 begin
+  Result := 0;
   Clipboard.Open;
   try
-    Len := Stream.Size - Stream.Position;
-    if Len > Size then Len := Size;
-    Data := GlobalAlloc(HeapAllocFlags, Len);
+    // (rom) added handling of Format and Size!
+    if Stream.Read(Result, SizeOf(Word)) <> SizeOf(Word) then
+      Exit;
+    if Stream.Read(Size, SizeOf(Longint)) <> SizeOf(Longint) then
+      Exit;
+    Data := GlobalAlloc(HeapAllocFlags, Size);
     try
-      if Data <> 0 then begin
+      if Data <> 0 then
+      begin
         Buffer := GlobalLock(Data);
         try
-          Stream.Read(Buffer^, Len);
-          SetClipboardData(Format, Data);
+          if Stream.Read(Buffer^, Size) <> Size then
+            Exit;
+          SetClipboardData(Result, Data);
         finally
           GlobalUnlock(Data);
         end;
@@ -120,12 +137,14 @@ begin
   end;
 end;
 
-{ TJvClipboardMonitor }
-
 constructor TJvClipboardMonitor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FWindowHandle := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}AllocateHWnd(WndProc);
+  {$IFDEF COMPILER6_UP}
+  FWindowHandle := Classes.AllocateHWnd(WndProc);
+  {$ELSE}
+  FWindowHandle := AllocateHWnd(WndProc);
+  {$ENDIF}
   SetEnabled(True);
 end;
 
@@ -133,26 +152,34 @@ destructor TJvClipboardMonitor.Destroy;
 begin
   FOnChange := nil;
   SetEnabled(False);
-  {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FWindowHandle);
+  {$IFDEF COMPILER6_UP}
+  Classes.DeallocateHWnd(FWindowHandle);
+  {$ELSE}
+  DeallocateHWnd(FWindowHandle);
+  {$ENDIF}
   inherited Destroy;
 end;
 
 procedure TJvClipboardMonitor.ForwardMessage(var Msg: TMessage);
 begin
   if FNextWindow <> 0 then
-    with Msg do SendMessage(FNextWindow, Msg, WParam, LParam);
+    with Msg do
+      SendMessage(FNextWindow, Msg, WParam, LParam);
 end;
 
 procedure TJvClipboardMonitor.WndProc(var AMsg: TMessage);
 begin
-  with AMsg do begin
+  with AMsg do
+  begin
     Result := 0;
     case Msg of
       WM_DESTROYCLIPBOARD:
         ClipboardChanged;
       WM_CHANGECBCHAIN:
-        if HWnd(WParam) = FNextWindow then FNextWindow := HWnd(LParam)
-        else ForwardMessage(AMsg);
+        if HWnd(WParam) = FNextWindow then
+          FNextWindow := HWnd(LParam)
+        else
+          ForwardMessage(AMsg);
       WM_DRAWCLIPBOARD:
         begin
           ForwardMessage(AMsg);
@@ -160,19 +187,23 @@ begin
         end;
       WM_DESTROY:
         SetEnabled(False);
-      else Result := DefWindowProc(FWindowHandle, Msg, WParam, LParam);
+    else
+      Result := DefWindowProc(FWindowHandle, Msg, WParam, LParam);
     end;
   end;
 end;
 
 procedure TJvClipboardMonitor.SetEnabled(Value: Boolean);
 begin
-  if FEnabled <> Value then begin
-    if Value then begin
+  if FEnabled <> Value then
+  begin
+    if Value then
+    begin
       FNextWindow := SetClipboardViewer(FWindowHandle);
       FEnabled := True;
     end
-    else begin
+    else
+    begin
       ChangeClipboardChain(FWindowHandle, FNextWindow);
       FEnabled := False;
       FNextWindow := 0;
@@ -191,7 +222,8 @@ end;
 
 procedure TJvClipboardMonitor.Change;
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 end.

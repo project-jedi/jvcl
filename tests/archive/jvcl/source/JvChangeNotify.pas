@@ -25,29 +25,31 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
 {$IFDEF LINUX}
 This unit is only supported on Windows!
-{$ENDIF}
+  {$ENDIF}
 
-  {A wrapper for the Find[First/Next]ChangeNotification API calls. }
+{A wrapper for the Find[First/Next]ChangeNotification API calls. }
 
 unit JvChangeNotify;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  JvComponent;
 
 type
-  TJvNotifyArray = array[0..MAXIMUM_WAIT_OBJECTS - 1] of THandle;
+  TJvNotifyArray = array [0..MAXIMUM_WAIT_OBJECTS - 1] of THandle;
   TJvChangeAction = (caChangeFileName, caChangeDirName, caChangeAttributes, caChangeSize,
     caChangeLastWrite, caChangeSecurity);
   TJvChangeActions = set of TJvChangeAction;
   TJvNotifyEvent = procedure(Sender: TObject; Dir: string; Actions: TJvChangeActions) of object;
-  TJvThreadNotifyEvent = procedure(Sender: TObject; Index: integer) of object;
+  TJvThreadNotifyEvent = procedure(Sender: TObject; Index: Integer) of object;
   TJvNotifyError = procedure(Sender: TObject; const MSg: string) of object;
 
   TJvChangeItems = class;
@@ -57,10 +59,10 @@ type
   private
     FParent: TJvChangeItems;
     FActions: TJvChangeActions;
-    FSubTrees: boolean;
+    FSubTrees: Boolean;
     FDir: string;
     FOnChange: TNotifyEvent;
-    procedure SetSubTrees(Value: boolean);
+    procedure SetSubTrees(Value: Boolean);
     procedure SetDir(Value: string);
   protected
     function GetDisplayName: string; override;
@@ -72,7 +74,7 @@ type
   published
     property Directory: string read FDir write SetDir;
     property Actions: TJvChangeActions read FActions write FActions default [caChangeFileName, caChangeDirName];
-    property IncludeSubTrees: boolean read FSubTrees write SetSubTrees default false;
+    property IncludeSubTrees: Boolean read FSubTrees write SetSubTrees default False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -92,78 +94,76 @@ type
   TJvChangeThread = class(TThread)
   private
     FNotifyArray: TJvNotifyArray;
-    FCount, FIndex, FInterval: integer;
+    FCount: Integer;
+    FIndex: Integer;
+    FInterval: Integer;
     FNotify: TJvThreadNotifyEvent;
-    procedure Change(Index: integer);
+    procedure Change(Index: Integer);
     procedure SynchChange;
   public
-    constructor Create(NotifyArray: TJvNotifyArray; Count, Interval: integer);
+    constructor Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer);
     procedure Execute; override;
     property OnChangeNotify: TJvThreadNotifyEvent read FNotify write FNotify;
   end;
 
   TJvChangeNotify = class(TJvComponent)
   private
-    { Private declarations }
     FThread: TJvChangeThread;
-    FActive: boolean;
-    FInterval: integer;
+    FActive: Boolean;
+    FInterval: Integer;
     FCollection: TJvChangeItems;
     FNotify: TJvNotifyEvent;
     FNotifyArray: TJvNotifyArray;
     procedure SetCollection(Value: TJvChangeItems);
-    procedure SetInterval(Value: integer);
-    procedure SetActive(Value: boolean);
-    procedure CheckActive;
+    procedure SetInterval(Value: Integer);
+    procedure SetActive(Value: Boolean);
+    procedure CheckActive(Name: string);
     function NotifyError(Msg: string): string;
-    procedure DoThreadChangeNotify(Sender: TObject; Index: integer);
+    procedure DoThreadChangeNotify(Sender: TObject; Index: Integer);
   protected
-    { Protected declarations }
     procedure Change(Item: TJvChangeItem); virtual;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Active: boolean read FActive write SetActive default false;
+    property Active: Boolean read FActive write SetActive default False;
   published
-    { Published declarations }
     property Notifications: TJvChangeItems read FCollection write SetCollection;
-    property CheckInterval: integer read FInterval write SetInterval default 100;
+    property CheckInterval: Integer read FInterval write SetInterval default 100;
     property OnChangeNotify: TJvNotifyEvent read FNotify write FNotify;
   end;
 
 function ActionsToString(Actions: TJvChangeActions): string;
 
 implementation
-uses
-  JvTypes
-{$IFNDEF COMPILER6_UP}
-  ,FileCtrl
-{$ENDIF}
-  ;
 
+uses
+  {$IFNDEF COMPILER6_UP}
+  FileCtrl,
+  {$ENDIF}
+  JvTypes;
 
 function ActionsToString(Actions: TJvChangeActions): string;
 const
-  aArray: array[TJvChangeAction] of shortstring = ('Filename Change', 'Directory Name Change', 'Attributes Change', 'Size Change',
-    'Write Change', 'Security Change');
-var i: TJvChangeAction;
+  ActionStrings: array [TJvChangeAction] of PChar =
+    ('Filename Change', 'Directory Name Change', 'Attributes Change',
+     'Size Change', 'Write Change', 'Security Change');
+var
+  I: TJvChangeAction;
 begin
   Result := '';
-  for i := Low(TJvChangeAction) to High(TJvChangeAction) do // Iterate
-    if i in Actions then
-      Result := Result + aArray[i] + ',';
-  if Length(Result) > 0 then
-    Result := Copy(Result, 1, Length(Result) - 1);
+  for I := Low(TJvChangeAction) to High(TJvChangeAction) do
+    if I in Actions then
+      if Result = '' then
+        Result := ActionStrings[I]
+      else
+        Result := Result + ',' + ActionStrings[I];
 end;
-
-{ TJvChangeItem }
 
 constructor TJvChangeItem.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
   FParent := TJvChangeItems(Collection);
-  FSubTrees := false;
+  FSubTrees := False;
   FActions := [caChangeFileName, caChangeDirName];
 end;
 
@@ -184,16 +184,17 @@ begin
   inherited Assign(Source);
 end;
 
-procedure TJvChangeItem.SetSubTrees(Value: boolean);
+procedure TJvChangeItem.SetSubTrees(Value: Boolean);
 begin
-  if (FSubTrees <> Value) then
+  if FSubTrees <> Value then
   begin
     if csDesigning in FParent.FOwner.ComponentState then
       FSubTrees := Value
-    else if Value then
+    else
+    if Value then
       FSubTrees := Value and (Win32Platform = VER_PLATFORM_WIN32_NT)
     else
-      FSubTrees := false;
+      FSubTrees := False;
   end;
 end;
 
@@ -215,10 +216,8 @@ end;
 procedure TJvChangeItem.Change;
 begin
   if Assigned(FOnChange) then
-    FOnChange(self);
+    FOnChange(Self);
 end;
-
-{ TJvChangeItems }
 
 constructor TJvChangeItems.Create(AOwner: TJvChangeNotify);
 begin
@@ -250,38 +249,37 @@ begin
 end;
 
 procedure TJvChangeItems.Assign(Source: TPersistent);
-var i: integer;
+var
+  I: Integer;
 begin
   if Source is TJvChangeItems then
   begin
     Clear;
-    for i := 0 to TJvChangeItems(Source).Count - 1 do
-      Add.Assign(TJvChangeItems(Source)[i]);
+    for I := 0 to TJvChangeItems(Source).Count - 1 do
+      Add.Assign(TJvChangeItems(Source)[I]);
     Exit;
   end;
   inherited;
 end;
 
-{ TJvChangeNotify }
-
 constructor TJvChangeNotify.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FCollection := TJvChangeItems.Create(self);
-  FActive := false;
+  FCollection := TJvChangeItems.Create(Self);
+  FActive := False;
   FInterval := 100;
 end;
 
 destructor TJvChangeNotify.Destroy;
 begin
-  Active := false;
+  Active := False;
   inherited Destroy;
 end;
 
-procedure TJvChangeNotify.CheckActive;
+procedure TJvChangeNotify.CheckActive(Name: string);
 begin
   if Active then
-    raise EJVCLException.Create('Cannot change this value when active');
+    raise EJVCLException.Create('Cannot change ' + Name + ' when active');
 end;
 
 procedure TJvChangeNotify.SetCollection(Value: TJvChangeItems);
@@ -296,12 +294,12 @@ begin
   else
     Exit;
   if Assigned(FNotify) then
-    FNotify(self, Item.Directory, Item.Actions);
+    FNotify(Self, Item.Directory, Item.Actions);
 end;
 
-procedure TJvChangeNotify.SetInterval(Value: integer);
+procedure TJvChangeNotify.SetInterval(Value: Integer);
 begin
-  CheckActive;
+  CheckActive('Interval');
   if Value <= 0 then
     Exit;
   if FInterval <> Value then
@@ -317,17 +315,23 @@ begin
     EJVCLException.CreateFmt('%s [%s]', [Result, Msg]);
 end;
 
-procedure TJvChangeNotify.DoThreadChangeNotify(Sender: TObject; Index: integer);
+procedure TJvChangeNotify.DoThreadChangeNotify(Sender: TObject; Index: Integer);
 begin
   if Assigned(FNotify) then
-    FNotify(self, Notifications[Index].Directory, Notifications[Index].Actions);
+    FNotify(Self, Notifications[Index].Directory, Notifications[Index].Actions);
 end;
 
-procedure TJvChangeNotify.SetActive(Value: boolean);
+procedure TJvChangeNotify.SetActive(Value: Boolean);
 const
-  cActions: array[TJvChangeAction] of Cardinal = (FILE_NOTIFY_CHANGE_FILE_NAME, FILE_NOTIFY_CHANGE_DIR_NAME,
-    FILE_NOTIFY_CHANGE_ATTRIBUTES, FILE_NOTIFY_CHANGE_SIZE, FILE_NOTIFY_CHANGE_LAST_WRITE, FILE_NOTIFY_CHANGE_SECURITY);
-var cA: TJvChangeAction; Flags: Cardinal; i: integer; S: string;
+  cActions: array [TJvChangeAction] of Cardinal =
+    (FILE_NOTIFY_CHANGE_FILE_NAME, FILE_NOTIFY_CHANGE_DIR_NAME,
+     FILE_NOTIFY_CHANGE_ATTRIBUTES, FILE_NOTIFY_CHANGE_SIZE,
+     FILE_NOTIFY_CHANGE_LAST_WRITE, FILE_NOTIFY_CHANGE_SECURITY);
+var
+  cA: TJvChangeAction;
+  Flags: Cardinal;
+  I: Integer;
+  S: string;
 begin
   if (csDesigning in ComponentState) or (FActive = Value) then
     Exit;
@@ -335,21 +339,21 @@ begin
   FActive := Value;
   if FActive then
   begin
-    FillChar(FNotifyArray, sizeof(TJvNotifyArray), INVALID_HANDLE_VALUE);
-    for i := 0 to FCollection.Count - 1 do
+    FillChar(FNotifyArray, SizeOf(TJvNotifyArray), INVALID_HANDLE_VALUE);
+    for I := 0 to FCollection.Count - 1 do
     begin
       Flags := 0;
       { convert TJvChangeActions to bitfields }
       for cA := Low(TJvChangeAction) to High(TJvChangeAction) do
-        if cA in FCollection[i].Actions then
+        if cA in FCollection[I].Actions then
           Flags := Flags or (cActions[cA]);
-      S := FCollection[i].Directory;
+      S := FCollection[I].Directory;
       if (Length(S) = 0) or not DirectoryExists(S) then
-        raise EJVCLException.CreateFmt('Invalid or empty path ("%s") at index %d', [S, i]);
-      FNotifyArray[i] := FindFirstChangeNotification(PChar(S),
-        longbool(FCollection[i].IncludeSubTrees), Flags);
-      if FNotifyArray[i] = INVALID_HANDLE_VALUE then
-        NotifyError(FCollection[i].Directory);
+        raise EJVCLException.CreateFmt('Invalid or empty path ("%s") at index %d', [S, I]);
+      FNotifyArray[I] := FindFirstChangeNotification(PChar(S),
+        longbool(FCollection[I].IncludeSubTrees), Flags);
+      if FNotifyArray[I] = INVALID_HANDLE_VALUE then
+        NotifyError(FCollection[I].Directory);
     end;
     if FThread <> nil then
     begin
@@ -360,7 +364,8 @@ begin
     FThread.OnChangeNotify := DoThreadChangeNotify;
     FThread.Resume;
   end
-  else if FThread <> nil then
+  else
+  if FThread <> nil then
   begin
     FThread.Terminate;
     FreeAndNil(FThread);
@@ -386,53 +391,53 @@ begin
     }
 end;
 
-{ TJvChangeThread }
-
-constructor TJvChangeThread.Create(NotifyArray: TJvNotifyArray; Count, Interval: integer);
-var i: integer;
+constructor TJvChangeThread.Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer);
+var
+  I: Integer;
 begin
-  inherited Create(true);
+  inherited Create(True);
   FCount := Count;
   FInterval := Interval;
-  FillChar(FNotifyArray, sizeof(TjvNotifyArray), INVALID_HANDLE_VALUE);
-  for i := 0 to FCount - 1 do
-    FNotifyArray[i] := NotifyArray[i];
+  FillChar(FNotifyArray, SizeOf(TJvNotifyArray), INVALID_HANDLE_VALUE);
+  for I := 0 to FCount - 1 do
+    FNotifyArray[I] := NotifyArray[I];
 end;
 
-procedure TJvChangeThread.Change(Index: integer);
+procedure TJvChangeThread.Change(Index: Integer);
 begin
   FIndex := Index;
   Synchronize(SynchChange);
 end;
 
 procedure TJvChangeThread.Execute;
-var i: integer;
+var
+  I: Integer;
 begin
   while not Terminated do
   begin
-    i := WaitForMultipleObjects(FCount, @FNotifyArray, False, FInterval);
-    if (i >= 0) and (i < FCount) then
+    I := WaitForMultipleObjects(FCount, @FNotifyArray, False, FInterval);
+    if (I >= 0) and (I < FCount) then
     begin
       try
-        Change(i);
+        Change(I);
       finally
-        Assert(FindNextChangeNotification(FNotifyArray[i]));
+        Assert(FindNextChangeNotification(FNotifyArray[I]));
       end;
     end;
   end;
   if Terminated then
-    for i := 0 to FCount - 1 do // Iterate
-      if FNotifyArray[i] <> INVALID_HANDLE_VALUE then
+    for I := 0 to FCount - 1 do
+      if FNotifyArray[I] <> INVALID_HANDLE_VALUE then
       begin
-        FindCloseChangeNotification(FNotifyArray[i]);
-        FNotifyArray[i] := INVALID_HANDLE_VALUE;
+        FindCloseChangeNotification(FNotifyArray[I]);
+        FNotifyArray[I] := INVALID_HANDLE_VALUE;
       end;
 end;
 
 procedure TJvChangeThread.SynchChange;
 begin
   if Assigned(FNotify) then
-    FNotify(self, FIndex);
+    FNotify(Self, FIndex);
 end;
 
 end.

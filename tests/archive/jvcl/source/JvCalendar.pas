@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s): Oliver Giesen [ogware@gmx.net]           
+Contributor(s): Oliver Giesen [ogware@gmx.net]
 
 Last Modified: 2002-12-09
 
@@ -34,14 +34,15 @@ unit JvCalendar;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, CommCtrl,
-  ComCtrls, JvComponent, JvTypes;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, CommCtrl, ComCtrls,
+  JvComponent, JvTypes;
 
 type
   EMonthCalError = class(EJVCLException);
   TJvMonthCalWeekDay = (mcLocale, mcMonday, mcTuesday, mcWednesday, mcThursday, mcFriday, mcSaturday, mcSunday);
   TJvMonthCalSelEvent = procedure(Sender: TObject; StartDate, EndDate: TDateTime) of object;
-  TJvMonthCalStateEvent = procedure(Sender: TObject; Date: TDateTime; Count: integer; var DayStateArray: array of TMonthDayState) of object;
+  TJvMonthCalStateEvent = procedure(Sender: TObject; Date: TDateTime; Count: Integer; var DayStateArray: array of
+    TMonthDayState) of object;
 
   TJvCustomMonthCalendar = class;
 
@@ -55,7 +56,7 @@ type
     FMonthBackColor: TColor;
     FTrailingTextColor: TColor;
     procedure SetColor(Index: Integer; Value: TColor);
-    function GetColor(Index:integer):TColor;
+    function GetColor(Index: Integer): TColor;
     procedure SetAllColors;
   public
     constructor Create(AOwner: TJvCustomMonthCalendar);
@@ -98,36 +99,37 @@ type
     property WeekNumbers: Boolean read FWeekNumbers write SetWeekNumbers default False;
   end;
 
+  TMonthDayStateArray = array [0..11] of TMonthDayState;
+
   TJvCustomMonthCalendar = class(TJvWinControl)
   private
-    { Private declarations }
     FAppearance: TJvMonthCalAppearance;
     FOwnsAppearance: Boolean;
-    FMultiSelect: boolean;
-    FMaxSelCount: word;
+    FMultiSelect: Boolean;
+    FMaxSelCount: Word;
     FMinDate: TDateTime;
     FMaxDate: TDateTime;
     FFirstSelDate: TDateTime;
     FLastSelDate: TDateTime;
-    FMonthDelta: integer;
+    FMonthDelta: Integer;
     FToday: TDateTime;
     FBorderStyle: TBorderStyle;
     FOnSelect: TJvMonthCalSelEvent;
     FOnSelChange: TJvMonthCalSelEvent;
     FOnGetState: TJvMonthCalStateEvent;
-    FOnKillFocus,
+    FOnKillFocus: TJvFocusChangeEvent;
     FOnSetFocus: TJvFocusChangeEvent;
     FLeaving: Boolean;
     FEntering: Boolean;
     procedure DoBoldDays;
     procedure SetColors(Value: TJvMonthCalColors);
     procedure SetBoldDays(Value: TStrings);
-    procedure SetMultiSelect(Value: boolean);
-    procedure SetShowToday(Value: boolean);
-    procedure SetCircleToday(Value: boolean);
-    procedure SetWeekNumbers(Value: boolean);
+    procedure SetMultiSelect(Value: Boolean);
+    procedure SetShowToday(Value: Boolean);
+    procedure SetCircleToday(Value: Boolean);
+    procedure SetWeekNumbers(Value: Boolean);
     procedure SetFirstDayOfWeek(Value: TJvMonthCalWeekDay);
-    procedure SetMaxSelCount(Value: word);
+    procedure SetMaxSelCount(Value: Word);
     procedure SetMinDate(Value: TDateTime);
     procedure SetMaxDate(Value: TDateTime);
     procedure SetFirstSelDate(Value: TDateTime);
@@ -135,55 +137,51 @@ type
     function GetLastSelDate: TDateTime;
     procedure SetLastSelDate(Value: TDateTime);
     procedure SetSelectedDays(dFrom, dTo: TDateTime);
-    procedure SetMonthDelta(Value: integer);
+    procedure SetMonthDelta(Value: Integer);
     procedure SetToday(Value: TDateTime);
     procedure SetBorderStyle(Value: TBorderStyle);
-    function GetTodayWidth: integer;
+    function GetTodayWidth: Integer;
     function GetMinSize: TRect;
-    function IsBold(Year, Month, Day: Word): boolean;
-    procedure SetBold(Year, Month, Day: Word; Value: boolean);
+    function IsBold(Year, Month, Day: Word): Boolean;
+    procedure SetBold(Year, Month, Day: Word; Value: Boolean);
 
     function GetBoldDays: TStrings;
-    function GetCircleToday: boolean;
+    function GetCircleToday: Boolean;
     function GetColors: TJvMonthCalColors;
     function GetFirstDayOfWeek: TJvMonthCalWeekDay;
-    function GetShowToday: boolean;
-    function GetWeekNumbers: boolean;
-
+    function GetShowToday: Boolean;
+    function GetWeekNumbers: Boolean;
 
     function GetDays(Year, Month: Word): string;
     procedure SetDays(Year, Month: Word; Value: string);
-    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
-    procedure WMGetDlgCode(var Message: TMessage);message WM_GETDLGCODE;
-    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
-    procedure WMKillFocus(var AMessage: TMessage); message WM_KILLFOCUS;
-    procedure WMSetFocus(var AMessage: TMessage); message WM_SETFOCUS;
-
+    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
+    procedure WMGetDlgCode(var Msg: TMessage); message WM_GETDLGCODE;
+    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
+    procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
+    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
   protected
-    { Protected declarations }
-
     procedure ConstrainedResize(var MinWidth: Integer;
       var MinHeight: Integer; var MaxWidth: Integer;
       var MaxHeight: Integer); override;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
-    procedure CheckDayState(Year, Month: word; var DayState: TMonthDayState); virtual;
+    procedure CheckDayState(Year, Month: Word; var DayState: TMonthDayState); virtual;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure Change; virtual;
     procedure DoDateSelect(StartDate, EndDate: TDateTime); virtual;
     procedure DoDateSelChange(StartDate, EndDate: TDateTime); virtual;
-    procedure DoGetDayState(var DayState: TNMDayState); virtual;
+    procedure DoGetDayState(var DayState: TNMDayState; var StateArray: TMonthDayStateArray); virtual;
     procedure DoKillFocus(const ANextControl: TWinControl); virtual;
     procedure DoSetFocus(const APreviousControl: TWinControl); virtual;
 
     property MinSize: TRect read GetMinSize;
-    property Bold[Year, Month, Day: word]: boolean read IsBold write SetBold;
+    property Bold[Year, Month, Day: Word]: Boolean read IsBold write SetBold;
 
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
     property BoldDays: TStrings read GetBoldDays write SetBoldDays;
-    property CircleToday: boolean read GetCircleToday write SetCircleToday default true;
+    property CircleToday: Boolean read GetCircleToday write SetCircleToday default True;
     property Colors: TJvMonthCalColors read GetColors write SetColors;
     property DateFirst: TDateTime read GetFirstSelDate write SetFirstSelDate;
     property DateLast: TDateTime read GetLastSelDate write SetLastSelDate;
@@ -191,12 +189,12 @@ type
     property DateMin: TDateTime read FMinDate write SetMinDate;
     property Days[Year, Month: Word]: string read GetDays write SetDays;
     property FirstDayOfWeek: TJvMonthCalWeekDay read GetFirstDayOfWeek write SetFirstDayOfWeek default mcLocale;
-    property MaxSelCount: word read FMaxSelCount write SetMaxSelCount default 7;
-    property MonthDelta: integer read FMonthDelta write SetMonthDelta default 1;
-    property MultiSelect: boolean read FMultiSelect write SetMultiSelect default false;
-    property ShowToday: boolean read GetShowToday write SetShowToday default true;
-    property TodayWidth: integer read GetTodayWidth;
-    property WeekNumbers: boolean read GetWeekNumbers write SetWeekNumbers default false;
+    property MaxSelCount: Word read FMaxSelCount write SetMaxSelCount default 7;
+    property MonthDelta: Integer read FMonthDelta write SetMonthDelta default 1;
+    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
+    property ShowToday: Boolean read GetShowToday write SetShowToday default True;
+    property TodayWidth: Integer read GetTodayWidth;
+    property WeekNumbers: Boolean read GetWeekNumbers write SetWeekNumbers default False;
     property Today: TDateTime read FToday write SetToday;
     property OnSelect: TJvMonthCalSelEvent read FOnSelect write FOnSelect;
     property OnSelChange: TJvMonthCalSelEvent read FOnSelChange write FOnSelChange;
@@ -204,14 +202,14 @@ type
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
-    constructor CreateWithAppearance(AOwner: TComponent; const AAppearance: TJvMonthCalAppearance; const AOwnsAppearance: Boolean = False);
+    constructor CreateWithAppearance(AOwner: TComponent; const AAppearance: TJvMonthCalAppearance; const
+      AOwnsAppearance: Boolean = False);
     destructor Destroy; override;
-    function FirstVisibleDate(Partial: boolean): TDateTime;
-    function LastVisibleDate(Partial: boolean): TDateTime;
-    function VisibleMonths: integer;
-    procedure SetDayStates(MonthCount: integer; DayStates: array of TMonthDayState);
+    function FirstVisibleDate(Partial: Boolean): TDateTime;
+    function LastVisibleDate(Partial: Boolean): TDateTime;
+    function VisibleMonths: Integer;
+    procedure SetDayStates(MonthCount: Integer; DayStates: array of TMonthDayState);
 
     property Entering: Boolean read FEntering;
     property Leaving: Boolean read FLeaving;
@@ -279,7 +277,7 @@ type
 
 function StringToDayStates(const S: string): TMonthDayState;
 function DayStatesToString(Days: TMonthDayState): string;
-// function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: integer): boolean;
+// function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: Integer): Boolean;
 
 implementation
 
@@ -306,14 +304,15 @@ begin
     InitCommonControls;
 end;
 
-function IsBlankDate(ST: TSystemTime): boolean;
+function IsBlankDate(ST: TSystemTime): Boolean;
 begin
   with ST do
     Result := (wMonth = 0) and (wDay = 0);
 end;
 
 function StringToDayStates(const S: string): TMonthDayState;
-var P, L, I, R: integer;
+var
+  P, L, I, R: Integer;
 begin
   Result := 0;
   P := 1;
@@ -338,17 +337,17 @@ end;
 type
   // (p3) from ShLwAPI
   TDLLVersionInfo = packed record
-    cbSize:DWord;
-    dwMajorVersion:DWord;
-    dwMinorVersion:DWord;
-    dwBuildNumber:DWord;
-    dwPlatformID:DWord;
+    cbSize: DWord;
+    dwMajorVersion: DWord;
+    dwMinorVersion: DWord;
+    dwBuildNumber: DWord;
+    dwPlatformID: DWord;
   end;
 
 {
-function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: integer): boolean;
+function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: Integer): Boolean;
 var hDLL, hr: THandle;
-  pDllGetVersion: function(var dvi: TDLLVersionInfo): integer; stdcall;
+  pDllGetVersion: function(var dvi: TDLLVersionInfo): Integer; stdcall;
   dvi: TDLLVersionInfo;
 begin
   hDLL := LoadLibrary(PChar(DLLName));
@@ -356,7 +355,7 @@ begin
     hDLL := 0;
   if (hDLL <> 0) then
   begin
-    Result := true;
+    Result := True;
     (*  You must get this function explicitly
         because earlier versions of the DLL
         don't implement this function.
@@ -365,8 +364,8 @@ begin
     @pDllGetVersion := GetProcAddress(hDLL, PChar('DllGetVersion'));
     if Assigned(pDllGetVersion) then
     begin
-      ZeroMemory(@dvi, sizeof(dvi));
-      dvi.cbSize := sizeof(dvi);
+      ZeroMemory(@dvi, SizeOf(dvi));
+      dvi.cbSize := SizeOf(dvi);
       hr := pDllGetVersion(dvi);
       if (hr = 0) then
       begin
@@ -382,12 +381,13 @@ begin
     FreeLibrary(hDLL);
     Exit;
   end;
-  Result := false;
+  Result := False;
 end;
 }
 
 function DayStatesToString(Days: TMonthDayState): string;
-var i: integer;
+var
+  i: Integer;
 begin
   Result := '';
   if Days = 0 then
@@ -398,8 +398,6 @@ begin
   if AnsiLastChar(Result) = ',' then
     SetLength(Result, Length(Result) - 1);
 end;
-
-{ TJvMonthCalColors }
 
 constructor TJvMonthCalColors.Create(AOwner: TJvCustomMonthCalendar);
 begin
@@ -442,23 +440,34 @@ begin
         if Calendar <> nil then
           Calendar.Color := FBackColor;
       end;
-    1: FTextColor := Value;
-    2: FTitleBackColor := Value;
-    3: FTitleTextColor := Value;
-    4: FMonthBackColor := Value;
-    5: FTrailingTextColor := Value;
+    1:
+      FTextColor := Value;
+    2:
+      FTitleBackColor := Value;
+    3:
+      FTitleTextColor := Value;
+    4:
+      FMonthBackColor := Value;
+    5:
+      FTrailingTextColor := Value;
   end;
 end;
 
-function TJvMonthCalColors.GetColor(Index: integer): TColor;
+function TJvMonthCalColors.GetColor(Index: Integer): TColor;
 begin
   case Index of
-    0: Result := FBackColor;
-    1: Result := FTextColor;
-    2: Result := FTitleBackColor;
-    3: Result := FTitleTextColor;
-    4: Result := FMonthBackColor;
-    5: Result := FTrailingTextColor;
+    0:
+      Result := FBackColor;
+    1:
+      Result := FTextColor;
+    2:
+      Result := FTitleBackColor;
+    3:
+      Result := FTitleTextColor;
+    4:
+      Result := FMonthBackColor;
+    5:
+      Result := FTrailingTextColor;
   else
     Result := 0;
   end;
@@ -479,31 +488,29 @@ type
   private
     Calendar: TJvCustomMonthCalendar;
   protected
-    function GetDateIndex(Year, Month: word): integer; virtual;
-    function GetBoldDays(Y, M: word): string; virtual;
+    function GetDateIndex(Year, Month: Word): Integer; virtual;
+    function GetBoldDays(Y, M: Word): string; virtual;
   public
-    constructor Create; 
+    constructor Create;
     procedure AddStrings(Strings: TStrings); override;
     function AddObject(const S: string; AObject: TObject): Integer; override;
     function Add(const S: string): Integer; override;
-    function IsBold(Year, Month, Day: Word): boolean;
-    procedure SetBold(Year, Month, Day: Word; Value: boolean);
-    function AddDays(Year, Month: Word; const Days: string): integer; virtual;
+    function IsBold(Year, Month, Day: Word): Boolean;
+    procedure SetBold(Year, Month, Day: Word; Value: Boolean);
+    function AddDays(Year, Month: Word; const Days: string): Integer; virtual;
   end;
-
-  { TMonthCalStrings }
 
 constructor TMonthCalStrings.Create;
 begin
-  inherited;
+  inherited Create;
   Sorted := True;
   Duplicates := dupIgnore;
 end;
 
-  { Days is a comma separated list of days to set as bold. If Days is empty, the
+{ Days is a comma separated list of days to set as bold. If Days is empty, the
   line is removed (if found) }
 
-function TMonthCalStrings.AddDays(Year, Month: Word; const Days: string): integer;
+function TMonthCalStrings.AddDays(Year, Month: Word; const Days: string): Integer;
 begin
   if Days = '' then
   begin
@@ -527,25 +534,28 @@ begin
   Result := IndexOfName(Copy(S, 1, 6));
   if Result > -1 then
   begin
-    Sorted := false;
+    Sorted := False;
     Strings[Result] := S;
-    Sorted := true;
+    Sorted := True;
   end
   else
-       Result := inherited Add(S);
-  if (Calendar <> nil) and (Calendar.HandleAllocated) then
+    Result := inherited Add(S);
+  if (Calendar <> nil) and Calendar.HandleAllocated then
     Calendar.DoBoldDays;
 end;
 
-function TMonthCalStrings.IsBold(Year, Month, Day: Word): boolean;
-var aDayState: TMonthDayState;
+function TMonthCalStrings.IsBold(Year, Month, Day: Word): Boolean;
+var
+  DayState: TMonthDayState;
 begin
-  aDayState := StringToDayStates(GetBoldDays(Year, Month) + ',' + GetBoldDays(0, Month));
-  Result := (aDayState and (1 shl (Day - 1))) <> 0;
+  DayState := StringToDayStates(GetBoldDays(Year, Month) + ',' + GetBoldDays(0, Month));
+  Result := (DayState and (1 shl (Day - 1))) <> 0;
 end;
 
-procedure TMonthCalStrings.SetBold(Year, Month, Day: Word; Value: boolean);
-var S: string; aDayState: TMonthDayState;
+procedure TMonthCalStrings.SetBold(Year, Month, Day: Word; Value: Boolean);
+var
+  S: string;
+  DayState: TMonthDayState;
 begin
   if IsBold(Year, Month, Day) <> Value then
   begin
@@ -559,9 +569,9 @@ begin
       AddDays(Year, Month, S);
       Exit;
     end;
-    aDayState := StringToDayStates(S);
-    aDayState := aDayState and not (1 shl (Day - 1));
-    AddDays(Year, Month, DayStatesToString(aDayState));
+    DayState := StringToDayStates(S);
+    DayState := DayState and not (1 shl (Day - 1));
+    AddDays(Year, Month, DayStatesToString(DayState));
   end;
 end;
 
@@ -583,8 +593,9 @@ begin
   Result := Add(S);
 end;
 
-function TMonthCalStrings.GetDateIndex(Year, Month: word): integer;
-var S: string;
+function TMonthCalStrings.GetDateIndex(Year, Month: Word): Integer;
+var
+  S: string;
 begin
   if Year = 0 then
     S := Format('0000%.2d', [Month])
@@ -597,8 +608,9 @@ begin
   Result := -1;
 end;
 
-function TMonthCalStrings.GetBoldDays(Y, M: word): string;
-var S: string;
+function TMonthCalStrings.GetBoldDays(Y, M: Word): string;
+var
+  S: string;
 begin
   if Y = 0 then
     S := Format('0000%.2d', [M])
@@ -606,9 +618,6 @@ begin
     S := Format('%.4d%.2d', [Y, M]);
   Result := Values[S];
 end;
-
-
-{ TJvCustomMonthCalendar }
 
 constructor TJvCustomMonthCalendar.Create(AOwner: TComponent);
 begin
@@ -628,7 +637,7 @@ begin
 
   FAppearance.Calendar := Self;
 
-  FMultiSelect := false;
+  FMultiSelect := False;
   FMaxSelCount := 7;
   FMinDate := 0.0;
   FMaxDate := 0.0;
@@ -637,8 +646,8 @@ begin
   FMonthDelta := 1;
   FToday := Now;
   FBorderStyle := bsNone;
-  FEntering:= False;
-  FLeaving:= False;
+  FEntering := False;
+  FLeaving := False;
   inherited Color := clWindow;
   ParentColor := False;
   TabStop := True;
@@ -648,18 +657,18 @@ end;
 
 destructor TJvCustomMonthCalendar.Destroy;
 begin
-  if(FOwnsAppearance) then
+  if (FOwnsAppearance) then
     FreeAndNil(FAppearance);
   inherited Destroy;
 end;
 
 procedure TJvCustomMonthCalendar.CreateParams(var Params: TCreateParams);
 const
-  BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
-  MultiSelects: array[boolean] of DWORD = (0, MCS_MULTISELECT);
-  NoTodays: array[boolean] of DWORD = (MCS_NOTODAY, 0);
-  NoCircles: array[boolean] of DWORD = (MCS_NOTODAYCIRCLE, 0);
-  Weeks: array[boolean] of DWORD = (0, MCS_WEEKNUMBERS);
+  BorderStyles: array [TBorderStyle] of DWORD = (0, WS_BORDER);
+  MultiSelects: array [Boolean] of DWORD = (0, MCS_MULTISELECT);
+  NoTodays: array [Boolean] of DWORD = (MCS_NOTODAY, 0);
+  NoCircles: array [Boolean] of DWORD = (MCS_NOTODAYCIRCLE, 0);
+  Weeks: array [Boolean] of DWORD = (0, MCS_WEEKNUMBERS);
 begin
   InitCommonControl(ICC_DATE_CLASSES);
   inherited CreateParams(Params);
@@ -693,7 +702,7 @@ begin
   FAppearance.BoldDays := Value;
 end;
 
-function TJvCustomMonthCalendar.IsBold(Year, Month, Day: Word): boolean;
+function TJvCustomMonthCalendar.IsBold(Year, Month, Day: Word): Boolean;
 begin
   Result := TMonthCalStrings(FAppearance.BoldDays).IsBold(Year, Month, Day);
 end;
@@ -708,17 +717,17 @@ begin
   TMonthCalStrings(FAppearance.BoldDays).AddDays(Year, Month, Value);
 end;
 
-procedure TJvCustomMonthCalendar.SetBold(Year, Month, Day: Word; Value: boolean);
+procedure TJvCustomMonthCalendar.SetBold(Year, Month, Day: Word; Value: Boolean);
 begin
   TMonthCalStrings(FAppearance.BoldDays).SetBold(Year, Month, Day, Value);
 end;
 
 { gets the first visible calendar month }
 
-function TJvCustomMonthCalendar.FirstVisibleDate(Partial: boolean): TDateTime;
+function TJvCustomMonthCalendar.FirstVisibleDate(Partial: Boolean): TDateTime;
 var
-  rgst: array[0..1] of TSystemTime;
-  Flag: integer;
+  rgst: array [0..1] of TSystemTime;
+  Flag: Integer;
 begin
   Result := 0;
   if Partial then
@@ -732,15 +741,15 @@ end;
 
 { gets the last visible calendar month }
 
-function TJvCustomMonthCalendar.LastVisibleDate(Partial: boolean): TDateTime;
+function TJvCustomMonthCalendar.LastVisibleDate(Partial: Boolean): TDateTime;
 const
-  isPartial: array[boolean] of integer = (GMR_VISIBLE, GMR_DAYSTATE);
+  IsPartial: array [Boolean] of Integer = (GMR_VISIBLE, GMR_DAYSTATE);
 var
   rgst: array[0..1] of TSystemTime;
-  Flag: integer;
+  Flag: Integer;
 begin
   Result := 0;
-  Flag := isPartial[Partial];
+  Flag := IsPartial[Partial];
   if SendMessage(Handle, MCM_GETMONTHRANGE, Flag, Longint(@rgst)) <> 0 then
     with rgst[1] do
       Result := Trunc(EncodeDate(wYear, wMonth, wDay));
@@ -749,9 +758,12 @@ end;
 { protected }
 
 procedure TJvCustomMonthCalendar.Change;
-var rgst: array[0..1] of TSystemTime;Y,M,D:word;
+var
+  rgst: array [0..1] of TSystemTime;
+  Y, M, D: Word;
 begin
-  if not HandleAllocated then Exit;
+  if not HandleAllocated then
+    Exit;
   MonthCal_SetFirstDayOfWeek(Handle, Ord(FAppearance.FirstDayOfWeek) - 1);
   MonthCal_SetMaxSelCount(Handle, FMaxSelCount);
 
@@ -759,14 +771,14 @@ begin
   SetSelectedDays(FFirstSelDate, FLastSelDate);
   if (FMinDate <> 0) and (FMaxDate <> 0) then
   begin
-    DecodeDate(FMinDate,Y,M,D);
+    DecodeDate(FMinDate, Y, M, D);
     with rgst[0] do
     begin
       wYear := Y;
       wMonth := M;
       wDay := D;
     end;
-    DecodeDate(FMaxDate,Y,M,D);
+    DecodeDate(FMaxDate, Y, M, D);
     with rgst[1] do
     begin
       wYear := Y;
@@ -777,7 +789,7 @@ begin
   end
   else
     MonthCal_SetRange(Handle, 0, nil);
-  DecodeDate(FTOday,Y,M,D);
+  DecodeDate(FTOday, Y, M, D);
   with rgst[0] do
   begin
     wYear := Y;
@@ -788,22 +800,26 @@ begin
 end;
 
 procedure TJvCustomMonthCalendar.DoBoldDays;
-var Y, M, D: word; aDayArray: array[0..11] of TMonthDayState; aNMDAyState: TNmDayState;
+var
+  Y, M, D: Word;
+  DayArray: TMonthDayStateArray;
+  NMDAyState: TNmDayState;
 begin
-  if not HandleAllocated then Exit;
-  DecodeDate(FirstVisibleDate(true), Y, M, D);
-  FillChar(aDayArray, sizeof(TMonthDayState) * 12, 0);
-  with aNMDayState do
+  if not HandleAllocated then
+    Exit;
+  DecodeDate(FirstVisibleDate(True), Y, M, D);
+  FillChar(DayArray, SizeOf(TMonthDayStateArray), 0);
+  with NMDayState do
   begin
     stStart.wYear := Y;
     stStart.wMonth := M;
     stStart.wDay := D;
     cDayState := VisibleMonths;
-    prgDayState := @aDayArray;
+    prgDayState := @DayArray;
   end;
   for D := 0 to VisibleMonths - 1 do
   begin
-    CheckDayState(Y, M, aDayArray[D]);
+    CheckDayState(Y, M, DayArray[D]);
     Inc(M);
     if M > 12 then
     begin
@@ -811,7 +827,7 @@ begin
       Inc(Y);
     end;
   end;
-  SendMessage(Handle, MCM_SETDAYSTATE, VisibleMonths, longint(@aDayArray));
+  SendMessage(Handle, MCM_SETDAYSTATE, VisibleMonths, Longint(@DayArray));
   //  MonthCal_SetDayState(Handle,VisibleMonths,aNMDayState);
 end;
 
@@ -827,28 +843,27 @@ begin
     FOnSelChange(Self, StartDate, EndDate);
 end;
 
-procedure TJvCustomMonthCalendar.CheckDayState(Year, Month: word; var DayState: TMonthDayState);
+procedure TJvCustomMonthCalendar.CheckDayState(Year, Month: Word; var DayState: TMonthDayState);
 begin
   DayState := StringToDayStates(TMonthCalStrings(FAppearance.BoldDays).GetBoldDays(Year, Month));
 end;
 
-procedure TJvCustomMonthCalendar.DoGetDayState(var DayState: TNMDayState);
+procedure TJvCustomMonthCalendar.DoGetDayState(var DayState: TNMDayState; var StateArray: TMonthDayStateArray);
 var
   aDate: TDateTime;
-  i: integer;
-  aStateArray: array[0..11] of TMonthDayState;
-  Y, M: word;
+  I: Integer;
+  Y, M: Word;
 begin
-  FillChar(aStateArray, sizeof(aStateArray), #0);
+  FillChar(StateArray, SizeOf(TMonthDayStateArray), #0);
   with DayState.stStart do
   begin
     Y := wYear;
     M := wMonth;
   end;
   with DayState do
-    for i := 0 to cDayState - 1 do
+    for I := 0 to cDayState - 1 do
     begin
-      CheckDayState(Y, M, aStateArray[i]);
+      CheckDayState(Y, M, StateArray[I]);
       Inc(M);
       if M > 12 then
       begin
@@ -862,8 +877,8 @@ begin
 
   if Assigned(FOnGetState) then
     with DayState do
-      FOnGetState(self, aDate, cDayState, aStateArray);
-  DayState.prgDayState := @aStateArray;
+      FOnGetState(Self, aDate, cDayState, StateArray);
+  DayState.prgDayState := @StateArray;
 end;
 
 procedure TJvCustomMonthCalendar.CreateWnd;
@@ -873,13 +888,13 @@ begin
   Change;
 end;
 
-procedure TJvCustomMonthCalendar.CMColorChanged(var Message: TMessage);
+procedure TJvCustomMonthCalendar.CMColorChanged(var Msg: TMessage);
 begin
   inherited;
   InvalidateRect(Handle, nil, True);
 end;
 
-procedure TJvCustomMonthCalendar.CMFontChanged(var Message: TMessage);
+procedure TJvCustomMonthCalendar.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
 //  if HandleAllocated then
@@ -887,7 +902,7 @@ begin
   InvalidateRect(Handle, nil, True);
 end;
 
-procedure TJvCustomMonthCalendar.SetMultiSelect(Value: boolean);
+procedure TJvCustomMonthCalendar.SetMultiSelect(Value: Boolean);
 begin
   if FMultiSelect <> Value then
   begin
@@ -896,17 +911,17 @@ begin
   end;
 end;
 
-procedure TJvCustomMonthCalendar.SetShowToday(Value: boolean);
+procedure TJvCustomMonthCalendar.SetShowToday(Value: Boolean);
 begin
   FAppearance.ShowToday := Value;
 end;
 
-procedure TJvCustomMonthCalendar.SetCircleToday(Value: boolean);
+procedure TJvCustomMonthCalendar.SetCircleToday(Value: Boolean);
 begin
   FAppearance.CircleToday := Value;
 end;
 
-procedure TJvCustomMonthCalendar.SetWeekNumbers(Value: boolean);
+procedure TJvCustomMonthCalendar.SetWeekNumbers(Value: Boolean);
 begin
   FAppearance.WeekNumbers := Value;
 end;
@@ -916,7 +931,7 @@ begin
   FAppearance.FirstDayOfWeek := Value;
 end;
 
-procedure TJvCustomMonthCalendar.SetMaxSelCount(Value: word);
+procedure TJvCustomMonthCalendar.SetMaxSelCount(Value: Word);
 begin
   if FMaxSelCount <> Value then
   begin
@@ -950,10 +965,12 @@ begin
 end;
 
 function TJvCustomMonthCalendar.GetFirstSelDate: TDateTime;
-var rgst: array[0..1] of TSystemTime;
+var
+  rgst: array [0..1] of TSystemTime;
 begin
   Result := FFirstSelDate;
-  if not HandleAllocated then Exit;
+  if not HandleAllocated then
+    Exit;
   if FMultiSelect then
     MonthCal_GetSelRange(Handle, @rgst)
   else
@@ -964,7 +981,7 @@ end;
 
 procedure TJvCustomMonthCalendar.SetLastSelDate(Value: TDateTime);
 begin
-  if (FLastSelDate <> Value) then
+  if FLastSelDate <> Value then
   begin
     FLastSelDate := Value;
     SetSelectedDays(FLastSelDate, FFirstSelDate);
@@ -972,10 +989,12 @@ begin
 end;
 
 function TJvCustomMonthCalendar.GetLastSelDate: TDateTime;
-var rgst: array[0..1] of TSystemTime;
+var
+  rgst: array [0..1] of TSystemTime;
 begin
   Result := FLastSelDate;
-  if not HandleAllocated then Exit;
+  if not HandleAllocated then
+    Exit;
   if not FMultiSelect then
   begin
     Result := FLastSelDate;
@@ -987,9 +1006,11 @@ begin
 end;
 
 procedure TJvCustomMonthCalendar.SetSelectedDays(dFrom, dTo: TDateTime);
-var rgst: array[0..1] of TSystemTime;
+var
+  rgst: array [0..1] of TSystemTime;
 begin
-  if not HandleAllocated then Exit;
+  if not HandleAllocated then
+    Exit;
   if FMultiSelect then
   begin
     if (dFrom <> 0) and (dTo <> 0) then
@@ -1011,7 +1032,7 @@ begin
   end;
 end;
 
-procedure TJvCustomMonthCalendar.SetMonthDelta(Value: integer);
+procedure TJvCustomMonthCalendar.SetMonthDelta(Value: Integer);
 begin
   if FMonthDelta <> Value then
   begin
@@ -1038,22 +1059,25 @@ begin
   end;
 end;
 
-function TJvCustomMonthCalendar.GetTodayWidth: integer;
+function TJvCustomMonthCalendar.GetTodayWidth: Integer;
 begin
   Result := SendMessage(Handle, MCM_GETMAXTODAYWIDTH, 0, 0);
 end;
 
-function TJvCustomMonthCalendar.VisibleMonths: integer;
+function TJvCustomMonthCalendar.VisibleMonths: Integer;
 begin
   Result := 1;
-  if not HandleAllocated then Exit;
+  if not HandleAllocated then
+    Exit;
   Result := MonthCal_GetMonthRange(Handle, GMR_DAYSTATE, nil);
 end;
 
-procedure TJvCustomMonthCalendar.SetDayStates(MonthCount: integer; DayStates: array of TMonthDayState);
-var Index: integer;
+procedure TJvCustomMonthCalendar.SetDayStates(MonthCount: Integer; DayStates: array of TMonthDayState);
+var
+  Index: Integer;
 begin
-  if not HandleAllocated then Exit;
+  if not HandleAllocated then
+    Exit;
   Index := High(DayStates) - Low(DayStates);
   if (Index < MonthCount) or (Index < VisibleMonths) then
     raise EMonthCalError.Create('Invalid argument to SetDayStates');
@@ -1074,42 +1098,44 @@ begin
   if HandleAllocated then
   begin
     SendMessage(Handle, MCM_GETMINREQRECT, 0, Longint(@Result));
-    OffSetRect(Result,-Result.Left,-Result.Top);
+    OffSetRect(Result, -Result.Left, -Result.Top);
   end
   else
-    Result := Rect(0,0,191,154);
+    Result := Rect(0, 0, 191, 154);
 end;
 
-procedure TJvCustomMonthCalendar.CNNotify(var Message: TWMNotify);
-var dFrom, dTo: TDateTime;
+procedure TJvCustomMonthCalendar.CNNotify(var Msg: TWMNotify);
+var
+  dFrom, dTo: TDateTime;
+  StateArray: TMonthDayStateArray;
 begin
-  with Message.NMHdr^ do
+  with Msg.NMHdr^ do
     case Code of
       MCN_GETDAYSTATE:
-        DoGetDayState(PNMDayState(Message.NMHDR)^);
+        DoGetDayState(PNMDayState(Msg.NMHDR)^, StateArray);
       MCN_SELCHANGE:
         begin
-          if IsBlankDate(PNMSelChange(Message.NMHdr)^.stSelStart) then
+          if IsBlankDate(PNMSelChange(Msg.NMHdr)^.stSelStart) then
             Exit;
-          with PNMSelChange(Message.NMHdr)^.stSelStart do
+          with PNMSelChange(Msg.NMHdr)^.stSelStart do
             dFrom := Trunc(EncodeDate(wYear, wMonth, wDay));
-          if IsBlankDate(PNMSelChange(Message.NMHdr)^.stSelEnd) then
+          if IsBlankDate(PNMSelChange(Msg.NMHdr)^.stSelEnd) then
             dTo := dFrom
           else
-            with PNMSelChange(Message.NMHdr)^.stSelEnd do
+            with PNMSelChange(Msg.NMHdr)^.stSelEnd do
               dTo := Trunc(EncodeDate(wYear, wMonth, wDay));
           DoDateSelChange(dFrom, dTo);
         end;
       MCN_SELECT:
         begin
-          if IsBlankDate(PNMSelChange(Message.NMHdr)^.stSelStart) then
+          if IsBlankDate(PNMSelChange(Msg.NMHdr)^.stSelStart) then
             Exit;
-          with PNMSelChange(Message.NMHdr)^.stSelStart do
+          with PNMSelChange(Msg.NMHdr)^.stSelStart do
             dFrom := Trunc(EncodeDate(wYear, wMonth, wDay));
-          if IsBlankDate(PNMSelChange(Message.NMHdr)^.stSelEnd) then
+          if IsBlankDate(PNMSelChange(Msg.NMHdr)^.stSelEnd) then
             dTo := dFrom
           else
-            with PNMSelChange(Message.NMHdr)^.stSelEnd do
+            with PNMSelChange(Msg.NMHdr)^.stSelEnd do
               dTo := Trunc(EncodeDate(wYear, wMonth, wDay));
           DoDateSelect(dFrom, dTo);
         end;
@@ -1130,8 +1156,10 @@ begin
       CtlMinHeight := Bottom - Top;
       CtlMinWidth := Right - Left;
     end;
-    if MinHeight < CtlMinHeight then MinHeight := CtlMinHeight;
-    if MinWidth < CtlMinWidth then MinWidth := CtlMinWidth;
+    if MinHeight < CtlMinHeight then
+      MinHeight := CtlMinHeight;
+    if MinWidth < CtlMinWidth then
+      MinWidth := CtlMinWidth;
   end;
   inherited ConstrainedResize(MinWidth, MinHeight, MaxWidth, MaxHeight);
 end;
@@ -1148,18 +1176,19 @@ begin
     with R do
     begin
       NewWidth := Right - Left + Ord(BorderStyle = bsSingle) * 2;
-      NewHeight := Bottom - Top + Ord(BorderStyle = bsSingle)* 2;
+      NewHeight := Bottom - Top + Ord(BorderStyle = bsSingle) * 2;
     end;
   end
-  else Result := False;
+  else
+    Result := False;
 end;
 
-procedure TJvCustomMonthCalendar.WMGetDlgCode(var Message: TMessage);
+procedure TJvCustomMonthCalendar.WMGetDlgCode(var Msg: TMessage);
 begin
-  Message.Result := DLGC_WANTARROWS;
+  Msg.Result := DLGC_WANTARROWS;
 end;
 
-procedure TJvCustomMonthCalendar.WMLButtonDown(var Message: TWMLButtonDown);
+procedure TJvCustomMonthCalendar.WMLButtonDown(var Msg: TWMLButtonDown);
 begin
   SetFocus;
   inherited;
@@ -1167,32 +1196,32 @@ end;
 
 function TJvCustomMonthCalendar.GetBoldDays: TStrings;
 begin
-  result := FAppearance.BoldDays;
+  Result := FAppearance.BoldDays;
 end;
 
 function TJvCustomMonthCalendar.GetCircleToday: Boolean;
 begin
-  result := FAppearance.CircleToday;
+  Result := FAppearance.CircleToday;
 end;
 
 function TJvCustomMonthCalendar.GetColors: TJvMonthCalColors;
 begin
-  result := FAppearance.Colors;
+  Result := FAppearance.Colors;
 end;
 
 function TJvCustomMonthCalendar.GetShowToday: Boolean;
 begin
-  result := FAppearance.ShowToday;
+  Result := FAppearance.ShowToday;
 end;
 
 function TJvCustomMonthCalendar.GetWeekNumbers: Boolean;
 begin
-  result := FAppearance.WeekNumbers;
+  Result := FAppearance.WeekNumbers;
 end;
 
 function TJvCustomMonthCalendar.GetFirstDayOfWeek: TJvMonthCalWeekDay;
 begin
-  result := FAppearance.FirstDayOfWeek;
+  Result := FAppearance.FirstDayOfWeek;
 end;
 
 procedure TJvCustomMonthCalendar.DoKillFocus(
@@ -1209,36 +1238,34 @@ begin
     OnSetFocus(Self, APreviousControl);
 end;
 
-procedure TJvCustomMonthCalendar.WMKillFocus(var AMessage: TMessage);
+procedure TJvCustomMonthCalendar.WMKillFocus(var Msg: TMessage);
 begin
-  FLeaving:= True;
+  FLeaving := True;
   try
     inherited;
-    DoKillFocus(FindControl(AMessage.WParam));
+    DoKillFocus(FindControl(Msg.WParam));
   finally
-    FLeaving:= False;
+    FLeaving := False;
   end;
 end;
 
-procedure TJvCustomMonthCalendar.WMSetFocus(var AMessage: TMessage);
+procedure TJvCustomMonthCalendar.WMSetFocus(var Msg: TMessage);
 begin
-  FEntering:= True;
+  FEntering := True;
   try
     inherited;
-    DoSetFocus(FindControl(AMessage.WParam));
+    DoSetFocus(FindControl(Msg.WParam));
   finally
-    FEntering:= False;
+    FEntering := False;
   end;
 
 end;
-
-{ TJvMonthCalAppearance }
 
 constructor TJvMonthCalAppearance.Create;
 begin
-  inherited;
+  inherited Create;
   FCircleToday := True;
-  FColors := TJvMonthCalColors.Create(NIL);
+  FColors := TJvMonthCalColors.Create(nil);
   FBoldDays := TMonthCalStrings.Create;
   FShowToday := True;
   FWeekNumbers := False;
@@ -1249,23 +1276,22 @@ destructor TJvMonthCalAppearance.Destroy;
 begin
   FreeAndNil(FColors);
   FreeAndNil(FBoldDays);
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvMonthCalAppearance.GetCalendar: TJvCustomMonthCalendar;
 begin
-  result := FColors.Calendar;
+  Result := FColors.Calendar;
 end;
 
 procedure TJvMonthCalAppearance.SetBoldDays(const AValue: TStrings);
 begin
   FBoldDays.Assign(AValue);
-  if(Assigned(Calendar)) then
+  if Assigned(Calendar) then
     Calendar.DoBoldDays;
 end;
 
-procedure TJvMonthCalAppearance.SetCalendar(
-  const AValue: TJvCustomMonthCalendar);
+procedure TJvMonthCalAppearance.SetCalendar(const AValue: TJvCustomMonthCalendar);
 begin
   FColors.Calendar := AValue;
   TMonthCalStrings(FBoldDays).Calendar := AValue;
@@ -1273,10 +1299,10 @@ end;
 
 procedure TJvMonthCalAppearance.SetCircleToday(const AValue: Boolean);
 begin
-  if(FCircleToday <> AValue) then
+  if FCircleToday <> AValue then
   begin
     FCircleToday := AValue;
-    if(Assigned(Calendar)) then
+    if Assigned(Calendar) then
       Calendar.RecreateWnd;
   end;
 end;
@@ -1289,32 +1315,33 @@ end;
 procedure TJvMonthCalAppearance.SetFirstDoW(
   const AValue: TJvMonthCalWeekDay);
 begin
-  if(FFirstDoW <> AValue) then
+  if FFirstDoW <> AValue then
   begin
     FFirstDoW := AValue;
-    if(Assigned(Calendar)) then
+    if Assigned(Calendar) then
       Calendar.Change;
   end;
 end;
 
 procedure TJvMonthCalAppearance.SetShowToday(const AValue: Boolean);
 begin
-  if(FShowToday <> AValue) then
+  if FShowToday <> AValue then
   begin
     FShowToday := AValue;
-    if(Assigned(Calendar)) then
+    if Assigned(Calendar) then
       Calendar.RecreateWnd;
   end;
 end;
 
 procedure TJvMonthCalAppearance.SetWeekNumbers(const AValue: Boolean);
 begin
-  if(FWeekNumbers <> AValue) then
+  if FWeekNumbers <> AValue then
   begin
     FWeekNumbers := AValue;
-    if(Assigned(Calendar)) then
+    if Assigned(Calendar) then
       Calendar.RecreateWnd;
   end;
 end;
 
 end.
+

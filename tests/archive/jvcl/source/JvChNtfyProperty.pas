@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -31,21 +31,24 @@ Known Issues:
 unit JvChNtfyProperty;
 
 interface
+
 uses
-  SysUtils,{$IFDEF COMPILER6_UP}DesignEditors,DesignIntf{$ELSE}DsgnIntf{$ENDIF};
+  SysUtils,
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf;
+  {$ELSE}
+  DsgnIntf;
+  {$ENDIF}
 
 type
-
   TJvChangeNotifyEditor = class(TDefaultEditor)
   public
-    procedure ExecuteVerb(Index:integer);override;
-
- {$IFDEF COMPILER6_UP}
-    procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
-{$ELSE}
- procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
-{$ENDIF}
-
+    procedure ExecuteVerb(Index: Integer); override;
+    {$IFDEF COMPILER6_UP}
+    procedure EditProperty(const Prop: IProperty; var Cont: Boolean); override;
+    {$ELSE}
+    procedure EditProperty(PropertyEditor: TPropertyEditor; var Cont, FreeEditor: Boolean); override;
+    {$ENDIF}
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
@@ -55,42 +58,50 @@ resourcestring
 
 implementation
 
-{ TJvChangeNotifyEditor }
+{$IFDEF COMPILER6_UP}
 
- {$IFDEF COMPILER6_UP}
-procedure TJvChangeNotifyEditor.EditProperty(const Prop: IProperty;  var Continue: Boolean);
-var PropName:string;
+procedure TJvChangeNotifyEditor.EditProperty(const Prop: IProperty; var Cont: Boolean);
+var
+  PropName: string;
 begin
   PropName := Prop.GetName;
-  if SameText(PropName,'Notifications') then // do not localize
+  if SameText(PropName, 'Notifications') then // do not localize
   begin
     Prop.Edit;
-    Continue := false;
+    Cont := False;
   end;
 end;
+
 {$ELSE}
-procedure TJvChangeNotifyEditor.EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean);
-var PropName:string;
+
+procedure TJvChangeNotifyEditor.EditProperty(PropertyEditor: TPropertyEditor; var Cont, FreeEditor: Boolean);
+var
+  PropName: string;
 begin
   PropName := PropertyEditor.GetName;
-  if SameText(PropName,'Notifications') then
+  if SameText(PropName, 'Notifications') then
   begin
     PropertyEditor.Edit;
-    Continue := false;
+    Cont := False;
   end;
 end;
+
 {$ENDIF}
 
-
-
-procedure TJvChangeNotifyEditor.ExecuteVerb(Index: integer);
+procedure TJvChangeNotifyEditor.ExecuteVerb(Index: Integer);
 begin
-  if Index = 0 then Edit else inherited;
+  if Index = 0 then
+    Edit
+  else
+    inherited ExecuteVerb(Index);
 end;
 
 function TJvChangeNotifyEditor.GetVerb(Index: Integer): string;
 begin
-  if Index = 0 then Result := SEditProperty else Result := '';
+  if Index = 0 then
+    Result := SEditProperty
+  else
+    Result := '';
 end;
 
 function TJvChangeNotifyEditor.GetVerbCount: Integer;
@@ -99,3 +110,4 @@ begin
 end;
 
 end.
+

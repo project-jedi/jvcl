@@ -30,7 +30,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I JVCL.Inc}
 
 unit JvButtons;
 
@@ -38,27 +38,26 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  ExtCtrls, CommCtrl, StdCtrls, Menus, Buttons, JvWndProcHook;
+  ExtCtrls, CommCtrl, StdCtrls, Menus, Buttons,
+  JvWndProcHook, JvComponent, JVCLVer;
 
 type
-
   { VCL Buttons unit does not publish TJvButtonGlyph  class,
     so we do it for other programers (Delphi 3 version) }
-
-  TJvButtonGlyph = class
+  TJvButtonGlyph = class(TObject)
   private
     FGlyphList: TImageList;
-    FIndexs: array[TButtonState] of Integer;
+    FIndexs: array [TButtonState] of Integer;
     FTransparentColor: TColor;
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
     FColor: TColor;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     FBiDiMode: TBiDiMode; {o}
     FParentBiDiMode: Boolean;
     procedure SetBiDiMode(Value: TBiDiMode);
     procedure SetParentBiDiMode(Value: Boolean);
-{$ENDIF COMPILER4_UP}
+    {$ENDIF COMPILER4_UP}
     procedure GlyphChanged(Sender: TObject);
     procedure SetGlyph(Value: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);
@@ -84,22 +83,20 @@ type
       const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
       State: TButtonState; Transparent: Boolean): TRect;
     { DrawExternal draws any glyph (not glyph property) -
-      if you don't needed to save previous glyph set IgnoreOld to true -
-      this increase performance }
-    function DrawExternal(AGlyph: TBitmap; ANumGlyphs: TNumGlyphs; AColor: TColor; IgnoreOld: boolean;
+      if you don't needed to save previous glyph set IgnoreOld to True -
+      this increases performance }
+    function DrawExternal(AGlyph: TBitmap; ANumGlyphs: TNumGlyphs; AColor: TColor; IgnoreOld: Boolean;
       Canvas: TCanvas; const Client: TRect; const Offset: TPoint; const Caption: string;
       Layout: TButtonLayout; Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean): TRect;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     property BiDiMode: TBiDiMode read FBiDiMode write SetBiDiMode;
     property ParentBiDiMode: Boolean read FParentBiDiMode write SetParentBiDiMode;
-{$ENDIF COMPILER4_UP}
+    {$ENDIF COMPILER4_UP}
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property Color: TColor read FColor write SetColor;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
-
-  { TJvHTButtonGlyph }
 
   TJvHTButtonGlyph = class(TJvButtonGlyph)
   private
@@ -110,9 +107,7 @@ type
       Caption: string); override;
   end;
 
-  { TJvaCaptionButton }
-
-  TJvaCaptionButton = class(TComponent)
+  TJvaCaptionButton = class(TJvComponent)
   private
     FGlyph: TJvButtonGlyph;
     FCaption: string;
@@ -120,42 +115,42 @@ type
     FSpacing: Integer;
     FMargin: Integer;
     FRect: TRect;
-    FMouseLButtonDown: boolean;
-    FPress: boolean;
+    FMouseLButtonDown: Boolean;
+    FPress: Boolean;
     FOnClick: TNotifyEvent;
-    FBPos: integer;
-    FWidth: integer;
+    FBPos: Integer;
+    FWidth: Integer;
     WHook: TJvWindowHook;
-    FActive: boolean;
+    FActive: Boolean;
     FFont: TFont;
-    FVisible: boolean;
+    FVisible: Boolean;
     procedure DoBeforeMsg(Sender: TObject; var Msg: TMessage; var Handled: Boolean);
     procedure DoAfterMsg(Sender: TObject; var Msg: TMessage; var Handled: Boolean);
-//    procedure HookWndProc(var Message: TMessage);
+//    procedure HookWndProc(var Msg: TMessage);
     procedure Draw;
-    function MouseOnButton(X, Y: integer): boolean;
+    function MouseOnButton(X, Y: Integer): Boolean;
     procedure Resize;
     procedure GlyphChanged(Sender: TObject);
 
-    function GetHeight: integer;
-    function GetWidth: integer;
-    function GetLeft: integer;
+    function GetHeight: Integer;
+    function GetWidth: Integer;
+    function GetLeft: Integer;
 
     procedure SetCaption(Value: string);
-    function IsCaptionStored: boolean;
+    function IsCaptionStored: Boolean;
     function GetGlyph: TBitmap;
     procedure SetGlyph(Value: TBitmap);
     function GetNumGlyphs: TNumGlyphs;
     procedure SetNumGlyphs(Value: TNumGlyphs);
-    procedure SetBPos(const Value: integer);
+    procedure SetBPos(const Value: Integer);
     procedure SetLayout(Value: TButtonLayout);
     procedure SetSpacing(Value: Integer);
     procedure SetMargin(Value: Integer);
-    procedure SetWidth(const Value: integer);
+    procedure SetWidth(const Value: Integer);
     procedure SetFont(Value: TFont);
     procedure FontChanged(Sender: TObject);
-    procedure SetDown(const Value: boolean);
-    procedure SetVisible(const Value: boolean);
+    procedure SetDown(const Value: Boolean);
+    procedure SetVisible(const Value: Boolean);
   protected
     FState: TButtonState;
     function CalcOffset: TPoint;
@@ -167,100 +162,97 @@ type
     procedure Click; dynamic;
     procedure Update;
   published
-    property Position: integer read FBPos write SetBPos;
+    property Position: Integer read FBPos write SetBPos;
     property Spacing: Integer read FSpacing write SetSpacing default 4;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: Integer read FMargin write SetMargin default -1;
     property Caption: string read FCaption write SetCaption stored IsCaptionStored;
-    property Width: integer read FWidth write SetWidth default -1;
+    property Width: Integer read FWidth write SetWidth default -1;
     property Font: TFont read FFont write SetFont;
     property Glyph: TBitmap read GetGlyph write SetGlyph;
     property NumGlyphs: TNumGlyphs read GetNumGlyphs write SetNumGlyphs default 1;
-    property Down: boolean read FPress write SetDown default false;
-    property Visible: boolean read FVisible write SetVisible default true;
+    property Down: Boolean read FPress write SetDown default False;
+    property Visible: Boolean read FVisible write SetVisible default True;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
-  { TJvaColorButton }
-  TPaintButtonEvent = procedure(Sender: TObject; IsDown, IsDefault: boolean; State: TButtonState) of object;
+  TPaintButtonEvent = procedure(Sender: TObject; IsDown, IsDefault: Boolean; State: TButtonState) of object;
 
   TJvaColorButton = class(TBitBtn)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FCanvas: TCanvas;
     FGlyphDrawer: TJvButtonGlyph;
     FOnPaint: TPaintButtonEvent;
-    procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
+    procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
   protected
     IsFocused: Boolean;
     procedure SetButtonStyle(ADefault: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DefaultDrawing(const IsDown, IsDefault: boolean; const State: TButtonState);
+    procedure DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
     property Canvas: TCanvas read FCanvas;
   published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Color;
     property ParentColor;
     property OnPaint: TPaintButtonEvent read FOnPaint write FOnPaint;
   end;
 
-  { TJvNoFrameButton }
-
   TJvNoFrameButton = class(TSpeedButton)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FGlyphDrawer: TJvButtonGlyph;
-    FNoBorder: boolean;
+    FNoBorder: Boolean;
     FOnPaint: TPaintButtonEvent;
-    procedure SetNoBorder(Value: boolean);
+    procedure SetNoBorder(Value: Boolean);
   protected
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DefaultDrawing(const IsDown: boolean; const State: TButtonState);
+    procedure DefaultDrawing(const IsDown: Boolean; const State: TButtonState);
     property Canvas;
   published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Color;
     property ParentColor;
-    property NoBorder: boolean read FNoBorder write SetNoBorder;
+    property NoBorder: Boolean read FNoBorder write SetNoBorder;
     property OnPaint: TPaintButtonEvent read FOnPaint write FOnPaint;
   end;
-
-  { TJvHTButton }
 
   TJvHTButton = class(TJvaColorButton)
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
 implementation
 
-uses JvHtControls, JvDsgnIntf, JvMaxMin;
+uses
+  JvHtControls, JvDsgnIntf, JvMaxMin;
 
-{*********************************************************************
- *************************  VCL Buttons unit  ************************
- *********************************************************************}
 type
-
   TJvGlyphList = class(TImageList)
   private
-    Used: TBits;
+    FUsed: TBits;
     FCount: Integer;
     function AllocateIndex: Integer;
   public
     constructor CreateSize(AWidth, AHeight: Integer);
     destructor Destroy; override;
-{$IFDEF COMPILER2}
+    {$IFDEF COMPILER2}
     function Add(Image, Mask: TBitmap): Integer;
-{$ENDIF COMPILER2}
+    {$ENDIF COMPILER2}
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
     procedure Delete(Index: Integer);
     property Count: Integer read FCount;
   end;
 
-  TJvGlyphCache = class
+  TJvGlyphCache = class(TObject)
   private
-    GlyphLists: TList;
+    FGlyphLists: TList;
   public
     constructor Create;
     destructor Destroy; override;
@@ -274,28 +266,27 @@ type
 constructor TJvGlyphList.CreateSize(AWidth, AHeight: Integer);
 begin
   inherited CreateSize(AWidth, AHeight);
-  Used := TBits.Create;
+  FUsed := TBits.Create;
 end;
 
 destructor TJvGlyphList.Destroy;
 begin
-  Used.Free;
+  FUsed.Free;
   inherited Destroy;
 end;
 
 function TJvGlyphList.AllocateIndex: Integer;
 begin
-  Result := Used.OpenBit;
-  if Result >= Used.Size then
+  Result := FUsed.OpenBit;
+  if Result >= FUsed.Size then
   begin
     Result := inherited Add(nil, nil);
-    Used.Size := Result + 1;
+    FUsed.Size := Result + 1;
   end;
-  Used[Result] := True;
+  FUsed[Result] := True;
 end;
 
 {$IFDEF COMPILER2}
-
 function TJvGlyphList.Add(Image, Mask: TBitmap): Integer;
 begin
   Result := AllocateIndex;
@@ -313,24 +304,22 @@ end;
 
 procedure TJvGlyphList.Delete(Index: Integer);
 begin
-  if Used[Index] then
+  if FUsed[Index] then
   begin
     Dec(FCount);
-    Used[Index] := False;
+    FUsed[Index] := False;
   end;
 end;
-
-{ TJvGlyphCache  }
 
 constructor TJvGlyphCache.Create;
 begin
   inherited Create;
-  GlyphLists := TList.Create;
+  FGlyphLists := TList.Create;
 end;
 
 destructor TJvGlyphCache.Destroy;
 begin
-  GlyphLists.Free;
+  FGlyphLists.Free;
   inherited Destroy;
 end;
 
@@ -338,15 +327,15 @@ function TJvGlyphCache.GetList(AWidth, AHeight: Integer): TJvGlyphList;
 var
   I: Integer;
 begin
-  for I := GlyphLists.Count - 1 downto 0 do
+  for I := FGlyphLists.Count - 1 downto 0 do
   begin
-    Result := GlyphLists[I];
+    Result := FGlyphLists[I];
     with Result do
       if (AWidth = Width) and (AHeight = Height) then
         Exit;
   end;
   Result := TJvGlyphList.CreateSize(AWidth, AHeight);
-  GlyphLists.Add(Result);
+  FGlyphLists.Add(Result);
 end;
 
 procedure TJvGlyphCache.ReturnList(List: TJvGlyphList);
@@ -355,14 +344,14 @@ begin
     Exit;
   if List.Count = 0 then
   begin
-    GlyphLists.Remove(List);
+    FGlyphLists.Remove(List);
     List.Free;
   end;
 end;
 
 function TJvGlyphCache.Empty: Boolean;
 begin
-  Result := GlyphLists.Count = 0;
+  Result := FGlyphLists.Count = 0;
 end;
 
 var
@@ -383,12 +372,10 @@ begin
     FillRect(Rect(0, 0, Pattern.Width, Pattern.Height));
     for Y := 0 to 7 do
       for X := 0 to 7 do
-        if (Y mod 2) = (X mod 2) then { toggles between even/odd pixles }
+        if (Y mod 2) = (X mod 2) then { toggles between even/odd pixels }
           Pixels[X, Y] := HighLightColor {clBtnHighlight}; { on even/odd rows }
   end;
 end;
-
-{ TJvButtonGlyph  }
 
 constructor TJvButtonGlyph.Create;
 var
@@ -463,6 +450,7 @@ begin
     Invalidate;
   end;
 end;
+
 {$ENDIF COMPILER4_UP}
 
 procedure TJvButtonGlyph.SetGlyph(Value: TBitmap);
@@ -504,7 +492,6 @@ begin
 end;
 
 {$IFDEF COMPILER2}
-
 function TJvButtonGlyph.CreateButtonGlyph(State: TButtonState): Integer;
 const
   ROP_DSPDxax = $00E20746;
@@ -557,7 +544,8 @@ begin
           try
             if NumGlyphs > 1 then
               with TmpImage.Canvas do
-              begin { Change white & gray to clBtnHighlight and clBtnShadow }
+              begin
+                { Change white & gray to clBtnHighlight and clBtnShadow }
                 CopyRect(IRect, FOriginal.Canvas, ORect);
                 MonoBmp.Width := IWidth;
                 MonoBmp.Height := IHeight;
@@ -640,7 +628,6 @@ end;
 {$ENDIF COMPILER2}
 
 {$IFDEF COMPILER3_UP}
-
 function TJvButtonGlyph.CreateButtonGlyph(State: TButtonState): Integer;
 const
   ROP_DSPDxax = $00E20746;
@@ -672,9 +659,7 @@ begin
     TmpImage.Height := IHeight;
     IRect := Rect(0, 0, IWidth, IHeight);
     TmpImage.Canvas.Brush.Color := Color {clBtnFace};
-{$IFDEF COMPILER3_UP}
     TmpImage.Palette := CopyPalette(FOriginal.Palette);
-{$ENDIF COMPILER3_UP}
     I := State;
     if Ord(I) >= NumGlyphs then
       I := bsUp;
@@ -684,14 +669,10 @@ begin
         bsExclusive:
         begin
           TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
-{$IFDEF COMPILER2}
-          FIndexs[State] := FGlyphList.AddMasked(TmpImage, FTransparentColor);
-{$ELSE}
           if FOriginal.TransparentMode = tmFixed then
             FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage, FTransparentColor)
           else
             FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage, clDefault);
-{$ENDIF COMPILER2}
         end;
       bsDisabled:
         begin
@@ -701,9 +682,7 @@ begin
             MonoBmp := TBitmap.Create;
             DDB := TBitmap.Create;
             DDB.Assign(FOriginal);
-{$IFDEF COMPILER3_UP}
             DDB.HandleType := bmDDB;
-{$ENDIF COMPILER3_UP}
             if NumGlyphs > 1 then
               with TmpImage.Canvas do
               begin { Change white & gray to clBtnHighlight and clBtnShadow }
@@ -748,9 +727,7 @@ begin
               with MonoBmp do
               begin
                 Assign(FOriginal);
-{$IFDEF COMPILER3_UP}
                 HandleType := bmDDB;
-{$ENDIF COMPILER3_UP}
                 Canvas.Brush.Color := clBlack;
                 Width := IWidth;
                 if Monochrome then
@@ -814,14 +791,14 @@ end;
 procedure TJvButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TButtonState);
 var
-  flags: LongInt;
+  Flags: Longint;
 begin
-  flags := 0;
+  Flags := 0;
   {O}
-{$IFDEF COMPILER4_UP}
+  {$IFDEF COMPILER4_UP}
   if FBiDiMode <> bdLeftToRight then
-    flags := DT_RTLREADING;
-{$ENDIF COMPILER4_UP}
+    Flags := DT_RTLREADING;
+  {$ENDIF COMPILER4_UP}
   with Canvas do
   begin
     Brush.Style := bsClear;
@@ -829,14 +806,14 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, flags);
+      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, flags);
+      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
     end
     else
       DrawText(Handle, PChar(Caption), Length(Caption), TextBounds,
-        DT_CENTER or DT_VCENTER or DT_SINGLELINE or flags);
+        DT_CENTER or DT_VCENTER or DT_SINGLELINE or Flags);
   end;
 end;
 
@@ -966,11 +943,8 @@ begin
   DrawButtonGlyph(Canvas, GlyphPos, State, Transparent);
   DrawButtonText(Canvas, Caption, Result, State);
 end;
-{#####################################################################
- #########################  VCL Buttons unit  ########################
- #####################################################################}
 
-function TJvButtonGlyph.DrawExternal(AGlyph: TBitmap; ANumGlyphs: TNumGlyphs; AColor: TColor; IgnoreOld: boolean;
+function TJvButtonGlyph.DrawExternal(AGlyph: TBitmap; ANumGlyphs: TNumGlyphs; AColor: TColor; IgnoreOld: Boolean;
   Canvas: TCanvas; const Client: TRect; const Offset: TPoint; const Caption: string;
   Layout: TButtonLayout; Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean): TRect;
 var
@@ -1004,8 +978,6 @@ begin
   DrawText(Canvas.Handle, PChar(Caption), Length(Caption), TextRect, DT_CALCRECT);
 end;
 
-{ TJvHTButtonGlyph }
-
 procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TButtonState);
 begin
@@ -1033,19 +1005,17 @@ begin
     Canvas.TextHeight(Caption));
 end;
 
-{****************** TJvaCaptionButton ******************}
-
 constructor TJvaCaptionButton.Create(AOwner: TComponent);
 
-  function FindButtonPos: integer;
+  function FindButtonPos: Integer;
   var
-    i: integer;
+    I: Integer;
     B: TComponent;
   begin
     Result := 4;
-    for i := 0 to Owner.ComponentCount - 1 do
+    for I := 0 to Owner.ComponentCount - 1 do
     begin
-      B := Owner.Components[i];
+      B := Owner.Components[I];
       if B is TJvaCaptionButton then
         Result := Max(Result, (B as TJvaCaptionButton).FBPos + 1);
     end;
@@ -1061,16 +1031,16 @@ begin
   FFont := TFont.Create;
   FFont.OnChange := FontChanged;
   FBPos := FindButtonPos;
-  FMouseLButtonDown := false;
-  FPress := false;
+  FMouseLButtonDown := False;
+  FPress := False;
   FWidth := -1;
   FMargin := -1;
-  FVisible := true;
+  FVisible := True;
   WHook := TJvWindowHook.Create(nil);
   WHook.BeforeMessage := DoBeforeMsg;
   WHook.AfterMessage := DoAfterMsg;
   WHook.Control := (Owner as TForm);
-  WHook.Active := true;
+  WHook.Active := True;
   Resize;
 end;
 
@@ -1092,7 +1062,7 @@ begin
     Result := (Owner as TForm).BorderStyle;
 end;
 
-function TJvaCaptionButton.GetHeight: integer;
+function TJvaCaptionButton.GetHeight: Integer;
 begin
   if BorderStyle in [bsSizeToolWin, bsToolWindow] then
     Result := GetSystemMetrics(SM_CYSMSIZE)
@@ -1100,23 +1070,24 @@ begin
     Result := GetSystemMetrics(SM_CYSIZE);
 end;
 
-function TJvaCaptionButton.GetWidth: integer;
+function TJvaCaptionButton.GetWidth: Integer;
 begin
   if FWidth <> -1 then
     Result := FWidth
-  else if BorderStyle in [bsSizeToolWin, bsToolWindow] then
+  else
+  if BorderStyle in [bsSizeToolWin, bsToolWindow] then
     Result := GetSystemMetrics(SM_CXSMSIZE)
   else
     Result := GetSystemMetrics(SM_CXSIZE);
 end;
 
-function TJvaCaptionButton.GetLeft: integer;
+function TJvaCaptionButton.GetLeft: Integer;
 var
-  F: integer;
+  F: Integer;
 
-  function FirstButtonPos: integer;
+  function FirstButtonPos: Integer;
   var
-    i: integer;
+    i: Integer;
     B: TComponent;
   begin
     Result := FBPos;
@@ -1128,18 +1099,18 @@ var
     end;
   end;
 
-  function RightButtonWidth: integer;
+  function RightButtonWidth: Integer;
   var
-    i: integer;
+    I: Integer;
     B: TComponent;
   begin
     Result := 0;
-    for i := 0 to Owner.ComponentCount - 1 do
+    for I := 0 to Owner.ComponentCount - 1 do
     begin
-      B := Owner.Components[i];
+      B := Owner.Components[I];
       if (B is TJvaCaptionButton) and
         ((B as TJvaCaptionButton).FBPos <= FBPos) then
-        inc(Result, (B as TJvaCaptionButton).GetWidth);
+        Inc(Result, (B as TJvaCaptionButton).GetWidth);
     end;
   end;
 
@@ -1204,7 +1175,7 @@ var
   Canvas: TCanvas;
   Offset: TPoint;
 const
-  CaptionColor: array[boolean] of TColor = (clInactiveCaption, clActiveCaption);
+  CaptionColor: array [Boolean] of TColor = (clInactiveCaption, clActiveCaption);
 begin
   if not FVisible then
     exit;
@@ -1218,9 +1189,9 @@ begin
     Canvas.Handle := DC;
     Canvas.Brush.Color := CaptionColor[FActive];
     //Canvas.FillRect(R); { commented for Windows98 gradient caption compatibility }
-    inc(R.Left, 2);
-    inc(R.Top, 2);
-    dec(R.Bottom, 2);
+    Inc(R.Left, 2);
+    Inc(R.Top, 2);
+    Dec(R.Bottom, 2);
     if FPress then
       DrawFrameControl(DC, R, DFC_BUTTON, DFCS_BUTTONPUSH or DFCS_PUSHED)
     else
@@ -1232,10 +1203,10 @@ begin
 
     if FPress then
       TJvButtonGlyph(FGlyph).Draw(Canvas, R, Point(0, 0),
-        FCaption, FLayout, FMargin, FSpacing, bsDown, true)
+        FCaption, FLayout, FMargin, FSpacing, bsDown, True)
     else
       TJvButtonGlyph(FGlyph).Draw(Canvas, R, Point(0, 0),
-        FCaption, FLayout, FMargin, FSpacing, bsUp, true);
+        FCaption, FLayout, FMargin, FSpacing, bsUp, True);
   finally
     Canvas.Handle := 0;
     Canvas.Free;
@@ -1244,106 +1215,106 @@ begin
 end;
 
 (*
-procedure TJvaCaptionButton.HookWndProc(var Message: TMessage);
+procedure TJvaCaptionButton.HookWndProc(var Msg: TMessage);
 var
   P: TPoint;
-  OldPress: boolean;
+  OldPress: Boolean;
 begin
   if Owner = nil then
     exit;
-  case Message.Msg of
+  case Msg.Msg of
     WM_NCACTIVATE: // after
       begin
-        FActive := boolean(Message.wParam);
-        WHook.CallOldProc(Message);
+        FActive := Boolean(Msg.wParam);
+        WHook.CallOldProc(Msg);
         Draw;
       end;
     WM_SETTEXT, WM_NCPAINT: // after
       begin
-        WHook.CallOldProc(Message);
+        WHook.CallOldProc(Msg);
         Draw;
       end;
     WM_SIZE: // after
       begin
-        WHook.CallOldProc(Message);
+        WHook.CallOldProc(Msg);
         Resize;
       end;
     WM_NCLBUTTONDOWN: // before
       if FVisible and
-        MouseOnButton(TWMNCHitMessage(Message).XCursor, TWMNCHitMessage(Message).YCursor) then
+        MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
       begin
         SetCapture((Owner as TForm).Handle);
-        FMouseLButtonDown := true;
-        FPress := true;
+        FMouseLButtonDown := True;
+        FPress := True;
         Draw;
       end
       else
-        WHook.CallOldProc(Message);
+        WHook.CallOldProc(Msg);
     WM_NCLBUTTONDBLCLK: // before
       if FVisible and
-        MouseOnButton(TWMNCHitMessage(Message).XCursor, TWMNCHitMessage(Message).YCursor) then
+        MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
       begin
-        { FPress := true;
+        { FPress := True;
           Draw;
-          FPress := false;
+          FPress := False;
           Draw;}
       end
       else
-        WHook.CallOldProc(Message);
+        WHook.CallOldProc(Msg);
     WM_LBUTTONUP: // before
       if FVisible and FMouseLButtonDown then
       begin
         ReleaseCapture;
-        FMouseLButtonDown := false;
-        FPress := false;
+        FMouseLButtonDown := False;
+        FPress := False;
         Draw;
-        P := (Owner as TForm).ClientToScreen(Point(TWMNCHitMessage(Message).XCursor, TWMNCHitMessage(Message).YCursor));
+        P := (Owner as TForm).ClientToScreen(Point(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor));
         if MouseOnButton(P.X, P.Y) then
           Click;
       end
       else
-        WHook.CallOldProc(Message);
+        WHook.CallOldProc(Msg);
     WM_MOUSEMOVE: // before
       if FMouseLButtonDown then
       begin
-        P := (Owner as TForm).ClientToScreen(Point(TWMNCHitMessage(Message).XCursor, TWMNCHitMessage(Message).YCursor));
+        P := (Owner as TForm).ClientToScreen(Point(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor));
         OldPress := FPress;
         FPress := MouseOnButton(P.X, P.Y);
         if OldPress <> FPress then
           Draw;
       end
       else
-        WHook.CallOldProc(Message);
+        WHook.CallOldProc(Msg);
     WM_NCHITTEST: // before
       if FVisible and
-        MouseOnButton(TWMNCHitMessage(Message).XCursor, TWMNCHitMessage(Message).YCursor) then
-        Message.Result := HTBORDER
+        MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
+        Msg.Result := HTBORDER
       else
-        WHook.CallOldProc(Message);
+        WHook.CallOldProc(Msg);
     WM_NCRBUTTONDOWN: // before
       { if FVisible and
-          MouseOnButton(TWMNCHitMessage(Message).XCursor, TWMNCHitMessage(Message).YCursor) then
-         WHook.CallOldProc(Message)
-       else} WHook.CallOldProc(Message);
+          MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
+         WHook.CallOldProc(Msg)
+       else} WHook.CallOldProc(Msg);
     WM_SETTINGCHANGE: // after
       begin
-        WHook.CallOldProc(Message);
+        WHook.CallOldProc(Msg);
         Changed;
       end;
   else
-    WHook.CallOldProc(Message);
+    WHook.CallOldProc(Msg);
   end;
 end;
 *)
 
 procedure TJvaCaptionButton.Changed;
 var
-  i: integer;
+  I: Integer;
   B: TComponent;
 begin
-  for i := 0 to Owner.ComponentCount - 1 do
+  for I := 0 to Owner.ComponentCount - 1 do
   begin
-    B := Owner.Components[i];
+    B := Owner.Components[I];
     if (B is TJvaCaptionButton) then
     begin
       (B as TJvaCaptionButton).Resize;
@@ -1352,7 +1323,7 @@ begin
   end;
 end;
 
-function TJvaCaptionButton.MouseOnButton(X, Y: integer): boolean;
+function TJvaCaptionButton.MouseOnButton(X, Y: Integer): Boolean;
 begin
   with (Owner as TForm) do
     Result := PtInRect(FRect, Point(X - Left - CalcOffset.X, Y - Top - CalcOffset.Y));
@@ -1380,15 +1351,18 @@ begin
   end;
 end;
 
-function TJvaCaptionButton.IsCaptionStored: boolean;
+function TJvaCaptionButton.IsCaptionStored: Boolean;
 begin
   Result := FCaption <> '';
 end;
 
 procedure TJvaCaptionButton.SetFont(Value: TFont);
 begin
-  Font.Assign(Value);
-  Changed;
+  if FFont <> Value then
+  begin
+    FFont.Assign(Value);
+    Changed;
+  end;
 end;
 
 procedure TJvaCaptionButton.FontChanged(Sender: TObject);
@@ -1398,37 +1372,44 @@ end;
 
 function TJvaCaptionButton.GetGlyph: TBitmap;
 begin
-  Result := TJvButtonGlyph(FGlyph).Glyph;
+  Result := FGlyph.Glyph;
 end;
 
 procedure TJvaCaptionButton.SetGlyph(Value: TBitmap);
 begin
-  TJvButtonGlyph(FGlyph).Glyph := Value;
-  Changed;
+  if FGlyph.Glyph <> Value then
+  begin
+    FGlyph.Glyph := Value;
+    Changed;
+  end;
 end;
 
 function TJvaCaptionButton.GetNumGlyphs: TNumGlyphs;
 begin
-  Result := TJvButtonGlyph(FGlyph).NumGlyphs;
+  Result := FGlyph.NumGlyphs;
 end;
 
 procedure TJvaCaptionButton.SetNumGlyphs(Value: TNumGlyphs);
 begin
   if Value < 0 then
     Value := 1
-  else if Value > 4 then
+  else
+  if Value > 4 then
     Value := 4;
-  if Value <> TJvButtonGlyph(FGlyph).NumGlyphs then
+  if Value <> FGlyph.NumGlyphs then
   begin
-    TJvButtonGlyph(FGlyph).NumGlyphs := Value;
+    FGlyph.NumGlyphs := Value;
     Changed;
   end;
 end;
 
-procedure TJvaCaptionButton.SetBPos(const Value: integer);
+procedure TJvaCaptionButton.SetBPos(const Value: Integer);
 begin
-  FBPos := Value;
-  Changed;
+  if FBPos <> Value then
+  begin
+    FBPos := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvaCaptionButton.SetLayout(Value: TButtonLayout);
@@ -1458,10 +1439,13 @@ begin
   end;
 end;
 
-procedure TJvaCaptionButton.SetWidth(const Value: integer);
+procedure TJvaCaptionButton.SetWidth(const Value: Integer);
 begin
-  FWidth := Value;
-  Changed;
+  if FWidth <> Value then
+  begin
+    FWidth := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvaCaptionButton.Update;
@@ -1469,33 +1453,39 @@ begin
   Draw;
 end;
 
-procedure TJvaCaptionButton.SetDown(const Value: boolean);
+procedure TJvaCaptionButton.SetDown(const Value: Boolean);
 begin
-  FPress := Value;
-  Changed;
+  if FPress <> Value then
+  begin
+    FPress := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvaCaptionButton.SetVisible(const Value: boolean);
+procedure TJvaCaptionButton.SetVisible(const Value: Boolean);
 begin
-  FVisible := Value;
-  Changed;
+  if FVisible <> Value then
+  begin
+    FVisible := Value;
+    Changed;
+  end;
 end;
-
-{****************** TJvaColorButton ******************}
 
 constructor TJvaColorButton.Create(AOwner: TComponent);
 begin
-  FGlyphDrawer := TJvButtonGlyph.Create;
   inherited Create(AOwner);
+  FGlyphDrawer := TJvButtonGlyph.Create;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
 end;
 
 destructor TJvaColorButton.Destroy;
 begin
-  inherited Destroy;
   FGlyphDrawer.Free;
-  FCanvas.Free;
+  TControlCanvas(FCanvas).Free;
+  FGlyphDrawer := nil;
+  FCanvas := nil;
+  inherited Destroy;
 end;
 
 procedure TJvaColorButton.SetButtonStyle(ADefault: Boolean);
@@ -1505,13 +1495,13 @@ begin
   inherited SetButtonStyle(ADefault);
 end;
 
-procedure TJvaColorButton.CNDrawItem(var Message: TWMDrawItem);
+procedure TJvaColorButton.CNDrawItem(var Msg: TWMDrawItem);
 var
   DrawItemStruct: TDrawItemStruct;
   IsDown, IsDefault: Boolean;
   State: TButtonState;
 begin
-  DrawItemStruct := Message.DrawItemStruct^;
+  DrawItemStruct := Msg.DrawItemStruct^;
   FCanvas.Handle := DrawItemStruct.hDC;
   with DrawItemStruct do
   begin
@@ -1520,7 +1510,8 @@ begin
 
     if not Enabled then
       State := bsDisabled
-    else if IsDown then
+    else
+      if IsDown then
       State := bsDown
     else
       State := bsUp;
@@ -1536,13 +1527,13 @@ end;
 
 {$O-}
 
-procedure TJvaColorButton.DefaultDrawing(const IsDown, IsDefault: boolean; const State: TButtonState);
+procedure TJvaColorButton.DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
 var
   R: TRect;
   Flags: Longint;
 begin
   if Canvas.Handle = 0 then
-    exit;
+    Exit;
 
   R := ClientRect;
   Flags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
@@ -1593,8 +1584,8 @@ begin
   if IsDown then
     OffsetRect(R, 1, 1);
 
-  FGlyphDrawer.DrawExternal(Glyph, NumGlyphs, Color, true, FCanvas, R, Point(0, 0), Caption, Layout, Margin,
-    Spacing, State, false {true});
+  FGlyphDrawer.DrawExternal(Glyph, NumGlyphs, Color, True, FCanvas, R, Point(0, 0), Caption, Layout, Margin,
+    Spacing, State, False {True});
 
   if IsFocused and IsDefault then
   begin
@@ -1609,21 +1600,19 @@ end;
 {$IFDEF OPTIMIZATION_ON}
 {$O+}
 {$ENDIF OPTIMIZATION_ON}
-{################## TJvaColorButton ##################}
-
-{***************** TJvNoFrameButton *****************}
 
 constructor TJvNoFrameButton.Create(AOwner: TComponent);
 begin
-  FGlyphDrawer := TJvButtonGlyph.Create;
   inherited Create(AOwner);
-  FNoBorder := true;
+  FGlyphDrawer := TJvButtonGlyph.Create;
+  FNoBorder := True;
 end;
 
 destructor TJvNoFrameButton.Destroy;
 begin
-  inherited Destroy;
   FGlyphDrawer.Free;
+  FglyphDrawer := nil;
+  inherited Destroy;
 end;
 
 procedure TJvNoFrameButton.Paint;
@@ -1633,26 +1622,27 @@ begin
     FState := bsDisabled;
     // FDragging := False;
   end
-  else if FState = bsDisabled then
+  else
+  if FState = bsDisabled then
     if Down and (GroupIndex <> 0) then
       FState := bsExclusive
     else
       FState := bsUp;
   if Assigned(FOnPaint) then
-    FOnPaint(Self, Down, false, FState)
+    FOnPaint(Self, Down, False, FState)
   else
     DefaultDrawing(Down, FState);
 end;
 
-procedure TJvNoFrameButton.DefaultDrawing(const IsDown: boolean; const State: TButtonState);
+procedure TJvNoFrameButton.DefaultDrawing(const IsDown: Boolean; const State: TButtonState);
 const
-  DownStyles: array[Boolean] of Integer = (BDR_RAISEDINNER, BDR_SUNKENOUTER);
-  FillStyles: array[Boolean] of Integer = (BF_MIDDLE, 0);
+  DownStyles: array [Boolean] of Integer = (BDR_RAISEDINNER, BDR_SUNKENOUTER);
+  FillStyles: array [Boolean] of Integer = (BF_MIDDLE, 0);
 var
   PaintRect: TRect;
   Offset: TPoint;
 begin
-  if {$IFNDEF COMPILER2}Flat and {$ENDIF} not NoBorder then
+  if {$IFNDEF COMPILER2} Flat and {$ENDIF} not NoBorder then
     inherited Paint
   else
   begin
@@ -1660,13 +1650,13 @@ begin
     PaintRect := Rect(0, 0, Width, Height);
     if not NoBorder then
     begin
-{$IFDEF COMPILER4_UP}
+      {$IFDEF COMPILER4_UP}
       DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
         FillStyles[Transparent] or BF_RECT);
-{$ELSE}
+      {$ELSE}
       DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
-        FillStyles[true {Transparent}] or BF_RECT);
-{$ENDIF COMPILER4_UP}
+        FillStyles[True {Transparent}] or BF_RECT);
+      {$ENDIF COMPILER4_UP}
       InflateRect(PaintRect, -1, -1);
     end;
     Canvas.Brush.Style := bsSolid;
@@ -1694,15 +1684,15 @@ begin
       Offset.Y := 0;
     end;
     {O}
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     FGlyphDrawer.BiDiMode := BiDiMode;
-{$ENDIF COMPILER4_UP}
-    FGlyphDrawer.DrawExternal(Glyph, NumGlyphs, Color, true, Canvas, PaintRect, Offset, Caption, Layout, Margin,
-      Spacing, FState, false {true});
+    {$ENDIF COMPILER4_UP}
+    FGlyphDrawer.DrawExternal(Glyph, NumGlyphs, Color, True, Canvas, PaintRect, Offset, Caption, Layout, Margin,
+      Spacing, FState, False {True});
   end;
 end;
 
-procedure TJvNoFrameButton.SetNoBorder(Value: boolean);
+procedure TJvNoFrameButton.SetNoBorder(Value: Boolean);
 begin
   if FNoBorder <> Value then
   begin
@@ -1718,6 +1708,13 @@ begin
   FGlyphDrawer := TJvHTButtonGlyph.Create;
 end;
 
+destructor TJvHTButton.Destroy;
+begin
+  TJvHTButtonGlyph(FGlyphDrawer).Free;
+  FGlyphDrawer := nil;
+  inherited Destroy;
+end;
+
 procedure TJvaCaptionButton.DoAfterMsg(Sender: TObject; var Msg: TMessage;
   var Handled: Boolean);
 begin
@@ -1726,7 +1723,7 @@ begin
   case Msg.Msg of
     WM_NCACTIVATE:
       begin
-        FActive := boolean(Msg.wParam);
+        FActive := Boolean(Msg.wParam);
         Draw;
       end;
     WM_SETTEXT, WM_NCPAINT:
@@ -1742,7 +1739,7 @@ procedure TJvaCaptionButton.DoBeforeMsg(Sender: TObject; var Msg: TMessage;
   var Handled: Boolean);
 var
   P: TPoint;
-  OldPress: boolean;
+  OldPress: Boolean;
 begin
   if Owner = nil then
     Exit;
@@ -1752,34 +1749,34 @@ begin
         MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
       begin
         SetCapture((Owner as TForm).Handle);
-        FMouseLButtonDown := true;
-        FPress := true;
-        Handled := true;
+        FMouseLButtonDown := True;
+        FPress := True;
+        Handled := True;
         Draw;
       end;
-    WM_NCLBUTTONDBLCLK: 
+    WM_NCLBUTTONDBLCLK:
       if FVisible and
         MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
       begin
-        { FPress := true;
+        { FPress := True;
           Draw;
-          FPress := false;
+          FPress := False;
           Draw;}
-        Handled := true;
+        Handled := True;
       end;
-    WM_LBUTTONUP: 
+    WM_LBUTTONUP:
       if FVisible and FMouseLButtonDown then
       begin
         ReleaseCapture;
-        FMouseLButtonDown := false;
-        FPress := false;
+        FMouseLButtonDown := False;
+        FPress := False;
         Draw;
         P := (Owner as TForm).ClientToScreen(Point(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor));
         if MouseOnButton(P.X, P.Y) then
           Click;
-        Handled := true;
+        Handled := True;
       end;
-    WM_MOUSEMOVE: 
+    WM_MOUSEMOVE:
       if FMouseLButtonDown then
       begin
         P := (Owner as TForm).ClientToScreen(Point(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor));
@@ -1787,14 +1784,14 @@ begin
         FPress := MouseOnButton(P.X, P.Y);
         if OldPress <> FPress then
           Draw;
-        Handled := true;
+        Handled := True;
       end;
     WM_NCHITTEST:
       if FVisible and
         MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
       begin
         Msg.Result := HTBORDER;
-        Handled := true;
+        Handled := True;
       end;
     WM_NCRBUTTONDOWN:
       { if FVisible and

@@ -28,13 +28,11 @@ Known Issues:
 
 unit JvClipboardViewer;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ClipBrd, JvTypes, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ClipBrd,
+  JvTypes, JvComponent;
 
 type
   TJvClipboardViewer = class(TJvComponent)
@@ -60,19 +58,27 @@ implementation
 
 constructor TJvClipboardViewer.Create(AOwner: TComponent);
 begin
-  inherited;
-  FHandle := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}AllocateHWND(WndProc);
+  inherited Create(AOwner);
+  {$IFDEF COMPILER6_UP}
+  FHandle := Classes.AllocateHWND(WndProc);
+  {$ELSE}
+  FHandle := AllocateHWND(WndProc);
+  {$ENDIF}
   FNextCB := SetClipboardViewer(FHandle);
-  // (rom) removed a SetClipboardViewer line her
+  // (rom) removed a SetClipboardViewer line here
 end;
 
 {**************************************************}
 
 destructor TJvClipboardViewer.Destroy;
 begin
-  {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FHandle);
+  {$IFDEF COMPILER6_UP}
+  Classes.DeallocateHWnd(FHandle);
+  {$ELSE}
+  DeallocateHWnd(FHandle);
+  {$ENDIF}
   ChangeClipboardChain(FHandle, FNextCB);
-  inherited;
+  inherited Destroy;
 end;
 
 {**************************************************}
@@ -92,7 +98,7 @@ var
   Bitmap: TBitmap;
 begin
   inherited;
-  if Clipboard.HasFormat(CF_BITMAP) and (Assigned(FOnImage)) then
+  if Clipboard.HasFormat(CF_BITMAP) and Assigned(FOnImage) then
   begin
     Bitmap := nil;
     try
@@ -103,7 +109,8 @@ begin
       Bitmap.Free;
     end;
   end
-  else if (Clipboard.HasFormat(CF_TEXT)) and (Assigned(FOnText)) then
+  else
+  if (Clipboard.HasFormat(CF_TEXT)) and Assigned(FOnText) then
     FOnText(Self, ClipBoard.AsText);
   Msg.Result := 0;
 end;

@@ -12,7 +12,7 @@ The Original Code is: JvCalc.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,19 +25,16 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvCalc;
 
 interface
 
-
 uses Windows, SysUtils,
-{$IFDEF COMPILER6_UP}
-Variants,
-{$ENDIF}
-
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF}
   Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,
-  ExtCtrls, Buttons, JvxCtrls, Clipbrd{, JvComponent};
+  ExtCtrls, Buttons, JvxCtrls, Clipbrd {, JvComponent};
 
 const
   DefCalcPrecision = 15;
@@ -52,7 +49,7 @@ type
   private
     FValue: Double;
     FMemory: Double;
-    FTitle: String;
+    FTitle: string;
     FCtl3D: Boolean;
     FPrecision: Byte;
     FBeepOnError: Boolean;
@@ -87,8 +84,6 @@ type
     property OnDisplayChange: TNotifyEvent read FOnDisplayChange write FOnDisplayChange;
   end;
 
-{ TJvCalculatorForm }
-
   TJvCalculatorForm = class(TForm)
   private
     FMainPanel: TPanel;
@@ -111,19 +106,27 @@ type
   end;
 
 function CreateCalculatorForm(AOwner: TComponent; AHelpContext: THelpContext): TJvCalculatorForm;
-function CreatePopupCalculator(AOwner: TComponent
-  {$IFDEF COMPILER4_UP}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
+{$IFDEF COMPILER4_UP}
+function CreatePopupCalculator(AOwner: TComponent;
+  ABiDiMode: TBiDiMode = bdLeftToRight): TWinControl;
+{$ELSE}
+function CreatePopupCalculator(AOwner: TComponent): TWinControl;
+{$ENDIF}
 procedure SetupPopupCalculator(PopupCalc: TWinControl; APrecision: Byte;
   ABeepOnError: Boolean);
 
 implementation
 
-uses {$IFNDEF WIN32} JvStr16, {$ENDIF} JvVCLUtils, JvMaxMin, JvStrUtils, JvToolEdit;
+uses
+  {$IFNDEF WIN32}
+  JvStr16,
+  {$ENDIF}
+  JvVCLUtils, JvMaxMin, JvStrUtils, JvToolEdit;
 
 {$IFDEF WIN32}
- {$R *.Res}
+{$R *.Res}
 {$ELSE}
- {$R *.R16}
+{$R *.R16}
 {$ENDIF}
 
 const
@@ -132,7 +135,7 @@ const
 
 type
   TCalcBtnKind =
-   (cbNone, cbNum0, cbNum1, cbNum2, cbNum3, cbNum4, cbNum5, cbNum6,
+    (cbNone, cbNum0, cbNum1, cbNum2, cbNum3, cbNum4, cbNum5, cbNum6,
     cbNum7, cbNum8, cbNum9, cbSgn, cbDcm, cbDiv, cbMul, cbSub,
     cbAdd, cbSqr, cbPcnt, cbRev, cbEql, cbBck, cbClr, cbMP,
     cbMS, cbMR, cbMC, cbOk, cbCancel);
@@ -145,22 +148,27 @@ var
   NonClientMetrics: TNonClientMetrics;
 {$ENDIF}
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
     AFont.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont)
   else
-{$ENDIF}
-  with AFont do begin
-    Color := clWindowText;
-    Name := 'MS Sans Serif';
-    Size := 8;
-  end;
+  {$ENDIF}
+    with AFont do
+    begin
+      Color := clWindowText;
+      Name := 'MS Sans Serif';
+      Size := 8;
+    end;
   AFont.Style := [fsBold];
-  if Layout = clDialog then begin
+  {
+  if Layout = clDialog then
+  begin
   end
-  else begin
+  else
+  begin
   end;
+  }
 end;
 
 function CreateCalculatorForm(AOwner: TComponent; AHelpContext: THelpContext): TJvCalculatorForm;
@@ -169,10 +177,12 @@ begin
   with Result do
   try
     HelpContext := AHelpContext;
-{$IFDEF WIN32}
-    if HelpContext <> 0 then BorderIcons := BorderIcons + [biHelp];
-{$ENDIF}
-    if Screen.PixelsPerInch <> 96 then begin { scale to screen res }
+    {$IFDEF WIN32}
+    if HelpContext <> 0 then
+      BorderIcons := BorderIcons + [biHelp];
+    {$ENDIF}
+    if Screen.PixelsPerInch <> 96 then
+    begin { scale to screen res }
       ScaleBy(Screen.PixelsPerInch, 96);
       SetDefaultFont(Font, clDialog);
       Left := (Screen.Width div 2) - (Width div 2);
@@ -183,8 +193,6 @@ begin
     raise;
   end;
 end;
-
-{ TJvCalcButton }
 
 type
   TJvCalcButton = class(TJvxSpeedButton)
@@ -201,27 +209,37 @@ type
 constructor TJvCalcButton.CreateKind(AOwner: TComponent; AKind: TCalcBtnKind);
 begin
   inherited Create(AOwner);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   ControlStyle := ControlStyle + [csReplicatable];
-{$ENDIF}
+  {$ENDIF}
   FKind := AKind;
-  if FKind in [cbNum0..cbClr] then Tag := Ord(Kind) - 1
-  else Tag := -1;
+  if FKind in [cbNum0..cbClr] then
+    Tag := Ord(Kind) - 1
+  else
+    Tag := -1;
 end;
 
 procedure TJvCalcButton.CMParentFontChanged(var Message: TMessage);
 
   function BtnColor(Kind: TCalcBtnKind): TColor;
   begin
-    if Kind in [cbSqr, cbPcnt, cbRev, cbMP..cbMC] then Result := clNavy
-    else if Kind in [cbDiv, cbMul, cbSub, cbAdd, cbEql] then Result := clPurple
-    else if Kind in [cbBck, cbClr] then Result := clMaroon
-    else Result := clBtnText;
+    if Kind in [cbSqr, cbPcnt, cbRev, cbMP..cbMC] then
+      Result := clNavy
+    else
+      if Kind in [cbDiv, cbMul, cbSub, cbAdd, cbEql] then
+      Result := clPurple
+    else
+      if Kind in [cbBck, cbClr] then
+      Result := clMaroon
+    else
+      Result := clBtnText;
   end;
 
 begin
-  if not FFontChanging then inherited;
-  if ParentFont and not FFontChanging then begin
+  if not FFontChanging then
+    inherited;
+  if ParentFont and not FFontChanging then
+  begin
     FFontChanging := True;
     try
       Font.Color := BtnColor(FKind);
@@ -233,8 +251,8 @@ begin
 end;
 
 const
-  BtnPos: array[TCalcPanelLayout, TCalcBtnKind] of TPoint =
-  (((X: -1; Y: -1), (X: 47; Y: 104), (X: 47; Y: 80), (X: 85; Y: 80),
+  BtnPos: array [TCalcPanelLayout, TCalcBtnKind] of TPoint =
+  (((X: - 1; Y: - 1), (X: 47; Y: 104), (X: 47; Y: 80), (X: 85; Y: 80),
     (X: 123; Y: 80), (X: 47; Y: 56), (X: 85; Y: 56), (X: 123; Y: 56),
     (X: 47; Y: 32), (X: 85; Y: 32), (X: 123; Y: 32), (X: 85; Y: 104),
     (X: 123; Y: 104), (X: 161; Y: 32), (X: 161; Y: 56), (X: 161; Y: 80),
@@ -242,14 +260,14 @@ const
     (X: 199; Y: 104), (X: 145; Y: 6), (X: 191; Y: 6), (X: 5; Y: 104),
     (X: 5; Y: 80), (X: 5; Y: 56), (X: 5; Y: 32),
     (X: 47; Y: 6), (X: 85; Y: 6)),
-   ((X: -1; Y: -1), (X: 6; Y: 75), (X: 6; Y: 52), (X: 29; Y: 52),
+    ((X: - 1; Y: - 1), (X: 6; Y: 75), (X: 6; Y: 52), (X: 29; Y: 52),
     (X: 52; Y: 52), (X: 6; Y: 29), (X: 29; Y: 29), (X: 52; Y: 29),
     (X: 6; Y: 6), (X: 29; Y: 6), (X: 52; Y: 6), (X: 52; Y: 75),
     (X: 29; Y: 75), (X: 75; Y: 6), (X: 75; Y: 29), (X: 75; Y: 52),
-    (X: 75; Y: 75), (X: -1; Y: -1), (X: -1; Y: -1), (X: -1; Y: -1),
-    (X: 52; Y: 98), (X: 29; Y: 98), (X: 6; Y: 98), (X: -1; Y: -1),
-    (X: -1; Y: -1), (X: -1; Y: -1), (X: -1; Y: -1),
-    (X: -1; Y: -1), (X: -1; Y: -1)));
+    (X: 75; Y: 75), (X: - 1; Y: - 1), (X: - 1; Y: - 1), (X: - 1; Y: - 1),
+    (X: 52; Y: 98), (X: 29; Y: 98), (X: 6; Y: 98), (X: - 1; Y: - 1),
+    (X: - 1; Y: - 1), (X: - 1; Y: - 1), (X: - 1; Y: - 1),
+    (X: - 1; Y: - 1), (X: - 1; Y: - 1)));
 
   ResultKeys = [#13, '=', '%'];
 
@@ -257,22 +275,29 @@ function CreateCalcBtn(AParent: TWinControl; AKind: TCalcBtnKind;
   AOnClick: TNotifyEvent; ALayout: TCalcPanelLayout): TJvCalcButton;
 const
   BtnCaptions: array[cbSgn..cbMC] of PChar =
-   ('±', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
+  ('±', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
     'MP', 'MS', 'MR', 'MC');
 begin
   Result := TJvCalcButton.CreateKind(AParent, AKind);
   with Result do
   try
-    if Kind in [cbNum0..cbNum9] then Caption := IntToStr(Tag)
-    else if Kind = cbDcm then Caption := DecimalSeparator
-    else if Kind in [cbSgn..cbMC] then Caption := StrPas(BtnCaptions[Kind]);
+    if Kind in [cbNum0..cbNum9] then
+      Caption := IntToStr(Tag)
+    else
+      if Kind = cbDcm then
+      Caption := DecimalSeparator
+    else
+    if Kind in [cbSgn..cbMC] then
+      Caption := StrPas(BtnCaptions[Kind]);
     Left := BtnPos[ALayout, Kind].X;
     Top := BtnPos[ALayout, Kind].Y;
-    if ALayout = clDialog then begin
+    if ALayout = clDialog then
+    begin
       Width := 36;
       Height := 22;
     end
-    else begin
+    else
+    begin
       Width := 21;
       Height := 21;
     end;
@@ -285,8 +310,6 @@ begin
     raise;
   end;
 end;
-
-{ TJvCalculatorPanel }
 
 type
   TJvCalculatorPanel = class(TPanel)
@@ -343,21 +366,23 @@ var
   Bmp: TBitmap;
   I: TCalcBtnKind;
 const
-  BtnGlyphs: array[cbSgn..cbCancel] of Integer = (2{Sgn}, -1, -1, 3{Mul},
-    4{Sub}, 5{Add}, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1{Ok}, 0{Cancel});
+  BtnGlyphs: array [cbSgn..cbCancel] of Integer = (2 {Sgn}, -1, -1, 3 {Mul},
+    4 {Sub}, 5 {Add}, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1 {Ok}, 0 {Cancel});
 begin
   inherited Create(AOwner);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if ALayout = clPopup then
     ControlStyle := ControlStyle + [csReplicatable];
-{$ENDIF}
+  {$ENDIF}
   ParentColor := False;
   Color := clBtnFace;
-  if ALayout = clDialog then begin
+  if ALayout = clDialog then
+  begin
     Height := 129;
     Width := 240;
   end
-  else begin
+  else
+  begin
     Height := 124;
     Width := 98;
   end;
@@ -367,30 +392,42 @@ begin
   BevelInner := bvNone;
   ParentColor := True;
   ParentCtl3D := True;
-  if ALayout = clDialog then Bmp := TBitmap.Create
-  else Bmp := nil;
+  if ALayout = clDialog then
+    Bmp := TBitmap.Create
+  else
+    Bmp := nil;
   try
-    if Bmp <> nil then Bmp.Handle := LoadBitmap(hInstance, 'JVCALCBTNS');
-    for I := cbNum0 to cbCancel do begin
+    if Bmp <> nil then
+      Bmp.Handle := LoadBitmap(hInstance, 'JVCALCBTNS');
+    for I := cbNum0 to cbCancel do
+    begin
       if BtnPos[ALayout, I].X > 0 then
-        with CreateCalcBtn(Self, I, BtnClick, ALayout) do begin
-          if ALayout = clDialog then begin
-            if (Kind in [cbBck, cbClr]) then Width := 44;
+        with CreateCalcBtn(Self, I, BtnClick, ALayout) do
+        begin
+          if ALayout = clDialog then
+          begin
+            if (Kind in [cbBck, cbClr]) then
+              Width := 44;
             if (Kind in [cbSgn..cbCancel]) then
-              if BtnGlyphs[Kind] >= 0 then begin
+              if BtnGlyphs[Kind] >= 0 then
+              begin
                 Caption := '';
                 AssignBitmapCell(Bmp, Glyph, 6, 1, BtnGlyphs[Kind]);
               end;
           end
-          else begin
-            if Kind in [cbEql] then Width := 44;
+          else
+          begin
+            if Kind in [cbEql] then
+              Width := 44;
           end;
         end;
     end;
-    if ALayout = clDialog then begin
+    if ALayout = clDialog then
+    begin
       { Memory panel }
       FMemoryPanel := TPanel.Create(Self);
-      with FMemoryPanel do begin
+      with FMemoryPanel do
+      begin
         SetBounds(6, 7, 34, 20);
         BevelInner := bvLowered;
         BevelOuter := bvNone;
@@ -398,7 +435,8 @@ begin
         Parent := Self;
       end;
       FMemoryLabel := TLabel.Create(Self);
-      with FMemoryLabel do begin
+      with FMemoryLabel do
+      begin
         SetBounds(3, 3, 26, 14);
         Alignment := taCenter;
         AutoSize := False;
@@ -417,7 +455,8 @@ end;
 
 procedure TJvCalculatorPanel.SetText(const Value: string);
 begin
-  if FText <> Value then begin
+  if FText <> Value then
+  begin
     FText := Value;
     TextChanged;
   end;
@@ -425,16 +464,20 @@ end;
 
 procedure TJvCalculatorPanel.TextChanged;
 begin
-  if Assigned(FControl) then TLabel(FControl).Caption := FText;
-  if Assigned(FOnTextChange) then FOnTextChange(Self);
+  if Assigned(FControl) then
+    TLabel(FControl).Caption := FText;
+  if Assigned(FOnTextChange) then
+    FOnTextChange(Self);
 end;
 
 procedure TJvCalculatorPanel.Error;
 begin
   FStatus := csError;
   SetText(SError);
-  if FBeepOnError then MessageBeep(0);
-  if Assigned(FOnError) then FOnError(Self);
+  if FBeepOnError then
+    MessageBeep(0);
+  if Assigned(FOnError) then
+    FOnError(Self);
 end;
 
 procedure TJvCalculatorPanel.SetDisplay(R: Double);
@@ -442,21 +485,26 @@ var
   S: string;
 begin
   S := FloatToStrF(R, ffGeneral, Max(2, FPrecision), 0);
-  if FText <> S then begin
+  if FText <> S then
+  begin
     SetText(S);
-    if Assigned(FOnDisplayChange) then FOnDisplayChange(Self);
+    if Assigned(FOnDisplayChange) then
+      FOnDisplayChange(Self);
   end;
 end;
 
 function TJvCalculatorPanel.GetDisplay: Double;
 begin
-  if FStatus = csError then Result := 0.0
-  else Result := StrToFloat(Trim(FText));
+  if FStatus = csError then
+    Result := 0.0
+  else
+    Result := StrToFloat(Trim(FText));
 end;
 
 procedure TJvCalculatorPanel.CheckFirst;
 begin
-  if FStatus = csFirst then begin
+  if FStatus = csFirst then
+  begin
     FStatus := csValid;
     SetText('0');
   end;
@@ -464,17 +512,20 @@ end;
 
 procedure TJvCalculatorPanel.CMCtl3DChanged(var Message: TMessage);
 const
-  Ctl3DStyle: array[Boolean] of TButtonStyle = (bsWin31, bsNew);
-  Ctl3DBevel: array[Boolean] of TPanelBevel = (bvNone, bvLowered);
-  Ctl3DBorder: array[Boolean] of TBorderStyle = (bsSingle, bsNone);
+  Ctl3DStyle: array [Boolean] of TButtonStyle = (bsWin31, bsNew);
+  Ctl3DBevel: array [Boolean] of TPanelBevel = (bvNone, bvLowered);
+  Ctl3DBorder: array [Boolean] of TBorderStyle = (bsSingle, bsNone);
 var
   I: Integer;
 begin
   inherited;
-  for I := 0 to ComponentCount - 1 do begin
+  for I := 0 to ComponentCount - 1 do
+  begin
     if Components[I] is TJvxSpeedButton then
       TJvxSpeedButton(Components[I]).Style := Ctl3DStyle[Ctl3D]
-    else if Components[I] = FMemoryPanel then begin
+    else
+      if Components[I] = FMemoryPanel then
+    begin
       FMemoryPanel.BevelInner := Ctl3DBevel[Ctl3D];
       FMemoryPanel.BorderStyle := Ctl3DBorder[Ctl3D];
     end;
@@ -484,8 +535,10 @@ end;
 procedure TJvCalculatorPanel.UpdateMemoryLabel;
 begin
   if FMemoryLabel <> nil then
-    if FMemory <> 0.0 then FMemoryLabel.Caption := 'M'
-    else FMemoryLabel.Caption := '';
+    if FMemory <> 0.0 then
+      FMemoryLabel.Caption := 'M'
+    else
+      FMemoryLabel.Caption := '';
 end;
 
 procedure TJvCalculatorPanel.CalcKey(Key: Char);
@@ -493,9 +546,12 @@ var
   R: Double;
 begin
   Key := UpCase(Key);
-  if (FStatus = csError) and (Key <> 'C') then Key := #0;
-  if Assigned(FOnCalcKey) then FOnCalcKey(Self, Key);
-  if Key in [DecimalSeparator, '.', ','] then begin
+  if (FStatus = csError) and (Key <> 'C') then
+    Key := #0;
+  if Assigned(FOnCalcKey) then
+    FOnCalcKey(Self, Key);
+  if Key in [DecimalSeparator, '.', ','] then
+  begin
     CheckFirst;
     if Pos(DecimalSeparator, FText) = 0 then
       SetText(FText + DecimalSeparator);
@@ -503,23 +559,35 @@ begin
   end;
   case Key of
     'R':
-      if FStatus in [csValid, csFirst] then begin
+      if FStatus in [csValid, csFirst] then
+      begin
         FStatus := csFirst;
-        if GetDisplay = 0 then Error else SetDisplay(1.0 / GetDisplay);
+        if GetDisplay = 0 then
+          Error
+        else
+          SetDisplay(1.0 / GetDisplay);
       end;
     'Q':
-      if FStatus in [csValid, csFirst] then begin
+      if FStatus in [csValid, csFirst] then
+      begin
         FStatus := csFirst;
-        if GetDisplay < 0 then Error else SetDisplay(Sqrt(GetDisplay));
+        if GetDisplay < 0 then
+          Error
+        else
+          SetDisplay(Sqrt(GetDisplay));
       end;
     '0'..'9':
       begin
         CheckFirst;
-        if FText = '0' then SetText('');
-        if Pos('E', FText) = 0 then begin
+        if FText = '0' then
+          SetText('');
+        if Pos('E', FText) = 0 then
+        begin
           if Length(FText) < Max(2, FPrecision) + Ord(Boolean(Pos('-', FText))) then
             SetText(FText + Key)
-          else if FBeepOnError then MessageBeep(0);
+          else
+          if FBeepOnError then
+            MessageBeep(0);
         end;
       end;
     #8:
@@ -530,10 +598,12 @@ begin
         else
           SetText(System.Copy(FText, 1, Length(FText) - 1));
       end;
-    '_': SetDisplay(-GetDisplay);
+    '_':
+      SetDisplay(-GetDisplay);
     '+', '-', '*', '/', '=', '%', #13:
       begin
-        if FStatus = csValid then begin
+        if FStatus = csValid then
+        begin
           FStatus := csFirst;
           R := GetDisplay;
           if Key = '%' then
@@ -545,17 +615,25 @@ begin
             '+': SetDisplay(FOperand + R);
             '-': SetDisplay(FOperand - R);
             '*': SetDisplay(FOperand * R);
-            '/': if R = 0 then Error else SetDisplay(FOperand / R);
+            '/':
+              if R = 0 then
+                Error
+              else
+                SetDisplay(FOperand / R);
           end;
         end;
         FOperator := Key;
         FOperand := GetDisplay;
         if Key in ResultKeys then
-          if Assigned(FOnResult) then FOnResult(Self);
+          if Assigned(FOnResult) then
+            FOnResult(Self);
       end;
-    #27, 'C': Clear;
-    ^C: Copy;
-    ^V: Paste;
+    #27, 'C':
+      Clear;
+    ^C:
+      Copy;
+    ^V:
+      Paste;
   end;
 end;
 
@@ -571,8 +649,10 @@ var
   Btn: TJvxSpeedButton;
 begin
   Btn := FindButton(Key);
-  if Btn <> nil then Btn.ButtonClick
-  else CalcKey(Key);
+  if Btn <> nil then
+    Btn.ButtonClick
+  else
+    CalcKey(Key);
 end;
 
 function TJvCalculatorPanel.FindButton(Key: Char): TJvxSpeedButton;
@@ -582,15 +662,23 @@ var
   I: Integer;
   BtnTag: Longint;
 begin
-  if Key in [DecimalSeparator, '.', ','] then Key := '.'
-  else if Key = #13 then Key := '='
-  else if Key = #27 then Key := 'C';
+  if Key in [DecimalSeparator, '.', ','] then
+    Key := '.'
+  else
+    if Key = #13 then
+    Key := '='
+  else
+  if Key = #27 then
+    Key := 'C';
   BtnTag := Pos(UpCase(Key), ButtonChars) - 1;
   if BtnTag >= 0 then
-    for I := 0 to ControlCount - 1 do begin
-      if Controls[I] is TJvxSpeedButton then begin
+    for I := 0 to ControlCount - 1 do
+    begin
+      if Controls[I] is TJvxSpeedButton then
+      begin
         Result := TJvxSpeedButton(Controls[I]);
-        if Result.Tag = BtnTag then Exit;
+        if Result.Tag = BtnTag then
+          Exit;
       end;
     end;
   Result := nil;
@@ -599,33 +687,49 @@ end;
 procedure TJvCalculatorPanel.BtnClick(Sender: TObject);
 begin
   case TJvCalcButton(Sender).Kind of
-    cbNum0..cbNum9: CalcKey(Char(TComponent(Sender).Tag + Ord('0')));
-    cbSgn: CalcKey('_');
-    cbDcm: CalcKey(DecimalSeparator);
-    cbDiv: CalcKey('/');
-    cbMul: CalcKey('*');
-    cbSub: CalcKey('-');
-    cbAdd: CalcKey('+');
-    cbSqr: CalcKey('Q');
-    cbPcnt: CalcKey('%');
-    cbRev: CalcKey('R');
-    cbEql: CalcKey('=');
-    cbBck: CalcKey(#8);
-    cbClr: CalcKey('C');
+    cbNum0..cbNum9:
+      CalcKey(Char(TComponent(Sender).Tag + Ord('0')));
+    cbSgn:
+      CalcKey('_');
+    cbDcm:
+      CalcKey(DecimalSeparator);
+    cbDiv:
+      CalcKey('/');
+    cbMul:
+      CalcKey('*');
+    cbSub:
+      CalcKey('-');
+    cbAdd:
+      CalcKey('+');
+    cbSqr:
+      CalcKey('Q');
+    cbPcnt:
+      CalcKey('%');
+    cbRev:
+      CalcKey('R');
+    cbEql:
+      CalcKey('=');
+    cbBck:
+      CalcKey(#8);
+    cbClr:
+      CalcKey('C');
     cbMP:
-      if FStatus in [csValid, csFirst] then begin
+      if FStatus in [csValid, csFirst] then
+      begin
         FStatus := csFirst;
         FMemory := FMemory + GetDisplay;
         UpdateMemoryLabel;
       end;
     cbMS:
-      if FStatus in [csValid, csFirst] then begin
+      if FStatus in [csValid, csFirst] then
+      begin
         FStatus := csFirst;
         FMemory := GetDisplay;
         UpdateMemoryLabel;
       end;
     cbMR:
-      if FStatus in [csValid, csFirst] then begin
+      if FStatus in [csValid, csFirst] then
+      begin
         FStatus := csFirst;
         CheckFirst;
         SetDisplay(FMemory);
@@ -637,13 +741,19 @@ begin
       end;
     cbOk:
       begin
-        if FStatus <> csError then begin
+        if FStatus <> csError then
+        begin
           DisplayValue := DisplayValue; { to raise exception on error }
-          if Assigned(FOnOk) then FOnOk(Self);
+          if Assigned(FOnOk) then
+            FOnOk(Self);
         end
-        else if FBeepOnError then MessageBeep(0);
+        else
+        if FBeepOnError then
+          MessageBeep(0);
       end;
-    cbCancel: if Assigned(FOnCancel) then FOnCancel(Self);
+    cbCancel:
+      if Assigned(FOnCancel) then
+        FOnCancel(Self);
   end;
 end;
 
@@ -655,15 +765,13 @@ end;
 procedure TJvCalculatorPanel.Paste;
 begin
   if Clipboard.HasFormat(CF_TEXT) then
-    try
-      SetDisplay(StrToFloat(Trim(ReplaceStr(Clipboard.AsText,
-        CurrencyString, ''))));
-    except
-      SetText('0');
-    end;
+  try
+    SetDisplay(StrToFloat(Trim(ReplaceStr(Clipboard.AsText,
+      CurrencyString, ''))));
+  except
+    SetText('0');
+  end;
 end;
-
-{ TJvLocCalculator }
 
 type
   TJvLocCalculator = class(TJvCalculatorPanel)
@@ -679,9 +787,9 @@ constructor TJvLocCalculator.Create(AOwner: TComponent);
 begin
   inherited CreateLayout(AOwner, clPopup);
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   ControlStyle := ControlStyle + [csReplicatable];
-{$ENDIF}
+  {$ENDIF}
   Enabled := False;
   TabStop := False;
 end;
@@ -695,15 +803,14 @@ end;
 procedure TJvLocCalculator.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  with Params do begin
+  with Params do
+  begin
     Style := Style and not (WS_TABSTOP or WS_DISABLED);
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     AddBiDiModeExStyle(ExStyle);
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
-
-{ TJvPopupCalculator }
 
 type
   TJvPopupCalculator = class(TJvPopupWindow)
@@ -713,20 +820,24 @@ type
     procedure ResultClick(Sender: TObject);
   protected
     procedure KeyPress(var Key: Char); override;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     function GetValue: Variant; override;
     procedure SetValue(const Value: Variant); override;
-{$ELSE}
+    {$ELSE}
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
-{$ENDIF}
+    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     function GetPopupText: string; override;
   end;
 
-function CreatePopupCalculator(AOwner: TComponent
-  {$IFDEF COMPILER4_UP}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
+{$IFDEF COMPILER4_UP}
+function CreatePopupCalculator(AOwner: TComponent;
+  ABiDiMode: TBiDiMode = bdLeftToRight): TWinControl;
+{$ELSE}
+function CreatePopupCalculator(AOwner: TComponent): TWinControl;
+{$ENDIF}
 begin
   Result := TJvPopupCalculator.Create(AOwner);
   if (AOwner <> nil) and not (csDesigning in AOwner.ComponentState) and
@@ -737,9 +848,9 @@ begin
       font back to the original info. }
     TJvPopupCalculator(Result).FCalcPanel.ParentFont := True;
     SetDefaultFont(TJvPopupCalculator(Result).Font, clPopup);
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     Result.BiDiMode := ABiDiMode;
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
 
@@ -749,7 +860,8 @@ begin
   if (PopupCalc = nil) or not (PopupCalc is TJvPopupCalculator) then
     Exit;
   if TJvPopupCalculator(PopupCalc).FCalcPanel <> nil then
-    with TJvPopupCalculator(PopupCalc).FCalcPanel do begin
+    with TJvPopupCalculator(PopupCalc).FCalcPanel do
+    begin
       FPrecision := Max(2, APrecision);
       FBeepOnError := ABeepOnError;
     end;
@@ -762,9 +874,11 @@ begin
   Width := 104;
   Color := clBtnFace;
   SetDefaultFont(Font, clPopup);
-  if (csDesigning in ComponentState) then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   FCalcPanel := TJvLocCalculator.Create(Self);
-  with FCalcPanel do begin
+  with FCalcPanel do
+  begin
     Parent := Self;
     Align := alClient;
     BevelOuter := bvRaised;
@@ -777,7 +891,8 @@ end;
 
 procedure TJvPopupCalculator.KeyPress(var Key: Char);
 begin
-  if FCalcPanel <> nil then FCalcPanel.CalcKeyPress(Self, Key);
+  if FCalcPanel <> nil then
+    FCalcPanel.CalcKeyPress(Self, Key);
   inherited KeyPress(Key);
 end;
 
@@ -785,15 +900,20 @@ end;
 
 function TJvPopupCalculator.GetValue: Variant;
 begin
-  if (csDesigning in ComponentState) then Result := 0
-  else begin
-    if FCalcPanel.FStatus <> csError then begin
+  if csDesigning in ComponentState then
+    Result := 0
+  else
+  begin
+    if FCalcPanel.FStatus <> csError then
+    begin
       { to raise exception on error }
       FCalcPanel.DisplayValue := FCalcPanel.DisplayValue;
       Result := FCalcPanel.DisplayValue;
     end
-    else begin
-      if FCalcPanel.FBeepOnError then MessageBeep(0);
+    else
+    begin
+      if FCalcPanel.FBeepOnError then
+        MessageBeep(0);
       Result := 0;
     end;
   end;
@@ -802,7 +922,8 @@ end;
 procedure TJvPopupCalculator.SetValue(const Value: Variant);
 begin
   if not (csDesigning in ComponentState) then
-    with FCalcPanel do begin
+    with FCalcPanel do
+    begin
       try
         if VarIsNull(Value) or VarIsEmpty(Value) then
           DisplayValue := 0
@@ -822,15 +943,20 @@ function TJvPopupCalculator.GetValue: string;
 var
   D: Double;
 begin
-  if (csDesigning in ComponentState) or (FCalcPanel = nil) then Result := '0'
-  else begin
-    if FCalcPanel.FStatus <> csError then begin
+  if (csDesigning in ComponentState) or (FCalcPanel = nil) then
+    Result := '0'
+  else
+  begin
+    if FCalcPanel.FStatus <> csError then
+    begin
       { to raise exception on error }
       FCalcPanel.DisplayValue := FCalcPanel.DisplayValue;
       D := FCalcPanel.DisplayValue;
     end
-    else begin
-      if FCalcPanel.FBeepOnError then MessageBeep(0);
+    else
+    begin
+      if FCalcPanel.FBeepOnError then
+        MessageBeep(0);
       D := 0;
     end;
     Result := FloatToStrF(D, ffGeneral, Max(2, FCalcPanel.FPrecision), 0);
@@ -839,15 +965,18 @@ end;
 
 procedure TJvPopupCalculator.SetValue(const Value: string);
 begin
-  if not (csDesigning in ComponentState) then begin
-    with FCalcPanel do begin
-      if Value = '' then DisplayValue := 0
+  if not (csDesigning in ComponentState) then
+  begin
+    with FCalcPanel do
+    begin
+      if Value = '' then
+        DisplayValue := 0
       else
-        try
-          DisplayValue := StrToFloat(Value);
-        except
-          DisplayValue := 0;
-        end;
+      try
+        DisplayValue := StrToFloat(Value);
+      except
+        DisplayValue := 0;
+      end;
       FStatus := csFirst;
       FOperator := '=';
     end;
@@ -863,7 +992,8 @@ end;
 
 procedure TJvPopupCalculator.ResultClick(Sender: TObject);
 begin
-  if FCalcPanel.FStatus <> csError then begin
+  if FCalcPanel.FStatus <> csError then
+  begin
     FCalcPanel.DisplayValue := FCalcPanel.DisplayValue;
     CloseUp(True);
   end;
@@ -873,8 +1003,6 @@ procedure TJvPopupCalculator.TextChange(Sender: TObject);
 begin
   InvalidateEditor;
 end;
-
-{ TJvCalculator }
 
 constructor TJvCalculator.Create(AOwner: TComponent);
 begin
@@ -911,22 +1039,26 @@ function TJvCalculator.GetDisplay: Double;
 begin
   if Assigned(FCalc) then
     Result := TJvCalculatorPanel(FCalc.FCalcPanel).GetDisplay
-  else Result := FValue;
+  else
+    Result := FValue;
 end;
 
 procedure TJvCalculator.CalcKey(var Key: Char);
 begin
-  if Assigned(FOnCalcKey) then FOnCalcKey(Self, Key);
+  if Assigned(FOnCalcKey) then
+    FOnCalcKey(Self, Key);
 end;
 
 procedure TJvCalculator.DisplayChange;
 begin
-  if Assigned(FOnDisplayChange) then FOnDisplayChange(Self);
+  if Assigned(FOnDisplayChange) then
+    FOnDisplayChange(Self);
 end;
 
 procedure TJvCalculator.Change;
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 function TJvCalculator.Execute: Boolean;
@@ -940,15 +1072,18 @@ begin
     TJvCalculatorPanel(FCalcPanel).UpdateMemoryLabel;
     TJvCalculatorPanel(FCalcPanel).FPrecision := Max(2, Self.Precision);
     TJvCalculatorPanel(FCalcPanel).FBeepOnError := Self.BeepOnError;
-    if Self.FValue <> 0 then begin
+    if Self.FValue <> 0 then
+    begin
       TJvCalculatorPanel(FCalcPanel).DisplayValue := Self.FValue;
       TJvCalculatorPanel(FCalcPanel).FStatus := csFirst;
       TJvCalculatorPanel(FCalcPanel).FOperator := '=';
     end;
     Result := (ShowModal = mrOk);
-    if Result then begin
+    if Result then
+    begin
       Self.FMemory := TJvCalculatorPanel(FCalcPanel).FMemory;
-      if (TJvCalculatorPanel(FCalcPanel).DisplayValue <> Self.FValue) then begin
+      if (TJvCalculatorPanel(FCalcPanel).DisplayValue <> Self.FValue) then
+      begin
         Self.FValue := TJvCalculatorPanel(FCalcPanel).DisplayValue;
         Change;
       end;
@@ -959,19 +1094,17 @@ begin
   end;
 end;
 
-{ TJvCalculatorForm }
-
 constructor TJvCalculatorForm.Create(AOwner: TComponent);
 var
   Control: TWinControl;
   Popup: TPopupMenu;
-  Items: array[0..1] of TMenuItem;
+  Items: array [0..1] of TMenuItem;
 begin
-{$IFDEF CBUILDER}
+  {$IFDEF CBUILDER}
   inherited CreateNew(AOwner, 0);
-{$ELSE}
+  {$ELSE}
   inherited CreateNew(AOwner);
-{$ENDIF}
+  {$ENDIF}
   BorderIcons := [biSystemMenu];
   BorderStyle := bsDialog;
   Caption := SCalculator;
@@ -989,7 +1122,8 @@ begin
   Popup.OnPopup := PopupMenuPopup;
   { MainPanel }
   FMainPanel := TPanel.Create(Self);
-  with FMainPanel do begin
+  with FMainPanel do
+  begin
     Align := alClient;
     Parent := Self;
     BevelOuter := bvLowered;
@@ -998,7 +1132,8 @@ begin
   end;
   { DisplayPanel }
   FDisplayPanel := TPanel.Create(Self);
-  with FDisplayPanel do begin
+  with FDisplayPanel do
+  begin
     SetBounds(6, 6, 230, 23);
     Parent := FMainPanel;
     BevelOuter := bvLowered;
@@ -1006,7 +1141,8 @@ begin
     Ctl3D := False;
   end;
   Control := TPanel.Create(Self);
-  with TPanel(Control) do begin
+  with TPanel(Control) do
+  begin
     SetBounds(1, 1, 228, 21);
     Align := alClient;
     Parent := FDisplayPanel;
@@ -1017,7 +1153,8 @@ begin
     ParentCtl3D := False;
   end;
   FDisplayLabel := TLabel.Create(Self);
-  with FDisplayLabel do begin
+  with FDisplayLabel do
+  begin
     AutoSize := False;
     Alignment := taRightJustify;
     SetBounds(5, 2, 217, 15);
@@ -1026,7 +1163,8 @@ begin
   end;
   { CalcPanel }
   FCalcPanel := TJvCalculatorPanel.CreateLayout(Self, clDialog);
-  with TJvCalculatorPanel(FCalcPanel) do begin
+  with TJvCalculatorPanel(FCalcPanel) do
+  begin
     Align := alBottom;
     Parent := FMainPanel;
     OnOkClick := Self.OkClick;
@@ -1039,11 +1177,13 @@ end;
 
 procedure TJvCalculatorForm.CMCtl3DChanged(var Message: TMessage);
 const
-  Ctl3DBevel: array[Boolean] of TPanelBevel = (bvNone, bvLowered);
+  Ctl3DBevel: array [Boolean] of TPanelBevel = (bvNone, bvLowered);
 begin
   inherited;
-  if FDisplayPanel <> nil then FDisplayPanel.BevelOuter := Ctl3DBevel[Ctl3D];
-  if FMainPanel <> nil then FMainPanel.BevelOuter := Ctl3DBevel[Ctl3D];
+  if FDisplayPanel <> nil then
+    FDisplayPanel.BevelOuter := Ctl3DBevel[Ctl3D];
+  if FMainPanel <> nil then
+    FMainPanel.BevelOuter := Ctl3DBevel[Ctl3D];
 end;
 
 procedure TJvCalculatorForm.FormKeyPress(Sender: TObject; var Key: Char);
@@ -1089,3 +1229,4 @@ begin
 end;
 
 end.
+
