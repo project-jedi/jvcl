@@ -557,12 +557,14 @@ begin
   //CalcTextPos(TxtRect, aCanvas.Font, aAngle, HAlign, VAlign, aTxt);
   CalcTextPos(HostRect, TextLeft, TextTop, TextBounds, aCanvas.Font, aAngle,
     HAlign, VAlign, aTxt);
-
+  {$IFDEF VCL}
   Windows.GetObject(aCanvas.Font.Handle, SizeOf(LogFont), @LogFont);
   LogFont.lfEscapement := aAngle;
   LogFont.lfOrientation := LogFont.lfEscapement;
   aCanvas.Font.Handle := CreateFontIndirect(LogFont);
+  {$ELSE}
 
+  {$ENDIF}
   Flags := DT_NOPREFIX or DT_LEFT or DT_TOP or DT_NOCLIP or DT_SINGLELINE;
 
   PTxt := StrAlloc((Length(aTxt) + 4) * SizeOf(Char));

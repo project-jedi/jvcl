@@ -48,13 +48,17 @@ interface
 // and tested.
 
 uses
-   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-   StdCtrls, ImgList,
-   JvTFManager, JvTFSparseMatrix,
-   {$IFDEF USEJVCL}
-   JvTypes,
-   {$ENDIF USEJVCL}
-   JvTFUtils;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ImgList,
+  {$ELSE}
+  QWindows, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QImgList,
+  {$ENDIF}
+  JvTFManager, JvTFSparseMatrix,
+  {$IFDEF USEJVCL}JvTypes, {$ENDIF}
+  JvTFUtils;
 
 const
    AbsMinColWidth = 5;
@@ -877,9 +881,11 @@ type
     FOnFocusedRowChanged: TNotifyEvent;
     FOnFocusedColChanged: TNotifyEvent;
 
+    {$IFDEF VCL}
    // internal stuff
     procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
+    {$ENDIF}
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure SeTJvTFVisibleScrollBars(Value: TJvTFVisibleScrollBars);
     procedure AlignScrollBars;
@@ -2308,9 +2314,11 @@ begin
 
   ControlStyle := ControlStyle + [csNoDesignVisible];
 
-  BorderStyle := bsNone;
-  ParentCtl3D := False;
-  Ctl3D := False;
+   BorderStyle := bsNone;
+   {$IFDEF VCL}
+   ParentCtl3D := False;
+   Ctl3D := False;
+   {$ENDIF}
 end;
 
 procedure TJvTFInPlaceApptEditor.DoExit;

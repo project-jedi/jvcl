@@ -35,8 +35,13 @@ unit JvTFGantt; { TJvTFGantt component. }
 interface
 
 uses
-  Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows,  Messages, Graphics, Controls, Forms, Dialogs,
   Menus, StdCtrls, ExtCtrls,
+  {$ELSE}
+  QGraphics, QControls, QForms, QDialogs, QMenus, QStdCtrls, QExtCtrls,
+  {$ENDIF}
   JvTFUtils, JvTFManager;
 
 type
