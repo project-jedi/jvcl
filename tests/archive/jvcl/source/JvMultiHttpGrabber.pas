@@ -196,7 +196,7 @@ begin
         INTERNET_STATUS_NAME_RESOLVED:
           if Assigned(Grabber.FOnResolved) then
             Grabber.FOnResolved(Grabber, UserData, Url, StrPas(PChar(Info)));
-         INTERNET_STATUS_RECEIVING_RESPONSE:
+        INTERNET_STATUS_RECEIVING_RESPONSE:
           if Assigned(Grabber.FOnReceivingResponse) then
             Grabber.FOnReceivingResponse(Grabber, UserData, Url);
         INTERNET_STATUS_REDIRECT:
@@ -256,7 +256,7 @@ end;
 
 procedure TJvMultiHttpGrabber.RaiseError(Value: Pointer);
 var
-  Msg: array [0..256] of Char;
+  Msg: array[0..256] of Char;
 begin
   if Assigned(FOnError) then
     with (PRequestInfos(Value))^ do
@@ -270,7 +270,7 @@ end;
 procedure TJvMultiHttpGrabber.RaiseWebError(Infos: Pointer);
 var
   dwIndex, dwBufLen: DWORD;
-  Buf: array [0..1024] of Char;
+  Buf: array[0..1024] of Char;
 begin
   if Assigned(FOnError) then
   begin
@@ -286,6 +286,7 @@ function TJvMultiHttpGrabber.StartConnection(UserData: Integer; IgnoreMessages: 
 var
   Infos: PRequestInfos;
   HostName, FilePath: string;
+  HostPort: word;
 
   procedure ParseUrl(Value: string);
   begin
@@ -300,8 +301,15 @@ var
     end
     else
       HostName := Value;
-  end;
 
+    if Pos(':', HostName) <> 0 then
+    begin // If URL contains a non-standard Port number, attempt to use it
+      HostPort := StrToIntDef(Copy(HostName, Pos(':', HostName) + 1, Length(HostName)), INTERNET_DEFAULT_HTTP_PORT);
+      HostName := Copy(HostName, 1, Pos(':', HostName) - 1);
+    end
+    else // If not, use the standard one
+      HostPort := INTERNET_DEFAULT_HTTP_PORT;
+  end;
 begin
   Result := nil;
 
@@ -328,7 +336,7 @@ begin
   //Open the internet connection
   ParseUrl(Url);
   Infos^.hHostConnect := InternetConnect(Infos^.hSession, PChar(HostName),
-    INTERNET_DEFAULT_HTTP_PORT, PChar(FUserName), PChar(FPassword), INTERNET_SERVICE_HTTP,
+    HostPort, PChar(FUserName), PChar(FPassword), INTERNET_SERVICE_HTTP,
     0, Cardinal(Infos));
   if Infos^.hHostConnect = nil then
   begin
@@ -413,7 +421,7 @@ end;
 procedure TJvMultiHttpThread.Execute;
 var
   Infos: PRequestInfos;
-  Buffer: array [0..512] of Byte;
+  Buffer: array[0..512] of Byte;
   BytesRead: DWORD;
   dLength, dReserved, dSize: DWORD;
 begin
