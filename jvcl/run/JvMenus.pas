@@ -539,6 +539,7 @@ type
 
     // Left margin properties and events
     property LeftMargin       : Cardinal               read FLeftMargin       write SetLeftMargin default 0;
+    property OnDrawLeftMargin : TJvDrawLeftMarginEvent read FOnDrawLeftMargin write FOnDrawLeftMargin;
   public
     // constructor, requires the menu to which this painter is linked
     // will create the objects derived from TPersistent which are
@@ -559,7 +560,6 @@ type
                     ItemRect : TRect;
                     State: TMenuOwnerDrawState); virtual;
   published
-    property OnDrawLeftMargin : TJvDrawLeftMarginEvent read FOnDrawLeftMargin write FOnDrawLeftMargin;
     property ImageBackgroundColor : TColor read FImageBackgroundColor write SetImageBackgroundColor default DefaultImageBackgroundColor;
   end;
 
@@ -702,6 +702,9 @@ begin
     msXP:         Result := TJvXPMenuItemPainter.Create(Menu);
     else          Result := TJvStandardMenuItemPainter.Create(Menu);
   end;
+  {$IFDEF COMPILER6_UP}
+  Result.Name := 'ItemPainter';
+  {$ENDIF COMPILER6_UP}
 end;
 
 function IsItemPopup(Item: TMenuItem): Boolean;
@@ -1659,8 +1662,12 @@ end;
 
 constructor TJvCustomMenuItemPainter.Create(Menu: TMenu);
 begin
-  inherited Create; {(Menu);
-  Name := 'ItemPainter';}
+  {$IFDEF COMPILER6_UP}
+  inherited Create(Menu);
+  Name := 'ItemPainter';
+  {$ELSE}
+  inherited Create; 
+  {$ENDIF COMPILER6_UP}
 
   // affect default values that are not 0
   FImageBackgroundColor := DefaultImageBackgroundColor;

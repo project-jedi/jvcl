@@ -65,8 +65,15 @@ type
   // from having events for a sub property.
   // The design time editor associated with TJvPersistent will display
   // the events, thus mimicking a Sub Component.
+  {$IFDEF COMPILER6_UP}
+  TJvPersistent = class(TComponent)
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
+  {$ELSE}
   TJvPersistent = class(TPersistent)
   end;
+  {$ENDIF COMPILER6_UP}
 
   TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers,
     hkPerformanceData, hkCurrentConfig, hkDynData);
@@ -454,6 +461,16 @@ type
 {$ENDIF VisualCLX}
 
 implementation
+
+{$IFDEF COMPILER6_UP}
+constructor TJvPersistent.Create(AOwner: TComponent);
+begin
+  inherited;
+
+  SetSubComponent(True);
+  Name := 'SubComponent';
+end;
+{$ENDIF COMPILER6_UP}
 
 end.
 

@@ -51,6 +51,17 @@ uses
   Classes, SysUtils;
 
 type
+  // Special TClassProperty, that show events along with all other properties
+  // This is only useful with version 5 and before
+  {$IFNDEF COMPILER6_UP}
+  TJvPersistentProperty = class(TClassProperty)
+  public
+    procedure GetProperties(Proc: TGetPropEditProc); override;
+    function GetAttributes: TPropertyAttributes; override;
+    function GetEditLimit: Integer; override;
+  end;
+  {$ENDIF COMPILER6_UP}
+
   TJvHintProperty = class(TStringProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
@@ -988,6 +999,37 @@ begin
   else
     inherited SetValue(Value);
 end;
+
+{ TJvPersistentProperty }
+
+{$IFNDEF COMPILER6_UP}
+function TJvPersistentProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paSubProperties, paReadOnly];
+end;
+
+function TJvPersistentProperty.GetEditLimit: Integer;
+begin
+  Result := 127;
+end;
+
+procedure TJvPersistentProperty.GetProperties(Proc: TGetPropEditProc);
+var
+  I: Integer;
+  J: Integer;
+  JvPersistents: TDesignerSelectionList;
+begin
+  JvPersistents := TDesignerSelectionList.Create;
+  for I := 0 to PropCount - 1 do
+  begin
+    J := GetOrdValueAt(I);
+    if J <> 0 then
+      JvPersistents.Add(TJvPersistent(GetOrdValueAt(I)));
+  end;
+  if JvPersistents.Count > 0 then
+    GetComponentProperties(JvPersistents, tkAny, Designer, Proc);
+end;
+{$ENDIF COMPILER6_UP}
 
 end.
 
