@@ -35,7 +35,7 @@ uses
   Windows, Forms, Graphics, ImgList, Dialogs, Controls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QForms, QGraphics, QImgList, QDialogs, QControls, Types, ClxEditors,
+  QForms, QGraphics, QImgList, QDialogs, QControls, Types,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   {$IFDEF VCL}

@@ -37,13 +37,13 @@ uses
   Windows, Forms, Graphics, ImgList, Dialogs, Controls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QForms, QGraphics, QImgList, QDialogs, QControls, ClxEditors,
+  QForms, QGraphics, QImgList, QDialogs, QControls,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, DesignMenus,
   {$IFDEF VCL}
   VCLEditors;
   {$ENDIF VCL}
+  DesignIntf, DesignEditors, DesignMenus;
   {$ELSE}
   DsgnIntf;
   {$ENDIF COMPILER6_UP}

@@ -25,16 +25,24 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvGroupHeaderEditor;
 
 interface
 
 uses
-  Windows, Forms, Graphics, ImgList, SysUtils, Classes, Dialogs, Controls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Forms, Graphics, ImgList, Dialogs, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QWindows, QForms, QGraphics, QImgList, QDialogs, QControls,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, DesignMenus, VCLEditors;
+  {$IFDEF VCL}
+  VCLEditors,
+  {$ENDIF VCL}
+  DesignIntf, DesignEditors, DesignMenus;
   {$ELSE}
   DsgnIntf;
   {$ENDIF COMPILER6_UP}
