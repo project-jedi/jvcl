@@ -342,7 +342,7 @@ begin
     ((Part3 and $000000FF) shl 16);
 end;
 
-//=== { TJvColorSpace } ==================================================
+//=== { TJvColorSpace } ======================================================
 
 constructor TJvColorSpace.Create(ColorID: TJvColorSpaceID);
 begin
@@ -679,7 +679,7 @@ var
   Y, U, V: Integer;
   Red, Green, Blue: Integer;
 begin
-  SplitColorParts(AColor,Red,Green,Blue);
+  SplitColorParts(AColor, Red, Green, Blue);
 
   Y := Round(0.257*Red + 0.504*Green + 0.098*Blue) + 16;
   V := Round(0.439*Red - 0.368*Green - 0.071*Blue) + 128;
@@ -697,7 +697,7 @@ var
   Red, Green, Blue: Integer;
   Y, U, V: Integer;
 begin
-  SplitColorParts(AColor,Y,U,V);
+  SplitColorParts(AColor, Y, U, V);
 
   Y := Y - 16;
   U := U - 128;
@@ -761,7 +761,7 @@ var
   Red, Green, Blue: Integer;
   ColorMax, ColorMin, ColorDelta: Integer;
 begin
-  SplitColorParts(AColor,Red,Green,Blue);
+  SplitColorParts(AColor, Red, Green, Blue);
 
   if Red > Green then
     ColorMax := Red
@@ -932,7 +932,7 @@ var
   Y, I, Q: Integer;
   Red, Green, Blue: Integer;
 begin
-  SplitColorParts(AColor,Red,Green,Blue);
+  SplitColorParts(AColor, Red, Green, Blue);
 
   Y := Round(0.299*Red + 0.587*Green + 0.114*Blue);
   I := Round(0.596*Red - 0.275*Green - 0.321*Blue) + 128;
@@ -950,7 +950,7 @@ var
   Red, Green, Blue: Integer;
   Y, I, Q: Integer;
 begin
-  SplitColorParts(AColor,Y,I,Q);
+  SplitColorParts(AColor, Y, I, Q);
 
   //Y := Y;
   I := I - 128;
@@ -1148,9 +1148,7 @@ begin
     case ID of
       $00:
         Result := ColorSpace[csRGB].ConvertFromColor(AColor);
-      clSystemColor shr 24,
-      clNone shr 24,
-      clDefault shr 24:
+      $80:
         Result := ColorSpace[csDEF].ConvertFromColor(AColor);
     else
       raise EJvColorSpaceError.CreateResFmt(@RsEInconvertibleColor, [Cardinal(AColor)]);
@@ -1161,7 +1159,7 @@ function TJvColorSpaceManager.GetColorSpaceID(AColor: TJvFullColor): TJvColorSpa
 var
   I: Integer;
 begin
-  Result := TJvColorSpaceID(AColor shr 24);
+  Result := TJvColorSpaceID(AColor shr 24) and $FC;
   for I := 0 to Count - 1 do
     if ColorSpaceByIndex[I].ID = Result then
       Exit;
