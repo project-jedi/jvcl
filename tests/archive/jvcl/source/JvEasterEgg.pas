@@ -100,7 +100,7 @@ begin
       case Msg of
         WM_KEYUP, WM_SYSKEYUP:
           begin
-            Shift := KeyDataToShiftState(LParam);
+            Shift := KeyboardStateToShiftState;
             if Shift = FControlKeys then
             begin
               if ssShift in Shift then
