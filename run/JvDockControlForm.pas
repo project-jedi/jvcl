@@ -419,24 +419,15 @@ type
   TJvDockGetClientAlignSizeEvent = procedure(Align: TAlign; var Value: Integer) of object;
   TJvDockFinishSetDockPanelSizeEvent = procedure(DockPanel: TJvDockPanel) of object;
 
+  TJvDockPosition = (dpLeft, dpRight, dpTop, dpBottom);
+
   TJvDockServer = class(TJvDockBaseControl)
   private
     FDockPanelClass: TJvDockPanelClass;
-    FLeftDockPanel: TJvDockPanel;
-    FTopDockPanel: TJvDockPanel;
-    FBottomDockPanel: TJvDockPanel;
-    FRightDockPanel: TJvDockPanel;
-
+    FDockPanels: array [TJvDockPosition] of TJvDockPanel;
     FDockSplitterClass: TJvDockSplitterClass;
-    FLeftSplitter: TJvDockSplitter;
-    FTopSplitter: TJvDockSplitter;
-    FBottomSplitter: TJvDockSplitter;
-    FRightSplitter: TJvDockSplitter;
-
-    FLeftSplitterStyle: TJvDockSplitterStyle;
-    FTopSplitterStyle: TJvDockSplitterStyle;
-    FRightSplitterStyle: TJvDockSplitterStyle;
-    FBottomSplitterStyle: TJvDockSplitterStyle;
+    FSplitters: array [TJvDockPosition] of TJvDockSplitter;
+    FSplitterStyles: array [TJvDockPosition] of TJvDockSplitterStyle;
 
     FOnGetClientAlignSize: TJvDockGetClientAlignSizeEvent;
     FOnFinishSetDockPanelSize: TJvDockFinishSetDockPanelSizeEvent;
@@ -447,18 +438,20 @@ type
     procedure CreateSplitterStyle;
     procedure DestroySplitterStyle;
 
-    procedure SetSplitterStyle;
-    procedure SetLeftSplitterStyle(const Value: TJvDockSplitterStyle);
-    procedure SetTopSplitterStyle(const Value: TJvDockSplitterStyle);
-    procedure SetRightSplitterStyle(const Value: TJvDockSplitterStyle);
-    procedure SetBottomSplitterStyle(const Value: TJvDockSplitterStyle);
+    procedure SetSplitterStyles;
 
-    function GetDockPanel(Index: Integer): TJvDockPanel;
-
-    function GetDockSplitter(Index: Integer): TJvDockSplitter;
     procedure DoGetClientAlignControl(Align: TAlign; var Value: Integer);
+    function GetDockPanel(DockPosition: TJvDockPosition): TJvDockPanel;
+    function GetDockPanelIndex(const Index: Integer): TJvDockPanel;
     function GetDockPanelWithAlign(Index: TAlign): TJvDockPanel;
     function GetDockSplitterWithAlign(Index: TAlign): TJvDockSplitter;
+    function GetSlitterStyleIndex(const Index: Integer): TJvDockSplitterStyle;
+    function GetSplitter(DockPosition: TJvDockPosition): TJvDockSplitter;
+    function GetSplitterIndex(const Index: Integer): TJvDockSplitter;
+    function GetSplitterStyle(DockPosition: TJvDockPosition): TJvDockSplitterStyle;
+    function GetSplitterStyleIndex(const Index: Integer): TJvDockSplitterStyle;
+    procedure SetSplitterStyle(DockPosition: TJvDockPosition; ASplitterStyle: TJvDockSplitterStyle);
+    procedure SetSplitterStyleIndex(const Index: Integer; ASplitterStyle: TJvDockSplitterStyle);
   protected
     procedure Loaded; override;
 
@@ -478,28 +471,30 @@ type
     destructor Destroy; override;
     function GetClientAlignControl(Align: TAlign): Integer;
 
-    property LeftDockPanel: TJvDockPanel read FLeftDockPanel;
-    property RightDockPanel: TJvDockPanel read FRightDockPanel;
-    property TopDockPanel: TJvDockPanel read FTopDockPanel;
-    property BottomDockPanel: TJvDockPanel read FBottomDockPanel;
+    property DockPanel[DockPosition: TJvDockPosition]: TJvDockPanel read GetDockPanel;
+    property Splitter[DockPosition: TJvDockPosition]: TJvDockSplitter read GetSplitter;
+    property SplitterStyle[DockPosition: TJvDockPosition]: TJvDockSplitterStyle read GetSplitterStyle write SetSplitterStyle;
 
-    property LeftSplitter: TJvDockSplitter read FLeftSplitter;
-    property RightSplitter: TJvDockSplitter read FRightSplitter;
-    property TopSplitter: TJvDockSplitter read FTopSplitter;
-    property BottomSplitter: TJvDockSplitter read FBottomSplitter;
+    property LeftDockPanel: TJvDockPanel index 0 read GetDockPanelIndex;
+    property RightDockPanel: TJvDockPanel index 1 read GetDockPanelIndex;
+    property TopDockPanel: TJvDockPanel index 2 read GetDockPanelIndex;
+    property BottomDockPanel: TJvDockPanel index 3 read GetDockPanelIndex;
 
-    property DockPanel[Index: Integer]: TJvDockPanel read GetDockPanel;
+    property LeftSplitter: TJvDockSplitter index 0 read GetSplitterIndex;
+    property RightSplitter: TJvDockSplitter index 1 read GetSplitterIndex;
+    property TopSplitter: TJvDockSplitter index 2 read GetSplitterIndex;
+    property BottomSplitter: TJvDockSplitter index 3 read GetSplitterIndex;
+
     property DockPanelWithAlign[Index: TAlign]: TJvDockPanel read GetDockPanelWithAlign;
-    property DockSplitter[Index: Integer]: TJvDockSplitter read GetDockSplitter;
     property DockSplitterWithAlign[Index: TAlign]: TJvDockSplitter read GetDockSplitterWithAlign;
     {$IFNDEF USEJVCL}
     property Version: string read GetDockStyleVersion;
     {$ENDIF USEJVCL}
   published
-    property LeftSplitterStyle: TJvDockSplitterStyle read FLeftSplitterStyle write SetLeftSplitterStyle;
-    property TopSplitterStyle: TJvDockSplitterStyle read FTopSplitterStyle write SetTopSplitterStyle;
-    property RightSplitterStyle: TJvDockSplitterStyle read FRightSplitterStyle write SetRightSplitterStyle;
-    property BottomSplitterStyle: TJvDockSplitterStyle read FBottomSplitterStyle write SetBottomSplitterStyle;
+    property LeftSplitterStyle: TJvDockSplitterStyle index 0 read GetSplitterStyleIndex write SetSplitterStyleIndex;
+    property RightSplitterStyle: TJvDockSplitterStyle index 1 read GetSplitterStyleIndex write SetSplitterStyleIndex;
+    property TopSplitterStyle: TJvDockSplitterStyle index 2 read GetSlitterStyleIndex write SetSplitterStyleIndex;
+    property BottomSplitterStyle: TJvDockSplitterStyle index 3 read GetSplitterStyleIndex write SetSplitterStyleIndex;
     property AutoFocusDockedForm: Boolean read FAutoFocusDockedForm write FAutoFocusDockedForm default True;
 
     property OnGetClientAlignSize: TJvDockGetClientAlignSizeEvent
@@ -4079,7 +4074,7 @@ begin
     (JvGlobalDockClient = nil) then
     Exit;
 
-  DockServer.DockSplitter[Integer(Align) - 1].Visible := MakeVisible;
+  DockServer.DockSplitterWithAlign[Align].Visible := MakeVisible;
 
   if MakeVisible and (Client <> nil) then
   begin
@@ -4186,8 +4181,8 @@ begin
 end;
 
 procedure TJvDockServer.CreateDockPanelAndSplitter;
-var
-  ControlList: TList;
+//var
+//  ControlList: TList;
 
   function CreatePanel(Align: TAlign; Name: string): TJvDockPanel;
   begin
@@ -4231,40 +4226,40 @@ var
   end;
 
 begin
-  ControlList := TList.Create;
-  try
-    FLeftDockPanel := CreatePanel(alLeft, 'LeftDockPanel' + cDefaultNameSuffix);
-    FLeftSplitter := CreateSplitter(alLeft, 'LeftSplitter' + cDefaultNameSuffix);
-    FRightDockPanel := CreatePanel(alRight, 'RightDockPanel' + cDefaultNameSuffix);
-    FRightSplitter := CreateSplitter(alRight, 'RightSplitter' + cDefaultNameSuffix);
-    FTopDockPanel := CreatePanel(alTop, 'TopDockPanel' + cDefaultNameSuffix);
-    FTopSplitter := CreateSplitter(alTop, 'TopSplitter' + cDefaultNameSuffix);
-    FBottomDockPanel := CreatePanel(alBottom, 'BottomDockPanel' + cDefaultNameSuffix);
-    FBottomSplitter := CreateSplitter(alBottom, 'BottomSplitter' + cDefaultNameSuffix);
-  finally
-    ControlList.Free;
-  end;
+//  ControlList := TList.Create;
+//  try
+    FDockPanels[dpLeft] := CreatePanel(alLeft, 'LeftDockPanel' + cDefaultNameSuffix);
+    FSplitters[dpLeft] := CreateSplitter(alLeft, 'LeftSplitter' + cDefaultNameSuffix);
+    FDockPanels[dpRight] := CreatePanel(alRight, 'RightDockPanel' + cDefaultNameSuffix);
+    FSplitters[dpRight] := CreateSplitter(alRight, 'RightSplitter' + cDefaultNameSuffix);
+    FDockPanels[dpTop] := CreatePanel(alTop, 'TopDockPanel' + cDefaultNameSuffix);
+    FSplitters[dpTop] := CreateSplitter(alTop, 'TopSplitter' + cDefaultNameSuffix);
+    FDockPanels[dpBottom] := CreatePanel(alBottom, 'BottomDockPanel' + cDefaultNameSuffix);
+    FSplitters[dpBottom] := CreateSplitter(alBottom, 'BottomSplitter' + cDefaultNameSuffix);
+//  finally
+//    ControlList.Free;
+//  end;
 end;
 
 procedure TJvDockServer.CreateSplitterStyle;
+const
+  cCursor: array [TJvDockPosition] of TCursor = (crHSplit, crHSplit, crVSplit, crVSplit);
+var
+  Position: TJvDockPosition;
 begin
-  FLeftSplitterStyle := TJvDockSplitterStyle.Create(FLeftSplitter, crHSplit);
-  FTopSplitterStyle := TJvDockSplitterStyle.Create(FTopSplitter, crVSplit);
-  FRightSplitterStyle := TJvDockSplitterStyle.Create(FRightSplitter, crHSplit);
-  FBottomSplitterStyle := TJvDockSplitterStyle.Create(FBottomSplitter, crVSplit);
-
-  FLeftSplitterStyle.FDockServer := Self;
-  FTopSplitterStyle.FDockServer := Self;
-  FRightSplitterStyle.FDockServer := Self;
-  FBottomSplitterStyle.FDockServer := Self;
+  for Position := Low(TJvDockPosition) to High(TJvDockPosition) do
+  begin
+    FSplitterStyles[Position] := TJvDockSplitterStyle.Create(Splitter[Position], cCursor[Position]);
+    FSplitterStyles[Position].FDockServer := Self;
+  end;
 end;
 
 procedure TJvDockServer.DestroySplitterStyle;
+var
+  Position: TJvDockPosition;
 begin
-  FLeftSplitterStyle.Free;
-  FTopSplitterStyle.Free;
-  FRightSplitterStyle.Free;
-  FBottomSplitterStyle.Free;
+  for Position := Low(TJvDockPosition) to High(TJvDockPosition) do
+    FreeAndNil(FSplitterStyles[Position]);
 end;
 
 procedure TJvDockServer.DoFinishSetDockPanelSize(DockPanel: TJvDockPanel);
@@ -4299,19 +4294,16 @@ begin
   DoGetClientAlignControl(Align, Result);
 end;
 
-function TJvDockServer.GetDockPanel(Index: Integer): TJvDockPanel;
+function TJvDockServer.GetDockPanel(
+  DockPosition: TJvDockPosition): TJvDockPanel;
 begin
-  Result := nil;
-  case Index of
-    0:
-      Result := FTopDockPanel;
-    1:
-      Result := FBottomDockPanel;
-    2:
-      Result := FLeftDockPanel;
-    3:
-      Result := FRightDockPanel;
-  end;
+  Result := FDockPanels[DockPosition];
+end;
+
+function TJvDockServer.GetDockPanelIndex(
+  const Index: Integer): TJvDockPanel;
+begin
+  Result := FDockPanels[TJvDockPosition(Index)];
 end;
 
 function TJvDockServer.GetDockPanelWithAlign(Index: TAlign): TJvDockPanel;
@@ -4319,28 +4311,13 @@ begin
   Result := nil;
   case Index of
     alLeft:
-      Result := FLeftDockPanel;
+      Result := LeftDockPanel;
     alRight:
-      Result := FRightDockPanel;
+      Result := RightDockPanel;
     alTop:
-      Result := FTopDockPanel;
+      Result := TopDockPanel;
     alBottom:
-      Result := FBottomDockPanel;
-  end;
-end;
-
-function TJvDockServer.GetDockSplitter(Index: Integer): TJvDockSplitter;
-begin
-  Result := nil;
-  case Index of
-    0:
-      Result := FTopSplitter;
-    1:
-      Result := FBottomSplitter;
-    2:
-      Result := FLeftSplitter;
-    3:
-      Result := FRightSplitter;
+      Result := BottomDockPanel;
   end;
 end;
 
@@ -4349,14 +4326,44 @@ begin
   Result := nil;
   case Index of
     alLeft:
-      Result := FLeftSplitter;
+      Result := LeftSplitter;
     alRight:
-      Result := FRightSplitter;
+      Result := RightSplitter;
     alTop:
-      Result := FTopSplitter;
+      Result := TopSplitter;
     alBottom:
-      Result := FBottomSplitter;
+      Result := BottomSplitter;
   end;
+end;
+
+function TJvDockServer.GetSlitterStyleIndex(
+  const Index: Integer): TJvDockSplitterStyle;
+begin
+  Result := FSplitterStyles[TJvDockPosition(Index)];
+end;
+
+function TJvDockServer.GetSplitter(
+  DockPosition: TJvDockPosition): TJvDockSplitter;
+begin
+  Result := FSplitters[DockPosition];
+end;
+
+function TJvDockServer.GetSplitterIndex(
+  const Index: Integer): TJvDockSplitter;
+begin
+  Result := FSplitters[TJvDockPosition(Index)];
+end;
+
+function TJvDockServer.GetSplitterStyle(
+  DockPosition: TJvDockPosition): TJvDockSplitterStyle;
+begin
+  Result := FSplitterStyles[DockPosition];
+end;
+
+function TJvDockServer.GetSplitterStyleIndex(
+  const Index: Integer): TJvDockSplitterStyle;
+begin
+  Result := FSplitterStyles[TJvDockPosition(Index)];
 end;
 
 procedure TJvDockServer.Loaded;
@@ -4374,7 +4381,7 @@ begin
   if not (csDesigning in ComponentState) then
   begin
     CreateDockPanelAndSplitter;
-    SetSplitterStyle;
+    SetSplitterStyles;
   end;
   inherited Loaded;
 end;
@@ -4390,11 +4397,6 @@ begin
   if not Value then
     DoFloatDockClients(BottomDockPanel);
   inherited SetBottomDock(Value);
-end;
-
-procedure TJvDockServer.SetBottomSplitterStyle(const Value: TJvDockSplitterStyle);
-begin
-  FBottomSplitterStyle.Assign(Value);
 end;
 
 procedure TJvDockServer.SetEnableDock(const Value: Boolean);
@@ -4416,11 +4418,6 @@ begin
   inherited SetLeftDock(Value);
 end;
 
-procedure TJvDockServer.SetLeftSplitterStyle(const Value: TJvDockSplitterStyle);
-begin
-  FLeftSplitterStyle.Assign(Value);
-end;
-
 procedure TJvDockServer.SetRightDock(const Value: Boolean);
 begin
   if not Value then
@@ -4428,21 +4425,27 @@ begin
   inherited SetRightDock(Value);
 end;
 
-procedure TJvDockServer.SetRightSplitterStyle(const Value: TJvDockSplitterStyle);
+procedure TJvDockServer.SetSplitterStyle(DockPosition: TJvDockPosition;
+  ASplitterStyle: TJvDockSplitterStyle);
 begin
-  FRightSplitterStyle.Assign(Value);
+  FSplitterStyles[DockPosition].Assign(ASplitterStyle);
 end;
 
-procedure TJvDockServer.SetSplitterStyle;
+procedure TJvDockServer.SetSplitterStyleIndex(const Index: Integer;
+  ASplitterStyle: TJvDockSplitterStyle);
 begin
-  LeftSplitterStyle.Splitter := FLeftSplitter;
-  LeftSplitterStyle.SetSplitterStyle;
-  TopSplitterStyle.Splitter := FTopSplitter;
-  TopSplitterStyle.SetSplitterStyle;
-  RightSplitterStyle.Splitter := FRightSplitter;
-  RightSplitterStyle.SetSplitterStyle;
-  BottomSplitterStyle.Splitter := FBottomSplitter;
-  BottomSplitterStyle.SetSplitterStyle;
+  FSplitterStyles[TJvDockPosition(Index)].Assign(ASplitterStyle);
+end;
+
+procedure TJvDockServer.SetSplitterStyles;
+var
+  Position: TJvDockPosition;
+begin
+  for Position := Low(TJvDockPosition) to High(TJvDockPosition) do
+  begin
+    SplitterStyle[Position].Splitter := Splitter[Position];
+    SplitterStyle[Position].SetSplitterStyle;
+  end;
 end;
 
 procedure TJvDockServer.SetTopDock(const Value: Boolean);
@@ -4450,11 +4453,6 @@ begin
   if not Value then
     DoFloatDockClients(TopDockPanel);
   inherited SetTopDock(Value);
-end;
-
-procedure TJvDockServer.SetTopSplitterStyle(const Value: TJvDockSplitterStyle);
-begin
-  FTopSplitterStyle.Assign(Value);
 end;
 
 procedure TJvDockServer.WindowProc(var Msg: TMessage);
