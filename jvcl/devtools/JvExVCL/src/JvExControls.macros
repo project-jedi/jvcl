@@ -595,7 +595,7 @@ JV_DIFF_EVENTS_IMPL_CUSTOMCONTROL(ClassName)
 // ***********************************************************************
 
 (*$DEFINE JV_EDITCONTROL_EVENTS_BEGIN(ClassName)
-  JV_WINCONTROL_EVENTS_BEGIN1(ClassName, IJvEditControlEvents)
+  JV_WINCONTROL_EVENTS_BEGIN1(ClassName,IJvEditControlEvents)
   private
     FClipboardCommands: TJvClipboardCommands;
     {$IFDEF VisualCLX}
