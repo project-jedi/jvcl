@@ -8,7 +8,7 @@ object frmMain: TfrmMain
     's etc.'#13#10#13#10'If your keyboard has extra buttons for opening mail pr' +
     'ograms, '#13#10'raising/lowering the volume etc, try pressing those to' +
     ' see the messages'#13#10'being intercepted.'#13#10#13#10'If the Active checkbox ' +
-    'is grayed out, this means your system doesn'#39't support '#13#10'the Regi' +
+    'is grayed out, this means your system doesn''t support '#13#10'the Regi' +
     'sterShellHookWindow/DeregisterShellHookWindow functions.'#13#10
   Caption = 'JvShellHook Demo'
   Color = clBtnFace
@@ -23,9 +23,6 @@ object frmMain: TfrmMain
   ShowHint = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  DesignSize = (
-    551
-    305)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -67,7 +64,7 @@ object frmMain: TfrmMain
     Width = 121
     Height = 17
     Anchors = [akLeft, akBottom]
-    Caption = 'Don'#39't show &redraws'
+    Caption = 'Don''t show &redraws'
     Checked = True
     State = cbChecked
     TabOrder = 2
