@@ -26,6 +26,7 @@ BRCC = "$(ROOT)\bin\brcc32.exe" $**
 default: \
 isu.exe \
 JConvert.exe \
+JVCLConvert.exe \
 JTouch.exe \
 crlf.exe \
 MakeDOF.exe \
@@ -139,4 +140,7 @@ Res2Bmp.exe: Res2Bmp\Res2Bmp.dpr
   $(DCC) $&.dpr
   cd ..
 
-
+JVCLConvert.exe: JVCLConvert\JVCLConvert.dpr
+  cd JVCLConvert
+  $(DCC) $&.dpr
+  cd ..
