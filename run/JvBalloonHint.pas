@@ -33,8 +33,9 @@ unit JvBalloonHint;
 interface
 
 uses
-  Windows, Controls, Classes, Graphics, Messages, Forms, ImgList,
-  JvComponent;
+  Windows, Messages, CommCtrl, Registry, SysUtils, Classes, Graphics, Controls,
+  Forms, ImgList,
+  JvComponent, JvFinalize;
 
 const
   CJvBallonHintVisibleTimeDefault = 5000;
@@ -267,7 +268,7 @@ type
 implementation
 
 uses
-  SysUtils, CommCtrl, Registry, Math,
+  Math,
   MMSystem, // needed for sndPlaySound
   ComCtrls, // needed for GetComCtlVersion
   JvJVCLUtils, JvThemes, JvWndProcHook, JvResources;
@@ -343,6 +344,18 @@ type
 
 var
   AnimateWindowProc: TAnimateWindowProc = nil;
+
+procedure InitD5Controls;
+var
+  UserHandle: HMODULE;
+begin
+  if not Assigned(AnimateWindowProc) then
+  begin
+    UserHandle := GetModuleHandle('USER32');
+    if UserHandle <> 0 then
+      @AnimateWindowProc := GetProcAddress(UserHandle, 'AnimateWindow');
+  end;
+end;
 
 {$ENDIF COMPILER6_UP}
 
@@ -673,6 +686,9 @@ end;
 
 constructor TJvBalloonWindow.Create(AOwner: TComponent);
 begin
+  {$IFNDEF COMPILER6_UP}
+  InitD5Controls;
+  {$ENDIF COMPILER6_UP}
   inherited Create(AOwner);
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
 end;
@@ -1549,7 +1565,10 @@ end;
 class function TGlobalCtrl.Instance: TGlobalCtrl;
 begin
   if not Assigned(GGlobalCtrl) then
+  begin
     GGlobalCtrl := TGlobalCtrl.Create(nil);
+    AddFinalizeObjectNil(TObject(GGlobalCtrl));
+  end;
   Result := GGlobalCtrl;
 end;
 
@@ -1931,25 +1950,6 @@ begin
   else
     inherited;
 end;
-
-{$IFNDEF COMPILER6_UP}
-procedure InitD5Controls;
-var
-  UserHandle: HMODULE;
-begin
-  UserHandle := GetModuleHandle('USER32');
-  if UserHandle <> 0 then
-    @AnimateWindowProc := GetProcAddress(UserHandle, 'AnimateWindow');
-end;
-{$ENDIF COMPILER6_UP}
-
-initialization
-  {$IFNDEF COMPILER6_UP}
-  InitD5Controls;
-  {$ENDIF COMPILER6_UP}
-
-finalization
-  FreeAndNil(GGlobalCtrl);
 
 end.
 

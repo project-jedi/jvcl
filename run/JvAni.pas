@@ -46,7 +46,7 @@ uses
   Windows, Graphics, ExtCtrls, Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QGraphics, QExtCtrls, QDialogs, Types,
+  QGraphics, QExtCtrls, QDialogs, Types, QWindows, 
   {$ENDIF VisualCLX}
   JvTypes;
 

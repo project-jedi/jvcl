@@ -32,10 +32,10 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, ExtCtrls,
+  Controls, Forms, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QExtCtrls, QImgList,
+  Types, QControls, QForms, QExtCtrls, QImgList,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent;
@@ -123,3 +123,4 @@ begin
 end;
 
 end.
+
