@@ -30,12 +30,12 @@ unit JvBitmapButton;
 interface
 
 uses
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Types, QWindows, QGraphics, QControls, QForms, QDialogs,
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent, JvTypes;
 
@@ -179,7 +179,7 @@ end;
 
 procedure TJvBitmapButton.Paint;
 begin
-  inherited;
+  inherited Paint;
   if Assigned(FBitmap) then
   begin
     if FPushDown then
@@ -188,7 +188,8 @@ begin
     begin
       if Down then
         Canvas.Draw(1, 1, FDarker)
-      else if FMouseOver and FHotTrack then
+      else
+      if FMouseOver and FHotTrack then
         Canvas.Draw(0, 0, FLighter)
       else
         Canvas.Draw(0, 0, FNormal);
@@ -428,7 +429,7 @@ begin
     p2 := Target.ScanLine[Y];
     for X := 1 to FBitmap.Width do begin
       if (AColor <> clNone) and
-           (p1.rgbBlue = bt) and (p1.rgbGreen = gt) and (p1.rgbRed = rt) then
+        (p1.rgbBlue = bt) and (p1.rgbGreen = gt) and (p1.rgbRed = rt) then
         p2^ := p1^
       else
         Transform(p2, p1);

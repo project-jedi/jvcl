@@ -693,9 +693,11 @@ begin
             Canvas.FillRect(Rect);
             if Supports(Item, IJvDataItemRenderer, ItemRenderer) then
               ItemRenderer.Draw(Canvas, Rect, DrawState)
-            else if DP_FindItemsRenderer(Item, ItemsRenderer) then
+            else
+            if DP_FindItemsRenderer(Item, ItemsRenderer) then
               ItemsRenderer.DrawItem(Canvas, Rect, Item, DrawState)
-            else if Supports(Item, IJvDataItemText, ItemText) then
+            else
+            if Supports(Item, IJvDataItemText, ItemText) then
               Canvas.TextRect(Rect, Rect.Left, Rect.Top, ItemText.Caption)
             else
               Canvas.TextRect(Rect, Rect.Left, Rect.Top, RsDataItemRenderHasNoText);

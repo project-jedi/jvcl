@@ -492,7 +492,8 @@ begin
     end;
     Exit;
   end
-  else if coCustomColors in Options then
+  else
+  if coCustomColors in Options then
   begin
     InsertColor(Items.Count - 1, Value, Format(FPrefix, [FCustCnt]));
     //      Items.InsertObject(Items.Count, FPrefix + IntToStr(FCustCnt), TObject(Value))
@@ -585,7 +586,8 @@ begin
       SetBkMode(Canvas.Handle, TRANSPARENT);
       DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
     end
-    else if (coText in FOptions) or (coHex in FOptions) or (coRGB in FOptions) then
+    else
+    if (coText in FOptions) or (coHex in FOptions) or (coRGB in FOptions) then
     begin
       S := Items[Index];
       DoGetDisplayName(Index, TColor(Items.Objects[Index]), S);
@@ -593,7 +595,8 @@ begin
       begin
         if coHex in FOptions then
           S := Format('0x%.6x', [ColorToRGB(TColor(Items.Objects[Index]))])
-        else if coRGB in Foptions then
+        else
+        if coRGB in Foptions then
           S := Format('(%d,%d,%d)', [GetRValue(TColor(Items.Objects[Index])), GetGValue(TColor(Items.Objects[Index])),
             GetBValue(TColor(Items.Objects[Index]))]);
       end;
@@ -625,24 +628,25 @@ begin
     FExecutingDialog := True;
     CD := TColorDialog.Create(Self);
     with CD do
-    try
-      CD.Color := ColorValue;
-      Options := Options + [cdFullOpen, cdPreventFullOpen];
-      S := FPrefix;
-      if Execute then
-      begin
-        if DoNewColor(CD.Color, S) then
-          Inc(FCustCnt);
-        ColorValue := CD.Color;
-        Change;
-      end
-      else
-        ItemIndex := Items.Count - 2;
-    finally
-      Free;
-    end // with
+      try
+        CD.Color := ColorValue;
+        Options := Options + [cdFullOpen, cdPreventFullOpen];
+        S := FPrefix;
+        if Execute then
+        begin
+          if DoNewColor(CD.Color, S) then
+            Inc(FCustCnt);
+          ColorValue := CD.Color;
+          Change;
+        end
+        else
+          ItemIndex := Items.Count - 2;
+      finally
+        Free;
+      end;
   end
-  else if ItemIndex >= 0 then
+  else
+  if ItemIndex >= 0 then
     ColorValue := TColor(Items.Objects[ItemIndex]);
   inherited Click;
   FExecutingDialog := False;
@@ -810,7 +814,7 @@ end;
 
 procedure TJvColorComboBox.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   HandleNeeded;
   if HandleAllocated then
     GetColors;
@@ -828,7 +832,7 @@ end;
 
 procedure TJvColorComboBox.SetParent(AParent: TWinControl);
 begin
-  inherited;
+  inherited SetParent(AParent);
   if (Parent <> nil) and HandleAllocated then
     GetColors;
 end;
@@ -1036,7 +1040,8 @@ begin
         Canvas.MoveTo(0, R.Bottom - 1);
         Canvas.LineTo(ClientWidth, R.Bottom - 1);
       end
-      else if (Index = MRUCount) and (Index > 0) then
+      else
+      if (Index = MRUCount) and (Index > 0) then
       begin
         Canvas.Pen.Color := clGray;
         Canvas.Pen.Width := 1;
@@ -1072,7 +1077,7 @@ begin
   if FShowMRU and FWasMouse and not DroppedDown then
   begin
     ItemIndex := AddToMRU;
-    FWasMouse := false;
+    FWasMouse := False;
   end;
 end;
 
@@ -1184,7 +1189,7 @@ begin
       ClearMRU;
     FShowMRU := Value;
     if FShowMRU and Sorted then
-      Sorted := false;
+      Sorted := False;
   end;
 end;
 
@@ -1202,14 +1207,16 @@ begin
       Items.InsertObject(0, Items[I], Items.Objects[I]);
       Inc(FMRUCount);
     end
-    else if I < 0 then
+    else
+    if I < 0 then
     begin
       Items.InsertObject(0, Text, TObject(TRUETYPE_FONTTYPE));
       Inc(FMRUCount);
     end;
     Result := 0;
   end
-  else if (MRUCount > 0) and (ItemIndex > 0) then
+  else
+  if (MRUCount > 0) and (ItemIndex > 0) then
   begin
     Items[0] := Items[ItemIndex];
     Items.Objects[0] := Items.Objects[ItemIndex];
@@ -1220,15 +1227,15 @@ end;
 procedure TJvFontComboBox.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  FWasMouse := false;
-  inherited;
+  FWasMouse := False;
+  inherited MouseDown(Button, Shift, X, Y);
 end;
 
 procedure TJvFontComboBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  FWasMouse := true;
-  inherited;
+  FWasMouse := True;
+  inherited  MouseUp(Button, Shift, X, Y);;
 end;
 
 procedure TJvFontComboBox.CloseUp;
@@ -1238,7 +1245,7 @@ begin
   begin
     AddToMRU;
     ItemIndex := Items.IndexOf(Text);
-    FWasMouse := false;
+    FWasMouse := False;
   end;
 end;
 
@@ -1255,7 +1262,7 @@ procedure TJvFontComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if (Key = VK_RETURN) and FShowMRU then
     ItemIndex := AddToMRU;
-  inherited;
+  inherited KeyDown(Key, Shift);
 end;
 
 procedure TJvFontComboBox.SetMaxMRUCount(const Value: Integer);
@@ -1282,7 +1289,7 @@ end;
 
 procedure TJvFontComboBox.SetParent(AParent: TWinControl);
 begin
-  inherited;
+  inherited SetParent(AParent);
   if Parent <> nil then
   begin
     Reset;

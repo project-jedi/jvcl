@@ -619,7 +619,8 @@ procedure TJvCustomBehaviorLabel.SetOptions(const Value: TJvLabelBehavior);
 begin
   if Value = nil then
     Behavior := ''
-  else if (FOptions = nil) or (FOptions.ClassType <> Value.ClassType) then
+  else
+  if (FOptions = nil) or (FOptions.ClassType <> Value.ClassType) then
     Behavior := GetLabelBehaviorName(TJvLabelBehaviorOptionsClass(Value.ClassType));
   UpdateDesigner;
 end;
@@ -1233,7 +1234,8 @@ begin
     OwnerLabel.UseEffectText := False;
     Exit;
   end
-  else if FScratchPad[FCurrentPos] <> DecodedText[FCurrentPos] then
+  else
+  if FScratchPad[FCurrentPos] <> DecodedText[FCurrentPos] then
   begin
     {$IFDEF VCL}
     FScratchPad[FCurrentPos] := Char(32 + Random(Ord(DecodedText[FCurrentPos]) + 10));

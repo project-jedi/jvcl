@@ -3931,7 +3931,8 @@ begin
   begin
     Result := RsErrorRowItem;
   end
-  else if (ColumnIndex < pItem^.columns) then
+  else
+  if ColumnIndex < pItem^.columns then
   begin
     Copy1 := CsvRowGetColumnMarker(pItem, ColumnIndex);
     Copy2 := CsvRowGetColumnMarker(pItem, ColumnIndex + 1);

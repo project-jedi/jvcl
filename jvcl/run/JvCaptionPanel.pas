@@ -350,7 +350,8 @@ begin
 
   if not Enabled then
     Flags := Flags or DFCS_INACTIVE
-  else if FDown and FMouseDown and Enabled then
+  else
+  if FDown and FMouseDown and Enabled then
     Flags := Flags or DFCS_PUSHED;
   if FFlat then
     Flags := Flags or DFCS_FLAT;
@@ -367,7 +368,8 @@ begin
       R := ClientRect;
       if FDown and FMouseDown then
         Frame3D(Canvas, R, clBtnShadow, clBtnHighLight, 1)
-      else if FOver then
+      else
+      if FOver then
         Frame3D(Canvas, R, clBtnHighLight, clBtnShadow, 1)
       else
         Frame3D(Canvas, R, clBtnFace, clBtnFace, 1);
@@ -561,7 +563,8 @@ begin
   begin
     if CaptionPosition = dpLeft then
       FCaptionWidth := GetSystemMetrics(SM_CYCAPTION) - 3 + FlatOffset
-    else if CaptionPosition = dpRight then
+    else
+    if CaptionPosition = dpRight then
       FCaptionWidth := GetSystemMetrics(SM_CYCAPTION) - 4 + FlatOffset
     else
       FCaptionWidth := GetSystemMetrics(SM_CYCAPTION) - 5 + FlatOffset

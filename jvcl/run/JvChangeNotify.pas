@@ -394,7 +394,8 @@ begin
       FThread.OnTerminate := DoThreadTerminate;
       FThread.Resume;
     end
-    else if (FThread <> nil) then
+    else
+    if FThread <> nil then
     begin
       FThread.Terminate;
       FThread := nil;
