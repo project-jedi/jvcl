@@ -53,6 +53,10 @@ Known Issues:
 {*AUTOCONFIG*}
 {$IFDEF COMPILER7_UP}
  {$DEFINE JVCLThemesEnabled}
+{$ELSE}
+ {$IFDEF JVCLThemesEnabled}
+  {$DEFINE JVCLThemesEnabledD56}
+ {$ENDIF}
 {$ENDIF}
 
 { Activates MIDAS components (DBRemoteLogin)}
