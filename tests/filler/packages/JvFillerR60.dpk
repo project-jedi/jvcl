@@ -24,7 +24,7 @@ package JvFillerR60;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JvFiller Experiment runtime package for Delphi 6.0'}
 {$RUNONLY}
-{$IMPLICITBUILD OFF}
+{$IMPLICITBUILD ON}
 
 requires
   rtl,
@@ -33,10 +33,10 @@ requires
   DJCL60;
 
 contains
-  JvFillIntf in '..\source\JvFillIntf.pas',
   JvFillBasicImpl in '..\source\JvFillBasicImpl.pas',
   JvFillerControls in '..\source\JvFillerControls.pas',
   JvFillFontList in '..\source\JvFillFontList.pas',
+  JvFillIntf in '..\source\JvFillIntf.pas',
   JvFillStringList in '..\source\JvFillStringList.pas';
 
 end.

@@ -9,9 +9,10 @@ procedure RegFillerPropEdits;
 implementation
 
 uses
-  Classes, Consts, DsgnIntf, SysUtils, TypInfo,
+  Classes, Consts, {$IFNDEF COMPILER6_UP} DsgnIntf, {$ELSE} DesignIntf, DesignEditors, {$ENDIF} SysUtils, TypInfo,
   JvFillBasicImpl, JvFillIntf, JvFillerEditor, JvFillStringList;
 
+type
 {$IFNDEF COMPILER6_UP}
 
 { Since D5 doesn't support published properties of type interface (or rather, the OI/streaming
@@ -19,7 +20,6 @@ uses
   will only list components that support both the IFiller as well as the IInterfaceComponentRef
   interfaces. }
 
-type
   TInterfaceProperty = class(TComponentProperty)
   private
     FOrgStrProc: TGetStrProc;

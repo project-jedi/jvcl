@@ -5,7 +5,8 @@ interface
 {$I JVCL.INC}
 
 uses
-  Windows, Classes, StdCtrls, Controls, Graphics, JvFillIntf, JvFillBasicImpl, JvListBox, JvLabel;
+  Windows, Classes, StdCtrls, Controls, Graphics,
+  JvFillIntf, JvFillBasicImpl, JvListBox, JvLabel;
 
 type
   TJvFillListBox = class(TJvCustomListBox, IFillerNotify)

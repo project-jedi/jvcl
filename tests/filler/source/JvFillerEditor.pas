@@ -1,13 +1,16 @@
+{$I JVCL.INC}
 unit JvFillerEditor;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  ComCtrls, ImgList, ActnList, Menus, DsgnIntf, ExtCtrls,
+  ComCtrls, ImgList, ActnList, Menus, ExtCtrls,
+  {$IFNDEF COMPILER6_UP} DsgnIntf, {$ELSE} DesignIntf, DesignEditors, {$ENDIF}
   ToolWin, JvFillIntf, JvFillBasicImpl;
 
 type
+
   TFillerEditItem = packed record
     ID: string;
     Flags: Integer;
@@ -54,7 +57,7 @@ type
   private
     { Private declarations }
     FFiller: IFiller;
-    FDesigner: IFormDesigner;
+    FDesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF};
     FViewItems: TFillerEditItems;
     FOrgSelect: IDesignerSelections;
     FPropView: TJvFillerItem;
@@ -73,7 +76,7 @@ type
     procedure AddSubItem(Index: Integer; Item: IFillerItem);
     procedure InsertItems(var Index: Integer; Items: IFillerItems);
     procedure SetFiller(Value: IFiller);
-    procedure SetDesigner(Value: IFormDesigner);
+    procedure SetDesigner(Value: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF});
     { IFillerNotify }
     procedure FillerChanging(const AFiller: IFiller; AReason: TJvFillerChangeReason);
     procedure FillerChanged(const AFiller: IFiller; AReason: TJvFillerChangeReason);
@@ -81,10 +84,10 @@ type
     { Public declarations }
     PropName: string;
     property Filler: IFiller read FFiller write SetFiller;
-    property Designer: IFormDesigner read FDesigner write SetDesigner;
+    property Designer: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF} read FDesigner write SetDesigner;
   end;
 
-procedure EditFiller(AFiller: IFiller; ADesigner: IFormDesigner; PropName: string);
+procedure EditFiller(AFiller: IFiller; ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; PropName: string);
 
 implementation
 
@@ -139,7 +142,7 @@ begin
     Result := TExtensibleInterfacedObject(Items.GetImplementer).GetInterface(IID, Obj);
 end;
 
-procedure EditFiller(AFiller: IFiller; ADesigner: IFormDesigner; PropName: string);
+procedure EditFiller(AFiller: IFiller; ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; PropName: string);
 var
   EditorForm: TfrmFillerEditor;
   I: Integer;
@@ -523,13 +526,17 @@ begin
   UpdateSelectedItem;
 end;
 
-procedure TfrmFillerEditor.SetDesigner(Value: IFormDesigner);
+procedure TfrmFillerEditor.SetDesigner(Value: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF});
 begin
   if Value <> FDesigner then
   begin
     if FDesigner <> nil then
       ResetSelection;
+    {$IFDEF COMPILER6_UP}
+    FOrgSelect := TDesignerSelections.Create;
+    {$ELSE}
     FOrgSelect := TDesignerSelectionList.Create;
+    {$ENDIF}
     FDesigner := Value;
     if Designer <> nil then
       Designer.GetSelections(FOrgSelect);
