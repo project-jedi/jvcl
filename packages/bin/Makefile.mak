@@ -56,6 +56,12 @@ CFGFILE=..\$(PKGDIR)\$(CONFIGFILENAME)
 PERSONALEDITION_OPTION = -DDUMMYDUMMY
 !endif
 
+!ifdef EXTRAUNITDIRS
+DXGETTEXT=-DUSE_DXGETTEXT
+!else
+DXGETTEXT=
+!endif
+
 !ifndef EXTRAUNITDIRS
 EXTRAUNITDIRS=.
 !endif
@@ -84,6 +90,8 @@ JVCLSOURCEDIRS1=$(JVCLROOT)\common;$(JVCLROOT)\run
 JVCLSOURCEDIRS2=$(JVCLROOT)\design
 JVCLINCLUDEDIRS=$(JVCLROOT)\common
 JVCLRESDIRS=$(JVCLROOT)\Resources
+
+LANGUAGES=de es fr it nl ro ru sv
 
 #-------------------------------------------------------------------------------
 
@@ -200,7 +208,20 @@ Clean:
 	@cd bin
 
 ################################################################################
-Installer:
+MOs:
+	@echo [Generating MO files]
+	cd $(JVCLROOT)
+	# put the generation in a temporary batch file so that it is not shown to the user
+	# the redirection to NUL doesn't work at the end of the FOR loop
+	echo @echo off > mogen.bat
+  echo IF NOT $(DXGETTEXT)!==! FOR %%l IN ($(LANGUAGES)) DO "$(EXTRAUNITDIRS)\msgfmt" -o locale\%%l\LC_MESSAGES\JVCLInstall.mo locale\%%l\LC_MESSAGES\JVCLInstall.po >> mogen.bat
+  echo IF NOT $(DXGETTEXT)!==! FOR %%l IN ($(LANGUAGES)) DO "$(EXTRAUNITDIRS)\msgfmt" -o locale\%%l\LC_MESSAGES\jvcl.mo locale\%%l\LC_MESSAGES\jvcl.po >> mogen.bat
+  call mogen.bat >NUL
+  -del mogen.bat
+  cd packages\bin
+
+################################################################################
+Installer: MOs
 	@echo [Compiling: Installer]
 	$(MAKE) $(QUIET) "-DCFG=..\..\install\JVCLInstall\JVCLInstall.cfg" configfile
 	@cd ..\..\install\JVCLInstall
@@ -210,7 +231,6 @@ Installer:
 	@echo -DNO_JCL>>JVCLInstall.cfg
 	#
 	#
-	$(DCC) -DNO_JCL JVCLInstall.dpr
+	$(DCC) $(DXGETTEXT) -DNO_JCL JVCLInstall.dpr
 	start ..\..\bin\JVCLInstall.exe
-
 
