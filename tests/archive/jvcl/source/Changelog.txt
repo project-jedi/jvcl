@@ -1,6 +1,11 @@
 2002-10-10
+- Added Oliver Giesens date components to the D6 packages
 - Added JvStdActions, JvDialogActns and JvActnRes to D6 DT package
-- Added new OwnerDraw ImageIndex property editor to JvDsgnEditors that works with both D5 and D6
+- Added new ownerdrawn ImageList.ImageIndex property editor to JvDsgnEditors that works with both D5 and D6. 
+  Easy to derive new property editor from it without having to reimplement (just override the ImageList function)
+
+2002-10-09
+- Renamed the "RxLib" resources (bitmaps and string tables) in JVCL so that RxLib and JVCL can be installed side-by-side without name conflicts
 
 2002-10-05
 - Added datetimepicker and checked mask edit donated by Oliver Giesen/Lucatec
