@@ -109,9 +109,9 @@ dc.exe: DFMCleaner\dc.dpr
   
 pg.exe: bin\pg.exe
 
-bin\pg.exe: PackagesGenerator\pg.dpr
+bin\pg.exe: PackagesGenerator\pg.dpr PackagesGenerator\CmdLineUtils.pas PackagesGenerator\FileUtils.pas PackagesGenerator\GenerateUtils.pas
   @cd PackagesGenerator
-  $(DCC) $&.dpr
+  $(DCC) pg.dpr
   @cd ..
 
 pgEdit.exe: PackagesGenerator\pgEdit.dpr
@@ -124,10 +124,13 @@ NoQuotes.exe: NoQuotes\NoQuotes.dpr
   $(DCC) $&.dpr
   cd ..
   
-SetPoHeader.exe: SetPoHeader\SetPoHeader.dpr
+SetPoHeader.exe: bin\SetPoHeader.exe
+
+bin\SetPoHeader.exe: SetPoHeader\SetPoHeaderUtils.pas SetPoHeader\SetPoHeader.dpr
   cd SetPoHeader
-  $(DCC) $&.dpr
+  $(DCC) SetPoHeader.dpr
   cd ..
+
 
 JVCLConvert.exe: JVCLConvert\JVCLConvert.dpr
   cd JVCLConvert
