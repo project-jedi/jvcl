@@ -8,10 +8,10 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvExStdCtrls.pas, released on 2004-01-04
+The Original Code is: JvExStdCtrls.pas, released on 2004-10-21
 
-The Initial Developer of the Original Code is Andreas Hausladen [Andreas dott Hausladen att gmx dott de]
-Portions created by Andreas Hausladen are Copyright (C) 2003 Andreas Hausladen.
+The Initial Developer of the Original Code is André Snepvangers [asn att xs4all dott nl]
+Portions created by André Snepvangers are Copyright (C) 2004 André Snepvangers.
 All Rights Reserved.
 
 Contributor(s): -
@@ -39,33 +39,33 @@ uses
 
 
 type
-  JV_WINCONTROL_EVENTS(CustomGroupBox)
+  JV_WINCONTROL(CustomGroupBox)
 {$DEFINE HASAUTOSIZE}
-  JV_CONTROL_EVENTS(CustomLabel)
-  JV_CONTROL_EVENTS(Label)
+  JV_CONTROL(CustomLabel)
+  JV_CONTROL(Label)
 {$UNDEF HASAUTOSIZE}
-  JV_EDITCONTROL_EVENTS(CustomEdit)
-  JV_EDITCONTROL_EVENTS(CustomMemo)
+  JV_EDITCONTROL(CustomEdit)
+  JV_EDITCONTROL(CustomMemo)
   {$IFDEF COMPILER6_UP}
-  JV_WINCONTROL_EVENTS(CustomCombo)
+  JV_WINCONTROL(CustomCombo)
   {$ENDIF COMPILER6_UP}
-  JV_WINCONTROL_EVENTS(CustomComboBox)
-  JV_WINCONTROL_EVENTS(ButtonControl)
-  JV_WINCONTROL_EVENTS(Button)
-  JV_WINCONTROL_EVENTS(CustomCheckBox)
-  JV_WINCONTROL_EVENTS(RadioButton)
-  JV_WINCONTROL_EVENTS(CustomListBox)
-  JV_WINCONTROL_EVENTS(ScrollBar)
-  JV_WINCONTROL_EVENTS(GroupBox)
-  JV_WINCONTROL_EVENTS(CheckBox)
-  JV_WINCONTROL_EVENTS(CustomStaticText)
-  JV_WINCONTROL_EVENTS(StaticText)
+  JV_WINCONTROL(CustomComboBox)
+  JV_WINCONTROL(ButtonControl)
+  JV_WINCONTROL(Button)
+  JV_WINCONTROL(CustomCheckBox)
+  JV_WINCONTROL(RadioButton)
+  JV_WINCONTROL(CustomListBox)
+  JV_WINCONTROL(ScrollBar)
+  JV_WINCONTROL(GroupBox)
+  JV_WINCONTROL(CheckBox)
+  JV_WINCONTROL(CustomStaticText)
+  JV_WINCONTROL(StaticText)
 
-function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): boolean;
+function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
 
 implementation
 
-function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): boolean;
+function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
 begin
   case Msg of
     WM_CLEAR         : Result := caClear in ClipBoardCommands;
@@ -79,35 +79,35 @@ begin
 end;
 
 
-JV_WINCONTROL_EVENTS_IMPL(CustomGroupBox)
+JV_WINCONTROL_IMPL(CustomGroupBox)
 {$DEFINE HASAUTOSIZE}
-JV_CONTROL_EVENTS_IMPL(CustomLabel)
-JV_CONTROL_EVENTS_IMPL(Label)
+JV_CONTROL_IMPL(CustomLabel)
+JV_CONTROL_IMPL(Label)
 {$UNDEF HASAUTOSIZE}
 
 {$UNDEF CONSTRUCTOR_CODE}
 {$DEFINE CONSTRUCTOR_CODE
   FClipboardCommands := [caCopy..caUndo];
 }
-JV_EDITCONTROL_EVENTS_IMPL(CustomEdit)
-JV_EDITCONTROL_EVENTS_IMPL(CustomMemo)
+JV_EDITCONTROL_IMPL(CustomEdit)
+JV_EDITCONTROL_IMPL(CustomMemo)
 {$UNDEF CONSTRUCTOR_CODE}
 {$DEFINE CONSTRUCTOR_CODE}
 
 {$IFDEF COMPILER6_UP}
-JV_WINCONTROL_EVENTS_IMPL(CustomCombo)
+JV_WINCONTROL_IMPL(CustomCombo)
 {$ENDIF COMPILER6_UP}
-JV_WINCONTROL_EVENTS_IMPL(CustomComboBox)
-JV_WINCONTROL_EVENTS_IMPL(ButtonControl)
-JV_WINCONTROL_EVENTS_IMPL(Button)
-JV_WINCONTROL_EVENTS_IMPL(CustomCheckBox)
-JV_WINCONTROL_EVENTS_IMPL(RadioButton)
-JV_WINCONTROL_EVENTS_IMPL(CustomListBox)
-JV_WINCONTROL_EVENTS_IMPL(ScrollBar)
-JV_WINCONTROL_EVENTS_IMPL(GroupBox)
-JV_WINCONTROL_EVENTS_IMPL(CheckBox)
-JV_WINCONTROL_EVENTS_IMPL(CustomStaticText)
-JV_WINCONTROL_EVENTS_IMPL(StaticText)
+JV_WINCONTROL_IMPL(CustomComboBox)
+JV_WINCONTROL_IMPL(ButtonControl)
+JV_WINCONTROL_IMPL(Button)
+JV_WINCONTROL_IMPL(CustomCheckBox)
+JV_WINCONTROL_IMPL(RadioButton)
+JV_WINCONTROL_IMPL(CustomListBox)
+JV_WINCONTROL_IMPL(ScrollBar)
+JV_WINCONTROL_IMPL(GroupBox)
+JV_WINCONTROL_IMPL(CheckBox)
+JV_WINCONTROL_IMPL(CustomStaticText)
+JV_WINCONTROL_IMPL(StaticText)
 
 {$UNDEF CONSTRUCTOR_CODE} // undefine at file end
 

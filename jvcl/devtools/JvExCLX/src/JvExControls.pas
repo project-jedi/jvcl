@@ -27,6 +27,8 @@ unit JvExControls;
 
 {$I jvcl.inc}
 
+{MACROINCLUDE JvExControls.macros}
+
 WARNINGHEADER
 
 interface
@@ -48,13 +50,12 @@ type
     ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
   end;
 
-
 type
-  JV_CONTROL_EVENTS(Control)
-  JV_WINCONTROL_EVENTS(WinControl)
+  JV_CONTROL(Control)
+  JV_WINCONTROL(WinControl)
   JV_CONTROL(GraphicControl)
-  JV_WINCONTROL_EVENTS(CustomControl)
-  JV_WINCONTROL_EVENTS(HintWindow)
+  JV_WINCONTROL(CustomControl)
+  JV_WINCONTROL(HintWindow)
 
 function GetHintColor(Instance: TWinControl): TColor;
 function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;
@@ -119,11 +120,11 @@ begin
 end;
 
 
-JV_CONTROL_EVENTS_IMPL(Control)
-JV_WINCONTROL_EVENTS_IMPL(WinControl)
-JV_CONTROL_EVENTS_IMPL(GraphicControl)
-JV_WINCONTROL_EVENTS_IMPL(CustomControl)
-JV_WINCONTROL_EVENTS_IMPL(HintWindow)
+JV_CONTROL_IMPL(Control)
+JV_WINCONTROL_IMPL(WinControl)
+JV_CONTROL_IMPL(GraphicControl)
+JV_WINCONTROL_IMPL(CustomControl)
+JV_WINCONTROL_IMPL(HintWindow)
 
 end.
 
