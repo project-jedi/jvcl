@@ -39,7 +39,8 @@ uses
 const
   // custom painter constants
   DefaultImageBackgroundColor = clBtnFace;
-
+  DefaultMarginColor: TColor = clBlue;
+  
   // xp painter constants
   DefaultXPImageBackgroundColor = $D1D8D8;
   DefaultXPSeparatorColor = $A6A6A6;
@@ -91,7 +92,7 @@ type
 
   { TJvMenuChangeLink}
 
-  // This class should be used by any class that which to be notified
+  // This class should be used by any class that wish to be notified
   // when the content of the menu has changed. Pass an instance of
   // TJvMenuChangeLink to a TJvMainMenu through RegisterChanges and
   // the OnChange event of your object will be fired whenever it is
@@ -145,9 +146,6 @@ type
   // The event trigerred when the size of an item is required
   TMeasureMenuItemEvent = procedure(Sender: TMenu; Item: TMenuItem; var Width,
     Height: Integer) of object;
-
-  // the event trigerred when the margin of a menu must be drawn
-  TDrawMarginEvent = procedure(Sender: TMenu; Rect: TRect) of object;
 
   // event trigerred when about to draw the menu item and a
   // glyph for it is required. If no handler is provided, the
@@ -283,7 +281,6 @@ type
     FImageMargin    : TJvImageMargin;
     FImages         : TImageList;
     FImageSize      : TJvMenuImageSize;
-//    FLeftMargin     : Cardinal;
     FShowCheckMarks : Boolean;
     FStyle          : TJvMenuStyle;
     FTextMargin     : Integer;
@@ -291,7 +288,6 @@ type
 
     FOnDrawItem: TDrawMenuItemEvent;
     FOnMeasureItem: TMeasureMenuItemEvent;
-//    FOnDrawMargin: TDrawMarginEvent;
     FOnGetItemParams: TItemParamsEvent;
 
     FImageChangeLink: TChangeLink;
@@ -330,7 +326,6 @@ type
       var ImageIndex: Integer); dynamic;
     procedure DrawItem(Item: TMenuItem; Rect: TRect;
       State: TMenuOwnerDrawState); virtual;
-//    procedure DrawMargin(ARect: TRect); virtual;
     procedure GetItemParams(Item: TMenuItem; State: TMenuOwnerDrawState;
       AFont: TFont; var Color: TColor; var Graphic: TGraphic;
       var NumGlyphs: Integer); dynamic;
@@ -346,7 +341,6 @@ type
     procedure Popup(X, Y: Integer); override;
     procedure DefaultDrawItem(Item: TMenuItem; Rect: TRect;
       State: TMenuOwnerDrawState);
-//    procedure DefaultDrawMargin(ARect: TRect; StartColor, EndColor: TColor);
     property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL      : TJVCLAboutInfo           read FAboutJVCL          write FAboutJVCL         stored False;
@@ -357,7 +351,6 @@ type
     property Images         : TImageList               read FImages             write SetImages;
     property ImageSize      : TJvMenuImageSize             read FImageSize          write FImageSize;
     property ItemPainter    : TJvCustomMenuItemPainter read FJvMenuItemPainter;
-//    property LeftMargin     : Cardinal                 read FLeftMargin         write FLeftMargin        default 0;
     property OwnerDraw stored False;
     property ShowCheckMarks : Boolean                  read FShowCheckMarks     write FShowCheckMarks    default False;
     property Style          : TJvMenuStyle             read FStyle              write SetStyle           default msStandard;
@@ -368,10 +361,12 @@ type
     property OnGetDisabledImageIndex: TItemImageEvent read FOnGetDisabledImageIndex write FOnGetDisabledImageIndex;
     property OnGetHotImageIndex: TItemImageEvent read FOnGetHotImageIndex write FOnGetHotImageIndex;
     property OnDrawItem: TDrawMenuItemEvent read FOnDrawItem write FOnDrawItem;
-//    property OnDrawMargin: TDrawMarginEvent read FOnDrawMargin write FOnDrawMargin;
     property OnGetItemParams: TItemParamsEvent read FOnGetItemParams write FOnGetItemParams;
     property OnMeasureItem: TMeasureMenuItemEvent read FOnMeasureItem write FOnMeasureItem;
   end;
+
+  // the event trigerred when the margin of a menu must be drawn
+  TDrawLeftMarginEvent = procedure(Sender: TMenu; Rect: TRect) of object;
 
   { TJvCustomMenuItemPainter }
 
@@ -381,9 +376,14 @@ type
   // of the painting of menu items. There is one descendent per
   // style in the TJvMenuStyle enumeration
   TJvCustomMenuItemPainter = class (TPersistent)
+  private
+    procedure SetLeftMargin(const Value: Cardinal);
+    procedure SetImageBackgroundColor(const Value: TColor);
   protected
     // property fields
     FImageBackgroundColor : TColor;
+    FLeftMargin           : Cardinal;
+    FOnDrawLeftMargin     : TDrawLeftMarginEvent;
 
     // other usage fields
     FMainMenu    : TJvMainMenu;
@@ -503,31 +503,38 @@ type
     // draws the text at the given place
     procedure DrawText(ARect : TRect; const Text: string; Flags: Longint); virtual;
 
+    procedure DrawLeftMargin(ARect: TRect); virtual;
+    procedure DefaultDrawLeftMargin(ARect: TRect; StartColor, EndColor: TColor);
+
     // properties read or calculated from the properties of the
     // menu to which the painter is linked
-    property Canvas          : TCanvas read GetCanvas;
-    property CheckMarkHeight : Integer read GetCheckMarkHeight;
-    property CheckMarkWidth  : Integer read GetCheckMarkWidth;
-    property ComponentState  : TComponentState read GetComponentState;
-    property DisabledImages  : TImageList read GetDisabledImages;
-    property DrawHighlight   : Boolean read GetDrawHighlight;
-    property GrayColor       : TColor read GetGrayColor;
-    property HotImages       : TImageList read GetHotImages;
-    property Images          : TImageList read GetImages;
-    property ImageHeight     : Integer read GetImageHeight;
-    property ImageMargin     : TJvImageMargin read FImageMargin;
-    property ImageSize       : TJvMenuImageSize read FImageSize;
-    property ImageWidth      : Integer read GetImageWidth;
-    property IsPopup         : Boolean read GetIsPopup;
-    property IsRightToLeft   : Boolean read GetIsRightToLeft;
-    property ShowCheckMarks  : Boolean read GetShowCheckMarks;
-    property TextMargin      : Integer read GetTextMargin;
+    property Canvas          : TCanvas              read GetCanvas;
+    property CheckMarkHeight : Integer              read GetCheckMarkHeight;
+    property CheckMarkWidth  : Integer              read GetCheckMarkWidth;
+    property ComponentState  : TComponentState      read GetComponentState;
+    property DisabledImages  : TImageList           read GetDisabledImages;
+    property DrawHighlight   : Boolean              read GetDrawHighlight;
+    property GrayColor       : TColor               read GetGrayColor;
+    property HotImages       : TImageList           read GetHotImages;
+    property Images          : TImageList           read GetImages;
+    property ImageHeight     : Integer              read GetImageHeight;
+    property ImageMargin     : TJvImageMargin       read FImageMargin;
+    property ImageSize       : TJvMenuImageSize     read FImageSize;
+    property ImageWidth      : Integer              read GetImageWidth;
+    property IsPopup         : Boolean              read GetIsPopup;
+    property IsRightToLeft   : Boolean              read GetIsRightToLeft;
+    property ShowCheckMarks  : Boolean              read GetShowCheckMarks;
+    property TextMargin      : Integer              read GetTextMargin;
     property TextVAlignment  : TJvVerticalAlignment read GetTextVAlignment;
+
+    // Left margin properties and events
+    property LeftMargin       : Cardinal             read FLeftMargin       write SetLeftMargin default 0;
+    property OnDrawLeftMargin : TDrawLeftMarginEvent read FOnDrawLeftMargin write FOnDrawLeftMargin;
   public
     // constructor, requires the menu to which this painter is linked
     // will create the objects derived from TPersistent which are
     // stored here (see UpdateFieldsFromMenu)
-    constructor Create(Menu : TMenu); overload; virtual;
+    constructor Create(Menu : TMenu); reintroduce; overload; virtual;
 
     // destroys the objects created in create
     destructor Destroy; override;
@@ -543,7 +550,7 @@ type
                     ItemRect : TRect;
                     State: TMenuOwnerDrawState); virtual;
   published
-    property ImageBackgroundColor : TColor read FImageBackgroundColor write FImageBackgroundColor default DefaultImageBackgroundColor;
+    property ImageBackgroundColor : TColor read FImageBackgroundColor write SetImageBackgroundColor default DefaultImageBackgroundColor;
   end;
 
   { TJvOfficeMenuItemPainter }
@@ -566,6 +573,9 @@ type
     procedure Paint(Item : TMenuItem;
                     ItemRect : TRect;
                     State: TMenuOwnerDrawState); override;
+  published
+    property LeftMargin;
+    property OnDrawLeftMargin;
   end;
 
   // this painter draws an item as a lowered or raised button
@@ -579,11 +589,17 @@ type
     procedure UpdateFieldsFromMenu; override;
   public
     constructor Create(Menu : TMenu; Lowered : boolean); overload;
+  published
+    property LeftMargin;
+    property OnDrawLeftMargin;
   end;
 
   // this painter is the standard one and as such doesn't do anything
-  // more than the ancestor class
+  // more than the ancestor class except publishing properties
   TJvStandardMenuItemPainter = class (TJvCustomMenuItemPainter)
+  published
+    property LeftMargin;
+    property OnDrawLeftMargin;
   end;
 
   // this painter calls the user supplied events to render the item
@@ -664,8 +680,6 @@ const
   sUnitName = 'JvMenus';
 
 const
-  // (ahuser) deactivated because the code that uses DefMarginColor is deactivated
-  //DefMarginColor: TColor = clBlue;
   Separator = '-';
 
 function CreateMenuItemPainterFromStyle(Style : TJvMenuStyle; Menu : TMenu) : TJvCustomMenuItemPainter;
@@ -1536,40 +1550,6 @@ begin
     FOnGetImageIndex(Self, Item, State, ImageIndex);
 end;
 
-{procedure TJvPopupMenu.DefaultDrawMargin(ARect: TRect; StartColor,
-  EndColor: TColor);
-var
-  R: Integer;
-begin
-  with ARect do
-  begin
-    if NewStyleControls then
-      R := Right - 3
-    else
-      R := Right;
-    GradientFillRect(Canvas, Rect(Left, Top, R, Bottom), StartColor,
-      EndColor, fdTopToBottom, 32);
-    if NewStyleControls then
-    begin
-      MenuLine(Canvas, clBtnShadow, Right - 2, Top, Right - 2, Bottom);
-      MenuLine(Canvas, clBtnHighlight, Right - 1, Top, Right - 1, Bottom);
-    end;
-  end;
-end;
-
-procedure TJvPopupMenu.DrawMargin(ARect: TRect);
-begin
-  if Assigned(FOnDrawMargin) then
-    FOnDrawMargin(Self, ARect)
-  else
-  begin
-    DefaultDrawMargin(ARect, DefMarginColor, RGB(
-      GetRValue(DefMarginColor) div 4,
-      GetGValue(DefMarginColor) div 4,
-      GetBValue(DefMarginColor) div 4));
-  end;
-end; }
-
 procedure TJvPopupMenu.WMDrawItem(var Message: TWMDrawItem);
 var
   State: TMenuOwnerDrawState;
@@ -1587,14 +1567,6 @@ begin
       SaveIndex := SaveDC(hDC);
       try
         Canvas.Handle := hDC;
-{        if (Item.Parent = Self.Items) and (FLeftMargin > 0) then
-          if (itemAction = ODA_DRAWENTIRE) then
-          begin
-            MarginRect := Canvas.ClipRect;
-            MarginRect.Left := 0;
-            MarginRect.Right := FLeftMargin;
-            DrawMargin(MarginRect);
-          end;}
         SetDefaultMenuFont(Canvas.Font);
         Canvas.Font.Color := clMenuText;
         Canvas.Brush.Color := clMenu;
@@ -1606,8 +1578,6 @@ begin
           Canvas.Brush.Color := clHighlight;
           Canvas.Font.Color := clHighlightText;
         end;
-{        if (Item.Parent = Self.Items) then
-          Inc(rcItem.Left, LeftMargin + 1);}
         with rcItem do
           IntersectClipRect(Canvas.Handle, Left, Top, Right, Bottom);
         DrawItem(Item, rcItem, State);
@@ -1636,8 +1606,6 @@ begin
 
         FJvMenuItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
         MeasureItem(Item, Integer(itemWidth), Integer(itemHeight));
-{        if (Item.Parent = Self.Items) then
-          Inc(itemWidth, LeftMargin + 1);}
       finally
         ReleaseDC(0, Canvas.Handle);
         Canvas.Handle := 0;
@@ -1891,14 +1859,14 @@ begin
   end;
 
   case TextVAlignment of
-    vaMiddle : Inc(ARect.Top, ((ARect.Bottom-ARect.Top+1)-Canvas.TextHeight(Text)) div 2);
-    vaBottom : ARect.Top := ARect.Bottom - Canvas.TextHeight(Text);
+    vaMiddle : Inc(ARect.Top, ((ARect.Bottom-ARect.Top+1)-Canvas.TextHeight(DelChars(Text, '&'))) div 2);
+    vaBottom : ARect.Top := ARect.Bottom - Canvas.TextHeight(DelChars(Text, '&'));
   end;
 
   // if a top level menu item then draw text centered horizontally
   if not IsPopup then
   begin
-    ARect.Left := ARect.Right-Canvas.TextWidth(Text);
+    ARect.Left := ARect.Left + ((ARect.Right-ARect.Left)-Canvas.TextWidth(DelChars(Text, '&'))) div 2;
   end;
 
   if (mdDisabled in FState) then
@@ -1955,39 +1923,45 @@ var
   ImageAndMarginRect : TRect;
   TextRect           : TRect;
   TextAndMarginRect  : TRect;
+  LeftMarginRect     : TRect;      
+
+  CanvasWindow: HWND;
+  CanvasRect: TRect;
 begin
   // prepare the painting
   PreparePaint(Item, ItemRect, State, false);
 
-  // the code below has been removed because if the user wants to use
-  // the OnDrawItem event, he must use a style of msOwnerDraw and the
-  // OwnerDrawn painter will make the calls.
-  // This also allows the user using the component to call this method
-  // from an owner drawn menu without getting an infinite recursion 
-{  // if user supplied an event handler, we call it and don't draw anything
-  if Assigned(FOnDrawItem) then
-  begin
-    if Assigned(FMainMenu) then
-      FOnDrawItem(FMainMenu, Item, ItemRect, State)
-    else
-      FOnDrawItem(FPopupMenu, Item, ItemRect, State);
-    exit;
-  end;}
-
   // calculate areas for the different parts of the item to be drawn
   if IsPopup then
   begin
+    // as the margin is to be drawn for the entire height of the menu,
+    // we need to retrieve this height. The only way to do that is to
+    // get the rectangle for the canvas in which we are to draw.
+    CanvasWindow := WindowFromDC(Canvas.Handle);
+    GetWindowRect(CanvasWindow, CanvasRect);
+
+    // different values depending on the reading convention
     if IsRightToLeft then
     begin
       CheckMarkRect      := Rect(ItemRect.Right-CheckMarkWidth+1, ItemRect.Top, ItemRect.Right, ItemRect.Bottom);
       ImageAndMarginRect := Rect(CheckMarkRect.Left-1-ImageMargin.Left-ImageWidth-ImageMargin.Right, ItemRect.Top, CheckMarkRect.Left-1, ItemRect.Bottom);
       TextAndMarginRect  := Rect(ItemRect.Left, ItemRect.Top, ImageAndMarginRect.Left-1, ItemRect.Bottom);
+      OffsetRect(CheckMarkRect, -LeftMargin, 0);
+      OffsetRect(ImageAndMarginRect, -LeftMargin, 0);
+      OffsetRect(TextAndMarginRect, -LeftMargin, 0);
+
+      LeftMarginRect     := Rect(ItemRect.Right, 0, Cardinal(ItemRect.Right)-LeftMargin, CanvasRect.Bottom-CanvasRect.Top);
     end
     else
     begin
       CheckMarkRect      := Rect(ItemRect.Left, ItemRect.Top, ItemRect.Left+CheckMarkWidth-1, ItemRect.Bottom);
       ImageAndMarginRect := Rect(CheckMarkRect.Right+1, ItemRect.Top, CheckMarkRect.Right+1+ImageMargin.Left+ImageWidth+ImageMargin.Right-1, ItemRect.Bottom);
       TextAndMarginRect  := Rect(ImageAndMarginRect.Right+1, ItemRect.Top, ItemRect.Right, ItemRect.Bottom);
+      OffsetRect(CheckMarkRect, LeftMargin, 0);
+      OffsetRect(ImageAndMarginRect, LeftMargin, 0);
+      OffsetRect(TextAndMarginRect, LeftMargin, 0);
+
+      LeftMarginRect     := Rect(ItemRect.Left, 0, Cardinal(ItemRect.Left)+LeftMargin, CanvasRect.Bottom-CanvasRect.Top);
     end;
     ImageRect          := Rect(ImageAndMarginRect.Left+ImageMargin.Left, ImageAndMarginRect.Top+ImageMargin.Top, ImageAndMarginRect.Right-ImageMargin.Right, ImageAndMarginRect.Bottom-ImageMargin.Bottom);
     TextRect           := Rect(TextAndMarginRect.Left + TextMargin, TextAndMarginRect.Top, TextAndMarginRect.Right, TextAndMarginRect.Bottom);
@@ -2002,7 +1976,11 @@ begin
   // first, draw the background of the entire item
   DrawItemBackground(ItemRect);
 
-  // then draw the background of each separate part
+  // draw the margin, if any
+  if LeftMargin > 0 then
+    DrawLeftMargin(LeftMarginRect);
+
+  // draw the background of each separate part
   if IsPopup then
   begin
     if ShowCheckMarks then
@@ -2171,24 +2149,32 @@ end;
 
 function TJvCustomMenuItemPainter.GetTextWidth(Item: TMenuItem): Integer;
 var
-  I, MaxW: Integer;
+  I: Integer;
 begin
   if IsPopup then
   begin
-    Result := Canvas.TextWidth(DelChars(Item.Caption, '&') + Tab + Tab);
-    MaxW := Canvas.TextWidth(ShortCutToText(Item.ShortCut) + ' ');
-    if (Item.Parent <> nil) and (Item.ShortCut <> scNone) then
+    // The width of the text is splitted in three parts:
+    // Text Shortcut SubMenuArrow.
+    // with the two last ones being not compulsory
+
+    Result := Canvas.TextWidth(DelChars(Item.Caption, '&'));
+    if Item.ShortCut <> scNone then
     begin
-      for I := 0 to Item.Parent.Count - 1 do
-        with Item.Parent.Items[I] do
-        begin
-          Result := Max(Result, Canvas.TextWidth(DelChars(Caption, '&') + Tab + Tab));
-          MaxW := Max(MaxW, Canvas.TextWidth(ShortCutToText(ShortCut) + ' '));
-        end;
-    end;
-    Result := Result + MaxW;
-    if Item.Count > 0 then
+      // It has been found that there are always two tabs
+      // in front of the text for the shortcut.
+      Inc(Result, Canvas.TextWidth(ShortcutToText(Item.ShortCut)));
       Inc(Result, Canvas.TextWidth(Tab + Tab));
+
+      // if the menu item has a parent and any of the child of the
+      // parent has child too, then we add the required width for
+      // an arrow. It is considered to be the width of two spaces.
+      if Item.Parent <> nil then
+      begin
+        for I := 0 to Item.Parent.Count - 1 do
+          if Item.Parent.Items[I].Count > 0 then
+            Inc(Result, Canvas.TextWidth('  '));
+      end;
+    end;
   end
   else
     Result := Canvas.TextWidth(DelChars(Item.Caption, '&'));
@@ -2201,7 +2187,7 @@ begin
 
   if IsPopup then
   begin
-    Width := CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right + TextMargin + GetTextWidth(Item);
+    Width := LeftMargin + Cardinal(CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right + TextMargin + GetTextWidth(Item));
 
     if Item.Caption = Separator then
       Height := Max(Canvas.TextHeight(Separator) div 2, 9)
@@ -2376,6 +2362,50 @@ begin
     Result := FMainMenu.ComponentState
   else
     Result := FPopupMenu.ComponentState;
+end;
+
+procedure TJvCustomMenuItemPainter.DefaultDrawLeftMargin(ARect: TRect; StartColor,
+  EndColor: TColor);
+var
+  R: Integer;
+begin
+  with ARect do
+  begin
+    R := Right - 3;
+
+    // Draw the gradient
+    GradientFillRect(Canvas, Rect(Left, Top, R, Bottom), StartColor,
+      EndColor, fdTopToBottom, 32);
+
+    // Draw the separating line
+    MenuLine(Canvas, clBtnFace, Right - 3, Top, Right - 3, Bottom);
+    MenuLine(Canvas, clBtnShadow, Right - 2, Top, Right - 2, Bottom);
+    MenuLine(Canvas, clBtnHighlight, Right - 1, Top, Right - 1, Bottom);
+  end;
+end;
+
+procedure TJvCustomMenuItemPainter.DrawLeftMargin(ARect: TRect);
+begin
+  if Assigned(FOnDrawLeftMargin) then
+    FOnDrawLeftMargin(Self.FParentMenu, ARect)
+  else
+  begin
+    DefaultDrawLeftMargin(ARect, DefaultMarginColor, RGB(
+      GetRValue(DefaultMarginColor) div 4,
+      GetGValue(DefaultMarginColor) div 4,
+      GetBValue(DefaultMarginColor) div 4));
+  end;
+end; 
+
+procedure TJvCustomMenuItemPainter.SetLeftMargin(const Value: Cardinal);
+begin
+  FLeftMargin := Value;
+end;
+
+procedure TJvCustomMenuItemPainter.SetImageBackgroundColor(
+  const Value: TColor);
+begin
+  FImageBackgroundColor := Value;
 end;
 
 { TJvBtnMenuItemPainter }
