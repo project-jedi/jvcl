@@ -56,6 +56,10 @@ type
   );
   TDlgCodes = set of TDlgCode;
 
+{$IFDEF VisualCLX}
+  HWND = QWindows.HWND;
+{$ENDIF VisualCLX}
+
 const
   dcWantMessage = dcWantAllKeys;
 
@@ -91,8 +95,8 @@ type
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean);
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean);
     procedure DoGetDlgCode(var Code: TDlgCodes); // WM_GETDLGCODE
-    procedure DoSetFocus(PreviousControl: TWinControl);  // WM_SETFOCUS
-    procedure DoKillFocus(NextControl: TWinControl); // WM_KILLFOCUS
+    procedure DoSetFocus(FocusedWnd: HWND);  // WM_SETFOCUS
+    procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
   end;
 
   IJvCustomControlEvents = interface
@@ -340,13 +344,13 @@ begin
               begin
                 with PMsg^ do
                   Result := InheritMsg(Instance, Msg, WParam, LParam);
-                DoSetFocus(FindControl(HWND(PMsg^.WParam)));
+                DoSetFocus(HWND(PMsg^.WParam));
               end;
             WM_KILLFOCUS:
               begin
                 with PMsg^ do
                   Result := InheritMsg(Instance, Msg, WParam, LParam);
-                DoKillFocus(FindControl(HWND(PMsg^.WParam)));
+                DoKillFocus(HWND(PMsg^.WParam));
               end;
         else
           CallInherited := True;
@@ -762,6 +766,7 @@ function AppEventFilter(App: TApplication; Sender: QObjectH; Event: QEventH): Bo
 var
   Control: TWidgetControl;
   Intf: IJvWinControlEvents;
+  Wnd: HWND;
 begin
   Result := False; // let the default event handler handle this event
   try
@@ -771,10 +776,14 @@ begin
           Control := FindControl(QWidgetH(Sender));
           if (Control <> nil) and Supports(Control, IJvWinControlEvents, Intf) then
           begin
-            if QEvent_type(Event) = QEventType_FocusIn then
-              Intf.DoSetFocus(Screen.ActiveControl)
+            if Screen.ActiveControl <> nil then
+              Wnd := Screen.ActiveControl.Handle
             else
-              Intf.DoKillFocus(Screen.ActiveControl);
+              Wnd := HWND(0);
+            if QEvent_type(Event) = QEventType_FocusIn then
+              Intf.DoSetFocus(Wnd)
+            else
+              Intf.DoKillFocus(Wnd);
           end;
         end;
     end;
