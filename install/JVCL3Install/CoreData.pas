@@ -713,13 +713,13 @@ begin
             List.Delete(i);
           Break;
         end;
-      if not Found then
+      if (not Found) and (Add) then
       begin
         if StartsWith(AnsiLowerCase(NewPaths[DirIndex]), AnsiLowerCase(RootDir) + '\') then
         begin
           if IsDelphi then
             List.Add('$(DELPHI)' + Copy(NewPaths[DirIndex], 1 + Length(RootDir), MaxInt))
-          else
+          else               
             List.Add('$(BCB)' + Copy(NewPaths[DirIndex], 1 + Length(RootDir), MaxInt));
         end
         else
@@ -948,12 +948,12 @@ var i: Integer;
 begin
   AddRemoveJVCLPaths(False);
   DoClearJVCLPalette;
-  UpdateKnownPackage;
   for i := 0 to Packages.Count - 1 do
   begin
     Packages[i].Install := False;
     Packages[i].FIsInstalled := False;
   end;
+  UpdateKnownPackage;
   FIsJVCLInstalled := False;
  // do not call ReadData here
 end;
@@ -1389,7 +1389,7 @@ begin
   FName := AName;
   FRequires := TObjectList.Create;
   FContains := TObjectList.Create;
-  FInstall := True;
+  FInstall := False;
   FXmlDir := AXmlDir;
 
   ReadXmlPackage; // fills FDisplayName, FDescription, FRequires
@@ -1520,6 +1520,7 @@ begin
     if CompareText(PkgName, ExtractFileName(Target.KnownPackages[i])) = 0 then
     begin
       FIsInstalled := True;
+      FInstall := True;
       Target.FIsJVCLInstalled := True;
       Break;
     end;
