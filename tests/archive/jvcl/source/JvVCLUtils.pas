@@ -305,9 +305,9 @@ type
     property Size: Integer read FSize write SetSize;
   end;
 
-{ TJvMetafileCanvas }
+{ TMetafileCanvas }
 
-  TJvMetafileCanvas = class(TCanvas)
+  TMetafileCanvas = class(TCanvas)
   private
     FMetafile: TMetafile;
   public
@@ -316,9 +316,9 @@ type
     property Metafile: TMetafile read FMetafile;
   end;
 
-{ TJvResourceStream }
+{ TResourceStream }
 
-  TJvResourceStream = class(THandleStream)
+  TResourceStream = class(THandleStream)
   private
     FStartPos: LongInt;
     FEndPos: LongInt;
@@ -2550,9 +2550,9 @@ begin
   inherited Destroy;
 end;
 
-{ TJvResourceStream }
+{ TResourceStream }
 
-constructor TJvResourceStream.Create(Instance: THandle; const ResName: string;
+constructor TResourceStream.Create(Instance: THandle; const ResName: string;
   ResType: PChar);
 var
   ResID: array[0..255] of Char;
@@ -2560,13 +2560,13 @@ begin
   CreateFromPChar(Instance, StrPCopy(ResID, ResName), ResType);
 end;
 
-constructor TJvResourceStream.CreateFromID(Instance: THandle; ResID: Integer;
+constructor TResourceStream.CreateFromID(Instance: THandle; ResID: Integer;
   ResType: PChar);
 begin
   CreateFromPChar(Instance, MakeIntResource(ResID), ResType);
 end;
 
-constructor TJvResourceStream.CreateFromPChar(Instance: THandle; ResName,
+constructor TResourceStream.CreateFromPChar(Instance: THandle; ResName,
   ResType: PChar);
 var
   ResInfo: THandle;
@@ -2581,18 +2581,18 @@ begin
   FEndPos := FStartPos + SizeOfResource(Instance, ResInfo);
 end;
 
-destructor TJvResourceStream.Destroy;
+destructor TResourceStream.Destroy;
 begin
   if Handle >= 0 then FileClose(Handle);
   inherited Destroy;
 end;
 
-function TJvResourceStream.Write(const Buffer; Count: Longint): Longint;
+function TResourceStream.Write(const Buffer; Count: Longint): Longint;
 begin
   raise EStreamError.CreateRes(SWriteError);
 end;
 
-function TJvResourceStream.Seek(Offset: Longint; Origin: Word): Longint;
+function TResourceStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
   case Origin of
     soFromBeginning:
