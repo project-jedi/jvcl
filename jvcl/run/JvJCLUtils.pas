@@ -29,9 +29,6 @@ Known Issues:
 
 unit JvJCLUtils;
 
-// (p3) note: this unit should only contain JCL compatible routines ( no Forms etc)
-// and no JVCL units!
-
 { history:
 3.0:
   2003-09-19: (changes by Andreas Hausladen)
@@ -57,6 +54,8 @@ unit JvJCLUtils;
 }
 
 interface
+// (p3) note: this unit should only contain JCL compatible routines (no Forms etc)
+// and no JVCL units!
 
 uses
   {$IFDEF MSWINDOWS}
@@ -1009,8 +1008,7 @@ uses
   {$ELSE}
   QConsts,
   {$ENDIF VCL}
-  JclStrings, JclSysInfo,
-  JvTypes;
+  JclStrings, JclSysInfo;
 
 const
   Separators: TSysCharSet = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
@@ -8240,6 +8238,22 @@ procedure AntiAlias(Clip: TBitmap);
 begin
   AntiAliasRect(Clip, 0, 0, Clip.Width, Clip.Height);
 end;
+
+type
+// (p3) duplicated from JvTypes to avoid JVCL dependencies 
+  {$IFDEF VCL}
+  TJvRGBTriple = packed record
+    rgbBlue: Byte;
+    rgbGreen: Byte;
+    rgbRed: Byte;
+  end;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit
+  {$ENDIF VisualCLX}
+
+  PJvRGBArray = ^TJvRGBArray;
+  TJvRGBArray = array [0..32766] of TJvRGBTriple;
 
 procedure AntiAliasRect(Clip: TBitmap;
   XOrigin, YOrigin, XFinal, YFinal: Integer);
