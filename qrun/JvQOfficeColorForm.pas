@@ -59,10 +59,10 @@ type
   TJvSubDragBar = class(TLabel)
   
   private
-    OwnerForm: TControl;
+    FOwnerForm: TControl;
     
-    Fx, Fy: Integer;
-   
+    FPos: TPoint;
+    
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -80,7 +80,6 @@ type
     FWordStyle: Boolean;
     FColorPanel: TJvOfficeColorPanel;
     FDragBar: TJvSubDragBar;
-
     FOwner: TControl;
     FDragBarSpace: Integer;
     FDragBarHeight: Integer;
@@ -91,37 +90,27 @@ type
     FOnWindowStyleChanged: TNotifyEvent;
     FShowDragBar: Boolean;
     FDragBarHint: string;
-
     procedure FormDeactivate(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-
     procedure SetMeasure(const Index, Value: Integer);
-
     procedure SetFlat(const Value: Boolean);
     procedure SetWordStyle(const Value: Boolean);
     procedure SetToolWindowStyle(const Value: Boolean);
-
     procedure SetShowDragBar(const Value: Boolean);
     procedure SetDragBarHint(const Value: string);
   protected
-
     DropDownMoved: Boolean; //移动过
     DropDownMoving: Boolean; //正在移动
     MoveEnd: Boolean; //移动完毕
     MoveStart: Boolean; //开始移动
-
     procedure Resize; override;
-
     procedure VisibleChanged; override;
-
-    procedure AdjustColorForm();
-
+    procedure AdjustColorForm;
     
     
     function WidgetFlags: Integer; override;
     procedure Paint; override;
     
-
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure ShowingChanged; override;
     property OnShowingChanged: TNotifyEvent read FOnShowingChanged write FOnShowingChanged;
@@ -129,22 +118,22 @@ type
     property OnWindowStyleChanged: TNotifyEvent read FOnWindowStyleChanged write FOnWindowStyleChanged;
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
-
     procedure SetButton(Button: TControl);
-
     property ColorPanel: TJvOfficeColorPanel read FColorPanel;
     property ShowDragBar: Boolean read FShowDragBar write SetShowDragBar default True;
     property DragBarHeight: Integer index Tag_DragBarHeight read FDragBarHeight write SetMeasure;
     property DragBarHint: string read FDragBarHint write SetDragBarHint;
     property DragBarSpace: Integer index Tag_DragBarSpace read FDragBarSpace write SetMeasure;
     property ToolWindowStyle: Boolean read FToolWindowStyle write SetToolWindowStyle default False;
-
     property Flat: Boolean read FFlat write SetFlat;
   end;
 
 implementation
 
-{ TJvOfficeColorForm }
+uses
+  JvQResources;
+
+//=== TJvOfficeColorForm =====================================================
 
 constructor TJvOfficeColorForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 var
@@ -165,10 +154,10 @@ begin
   {$ENDIF MSWINDOWS}
   
   FormStyle := fsStayOnTop;
-  Caption := 'Color Window';
+  Caption := RsColorWindow;
 
   FToolWindowStyle := False;
-  FDragBarHint := 'Drag to float';
+  FDragBarHint := RsDragToFloat;
 
   ParentControl := Self;
 
@@ -176,7 +165,7 @@ begin
   with FDragBar do
   begin
     Parent := ParentControl;
-    OwnerForm := Self;
+    FOwnerForm := Self;
     AutoSize := False;
     Caption := '';
     
@@ -208,14 +197,12 @@ end;
 
 
 
-
 function TJvOfficeColorForm.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags and
     not Integer(WidgetFlags_WStyle_Title) or
     Integer(WidgetFlags_WType_Popup);
 end;
-
 
 
 procedure TJvOfficeColorForm.FormKeyUp(Sender: TObject; var Key: Word;
@@ -228,13 +215,14 @@ begin
   end;
 end;
 
-procedure TJvOfficeColorForm.AdjustColorForm();
+procedure TJvOfficeColorForm.AdjustColorForm;
 var
   TempHeight: Integer;
   HasDragBar: Boolean;
   Offset: Integer;
 begin
-  if not FInited or FBusy then exit;
+  if not FInited or FBusy then
+    Exit;
   FBusy := True;
 
   DisableAlign;
@@ -277,8 +265,7 @@ begin
   if FDragBar.Visible then
     FDragBar.SetBounds(Offset, FDragBarSpace + Offset, FColorPanel.Width, FDragBarHeight);
 
-  FColorPanel.SetBounds(Offset, TempHeight + 1,
-    FColorPanel.Width, FColorPanel.Height);
+  FColorPanel.SetBounds(Offset, TempHeight + 1, FColorPanel.Width, FColorPanel.Height);
   FBusy := False;
 end;
 
@@ -301,12 +288,14 @@ begin
   else
     Exit;
   end;
-  if MeasureItem^ = Value then Exit;
+  if MeasureItem^ = Value then
+    Exit;
 
   MeasureItem^ := Value;
   FWordStyle := False;
-  if MeasureItem^ < MeasureConst then MeasureItem^ := MeasureConst;
-  AdjustColorForm();
+  if MeasureItem^ < MeasureConst then
+    MeasureItem^ := MeasureConst;
+  AdjustColorForm;
 end;
 
 procedure TJvOfficeColorForm.SetFlat(const Value: Boolean);
@@ -338,7 +327,7 @@ begin
     end;
     
     if not DropDownMoving then
-      AdjustColorForm();
+      AdjustColorForm;
     if Assigned(FOnWindowStyleChanged) then
       FOnWindowStyleChanged(Self);
   end
@@ -356,14 +345,14 @@ end;
 
 procedure TJvOfficeColorForm.ShowingChanged;
 begin
-  inherited;
+  inherited ShowingChanged;
   if Assigned(FOnShowingChanged) then
     FOnShowingChanged(ActiveControl);
 end;
 
 procedure TJvOfficeColorForm.DoKillFocus(FocusedWnd: HWND);
 begin
-  inherited;
+  inherited DoKillFocus(FocusedWnd);
   if Assigned(FOnKillFocus) and not DropDownMoving then
     FOnKillFocus(ActiveControl);
 end;
@@ -376,7 +365,7 @@ end;
 
 procedure TJvOfficeColorForm.VisibleChanged;
 begin
-  inherited;
+  inherited VisibleChanged;
   if not Visible then
   begin
     if ToolWindowStyle then
@@ -397,23 +386,17 @@ begin
   end;
 end;
 
-{ TJvSubDragBar }
+//=== TJvSubDragBar ==========================================================
 
 procedure TJvSubDragBar.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
-
-var
-  p: TPoint;
-
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if Button = mbLeft then
   begin
-    TJvOfficeColorForm(OwnerForm).MoveStart := True;
+    TJvOfficeColorForm(FOwnerForm).MoveStart := True;
     
-    p := ClientToScreen(Point(x, y));
-    Fx := p.X;
-    Fy := p.Y;
+    FPos := ClientToScreen(Point(X, Y));
     
   end;
 end;
@@ -442,7 +425,7 @@ procedure TJvOfficeColorForm.Resize;
 begin
   inherited Resize;
   if FInited then
-    AdjustColorForm();
+    AdjustColorForm;
 end;
 
 procedure TJvOfficeColorForm.SetWordStyle(const Value: Boolean);
@@ -464,33 +447,29 @@ procedure TJvSubDragBar.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   lOwnerForm: TJvOfficeColorForm;
   
-  p, q: TPoint;
+  P, Q: TPoint;
   
 begin
-  inherited;
-  lOwnerForm := TJvOfficeColorForm(OwnerForm);
-  if lOwnerForm.MoveStart or
-    lOwnerForm.DropDownMoving then
+  inherited MouseMove(Shift, X, Y);
+  lOwnerForm := TJvOfficeColorForm(FOwnerForm);
+  if lOwnerForm.MoveStart or lOwnerForm.DropDownMoving then
   begin
     if not lOwnerForm.DropDownMoved then
-    begin
       lOwnerForm.DropDownMoved := True;
-    end;
     
 
     lOwnerForm.DropDownMoving := True;
     lOwnerForm.MoveStart := False;
 
     
-    q := ClientToScreen(Point(X, y));
-    p := Point(q.x - Fx, q.y - Fy);
-    if ((p.x <> 0) or (p.y <> 0)) then
+    Q := ClientToScreen(Point(X, Y));
+    P := Point(Q.X - FPos.X, Q.Y - FPos.Y);
+    if (P.X <> 0) or (P.Y <> 0) then
       with lOwnerForm do
       begin
-        Left := Left + p.X;
-        Top := Top + p.Y;
-        Fx := q.x;
-        Fy := q.y;
+        Left := Left + P.X;
+        Top := Top + P.Y;
+        FPos := Q;
       end;
     
   end;
@@ -500,23 +479,23 @@ procedure TJvSubDragBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 
 var
-  p: TPoint;
+  P: TPoint;
 
 begin
-  inherited;
+  inherited MouseUp(Button, Shift, X, Y);
   if Button = mbLeft then
   begin
     
     
-    if TJvOfficeColorForm(OwnerForm).DropDownMoving then
+    if TJvOfficeColorForm(FOwnerForm).DropDownMoving then
     begin
-      TJvOfficeColorForm(OwnerForm).DropDownMoving := False;
-      TJvOfficeColorForm(OwnerForm).MoveStart := False;
-      TJvOfficeColorForm(OwnerForm).ToolWindowStyle := True;
-      p := ClientToScreen(Point(x, y));
-      OwnerForm.Top := p.Y + 10;
-      Fx := 0;
-      Fy := 0;
+      TJvOfficeColorForm(FOwnerForm).DropDownMoving := False;
+      TJvOfficeColorForm(FOwnerForm).MoveStart := False;
+      TJvOfficeColorForm(FOwnerForm).ToolWindowStyle := True;
+      P := ClientToScreen(Point(X, Y));
+      FOwnerForm.Top := P.Y + 10;
+      FPos.X := 0;
+      FPos.Y := 0;
     end;
     
   end;
@@ -533,13 +512,10 @@ begin
   else
   begin
     if DropDownMoved then
-    begin
       SetToolWindowStyle(False);
-    end;
   end;
   AdjustColorForm;
 end;
-
 
 
 procedure TJvOfficeColorForm.Paint;
@@ -554,7 +530,6 @@ begin
     Frame3D(Canvas, Rec, clActiveCaption, cl3DDkShadow, 1)
   end;
 end;
-
 
 
 end.

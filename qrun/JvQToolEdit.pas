@@ -23,6 +23,7 @@ Contributers:
   Rob den Braasem [rbraasem att xs4all dott nl]
   Polaris Software
   rblaurindo
+  Andreas Hausladen
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -165,6 +166,7 @@ type
     FImageKind: TJvImageKind;
     FNumGlyphs: Integer;
     FStreamedButtonWidth: Integer;
+    FOnEnabledChanged: TNotifyEvent;
     function BtnWidthStored: Boolean;
     function GetButtonFlat: Boolean;
     function GetButtonHint: string;
@@ -274,6 +276,8 @@ type
     property PopupAlign: TPopupAlign read FPopupAlign write FPopupAlign default epaRight;
     property PopupVisible: Boolean read GetPopupVisible;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+
+    property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -823,10 +827,7 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 implementation
 
 uses
-  {$IFDEF MSWINDOWS}
-  ShellAPI,
-  {$ENDIF MSWINDOWS}
-  Math,
+  ShellAPI, Math,
   
   QConsts,
   
@@ -856,7 +857,6 @@ const
 
   
 
-
   { TDateHook is used to only have 1 hook per application for monitoring
     date changes;
 
@@ -865,8 +865,6 @@ const
     changing on receiving WM_WININICHANGE; The Application object receives it
     later than the forms, controls etc.
   }
-
-  
 
 
 
@@ -1081,7 +1079,8 @@ end;
 
 
 { PaintEdit (CLX) needs an implemented EM_GETRECT message handler. If no
-  EM_GETTEXT handler exists, it uses the ClientRect of the edit control. }
+  EM_GETTEXT handler exists or the edit control does not implements
+  IComboEditHelper, it uses the ClientRect of the edit control. }
 
 function PaintEdit(Editor: TCustomEdit; const AText: WideString;
   AAlignment: TAlignment; PopupVisible: Boolean;
@@ -1096,6 +1095,7 @@ var
   SavedBrush: TBrushRecall;
   Offset: Integer;
   R: TRect;
+  EditHelperIntf: IComboEditHelper;
 begin
   Result := True;
   if csDestroying in Editor.ComponentState then
@@ -1133,8 +1133,16 @@ begin
 
     with ACanvas do
     begin
-      EditRect := Rect(0, 0, 0, 0);
-      SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
+      if Supports(Editor, IComboEditHelper, EditHelperIntf) then
+      begin
+        EditRect := EditHelperIntf.GetEditorRect;
+        EditHelperIntf := nil;
+      end
+      else
+      begin
+        EditRect := Rect(0, 0, 0, 0);
+        SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
+      end;
       if IsRectEmpty(EditRect) then
       begin
         EditRect := ed.ClientRect;
@@ -1486,6 +1494,8 @@ begin
   inherited EnabledChanged;
   Invalidate;
   FButton.Enabled := Enabled;
+  if Assigned(FOnEnabledChanged) then
+    FOnEnabledChanged(Self);
 end;
 
 procedure TJvCustomComboEdit.FontChanged;
@@ -2678,7 +2688,7 @@ begin
       if FDateAutoBetween then
         SetMinDate(Value)
       else
-        raise EJVCLException.CreateFmt(RsEDateMaxLimit, [DateToStr(FMinDate)]);
+        raise EJVCLException.CreateResFmt(@RsEDateMaxLimit, [DateToStr(FMinDate)]);
     FMaxDate := Value;
     UpdatePopup;
     if FDateAutoBetween then
@@ -2697,7 +2707,7 @@ begin
       if FDateAutoBetween then
         SetMaxDate(Value)
       else
-        raise EJVCLException.CreateFmt(RsEDateMinLimit, [DateToStr(FMaxDate)]);
+        raise EJVCLException.CreateResFmt(@RsEDateMinLimit, [DateToStr(FMaxDate)]);
     FMinDate := Value;
     UpdatePopup;
     if FDateAutoBetween then
@@ -2839,15 +2849,15 @@ begin
     begin
       if ((FMinDate <> NullDate) and (FMaxDate <> NullDate) and
         ((Value < FMinDate) or (Value > FMaxDate))) then
-        raise EJVCLException.CreateFmt(RsEDateOutOfRange, [FormatDateTime(FDateFormat, Value),
+        raise EJVCLException.CreateResFmt(@RsEDateOutOfRange, [FormatDateTime(FDateFormat, Value),
           FormatDateTime(FDateFormat, FMinDate), FormatDateTime(FDateFormat, FMaxDate)])
       else
       if (FMinDate <> NullDate) and (Value < FMinDate) then
-        raise EJVCLException.CreateFmt(RsEDateOutOfMin, [FormatDateTime(FDateFormat, Value),
+        raise EJVCLException.CreateResFmt(@RsEDateOutOfMin, [FormatDateTime(FDateFormat, Value),
           FormatDateTime(FDateFormat, FMinDate)])
       else
       if (FMaxDate <> NullDate) and (Value > FMaxDate) then
-        raise EJVCLException.CreateFmt(RsEDateOutOfMax, [FormatDateTime(FDateFormat, Value),
+        raise EJVCLException.CreateResFmt(@RsEDateOutOfMax, [FormatDateTime(FDateFormat, Value),
           FormatDateTime(FDateFormat, FMaxDate)]);
     end;
   inherited SetDate(Value);
@@ -3380,7 +3390,7 @@ begin
     ClearFileList;
   end
   else
-    raise EComboEditError.CreateFmt(SInvalidFilename, [Value]);
+    raise EComboEditError.CreateResFmt(@SInvalidFilename, [Value]);
 end;
 
 procedure TJvFilenameEdit.SetFilter(const Value: string);

@@ -38,7 +38,7 @@ uses
   SysUtils, Classes,
   
   
-  Qt, QForms, QGraphics, QControls, QWindows, QMessages,
+  Qt, QGraphics, QControls, QForms, QWindows,
   
   JvQComponent;
 

@@ -301,7 +301,8 @@ procedure TJvBaseProgressBar.StepBy(Delta: Integer);
 begin
   if Position + Delta > Max then
     Position := Max
-  else if Position + Delta < Min then
+  else
+  if Position + Delta < Min then
     Position := Min
   else
     Position := Position + Delta;

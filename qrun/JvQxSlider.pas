@@ -36,9 +36,10 @@ uses
   SysUtils, Classes,
   
   
-  QForms, QControls, QExtCtrls, QGraphics, QMenus, QWindows,
+  QForms, QControls, QExtCtrls, QGraphics, QMenus,
   
   JvQComponent, JvQExControls;
+
 type
   TNumThumbStates = 1..2;
   TSliderOrientation = (soHorizontal, soVertical);
@@ -278,13 +279,7 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
-  Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
-  Math,
+  Consts, Math,
   JvQJVCLUtils, JvQJCLUtils, JvQConsts, JvQTypes, JvQThemes;
 
 {$IFDEF MSWINDOWS}
@@ -845,7 +840,7 @@ procedure TJvCustomSlider.SetIncrement(Value: Longint);
 begin
   if not (csReading in ComponentState) and ((Value > MaxValue - MinValue) or
     (Value < 1)) then
-    raise EJVCLException.CreateFmt(SOutOfRange, [1, MaxValue - MinValue]);
+    raise EJVCLException.CreateResFmt(@SOutOfRange, [1, MaxValue - MinValue]);
   if (Value > 0) and (FIncrement <> Value) then
   begin
     FIncrement := Value;

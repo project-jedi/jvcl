@@ -2383,7 +2383,8 @@ begin
       for j:=0 to 2 do
         sLogic.FGates[j].State:=False;
     end
-    else if (Wc.Controls[I] is TJvSimLight) then
+    else
+    if (Wc.Controls[I] is TJvSimLight) then
     begin
       sLight:=TJvSimLight(Wc.Controls[I]);
       sLight.Lit:=False;
