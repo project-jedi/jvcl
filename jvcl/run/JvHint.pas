@@ -64,6 +64,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ActivateHint(AArea: TRect; ATxt: THintString);
+    procedure ActivateHintAt(AArea: TRect; ATxt: THintString; ScreenPos: TPoint);
     procedure CancelHint;
   published
     property AutoHide: Boolean read FAutoHide write FAutoHide default True;
@@ -116,6 +117,14 @@ var
   P: TPoint;
 begin
   GetCursorPos(P);
+  Inc(P.Y, 20);
+  ActivateHintAt(AArea, ATxt, P);
+end;
+
+procedure TJvHint.ActivateHintAt(AArea: TRect; ATxt: THintString; ScreenPos: TPoint);
+var
+  P: TPoint;
+begin
   Area := AArea;
   if ATxt = '' then
   begin
@@ -124,6 +133,7 @@ begin
   end
   else
     Txt := ATxt;
+  GetCursorPos(P);
   if not PtInRect(Area, P) then
   begin
     if IsWindowVisible(HintWindow.Handle) then
@@ -133,8 +143,8 @@ begin
   if HintWindow.Caption <> Txt then
   begin
     R := HintWindow.CalcHintRect(Screen.Width, Txt, nil);
-    R.Top := P.Y + 20;
-    R.Left := P.X;
+    R.Top := ScreenPos.Y;
+    R.Left := ScreenPos.X;
     Inc(R.Bottom, R.Top);
     Inc(R.Right, R.Left);
     State := tmBeginShow;
