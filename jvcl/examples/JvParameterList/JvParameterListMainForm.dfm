@@ -2044,6 +2044,15 @@ object Form1: TForm1
         TabOrder = 2
         OnClick = Button17Click
       end
+      object Button18: TButton
+        Left = 128
+        Top = 33
+        Width = 120
+        Height = 25
+        Caption = 'Edit DBMS_JOB Entry'
+        TabOrder = 3
+        OnClick = Button18Click
+      end
     end
   end
   object JvAppRegistryStorage: TJvAppRegistryStorage

@@ -122,6 +122,7 @@ type
     Button16: TButton;
     Button15: TButton;
     Button17: TButton;
+    Button18: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -146,6 +147,7 @@ type
     procedure AssignWidthHeightCheckBoxClick(Sender: TObject);
     procedure Button16Click(Sender: TObject);
     procedure Button17Click(Sender: TObject);
+    procedure Button18Click(Sender: TObject);
   private
     { Private-Deklarationen }
     Form : TCustomForm;
@@ -1248,6 +1250,85 @@ end;
 procedure TForm1.Button17Click(Sender: TObject);
 begin
   ShowUnitVersioning(nil);
+end; 
+
+procedure TForm1.Button18Click(Sender: TObject);
+VAR
+  ParameterList         : TJvParameterList;
+  Parameter         : TJvBaseParameter;
+begin
+  ParameterList := TJvParameterList.Create(Self);
+  TRY
+    Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
+    WITH TJvEditParameter(Parameter) DO
+    BEGIN
+      Caption := '&Job';
+      SearchName := 'Job';
+      AsString := '999';
+      ReadOnly := True;
+      Width := 250;
+    END; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvMemoParameter.Create(ParameterList));
+    WITH TJvMemoParameter(Parameter) DO
+    BEGIN
+      Caption := '&What';
+      SearchName := 'What';
+      AsString := 'Do Anything';
+      Required := True;
+      Width := 450;
+      Height := 250;
+      Scrollbars := ssBoth;
+      WantTabs := False;
+      WantReturns := True;
+      WordWrap := False;
+      FontName := 'Courier New';
+    END; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(tJvDateParameter.Create(ParameterList));
+    WITH tJvDateParameter(Parameter) DO
+    BEGIN
+      Caption := '&Date';
+      SearchName := 'Date';
+      asDate := Trunc(now);
+      Width := 120;
+    END; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(tJvTimeParameter.Create(ParameterList));
+    WITH tJvTimeParameter(Parameter) DO
+    BEGIN
+      Caption := '&Time';
+      SearchName := 'Time';
+      asDate := now;
+      Width := 120;
+    END; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
+    WITH TJvEditParameter(Parameter) DO
+    BEGIN
+      Caption := '&Interval';
+      SearchName := 'Interval';
+      AsString := 'trunc(sysdate)+1';
+      Width := 450;
+    END; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    WITH Parameter DO
+    BEGIN
+      Caption := '&Broken Job';
+      SearchName := 'Broken';
+      AsBoolean := FALSE;
+      Width := 350;
+    END; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    ParameterList.Messages.Caption := 'Change Job';
+    ParameterList.Messages.OkButton := '&Ok';
+    ParameterList.Messages.CancelButton := '&Cancel';
+    ParameterList.Width := 510;
+    ParameterList.ShowParameterDialog;
+  FINALLY
+    FreeAndNil(ParameterList);
+  END;
 end;
 
 end.
