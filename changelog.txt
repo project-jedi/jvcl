@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-09-18:
+- added new methods to TJvStringGrid: AutoSizeCol, InsertRow, InsertCol, RemoveRow, RemoveCol, HideRow, ShowRow, HideCol, ShowCol and Clear and a new FixedFont property // peter3
 2003-09-16:
 - moved JvgRegLibDelphi3, JvgRegLibDelphi and JvgRegLibCBB5 to /archive - not used // peter3
 - renamed JvgRegLibDelphi.pas to JvGlobusReg.pas to follow JVCL naming rules
