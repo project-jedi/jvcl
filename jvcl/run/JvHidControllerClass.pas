@@ -1709,17 +1709,18 @@ begin
   FNumUnpluggedDevices  := 0;
   FDevThreadSleepTime   := 100;
   FVersion              := cHidControllerClassVersion;
+
+  // this is just to remind you that one controller is sufficient
+  Inc(GlobalInstanceCount);
+  if GlobalInstanceCount > 1 then
+    raise EControllerError.CreateRes(@RsEOnlyOneControllerPerProgram);
+
   if LoadSetupApi then
     LoadHid;
   if IsHidLoaded then
     HidD_GetHidGuid(FHidGuid)
   else
     FHidGuid := cHidGuid;
-
-  // this is just to remind you that one controller is sufficient
-  Inc(GlobalInstanceCount);
-  if GlobalInstanceCount > 1 then
-    raise EControllerError.CreateRes(@RsEOnlyOneControllerPerProgram);
 
   FillInList(FList);
   FNumCheckedInDevices := FList.Count;
@@ -1768,6 +1769,9 @@ var
   HidDev: TJvHidDevice;
 begin
   Dec(GlobalInstanceCount);
+  // this only triggers if a second instance throws an exception
+  if GlobalInstanceCount > 0 then
+    Exit;
   // to prevent strange problems
   FDeviceChangeEvent := nil;
   FDevUnplugEvent    := nil;
