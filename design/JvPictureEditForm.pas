@@ -32,7 +32,8 @@ interface
 uses
   Windows, Messages, Classes, Graphics, Forms, Controls, Dialogs, Menus,
   StdCtrls, ExtCtrls, Buttons,
-  JvMRUManager, JvFormPlacement, JvClipboardMonitor, JvComponent;
+  JvMRUManager, JvFormPlacement, JvClipboardMonitor, JvComponent,
+  JvAppStore, JvAppRegistryStore;
 
 type
   TPictureEditDialog = class(TForm)
@@ -55,6 +56,7 @@ type
     PathsBtn: TSpeedButton;
     PathsMenu: TPopupMenu;
     PathsMRU: TJvMRUManager;
+    AppStore: TJvAppRegistryStore;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure LoadClick(Sender: TObject);
@@ -206,11 +208,7 @@ begin
   SaveDialog.Title := 'Save picture as';
   Bevel.Visible := False;
   Font.Style := [];
-  with FormStorage do
-  begin
-    UseRegistry := True;
-    IniFileName := SDelphiKey;
-  end;
+  AppStore.Root := SDelphiKey;
   PathsMRU.RecentMenu := PathsMenu.Items;
   IconColor := clBtnFace;
   HelpContext := hcDPictureEditor;
@@ -412,18 +410,14 @@ const
 
 procedure TPictureEditDialog.FormStorageRestorePlacement(Sender: TObject);
 begin
-  IconColor := TColor(IniReadInteger(FormStorage.IniFileObject,
-    FormStorage.IniSection, sBackColorIdent, clBtnFace));
-  FileDialog.InitialDir := IniReadString(FormStorage.IniFileObject,
-    FormStorage.IniSection, sFileDir, FileDialog.InitialDir);
+  IconColor := FormStorage.ReadInteger(sBackColorIdent, clBtnFace);
+  FileDialog.InitialDir := FormStorage.ReadString(sFileDir, FileDialog.InitialDir);
 end;
 
 procedure TPictureEditDialog.FormStorageSavePlacement(Sender: TObject);
 begin
-  IniWriteInteger(FormStorage.IniFileObject, FormStorage.IniSection,
-    sBackColorIdent, IconColor);
-  IniWriteString(FormStorage.IniFileObject, FormStorage.IniSection,
-    sFileDir, FileDialog.InitialDir);
+  FormStorage.WriteInteger(sBackColorIdent, IconColor);
+  FormStorage.WriteString(sFileDir, FileDialog.InitialDir);
 end;
 
 procedure TPictureEditDialog.PathsClick(Sender: TObject);
