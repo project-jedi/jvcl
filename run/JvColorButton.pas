@@ -74,6 +74,8 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure Paint; override;
+    procedure ShowColorPopup(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -137,6 +139,22 @@ procedure TJvColorButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
+  ShowColorPopup(Button, Shift, X, Y);
+  FIsDown := ArrowWidth <> 0;
+  Repaint;
+end;
+
+procedure TJvColorButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  FIsDown := False;
+  Repaint;
+end;
+
+procedure TJvColorButton.ShowColorPopup(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
   if (Button <> mbLeft) or not Enabled or not Assigned(FColorForm) then
     Exit;
   with TJvColorForm(FColorForm) do
@@ -159,16 +177,6 @@ begin
       FColorForm.Hide;
     //    ColorSquare21.Color := Self.Color;
   end;
-  FIsDown := ArrowWidth <> 0;
-  Repaint;
-end;
-
-procedure TJvColorButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-begin
-  inherited MouseUp(Button, Shift, X, Y);
-  FIsDown := False;
-  Repaint;
 end;
 
 procedure TJvColorButton.Paint;

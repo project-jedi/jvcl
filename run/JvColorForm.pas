@@ -42,7 +42,7 @@ uses
   Graphics, Controls, Forms, Buttons, ExtCtrls, Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QButtons, QExtCtrls, QDialogs,
+  Types, Qt, QGraphics, QControls, QForms, QButtons, QExtCtrls, QDialogs,
   {$ENDIF VisualCLX}
   JvColorBox;
 
@@ -50,7 +50,12 @@ const
   cButtonWidth = 22;
 
 type
-  TOpenColorDialog = class(TColorDialog);
+ // (ahuser) TJvColorDialog is not registered as component
+  TJvColorDialog = class(TColorDialog)
+  published
+    property OnShow;
+    property OnClose;
+  end;
 
   TJvColorForm = class(TForm)
     OtherBtn: TSpeedButton;
@@ -66,7 +71,7 @@ type
     FCDVisible: Boolean;
     FCS: TJvColorSquare;
     FButtonSize: Integer;
-    FColorDialog: TOpenColorDialog;
+    FColorDialog: TJvColorDialog;
     FSelectedColor: TColor;
     procedure ShowCD(Sender: TObject);
     procedure HideCD(Sender: TObject);
@@ -76,17 +81,19 @@ type
     procedure SetButtonSize(const Value: Integer);
   protected
     {$IFDEF VCL}
-    procedure CreateWnd; override;
+    procedure CreateParams(var Params: TCreateParams); override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    procedure DoShow; override;
+    function WidgetFlags: Integer; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     {$ENDIF VisualCLX}
+    procedure UpdateSize; virtual;
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     procedure MakeColorButtons;
     procedure SetButton(Button: TControl);
     property ButtonSize: Integer read FButtonSize write SetButtonSize default cButtonWidth;
-    property ColorDialog: TOpenColorDialog read FColorDialog write FColorDialog;
+    property ColorDialog: TJvColorDialog read FColorDialog write FColorDialog;
     property SelectedColor: TColor read FSelectedColor write FSelectedColor default clBlack;
   end;
 
@@ -103,9 +110,10 @@ begin
   BorderIcons := [];
   {$IFDEF VCL}
   BorderStyle := bsDialog;
-  {$ELSE}
-  BorderStyle := fbsNone;
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  BorderStyle := fbsDialog;
+  {$ENDIF VisualCLX}
   // (rom) this is not a standard Windows font
   Font.Name := 'MS Shell Dlg 2';
   FormStyle := fsStayOnTop;
@@ -113,11 +121,8 @@ begin
   OnActivate := FormActivate;
   OnClose := FormClose;
   OnKeyUp := FormKeyUp;
-  {$IFDEF VisualCLX}
-  OnDeactivate := FormDeactivate;
-  {$ENDIF VisualCLX}
 
-  FColorDialog := TOpenColorDialog.Create(Self);
+  FColorDialog := TJvColorDialog.Create(Self);
   FCDVisible := False;
   FColorDialog.OnShow := ShowCD;
   FColorDialog.OnClose := HideCD;
@@ -144,28 +149,29 @@ begin
   if Assigned(FOwner) and (FOwner is TJvColorButton) then
     TJvColorButton(FOwner).Color := SelectedColor;
   FColorDialog.Color := SelectedColor;
-  {$IFDEF VisualCLX}
-  OnDeactivate := nil;
-  try
-  {$ENDIF VisualCLX}
-    if FColorDialog.Execute then
+  if FColorDialog.Execute then
+  begin
+    FCS.Color := FColorDialog.Color;
+    if FOwner is TJvColorButton then
     begin
-      FCS.Color := FColorDialog.Color;
-      if FOwner is TJvColorButton then
-      begin
-        TJvColorButton(FOwner).CustomColors.Assign(FColorDialog.CustomColors);
-        TJvColorButton(FOwner).Color := SelectedColor;
-      end;
-      ModalResult := mrOK;
-    end
-    else
-      ModalResult := mrCancel;
-  {$IFDEF VisualCLX}
-  finally
-    OnDeactivate := FormDeactivate;
-  end;
-  {$ENDIF VisualCLX}
+      TJvColorButton(FOwner).CustomColors.Assign(FColorDialog.CustomColors);
+      TJvColorButton(FOwner).Color := SelectedColor;
+    end;
+    ModalResult := mrOK;
+  end
+  else
+    ModalResult := mrCancel;
   Hide;
+end;
+
+procedure TJvColorForm.FormDeactivate(Sender: TObject);
+begin
+  if (not FCDVisible) then
+  begin
+    if Visible then
+      Hide;
+    ModalResult := mrCancel;
+  end;
 end;
 
 {$IFDEF VCL}
@@ -175,23 +181,43 @@ begin
   if Msg.Active = WA_INACTIVE then
     FormDeactivate(Self);
 end;
+
+procedure TJvColorForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.Style := Params.Style and not WS_CAPTION;
+end;
 {$ENDIF VCL}
 
-procedure TJvColorForm.FormDeactivate(Sender: TObject);
+{$IFDEF VisualCLX}
+function TJvColorForm.WidgetFlags: Integer;
 begin
-  if (not FCDVisible) then
-  begin
-    if Visible then 
-      Hide;
-    ModalResult := mrCancel;
-  end;
+  Result := inherited WidgetFlags and not Integer(WidgetFlags_WStyle_Title) or
+                      Integer(WidgetFlags_WType_Popup);
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvColorForm.DoShow;
+type
+  TJvOpenWidgetControl = class(TWidgetControl);
+
+function TJvColorForm.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  FormActivate(Self);
-  inherited DoShow;
+  case QEvent_type(Event) of
+    QEventType_Show:
+      FormActivate(Self);   // prevent visual moving
+    QEventType_FocusOut:
+      FormDeactivate(Self);
+    QEventType_Hide:
+      if FOwner is TJvColorButton then
+        TJvOpenWidgetControl(FOwner).MouseUp(mbLeft, [ssLeft], 0, 0);
+    QEventType_Close:
+      begin
+        QCloseEvent_ignore(QCloseEventH(Event)); // do not close
+        Result := True;
+        Hide;
+        Exit;
+      end;
+  end;
+  Result := inherited EventFilter(Sender, Event);
 end;
 {$ENDIF VisualCLX}
 
@@ -227,17 +253,6 @@ begin
   Action := caFree;
 end;
 
-{$IFDEF VCL}
-procedure TJvColorForm.CreateWnd;
-begin
-  inherited CreateWnd;
-//  Hide;
-  SetWindowLong(Handle, GWL_STYLE,
-    GetWindowLong(Handle, GWL_STYLE) and not WS_CAPTION);
-//  Show;
-end;
-{$ENDIF VCL}
-
 procedure TJvColorForm.FormActivate(Sender: TObject);
 var
   R: TRect;
@@ -255,8 +270,7 @@ begin
     if FOwner is TJvColorButton then
       SelectedColor := TJvColorButton(FOwner).Color;
   end;
-  ClientWidth := FCS.Left + FCS.Width;
-  Height := OtherBtn.Top + OtherBtn.Height + 8;
+  UpdateSize;
 end;
 
 procedure TJvColorForm.MakeColorButtons;
@@ -279,14 +293,15 @@ begin
   {$IFDEF VCL}
   ParentControl := Self;
   Offset := 0;
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   ParentControl := TPanel.Create(Self);
   ParentControl.Align := alClient;
   ParentControl.Parent := Self;
   TPanel(ParentControl).BevelInner := bvRaised;
   TPanel(ParentControl).BevelOuter := bvRaised;
   Offset := 2;
-  {$ENDIF VCL}
+  {$ENDIF VisualCLX}
 
   X := Offset;
   Y := Offset;
@@ -321,18 +336,26 @@ begin
   FCS.Parent := ParentControl;
   FCS.BorderStyle := bsSingle;
   FCS.SetBounds(Offset + FButtonSize * 3, Y + 6, FButtonSize, FButtonSize);
-  Self.ClientWidth := FCS.Left + FCS.Width;
-  Self.ClientHeight := OtherBtn.Top + OtherBtn.Height;
+  UpdateSize;
   with TBevel.Create(Self) do
   begin
     Parent := ParentControl;
     Shape := bsTopLine;
-    {$IFDEF VisualCLX}
-    Dec(Y, 6);
-    {$ENDIF VisualCLX}
     SetBounds(2, Y, Self.Width - 4, 4);
     Anchors := [akLeft, akBottom, akRight];
   end;
+end;
+
+procedure TJvColorForm.UpdateSize;
+begin
+  {$IFDEF VCL}
+  ClientWidth := FCS.Left + FCS.Width;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  // workaround a VisualCLX bug: ClientWidth does not allow values smaller than 100
+  Width := FCS.Left + FCS.Width + 2;
+  {$ENDIF VisualCLX}
+  Height := OtherBtn.Top + OtherBtn.Height + 8;
 end;
 
 procedure TJvColorForm.SetButtonSize(const Value: Integer);
