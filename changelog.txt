@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-09-30
+- updated the installation guide for BCB specific steps // olivier
 2003-09-29
 - updated the BCB compatibility guide // olivier
 2003-09-28:
