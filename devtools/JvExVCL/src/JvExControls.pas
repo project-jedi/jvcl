@@ -125,16 +125,6 @@ type
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
     {$IFDEF VisualCLX}
     procedure DoFontChanged(Sender: TObject);  // CM_FONTCHANGED
-    procedure Paint;
-    {$ENDIF VisualCLX}
-  end;
-
-  IJvCustomControlEvents = interface(IJvWinControlEvents)
-    ['{7804BD3A-D7A5-4314-9259-6DE08A0DC38A}']
-    {$IFDEF VisualCLX}
-    // implements doublebuffering for  TCustomControl derived classes and
-    // TJvExWidgetControl.
-    function GetDoubleBuffered: Boolean;
     {$ENDIF VisualCLX}
   end;
 

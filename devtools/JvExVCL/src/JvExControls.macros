@@ -138,6 +138,7 @@
 
 (*$DEFINE JV_WINCONTROL_EVENTS_DECL_VISUALCLX
   private
+    FDoubleBuffered: Boolean;
     InternalFontChanged: TNotifyEvent;
     procedure OnFontChanged(Sender: TObject);
   protected
@@ -154,6 +155,8 @@
     procedure RecreateWnd;
   public
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
+  published
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
 *)
 
 (*$DEFINE JV_WINCONTROL_EVENTS_DECL_COMMON
@@ -184,16 +187,6 @@
 
 
 (*$DEFINE JV_DIFF_EVENTS_DECL_CUSTOMCONTROL
-{$IFDEF VisualCLX}
-  private
-    FDoubleBuffered: Boolean;
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
-  protected
-    procedure ColorChanged; override;
-  published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-{$ENDIF VisualCLX}
 *)
 // ************************************************
 
@@ -311,17 +304,17 @@
 // ****************** CustomControl **********************
 
 (*$DEFINE JV_CUSTOMCONTROL_EVENTS_BEGIN(ClassName)
-  JV_EVENTS_CLASS2(ClassName, IJvWinControlEvents, IJvCustomControlEvents)
+  JV_EVENTS_CLASS1(ClassName, IJvWinControlEvents)
   JV_CUSTOMCONTROL_EVENTS_DECL
 *)
 
 (*$DEFINE JV_CUSTOMCONTROL_EVENTS_BEGIN1(ClassName, Intf1)
-  JV_EVENTS_CLASS3(ClassName, Intf1, IJvWinControlEvents, IJvCustomControlEvents)
+  JV_EVENTS_CLASS2(ClassName, Intf1, IJvWinControlEvents)
   JV_CUSTOMCONTROL_EVENTS_DECL
 *)
 
 (*$DEFINE JV_CUSTOMCONTROL_EVENTS_BEGIN2(ClassName, Intf2, Intf1)
-  JV_EVENTS_CLASS4(ClassName, Intf2, Intf1, IJvWinControlEvents, IJvCustomControlEvents)
+  JV_EVENTS_CLASS3(ClassName, Intf2, Intf1, IJvWinControlEvents)
   JV_CUSTOMCONTROL_EVENTS_DECL
 *)
 
