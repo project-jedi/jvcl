@@ -219,21 +219,23 @@ type
     procedure SetColors(const Value: TJvNavPanelColors);
     procedure DoColorsChange(Sender: TObject);
   protected
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    property Action;
     property Align;
-    property AllowAllup;
+    property AllowAllUp;
     property Anchors;
-    property Caption;
+//    property Caption;
     property Constraints;
+    property Down;
     property DragCursor;
     property DragKind;
     property DragMode;
-    property Down;
     property DropDownMenu;
     property GroupIndex;
     property Enabled;
@@ -275,22 +277,26 @@ type
     procedure DoColorsChange(Sender: TObject);
   protected
     procedure Paint; override;
-    procedure Click; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    property Action;
     property Align;
+    property AllowAllUp;
     property Anchors;
     property Caption;
     property Constraints;
+    property Down;
     property DragCursor;
     property DragKind;
     property DragMode;
     property Enabled;
     property Font;
+    property GroupIndex;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -454,7 +460,7 @@ type
 
 implementation
 uses
-  Forms, JvJVCLUtils;
+  Forms, ActnList, JvJVCLUtils;
 
 
 { TJvIconPanel }
@@ -1035,11 +1041,56 @@ begin
   end;
 end;
 
+procedure TJvNavIconButton.ActionChange(Sender: TObject;
+  CheckDefaults: Boolean);
+begin
+  inherited ActionChange(Sender, CheckDefaults);
+  if Sender is TCustomAction then
+    with TCustomAction(Sender) do
+    begin
+      if (not CheckDefaults or (Self.Images = nil)) and (ActionList <> nil) then
+        Self.Images := ActionList.Images;
+      if not CheckDefaults or (Self.Caption = '') or (Self.Caption = Self.Name) then
+        Self.Caption := Caption;
+      if not CheckDefaults or Self.Enabled then
+        Self.Enabled := Enabled;
+      if not CheckDefaults or (Self.Hint = '') then
+        Self.Hint := Hint;
+      if not CheckDefaults or (Self.ImageIndex = -1) then
+        Self.ImageIndex := ImageIndex;
+      if not CheckDefaults or Self.Visible then
+        Self.Visible := Visible;
+      if not CheckDefaults or not Down then
+        Self.Down := Checked;
+      if not CheckDefaults or not Assigned(Self.OnClick) then
+        Self.OnClick := OnExecute;
+    end;
+end;
+
 { TJvNavPanelButton }
 
-procedure TJvNavPanelButton.Click;
+procedure TJvNavPanelButton.ActionChange(Sender: TObject;
+  CheckDefaults: Boolean);
 begin
-  inherited;
+  inherited ActionChange(Sender, CheckDefaults);
+  if Sender is TCustomAction then
+    with TCustomAction(Sender) do
+    begin
+      if not CheckDefaults and (ActionList <> nil) then
+        Self.Images := ActionList.Images;
+      if not CheckDefaults or (Self.Caption = '') or (Self.Caption = Self.Name) then
+        Self.Caption := Caption;
+      if not CheckDefaults or Self.Enabled then
+        Self.Enabled := Enabled;
+      if not CheckDefaults or (Self.Hint = '') then
+        Self.Hint := Hint;
+      if not CheckDefaults or (Self.ImageIndex = -1) then
+        Self.ImageIndex := ImageIndex;
+      if not CheckDefaults or Self.Visible then
+        Self.Visible := Visible;
+      if not CheckDefaults or not Assigned(Self.OnClick) then
+        Self.OnClick := OnExecute;
+    end;
 end;
 
 constructor TJvNavPanelButton.Create(AOwner: TComponent);
