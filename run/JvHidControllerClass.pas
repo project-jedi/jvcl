@@ -908,7 +908,8 @@ end;
 
 procedure TJvHidDevice.SetNumInputBuffers(const Num: Integer);
 begin
-  if (Num <> FNumInputBuffers) and OpenFile then
+  if (Num <> FNumOverlappedBuffers) and OpenFileEx(omhRead) then
+//  if (Num <> FNumInputBuffers) and OpenFile then
   begin
     HidD_SetNumInputBuffers(HidFileHandle, Num);
     HidD_GetNumInputBuffers(HidFileHandle, FNumInputBuffers);
