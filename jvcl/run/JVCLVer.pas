@@ -37,7 +37,7 @@ const
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 const
-  JVCLX_VERSIONSTRING = '1.00';
+  JVCL_VERSIONSTRING = '1.00';
 {$ENDIF VisualCLX}
 
 type
