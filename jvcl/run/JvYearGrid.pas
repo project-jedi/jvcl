@@ -72,8 +72,14 @@ type
     FBookMarkColor: TColor;
     FYearData: array [0..37, 0..12] of TYearData;
     FYearFile: string;
+    {$IFDEF VCL}
     procedure DoShowHint(var HintStr: string; var CanShow: Boolean;
       var HintInfo: THintInfo);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure DoShowHint(var HintStr: widestring; var CanShow: Boolean;
+      var HintInfo: THintInfo);
+    {$ENDIF VisualCLX}
     procedure MakeHTML(AList: TStringList; Border, Filter: Boolean);
     procedure SetHTMLBorder(const Value: Boolean);
     procedure SetGridYear(const Value: Integer);
@@ -218,8 +224,14 @@ begin
   end;
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvYearGrid.DoShowHint(var HintStr: widestring; var CanShow: Boolean;
+  var HintInfo: THintInfo);
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvYearGrid.DoShowHint(var HintStr: string; var CanShow: Boolean;
   var HintInfo: THintInfo);
+{$ENDIF VCL}
 var
   ACol, ARow, X, Y: Integer;
   S, DS: string;
@@ -730,7 +742,9 @@ begin
   if (Col < 1) or (Row < 1) or (FYearData[Col, Row].DisplayText = '') then
     Exit;
   CD := TColorDialog.Create(Application);
+  {$IFDEF VCL}
   CD.Options := [cdFullOpen, cdAnyColor];
+  {$ENDIF VCL}
   if CD.Execute then
   begin
     FYearData[Col, Row].CustomColor := CD.Color;
@@ -869,7 +883,9 @@ var
   CD: TColorDialog;
 begin
   CD := TColorDialog.Create(Application);
+  {$IFDEF VCL}
   CD.Options := [cdFullOpen, cdAnyColor];
+  {$ENDIF VCL}
   if CD.Execute then
     BorderColor := CD.Color;
   CD.Free;
@@ -880,7 +896,9 @@ var
   CD: TColorDialog;
 begin
   CD := TColorDialog.Create(Application);
+  {$IFDEF VCL}
   CD.Options := [cdFullOpen, cdAnyColor];
+  {$ENDIF VCL}
   if CD.Execute then
     BookMarkColor := CD.Color;
   CD.Free;

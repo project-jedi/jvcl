@@ -101,7 +101,9 @@ type
     property Align;
     property Alignment;
     property FocusControl;
+    {$IFDEF VCL}
     property DragCursor;
+    {$ENDIF VCL}
     property DragMode;
     property ParentColor;
     property ShowHint;

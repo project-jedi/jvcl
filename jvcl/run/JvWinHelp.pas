@@ -109,7 +109,7 @@ begin
     Result := TWinControl(FOwner).Handle
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    Result := QWidget_winID(FOwner.Handle);
+    Result := QWidget_winID( TWidgetControl(FOwner).Handle)
     {$ENDIF VisualCLX}
   else
   if Application <> nil then
