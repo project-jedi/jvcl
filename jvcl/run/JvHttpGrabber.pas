@@ -389,7 +389,7 @@ begin
       FErrorText := '';
 
       //Connect to the web
-      hSession := InternetOpen(PChar(FAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, DWORD(Self));
+      hSession := InternetOpen(PChar(FAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
       if hSession = nil then
       begin
         FErrorText := GetLastErrorMsg;

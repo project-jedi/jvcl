@@ -43,6 +43,7 @@ type
     FSender: TObject; //acp
     FStream: TMemoryStream;
     FUrl: string;
+    FPassiveFTP:boolean;
     FUserName: string;
     FFileName: string;
     FPassword: string;
@@ -66,7 +67,7 @@ type
     procedure Closed;
   public
     constructor Create(Url, UserName, FileName, Password: string;
-      OutputMode: TJvOutputMode; OnError: TJvErrorEvent;
+      OutputMode: TJvOutputMode; PassiveFTP:boolean; OnError: TJvErrorEvent;
       OnDoneFile: TJvDoneFileEvent; OnDoneStream: TJvDoneStreamEvent;
       OnProgress: TJvFTPProgressEvent; Mode: TJvDownloadMode; Agent: string;
       OnStatus: TJvFTPProgressEvent; Sender: TObject; OnClosedConnection: TNotifyEvent); // acp
@@ -100,6 +101,7 @@ type
     FOnClosed: TNotifyEvent;
     FOnClosing: TNotifyEvent;
     FOnRequest: TNotifyEvent;
+    FPassiveFTP: boolean;
     procedure ThreadFinished(Sender: TObject);
     procedure Error(Sender: TObject; ErrorMsg: string);
     procedure DoneFile(Sender: TObject; FileName: string; FileSize: Integer; Url: string);
@@ -117,6 +119,7 @@ type
     property Password: string read FPassword write FPassword;
     property FileName: TFileName read FFileName write FFileName;
     property OutputMode: TJvOutputMode read FOutputMode write FOutputMode default omStream;
+    property PassiveFTP:boolean read FPassiveFTP write FPassiveFTP; 
     property Mode: TJvDownloadMode read FMode write FMode default hmBinary;
     property Agent: string read FAgent write FAgent;
     property OnDoneFile: TJvDoneFileEvent read FOnDoneFile write FOnDoneFile;
@@ -214,7 +217,7 @@ begin
    //Download it
   if FThread = nil then
   begin
-    FThread := TJvFtpThread.Create(Url, UserName, FileName, Password, OutputMode, Error, DoneFile, DoneStream,
+    FThread := TJvFtpThread.Create(Url, UserName, FileName, Password, OutputMode, PassiveFTP, Error, DoneFile, DoneStream,
       Progress, Mode, Agent, Status, Self, Closed); // acp
     FThread.OnTerminate := ThreadFinished;
     FThread.Resume;
@@ -280,7 +283,7 @@ end;
 //=== TJvFtpThread ===========================================================
 
 constructor TJvFtpThread.Create(Url, UserName, FileName,
-  Password: string; OutputMode: TJvOutputMode; OnError: TJvErrorEvent;
+  Password: string; OutputMode: TJvOutputMode; PassiveFTP:boolean; OnError: TJvErrorEvent;
   OnDoneFile: TJvDoneFileEvent; OnDoneStream: TJvDoneStreamEvent;
   OnProgress: TJvFTPProgressEvent; Mode: TJvDownloadMode;
   Agent: string; OnStatus: TJvFTPProgressEvent; Sender: TObject; OnClosedConnection: TNotifyEvent); // acp
@@ -291,6 +294,7 @@ begin
   FFileName := FileName;
   FPassword := Password;
   FOutputMode := OutputMode;
+  FPassiveFTP := PassiveFTP; 
   FOnError := OnError;
   FOnDoneFile := OnDoneFile;
   FOnDoneStream := OnDoneStream;
@@ -340,6 +344,8 @@ begin
 end;
 
 procedure TJvFtpThread.Execute;
+const
+  cPassive:array [boolean] of DWORD = (0, INTERNET_FLAG_PASSIVE);
 var
   hSession, hHostConnection, hDownload: HINTERNET;
   HostName, FileName: string;
@@ -395,7 +401,7 @@ begin
       else
         Password := PChar(FPassword);
       hHostConnection := InternetConnect(hSession, PChar(HostName), INTERNET_DEFAULT_FTP_PORT,
-        UserName, Password, INTERNET_SERVICE_FTP, 0, 0);
+        UserName, Password, INTERNET_SERVICE_FTP, cPassive[FPassiveFTP], 0);
       if hHostConnection = nil then
       begin
         dwIndex := 0;
