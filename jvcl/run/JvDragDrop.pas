@@ -350,23 +350,32 @@ begin
   if FileDescriptorFormatEtc.cfFormat <> 0 then
     Exit;
 
-  FileDropFormatEtc.cfFormat := CF_HDROP;
-  FileDropFormatEtc.ptd := nil;
-  FileDropFormatEtc.dwAspect := DVASPECT_CONTENT;
-  FileDropFormatEtc.lindex := 0;
-  FileDropFormatEtc.tymed := TYMED_HGLOBAL;
+  with FileDropFormatEtc do
+  begin
+    cfFormat := CF_HDROP;
+    ptd := nil;
+    dwAspect := DVASPECT_CONTENT;
+    lindex := 0;
+    tymed := TYMED_HGLOBAL;
+  end;
 
-  FileDescriptorFormatEtc.cfFormat := CF_FILEDESCRIPTOR;
-  FileDescriptorFormatEtc.ptd := nil;
-  FileDescriptorFormatEtc.dwAspect := DVASPECT_CONTENT;
-  FileDescriptorFormatEtc.lindex := -1;
-  FileDescriptorFormatEtc.tymed := TYMED_HGLOBAL;
+  with FileDescriptorFormatEtc do
+  begin
+    cfFormat := CF_FILEDESCRIPTOR;
+    ptd := nil;
+    dwAspect := DVASPECT_CONTENT;
+    lindex := -1;
+    tymed := TYMED_HGLOBAL;
+  end;
 
-  FileContentFormatEtc.cfFormat := CF_FILECONTENTS;
-  FileContentFormatEtc.ptd := nil;
-  FileContentFormatEtc.dwAspect := DVASPECT_CONTENT;
-  FileContentFormatEtc.lindex := 0;
-  FileContentFormatEtc.tymed := TYMED_ISTREAM;
+  with FileContentFormatEtc do
+  begin
+    cfFormat := CF_FILECONTENTS;
+    ptd := nil;
+    dwAspect := DVASPECT_CONTENT;
+    lindex := 0;
+    tymed := TYMED_ISTREAM;
+  end;
 end;
 
 procedure GetDropEffect(Effect: Longint; var Eff: TJvDropEffect);
@@ -615,13 +624,11 @@ begin
         FileGroupDescr := GlobalLock(Medium.hGlobal);
         try
           if List <> nil then
-          begin
             for I := 0 to FileGroupDescr.cItems - 1 do
             begin
               SetString(S, FileGroupDescr^.fgd[I].cFileName, StrLen(FileGroupDescr^.fgd[I].cFileName));
               List.Add(S);
             end;
-          end;
           Result := FileGroupDescr.cItems;
         finally
           GlobalUnlock(Medium.hGlobal);
@@ -769,14 +776,13 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   OleInitialize(nil);
 
 finalization
+  OleUninitialize;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  OleUninitialize;
 
 end.
 

@@ -110,15 +110,13 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   RegisterAppStoragePropertyEngines;
 
 finalization
-{$IFDEF UNITVERSIONING}
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
-
   UnregisterAppStoragePropertyEngines;
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.
 
