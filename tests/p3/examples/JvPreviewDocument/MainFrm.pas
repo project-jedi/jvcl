@@ -13,7 +13,7 @@ type
     Label2: TLabel;
     Label3: TLabel;
     Edit1: TEdit;
-    udColumns: TUpDown;
+    udCols: TUpDown;
     Edit2: TEdit;
     udRows: TUpDown;
     Edit3: TEdit;
@@ -47,8 +47,10 @@ type
     reOriginal: TJvRichEdit;
     PrintDialog1: TPrintDialog;
     Print1: TMenuItem;
+    Label6: TLabel;
+    cbScaleMode: TComboBox;
     procedure FormCreate(Sender: TObject);
-    procedure udColumnsClick(Sender: TObject; Button: TUDBtnType);
+    procedure udColsClick(Sender: TObject; Button: TUDBtnType);
     procedure udRowsClick(Sender: TObject; Button: TUDBtnType);
     procedure udShadowWidthClick(Sender: TObject; Button: TUDBtnType);
     procedure udZoomClick(Sender: TObject; Button: TUDBtnType);
@@ -63,8 +65,10 @@ type
     procedure Last1Click(Sender: TObject);
     procedure About1Click(Sender: TObject);
     procedure Print1Click(Sender: TObject);
+    procedure cbScaleModeChange(Sender: TObject);
   private
     procedure OpenFile(const Filename: string);
+    procedure DoChange(Sender: TObject);
     { Private declarations }
   public
     { Public declarations }
@@ -80,7 +84,7 @@ type
     FCurrentRow: integer;
     procedure CreatePreview;
     procedure DoAddPage(Sender: TObject; PageIndex: integer;
-      Canvas: TCanvas; PageRect, PrintRect: TRect;var NeedMorePages:boolean);
+      Canvas: TCanvas; PageRect, PrintRect: TRect; var NeedMorePages: boolean);
   public
     constructor Create(Preview: TJvPreviewDoc; Strings: TStrings);
     destructor Destroy; override;
@@ -94,13 +98,12 @@ type
     FRE: TRichEdit;
     FPreview: TJvPreviewDoc;
     procedure DoAddPage(Sender: TObject; PageIndex: integer;
-      Canvas: TCanvas; PageRect, PrintRect: TRect;var NeedMorePages:boolean);
+      Canvas: TCanvas; PageRect, PrintRect: TRect; var NeedMorePages: boolean);
     procedure CreatePreview;
   public
     constructor Create(Preview: TJvPreviewDoc; RichEdit: TRichEdit);
     property Finished: boolean read FFinished;
   end;
-
 
 var
   frmMain: TfrmMain;
@@ -108,14 +111,16 @@ var
 implementation
 uses
   RichEdit, Printers;
+  
 {$R *.dfm}
 
 type
+  // a class that implements the IJvPrinter interface
   TJvPrinter = class(TInterfacedObject, IUnknown, IJvPrinter)
   private
-    FPrinter:TPrinter;
+    FPrinter: TPrinter;
   public
-    constructor Create(APrinter:TPrinter);
+    constructor Create(APrinter: TPrinter);
     procedure BeginDoc;
     procedure EndDoc;
     function GetAborted: Boolean;
@@ -124,12 +129,11 @@ type
     function GetPageWidth: Integer;
     function GetPrinting: Boolean;
     procedure NewPage;
-    function GetTitle: String;
-    procedure SetTitle(const Value: String);
-
+    function GetTitle: string;
+    procedure SetTitle(const Value: string);
   end;
 
-{ TJvStringsPreviewRenderer }
+  { TJvStringsPreviewRenderer }
 
 constructor TJvStringsPreviewRenderer.Create(Preview: TJvPreviewDoc;
   Strings: TStrings);
@@ -141,12 +145,12 @@ begin
 end;
 
 procedure TJvStringsPreviewRenderer.DoAddPage(Sender: TObject; PageIndex: integer; Canvas: TCanvas;
-  PageRect, PrintRect: TRect;var NeedMorePages:boolean);
+  PageRect, PrintRect: TRect; var NeedMorePages: boolean);
 var i, IncValue: integer; ARect: TRect; tm: TTextMetric; S: string;
 begin
   if not FFinished then
   begin
-    Canvas.Font.Name := 'Courier New';
+    Canvas.Font.Name := 'Verdana';
     Canvas.Font.Size := 10;
     ARect := PrintRect;
 
@@ -196,6 +200,170 @@ begin
   inherited;
 end;
 
+{ TJvRTFRenderer }
+
+constructor TJvRTFRenderer.Create(Preview: TJvPreviewDoc;
+  RichEdit: TRichEdit);
+begin
+  inherited Create;
+  FRE := RichEdit;
+  FPreview := Preview;
+  CreatePreview;
+end;
+
+procedure TJvRTFRenderer.CreatePreview;
+begin
+  if FRE.Lines.Count > 0 then
+  begin
+    FLastChar := 0;
+    FPreview.BeginUpdate;
+    try
+      FPreview.Clear;
+      FPreview.OnAddPage := DoAddPage;
+      FPreview.Add; // this will call OnAddPage that will call Add until we are finished
+    finally
+      FPreview.EndUpdate;
+    end;
+  end
+  else
+    FFinished := true;
+end;
+
+// this code was almost entirely stolen from TRichEdit.Print
+procedure TJvRTFRenderer.DoAddPage(Sender: TObject; PageIndex: integer;
+  Canvas: TCanvas; PageRect, PrintRect: TRect; var NeedMorePages: boolean);
+var
+  Range: TFormatRange;
+  OutDC: HDC;
+  MaxLen, LogX, LogY, OldMap: Integer;
+begin
+  if not Finished then
+  begin
+    FillChar(Range, SizeOf(TFormatRange), 0);
+    OutDC := Canvas.Handle;
+    Range.hdc := OutDC;
+    Range.hdcTarget := OutDC;
+    LogX := GetDeviceCaps(OutDC, LOGPIXELSX);
+    LogY := GetDeviceCaps(OutDC, LOGPIXELSY);
+    if IsRectEmpty(FRE.PageRect) then
+    begin
+      Range.rc.right := (PrintRect.Right - PrintRect.Left) * 1440 div LogX;
+      Range.rc.bottom := (PrintRect.Bottom - PrintRect.Top) * 1440 div LogY;
+    end
+    else
+    begin
+      Range.rc.left := FRE.PageRect.Left * 1440 div LogX;
+      Range.rc.top := FRE.PageRect.Top * 1440 div LogY;
+      Range.rc.right := FRE.PageRect.Right * 1440 div LogX;
+      Range.rc.bottom := FRE.PageRect.Bottom * 1440 div LogY;
+    end;
+    Range.rcPage := Range.rc;
+    MaxLen := FRE.GetTextLen;
+    Range.chrg.cpMax := -1;
+
+    // ensure the output DC is in text map mode
+    OldMap := SetMapMode(Range.hdc, MM_TEXT);
+    try
+      SendMessage(FRE.Handle, EM_FORMATRANGE, 0, 0); // flush buffer
+
+      Range.chrg.cpMin := FLastChar;
+      FLastChar := SendMessage(FRE.Handle, EM_FORMATRANGE, 1, Longint(@Range));
+      FFinished := (FLastChar >= MaxLen) or (FLastChar = -1);
+      NeedMorePages := not FFinished;
+      SendMessage(FRE.Handle, EM_FORMATRANGE, 0, 0); // flush buffer
+    finally
+      SetMapMode(OutDC, OldMap);
+    end;
+    Exit;
+  end;
+  //  FFinished := true;
+end;
+
+{ TJvPrinter }
+
+procedure TJvPrinter.BeginDoc;
+begin
+  FPrinter.BeginDoc;
+end;
+
+constructor TJvPrinter.Create(APrinter: TPrinter);
+begin
+  Assert(APrinter <> nil, '');
+  inherited Create;
+  FPrinter := APrinter;
+end;
+
+procedure TJvPrinter.EndDoc;
+begin
+  FPrinter.EndDoc;
+end;
+
+function TJvPrinter.GetAborted: Boolean;
+begin
+  Result := FPrinter.Aborted;
+end;
+
+function TJvPrinter.GetCanvas: TCanvas;
+begin
+  Result := FPrinter.Canvas;
+end;
+
+function TJvPrinter.GetPageHeight: Integer;
+begin
+  Result := FPrinter.PageHeight;
+end;
+
+function TJvPrinter.GetPageWidth: Integer;
+begin
+  Result := FPrinter.PageWidth;
+end;
+
+function TJvPrinter.GetPrinting: Boolean;
+begin
+  Result := FPrinter.Printing;
+end;
+
+function TJvPrinter.GetTitle: string;
+begin
+  Result := FPrinter.Title;
+end;
+
+procedure TJvPrinter.NewPage;
+begin
+  FPrinter.NewPage;
+end;
+
+procedure TJvPrinter.SetTitle(const Value: string);
+begin
+  FPrinter.Title := Value;
+end;
+
+procedure TfrmMain.Print1Click(Sender: TObject);
+var jp: TJvPrinter;
+begin
+  PrintDialog1.PrintRange := prAllPages;
+  if pd.PageCount < 1 then
+    PrintDialog1.Options := PrintDialog1.Options - [poPageNums]
+  else
+  begin
+    PrintDialog1.Options := PrintDialog1.Options + [poPageNums];
+    PrintDialog1.FromPage := 1;
+    PrintDialog1.ToPage := pd.PageCount;
+  end;
+  if PrintDialog1.Execute then
+  begin
+    jp := TJvPrinter.Create(Printer);
+    try
+      if PrintDialog1.PrintRange = prPageNums then
+        pd.PrintRange(jp, PrintDialog1.FromPage - 1, PrintDialog1.ToPage - 1, PrintDialog1.Copies, PrintDialog1.Collate)
+      else
+        pd.PrintRange(jp, 0, -1, PrintDialog1.Copies, PrintDialog1.Collate)
+    finally
+      jp.Free;
+    end;
+  end;
+end;
+
 { TfrmMain }
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -204,33 +372,55 @@ begin
   pd.Parent := tabPreview;
   pd.Align := alClient;
   pd.TabStop := true;
-  pd.Options.DrawMargins := mnuMargins.Checked;
-  pd.Options.Rows := udRows.Position;
-  pd.Options.Cols := udColumns.Position;
-  pd.Options.Shadow.Offset := udShadowWidth.Position;
-  pd.Options.Zoom := udZoom.Position;
-  cbPreview.ItemIndex := 1;
-  cbPreviewChange(nil);
+  pd.BeginUpdate;
+  pd.OnChange := DoChange;
+  try
+    pd.Options.DrawMargins := mnuMargins.Checked;
+    pd.Options.Rows := udRows.Position;
+    pd.Options.Cols := udCols.Position;
+    pd.Options.Shadow.Offset := udShadowWidth.Position;
+    pd.Options.Scale := udZoom.Position;
+    cbPreview.ItemIndex := 1; // printer
+    cbPreviewChange(nil);
+    cbScaleMode.ItemIndex := 0; // full page
+    cbScaleModeChange(nil);
+  finally
+    pd.EndUpdate;
+  end;
 end;
 
-procedure TfrmMain.udColumnsClick(Sender: TObject; Button: TUDBtnType);
+procedure TfrmMain.DoChange(Sender: TObject);
 begin
-  pd.Options.Cols := udColumns.Position;
+  udCols.Position := pd.Options.Cols;
+  udRows.Position := pd.Options.Rows;
+  udShadowWidth.Position := pd.Options.Shadow.Offset;
+  udZoom.Position := pd.Options.Scale;
+  mnuMargins.Checked := pd.Options.DrawMargins;
+  cbScaleMode.ItemIndex := Ord(pd.Options.ScaleMode);
+end;
+
+procedure TfrmMain.udColsClick(Sender: TObject; Button: TUDBtnType);
+begin
+  pd.Options.Cols := udCols.Position;
+  udCols.Position := pd.Options.Cols;
 end;
 
 procedure TfrmMain.udRowsClick(Sender: TObject; Button: TUDBtnType);
 begin
   pd.Options.Rows := udRows.Position;
+  udRows.Position := pd.Options.Rows;
 end;
 
 procedure TfrmMain.udShadowWidthClick(Sender: TObject; Button: TUDBtnType);
 begin
   pd.Options.Shadow.Offset := udShadowWidth.Position;
+  udShadowWidth.Position := pd.Options.Shadow.Offset;
 end;
 
 procedure TfrmMain.udZoomClick(Sender: TObject; Button: TUDBtnType);
 begin
-  pd.Options.Zoom := udZoom.Position;
+  pd.Options.Scale := udZoom.Position;
+  udZoom.Position := pd.Options.Scale;
 end;
 
 procedure TfrmMain.cbPreviewChange(Sender: TObject);
@@ -251,8 +441,8 @@ begin
   Screen.Cursor := crHourGlass;
   with TJvRTFRenderer.Create(pd, reOriginal) do
   try
-    while not Finished do // hangs here sometimes, why?
-      Application.ProcessMessages;
+    while not Finished do ;
+//      Application.ProcessMessages;
   finally
     Free;
     Screen.Cursor := crDefault;
@@ -309,162 +499,10 @@ begin
   ShowMessage('JvPreviewDocument Demo');
 end;
 
-{ TJvRTFRenderer }
-
-constructor TJvRTFRenderer.Create(Preview: TJvPreviewDoc;
-  RichEdit: TRichEdit);
+procedure TfrmMain.cbScaleModeChange(Sender: TObject);
 begin
-  inherited Create;
-  FRE := RichEdit;
-  FPreview := Preview;
-  CreatePreview;
-end;
-
-procedure TJvRTFRenderer.CreatePreview;
-begin
-  if FRE.Lines.Count > 0 then
-  begin
-    FLastChar := 0;
-    FPreview.Clear;
-    FPreview.OnAddPage := DoAddPage;
-    FPreview.Add;
-  end
-  else
-    FFinished := true;
-end;
-
-// this code was almost entirely stolen from TRichEdit.Print
-procedure TJvRTFRenderer.DoAddPage(Sender: TObject; PageIndex: integer;
-  Canvas: TCanvas; PageRect, PrintRect: TRect;var NeedMorePages:boolean);
-var
-  Range: TFormatRange;
-  OutDC: HDC;
-  MaxLen, LogX, LogY, OldMap: Integer;
-begin
-  if not Finished then
-  begin
-    FillChar(Range, SizeOf(TFormatRange), 0);
-    OutDC := Canvas.Handle;
-    Range.hdc := OutDC;
-    Range.hdcTarget := OutDC;
-    LogX := GetDeviceCaps(OutDC, LOGPIXELSX);
-    LogY := GetDeviceCaps(OutDC, LOGPIXELSY);
-    if IsRectEmpty(FRE.PageRect) then
-    begin
-      Range.rc.right := (PrintRect.Right - PrintRect.Left) * 1440 div LogX;
-      Range.rc.bottom := (PrintRect.Bottom - PrintRect.Top) * 1440 div LogY;
-    end
-    else
-    begin
-      Range.rc.left := FRE.PageRect.Left * 1440 div LogX;
-      Range.rc.top := FRE.PageRect.Top * 1440 div LogY;
-      Range.rc.right := FRE.PageRect.Right * 1440 div LogX;
-      Range.rc.bottom := FRE.PageRect.Bottom * 1440 div LogY;
-    end;
-    Range.rcPage := Range.rc;
-    MaxLen := FRE.GetTextLen;
-    Range.chrg.cpMax := -1;
-
-    // ensure the output DC is in text map mode
-    OldMap := SetMapMode(Range.hdc, MM_TEXT);
-    try
-      SendMessage(FRE.Handle, EM_FORMATRANGE, 0, 0); // flush buffer
-
-      Range.chrg.cpMin := FLastChar;
-      FLastChar := SendMessage(FRE.Handle, EM_FORMATRANGE, 1, Longint(@Range));
-      FFinished := (FLastChar >= MaxLen) or (FLastChar = -1);
-      NeedMorePages := not FFinished;
-      SendMessage(FRE.Handle, EM_FORMATRANGE, 0, 0); // flush buffer
-    finally
-      SetMapMode(OutDC, OldMap);
-    end;
-    Exit;
-  end;
-//  FFinished := true;
-end;
-
-{ TJvPrinter }
-
-procedure TJvPrinter.BeginDoc;
-begin
-  FPrinter.BeginDoc;
-end;
-
-constructor TJvPrinter.Create(APrinter: TPrinter);
-begin
-  Assert(APrinter <> nil,'');
-  inherited Create;
-  FPrinter := APrinter;
-end;
-
-procedure TJvPrinter.EndDoc;
-begin
-  FPrinter.EndDoc;
-end;
-
-function TJvPrinter.GetAborted: Boolean;
-begin
-  Result := FPrinter.Aborted;
-end;
-
-function TJvPrinter.GetCanvas: TCanvas;
-begin
-  Result := FPrinter.Canvas;
-end;
-
-function TJvPrinter.GetPageHeight: Integer;
-begin
-  Result := FPrinter.PageHeight;
-end;
-
-function TJvPrinter.GetPageWidth: Integer;
-begin
-  Result := FPrinter.PageWidth;
-end;
-
-function TJvPrinter.GetPrinting: Boolean;
-begin
-  Result := FPrinter.Printing;
-end;
-
-function TJvPrinter.GetTitle: String;
-begin
-  Result := FPrinter.Title;
-end;
-
-procedure TJvPrinter.NewPage;
-begin
-  FPrinter.NewPage;
-end;
-
-procedure TJvPrinter.SetTitle(const Value: String);
-begin
-  FPrinter.Title := Value;
-end;
-
-procedure TfrmMain.Print1Click(Sender: TObject);
-var jp:TJvPrinter;
-begin
-  if pd.PageCount < 1 then
-    PrintDialog1.Options := PrintDialog1.Options - [poPageNums]
-  else
-  begin
-    PrintDialog1.Options := PrintDialog1.Options + [poPageNums];
-    PrintDialog1.FromPage := 1;
-    PrintDialog1.ToPage := pd.PageCount;
-  end;
-  if PrintDialog1.Execute then
-  begin
-    jp := TJvPrinter.Create(Printer);
-    try
-      if PrintDialog1.PrintRange = prPageNums then
-        pd.PrintRange(jp,PrintDialog1.FromPage-1,PrintDialog1.ToPage-1,PrintDialog1.Copies,PrintDialog1.Collate)
-      else
-        pd.PrintRange(jp,0,-1,PrintDialog1.Copies,PrintDialog1.Collate)
-    finally
-      jp.Free;
-    end;
-  end;
+  pd.Options.ScaleMode := TJvPreviewScaleMode(cbScaleMode.ItemIndex);
+  cbScaleMode.ItemIndex := Ord(pd.Options.ScaleMode);
 end;
 
 end.

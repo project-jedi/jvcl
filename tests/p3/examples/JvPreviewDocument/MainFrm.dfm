@@ -47,16 +47,23 @@ object frmMain: TfrmMain
     object Label4: TLabel
       Left = 304
       Top = 8
-      Width = 26
+      Width = 29
       Height = 13
-      Caption = 'Zoom'
+      Caption = 'Scale:'
     end
     object Label5: TLabel
-      Left = 400
+      Left = 552
       Top = 8
       Width = 42
       Height = 13
       Caption = 'Preview:'
+    end
+    object Label6: TLabel
+      Left = 392
+      Top = 8
+      Width = 58
+      Height = 13
+      Caption = 'Scale Mode:'
     end
     object Edit1: TEdit
       Left = 16
@@ -66,7 +73,7 @@ object frmMain: TfrmMain
       TabOrder = 0
       Text = '1'
     end
-    object udColumns: TUpDown
+    object udCols: TUpDown
       Left = 81
       Top = 24
       Width = 15
@@ -76,7 +83,7 @@ object frmMain: TfrmMain
       Position = 1
       TabOrder = 1
       Wrap = False
-      OnClick = udColumnsClick
+      OnClick = udColsClick
     end
     object Edit2: TEdit
       Left = 112
@@ -132,8 +139,8 @@ object frmMain: TfrmMain
       Width = 16
       Height = 21
       Associate = Edit4
-      Min = 1
-      Max = 1000
+      Min = 10
+      Max = 500
       Position = 100
       TabOrder = 7
       Thousands = False
@@ -141,7 +148,7 @@ object frmMain: TfrmMain
       OnClick = udZoomClick
     end
     object cbPreview: TComboBox
-      Left = 400
+      Left = 552
       Top = 24
       Width = 145
       Height = 21
@@ -152,6 +159,21 @@ object frmMain: TfrmMain
       Items.Strings = (
         'Screen'
         'Printer')
+    end
+    object cbScaleMode: TComboBox
+      Left = 392
+      Top = 24
+      Width = 145
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 9
+      OnChange = cbScaleModeChange
+      Items.Strings = (
+        'Full Page'
+        'Page Width'
+        'Use Scale'
+        'Use Cols and Rows')
     end
   end
   object PageControl1: TPageControl
@@ -263,7 +285,7 @@ object frmMain: TfrmMain
     end
   end
   object OpenDialog1: TOpenDialog
-    Filter = 'RTF files|*.rtf|All files(*.*)|*.*'
+    Filter = 'RTF files|*.rtf|Text files|*.txt|All files(*.*)|*.*'
     InitialDir = '.'
     Left = 92
     Top = 112

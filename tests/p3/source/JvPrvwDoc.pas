@@ -28,6 +28,8 @@ const
   WM_PREVIEWADDPAGE = WM_USER + 1001;
 
 type
+  TJvPreviewScaleMode = (smFullPage,smPageWidth,smScale,smColsRows);
+   
   TJvDrawPreviewEvent = procedure(Sender: TObject; PageIndex: integer; Canvas: TCanvas;
     PageRect, PrintRect: TRect) of object;
   TJvDrawPageEvent = procedure(Sender: TObject; PageIndex: integer; Canvas: TCanvas;
@@ -79,6 +81,15 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    function XPxToInch(Pixels:integer):single;
+    function YPxToInch(Pixels:integer):single;
+    function XPxToMM(Pixels:integer):single;
+    function YPxToMM(Pixels:integer):single;
+    function InchToXPx(Inch:single):integer;
+    function InchToYPx(Inch:single):integer;
+    function MMToXPx(MM:single):integer;
+    function MMToYPx(MM:single):integer;
+
     property ReferenceHandle: HDC read FReferenceHandle write SetReferenceHandle;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
@@ -119,8 +130,9 @@ type
     FOnChange: TNotifyEvent;
     FDrawMargins: boolean;
     FCols: Cardinal;
-    FZoom: Cardinal;
+    FScale: Cardinal;
     FRows: Cardinal;
+    FScaleMode: TJvPreviewScaleMode;
     procedure SetColor(const Value: TColor);
     procedure SetHorzSpacing(const Value: Cardinal);
     procedure SetVertSpacing(const Value: Cardinal);
@@ -128,11 +140,14 @@ type
     procedure SetDrawMargins(const Value: boolean);
     procedure SetCols(const Value: Cardinal);
     procedure SetShadow(const Value: TJvPageShadow);
-    procedure SetZoom(const Value: Cardinal);
+    procedure SetScale(const Value: Cardinal);
     procedure SetRows(const Value: Cardinal);
     procedure Change;
     function GetCols: Cardinal;
     function GetRows: Cardinal;
+    function GetHorzSpacing: Cardinal;
+    function GetVertSpacing: Cardinal;
+    procedure SetScaleMode(const Value: TJvPreviewScaleMode);
   public
     constructor Create;
     destructor Destroy; override;
@@ -141,11 +156,12 @@ type
     property Color: TColor read FColor write SetColor default clWhite;
     property Cols: Cardinal read GetCols write SetCols default 1;
     property DrawMargins: boolean read FDrawMargins write SetDrawMargins default false;
-    property HorzSpacing: Cardinal read FHorzSpacing write SetHorzSpacing default 8;
+    property HorzSpacing: Cardinal read GetHorzSpacing write SetHorzSpacing default 8;
     property Rows: Cardinal read GetRows write SetRows;
     property Shadow: TJvPageShadow read FShadow write SetShadow;
-    property VertSpacing: Cardinal read FVertSpacing write SetVertSpacing default 8;
-    property Zoom: Cardinal read FZoom write SetZoom default 100;
+    property VertSpacing: Cardinal read GetVertSpacing write SetVertSpacing default 8;
+    property Scale: Cardinal read FScale write SetScale default 100;
+    property ScaleMode:TJvPreviewScaleMode read FScaleMode write SetScaleMode default smFullPage;
   end;
 
   TJvCustomPreviewDoc = class(TCustomControl)
@@ -159,8 +175,9 @@ type
     FDeviceInfo: TJvDeviceInfo;
     FOnAddPage: TJvDrawPageEvent;
     FSelectedPage: integer;
+    FOnChange: TNotifyEvent;
+    FUpdateCount:integer;
     procedure DoOptionsChange(Sender: TObject);
-    procedure DoDeviceInfoChange(Sender: TObject);
     function GetPreviewRects(PageIndex: integer; var APageRect, APrintRect: TRect): boolean;
     procedure DrawPreview(PageIndex: integer; APageRect, APrintRect: TRect);
 
@@ -184,7 +201,14 @@ type
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMGetDlgCode(var Message: TMessage); message WM_GETDLGCODE;
-    procedure DoSize;
+    // returns max no of cols at current scale that will fit in client area
+    function GetMaxCols:Cardinal;
+    // returns max no of rows at current scale that will fit in client area
+    function GetMaxRows:integer;
+    // returns the optimal scale value using current cols and rows
+    function GetOptimalScale:Cardinal;
+    function GetScale(AHeight,AWidth:Cardinal):Cardinal;
+    procedure Change;dynamic;
   protected
 
     procedure CreateParams(var Params: TCreateParams); override;
@@ -200,9 +224,13 @@ type
     property Options: TJvPreviewPageOptions read FOptions write SetOptions;
     property OnAddPage: TJvDrawPageEvent read FOnAddPage write FOnAddPage;
     property OnDrawPreviewPage: TJvDrawPreviewEvent read FOnDrawPreviewPage write FOnDrawPreviewPage;
+    property OnChange:TNotifyEvent read FOnChange write FOnChange;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function Updating:boolean;reintroduce;
     function Add: TMetaFile;
     procedure Delete(Index: integer);
     procedure Clear;
@@ -220,6 +248,7 @@ type
     property DeviceInfo;
 
     property Options;
+    property OnChange;
     property OnAddPage;
     property OnDrawPreviewPage;
 
@@ -368,7 +397,9 @@ begin
   FShadow := TJvPageShadow.Create;
   FShadow.OnChange := DoShadowChange;
   FCols := 1;
-  FZoom := 100;
+  FRows := 1;
+  FScale := 100;
+  FScaleMode := smFullPage;
   FColor := clWhite;
   FVertSpacing := 8;
   FHorzSpacing := 8;
@@ -390,9 +421,19 @@ begin
   Result := Max(FCols, 1);
 end;
 
+function TJvPreviewPageOptions.GetHorzSpacing: Cardinal;
+begin
+  Result := Max(FHorzSpacing,abs(Shadow.Offset));
+end;
+
 function TJvPreviewPageOptions.GetRows: Cardinal;
 begin
   Result := Max(FRows, 1);
+end;
+
+function TJvPreviewPageOptions.GetVertSpacing: Cardinal;
+begin
+  Result := Max(FVertSpacing,abs(Shadow.Offset));
 end;
 
 procedure TJvPreviewPageOptions.SetColor(const Value: TColor);
@@ -456,11 +497,21 @@ begin
   end;
 end;
 
-procedure TJvPreviewPageOptions.SetZoom(const Value: Cardinal);
+procedure TJvPreviewPageOptions.SetScale(const Value: Cardinal);
 begin
-  if FZoom <> Value then
+  if FScale <> Value then
   begin
-    FZoom := Max(Value, 1);
+    FScale := Max(Value, 1);
+    Change;
+  end;
+end;
+
+procedure TJvPreviewPageOptions.SetScaleMode(
+  const Value: TJvPreviewScaleMode);
+begin
+  if FScaleMode <> Value then
+  begin
+    FScaleMode := Value;
     Change;
   end;
 end;
@@ -508,9 +559,7 @@ begin
     Result.Height := DeviceInfo.PageHeight;
   // keep adding pages until user says stop
   until not DoAddPage(Result,FPages.Add(Result));
-  CalcScrollRange;
-  Invalidate;
-
+  Change;
   // post a message to ourself in case the user added the page in the OnAddPage event
 //  PostMessage(Handle, WM_PREVIEWADDPAGE, integer(Result), FPages.Add(Result));
 end;
@@ -567,7 +616,7 @@ begin
   FOptions.OnChange := DoOptionsChange;
 
   FDeviceInfo := TJvDeviceInfo.Create;
-  FDeviceInfo.OnChange := DoDeviceInfoChange;
+  FDeviceInfo.OnChange := DoOptionsChange;
 
   Color := clAppWorkSpace;
   ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
@@ -633,12 +682,6 @@ begin
   ACanvas.Free; // spool canvas to metafile
 end;
 
-procedure TJvCustomPreviewDoc.DoDeviceInfoChange(Sender: TObject);
-begin
-  CalcScrollRange;
-  Invalidate;
-end;
-
 procedure TJvCustomPreviewDoc.DoDrawPreviewPage(PageIndex: integer;
   Canvas: TCanvas; PageRect, PrintRect: TRect);
 begin
@@ -648,8 +691,7 @@ end;
 
 procedure TJvCustomPreviewDoc.DoOptionsChange(Sender: TObject);
 begin
-  CalcScrollRange;
-  Invalidate;
+  Change;
 end;
 
 procedure TJvCustomPreviewDoc.DrawPreview(PageIndex: integer; APageRect,
@@ -675,7 +717,7 @@ begin
   DC := GetDC(0);
   try
     Result := MulDiv(MulDiv(DeviceInfo.PageHeight,GetDeviceCaps(DC,LOGPIXELSY),
-      DeviceInfo.LogPixelsY),Options.Zoom,100);
+      DeviceInfo.LogPixelsY),Options.Scale,100);
   finally
     ReleaseDC(0,DC);
   end;
@@ -687,7 +729,7 @@ begin
   DC := GetDC(0);
   try
     Result := MulDiv(MulDiv(DeviceInfo.OffsetLeft,GetDeviceCaps(DC,LOGPIXELSX),
-      DeviceInfo.LogPixelsX),Options.Zoom,100);
+      DeviceInfo.LogPixelsX),Options.Scale,100);
   finally
     ReleaseDC(0,DC);
   end;
@@ -699,7 +741,7 @@ begin
   DC := GetDC(0);
   try
     Result := MulDiv(MulDiv(DeviceInfo.OffsetTop,GetDeviceCaps(DC,LOGPIXELSY),
-      DeviceInfo.LogPixelsY),Options.Zoom,100);
+      DeviceInfo.LogPixelsY),Options.Scale,100);
   finally
     ReleaseDC(0,DC);
   end;
@@ -711,22 +753,27 @@ begin
   DC := GetDC(0);
   try
     Result := MulDiv(MulDiv(DeviceInfo.PageWidth,GetDeviceCaps(DC,LOGPIXELSX),
-      DeviceInfo.LogPixelsX),Options.Zoom,100);
+      DeviceInfo.LogPixelsX),Options.Scale,100);
   finally
     ReleaseDC(0,DC);
   end;
 end;
 
 function TJvCustomPreviewDoc.GetPreviewRects(PageIndex: integer; var APageRect, APrintRect: TRect): boolean;
-var ACol, ARow: integer;
+var ACol, ACols, ARows, ARow, AOffsetX, AOffsetY: integer;
 begin
   ACol := (PageIndex mod Options.Cols);
   ARow := (PageIndex div Options.Cols);
+  ACols := Max(Min(PageCount,Options.Cols),1);
+  ARows := Max(Max(Min(PageCount div ACols,Options.Rows),1),ARow);
   APageRect := Rect(0, 0, GetPreviewPageWidth, GetPreviewPageHeight);
-  OffsetRect(APageRect, FOptions.HorzSpacing, FOptions.VertSpacing);
-  OffsetRect(APageRect, ACol * (FOptions.HorzSpacing + GetPreviewPageWidth),
-    ARow * (GetPreviewPageHeight + FOptions.VertSpacing));
-  OffsetRect(APageRect, FScrollPos.X, FScrollPos.Y);
+  // find top/left edge when sized
+  AOffsetX :=
+    Max((ClientWidth - (GetPreviewPageWidth + Options.HorzSpacing) * ACols) div 2,FOptions.HorzSpacing);
+  AOffsetY :=
+    Max((ClientHeight - (GetPreviewPageHeight + Options.VertSpacing) * ARows) div 2,FOptions.VertSpacing);
+  OffsetRect(APageRect, AOffsetX + FScrollPos.X + ACol * (FOptions.HorzSpacing + GetPreviewPageWidth),
+    AOffsetY + FScrollPos.Y + ARow * (GetPreviewPageHeight + FOptions.VertSpacing));
 
   APrintRect := APageRect;
   with FOptions do
@@ -745,9 +792,8 @@ procedure TJvCustomPreviewDoc.Paint;
 var i: integer;
   APageRect, APrintRect: TRect;
 begin
+  if Updating then Exit;
   //  StoreCanvas(FBuffer.Canvas);
-  FBuffer.Width := ClientWidth; // GetMaxVirtualWidth;
-  FBuffer.Height := ClientHeight; // GetMaxVirtualHeight;
   with FBuffer.Canvas do
   begin
     Brush.Color := Color;
@@ -759,7 +805,15 @@ begin
       begin
         if (APageRect.Right <= 0) or (APageRect.Left >= ClientWidth) or
           (APageRect.Bottom <= 0) or (APageRect.Top >= ClientHeight) then
-          Continue; // outside view
+          Continue // outside view
+        else if (PageCount > 0) and (GetPreviewPageWidth < ClientWidth)
+          and (GetPreviewPageHeight < ClientHeight) then
+        begin
+          if (APageRect.Right >= ClientWidth) or (APageRect.Left <= 0) or
+            (APageRect.Bottom >= ClientHeight) or (APageRect.Top <= 0) then
+          Continue; // some part is outside view
+        end;
+
         // draw shadow
         if (Options.Shadow.Offset <> 0) then
         begin
@@ -848,16 +902,9 @@ end;
 procedure TJvCustomPreviewDoc.WMSize(var Message: TWMSize);
 begin
   inherited;
-  DoSize;
+  Change;
 end;
 
-procedure TJvCustomPreviewDoc.DoSize;
-begin
-  FBuffer.Width := ClientWidth;
-  FBuffer.Height := ClientHeight;
-  CalcScrollRange;
-//  Invalidate;
-end;
 
 procedure TJvCustomPreviewDoc.WMHScroll(var Msg: TWMHScroll);
 var AValue,AMin,AMax:integer;
@@ -879,13 +926,13 @@ begin
     end;
     SB_LINEDOWN,SB_PAGEDOWN:
     begin
-      AValue := (GetPreviewPageWidth + Max(Options.HorzSpacing,Options.Shadow.Offset));
+      AValue := GetPreviewPageWidth + Options.HorzSpacing;
       ScrollBy(-AValue,0);
       FScrollPos.X := FScrollPos.X - AValue;
     end;
     SB_LINEUP,SB_PAGEUP:
     begin
-      AValue := (GetPreviewPageWidth + Max(Options.HorzSpacing,Options.Shadow.Offset));
+      AValue := GetPreviewPageWidth + Options.HorzSpacing;
       ScrollBy(AValue,0);
       FScrollPos.X := FScrollPos.X + AValue;
     end;
@@ -1050,11 +1097,104 @@ begin
     APrinter.EndDoc;
 end;
 
+function TJvCustomPreviewDoc.GetMaxCols: Cardinal;
+begin
+  Result := Max((ClientWidth - Options.HorzSpacing) div (GetPreviewPageWidth + Options.HorzSpacing),1);
+end;
+
+function TJvCustomPreviewDoc.GetMaxRows: integer;
+begin
+  Result := Max((ClientHeight - Options.VertSpacing) div (GetPreviewPageHeight + Options.VertSpacing),1);
+end;
+
+function TJvCustomPreviewDoc.GetOptimalScale: Cardinal;
+var Val1,Val2:integer;
+    ACols,ARows:integer;
+begin
+  ACols := Max(Min(PageCount,Options.Cols),1);
+  ARows := Max(Min(PageCount,Options.Rows),1);
+  Val1 := (ClientHeight - Options.VertSpacing) div ARows - Options.VertSpacing * 3 div 2;
+  Val2  := (ClientWidth - Options.HorzSpacing) div ACols - Options.HorzSpacing * 3 div 2;
+  Result := GetScale(Val1,Val2);
+end;
+
+procedure TJvCustomPreviewDoc.Change;
+begin
+  if Updating then Exit;
+  FBuffer.Width := ClientWidth;
+  FBuffer.Height := ClientHeight;
+  case Options.ScaleMode of
+    smFullPage:
+    begin
+      Options.FCols := 1;
+      Options.FRows := 1;
+      Options.FScale := GetOptimalScale;
+    end;
+    smPageWidth:
+    begin
+      Options.FCols := 1;
+      Options.FRows := 1;
+      Options.FScale := GetScale(0,ClientWidth - Options.HorzSpacing * 2);
+    end;
+    smScale:
+    begin
+      Options.FCols := GetMaxCols;
+      Options.FRows := GetMaxRows;
+    end;
+    smColsRows:
+      Options.FScale := GetOptimalScale;
+  end;
+  CalcScrollRange;
+  if Assigned(FOnChange) then FOnChange(self); 
+  Invalidate;
+end;
+
+procedure TJvCustomPreviewDoc.BeginUpdate;
+begin
+  Inc(FUpdateCount);
+end;
+
+procedure TJvCustomPreviewDoc.EndUpdate;
+begin
+  Dec(FUpdateCount);
+  if FUpdateCount = 0 then Change;
+  if FUpdateCount < 0 then FUpdateCount := 0;
+end;
+
+function TJvCustomPreviewDoc.Updating: boolean;
+begin
+  Result := FUpdateCount <> 0;
+end;
+
+function TJvCustomPreviewDoc.GetScale(AHeight, AWidth: Cardinal): Cardinal;
+var DC:HDC;
+begin
+  // determine scale factor for both sides, choose lesser
+  // this is the opposite of GetPreviewPageWidth/Height
+  DC := GetDC(0);
+  try
+    if AWidth > 0 then
+      AWidth := MulDiv(AWidth,100,MulDiv(DeviceInfo.PageWidth,
+        GetDeviceCaps(DC,LOGPIXELSX),DeviceInfo.LogPixelsX));
+    if AHeight > 0 then
+      AHeight := MulDiv(AHeight,100,MulDiv(DeviceInfo.PageHeight,
+        GetDeviceCaps(DC,LOGPIXELSY),DeviceInfo.LogPixelsY));
+    if (AHeight > 0) and (AWidth > 0) then
+      Result := Min(AWidth,AHeight)
+    else if AHeight > 0 then
+      Result := AHeight
+    else
+      Result := AWidth;
+  finally
+    ReleaseDC(0,DC);
+  end;
+end;
+
 { TJvDeviceInfo }
 
 procedure TJvDeviceInfo.Change;
 begin
-  if Assigned(FOnCHange) then
+  if Assigned(FOnChange) then
     FOnChange(self);
 end;
 
@@ -1069,6 +1209,26 @@ begin
   if FScreenDC <> 0 then
     ReleaseDC(0, FScreenDC);
   inherited;
+end;
+
+function TJvDeviceInfo.InchToXPx(Inch: single): integer;
+begin
+  Result := round(Inch * LogPixelsY);
+end;
+
+function TJvDeviceInfo.InchToYPx(Inch: single): integer;
+begin
+  Result := round(Inch * LogPixelsX);
+end;
+
+function TJvDeviceInfo.MMToXPx(MM: single): integer;
+begin
+  Result := InchToXPx(MM * 25.4);
+end;
+
+function TJvDeviceInfo.MMToYPx(MM: single): integer;
+begin
+  Result := InchToYPx(MM * 25.4);
 end;
 
 procedure TJvDeviceInfo.SetLogPixelsY(const Value: Cardinal);
@@ -1184,6 +1344,26 @@ begin
   if FScreenDC = 0 then
     FScreenDC := GetDC(0);
   SetReferenceHandle(FScreenDC);
+end;
+
+function TJvDeviceInfo.XPxToInch(Pixels: integer): single;
+begin
+  Result := Pixels / LogPixelsX;
+end;
+
+function TJvDeviceInfo.XPxToMM(Pixels: integer): single;
+begin
+  Result := XPxToInch(Pixels) / 25.4;
+end;
+
+function TJvDeviceInfo.YPxToInch(Pixels: integer): single;
+begin
+  Result := Pixels / LogPixelsY;
+end;
+
+function TJvDeviceInfo.YPxToMM(Pixels: integer): single;
+begin
+  Result := YPxToInch(Pixels) / 25.4;
 end;
 
 end.
