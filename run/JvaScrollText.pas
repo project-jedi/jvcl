@@ -50,8 +50,7 @@ type
     FFontMaskImage: TImage;
     FFontImage: TImage;
     FScrollImage: TImage;
-    FStrings: TStrings;
-
+    FStrings: TStringList;
     FStop: Boolean;
     FScrollBottom: Integer;
     FScrollTop: Integer;
@@ -64,6 +63,7 @@ type
     procedure SetBackImage(Value: TPicture);
     function GetForeImage: TPicture;
     function GetBackImage: TPicture;
+    function GetStrings: TStrings;
     procedure SetStrings(Value: TStrings);
   protected
     procedure Loaded; override;
@@ -77,7 +77,7 @@ type
     property ForeImage: TPicture read GetForeImage write SetForeImage;
     property BackImage: TPicture read GetBackImage write SetBackImage;
     property Height default 150;
-    property Lines: TStrings read FStrings write SetStrings;
+    property Lines: TStrings read GetStrings write SetStrings;
     property ScrollBottom: Integer read FScrollBottom write FScrollBottom default -1;
     property ScrollTop: Integer read FScrollTop write FScrollTop default -1;
     property LeftMargin: Integer read FLeftMargin write FLeftMargin default -1;
@@ -95,8 +95,8 @@ uses
 
 const
   cDelayIncrement = 50;
-  cIntToStyle: array [0..3] of TFontStyles =
-    ([], [fsBold], [fsItalic], [fsBold, fsItalic]);
+  cIntToStyle: array[0..3] of TFontStyles =
+  ([], [fsBold], [fsItalic], [fsBold, fsItalic]);
 
 constructor TJvaScrollText.Create(AOwner: TComponent);
 begin
@@ -115,7 +115,7 @@ begin
   FMaxFontSize := 48;
   Speed := 25;
   Width := 150;
-  Height := 150; 
+  Height := 150;
 end;
 
 destructor TJvaScrollText.Destroy;
@@ -151,6 +151,11 @@ begin
   Invalidate;
 end;
 
+function TJvaScrollText.GetStrings: TStrings;
+begin
+  Result := FStrings;
+end;
+
 procedure TJvaScrollText.SetStrings(Value: TStrings);
 begin
   FStrings.Assign(Value);
@@ -178,7 +183,7 @@ var
   DelayPause2: Longword;
   Pixels: 1..4;
   Pixels2: 1..4;
-  Pix: array [1..4] of Integer;
+  Pix: array[1..4] of Integer;
  // DrawInfo: Boolean;
   Line: Integer;
   H2, Popr, LastLine: Integer;
@@ -188,6 +193,7 @@ var
   FontHeight: Integer;
 
   // (rom) the Delay implementation is crude. Better use a Timer
+
   procedure Delay(MSecs: Longword);
   var
     DelayM: Longword;
@@ -224,7 +230,7 @@ var
     end
     else
       Result := False;
-      FontHeight := -FFontImage.Canvas.Font.Height + 3;
+    FontHeight := -FFontImage.Canvas.Font.Height + 3;
   end;
 
   procedure InitAll;
@@ -248,14 +254,14 @@ var
     FScrollImage.Picture.Assign(FForeImage.Picture);
     SourceFon.Top := 0;
     SourceFon.Left := 0;
-    SourceFon.Right := FForeImage.Width-1;
-    SourceFon.Bottom := FForeImage.Height-1;
+    SourceFon.Right := FForeImage.Width - 1;
+    SourceFon.Bottom := FForeImage.Height - 1;
     Source.Top := 0;
     Source.Left := 0;
-    Source.Right := FScrollImage.Picture.Width-1;
+    Source.Right := FScrollImage.Picture.Width - 1;
     Dest := Source;
     FFontImage.Canvas.Brush.Color := clBlack;
-    Source.Bottom := FFontImage.Picture.Height-1;
+    Source.Bottom := FFontImage.Picture.Height - 1;
     FFontImage.Canvas.FillRect(Source);
     FFontImage.Canvas.Font.Color := clWhite;
     FFontMaskImage.Canvas.Brush.Color := clWhite;
@@ -282,6 +288,7 @@ var
   end;
 
   // (rom) the Delay implementation is crude. Better use a Timer or multimedia timer
+
   procedure DelayBegin;
   begin
     DelayMsec := GetTickCount;
@@ -309,14 +316,14 @@ var
         Pixels := 3;
       if Pix[4] > Pix[Pixels] then
         Pixels := 4;
-      DelayPause := FSpeed + (Pixels-1)*cDelayIncrement;
+      DelayPause := FSpeed + (Pixels - 1) * cDelayIncrement;
       DelayPause2 := DelayPause;
       Pixels2 := Pixels;
       Pix[1] := 0;
       Pix[2] := 0;
       Pix[3] := 0;
       Pix[4] := 0;
-      Pic    := 0;
+      Pic := 0;
     end
     else
     begin
@@ -389,12 +396,12 @@ begin
       Dec(H2);
       if (J mod Pixels) <> 0 then
         Continue;
-      Source.Bottom := H+J; {H1}
+      Source.Bottom := H + J; {H1}
       Source.Left := FLeftMargin;
       SourceFon.Left := FLeftMargin;
       Dest.Left := FLeftMargin;
       Dest.Top := H2;
-      Dest.Bottom := H2 + H+J; {H2+H1}
+      Dest.Bottom := H2 + H + J; {H2+H1}
       DelayBegin;
       CopyAll;
       Canvas.Draw(0, 0, FScrollImage.Picture.Graphic);
@@ -406,10 +413,10 @@ begin
     begin
       Inc(H2, FontHeight);
       Inc(Popr, FontHeight);
-      Dest.Top      := 0;
-      Dest.Bottom   := FFontImage.Picture.Height-1 - FontHeight;
+      Dest.Top := 0;
+      Dest.Bottom := FFontImage.Picture.Height - 1 - FontHeight;
       Source.Top := FontHeight;
-      Source.Bottom := FFontImage.Picture.Height-1;
+      Source.Bottom := FFontImage.Picture.Height - 1;
       FFontImage.Canvas.CopyRect(Dest, FFontImage.Canvas, Source);
       Source.Top := 0;
     end;
@@ -429,3 +436,4 @@ begin
 end;
 
 end.
+

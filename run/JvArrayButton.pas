@@ -206,7 +206,7 @@ begin
   inherited MouseMove(Shift, X, Y);
   MouseToCell(X, Y, Pt.X, Pt.Y);
   if (not FPushDown) and
-     ((Pt.X <> FMouseOverBtn.X) or (Pt.Y <> FMouseOverBtn.Y)) then
+    ((Pt.X <> FMouseOverBtn.X) or (Pt.Y <> FMouseOverBtn.Y)) then
   begin
     FMouseOverBtn := Pt;
     Invalidate;
