@@ -60,7 +60,7 @@ unit JvXPBar;
 //  bug in Windows XP and 2003 and once all machines
 //  "OUT THERE" have been updated, this should be removed
 //  from the code.
-{.$define XP_TRANSPARENCY_FIX}
+//{ $ define XP_TRANSPARENCY_FIX}
 
 interface
 
@@ -2159,6 +2159,8 @@ var
         ACanvas.Pixels[Width - 1, R.Top + 1] := OwnColor;
         ACanvas.Pixels[Width - 2, R.Top + 1] := FColors.FBorderColor;
       end;
+
+      // Paint rollover button: (expanded/collapsed state button images)
       if FShowRollButton and (Width >= 115) then
       begin
         Bitmap := TBitmap.Create;
@@ -2201,10 +2203,8 @@ var
             else
               Bitmap.LoadFromResourceName(HInstance, 'JvXPCustomWinXPBarCOLLAPSE' + IntToStr(Index));
           end;
+          // Transparency fix not needed Here! -WPostma
           Bitmap.Transparent := True;
-{$ifdef XP_TRANSPARENCY_FIX}
-          BitmapBgPaint( Bitmap, {WinXPBar.}Colors.BodyColor);
-{$endif}
           ACanvas.Draw(R.Right - 24, R.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
         finally
           Bitmap.Free;
