@@ -149,6 +149,7 @@ type
     FSortedFields: TSortFields;
     FSortWith: TSortWith;
     FSortOK: Boolean;
+    FMultiColSort: Boolean;
     FOnIndexNotFound: TIndexNotFoundEvent;
     FOnUserSort: TUserSortEvent;
     FSavedBookmark: TBookmarkStr;
@@ -156,6 +157,7 @@ type
     FOnRestoreGridPosition: TRestoreGridPosEvent;
     FValueToSearch: Variant;
     FSearchFields: TStringList;
+    procedure SetMultiColSort(const Value: Boolean);
     function PrivateSearch(var ResultCol: Integer; var ResultField: TField;
       const CaseSensitive, WholeFieldOnly, Next: Boolean): Boolean;
   protected
@@ -183,6 +185,8 @@ type
       swFields   : for ADO tables
       swUserFunc : for other data providers (assignment of OnUserSort is mandatory) }
     property SortWith: TSortWith read FSortWith write FSortWith default swIndex;
+    { MultiColSort: is the sorting allowed on several columns or only one ? }
+    property MultiColSort: Boolean read FMultiColSort write SetMultiColSort default True;
     { OnIndexNotFound: fired when SortWith = swIndex and the sorting index is not found }
     property OnIndexNotFound: TIndexNotFoundEvent
       read FOnIndexNotFound write FOnIndexNotFound;
@@ -209,6 +213,7 @@ begin
   FSortedFields := nil;
   FSortWith := swIndex;
   FSortOK := True;
+  FMultiColSort := True;
   FOnIndexNotFound := nil;
   FOnUserSort := nil;
   FSavedBookmark := '';
@@ -412,6 +417,19 @@ begin
   end;
 end;
 
+procedure TJvDBUltimGrid.SetMultiColSort(const Value: Boolean);
+begin
+  if FMultiColSort <> Value then
+  begin
+    FMultiColSort := Value;
+    if Assigned(FSortedFields) and not FMultiColSort then
+    begin
+      SetLength(FSortedFields, 1);
+      Sort(FSortedFields);
+    end;
+  end;
+end;
+
 procedure TJvDBUltimGrid.DoTitleClick(ACol: Longint; AField: TField);
 var
   Keys: TKeyboardState;
@@ -428,7 +446,7 @@ begin
       SortArraySize := 1;
       if Assigned(FSortedFields) then
       begin
-        ShiftOrCtrlKeyPressed := GetKeyboardState(Keys);
+        ShiftOrCtrlKeyPressed := MultiColSort and GetKeyboardState(Keys);
         if ShiftOrCtrlKeyPressed then
           ShiftOrCtrlKeyPressed :=
             (((Keys[VK_SHIFT] and $80) <> 0) or ((Keys[VK_CONTROL] and $80) <> 0));
