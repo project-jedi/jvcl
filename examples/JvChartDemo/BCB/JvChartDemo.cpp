@@ -27,6 +27,7 @@
 #pragma hdrstop
 //---------------------------------------------------------------------------
 USEFORM("MainForm.cpp", frmMain);
+USEUNIT("StatClasses.cpp");
 //---------------------------------------------------------------------------
 WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
