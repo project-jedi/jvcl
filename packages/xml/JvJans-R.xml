@@ -24,6 +24,7 @@
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
     <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="visualclx" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvMarkupCommon.pas" Targets="all" Formname="" Condition=""/>

@@ -18,7 +18,7 @@
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p,D7clx,K3" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
-    <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p,D7clx,K3" Condition=""/>
+    <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="CJCLVCL" Targets="C6,C6p" Condition=""/>
   </Requires>
