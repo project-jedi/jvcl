@@ -583,12 +583,13 @@ end;
 
 procedure TJvCaptionPanel.DrawRotatedText(Rotation: Integer);
 var
-{$IFDEF VCL}
+  {$IFDEF VCL}
   lf: TLogFont;
   tf: TFont;
-{$ENDIF VCL}
+  Flags: Integer;
+  {$ENDIF VCL}
   R: TRect;
-  Flags, tH, tW: Integer;
+  tH, tW: Integer;
 begin
   if FCaption = '' then
     Exit;
@@ -640,11 +641,10 @@ begin
         dpBottom:
           OffsetRect(R, FOffset, tH);
       end;
+      {$IFDEF VCL}
       Flags := DT_NOPREFIX;
       if FDrawPosition in [dpTop, dpBottom] then
         Flags := Flags or DT_VCENTER;
-
-      {$IFDEF VCL}
       if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
         Flags := Flags or DT_NOCLIP; { bug or feature? }
       DrawText(Canvas.Handle, PChar(Caption), -1, R, Flags);
