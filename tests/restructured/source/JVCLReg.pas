@@ -35,7 +35,7 @@ procedure Register;
 
 implementation
 
-{$R JVCLReg.dcr}
+{$R ..\resources\JVCLReg.dcr}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, Dlgs, ToolsApi,
