@@ -501,8 +501,10 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
+{$IFDEF VisualCLX}
 const
   NewStyleControls = True; // Lo(GetVersion) > 4 { Windows }
+{$ENDIF VisualCLX}  
 
 { DrawButtonFrame - returns the remaining usable area inside the Client rect }
 

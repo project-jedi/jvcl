@@ -795,8 +795,8 @@ uses
 {$R ..\resources\JvToolEdit.res}
 
 type
-  TWinControlAccess = class(TWinControl);
-  TCustomEditAccess = class(TCustomEdit);
+  TOpenWinControl = class(TWinControl);
+  TOpenCustomEdit = class(TCustomEdit);
 
   { TDateHook is used to only have 1 hook per application for monitoring
     date changes;
@@ -906,47 +906,46 @@ end;
 function EditorTextMargins(Editor: TCustomEdit): TPoint;
 var
   DC: HDC;
-  SaveFont: HFONT;
   I: Integer;
+  SaveFont: HFONT;
   SysMetrics, Metrics: TTextMetric;
+  Ed: TOpenCustomEdit;
 begin
-  with TCustomEditAccess(Editor) do
+  Ed := TOpenCustomEdit(Editor);
+  if NewStyleControls then
   begin
-    if NewStyleControls then
-    begin
-      if BorderStyle = bsNone then
-        I := 0
-      else
-      if Ctl3D then
-        I := 1
-      else
-        I := 2;
-      if GetWindowLong(Handle, GWL_STYLE) and ES_MULTILINE = 0 then
-        Result.X := (SendMessage(Handle, EM_GETMARGINS, 0, 0) and $0000FFFF) + I
-      else
-        Result.X := I;
-      Result.Y := I;
-    end
+    if Ed.BorderStyle = bsNone then
+      I := 0
+    else
+    if Ed.Ctl3D then
+      I := 1
+    else
+      I := 2;
+    if GetWindowLong(Ed.Handle, GWL_STYLE) and ES_MULTILINE = 0 then
+      Result.X := (SendMessage(Ed.Handle, EM_GETMARGINS, 0, 0) and $0000FFFF) + I
+    else
+      Result.X := I;
+    Result.Y := I;
+  end
+  else
+  begin
+    if Ed.BorderStyle = bsNone then
+      I := 0
     else
     begin
-      if BorderStyle = bsNone then
-        I := 0
-      else
-      begin
-        DC := GetDC(0);
-        GetTextMetrics(DC, SysMetrics);
-        SaveFont := SelectObject(DC, Font.Handle);
-        GetTextMetrics(DC, Metrics);
-        SelectObject(DC, SaveFont);
-        ReleaseDC(0, DC);
-        I := SysMetrics.tmHeight;
-        if I > Metrics.tmHeight then
-          I := Metrics.tmHeight;
-        I := I div 4;
-      end;
-      Result.X := I;
-      Result.Y := I;
+      DC := GetDC(0);
+      GetTextMetrics(DC, SysMetrics);
+      SaveFont := SelectObject(DC, Ed.Font.Handle);
+      GetTextMetrics(DC, Metrics);
+      SelectObject(DC, SaveFont);
+      ReleaseDC(0, DC);
+      I := SysMetrics.tmHeight;
+      if I > Metrics.tmHeight then
+        I := Metrics.tmHeight;
+      I := I div 4;
     end;
+    Result.X := I;
+    Result.Y := I;
   end;
 end;
 
@@ -974,6 +973,7 @@ var
   PS: TPaintStruct;
   S: string;
   ExStyle: DWORD;
+  Ed: TOpenCustomEdit;
 const
   AlignStyle: array [Boolean, TAlignment] of DWORD =
     ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
@@ -982,93 +982,91 @@ begin
   Result := True;
   if csDestroying in Editor.ComponentState then
     Exit;
-  with TCustomEditAccess(Editor) do
+  Ed := TOpenCustomEdit(Editor);
+  if Ed.UseRightToLeftAlignment then
+    ChangeBiDiModeAlignment(AAlignment);
+  if StandardPaint and not (csPaintCopy in Ed.ControlState) then
   begin
-    if UseRightToLeftAlignment then
-      ChangeBiDiModeAlignment(AAlignment);
-    if StandardPaint and not (csPaintCopy in ControlState) then
-    begin
-      if SysLocale.MiddleEast and HandleAllocated and (IsRightToLeft) then
-      begin { This keeps the right aligned text, right aligned }
-        ExStyle := DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) and (not WS_EX_RIGHT) and
-          (not WS_EX_RTLREADING) and (not WS_EX_LEFTSCROLLBAR);
-        if UseRightToLeftReading then
-          ExStyle := ExStyle or WS_EX_RTLREADING;
-        if UseRightToLeftScrollBar then
-          ExStyle := ExStyle or WS_EX_LEFTSCROLLBAR;
-        ExStyle := ExStyle or
-          AlignStyle[UseRightToLeftAlignment, AAlignment];
-        if DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) <> ExStyle then
-          SetWindowLong(Handle, GWL_EXSTYLE, ExStyle);
-      end;
-      Result := False;
-      { return false if we need to use standard paint handler }
-      Exit;
+    if SysLocale.MiddleEast and Ed.HandleAllocated and (Ed.IsRightToLeft) then
+    begin { This keeps the right aligned text, right aligned }
+      ExStyle := DWORD(GetWindowLong(Ed.Handle, GWL_EXSTYLE)) and (not WS_EX_RIGHT) and
+        (not WS_EX_RTLREADING) and (not WS_EX_LEFTSCROLLBAR);
+      if Ed.UseRightToLeftReading then
+        ExStyle := ExStyle or WS_EX_RTLREADING;
+      if Ed.UseRightToLeftScrollBar then
+        ExStyle := ExStyle or WS_EX_LEFTSCROLLBAR;
+      ExStyle := ExStyle or
+        AlignStyle[Ed.UseRightToLeftAlignment, AAlignment];
+      if DWORD(GetWindowLong(Ed.Handle, GWL_EXSTYLE)) <> ExStyle then
+        SetWindowLong(Ed.Handle, GWL_EXSTYLE, ExStyle);
     end;
-    { Since edit controls do not handle justification unless multi-line (and
-      then only poorly) we will draw right and center justify manually unless
-      the edit has the focus. }
-    if ACanvas = nil then
+    Result := False;
+    { return false if we need to use standard paint handler }
+    Exit;
+  end;
+  { Since edit controls do not handle justification unless multi-line (and
+    then only poorly) we will draw right and center justify manually unless
+    the edit has the focus. }
+  if ACanvas = nil then
+  begin
+    ACanvas := TControlCanvas.Create;
+    TControlCanvas(ACanvas).Control := Editor;
+  end;
+  DC := Msg.DC;
+  if DC = 0 then
+    DC := BeginPaint(Ed.Handle, PS);
+  ACanvas.Handle := DC;
+  try
+    ACanvas.Font := Ed.Font;
+    with ACanvas do
     begin
-      ACanvas := TControlCanvas.Create;
-      TControlCanvas(ACanvas).Control := Editor;
-    end;
-    DC := Msg.DC;
-    if DC = 0 then
-      DC := BeginPaint(Handle, PS);
-    ACanvas.Handle := DC;
-    try
-      ACanvas.Font := Font;
-      with ACanvas do
+      SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
+      if not (NewStyleControls and Ed.Ctl3D) and (Ed.BorderStyle = bsSingle) then
       begin
-        SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
-        if not (NewStyleControls and Ctl3D) and (BorderStyle = bsSingle) then
-        begin
-          Brush.Color := clWindowFrame;
-          FrameRect(ClientRect);
-        end;
-        S := AText;
-        LTextWidth := TextWidth(S);
-        if PopupVisible then
-          X := EditRect.Left
+        Brush.Color := clWindowFrame;
+        FrameRect(Ed.ClientRect);
+      end;
+      S := AText;
+      LTextWidth := TextWidth(S);
+      if PopupVisible then
+        X := EditRect.Left
+      else
+      begin
+        case AAlignment of
+          taLeftJustify:
+            X := EditRect.Left;
+          taRightJustify:
+            X := EditRect.Right - LTextWidth;
         else
-        begin
-          case AAlignment of
-            taLeftJustify:
-              X := EditRect.Left;
-            taRightJustify:
-              X := EditRect.Right - LTextWidth;
-          else
-            X := (EditRect.Right + EditRect.Left - LTextWidth) div 2;
-          end;
-        end;
-        if SysLocale.MiddleEast then
-          UpdateTextFlags;
-        if not Enabled then
-        begin
-          // if PS.fErase then // (p3) fErase is not set to true when control is disabled
-          Perform(WM_ERASEBKGND, ACanvas.Handle, 0);
-
-          SaveDC(ACanvas.Handle);
-          try
-            ACanvas.Brush.Style := bsClear;
-            ACanvas.Font.Color := DisabledTextColor;
-            ACanvas.TextRect(EditRect, X, EditRect.Top, S);
-          finally
-            RestoreDC(ACanvas.Handle, -1);
-          end;
-        end
-        else
-        begin
-          Brush.Color := Color;
-          ACanvas.TextRect(EditRect, X, EditRect.Top, S);
+          X := (EditRect.Right + EditRect.Left - LTextWidth) div 2;
         end;
       end;
-    finally
-      ACanvas.Handle := 0;
-      if Msg.DC = 0 then
-        EndPaint(Handle, PS);
+      if SysLocale.MiddleEast then
+        UpdateTextFlags;
+      if not Ed.Enabled then
+      begin
+        // if PS.fErase then // (p3) fErase is not set to true when control is disabled
+        Ed.Perform(WM_ERASEBKGND, ACanvas.Handle, 0);
+
+        SaveDC(ACanvas.Handle);
+        try
+          ACanvas.Brush.Style := bsClear;
+          ACanvas.Font.Color := DisabledTextColor;
+          ACanvas.TextRect(EditRect, X, EditRect.Top, S);
+        finally
+          RestoreDC(ACanvas.Handle, -1);
+        end;
+      end
+      else
+      begin
+        Brush.Color := Ed.Color;
+        ACanvas.TextRect(EditRect, X, EditRect.Top, S);
+      end;
     end;
+  finally
+    ACanvas.Handle := 0;
+    if Msg.DC = 0 then
+      EndPaint(Ed.Handle, PS);
   end;
 end;
 
@@ -1444,13 +1442,13 @@ begin
       VK_RETURN:
         if (Form <> nil) {and Form.KeyPreview} then
         begin
-          TWinControlAccess(Form).KeyDown(Key, Shift);
+          TOpenWinControl(Form).KeyDown(Key, Shift);
           Key := 0;
         end;
       VK_TAB:
         if (Form <> nil) {and Form.KeyPreview} then
         begin
-          TWinControlAccess(Form).KeyDown(Key, Shift);
+          TOpenWinControl(Form).KeyDown(Key, Shift);
           Key := 0;
         end;
     end;
@@ -1495,7 +1493,7 @@ begin
   begin
     Key := #0;
     if (Form <> nil) {and Form.KeyPreview} then
-      TWinControlAccess(Form).KeyPress(Key);
+      TOpenWinControl(Form).KeyPress(Key);
   end;
   //Polaris
   inherited KeyPress(Key);
