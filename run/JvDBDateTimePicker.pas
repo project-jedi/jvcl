@@ -52,10 +52,14 @@ type
     FDataLink: TFieldDataLink;
     FBeepOnError: Boolean;
     FTrimValue: Boolean;
+    FIsReadOnly: Boolean;
     function GetDataField: string;
     function GetDataSource: TDataSource;
+    function GetReadOnly: Boolean;
+    procedure SetReadOnly(Value: Boolean);
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
+    procedure EditingChange(Sender: TObject);
   protected
     function IsDateAndTimeField: Boolean;
     // Adding capability to edit
@@ -77,6 +81,7 @@ type
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property TrimValue: Boolean read FTrimValue write FTrimValue default True;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
   end;
 
 implementation
@@ -100,10 +105,12 @@ uses
 constructor TJvDBDateTimePicker.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FIsReadOnly := True;
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := DataChange;
   FDataLink.OnUpdateData := UpdateData;
+  FDataLink.OnEditingChange := EditingChange;
   OnCloseUp := CalendarOnCloseUp;
   OnDropDown := CalendarOnDropDown;
   FBeepOnError := True;
@@ -237,6 +244,12 @@ end;
 
 procedure TJvDBDateTimePicker.KeyDown(var Key: Word; Shift: TShiftState);
 begin
+  if FIsReadOnly and not FDataLink.CanModify then
+  begin
+    Key := 0;
+    Exit;
+  end;
+
   // we still parent code
   inherited KeyDown(Key, Shift);
   // Is it Delete key, insert key or shiftstate ...
@@ -285,6 +298,12 @@ end;
 
 procedure TJvDBDateTimePicker.KeyPress(var Key: Char);
 begin
+  if FIsReadOnly and not FDataLink.CanModify then
+  begin
+    Key := #0;
+    Exit;
+  end;
+
   inherited KeyPress(Key);
   if (Key in [#32..#255]) and ((FDataLink.Field <> nil) and
     not (FDataLink.Field.IsValidChar(Key))) then
@@ -414,6 +433,21 @@ begin
     Result := (Field <> nil) and
       (Field.DataType in [ftDateTime {$IFDEF COMPILER6_UP}, ftTimeStamp {$ENDIF}]) and
       not TrimValue;
+end;
+
+procedure TJvDBDateTimePicker.EditingChange(Sender: TObject);
+begin
+  FIsReadOnly := not FDataLink.Editing;
+end;
+
+function TJvDBDateTimePicker.GetReadOnly: Boolean;
+begin
+  Result := FDataLink.ReadOnly;
+end;
+
+procedure TJvDBDateTimePicker.SetReadOnly(Value: Boolean);
+begin
+  FDataLink.ReadOnly := Value;
 end;
 
 end.
