@@ -370,6 +370,11 @@ contains
   JvChPswDlg in '..\source\JvChPswDlg.pas' {JvChPswdForm},
   JvMemTable in '..\source\JvMemTable.pas',
   JvFormProgress in '..\source\JvFormProgress.pas' {FormProg},
-  JvRadioCtl in '..\source\JvRadioCtl.pas';
+  JvRadioCtl in '..\source\JvRadioCtl.pas',
+  JvThumbImage in '..\Source\JvThumbImage.pas',
+  JvBaseThumbnail in '..\Source\JvBaseThumbnail.pas',
+  JvThumbnails in '..\Source\JvThumbnails.pas',
+  JvThumbViews in '..\Source\JvThumbViews.pas',
+  JvMovableBevel in '..\Source\JvMovableBevel.pas';
 
 end.
