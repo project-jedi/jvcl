@@ -32,8 +32,9 @@ Each file has its own role:<br>
  cellpadding="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; white-space: nowrap;">Package XML
-Source Files<br>
+      <td style="vertical-align: top; white-space: nowrap;"><a
+ href="#Package_XML_Source_Files_Format">Package XML
+Source Files</a><br>
       </td>
       <td style="vertical-align: top;">Each packageXML source file
 indicates which files are to be included in the package, which other
@@ -47,17 +48,20 @@ file.<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">XML Configuration File<br>
+      <td style="vertical-align: top;"><a
+ href="#XML_Configuration_File_Format">XML Configuration File</a><br>
       </td>
       <td style="vertical-align: top;">This file contains the
 declaration of models that the package generator will use to generate
-the files. Each model declares targets (Delphi, C++ Builder or Kylix
-versions) the format of the filenames to output, the location of
+the files. Each model declares targets (one version of Delphi, C++
+Builder or Kylix) the format of the filenames to output, the location
+of
 package files and a possible include file.<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">Template Files<br>
+      <td style="vertical-align: top;"><a href="#Template_Files_Format">Template
+Files</a><br>
       </td>
       <td style="vertical-align: top;">These files are skeletons for
 the final output files. They contain special markers that will get
@@ -66,7 +70,8 @@ Package Source XML files to generate the final output files.<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">Include File<br>
+      <td style="vertical-align: top;"><a href="#Include_File_parsing">Include
+File</a><br>
       </td>
       <td style="vertical-align: top;">The Delphi packages are Pascal
 source files and as such can include conditional compilation
@@ -90,7 +95,8 @@ will be left untouched.<br>
   </tbody>
 </table>
 <br>
-<h2>Package XML Source Files Format</h2>
+<h2><a name="Package_XML_Source_Files_Format"></a>Package XML Source
+Files Format</h2>
 Here is a basic XML source file (Extracted from JvCore-R.xml):<br>
 <br>
 <table
@@ -109,19 +115,32 @@ version="1.0" encoding="iso-8859-1"?&gt;<br>
 &nbsp; &lt;C6Libs/&gt;<br>
 &nbsp; &lt;Requires&gt;<br>
 &nbsp;&nbsp;&nbsp; &lt;Package Name="ThemeManager6"
-Targets="D6,D6p,C6,C6p" Condition="JVCLThemesEnabled"/&gt;<br>
-&nbsp;&nbsp;&nbsp; &lt;Package Name="CJCL" Targets="C6,C6p"
+Targets="D6,D6p,C6,C6p"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Condition="JVCLThemesEnabled"/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;Package
+Name="CJCL"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Targets="C6,C6p" &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;
 Condition=""/&gt;<br>
-&nbsp;&nbsp;&nbsp; &lt;Package Name="vclx"
+&nbsp;&nbsp;&nbsp; &lt;Package
+Name="vclx"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Targets="D6,D6p,D7,D7p,C6,C6p,K2,K3" Condition=""/&gt;<br>
 &nbsp; &lt;/Requires&gt;<br>
 &nbsp; &lt;Contains&gt;<br>
-&nbsp;&nbsp;&nbsp; &lt;File Name="..\..\common\JvConsts.pas"
-Targets="all" Formname="" Condition=""/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;File
+Name="..\..\common\JvConsts.pas"&nbsp;&nbsp;&nbsp;&nbsp;
+Targets="all" Formname="" &nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Condition=""/&gt;<br>
 &nbsp;&nbsp;&nbsp; &lt;File Name="..\..\run\JvColorProvider.pas"
-Targets="all" Formname="" Condition=""/&gt;<br>
-&nbsp;&nbsp;&nbsp; &lt;File Name="..\..\run\JvComponent.pas"
-Targets="all" Formname="" Condition=""/&gt;<br>
+Targets="all"
+Formname=""&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Condition=""/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;File
+Name="..\..\run\JvComponent.pas"&nbsp;&nbsp;&nbsp;&nbsp;
+Targets="all"
+Formname=""&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Condition=""/&gt;<br>
 &nbsp;&nbsp;&nbsp; &lt;File Name="..\..\run\JvJVCLAboutForm.pas"
 Targets="all" Formname="JvJVCLAboutForm" Condition=""/&gt;<br>
 &nbsp; &lt;/Contains&gt;<br>
@@ -134,11 +153,12 @@ Targets="all" Formname="JvJVCLAboutForm" Condition=""/&gt;<br>
 When reading those files, the package generator doesn't check for the
 existence of the nodes and properties in the XML file. It assumes they
 exist and if they don't you will most likely end up with an exception.
-This is why we recomment you use pgEdit.exe to edit these files, which
+This is why we recommend that you use pgEdit.exe to edit these files,
+which
 will ensure the format of the xml files is correct. Here is a
 description of each node and its usage:<br>
 <br>
-<table style="text-align: left; width: 100%;" border="1" cellspacing="2"
+<table style="text-align: left; width: 100%;" border="1" cellspacing="1"
  cellpadding="2">
   <tbody>
     <tr>
@@ -230,7 +250,9 @@ as C5Libs but will be the replacement for %C6LIBS%<br>
       </td>
       <td style="vertical-align: top;">Package<br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">This node is only the parent of
+all the package nodes, those nodes indicating the packages required by
+the current package.<br>
       </td>
     </tr>
     <tr>
@@ -238,7 +260,9 @@ as C5Libs but will be the replacement for %C6LIBS%<br>
       </td>
       <td style="vertical-align: top;">Package<br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">This node is only the parent of
+all the file nodes, those nodes indicating the files contained in the
+current package.
       </td>
     </tr>
     <tr>
@@ -246,7 +270,43 @@ as C5Libs but will be the replacement for %C6LIBS%<br>
       </td>
       <td style="vertical-align: top;">Requires<br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">Each package node in a Require
+node indicates a package that the current one requires in order to be
+compiled. It must have those three attributes:<br>
+      <table style="text-align: left; width: 100%;" border="0"
+ cellspacing="0" cellpadding="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">Name<br>
+            </td>
+            <td style="vertical-align: top;">The name of the package
+that is being required. No extension shall be given here. If the name
+starts with the prefix indicated for the current model, then it will be
+modified according to the format indicated in the model. For instance,
+if Name is 'JvCore-R', prefix is 'Jv', format is '%p%e%v%t' and the
+current target is C++ Builder 6 then the name will be replaced by
+JvCoreC6R. Please see the detailed description of the generation
+process for further information.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Targets<br>
+            </td>
+            <td style="vertical-align: top;">The targets for which the
+package is to be required<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Condition<br>
+            </td>
+            <td style="vertical-align: top;">The condition under which
+the package is to be required. If empty, no condition is necessary to
+require the package in the current one.<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
       </td>
     </tr>
     <tr>
@@ -254,14 +314,57 @@ as C5Libs but will be the replacement for %C6LIBS%<br>
       </td>
       <td style="vertical-align: top;">Contains<br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">Each file node in a Contains
+node indicates a file that is to be included in the package. It must
+have those four attributes:<br>
+      <table style="text-align: left; width: 100%;" border="0"
+ cellspacing="0" cellpadding="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">Name<br>
+            </td>
+            <td style="vertical-align: top;">The name of the file to
+include. The extension must be indicated<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Targets<br>
+            </td>
+            <td style="vertical-align: top;">The targets for which the
+file is to be included<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Formname<br>
+            </td>
+            <td style="vertical-align: top;">The name of the form (dfm)
+associated with the pas file, if any. It is not the type name, but the
+name of the form that must be indicated here. For instance if the form
+is of type TForm1 then the value must be Form1. Moreover, if the dfm
+file describes a Frame or a Data Module, the name must be followed by a
+colon, a space and TFrame or TDataModule.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Condition<br>
+            </td>
+            <td style="vertical-align: top;">The condition under which
+the file is to be included. If empty, no
+condition is necessary to include the file.</td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
       </td>
     </tr>
   </tbody>
 </table>
 <br>
 <br>
-<h2>XML Configuration File Format</h2>
+<h2><a name="XML_Configuration_File_Format"></a>XML Configuration File
+Format</h2>
+Here is a basic XML Configuration file, derived from the full
+pgEdit.xml distributed with the JVCL:<br>
 <br>
 <table
  style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
@@ -299,7 +402,334 @@ value="d7,d7p"/&gt;<br>
   </tbody>
 </table>
 <br>
-<h2>Template Files Format</h2>
+Contrary to the package XML source files, the validity of this file is
+checked when read and an explicative message will be given to you if
+the file is corrupted. However, a non corrupted file doesn't mean it
+does something useful. For that, you need to indicate the correct
+values according to the following table:<br>
+<br>
+<table style="text-align: left; width: 100%;" border="1" cellspacing="1"
+ cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Node<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Parent
+Node<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Description<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Configuration<br>
+      </td>
+      <td style="vertical-align: top; white-space: nowrap;">node (root
+node)<br>
+      </td>
+      <td style="vertical-align: top;">This is the root node of the XML
+file. It doesn't have to have any attributes and may be named
+differently, but that would mean that pgEdit needs to be changed to
+cope with the modification. pg wouldn't mind.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">pgEdit<br>
+      </td>
+      <td style="vertical-align: top;">Configuration<br>
+      </td>
+      <td style="vertical-align: top;">This node contains all the
+subnodes required by pgEdit to save its state when it closed down. The
+state includes the values of various components, the size of the form,
+its position...<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">models<br>
+      </td>
+      <td style="vertical-align: top;">Configuration<br>
+      </td>
+      <td style="vertical-align: top;">This node holds the model nodes,
+those nodes being the actual configuration described in this file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">model<br>
+      </td>
+      <td style="vertical-align: top;">models<br>
+      </td>
+      <td style="vertical-align: top;">Each model node defines a
+generation model that can be used by the package generator. The five
+attributes are compulsory and serve the following purpose:<br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellspacing="0" cellpadding="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">name<br>
+            </td>
+            <td style="vertical-align: top;">The name of the model<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">prefix<br>
+            </td>
+            <td style="vertical-align: top;">The prefix indicates the
+first characters of package names that are to be modified when
+encountered in a required package node for a package to generate.
+Please see the detailled description of the <a
+ href="#Detailed_Generation_process">generation process</a> for further
+information.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">format<br>
+            </td>
+            <td style="vertical-align: top;">The format of the string
+that will replace a package name that matched the prefix. Please see
+the detailed description of the <a href="#Detailed_Generation_process">generation
+process</a> for further information. Some special markers will get
+replaced:<br>
+            <table style="width: 100%; text-align: left;" border="0"
+ cellspacing="0" cellpadding="2">
+              <tbody>
+                <tr>
+                  <td style="vertical-align: top;">%e<br>
+                  </td>
+                  <td style="vertical-align: top;">The environment one
+letter indicator. See below for more details<br>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: top;">%n<br>
+                  </td>
+                  <td style="vertical-align: top;">The package name,
+without its suffix. Hence JvCore-R would give Core in the example above.</td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: top;">%p</td>
+                  <td style="vertical-align: top;">The prefix. In the
+example above, Jv<br>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: top;">%t<br>
+                  </td>
+                  <td style="vertical-align: top;">The type of package.
+Simply the letter after the dash. JvCore-R gives R for instance<br>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: top;">%v</td>
+                  <td style="vertical-align: top;">The version of the
+target. See below for more details<br>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+Delphi and C++ Builder prior to version 6 do not support the LibSuffix
+concept. If you want to emulate it with your packages, you may find
+usefull this fact:<br>
+If there is a comma in the format string, then it is considered as a
+separator. What is before it is used for all versions starting from 6,
+and what is after it is used for all versions before 6.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">packages<br>
+            </td>
+            <td style="vertical-align: top;">The location of the
+packages. This is considered as a root, meaning that the Package XML
+source files will be searched in the xml subdirectory. Then the
+directories used to output the files for each targets will have to
+exist in this pseudo root directory.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">incfile<br>
+            </td>
+            <td style="vertical-align: top;">The name of the include
+file to parse. This has only an impact for C++ Builder targets<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">targets<br>
+      </td>
+      <td style="vertical-align: top;">model<br>
+      </td>
+      <td style="vertical-align: top;">This node holds the target
+nodes, one node for each target your suite can support<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">aliases<br>
+      </td>
+      <td style="vertical-align: top;">model<br>
+      </td>
+      <td style="vertical-align: top;">This node holds the alias nodes,
+one node for each target alias you want to provide. In the example
+above, using Delphi in a target node in a package XML source file is
+equivalent to using d7,d7p. The aliases are not resolved recursively
+and are not case sensitive. You don't have to define the 'all' alias,
+it will be derived from the list of targets.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">target<br>
+      </td>
+      <td style="vertical-align: top;">targets<br>
+      </td>
+      <td style="vertical-align: top;">Each target node must have at
+least the name attribute. All other attributes are optionnal:<br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellspacing="0" cellpadding="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">name<br>
+            </td>
+            <td style="vertical-align: top;">The name of the target,
+compulsory.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">dir<br>
+            </td>
+            <td style="vertical-align: top;">The directory where to
+generate the packages. Defaults to name. It must exists in the packages
+directory before starting the generation of packages. If not, errors
+will occur and the error messages may not be self-explanatory.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">pname<br>
+            </td>
+            <td style="vertical-align: top;">The name of the associated
+Perso target. A perso target is the target that will be used to force
+the generation of a different package for a version of the target that
+do not support some features (Database generally). Leave empty or do
+not define if there are no reason to use this feature. For instance,
+Delphi 7 Personal Edition doesn't support Databases. With the example
+above you could use the d7 target alone when specifying a file that is
+to be included for Delphi 7 and not Delphi 7 Personal Edition. Use
+'d7,d7p' when including a file that can be used for all versions of
+Delphi 7.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">pdir<br>
+            </td>
+            <td style="vertical-align: top;">The directory for the
+associated perso target. Defaults to pname<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">env<br>
+            </td>
+            <td style="vertical-align: top;">A character to identify
+the development environment. Defaults to the first character of name.
+Expected values are D for delphi, C for C++ Builder and K for Kylix.
+Any other value will most likely lead to errors while generating the
+packages.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">ver<br>
+            </td>
+            <td style="vertical-align: top;">A character to identify
+the version of the environment. Defaults to the second character of
+name. The expected value is a number and errors will arise if it is not.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">defines<br>
+            </td>
+            <td style="vertical-align: top;">A comma separated string
+to indicate which Conditional Compilation symbols are defined as the
+result of using this target so that your include file can enclose some
+$DEFINE in $IFDEF that relate to the compiler being used. For instance,
+in the JVCL, we have the JVCLThemesEnabled compilation directive. It
+can be turned on manually, but if the target compiler is version 7 or
+upper, it is turned on by default as the theme support is included in
+the default distribution. Hence in the include file, we did this:<br>
+            <code><br>
+            </code>
+            <table
+ style="text-align: left; background-color: rgb(204, 204, 204); width: 100%;"
+ border="0" cellspacing="0" cellpadding="2">
+              <tbody>
+                <tr>
+                  <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><code>{$IFDEF
+COMPILER7_UP}<br>
+&nbsp; {$DEFINE JVCLThemesEnabled}<br>
+{$ENDIF}<br>
+                  </code></td>
+                </tr>
+              </tbody>
+            </table>
+            <code></code><br>
+Now, when a file is included with the JVCLThemesEnabled condition, it
+will only be if the COMPILER7_UP condition is also available. But this
+is only the case when compiling because it is derived from the version
+number of the compiler. However, you can specifically indicate that a
+given target will define a condition using this attribute, hence
+mimicking what happens during compilation. Please refer to the <a
+ href="#Include_File_parsing">Include File parsing</a> section for more
+information on the handling of the include file.<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">alias<br>
+      </td>
+      <td style="vertical-align: top;">aliases<br>
+      </td>
+      <td style="vertical-align: top;">Each alias node must have those
+two attributes:<br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellspacing="0" cellpadding="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">name<br>
+            </td>
+            <td style="vertical-align: top;">The name of the alias<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">value<br>
+            </td>
+            <td style="vertical-align: top;">The comma separated list
+of targets this alias will expand to. No recursion is done when
+resolving the aliases. If you defined some Perso target, do not forget
+to include them in the value for your alias.<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2><a name="Template_Files_Format"></a>Template Files Format</h2>
+<h2><br>
+</h2>
+<h2><a name="Include_File_parsing"></a>Include File parsing</h2>
+<br>
+<h2><a name="Detailed_Generation_process"></a>Detailed Generation
+process</h2>
 <br>
 <br>
 </body>
