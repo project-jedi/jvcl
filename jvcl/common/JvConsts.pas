@@ -398,9 +398,14 @@ resourcestring
   SJvEditorString = 'Click to edit...';
 
   { JvID3_ component editor }
-  SID3FrameEditor = 'Frame edi&tor...';
+  SID3CommitTag = '&Commit';
+  SID3FileInfoTag = 'File &info';
+  SID3FrameEditorTag = 'Frame edi&tor';
   SID3RemoveTag = '&Remove tag...';
-  SID3CommitTag = '&Commit...';
+  SID3RemoveTagConfirmation = 'Remove tag?';
+  SID3Err_FileDoesNotExists = 'File %s does not exists';
+  SID3Err_NoFileSpecified = 'No file specified';
+  SID3Err_NoValidMPEGTag = 'This file has not a valid MPEG tag';
 
   { JvDataProvider constants }
 const
