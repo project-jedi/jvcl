@@ -437,7 +437,15 @@ type
     function ControlGetDataField: string;
   end;
 
+  TJvDynControlEngineVCLDB = class(TJvDynControlEngineDB)
+  protected
+  public
+    function GetDatasourceFromDataComponent (ADataComponent : TComponent) : TDatasource; override;
+    procedure RegisterControls; override;
+  end;
+
 function DynControlEngineVCLDB: TJvDynControlEngineDB;
+
 
 implementation
 
@@ -1780,14 +1788,6 @@ function DynControlEngineVCLDB: TJvDynControlEngineDB;
 begin
   Result := IntDynControlEngineVCLDB;
 end;
-
-type
-  TJvDynControlEngineVCLDB = class(TJvDynControlEngineDB)
-  protected
-  public
-    function GetDatasourceFromDataComponent (ADataComponent : TComponent) : TDatasource; override;
-    procedure RegisterControls; override;
-  end;
 
 procedure TJvDynControlEngineVCLDB.RegisterControls;
 begin
