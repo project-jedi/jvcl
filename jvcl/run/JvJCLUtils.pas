@@ -958,6 +958,10 @@ function IsForegroundTask: Boolean;
 function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: string): Boolean;
 {$ENDIF VCL}
 
+procedure AntiAlias(Clip: TBitmap);
+procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
+  XFinal, YFinal: Integer);
+
 implementation
 
 uses
@@ -8048,10 +8052,55 @@ begin
   end;
 end;
 
+procedure AntiAlias(Clip: TBitmap);
+begin
+  AntiAliasRect(Clip, 0, 0, Clip.Width, Clip.Height);
+end;
+
+procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
+  XFinal, YFinal: Integer);
+var
+  Tmp, X, Y: Integer;
+  P0, P1, P2: PByteArray;
+begin
+  // swap values
+  if XFinal < XOrigin then
+  begin
+    Tmp := XOrigin;
+    XOrigin := XFinal;
+    XFinal := Tmp;
+  end;
+  if YFinal < YOrigin then
+  begin
+    Tmp := YOrigin;
+    YOrigin := YFinal;
+    YFinal := Tmp;
+  end;
+  XOrigin := Max(1, XOrigin);
+  YOrigin := Max(1, YOrigin);
+  XFinal := Min(Clip.Width - 2, XFinal);
+  YFinal := Min(Clip.Height - 2, YFinal);
+  // (rom) this change of pixel format has to be documented or reversed afterwards
+  Clip.PixelFormat := pf24bit;
+  for Y := YOrigin to YFinal do
+  begin
+    P0 := Clip.ScanLine[Y - 1];
+    P1 := Clip.ScanLine[Y];
+    P2 := Clip.ScanLine[Y + 1];
+    for X := XOrigin to XFinal do
+    begin
+      P1[X * 3] := (P0[X * 3] + P2[X * 3] + P1[(X - 1) * 3] + P1[(X + 1) * 3]) div 4;
+      P1[X * 3 + 1] := (P0[X * 3 + 1] + P2[X * 3 + 1] + P1[(X - 1) * 3 + 1] + P1[(X + 1) * 3 + 1]) div 4;
+      P1[X * 3 + 2] := (P0[X * 3 + 2] + P2[X * 3 + 2] + P1[(X - 1) * 3 + 2] + P1[(X + 1) * 3 + 2]) div 4;
+    end;
+  end;
+end;
+
 initialization
   { begin JvDateUtil }
-{$IFDEF USE_FOUR_DIGIT_YEAR}
+  {$IFDEF USE_FOUR_DIGIT_YEAR}
   FourDigitYear := Pos('YYYY', AnsiUpperCase(ShortDateFormat)) > 0;
-{$ENDIF}
+  {$ENDIF}
   { end JvDateUtil }
+
 end.

@@ -110,9 +110,9 @@ type
   published
     property ButtonShape: TJvButtonShapes read FButtonShape write SetButtonShape;
     property Color;
-    property AntiAlias:boolean read FAntiAlias write SetAntiAlias default false;
+    property AntiAlias: Boolean read FAntiAlias write SetAntiAlias default False;
     property HotColor: TColor read FHotColor write SetHotColor;
-    property Flat: boolean read FFlat write SetFlat;
+    property Flat: Boolean read FFlat write SetFlat;
     property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor;
     property FlatArrow: boolean read FFlatArrow write SetFlatArrow;
     property Width default 65;
@@ -129,53 +129,8 @@ type
 implementation
 
 uses
-  Math;
-
-procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
-  XFinal, YFinal: Integer);
-var
-  Memo, X, Y: Integer; (* Composantes primaires des points environnants *)
-  P0, P1, P2: PByteArray;
-
-begin
-  if XFinal < XOrigin then
-  begin
-    // swap values
-    Memo := XOrigin;
-    XOrigin := XFinal;
-    XFinal := Memo;
-  end;
-  if YFinal < YOrigin then
-  begin
-    Memo := YOrigin;
-    YOrigin := YFinal;
-    YFinal := Memo;
-  end; (* si diff‚rence n‚gative *)
-  XOrigin := Max(1, XOrigin);
-  YOrigin := Max(1, YOrigin);
-  XFinal := Min(Clip.Width - 2, XFinal);
-  YFinal := Min(Clip.Height - 2, YFinal);
-  Clip.PixelFormat := pf24bit;
-  for Y := YOrigin to YFinal do
-  begin
-    P0 := Clip.ScanLine[Y - 1];
-    P1 := Clip.ScanLine[Y];
-    P2 := Clip.ScanLine[Y + 1];
-    for X := XOrigin to XFinal do
-    begin
-      P1[X * 3] := (P0[X * 3] + P2[X * 3] + P1[(X - 1) * 3] + P1[(X + 1) * 3]) div 4;
-      P1[X * 3 + 1] := (P0[X * 3 + 1] + P2[X * 3 + 1] + P1[(X - 1) * 3 + 1] + P1[(X + 1) * 3 + 1]) div 4;
-      P1[X * 3 + 2] := (P0[X * 3 + 2] + P2[X * 3 + 2] + P1[(X - 1) * 3 + 2] + P1[(X + 1) * 3 + 2]) div 4;
-    end;
-  end;
-end;
-
-procedure AntiAlias(Clip: TBitmap);
-begin
-  AntiAliasRect(Clip, 0, 0, Clip.Width, Clip.Height);
-end;
-
-//=== TJvShapedButton ========================================================
+  Math,
+  JvJCLUtils;
 
 constructor TJvShapedButton.Create(AOwner: TComponent);
 begin
@@ -2663,7 +2618,7 @@ end;
 procedure TJvShapedButton.DoAntiAlias(Bmp: TBitmap);
 begin
   if AntiAlias then
-    JvShapedButton.AntiAlias(Bmp);
+    JvJCLUtils.AntiAlias(Bmp);
 end;
 
 procedure TJvShapedButton.SetAntiAlias(const Value: boolean);

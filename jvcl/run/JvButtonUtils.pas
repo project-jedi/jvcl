@@ -30,60 +30,6 @@ unit JvButtonUtils;
 
 interface
 
-uses
-  Windows, SysUtils, Classes, Graphics;
-
-procedure AntiAlias(Clip: TBitmap);
-procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
-  XFinal, YFinal: Integer);
-
 implementation
-
-uses
-  Math;
-
-procedure AntiAlias(Clip: TBitmap);
-begin
-  AntiAliasRect(Clip, 0, 0, Clip.Width, Clip.Height);
-end;
-
-procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
-  XFinal, YFinal: Integer);
-var
-  Memo, X, Y: Integer; (* Composantes primaires des points environnants *)
-  P0, P1, P2: PByteArray;
-
-begin
-  if XFinal < XOrigin then
-  begin
-    // swap values
-    Memo := XOrigin;
-    XOrigin := XFinal;
-    XFinal := Memo;
-  end;
-  if YFinal < YOrigin then
-  begin
-    Memo := YOrigin;
-    YOrigin := YFinal;
-    YFinal := Memo;
-  end; (* si diff‚rence n‚gative *)
-  XOrigin := Max(1, XOrigin);
-  YOrigin := Max(1, YOrigin);
-  XFinal := Min(Clip.Width - 2, XFinal);
-  YFinal := Min(Clip.Height - 2, YFinal);
-  Clip.PixelFormat := pf24bit;
-  for Y := YOrigin to YFinal do
-  begin
-    P0 := Clip.ScanLine[Y - 1];
-    P1 := Clip.ScanLine[Y];
-    P2 := Clip.ScanLine[Y + 1];
-    for X := XOrigin to XFinal do
-    begin
-      P1[X * 3] := (P0[X * 3] + P2[X * 3] + P1[(X - 1) * 3] + P1[(X + 1) * 3]) div 4;
-      P1[X * 3 + 1] := (P0[X * 3 + 1] + P2[X * 3 + 1] + P1[(X - 1) * 3 + 1] + P1[(X + 1) * 3 + 1]) div 4;
-      P1[X * 3 + 2] := (P0[X * 3 + 2] + P2[X * 3 + 2] + P1[(X - 1) * 3 + 2] + P1[(X + 1) * 3 + 2]) div 4;
-    end;
-  end;
-end;
 
 end.
