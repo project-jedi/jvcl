@@ -28,10 +28,7 @@ package JvQXPCtrlsD7D;
 
 requires
   JvQCoreD7D,
-  JvQXPCtrlsD7R,
-  rtl,
-  visualclx,
-  designide;
+  JvQXPCtrlsD7R;
 
 contains
   JvQXPCtrlsReg in '..\..\qdesign\JvQXPCtrlsReg.pas',

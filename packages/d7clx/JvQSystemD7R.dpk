@@ -27,9 +27,7 @@ package JvQSystemD7R;
 
 requires
   JvQCoreD7R,
-  rtl,
-  visualclx,
-  DJcl;
+  DJclVClx;
 
 contains
   JvQXmlDatabase in '..\..\qrun\JvQXmlDatabase.pas',
@@ -44,6 +42,7 @@ contains
   JvQThreadTimer in '..\..\qrun\JvQThreadTimer.pas',
   JvQTimer in '..\..\qrun\JvQTimer.pas',
   JvQAppXmlStorage in '..\..\qrun\JvQAppXMLStorage.pas',
-  JvQFormPlacement in '..\..\qrun\JvQFormPlacement.pas';
+  JvQFormPlacement in '..\..\qrun\JvQFormPlacement.pas',
+  JvQFormPlacementSelectList in '..\..\qrun\JvQFormPlacementSelectList.pas';
 
 end.

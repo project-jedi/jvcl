@@ -29,9 +29,15 @@ package JvQCustomD7D;
 requires
   JvQCoreD7D,
   JvQCustomD7R,
-  designide;
+  rtl,
+  visualclx,
+  JvQCoreD7R,
+  JvQSystemD7R,
+  JvQStdCtrlsD7R;
 
 contains
-  JvQCustomReg in '..\..\qdesign\JvQCustomReg.pas';
+  JvQCustomReg in '..\..\qdesign\JvQCustomReg.pas',
+  JvQOutlookBarForm in '..\..\qdesign\JvQOutlookBarForm.pas',
+  JvQOutlookBarEditors in '..\..\qdesign\JvQOutlookBarEditors.pas';
 
 end.

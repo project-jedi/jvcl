@@ -26,11 +26,7 @@ package JvQStdCtrlsD7R;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvQSystemD7R,
-  JvQCoreD7R,
-  rtl,
-  visualclx,
-  DJcl;
+  JvQSystemD7R;
 
 contains
   JvQItemsSearchs in '..\..\qrun\JvQItemsSearchs.pas',
@@ -64,6 +60,10 @@ contains
   JvQExComboEdits in '..\..\qrun\JvQExComboEdits.pas',
   JvQImageList in '..\..\qrun\JvQImageList.pas',
   JvQControlBar in '..\..\qrun\JvQControlBar.pas',
-  JvQStringGrid in '..\..\qrun\JvQStringGrid.pas';
+  JvQStringGrid in '..\..\qrun\JvQStringGrid.pas',
+  JvQGrids in '..\..\qrun\JvQGrids.pas',
+  JvQTimeEdit in '..\..\qrun\JvQTimeEdit.pas',
+  JvQSpinButton in '..\..\qrun\JvQSpinButton.pas',
+  JvQGauges in '..\..\qrun\JvQGauges.pas';
 
 end.

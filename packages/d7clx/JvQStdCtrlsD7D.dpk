@@ -29,16 +29,14 @@ package JvQStdCtrlsD7D;
 requires
   JvQCoreD7D,
   JvQStdCtrlsD7R,
-  designide,
-  visualclx,
-  rtl,
-  JvQCoreD7R,
-  DJcl,
-  JvQCtrlsD7R;
+  JvQCtrlsD7R,
+  DJclVClx;
 
 contains
   JvQCheckedItemsForm in '..\..\qdesign\JvQCheckedItemsForm.pas' {JvCheckItemsEditor},
   JvQProgressEditor in '..\..\qdesign\JvQProgressEditor.pas',
-  JvQStdCtrlsReg in '..\..\qdesign\JvQStdCtrlsReg.pas';
+  JvQStdCtrlsReg in '..\..\qdesign\JvQStdCtrlsReg.pas',
+  JvQStdDsgnEditors in '..\..\qdesign\JvQStdDsgnEditors.pas',
+  JvQDateTimeForm in '..\..\qdesign\JvQDateTimeForm.pas' {frmSelectDateTimeDlg};
 
 end.

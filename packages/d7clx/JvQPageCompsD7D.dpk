@@ -27,10 +27,7 @@ package JvQPageCompsD7D;
 
 requires
   JvQPageCompsD7R,
-  JvQCoreD7D,
-  rtl,
-  designide,
-  clxdesigner;
+  JvQCoreD7D;
 
 contains
   JvQPageLinkEditorForm in '..\..\qdesign\JvQPageLinkEditorForm.pas' {frmJvTreeViewLinksEditor},

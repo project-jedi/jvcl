@@ -27,8 +27,6 @@ package JvQAppFrmD7R;
 {$DEFINE VisualCLX}
 
 requires
-  JvQCoreD7R,
-  JvQSystemD7R,
   JvQStdCtrlsD7R;
 
 contains

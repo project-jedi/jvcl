@@ -31,7 +31,6 @@ requires
   JvQCoreD7D,
   JvQStdCtrlsD7R,
   rtl,
-  designide,
   visualclx,
   JvQCoreD7R,
   DJcl,

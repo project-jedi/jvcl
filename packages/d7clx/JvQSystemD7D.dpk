@@ -27,19 +27,13 @@ package JvQSystemD7D;
 
 requires
   JvQCoreD7D,
-  JvQCoreD7R,
-  rtl,
-  visualclx,
-  designide,
-  JvQSystemD7R,
-  DJcl;
+  JvQSystemD7R;
 
 contains
   JvQSystemReg in '..\..\qdesign\JvQSystemReg.pas',
   JvQTimerListEditor in '..\..\qdesign\JvQTimerListEditor.pas',
   JvQChangeNotifyEditor in '..\..\qdesign\JvQChangeNotifyEditor.pas',
   JvQMinMaxForm in '..\..\qdesign\JvQMinMaxForm.pas' {MinMaxInfoEditDialog},
-  JvQFormPropertiesForm in '..\..\qdesign\JvQFormPropertiesForm.pas' {JvFormPropsDlg},
-  JvQFormPlacementSelectList in '..\..\qrun\JvQFormPlacementSelectList.pas';
+  JvQFormPropertiesForm in '..\..\qdesign\JvQFormPropertiesForm.pas' {JvFormPropsDlg};
 
 end.

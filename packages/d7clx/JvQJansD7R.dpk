@@ -26,11 +26,7 @@ package JvQJansD7R;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl,
-  visualclx,
-  JvQCoreD7R,
-  JvQStdCtrlsD7R,
-  DJcl;
+  JvQStdCtrlsD7R;
 
 contains
   JvQMarkupCommon in '..\..\qrun\JvQMarkupCommon.pas',

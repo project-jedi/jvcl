@@ -26,9 +26,7 @@ package JvQManagedThreadsD7R;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvQCoreD7R,
-  rtl,
-  visualclx;
+  JvQCoreD7R;
 
 contains
   JvQMTComponents in '..\..\qrun\JvQMTComponents.pas',

@@ -27,12 +27,7 @@ package JvQWizardD7D;
 
 requires
   JvQWizardD7R,
-  JvQCoreD7R,
   JvQCoreD7D,
-  rtl,
-  designide,
-  visualclx,
-  clxdesigner,
   DJclVClx;
 
 contains

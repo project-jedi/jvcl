@@ -27,10 +27,8 @@ package JvQHMID7D;
 {$DEFINE VisualCLX}
 
 requires
-  JvQCoreD7D,
   JvQHMID7R,
-  designide,
-  rtl;
+  JvQCoreD7D;
 
 contains
   JvQHMIReg in '..\..\qdesign\JvQHMIReg.pas';

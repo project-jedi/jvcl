@@ -26,9 +26,7 @@ package JvQWizardD7R;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvQCoreD7R,
-  rtl,
-  visualclx;
+  JvQCoreD7R;
 
 contains
   JvQWizardCommon in '..\..\qrun\JvQWizardCommon.pas',

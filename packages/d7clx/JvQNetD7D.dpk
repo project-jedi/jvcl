@@ -27,19 +27,13 @@ package JvQNetD7D;
 {$DEFINE VisualCLX}
 
 requires
-  designide,
   JvQCoreD7D,
-  JvQNetD7R,
-  vcl,
-  rtl,
-  vclactnband,
-  vclx;
+  JvQNetD7R;
 
 contains
   JvQUrlListGrabberEditors in '..\..\qdesign\JvQUrlListGrabberEditors.pas',
   JvQHtmlParserEditor in '..\..\qdesign\JvQHtmlParserEditor.pas',
   JvQNetReg in '..\..\qdesign\JvQNetReg.pas',
-  JvQParserForm in '..\..\qrun\JvQParserForm.pas' {FormParsers},
-  JvQMailEditor in '..\..\qdesign\JvQMailEditor.pas';
+  JvQParserForm in '..\..\qrun\JvQParserForm.pas' {FormParsers};
 
 end.

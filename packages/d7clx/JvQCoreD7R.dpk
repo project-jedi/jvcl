@@ -27,12 +27,10 @@ package JvQCoreD7R;
 {$IMPLICITBUILD OFF}
 {$DEFINE VisualCLX}
 {$DEFINE ANIMATE}
-{$I jvcl.inc}
 
 requires
   visualclx,
-  rtl,
-  DJclVClx;
+  DJcl;
 
 contains
   JvQConsts in '..\..\qcommon\JvQConsts.pas',

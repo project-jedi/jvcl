@@ -27,8 +27,7 @@ package JvQHMID7R;
 {$DEFINE VisualCLX}
 
 requires
-  JvQCoreD7R,
-  rtl;
+  JvQCoreD7R;
 
 contains
   JvQDialButton in '..\..\qrun\JvQDialButton.pas',

@@ -28,16 +28,7 @@ package JvQMMD7R;
 {$DEFINE ANIMATE}
 
 requires
-  JvQCoreD7R,
-  JvQCtrlsD7R,
-  JvQSystemD7R,
-  JvQCmpD7R,
-  JvQStdCtrlsD7R,
-  rtl,
-  designide,
-  visualclx,
-  JvQCoreD7D,
-  DJcl;
+  JvQCtrlsD7R;
 
 contains
   JvQBmpAnimator in '..\..\qrun\JvQBmpAnimator.pas',

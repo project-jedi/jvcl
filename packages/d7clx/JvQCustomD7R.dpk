@@ -31,7 +31,9 @@ requires
   JvQStdCtrlsD7R,
   JvQSystemD7R,
   rtl,
-  visualclx;
+  visualclx,
+  DJclVClx,
+  DJcl;
 
 contains
   JvQChart in '..\..\qrun\JvQChart.pas',
@@ -47,6 +49,9 @@ contains
   JvQLinkLabelTree in '..\..\qrun\JvQLinkLabelTree.pas',
   JvQTMTimeLine in '..\..\qrun\JvQTMTimeLine.pas',
   JvQUnicodeCanvas in '..\..\qrun\JvQUnicodeCanvas.pas',
-  JvQValidateEdit in '..\..\qrun\JvQValidateEdit.pas';
+  JvQValidateEdit in '..\..\qrun\JvQValidateEdit.pas',
+  JvQLookOut in '..\..\qrun\JvQLookOut.pas',
+  JvQOutlookBar in '..\..\qrun\JvQOutlookBar.pas',
+  JvQHLParser in '..\..\qrun\JvQHLParser.pas';
 
 end.
