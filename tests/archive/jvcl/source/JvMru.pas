@@ -686,7 +686,7 @@ begin
   Result := false;
   with TRegistry.Create do
   try
-    if FList = 0 and (SubKey <> '') and KeyExists(SubKey) then
+    if (FList = 0) and (SubKey <> '') and KeyExists(SubKey) then
       Result := DeleteKey(SubKey);
   finally
     free;
