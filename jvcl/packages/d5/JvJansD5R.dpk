@@ -1,7 +1,7 @@
 package JvJansD5R;
 
-{$R *.res}
-{$ALIGN 8}
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO ON}
@@ -19,17 +19,17 @@ package JvJansD5R;
 {$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Jans Runtime Components'}
+{$RUNONLY}
 {$IMPLICITBUILD ON}
 
 requires
-  vcl,
-  vclx,
-  VclSmp,
-  rtl,
+  vcl50,
+  vclx50,
+  VclSmp50,
   JvCoreD5R;
 
 contains

@@ -1,7 +1,7 @@
 package JvBDED5R;
 
-{$R *.res}
-{$ALIGN 8}
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -30,7 +30,7 @@ requires
   JvCoreD5R,
   JvDBD5R,
   JvDlgsD5R,
-  bdertl;
+  Vclbde50;
 
 contains
   JvBdeUtils in '..\..\run\JvBdeUtils.pas',

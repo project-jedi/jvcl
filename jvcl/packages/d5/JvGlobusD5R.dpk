@@ -1,7 +1,7 @@
 package JvGlobusD5R;
 
-{$R *.res}
-{$ALIGN 8}
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO ON}
@@ -22,21 +22,22 @@ package JvGlobusD5R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'GVCL - Globus VCL Extention Library'}
+{$DESCRIPTION 'JVCL - Globus Extension Library'}
+{$RUNONLY}
 {$IMPLICITBUILD ON}
 
 requires
-  vcl,
-  Vclx,
-  Vcldb,
-  VclSmp,
-  Qrpt,
-  vcljpg,
-  vclie,
+  vcl50,
+  vclx50,
+  vcldb50,
+  VclSmp50,
+  qrpt50,
+  vcljpg50,
   JvCoreD5R,
   DJCL50,
   JvStdCtrlsD5R,
-  JvSystemD5R;
+  JvSystemD5R,
+  vclie50;
 
 contains
   JvgAlignForm in '..\..\run\JvgAlignForm.pas',

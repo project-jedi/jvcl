@@ -1,7 +1,7 @@
 package JvPrintPreviewD5R;
 
 {$R *.res}
-{$ALIGN 8}
+
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO ON}
@@ -27,9 +27,9 @@ package JvPrintPreviewD5R;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
-  vcl,
-  vclx,
+  
+  vcl50,
+  vclx50,
   JvCoreD5R;
 
 contains

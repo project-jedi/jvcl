@@ -1,7 +1,7 @@
 package JvCustomD5D;
 
 {$R *.res}
-{$ALIGN 8}
+
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -28,9 +28,8 @@ package JvCustomD5D;
 
 requires
   JvCustomD5R,
-  designide,
   JvCoreD5D,
-  dclstd;
+  dclstd50;
 
 contains
   JvCustomReg in '..\..\design\JvCustomReg.pas',

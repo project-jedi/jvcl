@@ -1,7 +1,7 @@
 package JvMMD5D;
 
 {$R *.res}
-{$ALIGN 8}
+
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -28,7 +28,7 @@ package JvMMD5D;
 
 requires
   JvMMD5R,
-  designide,
+  
   DJCL50,
   JvCmpD5R;
 

@@ -1,7 +1,7 @@
 package JvBandsD5D;
 
 {$R *.res}
-{$ALIGN 8}
+
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO ON}
@@ -24,11 +24,11 @@ package JvBandsD5D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Band Objects Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD OFF}
+{$IMPLICITBUILD ON}
 
 requires
   JvCoreD5R,
-  designide,
+  
   JvBandsD5R;
 
 contains

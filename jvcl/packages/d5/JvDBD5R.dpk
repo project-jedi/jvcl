@@ -1,7 +1,7 @@
 package JvDBD5R;
 
 {$R *.res}
-{$ALIGN 8}
+
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -29,8 +29,7 @@ package JvDBD5R;
 requires
   JvCoreD5R,
   JvStdCtrlsD5R,
-  dbrtl,
-  vcldb;
+  vcldb50;
 
 contains
   JvDBConsts in '..\..\common\JvDBConsts.pas',

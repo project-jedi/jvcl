@@ -1,7 +1,7 @@
 package JvJansD5D;
 
-{$R *.res}
-{$ALIGN 8}
+{$R *.RES}
+
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO ON}
@@ -19,16 +19,15 @@ package JvJansD5D;
 {$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Jans Designtime Components'}
+{$DESIGNONLY}
 {$IMPLICITBUILD ON}
 
 requires
-  vcl,
-  vclx,
-  designide,
+  vcl50,
   JvJansD5R;
 
 contains

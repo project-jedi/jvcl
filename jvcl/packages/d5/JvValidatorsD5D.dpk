@@ -1,7 +1,7 @@
 package JvValidatorsD5D;
 
-{$R *.res}
-{$ALIGN 8}
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO ON}
@@ -27,10 +27,8 @@ package JvValidatorsD5D;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
   JvValidatorsD5R,
-  designide,
-  dclstd,
+  dclstd50,
   JvCoreD5D;
 
 contains

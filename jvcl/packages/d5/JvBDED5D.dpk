@@ -1,7 +1,7 @@
 package JvBDED5D;
 
 {$R *.res}
-{$ALIGN 8}
+
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -28,8 +28,8 @@ package JvBDED5D;
 
 requires
   JvBDED5R,
-  designide,
-  dclstd,
+  
+  dclstd50,
   JvDBD5D;
 
 contains
