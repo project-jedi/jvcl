@@ -34,7 +34,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Width = 192
           Height = 267
           Caption = 'Colors'
-          Font.Charset = RUSSIAN_CHARSET
+          Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
@@ -348,7 +348,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Width = 97
           Height = 145
           Caption = 'Passive'
-          Font.Charset = RUSSIAN_CHARSET
+          Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
@@ -509,7 +509,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Width = 97
           Height = 145
           Caption = 'Active'
-          Font.Charset = RUSSIAN_CHARSET
+          Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
@@ -671,7 +671,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Width = 97
           Height = 145
           Caption = 'Disabled'
-          Font.Charset = RUSSIAN_CHARSET
+          Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
@@ -832,7 +832,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Width = 91
           Height = 103
           Caption = 'Text Style'
-          Font.Charset = RUSSIAN_CHARSET
+          Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
@@ -870,7 +870,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Cursor = crHandPoint
             Caption = 'Bold'
             OnClick = cbxBoldClick
-            Font.Charset = RUSSIAN_CHARSET
+            Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
             Font.Name = 'Arial'
@@ -900,7 +900,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Cursor = crHandPoint
             Caption = 'Italic'
             OnClick = cbxItalicClick
-            Font.Charset = RUSSIAN_CHARSET
+            Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
             Font.Name = 'Arial'
@@ -930,7 +930,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Cursor = crHandPoint
             Caption = 'Underline'
             OnClick = cbxUnderlineClick
-            Font.Charset = RUSSIAN_CHARSET
+            Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
             Font.Name = 'Arial'
@@ -960,7 +960,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Cursor = crHandPoint
             Caption = 'StrikeOut'
             OnClick = cbxStrikeOutClick
-            Font.Charset = RUSSIAN_CHARSET
+            Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
             Font.Name = 'Arial'
@@ -988,7 +988,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Width = 106
           Height = 103
           Caption = 'Direction'
-          Font.Charset = RUSSIAN_CHARSET
+          Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
@@ -1113,7 +1113,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Width = 417
           Height = 65
           Caption = 'Sizes'
-          Font.Charset = RUSSIAN_CHARSET
+          Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
@@ -1266,7 +1266,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Width = 257
           Height = 278
           Caption = 'Gradient'
-          Font.Charset = RUSSIAN_CHARSET
+          Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
@@ -1435,7 +1435,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Cursor = crHandPoint
             Caption = 'Active'
             OnClick = cbxGradientActiveClick
-            Font.Charset = RUSSIAN_CHARSET
+            Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -12
             Font.Name = 'Arial'
@@ -1463,7 +1463,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Cursor = crHandPoint
             Caption = 'Buffered Draw'
             OnClick = cbxGradientBufferedDrawClick
-            Font.Charset = RUSSIAN_CHARSET
+            Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -12
             Font.Name = 'Arial'
@@ -1587,7 +1587,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Width = 193
           Height = 123
           Caption = 'Background'
-          Font.Charset = RUSSIAN_CHARSET
+          Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
@@ -1666,7 +1666,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Cursor = crHandPoint
             Caption = 'Active'
             OnClick = cbxActiveBackgroundClick
-            Font.Charset = RUSSIAN_CHARSET
+            Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -12
             Font.Name = 'Arial'
@@ -1692,7 +1692,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
           Width = 193
           Height = 142
           Caption = 'Texture'
-          Font.Charset = RUSSIAN_CHARSET
+          Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
@@ -1774,7 +1774,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Cursor = crHandPoint
             Caption = 'Active'
             OnClick = cbxActiveBackgroundClick
-            Font.Charset = RUSSIAN_CHARSET
+            Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -12
             Font.Name = 'Arial'

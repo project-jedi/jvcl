@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -34,13 +35,15 @@ unit JvgRegLibCBB5;
 interface
 
 //{$DEFINE INC_ALPHA_UNITS} // компилировать также недоработанные компоненты
+{ Also compile not complete(finished) components [translated] }
 
 procedure Register;
 
 implementation
 
 uses Classes,
-  { beta version units - готовые к использованию компоненты }
+  //{ beta version units - готовые к использованию компоненты }
+  { beta version units - components ready to be used [translated] }
   JvgBevel, JvgLabel, JvgEdit, JvgCheckBox, JvgTreeView, JvgFlyingText, JvgPage, JvgTab,
   JvgHint, Jvg3DColors, JvgCaption, JvgProgress, JvgHShape, JvgSplit, JvgJump,
   JvgDigits, JvgGroupBox, JvgImage, JvgShadow, JvgListBox, JvgAskListBox, JvgScrollBox, JvgGraphicButton, { JvgQRLabel,}
@@ -50,7 +53,8 @@ uses Classes,
   JvgSmallFontsDefence, JvgWizardHeader, JvgXMLSerializer,
   {JvgExportComponents, } JvgShadowEditor, JvgHelpPanelEditor
 
-  { alpha version units - компоненты в стадии доработки }
+  //{ alpha version units - компоненты в стадии доработки }
+  { alpha version units - components in stage of completing them [translated] }
   {$IFDEF INC_ALPHA_UNITS}
   {JvgMultiResources, JvgButton,  },
   JvgPropertyCenter,

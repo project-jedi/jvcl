@@ -351,7 +351,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Top = 26
             Width = 23
             Height = 23
-            Hint = #194#251#240#224#226#237#232#226#224#237#232#229' '#242#229#234#241#242#224
+            Hint = 'Text alignment'
             AllowAllUp = True
             GroupIndex = 1
             Down = True
@@ -374,7 +374,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Top = 26
             Width = 23
             Height = 23
-            Hint = #194#251#240#224#226#237#232#226#224#237#232#229' '#242#229#234#241#242#224
+            Hint = 'Text alignment'
             AllowAllUp = True
             GroupIndex = 1
             Glyph.Data = {
@@ -396,7 +396,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Top = 26
             Width = 23
             Height = 23
-            Hint = #194#251#240#224#226#237#232#226#224#237#232#229' '#242#229#234#241#242#224
+            Hint = 'Text alignment'
             AllowAllUp = True
             GroupIndex = 1
             Glyph.Data = {
@@ -418,7 +418,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Top = 26
             Width = 23
             Height = 23
-            Hint = #194#251#240#224#226#237#232#226#224#237#232#229' '#242#229#234#241#242#224
+            Hint = 'Text alignment'
             AllowAllUp = True
             GroupIndex = 1
             Glyph.Data = {
@@ -589,7 +589,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Top = 3
             Width = 23
             Height = 23
-            Hint = #210#229#234#241#242
+            Hint = 'Text'
             AllowAllUp = True
             GroupIndex = 1
             Glyph.Data = {
@@ -676,7 +676,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Top = 26
             Width = 23
             Height = 23
-            Hint = #194#229#240#242#232#234#224#235#252#237#238#229' '#240#224#241#239#238#235#238#228#230#229#237#232#229' '#241#242#240#224#237#232#246#251
+            Hint = 'Vertical positioning of page (Portrait)'
             GroupIndex = 2
             Down = True
             Glyph.Data = {
@@ -701,7 +701,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Top = 26
             Width = 23
             Height = 23
-            Hint = #195#238#240#232#231#238#237#242#224#235#252#237#238#229' '#240#224#241#239#238#235#238#228#230#229#237#232#229' '#241#242#240#224#237#232#246#251
+            Hint = 'Horizontal positioning of page (Landscape)'
             GroupIndex = 2
             Glyph.Data = {
               1E010000424D1E010000000000007600000028000000120000000E0000000100
@@ -731,7 +731,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Top = 26
             Width = 23
             Height = 23
-            Hint = #206#225#250#229#234#242' OLE'
+            Hint = 'OLE object'
             AllowAllUp = True
             GroupIndex = 1
             Glyph.Data = {
@@ -769,7 +769,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Top = 26
             Width = 23
             Height = 23
-            Hint = #207#240#232#226#255#231#234#224' '#234' '#241#229#242#234#229
+            Hint = 'Snap to grid'
             AllowAllUp = True
             GroupIndex = 15
             Glyph.Data = {
@@ -790,7 +790,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Top = 3
             Width = 23
             Height = 23
-            Hint = #208#224#236#234#224
+            Hint = 'Bevel'
             AllowAllUp = True
             GroupIndex = 1
             Glyph.Data = {
@@ -835,7 +835,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Top = 3
             Width = 23
             Height = 23
-            Hint = #199#224#244#232#234#241#232#240#238#226#224#242#252' '#226#241#229' '#253#235#229#236#229#237#242#251
+            Hint = 'Lock all elements'
             AllowAllUp = True
             GroupIndex = 13
             Glyph.Data = {
@@ -855,7 +855,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Top = 26
             Width = 23
             Height = 23
-            Hint = #199#224#244#232#234#241#232#240#238#226#224#242#252' '#253#235#229#236#229#237#242
+            Hint = 'Lock element'
             AllowAllUp = True
             GroupIndex = 14
             Glyph.Data = {
@@ -894,7 +894,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
               Top = 21
               Width = 43
               Height = 22
-              Hint = #208#224#231#236#229#240' '#248#240#232#244#242#224
+              Hint = 'Font size'
               MaxValue = 200
               MinValue = 1
               ParentShowHint = False
@@ -947,7 +947,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
               Top = 2
               Width = 50
               Height = 17
-              Hint = #194#251#225#238#240' '#246#226#229#242#224
+              Hint = 'Choice for color'
               Caption = 'Font'
               Glyph.Data = {
                 EE000000424DEE0000000000000076000000280000000F0000000F0000000100
@@ -968,7 +968,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
               Top = 2
               Width = 49
               Height = 17
-              Hint = #194#251#225#238#240' '#246#226#229#242#224
+              Hint = 'Choice for color'
               Caption = 'Back'
               Glyph.Data = {
                 EE000000424DEE0000000000000076000000280000000F0000000F0000000100
@@ -989,7 +989,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
               Top = 2
               Width = 51
               Height = 17
-              Hint = #194#251#225#238#240' '#246#226#229#242#224
+              Hint = 'Choice for color'
               Caption = 'Bevel'
               Glyph.Data = {
                 EE000000424DEE0000000000000076000000280000000F0000000F0000000100
@@ -1219,10 +1219,10 @@ object JvgReportEditorForm: TJvgReportEditorForm
       object glLabel3: TLabel
         Left = 5
         Top = 0
-        Width = 50
+        Width = 46
         Height = 12
-        Caption = 'OLE '#238#225#250#229#234#242
-        Font.Charset = RUSSIAN_CHARSET
+        Caption = 'OLE object'
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -9
         Font.Name = 'Arial'
@@ -1261,8 +1261,8 @@ object JvgReportEditorForm: TJvgReportEditorForm
         Width = 596
         Height = 12
         Align = alTop
-        Caption = '   '#239#224#240#224#236#229#242#240#251
-        Font.Charset = RUSSIAN_CHARSET
+        Caption = '   Parameters'
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -9
         Font.Name = 'Arial'
@@ -1342,7 +1342,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
     Left = 0
     Top = 97
     Width = 626
-    Height = 356
+    Height = 349
     Align = alClient
     BevelOuter = bvNone
     Caption = 'P_Main'
@@ -1352,7 +1352,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
       Left = 17
       Top = 0
       Width = 609
-      Height = 356
+      Height = 349
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -1383,7 +1383,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
       Left = 0
       Top = 0
       Width = 17
-      Height = 356
+      Height = 349
       Align = alLeft
       BevelOuter = bvLowered
       TabOrder = 1
@@ -1411,28 +1411,28 @@ object JvgReportEditorForm: TJvgReportEditorForm
     Left = 26
     Top = 106
     object N1: TMenuItem
-      Caption = #205#224' '#239#229#240#229#228#237#232#233' '#239#235#224#237
+      Caption = 'Bring to front'
       OnClick = N1Click
     end
     object N2: TMenuItem
-      Caption = #205#224' '#231#224#228#237#232#233' '#239#235#224#237
+      Caption = 'Send to back'
     end
     object N3: TMenuItem
       Caption = '-'
     end
     object N_DeleteObject: TMenuItem
-      Caption = #211#228#224#235#232#242#252
+      Caption = 'Remove'
       OnClick = N_DeleteObjectClick
     end
     object N_Linktofile: TMenuItem
-      Caption = #206#242#238#225#240#224#231#232#242#252' '#238#225#250#229#234#242'...'
+      Caption = 'Show object'
     end
     object N4: TMenuItem
-      Caption = #194#251#240#224#226#237#232#226#224#237#232#229
+      Caption = 'Alignment'
       OnClick = N4Click
     end
     object N_OLESize: TMenuItem
-      Caption = #204#224#241#248#242#224#225' '#238#225#250#229#234#242#224' OLE'
+      Caption = 'OLE object'#39's scale'
       object N_Clip: TMenuItem
         Caption = 'Clip'
         GroupIndex = 1
