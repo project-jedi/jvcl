@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-  <link type="text/css" href="default.css" rel="STYLESHEET">
+  <link rel="STYLESHEET" href="default.css" type="text/css">
   <title>Installation Notes for JVCL</title>
 </head>
 <body>
@@ -46,7 +46,7 @@ you have installed</li>
 C++ Builder). Delete all of the files related to JVCL and JCL</li>
   <li>Delete or rename the top folder where JCL and JVCL is installed</li>
   <li>Start regedit (click <b>Start - Run</b>, type "regedit.exe" and
-hit <b> Enter</b>). Open the key <font face="Courier New" size="2">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font>
+hit <b> Enter</b>). Open the key <font size="2" face="Courier New">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font>
 and delete all name/value items in the list related to JVCL.
 (&lt;compiler&gt; is either "Delphi" or "C++Builder", &lt;version&gt;
 is the IDE version you have installed)</li>
@@ -84,7 +84,7 @@ what
 you want!). We recommend but do not require that the JCL and JVCL
 folders should be created as siblings, i.e the
 folder structure looks like this:</p>
-<p><font size="2" face="Courier New">JEDI<br>
+<p><font face="Courier New" size="2">JEDI<br>
 &nbsp; JCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JCL subfolders&gt;<br>
 &nbsp; JVCL<br>
@@ -178,7 +178,7 @@ you want!). </p>
 the same base folder as JVCL, but we do recommend that the JCL and JVCL
 folders are created as siblings, i.e the folder structure should look
 like this:</p>
-<p><font size="2" face="Courier New">JEDI<br>
+<p><font face="Courier New" size="2">JEDI<br>
 &nbsp; JCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JCL subfolders&gt;<br>
 &nbsp; JVCL<br>
@@ -340,7 +340,7 @@ unusable
 for the next time you want to compile the JVCL.<br>
 </div>
 <br>
-<h2>Adding JVCL paths to C++&nbsp;Builder<br>
+<h2><a name="AddJVCLPathToBCB"></a>Adding JVCL paths to C++&nbsp;Builder<br>
 </h2>
 <p>To make your applications find the JVCL header files when you
 compile, two options are available to you:<br>
