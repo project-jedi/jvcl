@@ -29,7 +29,6 @@ package JVCL200_D50Standard;
 
 requires
   vcl50,
-  dclsmp50,
   dclstd50,
   JVCL200_R50Standard;
 

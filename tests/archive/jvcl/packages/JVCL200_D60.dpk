@@ -50,7 +50,6 @@ package JVCL200_D60;
 
 requires
   dcldb,
-  dclsmp,
   dclstd,
   designide,
   vcl,

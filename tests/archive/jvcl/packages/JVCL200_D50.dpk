@@ -30,7 +30,6 @@ package JVCL200_D50;
 
 requires
   dcldb50,
-  dclsmp50,
   dclstd50,
   vcl50,
   vcldb50,
