@@ -2779,7 +2779,7 @@ procedure TJvDBGrid.CMHintShow(var Msg: TMessage);
 const
   C_TIMEOUT = 250;
 var
-  ACol, ARow, ATimeOut: Integer;
+  ACol, ARow, ATimeOut, SaveRow: Integer;
   AtCursorPosition: boolean;
 begin
   AtCursorPosition := true;
@@ -2837,6 +2837,7 @@ begin
         HintStr := Columns[ACol].Title.Caption
       else
       begin
+        SaveRow := DataLink.ActiveRecord;
         DataLink.ActiveRecord := ARow;
         if Columns[ACol].Field <> nil then
         begin
@@ -2845,6 +2846,7 @@ begin
           else
             HintStr := Columns[ACol].Field.DisplayText;
         end;
+        DataLink.ActiveRecord := SaveRow;
       end;
 
       if (Canvas.TextWidth(HintStr) < Columns[ACol].Width) then
@@ -2856,7 +2858,7 @@ begin
       HideTimeOut := ATimeOut;
     end;
     
-    if not AtCursorPosition then
+    if not AtCursorPosition and HintWindowClass.ClassNameIs('THintWindow') then
     begin
       HintPos := ClientToScreen(CursorRect.TopLeft);
     end;
