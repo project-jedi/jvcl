@@ -322,6 +322,7 @@ type
     FButtons: TBitmap;
     FButtonWidth: Integer;
     FButtonHeight: Integer;
+    FButtonCount: Integer;
     FIsThemed: Boolean;
     FBitmapValid: Boolean;
     FClientCount: Integer;
@@ -380,34 +381,48 @@ begin
     Result := -1;
 end;
 
-function GetXPCaptionButtonBitmap(ABitmap: TBitmap): Boolean;
-type
-  TXPStyle = (xpBlue, xpMetallic, xpGreen);
-const
-  cDefaultFileName = 'Luna.msstyles';
-  cStyleNames: array [TXPStyle] of string =
-    ('NormalColor', 'Metallic', 'HomeStead');
-  cResName: array [TXPStyle] of string =
-    ('BLUE_CAPTIONBUTTON_BMP', 'METALLIC_CAPTIONBUTTON_BMP', 'HOMESTEAD_CAPTIONBUTTON_BMP');
+function TranslateBitmapFileName(const S: string): string;
+var
+  I: Integer;
+begin
+  SetLength(Result, Length(S));
+  for I := 1 to Length(S) do
+    case S[I] of
+      'A'..'Z', '0'..'9': Result[I] := S[I];
+      'a'..'z': Result[I] := UpCase(S[I]);
+    else
+      Result[I] := '_';
+    end;
+end;
+
+function GetXPCaptionButtonBitmap(ABitmap: TBitmap; out BitmapCount: Integer): Boolean;
 var
   Handle: THandle;
-  ThemeFileNameW, ColorBuffW: array [0..MAX_PATH] of WideChar;
-  Style: Integer;
+  ThemeFileNameW, BitmapFileNameW: array [0..MAX_PATH] of WideChar;
   OldError: Longint;
+  Details: TThemedElementDetails;
 begin
   ThemeFileNameW[MAX_PATH] := #0;
-  ColorBuffW[MAX_PATH] := #0;
+  BitmapFileNameW[MAX_PATH] := #0;
 
-  Result := UxTheme.GetCurrentThemeName(ThemeFileNameW, MAX_PATH, ColorBuffW, MAX_PATH, nil, 0) = S_OK;
+  Result := UxTheme.GetCurrentThemeName(ThemeFileNameW, MAX_PATH, nil, 0, nil, 0) = S_OK;
   if not Result then
     Exit;
 
-  Result := SameText(ExtractFileName(string(ThemeFileNameW)), cDefaultFileName);
+  Details := ThemeServices.GetElementDetails(twMinButtonNormal);
+  with Details do
+    Result := GetThemeFilename(ThemeServices.Theme[Element], Part, State,
+      TMT_IMAGEFILE, BitmapFileNameW, MAX_PATH) = S_OK;
   if not Result then
     Exit;
 
-  Style := StrArrayIndex(string(ColorBuffW), cStyleNames);
-  Result := Style >= 0;
+  with Details do
+    Result := GetThemeInt(ThemeServices.Theme[Element], Part, State,
+      TMT_IMAGECOUNT, BitmapCount) = S_OK;
+  if not Result then
+    Exit;
+
+  Result := BitmapCount > 0;
   if not Result then
     Exit;
 
@@ -417,7 +432,7 @@ begin
     Result := Handle <> 0;
     if Result then
     try
-      ABitmap.LoadFromResourceName(Handle, cResName[TXPStyle(Style)]);
+      ABitmap.LoadFromResourceName(Handle, TranslateBitmapFileName(BitmapFileNameW));
       Result := (ABitmap.Width > 0) and (ABitmap.Height > 0);
     finally
       FreeLibrary(Handle);
@@ -490,9 +505,9 @@ begin
   { D }
   _TransparentBlt(
     DestDC,
-    0, 0 + SizingMargins.cyTopHeight, SizingMargins.cxLeftWidth, EDestHeight,
+    0, SizingMargins.cyTopHeight, SizingMargins.cxLeftWidth, EDestHeight,
     SourceDC,
-    0, 0 + SizingMargins.cyTopHeight, SizingMargins.cxLeftWidth, ESourceHeight,
+    0, SizingMargins.cyTopHeight, SizingMargins.cxLeftWidth, ESourceHeight,
     TransparentColor
     );
 
@@ -526,9 +541,9 @@ begin
   { H }
   _TransparentBlt(
     DestDC,
-    SizingMargins.cxLeftWidth, EDestWidth + SizingMargins.cyTopHeight, EDestWidth, SizingMargins.cyBottomHeight,
+    SizingMargins.cxLeftWidth, EDestHeight + SizingMargins.cyTopHeight, EDestWidth, SizingMargins.cyBottomHeight,
     SourceDC,
-    SizingMargins.cxLeftWidth, ESourceWidth + SizingMargins.cyTopHeight, ESourceWidth, SizingMargins.cyBottomHeight,
+    SizingMargins.cxLeftWidth, ESourceHeight + SizingMargins.cyTopHeight, ESourceWidth, SizingMargins.cyBottomHeight,
     TransparentColor
     );
 
@@ -580,14 +595,19 @@ procedure TGlobalXPData.Draw(HDC: HDC; State: Integer;
 begin
   if FBitmapValid and CanDrawTransparent then
   begin
+    if (State >= FButtonCount) and (State >= 4) then
+      State := State mod 4;
+    if State >= FButtonCount then
+      State := FButtonCount - 1;
+
     // Same Rect?
     if (DrawRect.Right - DrawRect.Left = FButtonWidth) and
-       (DrawRect.Bottom - DrawRect.Top = FButtonHeight) then
+      (DrawRect.Bottom - DrawRect.Top = FButtonHeight) then
     begin
       _TransparentBlt(HDC, DrawRect.Left, DrawRect.Top,
         DrawRect.Right - DrawRect.Left, DrawRect.Bottom - DrawRect.Top,
         FButtons.Canvas.Handle, 0, FButtonHeight * (State - 1),
-        FButtonWidth, FButtonHeight, {FButtons.Palette,} clFuchsia)
+        FButtonWidth, FButtonHeight, clFuchsia)
     end
     else
     begin
@@ -670,12 +690,12 @@ begin
   if not FIsThemed then
     Exit;
 
-  FBitmapValid := GetXPCaptionButtonBitmap(FButtons);
+  FBitmapValid := GetXPCaptionButtonBitmap(FButtons, FButtonCount);
 
   if FBitmapValid then
   begin
     FButtonWidth := FButtons.Width;
-    FButtonHeight := FButtons.Height div 8;
+    FButtonHeight := FButtons.Height div FButtonCount;
 
     Details := ThemeServices.GetElementDetails(twMinButtonNormal);
     //    with Details do
