@@ -11,7 +11,7 @@
     <File Name="..\..\qrun\JvQHtmlParser.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQMail.pas" Targets="d7clx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQRgbToHtml.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQRichEditToHtml.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQRichEditToHtml.pas" Targets="" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQStringListToHtml.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQStrToHtml.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQUrlGrabbers.pas" Targets="d7clx" Formname="" Condition=""/>
