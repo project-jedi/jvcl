@@ -22,9 +22,9 @@ object frmMain: TfrmMain
     Top = 26
     Width = 463
     Height = 314
-    ActivePage = tbsStrings
+    ActivePage = tbsFiles
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object tbsFiles: TTabSheet
       Caption = 'Select Files'
