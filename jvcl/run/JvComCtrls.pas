@@ -156,6 +156,7 @@ type
     FLocalFont: HFONT;
     FOnFieldChange: TJvIpAddrFieldChangeEvent;
     FOnChange: TNotifyEvent;
+    FFocusFromField: Boolean;
     procedure ClearEditControls;
     procedure DestroyLocalFont;
     procedure SetAddress(const Value: LongWord);
@@ -165,6 +166,7 @@ type
     procedure WMDestroy(var Msg: TWMNCDestroy); message WM_DESTROY;
     procedure WMParentNotify(var Msg: TWMParentNotify); message WM_PARENTNOTIFY;
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
+    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMSetText(var Msg: TWMSetText); message WM_SETTEXT;
     procedure WMCtlColorEdit(var Msg: TWMCtlColorEdit); message WM_CTLCOLOREDIT;
     procedure WMKeyDown(var Msg: TWMKeyDown); message WM_KEYDOWN;
@@ -1062,8 +1064,32 @@ begin
             FChanging := False;
           end;
         end;
+      EN_SETFOCUS:
+        begin
+          FFocusFromField := True;
+          try
+            // Mantis 2599: Send a WM_SETFOCUS to self so that the
+            // OnEnter event (and the other control's OnExit) works.
+            // We simply take the precaution to indicate it comes
+            // from a field. See WMSetFocus for details
+            Perform(WM_SETFOCUS, 0, 0);
+          finally
+            FFocusFromField := False;
+          end;
+        end;
     end;
   inherited;
+end;
+
+procedure TJvIPAddress.WMSetFocus(var Msg: TWMSetFocus);
+begin
+  // if we receive the focus from a field, then it's because
+  // of a mouse click. Thus we do nothing or it would prevent
+  // the focus from being directly set to the field. Note that
+  // doing this does not prevent OnFocus from running, which
+  // is what we want. 
+  if not FFocusFromField then
+    inherited;
 end;
 
 procedure TJvIPAddress.CNNotify(var Msg: TWMNotify);
