@@ -25,7 +25,7 @@ DRC = $&.drc
 SRCP = $(SRC);$(COM);$(JCL);$(ARCH);$(DCU)
 SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
 #---------------------------------------------------------------------------------------------------
-MAKE = "$(ROOT)\bin\make.exe" -$(MAKEFLAGS) -f$**
+MAKE = "$(ROOT)\bin\make.exe" -$(MAKEFLAGS)
 DCC  = "$(ROOT)\bin\dcc32.exe" -e"$(BIN)" -i"$(SRCP)" -n"$(DCU)" -r"$(SRCP)" -u"$(SRCP)" -u"$(ROOT)\Lib\Obj" -q -w -h -m
 DCCx = "$(ROOT)\bin\dcc32.exe" -Q -M
 DCCH = "$(ROOT)\bin\dcc32.exe" -e"..\$(BIN)" -i"$(SRCH)" -n"..\$(DCU)" -r"$(SRCH)" -u"$(SRCH)" -q -w -h -m
@@ -55,6 +55,19 @@ dxgettextResstr.exe \
 pg2want.exe
 
 #---------------------------------------------------------------------------------------------------
+
+# configfile requires symbol "CFG=path\filename.cfg"
+configfile:
+	-@del "$(CFG)" >NUL 2>NUL
+	-@IF EXIST "$(ROOT)\bin\dcc32.cfg" @type "$(ROOT)\bin\dcc32.cfg" >>"$(CFG)"
+	@echo. >>"$(CFG)"
+	@echo. >>"$(CFG)"
+	@echo -e"$(BIN)">>$(CFG)
+	@echo -i"$(SRCP)">>$(CFG)
+	@echo -n"$(DCU)">>$(CFG)
+	@echo -r"$(SRCP)">>$(CFG)
+	@echo -u"$(SRCP)">>$(CFG)
+	@echo -u"$(ROOT)\Lib\Obj">>$(CFG)
 
 isu.exe: ITEStrip\isu.dpr
   cd ITEStrip
@@ -87,19 +100,11 @@ MakeCFG.exe: MakeCFG\MakeCFG.dpr \
 
 Bpg2Make.exe: Bpg2Make\Bpg2Make.dpr \
 		Bpg2Make\Bpg2MakeUtils.pas
-  cd Bpg2Make
-  @type &&|
--e"$(BIN)"
--i"$(SRCP)"
--n"$(DCU)"
--r"$(SRCP)"
--u"$(SRCP)"
--u"$(ROOT)\Lib\Obj"
-| >Bpg2Make.cfg
+  @$(MAKE) -DCFG=Bpg2Make\Bpg2Make.cfg configfile >NUL
+  @cd Bpg2Make
   $(DCCx) Bpg2Make.dpr
   -@del Bpg2Make.cfg >NUL 2>NUL
-  -@del Make*.@@@ >NUL 2>NUL
-  cd ..
+  @cd ..
 
 jtouch.exe: JTouch\jtouch.dpr \
 		JTouch\JTouchUtils.pas
@@ -134,18 +139,10 @@ pg.exe: PackagesGenerator\pg.dpr \
 		PackagesGenerator\CmdLineUtils.pas \
 		PackagesGenerator\FileUtils.pas \
 		PackagesGenerator\GenerateUtils.pas
+  @$(MAKE) -DCFG=PackagesGenerator\pg.cfg configfile >NUL
   @cd PackagesGenerator
-  @type &&|
--e"$(BIN)"
--i"$(SRCP)"
--n"$(DCU)"
--r"$(SRCP)"
--u"$(SRCP)"
--u"$(ROOT)\Lib\Obj"
-| >pg.cfg
   $(DCCx) -DNO_JCL pg.dpr
   -@del pg.cfg >NUL 2>NUL
-  -@del Make*.@@@ >NUL 2>NUL
   @cd ..
 
 pgEdit.exe: PackagesGenerator\pgEdit.dpr \
@@ -161,18 +158,10 @@ pgEdit.exe: PackagesGenerator\pgEdit.dpr \
 		PackagesGenerator\ModelsForm.pas \
 		PackagesGenerator\TargetDialog.pas \
 		PackagesGenerator\UtilsJcl.pas
-  cd PackagesGenerator
-  @type &&|
--e"$(BIN)"
--i"$(SRCP)"
--n"$(DCU)"
--r"$(SRCP)"
--u"$(SRCP)"
--u"$(ROOT)\Lib\Obj"
-| >pgEdit.cfg
+  @$(MAKE) -DCFG=PackagesGenerator\pgEdit.cfg configfile >NUL
+  @cd PackagesGenerator
   $(DCCx) pgEdit.dpr
   -@del pgEdit.cfg >NUL 2>NUL
-  -@del Make*.@@@ >NUL 2>NUL
   @cd ..
 
 NoQuotes.exe: NoQuotes\NoQuotes.dpr
