@@ -3,7 +3,7 @@ unit RANotepad;
 uses Global;
 
 var
-  ModulesReg: TRegAuto;
+  ModulesReg: TJvRegAuto;
   Ss: TStringList;
   FileOpenedFuncList: TStringList;
   FileClosedFuncList: TStringList;
@@ -17,7 +17,7 @@ begin
   ODS('main.InitGlobal');
   InitGlobal;
   Editor.GutterWidth := 16;
-  ModulesReg := TRegAuto.Create(MainWindow);
+  ModulesReg := TJvRegAuto.Create(MainWindow);
   ModulesReg.IniFile := WorkingDir + 'modules.ini';
   ModulesReg.UseReg := False;
   ModulesReg.UseIni := True;

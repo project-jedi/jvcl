@@ -25,9 +25,9 @@ description : Register custom useful controls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvaCtlReg;
 
@@ -48,17 +48,17 @@ uses
   JvButtons, JvComponentPanel, JvScrollMax,
   JvEditor, JvHLEditor, JvHLEdPropDlg, JvaScrollText, JvHTHintEditor,
 {$ENDIF COMPLIB_VCL}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   JvIDEZoom,
-{$ENDIF Delphi3_Up}
-{$IFDEF Delphi6_Up}
+{$ENDIF COMPILER3_UP}
+{$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories
   {$IFDEF COMPLIB_VCL}
    , VCLEditors
   {$ENDIF COMPLIB_VCL}
 {$ELSE}
   DsgnIntf
-{$ENDIF Delphi6_Up}
+{$ENDIF COMPILER6_UP}
 ;
 
 {$R ractl.dcr}
@@ -181,7 +181,7 @@ begin
   Result := inherited GetAttributes + [paDialog];
 end;
 
-{$IFDEF Delphi5}
+{$IFDEF COMPILER5}
 type
   TJvEditorCategory = class (TPropertyCategory)
   public
@@ -194,7 +194,7 @@ class function TJvEditorCategory.Name: String;
 begin
   Result := 'Editor';
 end;
-{$ENDIF Delphi5}
+{$ENDIF COMPILER5}
 
 {$ENDIF COMPLIB_VCL}
 
@@ -216,7 +216,7 @@ begin
  {JvHLEdPropDlg unit}
   RegisterComponents(RALibTabName, [TJvHLEdPropDlg]);
   RegisterComponentEditor(TJvHLEdPropDlg, TJvHLEdPropDlgEditor);
-  RegisterPropertyEditor(TypeInfo(TColors), TJvHLEditor, 'Colors', TJvHLEditorColorProperty);
+  RegisterPropertyEditor(TypeInfo(TJvColors ), TJvHLEditor, 'Colors', TJvHLEditorColorProperty);
  {JvScrollMax unit}
   RegisterComponents(RALibTabName, [TJvScrollMax]);
   RegisterClass(TJvScrollMaxBand);
@@ -225,7 +225,7 @@ begin
   RegisterComponents(RALibTabName, [TJvaScrollText]);
  {JvRegAuto unit}
   RegisterComponents(RALibTabName, [TJvRegAuto]);
-  RegisterComponentEditor(TJvRegAuto, TRegAutoEditor);
+  RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor );
  {JvHtControls unit}
   RegisterComponents(RALibTabName, [TJvhtListBox, TJvHTComboBox, TJvHTLabel]);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
@@ -243,11 +243,11 @@ begin
 {$ENDIF COMPLIB_CLX}
 
  {Zoom unit}
- {$IFDEF Delphi3_Up}
+ {$IFDEF COMPILER3_UP}
   RegisterZoom;
- {$ENDIF Delphi3_Up}
+ {$ENDIF COMPILER3_UP}
 
- {$IFDEF Delphi5}
+ {$IFDEF COMPILER5}
   RegisterPropertiesInCategory(TJvEditorCategory, TJvCustomEditor,
     ['InsertMode', 'DoubleClickLine', 'Completion', 'SmartTab',
     'BackSpaceUnindents', 'AutoIndent', 'KeepTrailingBlanks', 'CursorBeyondEOF',
@@ -264,7 +264,7 @@ begin
     'OnPaintGutter', 'OnScroll', 'OnConstrainedResize']);
  {$ENDIF}
 
- {$IFDEF Delphi6_Up}
+ {$IFDEF COMPILER6_UP}
  {$IFDEF COMPLIB_VCL}
   RegisterPropertiesInCategory('Editor', TJvCustomEditor,
     ['InsertMode', 'DoubleClickLine', 'Completion', 'SmartTab',

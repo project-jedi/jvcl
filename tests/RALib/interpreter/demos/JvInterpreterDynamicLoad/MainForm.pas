@@ -1,6 +1,6 @@
 unit MainForm;
 
-{$INCLUDE JEDI.INC}
+{$INCLUDE JVCL.INC}
 
 interface
 
@@ -28,14 +28,14 @@ implementation
 {$R *.dfm}
 
 const
-{$IFDEF Delphi5}
+{$IFDEF COMPILER5}
   PackageFileName    = 'rai5.bpl';
   ALLPackageFileName = 'raia5.bpl';
-{$ENDIF Delphi5}
-{$IFDEF Delphi6}
+{$ENDIF COMPILER5}
+{$IFDEF COMPILER6}
   PackageFileName    = 'rai6.bpl';
   ALLPackageFileName = 'raia6.bpl';
-{$ENDIF Delphi6}
+{$ENDIF COMPILER6}
 
 procedure DynamicJvInterpreterRunFormModal(const FileName: TFileName);
 var
@@ -49,13 +49,13 @@ begin
   try
     Pak := LoadPackage(PackageFileName);
   except
-    raise Exception.CreateFmt('Package %s konnte nicht geladen werden!', [ExtractFileName(PackageFileName)]);
+    raise Exception.CreateFmt('Package %s couldn''t be loaded!', [ExtractFileName(PackageFileName)]);
   end;
 
   try
     ALLPak := LoadPackage(ALLPackageFileName);
   except
-    raise Exception.CreateFmt('Package %s konnte nicht geladen werden!', [ExtractFileName(AllPackageFileName)]);
+    raise Exception.CreateFmt('Package %s couldn''t be loaded!', [ExtractFileName(AllPackageFileName)]);
   end;
 
   try
@@ -68,7 +68,7 @@ begin
 
      Proc := GetProcAddress(Pak, ('@JvInterpreterFm@JvInterpreterRunFormModal$qqrx17System@AnsiString'));
      if not Assigned(Proc) then
-        raise Exception.CreateFmt('Funktion %s nicht gefunden!', ['RunFormModal']);
+        raise Exception.CreateFmt('Function %s not found!', ['RunFormModal']);
 
      TRunFormModal(Proc)(FileName);
 
@@ -87,13 +87,13 @@ begin
   try
     Result := LoadPackage(PackageFileName);
   except
-    raise Exception.CreateFmt('Package %s konnte nicht geladen werden!', [ExtractFileName(PackageFileName)]);
+    raise Exception.CreateFmt('Package %s couldn''t be loaded!', [ExtractFileName(PackageFileName)]);
   end;
    FuncName := '@' + UnitName + '@initialization$qqrv';
    Proc := GetProcAddress(Result, PChar(FuncName));
 
    if not Assigned(Proc) then
-      raise Exception.CreateFmt('Funktion %s.Initialization nicht gefunden!', [FuncName]);
+      raise Exception.CreateFmt('Function %s.Initialization not found!', [FuncName]);
 
    Proc;
 end;
@@ -101,19 +101,19 @@ end;
 procedure TMain.RunDynamicClick(Sender: TObject);
 var
   PackageFileName: String;
-  JvInterpreter_MyLabelPackage: HModule;
+  MyLabelPackage: HModule;
 begin
-  PackageFileName := ExtractFilePath(Application.ExeName) + 'JvInterpreter_MyLabelPackage.bpl';
-  JvInterpreter_MyLabelPackage := 0;
+  PackageFileName := ExtractFilePath(Application.ExeName) + 'MyLabelPackage.bpl';
+  MyLabelPackage := 0;
   try
     try
-      JvInterpreter_MyLabelPackage := LoadJvInterpreterPackage(PackageFileName, 'JvInterpreter_mylabel');
+      MyLabelPackage := LoadJvInterpreterPackage(PackageFileName, 'Mylabel');
     except
-      raise Exception.CreateFmt('Package %s konnte nicht geladen werden!', [ExtractFileName(PackageFileName)]);
+      raise Exception.CreateFmt('Package %s couldn''t be loaded!', [ExtractFileName(PackageFileName)]);
     end;
     DynamicJvInterpreterRunFormModal(ExtractFilePath(Application.ExeName) + 'ScriptForm.pas');
   finally
-    FreeLibrary(JvInterpreter_MyLabelPackage);
+    FreeLibrary(MyLabelPackage);
   end;
 end;
 

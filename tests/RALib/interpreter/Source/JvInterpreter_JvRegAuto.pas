@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvInterpreter_JvRegAuto;
 
@@ -251,8 +251,8 @@ begin
     AddSet(TJvRegAuto, 'UseIni', TRegAuto_Write_UseIni, 0, [varBoolean]);
     AddGet(TJvRegAuto, 'UseStr', TRegAuto_Read_UseStr, 0, [0], varBoolean);
     AddSet(TJvRegAuto, 'UseStr', TRegAuto_Write_UseStr, 0, [varBoolean]);
-   { ERegAutoError }
-    AddClass('JvRegAuto', ERegAutoError, 'ERegAutoError');
+   { EJvRegAutoError  }
+    AddClass('JvRegAuto', EJvRegAutoError , 'EJvRegAutoError ');
   end;    { with }
   RegisterClasses([TJvRegAuto]);
 end;    { RegisterJvInterpreterAdapter }

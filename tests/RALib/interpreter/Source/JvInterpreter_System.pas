@@ -25,15 +25,15 @@ Description : JVCL Interpreter version 2
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvInterpreter_System;
 
 interface
 
-uses JvInterpreter {$IFDEF Delphi6_Up}, Variants {$ENDIF};
+uses JvInterpreter {$IFDEF COMPILER6_UP}, Variants {$ENDIF};
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 
@@ -101,14 +101,14 @@ end;
 
   { TInterfacedObject }
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read RefCount: Integer }
 
 procedure TInterfacedObject_Read_RefCount(var Value: Variant; Args: TArgs);
 begin
   Value := TInterfacedObject(Args.Obj).RefCount;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { procedure Move(const Source; var Dest; Count: Integer); }
 
@@ -461,10 +461,10 @@ begin
     AddGet(TObject, 'InheritsFrom', TObject_InheritsFrom, 1, [varEmpty], varEmpty);
    // AddGet(TObject, 'GetInterface', TObject_GetInterface, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
    { TInterfacedObject }
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
     AddClass('System', TInterfacedObject, 'TInterfacedObject');
     AddGet(TInterfacedObject, 'RefCount', TInterfacedObject_Read_RefCount, 0, [0], varEmpty);
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
     AddFun('System', 'Move', JvInterpreter_Move, 3, [varEmpty, varByRef, varEmpty], varEmpty);
     AddFun('System', 'ParamCount', JvInterpreter_ParamCount, 0, [0], varEmpty);
     AddFun('System', 'ParamStr', JvInterpreter_ParamStr, 1, [varEmpty], varEmpty);

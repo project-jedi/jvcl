@@ -25,9 +25,9 @@ description : Design-time Editor for TJvRegAuto component
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvRegAutoEditor;
 
@@ -37,23 +37,23 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, JvRegAuto, ExtCtrls, ComCtrls, Grids,
   Buttons,
-  {$IFDEF Delphi6_Up}
+  {$IFDEF COMPILER6_UP}
    DesignIntf, DesignEditors
   {$ELSE}
    DsgnIntf
-  {$ENDIF Delphi6_Up},
-  {$IFDEF Delphi4_Up} ImgList, {$ENDIF Delphi4_Up}
+  {$ENDIF COMPILER6_UP},
+  {$IFDEF COMPILER4_UP} ImgList, {$ENDIF COMPILER4_UP}
   Menus;
 
 type
 
-  TRegAutoEditor = class(TComponentEditor)
+  TJvRegAutoEditor  = class(TComponentEditor)
     function GetVerbCount : integer; override;
     function GetVerb(Index : integer) : string; override;
     procedure ExecuteVerb(Index : integer) ; override;
   end;
 
-  TRegEditor = class(TForm)
+  TJvRegEditor  = class(TForm)
     panelBottom: TPanel;
     panelTop: TPanel;
     panelOKCancelApply: TPanel;
@@ -109,7 +109,7 @@ type
   end;
 
 var
-  RegEditor: TRegEditor;
+  RegEditor: TJvRegEditor ;
 
 implementation
 
@@ -117,22 +117,22 @@ uses JvCtlConst, TypInfo, ExptIntf, JvDsgnIntf;
 
 {$R *.DFM}
 
-function TRegAutoEditor.GetVerbCount : integer;
+function TJvRegAutoEditor .GetVerbCount : integer;
 begin
   Result := inherited GetVerbCount + 1;
 end;
 
-function TRegAutoEditor.GetVerb(Index : integer) : string;
+function TJvRegAutoEditor .GetVerb(Index : integer) : string;
 begin
   if Index = GetVerbCount - 1 then
     Result := 'Editor' else
     Result := inherited GetVerb(Index);
 end;
 
-procedure TRegAutoEditor.ExecuteVerb(Index : integer);
+procedure TJvRegAutoEditor .ExecuteVerb(Index : integer);
 begin
   if Index = GetVerbCount - 1 then begin
-    RegEditor := TRegEditor.Create1(nil, Component);
+    RegEditor := TJvRegEditor .Create1(nil, Component);
     try
       RegEditor.ShowModal;
       if RegEditor.Modified then Designer.Modified;
@@ -144,7 +144,7 @@ begin
 end;
 
 type
-  TLoadProgress = class(TForm)
+  TJvLoadProgress  = class(TForm)
     ProgressBar : TProgressBar;
     procedure btnCancelClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -152,7 +152,7 @@ type
     Canceled : boolean;
   end;
 var
-  LoadProgress: TLoadProgress;
+  LoadProgress: TJvLoadProgress ;
 
 const
 // индексы картинок в TreeImages
@@ -164,12 +164,12 @@ const
   imEnumeration = 1;
   imComponent   = 3; //с этой картинки начинаются компонеты
 
-function LoadProgressCreate : TLoadProgress;
+function LoadProgressCreate : TJvLoadProgress ;
 begin
  {$IFDEF Delphi}
-  Result := TLoadProgress.CreateNew(Application);
+  Result := TJvLoadProgress .CreateNew(Application);
  {$ELSE}
-  Result := TLoadProgress.CreateNew(Application, 1);
+  Result := TJvLoadProgress .CreateNew(Application, 1);
  {$ENDIF}
   with Result do begin
     OnClose := FormClose;
@@ -200,18 +200,18 @@ begin
   end;
 end;
 
-procedure TLoadProgress.btnCancelClick(Sender: TObject);
+procedure TJvLoadProgress .btnCancelClick(Sender: TObject);
 begin
   Canceled := true;
 end;
 
-procedure TLoadProgress.FormClose(Sender: TObject;
+procedure TJvLoadProgress .FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
   Action := caFree;
 end;
 
-constructor TRegEditor.Create1(AOwner: TComponent; lComponent : TComponent);
+constructor TJvRegEditor .Create1(AOwner: TComponent; lComponent : TComponent);
 begin
   inherited Create(AOwner);
   Component := lComponent as TJvRegAuto;
@@ -219,23 +219,23 @@ begin
   FModified := false;
 end;
 
-procedure TRegEditor.btnOkClick(Sender: TObject);
+procedure TJvRegEditor .btnOkClick(Sender: TObject);
 begin
   Apply;
   Close;
 end;
 
-procedure TRegEditor.btnCancelClick(Sender: TObject);
+procedure TJvRegEditor .btnCancelClick(Sender: TObject);
 begin
   Close;
 end;
 
-procedure TRegEditor.Apply;
+procedure TJvRegEditor .Apply;
 begin
   Component.Props := List.Items;
 end;
 
-procedure TRegEditor.FormShow(Sender: TObject);
+procedure TJvRegEditor .FormShow(Sender: TObject);
 begin
   LoadProgress := LoadProgressCreate;
   try
@@ -247,7 +247,7 @@ begin
   ListLoad;
 end;
 
-procedure TRegEditor.ListLoad;
+procedure TJvRegEditor .ListLoad;
 begin
   List.Items.Assign(Component.Props);
 end;
@@ -261,7 +261,7 @@ begin
     Result := true;
 end;
 
-procedure TRegEditor.TreeLoad;
+procedure TJvRegEditor .TreeLoad;
 var
   i, j : integer;
   ANode : TTreeNode;                    
@@ -285,7 +285,7 @@ const
     i        : integer;
     MyNode   : TTreeNode;
   begin
-    {$IFDEF Delphi3_Up}
+    {$IFDEF COMPILER3_UP}
       ATypeInfo := APropInfo^.PropType^;
     {$ELSE}
       ATypeInfo := APropInfo^.PropType;
@@ -436,19 +436,19 @@ begin
   end;
 end;
 
-procedure TRegEditor.FormResize(Sender: TObject);
+procedure TJvRegEditor .FormResize(Sender: TObject);
 begin
   edtProp.Width := panelButtons.Left - edtProp.Left*2-2;
 end;
 
-procedure TRegEditor.WMGetMinMaxInfo(var M : TWMGetMinMaxInfo);
+procedure TJvRegEditor .WMGetMinMaxInfo(var M : TWMGetMinMaxInfo);
 begin
   inherited;
   M.MinMaxInfo^.ptMinTrackSize.X := panelOKCancelApply.Width + 15;
   M.MinMaxInfo^.ptMinTrackSize.Y := 200;
 end;
 
-procedure TRegEditor.TreeChange(Sender: TObject; Node: TTreeNode);
+procedure TJvRegEditor .TreeChange(Sender: TObject; Node: TTreeNode);
 var
   Text, Text1 : string;
   P : integer;
@@ -471,7 +471,7 @@ begin
   if Ind <> -1 then List.ItemIndex := Ind;}
 end;
 
-procedure TRegEditor.btnAddPropClick(Sender: TObject);
+procedure TJvRegEditor .btnAddPropClick(Sender: TObject);
 var Ind : integer;
 begin
   Ind := List.Items.IndexOf(edtProp.Text);
@@ -483,7 +483,7 @@ begin
   end;
 end;
 
-procedure TRegEditor.PropAdd;
+procedure TJvRegEditor .PropAdd;
 begin
   if List.Items.IndexOf(edtProp.Text) = -1 then begin
     List.Items.Add(edtProp.Text);
@@ -491,7 +491,7 @@ begin
   end;
 end;
 
-procedure TRegEditor.PropDelete;
+procedure TJvRegEditor .PropDelete;
 var It : integer;
 begin
   It := List.ItemIndex;
@@ -503,7 +503,7 @@ begin
     edtProp.Text := List.Items[List.ItemIndex];
 end;
 
-procedure TRegEditor.ListKeyUp(Sender: TObject; var Key: Word;
+procedure TJvRegEditor .ListKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_DELETE then PropDelete;
@@ -511,17 +511,17 @@ begin
     edtProp.Text := List.Items[List.ItemIndex];
 end;
 
-procedure TRegEditor.ListClick(Sender: TObject);
+procedure TJvRegEditor .ListClick(Sender: TObject);
 begin
   edtProp.Text := List.Items[List.ItemIndex];
 end;
 
-procedure TRegEditor.TreeEnter(Sender: TObject);
+procedure TJvRegEditor .TreeEnter(Sender: TObject);
 begin
   TreeChange(Sender, Tree.Selected);
 end;
 
-procedure TRegEditor.ListDrawItem(Control: TWinControl; Index: Integer;
+procedure TJvRegEditor .ListDrawItem(Control: TWinControl; Index: Integer;
   Rect: TRect; State: TOwnerDrawState);
 var
   Offset: Integer;	{ text offset width }
@@ -552,10 +552,10 @@ begin
 end;
 
 
-procedure TRegEditor.FormCreate(Sender: TObject);
+procedure TJvRegEditor .FormCreate(Sender: TObject);
 begin
 //  if Tree.Images = nil then List.Style := lbStandard;
- {$IFDEF Delphi3_Up}
+ {$IFDEF COMPILER3_UP}
   with TSplitter.Create(Self) do
   begin
     Parent := Self;
@@ -564,7 +564,7 @@ begin
     Beveled := false;
     Visible := true;
   end;
- {$ENDIF Delphi3_Up}
+ {$ENDIF COMPILER3_UP}
   with TJvRegAuto.Create(Self) do begin
    {$IFDEF Delphi}
     RegPath := 'Software\Borland\Delphi\JVCL\JvRegAutoEditor';
@@ -584,7 +584,7 @@ begin
   Sort1.Caption   := sRegAutoEditorSort;
 end;
 
-procedure TRegEditor.edtPropChange(Sender: TObject);
+procedure TJvRegEditor .edtPropChange(Sender: TObject);
 var
   Ind : integer;
 begin
@@ -592,7 +592,7 @@ begin
   if Ind <> -1 then List.ItemIndex := Ind;
 end;
 
-procedure TRegEditor.edtPropKeyPress(Sender: TObject; var Key: Char);
+procedure TJvRegEditor .edtPropKeyPress(Sender: TObject; var Key: Char);
 begin
   if Key = ^M then begin
     btnAddPropClick(Sender);
@@ -600,45 +600,45 @@ begin
   end;
 end;
 
-procedure TRegEditor.ListDragOver(Sender, Source: TObject; X, Y: Integer;
+procedure TJvRegEditor .ListDragOver(Sender, Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   Accept := (Source = Tree) and (List.Items.IndexOf(edtProp.Text) = -1);
 end;
 
-procedure TRegEditor.ListDragDrop(Sender, Source: TObject; X, Y: Integer);
+procedure TJvRegEditor .ListDragDrop(Sender, Source: TObject; X, Y: Integer);
 begin
   if (Source = Tree) and (List.Items.IndexOf(edtProp.Text) = -1) then
     btnAddPropClick(Self);
 //  then PropAdd;
 end;
 
-procedure TRegEditor.TreeDragOver(Sender, Source: TObject; X, Y: Integer;
+procedure TJvRegEditor .TreeDragOver(Sender, Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   Accept := (Source = List) and (List.Items.IndexOf(edtProp.Text) <> -1);
 end;
 
-procedure TRegEditor.TreeDragDrop(Sender, Source: TObject; X, Y: Integer);
+procedure TJvRegEditor .TreeDragDrop(Sender, Source: TObject; X, Y: Integer);
 begin
   if (Source = List) and (List.Items.IndexOf(edtProp.Text) <> -1) then
     btnAddPropClick(Self);
 //  then PropDelete;
 end;
 
-procedure TRegEditor.ListEnter(Sender: TObject);
+procedure TJvRegEditor .ListEnter(Sender: TObject);
 begin
   btnAddProp.Enabled := true;
 end;
 
 
-procedure TRegEditor.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TJvRegEditor .FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   if FProps <> Component.Props.Text then FModified := true;
 end;
 
 
-procedure TRegEditor.Sort1Click(Sender: TObject);
+procedure TJvRegEditor .Sort1Click(Sender: TObject);
 begin
   List.Sorted := true;
 //  List.Sorted := false;

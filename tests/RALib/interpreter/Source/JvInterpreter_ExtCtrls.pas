@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 
 unit JvInterpreter_ExtCtrls;
@@ -139,7 +139,7 @@ begin
   TImage(Args.Obj).Center := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read IncrementalDisplay: Boolean }
 procedure TImage_Read_IncrementalDisplay(var Value: Variant; Args: TArgs);
 begin
@@ -151,7 +151,7 @@ procedure TImage_Write_IncrementalDisplay(const Value: Variant; Args: TArgs);
 begin
   TImage(Args.Obj).IncrementalDisplay := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read Picture: TPicture }
 procedure TImage_Read_Picture(var Value: Variant; Args: TArgs);
@@ -177,7 +177,7 @@ begin
   TImage(Args.Obj).Stretch := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read Transparent: Boolean }
 procedure TImage_Read_Transparent(var Value: Variant; Args: TArgs);
 begin
@@ -189,7 +189,7 @@ procedure TImage_Write_Transparent(const Value: Variant; Args: TArgs);
 begin
   TImage(Args.Obj).Transparent := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
   { TBevel }
 
@@ -385,7 +385,7 @@ end;
 
   { TSplitter }
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { constructor Create(AOwner: TComponent) }
 procedure TSplitter_Create(var Value: Variant; Args: TArgs);
 begin
@@ -415,7 +415,7 @@ procedure TSplitter_Write_MinSize(const Value: Variant; Args: TArgs);
 begin
   TSplitter(Args.Obj).MinSize := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
@@ -450,18 +450,18 @@ begin
     AddSet(TImage, 'AutoSize', TImage_Write_AutoSize, 0, [0]);
     AddGet(TImage, 'Center', TImage_Read_Center, 0, [0], varEmpty);
     AddSet(TImage, 'Center', TImage_Write_Center, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TImage, 'IncrementalDisplay', TImage_Read_IncrementalDisplay, 0, [0], varEmpty);
     AddSet(TImage, 'IncrementalDisplay', TImage_Write_IncrementalDisplay, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TImage, 'Picture', TImage_Read_Picture, 0, [0], varEmpty);
     AddSet(TImage, 'Picture', TImage_Write_Picture, 0, [0]);
     AddGet(TImage, 'Stretch', TImage_Read_Stretch, 0, [0], varEmpty);
     AddSet(TImage, 'Stretch', TImage_Write_Stretch, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TImage, 'Transparent', TImage_Read_Transparent, 0, [0], varEmpty);
     AddSet(TImage, 'Transparent', TImage_Write_Transparent, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TBevelStyle }
     AddConst('Extctrls', 'bsLowered', bsLowered);
     AddConst('Extctrls', 'bsRaised', bsRaised);
@@ -523,7 +523,7 @@ begin
    { TRadioGroup }
     AddClass('Extctrls', TRadioGroup, 'TRadioGroup');
     AddGet(TRadioGroup, 'Create', TRadioGroup_Create, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    { TSplitter }
     AddClass('Extctrls', TSplitter, 'TSplitter');
     AddGet(TSplitter, 'Create', TSplitter_Create, 1, [varEmpty], varEmpty);
@@ -531,10 +531,10 @@ begin
     AddSet(TSplitter, 'Beveled', TSplitter_Write_Beveled, 0, [0]);
     AddGet(TSplitter, 'MinSize', TSplitter_Read_MinSize, 0, [0], varEmpty);
     AddSet(TSplitter, 'MinSize', TSplitter_Write_MinSize, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
   end;    { with }
   RegisterClasses([TShape, TPaintBox, TImage, TBevel, TTimer, TPanel, TPage,
-    TNotebook, THeader, TRadioGroup {$IFDEF Delphi3_Up}, TSplitter {$ENDIF Delphi3_Up}]);
+    TNotebook, THeader, TRadioGroup {$IFDEF COMPILER3_UP}, TSplitter {$ENDIF COMPILER3_UP}]);
 end;    { RegisterJvInterpreterAdapter }
 
 end.

@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvInterpreter_DBTables;
 
@@ -78,13 +78,13 @@ begin
   TSession(Args.Obj).AddAlias(Args.Values[0], Args.Values[1], V2O(Args.Values[2]) as TStrings);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure AddDriver(const Name: string; List: TStrings); }
 procedure TSession_AddDriver(var Value: Variant; Args: TArgs);
 begin
   TSession(Args.Obj).AddDriver(Args.Values[0], V2O(Args.Values[1]) as TStrings);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure AddStandardAlias(const Name, Path, DefaultDriver: string); }
 procedure TSession_AddStandardAlias(var Value: Variant; Args: TArgs);
@@ -128,13 +128,13 @@ begin
   TSession(Args.Obj).DeleteAlias(Args.Values[0]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure DeleteDriver(const Name: string); }
 procedure TSession_DeleteDriver(var Value: Variant; Args: TArgs);
 begin
   TSession(Args.Obj).DeleteDriver(Args.Values[0]);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure DropConnections; }
 procedure TSession_DropConnections(var Value: Variant; Args: TArgs);
@@ -220,13 +220,13 @@ begin
   TSession(Args.Obj).ModifyAlias(Args.Values[0], V2O(Args.Values[1]) as TStrings);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure ModifyDriver(Name: string; List: TStrings); }
 procedure TSession_ModifyDriver(var Value: Variant; Args: TArgs);
 begin
   TSession(Args.Obj).ModifyDriver(Args.Values[0], V2O(Args.Values[1]) as TStrings);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure Open; }
 procedure TSession_Open(var Value: Variant; Args: TArgs);
@@ -306,7 +306,7 @@ begin
   TSession(Args.Obj).Active := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read AutoSessionName: Boolean }
 procedure TSession_Read_AutoSessionName(var Value: Variant; Args: TArgs);
 begin
@@ -318,7 +318,7 @@ procedure TSession_Write_AutoSessionName(const Value: Variant; Args: TArgs);
 begin
   TSession(Args.Obj).AutoSessionName := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read KeepConnections: Boolean }
 procedure TSession_Read_KeepConnections(var Value: Variant; Args: TArgs);
@@ -368,7 +368,7 @@ begin
   TSession(Args.Obj).SessionName := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read SQLHourGlass: Boolean }
 procedure TSession_Read_SQLHourGlass(var Value: Variant; Args: TArgs);
 begin
@@ -380,7 +380,7 @@ procedure TSession_Write_SQLHourGlass(const Value: Variant; Args: TArgs);
 begin
   TSession(Args.Obj).SQLHourGlass := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
   { TDatabase }
 
@@ -584,7 +584,7 @@ begin
   TDatabase(Args.Obj).DriverName := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read HandleShared: Boolean }
 procedure TDatabase_Read_HandleShared(var Value: Variant; Args: TArgs);
 begin
@@ -596,7 +596,7 @@ procedure TDatabase_Write_HandleShared(const Value: Variant; Args: TArgs);
 begin
   TDatabase(Args.Obj).HandleShared := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read KeepConnection: Boolean }
 procedure TDatabase_Read_KeepConnection(var Value: Variant; Args: TArgs);
@@ -660,7 +660,7 @@ end;
 
   { TDataSetUpdateObject }
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 type
   TBDEDataSet = TDataSet;
 {$ENDIF}
@@ -679,13 +679,13 @@ begin
   TBDEDataSet(Args.Obj).ApplyUpdates;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function BookmarkValid(Bookmark: TBookmark): Boolean; }
 procedure TBDEDataSet_BookmarkValid(var Value: Variant; Args: TArgs);
 begin
   Value := TBDEDataSet(Args.Obj).BookmarkValid(V2P(Args.Values[0]));
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure Cancel; }
 procedure TBDEDataSet_Cancel(var Value: Variant; Args: TArgs);
@@ -699,7 +699,7 @@ begin
   TBDEDataSet(Args.Obj).CancelUpdates;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read CacheBlobs: Boolean }
 procedure TBDEDataSet_Read_CacheBlobs(var Value: Variant; Args: TArgs);
 begin
@@ -717,7 +717,7 @@ procedure TBDEDataSet_CompareBookmarks(var Value: Variant; Args: TArgs);
 begin
   Value := TBDEDataSet(Args.Obj).CompareBookmarks(V2P(Args.Values[0]), V2P(Args.Values[1]));
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure CommitUpdates; }
 procedure TBDEDataSet_CommitUpdates(var Value: Variant; Args: TArgs);
@@ -725,7 +725,7 @@ begin
   TBDEDataSet(Args.Obj).CommitUpdates;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function ConstraintsDisabled: Boolean; }
 procedure TBDEDataSet_ConstraintsDisabled(var Value: Variant; Args: TArgs);
 begin
@@ -749,7 +749,7 @@ procedure TBDEDataSet_EnableConstraints(var Value: Variant; Args: TArgs);
 begin
   TBDEDataSet(Args.Obj).EnableConstraints;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure FetchAll; }
 procedure TBDEDataSet_FetchAll(var Value: Variant; Args: TArgs);
@@ -757,13 +757,13 @@ begin
   TBDEDataSet(Args.Obj).FetchAll;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure FlushBuffers; }
 procedure TBDEDataSet_FlushBuffers(var Value: Variant; Args: TArgs);
 begin
   TBDEDataSet(Args.Obj).FlushBuffers;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  function GetCurrentRecord(Buffer: PChar): Boolean; }
 procedure TBDEDataSet_GetCurrentRecord(var Value: Variant; Args: TArgs);
@@ -771,13 +771,13 @@ begin
   Value := TBDEDataSet(Args.Obj).GetCurrentRecord(PChar(string(Args.Values[0])));
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure GetIndexInfo; }
 procedure TBDEDataSet_GetIndexInfo(var Value: Variant; Args: TArgs);
 begin
   TBDEDataSet(Args.Obj).GetIndexInfo;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  function Locate(const KeyFields: string; const KeyValues: Variant; Options: TLocateOptions): Boolean; }
 procedure TBDEDataSet_Locate(var Value: Variant; Args: TArgs);
@@ -791,13 +791,13 @@ begin
   Value := TBDEDataSet(Args.Obj).Lookup(Args.Values[0], Args.Values[1], Args.Values[2]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function IsSequenced: Boolean; }
 procedure TBDEDataSet_IsSequenced(var Value: Variant; Args: TArgs);
 begin
   Value := TBDEDataSet(Args.Obj).IsSequenced;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure Post; }
 procedure TBDEDataSet_Post(var Value: Variant; Args: TArgs);
@@ -817,13 +817,13 @@ begin
   Value := TBDEDataSet(Args.Obj).UpdateStatus;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure Translate(Src, Dest: PChar; ToOem: Boolean); }
 procedure TBDEDataSet_Translate(var Value: Variant; Args: TArgs);
 begin
   TBDEDataSet(Args.Obj).Translate(PChar(string(Args.Values[0])), PChar(string(Args.Values[1])), Args.Values[2]);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read ExpIndex: Boolean }
 procedure TBDEDataSet_Read_ExpIndex(var Value: Variant; Args: TArgs);
@@ -899,7 +899,7 @@ begin
   Value := TDBDataSet(Args.Obj).CheckOpen(Args.Values[0]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure CloseDatabase(Database: TDatabase); }
 procedure TDBDataSet_CloseDatabase(var Value: Variant; Args: TArgs);
 begin
@@ -911,7 +911,7 @@ procedure TDBDataSet_OpenDatabase(var Value: Variant; Args: TArgs);
 begin
   Value := O2V(TDBDataSet(Args.Obj).OpenDatabase);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read Database: TDatabase }
 procedure TDBDataSet_Read_Database(var Value: Variant; Args: TArgs);
@@ -1181,7 +1181,7 @@ begin
   TTable(Args.Obj).KeyFieldCount := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read TableLevel: Integer }
 procedure TTable_Read_TableLevel(var Value: Variant; Args: TArgs);
 begin
@@ -1193,7 +1193,7 @@ procedure TTable_Write_TableLevel(const Value: Variant; Args: TArgs);
 begin
   TTable(Args.Obj).TableLevel := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read Exclusive: Boolean }
 procedure TTable_Read_Exclusive(var Value: Variant; Args: TArgs);
@@ -1529,7 +1529,7 @@ begin
   Value := TParam(Args.Obj).GetDataSize;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure LoadFromFile(const FileName: string; BlobType: TBlobType); }
 procedure TParam_LoadFromFile(var Value: Variant; Args: TArgs);
 begin
@@ -1547,7 +1547,7 @@ procedure TParam_SetBlobData(var Value: Variant; Args: TArgs);
 begin
   TParam(Args.Obj).SetBlobData(V2P(Args.Values[0]), Args.Values[1]);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure SetData(Buffer: Pointer); }
 procedure TParam_SetData(var Value: Variant; Args: TArgs);
@@ -1567,7 +1567,7 @@ begin
   TParam(Args.Obj).AsBCD := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read AsBlob: TBlobData }
 procedure TParam_Read_AsBlob(var Value: Variant; Args: TArgs);
 begin
@@ -1579,7 +1579,7 @@ procedure TParam_Write_AsBlob(const Value: Variant; Args: TArgs);
 begin
   TParam(Args.Obj).AsBlob := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read AsBoolean: Boolean }
 procedure TParam_Read_AsBoolean(var Value: Variant; Args: TArgs);
@@ -1665,7 +1665,7 @@ begin
   TParam(Args.Obj).AsSmallInt := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read AsMemo: string }
 procedure TParam_Read_AsMemo(var Value: Variant; Args: TArgs);
 begin
@@ -1677,7 +1677,7 @@ procedure TParam_Write_AsMemo(const Value: Variant; Args: TArgs);
 begin
   TParam(Args.Obj).AsMemo := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read AsString: string }
 procedure TParam_Read_AsString(var Value: Variant; Args: TArgs);
@@ -2282,16 +2282,16 @@ begin
     AddGet(EDBEngineError, 'Create', EDBEngineError_Create, 1, [varEmpty], varEmpty);
     AddGet(EDBEngineError, 'ErrorCount', EDBEngineError_Read_ErrorCount, 0, [0], varEmpty);
     AddGet(EDBEngineError, 'Errors', EDBEngineError_Read_Errors, 1, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    { ENoResultSet }
     AddClass('DbTables', ENoResultSet, 'ENoResultSet');
-   {$ENDIF Delphi3_Up}
-   {$IFDEF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
+   {$IFDEF COMPILER3_UP}
    { TConfigModes }
     AddConst('DbTables', 'cfmVirtual', cfmVirtual);
     AddConst('DbTables', 'cfmPersistent', cfmPersistent);
     AddConst('DbTables', 'cfmSession', cfmSession);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TDatabaseEvent }
     AddConst('DbTables', 'dbOpen', dbOpen);
     AddConst('DbTables', 'dbClose', dbClose);
@@ -2299,10 +2299,10 @@ begin
     AddConst('DbTables', 'dbRemove', dbRemove);
     AddConst('DbTables', 'dbAddAlias', dbAddAlias);
     AddConst('DbTables', 'dbDeleteAlias', dbDeleteAlias);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddConst('DbTables', 'dbAddDriver', dbAddDriver);
     AddConst('DbTables', 'dbDeleteDriver', dbDeleteDriver);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TTraceFlag }
     AddConst('DbTables', 'tfQPrepare', tfQPrepare);
     AddConst('DbTables', 'tfQExecute', tfQExecute);
@@ -2313,17 +2313,17 @@ begin
     AddConst('DbTables', 'tfBlob', tfBlob);
     AddConst('DbTables', 'tfMisc', tfMisc);
     AddConst('DbTables', 'tfVendor', tfVendor);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddConst('DbTables', 'tfDataIn', tfDataIn);
     AddConst('DbTables', 'tfDataOut', tfDataOut);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TSession }
     AddClass('DbTables', TSession, 'TSession');
     AddGet(TSession, 'Create', TSession_Create, 1, [varEmpty], varEmpty);
     AddGet(TSession, 'AddAlias', TSession_AddAlias, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TSession, 'AddDriver', TSession_AddDriver, 2, [varEmpty, varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TSession, 'AddStandardAlias', TSession_AddStandardAlias, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TSession, 'ConfigMode', TSession_Read_ConfigMode, 0, [0], varEmpty);
     AddSet(TSession, 'ConfigMode', TSession_Write_ConfigMode, 0, [0]);
@@ -2331,9 +2331,9 @@ begin
     AddGet(TSession, 'Close', TSession_Close, 0, [0], varEmpty);
     AddGet(TSession, 'CloseDatabase', TSession_CloseDatabase, 1, [varEmpty], varEmpty);
     AddGet(TSession, 'DeleteAlias', TSession_DeleteAlias, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TSession, 'DeleteDriver', TSession_DeleteDriver, 1, [varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TSession, 'DropConnections', TSession_DropConnections, 0, [0], varEmpty);
     AddGet(TSession, 'FindDatabase', TSession_FindDatabase, 1, [varEmpty], varEmpty);
     AddGet(TSession, 'GetAliasNames', TSession_GetAliasNames, 1, [varEmpty], varEmpty);
@@ -2348,9 +2348,9 @@ begin
     AddGet(TSession, 'GetStoredProcNames', TSession_GetStoredProcNames, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TSession, 'IsAlias', TSession_IsAlias, 1, [varEmpty], varEmpty);
     AddGet(TSession, 'ModifyAlias', TSession_ModifyAlias, 2, [varEmpty, varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TSession, 'ModifyDriver', TSession_ModifyDriver, 2, [varEmpty, varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TSession, 'Open', TSession_Open, 0, [0], varEmpty);
     AddGet(TSession, 'OpenDatabase', TSession_OpenDatabase, 1, [varEmpty], varEmpty);
     AddGet(TSession, 'RemoveAllPasswords', TSession_RemoveAllPasswords, 0, [0], varEmpty);
@@ -2364,10 +2364,10 @@ begin
     AddSet(TSession, 'TraceFlags', TSession_Write_TraceFlags, 0, [0]);
     AddGet(TSession, 'Active', TSession_Read_Active, 0, [0], varEmpty);
     AddSet(TSession, 'Active', TSession_Write_Active, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TSession, 'AutoSessionName', TSession_Read_AutoSessionName, 0, [0], varEmpty);
     AddSet(TSession, 'AutoSessionName', TSession_Write_AutoSessionName, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TSession, 'KeepConnections', TSession_Read_KeepConnections, 0, [0], varEmpty);
     AddSet(TSession, 'KeepConnections', TSession_Write_KeepConnections, 0, [0]);
     AddGet(TSession, 'NetFileDir', TSession_Read_NetFileDir, 0, [0], varEmpty);
@@ -2376,10 +2376,10 @@ begin
     AddSet(TSession, 'PrivateDir', TSession_Write_PrivateDir, 0, [0]);
     AddGet(TSession, 'SessionName', TSession_Read_SessionName, 0, [0], varEmpty);
     AddSet(TSession, 'SessionName', TSession_Write_SessionName, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TSession, 'SQLHourGlass', TSession_Read_SQLHourGlass, 0, [0], varEmpty);
     AddSet(TSession, 'SQLHourGlass', TSession_Write_SQLHourGlass, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TTransIsolation }
     AddConst('DbTables', 'tiDirtyRead', tiDirtyRead);
     AddConst('DbTables', 'tiReadCommitted', tiReadCommitted);
@@ -2419,10 +2419,10 @@ begin
     AddSet(TDatabase, 'DatabaseName', TDatabase_Write_DatabaseName, 0, [0]);
     AddGet(TDatabase, 'DriverName', TDatabase_Read_DriverName, 0, [0], varEmpty);
     AddSet(TDatabase, 'DriverName', TDatabase_Write_DriverName, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TDatabase, 'HandleShared', TDatabase_Read_HandleShared, 0, [0], varEmpty);
     AddSet(TDatabase, 'HandleShared', TDatabase_Write_HandleShared, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TDatabase, 'KeepConnection', TDatabase_Read_KeepConnection, 0, [0], varEmpty);
     AddSet(TDatabase, 'KeepConnection', TDatabase_Write_KeepConnection, 0, [0]);
     AddGet(TDatabase, 'LoginPrompt', TDatabase_Read_LoginPrompt, 0, [0], varEmpty);
@@ -2461,43 +2461,43 @@ begin
     AddClass('DbTables', TBDEDataSet, 'TBDEDataSet');
     AddGet(TBDEDataSet, 'Create', TBDEDataSet_Create, 1, [varEmpty], varEmpty);
     AddGet(TBDEDataSet, 'ApplyUpdates', TBDEDataSet_ApplyUpdates, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBDEDataSet, 'BookmarkValid', TBDEDataSet_BookmarkValid, 1, [varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TBDEDataSet, 'Cancel', TBDEDataSet_Cancel, 0, [0], varEmpty);
     AddGet(TBDEDataSet, 'CancelUpdates', TBDEDataSet_CancelUpdates, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBDEDataSet, 'CacheBlobs', TBDEDataSet_Read_CacheBlobs, 0, [0], varEmpty);
     AddSet(TBDEDataSet, 'CacheBlobs', TBDEDataSet_Write_CacheBlobs, 0, [0]);
     AddGet(TBDEDataSet, 'CompareBookmarks', TBDEDataSet_CompareBookmarks, 2, [varEmpty, varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TBDEDataSet, 'CommitUpdates', TBDEDataSet_CommitUpdates, 0, [0], varEmpty);
    // AddGet(TBDEDataSet, 'ConstraintCallBack', TBDEDataSet_ConstraintCallBack, 2, [varEmpty, varByRef], nil);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBDEDataSet, 'ConstraintsDisabled', TBDEDataSet_ConstraintsDisabled, 0, [0], varEmpty);
     AddGet(TBDEDataSet, 'CreateBlobStream', TBDEDataSet_CreateBlobStream, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TBDEDataSet, 'DisableConstraints', TBDEDataSet_DisableConstraints, 0, [0], varEmpty);
     AddGet(TBDEDataSet, 'EnableConstraints', TBDEDataSet_EnableConstraints, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TBDEDataSet, 'FetchAll', TBDEDataSet_FetchAll, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBDEDataSet, 'FlushBuffers', TBDEDataSet_FlushBuffers, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TBDEDataSet, 'GetCurrentRecord', TBDEDataSet_GetCurrentRecord, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBDEDataSet, 'GetIndexInfo', TBDEDataSet_GetIndexInfo, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TBDEDataSet, 'Locate', TBDEDataSet_Locate, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TBDEDataSet, 'Lookup', TBDEDataSet_Lookup, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBDEDataSet, 'IsSequenced', TBDEDataSet_IsSequenced, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TBDEDataSet, 'Post', TBDEDataSet_Post, 0, [0], varEmpty);
     AddGet(TBDEDataSet, 'RevertRecord', TBDEDataSet_RevertRecord, 0, [0], varEmpty);
     AddGet(TBDEDataSet, 'UpdateStatus', TBDEDataSet_UpdateStatus, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBDEDataSet, 'Translate', TBDEDataSet_Translate, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TBDEDataSet, 'ExpIndex', TBDEDataSet_Read_ExpIndex, 0, [0], varEmpty);
     AddGet(TBDEDataSet, 'Handle', TBDEDataSet_Read_Handle, 0, [0], varEmpty);
     AddGet(TBDEDataSet, 'KeySize', TBDEDataSet_Read_KeySize, 0, [0], varEmpty);
@@ -2516,10 +2516,10 @@ begin
    { TDBDataSet }
     AddClass('DbTables', TDBDataSet, 'TDBDataSet');
     AddGet(TDBDataSet, 'CheckOpen', TDBDataSet_CheckOpen, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TDBDataSet, 'CloseDatabase', TDBDataSet_CloseDatabase, 1, [varEmpty], varEmpty);
     AddGet(TDBDataSet, 'OpenDatabase', TDBDataSet_OpenDatabase, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TDBDataSet, 'Database', TDBDataSet_Read_Database, 0, [0], varEmpty);
     AddGet(TDBDataSet, 'DBHandle', TDBDataSet_Read_DBHandle, 0, [0], varEmpty);
     AddGet(TDBDataSet, 'DBLocale', TDBDataSet_Read_DBLocale, 0, [0], varEmpty);
@@ -2579,10 +2579,10 @@ begin
     AddSet(TTable, 'KeyExclusive', TTable_Write_KeyExclusive, 0, [0]);
     AddGet(TTable, 'KeyFieldCount', TTable_Read_KeyFieldCount, 0, [0], varEmpty);
     AddSet(TTable, 'KeyFieldCount', TTable_Write_KeyFieldCount, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TTable, 'TableLevel', TTable_Read_TableLevel, 0, [0], varEmpty);
     AddSet(TTable, 'TableLevel', TTable_Write_TableLevel, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TTable, 'Exclusive', TTable_Read_Exclusive, 0, [0], varEmpty);
     AddSet(TTable, 'Exclusive', TTable_Write_Exclusive, 0, [0]);
     AddGet(TTable, 'IndexFieldNames', TTable_Read_IndexFieldNames, 0, [0], varEmpty);
@@ -2648,18 +2648,18 @@ begin
     AddGet(TParam, 'Clear', TParam_Clear, 0, [0], varEmpty);
     AddGet(TParam, 'GetData', TParam_GetData, 1, [varEmpty], varEmpty);
     AddGet(TParam, 'GetDataSize', TParam_GetDataSize, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TParam, 'LoadFromFile', TParam_LoadFromFile, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TParam, 'LoadFromStream', TParam_LoadFromStream, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TParam, 'SetBlobData', TParam_SetBlobData, 2, [varEmpty, varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TParam, 'SetData', TParam_SetData, 1, [varEmpty], varEmpty);
     AddGet(TParam, 'AsBCD', TParam_Read_AsBCD, 0, [0], varEmpty);
     AddSet(TParam, 'AsBCD', TParam_Write_AsBCD, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TParam, 'AsBlob', TParam_Read_AsBlob, 0, [0], varEmpty);
     AddSet(TParam, 'AsBlob', TParam_Write_AsBlob, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TParam, 'AsBoolean', TParam_Read_AsBoolean, 0, [0], varEmpty);
     AddSet(TParam, 'AsBoolean', TParam_Write_AsBoolean, 0, [0]);
     AddGet(TParam, 'AsCurrency', TParam_Read_AsCurrency, 0, [0], varEmpty);
@@ -2674,10 +2674,10 @@ begin
     AddSet(TParam, 'AsInteger', TParam_Write_AsInteger, 0, [0]);
     AddGet(TParam, 'AsSmallInt', TParam_Read_AsSmallInt, 0, [0], varEmpty);
     AddSet(TParam, 'AsSmallInt', TParam_Write_AsSmallInt, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TParam, 'AsMemo', TParam_Read_AsMemo, 0, [0], varEmpty);
     AddSet(TParam, 'AsMemo', TParam_Write_AsMemo, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TParam, 'AsString', TParam_Read_AsString, 0, [0], varEmpty);
     AddSet(TParam, 'AsString', TParam_Write_AsString, 0, [0]);
     AddGet(TParam, 'AsTime', TParam_Read_AsTime, 0, [0], varEmpty);
@@ -2790,7 +2790,7 @@ begin
     AddGet(TBlobStream, 'Truncate', TBlobStream_Truncate, 0, [0], varEmpty);
   end;    { with }
   RegisterClasses([TSession, TDataBase, TTable, TQuery, TStoredProc,
-    TBatchMove, {$IFDEF Delphi3_Up} TParam, {$ENDIF Delphi3_Up} TParams, TUpdateSQL]);
+    TBatchMove, {$IFDEF COMPILER3_UP} TParam, {$ENDIF COMPILER3_UP} TParams, TUpdateSQL]);
 end;    { RegisterJvInterpreterAdapter }
 
 end.

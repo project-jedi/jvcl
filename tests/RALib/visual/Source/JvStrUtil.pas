@@ -25,9 +25,9 @@ Description : String utilities
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvStrUtil;
 
@@ -115,16 +115,16 @@ type
 
   function ExtractFilePath2(const FileName: String): String;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
   function AnsiStrIComp(S1, S2: PChar): Integer;
 
   function AnsiStrLIComp(S1, S2: PChar; MaxLen: Cardinal): Integer;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 implementation
 
              
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 function AnsiStrIComp(S1, S2: PChar): Integer;
 begin
   Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE, S1, -1,
@@ -136,7 +136,7 @@ begin
   Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
     S1, MaxLen, S2, MaxLen) - 2;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 function FindNotBlankCharPos(const S: string): Integer;
 var
@@ -209,7 +209,7 @@ begin
   inc(iBeg);
   iEnd := P;
   while iEnd <= Length(S) do
-    if ( S[iEnd] in Separators ) {$IFDEF Delphi3_Up} and ( StrByteType( pchar(s) , iEnd-1 ) <> mbTrailByte ) {$ENDIF}
+    if ( S[iEnd] in Separators ) {$IFDEF COMPILER3_UP} and ( StrByteType( pchar(s) , iEnd-1 ) <> mbTrailByte ) {$ENDIF}
     then break else inc(iEnd);
   if iEnd > iBeg then
     Result := Copy(S, iBeg, iEnd - iBeg) else

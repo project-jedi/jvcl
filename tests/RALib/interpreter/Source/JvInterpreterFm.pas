@@ -26,9 +26,9 @@ Component   : form runner for JvInterpreter
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 { history (JVCL Library versions):
   1.10:
@@ -83,11 +83,11 @@ type
   protected
     procedure ReadState(Reader: TReader); override;
   public
-    {$IFDEF Delphi4_Up}
+    {$IFDEF COMPILER4_UP}
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     {$ELSE}
     constructor CreateNew(AOwner: TComponent; Dummy: Integer);
-    {$ENDIF Delphi4_Up}
+    {$ENDIF COMPILER4_UP}
     destructor Destroy; override;
     property JvInterpreterFm: TJvInterpreterFm read FJvInterpreterFm write FJvInterpreterFm;
   end;
@@ -206,11 +206,11 @@ begin
   TJvInterpreterForm(Root).FMethodList.Add(Result);
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 constructor TJvInterpreterForm.CreateNew(AOwner: TComponent; Dummy: Integer = 0);
 {$ELSE}
 constructor TJvInterpreterForm.CreateNew(AOwner: TComponent; Dummy: Integer);
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 begin
   FMethodList := TList.Create;
  {$IFDEF Delphi}
@@ -290,11 +290,11 @@ function JvInterpreterReadComponentRes(var Stream: TStream; Instance: TComponent
   : TComponent;
 var
   JvInterpreterReader: TJvInterpreterReader;
- {$IFDEF Delphi5_Up}
+ {$IFDEF COMPILER5_UP}
   TmpStream: TMemoryStream;
- {$ENDIF Delphi5_Up}
+ {$ENDIF COMPILER5_UP}
 begin
- {$IFDEF Delphi5_Up}
+ {$IFDEF COMPILER5_UP}
   if TestStreamFormat(Stream) = sofText then
   begin
     TmpStream := TMemoryStream.Create;
@@ -303,7 +303,7 @@ begin
     Stream := TmpStream;
     Stream.Position := 0;
   end;
- {$ENDIF Delphi5_Up}
+ {$ENDIF COMPILER5_UP}
 
   Stream.ReadResHeader;
   JvInterpreterReader := TJvInterpreterReader.Create(Stream, 4096);
@@ -337,11 +337,11 @@ begin
     JvInterpreterErrorN(ieUnitNotFound, -1, UnitName);
   Source := S;
   Compile;
-  {$IFDEF Delphi4_Up}
+  {$IFDEF COMPILER4_UP}
   FForm := TJvInterpreterForm.CreateNew(Application);
   {$ELSE}
   FForm := TJvInterpreterForm.CreateNew(Application, 0);
-  {$ENDIF Delphi4_Up}
+  {$ENDIF COMPILER4_UP}
   FForm.FUnitName := UnitName;
   LoadForm(FForm);
   Result := FForm;
@@ -488,11 +488,11 @@ begin
   JvInterpreterSrcClass := THackAdapter(Adapter).GetSrcClass(Identifer);
   if JvInterpreterSrcClass <> nil then
   begin
-    {$IFDEF Delphi4_Up}
+    {$IFDEF COMPILER4_UP}
     JvInterpreterForm := TJvInterpreterForm.CreateNew(Application);
     {$ELSE}
     JvInterpreterForm := TJvInterpreterForm.CreateNew(Application, 0);
-    {$ENDIF Delphi4_Up}
+    {$ENDIF COMPILER4_UP}
     JvInterpreterForm.FClassIdentifer := Identifer;
     Value := O2V(JvInterpreterForm);
     Result := True;

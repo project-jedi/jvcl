@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvInterpreter_httpapp;
 
@@ -40,7 +40,7 @@ uses JvInterpreter;
 implementation
 
 uses SysUtils, Classes, Forms, Masks,
- {$IFDEF Delphi5_Up} Contnrs, {$ENDIF Delphi5_Up}
+ {$IFDEF COMPILER5_UP} Contnrs, {$ENDIF COMPILER5_UP}
   HTTPApp;
 
 
@@ -772,7 +772,7 @@ begin
   TWebActionItem(Args.Obj).PathInfo := Value;
 end;
 
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
 { property Read Producer: TCustomContentProducer }
 procedure TWebActionItem_Read_Producer(var Value: Variant; Args: TArgs);
 begin
@@ -784,7 +784,7 @@ procedure TWebActionItem_Write_Producer(const Value: Variant; Args: TArgs);
 begin
   TWebActionItem(Args.Obj).Producer := V2O(Value) as TCustomContentProducer;
 end;
-{$ENDIF Delphi5_Up}
+{$ENDIF COMPILER5_UP}
 
   { TWebDispatcher }
 
@@ -969,10 +969,10 @@ begin
     AddSet(TWebActionItem, 'Name', TWebActionItem_Write_Name, 0, [0]);
     AddGet(TWebActionItem, 'PathInfo', TWebActionItem_Read_PathInfo, 0, [0], varEmpty);
     AddSet(TWebActionItem, 'PathInfo', TWebActionItem_Write_PathInfo, 0, [0]);
-   {$IFDEF Delphi5_Up}
+   {$IFDEF COMPILER5_UP}
     AddGet(TWebActionItem, 'Producer', TWebActionItem_Read_Producer, 0, [0], varEmpty);
     AddSet(TWebActionItem, 'Producer', TWebActionItem_Write_Producer, 0, [0]);
-   {$ENDIF Delphi5_Up}
+   {$ENDIF COMPILER5_UP}
    { TWebDispatcher }
     AddClass('httpapp', TWebDispatcher, 'TWebDispatcher');
     AddFun('httpapp', 'DosPathToUnixPath', JvInterpreter_DosPathToUnixPath, 1, [varString], varEmpty);

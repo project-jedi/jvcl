@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvInterpreter_Grids;
 
@@ -102,7 +102,7 @@ end;
 
   { TCustomGrid }
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function MouseCoord(X, Y: Integer): TGridCoord; }
 procedure TCustomGrid_MouseCoord(var Value: Variant; Args: TArgs);
 begin
@@ -214,7 +214,7 @@ begin
     AddConst('Grids', 'sdDown', sdDown);
    { TCustomGrid }
     AddClass('Grids', TCustomGrid, 'TCustomGrid');
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TCustomGrid, 'MouseCoord', TCustomGrid_MouseCoord, 2, [varEmpty, varEmpty], varEmpty);
    {$ENDIF BCB1}
    { TDrawGrid }

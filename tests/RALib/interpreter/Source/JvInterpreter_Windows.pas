@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvInterpreter_Windows;
 
@@ -190,7 +190,7 @@ begin
     AddConst('Windows', 'VK_MENU', VK_MENU);
     AddConst('Windows', 'VK_PAUSE', VK_PAUSE);
     AddConst('Windows', 'VK_CAPITAL', VK_CAPITAL);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddConst('Windows', 'VK_KANA', VK_KANA);
     AddConst('Windows', 'VK_HANGUL', VK_HANGUL);
     AddConst('Windows', 'VK_JUNJA', VK_JUNJA);
@@ -201,7 +201,7 @@ begin
     AddConst('Windows', 'VK_NONCONVERT', VK_NONCONVERT);
     AddConst('Windows', 'VK_ACCEPT', VK_ACCEPT);
     AddConst('Windows', 'VK_MODECHANGE', VK_MODECHANGE);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddConst('Windows', 'VK_ESCAPE', VK_ESCAPE);
     AddConst('Windows', 'VK_SPACE', VK_SPACE);
     AddConst('Windows', 'VK_PRIOR', VK_PRIOR);

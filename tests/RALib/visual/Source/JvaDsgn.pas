@@ -25,9 +25,9 @@ description : routines for design-time
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvaDsgn;
 
@@ -41,12 +41,12 @@ uses
   Types, QGraphics,
  {$ENDIF COMPLIB_CLX}
   SysUtils, Classes,
- {$IFDEF Delphi6_Up}
+ {$IFDEF COMPILER6_UP}
   DesignIntf
  {$ELSE}
   DsgnIntf
- {$ENDIF Delphi6_Up},
- {$IFNDEF Delphi4_Up}
+ {$ENDIF COMPILER6_UP},
+ {$IFNDEF COMPILER4_UP}
   Forms,
  {$ENDIF}
   JvDsgnIntf;
@@ -66,7 +66,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 type
   TMyComponent = class(TComponent);
 
@@ -114,7 +114,7 @@ begin
   end;
 end;
 
-{$IFDEF Delphi6_Up}
+{$IFDEF COMPILER6_UP}
 procedure DesignerSelectComponent(Self : TComponent);
 var
   Designer: IDesignerNotify;
@@ -150,7 +150,7 @@ begin
     end;
   end;
 end;
-{$ENDIF Delphi6_Up}
+{$ENDIF COMPILER6_UP}
 
 {$ELSE}
 

@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvInterpreter_StdCtrls;
 
@@ -464,7 +464,7 @@ begin
   TScrollBar(Args.Obj).SetParams(Args.Values[0], Args.Values[1], Args.Values[2]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   { TCustomStaticText }
 
 { constructor Create(AOwner: TComponent) }
@@ -480,7 +480,7 @@ procedure TStaticText_Create(var Value: Variant; Args: TArgs);
 begin
   Value := O2V(TStaticText.Create(V2O(Args.Values[0]) as TComponent));
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 
 type
@@ -494,7 +494,7 @@ type
 
 procedure TJvInterpreterStdCtrlsEvent.DrawItemEvent(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
 begin
- {$IFDEF Delphi5_Up}
+ {$IFDEF COMPILER5_UP}
   CallFunction(nil, [O2V(Control), Index, Rect2Var(Rect), S2V(Word(State))]);
  {$ELSE}
   CallFunction(nil, [O2V(Control), Index, Rect2Var(Rect), S2V(Byte(State))]);
@@ -521,12 +521,12 @@ begin
    { TGroupBox }
     AddClass('StdCtrls', TGroupBox, 'TGroupBox');
     AddGet(TGroupBox, 'Create', TGroupBox_Create, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    { TTextLayout }
     AddConst('StdCtrls', 'tlTop', tlTop);
     AddConst('StdCtrls', 'tlCenter', tlCenter);
     AddConst('StdCtrls', 'tlBottom', tlBottom);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TCustomLabel }
     AddClass('StdCtrls', TCustomLabel, 'TCustomLabel');
     AddGet(TCustomLabel, 'Create', TCustomLabel_Create, 1, [varEmpty], varEmpty);
@@ -660,7 +660,7 @@ begin
     AddClass('StdCtrls', TScrollBar, 'TScrollBar');
     AddGet(TScrollBar, 'Create', TScrollBar_Create, 1, [varEmpty], varEmpty);
     AddGet(TScrollBar, 'SetParams', TScrollBar_SetParams, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    { TStaticBorderStyle }
     AddConst('StdCtrls', 'sbsNone', sbsNone);
     AddConst('StdCtrls', 'sbsSingle', sbsSingle);
@@ -671,7 +671,7 @@ begin
    { TStaticText }
     AddClass('StdCtrls', TStaticText, 'TStaticText');
     AddGet(TStaticText, 'Create', TStaticText_Create, 1, [varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
 
     AddHandler('StdCtrls', 'TDrawItemEvent', TJvInterpreterStdCtrlsEvent, @TJvInterpreterStdCtrlsEvent.DrawItemEvent);
     AddHandler('StdCtrls', 'TMeasureItemEvent', TJvInterpreterStdCtrlsEvent, @TJvInterpreterStdCtrlsEvent.MeasureItemEvent);
@@ -680,7 +680,7 @@ begin
   RegisterClasses([TGroupBox, TCustomLabel, TLabel, TCustomEdit, TEdit,
     TCustomMemo, TMemo, TCustomComboBox, TComboBox, TButton, TCustomCheckBox,
     TCheckBox, TRadioButton, TCustomListBox, TListBox, TScrollBar
-   {$IFDEF Delphi3_Up}, TCustomStaticText, TStaticText {$ENDIF Delphi3_Up} ]);
+   {$IFDEF COMPILER3_UP}, TCustomStaticText, TStaticText {$ENDIF COMPILER3_UP} ]);
 end;    { RegisterJvInterpreterAdapter }
 
 end.

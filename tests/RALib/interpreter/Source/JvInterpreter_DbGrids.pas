@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvInterpreter_DbGrids;
 
@@ -166,7 +166,7 @@ begin
   Value := O2V(TColumn(Args.Obj).DefaultFont);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function DefaultImeMode: TImeMode; }
 procedure TColumn_DefaultImeMode(var Value: Variant; Args: TArgs);
 begin
@@ -178,7 +178,7 @@ procedure TColumn_DefaultImeName(var Value: Variant; Args: TArgs);
 begin
   Value := TColumn(Args.Obj).DefaultImeName;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  function DefaultReadOnly: Boolean; }
 procedure TColumn_DefaultReadOnly(var Value: Variant; Args: TArgs);
@@ -198,13 +198,13 @@ begin
   TColumn(Args.Obj).RestoreDefaults;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read Grid: TCustomDBGrid }
 procedure TColumn_Read_Grid(var Value: Variant; Args: TArgs);
 begin
   Value := O2V(TColumn(Args.Obj).Grid);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read AssignedValues: TColumnValues }
 procedure TColumn_Read_AssignedValues(var Value: Variant; Args: TArgs);
@@ -296,7 +296,7 @@ begin
   TColumn(Args.Obj).Font := V2O(Value) as TFont;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read ImeMode: TImeMode }
 procedure TColumn_Read_ImeMode(var Value: Variant; Args: TArgs);
 begin
@@ -320,7 +320,7 @@ procedure TColumn_Write_ImeName(const Value: Variant; Args: TArgs);
 begin
   TColumn(Args.Obj).ImeName := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read PickList: TStrings }
 procedure TColumn_Read_PickList(var Value: Variant; Args: TArgs);
@@ -334,7 +334,7 @@ begin
   TColumn(Args.Obj).PickList := V2O(Value) as TStrings;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read PopupMenu: TPopupMenu }
 procedure TColumn_Read_PopupMenu(var Value: Variant; Args: TArgs);
 begin
@@ -346,7 +346,7 @@ procedure TColumn_Write_PopupMenu(const Value: Variant; Args: TArgs);
 begin
   TColumn(Args.Obj).PopupMenu := V2O(Value) as TPopupMenu;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read ReadOnly: Boolean }
 procedure TColumn_Read_ReadOnly(var Value: Variant; Args: TArgs);
@@ -398,7 +398,7 @@ begin
   Value := O2V(TDBGridColumns(Args.Obj).Add);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure LoadFromFile(const Filename: string); }
 procedure TDBGridColumns_LoadFromFile(var Value: Variant; Args: TArgs);
 begin
@@ -410,7 +410,7 @@ procedure TDBGridColumns_LoadFromStream(var Value: Variant; Args: TArgs);
 begin
   TDBGridColumns(Args.Obj).LoadFromStream(V2O(Args.Values[0]) as TStream);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure RestoreDefaults; }
 procedure TDBGridColumns_RestoreDefaults(var Value: Variant; Args: TArgs);
@@ -424,7 +424,7 @@ begin
   TDBGridColumns(Args.Obj).RebuildColumns;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure SaveToFile(const Filename: string); }
 procedure TDBGridColumns_SaveToFile(var Value: Variant; Args: TArgs);
 begin
@@ -436,7 +436,7 @@ procedure TDBGridColumns_SaveToStream(var Value: Variant; Args: TArgs);
 begin
   TDBGridColumns(Args.Obj).SaveToStream(V2O(Args.Values[0]) as TStream);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read State: TDBGridColumnsState }
 procedure TDBGridColumns_Read_State(var Value: Variant; Args: TArgs);
@@ -609,10 +609,10 @@ begin
     AddConst('DbGrids', 'cvTitleCaption', cvTitleCaption);
     AddConst('DbGrids', 'cvTitleAlignment', cvTitleAlignment);
     AddConst('DbGrids', 'cvTitleFont', cvTitleFont);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddConst('DbGrids', 'cvImeMode', cvImeMode);
     AddConst('DbGrids', 'cvImeName', cvImeName);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TColumnTitle }
     AddClass('DbGrids', TColumnTitle, 'TColumnTitle');
     AddGet(TColumnTitle, 'Create', TColumnTitle_Create, 1, [varEmpty], varEmpty);
@@ -641,16 +641,16 @@ begin
     AddGet(TColumn, 'DefaultAlignment', TColumn_DefaultAlignment, 0, [0], varEmpty);
     AddGet(TColumn, 'DefaultColor', TColumn_DefaultColor, 0, [0], varEmpty);
     AddGet(TColumn, 'DefaultFont', TColumn_DefaultFont, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TColumn, 'DefaultImeMode', TColumn_DefaultImeMode, 0, [0], varEmpty);
     AddGet(TColumn, 'DefaultImeName', TColumn_DefaultImeName, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TColumn, 'DefaultReadOnly', TColumn_DefaultReadOnly, 0, [0], varEmpty);
     AddGet(TColumn, 'DefaultWidth', TColumn_DefaultWidth, 0, [0], varEmpty);
     AddGet(TColumn, 'RestoreDefaults', TColumn_RestoreDefaults, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TColumn, 'Grid', TColumn_Read_Grid, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TColumn, 'AssignedValues', TColumn_Read_AssignedValues, 0, [0], varEmpty);
     AddGet(TColumn, 'Field', TColumn_Read_Field, 0, [0], varEmpty);
     AddSet(TColumn, 'Field', TColumn_Write_Field, 0, [0]);
@@ -666,18 +666,18 @@ begin
     AddSet(TColumn, 'FieldName', TColumn_Write_FieldName, 0, [0]);
     AddGet(TColumn, 'Font', TColumn_Read_Font, 0, [0], varEmpty);
     AddSet(TColumn, 'Font', TColumn_Write_Font, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TColumn, 'ImeMode', TColumn_Read_ImeMode, 0, [0], varEmpty);
     AddSet(TColumn, 'ImeMode', TColumn_Write_ImeMode, 0, [0]);
     AddGet(TColumn, 'ImeName', TColumn_Read_ImeName, 0, [0], varEmpty);
     AddSet(TColumn, 'ImeName', TColumn_Write_ImeName, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TColumn, 'PickList', TColumn_Read_PickList, 0, [0], varEmpty);
     AddSet(TColumn, 'PickList', TColumn_Write_PickList, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TColumn, 'PopupMenu', TColumn_Read_PopupMenu, 0, [0], varEmpty);
     AddSet(TColumn, 'PopupMenu', TColumn_Write_PopupMenu, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TColumn, 'ReadOnly', TColumn_Read_ReadOnly, 0, [0], varEmpty);
     AddSet(TColumn, 'ReadOnly', TColumn_Write_ReadOnly, 0, [0]);
     AddGet(TColumn, 'Title', TColumn_Read_Title, 0, [0], varEmpty);
@@ -691,16 +691,16 @@ begin
     AddClass('DbGrids', TDBGridColumns, 'TDBGridColumns');
     AddGet(TDBGridColumns, 'Create', TDBGridColumns_Create, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TDBGridColumns, 'Add', TDBGridColumns_Add, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TDBGridColumns, 'LoadFromFile', TDBGridColumns_LoadFromFile, 1, [varEmpty], varEmpty);
     AddGet(TDBGridColumns, 'LoadFromStream', TDBGridColumns_LoadFromStream, 1, [varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TDBGridColumns, 'RestoreDefaults', TDBGridColumns_RestoreDefaults, 0, [0], varEmpty);
     AddGet(TDBGridColumns, 'RebuildColumns', TDBGridColumns_RebuildColumns, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TDBGridColumns, 'SaveToFile', TDBGridColumns_SaveToFile, 1, [varEmpty], varEmpty);
     AddGet(TDBGridColumns, 'SaveToStream', TDBGridColumns_SaveToStream, 1, [varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TDBGridColumns, 'State', TDBGridColumns_Read_State, 0, [0], varEmpty);
     AddSet(TDBGridColumns, 'State', TDBGridColumns_Write_State, 0, [0]);
     AddGet(TDBGridColumns, 'Grid', TDBGridColumns_Read_Grid, 0, [0], varEmpty);

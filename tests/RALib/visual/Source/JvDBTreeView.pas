@@ -26,9 +26,9 @@ description : db-aware TreeView
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 { history
  (JVCL Library versions) :
@@ -46,7 +46,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Dialogs, Graphics,
   CommCtrl, ComCtrls, ExtCtrls, Db, dbctrls
-  {$IFDEF Delphi6_Up}, Variants {$ENDIF}
+  {$IFDEF COMPILER6_UP}, Variants {$ENDIF}
   ;
 
 type
@@ -96,9 +96,9 @@ type
     procedure SetDataSource(Value: TDataSource);
    {### for property}
     procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
-   {$IFDEF Delphi4_Up}
+   {$IFDEF COMPILER4_UP}
     procedure SetMirror(Value: Boolean);
-   {$ENDIF Delphi4_Up}
+   {$ENDIF COMPILER4_UP}
   private
  {**** Drag'n'Drop ****}
     YY : integer;
@@ -158,9 +158,9 @@ type
     property PersistentNode : boolean read FPersistentNode write FPersistentNode;
     property SelectedIndex : integer read FSelectedIndex write FSelectedIndex default 1;
     property UseFilter: boolean read FUseFilter write FUseFilter;
-   {$IFDEF Delphi4_Up}
+   {$IFDEF COMPILER4_UP}
     property Mirror: Boolean read FMirror write SetMirror;
-   {$ENDIF Delphi4_Up}
+   {$ENDIF COMPILER4_UP}
 
     property Items;
   end;
@@ -184,7 +184,7 @@ type
     FMasterValue : variant;
   public
     procedure SetMasterValue(AValue : variant);
-    procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); {$IFNDEF Delphi2} override; {$ENDIF}
+    procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); {$IFNDEF COMPILER2} override; {$ENDIF}
     property MasterValue : variant read FMasterValue;
   end;
 
@@ -205,9 +205,9 @@ type
     property ShowLines;
     property ShowRoot;
     property ReadOnly;
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     property RightClickSelect;
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     property DragMode;
     property HideSelection;
     property Indent;
@@ -254,7 +254,7 @@ type
     property ShowHint;
     property Images;
     property StateImages;
-   {$IFDEF Delphi4_Up}
+   {$IFDEF COMPILER4_UP}
     property Anchors;
     property AutoExpand;
     property BiDiMode;
@@ -271,10 +271,10 @@ type
     property OnEndDock;
     property OnStartDock;
     property Mirror;
-   {$ENDIF Delphi4_Up}
+   {$ENDIF COMPILER4_UP}
   end;
 
-  ERADBTreeViewError = class(ETreeViewError);
+  EJvDBTreeViewError  = class(ETreeViewError);
 
 const
   DnDScrollArea : integer = 15;
@@ -284,7 +284,7 @@ implementation
 
 uses JvDBConst;
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 type
   LongWord = Longint;
 {$ENDIF}
@@ -310,7 +310,7 @@ begin
     Result := VarAsType(V, VarType);
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 procedure MirrorControl(Control: TWinControl; RightToLeft: Boolean);
 var
   OldLong: LongWord;
@@ -323,7 +323,7 @@ begin
    SetWindowLong(Control.Handle, GWL_EXSTYLE, OldLong and not $00400000);
   Control.Repaint;
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 {********************* TJvDBTreeViewDataLink *********************}
 
@@ -376,7 +376,7 @@ begin
     Free
   else
     inherited MoveTo(Destination, Mode);
- {$IFDEF Delphi2}
+ {$IFDEF COMPILER2}
   Destination.HasChildren := true;
  {$ENDIF}   
   TV.FPersistentNode := PersistNode;
@@ -414,7 +414,7 @@ end;
 procedure TCustomJvDBTreeView.CheckDataSet;
 begin
   if not ValidDataSet then
-    raise ERADBTreeViewError.Create(SDataSetNotActive);
+    raise EJvDBTreeViewError .Create(SDataSetNotActive);
 end;
 
 procedure TCustomJvDBTreeView.Warning(Message : string);
@@ -713,14 +713,14 @@ function TCustomJvDBTreeView.SelectNode(AMasterValue : variant) : TTreeNode;
     if Assigned(FGetDetailValue) then begin
       Result := FGetDetailValue(AMasterValue, DetailValue);
       if DetailValue = FStartMasterValue then
-        raise ERADBTreeViewError.Create('error value for DetailValue');
+        raise EJvDBTreeViewError .Create('error value for DetailValue');
     end else begin
       V := FDataLink.DataSet.Lookup(FMasterField, AMasterValue, FMasterField+';'+FDetailField);
       Result := ((VarType(V) and varArray) = varArray) and (V[1] <> null);
       if Result then begin
         DetailValue := V[1];
         if DetailValue = FStartMasterValue then
-          raise ERADBTreeViewError.Create('internal error');
+          raise EJvDBTreeViewError .Create('internal error');
       end;
     end;
   end;
@@ -1082,7 +1082,7 @@ begin
             else
               V := FStartMasterValue;
           naAddChild : V := Destination.FMasterValue;
-          else raise ERADBTreeViewError.Create(SMoveToModeError);
+          else raise EJvDBTreeViewError .Create(SMoveToModeError);
         end;
         FDataLink.DataSet[FDetailField] := V;
       end;
@@ -1195,14 +1195,14 @@ begin
   end;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 procedure TCustomJvDBTreeView.SetMirror(Value: Boolean);
 begin
   if Value and SysLocale.MiddleEast and not (csDesigning in ComponentState) then
     MirrorControl(Self, Value);
   FMirror := Value;
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 end.
 

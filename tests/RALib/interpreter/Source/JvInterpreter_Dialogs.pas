@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvInterpreter_Dialogs;
 
@@ -56,13 +56,13 @@ type
 
   { TCommonDialog }
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read Handle: HWnd }
 procedure TCommonDialog_Read_Handle(var Value: Variant; Args: TArgs);
 begin
   Value := Integer(TCommonDialog(Args.Obj).Handle);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {$IFDEF COMPLIB_VCL}
 { property Read Ctl3D: Boolean }
@@ -384,11 +384,11 @@ end;
 {  function Execute: Boolean; }
 procedure TPrinterSetupDialog_Execute(var Value: Variant; Args: TArgs);
 begin
- {$IFDEF Delphi3_Up}
+ {$IFDEF COMPILER3_UP}
   Value := TPrinterSetupDialog(Args.Obj).Execute;
  {$ELSE}
   TPrinterSetupDialog(Args.Obj).Execute;
- {$ENDIF Delphi3_Up}
+ {$ENDIF COMPILER3_UP}
 end;
 
   { TPrintDialog }
@@ -652,13 +652,13 @@ begin
 end;
 
 {$IFDEF COMPLIB_VCL}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { function MessageDlgPosHelp(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer; const HelpFileName: string): Integer; }
 procedure JvInterpreter_MessageDlgPosHelp(var Value: Variant; Args: TArgs);
 begin
   Value := MessageDlgPosHelp(Args.Values[0], Args.Values[1], TMsgDlgButtons(Word(V2S(Args.Values[2]))), Args.Values[3], Args.Values[4], Args.Values[5], Args.Values[6]);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 {$ENDIF COMPLIB_VCL}
 
 { procedure ShowMessage(const Msg: string); }
@@ -672,14 +672,14 @@ begin
 {$ENDIF COMPLIB_CLX}
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { procedure ShowMessageFmt(const Msg: string; Params: array of const); }
 procedure JvInterpreter_ShowMessageFmt(var Value: Variant; Args: TArgs);
 begin
   Args.OpenArray(1);
   ShowMessageFmt(Args.Values[0], Slice(Args.OA^, Args.OAS));
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { procedure ShowMessagePos(const Msg: string; X, Y: Integer); }
 procedure JvInterpreter_ShowMessagePos(var Value: Variant; Args: TArgs);
@@ -722,9 +722,9 @@ begin
   begin
    { TCommonDialog }
     AddClass('Dialogs', TCommonDialog, 'TCommonDialog');
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TCommonDialog, 'Handle', TCommonDialog_Read_Handle, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    {$IFDEF COMPLIB_VCL}
     AddGet(TCommonDialog, 'Ctl3D', TCommonDialog_Read_Ctl3D, 0, [0], varEmpty);
     AddSet(TCommonDialog, 'Ctl3D', TCommonDialog_Write_Ctl3D, 0, [0]);
@@ -942,10 +942,10 @@ begin
     AddConst('Dialogs', 'mbIgnore', Integer(mbIgnore));
    {$IFDEF COMPLIB_VCL}
     AddConst('Dialogs', 'mbAll', Integer(mbAll));
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddConst('Dialogs', 'mbNoToAll', Integer(mbNoToAll));
     AddConst('Dialogs', 'mbYesToAll', Integer(mbYesToAll));
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddConst('Dialogs', 'mbHelp', Integer(mbHelp));
    {$ENDIF COMPLIB_VCL}
     AddConst('Dialogs', 'mrNone', Integer(mrNone));
@@ -957,24 +957,24 @@ begin
     AddConst('Dialogs', 'mrYes', Integer(mrYes));
     AddConst('Dialogs', 'mrNo', Integer(mrNo));
     AddConst('Dialogs', 'mrAll', Integer(mrAll));
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddConst('Dialogs', 'mrNoToAll', Integer(mrNoToAll));
     AddConst('Dialogs', 'mrYesToAll', Integer(mrYesToAll));
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    {$IFDEF COMPLIB_VCL}
     AddFun('Dialogs', 'CreateMessageDialog', JvInterpreter_CreateMessageDialog, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
    {$ENDIF COMPLIB_VCL}
     AddFun('Dialogs', 'MessageDlg', JvInterpreter_MessageDlg, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
     AddFun('Dialogs', 'MessageDlgPos', JvInterpreter_MessageDlgPos, 6, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
    {$IFDEF COMPLIB_VCL}
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddFun('Dialogs', 'MessageDlgPosHelp', JvInterpreter_MessageDlgPosHelp, 7, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    {$ENDIF COMPLIB_VCL}
     AddFun('Dialogs', 'ShowMessage', JvInterpreter_ShowMessage, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddFun('Dialogs', 'ShowMessageFmt', JvInterpreter_ShowMessageFmt, 2, [varEmpty, varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddFun('Dialogs', 'ShowMessagePos', JvInterpreter_ShowMessagePos, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddFun('Dialogs', 'InputBox', JvInterpreter_InputBox, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddFun('Dialogs', 'InputQuery', JvInterpreter_InputQuery, 3, [varEmpty, varEmpty, varByRef], varEmpty);

@@ -1,2 +1,5 @@
 [Directories]
-UnitOutputDir=..\..\..\..\Lib6
+OutputDir=
+UnitOutputDir=dcu
+
+

@@ -25,9 +25,9 @@ description : db-aware routines
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvDBUtil;
 
@@ -36,13 +36,13 @@ interface
 uses
   Windows, Messages, Bde, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, DB, DBTables, DBCtrls
-  {$IFDEF Delphi6_Up}, Variants {$ENDIF}
+  {$IFDEF COMPILER6_UP}, Variants {$ENDIF}
   ;
 
 
 type
 
-  EScriptError = class(Exception)
+  EJvScriptError  = class(Exception)
     ErrPos : integer;
     constructor Create2(AMessage : string; AErrPos : integer);
   end;
@@ -116,7 +116,7 @@ type
   
 implementation
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 function AnsiStrIComp(S1, S2: PChar): Integer;
 begin
   Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE, S1, -1,
@@ -128,10 +128,10 @@ begin
   Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
     S1, MaxLen, S2, MaxLen) - 2;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 
-constructor EScriptError.Create2(AMessage : string; AErrPos : integer);
+constructor EJvScriptError .Create2(AMessage : string; AErrPos : integer);
 begin
   inherited Create(AMessage);
   ErrPos := AErrPos;
@@ -259,7 +259,7 @@ begin
         begin
           ErrPos := NBeg;
           //..
-          raise EScriptError.Create2(E.Message, ErrPos)
+          raise EJvScriptError .Create2(E.Message, ErrPos)
         end else
           raise;
       end;
@@ -340,9 +340,9 @@ begin
       fldFLOATIEEE: result := 'float IEEE';         { 80-bit IEEE float }
       fldVARBYTES: result := 'varbytes';            { Length prefixed var bytes }
       fldLOCKINFO: result := 'lockinfo';            { Look for LOCKINFO typedef }
-     {$IFDEF Delphi3_Up}
+     {$IFDEF COMPILER3_UP}
       fldCURSOR: result := 'Oracle cursor';         { For Oracle Cursor type }
-     {$ENDIF Delphi3_Up}
+     {$ENDIF COMPILER3_UP}
 
      { Paradox types (Physical) }
       fldPDXCHAR: result := 'alpha('+sUnits1+')';       { Alpha    (string) }
@@ -378,13 +378,13 @@ begin
       fldDBOLEBLOB: result := 'OLE BLOb';           { OLE object    (blob) }
       fldDBBINARY: result := 'Binary BLOb';         { Binary data   (blob) }
       fldDBBYTES: result := 'bytes';                { Only for TEMPORARY tables }
-     {$IFDEF Delphi3_Up}
+     {$IFDEF COMPILER3_UP}
       fldDBLONG: result := 'long integer';          { Long (Integer) }
       fldDBDATETIME: result := 'date time';         { Time Stamp }
       fldDBDOUBLE: result := 'double';              { Double }
 
       fldDBAUTOINC: result := 'aut increment';      { Auto increment (long) }
-     {$ENDIF Delphi3_Up}
+     {$ENDIF COMPILER3_UP}
 
      { InterBase types (Physical) }
       1026 : result := 'integer';

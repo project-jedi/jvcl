@@ -16,6 +16,7 @@ type
     pnlStatus: TPanel;
     Button3: TButton;
     Label3: TLabel;
+    Table1: TTable;
     procedure FormCreate(Sender: TObject);
     procedure Table1ActiveChanged(DataSet: TDataSet);
     procedure CheckBox2Click(Sender: TObject);
@@ -51,8 +52,8 @@ end;
 
 procedure TForm2.CheckBox2Click(Sender: TObject);
 begin
- // if TCheckBox(Sender).Checked then
-  if Sender.Checked then
+  if TCheckBox(Sender).Checked then
+//  if Sender.Checked then
     DataModule1.Table1.Open
   else
     DataModule1.Table1.Close

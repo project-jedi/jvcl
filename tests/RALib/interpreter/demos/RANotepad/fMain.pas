@@ -1,4 +1,4 @@
-{$INCLUDE JEDI.INC}
+{$INCLUDE JVCL.INC}
 
 unit fMain;
 
@@ -7,8 +7,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvRegAuto, ComCtrls, JvEditor, JvHLEditor, Menus,
-  ShellApi, JvInterpreter, {$IFDEF Delphi5_Up} ImgList, {$ENDIF} RAHLEdPropDlg
-  {$IFDEF Delphi6_Up}, Variants {$ENDIF}
+  ShellApi, JvInterpreter, {$IFDEF COMPILER5_UP} ImgList, {$ENDIF} JvHLEdPropDlg
+  {$IFDEF COMPILER6_UP}, Variants {$ENDIF}
   ;
 
 const
@@ -111,8 +111,8 @@ var
 
 implementation
 
-uses RAStrUtil, JvCtlConst,
-  RAUtils, JvInterpreter_JvUtils,
+uses JvStrUtil, JvCtlConst,
+  JvUtils, JvInterpreter_JvUtils,
   JvInterpreter_System, JvInterpreter_Windows, JvInterpreter_SysUtils,
   JvInterpreter_Graphics, JvInterpreter_Classes, JvInterpreter_Controls,
   JvInterpreter_StdCtrls, JvInterpreter_ComCtrls, JvInterpreter_ExtCtrls, JvInterpreter_Forms,
@@ -155,9 +155,9 @@ end;
 
 procedure TMain.OpenFile(AFileName: TFileName);
 begin
- {$IFDEF Delphi3_Up}
+ {$IFDEF COMPILER3_UP}
   AFileName := TargetFileName(AFileName);
- {$ENDIF Delphi3_Up}
+ {$ENDIF COMPILER3_UP}
   RAHLEditor1.BeginUpdate;
   try
     RAHLEditor1.Lines.LoadFromFile(AFileName);
@@ -298,7 +298,7 @@ begin
   Application.MessageBox('JVCL Notepad 2.0 Freeware'#13#13 +
     'Based on Delphi components TJvHLEditor and TJvInterpreterProgram.'#13 +
     'Available (free) at JVCL Library home page:'#13 +
-    '   http://ralib.hotbox.ru'#13#13 +
+    '   http://jvcl.sourceforge.net'#13#13 +
     'programming - Andrei Prygounkov:'#13 +
     '   a.prygounkov@gmx.de'#13,
     'About', MB_ICONINFORMATION);

@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvInterpreter_DbCtrls;
 
@@ -636,7 +636,7 @@ begin
   TDBNavigator(Args.Obj).VisibleButtons := TButtonSet(Word(V2S(Value)))
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read Flat: Boolean }
 procedure TDBNavigator_Read_Flat(var Value: Variant; Args: TArgs);
 begin
@@ -648,7 +648,7 @@ procedure TDBNavigator_Write_Flat(const Value: Variant; Args: TArgs);
 begin
   TDBNavigator(Args.Obj).Flat := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read Hints: TStrings }
 procedure TDBNavigator_Read_Hints(var Value: Variant; Args: TArgs);
@@ -682,13 +682,13 @@ begin
   Value := O2V(TDBLookupListBox.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read SelectedItem: string }
 procedure TDBLookupListBox_Read_SelectedItem(var Value: Variant; Args: TArgs);
 begin
   Value := TDBLookupListBox(Args.Obj).SelectedItem;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read BorderStyle: TBorderStyle }
 procedure TDBLookupListBox_Read_BorderStyle(var Value: Variant; Args: TArgs);
@@ -782,7 +782,7 @@ begin
   TDBLookupComboBox(Args.Obj).DropDownWidth := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   { TDBRichEdit }
 
 { constructor Create(AOwner: TComponent) }
@@ -850,7 +850,7 @@ procedure TDBRichEdit_Write_ReadOnly(const Value: Variant; Args: TArgs);
 begin
   TDBRichEdit(Args.Obj).ReadOnly := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
@@ -971,10 +971,10 @@ begin
     AddSet(TDBNavigator, 'DataSource', TDBNavigator_Write_DataSource, 0, [0]);
     AddGet(TDBNavigator, 'VisibleButtons', TDBNavigator_Read_VisibleButtons, 0, [0], varEmpty);
     AddSet(TDBNavigator, 'VisibleButtons', TDBNavigator_Write_VisibleButtons, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TDBNavigator, 'Flat', TDBNavigator_Read_Flat, 0, [0], varEmpty);
     AddSet(TDBNavigator, 'Flat', TDBNavigator_Write_Flat, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TDBNavigator, 'Hints', TDBNavigator_Read_Hints, 0, [0], varEmpty);
     AddSet(TDBNavigator, 'Hints', TDBNavigator_Write_Hints, 0, [0]);
     AddGet(TDBNavigator, 'ConfirmDelete', TDBNavigator_Read_ConfirmDelete, 0, [0], varEmpty);
@@ -982,9 +982,9 @@ begin
    { TDBLookupListBox }
     AddClass('DbCtrls', TDBLookupListBox, 'TDBLookupListBox');
     AddGet(TDBLookupListBox, 'Create', TDBLookupListBox_Create, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TDBLookupListBox, 'SelectedItem', TDBLookupListBox_Read_SelectedItem, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TDBLookupListBox, 'BorderStyle', TDBLookupListBox_Read_BorderStyle, 0, [0], varEmpty);
     AddSet(TDBLookupListBox, 'BorderStyle', TDBLookupListBox_Write_BorderStyle, 0, [0]);
     AddGet(TDBLookupListBox, 'RowCount', TDBLookupListBox_Read_RowCount, 0, [0], varEmpty);
@@ -1002,7 +1002,7 @@ begin
     AddSet(TDBLookupComboBox, 'DropDownRows', TDBLookupComboBox_Write_DropDownRows, 0, [0]);
     AddGet(TDBLookupComboBox, 'DropDownWidth', TDBLookupComboBox_Read_DropDownWidth, 0, [0], varEmpty);
     AddSet(TDBLookupComboBox, 'DropDownWidth', TDBLookupComboBox_Write_DropDownWidth, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    { TDBRichEdit }
     AddClass('DbCtrls', TDBRichEdit, 'TDBRichEdit');
     AddGet(TDBRichEdit, 'Create', TDBRichEdit_Create, 1, [varEmpty], varEmpty);
@@ -1016,11 +1016,11 @@ begin
     AddSet(TDBRichEdit, 'DataSource', TDBRichEdit_Write_DataSource, 0, [0]);
     AddGet(TDBRichEdit, 'ReadOnly', TDBRichEdit_Read_ReadOnly, 0, [0], varEmpty);
     AddSet(TDBRichEdit, 'ReadOnly', TDBRichEdit_Write_ReadOnly, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
   end;    { with }
   RegisterCLasses([TDBEdit, TDBText, TDBCheckBox, TDBComboBox, TDBListBox,
     TDBRadioGroup, TDBMemo, TDBImage, TDBNavigator, TDBLookupListBox,
-    TDBLookupComboBox {$IFDEF Delphi3_Up}, TDBRichEdit {$ENDIF Delphi3_Up}]);
+    TDBLookupComboBox {$IFDEF COMPILER3_UP}, TDBRichEdit {$ENDIF COMPILER3_UP}]);
 end;    { RegisterJvInterpreterAdapter }
 
 end.

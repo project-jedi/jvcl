@@ -26,9 +26,9 @@ description : scrollable panels
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 { History:
   1.20:
@@ -112,9 +112,9 @@ type
     procedure SetZOrder(TopMost: Boolean); override;
     function JvScrollMax : TJvScrollMax;
     procedure UpdateSize(ATop : integer);
-   {$IFDEF Delphi2}
+   {$IFDEF COMPILER2}
     procedure RequestAlign;
-   {$ENDIF Delphi2}
+   {$ENDIF COMPILER2}
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     function CollapsedHeight : integer;
     procedure ChangeScale(M, D: Integer); override;
@@ -158,10 +158,10 @@ type
     property OnDragOver;
     property OnEndDrag;
     property OnStartDrag; 
-   {$IFDEF Delphi4_Up}
+   {$IFDEF COMPILER4_UP}
     property BiDiMode;
     property ParentBiDiMode;
-   {$ENDIF Delphi4_Up}
+   {$ENDIF COMPILER4_UP}
   end;
 
   TJvScrollMaxBands = class(TCustomControl)
@@ -246,11 +246,11 @@ type
     procedure SetOneExpanded(const Value: boolean);
   protected
     procedure Loaded; override;
-   {$IFDEF Delphi2}
+   {$IFDEF COMPILER2}
     procedure GetChildren(Proc: TGetChildProc); override;
    {$ELSE}
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
-   {$ENDIF  Delphi2}
+   {$ENDIF  COMPILER2}
     function GetChildParent: TComponent; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Resize; override;
@@ -304,7 +304,7 @@ type
     property OnDragOver;
     property OnEndDrag;
     property OnStartDrag;
- {$IFDEF Delphi4_Up}
+ {$IFDEF COMPILER4_UP}
   public
     property DockManager;
   published
@@ -324,10 +324,10 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
- {$ENDIF Delphi4_Up}
+ {$ENDIF COMPILER4_UP}
   end;
 
-  ERAScrollMaxError = class(Exception);
+  EJvScrollMaxError  = class(Exception);
 
 var
   crRAHand : integer;
@@ -514,18 +514,18 @@ type
 
   TJvBandBtn = class(TJvNoFrameButton)
   private
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
   end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 procedure TJvBandBtn.CMDesignHitTest(var Message: TCMDesignHitTest);
 begin
   Message.Result := 1;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 procedure TJvBandBtn.CMFontChanged(var Message: TMessage);
 begin
@@ -565,9 +565,9 @@ begin
     NoBorder := false;
     ParentColor := true;
     {o}
-    {$IFDEF Delphi4_Up}
+    {$IFDEF COMPILER4_UP}
     FButton.ParentBiDiMode := True;
-    {$ENDIF Delphi4_Up}
+    {$ENDIF COMPILER4_UP}
   end;
   Expanded := true;
 end;
@@ -780,7 +780,7 @@ end;
 procedure TJvScrollMaxBand.SetParent(AParent: TWinControl);
 begin
   if not ((AParent is TJvScrollMaxBands) or (AParent = nil)) then
-    raise ERAScrollMaxError.Create('TJvScrollMaxBand can be putted only into TJvScrollMax component');
+    raise EJvScrollMaxError .Create('TJvScrollMaxBand can be putted only into TJvScrollMax component');
   inherited SetParent(AParent);
   if not (csLoading in ComponentState) then
   begin
@@ -847,12 +847,12 @@ begin
   FButton.Width := Width - FButton.Left * 2;
 end;
 
-{$IFDEF Delphi2}
+{$IFDEF COMPILER2}
 procedure TJvScrollMaxBand.RequestAlign;
 begin
   if Parent <> nil then Left := Left - 1;
 end;
-{$ENDIF Delphi2}
+{$ENDIF COMPILER2}
 
 procedure TJvScrollMaxBand.Paint;
 var
@@ -969,7 +969,7 @@ begin
      JvScrollMax.FOneExpanded then
     for i := 0 to ControlCount -1 do
       if not (Controls[i] is TJvScrollMaxBand) then
-        raise ERAScrollMaxError.Create('TJvScrollMax can contains only TJvScrollMaxBand components')
+        raise EJvScrollMaxError .Create('TJvScrollMax can contains only TJvScrollMaxBand components')
       else if Controls[i] <> AControl then
         (Controls[i] as TJvScrollMaxBand).Expanded := false;
   SPos := JvScrollMax.FScrollPos;
@@ -978,7 +978,7 @@ begin
     for i := 0 to ControlCount -1 do
     begin
       if not (Controls[i] is TJvScrollMaxBand) then
-        raise ERAScrollMaxError.Create('TJvScrollMax can contains only TJvScrollMaxBand components');
+        raise EJvScrollMaxError .Create('TJvScrollMax can contains only TJvScrollMaxBand components');
       if i > 0 then
         T := Controls[i - 1].BoundsRect.Bottom else
         T := -JvScrollMax.FScrollPos;
@@ -1068,9 +1068,9 @@ begin
     OnScroll := ScrollBarScroll;
     ParentColor := true;
     Visible := True;
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     DesignInteractive := true;
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
   end;
 end;
 
@@ -1233,7 +1233,7 @@ begin
 end;
 
 
-{$IFDEF Delphi2}
+{$IFDEF COMPILER2}
 procedure TJvScrollMax.GetChildren(Proc: TGetChildProc);
 begin
   pnlEdit.GetChildren(Proc);
@@ -1243,7 +1243,7 @@ procedure TJvScrollMax.GetChildren(Proc: TGetChildProc; Root: TComponent);
 begin
   pnlEdit.GetChildren(Proc, Root);
 end;
-{$ENDIF  Delphi2}
+{$ENDIF  COMPILER2}
 
 function TJvScrollMax.GetChildParent: TComponent;
 begin
@@ -1285,7 +1285,7 @@ begin
       Band := pnlEdit.Controls[i] as TJvScrollMaxBand;
       break;
     end;
-  if Band = nil then raise ERAScrollMaxError.CreateFmt('Control %s not a child of %s', [AControl.Name, Parent.Name]);
+  if Band = nil then raise EJvScrollMaxError .CreateFmt('Control %s not a child of %s', [AControl.Name, Parent.Name]);
   Band.Expanded := true;
   Rect := AControl.ClientRect;
   Dec(Rect.Top, BevelWidth + BorderWidth + 4);

@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvInterpreter_Forms;
 
@@ -42,7 +42,7 @@ implementation
 uses
   Classes,
 {$IFDEF COMPLIB_VCL}
-  Windows, SysUtils, Graphics, Controls, Menus, Forms {$IFDEF Delphi4_Up},ImgList{$ENDIF Delphi4_Up}, JvInterpreter_Windows
+  Windows, SysUtils, Graphics, Controls, Menus, Forms {$IFDEF COMPILER4_UP},ImgList{$ENDIF COMPILER4_UP}, JvInterpreter_Windows
 {$ENDIF COMPLIB_VCL}
 {$IFDEF COMPLIB_CLX}
   SysUtils, Variants, Qt, QGraphics, QControls, QMenus, QImgList, QForms, JvInterpreter_Types
@@ -150,7 +150,7 @@ begin
   Value := O2V(TScrollingWinControl.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure DisableAutoRange; }
 procedure TScrollingWinControl_DisableAutoRange(var Value: Variant; Args: TArgs);
 begin
@@ -162,7 +162,7 @@ procedure TScrollingWinControl_EnableAutoRange(var Value: Variant; Args: TArgs);
 begin
   TScrollingWinControl(Args.Obj).EnableAutoRange;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure ScrollInView(AControl: TControl); }
 procedure TScrollingWinControl_ScrollInView(var Value: Variant; Args: TArgs);
@@ -216,10 +216,10 @@ end;
 
   { TCustomForm }
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 type
   TCustomForm = TForm;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  function CloseQuery: Boolean; }
 procedure TCustomForm_CloseQuery(var Value: Variant; Args: TArgs);
@@ -356,7 +356,7 @@ begin
   TCustomForm(Args.Obj).DropTarget := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read HelpFile: string }
 procedure TCustomForm_Read_HelpFile(var Value: Variant; Args: TArgs);
 begin
@@ -368,7 +368,7 @@ procedure TCustomForm_Write_HelpFile(const Value: Variant; Args: TArgs);
 begin
   TCustomForm(Args.Obj).HelpFile := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read KeyPreview: Boolean }
 procedure TCustomForm_Read_KeyPreview(var Value: Variant; Args: TArgs);
@@ -500,13 +500,13 @@ begin
   Value := O2V(TScreen(Args.Obj).ActiveControl);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read ActiveCustomForm: TCustomForm }
 procedure TScreen_Read_ActiveCustomForm(var Value: Variant; Args: TArgs);
 begin
   Value := O2V(TScreen(Args.Obj).ActiveCustomForm);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read ActiveForm: TForm }
 procedure TScreen_Read_ActiveForm(var Value: Variant; Args: TArgs);
@@ -514,7 +514,7 @@ begin
   Value := O2V(TScreen(Args.Obj).ActiveForm);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read CustomFormCount: Integer }
 procedure TScreen_Read_CustomFormCount(var Value: Variant; Args: TArgs);
 begin
@@ -526,7 +526,7 @@ procedure TScreen_Read_CustomForms(var Value: Variant; Args: TArgs);
 begin
   Value := O2V(TScreen(Args.Obj).CustomForms[Args.Values[0]]);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read Cursor: TCursor }
 procedure TScreen_Read_Cursor(var Value: Variant; Args: TArgs);
@@ -570,7 +570,7 @@ begin
 end;
 
 {$IFDEF COMPLIB_VCL}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read IconFont: TFont }
 procedure TScreen_Read_IconFont(var Value: Variant; Args: TArgs);
 begin
@@ -582,7 +582,7 @@ procedure TScreen_Write_IconFont(const Value: Variant; Args: TArgs);
 begin
   TScreen(Args.Obj).IconFont := V2O(Value) as TFont;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 {$ENDIF COMPLIB_VCL}
 
 { property Read Fonts: TStrings }
@@ -604,7 +604,7 @@ begin
 end;
 
 {$IFDEF COMPLIB_VCL}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read Imes: TStrings }
 procedure TScreen_Read_Imes(var Value: Variant; Args: TArgs);
 begin
@@ -622,7 +622,7 @@ procedure TScreen_Read_DefaultKbLayout(var Value: Variant; Args: TArgs);
 begin
   Value := Integer(TScreen(Args.Obj).DefaultKbLayout);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 {$ENDIF COMPLIB_VCL}
 
 { property Read Height: Integer }
@@ -737,13 +737,13 @@ begin
 end;
 
 {$IFDEF COMPLIB_VCL}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure NormalizeAllTopMosts; }
 procedure TApplication_NormalizeAllTopMosts(var Value: Variant; Args: TArgs);
 begin
   TApplication(Args.Obj).NormalizeAllTopMosts;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 {$ENDIF COMPLIB_VCL}
 
 {  procedure NormalizeTopMosts; }
@@ -794,13 +794,13 @@ begin
   Value := TApplication(Args.Obj).Active;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read CurrentHelpFile: string }
 procedure TApplication_Read_CurrentHelpFile(var Value: Variant; Args: TArgs);
 begin
   Value := TApplication(Args.Obj).CurrentHelpFile;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {$IFDEF COMPLIB_VCL}
 { property Read DialogHandle: HWnd }
@@ -984,7 +984,7 @@ begin
   TApplication(Args.Obj).UpdateFormatSettings := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read UpdateMetricSettings: Boolean }
 procedure TApplication_Read_UpdateMetricSettings(var Value: Variant; Args: TArgs);
 begin
@@ -996,7 +996,7 @@ procedure TApplication_Write_UpdateMetricSettings(const Value: Variant; Args: TA
 begin
   TApplication(Args.Obj).UpdateMetricSettings := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 {$ENDIF COMPLIB_VCL}
 
 
@@ -1060,13 +1060,13 @@ begin
   Value := S2V(Byte(KeyDataToShiftState(Args.Values[0])));
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { function ForegroundTask: Boolean; }
 procedure JvInterpreter_ForegroundTask(var Value: Variant; Args: TArgs);
 begin
   Value := ForegroundTask;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 {$ENDIF COMPLIB_VCL}
 
 
@@ -1142,10 +1142,10 @@ begin
    { TScrollingWinControl }
     AddClass('Forms', TScrollingWinControl, 'TScrollingWinControl');
     AddGet(TScrollingWinControl, 'Create', TScrollingWinControl_Create, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TScrollingWinControl, 'DisableAutoRange', TScrollingWinControl_DisableAutoRange, 0, [0], varEmpty);
     AddGet(TScrollingWinControl, 'EnableAutoRange', TScrollingWinControl_EnableAutoRange, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TScrollingWinControl, 'ScrollInView', TScrollingWinControl_ScrollInView, 1, [varEmpty], varEmpty);
     AddGet(TScrollingWinControl, 'HorzScrollBar', TScrollingWinControl_Read_HorzScrollBar, 0, [0], varEmpty);
     AddSet(TScrollingWinControl, 'HorzScrollBar', TScrollingWinControl_Write_HorzScrollBar, 0, [0]);
@@ -1223,13 +1223,13 @@ begin
    {$IFDEF COMPLIB_VCL}
     AddConst('Forms', 'fsCreatedMDIChild', Integer(fsCreatedMDIChild));
    {$ENDIF COMPLIB_VCL}
-   {$IFDEF Delphi5_Up}
+   {$IFDEF COMPILER5_UP}
     AddConst('Forms', 'fsActivated', Integer(fsActivated));
-   {$ENDIF Delphi5_Up}
+   {$ENDIF COMPILER5_UP}
    { TCustomForm }
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddClass('Forms', TCustomForm, 'TCustomForm');
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TCustomForm, 'Close', TCustomForm_Close, 0, [0], varEmpty);
     AddGet(TCustomForm, 'CloseQuery', TCustomForm_CloseQuery, 0, [0], varEmpty);
     AddGet(TCustomForm, 'DefocusControl', TCustomForm_DefocusControl, 2, [varEmpty, varEmpty], varEmpty);
@@ -1259,10 +1259,10 @@ begin
     AddGet(TCustomForm, 'Canvas', TCustomForm_Read_Canvas, 0, [0], varEmpty);
     AddGet(TCustomForm, 'DropTarget', TCustomForm_Read_DropTarget, 0, [0], varEmpty);
     AddSet(TCustomForm, 'DropTarget', TCustomForm_Write_DropTarget, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TCustomForm, 'HelpFile', TCustomForm_Read_HelpFile, 0, [0], varEmpty);
     AddSet(TCustomForm, 'HelpFile', TCustomForm_Write_HelpFile, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TCustomForm, 'KeyPreview', TCustomForm_Read_KeyPreview, 0, [0], varEmpty);
     AddSet(TCustomForm, 'KeyPreview', TCustomForm_Write_KeyPreview, 0, [0]);
     AddGet(TCustomForm, 'Menu', TCustomForm_Read_Menu, 0, [0], varEmpty);
@@ -1298,14 +1298,14 @@ begin
     AddClass('Forms', TScreen, 'TScreen');
     AddGet(TScreen, 'Create', TScreen_Create, 1, [varEmpty], varEmpty);
     AddGet(TScreen, 'ActiveControl', TScreen_Read_ActiveControl, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TScreen, 'ActiveCustomForm', TScreen_Read_ActiveCustomForm, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TScreen, 'ActiveForm', TScreen_Read_ActiveForm, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TScreen, 'CustomFormCount', TScreen_Read_CustomFormCount, 0, [0], varEmpty);
     AddGet(TScreen, 'CustomForms', TScreen_Read_CustomForms, 1, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TScreen, 'Cursor', TScreen_Read_Cursor, 0, [0], varEmpty);
     AddSet(TScreen, 'Cursor', TScreen_Write_Cursor, 0, [0]);
     AddGet(TScreen, 'Cursors', TScreen_Read_Cursors, 1, [0], varEmpty);
@@ -1313,21 +1313,21 @@ begin
     AddGet(TScreen, 'DataModules', TScreen_Read_DataModules, 1, [0], varEmpty);
     AddGet(TScreen, 'DataModuleCount', TScreen_Read_DataModuleCount, 0, [0], varEmpty);
    {$IFDEF COMPLIB_VCL}
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TScreen, 'IconFont', TScreen_Read_IconFont, 0, [0], varEmpty);
     AddSet(TScreen, 'IconFont', TScreen_Write_IconFont, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    {$ENDIF COMPLIB_VCL}
     AddGet(TScreen, 'Fonts', TScreen_Read_Fonts, 0, [0], varEmpty);
     AddGet(TScreen, 'FormCount', TScreen_Read_FormCount, 0, [0], varEmpty);
     AddIGet(TScreen, 'Forms', TScreen_Read_Forms, 1, [0], varEmpty); // ivan_ra
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    {$IFDEF COMPLIB_VCL}
     AddGet(TScreen, 'Imes', TScreen_Read_Imes, 0, [0], varEmpty);
     AddGet(TScreen, 'DefaultIme', TScreen_Read_DefaultIme, 0, [0], varEmpty);
     AddGet(TScreen, 'DefaultKbLayout', TScreen_Read_DefaultKbLayout, 0, [0], varEmpty);
    {$ENDIF COMPLIB_VCL}
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TScreen, 'Height', TScreen_Read_Height, 0, [0], varEmpty);
     AddGet(TScreen, 'PixelsPerInch', TScreen_Read_PixelsPerInch, 0, [0], varEmpty);
     AddGet(TScreen, 'Width', TScreen_Read_Width, 0, [0], varEmpty);
@@ -1353,9 +1353,9 @@ begin
     AddGet(TApplication, 'MessageBox', TApplication_MessageBox, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TApplication, 'Minimize', TApplication_Minimize, 0, [0], varEmpty);
    {$IFDEF COMPLIB_VCL}
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TApplication, 'NormalizeAllTopMosts', TApplication_NormalizeAllTopMosts, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    {$ENDIF COMPLIB_VCL}
     AddGet(TApplication, 'NormalizeTopMosts', TApplication_NormalizeTopMosts, 0, [0], varEmpty);
     AddGet(TApplication, 'ProcessMessages', TApplication_ProcessMessages, 0, [0], varEmpty);
@@ -1365,9 +1365,9 @@ begin
     AddGet(TApplication, 'ShowException', TApplication_ShowException, 1, [varEmpty], varEmpty);
     AddGet(TApplication, 'Terminate', TApplication_Terminate, 0, [0], varEmpty);
     AddGet(TApplication, 'Active', TApplication_Read_Active, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TApplication, 'CurrentHelpFile', TApplication_Read_CurrentHelpFile, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    {$IFDEF COMPLIB_VCL}
     AddGet(TApplication, 'DialogHandle', TApplication_Read_DialogHandle, 0, [0], varEmpty);
     AddSet(TApplication, 'DialogHandle', TApplication_Write_DialogHandle, 0, [0]);
@@ -1400,10 +1400,10 @@ begin
    {$IFDEF COMPLIB_VCL}
     AddGet(TApplication, 'UpdateFormatSettings', TApplication_Read_UpdateFormatSettings, 0, [0], varEmpty);
     AddSet(TApplication, 'UpdateFormatSettings', TApplication_Write_UpdateFormatSettings, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TApplication, 'UpdateMetricSettings', TApplication_Read_UpdateMetricSettings, 0, [0], varEmpty);
     AddSet(TApplication, 'UpdateMetricSettings', TApplication_Write_UpdateMetricSettings, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    {$ENDIF COMPLIB_VCL}
 
     AddFun('Forms', 'Application', JvInterpreter_Application, 0, [0], varEmpty);
@@ -1419,9 +1419,9 @@ begin
    {$IFDEF COMPLIB_VCL}
     AddFun('Forms', 'KeysToShiftState', JvInterpreter_KeysToShiftState, 1, [varEmpty], varEmpty);
     AddFun('Forms', 'KeyDataToShiftState', JvInterpreter_KeyDataToShiftState, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddFun('Forms', 'ForegroundTask', JvInterpreter_ForegroundTask, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    {$ENDIF COMPLIB_VCL}
 
     AddHandler('Forms', 'TCloseEvent', TJvInterpreterFormsEvent, @TJvInterpreterFormsEvent.CloseEvent);

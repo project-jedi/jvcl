@@ -26,9 +26,9 @@ Description : 'Delphi IDE'-like Editor
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvaScrollText;
 
@@ -84,7 +84,7 @@ implementation
 
 uses JvStrUtil, JvDsgnIntf;
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 type
   longword = Integer;
 {$ENDIF}

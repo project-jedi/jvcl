@@ -30,9 +30,9 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvButtons;
 
@@ -44,10 +44,10 @@ uses
 
 type
 
- { VCL Buttons unit does not publish TButtonGlyph class,
+ { VCL Buttons unit does not publish TJvButtonGlyph  class,
    so we do it for other programers (Delphi 3 version) }
 
-  TButtonGlyph = class
+  TJvButtonGlyph  = class
   private
     FGlyphList: TImageList;
     FIndexs: array[TButtonState] of Integer;
@@ -55,12 +55,12 @@ type
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
     FColor : TColor;
-    {$IFDEF Delphi4_Up}
+    {$IFDEF COMPILER4_UP}
     FBiDiMode: TBiDiMode;{o}
     FParentBiDiMode: Boolean;
     procedure SetBiDiMode(Value : TBiDiMode);
     procedure SetParentBiDiMode(Value: Boolean);
-    {$ENDIF Delphi4_Up}
+    {$ENDIF COMPILER4_UP}
     procedure GlyphChanged(Sender: TObject);
     procedure SetGlyph(Value: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);
@@ -91,10 +91,10 @@ type
     function DrawExternal(AGlyph : TBitmap; ANumGlyphs : TNumGlyphs; AColor : TColor; IgnoreOld : boolean;
       Canvas: TCanvas; const Client: TRect; const Offset: TPoint; const Caption: string;
       Layout: TButtonLayout; Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean): TRect;
-    {$IFDEF Delphi4_Up}
+    {$IFDEF COMPILER4_UP}
     property BiDiMode: TBiDiMode read FBiDiMode write SetBiDiMode;
     property ParentBiDiMode: Boolean read FParentBiDiMode write SetParentBiDiMode;
-    {$ENDIF Delphi4_Up}
+    {$ENDIF COMPILER4_UP}
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property Color : TColor read FColor write SetColor;
@@ -103,7 +103,7 @@ type
 
   { TJvHTButtonGlyph }
 
-  TJvHTButtonGlyph = class(TButtonGlyph)
+  TJvHTButtonGlyph = class(TJvButtonGlyph )
   private
     procedure DrawButtonText(Canvas: TCanvas; const Caption: string;
       TextBounds: TRect; State: TButtonState); override;
@@ -116,7 +116,7 @@ type
 
   TJvaCaptionButton = class(TComponent)
   private
-    FGlyph : TButtonGlyph;
+    FGlyph : TJvButtonGlyph ;
     FCaption : string;
     FLayout : TButtonLayout;
     FSpacing : Integer;
@@ -189,7 +189,7 @@ type
   TJvaColorButton = class(TBitBtn)
   private
     FCanvas : TCanvas;
-    FGlyphDrawer : TButtonGlyph;
+    FGlyphDrawer : TJvButtonGlyph ;
     FOnPaint: TPaintButtonEvent;
     procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
   protected
@@ -210,7 +210,7 @@ type
 
   TJvNoFrameButton = class(TSpeedButton)
   private
-    FGlyphDrawer : TButtonGlyph;
+    FGlyphDrawer : TJvButtonGlyph ;
     FNoBorder : boolean;
     FOnPaint : TPaintButtonEvent;
     procedure SetNoBorder(Value : boolean);
@@ -256,7 +256,7 @@ end;
  *********************************************************************}
 type
 
-  TGlyphList = class(TImageList)
+  TJvGlyphList  = class(TImageList)
   private
     Used: TBits;
     FCount: Integer;
@@ -264,40 +264,40 @@ type
   public
     constructor CreateSize(AWidth, AHeight: Integer);
     destructor Destroy; override;
-    {$IFDEF Delphi2}
+    {$IFDEF COMPILER2}
     function Add(Image, Mask: TBitmap): Integer;
-    {$ENDIF Delphi2}
+    {$ENDIF COMPILER2}
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
     procedure Delete(Index: Integer);
     property Count: Integer read FCount;
   end;
 
-  TGlyphCache = class
+  TJvGlyphCache  = class
   private
     GlyphLists: TList;
   public
     constructor Create;
     destructor Destroy; override;
-    function GetList(AWidth, AHeight: Integer): TGlyphList;
-    procedure ReturnList(List: TGlyphList);
+    function GetList(AWidth, AHeight: Integer): TJvGlyphList ;
+    procedure ReturnList(List: TJvGlyphList );
     function Empty: Boolean;
   end;
 
- { TGlyphList }
+ { TJvGlyphList  }
 
-constructor TGlyphList.CreateSize(AWidth, AHeight: Integer);
+constructor TJvGlyphList .CreateSize(AWidth, AHeight: Integer);
 begin
   inherited CreateSize(AWidth, AHeight);
   Used := TBits.Create;
 end;
 
-destructor TGlyphList.Destroy;
+destructor TJvGlyphList .Destroy;
 begin
   Used.Free;
   inherited Destroy;
 end;
 
-function TGlyphList.AllocateIndex: Integer;
+function TJvGlyphList .AllocateIndex: Integer;
 begin
   Result := Used.OpenBit;
   if Result >= Used.Size then
@@ -308,23 +308,23 @@ begin
   Used[Result] := True;
 end;
 
-{$IFDEF Delphi2}
-function TGlyphList.Add(Image, Mask: TBitmap): Integer;
+{$IFDEF COMPILER2}
+function TJvGlyphList .Add(Image, Mask: TBitmap): Integer;
 begin
   Result := AllocateIndex;
   Replace(Result, Image, Mask);
   Inc(FCount);
 end;
-{$ENDIF Delphi2}
+{$ENDIF COMPILER2}
 
-function TGlyphList.AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
+function TJvGlyphList .AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
 begin
   Result := AllocateIndex;
   ReplaceMasked(Result, Image, MaskColor);
   Inc(FCount);
 end;
 
-procedure TGlyphList.Delete(Index: Integer);
+procedure TJvGlyphList .Delete(Index: Integer);
 begin
   if Used[Index] then
   begin
@@ -333,21 +333,21 @@ begin
   end;
 end;
 
-{ TGlyphCache }
+{ TJvGlyphCache  }
 
-constructor TGlyphCache.Create;
+constructor TJvGlyphCache .Create;
 begin
   inherited Create;
   GlyphLists := TList.Create;
 end;
 
-destructor TGlyphCache.Destroy;
+destructor TJvGlyphCache .Destroy;
 begin
   GlyphLists.Free;
   inherited Destroy;
 end;
 
-function TGlyphCache.GetList(AWidth, AHeight: Integer): TGlyphList;
+function TJvGlyphCache .GetList(AWidth, AHeight: Integer): TJvGlyphList ;
 var
   I: Integer;
 begin
@@ -357,11 +357,11 @@ begin
     with Result do
       if (AWidth = Width) and (AHeight = Height) then Exit;
   end;
-  Result := TGlyphList.CreateSize(AWidth, AHeight);
+  Result := TJvGlyphList .CreateSize(AWidth, AHeight);
   GlyphLists.Add(Result);
 end;
 
-procedure TGlyphCache.ReturnList(List: TGlyphList);
+procedure TJvGlyphCache .ReturnList(List: TJvGlyphList );
 begin
   if List = nil then Exit;
   if List.Count = 0 then
@@ -371,13 +371,13 @@ begin
   end;
 end;
 
-function TGlyphCache.Empty: Boolean;
+function TJvGlyphCache .Empty: Boolean;
 begin
   Result := GlyphLists.Count = 0;
 end;
 
 var
-  GlyphCache: TGlyphCache = nil;
+  GlyphCache: TJvGlyphCache  = nil;
   Pattern: TBitmap = nil;
 
 procedure CreateBrushPattern(FaceColor, HighLightColor : TColor);
@@ -400,9 +400,9 @@ begin
 end;
 
 
-{ TButtonGlyph }
+{ TJvButtonGlyph  }
 
-constructor TButtonGlyph.Create;
+constructor TJvButtonGlyph .Create;
 var
   I: TButtonState;
 begin
@@ -413,10 +413,10 @@ begin
   FNumGlyphs := 1;
   for I := Low(I) to High(I) do
     FIndexs[I] := -1;
-  if GlyphCache = nil then GlyphCache := TGlyphCache.Create;
+  if GlyphCache = nil then GlyphCache := TJvGlyphCache .Create;
 end;
 
-destructor TButtonGlyph.Destroy;
+destructor TJvButtonGlyph .Destroy;
 begin
   FOriginal.Free;
   Invalidate;
@@ -428,20 +428,20 @@ begin
   inherited Destroy;
 end;
 
-procedure TButtonGlyph.Invalidate;
+procedure TJvButtonGlyph .Invalidate;
 var
   I: TButtonState;
 begin
   for I := Low(I) to High(I) do
   begin
-    if FIndexs[I] <> -1 then TGlyphList(FGlyphList).Delete(FIndexs[I]);
+    if FIndexs[I] <> -1 then TJvGlyphList (FGlyphList).Delete(FIndexs[I]);
     FIndexs[I] := -1;
   end;
-  GlyphCache.ReturnList(TGlyphList(FGlyphList));
+  GlyphCache.ReturnList(TJvGlyphList (FGlyphList));
   FGlyphList := nil;
 end;
 
-procedure TButtonGlyph.GlyphChanged(Sender: TObject);
+procedure TJvButtonGlyph .GlyphChanged(Sender: TObject);
 begin
   if Sender = FOriginal then
   begin
@@ -452,8 +452,8 @@ begin
 end;
 
 {O}
-{$IFDEF Delphi4_Up}
-procedure TButtonGlyph.SetBiDiMode(Value : TBiDiMode);
+{$IFDEF COMPILER4_UP}
+procedure TJvButtonGlyph .SetBiDiMode(Value : TBiDiMode);
 begin
   if FBiDiMode <> Value then
   begin
@@ -463,7 +463,7 @@ begin
   end;
 end;
 
-procedure TButtonGlyph.SetParentBiDiMode(Value: Boolean);
+procedure TJvButtonGlyph .SetParentBiDiMode(Value: Boolean);
 begin
   if FParentBiDiMode <> Value then
   begin
@@ -471,9 +471,9 @@ begin
     Invalidate;
   end;
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
-procedure TButtonGlyph.SetGlyph(Value: TBitmap);
+procedure TJvButtonGlyph .SetGlyph(Value: TBitmap);
 var
   Glyphs: Integer;
 begin
@@ -491,7 +491,7 @@ begin
   end;
 end;
 
-procedure TButtonGlyph.SetNumGlyphs(Value: TNumGlyphs);
+procedure TJvButtonGlyph .SetNumGlyphs(Value: TNumGlyphs);
 begin
   if (Value <> FNumGlyphs) and (Value > 0) then
   begin
@@ -501,7 +501,7 @@ begin
   end;
 end;
 
-procedure TButtonGlyph.SetColor(Value : TColor);
+procedure TJvButtonGlyph .SetColor(Value : TColor);
 begin
   if FColor <> Value then
   begin
@@ -510,8 +510,8 @@ begin
   end;
 end;
 
-{$IFDEF Delphi2}
-function TButtonGlyph.CreateButtonGlyph(State: TButtonState): Integer;
+{$IFDEF COMPILER2}
+function TJvButtonGlyph .CreateButtonGlyph(State: TButtonState): Integer;
 const
   ROP_DSPDxax = $00E20746;
 var
@@ -529,7 +529,7 @@ begin
   IHeight := FOriginal.Height;
   if FGlyphList = nil then
   begin
-    if GlyphCache = nil then GlyphCache := TGlyphCache.Create;
+    if GlyphCache = nil then GlyphCache := TJvGlyphCache .Create;
     FGlyphList := GlyphCache.GetList(IWidth, IHeight);
   end;
   TmpImage := TBitmap.Create;
@@ -545,12 +545,12 @@ begin
       bsUp, bsDown:
         begin
           TmpImage.Canvas.BrushCopy(IRect, FOriginal, ORect, FTransparentColor);
-          FIndexs[State] := TGlyphList(FGlyphList).Add(TmpImage, nil);
+          FIndexs[State] := TJvGlyphList (FGlyphList).Add(TmpImage, nil);
         end;
       bsExclusive:
         begin
           TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
-          FIndexs[State] := TGlyphList(FGlyphList).AddMasked(TmpImage, FTransparentColor);
+          FIndexs[State] := TJvGlyphList (FGlyphList).AddMasked(TmpImage, FTransparentColor);
         end;
       bsDisabled:
         begin
@@ -626,7 +626,7 @@ begin
                   MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
               end;
             end;
-            FIndexs[State] := TGlyphList(FGlyphList).Add(TmpImage, nil);
+            FIndexs[State] := TJvGlyphList (FGlyphList).Add(TmpImage, nil);
           finally
             MonoBmp.Free;
           end;
@@ -638,10 +638,10 @@ begin
   Result := FIndexs[State];
   FOriginal.Dormant;
 end;
-{$ENDIF Delphi2}
+{$ENDIF COMPILER2}
 
-{$IFDEF Delphi3_Up}
-function TButtonGlyph.CreateButtonGlyph(State: TButtonState): Integer;
+{$IFDEF COMPILER3_UP}
+function TJvButtonGlyph .CreateButtonGlyph(State: TButtonState): Integer;
 const
   ROP_DSPDxax = $00E20746;
 var
@@ -659,7 +659,7 @@ begin
   IHeight := FOriginal.Height;
   if FGlyphList = nil then
   begin
-    if GlyphCache = nil then GlyphCache := TGlyphCache.Create;
+    if GlyphCache = nil then GlyphCache := TJvGlyphCache .Create;
     FGlyphList := GlyphCache.GetList(IWidth, IHeight);
   end;
   TmpImage := TBitmap.Create;
@@ -668,9 +668,9 @@ begin
     TmpImage.Height := IHeight;
     IRect := Rect(0, 0, IWidth, IHeight);
     TmpImage.Canvas.Brush.Color := Color{clBtnFace};
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     TmpImage.Palette := CopyPalette(FOriginal.Palette);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     I := State;
     if Ord(I) >= NumGlyphs then I := bsUp;
     ORect := Rect(Ord(I) * IWidth, 0, (Ord(I) + 1) * IWidth, IHeight);
@@ -679,14 +679,14 @@ begin
       bsExclusive:
         begin
           TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
-         {$IFDEF Delphi2}
+         {$IFDEF COMPILER2}
           FIndexs[State] := FGlyphList.AddMasked(TmpImage, FTransparentColor);
          {$ELSE}
           if FOriginal.TransparentMode = tmFixed then
-            FIndexs[State] := TGlyphList(FGlyphList).AddMasked(TmpImage, FTransparentColor)
+            FIndexs[State] := TJvGlyphList (FGlyphList).AddMasked(TmpImage, FTransparentColor)
           else
-            FIndexs[State] := TGlyphList(FGlyphList).AddMasked(TmpImage, clDefault);
-          {$ENDIF Delphi2}
+            FIndexs[State] := TJvGlyphList (FGlyphList).AddMasked(TmpImage, clDefault);
+          {$ENDIF COMPILER2}
         end;
       bsDisabled:
         begin
@@ -696,9 +696,9 @@ begin
             MonoBmp := TBitmap.Create;
             DDB := TBitmap.Create;
             DDB.Assign(FOriginal);
-           {$IFDEF Delphi3_Up}
+           {$IFDEF COMPILER3_UP}
             DDB.HandleType := bmDDB;
-           {$ENDIF Delphi3_Up}
+           {$ENDIF COMPILER3_UP}
             if NumGlyphs > 1 then
             with TmpImage.Canvas do
             begin    { Change white & gray to clBtnHighlight and clBtnShadow }
@@ -743,9 +743,9 @@ begin
               with MonoBmp do
               begin
                 Assign(FOriginal);
-               {$IFDEF Delphi3_Up}
+               {$IFDEF COMPILER3_UP}
                 HandleType := bmDDB;
-               {$ENDIF Delphi3_Up}
+               {$ENDIF COMPILER3_UP}
                 Canvas.Brush.Color := clBlack;
                 Width := IWidth;
                 if Monochrome then
@@ -776,7 +776,7 @@ begin
             DDB.Free;
             MonoBmp.Free;
           end;
-          FIndexs[State] := TGlyphList(FGlyphList).AddMasked(TmpImage, clDefault);
+          FIndexs[State] := TJvGlyphList (FGlyphList).AddMasked(TmpImage, clDefault);
         end;
     end;
   finally
@@ -785,9 +785,9 @@ begin
   Result := FIndexs[State];
   FOriginal.Dormant;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
-procedure TButtonGlyph.DrawButtonGlyph(Canvas: TCanvas; const GlyphPos: TPoint;
+procedure TJvButtonGlyph .DrawButtonGlyph(Canvas: TCanvas; const GlyphPos: TPoint;
   State: TButtonState; Transparent: Boolean);
 var
   Index: Integer;
@@ -804,17 +804,17 @@ begin
         ColorToRGB(Color{clBtnFace}), clNone, ILD_Normal);
 end;
 
-procedure TButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
+procedure TJvButtonGlyph .DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TButtonState);
 var
   flags: LongInt;
 begin
   flags := 0;
   {O}
-  {$IFDEF Delphi4_Up}
+  {$IFDEF COMPILER4_UP}
   if FBiDiMode <> bdLeftToRight then
     flags := DT_RTLREADING;
-  {$ENDIF Delphi4_Up}
+  {$ENDIF COMPILER4_UP}
   with Canvas do
   begin
     Brush.Style := bsClear;
@@ -832,7 +832,7 @@ begin
   end;
 end;
 
-procedure TButtonGlyph.CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
+procedure TJvButtonGlyph .CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
   const Offset: TPoint; const Caption: string; Layout: TButtonLayout; Margin,
   Spacing: Integer; var GlyphPos: TPoint; var TextBounds: TRect);
 var
@@ -946,7 +946,7 @@ begin
     TextPos.Y + Client.Top + Offset.X);
 end;
 
-function TButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
+function TJvButtonGlyph .Draw(Canvas: TCanvas; const Client: TRect;
   const Offset: TPoint; const Caption: string; Layout: TButtonLayout;
   Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean): TRect;
 var
@@ -961,7 +961,7 @@ end;
  #########################  VCL Buttons unit  ########################
  #####################################################################}
 
-function TButtonGlyph.DrawExternal(AGlyph : TBitmap; ANumGlyphs : TNumGlyphs; AColor : TColor; IgnoreOld : boolean;
+function TJvButtonGlyph .DrawExternal(AGlyph : TBitmap; ANumGlyphs : TNumGlyphs; AColor : TColor; IgnoreOld : boolean;
   Canvas: TCanvas; const Client: TRect; const Offset: TPoint; const Caption: string;
   Layout: TButtonLayout; Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean): TRect;
 var
@@ -988,7 +988,7 @@ begin
   end;
 end;
 
-procedure TButtonGlyph.CalcTextRect(Canvas: TCanvas; var TextRect: TRect;
+procedure TJvButtonGlyph .CalcTextRect(Canvas: TCanvas; var TextRect: TRect;
   Caption: string);
 begin
   TextRect := Rect(0, 0, TextRect.Right - TextRect.Left, 0);
@@ -1046,8 +1046,8 @@ begin
   if not (AOwner is TForm) then raise Exception.Create('RACaptionButton owner must be a TForm');
   inherited Create(AOwner);
 
-  FGlyph := TButtonGlyph.Create;
-  TButtonGlyph(FGlyph).OnChange := GlyphChanged;
+  FGlyph := TJvButtonGlyph .Create;
+  TJvButtonGlyph (FGlyph).OnChange := GlyphChanged;
   FFont := TFont.Create;
   FFont.OnChange := FontChanged;
   FBPos := FindButtonPos;
@@ -1065,7 +1065,7 @@ begin
   WHook.Free;
   if Owner <> nil then
     RedrawWindow((Owner as TForm).Handle, PRect(0), 0, RDW_FRAME or RDW_NOINTERNALPAINT or RDW_INVALIDATE);
-  TButtonGlyph(FGlyph).Free;
+  TJvButtonGlyph (FGlyph).Free;
   FFont.Free;
   inherited Destroy;
 end;
@@ -1209,10 +1209,10 @@ begin
     if FPress then OffsetRect(R, 1, 1);
 
     if FPress then
-      TButtonGlyph(FGlyph).Draw(Canvas, R, Point(0, 0),
+      TJvButtonGlyph (FGlyph).Draw(Canvas, R, Point(0, 0),
         FCaption, FLayout, FMargin, FSpacing, bsDown, true)
     else
-      TButtonGlyph(FGlyph).Draw(Canvas, R, Point(0, 0),
+      TJvButtonGlyph (FGlyph).Draw(Canvas, R, Point(0, 0),
         FCaption, FLayout, FMargin, FSpacing, bsUp, true);
   finally
     Canvas.Handle := 0;
@@ -1360,27 +1360,27 @@ end;
 
 function TJvaCaptionButton.GetGlyph: TBitmap;
 begin
-  Result := TButtonGlyph(FGlyph).Glyph;
+  Result := TJvButtonGlyph (FGlyph).Glyph;
 end;
 
 procedure TJvaCaptionButton.SetGlyph(Value: TBitmap);
 begin
-  TButtonGlyph(FGlyph).Glyph := Value;
+  TJvButtonGlyph (FGlyph).Glyph := Value;
   Changed;
 end;
 
 function TJvaCaptionButton.GetNumGlyphs: TNumGlyphs;
 begin
-  Result := TButtonGlyph(FGlyph).NumGlyphs;
+  Result := TJvButtonGlyph (FGlyph).NumGlyphs;
 end;
 
 procedure TJvaCaptionButton.SetNumGlyphs(Value: TNumGlyphs);
 begin
   if Value < 0 then Value := 1
   else if Value > 4 then Value := 4;
-  if Value <> TButtonGlyph(FGlyph).NumGlyphs then
+  if Value <> TJvButtonGlyph (FGlyph).NumGlyphs then
   begin
-    TButtonGlyph(FGlyph).NumGlyphs := Value;
+    TJvButtonGlyph (FGlyph).NumGlyphs := Value;
     Changed;
   end;
 end;
@@ -1445,7 +1445,7 @@ end;
 
 constructor TJvaColorButton.Create(AOwner: TComponent);
 begin
-  FGlyphDrawer := TButtonGlyph.Create;
+  FGlyphDrawer := TJvButtonGlyph .Create;
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -1567,7 +1567,7 @@ end;
 
 constructor TJvNoFrameButton.Create(AOwner: TComponent);
 begin
-  FGlyphDrawer := TButtonGlyph.Create;
+  FGlyphDrawer := TJvButtonGlyph .Create;
   inherited Create(AOwner);
   FNoBorder := true;
 end;
@@ -1604,7 +1604,7 @@ var
   PaintRect: TRect;
   Offset: TPoint;
 begin
-  if {$IFNDEF Delphi2} Flat and {$ENDIF} not NoBorder then
+  if {$IFNDEF COMPILER2} Flat and {$ENDIF} not NoBorder then
     inherited Paint
   else
   begin
@@ -1612,13 +1612,13 @@ begin
     PaintRect := Rect(0, 0, Width, Height);
     if not NoBorder then
     begin
-     {$IFDEF Delphi4_Up}
+     {$IFDEF COMPILER4_UP}
       DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
         FillStyles[Transparent] or BF_RECT);
      {$ELSE}
       DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
         FillStyles[true{Transparent}] or BF_RECT);
-     {$ENDIF Delphi4_Up}
+     {$ENDIF COMPILER4_UP}
       InflateRect(PaintRect, -1, -1);
     end;
     Canvas.Brush.Style := bsSolid;
@@ -1646,9 +1646,9 @@ begin
       Offset.Y := 0;
     end;
     {O}
-    {$IFDEF Delphi4_Up}
+    {$IFDEF COMPILER4_UP}
     FGlyphDrawer.BiDiMode := BiDiMode;
-    {$ENDIF Delphi4_Up}
+    {$ENDIF COMPILER4_UP}
     FGlyphDrawer.DrawExternal(Glyph, NumGlyphs, Color, true, Canvas, PaintRect, Offset, Caption, Layout, Margin,
       Spacing, FState, false{true});
   end;

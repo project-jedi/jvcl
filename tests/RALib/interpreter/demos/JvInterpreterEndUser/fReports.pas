@@ -1,17 +1,17 @@
-{$INCLUDE JEDI.INC}
+{$INCLUDE JVCL.INC}
 unit fReports;
 
 interface
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, RAHtControls, Buttons, JvButtons, JvRegAuto, JvInterpreter, JvInterpreterFm,
-  QuickRpt {$IFDEF Delphi6_Up}, Variants {$ENDIF};
+  StdCtrls, JvHtControls, Buttons, JvButtons, JvRegAuto, JvInterpreter, JvInterpreterFm,
+  QuickRpt {$IFDEF COMPILER6_UP}, Variants {$ENDIF};
 {$ELSE}
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, RAHtControls, Buttons, JvButtons, JvRegAuto, JvInterpreter, JvInterpreterFm,
+  StdCtrls, JvHtControls, Buttons, JvButtons, JvRegAuto, JvInterpreter, JvInterpreterFm,
   QuickRep;
 {$ENDIF}
 
@@ -38,7 +38,7 @@ type
 
 implementation
 
-uses RAUtils, JvInterpreter_all, JvInterpreter_Quickrpt;
+uses JvUtils, JvInterpreter_all, JvInterpreter_Quickrpt;
 
 {$R *.DFM}
 

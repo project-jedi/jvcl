@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 
 unit JvInterpreter_SysUtils;
@@ -208,7 +208,7 @@ begin
   Value := P2V(AllocMem(Args.Values[0]));
 end;
 
-{$IFNDEF Delphi6_Up}
+{$IFNDEF COMPILER6_UP}
 { function NewStr(const S: string): PString; }
 procedure JvInterpreter_NewStr(var Value: Variant; Args: TArgs);
 begin
@@ -232,7 +232,7 @@ procedure JvInterpreter_AppendStr(var Value: Variant; Args: TArgs);
 begin
   AppendStr(string(TVarData(Args.Values[0]).vString), Args.Values[1]);
 end;
-{$ENDIF Delphi6_Up} // {$IFNDEF Delphi6_Up}
+{$ENDIF COMPILER6_UP} // {$IFNDEF COMPILER6_UP}
 
 { function UpperCase(const S: string): string; }
 procedure JvInterpreter_UpperCase(var Value: Variant; Args: TArgs);
@@ -252,13 +252,13 @@ begin
   Value := CompareStr(Args.Values[0], Args.Values[1]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; }
 procedure JvInterpreter_CompareMem(var Value: Variant; Args: TArgs);
 begin
   Value := CompareMem(V2P(Args.Values[0]), V2P(Args.Values[1]), Args.Values[2]);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { function CompareText(const S1, S2: string): Integer; }
 procedure JvInterpreter_CompareText(var Value: Variant; Args: TArgs);
@@ -290,7 +290,7 @@ begin
   Value := AnsiCompareText(Args.Values[0], Args.Values[1]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { function AnsiStrComp(S1, S2: PChar): Integer; }
 procedure JvInterpreter_AnsiStrComp(var Value: Variant; Args: TArgs);
 begin
@@ -338,7 +338,7 @@ procedure JvInterpreter_AnsiStrLastChar(var Value: Variant; Args: TArgs);
 begin
   Value := string(AnsiStrLastChar(PChar(string(Args.Values[0]))));
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { function Trim(const S: string): string; }
 procedure JvInterpreter_Trim(var Value: Variant; Args: TArgs);
@@ -364,7 +364,7 @@ begin
   Value := QuotedStr(Args.Values[0]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { function AnsiQuotedStr(const S: string; Quote: Char): string; }
 procedure JvInterpreter_AnsiQuotedStr(var Value: Variant; Args: TArgs);
 begin
@@ -376,7 +376,7 @@ procedure JvInterpreter_AnsiExtractQuotedStr(var Value: Variant; Args: TArgs);
 begin
   Value := AnsiExtractQuotedStr(PChar(TVarData(Args.Values[0]).vPointer), string(Args.Values[1])[1]);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { function AdjustLineBreaks(const S: string): string; }
 procedure JvInterpreter_AdjustLineBreaks(var Value: Variant; Args: TArgs);
@@ -592,13 +592,13 @@ begin
   Value := ExpandUNCFileName(Args.Values[0]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { function ExtractRelativePath(const BaseName, DestName: string): string; }
 procedure JvInterpreter_ExtractRelativePath(var Value: Variant; Args: TArgs);
 begin
   Value := ExtractRelativePath(Args.Values[0], Args.Values[1]);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { function FileSearch(const Name, DirList: string): string; }
 procedure JvInterpreter_FileSearch(var Value: Variant; Args: TArgs);
@@ -802,37 +802,58 @@ end;
 
 { function Format(const Format: string; const Args: array of const): string; }
 procedure JvInterpreter_Format(var Value: Variant; Args: TArgs);
+ function FormatWorkaround(const MyFormat: string; const Args: array of const):string;
+  begin
+     result := Format(MyFormat, Args);
+  end;
 begin
   Args.OpenArray(1);
-  Value := Format(Args.Values[0], Slice(Args.OA^, Args.OAS));
+  Value := FormatWorkaround(Args.Values[0], Slice(Args.OA^, Args.OAS));
 end;
 
 { procedure FmtStr(var Result: string; const Format: string; const Args: array of const); }
 procedure JvInterpreter_FmtStr(var Value: Variant; Args: TArgs);
+ procedure FmtStrWorkaround(var Result: string; const Format: string; const Args: array of const);
+  begin
+     FmtStr(Result, Format, Args);
+  end;
 begin
   Args.OpenArray(2);
-  FmtStr(string(TVarData(Args.Values[0]).vString), Args.Values[1], Slice(Args.OA^, Args.OAS));
+  FmtStrWorkaround(string(TVarData(Args.Values[0]).vString), Args.Values[1], Slice(Args.OA^, Args.OAS));
 end;
 
 { function StrFmt(Buffer, Format: PChar; const Args: array of const): PChar; }
 procedure JvInterpreter_StrFmt(var Value: Variant; Args: TArgs);
+ function StrFmtWorkaround(Buffer, Format: PChar; const Args: array of const): PChar;
+  begin
+     result := StrFmt(Buffer,Format, Args);
+  end;
 begin
   Args.OpenArray(2);
-  Value := string(StrFmt(PChar(string(Args.Values[0])), PChar(string(Args.Values[1])), Slice(Args.OA^, Args.OAS)));
+  Value := string(StrFmtWorkaround(PChar(string(Args.Values[0])), PChar(string(Args.Values[1])), Slice(Args.OA^, Args.OAS)));
 end;
 
 { function StrLFmt(Buffer: PChar; MaxLen: Cardinal; Format: PChar; const Args: array of const): PChar; }
 procedure JvInterpreter_StrLFmt(var Value: Variant; Args: TArgs);
+ function StrLFmtWorkaround(Buffer: PChar; MaxLen: Cardinal; Format: PChar; const Args: array of const): PChar;
+  begin
+     result :=  StrLFmt(Buffer,MaxLen, Format, Args);
+  end;
+
 begin
   Args.OpenArray(3);
-  Value := string(StrLFmt(PChar(string(Args.Values[0])), Args.Values[1], PChar(string(Args.Values[2])), Slice(Args.OA^, Args.OAS)));
+  Value := string(StrLFmtWorkaround(PChar(string(Args.Values[0])), Args.Values[1], PChar(string(Args.Values[2])), Slice(Args.OA^, Args.OAS)));
 end;
 
 { function FormatBuf(var Buffer; BufLen: Cardinal; const Format; FmtLen: Cardinal; const Args: array of const): Cardinal; }
 procedure JvInterpreter_FormatBuf(var Value: Variant; Args: TArgs);
+ function FormatBufWorkaround(var Buffer; BufLen: Cardinal; const Format; FmtLen: Cardinal; const Args: array of const): Cardinal;
+  begin
+     result :=  FormatBuf(Buffer,BufLen, Format, FmtLen, Args);
+  end;
 begin
   Args.OpenArray(4);
-  Value := Integer(FormatBuf(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3], Slice(Args.OA^, Args.OAS)));
+  Value := Integer(FormatBufWorkaround(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3], Slice(Args.OA^, Args.OAS)));
 end;
 
 { function FloatToStr(Value: Extended): string; }
@@ -1002,7 +1023,7 @@ begin
   Value := Now;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { function IncMonth(const Date: TDateTime; NumberOfMonths: Integer): TDateTime; }
 procedure JvInterpreter_IncMonth(var Value: Variant; Args: TArgs);
 begin
@@ -1014,7 +1035,7 @@ procedure JvInterpreter_IsLeapYear(var Value: Variant; Args: TArgs);
 begin
   Value := IsLeapYear(Args.Values[0]);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { function DateToStr(Date: TDateTime): string; }
 procedure JvInterpreter_DateToStr(var Value: Variant; Args: TArgs);
@@ -1100,13 +1121,13 @@ begin
   Value := P2V(ExceptAddr);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { function ExceptionErrorMessage(ExceptObject: TObject; ExceptAddr: Pointer; Buffer: PChar; Size: Integer): Integer; }
 procedure JvInterpreter_ExceptionErrorMessage(var Value: Variant; Args: TArgs);
 begin
   Value := ExceptionErrorMessage(V2O(Args.Values[0]), V2P(Args.Values[1]), PChar(string(Args.Values[2])), Args.Values[3]);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { procedure ShowException(ExceptObject: TObject; ExceptAddr: Pointer); }
 procedure JvInterpreter_ShowException(var Value: Variant; Args: TArgs);
@@ -1132,7 +1153,7 @@ begin
   Beep;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { function ByteType(const S: string; Index: Integer): TMbcsByteType; }
 procedure JvInterpreter_ByteType(var Value: Variant; Args: TArgs);
 begin
@@ -1254,7 +1275,7 @@ begin
   Value := Win32Check(Args.Values[0]);
 end;
 {$ENDIF MSWINDOWS}
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 
 { regional options }
@@ -1428,7 +1449,7 @@ begin
   LongTimeFormat := Value;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 { read TwoDigitYearCenturyWindow }
 procedure JvInterpreter_Read_TwoDigitYearCenturyWindow(var Value: Variant; Args: TArgs);
 begin
@@ -1452,7 +1473,7 @@ procedure JvInterpreter_Write_ListSeparator(var Value: Variant; Args: TArgs);
 begin
   ListSeparator := string(Args.Values[0])[1];
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 { read ShortMonthNames }
 procedure JvInterpreter_Read_ShortMonthNames(var Value: Variant; Args: TArgs);
@@ -1502,7 +1523,7 @@ begin
   LongDayNames[Integer(Args.Values[0])] := Value;
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 { read EraNames }
 procedure JvInterpreter_Read_EraNames(var Value: Variant; Args: TArgs);
 begin
@@ -1526,7 +1547,7 @@ procedure JvInterpreter_Write_EraYearOffsets(var Value: Variant; Args: TArgs);
 begin
   EraYearOffsets[Integer(Args.Values[0])] := Value;
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 *)
 
 type
@@ -1594,10 +1615,10 @@ begin
     AddClass('SysUtils', EAccessViolation, 'EAccessViolation');
    { EPrivilege }
     AddClass('SysUtils', EPrivilege, 'EPrivilege');
-   {$IFNDEF Delphi6_Up}
+   {$IFNDEF COMPILER6_UP}
    { EStackOverflow }
     AddClass('SysUtils', EStackOverflow, 'EStackOverflow');
-   {$ENDIF Delphi6_Up}
+   {$ENDIF COMPILER6_UP}
    { EControlC }
     AddClass('SysUtils', EControlC, 'EControlC');
    { EVariantError }
@@ -1608,7 +1629,7 @@ begin
     AddClass('SysUtils', EPropWriteOnly, 'EPropWriteOnly');
    { EExternalException }
     AddClass('SysUtils', EExternalException, 'EExternalException');
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    { EAssertionFailed }
     AddClass('SysUtils', EAssertionFailed, 'EAssertionFailed');
    {$IFNDEF PC_MAPPED_EXCEPTIONS} // Linux define symbol
@@ -1627,27 +1648,27 @@ begin
    { EWin32Error }
     AddClass('SysUtils', EWin32Error, 'EWin32Error');
    {$ENDIF MSWINDOWS}
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
 
     AddFun('SysUtils', 'AllocMem', JvInterpreter_AllocMem, 1, [varEmpty], varEmpty);
-   {$IFNDEF Delphi6_Up}
+   {$IFNDEF COMPILER6_UP}
     AddFun('SysUtils', 'NewStr', JvInterpreter_NewStr, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'DisposeStr', JvInterpreter_DisposeStr, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'AssignStr', JvInterpreter_AssignStr, 2, [varByRef, varEmpty], varEmpty);
     AddFun('SysUtils', 'AppendStr', JvInterpreter_AppendStr, 2, [varByRef, varEmpty], varEmpty);
-   {$ENDIF Delphi6_Up}
+   {$ENDIF COMPILER6_UP}
     AddFun('SysUtils', 'UpperCase', JvInterpreter_UpperCase, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'LowerCase', JvInterpreter_LowerCase, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'CompareStr', JvInterpreter_CompareStr, 2, [varEmpty, varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddFun('SysUtils', 'CompareMem', JvInterpreter_CompareMem, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddFun('SysUtils', 'CompareText', JvInterpreter_CompareText, 2, [varEmpty, varEmpty], varEmpty);
     AddFun('SysUtils', 'AnsiUpperCase', JvInterpreter_AnsiUpperCase, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'AnsiLowerCase', JvInterpreter_AnsiLowerCase, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'AnsiCompareStr', JvInterpreter_AnsiCompareStr, 2, [varEmpty, varEmpty], varEmpty);
     AddFun('SysUtils', 'AnsiCompareText', JvInterpreter_AnsiCompareText, 2, [varEmpty, varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddFun('SysUtils', 'AnsiStrComp', JvInterpreter_AnsiStrComp, 2, [varEmpty, varEmpty], varEmpty);
     AddFun('SysUtils', 'AnsiStrIComp', JvInterpreter_AnsiStrIComp, 2, [varEmpty, varEmpty], varEmpty);
     AddFun('SysUtils', 'AnsiStrLComp', JvInterpreter_AnsiStrLComp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
@@ -1656,15 +1677,15 @@ begin
     AddFun('SysUtils', 'AnsiStrUpper', JvInterpreter_AnsiStrUpper, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'AnsiLastChar', JvInterpreter_AnsiLastChar, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'AnsiStrLastChar', JvInterpreter_AnsiStrLastChar, 1, [varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddFun('SysUtils', 'Trim', JvInterpreter_Trim, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'TrimLeft', JvInterpreter_TrimLeft, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'TrimRight', JvInterpreter_TrimRight, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'QuotedStr', JvInterpreter_QuotedStr, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddFun('SysUtils', 'AnsiQuotedStr', JvInterpreter_AnsiQuotedStr, 2, [varEmpty, varEmpty], varEmpty);
     AddFun('SysUtils', 'AnsiExtractQuotedStr', JvInterpreter_AnsiExtractQuotedStr, 2, [varByRef, varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddFun('SysUtils', 'AdjustLineBreaks', JvInterpreter_AdjustLineBreaks, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'IsValidIdent', JvInterpreter_IsValidIdent, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'IntToStr', JvInterpreter_IntToStr, 1, [varEmpty], varEmpty);
@@ -1700,9 +1721,9 @@ begin
     AddFun('SysUtils', 'ExtractFileExt', JvInterpreter_ExtractFileExt, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'ExpandFileName', JvInterpreter_ExpandFileName, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'ExpandUNCFileName', JvInterpreter_ExpandUNCFileName, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddFun('SysUtils', 'ExtractRelativePath', JvInterpreter_ExtractRelativePath, 2, [varEmpty, varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddFun('SysUtils', 'FileSearch', JvInterpreter_FileSearch, 2, [varEmpty, varEmpty], varEmpty);
    {$IFDEF MSWINDOWS}
     AddFun('SysUtils', 'DiskFree', JvInterpreter_DiskFree, 1, [varEmpty], varEmpty);
@@ -1769,10 +1790,10 @@ begin
     AddFun('SysUtils', 'Date', JvInterpreter_Date, 0, [0], varEmpty);
     AddFun('SysUtils', 'Time', JvInterpreter_Time, 0, [0], varEmpty);
     AddFun('SysUtils', 'Now', JvInterpreter_Now, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddFun('SysUtils', 'IncMonth', JvInterpreter_IncMonth, 2, [varEmpty, varEmpty], varEmpty);
     AddFun('SysUtils', 'IsLeapYear', JvInterpreter_IsLeapYear, 1, [varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddFun('SysUtils', 'DateToStr', JvInterpreter_DateToStr, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'TimeToStr', JvInterpreter_TimeToStr, 1, [varEmpty], varEmpty);
     AddFun('SysUtils', 'DateTimeToStr', JvInterpreter_DateTimeToStr, 1, [varEmpty], varEmpty);
@@ -1787,14 +1808,14 @@ begin
     AddFun('SysUtils', 'GetFormatSettings', JvInterpreter_GetFormatSettings, 0, [0], varEmpty);
     AddFun('SysUtils', 'ExceptObject', JvInterpreter_ExceptObject, 0, [0], varEmpty);
     AddFun('SysUtils', 'ExceptAddr', JvInterpreter_ExceptAddr, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddFun('SysUtils', 'ExceptionErrorMessage', JvInterpreter_ExceptionErrorMessage, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddFun('SysUtils', 'ShowException', JvInterpreter_ShowException, 2, [varEmpty, varEmpty], varEmpty);
     AddFun('SysUtils', 'Abort', JvInterpreter_Abort, 0, [0], varEmpty);
     AddFun('SysUtils', 'OutOfMemoryError', JvInterpreter_OutOfMemoryError, 0, [0], varEmpty);
     AddFun('SysUtils', 'Beep', JvInterpreter_Beep, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddFun('SysUtils', 'ByteType', JvInterpreter_ByteType, 2, [varEmpty, varEmpty], varEmpty);
     AddFun('SysUtils', 'StrByteType', JvInterpreter_StrByteType, 2, [varEmpty, varEmpty], varEmpty);
     AddFun('SysUtils', 'ByteToCharLen', JvInterpreter_ByteToCharLen, 2, [varEmpty, varEmpty], varEmpty);
@@ -1817,7 +1838,7 @@ begin
     AddFun('SysUtils', 'RaiseLastWin32Error', JvInterpreter_RaiseLastWin32Error, 0, [0], varEmpty);
     AddFun('SysUtils', 'Win32Check', JvInterpreter_Win32Check, 1, [varEmpty], varEmpty);
    {$ENDIF MSWINDOWS}
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { File open modes }
     AddConst('SysUtils', 'fmOpenRead', Integer(fmOpenRead));
     AddConst('SysUtils', 'fmOpenWrite', Integer(fmOpenWrite));

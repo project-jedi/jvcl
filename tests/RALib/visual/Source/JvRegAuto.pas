@@ -26,9 +26,9 @@ description : registry and ini-file storage for properties of other components
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvRegAuto;
 
@@ -106,13 +106,13 @@ type
     procedure SetSaveWindowPlace(F : boolean);
    {$ENDIF COMPLIB_VCL}
     procedure SetIniStrings(AIniStrings : TStrings);
-   {$IFDEF Delphi4_Up}
+   {$IFDEF COMPILER4_UP}
     function GetUse(Index: TStorageMedia): Boolean;
     procedure SetUse(Index: TStorageMedia; Value: Boolean);
    {$ELSE}
     function GetUse(Index: Integer): Boolean;
     procedure SetUse(Index: Integer; Value: Boolean);
-   {$ENDIF Delphi4_Up}
+   {$ENDIF COMPILER4_UP}
     {############ Äëÿ Property ############}
     procedure NewFormOnCreate(Sender : TObject);
     procedure NewFormOnDestroy(Sender : TObject);
@@ -166,7 +166,7 @@ type
 
     // next three properties are only for compatibility with
     // previous TJvRegAuto versions, don't use them in new programs.
-   {$IFDEF Delphi4_Up}
+   {$IFDEF COMPILER4_UP}
     property UseReg: Boolean index raRegistry read GetUse write SetUse;
     property UseIni: Boolean index raIniFile read GetUse write SetUse;
     property UseStr: Boolean index raIniStrings read GetUse write SetUse;
@@ -174,7 +174,7 @@ type
     property UseReg: Boolean index 0 read GetUse write SetUse;
     property UseIni: Boolean index 1 read GetUse write SetUse;
     property UseStr: Boolean index 2 read GetUse write SetUse;
-   {$ENDIF Delphi4_Up}
+   {$ENDIF COMPILER4_UP}
 
     procedure AddNotify(ANotify : TRegAutoEvent);
     procedure RemoveNotify(ANotify : TRegAutoEvent);
@@ -237,7 +237,7 @@ type
    {$ENDIF COMPILER35_Up}
   end;
 
-  ERegAutoError = class(Exception);
+  EJvRegAutoError  = class(Exception);
 
 var
   GlobalIniFile : string = ''; {if <> '', used by all RegAutos}
@@ -251,7 +251,7 @@ uses JvStrUtil, JvDsgnIntf;
 function GetUserHome: string;
 begin
  {$IFDEF MSWINDOWS}
- {$IFDEF Delphi6_Up}
+ {$IFDEF COMPILER6_UP}
   Result := GetEnvironmentVariable('USERPROFILE');
  {$ELSE}
   SetLength(Result, 1024);
@@ -263,7 +263,7 @@ begin
  {$ENDIF LINUX}
 end;
 
-{$IFDEF Delphi2}
+{$IFDEF COMPILER2}
 function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; assembler;
 asm
         PUSH    ESI
@@ -284,7 +284,7 @@ asm
 @@2:    POP     EDI
         POP     ESI
 end;
-{$ENDIF Delphi2}
+{$ENDIF COMPILER2}
 
 constructor TJvRegAuto.Create(AOwner: TComponent);
 var
@@ -462,8 +462,8 @@ begin
   Result := '';
   case PropTyp of
     tkString,
-    tkLString{$IFDEF Delphi3_Up},
-    tkWString{$ENDIF Delphi3_Up} :
+    tkLString{$IFDEF COMPILER3_UP},
+    tkWString{$ENDIF COMPILER3_UP} :
       if FLoaded then Result:= GetStrProp(Obj, PropInf);
   end;
 end;
@@ -472,8 +472,8 @@ procedure TJvRegAuto.SetStrPrp(Value : string);
 begin
   case PropTyp of
     tkString,
-    tkLString{$IFDEF Delphi3_Up},
-    tkWString{$ENDIF Delphi3_Up} :
+    tkLString{$IFDEF COMPILER3_UP},
+    tkWString{$ENDIF COMPILER3_UP} :
       if FLoaded then SetStrProp(Obj, PropInf, Value);
   end;
 end;
@@ -537,15 +537,15 @@ begin
       tkEnumeration : SaveOrdPrp;
       tkFloat       : SaveFloatPrp;
       tkString,
-      tkLString{$IFDEF Delphi3_Up},
-      tkWString{$ENDIF Delphi3_Up}    : SaveStrPrp;
+      tkLString{$IFDEF COMPILER3_UP},
+      tkWString{$ENDIF COMPILER3_UP}    : SaveStrPrp;
     end;
   end;
  {$IFDEF COMPLIB_VCL}
   if SaveWindowPlace then SaveWindowPlacement;
  {$ENDIF COMPLIB_VCL}
  except
-   raise ERegAutoError.Create('Could not save property ' + ObjProp);
+   raise EJvRegAutoError .Create('Could not save property ' + ObjProp);
  end;
   if Assigned(FAfterSave) then FAfterSave(Self);
   for i := 0 to FNotifiers.Count - 1 do
@@ -600,13 +600,13 @@ begin
       tkEnumeration : LoadOrdPrp;
       tkFloat       : LoadFloatPrp;
       tkString,
-      tkLString{$IFDEF Delphi3_Up},
-      tkWString{$ENDIF Delphi3_Up}     : LoadStrPrp;
+      tkLString{$IFDEF COMPILER3_UP},
+      tkWString{$ENDIF COMPILER3_UP}     : LoadStrPrp;
     end;
   end;
  except
    on E : Exception do
-     raise ERegAutoError.Create('Could not load property: ' + E.Message);
+     raise EJvRegAutoError .Create('Could not load property: ' + E.Message);
  end;
   if Assigned(FAfterLoad) then FAfterLoad(Self);
   for i := 0 to FNotifiers.Count - 1 do
@@ -715,7 +715,7 @@ begin
   IniStrings.Assign(AIniStrings);
 end;
 
-{$IFDEF Delphi4_Up}
+{$IFDEF COMPILER4_UP}
 function TJvRegAuto.GetUse(Index: TStorageMedia): Boolean;
 begin
   Result := FStorage = Index;
@@ -737,7 +737,7 @@ procedure TJvRegAuto.SetUse(Index: Integer; Value: Boolean);
 begin
   FStorage := TStorageMedia(Index);
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 {**************************************************}
 function TJvRegAuto.GetFullIniFileName: String;

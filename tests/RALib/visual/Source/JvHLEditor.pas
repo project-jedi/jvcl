@@ -28,9 +28,9 @@ description : JvEditor with built-in highlighting for:
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 { history
  (JVCL Library versions) :
@@ -82,7 +82,7 @@ type
   THighLighter = (hlNone, hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlVB,
     hlHtml, hlPerl, hlIni, hlCocoR, hlPhp);
 
-  TSymbolColor = class(TPersistent)
+  TJvSymbolColor  = class(TPersistent)
   private
     FStyle: TFontStyles;
     FForeColor: TColor;
@@ -97,35 +97,35 @@ type
     property BackColor: TColor read FBackColor write FBackColor;
   end;
 
-  TColors = class(TPersistent)
+  TJvColors  = class(TPersistent)
   private
-    FComment: TSymbolColor;
-    FNumber: TSymbolColor;
-    FString: TSymbolColor;
-    FSymbol: TSymbolColor;
-    FReserved: TSymbolColor;
-    FIdentifer: TSymbolColor;
-    FPreproc: TSymbolColor;
-    FFunctionCall: TSymbolColor;
-    FDeclaration: TSymbolColor;
-    FStatement: TSymbolColor;
-    FPlainText: TSymbolColor;
+    FComment: TJvSymbolColor ;
+    FNumber: TJvSymbolColor ;
+    FString: TJvSymbolColor ;
+    FSymbol: TJvSymbolColor ;
+    FReserved: TJvSymbolColor ;
+    FIdentifer: TJvSymbolColor ;
+    FPreproc: TJvSymbolColor ;
+    FFunctionCall: TJvSymbolColor ;
+    FDeclaration: TJvSymbolColor ;
+    FStatement: TJvSymbolColor ;
+    FPlainText: TJvSymbolColor ;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   published
-    property Comment: TSymbolColor read FComment write FComment;
-    property Number: TSymbolColor read FNumber write FNumber;
-    property Strings: TSymbolColor read FString write FString;
-    property Symbol: TSymbolColor read FSymbol write FSymbol;
-    property Reserved: TSymbolColor read FReserved write FReserved;
-    property Identifer: TSymbolColor read FIdentifer write FIdentifer;
-    property Preproc: TSymbolColor read FPreproc write FPreproc;
-    property FunctionCall: TSymbolColor read FFunctionCall write FFunctionCall;
-    property Declaration: TSymbolColor read FDeclaration write FDeclaration;
-    property Statement: TSymbolColor read FStatement write FStatement;
-    property PlainText: TSymbolColor read FPlainText write FPlainText;
+    property Comment: TJvSymbolColor  read FComment write FComment;
+    property Number: TJvSymbolColor  read FNumber write FNumber;
+    property Strings: TJvSymbolColor  read FString write FString;
+    property Symbol: TJvSymbolColor  read FSymbol write FSymbol;
+    property Reserved: TJvSymbolColor  read FReserved write FReserved;
+    property Identifer: TJvSymbolColor  read FIdentifer write FIdentifer;
+    property Preproc: TJvSymbolColor  read FPreproc write FPreproc;
+    property FunctionCall: TJvSymbolColor  read FFunctionCall write FFunctionCall;
+    property Declaration: TJvSymbolColor  read FDeclaration write FDeclaration;
+    property Statement: TJvSymbolColor  read FStatement write FStatement;
+    property PlainText: TJvSymbolColor  read FPlainText write FPlainText;
   end;
 
   TOnReservedWord = procedure(Sender: TObject; Token: string;
@@ -135,7 +135,7 @@ type
   private
     Parser: TJvIParser;
     FHighLighter: THighLighter;
-    FColors: TColors;
+    FColors: TJvColors ;
     FLine: string;
     FLineNum: Integer;
     FLong: byte;
@@ -165,7 +165,7 @@ type
   published
     property HighLighter: THighLighter read FHighLighter write SetHighLighter
       default hlPascal;
-    property Colors: TColors read FColors write FColors;
+    property Colors: TJvColors  read FColors write FColors;
     property LongTokens: Boolean read FLongTokens write FLongTokens default
       True;
     property OnReservedWord: TOnReservedWord read FOnReservedWord write
@@ -184,7 +184,7 @@ begin
   if x < y then Result := x else Result := y;
 end;
 
-procedure TSymbolColor.SetColor(const ForeColor, BackColor: TColor; const Style:
+procedure TJvSymbolColor .SetColor(const ForeColor, BackColor: TColor; const Style:
   TFontStyles);
 begin
   FForeColor := ForeColor;
@@ -192,31 +192,31 @@ begin
   FStyle := Style;
 end;
 
-procedure TSymbolColor.Assign(Source: TPersistent);
+procedure TJvSymbolColor .Assign(Source: TPersistent);
 begin
-  if Source is TSymbolColor then
+  if Source is TJvSymbolColor  then
   begin
-    FForeColor := TSymbolColor(Source).FForeColor;
-    FBackColor := TSymbolColor(Source).FBackColor;
-    FStyle := TSymbolColor(Source).FStyle;
+    FForeColor := TJvSymbolColor (Source).FForeColor;
+    FBackColor := TJvSymbolColor (Source).FBackColor;
+    FStyle := TJvSymbolColor (Source).FStyle;
   end
   else
     inherited Assign(Source);
 end;
 
-constructor TColors.Create;
+constructor TJvColors .Create;
 begin
-  FComment := TSymbolColor.Create;
-  FNumber := TSymbolColor.Create;
-  FString := TSymbolColor.Create;
-  FSymbol := TSymbolColor.Create;
-  FReserved := TSymbolColor.Create;
-  FStatement := TSymbolColor.Create;
-  FIdentifer := TSymbolColor.Create;
-  FPreproc := TSymbolColor.Create;
-  FFunctionCall := TSymbolColor.Create;
-  FDeclaration := TSymbolColor.Create;
-  FPlainText := TSymbolColor.Create;
+  FComment := TJvSymbolColor .Create;
+  FNumber := TJvSymbolColor .Create;
+  FString := TJvSymbolColor .Create;
+  FSymbol := TJvSymbolColor .Create;
+  FReserved := TJvSymbolColor .Create;
+  FStatement := TJvSymbolColor .Create;
+  FIdentifer := TJvSymbolColor .Create;
+  FPreproc := TJvSymbolColor .Create;
+  FFunctionCall := TJvSymbolColor .Create;
+  FDeclaration := TJvSymbolColor .Create;
+  FPlainText := TJvSymbolColor .Create;
   FComment.SetColor(clOlive, clWindow, [fsItalic]);
   FNumber.SetColor(clNavy, clWindow, []);
   FString.SetColor(clPurple, clWindow, []);
@@ -230,7 +230,7 @@ begin
   FPlainText.SetColor(clWindowText, clWindow, []);
 end;
 
-destructor TColors.Destroy;
+destructor TJvColors .Destroy;
 begin
   FComment.Free;
   FNumber.Free;
@@ -246,21 +246,21 @@ begin
   inherited Destroy;
 end; { Destroy }
 
-procedure TColors.Assign(Source: TPersistent);
+procedure TJvColors .Assign(Source: TPersistent);
 begin
-  if Source is TColors then
+  if Source is TJvColors  then
   begin
-    FComment     .Assign(TColors(Source).FComment     );
-    FNumber      .Assign(TColors(Source).FNumber      );
-    FString      .Assign(TColors(Source).FString      );
-    FSymbol      .Assign(TColors(Source).FSymbol      );
-    FReserved    .Assign(TColors(Source).FReserved    );
-    FStatement   .Assign(TColors(Source).FStatement   );
-    FIdentifer   .Assign(TColors(Source).FIdentifer   );
-    FPreproc     .Assign(TColors(Source).FPreproc     );
-    FFunctionCall.Assign(TColors(Source).FFunctionCall);
-    FDeclaration .Assign(TColors(Source).FDeclaration );
-    FPlainText   .Assign(TColors(Source).FPlainText   );
+    FComment     .Assign(TJvColors (Source).FComment     );
+    FNumber      .Assign(TJvColors (Source).FNumber      );
+    FString      .Assign(TJvColors (Source).FString      );
+    FSymbol      .Assign(TJvColors (Source).FSymbol      );
+    FReserved    .Assign(TJvColors (Source).FReserved    );
+    FStatement   .Assign(TJvColors (Source).FStatement   );
+    FIdentifer   .Assign(TJvColors (Source).FIdentifer   );
+    FPreproc     .Assign(TJvColors (Source).FPreproc     );
+    FFunctionCall.Assign(TJvColors (Source).FFunctionCall);
+    FDeclaration .Assign(TJvColors (Source).FDeclaration );
+    FPlainText   .Assign(TJvColors (Source).FPlainText   );
   end
   else
     inherited Assign(Source);
@@ -274,7 +274,7 @@ begin
   Parser := TJvIParser.Create;
   Parser.ReturnComments := True;
   FHighLighter := hlPascal;
-  FColors := TColors.Create;
+  FColors := TJvColors .Create;
   FLongTokens := True;
   FSyntaxHighlighting := True;
   ProductionsLine := High(Integer);
@@ -598,7 +598,7 @@ const
     end;
   end;
 
-  procedure SetBlockColor(iBeg, iEnd: Integer; Color: TSymbolColor);
+  procedure SetBlockColor(iBeg, iEnd: Integer; Color: TJvSymbolColor );
   var
     i: integer;
   begin
@@ -610,7 +610,7 @@ const
     end;
   end;
 
-  procedure SetColor(Color: TSymbolColor);
+  procedure SetColor(Color: TJvSymbolColor );
   begin
     SetBlockColor(Parser.PosBeg[0] + 1, Parser.PosEnd[0], Color);
   end;
@@ -700,7 +700,7 @@ var
 
 var
   F: boolean;
-  C: TSymbolColor;
+  C: TJvSymbolColor ;
   Reserved: Boolean;
   PrevToken: string;
   PrevToken2: string;

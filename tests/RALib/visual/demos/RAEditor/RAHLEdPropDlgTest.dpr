@@ -2,8 +2,8 @@ program RAHLEdPropDlgTest;
 
 uses
   Forms,
-  fRAHLEdPropDlgTestMain in 'fRAHLEdPropDlgTestMain.pas' {Form1},
-  fRAHLEdPropDlgTestParams in 'fRAHLEdPropDlgTestParams.pas' {MyParams};
+  fJvHLEdPropDlgTestMain in 'fJvHLEdPropDlgTestMain.pas' {Form1},
+  fJvHLEdPropDlgTestParams in 'fJvHLEdPropDlgTestParams.pas' {MyParams};
 
 {$R *.RES}
 

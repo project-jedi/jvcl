@@ -25,9 +25,9 @@ description : Language specific constant for Slovak
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvCtlConst;
 
@@ -67,11 +67,11 @@ const
   RAIIdFirstSymbols = ['A'..'Z', 'a'..'z', '_'];
 {$ENDIF RAINTER}
 
-{$IFDEF Delphi2}
+{$IFDEF COMPILER2}
   SScrollBarRange = 'Hodnota posúvaèa je mimo hraníc';
 {$ENDIF}
 
- {RADlg}
+ {JvDlg}
   SOk = 'OK';
   SCancel = 'Cancel';
 
@@ -90,7 +90,7 @@ const
 
  { RALib 1.55 }
 
- {RAHLEdPropDlg}
+ {JvHLEdPropDlg}
   SHLEdPropDlg_Caption = 'Editor vlastností';
   SHLEdPropDlg_tsEditor = 'Editor';
   SHLEdPropDlg_tsColors = 'Farby';

@@ -25,11 +25,11 @@ description : Dephi IDE enhancement tool
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
 
-{$UNDEF Delphi5_Up}
+{$I JVCL.INC}
+
+{$UNDEF COMPILER5_UP}
 
 unit JvIDEZoom;
 
@@ -46,24 +46,24 @@ implementation
 type
 
   TJvEEditorZoom = class
-   {$IFDEF Delphi5_Up}
+   {$IFDEF COMPILER5_UP}
     (TNotifierObject, IUnknown, IOTAKeyboardBinding)
-   {$ENDIF Delphi5_Up}
+   {$ENDIF COMPILER5_UP}
   private
     procedure Zoom(Sender : TObject);
   public
-   {$IFDEF Delphi5_Up}
+   {$IFDEF COMPILER5_UP}
     procedure BindKeyboard(const BindingServices: IOTAKeyBindingServices);
-   {$ENDIF Delphi5_Up}
+   {$ENDIF COMPILER5_UP}
   end;
 
 
-{$IFDEF Delphi5_Up}
+{$IFDEF COMPILER5_UP}
 procedure TJvEEditorZoom.BindKeyboard(const BindingServices: IOTAKeyBindingServices);
 begin
   BindingServices.AddKeyBinding([ShortCut(Ord('B'), [ssCtrl])], BufferListProc, nil);
 end;
-{$ENDIF Delphi5_Up}
+{$ENDIF COMPILER5_UP}
 
 procedure Unregister;
 var
@@ -118,9 +118,9 @@ begin
     end;
     ViewsMenu.Add(MenuItem);
   end;
-  {$IFDEF Delphi5_Up}
+  {$IFDEF COMPILER5_UP}
   (BorlandIDEServices as IOTAKeyBoardServices).AddKeyboardBinding(TJvEEditorZoom.Create);
-  {$ENDIF Delphi5_Up}
+  {$ENDIF COMPILER5_UP}
 end;
 
 

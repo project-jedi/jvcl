@@ -10,7 +10,7 @@ uses
 
 begin
   Application.Initialize;
-  Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TMainForm , MainForm);
   Application.CreateForm(TAboutBox, AboutBox);
   Application.Run;
 end.

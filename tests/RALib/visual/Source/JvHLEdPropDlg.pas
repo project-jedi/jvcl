@@ -26,9 +26,9 @@ description : Properties dialog for TJvHLEditor component
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvHLEdPropDlg;
 
@@ -106,7 +106,7 @@ type
     { Private declarations }
     RAHLEditor1: TJvHLEditor;
     FHighlighter: THighlighter;
-    SC: TSymbolColor;
+    SC: TJvSymbolColor ;
     InChanging: boolean;
     Params: TJvHLEdPropDlg;
     procedure LoadLocale;
@@ -205,7 +205,7 @@ end;
 
 
 type
-  TSampleViewer = class(TJvHLEditor)
+  TJvSampleViewer  = class(TJvHLEditor)
   private
     TmpEd: TJvHLEditor;
     procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
@@ -288,7 +288,7 @@ procedure TJvHLEdPropDlg.SaveHighlighterColors(ARAHLEditor: TJvHLEditor; AHighli
 var
   Section: string;
 
-  procedure SaveColor(AColor: TSymbolColor; const Prefix: string);
+  procedure SaveColor(AColor: TJvSymbolColor ; const Prefix: string);
   begin
     FRegAuto.WriteString(Section, Prefix,
       ColorToString(AColor.ForeColor) +
@@ -302,9 +302,9 @@ begin
   Section := AddSlash2(FRegAutoSection) + HighLighters[AHighLighter];
   FRegAuto.WriteString(Section, 'BackColor', ColorToString(ARAHLEditor.Color));
   FRegAuto.WriteString(Section, 'FontName', ARAHLEditor.Font.Name);
- {$IFDEF Delphi3_Up}
+ {$IFDEF COMPILER3_UP}
   FRegAuto.WriteString(Section, 'Charset', IntToStr(ARAHLEditor.Font.Charset));
- {$ENDIF Delphi3_Up}
+ {$ENDIF COMPILER3_UP}
   FRegAuto.WriteInteger(Section, 'FontSize', ARAHLEditor.Font.Size);
   FRegAuto.WriteString(Section, 'RightMarginColor', ColorToString(ARAHLEditor.RightMarginColor));
   SaveColor(ARAHLEditor.Colors.Number      , 'Number');
@@ -324,7 +324,7 @@ procedure TJvHLEdPropDlg.LoadHighlighterColors(ARAHLEditor: TJvHLEditor; AHighli
 var
   Section: string;
 
-  procedure LoadColor(AColor: TSymbolColor; DefaultForeColor,
+  procedure LoadColor(AColor: TJvSymbolColor ; DefaultForeColor,
     DefaultBackColor: TColor; DefaultStyle: TFontStyles; const Prefix: string);
   var
     S, S1: string;
@@ -366,9 +366,9 @@ begin
   LoadColor(ARAHLEditor.Colors.PlainText   , clWindowText , clWindow, [], 'PlainText');
   ARAHLEditor.Color := StringToColor(FRegAuto.ReadString(Section, 'BackColor', 'clWindow'));
   ARAHLEditor.Font.Name := FRegAuto.ReadString(Section, 'FontName', 'Courier New');
- {$IFDEF Delphi3_Up}
+ {$IFDEF COMPILER3_UP}
   ARAHLEditor.Font.Charset := FRegAuto.ReadInteger(Section, 'Charset', DEFAULT_CHARSET);
- {$ENDIF Delphi3_Up}
+ {$ENDIF COMPILER3_UP}
   ARAHLEditor.Font.Size := FRegAuto.ReadInteger(Section, 'FontSize', 10);
   ARAHLEditor.RightMarginColor := StringToColor(FRegAuto.ReadString(Section, 'RightMarginColor', 'clSilver'));
 end;
@@ -495,7 +495,7 @@ end;
 procedure TJvHLEditorParamsForm.FormCreate(Sender: TObject);
 begin
   LoadLocale;
-  RAHLEditor1 := TSampleViewer.Create(Self);
+  RAHLEditor1 := TJvSampleViewer .Create(Self);
   RAHLEditor1.Parent := tsColors;
   RAHLEditor1.SetBounds(8, 176, 396, 110);
   RAHLEditor1.TabStop := False;
@@ -819,8 +819,8 @@ begin
   bCancel.Caption := SCancel;
 end;
 
- { TSampleViewer }
-constructor TSampleViewer.Create(AOwner: TComponent);
+ { TJvSampleViewer  }
+constructor TJvSampleViewer .Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   TmpEd := TJvHLEditor.Create(Self);
@@ -828,7 +828,7 @@ begin
   TmpEd.Parent := Self;
 end;    { Create }
 
-procedure TSampleViewer.WndProc(var Message: TMessage);
+procedure TJvSampleViewer .WndProc(var Message: TMessage);
 begin
   case Message.Msg of    { }
     {WM_LBUTTONDOWN,} WM_LBUTTONUP, WM_RBUTTONDOWN, WM_RBUTTONUP,
@@ -839,7 +839,7 @@ begin
   end;    { case }
 end;
 
-procedure TSampleViewer.WMLButtonDown(var Message: TWMLButtonDown);
+procedure TJvSampleViewer .WMLButtonDown(var Message: TWMLButtonDown);
 var
   XX, YY: integer;
   F: integer;
@@ -869,8 +869,8 @@ begin
     TmpEd.Colors.PlainText.ForeColor := 11;
     TmpEd.SelForeColor := 12;
     Str := TmpEd.Lines[YY];
-    TSampleViewer(TmpEd).GetLineAttr(Str, YY, 0, JvEditor.Max_X - 1);
-    F := TSampleViewer(TmpEd).LineAttrs[XX].FC;
+    TJvSampleViewer (TmpEd).GetLineAttr(Str, YY, 0, JvEditor.Max_X - 1);
+    F := TJvSampleViewer (TmpEd).LineAttrs[XX].FC;
   end;
 	(Owner as TJvHLEditorParamsForm).lbElements.ItemIndex :=F;
   (Owner as TJvHLEditorParamsForm).lbElementsClick((Owner as TJvHLEditorParamsForm).lbElements);

@@ -1,6 +1,6 @@
 object Form2: TForm2
-  Left = 197
-  Top = 108
+  Left = 198
+  Top = 264
   Width = 442
   Height = 381
   Caption = 'Form2'
@@ -84,5 +84,9 @@ object Form2: TForm2
     SaveWindowPlace = True
     Left = 240
     Top = 224
+  end
+  object Table1: TTable
+    Left = 192
+    Top = 40
   end
 end

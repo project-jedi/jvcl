@@ -1,2 +1,2 @@
-copy RACtlConst.pas ..\..\Lib\RACtlConst.pas
-copy RADBConst.pas ..\..\Lib\RADBConst.pas
+copy JvCtlConst.pas ..\..\Lib\JvCtlConst.pas
+copy JvDBConst.pas ..\..\Lib\JvDBConst.pas

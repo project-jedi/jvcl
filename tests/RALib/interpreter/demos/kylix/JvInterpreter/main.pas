@@ -7,7 +7,7 @@ uses
   QStdCtrls, QExtCtrls, JvRegAuto, IniFiles, JvInterpreter;
 
 type
-  TMainForm = class(TForm)
+  TMainForm   = class(TForm)
     Panel1: TPanel;
     Panel2: TPanel;
     Memo1: TMemo;
@@ -38,7 +38,7 @@ type
   end;
 
 var
-  MainForm: TMainForm;
+  MainForm: TMainForm  ;
 
 implementation
 
@@ -57,7 +57,7 @@ uses
 
 {$R *.xfm}
 
-procedure TMainForm.RunClick(Sender: TObject);
+procedure TMainForm  .RunClick(Sender: TObject);
 const
   Bool : array [boolean] of string = ('False', 'True');
 var
@@ -131,7 +131,7 @@ begin
   end;
 end;
 
-procedure TMainForm.FormCreate(Sender: TObject);
+procedure TMainForm  .FormCreate(Sender: TObject);
 var
   SearchRec : TSearchRec;
   DosError  : integer;
@@ -160,12 +160,12 @@ begin
   FindClose(SearchRec);
 end;
 
-procedure TMainForm.RegAuto1AfterSave(Sender: TObject);
+procedure TMainForm  .RegAuto1AfterSave(Sender: TObject);
 begin
   RegAuto1.WriteString(Name, 'sample', SampleSelector.Text);
 end;
 
-procedure TMainForm.RegAuto1AfterLoad(Sender: TObject);
+procedure TMainForm  .RegAuto1AfterLoad(Sender: TObject);
 var
   sample: string;
 begin
@@ -177,7 +177,7 @@ begin
   SampleSelectorSelect(nil);
 end;
 
-procedure TMainForm.SampleSelectorSelect(Sender: TObject);
+procedure TMainForm  .SampleSelectorSelect(Sender: TObject);
 var
   Sample: string;
 begin
@@ -207,7 +207,7 @@ begin
   Memo2.SelStart := 0;
 //  Memo1.Refresh;
 end;
- procedure TMainForm.JvInterpreterProgram1GetValue(Sender: TObject;
+ procedure TMainForm  .JvInterpreterProgram1GetValue(Sender: TObject;
   Identifer: String; var Value: Variant; Args: TArgs; var Done: Boolean);
 begin
   if Cmp(Identifer, 'Test') then

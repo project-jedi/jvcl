@@ -26,9 +26,9 @@ description : database batchmove
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 {
  history:
@@ -59,7 +59,7 @@ interface
 
 uses
   BDE, Windows, Messages, SysUtils, Classes, DB, DBTables
-  {$IFDEF Delphi6_Up}, Variants {$ENDIF}
+  {$IFDEF COMPILER6_UP}, Variants {$ENDIF}
   ;
 
 type
@@ -120,7 +120,7 @@ type
     property Progress : boolean read FProgress write FProgress default false;
   end;
 
-  ERADBMoveError = class(EDatabaseError);
+  EJvDBMoveError  = class(EDatabaseError);
 
 implementation
 
@@ -128,7 +128,7 @@ uses JvDBUtil;
 
 type
 
-  TFieldRef = class
+  TFieldRef  = class
   private
     STableName : string;
     SFieldName : string;
@@ -290,7 +290,7 @@ var
   i, j : integer;
   S : string;
   Master, Detail : string;
-  FieldRef : TFieldRef;
+  FieldRef : TFieldRef ;
 begin
   FieldRefs.Clear;
   for i := 0 to FReferences.Count - 1 do
@@ -302,8 +302,8 @@ begin
       Master := SubStr(S, 1, '=');
       if (Detail = '') or (Pos('.', Detail) = 0) or
          (Master = '') or (Pos('.', Master) = 0) then
-        raise ERADBMoveError.Create('Invalid reference descriptor');
-      FieldRef := TFieldRef.Create;
+        raise EJvDBMoveError .Create('Invalid reference descriptor');
+      FieldRef := TFieldRef .Create;
       FieldRef.STableName := Trim(SubStr(Master, 0, '.'));
       FieldRef.SFieldName := Trim(SubStr(Master, 1, '.'));
       FieldRef.DTableName := Trim(SubStr(Detail, 0, '.'));
@@ -315,7 +315,7 @@ begin
       FieldRef.DTFieldIndex := -1;
       FieldRef.MasterRef := true;
       for j := 0 to FieldRefs.Count - 1 do
-        with TFieldRef(FieldRefs[j]) do
+        with TFieldRef (FieldRefs[j]) do
           if Cmp(STableName, FieldRef.STableName) and
              Cmp(SFieldName, FieldRef.SFieldName) then
           begin
@@ -346,7 +346,7 @@ var
   begin
     FillChar(MasterFields, sizeof(MasterFields), 0);
     for i := 0 to FieldRefs.Count - 1 do
-      with TFieldRef(FieldRefs[i]) do
+      with TFieldRef (FieldRefs[i]) do
       begin
         if Cmp(STableName, ChangeFileExt(STable.TableName, '')) then
         begin
@@ -380,7 +380,7 @@ var
     i : integer;
   begin
     for i := 0 to FieldRefs.Count - 1 do
-      with TFieldRef(FieldRefs[i]) do
+      with TFieldRef (FieldRefs[i]) do
         if MasterRef and (STableIndex = TableIndex) then
         try
           RTable.AppendRecord([TableIndex + 1, SFieldIndex + 1,
@@ -396,7 +396,7 @@ var
     i : integer;
   begin
     for i := 0 to FieldRefs.Count - 1 do
-      with TFieldRef(FieldRefs[i]) do
+      with TFieldRef (FieldRefs[i]) do
         if (DTableIndex = TableIndex) and
            (DFieldIndex <> -1) and
            (DTable.Fields[DFieldIndex].AsVariant <> Null) then

@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvInterpreter_ComCtrls;
 
@@ -905,7 +905,7 @@ begin
   TTextAttributes(Args.Obj).Assign(V2O(Args.Values[0]) as TPersistent);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read Charset: TFontCharset }
 procedure TTextAttributes_Read_Charset(var Value: Variant; Args: TArgs);
 begin
@@ -917,7 +917,7 @@ procedure TTextAttributes_Write_Charset(const Value: Variant; Args: TArgs);
 begin
   TTextAttributes(Args.Obj).Charset := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read Color: TColor }
 procedure TTextAttributes_Read_Color(var Value: Variant; Args: TArgs);
@@ -1319,7 +1319,7 @@ begin
   TListItem(Args.Obj).Caption := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read Checked: Boolean }
 procedure TListItem_Read_Checked(var Value: Variant; Args: TArgs);
 begin
@@ -1331,7 +1331,7 @@ procedure TListItem_Write_Checked(const Value: Variant; Args: TArgs);
 begin
   TListItem(Args.Obj).Checked := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read Cut: Boolean }
 procedure TListItem_Read_Cut(var Value: Variant; Args: TArgs);
@@ -1637,7 +1637,7 @@ begin
   TCustomListView(Args.Obj).Scroll(Args.Values[0], Args.Values[1]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read Checkboxes: Boolean }
 procedure TCustomListView_Read_Checkboxes(var Value: Variant; Args: TArgs);
 begin
@@ -1649,7 +1649,7 @@ procedure TCustomListView_Write_Checkboxes(const Value: Variant; Args: TArgs);
 begin
   TCustomListView(Args.Obj).Checkboxes := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read Column[Integer]: TListColumn }
 procedure TCustomListView_Read_Column(var Value: Variant; Args: TArgs);
@@ -1669,7 +1669,7 @@ begin
   TCustomListView(Args.Obj).DropTarget := V2O(Value) as TListItem;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read GridLines: Boolean }
 procedure TCustomListView_Read_GridLines(var Value: Variant; Args: TArgs);
 begin
@@ -1693,7 +1693,7 @@ procedure TCustomListView_Write_HotTrack(const Value: Variant; Args: TArgs);
 begin
   TCustomListView(Args.Obj).HotTrack := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read ItemFocused: TListItem }
 procedure TCustomListView_Read_ItemFocused(var Value: Variant; Args: TArgs);
@@ -1707,7 +1707,7 @@ begin
   TCustomListView(Args.Obj).ItemFocused := V2O(Value) as TListItem;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read RowSelect: Boolean }
 procedure TCustomListView_Read_RowSelect(var Value: Variant; Args: TArgs);
 begin
@@ -1719,7 +1719,7 @@ procedure TCustomListView_Write_RowSelect(const Value: Variant; Args: TArgs);
 begin
   TCustomListView(Args.Obj).RowSelect := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read SelCount: Integer }
 procedure TCustomListView_Read_SelCount(var Value: Variant; Args: TArgs);
@@ -1791,7 +1791,7 @@ begin
   Value := O2V(TListView.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   { TAnimate }
 
 { constructor Create(AOwner: TComponent) }
@@ -1889,7 +1889,7 @@ procedure TAnimate_Write_ResName(const Value: Variant; Args: TArgs);
 begin
   TAnimate(Args.Obj).ResName := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 
 type
@@ -2067,11 +2067,11 @@ procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapt
 begin
   with JvInterpreterAdapter do
   begin
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    { TTabPosition }
     AddConst('ComCtrls', 'tpTop', tpTop);
     AddConst('ComCtrls', 'tpBottom', tpBottom);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TCustomTabControl }
     AddClass('ComCtrls', TCustomTabControl, 'TCustomTabControl');
    { TTabControl }
@@ -2315,10 +2315,10 @@ begin
     AddClass('ComCtrls', TTextAttributes, 'TTextAttributes');
     AddGet(TTextAttributes, 'Create', TTextAttributes_Create, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TTextAttributes, 'Assign', TTextAttributes_Assign, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TTextAttributes, 'Charset', TTextAttributes_Read_Charset, 0, [0], varEmpty);
     AddSet(TTextAttributes, 'Charset', TTextAttributes_Write_Charset, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TTextAttributes, 'Color', TTextAttributes_Read_Color, 0, [0], varEmpty);
     AddSet(TTextAttributes, 'Color', TTextAttributes_Write_Color, 0, [0]);
     AddGet(TTextAttributes, 'ConsistentAttributes', TTextAttributes_Read_ConsistentAttributes, 0, [0], varEmpty);
@@ -2437,10 +2437,10 @@ begin
     AddGet(TListItem, 'SetPosition', TListItem_SetPosition, 1, [varEmpty], varEmpty);
     AddGet(TListItem, 'Caption', TListItem_Read_Caption, 0, [0], varEmpty);
     AddSet(TListItem, 'Caption', TListItem_Write_Caption, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TListItem, 'Checked', TListItem_Read_Checked, 0, [0], varEmpty);
     AddSet(TListItem, 'Checked', TListItem_Write_Checked, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TListItem, 'Cut', TListItem_Read_Cut, 0, [0], varEmpty);
     AddSet(TListItem, 'Cut', TListItem_Write_Cut, 0, [0]);
     AddGet(TListItem, 'Data', TListItem_Read_Data, 0, [0], varEmpty);
@@ -2526,25 +2526,25 @@ begin
     AddGet(TCustomListView, 'GetSearchString', TCustomListView_GetSearchString, 0, [0], varEmpty);
     AddGet(TCustomListView, 'IsEditing', TCustomListView_IsEditing, 0, [0], varEmpty);
     AddGet(TCustomListView, 'Scroll', TCustomListView_Scroll, 2, [varEmpty, varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TCustomListView, 'Checkboxes', TCustomListView_Read_Checkboxes, 0, [0], varEmpty);
     AddSet(TCustomListView, 'Checkboxes', TCustomListView_Write_Checkboxes, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TCustomListView, 'Column', TCustomListView_Read_Column, 1, [0], varEmpty);
     AddGet(TCustomListView, 'DropTarget', TCustomListView_Read_DropTarget, 0, [0], varEmpty);
     AddSet(TCustomListView, 'DropTarget', TCustomListView_Write_DropTarget, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TCustomListView, 'GridLines', TCustomListView_Read_GridLines, 0, [0], varEmpty);
     AddSet(TCustomListView, 'GridLines', TCustomListView_Write_GridLines, 0, [0]);
     AddGet(TCustomListView, 'HotTrack', TCustomListView_Read_HotTrack, 0, [0], varEmpty);
     AddSet(TCustomListView, 'HotTrack', TCustomListView_Write_HotTrack, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TCustomListView, 'ItemFocused', TCustomListView_Read_ItemFocused, 0, [0], varEmpty);
     AddSet(TCustomListView, 'ItemFocused', TCustomListView_Write_ItemFocused, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TCustomListView, 'RowSelect', TCustomListView_Read_RowSelect, 0, [0], varEmpty);
     AddSet(TCustomListView, 'RowSelect', TCustomListView_Write_RowSelect, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TCustomListView, 'SelCount', TCustomListView_Read_SelCount, 0, [0], varEmpty);
     AddGet(TCustomListView, 'Selected', TCustomListView_Read_Selected, 0, [0], varEmpty);
     AddSet(TCustomListView, 'Selected', TCustomListView_Write_Selected, 0, [0]);
@@ -2558,7 +2558,7 @@ begin
    { TListView }
     AddClass('ComCtrls', TListView, 'TListView');
     AddGet(TListView, 'Create', TListView_Create, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    { TCommonAVI }
     AddConst('ComCtrls', 'aviNone', aviNone);
     AddConst('ComCtrls', 'aviFindFolder', aviFindFolder);
@@ -2587,7 +2587,7 @@ begin
     AddSet(TAnimate, 'ResId', TAnimate_Write_ResId, 0, [0]);
     AddGet(TAnimate, 'ResName', TAnimate_Read_ResName, 0, [0], varEmpty);
     AddSet(TAnimate, 'ResName', TAnimate_Write_ResName, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
 
     AddHandler('ComCtrls', 'TTabChangingEvent', TJvInterpreterComCtrlsEvent, @TJvInterpreterComCtrlsEvent.TabChangingEvent);
     AddHandler('ComCtrls', 'TDrawPanelEvent', TJvInterpreterComCtrlsEvent, @TJvInterpreterComCtrlsEvent.DrawPanelEvent);
@@ -2619,7 +2619,7 @@ begin
     TStatusBar, THeaderSection, THeaderSections, THeaderControl, TTreeNode,
     TTreeNodes, TTreeView, TTrackBar, TProgressBar, TTextAttributes,
     TParaAttributes, TRichEdit, TUpDown, THotKey, TListColumn, TListColumns,
-    TListItem, TListItems, TListView {$IFDEF Delphi3_Up}, TAnimate {$ENDIF Delphi3_Up}]);
+    TListItem, TListItems, TListView {$IFDEF COMPILER3_UP}, TAnimate {$ENDIF COMPILER3_UP}]);
 end;    { RegisterJvInterpreterAdapter }
 
 end.

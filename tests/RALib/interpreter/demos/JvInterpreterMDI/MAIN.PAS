@@ -6,7 +6,7 @@ uses Sysutils, Forms, Controls, Menus, Classes, ComCtrls,
      JvInterpreter, JvInterpreterFm, JvInterpreter_all;
 
 type
-  TMainForm = class(TForm)
+  TMainForm   = class(TForm)
     MainMenu1: TMainMenu;
     File1: TMenuItem;
     FileNewItem: TMenuItem;
@@ -28,7 +28,7 @@ type
   end;
 
 var
-  MainForm: TMainForm;
+  MainForm: TMainForm  ;
 
 implementation
 
@@ -36,17 +36,17 @@ implementation
 
 uses ChildWin, About;
 
-procedure TMainForm.FileNew1Execute(Sender: TObject);
+procedure TMainForm  .FileNew1Execute(Sender: TObject);
 begin
   JvInterpreterFm1.RunForm(ExtractFilePath(paramstr(0))+'childwin.pas');
 end;
 
-procedure TMainForm.HelpAbout1Execute(Sender: TObject);
+procedure TMainForm  .HelpAbout1Execute(Sender: TObject);
 begin
   JvInterpreterRunFormModal(ExtractFilePath(paramstr(0))+'about.pas');
 end;
 
-procedure TMainForm.FileExit1Execute(Sender: TObject);
+procedure TMainForm  .FileExit1Execute(Sender: TObject);
 begin
   Close;
 end;

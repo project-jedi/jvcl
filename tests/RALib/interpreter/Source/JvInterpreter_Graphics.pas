@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 
 unit JvInterpreter_Graphics;
@@ -99,7 +99,7 @@ begin
   TFont(Args.Obj).PixelsPerInch := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read Charset: TFontCharset }
 procedure TFont_Read_Charset(var Value: Variant; Args: TArgs);
 begin
@@ -111,7 +111,7 @@ procedure TFont_Write_Charset(const Value: Variant; Args: TArgs);
 begin
   TFont(Args.Obj).Charset := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read Color: TColor }
 procedure TFont_Read_Color(var Value: Variant; Args: TArgs);
@@ -419,13 +419,13 @@ begin
   TCanvas(Args.Obj).LineTo(Args.Values[0], Args.Values[1]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure Lock; }
 procedure TCanvas_Lock(var Value: Variant; Args: TArgs);
 begin
   TCanvas(Args.Obj).Lock;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure MoveTo(X, Y: Integer); }
 procedure TCanvas_MoveTo(var Value: Variant; Args: TArgs);
@@ -508,7 +508,7 @@ begin
   Value := TCanvas(Args.Obj).TextWidth(Args.Values[0]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function TryLock: Boolean; }
 procedure TCanvas_TryLock(var Value: Variant; Args: TArgs);
 begin
@@ -520,7 +520,7 @@ procedure TCanvas_Unlock(var Value: Variant; Args: TArgs);
 begin
   TCanvas(Args.Obj).Unlock;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read ClipRect: TRect }
 procedure TCanvas_Read_ClipRect(var Value: Variant; Args: TArgs);
@@ -550,13 +550,13 @@ begin
 {$ENDIF COMPLIB_CLX}
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read LockCount: Integer }
 procedure TCanvas_Read_LockCount(var Value: Variant; Args: TArgs);
 begin
   Value := TCanvas(Args.Obj).LockCount;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read PenPos: TPoint }
 procedure TCanvas_Read_PenPos(var Value: Variant; Args: TArgs);
@@ -688,7 +688,7 @@ begin
   TGraphic(Args.Obj).Modified := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {$IFDEF COMPLIB_VCL}
 { property Read Palette: HPALETTE }
 procedure TGraphic_Read_Palette(var Value: Variant; Args: TArgs);
@@ -726,7 +726,7 @@ procedure TGraphic_Write_Transparent(const Value: Variant; Args: TArgs);
 begin
   TGraphic(Args.Obj).Transparent := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read Width: Integer }
 procedure TGraphic_Read_Width(var Value: Variant; Args: TArgs);
@@ -810,7 +810,7 @@ begin
   TPicture(Args.Obj).Graphic := V2O(Value) as TGraphic;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {$IFDEF COMPLIB_VCL}
 { property Read PictureAdapter: IChangeNotifier }
 procedure TPicture_Read_PictureAdapter(var Value: Variant; Args: TArgs);
@@ -825,7 +825,7 @@ begin
   NotImplemented('TPicture.PictureAdapter');
 end;
 {$ENDIF COMPLIB_VCL}
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read Height: Integer }
 procedure TPicture_Read_Height(var Value: Variant; Args: TArgs);
@@ -916,13 +916,13 @@ begin
   TMetafile(Args.Obj).Assign(V2O(Args.Values[0]) as TPersistent);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function ReleaseHandle: HENHMETAFILE; }
 procedure TMetafile_ReleaseHandle(var Value: Variant; Args: TArgs);
 begin
   Value := Integer(TMetafile(Args.Obj).ReleaseHandle);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read CreatedBy: String }
 procedure TMetafile_Read_CreatedBy(var Value: Variant; Args: TArgs);
@@ -1049,13 +1049,13 @@ begin
   TBitmap(Args.Obj).LoadFromResourceID(Args.Values[0], Args.Values[1]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure Mask(TransparentColor: TColor); }
 procedure TBitmap_Mask(var Value: Variant; Args: TArgs);
 begin
   TBitmap(Args.Obj).Mask(Args.Values[0]);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {$IFDEF COMPLIB_VCL}
 {  function ReleaseHandle: HBITMAP; }
@@ -1064,13 +1064,13 @@ begin
   Value := Integer(TBitmap(Args.Obj).ReleaseHandle);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function ReleaseMaskHandle: HBITMAP; }
 procedure TBitmap_ReleaseMaskHandle(var Value: Variant; Args: TArgs);
 begin
   Value := Integer(TBitmap(Args.Obj).ReleaseMaskHandle);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  function ReleasePalette: HPALETTE; }
 procedure TBitmap_ReleasePalette(var Value: Variant; Args: TArgs);
@@ -1120,7 +1120,7 @@ begin
 end;
 
 {$IFDEF COMPLIB_VCL}
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read HandleType: TBitmapHandleType }
 procedure TBitmap_Read_HandleType(var Value: Variant; Args: TArgs);
 begin
@@ -1132,7 +1132,7 @@ procedure TBitmap_Write_HandleType(const Value: Variant; Args: TArgs);
 begin
   TBitmap(Args.Obj).HandleType := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read IgnorePalette: Boolean }
 procedure TBitmap_Read_IgnorePalette(var Value: Variant; Args: TArgs);
@@ -1146,13 +1146,13 @@ begin
   TBitmap(Args.Obj).IgnorePalette := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read MaskHandle: HBITMAP }
 procedure TBitmap_Read_MaskHandle(var Value: Variant; Args: TArgs);
 begin
   Value := Integer(TBitmap(Args.Obj).MaskHandle);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 {$ENDIF COMPLIB_VCL}
 
 { property Read Monochrome: Boolean }
@@ -1167,7 +1167,7 @@ begin
   TBitmap(Args.Obj).Monochrome := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read PixelFormat: TPixelFormat }
 procedure TBitmap_Read_PixelFormat(var Value: Variant; Args: TArgs);
 begin
@@ -1185,7 +1185,7 @@ procedure TBitmap_Read_ScanLine(var Value: Variant; Args: TArgs);
 begin
   Value := P2V(TBitmap(Args.Obj).ScanLine[Args.Values[0]]);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read TransparentColor: TColor }
 procedure TBitmap_Read_TransparentColor(var Value: Variant; Args: TArgs);
@@ -1193,7 +1193,7 @@ begin
   Value := TBitmap(Args.Obj).TransparentColor;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Write TransparentColor(Value: TColor) }
 procedure TBitmap_Write_TransparentColor(const Value: Variant; Args: TArgs);
 begin
@@ -1211,7 +1211,7 @@ procedure TBitmap_Write_TransparentMode(const Value: Variant; Args: TArgs);
 begin
   TBitmap(Args.Obj).TransparentMode := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
   { TIcon }
 
@@ -1319,10 +1319,10 @@ begin
     AddSet(TFont, 'Handle', TFont_Write_Handle, 0, [0]);
     AddGet(TFont, 'PixelsPerInch', TFont_Read_PixelsPerInch, 0, [0], varEmpty);
     AddSet(TFont, 'PixelsPerInch', TFont_Write_PixelsPerInch, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TFont, 'Charset', TFont_Read_Charset, 0, [0], varEmpty);
     AddSet(TFont, 'Charset', TFont_Write_Charset, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TFont, 'Color', TFont_Read_Color, 0, [0], varEmpty);
     AddSet(TFont, 'Color', TFont_Write_Color, 0, [0]);
     AddGet(TFont, 'Height', TFont_Read_Height, 0, [0], varEmpty);
@@ -1392,9 +1392,9 @@ begin
     AddGet(TCanvas, 'FrameRect', TCanvas_FrameRect, 1, [varEmpty], varEmpty);
    {$ENDIF COMPLIB_VCL}
     AddGet(TCanvas, 'LineTo', TCanvas_LineTo, 2, [varEmpty, varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TCanvas, 'Lock', TCanvas_Lock, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TCanvas, 'MoveTo', TCanvas_MoveTo, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TCanvas, 'Pie', TCanvas_Pie, 8, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TCanvas, 'Polygon', TCanvas_Polygon, 1, [varEmpty], varEmpty);
@@ -1408,16 +1408,16 @@ begin
     AddGet(TCanvas, 'TextOut', TCanvas_TextOut, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TCanvas, 'TextRect', TCanvas_TextRect, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TCanvas, 'TextWidth', TCanvas_TextWidth, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TCanvas, 'TryLock', TCanvas_TryLock, 0, [0], varEmpty);
     AddGet(TCanvas, 'Unlock', TCanvas_Unlock, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TCanvas, 'ClipRect', TCanvas_Read_ClipRect, 0, [0], varEmpty);
     AddGet(TCanvas, 'Handle', TCanvas_Read_Handle, 0, [0], varEmpty);
     AddSet(TCanvas, 'Handle', TCanvas_Write_Handle, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TCanvas, 'LockCount', TCanvas_Read_LockCount, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TCanvas, 'PenPos', TCanvas_Read_PenPos, 0, [0], varEmpty);
     AddSet(TCanvas, 'PenPos', TCanvas_Write_PenPos, 0, [0]);
     AddGet(TCanvas, 'Brush', TCanvas_Read_Brush, 0, [0], varEmpty);
@@ -1428,12 +1428,12 @@ begin
     AddSet(TCanvas, 'Font', TCanvas_Write_Font, 0, [0]);
     AddGet(TCanvas, 'Pen', TCanvas_Read_Pen, 0, [0], varEmpty);
     AddSet(TCanvas, 'Pen', TCanvas_Write_Pen, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    { TProgressStage }
     AddConst('Graphics', 'psStarting', Integer(psStarting));
     AddConst('Graphics', 'psRunning', Integer(psRunning));
     AddConst('Graphics', 'psEnding', Integer(psEnding));
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TGraphic }
     AddClass('Graphics', TGraphic, 'TGraphic');
     AddGet(TGraphic, 'LoadFromFile', TGraphic_LoadFromFile, 1, [varEmpty], varEmpty);
@@ -1449,7 +1449,7 @@ begin
     AddSet(TGraphic, 'Height', TGraphic_Write_Height, 0, [0]);
     AddGet(TGraphic, 'Modified', TGraphic_Read_Modified, 0, [0], varEmpty);
     AddSet(TGraphic, 'Modified', TGraphic_Write_Modified, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    {$IFDEF COMPLIB_VCL}
     AddGet(TGraphic, 'Palette', TGraphic_Read_Palette, 0, [0], varEmpty);
     AddSet(TGraphic, 'Palette', TGraphic_Write_Palette, 0, [0]);
@@ -1458,7 +1458,7 @@ begin
    {$ENDIF COMPLIB_VCL}
     AddGet(TGraphic, 'Transparent', TGraphic_Read_Transparent, 0, [0], varEmpty);
     AddSet(TGraphic, 'Transparent', TGraphic_Write_Transparent, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TGraphic, 'Width', TGraphic_Read_Width, 0, [0], varEmpty);
     AddSet(TGraphic, 'Width', TGraphic_Write_Width, 0, [0]);
    { TPicture }
@@ -1476,12 +1476,12 @@ begin
     AddSet(TPicture, 'Bitmap', TPicture_Write_Bitmap, 0, [0]);
     AddGet(TPicture, 'Graphic', TPicture_Read_Graphic, 0, [0], varEmpty);
     AddSet(TPicture, 'Graphic', TPicture_Write_Graphic, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    {$IFDEF COMPLIB_VCL}
     AddGet(TPicture, 'PictureAdapter', TPicture_Read_PictureAdapter, 0, [0], varEmpty);
     AddSet(TPicture, 'PictureAdapter', TPicture_Write_PictureAdapter, 0, [0]);
    {$ENDIF COMPLIB_VCL}
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TPicture, 'Height', TPicture_Read_Height, 0, [0], varEmpty);
     AddGet(TPicture, 'Icon', TPicture_Read_Icon, 0, [0], varEmpty);
     AddSet(TPicture, 'Icon', TPicture_Write_Icon, 0, [0]);
@@ -1501,9 +1501,9 @@ begin
     AddGet(TMetafile, 'LoadFromClipboardFormat', TMetafile_LoadFromClipboardFormat, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TMetafile, 'SaveToClipboardFormat', TMetafile_SaveToClipboardFormat, 3, [varByRef, varByRef, varByRef], varEmpty);
     AddGet(TMetafile, 'Assign', TMetafile_Assign, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TMetafile, 'ReleaseHandle', TMetafile_ReleaseHandle, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TMetafile, 'CreatedBy', TMetafile_Read_CreatedBy, 0, [0], varEmpty);
     AddGet(TMetafile, 'Description', TMetafile_Read_Description, 0, [0], varEmpty);
     AddGet(TMetafile, 'Enhanced', TMetafile_Read_Enhanced, 0, [0], varEmpty);
@@ -1516,10 +1516,10 @@ begin
     AddSet(TMetafile, 'MMHeight', TMetafile_Write_MMHeight, 0, [0]);
     AddGet(TMetafile, 'Inch', TMetafile_Read_Inch, 0, [0], varEmpty);
     AddSet(TMetafile, 'Inch', TMetafile_Write_Inch, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    {$ENDIF COMPLIB_VCL}
    { TBitmapHandleType }
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddConst('Graphics', 'bmDIB', Integer(bmDIB));
     AddConst('Graphics', 'bmDDB', Integer(bmDDB));
    { TPixelFormat }
@@ -1535,9 +1535,9 @@ begin
    { TTransparentMode }
     AddConst('Graphics', 'tmAuto', Integer(tmAuto));
     AddConst('Graphics', 'tmFixed', Integer(tmFixed));
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TBitmap }
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddClass('Graphics', TBitmap, 'TBitmap');
     AddGet(TBitmap, 'Create', TBitmap_Create, 0, [0], varEmpty);
     AddGet(TBitmap, 'Assign', TBitmap_Assign, 1, [varEmpty], varEmpty);
@@ -1549,14 +1549,14 @@ begin
     AddGet(TBitmap, 'LoadFromStream', TBitmap_LoadFromStream, 1, [varEmpty], varEmpty);
     AddGet(TBitmap, 'LoadFromResourceName', TBitmap_LoadFromResourceName, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TBitmap, 'LoadFromResourceID', TBitmap_LoadFromResourceID, 2, [varEmpty, varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBitmap, 'Mask', TBitmap_Mask, 1, [varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    {$IFDEF COMPLIB_VCL}
     AddGet(TBitmap, 'ReleaseHandle', TBitmap_ReleaseHandle, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBitmap, 'ReleaseMaskHandle', TBitmap_ReleaseMaskHandle, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TBitmap, 'ReleasePalette', TBitmap_ReleasePalette, 0, [0], varEmpty);
     AddGet(TBitmap, 'SaveToClipboardFormat', TBitmap_SaveToClipboardFormat, 3, [varByRef, varByRef, varByRef], varEmpty);
    {$ENDIF COMPLIB_VCL}
@@ -1565,29 +1565,29 @@ begin
     AddGet(TBitmap, 'Handle', TBitmap_Read_Handle, 0, [0], varEmpty);
     AddSet(TBitmap, 'Handle', TBitmap_Write_Handle, 0, [0]);
    {$IFDEF COMPLIB_VCL}
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBitmap, 'HandleType', TBitmap_Read_HandleType, 0, [0], varEmpty);
     AddSet(TBitmap, 'HandleType', TBitmap_Write_HandleType, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TBitmap, 'IgnorePalette', TBitmap_Read_IgnorePalette, 0, [0], varEmpty);
     AddSet(TBitmap, 'IgnorePalette', TBitmap_Write_IgnorePalette, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBitmap, 'MaskHandle', TBitmap_Read_MaskHandle, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    {$ENDIF COMPLIB_VCL}
     AddGet(TBitmap, 'Monochrome', TBitmap_Read_Monochrome, 0, [0], varEmpty);
     AddSet(TBitmap, 'Monochrome', TBitmap_Write_Monochrome, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBitmap, 'PixelFormat', TBitmap_Read_PixelFormat, 0, [0], varEmpty);
     AddSet(TBitmap, 'PixelFormat', TBitmap_Write_PixelFormat, 0, [0]);
     AddGet(TBitmap, 'ScanLine', TBitmap_Read_ScanLine, 1, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TBitmap, 'TransparentColor', TBitmap_Read_TransparentColor, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddSet(TBitmap, 'TransparentColor', TBitmap_Write_TransparentColor, 0, [0]);
     AddGet(TBitmap, 'TransparentMode', TBitmap_Read_TransparentMode, 0, [0], varEmpty);
     AddSet(TBitmap, 'TransparentMode', TBitmap_Write_TransparentMode, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TIcon }
     AddClass('Graphics', TIcon, 'TIcon');
     AddGet(TIcon, 'Create', TIcon_Create, 0, [0], varEmpty);

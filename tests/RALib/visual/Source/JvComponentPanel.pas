@@ -26,9 +26,9 @@ description : Component panel for GUI developers
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvComponentPanel;
 
@@ -88,7 +88,7 @@ type
     property ButtonWidth  : integer      read FButtonW        write SetButtonW;
     property ButtonHeight : integer      read FButtonH        write SetButtonH;
     property ButtonCount  : integer      read GetButtonCount write SetButtonCount;
-   {$IFDEF Delphi4_Up}
+   {$IFDEF COMPILER4_UP}
     property Anchors;
     property AutoSize;
     property BiDiMode;
@@ -105,7 +105,7 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-   {$ENDIF Delphi4_Up}
+   {$ENDIF COMPILER4_UP}
   end;
 
 implementation
@@ -151,9 +151,9 @@ begin
     OnClick := OnMoveClick;
   end;
   with FButtonPointer do begin
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     Flat   := true;
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     Parent := Self;
     Top    := 0;
     Glyph.LoadFromResourceName(HInstance, 'RACPPOINTER');
@@ -229,9 +229,9 @@ begin
     begin
       TmpButton := TSpeedButton.Create(Self);
       with TmpButton do begin
-       {$IFDEF Delphi3_Up}
+       {$IFDEF COMPILER3_UP}
         Flat    := true;
-       {$ENDIF Delphi3_Up}
+       {$ENDIF COMPILER3_UP}
         Parent  := Self;
         Top     := 0;
         GroupIndex := 1;

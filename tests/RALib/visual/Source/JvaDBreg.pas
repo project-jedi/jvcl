@@ -25,44 +25,44 @@ description : Register db-aware components
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvaDBReg;
 
 interface
 
 uses Classes,
-  {$IFDEF Delphi6_Up}
+  {$IFDEF COMPILER6_UP}
    DesignIntf, DesignEditors, VCLEditors
   {$ELSE}
    DsgnIntf
-  {$ENDIF Delphi6_Up}
+  {$ENDIF COMPILER6_UP}
   ;
 
 type
 
  {**************** from Delphi2\Lib\DBReg.pas }
-  TDBStringProperty = class(TStringProperty)
+  TJvDBStringProperty  = class(TStringProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValueList(List: TStrings); virtual; abstract;
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
-  TDataFieldProperty = class(TDBStringProperty)
+  TJvDataFieldProperty  = class(TJvDBStringProperty )
   public
     function GetDataSourcePropName: string; virtual;
     procedure GetValueList(List: TStrings); override;
   end;
 
-  TListFieldProperty = class(TDataFieldProperty)
+  TJvListFieldProperty  = class(TJvDataFieldProperty )
   public
     function GetDataSourcePropName: string; override;
   end;
 
-  TDatabaseNameProperty = class(TDBStringProperty)
+  TJvDatabaseNameProperty  = class(TJvDBStringProperty )
   public
     procedure GetValueList(List: TStrings); override;
   end;
@@ -93,30 +93,30 @@ begin
   RegisterComponents(RALibTabName, [TJvaSQLScript]);
  {JvDBTreeView unit}
   RegisterComponents(RALibTabName, [TJvDBTreeView]);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'ItemField', TDataFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'MasterField', TDataFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'DetailField', TDataFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'IconField', TDataFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'ItemField', TJvDataFieldProperty );
+  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'MasterField', TJvDataFieldProperty );
+  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'DetailField', TJvDataFieldProperty );
+  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'IconField', TJvDataFieldProperty );
 
  {JvDBLookupTreeView unit}
   RegisterComponents(RALibTabName, [TJvDBLookupTreeView, TJvDBLookupTreeViewCombo]);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'KeyField', TListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'ListField', TListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'MasterField', TListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'DetailField', TListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'IconField', TListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'KeyField', TListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'ListField', TListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'MasterField', TListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'DetailField', TListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'IconField', TListFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'KeyField', TJvListFieldProperty );
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'ListField', TJvListFieldProperty );
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'MasterField', TJvListFieldProperty );
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'DetailField', TJvListFieldProperty );
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'IconField', TJvListFieldProperty );
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'KeyField', TJvListFieldProperty );
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'ListField', TJvListFieldProperty );
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'MasterField', TJvListFieldProperty );
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'DetailField', TJvListFieldProperty );
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'IconField', TJvListFieldProperty );
 
  { JvDBMove unit }
   RegisterComponents(RALibTabName, [TJvDBMove]);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBMove, 'Source', TDatabaseNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBMove, 'Destination', TDatabaseNameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBMove, 'Source', TJvDatabaseNameProperty );
+  RegisterPropertyEditor(TypeInfo(string), TJvDBMove, 'Destination', TJvDatabaseNameProperty );
 
- {$IFDEF Delphi6_Up}
+ {$IFDEF COMPILER6_UP}
  {$IFDEF COMPLIB_VCL}
   RegisterPropertiesInCategory('Database', TJvDBTreeView,
     ['ItemField', 'MasterField', 'DetailField', 'IconField', 'StartMasterValue', 'UseFilter']);
@@ -130,17 +130,17 @@ begin
 end;
 
 {**************** from Delphi2\Lib\DBReg.pas }
-function TListFieldProperty.GetDataSourcePropName: string;
+function TJvListFieldProperty .GetDataSourcePropName: string;
 begin
   Result := 'ListSource';
 end;
 
-function TDBStringProperty.GetAttributes: TPropertyAttributes;
+function TJvDBStringProperty .GetAttributes: TPropertyAttributes;
 begin
   Result := [paValueList, paSortList, paMultiSelect];
 end;
 
-procedure TDBStringProperty.GetValues(Proc: TGetStrProc);
+procedure TJvDBStringProperty .GetValues(Proc: TGetStrProc);
 var
   I: Integer;
   Values: TStringList;
@@ -155,12 +155,12 @@ begin
 end;
 
 
-function TDataFieldProperty.GetDataSourcePropName: string;
+function TJvDataFieldProperty .GetDataSourcePropName: string;
 begin
   Result := 'DataSource';
 end;
 
-procedure TDataFieldProperty.GetValueList(List: TStrings);
+procedure TJvDataFieldProperty .GetValueList(List: TStrings);
 var
   Instance: TComponent;
   PropInfo: PPropInfo;
@@ -176,7 +176,7 @@ begin
   end;
 end;
 
-procedure TDatabaseNameProperty.GetValueList(List: TStrings);
+procedure TJvDatabaseNameProperty .GetValueList(List: TStrings);
 begin
   Session.GetDatabaseNames(List);
 end;

@@ -1,2 +1,4 @@
 [Directories]
 UnitOutputDir=..\..\..\..\Lib5
+SearchPath=..\..\..\..\Images;..\..\..\Source
+

@@ -2,8 +2,8 @@ program TracerTest;
 
 uses
   Forms,
-  fTracerTest in 'fTracerTest.pas' {Form1},
-  iMTracer in 'iMTracer.pas';
+  fJvTracerTest in 'fJvTracerTest.pas' {Form1},
+  iJvMTracer in 'iJvMTracer.pas';
 
 {$R *.RES}
 

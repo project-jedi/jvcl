@@ -2,13 +2,13 @@ program RAEditorTest;
 
 uses
   Forms,
-  fRAEditorTest in 'fRAEditorTest.pas' {Editor};
+  fJvEditorTest in 'fJvEditorTest.pas' {frmEditor};
 
 {$R *.RES}
 
 begin
   Application.Initialize;
   Application.Title := '';
-  Application.CreateForm(TEditor, Editor);
+  Application.CreateForm(TfrmEditor, frmEditor);
   Application.Run;
 end.

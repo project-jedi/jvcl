@@ -1,14 +1,14 @@
 unit EditPos;
 
 var
-  EditPosReg: TRegAuto;
+  EditPosReg: TJvRegAuto;
 
 const
   EditPosCfg = 'EditPos.cfg';
 
 procedure InitEditPos;
 begin
-  EditPosReg := TRegAuto.Create(MainWindow);
+  EditPosReg := TJvRegAuto.Create(MainWindow);
   EditPosReg.IniFile := WorkingDir + EditPosCfg;
   EditPosReg.UseIni := True;
   EditPosReg.UseReg := False;

@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvInterpreter_JvEditor;
 
@@ -42,39 +42,39 @@ implementation
 uses Classes, JvEditor, JvHLEditor, JvInterpreter_Windows;
 
 
-  { TKeyboard }
+  { TJvKeyboard  }
 
 { constructor Create }
 procedure TKeyboard_Create(var Value: Variant; Args: TArgs);
 begin
-  Value := O2V(TKeyboard.Create);
+  Value := O2V(TJvKeyboard .Create);
 end;
 
 {  procedure Add(const ACommand: TEditCommand; const AKey1: word; const AShift1: TShiftState); }
 procedure TKeyboard_Add(var Value: Variant; Args: TArgs);
 begin
-  TKeyboard(Args.Obj).Add(Args.Values[0], Args.Values[1], TShiftState(Byte(V2S(Args.Values[2]))));
+  TJvKeyboard (Args.Obj).Add(Args.Values[0], Args.Values[1], TShiftState(Byte(V2S(Args.Values[2]))));
 end;
 
 {  procedure Add2(const ACommand: TEditCommand; const AKey1: word; const AShift1: TShiftState; const AKey2: word; const AShift2: TShiftState); }
 procedure TKeyboard_Add2(var Value: Variant; Args: TArgs);
 begin
-  TKeyboard(Args.Obj).Add2(Args.Values[0], Args.Values[1], TShiftState(Byte(V2S(Args.Values[2]))), Args.Values[3], TShiftState(Byte(V2S(Args.Values[4]))));
+  TJvKeyboard (Args.Obj).Add2(Args.Values[0], Args.Values[1], TShiftState(Byte(V2S(Args.Values[2]))), Args.Values[3], TShiftState(Byte(V2S(Args.Values[4]))));
 end;
 
 {  procedure Clear; }
 procedure TKeyboard_Clear(var Value: Variant; Args: TArgs);
 begin
-  TKeyboard(Args.Obj).Clear;
+  TJvKeyboard (Args.Obj).Clear;
 end;
 
 {  procedure SetDefLayot; }
 procedure TKeyboard_SetDefLayot(var Value: Variant; Args: TArgs);
 begin
-  TKeyboard(Args.Obj).SetDefLayot;
+  TJvKeyboard (Args.Obj).SetDefLayot;
 end;
 
-  { ERAEditorError }
+  { EJvEditorError  }
 
   { TJvCustomEditor }
 
@@ -374,7 +374,7 @@ begin
 end;
 *)
 
-{ property Read Keyboard: TKeyboard }
+{ property Read Keyboard: TJvKeyboard  }
 procedure TRACustomEditor_Read_Keyboard(var Value: Variant; Args: TArgs);
 begin
   Value := O2V(TJvCustomEditor(Args.Obj).Keyboard);
@@ -438,15 +438,15 @@ begin
    { TModifiedAction }
     AddConst('JvEditor', 'maInsert', maInsert);
     AddConst('JvEditor', 'maDelete', maDelete);
-   { TKeyboard }
-    AddClass('JvEditor', TKeyboard, 'TKeyboard');
-    AddGet(TKeyboard, 'Create', TKeyboard_Create, 0, [0], varEmpty);
-    AddGet(TKeyboard, 'Add', TKeyboard_Add, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddGet(TKeyboard, 'Add2', TKeyboard_Add2, 5, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-    AddGet(TKeyboard, 'Clear', TKeyboard_Clear, 0, [0], varEmpty);
-    AddGet(TKeyboard, 'SetDefLayot', TKeyboard_SetDefLayot, 0, [0], varEmpty);
-   { ERAEditorError }
-    AddClass('JvEditor', ERAEditorError, 'ERAEditorError');
+   { TJvKeyboard  }
+    AddClass('JvEditor', TJvKeyboard , 'TJvKeyboard ');
+    AddGet(TJvKeyboard , 'Create', TKeyboard_Create, 0, [0], varEmpty);
+    AddGet(TJvKeyboard , 'Add', TKeyboard_Add, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddGet(TJvKeyboard , 'Add2', TKeyboard_Add2, 5, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
+    AddGet(TJvKeyboard , 'Clear', TKeyboard_Clear, 0, [0], varEmpty);
+    AddGet(TJvKeyboard , 'SetDefLayot', TKeyboard_SetDefLayot, 0, [0], varEmpty);
+   { EJvEditorError  }
+    AddClass('JvEditor', EJvEditorError , 'EJvEditorError ');
    { TTabStop }
     AddConst('JvEditor', 'tsTabStop', tsTabStop);
     AddConst('JvEditor', 'tsAutoIndent', tsAutoIndent);

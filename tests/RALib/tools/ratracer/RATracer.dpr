@@ -3,8 +3,8 @@ program RATracer;
 uses
   Forms,
   Dialogs,
-  fTracer in 'fTracer.pas' {TracerMain},
-  iMTracer in 'iMTracer.pas';
+  fJvTracer in 'fJvTracer.pas' {TracerMain},
+  iJvMTracer in 'iJvMTracer.pas';
 
 {$R *.RES}
 
@@ -12,6 +12,6 @@ uses
 begin
   Application.Initialize;
   Application.Title := 'JVCL Tracer';
-  Application.CreateForm(TTracerMain, TracerMain);
+  Application.CreateForm(TJvTracerMain , TracerMain);
   Application.Run;
 end.

@@ -831,8 +831,8 @@ object Main: TMain
       'alink="#FFFF00">'
       ''
       
-        '<p align="left">Download last JVCLmp;A Library version now - <fon' +
-        't face="Arial"'
+        '<p align="left">Download last JVCLmp;A Library version now - <fo' +
+        'nt face="Arial"'
       
         'color="#00FFFF"><a href="http://www.torry.ru/vcl/packs/ralib.zip' +
         '"><small>ralib110.zip</small></a>'

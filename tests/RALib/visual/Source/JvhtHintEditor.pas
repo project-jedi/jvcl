@@ -25,9 +25,9 @@ description : Design-time Hint Editor
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvHTHintEditor;
 
@@ -36,11 +36,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls,
-  {$IFDEF Delphi6_Up}
+  {$IFDEF COMPILER6_UP}
    DesignIntf, DesignEditors,
   {$ELSE}
    DsgnIntf,
-  {$ENDIF Delphi6_Up}
+  {$ENDIF COMPILER6_UP}
   JvHint;
 
 type

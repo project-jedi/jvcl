@@ -1,3 +1,5 @@
 [Directories]
-UnitOutputDir=..\..\..\..\Lib5
+OutputDir=
+UnitOutputDir=
+
 

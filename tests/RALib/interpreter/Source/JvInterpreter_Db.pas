@@ -25,9 +25,9 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvInterpreter_Db;
 
@@ -39,7 +39,7 @@ uses JvInterpreter;
 
 implementation
 
-uses Classes, Db {$IFNDEF Delphi3_Up}, DbTables{$ENDIF};
+uses Classes, Db {$IFNDEF COMPILER3_UP}, DbTables{$ENDIF};
 
 
   { EDatabaseError }
@@ -60,7 +60,7 @@ begin
   Value := O2V(TFieldDef(Args.Obj).CreateField(V2O(Args.Values[0]) as TComponent));
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read InternalCalcField: Boolean }
 procedure TFieldDef_Read_InternalCalcField(var Value: Variant; Args: TArgs);
 begin
@@ -72,7 +72,7 @@ procedure TFieldDef_Write_InternalCalcField(const Value: Variant; Args: TArgs);
 begin
   TFieldDef(Args.Obj).InternalCalcField := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read DataType: TFieldType }
 procedure TFieldDef_Read_DataType(var Value: Variant; Args: TArgs);
@@ -98,7 +98,7 @@ begin
   Value := TFieldDef(Args.Obj).Name;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read Precision: Integer }
 procedure TFieldDef_Read_Precision(var Value: Variant; Args: TArgs);
 begin
@@ -110,7 +110,7 @@ procedure TFieldDef_Write_Precision(const Value: Variant; Args: TArgs);
 begin
   TFieldDef(Args.Obj).Precision := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read Required: Boolean }
 procedure TFieldDef_Read_Required(var Value: Variant; Args: TArgs);
@@ -220,13 +220,13 @@ begin
   Value := TField(Args.Obj).GetData(V2P(Args.Values[0]));
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function IsBlob: Boolean; }
 procedure TField_IsBlob(var Value: Variant; Args: TArgs);
 begin
   Value := TField(Args.Obj).IsBlob;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  function IsValidChar(InputChar: Char): Boolean; }
 procedure TField_IsValidChar(var Value: Variant; Args: TArgs);
@@ -234,13 +234,13 @@ begin
   Value := TField(Args.Obj).IsValidChar(string(Args.Values[0])[1]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure RefreshLookupList; }
 procedure TField_RefreshLookupList(var Value: Variant; Args: TArgs);
 begin
   TField(Args.Obj).RefreshLookupList;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure SetData(Buffer: Pointer); }
 procedure TField_SetData(var Value: Variant; Args: TArgs);
@@ -254,13 +254,13 @@ begin
   TField(Args.Obj).SetFieldType(Args.Values[0]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure Validate(Buffer: Pointer); }
 procedure TField_Validate(var Value: Variant; Args: TArgs);
 begin
   TField(Args.Obj).Validate(V2P(Args.Values[0]));
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read AsBoolean: Boolean }
 procedure TField_Read_AsBoolean(var Value: Variant; Args: TArgs);
@@ -376,13 +376,13 @@ begin
   Value := TField(Args.Obj).CanModify;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read CurValue: Variant }
 procedure TField_Read_CurValue(var Value: Variant; Args: TArgs);
 begin
   Value := TField(Args.Obj).CurValue;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read DataSet: TDataSet }
 procedure TField_Read_DataSet(var Value: Variant; Args: TArgs);
@@ -480,13 +480,13 @@ begin
   TField(Args.Obj).NewValue := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read Offset: word }
 procedure TField_Read_Offset(var Value: Variant; Args: TArgs);
 begin
   Value := TField(Args.Obj).Offset;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read OldValue: Variant }
 procedure TField_Read_OldValue(var Value: Variant; Args: TArgs);
@@ -556,7 +556,7 @@ begin
   TField(Args.Obj).Alignment := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read CustomConstraint: string }
 procedure TField_Read_CustomConstraint(var Value: Variant; Args: TArgs);
 begin
@@ -592,7 +592,7 @@ procedure TField_Write_DefaultExpression(const Value: Variant; Args: TArgs);
 begin
   TField(Args.Obj).DefaultExpression := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read DisplayLabel: string }
 procedure TField_Read_DisplayLabel(var Value: Variant; Args: TArgs);
@@ -642,13 +642,13 @@ begin
   TField(Args.Obj).FieldName := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read HasConstraints: Boolean }
 procedure TField_Read_HasConstraints(var Value: Variant; Args: TArgs);
 begin
   Value := TField(Args.Obj).HasConstraints;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read Index: Integer }
 procedure TField_Read_Index(var Value: Variant; Args: TArgs);
@@ -662,7 +662,7 @@ begin
   TField(Args.Obj).Index := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read ImportedConstraint: string }
 procedure TField_Read_ImportedConstraint(var Value: Variant; Args: TArgs);
 begin
@@ -674,7 +674,7 @@ procedure TField_Write_ImportedConstraint(const Value: Variant; Args: TArgs);
 begin
   TField(Args.Obj).ImportedConstraint := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read LookupDataSet: TDataSet }
 procedure TField_Read_LookupDataSet(var Value: Variant; Args: TArgs);
@@ -724,7 +724,7 @@ begin
   TField(Args.Obj).KeyFields := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read LookupCache: Boolean }
 procedure TField_Read_LookupCache(var Value: Variant; Args: TArgs);
 begin
@@ -748,7 +748,7 @@ procedure TField_Write_Origin(const Value: Variant; Args: TArgs);
 begin
   TField(Args.Obj).Origin := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read ReadOnly: Boolean }
 procedure TField_Read_ReadOnly(var Value: Variant; Args: TArgs);
@@ -1175,13 +1175,13 @@ begin
 end;
 
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function IsBlob: Boolean; }
 procedure TBlobField_IsBlob(var Value: Variant; Args: TArgs);
 begin
   Value := TBlobField(Args.Obj).IsBlob;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure LoadFromFile(const FileName: string); }
 procedure TBlobField_LoadFromFile(var Value: Variant; Args: TArgs);
@@ -1213,7 +1213,7 @@ begin
   TBlobField(Args.Obj).SetFieldType(Args.Values[0]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read BlobSize: Integer }
 procedure TBlobField_Read_BlobSize(var Value: Variant; Args: TArgs);
 begin
@@ -1231,7 +1231,7 @@ procedure TBlobField_Write_Modified(const Value: Variant; Args: TArgs);
 begin
   TBlobField(Args.Obj).Modified := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read Value: string }
 procedure TBlobField_Read_Value(var Value: Variant; Args: TArgs);
@@ -1245,7 +1245,7 @@ begin
   TBlobField(Args.Obj).Value := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read Transliterate: Boolean }
 procedure TBlobField_Read_Transliterate(var Value: Variant; Args: TArgs);
 begin
@@ -1257,7 +1257,7 @@ procedure TBlobField_Write_Transliterate(const Value: Variant; Args: TArgs);
 begin
   TBlobField(Args.Obj).Transliterate := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read BlobType: TBlobType }
 procedure TBlobField_Read_BlobType(var Value: Variant; Args: TArgs);
@@ -1327,24 +1327,24 @@ begin
   Value := TIndexDef(Args.Obj).Source;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Write Source(Value: string) }
 procedure TIndexDef_Write_Source(const Value: Variant; Args: TArgs);
 begin
   TIndexDef(Args.Obj).Source := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
   { TIndexDefs }
 
 { constructor Create(DataSet: TDataSet) }
 procedure TIndexDefs_Create(var Value: Variant; Args: TArgs);
 begin
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   Value := O2V(TIndexDefs.Create(V2O(Args.Values[0]) as TDataSet));
 {$ELSE}
   Value := O2V(TIndexDefs.Create(V2O(Args.Values[0]) as TTable));
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 end;
 
 {  procedure Add(const Name, Fields: string; Options: TIndexOptions); }
@@ -1371,13 +1371,13 @@ begin
   Value := O2V(TIndexDefs(Args.Obj).FindIndexForFields(Args.Values[0]));
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function GetIndexForFields(const Fields: string; CaseInsensitive: Boolean): TIndexDef; }
 procedure TIndexDefs_GetIndexForFields(var Value: Variant; Args: TArgs);
 begin
   Value := O2V(TIndexDefs(Args.Obj).GetIndexForFields(Args.Values[0], Args.Values[1]));
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  function IndexOf(const Name: string): Integer; }
 procedure TIndexDefs_IndexOf(var Value: Variant; Args: TArgs);
@@ -1403,7 +1403,7 @@ begin
   Value := O2V(TIndexDefs(Args.Obj).Items[Args.Values[0]]);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Read Updated: Boolean }
 procedure TIndexDefs_Read_Updated(var Value: Variant; Args: TArgs);
 begin
@@ -1415,7 +1415,7 @@ procedure TIndexDefs_Write_Updated(const Value: Variant; Args: TArgs);
 begin
   TIndexDefs(Args.Obj).Updated := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
   { TDataLink }
 
@@ -1583,7 +1583,7 @@ begin
   TDataSource(Args.Obj).Enabled := Value;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
   { TCheckConstraint }
 
 {  procedure Assign(Source: TPersistent); }
@@ -1671,7 +1671,7 @@ procedure TCheckConstraints_Write_Items(const Value: Variant; Args: TArgs);
 begin
   TCheckConstraints(Args.Obj).Items[Args.Values[0]] := V2O(Value) as TCheckConstraint;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
   { TDataSet }
 
@@ -1694,13 +1694,13 @@ begin
   TDataSet(Args.Obj).AppendRecord(Slice(Args.OA^, Args.OAS));
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function BookmarkValid(Bookmark: TBookmark): Boolean; }
 procedure TDataSet_BookmarkValid(var Value: Variant; Args: TArgs);
 begin
   Value := TDataSet(Args.Obj).BookmarkValid(V2P(Args.Values[0]));
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure Cancel; }
 procedure TDataSet_Cancel(var Value: Variant; Args: TArgs);
@@ -1732,7 +1732,7 @@ begin
   Value := TDataSet(Args.Obj).ControlsDisabled;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function CompareBookmarks(Bookmark1, Bookmark2: TBookmark): Integer; }
 procedure TDataSet_CompareBookmarks(var Value: Variant; Args: TArgs);
 begin
@@ -1744,7 +1744,7 @@ procedure TDataSet_CreateBlobStream(var Value: Variant; Args: TArgs);
 begin
   Value := O2V(TDataSet(Args.Obj).CreateBlobStream(V2O(Args.Values[0]) as TField, Args.Values[1]));
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure CursorPosChanged; }
 procedure TDataSet_CursorPosChanged(var Value: Variant; Args: TArgs);
@@ -1867,13 +1867,13 @@ begin
   TDataSet(Args.Obj).InsertRecord(Slice(Args.OA^, Args.OAS));
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function IsEmpty: Boolean; }
 procedure TDataSet_IsEmpty(var Value: Variant; Args: TArgs);
 begin
   Value := TDataSet(Args.Obj).IsEmpty;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  function IsLinkedTo(DataSource: TDataSource): Boolean; }
 procedure TDataSet_IsLinkedTo(var Value: Variant; Args: TArgs);
@@ -1881,13 +1881,13 @@ begin
   Value := TDataSet(Args.Obj).IsLinkedTo(V2O(Args.Values[0]) as TDataSource);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  function IsSequenced: Boolean; }
 procedure TDataSet_IsSequenced(var Value: Variant; Args: TArgs);
 begin
   Value := TDataSet(Args.Obj).IsSequenced;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure Last; }
 procedure TDataSet_Last(var Value: Variant; Args: TArgs);
@@ -1956,13 +1956,13 @@ begin
   TDataSet(Args.Obj).SetFields(Slice(Args.OA^, Args.OAS));
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 {  procedure Translate(Src, Dest: PChar; ToOem: Boolean); }
 procedure TDataSet_Translate(var Value: Variant; Args: TArgs);
 begin
   TDataSet(Args.Obj).Translate(PChar(string(Args.Values[0])), PChar(string(Args.Values[1])), Args.Values[2]);
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 {  procedure UpdateCursorPos; }
 procedure TDataSet_UpdateCursorPos(var Value: Variant; Args: TArgs);
@@ -2048,13 +2048,13 @@ begin
   Value := O2V(TDataSet(Args.Obj).Fields[Args.Values[0]]);
 end;
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 { property Write Fields[Integer]: TField }
 procedure TDataSet_Write_Fields(const Value: Variant; Args: TArgs);
 begin
   TDataSet(Args.Obj).Fields[Args.Values[0]] := V2O(Value) as TField;
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 { property Read FieldValues[string]: Variant }
 procedure TDataSet_Read_FieldValues(var Value: Variant; Args: TArgs);
@@ -2092,13 +2092,13 @@ begin
   Value := TDataSet(Args.Obj).RecNo;
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { property Write RecNo(Value: Integer) }
 procedure TDataSet_Write_RecNo(const Value: Variant; Args: TArgs);
 begin
   TDataSet(Args.Obj).RecNo := Value;
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { property Read RecordSize: Word }
 procedure TDataSet_Read_RecordSize(var Value: Variant; Args: TArgs);
@@ -2239,11 +2239,11 @@ begin
     AddConst('Db', 'dsSetKey', dsSetKey);
     AddConst('Db', 'dsCalcFields', dsCalcFields);
     AddConst('Db', 'dsFilter', dsFilter);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddConst('Db', 'dsNewValue', dsNewValue);
     AddConst('Db', 'dsOldValue', dsOldValue);
     AddConst('Db', 'dsCurValue', dsCurValue);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TDataEvent }
     AddConst('Db', 'deFieldChange', deFieldChange);
     AddConst('Db', 'deRecordChange', deRecordChange);
@@ -2286,27 +2286,27 @@ begin
     AddConst('Db', 'ftParadoxOle', ftParadoxOle);
     AddConst('Db', 'ftDBaseOle', ftDBaseOle);
     AddConst('Db', 'ftTypedBinary', ftTypedBinary);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddConst('Db', 'ftCursor', ftCursor);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TFieldDef }
     AddClass('Db', TFieldDef, 'TFieldDef');
    {$IFNDEF BCB3}
     AddGet(TFieldDef, 'Create', TFieldDef_Create, 6, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
    {$ENDIF BCB3}
     AddGet(TFieldDef, 'CreateField', TFieldDef_CreateField, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TFieldDef, 'InternalCalcField', TFieldDef_Read_InternalCalcField, 0, [0], varEmpty);
     AddSet(TFieldDef, 'InternalCalcField', TFieldDef_Write_InternalCalcField, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TFieldDef, 'DataType', TFieldDef_Read_DataType, 0, [0], varEmpty);
     AddGet(TFieldDef, 'FieldClass', TFieldDef_Read_FieldClass, 0, [0], varEmpty);
     AddGet(TFieldDef, 'FieldNo', TFieldDef_Read_FieldNo, 0, [0], varEmpty);
     AddGet(TFieldDef, 'Name', TFieldDef_Read_Name, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TFieldDef, 'Precision', TFieldDef_Read_Precision, 0, [0], varEmpty);
     AddSet(TFieldDef, 'Precision', TFieldDef_Write_Precision, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TFieldDef, 'Required', TFieldDef_Read_Required, 0, [0], varEmpty);
     AddGet(TFieldDef, 'Size', TFieldDef_Read_Size, 0, [0], varEmpty);
    { TFieldDefs }
@@ -2324,9 +2324,9 @@ begin
     AddConst('Db', 'fkData', fkData);
     AddConst('Db', 'fkCalculated', fkCalculated);
     AddConst('Db', 'fkLookup', fkLookup);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddConst('Db', 'fkInternalCalc', fkInternalCalc);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TField }
     AddClass('Db', TField, 'TField');
     AddGet(TField, 'Create', TField_Create, 1, [varEmpty], varEmpty);
@@ -2335,18 +2335,18 @@ begin
     AddGet(TField, 'Clear', TField_Clear, 0, [0], varEmpty);
     AddGet(TField, 'FocusControl', TField_FocusControl, 0, [0], varEmpty);
     AddGet(TField, 'GetData', TField_GetData, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TField, 'IsBlob', TField_IsBlob, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TField, 'IsValidChar', TField_IsValidChar, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TField, 'RefreshLookupList', TField_RefreshLookupList, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TField, 'SetData', TField_SetData, 1, [varEmpty], varEmpty);
     AddGet(TField, 'SetFieldType', TField_SetFieldType, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TField, 'Validate', TField_Validate, 1, [varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TField, 'AsBoolean', TField_Read_AsBoolean, 0, [0], varEmpty);
     AddSet(TField, 'AsBoolean', TField_Write_AsBoolean, 0, [0]);
     AddGet(TField, 'AsCurrency', TField_Read_AsCurrency, 0, [0], varEmpty);
@@ -2366,9 +2366,9 @@ begin
     AddGet(TField, 'Calculated', TField_Read_Calculated, 0, [0], varEmpty);
     AddSet(TField, 'Calculated', TField_Write_Calculated, 0, [0]);
     AddGet(TField, 'CanModify', TField_Read_CanModify, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TField, 'CurValue', TField_Read_CurValue, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TField, 'DataSet', TField_Read_DataSet, 0, [0], varEmpty);
     AddSet(TField, 'DataSet', TField_Write_DataSet, 0, [0]);
     AddGet(TField, 'DataSize', TField_Read_DataSize, 0, [0], varEmpty);
@@ -2385,9 +2385,9 @@ begin
     AddSet(TField, 'Lookup', TField_Write_Lookup, 0, [0]);
     AddGet(TField, 'NewValue', TField_Read_NewValue, 0, [0], varEmpty);
     AddSet(TField, 'NewValue', TField_Write_NewValue, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TField, 'Offset', TField_Read_Offset, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TField, 'OldValue', TField_Read_OldValue, 0, [0], varEmpty);
     AddGet(TField, 'Size', TField_Read_Size, 0, [0], varEmpty);
     AddSet(TField, 'Size', TField_Write_Size, 0, [0]);
@@ -2399,14 +2399,14 @@ begin
     AddSet(TField, 'Value', TField_Write_Value, 0, [0]);
     AddGet(TField, 'Alignment', TField_Read_Alignment, 0, [0], varEmpty);
     AddSet(TField, 'Alignment', TField_Write_Alignment, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TField, 'CustomConstraint', TField_Read_CustomConstraint, 0, [0], varEmpty);
     AddSet(TField, 'CustomConstraint', TField_Write_CustomConstraint, 0, [0]);
     AddGet(TField, 'ConstraintErrorMessage', TField_Read_ConstraintErrorMessage, 0, [0], varEmpty);
     AddSet(TField, 'ConstraintErrorMessage', TField_Write_ConstraintErrorMessage, 0, [0]);
     AddGet(TField, 'DefaultExpression', TField_Read_DefaultExpression, 0, [0], varEmpty);
     AddSet(TField, 'DefaultExpression', TField_Write_DefaultExpression, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TField, 'DisplayLabel', TField_Read_DisplayLabel, 0, [0], varEmpty);
     AddSet(TField, 'DisplayLabel', TField_Write_DisplayLabel, 0, [0]);
     AddGet(TField, 'DisplayWidth', TField_Read_DisplayWidth, 0, [0], varEmpty);
@@ -2415,15 +2415,15 @@ begin
     AddSet(TField, 'FieldKind', TField_Write_FieldKind, 0, [0]);
     AddGet(TField, 'FieldName', TField_Read_FieldName, 0, [0], varEmpty);
     AddSet(TField, 'FieldName', TField_Write_FieldName, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TField, 'HasConstraints', TField_Read_HasConstraints, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TField, 'Index', TField_Read_Index, 0, [0], varEmpty);
     AddSet(TField, 'Index', TField_Write_Index, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TField, 'ImportedConstraint', TField_Read_ImportedConstraint, 0, [0], varEmpty);
     AddSet(TField, 'ImportedConstraint', TField_Write_ImportedConstraint, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TField, 'LookupDataSet', TField_Read_LookupDataSet, 0, [0], varEmpty);
     AddSet(TField, 'LookupDataSet', TField_Write_LookupDataSet, 0, [0]);
     AddGet(TField, 'LookupKeyFields', TField_Read_LookupKeyFields, 0, [0], varEmpty);
@@ -2432,12 +2432,12 @@ begin
     AddSet(TField, 'LookupResultField', TField_Write_LookupResultField, 0, [0]);
     AddGet(TField, 'KeyFields', TField_Read_KeyFields, 0, [0], varEmpty);
     AddSet(TField, 'KeyFields', TField_Write_KeyFields, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TField, 'LookupCache', TField_Read_LookupCache, 0, [0], varEmpty);
     AddSet(TField, 'LookupCache', TField_Write_LookupCache, 0, [0]);
     AddGet(TField, 'Origin', TField_Read_Origin, 0, [0], varEmpty);
     AddSet(TField, 'Origin', TField_Write_Origin, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TField, 'ReadOnly', TField_Read_ReadOnly, 0, [0], varEmpty);
     AddSet(TField, 'ReadOnly', TField_Write_ReadOnly, 0, [0]);
     AddGet(TField, 'Required', TField_Read_Required, 0, [0], varEmpty);
@@ -2537,25 +2537,25 @@ begin
     AddGet(TBlobField, 'Create', TBlobField_Create, 1, [varEmpty], varEmpty);
     AddGet(TBlobField, 'Assign', TBlobField_Assign, 1, [varEmpty], varEmpty);
     AddGet(TBlobField, 'Clear', TBlobField_Clear, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBlobField, 'IsBlob', TBlobField_IsBlob, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TBlobField, 'LoadFromFile', TBlobField_LoadFromFile, 1, [varEmpty], varEmpty);
     AddGet(TBlobField, 'LoadFromStream', TBlobField_LoadFromStream, 1, [varEmpty], varEmpty);
     AddGet(TBlobField, 'SaveToFile', TBlobField_SaveToFile, 1, [varEmpty], varEmpty);
     AddGet(TBlobField, 'SaveToStream', TBlobField_SaveToStream, 1, [varEmpty], varEmpty);
     AddGet(TBlobField, 'SetFieldType', TBlobField_SetFieldType, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBlobField, 'BlobSize', TBlobField_Read_BlobSize, 0, [0], varEmpty);
     AddGet(TBlobField, 'Modified', TBlobField_Read_Modified, 0, [0], varEmpty);
     AddSet(TBlobField, 'Modified', TBlobField_Write_Modified, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TBlobField, 'Value', TBlobField_Read_Value, 0, [0], varEmpty);
     AddSet(TBlobField, 'Value', TBlobField_Write_Value, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TBlobField, 'Transliterate', TBlobField_Read_Transliterate, 0, [0], varEmpty);
     AddSet(TBlobField, 'Transliterate', TBlobField_Write_Transliterate, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TBlobField, 'BlobType', TBlobField_Read_BlobType, 0, [0], varEmpty);
     AddSet(TBlobField, 'BlobType', TBlobField_Write_BlobType, 0, [0]);
    { TMemoField }
@@ -2580,9 +2580,9 @@ begin
     AddGet(TIndexDef, 'Name', TIndexDef_Read_Name, 0, [0], varEmpty);
     AddGet(TIndexDef, 'Options', TIndexDef_Read_Options, 0, [0], varEmpty);
     AddGet(TIndexDef, 'Source', TIndexDef_Read_Source, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddSet(TIndexDef, 'Source', TIndexDef_Write_Source, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TIndexDefs }
     AddClass('Db', TIndexDefs, 'TIndexDefs');
     AddGet(TIndexDefs, 'Create', TIndexDefs_Create, 1, [varEmpty], varEmpty);
@@ -2590,18 +2590,18 @@ begin
     AddGet(TIndexDefs, 'Assign', TIndexDefs_Assign, 1, [varEmpty], varEmpty);
     AddGet(TIndexDefs, 'Clear', TIndexDefs_Clear, 0, [0], varEmpty);
     AddGet(TIndexDefs, 'FindIndexForFields', TIndexDefs_FindIndexForFields, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TIndexDefs, 'GetIndexForFields', TIndexDefs_GetIndexForFields, 2, [varEmpty, varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TIndexDefs, 'IndexOf', TIndexDefs_IndexOf, 1, [varEmpty], varEmpty);
     AddGet(TIndexDefs, 'Update', TIndexDefs_Update, 0, [0], varEmpty);
     AddGet(TIndexDefs, 'Count', TIndexDefs_Read_Count, 0, [0], varEmpty);
     AddIGet(TIndexDefs, 'Items', TIndexDefs_Read_Items, 1, [0], varEmpty);
     AddIDGet(TIndexDefs, TIndexDefs_Read_Items, 1, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TIndexDefs, 'Updated', TIndexDefs_Read_Updated, 0, [0], varEmpty);
     AddSet(TIndexDefs, 'Updated', TIndexDefs_Write_Updated, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TDataLink }
     AddClass('Db', TDataLink, 'TDataLink');
     AddGet(TDataLink, 'Create', TDataLink_Create, 0, [0], varEmpty);
@@ -2633,7 +2633,7 @@ begin
     AddSet(TDataSource, 'DataSet', TDataSource_Write_DataSet, 0, [0]);
     AddGet(TDataSource, 'Enabled', TDataSource_Read_Enabled, 0, [0], varEmpty);
     AddSet(TDataSource, 'Enabled', TDataSource_Write_Enabled, 0, [0]);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    { TCheckConstraint }
     AddClass('Db', TCheckConstraint, 'TCheckConstraint');
     AddGet(TCheckConstraint, 'Assign', TCheckConstraint_Assign, 1, [varEmpty], varEmpty);
@@ -2652,25 +2652,25 @@ begin
     AddGet(TCheckConstraints, 'Add', TCheckConstraints_Add, 0, [0], varEmpty);
     AddIGet(TCheckConstraints, 'Items', TCheckConstraints_Read_Items, 1, [0], varEmpty);
     AddISet(TCheckConstraints, 'Items', TCheckConstraints_Write_Items, 1, [0]);
-   {$ENDIF Delphi3_Up}
-   {$IFDEF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
+   {$IFDEF COMPILER3_UP}
    { TBookmarkFlag }
     AddConst('Db', 'bfCurrent', bfCurrent);
     AddConst('Db', 'bfBOF', bfBOF);
     AddConst('Db', 'bfEOF', bfEOF);
     AddConst('Db', 'bfInserted', bfInserted);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TGetMode }
     AddConst('Db', 'gmCurrent', gmCurrent);
     AddConst('Db', 'gmNext', gmNext);
     AddConst('Db', 'gmPrior', gmPrior);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
    { TGetResult }
     AddConst('Db', 'grOK', grOK);
     AddConst('Db', 'grBOF', grBOF);
     AddConst('Db', 'grEOF', grEOF);
     AddConst('Db', 'grError', grError);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
    { TResyncMode }
     AddConst('Db', 'rmExact', rmExact);
     AddConst('Db', 'rmCenter', rmCenter);
@@ -2697,18 +2697,18 @@ begin
     AddGet(TDataSet, 'ActiveBuffer', TDataSet_ActiveBuffer, 0, [0], varEmpty);
     AddGet(TDataSet, 'Append', TDataSet_Append, 0, [0], varEmpty);
     AddGet(TDataSet, 'AppendRecord', TDataSet_AppendRecord, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TDataSet, 'BookmarkValid', TDataSet_BookmarkValid, 1, [varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TDataSet, 'Cancel', TDataSet_Cancel, 0, [0], varEmpty);
     AddGet(TDataSet, 'CheckBrowseMode', TDataSet_CheckBrowseMode, 0, [0], varEmpty);
     AddGet(TDataSet, 'ClearFields', TDataSet_ClearFields, 0, [0], varEmpty);
     AddGet(TDataSet, 'Close', TDataSet_Close, 0, [0], varEmpty);
     AddGet(TDataSet, 'ControlsDisabled', TDataSet_ControlsDisabled, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TDataSet, 'CompareBookmarks', TDataSet_CompareBookmarks, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TDataSet, 'CreateBlobStream', TDataSet_CreateBlobStream, 2, [varEmpty, varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TDataSet, 'CursorPosChanged', TDataSet_CursorPosChanged, 0, [0], varEmpty);
     AddGet(TDataSet, 'Delete', TDataSet_Delete, 0, [0], varEmpty);
     AddGet(TDataSet, 'DisableControls', TDataSet_DisableControls, 0, [0], varEmpty);
@@ -2729,13 +2729,13 @@ begin
     AddGet(TDataSet, 'GotoBookmark', TDataSet_GotoBookmark, 1, [varEmpty], varEmpty);
     AddGet(TDataSet, 'Insert', TDataSet_Insert, 0, [0], varEmpty);
     AddGet(TDataSet, 'InsertRecord', TDataSet_InsertRecord, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TDataSet, 'IsEmpty', TDataSet_IsEmpty, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TDataSet, 'IsLinkedTo', TDataSet_IsLinkedTo, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TDataSet, 'IsSequenced', TDataSet_IsSequenced, 0, [0], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TDataSet, 'Last', TDataSet_Last, 0, [0], varEmpty);
     AddGet(TDataSet, 'Locate', TDataSet_Locate, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TDataSet, 'Lookup', TDataSet_Lookup, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
@@ -2747,9 +2747,9 @@ begin
     AddGet(TDataSet, 'Refresh', TDataSet_Refresh, 0, [0], varEmpty);
     AddGet(TDataSet, 'Resync', TDataSet_Resync, 1, [varEmpty], varEmpty);
     AddGet(TDataSet, 'SetFields', TDataSet_SetFields, 1, [varEmpty], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddGet(TDataSet, 'Translate', TDataSet_Translate, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TDataSet, 'UpdateCursorPos', TDataSet_UpdateCursorPos, 0, [0], varEmpty);
     AddGet(TDataSet, 'UpdateRecord', TDataSet_UpdateRecord, 0, [0], varEmpty);
     AddGet(TDataSet, 'BOF', TDataSet_Read_BOF, 0, [0], varEmpty);
@@ -2764,9 +2764,9 @@ begin
     AddGet(TDataSet, 'FieldDefs', TDataSet_Read_FieldDefs, 0, [0], varEmpty);
     AddSet(TDataSet, 'FieldDefs', TDataSet_Write_FieldDefs, 0, [0]);
     AddIGet(TDataSet, 'Fields', TDataSet_Read_Fields, 1, [0], varEmpty);
-   {$IFNDEF Delphi4_Up}
+   {$IFNDEF COMPILER4_UP}
     AddISet(TDataSet, 'Fields', TDataSet_Write_Fields, 1, [0]);
-   {$ENDIF Delphi4_Up}
+   {$ENDIF COMPILER4_UP}
     AddIGet(TDataSet, 'FieldValues', TDataSet_Read_FieldValues, 1, [0], varEmpty);
     AddISet(TDataSet, 'FieldValues', TDataSet_Write_FieldValues, 1, [0]);
     AddIDGet(TDataSet, TDataSet_Read_FieldValues, 1, [0], varEmpty);
@@ -2775,9 +2775,9 @@ begin
     AddGet(TDataSet, 'Modified', TDataSet_Read_Modified, 0, [0], varEmpty);
     AddGet(TDataSet, 'RecordCount', TDataSet_Read_RecordCount, 0, [0], varEmpty);
     AddGet(TDataSet, 'RecNo', TDataSet_Read_RecNo, 0, [0], varEmpty);
-   {$IFDEF Delphi3_Up}
+   {$IFDEF COMPILER3_UP}
     AddSet(TDataSet, 'RecNo', TDataSet_Write_RecNo, 0, [0]);
-   {$ENDIF Delphi3_Up}
+   {$ENDIF COMPILER3_UP}
     AddGet(TDataSet, 'RecordSize', TDataSet_Read_RecordSize, 0, [0], varEmpty);
     AddGet(TDataSet, 'State', TDataSet_Read_State, 0, [0], varEmpty);
     AddGet(TDataSet, 'Filter', TDataSet_Read_Filter, 0, [0], varEmpty);
@@ -2803,7 +2803,7 @@ begin
     TWordField, TAutoIncField, TFloatField, TCurrencyField, TBooleanField,
     TDateTimeField, TDateField, TTimeField, TBinaryField, TBytesField,
     TVarBytesField, TBCDField, TBlobField, TMemoField, TGraphicField,
-    TDataSource {$IFDEF Delphi3_Up}, TCheckConstraint, TCheckConstraints {$ENDIF Delphi3_Up}]);
+    TDataSource {$IFDEF COMPILER3_UP}, TCheckConstraint, TCheckConstraints {$ENDIF COMPILER3_UP}]);
 end;    { RegisterJvInterpreterAdapter }
 
 end.

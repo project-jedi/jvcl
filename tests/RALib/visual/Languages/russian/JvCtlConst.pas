@@ -25,9 +25,9 @@ description : Language specific constants for Russian
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvCtlConst;
 
@@ -75,11 +75,11 @@ const
   StSeparators     = '(),.;';
  {$ENDIF BCB}
 
-{$IFDEF Delphi2}
+{$IFDEF COMPILER2}
   SScrollBarRange = 'значение Scrollbar вышло за допустимые пределы';
 {$ENDIF}
 
- {RADlg}
+ {JvDlg}
   SOk = 'OK';
   SCancel = 'Отмена';
 
@@ -98,7 +98,7 @@ const
 
  { RALib 1.55 }
 
- {RAHLEdPropDlg}
+ {JvHLEdPropDlg}
   SHLEdPropDlg_Caption = 'Свойства: Редактор';
   SHLEdPropDlg_tsEditor = 'Редактор';
   SHLEdPropDlg_tsColors = 'Цвета';

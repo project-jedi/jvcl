@@ -60,7 +60,7 @@ contains
   JvInterpreter_httpapp in '..\..\..\Source\JvInterpreter_httpapp.pas',
   JvInterpreter_Contnrs in '..\..\..\Source\JvInterpreter_Contnrs.pas',
   JvInterpreter_JvUtils in '..\..\..\Source\JvInterpreter_JvUtils.pas',
-  RAUtils in '..\..\..\..\Tools\RAUtils.pas',
+  JvUtils in '..\..\..\..\Tools\JvUtils.pas',
   JvInterpreter_JvInterpreter in '..\..\..\Source\JvInterpreter_JvInterpreter.pas';
 
 end.

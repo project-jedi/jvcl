@@ -25,9 +25,9 @@ description : Language specific constant for French
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit RAConst;
 
@@ -67,11 +67,11 @@ const
   RAIIdFirstSymbols = ['A'..'Z', 'a'..'z', '_'];
 {$ENDIF RAINTER}
 
-{$IFDEF Delphi2}
+{$IFDEF COMPILER2}
   SScrollBarRange = 'Indice de barre de défilement hors limite';
 {$ENDIF}
 
- {RADlg}
+ {JvDlg}
   SOk = 'OK';
   SCancel = 'Annulé';
 
@@ -89,7 +89,7 @@ const
 
  { RALib 1.55 }
 
- {RAHLEdPropDlg}
+ {JvHLEdPropDlg}
   SHLEdPropDlg_Caption = 'Propriétés de l''éditeur';
   SHLEdPropDlg_tsEditor = 'Général';
   SHLEdPropDlg_tsColors = 'Couleurs';

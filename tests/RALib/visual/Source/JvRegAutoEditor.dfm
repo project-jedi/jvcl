@@ -1,4 +1,4 @@
-object RegEditor: TRegEditor
+object RegEditor: TJvRegEditor 
   Left = 211
   Top = 120
   Width = 460

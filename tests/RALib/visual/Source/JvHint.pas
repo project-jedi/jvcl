@@ -26,9 +26,9 @@ description : Custom activated hint
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvHint;
 
@@ -65,13 +65,13 @@ type
   protected
     procedure Paint; override;
   public
-   {$IFNDEF Delphi3_Up}
+   {$IFNDEF COMPILER3_UP}
     procedure ActivateHint(Rect: TRect; const AHint: string); override;
    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     function CalcHintRect(MaxWidth: Integer; const AHint: string;
-      AData: Pointer): TRect; {$IFDEF Delphi3_Up} override; {$ENDIF Delphi3_Up}
+      AData: Pointer): TRect; {$IFDEF COMPILER3_UP} override; {$ENDIF COMPILER3_UP}
   end;
 
   procedure RegisterHtHints;
@@ -117,7 +117,7 @@ begin
   end;
   if HintWindow.Caption <> Txt then
   begin
-   {$IFDEF Delphi2}
+   {$IFDEF COMPILER2}
     R := Rect(0, 0, Screen.Width, 0);
     DrawText(HintWindow.Canvas.Handle, PChar(Txt), -1, R, DT_CALCRECT or DT_LEFT or
       DT_WORDBREAK or DT_NOPREFIX);
@@ -125,7 +125,7 @@ begin
     Inc(R.Bottom, 2);
    {$ELSE}
     R := HintWindow.CalcHintRect(Screen.Width, Txt, nil);
-   {$ENDIF Delphi2}
+   {$ENDIF COMPILER2}
     R.Top  := P.Y + 20;
     R.Left := P.X;
     inc(R.Bottom, R.Top);
@@ -218,7 +218,7 @@ procedure TJvHTHintWindow.Paint;
 begin
 end;
 
-{$IFNDEF Delphi3_Up}
+{$IFNDEF COMPILER3_UP}
 procedure TJvHTHintWindow.ActivateHint(Rect: TRect; const AHint: string);
 var
   R: TRect;

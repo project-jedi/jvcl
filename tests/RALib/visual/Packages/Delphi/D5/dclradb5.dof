@@ -1,3 +1,4 @@
 [Directories]
 UnitOutputDir=..\..\..\..\Lib5
-SearchPath=..\..\..\..\Images; ..\..\..\..\visual\Source
+SearchPath=..\..\..\..\Images;..\..\..\Source
+

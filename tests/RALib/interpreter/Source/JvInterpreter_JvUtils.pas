@@ -25,9 +25,8 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+{$I JVCL.INC}
 
 unit JvInterpreter_JvUtils;
 
@@ -40,7 +39,7 @@ uses JvInterpreter;
 implementation
 
 uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls,
-  Dialogs, Menus, RAUtils, JvInterpreter_Windows, JvInterpreter_SysUtils;
+  Dialogs, Menus, JvUtils, JvInterpreter_Windows, JvInterpreter_SysUtils;
 
 
 { function ReplaceAllSokr(S: string; Words, Frases: TStrings): string; }
@@ -126,7 +125,7 @@ begin
   Value := ReadFolders(Args.Values[0], V2O(Args.Values[1]) as TStrings);
 end;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 { function TargetFileName(const FileName: TFileName): TFileName; }
 procedure JvInterpreter_TargetFileName(var Value: Variant; Args: TArgs);
 begin
@@ -138,7 +137,7 @@ procedure JvInterpreter_ResolveLink(var Value: Variant; Args: TArgs);
 begin
   Value := ResolveLink(Args.Values[0], Args.Values[1], TFileName(TVarData(Args.Values[2]).vString));
 end;
-{$ENDIF Delphi3_Up}
+{$ENDIF COMPILER3_UP}
 
 { procedure LoadIcoToImage(ALarge, ASmall: TImageList; const NameRes: string); }
 procedure JvInterpreter_LoadIcoToImage(var Value: Variant; Args: TArgs);
@@ -291,7 +290,7 @@ end;
 { procedure ItemHtDrawEx(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState; const Text: string; const HideSelColor: Boolean; var PlainItem: string; var Width: Integer; CalcWidth: Boolean); }
 procedure JvInterpreter_ItemHtDrawEx(var Value: Variant; Args: TArgs);
 begin
- {$IFDEF Delphi5_Up}
+ {$IFDEF COMPILER5_UP}
   ItemHtDrawEx(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]), TOwnerDrawState(Word(V2S(Args.Values[2]))), Args.Values[3], Args.Values[4], string(TVarData(Args.Values[5]).vString), TVarData(Args.Values[6]).vInteger, Args.Values[7]);
  {$ELSE}
   ItemHtDrawEx(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]), TOwnerDrawState(Byte(V2S(Args.Values[2]))), Args.Values[3], Args.Values[4], string(TVarData(Args.Values[5]).vString), TVarData(Args.Values[6]).vInteger, Args.Values[7]);
@@ -301,7 +300,7 @@ end;
 { function ItemHtDraw(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState; const Text: string; const HideSelColor: Boolean): string; }
 procedure JvInterpreter_ItemHtDraw(var Value: Variant; Args: TArgs);
 begin
- {$IFDEF Delphi5_Up}
+ {$IFDEF COMPILER5_UP}
   Value := ItemHtDraw(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]), TOwnerDrawState(Word(V2S(Args.Values[2]))), Args.Values[3], Args.Values[4]);
  {$ELSE}
   Value := ItemHtDraw(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]), TOwnerDrawState(Byte(V2S(Args.Values[2]))), Args.Values[3], Args.Values[4]);
@@ -311,7 +310,7 @@ end;
 { function ItemHtWidth(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState; const Text: string; const HideSelColor: Boolean): Integer; }
 procedure JvInterpreter_ItemHtWidth(var Value: Variant; Args: TArgs);
 begin
- {$IFDEF Delphi5_Up}
+ {$IFDEF COMPILER5_UP}
   Value := ItemHtWidth(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]), TOwnerDrawState(Word(V2S(Args.Values[2]))), Args.Values[3], Args.Values[4]);
  {$ELSE}
   Value := ItemHtWidth(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]), TOwnerDrawState(Byte(V2S(Args.Values[2]))), Args.Values[3], Args.Values[4]);
@@ -838,61 +837,61 @@ procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapt
 begin
   with JvInterpreterAdapter do
   begin
-    AddFun('RAUtils', 'ReplaceAllSokr', JvInterpreter_ReplaceAllSokr, 3, [varString, varObject, varObject], varEmpty);
-    AddFun('RAUtils', 'ReplaceSokr', JvInterpreter_ReplaceSokr, 6, [varString, varInteger, varInteger, varObject, varObject, varInteger or varByRef], varEmpty);
-    AddFun('RAUtils', 'CountOfLines', JvInterpreter_CountOfLines, 1, [varString], varEmpty);
-    AddFun('RAUtils', 'DeleteEmptyLines', JvInterpreter_DeleteEmptyLines, 1, [varObject], varEmpty);
-    AddFun('RAUtils', 'SQLAddWhere', JvInterpreter_SQLAddWhere, 2, [varObject, varString], varEmpty);
-    AddFun('RAUtils', 'ResSaveToFile', JvInterpreter_ResSaveToFile, 4, [varString, varString, varBoolean, varString], varEmpty);
-    AddFun('RAUtils', 'ResSaveToFileEx', JvInterpreter_ResSaveToFileEx, 5, [varEmpty, varEmpty, varEmpty, varBoolean, varString], varEmpty);
-    AddFun('RAUtils', 'ResSaveToString', JvInterpreter_ResSaveToString, 4, [varEmpty, varString, varString, varString or varByRef], varEmpty);
-    AddFun('RAUtils', 'Execute', JvInterpreter_Execute, 2, [varString, varString], varEmpty);
-    AddFun('RAUtils', 'IniReadSection', JvInterpreter_IniReadSection, 3, [varEmpty, varString, varObject], varEmpty);
-    AddFun('RAUtils', 'LoadTextFile', JvInterpreter_LoadTextFile, 1, [varEmpty], varEmpty);
-    AddFun('RAUtils', 'SaveTextFile', JvInterpreter_SaveTextFile, 2, [varEmpty, varString], varEmpty);
-    AddFun('RAUtils', 'ReadFolder', JvInterpreter_ReadFolder, 3, [varEmpty, varEmpty, varObject], varEmpty);
-    AddFun('RAUtils', 'ReadFolders', JvInterpreter_ReadFolders, 2, [varEmpty, varObject], varEmpty);
-   {$IFDEF Delphi3_Up}
-    AddFun('RAUtils', 'TargetFileName', JvInterpreter_TargetFileName, 1, [varEmpty], varEmpty);
-    AddFun('RAUtils', 'ResolveLink', JvInterpreter_ResolveLink, 3, [varEmpty, varEmpty, varEmpty or varByRef], varEmpty);
-   {$ENDIF Delphi3_Up}
-    AddFun('RAUtils', 'LoadIcoToImage', JvInterpreter_LoadIcoToImage, 3, [varObject, varObject, varString], varEmpty);
-    AddFun('RAUtils', 'RATextOut', JvInterpreter_RATextOut, 4, [varObject, varEmpty, varEmpty, varString], varEmpty);
-    AddFun('RAUtils', 'RATextOutEx', JvInterpreter_RATextOutEx, 5, [varObject, varEmpty, varEmpty, varString, varBoolean], varEmpty);
-    AddFun('RAUtils', 'RATextCalcHeight', JvInterpreter_RATextCalcHeight, 3, [varObject, varEmpty, varString], varEmpty);
-    AddFun('RAUtils', 'Roughed', JvInterpreter_Roughed, 3, [varObject, varEmpty, varBoolean], varEmpty);
-    AddFun('RAUtils', 'BitmapFromBitmap', JvInterpreter_BitmapFromBitmap, 4, [varObject, varInteger, varInteger, varInteger], varEmpty);
-    AddFun('RAUtils', 'TextWidth', JvInterpreter_TextWidth, 1, [varString], varEmpty);
-    AddFun('RAUtils', 'DefineCursor', JvInterpreter_DefineCursor, 1, [varEmpty], varEmpty);
-    AddFun('RAUtils', 'FindFormByClassName', JvInterpreter_FindFormByClassName, 1, [varString], varEmpty);
-    AddFun('RAUtils', 'FindByTag', JvInterpreter_FindByTag, 3, [varObject, varEmpty, varInteger], varEmpty);
-    AddFun('RAUtils', 'ControlAtPos2', JvInterpreter_ControlAtPos2, 3, [varObject, varInteger, varInteger], varEmpty);
-    AddFun('RAUtils', 'RBTag', JvInterpreter_RBTag, 1, [varObject], varEmpty);
-    AddFun('RAUtils', 'AppMinimized', JvInterpreter_AppMinimized, 0, [0], varEmpty);
-    AddFun('RAUtils', 'MsgDlg2', JvInterpreter_MsgDlg2, 6, [varString, varString, varEmpty, varEmpty, varInteger, varObject], varEmpty);
-    AddFun('RAUtils', 'MsgDlgDef', JvInterpreter_MsgDlgDef, 7, [varString, varString, varEmpty, varEmpty, varEmpty, varInteger, varObject], varEmpty);
-    AddFun('RAUtils', 'Delay', JvInterpreter_Delay, 1, [varEmpty], varEmpty);
-    //AddFun('RAUtils', 'CenterHor', JvInterpreter_CenterHor, 3, [varObject, varInteger, varEmpty], nil);
-    AddFun('RAUtils', 'EnableControls', JvInterpreter_EnableControls, 2, [varObject, varBoolean], varEmpty);
-    AddFun('RAUtils', 'EnableMenuItems', JvInterpreter_EnableMenuItems, 3, [varObject, varInteger, varBoolean], varEmpty);
-    //AddFun('RAUtils', 'ExpandWidth', JvInterpreter_ExpandWidth, 3, [varObject, varInteger, varEmpty], nil);
-    AddFun('RAUtils', 'PanelBorder', JvInterpreter_PanelBorder, 1, [varObject], varEmpty);
-    AddFun('RAUtils', 'Pixels', JvInterpreter_Pixels, 2, [varObject, varInteger], varEmpty);
-    AddFun('RAUtils', 'SetChildPropOrd', JvInterpreter_SetChildPropOrd, 3, [varObject, varString, varEmpty], varEmpty);
-    AddFun('RAUtils', 'Error', JvInterpreter_Error, 1, [varString], varEmpty);
-    AddFun('RAUtils', 'ItemHtDrawEx', JvInterpreter_ItemHtDrawEx, 8, [varObject, varEmpty, varEmpty, varString, varBoolean, varString or varByRef, varInteger or varByRef, varBoolean], varEmpty);
-    AddFun('RAUtils', 'ItemHtDraw', JvInterpreter_ItemHtDraw, 5, [varObject, varEmpty, varEmpty, varString, varBoolean], varEmpty);
-    AddFun('RAUtils', 'ItemHtWidth', JvInterpreter_ItemHtWidth, 5, [varObject, varEmpty, varEmpty, varString, varBoolean], varEmpty);
-    AddFun('RAUtils', 'ItemHtPlain', JvInterpreter_ItemHtPlain, 1, [varString], varEmpty);
-    AddFun('RAUtils', 'ClearList', JvInterpreter_ClearList, 1, [varObject], varEmpty);
-    AddFun('RAUtils', 'MemStreamToClipBoard', JvInterpreter_MemStreamToClipBoard, 2, [varObject, varSmallint], varEmpty);
-    AddFun('RAUtils', 'ClipBoardToMemStream', JvInterpreter_ClipBoardToMemStream, 2, [varObject, varSmallint], varEmpty);
-    AddFun('RAUtils', 'GetPropType', JvInterpreter_GetPropType, 2, [varObject, varString], varEmpty);
-    AddFun('RAUtils', 'GetPropStr', JvInterpreter_GetPropStr, 2, [varObject, varString], varEmpty);
-    AddFun('RAUtils', 'GetPropOrd', JvInterpreter_GetPropOrd, 2, [varObject, varString], varEmpty);
-    AddFun('RAUtils', 'CompareMem', JvInterpreter_CompareMem, 3, [varPointer, varPointer, varInteger], varEmpty);
-    AddFun('RAUtils', 'ShowMenu', JvInterpreter_ShowMenu, 2, [varObject, varEmpty], varEmpty);
-    AddFun('RAUtils', 'PrepareIniSection', JvInterpreter_PrepareIniSection, 1, [varObject], varEmpty);
+    AddFun('JvUtils', 'ReplaceAllSokr', JvInterpreter_ReplaceAllSokr, 3, [varString, varObject, varObject], varEmpty);
+    AddFun('JvUtils', 'ReplaceSokr', JvInterpreter_ReplaceSokr, 6, [varString, varInteger, varInteger, varObject, varObject, varInteger or varByRef], varEmpty);
+    AddFun('JvUtils', 'CountOfLines', JvInterpreter_CountOfLines, 1, [varString], varEmpty);
+    AddFun('JvUtils', 'DeleteEmptyLines', JvInterpreter_DeleteEmptyLines, 1, [varObject], varEmpty);
+    AddFun('JvUtils', 'SQLAddWhere', JvInterpreter_SQLAddWhere, 2, [varObject, varString], varEmpty);
+    AddFun('JvUtils', 'ResSaveToFile', JvInterpreter_ResSaveToFile, 4, [varString, varString, varBoolean, varString], varEmpty);
+    AddFun('JvUtils', 'ResSaveToFileEx', JvInterpreter_ResSaveToFileEx, 5, [varEmpty, varEmpty, varEmpty, varBoolean, varString], varEmpty);
+    AddFun('JvUtils', 'ResSaveToString', JvInterpreter_ResSaveToString, 4, [varEmpty, varString, varString, varString or varByRef], varEmpty);
+    AddFun('JvUtils', 'Execute', JvInterpreter_Execute, 2, [varString, varString], varEmpty);
+    AddFun('JvUtils', 'IniReadSection', JvInterpreter_IniReadSection, 3, [varEmpty, varString, varObject], varEmpty);
+    AddFun('JvUtils', 'LoadTextFile', JvInterpreter_LoadTextFile, 1, [varEmpty], varEmpty);
+    AddFun('JvUtils', 'SaveTextFile', JvInterpreter_SaveTextFile, 2, [varEmpty, varString], varEmpty);
+    AddFun('JvUtils', 'ReadFolder', JvInterpreter_ReadFolder, 3, [varEmpty, varEmpty, varObject], varEmpty);
+    AddFun('JvUtils', 'ReadFolders', JvInterpreter_ReadFolders, 2, [varEmpty, varObject], varEmpty);
+   {$IFDEF COMPILER3_UP}
+    AddFun('JvUtils', 'TargetFileName', JvInterpreter_TargetFileName, 1, [varEmpty], varEmpty);
+    AddFun('JvUtils', 'ResolveLink', JvInterpreter_ResolveLink, 3, [varEmpty, varEmpty, varEmpty or varByRef], varEmpty);
+   {$ENDIF COMPILER3_UP}
+    AddFun('JvUtils', 'LoadIcoToImage', JvInterpreter_LoadIcoToImage, 3, [varObject, varObject, varString], varEmpty);
+    AddFun('JvUtils', 'RATextOut', JvInterpreter_RATextOut, 4, [varObject, varEmpty, varEmpty, varString], varEmpty);
+    AddFun('JvUtils', 'RATextOutEx', JvInterpreter_RATextOutEx, 5, [varObject, varEmpty, varEmpty, varString, varBoolean], varEmpty);
+    AddFun('JvUtils', 'RATextCalcHeight', JvInterpreter_RATextCalcHeight, 3, [varObject, varEmpty, varString], varEmpty);
+    AddFun('JvUtils', 'Roughed', JvInterpreter_Roughed, 3, [varObject, varEmpty, varBoolean], varEmpty);
+    AddFun('JvUtils', 'BitmapFromBitmap', JvInterpreter_BitmapFromBitmap, 4, [varObject, varInteger, varInteger, varInteger], varEmpty);
+    AddFun('JvUtils', 'TextWidth', JvInterpreter_TextWidth, 1, [varString], varEmpty);
+    AddFun('JvUtils', 'DefineCursor', JvInterpreter_DefineCursor, 1, [varEmpty], varEmpty);
+    AddFun('JvUtils', 'FindFormByClassName', JvInterpreter_FindFormByClassName, 1, [varString], varEmpty);
+    AddFun('JvUtils', 'FindByTag', JvInterpreter_FindByTag, 3, [varObject, varEmpty, varInteger], varEmpty);
+    AddFun('JvUtils', 'ControlAtPos2', JvInterpreter_ControlAtPos2, 3, [varObject, varInteger, varInteger], varEmpty);
+    AddFun('JvUtils', 'RBTag', JvInterpreter_RBTag, 1, [varObject], varEmpty);
+    AddFun('JvUtils', 'AppMinimized', JvInterpreter_AppMinimized, 0, [0], varEmpty);
+    AddFun('JvUtils', 'MsgDlg2', JvInterpreter_MsgDlg2, 6, [varString, varString, varEmpty, varEmpty, varInteger, varObject], varEmpty);
+    AddFun('JvUtils', 'MsgDlgDef', JvInterpreter_MsgDlgDef, 7, [varString, varString, varEmpty, varEmpty, varEmpty, varInteger, varObject], varEmpty);
+    AddFun('JvUtils', 'Delay', JvInterpreter_Delay, 1, [varEmpty], varEmpty);
+    //AddFun('JvUtils', 'CenterHor', JvInterpreter_CenterHor, 3, [varObject, varInteger, varEmpty], nil);
+    AddFun('JvUtils', 'EnableControls', JvInterpreter_EnableControls, 2, [varObject, varBoolean], varEmpty);
+    AddFun('JvUtils', 'EnableMenuItems', JvInterpreter_EnableMenuItems, 3, [varObject, varInteger, varBoolean], varEmpty);
+    //AddFun('JvUtils', 'ExpandWidth', JvInterpreter_ExpandWidth, 3, [varObject, varInteger, varEmpty], nil);
+    AddFun('JvUtils', 'PanelBorder', JvInterpreter_PanelBorder, 1, [varObject], varEmpty);
+    AddFun('JvUtils', 'Pixels', JvInterpreter_Pixels, 2, [varObject, varInteger], varEmpty);
+    AddFun('JvUtils', 'SetChildPropOrd', JvInterpreter_SetChildPropOrd, 3, [varObject, varString, varEmpty], varEmpty);
+    AddFun('JvUtils', 'Error', JvInterpreter_Error, 1, [varString], varEmpty);
+    AddFun('JvUtils', 'ItemHtDrawEx', JvInterpreter_ItemHtDrawEx, 8, [varObject, varEmpty, varEmpty, varString, varBoolean, varString or varByRef, varInteger or varByRef, varBoolean], varEmpty);
+    AddFun('JvUtils', 'ItemHtDraw', JvInterpreter_ItemHtDraw, 5, [varObject, varEmpty, varEmpty, varString, varBoolean], varEmpty);
+    AddFun('JvUtils', 'ItemHtWidth', JvInterpreter_ItemHtWidth, 5, [varObject, varEmpty, varEmpty, varString, varBoolean], varEmpty);
+    AddFun('JvUtils', 'ItemHtPlain', JvInterpreter_ItemHtPlain, 1, [varString], varEmpty);
+    AddFun('JvUtils', 'ClearList', JvInterpreter_ClearList, 1, [varObject], varEmpty);
+    AddFun('JvUtils', 'MemStreamToClipBoard', JvInterpreter_MemStreamToClipBoard, 2, [varObject, varSmallint], varEmpty);
+    AddFun('JvUtils', 'ClipBoardToMemStream', JvInterpreter_ClipBoardToMemStream, 2, [varObject, varSmallint], varEmpty);
+    AddFun('JvUtils', 'GetPropType', JvInterpreter_GetPropType, 2, [varObject, varString], varEmpty);
+    AddFun('JvUtils', 'GetPropStr', JvInterpreter_GetPropStr, 2, [varObject, varString], varEmpty);
+    AddFun('JvUtils', 'GetPropOrd', JvInterpreter_GetPropOrd, 2, [varObject, varString], varEmpty);
+    AddFun('JvUtils', 'CompareMem', JvInterpreter_CompareMem, 3, [varPointer, varPointer, varInteger], varEmpty);
+    AddFun('JvUtils', 'ShowMenu', JvInterpreter_ShowMenu, 2, [varObject, varEmpty], varEmpty);
+    AddFun('JvUtils', 'PrepareIniSection', JvInterpreter_PrepareIniSection, 1, [varObject], varEmpty);
 
     AddFun('RAUtilsW', 'GetWordOnPos', JvInterpreter_GetWordOnPos, 2, [varString, varInteger], varEmpty);
     AddFun('RAUtilsW', 'GetWordOnPosEx', JvInterpreter_GetWordOnPosEx, 4, [varString, varInteger, varInteger or varByRef, varInteger or varByRef], varEmpty);

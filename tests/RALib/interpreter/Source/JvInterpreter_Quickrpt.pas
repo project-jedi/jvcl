@@ -25,18 +25,18 @@ description : adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
 
-{$IFDEF Delphi4_Up}
+{$I JVCL.INC}
+
+{$IFDEF COMPILER4_UP}
 {$DEFINE RA_QR3H}
 {$ELSE}
 {$DEFINE RA_QR2}
 {$ENDIF}
 
 // {$IFDEF RA_QR2}
-// {$DEFINE Delphi3}
+// {$DEFINE COMPILER3}
 // {$UNDEF RA_QR3H}
 // {$ENDIF RA_QR2}
 
@@ -53,14 +53,14 @@ uses JvInterpreter;
 implementation
 
 uses SysUtils, Classes, Controls, Forms, Graphics, Db, JvInterpreterParser, JvInterpreterFm,
-  {$IFDEF Delphi3_Up}
+  {$IFDEF COMPILER3_UP}
    QrPrntr, Quickrpt, QrCtrls
   {$ELSE}
    Quickrep
   {$ENDIF}
   ;
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
 procedure JvInterpreterRunReportPreview(const FileName: string);
 var
@@ -663,7 +663,7 @@ end;
 procedure TQRCustomBand_ExpandBand(var Value: Variant; Args: TArgs);
 var
   NewTop: extended;
- {$IFDEF Delphi3}
+ {$IFDEF COMPILER3}
   param2: extended;
  {$ELSE} {D4}
   param2: Boolean;
@@ -1346,7 +1346,7 @@ begin
   TQuickRep(Args.Obj).QRPrinter := V2O(Value) as TQRPrinter;
 end;
 
-{$IFDEF Delphi3}
+{$IFDEF COMPILER3}
 { property Read RecordCount: integer }
 procedure TQuickRep_Read_RecordCount(var Value: Variant; Args: TArgs);
 begin
@@ -1358,7 +1358,7 @@ procedure TQuickRep_Read_RecordNumber(var Value: Variant; Args: TArgs);
 begin
   Value := TQuickRep(Args.Obj).RecordNumber;
 end;
-{$ENDIF Delphi3}
+{$ENDIF COMPILER3}
 
 { property Read RotateBands: integer }
 procedure TQuickRep_Read_RotateBands(var Value: Variant; Args: TArgs);
@@ -1948,7 +1948,7 @@ end;
 {$ENDIF}
 
 
-{$IFDEF Delphi3_Up}
+{$IFDEF COMPILER3_UP}
 
 { Delphi 3, 4 and CBuilder 3 }
 
@@ -2204,10 +2204,10 @@ begin
     AddGet(TQuickRep, 'Printer', TQuickRep_Read_Printer, 0, [0], varEmpty);
     AddGet(TQuickRep, 'QRPrinter', TQuickRep_Read_QRPrinter, 0, [0], varEmpty);
     AddSet(TQuickRep, 'QRPrinter', TQuickRep_Write_QRPrinter, 0, [0]);
-   {$IFDEF Delphi3}
+   {$IFDEF COMPILER3}
     AddGet(TQuickRep, 'RecordCount', TQuickRep_Read_RecordCount, 0, [0], varEmpty);
     AddGet(TQuickRep, 'RecordNumber', TQuickRep_Read_RecordNumber, 0, [0], varEmpty);
-   {$ENDIF Delphi3}
+   {$ENDIF COMPILER3}
     AddGet(TQuickRep, 'RotateBands', TQuickRep_Read_RotateBands, 0, [0], varEmpty);
     AddSet(TQuickRep, 'RotateBands', TQuickRep_Write_RotateBands, 0, [0]);
     AddGet(TQuickRep, 'State', TQuickRep_Read_State, 0, [0], varEmpty);
@@ -2279,7 +2279,7 @@ begin
     AddSet(TQRCompositeReport, 'PrinterSettings', TQRCompositeReport_Write_PrinterSettings, 0, [0]);
     AddGet(TQRCompositeReport, 'ReportTitle', TQRCompositeReport_Read_ReportTitle, 0, [0], varEmpty);
     AddSet(TQRCompositeReport, 'ReportTitle', TQRCompositeReport_Write_ReportTitle, 0, [0]);
-   {$IFDEF Delphi3}
+   {$IFDEF COMPILER3}
    { THandleOperation }
     AddConst('Quickrpt', 'hoCreate', hoCreate);
     AddConst('Quickrpt', 'hoParent', hoParent);
@@ -2298,7 +2298,7 @@ begin
     AddConst('Quickrpt', 'qrpA4', qrpA4);
     AddConst('Quickrpt', 'qrpA5', qrpA5);
     AddConst('Quickrpt', 'qrpCustom', qrpCustom);
-   {$ENDIF Delphi3}
+   {$ENDIF COMPILER3}
 
     AddHandler('Quickrpt', 'TQROnNeedDataEvent', TJvInterpreterQuickrptEvent, @TJvInterpreterQuickrptEvent.QROnNeedDataEvent);
     AddHandler('Quickrpt', 'TQRNotifyOperationEvent', TJvInterpreterQuickrptEvent, @TJvInterpreterQuickrptEvent.QRNotifyOperationEvent);

@@ -26,9 +26,9 @@ description : dialog components
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvDlg;
 
@@ -109,7 +109,7 @@ begin
 {$ENDIF LINUX}
 end;
 {$ENDIF BCB3}
-{##################### From RAUtils unit #####################}
+{##################### From JvUtils unit #####################}
 
 type
 

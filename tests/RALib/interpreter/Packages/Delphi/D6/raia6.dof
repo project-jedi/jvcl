@@ -1,4 +1,4 @@
 [Directories]
-OutputDir=
 UnitOutputDir=..\..\..\..\Lib6
-SearchPath=..\..\..\..\visual\source
+SearchPath=..\..\..\source;..\..\..\..\visual\source;..\..\..\..\tools
+

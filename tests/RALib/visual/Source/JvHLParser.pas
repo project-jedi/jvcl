@@ -26,9 +26,9 @@ description : text parser
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvHLParser;
 
@@ -79,7 +79,7 @@ type
     property ReturnComments: Boolean read FReturnComments write FReturnComments;
   end;
 
-  EIParserError = class(Exception)
+  EJvIParserError  = class(Exception)
   public
     ErrCode: integer;
     Pos: integer;
@@ -116,7 +116,7 @@ begin
 {$ENDIF BCB}
 end;
 
-constructor EIParserError.Create(AErrCode: integer; APos: integer);
+constructor EJvIParserError .Create(AErrCode: integer; APos: integer);
 begin
   ErrCode := AErrCode;
   Pos := APos;
@@ -261,7 +261,7 @@ begin
       If SkipComments Then
          P:=StrEnd(F1);
     except
-      on E: EIParserError do
+      on E: EJvIParserError  do
         if (E.ErrCode = ieBadRemark) and ReturnComments then
           P := StrEnd(F1)
         else

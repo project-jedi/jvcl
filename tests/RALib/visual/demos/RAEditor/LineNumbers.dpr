@@ -2,12 +2,12 @@ program LineNumbers;
 
 uses
   Forms,
-  fLineNumbersMain in 'fLineNumbersMain.pas' {LineNumbersMain};
+  fJvLineNumbersMain in 'fJvLineNumbersMain.pas' {LineNumbersMain};
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TLineNumbersMain, LineNumbersMain);
+  Application.CreateForm(TJvLineNumbersMain , LineNumbersMain);
   Application.Run;
 end.

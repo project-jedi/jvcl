@@ -1,2 +1,5 @@
 [Directories]
-UnitOutputDir=
+UnitOutputDir=..\..\..\..\Lib6
+SearchPath=..\..\..\..\Images;..\..\..\Source
+
+

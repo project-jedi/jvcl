@@ -25,9 +25,9 @@ description : Ht Controls
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
-{$I JEDI.INC}
+
+{$I JVCL.INC}
              
 
 unit JvHtControls;
@@ -120,13 +120,13 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-  {$IFDEF Delphi3_Up}
+  {$IFDEF COMPILER3_UP}
   {$IFDEF COMPLIB_VCL}
     property ImeMode;
     property ImeName;
   {$ENDIF COMPLIB_VCL}
-  {$ENDIF Delphi3_Up}
-  {$IFDEF Delphi4_Up}
+  {$ENDIF COMPILER3_UP}
+  {$IFDEF COMPILER4_UP}
     property Anchors;
   {$IFDEF COMPLIB_VCL}
     property AutoSize;
@@ -139,7 +139,7 @@ type
     property OnEndDock;
     property OnStartDock;
   {$ENDIF COMPLIB_VCL}
-  {$ENDIF Delphi4_Up}
+  {$ENDIF COMPILER4_UP}
   end;
 
   TJvHTComboBox = class(TCustomComboBox)
@@ -209,13 +209,13 @@ type
     property OnKeyUp;
   //  property OnMeasureItem;
     property OnStartDrag;
-  {$IFDEF Delphi3_Up}
+  {$IFDEF COMPILER3_UP}
   {$IFDEF COMPLIB_VCL}
     property ImeMode;
     property ImeName;
   {$ENDIF COMPLIB_VCL}
-  {$ENDIF Delphi3_Up}
-  {$IFDEF Delphi4_Up}
+  {$ENDIF COMPILER3_UP}
+  {$IFDEF COMPILER4_UP}
   {$IFDEF COMPLIB_VCL}
     property AutoSize;
     property BiDiMode;
@@ -227,12 +227,12 @@ type
     property OnEndDock;
     property OnStartDock;
   {$ENDIF COMPLIB_VCL}
-  {$ENDIF Delphi4_Up}
+  {$ENDIF COMPILER4_UP}
   end;
 
   TJvHTLabel = class(TCustomLabel)
   private
-  {$IFNDEF Delphi4_Up}
+  {$IFNDEF COMPILER4_UP}
     procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
   {$ENDIF}
   {$IFDEF COMPLIB_VCL}
@@ -277,10 +277,10 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-  {$IFDEF Delphi3_Up}
+  {$IFDEF COMPILER3_UP}
     property Layout;
-  {$ENDIF Delphi3_Up}
-  {$IFDEF Delphi4_Up}
+  {$ENDIF COMPILER3_UP}
+  {$IFDEF COMPILER4_UP}
   {$IFDEF COMPLIB_VCL}
     property BiDiMode;
   {$ENDIF COMPLIB_VCL}
@@ -291,7 +291,7 @@ type
     property OnEndDock;
     property OnStartDock;
   {$ENDIF COMPLIB_VCL}
-  {$ENDIF Delphi4_Up}
+  {$ENDIF COMPILER4_UP}
   end;
 
   procedure ItemHtDrawEx(Canvas : TCanvas; Rect: TRect;
@@ -614,13 +614,13 @@ end;
 
 { TJvHTLabel }
 
-{$IFNDEF Delphi4_Up}
+{$IFNDEF COMPILER4_UP}
 procedure TJvHTLabel.CMTextChanged(var Message: TMessage);
 begin
   Invalidate;
   AdjustBounds;
 end;
-{$ENDIF Delphi4_Up}
+{$ENDIF COMPILER4_UP}
 
 {$IFDEF COMPLIB_VCL}
 procedure TJvHTLabel.CMFontChanged(var Message: TMessage);
@@ -714,7 +714,7 @@ begin
     begin
       S := Ss[i];
       Rect := ClientRect;
-     {$IFDEF Delphi3_Up}
+     {$IFDEF COMPILER3_UP}
       case Layout of    { }
         tlTop:
           inc(Rect.Top, H * i);
@@ -725,7 +725,7 @@ begin
       end;    { case }
      {$ELSE}
       inc(Rect.Top, H * i);
-     {$ENDIF Delphi3_Up}
+     {$ENDIF COMPILER3_UP}
       case Alignment of    { }
         taLeftJustify: {nothing};
         taRightJustify:
