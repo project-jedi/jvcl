@@ -1,43 +1,62 @@
-================================================================
+----------------------------------------------------------------------------------------------------
+@@$TJvTimeLimit
+<TITLE TJvTimeLimit overview>
+<GROUP JVCL.Miscel>
+  Use TJvTimeLimit to limit the possible execution of an application with an end date. Use EndDate
+  to specify an expiration date after or on which the application won't start.
+  
+  Use the OnExpire event to take specific actions, if the current date is past or on the date specified
+  by EndDate.
+----------------------------------------------------------------------------------------------------
 @@JvTimeLimit.pas
-Note:
-<B>Delphi Versions:</B> <COLOR Brown>5, 6</COLOR> <B> 
-
-C++ Builder Versions:</B> <COLOR Brown>none</COLOR>
-
-Conditions:
-The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/MPL-1.1.html
-
-Author:
-Sebastien Buysse
-
-Version:
-1.20 Beta
-
-================================================================
+Summary
+  Contains the TJvTimeLimit component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Sébastien Buysse
+----------------------------------------------------------------------------------------------------
 @@TJvTimeLimit
-Description:
-This component is usefull to limit a shareware. if you want to restrict the usage of the shareware after a certain date, just specify that date ... The component will remind you the date is over.
-
-================================================================
-@@TJvTimeLimit.FDate
-
-================================================================
-@@TJvTimeLimit.FOnExpire
-
-================================================================
-@@TJvTimeLimit.Loaded
-
-================================================================
+<GROUP TJvTimeLimit>
+Summary
+  Adds a date limit to the execution of an application.
+Description
+  Use TJvTimeLimit to limit the possible execution of an application with an end date. Use EndDate
+  to specify an expiration date after or on which the application won't start.
+  
+  Use the OnExpire event to take specific actions, if the current date is past or on the date specified
+  by EndDate.
+----------------------------------------------------------------------------------------------------
 @@TJvTimeLimit.EndDate
-Description:
-This is the expiration date
-
-================================================================
+Summary
+  Indicates an end date, after which the application won't start.
+Description
+  Use EndDate to set the last possible date that the application will work. If the user starts the 
+  application after or on the date specified by EndDate, TJvTimeLimit triggers the OnExpire event and 
+  terminates the application.
+See Also
+  OnExpire
+----------------------------------------------------------------------------------------------------
+@@TJvTimeLimit.Loaded
+Summary
+  Checks whether the EndDate is reached.
+Description
+  Loaded is called automatically when the form containing the TJvTimeLimit control has been loaded 
+  into memory. TJvTimeLimit uses this method to check whether the date specified by EndDate is reached.
+  If so, it triggers the OnExpire event and the terminates the application.
+Parameters
+  None.
+See Also
+  EndDate, OnExpire
+----------------------------------------------------------------------------------------------------
 @@TJvTimeLimit.OnExpire
-Description:
-This event is called when the date is over
-
-================================================================
-@@RC_Expired
-
+Summary
+  Occurs when the current date is equal or past the date specified by EndDate.
+Description
+  Write an OnExpire event handler to take specific action when the current date is equal or past the
+  date specified by EndDate. For example, you can display a message box that notifies the user the
+  application has expired. 
+  
+  After the event is handled the application is terminated. If no event handler is specified, 
+  TJvTimeLimit shows a default message.  
+See Also
+  EndDate
