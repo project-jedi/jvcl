@@ -81,6 +81,9 @@ type
     function ProcessEvents: Boolean;
     procedure Notify(Item: TCollectionItem; Action: TCollectionNotification);
       {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    {$IFDEF COMPILER5}
+    function Owner: TPersistent;
+    {$ENDIF COMPILER5}
   public
     constructor Create(AOwner: TPersistent);
     procedure Activate;
@@ -402,6 +405,13 @@ begin
   inherited Create(AOwner, TJvTimerEvent);
   FParent := TJvTimerList(AOwner);
 end;
+
+{$IFDEF COMPILER5}
+function TJvTimerEvents.Owner: TPersistent;
+begin
+  Result := GetOwner;
+end;
+{$ENDIF COMPILER5}
 
 procedure TJvTimerEvents.Activate;
 begin
