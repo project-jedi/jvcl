@@ -208,6 +208,7 @@ type
     property Caption: string read FCaption write FCaption;
   end;
 
+  // (p3) could be removed - a more complete implementation is in JvBrowseFolder
   TJvBrowseFolderDialog = class(TJvCommonDialog)
   private
     FFolderName: string;
@@ -333,11 +334,13 @@ type
     procedure Execute; override;
   end;
 
+  // (p3) this extension (PlacesBar) is already in TJvOpenDialog
   TJvOpenDialog2000 = class(TOpenDialog)
   public
     function Execute: Boolean; override;
   end;
 
+  // (p3) this extension (PlacesBar) is already in TJvSaveDialog
   TJvSaveDialog2000 = class(TSaveDialog)
   public
     function Execute: Boolean; override;

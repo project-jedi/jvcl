@@ -1,4 +1,7 @@
 2003-03-23
+- Removed TJvOpenDialog2000 and TJvSaveDialog2000 from registration in JVCLReg.pas: use TJvOpenDialog and TJvSaveDialog instead. They contain a better implementation of the same things as the xxx2000 versions. // peter3
+
+2003-03-23
 Modifications from Andreas Hausladen:
 ==============================================================================
 Theses modifications were primary applied to the R&A Library 2.00 in order to
