@@ -140,7 +140,6 @@ begin
   FMaxPixel.Test(st, Font);
   if st <> Text then
     Text := st;
-  SelStart := Length(Text);
   FAutoSave.SaveValue(Text);
 end;
 
