@@ -69,7 +69,7 @@ type
     var AllowEdit: Boolean) of object;
   TDrawColumnTitleEvent = procedure(Sender: TObject; ACanvas: TCanvas;
     ARect: TRect; Field: TField; ASortMarker: TBitmap; IsDown: Boolean;
-    var Offset: Integer; var DeafaultDrawText,
+    var Offset: Integer; var DefaultDrawText,
     DefaultDrawSortMarker: Boolean) of object;
   // Lionel
   TTitleHintEvent = procedure(Sender: TObject; Field: TField;
