@@ -370,7 +370,7 @@ begin
   if ALayout = clDialog then Bmp := TBitmap.Create
   else Bmp := nil;
   try
-    if Bmp <> nil then Bmp.Handle := LoadBitmap(hInstance, 'CALCBTNS');
+    if Bmp <> nil then Bmp.Handle := LoadBitmap(hInstance, 'JVCALCBTNS');
     for I := cbNum0 to cbCancel do begin
       if BtnPos[ALayout, I].X > 0 then
         with CreateCalcBtn(Self, I, BtnClick, ALayout) do begin
