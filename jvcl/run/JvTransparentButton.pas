@@ -432,6 +432,7 @@ begin
   if FOutline <> Value then
   begin
     FOutline := Value;
+    Flat := FOutline = fsExplorer;
     Invalidate;
   end;
 end;
@@ -1053,6 +1054,7 @@ begin
   if FOutline <> Value then
   begin
     FOutline := Value;
+    Flat := FOutline = fsExplorer;
     Invalidate;
   end;
 end;
