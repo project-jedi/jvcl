@@ -1089,7 +1089,6 @@ begin
       FreeAndNil(Lst);
     end;
   end;
-  WriteString(Path, JclSetToStr(ATypeInfo, Value, True));
 end;
 
 function TJvCustomAppStore.GetPropCount(Instance: TPersistent): Integer;
