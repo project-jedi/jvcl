@@ -3442,8 +3442,6 @@ begin
 end;
 
 procedure TJvDockCustomPanelSplitter.Paint;
-const
-  XorColor = $00FFD8CE;
 var
   FrameBrush: HBRUSH;
   R: TRect;
@@ -3472,7 +3470,7 @@ begin
     begin
       Pen.Style := psDot;
       Pen.Mode := pmXor;
-      Pen.Color := XorColor;
+      Pen.Color := JvDockXorColor;
       Brush.Style := bsClear;
       Rectangle(0, 0, ClientWidth, ClientHeight);
     end;

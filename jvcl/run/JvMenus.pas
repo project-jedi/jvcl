@@ -41,13 +41,13 @@ const
   DefaultMarginColor: TColor = clBlue;
 
   // xp painter constants
-  DefaultXPImageBackgroundColor = $D1D8D8;
-  DefaultXPSeparatorColor = $A6A6A6;
-  DefaultXPSFBrushColor = $D2BDB6;
-  DefaultXPSFPenColor = $6A240A;
-  DefaultXPShadowColor = $9D8D88;
-  DefaultXPCheckedImageBackColorSelected = $B59285;
-  DefaultXPCheckedImageBackColor = $D8D5D4;
+  DefaultXPImageBackgroundColor = TColor($D1D8D8);
+  DefaultXPSeparatorColor = TColor($A6A6A6);
+  DefaultXPSFBrushColor = TColor($D2BDB6);
+  DefaultXPSFPenColor = TColor($6A240A);
+  DefaultXPShadowColor = TColor($9D8D88);
+  DefaultXPCheckedImageBackColorSelected = TColor($B59285);
+  DefaultXPCheckedImageBackColor = TColor($D8D5D4);
 
 type
 

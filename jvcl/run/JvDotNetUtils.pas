@@ -41,7 +41,7 @@ procedure SetDotNetFrameColors(FocusedColor, UnfocusedColor:TColor);
 implementation
 
 var
-  InternalFocusedColor: TColor = $00733800;
+  InternalFocusedColor: TColor = TColor($00733800);
   InternalUnfocusedColor: TColor = clGray;
 
 procedure SetDotNetFrameColors(FocusedColor, UnfocusedColor:TColor);

@@ -453,17 +453,14 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function BookmarkValid(Bookmark: TBookmark): Boolean;override;
+    function BookmarkValid(Bookmark: TBookmark): Boolean; override;
     function GetFieldData(Field: TField; Buffer: Pointer): Boolean; override;
 
-                // Autoincrement feature: Get next available auto-incremented value for numbered/indexed autoincrementing fields.
-    function GetAutoincrement(fieldName:String):Integer;
-
+    // Autoincrement feature: Get next available auto-incremented value for numbered/indexed autoincrementing fields.
+    function GetAutoincrement(FieldName: string): Integer;
 
     // NEW: COPY FROM ANOTHER TDATASET (TTable, TADOTable, TQuery, or whatever)
-    function CopyFromDataset( dataset:TDataset ):Integer;
-
-
+    function CopyFromDataset(DataSet: TDataset): Integer;
 
     // SELECT * FROM TABLE WHERE <fieldname> LIKE <pattern>:
     procedure SetFilter(FieldName, pattern: string); // Make Rows Visible Only if they match filterString
@@ -1075,7 +1072,7 @@ end;
 
 procedure TJvCustomCsvDataSet.SetFilterOnNull(FieldName:String; NullFlag:Boolean);
 var
-  valueLen, t: Integer;
+  t: Integer;
   pRow: PCsvRow;
   fieldRec: PCsvColumn;
   FieldIndex: Integer;
@@ -1396,15 +1393,15 @@ begin
 end;
 
 // Auto-increment
-function TJvCustomCsvDataSet.GetAutoincrement(fieldName:String):Integer;
+function TJvCustomCsvDataSet.GetAutoincrement(FieldName: string): Integer;
 var
- recindex:Integer;
- FieldLookup: TField;
- CsvColumnData : PCsvColumn;
- max,value:integer;
- RowPtr: PCsvRow;
+  recindex: Integer;
+  FieldLookup: TField;
+  CsvColumnData: PCsvColumn;
+  max, value: Integer;
+  RowPtr: PCsvRow;
 begin
-  result := -1; // failed.
+  Result := -1; // failed.
   FieldLookup := FieldByName(fieldName);
   if FieldLookup.DataType <> ftInteger then
       exit; // failed. Can only auto increment on integer fields!
@@ -1419,20 +1416,20 @@ begin
       // skip filtered rows:
        RowPtr := FData[recindex];
        Assert(Assigned(RowPtr)); // FData should never contain nils!
-       if (RowPtr^.filtered) then
-            continue; // skip filtered row!
+       if RowPtr^.filtered then
+            Continue; // skip filtered row!
 
       value := GetFieldValueAsVariant(CsvColumnData,FieldLookup,recindex);
       if value > max then
           max := value; // keep maximum.
     except
       on E: EVariantError do
-        exit; // failed.
+        Exit; // failed.
     end;
   if max < 0 then
-      result := 0 // autoincrement starts at zero
+    Result := 0 // autoincrement starts at zero
   else
-      result := max+1; // count upwards.
+    Result := max+1; // count upwards.
 end;
 
 
@@ -4326,51 +4323,53 @@ end;
 
 // get contents of one dataset into this dataset. copies only fields that
 // match. Raises an exception if an error occurs. returns # of rows copied.
-function TJvCustomCsvDataSet.CopyFromDataset( dataset:TDataset ):Integer;
+function TJvCustomCsvDataSet.CopyFromDataset(DataSet: TDataset): Integer;
 var
-  t,MatchFieldCount:Integer;
-  FieldName:String;
-  MatchSourceField:Array of TField;
-  MatchDestField:Array of TField;
+  I, MatchFieldCount: Integer;
+  FieldName: string;
+  MatchSourceField: array of TField;
+  MatchDestField: array of TField;
 begin
-  result := -1;
+  // Result := -1;
   SetLength(MatchSourceField, FieldCount);
   SetLength(MatchDestField, FieldCount);
   MatchFieldCount := 0;
-  for t := 0 to dataset.FieldCount-1 do begin
-      MatchSourceField[MatchFieldCount] := dataset.Fields.FieldByNumber(t+1);
-      Assert(Assigned(MatchSourceField[MatchFieldCount]));
-      FieldName :=  MatchSourceField[MatchFieldCount].FieldName;
-      try
-          MatchDestField[MatchFieldCount] := FieldByName(FieldName);
-          Assert(Assigned(MatchDestField[MatchFieldCount]));
-          Inc(MatchFieldCount);
-      except
-          on E:EDatabaseError do begin
-              // ignore it.
-          end;
+  for I := 0 to DataSet.FieldCount-1 do
+  begin
+    MatchSourceField[MatchFieldCount] := DataSet.Fields.FieldByNumber(I+1);
+    Assert(Assigned(MatchSourceField[MatchFieldCount]));
+    FieldName := MatchSourceField[MatchFieldCount].FieldName;
+    try
+      MatchDestField[MatchFieldCount] := FieldByName(FieldName);
+      Assert(Assigned(MatchDestField[MatchFieldCount]));
+      Inc(MatchFieldCount);
+    except
+      on E: EDatabaseError do
+      begin
+        // ignore it.
       end;
+    end;
   end;
-  OutputDebugString(PChar( 'MatchFieldCount='+IntToStr(MatchFieldCount) ) );
-  if (MatchFieldCount = 0) then begin
-       JvCsvDatabaseError(FTableName, RsETimeTConvError);
-  end;
-  result := 0;
-  dataset.First;
+  {$IFDEF DEBUGINFO_ON}
+  OutputDebugString(PChar('MatchFieldCount=' + IntToStr(MatchFieldCount)));
+  {$ENDIF DEBUGINFO_ON}
+  if MatchFieldCount = 0 then
+    JvCsvDatabaseError(FTableName, RsETimeTConvError);
+  Result := 0;
+  DataSet.First;
   if (not Active) and (not LoadsFromFile) then
-      Active := true;
+    Active := True;
 
-  while not dataset.Eof do begin
-      Append;
-      for t:= 0 to MatchFieldCount-1 do begin
-          MatchDestField[t].Value := MatchSourceField[t].Value;
-      end;
-      Post;
-      dataset.Next;
-      Inc(result);      
+  while not Dataset.Eof do
+  begin
+    Append;
+    for I := 0 to MatchFieldCount-1 do
+      MatchDestField[I].Value := MatchSourceField[I].Value;
+    Post;
+    DataSet.Next;
+    Inc(Result);
   end;
 end;
-
 
 end.
 
