@@ -735,11 +735,17 @@ end;
 
 procedure TJvBasePanelEditParameter.SetHeight(Value: Integer);
 begin
+  inherited SetHeight(Value);
+  if Assigned (FramePanel) then
+    FramePanel.Height := Value;
   ArrangeLabelAndWinControlOnPanel;
 end;
 
 procedure TJvBasePanelEditParameter.SetWidth(Value: Integer);
 begin
+  inherited SetWidth(Value);
+  if Assigned (FramePanel) then
+    FramePanel.Width := Value;
   ArrangeLabelAndWinControlOnPanel;
 end;
 
