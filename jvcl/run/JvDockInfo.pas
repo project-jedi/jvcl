@@ -224,8 +224,8 @@ end;
 procedure TJvDockInfoZone.SetDockInfoFromControlToNode(Control: TControl);
 begin
   DockRect := Control.BoundsRect;
-  UnDockWidth := Control.UndockWidth;
-  UnDockHeight := Control.UndockHeight;
+  UnDockWidth := Control.UnDockWidth;
+  UnDockHeight := Control.UnDockHeight;
   if Control is TJvDockVSPopupPanel then
     Control.Visible := False
   else
@@ -326,8 +326,8 @@ begin
   Control.Visible := Visible;
   Control.LRDockWidth := LRDockWidth;
   Control.TBDockHeight := TBDockHeight;
-  Control.UndockHeight := UndockHeight;
-  Control.UndockWidth := UndockWidth;
+  Control.UnDockHeight := UnDockHeight;
+  Control.UnDockWidth := UnDockWidth;
 end;
 
 procedure TJvDockInfoZone.SetDockInfoFromNodeToDockControl(DockControl: TJvDockBaseControl);
@@ -591,8 +591,8 @@ var
         UnDockTop := ReadInteger(DockFormName, 'UnDockTop', 100);
         LRDockWidth := ReadInteger(DockFormName, 'LRDockWidth', 100);
         TBDockHeight := ReadInteger(DockFormName, 'TBDockHeight', 100);
-        UnDockWidth := ReadInteger(DockFormName, 'UndockWidth', 100);
-        UnDockHeight := ReadInteger(DockFormName, 'UndockHeight', 100);
+        UnDockWidth := ReadInteger(DockFormName, 'UnDockWidth', 100);
+        UnDockHeight := ReadInteger(DockFormName, 'UnDockHeight', 100);
         VSPaneWidth := ReadInteger(DockFormName, 'VSPaneWidth', 100);
         Visible := ReadBool(DockFormName, 'Visible', True);
         BorderStyle := TBorderStyle(ReadInteger(DockFormName, 'BorderStyle', 0));

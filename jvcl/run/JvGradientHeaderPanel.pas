@@ -77,7 +77,6 @@ type
     function GetLabelAlignment: TAlignment;
     procedure SetLabelAlignment(const Value: TAlignment);
     procedure AdjustLabelWidth;
-
     {$IFDEF VCL}
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     {$ENDIF VCL}
@@ -88,8 +87,7 @@ type
 //    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoLabelFontChange(Sender: TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X: Integer; Y: Integer); override;
-
+      X, Y: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -172,22 +170,22 @@ uses
 type
   TNoEventLabel = class(TLabel)
   public
-    {$IFDEF VCL}
-    procedure Dispatch(var Message); override;
-    {$ENDIF VCL}
     {$IFDEF VisualCLX}
     constructor Create(AOwner: TComponent); override;
     {$ENDIF VisualCLX}
+    {$IFDEF VCL}
+    procedure Dispatch(var Message); override;
+    {$ENDIF VCL}
   end;
 
   TNoEventGradient = class(TJvGradient)
   public
-    {$IFDEF VCL}
-    procedure Dispatch(var Message); override;
-    {$ENDIF VCL}
     {$IFDEF VisualCLX}
     constructor Create(AOwner: TComponent); override;
     {$ENDIF VisualCLX}
+    {$IFDEF VCL}
+    procedure Dispatch(var Message); override;
+    {$ENDIF VCL}
   end;
 
 constructor TJvGradientHeaderPanel.Create(AOwner: TComponent);
@@ -435,10 +433,10 @@ end;
 procedure TJvGradientHeaderPanel.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  inherited;
-  if CanFocus then SetFocus;
+  inherited MouseDown(Button, Shift, X, Y);
+  if CanFocus then
+    SetFocus;
 end;
-
 
 (*
 function TJvGradientHeaderPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
@@ -450,47 +448,49 @@ end;
 
 //=== { TNoEventLabel } ======================================================
 
-{$IFDEF VCL}
+{$IFDEF VisualCLX}
+constructor TNoEventLabel.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle - [csNoStdEvents];
+end;
+{$ENDIF VisualCLX}
 
+{$IFDEF VCL}
 procedure TNoEventLabel.Dispatch(var Message);
 begin
   with TMessage(Message) do
     if (Parent <> nil) and
-    (((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) or
-    ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST))) then
-    Parent.Dispatch(Message)
-  else
-    inherited;
+      (((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) or
+      ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST))) then
+      Parent.Dispatch(Message)
+    else
+      inherited Dispatch(Message);
 end;
+{$ENDIF VCL}
 
 //=== { TNoEventGradient } ===================================================
 
+{$IFDEF VisualCLX}
+constructor TNoEventGradient.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle - [csNoStdEvents];
+end;
+{$ENDIF VisualCLX}
+
+{$IFDEF VCL}
 procedure TNoEventGradient.Dispatch(var Message);
 begin
   with TMessage(Message) do
     if (Parent <> nil) and
-    (((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) or
-    ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST))) then
-    Parent.Dispatch(Message)
-  else
-    inherited Dispatch(Message);
+      (((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) or
+      ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST))) then
+      Parent.Dispatch(Message)
+    else
+      inherited Dispatch(Message);
 end;
-
 {$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-constructor TNoEventLabel.Create(AOwner: TComponent);
-begin
-  inherited;
-  ControlStyle := ControlStyle - [csNoStdEvents];
-end;
-
-constructor TNoEventGradient.Create(AOwner: TComponent);
-begin
-  inherited;
-  ControlStyle := ControlStyle - [csNoStdEvents];
-end;
-{$ENDIF VisualCLX}
 
 end.
 

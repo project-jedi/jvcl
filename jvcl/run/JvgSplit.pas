@@ -278,7 +278,7 @@ begin
         end;
       alBottom:
         begin
-          fKeepSize := FControl.Height;
+          FKeepSize := FControl.Height;
           Parent.DisableAlign;
           try
             FControl.Top := FControl.Top + (FControl.Height - cNewSize);

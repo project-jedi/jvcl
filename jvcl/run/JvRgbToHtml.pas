@@ -62,7 +62,7 @@ begin
   with TJvRGBToHTML.Create(nil) do
     try
       RGBColor := Value;
-      Result := HtmlColor;
+      Result := HTMLColor;
     finally
       Free;
     end;

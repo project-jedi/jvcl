@@ -162,13 +162,13 @@ var
 begin
   inherited DoShow;
   {$IFDEF VCL}
-  if not SystemParametersInfo(SPI_GETWORKAREA, 0, @lScreenRect, 0) then
+  if not SystemParametersInfo(SPI_GETWORKAREA, 0, @LScreenRect, 0) then
   {$ENDIF VCL}
     LScreenRect := Rect(0, 0, Screen.Width, Screen.Height);
   if (Left + Width > LScreenRect.Right) then
     Left := LScreenRect.Right - Width;
   if (Top + Height > LScreenRect.Bottom) then
-    Top := Self.Edit.ClientOrigin.y - Height;
+    Top := Self.Edit.ClientOrigin.Y - Height;
 end;
 
 function TJvCustomDropDownForm.GetEdit: TCustomEdit;

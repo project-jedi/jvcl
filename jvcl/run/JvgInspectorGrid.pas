@@ -105,13 +105,13 @@ type
     function SelectCell(ACol, ARow: Longint): Boolean; override;
     function GetEditMask(ACol, ARow: Longint): string; override;
 
-    procedure DrawButton(ARow: longint; Expanded: Boolean);
+    procedure DrawButton(ARow: Longint; Expanded: Boolean);
 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure KeyPress(var Key: Char); override;
 
     procedure GetCellStyle(Sender: TObject; var ACol, ARow: Integer; var Style: TglGridCellStyle); override;
-    procedure GetCellGradientParams(Sender: TObject; ACol, ARow: longint; var CellRect: TRect; var Gradient:
+    procedure GetCellGradientParams(Sender: TObject; ACol, ARow: Longint; var CellRect: TRect; var Gradient:
       TJvgGradient); override;
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
   public

@@ -198,7 +198,7 @@ type
     // string has been set for the control.
     // This property is used in conjunction with ImageIndex to select the image to display
     // If either is nil, invalid or out of range, no error image is displayed
-    property Images: TCustomImageList read FImagelist write SetImageList;
+    property Images: TCustomImageList read FImageList write SetImageList;
     // Gets or sets the ImageIndex in ImageList to use when displaying an image next to a control
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
   end;
@@ -599,7 +599,7 @@ end;
 procedure TJvErrorIndicator.SetClientError(const AClient: IJvErrorIndicatorClient);
 begin
   if AClient <> nil then
-    SetError(AClient.getControl, AClient.ErrorMessage);
+    SetError(AClient.GetControl, AClient.ErrorMessage);
 end;
 
 procedure TJvErrorIndicator.IndicatorSetError(AControl: TControl;

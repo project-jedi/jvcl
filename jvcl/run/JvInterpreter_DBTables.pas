@@ -1241,7 +1241,7 @@ procedure TTable_SetRange(var Value: Variant; Args: TJvInterpreterArgs);
 var
   OA: TOpenArray;
   OAV: TValueArray;
-  OAS: integer;
+  OAS: Integer;
 begin
   Args.OpenArray(0);
   V2OA(Args.Values[1], OA, OAV, OAS);
@@ -3060,7 +3060,7 @@ begin
     AddGet(TBlobStream, 'Seek', TBlobStream_Seek, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TBlobStream, 'Truncate', TBlobStream_Truncate, 0, [varEmpty], varEmpty);
   end;
-  RegisterClasses([TSession, TDataBase, TTable, TQuery, TStoredProc,
+  RegisterClasses([TSession, TDatabase, TTable, TQuery, TStoredProc,
     TBatchMove, TParam, TParams, TUpdateSQL]);
 end;
 

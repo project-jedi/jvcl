@@ -1325,7 +1325,7 @@ end;
 
 function TJvGIFFrame.GetColorCount: Integer;
 begin
-  Result := FImage.FColormap.Count;
+  Result := FImage.FColorMap.Count;
   if (Result = 0) and Assigned(FBitmap) and (FBitmap.Palette <> 0) then
     Result := PaletteEntries(FBitmap.Palette);
 end;
@@ -2150,7 +2150,7 @@ end;
 
 function TJvGIFImage.GetGlobalColorCount: Integer;
 begin
-  Result := FImage.FColormap.Count;
+  Result := FImage.FColorMap.Count;
 end;
 
 function TJvGIFImage.GetEmpty: Boolean;
@@ -2164,7 +2164,7 @@ begin
     (TJvGIFFrame(FItems[I]).FImage.FImageData.Size = 0)));
 end;
 
-function TJvGIFImage.GetPalette: HPalette;
+function TJvGIFImage.GetPalette: HPALETTE;
 begin
   if FItems.Count > 0 then
     Result := Bitmap.Palette

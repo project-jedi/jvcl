@@ -217,9 +217,9 @@ var
           ssyColon:
             begin
               Pt.X := Pt.X + FInterspace;
-              Windows.SetPixel(Handle, Pt.X, Pt.Y + FDsize.Y div 3,
+              Windows.SetPixel(Handle, Pt.X, Pt.Y + FDSize.Y div 3,
                 ColorToRGB(CActive));
-              Windows.SetPixel(Handle, Pt.X, Pt.Y + FDSize.Y - FDsize.Y div 3,
+              Windows.SetPixel(Handle, Pt.X, Pt.Y + FDSize.Y - FDSize.Y div 3,
                 ColorToRGB(CActive));
               Pt.X := Pt.X + FInterspace * 2;
             end;

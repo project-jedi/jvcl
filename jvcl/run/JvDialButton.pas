@@ -710,7 +710,8 @@ end;
 
 procedure TJvCustomDialButton.Paint;
 begin
-  if csCreating in ControlState then exit;
+  if csCreating in ControlState then
+    Exit;
   Canvas.Brush.Color := Parent.Brush.Color;
   DrawThemedBackground(Self, Canvas, ClientRect);
   BitmapNeeded;
@@ -916,7 +917,7 @@ begin
     if not ThemeServices.ThemesEnabled then
     {$ENDIF JVCLThemesEnabled}
       Canvas.FillRect(FBitmapRect);
-    SetViewPortOrgEx(Canvas.Handle, FSize div 2 - FRadius, FSize div 2 - FRadius,
+    SetViewportOrgEx(Canvas.Handle, FSize div 2 - FRadius, FSize div 2 - FRadius,
       @OldOrg);
     try
       // Draw edge.

@@ -447,25 +447,25 @@ end;
 
 procedure TJvMTThread.SetManager(Value: TJvMTManager);
 begin
-  UnhookThread;
+  UnHookThread;
   inherited SetManager(Value);
 end;
 
 procedure TJvMTThread.SetOnExecute(Value: TJvMTThreadEvent);
 begin
-  UnhookThread;
+  UnHookThread;
   FOnExecute := Value;
 end;
 
 procedure TJvMTThread.SetOnFinished(Value: TJvMTThreadEvent);
 begin
-  UnhookThread;
+  UnHookThread;
   FOnFinished := Value;
 end;
 
 procedure TJvMTThread.SetOnTerminating(Value: TJvMTThreadEvent);
 begin
-  UnhookThread;
+  UnHookThread;
   FOnTerminating := Value;
 end;
 
@@ -768,7 +768,7 @@ begin
   if FQueue <> nil then
     raise EThread.CreateRes(@RsECannotChangePropertyBuffer);
   if Value < 1 then
-    raise EInvalidOperation.CreateREsFmt(@SPropertyOutOfRange, [ClassName]);
+    raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [ClassName]);
   FMaxBufferSize := Value;
 end;
 

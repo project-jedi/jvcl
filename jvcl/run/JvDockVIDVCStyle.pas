@@ -1286,8 +1286,8 @@ var
       else
         APoint := Point(0, 0);
       APoint := DockSite.ClientToScreen(APoint);
-      Result.Left := APoint.x;
-      Result.Top := APoint.y;
+      Result.Left := APoint.X;
+      Result.Top := APoint.Y;
       Result.UndockWidth := TempCtl.UndockWidth;
       Result.UndockHeight := TempCtl.UndockHeight;
       Result.LRDockWidth := TempCtl.LRDockWidth;
@@ -1862,9 +1862,9 @@ begin
 
   ShiftScaleOrientation := SizingZone.ParentZone.Orientation;
   if SizingZone.ParentZone.Orientation = doHorizontal then
-    SizingZone.ZoneLimit := SizePos.y + (SplitterWidth div 2)
+    SizingZone.ZoneLimit := SizePos.Y + (SplitterWidth div 2)
   else
-    SizingZone.ZoneLimit := SizePos.x + (SplitterWidth div 2);
+    SizingZone.ZoneLimit := SizePos.X + (SplitterWidth div 2);
 
   ParentLimit := SizingZone.LimitBegin;
   if OldLimit - ParentLimit > 0 then
@@ -3127,13 +3127,13 @@ begin
   Result := -1;
   case Page.TabPosition of
     tpTop:
-      Result := FindSheetWithPos(x, y, 0, Height - TabBottomOffset);
+      Result := FindSheetWithPos(X, Y, 0, Height - TabBottomOffset);
     tpBottom:
-      Result := FindSheetWithPos(x, y, TabBottomOffset, Height);
+      Result := FindSheetWithPos(X, Y, TabBottomOffset, Height);
     tpLeft:
-      Result := FindSheetWithPos(y, x, 0, Height - TabBottomOffset);
+      Result := FindSheetWithPos(Y, X, 0, Height - TabBottomOffset);
     tpRight:
-      Result := FindSheetWithPos(y, x, TabBottomOffset, Height);
+      Result := FindSheetWithPos(Y, X, TabBottomOffset, Height);
   end;
 end;
 

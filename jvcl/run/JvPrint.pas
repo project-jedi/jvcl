@@ -68,14 +68,14 @@ end;
 
 procedure TJvPrint.Print(Value: TStringList);
 var
-  I, Line, Pagenum: Integer;
+  I, Line, PageNum: Integer;
 begin
   //let's print
   if Assigned(FOnBeginPrint) then
     FOnBeginPrint(Self);
   Line := 0;
   Printer.BeginDoc;
-  Pagenum := 1;
+  PageNum := 1;
   for I := 0 to Value.Count - 1 do
   begin
     if Assigned(FOnProgress) then

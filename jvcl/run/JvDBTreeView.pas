@@ -486,7 +486,7 @@ end;
 
 procedure TJvCustomDBTreeView.SetDataSource(Value: TDataSource);
 begin
-  if Value = FDatalink.Datasource then
+  if Value = FDataLink.DataSource then
     Exit;
   Items.Clear;
   FDataLink.DataSource := Value;

@@ -181,7 +181,7 @@ end;
 procedure TJvImageSquare.Paint;
 var
   R: TRect;
-  dX, dY: Integer;
+  DX, DY: Integer;
 begin
   R := Rect(0, 0, Width, Height);
 
@@ -202,14 +202,14 @@ begin
   if Assigned(FImageList) then
   begin
     { draw in middle }
-    dX := (Width - FImageList.Width) div 2;
-    dY := (Height - FImageList.Height) div 2;
+    DX := (Width - FImageList.Width) div 2;
+    DY := (Height - FImageList.Height) div 2;
     {$IFDEF VCL}
     ImageList_DrawEx(FImageList.Handle, FIndex, Canvas.Handle,
-      dx, dy, 0, 0, CLR_NONE, CLR_NONE, ILD_TRANSPARENT);
+      DX, DY, 0, 0, CLR_NONE, CLR_NONE, ILD_TRANSPARENT);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    FImageList.Draw(Canvas, dX, dY, FIndex);
+    FImageList.Draw(Canvas, DX, DY, FIndex);
     {$ENDIF VisualCLX}
   end;
 end;
