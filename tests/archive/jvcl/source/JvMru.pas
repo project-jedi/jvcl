@@ -40,27 +40,28 @@ Anyway they still are under MPL 1.1 and are welcome to be integrated into JVCL.
 the_Arioch@nm.ru
 
 Changes are:
- 0) Memory leaks in GetItem and EnumerateItems been fixed -
+ 0) Memory leaks in GetItem and EnumerateItems been fixed in JVCL 1.32
  1) fixed bug 2 Microsoft bugs. Read article at URL above.
- 2) fixed bug ANSI EnumMruList fails with binary MRU lists under WinNT
- 3) added ItemData property that allows to read data w|o using event
- 4) added MoveToTop method
- 5) EnumerateItems now relies upon GetItem to remove duplication of code.
+ 2) added ItemData property that allows to read data w|o using event
+ 3) EnumerateItems now relies upon GetItem to remove duplication of code.
      Now, if any bug - You may fix it one time, not 2 times :)
- 6) one more thing - i cannot get the reason that almost all of the methods
+ 4) one more thing - i cannot get the reason that almost all of the methods
     of the component are published rather than public. I think it is also a bug
- 7) added MoveToTop(index) method; Warning! it changes ItemData property
- 8) added DelayedWrite property
- 9) renamed DeleteString to DeleteItem - cause it is the same for both String and Data
-10) added UseUnicode property - if List is of string type then it will use WideString methods
-11) added WantUnicode property - it will set UseUnicode respecting to used platform
+ 5) added MoveToTop(index) method; Warning! it changes ItemData property
+ 6) added DelayedWrite property
+ 7) renamed DeleteString to DeleteItem - cause it is the same for both String and Data
+ 8) added UseUnicode property - if List is of string type then it will use WideString methods
+ 9) added WantUnicode property - it will set UseUnicode respecting to used platform
+10) some storage modifiers added for published property
+xx) why keep UnicodeAvailable in every component? I iwsh Delphi could map
+    property to a global variable :(
 *)
-
-{$I JVCL.INC}
+{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+{$I JEDI.INC}
 
 unit JvMru;
 
-
+{$OBJEXPORTALL On}
 
 interface
 
@@ -115,9 +116,10 @@ type
     function InternalGetItem(Index: Integer; FireEvent: boolean = true): Boolean;
     procedure ReCreateList;
     procedure NeedUnicode;
-    procedure DoEnumText(const S: string; Index: integer); virtual;
-    procedure DoUnicodeEnumText(const S: WideString; Index: integer); virtual;
-    procedure DoEnumData(Data: Pointer; DataSize: integer; Index: integer); virtual;
+    procedure DoEnumText; virtual;
+    procedure DoUnicodeEnumText; virtual;
+    procedure DoEnumData(DataSize: integer); virtual;
+    // Arioch:: even DataSize can be retained later from properties - but let 'em be.
   public
     procedure Close;
     procedure Open;
@@ -154,9 +156,8 @@ type
     function FindUnicodeString(Value: widestring): Integer;
 
   published
-    property Active:boolean read GetActive write SetActive;
     property DelayedWrite: boolean read FDelayedWrite write FDelayedWrite default false;
-    property WantUnicode: boolean read FWantUnicode write SetWantUnicode;
+    property WantUnicode: boolean read FWantUnicode write SetWantUnicode default false;
     property RootKey: TJvHKey read FKey write SetKey default hkCurrentUser;
     property SubKey: string read GetSubKey write SetSubKey stored false;
     // Arioch: it will be read from RCDATA for compatiblility, but unicode value should be stored!
@@ -168,6 +169,7 @@ type
     property OnEnumText: TOnEnumText read FOnEnumText write FOnEnumText;
     property OnEnumUnicodeText: TOnEnumUnicodeText read FOnEnumUnicodeText write FOnEnumUnicodeText;
     property OnEnumData: TOnEnumData read FOnEnumData write FOnEnumData;
+    property Active:boolean read GetActive write SetActive;
   end;
 
   EMruException = class(EJVCLException);
@@ -177,7 +179,7 @@ uses
   JvFunctions, Registry;
 
 resourcestring
-  RC_ErrorCreatingMRU = 'Unable to create MRU';
+  RC_ErrorMRU_Creating = 'Unable to create MRU';
   RC_ErrorMRU_Unicode = 'Windows NT required for Unicode in MRU';
 
 var
@@ -254,35 +256,37 @@ var
 
 function TJvMruList.AddData(Value: Pointer; Size: Integer): Boolean;
 begin
-  if FList <> 0 then
-    Result := AddMruData(FList, Value, Size) <> -1
-  else
     Result := False;
+  if FList <> 0 then
+    Result := AddMruData(FList, Value, Size) <> -1;
 end;
 
 {**************************************************}
 
 function TJvMruList.AddPChar(Value: string): Boolean;
 begin
+    Result := False;
   if FList <> 0 then
   begin
     Result := AddMruString(FList, PChar(Value)) <> -1;
     // (p3) call EnumText here ?
+    //  Arioch: Why? What for?
+    //  Whether You want them - make a special sepearate set of events
+    //  And there's danger that eventHandler tries to get a list of items,
+    //  thus, killing current section! 
   end
-  else
-    Result := False;
 end;
 
 function TJvMruList.AddUnicodePChar(Value: PWideChar): Boolean;
 begin
   NeedUnicode;
+  Result := False;
   if FList <> 0 then
   begin
     Result := AddMruStringW(FList, PWideChar(Value)) <> -1;
     // (p3) call EnumText here?
-  end
-  else
-    Result := False;
+    // See above
+  end;
 end;
 
 function TJvMruList.AddString(Value: string): Boolean;
@@ -309,19 +313,21 @@ begin
   SetWantUnicode(false);
   FItemData.p := nil;
 
-  ReCreateList;
+  // ReCreateList;
+  Close; // since there is PUBLISHED .Active property - let it control how it will be.
 end;
 
 {**************************************************}
 
 function TJvMruList.DeleteItem(Index: Integer): Boolean;
 begin
+  Result := False;
+  
   if FList <> 0 then
   begin
     Result := DelMruString(FList, Index);
     ReCreateList;                       // Arioch: fixes MS's bug
-  end else
-    Result := False;
+  end;
 end;
 
 {**************************************************}
@@ -343,27 +349,26 @@ begin
     Exit;
 
   Index := 0;
-  while GetItem(Index) do inc(Index);
+    while GetItem(Index) do inc(Index);
+  If Index>0 then Result:=true;
 end;
 
 {**************************************************}
 
 function TJvMruList.FindData(Value: Pointer; Size: Integer): Integer;
 begin
-  if FList <> 0 then
-    Result := FindMruData(FList, Value, Size, nil)
-  else
     Result := -1;
+  if FList <> 0 then
+    Result := FindMruData(FList, Value, Size, nil);
 end;
 
 {**************************************************}
 
 function TJvMruList.FindString(Value: string): Integer;
 begin
-  if FList <> 0 then
-    Result := FindMruString(FList, PChar(Value), nil)
-  else
     Result := -1;
+  if FList <> 0 then
+    Result := FindMruString(FList, PChar(Value), nil);
 end;
 
 {**************************************************}
@@ -371,10 +376,9 @@ end;
 function TJvMruList.FindUnicodeString(Value: widestring): Integer;
 begin
   NeedUnicode;
-  if FList <> 0 then
-    Result := FindMruStringW(FList, PWideChar(Value), nil)
-  else
     Result := -1;
+  if FList <> 0 then
+    Result := FindMruStringW(FList, PWideChar(Value), nil);
 end;
 
 function TJvMruList.GetItem(Index: Integer): Boolean;
@@ -410,8 +414,8 @@ begin
         SetItemData(p);
         FItemIndex := Index;
         if FireEvent then
-          DoEnumText(string(PChar(P)), Index);
-      end;
+          DoEnumText()
+        end;
     end
     else
     begin                               // Unicode
@@ -419,8 +423,8 @@ begin
       i := EnumMruListW(FList, Index, p, 256);
       if i > 255 then
       begin
-        ReAllocMem(p, i + 2);
-        i := EnumMruListW(FList, Index, p, (i div 2) + 1);
+        ReAllocMem(p, (i + 1)*2);
+        i := EnumMruListW(FList, Index, p, i + 1);
       end;
       if i <> -1 then
       begin
@@ -428,7 +432,7 @@ begin
         SetItemData(p);
         FItemIndex := Index;
         if FireEvent then
-          DoUnicodeEnumText(WideString(PWideChar(p)), Index);
+          DoUnicodeEnumText();
       end;
     end
   end
@@ -458,7 +462,7 @@ begin
       SetItemData(p);
       FItemIndex := Index;
       if FireEvent then
-        DoEnumData(P, i, Index);
+        DoEnumData(i);
     end;
   end;
 end;
@@ -467,10 +471,9 @@ end;
 
 function TJvMruList.GetItemsCount: Integer;
 begin
-  if FList <> 0 then
-    Result := EnumMruList(FList, -1, nil, 0)
-  else
     Result := 0;
+  if FList <> 0 then
+    Result := EnumMruList(FList, -1, nil, 0);
 end;
 {**************************************************}
 
@@ -578,7 +581,7 @@ end;
 procedure TJvMruList.SetUseUnicode(const Value: boolean);
 begin
   if Value then NeedUnicode;
-  if FUseUnicode = Value then exit; ;
+  if FUseUnicode = Value then exit; 
   FUseUnicode := Value;
 end;
 
@@ -593,7 +596,8 @@ end;
 procedure TJvMruList.Close;
 begin
   if FList <> 0 then
-    FreeMruList(FList);
+     begin FreeMruList(FList); FList:=0; end;
+
   FItemIndex := -1;
   SetItemData(pointer(nil));
 end;
@@ -647,14 +651,18 @@ begin
       FList := CreateMruList(@FLst);
 
     if FList = 0 then
-      raise EMruException.Create(RC_ErrorCreatingMRU);
+      raise EMruException.Create(RC_ErrorMRU_Creating);
   end;
 end;
 
 function TJvMruList.ItemDataSize: integer;
 // Arioch: Here we rely on undocumemted internal structure
 // that has been used by GetMem/FreeMem for ages!
-// See for exampel GetMem.inc in VCL sources
+// for example see sources for GetMem.inc in VCL sources
+//
+// JVCL should have a list were it relies upon undocumented parts of Delphi,
+//  Windows, etc..., so when new version of D,Win,... is realeased we could
+//  check the list instead of hunting for misty bug;
 begin
   Result := 0;
   if ItemDataAsPointer = nil then exit;
@@ -662,23 +670,24 @@ begin
 end;
 
 
-procedure TJvMruList.DoEnumText(const S: string; Index: integer);
+procedure TJvMruList.DoEnumText();
 begin
   if Assigned(FOnEnumText) then
-    FOnEnumText(self, S, Index);
+    FOnEnumText(self, string(FItemData.s), ItemIndex);
+//    FOnEnumText(self, S, Index);
 end;
 
-procedure TJvMruList.DoUnicodeEnumText(const S: WideString;
-  Index: integer);
+procedure TJvMruList.DoUnicodeEnumText();
 begin
   if Assigned(FOnEnumUnicodeText) then
-    FOnEnumUnicodeText(Self, S, Index);
+    FOnEnumUnicodeText(Self, widestring(FItemData.ws), FItemIndex);
+//    FOnEnumUnicodeText(Self, S, Index);
 end;
 
-procedure TJvMruList.DoEnumData(Data: Pointer; DataSize, Index: integer);
+procedure TJvMruList.DoEnumData(DataSize: integer);
 begin
   if Assigned(FOnEnumData) then
-    FOnEnumData(Self, Data, DataSize, Index);
+    FOnEnumData(Self, FItemData.p, DataSize, FItemIndex);
 end;
 
 function TJvMruList.DeleteKey: boolean;
@@ -728,13 +737,13 @@ initialization
       AddMRUStringW := GetProcAddress(hComCtlDll, PChar(401));
       FindMRUStringW := GetProcAddress(hComCtlDll, PChar(402));
       EnumMRUListW := GetProcAddress(hComCtlDll, PChar(403));
-    end else
+    end (* else  Since TurboPascal 7.0 allthe global vars are filled with Zero'es at the start, yes?
     begin
       CreateMRUListW := nil;
       AddMRUStringW := nil;
       FindMRUStringW := nil;
       EnumMRUListW := nil;
-    end;
+    end;   *)
   end
   else
     PError('MRU');
