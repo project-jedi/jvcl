@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvQMM" Design="0">
+  <Description>JVCLX Multimedia and Image Components Runtime Package</Description>
+  <Requires>
+    <Package Name="JvQCore-R" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="JvQCtrls-R" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="JvQSystem-R" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="JvQCmp-R" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="JvQStdCtrls-R" Targets="D7,K3,K3p" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\qrun\JvQAVICapture.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQBmpAnimator.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQGradient.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQGradientHeaderPanel.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQIconList.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQId3v1.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQId3v2.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQID3v2Base.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQId3v2Types.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQImageRotate.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQImageTransform.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQImageSquare.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQPicClip.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSlider.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSpecialImage.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSpecialProgress.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSplashWindow.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQStarfield.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQQtKeySelectionFrame.pas" Targets="D7,K3,K3p" Formname="JvQVirtualKeySelectionFrame: TFrame" Condition=""/>
+    <File Name="..\..\qrun\JvQWaitingGradient.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQWaitingProgress.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQWavePlayer.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQAni.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQAnimate.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQAnimatedImage.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+  </Contains>
+</Package>
