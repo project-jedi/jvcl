@@ -40,6 +40,8 @@ contains
   JvImagePreviewForm in '..\..\design\JvImagePreviewForm.pas' {ImageForm},
   JvID3v2EditorForm in '..\..\design\JvID3v2EditorForm.pas' {JvID3FramesEditor},
   JvID3v2DefineForm in '..\..\design\JvID3v2DefineForm.pas' {JvID3DefineDlg},
-  JvIconListForm in '..\..\design\JvIconListForm.pas' {IconListDialog};
+  JvIconListForm in '..\..\design\JvIconListForm.pas' {IconListDialog},
+  JvVirtualKeyEditorForm in '..\..\design\JvVirtualKeyEditorForm.pas' {frmJvVirtualKeyEditor},
+  JvAVICaptureEditors in '..\..\design\JvAVICaptureEditors.pas';
 
 end.

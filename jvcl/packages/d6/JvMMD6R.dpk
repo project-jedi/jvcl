@@ -61,7 +61,10 @@ contains
   JvAnimate in '..\..\run\JvAnimate.pas',
   JvBmpAnimator in '..\..\run\JvBmpAnimator.pas',
   JvIconList in '..\..\run\JvIconList.pas',
-  JvGradientHeaderPanel in '..\..\run\JvGradientHeaderPanel.pas';
+  JvGradientHeaderPanel in '..\..\run\JvGradientHeaderPanel.pas',
+  JvVirtualKeySelectionFrame in '..\..\run\JvVirtualKeySelectionFrame.pas' {JvVirtualKeySelectionFrame: TFrame},
+  JvAVICapture in '..\..\run\JvAVICapture.pas',
+  VFW in '..\..\common\VFW.pas';
 
 
 end.

@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2003-06-29:
+- Added TJvAVICapture component from Olivier Sannier
+
 2003-06-26:
 - Removed JvAutoSave and JvRegAutoSave. From now on, use JvFormStorage instead.
 

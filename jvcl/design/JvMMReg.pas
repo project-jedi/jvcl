@@ -20,9 +20,9 @@ uses
   JvImageRotate, JvImageTransform, JvImageWindow, JvPcx,
   JvStarfield, JvWaitingGradient, JvWaitingProgress, JvWavePlayer,
   JvSpecialProgress, JvSlider, {$IFDEF USE_JV_GIF} JvGIF, JvGIFCtrl, {$ENDIF} JvID3v2Base, JvAnimatedImage,
-  JvSpecialImage,
+  JvSpecialImage, JvAVICapture,
 
-  JvAnimatedEditor, JvID3v2EditorForm, JvPictureEditForm, JvIconListForm;
+  JvAnimatedEditor, JvID3v2EditorForm, JvPictureEditForm, JvIconListForm, JvAVICaptureEditors;
 
 {$R ..\resources\JvMMReg.dcr}
 
@@ -31,7 +31,8 @@ begin
   RegisterComponents(SPaletteImageAnimator,[
     TJvAnimate, TJvBmpAnimator, TJvPicClip,
     TJvImageRotate, TJvImageTransform, TJvImageWindow, TJvImageSquare,
-    TJvStarfield, {$IFDEF USE_JV_GIF}TJvGIFAnimator, {$ENDIF} TJvAnimatedImage, TJvSpecialImage
+    TJvStarfield, {$IFDEF USE_JV_GIF}TJvGIFAnimator, {$ENDIF} TJvAnimatedImage,
+    TJvSpecialImage, TJvAVICapture
     ]);
   RegisterComponents(SPaletteBarPanel,[
     TJvGradientHeaderPanel, TJvGradient, TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress
@@ -44,6 +45,8 @@ begin
     ]);
 
   RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
+  RegisterPropertyEditor(TypeInfo(TJvDriverIndex), nil, '', TJvDriverIndexEditor);
+  RegisterPropertyEditor(TypeInfo(TJvVirtualKey), nil, '', TJvVirtualKeyEditor);
 
   RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
   RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
