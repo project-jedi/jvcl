@@ -90,7 +90,7 @@ begin
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
  
-  RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
+  //RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
