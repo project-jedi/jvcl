@@ -593,7 +593,7 @@ begin
   FHotTrack := false;
   FHotFont := TFont.Create;
   FFontSave := TFont.Create;
-//  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   FOver := false;
   FWordWrap := true;
   FForceSameSize := false;

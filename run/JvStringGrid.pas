@@ -236,7 +236,7 @@ begin
   FFixedFont.OnChange := DoFixedFontChange;
   FHintColor := clInfoBk;
   FOver := false;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
 destructor TJvStringGrid.Destroy;

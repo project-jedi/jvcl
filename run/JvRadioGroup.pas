@@ -96,7 +96,7 @@ constructor TJvRadioGroup.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
 {$IFDEF JVCLThemesEnabledD56}
   IncludeThemeStyle(Self, [csParentBackground]);
 {$ENDIF}  

@@ -72,7 +72,7 @@ begin
   FHintColor := clInfoBk;
   FOver := False;
   FHotTrack := False;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
 procedure TJvScrollBar.CMCtl3DChanged(var Msg: TMessage);

@@ -77,7 +77,7 @@ constructor TJvHotKey.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
 procedure TJvHotKey.CMParentColorChanged(var Msg: TMessage);

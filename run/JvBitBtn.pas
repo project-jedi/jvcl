@@ -90,6 +90,7 @@ type
   end;
 
 implementation
+
 uses
   JvJVCLUtils;
 
@@ -103,7 +104,7 @@ begin
   FOver := False;
   FGlyph := TBitmap.Create;
   FOldGlyph := TBitmap.Create;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   FHotTrackFontOptions := DefaultTrackFontOptions;
 end;
 

@@ -68,7 +68,7 @@ begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   FOver := False;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
 procedure TJvHeaderControl.MouseEnter(var Msg: TMessage);

@@ -104,7 +104,7 @@ type
     procedure Paint; override;
     procedure DoExit; override;
     procedure DoEnter; override;
-    procedure CreateParams(var Params: TCreateParams); override;
+    // procedure CreateParams(var Params: TCreateParams); override;
     procedure ColorClicked(Sender: TObject; Button: TMouseButton; Color: TColor);
   public
     constructor Create(AOwner: TComponent); override;
@@ -299,11 +299,13 @@ begin
 
 end;
 
+{
 procedure TJvColorBox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
+}
 
 destructor TJvColorBox.Destroy;
 begin

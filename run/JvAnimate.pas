@@ -99,7 +99,7 @@ constructor TJvAnimate.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FColor := clInfoBk;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   IncludeThemeStyle(Self, [csParentBackground]);
 end;
 

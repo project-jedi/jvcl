@@ -68,8 +68,7 @@ end;
 
 destructor TJvDBProgressBar.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink := nil;
+  FreeAndNil(FDataLink);
   inherited Destroy;
 end;
 

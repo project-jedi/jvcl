@@ -244,7 +244,7 @@ begin
   FOver := False;
   FCaret := TJvCaret.Create(Self);
   FCaret.OnChanged := CaretChanged;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   (* ++ RDB ++ *)
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;

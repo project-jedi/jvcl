@@ -218,7 +218,7 @@ begin
   FHintColor := clInfoBk;
   FHotTrack := False;
   FOver := False;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   FCaret := TJvCaret.Create(self);
   FCaret.OnChanged := CaretChanged;
   FClipboardCommands := [caCopy..caUndo];

@@ -224,7 +224,7 @@ begin
   FHintColor := clInfoBk;
   FHotTrack := false;
   FIncrement := 1;
-  Controlstyle := Controlstyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   FAlignButton := abRight;
   FFormat := ufInt;
   FFirstTime := true;

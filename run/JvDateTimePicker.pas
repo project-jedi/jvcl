@@ -107,7 +107,7 @@ constructor TJvDateTimePicker.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   FNullText := SNullText;
   FDropDownDate := SysUtils.Date;
 end;

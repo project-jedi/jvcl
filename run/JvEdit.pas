@@ -201,7 +201,7 @@ type
     property MaxPixel;
     property Modified;
     // property SelStart; (p3) why published?
-    //property SelText;
+    // property SelText;
     // property SelLength; (p3) why published?
     property OnMouseEnter;
     property OnMouseLeave;
@@ -262,7 +262,7 @@ begin
   FColor := clInfoBk;
   FOver := False;
   FAlignment := taLeftJustify;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   ClipboardCommands := [caCopy..caUndo];
   {$IFDEF VCL}
   FDisabledColor := clWindow;

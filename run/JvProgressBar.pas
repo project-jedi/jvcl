@@ -71,7 +71,7 @@ constructor TJvProgressBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   FBarColor := clNavy;
 end;
 
