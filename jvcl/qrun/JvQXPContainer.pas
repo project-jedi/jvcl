@@ -180,7 +180,7 @@ type
 
 implementation
 
-//=== TJvXPCustomContainer ===================================================
+//=== { TJvXPCustomContainer } ===============================================
 
 constructor TJvXPCustomContainer.Create(AOwner: TComponent);
 begin
@@ -218,7 +218,7 @@ begin
   inherited HookEnabledChanged;
   if FEnabledMode = emAffectChilds then
     for I := 0 to ControlCount - 1 do
-      Controls[i].Enabled := Enabled;
+      Controls[I].Enabled := Enabled;
   if Assigned(FOnEnabledChanged) then
     FOnEnabledChanged(Self);
 end;

@@ -34,7 +34,7 @@ unit JvQParameterListParameter;
 interface
 
 uses
-  Classes, SysUtils, QStdCtrls, QExtCtrls, QGraphics, QForms,
+  Classes, SysUtils, QStdCtrls, QExtCtrls, Types, QGraphics, QForms,
   QControls, QFileCtrls, QDialogs, QComCtrls, QButtons, 
   Variants,  
   JvQTypes, 

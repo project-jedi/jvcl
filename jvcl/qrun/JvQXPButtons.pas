@@ -38,7 +38,7 @@ interface
 uses
   Classes, TypInfo,
   QWindows, QMessages, Types, QGraphics, QControls, QForms, QActnList, QImgList, QMenus, 
-  JvQExControls, 
+  JvQExControls, Qt,
   JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -282,7 +282,7 @@ type
 
 implementation
 
-//=== TJvXPCustomButtonActionLink ============================================
+//=== { TJvXPCustomButtonActionLink } ========================================
 
 destructor TJvXPCustomButtonActionLink.Destroy;
 begin
@@ -308,7 +308,7 @@ begin
   (FClient as TJvXPCustomButton).Invalidate;
 end;
 
-//=== TJvXPCustomButton ======================================================
+//=== { TJvXPCustomButton } ==================================================
 
 constructor TJvXPCustomButton.Create(AOwner: TComponent);
 begin
@@ -340,7 +340,6 @@ begin
   FCkGradient := TBitmap.Create; // clicked gradient
   FFcGradient := TBitmap.Create; // focused gradient
   FHlGradient := TBitmap.Create; // Highlight gradient
-  ParentColor := false;
 end;
 
 destructor TJvXPCustomButton.Destroy;
@@ -528,7 +527,7 @@ end;
 procedure TJvXPCustomButton.HookResized;
 const
   ColSteps = 64;
-  Dithering = False;
+  Dithering = True;
 var
   Offset: Integer;
 begin
@@ -837,7 +836,9 @@ begin
   begin
     P := ClientToScreen(Point(0, Height));
     DropDownMenu.Popup(P.X, P.Y);  
-    // TODO 
+    repeat
+      Application.ProcessMessages;
+    until not QWidget_isVisible(DropDownMenu.Handle); 
 
   end;
 end;

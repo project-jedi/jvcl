@@ -40,10 +40,8 @@ uses
   {$IFDEF MSWINDOWS}
   ShellAPI,
   {$ENDIF MSWINDOWS}
-  QWindows, QMessages, Types, QGraphics, QControls, QForms, QDialogs, QGrids, QMenus, QClipbrd,
-  {$IFDEF USEJVCL}
-  JvQJVCLUtils, JvQTypes,
-  {$ENDIF USEJVCL}
+  QWindows, QMessages, Types, QGraphics, QControls, QForms, QDialogs, QGrids, QMenus, QClipbrd, 
+  JvQJVCLUtils, JvQTypes, 
   SysUtils, QStdCtrls, Classes;
 
 
@@ -51,14 +49,7 @@ uses
 const
   JvDefaultBorderColor = TColor($EEF5FF);
 
-type
-  {$IFNDEF USEJVCL}
-  THintString = string;
-  {$HPPEMIT '#ifndef TDate'}  
-  {$HPPEMIT '#define TDate TDateTime'}
-  {$HPPEMIT '#define TTime TDateTime'} 
-  {$HPPEMIT '#endif'}
-  {$ENDIF USEJVCL}
+type 
 
   TYearData = record
     DisplayText : string;
@@ -155,10 +146,8 @@ type
     FFirstDayOfWeek: TJvWeekDay;
     FWeekendDays: TJvWeekDaySet;
     FAutoSizeOptions: TJvAutoSizeOptions;
-
-    {$IFDEF USEJVCL}
-    FCellMargins: TJvRect;
-    {$ENDIF USEJVCL}
+ 
+    FCellMargins: TJvRect; 
     {$IFNDEF USECUSTOMGRID}
     FOnSelectCell: TSelectCellEvent;
     FOnDrawCell: TDrawCellEvent;
@@ -168,10 +157,8 @@ type
     FMonthNamesAlignment: TAlignment;
     FYearAlignment: TAlignment;
     FYear: Integer;
-
-    {$IFDEF USEJVCL}
-    procedure CellMarginsChange(Sender: TObject);
-    {$ENDIF USEJVCL}
+ 
+    procedure CellMarginsChange(Sender: TObject); 
 
     procedure SetFirstDayOfWeek(const Value: TJvWeekDay);
     function GetDefaultColWidth: Integer;
@@ -181,10 +168,8 @@ type
     procedure SetFirstColWidth(const Value: Integer);
     procedure SetFirstRowHeight(const Value: Integer);
     procedure SetWeekendDays(const Value: TJvWeekDaySet);
-    procedure SetAutoSizeOptions(const Value: TJvAutoSizeOptions);
-    {$IFDEF USEJVCL}
-    procedure SetCellMargins(const Value: TJvRect);
-    {$ENDIF USEJVCL}
+    procedure SetAutoSizeOptions(const Value: TJvAutoSizeOptions); 
+    procedure SetCellMargins(const Value: TJvRect); 
     procedure SetDayNamesAlignment(const Value: TAlignment);
     procedure SetDaysAlignment(const Value: TAlignment);
     procedure SetMonthNamesAlignment(const Value: TAlignment);
@@ -214,8 +199,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure LoadYear(Filename: string = '');
-    procedure SaveYear(Filename: string = '');
+    procedure LoadYear(FileName: string = '');
+    procedure SaveYear(FileName: string = '');
 
     function GetSelDateText: string;
     procedure SetSelDateText(AText: string);
@@ -255,10 +240,8 @@ type
 
     property FirstColWidth: Integer read GetFirstColWidth write SetFirstColWidth;
     property FirstRowHeight: Integer read GetFirstRowHeight write SetFirstRowHeight;
-
-    {$IFDEF USEJVCL}
-    property CellMargins: TJvRect read FCellMargins write SetCellMargins;
-    {$ENDIF USEJVCL}
+ 
+    property CellMargins: TJvRect read FCellMargins write SetCellMargins; 
 
     property WeekendDays: TJvWeekDaySet read FWeekendDays write SetWeekendDays;
 
@@ -291,42 +274,14 @@ type
 
 implementation
 
-uses
-  {$IFDEF USEJVCL}
+uses 
   JvQConsts,
-  JvQResources,
-  {$ENDIF USEJVCL}
+  JvQResources, 
   JvQYearGridEditForm;
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsYearGrid = 'YearGrid';
-  RsEnterYear = 'Enter year (1999-2050):';
-  RsInvalidYear = 'invalid year';
-  RsYear = '&Year...';
-  RsEdit = '&Edit';
-  RsColor = '&Color...';
-  RsNoColor = '&No Color';
-  RsSaveAllInfo = '&Save All Info';
-  RsSaveFoundInfo = 'Save Found Info';
-  RsBorderColor = '&Border Color...';
-  RsBookMarkColor = 'Book&Mark Color...';
-  RsFindItem = '&Find...';
-  RsClearFind = 'Clear Find';
-  RsYearGridFind = 'YearGrid Find';
-  RsEnterSeachText = 'Enter seach text:';
-  RsFounds = 'Found %s';
-  RsToday = 'Today ';
-  RsCutItem = 'Cu&t';
-  RsCopyItem = '&Copy';
-  RsPasteItem = '&Paste';
-  RsDeleteItem = '&Delete';
-{$ENDIF USEJVCL}
 
-{$IFNDEF USEJVCL}
-const
-  Cr = #13;
-{$ENDIF USEJVCL}
+
+
 
 const
   TodayFontColor = clWhite;
@@ -337,15 +292,13 @@ var
   AYear, AMonth, ADay: Word;
 begin
   inherited Create(AOwner);
-
-  {$IFDEF USEJVCL}
+ 
   FCellMargins := TJvRect.Create;
   FCellMargins.Top    := 1;
   FCellMargins.Left   := 1;
   FCellMargins.Bottom := 1;
   FCellMargins.Right  := 1;
-  FCellMargins.OnChange := CellMarginsChange; // Must be set last
-  {$ENDIF USEJVCL}
+  FCellMargins.OnChange := CellMarginsChange; // Must be set last 
 
   FOrientation := yoHorizontal;
 
@@ -393,11 +346,9 @@ end;
 destructor TJvYearGrid.Destroy;
 begin
 //  SaveYear;
-  FGridPop.Free;
-  {$IFDEF USEJVCL}
-  FCellMargins.Free;
-  {$ENDIF USEJVCL}
-  inherited destroy;
+  FGridPop.Free; 
+  FCellMargins.Free; 
+  inherited Destroy;
 end;
 
 procedure TJvYearGrid.DrawCell(ACol, ARow: Integer;
@@ -532,7 +483,7 @@ begin
   end;
 end;
 
-procedure TJvYearGrid.SaveYear(Filename: string);
+procedure TJvYearGrid.SaveYear(FileName: string);
 var
   MonthIndex, DayIndex: Integer;
   YList, DList: TStringList;
@@ -560,16 +511,16 @@ begin
       YList.Append(DList.CommaText);
     end;
   end;
-  if Filename = '' then
+  if FileName = '' then
     YList.SaveToFile(FYearFile)
   else
-    YList.SaveToFile(Filename);
+    YList.SaveToFile(FileName);
 
   DList.Free;
-  Ylist.Free;
+  YList.Free;
 end;
 
-procedure TJvYearGrid.LoadYear(Filename: string);
+procedure TJvYearGrid.LoadYear(FileName: string);
 var
   MonthIndex, DayIndex, Index: Integer;
   YList, DList: TStringList;
@@ -577,10 +528,10 @@ var
 begin
   YList := TStringList.Create;
   DList := TStringList.Create;
-  if Filename = '' then
+  if FileName = '' then
     YList.LoadFromFile(FYearFile)
   else
-    YList.LoadFromFile(Filename);
+    YList.LoadFromFile(FileName);
 
   Index := 0;
   for MonthIndex := 0 to 12 do
@@ -1216,7 +1167,7 @@ begin
     end;
   end
   else
-    Scrollbars := FSavedScrollBars;
+    ScrollBars := FSavedScrollBars;
 
   FAutoSize := Value;
   AdjustBounds;   
@@ -1315,10 +1266,10 @@ begin
   if AutoSize then
   begin
     if aoFirstRow in AutoSizeOptions then
-      RowHeights[0] := GetHighestTextInRow(0) {$IFDEF USEJVCL} + CellMargins.Top + CellMargins.Bottom {$ENDIF};
+      RowHeights[0] := GetHighestTextInRow(0)  + CellMargins.Top + CellMargins.Bottom ;
 
     if aoFirstColumn in AutoSizeOptions then
-      ColWidths[0] := GetLargestTextInColumn(0) {$IFDEF USEJVCL} + CellMargins.Left + CellMargins.Right {$ENDIF};
+      ColWidths[0] := GetLargestTextInColumn(0)  + CellMargins.Left + CellMargins.Right ;
 
     if aoRows in AutoSizeOptions then
     begin
@@ -1333,7 +1284,7 @@ begin
       end;
         
       for I := 1 to RowCount-1 do
-        RowHeights[I] := MaxValue {$IFDEF USEJVCL} + CellMargins.Top + CellMargins.Bottom {$ENDIF};
+        RowHeights[I] := MaxValue  + CellMargins.Top + CellMargins.Bottom ;
     end;
 
     if aoColumns in AutoSizeOptions then
@@ -1349,18 +1300,18 @@ begin
       end;
 
       for I := 1 to ColCount-1 do
-        ColWidths[I] := MaxValue {$IFDEF USEJVCL} + CellMargins.Left + CellMargins.Top {$ENDIF};
+        ColWidths[I] := MaxValue  + CellMargins.Left + CellMargins.Top ;
     end;
   end;
 end;
 
-{$IFDEF USEJVCL}
+
 procedure TJvYearGrid.SetCellMargins(const Value: TJvRect);
 begin
   FCellMargins.Assign(Value);
   AdjustBounds;
 end;
-{$ENDIF USEJVCL}
+
 
 procedure TJvYearGrid.AdjustBounds;
 var
@@ -1396,12 +1347,12 @@ begin
     AdjustBounds;
 end;
 
-{$IFDEF USEJVCL}
+
 procedure TJvYearGrid.CellMarginsChange(Sender: TObject);
 begin
   AdjustBounds;
 end;
-{$ENDIF USEJVCL}
+
 
 procedure TJvYearGrid.SetDayNamesAlignment(const Value: TAlignment);
 begin
@@ -1540,11 +1491,11 @@ var
   begin
     case Alignment of
       taRightJustify:
-        Result := Rect.Right - SWidth {$IFDEF USEJVCL} - CellMargins.Right {$ENDIF};
+        Result := Rect.Right - SWidth  - CellMargins.Right ;
       taCenter:
-        Result := Rect.Left + (Rect.Right-Rect.Left - SWidth {$IFDEF USEJVCL} - CellMargins.Left - CellMargins.Right {$ENDIF} + 2) div 2;
+        Result := Rect.Left + (Rect.Right-Rect.Left - SWidth  - CellMargins.Left - CellMargins.Right  + 2) div 2;
     else
-      Result := Rect.Left {$IFDEF USEJVCL} + CellMargins.Left {$ENDIF};
+      Result := Rect.Left  + CellMargins.Left ;
     end;
   end;
 

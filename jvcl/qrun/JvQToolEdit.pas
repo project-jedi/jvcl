@@ -35,6 +35,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I crossplatform.inc}
 
 unit JvQToolEdit;
 
@@ -183,7 +184,6 @@ type
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
     FPopup: TWinControl;   
-    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure CustomAlignPosition(Control: TControl; var NewLeft,
       NewTop, NewWidth, NewHeight: Integer; var AlignRect: TRect); override;  
     procedure DoClearText; override;
@@ -261,7 +261,6 @@ type
     property PopupVisible: Boolean read GetPopupVisible;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property ShowButton: Boolean read GetShowButton write SetShowButton default True;
-
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
   public
     constructor Create(AOwner: TComponent); override;
@@ -269,7 +268,8 @@ type
     class function DefaultImageIndex: TImageIndex; virtual;
     class function DefaultImages: TCustomImageList; virtual;
     procedure DoClick;
-    procedure SelectAll;
+    procedure SelectAll; 
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override; 
     { Backwards compatibility; moved to public&published; eventually remove }
     property GlyphKind: TGlyphKind read GetGlyphKind write SetGlyphKind; 
   end;
@@ -341,7 +341,7 @@ type
   end;
 
   { TJvFileDirEdit }
-  { The common parent of TJvFilenameEdit and TJvDirectoryEdit          }
+  { The common parent of TJvFilenameEdit and TJvDirectoryEdit      }
   { For internal use only; it's not intended to be used separately }
 
 type
@@ -892,16 +892,16 @@ procedure DrawSelectedText(Canvas: TCanvas; const R: TRect; X, Y: Integer;
   const Text: WideString; SelStart, SelLength: Integer;
   HighlightColor, HighlightTextColor: TColor);
 var
-  w, h, Width: Integer;
+  W, H, Width: Integer;
   S: WideString;
   SelectionRect: TRect;
   Brush: TBrushRecall;
   PenMode: TPenMode;
   FontColor: TColor;
 begin
-  w := R.Right - R.Left;
-  h := R.Bottom - R.Top;
-  if (w <= 0) or (h <= 0) then
+  W := R.Right - R.Left;
+  H := R.Bottom - R.Top;
+  if (W <= 0) or (H <= 0) then
     Exit;
 
   S := Copy(Text, 1, SelStart);
@@ -919,7 +919,7 @@ begin
     PenMode := Canvas.Pen.Mode;
     try
       SelectionRect := Rect(Max(X, R.Left), R.Top,
-                            Min(X + Width, R.Right), R.Bottom);
+        Min(X + Width, R.Right), R.Bottom);
       Canvas.Pen.Mode := pmCopy;
       Canvas.Brush.Color := HighlightColor;
       Canvas.FillRect(SelectionRect);
@@ -1898,8 +1898,7 @@ var
   begin
     Result := TBitmap.Create;
     with Result do
-    try
-      Monochrome := True;
+    try 
       Width := Max(1, FButton.Width - 6);
       Height := 4;
       W := 2;
@@ -1908,10 +1907,12 @@ var
         g := 1;
       if g > 3 then
         g := 3;
-      I := (Width - 3 * W - 2 * g) div 2;
+      I := (Width - 3 * W - 2 * g) div 2; 
+      Canvas.Start; 
       PatBlt(Canvas.Handle, I, 1, W, W, BLACKNESS);
       PatBlt(Canvas.Handle, I + g + W, 1, W, W, BLACKNESS);
-      PatBlt(Canvas.Handle, I + 2 * g + 2 * W, 1, W, W, BLACKNESS);
+      PatBlt(Canvas.Handle, I + 2 * g + 2 * W, 1, W, W, BLACKNESS); 
+      Canvas.Stop; 
     except
       Free;
       raise;

@@ -59,7 +59,7 @@ type
       const ReportListAsValue: Boolean = True); override;
 
     function IsFolderInt(const Path: string; ListIsValue: Boolean = True): Boolean; override;
-    function PathExistsInt(const Path: string): boolean; override;
+    function PathExistsInt(const Path: string): Boolean; override;
     function ValueStoredInt(const Path: string): Boolean; override;
     procedure DeleteValueInt(const Path: string); override;
     procedure DeleteSubTreeInt(const Path: string); override;
@@ -220,7 +220,7 @@ begin
   if RegOpenKey(FRegHKEY, PChar(RefPath), PathHKEY) = ERROR_SUCCESS then
     try
       Result := True;
-      if ListIsValue and (RegQueryValueEx(PathHKey, cCount, nil, nil, nil, nil) = ERROR_SUCCESS) then
+      if ListIsValue and (RegQueryValueEx(PathHKEY, cCount, nil, nil, nil, nil) = ERROR_SUCCESS) then
       begin
         Result := False;
         I := 0;
@@ -239,7 +239,7 @@ begin
     end;
 end;
 
-function TJvAppRegistryStorage.PathExistsInt(const Path: string): boolean;
+function TJvAppRegistryStorage.PathExistsInt(const Path: string): Boolean;
 var
   SubKey: string;
   ValueName: string;
