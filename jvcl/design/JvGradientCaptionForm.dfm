@@ -175,15 +175,13 @@ object GradCaptionsEditor: TGradCaptionsEditor
       TabOrder = 0
       OnClick = DeleteButtonClick
     end
-    object CaptionList: TJvListBox
+    object CaptionList: TListBox
       Left = 8
       Top = 16
       Width = 121
       Height = 105
       Anchors = [akLeft, akTop, akRight, akBottom]
       ItemHeight = 13
-      Background.FillMode = bfmTile
-      Background.Visible = False
       TabOrder = 2
     end
   end
@@ -193,13 +191,10 @@ object GradCaptionsEditor: TGradCaptionsEditor
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    MinFontSize = 0
-    MaxFontSize = 0
     Left = 24
     Top = 76
   end
   object ColorDialog: TColorDialog
-    Ctl3D = True
     Left = 84
     Top = 76
   end

@@ -30,18 +30,16 @@ unit JvDirectoryListForm;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, StdCtrls,
-  JvxCtrls, JvFormPlacement, JvComponent, JvListBox, JvCtrls;
+  Windows, SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls;
 
 type
-  TJvDirectoryListDialog = class(TJvForm)
-    DirectoryList: TJvListBox;
+  TJvDirectoryListDialog = class(TForm)
     AddBtn: TButton;
     RemoveBtn: TButton;
     ModifyBtn: TButton;
     OKBtn: TButton;
     CancelBtn: TButton;
-    Storage: TJvFormStorage;
+    DirectoryList: TListView;
     procedure AddBtnClick(Sender: TObject);
     procedure ModifyBtnClick(Sender: TObject);
     procedure RemoveBtnClick(Sender: TObject);
@@ -50,7 +48,6 @@ type
     procedure DirectoryListDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure DirectoryListDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
-    procedure FormCreate(Sender: TObject);
   private
     procedure CheckButtons;
   end;
@@ -60,19 +57,25 @@ function EditFolderList(Folders: TStrings): Boolean;
 implementation
 
 uses
-  JvJVCLUtils, JvJCLUtils, JvBrowseFolder, JvBoxProcs, JvConsts;
+  JvJVCLUtils, JvJCLUtils, JvBrowseFolder, JvConsts;
 
 {$R *.DFM}
 
 function EditFolderList(Folders: TStrings): Boolean;
+var i:integer;
 begin
   with TJvDirectoryListDialog.Create(Application) do
   try
     if Assigned(Folders) then
-      DirectoryList.Items.Assign(Folders);
+      for i := 0 to Folders.Count - 1 do
+        DirectoryList.Items.Add.Caption := Folders[i];
     Result := ShowModal = mrOk;
     if Result and Assigned(Folders) then
-      Folders.Assign(DirectoryList.Items);
+    begin
+      Folders.Clear;
+      for i := 0 to DirectoryList.Items.Count - 1 do
+        Folders.Add(DirectoryList.Items[i].Caption);
+    end;
   finally
     Free;
   end;
@@ -83,18 +86,23 @@ begin
   ModifyBtn.Enabled := (DirectoryList.Items.Count > 0) and
     (DirectoryList.ItemIndex >= 0);
   RemoveBtn.Enabled := ModifyBtn.Enabled;
+  DirectoryList.AlphaSort;
 end;
 
 procedure TJvDirectoryListDialog.AddBtnClick(Sender: TObject);
 var
-  I: Integer;
   S: string;
 begin
   S := '';
   if BrowseDirectory(S, '', 0) then
   begin
-    I := DirectoryList.Items.Add(S);
-    DirectoryList.ItemIndex := I;
+    if DirectoryList.FindCaption(0,S,false,true,true) = nil then 
+    with DirectoryList.Items.Add do
+    begin
+      Caption := S;
+      Selected := true;
+      Focused := true;
+    end;
     CheckButtons;
   end;
 end;
@@ -107,9 +115,9 @@ begin
   I := DirectoryList.ItemIndex;
   if I >= 0 then
   begin
-    S := DirectoryList.Items[I];
+    S := DirectoryList.Items[I].Caption;
     if BrowseDirectory(S, '', 0) then
-      DirectoryList.Items[I] := S;
+      DirectoryList.Items[I].Caption := S;
   end;
 end;
 
@@ -138,24 +146,15 @@ end;
 procedure TJvDirectoryListDialog.DirectoryListDragDrop(Sender,Source: TObject;
   X, Y: Integer);
 begin
-  BoxMoveFocusedItem(DirectoryList, DirectoryList.ItemAtPos(Point(X, Y), True));
-  CheckButtons;
+//  BoxMoveFocusedItem(DirectoryList, DirectoryList.ItemAtPos(Point(X, Y), True));
+//  CheckButtons;
 end;
 
 procedure TJvDirectoryListDialog.DirectoryListDragOver(Sender, Source: TObject;
   X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-  BoxDragOver(DirectoryList, Source, X, Y, State, Accept, DirectoryList.Sorted);
-  CheckButtons;
-end;
-
-procedure TJvDirectoryListDialog.FormCreate(Sender: TObject);
-begin
-  with Storage do
-  begin
-    UseRegistry := True;
-    IniFileName := SDelphiKey;
-  end;
+//  BoxDragOver(DirectoryList, Source, X, Y, State, Accept, DirectoryList.Sorted);
+//  CheckButtons;
 end;
 
 end.

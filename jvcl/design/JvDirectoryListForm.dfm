@@ -26,24 +26,10 @@ object JvDirectoryListDialog: TJvDirectoryListDialog
     0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = True
-  Position = poOwnerFormCenter
-  OnCreate = FormCreate
+  Position = poScreenCenter
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object DirectoryList: TJvListBox
-    Left = 8
-    Top = 12
-    Width = 245
-    Height = 165
-    DragMode = dmAutomatic
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    ItemHeight = 13
-    TabOrder = 0
-    OnClick = DirectoryListClick
-    OnDragDrop = DirectoryListDragDrop
-    OnDragOver = DirectoryListDragOver
-  end
   object AddBtn: TButton
     Left = 264
     Top = 12
@@ -51,7 +37,7 @@ object JvDirectoryListDialog: TJvDirectoryListDialog
     Height = 25
     Anchors = [akTop, akRight]
     Caption = 'Add...'
-    TabOrder = 1
+    TabOrder = 0
     OnClick = AddBtnClick
   end
   object RemoveBtn: TButton
@@ -61,7 +47,7 @@ object JvDirectoryListDialog: TJvDirectoryListDialog
     Height = 25
     Anchors = [akTop, akRight]
     Caption = 'Remove'
-    TabOrder = 3
+    TabOrder = 2
     OnClick = RemoveBtnClick
   end
   object ModifyBtn: TButton
@@ -71,7 +57,7 @@ object JvDirectoryListDialog: TJvDirectoryListDialog
     Height = 25
     Anchors = [akTop, akRight]
     Caption = 'Modify'
-    TabOrder = 2
+    TabOrder = 1
     OnClick = ModifyBtnClick
   end
   object OKBtn: TButton
@@ -83,7 +69,7 @@ object JvDirectoryListDialog: TJvDirectoryListDialog
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 4
+    TabOrder = 3
   end
   object CancelBtn: TButton
     Left = 264
@@ -94,13 +80,25 @@ object JvDirectoryListDialog: TJvDirectoryListDialog
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 5
+    TabOrder = 4
   end
-  object Storage: TJvFormStorage
-    IniFileName = 'DELPHI.INI'
-    IniSection = 'RX.DirListEditor'
-    StoredValues = <>
-    Left = 4
-    Top = 160
+  object DirectoryList: TListView
+    Left = 8
+    Top = 8
+    Width = 250
+    Height = 177
+    Columns = <
+      item
+        MinWidth = -2
+        Width = -2
+        WidthType = (
+          -2)
+      end>
+    ReadOnly = True
+    RowSelect = True
+    ShowColumnHeaders = False
+    SortType = stText
+    TabOrder = 5
+    ViewStyle = vsReport
   end
 end

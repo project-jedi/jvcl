@@ -38,7 +38,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  JvFormPlacement, JvComponent, CheckLst;
+  CheckLst;
 
 type
   TJvCheckItemEditor = class(TForm)
@@ -59,7 +59,6 @@ type
     cbUncheckedItem: TMenuItem;
     N2: TMenuItem;
     EnabledItem: TMenuItem;
-    FormPlacement: TJvFormStorage;
     OkBtn: TButton;
     CancelBtn: TButton;
     DownBtn: TButton;
@@ -74,7 +73,6 @@ type
     procedure NewBtnClick(Sender: TObject);
     procedure DeleteBtnClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure EnabledItemClick(Sender: TObject);
     procedure PopupPopup(Sender: TObject);
     procedure AddListBtnClick(Sender: TObject);
@@ -232,14 +230,6 @@ begin
   end;
 end;
 
-procedure TJvCheckItemsEditor.FormCreate(Sender: TObject);
-begin
-  with FormPlacement do
-  begin
-    UseRegistry := True;
-    IniFileName := SDelphiKey;
-  end;
-end;
 
 procedure TJvCheckItemsEditor.CheckButtons;
 begin
