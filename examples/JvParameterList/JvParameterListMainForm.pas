@@ -28,7 +28,7 @@ unit JvParameterListMainForm;
 
 interface
 
-{.$DEFINE INCLUDE_DEVEXP_CX}
+{$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
@@ -309,7 +309,7 @@ begin
     begin
       SearchName := 'ButtonEditTest';
       Caption    := 'ButtonEditTest';
-      OnButtonClick := Button5Click;
+      OnClick := Button5Click;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvFileNameParameter.Create(ParameterList);
@@ -584,7 +584,7 @@ begin
     begin
       SearchName := 'ButtonA';
       Caption    := 'Message Dlg &A';
-      OnButtonClick := ShowTest3ButttonClick;
+      OnClick := ShowTest3ButttonClick;
       Width      := 90;
     end;
     ParameterList.AddParameter(Parameter);
@@ -593,7 +593,7 @@ begin
     begin
       SearchName := 'ButtonB';
       Caption    := 'Message Dlg &B';
-      OnButtonClick := ShowTest3ButttonClick;
+      OnClick := ShowTest3ButttonClick;
       Width      := 90;
     end;
     ParameterList.AddParameter(Parameter);
@@ -602,7 +602,7 @@ begin
     begin
       SearchName := 'ButtonC';
       Caption    := 'Message Dlg &C';
-      OnButtonClick := ShowTest3ButttonClick;
+      OnClick := ShowTest3ButttonClick;
       Width      := 90;
     end;
     ParameterList.AddParameter(Parameter);
@@ -611,7 +611,7 @@ begin
     begin
       SearchName := 'ButtonD';
       Caption    := 'Message Dlg &D';
-      OnButtonClick := ShowTest3ButttonClick;
+      OnClick := ShowTest3ButttonClick;
       Width      := 90;
     end;
     ParameterList.AddParameter(Parameter);
@@ -628,7 +628,7 @@ begin
     begin
       SearchName := 'ButtonE';
       Caption    := 'Message Dlg &E';
-      OnButtonClick := ShowTest3ButttonClick;
+      OnClick := ShowTest3ButttonClick;
       Width      := 90;
       DisableReasons.AddReasonIsEmpty('Edit1');
     end;

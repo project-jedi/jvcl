@@ -61,13 +61,11 @@ type
     FGlyph: TBitmap;
     FNumGlyphs: Integer;
     FLayout: TButtonLayout;
-    // (rom) bad name?
-    FOnButtonClick: TJvParameterListEvent;
+    FOnClick: TJvParameterListEvent;
   protected
     procedure SetGlyph(Value: TBitmap);
     function GetParameterNameExt: string; override;
-    // (rom) bad name
-    procedure OnButtonClickInt(Sender: TObject);
+    procedure Click(Sender: TObject);
     procedure SetWinControlProperties; override;
   public
     constructor Create(AParameterList: TJvParameterList); override;
@@ -78,8 +76,7 @@ type
     property Glyph: TBitmap read FGlyph write SetGlyph;
     property NumGlyphs: Integer read FNumGlyphs write FNumGlyphs;
     property Layout: TButtonLayout read FLayout write FLayout;
-    // (rom) bad name?
-    property OnButtonClick: TJvParameterListEvent read FOnButtonClick write FOnButtonClick;
+    property OnClick: TJvParameterListEvent read FOnClick write FOnClick;
   end;
 
   TJvRadioButtonParameter = class(TJvNoDataParameter)
@@ -87,8 +84,7 @@ type
     FOnClick: TJvParameterListEvent;
   protected
     function GetParameterNameExt: string; override;
-    // (rom) bad name
-    procedure OnClickInt(Sender: TObject);
+    procedure Click(Sender: TObject);
     procedure SetWinControlProperties; override;
   public
     procedure Assign(Source: TPersistent); override;
@@ -239,14 +235,14 @@ type
 
   TJvButtonEditParameter = class(TJvEditParameter)
   private
-    FOnButtonClick: TNotifyEvent;
+    FOnClick: TNotifyEvent;
   protected
     function GetParameterNameExt: string; override;
     procedure CreateWinControl(AParameterParent: TWinControl); override;
   public
     procedure Assign(Source: TPersistent); override;
   published
-    property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
   TJvNumberEditorType = (netEdit, netSpin, netCalculate);
@@ -603,10 +599,10 @@ begin
   Result := 'Button';
 end;
 
-procedure TJvButtonParameter.OnButtonClickInt(Sender: TObject);
+procedure TJvButtonParameter.Click(Sender: TObject);
 begin
-  if Assigned(OnButtonClick) then
-    OnButtonClick(ParameterList, Self);
+  if Assigned(OnClick) then
+    OnClick(ParameterList, Self);
 end;
 
 procedure TJvButtonParameter.SetGlyph(Value: TBitmap);
@@ -634,7 +630,7 @@ end;
 procedure TJvButtonParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
   WinControl := DynControlEngine.CreateButton(Self, ParameterParent,
-    GetParameterName, Caption, Hint, OnButtonClickInt, False, False);
+    GetParameterName, Caption, Hint, Click, False, False);
   if Height > 0 then
     WinControl.Height := Height;
   if Width > 0 then
@@ -668,7 +664,7 @@ begin
   Result := 'RadioButton';
 end;
 
-procedure TJvRadioButtonParameter.OnClickInt(Sender: TObject);
+procedure TJvRadioButtonParameter.Click(Sender: TObject);
 begin
   if Assigned(FOnClick) then
     FOnClick(ParameterList, Self);
@@ -684,7 +680,6 @@ begin
   WinControl := DynControlEngine.CreateRadioButton(Self, ParameterParent,
     GetParameterName, Caption);
   WinControl.Hint := Hint;
-//  WinControl.OnClick := OnClickInt;
   if Height > 0 then
     WinControl.Height := Height;
   if Width > 0 then
@@ -1887,7 +1882,7 @@ procedure TJvButtonEditParameter.CreateWinControl(AParameterParent: TWinControl)
 var
   DynCtrlEdit: IJvDynControlEdit;
 begin
-  WinControl := DynControlEngine.CreateButtonEditControl(Self, AParameterParent, GetParameterName, FOnButtonClick);
+  WinControl := DynControlEngine.CreateButtonEditControl(Self, AParameterParent, GetParameterName, FOnClick);
   if Supports(WinControl, IJvDynControlEdit, DynCtrlEdit) then
   begin
     DynCtrlEdit.ControlSetPasswordChar(PasswordChar);
@@ -1899,7 +1894,7 @@ procedure TJvButtonEditParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   if Source is TJvButtonEditParameter then
-    OnButtonClick := TJvButtonEditParameter(Source).OnButtonClick;
+    OnClick := TJvButtonEditParameter(Source).OnClick;
 end;
 
 //=== { TJvNumberEditParameter } =============================================
