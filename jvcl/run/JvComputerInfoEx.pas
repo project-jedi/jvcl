@@ -278,6 +278,7 @@ type
   end;
 
   TJvCPUType = (cpuUnknown, cpuIntel, cpuCyrix, cpuAMD, cpuCrusoe);
+  TJvSSEVersion = (vNoSSE, vSSE1, vSSE2, vSSE3);
 
   TJvCPUInfo = class(TJvReadOnlyInfo)
   private
@@ -295,11 +296,21 @@ type
     function GetIsFDIVOK: Boolean;
     function GetManufacturer: string;
     function GetMMX: Boolean;
+    function GetSSE: TJvSSEVersion;
     function GetModel: Byte;
     function GetNormFreq: Cardinal;
     function GetRawFreq: Cardinal;
     function GetStepping: Byte;
     function GetVendorIDString: string;
+    function GetProcessorCount: Integer;
+    function Get3DNow: Boolean;
+    function GetEx3DNow: Boolean;
+    function GetExMMX: Boolean;
+    function GetIs64Bits: Boolean;
+    function GetL1CodeCache: Cardinal;
+    function GetL1DataCache: Cardinal;
+    function GetL2Cache: Cardinal;
+    function GetL3Cache: Cardinal;
     procedure SetCPUName(const Value: string);
     procedure SetCPUType(const Value: TJvCPUType);
     procedure SetExTicks(const Value: Cardinal);
@@ -312,13 +323,21 @@ type
     procedure SetIsFDIVOK(const Value: Boolean);
     procedure SetManufacturer(const Value: string);
     procedure SetMMX(const Value: Boolean);
+    procedure SetSSE(const Value: TJvSSEVersion);
     procedure SetModel(const Value: Byte);
     procedure SetNormFreq(const Value: Cardinal);
     procedure SetRawFreq(const Value: Cardinal);
     procedure SetStepping(const Value: Byte);
     procedure SetVendorIDString(const Value: string);
-    function GetProcessorCount: Integer;
     procedure SetProcessorCount(const Value: Integer);
+    procedure Set3DNow(const Value: Boolean);
+    procedure SetEx3DNow(const Value: Boolean);
+    procedure SetExMMX(const Value: Boolean);
+    procedure SetIs64Bits(const Value: Boolean);
+    procedure SetL1CodeCache(const Value: Cardinal);
+    procedure SetL1DataCache(const Value: Cardinal);
+    procedure SetL2Cache(const Value: Cardinal);
+    procedure SetL3Cache(const Value: Cardinal);
   public
     function IntelSpecific: TIntelSpecific;
     function CyrixSpecific: TCyrixSpecific;
@@ -331,6 +350,7 @@ type
     // CPUInfo
     property HasInstruction: Boolean read GetHasInstruction write SetHasInstruction stored False;
     property MMX: Boolean read GetMMX write SetMMX stored False;
+    property SSE: TJvSSEVersion read GetSSE write SetSSE stored False;
     property IsFDIVOK: Boolean read GetIsFDIVOK write SetIsFDIVOK stored False;
     property HasCacheInfo: Boolean read GetHasCacheInfo write SetHasCacheInfo stored False;
     property HasExtendedInfo: Boolean read GetHasExtendedInfo write SetHasExtendedInfo stored False;
@@ -342,6 +362,14 @@ type
     property Manufacturer: string read GetManufacturer write SetManufacturer stored False;
     property Name: string read GetCPUName write SetCPUName stored False;
     property ProcessorCount: Integer read GetProcessorCount write SetProcessorCount stored False;
+    property Is64Bits: Boolean read GetIs64Bits write SetIs64Bits stored False;
+    property ExMMX: Boolean read GetExMMX write SetExMMX stored False;
+    property _3DNow: Boolean read Get3DNow write Set3DNow stored False;
+    property Ex3DNow: Boolean read GetEx3DNow write SetEx3DNow stored False;
+    property L1DataCache: Cardinal read GetL1DataCache write SetL1DataCache stored False;
+    property L1CodeCache: Cardinal read GetL1CodeCache write SetL1CodeCache stored False;
+    property L2Cache: Cardinal read GetL2Cache write SetL2Cache stored False;
+    property L3Cache: Cardinal read GetL3Cache write SetL3Cache stored False;
     // FreqInfo
     property RawFreq: Cardinal read GetRawFreq write SetRawFreq stored False;
     property NormFreq: Cardinal read GetNormFreq write SetNormFreq stored False;
@@ -1776,6 +1804,11 @@ begin
   Result := GetCPUInfo.CyrixSpecific;
 end;
 
+function TJvCPUInfo.Get3DNow: Boolean;
+begin
+  Result := GetCPUInfo._3DNow;
+end;
+
 function TJvCPUInfo.GetCPUInfo: TCPUInfo;
 begin
   JclSysInfo.GetCPUInfo(Result);
@@ -1794,6 +1827,16 @@ end;
 function TJvCPUInfo.GetCPUType: TJvCPUType;
 begin
   Result := TJvCPUType(GetCPUInfo.CpuType);
+end;
+
+function TJvCPUInfo.GetEx3DNow: Boolean;
+begin
+  Result := GetCPUInfo.Ex3DNow;
+end;
+
+function TJvCPUInfo.GetExMMX: Boolean;
+begin
+  Result := GetCPUInfo.ExMMX;
 end;
 
 function TJvCPUInfo.GetExTicks: Cardinal;
@@ -1831,9 +1874,34 @@ begin
   Result := GetCPUSpeed.InCycles;
 end;
 
+function TJvCPUInfo.GetIs64Bits: Boolean;
+begin
+  Result := GetCPUInfo.Is64Bits;
+end;
+
 function TJvCPUInfo.GetIsFDIVOK: Boolean;
 begin
   Result := GetCPUInfo.IsFDIVOK;
+end;
+
+function TJvCPUInfo.GetL1CodeCache: Cardinal;
+begin
+  Result := GetCPUInfo.L1InstructionCacheSize;
+end;
+
+function TJvCPUInfo.GetL1DataCache: Cardinal;
+begin
+  Result := GetCPUInfo.L1DataCacheSize;
+end;
+
+function TJvCPUInfo.GetL2Cache: Cardinal;
+begin
+  Result := GetCPUInfo.L2CacheSize;
+end;
+
+function TJvCPUInfo.GetL3Cache: Cardinal;
+begin
+  Result := GetCPUInfo.L3CacheSize;
 end;
 
 function TJvCPUInfo.GetManufacturer: string;
@@ -1866,6 +1934,16 @@ begin
   Result := GetCPUSpeed.RawFreq;
 end;
 
+function TJvCPUInfo.GetSSE: TJvSSEVersion;
+begin
+  case GetCPUInfo.SSE of
+    1 :  Result := vSSE1;
+    2 :  Result := vSSE2;
+    3 :  Result := vSSE3;
+    else Result := vNoSSE;
+  end;
+end;
+
 function TJvCPUInfo.GetStepping: Byte;
 begin
   Result := GetCPUInfo.Stepping;
@@ -1881,12 +1959,27 @@ begin
   Result := GetCPUInfo.IntelSpecific;
 end;
 
+procedure TJvCPUInfo.Set3DNow(const Value: Boolean);
+begin
+  RaiseReadOnly;
+end;
+
 procedure TJvCPUInfo.SetCPUName(const Value: string);
 begin
   RaiseReadOnly;
 end;
 
 procedure TJvCPUInfo.SetCPUType(const Value: TJvCPUType);
+begin
+  RaiseReadOnly;
+end;
+
+procedure TJvCPUInfo.SetEx3DNow(const Value: Boolean);
+begin
+  RaiseReadOnly;
+end;
+
+procedure TJvCPUInfo.SetExMMX(const Value: Boolean);
 begin
   RaiseReadOnly;
 end;
@@ -1926,7 +2019,32 @@ begin
   RaiseReadOnly;
 end;
 
+procedure TJvCPUInfo.SetIs64Bits(const Value: Boolean);
+begin
+  RaiseReadOnly;
+end;
+
 procedure TJvCPUInfo.SetIsFDIVOK(const Value: Boolean);
+begin
+  RaiseReadOnly;
+end;
+
+procedure TJvCPUInfo.SetL1CodeCache(const Value: Cardinal);
+begin
+  RaiseReadOnly;
+end;
+
+procedure TJvCPUInfo.SetL1DataCache(const Value: Cardinal);
+begin
+  RaiseReadOnly;
+end;
+
+procedure TJvCPUInfo.SetL2Cache(const Value: Cardinal);
+begin
+  RaiseReadOnly;
+end;
+
+procedure TJvCPUInfo.SetL3Cache(const Value: Cardinal);
 begin
   RaiseReadOnly;
 end;
@@ -1957,6 +2075,11 @@ begin
 end;
 
 procedure TJvCPUInfo.SetRawFreq(const Value: Cardinal);
+begin
+  RaiseReadOnly;
+end;
+
+procedure TJvCPUInfo.SetSSE(const Value: TJvSSEVersion);
 begin
   RaiseReadOnly;
 end;
