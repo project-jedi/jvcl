@@ -261,13 +261,26 @@ begin
   begin
     OffsetRect(Rect, 1, 1);
     Canvas.Font.Color := clBtnHighlight;
+    {$IFDEF VCL}
     DrawText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags);
     OffsetRect(Rect, -1, -1);
     Canvas.Font.Color := clBtnShadow;
     DrawText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawText(Canvas, Text, Length(Text), Rect, Flags);
+    OffsetRect(Rect, -1, -1);
+    Canvas.Font.Color := clBtnShadow;
+    DrawText(Canvas, Text, Length(Text), Rect, Flags);
+    {$ENDIF VisualCLX}
   end
   else
+    {$IFDEF VCL}
     DrawText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawText(Canvas, Text, Length(Text), Rect, Flags);
+    {$ENDIF VisualCLX}
 end;
 
 procedure TJvGroupHeader.Paint;

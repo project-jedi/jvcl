@@ -430,8 +430,14 @@ begin
           Bottom := Top + FontHeight;
         end;
         Text := Caption;
+        {$IFDEF VCL}
         DrawText(Handle, PChar(Text), Length(Caption), ARect,
           DT_EXPANDTABS or DT_VCENTER or DT_CENTER);
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        DrawText(Canvas, Text, Length(Caption), ARect,
+          DT_EXPANDTABS or DT_VCENTER or DT_CENTER);
+        {$ENDIF VisualCLX}
       end;
     end;
   {$IFDEF VisualCLX}

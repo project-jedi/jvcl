@@ -210,18 +210,13 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
+{$IFDEF VCL}
 function DrawText(Canvas: TCanvas; Caption: TCaption; var R: TRect;
   Flags: Integer): Integer;
 begin
-  {$IFDEF VCL}
   Result := Windows.DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, Flags);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Canvas.Start;
-  Result := QWindows.DrawText(Canvas.Handle, WideString(Caption), Length(Caption), R, Flags);
-  Canvas.Stop;
-  {$ENDIF VisualCLX}
 end;
+{$ENDIF VCL}
 
 procedure DrawLine(Canvas: TCanvas; X, Y, X2, Y2: Integer);
 begin

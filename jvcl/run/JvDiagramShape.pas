@@ -1215,7 +1215,7 @@ begin
     DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  DrawTextW(Canvas.Handle, PWideChar(FText), Length(FText), TempRect,
+  DrawText(Canvas, FText, Length(FText), TempRect,
     DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
   {$ENDIF VisualCLX}
   inherited Paint;
