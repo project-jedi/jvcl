@@ -1,3 +1,9 @@
+2002-06-23
+- TJvSimpleXml: Using hashed string list to retrieve items by name faster (2*) //Sebastien Buysse
+- TJvSimpleXml: Added encoding type in output file (Internet Explorer will load the file now) //Sebastien Buysse
+- TJvSimpleXml: Added BinaryValue, and Add() with stream param to put raw data in XML //Sebastien Buysse
+- TJvSimpleXml: Fixed limit of 64k to tag value //Sebastien Buysse
+
 2002-06-04 (Release 1.31)
 
 - Added following components from Sebastien Buysse:
