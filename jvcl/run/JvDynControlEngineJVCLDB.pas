@@ -2056,9 +2056,9 @@ initialization
   SetDefaultDynControlEngineDB(IntDynControlEngineJVCLDB);
 
 finalization
+  FreeAndNil(IntDynControlEngineJVCLDB);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FreeAndNil(IntDynControlEngineJVCLDB);
 
 end.
