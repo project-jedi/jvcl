@@ -275,7 +275,6 @@ object frmMain: TfrmMain
       Width = 145
       Height = 21
       Style = csDropDownList
-      Enabled = False
       ItemHeight = 13
       TabOrder = 9
       OnClick = cbFilterClick

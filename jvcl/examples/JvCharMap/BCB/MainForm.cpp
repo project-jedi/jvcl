@@ -27,14 +27,15 @@
 #pragma hdrstop
 
 #include "MainForm.h"
-//#include "JvClipbrd.hpp"
+#include "JvClipbrd.hpp"
+#include <typinfo.hpp>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "JvColorCombo"
 #pragma link "JvCombobox"
 #pragma link "JvExStdCtrls"
 #pragma link "JvCharMap"
-//#pragma link "JvClipbrd"
+#pragma link "JvClipbrd"
 #pragma resource "*.dfm"
 TfrmMain *frmMain;
 
@@ -154,17 +155,59 @@ void __fastcall TfrmMain::cbFontChange(TObject *Sender)
     JM->Font->Name = cbFont->FontName;
 }
 
+// To fill the filter combo box, we need to enumerate and retrieve
+// all names of the TJvCharMapUnicodeFilter enumeration.
+// Please see the JvInspector demo for more information on this
+// sort of construct required to get runtime type information
+class TJvCharMapUnicodeFilterTypeInfoHelper : public TPersistent
+{
+  private:
+    TJvCharMapUnicodeFilter FTJvCharMapUnicodeFilterProp;
+  __published:
+    __property TJvCharMapUnicodeFilter TJvCharMapUnicodeFilterProp =
+      { read = FTJvCharMapUnicodeFilterProp};
+  public:
+    static PTypeInfo TypeInfo(void)
+      {
+        PTypeInfo ClassTypeInfo;
+        PPropInfo PropertyInfo;
+        PTypeInfo PropertyTypeInfo;
+
+        ClassTypeInfo = __typeinfo(TJvCharMapUnicodeFilterTypeInfoHelper);
+
+        PropertyInfo = GetPropInfo(ClassTypeInfo, "TJvCharMapUnicodeFilterProp");
+
+        PropertyTypeInfo = *(PropertyInfo->PropType);
+
+        return PropertyTypeInfo;
+      }
+
+    static TJvCharMapUnicodeFilter Low(void)
+      {
+        PTypeData data;
+        data = GetTypeData(TypeInfo());
+
+        return static_cast<TJvCharMapUnicodeFilter>(data->MinValue);
+      }
+
+    static TJvCharMapUnicodeFilter High(void)
+      {
+        PTypeData data;
+        data = GetTypeData(TypeInfo());
+
+        return static_cast<TJvCharMapUnicodeFilter>(data->MaxValue);
+      }
+};
+
 void __fastcall TfrmMain::FillFilter()
 {
   cbFilter->Items->BeginUpdate();
   try
   {
     cbFilter->Items->Clear();
-
-//var  I: TJvCharMapUnicodeFilter;
-//    for I := Low(TJvCharMapUnicodeFilter) to High(TJvCharMapUnicodeFilter) do
-//      cbFilter.Items.Add(GetEnumName(TypeInfo(TJvCharMapUnicodeFilter), Ord(I)));
-
+    
+    for(int i=TJvCharMapUnicodeFilterTypeInfoHelper::Low(); i<=TJvCharMapUnicodeFilterTypeInfoHelper::High(); i++)
+      cbFilter->Items->Add(GetEnumName(TJvCharMapUnicodeFilterTypeInfoHelper::TypeInfo(), i));
   }
   __finally
   {
@@ -302,7 +345,7 @@ void __fastcall TfrmMain::chkUnicodeClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TfrmMain::Copy1Click(TObject *Sender)
 {
-//  JvClipboard->AsWideText = JM->Character;
+  JvClipboard()->AsWideText = WideString(JM->Character);
 }
 //---------------------------------------------------------------------------
 void __fastcall TfrmMain::btnSelectClick(TObject *Sender)
@@ -326,7 +369,7 @@ void __fastcall TfrmMain::cbLocalesClick(TObject *Sender)
 void __fastcall TfrmMain::chkShadowClick(TObject *Sender)
 {
   JM->ShowShadow = chkShadow->Checked;
-  JM->ShadowSize = rand()*4 + 2;
+  JM->ShadowSize = random(4) + 2;
 }
 //---------------------------------------------------------------------------
 void __fastcall TfrmMain::chkDisplayAllClick(TObject *Sender)
