@@ -35,7 +35,7 @@ uses
   Windows, Messages, Graphics, Controls, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QExtCtrls, Types
+  QGraphics, QControls, QExtCtrls, Types, Qt, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvPanel;
@@ -70,8 +70,10 @@ end;
 
 procedure TJvTransparentPanel.CaptureBackground;
 var
+  {$IFDEF VCL}
   Canvas: TCanvas;
   DC: HDC;
+  {$ENDIF VCL}
   SourceRect: TRect;
 begin
   // (rom) check here to secure against misuse
@@ -85,6 +87,7 @@ begin
   end;
   SourceRect.TopLeft := ClientToScreen(ClientRect.TopLeft);
   SourceRect.BottomRight := ClientToScreen(ClientRect.BottomRight);
+  {$IFDEF VCL}
   DC := CreateDC('DISPLAY', nil, nil, nil);
   try
     Canvas := TCanvas.Create;
@@ -98,6 +101,11 @@ begin
   finally
     DeleteDC(DC);
   end;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QPixmap_grabWidget(FBackground.Handle, HWND_DESKTOP, SourceRect.Left, SourceRect.Top,
+     (SourceRect.Right - SourceRect.Left), (SourceRect.Bottom - SourceRect.Top));
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvTransparentPanel.Paint;

@@ -63,7 +63,7 @@ uses
   Windows, Messages, ShlObj, ActiveX,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  Libc, Xlib,
+  Libc, Xlib, QStdCtrls, StrUtils,
   {$ENDIF LINUX}
   SysUtils, Classes,
   {$IFDEF VCL}
@@ -5936,8 +5936,13 @@ begin
   if L > L2 then
     Result := False
   else
+    {$IFDEF MSWINDOWS}
     Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
       P, L, PChar(SubStr), L) = 2;
+    {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
+    Result := AnsiStartsText(SubStr, Str);
+    {$ENDIF LINUX}
 end;
 
 function StringEndsWith(const Str, SubStr: string): Boolean;
@@ -6101,7 +6106,7 @@ begin
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   TempFile := GetTempFileName('~JV');
-  Result := 1;
+  Res := 1;
   {$ENDIF LINUX}
   if Res <> 0 then
     Result := TempFile

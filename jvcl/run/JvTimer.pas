@@ -121,10 +121,17 @@ procedure TJvTimerThread.Execute;
   begin
     Result := Terminated or Application.Terminated or (FOwner = nil);
   end;
-
+{$IFDEF LINUX}
+  function SleepEx(ms: cardinal; bAlertable: boolean):cardinal;
+  begin
+    Sleep(ms);
+    Result := 0;
+  end;
+{$ENDIF LINUX}
 begin
   repeat
-    if (not ThreadClosed) and (SleepEx(FInterval, False) = 0) and
+    if (not ThreadClosed) and
+        (SleepEx(FInterval, False) = 0) and
        (not ThreadClosed) and FOwner.FEnabled then
       with FOwner do
       begin
@@ -153,7 +160,9 @@ begin
   FInterval := 1000;
   FSyncEvent := True;
   FThreaded := True;
+  {$IFDEF WINDOWS}
   FThreadPriority := tpNormal;
+  {$ENDIF WINDOWS}
   FTimerThread := TJvTimerThread.Create(Self, False);
 end;
 
@@ -178,7 +187,9 @@ begin
     TJvTimerThread(FTimerThread).FInterval := FInterval;
     if (FInterval <> 0) and FEnabled and Assigned(FOnTimer) then
     begin
+      {$IFDEF MSWINDOWS}
       FTimerThread.Priority := FThreadPriority;
+      {$ENDIF MSWINDOWS}
       while FTimerThread.Suspended do
         FTimerThread.Resume;
     end;
@@ -217,6 +228,7 @@ begin
   end;
 end;
 
+{$IFDEF MSWINDOWS}
 procedure TJvTimer.SetThreadPriority(Value: TThreadPriority);
 begin
   if Value <> FThreadPriority then
@@ -226,6 +238,7 @@ begin
       UpdateTimer;
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 procedure TJvTimer.Synchronize(Method: TThreadMethod);
 begin

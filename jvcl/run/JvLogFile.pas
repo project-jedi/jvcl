@@ -30,7 +30,13 @@ unit JvLogFile;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Controls, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms,
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type

@@ -509,14 +509,18 @@ function ColorProviderColorAdderRegister: TJvColorProviderColorAdderRegister;
 implementation
 
 uses
+  SysUtils,
   {$IFNDEF COMPILER6_UP}
   Consts,
-  {$ENDIF COMPILER6_UP}
-  Controls,
-  {$IFDEF COMPILER6_UP}
+  {$ELSE}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
-  SysUtils,
+  {$IFDEF VCL}
+  Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls,
+  {$ENDIF VisualCLX}
   JclRTTI, JclStrings,
   JvJVCLUtils, JvConsts, JvResources;
 

@@ -903,11 +903,14 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 implementation
 
 uses
-  ShellAPI, Consts, Math, 
-  JvThemes, JvResources, JvJVCLUtils, JvPickDate,
+  ShellAPI, Math,
   {$IFDEF VCL}
-  JvBrowseFolder,
+  Consts, JvBrowseFolder,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
+  JvThemes, JvResources, JvJVCLUtils, JvPickDate,
   JvConsts;
 
 const

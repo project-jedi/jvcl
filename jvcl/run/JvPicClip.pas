@@ -30,11 +30,16 @@ unit JvPicClip;
 interface
 
 uses
-  Windows, Classes, Controls, 
+  Classes,
+  {$IFDEF VCL}
+  Windows, Graphics, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QWindows, QGraphics, QControls,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
-  Graphics,
   JvComponent;
 
 type
@@ -92,7 +97,13 @@ type
 implementation
 
 uses
-  SysUtils, Consts,
+  SysUtils,
+  {$IFDEF VCL}
+  Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
   JvJVCLUtils, JvConsts;
 
 constructor TJvPicClip.Create(AOwner: TComponent);
