@@ -79,6 +79,7 @@ resourcestring
   }
 
   RsEmptyItem = '<Empty>';
+  RsNoName = '(unnamed)';
 
   RsDatabaseName = 'Database name: %s';
   RsDataItemRenderHasNoText = '(item does not support the IJvDataItemText interface)';
@@ -1659,6 +1660,10 @@ resourcestring
 //=== JvSticker.pas ==========================================================
 resourcestring
   RsEditStickerCaption = 'Edit sticker';
+
+//=== JvStringHolder.pas =====================================================
+resourcestring
+  RsNoItemFoundWithName = 'No item found with name "%s"';
 
 //=== JvStrings.pas ==========================================================
 resourcestring

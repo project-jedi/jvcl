@@ -139,13 +139,58 @@ type
     property MacroChar: Char read FMacroChar write SetMacroChar default '%';
     property Macros: TJvMacros read FMacros write SetMacros;
     property OnExpandMacros: TNotifyEvent read FOnExpandMacros write FOnExpandMacros;
-    property Duplicates: TDuplicates read GetDuplicates write SetDuplicates
-      default dupIgnore;
+    property Duplicates: TDuplicates read GetDuplicates write SetDuplicates default dupIgnore;
     property KeyString: string read FXorKey write FXorKey stored False;
     property Sorted: Boolean read GetSorted write SetSorted default False;
     property Strings: TStrings read GetStrings write SetStrings stored False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
+  end;
+
+  { MultiStringHolder }
+
+  EJvMultiStringHolderException = class(Exception);
+
+  TJvMultiStringHolderCollectionItem = class(TCollectionItem)
+  private
+    FName: string;
+    FStrings: TStrings;
+    procedure SetName(Value: string);
+    procedure SetStrings(const Value: TStrings);
+  protected
+    function GetDisplayName: string; override;
+  public
+    constructor Create(Collection: TCollection); override;
+    destructor Destroy; override;
+  published
+    property Name: string read FName write SetName;
+    property Strings: TStrings read FStrings write SetStrings;
+  end;
+
+  TJvMultiStringHolderCollection = class(TCollection)
+  protected
+    function GetItem(Index: Integer): TJvMultiStringHolderCollectionItem;
+    procedure SetItem(Index: Integer; Value: TJvMultiStringHolderCollectionItem);
+  public
+    function DoesNameExist(const Name: string): Boolean;
+    property Items[Index: Integer]: TJvMultiStringHolderCollectionItem read GetItem write SetItem;
+    function Add: TJvMultiStringHolderCollectionItem;
+    function Insert(Index: Integer): TJvMultiStringHolderCollectionItem;
+  end;
+
+  TJvMultiStringHolder = class(TComponent)
+  private
+    FMultipleStrings: TJvMultiStringHolderCollection;
+    procedure SetMultipleStrings(Value: TJvMultiStringHolderCollection);
+    function GetItemByName(const Name: string): TJvMultiStringHolderCollectionItem;
+    function GetStringsByName(const Name: string): TStrings;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property ItemByName[const Name: string]: TJvMultiStringHolderCollectionItem read GetItemByName;
+    property StringsByName[const Name: string]: TStrings read GetStringsByName;
+  published
+    property MultipleStrings: TJvMultiStringHolderCollection read FMultipleStrings write SetMultipleStrings;
   end;
 
 implementation
@@ -160,7 +205,7 @@ uses
   {$IFDEF VisualCLX}
   QConsts,
   {$ENDIF VisualCLX}
-  JvJCLUtils, JvConsts, JvTypes;
+  JvJCLUtils, JvResources, JvConsts, JvTypes;
 
 const
   XorVersion = 1;
@@ -777,6 +822,118 @@ end;
 procedure TJvStrHolder.WriteVersion(Writer: TWriter);
 begin
   Writer.WriteInteger(XorVersion);
+end;
+
+//=== { TJvMultiStringHolderCollectionItem } =================================
+
+procedure TJvMultiStringHolderCollectionItem.SetName(Value: string);
+begin
+  Value := Trim(Value);
+  if Value = '' then
+    FName := ''
+  else
+  begin
+    if not TJvMultiStringHolderCollection(Collection).DoesNameExist(Value) then
+      FName := Value
+    else
+      raise EJVCLException.CreateRes(@SDuplicateString);
+  end;
+end;
+
+procedure TJvMultiStringHolderCollectionItem.SetStrings(const Value: TStrings);
+begin
+  FStrings.Assign(Value);
+end;
+
+function TJvMultiStringHolderCollectionItem.GetDisplayName: string;
+begin
+  if FName <> '' then
+    Result := FName
+  else
+    Result := RsNoName;
+end;
+
+constructor TJvMultiStringHolderCollectionItem.Create(Collection: TCollection);
+begin
+  inherited Create(Collection);
+  FStrings := TStringList.Create;
+end;
+
+destructor TJvMultiStringHolderCollectionItem.Destroy;
+begin
+  FStrings.Free;
+  inherited Destroy;
+end;
+
+//=== { TJvMultiStringHolderCollection } =====================================
+
+function TJvMultiStringHolderCollection.GetItem(Index: Integer): TJvMultiStringHolderCollectionItem;
+begin
+  Result := TJvMultiStringHolderCollectionItem(inherited GetItem(Index));
+end;
+
+procedure TJvMultiStringHolderCollection.SetItem(Index: Integer; Value: TJvMultiStringHolderCollectionItem);
+begin
+  inherited SetItem(Index, Value);
+end;
+
+function TJvMultiStringHolderCollection.DoesNameExist(const Name: string): Boolean;
+var
+  I: Integer;
+begin
+  Result := True;
+  for I := 0 to Count - 1 do
+    if CompareText(Items[I].Name, Name) = 0 then
+      Exit;
+  Result := False;
+end;
+
+function TJvMultiStringHolderCollection.Add: TJvMultiStringHolderCollectionItem;
+begin
+  Result := TJvMultiStringHolderCollectionItem(inherited Add);
+end;
+
+function TJvMultiStringHolderCollection.Insert(Index: Integer): TJvMultiStringHolderCollectionItem;
+begin
+  Result := Add;
+  Result.Index := Index;
+end;
+
+//=== { TJvMultiStringHolder } ===============================================
+
+constructor TJvMultiStringHolder.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FMultipleStrings := TJvMultiStringHolderCollection.Create(TJvMultiStringHolderCollectionItem);
+end;
+
+destructor TJvMultiStringHolder.Destroy;
+begin
+  FMultipleStrings.Free;
+  inherited Destroy;
+end;
+
+procedure TJvMultiStringHolder.SetMultipleStrings(Value: TJvMultiStringHolderCollection);
+begin
+  FMultipleStrings.Assign(Value);
+end;
+
+function TJvMultiStringHolder.GetItemByName(const Name: string): TJvMultiStringHolderCollectionItem;
+var
+  I: Integer;
+begin
+  for I := 0 to MultipleStrings.Count - 1 do
+    if CompareText(MultipleStrings.Items[I].Name, Name) = 0 then
+    begin
+      Result := MultipleStrings.Items[I];
+      Exit;
+    end;
+  raise EJvMultiStringHolderException.CreateResFmt(@RsNoItemFoundWithName, [Name]);
+end;
+
+function TJvMultiStringHolder.GetStringsByName(const Name: string): TStrings;
+begin
+  Result := GetItemByName(Name).Strings;
 end;
 
 {$IFDEF UNITVERSIONING}
