@@ -8,6 +8,8 @@ interface
 // to Destination
 // Both Origin and Destination should be absolute path but this
 // is not verified by the function.
+// If Origin and Destination are on different partitions,
+// the function returns Destination
 function GetRelativePath(Origin, Destination : string) : string;
 
 // returns the given path without any relative instructions inside
@@ -21,6 +23,30 @@ function PathNoInsideRelative(Path : string) : string;
 implementation
 
 uses Classes, JclStrings, JclFileUtils, SysUtils;
+
+function StrEnsureNoPrefix(prefix : string; str : string) : string;
+var
+  prefixLength : Integer;
+begin
+  prefixLength := Length(prefix);
+  if Copy(str, 1, prefixLength) = prefix then
+    Result := Copy(str, prefixLength+1, Length(str))
+  else
+    Result := str;
+end;
+
+function StrEnsureNoSuffix(suffix : string; str : string) : string;
+var
+  suffixLength : Integer;
+  strLength : Integer;
+begin
+  suffixLength := Length(suffix);
+  strLength := Length(str);
+  if Copy(str, strLength-suffixLength+1, suffixLength) = suffix then
+    Result := Copy(str, 1, strLength-suffixLength)
+  else
+    Result := str;
+end;
 
 function GetRelativePath(Origin, Destination : string) : string;
 var
@@ -37,18 +63,46 @@ begin
     // TSTRINGS, THEY WILL SPLIT PATHS WITH SPACES !!!!
     StrToStrings(Origin, PathSeparator, OrigList);
     StrToStrings(Destination, PathSeparator, DestList);
+{$IFDEF MSWINDOWS}
+    // Let's do some tests when the paths indicate drive letters
+    // This, of course, only happens under a Windows platform
 
-    // find the first directory that is not the same
-    DiffIndex := 0;
-    while (OrigList[DiffIndex] = DestList[DiffIndex]) do
-      Inc(DiffIndex);
-
-    Result := StrRepeat('..'+PathSeparator, OrigList.Count - DiffIndex);
-    if DiffIndex < DestList.Count then
+    // If the destination indicates a drive and the drive
+    // letter is different from the one from the one in
+    // origin, then simply return it as the result
+    // Else, if the origin indicates a drive and destination
+    // doesn't, then return the concatenation of origin and
+    // destination, ensuring a pathseparator between them.
+    // Else, try to find the relative path between the two.
+    if (DestList[0][2] = ':') and
+       (DestList[0][1] <> OrigList[0][1]) then
     begin
-      for i := DiffIndex to DestList.Count - 2 do
-        Result := Result + DestList[i] + PathSeparator;
-      Result := Result + DestList[DestList.Count-1];
+      Result := Destination;
+    end
+    else if (OrigList[0][2] = ':') and
+            (DestList[0][2] <> ':') then
+    begin
+      Result := StrEnsureSuffix(PathSeparator, Origin)+StrEnsureNoPrefix(PathSeparator, Destination);
+    end
+    else
+{$ENDIF}
+    begin
+      // find the first directory that is not the same
+      DiffIndex := 0;
+{$IFDEF MSWINDOWS} // case insensitive
+      while StrSame(OrigList[DiffIndex], DestList[DiffIndex]) do
+{$ELSE}            // case sensitive
+      while OrigList[DiffIndex] = DestList[DiffIndex] do
+{$ENDIF}
+        Inc(DiffIndex);
+
+      Result := StrRepeat('..'+PathSeparator, OrigList.Count - DiffIndex);
+      if DiffIndex < DestList.Count then
+      begin
+        for i := DiffIndex to DestList.Count - 2 do
+          Result := Result + DestList[i] + PathSeparator;
+        Result := Result + DestList[DestList.Count-1];
+      end;
     end;
   finally
     DestList.Free;
