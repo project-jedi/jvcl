@@ -117,6 +117,60 @@ begin
     RedrawWindow(AControl.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or RDW_INVALIDATE or RDW_UPDATENOW or RDW_ALLCHILDREN);
 end;
 
+procedure CopyObjects(Strings: TStrings; AList: TList);
+var i: integer;
+begin
+  for i := 0 to Strings.Count - 1 do
+    AList.Add(Strings.Objects[i]);
+end;
+
+function GetNumLinksTo(AShape: TJvCustomDiagramShape): integer;
+var i: integer;
+begin
+  Result := 0;
+  for i := 0 to AShape.Parent.ControlCount - 1 do
+    if (AShape.Parent.Controls[i] is TJvConnector) and
+      (TJvConnector(AShape.Parent.Controls[i]).EndConn.Shape = AShape) then
+      Inc(Result);
+end;
+
+function GetNumLinksFrom(AShape: TJvCustomDiagramShape): integer;
+var i: integer;
+begin
+  Result := 0;
+  for i := 0 to AShape.Parent.ControlCount - 1 do
+    if (AShape.Parent.Controls[i] is TJvConnector) and
+      (TJvConnector(AShape.Parent.Controls[i]).StartConn.Shape = AShape) then
+      Inc(Result);
+end;
+
+function NameCompare(Item1, Item2: Pointer): integer;
+begin
+  Result := CompareText(
+    TJvCustomDiagramShape(Item1).Caption.Text,
+    TJvCustomDiagramShape(Item2).Caption.Text);
+end;
+
+function MinLinksToCompare(Item1, Item2: Pointer): integer;
+begin
+  Result := GetNumLinksTo(Item1) - GetNumLinksTo(Item2);
+end;
+
+function MinLinksFromCompare(Item1, Item2: Pointer): integer;
+begin
+  Result := GetNumLinksFrom(Item1) - GetNumLinksFrom(Item2);
+end;
+
+function MaxLinksToCompare(Item1, Item2: Pointer): integer;
+begin
+  Result := GetNumLinksTo(Item2) - GetNumLinksTo(Item1);
+end;
+
+function MaxLinksFromCompare(Item1, Item2: Pointer): integer;
+begin
+  Result := GetNumLinksFrom(Item2) - GetNumLinksFrom(Item1);
+end;
+
 { TfrmMain }
 
 procedure TfrmMain.DoShapeClick(Sender: TObject);
@@ -384,7 +438,7 @@ end;
 procedure TfrmMain.Arrange(AList: TList);
 var Cols, i: integer; FS: TJvCustomDiagramShape;
 begin
-  if AList.Count < 2 then
+  if AList.Count = 0 then
     Exit;
   Cols := round(sqrt(AList.Count));
   FLeft := 0;
@@ -402,59 +456,6 @@ begin
   end;
 end;
 
-procedure CopyObjects(Strings: TStrings; AList: TList);
-var i: integer;
-begin
-  for i := 0 to Strings.COunt - 1 do
-    AList.Add(Strings.Objects[i]);
-end;
-
-function GetNumLinksTo(AShape: TJvCustomDiagramShape): integer;
-var i: integer;
-begin
-  Result := 0;
-  for i := 0 to AShape.Parent.ControlCount - 1 do
-    if (AShape.Parent.Controls[i] is TJvConnector) and
-      (TJvConnector(AShape.Parent.Controls[i]).EndConn.Shape = AShape) then
-      Inc(Result);
-end;
-
-function GetNumLinksFrom(AShape: TJvCustomDiagramShape): integer;
-var i: integer;
-begin
-  Result := 0;
-  for i := 0 to AShape.Parent.ControlCount - 1 do
-    if (AShape.Parent.Controls[i] is TJvConnector) and
-      (TJvConnector(AShape.Parent.Controls[i]).StartConn.Shape = AShape) then
-      Inc(Result);
-end;
-
-function NameCompare(Item1, Item2: Pointer): integer;
-begin
-  Result := CompareText(
-    TJvCustomDiagramShape(Item1).Caption.Text,
-    TJvCustomDiagramShape(Item2).Caption.Text);
-end;
-
-function MinLinksToCompare(Item1, Item2: Pointer): integer;
-begin
-  Result := GetNumLinksTo(Item1) - GetNumLinksTo(Item2);
-end;
-
-function MinLinksFromCompare(Item1, Item2: Pointer): integer;
-begin
-  Result := GetNumLinksFrom(Item1) - GetNumLinksFrom(Item2);
-end;
-
-function MaxLinksToCompare(Item1, Item2: Pointer): integer;
-begin
-  Result := GetNumLinksTo(Item2) - GetNumLinksTo(Item1);
-end;
-
-function MaxLinksFromCompare(Item1, Item2: Pointer): integer;
-begin
-  Result := GetNumLinksFrom(Item2) - GetNumLinksFrom(Item1);
-end;
 
 procedure TfrmMain.SbMouseWheel(Sender: TObject;
   Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;

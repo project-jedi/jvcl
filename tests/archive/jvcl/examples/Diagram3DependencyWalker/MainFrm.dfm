@@ -856,6 +856,7 @@ object frmMain: TfrmMain
           Checked = True
           GroupIndex = 1
           RadioItem = True
+          ShortCut = 16433
           OnClick = SelectArrangeClick
         end
         object byLinksTo1: TMenuItem
@@ -863,6 +864,7 @@ object frmMain: TfrmMain
           Caption = 'by Links To'
           GroupIndex = 1
           RadioItem = True
+          ShortCut = 16434
           OnClick = SelectArrangeClick
         end
         object byLinksFrom1: TMenuItem
@@ -870,6 +872,7 @@ object frmMain: TfrmMain
           Caption = 'by Links From'
           GroupIndex = 1
           RadioItem = True
+          ShortCut = 16435
           OnClick = SelectArrangeClick
         end
         object byLinksToinverted1: TMenuItem
@@ -877,6 +880,7 @@ object frmMain: TfrmMain
           Caption = 'by Links To (inverted)'
           GroupIndex = 1
           RadioItem = True
+          ShortCut = 16436
           OnClick = SelectArrangeClick
         end
         object byLinksFrominverted1: TMenuItem
@@ -884,6 +888,7 @@ object frmMain: TfrmMain
           Caption = 'by Links From (inverted)'
           GroupIndex = 1
           RadioItem = True
+          ShortCut = 16437
           OnClick = SelectArrangeClick
         end
       end
@@ -892,6 +897,7 @@ object frmMain: TfrmMain
       end
       object Clear1: TMenuItem
         Caption = 'Clear'
+        ShortCut = 24622
         OnClick = Clear1Click
       end
     end
