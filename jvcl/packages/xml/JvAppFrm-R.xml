@@ -25,7 +25,6 @@
     <File Name="..\..\run\JvAppAnimatedIcon.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppEvent.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppHotKey.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAppInfo.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormAnimatedIcon.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormAnimation.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormAutoSize.pas" Targets="all" Formname="" Condition=""/>
