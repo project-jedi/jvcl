@@ -33,8 +33,8 @@ unit JvBDESQLScript;
 interface
 
 uses
-  SysUtils, Classes, DBTables,
-  JvBDEUtils, JvDBUtils, JvComponent;
+  Classes, DBTables,
+  JvDBUtils, JvComponent;
 
 type
   TJvBDESQLScript = class;
@@ -61,6 +61,9 @@ type
   end;
 
 implementation
+
+uses
+  JvBDEUtils;
 
 constructor TJvBDESQLScript.Create(AOwner: TComponent);
 begin

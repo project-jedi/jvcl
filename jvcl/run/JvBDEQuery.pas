@@ -29,14 +29,8 @@ unit JvBDEQuery;
 interface
 
 uses
-  Bde,
-  {$IFDEF COMPILER6_UP}
-  RTLConsts,
-  {$ENDIF COMPILER6_UP}
-  Classes, SysUtils, DB, DBTables,
-  JvTypes, JvJCLUtils, JvBdeUtils, JvComponent, JVCLVer;
-
-{.$DEFINE DEBUG}
+  SysUtils, Classes, DB, DBTables, Bde,
+  JvComponent, JVCLVer;
 
 const
   DefaultMacroChar = '%';
@@ -68,9 +62,6 @@ type
     function GetMacroCount: Word;
     procedure SetMacroChar(Value: Char);
     function GetRealSQL: TStrings;
-    {$IFDEF DEBUG}
-    procedure SetRealSQL(Value: TStrings);
-    {$ENDIF DEBUG}
   protected
     procedure InternalFirst; override;
     function GetRecord(Buffer: PChar; GetMode: TGetMode; DoCheck: Boolean): TGetResult; override;
@@ -93,16 +84,11 @@ type
     function MacroByName(const Value: string): TParam;
     property MacroCount: Word read GetMacroCount;
     property OpenStatus: TQueryOpenStatus read FOpenStatus;
-    {$IFNDEF DEBUG}
     property RealSQL: TStrings read GetRealSQL;
-    {$ENDIF DEBUG}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property MacroChar: Char read FMacroChar write SetMacroChar default DefaultMacroChar;
     property SQL: TStrings read GetSQL write SetSQL;
-    {$IFDEF DEBUG}
-    property RealSQL: TStrings read GetRealSQL write SetRealSQL stored False;
-    {$ENDIF DEBUG}
     property Macros: TParams read GetMacros write SetMacros;
   end;
 
@@ -189,23 +175,26 @@ const
   dbfExecScript = dbfTable;
 
 procedure CreateQueryParams(List: TParams; const Value: PChar; Macro: Boolean;
-  SpecialChar: Char; Delims: TCharSet);
+  SpecialChar: Char; Delims: TSysCharSet);
 
 implementation
 
 uses
-  Consts, Forms, BDEConst,
-  JvDBUtils, JvJVCLUtils;
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF COMPILER6_UP}
+  Forms, Consts, BDEConst,
+  JvDBUtils, JvBdeUtils;
 
 { Parse SQL utility routines }
 
-function NameDelimiters(C: Char; Delims: TCharSet): Boolean;
+function NameDelimiters(C: Char; Delims: TSysCharSet): Boolean;
 begin
   Result := NameDelimiter(C) or (C in Delims);
 end;
 
 procedure CreateQueryParams(List: TParams; const Value: PChar; Macro: Boolean;
-  SpecialChar: Char; Delims: TCharSet);
+  SpecialChar: Char; Delims: TSysCharSet);
 var
   CurPos, StartPos: PChar;
   CurChar: Char;
@@ -652,12 +641,6 @@ procedure TJvQuery.PSExecute;
 begin
   ExecSQL;
 end;
-
-{$IFDEF DEBUG}
-procedure TJvQuery.SetRealSQL(Value: TStrings);
-begin
-end;
-{$ENDIF DEBUG}
 
 //=== { TJvQueryThread } =====================================================
 

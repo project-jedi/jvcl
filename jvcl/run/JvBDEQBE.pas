@@ -32,9 +32,7 @@ unit JvBDEQBE;
 interface
 
 uses
-  SysUtils,
-  Bde,
-  Classes, DB, DBTables;
+  Classes, DB, DBTables, Bde;
 
 const
   DefQBEStartParam = '#';
@@ -120,8 +118,7 @@ type
 implementation
 
 uses
-  DBConsts,
-  BDEConst,
+  SysUtils, DBConsts, BDEConst,
   JvDBUtils;
 
 constructor TJvQBEQuery.Create(AOwner: TComponent);

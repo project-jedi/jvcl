@@ -29,8 +29,8 @@ unit JvBDEIndex;
 interface
 
 uses
-  SysUtils, Messages, Classes, Controls, Graphics, Menus, StdCtrls,
-  DB, DBTables, JvExStdCtrls;
+  Classes, DB,
+  JvExStdCtrls;
 
 type
   TJvIdxDisplayMode = (dmFieldLabels, dmFieldNames, dmIndexName);
@@ -108,6 +108,7 @@ type
 implementation
 
 uses
+  SysUtils, StdCtrls, DBTables,
   JvBdeUtils;
 
 //=== { TJvKeyDataLink } =====================================================

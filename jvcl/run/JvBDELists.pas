@@ -30,8 +30,7 @@ interface
 
 uses
   SysUtils, Classes,
-  BDE, DB, DBTables,
-  JvDBUtils;
+  BDE, DB, DBTables;
 
 type
   TJvBDEItemType = (bdDatabases, bdDrivers, bdLangDrivers, bdUsers, bdRepositories);
@@ -199,7 +198,7 @@ implementation
 
 uses
   BDEConst, DBConsts,
-  JvResources;
+  JvDBUtils, JvResources;
 
 //=== Utility routines =======================================================
 

@@ -51,10 +51,7 @@ unit JvBDEMove;
 interface
 
 uses
-  BDE, SysUtils, Classes, DB, DBTables,
-  {$IFDEF COMPILER6_UP}
-  Variants,
-  {$ENDIF COMPILER6_UP}
+  Classes, DB, DBTables,
   JvComponent;
 
 type
@@ -122,6 +119,10 @@ type
 implementation
 
 uses
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  SysUtils, BDE,
   JvBDEUtils, JvResources;
 
 const

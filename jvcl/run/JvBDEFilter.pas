@@ -29,8 +29,7 @@ unit JvBDEFilter;
 interface
 
 uses
-  SysUtils, Classes, Forms,
-  Bde, DB, DBTables,
+  Classes, Bde, DB,
   JvTypes, JvComponent;
 
 type
@@ -139,8 +138,8 @@ procedure DropAllFilters(DataSet: TDataSet);
 implementation
 
 uses
-  DBConsts, Dialogs, DbCommon,
-  JvResources, JvJVCLUtils, JvDBUtils, JvBdeUtils;
+  SysUtils, Forms, DBConsts, DbCommon, DBTables,
+  JvDBUtils, JvBdeUtils, JvResources;
 
 procedure DropAllFilters(DataSet: TDataSet);
 begin
