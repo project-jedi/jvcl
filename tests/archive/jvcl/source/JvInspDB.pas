@@ -158,6 +158,7 @@ begin
       Item.DoneEdit(True);
       Item.InitEdit;
     end;}
+    InvalidateData;
     Invalidate;
   end;
 end;

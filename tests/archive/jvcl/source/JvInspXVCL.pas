@@ -129,7 +129,10 @@ procedure TJvInspectorxNodeData.NodeNotifyEvent(Sender: TJvxNode;
   Operation: TJvxNodeOperation);
 begin
   if (Sender = JvxNode) and (Operation = noChange) then
+  begin
+    InvalidateData;
     Invalidate;
+  end;
 end;
 
 procedure TJvInspectorxNodeData.SetAsFloat(const Value: Extended);
