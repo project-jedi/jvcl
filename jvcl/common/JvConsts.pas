@@ -38,6 +38,14 @@ uses
   QControls, QGraphics;
   {$ENDIF VisualCLX}
 
+{$IFDEF VisualCLX}
+const
+  clMoneyGreen = TColor($C0DCC0);
+  clSkyBlue = TColor($F0CAA6);
+  clCream = TColor($F0FBFF);
+  clMedGray = TColor($A4A0A0);
+{$ENDIF VisualCLX}
+
 const
   { JvEditor }
   JvEditorCompletionChars = #8+'0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
