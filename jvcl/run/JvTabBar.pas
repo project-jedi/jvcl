@@ -1441,7 +1441,7 @@ end;
 
 function TJvTabBarItems.GetTabBar: TJvCustomTabBar;
 begin
-  Result := GetOwner as TJvTabBar;
+  Result := GetOwner as TJvCustomTabBar;
 end;
 
 function TJvTabBarItems.GetItem(Index: Integer): TJvTabBarItem;
