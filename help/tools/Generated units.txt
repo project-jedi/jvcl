@@ -5,6 +5,8 @@ JvAniFile
 JvAnimatedImage
 JvAppEvent
 JvAppInst
+JvAppStoreSelectList
+JvAppXmlStore
 JvArrayButton
 JvaScrollText
 JvBandForms
@@ -37,6 +39,7 @@ JvClipboardViewer
 JvClipbrd
 JvClock
 JVCLVer
+JvClxUtils
 JvColorProvider
 JvComCtrls
 JvCommonExecDlg
@@ -75,6 +78,10 @@ JvDirectories
 JvDrawImage
 JvDsgnIntf
 JvDualList
+JvDynControlEngine
+JvDynControlEngineIntf
+JvDynControlEngineJVCL
+JvDynControlEngineVCL
 JvEasterEgg
 JvEditor
 JvFavoritesButton
@@ -82,6 +89,7 @@ JvFooter
 JvFormAnimatedIcon
 JvFormAnimation
 JvFormMagnet
+JvFormPlacementSelectList
 JvFormToHtml
 JvFormTransparent
 JvForth
@@ -138,7 +146,6 @@ JvGradient
 JvGradientCaption
 JvGradientHeaderPanel
 JvgReport
-JvgReportParamsEditor
 JvgRichEditUtils
 JvGridFilter
 JvGridPrinter
@@ -189,6 +196,7 @@ JvImageDlg
 JvImageDrawThread
 JvImageList
 JvImageRotate
+JvImageSquare
 JvInspDB
 JvInspExtraEditors
 JvInspXVCL
@@ -240,6 +248,8 @@ JvPageSetup
 JvPageSetupTitled
 JvPaintFX
 JvPanel
+JvParameterList
+JvParameterListParameter
 JvPatchFile
 JvPcx
 JvPerfMon95
@@ -256,6 +266,7 @@ JvRadioGroup
 JvRas32
 JvRecentMenuButton
 JvResample
+JvResources
 JvRgbToHtml
 JvRichEditToHtml
 JvSAL
@@ -300,7 +311,6 @@ JvThumbImage
 jvThumbNails
 JvThumbviews
 JvTimer
-JvToolEdit
 JvTracker
 JvTransparentPanel
 JvTurtle
@@ -336,3 +346,4 @@ JvxSlider
 JvYearGrid
 JvZlibMultiple
 JvZoom
+QWinCursors
