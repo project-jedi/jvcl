@@ -35,17 +35,14 @@ interface
 uses
   Windows, SysUtils, Classes, Graphics, Controls, Forms,
   ComCtrls, Registry, ImgList,
-  JVCLVer;
+  JVCLVer, JvTypes;
 
 type
-  TJvRegistryKey =
-    (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers, hkPerformanceData, hkCurrentConfig, hkDynData);
-  TJvRegistryKeys = set of TJvRegistryKey;
 
   TJvRegistryTreeView = class(TCustomTreeView)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FRegistryKeys: TJvRegistryKeys;
+    FRegistryKeys: TJvRegKeys;
     FInternalImages: TImageList;
     FListView: TListView;
     FRootCaption: string;
@@ -55,7 +52,7 @@ type
     procedure SetDefaultCaption(Value: string);
     procedure SetDefaultNoValue(Value: string);
     procedure SetRootCaption(Value: string);
-    procedure SetRegistryKeys(Value: TJvRegistryKeys);
+    procedure SetRegistryKeys(Value: TJvRegKeys);
     procedure BuildTree;
     function FillListView(Node: TTreeNode): Boolean;
     procedure SetDefaultImages;
@@ -106,7 +103,7 @@ type
     property RightClickSelect;
     property Indent;
     property HideSelection;
-    property RegistryKeys: TJvRegistryKeys read FRegistryKeys write SetRegistryKeys default
+    property RegistryKeys: TJvRegKeys read FRegistryKeys write SetRegistryKeys default
       [hkCurrentUser, hkLocalMachine];
     property ListView: TListView read FListView write FListView;
     property RootCaption: string read FRootCaption write SetRootCaption;
@@ -473,7 +470,7 @@ begin
   BuildTree;
 end;
 
-procedure TJvRegistryTreeView.SetRegistryKeys(Value: TJvRegistryKeys);
+procedure TJvRegistryTreeView.SetRegistryKeys(Value: TJvRegKeys);
 begin
   if FRegistryKeys <> Value then
     FRegistryKeys := Value;

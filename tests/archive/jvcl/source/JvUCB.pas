@@ -33,10 +33,10 @@ interface
 uses
   Windows, SysUtils, Classes, Graphics, Controls,
   StdCtrls,
-  JvComponent;
+  JvComponent, JvTypes;
 
 type
-  TJvUCBDisplayMode = (dmCurrentUser, dmLocalMachine);
+  TJvUCBDisplayMode = (hkCurrentUser, hkLocalMachine);  // subset of TJvRegKey
   TJvUCBDisplayModes = set of TJvUCBDisplayMode;
 
   TJvUninstallComboBox = class(TCustomComboBox)
@@ -63,7 +63,7 @@ type
   published
     property ShowAll: Boolean read FShowAll write SetShowAll;
     property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode
-      default [dmCurrentUser, dmLocalMachine];
+      default [hkCurrentUser, hkLocalMachine];
     property Color;
     property Ctl3D;
     property DragCursor;
@@ -132,7 +132,7 @@ type
     property Align;
     property ShowAll: Boolean read FShowAll write SetShowAll;
     property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode
-      default [dmCurrentUser, dmLocalMachine];
+      default [hkCurrentUser, hkLocalMachine];
     property Color;
     property Ctl3D;
     property DragCursor;
@@ -206,7 +206,7 @@ begin
   inherited Create(AComponent);
   FFolders := TStringList.Create;
   Style := csDropDownList;
-  FDisplayMode := [dmCurrentUser, dmLocalMachine];
+  FDisplayMode := [hkCurrentUser, hkLocalMachine];
 end;
 
 destructor TJvUninstallComboBox.Destroy;
@@ -344,7 +344,7 @@ constructor TJvUninstallListBox.Create(AComponent: TComponent);
 begin
   inherited Create(AComponent);
   FFolders := TStringList.Create;
-  FDisplayMode := [dmCurrentUser, dmLocalMachine];
+  FDisplayMode := [hkCurrentUser, hkLocalMachine];
 end;
 
 destructor TJvUninstallListBox.Destroy;

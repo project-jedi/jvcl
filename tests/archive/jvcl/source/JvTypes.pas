@@ -48,6 +48,9 @@ const
   {$ENDIF}
 
 type
+  TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers, hkCurrentConfig, hkPerformanceData, hkDynData);
+  TJvRegKeys = set of TJvRegKey;
+
   {$IFNDEF COMPILER5_UP}
   TAnchorKind = (akLeft, akTop, akRight, akBottom);
   TAnchors = set of TAnchorKind;

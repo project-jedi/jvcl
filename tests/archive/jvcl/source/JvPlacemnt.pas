@@ -34,16 +34,12 @@ uses
   RTLConsts, Variants,
   {$ENDIF}
   Windows, Registry, Controls, Messages, Classes, Forms, IniFiles,
-  JvComponent, JvWndProcHook {, JvComponent};
+  JvComponent, JvWndProcHook {, JvComponent}, JvTypes;
 
 type
   TPlacementOption = (fpState, fpPosition, fpActiveControl);
   TPlacementOptions = set of TPlacementOption;
   TPlacementOperation = (poSave, poRestore);
-  {$IFDEF WIN32}
-  TPlacementRegRoot = (prCurrentUser, prLocalMachine, prCurrentConfig,
-    prClassesRoot, prUsers, prDynData);
-  {$ENDIF}
 
   TJvIniLink = class;
 
@@ -78,7 +74,7 @@ type
     FUseRegistry: Boolean;
     {$IFDEF WIN32}
     FRegIniFile: TRegIniFile;
-    FRegistryRoot: TPlacementRegRoot;
+    FRegistryRoot: TJvRegKey;
     {$ENDIF WIN32}
     FLinks: TList;
     FOptions: TPlacementOptions;
@@ -153,7 +149,7 @@ type
     property Options: TPlacementOptions read FOptions write FOptions default [fpState, fpPosition];
     property PreventResize: Boolean read FPreventResize write SetPreventResize default False;
     {$IFDEF WIN32}
-    property RegistryRoot: TPlacementRegRoot read FRegistryRoot write FRegistryRoot default prCurrentUser;
+    property RegistryRoot: TJvRegKey read FRegistryRoot write FRegistryRoot default hkCurrentUser;
     {$ENDIF WIN32}
     property UseRegistry: Boolean read FUseRegistry write FUseRegistry default False;
     property Version: Integer read FVersion write FVersion default 0;
@@ -292,7 +288,7 @@ uses
   {$IFDEF COMPILER3_UP}
   Consts,
   {$ENDIF COMPILER3_UP}
-  JvAppUtils, JvStrUtils, JvProps, JvTypes;
+  JvAppUtils, JvStrUtils, JvProps;
 
 const
   { The following string should not be localized }
@@ -750,15 +746,15 @@ begin
         FRegIniFile.Access := KEY_READ;
       {$ENDIF}
       case FRegistryRoot of
-        prLocalMachine:
+        hkLocalMachine:
           FRegIniFile.RootKey := HKEY_LOCAL_MACHINE;
-        prClassesRoot:
+        hkClassesRoot:
           FRegIniFile.RootKey := HKEY_CLASSES_ROOT;
-        prCurrentConfig:
+        hkCurrentConfig:
           FRegIniFile.RootKey := HKEY_CURRENT_CONFIG;
-        prUsers:
+        hkUsers:
           FRegIniFile.RootKey := HKEY_USERS;
-        prDynData:
+        hkDynData:
           FRegIniFile.RootKey := HKEY_DYN_DATA;
       end;
       if FRegIniFile.RootKey <> HKEY_CURRENT_USER then
