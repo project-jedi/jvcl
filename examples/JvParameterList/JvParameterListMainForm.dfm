@@ -2109,6 +2109,7 @@ object Form1: TForm1
   object JvAppXMLStorage: TJvAppXMLFileStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    StorageOptions.WhiteSpaceReplacement = '_'
     FileName = 'JvParameterListDemo.xml'
     RootNodeName = 'Configuration'
     SubStorages = <>
