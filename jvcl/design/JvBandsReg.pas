@@ -8,7 +8,7 @@ implementation
 uses
   Classes, ImgList,
   {$IFDEF COMPILER6_UP} DesignEditors, DesignIntf, {$ELSE} DsgnIntf, {$ENDIF COMPILER6_UP}
-  ExptIntf, ToolsApi,
+  {$IFNDEF COMPILER7_UP}ExptIntf, {$ENDIF}ToolsApi,
   JclSchedule,
 
   JvBandForms, JvBandObject, JvBandObjectDLLWizard, JvBandObjectDLLWizardForm;

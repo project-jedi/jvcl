@@ -14,7 +14,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  FiltEdit, ExptIntf, ToolsApi,
+  FiltEdit, {$IFNDEF COMPILER7_UP}ExptIntf, {$ENDIF}ToolsApi,
   JclSchedule,
 
   JvConsts, JvTrayIcon, JvGammaPanel, JvInspector, JvLinkLabel,
