@@ -289,6 +289,8 @@ begin
   Result := ChangeFileExt(BplName, '');
   Delete(Result, Length(Result) - 2, 1);
   Result[Length(Result) - 1] := '-';
+  if Result[3] = 'Q' then
+    Delete(Result, 3, 1);
 end;
 
 /// <summary>

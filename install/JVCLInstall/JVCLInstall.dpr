@@ -30,7 +30,7 @@ program JVCLInstall;
 
 uses
   {$IFDEF USE_DXGETTEXT}
-  gnugettext,
+  JvGnugettext,
   {$ENDIF USE_DXGETTEXT}
   Forms,
   Main in 'Main.pas' {FormMain},

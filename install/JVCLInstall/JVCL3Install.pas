@@ -121,7 +121,7 @@ implementation
 uses
   PgIDESelection, CmdLineUtils,
   {$IFDEF USE_DXGETTEXT}
-  gnugettext,
+  JvGnugettext,
   {$ENDIF USE_DXGETTEXT}
   InstallerConsts;
 

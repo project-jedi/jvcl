@@ -102,7 +102,7 @@ begin
                 S := '';
                 for Kind := pkFirst to pkLast do
                   if Kind in InstallMode then
-                    S := ', ' + PackageGroupKindToStr[Kind];
+                    S := S + ', ' + PackageGroupKindToStr[Kind];
                 Delete(S, 1, 2);
 
                 Add(RsInstallForFrameworks, S);

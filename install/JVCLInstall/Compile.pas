@@ -122,7 +122,7 @@ type
     function GenerateAllPackages: Boolean; overload;
     function Compile(Force: Boolean = False): Boolean;
     function CompileTarget(TargetConfig: TTargetConfig;
-      ForceJclDcp: Boolean): Boolean;
+      ForceJclDcp: Boolean; DoClx: Boolean): Boolean;
 
     procedure Abort; // abort compile process
 
@@ -492,8 +492,8 @@ end;
 
 function TJVCLCompiler.Compile(Force: Boolean = False): Boolean;
 var
-  i: Integer;
-  Count: Integer;
+  i, Index: Integer;
+  Frameworks, Count: Integer;
   TargetConfigs: array of TTargetConfig;
   SysInfo: string;
 begin
@@ -540,6 +540,7 @@ begin
   AbortReason := '';
  // read target configs that should be compiled
   Count := 0;
+  Frameworks := 0;
   SetLength(TargetConfigs, Data.Targets.Count);
   for i := 0 to High(TargetConfigs) do
   begin
@@ -547,18 +548,35 @@ begin
     begin
       TargetConfigs[Count] := Data.TargetConfig[i];
       Inc(Count);
+      if pkVCL in Data.TargetConfig[i].InstallMode then
+        Inc(Frameworks);
+      if pkCLX in Data.TargetConfig[i].InstallMode then
+        Inc(Frameworks);
     end;
   end;
   SetLength(TargetConfigs, Count);
 
  // compile all targets
+  Index := 0;
   for i := 0 to Count - 1 do
   begin
-    DoTargetProgress(TargetConfigs[i], i, Count);
-    Result := CompileTarget(TargetConfigs[i], Force);
-    DoTargetProgress(TargetConfigs[i], i + 1, Count);
-    if not Result then
-      Break;
+    DoTargetProgress(TargetConfigs[i], Index, Frameworks);
+    if pkVCL in TargetConfigs[i].InstallMode then
+    begin
+      Result := CompileTarget(TargetConfigs[i], Force, {CLX:=}False);
+      if not Result then
+        Break;
+      Inc(Index);
+    end;
+    DoTargetProgress(TargetConfigs[i], Index, Frameworks);
+    if pkVCL in TargetConfigs[i].InstallMode then
+    begin
+      Result := CompileTarget(TargetConfigs[i], Force, {CLX:=}True);
+      if not Result then
+        Break;
+      Inc(Index);
+    end;
+    DoTargetProgress(TargetConfigs[i], Index, Frameworks);
   end;
 end;
 
@@ -567,7 +585,7 @@ end;
 /// given target IDE.
 /// </summary>
 function TJVCLCompiler.CompileTarget(TargetConfig: TTargetConfig;
-  ForceJclDcp: Boolean): Boolean;
+  ForceJclDcp: Boolean; DoClx: Boolean): Boolean;
 var
   ObjFiles: TStrings;
   i: Integer;
@@ -577,7 +595,7 @@ begin
   Aborted := False;
   FOutput.Clear;
 
-  if TargetConfig.Target.IsBCB and TargetConfig.Build then
+  if TargetConfig.Target.IsBCB and TargetConfig.Build then // CLX for BCB is not supported
   begin
     // Delete all .obj files because dcc32.exe -JPHNE does not create new .obj
     // files if they already exist. And as a result interface changes in a unit
@@ -593,7 +611,7 @@ begin
   end;
 
  // VCL
-  if Result and (pkVCL in TargetConfig.InstallMode) then
+  if Result and (pkVCL in TargetConfig.InstallMode) and not DoClx then
   begin
    // debug units
     if (not TargetConfig.Target.IsBCB) and TargetConfig.DebugUnits then
@@ -610,12 +628,20 @@ begin
     if Result or not CmdOptions.KeepFiles then
       Make(TargetConfig, FQuiet + ' Clean', CaptureLineClean);
     if Result then
-      CaptureLine('[Finished JVCL for VCL installation]', Aborted);
+      CaptureLine('[Finished JVCL for VCL installation]', Aborted); // do not localize
   end;
 
  // Clx
-  if Result and (pkClx in TargetConfig.InstallMode) then
+  if Result and (pkClx in TargetConfig.InstallMode) and DoClx then
   begin
+    if not FileExists(TargetConfig.BplDir + '\clxdesigner.dcp') then
+    begin
+      // Delphi 7 has no clxdesigner.dcp so we compile it from Delphi's property
+      // editor source.
+      CaptureExecute(Data.JVCLPackagesDir + '\bin\MakeClxDesigner.bat', '',
+        Data.JVCLPackagesDir + '\bin', CaptureLine, nil, False);
+    end;
+
    // debug units
     if (not TargetConfig.Target.IsBCB) and TargetConfig.DebugUnits then
       Result := CompileProjectGroup(
@@ -631,7 +657,7 @@ begin
     if Result or not CmdOptions.KeepFiles then
       Make(TargetConfig, FQuiet + ' Clean', CaptureLineClean);
     if Result then
-      CaptureLine('[Finished JVCL for CLX installation]', Aborted);
+      CaptureLine('[Finished JVCL for CLX installation]', Aborted); // do not localize
   end;
 end;
 
@@ -715,15 +741,14 @@ begin
       Dir := ProjectGroup.TargetConfig.JVCLDir + PathDelim + 'run';
       FindFiles(Dir, '*.dfm', False, Files, ['.dfm']);
     end;
-    
+
+    CaptureLine(RsCopyingFiles, FAborted);
     for i := 0 to Files.Count - 1 do
     begin
       DestFile := DestDir + PathDelim + ExtractFileName(Files[i]);
       if FileAge(Files[i]) > FileAge(DestFile) then
       begin
 {**}    DoProgress(ExtractFileName(Files[i]), i, Files.Count, pkOther);
-        CaptureLine(Format(RsCopyingFile, [ExtractFileName(Files[i])]), FAborted);
-
         CopyFile(PChar(Files[i]), PChar(DestFile), False);
       end;
     end;
@@ -761,6 +786,7 @@ begin
   try
     TargetConfig := ProjectGroup.TargetConfig;
     AutoDepend := TargetConfig.AutoDependencies;
+
     // obtain information for progress bar
     FPkgCount := 0;
     for i := 0 to ProjectGroup.Count - 1 do
@@ -768,16 +794,21 @@ begin
         Inc(FPkgCount);
 
     Edition := TargetConfig.TargetSymbol;
+    if ProjectGroup.IsVCLX then
+      Edition := Edition + 'clx';
     JVCLPackagesDir := TargetConfig.JVCLPackagesDir;
     Args := '-f Makefile.mak';
 
     PkgDir := Edition;
-    if PkgDir[3] in ['p', 'P', 's', 'S'] then
+    if not ProjectGroup.IsVCLX then // only PRO and ENT versions have CLX support
     begin
-      if PkgDir[2] = '5' then
-        PkgDir := Copy(PkgDir, 1, 2) + 'std'
-      else
-        PkgDir := Copy(PkgDir, 1, 2) + 'per';
+      if PkgDir[3] in ['p', 'P', 's', 'S'] then
+      begin
+        if PkgDir[2] = '5' then
+          PkgDir := Copy(PkgDir, 1, 2) + 'std'
+        else
+          PkgDir := Copy(PkgDir, 1, 2) + 'per';
+      end;
     end;
 
     DccOpt := '';
@@ -811,9 +842,10 @@ begin
     SetEnvironmentVariable('BPILIBDIR', Pointer(TargetConfig.DcpDir)); // for BCB
 
    // add dxgettext unit directory
+    { Dxgettext is now included in the JVCL as JvGnugettext
     if Data.JVCLConfig.Enabled['USE_DXGETTEXT'] then
       SetEnvironmentVariable('EXTRAUNITDIRS', Pointer(TargetConfig.DxgettextDir))
-    else
+    else}
       SetEnvironmentVariable('EXTRAUNITDIRS', nil);
     SetEnvironmentVariable('EXTRAINCLUDEDIRS', nil);
     SetEnvironmentVariable('EXTRARESDIRS', nil);
@@ -834,7 +866,7 @@ begin
       end;
     end;
 
-   // generate temnplate.cfg file for PkgDir
+   // generate template.cfg file for PkgDir
     SetEnvironmentVariable('EDITION', PChar(Edition));
     SetEnvironmentVariable('PKGDIR', PChar(PkgDir));
     SetEnvironmentVariable('PKGDIR_MASTEREDITION', PChar(PkgDir));
@@ -882,15 +914,19 @@ begin
     FPkgIndex := 0;
     if FPkgCount > 0 then
     begin
-      // ==== Resources have changed ====
+      // ==== changed Resources ====
       // As long as no dependency information about resources is in the .xml
       // files we let the Delphi compiler decide if he wants to compile the
       // package.
       if (FResCount > 0) then
         AutoDepend := False;
-      // =================================
+      // ===========================
 
+      { Now it is time to write the "xx Packages.mak" file. }
       CreateProjectGroupMakefile(ProjectGroup, AutoDepend);
+
+      { Are there any packages that have to be compiled? Ask make.exe for this
+        information. }
       if AutoDepend then
       begin
         SetEnvironmentVariable('MAKEOPTIONS', '-n');
@@ -908,6 +944,11 @@ begin
 
       if FPkgCount > 0 then
       begin
+        { Remove .dfm/.xfm files from the lib directory so the compiler takes the
+          correct one and we do not have unused files in the lib directory. }
+        DeleteFormDataFiles(ProjectGroup);
+
+        { Now compile the packages }
         DoPackageProgress(nil, '', 0, FPkgCount);
         // compile packages
         if Make(TargetConfig, Args + FQuiet + ' CompilePackages', CaptureLinePackageCompilation) <> 0 then
@@ -923,18 +964,28 @@ begin
 
    // *****************************************************************
 
-{**}DoProjectProgress(RsCopyingFiles, GetProjectIndex, ProjectMax);
-    if ProjectGroup.TargetConfig.DeveloperInstall then
-      DeleteFormDataFiles(ProjectGroup) // remove files for Developer installation
-    else
+    if (FPkgCount > 0) and
+       ((not ProjectGroup.TargetConfig.DeveloperInstall) or
+        (TargetConfig.Target.IsBCB)) then
+    begin
+{**}  DoProjectProgress(RsCopyingFiles, GetProjectIndex, ProjectMax);
+      { The .dfm/.xfm files are deleted from the lib directory in the
+        resource generation section in this method.
+        The files are only copied for a non-developer installation and for
+        BCB. }
       CopyFormDataFiles(ProjectGroup);
+    end
+    else
+{**}  GetProjectIndex; // increase progress
+
   finally
 {**}DoProjectProgress(RsFinished, ProjectMax, ProjectMax);
     FCurrentProjectGroup := nil;
   end;
   Result := True;
+
+  { Delete the generated "xx Package.mak" file. }
   DeleteFile(ChangeFileExt(ProjectGroup.Filename, '.mak'));
-  DeleteFile(TargetConfig.JVCLPackagesDir + '\tmp.bat');
 end;
 
 /// <summary>
@@ -948,7 +999,8 @@ var
   Lines: TStrings;
   i, depI: Integer;
   Pkg: TPackageTarget;
-  Dependencies, S, PasFile, DcuFile, ObjFile, FilenameOnly: string;
+  Dependencies, S, PasFile, DcuFile, ObjFile, FormFile: string;
+  FilenameOnly: string;
   DeleteFiles: Boolean;
   BplFilename, MapFilename: string;
   PasFileSearchDirs: string;
@@ -973,23 +1025,24 @@ begin
     Lines.Add(Format('.path.dcp = "%s";"%s";"%s";"%s"',
       [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir,
        ProjectGroup.Target.BplDir, ProjectGroup.Target.DcpDir]));
+
     if AutoDepend then
     begin
       S := ProjectGroup.TargetConfig.JVCLDir;
       PasFileSearchDirs :=
-        Format('"%s\common";"%s\run";"%s\design";"%s\qcommon";"%s\qrun";"%s\qdesign";"%s"',
-               [S, S, S, S, S, S, ProjectGroup.TargetConfig.DxgettextDir]);
+        Format('"%s\common";"%s\run";"%s\design";"%s\qcommon";"%s\qrun";"%s\qdesign"',//;"%s"',
+               [S, S, S, S, S, S{, ProjectGroup.TargetConfig.DxgettextDir}]);
       Lines.Add('.path.pas = ' + PasFileSearchDirs);
-      Lines.Add(Format('.path.dfm = "%s\run";"%s\design";"%s\qrun";"%s\qdesign"',
-        [S, S, S, S]));
-      Lines.Add(Format('.path.xfm = "%s\run";"%s\design";"%s\qrun";"%s\qdesign"',
-        [S, S, S, S]));
+      Lines.Add(Format('.path.dfm = "%s\run";"%s\design"',
+        [S, S]));
+      Lines.Add(Format('.path.xfm = "%s\qrun";"%s\qdesign"',
+        [S, S]));
       Lines.Add(Format('.path.inc = "%s\common"', [S]));
       Lines.Add(Format('.path.res = "%s\Resources"', [S]));
       Lines.Add(Format('.path.bpl = "%s";"%s"',
         [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir]));
       Lines.Add('');
-      
+
      // add files like jvcl.inc
       Dependencies := '';
       for depI := 0 to High(CommonDependencyFiles) do
@@ -1049,16 +1102,30 @@ begin
         begin
           if IsFileUsed(ProjectGroup, Pkg.Info.Contains[depI]) then
           begin
-            Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
-              ExtractFileName(Pkg.Info.Contains[depI].Name);
-            {if Pkg.Info.Contains[depI].FormName <> '' then
+            PasFile := Pkg.Info.Contains[depI].Name;
+            FilenameOnly := ExtractFileName(PasFile);
+            PasFile := FollowRelativeFilename(Data.JVCLPackagesXmlDir, PasFile);
+            if not FileExists(PasFile) then
+              PasFile := FindFilename(PasFileSearchDirs, FilenameOnly);
+
+            if FileExists(PasFile) then // add the file only if it exists
             begin
-              if ProjectGroup.IsVCLX then
-                S := ChangeFileExt(ExtractFileName(Pkg.Info.Contains[depI].Name), '.xfm')
-              else
-                S := ChangeFileExt(ExtractFileName(Pkg.Info.Contains[depI].Name), '.dfm');
-              Dependencies := Dependencies + '\' + sLineBreak + #9#9 + S;
-            end;}
+              Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
+                FilenameOnly;
+
+              { Check for a .dfm/.xfm file }
+              if Pkg.Info.Contains[depI].FormName <> '' then
+              begin
+                if ProjectGroup.IsVCLX then
+                  FormFile := ChangeFileExt(PasFile, '.xfm')
+                else
+                  FormFile := ChangeFileExt(PasFile, '.dfm');
+                if FileExists(FormFile) then
+                  Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
+                    ExtractFileName(FormFile);
+              end;
+
+            end;
           end;
         end;
         Dependencies := Dependencies + '\' + sLineBreak + #9#9'$(CommonDependencies)';
@@ -1147,6 +1214,7 @@ begin
       Lines.Add(#9'@cd ' + GetReturnPath(Pkg.RelSourceDir));
       Lines.Add('');
     end;
+
     Lines.SaveToFile(ChangeFileExt(ProjectGroup.Filename, '.mak'));
   finally
     Lines.Free;

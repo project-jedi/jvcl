@@ -200,8 +200,8 @@ begin
     LblDxgettextHomepage.OnClick := Installer.DoHomepageClick;
     LblDxgettextHomepage.Caption := CheckBoxDxgettextSupport.Caption;
 
-    CheckBoxDxgettextSupport.Visible := Installer.Data.IsDxgettextInstalled;
-    LblDxgettextHomepage.Visible := not Installer.Data.IsDxgettextInstalled;
+    //CheckBoxDxgettextSupport.Visible := Installer.Data.IsDxgettextInstalled;
+    LblDxgettextHomepage.Visible := not CheckBoxDxgettextSupport.Visible;
 
    // common options
     if not CommonCompiledJcl then
