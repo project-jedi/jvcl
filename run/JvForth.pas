@@ -47,7 +47,7 @@ uses
   {$IFDEF DELPHI6_UP}
   Variants,
   {$ENDIF DELPHI6_UP}
-  JvXMLTree, JvStrings, JvTypes;
+  JvXMLTree, JvComponent, JvStrings, JvTypes;
 
 const
   StackMax = 1000;
@@ -172,7 +172,7 @@ type
     procedure ClearObjects;
   end;
 
-  TJvForthScript = class(TComponent)
+  TJvForthScript = class(TJvComponent)
   private
     FScript: string;
     FIncludes: TStringList;
