@@ -285,8 +285,9 @@ begin
     else
       Value := TJvMacro(Source).FData;
     Name := TJvMacro(Source).Name;
+    Exit;
   end;
-  // (rom) else inherited Assign(source) missing?
+  inherited Assign(Source);
 end;
 
 function TJvMacro.GetDisplayName: string;

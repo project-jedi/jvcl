@@ -43,7 +43,7 @@ uses
 const
   CM_PARENTSTYLEMANAGERCHANGE = CM_BASE + 1;
   CM_PARENTSTYLEMANAGERCHANGED = CM_BASE + 2;
-  
+
 type
   TJvCustomNavigationPane = class;
   TJvNavIconButton = class;
@@ -570,8 +570,8 @@ type
   protected
     procedure UpdatePageList;
 
-    function GetAction: TBasicAction;override;
-    procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
+    function GetAction: TBasicAction; {$IFDEF COMPILER6_UP}override;{$ENDIF COMPILER6_UP}
+    procedure SetParent({$IFDEF VisualCLX}const{$ENDIF}AParent: TWinControl); override;
     procedure SetPageIndex(Value: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property NavPanel: TJvNavPanelButton read FNavPanel;
@@ -590,7 +590,7 @@ type
     destructor Destroy; override;
     property AutoHeader: Boolean read GetAutoHeader write SetAutoHeader;
   published
-    property Action:TBasicAction read GetAction write SetAction;
+    property Action: TBasicAction read GetAction write SetAction;
 
     property Color default clWindow;
     property ParentColor default False;
@@ -894,7 +894,7 @@ type
     property NavPages;
   published
     property ActivePage;
-//    property Alignment;
+    //    property Alignment;
     property Align;
     property Anchors;
     property AutoHeaders;
@@ -937,7 +937,7 @@ type
 
     property Resizable;
     property SmallImages;
-//    property WordWrap;
+    //    property WordWrap;
     property OnChange;
     property OnChanging;
     property OnDropDownMenu;
@@ -1056,13 +1056,14 @@ end;
 //=== TCustomImageListEx =====================================================
 
 {$IFDEF COMPILER5}
+
 procedure TCustomImageListEx.Draw(Canvas: TCanvas; X, Y, Index: Integer;
   ADrawingStyle: TDrawingStyle; AImageType: TImageType; Enabled: Boolean);
 const
-  DrawingStyles: array [TDrawingStyle] of Longint =
-    (ILD_FOCUS, ILD_SELECTED, ILD_NORMAL, ILD_TRANSPARENT);
-  Images: array [TImageType] of Longint =
-    (0, ILD_MASK);
+  DrawingStyles: array[TDrawingStyle] of Longint =
+  (ILD_FOCUS, ILD_SELECTED, ILD_NORMAL, ILD_TRANSPARENT);
+  Images: array[TImageType] of Longint =
+  (0, ILD_MASK);
 begin
   if HandleAllocated then
     DoDraw(Index, Canvas, X, Y, DrawingStyles[ADrawingStyle] or
@@ -1182,7 +1183,7 @@ begin
       Colors := FStyleManager.Colors;
     end;
   end;
-//  FDropButton.StyleManager := Value;
+  //  FDropButton.StyleManager := Value;
   InternalStyleManagerChanged(Self, Value);
   // TODO: should this be removed?
 //  for I := 0 to ControlCount - 1 do
@@ -1197,6 +1198,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvIconPanel.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   Msg.Result := 1;
@@ -1204,6 +1206,7 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
+
 function TJvIconPanel.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
@@ -1233,7 +1236,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0,0);
+      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
   end;
 end;
 
@@ -1310,8 +1313,7 @@ begin
   ACount := MaximizedCount;
   if NewSize < ButtonHeight div 2 then
     MaximizedCount := ACount - 1
-  else
-  if NewSize > ButtonHeight + ButtonHeight div 2 then
+  else if NewSize > ButtonHeight + ButtonHeight div 2 then
     MaximizedCount := ACount + 1;
   NewSize := 0;
   Accept := False;
@@ -1414,6 +1416,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomNavigationPane.WMNCPaint(var Msg: TWMNCPaint);
 var
   AColor: TColor;
@@ -1532,6 +1535,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomNavigationPane.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   if ActivePage = nil then
@@ -1544,6 +1548,7 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
+
 function TJvCustomNavigationPane.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
@@ -1640,7 +1645,7 @@ begin
       FStyleManager.FreeNotification(Self);
       Colors := FStyleManager.Colors;
     end;
-//    FSplitter.StyleManager := Value;
+    //    FSplitter.StyleManager := Value;
     InternalStyleManagerChanged(Self, Value);
   end;
 end;
@@ -1701,7 +1706,7 @@ begin
     if AutoHeaders then
       NavPages[I].Header.Images := LargeImages;
     NavPages[I].IconButton.Images := SmallImages;
-//    NavPages[I].StyleManager := StyleManager;
+    //    NavPages[I].StyleManager := StyleManager;
   end;
 end;
 
@@ -1729,7 +1734,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0,0);
+      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
   end;
 end;
 
@@ -1790,8 +1795,7 @@ begin
   if Operation = opRemove then
     if AComponent = Images then
       Images := nil
-    else
-    if AComponent = StyleManager then
+    else if AComponent = StyleManager then
       StyleManager := nil;
 end;
 
@@ -1813,15 +1817,14 @@ begin
       else
         GradientFillRect(Canvas, Rect, Colors.ButtonHotColorFrom, Colors.ButtonHotColorTo, fdTopToBottom, 32)
     end
-    else
-    if Down then
+    else if Down then
       GradientFillRect(Canvas, Rect, Colors.ButtonSelectedColorFrom, Colors.ButtonSelectedColorTo, fdTopToBottom, 32);
     case ButtonType of
       nibDropDown:
         begin // area should be 7x12
           InflateRect(Rect, -((Rect.Right - Rect.Left) - 7) div 2, -((Rect.Bottom - Rect.Top) - 12) div 2);
           if bsMouseDown in MouseStates then
-            OffsetRect(Rect, 1,1);
+            OffsetRect(Rect, 1, 1);
           Canvas.Pen.Color := clBlack;
           P.X := Rect.Left;
           P.Y := Rect.Top;
@@ -1866,7 +1869,7 @@ begin
             TCustomImageListEx(Images).Draw(Canvas,
               (Width - Images.Width) div 2 + Ord(bsMouseDown in MouseStates),
               (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
-              ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Enabled);
+              ImageIndex, {$IFDEF VisualCLX}itImage, {$ENDIF}Enabled);
         end;
       nibDropArrow:
         begin
@@ -1987,7 +1990,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0,0);
+      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
   end;
 end;
 
@@ -2100,11 +2103,9 @@ begin
     else
       GradientFillRect(Canvas, R, Colors.ButtonHotColorFrom, Colors.ButtonHotColorTo, fdTopToBottom, 32);
   end
-  else
-  if Down then
+  else if Down then
     GradientFillRect(Canvas, R, Colors.ButtonSelectedColorFrom, Colors.ButtonSelectedColorTo, fdTopToBottom, 32)
-  else
-  if bsMouseDown in MouseStates then
+  else if bsMouseDown in MouseStates then
     GradientFillRect(Canvas, R, Colors.ButtonSelectedColorTo, Colors.ButtonSelectedColorFrom, fdTopToBottom, 32)
   else
     GradientFillRect(Canvas, ClientRect, Colors.ButtonColorFrom, Colors.ButtonColorTo, fdTopToBottom, 32);
@@ -2206,6 +2207,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvNavPanelButton.CMDialogChar(var Msg: TCMDialogChar);
 begin
   if IsAccel(Msg.CharCode, Caption) then
@@ -2219,6 +2221,7 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
+
 function TJvNavPanelButton.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -2273,29 +2276,26 @@ end;
 
 procedure TJvNavPanelColors.Assign(Source: TPersistent);
 begin
-  if Source is TJvNavPanelColors then
+  if (Source is TJvNavPanelColors) and (Source <> Self) then
   begin
-    if Source <> Self then
-    begin
-      FButtonColorFrom := TJvNavPanelColors(Source).ButtonColorFrom;
-      FButtonColorTo := TJvNavPanelColors(Source).ButtonColorTo;
-      FButtonHotColorFrom := TJvNavPanelColors(Source).ButtonHotColorFrom;
-      FButtonHotColorTo := TJvNavPanelColors(Source).ButtonHotColorTo;
-      FButtonSelectedColorFrom := TJvNavPanelColors(Source).ButtonSelectedColorFrom;
-      FButtonSelectedColorTo := TJvNavPanelColors(Source).ButtonSelectedColorTo;
-      FFrameColor := TJvNavPanelColors(Source).FrameColor;
-      FHeaderColorFrom := TJvNavPanelColors(Source).HeaderColorFrom;
-      FHeaderColorTo := TJvNavPanelColors(Source).HeaderColorTo;
-      FDividerColorFrom := TJvNavPanelColors(Source).DividerColorFrom;
-      FDividerColorTo := TJvNavPanelColors(Source).DividerColorTo;
-      FSplitterColorFrom := TJvNavPanelColors(Source).SplitterColorFrom;
-      FSplitterColorTo := TJvNavPanelColors(Source).SplitterColorTo;
-      FButtonSeparatorColor := TJvNavPanelColors(Source).ButtonSeparatorColor;
-      Change;
-    end;
-  end
-  else
-    inherited Assign(Source);
+    FButtonColorFrom := TJvNavPanelColors(Source).ButtonColorFrom;
+    FButtonColorTo := TJvNavPanelColors(Source).ButtonColorTo;
+    FButtonHotColorFrom := TJvNavPanelColors(Source).ButtonHotColorFrom;
+    FButtonHotColorTo := TJvNavPanelColors(Source).ButtonHotColorTo;
+    FButtonSelectedColorFrom := TJvNavPanelColors(Source).ButtonSelectedColorFrom;
+    FButtonSelectedColorTo := TJvNavPanelColors(Source).ButtonSelectedColorTo;
+    FFrameColor := TJvNavPanelColors(Source).FrameColor;
+    FHeaderColorFrom := TJvNavPanelColors(Source).HeaderColorFrom;
+    FHeaderColorTo := TJvNavPanelColors(Source).HeaderColorTo;
+    FDividerColorFrom := TJvNavPanelColors(Source).DividerColorFrom;
+    FDividerColorTo := TJvNavPanelColors(Source).DividerColorTo;
+    FSplitterColorFrom := TJvNavPanelColors(Source).SplitterColorFrom;
+    FSplitterColorTo := TJvNavPanelColors(Source).SplitterColorTo;
+    FButtonSeparatorColor := TJvNavPanelColors(Source).ButtonSeparatorColor;
+    Change;
+    Exit;
+  end;
+  inherited Assign(Source);
 end;
 
 procedure TJvNavPanelColors.Change;
@@ -2475,14 +2475,15 @@ procedure TJvNavPanelFonts.Assign(Source: TPersistent);
 begin
   if Source is TJvNavPanelFonts then
   begin
-    if source <> Self then
+    if Source <> Self then
     begin
       NavPanelFont := TJvNavPanelFonts(Source).NavPanelFont;
       DividerFont := TJvNavPanelFonts(Source).DividerFont;
       HeaderFont := TJvNavPanelFonts(Source).HeaderFont;
     end;
+    Exit;
   end;
-  // (rom) else inherited Assign(Source) missing?
+  inherited Assign(Source);
 end;
 
 procedure TJvNavPanelFonts.Change;
@@ -2627,8 +2628,7 @@ begin
   begin
     if AComponent = IconPanel then
       IconPanel := nil
-    else
-    if AComponent = StyleManager then
+    else if AComponent = StyleManager then
       StyleManager := nil;
   end;
 end;
@@ -2667,10 +2667,10 @@ begin
       Colors := FStyleManager.Colors;
     end;
   end;
-//  FNavPanel.StyleManager := Value;
-//  FIconButton.StyleManager := Value;
-//  if AutoHeader then
-//    Header.StyleManager := Value;
+  //  FNavPanel.StyleManager := Value;
+  //  FIconButton.StyleManager := Value;
+  //  if AutoHeader then
+  //    Header.StyleManager := Value;
 end;
 
 procedure TJvNavPanelPage.SetHint(const Value: string);
@@ -2721,7 +2721,7 @@ begin
   UpdatePageList;
 end;
 
-procedure TJvNavPanelPage.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
+procedure TJvNavPanelPage.SetParent({$IFDEF VisualCLX}const{$ENDIF}AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if (FNavPanel = nil) or (FIconButton = nil) or (csDestroying in ComponentState) then
@@ -2730,7 +2730,7 @@ begin
   if AParent is TJvCustomNavigationPane then
   begin
     IconPanel := TJvCustomNavigationPane(AParent).FIconPanel;
-//    StyleManager := TJvCustomNavigationPane(AParent).StyleManager;
+    //    StyleManager := TJvCustomNavigationPane(AParent).StyleManager;
 
     NavPanel.Colors := TJvCustomNavigationPane(AParent).Colors;
     NavPanel.StyleManager := StyleManager;
@@ -2830,7 +2830,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0,0);
+      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
   end;
 end;
 
@@ -2993,7 +2993,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0,0);
+      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
   end;
 end;
 
@@ -3048,15 +3048,14 @@ begin
   if Operation = opRemove then
     if AComponent = Images then
       Images := nil
-    else
-    if AComponent = StyleManager then
+    else if AComponent = StyleManager then
       StyleManager := nil;
 end;
 
 procedure TJvNavPanelHeader.Paint;
 const
-  cAlignment: array [TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  cWordWrap: array [Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
+  cAlignment: array[TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  cWordWrap: array[Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
 var
   R, TempRect: TRect;
   X, Y, H: Integer;
@@ -3108,7 +3107,7 @@ begin
     if Y > Height - Images.Height - 4 then
       Y := Height - Images.Height - 4;
     TCustomImageListEx(Images).Draw(Canvas, X, Y, ImageIndex,
-      {$IFDEF VisualCLX} itImage, {$ENDIF} True);
+      {$IFDEF VisualCLX}itImage, {$ENDIF}True);
   end;
 end;
 
@@ -3182,6 +3181,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvNavPanelHeader.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   Msg.Result := 1;
@@ -3189,6 +3189,7 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
+
 function TJvNavPanelHeader.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
@@ -3234,7 +3235,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0,0);
+      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
   end;
 end;
 
@@ -3309,7 +3310,7 @@ end;
 
 procedure TJvNavPanelDivider.Paint;
 const
-  cAlignment: array [TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  cAlignment: array[TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
 var
   R: TRect;
 begin
@@ -3402,7 +3403,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0,0);
+      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
   end;
 end;
 
@@ -3447,20 +3448,15 @@ begin
     else
       Exit;
   end
-  else
-  if Source is TJvIconPanel then
+  else if Source is TJvIconPanel then
     SourceColors := TJvIconPanel(Source).Colors
-  else
-  if Source is TJvNavIconButton then
+  else if Source is TJvNavIconButton then
     SourceColors := TJvNavIconButton(Source).Colors
-  else
-  if Source is TJvNavPanelButton then
+  else if Source is TJvNavPanelButton then
     SourceColors := TJvNavPanelButton(Source).Colors
-  else
-  if Source is TJvNavPanelPage then
+  else if Source is TJvNavPanelPage then
     SourceColors := TJvNavPanelPage(Source).Colors
-  else
-  if Source is TJvCustomNavigationPane then
+  else if Source is TJvCustomNavigationPane then
     SourceColors := TJvCustomNavigationPane(Source).Colors
   else
   begin
@@ -3489,20 +3485,15 @@ begin
     else
       Exit;
   end
-  else
-  if Dest is TJvIconPanel then
+  else if Dest is TJvIconPanel then
     DestColors := TJvIconPanel(Dest).Colors
-  else
-  if Dest is TJvNavIconButton then
+  else if Dest is TJvNavIconButton then
     DestColors := TJvNavIconButton(Dest).Colors
-  else
-  if Dest is TJvNavPanelButton then
+  else if Dest is TJvNavPanelButton then
     DestColors := TJvNavPanelButton(Dest).Colors
-  else
-  if Dest is TJvNavPanelPage then
+  else if Dest is TJvNavPanelPage then
     DestColors := TJvNavPanelPage(Dest).Colors
-  else
-  if Dest is TJvCustomNavigationPane then
+  else if Dest is TJvCustomNavigationPane then
     DestColors := TJvCustomNavigationPane(Dest).Colors
   else
   begin
@@ -3643,7 +3634,7 @@ begin
           end;
         nptCustom:
           begin
-          // do nothing
+            // do nothing
           end;
       end;
       FTheme := Value;
@@ -3689,8 +3680,8 @@ end;
 constructor TJvNavPaneToolPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := [csAcceptsControls, {$IFDEF VCL} csCaptureMouse, {$ENDIF VCL} csClickEvents,
-    csOpaque, csDoubleClicks, csReplicatable];
+  ControlStyle := [csAcceptsControls, {$IFDEF VCL}csCaptureMouse, {$ENDIF VCL}csClickEvents,
+  csOpaque, csDoubleClicks, csReplicatable];
   ParentColor := False;
   Color := clWindow;
 
@@ -3858,8 +3849,7 @@ begin
   begin
     if AComponent = Images then
       Images := nil
-    else
-    if AComponent = StyleManager then
+    else if AComponent = StyleManager then
       StyleManager := nil;
   end;
 end;
@@ -3907,14 +3897,14 @@ begin
     Canvas.Font := Self.Font;
     if (DropDownMenu = nil) and not (csDesigning in ComponentState) then
     begin
-      OffsetRect(R, 2, -1);  // line up with where button caption should have been
+      OffsetRect(R, 2, -1); // line up with where button caption should have been
       SetBkMode(Canvas.Handle, TRANSPARENT);
       DrawText(Canvas, Caption, Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
     end;
     // draw the client areas top rounding
     R := ClientRect;
     Inc(R.Top, HeaderHeight);
-//    Inc(R.Left);
+    //    Inc(R.Left);
     Inc(R.Right);
     Canvas.Brush.Color := Color;
     Canvas.Pen.Style := psClear;
@@ -3951,18 +3941,18 @@ begin
         end;
       end;
     end;
-      // fill the rest of the client area
+    // fill the rest of the client area
     Canvas.Brush.Color := Color;
     Inc(R.Top, HeaderHeight + ButtonHeight + EdgeRounding);
     Dec(R.Right);
     Canvas.FillRect(R);
   finally
-  {$IFDEF VCL}
-  Canvas.Unlock;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Canvas.Stop;
-  {$ENDIF VisualCLX}
+    {$IFDEF VCL}
+    Canvas.Unlock;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Canvas.Stop;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -4138,6 +4128,7 @@ begin
 end;
 
 {$IFDEF VisualCLX}
+
 function TJvNavPaneToolPanel.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
@@ -4169,7 +4160,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0,0);
+      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
   end;
 end;
 
@@ -4278,7 +4269,7 @@ var
   R: TRect;
   I: Integer;
 begin
-//  inherited Paint;
+  //  inherited Paint;
   if MouseStates <> [] then
   begin
     Canvas.Pen.Color := $6B2408;
@@ -4287,7 +4278,7 @@ begin
     if (bsMouseDown in MouseStates) or Down then
     begin
       if TransparentDown then
-        Canvas.Brush.Style := bsClear;  // (p3) don't draw background - looks better IMO
+        Canvas.Brush.Style := bsClear; // (p3) don't draw background - looks better IMO
       if (ButtonType = nibDropArrow) and (DropDownMenu <> nil) then
       begin
         Canvas.Brush.Color := clWindow;
@@ -4295,12 +4286,12 @@ begin
         if DrawPartialMenuFrame then
         begin
           Canvas.FillRect(ClientRect); // if Brush.Style = bsClear, this does nothing
-          Canvas.MoveTo(0,Height);
-          Canvas.LineTo(0,0);
-          Canvas.LineTo(Width - 1,0);
-          Canvas.LineTo(Width - 1,Height);
+          Canvas.MoveTo(0, Height);
+          Canvas.LineTo(0, 0);
+          Canvas.LineTo(Width - 1, 0);
+          Canvas.LineTo(Width - 1, Height);
           // (p3) yucky! first goto in JVCL?!!!
-            goto DrawButton;
+          goto DrawButton;
         end;
       end
       else
@@ -4337,7 +4328,7 @@ begin
       end;
     nibClose:
       begin
-      // close button is 8x8, centered
+        // close button is 8x8, centered
         if bsMouseDown in MouseStates then
           Canvas.Pen.Color := clHighlightText
         else
@@ -4365,9 +4356,9 @@ begin
       if Assigned(Images) then
         TCustomImageListEx(Images).Draw(
           Canvas, (Width - Images.Width) div 2, (Height - Images.Height) div 2,
-          ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Enabled);
-    else
-      raise EJVCLException.CreateRes(@RsEUnsupportedButtonType);
+          ImageIndex, {$IFDEF VisualCLX}itImage, {$ENDIF}Enabled);
+  else
+    raise EJVCLException.CreateRes(@RsEUnsupportedButtonType);
   end;
 end;
 
@@ -4419,10 +4410,13 @@ begin
     FDropDown.DrawPartialMenuFrame := Value;
 end;
 
-
 function TJvNavPanelPage.GetAction: TBasicAction;
 begin
+  {$IFDEF COMPILER6_UP}
   Result := inherited GetAction;
+  {$ELSE}
+  Result := inherited Action;
+  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvNavPanelPage.SetAction(const Value: TBasicAction);
@@ -4452,7 +4446,6 @@ begin
         Self.OnClick := OnExecute;
     end;
 end;
-
 
 initialization
   RegisterClasses([TJvNavPanelPage]);

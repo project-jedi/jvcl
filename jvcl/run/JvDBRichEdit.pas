@@ -132,6 +132,7 @@ type
     property WantTabs;
     property WordSelection;
     property WordWrap;
+    property Zoom;
     property OnChange;
     property OnClick;
     property OnDblClick;

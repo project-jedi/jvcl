@@ -325,8 +325,9 @@ begin
     Align := TJvgCustomTreeView(Source).Align;
     Parent := TJvgCustomTreeView(Source).Parent;
     Items.Assign(TJvgCustomTreeView(Source).Items);
+    Exit;
   end;
-  // (rom) else inherited Assign(Source) missing?
+  inherited Assign(Source);
 end;
 
 procedure TJvgCustomTreeView.CreateParams(var Params: TCreateParams);
@@ -625,16 +626,16 @@ end;
 procedure TJvgCheckTreeView.Assign(Source: TPersistent);
 begin
   if Source is TJvgCustomTreeView then
-    inherited Assign(Source);
-  if Source is TJvgCheckTreeView then
+    inherited Assign(Source)
+  else if Source is TJvgCheckTreeView then
   begin
     FOnChangeCheck := TJvgCheckTreeView(Source).OnChangeCheck;
     FGlyphChecked.Assign(TJvgCheckTreeView(Source).GlyphChecked);
     FGlyphUnChecked.Assign(TJvgCheckTreeView(Source).GlyphUnChecked);
     FChecksScheme := TJvgCheckTreeView(Source).ChecksScheme;
     FCheckStateInheritance := TJvgCheckTreeView(Source).CheckStateInheritance;
-  end;
-  // (rom) else inherited Assign(Source) missing?
+  end
+  else inherited Assign(Source);
 end;
 
 procedure TJvgCheckTreeView.TVMInsertItem(var Message: TMessage);
