@@ -1,5 +1,6 @@
 package JvCoreD5R;
 
+{$INCLUDE JVCL.INC}
 {$R *.RES}
 {$ALIGN ON}
 {$ASSERTIONS ON}
@@ -28,6 +29,9 @@ package JvCoreD5R;
 
 requires
   DJCL50,
+{$IFDEF JVCLThemesEnabled}
+  ThemeManager5,
+{$ENDIF}
   vclx50;
 
 contains
@@ -51,6 +55,7 @@ contains
   JvContextProvider in '..\..\run\JvContextProvider.pas',
   JvAppStore in '..\..\run\JvAppStore.pas',
   JvAppRegistryStore in '..\..\run\JvAppRegistryStore.pas',
-  JvAppIniStore in '..\..\run\JvAppIniStore.pas';
+  JvAppIniStore in '..\..\run\JvAppIniStore.pas',
+  JvThemes in '..\..\run\JvThemes.pas';
 
 end.
