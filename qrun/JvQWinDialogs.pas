@@ -35,10 +35,8 @@ unit JvQWinDialogs;
 
 interface
 
-uses
-  
-  Qt, Windows,
-  
+uses 
+  Qt, Windows, 
   QWindows, ShellAPI, ShlObj, ComObj, ActiveX, CommDlg, UrlMon,
   SysUtils, Classes,
   Types, QGraphics, QControls, QForms, QDialogs,
@@ -46,10 +44,8 @@ uses
 
 {$HPPEMIT '#include "dbt.h"'}
 
-type
-  
-  HWND = Windows.HWND;
-  
+type 
+  HWND = Windows.HWND; 
   EShellOleError = class(Exception);
   EWinDialogError = class(Exception);
 
@@ -180,35 +176,7 @@ type
 
   // the signature of procedures in CPL's that implements Control Panel functionality
   TCplApplet = function(hwndCPl: HWND; uMsg: DWORD; lParam1, lParam2: Longint): Longint; stdcall;
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
   TJvComputerNameDialog = class(TJvCommonDialog)
   private
@@ -347,20 +315,7 @@ type
   public
     procedure Execute; override;
   end;
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
   TJvURLAssociationDialogOption = (uaDefaultName, uaRegisterAssoc);
   TJvURLAssociationDialogOptions = set of TJvURLAssociationDialogOption;
@@ -835,113 +790,6 @@ type
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //=== TJvComputerNameDialog ==================================================
 
 constructor TJvComputerNameDialog.Create(AOwner: TComponent);
@@ -954,10 +802,7 @@ function TJvComputerNameDialog.Execute: Boolean;
 var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
-  NameBuffer: array[0..MAX_PATH] of Char;
-  
-
-
+  NameBuffer: array[0..MAX_PATH] of Char; 
 begin
   Result := False;
 
@@ -970,16 +815,10 @@ begin
   BrowseInfo.pidlRoot := ItemIDList;
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
-  BrowseInfo.ulFlags := BIF_BROWSEFORCOMPUTER;
-  
-
-
+  BrowseInfo.ulFlags := BIF_BROWSEFORCOMPUTER; 
   try
     Result := SHBrowseForFolder(BrowseInfo) <> nil;
-  finally
-    
-
-
+  finally 
     FreePidl(BrowseInfo.pidlRoot);
   end;
   if Result then
@@ -999,10 +838,7 @@ var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
   ItemSelected: PItemIDList;
-  NameBuffer: array[0..MAX_PATH] of Char;
-  
-
-
+  NameBuffer: array[0..MAX_PATH] of Char; 
 begin
   ItemIDList := nil;
   FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
@@ -1010,17 +846,11 @@ begin
   BrowseInfo.pidlRoot := ItemIDList;
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
-  BrowseInfo.ulFlags := BIF_RETURNONLYFSDIRS;
-  
-
-
+  BrowseInfo.ulFlags := BIF_RETURNONLYFSDIRS; 
   try
     ItemSelected := SHBrowseForFolder(BrowseInfo);
     Result := ItemSelected <> nil;
-  finally
-    
-
-
+  finally 
   end;
 
   if Result then
@@ -1036,19 +866,11 @@ end;
 constructor TJvFormatDriveDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDrive := 'A';
-  
-
-
-
-
-
-  
+  FDrive := 'A';  
   if AOwner is TCustomForm then
     FHandle := QWidget_winId(TCustomForm(AOwner).Handle)
   else
-    FHandle := Windows.HWND_DESKTOP;
-  
+    FHandle := Windows.HWND_DESKTOP; 
 end;
 
 function TJvFormatDriveDialog.Execute: Boolean;
@@ -1287,15 +1109,9 @@ begin
     CaptionText := Caption;
 
   CaptionText := CaptionText + CaptionSeparator + Product;
-
-  
-
-
-
   
   OSCheck(LongBool(ShellAbout(QWidget_winId(Application.MainForm.Handle),
-    PChar(CaptionText), PChar(OtherText), 0)));
-  
+    PChar(CaptionText), PChar(OtherText), 0))); 
   Result := True;
 end;
 
@@ -1345,15 +1161,9 @@ begin
       StrPCopy(PChar(DescriptionBuffer), FDescription);
   end;
 
-  if Assigned(SHRunDialog) then
-    
-
-
-
-    
+  if Assigned(SHRunDialog) then  
     SHRunDialog(GetForegroundWindow, 0, nil, CaptionBuffer,
-      DescriptionBuffer, 0)
-    
+      DescriptionBuffer, 0) 
   else
     raise EWinDialogError.CreateRes(@RsENotSupported);
 end;
@@ -1679,26 +1489,6 @@ end;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 { TJvURLAssociationDialog }
 
 constructor TJvURLAssociationDialog.Create(AOwner: TComponent);
@@ -1740,13 +1530,8 @@ begin
   if Owner is TControl then
   begin
     F := GetParentForm(TControl(Owner));
-    if F <> nil then
-      
-
-
-      
-      Result := QWidget_winId(F.Handle);
-      
+    if F <> nil then  
+      Result := QWidget_winId(F.Handle); 
   end;
   if Result = 0 then
     Result := GetForegroundWindow;
@@ -1786,13 +1571,8 @@ begin
   if Owner is TControl then
   begin
     F := GetParentForm(TControl(Owner));
-    if F <> nil then
-      
-
-
-      
-      Result := QWidget_winId(F.Handle);
-      
+    if F <> nil then  
+      Result := QWidget_winId(F.Handle); 
   end;
   if Result = 0 then
     Result := GetForegroundWindow;
