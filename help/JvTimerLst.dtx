@@ -10,6 +10,7 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TAllTimersEvent
 <TITLE TAllTimersEvent type>
+<COMBINE TJvTimerList.OnTimers>
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerEvent
 Summary
@@ -227,7 +228,7 @@ Return Value
   You can not use it in calls to windows API's. It is just a number that identifies a timer uniquely
   in a timer list.
 See Also
-<LINK Add>
+  <LINK Add>
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.Clear
 Summary
@@ -267,7 +268,7 @@ Parameters
 See Also
   <LINK ItemByHandle>, TJvTimerEvent.Handle
 ----------------------------------------------------------------------------------------------------
-@@TJvTimerEvent.EnabledCount
+@@TJvTimerList.EnabledCount
 Summary
   \Returns the number of enabled timers maintained by the timer list.
 Description
@@ -332,7 +333,6 @@ See Also
   Active
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.OnTimers
-<COMBINEWITH TAllTimersEvent>
 Summary
   Occurs for each timer that executes.
 Description
