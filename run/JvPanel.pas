@@ -245,7 +245,9 @@ type
 implementation
 
 uses
+  {$IFDEF COMPILER6_UP}
   Types,
+  {$ENDIF COMPILER6_UP}
   JvMouseTimer;
 
 const
