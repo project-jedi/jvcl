@@ -2030,8 +2030,8 @@ var
         X := Round(XOrigin + J * LineXPixelGap);
         Y := Round(YOrigin - (((V -PenAxisOpt.YMin)/ PenAxisOpt.YGap) * PenAxisOpt.YPixelGap));
         SetLineColor(I);
-        if Y < (Options.YStartOffset+20) then
-          Y := (Options.YStartOffset+20); // constrain Y to stay on chart.
+        if Y < Options.YStartOffset then
+          Y := Options.YStartOffset; // constrain Y to stay on chart.
 
         (*
         if MinFlag or MaxFlag then // local min/max markers!
@@ -2118,11 +2118,14 @@ var
               ChartCanvas.Pen.Style := psSolid;
             end;
 
-            ChartCanvas.Brush.Style := bsSolid;
-            MyCenterTextOut(X + 1, (Y - (Options.MarkerSize + th)) - 1, Text);
-            ChartCanvas.Brush.Color := Options.PaperColor;
-            LastX := X + tw;
-            LastY := Y;
+            if Y >= (Options.YStartOffset+20) then begin
+              ChartCanvas.Brush.Style := bsSolid;
+              MyCenterTextOut(X + 1, (Y - (Options.MarkerSize + th)) - 1, Text);
+              ChartCanvas.Brush.Color := Options.PaperColor;
+              LastX := X + tw;
+              LastY := Y;
+            end;
+
           end;
         end;
       end;
@@ -3374,7 +3377,8 @@ begin
     else
     begin
       Str := Str + FloatToStrF(Val, ffFixed, REALPREC, 3);
-      Str := Str + ' ' + Options.PenUnit[I];
+      if Options.PenUnit.Count>I then
+          Str := Str + ' ' + Options.PenUnit[I];
     end;
 
     FMouseDownHintStrs.Add(Str);
