@@ -47,6 +47,7 @@ object JvgReportParamsForm: TJvgReportParamsForm
           Height = 25
           Cancel = True
           Caption = 'Cancel'
+          ModalResult = 2
           TabOrder = 0
         end
         object BitBtn1: TBitBtn
@@ -55,6 +56,7 @@ object JvgReportParamsForm: TJvgReportParamsForm
           Width = 75
           Height = 25
           Caption = 'OK'
+          ModalResult = 1
           TabOrder = 1
         end
       end

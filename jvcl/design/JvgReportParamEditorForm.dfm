@@ -1,7 +1,7 @@
 object JvgReportParamEditor: TJvgReportParamEditor
   Left = 250
   Top = 212
-  BorderIcons = []
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Report parameter'
   ClientHeight = 139
@@ -39,6 +39,7 @@ object JvgReportParamEditor: TJvgReportParamEditor
         Width = 75
         Height = 25
         Caption = 'Cancel'
+        ModalResult = 2
         TabOrder = 0
       end
       object BitBtn1: TBitBtn
@@ -46,8 +47,9 @@ object JvgReportParamEditor: TJvgReportParamEditor
         Top = 2
         Width = 75
         Height = 25
-        Caption = 'Ok'
+        Caption = 'OK'
         Default = True
+        ModalResult = 1
         TabOrder = 1
       end
     end
