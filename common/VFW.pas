@@ -86,8 +86,11 @@ uses
 
 type
   PVOID = Pointer;
+  {$EXTERNALSYM PVOID}
   LONG  = Longint;
+  {$EXTERNALSYM LONG}
   PLONG = ^LONG;
+  {$EXTERNALSYM PLONG}
   int   = Integer;
   {$EXTERNALSYM int}
 
