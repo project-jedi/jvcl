@@ -5,7 +5,7 @@
   <C6PFlags>-LUDesignIde</C6PFlags>
   <Requires>
     <Package Name="JvBands-R" Targets="all" Condition=""/>
-    <Package Name="JvCore-R" Targets="D5,D5s,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvCustom-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
