@@ -1,3 +1,5 @@
+##Package: ??
+##Status: Needs review
 ----------------------------------------------------------------------------------------------------
 @@JvWndProcHook.pas
 Summary
@@ -60,7 +62,7 @@ Description
   hook procedure is registered with parameter Order set to hoBeforeMsg, then returning True will
   prevent the hooked control to respond to the message.
 Parameters
-  Message - Represents the Windows message send to the hooked control.
+  Msg - Represents the Windows message send to the hooked control.
 See Also
   RegisterWndProcHook, UnRegisterWndProcHook
 ----------------------------------------------------------------------------------------------------
@@ -141,11 +143,6 @@ Description
   message.
 
   This event is only triggered when Active is set to True.
-Parameters
-  Sender  - The hook component that has send this message.
-  Msg     - Represents the Windows message send to the hooked control.
-  Handled - Set Handled to True to specify that the message is handled, and that no other hooks may
-             respond to this message.
 See Also
   Active, BeforeMessage, Control
 ----------------------------------------------------------------------------------------------------
@@ -161,11 +158,6 @@ Description
   to this message.
 
   This event is only triggered when Active is set to True.
-Parameters
-  Sender  - The hook component that has send this message.
-  Msg     - Represents the Windows message send to the hooked control.
-  Handled - Set Handled to True to specify that the message is handled, and that no other hooks, or
-             the hooked control itself, may respond to this message.
 See Also
   Active, AfterMessage, Control
 ----------------------------------------------------------------------------------------------------
