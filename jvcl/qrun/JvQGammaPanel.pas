@@ -215,7 +215,7 @@ begin
     OnMouseDown := ChangeColor;
     OnMouseMove := ColorSeek;
     Align := alClient;
-    Picture.Bitmap.LoadFromResourceName(HInstance, 'COLORS');
+    Picture.Bitmap.LoadFromResourceName(HInstance, 'JvGammaPanelCOLORS');
     Cursor := crCross;
   end;
 

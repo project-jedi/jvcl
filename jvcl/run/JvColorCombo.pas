@@ -114,9 +114,9 @@ type
   published
     property Anchors;
     property AutoComplete default False;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property AutoDropDown;
-{$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind;
@@ -244,9 +244,9 @@ type
   published
     property Anchors;
     property AutoComplete default False;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property AutoDropDown;
-{$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind;
@@ -851,9 +851,9 @@ end;
 constructor TJvFontComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FTrueTypeBmp := LoadInternalBitmap('TTF_FONT');
-  FFixBmp := LoadInternalBitmap('FIX_FONT');
-  FDeviceBmp := LoadInternalBitmap('PRN_FONT');
+  FTrueTypeBmp := LoadInternalBitmap('JvFontComboBoxTTF');
+  FFixBmp := LoadInternalBitmap('JvFontComboBoxFIX');
+  FDeviceBmp := LoadInternalBitmap('JvFontComboBoxPRN');
   FHiliteColor := clHighlight;
   FHiliteText := clHighlightText;
   FDevice := fdScreen;

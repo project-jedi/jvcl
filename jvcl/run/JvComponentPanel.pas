@@ -146,7 +146,7 @@ begin
     Tag := 0;
     Width := 12;
     Top := 0;
-    Glyph.LoadFromResourceName(HInstance, 'RACPLEFT');
+    Glyph.LoadFromResourceName(HInstance, 'JvComponentPanelLEFT');
     NumGlyphs := 2;
     OnClick := MoveClick;
   end;
@@ -156,7 +156,7 @@ begin
     Tag := 1;
     Width := 12;
     Top := 0;
-    Glyph.LoadFromResourceName(HInstance, 'RACPRIGHT');
+    Glyph.LoadFromResourceName(HInstance, 'JvComponentPanelRIGHT');
     NumGlyphs := 2;
     OnClick := MoveClick;
   end;
@@ -165,7 +165,7 @@ begin
     Flat := True;
     Parent := Self;
     Top := 0;
-    Glyph.LoadFromResourceName(HInstance, 'RACPPOINTER');
+    Glyph.LoadFromResourceName(HInstance, 'JvComponentPanelPOINTER');
     GroupIndex := 1;
     OnClick := BtnClick;
   end;

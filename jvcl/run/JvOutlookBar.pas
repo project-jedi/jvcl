@@ -1380,7 +1380,7 @@ begin
       Parent := Self;
       Visible := False;
       Transparent := False;
-      Bmp.LoadFromResourceName(HInstance, 'UPARROW');
+      Bmp.LoadFromResourceName(HInstance, 'JvCustomOutlookBarUPARROW');
       Glyph := Bmp;
       OnClick := DoUpClick;
       if csDesigning in ComponentState then
@@ -1398,7 +1398,7 @@ begin
       Parent := Self;
       Visible := False;
       Transparent := False;
-      Bmp.LoadFromResourceName(HInstance, 'DWNARROW');
+      Bmp.LoadFromResourceName(HInstance, 'JvCustomOutlookBarDOWNARROW');
       Glyph := Bmp;
       OnClick := DoDwnClick;
       if csDesigning in ComponentState then

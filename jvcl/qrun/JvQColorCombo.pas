@@ -962,8 +962,8 @@ end;
 constructor TJvFontComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FTrueTypeBmp := LoadInternalBitmap('TTF_FONT');
-  FFixBmp := LoadInternalBitmap('FIX_FONT');
+  FTrueTypeBmp := LoadInternalBitmap('JvFontComboBoxTTF');
+  FFixBmp := LoadInternalBitmap('JvFontComboBoxFIX');
   FHiliteColor := clHighlight;
   FHiliteText := clHighlightText;
   FUseImages := True;
