@@ -41,7 +41,6 @@ contains
   JvChangeNotifyEditor in '..\..\design\JvChangeNotifyEditor.pas',
   JvPerfStatEditor in '..\..\design\JvPerfStatEditor.pas',
   JvFormPropertiesForm in '..\..\design\JvFormPropertiesForm.pas' {JvFormPropsDlg},
-  JvMinMaxForm in '..\..\design\JvMinMaxForm.pas' {MinMaxInfoEditDialog},
-  JvTimerListForm in '..\..\design\JvTimerListForm.pas' {JvTimerItemsEditor};
+  JvMinMaxForm in '..\..\design\JvMinMaxForm.pas' {MinMaxInfoEditDialog};
 
 end.

@@ -36,8 +36,6 @@ requires
 contains
   JvCmpReg in '..\..\design\JvCmpReg.pas',
   JvDataEmbeddedEditor in '..\..\design\JvDataEmbeddedEditor.pas',
-  JvAlarmsEditor in '..\..\design\JvAlarmsEditor.pas',
-  JvAlarmsForm in '..\..\run\JvAlarmsForm.pas' {FormAlarm},
   JvPatcherEditor in '..\..\design\JvPatcherEditor.pas',
   JvPatchForm in '..\..\run\JvPatchForm.pas' {FoPatch},
   JvPageManagerForm in '..\..\design\JvPageManagerForm.pas' {JvProxyEditor};

@@ -28,7 +28,9 @@ package JvWizardD6R;
 
 requires
   rtl,
-  vcl;
+  vcl,
+  vclx,
+  JvCoreD6R;
 
 contains
   JvWizard in '..\..\run\JvWizard.pas',
