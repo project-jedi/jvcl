@@ -496,6 +496,7 @@ begin
     Application.Minimize;
   end;
   ShowWindow(Application.Handle, SW_HIDE);
+  FVisible:=false; 
 end;
 
 {**************************************************}
