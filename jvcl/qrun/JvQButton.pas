@@ -35,9 +35,9 @@ unit JvQButton;
 interface
 
 uses
-  SysUtils, Classes,  
-  Qt, QGraphics, QControls, QForms, QStdCtrls, QMenus, QButtons, Types,
-  QWindows, 
+  SysUtils, Classes, 
+  Types, QGraphics, QControls, QForms, QStdCtrls, QMenus, QButtons, 
+  Qt, QWindows, 
   JvQComponent, JvQConsts, JvQTypes, JvQExStdCtrls, JvQThemes, JvQFinalize;
 
 type
@@ -206,7 +206,7 @@ begin
   Result := GlobalPattern;
 end;
 
-//=== TJvCustomGraphicButton =================================================
+//=== { TJvCustomGraphicButton } =============================================
 
 constructor TJvCustomGraphicButton.Create(AOwner: TComponent);
 begin
@@ -326,7 +326,9 @@ end;
 procedure TJvCustomGraphicButton.MouseMove(Shift: TShiftState;
   X, Y: Integer);
 begin
-  inherited MouseMove(Shift, X, Y); 
+  inherited MouseMove(Shift, X, Y);
+  if MouseCapture then
+  begin
     if not InsideBtn(X, Y) then
     begin
       Exclude(FStates, bsMouseInside);
@@ -336,7 +338,8 @@ begin
     begin
       Include(FStates, bsMouseInside);
       RepaintBackground;
-    end; 
+    end;
+  end;
 end;
 
 procedure TJvCustomGraphicButton.MouseUp(Button: TMouseButton;
@@ -561,7 +564,7 @@ begin
     inherited SetBounds(Left, Top, AWidth, AHeight);
 end;
 
-//=== TJvCustomButton ========================================================
+//=== { TJvCustomButton } ====================================================
 
 constructor TJvCustomButton.Create(AOwner: TComponent);
 begin
@@ -732,7 +735,7 @@ begin
     inherited SetBounds(Left, Top, AWidth, AHeight);
 end;
 
-//=== TJvDropDownButton ======================================================
+//=== { TJvDropDownButton } ==================================================
 
 constructor TJvDropDownButton.Create(AOwner: TComponent);
 begin
