@@ -82,14 +82,12 @@ var
   Suffix : string;
 begin
   Name := packageNode.Properties.ItemNamed['Name'].Value;
-  if Copy(Name, 1, 2) = 'Jv' then
+  if (Copy(Name, 1, 2) = 'Jv') and
+     (Pos('-', Name) <> 0)  then
   begin
     Suffix := TargetToSuffix(target);
-    Result := Name+Suffix;
-    if packageNode.Properties.ItemNamed['Design'].Value <> '' then
-      Result := Result+'D'
-    else
-      Result := Result+'R';
+    Result := Copy(Name, 1, Length(Name)-2)+Suffix;
+  Result := Result+Copy(Name, Length(Name), 1);
   end
   else
   begin
@@ -100,38 +98,53 @@ end;
 function IsNotInPerso(Node : TJvSimpleXmlElem; target : string) : Boolean;
 var
   persoTarget : string;
+  targets : TStringList;
 begin
   persoTarget := GetPersoTarget(target);
   if persoTarget = '' then
     Result := False
   else
   begin
-    Result := (Node.Properties.ItemNamed[ShortTarget(persoTarget)].Value = '') and
-              (Node.Properties.ItemNamed[ShortTarget(target)].Value <> '');
+    targets := TStringList.Create;
+    try
+      StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
+                   ',',
+                   targets);
+      Result := (targets.IndexOf(ShortTarget(persoTarget)) = -1) and
+                (targets.IndexOf(ShortTarget(target)) > -1);
+    finally
+      targets.Free;
+    end;
   end;
-  if Result then
-    Beep;
 end;
 
 function IsOnlyInPerso(Node : TJvSimpleXmlElem; target : string) : Boolean;
 var
   persoTarget : string;
+  targets : TStringList;
 begin
   persoTarget := GetPersoTarget(target);
   if persoTarget = '' then
     Result := False
   else
   begin
-    Result := (Node.Properties.ItemNamed[ShortTarget(persoTarget)].Value <> '') and
-              (Node.Properties.ItemNamed[ShortTarget(target)].Value = '');
+    targets := TStringList.Create;
+    try
+      StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
+                   ',',
+                   targets);
+      Result := (targets.IndexOf(ShortTarget(persoTarget)) > -1) and
+                (targets.IndexOf(ShortTarget(target)) = -1);
+    finally
+      targets.Free;
+    end;
   end;
-  if Result then
-    Beep;
 end;
 
 function EnsureCondition(line : string; Node : TJvSimpleXmlElem; target : string) : string;
 begin
-  // if there is a condition and target supports it
+  // if there is a condition and the target supports it
+  // Currently, only Delphi targets support conditions
   if (Node.Properties.ItemNamed['Condition'].Value <> '') and
      (StrUpper(target)[1] = 'D') then
   begin
@@ -196,6 +209,21 @@ begin
   end;
 end;
 
+function IsIncluded(Node : TJvSimpleXmlElem; target : string) : Boolean;
+var
+  targets : TStringList;
+begin
+  targets := TStringList.Create;
+  try
+    StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
+                 ',', targets);
+    Result := (targets.IndexOf(ShortTarget(target)) > -1) or
+              (StrLower(targets[0]) = 'all');
+  finally
+    targets.Free;
+  end;
+end;
+
 procedure ApplyTemplateAndSave(path, target, package, extension : string; template : TStrings; xml : TJvSimpleXml; templateDate, xmlDate : TDateTime);
 var
   OutFileName : string;
@@ -253,7 +281,7 @@ begin
         begin
           packageNode := requiredNode.Items[j];
           // if this required package is to be included for this target
-          if packageNode.Properties.ItemNamed[ShortTarget(target)].Value <> '' then
+          if IsIncluded(packageNode, target) then
           begin
             tmpStr := repeatLines;
             reqPackName := BuildPackageName(packageNode, target);
@@ -292,7 +320,7 @@ begin
         begin
           fileNode := containsNode.Items[j];
           // if this included file is to be included for this target
-          if fileNode.Properties.ItemNamed[ShortTarget(target)].Value <> '' then
+          if IsIncluded(fileNode, target) then
           begin
             tmpStr := repeatLines;
             incFileName := fileNode.Properties.ItemNamed['Name'].Value;
@@ -333,7 +361,8 @@ begin
         begin
           fileNode := containsNode.Items[j];
           // if this included file is to be included for this target
-          if (fileNode.Properties.ItemNamed[ShortTarget(target)].Value <> '') and
+          // and there is a form associated to the file
+          if IsIncluded(fileNode, target) and
             (fileNode.Properties.ItemNamed['FormName'].Value <> '') then
           begin
             tmpStr := repeatLines;
