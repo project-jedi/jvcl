@@ -34,9 +34,8 @@ unit JvControlPanelButton;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, Menus,
-  JvTypes, JvButton, JvComputerInfoEx, JvJVCLUtils;
+  Windows, Classes, Controls, Menus,
+  JvTypes, JvButton, JvComputerInfoEx;
 
 type
   TJvControlPanelButton = class(TJvCustomButton)
@@ -62,6 +61,10 @@ type
   end;
 
 implementation
+
+uses
+  Graphics,
+  JvJVCLUtils;
 
 constructor TJvControlPanelButton.Create(AOwner: TComponent);
 begin

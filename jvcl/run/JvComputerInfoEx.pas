@@ -43,16 +43,13 @@ unit JvComputerInfoEx;
 interface
 
 uses
-  Classes, SysUtils,
-  {$IFDEF VCL}
-  Controls, Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Qt, QControls, QGraphics,
-  {$ENDIF VisualCLX}
   Windows, Messages, ShlObj,
+  {$IFDEF VisualCLX}
+  Qt,
+  {$ENDIF VisualCLX}
+  Classes, Graphics,
   JclWin32, JclSysInfo,
-  JvJCLUtils, JvJVCLUtils, JvDataProvider, JvComponent, JvTypes;
+  JvJVCLUtils, JvComponent, JvTypes;
 
 {$HPPEMIT '#include <dbt.h>'}
 // these are defined here to avoid including DBT.pas
@@ -1387,8 +1384,12 @@ type
 implementation
 
 uses
-  WinInet, Registry, ShellAPI, ActiveX, Math,
+  SysUtils,
+  WinInet, Registry,
   JclShell, JclRegistry, JclFileUtils,
+  {$IFDEF COMPILER5}
+  JvJCLUtils, // Include/ExcludeTrailingPathDelimiter
+  {$ENDIF COMPILER5}
   JvResources;
 
 var
@@ -5614,7 +5615,6 @@ begin
     SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETNONCLIENTMETRICS, 0);
   end;
 end;
-
 
 
 initialization

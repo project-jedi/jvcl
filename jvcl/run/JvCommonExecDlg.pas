@@ -31,13 +31,13 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Controls,
+  Windows,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, Types, QWindows,
+  Types, QWindows,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
-  JvBaseDlg, JvTypes;
+  Classes,
+  JvBaseDlg;
 
 type
   TJvCommonExecDialog = class(TJvCommonDialogP)
@@ -49,6 +49,9 @@ type
   end;
 
 implementation
+
+uses
+  Controls, JvTypes;
 
 constructor TJvCommonExecDialog.Create(AOwner: TComponent);
 begin

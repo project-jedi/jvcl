@@ -31,13 +31,11 @@ unit JvCommonDialogD;
 interface
 
 uses
-  Windows, SetupApi, SysUtils, Classes,
-  {$IFDEF VCL}
-  Controls,
-  {$ENDIF VCL}
+  Windows, Classes,
   {$IFDEF VisualCLX}
-  Qt, QControls,
+  Qt,
   {$ENDIF VisualCLX}
+  Controls,
   JvTypes, JvComponent;
 
 type
@@ -59,6 +57,7 @@ function JvDiskStylesToDWORD(const Style: TJvDiskStyles): DWORD;
 implementation
 
 uses
+  SetupApi,
   JvResources;
 
 const

@@ -45,9 +45,8 @@ unit JvDateTimePicker;
 interface
 
 uses
-  Windows, Messages, CommCtrl,
-  SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
-  JvExComCtrls, JvTypes;
+  Windows, Messages, SysUtils, Classes, Controls, ComCtrls,
+  JvExComCtrls;
 
 type
   TJvDateTimePicker = class(TJvExDateTimePicker)
@@ -93,7 +92,11 @@ type
 implementation
 
 uses
-  JvJVCLUtils, JvResources;
+  CommCtrl,
+  {$IFDEF COMPILER5}
+  JvJCLUtils,
+  {$ENDIF COMPILER5}
+  JvResources;
 
 constructor TJvDateTimePicker.Create(AOwner: TComponent);
 begin

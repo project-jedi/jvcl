@@ -101,7 +101,7 @@ implementation
 
 uses
   SysUtils,
-  JvConsts, JvResources, JvTypes;
+  JvTypes, JvConsts, JvResources;
 
 var
   TokenCount: Integer = 0;

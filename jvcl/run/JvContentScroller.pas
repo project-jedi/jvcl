@@ -33,8 +33,7 @@ unit JvContentScroller;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows, Messages, Graphics, Controls, Forms, Dialogs, ExtCtrls,
+  SysUtils, Classes, ExtCtrls,
   {$IFDEF VisualCLX}
   QTypes,
   {$ENDIF VisualCLX}
@@ -156,10 +155,11 @@ type
 
 implementation
 
-{$IFDEF MSWINDOWS}
 uses
-  MMSystem;
-{$ENDIF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
+  MMSystem,
+  {$ENDIF MSWINDOWS}
+  Graphics, Controls;
 
 constructor TJvContentScroller.Create(AOwner: TComponent);
 begin
