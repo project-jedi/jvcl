@@ -836,8 +836,9 @@ end;
 
 function TJvSimpleXmlElems.Add(Value: TJvSimpleXmlElem): TJvSimpleXmlElem;
 begin
-  AddChild(Value);
-  result := @Value;
+  if Value<>nil then
+    AddChild(Value);
+  result := Value;
 end;
 {*************************************************}
 
