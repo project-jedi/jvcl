@@ -784,7 +784,7 @@ var
   TargetCanvas: TCanvas;
   ColumnField, RowField, ValueField: TField;
   ColPageNo, RowPageNo, ColNo, RowNo: integer;
-  ClientR, CaptR, DataR, R: TRect;
+  ClientR, CaptR, DataR: TRect;
   FilledRowNo: array[0..MAX_ROWS] of boolean;
   OldFilter: string;
   OldFiltered: boolean;
@@ -793,6 +793,7 @@ begin
     exit;
   FillChar(FinalColsSum, SizeOf(FinalColsSum), 0);
   FillChar(FinalRowsSum, SizeOf(FinalRowsSum), 0);
+  OldFiltered := False;
   with IndentsInSantim do
   try
     with FDataSet do
