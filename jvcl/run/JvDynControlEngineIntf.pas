@@ -153,6 +153,8 @@ type
 
   IJvDynControlButton = interface
     ['{65193802-7E31-47FD-A4B8-E1201E0A2F38}']
+    procedure ControlSetDefault(Value: Boolean);
+    procedure ControlSetCancel(Value: Boolean);
     procedure ControlSetGlyph(Value: TBitmap);
     procedure ControlSetNumGlyphs(Value: Integer);
     procedure ControlSetLayout(Value: TButtonLayout);

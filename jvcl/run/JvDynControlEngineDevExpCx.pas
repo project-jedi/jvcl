@@ -117,6 +117,8 @@ type
     procedure ControlSetGlyph(Value: TBitmap);
     procedure ControlSetNumGlyphs(Value: Integer);
     procedure ControlSetLayout(Value: TButtonLayout);
+    procedure ControlSetDefault(Value: Boolean);
+    procedure ControlSetCancel(Value: Boolean);
   end;
 
   TJvDynControlCxCalcEdit = class(TcxCalcEdit, IUnknown, IJvDynControl, IJvDynControlData,
@@ -619,6 +621,8 @@ type
     procedure ControlSetGlyph(Value: TBitmap);
     procedure ControlSetNumGlyphs(Value: Integer);
     procedure ControlSetLayout(Value: TButtonLayout);
+    procedure ControlSetDefault(Value: Boolean);
+    procedure ControlSetCancel(Value: Boolean);
 
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
@@ -875,6 +879,15 @@ end;
 procedure TJvDynControlCxButtonEdit.ControlSetLayout(Value: TButtonLayout);
 begin
 end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetDefault(Value: Boolean);
+begin
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetCancel(Value: Boolean);
+begin
+end;
+
 
 procedure TJvDynControlCxButtonEdit.IntOnButtonClick(Sender: TObject;
   AButtonIndex: Integer);
@@ -2561,6 +2574,17 @@ procedure TJvDynControlCxButton.ControlSetLayout(Value: TButtonLayout);
 begin
   Layout := Value;
 end;
+
+procedure TJvDynControlCxButton.ControlSetDefault(Value: Boolean);
+begin
+  Default := Value;
+end;
+
+procedure TJvDynControlCxButton.ControlSetCancel(Value: Boolean);
+begin
+  Cancel := Value;
+end;
+
 
 procedure TJvDynControlCxButton.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin

@@ -98,6 +98,8 @@ type
     procedure ControlSetGlyph(Value: TBitmap);
     procedure ControlSetNumGlyphs(Value: Integer);
     procedure ControlSetLayout(Value: TButtonLayout);
+    procedure ControlSetDefault(Value: Boolean);
+    procedure ControlSetCancel(Value: Boolean);
   end;
 
   TJvDynControlVCLFileNameEdit = class(TPanel, IUnknown,
@@ -551,6 +553,8 @@ type
     procedure ControlSetGlyph(Value: TBitmap);
     procedure ControlSetNumGlyphs(Value: Integer);
     procedure ControlSetLayout(Value: TButtonLayout);
+    procedure ControlSetDefault(Value: Boolean);
+    procedure ControlSetCancel(Value: Boolean);
   end;
 
   TJvDynControlVCLRadioButton = class(TRadioButton, IUnknown,
@@ -785,6 +789,16 @@ end;
 procedure TJvDynControlVCLButtonEdit.ControlSetLayout(Value: TButtonLayout);
 begin
   FButton.Layout := Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetDefault(Value: Boolean);
+begin
+  FButton.Default := Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetCancel(Value: Boolean);
+begin
+  FButton.Cancel := Value;
 end;
 
 //=== { TJvDynControlVCLFileNameEdit } =======================================
@@ -2282,6 +2296,17 @@ procedure TJvDynControlVCLButton.ControlSetLayout(Value: TButtonLayout);
 begin
   Layout := Value;
 end;
+
+procedure TJvDynControlVCLButton.ControlSetDefault(Value: Boolean);
+begin
+  Default := Value;
+end;
+
+procedure TJvDynControlVCLButton.ControlSetCancel(Value: Boolean);
+begin
+  Cancel := Value;
+end;
+
 
 //=== { TJvDynControlVCLRadioButton } ========================================
 

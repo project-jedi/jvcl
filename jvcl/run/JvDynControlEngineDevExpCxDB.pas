@@ -106,6 +106,8 @@ type
     procedure ControlSetGlyph(Value: TBitmap);
     procedure ControlSetNumGlyphs(Value: Integer);
     procedure ControlSetLayout(Value: TButtonLayout);
+    procedure ControlSetDefault(Value: Boolean);
+    procedure ControlSetCancel(Value: Boolean);
 
     //IJvDynControlDatabase
     procedure ControlSetDataSource(Value: TDataSource);
@@ -782,6 +784,14 @@ begin
 end;
 
 procedure TJvDynControlCxDBButtonEdit.ControlSetLayout(Value: TButtonLayout);
+begin
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetDefault(Value: Boolean);
+begin
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetCancel(Value: Boolean);
 begin
 end;
 
@@ -2337,6 +2347,7 @@ end;
 type
   TAccesscxCustomGridTableItem = class(TcxCustomGridTableItem);
   TAccesscxCustomEdit = class(TcxCustomEdit);
+  TAccessCustomControl = class(TCustomControl);
 
 procedure TJvDynControlEngineDevExpCxDB.TransferGridItemToControl(AGridItem: TcxCustomGridTableItem;
   ADataSource: TDataSource; AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions);
@@ -2383,13 +2394,27 @@ begin
         end;
       end
       else
+      if aGridItem.PropertiesClass = TcxComboBoxProperties then
+      begin
+        Control := TWinControl(CreateDBControl(jctDBCheckBox, AControl, AControl, '', aDataSource, GridDataBinding.Field.FieldName));
+        if Supports(Control, IJvDynControlDBCheckBox) and Assigned(TcxGridColumn(aGridItem).Properties) then
+        with Control as IJvDynControlDBCheckBox do
+        begin
+          ControlSetValueChecked(TcxCheckBoxProperties(TcxGridColumn(aGridItem).Properties).ValueChecked);
+          ControlSetValueUnChecked(TcxCheckBoxProperties(TcxGridColumn(aGridItem).Properties).ValueUnChecked);
+        end;
+      end
+      else
         Control := CreateDBFieldControl(GridDataBinding.Field, AControl, AControl, '', ADataSource);
       if FieldDefaultWidth > 0 then
         Control.Width := FieldDefaultWidth
       else
       begin
-        if TAccesscxCustomGridTableItem(AGridItem).Width > 0 then
-          Control.Width := TAccesscxCustomGridTableItem(AGridItem).Width;
+//        if TAccesscxCustomGridTableItem(AGridItem).Width > 0 then
+//          Control.Width := TAccesscxCustomGridTableItem(AGridItem).Width;
+         if GridDataBinding.Field.Size > 0 then
+           Control.Width :=
+             TAccessCustomControl(AControl).Canvas.TextWidth('X') * GridDataBinding.Field.Size ;
         if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
           Control.Width := FieldMaxWidth
         else
