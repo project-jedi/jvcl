@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2003-03-17
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -256,7 +256,10 @@ end;
 procedure TJvSpecialImage.PictureChanged(Sender: TObject);
 begin
   if FWorking = False then
+  begin
+    FOriginal.Assign(inherited Picture);
     ApplyChanges; // SetBright(FBrightness);
+  end;
   Invalidate;
 end;
 
