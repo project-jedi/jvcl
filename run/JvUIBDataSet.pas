@@ -65,9 +65,10 @@ type
     procedure SetUniDirectional(const Value: boolean);
     function GetFetchBlobs: boolean;
     procedure SetFetchBlobs(const Value: boolean);
-    function GetParams: TSQLParams;
     procedure SetDatabase(const Value: TJvUIBDataBase);
     function GetDatabase: TJvUIBDataBase;
+    function GetParams: TSQLParams;
+    function GetInternalFields: TSQLResult;
   protected
 
     procedure InternalOpen; override;
@@ -102,7 +103,7 @@ type
 
     property Transaction: TJvUIBTransaction read GetTransaction write SetTransaction;
     property Database: TJvUIBDataBase read GetDatabase write SetDatabase;
-    property UniDirectionnal: boolean read  GetUniDirectional write SetUniDirectional default False;
+    property UniDirectional: boolean read  GetUniDirectional write SetUniDirectional default False;
     property OnClose: TEndTransMode read FOnClose write SetOnClose default etmCommit;
     property OnError: TEndTransMode read GetOnError write SetOnError default etmRollback;
     property SQL: TStrings read GetSQL write SetSQL;
@@ -137,17 +138,16 @@ type
     procedure ParamsSetBlob(const Name: string; var str: string); overload;
     procedure ParamsSetBlob(const Name: string; Buffer: Pointer; Size: Word); overload;
 
-    property InternalStatement: TJvUIBStatement read FStatement;
+    property InternalFields: TSQLResult read GetInternalFields;
   end;
 
   TJvUIBDataSet = class(TJvUIBCustomDataSet)
-  public
-    property Params;
   published
+    property Params;
     property Transaction;
     property Database;
 {$IFDEF COMPILER6_UP}
-    property UniDirectionnal;
+    property UniDirectional;
 {$ENDIF}
     property OnClose;
     property OnError;
@@ -422,8 +422,8 @@ begin
   inherited Create(AOwner);
   FIsLast := False;
   FIsFirst := False;
-
 end;
+
 
 destructor TJvUIBCustomDataSet.Destroy;
 begin
@@ -670,11 +670,6 @@ begin
   FStatement.FetchBlobs := Value;
 end;
 
-function TJvUIBCustomDataSet.GetParams: TSQLParams;
-begin
-  Result := FStatement.Params;
-end;
-
 procedure TJvUIBCustomDataSet.Execute;
 begin
   FStatement.Execute;
@@ -786,6 +781,16 @@ procedure TJvUIBCustomDataSet.ReadBlob(const Index: Word;
   var Value: Variant);
 begin
   FStatement.ReadBlob(Index, Value);
+end;
+
+function TJvUIBCustomDataSet.GetParams: TSQLParams;
+begin
+  Result := FStatement.Params;
+end;
+
+function TJvUIBCustomDataSet.GetInternalFields: TSQLResult;
+begin
+  Result := FStatement.Fields;
 end;
 
 end.
