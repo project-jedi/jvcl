@@ -1,350 +1,220 @@
 ##Package: StdCtrls
-##Status: Generated
+##Status: Completed
+##Skip: TJvImageList.DrawIndirect
+##Skip: TJvImageList.FHandle
+##Skip: TJvImageList.Merge
 ----------------------------------------------------------------------------------------------------
 @@JvImageList.pas
 Summary
   Contains the TJvImageList component.
 <INCLUDE JVCL.UnitText.dtx>
- 
 Author
   Andreas Hausladen
- 
 ----------------------------------------------------------------------------------------------------
 @@CreateImageListHandle
 <TITLE CreateImageListHandle function>
- 
-JVCLInfo
-  VCL only
-
+##VCL only
 Summary
   Creates a new image list (handle) with the specified pixel format.
-
 Description
-  CreateImageListHandle creates a new image list with the specified attributes.
- 
+  Returns a new image list handle that must be released by CommCtrl.ImageList_destroy().
 Parameters
-  Width       - Width of the images to hold Height      - Height of the images to hold PixelFormat - 
-color resolution for the internal image Masked      - If true a masked image list is created 
-AllocBy     - If the list is to small the internal number of images will be increased by this value
-Return value
-  New image list handle that must be released by CommCtrl.ImageList_destroy().
-
+  Width       - Width of the images to hold
+  Height      - Height of the images to hold
+  PixelFormat - color resolution for the internal image
+  Masked      - If true a masked image list is created
+  AllocBy     - If the list is to small the internal number of images will be increased by this value
 See Also
   TJvImageList.PixelFormat
-
 ----------------------------------------------------------------------------------------------------
 @@LoadImageListFromBitmap@TCustomImageList@TBitmap@TBitmap
 <TITLE LoadImageListFromBitmap function>
- 
 Summary
   Loads the bitmaps for the ImageList from a bitmap.
- 
 Description
-  The given bitmap is splitted into smaller bitmaps which are added to the image list. The mask   
-bitmap is used as mask. Or the mask color is used if AutoMaskColor is false. Otherwise bottom left 
-pixel's color is used as mask color.
- 
-Parameters
-  ImgList       - The image list to which the splitted bitmap should be added Bitmap        - The  
-bitmap that should be added to the image list MaskBitmap    - The bitmap mask that is used for the 
-bitmap MaskColor     - Mask color (default: clFuchsia) AutoMaskColor - Set this to true if the mask 
-color should be the bottom left pixel of each bitmap slice.
- 
-Return value
+  The given bitmap is splitted into smaller bitmaps which are added to the image list. The mask
+  bitmap is used as mask. Or the mask color is used if AutoMaskColor is false. Otherwise bottom left
+  pixel's color is used as mask color.
+
   The return value is the number of added bitmaps.
- 
+Parameters
+  ImgList       - The image list to which the splitted bitmap should be added
+  Bitmap        - The bitmap that should be added to the image list
+  MaskBitmap    - The bitmap mask that is used for the bitmap
+  MaskColor     - Mask color (default: clFuchsia)
+  AutoMaskColor - Set this to true if the mask color should be the bottom left pixel of each bitmap slice.
 ----------------------------------------------------------------------------------------------------
 @@LoadImageListFromBitmap@TCustomImageList@TBitmap@TColor@Boolean
+<COMBINE LoadImageListFromBitmap@TCustomImageList@TBitmap@TBitmap>
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList
 <TITLEIMG TJvImageList>
- 
+JVCLInfo
+  GROUP=JVCL.Graphics.Static
+  FLAG=Component
 Summary
   An extended Image list component.
- 
 Description
   This image list allows to use a picture and resource bitmaps as the image list content.
- 
-----------------------------------------------------------------------------------------------------
-@@TJvImageList.Assign
-Summary
-  Copies the image list with all it's settings.
- 
-Description
-  Use Assign to copy the image list
- 
-Parameters
-  Source - Source image list
- 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.BeginUpdate
 Summary
   Block all OnChange events.
- 
 Description
   Call BeginUpdate in combination with EndUpdate to prevent OnChange events while changing the data.
- 
 See Also
   EndUpdate
- 
-----------------------------------------------------------------------------------------------------
-@@TJvImageList.DrawIndirect
-Summary
-  Write here a summary (1 line)
- 
-Description
-  Write here a description
- 
-Parameters
-  ImageListDrawParams - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated) Remove the 'See Also' section if there are no 
- references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.EndUpdate
 Summary
   Unlock the blocked OnChange events.
- 
 Description
-  Call EndUpdate unlock an OnChange event lock that was caused by BeginUpdate
+  Call EndUpdate unlock an OnChange event lock that was caused by BeginUpdate.
 See Also
   BeginUpdate
- 
-----------------------------------------------------------------------------------------------------
-@@TJvImageList.FHandle
-Summary
-  Write here a summary (1 line)
- 
-Description
-  Write here a description
- 
-See Also
-  List here other properties, methods (comma seperated) Remove the 'See Also' section if there are no 
- references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.FileName
 Summary
   Contains the filename of the picture on the developers hard disk.
- 
 Description
-  FileName specifies a graphic file that is available on the developer's system which contains the bitmaps which can be exported by the ImageList. The Data is copied to Picture.Graphic. If the file does not exists at design time the stored Picture.Graphic is used.
-FileName only works if Mode is set to imPicture.
- 
+  FileName specifies a graphic file that is available on the developer's system which contains the
+  bitmaps which can be exported by the ImageList. The Data is copied to Picture.Graphic. If the
+  file does not exists at design time the stored Picture.Graphic is used. FileName only works if
+  Mode is set to imPicture.
 See Also
   Mode,Picture,ResourceIds
- 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.LoadFromFile
 Summary
   Loads the image list from a bitmap file.
- 
 Description
-  Loads the image list from a bitmap file. The bitmap is spitted into ImageList.Width *   
-ImageList.Height sized slices.
- 
+  Loads the image list from a bitmap file. The bitmap is spitted into ImageList.Width *
+  ImageList.Height sized slices.
 Parameters
   Filename - File to load
- 
 See Also
   SaveToFile,LoadFromStream
- 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.LoadFromStream
 Summary
   Loads the image list from a bitmap stream.
- 
 Description
-  Loads the image list from a bitmap stream. The bitmap is spitted into ImageList.Width *   
-ImageList.Height sized slices.
- 
+  Loads the image list from a bitmap stream. The bitmap is spitted into ImageList.Width *
+  ImageList.Height sized slices.
 Parameters
   Stream - bitmap stream to load
- 
 See Also
   SaveToStream,LoadFromFile
- 
-----------------------------------------------------------------------------------------------------
-@@TJvImageList.Merge
-Summary
-  Write here a summary (1 line)
- 
-Description
-  Write here a description
- 
-Parameters
-  Index1    - Description for this parameter ImageList - Description for this parameter Index2    -  
-Description for this parameter dx        - Description for this parameter dy        - Description 
-for this parameter
-
-Return value
-  Describe here what the function returns
- 
-See Also
-  List here other properties, methods (comma seperated) Remove the 'See Also' section if there are no 
- references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.Mode
 Summary
   Sets the mode of the image list.
- 
 Description
-  Set Mode to one of the following values
-- imClassic
- The image list acts as TImageList. The Filename, Picture and ResourceIds properties are ignored - 
-imPicture
-The FileName and Picture property are used.
-- imResourceIds
-The ResourceIds property is used.
- 
+  Set Mode to one of the following values:
+
+  <TABLE>
+  Value             Meaning
+  -----             -------
+  imClassic         The image list acts as TImageList. The Filename, Picture and ResourceIds properties are ignored.
+  imPicture         The FileName and Picture property are used.
+  imResourceIds     The ResourceIds property is used.
+  </TABLE>
 See Also
   Picture,FileName,ResourceIds
- 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.Picture
 Summary
   Contains the picture that is used for the image list.
- 
 Description
-  Specify a picture that should be used as the image list's content. The Picture property meight be updated at design time by the FileName property.
- To use this feature the Mode property must be imPicture
+  Specify a picture that should be used as the image list's content. The Picture property might be
+  updated at design time by the FileName property. To use this feature the Mode property must be imPicture.
 See Also
   Mode,FileName,ResourceIds
- 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.PixelFormat
-JVCLInfo
-  VCL only
-
+## VCL only
 Summary
   Specifies the pixel format for the internal image
 Description
   PixelFormat is the color resolution of the image list.
   pf1bit and pfCustom are not supported.
-pf32bit works under Windows XP only.
-
+  pf32bit works under Windows XP only.
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.ResourceIds
 Summary
   Specifies the resource identifieres for the bitmaps.
- 
 Description
-  ResourceIds contains the resource ids of the bitmaps to load. Allowed are RCDATA (a bitmap file)   
-and BITMAP. ResourceIds property is only loaded into the image list if Mode is imResourceIds.
- 
+  ResourceIds contains the resource ids of the bitmaps to load. Allowed are RCDATA (a bitmap file)
+  and BITMAP. ResourceIds property is only loaded into the image list if Mode is imResourceIds.
 See Also
   Mode,FileName,Picture
- 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.SaveToFile
 Summary
   Saves the image list to a bitmap file.
- 
 Description
-  Saves the image list to the bitmap file FileName.
- 
+  Call SaveToFile to save the image list to the bitmap file FileName.
 Parameters
   Filename - File name of the bitmap file
- 
 See Also
   LoadFromFile,SaveToStream
- 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.SaveToStream
 Summary
   Saves the image list to a bitmap stream.
- 
+Description
+  Call SaveToStream to save the image list to a bitmap stream.
 Parameters
   Stream - destination stream
- 
 See Also
   LoadFromStream,SaveToFile
- 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.TransparentColor
 Summary
   Specifies the transparent color.
- 
 Description
-  Specifies the color that is used as the MaskColor when spitting the graphic in Picture.Graphic or   
-adding the Resource bitmaps to the image list.
- 
+  Specifies the color that is used as the MaskColor when spitting the graphic in Picture.Graphic or
+  adding the Resource bitmaps to the image list.
 See Also
   TransparentMode
- 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.TransparentMode
 Summary
   Specifies the transparent mode.
- 
 Description
   TransparentMode is used for adding the bitmaps from Picture or ResourceIds.
-- tmNone : no mask
- - tmAuto  : use the pixel at the left bottom edge - tmColor: use TransparentColor 
+
+  - tmNone: no mask
+  - tmAuto: use the pixel at the left bottom edge
+  - tmColor: use TransparentColor
 See Also
   TransparentColor
- 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListMode
 <TITLE TJvImageListMode type>
- 
 Summary
-  The type TJvImageListMode consists of a flags that specifies the mode of an image list.
- 
-See Also
-  Mode
- 
-----------------------------------------------------------------------------------------------------
-@@TJvImageListMode.imClassic
-Description for imClassic
- 
-Summary
-  The image list acts as a TImageList.
- 
+  Flags that specifies the mode of an image list.
 Description
+  The type TJvImageListMode consists of a flags that specifies the mode of an image list.
+See Also
+  TJvImageList.Mode
+@@TJvImageListMode.imClassic
   The image list acts as TImageList. The Filename, Picture and ResourceIds properties are ignored.
- 
-----------------------------------------------------------------------------------------------------
 @@TJvImageListMode.imPicture
-Description for imPicture
- 
-Summary
   The FileName and Picture property are used.
- 
-----------------------------------------------------------------------------------------------------
 @@TJvImageListMode.imResourceIds
-Description for imResourceIds
- 
-Summary
   The ResourceIds property is used.
- 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListTransparentMode
 <TITLE TJvImageListTransparentMode type>
- 
 Summary
+  Consists of flags that specifies the transparent color mode.
+Description
   The type TJvImageListTransparentMode consists of flags that specifies the transparent color mode.
- 
-----------------------------------------------------------------------------------------------------
 @@TJvImageListTransparentMode.tmNone
-Description for tmNone
- 
-Summary
   Do not use any mask.
- 
-----------------------------------------------------------------------------------------------------
 @@TJvImageListTransparentMode.tmAuto
-Description for tmAuto
- 
-Summary
   Use the pixel at the left bottom edge as mask color.
- 
-----------------------------------------------------------------------------------------------------
 @@TJvImageListTransparentMode.tmColor
-Description for tmColor
- 
-Summary
   Use the TransparentColor property as mask color.
- 
+
