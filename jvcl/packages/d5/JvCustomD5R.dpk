@@ -47,7 +47,6 @@ contains
   JvLinkLabelTree in '..\..\run\JvLinkLabelTree.pas',
   JvLookOut in '..\..\run\JvLookOut.pas',
   JvOutlookBar in '..\..\run\JvOutlookBar.pas',
-  JvRadioControl in '..\..\run\JvRadioControl.pas',
   JvSchedEvtStore in '..\..\run\JvSchedEvtStore.pas',
   JvScheduledEvents in '..\..\run\JvScheduledEvents.pas',
   JvThumbImage in '..\..\run\JvThumbImage.pas',

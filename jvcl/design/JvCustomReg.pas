@@ -18,7 +18,7 @@ uses
   JclSchedule,
 
   JvConsts, JvTrayIcon, JvGammaPanel, JvInspector, JvLinkLabel,
-  JvLookOut, JvOutlookBar, JvRadioControl, JvScheduledEvents, JvThumbImage,
+  JvLookOut, JvOutlookBar, JvScheduledEvents, JvThumbImage,
   JvThumbnails, JvThumbviews, JvTimeLine, JvTMTimeLine, JvBalloonHint,
   JvValidateEdit, JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvHLParser,
   JvTimeLineEditor, JvHLEditEditor, JvScheduleEditors,
@@ -30,7 +30,7 @@ uses
 procedure Register;
 begin
   RegisterComponents(SPaletteButton,[
-    TJvRadioControl, TJvLookOutButton, TJvExpressButton
+    TJvLookOutButton, TJvExpressButton
     ]);
   RegisterComponents(SPaletteEdit,[
     TJvValidateEdit,TJvEditor, TJvHLEditor, TJvHLEdPropDlg

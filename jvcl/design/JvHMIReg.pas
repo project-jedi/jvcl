@@ -17,19 +17,22 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvConsts, JvSegmentedLEDDisplay, JvLED,
+  JvConsts, JvSegmentedLEDDisplay, JvLED, JvRadioControl, 
   JvSegmentedLEDDisplayEditors;
 
 procedure Register;
 begin
-  RegisterComponents('HMI Indicators',[
+  RegisterComponents('HMI Indicators', [
     TJvSegmentedLEDDisplay,
     TJvLED
     ]);
 
-  RegisterComponents('HMI Non Visual',[
+  RegisterComponents('HMI Non Visual', [
     TJv7SegmentedLEDCharacterMapper
     ]);
+
+  RegisterComponents('HMI Controls', [
+    TJvRadioControl]);
 
   RegisterPropertyEditor(TypeInfo(TJvSegmentedLEDDigitClassName), TPersistent, '', TJvSegmentedLEDDigitClassProperty);
   RegisterPropertyEditor(TypeInfo(TUnlitColor), TPersistent, '', TUnlitColorProperty);
