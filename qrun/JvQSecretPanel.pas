@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -41,8 +42,8 @@ unit JvQSecretPanel;
 interface
 
 uses
-  Windows,
-  Messages, Classes, Controls, Graphics, ExtCtrls, Forms,
+  Classes,  
+  QWindows, QMessages, QControls, Types, QGraphics, QExtCtrls, QForms,
   JvQTimer, JvQComponent, JvQTypes;
 
 type
@@ -122,17 +123,14 @@ type
       default sdVertical;
     property TextStyle: TPanelBevel read FTextStyle write SetTextStyle default bvNone;
     property Anchors;
-    property BiDiMode;
+
     property Constraints;
-    property DragKind;
-    property ParentBiDiMode;
     property Align;
     property BevelInner;
     property BevelOuter default bvLowered;
     property BevelWidth;
     property BorderWidth;
     property BorderStyle;
-    property DragCursor;
     property DragMode;
     property Color;
     property Font;
@@ -159,15 +157,13 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnContextPopup;
-    property OnEndDock;
-    property OnStartDock;
     property OnResize;
   end;
 
 implementation
 
 uses
-  SysUtils, QConsts, Math, ActnList, {CommCtrl,}
+  SysUtils, QConsts, Math, QActnList, CommCtrl,
   JvQConsts, JvQThemes, JvQJCLUtils, JvQJVCLUtils;
 
 const
@@ -392,8 +388,8 @@ begin
     begin
       I := SaveDC(Handle);
       try
-        with FTxtRect do
-          MoveWindowOrg(Handle, -Left, -Top);
+ //       with FTxtRect do
+ //         MoveWindowOrg(Handle, -Left, -Top);
         Brush.Color := Self.Color;
         PaintClient(FMemoryImage.Canvas, FPaintRect);
       finally
@@ -462,7 +458,7 @@ begin
     try
       BitBlt(Canvas.Handle, FTxtRect.Left, FTxtRect.Top, FMemoryImage.Width,
         FMemoryImage.Height, FMemoryImage.Canvas.Handle, 0, 0, SRCCOPY);
-      ValidateRect(Handle, @FTxtRect);
+      //ValidateRect(Handle, @FTxtRect);
     finally
       Canvas.Unlock;
     end;
@@ -651,7 +647,7 @@ begin
       StopPlay;
       if (csDesigning in ComponentState) and
         not (csDestroying in ComponentState) then
-        ValidParentForm(Self).Designer.Modified;
+        ValidParentForm(Self).DesignerHook.Modified;
     end;
     if not (csDestroying in ComponentState) then
       for I := 0 to Pred(ControlCount) do

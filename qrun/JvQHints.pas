@@ -58,7 +58,7 @@ type
     function CreateRegion(Shade: Boolean): HRGN;
     procedure FillRegion(Rgn: HRGN; Shade: Boolean);
   protected
-    procedure CreateParams(var Params: TCreateParams); override;
+//    procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -169,7 +169,7 @@ var
 
 begin
   R := FRect;
-  Result := 0;
+  Result := nil;
   if Shade then
     OffsetRect(R, HintShadowSize, HintShadowSize);
   case HintStyle of
@@ -214,7 +214,7 @@ begin
       try
         CombineRgn(Result, Dest, Tail, RGN_OR);
       finally
-        if Dest <> 0 then
+        if Dest <> nil then
           DeleteObject(Dest);
       end;
     finally
@@ -407,7 +407,7 @@ var
 begin
   Result := Rect(0, 0, MaxWidth, 0);
   DrawText(Canvas, AHint, -1, Result,
-    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment] or );
+    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment]);
   Inc(Result.Right, 8);
   Inc(Result.Bottom, 4);
   FRect := Result;

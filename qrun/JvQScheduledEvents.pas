@@ -37,11 +37,9 @@ unit JvQScheduledEvents;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, SyncObjs,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}  
-  Qt, QForms, Types, QWindows, 
+  SysUtils, Classes, Contnrs, SyncObjs, 
+  Qt, Types, 
+  QWindows, QMessages, QForms,
   JclSchedule,
   JvQAppStorage, JvQFinalize;
 

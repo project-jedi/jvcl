@@ -98,9 +98,9 @@ type
     procedure SetItems(const Value: TJvPageIndexNodes);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function CreateNode: TTreeNode; override;
-    function CreateNodes: TTreeNodes;  override; 
-    function CanChange(Node: TTreeNode): Boolean; override;
+    function CreateNode: TTreeNode; dynamic;//override;
+    function CreateNodes: TTreeNodes; dynamic;  //override;
+    function CanChange(Node: TTreeNode): Boolean; dynamic;
     procedure Change(Node: TTreeNode); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -177,8 +177,8 @@ type
 
     procedure DoGetImageIndex(Sender: TObject; Node: TTreeNode);
     procedure DoGetSelectedIndex(Sender: TObject; Node: TTreeNode);
-    procedure GetImageIndex(Node: TTreeNode); override;
-    procedure GetSelectedIndex(Node: TTreeNode); override;
+    procedure GetImageIndex(Node: TTreeNode); dynamic;
+    procedure GetSelectedIndex(Node: TTreeNode); dynamic;
     function CanChange(Node: TTreeNode): Boolean; override;
     procedure Change(Node: TTreeNode); override;
     procedure ResetPreviousNode(NewNode: TTreeNode); virtual;
@@ -222,10 +222,8 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property RightClickSelect;
     property RowSelect;
     property ShowHint;
-    property ShowRoot;
     property SortType;
     property TabOrder;
     property TabStop default True;
@@ -235,11 +233,9 @@ type
     property OnClick;
     property OnCollapsed;
     property OnCollapsing;
-    property OnCompare;
-    property OnContextPopup; 
-    property OnAddition;
-    property OnCreateNodeClass; 
-    property OnCustomDraw;
+//    property OnCompare;
+    property OnContextPopup;
+//    property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
     property OnDeletion;
@@ -267,7 +263,7 @@ type
   TJvSettingsTreeView = class(TJvCustomSettingsTreeView)
   published
     property AutoExpand default True;
-    property ShowButtons default False; 
+    property ShowButtons default False;
     property ReadOnly default True;
     property PageDefault;
     property PageNodeImages;
@@ -279,17 +275,17 @@ type
     property OnParentColorChange;
 
     property Align;
-    property Anchors; 
+    property Anchors;
     property BorderStyle;
-    property BorderWidth;
-    property ChangeDelay;
+//    property BorderWidth;
+//    property ChangeDelay;
     property Color;
     property Constraints;
     property DragMode;
     property Enabled;
     property Font;
-    property HideSelection;
-    property HotTrack;
+//    property HideSelection;
+//    property HotTrack;
     property Images;
     property Indent;
     // don't use!
@@ -299,28 +295,28 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property RightClickSelect;
+//    property RightClickSelect;
     property RowSelect;
     property ShowHint;
-    property ShowRoot;
+//    property ShowRoot;
     property SortType;
-    property StateImages;
+//    property StateImages;
     property TabOrder;
     property TabStop default True;
-    property ToolTips;
+//    property ToolTips;
     property Visible;
-    property OnAdvancedCustomDraw;
-    property OnAdvancedCustomDrawItem;
+//    property OnAdvancedCustomDraw;
+//    property OnAdvancedCustomDrawItem;
     property OnChange;
     property OnChanging;
     property OnClick;
     property OnCollapsed;
     property OnCollapsing;
-    property OnCompare;
-    property OnContextPopup; 
-    property OnAddition;
-    property OnCreateNodeClass; 
-    property OnCustomDraw;
+//    property OnCompare;
+    property OnContextPopup;
+//    property OnAddition;
+//    property OnCreateNodeClass;
+//    property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
     property OnDeletion;
@@ -449,7 +445,7 @@ end;
 
 function TJvCustomPageListTreeView.CanChange(Node: TTreeNode): Boolean;
 begin
-  Result := inherited CanChange(Node);
+  Result := true; //inherited CanChange(Node);
   if Result and Assigned(Node) and Assigned(FPageList) then
     Result := FPageList.CanChange(TJvPageIndexNode(Node).PageIndex);
 end;
@@ -726,7 +722,8 @@ begin
       ResetPreviousNode(N);
       N.ImageIndex := FNodeImages.SelectedIndex;
       N.SelectedIndex := FNodeImages.SelectedIndex;
-      R := N.DisplayRect(False);
+      R := N.DisplayRect; 
+      QWindows. 
       InvalidateRect(Handle, @R, True);
       SetPreviousNode(N);
     end;
@@ -781,7 +778,8 @@ begin
   begin
     FLastSelected.ImageIndex := FNodeImages.ImageIndex;
     FLastSelected.SelectedIndex := FNodeImages.ImageIndex;
-    R := FLastSelected.DisplayRect(False);
+    R := FLastSelected.DisplayRect; 
+    QWindows. 
     InvalidateRect(Handle, @R, True);
   end;
 end;

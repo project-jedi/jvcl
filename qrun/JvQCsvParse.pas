@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -213,9 +214,9 @@ var
 begin
   l := StrLen(S1);
   if (l < 2) or (l > 9) then
-    raise EJVCLException.Create(RsEInvalidHexLiteral);
+    raise EJVCLException.CreateRes(@RsEInvalidHexLiteral);
   if S1[0] <> '$' then
-    raise EJVCLException.Create(RsEInvalidHexLiteral);
+    raise EJVCLException.CreateRes(@RsEInvalidHexLiteral);
   Val := 0;
   for x := 1 to l - 2 do
   begin
@@ -229,7 +230,7 @@ begin
     if S1[x] in HexadecimalUppercaseLetters then
       Digit := Ord(S1[x]) - Ord('A') + 10
     else
-      raise EJVCLException.Create(RsEInvalidHexLiteral);
+      raise EJVCLException.CreateRes(@RsEInvalidHexLiteral);
     Val := Val + Digit;
   end;
   Result := Val;
@@ -740,7 +741,7 @@ var
 begin
   Len := Length(S);
   I := 1;
-  while (Len >= I) and ((S[I] = ' ') or (S[I] = #9)) do
+  while (Len >= I) and ((S[I] = ' ') or (S[I] = Tab)) do
     I := I + 1;
   if I > Len then
   begin
@@ -750,7 +751,7 @@ begin
   S := Copy(S, I, Len);
   Len := Len - I + 1;
   I := Len;
-  while (I > 0) and ((S[I] = ' ') or (S[I] = #9)) do
+  while (I > 0) and ((S[I] = ' ') or (S[I] = Tab)) do
     I := I - 1;
   Result := Copy(S, 1, I);
 end;

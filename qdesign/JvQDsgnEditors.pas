@@ -40,9 +40,8 @@ interface
 
 uses
   QWindows, QForms, QControls, Types, QGraphics, QExtCtrls, QDialogs,
-  QExtDlgs, QMenus, QStdCtrls, QImgList,  
-  ClxImgEdit, 
-  DsnConst, 
+  QExtDlgs, QMenus, QStdCtrls, QImgList, 
+  ClxImgEdit, DsnConst, 
   RTLConsts, DesignIntf, DesignEditors, DesignMenus,
   CLXEditors,  
   Classes, SysUtils;
@@ -108,7 +107,6 @@ type
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean);
   end;
-
 
 
 type
@@ -242,9 +240,14 @@ implementation
 
 
 uses
-  TypInfo, Math,  
-  QFileCtrls, QConsts, JvQRegistryIniFile, 
-  JvQTypes, JvQStringsForm, JvQDsgnConsts;
+  TypInfo, Math, QFileCtrls, QConsts,
+  {$IFDEF MSWINDOWS}
+  Registry,
+  {$ENDIF MSWINDOWS} 
+  {$IFDEF LINUX}
+  JvQRegistryIniFile,
+  {$ENDIF LINUX}
+  JvQTypes, JvQStringsForm, JvQDsgnConsts, JvQConsts;
 
 function ValueName(E: Extended): string;
 begin
@@ -856,14 +859,11 @@ const
 procedure TColorPropertyEx.Edit;
 var
   ColorDialog: TColorDialog;
-//  IniFile: TRegIniFile;
-//  BaseRegistryKey: string;
+  IniFile: TRegIniFile;
 
-(*  procedure GetCustomColors;
+  procedure GetCustomColors;
   begin
-    if BaseRegistryKey = '' then
-      Exit;
-    IniFile := TRegIniFile.Create(BaseRegistryKey);
+    IniFile := TRegIniFile.Create(sDelphiKey);
     try
       IniFile.ReadSectionValues(SCustomColors, ColorDialog.CustomColors);
     except
@@ -890,22 +890,19 @@ var
           end;
         end;
   end;
-*)
 
 begin
-//  BaseRegistryKey := HKEY_CURRENT_USER + '/.borland/jvcl.ini';
-//  IniFile := nil;
+  IniFile := nil;
   ColorDialog := TColorDialog.Create(Application);
   try
-//    GetCustomColors;
+    GetCustomColors;
     ColorDialog.Color := GetOrdValue;
     ColorDialog.HelpContext := hcDColorEditor;
-//    ColorDialog.Options := [cdShowHelp];
     if ColorDialog.Execute then
       SetOrdValue(ColorDialog.Color);
-//    SaveCustomColors;
+    SaveCustomColors;
   finally
-//    IniFile.Free;
+    IniFile.Free;
     ColorDialog.Free;
   end;
 end;
@@ -961,8 +958,10 @@ var
   OldPenColor, OldBrushColor: TColor;
 begin
   Right := (ARect.Bottom - ARect.Top) {* 2} + ARect.Left;
+  if ACanvas = nil then exit;
   with ACanvas do
   begin
+    Start;
     // save off things
     OldPenColor := Pen.Color;
     OldBrushColor := Brush.Color;
@@ -981,13 +980,15 @@ begin
     Pen.Color := OldPenColor;
     DefaultPropertyListDrawValue(Value, ACanvas, Rect(Right, ARect.Top, ARect.Right,
       ARect.Bottom), ASelected);
+    Stop;
   end;
 end;
 
 procedure TColorPropertyEx.ListMeasureWidth(const Value: string;
   ACanvas: TCanvas; var AWidth: Integer);
 begin
-  AWidth := AWidth + ACanvas.TextHeight('M') {* 2};
+  if ACanvas <> nil then
+    AWidth := AWidth + ACanvas.TextHeight('M') {* 2};
 end;
 
 procedure TColorPropertyEx.SetValue(const Value: string);
@@ -1015,21 +1016,29 @@ end;
 procedure DefaultPropertyDrawName(Prop: TPropertyEditor; Canvas: TCanvas;
   const Rect: TRect);
 begin
+  if Canvas = nil then exit;
+  Canvas.Start;
   Canvas.TextRect(Rect, Rect.Left + 1, Rect.Top + 1, Prop.GetName);
+  Canvas.Stop;
 end;
 
 procedure DefaultPropertyDrawValue(Prop: TPropertyEditor; Canvas: TCanvas;
   const Rect: TRect);
 begin
+  if Canvas = nil then exit;
+  Canvas.Start;
   Canvas.TextRect(Rect, Rect.Left + 1, Rect.Top + 1, Prop.GetVisualValue);
+  Canvas.Stop;
 end;
 
 procedure DefaultPropertyListDrawValue(const Value: string; Canvas: TCanvas;
   const Rect: TRect; Selected: Boolean);
 begin
+  if Canvas = nil then exit;
+  Canvas.Start;
   Canvas.TextRect(Rect, Rect.Left + 1, Rect.Top + 1, Value);
+  Canvas.Stop;
 end;
-
 
 
 end.

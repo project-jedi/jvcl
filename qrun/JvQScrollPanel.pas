@@ -38,8 +38,8 @@ unit JvQScrollPanel;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QToolWin, QExtCtrls, Types, QWindows, 
+  SysUtils, Classes,
+  QWindows, QMessages, Types, QGraphics, QControls, QToolWin, QExtCtrls,
   JvQComponent, JvQExForms;
 
 type
@@ -270,12 +270,14 @@ begin
     begin
       if FVertical then
       begin
-        R := Rect(Width div 2 - 1, 1, Width, Height - 1);
+        R := Rect(Width div 2 - 1, 1, Width, Height - 1); 
+        QWindows. 
         DrawEdge(Handle, R, EDGE_ETCHED, BF_LEFT);
       end
       else
       begin
-        R := Rect(1, Height div 2 - 1, Width, Height - 1);
+        R := Rect(1, Height div 2 - 1, Width, Height - 1); 
+        QWindows. 
         DrawEdge(Handle, R, EDGE_ETCHED, BF_TOP);
       end;
     end;
@@ -658,7 +660,7 @@ begin
   FDownRight.Kind := sbRight;
 end;
 
-procedure TJvCustomScrollPanel.SetParent( const  AParent: TWinControl);
+procedure TJvCustomScrollPanel.SetParent(const AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if FUpLeft = nil then

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -23,21 +24,23 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  GIF support is native for VisualCLX so this file is VCL only
 -----------------------------------------------------------------------------}
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
+{$I vclonly.inc}
+
+// for HeapAllocFlags
+{$WARN SYMBOL_PLATFORM OFF}
 
 unit JvQGIF;
 
 interface
 
 uses
-  QWindows,
-
-  RTLConsts,
-  
+  Windows, 
+  RTLConsts, 
   SysUtils, Classes, Types, QGraphics, QControls;
 
 const
@@ -105,8 +108,7 @@ type
     function Equals(Graphic: TGraphic): Boolean; override;
     function GetEmpty: Boolean; override;
     function GetHeight: Integer; override;
-    function GetWidth: Integer; override;
-    function GetPalette: HPALETTE;override;
+    function GetWidth: Integer; override; 
     function GetTransparent: Boolean;override;
     procedure ClearItems;
     procedure NewImage;
@@ -124,11 +126,7 @@ type
     procedure EncodeAllFrames;
     procedure Assign(Source: TPersistent); override;
     procedure LoadFromStream(Stream: TStream); override;
-    procedure SaveToStream(Stream: TStream); override;
-    procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle;
-      APalette: HPALETTE); override;
-    procedure SaveToClipboardFormat(var AFormat: Word; var AData: THandle;
-      var APalette: HPALETTE); override;
+    procedure SaveToStream(Stream: TStream); override; 
     procedure LoadFromResourceName(Instance: THandle; const ResName: string;
       ResType: PChar);
     procedure LoadFromResourceID(Instance: THandle; ResID: Integer;
@@ -467,6 +465,7 @@ type
 
 //=== TExtension =============================================================
 
+type
   TExtension = class(TPersistent)
   private
     FExtType: TExtensionType;
@@ -2215,56 +2214,7 @@ begin
     Result := FScreenHeight;
 end;
 
-procedure TJvGIFImage.LoadFromClipboardFormat(AFormat: Word; AData: THandle;
-  APalette: HPALETTE);
-var
-  Bmp: TBitmap;
-  Stream: TMemoryStream;
-  Size: Longint;
-  Buffer: Pointer;
-  Data: THandle;
-begin
-  { !! check for gif clipboard Data, mime type image/gif }
-  Data := GetClipboardData(CF_GIF);
-  if Data <> 0 then
-  begin
-    Buffer := GlobalLock(Data);
-    try
-      Stream := TMemoryStream.Create;
-      try
-        Stream.Write(Buffer^, GlobalSize(Data));
-        Stream.Position := 0;
-        Stream.Read(Size, SizeOf(Size));
-        ReadStream(Size, Stream, False);
-        if Count > 0 then
-        begin
-          FFrameIndex := 0;
-          AData := GetClipboardData(CF_BITMAP);
-          if AData <> 0 then
-          begin
-            Frames[0].NewBitmap;
-            Frames[0].FBitmap.LoadFromClipboardFormat(CF_BITMAP,
-              AData, APalette);
-          end;
-        end;
-      finally
-        Stream.Free;
-      end;
-    finally
-      GlobalUnlock(Data);
-    end;
-  end
-  else
-  begin
-    Bmp := TBitmap.Create;
-    try
-      Bmp.LoadFromClipboardFormat(AFormat, AData, APalette);
-      Assign(Bmp);
-    finally
-      Bmp.Free;
-    end;
-  end;
-end;
+
 
 procedure TJvGIFImage.LoadFromStream(Stream: TStream);
 begin
@@ -2742,48 +2692,7 @@ begin
   Changed(Self);
 end;
 
-procedure TJvGIFImage.SaveToClipboardFormat(var AFormat: Word; var AData: THandle;
-  var APalette: HPALETTE);
-var
-  Stream: TMemoryStream;
-  Data: THandle;
-  Buffer: Pointer;
-  I: Integer;
-begin
-  { !! check for gif clipboard format, mime type image/gif }
-  if FItems.Count = 0 then
-    Exit;
-  Frames[0].Bitmap.SaveToClipboardFormat(AFormat, AData, APalette);
-  for I := 0 to FItems.Count - 1 do
-    with Frames[I] do
-    begin
-      if (FImage.FImageData = nil) or (FImage.FImageData.Size = 0) then
-        Exit;
-    end;
-  Stream := TMemoryStream.Create;
-  try
-    WriteStream(Stream, True);
-    Stream.Position := 0;
-    Data := GlobalAlloc(HeapAllocFlags, Stream.Size);
-    try
-      if Data <> 0 then
-      begin
-        Buffer := GlobalLock(Data);
-        try
-          Stream.Read(Buffer^, Stream.Size);
-          SetClipboardData(CF_GIF, Data);
-        finally
-          GlobalUnlock(Data);
-        end;
-      end;
-    except
-      GlobalFree(Data);
-      raise;
-    end;
-  finally
-    Stream.Free;
-  end;
-end;
+
 
 procedure TJvGIFImage.WriteData(Stream: TStream);
 begin
@@ -3013,8 +2922,7 @@ end;
 
 initialization
   CF_GIF := RegisterClipboardFormat('GIF Image');
-
-  
+ 
 {$IFDEF USE_JV_GIF}
   TPicture.RegisterFileFormat('gif', RsGIFImage, TJvGIFImage);
   TPicture.RegisterClipboardFormat(CF_GIF, TJvGIFImage);

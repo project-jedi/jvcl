@@ -39,9 +39,12 @@ uses
   SysUtils, Classes, Contnrs,
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}  
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VisualCLX}
+  Qt,
+  {$ENDIF VisualCLX}
   QControls, QStdCtrls, QDialogs, QExtCtrls, QForms, QGraphics, QWindows, Types,
-  QClipbrd, 
+  QClipbrd,
   JclBase,
   JvQConsts, JvQComponent, JvQTypes, JvQDynControlEngine, JvQFinalize;
 
@@ -1515,9 +1518,15 @@ end;
 const
   Captions: array [TMsgDlgType] of string =
     (SMsgDlgWarning, SMsgDlgError, SMsgDlgInformation, SMsgDlgConfirm, '');
+  {$IFDEF MSWINDOWS}
   IconIDs: array [TMsgDlgType] of PChar =
     (IDI_EXCLAMATION, IDI_HAND, IDI_ASTERISK, IDI_QUESTION, nil);
-  
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  IconIDs: array [TMsgDlgType] of QMessageBoxIcon =
+    (QMessageBoxIcon_Warning,  QMessageBoxIcon_Critical, QMessageBoxIcon_Information,
+     QMessageBoxIcon_NoIcon, QMessageBoxIcon_NoIcon);
+  {$ENDIF LINUX}
   // TMsgDlgType = (mtCustom, mtInformation, mtWarning, mtError, mtConfirmation);
   ButtonCaptions: array [TMsgDlgBtn] of string =
    (SMsgDlgHelp, SMsgDlgOK, SMsgDlgCancel, SMsgDlgYes,
@@ -1525,7 +1534,7 @@ const
     SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll);
   ModalResults: array [TMsgDlgBtn] of Integer =
    (0, mrOk, mrCancel, mrYes, mrNo, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
-    mrYesToAll); 
+    mrYesToAll);
 
 function DlgCaption(const DlgType: TMsgDlgType): string;
 begin
@@ -1537,8 +1546,8 @@ begin
   if IconIDs[DlgType] <> nil then
   begin
     Result := TIcon.Create;
-    try  
-      // TODO 
+    try
+      // TODO
     except
       Result.Free;
       raise;

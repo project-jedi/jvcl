@@ -38,14 +38,14 @@ uses
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}  
+  {$ENDIF MSWINDOWS}
   QControls, QForms, QToolWin,
-  QMenus, QActnList, QComCtrls, QImgList,
-  DesignEditors, DesignIntf, DesignMenus, ClxDesignWindows, 
-  JvQOutlookBar;
+  QMenus, QActnList, QComCtrls, QImgList, 
+  DesignEditors, DesignIntf, DesignMenus, QDesignWindows, 
+  JvQOutlookBar, QTypes, QExtCtrls;
 
-type  
-  TFrmOLBEditor = class(TClxDesignWindow) 
+type
+  TFrmOLBEditor = class(TDesignWindow)
     tbTop: TToolBar;
     btnNew: TToolButton;
     btnDel: TToolButton;
@@ -115,7 +115,6 @@ type
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override; 
-    function UniqueName(Component: TComponent): string; override;  
   end;
 
 implementation
@@ -126,14 +125,11 @@ uses
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   JvQRegistryIniFile,
-  {$ENDIF LINUX}  
-  QDialogs, 
+  {$ENDIF LINUX}
+  QDialogs,
   JvQConsts, JvQDsgnConsts;
 
-
-
 {$R *.xfm}
-
 
 const
   cJvOutlookBar = 'TJvOutlookBar';
@@ -198,13 +194,6 @@ begin
   if not (csDestroying in ComponentState) then
     UpdateItems;
 end;
-
-
-function TFrmOLBEditor.UniqueName(Component: TComponent): string;
-begin
-  Result := Designer.UniqueName(Component.ClassName);
-end;
-
 
 
 
@@ -536,6 +525,7 @@ begin
 end;
 
 procedure TFrmOLBEditor.StoreSettings;
+{$IFDEF MSWINDOWS}
 var
   R: TRegIniFile;
 begin
@@ -552,8 +542,29 @@ begin
     R.Free;
   end;
 end;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+begin
+  with TJvRegistryFile.Create(HKEY_CURRENT_USER) do
+  try
+    if OpenKey(GetRegPath, True) then
+    try
+      // Width, Height, TextLabels
+      WriteInteger(cWidth, Width);
+      WriteInteger(cHeight, Height);
+      WriteBool(cTextLabels, acShowTextLabels.Checked);
+      WriteBool(cToolBar, acToolBar.Checked);
+    finally
+      CloseKey;
+    end;
+  finally
+    Free;
+  end;
+end;
+{$ENDIF LINUX}
 
 procedure TFrmOLBEditor.LoadSettings;
+{$IFDEF MSWINDOWS}
 var
   R: TRegIniFile;
 begin
@@ -572,9 +583,29 @@ begin
     R.Free;
   end;
 end;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+begin
+  with TJvRegistryIniFile.Create(HKEY_CURRENT_USER) do
+  try
+    if OpenKey(GetRegPath, True) then
+    try
+    // Width, Height, TextLabels
+      WriteInteger(cWidth, Width);
+      WriteInteger(cHeight, Height);
+      WriteBool(cTextLabels, acShowTextLabels.Checked);
+      WriteBool(cToolBar, acToolBar.Checked);
+    finally
+      CloseKey;  
+    end;
+  finally
+    Free;
+  end;
+end;
+{$ENDIF LINUX}
 
-{$IFDEF MSWINDOWS}
 function TFrmOLBEditor.GetRegPath: string;
+{$IFDEF MSWINDOWS}
 const
   cRegKey = '\JVCL\OutlookBar Editor';
 begin 
@@ -583,9 +614,10 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 const
-  cRegKey = '/JVCL/OutlookBar Editor';
+  cRegKey = 'OutlookBar Editor';
 begin
-  Result := SDelphiKey + RsPropertyEditors + cRegKey;
+  Result := SDelphiKey + RsPropertyEditors + cRegKey
+              + PathDelim + cJvOutlookBar;
 end;
 {$ENDIF LINUX}
 

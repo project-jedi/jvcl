@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,10 +34,8 @@ unit JvQMemoryDataset;
 interface
 
 uses
-  SysUtils, Classes, DB,
-  
-  Variants,
-  
+  SysUtils, Classes, DB, 
+  Variants, 
   JvQDBUtils;
 
 type
@@ -2251,10 +2250,8 @@ begin
       for J := 0 to Len - 1 do
       begin
         ValRow := KeyValues[J];
-        ValDel := xKey[J];
-        
-        if (VarCompareValue(ValRow, ValDel) = vrEqual) then
-        
+        ValDel := xKey[J]; 
+        if (VarCompareValue(ValRow, ValDel) = vrEqual) then 
         begin
           Inc(Equals);
           if Equals = (Len - 1) then

@@ -139,7 +139,7 @@ type
   private
     FPropagateEnabled: Boolean;
   protected
-    procedure EnabledChanged; override;
+//    procedure EnabledChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -176,12 +176,14 @@ begin
   PropagateEnabled := True;
 end;
 
+(*
 procedure TGroupBox.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
   if PropagateEnabled then
     Broadcast(Msg);
 end;
+*)
 
 //=== TfrmTreeViewItems ======================================================
 

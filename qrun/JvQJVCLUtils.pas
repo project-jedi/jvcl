@@ -1758,13 +1758,13 @@ begin
   end;
 end;
 
-
+(*
 function MsgDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons;
   HelpCtx: Longint): Word;
 begin
   Result := MessageDlg(Msg, AType, AButtons, HelpCtx);
 end;
-
+*)
 { Gradient fill procedure - displays a gradient beginning with a chosen    }
 { color and ending with another chosen color. Based on TGradientFill       }
 { component source code written by Curtis White, cwhite@teleport.com.      }
