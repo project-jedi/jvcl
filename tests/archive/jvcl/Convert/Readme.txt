@@ -26,6 +26,13 @@ If you want to check the process first before making any real changes to your fi
 
 We have also provided a "Delphi2CompilerDefs.dat" file, that you can use to convert DelphiXXX define settings to CompilerXXX settings.
 
+SUPPLIED DAT FILES:
+===================
+RxLib.dat - use to convert the RxLib 2.75 source files to JVCL standard
+RaLib.dat - use to convert the RaLib source files to JVCL standard
+Delphi2CompilerDefs.dat - use to convert DELPHIXXX defines to COMPILERXXX defines
+RxToJVCLApp.dat - use to convert your RxLib enabled application to JVCL equivalent
+
 IMPORTANT:
 =============
 Please note: for best results, you should leave all the Options as they are, i.e. checked, especially the "Whole words only"
