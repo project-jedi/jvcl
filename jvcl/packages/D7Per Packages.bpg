@@ -22,7 +22,8 @@ PROJECTS = JvCoreD7R.bpl JvCoreD7D.bpl JvSystemD7R.bpl JvSystemD7D.bpl \
   JvTimeFrameworkD7R.bpl JvTimeFrameworkD7D.bpl \
   JvHMID7R.bpl JvHMID7D.bpl JvManagedThreadsD7R.bpl \
   JvManagedThreadsD7D.bpl JvXPCtrlsD7R.bpl JvXPCtrlsD7D.bpl \
-  JvDockingD7R.bpl JvDockingD7D.bpl
+  JvDockingD7R.bpl JvDockingD7D.bpl JvDotNetCtrlsD7R.bpl \
+  JvDotNetCtrlsD7D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -182,4 +183,10 @@ JvDockingD7R.bpl: d7\JvDockingD7R.dpk
   $(DCC)
 
 JvDockingD7D.bpl: d7\JvDockingD7D.dpk
+  $(DCC)
+
+JvDotNetCtrlsD7R.bpl: d7\JvDotNetCtrlsD7R.dpk
+  $(DCC)
+
+JvDotNetCtrlsD7D.bpl: d7\JvDotNetCtrlsD7D.dpk
   $(DCC)

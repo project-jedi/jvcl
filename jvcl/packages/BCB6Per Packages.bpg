@@ -20,7 +20,9 @@ PROJECTS = JvCoreC6R.bpl JvCoreC6D.bpl JvSystemC6R.bpl JvSystemC6D.bpl \
   JvPageCompsC6R.bpl JvPageCompsC6D.bpl JvValidatorsC6R.bpl JvValidatorsC6D.bpl \
   JvUIBC6R.bpl JvUIBC6D.bpl JvWizardC6R.bpl JvWizardC6D.bpl \
   JvTimeFrameworkC6R.bpl JvTimeFrameworkC6D.bpl JvHMIC6R.bpl JvHMIC6D.bpl \
-  JvManagedThreadsC6R.bpl JvManagedThreadsC6D.bpl
+  JvManagedThreadsC6R.bpl JvManagedThreadsC6D.bpl JvXPCtrlsC6R.bpl \
+  JvXPCtrlsC6D.bpl JvDockingC6R.bpl JvDockingC6D.bpl JvDotNetCtrlsC6R.bpl \
+  JvDotNetCtrlsC6D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -214,6 +216,30 @@ JvManagedThreadsC6R.bpl: bcb6\JvManagedThreadsC6R.bpk
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 JvManagedThreadsC6D.bpl: bcb6\JvManagedThreadsC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvXPCtrlsC6R.bpl: bcb6\JvXPCtrlsC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvXPCtrlsC6D.bpl: bcb6\JvXPCtrlsC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvDockingC6R.bpl: bcb6\JvDockingC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvDockingC6D.bpl: bcb6\JvDockingC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvDotNetCtrlsC6R.bpl: bcb6\JvDotNetCtrlsC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvDotNetCtrlsC6D.bpl: bcb6\JvDotNetCtrlsC6D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
