@@ -953,7 +953,10 @@ procedure TJvMainMenu.DrawItem(Item: TMenuItem; Rect: TRect;
 begin
   if Canvas.Handle <> 0 then
   begin
-    FJvMenuItemPainter.Paint(Item, Rect, State);
+    if Assigned(FOnDrawItem) then
+      FOnDrawItem(Self, Item, Rect, State)
+    else
+      FJvMenuItemPainter.Paint(Item, Rect, State);
   end;
 end;
 
@@ -1463,7 +1466,10 @@ procedure TJvPopupMenu.DrawItem(Item: TMenuItem; Rect: TRect;
 begin
   if Canvas.Handle <> 0 then
   begin
-    FJvMenuItemPainter.Paint(Item, Rect, State);
+    if Assigned(FOnDrawItem) then
+      FOnDrawItem(Self, Item, Rect, State)
+    else
+      FJvMenuItemPainter.Paint(Item, Rect, State);
   end;
 end;
 
@@ -2912,7 +2918,7 @@ begin
   else
   begin
     if Assigned(FPopupMenu.OnMeasureItem) then
-      FPopupMenu.OnMeasureItem(FMainMenu, Item, Width, Height);
+      FPopupMenu.OnMeasureItem(FPopupMenu, Item, Width, Height);
   end;
 end;
 
@@ -2927,7 +2933,7 @@ begin
   else
   begin
     if Assigned(FPopupMenu.OnDrawItem) then
-      FPopupMenu.OnDrawItem(FMainMenu, Item, ItemRect, State);
+      FPopupMenu.OnDrawItem(FPopupMenu, Item, ItemRect, State);
   end;
 end;
 
