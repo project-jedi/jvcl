@@ -149,6 +149,8 @@ procedure TJvSegmentedLEDDisplayEditor.PrepareItem(Index: Integer; const AItem: 
 begin
   if (Index = 1) and (DigitCount = 0) then
     AItem.Enabled := False;
+  if (Index = 0) and (TOpenDisplay(Display).DigitClass = nil) then
+    AItem.Enabled := False;
 end;
 
 //===TUnlitColorProperty============================================================================
