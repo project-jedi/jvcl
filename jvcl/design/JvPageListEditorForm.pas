@@ -184,14 +184,23 @@ begin
 end;
 
 procedure TfrmPageListEditor.acDeleteExecute(Sender: TObject);
+var I:Integer;
 begin
   if Assigned(PageList.ActivePage) then
   begin
+    I := lbPages.ItemIndex;
     if lbPages.ItemIndex >= 0 then
       lbPages.Items.Delete(TJvCustomPageAccess(PageList.ActivePage).PageIndex);
     Designer.SelectComponent(PageList);
     PageList.ActivePage.Free;
-    Designer.Modified;
+    if I >= lbPages.Items.Count then Dec(i);
+    if (I >= 0) and (I < lbPages.Items.Count) then
+    begin
+      lbPages.ItemIndex := I;
+      SelectPage(I);
+    end
+    else
+      Designer.Modified;
   end;
 end;
 
