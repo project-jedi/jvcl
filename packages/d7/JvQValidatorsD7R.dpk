@@ -39,17 +39,11 @@ package JvQValidatorsD7R;
 requires
   JvQCoreD7R,
   rtl,
-  visualclx,
-  vclx
-  ;
+  visualclx;
 
 contains
-{$IFDEF VisualCLX}
   JvQValidators in '..\..\qrun\JvQValidators.pas' ,
-{$ENDIF}
-{$IFDEF VisualCLX}
-  JvQErrorIndicator in '..\..\qrun\JvQErrorIndicator.pas' ,
-{$ENDIF}
+  JvQErrorIndicator in '..\..\qrun\JvQErrorIndicator.pas' 
   ;
 
 end.
