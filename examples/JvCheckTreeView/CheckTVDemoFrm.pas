@@ -29,24 +29,12 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, ImgList, ComCtrls, StdCtrls, ExtCtrls,
-  JvCheckTreeView;
+  JvCheckTreeView, JvExComCtrls, JvComCtrls;
 
 type
   TfrmCheckTVDemo = class(TForm)
-    Splitter1: TSplitter;
-    Panel1: TPanel;
     ilStandard: TImageList;
     ilChecks: TImageList;
-    Label1: TLabel;
-    edText: TEdit;
-    btnAdd: TButton;
-    cbNodeType: TComboBox;
-    Label2: TLabel;
-    btnAddChild: TButton;
-    chkChecked: TCheckBox;
-    Label3: TLabel;
-    edImageIndex: TEdit;
-    udImageIndex: TUpDown;
     popTree: TPopupMenu;
     Nodetype1: TMenuItem;
     mnuNormal: TMenuItem;
@@ -54,18 +42,29 @@ type
     mnuRadioItem: TMenuItem;
     mnuChecked: TMenuItem;
     mnuDelete: TMenuItem;
-    chkFlat: TCheckBox;
     ilFlatChecks: TImageList;
-    btnRandom: TButton;
-    cbStyle: TComboBox;
     StatusBar1: TStatusBar;
-    Label4: TLabel;
-    cbCascadeLevels: TComboBox;
-    Label5: TLabel;
     N1: TMenuItem;
     Clear1: TMenuItem;
+    Label1: TLabel;
+    edText: TEdit;
+    Label2: TLabel;
+    cbNodeType: TComboBox;
+    Label3: TLabel;
+    edImageIndex: TEdit;
+    udImageIndex: TUpDown;
+    cbStyle: TComboBox;
+    chkChecked: TCheckBox;
+    chkFlat: TCheckBox;
+    Label5: TLabel;
+    cbCascadeLevels: TComboBox;
     Label6: TLabel;
     cbCascadeOptions: TComboBox;
+    btnRandom: TButton;
+    btnAddChild: TButton;
+    btnAdd: TButton;
+    Label4: TLabel;
+    JvCheckTreeView1: TJvCheckTreeView;
     procedure FormCreate(Sender: TObject);
     procedure btnAddClick(Sender: TObject);
     procedure btnAddChildClick(Sender: TObject);
@@ -81,13 +80,13 @@ type
     procedure cbCascadeLevelsChange(Sender: TObject);
     procedure Clear1Click(Sender: TObject);
     procedure cbCascadeOptionsChange(Sender: TObject);
-  private
-    procedure SetupNode(Node: TTreeNode);
-    procedure DoTreeContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
-    procedure DoToggling(Sender:TObject;Node:TTreeNode;var AllowChange:boolean);
-    procedure DoToggled(Sender:TObject;Node:TTreeNode);
+    procedure JvCheckTreeView1ContextPopup(Sender: TObject;
+      MousePos: TPoint; var Handled: Boolean);
+    procedure JvCheckTreeView1Toggling(Sender: TObject; Node: TTreeNode;
+      var AllowChange: Boolean);
+    procedure JvCheckTreeView1Toggled(Sender: TObject; Node: TTreeNode);
   public
-    tv: TJvCheckTreeView;
+    procedure SetupNode(Node: TTreeNode);
   end;
 
 var
@@ -99,19 +98,6 @@ implementation
 
 procedure TfrmCheckTVDemo.FormCreate(Sender: TObject);
 begin
-  tv := TJvCheckTreeview.Create(self);
-  tv.Align := alLeft;
-  tv.Width := 200;
-  tv.Parent := self;
-  tv.Images := ilStandard;
-  tv.StateImages := ilChecks;
-  tv.HideSelection := false;
-  tv.PopupMenu := popTree;
-
-  tv.OnContextPopup := DoTreeContextPopup;
-  tv.OnToggling := DoToggling;
-  tv.OnToggled  := DoToggled;
-
   udImageIndex.Max := ilStandard.Count - 1;
   cbNodeType.ItemIndex := 1; // checkboxes
   cbNodeTypeChange(Sender);
@@ -126,7 +112,7 @@ begin
   cbCascadeOptionsChange(Sender);
 end;
 
-procedure TfrmCheckTVDemo.SetupNode(Node:TTreeNode);
+procedure TfrmCheckTVDemo.SetupNode(Node: TTreeNode);
 begin
   Node.ImageIndex := udImageIndex.Position;
   Node.SelectedIndex := Node.ImageIndex;
@@ -140,28 +126,28 @@ begin
   case cbNodeType.ItemIndex of
     1: // check box
       begin
-        tv.CheckBox[Node] := true;
-        tv.Checked[Node] := chkChecked.Checked;
+        JvCheckTreeView1.CheckBox[Node] := True;
+        JvCheckTreeView1.Checked[Node] := chkChecked.Checked;
       end;
-    2:  // radio item
+    2: // radio item
       begin
-        tv.RadioItem[Node] := true;
-        tv.Checked[Node] := chkChecked.Checked;
+        JvCheckTreeView1.RadioItem[Node] := True;
+        JvCheckTreeView1.Checked[Node] := chkChecked.Checked;
       end;
   end;
   Node.MakeVisible;
-  tv.Selected := Node;
+  JvCheckTreeView1.Selected := Node;
 end;
 
 procedure TfrmCheckTVDemo.btnAddClick(Sender: TObject);
 begin
-  SetupNode(tv.Items.Add(tv.Selected, edText.Text));
+  SetupNode(JvCheckTreeView1.Items.Add(JvCheckTreeView1.Selected, edText.Text));
   edText.SetFocus;
 end;
 
 procedure TfrmCheckTVDemo.btnAddChildClick(Sender: TObject);
 begin
-  SetupNode(tv.Items.AddChild(tv.Selected, edText.Text));
+  SetupNode(JvCheckTreeView1.Items.AddChild(JvCheckTreeView1.Selected, edText.Text));
   edText.SetFocus;
 end;
 
@@ -170,172 +156,186 @@ begin
   chkChecked.Enabled := cbNodeType.ItemIndex > 0;
 end;
 
-procedure TfrmCheckTVDemo.DoTreeContextPopup(Sender: TObject;
-  MousePos: TPoint; var Handled: Boolean);
-var N:TTreeNode;
-begin
-  N := tv.GetNodeAt(MousePos.X,MousePos.Y);
-  if N <> nil then
-  begin
-    popTree.Tag := integer(N);
-    mnuChecked.Enabled := true;
-    mnuChecked.Checked := tv.Checked[N];
-    if tv.CheckBox[N] then
-      mnuCheckBox.Checked := true
-    else if tv.RadioItem[N] then
-      mnuRadioItem.Checked := true
-    else
-    begin
-      mnuChecked.Enabled := false;
-      mnuNormal.Checked := true;
-      mnuChecked.Checked := false;
-    end;
-  end
-  else                        
-  begin
-    popTree.Tag := 0;
-    Handled := true;
-  end;
-end;
-
 procedure TfrmCheckTVDemo.mnuNormalClick(Sender: TObject);
-var N:TTreeNode;
+var
+  N: TTreeNode;
 begin
   N := TTreeNode(popTree.Tag);
   if N <> nil then
   begin
-    tv.CheckBox[N] := false;
-    tv.RadioItem[N] := false;
+    JvCheckTreeView1.CheckBox[N] := False;
+    JvCheckTreeView1.RadioItem[N] := False;
   end;
 end;
 
 procedure TfrmCheckTVDemo.mnuCheckBoxClick(Sender: TObject);
-var N:TTreeNode;
+var
+  N: TTreeNode;
 begin
   N := TTreeNode(popTree.Tag);
   if N <> nil then
-    tv.CheckBox[N] := true;
+    JvCheckTreeView1.CheckBox[N] := True;
 end;
 
 procedure TfrmCheckTVDemo.mnuRadioItemClick(Sender: TObject);
-var N:TTreeNode;
+var
+  N: TTreeNode;
 begin
   N := TTreeNode(popTree.Tag);
   if N <> nil then
-    tv.RadioItem[N] := true;
+    JvCheckTreeView1.RadioItem[N] := True;
 end;
 
 procedure TfrmCheckTVDemo.mnuCheckedClick(Sender: TObject);
-var N:TTreeNode;M:TMenuItem;
+var
+  N: TTreeNode;
+  M: TMenuItem;
 begin
   N := TTreeNode(popTree.Tag);
   if N <> nil then
   begin
     M := Sender as TMenuItem;
     M.Checked := not M.Checked;
-    tv.Checked[N] := M.Checked;
+    JvCheckTreeView1.Checked[N] := M.Checked;
   end;
 end;
 
 procedure TfrmCheckTVDemo.mnuDeleteClick(Sender: TObject);
-var N:TTreeNode;
+var
+  N: TTreeNode;
 begin
   N := TTreeNode(popTree.Tag);
   if N <> nil then
-    tv.Items.Delete(N);
+    JvCheckTreeView1.Items.Delete(N);
 end;
 
 procedure TfrmCheckTVDemo.chkFlatClick(Sender: TObject);
 begin
   if chkFlat.Checked then
-    tv.StateImages := ilFlatChecks
+    JvCheckTreeView1.StateImages := ilFlatChecks
   else
-    tv.StateImages := ilChecks;
+    JvCheckTreeView1.StateImages := ilChecks;
 end;
 
 procedure TfrmCheckTVDemo.btnRandomClick(Sender: TObject);
-var i,aIndex:integer;N:TTreeNode;
+var
+  i, aIndex: integer;
+  N: TTreeNode;
 begin
   Randomize;
-  tv.Items.Clear;
+  JvCheckTreeView1.Items.BeginUpdate;
+  JvCheckTreeView1.Items.Clear;
   for i := 0 to 200 do
   begin
-    if tv.Items.Count =  0 then
-      N := tv.Items.AddChild(nil,edText.Text)
+    if JvCheckTreeView1.Items.Count = 0 then
+      N := JvCheckTreeView1.Items.AddChild(nil, edText.Text)
     else
     begin
-      aIndex := Random(tv.Items.Count-1);
-      if AIndex < tv.Items.Count div 2 then
-        N := tv.Items.AddChild(nil,edText.Text)
+      aIndex := Random(JvCheckTreeView1.Items.Count - 1);
+      if AIndex < JvCheckTreeView1.Items.Count div 2 then
+        N := JvCheckTreeView1.Items.AddChild(nil, edText.Text)
       else
-        N := tv.Items.AddChild(tv.Items[aIndex],edText.Text)
+        N := JvCheckTreeView1.Items.AddChild(JvCheckTreeView1.Items[aIndex], edText.Text)
     end;
-    N.ImageIndex := Random(ilStandard.Count-1);
+    N.ImageIndex := Random(ilStandard.Count - 1);
     N.SelectedIndex := N.ImageIndex;
     case Random(8) of
-    2..3: // check box
-      begin
-        tv.CheckBox[N] := true;
-        tv.Checked[N]  := boolean(Random(2));
-      end;
-    5..7:  // radio item
-      begin
-        tv.RadioItem[N] := true;
-        tv.Checked[N]  := boolean(Random(5));
-      end;
+      2..3: // check box
+        begin
+          JvCheckTreeView1.CheckBox[N] := True;
+          JvCheckTreeView1.Checked[N] := Random(2) <> 0;
+        end;
+      5..7: // radio item
+        begin
+          JvCheckTreeView1.RadioItem[N] := True;
+          JvCheckTreeView1.Checked[N] := Random(5) <> 0;
+        end;
     end;
   end;
-  tv.FullExpand;
+  JvCheckTreeView1.FullExpand;
+  JvCheckTreeView1.Items.EndUpdate;
 end;
 
 procedure TfrmCheckTVDemo.cbStyleChange(Sender: TObject);
 begin
-  tv.CheckBoxOptions.Style := TJvTVCheckBoxStyle(cbStyle.ItemIndex);
-  case tv.CheckBoxOptions.Style of
-    cbsNative,cbsNone:
-      tv.StateImages := nil;
+  JvCheckTreeView1.CheckBoxOptions.Style := TJvTVCheckBoxStyle(cbStyle.ItemIndex);
+  case JvCheckTreeView1.CheckBoxOptions.Style of
+    cbsNative, cbsNone:
+      JvCheckTreeView1.StateImages := nil;
     cbsJVCL:
       if chkFlat.Checked then
-        tv.StateImages := ilFlatChecks
+        JvCheckTreeView1.StateImages := ilFlatChecks
       else
-        tv.StateImages := ilChecks;
+        JvCheckTreeView1.StateImages := ilChecks;
   end;
 end;
 
 const
-  cOnOff:array[boolean] of PChar = ('off','on');
-
-procedure TfrmCheckTVDemo.DoToggled(Sender: TObject; Node: TTreeNode);
-begin
-  StatusBar1.Panels[0].Text := Format('Node %s toggled %s',[Node.Text,cOnOff[tv.Checked[Node]]]);
-end;
-
-procedure TfrmCheckTVDemo.DoToggling(Sender: TObject; Node: TTreeNode;
-  var AllowChange: boolean);
-begin
-  StatusBar1.Panels[0].Text := Format('Node %s about to be toggled %s',[Node.Text,cOnOff[not tv.Checked[Node]]]);
-end;
+  cOnOff: array [Boolean] of PChar = ('off', 'on');
 
 procedure TfrmCheckTVDemo.cbCascadeLevelsChange(Sender: TObject);
 begin
-  tv.CheckBoxOptions.CascadeLevels := cbCascadeLevels.ItemIndex - 1;
+  JvCheckTreeView1.CheckBoxOptions.CascadeLevels := cbCascadeLevels.ItemIndex - 1;
 end;
 
 procedure TfrmCheckTVDemo.Clear1Click(Sender: TObject);
 begin
-  tv.Items.Clear;
+  JvCheckTreeView1.Items.Clear;
 end;
 
 procedure TfrmCheckTVDemo.cbCascadeOptionsChange(Sender: TObject);
-var F:TJvTVCascadeOptions;
+var
+  F: TJvTVCascadeOptions;
 begin
   F := [];
   case cbCascadeOptions.ItemIndex of
     0: F := [poOnCheck];
     1: F := [poOnUnCheck];
-    2: F := [poOnCheck,poOnUnCheck];
+    2: F := [poOnCheck, poOnUnCheck];
   end;
-  tv.CheckBoxOptions.CascadeOptions := F;
+  JvCheckTreeView1.CheckBoxOptions.CascadeOptions := F;
+end;
+
+procedure TfrmCheckTVDemo.JvCheckTreeView1ContextPopup(Sender: TObject;
+  MousePos: TPoint; var Handled: Boolean);
+var
+  N: TTreeNode;
+begin
+  N := JvCheckTreeView1.GetNodeAt(MousePos.X, MousePos.Y);
+  if N <> nil then
+  begin
+    popTree.Tag := integer(N);
+    mnuChecked.Enabled := True;
+    mnuChecked.Checked := JvCheckTreeView1.Checked[N];
+    if JvCheckTreeView1.CheckBox[N] then
+      mnuCheckBox.Checked := True
+    else
+    if JvCheckTreeView1.RadioItem[N] then
+      mnuRadioItem.Checked := True
+    else
+    begin
+      mnuChecked.Enabled := False;
+      mnuNormal.Checked := True;
+      mnuChecked.Checked := False;
+    end;
+  end
+  else
+  begin
+    popTree.Tag := 0;
+    Handled := True;
+  end;
+end;
+
+procedure TfrmCheckTVDemo.JvCheckTreeView1Toggling(Sender: TObject;
+  Node: TTreeNode; var AllowChange: Boolean);
+begin
+  StatusBar1.Panels[0].Text := Format('Node %s about to be toggled %s', [Node.Text, cOnOff[not JvCheckTreeView1.Checked[Node]]]);
+end;
+
+procedure TfrmCheckTVDemo.JvCheckTreeView1Toggled(Sender: TObject;
+  Node: TTreeNode);
+begin
+  StatusBar1.Panels[0].Text := Format('Node %s toggled %s', [Node.Text, cOnOff[JvCheckTreeView1.Checked[Node]]]);
 end;
 
 end.

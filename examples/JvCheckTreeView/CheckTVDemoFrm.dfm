@@ -2,10 +2,11 @@ object frmCheckTVDemo: TfrmCheckTVDemo
   Left = 413
   Top = 183
   Width = 521
-  Height = 408
-  ActiveControl = edText
+  Height = 400
   Caption = 'JvCheckTreeView Demo'
   Color = clBtnFace
+  Constraints.MinHeight = 385
+  Constraints.MinWidth = 400
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -15,208 +16,60 @@ object frmCheckTVDemo: TfrmCheckTVDemo
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object Splitter1: TSplitter
-    Left = 0
-    Top = 0
-    Width = 5
-    Height = 359
-    Cursor = crHSplit
+  object Label1: TLabel
+    Left = 261
+    Top = 6
+    Width = 54
+    Height = 13
+    Anchors = [akTop, akRight]
+    Caption = 'Node &Text:'
+    FocusControl = edText
   end
-  object Panel1: TPanel
-    Left = 5
-    Top = 0
-    Width = 508
-    Height = 359
-    Align = alClient
-    BevelOuter = bvNone
-    TabOrder = 0
-    object Label1: TLabel
-      Left = 13
-      Top = 6
-      Width = 54
-      Height = 13
-      Caption = 'Node &Text:'
-      FocusControl = edText
-    end
-    object Label2: TLabel
-      Left = 13
-      Top = 54
-      Width = 56
-      Height = 13
-      Caption = '&Node Type:'
-      FocusControl = cbNodeType
-    end
-    object Label3: TLabel
-      Left = 13
-      Top = 108
-      Width = 62
-      Height = 13
-      Caption = '&ImageIndex:'
-      FocusControl = edImageIndex
-    end
-    object Label4: TLabel
-      Left = 13
-      Top = 162
-      Width = 28
-      Height = 13
-      Caption = '&Style:'
-      FocusControl = cbStyle
-    end
-    object Label5: TLabel
-      Left = 12
-      Top = 246
-      Width = 82
-      Height = 13
-      Caption = 'Cascade Checks:'
-    end
-    object Label6: TLabel
-      Left = 12
-      Top = 294
-      Width = 111
-      Height = 13
-      Caption = 'Cascade Checks when:'
-    end
-    object edText: TEdit
-      Left = 13
-      Top = 24
-      Width = 139
-      Height = 21
-      TabOrder = 0
-      Text = 'NodeName'
-    end
-    object btnAdd: TButton
-      Left = 181
-      Top = 54
-      Width = 75
-      Height = 25
-      Caption = '&Add'
-      TabOrder = 7
-      OnClick = btnAddClick
-    end
-    object cbNodeType: TComboBox
-      Left = 13
-      Top = 72
-      Width = 139
-      Height = 21
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 1
-      OnChange = cbNodeTypeChange
-      Items.Strings = (
-        'Normal'
-        'CheckBox'
-        'RadioItem')
-    end
-    object btnAddChild: TButton
-      Left = 181
-      Top = 84
-      Width = 75
-      Height = 25
-      Caption = 'Add &Child'
-      TabOrder = 8
-      OnClick = btnAddChildClick
-    end
-    object chkChecked: TCheckBox
-      Left = 19
-      Top = 210
-      Width = 97
-      Height = 17
-      Caption = 'C&hecked'
-      Enabled = False
-      TabOrder = 5
-    end
-    object edImageIndex: TEdit
-      Left = 13
-      Top = 126
-      Width = 121
-      Height = 21
-      TabOrder = 2
-      Text = '0'
-    end
-    object udImageIndex: TUpDown
-      Left = 134
-      Top = 126
-      Width = 15
-      Height = 21
-      Associate = edImageIndex
-      Min = -1
-      Position = 0
-      TabOrder = 3
-      Wrap = False
-    end
-    object chkFlat: TCheckBox
-      Left = 127
-      Top = 210
-      Width = 66
-      Height = 17
-      Caption = '&Flat'
-      TabOrder = 6
-      OnClick = chkFlatClick
-    end
-    object btnRandom: TButton
-      Left = 180
-      Top = 120
-      Width = 75
-      Height = 25
-      Caption = '&Random'
-      TabOrder = 9
-      OnClick = btnRandomClick
-    end
-    object cbStyle: TComboBox
-      Left = 13
-      Top = 180
-      Width = 139
-      Height = 21
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 4
-      OnChange = cbStyleChange
-      Items.Strings = (
-        'No checkboxes'
-        'MS implementation'
-        'JVCL implementation')
-    end
-    object cbCascadeLevels: TComboBox
-      Left = 12
-      Top = 264
-      Width = 145
-      Height = 21
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 10
-      OnChange = cbCascadeLevelsChange
-      Items.Strings = (
-        'Always'
-        'Never'
-        '1 Level'
-        '2 Levels'
-        '3 Levels'
-        '4 Levels'
-        '5 Levels'
-        '6 Levels'
-        '7 Levels'
-        '8 Levels'
-        '9 Levels'
-        '10 Levels')
-    end
-    object cbCascadeOptions: TComboBox
-      Left = 12
-      Top = 312
-      Width = 145
-      Height = 21
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 11
-      OnChange = cbCascadeOptionsChange
-      Items.Strings = (
-        'Checking'
-        'Unchecking'
-        'Unchecking and Checking')
-    end
+  object Label2: TLabel
+    Left = 261
+    Top = 54
+    Width = 56
+    Height = 13
+    Anchors = [akTop, akRight]
+    Caption = '&Node Type:'
+    FocusControl = cbNodeType
+  end
+  object Label3: TLabel
+    Left = 261
+    Top = 108
+    Width = 62
+    Height = 13
+    Anchors = [akTop, akRight]
+    Caption = '&ImageIndex:'
+    FocusControl = edImageIndex
+  end
+  object Label5: TLabel
+    Left = 260
+    Top = 246
+    Width = 82
+    Height = 13
+    Anchors = [akTop, akRight]
+    Caption = 'Cascade Checks:'
+  end
+  object Label6: TLabel
+    Left = 260
+    Top = 294
+    Width = 111
+    Height = 13
+    Anchors = [akTop, akRight]
+    Caption = 'Cascade Checks when:'
+  end
+  object Label4: TLabel
+    Left = 261
+    Top = 162
+    Width = 28
+    Height = 13
+    Anchors = [akTop, akRight]
+    Caption = '&Style:'
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 359
+    Top = 351
     Width = 513
     Height = 19
     Panels = <
@@ -226,9 +79,176 @@ object frmCheckTVDemo: TfrmCheckTVDemo
       end>
     SimplePanel = False
   end
+  object edText: TEdit
+    Left = 264
+    Top = 24
+    Width = 145
+    Height = 21
+    Anchors = [akTop, akRight]
+    TabOrder = 1
+    Text = 'NodeName'
+  end
+  object cbNodeType: TComboBox
+    Left = 264
+    Top = 72
+    Width = 145
+    Height = 21
+    Style = csDropDownList
+    Anchors = [akTop, akRight]
+    ItemHeight = 13
+    TabOrder = 2
+    OnChange = cbNodeTypeChange
+    Items.Strings = (
+      'Normal'
+      'CheckBox'
+      'RadioItem')
+  end
+  object edImageIndex: TEdit
+    Left = 264
+    Top = 128
+    Width = 132
+    Height = 21
+    Anchors = [akTop, akRight]
+    TabOrder = 3
+    Text = '0'
+  end
+  object udImageIndex: TUpDown
+    Left = 396
+    Top = 128
+    Width = 17
+    Height = 21
+    Anchors = [akTop, akRight]
+    Associate = edImageIndex
+    Min = -1
+    Position = 0
+    TabOrder = 4
+    Wrap = False
+  end
+  object cbStyle: TComboBox
+    Left = 264
+    Top = 184
+    Width = 145
+    Height = 21
+    Style = csDropDownList
+    Anchors = [akTop, akRight]
+    ItemHeight = 13
+    TabOrder = 5
+    OnChange = cbStyleChange
+    Items.Strings = (
+      'No checkboxes'
+      'MS implementation'
+      'JVCL implementation')
+  end
+  object chkChecked: TCheckBox
+    Left = 264
+    Top = 210
+    Width = 97
+    Height = 17
+    Anchors = [akTop, akRight]
+    Caption = 'C&hecked'
+    Enabled = False
+    TabOrder = 6
+  end
+  object chkFlat: TCheckBox
+    Left = 372
+    Top = 210
+    Width = 37
+    Height = 17
+    Anchors = [akTop, akRight]
+    Caption = '&Flat'
+    TabOrder = 7
+    OnClick = chkFlatClick
+  end
+  object cbCascadeLevels: TComboBox
+    Left = 264
+    Top = 264
+    Width = 145
+    Height = 21
+    Style = csDropDownList
+    Anchors = [akTop, akRight]
+    ItemHeight = 13
+    TabOrder = 8
+    OnChange = cbCascadeLevelsChange
+    Items.Strings = (
+      'Always'
+      'Never'
+      '1 Level'
+      '2 Levels'
+      '3 Levels'
+      '4 Levels'
+      '5 Levels'
+      '6 Levels'
+      '7 Levels'
+      '8 Levels'
+      '9 Levels'
+      '10 Levels')
+  end
+  object cbCascadeOptions: TComboBox
+    Left = 264
+    Top = 312
+    Width = 145
+    Height = 21
+    Style = csDropDownList
+    Anchors = [akTop, akRight]
+    ItemHeight = 13
+    TabOrder = 9
+    OnChange = cbCascadeOptionsChange
+    Items.Strings = (
+      'Checking'
+      'Unchecking'
+      'Unchecking and Checking')
+  end
+  object btnRandom: TButton
+    Left = 432
+    Top = 88
+    Width = 75
+    Height = 25
+    Anchors = [akTop, akRight]
+    Caption = '&Random'
+    TabOrder = 10
+    OnClick = btnRandomClick
+  end
+  object btnAddChild: TButton
+    Left = 432
+    Top = 56
+    Width = 75
+    Height = 25
+    Anchors = [akTop, akRight]
+    Caption = 'Add &Child'
+    TabOrder = 11
+    OnClick = btnAddChildClick
+  end
+  object btnAdd: TButton
+    Left = 432
+    Top = 24
+    Width = 75
+    Height = 25
+    Anchors = [akTop, akRight]
+    Caption = '&Add'
+    TabOrder = 12
+    OnClick = btnAddClick
+  end
+  object JvCheckTreeView1: TJvCheckTreeView
+    Left = 0
+    Top = 8
+    Width = 249
+    Height = 339
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    HideSelection = False
+    Images = ilStandard
+    Indent = 19
+    PopupMenu = popTree
+    StateImages = ilChecks
+    TabOrder = 13
+    OnContextPopup = JvCheckTreeView1ContextPopup
+    LineColor = -16777216
+    CheckBoxOptions.Style = cbsNone
+    OnToggling = JvCheckTreeView1Toggling
+    OnToggled = JvCheckTreeView1Toggled
+  end
   object ilStandard: TImageList
-    Left = 96
-    Top = 6
+    Left = 456
+    Top = 152
     Bitmap = {
       494C01011F002200040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000009000000001002000000000000090
@@ -1426,8 +1446,8 @@ object frmCheckTVDemo: TfrmCheckTVDemo
       000000000000}
   end
   object ilChecks: TImageList
-    Left = 156
-    Top = 6
+    Left = 456
+    Top = 200
     Bitmap = {
       494C010105000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
@@ -1833,8 +1853,8 @@ object frmCheckTVDemo: TfrmCheckTVDemo
       000000000000}
   end
   object popTree: TPopupMenu
-    Left = 336
-    Top = 114
+    Left = 456
+    Top = 296
     object Nodetype1: TMenuItem
       Caption = 'Node type'
       object mnuNormal: TMenuItem
@@ -1874,8 +1894,8 @@ object frmCheckTVDemo: TfrmCheckTVDemo
     end
   end
   object ilFlatChecks: TImageList
-    Left = 234
-    Top = 12
+    Left = 456
+    Top = 248
     Bitmap = {
       494C010105000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
