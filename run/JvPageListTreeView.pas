@@ -939,21 +939,9 @@ begin
 end;
 
 destructor TJvCustomPage.Destroy;
-var
-  f: TextFile;
 begin
-  AssignFile(f, 'C:\Msg.log');
-  if not FileExists('C:\Msg.log') then Rewrite(f) else Append(f);
-  WriteLn(f, '********************************');
-  CloseFile(f);
-
   PageList := nil;
   inherited Destroy;
-
-  AssignFile(f, 'C:\Msg.log');
-  if not FileExists('C:\Msg.log') then Rewrite(f) else Append(f);
-  WriteLn(f, 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-  CloseFile(f);
 end;
 
 procedure TJvCustomPage.DoAfterPaint(ACanvas: TCanvas; ARect: TRect);
