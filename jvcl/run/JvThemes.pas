@@ -743,16 +743,17 @@ function GetThemeStyle(Control: TControl): TThemeStyle;
   csParentBackground and the color is that of it's parent the Rect is not filled
   because the it is done by the JvThemes/VCL7. }
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
-  const R: TRect; NeedParentBackground: Boolean = True); overload;
+  const R: TRect; NeedsParentBackground: Boolean = True); overload;
 {$IFDEF MSWINDOWS}
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
-  Brush: HBRUSH; NeedParentBackground: Boolean = True);  overload;
+  Brush: HBRUSH; NeedsParentBackground: Boolean = True);  overload;
 
 function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect; uType, uState: UINT): BOOL;
 
 { PerformEraseBackground sends a WM_ERASEBKGND message to the Control's parent. }
-procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint); overload;
-procedure PerformEraseBackground(Control: TControl; DC: HDC); overload;
+procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint;
+  R: PRect = nil); overload;
+procedure PerformEraseBackground(Control: TControl; DC: HDC; R: PRect = nil); overload;
 {$ENDIF MSWINDOWS}
 
 function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: TRect;
@@ -760,11 +761,13 @@ function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: 
   IsFocused, IsHot: Boolean): TRect;
 
 function IsMouseOver(Control: TControl): Boolean;
+function GetParentBackground(Control: TWinControl): Boolean;
+procedure SetParentBackground(Control: TWinControl; Value: Boolean);
 
 implementation
 
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
-  const R: TRect; NeedParentBackground: Boolean = True);
+  const R: TRect; NeedsParentBackground: Boolean = True);
 begin
 {$IFDEF JVCLThemesEnabled}
   if (not (csDesigning in Control.ComponentState)) and
@@ -772,13 +775,18 @@ begin
      ((Canvas.Brush.Color = TWinControlThemeInfo(Control.Parent).Color) or
      (ColorToRGB(Canvas.Brush.Color) = ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
      (ThemeServices.ThemesEnabled) and
-     ((not NeedParentBackground) or
+     ((not NeedsParentBackground) or
      (csParentBackground in GetThemeStyle(Control))) then
 
     if Control is TWinControl then
-      ThemeServices.DrawParentBackground(TWinControl(Control).Handle, Canvas.Handle, nil, False, @R)
+    begin
+      if TWinControl(Control).DoubleBuffered then
+        PerformEraseBackground(Control, Canvas.Handle, @R)
+      else
+        ThemeServices.DrawParentBackground(TWinControl(Control).Handle, Canvas.Handle, nil, False, @R)
+    end
     else
-      ThemeServices.DrawParentBackground(Control.Parent.Handle, Canvas.Handle, nil, False, @R)
+      PerformEraseBackground(Control.Parent, Canvas.Handle, @R)
   else
 {$ENDIF}
   Canvas.FillRect(R);
@@ -787,7 +795,7 @@ end;
 {$IFDEF MSWINDOWS}
 
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
-  Brush: HBRUSH; NeedParentBackground: Boolean = True);
+  Brush: HBRUSH; NeedsParentBackground: Boolean = True);
 {$IFDEF JVCLThemesEnabled}
 var
   LogBrush: TLogBrush;
@@ -799,13 +807,18 @@ begin
      (Control.Parent <> nil) and
      (LogBrush.lbColor = Cardinal(ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
      (ThemeServices.ThemesEnabled) and
-     ((not NeedParentBackground) or
+     ((not NeedsParentBackground) or
      (csParentBackground in GetThemeStyle(Control))) then
 
     if Control is TWinControl then
-      ThemeServices.DrawParentBackground(TWinControl(Control).Handle, DC, nil, False, @R)
+    begin
+      if TWinControl(Control).DoubleBuffered then
+        PerformEraseBackground(Control, DC, @R)
+      else
+        ThemeServices.DrawParentBackground(TWinControl(Control).Handle, DC, nil, False, @R)
+    end
     else
-      ThemeServices.DrawParentBackground(Control.Parent.Handle, DC, nil, False, @R)
+      PerformEraseBackground(Control.Parent, DC, @R)
   else
 {$ENDIF}
   FillRect(DC, R, Brush);
@@ -859,10 +872,10 @@ begin
   Result := DrawFrameControl(DC, Rect, uType, uState);
 end;
 
-procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint);
-{ Mike Lischke is the original author of this code. }
+procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint; R: PRect = nil);
 var
   WindowOrg: TPoint;
+  OrgRgn, Rgn: THandle;
 begin
   if Control.Parent <> nil then
   begin
@@ -871,18 +884,39 @@ begin
       GetWindowOrgEx(DC, WindowOrg);
       SetWindowOrgEx(DC, WindowOrg.X + Offset.X, WindowOrg.Y + Offset.Y, nil);
     end;
+
+    OrgRgn := 0;
+    if R <> nil then
+    begin
+      OrgRgn := CreateRectRgn(0, 0, 1, 1);
+      if GetClipRgn(DC, OrgRgn) = 0 then
+      begin
+        DeleteObject(OrgRgn);
+        OrgRgn := 0;
+      end;
+      Rgn := CreateRectRgnIndirect(R^);
+      SelectClipRgn(DC, Rgn);
+      DeleteObject(Rgn);
+    end;
+
     try
-      Control.Parent.Perform(WM_ERASEBKGND, DC, 0);
+      Control.Parent.Perform(WM_ERASEBKGND, DC, DC); // force redraw
     finally
       if (Offset.X <> 0) and (Offset.Y <> 0) then
         SetWindowOrgEx(DC, WindowOrg.X, WindowOrg.Y, nil);
+
+      if OrgRgn <> 0 then
+      begin
+        SelectClipRgn(DC, OrgRgn);
+        DeleteObject(OrgRgn);
+      end;
     end;
   end;
 end;
 
-procedure PerformEraseBackground(Control: TControl; DC: HDC);
+procedure PerformEraseBackground(Control: TControl; DC: HDC; R: PRect = nil);
 begin
-  PerformEraseBackground(Control, DC, Point(Control.Left, Control.Top));
+  PerformEraseBackground(Control, DC, Point(Control.Left, Control.Top), R);
 end;
 
 {$ENDIF MSWINDOWS}
@@ -927,6 +961,23 @@ var pt: TPoint;
 begin
   pt := Control.ScreenToClient(Mouse.CursorPos);
   Result := PtInRect(Control.ClientRect, pt);
+end;
+
+function GetParentBackground(Control: TWinControl): Boolean;
+begin
+  Result := csParentBackground in GetThemeStyle(Control);
+end;
+
+procedure SetParentBackground(Control: TWinControl; Value: Boolean);
+begin
+  if Value <> GetParentBackground(Control) then
+  begin
+    if Value then
+      IncludeThemeStyle(Control, [csParentBackground])
+    else
+      ExcludeThemeStyle(Control, [csParentBackground]);
+    Control.Invalidate;
+  end;
 end;
 
 {$IFDEF JVCLThemesEnabled}
@@ -1002,17 +1053,20 @@ type
   TThemeHook = class(TObject)
   public
     FControl: TControl;
+    FStatus: (thsNone, thsInWndProc, thsDelete);
+    FDead: Boolean;
     FThemeStyle: TThemeStyle;
     FOrgWndProc: TWndMethod;
 
     procedure WndProc(var Msg: TMessage);
   protected
     procedure ThemedPaint(var Msg: TWMPaint; var Handled: Boolean);
-    procedure ThemedNCPaint(var Msg: TWMNCPaint; var Handled: Boolean);
+    procedure ThemedNCPaint(var Msg: TWMNCPaint);
     procedure ThemedEraseBkGnd(var Msg: TWMEraseBkGnd; var Handled: Boolean);
     procedure ThemedCtlColorStatic(var Msg: TWMCtlColorStatic; var Handled: Boolean);
   public
     constructor Create(AControl: TControl);
+    destructor Destroy; override;
     procedure DeleteHook;
 
     procedure IncludeThemeStyle(Style: TThemeStyle);
@@ -1027,6 +1081,8 @@ type
   private
     FLock: TRTLCriticalSection;
     FRecreationList: TList;
+    FDeadList: TObjectList;
+    FEraseBkgndHooked: Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1061,12 +1117,14 @@ constructor TThemeHookList.Create;
 begin
   inherited Create;
   FRecreationList := TList.Create;
+  FDeadList := TObjectList.Create;
   InitializeCriticalSection(FLock);
 end;
 
 destructor TThemeHookList.Destroy;
 begin
   FRecreationList.Free;
+  FDeadList.Free;
   DeleteCriticalSection(FLock);
   inherited Destroy;
 end;
@@ -1094,10 +1152,25 @@ begin
 end;
 
 function TThemeHookList.GetControl(Control: TControl): TThemeHook;
+var i: Integer;
 begin
   Result := FindControl(Control);
   if Result = nil then
   begin
+    for i := 0 to FDeadList.Count - 1 do
+    begin
+      Result := TThemeHook(FDeadList[i]);
+      if Result.Control = Control then
+      begin
+        Result.FDead := False;
+        if not (csDesigning in Result.FControl.ComponentState) then
+          if Result.FControl is TGraphicControl then
+            Result.FControl.FreeNotification(ThemeHookComponent);
+        FDeadList.Extract(Result);
+        Add(Result);
+        Exit;
+      end;
+    end;
     Result := TThemeHook.Create(Control);
     Add(Result);
   end;
@@ -1112,23 +1185,45 @@ begin
   if not (csDesigning in FControl.ComponentState) then
   begin
     FOrgWndProc := FControl.WindowProc;
-    FControl.FreeNotification(ThemeHookComponent);
+    if FControl is TGraphicControl then
+      FControl.FreeNotification(ThemeHookComponent);
     FControl.WindowProc := WndProc;
   end;
 end;
 
+destructor TThemeHook.Destroy;
+begin
+  if FControl is TGraphicControl then
+    FControl.FreeNotification(ThemeHookComponent);
+  inherited Destroy;
+end;
+
 procedure TThemeHook.DeleteHook;
 begin
+  if FStatus = thsInWndProc then
+    FStatus := thsDelete;
+  if FStatus = thsDelete then
+    Exit;
   if not (csDesigning in FControl.ComponentState) then
   begin
-    FControl.WindowProc := FOrgWndProc;
-    FControl.RemoveFreeNotification(ThemeHookComponent);
+    if TMethod(FControl.WindowProc).Code = @TThemeHook.WndProc then
+      FControl.WindowProc := FOrgWndProc
+    else
+      FDead := True; // keep WndProc
+    if FControl is TGraphicControl then
+      FControl.RemoveFreeNotification(ThemeHookComponent);
   end;
-  ThemeHooks.RecreationList.Remove(FControl);
-  FControl := nil;
+  if not FDead then
+    ThemeHooks.RecreationList.Remove(FControl);
   ThemeHooks.Enter;
   try
-    ThemeHooks.Remove(Self);
+    if FDead then
+    begin
+      ThemeHooks.Extract(Self);
+      ThemeHooks.FDeadList.Add(Self);
+    end
+    else
+      ThemeHooks.Remove(Self)
   finally
     ThemeHooks.Leave;
   end;
@@ -1142,7 +1237,8 @@ end;
 procedure TThemeHook.ExcludeThemeStyle(Style: TThemeStyle);
 begin
   FThemeStyle := FThemeStyle - Style;
-  if FThemeStyle = [] then
+  if (FThemeStyle = []) or
+     (ThemeHooks.FEraseBkgndHooked and (FThemeStyle = [csParentBackground])) then
     DeleteHook;
 end;
 
@@ -1151,8 +1247,12 @@ var
   Handled: Boolean;
 begin
  // Should not happen but it can if the WindowProc is hooked by another component
-  if (ThemeHooks = nil) or (ThemeHooks.IndexOf(Self) = -1) then Exit;
-
+  if (ThemeHooks = nil) then Exit;
+  if FDead then
+  begin
+    FOrgWndProc(Msg);
+    Exit;
+  end;
 
   Handled := False;
   case Msg.Msg of
@@ -1174,17 +1274,28 @@ begin
         ThemedCtlColorStatic(TWMCtlColorStatic(Msg), Handled);
   end;
 
-  if not Handled then
-    FOrgWndProc(Msg);
+  FStatus := thsInWndProc;
+  try
+    if not Handled then
+      FOrgWndProc(Msg);
+  finally
+    if FStatus = thsDelete then
+    begin
+      FStatus := thsNone;
+      DeleteHook;
+    end
+    else
+      FStatus := thsNone;
+  end;
 
   case Msg.Msg of
     WM_NCPAINT:
       if ThemeServices.ThemesEnabled then
-        ThemedNCPaint(TWMNCPaint(Msg), Handled);
+        ThemedNCPaint(TWMNCPaint(Msg));
 
     WM_DESTROY:
-        if (csDestroying in Control.ComponentState) and (ThemeHooks.RecreationList.IndexOf(Control) = -1) then
-          DeleteHook;
+       if (csDestroying in Control.ComponentState) and (ThemeHooks.RecreationList.IndexOf(Control) = -1) then
+         DeleteHook;
   end;
 
   while ThemeHooks.RecreationList.Count > 0 do
@@ -1201,7 +1312,7 @@ begin
       PerformEraseBackground(Control, Msg.DC);
 end;
 
-procedure TThemeHook.ThemedNCPaint(var Msg: TWMNCPaint; var Handled: Boolean);
+procedure TThemeHook.ThemedNCPaint(var Msg: TWMNCPaint);
 begin
   if csNeedsBorderPaint in ThemeStyle then
   begin
@@ -1209,13 +1320,15 @@ begin
     begin
       ThemeServices.PaintBorder(TWinControl(Control), False);
       Msg.Result := 0;
-      Handled := True;
     end;
   end;
 end;
 
 procedure TThemeHook.ThemedEraseBkGnd(var Msg: TWMEraseBkGnd; var Handled: Boolean);
 begin
+  if ThemeHooks.FEraseBkgndHooked then
+    Exit;
+
   if csParentBackground in ThemeStyle then
   begin
     if Control is TWinControl then
@@ -1304,9 +1417,71 @@ begin
   end;
 end;
 
+function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer; assembler;
+// JclSysUtils code
+asm
+        CALL    System.@FindDynaClass
+end;
+
+procedure WMEraseBkgndHook(Self: TWinControl; var Msg: TWMEraseBkgnd);
+var
+  R: TRect;
+begin
+  if not Self.DoubleBuffered or (Msg.DC = HDC(Msg.Unused)) then
+  begin
+    if ThemeServices.ThemesEnabled and (csParentBackground in GetThemeStyle(Self)) then
+    begin
+      R := Self.ClientRect;
+      ThemeServices.DrawParentBackground(Self.Handle, Msg.DC, nil, False, @R)
+    end
+    else
+      FillRect(Msg.DC, Self.ClientRect, Self.Brush.Handle);
+  end;
+  Msg.Result := 1;
+end;
+
+type
+  TJumpCode = packed record
+    Pop: Byte;  // pop xxx
+    Jmp: Byte;  // jmp Offset
+    Offset: Integer;
+  end;
+
+procedure InstallWinControlHook;
+var
+  Code: TJumpCode;
+  P: procedure;
+  n: Cardinal;
+begin
+  if GetModuleHandle('DCC60.DLL') <> 0 then
+    Exit;
+
+  P := GetDynamicMethod(TWinControl, WM_ERASEBKGND);
+  if Assigned(P) then
+  begin
+    if PByte(@P)^ = $53 then // push ebx
+      Code.Pop := $5b // pop ebx
+    else if PByte(@P)^ = $55 then // push ebp
+      Code.Pop := $5d // pop ebp
+    else
+      Exit;
+    Code.Jmp := $e9;
+    Code.Offset := Integer(@WMEraseBkgndHook) -
+                   (Integer(@P) + 1) -
+                   SizeOf(Code);
+   { The strange thing is that WriteProcessMemory does not want @P or something
+     overrides the $e9 with a "PUSH xxx"}
+    if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1), @Code, SizeOf(Code), n) then
+      ThemeHooks.FEraseBkgndHooked := True;
+    FlushInstructionCache(GetCurrentProcess, @P, SizeOf(Code));
+  end;
+end;
+
+
 initialization
   ThemeHooks := TThemeHookList.Create;
   ThemeHookComponent := TThemeHookComponent.Create(nil);
+  InstallWinControlHook;
 
 finalization
   FreeAndNil(ThemeHooks);
