@@ -28,20 +28,20 @@ Known Issues:
 
 unit JvWinampApi;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 // (rom) this file definitely needs some local helper functions
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,  JvHWinamp, JvTypes ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, JvHWinamp, JvTypes, JvComponent;
 
 type
   TWStatus = (wsNotAvailable, wsStopped, wsPlaying, wsPaused);
 
   TWinampEqualizer = record
-    Bands: array [0..9] of Integer;
+    Bands: array[0..9] of Integer;
     Preamp: Integer;
     Enabled, Autoload: Boolean;
   end;
@@ -117,7 +117,7 @@ resourcestring
   RC_WinampFormat = 'You must have Winamp %d.%d or higher to execute this Api';
   RC_ErrorFinding = 'Could not find winamp window';
 
-{**************************************************}
+  {**************************************************}
 
 procedure TJvWinampApi.ClearPlaylist;
 var
@@ -166,7 +166,7 @@ var
 begin
   h := FindWindow(PChar(RC_WinampWindow), nil);
   tstamp.Time := 0;
-  tstamp.Date := 0;
+  tstamp.Date := 1;
   if h <> 0 then
   begin
     i := SendMessage(h, WM_WA_IPC, 1, IPC_GETOUTPUTTime);
@@ -249,7 +249,7 @@ var
 begin
   h := FindWindow(PChar(RC_WinampWindow), nil);
   tstamp.Time := 0;
-  tstamp.Date := 0;
+  tstamp.Date := 1;
   if h <> 0 then
   begin
     i := SendMessage(h, WM_WA_IPC, 0, IPC_GETOUTPUTTime);
@@ -452,7 +452,7 @@ end;
 procedure TJvWinampApi.OpenFile(FileName: string);
 var
   cds: TCopyDataStruct;
-  dat: array [0..255] of Char;
+  dat: array[0..255] of Char;
   h: THandle;
 begin
   cds.dwData := IPC_PLAYFILE;
@@ -471,7 +471,7 @@ end;
 procedure TJvWinampApi.SetDirectory(Directory: string);
 var
   cds: TCopyDataStruct;
-  dat: array [0..255] of Char;
+  dat: array[0..255] of Char;
   h: THandle;
 begin
   cds.dwData := IPC_CHDIR;
