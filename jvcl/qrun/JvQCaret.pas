@@ -162,7 +162,7 @@ end;
 
 
 type
-  TOpenScrollingWidget = class(TScrollingWidget);
+  TScrollingWidgetAccessProtected = class(TScrollingWidget);
 
 
 procedure TJvCaret.CreateCaret;
@@ -177,7 +177,7 @@ begin
     not (csDesigning in FCaretOwner.ComponentState) and not IsDefaultCaret then
   begin  
       if FCaretOwner is TScrollingWidget then
-        Handle := TOpenScrollingWidget(FCaretOwner).ViewportHandle
+        Handle := TScrollingWidgetAccessProtected(FCaretOwner).ViewportHandle
       else
         Handle := FCaretOwner.Handle;
 

@@ -133,6 +133,7 @@ begin
 
   with Bitmap.Canvas do
   begin
+    Start;
     Brush.Color := StartColor;
     FillRect(Bounds(0, 0, AWidth, AHeight));
     if Style in [gsLeft, gsRight] then
@@ -153,11 +154,11 @@ begin
                   XX := iBndS + Random(xLoop);
                   if (XX < AWidth) and (XX > -1) then
                     with Row[XX] do
-                    begin  
+                    begin
                       rgbRed := GetRValue(GBand[iLoop - 1]);
                       rgbGreen := GetGValue(GBand[iLoop - 1]);
                       rgbBlue := GetBValue(GBand[iLoop - 1]);
-                      rgbReserved := 0; 
+                      rgbReserved := 0;
                     end;
                 end;
             end;
@@ -184,19 +185,20 @@ begin
               for xLoop := 0 to DitherDepth - 1 do
               if xLoop < AWidth  then
                 with Row[xLoop] do
-                begin  
+                begin
                   rgbRed := GetRValue(GBand[iLoop - 1]);
                   rgbGreen := GetGValue(GBand[iLoop - 1]);
                   rgbBlue := GetBValue(GBand[iLoop - 1]);
-                  rgbReserved := 0; 
+                  rgbReserved := 0;
                 end;
               end;
           end;
       end;
-      for xLoop := 0 to AWidth div DitherDepth do
+      for xLoop := 1 to AWidth div DitherDepth do
         CopyRect(Bounds(xLoop * DitherDepth, 0, DitherDepth, AHeight),
           Bitmap.Canvas, Bounds(0, 0, DitherDepth, AHeight));
     end;
+    Stop;
   end;
 end;
 

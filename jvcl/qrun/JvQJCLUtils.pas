@@ -90,6 +90,9 @@ function StrToFloatUS(const Text: string): Extended;
 // StrToFloatUS uses US '.' as decimal seperator and ',' as thousand separator
 function StrToFloatUSDef(const Text: string; Default: Extended): Extended;
 
+function VarIsInt(Value: Variant): Boolean;
+ // VarIsInt returns VarIsOrdinal-[varBoolean]
+
 { GetWordOnPos returns Word from string, S, on the cursor position, P}
 function GetWordOnPos(const S: string; const P: Integer): string;
 function GetWordOnPosW(const S: WideString; const P: Integer): WideString;
@@ -737,9 +740,9 @@ function SafeStrToTime(const Ps: string): TDateTime;
 function StrDelete(const psSub, psMain: string): string;
 
 type
-  TTime = TDateTime;
+  TTime = type TDateTime;
   {$EXTERNALSYM TTime}
-  TDate = TDateTime;
+  TDate = type TDateTime;
   {$EXTERNALSYM TDate}
 
   { returns the fractional value of pcValue}
@@ -995,6 +998,13 @@ end;
 function StrToFloatUSDef(const Text: string; Default: Extended): Extended;
 begin
   Result := StrToFloatDef(USToLocalFloatStr(Text), Default);
+end;
+
+function VarIsInt(Value: Variant): Boolean;
+begin
+  Result := VarType(Value) in [varByte, 
+    varShortInt, varWord, varLongWord, {varInt64,} 
+    varSmallInt, varInteger];
 end;
 
 function GetLineByPos(const S: string; const Pos: Integer): Integer;
@@ -3212,7 +3222,7 @@ end;
 
 
 type
-  TOpenIcon = class(TIcon);
+  TIconAccessProtected = class(TIcon);
 
 function Bmp2Icon(bmp: TBitmap): TIcon;
 begin
@@ -3223,7 +3233,7 @@ end;
 function Icon2Bmp(Ico: TIcon): TBitmap;
 begin
   Result := TBitmap.Create;
-  TOpenIcon(Ico).AssignTo(Result);
+  TIconAccessProtected(Ico).AssignTo(Result);
 end;
 
 procedure CopyIconToClipboard(Icon: TIcon; BackColor: TColor);

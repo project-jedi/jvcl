@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, Contnrs,  
-  Types, QWindows, QGraphics, QDialogs,  
+  Types, QWindows, QGraphics, QDialogs, 
   JclBase,
   JvQDataProvider, JvQDataProviderIntf, JvQTypes;
 
@@ -68,7 +68,7 @@ type
   IJvColorProvider = interface
     ['{3DF32721-553B-4759-A628-35F5CA62F3D5}']
     procedure DoAddColor(ColorType: TColorType; var Color: TColor; var DoAdd: Boolean);
-    function AddColor(ColorType: TColorType; Color: TColor): Boolean; 
+    function AddColor(ColorType: TColorType; Color: TColor): Boolean;
     function IndexOfMapping(Mapping: TJvColorProviderNameMapping): Integer;
     function IndexOfMappingName(Name: string): Integer;
     function Get_MappingCount: Integer;
@@ -273,7 +273,7 @@ type
 
     property Name: string read FName write FName;
   end;
-  
+
   TJvColorProviderSubSettings = class(TPersistent)
   private
     FActive: Boolean;
@@ -511,7 +511,7 @@ const
   aisStdDlg = 'aisStdDlg';
 
 type
-  TOpenWriter = class(TWriter);
+  TWriterAccessProtected = class(TWriter);
 
 function GetItemColorValue(Item: IJvDataItem; out Color: TColor): Boolean;
 var
@@ -639,7 +639,7 @@ type
     FListNumber: Integer; // 0 = StdColors, 1 = SysColors, 2 = CstColors
   protected
     function GetCaption: string;
-    procedure SetCaption(const Value: string); 
+    procedure SetCaption(const Value: string);
     function Editable: Boolean;
     procedure InitID; override;
     procedure InitImplementers; override;
@@ -685,12 +685,12 @@ type
     function GetConsumerSettings: IJvColorProviderSettings;
   end;
 
-  TOpenConsumerServiceExt = class(TJvDataConsumerAggregatedObject);
+  TJvDataConsumerAggregatedObjectAccessProtected = class(TJvDataConsumerAggregatedObject);
   TJvColorProviderSettings = class;
-  
+
   TJvColorMappingChangeEvent = procedure(Sender: TJvColorProviderSettings; Index: Integer;
     Mapping: TJvColorProviderNameMapping) of object;
-  
+
   TJvColorProviderSettings = class(TJvDataConsumerAggregatedObject, IJvColorProviderSettings)
   private
     FColorBoxSettings: TJvColorProviderColorBoxSettings;
@@ -855,12 +855,12 @@ end;
 
 procedure TJvColorProviderSubSettings.Changed;
 begin
-  TOpenConsumerServiceExt(ConsumerServiceExt).Changed(ccrOther);
+  TJvDataConsumerAggregatedObjectAccessProtected(ConsumerServiceExt).Changed(ccrOther);
 end;
 
 procedure TJvColorProviderSubSettings.ViewChanged;
 begin
-  TOpenConsumerServiceExt(ConsumerServiceExt).NotifyViewChanged;
+  TJvDataConsumerAggregatedObjectAccessProtected(ConsumerServiceExt).NotifyViewChanged;
 end;
 
 procedure TJvColorProviderSubSettings.SetActive(Value: Boolean);
@@ -2399,7 +2399,7 @@ procedure TJvColorProvider.WriteMappings(Writer: TWriter);
 var
   I: Integer;
 begin
-  TOpenWriter(Writer).WriteValue(vaCollection);
+  TWriterAccessProtected(Writer).WriteValue(vaCollection);
   for I := 0 to Mappings.Count - 1 do
     WriteMapping(Writer, I);
   Writer.WriteListEnd;
@@ -3149,9 +3149,6 @@ begin
     CurrentItem := nil;
   end;
 end;
-
-type
-  TOpenControl = class(TControl);
 
 function TJvColorItemsRenderer.AvgItemSize(ACanvas: TCanvas): TSize;
 var

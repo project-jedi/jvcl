@@ -48,7 +48,11 @@ Known Issues:
 
 {$I jvcl.inc}
 
-
+{$IFNDEF USEJVCL}
+// sorry no theming
+{$UNDEF JVCLThemesEnabled}
+{$UNDEF JVCLThemesEnabledD56}
+{$ENDIF USEJVCL}
 
 unit JvQXPBar;
 
@@ -56,9 +60,9 @@ interface
 
 uses
   Classes, SysUtils,
-  QWindows, QMessages, QControls, Types, QGraphics, QForms, QImgList, QActnList, QExtCtrls, 
+  QWindows, QControls, QMessages, Types, QGraphics, QForms, QImgList, QActnList, QExtCtrls, 
   Qt, JvQTypes, QTypes, 
-  JvQConsts, JvQXPCore, JvQXPCoreUtils;
+  JvQConsts, JvQXPCore, JvQXPCoreUtils, JvQJCLUtils;
 
 type
   { Warning: Never change order of enumeration because of
@@ -422,7 +426,11 @@ type
     property OnItemClick: TJvXPBarOnItemClickEvent read FOnItemClick write FOnItemClick;
     procedure AdjustClientRect(var Rect: TRect); override;
     // show hints for individual items in the list
-    function HintShow(var HintInfo: THintInfo): Boolean;  override;  
+    function HintShow(var HintInfo: THintInfo): Boolean;
+      {$IFDEF USEJVCL} override; {$ELSE} dynamic; {$ENDIF}
+    {$IFNDEF USEJVCL}
+    procedure CMHintShow(var Msg: TCMHintShow); message CM_HINTSHOW;
+    {$ENDIF USEJVCL}
     procedure DblClick; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -520,8 +528,10 @@ procedure RoundedFrame(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer
 
 implementation
 
-uses  
-  JvQResources, 
+uses 
+  {$IFDEF USEJVCL}
+  JvQResources,
+  {$ENDIF USEJVCL}
   QMenus;
 
 {$IFDEF MSWINDOWS}
@@ -531,7 +541,10 @@ uses
 {$R ../Resources/JvXPBar.res}
 {$ENDIF LINUX}
 
-
+{$IFNDEF USEJVCL}
+resourcestring
+  RsUntitled = 'untitled';
+{$ENDIF USEJVCL}
 
 const
   FC_HEADER_MARGIN = 6;
@@ -808,10 +821,9 @@ begin
     if (ItemCaption = '') and ((csDesigning in lBar.ComponentState) or (lBar.ControlCount = 0)) then
       ItemCaption := Format('(%s %d)', [RsUntitled, Index]);
     Inc(Rect.Left, 20);
- 
- 
+    SetBkMode(Handle, QWindows.TRANSPARENT);
     DrawText(ACanvas, ItemCaption, -1, Rect, DT_SINGLELINE or
-      DT_VCENTER or DT_END_ELLIPSIS); 
+      DT_VCENTER or DT_END_ELLIPSIS);
   end;
 end;
 
@@ -1170,10 +1182,11 @@ end;
 constructor TJvXPFadeThread.Create(WinXPBar: TJvXPCustomWinXPBar;
   RollDirection: TJvXPBarRollDirection);
 begin
-  inherited Create(False);
+  inherited Create(True);
   FWinXPBar := WinXPBar;
   FRollDirection := RollDirection;
   FreeOnTerminate := True;
+  Suspended := false;
 end;
 
 procedure TJvXPFadeThread.Execute;
@@ -1953,9 +1966,9 @@ begin
     if FHotTrack and (dsHighlight in DrawState) and (FHitTest <> htNone) and (FHotTrackColor <> clNone) then
       Font.Color := FHotTrackColor;
     Rect.Bottom := Rect.Top + FHeaderHeight;
-    Dec(Rect.Right, 3);  
+    Dec(Rect.Right, 3);
     DrawText(Canvas, Caption, -1, Rect, DT_SINGLELINE or DT_VCENTER or
-      DT_END_ELLIPSIS or DT_NOPREFIX); 
+      DT_END_ELLIPSIS or DT_NOPREFIX);
     { draw visible items }
     Brush.Color := FColors.BodyColor;
     if not FCollapsed or FRolling then
@@ -2073,7 +2086,12 @@ begin
   Result := False; // use default hint window
 end;
 
-
+{$IFNDEF USEJVCL}
+procedure TJvXPCustomWinXPBar.CMHintShow(var Msg: TCMHintShow);
+begin
+  Msg.Result := Ord(HintShow(Msg.HintInfo^));
+end;
+{$ENDIF USEJVCL}
 
 
 

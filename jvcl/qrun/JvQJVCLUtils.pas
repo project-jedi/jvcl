@@ -390,7 +390,65 @@ type
     property Visible: Boolean read FVisible write SetVisible default False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
-  { end JvGraph }
+{ end JvGraph }
+
+type
+  // equivalent of TPoint, but that can be a published property for BCB
+  TJvPoint = class(TPersistent)
+  private
+    FY: Longint;
+    FX: Longint;
+    FOnChange: TNotifyEvent;
+    procedure SetX(Value: Longint);
+    procedure SetY(Value: Longint);
+  protected
+    procedure DoChange;
+  public
+    procedure Assign(Source: TPersistent); override;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  published
+    property X: Longint read FX write SetX;
+    property Y: Longint read FY write SetY;
+  end;
+
+  // equivalent of TRect, but that can be a published property for BCB
+  TJvRect = class(TPersistent)
+  private
+    FTopLeft: TJvPoint;
+    FBottomRight: TJvPoint;
+    FOnChange: TNotifyEvent;
+    function GetBottom: Integer;
+    function GetLeft: Integer;
+    function GetRight: Integer;
+    function GetTop: Integer;
+    procedure SetBottom(Value: Integer);
+    procedure SetLeft(Value: Integer);
+    procedure SetRight(Value: Integer);
+    procedure SetTop(Value: Integer);
+    procedure SetBottomRight(Value: TJvPoint);
+    procedure SetTopLeft(Value: TJvPoint);
+    procedure PointChange(Sender: TObject);
+    function GetHeight: Integer;
+    function GetWidth: Integer;
+    procedure SetHeight(Value: Integer);
+    procedure SetWidth(Value: Integer);
+  protected
+    procedure DoChange;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+    property TopLeft: TJvPoint read FTopLeft write SetTopLeft;
+    property BottomRight: TJvPoint read FBottomRight write SetBottomRight;
+    property Width: Integer read GetWidth write SetWidth;
+    property Height: Integer read GetHeight write SetHeight;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  published
+    property Left: Integer read GetLeft write SetLeft;
+    property Top: Integer read GetTop write SetTop;
+    property Right: Integer read GetRight write SetRight;
+    property Bottom: Integer read GetBottom write SetBottom;
+  end;
 
 { begin JvCtrlUtils }
 
@@ -547,12 +605,12 @@ end;
 
 
 type
-  TOpenIcon = class(TIcon);
+  TIconAccessProtected = class(TIcon);
 
 function Icon2Bitmap(Ico: TIcon): TBitmap;
 begin
   Result := TBitmap.Create;
-  TOpenIcon(Ico).AssignTo(Result);
+  TIconAccessProtected(Ico).AssignTo(Result);
 end;
 
 function Bitmap2Icon(bmp: TBitmap): TIcon;
@@ -1519,7 +1577,7 @@ begin
 end;
 
 type
-  TCustomControlHack = class(TCustomControl);
+  TCustomControlAccessProtected = class(TCustomControl);
 
 {$IFDEF MSWINDOWS}
 
@@ -1640,7 +1698,7 @@ var
 begin
   AutoScroll := AForm.AutoScroll;
   AForm.Hide;
-  TCustomControlHack(AForm).DestroyHandle;
+  TCustomControlAccessProtected(AForm).DestroyHandle;
   with AForm do
   begin  
     BorderStyle := fbsNone; 
@@ -2125,17 +2183,17 @@ begin
     vaTopJustify:
       h := MinOffs;
     vaCenterJustify:
-      with TCustomControlHack(Control) do
+      with TCustomControlAccessProtected(Control) do
         h := Max(1, (ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W')) div 2);
   else {vaBottomJustify}
     begin
-      with TCustomControlHack(Control) do
+      with TCustomControlAccessProtected(Control) do
         h := Max(MinOffs, ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W'));
     end;
   end;
-  WriteText(TCustomControlHack(Control).Canvas, ARect, MinOffs, h, s, Align, WordWrap,
+  WriteText(TCustomControlAccessProtected(Control).Canvas, ARect, MinOffs, h, s, Align, WordWrap,
     ARightToLeft);
 end;
 
@@ -2159,17 +2217,17 @@ begin
     vaTopJustify:
       h := MinOffs;
     vaCenterJustify:
-      with TCustomControlHack(Control) do
+      with TCustomControlAccessProtected(Control) do
         h := Max(1, (ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W')) div 2);
   else {vaBottomJustify}
     begin
-      with TCustomControlHack(Control) do
+      with TCustomControlAccessProtected(Control) do
         h := Max(MinOffs, ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W'));
     end;
   end;
-  WriteText(TCustomControlHack(Control).Canvas, ARect, MinOffs, h, s, Align, WordWrap);
+  WriteText(TCustomControlAccessProtected(Control).Canvas, ARect, MinOffs, h, s, Align, WordWrap);
 end;
 
 procedure DrawCellText(Control: TCustomControl; ACol, ARow: Longint;
@@ -2185,7 +2243,7 @@ procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
 begin
   Rect.Top := (Rect.Bottom + Rect.Top - Bmp.Height) div 2;
   Rect.Left := (Rect.Right + Rect.Left - Bmp.Width) div 2;
-  TCustomControlHack(Control).Canvas.Draw(Rect.Left, Rect.Top, Bmp);
+  TCustomControlAccessProtected(Control).Canvas.Draw(Rect.Left, Rect.Top, Bmp);
 end;
 
 { TJvDesktopCanvas }
@@ -2886,7 +2944,7 @@ type
   {                                                       }
   {*******************************************************}
 
-  TJvNastyForm = class(TScrollingWinControl)
+  TJvHackForm = class(TScrollingWinControl)
   private
     FActiveControl: TWinControl;
     FFocusedControl: TWinControl;
@@ -2896,7 +2954,7 @@ type
     FWindowState: TWindowState; { !! }
   end;
 
-  TOpenComponent = class(TComponent);
+  TComponentAccessProtected = class(TComponent);
   {$HINTS ON}
 
 function CrtResString: string;
@@ -3074,11 +3132,11 @@ begin
           if (Position in [poScreenCenter, poDesktopCenter]) and
             not (csDesigning in ComponentState) then
           begin
-            TOpenComponent(Form).SetDesigning(True);
+            TComponentAccessProtected(Form).SetDesigning(True);
             try
               Position := poDesigned;
             finally
-              TOpenComponent(Form).SetDesigning(False);
+              TComponentAccessProtected(Form).SetDesigning(False);
             end;
           end;
           SetWindowPlacement(Handle, @Placement);
@@ -4960,6 +5018,149 @@ begin
   else
     Result := Value;
   end;
+end;
+
+//=== TJvPoint ===============================================================
+
+procedure TJvPoint.Assign(Source: TPersistent);
+begin
+  if Source is TJvPoint then
+  begin
+    FX := TJvPoint(Source).X;
+    FY := TJvPoint(Source).Y;
+    DoChange;
+  end
+  else
+    inherited Assign(Source);
+end;
+
+procedure TJvPoint.DoChange;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+procedure TJvPoint.SetX(Value: Longint);
+begin
+  FX := Value;
+  DoChange;
+end;
+
+procedure TJvPoint.SetY(Value: Longint);
+begin
+  FY := Value;
+  DoChange;
+end;
+
+//=== TJvRect ================================================================
+
+constructor TJvRect.Create;
+begin
+  inherited Create;
+  FTopLeft := TJvPoint.Create;
+  FBottomRight := TJvPoint.Create;
+  FTopLeft.OnChange := PointChange;
+  FBottomRight.OnChange := PointChange;
+end;
+
+destructor TJvRect.Destroy;
+begin
+  FTopLeft.Free;
+  FBottomRight.Free;
+  inherited Destroy;
+end;
+
+procedure TJvRect.Assign(Source: TPersistent);
+begin
+  if Source is TJvRect then
+  begin
+    TopLeft.Assign(TJvRect(Source).TopLeft);
+    BottomRight.Assign(TJvRect(Source).BottomRight);
+    DoChange;
+  end
+  else
+    inherited Assign(Source);
+end;
+
+procedure TJvRect.DoChange;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+function TJvRect.GetBottom: Integer;
+begin
+  Result := FBottomRight.Y;
+end;
+
+function TJvRect.GetLeft: Integer;
+begin
+  Result := FTopLeft.X;
+end;
+
+function TJvRect.GetRight: Integer;
+begin
+  Result := FBottomRight.X;
+end;
+
+function TJvRect.GetTop: Integer;
+begin
+  Result := FTopLeft.Y;
+end;
+
+procedure TJvRect.PointChange(Sender: TObject);
+begin
+  DoChange;
+end;
+
+procedure TJvRect.SetBottom(Value: Integer);
+begin
+  FBottomRight.Y := Value;
+end;
+
+procedure TJvRect.SetBottomRight(Value: TJvPoint);
+begin
+  FBottomRight.Assign(Value);
+end;
+
+procedure TJvRect.SetLeft(Value: Integer);
+begin
+  FTopLeft.X := Value;
+end;
+
+procedure TJvRect.SetRight(Value: Integer);
+begin
+  FBottomRight.X := Value;
+end;
+
+procedure TJvRect.SetTop(Value: Integer);
+begin
+  FTopLeft.Y := Value;
+end;
+
+procedure TJvRect.SetTopLeft(Value: TJvPoint);
+begin
+  FTopLeft.Assign(Value);
+end;
+
+function TJvRect.GetHeight: Integer;
+begin
+  Result := FBottomRight.Y - FTopLeft.Y;
+end;
+
+function TJvRect.GetWidth: Integer;
+begin
+  Result := FBottomRight.X - FTopLeft.X;
+end;
+
+procedure TJvRect.SetHeight(Value: Integer);
+begin
+  FBottomRight.Y := FTopLeft.Y + Value;
+end;
+
+procedure TJvRect.SetWidth(Value: Integer);
+begin
+  FBottomRight.X := FTopLeft.X + Value;
 end;
 
 initialization

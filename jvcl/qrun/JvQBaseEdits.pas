@@ -292,7 +292,7 @@ var
   GCalcImageIndex: TImageIndex = -1;
 
 type
-  TJvPopupWindowHack = class(TJvPopupWindow);
+  TJvPopupWindowAccessProtected = class(TJvPopupWindow);
 
 function IsValidFloat(const Value: string; var RetValue: Extended): Boolean;
 var
@@ -437,7 +437,7 @@ begin
     [DecimalSeparator, '.', ',', '+', '-', '*', '/', '_', '=', 'C', 'R', 'Q', '%', Backspace, Cr] -
     [ThousandSeparator]) then
   begin
-    TJvPopupWindowHack(FPopup).KeyPress(Key);
+    TJvPopupWindowAccessProtected(FPopup).KeyPress(Key);
     Key := #0;
   end;
   if Key in ['.', ','] - [ThousandSeparator] then

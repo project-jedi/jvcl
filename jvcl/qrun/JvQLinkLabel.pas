@@ -121,7 +121,7 @@ type
     property Parser: IParser read FParser;
     property Renderer: IRenderer read FRenderer;
     property Caption: TCaption read FCaption write SetText;
-    property Text: TStrings read GetStrings write SetStrings;
+    property Strings: TStrings read GetStrings write SetStrings;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;                // Bianconi
     property LinkColor: TColor read GetLinkColor write SetLinkColor default clBlue;
@@ -147,7 +147,7 @@ type
   TJvLinkLabel = class(TJvCustomLinkLabel)
   published
     property Caption;
-    property Text;
+    property Strings;
     property Anchors;
     property Transparent;
     property Layout;                   // Bianconi
@@ -577,13 +577,14 @@ begin
   if Value <> FCaption then
   begin
     FCaption := Value;
-    Text.Clear;
-    Text.Add(FCaption);
+    Strings.Clear;
+    Strings.Add(FCaption);
     FActiveLinkNode := nil; // We're about to free the tree containing the node it's pointing to
     FNodeTree.Free;
     ResetNodeCount;
     FNodeTree := FParser.Parse(Value);
     SynchronizeRootAndFont;
+//    ActivateLinkNodeAtPos(Point(1, 1), lsHot);
     Invalidate;
     DoCaptionChanged;
   end;

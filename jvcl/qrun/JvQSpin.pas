@@ -428,7 +428,7 @@ end;
 
 type
   TColorArray = array [0..2] of TColor; 
-  TCustomFormAccess = class(TCustomForm); 
+  TCustomFormAccessProtected = class(TCustomForm); 
 
   TJvUpDown = class(TCustomUpDown)
   private
@@ -1000,7 +1000,7 @@ begin
     if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) then
     begin
       { must catch and remove this, since is actually multi-line }  
-      TCustomFormAccess(GetParentForm(Self)).WantKey(Integer(Key), [], Key); 
+      TCustomFormAccessProtected(GetParentForm(Self)).WantKey(Integer(Key), [], Key); 
       if Key = Char(VK_RETURN) then
         Key := #0;
     end;

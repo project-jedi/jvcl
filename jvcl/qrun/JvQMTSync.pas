@@ -103,11 +103,18 @@ type
 
 implementation
 
-uses 
-  JvQResources, 
+uses
+  {$IFDEF USEJVCL}
+  JvQResources,
+  {$ENDIF USEJVCL}
   JvQMTThreading;
 
-
+{$IFNDEF USEJVCL}
+resourcestring
+  RsESemaphoreFailure = 'Semaphore failure (%d)';
+  RsESemaphoreAbandoned = 'Semaphore was abandoned';
+  RsEThreadAbandoned = 'Thread was abandoned';
+{$ENDIF USEJVCL}
 
 //=== TMTSemaphore ===========================================================
 
@@ -316,9 +323,9 @@ end;
 
 procedure TMTSimpleEvent.ResetEvent;
 begin
-  {$IFDEF WINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows.ResetEvent(FHandle);
-  {$ENDIF WINDOWS}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   QWindows.ResetEvent(FHandle);
   {$ENDIF LINUX}
@@ -326,9 +333,9 @@ end;
 
 procedure TMTSimpleEvent.SetEvent;
 begin
-  {$IFDEF WINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows.SetEvent(FHandle);
-  {$ENDIF WINDOWS}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   QWindows.SetEvent(FHandle);
   {$ENDIF LINUX}

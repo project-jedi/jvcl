@@ -446,12 +446,12 @@ function DrawButtonFrame(Canvas: TCanvas; const Client: TRect;
   IsDown, IsFlat: Boolean; Style: TButtonStyle; AColor: TColor): TRect;
 
 implementation
+
 uses
   Math;
 
 type
   TJvGlyphList = class;
-  TFontAccess = class(TFont);
 
   TJvGlyphCache = class(TObject)
   private
@@ -477,6 +477,8 @@ type
     procedure Delete(Index: Integer);
     property Count: Integer read FCount;
   end;
+
+  //TFontAccessProtected = class(TFont);
 
 const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);

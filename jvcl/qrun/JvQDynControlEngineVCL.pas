@@ -394,7 +394,8 @@ implementation
 
 uses 
   Variants, 
-  SysUtils;
+  SysUtils,
+  JvQJCLUtils;
 
 var
   IntDynControlEngineVCL: TJvDynControlEngine = nil;
@@ -536,15 +537,15 @@ end;
 
 
 type
-  TOpenMaskEdit = class(TMaskEdit);
+  TMaskEditAccessProtected = class(TMaskEdit);
 
 
 procedure TJvDynControlVCLButtonEdit.ControlSetPasswordChar(Value: Char);
 begin  
   if Value = #0 then
-    TOpenMaskEdit(FEditControl).EchoMode := emNormal
+    TMaskEditAccessProtected(FEditControl).EchoMode := emNormal
   else
-    TOpenMaskEdit(FEditControl).EchoMode := emPassword; 
+    TMaskEditAccessProtected(FEditControl).EchoMode := emPassword; 
 end;
 
 procedure TJvDynControlVCLButtonEdit.ControlSetEditMask(const Value: string);
@@ -1028,15 +1029,10 @@ end;
 
 procedure TJvDynControlVCLRadioGroup.ControlSetValue(Value: Variant);
 begin
-  if VarType(Value) in [varSmallInt, varInteger] then
+  if VarIsInt(Value) then
     ItemIndex := Value
   else
-    try
-      ItemIndex := Value
-    except
-      on E: Exception do
-        ItemIndex := Items.IndexOf(Value);
-    end;
+    ItemIndex := Items.IndexOf(Value);
 end;
 
 function TJvDynControlVCLRadioGroup.ControlGetValue: Variant;
@@ -1100,15 +1096,10 @@ end;
 
 procedure TJvDynControlVCLListBox.ControlSetValue(Value: Variant);
 begin
-  if VarType(Value) in [varSmallInt, varInteger] then
+  if VarIsInt(Value) then
     ItemIndex := Value
   else
-    try
-      ItemIndex := Value
-    except
-      on E: Exception do
-        ItemIndex := Items.IndexOf(Value);
-    end;
+    ItemIndex := Items.IndexOf(Value);
 end;
 
 function TJvDynControlVCLListBox.ControlGetValue: Variant;
@@ -1173,15 +1164,10 @@ end;
 
 procedure TJvDynControlVCLCheckListBox.ControlSetValue(Value: Variant);
 begin
-  if VarType(Value) in [varSmallInt, varInteger] then
+  if VarIsInt(Value) then
     ItemIndex := Value
   else
-    try
-      ItemIndex := Value
-    except
-      on E: Exception do
-        ItemIndex := Items.IndexOf(Value);
-    end;
+    ItemIndex := Items.IndexOf(Value);
 end;
 
 function TJvDynControlVCLCheckListBox.ControlGetValue: Variant;
@@ -1230,8 +1216,8 @@ begin
 end;
 
 function TJvDynControlVCLCheckListBox.ControlGetHeader(Index: Integer): Boolean;
-begin   
-	Result :=false;
+begin  
+  Result := False;  
 end;
 
 procedure TJvDynControlVCLCheckListBox.ControlSetState(Index: Integer; Value: TCheckBoxState);

@@ -335,7 +335,7 @@ const
   cShadowAlpha = 100;
 
 type
-  TOpenCanvas = class(TCanvas);
+  TCanvasAccessProtected = class(TCanvas);
 
   {$IFDEF MSWINDOWS}
   TShadowWindow = class(TJvCustomControl)
@@ -385,8 +385,8 @@ type
 procedure WideDrawText(Canvas: TCanvas; const Text: WideString; ARect: TRect;
   uFormat: Cardinal);
 begin
-  // (p3) TOpenCanvas bit stolen from Troy Wolbrink's TNT controls (not that it makes any difference AFAICS)
-  with TOpenCanvas(Canvas) do
+  // (p3) TCanvasAccessProtected bit stolen from Troy Wolbrink's TNT controls (not that it makes any difference AFAICS)
+  with TCanvasAccessProtected(Canvas) do
   begin
     Changing;
     RequiredState([csHandleValid, csFontValid, csBrushValid]); 
@@ -459,7 +459,7 @@ function TShadowWindow.WidgetFlags: Integer;
 begin
   Result :=
     Integer(WidgetFlags_WType_Popup) or         // WS_POPUPWINDOW
-    Integer(WidgetFlags_WStyle_NoBorder) or     
+    Integer(WidgetFlags_WStyle_NoBorder) or
     Integer(WidgetFlags_WStyle_Tool);           // WS_EX_TOOLWINDOW
 end;
 

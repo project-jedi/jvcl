@@ -114,8 +114,14 @@ type
     ClickableMessage: Boolean;
     MouseInControl: Boolean;
     MaxAlphaBlendValue: Byte;
-    FadeInTime, FadeOutTime, WaitTime: Integer;
-    WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo, FrameColor: TColor;
+    FadeInTime: Integer;
+    FadeOutTime: Integer;
+    WaitTime: Integer;
+    WindowColorFrom: TColor;
+    WindowColorTo: TColor;
+    CaptionColorFrom: TColor;
+    CaptionColorTo: TColor;
+    FrameColor: TColor;
     procedure FadeClose; 
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     procedure acCloseExecute(Sender: TObject);
@@ -297,14 +303,12 @@ end;
 
 procedure TJvFormDesktopAlert.FadeInTimer(Sender: TObject);
 begin
-  FadeTimer.Enabled := False;
-
+  FadeTimer.Enabled := False; 
 end;
 
 procedure TJvFormDesktopAlert.FadeOutTimer(Sender: TObject);
 begin
-  FadeTimer.Enabled := False;
-
+  FadeTimer.Enabled := False; 
     Close;
 end;
 

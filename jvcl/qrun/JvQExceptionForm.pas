@@ -36,10 +36,11 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QMessages, Types, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls,
   {$IFDEF MSWINDOWS}
-  ComObj,
-  {$ENDIF MSWINDOWS}
+  Windows, ComObj,
+  {$ENDIF MSWINDOWS}  
+  QWindows, 
+  Types, QGraphics, QControls, QForms, QDialogs, QStdCtrls,  QExtCtrls,
   JvQLabel, JvQComponent, JvQExControls;
 
 type
@@ -90,10 +91,7 @@ uses
   QConsts,
   JvQJVCLUtils, JvQJCLUtils, JvQConsts, JvQResources, JvQTypes;
 
-
-
 {$R *.xfm}
-
 
 var
   JvErrorDialog: TJvErrorDialog = nil;
@@ -125,11 +123,11 @@ begin
     begin
       if NewStyleControls then
         Application.ShowException(E)
-      else
-        MessageDlg(Application.Title, E.Message + '.', mtError, [mbOk], 0);
+      else  
+        MessageDlg(Application.Title, E.Message + '.', mtError, [mbOk], 0); 
     end;
   except
-    { ignore any exceptions };
+    { ignore any exceptions }
   end;
   Application.RestoreTopMosts;
 end;

@@ -147,12 +147,12 @@ uses
 type
   TNoEventLabel = class(TLabel)
   public
-    procedure Dispatch(var Message); override;
+    constructor Create(AOwner: TComponent); override;
   end;
 
   TNoEventGradient = class(TJvGradient)
   public
-    procedure Dispatch(var Message); override;
+    constructor Create(AOwner: TComponent); override;
   end;
 
 constructor TJvGradientHeaderPanel.Create(AOwner: TComponent);
@@ -408,29 +408,16 @@ end;
 *)
 
 { TNoEventLabel }
-
-procedure TNoEventLabel.Dispatch(var Message);
+constructor TNoEventLabel.Create(AOwner: TComponent);
 begin
-  with TMessage(Message) do
-    if (Parent <> nil) and
-    (((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) or
-    ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST))) then
-    Parent.Dispatch(Message)
-  else
-    inherited;
+  inherited;
+  ControlStyle := ControlStyle - [csNoStdEvents];
 end;
 
-{ TNoEventGradient }
-
-procedure TNoEventGradient.Dispatch(var Message);
+constructor TNoEventGradient.Create(AOwner: TComponent);
 begin
-  with TMessage(Message) do
-    if (Parent <> nil) and
-    (((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) or
-    ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST))) then
-    Parent.Dispatch(Message)
-  else
-    inherited;
+  inherited;
+  ControlStyle := ControlStyle - [csNoStdEvents];
 end;
 
 end.

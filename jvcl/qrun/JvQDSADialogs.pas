@@ -216,7 +216,11 @@ const
 //--------------------------------------------------------------------------------------------------
 
 // Additional values for DefaultButton, CancelButton and HelpButton parameters
-
+type
+  TMsgDlgBtn =
+    (mbHelp, mbOk, mbCancel, mbYes, mbNo, mbAbort, mbRetry, mbIgnore,
+     mbAll, mbNoToAll, mbYesToAll);
+  TMsgDlgButtons = set of TMsgDlgBtn;
 const
   mbNone = TMsgDlgBtn(-1);
   mbDefault = TMsgDlgBtn(-2);

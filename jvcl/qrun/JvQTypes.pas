@@ -41,7 +41,8 @@ interface
 uses
   SysUtils, Classes,
   QWindows, QMessages, QControls, QForms, Types, QGraphics, 
-  Qt, QTypes, JvQWStrUtils, 
+  Qt, QTypes,
+  JvQWStrUtils, 
   JvQConsts, JvQResources;
 
 const
@@ -63,7 +64,7 @@ type
 type 
 
   // Base class for persistent properties that can show events.
-  // By default, Delhpi and BCB don't show the events of a class
+  // By default, Delphi and BCB don't show the events of a class
   // derived from TPersistent unless it also derives from
   // TComponent. However, up until version 5, you couldn't have
   // a Component as a Sub Component of another one, thus preventing
@@ -148,17 +149,6 @@ type
 
   //  TOnOpened = procedure(Sender: TObject; Value: string) of object; // archive
   //  TOnOpenCanceled = procedure(Sender: TObject) of object; // archive
-
-  TJvKeyFoundEvent = procedure(Sender: TObject; Key, Results, OriginalLine: string) of object;
-  TJvParserInfoList = TStringList;
-  // (rom) definitely needs improvement
-  TJvParserInfo = class(TObject)
-  public
-    StartTag: string;
-    EndTag: string;
-    MustBe: Integer;
-    TakeText: Integer;
-  end;
  
 
   TJvGradientStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
@@ -395,64 +385,6 @@ type
   PCaptionChar = PWideChar;
 
 
-type
-  // equivalent of TPoint, but that can be a published property for BCB
-  TJvPoint = class(TPersistent)
-  private
-    FY: Longint;
-    FX: Longint;
-    FOnChange: TNotifyEvent;
-    procedure SetX(Value: Longint);
-    procedure SetY(Value: Longint);
-  protected
-    procedure DoChange;
-  public
-    procedure Assign(Source: TPersistent); override;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
-  published
-    property X: Longint read FX write SetX;
-    property Y: Longint read FY write SetY;
-  end;
-
-  // equivalent of TRect, but that can be a published property for BCB
-  TJvRect = class(TPersistent)
-  private
-    FTopLeft: TJvPoint;
-    FBottomRight: TJvPoint;
-    FOnChange: TNotifyEvent;
-    function GetBottom: Integer;
-    function GetLeft: Integer;
-    function GetRight: Integer;
-    function GetTop: Integer;
-    procedure SetBottom(Value: Integer);
-    procedure SetLeft(Value: Integer);
-    procedure SetRight(Value: Integer);
-    procedure SetTop(Value: Integer);
-    procedure SetBottomRight(Value: TJvPoint);
-    procedure SetTopLeft(Value: TJvPoint);
-    procedure PointChange(Sender: TObject);
-    function GetHeight: Integer;
-    function GetWidth: Integer;
-    procedure SetHeight(Value: Integer);
-    procedure SetWidth(Value: Integer);
-  protected
-    procedure DoChange;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Assign(Source: TPersistent); override;
-    property TopLeft: TJvPoint read FTopLeft write SetTopLeft;
-    property BottomRight: TJvPoint read FBottomRight write SetBottomRight;
-    property Width: Integer read GetWidth write SetWidth;
-    property Height: Integer read GetHeight write SetHeight;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
-  published
-    property Left: Integer read GetLeft write SetLeft;
-    property Top: Integer read GetTop write SetTop;
-    property Right: Integer read GetRight write SetRight;
-    property Bottom: Integer read GetBottom write SetBottom;
-  end;
-
 implementation
 
 //=== TJvPersistent ==========================================================
@@ -466,149 +398,6 @@ begin
   Name := 'SubComponent';
 end;
 
-
-//=== TJvRect ================================================================
-
-constructor TJvRect.Create;
-begin
-  inherited Create;
-  FTopLeft := TJvPoint.Create;
-  FBottomRight := TJvPoint.Create;
-  FTopLeft.OnChange := PointChange;
-  FBottomRight.OnChange := PointChange;
-end;
-
-destructor TJvRect.Destroy;
-begin
-  FTopLeft.Free;
-  FBottomRight.Free;
-  inherited Destroy;
-end;
-
-procedure TJvRect.Assign(Source: TPersistent);
-begin
-  if Source is TJvRect then
-  begin
-    TopLeft.Assign(TJvRect(Source).TopLeft);
-    BottomRight.Assign(TJvRect(Source).BottomRight);
-    DoChange;
-  end
-  else
-    inherited Assign(Source);
-end;
-
-procedure TJvRect.DoChange;
-begin
-  if Assigned(FOnChange) then
-    FOnChange(Self);
-end;
-
-function TJvRect.GetBottom: Integer;
-begin
-  Result := FBottomRight.Y;
-end;
-
-function TJvRect.GetLeft: Integer;
-begin
-  Result := FTopLeft.X;
-end;
-
-function TJvRect.GetRight: Integer;
-begin
-  Result := FBottomRight.X;
-end;
-
-function TJvRect.GetTop: Integer;
-begin
-  Result := FTopLeft.Y;
-end;
-
-procedure TJvRect.PointChange(Sender: TObject);
-begin
-  DoChange;
-end;
-
-procedure TJvRect.SetBottom(Value: Integer);
-begin
-  FBottomRight.Y := Value;
-end;
-
-procedure TJvRect.SetBottomRight(Value: TJvPoint);
-begin
-  FBottomRight.Assign(Value);
-end;
-
-procedure TJvRect.SetLeft(Value: Integer);
-begin
-  FTopLeft.X := Value;
-end;
-
-procedure TJvRect.SetRight(Value: Integer);
-begin
-  FBottomRight.X := Value;
-end;
-
-procedure TJvRect.SetTop(Value: Integer);
-begin
-  FTopLeft.Y := Value;
-end;
-
-procedure TJvRect.SetTopLeft(Value: TJvPoint);
-begin
-  FTopLeft.Assign(Value);
-end;
-
-function TJvRect.GetHeight: Integer;
-begin
-  Result := FBottomRight.Y - FTopLeft.Y;
-end;
-
-function TJvRect.GetWidth: Integer;
-begin
-  Result := FBottomRight.X - FTopLeft.X;
-end;
-
-procedure TJvRect.SetHeight(Value: Integer);
-begin
-  FBottomRight.Y := FTopLeft.Y + Value;
-end;
-
-procedure TJvRect.SetWidth(Value: Integer);
-begin
-  FBottomRight.X := FTopLeft.X + Value;
-end;
-
-//=== TJvPoint ===============================================================
-
-procedure TJvPoint.Assign(Source: TPersistent);
-begin
-  if Source is TJvPoint then
-  begin
-    FX := TJvPoint(Source).X;
-    FY := TJvPoint(Source).Y;
-    DoChange;
-  end
-  else
-    inherited Assign(Source);
-end;
-
-procedure TJvPoint.DoChange;
-begin
-  if Assigned(FOnChange) then
-    FOnChange(Self);
-end;
-
-procedure TJvPoint.SetX(Value: Longint);
-begin
-  FX := Value;
-  DoChange;
-end;
-
-procedure TJvPoint.SetY(Value: Longint);
-begin
-  FY := Value;
-  DoChange;
-end;
 
 end.
 

@@ -527,7 +527,7 @@ end;
 procedure TJvXPCustomButton.HookResized;
 const
   ColSteps = 64;
-  Dithering = True;
+  Dithering = False;
 var
   Offset: Integer;
 begin

@@ -36,7 +36,7 @@ unit JvQCommStatus;
 interface
 
 uses
-  Windows, SysUtils, Classes, 
+  Windows, SysUtils, Classes,
   JvQTypes, JvQComponent;
 
 type
