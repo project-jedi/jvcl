@@ -37,7 +37,8 @@ unit JvQMail;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms,
+  Windows, SysUtils, Classes,
+  QControls, QForms, Qt,
   Mapi, JclBase, JclMapi, JvQComponent;
 
 type
@@ -299,7 +300,7 @@ begin
   CreateRecips;
   SaveTaskWindowsState;
   try
-    Result := (ErrorCheck(FSimpleMapi.MapiAddress(FSessionHandle, Application.Handle,
+    Result := (ErrorCheck(FSimpleMapi.MapiAddress(FSessionHandle, QWidget_WinId(Application.AppWidget),
       PChar(Caption), EditFields, nil, Length(FRecipArray), FRecipArray[0],
       LogonFlags, 0, @NewRecipCount, NewRecips)) = SUCCESS_SUCCESS);
   finally
@@ -523,7 +524,7 @@ begin
     Inc(Flags, MAPI_GUARANTEE_FIFO);
   if roUnreadOnly in FReadOptions then
     Inc(Flags, MAPI_UNREAD_ONLY);
-  Res := FSimpleMapi.MapiFindNext(SessionHandle, Application.Handle, nil,
+  Res := FSimpleMapi.MapiFindNext(SessionHandle, QWidget_WinId(Application.AppWidget), nil,
     PChar(FSeedMessageID), Flags, 0, MsgId);
   Result := (Res = SUCCESS_SUCCESS);
   if Result then

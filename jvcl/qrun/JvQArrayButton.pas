@@ -37,7 +37,7 @@ interface
 uses
   
   
-  Types, QGraphics, QControls, QForms, QExtCtrls, QButtons, QWindows,
+  Types, QGraphics, QControls, QExtCtrls, QWindows,
   
   SysUtils, Classes,
   JvQComponent, JvQTypes;

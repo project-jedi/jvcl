@@ -34,7 +34,7 @@ unit JvQScreenSaver;
 interface
 
 uses
-  Windows, SysUtils, Classes,
+  SysUtils, Classes,
   JvQTypes, JvQComponent;
 
 type

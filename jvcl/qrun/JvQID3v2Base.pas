@@ -1199,7 +1199,7 @@ function NiceGenreToGenre(const ANiceGenre: string): string;
 implementation
 
 uses
-  Graphics, Windows,
+  QGraphics, Windows,
   
   JclBase, JclFileUtils, JclLogic, JclDateTime,
   JvQConsts, JvQResources;

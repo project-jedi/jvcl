@@ -1247,8 +1247,6 @@ begin
       Canvas.Font := FHighlightFont
     else
       Canvas.Font := Font;
-    RequiredState(Canvas, [csHandleValid, csBrushValid, csFontValid]);
-
     //    W := FSpacing  + W;
 //    SetBkMode(Canvas.Handle, Windows.Transparent);
     R := GetClientRect;
@@ -1264,6 +1262,9 @@ begin
 //    FTextRect := Bounds(0,0, Width - R.Left, Height);
     FTextRect := R;
     OffsetRect(FTextRect, -R.Left, -R.Top);
+    OffsetRect(FTextRect, Left, Top);
+    SetPainterFont(Canvas.Handle, Canvas.Font);
+    RequiredState(Canvas, [csHandleValid, csBrushValid, csFontValid]);
     H := DrawTextW(Canvas.Handle, PWideChar(Caption), -1, FTextRect, Flags or DT_CALCRECT);
     OffsetRect(FTextRect, R.Left, R.Top);
     if ImageSize = isLarge then

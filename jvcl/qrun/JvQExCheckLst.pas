@@ -75,7 +75,8 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
-  public
+    procedure ColorChanged; override;
+  published
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
   private
@@ -205,6 +206,11 @@ procedure TJvExCheckListBox.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCheckListBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExCheckListBox.CMFocusChanged(var Msg: TCMFocusChanged);

@@ -75,7 +75,8 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
-  public
+    procedure ColorChanged; override;
+  published
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
   private
@@ -144,6 +145,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
@@ -216,7 +218,8 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
-  public
+    procedure ColorChanged; override;
+  published
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
   private
@@ -285,6 +288,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
@@ -356,7 +360,8 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
-  public
+    procedure ColorChanged; override;
+  published
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
   private
@@ -445,6 +450,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
@@ -534,6 +540,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
@@ -623,6 +630,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
@@ -713,7 +721,8 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
-  public
+    procedure ColorChanged; override;
+  published
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
   private
@@ -782,7 +791,8 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
-  public
+    procedure ColorChanged; override;
+  published
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
   private
@@ -851,6 +861,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
@@ -920,7 +931,8 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
-  public
+    procedure ColorChanged; override;
+  published
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
   private
@@ -989,7 +1001,8 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
-  public
+    procedure ColorChanged; override;
+  published
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
   private
@@ -1058,7 +1071,8 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
-  public
+    procedure ColorChanged; override;
+  published
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
   private
@@ -1127,6 +1141,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
@@ -1196,6 +1211,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
@@ -1265,6 +1281,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
@@ -1334,7 +1351,8 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
-  public
+    procedure ColorChanged; override;
+  published
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
   private
@@ -1465,6 +1483,11 @@ procedure TJvExCustomGroupBox.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCustomGroupBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExCustomGroupBox.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1600,6 +1623,11 @@ procedure TJvExGroupBox.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExGroupBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExGroupBox.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1740,6 +1768,11 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExCustomLabel.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
+
 procedure TJvExCustomLabel.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -1873,6 +1906,11 @@ procedure TJvExLabel.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExLabel.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExLabel.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -2013,6 +2051,11 @@ procedure TJvExCustomEdit.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCustomEdit.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExCustomEdit.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -2225,6 +2268,11 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExEdit.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
+
 procedure TJvExEdit.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -2435,6 +2483,11 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExCustomMemo.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
+
 procedure TJvExCustomMemo.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -2643,6 +2696,11 @@ procedure TJvExMemo.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExMemo.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExMemo.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -2859,6 +2917,11 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExCustomComboBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
+
 procedure TJvExCustomComboBox.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -2992,6 +3055,11 @@ procedure TJvExComboBox.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExComboBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExComboBox.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -3129,6 +3197,11 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExButtonControl.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
+
 procedure TJvExButtonControl.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -3262,6 +3335,11 @@ procedure TJvExButton.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExButton.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExButton.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -3399,6 +3477,11 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExCustomCheckBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
+
 procedure TJvExCustomCheckBox.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -3532,6 +3615,11 @@ procedure TJvExCheckBox.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCheckBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExCheckBox.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -3669,6 +3757,11 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExRadioButton.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
+
 procedure TJvExRadioButton.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -3802,6 +3895,11 @@ procedure TJvExCustomListBox.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCustomListBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExCustomListBox.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -3939,6 +4037,11 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExListBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
+
 procedure TJvExListBox.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -4072,6 +4175,11 @@ procedure TJvExScrollBar.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExScrollBar.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExScrollBar.CMFocusChanged(var Msg: TCMFocusChanged);

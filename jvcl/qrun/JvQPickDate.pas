@@ -165,7 +165,7 @@ uses
 {$R ..\Resources\JvPickDate.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvPickDate.res}
+{$R ../Resources/JvPickDate.Res}
 {$ENDIF LINUX}
 
 const

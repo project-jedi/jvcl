@@ -58,8 +58,7 @@ uses
   {$ENDIF MSWINDOWS}
   
   
-  QForms, QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, QButtons,
-  QMenus, Types,
+  QGraphics, QControls, QExtCtrls, QMenus, Types,
   
   SysUtils, Classes,
   JvQComponent;

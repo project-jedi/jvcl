@@ -41,7 +41,7 @@ uses
   SysUtils, Classes,
   
   
-  QGraphics, QControls, QForms, QButtons, QMenus,
+  QGraphics, QControls, QButtons, QMenus,
   
   JvQTypes, JvQExButtons;
 

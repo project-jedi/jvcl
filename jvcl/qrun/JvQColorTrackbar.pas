@@ -31,7 +31,7 @@ Known Issues:
 
 { Description. }
 
-unit JvQColorTrackBar;
+unit JvQColorTrackbar;
 
 interface
 

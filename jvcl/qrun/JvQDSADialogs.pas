@@ -433,7 +433,10 @@ implementation
 
 uses
   Math, TypInfo, QConsts,
-  JclRegistry, JclSysUtils,
+  {$IFDEF MSWINDOWS}
+  JclRegistry,
+  {$ENDIF MSWINDOWS}
+  JclSysUtils,
   JvQResources, JvQDynControlEngineIntf;
 
 const

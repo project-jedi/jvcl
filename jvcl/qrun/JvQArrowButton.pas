@@ -778,6 +778,7 @@ begin
   FSpacing := 4;
   FPressBoth := True;
   Inc(ButtonCount);
+//  DoubleBuffered := true;
 end;
 
 destructor TJvArrowButton.Destroy;
