@@ -1,7 +1,7 @@
 program SpecialProgressTestPrj;
 
 uses
-  Forms,
+  QForms,
   JvSpecialProgressMainFormU in 'JvSpecialProgressMainFormU.pas' {JvSpecialProgressMainForm};
 
 {$R *.res}
