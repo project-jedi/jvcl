@@ -413,6 +413,10 @@ resourcestring
   { JvUrlListGrabber }
   sENoGrabberForUrl = 'There is no grabber capable of handling URL: %s';
 
+  { JvAppXmlStore }
+  SNodeCannotBeEmpty = 'The node must be given a name';
+  SDelSubTreeNotImplemented = 'DeleteSubTreeInt has not been implemented yet';
+
 implementation
 
 end.
