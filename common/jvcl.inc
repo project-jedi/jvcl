@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JVCL.INC, released on 2002-07-04.
 
-Last Modified: 2003-09-25
+Last Modified: 2003-10-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -20,8 +20,6 @@ Known Issues:
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
 {$I JEDI.INC}
-
-{*CONFIGSTART*}
 
 { Enable this define if you want to register property and component editors included in
  JVCL for non-JVCL components as well }
@@ -35,7 +33,6 @@ Known Issues:
   requires node in the affected package(s) }
 {$DEFINE USEJVCL}
 
-{*AUTOCONFIG*}
 {$IFDEF BCB}
   {$ObjExportAll ON}
 {$ENDIF}
@@ -50,7 +47,6 @@ Known Issues:
 {.$DEFINE JVCLThemesEnabled}
 
 { D7 has theme support built in...}
-{*AUTOCONFIG*}
 {$IFDEF COMPILER7_UP}
  {$DEFINE JVCLThemesEnabled}
 {$ELSE}
@@ -85,23 +81,19 @@ Known Issues:
 {$DEFINE DEFAULT_POPUP_CALENDAR}
 
 // Automatic defines for entry level Delphi's:
-{*AUTOCONFIG*}
 {$IFDEF D5Standard}
  {$DEFINE DelphiPersonalEdition}
 {$ENDIF}
 
-{*AUTOCONFIG*}
 {$IFDEF D6PersonalEdition}
  {$DEFINE DelphiPersonalEdition}
 {$ENDIF}
 
-{*AUTOCONFIG*}
 {$IFDEF D7PersonalEdition}
  {$DEFINE DelphiPersonalEdition}
 {$ENDIF}
 
 // Reduces warnings on D7:
-{*AUTOCONFIG*}
 {$IFDEF COMPILER7_UP}
   {$WARN UNSAFE_TYPE OFF}
   {$WARN UNSAFE_CODE OFF}
@@ -111,6 +103,6 @@ Known Issues:
 { Used by JvTimeFrameWork, see JvTFDays.pas for more info on time blocks }
 {$DEFINE TIMEBLOCKS}
 
-{ Used by JvEditor }
+{ This define controls whether JvHLEditor supports a highlighter for NQC. }
 {$DEFINE HL_NOT_QUITE_C}
 
