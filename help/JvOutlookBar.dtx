@@ -224,6 +224,16 @@ Description
   Read PageButtonHeight to determine the height of the buttons on the pages. Change PageButtonHeight to modify
   the height of all page buttons.
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomOutlookBar.PageImages
+Summary
+  Provides a list of icon images to display for each page button.
+Description
+  Set PageImages to specify the bitmaps that should be displayed on the page buttons.
+  Each page button can be associated with a bitmap in this image list by setting its
+  ImageIndex property.
+See Also
+  LargeImages, Pages, TJvOutlookBarPage.ImageIndex
+----------------------------------------------------------------------------------------------------
 @@TJvCustomOutlookBar.Pages
 Summary
   Provides indexed access to the pages in the bar.
@@ -328,6 +338,16 @@ Description
 See Also
   TJvOutlookBar.OnEditButton
 ----------------------------------------------------------------------------------------------------
+@@TJvOutlookBarButton.Enabled
+Summary
+  Controls whether the button responds to mouse events.
+Description
+  Use Enabled to change the availability of the button to the user. To disable a button, set Enabled to
+  false. Disabled button appear dimmed. If Enabled is false, the button ignores mouse events.
+
+  To re-enable a button, set Enabled to true. The button is no longer dimmed, and the user can use
+  the button.
+----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarButton.ImageIndex
 Summary
   Specifies the image to display on the button.
@@ -397,9 +417,7 @@ Description
 Summary
   Determines how text is aligned within the page button.
 Description
-  Use Alignment to change the way the text is formatted by the page button.
-Note
-  This property is not implemented yet.
+  Use Alignment to change the way the text is aligned by the page button.
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.Buttons
 Summary
@@ -442,7 +460,15 @@ Description
   To be notified when the user has finished editing the caption, assign an event handler to the OnEditPage event.
 See Also
   TJvCustomOutlookBar.OnEditPage
-##, TJvOutlookBar.EditCaption
+----------------------------------------------------------------------------------------------------
+@@TJvOutlookBarPage.Enabled
+Summary
+  Controls whether the page responds to mouse events.
+Description
+  Use Enabled to change the availability of the page to the user. To disable a page, set Enabled to
+  false. Disabled pages appear dimmed. If Enabled is false, the page ignores mouse events.
+
+  To re-enable a page, set Enabled to true. The page is no longer dimmed, and the user can use the page.
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.Font
 Summary
@@ -454,11 +480,11 @@ Description
 See Also
   Color, ParentFont, ParentColor
 ----------------------------------------------------------------------------------------------------
-@@TJvOutlookBarPage.Image
+@@TJvOutlookBarPage.Picture
 Summary
   Specifies a background image for the page
 Description
-  Use Image to specify an image to use as a background for the page. If an image is assigned, it
+  Use Picture to specify an image to use as a background for the page. If an image is assigned, it
   is automatically tiled to fill the entire ClientRect of the page.
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.ImageIndex
@@ -467,8 +493,10 @@ Summary
 Description
   Read ImageIndex to determine the image displayed on the page. Change ImageIndex to display another image.
   To remove an image, set ImageIndex to -1.
-Note
-  This property is not yet implemented.
+
+  The location of the image on the page button is controlled by the Alignment property.
+See Also
+  Alignment
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.ParentButtonSize
 Summary
