@@ -119,20 +119,26 @@ end;
 
 {$IFDEF VCL}
 procedure TJvBaseDesign.CMShowingChanged(var Msg: TMessage);
-begin
-  inherited;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvBaseDesign.ShowingChanged;
-begin
-  inherited ShowingChanged;
 {$ENDIF VisualCLX}
-  if not (csDesigning in ComponentState) and AutoStoreSettings then
+begin
+  if not (csDesigning in ComponentState) and AutoStoreSettings and Showing then
   try
-    if Showing then
-      RestoreSettings
-    else
-      StoreSettings;
+    RestoreSettings
+  except
+    Application.HandleException(Self);
+  end;
+  {$IFDEF VisualCLX}
+  inherited ShowingChanged;
+  {$ENDIF VisualCLX}
+  {$IFDEF VCL}
+  inherited;
+  {$ENDIF VCL}
+  if not (csDesigning in ComponentState) and AutoStoreSettings and not Showing then
+  try
+    StoreSettings;
   except
     Application.HandleException(Self);
   end;
