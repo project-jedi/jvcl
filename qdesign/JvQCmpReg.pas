@@ -54,7 +54,7 @@ uses
   JvQPageManager, JvQPatchFile, JvQStringHolder, JvQTimeLimit,
   JvQTranslator, JvQPrint, JvQEasterEgg, JvQMouseGesture, JvQLogFile,
   JvQDataEmbeddedEditor, JvQPatcherEditor, JvQProfilerForm, JvQPageManagerForm,
-  JvQDsgnEditors;
+  JvQDsgnEditors, JvQEventFilter;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCmpReg.dcr}
@@ -72,7 +72,7 @@ begin
   GroupDescendentsWith(TJvPageManager, TControl); 
 
   RegisterComponents(RsPaletteNonVisual, [TJvAlarms, TJvConverter,
-    TJvDataEmbedded,
+    TJvDataEmbedded, TJvEventFilter,
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
     TJvStrHolder, TJvMultiStringHolder, TJvTimeLimit, TJvTranslator, TJvTranslatorStrings,
     TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile]);
