@@ -390,13 +390,12 @@ type
 implementation
 
 uses
-  Consts,
-  CommCtrl,
+  Consts, CommCtrl,
   JvThemes,
   {$IFDEF JVCLThemesEnabled}
   UxTheme, {$IFNDEF COMPILER7_UP}TmSchema,{$ENDIF}
   {$ENDIF}
-  JvJCLUtils;
+  JvJCLUtils, JvTypes;
 
 {$R ..\resources\JvSpin.Res}
 
@@ -1725,7 +1724,7 @@ function TJvCustomSpinEdit.IsValidChar(Key: Char): Boolean;
 var
   ValidChars: set of Char;
 begin
-  ValidChars := ['+', '-', '0'..'9'];
+  ValidChars := DigitChars + ['+', '-'];
   if ValueType = vtFloat then
   begin
     if Pos(DecimalSeparator, Text) = 0 then

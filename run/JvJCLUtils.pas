@@ -24,9 +24,11 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvJCLUtils;
+
 // (p3) note: this unit should only contain JCL compatible routines ( no Forms etc)
 // and no JVCL units!
 
@@ -59,30 +61,31 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,  ShlObj, ActiveX,
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Libc, Xlib,
-  {$ENDIF}
+  {$ENDIF LINUX}
   SysUtils, Messages, Classes,
   {$IFDEF VCL}
   Graphics, Clipbrd,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, QGraphics, QClipbrd,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF}
-  TypInfo, JvClxUtils;
+  {$ENDIF COMPILER6_UP}
+  TypInfo; //, JvClxUtils;
 
 {$IFNDEF COMPILER_6UP}
 const
- // Delphi 1-5 do not support Linux
+  // Delphi 1-5 do not support Linux
   PathDelim = '\';
   DriveDelim = ':';
   PathSep = ';';
 {$ENDIF COMPILER6_UP}
-  AllFilesMask = {$IFDEF MSWINDOWS}'*.*'{$ELSE}'*'{$ENDIF};
+const
+  AllFilesMask = {$IFDEF MSWINDOWS} '*.*' {$ELSE} '*' {$ENDIF};
 {$IFDEF LINUX}
 type
   TFileTime = Integer;
@@ -352,16 +355,15 @@ procedure SaveTextFile(const FileName: TFileName; const Source: string);
 function ReadFolder(const Folder, Mask: TFileName; FileList: TStrings): Integer;
 function ReadFolders(const Folder: TFileName; FolderList: TStrings): Integer;
 
-
 { RATextOut same with TCanvas.TextOut procedure, but
   can clipping drawing with rectangle, RClip. }
-procedure RATextOut(Canvas: TCanvas; const R, RClip: TRect; const S: string);
+// procedure RATextOut(Canvas: TCanvas; const R, RClip: TRect; const S: string);
 { RATextOutEx same with RATextOut function, but
   can calculate needed height for correct output }
-function RATextOutEx(Canvas: TCanvas; const R, RClip: TRect; const S: string; const CalcHeight: Boolean): Integer;
+// function RATextOutEx(Canvas: TCanvas; const R, RClip: TRect; const S: string; const CalcHeight: Boolean): Integer;
 { RATextCalcHeight calculate needed height for
   correct output, using RATextOut or RATextOutEx functions }
-function RATextCalcHeight(Canvas: TCanvas; const R: TRect; const S: string): Integer;
+// function RATextCalcHeight(Canvas: TCanvas; const R: TRect; const S: string): Integer;
 { Cinema draws some visual effect }
 procedure Cinema(Canvas: TCanvas; rS {Source}, rD {Dest}: TRect);
 { Roughed fills rect with special 3D pattern }
@@ -836,7 +838,7 @@ function OSCheck(RetVal: Boolean): Boolean;
 { Shortens a fully qualified Path name so that it can be drawn with a specified length limit.
   Same as FileCtrl.MinimizeName in functionality (but not implementation). Included here to
   not be forced to use FileCtrl unnecessarily }
-function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
+// function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
 function MinimizeText(const Text: string; Canvas: TCanvas; MaxWidth: Integer): string;
 { MinimizeString trunactes long string, S, and appends
   '...' symbols, if Length of S is more than MaxLen }
@@ -954,20 +956,21 @@ function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
 function IsForegroundTask: Boolean;
 { BrowseForFolder displays Browse For Folder dialog }
 function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: string): Boolean;
-{$ENDIF COMLIB_VCL}
+{$ENDIF VCL}
 
 implementation
+
 uses
   Math, Consts,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   SysConst, ComObj, Registry, ShellAPI, MMSystem,
   JclSysInfo, JclStrings;
 
 // (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
 resourcestring
-  SPropertyNotExists    = 'Property "%s" does not exists';
+  SPropertyNotExists    = 'Property "%s" does not exist';
   SInvalidPropertyType  = 'Property "%s" has invalid type';
 
 const
@@ -2510,6 +2513,7 @@ begin
   Ss.Text := S;
 end;
 
+{ (rom) disabled because the functions drag in JvClxUtils.pas
 procedure RATextOut(Canvas: TCanvas; const R, RClip: TRect; const S: string);
 begin
   RATextOutEx(Canvas, R, RClip, S, False);
@@ -2545,6 +2549,7 @@ begin
     Ss.Free;
   end;
 end;
+}
 
 procedure Cinema(Canvas: TCanvas; rS, rD: TRect);
 const
@@ -7217,6 +7222,7 @@ begin
   Result := RetVal;
 end;
 
+{ (rom) disabled because the function drags in JvClxUtils.pas
 function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
 var
   b: string;
@@ -7231,6 +7237,7 @@ begin
   else
     Result := Filename;
 end;
+}
 
 function MinimizeText(const Text: string; Canvas: TCanvas;
   MaxWidth: Integer): string;

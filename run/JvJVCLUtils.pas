@@ -661,7 +661,17 @@ implementation
 uses
   Consts, SysConst, CommCtrl, MMSystem, ShlObj, ActiveX, Math,
   JclSysInfo,
+  {$IFDEF VisualCLX}
+  QWinCursors,
+  {$ENDIF VisualCLX}
   JvConsts, JvProgressUtils;
+
+{$IFDEF MSWINDOWS}
+{$R ..\resources\JvConsts.res}
+{$ENDIF}
+{$IFDEF LINUX}
+{$R ../Resources/JvConsts.res}
+{$ENDIF}
 
 resourcestring
   RsNotForMdi = 'MDI forms are not allowed';
@@ -5903,7 +5913,7 @@ var
   begin
     i := 1;
     while i <= Length(s) do
-      if not (s[i] in ['0'..'9', '-']) then
+      if not (s[i] in (DigitChars + ['-'])) then
         Delete(s, i, 1)
       else
         Inc(i);
@@ -6122,6 +6132,10 @@ begin
 end;
 
 initialization
+  { begin RxLib }
+  Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
+  Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
+  { end RxLib }
   { begin JvGraph }
   InitTruncTables;
   { end JvGraph }

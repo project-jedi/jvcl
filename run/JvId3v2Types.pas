@@ -255,7 +255,8 @@ procedure ISO_639_2Names(Strings: TStrings);
 implementation
 
 uses
-  Math, SysUtils;
+  Math, SysUtils,
+  JvTypes;
 
 resourcestring
   SFrameIDSizeCanOnlyBe34 = 'Frame ID size can only be 3 or 4';
@@ -1552,7 +1553,7 @@ begin
   Result := False;
 
   for I := 1 to Length(S) do
-    if not (S[I] in ['A'..'Z', '0'..'9']) then
+    if not (S[I] in (['A'..'Z'] + DigitChars)) then
       Exit;
 
   Result := True;

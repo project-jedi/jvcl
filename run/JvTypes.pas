@@ -38,12 +38,12 @@ unit JvTypes;
 interface
 
 uses
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Windows, Messages, Controls, Forms, Graphics,
-{$ENDIF}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Qt, QTypes, Types, QControls, QForms, QGraphics,
-{$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 const
@@ -53,11 +53,10 @@ const
   DEFAULT_SYSCOLOR_MASK = $000000FF;
   {$ELSE}
   DEFAULT_SYSCOLOR_MASK = $80000000;
-  {$ENDIF}
+  {$ENDIF COMPILER7_UP}
 
-{ Standard Windows colors that are not defined in Delphi 5}
+  { Standard Windows colors that are not defined in Delphi 5}
   {$IFNDEF COMPILER6_UP}
-
   COLOR_MENUHILIGHT = 29;
   {$EXTERNALSYM COLOR_MENUHILIGHT}
   COLOR_MENUBAR = 30;
@@ -72,29 +71,30 @@ const
   clHotLight = TColor(COLOR_HOTLIGHT or $80000000);
   clMenuHighlight = TColor(COLOR_MENUHILIGHT or $80000000);
   clMenuBar = TColor(COLOR_MENUBAR or $80000000);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 
 type
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   EOSError = class(EWin32Error);
   IInterface = IUnknown;
   {$M+}
   IInvokable = interface(IInterface)
   end;
   {$M-}
-{$ENDIF}
+  {$ENDIF COMPILER6_UP}
 
-  TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers, hkPerformanceData,
-    hkCurrentConfig, hkDynData);
+  TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers,
+    hkPerformanceData, hkCurrentConfig, hkDynData);
   TJvRegKeys = set of TJvRegKey;
 
   // base JVCL Exception class to derive from
   EJVCLException = class(Exception);
+  
   TJvLinkClickEvent = procedure(Sender: TObject; Link: string) of object;
-//  TOnRegistryChangeKey = procedure(Sender: TObject; RootKey: HKEY; Path: string) of object;
-//  TAngle = 0..360;
+  //  TOnRegistryChangeKey = procedure(Sender: TObject; RootKey: HKEY; Path: string) of object;
+  //  TAngle = 0..360;
   TJvOutputMode = (omFile, omStream);
-//  TLabelDirection = (sdLeftToRight, sdRightToLeft); // JvScrollingLabel
+  //  TLabelDirection = (sdLeftToRight, sdRightToLeft); // JvScrollingLabel
   TJvLabelRotateAngle = 0..360;
 
   TJvDoneFileEvent = procedure(Sender: TObject; FileName: string; FileSize: Integer; Url: string) of object;
@@ -102,10 +102,11 @@ type
   TJvHTTPProgressEvent = procedure(Sender: TObject; UserData, Position: Integer; TotalSize: Integer; Url: string; var Continue: Boolean) of object;
   TJvFTPProgressEvent = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
-{$IFDEF VisualCLX}
-//  HWnd = QWidgetH;
-  HCursor = QCursorH;
+  {$IFDEF VisualCLX}
+  //  HWND = QWidgetH;
+  HCURSOR = QCursorH;
   TControlClass = class of TControl;
+
   TMinMaxInfo = packed record
     ptReserved: TPoint;
     ptMaxSize: TPoint;
@@ -113,6 +114,8 @@ type
     ptMinTrackSize: TPoint;
     ptMaxTrackSize: TPoint;
   end;
+
+  PWindowPlacement = ^TWindowPlacement;
   TWindowPlacement = packed record
     length: Cardinal;
     flags: Integer;
@@ -121,9 +124,10 @@ type
     ptMaxPosition: TPoint;
     rcNormalPosition: TRect;
   end;
-  PWindowPlacement = ^TWindowPlacement;
+
   TTime = TDateTime;
   TDate = TDateTime;
+
   TRGBQuad = packed record
     rgbReserved: Byte;
     rgbBlue: Byte;
@@ -136,29 +140,33 @@ type
     rgbtGreen: Byte;
     rgbtRed: Byte;
   end;
-{$ENDIF VisualCLX}
-//  TRGBArray = array[0..MaxPixelCount - 1] of TRGBQuad;
+  {$ENDIF VisualCLX}
+
+  //  TRGBArray = array [0..MaxPixelCount - 1] of TRGBQuad;
 
   PRGBArray = ^TRGBArray; // JvThumbImage, JvImageSplit, JvRegion
   TRGBArray = array [0..MaxPixelCount - 1] of TRGBTriple;
   TBalance = 0..100;
+
   TJvVolumeRec = record
     case Byte of
       0:
-      (LongVolume: Longint);
+        (LongVolume: Longint);
       1:
-      (LeftVolume,
-       RightVolume: Word);
+        (LeftVolume: Word;
+         RightVolume: Word);
   end;
 
+  { (rom) unused
   TJvPoint = class(TPersistent)
   protected
-    Fx: Integer;
-    Fy: Integer;
+    FX: Integer;
+    FY: Integer;
   published
-    property x: Integer read Fx write Fx;
-    property y: Integer read Fy write Fy;
+    property X: Integer read FX write FX;
+    property Y: Integer read FY write FY;
   end;
+  }
 
   TJvErrorEvent = procedure(Sender: TObject; ErrorMsg: string) of object;
   TJvTransformationKind = (ttWipeLeft, ttWipeRight, ttWipeUp, ttWipeDown,
@@ -167,21 +175,23 @@ type
   TJvWaveLocation = (frFile, frResource, frRAM);
 
   TJvPopupPosition = (ppNone, ppForm, ppApplication);
-//  TJvDirMask = (dmFileNameChange, dmDirnameChange, dmAttributesChange, dmSizeChange, dmLastWriteChange, dmSecurityChange); //JvDirectorySpy
-//  TJvDirMasks = set of TJvDirMask;
-//  EJvDirectoryError = class(EJVCLException); // JvDirectorySpy
-//  TListEvent = procedure(Sender: TObject; Title: string; Handle: THandle) of object; // JvWindowsTitle
+  //  TJvDirMask = (dmFileNameChange, dmDirnameChange, dmAttributesChange, dmSizeChange, dmLastWriteChange, dmSecurityChange); //JvDirectorySpy
+  //  TJvDirMasks = set of TJvDirMask;
+  //  EJvDirectoryError = class(EJVCLException); // JvDirectorySpy
+  //  TListEvent = procedure(Sender: TObject; Title: string; Handle: THandle) of object; // JvWindowsTitle
 
   TJvProgressEvent = procedure(Sender: TObject; Current, Total: Integer) of object;
   TJvNextPageEvent = procedure(Sender: TObject; PageNumber: Integer) of object;
   TJvBitmapStyle = (bsNormal, bsCentered, bsStretched);
 
-//  TOnOpened = procedure(Sender: TObject; Value: string) of object; // archive
-//  TOnOpenCanceled = procedure(Sender: TObject) of object; // archive
+  //  TOnOpened = procedure(Sender: TObject; Value: string) of object; // archive
+  //  TOnOpenCanceled = procedure(Sender: TObject) of object; // archive
 
   TJvKeyFoundEvent = procedure(Sender: TObject; Key, Results, OriginalLine: string) of object;
   TJvParserInfoList = TStringList;
+  // (rom) definitely needs improvement
   TJvParserInfo = class
+  public
     StartTag: string;
     EndTag: string;
     MustBe: Integer;
@@ -195,53 +205,54 @@ const
   Tab = #9;
   
 {$IFNDEF COMPILER6_UP}
+const
   sLineBreak = #13#10;
   PathDelim = '\';
   DriveDelim = ':';
   PathSep    = ';';
 
-{ TStream seek origins }
 type
+  { TStream seek origins }
   TSeekOrigin = Integer; // Delphi 6: TSeekOrigin = (soBeginning, soCurrent, soEnd);
 const
   soBeginning = 0;
   soCurrent = 1;
   soEnd = 2;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 type
   TJvGradStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
-//  TOnDelete = procedure(Sender: TObject; Path: string) of object;
+  //  TOnDelete = procedure(Sender: TObject; Path: string) of object;
   TJvParentEvent = procedure(Sender: TObject; ParentWindow: THandle) of object;
-//   TOnImage = procedure(Sender: TObject; Image: TBitmap) of object; // JvClipboardViewer
-//  TOnText = procedure(Sender: TObject; Text: string) of object;
-//  TJvRestart = (rsLogoff, rsShutdown, rsReboot, rsRestart, rsRebootSystem, rsExitAndExecApp);
-//  TJvRunOption = (roNoBrowse, roNoDefault, roCalcDirectory, roNoLabel, roNoSeparateMem); // JvRunDlg
-//  TJvRunOptions = set of TJvRunOption; // JvRunDlg
-//   TJvFileKind = (ftFile, ftPrinter); // JvObjectPropertiesDlg
+  //  TOnImage = procedure(Sender: TObject; Image: TBitmap) of object; // JvClipboardViewer
+  //  TOnText = procedure(Sender: TObject; Text: string) of object;
+  //  TJvRestart = (rsLogoff, rsShutdown, rsReboot, rsRestart, rsRebootSystem, rsExitAndExecApp);
+  //  TJvRunOption = (roNoBrowse, roNoDefault, roCalcDirectory, roNoLabel, roNoSeparateMem); // JvRunDlg
+  //  TJvRunOptions = set of TJvRunOption; // JvRunDlg
+  //  TJvFileKind = (ftFile, ftPrinter); // JvObjectPropertiesDlg
 
-//  TSHFormatDrive = function(Handle: HWND; Drive, ID, Options: Word): LongInt; stdcall; // JvFormatDrive
-//  TFormatOption = (shQuickFormat, shFull, shSystemFilesOnly); // JvFormatDrive
-//  TButtonStyle = (bsAbortRetryIgnore, bsOk, bsOkCancel, bsRetryCancel, bsYesNo, bsYesNoCancel); // JvMessageBox
-//  TButtonDisplay = (bdIconExclamation, bdIconWarning, bdIconInformation, bdIconAsterisk, bdIconQuestion, bdIconStop, bdIconError, bdIconHand); // JvMessageBox
+  //  TSHFormatDrive = function(Handle: HWND; Drive, ID, Options: Word): LongInt; stdcall; // JvFormatDrive
+  //  TFormatOption = (shQuickFormat, shFull, shSystemFilesOnly); // JvFormatDrive
+  //  TButtonStyle = (bsAbortRetryIgnore, bsOk, bsOkCancel, bsRetryCancel, bsYesNo, bsYesNoCancel); // JvMessageBox
+  //  TButtonDisplay = (bdIconExclamation, bdIconWarning, bdIconInformation, bdIconAsterisk, bdIconQuestion, bdIconStop, bdIconError, bdIconHand); // JvMessageBox
 
-//  TDefault = (dbButton1, dbButton2, dbButton3, dbButton4); // JvMessageBox
-//  TModality = (bmApplModal, bmSystemModal, bmTaskModal); // JvMessageBox
-//  TButtonOption = (boDefaultDesktopOnly, boHelp, boRight, boRtlReading, boSetForeground, boTopMost); // JvMessageBox
-//  TButtonOptions = set of TButtonOption; // JvMessageBox
-//  TButtonResult = (brAbort, brCancel, brIgnore, brNo, brOk, brRetry, brYes); // JvMessageBox
-//   TMsgStyle = (msBeep, msIconAsterisk, msIconExclamation, msIconHand, msIconQuestion, msOk); // JvMessageBeep
+  //  TDefault = (dbButton1, dbButton2, dbButton3, dbButton4); // JvMessageBox
+  //  TModality = (bmApplModal, bmSystemModal, bmTaskModal); // JvMessageBox
+  //  TButtonOption = (boDefaultDesktopOnly, boHelp, boRight, boRtlReading, boSetForeground, boTopMost); // JvMessageBox
+  //  TButtonOptions = set of TButtonOption; // JvMessageBox
+  //  TButtonResult = (brAbort, brCancel, brIgnore, brNo, brOk, brRetry, brYes); // JvMessageBox
+  //  TMsgStyle = (msBeep, msIconAsterisk, msIconExclamation, msIconHand, msIconQuestion, msOk); // JvMessageBeep
   TJvDiskRes = (dsSuccess, dsCancel, dsSkipfile, dsError);
   TJvDiskStyle = (idfCheckFirst, idfNoBeep, idfNoBrowse, idfNoCompressed, idfNoDetails,
     idfNoForeground, idfNoSkip, idfOemDisk, idfWarnIfSkip);
   TJvDiskStyles = set of TJvDiskStyle;
   TJvDeleteStyle = (idNoBeep, idNoForeground);
   TJvDeleteStyles = set of TJvDeleteStyle;
-//   TOnOk = procedure(Sender: TObject; Password: string; var Accept: Boolean) of object; // JvPasswordForm
+  //   TOnOk = procedure(Sender: TObject; Password: string; var Accept: Boolean) of object; // JvPasswordForm
 
-//  TCoordChanged = procedure(Sender: TObject; Coord: string) of object;
+  //  TCoordChanged = procedure(Sender: TObject; Coord: string) of object;
   TJvNotifyParamsEvent = procedure(Sender: TObject; Params: Pointer) of object;
-{$IFDEF VCL}
+  {$IFDEF VCL}
   TJvFileInfoRec = record
     Attributes: DWORD;
     DisplayName: string;
@@ -251,23 +262,22 @@ type
     TypeName: string;
     SysIconIndex: Integer;
   end;
-{$ENDIF VCL}
+  {$ENDIF VCL}
   TJvAnimation = (anLeftRight, anRightLeft, anRightAndLeft, anLeftVumeter, anRightVumeter);
   TJvAnimations = set of TJvAnimation;
   TJvDropEvent = procedure(Sender: TObject; Pos: TPoint; Value: TStringList) of object;
-//   TOnFound = procedure(Sender: TObject; Path: string) of object; // JvSearchFile
-//  TOnChangedDir = procedure(Sender: TObject; Directory: string) of object; // JvSearchFile
-//  TOnAlarm = procedure(Sender: TObject; Keyword: string) of object; // JvAlarm
-{  TAlarm = record
-    Keyword: string;
-    DateTime: TDateTime;
-  end;
-} // JvAlarm
+  //   TOnFound = procedure(Sender: TObject; Path: string) of object; // JvSearchFile
+  //  TOnChangedDir = procedure(Sender: TObject; Directory: string) of object; // JvSearchFile
+  //  TOnAlarm = procedure(Sender: TObject; Keyword: string) of object; // JvAlarm
+  {  TAlarm = record
+      Keyword: string;
+      DateTime: TDateTime;
+    end;
+  } // JvAlarm
 
-// Bianconi - Moved from JvAlarms.pas
+  // Bianconi - Moved from JvAlarms.pas
   TJvTriggerKind = (tkOneShot, tkEachSecond, tkEachMinute, tkEachHour, tkEachDay, tkEachMonth, tkEachYear);
-// End of Bianconi
-
+  // End of Bianconi
 
   TJvFourCC = array [0..3] of Char;
   PJvAniTag = ^TJvAniTag;
@@ -323,7 +333,7 @@ const
 
 const
   CenturyOffset: Byte = 60;
-  NullDate: TDateTime = {-693594} 0;
+  NullDate: TDateTime = 0; {-693594}
 
 const
   DigitChars = ['0'..'9'];
@@ -356,17 +366,17 @@ type
   TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
   TJvListViewColumnSortEvent = procedure(Sender: TObject; Column: Integer; var AMethod:TJvSortMethod) of object;
 
-
 const
+  CM_JVBASE = CM_BASE + 80;
   { Command message for JvSpeedbar editor }
-  CM_SPEEDBARCHANGED = CM_BASE + 80;
+  CM_SPEEDBARCHANGED = CM_JVBASE + 0;
   { Command message for TJvSpeedButton }
-  CM_JVBUTTONPRESSED = CM_BASE + 81;
+  CM_JVBUTTONPRESSED = CM_JVBASE + 1;
   { Command messages for TJvWindowHook }
-  CM_RECREATEWINDOW  = CM_BASE + 82;
-  CM_DESTROYHOOK     = CM_BASE + 83;
+  CM_RECREATEWINDOW  = CM_JVBASE + 2;
+  CM_DESTROYHOOK     = CM_JVBASE + 3;
   { Notify message for TJvxTrayIcon }
-  CM_TRAYICON        = CM_BASE + 84;
+  CM_TRAYICON        = CM_JVBASE + 4;
 
   { TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
   PaletteMask = $02000000;
@@ -376,16 +386,6 @@ const
   crDragHand = TCursor(14001);
 
 implementation
-
-uses
-{$IFDEF VisualCLX}
-  QWinCursors,
-{$ENDIF}
-  JvConsts; // includes cursor resources
-
-initialization
-  Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
-  Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
 
 end.
 

@@ -283,7 +283,7 @@ function BrowseComputer(var AComputerName: string; const DlgText: string;
 implementation
 
 uses
-  Consts,
+  Consts, FileCtrl,
   JclSysUtils,
   JvTypes;
 
@@ -1350,6 +1350,7 @@ begin
     begin
       GetWindowRect(FDialogWindow, WindowRect);
       GetWindowRect(ItemHandle, ItemRect);
+      // (rom) MinimizeName from FileCtrl not JvJCLUtils
       AText := MinimizeName(AText, Application.MainForm.Canvas,
         (WindowRect.Right - WindowRect.Left) - (ItemRect.Left - WindowRect.Left) * 2 - 8);
     end;

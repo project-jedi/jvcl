@@ -1503,7 +1503,7 @@ begin
   Value := ReadItem(ItemName);
   if not AnsiSameText(AName, ItemName) then
     raise EJVCLException.Create(sIncorrectIdentifierFound);
-  if (Length(Value) < 3) or (Value[3] in ['0'..'9']) then
+  if (Length(Value) < 3) or (Value[3] in DigitChars) then
     Result := StrToInt(Value)
   else
   begin

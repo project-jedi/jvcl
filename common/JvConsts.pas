@@ -415,11 +415,4 @@ resourcestring
 
 implementation
 
-{$IFDEF MSWINDOWS}
-{$R ..\resources\JvConsts.res}
-{$ENDIF}
-{$IFDEF LINUX}
-{$R ../Resources/JvConsts.res}
-{$ENDIF}
-
 end.

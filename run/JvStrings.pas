@@ -24,6 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
   Should be merged with JCL
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 {$IFDEF COMPILER6_UP}
@@ -33,7 +34,7 @@ Known Issues:
  {$ENDIF}
 {$ENDIF}
 
-unit Jvstrings;
+unit JvStrings;
 
 interface
 
@@ -47,7 +48,8 @@ uses
 {$IFDEF VisualCLX}
   QGraphics,
 {$ENDIF}
-  SysUtils, Classes;
+  SysUtils, Classes,
+  JvTypes;
 
 {regular expressions}
 
@@ -216,9 +218,6 @@ function parseDate(s: string): Integer;
 // starts and ends with #
 
 implementation
-
-uses
-  JvTypes;
 
 resourcestring
   sCannotLoadResource = 'Can''t load resource: %s';
@@ -2106,7 +2105,7 @@ begin
   i := 0;
   c := Length(s);
   if c = 0 then Exit;
-  while (i + 1 <= c) and (s[i + 1] in ['0'..'9', ',', '.']) do
+  while (i + 1 <= c) and (s[i + 1] in (DigitChars + [',', '.'])) do
     inc(i);
   if (i + 1 <= c) and (s[i + 1] in ['e', 'E']) then
   begin
@@ -2114,7 +2113,7 @@ begin
     inc(i);
     if (i + 1 <= c) and (s[i + 1] in ['+', '-']) then inc(i);
     e2 := i;
-    while (i + 1 <= c) and (s[i + 1] in ['0'..'9']) do
+    while (i + 1 <= c) and (s[i + 1] in DigitChars) do
       inc(i);
     if i = e2 then i := e;
   end;
