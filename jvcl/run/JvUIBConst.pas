@@ -100,7 +100,7 @@ resourcestring
   EUIB_MUSTBEOPEN          = 'The query must be opened first.';
   EUIB_EXPLICITTRANS       = 'Transaction must be started explicitly.';
   EUIB_EXCEPTIONNOTFOUND   = 'Exception name %s, not found.';
-  EUIB_EXPTIONREGISTERED   = 'Exception: %d allready registered';
+  EUIB_EXPTIONREGISTERED   = 'Exception: %d already registered';
   EUIB_NOAUTOSTOP          = 'Transaction must be closed explicitly.';
   EUIB_NOGENERATOR         = 'Generator %s not found.';
   EUIB_NOFIELD             = 'Field not found.';
