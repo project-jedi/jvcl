@@ -449,6 +449,9 @@ function CutTime(ADate: TDateTime): TDateTime; { Set time to 00:00:00:00 }
 { String to date conversions }
 function GetDateOrder(const DateFormat: string): TDateOrder;
 function MonthFromName(const S: string; MaxLen: Byte): Byte;
+{$IFNDEF COMPILER6_UP}
+function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
+{$ENDIF}
 function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
 function StrToDateFmt(const DateFormat, S: string): TDateTime;
 function StrToDateFmtDef(const DateFormat, S: string; Default: TDateTime): TDateTime;
@@ -4483,6 +4486,18 @@ begin
     end;
   end;
 end;
+
+{$IFNDEF COMPILER6_UP}
+function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
+begin
+  Result := True;
+  try
+    Date := StrToDateTime(S);
+  except
+    Result := False;
+  end;
+end;
+{$ENDIF}
 
 function StrToDateFmt(const DateFormat, S: string): TDateTime;
 begin
