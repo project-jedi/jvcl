@@ -33,91 +33,114 @@ unit JvCheckBox;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls,
+  {$ELSE}
+  QGraphics, QControls, QForms, QStdCtrls,
+  {$ENDIF VCL}
   JVCLVer, JvTypes;
 
 type
   TJvCheckBox = class(TCheckBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FOnMouseEnter: TNotifyEvent;
-    FColor: TColor;
+    FHintColor: TColor;
     FSaved: TColor;
+    FOver: Boolean;
+    FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FHotTrack: boolean;
-    FHotFont: TFont;
+    FHotTrack: Boolean;
+    FHotTrackFont: TFont;
     FFontSave: TFont;
-    FOver: boolean;
-    FAutoSize: boolean;
+    FHotTrackFontOptions: TJvTrackFontOptions;
+    {$IFDEF VCL}
+    FOnCtl3DChanged: TNotifyEvent;
+    {$ENDIF VCL}
+    FAutoSize: Boolean;
     FAssociated: TControl;
     FCanvas: TControlCanvas;
-    FHotTrackFontOptions: TJvTrackFOntOptions;
-    FWordWrap: boolean;
+    FWordWrap: Boolean;
     FAlignment: TAlignment;
     FLayout: TTextLayout;
-    FRightButton: boolean;
-    procedure SetHotFont(const Value: TFont);
-    procedure SetAssociated(const Value: TControl);
+    FRightButton: Boolean;
     function GetCanvas: TCanvas;
+    function GetReadOnly: Boolean;
+    procedure SetHotTrackFont(const Value: TFont);
+    procedure SetAssociated(const Value: TControl);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
-    procedure SetWordWrap(const Value: boolean);
+    procedure SetWordWrap(const Value: Boolean);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetLayout(const Value: TTextLayout);
-    procedure SetReadOnly(const Value: boolean);
-    procedure SetRightButton(const Value: boolean);
-    function GetReadOnly: boolean;
-  protected
-    procedure SetAutoSize(Value: boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
-    procedure CreateParams(var Params: TCreateParams); override;
+    procedure SetReadOnly(const Value: Boolean);
+    procedure SetRightButton(const Value: Boolean);
+    {$IFDEF VCL}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    {$ENDIF VCL}
+  protected
+    {$IFDEF VCL}
+    procedure MouseEnter(AControl: TControl); dynamic;
+    procedure MouseLeave(AControl: TControl); dynamic;
+    procedure ParentColorChanged; dynamic;
+    procedure TextChanged; dynamic;
+    procedure FontChanged; dynamic;
+    procedure DoCtl3DChange;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
+    procedure ParentColorChanged; override;
+    procedure TextChanged; override;
+    procedure FontChanged; override;
+    {$ENDIF VisualCLX}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure CalcAutoSize; virtual;
+    procedure DoMouseEnter(AControl: TControl);
+    procedure DoMouseLeave(AControl: TControl);
+    procedure DoParentColorChange;
   public
-
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
     procedure Toggle; override;
     procedure Click; override;
-    procedure SetChecked(Value: boolean); override;
+    procedure SetChecked(Value: Boolean); override;
     property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property Alignment:TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property Layout:TTextLayout read FLayout write SetLayout default tlTop;
-    property ReadOnly:boolean read GetReadOnly write SetReadOnly default false;
-    // show button on right side of control
-    property RightButton:boolean read FRightButton write SetRightButton;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Associated: TControl read FAssociated write SetAssociated;
-    property AutoSize: boolean read FAutoSize write SetAutoSize default true;
-    property HotTrack: boolean read FHotTrack write FHotTrack default false;
-    property HotTrackFont: TFont read FHotFont write SetHotFont;
-    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
-      DefaultTrackFontOptions;
-
-    property HintColor: TColor read FColor write FColor default clInfoBk;
-    property WordWrap: boolean read FWordWrap write SetWordWrap default false;
-
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
+    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions
+      default DefaultTrackFontOptions;
+    property Layout: TTextLayout read FLayout write SetLayout default tlTop;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    // show button on right side of control
+    property RightButton: Boolean read FRightButton write SetRightButton default False;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
+    {$IFDEF VCL}
+    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
+    {$ENDIF VCL}
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
 implementation
+
 uses
   JvJVCLUtils;
-
-{**************************************************}
 
 constructor TJvCheckBox.Create(AOwner: TComponent);
 begin
@@ -125,26 +148,33 @@ begin
   FCanvas := TControlCanvas.Create;
   FCanvas.Control := Self;
   FHotTrack := False;
-  FHotFont := TFont.Create;
+  FHotTrackFont := TFont.Create;
   FFontSave := TFont.Create;
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
   FOver := False;
-//  ControlStyle := ControlStyle + [csAcceptsControls];
   FHotTrackFontOptions := DefaultTrackFontOptions;
   FAutoSize := True;
   FWordWrap := False;
   FAlignment := taLeftJustify;
-  FRightButton := false;
+  FRightButton := False;
   FLayout := tlTop;
 end;
 
 destructor TJvCheckBox.Destroy;
 begin
-  FHotFont.Free;
+  FHotTrackFont.Free;
   FFontSave.Free;
   inherited Destroy;
   // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Free;
+end;
+
+procedure TJvCheckBox.Loaded;
+begin
+  inherited Loaded;
+  if Assigned(FAssociated) then
+    Associated.Enabled := Checked;
+  CalcAutoSize;
 end;
 
 procedure TJvCheckBox.Toggle;
@@ -159,140 +189,154 @@ end;
 
 procedure TJvCheckBox.CreateParams(var Params: TCreateParams);
 const
-  cAlign:array[TAlignment] of word = (BS_LEFT, BS_RIGHT, BS_CENTER);
-  cRightButton:array[boolean] of word = (0, BS_RIGHTBUTTON);
-  cLayout:array[TTextLayout] of word = (BS_TOP, BS_VCENTER, BS_BOTTOM);
-  cWordWrap:array[boolean] of word = (0,BS_MULTILINE);
+  cAlign: array [TAlignment] of Word = (BS_LEFT, BS_RIGHT, BS_CENTER);
+  cRightButton: array [Boolean] of Word = (0, BS_RIGHTBUTTON);
+  cLayout: array [TTextLayout] of Word = (BS_TOP, BS_VCENTER, BS_BOTTOM);
+  cWordWrap: array [Boolean] of Word = (0, BS_MULTILINE);
 begin
   inherited CreateParams(Params);
   with Params do
-    Style := Style or cAlign[Alignment] or cLayout[Layout] or cRightButton[RightButton] or cWordWrap[WordWrap];
+    Style := Style or cAlign[Alignment] or cLayout[Layout] or
+      cRightButton[RightButton] or cWordWrap[WordWrap];
 end;
+
+{$IFDEF VCL}
 
 procedure TJvCheckBox.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
+  DoCtl3DChange;
+end;
+
+procedure TJvCheckBox.DoCtl3DChange;
+begin
   if Assigned(FOnCtl3DChanged) then
     FOnCtl3DChanged(Self);
 end;
 
-procedure TJvCheckBox.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
+{$ENDIF VCL}
 
+{$IFDEF VCL}
 procedure TJvCheckBox.CMMouseEnter(var Msg: TMessage);
 begin
+  inherited;
+  MouseEnter(Self);
+end;
+{$ENDIF VCL}
+
+procedure TJvCheckBox.MouseEnter(AControl: TControl);
+begin
+  {$IFDEF VisualCLX}
+  inherited MouseEnter(AControl);
+  {$ENDIF VisualCLX}
   // for D7...
   if csDesigning in ComponentState then
     Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    Application.HintColor := FColor;
+    Application.HintColor := FHintColor;
     if FHotTrack then
     begin
       FFontSave.Assign(Font);
-      Font.Assign(FHotFont);
+      Font.Assign(FHotTrackFont);
     end;
-    FOver := true;
+    FOver := True;
   end;
+  DoMouseEnter(AControl);
+end;
+
+procedure TJvCheckBox.DoMouseEnter;
+begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
+{$IFDEF VCL}
 procedure TJvCheckBox.CMMouseLeave(var Msg: TMessage);
 begin
+  inherited;
+  MouseLeave(Self);
+end;
+{$ENDIF VCL}
+
+procedure TJvCheckBox.MouseLeave(AControl: TControl);
+begin
+  {$IFDEF VisualCLX}
+  inherited MouseLeave(AControl);
+  {$ENDIF VisualCLX}
   // for D7...
   if csDesigning in ComponentState then
     Exit;
   if FOver then
   begin
+    FOver := False;
     Application.HintColor := FSaved;
     if FHotTrack then
       Font.Assign(FFontSave);
-    FOver := false;
   end;
+  DoMouseLeave(AControl);
+end;
+
+procedure TJvCheckBox.DoMouseLeave;
+begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
 
-procedure TJvCheckBox.SetHotFont(const Value: TFont);
-begin
-  FHotFont.Assign(Value);
-end;
-
-procedure TJvCheckBox.Loaded;
+{$IFDEF VCL}
+procedure TJvCheckBox.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
-  if Assigned(Associated) then
-    Associated.Enabled := Checked;
-  CalcAutoSize;
+  ParentColorChanged;
 end;
+{$ENDIF VCL}
 
-procedure TJvCheckBox.SetAutoSize(Value: boolean);
+procedure TJvCheckBox.ParentColorChanged;
 begin
-  if FAutoSize <> Value then
-  begin
-{$IFDEF COMPILER6_UP}
-//    inherited SetAutoSize(Value);
-{$ENDIF}
-    FAutoSize := Value;
-    if Value then WordWrap := false;
-    CalcAutoSize;
-  end;
+  {$IFDEF VisualCLX}
+  inherited ParentColorChanged;
+  {$ENDIF VisualCLX}
+  DoParentColorChange;
 end;
 
-procedure TJvCheckBox.SetAssociated(const Value: TControl);
+procedure TJvCheckBox.DoParentColorChange;
 begin
-  if FAssociated <> Self then
-  begin
-    FAssociated := Value;
-    if Assigned(FAssociated) then
-      FAssociated.Enabled := Checked;
-  end;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
 end;
 
-procedure TJvCheckBox.SetChecked(Value: boolean);
-begin
-  inherited SetChecked(Value);
-  if Assigned(FAssociated) then
-    FAssociated.Enabled := Value;
-end;
-
-procedure TJvCheckBox.Click;
-begin
-  inherited Click;
-  if Assigned(FAssociated) then
-    FAssociated.Enabled := Checked;
-end;
-
-procedure TJvCheckBox.Notification(AComponent: TComponent;
-  Operation: TOperation);
+{$IFDEF VCL}
+procedure TJvCheckBox.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
-  if (Operation = opRemove) and (AComponent = Associated) then
-    Associated := nil;
+  FontChanged;
 end;
+{$ENDIF VCL}
 
-function TJvCheckBox.GetCanvas: TCanvas;
+procedure TJvCheckBox.FontChanged;
 begin
-  Result := FCanvas;
-end;
-
-procedure TJvCheckBox.CMTextChanged(var Message: TMessage);
-begin
-  inherited;
-  CalcAutoSize;
-end;
-
-procedure TJvCheckBox.CMFontChanged(var Message: TMessage);
-begin
-  inherited;
+  {$IFDEF VisualCLX}
+  inherited FontChanged;
+  {$ENDIF VisualCLX}
   CalcAutoSize;
   UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
+end;
+
+{$IFDEF VCL}
+procedure TJvCheckBox.CMTextChanged(var Msg: TMessage);
+begin
+  inherited;
+  TextChanged;
+end;
+{$ENDIF VCL}
+
+procedure TJvCheckBox.TextChanged;
+begin
+  {$IFDEF VisualCLX}
+  inherited TextChanged;
+  {$ENDIF VisualCLX}
+  CalcAutoSize;
 end;
 
 procedure TJvCheckBox.CalcAutoSize;
@@ -307,14 +351,15 @@ begin
     (csLoading in ComponentState) then
     Exit;
   ASize := GetDefaultCheckBoxSize;
-    // add some spacing
+  // add some spacing
   Inc(ASize.cy, 4);
   FCanvas.Font := Font;
   R := Rect(0, 0, ClientWidth, ClientHeight);
-    // This is slower than GetTextExtentPoint but it does consider hotkeys
+  // This is slower than GetTextExtentPoint but it does consider hotkeys
   if Caption <> '' then
   begin
-    DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R, Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
+    DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R,
+      Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
   end
@@ -331,6 +376,62 @@ begin
   ClientHeight := AHeight;
 end;
 
+procedure TJvCheckBox.SetHotTrackFont(const Value: TFont);
+begin
+  FHotTrackFont.Assign(Value);
+end;
+
+procedure TJvCheckBox.SetAutoSize(Value: Boolean);
+begin
+  if FAutoSize <> Value then
+  begin
+    {$IFDEF COMPILER6_UP}
+    // inherited SetAutoSize(Value);
+    {$ENDIF COMPILER6_UP}
+    FAutoSize := Value;
+    if Value then
+      WordWrap := False;
+    CalcAutoSize;
+  end;
+end;
+
+procedure TJvCheckBox.SetAssociated(const Value: TControl);
+begin
+  if FAssociated <> Self then
+  begin
+    FAssociated := Value;
+    if Assigned(FAssociated) then
+      FAssociated.Enabled := Checked;
+  end;
+end;
+
+procedure TJvCheckBox.SetChecked(Value: Boolean);
+begin
+  inherited SetChecked(Value);
+  if Assigned(FAssociated) then
+    FAssociated.Enabled := Value;
+end;
+
+procedure TJvCheckBox.Click;
+begin
+  inherited Click;
+  if Assigned(FAssociated) then
+    FAssociated.Enabled := Checked;
+end;
+
+procedure TJvCheckBox.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = Associated) then
+    Associated := nil;
+end;
+
+function TJvCheckBox.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
+end;
+
 procedure TJvCheckBox.SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
 begin
   if FHotTrackFontOptions <> Value then
@@ -340,12 +441,13 @@ begin
   end;
 end;
 
-procedure TJvCheckBox.SetWordWrap(const Value: boolean);
+procedure TJvCheckBox.SetWordWrap(const Value: Boolean);
 begin
   if FWordWrap <> Value then
   begin
     FWordWrap := Value;
-    if Value then AutoSize := false;
+    if Value then
+      AutoSize := False;
     RecreateWnd;
   end;
 end;
@@ -355,7 +457,7 @@ begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
-    recreateWnd;
+    RecreateWnd;
   end;
 end;
 
@@ -368,13 +470,12 @@ begin
   end;
 end;
 
-procedure TJvCheckBox.SetReadOnly(const Value: boolean);
+procedure TJvCheckBox.SetReadOnly(const Value: Boolean);
 begin
-  if ClicksDisabled <> Value then
-    ClicksDisabled := Value;
+  ClicksDisabled := Value;
 end;
 
-procedure TJvCheckBox.SetRightButton(const Value: boolean);
+procedure TJvCheckBox.SetRightButton(const Value: Boolean);
 begin
   if FRightButton <> Value then
   begin
@@ -383,7 +484,7 @@ begin
   end;
 end;
 
-function TJvCheckBox.GetReadOnly: boolean;
+function TJvCheckBox.GetReadOnly: Boolean;
 begin
   Result := ClicksDisabled;
 end;
