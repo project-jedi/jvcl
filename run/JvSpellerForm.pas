@@ -50,7 +50,6 @@ type
     BtnSkipAll: TButton;
   private
     FSpeller: TJvSpeller;
-  public
   end;
 
   TJvDicIndexArray = array [1..26] of Integer;
@@ -96,9 +95,6 @@ uses
   JvConsts, JvResources, JvTypes;
 
 {$R *.dfm}
-
-const
-  Tab = Chr(9);
 
 function Q_PosStr(const FindString, SourceString: string; StartPos: Integer): Integer;
 asm
@@ -292,7 +288,7 @@ begin
   if FDictionary <> Value then
   begin
     FDictionary := Value;
-    LoadDictionary(FDictionary)
+    LoadDictionary(FDictionary);
   end;
 end;
 
