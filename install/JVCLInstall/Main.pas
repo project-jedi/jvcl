@@ -39,11 +39,14 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ImgList,
   Dialogs, JvExControls, JvComponent, jpeg, ExtCtrls, StdCtrls, JvWizard,
   JvWizardRouteMapList,
+  {$IFDEF USE_DXGETTEXT}
+  gnugettext,
+  {$ENDIF USE_DXGETTEXT}
   Core,
   ShellAPI, HtHint, JvWizardRouteMapSteps;
 
 type
-  TFormMain = class(TForm)
+  TFormMain = class(TJvForm)
     JvWizard: TJvWizard;
     ImageList: TImageList;
     PanelLogo: TPanel;
@@ -359,5 +362,21 @@ begin
     end;
   end;
 end;
+
+{$IFDEF USE_DXGETTEXT}
+
+{$IFDEF MSWINDOWS}
+const PathSeparator = '\';
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+const PathSeparator = '/';
+{$ENDIF LINUX}
+
+initialization
+  bindtextdomain('JVCLInstall', ExtractFilePath(Application.ExeName)+'..'+PathSeparator+'locale');
+  bindtextdomain('jvcl', ExtractFilePath(Application.ExeName)+'..'+PathSeparator+'locale');
+  AddDomainForResourceString('JVCLInstall');
+
+{$ENDIF USE_DXGETTEXT}
 
 end.
