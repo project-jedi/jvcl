@@ -4056,6 +4056,8 @@ begin
   end
   else if MinHeight <> Value then
   begin
+    if SizingFactor = irsNoResize then
+      FSizingFactor := irsValueMask;
     FMinHeight := Value;
     Item.Height := CurHeight;
   end;

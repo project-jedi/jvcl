@@ -28,7 +28,7 @@ unit JvInspExtraEditors;
 interface
 
 uses
-  SysUtils, Windows, Classes, Controls, Graphics,
+  SysUtils, Windows, Classes, Controls, Graphics, imglist,
   JvInspector;
 
 {$A+,B-,C+,E-,F-,G+,H+,I+,J+,K-,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Z1}
@@ -120,10 +120,35 @@ type
     property IncludeStdColors: Boolean read FIncludeStdColors write FIncludeStdColors;
   end;
 
+  { TImageList image index editor. Will render the image next to the value }
+  TJvInspectorTImageIndexItem = class(TJvCustomInspectorItem)
+  private
+    FImageList: TCustomImageList;
+  protected
+    procedure PaintValue(const ImgNum: Integer; const ImgName: string; const ACanvas: TCanvas;
+      const ARect: TRect);
+
+    procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
+      State: TOwnerDrawState); override;
+    procedure DoMeasureListItem(Control: TWinControl; Index: Integer; var Height: Integer); override;
+    procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer; var Width: Integer); override;
+    function GetDisplayValue: string; override;
+    procedure GetValueList(const Strings: TStrings); override;
+    procedure SetDisplayValue(const Value: string); override;
+    procedure SetFlags(const Value: TInspectorItemFlags); override;
+    procedure SetRects(const RectKind: TInspectorPaintRect; Value: TRect); override;
+  public
+    procedure DrawValue(const ACanvas: TCanvas); override;
+    class procedure RegisterAsDefaultItem;
+    class procedure UnregisterAsDefaultItem;
+
+    property ImageList: TCustomImageList read FImageList write FImageList;
+  end;
+
 implementation
 
 uses
-  StdCtrls,
+  StdCtrls, TypInfo,
   JclRTTI;
 
 type
@@ -487,7 +512,7 @@ end;
 procedure TJvInspectorColorItem.SetRects(const RectKind: TInspectorPaintRect; Value: TRect);
 begin
   if RectKind = iprValue then
-    Value.Left := Value.Left + (Value.Bottom  -Value.Top) + 1;
+    Value.Left := Value.Left + (Value.Bottom - Value.Top) + 2;
   inherited SetRects(RectKind, Value);
 end;
 
@@ -744,6 +769,158 @@ begin
 end;
 
 class procedure TJvInspectorAnchorsItem.UnregisterAsDefaultItem;
+begin
+  TJvCustomInspectorData.ItemRegister.Delete(Self);
+end;
+
+{ TJvInspectorTImageIndexItem }
+
+procedure TJvInspectorTImageIndexItem.PaintValue(const ImgNum: Integer; const ImgName: string;
+  const ACanvas: TCanvas; const ARect: TRect);
+var
+  TH: Integer;
+  BoxRect: TRect;
+  BMP: TBitmap;
+begin
+  TH := Rects[iprValue].Bottom - Rects[iprValue].Top - 2;
+  BoxRect.Left := ARect.Left + (ARect.Bottom - ARect.Top - TH) div 2;
+  BoxRect.Top := ARect.Top + BoxRect.Left - ARect.Left;
+  BoxRect.Right := BoxRect.Left + TH;
+  BoxRect.Bottom := BoxRect.Top + TH;
+  with ACanvas do
+  begin
+    if (ImgNum > -1) and (ImageList <> nil) and (ImgNum < ImageList.Count) then
+    begin
+      BMP := TBitmap.Create;
+      try
+        ImageList.GetBitmap(ImgNum, BMP);
+        StretchDraw(BoxRect, BMP);
+      finally
+        BMP.Free;
+      end;
+    end;
+    TextOut(ARect.Left + (ARect.Bottom - ARect.Top) + 1, BoxRect.Top, ImgName);
+  end;
+end;
+
+procedure TJvInspectorTImageIndexItem.DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
+  State: TOwnerDrawState);
+begin
+  with TListBox(Control) do
+  begin
+    if odSelected in State then
+      Canvas.Brush.Color := clHighlight;
+    Canvas.FillRect(Rect);
+    Rect.Top := Rect.Top + 1;
+    Rect.Bottom := Rect.Bottom - 1;
+    PaintValue(Integer(Items.Objects[Index]), Items[Index], Canvas, Rect);
+  end;
+end;
+
+procedure TJvInspectorTImageIndexItem.DoMeasureListItem(Control: TWinControl; Index: Integer;
+  var Height: Integer);
+begin
+  with Rects[iprValueArea] do
+    Height := Bottom - Top + 2;
+end;
+
+procedure TJvInspectorTImageIndexItem.DoMeasureListItemWidth(Control: TWinControl; Index: Integer;
+  var Width: Integer);
+begin
+  with Rects[iprValueArea] do
+    Width := Width + Bottom - Top + 2;
+end;
+
+function TJvInspectorTImageIndexItem.GetDisplayValue: string;
+begin
+  Result := JclTypedIntToStr(Integer(Data.AsOrdinal), Data.TypeInfo);
+end;
+
+procedure TJvInspectorTImageIndexItem.GetValueList(const Strings: TStrings);
+var
+  I: Integer;
+begin
+  Strings.AddObject('-1', TObject(-1000));
+  for I := 0 to FImageList.Count - 1 do
+    Strings.AddObject(IntToStr(I), TObject(I));
+end;
+
+procedure TJvInspectorTImageIndexItem.SetDisplayValue(const Value: string);
+var
+  TmpOrd: Integer;
+begin
+  TmpOrd := JclStrToTypedInt(Value, Data.TypeInfo);
+  if (JclTypeInfo(Data.TypeInfo) as IJclOrdinalRangeTypeInfo).OrdinalType = otULong then
+    Data.AsOrdinal := Cardinal(TmpOrd)
+  else
+    Data.AsOrdinal := TmpOrd;
+end;
+
+procedure TJvInspectorTImageIndexItem.SetFlags(const Value: TInspectorItemFlags);
+begin
+  inherited SetFlags(Value + [iifValueList, iifAllowNonListValues, iifOwnerDrawListVariable] -
+    [iifOwnerDrawListFixed]);
+end;
+
+procedure TJvInspectorTImageIndexItem.SetRects(const RectKind: TInspectorPaintRect; Value: TRect);
+begin
+  if RectKind = iprValue then
+    Value.Left := Value.Left + (Value.Bottom  -Value.Top) + 2;
+  inherited SetRects(RectKind, Value);
+end;
+
+procedure TJvInspectorTImageIndexItem.DrawValue(const ACanvas: TCanvas);
+var
+  Idx: Integer;
+  S: string;
+  ARect: TRect;
+  SafeColor: TColor;
+begin
+  Idx := -1;
+  if Data = nil then
+    S := sJvInspItemUnInitialized
+  else
+  try
+    if not Data.IsInitialized then
+      S := sJvInspItemUnInitialized
+    else if not Data.HasValue then
+      S := sJvInspItemNoValue
+    else if not Data.IsAssigned then
+      S := sJvInspItemUnassigned
+    else
+    begin
+      S := DisplayValue;
+      Idx := Data.AsOrdinal;
+    end;
+  except
+      S := sJvInspItemValueException + ExceptObject.ClassName + ': ' +
+        Exception(ExceptObject).Message;
+  end;
+  ARect := Rects[iprValueArea];
+  SafeColor := ACanvas.Brush.Color;
+  if Editing then
+    ACanvas.Brush.Color := clWindow;
+  try
+    ACanvas.FillRect(ARect);
+    PaintValue(Idx, S, ACanvas, ARect);
+    if Editing then
+      DrawEditor(ACanvas);
+  finally
+    if Editing then
+      ACanvas.Brush.Color := SafeColor;
+  end;
+end;
+
+class procedure TJvInspectorTImageIndexItem.RegisterAsDefaultItem;
+begin
+  with TJvCustomInspectorData.ItemRegister do
+  begin
+    if IndexOf(Self) = -1 then
+      Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TImageIndex)));
+  end;
+end;
+
+class procedure TJvInspectorTImageIndexItem.UnregisterAsDefaultItem;
 begin
   TJvCustomInspectorData.ItemRegister.Delete(Self);
 end;
