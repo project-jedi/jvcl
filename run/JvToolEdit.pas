@@ -65,7 +65,12 @@ type
   TCloseUpEvent = procedure(Sender: TObject; Accept: Boolean) of object;
   TPopupAlign = (epaRight, epaLeft);
 
+  {$IFDEF VCL}
+  TJvPopupWindow = class(TJvCustomControl)
+  {$ENDIF}
+  {$IFDEF VisualCLX}
   TJvPopupWindow = class(TCustomForm)
+  {$ENDIF}
   private
     FEditor: TWinControl;
     FCloseUp: TCloseUpEvent;
