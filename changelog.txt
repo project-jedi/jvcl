@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-12-14:
+- New component TJvDropTarget (implements IDropTarget) in JvDragDrop.pas // (ahuser)
 2003-12-09:
   JvMovableBevel.TJvScrollTextDirection -> renamed elements "2" changed to "To" // (rom)
 2003-12-07:
