@@ -23,6 +23,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 {$I jvcl.inc}
+
 unit JvPageListEditorForm;
 
 interface
@@ -38,14 +39,25 @@ uses
   QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, DesignWindows,
+  DesignIntf, DesignEditors,
+  {$IFDEF VCL}
+  DesignWindows,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  ClxDesignWindows,
+  {$ENDIF VisualCLX}
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}
   JvPageList;
 
 type
+  {$IFDEF VisualCLX}
+  TfrmPageListEditor = class(TClxDesignWindow)
+  {$ENDIF VisualCLX}
+  {$IFDEF VCL}
   TfrmPageListEditor = class(TDesignWindow)
+  {$ENDIF VCL}
     ToolBar1: TToolBar;
     btnAdd: TToolButton;
     btnDelete: TToolButton;
@@ -88,6 +100,9 @@ type
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override;
+    {$IFDEF VisualCLX}
+    function UniqueName(Component: TComponent): string; override;
+    {$ENDIF VisualCLX}
     {$ELSE}
     procedure ComponentDeleted(Component: IPersistent); override;
     function UniqueName(Component: TComponent): string; override;
@@ -103,7 +118,12 @@ implementation
 uses
   JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF VisualCLX}
 
 procedure ShowPageListEditor(Designer: IDesigner; APageList: TJvCustomPageList);
 var
@@ -236,7 +256,19 @@ begin
     UpdateList(lbPages.ItemIndex);
 end;
 
+{$IFDEF VisualCLX}
+function TfrmPageListEditor.UniqueName(Component: TComponent): string;
+begin
+  Result := Designer.UniqueName(Component.ClassName);
+end;
+{$ENDIF VisualCLX
+}
 {$ELSE}
+
+function TfrmPageListEditor.UniqueName(Component: TComponent): string;
+begin
+  Result := Designer.UniqueName(Component.ClassName);
+end;
 
 procedure TfrmPageListEditor.ComponentDeleted(Component: IPersistent);
 begin
@@ -260,10 +292,6 @@ begin
     UpdateList(lbPages.ItemIndex);
 end;
 
-function TfrmPageListEditor.UniqueName(Component: TComponent): string;
-begin
-  Result := Designer.UniqueName(Component.ClassName);
-end;
 
 {$ENDIF !COMPILER6_UP}
 
