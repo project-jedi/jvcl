@@ -2035,6 +2035,15 @@ object Form1: TForm1
         TabOrder = 0
         OnClick = Button15Click
       end
+      object Button17: TButton
+        Left = 5
+        Top = 33
+        Width = 120
+        Height = 25
+        Caption = 'Unit Versioning'
+        TabOrder = 2
+        OnClick = Button17Click
+      end
     end
   end
   object JvAppRegistryStorage: TJvAppRegistryStorage
