@@ -26,8 +26,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 {
 Documentation:
 *************
@@ -95,6 +93,8 @@ SUPPORT FOR TDBCtrlGrid:
 }
 
 unit JvDBImage;
+
+{$I jvcl.inc}
 
 interface
 

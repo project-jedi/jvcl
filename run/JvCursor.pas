@@ -26,10 +26,10 @@ Description:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvCursor;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvCursor;
 
 interface
 

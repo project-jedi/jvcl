@@ -24,10 +24,10 @@ Known Issues: none to date.
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvClipbrd;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvClipbrd;
 
 interface
 

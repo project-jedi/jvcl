@@ -19,17 +19,18 @@ Contributor(s): Oliver Giesen [ogware att gmx dott net]
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A wrapper component for the MS MonthCal control available in
+    ComCtl32.dll versions 4.70 and above.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvCalendar;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-{ @abstract(A wrapper component for the MS MonthCal control available in
-    ComCtl32.dll versions 4.70 and above.) }
-
-unit JvCalendar;
 
 interface
 

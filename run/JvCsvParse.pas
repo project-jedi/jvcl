@@ -38,9 +38,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvCsvParse;
+
+{$I jvcl.inc}
 
 interface
 

@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvDeleteError;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvDeleteError;
 
 interface
 

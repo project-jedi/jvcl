@@ -28,9 +28,9 @@ Description:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvComboListBox;
+
+{$I jvcl.inc}
 
 interface
 

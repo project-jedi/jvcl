@@ -21,10 +21,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvDynControlEngineJVCL;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvDynControlEngineJVCL;
 
 interface
 

@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvDdeCmd;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvDdeCmd;
 
 interface
 

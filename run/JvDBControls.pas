@@ -34,9 +34,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDBControls;
+
+{$I jvcl.inc}
 
 interface
 
@@ -47,7 +47,6 @@ uses
   {$ENDIF VCL}
   Classes, Graphics, Controls, StdCtrls, DBCtrls, DB,
   JvSecretPanel, JvLabel, JvToolEdit, JvMaskEdit, JvBaseEdits;
-
 
 type
   { NEW VALIDATION EVENT }

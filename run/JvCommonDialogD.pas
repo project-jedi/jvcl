@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvCommonDialogD;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvCommonDialogD;
 
 interface
 

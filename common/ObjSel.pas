@@ -41,10 +41,10 @@
 
 ******************************************************************************}
 
+unit ObjSel;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit ObjSel;
 
 {$WEAKPACKAGEUNIT}
 

@@ -23,15 +23,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDBGridSelectColumnForm;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  Windows,
-  Classes, Controls, Forms, StdCtrls, Dialogs, CheckLst, ExtCtrls, DB, DBGrids,
+  Windows, Classes, Controls, Forms, StdCtrls, Dialogs, CheckLst, ExtCtrls,
+  DB, DBGrids,
   JvDBGrid;
 
 type

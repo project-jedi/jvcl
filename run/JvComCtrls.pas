@@ -36,9 +36,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvComCtrls;
+
+{$I jvcl.inc}
 
 interface
 

@@ -26,12 +26,6 @@ located at http://jvcl.sourceforge.net
 Known Issues:
   (rom) comments should be ripped by the help writer
 -----------------------------------------------------------------------------}
-// $Id$
-
-{$I jvcl.inc}
-
-unit JvDBDateTimePicker;
-
 /////////////////////////////////////////////////////////////////////////
 // TJvDBDateTimePicker
 // Copyright(c)2000 Eko Subagio
@@ -40,6 +34,11 @@ unit JvDBDateTimePicker;
 // Extending and add capability to integrate with database
 // www.geocities.com/ekosbg
 /////////////////////////////////////////////////////////////////////////
+// $Id$
+
+unit JvDBDateTimePicker;
+
+{$I jvcl.inc}
 
 interface
 

@@ -26,11 +26,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvCharMap;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
@@ -793,29 +794,29 @@ end;
 function TJvCustomCharMap.GetCharInfo(AChar: WideChar;
   InfoType: Cardinal): Cardinal;
 var
-  ACharInfo: Cardinal;
+  LCharInfo: Cardinal;
 begin
-  ACharInfo := 0;
+  LCharInfo := 0;
   {$IFDEF VCL}
   if Win32Platform = VER_PLATFORM_WIN32_NT then
   begin
     // Locale is ignored on NT platforms
-    if GetStringTypeExW(0, InfoType, @AChar, 1, ACharInfo) then
-      Result := ACharInfo
+    if GetStringTypeExW(0, InfoType, @AChar, 1, LCharInfo) then
+      Result := LCharInfo
     else
       Result := 0;
   end
   else
   begin
-    if GetStringTypeEx(Locale, InfoType, @AChar, 1, ACharInfo) then
-      Result := ACharInfo
+    if GetStringTypeEx(Locale, InfoType, @AChar, 1, LCharInfo) then
+      Result := LCharInfo
     else
       Result := 0;
   end;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   {TODO : implement this if possible}
-  Result := ACharInfo;
+  Result := LCharInfo;
   {$ENDIF VisualCLX}
 end;
 
@@ -835,14 +836,14 @@ end;
 
 function TJvCustomCharMap.IsValidChar(AChar: WideChar): Boolean;
 var
-  ACharInfo: Cardinal;
+  LCharInfo: Cardinal;
 begin
   Result := False;
   if (AChar >= WideChar(CharRange.StartChar)) and
     (AChar <= WideChar(CharRange.EndChar)) then
   begin
-    ACharInfo := GetCharInfo(AChar, CT_CTYPE1);
-    Result := (ACharInfo <> 0); //  and (ACharInfo and C1_CNTRL <> C1_CNTRL);
+    LCharInfo := GetCharInfo(AChar, CT_CTYPE1);
+    Result := (LCharInfo <> 0); //  and (LCharInfo and C1_CNTRL <> C1_CNTRL);
   end;
 
   if Assigned(FOnValidateChar) then

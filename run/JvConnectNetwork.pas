@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvConnectNetwork;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvConnectNetwork;
 
 interface
 

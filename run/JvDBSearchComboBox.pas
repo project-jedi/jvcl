@@ -19,17 +19,17 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
-
 Description:
-// DB Component to find record with ComboBox
-// Free modified and corrected component TDBViewCombo from ???
+   DB Component to find record with ComboBox
+   Free modified and corrected component TDBViewCombo from ???
+
+Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDBSearchComboBox;
+
+{$I jvcl.inc}
 
 interface
 

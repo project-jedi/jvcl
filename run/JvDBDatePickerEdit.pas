@@ -35,14 +35,14 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDBDatePickerEdit;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  Messages, Classes, Controls, Db, DBCtrls,
+  Messages, Classes, Controls, DB, DBCtrls,
   JvDatePickerEdit;
 
 type

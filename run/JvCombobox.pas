@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvCombobox;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvCombobox;
 
 interface
 

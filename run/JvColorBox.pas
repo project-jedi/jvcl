@@ -42,9 +42,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvColorBox;
+
+{$I jvcl.inc}
 
 interface
 

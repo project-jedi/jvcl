@@ -22,10 +22,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvClipboardViewer;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvClipboardViewer;
 
 interface
 

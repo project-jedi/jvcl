@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvDragDrop;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvDragDrop;
 
 interface
 

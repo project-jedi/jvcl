@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDBDotNetControls;
+
+{$I jvcl.inc}
 
 {$IFDEF DelphiPersonalEdition}
 

@@ -26,9 +26,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvColorForm;
+
+{$I jvcl.inc}
 
 interface
 

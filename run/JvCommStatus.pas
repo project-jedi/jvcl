@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvCommStatus;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvCommStatus;
 
 interface
 
