@@ -47,10 +47,9 @@ type
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     function GetReadOnlyField: Boolean;
     procedure SetReadOnlyField(Value: Boolean);
-    procedure SetOnChange(const Value: TNotifyEvent);
   protected
+    procedure Change; override;
     procedure DoExit; override; { called to update data }
-    procedure DoChange(Sender: TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   public
@@ -60,7 +59,7 @@ type
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property ReadOnlyField: Boolean read GetReadOnlyField write SetReadOnlyField;
-    property OnChange: TNotifyEvent read FOnChange write SetOnChange;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
 implementation
@@ -72,7 +71,6 @@ begin
   FFieldDataLink.Control := Self;
   FFieldDataLink.OnDataChange := DataChange; { So we can respond to changes in data. }
   FFieldDataLink.OnUpdateData := UpdateData; { So data in linked table is updated when user edits control. }
-  inherited OnChange := Self.DoChange;
 end;
 
 destructor TJvDBSpinEdit.Destroy;
@@ -104,27 +102,13 @@ end;
   call the OnMouseDown event handler (if it's assigned). }
 
 procedure TJvDBSpinEdit.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  MouseDownEventHandler: TMouseEvent;
 begin
   if (not ReadOnlyField) and FFieldDataLink.Edit then { OK to edit. }
     inherited MouseDown(Button, Shift, X, Y)
   else
   begin { Our responsibility to call OnMouseDown if it's assigned, as we're skipping inherited method. }
-    MouseDownEventHandler := OnMouseDown;
-    if Assigned(MouseDownEventHandler) then
-      MouseDownEventHandler(Self, Button, Shift, X, Y);
-  end;
-end;
-
-procedure TJvDBSpinEdit.DoChange(Sender: TObject);
-begin
-  if (FFieldDataLink <> nil) and (FFieldDataLink.Field <> nil) and
-    not AnsiSameText(FFieldDataLink.Field.AsString, Self.Text) and FFieldDataLink.Edit then
-  begin
-    FFieldDataLink.Modified; { Data has changed. }
-    if Assigned(FOnChange) then
-      FOnChange(Self);
+    if Assigned(OnMouseDown) then
+      OnMouseDown(Self, Button, Shift, X, Y);
   end;
 end;
 
@@ -154,7 +138,7 @@ procedure TJvDBSpinEdit.DataChange(Sender: TObject); { Triggered when data chang
 begin
   if FFieldDataLink.Field = nil then
     Self.Text := ' '
-  else
+  else if not FFieldDataLink.Editing then
     Self.Text := FFieldDataLink.Field.AsString;
 end;
 
@@ -202,9 +186,12 @@ begin
   FFieldDataLink.ReadOnly := Value;
 end;
 
-procedure TJvDBSpinEdit.SetOnChange(const Value: TNotifyEvent);
+procedure TJvDBSpinEdit.Change;
 begin
-  FOnChange := Value;
+  if (FFieldDataLink <> nil) and (FFieldDataLink.Field <> nil) and
+    not AnsiSameText(FFieldDataLink.Field.AsString, Self.Text) and FFieldDataLink.Edit then
+    FFieldDataLink.Modified; { Data has changed. }
+  inherited Change;
 end;
 
 end.
