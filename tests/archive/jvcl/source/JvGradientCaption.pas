@@ -410,8 +410,8 @@ begin
   else if W < FLabel1.Width then // otherwise, just center
   begin
     FLabel1.Left := (Width - FLabel1.Width) div 2;
-    if FLabelLeft > FLabel1.Left then
-      FLabelLeft := FLabel1.Left;
+//    if (FLabelLeft > FLabel1.Left) and  then
+//      FLabelLeft := FLabel1.Left;
   end;
 end;
 
