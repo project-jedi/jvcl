@@ -22,9 +22,6 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 
- BCB5 users, see the note at the top of JvDlgsC5R.bpk regarding this unit
-      and why it is exclued from the BCB5 package!
-
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
@@ -44,7 +41,16 @@ uses
 
 type
   {$IFNDEF COMPILER6_UP}
+  {$IFDEF BCB5}
+  // For some weird reason, directly using TCommonDialog in the declaration
+  // of TCommonDialogClass will trigger a link error (bad index) with
+  // BCB5. However, the fix below allows the compilation to work and the
+  // linker doesn't complain anymore.
+  TBCB5TCommonDialogFix = TCommonDialog;
+  TCommonDialogClass = class of TBCB5TCommonDialogFix;
+  {$ELSE}
   TCommonDialogClass = class of TCommonDialog;
+  {$ENDIF BCB5}
   {$ENDIF COMPILER6_UP}
   TJvCommonDialogClass = class of TJvCommonDialog;
   TJvCommonDialogPClass = class of TJvCommonDialogP;
