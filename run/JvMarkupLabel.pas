@@ -89,9 +89,9 @@ type
 
     property Anchors;
     property Enabled;
-    property Color;   // Duplicates BackColor
+    property Color default clBtnFace;   // Duplicates BackColor
     property Constraints;
-    property ParentColor;
+    property ParentColor default true;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -131,6 +131,7 @@ begin
   FMarginLeft := 5;
   FMarginRight := 5;
   FMarginTop := 5;
+  ParentColor := true;
 end;
 
 destructor TJvMarkupLabel.Destroy;
@@ -642,13 +643,16 @@ end;}
 
 procedure TJvMarkupLabel.DoReadBackColor(Reader: TReader);
 begin
-  Color := TColor(Reader.ReadInteger);
+  if Reader.NextValue = vaIdent then
+    Color := StringToColor(Reader.ReadIdent)
+  else
+    Color := Reader.ReadInteger;
 end;
 
 procedure TJvMarkupLabel.DefineProperties(Filer: TFiler);
 begin
-  Filer.DefineProperty('BackColor', DoReadBackColor, nil, False);
   inherited DefineProperties(Filer);
+  Filer.DefineProperty('BackColor', DoReadBackColor, nil, False);
 end;
 
 end.
