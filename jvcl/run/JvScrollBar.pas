@@ -31,7 +31,13 @@ unit JvScrollBar;
 interface
 
 uses
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Messages, Graphics, Controls, Forms, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QStdCtrls, Types,
+  {$ENDIF VisualCLX}
   JvExStdCtrls;
 
 type
@@ -83,8 +89,10 @@ begin
   begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
+    {$IFDEF VCL}
     if HotTrack then
       Ctl3D := True;
+    {$ENDIF VCL}
     FOver := True;
     inherited MouseEnter(Control);
   end;
@@ -95,8 +103,10 @@ begin
   if FOver then
   begin
     Application.HintColor := FSaved;
+    {$IFDEF VCL}
     if HotTrack then
       Ctl3D := False;
+    {$ENDIF VCL}
     FOver := False;
     inherited MouseLeave(Control);
   end;
@@ -105,8 +115,10 @@ end;
 procedure TJvScrollBar.SetHotTrack(Value: Boolean);
 begin
   FHotTrack := Value;
+  {$IFDEF VCL}
   if FHotTrack then
     Ctl3D := False;
+  {$ENDIF VCL}  
 end;
 
 end.
