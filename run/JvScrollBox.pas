@@ -73,7 +73,7 @@ type
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
     property OnKeyDown;
     property OnKeyPress;
-    property OnKeyup;
+    property OnKeyUp;
     property TabStop;
   end;
 
