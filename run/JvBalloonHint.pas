@@ -33,7 +33,7 @@ unit JvBalloonHint;
 interface
 
 uses
-  Windows, Messages, Classes, Controls, Forms, ImgList,
+  Windows, Messages, Classes, Controls, Graphics, Forms, ImgList,
   JvComponent;
 
 const
@@ -271,7 +271,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Math,
   Registry, CommCtrl, MMSystem,
-  Graphics, ComCtrls, // needed for GetComCtlVersion
+  ComCtrls, // needed for GetComCtlVersion
   JvJVCLUtils, JvThemes, JvWndProcHook, JvResources;
 
 const
@@ -281,6 +281,7 @@ const
   CTipHeight: array [TJvStemSize] of Integer = (8, 16, 24);
   CTipWidth: array [TJvStemSize] of Integer = (8, 16, 24);
   CTipDelta: array [TJvStemSize] of Integer = (16, 15, 17);
+  DefaultTextFlags:Cardinal = DT_LEFT or DT_WORDBREAK or DT_EXPANDTABS or DT_NOPREFIX;
 
 type
   TGlobalCtrl = class(TComponent)
@@ -502,9 +503,10 @@ begin
   if FShowHeader then
   begin
     Result := Rect(0, 0, MaxWidth, 0);
+    Canvas.Font := Screen.HintFont;
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-    DrawText(Canvas.Handle, PChar(FHeader), -1, Result, DT_CALCRECT or DT_LEFT or
-      DT_WORDBREAK or DT_NOPREFIX or DrawTextBiDiModeFlagsReadingOnly);
+    DrawText(Canvas.Handle, PChar(FHeader), -1, Result,
+      DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
 
     { Other }
     Inc(Result.Right, 13);
@@ -579,9 +581,10 @@ begin
   if FMsg > '' then
   begin
     Result := Rect(0, 0, MaxWidth, 0);
-    Canvas.Font.Style := Canvas.Font.Style - [fsBold];
-    DrawText(Canvas.Handle, PChar(FMsg), -1, Result, DT_CALCRECT or DT_LEFT or
-      DT_WORDBREAK or DT_NOPREFIX or DrawTextBiDiModeFlagsReadingOnly);
+    Canvas.Font := Screen.HintFont;
+//    Canvas.Font.Style := Canvas.Font.Style - [fsBold];
+    DrawText(Canvas.Handle, PChar(FMsg), -1, Result,
+    DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
 
     { Other }
     Inc(Result.Right, 27);
@@ -659,6 +662,30 @@ begin
     FCurrentPosition := NewPosition;
 
     { ..and set the offset }
+    with CalcOffset(ARect) do
+      OffsetRect(ARect, X, Y);
+  end;
+  { final adjustment - just make sure no part is disappearing outside the top/left edge }
+  if ARect.Left < ScreenRect.Left then
+  begin
+    with CalcOffset(ARect) do
+      OffsetRect(ARect, -X, -Y);
+    if FCurrentPosition = bpLeftUp then
+      FCurrentPosition := bpRightUp
+    else if FCurrentPosition = bpLeftDown then
+      FCurrentPosition := bpRightDown;
+    with CalcOffset(ARect) do
+      OffsetRect(ARect, X, Y);
+  end;
+
+  if ARect.Top < ScreenRect.Top then
+  begin
+    with CalcOffset(ARect) do
+      OffsetRect(ARect, -X, -Y);
+    if FCurrentPosition = bpLeftUp then
+      FCurrentPosition := bpLeftDown
+    else if FCurrentPosition = bpRightUp then
+      FCurrentPosition := bpRightDown;
     with CalcOffset(ARect) do
       OffsetRect(ARect, X, Y);
   end;
@@ -847,10 +874,10 @@ begin
     HintRect := ClientRect;
     Inc(HintRect.Left, 12);
     Inc(HintRect.Top, FDeltaY + FMessageTop);
-    Canvas.Font.Color := Screen.HintFont.Color;
-    Canvas.Font.Style := Canvas.Font.Style - [fsBold];
-    DrawText(Canvas.Handle, PChar(FMsg), -1, HintRect, DT_LEFT or DT_NOPREFIX or
-      DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+    Canvas.Font := Screen.HintFont;
+//    Canvas.Font.Style := Canvas.Font.Style - [fsBold];
+    DrawText(Canvas.Handle, PChar(FMsg), -1, HintRect,
+      DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 
   if FShowHeader then
@@ -860,10 +887,10 @@ begin
     if FShowIcon then
       Inc(HeaderRect.Left, FImageSize.cx + 8);
     Inc(HeaderRect.Top, FDeltaY + 8);
-    Canvas.Font.Color := Screen.HintFont.Color;
+    Canvas.Font := Screen.HintFont;
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-    DrawText(Canvas.Handle, PChar(FHeader), -1, HeaderRect, DT_LEFT or DT_NOPREFIX or
-      DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+    DrawText(Canvas.Handle, PChar(FHeader), -1, HeaderRect,
+      DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 end;
 
@@ -1857,10 +1884,10 @@ begin
   begin
     Inc(HintRect.Left, 12);
     Inc(HintRect.Top, FDeltaY + FMessageTop);
-    Canvas.Font.Color := Screen.HintFont.Color;
+    Canvas.Font := Screen.HintFont;
     Canvas.Font.Style := Canvas.Font.Style - [fsBold];
-    DrawText(Canvas.Handle, PChar(FMsg), -1, HintRect, DT_LEFT or DT_NOPREFIX or
-      DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+    DrawText(Canvas.Handle, PChar(FMsg), -1, HintRect, 
+      DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 
   if FShowHeader then
@@ -1871,8 +1898,8 @@ begin
       Inc(HeaderRect.Left, FImageSize.cx + 8);
     Inc(HeaderRect.Top, FDeltaY + 8);
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-    DrawText(Canvas.Handle, PChar(FHeader), -1, HeaderRect, DT_LEFT or DT_NOPREFIX or
-      DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+    DrawText(Canvas.Handle, PChar(FHeader), -1, HeaderRect,
+      DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 end;
 
