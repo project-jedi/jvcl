@@ -211,3 +211,4 @@ WidthOf=JvJCLUtils.RectWidth
 HeightOf=JvJCLUtils.RectHeight
 IsPointInRect=JvJCLUtils.PtInRectExclusive
 PointInRect=JvJCLUtils.PtInRectInclusive
+TJvClrFrm=TJvColorForm
