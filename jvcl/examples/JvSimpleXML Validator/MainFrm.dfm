@@ -94,9 +94,11 @@ object Form1: TForm1
       end>
     SimplePanel = False
   end
-  object JvSimpleXml1: TJvSimpleXml
-    Left = 128
-    Top = 80
+  object JvSimpleXml1: TJvSimpleXML
+    IndentString = '  '
+    Options = [sxoAutoIndent]
+    Left = 92
+    Top = 74
   end
   object OpenDialog1: TOpenDialog
     DefaultExt = 'xml'

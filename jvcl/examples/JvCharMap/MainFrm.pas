@@ -38,6 +38,7 @@ type
     cbLocales: TComboBox;
     lblChars: TLabel;
     chkShadow: TCheckBox;
+    chkDisplayAll: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure btnFontClick(Sender: TObject);
     procedure chkZoomPanelClick(Sender: TObject);
@@ -52,6 +53,7 @@ type
     procedure cbFilterClick(Sender: TObject);
     procedure cbLocalesClick(Sender: TObject);
     procedure chkShadowClick(Sender: TObject);
+    procedure chkDisplayAllClick(Sender: TObject);
   private
     { Private declarations }
 {$IFDEF USETNT}
@@ -63,6 +65,8 @@ type
     procedure FillLocales;
     procedure DoJMSelectChar(Sender:TObject; AChar:WideChar);
     procedure DoJMResize(Sender:TObject);
+    procedure DoJMValidateChar(Sender: TObject; AChar: WideChar; var
+    Valid: boolean);
     procedure DisplayInfo(AChar:WideChar);
   public
     { Public declarations }
@@ -75,11 +79,7 @@ var
 implementation
 uses
   TypInfo,
-{$IFDEF USETNT}
-  TntClipbrd;
-{$ELSE}
-  ClipBrd;
-{$ENDIF}
+  JvClipBrd;
 
 {$R *.dfm}
 
@@ -96,6 +96,7 @@ begin
   JM.OnResize := DoJMResize;
   JM.Anchors := [akTop, akBottom];
   JM.PopupMenu := PopupMenu1;
+  JM.OnValidateChar := DoJMValidateChar;
   JM.AutoSizeWidth := true;
   JM.Left := (ClientWidth - JM.Width) div 2;
   JM.Top := lblChars.Top + lblChars.Height + 2;
@@ -118,9 +119,9 @@ begin
   edCharacter := TEdit.Create(self);
 {$ENDIF}
   edCharacter.Parent := Panel1;
-  edCharacter.Left := 312;
-  edCharacter.Top := 16;
-  edCharacter.Width := 121;
+  edCharacter.Left := reInfo.Left;
+  edCharacter.Top := btnSelect.Top + 4;
+  edCharacter.Width := btnSelect.Left - reInfo.Left - 7;
   edCharacter.Height := 22;
   edCharacter.Anchors := [akLeft, akTop, akRight];
   edCharacter.TabOrder := 11;
@@ -284,11 +285,7 @@ end;
 
 procedure TForm1.Copy1Click(Sender: TObject);
 begin
-{$IFDEF USETNT}
-  TntClipboard.AsWideText := JM.Character;
-{$ELSE}
-  Clipboard.AsText := WideString(JM.Character);
-{$ENDIF}
+  JvClipboard.AsWideText := JM.Character;
 end;
 
 procedure TForm1.btnSelectClick(Sender: TObject);
@@ -373,6 +370,17 @@ end;
 procedure TForm1.DoJMSelectChar(Sender: TObject; AChar: WideChar);
 begin
   DisplayInfo(AChar);
+end;
+
+procedure TForm1.DoJMValidateChar(Sender: TObject; AChar: WideChar;
+  var Valid: boolean);
+begin
+  Valid := Valid or chkDisplayAll.Checked;
+end;
+
+procedure TForm1.chkDisplayAllClick(Sender: TObject);
+begin
+  JM.Invalidate;
 end;
 
 end.

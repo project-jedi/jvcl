@@ -27,7 +27,7 @@ type
     FDescending: boolean;
     procedure Test(Decode: boolean);
     procedure AddInfo(const FileName: string; Decode: boolean;
-      FileSize: Int64; MSecs: Cardinal; MoreData: boolean);
+      FileSize: Int64; MSecs: Cardinal; AddRow: boolean);
   protected
     { Private declarations }
     procedure WMDropFiles(var Message: TWMDropFiles); message WM_DROPFILES;
@@ -76,12 +76,12 @@ begin
         SimpleXMLDecode(S, false)
       else
         SimpleXMLEncode(S);
-      AddInfo(memFiles.Lines[i], Decode, FStringLength, GetTickCount - FStartTime, i < memFiles.Lines.Count - 1);
+      AddInfo(memFiles.Lines[i], Decode, FStringLength, GetTickCount - FStartTime, sgResults.Cells[0,1] <> '');
     end;
 end;
 
 procedure TfrmSpeedTest.AddInfo(const FileName: string; Decode: boolean;
-  FileSize: Int64; MSecs: Cardinal; MoreData: boolean);
+  FileSize: Int64; MSecs: Cardinal; AddRow: boolean);
 const
   cDecoded: array[boolean] of PChar = ('Encoded', 'Decoded');
 var
@@ -98,6 +98,8 @@ begin
     Speed := FileSize / MSecs;
     KBSpeed := (FileSize / 1024) / (MSecs / 1000);
   end;
+  if AddRow then
+    sgResults.RowCount := sgResults.RowCount + 1;
   i := sgResults.RowCount - 1;
   sgResults.Cells[0, i] := ExtractFileName(FileName);
   sgResults.Cells[1, i] := IntToStr(FileSize);
@@ -105,8 +107,6 @@ begin
   sgResults.Cells[3, i] := IntToStr(MSecs);
   sgResults.Cells[4, i] := IntToStr(round(Speed));
   sgResults.Cells[5, i] := Format('%.*f', [1 + Ord(KBSpeed < 1), KBSpeed]);
-  if MoreData then
-    sgResults.RowCount := sgResults.RowCount + 1;
 end;
 
 procedure TfrmSpeedTest.btnEncodeClick(Sender: TObject);

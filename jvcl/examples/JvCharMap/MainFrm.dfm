@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 313
   Top = 122
-  Width = 555
+  Width = 647
   Height = 431
   ActiveControl = cbColor
   Caption = 'JvCharMap Demo'
@@ -11,7 +11,7 @@ object Form1: TForm1
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Shell Dlg 2'
+  Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
   ShowHint = True
@@ -19,7 +19,7 @@ object Form1: TForm1
   PixelsPerInch = 96
   TextHeight = 13
   object lblChars: TLabel
-    Left = 192
+    Left = 229
     Top = 8
     Width = 57
     Height = 13
@@ -29,7 +29,7 @@ object Form1: TForm1
   object Panel1: TPanel
     Left = 0
     Top = 248
-    Width = 547
+    Width = 639
     Height = 156
     Align = alBottom
     BevelInner = bvRaised
@@ -71,7 +71,7 @@ object Form1: TForm1
       FocusControl = cbFilter
     end
     object Label4: TLabel
-      Left = 160
+      Left = 161
       Top = 73
       Width = 34
       Height = 13
@@ -80,7 +80,7 @@ object Form1: TForm1
     end
     object btnFont: TButton
       Left = 216
-      Top = 124
+      Top = 126
       Width = 75
       Height = 25
       Caption = '&Font...'
@@ -164,8 +164,8 @@ object Form1: TForm1
     object cbColor: TJvColorComboBox
       Left = 8
       Top = 126
-      Width = 97
-      Height = 22
+      Width = 100
+      Height = 20
       ColorNameMap.Strings = (
         'clBlack=Black'
         'clMaroon=Maroon'
@@ -224,7 +224,7 @@ object Form1: TForm1
       ColorDialogText = 'Custom...'
       NewColorText = 'Custom'
       Options = [coText, coCustomColors]
-      DroppedDownWidth = 97
+      DroppedDownWidth = 100
       TabOrder = 11
     end
     object cbFont: TJvFontComboBox
@@ -238,7 +238,7 @@ object Form1: TForm1
       TabOrder = 12
     end
     object chkUnicode: TCheckBox
-      Left = 198
+      Left = 192
       Top = 52
       Width = 59
       Height = 17
@@ -247,9 +247,9 @@ object Form1: TForm1
       OnClick = chkUnicodeClick
     end
     object reInfo: TRichEdit
-      Left = 312
-      Top = 48
-      Width = 222
+      Left = 354
+      Top = 52
+      Width = 272
       Height = 96
       Anchors = [akLeft, akTop, akRight, akBottom]
       ScrollBars = ssBoth
@@ -257,8 +257,8 @@ object Form1: TForm1
       WordWrap = False
     end
     object btnSelect: TButton
-      Left = 456
-      Top = 16
+      Left = 548
+      Top = 13
       Width = 75
       Height = 25
       Anchors = [akTop, akRight]
@@ -278,7 +278,7 @@ object Form1: TForm1
       OnClick = cbFilterClick
     end
     object cbLocales: TComboBox
-      Left = 160
+      Left = 161
       Top = 90
       Width = 129
       Height = 21
@@ -299,6 +299,15 @@ object Form1: TForm1
       Caption = 'Shado&w'
       TabOrder = 7
       OnClick = chkShadowClick
+    end
+    object chkDisplayAll: TCheckBox
+      Left = 270
+      Top = 54
+      Width = 79
+      Height = 17
+      Caption = '&Display all'
+      TabOrder = 16
+      OnClick = chkDisplayAllClick
     end
   end
   object FontDialog1: TFontDialog

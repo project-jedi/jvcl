@@ -1,6 +1,6 @@
 object frmSpeedTest: TfrmSpeedTest
-  Left = 630
-  Top = 482
+  Left = 265
+  Top = 192
   Width = 650
   Height = 380
   Caption = 'SimpleXMLEncode and  SimpleXMLDecode Speed Test'
