@@ -315,6 +315,7 @@ begin
 end;
 
 procedure TJvMRUManager.Add(const RecentName: string; UserData: Longint);
+var i:integer;
 begin
   if not (Duplicates = dupAccept) and (FList.IndexOf(RecentName) > -1) then
   begin
@@ -322,7 +323,10 @@ begin
       raise Exception.Create('Duplicates not allowed in MRU list.')
   end
   else
-    FList.AddObject(RecentName, TObject(UserData));
+  begin
+    i := TJvRecentStrings(FList).Add(RecentName);
+    FList.Objects[i] := TObject(UserData);
+  end;
 end;
 
 procedure TJvMRUManager.Clear;
