@@ -103,6 +103,9 @@ type
     cmbModel: TComboBox;
     btnEditModel: TButton;
     btnCLXDescription: TButton;
+    lblGUID: TLabel;
+    btnGenerateGUID: TButton;
+    edtGUID: TEdit;
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
@@ -155,6 +158,8 @@ type
     procedure btnEditModelClick(Sender: TObject);
     procedure cmbModelClick(Sender: TObject);
     procedure btnCLXDescriptionClick(Sender: TObject);
+    procedure edtGUIDChange(Sender: TObject);
+    procedure btnGenerateGUIDClick(Sender: TObject);
   private
     { Private declarations }
     Changed : Boolean; // true if current file has changed
@@ -186,7 +191,11 @@ implementation
 uses
   FileUtils, JvSimpleXml, JclFileUtils, JclStrings, TargetDialog,
   GenerateUtils, KnownTagsForm, FormTypeDialog, ShellApi, AdvancedBCBForm,
-  GenerationMessagesForm, ModelsForm;
+  GenerationMessagesForm,
+  {$IFNDEF COMPILER6_UP}
+  ActiveX, ComObj,  // For GUID related functions under D5
+  {$ENDIF COMPILER6_UP}
+  ModelsForm;
 {$R *.dfm}
 
 procedure TfrmMain.actExitExecute(Sender: TObject);
@@ -398,6 +407,11 @@ begin
   Changed := True;
 end;
 
+procedure TfrmMain.edtGUIDChange(Sender: TObject);
+begin
+  Changed := True;
+end;
+
 procedure TfrmMain.LoadPackagesList;
 var
   path : string;
@@ -458,6 +472,7 @@ begin
       rootNode.Items.Add('Description', ledDescription.Text);
       if FClxDescription <> '' then
         rootNode.Items.Add('ClxDescription', FClxDescription);
+      rootNode.Items.Add('GUID', edtGUID.Text);
       rootNode.Items.Add('C5PFlags', ledC5PFlags.Text);
       rootNode.Items.Add('C6PFlags', ledC6PFlags.Text);
       rootNode.Items.Add('C5Libs', frmAdvancedBCB.edtBCB5.Text);
@@ -558,10 +573,12 @@ begin
       rbtDesign.Checked := rootNode.Properties.ItemNamed['Design'].BoolValue;
       rbtRuntime.Checked := not rbtDesign.Checked;
 
-      // read description, PFLAGS, and libs
+      // read description, PFLAGS, GUID, and libs
       ledDescription.Text := rootNode.Items.ItemNamed['Description'].Value;
       ledC5PFlags.Text    := rootNode.Items.ItemNamed['C5PFlags'].Value;
       ledC6PFlags.Text    := rootNode.Items.ItemNamed['C6PFlags'].Value;
+      if Assigned(rootNode.Items.ItemNamed['GUID']) then
+        edtGUID.Text := rootNode.Items.ItemNamed['GUID'].Value;
       frmAdvancedBCB.edtBCB5.Text := rootNode.Items.ItemNamed['C5Libs'].Value;
       frmAdvancedBCB.edtBCB6.Text := rootNode.Items.ItemNamed['C6Libs'].Value;
       if Assigned(rootNode.Items.ItemNamed['ClxDescription']) then
@@ -880,6 +897,7 @@ begin
   ledDescription.Text := '';
   rbtDesign.Checked := False;
   rbtRuntime.Checked := True;
+  edtGUID.Text := '';
   ledC5PFlags.Text := '';
   ledC6PFlags.Text := '';
   jsgDependencies.Rows[1].Text := '';
@@ -964,6 +982,15 @@ begin
                 'Please indicate the CLX Description',
                 FClxDescription) then
     Changed := True;
+end;
+
+procedure TfrmMain.btnGenerateGUIDClick(Sender: TObject);
+var
+  GeneratedGUID : TGUID;
+begin
+  // Generate a GUID for the package
+  CreateGUID(GeneratedGUID);
+  edtGUID.Text := GUIDToString(GeneratedGUID);
 end;
 
 end.

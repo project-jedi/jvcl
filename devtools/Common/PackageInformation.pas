@@ -108,6 +108,7 @@ type
     FC6PFlags: string;
     FC5Libs: TStrings;
     FC6Libs: TStrings;
+    FGUID: string;
 
     function GetContainCount: Integer;
     function GetContains(Index: Integer): TContainedFile;
@@ -136,6 +137,8 @@ type
     property C6PFlags: string read FC6PFlags;
     property C5Libs: TStrings read FC5Libs;
     property C6Libs: TStrings read FC6Libs;
+
+    property GUID: string read FGUID;  // D9 support
   end;
 
   { Package Group }
@@ -584,6 +587,7 @@ begin
     xml.LoadFromFile(Filename);
     RootNode := xml.Root;
 
+    FGUID := RootNode.Items.Value('GUID');
     FC5PFlags := RootNode.Items.Value('C5PFlags');
     FC6PFlags := RootNode.Items.Value('C6PFlags');
     FC5Libs.CommaText := RootNode.Items.Value('C5Libs');

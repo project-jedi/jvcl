@@ -47,6 +47,9 @@ object frmMain: TfrmMain
     Align = alLeft
     BevelOuter = bvLowered
     TabOrder = 1
+    DesignSize = (
+      137
+      502)
     object jlbList: TJvListBox
       Left = 8
       Top = 8
@@ -217,6 +220,9 @@ object frmMain: TfrmMain
     Align = alClient
     BevelOuter = bvLowered
     TabOrder = 3
+    DesignSize = (
+      660
+      502)
     object lblDependencies: TLabel
       Left = 12
       Top = 132
@@ -272,6 +278,16 @@ object frmMain: TfrmMain
       Anchors = [akLeft, akBottom]
       AutoSize = False
       Caption = 'BCB6 PFlags'
+    end
+    object lblGUID: TLabel
+      Left = 8
+      Top = 428
+      Width = 76
+      Height = 13
+      Alignment = taRightJustify
+      Anchors = [akLeft, akBottom]
+      AutoSize = False
+      Caption = 'Package GUID'
     end
     object ledName: TEdit
       Left = 92
@@ -336,7 +352,7 @@ object frmMain: TfrmMain
       Left = 92
       Top = 56
       Width = 552
-      Height = 389
+      Height = 365
       Anchors = [akLeft, akTop, akRight, akBottom]
       BevelOuter = bvNone
       TabOrder = 6
@@ -353,7 +369,7 @@ object frmMain: TfrmMain
         Left = 0
         Top = 169
         Width = 552
-        Height = 220
+        Height = 196
         Align = alClient
         ColCount = 4
         DefaultColWidth = 40
@@ -414,9 +430,29 @@ object frmMain: TfrmMain
       Top = 32
       Width = 97
       Height = 21
+      Anchors = [akTop, akRight]
       Caption = 'CLX Description'
       TabOrder = 8
       OnClick = btnCLXDescriptionClick
+    end
+    object edtGUID: TEdit
+      Left = 92
+      Top = 424
+      Width = 460
+      Height = 21
+      Anchors = [akLeft, akRight, akBottom]
+      TabOrder = 9
+      OnChange = edtGUIDChange
+    end
+    object btnGenerateGUID: TButton
+      Left = 555
+      Top = 424
+      Width = 89
+      Height = 21
+      Anchors = [akRight, akBottom]
+      Caption = 'Generate'
+      TabOrder = 10
+      OnClick = btnGenerateGUIDClick
     end
   end
   object jmmMain: TJvMainMenu
@@ -1501,6 +1537,7 @@ object frmMain: TfrmMain
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     RootNodeName = 'Configuration'
+    SubStorages = <>
     Left = 732
     Top = 172
   end

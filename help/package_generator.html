@@ -19,7 +19,7 @@ format<br>
 </a><a href="#Template_Files_Format">Template Files format<br>
 </a><a href="#Include_File_parsing">Include File parsing<br>
 </a><a href="#Detailed_Generation_process">Detailed generation process</a><br>
-Conditions parsing<br>
+<a href="#Conditions_parsing">Conditions parsing</a><br>
 <a href="#Detailed_Generation_process"></a><a
  href="#Command_line_reference">Command line reference<br>
 </a><a href="#Notes_to_developers">Notes to developers<br>
@@ -141,6 +141,7 @@ version="1.0" encoding="iso-8859-1"?&gt;<br>
 &nbsp; &lt;Description&gt;JVCL Core Runtime Package&lt;/Description&gt;<br>
 &nbsp; &lt;CLXDescription&gt;JVCLX Core Runtime
 Package&lt;/Description&gt;<br>
+&nbsp; &lt;GUID&gt;{CCA5391F-35F6-43D1-AB48-187085D1EF5B}&lt;/GUID&gt;<br>
 &nbsp; &lt;C5PFlags&gt;-LUCJcl50&lt;/C5PFlags&gt;<br>
 &nbsp; &lt;C6PFlags&gt;-LUCJcl&lt;/C6PFlags&gt;<br>
 &nbsp; &lt;C5Libs/&gt;<br>
@@ -236,6 +237,18 @@ package as it will be displayed in the IDE.<br>
       <td style="vertical-align: top;">This is the description of the
 package as it will be displayed in the IDE, when the package is
 generated for a CLX target.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">GUID<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">Delphi 2005 requires a GUID to
+be present in bdsproj files. This is the value that will be used as
+replacement for the %GUID% marker, allowing you to put such a GUID in a
+file if required. This is read as a string value, no verification is
+made to ensure that the value actually is a valid GUID.<br>
       </td>
     </tr>
     <tr>
@@ -921,7 +934,7 @@ and can appear more than once.<br>
       </td>
     </tr>
     <tr>
-      <td colspan="1" rowspan="12"
+      <td colspan="1" rowspan="13"
  style="vertical-align: top; white-space: nowrap;">Standard Line<br>
       </td>
       <td style="vertical-align: top; white-space: nowrap;">&lt;%%%
@@ -964,6 +977,13 @@ output file.<br>
       </td>
       <td style="vertical-align: top;">Replaced by the name of the
 package XML source file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%GUID%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the value from the
+GUID node in the package XML source file.<br>
       </td>
     </tr>
     <tr>
@@ -1443,7 +1463,7 @@ associated personal target and the test for a difference between
 <br>
 <h2><a name="Conditions_parsing"></a>Conditions parsing</h2>
 A simple parser is used to read the conditions applied to the various
-items of the package XML source files. Here is its specification:<br>
+items of the package XML source files. Here are its specifications:<br>
 <br>
 <div style="margin-left: 40px;">Syntax:<br>
 </div>
