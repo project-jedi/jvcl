@@ -606,15 +606,23 @@ end;
 
 procedure TJvCustomScheduledEvents.WndProc(var Msg: TMessage);
 begin
-  if Msg.Msg = CM_EXECEVENT then
-  begin
-    DoStartEvent(TJvEventCollectionItem(Msg.WParam));
-    TJvEventCollectionItem(Msg.WParam).Execute;
-    DoEndEvent(TJvEventCollectionItem(Msg.WParam));
-    Msg.Result := 1;
-  end
-  else
-    inherited;
+  with Msg do
+    if Msg = CM_EXECEVENT then
+    try
+      DoStartEvent(TJvEventCollectionItem(WParam));
+      TJvEventCollectionItem(WParam).Execute;
+      DoEndEvent(TJvEventCollectionItem(WParam));
+      Result := 1;
+    except
+      {$IFDEF COMPILER6_UP}
+      if Assigned(ApplicationHandleException) then
+        ApplicationHandleException(Self);
+      {$ELSE}
+      Application.HandleException(Self);
+      {$ENDIF COMPILER6_UP}
+    end
+    else
+      Result := DefWindowProc(Handle, Msg, WParam, LParam);
 end;
 
 //=== TJvEventCollection =====================================================
