@@ -72,7 +72,7 @@ object AboutDlg: TAboutDlg
     Height = 13
     Caption = 'Available memory:                              %s K   '
   end
-  object SecretPanel: TJvSecretPanel 
+  object SecretPanel: TJvSecretPanel
     Left = 54
     Top = 4
     Width = 209
@@ -87,8 +87,8 @@ object AboutDlg: TAboutDlg
       'F. Koshevnikov'
       'I.Pavluk'
       ''
-      '© 1995, 1996 AO ROSNO'
-      '© 1997 Master-Bank')
+      #169' 1995, 1996 AO ROSNO'
+      #169' 1997 Master-Bank')
     TextStyle = bvLowered
     BevelOuter = bvNone
     Font.Color = clBlue
@@ -127,7 +127,7 @@ object AboutDlg: TAboutDlg
       Top = 34
       Width = 188
       Height = 13
-      Caption = 'Copyright © 1995, 1996 AO ROSNO     '
+      Caption = 'Copyright '#169' 1995, 1996 AO ROSNO     '
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
@@ -151,7 +151,7 @@ object AboutDlg: TAboutDlg
       Top = 49
       Width = 146
       Height = 13
-      Caption = 'Copyright © 1997 Master-Bank'
+      Caption = 'Copyright '#169' 1997 Master-Bank'
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'MS Sans Serif'

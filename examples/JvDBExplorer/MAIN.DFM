@@ -108,7 +108,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
       BevelOuter = bvNone
       BorderWidth = 1
       TabOrder = 2
-      object DBStatusLabel: TJvDBStatusLabel 
+      object DBStatusLabel: TJvDBStatusLabel
         Left = 2
         Top = 2
         Width = 120
@@ -143,7 +143,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
       BevelOuter = bvNone
       BorderWidth = 1
       TabOrder = 3
-      object DBRecordNo: TJvDBStatusLabel 
+      object DBRecordNo: TJvDBStatusLabel
         Left = 2
         Top = 2
         Width = 99
@@ -164,7 +164,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
       end
     end
   end
-  object JvSpeedbar: TJvSpeedBar 
+  object JvSpeedbar: TJvSpeedBar
     Left = 0
     Top = 0
     Width = 472
@@ -610,7 +610,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
       SectionName = 'Help'
     end
   end
-  object DBProgress: TJvDBProgress 
+  object DBProgress: TJvDBProgress
     WaitCursor = crSQLWait
     MessageControl = StatusLine
     Gauge = DBGauge
@@ -618,7 +618,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
     Left = 32
     Top = 36
   end
-  object FormPlacement: TJvFormStorage 
+  object FormPlacement: TJvFormStorage
     OnSavePlacement = FormPlacementSavePlacement
     OnRestorePlacement = FormPlacementRestorePlacement
     StoredProps.Strings = (
@@ -946,7 +946,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
       end
     end
   end
-  object ClosedDatabases: TJvMRUManager 
+  object ClosedDatabases: TJvMRUManager
     Capacity = 15
     IniStorage = FormPlacement
     RecentMenu = ReopenItem
@@ -954,14 +954,14 @@ object DBExplorerMainForm: TDBExplorerMainForm
     Left = 88
     Top = 36
   end
-  object AppEvents: TJvAppEvents 
+  object AppEvents: TJvAppEvents
     UpdateFormatSettings = False
     OnIdle = AppIdle
     OnHint = AppHint
     Left = 144
     Top = 36
   end
-  object HelpList: TJvMRUManager 
+  object HelpList: TJvMRUManager
     AutoEnable = False
     Capacity = 20
     IniStorage = FormPlacement

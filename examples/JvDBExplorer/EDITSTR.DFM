@@ -1,4 +1,4 @@
-object StrEditDlg: TJvStrEditDlg 
+object StrEditDlg: TJvStrEditDlg
   Left = 207
   Top = 107
   Width = 487
@@ -151,7 +151,7 @@ object StrEditDlg: TJvStrEditDlg
     BevelOuter = bvNone
     BorderWidth = 10
     TabOrder = 2
-    object Memo: TJvDBRichEdit 
+    object Memo: TJvDBRichEdit
       Left = 10
       Top = 10
       Width = 459
@@ -192,7 +192,7 @@ object StrEditDlg: TJvStrEditDlg
     Left = 20
     Top = 40
   end
-  object FormPlacement: TJvFormStorage 
+  object FormPlacement: TJvFormStorage
     MinMaxInfo.MinTrackHeight = 150
     MinMaxInfo.MinTrackWidth = 360
     StoredProps.Strings = (

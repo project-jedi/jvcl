@@ -63,7 +63,7 @@ object TraceSQL: TTraceSQL
       75
       285)
   end
-  object Splitter: TJvxSplitter 
+  object Splitter: TJvxSplitter
     Left = 0
     Top = 173
     Width = 404
@@ -83,7 +83,7 @@ object TraceSQL: TTraceSQL
     ReadOnly = True
     TabOrder = 2
   end
-  object FormStorage: TJvFormStorage 
+  object FormStorage: TJvFormStorage
     StoredProps.Strings = (
       'ViewPanel.Height'
       'SaveLogDialog.InitialDir'
