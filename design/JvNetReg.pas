@@ -81,7 +81,7 @@ begin
     {$ENDIF USEWINDOWS}
     TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML]);
   {$IFDEF USEWINDOWS}
-  RegisterPropertyEditor(TypeInfo(TJvParserInfoList),
+  RegisterPropertyEditor(TypeInfo(TStrings),
     TJvHTMLParser, 'Parser', TJvHTMLParserEditor);
   RegisterPropertyEditor(TypeInfo(TJvUrlGrabberIndex),
     TJvUrlListGrabber, '', TJvUrlGrabberIndexProperty);
