@@ -68,26 +68,17 @@ type
       pwszRegKeyPath: LPCWSTR; pwszQuickComplete: LPCWSTR): HRESULT; stdcall;
     function Enable(fEnable: BOOL): HRESULT; stdcall;
   end;
-  {$EXTERNALSYM IAutoComplete}
 
 const
   { IAutoComplete2 options }
   ACO_NONE = 0;
-  {$EXTERNALSYM ACO_NONE}
   ACO_AUTOSUGGEST = $1;
-  {$EXTERNALSYM ACO_AUTOSUGGEST}
   ACO_AUTOAPPEND = $2;
-  {$EXTERNALSYM ACO_AUTOAPPEND}
   ACO_SEARCH = $4;
-  {$EXTERNALSYM ACO_SEARCH}
   ACO_FILTERPREFIXES = $8;
-  {$EXTERNALSYM ACO_FILTERPREFIXES}
   ACO_USETAB = $10;
-  {$EXTERNALSYM ACO_USETAB}
   ACO_UPDOWNKEYDROPSLIST = $20;
-  {$EXTERNALSYM ACO_UPDOWNKEYDROPSLIST}
   ACO_RTLREADING = $40;
-  {$EXTERNALSYM ACO_RTLREADING}
 
 type
   IAutoComplete2 = interface(IAutoComplete)
@@ -95,7 +86,6 @@ type
     function SetOptions(dwFlag: DWORD): HRESULT; stdcall;
     function GetOptions(var dwFlag: DWORD): HRESULT; stdcall;
   end;
-  {$EXTERNALSYM IAutoComplete2}
 
 {$ENDIF ~COMPILER7_UP}
 
