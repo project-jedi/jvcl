@@ -515,8 +515,13 @@ begin
       ' ',#10,#13:
         if (not TrimMultiple) or ((k=1) or not (Value[k-1] in [' ',#10,#13])) then
         begin
-          Value[k] := Value[i];
-          inc(k);
+          if j>0 then
+            st := st + Value[i]
+          else
+          begin
+            Value[k] := Value[i];
+            inc(k);
+          end;
         end;
       '&':
         begin
