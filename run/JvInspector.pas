@@ -3699,11 +3699,16 @@ var
   {$ENDIF VCL}
   BCount: Integer;
   BPerPage: Integer;
-  ShowVertSB: Boolean; //HEG
-  ShowHorzSB: Boolean; //HEG
+  ShowVertSB: Boolean;
+  ShowHorzSB: Boolean;
 begin
   if csDestroying in ComponentState then
     Exit;
+
+{$IFDEF VCL}
+  if (not HandleAllocated) then
+    exit;
+{$ENDIF VCL}
 
   if not UseBands then
   begin
@@ -3715,7 +3720,6 @@ begin
     { Needed to redisplay the scrollbar after it's hidden in the CloseUp method
       of an enumerated item's combobox }
     ShowVertSB := Round((DrawHeight) / ScFactor) >= Round(ClHeight / ScFactor);
-    ShowScrollBars(SB_VERT, ShowVertSB);
     if ShowVertSB then
     begin
       {$IFDEF VCL}
@@ -3736,9 +3740,6 @@ begin
       begin
         Min := 0;
         try
-  //        Max := Round((IdxToY(Succ(YToIdx(ImageHeight - ClientHeight))) + ClientHeight) / ScFactor);
-  //        LargeChange := Round(ClHeight / ScFactor);
-  //        Position := Round(IdxToY(TopIndex) / ScFactor);
           if ImageHeight > ClientHeight then
             Max := ImageHeight-Clientheight;
           LargeChange := Self.ClientHeight;
@@ -3749,6 +3750,7 @@ begin
       end;
       {$ENDIF VisualCLX}
     end;
+    ShowScrollBars(SB_VERT, ShowVertSB);
   end
   else
   begin
@@ -3758,7 +3760,6 @@ begin
     BCount := BandStarts.Count;
     BPerPage := ClientWidth div BandWidth;
     ShowHorzSB := BCount > BPerPage;
-    ShowScrollBars(SB_HORZ, ShowHorzSB);
     if ShowHorzSB then
     begin
       {$IFDEF VCL}
@@ -3784,6 +3785,7 @@ begin
       end;
       {$ENDIF VisualCLX}
     end;
+    ShowScrollBars(SB_HORZ, ShowHorzSB);
   end;
   Invalidate;
 end;
