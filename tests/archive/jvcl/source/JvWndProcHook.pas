@@ -494,6 +494,7 @@ end;
 procedure TJvHookInfos.WindowProc(var Message: TMessage);
 var
   HookInfo, NextHookInfo: PJvHookInfo;
+  I: Integer;
 begin
   { An object can now report for every possible message that he has
     handled that message, thus preventing the original control from
@@ -532,6 +533,20 @@ begin
     if HookInfo.Hook(Message) then
       Exit;
     HookInfo := NextHookInfo;
+  end;
+
+  if (Control = nil) and (Message.Msg = WM_DESTROY) then
+  begin
+    // Handle is being destroyed: remove all hooks on this window
+    with WndProcHook do
+    begin
+      I := IndexOf(Handle);
+      if I >= 0 then
+      begin
+        TJvHookInfos(FHookInfos[I]).Free;
+        FHookInfos.Delete(I);
+      end;
+    end;
   end;
 end;
 
