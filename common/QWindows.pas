@@ -207,6 +207,7 @@ type
 }
 function DrawTextBiDiModeFlagsReadingOnly: Longint;
 function DrawTextBiDiModeFlags(Flags: Longint): Longint;
+procedure ChangeBiDiModeAlignment(var Alignment: TAlignment);
 function UseRightToLeftAlignment: Boolean;
 { colors }
 function GetSysColor(SysColor: Integer): TColorRef;
@@ -1551,6 +1552,10 @@ end;
 function DrawTextBiDiModeFlags(Flags: Longint): Longint;
 begin
   Result := Flags;
+end;
+
+procedure ChangeBiDiModeAlignment(var Alignment: TAlignment);
+begin
 end;
 
 function UseRightToLeftAlignment: Boolean;
