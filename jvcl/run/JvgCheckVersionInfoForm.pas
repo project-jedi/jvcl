@@ -34,8 +34,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, JvgSpeedButton, JvgWizardHeader, JvgShadow,
-  ComCtrls, JvgSmallFontsDefense, JvComponent;
+  ExtCtrls, StdCtrls, ComCtrls, Buttons,
+  JvgSpeedButton, JvgWizardHeader, JvgShadow, JvgSmallFontsDefense,
+  JvComponent;
 
 type
   TJvgfCheckVersionInfo = class(TJvForm)
@@ -64,20 +65,16 @@ type
     procedure Execute(WinControl: TWinControl);
   end;
 
-var
-  fCheckVersionInfo: TJvgfCheckVersionInfo;
+implementation
 
+uses
+  ShellApi,
+  JvConsts, JvgHTTPVersionInfo;
+
+{$R *.DFM}
 
 resourcestring
   sNoNewerVersionOfProgramAvailable = 'No newer version of program available';
-
-implementation
-uses
-  JvConsts, ShellApi, JvgHTTPVersionInfo;
-  
-{$R *.DFM}
-
-{ TJvgfCheckVersionInfo }
 
 procedure TJvgfCheckVersionInfo.Execute(WinControl: TWinControl);
 var
@@ -86,8 +83,7 @@ var
 begin
   //  eCurentVersion.Text := globCon.APP_VERSION;
   //  eCurentVersionDate.Text := globCon.APP_DATE;
-
-  VersionInfo := TJvgHTTPVersionInfo.Create(self);
+  VersionInfo := TJvgHTTPVersionInfo.Create(Self);
   try
     VersionInfo.VersionDataURL := 'http://shop.biblio-globus.ru/cpr/VersionInfo/SiteBuilder.htm';
     if VersionInfo.GetVersionInfo(WinControl) and (VersionInfo.Version > eCurentVersion.Text) then
@@ -105,16 +101,14 @@ begin
       S := sNoNewerVersionOfProgramAvailable;
       Application.MessageBox(PChar(S), 'SiteBuilder', MB_OK + MB_ICONINFORMATION);
     end;
-
   finally
     VersionInfo.Free;
   end;
-
 end;
 
 procedure TJvgfCheckVersionInfo.sbNextClick(Sender: TObject);
 begin
-  ModalResult := mrOK
+  ModalResult := mrOk;
 end;
 
 procedure TJvgfCheckVersionInfo.lURLClick(Sender: TObject);

@@ -98,7 +98,7 @@ begin
     if csDesigning in ComponentState then
       Exit;
     Application.HintColor := FHintColor;
-    if FHotTrack then
+    if HotTrack then
       Ctl3D := True;
     FOver := True;
   end;
@@ -111,7 +111,7 @@ begin
   if FOver then
   begin
     Application.HintColor := FSaved;
-    if FHotTrack then
+    if HotTrack then
       Ctl3D := False;
     FOver := False;
   end;

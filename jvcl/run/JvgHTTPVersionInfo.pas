@@ -32,25 +32,26 @@ unit JvgHTTPVersionInfo;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, JvComponent, Graphics, Controls,
-  Forms, Dialogs, shdocvw;
+  Windows, Messages, SysUtils, Classes, Graphics,
+  Controls, Forms, Dialogs, SHDocVw,
+  JvComponent;
 
 type
   TJvgHTTPVersionInfo = class(TJvComponent)
   private
-    WebBrowser: TWebBrowser;
+    FVersionInfo: TStringList;
+    FWebBrowser: TWebBrowser;
     FVersionDataURL: string;
   protected
     function GetVersion: string;
     function GetDate: string;
     function GetProgramURL: string;
     function GetComments: string;
-
-    procedure OnLoadVersionInfo(Sender: TObject; const pDisp: IDispatch; var
-      URL: OleVariant);
+    procedure OnLoadVersionInfo(Sender: TObject; const PDisp: IDispatch;
+      var URL: OleVariant);
   public
-    VersionInfo: TStringList;
-    function GetVersionInfo(WinControl: TWinControl): boolean;
+    property VersionInfo: TStringList read FVersionInfo;
+    function GetVersionInfo(WinControl: TWinControl): Boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
@@ -58,32 +59,27 @@ type
     property Date: string read GetDate;
     property ProgramURL: string read GetProgramURL;
     property Comments: string read GetComments;
-    property VersionDataURL: string read FVersionDataURL write
-      FVersionDataURL;
-
+    property VersionDataURL: string read FVersionDataURL write FVersionDataURL;
   end;
-
-
-resourcestring
-  sUncknownURLPropertyVersionDataURLIs = 'Uncknown URL: property VersionDataURL is empty';
 
 implementation
 
 uses
   JvConsts;
 
-{ TJvgHTTPVersionInfo }
+resourcestring
+  sUnknownURLPropertyVersionDataURLIs = 'Unknown URL: property VersionDataURL is empty';
 
 constructor TJvgHTTPVersionInfo.Create(AOwner: TComponent);
 begin
-  inherited;
-  VersionInfo := TStringList.Create;
+  inherited Create(AOwner);
+  FVersionInfo := TStringList.Create;
 end;
 
 destructor TJvgHTTPVersionInfo.Destroy;
 begin
-  VersionInfo.Free;
-  inherited;
+  FVersionInfo.Free;
+  inherited Destroy;
 end;
 
 function TJvgHTTPVersionInfo.GetComments: string;
@@ -106,36 +102,36 @@ begin
   Result := VersionInfo.Values['version'];
 end;
 
-function TJvgHTTPVersionInfo.GetVersionInfo(WinControl: TWinControl): boolean;
+function TJvgHTTPVersionInfo.GetVersionInfo(WinControl: TWinControl): Boolean;
 begin
-  if trim(VersionDataURL) = '' then
-    raise Exception.Create(sUncknownURLPropertyVersionDataURLIs);
+  if Trim(VersionDataURL) = '' then
+    raise Exception.Create(sUnknownURLPropertyVersionDataURLIs);
 
-  WebBrowser := TWebBrowser.Create(nil);
-  WebBrowser.Visible := false;
-  WebBrowser.Left := -10;
-  WebBrowser.Width := 1;
-  WebBrowser.Height := 1;
-  TWinControl(WebBrowser).Parent := WinControl;
+  FWebBrowser := TWebBrowser.Create(nil);
+  FWebBrowser.Visible := False;
+  FWebBrowser.Left := -10;
+  FWebBrowser.Width := 1;
+  FWebBrowser.Height := 1;
+  TWinControl(FWebBrowser).Parent := WinControl;
 
   try
-    WebBrowser.OnDocumentComplete := OnLoadVersionInfo;
-    WebBrowser.Navigate(VersionDataURL);
+    FWebBrowser.OnDocumentComplete := OnLoadVersionInfo;
+    FWebBrowser.Navigate(VersionDataURL);
     repeat
       Application.ProcessMessages;
-    until not WebBrowser.Busy;
+    until not FWebBrowser.Busy;
   finally
-    WebBrowser.Free;
+    FWebBrowser.Free;
   end;
   Result := (Version <> '') or (Date <> '') or (ProgramURL <> '');
 end;
 
-procedure TJvgHTTPVersionInfo.OnLoadVersionInfo(Sender: TObject; const pDisp:
-  IDispatch; var URL: OleVariant);
+procedure TJvgHTTPVersionInfo.OnLoadVersionInfo(Sender: TObject;
+  const PDisp: IDispatch; var URL: OleVariant);
 var
-  Doc: variant;
+  Doc: Variant;
 begin
-  Doc := WebBrowser.Document;
+  Doc := FWebBrowser.Document;
   VersionInfo.Text := Doc.Body.InnerText;
   //for i := 0 to VersionInfo.Count-1 do
   //  VersionInfo.Names[i] := LowerCase(VersionInfo.Names[i]);

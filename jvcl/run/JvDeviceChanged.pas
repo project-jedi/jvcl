@@ -56,6 +56,8 @@ type
 
 implementation
 
+// (rom) change to RegisterWndProcHook mechanism?
+
 constructor TJvDeviceChanged.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -63,7 +65,7 @@ begin
   FHandle := Classes.AllocateHWnd(WndProc);
   {$ELSE}
   FHandle := AllocateHWnd(WndProc);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
 destructor TJvDeviceChanged.Destroy;
@@ -72,7 +74,7 @@ begin
   Classes.DeallocateHWnd(FHandle);
   {$ELSE}
   DeallocateHWnd(FHandle);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   inherited Destroy;
 end;
 

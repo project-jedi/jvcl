@@ -21,6 +21,12 @@ Last Modified: 2000-mm-dd
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Returns interface to mousetimer singleton. This interface can be used
+  by objects relying on CM_MOUSEENTER/CM_MOUSELEAVE messages to make sure
+  they get a CM_MOUSELEAVE under all circumstances if the mouse leaves
+  their area.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
@@ -40,10 +46,6 @@ type
     procedure Detach(AControl: TControl);
   end;
 
-{ Returns interface to mousetimer singleton. This interface can be used
-  by objects relying on CM_MOUSEENTER/CM_MOUSELEAVE messages to make sure
-  they get a CM_MOUSELEAVE under all circumstances if the mouse leaves
-  their area. }
 function MouseTimer: IMouseTimer;
 
 implementation
@@ -80,6 +82,7 @@ end;
 
 constructor TJvMouseTimer.Create;
 begin
+  inherited Create;
   FTimer := TTimer.Create(nil);
   FTimer.Enabled := False;
   FTimer.Interval := 200;
@@ -89,7 +92,7 @@ end;
 destructor TJvMouseTimer.Destroy;
 begin
   FTimer.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvMouseTimer.Attach(AControl: TControl);

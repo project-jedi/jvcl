@@ -83,7 +83,7 @@ implementation
 
 constructor TJvBevel.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FHintColor := clInfoBk;
   FOver := False;
 end;
