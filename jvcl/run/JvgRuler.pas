@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15
+Last Modified:  2004-03-16
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -46,6 +46,8 @@ type
     FOrientation: TJvgOrientation;
     FPosition: Integer;
     procedure SetPosition(const Value: Integer);
+    procedure SetOrientation(Value: TJvgOrientation);
+    procedure SetUseUnit(Value: TJvgSizeUnit);
   protected
     procedure Paint; override;
   public
@@ -54,8 +56,8 @@ type
   published
     property Align;
     property Font;
-    property Orientation: TJvgOrientation read FOrientation write FOrientation  default goHorizontal;
-    property UseUnit: TJvgSizeUnit read FUseUnit write FUseUnit default fsuCentimeters;
+    property Orientation: TJvgOrientation read FOrientation write SetOrientation  default goHorizontal;
+    property UseUnit: TJvgSizeUnit read FUseUnit write SetUseUnit default fsuCentimeters;
   end;
 
 implementation
@@ -161,6 +163,26 @@ begin
   if FPosition <> Value then
   begin
     FPosition := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvgRuler.SetOrientation(Value: TJvgOrientation);
+begin
+  if FOrientation <> Value then
+  begin
+    FOrientation := Value;
+    //Paint;
+    Invalidate;
+  end;
+end;
+
+procedure TJvgRuler.SetUseUnit(Value: TJvgSizeUnit);
+begin
+  if FUseUnit <> Value then
+  begin
+    FUseUnit := Value;
+    //Paint;
     Invalidate;
   end;
 end;
