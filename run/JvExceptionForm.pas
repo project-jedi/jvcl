@@ -83,7 +83,7 @@ implementation
 
 uses
   Windows, ComObj, Consts,
-  JvConsts, JvJVCLUtils, JvJCLUtils, JvResources;
+  JvJVCLUtils, JvJCLUtils, JvConsts, JvResources, JvTypes;
 
 {$R *.dfm}
 
@@ -188,9 +188,9 @@ begin
     S := Format(RsCodeError, [S,
       EExternalException(FExceptObj).ExceptionRecord^.ExceptionCode])
   else
-  if FExceptObj is {$IFDEF COMPILER6_UP} EOSError {$ELSE} EWin32Error {$ENDIF} then
+  if FExceptObj is EOSError then
     S := Format(RsCodeError,
-     [S, {$IFDEF COMPILER6_UP} EOSError {$ELSE} EWin32Error {$ENDIF} (FExceptObj).ErrorCode])
+     [S, EOSError(FExceptObj).ErrorCode])
   else
     S := S + '.';
   MessageText.Text := Format(RsModuleError, [ModuleName, S]);

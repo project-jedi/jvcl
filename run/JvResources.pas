@@ -1135,12 +1135,12 @@ resourcestring
   RsSelectionIndexOutOfBounds = '%d is not a valid selection index';
 
 //=== JvPageListTreeView.pas =================================================
-  {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
 { (ahuser) redefined in JvValidators.pas }
 { resourcestring
   RsEInterfaceNotSupported = '%s does not support the %s interface';
 }
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 
 //=== JvPageSetup.pas ========================================================
 resourcestring
@@ -1355,7 +1355,7 @@ resourcestring
 //=== JvSimpleXml.pas ========================================================
 resourcestring
   {$IFNDEF COMPILER6_UP}
-//  RsEInvalidBoolean = '''%s'' is not a valid Boolean value'; make Delphi 5 compiler happy // andreas
+  // RsEInvalidBoolean = '''%s'' is not a valid Boolean value'; make Delphi 5 compiler happy // andreas
   {$ENDIF COMPILER6_UP}
   RsEInvalidXMLElementUnexpectedCharacte =
     'Invalid XML Element: Unexpected character in properties declaration ("%s" found).';
