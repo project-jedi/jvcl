@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2003-10-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,8 +31,13 @@ unit JvAni;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, ExtCtrls, Consts,
+{$IFDEF COMPLIB_VCL}
+  Windows, Graphics, Forms, ExtCtrls,
+{$ENDIF}
+{$IFDEF COMPLIB_CLX}
+  QGraphics, QForms, QExtCtrls, Types,
+{$ENDIF}
+  SysUtils, Classes, Consts,
   JvTypes;
 
 type
@@ -69,8 +74,10 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
+  {$IFDEF COMPLIB_VCL}
     procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE); override;
     procedure SaveToClipboardFormat(var Format: Word; var Data: THandle; var APalette: HPALETTE); override;
+  {$ENDIF}
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
 
     property Author: string read FAuthor;
@@ -129,9 +136,14 @@ begin
   FRate.Clear;
   FSequence.Clear;
   FImage.Size := 0;
+  {$IFDEF COMPLIB_VCL}
   if FCurrentIcon.Handle <> 0 then
     DestroyIcon(FCurrentIcon.Handle);
   FCurrentIcon.Handle := 0;
+  {$ELSE}
+  if not FCurrentIcon.Empty then
+    FCurrentIcon.Assign(nil);
+  {$ENDIF}
   FIndex := -1;
 
   if not (csDestroying in Application.ComponentState) then
@@ -183,6 +195,7 @@ begin
   Result := FHeader.dwCY;
 end;
 
+{$IFDEF COMPLIB_VCL}
 procedure TJvAni.LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE);
 begin
   raise EInvalidGraphicOperation.Create(sIconToClipboard);
@@ -192,6 +205,7 @@ procedure TJvAni.SaveToClipboardFormat(var Format: Word; var Data: THandle; var 
 begin
   raise EInvalidGraphicOperation.Create(sIconToClipboard);
 end;
+{$ENDIF COMPLIB_VCL}
 
 procedure TJvAni.LoadFromStream(Stream: TStream);
 const
@@ -341,8 +355,13 @@ end;
 
 procedure TJvAni.Draw(ACanvas: TCanvas; const Rect: TRect);
 begin
+{$IFDEF COMPLIB_VCL}
   if FCurrentIcon.Handle <> 0 then
     DrawIcon(ACanvas.Handle, Rect.Left, Rect.Top, FCurrentIcon.Handle);
+{$ELSE}
+  if not FCurrentIcon.Empty then
+    Canvas.Draw(Rect.Left, Rect.Top, FCurrentIcon);
+{$ENDIF}
 end;
 
 procedure TJvAni.SetIndex(const Value: Integer);
@@ -371,9 +390,13 @@ begin
     if FIndex <> Value then
     begin
       FIndex := Value;
+    {$IFDEF COMPLIB_VCL}
       if FCurrentIcon.Handle <> 0 then
         DestroyIcon(FCurrentIcon.Handle);
-
+    {$ELSE}
+      if not FCurrentIcon.Empty then
+        FCurrentIcon.Assign(nil);
+    {$ENDIF}
       p := Integer(FImage.Memory);
       FImage.Position := Integer(FImages[FIndex]);
       FImage.Read(Len, SizeOf(Len));
@@ -382,8 +405,14 @@ begin
       Dec(Len, SizeOf(IconHeader) + (SizeOf(TIconDirEntry) * IconHeader.NumIcons));
       Inc(p, FImage.Position);
 
+    {$IFDEF COMPLIB_VCL}
       p := CreateIconFromResource(Pointer(p), Len, True, $30000);
       FCurrentIcon.Handle := p;
+    {$ENDIF}
+    {$IFDEF COMPLIB_CLX}
+      // FCurrentIcon.LoadFromResourceName();
+    {$ENDIF}
+
       Changed(Self);
     end;
 end;

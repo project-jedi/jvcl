@@ -14,9 +14,9 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
-Last Modified: 2002-05-26
+Last Modified: 2003-10-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,30 +34,39 @@ unit JvAppInfo;
 interface
 
 uses
-  Windows, Classes, SysUtils;
+{$IFDEF COMPLIB_VCL}
+  Windows, Registry,
+{$ENDIF}
+  Classes, SysUtils;
 
 type
   TJvAppInfo = class(TPersistent)
   private
+    {$IFDEF COMPLIB_VCL}
     FUseRegistry: Boolean;
     FRegKey: DWORD;
+    {$ENDIF}
     FSavePath: string;
     FSection: string;
     FUnAssigned: string;
     procedure CheckPath;
     function LoadIni: Boolean;
-    function LoadRegistry: Boolean;
     function SaveIni: Boolean;
+    {$IFDEF COMPLIB_VCL}
+    function LoadRegistry: Boolean;
     function SaveRegistry: Boolean;
+    {$ENDIF}
   public
     constructor Create;
-    procedure Assign(Source:TPersistent); override;
-    function Save:Boolean; virtual;
-    function Load:Boolean; virtual;
+    procedure Assign(Source: TPersistent); override;
+    function Save: Boolean; virtual;
+    function Load: Boolean; virtual;
     property SavePath: string read FSavePath write FSavePath;
     //  If set to True, SavePath is interpreted as a registry path
+    {$IFDEF COMPLIB_VCL}
     property UseRegistry: Boolean read FUseRegistry write FUseRegistry;
     property RegRootKey: DWORD read FRegKey write FRegKey;
+    {$ENDIF}
     property Section: string read FSection write FSection;
     property UnAssignedValue: string read FUnAssigned write FUnAssigned;
   end;
@@ -65,13 +74,81 @@ type
 implementation
 
 uses
-  IniFiles, Registry, TypInfo,
+  IniFiles, TypInfo,
   JvTypes;
 
-const
+resourcestring
   cInvalidPropertyFmt = 'Invalid property: %s';
   SNoPathSpecified = 'No path specified';
 
+function TJvAppInfo.LoadIni: Boolean;
+var
+  I: Integer;
+  PropList: TPropList;
+  Ini: TIniFile;
+  Value: string;
+begin
+  CheckPath;
+  Ini := TIniFile.Create(SavePath);
+  try
+    I := 0;
+    if GetPropList(ClassInfo, tkProperties, @PropList) > 0 then
+      while Assigned(PropList[I]) and (I < High(PropList)) do
+      begin
+        Value := Ini.ReadString(Section, PropList[i].Name, FUnAssigned);
+        if Value <> FUnAssigned then
+          case PropList[I].PropType^.Kind of
+            tkInteger, tkEnumeration:
+              SetOrdProp(Self, PropList[I], StrToInt(Value));
+            tkFloat:
+              SetFloatProp(Self, PropList[I], StrToFloat(Value));
+            tkString,tkLString:
+              SetStrProp(Self, PropList[I], Value);
+          else
+            raise EJVCLException.CreateFmt(cInvalidPropertyFmt, [PropList[I].Name]);
+          end;
+        Inc(I);
+      end;
+  finally
+    Ini.Free;
+  end;
+  Result := True;
+end;
+
+function TJvAppInfo.SaveIni: Boolean;
+var
+  I: Integer;
+  PropList: TPropList;
+  Ini: TIniFile;
+  Value: string;
+begin
+  CheckPath;
+  Ini := TIniFile.Create(SavePath);
+  I := 0;
+  try
+    if GetPropList(ClassInfo, tkProperties, @PropList) > 0 then
+      while Assigned(PropList[I]) and (I < High(PropList)) and (PropList[I].Name <> '') do
+      begin
+        case PropList[I].PropType^.Kind of
+          tkInteger, tkEnumeration:
+            Value := IntToStr(GetOrdProp(Self, PropList[I]));
+          tkFloat:
+            Value := FloatToStr(GetFloatProp(Self, PropList[I]));
+          tkString, tkLString:
+            Value := GetStrProp(Self, PropList[I]);
+          else
+            raise EJVCLException.CreateFmt(cInvalidPropertyFmt, [PropList[I].Name]);
+          end;
+          Ini.WriteString(Section, PropList[I].Name, Value);
+          Inc(I);
+      end;
+  finally
+    Ini.Free;
+  end;
+  Result := True;
+end;
+
+{$IFDEF COMPLIB_VCL}
 function TJvAppInfo.LoadRegistry: Boolean;
 var
   I: Integer;
@@ -110,40 +187,6 @@ begin
   Result := True;
 end;
 
-function TJvAppInfo.LoadIni: Boolean;
-var
-  I: Integer;
-  PropList: TPropList;
-  Ini: TIniFile;
-  Value: string;
-begin
-  CheckPath;
-  Ini := TIniFile.Create(SavePath);
-  try
-    I := 0;
-    if GetPropList(ClassInfo, tkProperties, @PropList) > 0 then
-      while Assigned(PropList[I]) and (I < High(PropList)) do
-      begin
-        Value := Ini.ReadString(Section, PropList[i].Name, FUnAssigned);
-        if Value <> FUnAssigned then
-          case PropList[I].PropType^.Kind of
-            tkInteger, tkEnumeration:
-              SetOrdProp(Self, PropList[I], StrToInt(Value));
-            tkFloat:
-              SetFloatProp(Self, PropList[I], StrToFloat(Value));
-            tkString,tkLString:
-              SetStrProp(Self, PropList[I], Value);
-          else
-            raise EJVCLException.CreateFmt(cInvalidPropertyFmt, [PropList[I].Name]);
-          end;
-        Inc(I);
-      end;
-  finally
-    Ini.Free;
-  end;
-  Result := True;
-end;
-
 function TJvAppInfo.SaveRegistry: Boolean;
 var
   I: Integer;
@@ -177,55 +220,27 @@ begin
   end;
   Result := True;
 end;
-
-function TJvAppInfo.SaveIni: Boolean;
-var
-  I: Integer;
-  PropList: TPropList;
-  Ini: TIniFile;
-  Value: string;
-begin
-  CheckPath;
-  Ini := TIniFile.Create(SavePath);
-  I := 0;
-  try
-    if GetPropList(ClassInfo, tkProperties, @PropList) > 0 then
-      while Assigned(PropList[I]) and (I < High(PropList)) and (PropList[I].Name <> '') do
-      begin
-        case PropList[I].PropType^.Kind of
-          tkInteger, tkEnumeration:
-            Value := IntToStr(GetOrdProp(Self, PropList[I]));
-          tkFloat:
-            Value := FloatToStr(GetFloatProp(Self, PropList[I]));
-          tkString, tkLString:
-            Value := GetStrProp(Self, PropList[I]);
-          else
-            raise EJVCLException.CreateFmt(cInvalidPropertyFmt, [PropList[I].Name]);
-          end;
-          Ini.WriteString(Section, PropList[I].Name, Value);
-          Inc(I);
-      end;
-  finally
-    Ini.Free;
-  end;
-  Result := True;
-end;
+{$ENDIF COMPLIB_VCL}
 
 function TJvAppInfo.Load: Boolean;
 begin
   CheckPath;
+{$IFDEF COMPLIB_VCL}
   if UseRegistry then
     Result := LoadRegistry
   else
+{$ENDIF}
     Result := LoadIni;
 end;
 
 function TJvAppInfo.Save: Boolean;
 begin
   CheckPath;
+{$IFDEF COMPLIB_VCL}
   if UseRegistry then
     Result := SaveRegistry
   else
+{$ENDIF}
     Result := SaveIni;
 end;
 
@@ -238,7 +253,9 @@ end;
 constructor TJvAppInfo.Create;
 begin
   inherited Create;
+{$IFDEF COMPLIB_VCL}
   FRegKey := HKEY_CURRENT_USER;
+{$ENDIF}  
   FUnAssigned := '';
 end;
 
@@ -247,8 +264,10 @@ begin
   if Source is TJvAppInfo then
   begin
     SavePath := TJvAppInfo(Source).SavePath;
+  {$IFDEF COMPLIB_VCL}
     UseRegistry := TJvAppInfo(Source).UseRegistry;
     RegRootKey := TJvAppInfo(Source).RegRootKey;
+  {$ENDIF}
     Section := TJvAppInfo(Source).Section;
     UnAssignedValue := TJvAppInfo(Source).UnAssignedValue;
     Exit;
@@ -257,6 +276,4 @@ begin
 end;
 
 end.
-
-
 

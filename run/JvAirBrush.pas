@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2000-06-15
+Last Modified: 2003-10-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -29,27 +29,34 @@ unit JvAirBrush;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
+  {$IFDEF COMPLIB_VCL}
+  Windows, Graphics,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  QGraphics, JvJVCLUtils, Types,
+  {$ENDIF}
+  SysUtils, Classes,
+  JvTypes, JvComponent;
 
 type
   TAirBrushShape = (absRound, absSquare, absLeftSlash, absRightSlash, absHorizontal, absVertical, absSpray);
-  TJvAirBrush = class(TComponent)
+  TJvAirBrush = class(TJvComponent)
   private
     Bitmap: TBitmap;
     FIntensity: Integer;
     FSize: Integer;
     FColor: TColor;
     FShape: TAirBrushShape;
-    FInterval: integer;
-    FCounter: DWord;
+    FInterval: Integer;
+    FCounter: LongWord;
     procedure SetColor(const Value: TColor);
     procedure SetIntensity(const Value: Integer);
     procedure SetSize(const Value: Integer);
     procedure MakeBrush;
-    procedure Blend(src1, src2, dst: tbitmap; amount: extended);
+    procedure Blend(src1, src2, dst: TBitmap; amount: Extended);
     procedure SetShape(const Value: TAirBrushShape);
     function GetAir: boolean;
-    procedure SetInterval(const Value: integer);
+    procedure SetInterval(const Value: Integer);
     procedure MakeSpray;
 
     { Private declarations }
@@ -59,7 +66,7 @@ type
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Draw(ACanvas: TCanvas; x, y: integer);
+    procedure Draw(ACanvas: TCanvas; x, y: Integer);
     property Air: boolean read GetAir;
   published
     { Published declarations }
@@ -67,7 +74,7 @@ type
     property Color: TColor read FColor write SetColor;
     property Intensity: Integer read FIntensity write SetIntensity;
     property Shape: TAirBrushShape read FShape write SetShape;
-    property Interval: integer read FInterval write SetInterval;
+    property Interval: Integer read FInterval write SetInterval;
   end;
 
 implementation
@@ -78,18 +85,17 @@ constructor TJvAirBrush.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FSize := 40;
-  FCounter := gettickcount;
-  ;
+  FCounter := GetTickCount;
   FInterval := 100;
   FIntensity := 10;
   FColor := clBlack;
-  Bitmap := TBitmap.create;
+  Bitmap := TBitmap.Create;
   FShape := absRound;
 end;
 
 destructor TJvAirBrush.destroy;
 begin
-  Bitmap.free;
+  Bitmap.Free;
   inherited;
 end;
 
@@ -120,94 +126,93 @@ end;
 
 procedure TJvAirBrush.MakeBrush;
 var
-  pts: array[0..3] of Tpoint;
+  pts: array[0..3] of TPoint;
 begin
   with Bitmap do
   begin
-    width := FSize;
-    height := FSize;
-    canvas.brush.color := clwhite;
-    canvas.fillrect(rect(0, 0, width, height));
-    canvas.pen.style := psclear;
-    canvas.brush.color := FColor;
+    Width := FSize;
+    Height := FSize;
+    Canvas.Brush.Color := clWhite;
+    Canvas.FillRect(Rect(0, 0, Width, Height));
+    Canvas.Pen.style := psClear;
+    Canvas.Brush.Color := FColor;
     case FShape of
-      absRound: canvas.Ellipse(0, 0, width, height);
-      absSquare: canvas.Rectangle(0, 0, width, height);
+      absRound: Canvas.Ellipse(0, 0, Width, Height);
+      absSquare: Canvas.Rectangle(0, 0, Width, Height);
       absRightSlash:
         begin
-          pts[0] := point(0, height - 1);
-          pts[1] := point(width div 4, height - 1);
-          pts[2] := point(width - 1, 0);
-          pts[3] := point(width - 1 - (width div 4), 0);
-          canvas.Polygon(pts);
+          pts[0] := Point(0, Height - 1);
+          pts[1] := Point(Width div 4, Height - 1);
+          pts[2] := Point(Width - 1, 0);
+          pts[3] := Point(Width - 1 - (Width div 4), 0);
+          Canvas.Polygon(pts);
         end;
       absLeftSlash:
         begin
-          pts[0] := point(0, 0);
-          pts[1] := point(width div 4, 0);
-          pts[2] := point(width - 1, height - 1);
-          pts[3] := point(width - 1 - (width div 4), height - 1);
-          canvas.Polygon(pts);
+          pts[0] := Point(0, 0);
+          pts[1] := Point(Width div 4, 0);
+          pts[2] := Point(Width - 1, Height - 1);
+          pts[3] := Point(Width - 1 - (Width div 4), Height - 1);
+          Canvas.Polygon(pts);
         end;
-      absHorizontal: canvas.rectangle(0, height div 4, width - 1, height - 1 - (height div 4));
-      absVertical: canvas.rectangle(width div 4, 0, width - 1 - (width div 4), height - 1);
+      absHorizontal: Canvas.Rectangle(0, Height div 4, Width - 1, Height - 1 - (Height div 4));
+      absVertical: Canvas.Rectangle(Width div 4, 0, Width - 1 - (Width div 4), Height - 1);
       absSpray: MakeSpray;
     end;
-    transparentcolor := clwhite;
-    transparent := true;
+    transparentColor := clWhite;
+    transparent := True;
   end;
 end;
 
 procedure TJvAirBrush.MakeSpray;
 var
-  x, y, x2, y2: integer;
+  x, y, x2, y2: Integer;
 begin
   x2 := Bitmap.Width div 2;
   y2 := Bitmap.Height div 2;
-  with Bitmap.canvas do
-    for y := 0 to Bitmap.height - 1 do
-      for x := 0 to Bitmap.width - 1 do
+  with Bitmap.Canvas do
+    for y := 0 to Bitmap.Height - 1 do
+      for x := 0 to Bitmap.Width - 1 do
         if (sqr(x - x2) + sqr(y - y2)) < sqr(x2) then
           if ((x mod 3) = 0) and ((y mod 3) = 0) then
             pixels[x, y] := FColor;
 end;
 
-procedure TJvAirBrush.Draw(ACanvas: TCanvas; x, y: integer);
+procedure TJvAirBrush.Draw(ACanvas: TCanvas; x, y: Integer);
 var
   bm, dst: TBitmap;
-  Rpaint, Rt: Trect;
-  CLeft, Ctop: integer;
+  Rpaint, Rt: TRect;
+  CLeft, Ctop: Integer;
 begin
   //  MakeBrush;
   CLeft := x - (FSize div 2);
   CTop := y - (FSize div 2);
-  Rpaint := rect(CLeft, CTop, CLeft + FSize, CTop + FSize);
-  bm := Tbitmap.create;
-  bm.width := Bitmap.width;
-  bm.height := bitmap.height;
-  dst := Tbitmap.create;
-  dst.width := bitmap.width;
-  dst.height := bitmap.height;
+  Rpaint := Rect(CLeft, CTop, CLeft + FSize, CTop + FSize);
+  bm := TBitmap.Create;
+  bm.Width := Bitmap.Width;
+  bm.Height := Bitmap.Height;
+  dst := TBitmap.Create;
+  dst.Width := Bitmap.Width;
+  dst.Height := Bitmap.Height;
   try
-    Rt := rect(0, 0, bm.width, bm.height);
-    bm.canvas.CopyRect(Rt, ACanvas, Rpaint);
+    Rt := Rect(0, 0, bm.Width, bm.Height);
+    bm.Canvas.CopyRect(Rt, ACanvas, Rpaint);
     bm.PixelFormat := pf24bit;
-    bitmap.PixelFormat := pf24bit;
+    Bitmap.PixelFormat := pf24bit;
     dst.PixelFormat := pf24bit;
-    Blend(bm, bitmap, dst, FIntensity / 100);
-    dst.TransparentColor := clwhite;
-    dst.transparent := true;
+    Blend(bm, Bitmap, dst, FIntensity / 100);
+    dst.TransparentColor := clWhite;
+    dst.transparent := True;
     ACanvas.draw(CLeft, CTop, dst);
   finally
-    bm.free;
-    dst.free;
+    bm.Free;
+    dst.Free;
   end;
-
 end;
 
-procedure TJvAirBrush.Blend(src1, src2, dst: tbitmap; amount: extended);
+procedure TJvAirBrush.Blend(src1, src2, dst: TBitmap; amount: Extended);
 var
-  w, h, x, y: integer;
+  w, h, x, y: Integer;
   ps1, ps2, pd: pbytearray;
 begin
   w := src1.Width;
@@ -246,20 +251,20 @@ begin
   MakeBrush;
 end;
 
-procedure TJvAirBrush.SetInterval(const Value: integer);
+procedure TJvAirBrush.SetInterval(const Value: Integer);
 begin
   FInterval := Value;
 end;
 
 function TJvAirBrush.GetAir: boolean;
 begin
-  if integer(gettickcount - FCounter) > FInterval then
+  if Integer(GetTickCount - FCounter) > FInterval then
   begin
-    result := true;
-    Fcounter := gettickcount;
+    Result := True;
+    Fcounter := GetTickCount;
   end
   else
-    result := false;
+    Result := False;
 end;
 
 end.

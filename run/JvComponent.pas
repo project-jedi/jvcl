@@ -160,14 +160,6 @@ begin
   JvThemes.SetParentBackground(Self, Value);
 end;
 
-{$IFDEF USE_DXGETTEXT}
-constructor TJvForm.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  TranslateComponent(Self);
-end;
-{$ENDIF}
-
 function TJvForm.GetParentBackground: Boolean;
 begin
   Result := JvThemes.GetParentBackground(Self);
@@ -178,6 +170,14 @@ begin
   JvThemes.SetParentBackground(Self, Value);
 end;
 
+{$ENDIF}
+
+{$IFDEF USE_DXGETTEXT}
+constructor TJvForm.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  TranslateComponent(Self);
+end;
 {$ENDIF}
 
 

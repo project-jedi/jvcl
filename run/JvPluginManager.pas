@@ -173,16 +173,16 @@ type
 // End of Bianconi
   end;
 
-resourcestring
-  SErrEmptyExt = 'Extension may not be empty';
-
 implementation
 
 uses
 {$IFNDEF COMPILER6_UP}
-  JvJVCLUtils, // for IncludeTrailingPathDelimiter (only <D6)
+  JvJCLUtils, // for IncludeTrailingPathDelimiter (only <D6)
 {$ENDIF}
   Forms;
+
+resourcestring
+  SErrEmptyExt = 'Extension may not be empty';
 
 const
   C_REGISTER_PLUGIN = 'RegisterPlugin';

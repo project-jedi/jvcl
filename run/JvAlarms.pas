@@ -20,6 +20,7 @@ Peter Thörnqvist [peter3@peter3.com]
 
 Last Modified:
   2002-06-15 - (p3) changed TJvAlarm record to TCollection so you can easily manipulate it at design-time
+  2003-10-24 - (andreas) CLX
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,11 +35,14 @@ unit JvAlarms;
 interface
 
 uses
-  Windows, SysUtils, Classes, Dialogs, Controls, ExtCtrls,
-  JvComponent,
-// Bianconi - To include TJvTriggerKind type
-  JvTypes;
-// End of Bianconi
+  {$IFDEF COMPLIB_VCL}
+  ExtCtrls,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  QExtCtrls,
+  {$ENDIF}
+  SysUtils, Classes,
+  JvTypes, JvComponent;
 
 type
   TJvAlarmItem = class(TCollectionItem)
@@ -46,7 +50,7 @@ type
     FName: string;
     FTime: TDateTime;
     FKind: TJvTriggerKind;
-  public                       
+  public
     procedure Assign(Source: TPersistent); override;
   published
     property Name: string read FName write FName;

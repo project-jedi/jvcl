@@ -32,11 +32,16 @@ unit JvAppIniStore;
 interface
 
 uses
-  Classes, Forms, IniFiles, Messages, SysUtils, Windows,
-  JvAppStore;
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF}
+  SysUtils, Classes, IniFiles, JvAppStore;
 
 type
-  TJvAppINIStore = class(TJvCustomAppStore)
+  TJvAppIniStore = class(TJvCustomAppStore)
   protected
     function ValueExists(const Section, Key: string): Boolean; virtual; abstract;
     function ReadValue(const Section, Key: string): string; virtual; abstract;
@@ -60,7 +65,7 @@ type
     determine how long there has to be no key or mouse activities or writes to the storage before
     it is written to the actual file. The non-buffered version will write directly to the file
     (TIniFile) is used. }
-  TJvAppINIFileStore = class(TJvAppINIStore)
+  TJvAppINIFileStore = class(TJvAppIniStore)
   private
     FBuffered: Boolean;
     FHasWritten: Boolean;
@@ -101,7 +106,7 @@ type
     that will read/store the contents to a physical device (file, DB, etc.).
 
     Disclaimer: this class has not yet been tested!! }
-  TJvCustomAppINIStringsStore = class(TJvAppINIStore)
+  TJvCustomAppINIStringsStore = class(TJvAppIniStore)
   private
     FIsInternalChange: Boolean;
     FSections: TStrings;
@@ -126,6 +131,18 @@ type
   end;
 
 implementation
+
+{$IFDEF LINUX}
+function GetTickCount: Cardinal;
+var
+  Info: TSysInfo;
+  TimeVal: TTimeVal;
+begin
+  sysinfo(Info);
+  gettimeofday(TimeVal, nil);
+  Result := Cardinal((Int64(Info.uptime) * 1000) + Round(TimeVal.tv_usec / 1000));
+end;
+{$ENDIF LINUX}
 
 function AnsiSameTextShortest(S1, S2: string): Boolean;
 begin
@@ -224,9 +241,9 @@ begin
   inherited Create(False);
 end;
 *)
-//===TJvAppINIStore=================================================================================
+//===TJvAppIniStore=================================================================================
 
-function TJvAppINIStore.ValueStored(const Path: string): Boolean;
+function TJvAppIniStore.ValueStored(const Path: string): Boolean;
 var
   Section: string;
   Key: string;
@@ -235,7 +252,7 @@ begin
   Result := ValueExists(Section, Key);
 end;
 
-procedure TJvAppINIStore.DeleteValue(const Path: string);
+procedure TJvAppIniStore.DeleteValue(const Path: string);
 var
   Section: string;
   Key: string;
@@ -244,14 +261,14 @@ begin
   RemoveValue(Section, Key);
 end;
 
-procedure TJvAppINIStore.DeleteSubTree(const Path: string);
+procedure TJvAppIniStore.DeleteSubTree(const Path: string);
 var
   TopSection: string;
 begin
   TopSection := GetAbsPath(Path);
 end;
 
-function TJvAppINIStore.ReadInteger(const Path: string; Default: Integer = 0): Integer;
+function TJvAppIniStore.ReadInteger(const Path: string; Default: Integer = 0): Integer;
 var
   Section: string;
   Key: string;
@@ -269,7 +286,7 @@ begin
     Result := Default;
 end;
 
-procedure TJvAppINIStore.WriteInteger(const Path: string; Value: Integer);
+procedure TJvAppIniStore.WriteInteger(const Path: string; Value: Integer);
 var
   Section: string;
   Key: string;
@@ -278,7 +295,7 @@ begin
   WriteValue(Section, Key, IntToStr(Value));
 end;
 
-function TJvAppINIStore.ReadFloat(const Path: string; Default: Extended = 0): Extended;
+function TJvAppIniStore.ReadFloat(const Path: string; Default: Extended = 0): Extended;
 var
   Section: string;
   Key: string;
@@ -296,7 +313,7 @@ begin
     Result := Default;
 end;
 
-procedure TJvAppINIStore.WriteFloat(const Path: string; Value: Extended);
+procedure TJvAppIniStore.WriteFloat(const Path: string; Value: Extended);
 var
   Section: string;
   Key: string;
@@ -305,7 +322,7 @@ begin
   WriteValue(Section, Key, FloatToStr(Value));
 end;
 
-function TJvAppINIStore.ReadString(const Path: string; Default: string = ''): string;
+function TJvAppIniStore.ReadString(const Path: string; Default: string = ''): string;
 var
   Section: string;
   Key: string;
@@ -317,7 +334,7 @@ begin
     Result := Default;
 end;
 
-procedure TJvAppINIStore.WriteString(const Path: string; Value: string);
+procedure TJvAppIniStore.WriteString(const Path: string; Value: string);
 var
   Section: string;
   Key: string;
@@ -326,7 +343,7 @@ begin
   WriteValue(Section, Key, Value);
 end;
 
-function TJvAppINIStore.ReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
+function TJvAppIniStore.ReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
 var
   Section: string;
   Key: string;
@@ -342,7 +359,7 @@ begin
     Result := 0;
 end;
 
-procedure TJvAppINIStore.WriteBinary(const Path: string; const Buf; BufSize: Integer);
+procedure TJvAppIniStore.WriteBinary(const Path: string; const Buf; BufSize: Integer);
 var
   Section: string;
   Key: string;

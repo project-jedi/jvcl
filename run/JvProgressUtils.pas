@@ -15,7 +15,7 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
+Last Modified: 2003-10-25
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -30,7 +30,18 @@ unit JvProgressUtils;
 interface
 
 uses
-  SysUtils, Classes, Controls;
+  {$IFDEF COMPLIB_VCL}
+  Controls, ComCtrls,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  QControls, QComCtrls,
+  {$ENDIF}
+  SysUtils, Classes;
+
+{$IFDEF COMPLIB_CLX}
+type
+  TControlClass = class of TControl;
+{$ENDIF}
 
 procedure RegisterProgressControl(AClass: TControlClass; const MaxPropName,
   MinPropName, ProgressPropName: string);
@@ -43,8 +54,7 @@ procedure SetProgressValue(Control: TControl; ProgressValue: Longint);
 
 implementation
 uses
-  TypInfo,
-  ComCtrls;
+  TypInfo;
 
 type
   TProgressProp = (ppMax, ppMin, ppProgress);

@@ -53,6 +53,7 @@ contains
   JvAppRegistryStore in '..\..\run\JvAppRegistryStore.pas',
   JvAppIniStore in '..\..\run\JvAppIniStore.pas',
   JvThemes in '..\..\run\JvThemes.pas',
+  JvClxUtils in '..\..\run\JvClxUtils.pas',
   JvColorProvider in '..\..\run\JvColorProvider.pas';
 
 end.

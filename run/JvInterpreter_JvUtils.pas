@@ -213,7 +213,7 @@ end;
 
 procedure JvInterpreter_DefineCursor(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := DefineCursor2(PChar(string(Args.Values[0])));
+  Value := DefineCursor(HInstance, PChar(string(Args.Values[0])));
 end;
 
 { function FindFormByClassName(FormClassName: string): TForm; }

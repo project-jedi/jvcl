@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-09-20
+Last Modified: 2003-10-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -25,7 +25,6 @@ Known Issues:
 
 -----------------------------------------------------------------------------}
 {$I JVCL.INC}
-{.$I WINDOWSONLY.INC}
 
 unit JvJCLUtils;
 // (p3) note: this unit should only contain JCL compatible routines ( no Forms etc)
@@ -41,7 +40,7 @@ unit JvJCLUtils;
       Spaces, AddSpaces, GetXYByPos, MakeStr, FindNotBlankCharPos,
       GetWordOnPosEx, SubStr, ReplaceString
 
-  2003-09-25: (ahuser)
+  2003-09-25: (andreas)
     - Added Linux version of the Windows related functions. (testing needed)
       The following functions are Windows only:
         LZFileExpand()
@@ -68,13 +67,13 @@ uses
   Graphics, Clipbrd,
   {$ENDIF}
   {$IFDEF COMPLIB_CLX}
-  Qt, QGraphics, QClipbrd, JvUnicodeCanvas,
+  Qt, QGraphics, QClipbrd,
   {$ENDIF}
   JvTypes,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF}
-  TypInfo;
+  TypInfo, JvClxUtils;
 
 {$IFNDEF COMPILER_6UP}
 const
@@ -390,7 +389,7 @@ function PointL(const X, Y: Longint): TPointL;
 // (rom) from JvBandUtils to make it obsolete
 function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF COMPLIB_VCL}
 { begin JvIconClipboardUtils }
 
 { Icon clipboard routines }
@@ -406,7 +405,7 @@ function CreateRealSizeIcon(Icon: TIcon): HIcon;
 procedure DrawRealSizeIcon(Canvas: TCanvas; Icon: TIcon; X, Y: Integer);
 
 {end JvIconClipboardUtils }
-{$ENDIF}
+{$ENDIF COMPLIB_VCL}
 
 { begin JvRLE }
 
@@ -656,6 +655,12 @@ function StrToDateTimeDef(const S:string;Default:TDateTime):TDateTime;
 function CompareDateTime(const A, B:TDateTime):integer;
 function StrToFloatDef(const S:String;Default:Extended):Extended;
 { end JvXMLDatabase D5 compatiblility functions }
+
+{ D5 compatibility functions }
+procedure RaiseLastOSError;
+function IncludeTrailingPathDelimiter(const APath: string): string;
+function ExcludeTrailingPathDelimiter(const APath: string): string;
+
 {$ENDIF}
 
 
@@ -2106,26 +2111,14 @@ begin
     Result := H * Ss.Count;
     if not CalcHeight then
       for I := 0 to Ss.Count - 1 do
-      {$IFDEF MSWINDOWS}
-        ExtTextOut(
-          Canvas.Handle, // handle of device context
+        ClxExtTextOut(
+          Canvas, // handle of device context
           R.Left, // X-coordinate of reference point
           R.Top + H * I, // Y-coordinate of reference point
           ETO_CLIPPED, // text-output options
           @RClip, // optional clipping and/or opaquing rectangle
-          PChar(Ss[I]),
-          Length(Ss[I]), // number of characters in string
-          nil); // address of array of intercharacter spacing values
-      {$ENDIF MSWINDOWS}
-      {$IFDEF LINUX}
-        TUnicodeCanvas(Canvas).ExtTextOut(
-          R.Left, // X-coordinate of reference point
-          R.Top + H * I, // Y-coordinate of reference point
-          [etoClipped],
-          @RClip, // optional clipping and/or opaquing rectangle
           Ss[I],
           nil); // address of array of intercharacter spacing values
-      {$ENDIF LINUX}
   finally
     Ss.Free;
   end;
@@ -2583,7 +2576,7 @@ end;
 
 
 function TextWidth(const AStr: string): Integer;
-{$IFDEF MSWINDOWS}
+{$IFDEF COMPLIB_VCL}
 var
   Canvas: TCanvas;
   DC: HDC;
@@ -2601,7 +2594,7 @@ begin
   end;
 end;
 {$ENDIF}
-{$IFDEF LINUX}
+{$IFDEF COMPLIB_CLX}
 var
   Bmp: TBitmap;
 begin
@@ -2825,7 +2818,7 @@ begin
 end;
 
 procedure MemStreamToClipBoard(MemStream: TMemoryStream; const Format: Word);
-{$IFDEF MSWINDOWS}
+{$IFDEF COMPLIB_VCL}
 var
   Data: THandle;
   DataPtr: Pointer;
@@ -2851,14 +2844,14 @@ begin
   end;
 end;
 {$ENDIF}
-{$IFDEF LINUX}
+{$IFDEF COMPLIB_CLX}
 var
   Position: Integer;
 begin
   Position := MemStream.Position;
   try
     MemStream.Position := 0;
-    Clipboard.SetFormat(Format('Stream#%d', [Format]), MemStream);
+    Clipboard.SetFormat(SysUtils.Format('Stream#%d', [Format]), MemStream);
   finally
     MemStream.Position := Position;
   end;
@@ -2866,7 +2859,7 @@ end;
 {$ENDIF}
 
 procedure ClipBoardToMemStream(MemStream: TMemoryStream; const Format: Word);
-{$IFDEF MSWINDOWS}
+{$IFDEF COMPLIB_VCL}
 var
   Data: THandle;
   DataPtr: Pointer;
@@ -2890,12 +2883,12 @@ begin
   end;
 end;
 {$ENDIF}
-{$IFDEF LINUX}
+{$IFDEF COMPLIB_CLX}
 begin
-  if Clipboard.Provides(Format('Stream#%d', [Format])) then
+  if Clipboard.Provides(SysUtils.Format('Stream#%d', [Format])) then
   begin
-    Clipboard.GetFormat(Format('Stream#%d', [Format]), MemStream);
-    Stream.Position := 0;
+    Clipboard.GetFormat(SysUtils.Format('Stream#%d', [Format]), MemStream);
+    MemStream.Position := 0;
   end;
 end;
 {$ENDIF}
@@ -3014,7 +3007,7 @@ begin
     Result := AFalse;
 end;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF COMPLIB_VCL}
 { begin JvIconClipboardUtils}
 { Icon clipboard routines }
 
@@ -3029,15 +3022,12 @@ function CF_ICON: Word;
 begin
   if Private_CF_ICON = 0 then
   begin
-{$IFDEF MSWINDOWS}
     { The following string should not be localized }
     Private_CF_ICON := RegisterClipboardFormat('Delphi Icon');
     TPicture.RegisterClipboardFormat(Private_CF_ICON, TIcon);
-{$ENDIF}
   end;
   Result := Private_CF_ICON;
 end;
-
 
 function CreateBitmapFromIcon(Icon: TIcon; BackColor: TColor): TBitmap;
 var
@@ -3492,7 +3482,7 @@ begin
   end;
 end;
 { end JvIconClipboardUtils }
-{$ENDIF MSWINDOWS}
+{$ENDIF COMPLIB_VCL}
 
 
 { begin JvRLE }
@@ -5901,6 +5891,29 @@ begin
 end;
 
 { end JvXMLDatabase D5 compatiblility functions }
+
+procedure RaiseLastOSError;
+begin
+  RaiseLastWin32Error;
+end;
+
+function IncludeTrailingPathDelimiter(const APath: string): string;
+begin
+  if (Length(APath) > 0) and (APath[Length(APath)] <> PathDelim) then
+    Result := APath + PathDelim
+  else
+    Result := APath;
+end;
+
+function ExcludeTrailingPathDelimiter(const APath: string): string;
+var I: Integer;
+begin
+  Result := APath;
+  I := Length(Result);
+  while (I > 0) and (Result[I] = PathDelim) do Dec(I);
+  SetLength(Result, I - 1);
+end;
+
 {$ENDIF}
 
 initialization

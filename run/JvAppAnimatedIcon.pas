@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2003-24-10
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,7 +31,13 @@ unit JvAppAnimatedIcon;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+{$IFDEF COMPLIB_VCL}
+  Windows, Messages, Graphics, Controls, Forms, ExtCtrls,
+{$ENDIF}
+{$IFDEF COMPLIB_CLX}
+  Types, QGraphics, QControls, QForms, QExtCtrls, QImgList,
+{$ENDIF}
+  SysUtils, Classes,
   JvComponent;
 
 type
@@ -75,11 +81,25 @@ begin
 end;
 
 procedure TJvAppAnimatedIcon.Animate(Sender: TObject);
+{$IFDEF COMPLIB_CLX}
+var TmpBmp: TBitmap;
+{$ENDIF}
 begin
   if (FImgList <> nil) and (FImgList.Count <> 0) then
   begin
     FNumber := (FNumber + 1) mod FImgList.Count;
+  {$IFDEF COMPLIB_VCL}
     FImgList.GetIcon(FNumber, Application.Icon);
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+    TmpBmp := TBitmap.Create;
+    try
+      FImgList.GetBitmap(FNumber, TmpBmp);
+      Application.Icon.Assign(TmpBmp);
+    finally
+      TmpBmp.Free;
+    end;
+  {$ENDIF}
   end;
 end;
 
