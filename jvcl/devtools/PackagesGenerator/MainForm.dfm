@@ -197,7 +197,7 @@ object frmMain: TfrmMain
     object pnlParameters: TPanel
       Left = 430
       Top = 28
-      Width = 255
+      Width = 291
       Height = 22
       BevelOuter = bvNone
       Caption = 'Parameters'
@@ -207,7 +207,7 @@ object frmMain: TfrmMain
       object shHideParameters: TShape
         Left = 0
         Top = 0
-        Width = 255
+        Width = 291
         Height = 22
         Align = alClient
         Brush.Color = clBtnFace
@@ -221,11 +221,11 @@ object frmMain: TfrmMain
         Caption = 'Prefix'
       end
       object lblFormat: TLabel
-        Left = 112
+        Left = 108
         Top = 4
-        Width = 32
+        Width = 37
         Height = 13
-        Caption = 'Format'
+        Caption = 'Formats'
       end
       object cmbPrefix: TComboBox
         Left = 32
@@ -240,16 +240,16 @@ object frmMain: TfrmMain
           'Jcl')
       end
       object cmbFormat: TComboBox
-        Left = 148
+        Left = 152
         Top = 0
-        Width = 105
+        Width = 137
         Height = 21
         ItemHeight = 13
         TabOrder = 1
         Text = '%p%n%e%v%t'
         Items.Strings = (
           '%p%n%e%v%t'
-          '%p%n')
+          '%p%n,%p%n%v0')
       end
     end
   end
