@@ -155,6 +155,11 @@ const
 var
   W2kFixMsAcmLibrary: THandle = 0;
 
+function IsWin2kOrAbove:boolean;
+begin
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and  (Win32MajorVersion >= 5);
+end;
+
 procedure InstallW2kFix;
 begin
   if JvDialogsUseFixW2k and IsWin2K and (W2kFixMsAcmLibrary = 0) then
@@ -404,7 +409,7 @@ var
 begin
   TOpenFileName(DialogData).hInstance := FindClassHInstance(Self.ClassType);
   FActiveSettingDone := False;
-  if IsWin2K then
+  if IsWin2kOrAbove then
   begin
     if ActiveStyle = asReport then
       InstallW2kFix;
