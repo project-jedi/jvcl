@@ -78,7 +78,7 @@ type
     var Offset: Integer; var DefaultDrawText,
     DefaultDrawSortMarker: Boolean) of object;
   TJvTitleHintEvent = procedure(Sender: TObject; Field: TField;
-    var AHint: string; var ATimeOut: integer) of object;
+    var AHint: string; var ATimeOut: Integer) of object;
   TJvCellHintEvent = TJvTitleHintEvent;
 
   TJvSelectDialogColumnStrings = class(TPersistent)
@@ -96,7 +96,7 @@ type
 
   TJvDBGrid = class(TJvExDBGrid)
   private
-    FAutoSort: boolean;
+    FAutoSort: Boolean;
     FBeepOnError: Boolean; // WAP
     FAutoAppend: Boolean; // Polaris
     FSizingIndex: Integer; // Polaris
@@ -188,14 +188,14 @@ type
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
 
   protected
-    FCurrentDrawRow: integer;
+    FCurrentDrawRow: Integer;
 
     procedure MouseLeave(Control: TControl); override;
     function AcquireFocus: Boolean;
     function CanEditShow: Boolean; override;
     function CreateEditor: TInplaceEdit; override;
     procedure DblClick; override;
-    function DoTitleBtnDblClick: boolean; dynamic;
+    function DoTitleBtnDblClick: Boolean; dynamic;
 
     procedure DoTitleClick(ACol: Longint; AField: TField); dynamic;
     procedure CheckTitleButton(ACol, ARow: Longint; var Enabled: Boolean); dynamic;
@@ -285,7 +285,7 @@ type
   published
     property AutoAppend: Boolean read FAutoAppend write FAutoAppend default True; // Polaris
     property SortMarker: TSortMarker read FSortMarker write SetSortMarker default smNone;
-    property AutoSort: boolean read FAutoSort write FAutoSort default true;
+    property AutoSort: Boolean read FAutoSort write FAutoSort default True;
     property Options: TDBGridOptions read GetOptions write SetOptions default DefJvGridOptions;
     property FixedCols: Integer read GetFixedCols write SetFixedCols default 0;
     property ClearSelection: Boolean read FClearSelection write FClearSelection default True;
@@ -356,13 +356,14 @@ uses
 
 const
   sUnitName = 'JvDBGrid';
+
 type
   TBookmarks = class(TBookmarkList);
   TGridPicture = (gpBlob, gpMemo, gpPicture, gpOle, gpObject, gpData,
     gpNotEmpty, gpMarkDown, gpMarkUp, gpChecked, gpUnChecked, gpPopup);
 
 const
-  GridBmpNames: array[TGridPicture] of PChar =
+  GridBmpNames: array [TGridPicture] of PChar =
   ('JV_DBG_BLOB', 'JV_DBG_MEMO', 'JV_DBG_PICT', 'JV_DBG_OLE', 'JV_DBG_OBJECT',
     'JV_DBG_DATA', 'JV_DBG_NOTEMPTY', 'JV_DBG_SMDOWN', 'JV_DBG_SMUP',
     'JV_DBG_CHECKED', 'JV_DBG_UNCHECKED', 'JV_DBG_POPUP');
@@ -372,8 +373,8 @@ const
 
 // (rom) changed to var
 var
-  GridBitmaps: array[TGridPicture] of TBitmap =
-  (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+  GridBitmaps: array [TGridPicture] of TBitmap =
+    (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   FirstGridBitmaps: Boolean = True;
 
 procedure FinalizeGridBitmaps;
@@ -436,7 +437,7 @@ var
 begin
   inherited Create(AOwner);
   inherited DefaultDrawing := False;
-  FAutoSort := true;
+  FAutoSort := True;
   FBeepOnError := True;
   Options := DefJvGridOptions;
   Bmp := TBitmap.Create;
@@ -457,7 +458,7 @@ begin
   FClearSelection := True;
   FAutoAppend := True; // Polaris
   FShowTitleHint := False;
-  FShowCellHint := false;
+  FShowCellHint := False;
   FAlternateRowColor := clNone;
   FSelectColumn := scDataBase;
   FTitleArrow := False;
@@ -1061,27 +1062,27 @@ end;
 
 procedure TJvDBGrid.DoTitleClick(ACol: Longint; AField: TField);
 const
-  cDirection: array[boolean] of TSortMarker = (smDown, smUp);
+  cDirection: array [Boolean] of TSortMarker = (smDown, smUp);
 var
   IndexDefs: TIndexDefs;
   lIndexName: string;
-  Descending: boolean;
-  IndexFound: boolean;
+  Descending: Boolean;
+  IndexFound: Boolean;
 
-  function GetIndexOf(aFieldName: string; var aIndexName: string; var Descending: boolean): boolean;
+  function GetIndexOf(aFieldName: string; var aIndexName: string; var Descending: Boolean): Boolean;
   var
-    i: integer;
-    IsDescending: boolean;
+    I: Integer;
+    IsDescending: Boolean;
 
   begin
     Result := False;
-    for i := 0 to IndexDefs.Count - 1 do
+    for I := 0 to IndexDefs.Count - 1 do
     begin
-      if Pos(aFieldName, IndexDefs[i].Fields) >= 1 then
+      if Pos(aFieldName, IndexDefs[I].Fields) >= 1 then
       begin
-        aIndexName := IndexDefs[i].Name; // best match so far
-        IsDescending := (ixDescending in IndexDefs[i].Options);
-        Result := true;
+        aIndexName := IndexDefs[I].Name; // best match so far
+        IsDescending := (ixDescending in IndexDefs[I].Options);
+        Result := True;
         if Descending <> IsDescending then
           // we've found an index that is the opposite direction of the previous one, so we return now
         begin
@@ -1089,13 +1090,13 @@ var
           Exit;
         end;
       end;
-      // if we get here and Result is true, it means we've found a matching index but it
+      // if we get here and Result is True, it means we've found a matching index but it
       // might be the same as the previous one...
     end;
   end;
 
 begin
-  IndexFound := false;
+  IndexFound := False;
 
   if AutoSort and IsPublishedProp(DataSource.DataSet, 'IndexDefs')
     and IsPublishedProp(DataSource.DataSet, 'IndexName') then
@@ -1107,7 +1108,7 @@ begin
     Descending := SortMarker = smUp;
     if GetIndexOf(AField.FieldName, lIndexName, Descending) then
     begin
-      IndexFound := true;
+      IndexFound := True;
       SortedField := AField.FieldName;
       SortMarker := cDirection[Descending];
       try
@@ -1126,15 +1127,17 @@ begin
   begin
     if SortedField = AField.FieldName then
     begin
-      case self.SortMarker of
-        smUp: self.SortMarker := smDown;
-        smDown: self.SortMarker := smUp;
+      case Self.SortMarker of
+        smUp:
+          Self.SortMarker := smDown;
+        smDown:
+          Self.SortMarker := smUp;
       end;
     end
     else
     begin
       SortedField := AField.FieldName;
-      self.SortMarker := smUp;
+      Self.SortMarker := smUp;
     end;
   end;
   if Assigned(FOnTitleBtnClick) then
@@ -1194,7 +1197,7 @@ end;
 
 function TJvDBGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
 var
-  Distance: integer;
+  Distance: Integer;
 begin
   Result := False;
   if Assigned(OnMouseWheelDown) then
@@ -1214,7 +1217,7 @@ end;
 
 function TJvDBGrid.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean;
 var
-  Distance: integer;
+  Distance: Integer;
 begin
   Result := False;
   if Assigned(OnMouseWheelUp) then
@@ -1360,7 +1363,7 @@ begin
     else
     begin
       //-----------------------------------------------------------------------
-      // FBC: do not move column if RowSelect = true
+      // FBC: do not move column if RowSelect = True
       //-----------------------------------------------------------------------
       if (dgRowSelect in Options) and (Columns.State <> csCustomized) then
         inherited MouseDown(Button, Shift, 1, Y)
@@ -1664,7 +1667,7 @@ end;
 
 procedure TJvDBGrid.DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
 const
-  EdgeFlag: array[Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);
+  EdgeFlag: array [Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);
 var
   FrameOffs: Byte;
   BackColor: TColor;
@@ -1744,8 +1747,8 @@ var
   procedure DrawExpandBtn(var TitleRect, TextRect: TRect; InBiDiMode: Boolean;
     Expanded: Boolean); { copied from Inprise's DbGrids.pas }
   const
-    ScrollArrows: array[Boolean, Boolean] of Integer =
-    ((DFCS_SCROLLRIGHT, DFCS_SCROLLLEFT), (DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT));
+    ScrollArrows: array [Boolean, Boolean] of Integer =
+      ((DFCS_SCROLLRIGHT, DFCS_SCROLLLEFT), (DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT));
   var
     ButtonRect: TRect;
     I: Integer;
@@ -1892,14 +1895,14 @@ begin
       begin
         BackColor := Canvas.Brush.Color;
         //-----------------------------------------
-        // FBC -fix Sortmarker
+        // FBC -fix SortMarker
         // Not so elegant, but it works.
         //-----------------------------------------
         if AnsiSameText(AField.FieldName, SortedField) then
         begin
-          ASortMarker := self.Sortmarker;
+          ASortMarker := Self.SortMarker;
           DoGetBtnParams(AField, Canvas.Font, BackColor, ASortMarker, Down);
-          self.Sortmarker := ASortMarker;
+          Self.SortMarker := ASortMarker;
         end
         else
           DoGetBtnParams(AField, Canvas.Font, BackColor, ASortMarker, Down);
@@ -2763,11 +2766,11 @@ begin
   FTitleColumn := nil;
 end;
 
-function TJvDBGrid.DoTitleBtnDblClick: boolean;
+function TJvDBGrid.DoTitleBtnDblClick: Boolean;
 begin
   Result := Assigned(FOnTitleBtnDblClick) and Assigned(FTitleColumn);
   if Result then
-    FOnTitleBtnDblClick(self, FTitleColumn.Index, FTitleColumn.Field);
+    FOnTitleBtnDblClick(Self, FTitleColumn.Index, FTitleColumn.Field);
 end;
 
 procedure TJvDBGrid.TitleClick(Column: TColumn);
@@ -2809,14 +2812,14 @@ const
   C_TIMEOUT = 250;
 var
   ACol, ARow, ATimeOut, SaveRow: Integer;
-  AtCursorPosition: boolean;
+  AtCursorPosition: Boolean;
 begin
-  AtCursorPosition := true;
+  AtCursorPosition := True;
   with PHintInfo(Msg.LParam)^ do
   begin
     HintStr := Hint;
     ATimeOut := HideTimeOut;
-    self.MouseToCell(CursorPos.X, CursorPos.Y, ACol, ARow);
+    Self.MouseToCell(CursorPos.X, CursorPos.Y, ACol, ARow);
 
     //-------------------------------------------------------------------------
     // ARow = -1 if 'outside' a valid cell;
@@ -2828,8 +2831,8 @@ begin
       begin
         if FShowCellHint then
         begin
-          CursorRect.Left := CellRect(0, self.RowCount - 1).Left;
-          CursorRect.top := CellRect(0, self.RowCount - 1).Bottom;
+          CursorRect.Left := CellRect(0, Self.RowCount - 1).Left;
+          CursorRect.Top := CellRect(0, Self.RowCount - 1).Bottom;
         end
         else
         begin
@@ -2848,7 +2851,7 @@ begin
 
     if FShowTitleHint and (ACol >= 0) and (ARow = -1) then
     begin
-      AtCursorPosition := false;
+      AtCursorPosition := False;
       HintStr := Columns[ACol].FieldName;
       ATimeOut := max(ATimeOut, Length(HintStr) * C_TIMEOUT);
       if Assigned(FOnShowTitleHint) and DataLink.Active then
@@ -2859,7 +2862,7 @@ begin
     if FShowCellHint and (ACol >= 0) and DataLink.Active and
       ((ARow >= 0) or (not FShowTitleHint)) then
     begin
-      AtCursorPosition := false;
+      AtCursorPosition := False;
       HintStr := Hint;
       SaveRow := DataLink.ActiveRecord;
       try
@@ -2899,7 +2902,8 @@ begin
 end;
 
 procedure TJvDBGrid.WMVScroll(var Msg: TWMVScroll);
-var ALeftCol:integer;
+var
+  ALeftCol: Integer;
 begin
   ALeftCol := LeftCol;
   inherited;

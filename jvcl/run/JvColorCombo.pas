@@ -952,7 +952,8 @@ end;
 function TJvFontComboBox.DoDrawPreview(const AFontName:string; var APreviewText:string; ATextWidth:Integer):Boolean;
 begin
   Result := ATextWidth < ClientWidth;
-  if Assigned(FOnDrawPreviewEvent) then FOnDrawPreviewEvent(self, AFontName, APreviewText, ATextWidth, Result);
+  if Assigned(FOnDrawPreviewEvent) then
+    FOnDrawPreviewEvent(Self, AFontName, APreviewText, ATextWidth, Result);
 end;
 
 procedure TJvFontComboBox.DrawItem(Index: Integer; R: TRect;
@@ -974,7 +975,8 @@ begin
     //    aWidth  := 20;
     if (Integer(Items.Objects[Index]) and TRUETYPE_FONTTYPE) <> 0 then
       aBmp := FTrueTypeBmp
-    else if (Integer(Items.Objects[Index]) and DEVICE_FONTTYPE) <> 0 then
+    else
+    if (Integer(Items.Objects[Index]) and DEVICE_FONTTYPE) <> 0 then
       aBmp := FDeviceBmp
     else
       aBmp := FFixBmp;
@@ -995,7 +997,7 @@ begin
     if foWysiWyg in FOptions then
     begin
       if (foPreviewFont in Options) then
-        Canvas.Font.Name := self.Font.Name
+        Canvas.Font.Name := Self.Font.Name
       else
         Canvas.Font.Name := Items[Index];
     end;

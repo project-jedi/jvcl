@@ -28,6 +28,7 @@ Known Issues:
 unit JvNavPaneEditors;
 
 interface
+
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
@@ -66,37 +67,40 @@ type
 
 implementation
 
-uses JvPageList;
+uses
+  JvPageList;
 
-{ TJvNavPanePageImageIndexProperty }
+//=== TJvNavPanePageImageIndexProperty =======================================
 
 function TJvNavPanePageImageIndexProperty.ImageList: TCustomImageList;
-var P:TJvNavigationPane;
+var
+  P: TJvNavigationPane;
 begin
   P := TJvNavigationPane(TJvNavPanelPage(GetComponent(0)).PageList);
   if P = nil then
     Result := nil
-  else if P.SmallImages <> nil then // small images fi better into the OI, so prefer those
+  else
+  if P.SmallImages <> nil then // small images fi better into the OI, so prefer those
     Result := P.SmallImages
   else
-    Result := P.LargeImages
+    Result := P.LargeImages;
 end;
 
-{ TJvNavPanelHeaderImageIndexProperty }
+//=== TJvNavPanelHeaderImageIndexProperty ====================================
 
 function TJvNavPanelHeaderImageIndexProperty.ImageList: TCustomImageList;
 begin
   Result := TJvNavPanelHeader(GetComponent(0)).Images;
 end;
 
-{ TJvNavPanelButtonImageIndexProperty }
+//=== TJvNavPanelButtonImageIndexProperty ====================================
 
 function TJvNavPanelButtonImageIndexProperty.ImageList: TCustomImageList;
 begin
   Result := TJvNavPanelButton(GetComponent(0)).Images;
 end;
 
-{ TJvNavIconButtonImageIndexProperty }
+//=== TJvNavIconButtonImageIndexProperty =====================================
 
 function TJvNavIconButtonImageIndexProperty.ImageList: TCustomImageList;
 begin

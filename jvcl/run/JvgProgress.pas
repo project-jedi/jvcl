@@ -215,7 +215,7 @@ begin
       PerformEraseBackground(Self, FBackImage.Canvas.Handle)
     else
     {$ENDIF JVCLThemesEnabled}
-    GetParentImageRect(self, Bounds(Left, Top, Width, Height),
+    GetParentImageRect(Self, Bounds(Left, Top, Width, Height),
       FBackImage.Canvas.Handle);*)
 
     FBackImage.Canvas.Brush.Color := Parent.Brush.Color;

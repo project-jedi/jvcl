@@ -22,6 +22,11 @@ located at http://jvcl.sourceforge.net
 component   : TJvScrollMax
 description : scrollable panels
 
+History:
+  1.20:
+    - first version;
+  2.00:
+    - new property ScrollbarVisible;
 Known Issues:
   Some russian comments were translated to english; these comments are marked
   with [translated]
@@ -29,13 +34,6 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-
-{ History:
-  1.20:
-    - first version;
-  2.00:
-    - new property ScrollbarVisible;
-}
 
 unit JvScrollMax;
 
@@ -101,7 +99,6 @@ type
   protected
     procedure TextChanged; override;
     procedure DoBoundsChanged; override;
-
     procedure Loaded; override;
     procedure Paint; override;
     procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
@@ -213,7 +210,7 @@ type
     FPnlEdit: TJvScrollMaxBands;
     FScrollBar: TJvPanelScrollBar;
     FScrollPos: Integer;
-    Yy: Integer;
+    FY: Integer;
     FButtonFont: TFont;
     FOnScroll: TNotifyEvent;
     FBeveled: Boolean;
@@ -338,12 +335,12 @@ uses
   JvDsgnIntf, JvJVCLUtils, JvConsts, JvThemes, JvResources;
 
 { Cursors resources }
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvScrollMax.res}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvScrollMax.res}
-{$ENDIF VisualCLX}
+{$ENDIF LINUX}
 
 function PanelBorder(Panel: TCustomPanel): Integer;
 begin
@@ -380,7 +377,7 @@ end;
 type
   TJvScroller = class(TPanel)
   private
-    Yy: Integer;
+    FY: Integer;
     {$IFDEF VCL}
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
     {$ENDIF VCL}
@@ -392,7 +389,7 @@ type
 procedure TJvScroller.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbLeft then
-    Yy := Y;
+    FY := Y;
 end;
 
 procedure TJvScroller.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -401,7 +398,7 @@ var
 begin
   if Shift = [ssLeft] then
   begin
-    Sm := Yy - Y;
+    Sm := FY - Y;
     T := Top;
     if Sm <> 0 then
     begin
@@ -413,7 +410,7 @@ begin
           FOnScroll(Parent);
       end;
     end;
-    Yy := Y - Top + T;
+    FY := Y - Top + T;
   end;
 end;
 
@@ -932,10 +929,7 @@ begin
         R.Top := 1;
       R.Right := Width - R.Left;
       R.Bottom := Height - 1;
-      {$IFDEF VisualCLX}
-      QWindows.
-      {$ENDIF VisualCLX}
-      DrawEdge(Canvas.Handle, R, EDGE_ETCHED, Ex[FExpanded]);
+      {$IFDEF VisualCLX} QWindows.{$ENDIF}DrawEdge(Canvas.Handle, R, EDGE_ETCHED, Ex[FExpanded]);
       if ButtonVisible then
       begin
         Canvas.Brush.Color := Color;
@@ -981,6 +975,11 @@ end;
 //=== TJvScrollMaxBands ======================================================
 
 procedure TJvScrollMaxBands.AlignControls(AControl: TControl; var Rect: TRect);
+var
+  I: Integer;
+  ScrollMax: TJvScrollMax;
+  T: Integer;
+  SMax, SPage, SPos: Integer;
 
   procedure AdjustBottom;
   begin
@@ -1022,11 +1021,6 @@ procedure TJvScrollMaxBands.AlignControls(AControl: TControl; var Rect: TRect);
       Controls[I].Cursor := Cursor;
   end;
 
-var
-  I: Integer;
-  ScrollMax: TJvScrollMax;
-  T: Integer;
-  SMax, SPage, SPos: Integer;
 begin
   if FScrolling then
     Exit;
@@ -1278,7 +1272,7 @@ var
 begin
   if (Button = mbLeft) and (BandCount > 0) then
   begin
-    Yy := (Sender as TControl).ClientToScreen(Point(0, Y)).Y;
+    FY := (Sender as TControl).ClientToScreen(Point(0, Y)).Y;
     CH := FPnlEdit.Height;
     if (Bands[BandCount - 1].BoundsRect.Bottom > CH) or
       (Bands[0].Top < 0) then
@@ -1298,9 +1292,9 @@ begin
     Y := (Sender as TControl).ClientToScreen(Point(0, Y)).Y;
     CH := FPnlEdit.Height;
     if not (Sender = FScrollBar.Scroller) then
-      Sm := Y - Yy
+      Sm := Y - FY
     else
-      Sm := Yy - Y;
+      Sm := FY - Y;
     if Sm < 0 then {Up}
     begin
       if not (Bands[BandCount - 1].BoundsRect.Bottom > CH) then
@@ -1324,7 +1318,7 @@ begin
       FScrollBar.Pos := -Bands[0].Top;
       FScrollPos := FScrollBar.Pos;
     end;
-    Yy := Y;
+    FY := Y;
     Correct;
   end;
 end;

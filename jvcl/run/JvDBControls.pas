@@ -59,7 +59,8 @@ uses
 
 type
   { NEW VALIDATION EVENT }
-  TJvDbAcceptValueEvent  = procedure (Sender:TObject; oldValue:String;var newValue:String; var Accept,Post:Boolean) of Object;
+  TJvDBAcceptValueEvent = procedure(Sender: TObject; OldValue: string;
+    var NewValue: string; var Accept, Post: Boolean) of object;
 
   {NEW IN JVCL3.0 - Enhanced DBEdit/DBMaskEdit }
   TJvDBMaskEdit = class(TJvCustomMaskEdit) // same base as TJvMaskEdit, plus data aware.
@@ -172,13 +173,13 @@ type
     { designtime properties SPECIFIC to only JvDBMaskEdit: }
     property EditMask; { from TJvCustomMaskEdit }
 
-     {new event}
-     // This event is fired when a new value has been entered, and the Enter key is
-     // hit, and the mask checking worked, and we are asking the user
-     // for whether to accept the entry, or not, and if so, the end
-     // user may also want to automatically set a flag to cause an automatic Post
-     // after the db control does a write to the fieldlink.
-     property OnAcceptNewValue: TJvDbAcceptValueEvent read FOnAcceptNewValue write FOnAcceptNewValue;
+    {new event}
+    // This event is fired when a new value has been entered, and the Enter key is
+    // hit, and the mask checking worked, and we are asking the user
+    // for whether to accept the entry, or not, and if so, the end
+    // user may also want to automatically set a flag to cause an automatic Post
+    // after the db control does a write to the fieldlink.
+    property OnAcceptNewValue: TJvDbAcceptValueEvent read FOnAcceptNewValue write FOnAcceptNewValue;
 
     {Common JEDI Niceties}
     property BeepOnError;
@@ -675,12 +676,12 @@ uses
   SysUtils, Dialogs, DbConsts, Math,
   JvDBUtils, JvJVCLUtils, JvCalc, JvConsts, JvResources, JvTypes;
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBControls.res}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvDBControls.res}
-{$ENDIF VisualCLX}
+{$ENDIF LINUX}
 
 //=== NEW IN JVCL 3.0 ==
 //=== TJvDBMaskEdit ==============================================================
@@ -726,7 +727,8 @@ procedure TJvDBMaskEdit.Loaded;
 begin
   inherited Loaded;
   ResetMaxLength;
-  if (csDesigning in ComponentState) then DataChange(Self);
+  if csDesigning in ComponentState then
+    DataChange(Self);
 end;
 
 procedure TJvDBMaskEdit.Notification(AComponent: TComponent;
@@ -734,7 +736,8 @@ procedure TJvDBMaskEdit.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (FDataLink <> nil) and
-    (AComponent = DataSource) then DataSource := nil;
+    (AComponent = DataSource) then
+    DataSource := nil;
 end;
 
 function TJvDBMaskEdit.UseRightToLeftAlignment: Boolean;
@@ -786,7 +789,8 @@ begin
   if FFocused <> Value then
   begin
     FFocused := Value;
-    if (FAlignment <> taLeftJustify) and not IsMasked then Invalidate;
+    if (FAlignment <> taLeftJustify) and not IsMasked then
+      Invalidate;
     FDataLink.Reset;
   end;
 end;
@@ -806,7 +810,8 @@ procedure TJvDBMaskEdit.SetDataSource(Value: TDataSource);
 begin
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
     FDataLink.DataSource := Value;
-  if Value <> nil then Value.FreeNotification(Self);
+  if Value <> nil then
+    Value.FreeNotification(Self);
 end;
 
 function TJvDBMaskEdit.GetDataField: string;
@@ -921,7 +926,7 @@ end;
 
 procedure TJvDBMaskEdit.DoExit;
 var
-  newValue: string;
+  NewValue: string;
   Accept, Post: Boolean;
 begin
   Accept := True;
@@ -932,7 +937,7 @@ begin
   if (FOriginalValue<>newValue) then
     if Assigned(FOnAcceptNewValue) then
     begin
-      FOnAcceptNewValue(Self,FOriginalValue,newValue,Accept,Post);
+      FOnAcceptNewValue(Self, FOriginalValue, NewValue, Accept, Post);
       if not Accept then
         Text := FOriginalValue;
     end;
@@ -983,7 +988,8 @@ begin
   if csDestroying in ComponentState then
     Exit;
   AAlignment := FAlignment;
-  if UseRightToLeftAlignment then ChangeBiDiModeAlignment(AAlignment);
+  if UseRightToLeftAlignment then
+    ChangeBiDiModeAlignment(AAlignment);
   if ((AAlignment = taLeftJustify) or FFocused) and
     not (csPaintCopy in ControlState) then
   begin
@@ -991,8 +997,10 @@ begin
     begin { This keeps the right aligned text, right aligned }
       ExStyle := DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) and (not WS_EX_RIGHT) and
         (not WS_EX_RTLREADING) and (not WS_EX_LEFTSCROLLBAR);
-      if UseRightToLeftReading then ExStyle := ExStyle or WS_EX_RTLREADING;
-      if UseRightToLeftScrollbar then ExStyle := ExStyle or WS_EX_LEFTSCROLLBAR;
+      if UseRightToLeftReading then
+        ExStyle := ExStyle or WS_EX_RTLREADING;
+      if UseRightToLeftScrollbar then
+        ExStyle := ExStyle or WS_EX_LEFTSCROLLBAR;
       ExStyle := ExStyle or
         AlignStyle[UseRightToLeftAlignment, AAlignment];
       if DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) <> ExStyle then
@@ -1007,7 +1015,8 @@ begin
   canvas, for purpose of being displayed in a DBControl Grid:
 }
   DC := Message.DC;
-  if DC = 0 then DC := BeginPaint(Handle, PS);
+  if DC = 0 then
+    DC := BeginPaint(Handle, PS);
   FCanvas.Handle := DC;
   try
     FCanvas.Font := Font;
@@ -1030,9 +1039,11 @@ begin
           ecUpperCase: S := AnsiUpperCase(S);
           ecLowerCase: S := AnsiLowerCase(S);
         end;
-      end else
+      end
+      else
         S := EditText;
-      if PasswordChar <> #0 then FillChar(S[1], Length(S), PasswordChar);
+      if PasswordChar <> #0 then
+        FillChar(S[1], Length(S), PasswordChar);
       Margins := GetTextMargins;
       case AAlignment of
         taLeftJustify: Left := Margins.X;
@@ -1046,7 +1057,8 @@ begin
     end;
   finally
     FCanvas.Handle := 0;
-    if Message.DC = 0 then EndPaint(Handle, PS);
+    if Message.DC = 0 then
+      EndPaint(Handle, PS);
   end;
 end;  
 
@@ -1064,13 +1076,21 @@ var
 begin
   if NewStyleControls then
   begin
-    if BorderStyle = bsNone then I := 0 else
-      if Ctl3D then I := 1 else I := 2;
+    if BorderStyle = bsNone then
+      I := 0
+    else
+    if Ctl3D then
+      I := 1
+    else
+      I := 2;
     Result.X := SendMessage(Handle, EM_GETMARGINS, 0, 0) and $0000FFFF + I;
     Result.Y := I;
-  end else
+  end
+  else
   begin
-    if BorderStyle = bsNone then I := 0 else
+    if BorderStyle = bsNone then
+      I := 0
+    else
     begin
       DC := GetDC(0);
       GetTextMetrics(DC, SysMetrics);
@@ -1079,7 +1099,8 @@ begin
       SelectObject(DC, SaveFont);
       ReleaseDC(0, DC);
       I := SysMetrics.tmHeight;
-      if I > Metrics.tmHeight then I := Metrics.tmHeight;
+      if I > Metrics.tmHeight then
+        I := Metrics.tmHeight;
       I := I div 4;
     end;
     Result.X := I;
@@ -1099,9 +1120,8 @@ begin
     FDataLink.UpdateAction(Action);
 end;
 
-
-
 //=== TJvDBComboEdit =========================================================
+
 procedure ResetMaxLength(DBEdit: TJvDBComboEdit);
 var
   F: TField;
@@ -1248,7 +1268,7 @@ begin
   if FDataLink <> nil then
     Result := FDataLink.ReadOnly
   else
-    Result := true;
+    Result := True;
 end;
 
 procedure TJvDBComboEdit.SetReadOnly(Value: Boolean);

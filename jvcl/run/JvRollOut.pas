@@ -372,7 +372,8 @@ end;
 
 procedure TJvRollOutImageOptions.Change;
 begin
-  if Assigned(FOnChange) then FOnChange(self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 constructor TJvRollOutImageOptions.Create;
@@ -447,7 +448,7 @@ end;
 procedure TJvRollOutColors.Change;
 begin
   if Assigned(FOnChange) then
-    FOnChange(self);
+    FOnChange(Self);
 end;
 
 constructor TJvRollOutColors.Create;
@@ -1145,7 +1146,8 @@ end;
 
 procedure TJvCustomRollOut.CheckChildTabStops;
 begin
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if Collapsed then
     GetChildTabStops
   else
@@ -1154,29 +1156,30 @@ end;
 
 procedure TJvCustomRollOut.GetChildTabStops;
 var
-  i: Integer;
+  I: Integer;
 begin
   if FTabStops = nil then
   begin
     FTabStops := TStringList.Create;
     FTabStops.Sorted := True;
   end;
-  for i := 0 to ControlCount - 1 do
-    if (Controls[i] is TWinControl) and (TWinControl(Controls[i]).TabStop) then
+  for I := 0 to ControlCount - 1 do
+    if (Controls[I] is TWinControl) and (TWinControl(Controls[I]).TabStop) then
     begin
-      FTabStops.AddObject(Controls[i].Name, Controls[i]);
-      TWinControl(Controls[i]).TabStop := False;
+      FTabStops.AddObject(Controls[I].Name, Controls[I]);
+      TWinControl(Controls[I]).TabStop := False;
     end;
 end;
 
 procedure TJvCustomRollOut.SetChildTabStops;
-var i: Integer;
+var
+  I: Integer;
 begin
   if FTabStops <> nil then
   begin
-    for i := 0 to FTabStops.Count - 1 do
-      if FindChildControl(FTabStops[i]) <> nil then
-        TWinControl(FTabStops.Objects[i]).TabStop := True;
+    for I := 0 to FTabStops.Count - 1 do
+      if FindChildControl(FTabStops[I]) <> nil then
+        TWinControl(FTabStops.Objects[I]).TabStop := True;
     FreeAndNil(FTabStops);
   end;
 end;
@@ -1191,7 +1194,7 @@ end;
 destructor TJvRollOutAction.Destroy;
 begin
   if RollOut <> nil then
-    RollOut.RemoveFreeNotification(self);
+    RollOut.RemoveFreeNotification(Self);
   inherited;
 end;
 
@@ -1277,10 +1280,10 @@ begin
   if FRollOut <> Value then
   begin
     if FRollOut <> nil then
-      FRollOut.RemoveFreeNotification(self);
+      FRollOut.RemoveFreeNotification(Self);
     FRollOut := Value;
     if FRollOut <> nil then
-      FRollOut.FreeNotification(self);
+      FRollOut.FreeNotification(Self);
   end;
 end;
 

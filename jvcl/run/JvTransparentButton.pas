@@ -429,7 +429,7 @@ begin
   FTransparent := True;
   Flat := True;
 
-  FImList := TImageList.Create(self);
+  FImList := TImageList.Create(Self);
   FGlyph := TBitmap.Create;
   FGrayGlyph := TBitmap.Create;
   FDisabledGlyph := TBitmap.Create;
@@ -675,19 +675,19 @@ begin
       TmpWidth := FGlyph.Width;
 
     { do top }
-    if self.TextAlign in [ttaBottomLeft, ttaBottom, ttaBottomRight] then
+    if Self.TextAlign in [ttaBottomLeft, ttaBottom, ttaBottomRight] then
       Dest.Top := Spacing
     else
-    if self.TextAlign in [ttaTopLeft, ttaTop, ttaTopRight] then
+    if Self.TextAlign in [ttaTopLeft, ttaTop, ttaTopRight] then
       Dest.Top := Height - FImList.Height - Spacing
     else
       Dest.Top := (Height - FImList.Height) div 2;
 
     { do left }
-    if self.TextAlign = ttaLeft then
+    if Self.TextAlign = ttaLeft then
       Dest.Left := Width - TmpWidth - Spacing
     else
-    if self.TextAlign = ttaRight then
+    if Self.TextAlign = ttaRight then
       Dest.Left := Spacing
     else { left, center, right }
       Dest.Left := (Width - TmpWidth) div 2;
@@ -769,7 +769,7 @@ begin
   MidX := TmpRect.Right - TmpRect.Left;
   Flags := DT_CENTER;
   { div 2 and shr 1 generates the exact same Asm code... }
-  case self.TextAlign of
+  case Self.TextAlign of
     ttaTop:
       OffsetRect(TmpRect, Width div 2 - MidX div 2, ARect.Top - MidY - Spacing);
     ttaTopLeft:
@@ -1391,19 +1391,19 @@ begin
     TmpWidth := FImList.Width;
 
     { do top }
-    if self.TextAlign in [ttaBottomLeft, ttaBottom, ttaBottomRight] then
+    if Self.TextAlign in [ttaBottomLeft, ttaBottom, ttaBottomRight] then
       Dest.Top := Spacing
     else
-    if self.TextAlign in [ttaTopLeft, ttaTop, ttaTopRight] then
+    if Self.TextAlign in [ttaTopLeft, ttaTop, ttaTopRight] then
       Dest.Top := Height - FImList.Height - Spacing
     else
       Dest.Top := (Height - FImList.Height) div 2;
 
     { do left }
-    if self.TextAlign = ttaLeft then
+    if Self.TextAlign = ttaLeft then
       Dest.Left := Width - TmpWidth - Spacing
     else
-    if self.TextAlign = ttaRight then
+    if Self.TextAlign = ttaRight then
       Dest.Left := Spacing
     else { left, center, right }
       Dest.Left := (Width - TmpWidth) div 2;
@@ -1457,7 +1457,7 @@ begin
   MidX := TmpRect.Right - TmpRect.Left;
   Flags := DT_CENTER;
   { div 2 and shr 1 generates the exact same Asm code... }
-  case self.TextAlign of
+  case Self.TextAlign of
     ttaTop:
       OffsetRect(TmpRect, Width div 2 - MidX div 2, ARect.Top - MidY - Spacing);
     ttaTopLeft:

@@ -292,10 +292,10 @@ type
 implementation
 
 uses
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
   JvConsts,
   JvResources,
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
   JvYearGridEditForm;
 
 {$IFNDEF USEJVCL}
@@ -321,7 +321,9 @@ resourcestring
   RsCopyItem = '&Copy';
   RsPasteItem = '&Paste';
   RsDeleteItem = '&Delete';
+{$ENDIF USEJVCL}
 
+{$IFNDEF USEJVCL}
 const
   Cr = #13;
 {$ENDIF USEJVCL}

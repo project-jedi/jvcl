@@ -178,11 +178,11 @@ begin
 
   ParentControl := Self;
 
-  FDragBar := TJvSubDragBar.Create(self);
+  FDragBar := TJvSubDragBar.Create(Self);
   with FDragBar do
   begin
     Parent := ParentControl;
-    OwnerForm := self;
+    OwnerForm := Self;
     AutoSize := False;
     Caption := '';
     {$IFDEF VCL}
@@ -196,7 +196,7 @@ begin
     Hint := FDragBarHint;
   end;
 
-  FColorPanel := TJvOfficeColorPanel.Create(self);
+  FColorPanel := TJvOfficeColorPanel.Create(Self);
   with FColorPanel do
     Parent := ParentControl;
 
@@ -372,7 +372,7 @@ begin
     if not DropDownMoving then
       AdjustColorForm();
     if Assigned(FOnWindowStyleChanged) then
-      FOnWindowStyleChanged(self);
+      FOnWindowStyleChanged(Self);
   end
   else
   begin

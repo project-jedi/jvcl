@@ -1107,13 +1107,13 @@ begin
     NonProviderChange;
     if FImages <> nil then
     begin
-      FImages.RemoveFreeNotification(self);
+      FImages.RemoveFreeNotification(Self);
       FImages.UnRegisterChanges(FChangeLink);
     end;
     FImages := Value;
     if FImages <> nil then
     begin
-      FImages.FreeNotification(self);
+      FImages.FreeNotification(Self);
       FImages.RegisterChanges(FChangeLink);
     end;
     if AutoSize then

@@ -175,15 +175,16 @@ uses
   {$ENDIF VisualCLX}
   JvButton, JvResources;
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvTipOfDay.res}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvTipOfDay.res}
+{$ENDIF LINUX}
 
+{$IFDEF VisualCLX}
 const
   psInsideFrame: TPenStyle = psSolid;
-  
 {$ENDIF VisualCLX}
 
 
@@ -304,7 +305,7 @@ begin
 
       UpdateTip;
 
-{$IFDEF VCL}
+  {$IFDEF VCL}
       ShowModal;
 
       if TButtonControlAccess(FCheckBox).Checked then
@@ -322,8 +323,8 @@ begin
   finally
     FRunning := False;
   end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
       OnHide := FormHide ;  // onclose
       Show ;  // Shown non modal
     except
@@ -332,25 +333,24 @@ begin
   except
     FRunning := False;
   end;
-{$ENDIF  VisualCLX}
+  {$ENDIF VisualCLX}
 end;
 
 {$IFDEF VisualCLX}
-procedure TJvTipOfDay.FormHide(Sender : TObject);
+procedure TJvTipOfDay.FormHide(Sender: TObject);
 begin
   with Sender as TForm do
   begin
     if TButtonControlAccess(FCheckBox).Checked then
       Include(FOptions, toShowOnStartUp)
     else
-      Exclude(FOptions, toShowOnStartUp) ;
-    Release ;   // destroy it
+      Exclude(FOptions, toShowOnStartUp);
+    Release;   // destroy it
     FRunning := False;
   end;
-  inherited
+  inherited FormHide(Sender);
 end;
 {$ENDIF VisualCLX}
-
 
 procedure TJvTipOfDay.Notification(AComponent: TComponent; Operation: TOperation);
 begin

@@ -783,13 +783,13 @@ end;
 procedure TJvCustomClipboardViewer.DoImage(Image: TBitmap);
 begin
   if Assigned(FOnImage) then
-    FOnImage(self,Image);
+    FOnImage(Self, Image);
 end;
 
 procedure TJvCustomClipboardViewer.DoText(const AText: string);
 begin
   if Assigned(FOnText) then
-    FOnText(self,AText);
+    FOnText(Self, AText);
 end;
 
 procedure TJvCustomClipboardViewer.EmptyClipboard;

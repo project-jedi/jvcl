@@ -209,7 +209,7 @@ type
   TJvLocalFileUrlGrabberThread = class(TJvCustomUrlGrabberThread)
   protected
     function GetGrabber: TJvLocalFileUrlGrabber;
-    procedure ParseUrl(const Url: string; var Filename: string);
+    procedure ParseUrl(const Url: string; var FileName: string);
     procedure Execute; override;
   public
     property Grabber: TJvLocalFileUrlGrabber read GetGrabber;
@@ -227,14 +227,11 @@ type
     property PreserveAttributes:boolean read FPreserveAttributes write FPreserveAttributes default True;
   end;
 
-resourcestring
-// TODO: move to JvResources
-  SFileNotFoundFmt = 'File "%s" not found';
-
 implementation
 
 uses
-  WinInet;
+  WinInet,
+  JvResources;
 
 const
   sUnitName = 'JvUrlGrabbers';
@@ -688,21 +685,21 @@ begin
 
   Grabber.FStream := nil;
   ParseUrl(Grabber.FUrl, FileName);
-  if not FileExists(Filename) then
+  if not FileExists(FileName) then
   begin
-    FErrorText := Format(SFileNotFoundFmt,[Filename]);
+    FErrorText := Format(RsFileNotFoundFmt, [FileName]);
     Synchronize(Error);
     Exit;
   end;
 
   if Grabber.FPreserveAttributes then
-    Attrs := GetFileAttributes(PChar(Filename))
+    Attrs := GetFileAttributes(PChar(FileName))
   else
     Attrs := 0;
   try
     FErrorText := '';
     Grabber.FStream := TMemoryStream.Create;
-    AFileStream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
+    AFileStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
     try
       Grabber.FSize := AFileStream.Size;
       Grabber.FBytesRead := 0;
@@ -722,15 +719,15 @@ begin
       end;
       if not Terminated and FContinue then // acp
         Synchronize(Ended);
-      if Grabber.FPreserveAttributes and FileExists(Grabber.Filename) then
-        SetFileAttributes(PChar(Grabber.Filename), Attrs);
+      if Grabber.FPreserveAttributes and FileExists(Grabber.FileName) then
+        SetFileAttributes(PChar(Grabber.FileName), Attrs);
     finally
       AFileStream.Free;
       Grabber.FStream.Free;
       Grabber.FStream := nil;
     end;
   except
-//    Application.HandleException(self);
+//    Application.HandleException(Self);
   end;
 end;
 
@@ -740,13 +737,13 @@ begin
 end;
 
 procedure TJvLocalFileUrlGrabberThread.ParseUrl(const Url: string;
-  var Filename: string);
+  var FileName: string);
 begin
   FileName := StringReplace(Url, '/', '\', [rfReplaceAll]);
   if AnsiSameText(Copy(Url, 1, 7), 'file://') then
-    Filename := Copy(Filename, 8, MaxInt)
+    FileName := Copy(FileName, 8, MaxInt)
   else
-    FileName := ExpandUNCFilename(Filename);
+    FileName := ExpandUNCFilename(FileName);
 end;
 
 { TJvLocalFileUrlGrabberProperties }

@@ -57,10 +57,10 @@ uses
   JvOutlookBarEditors, JvLookoutEditor, JvChart;
 
 {$IFDEF MSWINDOWS}
-{$R ..\resources\JvCustomReg.dcr}
+{$R ..\Resources\JvCustomReg.dcr}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../resources/JvCustomReg.dcr}
+{$R ../Resources/JvCustomReg.dcr}
 {$ENDIF LINUX}
 
 procedure Register;

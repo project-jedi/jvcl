@@ -764,7 +764,7 @@ begin
         Brush.Style := bsSolid;
         FillRect(R);
         Brush.Style := bsClear;
-        GetParentImageRect(self, Bounds(Left, Top, Width, Height),
+        GetParentImageRect(Self, Bounds(Left, Top, Width, Height),
           TargetCanvas.Handle);
       except
       end;

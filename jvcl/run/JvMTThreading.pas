@@ -132,10 +132,10 @@ type
     procedure WaitThreads;
   end;
 
-
 function CurrentMTThread: TMTThread;
 
 implementation
+
 {$IFDEF USEJVCL}
 uses
   JvResources;

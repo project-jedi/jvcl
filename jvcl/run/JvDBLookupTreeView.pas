@@ -1303,7 +1303,7 @@ begin
   inherited Create(AOwner);
 //  ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable];
 //  TabStop := False;
-  FTree := TJvPopupTree.Create(self);
+  FTree := TJvPopupTree.Create(Self);
   FTree.Parent := Self;
   FTree.Align := alClient;
   FTree.ReadOnly := True;

@@ -463,7 +463,7 @@ type
     procedure DoStyleChange(Sender: TObject);
   protected
     procedure UpdatePageList;
-    procedure SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl); override;
+    procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
     procedure SetPageIndex(Value: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property NavPanel: TJvNavPanelButton read FNavPanel;
@@ -856,7 +856,7 @@ begin
   FDropButton.Width := 22;
   FDropButton.Left := Width + 10;
   FDropButton.Align := alRight;
-  FDropButton.Parent := self;
+  FDropButton.Parent := Self;
   FColors := TJvNavPanelColors.Create;
   FColors.OnChange := DoColorsChange;
 end;
@@ -1509,7 +1509,7 @@ begin
             Images.Draw(Canvas,
               (Width - Images.Width) div 2 + Ord(bsMouseDown in MouseStates),
               (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
-              ImageIndex, {$IFDEF VisualCLX}itImage, {$ENDIF}Enabled);
+              ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Enabled);
         end;
       nibDropArrow:
         begin
@@ -2275,7 +2275,7 @@ begin
   UpdatePageList;
 end;
 
-procedure TJvNavPanelPage.SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl);
+procedure TJvNavPanelPage.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if (FNavPanel = nil) or (FIconButton = nil) or (csDestroying in ComponentState) then
@@ -2523,7 +2523,7 @@ begin
     Images.Draw(Canvas,
       ClientWidth - Images.Width - (Height - Images.Height) div 2,
       (Height - Images.Height) div 2, ImageIndex,
-      {$IFDEF VisualCLX}itImage, {$ENDIF}True);
+      {$IFDEF VisualCLX} itImage, {$ENDIF} True);
   end;
 end;
 

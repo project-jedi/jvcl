@@ -64,6 +64,7 @@ type
   end;
 
 implementation
+
 {$IFDEF USEJVCL}
 uses
   JvResources;

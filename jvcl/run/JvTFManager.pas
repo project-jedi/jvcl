@@ -1060,12 +1060,11 @@ uses
   JvConsts, JvResources,
   {$ENDIF USEJVCL}
   {$IFDEF VisualCLX}
-  QDialogs, QForms
+  QDialogs, QForms;
   {$ENDIF VisualCLX}
   {$IFDEF VCL}
-  Dialogs, Forms
+  Dialogs, Forms;
   {$ENDIF VCL}
-  ;
 
 {$IFNDEF USEJVCL}
 resourcestring

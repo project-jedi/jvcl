@@ -290,7 +290,7 @@ begin
   //{ Получение XML заголовка }
   { Retrieving XML header [translated] }
   if Assigned(OnGetXMLHeader) then
-    OnGetXMLHeader(self, Result);
+    OnGetXMLHeader(Self, Result);
   if Result = '' then
     Result := DefaultXMLHeader;
 
@@ -512,7 +512,7 @@ begin
     Stream.Read(Buffer[0], Stream.Size + 1);
 
     if Assigned(BeforeParsing) then
-      BeforeParsing(self, Buffer);
+      BeforeParsing(Self, Buffer);
 
     //{ Устанавливаем текущий указатель чтения данных }
     { Setting current pointer of reading data  [translated] }

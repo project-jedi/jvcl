@@ -28,6 +28,7 @@ Known Issues:
 unit JvAppDBStorage;
 
 interface
+
 uses
   SysUtils, Classes, DB,
   {$IFDEF COMPILER6_UP}
@@ -59,7 +60,7 @@ type
     FValueLink: TFieldDataLink;
     FOnRead: TJvDBStorageReadEvent;
     FOnWrite: TJvDBStorageWriteEvent;
-    FBookmark:TBookmarkStr;
+    FBookmark: TBookmarkStr;
     procedure SetDataSource(const Value: TDataSource);
     function GetDataSource: TDataSource;
     function GetKeyField: string;
@@ -69,12 +70,12 @@ type
     procedure SetSectionField(const Value: string);
     procedure SetValueField(const Value: string);
   protected
-    function FieldsAssigned: boolean;
+    function FieldsAssigned: Boolean;
     procedure EnumFolders(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
     procedure EnumValues(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
-    function PathExistsInt(const Path: string): boolean; override;
+    function PathExistsInt(const Path: string): Boolean; override;
     function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; override;
     procedure RemoveValue(const Section, Key: string);
     procedure DeleteSubTreeInt(const Path: string); override;
@@ -90,10 +91,10 @@ type
     function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
     procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function SectionExists(const Path:string; RestorePosition:boolean):boolean;
-    function ValueExists(const Section, Key: string; RestorePosition:boolean): boolean;
-    function ReadValue(const Section, Key: string): string;virtual;
-    procedure WriteValue(const Section, Key, Value: string);virtual;
+    function SectionExists(const Path: string; RestorePosition: Boolean): Boolean;
+    function ValueExists(const Section, Key: string; RestorePosition: Boolean): Boolean;
+    function ReadValue(const Section, Key: string): string; virtual;
+    procedure WriteValue(const Section, Key, Value: string); virtual;
     procedure StoreDataset;
     procedure RestoreDataset;
   public
@@ -122,13 +123,8 @@ type
 implementation
 
 uses
-  JclMime, JvJCLUtils;
-
-resourcestring
-  RsENotSupported = 'Method not supported';
-  RsEBufTooSmallFmt = 'Buffer too small (%d bytes required)';
-
-{ TJvCustomAppDBStorage }
+  JclMime,
+  JvJCLUtils, JvResources;
 
 constructor TJvCustomAppDBStorage.Create(AOwner: TComponent);
 begin
@@ -137,6 +133,15 @@ begin
   FKeyLink := TFieldDataLink.Create;
   FValueLink := TFieldDataLink.Create;
   inherited Create(AOwner);
+end;
+
+destructor TJvCustomAppDBStorage.Destroy;
+begin
+  DataSource := nil;
+  FreeAndNil(FSectionLink);
+  FreeAndNil(FKeyLink);
+  FreeAndNil(FValueLink);
+  inherited Destroy;
 end;
 
 procedure TJvCustomAppDBStorage.DeleteSubTreeInt(const Path: string);
@@ -171,15 +176,6 @@ begin
   end;
 end;
 
-destructor TJvCustomAppDBStorage.Destroy;
-begin
-  DataSource := nil;
-  FreeAndNil(FSectionLink);
-  FreeAndNil(FKeyLink);
-  FreeAndNil(FValueLink);
-  inherited Destroy;
-end;
-
 function TJvCustomAppDBStorage.DoReadBinary(const Path: string; var Buf;
   BufSize: Integer): Integer;
 var
@@ -190,8 +186,8 @@ begin
   Value := JclMime.MimeDecodeString(DoReadString(Path, ''));
   Result := Length(Value);
   if Result > BufSize then
-    raise EJvAppDBStorageError.CreateFmt(RsEBufTooSmallFmt,[Result]);
-  if (Length(Value) > 0) then
+    raise EJvAppDBStorageError.CreateFmt(RsEBufTooSmallFmt, [Result]);
+  if Length(Value) > 0 then
     Move(Value[1], Buf, Result);
 end;
 
@@ -270,7 +266,7 @@ begin
   raise EJvAppDBStorageError.Create(RsENotSupported);
 end;
 
-function TJvCustomAppDBStorage.FieldsAssigned: boolean;
+function TJvCustomAppDBStorage.FieldsAssigned: Boolean;
 begin
   Result := (FSectionLink.Field <> nil) and (FKeyLink.Field <> nil) and (FValueLink.Field <> nil);
 end;
@@ -311,14 +307,13 @@ begin
       DataSource := nil;
 end;
 
-function TJvCustomAppDBStorage.PathExistsInt(const Path: string): boolean;
+function TJvCustomAppDBStorage.PathExistsInt(const Path: string): Boolean;
 begin
   { TODO -oJVCL -cTESTING : Is this correct implementation? }
   Result := SectionExists(Path, True);
 end;
 
-function TJvCustomAppDBStorage.ReadValue(const Section,
-  Key: string): string;
+function TJvCustomAppDBStorage.ReadValue(const Section, Key: string): string;
 begin
   if ValueExists(Section, Key, False) then
     Result := FValueLink.Field.AsString
@@ -331,20 +326,21 @@ end;
 
 procedure TJvCustomAppDBStorage.RemoveValue(const Section, Key: string);
 begin
-{ TODO -oJVCL -cTESTING : NOT TESTED!!! }
-  if ValueExists(Section,Key, False) then
+  { TODO -oJVCL -cTESTING : NOT TESTED!!! }
+  if ValueExists(Section, Key, False) then
     FValueLink.Field.Clear;
 end;
 
 procedure TJvCustomAppDBStorage.RestoreDataset;
 begin
-  if FBookmark = '' then Exit;
+  if FBookmark = '' then
+    Exit;
   if FieldsAssigned then
-    Datasource.Dataset.Bookmark := FBookmark;
+    DataSource.Dataset.Bookmark := FBookmark;
   FBookmark := '';
 end;
 
-function TJvCustomAppDBStorage.SectionExists(const Path: string; RestorePosition:boolean): boolean;
+function TJvCustomAppDBStorage.SectionExists(const Path: string; RestorePosition: Boolean): Boolean;
 begin
   Result := FieldsAssigned and DataSource.Dataset.Active;
   if Result then
@@ -368,7 +364,8 @@ begin
     FKeyLink.DataSource := Value;
     FValueLink.DataSource := Value;
   end;
-  if Value <> nil then Value.FreeNotification(Self);
+  if Value <> nil then
+    Value.FreeNotification(Self);
 end;
 
 procedure TJvCustomAppDBStorage.SetKeyField(const Value: string);
@@ -390,14 +387,14 @@ procedure TJvCustomAppDBStorage.StoreDataset;
 begin
   if FBookmark <> '' then
     RestoreDataset;
-  if FieldsAssigned and Datasource.Dataset.Active then
+  if FieldsAssigned and DataSource.Dataset.Active then
   begin
-    FBookmark := Datasource.Dataset.Bookmark;
-    Datasource.Dataset.DisableControls;
+    FBookmark := DataSource.Dataset.Bookmark;
+    DataSource.Dataset.DisableControls;
   end;
 end;
 
-function TJvCustomAppDBStorage.ValueExists(const Section, Key: string; RestorePosition:boolean): boolean;
+function TJvCustomAppDBStorage.ValueExists(const Section, Key: string; RestorePosition: Boolean): Boolean;
 begin
   Result := FieldsAssigned and DataSource.Dataset.Active;
   if Result then
@@ -405,7 +402,8 @@ begin
     if RestorePosition then
       StoreDataset;
     try
-      Result := DataSource.Dataset.Locate(Format('%s;%s', [SectionField, KeyField]), VarArrayOf([Section, Key]), [loCaseInsensitive]);
+      Result := DataSource.Dataset.Locate(Format('%s;%s', [SectionField, KeyField]), VarArrayOf([Section, Key]),
+        [loCaseInsensitive]);
     finally
       if RestorePosition then
         RestoreDataset;
@@ -443,7 +441,6 @@ begin
   if Assigned(FOnWrite) then
     FOnWrite(Self, Section, Key, Value);
 end;
-
 
 end.
 

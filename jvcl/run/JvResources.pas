@@ -103,6 +103,9 @@ resourcestring
   RsESorryForOneDimensionalArraysOnly = 'Sorry, for one-dimensional arrays only';
   RsELocalDatabase = 'Cannot perform this operation on a local database';
 
+  RsEInterfaceNotSupported = '%s does not support the %s interface';
+  RsECircularReference = 'Circular reference not allowed';
+
 //=== JvAni.pas ==============================================================
 resourcestring
   RsAniExtension = 'ani';
@@ -110,6 +113,11 @@ resourcestring
   RsAniCurFilter = 'Animated Cursors (*.ani)|*.ani|Any files (*.*)|*.*';
 
   RsEInvalidAnimatedIconImage = 'Invalid animated icon image';
+
+//=== JvAppDBStorage.pas =======================================================
+resourcestring
+  RsENotSupported = 'Method not supported';
+  RsEBufTooSmallFmt = 'Buffer too small (%d bytes required)';
 
 //=== JvAppIniStorage.pas ======================================================
 resourcestring
@@ -153,6 +161,11 @@ resourcestring
   RsErrorMessagePrefix = 'Error #';
 
   RsEInvalidDriverIndex = '%d is an invalid driver index. The maximum value is %d';
+
+//=== JvBackgrounds.pas ======================================================
+resourcestring
+  SChainError = 'Message from %s.%s:'#13#10#13#10'Oops... Messing up %s''s window procedure chain.%s';
+  SWorkaround = #13#10#13#10'To avoid this, $DEFINE the NO_DESIGNHOOK conditional compilation symbol and rebuild.';
 
 //=== JvBalloonHint.pas ======================================================
 resourcestring
@@ -254,6 +267,7 @@ resourcestring
 
 //=== JvChart.pas ============================================================
 resourcestring
+  RsChartDesigntimeLabel = ': JEDI JVCL Charting Component';
   RsNoData = 'No data. (Data.ValueCount=0)';
   RsGraphHeader = 'Graph Header';
   RsCurrentHeaders = 'Current Header: %s';
@@ -458,10 +472,26 @@ resourcestring
   RsSetKeyData = 'Search';
   RsCalcFieldsData = 'Calculate';
 
-//=== JvDBGrid.pas ============================================================
+//=== JvDBGrid.pas ===========================================================
+resourcestring
   RsJvDBGridSelectTitle = 'Select columns';
   RsJvDBGridSelectOK = '&OK';
   RsJvDBGridSelectWarning = 'At least one column must be visible!';
+
+//=== JvDBGridExport.pas =====================================================
+resourcestring
+  RsDataSetIsUnassigned = 'Dataset or DataSource unassigned';
+  RsGridIsUnassigned = 'No grid assigned';
+  RsHTMLExportDocTitle = 'Grid to HTML Export';
+  RsExportWord = 'Exporting to MS Word...';
+  RsExportExcel = 'Exporting to MS Excel...';
+  RsExportHTML = 'Exporting to HTML...';
+  RsExportFile = 'Exporting to CSV/Text...';
+  RsExportClipboard = 'Exporting to Clipboard...';
+
+//=== JvDBImage.pas ==========================================================
+resourcestring
+  RsEBadGraphicSignature = 'Bad graphic signature';
 
 //=== JvDBLookup.pas =========================================================
 resourcestring
@@ -831,7 +861,9 @@ resourcestring
   RsEDivideBy = 'Divide by 0';
   RsEDuplicateSignsAtPos = 'Duplicate signs at Pos: %d';
   RsEExpressionStringIsEmpty = 'Expression string is empty';
+  {$IFDEF glDEBUG}
   RsEObjectMemoryLeak = 'object memory leak';
+  {$ENDIF glDEBUG}
 {$ENDIF USEJVCL}
 
 //=== JvgXMLSerializer.pas ===================================================
@@ -979,6 +1011,13 @@ resourcestring
 //=== JvImageDlg.pas =========================================================
 resourcestring
   RsImageTitle = 'Image Viewer';
+
+//=== JvImageList.pas ========================================================
+resourcestring
+  RsResource = 'Resource %s';
+  RsMappedResource = 'Mapped Resource %s';
+  RsBitmap = 'Bitmap %s';
+  RsEWrongImageListMode = 'Wrong image list mode. For this function the mode must be %s';
 
 //=== JvImageWindow.pas ======================================================
 resourcestring
@@ -1219,6 +1258,20 @@ resourcestring
 //=== JvMemoryDataset.pas ====================================================
 resourcestring
   RsEMemNoRecords = 'No data found';
+  // Added by CFZ 2004/03/03
+  // 'Los registros aplicados, difieren de los cambiados.';
+  //SNoExactApply = 'The applied records differs from the changed records.';
+  // 'Record already exists.Registro ya existente.';
+  SRecordDuplicate = 'Record already exists.';
+  // 'Registro no encontrado.';
+  SRecordInexistent = 'Record not found.';
+  // 'No se pudo agregar el registro.';
+  SInsertError = 'Impossible append the record.';
+  // 'No se pudo modificar el registro.';
+  SUpdateError = 'Impossible modify the record.';
+  // 'No se pudo eliminar el registro.';
+  SDeleteError = 'Impossible erase the record.';
+  //--------------------------------------------------------------------
 
 //=== JvMouseGesture.pas =====================================================
 resourcestring
@@ -1234,29 +1287,37 @@ resourcestring
   RsEDuplicatesNotAllowedInMRUList = 'Duplicates not allowed in MRU list';
 
 //=== JvMTComponents.pas =====================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsENoThreadManager = 'No ThreadManager specified';
   RsEOperatorNotAvailable = 'Operation not available while thread is active';
   RsECannotChangePropertySection = 'Cannot change property of active section';
   RsECannotChangePropertyBuffer = 'Cannot change property of active buffer';
+{$ENDIF USEJVCL}
 
 //=== JvMTData.pas ===========================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsEMethodOnlyForMainThread = '%s method can only be used by the main VCL thread';
+{$ENDIF USEJVCL}
 
 //=== JvMTSync.pas ===========================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsESemaphoreFailure = 'Semaphore failure (%d)';
   RsESemaphoreAbandoned = 'Semaphore was abandoned';
   RsEThreadAbandoned = 'Thread was abandoned';
+{$ENDIF USEJVCL}
 
 //=== JvMTThreading.pas ======================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsECurThreadIsPartOfManager = 'Current MTThread is part of the MTManager';
   RsECheckTerminateCalledByWrongThread = 'CheckTerminate can only be called by the same thread';
   RsEThreadNotInitializedOrWaiting = 'Cannot run: thread is not Initializing or Waiting';
   RsECannotChangeNameOfOtherActiveThread = 'Cannot change name of other active thread';
   RsEReleaseOfUnusedTicket = 'Release of unused ticket';
+{$ENDIF USEJVCL}
 
 //=== JvMultiHttpGrabber.pas =================================================
 resourcestring
@@ -1275,14 +1336,6 @@ resourcestring
 resourcestring
   RsAttributeIndexOutOfBounds = '%d is not a valid attribute index';
   RsSelectionIndexOutOfBounds = '%d is not a valid selection index';
-
-//=== JvPageListTreeView.pas =================================================
-{$IFNDEF COMPILER6_UP}
-{ (ahuser) redefined in JvValidators.pas }
-{ resourcestring
-  RsEInterfaceNotSupported = '%s does not support the %s interface';
-}
-{$ENDIF COMPILER6_UP}
 
 //=== JvPageSetup.pas ========================================================
 resourcestring
@@ -1566,6 +1619,7 @@ resourcestring
   RsEAlreadyHooked = 'TJvSystemPopup.Hook: already hooked';
 
 //=== JvTFDays.pas ===========================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsEInvalidPrimeTimeStartTime = 'Invalid PrimeTime StartTime';
   RsEInvalidPrimeTimeEndTime = 'Invalid PrimeTime EndTime';
@@ -1589,13 +1643,17 @@ resourcestring
   RsEAnotherTimeBlockWithTheName = 'Another time block with the name ' +
     '"%s" already exists';
   RsEATimeBlockWithTheNamesDoesNotExist = 'A time block with the name "%s" does not exist';
+{$ENDIF USEJVCL}
 
 //=== JvTFGantt.pas ==========================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsThisIsTheMajorScale = 'This is the Major Scale';
   RsThisIsTheMinorScale = 'This is the Minor Scale';
+{$ENDIF USEJVCL}
 
 //=== JvTFGlance.pas =========================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsECellDatesCannotBeChanged = 'Cell Dates cannot be changed';
   RsECellMapHasBeenCorrupteds = 'Cell map has been corrupted %s';
@@ -1605,12 +1663,16 @@ resourcestring
   RsEApptIndexOutOfBoundsd = 'Appt index out of bounds (%d)';
   RsECellCannotBeSplit = 'Cell cannot be split';
   RsEASubcellCannotBeSplit = 'A subcell cannot be split';
+{$ENDIF USEJVCL}
 
 //=== JvTFGlanceTextViewer.pas ===============================================
+{$IFDEF USEJVCL}
 resourcestring
   RsEGlanceControlNotAssigned = 'GlanceControl not assigned';
+{$ENDIF USEJVCL}
 
 //=== JvTFManager.pas ========================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsECouldNotCreateCustomImageMap = 'Could not create CustomImageMap.  ' +
     'Appointment not assigned';
@@ -1651,20 +1713,27 @@ resourcestring
     'because aPrinter must be assigned';
   RsEInvalidFooterHeightd = 'Invalid Footer Height (%d)';
   RsEInvalidHeaderHeightd = 'Invalid Header Height (%d)';
+{$ENDIF USEJVCL}
 
 //=== JvTFSparseMatrix.pas ===================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsEMatrixMustBeEmpty = 'Matrix must be empty before setting null value';
+{$ENDIF USEJVCL}
 
 //=== JvTFUtils.pas ==========================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsEResultDoesNotFallInMonth = 'Result does not fall in given month';
   RsEInvalidMonthValue = 'Invalid Month Value (%d)';
   RsEInvalidDayOfWeekValue = 'Invalid value for day of week (%d)';
+{$ENDIF USEJVCL}
 
 //=== JvTFWeeks.pas ==========================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsWeekOf = 'Week of %s';
+{$ENDIF USEJVCL}
 
 //=== JvThumbImage.pas =======================================================
 resourcestring
@@ -1854,6 +1923,10 @@ resourcestring
   RsClInfoBk = 'Tooltip background';
   {$ENDIF VisualCLX}
 
+//=== JvUrlGrabbers.pas ======================================================
+resourcestring
+  RsFileNotFoundFmt = 'File "%s" not found';
+
 //=== JvUrlListGrabber.pas ===================================================
 resourcestring
   RsENoGrabberForUrl = 'There is no grabber capable of handling URL: %s';
@@ -1861,8 +1934,6 @@ resourcestring
 
 //=== JvValidators.pas =======================================================
 resourcestring
-  RsEInterfaceNotSupported = '%s does not support the %s interface';
-  RsECircularReference = 'Circular reference not allowed';
   RsEInsertNilValidator = 'Cannot insert nil validator';
   RsERemoveNilValidator = 'Cannot remove nil validator';
   RsEValidatorNotChild = 'Validator is not owned by this component';
@@ -1883,7 +1954,7 @@ resourcestring
 resourcestring
   //SDiskFullError =
   //  'TJvDiskFullDialog does not support removable media or network drives.';
-  RsENotSupported = 'This function is not supported by your version of Windows';
+  RsEFunctionNotSupported = 'This function is not supported by your version of Windows';
   RsEInvalidDriveChar = 'Invalid drive (%s)';
   { make Delphi 5 compiler happy // andreas
     RsEUnsupportedDisk = 'Unsupported drive (%s): JvDiskFullDialog only supports fixed drives';}
@@ -1893,6 +1964,7 @@ resourcestring
   RsEOwnerForm = 'Owner must be of type TCustomForm';
 
 //=== JvWizard.pas ===========================================================
+// (rom) no IFDEF USEJVCL because of CLX version
 resourcestring
   RsFirstButtonCaption = 'To &Start Page';
   RsLastButtonCaption = 'To &Last Page';
@@ -1905,14 +1977,18 @@ resourcestring
   RsEInvalidWizardPage = 'The pages belong to another wizard';
 
 //=== JvWizardCommon.pas =====================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsETilingError = 'Tiling only works on images with dimensions > 0';
+{$ENDIF USEJVCL}
 
 //=== JvWizardRouteMapSteps.pas ==============================================
+{$IFDEF USEJVCL}
 resourcestring
   RsActiveStepFormat = 'Step %d of %d';
   RsBackTo = 'Back to';
   RsNextStep = 'Next Step';
+{$ENDIF USEJVCL}
 
 //=== JvXmlDatabase.pas ======================================================
 resourcestring
@@ -1926,7 +2002,16 @@ resourcestring
   RsUntitled = 'untitled';
 {$ENDIF USEJVCL}
 
+//=== JvXPCore.pas ===========================================================
+{$IFDEF USEJVCL}
+resourcestring
+  RsCopyright = 'Design eXperience. (c) 2002 M. Hoffmann Version ';
+  RsCopyright2 = 'Design eXperience II - (c) 2002 M. Hoffmann Version ';
+  RsVersion = '2.0.1'; // always increase version number on new releases!
+{$ENDIF USEJVCL}
+
 //=== JvYearGrid.pas =========================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsYearGrid = 'YearGrid';
   RsEnterYear = 'Enter year (1999-2050):';
@@ -1945,6 +2030,7 @@ resourcestring
   RsEnterSeachText = 'Enter seach text:';
   RsFounds = 'Found %s';
   RsToday = 'Today ';
+{$ENDIF USEJVCL}
   
 //=== not taken into JVCL ====================================================
 {

@@ -62,7 +62,7 @@ type
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
     {$IFDEF VisualCLX}
-    FAutoSize: boolean;
+    FAutoSize: Boolean;
     {$ENDIF VisualCLX}
     procedure SetInterval(Value: Cardinal);
     procedure SetRotate(Value: Boolean);
@@ -73,9 +73,8 @@ type
   protected
     procedure DoFocusChanged(Control: TWinControl); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    procedure SetAutoSize(Value: Boolean);
+    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
     {$IFDEF VCL}
-      override;
     function GetPalette: HPALETTE; override;
     {$ENDIF VCL}
     procedure AdjustSize; override;
@@ -101,7 +100,7 @@ type
     property OnStartDock;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    property AutoSize: boolean read FAutoSize write SetAutosize default True;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     {$ENDIF VisualCLX}
     property AutoStopInterval: Cardinal read FAutoStopInterval write FAutoStopInterval default 0;
     property Color;
@@ -151,12 +150,12 @@ uses
   QImgList;
   {$ENDIF VisualCLX}
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDice.Res}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvDice.Res}
-{$ENDIF VisualCLX}
+{$ENDIF LINUX}
 
 constructor TJvDice.Create(AOwner: TComponent);
 var

@@ -680,9 +680,9 @@ function TJvCustomEdit.GetPopupMenu: TPopupMenu;
 begin
   Result := inherited GetPopupMenu;
   {$IFDEF VCL}
- // user has not assigned his own popup menu, so use fixed default
+  // user has not assigned his own popup menu, so use fixed default
   if (Result = nil) and UseFixedPopup then
-    Result := FixedDefaultEditPopUp(self);
+    Result := FixedDefaultEditPopUp(Self);
   {$ENDIF VCL}
 end;
 
@@ -736,7 +736,7 @@ begin
     end;
     C := TControlCanvas.Create;
     try
-      C.Control := self;
+      C.Control := Self;
       {$IFDEF VCL}
       if GetTextExtentPoint32(C.Handle, PChar(Text), Length(Text), Size) then
       {$ENDIF VCL}

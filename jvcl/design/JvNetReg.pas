@@ -51,12 +51,12 @@ uses
   JvTypes, JvDsgnConsts,
   JvStringListToHtml, JvFormToHtml, JvRgbToHtml, JvStrToHtml;
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvNetReg.dcr}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvNetReg.dcr}
-{$ENDIF VisualCLX}
+{$ENDIF LINUX}
 
 procedure Register;
 begin
@@ -66,14 +66,13 @@ begin
     TJvLocalFileURLGrabber, TJvMail,
     {$ENDIF MSWINDOWS}
     TJvHTMLParser,
-    TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML
     {$IFDEF VCL}
-    ,TJvRichEditToHTML
+    TJvRichEditToHTML,
     {$ENDIF VCL}
     {$IFDEF MSWINDOWS}
-    ,TJvUrlListGrabber
+    TJvUrlListGrabber,
     {$ENDIF MSWINDOWS}
-    ]);
+    TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML]);
   {$IFDEF MSWINDOWS}
   RegisterPropertyEditor(TypeInfo(TJvParserInfoList),
     TJvHTMLParser, 'Parser', TJvHTMLParserEditor);

@@ -696,7 +696,7 @@ begin
     begin
       Color_ := Brush.Color;
       Font_.Assign(Font);
-      FOnPrintTableElement(self, Str, i + 1, j + 1, Element, Font_, Color_,
+      FOnPrintTableElement(Self, Str, i + 1, j + 1, Element, Font_, Color_,
         AlignFlags, fCanPrint);
       Font.Assign(Font_);
     end;
@@ -751,7 +751,7 @@ begin
     begin
       Color_ := Brush.Color;
       Font_.Assign(Font);
-      FOnPrintTableElement(self, Str, -1, -1, teTitle, Font_, Color_,
+      FOnPrintTableElement(Self, Str, -1, -1, teTitle, Font_, Color_,
         AlignFlags, fCanPrint);
       Font.Assign(Font_);
     end;
@@ -906,7 +906,7 @@ begin
     //...EVENT OnPrintQuery
     fCanPrint := true;
     if Assigned(FOnPrintQuery) then
-      FOnPrintQuery(self, ColPageCount, RowPageCount, fCanPrint);
+      FOnPrintQuery(Self, ColPageCount, RowPageCount, fCanPrint);
     if not fCanPrint then
     begin
       if fPrint then
@@ -949,7 +949,7 @@ begin
           //...EVENT OnPrintNewPage
           PrintingStatus := fpsContinue;
           if Assigned(OnPrintNewPage) then
-            OnPrintNewPage(self, ColPageNo, RowPageNo, PrintingStatus);
+            OnPrintNewPage(Self, ColPageNo, RowPageNo, PrintingStatus);
           if PrintingStatus = fpsAbort then
           begin
             if fPrint then
@@ -1045,7 +1045,7 @@ begin
                 if FilledRowNo[RowNo] then //...duplicate
                 begin
                   if Assigned(OnDuplicateCellValue) then
-                    OnDuplicateCellValue(self, ColNo, RowNo,
+                    OnDuplicateCellValue(Self, ColNo, RowNo,
                       valueField.AsString, fUseDuplicateValue);
 
                 end;
@@ -1125,7 +1125,7 @@ begin
   //...if event is assigned then user should calculates results himself
   if Assigned(OnCalcResult) then
   begin
-    OnCalcResult(self,
+    OnCalcResult(Self,
       ColNo, RowNo,
       Str, {CellValue}
       ColsSum[ColNo], {IntermediateColResult}

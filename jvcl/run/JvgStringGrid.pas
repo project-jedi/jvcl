@@ -184,10 +184,10 @@ begin
 
   if csDesigning in ComponentState then
     exit;
-  Memo := TMemo.Create(self);
+  Memo := TMemo.Create(Self);
   Memo.Visible := false;
   Memo.BorderStyle := bsNone;
-  Memo.Parent := self;
+  Memo.Parent := Self;
   Memo.OnChange := OnMemoChange;
   Memo.OnExit := OnMemoExit;
   //  Memo.OnKeyDown := OnMemoKeyDown;
@@ -236,7 +236,7 @@ begin
 
   Interspace := 2;
   if Assigned(OnDrawCell) then
-    OnDrawCell(self, ACol, ARow, ARect, AState);
+    OnDrawCell(Self, ACol, ARow, ARect, AState);
   if ACol < ColsBold then
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
   if ARow < RowsBold then
@@ -317,7 +317,7 @@ begin
     Style.BevelBold := false;
     Style.FontStyle := Canvas.Font.Style;
     Style.Interspace := Interspace;
-    GetCellStyle(self, ACol, ARow, Style);
+    GetCellStyle(Self, ACol, ARow, Style);
     Canvas.Font.Style := Style.FontStyle;
     R := Style.R;
     if not Style.Default_Drawing then
@@ -329,7 +329,7 @@ begin
         Gradient := TJvgGradient.Create;
       Gradient.Active := true;
       ARect := R;
-      GetCellGradientParams(self, ACol, ARow, ARect, Gradient);
+      GetCellGradientParams(Self, ACol, ARow, ARect, Gradient);
       GradientBox(Canvas.Handle, ARect, Gradient, integer(psSolid), 1);
     end;
 
@@ -515,12 +515,12 @@ begin
     exit;
 
   if Assigned(OnMouseDown) then
-    OnMouseDown(self, Button, Shift, X, Y);
+    OnMouseDown(Self, Button, Shift, X, Y);
   if Memo.Focused then
     Cells[MemoCell.X, MemoCell.Y] := Memo.Text;
   GridCoord := MouseCoord(X, Y);
   if (GridCoord.X = 1) and Assigned(OnDrawCell) then
-    OnDrawCell(self, GridCoord.X, GridCoord.Y, CellRect(GridCoord.X,
+    OnDrawCell(Self, GridCoord.X, GridCoord.Y, CellRect(GridCoord.X,
       GridCoord.Y), [gdFocused]);
   //  ClearSelection;
   ShowEditorAtCell(GridCoord.X, GridCoord.Y);
@@ -686,14 +686,14 @@ procedure TJvgStringGrid.GetCellGradientParams(Sender: TObject; ACol,
   ARow: Integer; var CellRect: TRect; var Gradient: TJvgGradient);
 begin
   if Assigned(OnGetCellGradientParams) then
-    OnGetCellGradientParams(self, ACol, ARow, CellRect, Gradient);
+    OnGetCellGradientParams(Self, ACol, ARow, CellRect, Gradient);
 end;
 
 procedure TJvgStringGrid.GetCellStyle(Sender: TObject; var ACol, ARow: Integer;
   var Style: TglGridCellStyle);
 begin
   if Assigned(OnGetCellStyle) then
-    OnGetCellStyle(self, ACol, ARow, Style);
+    OnGetCellStyle(Self, ACol, ARow, Style);
 end;
 
 procedure TJvgStringGrid.UpdateCaptions(Sender: TObject);

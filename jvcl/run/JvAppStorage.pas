@@ -2130,10 +2130,9 @@ begin
   try
     Tmp.RootPath := RootPath;
     Tmp.AppStorage := AppStorage;
-  // (rom) Tmp is orphaned if no exception hits
-  except
+  // (rom) leak fixed by changing except to finally
+  finally
     FreeAndNil(Tmp);
-    raise;
   end;
 end;
 

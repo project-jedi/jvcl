@@ -448,7 +448,7 @@ begin
   if FTransparent and (not FNeedUpdateOnlyMainText) then
     if (not (fcoFastDraw in Options)) or FNeedRebuildBackground or (csDesigning
       in ComponentState) then
-      GetParentImageRect(self, Bounds(Left, Top, Width, Height),
+      GetParentImageRect(Self, Bounds(Left, Top, Width, Height),
         FImg.Canvas.Handle);
 
   if Alignment = taLeftJustify then
@@ -525,7 +525,7 @@ begin
   FOnlyTextStyleChanged := False;
   FNeedUpdateOnlyMainText := False;
   if Assigned(FAfterPaint) then
-    FAfterPaint(self);
+    FAfterPaint(Self);
 end;
 //______________________________________________________________
 
@@ -629,7 +629,7 @@ var
 begin
   if FChecked then
   begin
-    Result := self;
+    Result := Self;
     Exit;
   end;
   Result := nil;

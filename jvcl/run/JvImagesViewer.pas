@@ -302,7 +302,7 @@ procedure TJvImageItem.DoLoadProgress(Sender: TObject; Stage: TProgressStage;
   PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
 begin
   if Owner is TJvImagesViewer then
-    TJvImagesViewer(Owner).DoLoadProgress(self, Stage, PercentDone, RedrawNow, R, Msg);
+    TJvImagesViewer(Owner).DoLoadProgress(Self, Stage, PercentDone, RedrawNow, R, Msg);
 end;
 
 function TJvImageItem.GetPicture: TPicture;
@@ -626,13 +626,13 @@ function TJvImagesViewer.LoadErrorHandled(E: Exception; const Filename: string):
 begin
   Result := false;
   if Assigned(FOnLoadError) then
-    FOnLoadError(self, E, Filename, Result);
+    FOnLoadError(Self, E, Filename, Result);
 end;
 
 procedure TJvImagesViewer.DoLoadBegin;
 begin
   if Assigned(FOnLoadBegin) then
-    FOnLoadBegin(self);
+    FOnLoadBegin(Self);
 end;
 
 procedure TJvImagesViewer.DoLoadProgress(Item: TJvImageItem;
@@ -640,13 +640,13 @@ procedure TJvImagesViewer.DoLoadProgress(Item: TJvImageItem;
   const R: TRect; const Msg: string);
 begin
   if Assigned(FOnLoadProgress) then
-    FOnLoadProgress(self, Item, Stage, PercentDone, ReDrawNow, R, Msg);
+    FOnLoadProgress(Self, Item, Stage, PercentDone, ReDrawNow, R, Msg);
 end;
 
 procedure TJvImagesViewer.DoLoadEnd;
 begin
   if Assigned(FOnLoadEnd) then
-    FOnLoadEnd(self);
+    FOnLoadEnd(Self);
 end;
 
 function TJvImagesViewer.GetOptionsClass: TJvItemViewerOptionsClass;
