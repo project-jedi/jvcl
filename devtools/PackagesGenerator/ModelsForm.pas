@@ -103,15 +103,17 @@ begin
     Cells[3, 0] := 'pdir';
     Cells[4, 0] := 'env';
     Cells[5, 0] := 'ver';
-    Cells[6, 0] := 'IsClx';
+    Cells[6, 0] := 'PathSep';
+    Cells[7, 0] := 'IsClx';
 
-    ColWidths[0] := 35;
+    ColWidths[0] := 40;
     ColWidths[1] := 30;
     ColWidths[2] := 40;
     ColWidths[3] := 35;
     ColWidths[4] := 25;
     ColWidths[5] := 25;
-    ColWidths[6] := 30;
+    ColWidths[6] := 45;
+    ColWidths[7] := 30;
   end;
 
   with stgAliases do
@@ -128,8 +130,8 @@ begin
     Cells[0, 0] := 'original';
     Cells[1, 0] := 'replacement';
 
-    ColWidths[0] := 95;
-    ColWidths[1] := 95;
+    ColWidths[0] := 90;
+    ColWidths[1] := 90;
   end;
 
 end;
@@ -229,8 +231,10 @@ begin
       row[4] := target.properties.ItemNamed['env'].value;
     if Assigned(target.properties.ItemNamed['ver']) then
       row[5] := target.properties.ItemNamed['ver'].value;
+    if Assigned(target.properties.ItemNamed['PathSep']) then
+      row[6] := target.properties.ItemNamed['PathSep'].value;
     if Assigned(target.properties.ItemNamed['IsClx']) then
-      row[6] := target.properties.ItemNamed['IsClx'].value;
+      row[7] := target.properties.ItemNamed['IsClx'].value;
 
     stgTargets.InsertRow(stgTargets.RowCount);
   end;
@@ -320,7 +324,9 @@ begin
       if row[5] <> '' then
         target.properties.Add('ver', row[5]);
       if row[6] <> '' then
-        target.properties.Add('IsClx', row[6]);
+        target.properties.Add('PathSep', row[6]);
+      if row[7] <> '' then
+        target.properties.Add('IsClx', row[7]);
     end;
 
     // aliases
