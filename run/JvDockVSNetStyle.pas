@@ -198,8 +198,13 @@ type
     function FindDockControl(Control: TWinControl; var BlockIndex: Integer;
       var PaneIndex: Integer): Boolean;
     function FindPane(Control: TWinControl): TJvDockVSPane;
+    { Slides the window into view }
     procedure PopupDockForm(Pane: TJvDockVSPane); overload;
     procedure PopupDockForm(Control: TWinControl); overload;
+    { Disables auto-hide }
+    procedure ShowPopupPanel(Pane: TJvDockVSPane); overload;
+    procedure ShowPopupPanel(Control: TWinControl); overload;
+    { Hides the window by sliding it to the edge of the form }
     procedure HidePopupPanel(Pane: TJvDockVSPane); overload;
     procedure HidePopupPanel(Control: TWinControl); overload;
     procedure HidePopupPanelWithAnimate;
@@ -464,6 +469,9 @@ type
   end;
 
 procedure HideAllPopupPanel(ExcludeChannel: TJvDockVSChannel);
+{ Disables auto-hide for ADockWindow. If ADockWindow is not auto-hidden then
+  the procedures works the same as JvDockControlForm.ShowDockForm }
+procedure UnAutoHideDockForm(ADockWindow: TWinControl);
 
 var
   DefaultVSChannelClass: TJvDockVSChannelClass = nil;
@@ -491,8 +499,10 @@ type
     procedure OnCustomTimer(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
-    procedure PopupForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer); virtual;
-    procedure HideForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer); virtual;
+    { Animates the popup of the form }
+    procedure PopupForm(AVSChannel: TJvDockVSChannel; MaxWidth: Integer); virtual;
+    { Animates the hiding of the form }
+    procedure HideForm(AVSChannel: TJvDockVSChannel; MaxWidth: Integer); virtual;
   end;
 
   { (ahuser) not used:
@@ -591,6 +601,121 @@ begin
             Channel.HidePopupPanel(Channel.FActivePane);
         end;
   end;
+end;
+
+procedure UnAutoHideDockForm(ADockWindow: TWinControl);
+var
+  TmpDockWindow: TWinControl;
+
+  procedure ShowClient(Client, DockParent: TWinControl);
+  var
+    ADockClient: TJvDockClient;
+    I: Integer;
+  begin
+    if (DockParent is TJvDockableForm) and (Client <> nil) then
+    begin
+      with TJvDockableForm(DockParent).DockableControl do
+        for I := 0 to DockClientCount - 1 do
+          if DockClients[I] <> Client then
+            MakeDockClientEvent(DockClients[I], True);
+      if Client.HostDockSite is TJvDockCustomControl then
+        TJvDockCustomControl(Client.HostDockSite).UpdateCaption(nil);
+    end
+    else
+    begin
+      ADockClient := FindDockClient(DockParent);
+      if (ADockClient <> nil) and (ADockClient.DockStyle <> nil) then
+      begin
+        ADockClient.DockStyle.ShowDockForm(ADockClient);
+        if DockParent.CanFocus then
+          DockParent.SetFocus;
+      end;
+    end;
+    if DockParent.Parent = nil then
+      SetForegroundWindow(DockParent.Handle);
+  end;
+
+  function ShowDockPanel(Client: TWinControl): TWinControl;
+  begin
+    Result := Client;
+    if Client <> nil then
+      if Client.HostDockSite is TJvDockPanel then
+      begin
+        TJvDockPanel(Client.HostDockSite).ShowDockPanel(True, Client, sdfDockPanel);
+        Result := nil;
+      end;
+  end;
+
+  function ShowTabDockHost(Client: TWinControl): TWinControl;
+  var
+    I: Integer;
+  begin
+    Result := Client;
+    if Client <> nil then
+    begin
+      ShowClient(nil, Client);
+      if Client.HostDockSite is TJvDockTabPageControl then
+      begin
+        with TJvDockTabPageControl(Client.HostDockSite) do
+          for I := 0 to Count - 1 do
+            if Pages[I].Controls[0] = Client then
+            begin
+              Pages[I].Show;
+              Break;
+            end;
+        if (Client.HostDockSite <> nil) and not (Client.HostDockSite is TJvDockPanel) then
+        begin
+          Result := Client.HostDockSite.Parent;
+          ShowClient(Client, Result);
+          if (Result <> nil) and (Result.HostDockSite is TJvDockTabPageControl) then
+            Result := ShowTabDockHost(Result);
+        end;
+      end;
+    end;
+  end;
+
+  function ShowConjoinDockHost(Client: TWinControl): TWinControl;
+  begin
+    Result := Client;
+    if Client <> nil then
+    begin
+      ShowClient(nil, Client);
+      if (Client.HostDockSite <> nil) and not (Client.HostDockSite is TJvDockPanel) then
+      begin
+        if Client.HostDockSite.Parent <> nil then
+        begin
+          Result := Client.HostDockSite.Parent;
+          ShowClient(Client, Result);
+          if (Result <> nil) and (Result.HostDockSite is TJvDockConjoinPanel) then
+            Result := ShowConjoinDockHost(Result);
+        end;
+      end;
+    end;
+  end;
+
+  procedure ShowPopupPanel(Client: TWinControl);
+  begin
+    if Client.HostDockSite is TJvDockVSPopupPanel then
+      TJvDockVSPopupPanel(Client.HostDockSite).VSChannel.ShowPopupPanel(Client)
+    else
+    if (Client.HostDockSite <> nil) and (Client.HostDockSite.Parent <> nil) then
+    begin
+      if (Client.HostDockSite.Parent.HostDockSite is TJvDockVSPopupPanel) then
+        TJvDockVSPopupPanel(Client.HostDockSite.Parent.HostDockSite).VSChannel.ShowPopupPanel(Client)
+      else
+      if Client.HostDockSite.Parent.HostDockSite is TJvDockPanel then
+        Client.HostDockSite.Parent.HostDockSite.Invalidate;
+    end;
+  end;
+
+begin
+  TmpDockWindow := ADockWindow;
+  repeat
+    ADockWindow := ShowTabDockHost(ADockWindow);
+    ADockWindow := ShowConjoinDockHost(ADockWindow);
+    ADockWindow := ShowDockPanel(ADockWindow);
+  until (ADockWindow = nil) or (ADockWindow.Parent = nil);
+  ShowPopupPanel(TmpDockWindow);
 end;
 
 //=== { TJvDockAppEvents } ===================================================
@@ -1473,6 +1598,141 @@ begin
   VSPopupPanelSplitter.BringToFront;
 end;
 
+procedure TJvDockVSChannel.ShowPopupPanel(Control: TWinControl);
+var
+  BlockIndex, PaneIndex: Integer;
+begin
+  FindDockControl(Control, BlockIndex, PaneIndex);
+  if (BlockIndex >= 0) and (PaneIndex >= 0) then
+    ShowPopupPanel(Blocks[BlockIndex].VSPanes[PaneIndex]);
+end;
+
+procedure TJvDockVSChannel.ShowPopupPanel(Pane: TJvDockVSPane);
+
+  procedure SetControlBringToFront(Control: TWinControl; Align: TAlign);
+  var
+    I: Integer;
+  begin
+    for I := Control.ControlCount - 1 downto 0 do
+      if Control.Controls[I].Visible and (Control.Controls[I].Align = Align) and
+        not (Control.Controls[I] is TJvDockVSChannel) and
+        not (Control.Controls[I] is TJvDockPanel) and
+        not (Control.Controls[I] is TJvDockSplitter) then
+        Control.Controls[I].BringToFront;
+  end;
+
+  procedure SetSingleDockFormVisible(HostDockSite: TWinControl; AForm: TForm);
+  var
+    I: Integer;
+  begin
+    for I := 0 to HostDockSite.DockClientCount - 1 do
+      HostDockSite.DockClients[I].Visible := AForm = HostDockSite.DockClients[I];
+  end;
+var
+  LShowControl: TWinControl;
+begin
+  if (Pane <> nil) and (ActiveDockForm <> Pane.FDockForm) then
+  begin
+    JvDockLockWindow(nil);
+    Parent.DisableAlign;
+    try
+      { Auto-hide all popups of this pane }
+      HidePopupPanel(FActivePane);
+      Pane.FDockForm.Visible := True;
+      if (Pane.FDockForm <> nil) and (Pane.FDockForm.HostDockSite.Parent is TJvDockTabHostForm) then
+      begin
+        FVSPopupPanel.JvDockManager.ShowSingleControl(Pane.FDockForm.HostDockSite.Parent);
+        SetSingleDockFormVisible(Pane.FDockForm.HostDockSite, Pane.FDockForm);
+        TJvDockTabHostForm(Pane.FDockForm.HostDockSite.Parent).Caption := Pane.FDockForm.Caption;
+      end
+      else
+        FVSPopupPanel.JvDockManager.ShowSingleControl(Pane.FDockForm);
+
+      FActiveDockForm := Pane.FDockForm;
+      FActivePane := Pane;
+      FVSPopupPanel.JvDockManager.ResetBounds(True);
+
+      Pane.FBlock.FActiveDockControl := Pane.FDockForm;
+      //Invalidate;
+      VSPopupPanel.BringToFront;
+      VSPopupPanelSplitter.BringToFront;
+      SetControlBringToFront(Parent, Align);
+      BringToFront;
+      case Align of
+        alLeft:
+          begin
+            VSPopupPanel.Width := Pane.FWidth;
+            VSPopupPanel.Top := Top;
+            VSPopupPanel.Height := Height;
+            VSPopupPanelSplitter.Top := Top;
+            VSPopupPanelSplitter.Height := Height;
+            VSPopupPanelSplitter.Width := VSPopupPanelSplitter.SplitWidth;
+            VSPopupPanel.Left := Left + Width + Pane.FWidth - VSPopupPanel.Width;
+            VSPopupPanelSplitter.Left := VSPopupPanel.Left + VSPopupPanel.Width;
+          end;
+        alRight:
+          begin
+            VSPopupPanel.Width := Pane.FWidth;
+            VSPopupPanel.Top := Top;
+            VSPopupPanel.Height := Height;
+            VSPopupPanelSplitter.Top := Top;
+            VSPopupPanelSplitter.Height := Height;
+            VSPopupPanelSplitter.Width := VSPopupPanelSplitter.SplitWidth;
+            VSPopupPanel.Left := Left - Pane.FWidth;
+            VSPopupPanelSplitter.Left := VSPopupPanel.Left - VSPopupPanelSplitter.SplitWidth;
+          end;
+        alTop:
+          begin
+            VSPopupPanel.Left := Left;
+            VSPopupPanel.Height := Pane.FWidth;
+            VSPopupPanel.Width := Width;
+            VSPopupPanelSplitter.Left := Left;
+            VSPopupPanelSplitter.Width := Width;
+            VSPopupPanelSplitter.Height := VSPopupPanelSplitter.SplitWidth;
+            VSPopupPanel.Top := Top + Height + Pane.FWidth - VSPopupPanel.Height;
+            VSPopupPanelSplitter.Top := VSPopupPanel.Top + VSPopupPanel.Height;
+          end;
+        alBottom:
+          begin
+            VSPopupPanel.Left := Left;
+            VSPopupPanel.Width := Width;
+            VSPopupPanel.Height := Pane.FWidth;
+            VSPopupPanelSplitter.Left := Left;
+            VSPopupPanelSplitter.Width := Width;
+            VSPopupPanelSplitter.Height := VSPopupPanelSplitter.SplitWidth;
+            VSPopupPanel.Top := Top - Pane.FWidth;
+            VSPopupPanelSplitter.Top := VSPopupPanel.Top - VSPopupPanelSplitter.SplitWidth;
+          end;
+      end;
+      VSPopupPanel.Visible := True;
+      VSPopupPanelSplitter.Visible := True;
+
+      { If the form is on a tab, then show the parent of the pagecontrol
+        (a TJvDockTabHostForm), otherwise show the form.
+      }
+      LShowControl := nil;
+      case Pane.FBlock.BlockType of
+        btTabBlock:
+          if Pane.FDockForm.Parent is TJvDockTabSheet then
+          begin
+            LShowControl := TJvDockTabSheet(Pane.FDockForm.Parent).PageControl;
+            if Assigned(LShowControl) then
+              LShowControl := LShowControl.Parent;
+          end;
+        btConjoinBlock: LShowControl := Pane.FDockForm;
+      end;
+      if Assigned(LShowControl) then
+        FVSPopupPanel.DoShowControl(LShowControl);
+    finally
+      Parent.EnableAlign;
+      JvDockUnLockWindow;
+    end;
+    if ActiveDockForm <> nil then
+      if ActiveDockForm.CanFocus then
+        ActiveDockForm.SetFocus;
+  end;
+end;
+
 //=== { TJvDockVSNETChannelOption } ==========================================
 
 constructor TJvDockVSNETChannelOption.Create(ADockStyle: TJvDockBasicStyle);
@@ -1840,7 +2100,6 @@ begin
           HideAllPopupPanel(Channel);
       end;
   end;
-
 end;
 
 function TJvDockVSNetStyle.DockServerWindowProc(DockServer: TJvDockServer;
@@ -2048,7 +2307,6 @@ begin
         Pane := VSChannel.FindPane(ADockClient.ParentForm)
       else
         Pane := nil;
-      Pane := VSChannel.FindPane(ADockClient.ParentForm);
       if Pane <> nil then
       begin
         Pane.FVisible := AVisible;
@@ -3091,11 +3349,11 @@ begin
   FState := asPopup;
 end;
 
-procedure TPopupPanelAnimate.HideForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer);
+procedure TPopupPanelAnimate.HideForm(AVSChannel: TJvDockVSChannel; MaxWidth: Integer);
 begin
   if FVSChannel <> nil then
     Exit;
-  FVSChannel := VSChannel;
+  FVSChannel := AVSChannel;
   Enabled := (FVSChannel <> nil) and (FVSChannel.ActiveDockForm <> nil);
   if FVSChannel <> nil then
   begin
@@ -3110,11 +3368,13 @@ begin
   // ??? no handler?
 end;
 
-procedure TPopupPanelAnimate.PopupForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer);
+procedure TPopupPanelAnimate.PopupForm(AVSChannel: TJvDockVSChannel; MaxWidth: Integer);
 begin
+  { Currently busy with animating? }
   if (FCurrentWidth > 0) and (FVSChannel <> nil) then
+    { Dangerous, not in try..finally }
     FVSChannel.Parent.EnableAlign;
-  FVSChannel := VSChannel;
+  FVSChannel := AVSChannel;
   Enabled := FVSChannel <> nil;
   if FVSChannel <> nil then
   begin
@@ -3149,6 +3409,7 @@ begin
     begin
       if FCurrentWidth = 0 then
       begin
+        { Dangerous, not in try..finally }
         Parent.DisableAlign;
         VSPopupPanel.BringToFront;
         VSPopupPanelSplitter.BringToFront;
@@ -3245,6 +3506,7 @@ begin
     end;
     if FCurrentWidth >= FMaxWidth then
     begin
+      { Dangerous, not in try..finally }
       FVSChannel.Parent.EnableAlign;
       Enabled := False;
       if FState = asHide then
