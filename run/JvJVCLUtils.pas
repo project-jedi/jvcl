@@ -2084,14 +2084,11 @@ begin
       Height := Bitmap.Height;
       Width := Bitmap.Width;
       R := Bounds(0, 0, Width, Height);
-      Canvas.Brush.Color := NewColor;
-      Canvas.FillRect(R);
-      {$IFDEF VCL}
-      Canvas.BrushCopy(R, Bitmap, R, Color);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      DrawBitmapTransparent(Canvas, 0, 0, Bitmap, Color);
-      {$ENDIF VisualCLX}
+      with Canvas do
+      begin
+        Brush.Color := NewColor;
+        FillRect(R);
+        BrushCopy({$IFDEF VisualCLX}Canvas,{$ENDIF} R, Bitmap, R, Color);
     end;
   except
     Result.Free;
