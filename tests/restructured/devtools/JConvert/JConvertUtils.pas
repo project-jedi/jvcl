@@ -174,7 +174,7 @@ begin
     }
   // always tell them who we are:
   try
-    WriteCopyRight('JEDI Form Conversion Utility Version 1.0');
+    writeln('JEDI Form Conversion Utility Version 1.0');
 
     if (ParamCount < 1) or GetCmdSwitchValue('?', ['-', '/'], Path, true) or
       GetCmdSwitchValue('h', ['-', '/'], Path, true) then

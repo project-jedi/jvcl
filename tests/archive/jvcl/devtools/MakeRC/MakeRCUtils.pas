@@ -58,7 +58,7 @@ var
   FileMask, Filename: string;
 begin
   try
-    WriteCopyRight('MakeRC: creates an RC file from the bitmap files in a specific folder');
+    writeln('MakeRC: creates an RC file from the bitmap files in a specific folder');
     if GetCmdSwitchValue('h', ['-', '/'], FileMask, true) or
       GetCmdSwitchValue('?', ['-', '/'], FileMask, true) then
     begin

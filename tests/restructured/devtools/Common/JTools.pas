@@ -8,6 +8,7 @@ uses
 function ParseCmdLine(ACmdLine: PChar; List: TStrings; QuoteChar: char = '"'): boolean;
 function GetCmdSwitchValue(const Switch: string; SwitchChars: TSysCharSet; var
   Value: string; IgnoreCase: boolean): boolean;
+procedure ShowError(const S:string;const Args:array of const);
 
 implementation
 
@@ -95,6 +96,11 @@ begin
       end;
     end;
   end;
+end;
+
+procedure ShowError(const S:string;const Args:array of const);
+begin
+  writeln(ErrOutput,Format(S,Args));
 end;
 
 end.
