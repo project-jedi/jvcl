@@ -2126,14 +2126,21 @@ begin
 end;
 
 function TJvMemInfo.GetSwapFileSize: Int64;
+var
+  MemInfo: TMemoryStatus;
 begin
-  with GetMemoryStatus do
-    Result := Trunc(dwTotalPageFile - dwAvailPageFile);
+  // (rom) avoid possible inconsistencies when calling GetMemoryStatus twice
+  MemInfo := GetMemoryStatus;
+  Result := MemInfo.dwTotalPageFile - MemInfo.dwAvailPageFile;
 end;
 
 function TJvMemInfo.GetSwapFileUsage: Integer;
+var
+  MemInfo: TMemoryStatus;
 begin
-  with GetMemoryStatus do
+  // (rom) avoid possible inconsistencies when calling GetMemoryStatus several times
+  MemInfo := GetMemoryStatus;
+  with MemInfo do
     if dwTotalPageFile > 0 then
       Result := 100 - Trunc(dwAvailPageFile / dwTotalPageFile * 100)
     else
