@@ -181,6 +181,7 @@ type
   private
     FFont: TFont;
     FDisabledFont: TFont;
+    FSelectedFont: TFont;
     FColor: TColor;
     FTabColor: TColor;
     FControlDivideColor: TColor;
@@ -200,8 +201,9 @@ type
     procedure SetCloseCrossColor(const Value: TColor);
     procedure SetCloseCrossColorDisabled(const Value: TColor);
     procedure SetCloseRectColor(const Value: TColor);
-    procedure SetDisabledFont(const Value: TFont);
     procedure SetFont(const Value: TFont);
+    procedure SetDisabledFont(const Value: TFont);
+    procedure SetSelectedFont(const Value: TFont);
 
     procedure SetModifiedCrossColor(const Value: TColor);
     procedure SetBorderColor(const Value: TColor);
@@ -240,6 +242,7 @@ type
 
     property Font: TFont read FFont write SetFont;
     property DisabledFont: TFont read FDisabledFont write SetDisabledFont;
+    property SelectedFont: TFont read FSelectedFont write SetSelectedFont;
   end;
 
   TJvTabBarItemEvent = procedure(Sender: TObject; Item: TJvTabBarItem) of object;
@@ -1508,12 +1511,15 @@ begin
   inherited Create(AOwner);
   FFont := TFont.Create;
   FDisabledFont := TFont.Create;
+  FSelectedFont := TFont.Create;
 
   FFont.Color := clWindowText;
   FDisabledFont.Color := clGrayText;
+  FSelectedFont.Assign(FFont);
 
   FFont.OnChange := FontChanged;
   FDisabledFont.OnChange := FontChanged;
+  FSelectedFont.OnChange := FontChanged;
 
   FTabColor := clBtnFace;
   FColor := clWindow;
@@ -1535,6 +1541,7 @@ destructor TJvModernTabBarPainter.Destroy;
 begin
   FFont.Free;
   FDisabledFont.Free;
+  FSelectedFont.Free;
   inherited Destroy;
 end;
 
@@ -1694,7 +1701,12 @@ begin
     end;
 
     if Tab.Enabled then
-      Font.Assign(Self.Font)
+    begin
+      if Tab.Selected then
+        Font.Assign(Self.SelectedFont)
+      else
+        Font.Assign(Self.Font);
+    end
     else
       Font.Assign(Self.DisabledFont);
 
@@ -1858,16 +1870,22 @@ begin
   end;
 end;
 
+procedure TJvModernTabBarPainter.SetFont(const Value: TFont);
+begin
+  if Value <> FFont then
+    FFont.Assign(Value);
+end;
+
 procedure TJvModernTabBarPainter.SetDisabledFont(const Value: TFont);
 begin
   if Value <> FDisabledFont then
     FDisabledFont.Assign(Value);
 end;
 
-procedure TJvModernTabBarPainter.SetFont(const Value: TFont);
+procedure TJvModernTabBarPainter.SetSelectedFont(const Value: TFont);
 begin
-  if Value <> FFont then
-    FFont.Assign(Value);
+  if Value <> FSelectedFont then
+    FSelectedFont.Assign(Value);
 end;
 
 {$IFDEF UNITVERSIONING}
