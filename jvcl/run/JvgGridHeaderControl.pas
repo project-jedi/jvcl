@@ -31,16 +31,20 @@ unit JvgGridHeaderControl;
 interface
 
 uses
-  Windows, Classes, ComCtrls, Grids, SysUtils, Forms,
   {$IFNDEF DelphiPersonalEdition}
   DBGrids,
   {$ENDIF DelphiPersonalEdition}  // Defines added by JGB
-  JVCLVer;
+  {$IFDEF USEJVCL}
+  JVCLVer,
+  {$ENDIF USEJVCL}
+  Windows, Classes, ComCtrls, Grids, SysUtils, Forms;
 
 type
   TJvgGridHeaderControl = class(THeaderControl)
   private
+    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FGrid: TCustomGrid;
     FJoinColumns: TStringList;
     //    aColWidths: array[0..255] of word;
@@ -59,7 +63,9 @@ type
     destructor Destroy; override;
     procedure ResizeColumns;
   published
+    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF USEJVCL}
     property Grid: TCustomGrid read FGrid write FGrid;
     property JoinColumns: TStrings read GetJoinColumns write SetJoinColumns;
     property EqualSize: Boolean read FEqualSize write SetEqualSize default True;

@@ -32,12 +32,19 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  JvgTypes, JvgUtils, JvComponent;
-  
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgUtils;
+
 type
   TJvgButtonState = (bsActive, bsPassive, bsPushed);
 
+  {$IFDEF USEJVCL}
   TJvgGraphicButton = class(TJvGraphicControl)
+  {$ELSE}
+  TJvgGraphicButton = class(TGraphicControl)
+  {$ENDIF USEJVCL}
   private
     FAutoSize: Boolean;
     FGlyphActive: TPicture;
@@ -53,8 +60,10 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     //    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+   {$ENDIF USEJVCL}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -78,14 +87,18 @@ type
     property GlyphActive: TPicture read FGlyphActive write SetGlyphActive;
     property GlyphPassive: TPicture read FGlyphPassive write SetGlyphPassive;
     property GlyphPushed: TPicture read FGlyphPushed write SetGlyphPushed;
+    {$IFDEF USEJVCL}
     property OnMouseEnter;
     property OnMouseLeave;
+    {$ENDIF USEJVCL}
   end;
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
   JvThemes;
+{$ENDIF USEJVCL}
 
 constructor TJvgGraphicButton.Create(AOwner: TComponent);
 begin
@@ -93,7 +106,9 @@ begin
   //  ControlStyle := ControlStyle + [{csReplicatable,}csOpaque];
   Width := 105;
   Height := 105;
+  {$IFDEF USEJVCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF USEJVCL}
 
   FGlyphActive := TPicture.Create;
   FGlyphPassive := TPicture.Create;
@@ -144,7 +159,6 @@ begin
       Brush.Style := bsClear;
       Rectangle(0, 0, Width, Height);
     end;
-
 end;
 
 procedure TJvgGraphicButton.SetGlyphActive(Value: TPicture);
@@ -165,6 +179,8 @@ begin
   Invalidate;
 end;
 
+{$IFDEF USEJVCL}
+
 procedure TJvgGraphicButton.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
@@ -182,6 +198,8 @@ begin
   FState := bsPassive;
   Repaint;
 end;
+
+{$ENDIF USEJVCL}
 
 procedure TJvgGraphicButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
