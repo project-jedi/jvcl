@@ -44,7 +44,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  Libc,
+  Libc, DateUtils,
   {$ENDIF LINUX}
   Types, StrUtils, SysUtils, Classes, Math, Contnrs, SyncObjs, QDialogs,
   QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QButtons;
