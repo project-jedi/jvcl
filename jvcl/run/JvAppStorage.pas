@@ -406,7 +406,7 @@ type
     procedure WriteBoolean(const Path: string; Value: Boolean);
     { Retrieves a TPersistent-Object with all of its published properties }
     procedure ReadPersistent(const Path: string; const PersObj: TPersistent;
-      const Recursive: Boolean = True; const ClearFirst: Boolean = True);
+      const Recursive: Boolean = True; const ClearFirst: Boolean = True; const IgnoreProperties: TStrings = nil);
     { Stores a TPersistent-Object with all of its published properties}
     procedure WritePersistent(const Path: string; const PersObj: TPersistent;
       const Recursive: Boolean = True; const IgnoreProperties: TStrings = nil);
@@ -1509,7 +1509,7 @@ var
   TgtPath: string;
 begin
   SL.BeginUpdate;
-  try
+  try                                
     ResolvePath(Path + '\*', TgtStore, TgtPath);
     Delete(TgtPath, Length(TgtPath) - 1, 2);
     if ClearFirst then
@@ -1762,7 +1762,7 @@ begin
 end;
 
 procedure TJvCustomAppStorage.ReadPersistent(const Path: string; const PersObj: TPersistent;
-  const Recursive, ClearFirst: Boolean);
+  const Recursive, ClearFirst: Boolean; const IgnoreProperties: TStrings);
 var
   Index: Integer;
   PropName: string;
@@ -1778,45 +1778,46 @@ begin
     PropName := GetPropName(PersObj, Index);
     KeyName := TranslatePropertyName(PersObj, PropName, True);
     PropPath := ConcatPaths([Path, KeyName]);
-    case PropType(PersObj, PropName) of
-      tkLString, tkWString, tkString:
-        SetStrProp(PersObj, PropName, ReadString(PropPath, GetStrProp(PersObj, PropName)));
-      tkEnumeration:
-        begin
-          TmpValue := GetOrdProp(PersObj, PropName);
-          ReadEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
-          SetOrdProp(PersObj, PropName, TmpValue);
-        end;
-      tkSet:
-        begin
-          TmpValue := GetOrdProp(PersObj, PropName);
-          ReadSet(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
-          SetOrdProp(PersObj, PropName, TmpValue);
-        end;
-      tkChar, tkInteger:
-        begin
-          TmpValue := GetOrdProp(PersObj, PropName);
-          ReadEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
-          SetOrdProp(PersObj, PropName, TmpValue);
-        end;
-      tkInt64:
-        SetInt64Prop(PersObj, PropName, StrToInt64(ReadString(PropPath,
-          IntToStr(GetInt64Prop(PersObj, PropName)))));
-      tkFloat:
-        SetFloatProp(PersObj, PropName, ReadFloat(PropPath, GetFloatProp(PersObj, PropName)));
-      tkClass:
-        begin
-          SubObj := GetObjectProp(PersObj, PropName);
-          if SubObj is TStrings then
-            ReadStringList(PropPath, TStrings(SubObj), ClearFirst)
-          else
-          if (SubObj is TPersistent) and Recursive then
-            if SubObj is TJvCustomPropertyStore then
-              TJvCustomPropertyStore(SubObj).LoadProperties
+    if (IgnoreProperties = nil) or (IgnoreProperties.IndexOf(PropName) = -1) then
+      case PropType(PersObj, PropName) of
+        tkLString, tkWString, tkString:
+          SetStrProp(PersObj, PropName, ReadString(PropPath, GetStrProp(PersObj, PropName)));
+        tkEnumeration:
+          begin
+            TmpValue := GetOrdProp(PersObj, PropName);
+            ReadEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
+            SetOrdProp(PersObj, PropName, TmpValue);
+          end;
+        tkSet:
+          begin
+            TmpValue := GetOrdProp(PersObj, PropName);
+            ReadSet(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
+            SetOrdProp(PersObj, PropName, TmpValue);
+          end;
+        tkChar, tkInteger:
+          begin
+            TmpValue := GetOrdProp(PersObj, PropName);
+            ReadEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
+            SetOrdProp(PersObj, PropName, TmpValue);
+          end;
+        tkInt64:
+          SetInt64Prop(PersObj, PropName, StrToInt64(ReadString(PropPath,
+            IntToStr(GetInt64Prop(PersObj, PropName)))));
+        tkFloat:
+          SetFloatProp(PersObj, PropName, ReadFloat(PropPath, GetFloatProp(PersObj, PropName)));
+        tkClass:
+          begin
+            SubObj := GetObjectProp(PersObj, PropName);
+            if SubObj is TStrings then
+              ReadStringList(PropPath, TStrings(SubObj), ClearFirst)
             else
-              ReadPersistent(PropPath, TPersistent(SubObj), True, ClearFirst);
-        end;
-    end;
+            if (SubObj is TPersistent) and Recursive then
+              if SubObj is TJvCustomPropertyStore then
+                TJvCustomPropertyStore(SubObj).LoadProperties
+              else
+                ReadPersistent(PropPath, TPersistent(SubObj), True, ClearFirst);
+          end;
+      end;
   end;
 end;
 
