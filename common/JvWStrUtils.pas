@@ -20,7 +20,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $ld$
+// $Id$
 
 {$I jvcl.inc}
 
