@@ -215,6 +215,7 @@ type
   HDC = QPainterH;
   HFONT = QFontH;
   UINT = Cardinal;
+  DWORD = Cardinal;
   BOOL = LongBool;
   COLORREF = TColorRef;
   TWinControlActionLink = TWidgetControlActionLink;
@@ -1335,6 +1336,8 @@ function ShellExecute(Handle: QWidgetH; const Operation, FileName, Parameters,
 function ShellExecute(Handle: Integer; Operation, FileName, Parameters,
   Directory: PChar; ShowCmd: Integer): THandle; overload;
 
+function GetTickCount: Cardinal;
+
 {$IFDEF LINUX}
 
 resourcestring
@@ -1371,7 +1374,6 @@ type
     wMilliseconds: Word;
   end;
 
-function GetTickCount: Cardinal;
 procedure GetLocalTime(var st: TSystemTime);
 
 procedure MessageBeep(Value: Integer);   // value ignored
@@ -7733,6 +7735,14 @@ begin
     Result := THandle(HINSTANCE_ERROR)
   {$ENDIF LINUX}
 end;
+
+{$IFDEF MSWINDOWS}
+function GetTickCount: Cardinal;
+begin
+  Result := Windows.GetTickCount;
+end;
+{$ENDIF MSWINDOWS}
+
 
 constructor TQtObject.Create(const AName: string = '');
 var
