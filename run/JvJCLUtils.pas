@@ -39,7 +39,7 @@ unit JvJCLUtils;
       TrimRightW
     - add unicode function for: GetWordOnPos, HasChar, CharInSet,
       Spaces, AddSpaces, GetXYByPos, MakeStr, FindNotBlankCharPos,
-      GetWordOnPosEx, SubStr, ReplaceString, Cmp
+      GetWordOnPosEx, SubStr, ReplaceString
 
   2003-09-25: (ahuser)
     - Added Linux version of the Windows related functions. (testing needed)
@@ -59,25 +59,24 @@ interface
 {$DEFINE INCLUDE_RAUTILSW}
 
 uses
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows, ShlObj, ActiveX,
-{$ENDIF}
-{$IFDEF LINUX}
+  {$ENDIF}
+  {$IFDEF LINUX}
   Libc, Xlib,
-{$ENDIF}
+  {$ENDIF}
   SysUtils, Classes,
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   Graphics, Clipbrd,
-{$ENDIF}
-{$IFDEF COMPLIB_CLX}
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
   Qt, QGraphics, QClipbrd,
-{$ENDIF}
+  {$ENDIF}
   JvTypes,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF}
-  TypInfo,
-  JclUnicode;
+  TypInfo;
 
 {$IFNDEF COMPILER_6UP}
 const
@@ -92,35 +91,6 @@ type
   TFileTime = Integer;
 {$ENDIF}
 
-type
-  { TAnsiToWideStrings is a TStrings derived class that gets and sets its data
-    from/to a TWideStrings list. }
-  TAnsiToWideStrings = class(TStrings)
-  private
-    FWideStrings: TWideStrings;
-    FDestroying: Boolean;
-  protected
-    function Get(Index: Integer): string; override;
-    function GetCapacity: Integer; override;
-    function GetCount: Integer; override;
-    function GetObject(Index: Integer): TObject; override;
-    procedure Put(Index: Integer; const S: string); override;
-    procedure PutObject(Index: Integer; AObject: TObject); override;
-    procedure SetCapacity(NewCapacity: Integer); override;
-  public
-    constructor Create(AWideStrings: TWideStrings);
-    destructor Destroy; override;
-
-    procedure Clear; override;
-    procedure Delete(Index: Integer); override;
-    procedure Exchange(Index1, Index2: Integer); override;
-    function IndexOf(const S: string): Integer; override;
-    procedure Insert(Index: Integer; const S: string); override;
-    procedure Move(CurIndex, NewIndex: Integer); override;
-
-    property WideStrings: TWideStrings read FWideStrings;
-  end;
-
 { GetWordOnPos returns Word from string, S, on the cursor position, P}
 function GetWordOnPos(const S: string; const P: Integer): string;
 function GetWordOnPosW(const S: WideString; const P: Integer): WideString;
@@ -130,7 +100,7 @@ function GetWordOnPosEx(const S: string; const P: Integer; var iBeg, iEnd: Integ
 function GetWordOnPosExW(const S: WideString; const P: Integer; var iBeg, iEnd: Integer): WideString;
 { SubStr returns substring from string, S, separated with Separator string}
 function SubStr(const S: string; const Index: Integer; const Separator: string): string;
-function SubStrW(const S: WideString; const Index: Integer; const Separator: WideString): WideString; 
+function SubStrW(const S: WideString; const Index: Integer; const Separator: WideString): WideString;
 { SubStrEnd same to previous function but Index numerated from the end of string }
 function SubStrEnd(const S: string; const Index: Integer; const Separator: string): string;
 { SubWord returns next Word from string, P, and offsets Pointer to the end of Word, P2 }
@@ -186,7 +156,6 @@ function CurrencyToStr(const Cur: currency): string;
 { Cmp compares two strings and returns True if they
   are equal. Case-insensitive.}
 function Cmp(const S1, S2: string): Boolean;
-function CmpW(const S1, S2: WideString): Boolean;
 { StringCat add S2 string to S1 and returns this string }
 function StringCat(var S1: string; S2: string): string;
 { HasChar returns True, if Char, Ch, contains in string, S }
@@ -199,7 +168,14 @@ function CountOfChar(const Ch: Char; const S: string): Integer;
 function DefStr(const S: string; Default: string): string;
 
 { StrLICompW2 is a faster replacement for JclUnicode.StrLICompW }
-function StrLICompW2(P1, P2: PWideChar; MaxLen: Integer): Integer;
+function StrLICompW2(S1, S2: PWideChar; MaxLen: Integer): Integer;
+function StrPosW(S, SubStr: PWideChar): PWideChar;
+function StrLenW(S: PWideChar): Integer;
+{$IFNDEF COMPILER6_UP}
+function WideCompareText(const S1, S2: WideString): Integer;
+function WideUpperCase(const S: WideString): WideString;
+function WideLowerCase(const S: WideString): WideString;
+{$ENDIF}
 function TrimW(const S: WideString): WideString;
 function TrimLeftW(const S: WideString): WideString;
 function TrimRightW(const S: WideString): WideString;
@@ -414,9 +390,7 @@ function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant;
 { begin JvIconClipboardUtils }
 
 { Icon clipboard routines }
-var
-  CF_ICON: Word;
-
+function CF_ICON: Word;
 procedure CopyIconToClipboard(Icon: TIcon; BackColor: TColor);
 procedure AssignClipboardIcon(Icon: TIcon);
 function CreateIconFromClipboard: TIcon;
@@ -1885,11 +1859,6 @@ begin
   Result := AnsiStrIComp(PChar(S1), PChar(S2)) = 0;
 end;
 
-function CmpW(const S1, S2: WideString): Boolean;
-begin
-  Result := StrICompW(PWideChar(S1), PWideChar(S2)) = 0;
-end;
-
 function StringCat(var S1: string; S2: string): string;
 begin
   S1 := S1 + S2;
@@ -2163,7 +2132,6 @@ begin
 end;
 {$ENDIF}
 
-
 function DefStr(const S: string; Default: string): string;
 begin
   if S <> '' then
@@ -2172,19 +2140,83 @@ begin
     Result := Default;
 end;
 
-function StrLICompW2(P1, P2: PWideChar; MaxLen: Integer): Integer;
+function StrLICompW2(S1, S2: PWideChar; MaxLen: Integer): Integer;
  // faster than the JclUnicode.StrLICompW function
 var
-  S1, S2: WideString;
+  P1, P2: WideString;
 begin
-  SetString(S1, P1, Min(MaxLen, StrLenW(P1)));
-  SetString(S2, P2, Min(MaxLen, StrLenW(P2)));
+  SetString(P1, S1, Min(MaxLen, StrLenW(S1)));
+  SetString(P2, S2, Min(MaxLen, StrLenW(S2)));
 {$IFDEF COMPILER6_UP}
-  Result := SysUtils.WideCompareText(S1, S2);
+  Result := SysUtils.WideCompareText(P1, P2);
 {$ELSE}
-  Result := WideCompareText(S1, S2, LOCALE_USER_DEFAULT);
+  Result := WideCompareText(P1, P2);
 {$ENDIF}
 end;
+
+function StrPosW(S, SubStr: PWideChar): PWideChar;
+var
+  P: PWideChar;
+  I: Integer;
+begin
+  Result := nil;
+  if (S = nil) or (SubStr = nil) or
+     (S[0] = #0) or (SubStr[0] = #0) then Exit;
+  Result := S;
+  while Result[0] <> #0 do
+  begin
+    if Result[0] <> SubStr[0] then
+      Inc(Result)
+    else
+    begin
+      P := Result + 1;
+      I := 0;
+      while (P[0] <> #0) and (P[0] = SubStr[I]) do
+      begin
+        Inc(I);
+        Inc(P);
+      end;
+      if SubStr[I] = #0 then
+        Exit
+      else
+        Inc(Result);
+    end;
+  end;
+  Result := nil;
+end;
+
+function StrLenW(S: PWideChar): Integer;
+begin
+  Result := 0;
+  if S <> nil then
+    while S[Result] <> #0 do
+      Inc(Result);
+end;
+
+{$IFNDEF COMPILER6_UP}
+function WideCompareText(const S1, S2: WideString): Integer;
+begin
+  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
+    Result := CompareText(string(S1), string(S2))
+  else
+    Result := CompareStringW(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
+      PWideChar(S1), Length(S1), PWideChar(S2), Length(S2)) - 2;
+end;
+
+function WideUpperCase(const S: WideString): WideString;
+begin
+  Result := S;
+  if Result <> '' then
+    CharUpperBuffW(Pointer(Result), Length(Result));
+end;
+
+function WideLowerCase(const S: WideString): WideString;
+begin
+  Result := S;
+  if Result <> '' then
+    CharLowerBuffW(Pointer(Result), Length(Result));
+end;
+{$ENDIF !COMPILER6_UP}
 
 function TrimW(const S: WideString): WideString;
 {$IFDEF COMPILER6_UP}
@@ -3207,6 +3239,27 @@ end;
 {$IFDEF MSWINDOWS}
 { begin JvIconClipboardUtils}
 { Icon clipboard routines }
+
+{$IFDEF COMPILER6_UP}
+var
+{$ELSE}
+const
+{$ENDIF}
+  Private_CF_ICON: Word = 0;
+
+function CF_ICON: Word;
+begin
+  if Private_CF_ICON = 0 then
+  begin
+{$IFDEF MSWINDOWS}
+    { The following string should not be localized }
+    Private_CF_ICON := RegisterClipboardFormat('Delphi Icon');
+    TPicture.RegisterClipboardFormat(Private_CF_ICON, TIcon);
+{$ENDIF}
+  end;
+  Result := Private_CF_ICON;
+end;
+
 
 function CreateBitmapFromIcon(Icon: TIcon; BackColor: TColor): TBitmap;
 var
@@ -5815,96 +5868,7 @@ end;
 { end JvXMLDatabase D5 compatiblility functions }
 {$ENDIF}
 
-
-{ TAnsiToWideStrings }
-
-constructor TAnsiToWideStrings.Create(AWideStrings: TWideStrings);
-begin
-  inherited Create;
-  FWideStrings := AWideStrings;
-end;
-
-destructor TAnsiToWideStrings.Destroy;
-begin
-  FDestroying := True; // do not clear the linked list
-  inherited Destroy;
-end;
-
-procedure TAnsiToWideStrings.Clear;
-begin
-  if not FDestroying then
-    FWideStrings.Clear;
-end;
-
-procedure TAnsiToWideStrings.Delete(Index: Integer);
-begin
-  if Assigned(FWideStrings) then
-    FWideStrings.Delete(Index);
-end;
-
-procedure TAnsiToWideStrings.Exchange(Index1, Index2: Integer);
-begin
-  FWideStrings.Exchange(Index1, Index2);
-end;
-
-function TAnsiToWideStrings.Get(Index: Integer): string;
-begin
-  Result := FWideStrings.Strings[Index]; // convert Wide to Ansi
-end;
-
-function TAnsiToWideStrings.GetCapacity: Integer;
-begin
-  Result := FWideStrings.Capacity;
-end;
-
-function TAnsiToWideStrings.GetCount: Integer;
-begin
-  Result := FWideStrings.Count;
-end;
-
-function TAnsiToWideStrings.GetObject(Index: Integer): TObject;
-begin
-  Result := FWideStrings.Objects[Index];
-end;
-
-function TAnsiToWideStrings.IndexOf(const S: string): Integer;
-begin
-  Result := FWideStrings.IndexOf(S);
-end;
-
-procedure TAnsiToWideStrings.Insert(Index: Integer; const S: string);
-begin
-  FWideStrings.Insert(Index, S);
-end;
-
-procedure TAnsiToWideStrings.Move(CurIndex, NewIndex: Integer);
-begin
-  FWideStrings.Move(CurIndex, NewIndex);
-end;
-
-procedure TAnsiToWideStrings.Put(Index: Integer; const S: string);
-begin
-  FWideStrings.Strings[Index] := S;
-end;
-
-procedure TAnsiToWideStrings.PutObject(Index: Integer; AObject: TObject);
-begin
-  FWideStrings.Objects[Index] := AObject;
-end;
-
-procedure TAnsiToWideStrings.SetCapacity(NewCapacity: Integer);
-begin
-  FWideStrings.Capacity := NewCapacity;
-end;
-
 initialization
-  { begin JvIconClipboardUtils}
-{$IFDEF MSWINDOWS}
-  { The following string should not be localized }
-  CF_ICON := RegisterClipboardFormat('Delphi Icon');
-  TPicture.RegisterClipboardFormat(CF_ICON, TIcon);
-{$ENDIF}
-  { end JvIconClipboardUtils }
   { begin JvDateUtil }
 {$IFDEF USE_FOUR_DIGIT_YEAR}
   FourDigitYear := Pos('YYYY', AnsiUpperCase(ShortDateFormat)) > 0;

@@ -103,6 +103,34 @@ type
     property Internal[Index: Integer]: WideString write SetInternal;
   end;
 
+  { TAnsiToWideStrings is a TStrings derived class that gets and sets its data
+    from/to a TWideStrings list. }
+  TAnsiToWideStrings = class(TStrings)
+  private
+    FWideStrings: TWideStrings;
+    FDestroying: Boolean;
+  protected
+    function Get(Index: Integer): string; override;
+    function GetCapacity: Integer; override;
+    function GetCount: Integer; override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure Put(Index: Integer; const S: string); override;
+    procedure PutObject(Index: Integer; AObject: TObject); override;
+    procedure SetCapacity(NewCapacity: Integer); override;
+  public
+    constructor Create(AWideStrings: TWideStrings);
+    destructor Destroy; override;
+
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    procedure Exchange(Index1, Index2: Integer); override;
+    function IndexOf(const S: string): Integer; override;
+    procedure Insert(Index: Integer; const S: string); override;
+    procedure Move(CurIndex, NewIndex: Integer); override;
+
+    property WideStrings: TWideStrings read FWideStrings;
+  end;
+
   TModifiedAction = (maAll, maInsert, maDelete, maInsertColumn, maDeleteColumn,
                      maReplace);
 
@@ -6611,6 +6639,12 @@ begin
 end;
 
 procedure TJvCompletion.FindSelItem(var Eq: Boolean);
+
+  function CmpW(const S1, S2: WideString): Boolean;
+  begin
+    Result := StrICompW(PWideChar(S1), PWideChar(S2)) = 0;
+  end;
+
 var
   S: WideString;
 
@@ -7004,6 +7038,87 @@ begin
     Message.Result := DefWindowProc(Handle, Msg, WParam, LParam);
 end;
 {$ENDIF}
+
+{ TAnsiToWideStrings }
+
+constructor TAnsiToWideStrings.Create(AWideStrings: TWideStrings);
+begin
+  inherited Create;
+  FWideStrings := AWideStrings;
+end;
+
+destructor TAnsiToWideStrings.Destroy;
+begin
+  FDestroying := True; // do not clear the linked list
+  inherited Destroy;
+end;
+
+procedure TAnsiToWideStrings.Clear;
+begin
+  if not FDestroying then
+    FWideStrings.Clear;
+end;
+
+procedure TAnsiToWideStrings.Delete(Index: Integer);
+begin
+  if Assigned(FWideStrings) then
+    FWideStrings.Delete(Index);
+end;
+
+procedure TAnsiToWideStrings.Exchange(Index1, Index2: Integer);
+begin
+  FWideStrings.Exchange(Index1, Index2);
+end;
+
+function TAnsiToWideStrings.Get(Index: Integer): string;
+begin
+  Result := FWideStrings.Strings[Index]; // convert Wide to Ansi
+end;
+
+function TAnsiToWideStrings.GetCapacity: Integer;
+begin
+  Result := FWideStrings.Capacity;
+end;
+
+function TAnsiToWideStrings.GetCount: Integer;
+begin
+  Result := FWideStrings.Count;
+end;
+
+function TAnsiToWideStrings.GetObject(Index: Integer): TObject;
+begin
+  Result := FWideStrings.Objects[Index];
+end;
+
+function TAnsiToWideStrings.IndexOf(const S: string): Integer;
+begin
+  Result := FWideStrings.IndexOf(S);
+end;
+
+procedure TAnsiToWideStrings.Insert(Index: Integer; const S: string);
+begin
+  FWideStrings.Insert(Index, S);
+end;
+
+procedure TAnsiToWideStrings.Move(CurIndex, NewIndex: Integer);
+begin
+  FWideStrings.Move(CurIndex, NewIndex);
+end;
+
+procedure TAnsiToWideStrings.Put(Index: Integer; const S: string);
+begin
+  FWideStrings.Strings[Index] := S;
+end;
+
+procedure TAnsiToWideStrings.PutObject(Index: Integer; AObject: TObject);
+begin
+  FWideStrings.Objects[Index] := AObject;
+end;
+
+procedure TAnsiToWideStrings.SetCapacity(NewCapacity: Integer);
+begin
+  FWideStrings.Capacity := NewCapacity;
+end;
 
 end.
 

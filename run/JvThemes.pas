@@ -32,8 +32,8 @@ uses
 {$IFDEF MSWINDOWS}
   Windows, Messages,
 {$ENDIF}
-  SysUtils, Classes,
 {$IFDEF JVCLThemesEnabled}
+  Contnrs,
  {$IFDEF COMPILER7_UP}Themes,{$ELSE}ThemeSrv,{$ENDIF}
 {$ENDIF}
 {$IFDEF COMPLIB_VCL}
@@ -42,7 +42,7 @@ uses
 {$IFDEF COMPLIB_CLX}
   QControls, QGraphics, QButtons,
 {$ENDIF}
-  Contnrs;
+  SysUtils, Classes;
 
 const
  // Add a message handler to a component that is themed by the ThemeManager but
