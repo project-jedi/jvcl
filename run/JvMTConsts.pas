@@ -26,7 +26,7 @@ unit JvMTConsts;
 
 interface
 uses
-  SysUtils, Windows, Classes;
+  SysUtils, Classes;
 
 type
   TMTTicket = Integer;
