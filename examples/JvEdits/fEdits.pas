@@ -30,14 +30,15 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Mask, JvEdit, JvToolEdit, JvBaseEdits, JvExMask;
+  StdCtrls, Mask,
+  JvEdit, JvToolEdit, JvBaseEdits, JvExMask;
 
 type
   TForm1 = class(TForm)
     JvFileNameBox1: TJvFilenameEdit;
     JvDirectoryBox1: TJvDirectoryEdit;
-    JvButtonBox1: TJvComboEdit;
     JvDateEdit1: TJvDateEdit;
+    JvButtonBox1: TJvComboEdit;
     JvCalcEdit1: TJvCalcEdit;
     procedure JvButtonBox1ButtonClick(Sender: TObject);
   private
@@ -48,7 +49,8 @@ var
   Form1: TForm1;
 
 implementation
-{$R *.DFM}
+
+{$R *.dfm}
 
 procedure TForm1.JvButtonBox1ButtonClick(Sender: TObject);
 begin

@@ -414,7 +414,6 @@ type
     procedure ClearFileList; virtual;
     procedure DisableSysErrors;
     procedure EnableSysErrors;
-    class function DefaultImageIndex: TImageIndex; override;
     property ImageKind default ikDefault;
     property MaxLength;
   public
@@ -478,6 +477,7 @@ type
     procedure ClearFileList; override;
     function GetLongName: string; override;
     function GetShortName: string; override;
+    class function DefaultImageIndex: TImageIndex; override;
   public
     constructor Create(AOwner: TComponent); override;
     property Dialog: TOpenDialog read FDialog;
@@ -578,6 +578,7 @@ type
     procedure ReceptFileDir(const AFileName: string); override;
     function GetLongName: string; override;
     function GetShortName: string; override;
+    class function DefaultImageIndex: TImageIndex; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -946,7 +947,8 @@ type
   {$ENDIF VCL}
 
 const
-  sFileBmp = 'JV_FEDITBMP';  { Filename and directory editor button glyph }
+  sDirBmp = 'JV_SEDITBMP';   { Directory editor button glyph }
+  sFileBmp = 'JV_FEDITBMP';  { Filename editor button glyph }
   sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
 
 var
@@ -956,6 +958,7 @@ var
   GDateImageIndex: TImageIndex = -1;
   GDefaultComboEditImagesList: TImageList = nil;
   GFileImageIndex: TImageIndex = -1;
+  GDirImageIndex: TImageIndex = -1;
 
 //=== Local procedures =======================================================
 
@@ -1498,6 +1501,51 @@ end;
 
 //=== TJvCustomComboEdit =====================================================
 
+constructor TJvCustomComboEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csCaptureMouse];
+  //  AutoSize := False;   // Polaris
+  FDirectInput := True;
+  FClickKey := scAltDown;
+  FPopupAlign := epaRight;
+  FBtnControl := TWinControl.Create(Self);
+  with FBtnControl do
+    ControlStyle := ControlStyle + [csReplicatable];
+  FBtnControl.Width := DefEditBtnWidth;
+  FBtnControl.Height := 17;
+  FBtnControl.Visible := True;
+  {$IFDEF VCL}
+  FBtnControl.Parent := Self;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FBtnControl.Parent := Self.ClientArea;
+  {$ENDIF VisualCLX}
+  FButton := TJvEditButton.Create(Self);
+  FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
+  FButton.Visible := True;
+  FButton.Parent := FBtnControl;
+  TJvEditButton(FButton).OnClick := EditButtonClick;
+  Height := 21;
+  (* ++ RDB ++ *)
+  FDisabledColor := clWindow;
+  FDisabledTextColor := clGrayText;
+  FGroupIndex := -1;
+  FGlyph := TBitmap.Create;
+  FStreamedButtonWidth := -1;
+  FImageKind := ikCustom;
+  FImageIndex := -1;
+  inherited OnKeyDown := LocalKeyDown;
+  (* -- RDB -- *)
+end;
+
+destructor TJvCustomComboEdit.Destroy;
+begin
+  FButton.OnClick := nil;
+  FGlyph.Free;
+  inherited Destroy;
+end;
+
 function TJvCustomComboEdit.AcceptPopup(var Value: Variant): Boolean;
 begin
   Result := True;
@@ -1655,44 +1703,6 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-constructor TJvCustomComboEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csCaptureMouse];
-  //  AutoSize := False;   // Polaris
-  FDirectInput := True;
-  FClickKey := scAltDown;
-  FPopupAlign := epaRight;
-  FBtnControl := TWinControl.Create(Self);
-  with FBtnControl do
-    ControlStyle := ControlStyle + [csReplicatable];
-  FBtnControl.Width := DefEditBtnWidth;
-  FBtnControl.Height := 17;
-  FBtnControl.Visible := True;
-  {$IFDEF VCL}
-  FBtnControl.Parent := Self;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FBtnControl.Parent := Self.ClientArea;
-  {$ENDIF VisualCLX}
-  FButton := TJvEditButton.Create(Self);
-  FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
-  FButton.Visible := True;
-  FButton.Parent := FBtnControl;
-  TJvEditButton(FButton).OnClick := EditButtonClick;
-  Height := 21;
-  (* ++ RDB ++ *)
-  FDisabledColor := clWindow;
-  FDisabledTextColor := clGrayText;
-  FGroupIndex := -1;
-  FGlyph := TBitmap.Create;
-  FStreamedButtonWidth := -1;
-  FImageKind := ikCustom;
-  FImageIndex := -1;
-  inherited OnKeyDown := LocalKeyDown;
-  (* -- RDB -- *)
-end;
-
 {$IFDEF VCL}
 
 procedure TJvCustomComboEdit.CreateParams(var Params: TCreateParams);
@@ -1737,13 +1747,6 @@ begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('NumGlyphs', ReadNumGlyphs, nil, False);
   Filer.DefineProperty('GlyphKind', ReadGlyphKind, nil, False);
-end;
-
-destructor TJvCustomComboEdit.Destroy;
-begin
-  FButton.OnClick := nil;
-  FGlyph.Free;
-  inherited Destroy;
 end;
 
 procedure TJvCustomComboEdit.DoChange;
@@ -2763,6 +2766,73 @@ end;
 
 //=== TJvCustomDateEdit ======================================================
 
+constructor TJvCustomDateEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  // Polaris
+  FDateAutoBetween := True;
+  FMinDate := NullDate;
+  FMaxDate := NullDate;
+
+  FBlanksChar := ' ';
+  FTitle := RsDateDlgCaption;
+  {$IFDEF VCL}
+  FPopupColor := clMenu;
+  {$ELSE}
+  FPopupColor := clWindow;
+  {$ENDIF VCL}
+  //  FDefNumGlyphs := 2;
+  FStartOfWeek := Mon;
+  FWeekends := [Sun];
+  FWeekendColor := clRed;
+  FYearDigits := dyDefault;
+  FCalendarHints := TStringList.Create;
+  FCalendarHints.OnChange := CalendarHintsChanged;
+  {$IFDEF VCL}
+  DateHook.Add;
+  {$ENDIF VCL}
+
+  ControlState := ControlState + [csCreating];
+  try
+    UpdateFormat;
+    {$IFDEF DEFAULT_POPUP_CALENDAR}
+    FPopup := TJvPopupWindow(CreatePopupCalendar(Self,
+      {$IFDEF VCL}
+      BiDiMode,
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      bdLeftToRight,
+      {$ENDIF VisualCLX}
+      // Polaris
+      FMinDate, FMaxDate));
+    TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
+    TJvPopupWindow(FPopup).Color := FPopupColor;
+    {$ENDIF DEFAULT_POPUP_CALENDAR}
+    ImageKind := ikDefault; { force update }
+  finally
+    ControlState := ControlState - [csCreating];
+  end;
+end;
+
+destructor TJvCustomDateEdit.Destroy;
+begin
+  {$IFDEF VCL}
+  DateHook.Delete;
+  {$ENDIF VCL}
+
+  if FPopup <> nil then
+  begin
+    TJvPopupWindow(FPopup).OnCloseUp := nil;
+    FPopup.Parent := nil;
+  end;
+  FPopup.Free;
+  FPopup := nil;
+  FCalendarHints.OnChange := nil;
+  FCalendarHints.Free;
+  FCalendarHints := nil;
+  inherited Destroy;
+end;
+
 function TJvCustomDateEdit.AcceptPopup(var Value: Variant): Boolean;
 var
   d: TDateTime;
@@ -2867,54 +2937,6 @@ begin
   end;
 end;
 
-constructor TJvCustomDateEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  // Polaris
-  FDateAutoBetween := True;
-  FMinDate := NullDate;
-  FMaxDate := NullDate;
-
-  FBlanksChar := ' ';
-  FTitle := RsDateDlgCaption;
-  {$IFDEF VCL}
-  FPopupColor := clMenu;
-  {$ELSE}
-  FPopupColor := clWindow;
-  {$ENDIF VCL}
-  //  FDefNumGlyphs := 2;
-  FStartOfWeek := Mon;
-  FWeekends := [Sun];
-  FWeekendColor := clRed;
-  FYearDigits := dyDefault;
-  FCalendarHints := TStringList.Create;
-  FCalendarHints.OnChange := CalendarHintsChanged;
-  {$IFDEF VCL}
-  DateHook.Add;
-  {$ENDIF VCL}
-
-  ControlState := ControlState + [csCreating];
-  try
-    UpdateFormat;
-    {$IFDEF DEFAULT_POPUP_CALENDAR}
-    FPopup := TJvPopupWindow(CreatePopupCalendar(Self,
-      {$IFDEF VCL}
-      BiDiMode,
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      bdLeftToRight,
-      {$ENDIF VisualCLX}
-      // Polaris
-      FMinDate, FMaxDate));
-    TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
-    TJvPopupWindow(FPopup).Color := FPopupColor;
-    {$ENDIF DEFAULT_POPUP_CALENDAR}
-    ImageKind := ikDefault; { force update }
-  finally
-    ControlState := ControlState - [csCreating];
-  end;
-end;
-
 {$IFDEF VCL}
 procedure TJvCustomDateEdit.CreateWindowHandle(const Params: TCreateParams);
 begin
@@ -2950,25 +2972,6 @@ begin
   end;
 
   Result := GDateImageIndex;
-end;
-
-destructor TJvCustomDateEdit.Destroy;
-begin
-  {$IFDEF VCL}
-  DateHook.Delete;
-  {$ENDIF VCL}
-
-  if FPopup <> nil then
-  begin
-    TJvPopupWindow(FPopup).OnCloseUp := nil;
-    FPopup.Parent := nil;
-  end;
-  FPopup.Free;
-  FPopup := nil;
-  FCalendarHints.OnChange := nil;
-  FCalendarHints.Free;
-  FCalendarHints := nil;
-  inherited Destroy;
 end;
 
 procedure TJvCustomDateEdit.DoExit;
@@ -3334,7 +3337,7 @@ end;
 
 //=== TJvDateEdit ============================================================
 
-// (rom) unusual not to have it implemented in the Cusotm base class
+// (rom) unusual not to have it implemented in the Custom base class
 
 constructor TJvDateEdit.Create(AOwner: TComponent);
 begin
@@ -3364,6 +3367,14 @@ begin
 end;
 
 //=== TJvDirectoryEdit =======================================================
+
+constructor TJvDirectoryEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  {$IFDEF VCL}
+  FOptions := [];
+  {$ENDIF VCL}
+end;
 
 procedure TJvDirectoryEdit.ButtonClick;
 var
@@ -3419,14 +3430,6 @@ begin
     if (Temp <> '') and DirExists(Temp) then
       InitialDir := Temp;
   end;
-end;
-
-constructor TJvDirectoryEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  {$IFDEF VCL}
-  FOptions := [];
-  {$ENDIF VCL}
 end;
 
 function TJvDirectoryEdit.GetLongName: string;
@@ -3485,15 +3488,25 @@ begin
     Text := Text + ';' + Temp;
 end;
 
-//=== TJvEditButton ==========================================================
-
-procedure TJvEditButton.Click;
+class function TJvDirectoryEdit.DefaultImageIndex: TImageIndex;
+var
+  Bmp: TBitmap;
 begin
-  if not FNoAction then
-    inherited Click
-  else
-    FNoAction := False;
+  if GDirImageIndex < 0 then
+  begin
+    Bmp := TBitmap.Create;
+    try
+      //Bmp.Handle := LoadBitmap(HInstance, sFileBmp);
+      Bmp.LoadFromResourceName(HInstance, sDirBmp);
+      GDirImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
+    finally
+      Bmp.Free;
+    end;
+  end;
+  Result := GDirImageIndex;
 end;
+
+//=== TJvEditButton ==========================================================
 
 constructor TJvEditButton.Create(AOwner: TComponent);
 begin
@@ -3501,6 +3514,14 @@ begin
   FStandard := True; // Polaris
   ControlStyle := ControlStyle + [csReplicatable];
   ParentShowHint := True;
+end;
+
+procedure TJvEditButton.Click;
+begin
+  if not FNoAction then
+    inherited Click
+  else
+    FNoAction := False;
 end;
 
 procedure TJvEditButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -3593,10 +3614,6 @@ end;
 
 //=== TJvFileDirEdit =========================================================
 
-procedure TJvFileDirEdit.ClearFileList;
-begin
-end;
-
 constructor TJvFileDirEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -3612,6 +3629,10 @@ begin
   end;
 end;
 
+procedure TJvFileDirEdit.ClearFileList;
+begin
+end;
+
 {$IFDEF VCL}
 procedure TJvFileDirEdit.CreateHandle;
 begin
@@ -3620,25 +3641,6 @@ begin
     SetDragAccept(True);
 end;
 {$ENDIF VCL}
-
-class function TJvFileDirEdit.DefaultImageIndex: TImageIndex;
-var
-  Bmp: TBitmap;
-begin
-  if GFileImageIndex < 0 then
-  begin
-    Bmp := TBitmap.Create;
-    try
-      //Bmp.Handle := LoadBitmap(HInstance, sFileBmp);
-      Bmp.LoadFromResourceName(HInstance, sFileBmp);
-      GFileImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
-    finally
-      Bmp.Free;
-    end;
-  end;
-
-  Result := GFileImageIndex;
-end;
 
 {$IFDEF VCL}
 procedure TJvFileDirEdit.DestroyWindowHandle;
@@ -3724,6 +3726,12 @@ end;
 
 //=== TJvFilenameEdit ========================================================
 
+constructor TJvFilenameEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  CreateEditDialog;
+end;
+
 procedure TJvFilenameEdit.ButtonClick;
 var
   Temp: string;
@@ -3772,12 +3780,6 @@ end;
 procedure TJvFilenameEdit.ClearFileList;
 begin
   FDialog.Files.Clear;
-end;
-
-constructor TJvFilenameEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  CreateEditDialog;
 end;
 
 procedure TJvFilenameEdit.CreateEditDialog;
@@ -3980,13 +3982,25 @@ begin
   end;
 end;
 
-//=== TJvPopupWindow =========================================================
-
-procedure TJvPopupWindow.CloseUp(Accept: Boolean);
+class function TJvFilenameEdit.DefaultImageIndex: TImageIndex;
+var
+  Bmp: TBitmap;
 begin
-  if Assigned(FCloseUp) then
-    FCloseUp(Self, Accept);
+  if GFileImageIndex < 0 then
+  begin
+    Bmp := TBitmap.Create;
+    try
+      //Bmp.Handle := LoadBitmap(HInstance, sFileBmp);
+      Bmp.LoadFromResourceName(HInstance, sFileBmp);
+      GFileImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
+    finally
+      Bmp.Free;
+    end;
+  end;
+  Result := GFileImageIndex;
 end;
+
+//=== TJvPopupWindow =========================================================
 
 constructor TJvPopupWindow.Create(AOwner: TComponent);
 begin
@@ -4000,8 +4014,14 @@ begin
   ParentCtl3D := False;
   Parent := FEditor;
   // use same size on small and large font:
-  Scaled := false;
+  Scaled := False;
   {$ENDIF VCL}
+end;
+
+procedure TJvPopupWindow.CloseUp(Accept: Boolean);
+begin
+  if Assigned(FCloseUp) then
+    FCloseUp(Self, Accept);
 end;
 
 {$IFDEF VCL}
