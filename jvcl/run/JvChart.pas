@@ -1051,6 +1051,9 @@ end;
 
 destructor TJvChartOptions.Destroy;
 begin
+  FreeAndNil( FPrimaryYAxis );//memory leak fix SEPT 21, 2004.WAP.
+  FreeAndNil ( FSecondaryYAxis );//memory leak fix SEPT 21, 2004. WAP.
+
   FreeAndNil(FXLegends);
   FreeAndNil(FPenLegends);
   FreeAndNil(FPenUnit);
@@ -3151,16 +3154,27 @@ begin
 
   if Options.MouseEdit then
   begin
-    if X < Options.XStartOffset then
-      EditYScale
-    else
-    if Y < Options.YStartOffset then
-      EditHeader
-    else
-    if Y > Options.YStartOffset + Options.YEnd then
+    if X < Options.XStartOffset then begin
+      EditYScale;
+      exit;
+    end else
+    // New: Don't let end user mess with title, if we
+    // provide our own way to set the title or title options,
+    // however, if Options.MouseEdit is on, they can still set the
+    // scale via mouse clicking.
+    if (Y < Options.YStartOffset) and (not Assigned(FOnTitleClick)) then begin
+      EditHeader;
+      exit;
+    end;
+
+
+    if (Y > Options.YStartOffset + Options.YEnd) and  (not Assigned(FOnXAxisClick)) then begin
       EditXHeader;
-  end
-  else
+      exit;
+    end;
+
+  end;
+
   begin
     if X < Options.XStartOffset then
     begin
