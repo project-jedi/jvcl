@@ -309,7 +309,7 @@ begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
     if FHotTrack then
-      Ctl3d := True;
+      Ctl3D := True;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then

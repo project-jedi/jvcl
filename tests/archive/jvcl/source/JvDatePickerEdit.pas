@@ -207,7 +207,7 @@ type
     property NoDateShortcut;
     property NoDateText;
     property ParentColor;
-    property ParentCtl3d;
+    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -758,7 +758,7 @@ end;
 procedure TJvCustomDatePickerEdit.DoCtl3DChanged;
 begin
   inherited DoCtl3DChanged;
-  FBut.Flat := not Self.Ctl3d;
+  FBut.Flat := not Self.Ctl3D;
 end;
 
 procedure TJvCustomDatePickerEdit.DoEnabledChanged;

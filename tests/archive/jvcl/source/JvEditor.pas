@@ -1793,7 +1793,7 @@ begin
   FRightMarginVisible := True;
   FRightMargin := 80;
   FBorderStyle := bsSingle;
-  Ctl3d := True;
+  Ctl3D := True;
   Height := 40;
   Width := 150;
   ParentColor := False;

@@ -229,7 +229,7 @@ begin
       Exit;
     Application.HintColor := FColor;
     if FEffect then
-      Ctl3d := True;
+      Ctl3D := True;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
@@ -270,7 +270,7 @@ begin
   begin
     Application.HintColor := FSaved;
     if FEffect then
-      Ctl3d := False;
+      Ctl3D := False;
     FOver := False;
   end;
   if Assigned(FOnMouseLeave) then
@@ -287,7 +287,7 @@ procedure TJvCheckListBox.SetEffect(const Value: Boolean);
 begin
   FEffect := Value;
   if FEffect then
-    Ctl3d := False;
+    Ctl3D := False;
 end;
 
 function TJvCheckListBox.SearchPrefix(Value: string; CaseSensitive: Boolean): Integer;

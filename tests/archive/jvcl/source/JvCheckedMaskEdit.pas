@@ -108,7 +108,7 @@ type
     property HotTrack;
     property MaxLength;
     property ParentColor;
-    property ParentCtl3d;
+    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
@@ -323,7 +323,7 @@ begin
   begin
     FCheck.Ctl3D := Self.Ctl3D;
     // adjust layout quirks:
-    if Self.Ctl3d then
+    if Self.Ctl3D then
       FCheck.Left := 0
     else
       FCheck.Left := 1;

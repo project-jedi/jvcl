@@ -55,7 +55,7 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChange write FOnParentColorChange;
     property Color;
-    property Ctl3d;
+    property Ctl3D;
     property Font;
     property ParentFont;
     property ParentColor;

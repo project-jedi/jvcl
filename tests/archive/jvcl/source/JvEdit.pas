@@ -318,7 +318,7 @@ begin
     begin
       I := SelStart;
       J := SelLength;
-      Ctl3d := True;
+      Ctl3D := True;
       SelStart := I;
       SelLength := J;
     end;
@@ -342,7 +342,7 @@ begin
     begin
       I := SelStart;
       J := SelLength;
-      Ctl3d := False;
+      Ctl3D := False;
       SelStart := I;
       SelLength := J;
     end;
@@ -369,7 +369,7 @@ end;
 procedure TJvCustomEdit.SetHotTrack(const Value: Boolean);
 begin
   FHotTrack := Value;
-  Ctl3d := not FHotTrack;
+  Ctl3D := not FHotTrack;
 end;
 
 function TJvCustomEdit.IsEmpty: Boolean;
