@@ -139,6 +139,8 @@ Here is a basic XML source file (Extracted from JvCore-R.xml):<br>
 version="1.0" encoding="iso-8859-1"?&gt;<br>
 &lt;Package Name="JvCore" Design="0"&gt;<br>
 &nbsp; &lt;Description&gt;JVCL Core Runtime Package&lt;/Description&gt;<br>
+&nbsp; &lt;CLXDescription&gt;JVCLX Core Runtime
+Package&lt;/Description&gt;<br>
 &nbsp; &lt;C5PFlags&gt;-LUCJcl50&lt;/C5PFlags&gt;<br>
 &nbsp; &lt;C6PFlags&gt;-LUCJcl&lt;/C6PFlags&gt;<br>
 &nbsp; &lt;C5Libs/&gt;<br>
@@ -224,6 +226,16 @@ package, but it MUST have those two properties.<br>
       </td>
       <td style="vertical-align: top;">This is the description of the
 package as it will be displayed in the IDE.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">ClxDescription<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">This is the description of the
+package as it will be displayed in the IDE, when the package is
+generated for a CLX target.<br>
       </td>
     </tr>
     <tr>
@@ -421,7 +433,7 @@ version="1.0" encoding="iso-8859-1"?&gt;<br>
 &nbsp; &lt;/pgEdit&gt;<br>
 &nbsp; &lt;models&gt;<br>
 &nbsp;&nbsp;&nbsp; &lt;model name="JVCL" prefix="Jv"
-format="%p%n%e%v%t" <br>
+ClxPrefix="JvQ" format="%p%n%e%v%t" <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 packages="..\..\packages" incfile="..\..\common\jvcl.inc"&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;targets&gt;<br>
@@ -432,7 +444,12 @@ pname="d7p" pdir="d7per" defines="COMPILER7_UP"/&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;alias name="Delphi"
 value="d7,d7p"/&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/aliases&gt;<br>
-&nbsp;&nbsp;&nbsp; &lt;/model&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ClxReplacements&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;replacement
+original="\run\Jv" replacement="\qrun\JvQ"/&gt;<br>
+      </code><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/ClxReplacements&gt;<br>
+      </code><code>&nbsp;&nbsp;&nbsp; &lt;/model&gt;<br>
 &nbsp; &lt;/models&gt;<br>
 &lt;/Configuration&gt;</code><br>
       </td>
@@ -574,7 +591,7 @@ See below for more details<br>
                 </tr>
               </tbody>
             </table>
-            <b></b> </td>
+            </td>
           </tr>
           <tr>
             <td style="vertical-align: top;">packages<br>
@@ -655,6 +672,17 @@ above, using "Delphi" in a target node in a package XML source file is
 equivalent to using "d7,d7p". The aliases are not resolved recursively
 and are not case sensitive. You don't have to define the 'all' alias,
 as it will be derived from the list of targets.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">ClxReplacements<br>
+      </td>
+      <td style="vertical-align: top;">model<br>
+      </td>
+      <td style="vertical-align: top;">This node, if it exists, holds
+the replacement nodes, one node per filename replacement. These
+replacements will only occur on the filename of the contained files for
+a package, and only when the target being generated is marked as CLX.<br>
       </td>
     </tr>
     <tr>
@@ -814,6 +842,34 @@ of targets this alias will expand to. No recursion is done when
 resolving the aliases. If you defined any Personal targets, do not
 forget
 to include them in the value for your alias.<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">replacement<br>
+      </td>
+      <td style="vertical-align: top;">ClxReplacements<br>
+      </td>
+      <td style="vertical-align: top;"> Each replacement node must have
+those two attributes:<br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellspacing="0" cellpadding="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">original<br>
+            </td>
+            <td style="vertical-align: top;">The orignal string to be
+replaced.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">replacement</td>
+            <td style="vertical-align: top;">The value to use as a
+replacement of the original string<br>
             </td>
           </tr>
         </tbody>
@@ -1440,15 +1496,6 @@ Defaults to the value defined in the model to use.<br>
       <td style="vertical-align: top;">Indicates the name of the
 include file to parse.<br>
 Defaults to the value defined in the model to use.</td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">-d<br>
-      </td>
-      <td style="vertical-align: top;">DEPRECATED. Forces the
-generation of the dof files by calling MakeDofs.bat.<br>
-This option should not be used. Provide a 'template.dof'
-instead.<br>
-      </td>
     </tr>
   </tbody>
 </table>
