@@ -75,14 +75,14 @@ uses
   Classes,
   {$IFDEF USEJVCL}
   JvDsgnConsts,
-  {$ENDIF}
+  {$ENDIF USEJVCL}
   JvTFGlance, JvTFGlanceTextViewer, JvTFMonths, JvTFWeeks, JvTFDays,
   JvTFAlarm, JvTFManager;
   
 {$IFNDEF USEJVCL}
 resourcestring
   RsPaletteTimeFramework = 'Jv TimeFrameWork';
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 //=== TJvTFGridLayoutCategory ================================================
 

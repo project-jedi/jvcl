@@ -52,19 +52,20 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  {$IFNDEF USEJVCL}
-  JvWizardAboutInfoForm,
-  {$ELSE}
+  {$IFDEF USEJVCL}
   JvDsgnConsts,
+  {$ELSE}
+  JvWizardAboutInfoForm,
   {$ENDIF USEJVCL}
   JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps, JvWizardEditorForm;
 
 {$R ..\resources\JvWizardReg.dcr}
+
 {$IFNDEF USEJVCL}
 resourcestring
   RsPaletteWizard = 'Jv Wizard';
-  
-{$ENDIF}
+{$ENDIF USEJVCL}
+
 procedure Register;
 const
   cActivePage = 'ActivePage';
