@@ -1,0 +1,1 @@
+This is a test folder for new CVS users to experiment in. Feel free to add, edit and delete files but try to keep the number of files (and sizes) down!
