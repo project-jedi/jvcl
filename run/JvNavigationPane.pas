@@ -3884,8 +3884,9 @@ begin
     else
       Inc(R.Left, 12);
     Canvas.Font := Self.Font;
-    if DropDownMenu = nil then
+    if (DropDownMenu = nil) and not (csDesigning in ComponentState) then
     begin
+      OffsetRect(R, 2, -1);  // line up with where button caption should have been
       SetBkMode(Canvas.Handle, TRANSPARENT);
       DrawText(Canvas, Caption, Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
     end;
