@@ -49,7 +49,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -78,7 +78,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -109,7 +109,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -127,7 +127,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -151,7 +151,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -178,7 +178,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -208,7 +208,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -231,7 +231,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -254,7 +254,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -274,7 +274,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetValue(Value: Variant);
@@ -298,7 +298,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -325,7 +325,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -348,7 +348,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -372,7 +372,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -407,7 +407,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -428,7 +428,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
   end;
 
   TJvDynControlJVCLPanel = class(TJvPanel, IUnknown, IJvDynControl,
@@ -441,7 +441,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetBorder(ABevelInner: TPanelBevel; ABevelOuter: TPanelBevel; ABevelWidth: Integer; ABorderStyle: TBorderStyle; ABorderWidth: Integer);
   end;
@@ -455,7 +455,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetAutoSize(Value: Boolean);
     procedure ControlSetIncrementalDisplay(Value: Boolean);
@@ -477,7 +477,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
   end;
 
   TJvDynControlJVCLLabel = class(TJvLabel, IUnknown, IJvDynControl,
@@ -490,7 +490,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetFocusControl(Value: TWinControl);
     procedure ControlSetWordWrap(Value: Boolean);
@@ -505,7 +505,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
   end;
 
   TJvDynControlJVCLButton = class(TJvBitBtn, IUnknown, IJvDynControl,
@@ -518,7 +518,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetGlyph(Value: TBitmap);
     procedure ControlSetNumGlyphs(Value: Integer);
@@ -535,7 +535,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(Value: string);
 
     // IJvDynControlData
     procedure ControlSetOnChange(Value: TNotifyEvent);
@@ -603,7 +603,7 @@ begin
 
 end;
 
-procedure TJvDynControlJVCLMaskEdit.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLMaskEdit.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -692,7 +692,7 @@ begin
   FEditControl.OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLButtonEdit.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLButtonEdit.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -782,7 +782,7 @@ begin
 
 end;
 
-procedure TJvDynControlJVCLCalcEdit.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLCalcEdit.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -837,7 +837,7 @@ procedure TJvDynControlJVCLSpinEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLSpinEdit.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLSpinEdit.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -922,7 +922,7 @@ procedure TJvDynControlJVCLFileNameEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLFileNameEdit.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLFileNameEdit.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -1021,7 +1021,7 @@ procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;                                                      
 
-procedure TJvDynControlJVCLDirectoryEdit.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -1133,7 +1133,7 @@ procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;                                                     
 
-procedure TJvDynControlJVCLDateTimeEdit.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -1206,7 +1206,7 @@ procedure TJvDynControlJVCLDateEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;                                                 
 
-procedure TJvDynControlJVCLDateEdit.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLDateEdit.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -1277,7 +1277,7 @@ procedure TJvDynControlJVCLTimeEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;                                                 
 
-procedure TJvDynControlJVCLTimeEdit.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLTimeEdit.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -1335,7 +1335,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLCheckBox.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLCheckBox.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -1414,7 +1414,7 @@ begin
   OnClick := Value;
 end;                                             
 
-procedure TJvDynControlJVCLMemo.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLMemo.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -1504,7 +1504,7 @@ begin
   OnClick := Value;
 end;                                                   
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLRadioGroup.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -1576,7 +1576,7 @@ begin
   OnClick := Value;
 end;                                                
 
-procedure TJvDynControlJVCLListBox.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLListBox.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -1649,7 +1649,7 @@ begin
   OnClick := Value;
 end;                                                     
 
-procedure TJvDynControlJVCLCheckListBox.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLCheckListBox.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -1785,7 +1785,7 @@ begin
   OnClick := Value;
 end;                                                 
 
-procedure TJvDynControlJVCLComboBox.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLComboBox.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -1856,7 +1856,7 @@ procedure TJvDynControlJVCLGroupBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;                                                 
 
-procedure TJvDynControlJVCLGroupBox.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLGroupBox.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -1893,7 +1893,7 @@ procedure TJvDynControlJVCLPanel.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;                                              
 
-procedure TJvDynControlJVCLPanel.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLPanel.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -1940,7 +1940,7 @@ begin
   OnClick := Value;
 end;                                              
 
-procedure TJvDynControlJVCLImage.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLImage.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -2022,7 +2022,7 @@ procedure TJvDynControlJVCLScrollBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;                                                  
 
-procedure TJvDynControlJVCLScrollBox.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLScrollBox.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -2054,7 +2054,7 @@ procedure TJvDynControlJVCLLabel.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;                                              
 
-procedure TJvDynControlJVCLLabel.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLLabel.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -2096,7 +2096,7 @@ procedure TJvDynControlJVCLStaticText.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;                                                   
 
-procedure TJvDynControlJVCLStaticText.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLStaticText.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -2129,7 +2129,7 @@ begin
   OnClick := Value;
 end;                                               
 
-procedure TJvDynControlJVCLButton.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLButton.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
@@ -2180,7 +2180,7 @@ begin
   OnClick := Value;
 end;                                                    
 
-procedure TJvDynControlJVCLRadioButton.ControlSetHint(Value: String);
+procedure TJvDynControlJVCLRadioButton.ControlSetHint(Value: string);
 begin
   Hint := Value;
 end;
