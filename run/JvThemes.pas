@@ -1904,7 +1904,7 @@ finalization
   FinalizeWMPrintClientFix;
   {$IFNDEF COMPILER7_UP}
   FreeAndNil(GlobalThemeHooks);
-  UninstallWinControlHook
+  UninstallWinControlHook;
   {$ENDIF !COMPILER7UP}
   {$ENDIF JVCLThemesEnabled}
 
