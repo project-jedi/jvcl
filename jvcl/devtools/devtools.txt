@@ -51,6 +51,17 @@ Creates a DOF file from a template. Command line:
 MakeDOF.exe <filemask> <template>
 MakeDOF always scans subdirs and overwrites any existing files.
 
+MakeCFG:
+========
+Creates a CFG file from a template. Command line:
+MakeCFG.exe <filemask> <template>
+MakeCFG always scans subdirs and overwrites any existing files.
+
+Bpg2Make:
+========
+Creates a MAK file from the Package Group. Command line:
+Bpg2Make.exe <bpgfilename>
+
 JConvert:
 =========
 JConvert converts DFM files from/to binary format just like the convert.exe supplied with Delphi. The difference is that JConvert only converts DFM's that needs to be converted: if a file is already in text format and that is what you want, the file will not be changed. Another difference is the -c(heck) option: with this set, the program reports how many DFM's would have been converted but doesn't actually convert anything.
