@@ -26,7 +26,7 @@
       ..\..\dcu\JvgProcess.obj ..\..\dcu\JvgProcessUtils.obj 
       ..\..\dcu\JvgProgress.obj ..\..\dcu\JvgQPrintPreviewForm.obj 
       ..\..\dcu\JvgQPrintSetupForm.obj ..\..\dcu\JvgQRLabel.obj 
-      ..\..\dcu\JvgReport.obj ..\..\dcu\JvgRichEditUtils.obj 
+      ..\..\dcu\JvgReport.obj ..\..\dcu\JvgReportParamsEditor.obj ..\..\dcu\JvgRichEditUtils.obj
       ..\..\dcu\JvgRttiUtils.obj ..\..\dcu\JvgRuler.obj 
       ..\..\dcu\JvgScrollBox.obj ..\..\dcu\JvgShade.obj ..\..\dcu\JvgShadow.obj 
       ..\..\dcu\JvgShape.obj ..\..\dcu\JvgSingleInstance.obj 
@@ -136,6 +136,7 @@
       <FILE FILENAME="..\..\run\JvgQPrintSetupForm.pas" FORMNAME="JvgPrintSetup" UNITNAME="JvgQPrintSetupForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvgQRLabel.pas" FORMNAME="" UNITNAME="JvgQRLabel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvgReport.pas" FORMNAME="" UNITNAME="JvgReport" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvgReportParamsEditor.pas" FORMNAME="" UNITNAME="JvgReportParamsEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvgRichEditUtils.pas" FORMNAME="" UNITNAME="JvgRichEditUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvgRttiUtils.pas" FORMNAME="" UNITNAME="JvgRttiUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvgRuler.pas" FORMNAME="" UNITNAME="JvgRuler" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

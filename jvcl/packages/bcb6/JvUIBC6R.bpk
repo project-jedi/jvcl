@@ -5,7 +5,8 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JvUIBC6R.bpl"/>
     <OBJFILES value="..\..\dcu\JvUIBC6R.obj ..\..\dcu\JvUIB.obj ..\..\dcu\JvUIBase.obj 
-      ..\..\dcu\JvUIBConst.obj ..\..\dcu\JvUIBError.obj ..\..\dcu\JvUIBLib.obj"/>
+      ..\..\dcu\JvUIBConst.obj ..\..\dcu\JvUIBDataSet.obj ..\..\dcu\JvUIBError.obj 
+      ..\..\dcu\JvUIBLib.obj ..\..\dcu\JvUIBMetaData.obj ..\..\dcu\JvUIBSQLParser.obj"/>
     <RESFILES value="JvUIBC6R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -14,7 +15,7 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="rtl.bpi JvCoreC6R.bpi vcl.bpi vclx.bpi CJCL60.bpi"/>
+    <PACKAGES value="rtl.bpi JvCoreC6R.bpi vcl.bpi vclx.bpi CJCL60.bpi dbrtl.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\run"/>
     <PATHRC value=".;"/>
@@ -31,7 +32,7 @@
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\run -I..\..\common -I$(BCB)\include -I$(BCB)\include\vcl 
+    <IDLCFLAGS value="-I..\..\run -I..\..\common -I$(BCB)\include -I$(BCB)\include\vcl
       -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
@@ -55,15 +56,16 @@
       <FILE FILENAME="..\..\run\JvUIB.pas" FORMNAME="" UNITNAME="JvUIB" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvUIBase.pas" FORMNAME="" UNITNAME="JvUIBase" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvUIBConst.pas" FORMNAME="" UNITNAME="JvUIBConst" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvUIBDataSet.pas" FORMNAME="" UNITNAME="JvUIBDataSet" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvUIBError.pas" FORMNAME="" UNITNAME="JvUIBError" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvUIBLib.pas" FORMNAME="" UNITNAME="JvUIBLib" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvUIBMetaData.pas" FORMNAME="" UNITNAME="JvUIBMetaData" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvUIBSQLParser.pas" FORMNAME="" UNITNAME="JvUIBSQLParser" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvUIBDataSet.pas" FORMNAME="" UNITNAME="JvUIBDataSet" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="dbrtl.bpi" FORMNAME="" UNITNAME="dbrtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
