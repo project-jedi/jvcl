@@ -874,8 +874,13 @@ var
 begin
   if Value <> Text then
   begin
-    P := PChar(Value);
-    Display.CharacterMapper.MapText(P, Self);
+    if Display.CharacterMapper <> nil then
+    begin
+      P := PChar(Value);
+      Display.CharacterMapper.MapText(P, Self);
+    end
+    else
+      UpdateText(Value);
     Display.UpdateText;
   end;
 end;
