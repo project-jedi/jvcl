@@ -17,7 +17,7 @@ Summary
   A control that can display an image from an imagelist.
 Description
   Use TJvImageSquare when you need a control that can display an image from an imagelist. By setting the
-  ImageList and ImageIndex properties, the control displays the selected image in it's client area.
+  Images and ImageIndex properties, the control displays the selected image in it's client area.
 
   Use properties like Color, HiColor and BorderStyle to modify the control's appearance. Use ShowClick
   to alter it's behavior.
@@ -41,15 +41,15 @@ Summary
   Specifies the index of the image to display from the image list.
 Description
   Use ImageIndex to specify the image to display in the control. The icon with
-  the specified index is drawn using ImageList. To not display an image, set ImageIndex to -1.
+  the specified index is drawn using Images. To not display an image, set ImageIndex to -1.
 See Also
-  ImageList
+  Images
 ----------------------------------------------------------------------------------------------------
-@@TJvImageSquare.ImageList
+@@TJvImageSquare.Images
 Summary
   Specifies an imagelist to retrieve the displayed image from.
 Description
-  Set ImageList to an imagelist where the component should retrieve the image to display. ImageList
+  Set Images to an imagelist where the component should retrieve the image to display. Images
   in combination with the ImageIndex property determines what image to display.
 See Also
   ImageIndex
@@ -149,11 +149,11 @@ See Also
 Summary
   Specifies the number of images to display.
 Description
-  Use ImageCount to specify the number of images to display from ImageList. For example, setting
+  Use ImageCount to specify the number of images to display from Images. For example, setting
   ImageCount to 2, will only display the first 2 images in the imagelist. ImageCount can never be set
-  to a value higher than ImageList.Count.
+  to a value higher than Images.Count.
 See Also
-  ImageIndex, ImageList
+  ImageIndex, Images
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.ImageIndex
 Summary
@@ -162,13 +162,13 @@ Description
   \Read ImageIndex to determine which image is currently selected or clicked. If no image is selected,
   ImageIndex returns -1.
 See Also
-  ImageList
+  Images
 ----------------------------------------------------------------------------------------------------
-@@TJvImageWindow.ImageList
+@@TJvImageWindow.Images
 Summary
   Specifies the images to display in the grid.
 Description
-  Set ImageList to the imagelist that should be displayed in the grid. If no imagelist is
+  Set Images to the imagelist that should be displayed in the grid. If no imagelist is
   assigned, no images are displayed.
 See Also
   ImageIndex, ColCount, ImageCount
@@ -203,7 +203,7 @@ See Also
 Summary
   Saves the images in the imagelist to a composite bitmap file.
 Description
-  Call SaveImageList to save the content of ImageList to a bitmap file. The images in ImageList are
+  Call SaveImageList to save the content of Images to a bitmap file. The images in Images are
   merged into a single strip of images before saving to file.
 Parameters
   Filename - The name of the file to save to. If Filename exists, it is overwritten.

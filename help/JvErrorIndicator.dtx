@@ -54,7 +54,7 @@ Return value
   that the returned location is where the control is actually located. The returned values are in client
   coordinates and is directly assignment compatible with the <LINK TControl.BoundsRect, BoundsRect> property.
 See Also
-  TControl.BoundsRect, Control, ImageIndex, ImageAlignment, Imagelist
+  TControl.BoundsRect, Control, ImageIndex, ImageAlignment, Images
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.Control
 Summary
@@ -63,9 +63,9 @@ Description
   Read Control to determine what control this error icon is acting upon. Change Control to make
   the error icon act on another control. The size and location of the error icon is automatically
   adjusted depending on the location of Control, the value of ImageAlignment as well as the size
-  of the image(s) in the Imagelist.
+  of the image(s) in the image list Images.
 See Also
-  Control, ImageAlignment, Imagelist
+  Control, ImageAlignment, Images
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.DrawImage
 Summary
@@ -99,16 +99,16 @@ See Also
 Summary
   Specifies the image to display in the control.
 Description
-  ImageIndex is the index of the image in Imagelist to display on the control. Set ImageIndex to -1 to
+  ImageIndex is the index of the image in Images to display on the control. Set ImageIndex to -1 to
   not show any icon. Normally, this property is maintained by the error indicator that created the control.
 See Also
-  Imagelist
+  Images
 ----------------------------------------------------------------------------------------------------
-@@TJvErrorControl.Imagelist
+@@TJvErrorControl.Images
 Summary
   Specifies the image list used to display images in the control.
 Description
-  Use Imagelist to specify where the control retrieves it's icons. In combination with ImageIndex
+  Use Images to specify where the control retrieves it's icons. In combination with ImageIndex
 See Also
   ImageIndex
 ----------------------------------------------------------------------------------------------------
@@ -251,7 +251,7 @@ Description
 See Also
   Error, ImageAlignment
 ----------------------------------------------------------------------------------------------------
-@@TJvErrorIndicator.Imagelist
+@@TJvErrorIndicator.Images
 Summary
   Lists the images that can appear on the error icons.
 Description
@@ -263,7 +263,7 @@ Description
   and position. To accommodate every system on which your application runs, it is recommended
   that you do not use 256 colors or higher.
 See Also
-  ImageIndex, TJvErrorControl.ImageIndex, TJvErrorControl.Imagelist
+  ImageIndex, TJvErrorControl.ImageIndex, TJvErrorControl.Images
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorIndicator.ImagePadding
 Summary

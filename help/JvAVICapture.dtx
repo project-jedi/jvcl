@@ -8,6 +8,19 @@ Summary
 Author
   Olivier Sannier
 ----------------------------------------------------------------------------------------------------
+@@PJvVideoHdr
+<TITLE PJvVideoHdr type>
+Summary
+  This type is equal to PVIDEOHDR
+Description
+  It has been created to ensure better readability
+----------------------------------------------------------------------------------------------------
+@@PJvWaveHdr
+<TITLE PJvWaveHdr type>
+Summary
+  This type is equal to PWAVEHDR
+Description
+  It has been created to ensure better readability
 @@TJvAudioFormat
 Summary
   This class describes the Audio Format used in the video stream
@@ -220,7 +233,7 @@ Description
   source depending on what you want to capture.
   If the given driver index is invalid, a EInvalidDriverIndex exception is triggered
 Parameters
-  driver - The index of the driver to connect to
+  Driver - The index of the driver to connect to
 Return value
   True if connection was successful, False otherwise
 See Also
@@ -329,13 +342,13 @@ Summary
 Description
   The frame will be grabbed out of any capture session, just displayed in the component
 Parameters
-  stop - True will stop Previewing and Overlaying, False will not change them
+  Stop - True will stop Previewing and Overlaying, False will not change them
 Return value
   True if the frame was grabbed successfully
 See Also
   Previewing, Overlaying
 ----------------------------------------------------------------------------------------------------
-@@TJvAVICapture.Hwnd
+@@TJvAVICapture.HWND
 Summary
   The handle of the underlying AVICap window.
 Description
@@ -389,7 +402,7 @@ Description
   This event will only be triggered if ueFrame is in UsedEvents
 Parameters
   Sender   - the TJvAVICapture component triggering the event
-  videoHdr - A TJvVideoHdr structure containing informations about the frame
+  videoHdr - A PJvVideoHdr structure containing informations about the frame
 See Also
   UsedEvents
 ----------------------------------------------------------------------------------------------------
@@ -415,7 +428,7 @@ Description
   This event will only be triggered if ueVideoStream is in UsedEvents
 Parameters
   Sender   - the TJvAVICapture component triggering the event
-  videoHdr - A TJvVideoHdr structure containing informations about the frame
+  videoHdr - A PJvVideoHdr structure containing informations about the frame
 See Also
   UsedEvents
 ----------------------------------------------------------------------------------------------------
@@ -495,7 +508,7 @@ Summary
 Description
   Tries to save the stream under the given filename
 Parameters
-  name - The name of the file to use
+  Name - The name of the file to use
 Return value
   True if call was successful
 ----------------------------------------------------------------------------------------------------
@@ -505,7 +518,7 @@ Summary
 Description
   The frame will be directly written into the DIB file
 Parameters
-  name - The name of the file to use
+  Name - The name of the file to use
 Return value
   True if the frame was saved successfuly
 ----------------------------------------------------------------------------------------------------
@@ -524,7 +537,7 @@ Summary
 Description
   Please refer to the Win32 API for detail on information chunks
 Parameters
-  chunk - The information chunk to set
+  Chunk - The information chunk to set
 Return value
   True if the information chunk was set successfuly
 ----------------------------------------------------------------------------------------------------
@@ -534,7 +547,7 @@ Summary
 Description
   Asks the system to show the given dialog for the currently selected driver
 Parameters
-  dialog - the dialog to show
+  Dialog - the dialog to show
 Return value
   True if dialog was shown successfuly and user pressed Ok. False otherwise
 See Also
@@ -953,7 +966,7 @@ Summary
 Description
   Tries to load the palette from the given file
 Parameters
-  filename - the name of the file containing the palette to load
+  FileName - the name of the file containing the palette to load
 Return value
   True if the palette was loaded successfuly, false otherwise
 See Also
@@ -970,7 +983,7 @@ Description
   capture driver that will now use it.
 
 Parameters
-  flag     - True to continue the creation, False to stop the creation
+  Flag     - True to continue the creation, False to stop the creation
   nbColors - Maximum number of colors in the palette
 Return value
   True if the call was successful
@@ -992,7 +1005,7 @@ Description
   Tries to save the current palette into a file that could be loaded later with Load.
   The usual extension for such files is .pal
 Parameters
-  filename - The name of the file to create
+  FileName - The name of the file to create
 Return value
   True if the file was created, false otherwise
 See Also
@@ -1120,13 +1133,6 @@ Summary
 See Also
   Height
 ----------------------------------------------------------------------------------------------------
-@@TJvVideoHdr
-<TITLE TJvVideoHdr type>
-Summary
-  This type is equal to PVIDEOHDR
-Description
-  It has been created to ensure better readability
-----------------------------------------------------------------------------------------------------
 @@TJvVirtualKey
 <TITLE TJvVirtualKey type>
 Summary
@@ -1134,13 +1140,6 @@ Summary
 Description
   This type is defined to allow to have a custom design editor that will ensure the
   virtual key value is always valid
-----------------------------------------------------------------------------------------------------
-@@TJvWaveHdr
-<TITLE TJvWaveHdr type>
-Summary
-  This type is equal to PWAVEHDR
-Description
-  It has been created to ensure better readability
 ----------------------------------------------------------------------------------------------------
 @@TOnCapControl
 <TITLE TOnCapControl type>

@@ -8,26 +8,26 @@ Summary
 Author
   Joe Doe
 ----------------------------------------------------------------------------------------------------
-@@TJvClipBoardCommand
-<TITLE TJvClipBoardCommand type>
+@@TJvClipboardCommand
+<TITLE TJvClipboardCommand type>
 Summary
   Enumerates clipboard commands.
 Description
-@@TJvClipBoardCommand.caCopy
+@@TJvClipboardCommand.caCopy
   \Copy command; This command copies the current selection to the clipboard in CF_TEXT format. 
-@@TJvClipBoardCommand.caCut
+@@TJvClipboardCommand.caCut
   Cut command; This command deletes (cut) the current selection, if any, in the edit control and 
   copies the deleted text to the clipboard in CF_TEXT format. 
-@@TJvClipBoardCommand.caPaste
+@@TJvClipboardCommand.caPaste
   Paste command; This command copies the current content of the clipboard to the edit control at the 
   current caret position. \Data is inserted only if the clipboard contains data in CF_TEXT format. 
-@@TJvClipBoardCommand.caUndo
+@@TJvClipboardCommand.caUndo
   Undo command. This command reverses the effect of the last operation on an edit control. The 
   previously deleted text is restored or the previously added text is deleted.
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboardCommands
 <TITLE TJvClipboardCommands type>
-<COMBINE TJvClipBoardCommand>
+<COMBINE TJvClipboardCommand>
 ----------------------------------------------------------------------------------------------------
 @@TJvComponent
 Summary
@@ -81,9 +81,6 @@ Description
 See Also
   TJvComponent, TJvCustomControl, TJvCustomMemo, TJvCustomPanel, TJvGraphicControl, 
   TJvMultiselectCheckListBox, TJvWinControl
-----------------------------------------------------------------------------------------------------
-@@TJvForm.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvGraphicControl
 Summary
