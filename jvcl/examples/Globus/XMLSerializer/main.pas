@@ -53,7 +53,7 @@ type
     procedure glXMLSerializerGetXMLHeader(Sender: TObject;
       var Value: String);
   private
-    sTestFileName: string; // File to be saved to XML
+    TestFileName: string; // File to be saved to XML
   public
   end;
 
@@ -72,13 +72,13 @@ var
 
 procedure TfglXMLSerializerDemo.FormCreate(Sender: TObject);
 begin
-  {  we will use the local file  test.xml}
-  sTestFileName := ExtractFilePath(ParamStr(0)) + 'test.xml';
-  eTestFileName.Text := sTestFileName;
+  { we will use the local file test.xml}
+  TestFileName := ExtractFilePath(ParamStr(0)) + 'Data\test.xml';
+  eTestFileName.Text := TestFileName;
 
   { TCatalogue - class which we will test}
 
-  Catalogue := TCatalogue.Create(self);
+  Catalogue := TCatalogue.Create(Self);
 end;
 
 procedure TfglXMLSerializerDemo.FormDestroy(Sender: TObject);
@@ -90,56 +90,53 @@ end;
 
 procedure TfglXMLSerializerDemo.bSaveXMLClick(Sender: TObject);
 var
-  fs: TFileStream;
-  i: integer;
+  Fs: TFileStream;
+  I: Integer;
 begin
   //We fill object with the any data
 
   Catalogue.Header := 'Catalog of descriptions of book news';
-  for i := 1 to 30 do
-  with Catalogue.Documents.Add do
-  begin
-    DocIndex := i;
-    Title := 'Title ' + IntToStr(i);
-    Author := 'Author ' + IntToStr(i);
-    PublicDate :=DateTimeToStr(now);
-  end;
+  for I := 1 to 30 do
+    with Catalogue.Documents.Add do
+    begin
+      DocIndex := I;
+      Title := 'Title ' + IntToStr(I);
+      Author := 'Author ' + IntToStr(I);
+      PublicDate :=DateTimeToStr(Now);
+    end;
   Catalogue.Footer := 'Created ' + DateToStr(date);
 
-  { сохраняем }
-  fs := TFileStream.Create( sTestFileName, fmCreate);
+  Fs := TFileStream.Create(TestFileName, fmCreate);
   try
-    JvgXMLSerializer.Serialize(Catalogue, fs);
+    JvgXMLSerializer.Serialize(Catalogue, Fs);
   finally
-    fs.Free;
+    Fs.Free;
   end;
 
-  ShowMessage('Object is saved to the file ');
+  ShowMessage('Object has been saved to the file '#13#10 + TestFileName);
 end;
-
-
 
 { Initialization of object from XML }
 
 procedure TfglXMLSerializerDemo.bLoadXMLClick(Sender: TObject);
 var
-  fs: TFileStream;
+  Fs: TFileStream;
 begin
   Catalogue.Documents.Clear;
-  fs := TFileStream.Create( sTestFileName, fmOpenRead);
+  Fs := TFileStream.Create(TestFileName, fmOpenRead);
   try
-    JvgXMLSerializer.DeSerialize(Catalogue, fs);
+    JvgXMLSerializer.DeSerialize(Catalogue, Fs);
   finally
-    fs.Free;
+    Fs.Free;
   end;
   ShowMessage('Object is loaded. Count: ' + IntToStr(Catalogue.Documents.Count));
 end;
 
-{ Open in browser}
+{ Open in browser }
 
 procedure TfglXMLSerializerDemo.bViewXMLClick(Sender: TObject);
 begin
-  ShellExecute(0, 'open', PChar(sTestFileName), nil, nil, SW_SHOW);
+  ShellExecute(0, 'open', PChar(TestFileName), nil, nil, SW_SHOW);
 end;
 
 { Standard title with the indication of coding for the Russian letters}
