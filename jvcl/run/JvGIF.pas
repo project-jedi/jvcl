@@ -255,7 +255,7 @@ uses
   Consts, Math,
   JvJCLUtils, JvJVCLUtils, JvAni, JvConsts, JvResources, JvTypes;
 
-{$R-}
+{$RANGECHECKS OFF}
 
 procedure JvGif_Dummy;
 begin
@@ -273,7 +273,7 @@ begin
 end;
 
 {$IFDEF RANGECHECKS_ON}
-{$R+}
+{$RANGECHECKS ON}
 {$ENDIF RANGECHECKS_ON}
 
 //=== TSharedImage ===========================================================

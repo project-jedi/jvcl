@@ -4333,7 +4333,7 @@ begin
       if FormStyle in [fsMDIChild, fsMDIForm] then
         TJvNastyForm(Form).FWindowState := WinState
       else
-        {$ENDIF VCL}
+      {$ENDIF VCL}
         WindowState := WinState;
     end;
     Update;

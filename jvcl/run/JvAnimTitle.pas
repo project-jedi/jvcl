@@ -43,26 +43,26 @@ type
   TJvAnimTitle = class(TJvComponent)
   private
     FTimer: TTimer;
-    FEnable: Boolean;
-    FInitialTitle: string;
+    FEnabled: Boolean;
     FTitle: string;
+    FCurrentTitle: string;
     FDelay: Integer;
     FSens: Boolean;
     FForm: TCustomForm;
     FBlink: Integer;
     FBlinked: Integer;
     FBlinking: Boolean;
-    procedure ChangeTitle(const NewTitle: string);
-    procedure EnableChange(NewEnable: Boolean);
-    procedure ChangeDelay(NewDelay: Integer);
+    procedure SetTitle(const NewTitle: string);
+    procedure SetEnabled(NewEnable: Boolean);
+    procedure SetDelay(NewDelay: Integer);
     procedure AnimateTitle(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Title: string read FInitialTitle write ChangeTitle;
-    property Enabled: Boolean read FEnable write EnableChange default False;
-    property Delay: Integer read FDelay write ChangeDelay default 50;
+    property Title: string read FTitle write SetTitle;
+    property Enabled: Boolean read FEnabled write SetEnabled default False;
+    property Delay: Integer read FDelay write SetDelay default 50;
     property Blink: Integer read FBlink write FBlink default 5;
   end;
 
@@ -71,18 +71,17 @@ implementation
 constructor TJvAnimTitle.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FEnable := False;
+  FEnabled := False;
   FDelay := 50;
   FBlink := 5;
   FForm := GetParentForm(TControl(AOwner));
-  FInitialTitle := FForm.Caption;
+  FTitle := FForm.Caption;
   FSens := True;
   FBlinking := False;
   FBlinked := 0;
-  FDelay := 100;
 
   FTimer := TTimer.Create(Self);
-  FTimer.Enabled := FEnable;
+  FTimer.Enabled := FEnabled;
   FTimer.Interval := FDelay;
   FTimer.OnTimer := AnimateTitle;
 end;
@@ -91,7 +90,7 @@ destructor TJvAnimTitle.Destroy;
 begin
   FTimer.Free;
   if not (csDestroying in FForm.ComponentState) then
-    FForm.Caption := FInitialTitle;
+    FForm.Caption := FTitle;
   inherited Destroy;
 end;
 
@@ -101,13 +100,13 @@ begin
   begin
     // (rom) this is a bad implementation better try to manipulate
     // (rom) the WM_GETTEXT and WM_SETTEXT to the Form window
-    if FForm.Caption = FInitialTitle then
+    if FForm.Caption = Title then
       FForm.Caption := ''
     else
     begin
-      FForm.Caption := FInitialTitle;
+      FForm.Caption := Title;
       Inc(FBlinked);
-      if FBlinked >= FBlink then
+      if FBlinked >= Blink then
       begin
         FBlinking := False;
         FBlinked := 0;
@@ -118,43 +117,43 @@ begin
   begin
     if FSens then
     begin
-      if Length(FTitle) = Length(FInitialTitle) then
+      if Length(FCurrentTitle) = Length(Title) then
       begin
         FSens := False;
-        if FBlink > 0 then
+        if Blink > 0 then
           FBlinking := True;
       end
       else
-        FTitle := FTitle + FInitialTitle[Length(FTitle) + 1];
+        FCurrentTitle := FCurrentTitle + Title[Length(FCurrentTitle) + 1];
     end
     else
-    if FTitle = '' then
+    if FCurrentTitle = '' then
       FSens := True
     else
-      SetLength(FTitle, Length(FTitle) - 1);
+      SetLength(FCurrentTitle, Length(FCurrentTitle) - 1);
     {$IFDEF LINUX}
-    if FTitle = '' then
+    if FCurrentTitle = '' then
       FForm.Caption := ' '   // else caption becomes <1>
     else
     {$ENDIF LINUX}
-    FForm.Caption := FTitle;
+    FForm.Caption := FCurrentTitle;
   end;
 end;
 
-procedure TJvAnimTitle.ChangeTitle(const NewTitle: string);
+procedure TJvAnimTitle.SetTitle(const NewTitle: string);
 begin
-  FInitialTitle := NewTitle;
-  FTitle := '';
+  FTitle := NewTitle;
+  FCurrentTitle := '';
   FSens := True;
 end;
 
-procedure TJvAnimTitle.EnableChange(NewEnable: Boolean);
+procedure TJvAnimTitle.SetEnabled(NewEnable: Boolean);
 begin
-  FEnable := NewEnable;
-  FTimer.Enabled := FEnable;
+  FEnabled := NewEnable;
+  FTimer.Enabled := FEnabled;
 end;
 
-procedure TJvAnimTitle.ChangeDelay(NewDelay: Integer);
+procedure TJvAnimTitle.SetDelay(NewDelay: Integer);
 begin
   FDelay := NewDelay;
   FTimer.Interval := FDelay;

@@ -34,7 +34,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, QuickRpt, QRCtrls, QRPrntr, ComCtrls, ToolWin,
-  ImgList, ShellApi, StdCtrls,
+  ImgList, ShellAPI, StdCtrls,
   JvgQRLabel, JvgBevel, JvgLabel, JvComponent, JvExControls;
 
 type

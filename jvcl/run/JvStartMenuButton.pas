@@ -70,7 +70,7 @@ type
 implementation
 
 uses
-  ShellApi,
+  ShellAPI,
   JvJVCLUtils, JvResources;
 
 constructor TJvStartMenuButton.Create(AOwner: TComponent);

@@ -129,13 +129,13 @@ var
 begin
   with FBitmap do
   begin
-    Width := FSize;
-    Height := FSize;
+    Width := Size;
+    Height := Size;
     Canvas.Brush.Color := clWhite;
     Canvas.FillRect(Rect(0, 0, Width, Height));
     Canvas.Pen.Style := psClear;
-    Canvas.Brush.Color := FColor;
-    case FShape of
+    Canvas.Brush.Color := Color;
+    case Shape of
       absRound:
         Canvas.Ellipse(0, 0, Width, Height);
       absSquare:
@@ -181,7 +181,7 @@ begin
       for X := 0 to FBitmap.Width - 1 do
         if (Sqr(X - X2) + Sqr(Y - Y2)) < Sqr(X2) then
           if ((X mod 3) = 0) and ((Y mod 3) = 0) then
-            Pixels[X, Y] := FColor;
+            Pixels[X, Y] := Color;
 end;
 
 procedure TJvAirBrush.Draw(ACanvas: TCanvas; X, Y: Integer);
@@ -191,9 +191,9 @@ var
   CLeft, CTop: Integer;
 begin
   //  MakeBrush;
-  CLeft := X - (FSize div 2);
-  CTop := Y - (FSize div 2);
-  RPaint := Rect(CLeft, CTop, CLeft + FSize, CTop + FSize);
+  CLeft := X - (Size div 2);
+  CTop := Y - (Size div 2);
+  RPaint := Rect(CLeft, CTop, CLeft + Size, CTop + Size);
   Bmp := TBitmap.Create;
   Bmp.Width := FBitmap.Width;
   Bmp.Height := FBitmap.Height;
@@ -206,7 +206,7 @@ begin
     Bmp.PixelFormat := pf24bit;
     FBitmap.PixelFormat := pf24bit;
     Dst.PixelFormat := pf24bit;
-    TJvPaintFX.Blend2(Bmp, FBitmap, Dst, FIntensity / 100);
+    TJvPaintFX.Blend2(Bmp, FBitmap, Dst, Intensity / 100);
     Dst.TransparentColor := clWhite;
     Dst.Transparent := True;
     ACanvas.Draw(CLeft, CTop, Dst);
@@ -229,7 +229,7 @@ end;
 
 function TJvAirBrush.GetAir: Boolean;
 begin
-  if Integer(GetTickCount - FCounter) > FInterval then
+  if Integer(GetTickCount - FCounter) > Interval then
   begin
     Result := True;
     FCounter := GetTickCount;

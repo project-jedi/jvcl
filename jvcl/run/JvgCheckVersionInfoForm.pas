@@ -67,7 +67,7 @@ type
 implementation
 
 uses
-  ShellApi,
+  ShellAPI,
   {$IFDEF USEJVCL}
   JvResources,
   {$ENDIF USEJVCL}
