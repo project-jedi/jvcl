@@ -993,6 +993,8 @@ end;
 procedure TJvCustomDBTreeView.Change2(Node: TTreeNode);
 begin
   FDataLink.DataSet.Locate(FMasterField, (Node as TJvDBTreeNode).FMasterValue, []);
+  if (Node as TJvDBTreeNode).FMasterValue = Null then
+    (Node as TJvDBTreeNode).SetMasterValue(FDataLink.DataSet.FieldByName(MasterField).AsVariant);
 end;
 
 procedure TJvCustomDBTreeView.InternalRecordChanged(Field: TField);
