@@ -280,6 +280,7 @@ begin
     Add('AboutJVCL');
     Add('AppStoragePath');
     Add('AutoLoad');
+    Add('ClearBeforeLoad');
     Add('Name');
     Add('Tag');
     Add('Enabled');
