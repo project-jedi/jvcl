@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2004-12-13 23:59\n"
-"PO-Revision-Date: 2004-12-13 23:59\n"
+"POT-Creation-Date: 2004-12-17 22:09\n"
+"PO-Revision-Date: 2004-12-17 22:09\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,7 +17,7 @@ msgstr ""
 #. FormCompile..Caption
 #: FrmCompile.dfm:6
 #. Programmer's name for it: RsCompiling
-#: FrmCompile.pas:75
+#: FrmCompile.pas:127
 msgid "Compiling"
 msgstr ""
 
@@ -105,7 +105,7 @@ msgstr ""
 #. FormCompile..PanelClient..LblStatus..Caption
 #: FrmCompile.dfm:178
 #. Programmer's name for it: RsThereAreErrors
-#: FrmCompile.pas:78
+#: FrmCompile.pas:130
 msgid "There are errors."
 msgstr ""
 
@@ -443,6 +443,18 @@ msgstr ""
 msgid "&Verbose compiler output"
 msgstr ""
 
+#. FrameConfigPage..CheckBoxIgnoreMakeErrors....Height
+#: Frames/FrmConfigPage.dfm:388
+msgid "Activate this option if the installer should not stop when an error "
+"occured while\n"
+"compiling the packages."
+msgstr ""
+
+#. FrameConfigPage..CheckBoxIgnoreMakeErrors..Caption
+#: Frames/FrmConfigPage.dfm:389
+msgid "D&o not stop on errors"
+msgstr ""
+
 #. FrameDirEditBrowse..LblCaption..Caption
 #: Frames/FrmDirEditBrowse.dfm:12
 msgid "LblCaption"
@@ -697,32 +709,32 @@ msgid_plural "Start directory: %s"
 msgstr[0] ""
 
 #. Programmer's name for it: RsPreparing
-#: FrmCompile.pas:74
+#: FrmCompile.pas:126
 msgid "Preparing..."
 msgstr ""
 
 #. Programmer's name for it: RsLinking
-#: FrmCompile.pas:76
+#: FrmCompile.pas:128
 msgid "Linking"
 msgstr ""
 
 #. Programmer's name for it: RsDone
-#: FrmCompile.pas:77
+#: FrmCompile.pas:129
 msgid "Done"
 msgstr ""
 
 #. Programmer's name for it: RsThereAreWarnings
-#: FrmCompile.pas:79
+#: FrmCompile.pas:131
 msgid "There are warnings."
 msgstr ""
 
 #. Programmer's name for it: RsThereAreHints
-#: FrmCompile.pas:80
+#: FrmCompile.pas:132
 msgid "There are hints."
 msgstr ""
 
 #. Programmer's name for it: RsCompiled
-#: FrmCompile.pas:81
+#: FrmCompile.pas:133
 msgid "compiled."
 msgstr ""
 
@@ -836,7 +848,7 @@ msgstr ""
 #. Programmer's name for it: RsComplete
 #: InstallerConsts.pas:85
 #. Programmer's name for it: RsComplete
-#: JVCLData.pas:295
+#: JVCLData.pas:297
 msgid "Complete."
 msgstr ""
 
@@ -1180,38 +1192,38 @@ msgid "Do you really want to cancel the installation?"
 msgstr ""
 
 #. Programmer's name for it: RsComponentPalettePrefix
-#: JVCLData.pas:287
+#: JVCLData.pas:289
 msgid "TJv"
 msgstr ""
 
 #. Programmer's name for it: RsNoJVCLFound
-#: JVCLData.pas:288
+#: JVCLData.pas:290
 msgid "No JVCL directory found. Application "
 "terminated."
 msgstr ""
 
 #. Programmer's name for it: RsJVCLInstaller
-#: JVCLData.pas:289
+#: JVCLData.pas:291
 msgid "JVCL Installer"
 msgstr ""
 
 #. Programmer's name for it: RsCleaningPalette
-#: JVCLData.pas:291
+#: JVCLData.pas:293
 msgid "Cleaning Palette..."
 msgstr ""
 
 #. Programmer's name for it: RsCleaningPathLists
-#: JVCLData.pas:292
+#: JVCLData.pas:294
 msgid "Cleaning Path lists..."
 msgstr ""
 
 #. Programmer's name for it: RsUnregisteringPackages
-#: JVCLData.pas:293
+#: JVCLData.pas:295
 msgid "Unregistering packages..."
 msgstr ""
 
 #. Programmer's name for it: RsDeletingFiles
-#: JVCLData.pas:294
+#: JVCLData.pas:296
 msgid "Deleting files..."
 msgstr ""
 
