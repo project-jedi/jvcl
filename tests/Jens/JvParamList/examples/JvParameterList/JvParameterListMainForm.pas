@@ -6,7 +6,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
-  Dialogs, JvDsaDialogs, jvParameterList, StdCtrls, jvParameterList_Parameter, Mask,
+  Dialogs, JvDsaDialogs, jvParameterList, StdCtrls, JvParameterListParameter, Mask,
   JvToolEdit, jvPanel,
   {$IFDEF INCLUDE_DEVEXP_CX}
   cxButtons, cxListBox, cxRadioGroup, cxLookAndFeelPainters,
@@ -38,8 +38,6 @@ type
     JvAppRegistryStore: TJvAppRegistryStore;
     JvFormStorage1: TJvFormStorage;
     JvFormStorage2: TJvFormStorage;
-    BitBtn1: TBitBtn;
-    BitBtn2: TBitBtn;
     HistoryEnabledCheckBox: TCheckBox;
     Image1: TImage;
     GroupBox2: TGroupBox;
@@ -74,6 +72,14 @@ type
     Button3: TButton;
     Button4: TButton;
     Button11: TButton;
+    GroupBox5: TGroupBox;
+    BitBtn1: TBitBtn;
+    BitBtn2: TBitBtn;
+    Label5: TLabel;
+    StaticText1: TStaticText;
+    StaticText2: TStaticText;
+    StaticText3: TStaticText;
+    StaticText4: TStaticText;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -108,13 +114,13 @@ implementation
 
 {$R *.dfm}
 
-uses JvDynControlEngine_VCL,
-  JvDynControlEngine_JVCL,
+uses JvDynControlEngineVCL,
+  JvDynControlEngineJVCL,
   JclBase,
   JvFormPlacementSelectList,
-  JvDynControlEngine_VCLRed
-     {$IFDEF INCLUDE_DEVEXP_CX}
-  , JvDynControlEngine_DevExpCx
+  JvDynControlEngineVCLRed
+ {$IFDEF INCLUDE_DEVEXP_CX}
+  , JvDynControlEngineDevExpCx
   , cxLookAndFeels
 {$ENDIF}
   ;
@@ -126,18 +132,18 @@ end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
-  ShowTest1(DynControlEngine_VCL);
+  ShowTest1(DynControlEngineVCL);
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 begin
-  ShowTest1(DynControlEngine_JVCL);
+  ShowTest1(DynControlEngineJVCL);
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 begin
   {$IFDEF INCLUDE_DEVEXP_CX}
-  ShowTest1(DynControlEngine_DevExpCx);
+  ShowTest1(DynControlEngineDevExpCx);
   {$ENDIF}
 end;
 
@@ -151,8 +157,8 @@ begin
     if Assigned(aDynControlEngine) then
       ParameterList.DynControlEngine := aDynControlEngine;
     {$IFDEF INCLUDE_DEVEXP_CX}
-    if ParameterList.DynControlEngine is tJvDynControlEngine_DevExpCx then
-      with tJvDynControlEngine_DevExpCx(ParameterList.DynControlEngine) do
+    if ParameterList.DynControlEngine is tJvDynControlEngineDevExpCx then
+      with tJvDynControlEngineDevExpCx(ParameterList.DynControlEngine) do
       begin
         case DevExpCxLookAndFeelRadioGroup.ItemIndex of
           1: cxProperties.LookAndFeel.Kind := lfFlat;
@@ -333,8 +339,8 @@ begin
     if Assigned(aDynControlEngine) then
       ParameterList.DynControlEngine := aDynControlEngine;
     {$IFDEF INCLUDE_DEVEXP_CX}
-    if ParameterList.DynControlEngine is tJvDynControlEngine_DevExpCx then
-      with tJvDynControlEngine_DevExpCx(ParameterList.DynControlEngine) do
+    if ParameterList.DynControlEngine is tJvDynControlEngineDevExpCx then
+      with tJvDynControlEngineDevExpCx(ParameterList.DynControlEngine) do
       begin
         case DevExpCxLookAndFeelRadioGroup.ItemIndex of
           1: cxProperties.LookAndFeel.Kind := lfFlat;
@@ -447,8 +453,8 @@ begin
     if Assigned(aDynControlEngine) then
       ParameterList.DynControlEngine := aDynControlEngine;
     {$IFDEF INCLUDE_DEVEXP_CX}
-    if ParameterList.DynControlEngine is tJvDynControlEngine_DevExpCx then
-      with tJvDynControlEngine_DevExpCx(ParameterList.DynControlEngine) do
+    if ParameterList.DynControlEngine is tJvDynControlEngineDevExpCx then
+      with tJvDynControlEngineDevExpCx(ParameterList.DynControlEngine) do
       begin
         case DevExpCxLookAndFeelRadioGroup.ItemIndex of
           1: cxProperties.LookAndFeel.Kind := lfFlat;
@@ -559,7 +565,7 @@ procedure TForm1.BitBtn1Click(Sender: TObject);
 var
   FormStorageSelectList: tJvFormStorageSelectList;
 begin
-//  SetDynControlEngine_DevExpCxDefault;
+//  SetDynControlEngineDevExpCxDefault;
   FormStorageSelectList := tJvFormStorageSelectList.Create(Self);
   try
     FormStorageSelectList.FormStorage := JvFormStorage2;
@@ -590,7 +596,7 @@ end;
 procedure TForm1.DevExpCxLookAndFeelRadioGroupClick(Sender: TObject);
 begin
   {$IFDEF INCLUDE_DEVEXP_CX}
-  with DynControlEngine_DevExpCx do
+  with DynControlEngineDevExpCx do
   begin
     case DevExpCxLookAndFeelRadioGroup.ItemIndex of
       1: cxProperties.LookAndFeel.Kind := lfFlat;
@@ -611,14 +617,14 @@ procedure TForm1.VCLRadioButtonClick(Sender: TObject);
 begin
   {$IFDEF INCLUDE_DEVEXP_CX}
   if CxRadioButton.Checked then
-    SetDefaultDynControlEngine(DynControlEngine_DevExpCx)
+    SetDefaultDynControlEngine(DynControlEngineDevExpCx)
   else  {$ENDIF}
   if JVCLRadioButton.Checked then
-    SetDefaultDynControlEngine(DynControlEngine_JVCL)
+    SetDefaultDynControlEngine(DynControlEngineJVCL)
   else if VCLRedRadioButton.Checked then
-    SetDefaultDynControlEngine(DynControlEngine_VCLRed)
+    SetDefaultDynControlEngine(DynControlEngineVCLRed)
   else
-    SetDefaultDynControlEngine(DynControlEngine_VCL);
+    SetDefaultDynControlEngine(DynControlEngineVCL);
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -669,7 +675,7 @@ end;
 
 procedure TForm1.Button11Click(Sender: TObject);
 begin
-  ShowTest1(DynControlEngine_VCLRed);
+  ShowTest1(DynControlEngineVCLRed);
 end;
 
 procedure TForm1.Button12Click(Sender: TObject);

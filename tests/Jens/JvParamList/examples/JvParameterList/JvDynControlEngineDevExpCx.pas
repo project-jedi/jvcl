@@ -25,7 +25,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDynControlEngine_DevExpCx;
+unit JvDynControlEngineDevExpCx;
 
 interface
 
@@ -35,7 +35,7 @@ uses
   cxLookAndFeels, cxMaskEdit, cxLabel, cxButtons, cxListBox, cxDropDownEdit,
   cxButtonEdit, cxCalendar, cxCheckBox, cxMemo, cxRadioGroup, cxImage,
   cxEdit, cxCalc, cxSpinEdit, cxTimeEdit,
-  JvDynControlEngine, JvDynControlEngine_Interface;
+  JvDynControlEngine, JvDynControlEngineIntf;
 
 type
   TCxDynControlWrapper = class (TPersistent)
@@ -478,7 +478,7 @@ type
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
-  TJvDynControlEngine_DevExpCx = class (TJvDynControlEngine)
+  TJvDynControlEngineDevExpCx = class (TJvDynControlEngine)
   private
     FCxProperties: TCxDynControlWrapper;
   protected
@@ -492,8 +492,8 @@ type
     property CxProperties: TCxDynControlWrapper read FCxProperties write FCxProperties;
   end;
 
-function DynControlEngine_DevExpCx: TJvDynControlEngine_DevExpCx;
-procedure SetDynControlEngine_DevExpCxDefault;
+function DynControlEngineDevExpCx: TJvDynControlEngineDevExpCx;
+procedure SetDynControlEngineDevExpCxDefault;
 
 implementation
 
@@ -505,7 +505,7 @@ uses
   cxControls;
 
 var
-  IntDynControlEngine_DevExpCx: TJvDynControlEngine_DevExpCx = nil;
+  IntDynControlEngineDevExpCx: TJvDynControlEngineDevExpCx = nil;
 
 //=== TCxDynControlWrapper ===================================================
 
@@ -1861,27 +1861,27 @@ begin
   LookAndFeel.Assign(Value.LookAndFeel);
 end;
 
-//=== TJvDynControlEngine_DevExpCx ===========================================
+//=== TJvDynControlEngineDevExpCx ===========================================
 
-constructor TJvDynControlEngine_DevExpCx.Create;
+constructor TJvDynControlEngineDevExpCx.Create;
 begin
   inherited Create;
   FCxProperties := TCxDynControlWrapper.Create;
 end;
 
-destructor TJvDynControlEngine_DevExpCx.Destroy;
+destructor TJvDynControlEngineDevExpCx.Destroy;
 begin
   FreeAndNil(FCxProperties);
   inherited Destroy;
 end;
 
-procedure TJvDynControlEngine_DevExpCx.SetcxProperties(Value: TCxDynControlWrapper);
+procedure TJvDynControlEngineDevExpCx.SetcxProperties(Value: TCxDynControlWrapper);
 begin
   if Value is TCxDynControlWrapper then
     FCxProperties.LookAndFeel.Assign(Value.LookAndFeel);
 end;
 
-function TJvDynControlEngine_DevExpCx.CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
+function TJvDynControlEngineDevExpCx.CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
 var
   //cx: IJvDynControlDevExpCx;
   C: TControl;
@@ -1894,42 +1894,42 @@ begin
 //    cx.ControlSetLookAndFeel(LookAndFeel);
 end;
 
-//=== DynControlEngine_DevExpCx ==============================================
+//=== DynControlEngineDevExpCx ==============================================
 
-function DynControlEngine_DevExpCx: TJvDynControlEngine_DevExpCx;
+function DynControlEngineDevExpCx: TJvDynControlEngineDevExpCx;
 begin
-  Result := IntDynControlEngine_DevExpCx;
+  Result := IntDynControlEngineDevExpCx;
 end;
 
-procedure SetDynControlEngine_DevExpCxDefault;
+procedure SetDynControlEngineDevExpCxDefault;
 begin
-  SetDefaultDynControlEngine(IntDynControlEngine_DevExpCx);
+  SetDefaultDynControlEngine(IntDynControlEngineDevExpCx);
 end;
 
 initialization
-  IntDynControlEngine_DevExpCx := TJvDynControlEngine_DevExpCx.Create;
-  IntDynControlEngine_DevExpCx.RegisterControl(jctLabel, TJvDynControlCxLabel);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctStaticText, TJvDynControlCxStaticText);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctButton, TJvDynControlCxButton);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctScrollBox, TJvDynControlCxScrollBox);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctPanel, TJvDynControlCxPanel);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctImage, TJvDynControlCxImage);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctCheckBox, TJvDynControlCxCheckBox);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctComboBox, TJvDynControlCxComboBox);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctListBox, TJvDynControlCxListBox);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctRadioGroup, TJvDynControlCxRadioGroup);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctDateTimeEdit, TJvDynControlCxDateTimeEdit);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctTimeEdit, TJvDynControlCxTimeEdit);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctDateEdit, TJvDynControlCxDateEdit);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctEdit, TJvDynControlCxMaskEdit);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctCalculateEdit, TJvDynControlCxCalcEdit);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctSpinEdit, TJvDynControlCxSpinEdit);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctDirectoryEdit, TJvDynControlCxDirectoryEdit);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctFileNameEdit, TJvDynControlCxFileNameEdit);
-  IntDynControlEngine_DevExpCx.RegisterControl(jctMemo, TJvDynControlCxMemo);
-  SetDefaultDynControlEngine(IntDynControlEngine_DevExpCx);
+  IntDynControlEngineDevExpCx := TJvDynControlEngineDevExpCx.Create;
+  IntDynControlEngineDevExpCx.RegisterControl(jctLabel, TJvDynControlCxLabel);
+  IntDynControlEngineDevExpCx.RegisterControl(jctStaticText, TJvDynControlCxStaticText);
+  IntDynControlEngineDevExpCx.RegisterControl(jctButton, TJvDynControlCxButton);
+  IntDynControlEngineDevExpCx.RegisterControl(jctScrollBox, TJvDynControlCxScrollBox);
+  IntDynControlEngineDevExpCx.RegisterControl(jctPanel, TJvDynControlCxPanel);
+  IntDynControlEngineDevExpCx.RegisterControl(jctImage, TJvDynControlCxImage);
+  IntDynControlEngineDevExpCx.RegisterControl(jctCheckBox, TJvDynControlCxCheckBox);
+  IntDynControlEngineDevExpCx.RegisterControl(jctComboBox, TJvDynControlCxComboBox);
+  IntDynControlEngineDevExpCx.RegisterControl(jctListBox, TJvDynControlCxListBox);
+  IntDynControlEngineDevExpCx.RegisterControl(jctRadioGroup, TJvDynControlCxRadioGroup);
+  IntDynControlEngineDevExpCx.RegisterControl(jctDateTimeEdit, TJvDynControlCxDateTimeEdit);
+  IntDynControlEngineDevExpCx.RegisterControl(jctTimeEdit, TJvDynControlCxTimeEdit);
+  IntDynControlEngineDevExpCx.RegisterControl(jctDateEdit, TJvDynControlCxDateEdit);
+  IntDynControlEngineDevExpCx.RegisterControl(jctEdit, TJvDynControlCxMaskEdit);
+  IntDynControlEngineDevExpCx.RegisterControl(jctCalculateEdit, TJvDynControlCxCalcEdit);
+  IntDynControlEngineDevExpCx.RegisterControl(jctSpinEdit, TJvDynControlCxSpinEdit);
+  IntDynControlEngineDevExpCx.RegisterControl(jctDirectoryEdit, TJvDynControlCxDirectoryEdit);
+  IntDynControlEngineDevExpCx.RegisterControl(jctFileNameEdit, TJvDynControlCxFileNameEdit);
+  IntDynControlEngineDevExpCx.RegisterControl(jctMemo, TJvDynControlCxMemo);
+  SetDefaultDynControlEngine(IntDynControlEngineDevExpCx);
 
 finalization
-  FreeAndNil(IntDynControlEngine_DevExpCx);
+  FreeAndNil(IntDynControlEngineDevExpCx);
 
 end.

@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
   Steve Magruder
 
-Last Modified: 2003-01-31
+Last Modified: 2003-12-17
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -37,7 +37,6 @@ uses
 
 type
   TDlgCenterKind = (dckScreen, dckMainForm, dckActiveForm);
-//=== TDSAMessageForm ========================================================
 
   TDSAMessageForm = class (TForm)
   private
@@ -352,7 +351,7 @@ implementation
 uses
   Consts, Math, TypInfo,
   JclRegistry, JclSysUtils,
-  JvResources, JvDynControlEngine_Interface;
+  JvResources, JvDynControlEngineIntf;
 
 {$IFNDEF DELPHI6_UP}
 type
@@ -1172,7 +1171,7 @@ const
   DSAString = 5;
 
   DSAKindTexts: array [DSABool..DSAString] of string = (
-    RsDSAAccessBool, RsDSAAccessFloat, RsDSAAccessInt64, RsDSAAccessInt, RsDSAAccessString);
+    RsEDSAAccessBool, RsEDSAAccessFloat, RsEDSAAccessInt64, RsEDSAAccessInt, RsEDSAAccessString);
 
 type
   TDSAValues = class (TStringList)

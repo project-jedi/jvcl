@@ -1,9 +1,9 @@
 object Form1: TForm1
   Left = 288
   Top = 215
-  Width = 870
-  Height = 640
-  Caption = 'Form1'
+  Width = 689
+  Height = 581
+  Caption = 'JvDynControlEngine / JvParameterList Sample'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,12 +11,13 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
-    Left = 760
-    Top = 5
+    Left = 240
+    Top = 25
     Width = 85
     Height = 76
     Picture.Data = {
@@ -1406,12 +1407,13 @@ object Form1: TForm1
       AB9F89AB89AB9FABAB93819797E852FFE8FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFF}
     Stretch = True
+    Visible = False
   end
   object GroupBox1: TGroupBox
-    Left = 480
-    Top = 135
+    Left = 10
+    Top = 125
     Width = 331
-    Height = 136
+    Height = 126
     Caption = 'Parameterlist Settings'
     TabOrder = 0
     object Label1: TLabel
@@ -1523,34 +1525,16 @@ object Form1: TForm1
       TabOrder = 8
     end
   end
-  object BitBtn1: TBitBtn
-    Left = 260
-    Top = 25
-    Width = 90
-    Height = 25
-    Caption = '&Load Settings'
-    TabOrder = 1
-    OnClick = BitBtn1Click
-  end
-  object BitBtn2: TBitBtn
-    Left = 260
-    Top = 55
-    Width = 90
-    Height = 25
-    Caption = '&Store Settings'
-    TabOrder = 2
-    OnClick = BitBtn2Click
-  end
   object GroupBox2: TGroupBox
-    Left = 480
-    Top = 280
-    Width = 311
-    Height = 186
+    Left = 360
+    Top = 90
+    Width = 306
+    Height = 161
     Caption = 'JvDynControl Settings'
-    TabOrder = 3
+    TabOrder = 1
     object DevExpCxLookAndFeelRadioGroup: TRadioGroup
       Left = 8
-      Top = 104
+      Top = 79
       Width = 137
       Height = 73
       Caption = 'DevExp Cx LookAndFeel'
@@ -1564,7 +1548,7 @@ object Form1: TForm1
     end
     object DevExpCxStyleGroupBox: TGroupBox
       Left = 150
-      Top = 105
+      Top = 80
       Width = 146
       Height = 71
       Caption = 'DevExp Cx Style'
@@ -1591,8 +1575,8 @@ object Form1: TForm1
     object GroupBox3: TGroupBox
       Left = 10
       Top = 20
-      Width = 231
-      Height = 76
+      Width = 181
+      Height = 56
       Caption = 'Default DynControlEngine'
       TabOrder = 2
       object VCLRadioButton: TRadioButton
@@ -1614,16 +1598,16 @@ object Form1: TForm1
         OnClick = VCLRadioButtonClick
       end
       object CxRadioButton: TRadioButton
-        Left = 5
-        Top = 55
-        Width = 101
+        Left = 80
+        Top = 35
+        Width = 96
         Height = 17
         Caption = 'DevExpress Cx'
         TabOrder = 2
         OnClick = VCLRadioButtonClick
       end
       object VclRedRadioButton: TRadioButton
-        Left = 75
+        Left = 80
         Top = 15
         Width = 81
         Height = 17
@@ -1636,17 +1620,17 @@ object Form1: TForm1
     end
   end
   object GroupBox4: TGroupBox
-    Left = 10
-    Top = 335
+    Left = 390
+    Top = 285
     Width = 276
-    Height = 111
+    Height = 206
     Caption = 'Message Dlg Tests'
-    TabOrder = 4
+    TabOrder = 2
     object JvPanel1: TJvPanel
       Left = 2
       Top = 15
       Width = 272
-      Height = 94
+      Height = 189
       MultiLine = False
       ArrangeSettings.BorderLeft = 5
       ArrangeSettings.BorderTop = 5
@@ -1658,79 +1642,92 @@ object Form1: TForm1
       TabOrder = 0
       object Button5: TButton
         Left = 5
-        Top = 5
+        Top = 89
         Width = 126
         Height = 25
         Caption = 'MessageDlg &A'
-        TabOrder = 0
+        TabOrder = 1
         OnClick = Button5Click
       end
       object Button6: TButton
         Left = 134
-        Top = 5
+        Top = 89
         Width = 126
         Height = 25
         Caption = 'MessageDlg &B'
-        TabOrder = 1
+        TabOrder = 2
         OnClick = Button6Click
       end
       object Button7: TButton
         Left = 5
-        Top = 33
+        Top = 117
         Width = 126
         Height = 25
         Caption = 'MessageDlg &C'
-        TabOrder = 2
+        TabOrder = 3
         OnClick = Button7Click
       end
       object Button8: TButton
         Left = 134
-        Top = 33
+        Top = 117
         Width = 126
         Height = 25
         Caption = 'MessageDlg &D'
-        TabOrder = 3
+        TabOrder = 4
         OnClick = Button8Click
       end
       object Button9: TButton
         Left = 5
-        Top = 61
+        Top = 145
         Width = 126
         Height = 25
         Caption = 'MessageDlg &E'
         Enabled = False
-        TabOrder = 4
+        TabOrder = 5
       end
       object Button10: TButton
         Left = 134
-        Top = 61
+        Top = 145
         Width = 126
         Height = 25
         Caption = 'MessageDlg &F'
         Enabled = False
-        TabOrder = 5
+        TabOrder = 6
+      end
+      object StaticText1: TStaticText
+        Left = 5
+        Top = 5
+        Width = 256
+        Height = 81
+        AutoSize = False
+        Caption = 
+          'Use these Buttons to show MessageDlg of the JvDSADialog-Unit. It' +
+          ' is a combination of JvDSADialogs and TJvDynControlEngine. The d' +
+          'efault engine is defined by the Default DynControlEngine Radiogr' +
+          'oup'
+        TabOrder = 0
       end
     end
   end
   object JvGroupBox1: TJvGroupBox
     Left = 10
-    Top = 135
-    Width = 366
-    Height = 191
+    Top = 285
+    Width = 361
+    Height = 266
     Caption = 'Parameterlist Test'
-    TabOrder = 5
+    TabOrder = 3
     object JvGroupBox2: TJvGroupBox
-      Left = 180
-      Top = 75
-      Width = 170
-      Height = 56
+      Left = 5
+      Top = 170
+      Width = 175
+      Height = 86
       Caption = 'ButtonTests'
       TabOrder = 0
       object JvPanel3: TJvPanel
         Left = 2
         Top = 15
-        Width = 166
-        Height = 39
+        Width = 171
+        Height = 69
         MultiLine = False
         ArrangeSettings.BorderLeft = 5
         ArrangeSettings.BorderTop = 5
@@ -1742,28 +1739,37 @@ object Form1: TForm1
         TabOrder = 0
         object Button13: TButton
           Left = 5
-          Top = 5
+          Top = 39
           Width = 156
           Height = 25
           Caption = 'Test Buttons Default Engine'
           Default = True
-          TabOrder = 0
+          TabOrder = 1
           OnClick = Button13Click
+        end
+        object StaticText3: TStaticText
+          Left = 5
+          Top = 5
+          Width = 156
+          Height = 31
+          AutoSize = False
+          Caption = 'Parameterlist with TJvButtonParameter'
+          TabOrder = 0
         end
       end
     end
     object JvGroupBox3: TJvGroupBox
-      Left = 181
-      Top = 15
-      Width = 170
-      Height = 56
+      Left = 185
+      Top = 170
+      Width = 171
+      Height = 86
       Caption = 'Disable / Enable Tests'
       TabOrder = 1
       object JvPanel4: TJvPanel
         Left = 2
         Top = 15
-        Width = 166
-        Height = 39
+        Width = 167
+        Height = 69
         MultiLine = False
         ArrangeSettings.BorderLeft = 5
         ArrangeSettings.BorderTop = 5
@@ -1775,28 +1781,37 @@ object Form1: TForm1
         TabOrder = 0
         object Button12: TButton
           Left = 5
-          Top = 5
+          Top = 39
           Width = 156
           Height = 25
           Caption = 'Disable/Enable Default Engine'
           Default = True
-          TabOrder = 0
+          TabOrder = 1
           OnClick = Button12Click
+        end
+        object StaticText4: TStaticText
+          Left = 5
+          Top = 5
+          Width = 156
+          Height = 31
+          AutoSize = False
+          Caption = 'Parameterlist with Disable/Enable-Reasons'
+          TabOrder = 0
         end
       end
     end
     object JvGroupBoxAllControls: TJvGroupBox
       Left = 5
       Top = 15
-      Width = 171
-      Height = 166
+      Width = 351
+      Height = 151
       Caption = 'All Controls'
       TabOrder = 2
       object JvPanelAllControls: TJvPanel
         Left = 2
         Top = 15
-        Width = 167
-        Height = 149
+        Width = 347
+        Height = 134
         MultiLine = False
         ArrangeSettings.BorderLeft = 5
         ArrangeSettings.BorderTop = 5
@@ -1809,55 +1824,102 @@ object Form1: TForm1
         OnResize = JvPanelAllControlsResize
         object Button1: TButton
           Left = 5
-          Top = 5
+          Top = 44
           Width = 156
           Height = 25
           Caption = 'Test &1 Default Engine'
           Default = True
-          TabOrder = 0
+          TabOrder = 1
           OnClick = Button1Click
         end
         object Button2: TButton
-          Left = 5
-          Top = 33
+          Left = 164
+          Top = 44
           Width = 156
           Height = 25
           Caption = 'Test &2 Vcl Engine'
           Default = True
-          TabOrder = 1
+          TabOrder = 2
           OnClick = Button2Click
         end
         object Button3: TButton
           Left = 5
-          Top = 61
+          Top = 72
           Width = 156
           Height = 25
           Caption = 'Test &3 Jvcl Engine'
           Default = True
-          TabOrder = 2
+          TabOrder = 3
           OnClick = Button3Click
         end
         object Button4: TButton
-          Left = 5
-          Top = 89
+          Left = 164
+          Top = 72
           Width = 156
           Height = 25
           Caption = 'Test &4 DevExp Cx Engine'
           Default = True
-          TabOrder = 3
+          TabOrder = 4
           OnClick = Button4Click
         end
         object Button11: TButton
           Left = 5
-          Top = 117
+          Top = 100
           Width = 156
           Height = 25
           Caption = 'Test &5 Vcl-Red Engine'
           Default = True
-          TabOrder = 4
+          TabOrder = 5
           OnClick = Button11Click
         end
+        object StaticText2: TStaticText
+          Left = 5
+          Top = 5
+          Width = 311
+          Height = 36
+          AutoSize = False
+          Caption = 
+            'Show all possible TJvParameterList Parameters using different TJ' +
+            'vDynControlEngines'
+          TabOrder = 0
+        end
       end
+    end
+  end
+  object GroupBox5: TGroupBox
+    Left = 10
+    Top = 5
+    Width = 206
+    Height = 111
+    Caption = 'Form Storage Select List'
+    TabOrder = 4
+    object Label5: TLabel
+      Left = 15
+      Top = 20
+      Width = 172
+      Height = 52
+      Caption = 
+        'Use this buttons to save/restore the values of the controls at t' +
+        'he right side using the TJvFormStorageSelectList'
+      WordWrap = True
+    end
+    object BitBtn1: TBitBtn
+      Left = 10
+      Top = 80
+      Width = 90
+      Height = 25
+      Caption = '&Load Settings'
+      TabOrder = 0
+      OnClick = BitBtn1Click
+    end
+    object BitBtn2: TBitBtn
+      Left = 105
+      Top = 80
+      Width = 90
+      Height = 25
+      Caption = '&Store Settings'
+      TabOrder = 1
+      OnClick = BitBtn2Click
     end
   end
   object JvAppRegistryStore: TJvAppRegistryStore
@@ -1868,8 +1930,8 @@ object Form1: TForm1
     Root = 'Software\JVCL\JvParameterListDemo'
     RegRoot = hkCurrentUser
     SubStores = <>
-    Left = 144
-    Top = 8
+    Left = 319
+    Top = 3
   end
   object JvFormStorage1: TJvFormStorage
     AppStorage = JvAppRegistryStore
@@ -1891,8 +1953,8 @@ object Form1: TForm1
       'JVCLRadioButton.Checked'
       'VCLRadioButton.Checked')
     StoredValues = <>
-    Left = 184
-    Top = 8
+    Left = 359
+    Top = 3
   end
   object JvFormStorage2: TJvFormStorage
     AppStorage = JvAppRegistryStore
@@ -1914,7 +1976,7 @@ object Form1: TForm1
       'JVCLRadioButton.Checked'
       'VCLRadioButton.Checked')
     StoredValues = <>
-    Left = 435
-    Top = 23
+    Left = 520
+    Top = 38
   end
 end
