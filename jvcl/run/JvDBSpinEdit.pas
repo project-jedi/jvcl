@@ -69,8 +69,6 @@ type
     destructor Destroy; override;
     property IsNull: Boolean read FIsNull;
   published
-    { (rb) Property Value should be public and not stored. This can only be
-           done by adjusting TJvSpinEdit/TJvCustomSpinEdit (?) }
     property AllowNull: Boolean read FAllowNull write FAllowNull default True;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
