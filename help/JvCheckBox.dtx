@@ -34,6 +34,9 @@ Description
   * Optionally set the Hintcolor.
   * Optionally set the AutoSave properties.
 ----------------------------------------------------------------------------------------------------
+@@TJvCheckBox.AboutJVCL
+  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.Associated
 Summary
   TControl descendant whose Enabled property will be controlled by the CheckBox.
@@ -49,7 +52,7 @@ Description
   and to specify the registry key and path that will be used to save the text.
 
   If AutoSave is enabled, the control saves its state automatically on changes by the user,
-  and loads the state automatically when the control will be created.
+  and loads the state automatically when the control is be created.
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.AutoSize
 Summary
@@ -93,7 +96,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.OnMouseEnter
 Summary
-  Custom Event triggered when the enters the component.
+  Custom event triggered when the enters the component.
 Description
   The event occurs whenever the mouse pointer is moved into the region defined by the component.
   The default action changes the <LINK HintColor, HintColor> to the color assigned.
@@ -102,11 +105,18 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.OnMouseLeave
 Summary
-  Custom Event triggered when the mouse leaves the area delimited by the component.
+  Custom event triggered when the mouse leaves the area delimited by the component.
 Description
   The event occurs whenever the mouse pointer is moved into the region defined by the component.
   The default action restores the <LINK HintColor, HintColor> to the Windows defaultHintColor
   (Delphi Color: clInfoBlk).
 See Also
   OnMouseEnter
+----------------------------------------------------------------------------------------------------
+@@TJvCheckBox.OnRestored
+Summary
+  Custom event triggered when the saved state is read back in.
+Description
+  Write an OnRestored event handler to take special action whenever the value of the checked
+  property is restored (only happens when the form is loaded and AutoSave is set to True).
 ----------------------------------------------------------------------------------------------------

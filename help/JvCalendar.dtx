@@ -57,13 +57,119 @@ Parameters
 See Also
   DayStatesToString
 ----------------------------------------------------------------------------------------------------
+@@TJvMonthCalAppearance
+Summary
+  Class to specify the visual appearance of a month calendar.
+Description
+  TJvMonthCalAppearance is a class used to specify the visual appearance of a TJvCustomMonthCalendar
+  descendant.
+See Also
+  TJvCustomMonthCalendar, TJvCustomMonthCalendar.CreateWithAppearance
+----------------------------------------------------------------------------------------------------
+@@TJvMonthCalAppearance.BoldDays
+Summary
+  A list of bold dates.
+Description
+  BoldDays is a list of dates that have a bold state. The items in this list should be in one of
+  two formats:
+
+  1. 0000mm=daylist
+  2. yyyymm=daylist
+
+  daylist is a comma separated string denoting the days to be set to the bold state.
+
+  The first format denotes a recurring item, for which the specified days are set to the bold state
+  for every year accessed.
+
+  The second format denotes a single item, for which the specified days are set to the bold state in
+  the specified year only.
+
+  Adding a date already in the list, replaces the old item.
+
+  Use the Days and Bold properties to simplify adding and removing bolding info.
+See Also
+  TJvCustomMonthCalendar.Bold, TJvCustomMonthCalendar.Days, StringToDayStates
+----------------------------------------------------------------------------------------------------
+@@TJvMonthCalAppearance.Calendar
+Summary
+  Reference to the calendar instance.
+Description
+  Calendar is a reference to the calendar control this appearance instance controls.
+----------------------------------------------------------------------------------------------------
+@@TJvMonthCalAppearance.Colors
+Summary
+  Determines the various colors for the control.
+Description
+  Colors determine the various colors used by the control.
+See Also
+  TJvMonthCalColors
+----------------------------------------------------------------------------------------------------
+@@TJvMonthCalAppearance.CircleToday
+Summary
+  Indicates if today should be circled.
+Description
+  CircleToday indicates wether or not today's date should be circled in the control.
+
+  When set to True today's date will be circled in the control if today's date is visible.
+
+  When set to False today's date will not be circled in the control.
+See Also
+  ShowToday, TJvCustomMonthCalendar.Today
+----------------------------------------------------------------------------------------------------
+@@TJvMonthCalAppearance.FirstDayOfWeek
+Summary
+  Determines which day of the week is shown first.
+Description
+  FirstDayOfWeek determines which day of the week is shown as the first day in the calendar control.
+
+  Setting FirstDayOfWeek to mcLocale will use the system's settings for first day of the week.
+See Also
+  TJvMonthCalWeekDay
+----------------------------------------------------------------------------------------------------
+@@TJvMonthCalAppearance.ShowToday
+Summary
+  Determines if today's date should be displayed at the bottom of the control.
+Description
+  ShowToday indicates if today's date should be displayed at the bottom of the control. When set to
+  True, today's date will be displayed at the bottom of the control, otherwise it will not.
+See Also
+  CircleToday, TJvCustomMonthCalendar.Today
+----------------------------------------------------------------------------------------------------
+@@TJvMonthCalAppearance.WeekNumbers
+Summary
+  Determines if week numbers are to displayed.
+Description
+  WeekNumbers determines if week numbers should be displayed to the left of each week. When set to
+  True week numbers will be visible.
+----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar
 Summary
-  Base component that serves as a wrapper around the MicroSoft MonthCalendar control.
+  Base component that serves as a wrapper around the MicroSoft® MonthCalendar control.
 Description
-  TJvCustomMonthCalendar is the base component for MicroSoft MonthCalendar control wrappers. Never
+  TJvCustomMonthCalendar is the base component for MicroSoft® MonthCalendar control wrappers. Never
   use a TJvCustomMonthCalendar control directly but rather one of it's descendants. Currently
   JEDI-VCL provides you with one descendant: TJvMonthCalendar2.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomMonthCalendar.CreateWithAppearance
+Summary
+  Create and instantiates a month calender with the specified appearance.
+Description
+  CreateWithAppearance will create a month calendar with a given appearance instance. The normal
+  Create constructor will call this method with a new appearance instance and sets the
+  AOwnsAppearance parameter to True.
+  
+  Other components (such as the TJvDateTimePicker) call this constructor to specify the appearance.
+Parameters
+  AOwner -          The owner component of the calendar.
+  AAppearance -     The appearance instance. This instance will determine how the calendar will be
+                    shown.
+  AOwnsAppearance - Determines if the passed appearance instance is owned by the calendar control.
+                    If set to True, the passes instance will be owned by the calendar (and
+                    subsequently freed when the calendar is destroyed). If set to False the caller
+                    is responsible of the instance. <B>WARNING:</B> The passed instance should
+                    <B>not</B> be freed before the calendar is disposed.
+See Also
+  TJvMonthCalAppearance
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.Bold
 Summary

@@ -156,7 +156,7 @@ Description
 Summary
   Occurs after the original text is restored.
 Description
-  \Write an OnRestored event to take specific action when then original text of the edit box is restored.
+  \Write an OnRestored event to take specific action when the original text of the edit box is restored.
   
   Use AutoSave to enable saving the text of the edit box to the registry when the user changes the text.
   If AutoSave is set to save the control's text to the registry, then when the edit control is recreated 
@@ -164,6 +164,18 @@ Description
   and an OnRestored event is triggered.
 See Also
   AutoSave
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEdit.ReadOnly
+Summary
+  Specifies if the edit is in read only mode.
+Description
+  ReadOnly specifies if the user can modify the text of the edit.
+  
+  If set to True the user can not modify the text of the edit control.
+  
+  If set to False the user can modify the text of the edit control.
+  
+  Regardless of the setting of this property, you can change the text of the edit through code.
 ----------------------------------------------------------------------------------------------------
 @@TJvEdit
 ##JVCL:Component

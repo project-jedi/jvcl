@@ -22,6 +22,15 @@ Description
   * drop a TJvFileInfo on a form or data module.
   * set the property FileName to an existing file on your computer.
 -----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.Attributes
+Summary
+  Holds the file attributes as an integer value.
+Description
+  Attributes holds the file attributes as an integer value. The value returned is the same as the one
+  returned by GetFileAttributes(PChar(Filename)).
+See Also
+  AttrString
+-----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.Filename
 Summary
   The file you want information on.
@@ -61,13 +70,13 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.AttrString
 Summary
-  Returns the Attributes of a file or directory.
+  Returns the attributes of a file or directory as a \string.
 Description
-  This Read-Only property returns the attributes of a file or directory as one String.  For a file 
+  This Read-Only property returns the attributes of a file or directory as one \string.  For a file 
   that has an attribute of Archive the result is "A".  For a combination of attributes such as 
   (Archive + Hidden + System), the result is "AHS".
   
-  The possible Attributes are:
+  The possible attributes are:
   <TABLE>
     Attribute     Resulting string
     ---------     ----------------
@@ -79,6 +88,10 @@ Description
     Readonly      R
     System        S
   </TABLE>
+  
+  Combinations of attributes will be returned in the order specified in the table.
+See Also
+  Attributes
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.IconLocation
 Summary
@@ -88,7 +101,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.TypeString
 Summary
-  Indicates the type of File
+  Indicates the type of file.
 Description
   TypeString returns a string composed of the extension which has ' file' at the end.  
   For example for an executable file, the TypeString is 'EXE file'
@@ -97,13 +110,40 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.Icon
 Summary
-  Retries the Icon that represents the file
+  Retrieves the icon that represents the file.
 Description
-  Returns icon as TIcon that currently is shown.  It 
+  Returns the icon representing the file or directory as a TIcon.
 See Also
-  Filename
+  IconHandle, Modifier
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.IconHandle
+Summary
+  Retrieves the handle of the icon the represents the file.
+Description
+  IconHandle retrieves the handle of the icon that represents the file or directory.
+See Also
+  Icon, Modifier
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.LargeImages
+Summary
+  Image list containing the large images of file icons.
+Description
+  LargeImages is an image list containing the large images of file icons. It is a direct reference
+  to the image list used by the Explorer to cache the various file/directory icons it has drawn.
+See Also
+  SmallImages
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.SmallImages
+Summary
+  Image list containing the small images of file icons.
+Description
+  SmallImages is an image list containing the small images of file icons. It is a direct reference
+  to the image list used by the Explorer to cache the various file/directory icons it has drawn.
+See Also
+  LargeImages
 ----------------------------------------------------------------------------------------------------
 @@TJvExeType
+<TITLE TJvExeType type>
 Summary
   Type used to indicate the type of executable file.
 Description
@@ -121,6 +161,7 @@ Description
   The file is a console application.
 ----------------------------------------------------------------------------------------------------
 @@TJvIconModifier
+<TITLE TJvIconModifier type>
 Summary
   Type used to indicate the type icon modifier.
 Description

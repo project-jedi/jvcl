@@ -25,7 +25,19 @@ Parameters
   AColor      - Specifies the color to add.
   DisplayName - The display text for the new color. 
 See Also
-  InsertColor
+  ChangeColor, InsertColor
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboBox.ChangeColor
+Summary
+  Changes a color in the combo box's color list.
+Description
+  Call ChangeColor at runtime to change a color in the combo box.
+Parameters
+  AIndex      - Specifies a zero-based position in the combo box's list where to change the color.
+  AColor      - Specifies the color to set at the specified index.
+  DisplayName - The display text for the new color.
+See Also
+  AddColor, InsertColor
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.ColorDialogText
 Summary
@@ -134,7 +146,7 @@ Parameters
   AColor      - Specifies the color to insert.
   DisplayName - The display text for the new color. 
 See Also
-  AddColor
+  AddColor, ChangeColor
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.NewColorText
 Summary
