@@ -199,7 +199,10 @@ resourcestring
 
 //=== JvDataEmbeddedEditor.pas ===============================================
 resourcestring
-   RsLoadFromFileEllipsis = 'Load from File...';
+   RsLoadFromFileEllipsis = 'Load From File...';
+   RsClearEmbeddedData = 'Clear data';
+   RsViewEmbeddedDataAsText = 'View As Text...';
+   
 
 //=== JvDataProviderDesignerForm.pas =========================================
 resourcestring

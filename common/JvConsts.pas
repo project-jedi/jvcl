@@ -105,8 +105,11 @@ const
   SDelphiKey = 'Software\Borland\C++Builder\7.0';
   {$ENDIF BCB7}
   {$IFDEF DELPHI8}
-  SDelphiKey = 'Software\Borland\Delphi\8.0';
+  SDelphiKey = 'Software\Borland\BDS\2.0';
   {$ENDIF DELPHI8}
+  {$IFDEF DELPHI9}
+  SDelphiKey = 'Software\Borland\BDS\3.0';
+  {$ENDIF DELPHI9}
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   SDelphiKey = '.borland/.jvclx1';
