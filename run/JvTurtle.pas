@@ -31,7 +31,15 @@ unit JvTurtle;
 interface
 
 uses
-  Windows, Messages, Math, SysUtils, Classes, Graphics, Controls;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, Types, 
+  {$ENDIF}
+  Math;
+
 
 type
   TRequestBackGroundEvent = procedure(Sender: TObject; Background: string) of object;
