@@ -28,7 +28,7 @@ unit JvDynControlEngine_Interface;
 
 interface
 
-uses  Classes, Controls, Forms, StdCtrls, Graphics, Buttons;
+uses  Classes, Controls, Forms, StdCtrls, ExtCtrls, Graphics, Buttons;
 
 type
   IJvDynControl = interface
@@ -57,6 +57,7 @@ type
 
   IJvDynControlItems = interface
     ['{A4391F0B-67AD-4937-B6D9-A6DBEECDFAE8}']
+    procedure ControlSetSorted(Value : boolean);
     procedure ControlSetItems(Value : TStrings);
     function ControlGetItems : TStrings;
     property Items : TStrings Read ControlGetItems Write ControlSetItems;
@@ -67,9 +68,19 @@ type
     procedure ControlSetFocusControl(Value : TWinControl);
   end;
 
+  IJvDynControlComboBox = interface
+    ['{9E9B46D8-2BAD-4BAA-BFDC-88FA0F3C847D}']
+    procedure ControlSetNewEntriesAllowed(Value : boolean);
+  end;
+
+  IJvDynControlRadioGroup = interface
+    ['{ED143973-5D21-41CF-85E1-5EE84E58BCEF}']
+    procedure ControlSetColumns(Value : integer);
+  end;
+
   IJvDynControlPanel = interface
     ['{EB2435FE-D9A6-4D33-9F01-589D0C93C6AC}']
-    procedure ControlSetBorderWidth(Value : integer);
+    procedure ControlSetBorder(aBevelInner : TPanelBevel; aBevelOuter : TPanelBevel; aBevelWidth : integer; aBorderStyle : TBorderStyle; aBorderWidth : integer);
   end;
 
   IJvDynControlButton = interface

@@ -29,7 +29,9 @@ unit JvParameterList_Parameter;
 interface
 
 uses Classes, SysUtils, StdCtrls, ExtCtrls, Graphics, Forms, Controls,
- // Variants,
+     {$IFDEF COMPILER6_UP}
+  Variants,
+     {$ENDIF}
   Dialogs, ComCtrls,
   JvPanel, JvPropertyStore, JvParameterList, jvDynControlEngine,
   JvDynControlEngine_Interface;
@@ -253,11 +255,10 @@ type
   private
     fItemList : TStringList;
     fItemIndex : integer;
+    fSorted : boolean;
   protected
     procedure SetItemList(Value : TStringList);
     procedure SetItemIndex(Value : integer);
-    procedure SetSorted(Value : boolean);
-    function GetSorted : boolean;
     procedure SetAsString(Value : string); override;
     procedure SetAsInteger(Value : integer); override;
     function GetAsInteger : integer; override;
@@ -271,7 +272,7 @@ type
   published
     property ItemList : TStringList Read fItemList Write SetItemList;
     property ItemIndex : integer Read fItemIndex Write SetItemIndex;
-    property Sorted : boolean Read GetSorted Write SetSorted;
+    property Sorted : boolean Read fSorted Write fSorted;
   end;
 
   TJvRadioGroupParameter = class (TJvListParameter)
@@ -289,10 +290,10 @@ type
 
   TJvComboBoxParameter = class (TJvListParameter)
   private
-    fStyle : TJvComboBoxParameterStyle;
+    fSorted : boolean;
+    fNewEntriesAllowed : boolean;
   protected
     function GetParameterNameExt : string; override;
-//       procedure OnNewItem (Sender: TWinControl);
     procedure CreateWinControl(aParameterParent : TWinControl); override;
 
   public
@@ -300,17 +301,15 @@ type
     procedure SetData; override;
     procedure Assign(Source : TPersistent); override;
   published
-    property Style : TJvComboBoxParameterStyle Read fStyle Write fStyle;
+    property Sorted : boolean Read fSorted Write fSorted;
+    property NewEntriesAllowed : boolean Read fNewEntriesAllowed Write fNewEntriesAllowed;
   end;
 
   TJvListBoxParameter = class (TJvListParameter)
   private
     fsorted : boolean;
-    fMultiSelect : boolean;
-    fSelected : TStringList;
   protected
     function GetParameterNameExt : string; override;
-    function GetSelected(Index : integer) : boolean;
     function GetWinControlData : variant; override;
     procedure SetWinControlData(Value : variant); override;
     procedure CreateWinControl(aParameterParent : TWinControl); override;
@@ -319,10 +318,8 @@ type
     constructor Create(AParameterList : TJvParameterList); override;
     destructor Destroy; override;
     procedure Assign(Source : TPersistent); override;
-    property Selected [Index : integer] : boolean Read GetSelected;
   published
     property Sorted : boolean Read fSorted Write fSorted;
-    property MultiSelect : boolean Read fMultiSelect Write fMultiSelect;
   end;
 
   TJvDateTimeParameter = class (TJvBasePanelEditParameter)
@@ -830,21 +827,12 @@ begin
     AsVariant := ItemList[Value];
 end;   {*** Procedure tJvBaseParameter.SetAsDate ***}
 
-procedure TJvListParameter.SetSorted(Value : boolean);
-begin
-  Itemlist.Sorted := Value;
-end;
-
-function TJvListParameter.GetSorted : boolean;
-begin
-  Result := Itemlist.Sorted;
-end;
-
 procedure TJvListParameter.Assign(Source : TPersistent);
 begin
   inherited Assign(Source);
   ItemList.Assign(TJvListParameter(Source).Itemlist);
   ItemIndex := TJvListParameter(Source).ItemIndex;
+  Sorted    := TJvListParameter(Source).Sorted;
 end;   {*** Procedure TJvListParameter.SetAsDate ***}
 
 procedure TJvListParameter.SearchItemIndex(Search : string);
@@ -872,6 +860,7 @@ end;   {*** procedure TJvListParameter.GetData ***}
 procedure TJvListParameter.SetData;
 begin
   inherited SetData;
+ //  IF Assigned (
  //  IF Assigned (WinControl) THEN
  //    ItemList.IndexOf (AsString) := ItemIndex;
 end;   {*** procedure TJvListParameter.SetData ***}
@@ -889,10 +878,13 @@ begin
 end;   {*** Procedure TJvRadioGroupParameter.SetAsDate ***}
 
 procedure TJvRadioGroupParameter.CreateWinControlOnParent(ParameterParent : TWinControl);
+var
+  iTmpRadioGroup : IJvDynControlRadioGroup;
 begin
   WinControl := DynControlEngine.CreateRadioGroupControl(Self, ParameterParent, GetParameterName, Caption, ItemList);
   JvDynControlData.ControlSetOnChange(HandleEnableDisable);
-//  RadioGroup.Columns := Columns;
+  if Supports(WinControl, IJvDynControlRadioGroup, iTmpRadioGroup) then
+    iTmpRadioGroup.ControlSetColumns(Columns);
 end;   {*** Procedure TJvRadioGroupParameter.CreateWinControlOnParent ***}
 
 
@@ -914,28 +906,14 @@ end;   {*** Procedure TJvCheckBoxParameter.CreateWinControlOnParent ***}
 procedure TJvComboBoxParameter.Assign(Source : TPersistent);
 begin
   inherited Assign(Source);
-  Style      := TJvComboBoxParameter(Source).Style;
-  LabelWidth := TJvComboBoxParameter(Source).LabelWidth;
-  EditWidth  := TJvComboBoxParameter(Source).EditWidth;
-  LabelArrangeMode := TJvComboBoxParameter(Source).LabelArrangeMode;
-  RightSpace := TJvComboBoxParameter(Source).RightSpace;
+  Sorted := TJvComboBoxParameter(Source).Sorted;
+  NewEntriesAllowed := TJvComboBoxParameter(Source).NewEntriesAllowed;
 end;   {*** Procedure TJvComboBoxParameter.SetAsDate ***}
 
 function TJvComboBoxParameter.GetParameterNameExt : string;
 begin
   Result := 'ComboBox';
 end;   {*** function TJvComboBoxParameter.GetParameterNameExt ****}
-
- //procedure TJvComboBoxParameter.OnNewItem(Sender: TCustomIncListBoxCombo);
- //Begin
- //  IF TIncCombo(Sender).Style = csIncSearchEdit THEN
- //  BEGIN
- //    Sender.AcceptNewItem := TRUE;
- //    TIncCombo(Sender).Items.Add (Sender.Text);
- //  END
- //  ELSE
- //    Sender.AcceptNewItem := False;
- //END;
 
 procedure TJvComboBoxParameter.GetData;
 begin
@@ -951,19 +929,17 @@ begin
 end;
 
 procedure TJvComboBoxParameter.CreateWinControl(aParameterParent : TWinControl);
+var
+  ITmpComboBox : IJvDynControlComboBox;
+  ITmpItems :    IJvDynControlItems;
 begin
   WinControl := DynControlEngine.CreateComboBoxControl(Self, aParameterParent, GetParameterName, ItemList);
   JvDynControlData.ControlSetOnChange(HandleEnableDisable);
+  if Supports(WinControl, IJvDynControlComboBox, ITmpComboBox) then
+    ITmpComboBox.ControlSetNewEntriesAllowed(NewEntriesAllowed);
+  if Supports(WinControl, IJvDynControlItems, ITmpItems) then
+    ITmpItems.ControlSetSorted(Sorted);
 
- //  With ComboBox AS IjvDynControlItems DO
- //  Begin
- //    ControlSetOnChange(HandleEnableDisable);
- //    ControlSetEnabled(Enabled and not ReadOnly);
- //    ControlSetVisible(True);
- //  End;
- //  ComboBox.Items.Assign (ItemList);
- //  ComboBox.Style := Style;
- //  ComboBox.OnnewItem := OnNewItem;
 end;
 
  {*****************************************************************************}
@@ -973,21 +949,17 @@ end;
 constructor TJvListBoxParameter.Create(AParameterList : TJvParameterList);
 begin
   inherited Create(AParameterList);
-  fSelected := TStringList.Create;
 end;
 
 destructor TJvListBoxParameter.Destroy;
 begin
-  fSelected.Free;
   inherited Destroy;
 end;
 
 procedure TJvListBoxParameter.Assign(Source : TPersistent);
 begin
   inherited Assign(Source);
-  Sorted      := TJvListBoxParameter(Source).Sorted;
-  MultiSelect := TJvListBoxParameter(Source).MultiSelect;
-  fSelected.Assign(TJvListBoxParameter(Source).fSelected);
+  Sorted := TJvListBoxParameter(Source).Sorted;
 end;   {*** Procedure TJvListBoxParameter.SetAsDate ***}
 
 function TJvListBoxParameter.GetParameterNameExt : string;
@@ -995,16 +967,14 @@ begin
   Result := 'ListBox';
 end;   {*** function TJvListBoxParameter.GetParameterNameExt ****}
 
-function TJvListBoxParameter.GetSelected(Index : integer) : boolean;
-begin
-  Result := fSelected.IndexOf(IntToStr(Index)) <> -1;
-end;   {*** function TJvListBoxParameter.GetParameterNameExt ****}
-
 procedure TJvListBoxParameter.CreateWinControl(aParameterParent : TWinControl);
+var
+  ITmpItems : IJvDynControlItems;
 begin
   WinControl := DynControlEngine.CreateListBoxControl(Self, aParameterParent, GetParameterName, ItemList);
- //  ListBox.Sorted := Sorted;
- //  ListBox.MultiSelect := MultiSelect;
+  JvDynControlData.ControlSetOnChange(HandleEnableDisable);
+  if Supports(WinControl, IJvDynControlItems, ITmpItems) then
+    ITmpItems.ControlSetSorted(Sorted);
 end;
 
 
@@ -1013,20 +983,11 @@ var
   i : integer;
 begin
   Result := inherited GetWinControlData;
-  fSelected.Clear;
-  if WinControl is TListBox then
-    for i := 0 to TListBox(WinControl).Items.Count - 1 do
-      if TListBox(WinControl).Selected[i] then
-        fSelected.Add(IntToStr(i));
 end;   {*** function TJvListBoxParameter.GetWinControlData ***}
 
 procedure TJvListBoxParameter.SetWinControlData(Value : variant);
 begin
   inherited SetWinControlData(Value);
-  if Assigned(WinControl) then
-    if WinControl is TListBox then
-      with TListBox(WinControl) do
-        ItemIndex := Items.IndexOf(Value);
 end;   {*** procedure TJvListBoxParameter.SetWinControlData ***}
 
 

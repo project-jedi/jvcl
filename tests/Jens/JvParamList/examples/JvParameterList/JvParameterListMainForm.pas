@@ -2,7 +2,7 @@ unit JvParameterListMainForm;
 
 interface
 
-{.$DEFINE INCLUDE_DEVEXP_CX}
+{$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
@@ -16,7 +16,9 @@ uses
   cxGroupBox,
   {$ENDIF}
   ExtCtrls, JvFormPlacement, JvComponent, JvAppStore,
-  JvAppRegistryStore, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn;
+  JvAppRegistryStore, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
+  JvCombobox, CheckLst, cxCheckListBox, ShlObj, cxShellCommon,
+  cxShellComboBox, cxButtonEdit;
 
 type
   TForm1 = class(TForm)
@@ -45,6 +47,11 @@ type
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
     HistoryEnabledCheckBox: TCheckBox;
+    Panel1: TPanel;
+    cxRadioGroup1: TcxRadioGroup;
+    cxShellComboBox1: TcxShellComboBox;
+    cxButtonEdit1: TcxButtonEdit;
+    OpenDialog1: TOpenDialog;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -171,10 +178,23 @@ begin
       ItemList.Add ('Test&1');
       ItemList.Add ('Test&2');
       ItemList.Add ('Test&3');
+      ItemList.Add ('Test&4');
+      ItemList.Add ('Test&5');
+      Columns := 2;
     End;
     ParameterList.AddParameter(Parameter);
-    ParameterList.Width := 400;
-    //ParameterList.Height := 300;
+    Parameter := tjvListBoxParameter.Create(ParameterList);
+    With tjvListBoxParameter(Parameter) Do
+    Begin
+      SearchName := 'ListBoxTest';
+      Caption := '&ListBoxTest';
+      ItemList.Add ('Listbox Test&1');
+      ItemList.Add ('Listbox Test&2');
+      ItemList.Add ('Listbox Test&3');
+      Height := 80;
+      Width := 80;
+    End;
+    ParameterList.AddParameter(Parameter);
     ParameterList.AutoHeight := AutoHeightCheckBox.Checked;
     ParameterList.AutoWidth := AutoWidthCheckBox.Checked;
     ParameterList.MaxHeight := strtoint (MaxHeightEdit.Text);

@@ -1,3 +1,29 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Initial Developer of the Original Code is Jens Fudickar [jens.fudickar@oratool.de]
+All Rights Reserved.
+
+Contributor(s):
+Jens Fudickar [jens.fudickar@oratool.de]
+
+Last Modified: 2003-11-03
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
 unit JvDynControlEngine_VCL;
 
 interface
@@ -86,6 +112,8 @@ type
 
     procedure ControlSetValue(Value : variant);
     function ControlGetValue : variant;
+
+    procedure ControlSetSorted(Value : boolean);
     procedure ControlSetItems(Value : TStrings);
     function ControlGetItems : TStrings;
 
@@ -95,7 +123,7 @@ type
     procedure ControlSetScrollbars(Value : TScrollStyle);
   end;
 
-  TJvDynControlVCLRadioGroup = class (TRadioGroup, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems)
+  TJvDynControlVCLRadioGroup = class (TRadioGroup, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlRadioGroup)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value : boolean);
@@ -111,8 +139,12 @@ type
 
     procedure ControlSetValue(Value : variant);
     function ControlGetValue : variant;
+
+    procedure ControlSetSorted(Value : boolean);
     procedure ControlSetItems(Value : TStrings);
     function ControlGetItems : TStrings;
+
+    procedure ControlSetColumns(Value : integer);
   end;
 
   TJvDynControlVCLListBox = class (TListBox, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick)
@@ -131,13 +163,15 @@ type
 
     procedure ControlSetValue(Value : variant);
     function ControlGetValue : variant;
+
+    procedure ControlSetSorted(Value : boolean);
     procedure ControlSetItems(Value : TStrings);
     function ControlGetItems : TStrings;
 
     procedure ControlSetOnDblClick(Value : TNotifyEvent);
   end;
 
-  TJvDynControlVCLComboBox = class (TComboBox, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems)
+  TJvDynControlVCLComboBox = class (TComboBox, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlComboBox)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value : boolean);
@@ -153,8 +187,12 @@ type
 
     procedure ControlSetValue(Value : variant);
     function ControlGetValue : variant;
+
+    procedure ControlSetSorted(Value : boolean);
     procedure ControlSetItems(Value : TStrings);
     function ControlGetItems : TStrings;
+
+    procedure ControlSetNewEntriesAllowed(Value : boolean);
   end;
 
   TJvDynControlVCLPanel = class (TPanel, IUnknown, IJvDynControl, IJvDynControlPanel)
@@ -167,7 +205,7 @@ type
     procedure ControlSetOnExit(Value : TNotifyEvent);
     procedure ControlSetOnClick(Value : TNotifyEvent);
 
-    procedure ControlSetBorderWidth(Value : integer);
+    procedure ControlSetBorder(aBevelInner : TPanelBevel; aBevelOuter : TPanelBevel; aBevelWidth : integer; aBorderStyle : TBorderStyle; aBorderWidth : integer);
   end;
 
   TJvDynControlVCLScrollbox = class (TScrollbox, IUnknown, IJvDynControl)
@@ -225,7 +263,11 @@ function DynControlEngine_VCL : tJvDynControlEngine;
 
 implementation
 
-uses SysUtils{, Variants};
+uses SysUtils
+     {$IFDEF COMPILER6_UP}
+  , Variants
+{$ENDIF}
+  ;
 
 var
   IntDynControlEngine_VCL : tJvDynControlEngine;
@@ -475,6 +517,10 @@ begin
   Result := Text;
 end;
 
+procedure TJvDynControlVCLMemo.ControlSetSorted(Value : boolean);
+begin
+end;
+
 procedure TJvDynControlVCLMemo.ControlSetItems(Value : TStrings);
 begin
   Lines.Assign(Value);
@@ -571,6 +617,10 @@ begin
   Result := ItemIndex;
 end;
 
+procedure TJvDynControlVCLRadioGroup.ControlSetSorted(Value : boolean);
+begin
+end;
+
 procedure TJvDynControlVCLRadioGroup.ControlSetItems(Value : TStrings);
 begin
   Items.Assign(Value);
@@ -579,6 +629,11 @@ end;
 function TJvDynControlVCLRadioGroup.ControlGetItems : TStrings;
 begin
   Result := Items;
+end;
+
+procedure TJvDynControlVCLRadioGroup.ControlSetColumns(Value : integer);
+begin
+  Columns := Value;
 end;
 
 function TJvDynControlVCLRadioGroup.ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
@@ -644,6 +699,11 @@ end;
 function TJvDynControlVCLListBox.ControlGetValue : variant;
 begin
   Result := ItemIndex;
+end;
+
+procedure TJvDynControlVCLListBox.ControlSetSorted(Value : boolean);
+begin
+  Sorted := Value;
 end;
 
 procedure TJvDynControlVCLListBox.ControlSetItems(Value : TStrings);
@@ -719,6 +779,11 @@ begin
   Result := Text;
 end;
 
+procedure TJvDynControlVCLComboBox.ControlSetSorted(Value : boolean);
+begin
+  Sorted := Value;
+end;
+
 procedure TJvDynControlVCLComboBox.ControlSetItems(Value : TStrings);
 begin
   Items.Assign(Value);
@@ -734,6 +799,13 @@ begin
   Result := true;
 end;
 
+procedure TJvDynControlVCLComboBox.ControlSetNewEntriesAllowed(Value : boolean);
+begin
+  if Value then
+    Style := csDropDown
+  else
+    Style := csDropDownList;
+end;
 
 
  //****************************************************************************
@@ -770,9 +842,13 @@ procedure TJvDynControlVCLPanel.ControlSetOnClick(Value : TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlVCLPanel.ControlSetBorderWidth(Value : integer);
+procedure TJvDynControlVCLPanel.ControlSetBorder(aBevelInner : TPanelBevel; aBevelOuter : TPanelBevel; aBevelWidth : integer; aBorderStyle : TBorderStyle; aBorderWidth : integer);
 begin
-  BorderWidth := Value;
+  BorderWidth := aBorderWidth;
+  BorderStyle := aBorderStyle;
+  BevelInner  := aBevelInner;
+  BevelOuter  := aBevelOuter;
+  BevelWidth  := aBevelWidth;
 end;
 
  //****************************************************************************

@@ -112,7 +112,10 @@ function DefaultDynControlEngine : tJvDynControlEngine;
 
 implementation
 
-uses TypInfo, SysUtils, JvTypes, JVDynControlEngine_VCL;
+uses {$IFDEF COMPILER6_UP}
+     Variants,
+     {$ENDIF}
+     TypInfo, SysUtils, JvTypes, JVDynControlEngine_VCL;
 
 var
   fDefaultDynControlEngine : tJvDynControlEngine;
@@ -388,8 +391,16 @@ begin
 end;
 
 function tJvDynControlEngine.CreateComboBoxControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aItems : TStringList) : tWinControl;
+var
+  DynCtrl: IJvDynControl;
+  DynCtrlItems: IJvDynControlItems;
 begin
   Result := tWinControl(CreateControl(jctComboBox, aOwner, aParentControl, aControlName));
+  if not Supports(Result, IJvDynControl, DynCtrl) then
+    raise EIntfCastError.Create('SIntfCastError');
+  if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
+    raise EIntfCastError.Create('SIntfCastError');
+  DynCtrlItems.Items := aItems;  
 end;
 
 function tJvDynControlEngine.CreateGroupBoxControl(aOwner : TComponent; aParentControl : tWinControl; aControlName : string; aCaption : string) : tWinControl;

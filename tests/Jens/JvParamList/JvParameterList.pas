@@ -28,10 +28,11 @@ unit JvParameterList;
 
 interface
 
-{.$IFDEF COMPILER6_UP}
 
 uses Classes, SysUtils, StdCtrls, ExtCtrls, Graphics, Forms, Controls,
-//  Variants,
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF}
   Dialogs, ComCtrls,
   JvDynControlEngine, JvDynControlEngine_Interface,
   JvComponent, JvPanel, JvPropertyStore, JvAppStore, JvAppStoreSelectList;
@@ -43,7 +44,7 @@ type
     ;
   TJvParameterPropertyValues = class
     ;
-  TJvParameterListSelectList = class;  
+  TJvParameterListSelectList = class ;
 
   tJvParameterListEnableDisableReason = class (TPersistent)
   private
@@ -214,23 +215,29 @@ type
 
   end;
 
-  TJvParameterListMessages = class(TPersistent)
+  TJvParameterListMessages = class (TPersistent)
   private
-    fCaption: String;
-    fOkButton: String;
-    fCancelButton: String;
-    fHistoryLoadButton: String;
-    fHistorySaveButton: String;
-    fHistoryClearButton: String;
+    fCaption : string;
+    fOkButton : string;
+    fCancelButton : string;
+    fHistoryLoadButton : string;
+    fHistorySaveButton : string;
+    fHistoryClearButton : string;
+    fHistoryLoadCaption : string;
+    fHistorySaveCaption : string;
+    fHistoryClearCaption : string;
   public
-    constructor create;
+    constructor Create;
   published
-    property Caption: String read fCaption write fCaption;
-    property OkButton: String read fOkButton write fOkButton;
-    property CancelButton: String read fCancelButton write fCancelButton;
-    property HistoryLoadButton: String read fHistoryLoadButton write fHistoryLoadButton;
-    property HistorySaveButton: String read fHistorySaveButton write fHistorySaveButton;
-    property HistoryClearButton: String read fHistoryClearButton write fHistoryClearButton;
+    property Caption : string Read fCaption Write fCaption;
+    property OkButton : string Read fOkButton Write fOkButton;
+    property CancelButton : string Read fCancelButton Write fCancelButton;
+    property HistoryLoadButton : string Read fHistoryLoadButton Write fHistoryLoadButton;
+    property HistorySaveButton : string Read fHistorySaveButton Write fHistorySaveButton;
+    property HistoryClearButton : string Read fHistoryClearButton Write fHistoryClearButton;
+    property HistoryLoadCaption : string Read fHistoryLoadCaption Write fHistoryLoadCaption;
+    property HistorySaveCaption : string Read fHistorySaveCaption Write fHistorySaveCaption;
+    property HistoryClearCaption : string Read fHistoryClearCaption Write fHistoryClearCaption;
   end;
 
   TJvParameterList = class (TJvComponent)
@@ -260,7 +267,6 @@ type
     ArrangePanel : TJvPanel;
     ScrollBox : TScrollBox;
     RightPanel : TJvPanel;
-    HistoryPanel : TJvPanel;
     procedure SetArrangeSettings(Value : TJvArrangeSettings);
     procedure SetPath(Value : string);
     function GetPath : string;
@@ -288,7 +294,7 @@ type
     property intParameterList : TStringList Read fintParameterList;
 
     property ParameterDialog : tCustomForm Read fParameterDialog;
-    property ParameterListSelectList : TJvParameterListSelectList read fParameterListSelectList;
+    property ParameterListSelectList : TJvParameterListSelectList Read fParameterListSelectList;
 
 
   public
@@ -319,7 +325,6 @@ type
 
        {creates the components of all parameters on any WinControl}
     procedure CreateWinControlsOnParent(ParameterParent : TWinControl);
-    procedure CreateHistoryButtonsOnParent(ParameterParent : TWinControl);
        {Destroy the WinControls of all parameters}
     procedure DestroyWinControls;
 
@@ -348,7 +353,7 @@ type
 
   published
     property ArrangeSettings : TJvArrangeSettings Read FArrangeSettings Write SetArrangeSettings;
-    property Messages : TJvParameterListMessages read fMessages ;
+    property Messages : TJvParameterListMessages Read fMessages;
     property Path : string Read GetPath Write SetPath;
        {Width of the dialog. When width = 0, then the width will be calculated }
     property Width : integer Read fWidth Write fWidth;
@@ -362,10 +367,6 @@ type
     property MaxWidth : integer Read fMaxWidth Write fMaxWidth default 400;
        {Maximum ClientHeight of the Dialog}
     property MaxHeight : integer Read fMaxHeight Write fMaxHeight default 600;
-       {Caption of the Ok-Button}
-       //       property OkButtonCaption : String read fOkButtonCaption write fOkButtonCaption;
-       {Caption of the Cancel-Button}
-//       property CancelButtonCaption : String read fCancelButtonCaption write fCancelButtonCaption;
     property OkButtonVisible : boolean Read fOkButtonVisible Write fOkButtonVisible;
     property CancelButtonVisible : boolean Read fCancelButtonVisible Write fCancelButtonVisible;
     property HistoryEnabled : boolean Read fHistoryEnabled Write fHistoryEnabled;
@@ -415,21 +416,24 @@ uses JvParameterList_Parameter;
 
 resourcestring
   ErrParameterMustBeEntered = 'Parameter %s must be entered!';
-  HistorySelectPath         = 'History';
+  HistorySelectPath = 'History';
 
 
 {*****************************************************************************}
 {* tJvParameterListMessages
 {*****************************************************************************}
-constructor tJvParameterListMessages.create;
+constructor tJvParameterListMessages.Create;
 begin
   inherited;
-  Caption := '';
-  OkButton := '&Ok';
+  Caption      := '';
+  OkButton     := '&Ok';
   CancelButton := '&Cancel';
-  HistoryLoadButton:= '&Load';
-  HistorySaveButton:= '&Save';
-  HistoryClearButton:= '&Clear';
+  HistoryLoadButton := '&Load';
+  HistorySaveButton := '&Save';
+  HistoryClearButton := 'Cl&ear';
+  HistoryLoadCaption := 'Load Parameter Settings';
+  HistorySaveCaption := 'Save Parameter Settings';
+  HistoryClearCaption := 'Manage Parameter Settings';
 end;
 
 {*****************************************************************************}
@@ -803,7 +807,6 @@ end;
 
 procedure tJvBaseParameter.GetData;
 begin
-  //TVarData(fValue).VType := varEmpty;
   fValue := NULL;
   if Assigned(WinControl) then
     fValue := WinControlData;
@@ -818,7 +821,7 @@ end;
 procedure tJvBaseParameter.Assign(Source : TPersistent);
 begin
   inherited Assign(Source);
-  AsVariant  := tJvParameterListEnableDisableReason(Source).AsVariant;
+  AsVariant  := tJvBaseParameter(Source).AsVariant;
   Caption    := tJvBaseParameter(Source).Caption;
   SearchName := tJvBaseParameter(Source).SearchName;
   Width      := tJvBaseParameter(Source).Width;
@@ -885,7 +888,6 @@ begin
     Exit;
   Data := HandleParameter.GetWinControlData;
   if VarIsNull(Data) then
-//  IF TVarData(Data).VType = varEmpty THEN
     Exit;
   for i := 0 to ParameterList.Count - 1 do
   begin
@@ -904,7 +906,6 @@ begin
         if Reason.RemoteParameterName <> HandleParameter.SearchName then
           Continue;
         if VarIsNull(Reason.AsVariant) then
-        //IF TVarData(Reason.AsVariant).VType = varEmpty THEN
           Continue;
         if iEnable = 0 then
           iEnable := -1;
@@ -922,7 +923,6 @@ begin
         if Reason.RemoteParameterName <> HandleParameter.SearchName then
           Continue;
         if VarIsNull(Reason.AsVariant) then
-        //IF TVarData(Reason.AsVariant).VType = varEmpty THEN
           Continue;
         if iEnable = 0 then
           iEnable := 1;
@@ -972,7 +972,7 @@ end;   {*** function TJvParameterList.ParameterByName ***}
 
 procedure TJvParameterList.Assign(Source : TPersistent);
 begin
-  Messages.Assign (TJvParameterList(Source).Messages);
+  Messages.Assign(TJvParameterList(Source).Messages);
   ArrangeSettings := TJvParameterList(Source).ArrangeSettings;
   AppStore   := TJvParameterList(Source).AppStore;
   Width      := TJvParameterList(Source).Width;
@@ -991,8 +991,8 @@ end;   {*** Procedure TJvParameterList.SetAsDate ***}
 
 procedure TJvParameterList.SetPath(Value : string);
 begin
-  fParameterListPropertyStore.Path := Value;
-  fParameterListSelectList.SelectPath := Value+'\'+HistorySelectPath;
+  fParameterListPropertyStore.Path    := Value;
+  fParameterListSelectList.SelectPath := Value + '\' + HistorySelectPath;
 end;   {*** procedure TJvParameterList.SetPath ***}
 
 function TJvParameterList.GetPath : string;
@@ -1017,9 +1017,9 @@ begin
   fMessages := TJvParameterListMessages.Create;
   fParameterListPropertyStore := TJvParameterListPropertyStore.Create(nil);
   fParameterListPropertyStore.Parameterlist := Self;
-  fintParameterList    := TStringList.Create;
+  fintParameterList := TStringList.Create;
   fDynControlEngine := DefaultDynControlEngine;
-  FArrangeSettings     := TJvArrangeSettings.Create(nil);
+  FArrangeSettings := TJvArrangeSettings.Create(nil);
   with FArrangeSettings do
   begin
     AutoArrange  := true;
@@ -1033,7 +1033,6 @@ begin
   ScrollBox    := nil;
   RightPanel   := nil;
   ArrangePanel := nil;
-  HistoryPanel := nil;
   fMaxWidth    := 600;
   fMaxHeight   := 400;
   fOkbuttonVisible := true;
@@ -1042,7 +1041,6 @@ begin
   fLastHistoryName := '';
   fParameterListSelectList := TJvParameterListSelectList.Create(self);
   fParameterListSelectList.ParameterList := Self;
-
 end;   {*** constructor TJvParameterList.create; ***}
 
 destructor TJvParameterList.Destroy;
@@ -1067,8 +1065,6 @@ begin
       Scrollbox := nil;
     if (AComponent = RightPanel) then
       RightPanel := nil;
-    if (AComponent = HistoryPanel) then
-      HistoryPanel := nil;
     if (AComponent = ArrangePanel) then
       ArrangePanel := nil;
     if (AComponent = fParameterListPropertyStore) then
@@ -1107,11 +1103,21 @@ begin
   ParameterDialog.ModalResult := mrCancel;
 end;
 
+type
+  tHackPanel = class (tCustomControl)
+  public
+    property canvas;
+  end;
+
+
 { Creates the ParameterDialog }
 procedure TJvParameterList.CreateParameterDialog;
 var
-  MainPanel, ButtonPanel : tWinControl;
+  MainPanel, BottomPanel, HistoryPanel, ButtonPanel : tWinControl;
   OkButton, CancelButton : tWinControl;
+  LoadButton, SaveButton, ClearButton : tWinControl;
+  ButtonLeft : integer;
+  ITmpPanel :  IJVDynControlPanel;
 begin
   if Assigned(fParameterDialog) then
     FreeAndNil(fParameterDialog);
@@ -1132,27 +1138,91 @@ begin
   if Width > 0 then
     ParameterDialog.Width := Width;
 
-  MainPanel   := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'MainPanel', '', alClient);
-  ButtonPanel := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'ButtonPanel', '', alBottom);
+
+  BottomPanel := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'BottomPanel', '', alBottom);
+  if not Supports(BottomPanel, IJVDynControlPanel, ITmpPanel) then
+    raise EIntfCastError.Create('SIntfCastError');
+  with ITmpPanel do
+    ControlSetBorder(bvNone, bvRaised, 1, bsNone, 0);
+
+  MainPanel := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'MainPanel', '', alClient);
+  if not Supports(MainPanel, IJVDynControlPanel, ITmpPanel) then
+    raise EIntfCastError.Create('SIntfCastError');
+  with ITmpPanel do
+    ControlSetBorder(bvNone, bvRaised, 1, bsNone, 3);
+
+  ButtonPanel := DynControlEngine.CreatePanelControl(Self, BottomPanel, 'BottonPanel', '', alRight);
+  if not Supports(ButtonPanel, IJVDynControlPanel, ITmpPanel) then
+    raise EIntfCastError.Create('SIntfCastError');
+  with ITmpPanel do
+    ControlSetBorder(bvNone, bvNone, 0, bsNone, 0);
 
   OkButton     := DynControlEngine.CreateButton(Self, ButtonPanel, 'OkButton', Messages.OkButton, '', OnOkButtonClick, true, false);
   CancelButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'CancelButton', Messages.CancelButton, '', OnCancelButtonClick, false, true);
-  ButtonPanel.Height := OkButton.Height + 6;
-  CancelButton.Top := 3;
-  CancelButton.Left := ButtonPanel.Width - 3 - CancelButton.Width;
-  CancelButton.Anchors := [akTop, akRight];
-  CancelButton.Visible := CancelButtonVisible;
-  CancelButton.Enabled := CancelButtonVisible;
-  if CancelButton is TButton then
-    TButton(CancelButton).Cancel := true;
-  OkButton.Top := 3;
-  OkButton.Left    := CancelButton.Left - 6 - OkButton.Width;
-  OkButton.Anchors := [akTop, akRight];
+
+  BottomPanel.Height := OkButton.Height + 6 + 2;
+
+  OkButton.Top     := 3;
+  OkButton.Left    := 3;
   OkButton.Visible := OkButtonVisible;
   OkButton.Enabled := OkButtonVisible;
-  if OkButton is TButton then
-    TButton(OkButton).Default := true;
-  CreateHistoryButtonsOnParent(ButtonPanel);
+  if OkButton.Visible then
+    ButtonLeft := OkButton.Left + OkButton.Width + 3
+  else
+    ButtonLeft := 0;
+
+  CancelButton.Top     := 3;
+  CancelButton.Left    := ButtonLeft + 3;
+  CancelButton.Visible := CancelButtonVisible;
+  CancelButton.Enabled := CancelButtonVisible;
+  if CancelButton.Visible then
+    ButtonLeft := ButtonLeft + 3 + CancelButton.Width + 3;
+
+  ButtonPanel.Width := ButtonLeft + 3;
+
+  OkButton.Anchors     := [akTop, akRight];
+  CancelButton.Anchors := [akTop, akRight];
+
+  if HistoryEnabled and (Path <> '') then
+  begin
+    ButtonLeft   := 0;
+    HistoryPanel := DynControlEngine.CreatePanelControl(Self, BottomPanel, 'HistoryPanel', '', alLeft);
+    if not Supports(HistoryPanel, IJVDynControlPanel, ITmpPanel) then
+      raise EIntfCastError.Create('SIntfCastError');
+    with ITmpPanel do
+      ControlSetBorder(bvNone, bvNone, 0, bsNone, 0);
+    with HistoryPanel do
+      Height := 25;
+    LoadButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'LoadButton', Messages.HistoryLoadButton, '', HistoryLoadClick, false, false);
+    with LoadButton do
+    begin
+      Left   := 6;
+      Top    := 5;
+      Height := 20;
+      Width  := thackPanel(HistoryPanel).Canvas.TextWidth(Messages.HistoryLoadButton) + 5;
+      ButtonLeft := Left + Width + 5;
+    end;
+    SaveButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'SaveButton', Messages.HistorySaveButton, '', HistorySaveClick, false, false);
+    with SaveButton do
+    begin
+      Left   := ButtonLeft;
+      Top    := 5;
+      Height := 20;
+      Width  := thackPanel(HistoryPanel).Canvas.TextWidth(Messages.HistorySaveButton) + 5;
+      ButtonLeft := Left + Width + 5;
+    end;
+    ClearButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'ClearButton', Messages.HistoryClearButton, '', HistoryClearClick, false, false);
+    with ClearButton do
+    begin
+      Left   := ButtonLeft;
+      Top    := 5;
+      Height := 20;
+      Width  := thackPanel(HistoryPanel).Canvas.TextWidth(Messages.HistoryClearButton) + 5;
+      ButtonLeft := Left + Width + 5;
+    end;
+    HistoryPanel.Width := ButtonLeft;
+  end;   {*** IF HistoryEnabled THEN ***}
+
   CreateWinControlsOnParent(MainPanel);
 
   if AutoWidth then
@@ -1162,23 +1232,28 @@ begin
       else
         TForm(ParameterDialog).ClientWidth := ArrangePanel.Width;
   if AutoHeight then
-    if ArrangePanel.Height + ButtonPanel.Height > TForm(ParameterDialog).ClientHeight then
-      if ArrangePanel.Height + ButtonPanel.Height > MaxHeight then
+    if ArrangePanel.Height + BottomPanel.Height > TForm(ParameterDialog).ClientHeight then
+      if ArrangePanel.Height + BottomPanel.Height > MaxHeight then
         TForm(ParameterDialog).ClientHeight := MaxHeight + 5
       else
-        TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + ButtonPanel.Height + 5;
+        TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 5;
 
+  if (ButtonPanel.Width + HistoryPanel.Width) > BottomPanel.Width then
+  begin
+    ButtonPanel.Align  := alBottom;
+    ButtonPanel.Height := BottomPanel.Height;
+    BottomPanel.Height := BottomPanel.Height * 2 + 1;
+    HistoryPanel.Align := alClient;
+  end;
   CheckScrollboxAutoScroll;
 
 end;
 
 
 function TJvParameterList.ShowParameterDialog : boolean;
- //var
- //  ParameterDialog: TParameterDialog;
 begin
- //  IF Count = 0 THEN
- //    Exception.Create ('TJvParameterList.ShowParameterDialog - No Parameters defined');
+  if Count = 0 then
+    Exception.Create('TJvParameterList.ShowParameterDialog - No Parameters defined');
   CreateParameterDialog;
   try
     SetDataToWinControls;
@@ -1223,70 +1298,20 @@ end;   {*** function TJvParameterList.GetParentByName ***}
 
 procedure TJvParameterList.HistoryLoadClick(Sender : TObject);
 begin
-  ParameterListSelectList.RestoreParameterList;
+  ParameterListSelectList.RestoreParameterList(Messages.HistoryLoadCaption);
 end;
 
 procedure TJvParameterList.HistorySaveClick(Sender : TObject);
 begin
-  ParameterListSelectList.SaveParameterList;
+  ParameterListSelectList.SaveParameterList(Messages.HistorySaveCaption);
+  ;
 end;
 
 procedure TJvParameterList.HistoryClearClick(Sender : TObject);
- //VAR OrgKey : String;
- //    ParamList : TJvParameterList;
- //    Parameter : tJvBaseParameter;
- //    ok : Boolean;
- //    Reg : TRegistry;
 begin
- //  IF Path = '' THEN
- //    Exit;
- //  IF GetHistoryList = '' THEN
- //    Exit;
- //  OrgKey := Path;
- //  ParamList := TJvParameterList.Create(self);
- //  try
- //    Parameter := tJvBaseParameter(tListBoxParameter.Create);
- //    WITH tListBoxParameter(Parameter) DO
- //    BEGIN
- //      Caption := '&Historyname :';
- //      SearchName := 'Name';
- //      Required := True;
- //      Width := 200;
- //      Height := 100;
- //      ItemList.Text := GetHistoryList;
- //      ItemIndex := 0;
- //      Sorted :=TRUE;
- //    END;   {*** WITH tEditParameter(Parameter) DO ***}
- //    ParamList.AddParam (Parameter);
- //    paramList.Messages.DialogCaption:= 'Delete History';
- //    ParamList.Messages.ButtonOk := Messages.ButtonOk;
- //    ParamList.Messages.ButtonCancel:= Messages.ButtonCancel;
- //    ok := ParamList.ShowParameterDialog;
- //    IF ok THEN
- //    BEGIN
- //      LastHistoryName := ParamList.ParameterByName('Name').AsString;
- //      LastHistoryName := StringReplace (LastHistoryName, '\', '',[rfReplaceAll]);
- //      Path := Path+'\History\'+LastHistoryName;
- //      Reg:=TRegistry.Create;
- //      try
- //        if Reg.OpenKey(Path,False) then
- //          Reg.DeleteKey(Path);
- //      finally
- //        Reg.Free;
- //      end;
- //      LastHistoryName := '';
- //    END;
- //  finally
- //    ParamList.Free;
- //    Path := OrgKey;
- //  end;
+  ParameterListSelectList.ManageSelectList(Messages.HistoryClearCaption);
 end;
 
-type
-  tHackPanel = class (tCustomControl)
-  public
-    property canvas;
-  end;
 
 procedure TJvParameterList.CreateWinControlsOnParent(ParameterParent : TWinControl);
 var
@@ -1354,53 +1379,6 @@ begin
   CheckScrollboxAutoScroll;
 end;   {*** procedure TJvParameterList.CreateWinControlsOnParent ***}
 
-procedure TJvParameterList.CreateHistoryButtonsOnParent(ParameterParent : TWinControl);
-var
-  Button : TButton;
-  l :      integer;
-begin
-  if Assigned(HistoryPanel) then
-    HistoryPanel.Free;
-  if HistoryEnabled and (Path <> '') then
-  begin
-    HistoryPanel := TJvPanel.Create(Self);
-    HistoryPanel.Parent := ParameterParent;
-    with HistoryPanel do
-    begin
-      BevelInner := bvNone;
-      BevelOuter := bvNone;
-      Align      := alLeft;
-      Height     := 25;
-    end;   {*** WITH HistoryPanel DO ***}
-    Button := DynControlEngine.CreateButton(Self, HistoryPanel, 'LoadButton', Messages.HistoryLoadButton, '', HistoryLoadClick, false, false);
-    with Button do
-    begin
-      Left := 5;
-      Top := 5;
-      Height := 20;
-      Width := thackPanel(HistoryPanel).Canvas.TextWidth(Caption) + 5;
-      l := Left + Width + 5;
-    end;
-    Button := DynControlEngine.CreateButton(Self, HistoryPanel, 'SaveButton', Messages.HistorySaveButton, '', HistorySaveClick, false, false);
-    with Button do
-    begin
-      Left := l;
-      Top := 5;
-      Height := 20;
-      Width := thackPanel(HistoryPanel).Canvas.TextWidth(Caption) + 5;
-      l := Left + Width + 5;
-    end;
-    Button := DynControlEngine.CreateButton(Self, HistoryPanel, 'ClearButton', Messages.HistoryClearButton, '', HistoryClearClick, false, false);
-    with Button do
-    begin
-      Left := l;
-      Top := 5;
-      Height := 20;
-      Width := thackPanel(HistoryPanel).Canvas.TextWidth(Caption) + 5;
-      l := Left + Width + 5;
-    end;
-  end;   {*** IF HistoryEnabled THEN ***}
-end;   {*** procedure TJvParameterList.CreateHistoryButtonsOnParent ***}
 
 procedure TJvParameterList.CheckScrollboxAutoScroll;
 begin
@@ -1429,10 +1407,6 @@ begin
     FreeAndNil(ArrangePanel);
   if Assigned(ScrollBox) then
     FreeAndNil(scrollbox);
-  if Assigned(HistoryPanel) then
-    FreeAndNil(HistoryPanel);
- //  for i := 0 to Count - 1 do
- //    Parameters[i].WinControl := nil;
 end;  {*** procedure TJvParameterList.DestroyWinControls; ***}
 
 procedure TJvParameterList.GetDataFromWinControls;
@@ -1545,8 +1519,6 @@ begin
       Result := ArrangePanel.ArrangeHeight
     else
       Result := ArrangePanel.Height;
-    if Assigned(HistoryPanel) then
-      Result := Result + HistoryPanel.Height;
   end
   else
     Result := 0;
@@ -1564,7 +1536,7 @@ end;   {*** procedure TJvParameterList.clear; ***}
  {* TJvParameterListPropertyStore                                                     *}
  {*****************************************************************************}
 
-procedure TJvParameterListPropertyStore.LoadData ;
+procedure TJvParameterListPropertyStore.LoadData;
 var
   i : integer;
 begin
@@ -1603,12 +1575,12 @@ end;   {*** procedure TJvParameterListPropertyStore.StoreData; ***}
 
 function tJvParameterListSelectList.GetDynControlEngine : tJvDynControlEngine;
 begin
-  Result   := fParameterList.DynControlEngine;
+  Result := fParameterList.DynControlEngine;
 end;
 
 function tJvParameterListSelectList.GetParameterList : TJvParameterList;
 begin
-  Result   := fParameterList;
+  Result := fParameterList;
 end;
 
 procedure tJvParameterListSelectList.SetParameterList(Value : TJvParameterList);
@@ -1637,7 +1609,8 @@ end;
 
 
 procedure tJvParameterListSelectList.RestoreParameterList(aCaption : string = '');
-Var SavePath : String;
+var
+  SavePath : string;
 begin
   if not Assigned(ParameterList) then
     Exit;
@@ -1651,11 +1624,12 @@ begin
     end;
   finally
     ParameterList.Path := SavePath;
-  End;
+  end;
 end;
 
 procedure tJvParameterListSelectList.SaveParameterList(aCaption : string = '');
-Var SavePath : String;
+var
+  SavePath : string;
 begin
   if not Assigned(ParameterList) then
     Exit;
@@ -1669,11 +1643,10 @@ begin
     end;
   finally
     ParameterList.Path := SavePath;
-  End;
+  end;
 end;
 
 
-{.$ENDIF}
 
 
 

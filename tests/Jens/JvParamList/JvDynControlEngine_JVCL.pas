@@ -1,3 +1,29 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Initial Developer of the Original Code is Jens Fudickar [jens.fudickar@oratool.de]
+All Rights Reserved.
+
+Contributor(s):
+Jens Fudickar [jens.fudickar@oratool.de]
+
+Last Modified: 2003-11-03
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
 unit JvDynControlEngine_JVCL;
 
 interface
@@ -47,6 +73,23 @@ type
     function ControlGetValue : variant;
   end;
 
+  TJvDynControlJVCLDirectoryEdit = class (TJvDirectoryEdit, IUnknown, IJvDynControl, IJvDynControlData)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetReadOnly(Value : boolean);
+    procedure ControlSetCaption(Value : string);
+    procedure ControlSetTabOrder(Value : integer);
+
+    procedure ControlSetOnEnter(Value : TNotifyEvent);
+    procedure ControlSetOnExit(Value : TNotifyEvent);
+    procedure ControlSetOnChange(Value : TNotifyEvent);
+    procedure ControlSetOnClick(Value : TNotifyEvent);
+
+    function ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+
+    procedure ControlSetValue(Value : variant);
+    function ControlGetValue : variant;
+  end;
 
   TJvDynControlJVCLDateTimeEdit = class (TJvDateTimePicker, IUnknown, IJvDynControl, IJvDynControlData)
   public
@@ -108,6 +151,8 @@ type
 
     procedure ControlSetValue(Value : variant);
     function ControlGetValue : variant;
+
+    procedure ControlSetSorted(Value : boolean);
     procedure ControlSetItems(Value : TStrings);
     function ControlGetItems : TStrings;
 
@@ -117,7 +162,7 @@ type
     procedure ControlSetScrollbars(Value : TScrollStyle);
   end;
 
-  TJvDynControlJVCLRadioGroup = class (TJvRadioGroup, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems)
+  TJvDynControlJVCLRadioGroup = class (TJvRadioGroup, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlRadioGroup)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value : boolean);
@@ -133,8 +178,12 @@ type
 
     procedure ControlSetValue(Value : variant);
     function ControlGetValue : variant;
+
+    procedure ControlSetSorted(Value : boolean);
     procedure ControlSetItems(Value : TStrings);
     function ControlGetItems : TStrings;
+
+    procedure ControlSetColumns(Value : integer);
   end;
 
   TJvDynControlJVCLListBox = class (TJvListBox, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick)
@@ -153,13 +202,15 @@ type
 
     procedure ControlSetValue(Value : variant);
     function ControlGetValue : variant;
+
+    procedure ControlSetSorted(Value : boolean);
     procedure ControlSetItems(Value : TStrings);
     function ControlGetItems : TStrings;
 
     procedure ControlSetOnDblClick(Value : TNotifyEvent);
   end;
 
-  TJvDynControlJVCLComboBox = class (TJvComboBox, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems)
+  TJvDynControlJVCLComboBox = class (TJvComboBox, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlComboBox)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value : boolean);
@@ -175,8 +226,12 @@ type
 
     procedure ControlSetValue(Value : variant);
     function ControlGetValue : variant;
+
+    procedure ControlSetSorted(Value : boolean);
     procedure ControlSetItems(Value : TStrings);
     function ControlGetItems : TStrings;
+
+    procedure ControlSetNewEntriesAllowed(Value : boolean);
   end;
 
   TJvDynControlJVCLPanel = class (TJvPanel, IUnknown, IJvDynControl, IJvDynControlPanel)
@@ -189,7 +244,7 @@ type
     procedure ControlSetOnExit(Value : TNotifyEvent);
     procedure ControlSetOnClick(Value : TNotifyEvent);
 
-    procedure ControlSetBorderWidth(Value : integer);
+    procedure ControlSetBorder(aBevelInner : TPanelBevel; aBevelOuter : TPanelBevel; aBevelWidth : integer; aBorderStyle : TBorderStyle; aBorderWidth : integer);
   end;
 
   TJvDynControlJVCLScrollbox = class (TJvScrollbox, IUnknown, IJvDynControl)
@@ -247,7 +302,11 @@ function DynControlEngine_JVCL : tJvDynControlEngine;
 
 implementation
 
-uses SysUtils;//, Variants;
+uses SysUtils
+     {$IFDEF COMPILER6_UP}
+  , Variants
+{$ENDIF}
+  ;
 
 var
   IntDynControlEngine_JVCL : tJvDynControlEngine;
@@ -310,7 +369,7 @@ begin
 end;
 
  //****************************************************************************
- // TJvDynControlJVCLFileNameEdit                      
+ // TJvDynControlJVCLFileNameEdit
  //****************************************************************************
 
 procedure TJvDynControlJVCLFileNameEdit.ControlSetDefaultProperties;
@@ -362,6 +421,63 @@ begin
 end;
 
 function TJvDynControlJVCLFileNameEdit.ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+begin
+  Result := true;
+end;
+
+ //****************************************************************************
+ // TJvDynControlJVCLDirectoryEdit
+ //****************************************************************************
+
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetReadOnly(Value : boolean);
+begin
+  ReadOnly := Value;
+end;
+
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetCaption(Value : string);
+begin
+end;
+
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetTabOrder(Value : integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnEnter(Value : TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnExit(Value : TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnChange(Value : TNotifyEvent);
+begin
+  OnChange := Value;
+end;
+
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnClick(Value : TNotifyEvent);
+begin
+
+end;
+
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetValue(Value : variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlJVCLDirectoryEdit.ControlGetValue : variant;
+begin
+  Result := Text;
+end;
+
+function TJvDynControlJVCLDirectoryEdit.ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
 begin
   Result := true;
 end;
@@ -554,6 +670,10 @@ begin
   Result := Text;
 end;
 
+procedure TJvDynControlJVCLMemo.ControlSetSorted(Value : boolean);
+begin
+end;
+
 procedure TJvDynControlJVCLMemo.ControlSetItems(Value : TStrings);
 begin
   Lines.Assign(Value);
@@ -650,6 +770,10 @@ begin
   Result := ItemIndex;
 end;
 
+procedure TJvDynControlJVCLRadioGroup.ControlSetSorted(Value : boolean);
+begin
+end;
+
 procedure TJvDynControlJVCLRadioGroup.ControlSetItems(Value : TStrings);
 begin
   Items.Assign(Value);
@@ -658,6 +782,11 @@ end;
 function TJvDynControlJVCLRadioGroup.ControlGetItems : TStrings;
 begin
   Result := Items;
+end;
+
+procedure TJvDynControlJVCLRadioGroup.ControlSetColumns(Value : integer);
+begin
+  Columns := Value;
 end;
 
 function TJvDynControlJVCLRadioGroup.ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
@@ -725,6 +854,11 @@ begin
   Result := ItemIndex;
 end;
 
+procedure TJvDynControlJVCLListBox.ControlSetSorted(Value : boolean);
+begin
+  Sorted := Value;
+end;
+
 procedure TJvDynControlJVCLListBox.ControlSetItems(Value : TStrings);
 begin
   Items.Assign(Value);
@@ -746,7 +880,7 @@ begin
 end;
 
  //****************************************************************************
- // TJvDynControlJVCLComboBox                      
+ // TJvDynControlJVCLComboBox
  //****************************************************************************
 
 procedure TJvDynControlJVCLComboBox.ControlSetDefaultProperties;
@@ -797,6 +931,11 @@ begin
   Result := Text;
 end;
 
+procedure TJvDynControlJVCLComboBox.ControlSetSorted(Value : boolean);
+begin
+  Sorted := Value;
+end;
+
 procedure TJvDynControlJVCLComboBox.ControlSetItems(Value : TStrings);
 begin
   Items.Assign(Value);
@@ -812,6 +951,13 @@ begin
   Result := true;
 end;
 
+procedure TJvDynControlJVCLComboBox.ControlSetNewEntriesAllowed(Value : boolean);
+begin
+  if Value then
+    Style := csDropDown
+  else
+    Style := csDropDownList;
+end;
 
 
  //****************************************************************************
@@ -848,9 +994,13 @@ procedure TJvDynControlJVCLPanel.ControlSetOnClick(Value : TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLPanel.ControlSetBorderWidth(Value : integer);
+procedure TJvDynControlJVCLPanel.ControlSetBorder(aBevelInner : TPanelBevel; aBevelOuter : TPanelBevel; aBevelWidth : integer; aBorderStyle : TBorderStyle; aBorderWidth : integer);
 begin
-  BorderWidth := Value;
+  BorderWidth := aBorderWidth;
+  BorderStyle := aBorderStyle;
+  BevelInner  := aBevelInner;
+  BevelOuter  := aBevelOuter;
+  BevelWidth  := aBevelWidth;
 end;
 
 
@@ -1018,7 +1168,7 @@ initialization
   IntDynControlEngine_JVCL.RegisterControl(jctEdit, TJvDynControlJVCLMaskEdit);
   IntDynControlEngine_JVCL.RegisterControl(jctIntegerEdit, TJvDynControlJVCLMaskEdit);
   IntDynControlEngine_JVCL.RegisterControl(jctDoubleEdit, TJvDynControlJVCLMaskEdit);
-  IntDynControlEngine_JVCL.RegisterControl(jctDirectoryEdit, TJvDynControlJVCLMaskEdit);
+  IntDynControlEngine_JVCL.RegisterControl(jctDirectoryEdit, TJvDynControlJVCLDirectoryEdit);
   IntDynControlEngine_JVCL.RegisterControl(jctFileNameEdit, TJvDynControlJVCLFileNameEdit);
   IntDynControlEngine_JVCL.RegisterControl(jctMemo, TJvDynControlJVCLMemo);
   SetDefaultDynControlEngine(IntDynControlEngine_JVCL);

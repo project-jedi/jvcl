@@ -72,7 +72,7 @@ type
     procedure OnOkButtonClick(Sender : TObject);
     procedure OnCancelButtonClick(Sender : TObject);
     procedure OnListBoxChange(Sender : TObject);
-    procedure SelectFormDestroying(Sender: TObject);
+    procedure SelectFormDestroying(Sender : TObject);
 
     procedure LoadSelectList;
     procedure StoreSelectList;
@@ -172,23 +172,24 @@ begin
     IComboBoxData.Value := IListBoxItems.Items[Index];
 end;
 
-procedure tJvAppStoreSelectList.SelectFormDestroying(Sender: TObject);
+procedure tJvAppStoreSelectList.SelectFormDestroying(Sender : TObject);
 begin
   fIComboBoxItems := nil;
-  fIComboBoxData := nil;
-  fIListBoxItems := nil;
-  fIListBoxData := nil;
+  fIComboBoxData  := nil;
+  fIListBoxItems  := nil;
+  fIListBoxData   := nil;
 end;
 
 procedure tJvAppStoreSelectList.CreateDialog(aOperation : tJvAppStoreSelectListOperation; aCaption : string = '');
 var
   MainPanel, ButtonPanel, ListBoxPanel, ComboBoxPanel : TWinControl;
   OkButton, CancelButton : tWinControl;
-  TmpPanel: IJVDynControlPanel;
-  TmpControl: IJvDynControl;
+  ITmpPanel :    IJVDynControlPanel;
+  ITmpControl :  IJvDynControl;
+  ITmpComboBox : IJvDynControlComboBox;
 begin
-  Operation     := aOperation;
-  IF Assigned(SelectDialog) THEN
+  Operation := aOperation;
+  if Assigned(SelectDialog) then
     FreeAndNil(fSelectDialog);
 
   fSelectDialog := TForm(DynControlEngine.CreateForm('', ''));
@@ -199,7 +200,7 @@ begin
     DefaultMonitor := dmActiveForm;
     FormStyle := fsNormal;
     BorderStyle := bsDialog;
-    Position := poScreenCenter;
+    Position  := poScreenCenter;
     OnDestroy := SelectFormDestroying;
   end;
 
@@ -228,23 +229,33 @@ begin
   OkButton.Anchors := [akTop, akRight];
 
   ComboBoxPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ComboBoxPanel', '', alBottom);
-  if not Supports(ComboBoxPanel, IJVDynControlPanel, TmpPanel) then
+  if not Supports(ComboBoxPanel, IJVDynControlPanel, ITmpPanel) then
     raise EIntfCastError.Create('SIntfCastError');
-  with TmpPanel do
-    ControlSetBorderWidth(5);
+  with ITmpPanel do
+    ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
   ListBoxPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ListPanel', '', alClient);
-  if not Supports(ListBoxPanel, IJVDynControlPanel, TmpPanel) then
+  if not Supports(ListBoxPanel, IJVDynControlPanel, ITmpPanel) then
     raise EIntfCastError.Create('SIntfCastError');
-  with TmpPanel do
-    ControlSetBorderWidth(5);
+  with ITmpPanel do
+    ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
 
-  ComboBox      := DynControlEngine.CreateComboBoxControl(Self, ComboBoxPanel, 'ComboBox', SelectList);
-  Supports(Combobox, IJvDynControlItems, fIComboBoxItems);
-  Supports(ComboBox, IJvDynControlData, fIComboBoxData);
+  ComboBox := DynControlEngine.CreateComboBoxControl(Self, ComboBoxPanel, 'ComboBox', SelectList);
+  if not Supports(Combobox, IJvDynControlItems, fIComboBoxItems) then
+    raise EIntfCastError.Create('SIntfCastError');
+  if not Supports(ComboBox, IJvDynControlData, fIComboBoxData) then
+    raise EIntfCastError.Create('SIntfCastError');
+
+  IComboBoxItems.ControlSetSorted(true);
+  if Supports(ComboBox, IJvDynControlComboBox, ITmpComboBox) then
+    case aOperation of
+      sloLoad : ITmpComboBox.ControlSetNewEntriesAllowed(false);
+      sloStore : ITmpComboBox.ControlSetNewEntriesAllowed(true);
+      sloManage : ITmpComboBox.ControlSetNewEntriesAllowed(false);
+    end;
 
   IComboBoxData.Value := '';
 
-  ListBox      := DynControlEngine.CreateListBoxControl(Self, ListBoxPanel, 'ListBox', SelectList);
+  ListBox := DynControlEngine.CreateListBoxControl(Self, ListBoxPanel, 'ListBox', SelectList);
   Supports(ListBox, IJvDynControlItems, fIListBoxItems);
   Supports(ListBox, IJvDynControlData, fIListBoxData);
   with IListBoxItems as IJvDynControl do
@@ -259,9 +270,9 @@ begin
   ListBox.Align  := alClient;
   ComboBox.Align := alClient;
 
-  if not Supports(OkButton, IJvDynControl, TmpControl) then
+  if not Supports(OkButton, IJvDynControl, ITmpControl) then
     raise EIntfCastError.Create('SIntfCastError');
-  with TmpControl do
+  with ITmpControl do
     case aOperation of
       sloLoad : ControlSetCaption('&Load');
       sloStore : ControlSetCaption('&Save');
@@ -328,10 +339,10 @@ var
 begin
   if not Assigned(AppStore) then
     Exit;
-//  if CheckEntries then
-//    for i := fSelectList.Count - 1 downto 0 do
-//      if not AppStore.PathExists(SelectPath + '\' + fSelectList[i]) then
-//        fSelectList.Delete(i);
+ //  if CheckEntries then
+ //    for i := fSelectList.Count - 1 downto 0 do
+ //      if not AppStore.PathExists(SelectPath + '\' + fSelectList[i]) then
+ //        fSelectList.Delete(i);
   AppStore.WriteStringList(SelectPath, fSelectList);
 end;
 

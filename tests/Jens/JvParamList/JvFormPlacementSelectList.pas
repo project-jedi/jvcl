@@ -72,7 +72,7 @@ uses SysUtils;
 
 function tJvFormStorageSelectList.GetFormStorage : TJvFormStorage;
 begin
-  Result   := fFormStorage;
+  Result := fFormStorage;
 end;
 
 procedure tJvFormStorageSelectList.SetFormStorage(Value : TJvFormStorage);
