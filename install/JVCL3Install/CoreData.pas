@@ -271,6 +271,8 @@ function CreateJclPackageList(Target: TTargetInfo): TPackageList;
 
 implementation
 
+uses Math;
+
 const
   cDelphiKeyName = 'SOFTWARE\Borland\Delphi';
   cBCBKeyName = 'SOFTWARE\Borland\C++Builder';
@@ -370,15 +372,15 @@ end;
 
 function GetUNCShare(const Filename: string): string;
 var nps: Integer;
-begin // nur für WIN-Dateisystem
+begin
   Result := '';
   if Filename = '' then exit;
-  if IsUNCPath(Filename) then // UNC-Pfad
+  if IsUNCPath(Filename) then
   begin
     Result := Copy(Filename, 3, Length(Filename));
     nps := pos('\', Result);
-    Delete(Result, 1, nps); // Rechnername entfernen
-    Result := Copy(Result, 1, pos('\', Result) - 1); // Share extrahieren
+    Delete(Result, 1, nps);
+    Result := Copy(Result, 1, pos('\', Result) - 1);
     Result := Copy(Filename, 1, nps + 2) + Result;
    end else Result := Copy(Filename, 1, 2);
 end;
@@ -399,7 +401,7 @@ begin
     Exit;
   end;
 
-  //ForceDirectories(ExtractFilePath(Dest)); // Ordner erstellen
+  //ForceDirectories(ExtractFilePath(Dest));
   if FileExists(Dest) then
   begin
     SetFileAttributes(PChar(Dest), 0);
@@ -407,7 +409,6 @@ begin
   end;
 
   CopyNecessary := True;
- // ? gleiches Laufwerk
   if CompareText(GetUNCShare(Source), GetUNCShare(Dest)) = 0 then
      CopyNecessary := not RenameFile(Source, Dest);
 
@@ -1232,6 +1233,11 @@ begin
   finally
     Names.Free;
   end;
+
+ // limit to Delphi/BCB 5 
+  for i := Count - 1 downto 0 do
+    if Items[i].MajorVersion < 5 then
+      FItems.Delete(i);
 end;
 
 procedure TTargetList.ReadTargetData(const Key, Name, Version: string);
