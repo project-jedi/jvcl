@@ -67,9 +67,10 @@ uses Classes,
   JvgGroupBox, JvgHelpPanel, JvgHelpPanelEditor, JvgHint, JvgImage,
   JvgLabel, JvgLanguageLoader, JvgListBox, JvgLogicsEditorForm,
   JvgMultiResourceEditorForm, {JvgMultiResources,} JvgPage, JvgProgress,
+  JvgGridHeaderControl, 
   {$IFNDEF DelphiPersonalEdition}
   JvgCrossTable, JvgDBNav, JvgExport, JvgDBGrid, JvgExportComponents,
-  JvgWebDocumentIterator, JvgGridHeaderControl, JvgHTTPVersionInfo,
+  JvgWebDocumentIterator, JvgHTTPVersionInfo,
   JvgQPrintPreviewForm, JvgQPrintSetupForm, JvgQRLabel, JvgVertDBGrid,
   JvgCheckVersionInfoForm,
   {$ENDIF DelphiPersonalEdition}
