@@ -22,7 +22,7 @@ object JvGridPreviewForm: TJvGridPreviewForm
     Left = 157
     Top = 0
     Width = 438
-    Height = 365
+    Height = 362
     Align = alClient
     Ctl3D = True
     ParentCtl3D = False
@@ -40,7 +40,7 @@ object JvGridPreviewForm: TJvGridPreviewForm
     Left = 0
     Top = 0
     Width = 157
-    Height = 365
+    Height = 362
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1

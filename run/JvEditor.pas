@@ -482,7 +482,7 @@ begin
       L := 0;
       Add('');
     end;
-    s := Strings[JvEditor.CaretY];
+    S := Strings[JvEditor.CaretY];
     if JvEditor.CaretX > Length(S) then
     begin
       L := JvEditor.CaretX - Length(S);
@@ -589,10 +589,10 @@ begin
     while (P[0] <> #0) and (P[0] <> Lf) and (P[0] <> Cr) do
       Inc(P);
 
-    SetString(s, F, P - F);
+    SetString(S, F, P - F);
 
     YStart := Y;
-    FirstLine := BegLine + s; // set Internal[YStart] later so we keep the trailing spaces for concat EndLine
+    FirstLine := BegLine + S; // set Internal[YStart] later so we keep the trailing spaces for concat EndLine
 
     while P[0] <> #0 do
     begin
@@ -730,7 +730,7 @@ var
   R: TRect;
   S: string;
   LA: TLineAttr;
-  jCStart: integer;
+  jCStart: Integer;
 begin
   with EditorClient do
   begin
@@ -1353,7 +1353,7 @@ begin
           end;
         end;
         { else }
-        { move cursor - oh yes!, it's allready moved: X := GetTabStop(..); }
+        { move cursor - oh yes!, it's already moved: X := GetTabStop(..); }
       end;
     ecDeleteLine:
       if not ReadOnly then
@@ -1776,8 +1776,8 @@ begin
           if SelBlockFormat = bfLine then
           begin
             X := 0;
-            if (Clips = '') or (Clips[Length(Clips)] <> Lf) then
-              Clips := Clips + sLineBreak;
+            if (ClipS = '') or (ClipS[Length(ClipS)] <> Lf) then
+              ClipS := ClipS + sLineBreak;
           end;
 
           { --- UNDO --- }
@@ -2507,7 +2507,7 @@ begin
         BeginCompound;
         try
           ClearSelection;
-          Reline;
+          ReLine;
 
           if Length(W) = 0 then
           begin
@@ -2587,12 +2587,12 @@ procedure TJvCompletion.FindSelItem(var Eq: Boolean);
 var
   S: string;
 
-  function FindFirst(Ss: TStrings; S: AnsiString): Integer;
+  function FindFirst(Strs: TStrings; S: AnsiString): Integer;
   var
     I: Integer;
   begin
-    for I := 0 to Ss.Count - 1 do
-      if StrLIComp(PAnsiChar(Ss[I]), PAnsiChar(S), Length(S)) = 0 then
+    for I := 0 to Strs.Count - 1 do
+      if StrLIComp(PAnsiChar(Strs[I]), PAnsiChar(S), Length(S)) = 0 then
       begin
         Result := I;
         Exit;

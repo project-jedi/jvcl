@@ -1690,6 +1690,7 @@ resourcestring
   RsEApptIndexOutOfBoundsd = 'Appt index out of bounds (%d)';
   RsECellCannotBeSplit = 'Cell cannot be split';
   RsEASubcellCannotBeSplit = 'A subcell cannot be split';
+  RsGlanceMainTitle = '(Title)';
 {$ENDIF USEJVCL}
 
 //=== JvTFGlanceTextViewer.pas ===============================================

@@ -83,9 +83,9 @@ begin
     QuickRep1 := Form.FindComponent(cQuickRep1) as TQuickRep;
     if QuickRep1 = nil then
       for I := 0 to Form.ComponentCount - 1 do
-        if Form.Components[i] is TQuickRep then
+        if Form.Components[I] is TQuickRep then
         begin
-          QuickRep1 := Form.Components[i] as TQuickRep;
+          QuickRep1 := Form.Components[I] as TQuickRep;
           Break;
         end;
     if QuickRep1 = nil then
@@ -126,7 +126,7 @@ begin
   TQRController(Args.Obj).DataSet := V2O(Value) as TDataSet;
 end;
 
-{ property Read DetailNumber: integer }
+{ property Read DetailNumber: Integer }
 
 procedure TQRController_Read_DetailNumber(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -147,18 +147,18 @@ begin
   TQRController(Args.Obj).Detail := V2O(Value) as TQRCustomBand;
 end;
 
-{ property Read Footer: TQRCustomband }
+{ property Read Footer: TQRCustomBand }
 
 procedure TQRController_Read_Footer(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TQRController(Args.Obj).Footer);
 end;
 
-{ property Write Footer(Value: TQRCustomband) }
+{ property Write Footer(Value: TQRCustomBand) }
 
 procedure TQRController_Write_Footer(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TQRController(Args.Obj).Footer := V2O(Value) as TQRCustomband;
+  TQRController(Args.Obj).Footer := V2O(Value) as TQRCustomBand;
 end;
 
 { property Read Header: TQRCustomBand }
@@ -203,28 +203,28 @@ begin
   TQRController(Args.Obj).ParentReport := V2O(Value) as TQuickRep;
 end;
 
-{ property Read PrintBefore: boolean }
+{ property Read PrintBefore: Boolean }
 
 procedure TQRController_Read_PrintBefore(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRController(Args.Obj).PrintBefore;
 end;
 
-{ property Write PrintBefore(Value: boolean) }
+{ property Write PrintBefore(Value: Boolean) }
 
 procedure TQRController_Write_PrintBefore(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRController(Args.Obj).PrintBefore := Value;
 end;
 
-{ property Read PrintIfEmpty: boolean }
+{ property Read PrintIfEmpty: Boolean }
 
 procedure TQRController_Read_PrintIfEmpty(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRController(Args.Obj).PrintIfEmpty;
 end;
 
-{ property Write PrintIfEmpty(Value: boolean) }
+{ property Write PrintIfEmpty(Value: Boolean) }
 
 procedure TQRController_Write_PrintIfEmpty(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -254,7 +254,7 @@ begin
   Value := O2V(TQRFrame.Create);
 end;
 
-{ function AnyFrame: boolean; }
+{ function AnyFrame: Boolean; }
 
 procedure TQRFrame_AnyFrame(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -289,56 +289,56 @@ begin
   TQRFrame(Args.Obj).Color := Value;
 end;
 
-{ property Read DrawTop: boolean }
+{ property Read DrawTop: Boolean }
 
 procedure TQRFrame_Read_DrawTop(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRFrame(Args.Obj).DrawTop;
 end;
 
-{ property Write DrawTop(Value: boolean) }
+{ property Write DrawTop(Value: Boolean) }
 
 procedure TQRFrame_Write_DrawTop(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRFrame(Args.Obj).DrawTop := Value;
 end;
 
-{ property Read DrawBottom: boolean }
+{ property Read DrawBottom: Boolean }
 
 procedure TQRFrame_Read_DrawBottom(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRFrame(Args.Obj).DrawBottom;
 end;
 
-{ property Write DrawBottom(Value: boolean) }
+{ property Write DrawBottom(Value: Boolean) }
 
 procedure TQRFrame_Write_DrawBottom(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRFrame(Args.Obj).DrawBottom := Value;
 end;
 
-{ property Read DrawLeft: boolean }
+{ property Read DrawLeft: Boolean }
 
 procedure TQRFrame_Read_DrawLeft(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRFrame(Args.Obj).DrawLeft;
 end;
 
-{ property Write DrawLeft(Value: boolean) }
+{ property Write DrawLeft(Value: Boolean) }
 
 procedure TQRFrame_Write_DrawLeft(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRFrame(Args.Obj).DrawLeft := Value;
 end;
 
-{ property Read DrawRight: boolean }
+{ property Read DrawRight: Boolean }
 
 procedure TQRFrame_Read_DrawRight(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRFrame(Args.Obj).DrawRight;
 end;
 
-{ property Write DrawRight(Value: boolean) }
+{ property Write DrawRight(Value: Boolean) }
 
 procedure TQRFrame_Write_DrawRight(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -396,21 +396,21 @@ begin
   TQRUnitBase(Args.Obj).ParentReport := V2O(Value) as TQuickRep;
 end;
 
-{ property Read ParentUpdating: boolean }
+{ property Read ParentUpdating: Boolean }
 
 procedure TQRUnitBase_Read_ParentUpdating(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRUnitBase(Args.Obj).ParentUpdating;
 end;
 
-{ property Write ParentUpdating(Value: boolean) }
+{ property Write ParentUpdating(Value: Boolean) }
 
 procedure TQRUnitBase_Write_ParentUpdating(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRUnitBase(Args.Obj).ParentUpdating := Value;
 end;
 
-{ property Read Resolution: integer }
+{ property Read Resolution: Integer }
 
 procedure TQRUnitBase_Read_Resolution(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -431,14 +431,14 @@ begin
   TQRUnitBase(Args.Obj).Units := Value;
 end;
 
-{ property Read Zoom: integer }
+{ property Read Zoom: Integer }
 
 procedure TQRUnitBase_Read_Zoom(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRUnitBase(Args.Obj).Zoom;
 end;
 
-{ property Write Zoom(Value: integer) }
+{ property Write Zoom(Value: Integer) }
 
 procedure TQRUnitBase_Write_Zoom(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -454,42 +454,42 @@ begin
   Value := O2V(TQRBandSize.Create(V2O(Args.Values[0]) as TQRCustomBand));
 end;
 
-{ property Read Length: extended }
+{ property Read Length: Extended }
 
 procedure TQRBandSize_Read_Length(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRBandSize(Args.Obj).Length;
 end;
 
-{ property Write Length(Value: extended) }
+{ property Write Length(Value: Extended) }
 
 procedure TQRBandSize_Write_Length(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRBandSize(Args.Obj).Length := Value;
 end;
 
-{ property Read Height: extended }
+{ property Read Height: Extended }
 
 procedure TQRBandSize_Read_Height(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRBandSize(Args.Obj).Height;
 end;
 
-{ property Write Height(Value: extended) }
+{ property Write Height(Value: Extended) }
 
 procedure TQRBandSize_Write_Height(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRBandSize(Args.Obj).Height := Value;
 end;
 
-{ property Read Width: extended }
+{ property Read Width: Extended }
 
 procedure TQRBandSize_Read_Width(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRBandSize(Args.Obj).Width;
 end;
 
-{ property Write Width(Value: extended) }
+{ property Write Width(Value: Extended) }
 
 procedure TQRBandSize_Write_Width(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -498,77 +498,77 @@ end;
 
 { TQRPage }
 
-{ constructor create(AParent: TQuickRep) }
+{ constructor Create(AParent: TQuickRep) }
 
-procedure TQRPage_create(var Value: Variant; Args: TJvInterpreterArgs);
+procedure TQRPage_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := O2V(TQRPage.create(V2O(Args.Values[0]) as TQuickRep));
+  Value := O2V(TQRPage.Create(V2O(Args.Values[0]) as TQuickRep));
 end;
 
-{ property Read BottomMargin: extended }
+{ property Read BottomMargin: Extended }
 
 procedure TQRPage_Read_BottomMargin(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRPage(Args.Obj).BottomMargin;
 end;
 
-{ property Write BottomMargin(Value: extended) }
+{ property Write BottomMargin(Value: Extended) }
 
 procedure TQRPage_Write_BottomMargin(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRPage(Args.Obj).BottomMargin := Value;
 end;
 
-{ property Read ColumnSpace: extended }
+{ property Read ColumnSpace: Extended }
 
 procedure TQRPage_Read_ColumnSpace(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRPage(Args.Obj).ColumnSpace;
 end;
 
-{ property Write ColumnSpace(Value: extended) }
+{ property Write ColumnSpace(Value: Extended) }
 
 procedure TQRPage_Write_ColumnSpace(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRPage(Args.Obj).ColumnSpace := Value;
 end;
 
-{ property Read Columns: integer }
+{ property Read Columns: Integer }
 
 procedure TQRPage_Read_Columns(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRPage(Args.Obj).Columns;
 end;
 
-{ property Write Columns(Value: integer) }
+{ property Write Columns(Value: Integer) }
 
 procedure TQRPage_Write_Columns(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRPage(Args.Obj).Columns := Value;
 end;
 
-{ property Read LeftMargin: extended }
+{ property Read LeftMargin: Extended }
 
 procedure TQRPage_Read_LeftMargin(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRPage(Args.Obj).LeftMargin;
 end;
 
-{ property Write LeftMargin(Value: extended) }
+{ property Write LeftMargin(Value: Extended) }
 
 procedure TQRPage_Write_LeftMargin(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRPage(Args.Obj).LeftMargin := Value;
 end;
 
-{ property Read Length: extended }
+{ property Read Length: Extended }
 
 procedure TQRPage_Read_Length(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRPage(Args.Obj).Length;
 end;
 
-{ property Write Length(Value: extended) }
+{ property Write Length(Value: Extended) }
 
 procedure TQRPage_Write_Length(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -603,56 +603,56 @@ begin
   TQRPage(Args.Obj).PaperSize := Value;
 end;
 
-{ property Read RightMargin: extended }
+{ property Read RightMargin: Extended }
 
 procedure TQRPage_Read_RightMargin(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRPage(Args.Obj).RightMargin;
 end;
 
-{ property Write RightMargin(Value: extended) }
+{ property Write RightMargin(Value: Extended) }
 
 procedure TQRPage_Write_RightMargin(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRPage(Args.Obj).RightMargin := Value;
 end;
 
-{ property Read Ruler: boolean }
+{ property Read Ruler: Boolean }
 
 procedure TQRPage_Read_Ruler(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRPage(Args.Obj).Ruler;
 end;
 
-{ property Write Ruler(Value: boolean) }
+{ property Write Ruler(Value: Boolean) }
 
 procedure TQRPage_Write_Ruler(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRPage(Args.Obj).Ruler := Value;
 end;
 
-{ property Read TopMargin: extended }
+{ property Read TopMargin: Extended }
 
 procedure TQRPage_Read_TopMargin(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRPage(Args.Obj).TopMargin;
 end;
 
-{ property Write TopMargin(Value: extended) }
+{ property Write TopMargin(Value: Extended) }
 
 procedure TQRPage_Write_TopMargin(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRPage(Args.Obj).TopMargin := Value;
 end;
 
-{ property Read Width: extended }
+{ property Read Width: Extended }
 
 procedure TQRPage_Read_Width(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRPage(Args.Obj).Width;
 end;
 
-{ property Write Width(Value: extended) }
+{ property Write Width(Value: Extended) }
 
 procedure TQRPage_Write_Width(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -668,28 +668,28 @@ begin
   Value := O2V(TQRBasePanel.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{ property Read Zoom: integer }
+{ property Read Zoom: Integer }
 
 procedure TQRBasePanel_Read_Zoom(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRBasePanel(Args.Obj).Zoom;
 end;
 
-{ property Write Zoom(Value: integer) }
+{ property Write Zoom(Value: Integer) }
 
 procedure TQRBasePanel_Write_Zoom(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRBasePanel(Args.Obj).Zoom := Value;
 end;
 
-{ property Read FontSize: integer }
+{ property Read FontSize: Integer }
 
 procedure TQRBasePanel_Read_FontSize(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRBasePanel(Args.Obj).FontSize;
 end;
 
-{ property Write FontSize(Value: integer) }
+{ property Write FontSize(Value: Integer) }
 
 procedure TQRBasePanel_Write_FontSize(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -726,18 +726,18 @@ begin
   Value := O2V(TQRCustomBand(Args.Obj).AddPrintable(TQRNewComponentClass(V2C(Args.Values[0]))));
 end;
 
-{ function CanExpand(Value: extended): boolean; }
+{ function CanExpand(Value: Extended): Boolean; }
 
 procedure TQRCustomBand_CanExpand(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRCustomBand(Args.Obj).CanExpand(Args.Values[0]);
 end;
 
-{ function ExpandBand(Value: extended; var NewTop, OfsX: extended): boolean; }
+{ function ExpandBand(Value: Extended; var NewTop, OfsX: Extended): Boolean; }
 
 procedure TQRCustomBand_ExpandBand(var Value: Variant; Args: TJvInterpreterArgs);
 var
-  NewTop: extended;
+  NewTop: Extended;
   param2: Boolean;
 begin
   NewTop := Args.Values[1];
@@ -796,70 +796,70 @@ begin
   TQRCustomBand(Args.Obj).LinkBand := V2O(Value) as TQRCustomBand;
 end;
 
-{ property Read AlignToBottom: boolean }
+{ property Read AlignToBottom: Boolean }
 
 procedure TQRCustomBand_Read_AlignToBottom(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRCustomBand(Args.Obj).AlignToBottom;
 end;
 
-{ property Write AlignToBottom(Value: boolean) }
+{ property Write AlignToBottom(Value: Boolean) }
 
 procedure TQRCustomBand_Write_AlignToBottom(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRCustomBand(Args.Obj).AlignToBottom := Value;
 end;
 
-{ property Read Enabled: boolean }
+{ property Read Enabled: Boolean }
 
 procedure TQRCustomBand_Read_Enabled(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRCustomBand(Args.Obj).Enabled;
 end;
 
-{ property Write Enabled(Value: boolean) }
+{ property Write Enabled(Value: Boolean) }
 
 procedure TQRCustomBand_Write_Enabled(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRCustomBand(Args.Obj).Enabled := Value;
 end;
 
-{ property Read ForceNewColumn: boolean }
+{ property Read ForceNewColumn: Boolean }
 
 procedure TQRCustomBand_Read_ForceNewColumn(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRCustomBand(Args.Obj).ForceNewColumn;
 end;
 
-{ property Write ForceNewColumn(Value: boolean) }
+{ property Write ForceNewColumn(Value: Boolean) }
 
 procedure TQRCustomBand_Write_ForceNewColumn(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRCustomBand(Args.Obj).ForceNewColumn := Value;
 end;
 
-{ property Read ForceNewPage: boolean }
+{ property Read ForceNewPage: Boolean }
 
 procedure TQRCustomBand_Read_ForceNewPage(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRCustomBand(Args.Obj).ForceNewPage;
 end;
 
-{ property Write ForceNewPage(Value: boolean) }
+{ property Write ForceNewPage(Value: Boolean) }
 
 procedure TQRCustomBand_Write_ForceNewPage(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRCustomBand(Args.Obj).ForceNewPage := Value;
 end;
 
-{ property Read HasChild: boolean }
+{ property Read HasChild: Boolean }
 
 procedure TQRCustomBand_Read_HasChild(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRCustomBand(Args.Obj).HasChild;
 end;
 
-{ property Write HasChild(Value: boolean) }
+{ property Write HasChild(Value: Boolean) }
 
 procedure TQRCustomBand_Write_HasChild(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -914,14 +914,14 @@ begin
   Value := O2V(TQRControllerBand.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{ property Read PrintIfEmpty: boolean }
+{ property Read PrintIfEmpty: Boolean }
 
 procedure TQRControllerBand_Read_PrintIfEmpty(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRControllerBand(Args.Obj).PrintIfEmpty;
 end;
 
-{ property Write PrintIfEmpty(Value: boolean) }
+{ property Write PrintIfEmpty(Value: Boolean) }
 
 procedure TQRControllerBand_Write_PrintIfEmpty(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -965,28 +965,28 @@ begin
   Value := O2V(TQRSubDetailGroupBands(Args.Obj).HeaderBand);
 end;
 
-{ property Read HasFooter: boolean }
+{ property Read HasFooter: Boolean }
 
 procedure TQRSubDetailGroupBands_Read_HasFooter(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRSubDetailGroupBands(Args.Obj).HasFooter;
 end;
 
-{ property Write HasFooter(Value: boolean) }
+{ property Write HasFooter(Value: Boolean) }
 
 procedure TQRSubDetailGroupBands_Write_HasFooter(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRSubDetailGroupBands(Args.Obj).HasFooter := Value;
 end;
 
-{ property Read HasHeader: boolean }
+{ property Read HasHeader: Boolean }
 
 procedure TQRSubDetailGroupBands_Read_HasHeader(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRSubDetailGroupBands(Args.Obj).HasHeader;
 end;
 
-{ property Write HasHeader(Value: boolean) }
+{ property Write HasHeader(Value: Boolean) }
 
 procedure TQRSubDetailGroupBands_Write_HasHeader(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -1065,14 +1065,14 @@ begin
   TQRSubDetail(Args.Obj).HeaderBand := V2O(Value) as TQRCustomBand;
 end;
 
-{ property Read PrintBefore: boolean }
+{ property Read PrintBefore: Boolean }
 
 procedure TQRSubDetail_Read_PrintBefore(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRSubDetail(Args.Obj).PrintBefore;
 end;
 
-{ property Write PrintBefore(Value: boolean) }
+{ property Write PrintBefore(Value: Boolean) }
 
 procedure TQRSubDetail_Write_PrintBefore(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -1137,84 +1137,84 @@ begin
   Value := O2V(TQuickRepBands(Args.Obj).SummaryBand);
 end;
 
-{ property Read HasTitle: boolean }
+{ property Read HasTitle: Boolean }
 
 procedure TQuickRepBands_Read_HasTitle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRepBands(Args.Obj).HasTitle;
 end;
 
-{ property Write HasTitle(Value: boolean) }
+{ property Write HasTitle(Value: Boolean) }
 
 procedure TQuickRepBands_Write_HasTitle(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQuickRepBands(Args.Obj).HasTitle := Value;
 end;
 
-{ property Read HasPageHeader: boolean }
+{ property Read HasPageHeader: Boolean }
 
 procedure TQuickRepBands_Read_HasPageHeader(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRepBands(Args.Obj).HasPageHeader;
 end;
 
-{ property Write HasPageHeader(Value: boolean) }
+{ property Write HasPageHeader(Value: Boolean) }
 
 procedure TQuickRepBands_Write_HasPageHeader(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQuickRepBands(Args.Obj).HasPageHeader := Value;
 end;
 
-{ property Read HasColumnHeader: boolean }
+{ property Read HasColumnHeader: Boolean }
 
 procedure TQuickRepBands_Read_HasColumnHeader(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRepBands(Args.Obj).HasColumnHeader;
 end;
 
-{ property Write HasColumnHeader(Value: boolean) }
+{ property Write HasColumnHeader(Value: Boolean) }
 
 procedure TQuickRepBands_Write_HasColumnHeader(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQuickRepBands(Args.Obj).HasColumnHeader := Value;
 end;
 
-{ property Read HasDetail: boolean }
+{ property Read HasDetail: Boolean }
 
 procedure TQuickRepBands_Read_HasDetail(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRepBands(Args.Obj).HasDetail;
 end;
 
-{ property Write HasDetail(Value: boolean) }
+{ property Write HasDetail(Value: Boolean) }
 
 procedure TQuickRepBands_Write_HasDetail(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQuickRepBands(Args.Obj).HasDetail := Value;
 end;
 
-{ property Read HasPageFooter: boolean }
+{ property Read HasPageFooter: Boolean }
 
 procedure TQuickRepBands_Read_HasPageFooter(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRepBands(Args.Obj).HasPageFooter;
 end;
 
-{ property Write HasPageFooter(Value: boolean) }
+{ property Write HasPageFooter(Value: Boolean) }
 
 procedure TQuickRepBands_Write_HasPageFooter(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQuickRepBands(Args.Obj).HasPageFooter := Value;
 end;
 
-{ property Read HasSummary: boolean }
+{ property Read HasSummary: Boolean }
 
 procedure TQuickRepBands_Read_HasSummary(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRepBands(Args.Obj).HasSummary;
 end;
 
-{ property Write HasSummary(Value: boolean) }
+{ property Write HasSummary(Value: Boolean) }
 
 procedure TQuickRepBands_Write_HasSummary(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -1246,14 +1246,14 @@ begin
   Value := O2V(TQuickRep(Args.Obj).CreateBand(Args.Values[0]));
 end;
 
-{ function TextHeight(aFont: TFont; aText: string): integer; }
+{ function TextHeight(aFont: TFont; aText: string): Integer; }
 
 procedure TQuickRep_TextHeight(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRep(Args.Obj).TextHeight(V2O(Args.Values[0]) as TFont, Args.Values[1]);
 end;
 
-{ function TextWidth(aFont: TFont; aText: string): integer; }
+{ function TextWidth(aFont: TFont; aText: string): Integer; }
 
 procedure TQuickRep_TextWidth(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -1387,7 +1387,7 @@ begin
   TQuickRep(Args.Obj).AllDataSets := V2O(Value) as TList;
 end;
 
-{ property Read Available: boolean }
+{ property Read Available: Boolean }
 
 procedure TQuickRep_Read_Available(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -1401,49 +1401,49 @@ begin
   Value := O2V(TQuickRep(Args.Obj).BandList);
 end;
 
-{ property Read ColumnTopPosition: integer }
+{ property Read ColumnTopPosition: Integer }
 
 procedure TQuickRep_Read_ColumnTopPosition(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRep(Args.Obj).ColumnTopPosition;
 end;
 
-{ property Write ColumnTopPosition(Value: integer) }
+{ property Write ColumnTopPosition(Value: Integer) }
 
 procedure TQuickRep_Write_ColumnTopPosition(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQuickRep(Args.Obj).ColumnTopPosition := Value;
 end;
 
-{ property Read CurrentColumn: integer }
+{ property Read CurrentColumn: Integer }
 
 procedure TQuickRep_Read_CurrentColumn(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRep(Args.Obj).CurrentColumn;
 end;
 
-{ property Read CurrentX: integer }
+{ property Read CurrentX: Integer }
 
 procedure TQuickRep_Read_CurrentX(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRep(Args.Obj).CurrentX;
 end;
 
-{ property Write CurrentX(Value: integer) }
+{ property Write CurrentX(Value: Integer) }
 
 procedure TQuickRep_Write_CurrentX(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQuickRep(Args.Obj).CurrentX := Value;
 end;
 
-{ property Read CurrentY: integer }
+{ property Read CurrentY: Integer }
 
 procedure TQuickRep_Read_CurrentY(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRep(Args.Obj).CurrentY;
 end;
 
-{ property Write CurrentY(Value: integer) }
+{ property Write CurrentY(Value: Integer) }
 
 procedure TQuickRep_Write_CurrentY(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -1464,35 +1464,35 @@ begin
 end;
 *)
 
-{ property Read Exporting: boolean }
+{ property Read Exporting: Boolean }
 
 procedure TQuickRep_Read_Exporting(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRep(Args.Obj).Exporting;
 end;
 
-{ property Read FinalPass: boolean }
+{ property Read FinalPass: Boolean }
 
 procedure TQuickRep_Read_FinalPass(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRep(Args.Obj).FinalPass;
 end;
 
-{ property Read HideBands: boolean }
+{ property Read HideBands: Boolean }
 
 procedure TQuickRep_Read_HideBands(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRep(Args.Obj).HideBands;
 end;
 
-{ property Write HideBands(Value: boolean) }
+{ property Write HideBands(Value: Boolean) }
 
 procedure TQuickRep_Write_HideBands(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQuickRep(Args.Obj).HideBands := Value;
 end;
 
-{ property Read PageNumber: integer }
+{ property Read PageNumber: Integer }
 
 procedure TQuickRep_Read_PageNumber(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -1520,14 +1520,14 @@ begin
   TQuickRep(Args.Obj).QRPrinter := V2O(Value) as TQRPrinter;
 end;
 
-{ property Read RotateBands: integer }
+{ property Read RotateBands: Integer }
 
 procedure TQuickRep_Read_RotateBands(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRep(Args.Obj).RotateBands;
 end;
 
-{ property Write RotateBands(Value: integer) }
+{ property Write RotateBands(Value: Integer) }
 
 procedure TQuickRep_Write_RotateBands(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -1618,14 +1618,14 @@ begin
   TQuickRep(Args.Obj).Page := V2O(Value) as TQRPage;
 end;
 
-{ property Read PrintIfEmpty: boolean }
+{ property Read PrintIfEmpty: Boolean }
 
 procedure TQuickRep_Read_PrintIfEmpty(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRep(Args.Obj).PrintIfEmpty;
 end;
 
-{ property Write PrintIfEmpty(Value: boolean) }
+{ property Write PrintIfEmpty(Value: Boolean) }
 
 procedure TQuickRep_Write_PrintIfEmpty(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -1660,28 +1660,28 @@ begin
   TQuickRep(Args.Obj).ReportTitle := Value;
 end;
 
-{ property Read ShowProgress: boolean }
+{ property Read ShowProgress: Boolean }
 
 procedure TQuickRep_Read_ShowProgress(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRep(Args.Obj).ShowProgress;
 end;
 
-{ property Write ShowProgress(Value: boolean) }
+{ property Write ShowProgress(Value: Boolean) }
 
 procedure TQuickRep_Write_ShowProgress(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQuickRep(Args.Obj).ShowProgress := Value;
 end;
 
-{ property Read SnapToGrid: boolean }
+{ property Read SnapToGrid: Boolean }
 
 procedure TQuickRep_Read_SnapToGrid(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQuickRep(Args.Obj).SnapToGrid;
 end;
 
-{ property Write SnapToGrid(Value: boolean) }
+{ property Write SnapToGrid(Value: Boolean) }
 
 procedure TQuickRep_Write_SnapToGrid(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -1762,56 +1762,56 @@ begin
   Value := O2V(TQRPrintableSize.Create(V2O(Args.Values[0]) as TQRPrintable));
 end;
 
-{ property Read Height: extended }
+{ property Read Height: Extended }
 
 procedure TQRPrintableSize_Read_Height(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRPrintableSize(Args.Obj).Height;
 end;
 
-{ property Write Height(Value: extended) }
+{ property Write Height(Value: Extended) }
 
 procedure TQRPrintableSize_Write_Height(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRPrintableSize(Args.Obj).Height := Value;
 end;
 
-{ property Read Left: extended }
+{ property Read Left: Extended }
 
 procedure TQRPrintableSize_Read_Left(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRPrintableSize(Args.Obj).Left;
 end;
 
-{ property Write Left(Value: extended) }
+{ property Write Left(Value: Extended) }
 
 procedure TQRPrintableSize_Write_Left(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRPrintableSize(Args.Obj).Left := Value;
 end;
 
-{ property Read Top: extended }
+{ property Read Top: Extended }
 
 procedure TQRPrintableSize_Read_Top(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRPrintableSize(Args.Obj).Top;
 end;
 
-{ property Write Top(Value: extended) }
+{ property Write Top(Value: Extended) }
 
 procedure TQRPrintableSize_Write_Top(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TQRPrintableSize(Args.Obj).Top := Value;
 end;
 
-{ property Read Width: extended }
+{ property Read Width: Extended }
 
 procedure TQRPrintableSize_Read_Width(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRPrintableSize(Args.Obj).Width;
 end;
 
-{ property Write Width(Value: extended) }
+{ property Write Width(Value: Extended) }
 
 procedure TQRPrintableSize_Write_Width(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -1841,14 +1841,14 @@ begin
   TQRPrintable(Args.Obj).ParentReport := V2O(Value) as TQuickRep;
 end;
 
-{ property Read Zoom: integer }
+{ property Read Zoom: Integer }
 
 procedure TQRPrintable_Read_Zoom(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TQRPrintable(Args.Obj).Zoom;
 end;
 
-{ property Write Zoom(Value: integer) }
+{ property Write Zoom(Value: Integer) }
 
 procedure TQRPrintable_Write_Zoom(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -1974,9 +1974,9 @@ type
   TQRNotifyOperationEvent = procedure (Sender : TObject; Operation : TQRNotifyOperation) of object;
   TQRBandBeforePrintEvent = procedure (Sender : TQRCustomBand; var PrintBand : Boolean) of object;
   TQRBandAfterPrintEvent = procedure (Sender : TQRCustomBand; BandPrinted : Boolean) of object;
-  TQRNotifyEvent = procedure (Sender : TQuickrep) of object;
+  TQRNotifyEvent = procedure (Sender : TQuickRep) of object;
   TQRReportBeforePrintEvent = procedure (Sender : TQuickRep; var PrintReport : Boolean) of object;
-  TQRFilterEvent = procedure (var PrintRecord : boolean) of object; }
+  TQRFilterEvent = procedure (var PrintRecord : Boolean) of object; }
 
   TJvInterpreterQuickrptEvent = class(TJvInterpreterEvent)
   private
@@ -1984,9 +1984,9 @@ type
     procedure QRNotifyOperationEvent(Sender: TObject; Operation: TQRNotifyOperation);
     procedure QRBandBeforePrintEvent(Sender: TQRCustomBand; var PrintBand: Boolean);
     procedure QRBandAfterPrintEvent(Sender: TQRCustomBand; BandPrinted: Boolean);
-    procedure QRNotifyEvent(Sender: TQuickrep);
+    procedure QRNotifyEvent(Sender: TQuickRep);
     procedure QRReportBeforePrintEvent(Sender: TQuickRep; var PrintReport: Boolean);
-    procedure QRFilterEvent(var PrintRecord: boolean);
+    procedure QRFilterEvent(var PrintRecord: Boolean);
   end;
 
 procedure TJvInterpreterQuickrptEvent.QROnNeedDataEvent(Sender: TObject; var MoreData: Boolean);
@@ -2011,7 +2011,7 @@ begin
   CallFunction(nil, [O2V(Sender), BandPrinted]);
 end;
 
-procedure TJvInterpreterQuickrptEvent.QRNotifyEvent(Sender: TQuickrep);
+procedure TJvInterpreterQuickrptEvent.QRNotifyEvent(Sender: TQuickRep);
 begin
   CallFunction(nil, [O2V(Sender)]);
 end;
@@ -2022,7 +2022,7 @@ begin
   PrintReport := Args.Values[1];
 end;
 
-procedure TJvInterpreterQuickrptEvent.QRFilterEvent(var PrintRecord: boolean);
+procedure TJvInterpreterQuickrptEvent.QRFilterEvent(var PrintRecord: Boolean);
 begin
   CallFunction(nil, [PrintRecord]);
   PrintRecord := Args.Values[0];
@@ -2112,7 +2112,7 @@ begin
     AddSet(TQRBandSize, 'Width', TQRBandSize_Write_Width, 0, [varEmpty]);
     { TQRPage }
     AddClass(cQuickrpt, TQRPage, 'TQRPage');
-    AddGet(TQRPage, 'create', TQRPage_create, 1, [varEmpty], varEmpty);
+    AddGet(TQRPage, 'Create', TQRPage_Create, 1, [varEmpty], varEmpty);
     AddGet(TQRPage, 'BottomMargin', TQRPage_Read_BottomMargin, 0, [varEmpty], varEmpty);
     AddSet(TQRPage, 'BottomMargin', TQRPage_Write_BottomMargin, 0, [varEmpty]);
     AddGet(TQRPage, 'ColumnSpace', TQRPage_Read_ColumnSpace, 0, [varEmpty], varEmpty);

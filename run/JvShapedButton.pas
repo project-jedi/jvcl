@@ -1439,7 +1439,7 @@ end;
 procedure TJvShapedButton.SetRegionRing(ALeft, ATop, AWidth,
   AHeight: Integer);
 var
-  rgn1, rgn2, rgn3: Hrgn;
+  rgn1, rgn2, rgn3: HRGN;
   x4, y4: Integer;
 begin
   x4 := AWidth div 4 ;
@@ -1462,16 +1462,16 @@ end;
 
 procedure TJvShapedButton.CalcPentagon(AWidth, AHeight: Integer);
 var
-  x2, y2, r: Integer;
-  a: Extended;
+  x2, y2, R: Integer;
+  A: Extended;
 begin
-  a := Pi / 2 - (2 * Pi / 5);
+  A := Pi / 2 - (2 * Pi / 5);
   x2 := AWidth div 2;
   y2 := AHeight div 2;
-  r := Round(x2 / Cos(a));
-  FYP := y2 - Round(r * Sin(a));
-  a := Pi - (4 * pi / 5);
-  FXP := Round(x2 - r * Sin(a));
+  R := Round(x2 / Cos(A));
+  FYP := y2 - Round(R * Sin(A));
+  A := Pi - (4 * Pi / 5);
+  FXP := Round(x2 - R * Sin(A));
 end;
 
 procedure TJvShapedButton.SetFlatArrow(const Value: Boolean);
@@ -1875,17 +1875,17 @@ begin
       Arc(R.Left, R.Top, R.Right, R.Bottom, // ellipse
         R.Left, R.Bottom, // start
         R.Right, R.Top); // end
-      Pen.Color := clbtnshadow;
+      Pen.Color := clBtnShadow;
       Arc(Ri.Left, Ri.Top, Ri.Right, Ri.Bottom, // ellipse
         R.Left, R.Bottom, // start
         R.Right, R.Top); // end
 
       // gray border (Top-Left)
-      Pen.Color := clbtnshadow;
+      Pen.Color := clBtnShadow;
       Arc(R.Left, R.Top, R.Right, R.Bottom, // ellipse
         R.Right, R.Top, // start
         R.Left, R.Bottom); // end
-      Pen.Color := clbtnhighlight;
+      Pen.Color := clBtnHighlight;
       Arc(Ri.Left, Ri.Top, Ri.Right, Ri.Bottom, // ellipse
         R.Right, R.Top, // start
         R.Left, R.Bottom); // end
@@ -1906,7 +1906,7 @@ begin
       Arc(R.Left, R.Top, R.Right, R.Bottom, // ellipse
         R.Left, R.Bottom, // start
         R.Right, R.Top); // end
-      Pen.Color := clbtnhighlight;
+      Pen.Color := clBtnHighlight;
       Arc(Ri.Left, Ri.Top, Ri.Right, Ri.Bottom, // ellipse
         R.Left, R.Bottom, // start
         R.Right, R.Top); // end
@@ -1916,7 +1916,7 @@ begin
       Arc(R.Left, R.Top, R.Right, R.Bottom, // ellipse
         R.Right, R.Top, // start
         R.Left, R.Bottom); // end
-      Pen.Color := clbtnshadow;
+      Pen.Color := clBtnShadow;
       Arc(Ri.Left, Ri.Top, Ri.Right, Ri.Bottom, // ellipse
         R.Right, R.Top, // start
         R.Left, R.Bottom); // end
@@ -2020,7 +2020,7 @@ begin
         Rect.Left, Rect.Bottom, // start
         Rect.Right, Rect.Top); // end
       // gray border (Top-Left)
-      Pen.Color := clbtnshadow;
+      Pen.Color := clBtnShadow;
       Arc(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, // ellipse
         Rect.Right, Rect.Top, // start
         Rect.Left, Rect.Bottom); // end
