@@ -332,16 +332,19 @@ begin
 end;
 
 procedure TJvEmbeddedFormPanel.UndockLinkedForm(ABorderStyle: TFormBorderStyle; APosition: TPosition);
+var B:Boolean;
 begin
   if (FLinkedForm <> nil) and (FLinkedForm.Parent = Self) then
     with FLinkedForm do
     begin
+      B := AutoScroll;
       Hide;
       Align := alNone;
       Parent := nil;
     // IMPORTANT!!! Don't set BorderStyle unless Parent = nil!!!
       BorderStyle := ABorderStyle;
       Position := APosition;
+      AutoScroll := B;
       Show;
     end;
 end;
