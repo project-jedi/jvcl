@@ -429,13 +429,14 @@ begin
   inherited CreateParams(Params);
   if Transparent and not IsThemed then
   begin
-    if not (csDesigning in ComponentState) then
+    // (rom) gives a better look in IDE if always set (not fully correct though)
+    //if not (csDesigning in ComponentState) then
       Params.ExStyle := Params.ExStyle or WS_EX_TRANSPARENT;
     ControlStyle := ControlStyle - [csOpaque];
   end
   else
   begin
-    if not (csDesigning in ComponentState) then
+    //if not (csDesigning in ComponentState) then
       Params.ExStyle := Params.ExStyle and not WS_EX_TRANSPARENT;
     ControlStyle := ControlStyle + [csOpaque];
   end;
@@ -591,18 +592,20 @@ begin
         Draw(X, Y, FGripBmp);
         {$ENDIF VisualCLX}
         {$IFDEF VCL}
-        // (rom) Marlett is not a standard Windows font
         Font.Name := 'Marlett';
         Font.Charset := DEFAULT_CHARSET;
         Font.Size := 12;
         Canvas.Font.Style := [];
-        Canvas.Font.Color := clBtnShadow;
         Brush.Style := bsClear;
         X := ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2;
         Y := ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2;
-        if Transparent and not IsThemed then
-          SetBkMode(Handle, BkModeTransparent);
+        // (rom) bsClear takes care of that already
+        //if Transparent and not IsThemed then
+        //  SetBkMode(Handle, BkModeTransparent);
+        Canvas.Font.Color := clBtnHighlight;
         TextOut(X, Y, 'o');
+        Canvas.Font.Color := clBtnShadow;
+        TextOut(X, Y, 'p');
         {$ENDIF VCL}
       end;
 end;
