@@ -65,7 +65,7 @@ type
     OpenDialog: TOpenDialog;
     SearchList: TListView;
     Panel1: TPanel;
-    JvPageControl: TJvPageControl;
+    JvPageControl: TPageControl;
     tbsFiles: TTabSheet;
     tbsStrings: TTabSheet;
     vleUnits: TValueListEditor;
