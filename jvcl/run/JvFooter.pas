@@ -31,7 +31,13 @@ unit JvFooter;
 interface
 
 uses
-  Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, ExtCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Messages, Graphics, Controls, StdCtrls, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QStdCtrls, QExtCtrls,
+  {$ENDIF VisualCLX}
   JvComponent, JvBitBtn, JvTypes;
 
 type
@@ -46,10 +52,18 @@ type
     procedure SetButtonIndex(const Value: Integer);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetSpaceInterval(const Value: Integer);
+    {$IFDEF VCL}
     procedure WMMove(var Msg: TWMMove); message WM_MOVE;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    {$ENDIF VCL}
   protected
+    {$IFDEF VCL}
     procedure SetParent(AParent: TWinControl); override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure SetParent(const ParentA: TWidgetControl); override;
+    procedure AdjustSize; override;
+    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -77,19 +91,24 @@ type
   published
     property Align;
     property Anchors;
+    {$IFDEF VCL}
     property AutoSize;
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property ParentBiDiMode;
+    property OnCanResize;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
     property BevelStyle: TJvBevelStyle read FBevelStyle write SetBevelStyle default bsLowered;
     property BevelVisible: Boolean read FBevelVisible write SetBevelVisible default False;
-    property BiDiMode;
     property Color;
     property Constraints;
     //property DockSite;
-    property DragCursor;
-    property DragKind;
     property DragMode;
     property Enabled;
     property Font;
-    property ParentBiDiMode;
     {$IFDEF JVCLThemesEnabled}
     property ParentBackground;
     {$ENDIF JVCLThemesEnabled}
@@ -101,7 +120,6 @@ type
     //property TabOrder;
     //property TabStop;
     property Visible;
-    property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
@@ -110,7 +128,6 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -119,7 +136,6 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
-    property OnStartDock;
     property OnStartDrag;
     //property OnUnDock;
   end;
@@ -191,14 +207,21 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvFooterBtn.WMMove(var Msg: TWMMove);
 begin
   // Avoid running at runtime
   // if (csDesigning in ComponentState) then
   TJvFooter(Parent).UpdatePosition;
 end;
+{$ENDIF VCL}
 
+{$IFDEF VisualCLX}
+procedure TJvFooterBtn.AdjustSize;
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvFooterBtn.WMSize(var Msg: TWMSize);
+{$ENDIF VCL}
 begin
   // Does not allow SizeChange
   // Avoid running at runtime
@@ -206,8 +229,18 @@ begin
     SetBounds(Left, Top, Width, Height);
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvFooterBtn.SetParent(const ParentA: TWinControl);
+var
+  AParent: TWidgetControl;
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvFooterBtn.SetParent(AParent: TWinControl);
+{$ENDIF}
 begin
+  {$IFDEF VisualCLX}
+  AParent := ParentA;
+  {$ENDIF VisualCLX}
   if AParent is TJvFooterBtn then // (p3) D6 messing up ?
     AParent := TJvFooterBtn(AParent).Parent;
   if not ((AParent is TJvFooter) or (AParent = nil)) then
