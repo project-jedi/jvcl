@@ -44,6 +44,7 @@ type
   TJvThread = class(TJvComponent)
   private
     FThreadCount: Integer;
+    FThreads: TThreadList;
     FExclusive: Boolean;
     FRunOnCreate: Boolean;
     FOnBegin: TNotifyEvent;
@@ -53,17 +54,25 @@ type
     FFreeOnTerminate: Boolean;
     procedure DoCreate;
     procedure DoTerminate(Sender: TObject);
+    function GetCount: Integer;
+    function GetThreads(Index: Integer): TThread;
+    function GetTerminated: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    property Count: Integer read GetCount;
+    property Threads[Index: Integer]: TThread read GetThreads;
   published
     function Execute(P: Pointer): THandle;
     function OneThreadIsRunning: Boolean;
     function GetPriority(Thread: THandle): TThreadPriority;
     procedure SetPriority(Thread: THandle; Priority: TThreadPriority);
     procedure QuitThread(Thread: THandle);
-    procedure Suspend(Thread: THandle);
+    procedure Suspend(Thread: THandle); // should not be used
     procedure Resume(Thread: THandle);
+    procedure Terminate; // terminates all running threads
+    property Terminated: Boolean read GetTerminated;
     property Exclusive: Boolean read FExclusive write FExclusive;
     property RunOnCreate: Boolean read FRunOnCreate write FRunOnCreate;
     property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate;
@@ -126,12 +135,18 @@ begin
   FRunOnCreate := True;
   FExclusive := True;
   FFreeOnTerminate := True;
+  FThreads := TThreadList.Create;
 end;
 
 destructor TJvThread.Destroy;
 begin
+  Terminate;
   while OneThreadIsRunning do
-    Sleep(0);
+  begin
+    Sleep(1);
+    CheckSynchronize; // TThread.OnTerminate is synchronized
+  end;
+  FThreads.Free;
   inherited Destroy;
 end;
 
@@ -142,7 +157,7 @@ begin
   Result := 0;
   if Exclusive and OneThreadIsRunning then
     Exit;
-    
+
   if Assigned(FOnExecute) then
   begin
     Inc(FThreadCount);
@@ -150,6 +165,7 @@ begin
     try
       HideThread.FreeOnTerminate := FFreeOnTerminate;
       HideThread.OnTerminate := DoTerminate;
+      FThreads.Add(HideThread);
       DoCreate;
     except
       HideThread.Free;
@@ -194,9 +210,10 @@ begin
     FOnBegin(nil);
 end;
 
-procedure TJvThread.DoTerminate;
+procedure TJvThread.DoTerminate(Sender: TObject);
 begin
   Dec(FThreadCount);
+  FThreads.Remove(Sender);
   try
     if Assigned(FOnFinish) then
       FOnFinish(nil);
@@ -210,6 +227,67 @@ end;
 function TJvThread.OneThreadIsRunning: Boolean;
 begin
   Result := FThreadCount > 0;
+end;
+
+procedure TJvThread.Terminate;
+var
+  List: TList;
+  i: Integer;
+begin
+  List := FThreads.LockList;
+  try
+    for i := 0 to List.Count - 1 do
+    begin
+      TJvHideThread(List[i]).Terminate;
+      if TJvHideThread(List[i]).Suspended then
+        TJvHideThread(List[i]).Resume;
+    end;
+  finally
+    FThreads.UnlockList;
+  end;
+end;
+
+function TJvThread.GetCount: Integer;
+var
+  List: TList;
+begin
+  List := FThreads.LockList;
+  try
+    Result := List.Count;
+  finally
+    FThreads.UnlockList;
+  end;
+end;
+
+function TJvThread.GetThreads(Index: Integer): TThread;
+var
+  List: TLIst;
+begin
+  List := FThreads.LockList;
+  try
+    Result := TJvHideThread(List[Index]);
+  finally
+    FThreads.UnlockList;
+  end;
+end;
+
+function TJvThread.GetTerminated: Boolean;
+var
+  i: Integer;
+  List: TList;
+begin
+  Result := True;
+  List := FThreads.LockList;
+  try
+    for i := 0 to List.Count - 1 do
+    begin
+      Result := Result or TJvHideThread(List[i]).Terminated;
+      if not Result then
+        Break;
+    end;
+  finally
+    FThreads.UnlockList;
+  end;
 end;
 
 //=== TJvHideThread ==========================================================
@@ -240,6 +318,7 @@ begin
     end;
   end;
 end;
+
 
 initialization
   SyncMtx := CreateMutex(nil, False, 'VCLJvThreadMutex');
