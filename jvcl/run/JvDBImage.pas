@@ -562,6 +562,7 @@ end;
 
 procedure TJvDBImage.LoadPicture;
 begin
+  if not FPictureLoaded then
   try
     Picture.Graphic := CreateGraphic;
   except
