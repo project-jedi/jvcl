@@ -111,7 +111,7 @@ type
     property Enabled;
     property DragCursor;
     property DragMode;
-    property PopUpMenu;
+    property PopupMenu;
     property ParentShowHint;
     property Hint;
     property ShowHint;
@@ -171,7 +171,7 @@ type
     property Enabled;
     property DragCursor;
     property DragMode;
-    property PopUpMenu;
+    property PopupMenu;
     property ParentShowHint;
     property Hint;
     property ShowHint;
