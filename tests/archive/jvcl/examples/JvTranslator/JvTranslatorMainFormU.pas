@@ -16,13 +16,16 @@ type
     Button1: TButton;
     Button2: TButton;
     JvTranslator1: TJvTranslator;
-    Variables: TJvTranslatorStrings;
     Button3: TButton;
-    JvTranslator2: TJvTranslator;
+    Button4: TButton;
+    RichEdit1: TRichEdit;
+    ListView1: TListView;
+    Variables: TJvTranslatorStrings;
     procedure FormCreate(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
   end;
 
 var
@@ -37,16 +40,20 @@ uses
 
 var
  CONST_SomeText: string = 'Wooow, this was good :p';
+ CONST_SomeMoreText: string = 'Wooow, this was better :p';
+ CONST_EvenMoreText: string = 'Wooow, this was the best :p';
 
 
 procedure TJvTranslatorMainForm.FormCreate(Sender: TObject);
 begin
   Variables.Add('SomeText',CONST_SomeText);
+  Variables.Add('SomeMoreText',CONST_SomeMoreText);
+  Variables.Add('EvenMoreText',CONST_EvenMoreText);
 end;
 
 procedure TJvTranslatorMainForm.Button3Click(Sender: TObject);
 begin
-  ShowMessage(CONST_SomeText);
+  ShowMessage(CONST_SomeText + #13#10 + CONST_SomeMoreText + #13#10 + CONST_EvenMoreText);
 end;
 
 procedure TJvTranslatorMainForm.Button1Click(Sender: TObject);
@@ -73,6 +80,12 @@ begin
     MessageDlg('File not found: ' + transFileName, mtError, [mbOK], 0)
   else
     JvTranslator1.Translate(transFileName);
+end;
+
+procedure TJvTranslatorMainForm.Button4Click(Sender: TObject);
+begin
+  JvTranslator1.SkipClass(TRichEdit);
+  RichEdit1.Lines.Text := JvTranslator1.ComponentToXML(self,true);
 end;
 
 end.
