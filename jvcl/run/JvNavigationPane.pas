@@ -532,6 +532,40 @@ type
     property OnStartDrag;
   end;
 
+  TJvNavPaneBackgroundImage = class(TPersistent)
+  private
+    FCenter: Boolean;
+    FTile: Boolean;
+    FTransparent: Boolean;
+    FProportional: Boolean;
+    FStretch: Boolean;
+    FDrawing: Boolean;
+    FPicture: TPicture;
+    FOnChange: TNotifyEvent;
+    procedure SetCenter(const Value: Boolean);
+    procedure SetPicture(const Value: TPicture);
+    procedure SetProportional(const Value: Boolean);
+    procedure SetStretch(const Value: Boolean);
+    procedure SetTile(const Value: Boolean);
+    procedure SetTransparent(const Value: Boolean);
+    procedure PictureChanged(Sender: TObject);
+  protected
+    procedure DrawImage(Canvas: TCanvas; ARect: TRect); virtual;
+    procedure Change; virtual;
+    function CalcRect(ADestRect: TRect): TRect;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  published
+    property Picture: TPicture read FPicture write SetPicture;
+    property Stretch: Boolean read FStretch write SetStretch;
+    property Proportional: Boolean read FProportional write SetProportional;
+    property Center: Boolean read FCenter write SetCenter;
+    property Tile: Boolean read FTile write SetTile;
+    property Transparent: Boolean read FTransparent write SetTransparent;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
   TJvNavPanelPage = class(TJvCustomPage)
   private
     FNavPanel: TJvNavPanelButton;
@@ -543,6 +577,7 @@ type
     FHeader: TJvNavPanelHeader;
     FImageIndex: TImageIndex;
     FParentStyleManager: Boolean;
+    FBackground: TJvNavPaneBackgroundImage;
     procedure SetCaption(const Value: TCaption);
     procedure SetIconic(const Value: Boolean);
     procedure SetImageIndex(const Value: TImageIndex);
@@ -569,9 +604,14 @@ type
     procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
     procedure SetParentStyleManager(const Value: Boolean);
     procedure SetAction(const Value: TBasicAction);
+    procedure SetBackground(const Value: TJvNavPaneBackgroundImage);
+    procedure DoBackgroundChange(Sender:TObject);
   protected
+
     procedure UpdatePageList;
-    function GetAction: TBasicAction; {$IFDEF COMPILER6_UP}override;{$ENDIF COMPILER6_UP}
+    function GetAction: TBasicAction;
+    {$IFDEF COMPILER6_UP} override;
+    {$ENDIF COMPILER6_UP}
     procedure SetParent({$IFDEF VisualCLX}const{$ENDIF}AParent: TWinControl); override;
     procedure SetPageIndex(Value: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -586,12 +626,14 @@ type
     property Alignment: TAlignment read GetAlignment write SetAlignment;
     property WordWrap: Boolean read GetWordWrap write SetWordWrap;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
+    procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property AutoHeader: Boolean read GetAutoHeader write SetAutoHeader;
   published
     property Action: TBasicAction read GetAction write SetAction;
+    property Background:TJvNavPaneBackgroundImage read FBackground write SetBackground;
 
     property Color default clWindow;
     property ParentColor default False;
@@ -687,6 +729,7 @@ type
     FShowGrabber: Boolean;
     FOnDropDownMenu: TContextPopupEvent;
     FParentStyleManager: Boolean;
+    FBackground: TJvNavPaneBackgroundImage;
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure SetColorFrom(const Value: TColor);
     procedure SetColorTo(const Value: TColor);
@@ -713,6 +756,7 @@ type
     procedure SetParentStyleManager(const Value: Boolean);
     function GetDrawPartialMenuFrame: Boolean;
     procedure SetDrawPartialMenuFrame(const Value: Boolean);
+    procedure SetBackground(const Value: TJvNavPaneBackgroundImage);
   protected
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -755,6 +799,7 @@ type
     property Visible;
     property Width default 185;
     property Height default 41;
+    property Background:TJvNavPaneBackgroundImage read FBackground write SetBackground;
     property DrawPartialMenuFrame: Boolean read GetDrawPartialMenuFrame write SetDrawPartialMenuFrame default False;
     property Buttons: TJvNavPaneToolButtons read FButtons write SetButtons;
     property ButtonColor: TColor read FButtonColor write SetButtonColor default $A03D09;
@@ -846,7 +891,7 @@ type
   protected
     function IsColorsStored: Boolean;
     function IsNavPanelFontStored: Boolean;
-    function IsNavPanelFontHotTrackStored:Boolean;
+    function IsNavPanelFontHotTrackStored: Boolean;
     function IsNavPanelHotTrackFontOptionsStored: Boolean;
     procedure UpdatePages; virtual;
     {$IFDEF VisualCLX}
@@ -1025,6 +1070,7 @@ type
 implementation
 
 uses
+  Math,
   {$IFDEF COMPILER5}
   CommCtrl,
   {$ENDIF COMPILER5}
@@ -2560,6 +2606,8 @@ end;
 constructor TJvNavPanelPage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FBackground := TJvNavPaneBackgroundImage.Create;
+  FBackground.OnChange := DoBackgroundChange;
   ParentColor := False;
   Color := clWindow;
   ControlStyle := ControlStyle + [csDisplayDragImage];
@@ -2590,6 +2638,7 @@ end;
 destructor TJvNavPanelPage.Destroy;
 begin
   FStyleLink.Free;
+  FBackground.Free;
   inherited Destroy;
 end;
 
@@ -2871,6 +2920,22 @@ end;
 procedure TJvNavPanelPage.ParentStyleManagerChange(var Msg: TMessage);
 begin
   InternalStyleManagerChanged(Self, StyleManager);
+end;
+
+procedure TJvNavPanelPage.SetBackground(const Value: TJvNavPaneBackgroundImage);
+begin
+  FBackground.Assign(Value);
+end;
+
+procedure TJvNavPanelPage.DoBackgroundChange(Sender: TObject);
+begin
+  Invalidate;
+end;
+
+procedure TJvNavPanelPage.Paint;
+begin
+  inherited;
+  Background.DrawImage(Canvas, ClientRect);
 end;
 
 //=== TJvOutlookSplitter =====================================================
@@ -3273,7 +3338,6 @@ begin
   // a control was inserted or removed
   InternalStyleManagerChanged(Self, StyleManager);
 end;
-
 
 //=== TJvNavPanelDivider =====================================================
 
@@ -3720,6 +3784,9 @@ end;
 constructor TJvNavPaneToolPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FBackground := TJvNavPaneBackgroundImage.Create;
+  FBackground.OnChange := DoImagesChange;
+
   ControlStyle := [csAcceptsControls, {$IFDEF VCL}csCaptureMouse, {$ENDIF VCL}csClickEvents,
   csOpaque, csDoubleClicks, csReplicatable];
   ParentColor := False;
@@ -3770,6 +3837,7 @@ begin
   FChangeLink.Free;
   FButtons.Free;
   FRealButtons.Free;
+  FBackground.Free;
   inherited Destroy;
 end;
 
@@ -3909,7 +3977,13 @@ begin
   {$ENDIF VisualCLX}
   try
     R := ClientRect;
-    R.Bottom := HeaderHeight + EdgeRounding;
+    Canvas.Brush.Color := Color;
+    Canvas.FillRect(R);
+
+    Inc(R.Top, HeaderHeight);
+    FBackground.DrawImage(Canvas, R);
+    R := ClientRect;
+    R.Bottom := HeaderHeight - EdgeRounding;
     Canvas.Brush.Color := ColorTo;
     Canvas.FillRect(R);
     R.Bottom := R.Top + HeaderHeight;
@@ -3941,16 +4015,48 @@ begin
       SetBkMode(Canvas.Handle, TRANSPARENT);
       DrawText(Canvas, Caption, Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
     end;
-    // draw the client areas top rounding
+
+    // draw the client areas top rounding, set pixels directly to avoid messing up any background image
+
+    // just a simple "arrow" in each corner in the same color as the gradient
+    // left corner
+    Y := HeaderHeight;
+    X := 0;
+    for I := 0 to 4 do
+      Canvas.Pixels[X, Y + I] := ColorTo;
+    Inc(X);
+    for I := 0 to 2 do
+      Canvas.Pixels[X, Y + I] := ColorTo;
+    Inc(X);
+    for I := 0 to 1 do
+      Canvas.Pixels[X, Y + I] := ColorTo;
+    Inc(X);
+    Canvas.Pixels[X, Y] := ColorTo;
+    Inc(X);
+    Canvas.Pixels[X, Y] := ColorTo;
+
+    // right corner
+    Y := HeaderHeight;
+    X := ClientWidth - 1;
+    for I := 0 to 4 do
+      Canvas.Pixels[X, Y + I] := ColorTo;
+    Dec(X);
+    for I := 0 to 2 do
+      Canvas.Pixels[X, Y + I] := ColorTo;
+    Dec(X);
+    for I := 0 to 1 do
+      Canvas.Pixels[X, Y + I] := ColorTo;
+    Dec(X);
+    Canvas.Pixels[X, Y] := ColorTo;
+    Dec(X);
+    Canvas.Pixels[X, Y] := ColorTo;
+
+    // draw the button area
     R := ClientRect;
     Inc(R.Top, HeaderHeight);
-    //    Inc(R.Left);
     Inc(R.Right);
-    Canvas.Brush.Color := Color;
-    Canvas.Pen.Style := psClear;
-    Canvas.RoundRect(R.Left, R.Top, R.Right, R.Bottom, EdgeRounding, EdgeRounding);
-    // draw the button area
     Canvas.Brush.Color := ButtonColor;
+    Canvas.Pen.Style := psClear;
     if Buttons.Count > 0 then
     begin
       R2 := Rect(R.Left, R.Top, R.Left + ButtonWidth * Buttons.Count - 1, R.Top + ButtonHeight);
@@ -3981,11 +4087,6 @@ begin
         end;
       end;
     end;
-    // fill the rest of the client area
-    Canvas.Brush.Color := Color;
-    Inc(R.Top, HeaderHeight + ButtonHeight + EdgeRounding);
-    Dec(R.Right);
-    Canvas.FillRect(R);
   finally
     {$IFDEF VCL}
     Canvas.Unlock;
@@ -4168,6 +4269,7 @@ begin
 end;
 
 {$IFDEF VisualCLX}
+
 function TJvNavPaneToolPanel.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
@@ -4175,6 +4277,7 @@ end;
 {$ENDIF VisualCLX}
 
 {$IFDEF VCL}
+
 procedure TJvNavPaneToolPanel.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   Msg.Result := 1;
@@ -4447,6 +4550,12 @@ begin
     FDropDown.DrawPartialMenuFrame := Value;
 end;
 
+procedure TJvNavPaneToolPanel.SetBackground(const Value: TJvNavPaneBackgroundImage);
+begin
+  FBackground.Assign(Value);
+end;
+
+
 function TJvNavPanelPage.GetAction: TBasicAction;
 begin
   {$IFDEF COMPILER6_UP}
@@ -4482,6 +4591,173 @@ begin
       if not CheckDefaults or not Assigned(Self.OnClick) then
         Self.OnClick := OnExecute;
     end;
+end;
+
+//=== TJvNavPaneBackgroundImage ==============================================
+
+function TJvNavPaneBackgroundImage.CalcRect(ADestRect: TRect): TRect;
+var
+  w, h, cw, ch: Integer;
+  xyaspect: Double;
+begin
+  w := Picture.Width;
+  h := Picture.Height;
+  cw := ADestRect.Right - ADestRect.Left;
+  ch := ADestRect.Bottom - ADestRect.Top;
+  if Stretch or (Proportional and ((w > cw) or (h > ch))) then
+  begin
+    if Proportional and (w > 0) and (h > 0) then
+    begin
+      xyaspect := w / h;
+      if w > h then
+      begin
+        w := cw;
+        h := Trunc(cw / xyaspect);
+        if h > ch then // woops, too big
+        begin
+          h := ch;
+          w := Trunc(ch * xyaspect);
+        end;
+      end
+      else
+      begin
+        h := ch;
+        w := Trunc(ch * xyaspect);
+        if w > cw then // woops, too big
+        begin
+          w := cw;
+          h := Trunc(cw / xyaspect);
+        end;
+      end;
+    end
+    else
+    begin
+      w := cw;
+      h := ch;
+    end;
+  end;
+
+  with Result do
+  begin
+    Left := ADestRect.Left;
+    Top := ADestRect.Top;
+    Right := ADestRect.Left + w;
+    Bottom := ADestRect.Top + h;
+  end;
+
+  if Center then
+    OffsetRect(Result, (cw - w) div 2, (ch - h) div 2);
+end;
+
+procedure TJvNavPaneBackgroundImage.Change;
+begin
+  FDrawing := True;
+  if Assigned(FOnChange) then FOnChange(Self);
+  FDrawing := False;
+end;
+
+constructor TJvNavPaneBackgroundImage.Create;
+begin
+  inherited Create;
+  FPicture := TPicture.Create;
+  FPicture.OnChange := PictureChanged;
+end;
+
+destructor TJvNavPaneBackgroundImage.Destroy;
+begin
+  FPicture.Free;
+  inherited Destroy;
+end;
+
+procedure TJvNavPaneBackgroundImage.DrawImage(Canvas: TCanvas; ARect: TRect);
+  procedure TileImage;
+  var
+    X, Y: integer;
+    G: TGraphic;
+  begin
+    G := Picture.Graphic;
+    X := ARect.Left;
+    Y := ARect.Top;
+    while Y < ARect.Bottom do
+    begin
+      Canvas.Draw(X, Y, G); // this doesn't clip on the right or bottom sides of ARect :(
+      Inc(X, G.Width);
+      if X > ARect.Right then
+      begin
+        X := ARect.Left;
+        Inc(Y, G.Height);
+      end;
+    end;
+  end;
+
+begin
+  if (Picture.Graphic = nil) or (Picture.Width = 0) or (Picture.Height = 0) then Exit;
+  if Tile then
+    TileImage
+  else
+    with Canvas do
+      StretchDraw(CalcRect(ARect), Picture.Graphic);
+end;
+
+procedure TJvNavPaneBackgroundImage.PictureChanged(Sender: TObject);
+var
+  G: TGraphic;
+begin
+  G := Picture.Graphic;
+  if G <> nil then
+    if not ((G is TMetaFile) or (G is TIcon)) then
+      G.Transparent := FTransparent;
+  if not FDrawing then Change;
+end;
+
+procedure TJvNavPaneBackgroundImage.SetCenter(const Value: Boolean);
+begin
+  if FCenter <> Value then
+  begin
+    FCenter := Value;
+    PictureChanged(Self);
+  end;
+end;
+
+procedure TJvNavPaneBackgroundImage.SetPicture(const Value: TPicture);
+begin
+  FPicture.Assign(Value);
+end;
+
+procedure TJvNavPaneBackgroundImage.SetProportional(const Value: Boolean);
+begin
+  if FProportional <> Value then
+  begin
+    FProportional := Value;
+    PictureChanged(Self);
+  end;
+end;
+
+procedure TJvNavPaneBackgroundImage.SetStretch(const Value: Boolean);
+begin
+  if FStretch <> Value then
+  begin
+    FStretch := Value;
+    PictureChanged(Self);
+  end;
+end;
+
+procedure TJvNavPaneBackgroundImage.SetTile(const Value: Boolean);
+begin
+  if FTile <> Value then
+  begin
+    FTile := Value;
+    PictureChanged(Self);
+  end;
+end;
+
+procedure TJvNavPaneBackgroundImage.SetTransparent(const Value: Boolean);
+begin
+  if FTransparent <> Value then
+  begin
+    FTransparent := Value;
+    PictureChanged(Self)
+  end;
 end;
 
 
