@@ -1496,6 +1496,7 @@ procedure TJvWideHLEditor.TextModified(ACaretX, ACaretY: Integer; Action: TModif
   const Text: WideString);
 var
   S: WideString;
+  L: Integer;
 {  LP, i: Integer;
   P: PChar;
   OldProductionsLine: Integer; }
@@ -1545,10 +1546,13 @@ begin
     begin
      // comment <-> preproc
       S := Lines[ACaretY];
-      if ((ACaretX > 1) and (S[ACaretX - 1] = '{')) or
-         ((ACaretX > 2) and (S[ACaretX - 2] = '(') and (S[ACaretX - 1] = '*')) or
-         ((ACaretX > 1) and (S[ACaretX] = '{')) or
-         ((ACaretX > 2) and (S[ACaretX - 1] = '(') and (S[ACaretX] = '*')) then
+      L := Length(S);
+         // [Backspace, "insert"]
+      if ((ACaretX > 1) and (ACaretX <= L + 1) and (S[ACaretX - 1] = '{')) or
+         ((ACaretX > 2) and (ACaretX <= L + 2) and (S[ACaretX - 2] = '(') and (S[ACaretX - 1] = '*')) or
+         // [Delete]
+         ((ACaretX > 0) and (ACaretX <= L) and (S[ACaretX] = '{')) or
+         ((ACaretX > 1) and (ACaretX <= L + 1) and (S[ACaretX - 1] = '(') and (S[ACaretX] = '*')) then
       begin
         if RescanLong(ACaretY) then
           Invalidate;
