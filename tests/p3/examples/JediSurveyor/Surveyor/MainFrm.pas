@@ -141,7 +141,7 @@ const
 
 implementation
 uses
-  JclStrings, JclSysInfo, JvFunctions, JvSurveyUtils, Math, CommentFrm;
+  ComObj, Math, JclStrings, JclSysInfo, JvFunctions, JvSurveyUtils, CommentFrm;
 
 {$R *.dfm}
 
@@ -285,7 +285,11 @@ end;
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   if not FCompletedSurvey and (FSurvey.Items.Count > 0) and YesNo(SSaveResponseCaption,SSaveResponsePrompt) then
-    FSurvey.SaveToFile(Filename,ffBinary)
+  begin
+    if FSurvey.SurveyTaker.ID = '' then
+      FSurvey.SurveyTaker.ID := CreateClassID;
+    FSurvey.SaveToFile(Filename,ffBinary);
+  end
   else if FileExists(FTempSurveyFilename) and YesNo(SDeleteResponseCaption,Format(SFmtDeleteResponsePrompt,[FTempSurveyFilename])) then
     DeleteFile(FTempSurveyFilename);
   SaveSettings;
@@ -348,10 +352,8 @@ begin
   begin
     Parent := sbSurvey;
     SetBounds(sbSurvey.ClientWidth - 105 - Width, 126, Width, Height);
-//    Caption := SSend;
     Action := acSaveSurvey;
     Anchors := [akRight,akTop];
-//    OnClick := DoSendMail;
     TabOrder := 2;
     Enabled := FSurvey.ExpiryDate >= Date;
   end;
@@ -359,10 +361,9 @@ begin
   begin
     Parent := sbSurvey;
     SetBounds(sbSurvey.ClientWidth - 25 - Width, 126, Width, Height);
-//    Caption := SSend;
-    Action := acSendMail;
+    Caption := SSend;
     Anchors := [akRight,akTop];
-//    OnClick := DoSendMail;
+    OnClick := DoSendMail;
     TabOrder := 3;
     Enabled := FSurvey.ExpiryDate >= Date;
   end;
@@ -617,6 +618,8 @@ begin
   acSendMail.Mail.Attachments.Clear;
   if FTempSurveyFilename = '' then
     FTempSurveyFilename := GetTempSurveyFileName;
+  if FSurvey.SurveyTaker.ID = '' then
+    FSurvey.SurveyTaker.ID := CreateClassID;
   FSurvey.SaveToFile(FTempSurveyFilename,ffBinary);
   acSendMail.Mail.Attachments.Add(FTempSurveyFilename);
 
@@ -818,6 +821,8 @@ begin
   if SaveSurveyDialog.Execute then
   begin
     FTempSurveyFilename := SaveSurveyDialog.Filename;
+    if FSurvey.SurveyTaker.ID = '' then
+      FSurvey.SurveyTaker.ID := CreateClassID;
     FSurvey.SaveToFile(FTempSurveyFilename,cSurveyFormat[SaveSurveyDialog.FilterIndex = 1]);
     FCompletedSurvey := true;
   end;

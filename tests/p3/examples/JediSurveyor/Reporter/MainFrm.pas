@@ -55,6 +55,8 @@ type
     View1: TMenuItem;
     acComments: TAction;
     Comments1: TMenuItem;
+    acDupeWarning: TAction;
+    acDupeWarning1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure acOpenExecute(Sender: TObject);
@@ -73,6 +75,7 @@ type
       var ReplaceText: string);
     procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure acCommentsExecute(Sender: TObject);
+    procedure acDupeWarningExecute(Sender: TObject);
   private
     { Private declarations }
     FFilename: string;
@@ -188,7 +191,7 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FSurvey := CreateSurvey;
   FResponses := TStringlist.Create;
-  FResponses.Sorted := true;
+  FResponses.Sorted := acDupeWarning.Checked;
   nbDetails.PageIndex := 0;
 end;
 
@@ -338,7 +341,7 @@ begin
   if ASurvey.ID <> FSurvey.ID then
     raise
       Exception.CreateFmt(SFmtInvalidResponseFile, [Filename]);
-  if FResponses.IndexOf(ASurvey.SurveyTaker.ID) > -1 then
+  if (FResponses.IndexOf(ASurvey.SurveyTaker.ID) > -1) and acDupeWarning.Checked then
     ShowMessageFmt(SFmtResponseAlreadyLoaded, [Filename, ASurvey.SurveyTaker.ID])
   else
   begin
@@ -580,6 +583,11 @@ end;
 procedure TfrmMain.acCommentsExecute(Sender: TObject);
 begin
   TfrmComments.Comments(FCurrentItem.Title, FCurrentItem.Comments);
+end;
+
+procedure TfrmMain.acDupeWarningExecute(Sender: TObject);
+begin
+  FResponses.Sorted := acDupeWarning.Checked;
 end;
 
 end.

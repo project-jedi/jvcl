@@ -216,6 +216,10 @@ object frmMain: TfrmMain
       object Comments1: TMenuItem
         Action = acComments
       end
+      object acDupeWarning1: TMenuItem
+        Action = acDupeWarning
+        AutoCheck = True
+      end
     end
     object Help1: TMenuItem
       Caption = 'Help'
@@ -288,6 +292,13 @@ object frmMain: TfrmMain
       Caption = 'Comments'
       ShortCut = 16416
       OnExecute = acCommentsExecute
+    end
+    object acDupeWarning: TAction
+      Category = 'View'
+      AutoCheck = True
+      Caption = 'Don'#39't add duplicates'
+      Checked = True
+      OnExecute = acDupeWarningExecute
     end
   end
   object il16: TImageList

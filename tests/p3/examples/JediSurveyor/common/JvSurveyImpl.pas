@@ -147,7 +147,7 @@ type
 
 implementation
 uses
-  JclSysInfo, JvFunctions, JvSurveyUtils, ComObj, zlib;
+  JclSysInfo, JvFunctions, JvSurveyUtils, zlib;
 
 resourcestring
   SErrUnknownFormatFmt = 'Unknown survey format in "%s"!';
@@ -381,8 +381,6 @@ end;
 
 function TJvSurveyTaker.GetID: WideString;
 begin
-  if FID = '' then
-    FID := CreateClassID;
   Result := FID;
 end;
 

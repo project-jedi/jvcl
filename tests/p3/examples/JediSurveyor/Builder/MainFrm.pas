@@ -130,6 +130,7 @@ type
     procedure acAboutExecute(Sender: TObject);
     procedure acCopyItemExecute(Sender: TObject);
     procedure acPreviewExecute(Sender: TObject);
+    procedure WMUser1(var Msg:TMessage);message WM_USER + 1;
   private
     FModified: boolean;
     FFilename: string;
@@ -190,7 +191,8 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   CreateEverything;
   LoadSettings;
-  Modified := false;
+  // set Modified to false after all updates are finished
+  PostMessage(Handle,WM_USER + 1,0,0);
 end;
 
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -612,6 +614,11 @@ begin
   end;
   if SaveFile then
     WinExec32AndWait(S + ' ' + Filename,SW_SHOWNORMAL);
+end;
+
+procedure TfrmMain.WMUser1(var Msg: TMessage);
+begin
+  Modified := false;
 end;
 
 end.
