@@ -1,24 +1,31 @@
-##Package: MM
+##Package: StdCtrls
 ##Status: Generated
 ----------------------------------------------------------------------------------------------------
-@@JvImageTransform.pas
+@@JvLinkedControls.pas
 Summary
-  Contains the TJvImageTransform component.
+  Contains the TJvLinkedControls component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  Sébastien Buysse
+  Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
-@@TJvImageTransform
-<TITLEIMG TJvImageTransform>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
+@@TJvLinkedControl
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvImageTransform.ImageShown
+@@TJvLinkedControl.Assign
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLinkedControl.Control
 Summary
   Write here a summary (1 line)
 Description
@@ -27,7 +34,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvImageTransform.Interval
+@@TJvLinkedControl.Options
 Summary
   Write here a summary (1 line)
 Description
@@ -36,7 +43,58 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvImageTransform.OnFinished
+@@TJvLinkedControls
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvLinkedControls.Add
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLinkedControls.Assign
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLinkedControls.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLinkedControls.Notification
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AComponent - Description for this parameter
+  Operation  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLinkedControls.OnChange
 Summary
   Write here a summary (1 line)
 Description
@@ -45,7 +103,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvImageTransform.Picture1
+@@TJvLinkedControls.RestoreEnabled
 Summary
   Write here a summary (1 line)
 Description
@@ -54,7 +112,8 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvImageTransform.Picture2
+@@TJvLinkedControlsOption
+<TITLE TJvLinkedControlsOption type>
 Summary
   Write here a summary (1 line)
 Description
@@ -62,64 +121,11 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+@@TJvLinkedControlsOption.loLinkChecked
+  Description for loLinkChecked
+@@TJvLinkedControlsOption.loLinkEnabled
+  Description for loLinkEnabled
 ----------------------------------------------------------------------------------------------------
-@@TJvImageTransform.Steps
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvImageTransform.Transform
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvImageTransform.TransformType
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTransformationKind
-<TITLE TJvTransformationKind type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-@@TJvTransformationKind.ttWipeLeft
-  Description for ttWipeLeft
-@@TJvTransformationKind.ttWipeRight
-  Description for ttWipeRight
-@@TJvTransformationKind.ttWipeUp
-  Description for ttWipeUp
-@@TJvTransformationKind.ttWipeDown
-  Description for ttWipeDown
-@@TJvTransformationKind.ttTurnLeft
-  Description for ttTurnLeft
-@@TJvTransformationKind.ttTurnRight
-  Description for ttTurnRight
-@@TJvTransformationKind.ttTurnUp
-  Description for ttTurnUp
-@@TJvTransformationKind.ttTurnDown
-  Description for ttTurnDown
-@@TJvTransformationKind.ttWipeDownRight
-  Description for ttWipeDownRight
-@@TJvTransformationKind.ttWipeDownLeft
-  Description for ttWipeDownLeft
-@@TJvTransformationKind.ttWipeUpRight
-  Description for ttWipeUpRight
-@@TJvTransformationKind.ttWipeUpLeft
-  Description for ttWipeUpLeft
+@@TJvLinkedControlsOptions
+<TITLE TJvLinkedControlsOptions type>
+<COMBINE TJvLinkedControlsOption>

@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Completed
+##Status: Incomplete
 ----------------------------------------------------------------------------------------------------
 @@JvLabel.pas
 Summary
@@ -35,12 +35,23 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.Alignment
 Summary
-  Write here a summary (1 line)
+  Controls the horizontal placement of the text within the label.
 Description
-  Write here a description
+  Set Alignment to specify how the text of the label is justified within the ClientRect of the label control.
+  The effect of the Alignment property is more obvious if the WordWrap property is true and the label 
+  includes more than one line of text.
+
+  These are the possible values:
+
+  <TABLE>
+  Value           Meaning
+  -----           -------
+  taLeftJustify   Align text on the left side in the edit control.
+  taCenter        Center the text in the edit control.
+  taRightJustify  Align text on the right side in the edit control.
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Layout, WordWrap
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.Angle
 Summary
@@ -61,12 +72,18 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.AutoSize
 Summary
-  Write here a summary (1 line)
+  Determines whether the size of the label automatically resizes to accommodate the text. 
 Description
-  Write here a description
+  Use AutoSize to make the label adjust its size automatically so the client area accommodates the
+  height and width of the text. When AutoSize is false, the label is fixed in size. When AutoSize
+  is true, the size of the label readjusts whenever the text changes. The size of the label is also
+  readjusts when the Font property changes.
+
+  When WordWrap is true, the width of the label is fixed. If AutoSize is also true, changes to the
+  text cause the label to change in height. When AutoSize is true and WordWrap is false, the font
+  determines the height of the label, and changes to the text cause the label to change in width.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Layout, WordWrap
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.FocusControl
 Summary
@@ -131,30 +148,30 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.ImageIndex
 Summary
-  Write here a summary (1 line)
+  Indicates which image appears on the label.
 Description
-  Write here a description
+  Set ImageIndex to designate an image that should appear on the label.
+  ImageIndex specifies a zero-offset index into the Images property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Images
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.Images
 Summary
-  Write here a summary (1 line)
+  Lists the images that can appear on the label.
 Description
-  Write here a description
+  Images contains a list of images that can appear on the label.
+  If Images is unassigned, no images are displayed on the button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.Layout
 Summary
-  Write here a summary (1 line)
+  Specifies the vertical placement of the text within the label.
 Description
-  Write here a description
+  Set Layout to specify how the text of the label is placed within the ClientRect of the label control.
+  Layout is the vertical analog to the Alignment property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Alignment
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.LeftMargin
 Summary
@@ -162,17 +179,13 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RightMargin
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.MouseInControl
 Summary
-  Write here a summary (1 line)
+  Indicates whether the mouse cursor is inside the control's area.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  \Read MouseInControl to determine whether the mouse cursor is inside the control's area.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.OnParentColorChange
 Summary
@@ -195,8 +208,7 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LeftMargin
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.ShadowColor
 Summary
@@ -227,7 +239,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.ShowAccelChar
 Summary
-  Write here a summary (1 line)
+  Determines how an ampersand in the label text is displayed.
 Description
   Write here a description
 See Also
@@ -236,7 +248,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.ShowFocus
 Summary
-  Write here a summary (1 line)
+  Indicates whether to draw a focus rectangle around the label when FocusControl has input focus.
 Description
   Write here a description
 See Also
@@ -245,21 +257,24 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.Spacing
 Summary
-  Write here a summary (1 line)
+  Controls the separation between the label's icon and caption.
 Description
-  Write here a description
+  The value stored in Spacing is the number of pixels between the label's icon and caption. If either
+  is absent from the label, the value of Spacing becomes irrelevant.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageIndex, Images, LeftMargin
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.Transparent
 Summary
-  Write here a summary (1 line)
+  Specifies whether controls that sit below the label on a form can be seen through the label.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set Transparent to true to prevent the label from obscuring other controls on the form. For example,
+  if the label is used to add text to a graphic, set Transparent to true so that the label does not
+  stand out as a separate object.
+
+  Writing text so that the background is transparent is slower than writing text when Transparent is
+  false. If the label is not obscuring a complicated image, performance can be improved by setting
+  the background color of the label to match the object beneath it and setting Transparent to false.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.URL
 Summary
@@ -291,12 +306,13 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.WordWrap
 Summary
-  Write here a summary (1 line)
+  Specifies whether the label text wraps when it is too long for the width of the label.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set WordWrap to true to allow the label to display multiple line of text. When WordWrap is true,
+  text that is too wide for the label control wraps at the right margin and continues in additional lines.
+
+  Set WordWrap to false to limit the label to a single line. When WordWrap is false, text that is too
+  wide for the label appears truncated.
 ----------------------------------------------------------------------------------------------------
 @@TJvLabel
 <TITLEIMG TJvLabel>

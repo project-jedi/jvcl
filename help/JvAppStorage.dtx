@@ -35,12 +35,26 @@ See Also
 @@TJvAppStorage
 <TITLEIMG TJvAppStorage>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Miscel
   FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvAppStorageCryptEvent
+<TITLE TJvAppStorageCryptEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvCustomAppStorage.OnDecryptPropertyValue
+    TJvCustomAppStorage.OnEncryptPropertyValue
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStorageEnumOption
 <TITLE TJvAppStorageEnumOption type>
@@ -78,6 +92,7 @@ Description
 Parameters
   Sender - Reference to the backend storage requesting the delete.
   Path   - Path of the list.
+  List   - Description for this parameter
   First  - First item to remove.
   Last   - Last item to remove.
 See Also
@@ -92,6 +107,7 @@ Description
 Parameters
   Sender - Reference to the backend storage requesting the read or write.
   Path   - Path of the list.
+  List   - Description for this parameter
   Index  - Index of the item to read or write.
 See Also
   TJvCustomAppStorage.ReadList, TJvCustomAppStorage.WriteList
@@ -450,6 +466,24 @@ Parameters
 See Also
   DeleteSubTree
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.DisablePropertyValueCrypt
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.EnablePropertyValueCrypt
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.GetCharName
 Summary
   Write here a summary (1 line)
@@ -509,6 +543,17 @@ Parameters
   Path        - Path (relative to the current path) to check.
   ListIsValue - Flag to interprete a list as value or not.
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.IsPropertyValueCryptEnabled
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ListStored
 Summary
   Determines if the specified path is a list.
@@ -521,6 +566,24 @@ Parameters
   Path - Path (relative to the current path) to check.
 See Also
   IsFolder, ValueStored
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.OnDecryptPropertyValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.OnEncryptPropertyValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.OnTranslatePropertyName
 Summary
@@ -695,6 +758,7 @@ Description
   immediately (e.g. store it in memory or display it in a control).
 Parameters
   Path       - Path (relative to the current path) of the value to read.
+  List       - Description for this parameter
   OnReadItem - Method that will read each item from the storage.
 See Also
   WriteList, ReadBinary, ReadDateTime, ReadFloat, ReadInteger, ReadString, ReadStringList
@@ -966,6 +1030,7 @@ Description
   from the storage.
 Parameters
   Path          - Path (relative to the current path) where the list is to be stored.
+  List          - Description for this parameter
   ItemCount     - Number of items to store.
   OnWriteItem   - Method that will write each item to the storage.
   OnDeleteItems - Method that will remove remaining items from a previous list.

@@ -8,37 +8,6 @@ Summary
 Author
   Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
-@@TJvScheduledEvents
-JVCLInfo
-  GROUP=JVCL.System.AlarmsAndTimers.Alarms
-  FLAG=Component
-##<TITLEIMG TJvCustomScheduledEvents>
-Summary
-  Allows you to schedule execution of events using a recurring schedule.
-Description
-  TJvScheduledEvents allows you to schedule execution of events based on a recurring schedule, much
-  like the recurring appointments/tasks in Microsoft® Outlook® or the replication/job scheduler in
-  Microsoft® SQL Server.
-  
-  The component uses the JclSchedule unit and it's interface to generate the execution times. For
-  more information on scheduling posibilities, check out the help for JclSchedule.
-  
-  Components usage:
-  
-  * Drop a TJvScheduledEvents component on a form or a datamodule
-  * Optionally specify if schedule states should be
-    <LINK TJvCustomScheduledEvents.AutoSave, automatically saved/restored> when the application is
-    terminated/started.
-  * Optionally specify the <LINK TJvCustomScheduledEvents.AutoSave, registry key> to store/retrieve
-    the schedule states.
-  * Add some events (at design time using the component popup menu or the
-    <LINK TJvCustomScheduledEvents.Events, events property>, specifying the
-    <LINK TJvEventCollectionItem.Schedule, schedule> and the
-    <LINK TJvEventCollectionItem.OnExecute, handler>; at run time by using
-    Events.Add).
-  * Optionally assign handlers to to fire <LINK TJvCustomScheduledEvents.OnStartEvent, before>
-    and/or <LINK TJvCustomScheduledEvents.OnEndEvent, after> an event is/has fired.
-----------------------------------------------------------------------------------------------------
 @@TJvCustomScheduledEvents
 Summary
   Base class for the TJvScheduleEvents component.
@@ -49,6 +18,24 @@ Description
   You should not create an instance of this class. Use one of the descendants instead.
 See Also
   TJvScheduledEvents
+----------------------------------------------------------------------------------------------------
+@@TJvCustomScheduledEvents.AppStorage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomScheduledEvents.AppStoragePath
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomScheduledEvents.AutoSave
 Summary
@@ -64,6 +51,35 @@ Description
   When set to False, no information is saved.
 See Also
   SaveTo
+----------------------------------------------------------------------------------------------------
+@@TJvCustomScheduledEvents.Events
+Summary
+  Holds a collection of events and their schedules.
+Description
+  Events is a collection of events and their schedules.
+  
+  At run time you can iterate over the items to retrieve information on each of the event or add new
+  events on the fly.
+  
+  At design time you can use the editor to add events and set the schedule for each of them.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomScheduledEvents.Handle
+Summary
+  Window handle used by background thread to signal the execution of an event.
+Description
+  Handle is the window handle to receives messages from the background thread to signal when an
+  event should be executed.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomScheduledEvents.LoadEventStates
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ClearBefore - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomScheduledEvents.OnEndEvent
 Summary
@@ -82,50 +98,41 @@ Description
 See Also
   OnEndEvent
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomScheduledEvents.SaveTo
+##@@TJvCustomScheduledEvents.SaveTo
+##Summary
+##  Specifies the location where event states are stored to or retrieved from.
+##Description
+##  SaveTo specifies where event states and last execution time should be saved to or retrieved from
+##  when AutoSave is True. SaveTo should point to a registry location.
+##  
+##  The string should be in the format <<B><I>HKEY_specifier</I>\</B>><B><I>path</I></B> where
+##  <I>HKEY_Specifier</I> specifies which root key to use and <I>path</I> specifies the path in that
+##  root key.
+##  
+##  <I>HKEY_Specifier</I> can be one of the following values:
+##  <TABLE>
+##    Value                   Alternate
+##    =====                   =========
+##    HKEY_CLASSES_ROOT       HKCR
+##    HKEY_CURRENT_USER       HKCU
+##    HKEY_LOCAL_MACHINE      HKLM
+##    HKEY_USERS              HKU
+##    HKEY_PERFORMANCE_DATA   HKPD
+##    HKEY_CURRENT_CONFIG     HKCC
+##    HKEY_DYN_DATA           HKDD
+##  </TABLE>
+##  If you ommit the <I>HKEY_Specifier</I> when setting SaveTo <B>HKEY_CURRENT_USER</B> is assumed.
+##See Also
+##  AutoSave
+----------------------------------------------------------------------------------------------------
+@@TJvCustomScheduledEvents.SaveEventStates
 Summary
-  Specifies the location where event states are stored to or retrieved from.
+  Write here a summary (1 line)
 Description
-  SaveTo specifies where event states and last execution time should be saved to or retrieved from
-  when AutoSave is True. SaveTo should point to a registry location.
-  
-  The string should be in the format <<B><I>HKEY_specifier</I>\</B>><B><I>path</I></B> where
-  <I>HKEY_Specifier</I> specifies which root key to use and <I>path</I> specifies the path in that
-  root key.
-  
-  <I>HKEY_Specifier</I> can be one of the following values:
-  <TABLE>
-    Value                   Alternate
-    =====                   =========
-    HKEY_CLASSES_ROOT       HKCR
-    HKEY_CURRENT_USER       HKCU
-    HKEY_LOCAL_MACHINE      HKLM
-    HKEY_USERS              HKU
-    HKEY_PERFORMANCE_DATA   HKPD
-    HKEY_CURRENT_CONFIG     HKCC
-    HKEY_DYN_DATA           HKDD
-  </TABLE>
-  If you ommit the <I>HKEY_Specifier</I> when setting SaveTo <B>HKEY_CURRENT_USER</B> is assumed.
+  Write here a description
 See Also
-  AutoSave
-----------------------------------------------------------------------------------------------------
-@@TJvCustomScheduledEvents.Handle
-Summary
-  Window handle used by background thread to signal the execution of an event.
-Description
-  Handle is the window handle to receives messages from the background thread to signal when an
-  event should be executed.
-----------------------------------------------------------------------------------------------------
-@@TJvCustomScheduledEvents.Events
-Summary
-  Holds a collection of events and their schedules.
-Description
-  Events is a collection of events and their schedules.
-  
-  At run time you can iterate over the items to retrieve information on each of the event or add new
-  events on the fly.
-  
-  At design time you can use the editor to add events and set the schedule for each of them.
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvEventCollection
 Summary
@@ -137,6 +144,41 @@ Description
   The collection will be populated with TJvEventCollectionItem objects.
 See Also
   TJvCustomScheduledEvents, TJvCustomScheduledEvents.Events, TJvEventCollectionItem
+----------------------------------------------------------------------------------------------------
+@@TJvEventCollection.Add
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEventCollection.Insert
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEventCollection.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvEventCollectionItem
 Summary
@@ -185,6 +227,35 @@ Description
   Data allows the application to quickly access information related to the schedule (eg. to retrieve
   the ID of a related appointment stored in a database).
 ----------------------------------------------------------------------------------------------------
+@@TJvEventCollectionItem.LastSnoozeInterval
+Summary
+  Indicates the snooze interval used in the last issued snooze request.
+Description
+  LastSnoozeInterval indicates the snooze interval used in the last issued snooze request. You can
+  use this property to issue a new snooze request using the same interval.
+See Also
+  Snooze
+----------------------------------------------------------------------------------------------------
+@@TJvEventCollectionItem.LoadState
+Summary
+  Initializes the schedule to a specific state.
+Description
+  LoadState initializes the schedule state to the one specified by the input parameters.
+  
+  LoadState and SaveState are used by descendant components of TJvCustomScheduledEvent when its
+  AutoSave property is set to True.
+Parameters
+  TriggerStamp  -       Timestamp of next event.
+  DayCount -            Number of days events have been triggered <B>after</B> the event specified
+                        by TriggerStamp is executed.
+  TriggerCount -        Number of events that have been triggered <B>after</B> the event specified
+                        by TriggerStamp is executed.
+  SnoozeStamp -         Timestamp of next snooze event (or NullStamp if there was no snooze
+                        request).
+  ALastSnoozeInterval - _SYSTEM_TIME record containing the last issued snooze interval.
+See Also
+  SaveState
+----------------------------------------------------------------------------------------------------
 @@TJvEventCollectionItem.Name
 Summary
   Represents the name of the scheduled event.
@@ -223,57 +294,6 @@ Description
 See Also
   NextFire, Snooze
 ----------------------------------------------------------------------------------------------------
-@@TJvEventCollectionItem.RequestedTriggerTime
-Summary
-  Determines the date and time at which the event was supposed to be triggered.
-Description
-  RequestedTriggerTime will report the date and time at which the event was scheduled to be 
-  triggered (either throught the schedule or because of a Snooze request).
-  
-  If your application is busy, there might be difference between actual trigger time and requested
-  trigger time. To find out what date and time the event should was triggered you can check
-  the value of ActualTriggerTime.
-See Also
-  ActualTriggerTime, NextFire, NextScheduleFire, Snooze
-----------------------------------------------------------------------------------------------------
-@@TJvEventCollectionItem.Schedule
-Summary
-  Specifies the dates and times at which the event should fire.
-Description
-  Schedule specifies at which dates and times the event should fire. Schedule uses the IJclSchedule
-  interface as defined in the JclSchedule unit (JEDI Code Library) to represent a recurring schedule
-  for the event. For full information on recurring schedules you should read the help for
-  IJclSchedule.
-----------------------------------------------------------------------------------------------------
-@@TJvEventCollectionItem.LastSnoozeInterval
-Summary
-  Indicates the snooze interval used in the last issued snooze request.
-Description
-  LastSnoozeInterval indicates the snooze interval used in the last issued snooze request. You can
-  use this property to issue a new snooze request using the same interval.
-See Also
-  Snooze
-----------------------------------------------------------------------------------------------------
-@@TJvEventCollectionItem.LoadState
-Summary
-  Initializes the schedule to a specific state.
-Description
-  LoadState initializes the schedule state to the one specified by the input parameters.
-  
-  LoadState and SaveState are used by descendant components of TJvCustomScheduledEvent when its
-  AutoSave property is set to True.
-Parameters
-  TriggerStamp  -       Timestamp of next event.
-  DayCount -            Number of days events have been triggered <B>after</B> the event specified
-                        by TriggerStamp is executed.
-  TriggerCount -        Number of events that have been triggered <B>after</B> the event specified
-                        by TriggerStamp is executed.
-  SnoozeStamp -         Timestamp of next snooze event (or NullStamp if there was no snooze
-                        request).
-  ALastSnoozeInterval - _SYSTEM_TIME record containing the last issued snooze interval.
-See Also
-  SaveState
-----------------------------------------------------------------------------------------------------
 @@TJvEventCollectionItem.OnExecute
 Summary
   Event to call at the preset dates and times.
@@ -295,6 +315,19 @@ Description
 See Also
   Start, Stop
 ----------------------------------------------------------------------------------------------------
+@@TJvEventCollectionItem.RequestedTriggerTime
+Summary
+  Determines the date and time at which the event was supposed to be triggered.
+Description
+  RequestedTriggerTime will report the date and time at which the event was scheduled to be 
+  triggered (either throught the schedule or because of a Snooze request).
+  
+  If your application is busy, there might be difference between actual trigger time and requested
+  trigger time. To find out what date and time the event should was triggered you can check
+  the value of ActualTriggerTime.
+See Also
+  ActualTriggerTime, NextFire, NextScheduleFire, Snooze
+----------------------------------------------------------------------------------------------------
 @@TJvEventCollectionItem.SaveState
 Summary
   Retrieves the current state of the schedule.
@@ -314,6 +347,15 @@ Parameters
   ALastSnoozeInterval - _SYSTEM_TIME record containing the last issued snooze interval.
 See Also
   LoadState
+----------------------------------------------------------------------------------------------------
+@@TJvEventCollectionItem.Schedule
+Summary
+  Specifies the dates and times at which the event should fire.
+Description
+  Schedule specifies at which dates and times the event should fire. Schedule uses the IJclSchedule
+  interface as defined in the JclSchedule unit (JEDI Code Library) to represent a recurring schedule
+  for the event. For full information on recurring schedules you should read the help for
+  IJclSchedule.
 ----------------------------------------------------------------------------------------------------
 @@TJvEventCollectionItem.Snooze
 Summary
@@ -362,6 +404,41 @@ Description
   Stop will end the schedule of the scheduled event. The scheduled event will be set to an
   uninitialized state.
 ----------------------------------------------------------------------------------------------------
+@@TJvScheduledEvents
+JVCLInfo
+  GROUP=JVCL.System.AlarmsAndTimers.Alarms
+  FLAG=Component
+##<TITLEIMG TJvCustomScheduledEvents>
+Summary
+  Allows you to schedule execution of events using a recurring schedule.
+Description
+  TJvScheduledEvents allows you to schedule execution of events based on a recurring schedule, much
+  like the recurring appointments/tasks in Microsoft® Outlook® or the replication/job scheduler in
+  Microsoft® SQL Server.
+  
+  The component uses the JclSchedule unit and it's interface to generate the execution times. For
+  more information on scheduling posibilities, check out the help for JclSchedule.
+  
+  Components usage:
+  
+  * Drop a TJvScheduledEvents component on a form or a datamodule
+  * Optionally specify if schedule states should be
+    <LINK TJvCustomScheduledEvents.AutoSave, automatically saved/restored> when the application is
+    terminated/started.
+  * Optionally specify the <LINK TJvCustomScheduledEvents.AutoSave, registry key> to store/retrieve
+    the schedule states.
+  * Add some events (at design time using the component popup menu or the
+    <LINK TJvCustomScheduledEvents.Events, events property>, specifying the
+    <LINK TJvEventCollectionItem.Schedule, schedule> and the
+    <LINK TJvEventCollectionItem.OnExecute, handler>; at run time by using
+    Events.Add).
+  * Optionally assign handlers to to fire <LINK TJvCustomScheduledEvents.OnStartEvent, before>
+    and/or <LINK TJvCustomScheduledEvents.OnEndEvent, after> an event is/has fired.
+----------------------------------------------------------------------------------------------------
+@@TScheduledEventExecute
+<TITLE TScheduledEventExecute type>
+<COMBINE TJvEventCollectionItem.OnExecute>
+----------------------------------------------------------------------------------------------------
 @@TScheduledEventState
 <TITLE TScheduledEventState type>
 Summary
@@ -388,4 +465,3 @@ See Also
 @@TScheduledEventState.sesEnded
   The schedule for the scheduled event has reached it's end condition and no snooze requests have
   been posted.
-----------------------------------------------------------------------------------------------------

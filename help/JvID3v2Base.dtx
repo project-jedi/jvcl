@@ -2452,6 +2452,29 @@ Description
   There is the possibility to put only a link to the image file by setting MIMEType to "-->" and
   set property URL to a complete \URL. The use of linked files
   should however be used sparingly since there is the risk of separation of files.
+  
+  The following example adds a frame with a picture selected by the user to the tag:
+  <AUTOLINK OFF>
+  <CODE> 
+  with TOpenPictureDialog.Create(Application) do
+  try
+    if not Execute then
+      Exit;
+
+    with TJvID3PictureFrame(JvID3v21.AddFrame(fiPicture)) do
+    begin
+      PictureType := ptCoverFront;
+      Description := 'Cover front';
+      MIMEType := ExtToMIMEType(ExtractFileExt(FileName));
+      
+      { Insert the picture in the frame }
+      LoadFromFile(FileName);
+    end;
+  finally
+    Free;
+  end;
+  </CODE>
+  <AUTOLINK ON>
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PictureFrame.Description
 Summary
@@ -2511,7 +2534,7 @@ Description
 
   The "image/png" or "image/jpeg" picture format should be used when interoperability is wanted.
 See Also
-  PictureType
+  <LINK ExtToMIMEType>, <LINK MIMETypeToExt>, PictureType
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PictureFrame.PictureType
 Summary

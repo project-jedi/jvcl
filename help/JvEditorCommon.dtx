@@ -1,275 +1,38 @@
-##Package: Docking
-##Status: Partially documented
+##Package: Custom
+##Status: Generated
 ----------------------------------------------------------------------------------------------------
-@@JvDockControlForm.pas
+@@JvEditorCommon.pas
 Summary
-  Contains a form used when docking.
+  Contains the TJvEditorCommon component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  luxioban.
+  Andrei Prygounkov
 ----------------------------------------------------------------------------------------------------
-@@ComputeDockingRect
-<TITLE ComputeDockingRect function>
+@@EJvEditorError
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  AControl - Description for this parameter
-  DockRect - Description for this parameter
-  MousePos - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@DefaultConjoinPanelClass
-<TITLE DefaultConjoinPanelClass variable>
-Summary
-  Specifies the default class used for conjoined panels.
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@DefaultDockPanelClass
-<TITLE DefaultDockPanelClass variable>
-Summary
-  Specifies the default class used for docking panels.
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@DefaultDockSplitterClass
-<TITLE DefaultDockSplitterClass variable>
-Summary
-  Specifies the default class used for docking splitters.
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@DefaultDockTreeClass
-<TITLE DefaultDockTreeClass variable>
-Summary
-  Specifies the default class used for docking trees.
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@DefaultDockZoneClass
-<TITLE DefaultDockZoneClass variable>
-Summary
-  Specifies the default class used for dock zones.
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@DefaultTabDockClass
-<TITLE DefaultTabDockClass variable>
-Summary
-  Specifies the default class used for docking tab sheets.
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@DoFloat
-<TITLE DoFloat procedure>
-Summary
-  Makes a docked control float.
-Description
-  Write here a description
-Parameters
-  Sender   - Description for this parameter
-  AControl - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@DoFloatAllForm
-<TITLE DoFloatAllForm procedure>
-Summary
-  Makes all docked forms float.
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@DoFloatForm
-<TITLE DoFloatForm procedure>
-Summary
-  Makes a docked form float.
-Description
-  Write here a description
-Parameters
-  DockForm - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@FindDockBaseControl
-<TITLE FindDockBaseControl function>
-Summary
-  Searches for a docked control.
-Description
-  Write here a description
-Parameters
-  Client - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@FindDockClient
-<TITLE FindDockClient function>
-Summary
-  Searches for a dock client.
-Description
-  Write here a description
-Parameters
-  Client - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@FindDockServer
-<TITLE FindDockServer function>
-Summary
-  Searches for a dock server.
-Description
-  Write here a description
-Parameters
-  Client - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@FreeAllDockableForm
-<TITLE FreeAllDockableForm procedure>
-Summary
-  Fress all dock forms.
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@GetClientAlignControlArea
-<TITLE GetClientAlignControlArea function>
-Summary
-  Returns the client align area for a dock control.
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-  Align    - Description for this parameter
-  Exclude  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@GetFormVisible
-<TITLE GetFormVisible function>
-Summary
-  Returns the visible status of a dock form.
-Description
-  Write here a description
-Parameters
-  DockWindow - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@HideDockForm
-<TITLE HideDockForm procedure>
-Summary
-  Hides a visible dock form.
-Description
-  Write here a description
-Parameters
-  DockWindow - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@IsDockable
-<TITLE IsDockable function>
-Summary
-  Returns whether a control can be docked or not.
-Description
-  Write here a description
-Parameters
-  Sender    - Description for this parameter
-  Client    - Description for this parameter
-  DropCtl   - Description for this parameter
-  DockAlign - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@LoadDockTreeFromFile
-<TITLE LoadDockTreeFromFile procedure>
-Summary
-  Loads dock data from a file.
-Description
-  Write here a description
-Parameters
-  FileName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@LoadDockTreeFromReg
-<TITLE LoadDockTreeFromReg procedure>
-Summary
-  Loads dock data from the registry.
-Description
-  Write here a description
-Parameters
-  RootKey  - Description for this parameter
-  RegPatch - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@MakeDockClientEvent
-<TITLE MakeDockClientEvent procedure>
-Summary
-  Creates a dock client event.
-Description
-  Write here a description
-Parameters
-  Host    - Description for this parameter
-  Visible - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@ResetDockClient@TControl@TControl
-<TITLE ResetDockClient procedure>
+@@IJvBackspaceUndo
 Summary
   Write here a summary (1 line)
 Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  Control   - Description for this parameter
-  NewTarget - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Write here a description
 ----------------------------------------------------------------------------------------------------
-@@ResetDockClient@TJvDockClient@TControl
-<TITLE ResetDockClient procedure>
+@@IJvBackspaceUnindentUndo
 Summary
   Write here a summary (1 line)
 Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  DockClient - Description for this parameter
-  NewTarget  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Write here a description
 ----------------------------------------------------------------------------------------------------
-@@ReshowAllVisibleWindow
-<TITLE ReshowAllVisibleWindow procedure>
+@@IJvHLEditor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@IJvHLEditor.Colors
 Summary
   Write here a summary (1 line)
 Description
@@ -278,33 +41,49 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@SaveDockTreeToFile
-<TITLE SaveDockTreeToFile procedure>
+@@IJvHLEditor.GetColors
 Summary
-  Saves dock data to a file.
+  Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  FileName - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@SaveDockTreeToReg
-<TITLE SaveDockTreeToReg procedure>
+@@IJvHLEditor.GetHighlighter
 Summary
-  Saves dock data to the registry.
+  Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  RootKey  - Description for this parameter
-  RegPatch - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@SetConjoinDockHostBorderStyle
-<TITLE SetConjoinDockHostBorderStyle procedure>
+@@IJvHLEditor.GetSyntaxHighlighting
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@IJvHLEditor.Highlighter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@IJvHLEditor.SetColors
 Summary
   Write here a summary (1 line)
 Description
@@ -315,8 +94,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@SetDockPageControlHotTrack
-<TITLE SetDockPageControlHotTrack procedure>
+@@IJvHLEditor.SetHighlighter
 Summary
   Write here a summary (1 line)
 Description
@@ -327,8 +105,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@SetDockPageControlPopupMenu
-<TITLE SetDockPageControlPopupMenu procedure>
+@@IJvHLEditor.SetSyntaxHighlighting
 Summary
   Write here a summary (1 line)
 Description
@@ -339,50 +116,39 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@SetDockSite
-<TITLE SetDockSite procedure>
+@@IJvHLEditor.SyntaxHighlighting
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@IJvUndoCompound
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@KeyPressed
+<TITLE KeyPressed function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Control   - Description for this parameter
-  SiteValue - Description for this parameter
+  VK - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@SetTabDockHostBorderStyle
-<TITLE SetTabDockHostBorderStyle procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@PJvSelectionRec
+<TITLE PJvSelectionRec type>
+<COMBINE TJvSelectionRec>
 ----------------------------------------------------------------------------------------------------
-@@ShowDockForm
-<TITLE ShowDockForm procedure>
-Summary
-  Makes a dock form visible.
-Description
-  Write here a description
-Parameters
-  DockWindow - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockableForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDockableForm.DockableControl
+@@TAdjustPersistentBlockMode
+<TITLE TAdjustPersistentBlockMode type>
 Summary
   Write here a summary (1 line)
 Description
@@ -390,8 +156,19 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+@@TAdjustPersistentBlockMode.amInsert
+  Description for amInsert
+@@TAdjustPersistentBlockMode.amDelete
+  Description for amDelete
+@@TAdjustPersistentBlockMode.amDeleteLine
+  Description for amDeleteLine
+@@TAdjustPersistentBlockMode.amLineConcat
+  Description for amLineConcat
+@@TAdjustPersistentBlockMode.amLineBreak
+  Description for amLineBreak
 ----------------------------------------------------------------------------------------------------
-@@TJvDockableForm.DockClient
+@@TBookMark
+<TITLE TBookMark type>
 Summary
   Write here a summary (1 line)
 Description
@@ -399,8 +176,39 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+@@TBookMark.X
+  Description for X
+@@TBookMark.Y
+  Description for Y
+@@TBookMark.Valid
+  Description for Valid
 ----------------------------------------------------------------------------------------------------
-@@TJvDockableForm.FloatingChild
+@@TBookMarkNum
+<TITLE TBookMarkNum type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = 0..9; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TBookMarks
+<TITLE TBookMarks type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = array [TBookMarkNum] of TBookMark; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TCellRect
+<TITLE TCellRect type>
 Summary
   Write here a summary (1 line)
 Description
@@ -408,8 +216,17 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+@@TCellRect.Width
+  Description for Width
+@@TCellRect.Height
+  Description for Height
 ----------------------------------------------------------------------------------------------------
-@@TJvDockableForm.UnDockControl
+@@TCommand2Event
+<TITLE TCommand2Event type>
+<COMBINE TJvKeyboard.OnCommand2>
+----------------------------------------------------------------------------------------------------
+@@TCompletionList
+<TITLE TCompletionList type>
 Summary
   Write here a summary (1 line)
 Description
@@ -417,186 +234,94 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+@@TCompletionList.cmIdentifiers
+  Description for cmIdentifiers
+@@TCompletionList.cmTemplates
+  Description for cmTemplates
 ----------------------------------------------------------------------------------------------------
-@@TJvDockAdvConjoinPanel
+@@TDelphiColor
+<TITLE TDelphiColor type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TDelphiColor.ForeColor
+  Description for ForeColor
+@@TDelphiColor.BackColor
+  Description for BackColor
+@@TDelphiColor.Style
+  Description for Style
+----------------------------------------------------------------------------------------------------
+@@TEditCommand
+<TITLE TEditCommand type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = Word; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvBeginCompoundUndo
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvDockAdvConjoinPanel.DockDrop
+@@TJvBeginCompoundUndo.Undo
 Summary
   Write here a summary (1 line)
 Description
   This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Source - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockAdvPanel
+@@TJvCaretUndo
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvDockAdvPanel.DockDrop
+@@TJvCaretUndo.CaretX
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCaretUndo.CaretY
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCaretUndo.Undo
 Summary
   Write here a summary (1 line)
 Description
   This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Source - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockAdvStyle
+@@TJvColors
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvDockAdvTabPageControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDockAdvTabPageControl.DockDrop
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Source - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseControl.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseControl.BottomDock
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseControl.DockStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseControl.EachOtherDock
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseControl.EnableDock
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseControl.GetDockStyleVersion
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseControl.LeftDock
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseControl.ParentForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseControl.RightDock
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseControl.TopDock
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseControl.Version
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOption.Assign
+@@TJvColors.Assign
 Summary
   Write here a summary (1 line)
 Description
@@ -607,7 +332,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOption.GrabbersSize
+@@TJvColors.Comment
 Summary
   Write here a summary (1 line)
 Description
@@ -616,29 +341,137 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOption.SetDockGrabbersSize_WithoutChangeSystemInfo
+@@TJvColors.Declaration
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvColors.FunctionCall
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvColors.Identifier
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvColors.Number
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvColors.PlainText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvColors.Preproc
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvColors.Reserved
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvColors.Statement
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvColors.Strings
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvColors.Symbol
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCompletionBase
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCompletionBase.CloseUp
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Value - Description for this parameter
+  Apply - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOption.SetDockSplitterWidth_WithoutChangeSystemInfo
+@@TJvCompletionBase.DoCompletion
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Value - Description for this parameter
+  AMode - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOption.SplitterWidth
+@@TJvCompletionBase.DropDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AMode      - Description for this parameter
+  ShowAlways - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCompletionBase.DropDownCount
 Summary
   Write here a summary (1 line)
 Description
@@ -647,21 +480,224 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOptionClass
-<TITLE TJvDockBasicConjoinServerOptionClass type>
+@@TJvCompletionBase.DropDownWidth
 Summary
-  Defines the metaclass for TJvDockBasicConjoinServerOption.
+  Write here a summary (1 line)
 Description
-  TJvDockBasicConjoinServerOptionClass is the metaclass for TJvDockBasicConjoinServerOption. Its value is the class reference for
-  TJvDockBasicConjoinServerOption or for one of its descendants.
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicServerOption
+@@TJvCompletionBase.Enabled
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCompletionBase.Interval
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCompletionBase.ItemHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCompletionBase.ItemIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCompletionBase.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCompletionBase.JvEditor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCompletionBase.ListBoxStyle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCompletionBase.Mode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCompletionBase.SelectItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCompletionBase.Visible
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicServerOption.Assign
+@@TJvControlScrollBar95.DoScroll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Msg - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.Handle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.Kind
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.LargeChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.Max
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.Min
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.OnScroll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.Page
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.Position
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.SetParams
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AMin      - Description for this parameter
+  AMax      - Description for this parameter
+  APosition - Description for this parameter
+  APage     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvControlScrollBar95.SmallChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.Assign
 Summary
   Write here a summary (1 line)
 Description
@@ -672,7 +708,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicServerOption.DockStyle
+@@TJvCustomEditorBase.AutoIndent
 Summary
   Write here a summary (1 line)
 Description
@@ -681,100 +717,163 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle
-Summary
-  Base class for docking styles.
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.AfterConstruction
+@@TJvCustomEditorBase.BackSpaceUnindents
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.CanSetBottomDocked
+@@TJvCustomEditorBase.BeepOnError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.BeginCompound
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.BeginUpdate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.BlockOverwrite
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.BookMarks
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.BorderStyle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.CalcCellRect
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ADockBaseControl - Description for this parameter
+  X - Description for this parameter
+  Y - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.CanSetEachOtherDocked
+@@TJvCustomEditorBase.CanCopy
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  ADockBaseControl - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.CanSetEnableDocked
+@@TJvCustomEditorBase.CanCut
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  ADockBaseControl - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.CanSetLeftDocked
+@@TJvCustomEditorBase.CanPaste
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  ADockBaseControl - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.CanSetRightDocked
+@@TJvCustomEditorBase.CanRedo
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  ADockBaseControl - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.CanSetTopDocked
+@@TJvCustomEditorBase.CanSelectAll
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  ADockBaseControl - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ConjoinPanelClass
+@@TJvCustomEditorBase.CanUndo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.CaretFromPos
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Pos - Description for this parameter
+  X   - Description for this parameter
+  Y   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.CaretX
 Summary
   Write here a summary (1 line)
 Description
@@ -783,7 +882,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ConjoinPanelTreeClass
+@@TJvCustomEditorBase.CaretY
 Summary
   Write here a summary (1 line)
 Description
@@ -792,7 +891,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ConjoinPanelZoneClass
+@@TJvCustomEditorBase.CellRect
 Summary
   Write here a summary (1 line)
 Description
@@ -801,7 +900,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ConjoinServerOption
+@@TJvCustomEditorBase.ClearSelection
 Summary
   Write here a summary (1 line)
 Description
@@ -810,7 +909,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ConjoinServerOptionClass
+@@TJvCustomEditorBase.ClipboardCopy
 Summary
   Write here a summary (1 line)
 Description
@@ -819,16 +918,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ControlName
-Summary
-  Returns a friendly name for the control.
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.Count
+@@TJvCustomEditorBase.ClipboardCut
 Summary
   Write here a summary (1 line)
 Description
@@ -837,7 +927,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.DockBaseControlList
+@@TJvCustomEditorBase.ClipboardPaste
 Summary
   Write here a summary (1 line)
 Description
@@ -846,7 +936,275 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.DockBaseControlLists
+@@TJvCustomEditorBase.Cols
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.Command
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACommand - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.Completion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.Compound
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.CursorBeyondEOF
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.DeleteSelected
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.DoubleClickLine
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.EditorClient
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.EndCompound
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.EndUpdate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.GetTextLen
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.GroupUndo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.Gutter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.GutterColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.GutterWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.HasSelection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.HideCaret
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.IndentColumns
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X    - Description for this parameter
+  BegY - Description for this parameter
+  EndY - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.IndentLines
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnIndent - Description for this parameter
+  BegY     - Description for this parameter
+  EndY     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.IndentSelLines
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UnIndent - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.InsertMode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.KeepTrailingBlanks
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.Keyboard
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.LastVisibleCol
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.LastVisibleRow
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.LeftCol
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.LineCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.LineInformations
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.LineLength
 Summary
   Write here a summary (1 line)
 Description
@@ -857,7 +1215,18 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.DockPanelClass
+@@TJvCustomEditorBase.MakeRowVisible
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ARow - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.Modified
 Summary
   Write here a summary (1 line)
 Description
@@ -866,7 +1235,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.DockPanelTreeClass
+@@TJvCustomEditorBase.OnChange
 Summary
   Write here a summary (1 line)
 Description
@@ -875,7 +1244,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.DockPanelZoneClass
+@@TJvCustomEditorBase.OnChangeStatus
 Summary
   Write here a summary (1 line)
 Description
@@ -884,7 +1253,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.DockSplitterClass
+@@TJvCustomEditorBase.OnCompletionDrawItem
 Summary
   Write here a summary (1 line)
 Description
@@ -893,9 +1262,495 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.GetControlName
+@@TJvCustomEditorBase.OnCompletionIdentifier
 Summary
-  Returns a user friendly control name.
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.OnCompletionMeasureItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.OnCompletionTemplate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.OnDblClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.OnGutterClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.OnGutterDblClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.OnPaintGutter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Canvas - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.OnResize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.OnScroll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.OnSelectionChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.PaintCaret
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  bShow - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.PersistentBlocks
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.PosFromCaret
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X - Description for this parameter
+  Y - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.PostCommand
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACommand - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.ReadOnly
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.Recording
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.Redo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.RightMargin
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.RightMarginColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.RightMarginVisible
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.Rows
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.ScrollBars
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.SelBackColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.SelBlockFormat
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.SelectAll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.SelectRange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  BegX - Description for this parameter
+  BegY - Description for this parameter
+  EndX - Description for this parameter
+  EndY - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.SelectWordOnCaret
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.SelForeColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.SelLength
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.SelStart
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.SetCaret
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X - Description for this parameter
+  Y - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.SetLeftTop
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ALeftCol - Description for this parameter
+  ATopRow  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.SmartTab
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.TabStops
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.TopRow
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.Undo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.UndoAfterSave
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.UndoBuffer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.UnIndentColumns
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X    - Description for this parameter
+  BegY - Description for this parameter
+  EndY - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.UpdateLock
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.UseFixedPopup
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.VisibleColCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEditorBase.VisibleRowCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEditKey
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvEditKey.Create2
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACommand - Description for this parameter
+  AKey1    - Description for this parameter
+  AShift1  - Description for this parameter
+  AKey2    - Description for this parameter
+  AShift2  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEditKey.Command
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEditKey.Key1
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEditKey.Key2
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEditKey.Shift1
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEditKey.Shift2
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEditorClient
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvEditorClient.BoundsRect
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
 Return value
@@ -904,33 +1759,16 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.GetDockFormVisible
+@@TJvEditorClient.Canvas
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  ADockClient - Description for this parameter
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.GetDockState
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  DockClient - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.GetDockStyleVersion
+@@TJvEditorClient.ClientHeight
 Summary
   Write here a summary (1 line)
 Description
@@ -941,120 +1779,207 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.HideDockForm
+@@TJvEditorClient.ClientRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEditorClient.ClientWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEditorClient.FJvEditor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEditorClient.GetCanvas
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEditorClient.Height
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEditorClient.Left
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEditorClient.Top
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEditorClient.Width
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvEndCompoundUndo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvGutter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvGutter.Invalidate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvGutter.Paint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvHighlighter
+<TITLE TJvHighlighter type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvHighlighter.hlNone
+  Description for hlNone
+@@TJvHighlighter.hlPascal
+  Description for hlPascal
+@@TJvHighlighter.hlCBuilder
+  Description for hlCBuilder
+@@TJvHighlighter.hlSql
+  Description for hlSql
+@@TJvHighlighter.hlPython
+  Description for hlPython
+@@TJvHighlighter.hlJava
+  Description for hlJava
+@@TJvHighlighter.hlVB
+  Description for hlVB
+@@TJvHighlighter.hlHtml
+  Description for hlHtml
+@@TJvHighlighter.hlPerl
+  Description for hlPerl
+@@TJvHighlighter.hlIni
+  Description for hlIni
+@@TJvHighlighter.hlCocoR
+  Description for hlCocoR
+@@TJvHighlighter.hlPhp
+  Description for hlPhp
+@@TJvHighlighter.hlNQC
+  Description for hlNQC
+@@TJvHighlighter.hlSyntaxHighlighter
+  Description for hlSyntaxHighlighter
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard.Add
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ADockClient - Description for this parameter
+  ACommand - Description for this parameter
+  AKey1    - Description for this parameter
+  AShift1  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ParentForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ResetCursor
+@@TJvKeyboard.Add2
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Source - Description for this parameter
+  ACommand - Description for this parameter
+  AKey1    - Description for this parameter
+  AShift1  - Description for this parameter
+  AKey2    - Description for this parameter
+  AShift2  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ResetDockControlConjoinOption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ResetDockControlTabOption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.RestoreClient
+@@TJvKeyboard.Add2Ctrl
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  DockClient - Description for this parameter
+  ACommand - Description for this parameter
+  AKey1    - Description for this parameter
+  AShift1  - Description for this parameter
+  AKey2    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ShowDockForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ADockClient - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.TabDockClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.TabServerOption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.TabServerOptionClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.Version
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicTabServerOption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicTabServerOption.Assign
+@@TJvKeyboard.Assign
 Summary
   Write here a summary (1 line)
 Description
@@ -1065,17 +1990,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicTabServerOption.HotTrack
-Summary
-  Specifies whether the <xxx> is highlighted when the mouse passes over it.
-Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font 
-  specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual 
-  feedback when the mouse passes over the <xxx>.
-See Also 
-  HotGlyph, HotTrackFont, OnMouseEnter, OnMouseLeave
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicTabServerOption.TabPosition
+@@TJvKeyboard.Clear
 Summary
   Write here a summary (1 line)
 Description
@@ -1084,25 +1999,370 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicTabServerOptionClass
-<TITLE TJvDockBasicTabServerOptionClass type>
+@@TJvKeyboard.Command
 Summary
-  Defines the metaclass for TJvDockBasicTabServerOption.
+  Write here a summary (1 line)
 Description
-  TJvDockBasicTabServerOptionClass is the metaclass for TJvDockBasicTabServerOption. Its value is the class reference for
-  TJvDockBasicTabServerOption or for one of its descendants.
+  Write here a description
+Parameters
+  AKey   - Description for this parameter
+  AShift - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockClient
-<TITLEIMG TJvDockClient>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
+@@TJvKeyboard.Command2
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AKey1   - Description for this parameter
+  AShift1 - Description for this parameter
+  AKey2   - Description for this parameter
+  AShift2 - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard.OnCommand2
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender  - Description for this parameter
+  Key1    - Description for this parameter
+  Shift1  - Description for this parameter
+  Key2    - Description for this parameter
+  Shift2  - Description for this parameter
+  Command - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard.Remove
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AKey1   - Description for this parameter
+  AShift1 - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard.Remove2
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AKey1   - Description for this parameter
+  AShift1 - Description for this parameter
+  AKey2   - Description for this parameter
+  AShift2 - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard.RemoveCtrl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACommand - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvKeyboard.SetDefLayout
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformation
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvDockClient.Assign
+@@TJvLineInformation.Data
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformation.Editor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformation.Line
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformation.SelectStyle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList.BreakpointColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList.BreakpointTextColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList.Count
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList.Data
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList.DebugPointColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList.DebugPointTextColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList.Editor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList.ErrorPointColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList.ErrorPointTextColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList.LineCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList.Lines
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineInformationList.SelectStyle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvLineSelectStyle
+<TITLE TJvLineSelectStyle type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvLineSelectStyle.lssUnselected
+  Description for lssUnselected
+@@TJvLineSelectStyle.lssBreakpoint
+  Description for lssBreakpoint
+@@TJvLineSelectStyle.lssDebugPoint
+  Description for lssDebugPoint
+@@TJvLineSelectStyle.lssErrorPoint
+  Description for lssErrorPoint
+----------------------------------------------------------------------------------------------------
+@@TJvSelBlockFormat
+<TITLE TJvSelBlockFormat type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvSelBlockFormat.bfInclusive
+  Description for bfInclusive
+@@TJvSelBlockFormat.bfLine
+  Description for bfLine
+@@TJvSelBlockFormat.bfColumn
+  Description for bfColumn
+@@TJvSelBlockFormat.bfNonInclusive
+  Description for bfNonInclusive
+----------------------------------------------------------------------------------------------------
+@@TJvSelectionRec
+<TITLE TJvSelectionRec type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvSelectionRec.IsSelected
+  Description for IsSelected
+@@TJvSelectionRec.Selecting
+  Description for Selecting
+@@TJvSelectionRec.SelBlockFormat
+  Description for SelBlockFormat
+@@TJvSelectionRec.SelBegX
+  Description for SelBegX
+@@TJvSelectionRec.SelBegY
+  Description for SelBegY
+@@TJvSelectionRec.SelEndX
+  Description for SelEndX
+@@TJvSelectionRec.SelEndY
+  Description for SelEndY
+@@TJvSelectionRec.SelStartX
+  Description for SelStartX
+@@TJvSelectionRec.SelStartY
+  Description for SelStartY
+@@TJvSelectionRec.SelLineOrgBegX
+  Description for SelLineOrgBegX
+@@TJvSelectionRec.SelLineOrgEndX
+  Description for SelLineOrgEndX
+----------------------------------------------------------------------------------------------------
+@@TJvSelectUndo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvSelectUndo.Undo
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvSymbolColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvSymbolColor.Assign
 Summary
   Write here a summary (1 line)
 Description
@@ -1113,7 +2373,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockClient.CanFloat
+@@TJvSymbolColor.BackColor
 Summary
   Write here a summary (1 line)
 Description
@@ -1122,571 +2382,126 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockClient.CreateConjoinHostAndDockControl
+@@TJvSymbolColor.ForeColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvSymbolColor.SetColor
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Control1 - Description for this parameter
-  Control2 - Description for this parameter
-  DockType - Description for this parameter
+  ForeColor - Description for this parameter
+  BackColor - Description for this parameter
+  Style     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvSymbolColor.Style
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvUndo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvUndo.JvEditor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvUndo.Redo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvUndo.RestoreSelection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvUndo.SaveSelection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvUndo.Undo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvUndoBuffer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvUndoBuffer.Add
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AUndo - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvUndoBuffer.CanUndo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockClient.CreateConjoinPanelClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ConjoinHost - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.CreateTabDockClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  TabHost - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.CreateTabHostAndDockControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control1 - Description for this parameter
-  Control2 - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.CurrentDockSite
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.DirectDrag
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.DockLevel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.DockState
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.DoFormShowHint
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  HTFlag  - Description for this parameter
-  HintStr - Description for this parameter
-  CanShow - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.DoNCButtonDblClk
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Message      - Description for this parameter
-  Button       - Description for this parameter
-  MouseStation - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.DoNCButtonDown
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Message      - Description for this parameter
-  Button       - Description for this parameter
-  MouseStation - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.DoNCButtonUp
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Message      - Description for this parameter
-  Button       - Description for this parameter
-  MouseStation - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.DoNCMouseMove
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Message      - Description for this parameter
-  MouseStation - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.DoPaintDockGrabber
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas  - Description for this parameter
-  Control - Description for this parameter
-  ARect   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.DoPaintDockSplitter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas  - Description for this parameter
-  Control - Description for this parameter
-  ARect   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.EnableCloseButton
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.FormDockDrop
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Source - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.FormDockOver
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Source - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-  State  - Description for this parameter
-  Accept - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.FormEndDock
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Target - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.FormGetDockEdge
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Source    - Description for this parameter
-  MousePos  - Description for this parameter
-  DropAlign - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.FormGetSiteInfo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Source        - Description for this parameter
-  Client        - Description for this parameter
-  InfluenceRect - Description for this parameter
-  MousePos      - Description for this parameter
-  CanDock       - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.FormPositionDockRect
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.FormStartDock
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.FormUnDock
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  NewTarget - Description for this parameter
-  Client    - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.HideParentForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.LastDockSite
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.LRDockWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.MakeHideEvent
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.MakeShowEvent
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.NCPopupMenu
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.OnFormHide
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.OnFormShow
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.OnFormShowHint
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  HTFlag  - Description for this parameter
-  HintStr - Description for this parameter
-  CanShow - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.OnNCButtonDblClk
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.OnNCButtonDown
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.OnNCButtonUp
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.OnNCMouseMove
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  DockClient   - Description for this parameter
-  X            - Description for this parameter
-  Y            - Description for this parameter
-  HitTest      - Description for this parameter
-  MouseStation - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.OnPaintDockGrabber
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.OnPaintDockSplitter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.ParentVisible
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.RelativeServer
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.RestoreChild
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.ShowHint
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.ShowParentForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.TBDockHeight
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.UnDockLeft
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.UnDockTop
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockClient.VSPaneWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockConjoinHostForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDockConjoinHostForm.Panel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockConjoinPanel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDockConjoinPanel.DockClient
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockConjoinPanel.DockDrop
+@@TJvUndoBuffer.Clear
 Summary
   Write here a summary (1 line)
 Description
   This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Source - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockConjoinPanel.ParentForm
+@@TJvUndoBuffer.Delete
 Summary
   Write here a summary (1 line)
 Description
@@ -1695,40 +2510,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockConjoinPanelClass
-<TITLE TJvDockConjoinPanelClass type>
-Summary
-  Defines the metaclass for TJvDockConjoinPanel.
-Description
-  TJvDockConjoinPanelClass is the metaclass for TJvDockConjoinPanel. Its value is the class reference for
-  TJvDockConjoinPanel or for one of its descendants.
-----------------------------------------------------------------------------------------------------
-@@TJvDockFinishSetDockPanelSizeEvent
-<TITLE TJvDockFinishSetDockPanelSizeEvent type>
-<COMBINE TJvDockServer.OnFinishSetDockPanelSize>
-----------------------------------------------------------------------------------------------------
-@@TJvDockFormHintEvent
-<TITLE TJvDockFormHintEvent type>
-<COMBINE TJvDockClient.OnFormShowHint>
-----------------------------------------------------------------------------------------------------
-@@TJvDockGetClientAlignSizeEvent
-<TITLE TJvDockGetClientAlignSizeEvent type>
-<COMBINE TJvDockServer.OnGetClientAlignSize>
-----------------------------------------------------------------------------------------------------
-@@TJvDockGrabbersSize
-<TITLE TJvDockGrabbersSize type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = 1..MaxInt; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockMouseStation
-<TITLE TJvDockMouseStation type>
+@@TJvUndoBuffer.Redo
 Summary
   Write here a summary (1 line)
 Description
@@ -1736,623 +2518,126 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-@@TJvDockMouseStation.msFloat
-  Description for msFloat
-@@TJvDockMouseStation.msConjoin
-  Description for msConjoin
-@@TJvDockMouseStation.msTabPage
-  Description for msTabPage
 ----------------------------------------------------------------------------------------------------
-@@TJvDockNCButtonDblClkEvent
-<TITLE TJvDockNCButtonDblClkEvent type>
+@@TJvUndoBuffer.Undo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvUnselectUndo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TLineAttr
+<TITLE TLineAttr type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TLineAttr.FC
+  Description for FC
+@@TLineAttr.BC
+  Description for BC
+@@TLineAttr.Style
+  Description for Style
+----------------------------------------------------------------------------------------------------
+@@TLineAttrs
+<TITLE TLineAttrs type>
 Summary
   Write here a summary (1 line)
 Description
   You don't have to document already described items such as sets,
   pointers to records etc.
-(Value = TJvDockNCButtonEvent; - for reference)
+(Value = array [0..Max_X] of TLineAttr; - for reference)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockNCButtonDownEvent
-<TITLE TJvDockNCButtonDownEvent type>
+@@TLongTokenType
+<TITLE TLongTokenType type>
 Summary
   Write here a summary (1 line)
 Description
   You don't have to document already described items such as sets,
   pointers to records etc.
-(Value = TJvDockNCButtonEvent; - for reference)
+(Value = 0..255; - for reference)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockNCButtonEvent
-<TITLE TJvDockNCButtonEvent type>
+@@TMacro
+<TITLE TMacro type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = AnsiString; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TModifiedAction
+<TITLE TModifiedAction type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TModifiedAction.maAll
+  Description for maAll
+@@TModifiedAction.maInsert
+  Description for maInsert
+@@TModifiedAction.maDelete
+  Description for maDelete
+@@TModifiedAction.maInsertColumn
+  Description for maInsertColumn
+@@TModifiedAction.maDeleteColumn
+  Description for maDeleteColumn
+@@TModifiedAction.maReplace
+  Description for maReplace
+----------------------------------------------------------------------------------------------------
+@@TOnCompletion
+<TITLE TOnCompletion type>
 Summary
   Write here a summary (1 line)
 Description
   This type is used by (for reference):
-    Nothing in this unit.
+    TJvCustomEditorBase.OnCompletionIdentifier
+    TJvCustomEditorBase.OnCompletionTemplate
 Parameters
-  DockClient   - Description for this parameter
-  Button       - Description for this parameter
-  X            - Description for this parameter
-  Y            - Description for this parameter
-  HitTest      - Description for this parameter
-  MouseStation - Description for this parameter
+  Sender - Description for this parameter
+  Cancel - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockNCButtonUpEvent
-<TITLE TJvDockNCButtonUpEvent type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = TJvDockNCButtonEvent; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockNCMouseMoveEvent
-<TITLE TJvDockNCMouseMoveEvent type>
-<COMBINE TJvDockClient.OnNCMouseMove>
-----------------------------------------------------------------------------------------------------
-@@TJvDockPaintDockEvent
-<TITLE TJvDockPaintDockEvent type>
+@@TOnGutterClick
+<TITLE TOnGutterClick type>
 Summary
   Write here a summary (1 line)
 Description
   This type is used by (for reference):
-    Nothing in this unit.
+    TJvCustomEditorBase.OnGutterClick
+    TJvCustomEditorBase.OnGutterDblClick
 Parameters
-  Canvas  - Description for this parameter
-  Control - Description for this parameter
-  ARect   - Description for this parameter
+  Sender - Description for this parameter
+  Line   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockPaintDockGrabberEvent
-<TITLE TJvDockPaintDockGrabberEvent type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = TJvDockPaintDockEvent; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockPaintDockSplitterEvent
-<TITLE TJvDockPaintDockSplitterEvent type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = TJvDockPaintDockEvent; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockPanel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDockPanel.DockDrop
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Source - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockPanel.DockServer
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockPanel.PanelIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockPanel.ResetPosition
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockPanel.ShowDockPanel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  MakeVisible   - Description for this parameter
-  Client        - Description for this parameter
-  PanelSizeFrom - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockPanelClass
-<TITLE TJvDockPanelClass type>
-Summary
-  Defines the metaclass for TJvDockPanel.
-Description
-  TJvDockPanelClass is the metaclass for TJvDockPanel. Its value is the class reference for
-  TJvDockPanel or for one of its descendants.
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer
-<TITLEIMG TJvDockServer>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.BottomDockPanel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.BottomSplitter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.BottomSplitterStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.DockPanel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.DockPanelWithAlign
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.DockSplitter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.DockSplitterWithAlign
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.GetClientAlignControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Align - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.LeftDockPanel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.LeftSplitter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.LeftSplitterStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.OnFinishSetDockPanelSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  DockPanel - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.OnGetClientAlignSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Align - Description for this parameter
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.RightDockPanel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.RightSplitter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.RightSplitterStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.TopDockPanel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.TopSplitter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.TopSplitterStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockServer.Version
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockSetDockPanelSizeFrom
-<TITLE TJvDockSetDockPanelSizeFrom type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-@@TJvDockSetDockPanelSizeFrom.sdfDockPanel
-  Description for sdfDockPanel
-@@TJvDockSetDockPanelSizeFrom.sdfClient
-  Description for sdfClient
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitter.DockServer
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitter.SplitterIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterClass
-<TITLE TJvDockSplitterClass type>
-Summary
-  Defines the metaclass for TJvDockSplitter.
-Description
-  TJvDockSplitterClass is the metaclass for TJvDockSplitter. Its value is the class reference for
-  TJvDockSplitter or for one of its descendants.
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterSize
-<TITLE TJvDockSplitterSize type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = 0..32767; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterStyle.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterStyle.Color
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterStyle.Cursor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterStyle.MinSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterStyle.ParentColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterStyle.ResizeStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterStyle.Size
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterStyle.Splitter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterWidth
-<TITLE TJvDockSplitterWidth type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = 1..MaxInt; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockTabClass
-<TITLE TJvDockTabClass type>
-Summary
-  Defines the metaclass for TJvDockTabPageControl.
-Description
-  TJvDockTabClass is the metaclass for TJvDockTabPageControl. Its value is the class reference for
-  TJvDockTabPageControl or for one of its descendants.
-----------------------------------------------------------------------------------------------------
-@@TJvDockTabHostForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDockTabHostForm.GetActiveDockForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockTabHostForm.PageControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockTabPageControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDockTabPageControl.DockClient
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockTabPageControl.DockDrop
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Source - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockTabPageControl.LoadFromStream
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Stream - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockTabPageControl.ParentForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDockTabPageControl.SaveToStream
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Stream - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TOnPaintGutter
+<TITLE TOnPaintGutter type>
+<COMBINE TJvCustomEditorBase.OnPaintGutter>
