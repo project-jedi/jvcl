@@ -23,6 +23,8 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+unit JvExcptDlg;
+
 {$I JVCL.INC}
 
 {$IFDEF COMPILER6_UP}
@@ -32,9 +34,6 @@ Known Issues:
 {$IFDEF LINUX}
 This unit is only supported on Windows!
 {$ENDIF}
-
-unit JvExcptDlg;
-
 
 interface
 
