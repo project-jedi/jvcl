@@ -17,6 +17,31 @@ All Rights Reserved.
 
 Contributor(s):
   Jens Fudickar
+  Hofi
+
+Last Modified: 2004-10-11
+
+Changes:
+2004-10-11:      by Hofi
+  * Changed
+      in class
+        TJvAppRegistryStorage
+          Root can be set to 'Software\%COMPANY_NAME%\%APPL_NAME%' by default
+            via UseOldDefaultRoot property, just like earlier in the original
+            RX TFormStorage version. (see below what %APPL_NAME% and %COMPANY_NAME% is)
+            You can use
+              - '%NONE%' to sign an empty Root
+                (design time empty value or spaces automatically converted)
+              - '%APPL_NAME%' to sign in Root a new path element equal to Application name
+              - '%COMPANY_NAME%' to sign in Root a new path element equal to DefCompanyName
+          Create(AOwner: TComponent);
+  * Added
+      to class
+        TJvAppRegistryStorage
+          property UseOldDefaultRoot:
+          procedure Loaded; override;
+          procedure SetRoot(const Value: string);
+          procedure SetUseOldDefaultRoot(Value: Boolean);
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -33,16 +58,21 @@ unit JvAppRegistryStorage;
 interface
 
 uses
-  Windows, Classes,
-  JvAppStorage, JvTypes;
+  Windows, Classes, Forms,
+  JvAppStorage, JvTypes, JvJVCLUtils;
 
 type
   TJvAppRegistryStorage = class(TJvCustomAppStorage)
   private
     FRegHKEY: HKEY;
+    FUseOldDefaultRoot: Boolean;
   protected
+    procedure Loaded; override;
+
     function GetRegRoot: TJvRegKey;
     procedure SetRegRoot(Value: TJvRegKey);
+    procedure SetRoot(const Value: string);
+    procedure SetUseOldDefaultRoot(Value: Boolean);
 
     { Create the registry key path if it doesn't exist yet. Any key in the path that doesn't exist
       is created. }
@@ -73,8 +103,9 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property RegRoot: TJvRegKey read GetRegRoot write SetRegRoot default hkCurrentUser;
-    property Root;
+    property Root read GetRoot write SetRoot;
     property SubStorages;
+    property UseOldDefaultRoot: Boolean read FUseOldDefaultRoot write SetUseOldDefaultRoot stored True default False ;
   end;
 
 implementation
@@ -84,11 +115,16 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils,
-  JclRegistry, JclResources,
+  JclRegistry, JclResources, JclStrings,
   JvConsts, JvResources;
 
 const
   cCount = 'Count';
+  cSoftwareKey = 'Software';
+  cNoRootMask = '%NONE%';
+  cAppNameMask = '%APPL_NAME%';
+  cCompanyNameMask = '%COMPANY_NAME%';
+  cOldDefaultRootMask =  cSoftwareKey + '\' + cCompanyNameMask + '\' + cAppNameMask;
 
 { (rom) disabled unused
 const
@@ -110,6 +146,57 @@ constructor TJvAppRegistryStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FRegHKEY := HKEY_CURRENT_USER;
+  FUseOldDefaultRoot := False;
+end;
+
+procedure TJvAppRegistryStorage.SetRoot(const Value: string);
+var
+  S : string;
+  AppName : string;
+begin
+  inherited SetRoot(Value);
+  if (csDesigning in ComponentState) then
+  begin   { design time }
+    if Value <> cOldDefaultRootMask then
+      FUseOldDefaultRoot := False;
+    if (Length(GetRoot) = 0) then
+      SetRoot(cNoRootMask);
+  end
+  else    { NOt design time }
+  begin
+    { this makes GetDefaultIniRegKey unnecessery ?!?! }
+    if GetRoot = cNoRootMask then
+      SetRoot('')
+    else
+      if StrFind( cAppNameMask, GetRoot) <> 0 then
+      begin
+        AppName := ExtractFileName(ChangeFileExt(Application.ExeName, ''));
+        S := GetRoot;
+        StrReplace( S, cAppNameMask, AppName, [rfIgnoreCase]);
+        SetRoot(S);
+      end
+      else
+        if StrFind( cCompanyNameMask, GetRoot) <> 0 then
+        begin
+          S := GetRoot;
+          StrReplace( S, cCompanyNameMask, DefCompanyName, [rfIgnoreCase]);
+          SetRoot(S);
+        end;
+  end;
+end;
+
+procedure TJvAppRegistryStorage.Loaded;
+begin
+  inherited Loaded;
+  SetUseOldDefaultRoot(UseOldDefaultRoot);
+  SetRoot(GetRoot);
+end;
+
+procedure TJvAppRegistryStorage.SetUseOldDefaultRoot(Value: Boolean);
+begin
+  FUseOldDefaultRoot := Value;
+  if FUseOldDefaultRoot then
+    SetRoot(cOldDefaultRootMask);
 end;
 
 function TJvAppRegistryStorage.GetRegRoot: TJvRegKey;

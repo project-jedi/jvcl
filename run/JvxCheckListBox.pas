@@ -24,6 +24,12 @@ Changes:
 2003-10-19:
   * Moved TJvxCustomListBox and TJvxCheckListBox from JvxCtrls to this unit
 
+2004-10-07:
+  * Changed by hofi
+    TJvxCheckListBox
+      procedure DrawCheck(R: TRect; AState: TCheckBoxState; Enabled: Boolean);
+        now protected to support possible call from derived classes.
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -170,7 +176,6 @@ type
     FOnStateChange: TChangeStateEvent;
     procedure ResetItemHeight;
     function GetItemHeight: Integer; override;
-    procedure DrawCheck(R: TRect; AState: TCheckBoxState; Enabled: Boolean);
     procedure SetCheckKind(Value: TCheckKind);
     procedure SetChecked(Index: Integer; AChecked: Boolean);
     function GetChecked(Index: Integer): Boolean;
@@ -209,6 +214,7 @@ type
     procedure SetItemData(Index: Integer; AData: Longint); override;
     procedure KeyPress(var Key: Char); override;
     procedure Loaded; override;
+    procedure DrawCheck(R: TRect; AState: TCheckBoxState; Enabled: Boolean);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure ResetContent; override;

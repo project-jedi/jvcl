@@ -67,6 +67,8 @@ type
     property MinTrackWidth: Integer index 7 read GetMinMaxInfo write SetMinMaxInfo default 0;
   end;
 
+  TJvFormPlacementVersionCheck = (fpvcNocheck, fpvcCheckGreaterEqual, fpvcCheckEqual);
+
   TJvFormPlacement = class(TJvComponent)
   private
     FActive: Boolean;
@@ -75,6 +77,7 @@ type
     FLinks: TList;
     FOptions: TPlacementOptions;
     FVersion: Integer;
+    FVersionCheck: TJvFormPlacementVersionCheck;
     FSaved: Boolean;
     FRestored: Boolean;
     FDestroying: Boolean;
@@ -152,6 +155,7 @@ type
     property Options: TPlacementOptions read FOptions write FOptions default [fpState, fpSize, fpLocation];
     property PreventResize: Boolean read FPreventResize write SetPreventResize default False;
     property Version: Integer read FVersion write FVersion default 0;
+    property VersionCheck: TJvFormPlacementVersionCheck read FVersionCheck write FVersionCheck default fpvcCheckGreaterEqual;
     property OnSavePlacement: TNotifyEvent read FOnSavePlacement write FOnSavePlacement;
     property OnRestorePlacement: TNotifyEvent read FOnRestorePlacement write FOnRestorePlacement;
   end;
@@ -296,6 +300,8 @@ begin
   FWinMinMaxInfo := TJvWinMinMaxInfo.Create;
   FWinMinMaxInfo.FOwner := Self;
   FLinks := TList.Create;
+  FVersion := 0;
+  FVersionCheck := fpvcCheckGreaterEqual;
 end;
 
 destructor TJvFormPlacement.Destroy;
@@ -813,22 +819,38 @@ end;
 procedure TJvFormPlacement.RestoreFormPlacement;
 var
   ActiveCtl: TComponent;
+  readVersion: Integer;
+  ContinueRestore : Boolean;
 begin
-  FSaved := False;
-  if Assigned(AppStorage) and (ReadInteger(siVersion, 0) >= FVersion) then
+  if Assigned(AppStorage) then
   begin
-    RestorePlacement;
-    FRestored := True;
-    Restore;
-    if (fpActiveControl in Options) and (Owner is TCustomForm) then
+    FSaved := False;
+    readVersion := ReadInteger(siVersion, 0);
+    if AppStorage.PathExists(AppStoragePath) then
+      Case VersionCheck of
+        fpvcNocheck : ContinueRestore := True;
+        fpvcCheckGreaterEqual : ContinueRestore := readVersion >= FVersion;
+        fpvcCheckEqual : ContinueRestore := readVersion = FVersion;
+      else
+        ContinueRestore := False;
+      end
+    else
+      ContinueRestore := False;
+    if ContinueRestore then
     begin
-      ActiveCtl := Form.FindComponent(AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, siActiveCtrl]), ''));
-      if (ActiveCtl <> nil) and (ActiveCtl is TWinControl) and
-        TWinControl(ActiveCtl).CanFocus then
-        Form.ActiveControl := TWinControl(ActiveCtl);
+      RestorePlacement;             
+      FRestored := True;
+      Restore;
+      if (fpActiveControl in Options) and (Owner is TCustomForm) then
+      begin
+        ActiveCtl := Form.FindComponent(AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, siActiveCtrl]), ''));
+        if (ActiveCtl <> nil) and (ActiveCtl is TWinControl) and
+          TWinControl(ActiveCtl).CanFocus then
+          Form.ActiveControl := TWinControl(ActiveCtl);
+      end;
     end;
+    FRestored := True;
   end;
-  FRestored := True;
   UpdatePlacement;
 end;
 
@@ -1026,12 +1048,11 @@ begin
   try
     AppStoragePath := ConcatPaths ([Self.AppStoragePath, StoredPropsPath]);
     AppStorage := Self.AppStorage;
-    if AppStorage.PathExists(AppStoragePath) then
-      try
-        LoadObjectsProps(Owner, FStoredProps);
-      except
-        { ignore any exceptions }
-      end;
+    try
+      LoadObjectsProps(Owner, FStoredProps);
+    except
+      { ignore any exceptions }
+    end;
   finally
     Free;
   end;
