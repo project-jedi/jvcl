@@ -167,7 +167,7 @@ FiltEdit,
   JvChangeNotify, JvEnterTab, JvFindFiles,
   JvFileInfo, JvItemsPanel, JvDsgnEditors, JvCntScr, JvCmdEdit,
   JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBarEditor, JvSHFmt,
-  JvInspector, JvHidControllerClass, JvAnalogClock, JvRadioCtl;
+  JvInspector, JvHidControllerClass, JvAnalogClock, JvRadioCtl, JvDSADialogs;
 
 {******************************************************************************}
 
@@ -421,7 +421,8 @@ begin
       TJvDiskPrompt,
       TJvCopyError,
       TJvDeleteError,
-      TJvRenameError
+      TJvRenameError,
+      TJvDSADialog 
       ]);
 
   // Jv Internet

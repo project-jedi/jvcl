@@ -416,6 +416,6 @@ contains
   JvBaseThumbnail in '..\Source\JvBaseThumbnail.pas',
   JvThumbnails in '..\Source\JvThumbnails.pas',
   JvThumbViews in '..\Source\JvThumbViews.pas',
-  JvMovableBevel in '..\Source\JvMovableBevel.pas';
-
+  JvMovableBevel in '..\Source\JvMovableBevel.pas',
+  JvDSADialogs in '..\Source\JvDSADialogs.pas';
 end.
