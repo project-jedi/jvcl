@@ -33,7 +33,7 @@ uses
   Windows, Graphics;
 {$ENDIF}
 {$IFDEF COMPLIB_CLX}
-  QGraphics;
+  Qt, QGraphics;
 {$ENDIF}
 
 type
@@ -227,11 +227,18 @@ function TUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TExtTextOutOptions; R
 begin
 {$IFDEF MSWINDOWS}
   Changing;
-  Result := Windows.ExtTextOut(Handle, X, Y, ExtTextOutOptionsToInt(Options),
+  Result := Windows.ExtTextOut(
+  {$IFDEF COMPLIB_VCL}
+    Handle,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+    QPainter_device(Handle)
+  {$ENDIF}
+    X, Y, ExtTextOutOptionsToInt(Options),
     Rect, PChar(Text), Length(Text), lpDx);
   Changed;
 {$ELSE}
-  Result := ExtTextOutW(X, Y; Options, Rect, WideString(Text), lpDx);
+  Result := ExtTextOutW(X, Y, Options, Rect, WideString(Text), lpDx);
 {$ENDIF}
 end;
 
