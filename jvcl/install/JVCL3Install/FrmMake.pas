@@ -81,11 +81,6 @@ uses
 
 {$R *.dfm}
 
-{const
-  JclDccOptions =   // -LN, -LE are not possible because they are overwritten
-    '-I"' + JclIncludePaths + '" ' +    // see BuildHelpers
-    '-U"' + JclUnitPaths + '"';}
-
 function Has(Text: string; const Values: array of string): Boolean;
 var
   i: Integer;
@@ -144,9 +139,9 @@ begin
   FormMake.BtnAbort.Caption := '&Close';
   if not FError then
   begin
-    FormMake.LblTarget.Caption := 'JVCL 3 package installation';
+    FormMake.LblTarget.Caption := 'JVCL3 package installation';
     FormMake.LblAction.Caption := 'Finished.';
-    MessageDlg('JVCL 3 packages were successfully installed.', mtInformation, [mbOk], 0);
+    MessageDlg('JVCL3 packages were successfully installed.', mtInformation, [mbOk], 0);
   end
   else if Aborted then
   begin
@@ -327,7 +322,10 @@ begin
       Build + '-f"' + ChangeFileExt(BpgFilename, '.mak') + '"', StartDir,
       CaptureLine) = 0;
     if FTarget.IsBCB then
+    begin
       MoveBCBFiles(LibOutDir, FTarget); // move .lib, .bpi to DcpDir, .bpl to BplDir and deletes .tds
+      MoveHPPFiles(SourcePaths, StartDir + '\xyz', FTarget);
+    end;
   finally
     SetEnvironmentVariable('DCCOPT', nil);
     SetEnvironmentVariable('DCC32', nil);
@@ -400,8 +398,8 @@ begin
       JclLibDir + '\' + FTarget.JclDirName,
       JCLPackageDir + '\' + FTarget.JclDirName,
       True);
-{    if Result then
-      FTarget.RegistryJclInstall;}
+    if Result then
+      FTarget.JclRegistryInstall;
   end;
 
   if Result then

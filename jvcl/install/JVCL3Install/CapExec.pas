@@ -99,7 +99,6 @@ var
 
 begin
   Result := -2;
-//  AllocConsole;
   if not Assigned(CaptureLine) then
     Exit;
 
@@ -118,7 +117,7 @@ begin
     Exit;
   try
     StartupInfo.wShowWindow := SW_HIDE;
-    StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
+    StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);;
     StartupInfo.hStdOutput := hWrite;
     StartupInfo.hStdError := StartupInfo.hStdOutput; // redirect
     StartupInfo.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;

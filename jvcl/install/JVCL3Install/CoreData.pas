@@ -83,6 +83,7 @@ type
     function GetIsBCB: Boolean;
     function GetIsDelphi: Boolean;
     function GetJVCLDirName: string;
+    procedure AddRemoveJCLPaths(Add: Boolean);
   protected
     procedure ClearPalette(reg: TRegistry; const Name: string);
     procedure DoClearJVCLPalette;
@@ -98,6 +99,8 @@ type
     procedure RegistryInstall;
     procedure RegistryUninstall;
     procedure UninstallOldJVCL;
+
+    procedure JclRegistryInstall;
 
     function ExpandDirMacros(const Path: string): string;
     function IsTargetFor(const Targets: string): Boolean;
@@ -284,6 +287,14 @@ const
   );
   cJVCLDirBrowseList: array[0..1] of PChar = (
     '$(JVCL)\run', '$(JVCL)\design'
+  );
+
+  cJCLDirList: array[0..0] of PChar = (
+    '$(JCL)\lib\xx\obj' // xx is replaced
+  );
+  cJCLDirBrowseList: array[0..3] of PChar = (
+    '$(JCL)\source\common', '$(JCL)\source\vcl', '$(JCL)\source\visclx',
+    '$(JCL)\source\windows'
   );
 
 function GetPackageGroupDir(Target: TTargetInfo): string;
@@ -722,6 +733,62 @@ begin
   end;
 end;
 
+procedure TTargetInfo.AddRemoveJCLPaths(Add: Boolean);
+var
+  reg: TRegistry;
+  S, Paths: string;
+  i: Integer;
+  JCLDirList: array of string;
+begin
+  if JCLDir = '' then Exit;
+
+  reg := TRegistry.Create;
+  try
+    reg.RootKey := HKEY_CURRENT_USER;
+    if reg.OpenKey(FRegKey + '\Library', True) then
+    begin
+
+      if reg.ValueExists('Search Path') then
+        Paths := reg.ReadString('Search Path');
+
+      SetLength(JCLDirList, Length(cJCLDirList));
+      for i := 0 to High(JCLDirList) do
+        JCLDirList[i] := ExpandDirMacros(cJCLDirList[i]);
+      JCLDirList[0] := ExpandDirMacros('$(JCL)\lib\' + JclDirName + '\obj');
+
+      S := AddRemovePaths(Paths, JCLDirList, Add);
+      if S <> Paths then
+      {$ifndef DoNotTouchRegistry}
+        reg.WriteString('Search Path', S);
+      {$else}
+        OutputDebugString(PChar('reg.WriteString(''Search Path'', ''' + S + ''')'));
+      {$endif}
+
+     // ------
+
+      if reg.ValueExists('Browsing Path') then
+        Paths := reg.ReadString('Browsing Path');
+
+      SetLength(JCLDirList, Length(cJCLDirBrowseList));
+      for i := 0 to High(JCLDirList) do
+        JCLDirList[i] := ExpandDirMacros(cJCLDirBrowseList[i]);
+
+      S := AddRemovePaths(Paths, JCLDirList, Add);
+      if S <> Paths then
+      {$ifndef DoNotTouchRegistry}
+        reg.WriteString('Browsing Path', S);
+      {$else}
+        OutputDebugString(PChar('reg.WriteString(''Browsing Path'', ''' + S + ''')'));
+      {$endif}
+
+      reg.CloseKey;
+    end;
+
+  finally
+    reg.Free;
+  end;
+end;
+
 function TTargetInfo.ExpandDirMacros(const Path: string): string;
 var
   i, EndPs: Integer;
@@ -743,7 +810,9 @@ begin
         NewS := FRootDir
 
       else if S = 'jvcl' then // used internally
-        NewS := JVCLDir;
+        NewS := JVCLDir
+      else if S = 'jcl' then  // used internally
+        NewS := JCLDir;
 
       if NewS <> S then
       begin
@@ -835,6 +904,12 @@ begin
  // do not call ReadData here
 end;
 
+procedure TTargetInfo.JclRegistryInstall;
+begin
+  if JCLDir <> '' then
+    AddRemoveJCLPaths(True);
+end;
+
 function TTargetInfo.GetJclDirName: string;
 begin
   if IsDelphi then
@@ -852,7 +927,7 @@ procedure TTargetInfo.ReadData;
 var
   reg: TRegistry;
   i: Integer;
-  JclFileName: string;
+  JclFileName, JclFileNameNoVer: string;
 begin
   reg := TRegistry.Create;
   try
@@ -910,8 +985,12 @@ begin
     JclFileName := 'DJcl' + IntToStr(MajorVersion) + '0'
   else
     JclFileName := 'CJcl' + IntToStr(MajorVersion) + '0';
+  JclFileNameNoVer := Copy(JclFileName, 1, Length(JclFileName) - 2);
   FIsJCLInstalled := (FileExists(FBplDir + '\' + JclFileName + '.bpl')) and
-                     (FileExists(FBplDir + '\' + JclFileName + '.dcp'));
+                     (FileExists(FBplDir + '\' + JclFileName + '.dcp') or
+                      FileExists(FBplDir + '\' + JclFileNameNoVer + '.dcp') or
+                      FileExists(FDcpDir + '\' + JclFileName + '.dcp') or
+                      FileExists(FDcpDir + '\' + JclFileNameNoVer + '.dcp') );
 
  // Jcl is not installed and we have a JCL directory
   FInstallJcl := ((not IsJCLInstalled) or (IsOldJVCLInstalled <> 0))

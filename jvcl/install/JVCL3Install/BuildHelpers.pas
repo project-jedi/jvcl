@@ -94,6 +94,7 @@ function PrepareDcpBpg(const MakeFilename: string; Files: TStrings;
   Target: TTargetInfo; IsJcl: Boolean): TPrepareBpgData;
 procedure CreateDelphiPackageForBCB(Package: TPackageInfo; Files: TStrings; IsJcl: Boolean);
 procedure MoveBCBFiles(const Dir: string; Target: TTargetInfo);
+procedure MoveHPPFiles(const Paths, StartDir: string; Target: TTargetInfo);
 
 const
   JclIncludePaths = '..\..\source\common';
@@ -131,6 +132,40 @@ begin
       if Dir[i] = '\' then
         Result := Result + '\..';
   end;
+end;
+
+function CutFirstDir(var Dir: string): string;
+var ps: Integer;
+begin
+  ps := Pos('\', Dir);
+  if ps = 0 then
+  begin
+    Result := Dir;
+    Dir := '';
+  end
+  else
+  begin
+    Result := Copy(Dir, 1, ps - 1);
+    Delete(Dir, 1, ps);
+  end;
+end;
+
+function GetAbsoluteDir(StartDir, RelDir: string): string;
+var FirstDir: string;
+begin
+  while RelDir <> '' do
+  begin
+    FirstDir := CutFirstDir(RelDir);
+    if FirstDir = '..' then
+      StartDir := ExtractFileDir(StartDir)
+    else if FirstDir = '.' then
+    begin
+      // do nothing
+    end
+    else
+      StartDir := StartDir + '\' + FirstDir;
+  end;
+  Result := StartDir;
 end;
 
 function StrEqualText(Text: PChar; SearchText: PChar; MaxLen: Integer;
@@ -199,7 +234,7 @@ begin
       end; 
 
       if not ReplaceAll then Break; 
-    end; 
+    end;
   end; 
 
   Index := LenText + 1;
@@ -552,6 +587,41 @@ begin
     until FindNext(sr) <> 0;
   finally
     FindClose(sr);
+  end;
+end;
+
+procedure MoveHPPFiles(const Paths, StartDir: string; Target: TTargetInfo);
+var
+  sr: TSearchRec;
+  DestDir, Dir: string;
+  List: TStrings;
+  i: Integer;
+begin
+  DestDir := Target.RootDir + '\Include\Vcl';
+  if not DirectoryExists(DestDir) then
+    Exit;
+
+  List := TStringList.Create;
+  try
+    SplitPaths(Paths, List);
+
+    for i := 0 to List.Count - 1 do
+    begin
+      Dir := GetAbsoluteDir(StartDir, List[i]);
+      if DirectoryExists(Dir) then
+      begin
+        if FindFirst(Dir + '\*.hpp', faAnyFile and not faDirectory, sr) = 0 then
+        try
+          repeat
+            MoveFile(Dir + '\' + sr.Name, DestDir + '\' + sr.Name)
+          until FindNext(sr) <> 0;
+        finally
+          FindClose(sr);
+        end;
+      end;
+    end;
+  finally
+    List.Free;
   end;
 end;
 
