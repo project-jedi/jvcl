@@ -319,7 +319,7 @@ end;
 
 procedure TfrmProgress.Action1Execute(Sender: TObject);
 begin
-  if FCanClose then Close;
+  if FCanClose then DoCancel;
 end;
 
 end.
