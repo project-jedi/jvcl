@@ -2624,13 +2624,13 @@ end;
 procedure RaiseWin32Error(ErrorCode: DWORD);
 {$IFDEF COMPILER3_UP}
 var
-  Error: {$IFDEF Delphi6_Up}EOSError{$ELSE}EWin32Error{$ENDIF};
+  Error: {$IFDEF COMPILER6_UP}EOSError{$ELSE}EWin32Error{$ENDIF};
 {$ENDIF}
 begin
   if ErrorCode <> ERROR_SUCCESS then begin
 {$IFDEF COMPILER3_UP}
-    Error := {$IFDEF Delphi6_Up}EOSError{$ELSE}EWin32Error{$ENDIF}.CreateFmt(
-      {$IFDEF Delphi6_Up}SOSError{$ELSE}SWin32Error{$ENDIF}, [ErrorCode,
+    Error := {$IFDEF COMPILER6_UP}EOSError{$ELSE}EWin32Error{$ENDIF}.CreateFmt(
+      {$IFDEF COMPILER6_UP}SOSError{$ELSE}SWin32Error{$ENDIF}, [ErrorCode,
       SysErrorMessage(ErrorCode)]);
     Error.ErrorCode := ErrorCode;
     raise Error;

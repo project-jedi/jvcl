@@ -32,7 +32,7 @@ unit JvChNtfyProperty;
 
 interface
 uses
-  SysUtils,{$IFDEF Delphi6_UP}DesignEditors,DesignIntf{$ELSE}DsgnIntf{$ENDIF};
+  SysUtils,{$IFDEF COMPILER6_UP}DesignEditors,DesignIntf{$ELSE}DsgnIntf{$ENDIF};
 
 type
 

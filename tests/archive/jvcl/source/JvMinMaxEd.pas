@@ -32,7 +32,7 @@ interface
 uses SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
   Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
   Buttons, Mask, JvCurrEdit, JvVCLUtils, JvPlacemnt,
- {$IFDEF Delphi6_Up}RTLConsts,DesignIntf, VCLEditors, DesignEditors,{$ELSE}DsgnIntf,{$ENDIF}
+ {$IFDEF COMPILER6_UP}RTLConsts,DesignIntf, VCLEditors, DesignEditors,{$ELSE}DsgnIntf,{$ENDIF}
   Consts;
 
 type

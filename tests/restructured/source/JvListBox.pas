@@ -147,12 +147,12 @@ type
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
     function DeleteExactString(Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
-    procedure SelectAll; {$IFDEF DELPHI6_UP}override;{$ENDIF}
+    procedure SelectAll; {$IFDEF COMPILER6_UP}override;{$ENDIF}
     procedure UnselectAll;
     procedure InvertSelection;
     procedure MoveSelectedUp; virtual;
     procedure MoveSelectedDown; virtual;
-    procedure DeleteSelected; {$IFDEF DELPHI6_UP}override;{$ENDIF}
+    procedure DeleteSelected; {$IFDEF COMPILER6_UP}override;{$ENDIF}
     procedure DeleteAllButSelected;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;

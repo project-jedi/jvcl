@@ -175,7 +175,7 @@ begin
   if FWindowHandle <> 0 then begin
 {$ENDIF}
     KillTimer(FWindowHandle, 1);
-    {$IFDEF Delphi6_Up}Classes.{$ENDIF}DeallocateHWnd(FWindowHandle);
+    {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FWindowHandle);
 {$IFDEF WIN32}
   end;
 {$ENDIF}
@@ -201,7 +201,7 @@ begin
   if FThreaded then begin
     if FWindowHandle <> 0 then begin
       KillTimer(FWindowHandle, 1);
-       {$IFDEF Delphi6_Up}Classes.{$ENDIF}DeallocateHWnd(FWindowHandle);
+       {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FWindowHandle);
       FWindowHandle := 0;
     end;
     if not FTimerThread.Suspended then FTimerThread.Suspend;
@@ -213,7 +213,7 @@ begin
   end
   else begin
     if not FTimerThread.Suspended then FTimerThread.Suspend;
-    if FWindowHandle = 0 then FWindowHandle := {$IFDEF Delphi6_Up}Classes.{$ENDIF}AllocateHWnd(WndProc)
+    if FWindowHandle = 0 then FWindowHandle := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}AllocateHWnd(WndProc)
     else KillTimer(FWindowHandle, 1);
     if (FInterval <> 0) and FEnabled and Assigned(FOnTimer) then
       if SetTimer(FWindowHandle, 1, FInterval, nil) = 0 then

@@ -39,8 +39,8 @@ This unit is only supported on Windows!
 interface
 
 uses
-  Windows, Classes, SysUtils, {$IFDEF DELPHI5_UP}Contnrs, {$ENDIF}Registry,
-{$IFDEF DELPHI6_UP}RTLConsts, {$ENDIF}
+  Windows, Classes, SysUtils, {$IFDEF COMPILER5_UP}Contnrs, {$ENDIF}Registry,
+{$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}
   Dialogs, Forms, JclBase, JvComponent;
 
 type

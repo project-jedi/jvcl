@@ -387,7 +387,7 @@ end;
 constructor TJvxTrayIcon.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHandle := {$IFDEF Delphi6_Up}Classes.{$ENDIF}AllocateHWnd(WndProc);
+  FHandle := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}AllocateHWnd(WndProc);
   FIcon := TIcon.Create;
   FIcon.OnChange := IconChanged;
   FIconList := TJvIconList.Create;
@@ -406,7 +406,7 @@ begin
   FIcon.OnChange := nil;
   SetAnimated(False);
   Deactivate;
-  {$IFDEF Delphi6_Up}Classes.{$ENDIF}DeallocateHWnd(FHandle);
+  {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FHandle);
   FIcon.Free;
   FIcon := nil;
   FIconList.Free;

@@ -50,9 +50,9 @@ uses{$IFDEF WIN32}Windows, {$ELSE}WinTypes, {$ENDIF}Classes, SysUtils,
 {$ENDIF}
 
   TypInfo, Controls, Graphics, ExtCtrls, Tabs, Dialogs, Forms,
-{$IFDEF Delphi3_Up}DsnConst, ExtDlgs, {$ELSE}LibConst, {$ENDIF}
+{$IFDEF COMPILER3_UP}DsnConst, ExtDlgs, {$ELSE}LibConst, {$ENDIF}
 {$IFDEF DCS}
-{$IFDEF Delphi4_Up}ImgEdit, {$ENDIF}{$IFDEF WIN32}ImgList, {$ENDIF}
+{$IFDEF COMPILER4_UP}ImgEdit, {$ENDIF}{$IFDEF WIN32}ImgList, {$ENDIF}
 {$ENDIF DCS}
 {$IFDEF WIN32}JvRichEd, {$ENDIF}Menus, FiltEdit, StdCtrls, Buttons,
   JvLConst, JvxCtrls, JvGrids, JvCurrEdit, JvToolEdit, JvHintProp, JvDateUtil,
@@ -325,7 +325,7 @@ procedure TJvAnimatedEditor.EditImage(Image: TJvAnimatedImage);
 var
   Components: TDesignerSelectionList;
 begin
-  Components := {$IFDEF Delphi6_Up}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
+  Components := {$IFDEF COMPILER6_UP}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
 {$IFNDEF COMPILER6_UP}
   try
 {$ENDIF}

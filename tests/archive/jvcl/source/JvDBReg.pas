@@ -51,8 +51,8 @@ implementation
 {.$ENDIF}
 
 uses TypInfo, JvLConst, JvDBCtrl, JvLookup, JvxLogin, JvDBComb, JvVCLUtils,
-{$IFNDEF Delphi3_Up}DBTables, {$ENDIF}{$IFDEF DCS}JvSelDSFrm, {$ENDIF}
-{$IFDEF Delphi3_Up}JvMemDS, {$ENDIF}{$IFDEF WIN32}JvDBRichEd, {$ENDIF}
+{$IFNDEF COMPILER3_UP}DBTables, {$ENDIF}{$IFDEF DCS}JvSelDSFrm, {$ENDIF}
+{$IFDEF COMPILER3_UP}JvMemDS, {$ENDIF}{$IFDEF WIN32}JvDBRichEd, {$ENDIF}
   Consts, LibHelp, JvDsgn;
 
 { TJvFieldProperty }
@@ -119,7 +119,7 @@ begin
 
   { Data aware components and controls }
   RegisterComponents({LoadStr(srRXDBAware)}'JvX DBAware', [
-{$IFDEF Delphi3_Up}TJvMemoryData, {$ENDIF}
+{$IFDEF COMPILER3_UP}TJvMemoryData, {$ENDIF}
     TJvDBGrid, TJvDBLookupList, TJvDBLookupCombo, TJvLookupEdit, TJvDBDateEdit,
       TJvDBCalcEdit, TJvDBComboEdit, {$IFDEF WIN32}TJvDBRichEdit, {$ENDIF}
     TJvDBStatusLabel, TJvDBComboBox]);

@@ -59,7 +59,7 @@ type
     procedure SetCaption(const Value: TCaption);
     procedure SetAssociated(const Value: TControl);
   protected
-    procedure SetAutoSize(Value: Boolean);{$IFDEF DELPHI6_UP}override;{$ENDIF}
+    procedure SetAutoSize(Value: Boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;

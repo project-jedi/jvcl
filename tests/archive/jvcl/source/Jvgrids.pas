@@ -138,7 +138,7 @@ type
     function GetEditAlignment(ACol, ARow: Longint): TAlignment; dynamic;
 
     function GetEditStyle(ACol, ARow: Longint):
-      {$IFDEF Delphi6_Up}TEditStyle; override;{$ELSE}TInplaceEditStyle; dynamic;{$ENDIF}
+      {$IFDEF COMPILER6_UP}TEditStyle; override;{$ELSE}TInplaceEditStyle; dynamic;{$ENDIF}
     procedure GetPicklist(ACol, ARow: Longint; Picklist: TStrings); dynamic;
 {$ENDIF}
   public
@@ -323,7 +323,7 @@ end;
 
 procedure TJvInplaceEdit.CreateParams(var Params: TCreateParams);
 const
-  Alignments: array[TAlignment] of {$IFDEF Delphi4}DWORD{$ELSE}Longint{$ENDIF} =
+  Alignments: array[TAlignment] of {$IFDEF COMPILER4}DWORD{$ELSE}Longint{$ENDIF} =
     (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);

@@ -32,7 +32,7 @@ unit JvOutEdit;
 
 interface
 uses
-  Forms, {$IFDEF Delphi6_UP}DesignIntf, designeditors,{$ELSE}Dsgnintf,{$ENDIF}Windows, Classes, Dialogs, Graphics, SysUtils;
+  Forms, {$IFDEF COMPILER6_UP}DesignIntf, designeditors,{$ELSE}Dsgnintf,{$ENDIF}Windows, Classes, Dialogs, Graphics, SysUtils;
 
 type
   TLookOutPageEditor = class(TComponentEditor)

@@ -222,8 +222,8 @@ var
   I: Integer;
   Component: TComponent;
 begin
-  for I := 0 to Designer.{$IFDEF Delphi6_Up}Root{$ELSE}Form{$ENDIF}.ComponentCount - 1 do begin
-    Component := Designer.{$IFDEF Delphi6_Up}Root{$ELSE}Form{$ENDIF}.Components[I];
+  for I := 0 to Designer.{$IFDEF COMPILER6_UP}Root{$ELSE}Form{$ENDIF}.ComponentCount - 1 do begin
+    Component := Designer.{$IFDEF COMPILER6_UP}Root{$ELSE}Form{$ENDIF}.Components[I];
 
     if (Component.InheritsFrom(TButtonControl) or 
       Component.InheritsFrom(TSpeedButton) or 
@@ -334,7 +334,7 @@ procedure TJvProxyEditor.FormClosed(Form: TForm);
 {$ENDIF}
 {$ENDIF}
 begin
-  if {$IFDEF Delphi6_Up}ADesigner.Root{$ELSE}Form{$ENDIF} = OwnerForm then Free;
+  if {$IFDEF COMPILER6_UP}ADesigner.Root{$ELSE}Form{$ENDIF} = OwnerForm then Free;
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -394,7 +394,7 @@ end;
 
 function TJvProxyEditor.GetForm: TCustomForm;
 begin
-  Result := {$IFDEF Delphi6_Up}TCustomForm(Designer.Root){$ELSE}Designer.Form{$ENDIF}; { GetParentForm(FBar) }
+  Result := {$IFDEF COMPILER6_UP}TCustomForm(Designer.Root){$ELSE}Designer.Form{$ENDIF}; { GetParentForm(FBar) }
 end;
 
 procedure TJvProxyEditor.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -413,7 +413,7 @@ end;
 function TJvProxyEditor.CheckPageManager: Boolean;
 begin
   Result := (FPageManager <> nil) and (FPageManager.Owner <> nil) and
-    (Designer.{$IFDEF Delphi6_Up}Root{$ELSE}Form{$ENDIF} <> nil);
+    (Designer.{$IFDEF COMPILER6_UP}Root{$ELSE}Form{$ENDIF} <> nil);
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -426,7 +426,7 @@ var
   FComponents: TDesignerSelectionList;
 begin
   if CheckPageManager and Active then begin
-    FComponents := {$IFDEF Delphi6_Up}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
+    FComponents := {$IFDEF COMPILER6_UP}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
     if Proxy <> nil then
       FComponents.Add(Proxy)
     else
@@ -487,7 +487,7 @@ var
 begin
   Proxy := ProxyByRow(ProxyGrid.Row - 1);
   if Proxy <> nil then begin
-    {$IFDEF Delphi6_Up}TCustomForm(Designer.Root).Designer{$ELSE}Designer{$ENDIF}.ValidateRename(Proxy, Proxy.Name, '');
+    {$IFDEF COMPILER6_UP}TCustomForm(Designer.Root).Designer{$ELSE}Designer{$ENDIF}.ValidateRename(Proxy, Proxy.Name, '');
     FDeleting := True;
     try
       Proxy.Free;

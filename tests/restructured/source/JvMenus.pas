@@ -1448,14 +1448,14 @@ end;
 
 procedure TJvPopupList.Add(Popup: TPopupMenu);
 begin
-  if Count = 0 then Window := {$IFDEF Delphi6_Up}Classes.{$ENDIF}AllocateHWnd(WndProc);
+  if Count = 0 then Window := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}AllocateHWnd(WndProc);
   inherited Add(Popup);
 end;
 
 procedure TJvPopupList.Remove(Popup: TPopupMenu);
 begin
   inherited Remove(Popup);
-  if Count = 0 then {$IFDEF Delphi6_Up}Classes.{$ENDIF}DeallocateHWnd(Window);
+  if Count = 0 then {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(Window);
 end;
 
 { TJvPopupMenu }

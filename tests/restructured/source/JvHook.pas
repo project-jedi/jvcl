@@ -144,7 +144,7 @@ constructor TJvControlHook.Create;
 begin
   inherited Create;
   FList := TList.Create;
-  FNewWndProc := {$IFDEF Delphi6_Up}Classes.{$ENDIF}MakeObjectInstance(HookWndProc);
+  FNewWndProc := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(HookWndProc);
   FPrevWndProc := nil;
   FControl := nil;
 end;
@@ -157,7 +157,7 @@ begin
   while FList.Count > 0 do RemoveHook(TJvWindowHook(FList.Last));
   FControl := nil;
   FList.Free;
-  {$IFDEF Delphi6_Up}Classes.{$ENDIF}FreeObjectInstance(FNewWndProc);
+  {$IFDEF COMPILER6_UP}Classes.{$ENDIF}FreeObjectInstance(FNewWndProc);
   FNewWndProc := nil;
   inherited Destroy;
 end;
@@ -268,13 +268,13 @@ end;
 constructor TJvHookList.Create;
 begin
   inherited Create;
-  FHandle := {$IFDEF Delphi6_Up}Classes.{$ENDIF}AllocateHWnd(WndProc);
+  FHandle := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}AllocateHWnd(WndProc);
 end;
 
 destructor TJvHookList.Destroy;
 begin
   while Count > 0 do TJvControlHook(Last).Free;
-  {$IFDEF Delphi6_Up}Classes.{$ENDIF}DeallocateHWnd(FHandle);
+  {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FHandle);
   inherited Destroy;
 end;
 

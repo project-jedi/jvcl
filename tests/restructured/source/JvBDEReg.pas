@@ -53,7 +53,7 @@ implementation
 uses TypInfo, JvDBLists, JvLConst, JvDBQBE, JvDBFilter, JvDBIndex, JvDBPrgrss,
   JvxLogin, JvDBSecur, JvQuery, JvVCLUtils, JvDbExcpt, JvDsgn,
 {$IFDEF DCS}JvSelDSFrm, {$ENDIF}{$IFDEF RX_MIDAS}JvRemLog, {$ENDIF}
-{$IFDEF Delphi3_Up}JvQBndDlg, {$ELSE}
+{$IFDEF COMPILER3_UP}JvQBndDlg, {$ELSE}
 {$IFNDEF WIN32}JvQBndDlg, {$ELSE}JvQBindDlg, {$ENDIF}{$ENDIF}
   Consts, LibHelp, JvMemTable;
 

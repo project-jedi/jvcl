@@ -299,7 +299,7 @@ function IncludeTrailingPathDelimiter(const APath: string): string;
 implementation
 uses
   Forms, Registry, ExtCtrls,
-{$IFDEF DELPHI6_UP}Types, {$ENDIF}MMSystem,
+{$IFDEF COMPILER6_UP}Types, {$ENDIF}MMSystem,
   ShlObj, CommCtrl, Cpl,
   { jvcl} JvDirectories,
   { jcl } JCLStrings;

@@ -32,7 +32,7 @@ unit JvStrLEdit;
 interface
 
 uses Windows, Classes, Graphics, Forms, Controls, Buttons, Dialogs,
-  StdCtrls, ExtCtrls, {$IFDEF Delphi6_UP}DesignIntf, DesignEditors
+  StdCtrls, ExtCtrls, {$IFDEF COMPILER6_UP}DesignIntf, DesignEditors
   {$ELSE}DsgnIntf{$ENDIF};
 
 type

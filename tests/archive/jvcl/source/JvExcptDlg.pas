@@ -248,8 +248,8 @@ begin
       EExternalException(ExceptObj).ExceptionRecord^.ExceptionCode])
 {$ENDIF}
 {$IFDEF COMPILER3_UP}
-  else if ExceptObj is {$IFDEF Delphi6_Up}EOSError{$ELSE}EWin32Error{$ENDIF} then
-    S := Format(SCodeError, [S, {$IFDEF Delphi6_Up}EOSError{$ELSE}EWin32Error{$ENDIF}(ExceptObj).ErrorCode])
+  else if ExceptObj is {$IFDEF COMPILER6_UP}EOSError{$ELSE}EWin32Error{$ENDIF} then
+    S := Format(SCodeError, [S, {$IFDEF COMPILER6_UP}EOSError{$ELSE}EWin32Error{$ENDIF}(ExceptObj).ErrorCode])
 {$ENDIF}
   else S := S + '.';
   MessageText.Text := Format(SModuleError, [ModuleName, S]);

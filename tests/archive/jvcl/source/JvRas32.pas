@@ -161,7 +161,7 @@ begin
   FCallBack := '';
   FDomain := '';
   FConnection := 0;
-  FHandle := {$IFDEF DELPHI6_UP}Classes.{$ENDIF}AllocateHWnd(WndProc);
+  FHandle := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}AllocateHWnd(WndProc);
   RASEvent := RegisterWindowMessage(RASDialEvent);
   if RASEvent = 0 then
     RASEvent := WM_RASDialEvent;
@@ -211,7 +211,7 @@ begin
     end;
     FreeLibrary(FDll);
   end;
-  {$IFDEF DELPHI6_UP}Classes.{$ENDIF}DeallocateHWnd(FHandle);
+  {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FHandle);
   inherited
 end;
 

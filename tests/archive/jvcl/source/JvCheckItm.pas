@@ -34,7 +34,7 @@ interface
 uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF} Messages,
   SysUtils, Classes, Controls, Forms, Menus, Graphics, StdCtrls, JvPlacemnt,
   Dialogs, JvxCtrls, ExtCtrls,
- {$IFDEF Delphi6_Up}RTLConsts,DesignIntf, VCLEditors, DesignEditors,{$ELSE}DsgnIntf,{$ENDIF}
+ {$IFDEF COMPILER6_UP}RTLConsts,DesignIntf, VCLEditors, DesignEditors,{$ELSE}DsgnIntf,{$ENDIF}
   CheckLst;
 
 type

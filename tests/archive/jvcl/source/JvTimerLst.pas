@@ -311,7 +311,7 @@ begin
   if FActive <> Value then begin
     if not (csDesigning in ComponentState) then begin
       if Value then begin
-        FWndHandle := {$IFDEF Delphi6_Up}Classes.{$ENDIF}AllocateHWnd(TimerWndProc);
+        FWndHandle := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}AllocateHWnd(TimerWndProc);
         StartTicks := GetTickCount;
         SetEvents(StartTicks);
         CalculateInterval(StartTicks);
@@ -320,7 +320,7 @@ begin
       end
       else begin
         KillTimer(FWndHandle, 1);
-        {$IFDEF Delphi6_Up}Classes.{$ENDIF}DeallocateHWnd(FWndHandle);
+        {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FWndHandle);
         FWndHandle := INVALID_HANDLE_VALUE;
         if Assigned(FOnFinish) then FOnFinish(Self);
       end;

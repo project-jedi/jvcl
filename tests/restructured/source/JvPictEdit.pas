@@ -33,7 +33,7 @@ interface
 
 uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
   Messages, Classes, Graphics, Forms, Controls, Dialogs, Buttons,
-  {$IFDEF DELPHI6_UP}RTLConsts, DesignIntf, DesignEditors, VCLEditors,
+  {$IFDEF COMPILER6_UP}RTLConsts, DesignIntf, DesignEditors, VCLEditors,
   {$ELSE} 
   DsgnIntf,
   {$ENDIF}

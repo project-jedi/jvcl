@@ -145,7 +145,7 @@ type
     procedure SetFont(Value: TFont);
     procedure FontChanged(Sender: TObject);
   protected
-    procedure SetAutosize(Value: Boolean);{$IFDEF DELPHI6_UP}override;{$ENDIF}
+    procedure SetAutosize(Value: Boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
     procedure RefreshText;
     procedure SetParent(AParent: TWinControl); override;
     procedure Paint; override;

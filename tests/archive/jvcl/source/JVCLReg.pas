@@ -153,7 +153,7 @@ uses
   JvBaseDlgEditor, JvCommonDialogDEditor,
 
   Dialogs, ExptIntf, ToolIntf, ExtDlgs, StdCtrls, Buttons,
-{$IFDEF DELPHI5}DsgnIntf, {$ENDIF}{$IFDEF DELPHI6_UP}DesignEditors, DesignIntf, {$ENDIF}
+{$IFDEF COMPILER5}DsgnIntf, {$ENDIF}{$IFDEF COMPILER6_UP}DesignEditors, DesignIntf, {$ENDIF}
   JvTypes, JvArrowBtn, JvBmpAnim, JvCaptionButton,
   JvColorCombo, JvDriveCtrls, JvFindReplace, JvInstallLabel, JvRollOut, JvScrollPanel,
   JvTransBtn2, JvTimeLine, JvTimeLineEdit, JvShFileOp, JvAppHotKey,

@@ -248,7 +248,7 @@ const
 constructor TJvBrowseFolderDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FObjectInstance := {$IFDEF Delphi6_Up}Classes.{$ENDIF}MakeObjectInstance(WndProc);
+  FObjectInstance := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(WndProc);
   FDesktopRoot := True;
   FBrowseKind := bfFolders;
   FPosition := dpScreenCenter;
@@ -257,7 +257,7 @@ end;
 
 destructor TJvBrowseFolderDlg.Destroy;
 begin
-  if FObjectInstance <> nil then {$IFDEF Delphi6_Up}Classes.{$ENDIF}FreeObjectInstance(FObjectInstance);
+  if FObjectInstance <> nil then {$IFDEF COMPILER6_UP}Classes.{$ENDIF}FreeObjectInstance(FObjectInstance);
   inherited Destroy;
 end;
 

@@ -40,7 +40,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-{$IFDEF DELPHI5_UP}Contnrs, {$ENDIF}ShellAPI, JclBase, JclStrings, JclSysInfo,
+{$IFDEF COMPILER5_UP}Contnrs, {$ENDIF}ShellAPI, JclBase, JclStrings, JclSysInfo,
   JclFileUtils, JvComponent;
 
 type

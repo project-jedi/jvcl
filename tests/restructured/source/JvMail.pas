@@ -36,7 +36,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Mapi, {$IFDEF DELPHI5_UP}Contnrs, {$ENDIF}JclBase, JclMapi, JvComponent;
+  Mapi, {$IFDEF COMPILER5_UP}Contnrs, {$ENDIF}JclBase, JclMapi, JvComponent;
 
 type
   TJvMail = class;

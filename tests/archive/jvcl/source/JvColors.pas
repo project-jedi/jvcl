@@ -45,7 +45,7 @@ procedure RegisterRxColors;
 implementation
 
 uses Windows,
- {$IFDEF Delphi6_Up}RTLConsts,DesignIntf, VCLEditors, DesignEditors,{$ELSE}DsgnIntf,{$ENDIF}
+ {$IFDEF COMPILER6_UP}RTLConsts,DesignIntf, VCLEditors, DesignEditors,{$ELSE}DsgnIntf,{$ENDIF}
 SysUtils
 ;
 

@@ -31,10 +31,10 @@ unit JvJVCLAbout;
 interface
 
 uses
-  Windows, Messages, SysUtils, {$IFDEF DELPHI6_UP}Variants, {$ENDIF}
+  Windows, Messages, SysUtils, {$IFDEF COMPILER6_UP}Variants, {$ENDIF}
   Classes, Graphics, Controls, Forms,
   Dialogs, JvHotLink, StdCtrls, ExtCtrls, jpeg, JvLabel,
-{$IFDEF DELPHI5}DsgnIntf, {$ENDIF}{$IFDEF DELPHI6_UP}DesignEditors, DesignIntf, {$ENDIF}
+{$IFDEF COMPILER5}DsgnIntf, {$ENDIF}{$IFDEF COMPILER6_UP}DesignEditors, DesignIntf, {$ENDIF}
   JVCLVer, JvComponent, Buttons, IniFiles;
 
 type

@@ -51,7 +51,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Menus,
-  ComCtrls, CommCtrl, StdActns, {$IFDEF DELPHI5_UP}Contnrs, {$ENDIF}JclBase, JVCLVer;
+  ComCtrls, CommCtrl, StdActns, {$IFDEF COMPILER5_UP}Contnrs, {$ENDIF}JclBase, JVCLVer;
 
 const
   JvDefPageControlBorder = 4;

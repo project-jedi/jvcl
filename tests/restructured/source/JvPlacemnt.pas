@@ -268,7 +268,7 @@ type
 
 { TJvStoredValues }
 
-  TJvStoredValues = class({$IFDEF Delphi4}TOwnedCollection{$ELSE}TCollection{$ENDIF})
+  TJvStoredValues = class({$IFDEF COMPILER4}TOwnedCollection{$ELSE}TCollection{$ENDIF})
   private
     FStorage: TJvFormPlacement;
     function GetValue(const Name: string): TJvStoredValue;

@@ -73,7 +73,7 @@ begin
   begin
     WinCtl := TWinControl(Owner);
     FHandle := WinCtl.Handle;
-    FWndProcInstance := {$IFDEF DELPHI6_UP}Classes.{$ENDIF}MakeObjectInstance(WndProc);
+    FWndProcInstance := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(WndProc);
     FDefProc := Pointer(GetWindowLong(FHandle, GWL_WNDPROC));
     SetWindowLong(FHandle, GWL_WNDPROC, Longint(FWndProcInstance));
   end
@@ -90,7 +90,7 @@ begin
   if FHandle <> 0 then
   begin
     SetWindowLong(FHandle, GWL_WNDPROC, Longint(FDefProc));
-    {$IFDEF DELPHI6_UP}Classes.{$ENDIF}FreeObjectInstance(FWndProcInstance);
+    {$IFDEF COMPILER6_UP}Classes.{$ENDIF}FreeObjectInstance(FWndProcInstance);
   end;
   inherited;
 end;

@@ -29,7 +29,7 @@ unit JvHintProp;
 
 interface
 
-uses {$IFDEF Delphi6_Up}DesignIntf, VCLEditors{$ELSE}DsgnIntf{$ENDIF};
+uses {$IFDEF COMPILER6_UP}DesignIntf, VCLEditors{$ELSE}DsgnIntf{$ENDIF};
 
 
 type

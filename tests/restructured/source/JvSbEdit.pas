@@ -321,7 +321,7 @@ var
 begin
   if CheckSpeedBar and Active then begin
     //Designer.GetSelections(FCompList);
-    FCompList := {$IFDEF Delphi6_Up}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
+    FCompList := {$IFDEF COMPILER6_UP}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
     if not SelectBar then begin
       if (ActiveControl = SectionList) or (ActiveControl = SectionName) then
       begin
@@ -346,7 +346,7 @@ procedure TJvSpeedbarEditor.FormClosed(Form: TForm);
 {$ENDIF}
 {$ENDIF}
 begin
-  if {$IFDEF Delphi6_Up}ADesigner.Root{$ELSE}Form{$ENDIF} = OwnerForm then Free;
+  if {$IFDEF COMPILER6_UP}ADesigner.Root{$ELSE}Form{$ENDIF} = OwnerForm then Free;
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -420,7 +420,7 @@ end;
 function TJvSpeedbarEditor.CheckSpeedBar: Boolean;
 begin
   Result := (FBar <> nil) and (FBar.Owner <> nil) and (FBar.Parent <> nil)
-    and ({$IFDEF Delphi6_Up}Designer.Root{$ELSE}Designer.Form{$ENDIF} <> nil);
+    and ({$IFDEF COMPILER6_UP}Designer.Root{$ELSE}Designer.Form{$ENDIF} <> nil);
 end;
 
 function TJvSpeedbarEditor.CurrentSection: Integer;
@@ -466,7 +466,7 @@ end;
 
 function TJvSpeedbarEditor.GetForm: TCustomForm;
 begin
-  Result := {$IFDEF Delphi6_Up}TCustomForm(Designer.Root){$ELSE}Designer.Form{$ENDIF}; { GetParentForm(FBar) }
+  Result := {$IFDEF COMPILER6_UP}TCustomForm(Designer.Root){$ELSE}Designer.Form{$ENDIF}; { GetParentForm(FBar) }
 end;
 
 procedure TJvSpeedbarEditor.UpdateListHeight;
@@ -573,7 +573,7 @@ begin
   if CheckSpeedBar and ConfirmDelete then begin
     Sect := SectionList.Row;
     if (Sect >= 0) and (Sect < FBar.SectionCount) then begin
-      {$IFDEF Delphi6_Up}TCustomForm(Designer.Root).Designer{$ELSE}Designer{$ENDIF}.ValidateRename(FBar.Sections[Sect],
+      {$IFDEF COMPILER6_UP}TCustomForm(Designer.Root).Designer{$ELSE}Designer{$ENDIF}.ValidateRename(FBar.Sections[Sect],
 //      Self.ValidateRename(FBar.Sections[Sect],
         FBar.Sections[Sect].Name, '');
       try
@@ -598,7 +598,7 @@ var
   Item: TJvSpeedItem;
 begin
 //----------------
-  CompList := {$IFDEF Delphi6_Up}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
+  CompList := {$IFDEF COMPILER6_UP}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
 {$IFNDEF COMPILER6_UP}
   try
 {$ENDIF}
@@ -624,7 +624,7 @@ var
   CompList: TDesignerSelectionList;
 begin
   if CheckSpeedBar then begin
-    CompList := {$IFDEF Delphi6_Up}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
+    CompList := {$IFDEF COMPILER6_UP}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
 {$IFNDEF COMPILER6_UP}
     try
 {$ENDIF}

@@ -32,7 +32,7 @@ unit JvOLBarEditor;
 interface
 
 uses
-  JvOLBar, Classes, {$IFDEF Delphi6_UP}DesignEditors, DesignIntf, DesignMenus{$ELSE}Dsgnintf, Menus{$ENDIF};
+  JvOLBar, Classes, {$IFDEF COMPILER6_UP}DesignEditors, DesignIntf, DesignMenus{$ELSE}Dsgnintf, Menus{$ENDIF};
 
 type
   TOLBarActivePageEditor = class(TIntegerProperty)

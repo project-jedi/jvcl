@@ -73,7 +73,7 @@ type
 
 { TJvMacros }
 
-  TJvMacros = class({$IFDEF Delphi4_Up}TOwnedCollection{$ELSE}TCollection{$ENDIF})
+  TJvMacros = class({$IFDEF COMPILER4_UP}TOwnedCollection{$ELSE}TCollection{$ENDIF})
   private
     function GetMacroValue(const MacroName: string): Variant;
     procedure SetMacroValue(const MacroName: string;

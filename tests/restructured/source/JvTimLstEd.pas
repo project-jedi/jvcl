@@ -291,7 +291,7 @@ procedure TJvTimerItemsEditor.FormClosed(Form: TForm);
 {$ENDIF}
 {$ENDIF}
 begin
-  if {$IFDEF Delphi6_Up}ADesigner.Root{$ELSE}Form{$ENDIF} = OwnerForm then Free;
+  if {$IFDEF COMPILER6_UP}ADesigner.Root{$ELSE}Form{$ENDIF} = OwnerForm then Free;
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -333,7 +333,7 @@ end;
 
 function TJvTimerItemsEditor.GetForm: TCustomForm;
 begin
-  Result := {$IFDEF Delphi6_Up}TCustomForm(Designer.Root){$ELSE}Designer.Form{$ENDIF};
+  Result := {$IFDEF COMPILER6_UP}TCustomForm(Designer.Root){$ELSE}Designer.Form{$ENDIF};
 end;
 
 procedure TJvTimerItemsEditor.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -344,7 +344,7 @@ end;
 function TJvTimerItemsEditor.CheckCollection: Boolean;
 begin
   Result := (TimersCollection <> nil) and (TimersCollection.Owner <> nil)
-    and ({$IFDEF Delphi6_Up}Designer.Root{$ELSE}Designer.Form{$ENDIF} <> nil);
+    and ({$IFDEF COMPILER6_UP}Designer.Root{$ELSE}Designer.Form{$ENDIF} <> nil);
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -358,7 +358,7 @@ var
   FComponents: TDesignerSelectionList;
 begin
   if CheckCollection and Active then begin
-    FComponents := {$IFDEF Delphi6_Up}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
+    FComponents := {$IFDEF COMPILER6_UP}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
     if Item <> nil then FComponents.Add(Item)
     else FComponents.Add(TimersCollection);
     SetSelection(FComponents);
@@ -428,7 +428,7 @@ var
 begin
   Item := ItemByRow(DrawGrid.Row - 1);
   if Item <> nil then begin
-    {$IFDEF Delphi6_Up}TCustomForm(Designer.Root).Designer{$ELSE}Designer{$ENDIF}.ValidateRename(Item, Item.Name, '');
+    {$IFDEF COMPILER6_UP}TCustomForm(Designer.Root).Designer{$ELSE}Designer{$ENDIF}.ValidateRename(Item, Item.Name, '');
     TimersCollection.Delete(Item.Handle);
     if TimersCollection.Count > 0 then begin
       Item := ItemByRow(DrawGrid.Row - 1);
@@ -534,7 +534,7 @@ var
   CompList: TDesignerSelectionList;
   Item: TJvTimerEvent;
 begin
-  CompList := {$IFDEF Delphi6_Up}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
+  CompList := {$IFDEF COMPILER6_UP}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
 {$IFNDEF COMPILER6_UP}
   try
 {$ENDIF}
@@ -556,7 +556,7 @@ var
   CompList: TDesignerSelectionList;
 begin
   if CheckCollection then begin
-    CompList := {$IFDEF Delphi6_Up}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
+    CompList := {$IFDEF COMPILER6_UP}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
 {$IFNDEF COMPILER6_UP}
     try
 {$ENDIF}
@@ -576,7 +576,7 @@ begin
   while TimersCollection.Events.Count > 0 do begin
     Item := TJvTimerEvent(TimersCollection.Events[0]);
     if Item <> nil then
-          {$IFDEF Delphi6_Up}TCustomForm(Designer.Root).Designer{$ELSE}Designer{$ENDIF}.ValidateRename(Item, Item.Name, '');
+          {$IFDEF COMPILER6_UP}TCustomForm(Designer.Root).Designer{$ELSE}Designer{$ENDIF}.ValidateRename(Item, Item.Name, '');
     TimersCollection.Events.Delete(0);
     Item.Free;
   end;

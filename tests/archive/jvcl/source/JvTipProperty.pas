@@ -33,7 +33,7 @@ unit JvTipProperty;
 
 interface
 uses
-  {$IFDEF Delphi6_UP}DesignEditors,DesignIntf{$ELSE}DsgnIntf{$ENDIF};
+  {$IFDEF COMPILER6_UP}DesignEditors,DesignIntf{$ELSE}DsgnIntf{$ENDIF};
 type
   { a component editor that by default opens the editor for the Items property in TTimeline }
   TJvTipPropertyEditor = class(TComponentEditor)

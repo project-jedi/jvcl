@@ -71,7 +71,7 @@ begin
   FShiftState := [ssAlt];
 
   FOldWndProc := Pointer(GetWindowLong(FForm.Handle, GWL_WNDPROC));
-  ptr := {$IFDEF DELPHI6_UP}Classes.{$ENDIF}MakeObjectInstance(NewWndProc);
+  ptr := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(NewWndProc);
   SetWindowLong(FForm.Handle, GWL_WNDPROC, Longint(ptr));
 end;
 

@@ -120,7 +120,7 @@ end;
 constructor TJvClipboardMonitor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FWindowHandle := {$IFDEF Delphi6_Up}Classes.{$ENDIF}AllocateHWnd(WndProc);
+  FWindowHandle := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}AllocateHWnd(WndProc);
   SetEnabled(True);
 end;
 
@@ -128,7 +128,7 @@ destructor TJvClipboardMonitor.Destroy;
 begin
   FOnChange := nil;
   SetEnabled(False);
-  {$IFDEF Delphi6_Up}Classes.{$ENDIF}DeallocateHWnd(FWindowHandle);
+  {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FWindowHandle);
   inherited Destroy;
 end;
 

@@ -103,7 +103,7 @@ var
   Form: TComponent;
 begin
   inherited GetValues(Proc);
-  Form := Designer.{$IFDEF Delphi6_Up}Root{$ELSE}Form{$ENDIF};
+  Form := Designer.{$IFDEF COMPILER6_UP}Root{$ELSE}Form{$ENDIF};
   if (Form is GetTypeData(GetPropType)^.ClassType) and
     (Form.Name <> '') then
     Proc(Form.Name);
@@ -119,7 +119,7 @@ begin
 {$ELSE}
   Component := Designer.Root.FindComponent(Value);
 {$ENDIF}
-  Form := Designer.{$IFDEF Delphi6_Up}Root{$ELSE}Form{$ENDIF};
+  Form := Designer.{$IFDEF COMPILER6_UP}Root{$ELSE}Form{$ENDIF};
   if ((Component = nil) or not (Component is GetTypeData(GetPropType)^.ClassType))
     and (CompareText(Form.Name, Value) = 0) then
   begin
