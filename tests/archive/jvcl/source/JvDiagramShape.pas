@@ -478,9 +478,7 @@ begin {SetCaption}
     // the caption has not already been set in place (it will already be in the
     // right place if we are loading this from a file).
     if (FCaption.Left = 0) and (FCaption.Top = 0) then
-    begin
-      AlignCaption(taCenter);
-    end;
+      AlignCaption(taLeftJustify);
   end;
 end; {SetCaption}
 
