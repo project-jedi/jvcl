@@ -1,7 +1,8 @@
 program ColorHintsTest;
 
 uses
-  Forms, RaHtHintsMainFormU;  
+  Forms,
+  RaHtHintsMainFormU in 'RaHtHintsMainFormU.pas' {RaHtHintsMainForm};
 
 {$R *.RES}
 
