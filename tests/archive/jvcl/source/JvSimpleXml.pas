@@ -372,7 +372,8 @@ const
 var
   XmlVariant: TXmlVariant = nil;
 {$ENDIF}
-
+var
+  GSorts:TList = nil;
 {$IFNDEF COMPILER6_UP}
 
 var
@@ -1364,11 +1365,11 @@ function SortItems(List: TStringList; Index1, Index2: Integer): Integer;
 var
   i: Integer;
 begin
-  result := 0;
+  Result := 0;
   for i:=0 to GSorts.Count-1 do
     if TJvSimpleXmlElems(GSorts[i]).FElems = List then
     begin
-      result := TJvSimpleXmlElems(GSorts[i]).FCompare(TJvSimpleXmlElems(GSorts[i]), Index1, Index2);
+      Result := TJvSimpleXmlElems(GSorts[i]).FCompare(TJvSimpleXmlElems(GSorts[i]), Index1, Index2);
       Exit;
     end;
 end;
