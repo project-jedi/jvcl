@@ -48,8 +48,8 @@ type
     procedure SetStyle(Value: TJvBevelStyle);
     procedure SetShape(Value: TShapeType);
   protected
-    procedure DoChange(Sender:TObject);
-    property OnChange:TNotifyEvent read FOnChange write FOnChange;
+    procedure DoChange(Sender: TObject);
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   public
     constructor Create;
     destructor Destroy; override;
@@ -140,28 +140,6 @@ uses
 
 //=== { TJvGroupHeaderOptions } ==============================================
 
-procedure TJvGroupHeaderOptions.Assign(Source: TPersistent);
-var FOldChange:TNotifyEvent;
-begin
-  if Source is TJvGroupHeaderOptions then
-  begin
-    FOldChange := FOnChange;
-    try
-      FOnChange := nil;
-      Brush := TJvGroupHeaderOptions(Source).Brush;
-      Height := TJvGroupHeaderOptions(Source).Height;
-      Pen   := TJvGroupHeaderOptions(Source).Pen;
-      Shape := TJvGroupHeaderOptions(Source).Shape;
-      Style := TJvGroupHeaderOptions(Source).Style;
-    finally
-      FOnChange := FOldChange;
-    end;
-    DoChange(Self);
-  end
-  else
-    inherited Assign(Source);
-end;
-
 constructor TJvGroupHeaderOptions.Create;
 begin
   inherited Create;
@@ -181,6 +159,29 @@ begin
   FPen.Free;
   FBrush.Free;
   inherited Destroy;
+end;
+
+procedure TJvGroupHeaderOptions.Assign(Source: TPersistent);
+var
+  FOldChange: TNotifyEvent;
+begin
+  if Source is TJvGroupHeaderOptions then
+  begin
+    FOldChange := FOnChange;
+    try
+      FOnChange := nil;
+      Brush := TJvGroupHeaderOptions(Source).Brush;
+      Height := TJvGroupHeaderOptions(Source).Height;
+      Pen := TJvGroupHeaderOptions(Source).Pen;
+      Shape := TJvGroupHeaderOptions(Source).Shape;
+      Style := TJvGroupHeaderOptions(Source).Style;
+    finally
+      FOnChange := FOldChange;
+    end;
+    DoChange(Self);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvGroupHeaderOptions.SetBrush(Value: TBrush);

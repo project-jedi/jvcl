@@ -788,7 +788,8 @@ begin
   begin
     if AComponent = Edit then
       Edit := nil
-    else if AComponent = ListBox then
+    else
+    if AComponent = ListBox then
       ListBox := nil;
   end;
 end;

@@ -7774,13 +7774,13 @@ end;
 // UnregisterServer by Ralf Kaiser patterned on RegisterServer
 function UnregisterServer(const ModuleName: string): Boolean;
 type
-  TCOMFunc = function:HResult;
+  TCOMFunc = function: HRESULT;
 const
-  S_OK    = $00000000;
+  S_OK = $00000000;
 var
   Handle: THandle;
   DllUnRegServ: TCOMFunc;
-  DllCanUnloadNow:TCOMFunc;
+  DllCanUnloadNow: TCOMFunc;
 begin
   Handle := LoadDLL(ModuleName);
   try
@@ -7793,15 +7793,11 @@ begin
   end;
 end;
 
-
 procedure FreeUnusedOle;
 begin
   FreeLibrary(GetModuleHandle('OleAut32'));
 end;
 
-{$ENDIF MSWINDOWS}
-
-{$IFDEF MSWINDOWS}
 function GetEnvVar(const VarName: string): string;
 var
   S: array [0..16383] of Char;
@@ -7811,7 +7807,9 @@ begin
   else
     Result := '';
 end;
+
 {$ENDIF MSWINDOWS}
+
 {$IFDEF UNIX}
 function GetEnvVar(const VarName: string): string;
 begin

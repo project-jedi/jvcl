@@ -62,15 +62,15 @@ type
   TJvSpeedButtonHotTrackOptions = class(TPersistent)
   private
     FEnabled: Boolean;
-    FColor:TColor;
-    FFrameColor:TColor;
+    FColor: TColor;
+    FFrameColor: TColor;
   public
     constructor Create;
-    procedure Assign(Source:TPersistent);override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Enabled: Boolean read FEnabled write FEnabled default False;
-    property Color:TColor read FColor write FColor default $00D2BDB6;
-    property FrameColor:TColor read FFrameColor write FFrameColor default $006A240A;
+    property Color: TColor read FColor write FColor default $00D2BDB6;
+    property FrameColor: TColor read FFrameColor write FFrameColor default $006A240A;
   end;
   {Insert End}
 
@@ -130,7 +130,6 @@ type
     procedure TimerExpired(Sender: TObject);
     procedure UpdateExclusive;
     procedure SetHotTrackOptions(Value: TJvSpeedButtonHotTrackOptions);
-
     procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_JVBUTTONPRESSED;
     {$IFDEF VCL}
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
@@ -665,7 +664,15 @@ begin
   InflateRect(Result, -1, -1);
 end;
 
-//=== { TJvSpeedButtonHotTrackOptions  } =======================================
+//=== { TJvSpeedButtonHotTrackOptions } ======================================
+
+constructor TJvSpeedButtonHotTrackOptions.Create;
+begin
+  inherited Create;
+  FEnabled := False;
+  FColor := $00D2BDB6;
+  FFrameColor := $006A240A;
+end;
 
 procedure TJvSpeedButtonHotTrackOptions.Assign(Source: TPersistent);
 begin
@@ -677,14 +684,6 @@ begin
   end
   else
     inherited Assign(Source);
-end;
-
-constructor TJvSpeedButtonHotTrackOptions.Create;
-begin
-  inherited Create;
-  FEnabled := False;
-  FColor := $00D2BDB6;
-  FFrameColor := $006A240A;
 end;
 
 //=== { TJvButtonImage } =====================================================

@@ -1488,7 +1488,8 @@ begin
           Break;
         end;
       end;
-      //      else if Parameters[I] is TJvTabControlParameter then
+      //      else
+      //      if Parameters[I] is TJvTabControlParameter then
       //        for J := 0 to TJvTabControlParameter(Parameters[I]).Tabs.Count - 1 do
      //          if Uppercase(Parameters[I].SearchName + '.' + TJvTabControlParameter(Parameters[I]).Tabs[J]) = Uppercase(SearchName) then
      //          begin

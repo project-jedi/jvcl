@@ -99,7 +99,7 @@ type
     procedure Change;
     procedure SetEnabled(const Value: Boolean);
     procedure SetAction(Value: TBasicAction);
-    function GetOutlookBar:TJvCustomOutlookBar;
+    function GetOutlookBar: TJvCustomOutlookBar;
   protected
     function GetDisplayName: string; override;
     function GetActionLinkClass: TJvOutlookBarButtonActionLinkClass; dynamic;
@@ -113,14 +113,14 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure EditCaption;
   published
-    property Action:TBasicAction read GetAction write SetAction;
+    property Action: TBasicAction read GetAction write SetAction;
     property Caption: TCaption read FCaption write SetCaption;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
     property Tag: Integer read FTag write FTag;
     property Down: Boolean read FDown write SetDown default False;
     property AutoToggle: Boolean read FAutoToggle write FAutoToggle;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
-    property OnClick:TNotifyEvent read FOnClick write FOnClick;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
   TJvOutlookBarButtons = class(TOwnedCollection)
@@ -179,7 +179,7 @@ type
   protected
     procedure DoPictureChange(Sender: TObject);
     function GetDisplayName: string; override;
-    function GetOutlookBar:TJvCustomOutlookBar;
+    function GetOutlookBar: TJvCustomOutlookBar;
   public
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
@@ -927,7 +927,6 @@ begin
   else
     Result := nil;
 end;
-
 
 //=== { TJvOutlookBarButtons } ===============================================
 

@@ -2968,7 +2968,8 @@ begin
       ReleaseObject(ReObject.poleobj);
     end;
   end
-  else if (Result = nil) and UseFixedPopup then
+  else
+  if (Result = nil) and UseFixedPopup then
     Result := FixedDefaultEditPopUp(Self);
 end;
 

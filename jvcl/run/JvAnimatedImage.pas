@@ -883,7 +883,7 @@ end;
 
 {$IFDEF VCL}
 
-procedure TJvAnimatedImage.ReadOpaque(Reader:TReader);
+procedure TJvAnimatedImage.ReadOpaque(Reader: TReader);
 begin
   Transparent := not Reader.ReadBoolean;
 end;

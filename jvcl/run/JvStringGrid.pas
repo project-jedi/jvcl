@@ -28,8 +28,6 @@ unit JvStringGrid;
 {$I jvcl.inc}
 
 //---------------------------------------------------------------
-// NEW FOR COMPILER6_UP ONLY:
-//
 // The inplace-edit-list feature is enabled dynamically when
 // compiling JVCL, if the underlying JVCL and VCL base classes
 // support it. Look for COMPILER6_UP below for places where this
@@ -63,9 +61,9 @@ type
   TJvSortType = (stNone, stAutomatic, stClassic, stCaseSensitive, stNumeric, stDate, stCurrency);
   TProgress = procedure(Sender: TObject; Progression, Total: Integer) of object;
 
-{$ifdef COMPILER6_UP}
-  TJvOnGetEditStyleEvent = procedure(Sender:TJvStringGrid;  AColumn, ARow: Integer; PickListStrings:TStrings; var EditStyle:TEditStyle ) of object;
-{$endif}
+  {$IFDEF COMPILER6_UP}
+  TJvOnGetEditStyleEvent = procedure(Sender: TJvStringGrid; AColumn, ARow: Integer; PickListStrings: TStrings; var EditStyle: TEditStyle) of object;
+  {$ENDIF COMPILER6_UP}
 
   TJvStringGrid = class(TJvExStringGrid)
   private
@@ -80,13 +78,13 @@ type
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
 
-{$ifdef COMPILER6_UP}
-    FCustomInplaceEditStyle:TEditStyle; // NEW (ENABLED IN C6/D6 AND UP ONLY!)
-    FOnGetEditStyle : TJvOnGetEditStyleEvent;
-    FPickListStrings:TStringList;
-    FOnEditButtonClick:TNotifyEvent;
-    FOnListboxCloseUp:TNotifyEvent;
-{$endif}
+    {$IFDEF COMPILER6_UP}
+    FCustomInplaceEditStyle: TEditStyle; // NEW 
+    FOnGetEditStyle: TJvOnGetEditStyleEvent;
+    FPickListStrings: TStringList;
+    FOnEditButtonClick: TNotifyEvent;
+    FOnListBoxCloseUp: TNotifyEvent;
+    {$ENDIF COMPILER6_UP}
 
     FFixedFont: TFont;
     procedure SetAlignment(const Value: TAlignment);
@@ -97,10 +95,10 @@ type
     procedure SetFixedFont(const Value: TFont);
     procedure DoFixedFontChange(Sender: TObject);
 
-{$ifdef COMPILER6_UP}
-    procedure EditButtonClick(Sender:TObject); dynamic; // NEW-WP 
-    procedure ListboxCloseUp(Sender:TObject); dynamic;
-{$endif}
+    {$IFDEF COMPILER6_UP}
+    procedure EditButtonClick(Sender: TObject); dynamic; // NEW-WP
+    procedure ListBoxCloseUp(Sender: TObject); dynamic;
+    {$ENDIF COMPILER6_UP}
 
   protected
     function CreateEditor: TInplaceEdit; override;
@@ -114,11 +112,11 @@ type
     procedure DrawCell(AColumn, ARow: Longint;
       Rect: TRect; State: TGridDrawState); override;
 
-{$ifdef COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     // NEW: Override to provide dropdown list editing as an
-    // event-handler in TJvStringGrid. only in C6/D6 and up.
+    // event-handler in TJvStringGrid.
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; override;
-{$endif}
+    {$ENDIF COMPILER6_UP}
 
     procedure CaptionClick(AColumn, ARow: Longint); dynamic;
     {$IFDEF VCL}
@@ -223,14 +221,11 @@ type
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
 
-{$ifdef COMPILER6_UP}
-    // New event properties in C6/D6 and up only!
+    {$IFDEF COMPILER6_UP}
     property OnGetEditStyle : TJvOnGetEditStyleEvent read FOnGetEditStyle write FOnGetEditStyle; // NEW -WP (D6 UP)
-    property OnEditButtonClick:TNotifyEvent read FOnEditButtonClick write FOnEditButtonClick; // NEW-WP  - User clicks on Ellipsis button, get event fired!
-    property OnListboxCloseUp:TNotifyEvent read FOnListboxCloseUp write FOnListboxCloseUp; // Listbox close up.
-{$endif}
-
-
+    property OnEditButtonClick: TNotifyEvent read FOnEditButtonClick write FOnEditButtonClick; // NEW-WP  - User clicks on Ellipsis button, get event fired!
+    property OnListBoxCloseUp: TNotifyEvent read FOnListBoxCloseUp write FOnListBoxCloseUp; // Listbox close up.
+    {$ENDIF COMPILER6_UP}
   end;
 
 implementation
@@ -245,127 +240,40 @@ uses
 const
   BufSize = 1024;
 
-type
-//=== {TExPopupListbox} -- WP Added ==================================
-
-  // TExPopupListbox - a popup listbox has no parent.
-TExPopupListbox = class(TCustomListbox)
-  private
-    FSearchText: String;
-    FSearchTickCount: Longint;
-  protected
-    procedure CreateParams(var Params: TCreateParams); override;
-    procedure CreateWnd; override;
-    procedure KeyPress(var Key: Char); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-  end;
-
-
-//=== { TExInplaceEditList } =====================================================
-
+//=== { TExInplaceEditList } =================================================
 
 // If the feature exists in the VCL base classes, we can enable the
 // feature here.
 type
-{$ifdef COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   TExInplaceEditList = class(TJvExPubInplaceEditList) // was inheriting from TJvExInplaceEdit.-WAP
-{$else}
+  {$ELSE}
   TExInplaceEditList = class(TJvExInplaceEdit)
-{$endif}
+  {$ENDIF COMPILER6_UP}
   private
-    // Important: Style of this inplace editor is set in TInplaceEditList 
+    // Important: Style of this inplace editor is set in TInplaceEditList
     // FEditStyle     - inherited - See VCL Source: ($delphi)\Source\vcl\Grids.pas
     //FActiveList    : TWinControl;    // WP-New: Listbox control stuff
     //FPickListLoaded: Boolean;        // WP-New
     //FPickList      : TCustomListbox; // WP-New
     //FListVisible   : Boolean;        // WP-New
-
-
-
     FLastCol: Integer;
     FLastRow: Integer;
   protected
-{$ifdef COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     procedure CloseUp(Accept: Boolean); override; // fire event on close up!
     procedure DoEditButtonClick; override;
-    procedure UpdateContents; override;//WP-New! - Put items into listbox!
-{$endif}
-
-
+    procedure UpdateContents; override; //WP-New! - Put items into listbox!
+    {$ENDIF COMPILER6_UP}
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
-
-
   public
     constructor Create(Owner: TComponent); override;//WP-New!
     //property ActiveList: TWinControl read FActiveList write FActiveList;//WP-New!
-
-
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     {$ENDIF VCL}
   end;
-
-
-  //=== { TExPopupListbox methods } =====================================================
-
-procedure TExPopupListBox.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  with Params do
-  begin
-    Style := Style or WS_BORDER;
-    ExStyle := WS_EX_TOOLWINDOW or WS_EX_TOPMOST;
-    AddBiDiModeExStyle(ExStyle);
-    WindowClass.Style := CS_SAVEBITS;
-  end;
-end;
-
-procedure TExPopupListbox.CreateWnd;
-begin
-  inherited CreateWnd;
-  Windows.SetParent(Handle, 0);
-  CallWindowProc(DefWndProc, Handle, wm_SetFocus, 0, 0);
-end;
-
-procedure TExPopupListbox.Keypress(var Key: Char);
-var
-  TickCount: Integer;
-begin
-  case Key of
-    #8, #27: FSearchText := '';
-    #32..#255:
-      begin
-        TickCount := GetTickCount;
-        if TickCount - FSearchTickCount > 2000 then FSearchText := '';
-        FSearchTickCount := TickCount;
-        if Length(FSearchText) < 32 then FSearchText := FSearchText + Key;
-        SendMessage(Handle, LB_SelectString, WORD(-1), Longint(PChar(FSearchText)));
-        Key := #0;
-      end;
-  end;
-  inherited Keypress(Key);
-end;
-
-procedure TExPopupListbox.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-{$ifdef COMPILER6_UP}
-var
-  accept:Boolean;
-{$endif}
-begin
-  inherited MouseUp(Button, Shift, X, Y);
-{$ifdef COMPILER6_UP}
-  accept := (X >= 0) and (Y >= 0) and
-      (X < Width) and (Y < Height);
-  TExInplaceEditList(Owner).CloseUp(accept);
-{$endif}      
-end;
-
-
-
-
-//=== { TExInplaceEditList methods } =====================================================
 
 constructor TExInplaceEditList.Create(Owner: TComponent);
 begin
@@ -374,25 +282,22 @@ begin
 end;
 
 //NEW!
-{$ifdef COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
 procedure TExInplaceEditList.UpdateContents;
 var
- ownerGrid:TJvStringGrid;
+ OwnerGrid: TJvStringGrid;
 begin
   inherited UpdateContents;
-  if EditStyle = esPickList then begin
+  if EditStyle = esPickList then
+  begin
     ActiveList := PickList;
     // Populate the listbox:
-      Assert(assigned(Grid));
-    ownerGrid := (Grid as TJvStringGrid);
-    PickList.Items.Assign( ownerGrid.FPickListStrings );
+    Assert(Assigned(Grid));
+    OwnerGrid := (Grid as TJvStringGrid);
+    PickList.Items.Assign(OwnerGrid.FPickListStrings);
   end;
 end;
-{$endif}
-
-
-
-
+{$ENDIF COMPILER6_UP}
 
 {$IFDEF VCL}
 procedure TExInplaceEditList.CreateParams(var Params: TCreateParams);
@@ -417,14 +322,13 @@ begin
   inherited DoSetFocus(FocusedWnd);
 end;
 
-{$ifdef COMPILER6_UP}
-// Only in C6/D6 and up!
+{$IFDEF COMPILER6_UP}
+
 procedure TExInplaceEditList.CloseUp(Accept: Boolean); //override; // fire event on close up!
 begin
   inherited CloseUp(Accept);
-  if Assigned(Grid) then begin
-      TJvStringGrid(Grid).ListboxCloseUp(Self);
-  end;
+  if Assigned(Grid) then
+    TJvStringGrid(Grid).ListBoxCloseUp(Self);
 end;
 
 procedure TExInplaceEditList.DoEditButtonClick;
@@ -432,7 +336,78 @@ begin
   if Assigned(Grid) then
     TJvStringGrid(Grid).EditButtonClick(Self);
 end;
-{$endif}
+
+{$ENDIF COMPILER6_UP}
+
+//=== { TExPopupListBox } ====================================================
+
+type
+  // TExPopupListBox - a popup listbox has no parent.
+  TExPopupListBox = class(TCustomListBox)
+  private
+    FSearchText: string;
+    FSearchTickCount: Longint;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure CreateWnd; override;
+    procedure KeyPress(var Key: Char); override;
+    {$IFDEF COMPILER6_UP}
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    {$ENDIF COMPILER6_UP}
+  end;
+
+procedure TExPopupListBox.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  with Params do
+  begin
+    Style := Style or WS_BORDER;
+    ExStyle := WS_EX_TOOLWINDOW or WS_EX_TOPMOST;
+    AddBiDiModeExStyle(ExStyle);
+    WindowClass.Style := CS_SAVEBITS;
+  end;
+end;
+
+procedure TExPopupListBox.CreateWnd;
+begin
+  inherited CreateWnd;
+  Windows.SetParent(Handle, 0);
+  CallWindowProc(DefWndProc, Handle, wm_SetFocus, 0, 0);
+end;
+
+procedure TExPopupListBox.Keypress(var Key: Char);
+var
+  TickCount: Integer;
+begin
+  case Key of
+    #8, #27:
+      FSearchText := '';
+    #32..#255:
+      begin
+        TickCount := GetTickCount;
+        if TickCount - FSearchTickCount > 2000 then
+          FSearchText := '';
+        FSearchTickCount := TickCount;
+        if Length(FSearchText) < 32 then
+          FSearchText := FSearchText + Key;
+        SendMessage(Handle, LB_SelectString, WPARAM(-1), LPARAM(PChar(FSearchText)));
+        Key := #0;
+      end;
+  end;
+  inherited Keypress(Key);
+end;
+
+{$IFDEF COMPILER6_UP}
+procedure TExPopupListBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+var
+  Accept: Boolean;
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  Accept := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
+  TExInplaceEditList(Owner).CloseUp(Accept);
+end;
+{$ENDIF COMPILER6_UP}
 
 //=== { TJvStringGrid } ======================================================
 
@@ -443,21 +418,17 @@ begin
   FFixedFont.Assign(Font);
   FFixedFont.OnChange := DoFixedFontChange;
   // ControlStyle := ControlStyle + [csAcceptsControls];
-{$ifdef COMPILER6_UP}
-  // Only in C6/D6 and up!
-  FPickListStrings:=TStringList.Create; //NEW -WP
-{$endif}
-
+  {$IFDEF COMPILER6_UP}
+  FPickListStrings := TStringList.Create; //NEW -WP
+  {$ENDIF COMPILER6_UP}
 end;
 
 destructor TJvStringGrid.Destroy;
 begin
   FreeAndNil(FFixedFont);
-{$ifdef COMPILER6_UP}
-  // Only in C6/D6 and up!
+  {$IFDEF COMPILER6_UP}
   FreeAndNil(FPickListStrings); //NEW-WP
-{$endif}
-
+  {$ENDIF COMPILER6_UP}
   inherited Destroy;
 end;
 
@@ -979,18 +950,18 @@ begin
   end;
 end;
 
-{$ifdef COMPILER6_UP}
-// Only in C6/D6 and up!
+{$IFDEF COMPILER6_UP}
 function TJvStringGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle; //override;
 begin
    FCustomInplaceEditStyle := esSimple;
-   if Assigned( FOnGetEditStyle) then begin
-        FPickListStrings.Clear;
-        FOnGetEditStyle(Self, ACol, ARow {integer} , FPickListStrings,  FCustomInplaceEditStyle {TEditStyle} );
+   if Assigned(FOnGetEditStyle) then
+   begin
+     FPickListStrings.Clear;
+     FOnGetEditStyle(Self, ACol, ARow, FPickListStrings, FCustomInplaceEditStyle);
    end;
    Result :=FCustomInplaceEditStyle;
 end;
-{$endif}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvStringGrid.DrawCell(AColumn, ARow: Integer; Rect: TRect;
   State: TGridDrawState);
@@ -1240,25 +1211,22 @@ begin
   Invalidate;
 end;
 
-{$ifdef COMPILER6_UP}
-// NEW-WP - invoked dynamically from the TInplaceEditList (C6/D6 UP ONLY!)
-procedure TJvStringGrid.ListboxCloseUp(Sender:TObject);
+{$IFDEF COMPILER6_UP}
+
+// NEW-WP - invoked dynamically from the TInplaceEditList
+procedure TJvStringGrid.ListBoxCloseUp(Sender: TObject);
 begin
-  if Assigned(FOnListboxCloseUp) then begin
-    FOnListboxCloseUp(Self)
-  end;
+  if Assigned(FOnListBoxCloseUp) then
+    FOnListBoxCloseUp(Self)
 end;
 
-procedure TJvStringGrid.EditButtonClick(Sender:TObject); //dynamic;
+procedure TJvStringGrid.EditButtonClick(Sender: TObject); //dynamic;
 begin
-  if Assigned(FOnEditButtonClick) then begin
+  if Assigned(FOnEditButtonClick) then
     FOnEditButtonClick(Self)
-  end;
 end;
 
-
-{$endif}
-
+{$ENDIF COMPILER6_UP}
 
 procedure TJvStringGrid.AutoSizeCol(Index, MinWidth: Integer);
 var

@@ -84,9 +84,7 @@ type
     property OnDblClick;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnActiveChanged:TNotifyEvent read FOnActiveChanged write FOnActiveChanged;
-
-
+    property OnActiveChanged: TNotifyEvent read FOnActiveChanged write FOnActiveChanged;
   end;
 
 implementation
