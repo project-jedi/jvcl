@@ -433,10 +433,16 @@ type
 
   IJvDataContext = interface
     ['{F226D92A-3493-4EF8-9CE6-037357EB0CEA}']
-    { Reference to the context manager (this will be nil for the implicit context of the provider). }
+    { Reference to the context manager. }
     function Contexts: IJvDataContexts;
     { Unique name of the context (used at design time and by the streaming system). }
     function Name: string;
+  end;
+
+  IJvDataContextManager = interface
+    ['{530367D8-601C-4E36-B5F0-357160497C50}']
+    { Allows the name to be changed. }
+    procedure SetName(Value: string);
   end;
 
 implementation
