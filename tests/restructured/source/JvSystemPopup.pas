@@ -82,7 +82,7 @@ type
 
   TMenuItemPrivateAccess = class(TComponent)
   private
-    FCaption: string;
+//    FCaption: string;
     FHandle: HMENU;
   end;
 

@@ -543,7 +543,7 @@ var
   Path: string;
   lpfnDoOrganizeFavDlg: LPFNORGFAV;
 begin
-  lpfnDoOrganizeFavDlg := nil;
+//  lpfnDoOrganizeFavDlg := nil;
   ShModule := SafeLoadLibrary('shdocvw.dll');
   try
     if ShModule <= HINSTANCE_ERROR then

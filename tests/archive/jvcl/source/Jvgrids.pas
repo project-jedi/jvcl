@@ -323,7 +323,7 @@ end;
 
 procedure TJvInplaceEdit.CreateParams(var Params: TCreateParams);
 const
-  Alignments: array[TAlignment] of {$IFDEF COMPILER4}DWORD{$ELSE}Longint{$ENDIF} =
+  Alignments: array[TAlignment] of {$IFDEF COMPILER4_UP}Cardinal{$ELSE}Longint{$ENDIF} =
     (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
