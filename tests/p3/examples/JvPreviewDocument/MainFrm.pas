@@ -49,6 +49,7 @@ type
     Print1: TMenuItem;
     Label6: TLabel;
     cbScaleMode: TComboBox;
+    StatusBar1: TStatusBar;
     procedure FormCreate(Sender: TObject);
     procedure udColsClick(Sender: TObject; Button: TUDBtnType);
     procedure udRowsClick(Sender: TObject; Button: TUDBtnType);
@@ -69,6 +70,7 @@ type
   private
     procedure OpenFile(const Filename: string);
     procedure DoChange(Sender: TObject);
+    procedure DoVertScroll(Sender: TObject);
     { Private declarations }
   public
     { Public declarations }
@@ -387,6 +389,7 @@ begin
     pd.Options.Cols := udCols.Position;
     pd.Options.Shadow.Offset := udShadowWidth.Position;
     pd.Options.Scale := udZoom.Position;
+    pd.OnVertScroll := DoVertScroll;
 
     cbPreview.ItemIndex := 1; // printer
     cbPreviewChange(nil);
@@ -411,8 +414,9 @@ begin
   udZoom.Position := pd.Options.Scale;
   mnuMargins.Checked := pd.Options.DrawMargins;
   cbScaleMode.ItemIndex := Ord(pd.Options.ScaleMode);
-  Caption := Format('%s: - (%d pages)',
-    [ExtractFilename(OpenDialog1.Filename), pd.PageCount]);
+  Statusbar1.Panels[0].Text := ExtractFilename(OpenDIalog1.Filename);
+  Statusbar1.Panels[1].Text := Format('%d pages',[pd.PageCount]);
+  Statusbar1.Panels[2].Text := Format('Cols: %d, Rows: %d, Page %d',[pd.TotalCols,pd.VisibleRows,pd.TopPage]);
 end;
 
 procedure TfrmMain.udColsClick(Sender: TObject; Button: TUDBtnType);
@@ -490,22 +494,22 @@ end;
 
 procedure TfrmMain.First1Click(Sender: TObject);
 begin
-  pd.SelectedPage := 0;
+  pd.TopPage := 0;
 end;
 
 procedure TfrmMain.Previous1Click(Sender: TObject);
 begin
-  pd.SelectedPage := pd.SelectedPage - 1;
+  pd.TopPage := pd.TopPage - pd.TotalCols;
 end;
 
 procedure TfrmMain.Next1Click(Sender: TObject);
 begin
-  pd.SelectedPage := pd.SelectedPage + 1;
+  pd.TopPage := pd.TopPage + pd.TotalCols;
 end;
 
 procedure TfrmMain.Last1Click(Sender: TObject);
 begin
-  pd.SelectedPage := pd.PageCount - 1;
+  pd.TopPage := pd.PageCount - 1;
 end;
 
 procedure TfrmMain.About1Click(Sender: TObject);
@@ -517,6 +521,11 @@ procedure TfrmMain.cbScaleModeChange(Sender: TObject);
 begin
   pd.Options.ScaleMode := TJvPreviewScaleMode(cbScaleMode.ItemIndex);
   cbScaleMode.ItemIndex := Ord(pd.Options.ScaleMode);
+end;
+
+procedure TfrmMain.DoVertScroll(Sender: TObject);
+begin
+  Statusbar1.Panels[2].Text := Format('Cols: %d, Rows: %d, Page %d',[pd.TotalCols,pd.VisibleRows,pd.TopPage]);
 end;
 
 end.

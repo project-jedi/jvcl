@@ -17,7 +17,7 @@ object frmMain: TfrmMain
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 429
+    Top = 410
     Width = 775
     Height = 65
     Align = alBottom
@@ -180,7 +180,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 775
-    Height = 429
+    Height = 410
     ActivePage = tabOriginal
     Align = alClient
     TabIndex = 0
@@ -192,7 +192,7 @@ object frmMain: TfrmMain
         Left = 0
         Top = 0
         Width = 767
-        Height = 401
+        Height = 382
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -208,6 +208,23 @@ object frmMain: TfrmMain
     object tabPreview: TTabSheet
       Caption = 'Preview'
     end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 475
+    Width = 775
+    Height = 19
+    Panels = <
+      item
+        Width = 200
+      end
+      item
+        Width = 150
+      end
+      item
+        Width = 50
+      end>
+    SimplePanel = False
   end
   object PrinterSetupDialog1: TPrinterSetupDialog
     Left = 152
