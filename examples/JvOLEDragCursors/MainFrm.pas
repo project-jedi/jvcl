@@ -29,8 +29,8 @@ unit MainFrm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, CSIntf;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, StdCtrls;
 
 type
   TForm1 = class(TForm)
@@ -44,7 +44,6 @@ type
     Panel3: TPanel;
     Panel2: TPanel;
     Panel9: TPanel;
-    CSGlobalObject1: TCSGlobalObject;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -57,7 +56,7 @@ var
 implementation
 
 uses
-  JvConsts;
+  JvJVCLUtils, JvConsts;
 
 {$R *.dfm}
 

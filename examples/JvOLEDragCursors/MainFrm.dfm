@@ -113,10 +113,4 @@ object Form1: TForm1
       TabOrder = 6
     end
   end
-  object CSGlobalObject1: TCSGlobalObject
-    HexNumPrefix = '$'
-    QuoteChar = #39
-    Left = 90
-    Top = 18
-  end
 end
