@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,20 +39,17 @@ procedure Register;
 implementation
 
 uses
-  Classes, QDialogs, QActnList, QExtDlgs,
-
-  DesignEditors, DesignIntf,
-
-  JvQDsgnConsts,
-
+  Classes, QDialogs, QActnList, 
+  DesignEditors, DesignIntf, 
+  JvQDsgnConsts, 
   {$IFDEF MSWINDOWS}
-  {JvQWinDialogs, JvQAddPrinter,} JvQCommonDialogD, JvQConnectNetwork, {JvQCopyError,
+  JvQWinDialogs, JvQAddPrinter, JvQCommonDialogD, JvQConnectNetwork, JvQCopyError,
   JvQDeleteError, JvQRenameError, JvQDiskPrompt, JvQFindFiles,
-  JvQObjectPickerDialog,} JvQCommonDialogDEditor, JvQDSADialogs,
+  JvQObjectPickerDialog, JvQCommonDialogDEditor,
   {$ENDIF MSWINDOWS}
-  JvQBaseDlg, JvQFindReplace, JvQTipOfDay, JvQCommonExecDlg,
+  JvQBaseDlg, JvQFindReplace, JvQDSADialogs, JvQTipOfDay, JvQCommonExecDlg,
   JvQDesktopAlert, JvQProgressComponent, JvQSelectDirectory, JvQImageDlg,
-  {JvQLoginForm,} JvQDualList, JvQProgressDialog, JvQBaseDlgEditor,
+  JvQLoginForm, JvQDualList, JvQProgressDialog, JvQBaseDlgEditor,
   JvQTipOfDayEditor;
 
 {$IFDEF MSWINDOWS}
@@ -65,43 +63,33 @@ procedure Register;
 const
   cAppletName = 'AppletName';
   cAppletIndex = 'AppletIndex';
-begin
-  RegisterComponents(RsPaletteDialog, [TOpenPictureDialog, TSavePictureDialog,
-    TPrinterSetupDialog]);
+begin 
   RegisterComponents(RsPaletteDialog, [TJvSelectDirectory,  TJvTipOfDay,
-    TJvFindReplace]);
-
-
+    TJvFindReplace, TJvDSADialog]); 
   {$IFDEF MSWINDOWS}
-  RegisterComponents(RsPaletteDialog, [TJvDSADialog, TJvConnectNetwork,
-    TJvDisconnectNetwork {, TJvAddPrinterDialog, TJvFindFilesDialog,
+  RegisterComponents(RsPaletteDialog, [TJvConnectNetwork,
+    TJvDisconnectNetwork, TJvAddPrinterDialog, TJvFindFilesDialog,
     TJvFormatDriveDialog, TJvOrganizeFavoritesDialog,
     TJvComputerNameDialog, TJvChangeIconDialog,
     TJvShellAboutDialog, TJvRunDialog, TJvObjectPropertiesDialog,
     TJvNewLinkDialog, TJvAddHardwareDialog, TJvOpenWithDialog,
     TJvDiskFullDialog, TJvExitWindowsDialog, TJvOutOfMemoryDialog,
-    TJvObjectPickerDialog} ]);
+    TJvObjectPickerDialog, TJvDualListDialog, TJvImageDialog, TJvLoginDialog,
+    TJvProgressDialog, TJvProgressComponent, TJvDiskPrompt, TJvCopyError,
+    TJvDeleteError, TJvRenameError, TJvDesktopAlert, TJvDesktopAlertStack]);
   {$ENDIF MSWINDOWS}
-    RegisterComponents(RsPaletteDialog, [TJvDualListDialog, TJvImageDialog, {TJvLoginDialog,}
-    TJvProgressDialog, TJvProgressComponent,
-    TJvDesktopAlert, TJvDesktopAlertStack]);
-
-
+ 
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-  RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
-
+  RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor); 
   RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
-  {$IFDEF _MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
   {$ENDIF MSWINDOWS}
-  RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
-  {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
-
-  {$ENDIF BCB5}
+  RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);   // removed because BCB5 cannot compile/link JvDialogActns  
 end;
 
 end.
