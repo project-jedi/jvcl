@@ -31,6 +31,9 @@ object MainForm: TMainForm
     TabOrder = 0
     OnBandMove = MainControlBarBandMove
     OnResize = MainControlBarResize
+    DesignSize = (
+      640
+      104)
     object tb_Standard_ToolBar: TToolBar
       Tag = 1
       Left = 11

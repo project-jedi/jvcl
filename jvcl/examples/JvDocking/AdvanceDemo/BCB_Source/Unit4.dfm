@@ -107,7 +107,7 @@ object Form4: TForm4
     NCPopupMenu = MainForm.PopupMenu2
     DirectDrag = False
     ShowHint = True
-    EnableCloseButton = True
+    EnableCloseBtn = True
     DockStyle = MainForm.JvDockVSNetStyle1
     Left = 64
     Top = 56

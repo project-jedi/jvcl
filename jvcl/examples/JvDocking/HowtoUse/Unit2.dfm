@@ -44,7 +44,7 @@ object Form2: TForm2
     TBDockHeight = 100
     DirectDrag = False
     ShowHint = True
-    EnableCloseButton = True
+    EnableCloseBtn = True
     DockStyle = Form1.JvDockVIDStyle1
     Left = 104
     Top = 48

@@ -1090,7 +1090,7 @@ object MemoryForm: TMemoryForm
     TBDockHeight = 100
     DirectDrag = True
     ShowHint = True
-    EnableCloseButton = True
+    EnableCloseBtn = True
     EachOtherDock = False
     DockStyle = MainForm.JvDockVCStyle1
     Left = 88

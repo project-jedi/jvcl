@@ -96,7 +96,7 @@ resourcestring
 
   RsDockCannotFindWindow = 'Cannot find window';
 
-  RsEInvalidDockSiteOrientationValue = 'invalid DockSiteOrientationation value doNoOrient';
+  RsEInvalidDockSiteOrientValue = 'invalid DockSiteOrient value doNoOrient';
 
 const
   RsDockBaseDockTreeVersion = $00040000;
@@ -110,8 +110,8 @@ const
 
 var
   JvGlobalDockManager: TJvDockManager = nil;
-  JvGlobalDockJvGlobalDockIsLoading: Boolean = False;
-  JvJvGlobalDockClient: TJvDockClient = nil;
+  JvGlobalDockIsLoading: Boolean = False;
+  JvGlobalDockClient: TJvDockClient = nil;
 
 implementation
 
