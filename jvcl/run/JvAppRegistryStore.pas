@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvAppStore.pas, released on --.
+The Original Code is: JvAppRegistryStore.pas, released on --.
 
 The Initial Developer of the Original Code is Marcel Bestebroer
 Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel
@@ -16,8 +16,9 @@ Bestebroer
 All Rights Reserved.
 
 Contributor(s):
+  Jens Fudickar
 
-Last Modified: 2003-09-05
+Last Modified: 2003-11-19
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -50,26 +51,27 @@ type
       const ReportListAsValue: Boolean = True); override;
     procedure EnumValues(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
+    function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; override;
+    function PathExistsInt(const Path: string): boolean; override;
+    function ValueStoredInt(const Path: string): Boolean; override;
+    procedure DeleteValueInt(const Path: string); override;
+    procedure DeleteSubTreeInt(const Path: string); override;
+    function DoReadBoolean(const Path: string; Default: Boolean): Boolean; override;
+    procedure DoWriteBoolean(const Path: string; Value: Boolean); override;
+    function DoReadInteger(const Path: string; Default: Integer): Integer; override;
+    procedure DoWriteInteger(const Path: string; Value: Integer); override;
+    function DoReadFloat(const Path: string; Default: Extended): Extended; override;
+    procedure DoWriteFloat(const Path: string; Value: Extended); override;
+    function DoReadString(const Path: string; Default: string): string; override;
+    procedure DoWriteString(const Path: string; Value: string); override;
+    function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
+    procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
-    function IsFolder(Path: string; ListIsValue: Boolean = True): Boolean; override;
-    function PathExists(const Path: string): boolean; override;
-    function ValueStored(const Path: string): Boolean; override;
-    procedure DeleteValue(const Path: string); override;
-    procedure DeleteSubTree(const Path: string); override;
-    function ReadBooleanInt(const Path: string; Default: Boolean = True): Boolean; override;
-    procedure WriteBooleanInt(const Path: string; Value: Boolean); override;
-    function ReadIntegerInt(const Path: string; Default: Integer = 0): Integer; override;
-    procedure WriteIntegerInt(const Path: string; Value: Integer); override;
-    function ReadFloatInt(const Path: string; Default: Extended = 0): Extended; override;
-    procedure WriteFloatInt(const Path: string; Value: Extended); override;
-    function ReadStringInt(const Path: string; Default: string = ''): string; override;
-    procedure WriteStringInt(const Path: string; Value: string); override;
-    function ReadBinaryInt(const Path: string; var Buf; BufSize: Integer): Integer; override;
-    procedure WriteBinaryInt(const Path: string; const Buf; BufSize: Integer); override;
   published
     property Root;
     property RegRoot: TJvRegKey read GetRegRoot write SetRegRoot;
+    property SubStores;
   end;
 
 implementation
@@ -191,7 +193,7 @@ begin
       end;
 end;
 
-function TJvAppRegistryStore.IsFolder(Path: string; ListIsValue: Boolean): Boolean;
+function TJvAppRegistryStore.IsFolderInt(Path: string; ListIsValue: Boolean): Boolean;
 var
   RefPath: string;
   PathHKEY: HKEY;
@@ -224,16 +226,16 @@ begin
     end;
 end;
 
-function TJvAppRegistryStore.PathExists(const Path: string): boolean;
+function TJvAppRegistryStore.PathExistsInt(const Path: string): boolean;
 var
   SubKey: string;
   ValueName: string;
 begin
   SplitKeyPath(Path, SubKey, ValueName);
-  Result := RegKeyExists(FRegHKEY, SubKey+'\'+ValueName);
+  Result := RegKeyExists(FRegHKEY, SubKey + '\' + ValueName);
 end;
 
-function TJvAppRegistryStore.ValueStored(const Path: string): Boolean;
+function TJvAppRegistryStore.ValueStoredInt(const Path: string): Boolean;
 var
   SubKey: string;
   ValueName: string;
@@ -252,7 +254,7 @@ begin
       raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyRead, [SubKey]);
 end;
 
-procedure TJvAppRegistryStore.DeleteValue(const Path: string);
+procedure TJvAppRegistryStore.DeleteValueInt(const Path: string);
 var
   SubKey: string;
   ValueName: string;
@@ -264,7 +266,7 @@ begin
   end;
 end;
 
-procedure TJvAppRegistryStore.DeleteSubTree(const Path: string);
+procedure TJvAppRegistryStore.DeleteSubTreeInt(const Path: string);
 var
   KeyRoot: string;
 begin
@@ -273,7 +275,7 @@ begin
     RegDeleteKeyTree(FRegHKEY, KeyRoot);
 end;
 
-function TJvAppRegistryStore.ReadIntegerInt(const Path: string; Default: Integer = 0): Integer;
+function TJvAppRegistryStore.DoReadInteger(const Path: string; Default: Integer): Integer;
 var
   SubKey: string;
   ValueName: string;
@@ -290,7 +292,7 @@ begin
   end;
 end;
 
-procedure TJvAppRegistryStore.WriteIntegerInt(const Path: string; Value: Integer);
+procedure TJvAppRegistryStore.DoWriteInteger(const Path: string; Value: Integer);
 var
   SubKey: string;
   ValueName: string;
@@ -300,7 +302,7 @@ begin
   RegWriteInteger(FRegHKEY, SubKey, ValueName, Value);
 end;
 
-function TJvAppRegistryStore.ReadBooleanInt(const Path: string; Default: Boolean = True): Boolean;
+function TJvAppRegistryStore.DoReadBoolean(const Path: string; Default: Boolean): Boolean;
 var
   SubKey: string;
   ValueName: string;
@@ -317,7 +319,7 @@ begin
   end;
 end;
 
-procedure TJvAppRegistryStore.WriteBooleanInt(const Path: string; Value: Boolean);
+procedure TJvAppRegistryStore.DoWriteBoolean(const Path: string; Value: Boolean);
 var
   SubKey: string;
   ValueName: string;
@@ -327,8 +329,7 @@ begin
   RegWriteBool(FRegHKEY, SubKey, ValueName, Value);
 end;
 
-
-function TJvAppRegistryStore.ReadFloatInt(const Path: string; Default: Extended = 0): Extended;
+function TJvAppRegistryStore.DoReadFloat(const Path: string; Default: Extended): Extended;
 var
   SubKey: string;
   ValueName: string;
@@ -346,7 +347,7 @@ begin
   end;
 end;
 
-procedure TJvAppRegistryStore.WriteFloatInt(const Path: string; Value: Extended);
+procedure TJvAppRegistryStore.DoWriteFloat(const Path: string; Value: Extended);
 var
   SubKey: string;
   ValueName: string;
@@ -356,7 +357,7 @@ begin
   RegWriteBinary(FRegHKEY, SubKey, ValueName, Value, SizeOf(Value));
 end;
 
-function TJvAppRegistryStore.ReadStringInt(const Path: string; Default: string = ''): string;
+function TJvAppRegistryStore.DoReadString(const Path: string; Default: string): string;
 var
   SubKey: string;
   ValueName: string;
@@ -373,7 +374,7 @@ begin
   end;
 end;
 
-procedure TJvAppRegistryStore.WriteStringInt(const Path: string; Value: string);
+procedure TJvAppRegistryStore.DoWriteString(const Path: string; Value: string);
 var
   SubKey: string;
   ValueName: string;
@@ -383,7 +384,7 @@ begin
   RegWriteString(FRegHKEY, SubKey, ValueName, Value);
 end;
 
-function TJvAppRegistryStore.ReadBinaryInt(const Path: string; var Buf; BufSize: Integer): Integer;
+function TJvAppRegistryStore.DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
 var
   SubKey: string;
   ValueName: string;
@@ -392,7 +393,7 @@ begin
   Result := RegReadBinary(FRegHKEY, SubKey, ValueName, Buf, BufSize);
 end;
 
-procedure TJvAppRegistryStore.WriteBinaryInt(const Path: string; const Buf; BufSize: Integer);
+procedure TJvAppRegistryStore.DoWriteBinary(const Path: string; const Buf; BufSize: Integer);
 var
   SubKey: string;
   ValueName: string;

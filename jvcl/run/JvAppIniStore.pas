@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvAppStore.pas, released on --.
+The Original Code is: JvAppIniStore.pas, released on --.
 
 The Initial Developer of the Original Code is Marcel Bestebroer
 Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel
@@ -16,8 +16,9 @@ Bestebroer
 All Rights Reserved.
 
 Contributor(s):
+  Jens Fudickar
 
-Last Modified: 2003-09-05
+Last Modified: 2003-11-19
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -43,26 +44,26 @@ uses
 type
   TJvAppIniStore = class(TJvCustomAppStore)
   private
-    FBaseSection : string;
+    FDefaultSection : string;
   protected
     function ValueExists(const Section, Key: string): Boolean; virtual; abstract;
     function ReadValue(const Section, Key: string): string; virtual; abstract;
     procedure WriteValue(const Section, Key, Value: string); virtual; abstract;
     procedure RemoveValue(const Section, Key: string); virtual; abstract;
-  public
-    function ValueStored(const Path: string): Boolean; override;
-    procedure DeleteValue(const Path: string); override;
-    procedure DeleteSubTree(const Path: string); override;
-    function ReadIntegerInt(const Path: string; Default: Integer = 0): Integer; override;
-    procedure WriteIntegerInt(const Path: string; Value: Integer); override;
-    function ReadFloatInt(const Path: string; Default: Extended = 0): Extended; override;
-    procedure WriteFloatInt(const Path: string; Value: Extended); override;
-    function ReadStringInt(const Path: string; Default: string = ''): string; override;
-    procedure WriteStringInt(const Path: string; Value: string); override;
-    function ReadBinaryInt(const Path: string; var Buf; BufSize: Integer): Integer; override;
-    procedure WriteBinaryInt(const Path: string; const Buf; BufSize: Integer); override;
-  published
-    property BaseSection : string read FBaseSection write FBaseSection;
+    procedure SplitKeyPath(const Path: string; out Key, ValueName: string); override;
+    function ValueStoredInt(const Path: string): Boolean; override;
+    procedure DeleteValueInt(const Path: string); override;
+    procedure DeleteSubTreeInt(const Path: string); override;
+    function DoReadInteger(const Path: string; Default: Integer): Integer; override;
+    procedure DoWriteInteger(const Path: string; Value: Integer); override;
+    function DoReadFloat(const Path: string; Default: Extended): Extended; override;
+    procedure DoWriteFloat(const Path: string; Value: Extended); override;
+    function DoReadString(const Path: string; Default: string): string; override;
+    procedure DoWriteString(const Path: string; Value: string); override;
+    function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
+    procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
+
+    property DefaultSection : string read FDefaultSection write FDefaultSection;
   end;
 
   { Storage to INI file. Optionally a buffered version (TMemIniFile) is used. IdleDelay will then
@@ -87,7 +88,9 @@ type
       const ReportListAsValue: Boolean = True); override;
     procedure EnumValues(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
+    function PathExistsInt(const Path: string): boolean; override;
     function ValueExists(const Section, Key: string): Boolean; override;
+    function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; override;
     function ReadValue(const Section, Key: string): string; override;
     procedure WriteValue(const Section, Key, Value: string); override;
     procedure RemoveValue(const Section, Key: string); override;
@@ -98,12 +101,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function PathExists(const Path: string): boolean; override;
     procedure Flush;
-    function IsFolder(Path: string; ListIsValue: Boolean = True): Boolean; override;
   published
     property Buffered: Boolean read FBuffered write SetBuffered;
+    property DefaultSection;
     property FileName: TFileName read GetFileName write SetFileName;
+    property SubStores;
 //    property IdleDelay: Longint read FIdleDelay write FIdleDelay default 100; TIdleThread disabled for now
   end;
 
@@ -266,38 +269,48 @@ end;
 
 //=== TJvAppIniStore =========================================================
 
-function TJvAppIniStore.ValueStored(const Path: string): Boolean;
+procedure TJvAppIniStore.SplitKeyPath(const Path: string; out Key, ValueName: string);
+begin
+  inherited SplitKeyPath(Path, Key, ValueName);
+  if Key = '' then
+    Key := DefaultSection;
+end;
+
+function TJvAppIniStore.ValueStoredInt(const Path: string): Boolean;
 var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
+  SplitKeyPath(Path, Section, Key);
   Result := ValueExists(Section, Key);
 end;
 
-procedure TJvAppIniStore.DeleteValue(const Path: string);
+procedure TJvAppIniStore.DeleteValueInt(const Path: string);
 var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
+  SplitKeyPath(Path, Section, Key);
   RemoveValue(Section, Key);
 end;
 
-procedure TJvAppIniStore.DeleteSubTree(const Path: string);
+procedure TJvAppIniStore.DeleteSubTreeInt(const Path: string);
 var
   TopSection: string;
 begin
   TopSection := GetAbsPath(Path);
+  if TopSection = '' then
+    TopSection := DefaultSection;
+  raise EJVCLAppStore.Create('DeleteSubTree has not been implemented yet.');
 end;
 
-function TJvAppIniStore.ReadIntegerInt(const Path: string; Default: Integer = 0): Integer;
+function TJvAppIniStore.DoReadInteger(const Path: string; Default: Integer): Integer;
 var
   Section: string;
   Key: string;
   Value: string;
 begin
-  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
+  SplitKeyPath(Path, Section, Key);
   if ValueExists(Section, Key) then
   begin
     Value := ReadValue(Section, Key);
@@ -309,22 +322,22 @@ begin
     Result := Default;
 end;
 
-procedure TJvAppIniStore.WriteIntegerInt(const Path: string; Value: Integer);
+procedure TJvAppIniStore.DoWriteInteger(const Path: string; Value: Integer);
 var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
+  SplitKeyPath(Path, Section, Key);
   WriteValue(Section, Key, IntToStr(Value));
 end;
 
-function TJvAppIniStore.ReadFloatInt(const Path: string; Default: Extended = 0): Extended;
+function TJvAppIniStore.DoReadFloat(const Path: string; Default: Extended): Extended;
 var
   Section: string;
   Key: string;
   Value: string;
 begin
-  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
+  SplitKeyPath(Path, Section, Key);
   if ValueExists(Section, Key) then
   begin
     Value := ReadValue(Section, Key);
@@ -336,43 +349,43 @@ begin
     Result := Default;
 end;
 
-procedure TJvAppIniStore.WriteFloatInt(const Path: string; Value: Extended);
+procedure TJvAppIniStore.DoWriteFloat(const Path: string; Value: Extended);
 var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
+  SplitKeyPath(Path, Section, Key);
   WriteValue(Section, Key, FloatToStr(Value));
 end;
 
-function TJvAppIniStore.ReadStringInt(const Path: string; Default: string = ''): string;
+function TJvAppIniStore.DoReadString(const Path: string; Default: string): string;
 var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
+  SplitKeyPath(Path, Section, Key);
   if ValueExists(Section, Key) then
     Result := ReadValue(Section, Key)
   else
     Result := Default;
 end;
 
-procedure TJvAppIniStore.WriteStringInt(const Path: string; Value: string);
+procedure TJvAppIniStore.DoWriteString(const Path: string; Value: string);
 var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
+  SplitKeyPath(Path, Section, Key);
   WriteValue(Section, Key, Value);
 end;
 
-function TJvAppIniStore.ReadBinaryInt(const Path: string; var Buf; BufSize: Integer): Integer;
+function TJvAppIniStore.DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
 var
   Section: string;
   Key: string;
   Value: string;
 begin
-  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
+  SplitKeyPath(Path, Section, Key);
   if ValueExists(Section, Key) then
   begin
     Value := ReadValue(Section, Key);
@@ -382,12 +395,12 @@ begin
     Result := 0;
 end;
 
-procedure TJvAppIniStore.WriteBinaryInt(const Path: string; const Buf; BufSize: Integer);
+procedure TJvAppIniStore.DoWriteBinary(const Path: string; const Buf; BufSize: Integer);
 var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
+  SplitKeyPath(Path, Section, Key);
   WriteValue(Section, Key, BufToBinStr(Buf, BufSize));
 end;
 
@@ -474,6 +487,8 @@ var
   I: Integer;
 begin
   RefPath := GetAbsPath(Path);
+  if RefPath = '' then
+    RefPath := DefaultSection;
   IniFile.ReadSections(Strings);
   I := Strings.Count - 1;
   while I >= 0 do
@@ -500,6 +515,8 @@ var
 begin
   PathIsList := ReportListAsValue and ListStored(Path);
   RefPath := GetAbsPath(Path);
+  if RefPath = '' then
+    RefPath := DefaultSection;
   IniFile.ReadSectionValues(RefPath, Strings);
   for I := Strings.Count - 1 downto 0 do
   begin
@@ -523,7 +540,7 @@ end;
 function TJvAppINIFileStore.ReadValue(const Section, Key: string): string;
 begin
   if Section = '' then
-    raise EJVCLException.Create(SReadValueFailed);
+    raise EJVCLAppStore.Create(SReadValueFailed);
   if IniFile <> nil then
     Result := IniFile.ReadString(Section, Key, '')
   else
@@ -535,7 +552,7 @@ begin
   if IniFile <> nil then
   begin
     if Section = '' then
-      raise EJVCLException.Create(SWriteValueFailed);
+      raise EJVCLAppStore.Create(SWriteValueFailed);
     IniFile.WriteString(Section, Key, Value);
     FLastUserAct := GetTickCount;
     FHasWritten := True;
@@ -578,14 +595,14 @@ begin
   inherited Destroy;
 end;
 
-function TJvAppINIFileStore.PathExists(const Path: string): boolean;
+function TJvAppINIFileStore.PathExistsInt(const Path: string): boolean;
 var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
+  SplitKeyPath(Path, Section, Key);
   Result := IniFile.SectionExists(Section + '\' + Key);
-End;
+end;
 
 procedure TJvAppINIFileStore.Flush;
 begin
@@ -596,13 +613,15 @@ begin
   end;
 end;
 
-function TJvAppINIFileStore.IsFolder(Path: string; ListIsValue: Boolean): Boolean;
+function TJvAppINIFileStore.IsFolderInt(Path: string; ListIsValue: Boolean): Boolean;
 var
   RefPath: string;
   ValueNames: TStrings;
   I: Integer;
 begin
   RefPath := GetAbsPath(Path);
+  if RefPath = '' then
+    RefPath := DefaultSection;
   Result := IniFile.SectionExists(RefPath);
   if Result and ListIsValue and IniFile.ValueExists(RefPath, cCount) then
   begin
