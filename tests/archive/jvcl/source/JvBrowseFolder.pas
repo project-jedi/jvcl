@@ -67,6 +67,7 @@ type
     FOnAcceptChange: TJvBrowseAcceptChange;
     // (p3) updates the status text. NOTE: doesn't work if odNewDialogStyle is true (MS limitation)!!!
     procedure UpdateStatusText(const hWnd: THandle; const Text: string);
+    procedure SetPath(const hWnd: THandle; const Path:String);
   protected
     function GetWindowHandle: THandle;
   public
@@ -78,7 +79,7 @@ type
 
     function Execute: Boolean; override;
   published
-    property Directory: string read FDirectory write FDummy;
+    property Directory: string read FDirectory write FDirectory;
     property DisplayName: string read FDisplayName write FDisplayName;
     property Options: TOptionsDir read FOptions write FOptions default
       [odStatusAvailable, odNewDialogStyle];
@@ -205,7 +206,8 @@ begin
 
           //Change directory (if possible)
           if FDirectory <> '' then
-            SendMessage(FDialogHandle, BFFM_SETSELECTION, Integer(True), Integer(PChar(FDirectory)));
+            SetPath(FDialogHandle, FDIrectory);
+//            SendMessage(FDialogHandle, BFFM_SETSELECTION, Integer(True), Integer(PChar(FDirectory)));
           UpdateStatusText(hWnd, FDirectory);
           //Call init event
           if Assigned(FOnInit) then
@@ -343,6 +345,11 @@ begin
     Result := Screen.ActiveCustomForm.Handle
   else
     Result := GetFocus;
+end;
+
+procedure TJvBrowseFolder.SetPath(const hWnd: THandle; const Path: String);
+begin
+  SendMessage(hWnd, BFFM_SETSELECTION, Ord(TRUE), integer(PChar(Path)));
 end;
 
 end.
