@@ -36,13 +36,13 @@ uses
   gnugettext,
   {$ENDIF USE_DXGETTEXT}
   {$IFDEF MSWINDOWS}
-  Windows, Messages,
+  Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Controls,
+  Messages, Controls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, Types, QWindows,
+  Qt, QWindows,
   {$ENDIF VisualCLX}
   JVCLVer, JvExControls, JvExExtCtrls, JvExComCtrls, JvExForms, JvExStdCtrls;
 
