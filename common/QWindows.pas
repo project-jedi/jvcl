@@ -848,7 +848,7 @@ implementation
 
 {$IFDEF LINUX}
 uses
-  Libc, Windows;
+  Libc;
 {$ENDIF LINUX}
 {$IFDEF MSWINDOWS}
 uses
