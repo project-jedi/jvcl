@@ -36,7 +36,7 @@ uses
   Windows, Graphics,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, Types,
+  QGraphics, Types, QWindows,
   {$ENDIF VisualCLX}
   Classes, SysUtils;
 
@@ -471,7 +471,12 @@ begin
   DC := GetDC(0);
   hSavFont := SelectObject(DC, aFont.Handle);
   //GetTextExtentPoint32(DC, cStr, Length(aTxt), Size);
+  {$IFDEF VCL}
   Windows.GetTextExtentPoint32(DC, PTxt, StrLen(PTxt), Size);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  GetTextExtentPoint32(DC, PTxt, StrLen(PTxt), Size);
+  {$ENDIF VisualCLX}
   StrDispose(PTxt);
   SelectObject(DC, hSavFont);
   ReleaseDC(0, DC);
@@ -553,7 +558,9 @@ procedure DrawAngleText(aCanvas: TCanvas; HostRect: TRect;
   var TextBounds: TRect; aAngle: Integer; HAlign: TAlignment;
   VAlign: TJvTFVAlignment; aTxt: String);
 var
+  {$IFDEF VCL}
   LogFont: TLogFont;
+  {$ENDIF VCL}
   TxtRect: TRect;
   Flags: UINT;
   PTxt: PChar;
@@ -571,14 +578,11 @@ begin
   LogFont.lfOrientation := LogFont.lfEscapement;
   aCanvas.Font.Handle := CreateFontIndirect(LogFont);
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-
-  {$ENDIF VisualCLX}
   Flags := DT_NOPREFIX or DT_LEFT or DT_TOP or DT_NOCLIP or DT_SINGLELINE;
 
   PTxt := StrAlloc((Length(aTxt) + 4) * SizeOf(Char));
   StrPCopy(PTxt, aTxt);
-
+  {$IFDEF VCL}
   //ClipRgn := Windows.CreateRectRgn(aRect.Left, aRect.Top,
     //                               aRect.Right, aRect.Bottom);
   ClipRgn := Windows.CreateRectRgn(HostRect.Left, HostRect.Top,
@@ -594,6 +598,22 @@ begin
   Windows.DeleteObject(ClipRgn);
   StrDispose(PTxt);
   aCanvas.Font.Handle := 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  ClipRgn := CreateRectRgn(HostRect.Left, HostRect.Top,
+                                   HostRect.Right, HostRect.Bottom);
+  SelectClipRgn(aCanvas.Handle, ClipRgn);
+
+
+  //Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
+  TxtRect := Rect(TextLeft, TextTop, TextLeft + 1, TextTop + 1);
+  DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
+
+  SelectClipRgn(aCanvas.Handle, 0);
+  DeleteObject(ClipRgn);
+  StrDispose(PTxt);
+  aCanvas.Font.Handle := nil;
+  {$ENDIF VisualCLX}
 
   //aRect := TxtRect;
 end;
