@@ -10,7 +10,8 @@ DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
 PROJECTS = crlf.exe MakePNG.exe MakeRC.exe Res2Bmp.exe jconvert.exe dc.exe MakeDOF.exe \
-  MakeCFG.exe jtouch.exe isu.exe ErrLook.exe stripCmtPO.exe
+  MakeCFG.exe jtouch.exe isu.exe ErrLook.exe stripCmtPO.exe pg.exe pgEdit.exe \
+  dxgettextResstr.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -57,10 +58,10 @@ stripCmtPO.exe: stripCmtPO\stripCmtPO.dpr
 dxgettextResstr.exe: dxgettextResstr\dxgettextResstr.dpr
   $(DCC)
   
-pg.exe: PackageGenerator\pg.dpr
+pg.exe: PackagesGenerator\pg.dpr
   $(DCC)
 
-pgEdit.exe: PackageGenerator\pgEdit.dpr
+pgEdit.exe: PackagesGenerator\pgEdit.dpr
   $(DCC)
 
 

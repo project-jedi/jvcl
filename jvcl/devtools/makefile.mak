@@ -8,19 +8,19 @@
 ROOT = $(MAKEDIR)\..
 !endif
 #---------------------------------------------------------------------------------------------------
-SRC = ..\..\Source
+SRC = ..\..\Run
 ARCH = ..\..\Archive
-COM = ..\Common
+COM = ..\Common;..\..\Common
 BIN = ..\Bin
 DCU = ..\Dcu
-JCL = ..\..\..\JCL\source
+JCL = ..\..\..\JCL\source;..\..\..\JCL\source\common;..\..\..\JCL\source\windows;..\..\..\JCL\source\vcl;..\..\..\JCL\source\visclx
 DRC = $&.drc
 SRCP = $(SRC);$(COM);$(JCL);$(ARCH);$(DCU)
 SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
-DCC  = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(SRCP) -n$(DCU) -r$(SRCP) -u$(SRCP) -q -w -m
-DCCH = $(ROOT)\bin\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -m
+DCC  = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(SRCP) -n$(DCU) -r$(SRCP) -u$(SRCP) -q -w -h -m
+DCCH = $(ROOT)\bin\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -h m
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
 default: \
@@ -98,8 +98,8 @@ dc.exe: DFMCleaner\dc.dpr
   $(DCC) $&.dpr
   cd ..
   
-pg.exe: PackageGenerator\pg.dpr
-  cd PackageGenerator
+pg.exe: PackagesGenerator\pg.dpr
+  cd PackagesGenerator
   $(DCC) $&.dpr
   cd..
 
