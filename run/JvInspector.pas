@@ -6040,6 +6040,8 @@ end;
 
 procedure TJvCustomInspectorItem.EditKeyPress(Sender: TObject; var Key: Char);
 begin
+  if Assigned(Inspector.FOnEditorKeyPress) then
+    Inspector.FOnEditorKeyPress(Self,Key);
   if Inspector.AutoComplete and (iifValueList in Flags) and not ReadOnly then
   begin
     if not Assigned(FAutoComplete) then
