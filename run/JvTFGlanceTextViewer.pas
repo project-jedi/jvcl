@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvTFGlTxtVw.PAS, released on 2003-08-01.
+The Original Code is: JvTFGlanceTextViewer.PAS, released on 2003-08-01.
 
 The Initial Developer of the Original Code is Unlimited Intelligence Limited.
 Portions created by Unlimited Intelligence Limited are Copyright (C) 1999-2002 Unlimited Intelligence Limited.
@@ -27,7 +27,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvTFGlTxtVw;
+unit JvTFGlanceTextViewer;
 
 interface
 

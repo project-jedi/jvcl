@@ -39,8 +39,8 @@ contains
   JvTFAlarm in '..\..\run\JvTFAlarm.pas',
   JvTFDays in '..\..\run\JvTFDays.pas',
   JvTFGlance in '..\..\run\JvTFGlance.pas',
-  JvTFGlTxtVw in '..\..\run\JvTFGlTxtVw.pas',
+  JvTFGlanceTextViewer in '..\..\run\JvTFGlanceTextViewer.pas',
   JvTFMonths in '..\..\run\JvTFMonths.pas',
-  JvTFSprsMtrx in '..\..\run\JvTFSprsMtrx.pas';
+  JvTFSparseMatrix in '..\..\run\JvTFSparseMatrix.pas';
 
 end.

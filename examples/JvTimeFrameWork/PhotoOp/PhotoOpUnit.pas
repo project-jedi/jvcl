@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Db, DBTables, ComCtrls, StdCtrls, Buttons, ExtCtrls,
-  ImgList, JvTFManager, JvTFDays, JvTFGlance, JvTFGlTxtVw, JvTFMonths, JvTFWeeks;
+  ImgList, JvTFManager, JvTFDays, JvTFGlance, JvTFGlanceTextViewer, JvTFMonths, JvTFWeeks;
 
 type
   TPhotoOpMain = class(TForm)

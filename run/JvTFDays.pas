@@ -59,7 +59,7 @@ uses
    Dialogs,
    StdCtrls,
    JvTFManager,
-   JvTFSprsMtrx,
+   JvTFSparseMatrix,
    JvTFUtils;
 {$ELSE}
 uses
@@ -73,7 +73,7 @@ uses
    Dialogs,
    StdCtrls,
    JvTFManager,
-   JvTFSprsMtrx,
+   JvTFSparseMatrix,
    ImgList,
    JvTFUtils;
 {$ENDIF}
