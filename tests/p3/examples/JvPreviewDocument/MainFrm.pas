@@ -364,6 +364,13 @@ begin
   end;
 end;
 
+function Max(Val1, Val2: integer): integer;
+begin
+  Result := Val1;
+  if Val2 > Val1 then
+    Result := Val2;
+end;
+
 { TfrmMain }
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -380,10 +387,17 @@ begin
     pd.Options.Cols := udCols.Position;
     pd.Options.Shadow.Offset := udShadowWidth.Position;
     pd.Options.Scale := udZoom.Position;
+
     cbPreview.ItemIndex := 1; // printer
     cbPreviewChange(nil);
     cbScaleMode.ItemIndex := 0; // full page
     cbScaleModeChange(nil);
+
+    // set 0.5 inch margin
+    pd.DeviceInfo.OffsetLeft := Max(pd.DeviceInfo.InchToXPx(0.5),pd.DeviceInfo.OffsetLeft);
+    pd.DeviceInfo.OffsetRight := Max(pd.DeviceInfo.InchToXPx(0.5),pd.DeviceInfo.OffsetRight);
+    pd.DeviceInfo.OffsetTop := Max(pd.DeviceInfo.InchToYPx(0.5),pd.DeviceInfo.OffsetTop);
+    pd.DeviceInfo.OffsetBottom := Max(pd.DeviceInfo.InchToYPx(0.5),pd.DeviceInfo.OffsetBottom);
   finally
     pd.EndUpdate;
   end;
@@ -397,6 +411,8 @@ begin
   udZoom.Position := pd.Options.Scale;
   mnuMargins.Checked := pd.Options.DrawMargins;
   cbScaleMode.ItemIndex := Ord(pd.Options.ScaleMode);
+  Caption := Format('%s: - (%d pages)',
+    [ExtractFilename(OpenDialog1.Filename), pd.PageCount]);
 end;
 
 procedure TfrmMain.udColsClick(Sender: TObject; Button: TUDBtnType);
@@ -447,8 +463,6 @@ begin
     Free;
     Screen.Cursor := crDefault;
   end;
-  Caption := Format('%s: - (%d pages)',
-    [ExtractFilename(OpenDialog1.Filename), pd.PageCount]);
 end;
 
 procedure TfrmMain.Open1Click(Sender: TObject);
