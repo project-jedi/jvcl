@@ -3861,7 +3861,10 @@ end;
 
 function TJvFilenameEdit.GetFileName: TFileName;
 begin
-  Result := ClipFilename(inherited Text);
+  if AddQuotes then
+    Result := ClipFilename(inherited Text)
+  else
+    Result := inherited Text;
 end;
 
 function TJvFilenameEdit.GetFilter: string;
