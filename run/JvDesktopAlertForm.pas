@@ -196,7 +196,9 @@ begin
   if ((P.Y <= cCaptionHeight) and Moveable) or (MoveAnywhere and (ControlAtPos(P,false) = nil)) then
   begin
     FadeTimer.Enabled := false;
+{$IFDEF COMPILER6_UP}
     AlphaBlendValue := MaxAlphaBlendValue;
+{$ENDIF COMPILER6_UP}
     Message.Result := HTCAPTION;
   end
   else
@@ -214,7 +216,9 @@ begin
   MouseInControl := true;
 //  SetFocus;
   FadeTimer.Enabled := false;
+{$IFDEF COMPILER6_UP}
   AlphaBlendValue := MaxAlphaBlendValue;
+{$ENDIF COMPILER6_UP}
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
@@ -238,6 +242,7 @@ end;
 procedure TJvFormDesktopAlert.FadeInTimer(Sender: TObject);
 begin
   FadeTimer.Enabled := false;
+{$IFDEF COMPILER6_UP}
   if AlphaBlendValue <= MaxAlphaBlendValue - cAlphaIncrement then
     AlphaBlendValue := AlphaBlendValue + cAlphaIncrement;
   if AlphaBlendValue >= MaxAlphaBlendValue - cAlphaIncrement then
@@ -247,11 +252,13 @@ begin
   end
   else
     FadeTimer.Enabled := True;;
+{$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvFormDesktopAlert.FadeOutTimer(Sender: TObject);
 begin
   FadeTimer.Enabled := false;
+{$IFDEF COMPILER6_UP}
   if AlphaBlendValue > cAlphaIncrement then
   begin
     AlphaBlendValue := AlphaBlendValue - cAlphaIncrement;
@@ -262,6 +269,7 @@ begin
   end
   else
     Close
+{$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvFormDesktopAlert.WaitTimer(Sender: TObject);
@@ -372,7 +380,13 @@ begin
         if (Images = nil) or (ImageIndex < 0) or (ImageIndex >= Images.Count) then Exit;
         Images.Draw(Canvas,
             (Width - Images.Width) div 2 + Ord(bsMouseDown in MouseStates),
-            (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates), ImageIndex, dsTransparent, itImage, Enabled);
+            (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
+            ImageIndex,
+            {$IFDEF COMPILER6_UP}
+            dsTransparent,
+            itImage,
+            {$ENDIF COMPILER6_UP}
+            Enabled);
       end;
 
     end;
@@ -418,7 +432,9 @@ procedure TJvFormDesktopAlert.DoShow;
 begin
   inherited DoShow;
   FadeTimer.Enabled := false;
+{$IFDEF COMPILER6_UP}
   AlphaBlendValue := 0;
+{$ENDIF COMPILER6_UP}
   if ClickableMessage then
     lblText.Cursor := crHandPoint
   else
@@ -485,8 +501,10 @@ begin
   MouseTimer.OnTimer := DoMouseTimer;
   MouseTimer.Enabled := True;
 
+{$IFDEF COMPILER6_UP}
   AlphaBlend := True;
   AlphaBlendValue := 0;
+{$ENDIF COMPILER6_UP}
   BorderIcons := [];
   BorderStyle := bsNone;
   FormStyle := fsStayOnTop;
@@ -512,8 +530,10 @@ begin
   lblText.SetBounds(56, 24,67,13);
   lblText.Transparent := True;
   lblText.WordWrap := True;
+{$IFDEF COMPILER6_UP}
   lblText.OnMouseEnter := lblTextMouseEnter;
   lblText.OnMouseLeave := lblTextMouseLeave;
+{$ENDIF COMPILER6_UP}
 
   acClose := TAction.Create(Self);
   acClose.Caption := 'Close';
@@ -555,7 +575,9 @@ end;
 
 procedure TJvFormDesktopAlert.FadeIn;
 begin
+{$IFDEF COMPILER6_UP}
   AlphaBlendValue := 0;
+{$ENDIF COMPILER6_UP}
   Update;
   FadeTimer.Enabled := false;
   FadeTimer.Interval := FadeInTime;
@@ -567,7 +589,9 @@ end;
 
 procedure TJvFormDesktopAlert.FadeOut;
 begin
+{$IFDEF COMPILER6_UP}
   AlphaBlendValue := MaxAlphaBlendValue;
+{$ENDIF COMPILER6_UP}
   Update;
   FadeTimer.Enabled := false;
   FadeTimer.Interval := FadeOutTime;
@@ -580,7 +604,9 @@ end;
 
 procedure TJvFormDesktopAlert.Wait;
 begin
+{$IFDEF COMPILER6_UP}
   AlphaBlendValue := MaxAlphaBlendValue;
+{$ENDIF COMPILER6_UP}
   Update;
   FadeTimer.Enabled := false;
   FadeTimer.Interval := WaitTime;
