@@ -165,13 +165,12 @@ type
   private
     FInterval: Cardinal;
     FDirection: TJvLabelScrollDirection;
-    FOriginalText: TCaption;
     FTimer: TTimer;
-    FPad: Boolean;
+    FPadding: Boolean;
     procedure SetDirection(const Value: TJvLabelScrollDirection);
     procedure SetInterval(const Value: Cardinal);
     procedure DoTimerEvent(Sender: TObject);
-    procedure DoPadding(Value: Boolean);
+    procedure SetPadding(Value: Boolean);
   protected
     procedure Start; override;
     procedure Stop; override;
@@ -181,7 +180,7 @@ type
     property Active;
     // Set Padding to True to simulate the Caption being scrolled "around the Edge" of the
     // label. This property is implemented such that the text is right-padded with spaces
-    property Padding: Boolean read FPad write FPad default False;
+    property Padding: Boolean read FPadding write SetPadding default False;
     // Interval specifies the number of milliseconds that elapses between each scroll
     // A lower Interval increases the speed of the scroll
     property Interval: Cardinal read FInterval write SetInterval default 50;
@@ -237,7 +236,6 @@ type
     FInterval: Cardinal;
     FTextPos: Integer;
     FTimer: TTimer;
-    FOriginalText: TCaption;
     procedure SetInterval(const Value: Cardinal);
     procedure SetMakeErrors(const Value: Boolean);
     procedure DoTimerEvent(Sender: TObject);
@@ -265,7 +263,6 @@ type
     FTextPos: Integer;
     FCharValue: Integer;
     FTimer: TTimer;
-    FOriginalText: TCaption;
     procedure SetInterval(const Value: Cardinal);
     procedure DoTimerEvent(Sender: TObject);
   protected
@@ -285,7 +282,6 @@ type
   TJvLabelCodeBreaker = class(TJvLabelBehavior)
   private
     FScratchPad: TCaption;
-    FOriginal: TCaption;
     FDecodedText: TCaption;
     FInterval: Integer;
     FCurrentPos: Integer;
@@ -311,13 +307,14 @@ type
     FOnParentColorChanged: TNotifyEvent;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
-    FUseLocalText: Boolean;
-    FLocalText: TCaption;
+    FUseEffectText: Boolean;
+    FEffectText: TCaption;
     function GetOptions: TJvLabelBehavior;
     function BehaviorStored: Boolean;
     procedure UpdateDesigner;
     procedure SetBehavior(const Value: TJvLabelBehaviorName);
     procedure SetOptions(const Value: TJvLabelBehavior);
+    procedure SetUseEffectText(const Value: Boolean);
   protected
     procedure ParentColorChanged; override;
     procedure Resize; override;
@@ -338,6 +335,9 @@ type
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
+    // do not make these published
+    property EffectText: TCaption read FEffectText write FEffectText;
+    property UseEffectText: Boolean read FUseEffectText write SetUseEffectText;
   end;
 
   TJvBehaviorLabel = class(TJvCustomBehaviorLabel)
@@ -527,6 +527,8 @@ constructor TJvCustomBehaviorLabel.Create(AComponent: TComponent);
 begin
   inherited Create(AComponent);
   FBehavior := cNoneCaption;
+  FUseEffectText := False;
+  FEffectText := '';
 end;
 
 destructor TJvCustomBehaviorLabel.Destroy;
@@ -561,8 +563,8 @@ function TJvCustomBehaviorLabel.GetLabelText: string;
 function TJvCustomBehaviorLabel.GetLabelText: WideString;
 {$ENDIF VisualCLX}
 begin
-  if FUseLocalText then
-    Result := FLocalText
+  if UseEffectText then
+    Result := EffectText
   else
     Result := inherited GetLabelText;
 end;
@@ -620,6 +622,16 @@ begin
   UpdateDesigner;
 end;
 
+procedure TJvCustomBehaviorLabel.SetUseEffectText(const Value: Boolean);
+begin
+  if Value <> FUseEffectText then
+  begin
+    FUseEffectText := Value;
+    if ComponentState * [csLoading, csDestroying] = [] then
+      Repaint;
+  end;
+end;
+
 procedure TJvCustomBehaviorLabel.UpdateDesigner;
 var
   F: TCustomForm;
@@ -643,8 +655,7 @@ end;
 constructor TJvLabelBlink.Create(ALabel: TJvCustomBehaviorLabel);
 begin
   inherited Create(ALabel);
-  ALabel.FUseLocalText := False;
-  ALabel.FLocalText := '';
+  ALabel.EffectText := '';
   FDelay := 100;
   FInterval := 400;
 end;
@@ -654,8 +665,7 @@ begin
   FTimer.Enabled := False;
   FTimer.Interval := FInterval;
   FToggled := not FToggled;
-  OwnerLabel.FUseLocalText := FToggled;
-  OwnerLabel.Refresh;
+  OwnerLabel.UseEffectText := FToggled;
   FTimer.Enabled := FInterval > 0;
 end;
 
@@ -682,7 +692,7 @@ end;
 procedure TJvLabelBlink.Start;
 begin
   inherited Start;
-  if csLoading in OwnerLabel.ComponentState then
+  if OwnerLabel.ComponentState * [csLoading, csDestroying] <> [] then
     Exit;
   if FTimer = nil then
   begin
@@ -702,8 +712,7 @@ begin
   if FTimer <> nil then
   begin
     FreeAndNil(FTimer);
-    OwnerLabel.FUseLocalText := False;
-    OwnerLabel.Repaint;
+    OwnerLabel.UseEffectText := False;
   end;
   inherited Stop;
 end;
@@ -799,7 +808,7 @@ end;
 
 procedure TJvLabelBounce.Start;
 begin
-  if (csLoading in OwnerLabel.ComponentState) then
+  if OwnerLabel.ComponentState * [csLoading, csDestroying] <> [] then
     Exit;
   FParent := OwnerLabel.Parent;
   if FParent = nil then
@@ -841,12 +850,13 @@ begin
   FTimer.Enabled := False;
   if OwnerLabel.Caption <> '' then
   begin
-    Tmp := OwnerLabel.Caption;
+    Tmp := OwnerLabel.EffectText;
     if FDirection = sdLeftToRight then
       Tmp := Tmp[Length(Tmp)] + Copy(Tmp, 1, Length(Tmp) - 1)
     else
       Tmp := Copy(Tmp, 2, Length(Tmp) - 1) + Tmp[1];
-    OwnerLabel.Caption := Tmp;
+    OwnerLabel.EffectText := Tmp;
+    OwnerLabel.Repaint;
   end;
   FTimer.Enabled := True;
 end;
@@ -871,21 +881,24 @@ begin
   end;
 end;
 
-procedure TJvLabelScroll.DoPadding(Value: Boolean);
+procedure TJvLabelScroll.SetPadding(Value: Boolean);
 var
   Tmp: TCaption;
 begin
-  Tmp := FOriginalText;
-  if Value and not (csDestroying in OwnerLabel.ComponentState) then
-    while OwnerLabel.Canvas.TextWidth(Tmp) < OwnerLabel.Width do
-      Tmp := Tmp + ' ';
-  OwnerLabel.Caption := Tmp;
+  FPadding := Value;
+  Tmp := '';
+  while OwnerLabel.Canvas.TextWidth(Tmp) < OwnerLabel.Width do
+    Tmp := Tmp + ' ';
+  if Value then
+    OwnerLabel.EffectText := OwnerLabel.Caption + Tmp
+  else
+    OwnerLabel.EffectText := OwnerLabel.Caption;
 end;
 
 procedure TJvLabelScroll.Start;
 begin
   inherited Start;
-  if csLoading in OwnerLabel.ComponentState then
+  if OwnerLabel.ComponentState * [csLoading, csDestroying] <> [] then
     Exit;
   if FTimer = nil then
   begin
@@ -894,19 +907,15 @@ begin
     FTimer.OnTimer := DoTimerEvent;
   end;
   FTimer.Interval := Interval;
-  FOriginalText := OwnerLabel.Caption;
-  DoPadding(Padding);
+  SetPadding(Padding);
+  OwnerLabel.UseEffectText := True;
   FTimer.Enabled := True;
 end;
 
 procedure TJvLabelScroll.Stop;
 begin
-  if FTimer <> nil then
-  begin
-    FreeAndNil(FTimer);
-    OwnerLabel.Caption := FOriginalText;
-    //    DoPadding(False);
-  end;
+  FreeAndNil(FTimer);
+  OwnerLabel.UseEffectText := False;
   inherited Stop;
 end;
 
@@ -1032,7 +1041,7 @@ end;
 
 procedure TJvLabelAppear.Start;
 begin
-  if csLoading in OwnerLabel.ComponentState then
+  if OwnerLabel.ComponentState * [csLoading, csDestroying] <> [] then
     Exit;
   FParent := OwnerLabel.Parent;
   if FParent = nil then
@@ -1073,19 +1082,20 @@ var
   I: Integer;
 begin
   FTimer.Enabled := False;
-  if FTextPos <= Length(FOriginalText) then
+  if FTextPos <= Length(OwnerLabel.Caption) then
   begin
-    Tmp := Copy(FOriginalText, 1, FTextPos - 1);
+    Tmp := Copy(OwnerLabel.Caption, 1, FTextPos - 1);
     I := Random(10);
     if (I = 7) and MakeErrors then
-      Tmp := Tmp + Char(Ord(FOriginalText[FTextPos]) - Random(10))
+      Tmp := Tmp + Char(Ord(OwnerLabel.Caption[FTextPos]) - Random(10))
     else
-      Tmp := Tmp + FOriginalText[FTextPos];
+      Tmp := Tmp + OwnerLabel.Caption[FTextPos];
     if (MakeErrors) and (I <> 7) then
       FTimer.Interval := Interval
     else
       FTimer.Interval := Interval * 2;
-    OwnerLabel.Caption := Tmp;
+    OwnerLabel.EffectText := Tmp;
+    OwnerLabel.Repaint;
     Inc(FTextPos);
     FTimer.Enabled := True;
   end
@@ -1116,7 +1126,7 @@ end;
 procedure TJvLabelTyping.Start;
 begin
   inherited Start;
-  if csLoading in OwnerLabel.ComponentState then
+  if OwnerLabel.ComponentState * [csLoading, csDestroying] <> [] then
     Exit;
   if FTimer = nil then
   begin
@@ -1126,18 +1136,16 @@ begin
   end;
   FTimer.Interval := Interval;
   Randomize;
-  FOriginalText := OwnerLabel.Caption;
+  OwnerLabel.EffectText := '';
+  OwnerLabel.UseEffectText := True;
   FTextPos := 1;
   FTimer.Enabled := True;
 end;
 
 procedure TJvLabelTyping.Stop;
 begin
-  if FTimer <> nil then
-  begin
-    FreeAndNil(FTimer);
-    OwnerLabel.Caption := FOriginalText;
-  end;
+  FreeAndNil(FTimer);
+  OwnerLabel.UseEffectText := False;
   inherited Stop;
 end;
 
@@ -1152,14 +1160,15 @@ end;
 procedure TJvLabelSpecial.DoTimerEvent(Sender: TObject);
 begin
   FTimer.Enabled := False;
-  if FTextPos < Length(FOriginalText) then
+  if FTextPos < Length(OwnerLabel.Caption) then
   begin
-    if FCharValue > Ord(FOriginalText[FTextPos]) then
+    if FCharValue > Ord(OwnerLabel.Caption[FTextPos]) then
     begin
       Inc(FTextPos);
       FCharValue := 32;
     end;
-    OwnerLabel.Caption := Copy(FOriginalText, 1, FTextPos) + Char(FCharValue);
+    OwnerLabel.EffectText := Copy(OwnerLabel.Caption, 1, FTextPos) + Char(FCharValue);
+    OwnerLabel.Repaint;
     Inc(FCharValue);
     FTimer.Enabled := True;
   end
@@ -1180,7 +1189,7 @@ end;
 procedure TJvLabelSpecial.Start;
 begin
   inherited Start;
-  if csLoading in OwnerLabel.ComponentState then
+  if OwnerLabel.ComponentState * [csLoading, csDestroying] <> [] then
     Exit;
   if FTimer = nil then
   begin
@@ -1190,18 +1199,16 @@ begin
   end;
   FTextPos := 1;
   FCharValue := 32;
-  FOriginalText := OwnerLabel.Caption;
+  OwnerLabel.EffectText := '';
+  OwnerLabel.UseEffectText := True;
   FTimer.Interval := Interval;
   FTimer.Enabled := True;
 end;
 
 procedure TJvLabelSpecial.Stop;
 begin
-  if FTimer <> nil then
-  begin
-    FreeAndNil(FTimer);
-    OwnerLabel.Caption := FOriginalText;
-  end;
+  FreeAndNil(FTimer);
+  OwnerLabel.UseEffectText := False;
   inherited Stop;
 end;
 
@@ -1218,11 +1225,8 @@ begin
   FTimer.Enabled := False;
   if (FCurrentPos > Length(FScratchPad)) or (FCurrentPos > Length(DecodedText)) then
   begin
-    with OwnerLabel do
-    begin
-      Caption := DecodedText;
-//      Repaint;
-    end;
+    OwnerLabel.EffectText := DecodedText;
+    OwnerLabel.Repaint;
     Active := False;
     Exit;
   end
@@ -1235,12 +1239,9 @@ begin
     {$IFDEF VisualCLX}
     FScratchPad[FCurrentPos] := WideChar(32 + Random(Ord(DecodedText[FCurrentPos]) + 10));
     {$ENDIF VisualCLX}
-    with OwnerLabel do
-    begin
-      Caption := Copy(Caption, 1, FCurrentPos - 1) +
-        FScratchPad[FCurrentPos] + Copy(Caption, FCurrentPos + 1, MaxInt);
-//      Repaint;
-    end
+    OwnerLabel.EffectText := Copy(OwnerLabel.EffectText, 1, FCurrentPos - 1) +
+      FScratchPad[FCurrentPos] + Copy(OwnerLabel.EffectText, FCurrentPos + 1, MaxInt);
+    OwnerLabel.Repaint;
   end
   else
     Inc(FCurrentPos);
@@ -1261,16 +1262,16 @@ end;
 procedure TJvLabelCodeBreaker.Start;
 begin
   inherited Start;
-  FOriginal := OwnerLabel.Caption;
   FCurrentPos := 1;
-  if (Interval > 0) and (FOriginal <> '') and (DecodedText <> '') then
+  if (Interval > 0) and (OwnerLabel.Caption <> '') and (DecodedText <> '') then
   begin
-    FScratchPad := FOriginal;
+    FScratchPad := OwnerLabel.Caption;
     FTimer := TTimer.Create(nil);
     FTimer.Enabled := False;
     FTimer.OnTimer := DoTimer;
     FTimer.Interval := Interval;
     FTimer.Enabled := True;
+    OwnerLabel.UseEffectText := True;
   end
   else
     Active := False;
@@ -1279,7 +1280,8 @@ end;
 procedure TJvLabelCodeBreaker.Stop;
 begin
   FreeAndNil(FTimer);
-//  OwnerLabel.Caption := FOriginal;
+  OwnerLabel.Caption := OwnerLabel.EffectText;
+  OwnerLabel.UseEffectText := False;
   inherited Stop;
 end;
 
