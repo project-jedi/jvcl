@@ -31,7 +31,7 @@ unit JvPropertyStore;
 interface
 
 uses
-  Classes, 
+  Classes,
   JvAppStorage, JvComponent;
 
 type
@@ -47,7 +47,7 @@ type
     FAutoLoad: Boolean;
     FLastLoadTime: TDateTime;
     FIgnoreLastLoadTime: Boolean;
-    FCombinedIgnoreList: TStrings;
+    FCombinedIgnoreProperties: TStrings;
     FOnBeforeLoadProperties: TNotifyEvent;
     FOnAfterLoadProperties: TNotifyEvent;
     FOnBeforeStoreProperties: TNotifyEvent;
@@ -68,7 +68,7 @@ type
     procedure LoadData; virtual;
     procedure StoreData; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function CombinedIgnoreList: TStrings;
+    function  GetCombinedIgnoreProperties: TStrings;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -78,6 +78,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Clear; virtual;
     function TranslatePropertyName(AName: string): string; virtual;
+    property CombinedIgnoreProperties: TStrings read GetCombinedIgnoreProperties;
   published
     property AutoLoad: Boolean read FAutoLoad write SetAutoLoad;
     property AppStoragePath: string read FAppStoragePath write SetPath;
@@ -292,7 +293,7 @@ begin
   FIntIgnoreProperties := TStringList.Create;
   FIgnoreProperties := TStringList.Create;
   FIgnoreLastLoadTime := False;
-  FCombinedIgnoreList := TCombinedStrings.Create;
+  FCombinedIgnoreProperties := TCombinedStrings.Create;
   for I := Low(IgnorePropertyList) to High(IgnorePropertyList) do
     FIntIgnoreProperties.Add(IgnorePropertyList[I]);
 end;
@@ -302,7 +303,7 @@ begin
   if not (csDesigning in ComponentState) then
     if AutoLoad then
       StoreProperties;
-  FreeAndNil(FCombinedIgnoreList);
+  FreeAndNil(FCombinedIgnoreProperties);
   FreeAndNil(FIntIgnoreProperties);
   FreeAndNil(FIgnoreProperties);
   Clear;
@@ -317,11 +318,11 @@ begin
     FAppStorage := nil;
 end;
 
-function TJvCustomPropertyStore.CombinedIgnoreList: TStrings;
+function TJvCustomPropertyStore.GetCombinedIgnoreProperties: TStrings;
 begin
-  FCombinedIgnoreList.Assign(FIntIgnoreProperties);
-  FCombinedIgnoreList.AddStrings(FIgnoreProperties);
-  Result := FCombinedIgnoreList;
+  FCombinedIgnoreProperties.Assign(FIntIgnoreProperties);
+  FCombinedIgnoreProperties.AddStrings(FIgnoreProperties);
+  Result := FCombinedIgnoreProperties;
 end;
 
 function TJvCustomPropertyStore.GetPropCount(Instance: TPersistent): Integer;
@@ -520,7 +521,7 @@ begin
   if Assigned(FOnBeforeLoadProperties) then
     FOnBeforeLoadProperties(Self);
   LoadData;
-  AppStorage.ReadPersistent(AppStoragePath, Self, True, True, CombinedIgnoreList);
+  AppStorage.ReadPersistent(AppStoragePath, Self, True, True, CombinedIgnoreProperties);
   if Assigned(FOnAfterLoadProperties) then
     FOnAfterLoadProperties(Self);
 end;
@@ -544,7 +545,7 @@ begin
     FOnBeforeStoreProperties(Self);
   if SaveProperties then
     StoreData;
-  AppStorage.WritePersistent(AppStoragePath, Self, True, CombinedIgnoreList);
+  AppStorage.WritePersistent(AppStoragePath, Self, True, CombinedIgnoreProperties);
   if Assigned(FOnAfterStoreProperties) then
     FOnAfterStoreProperties(Self);
 end;
@@ -659,7 +660,7 @@ begin
         else
         if NewObject is TPersistent then
           Sender.ReadPersistent(Sender.ConcatPaths([Path, cObject + IntToStr(Index)]),
-            TPersistent(NewObject), True, True, CombinedIgnoreList);
+            TPersistent(NewObject), True, True, CombinedIgnoreProperties);
       end;
       if Sender.ValueStored(Sender.ConcatPaths([Path, cItem + IntToStr(Index)])) then
         ObjectName := Sender.ReadString(Sender.ConcatPaths([Path, cItem + IntToStr(Index)]))
@@ -684,7 +685,7 @@ begin
       else
       if Objects[Index] is TPersistent then
         Sender.ReadPersistent(Sender.ConcatPaths([Path, cObject + IntToStr(Index)]),
-          TPersistent(Objects[Index]), True, True, CombinedIgnoreList);
+          TPersistent(Objects[Index]), True, True, CombinedIgnoreProperties);
     end;
     if Sender.ValueStored(Sender.ConcatPaths([Path, cItem + IntToStr(Index)])) then
       Strings[Index] := Sender.ReadString(Sender.ConcatPaths([Path, cItem + IntToStr(Index)]))
@@ -709,7 +710,7 @@ begin
     else
     if Objects[Index] is TPersistent then
       Sender.WritePersistent(Sender.ConcatPaths([Path, cObject + IntToStr(Index)]),
-        TPersistent(Objects[Index]), True, CombinedIgnoreList);
+        TPersistent(Objects[Index]), True, CombinedIgnoreProperties);
     if Strings[Index] <> '' then
       Sender.WriteString(Sender.ConcatPaths([Path, cItem + IntToStr(Index)]), Strings[Index]);
   end
