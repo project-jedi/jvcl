@@ -40,9 +40,10 @@ type
     FControl: TControl;
     FRectList: array [1..8] of TRect;
     procedure WMNCHitTest(var Msg: TWMNCHitTest);  message WM_NCHITTEST;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMMove(var Msg: TWMMove); message WM_MOVE;
+  protected
+    procedure Resize; override;
   public
     constructor CreateEx(AOwner: TComponent; AControl: TControl);
     procedure CreateParams(var Params: TCreateParams);  override;
@@ -145,7 +146,7 @@ begin
     inherited;
 end;
 
-procedure TJvStickSizer.WMSize(var Msg: TWMSize);
+procedure TJvStickSizer.Resize;
 var
   R: TRect;
 begin

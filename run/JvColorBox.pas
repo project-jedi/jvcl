@@ -136,12 +136,9 @@ type
     procedure SetDropDown(Value: TPopupMenu);
     {$IFDEF VCL}
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     {$ENDIF VCL}
   protected
-    {$IFDEF VisualCLX}
-    procedure BoundsChanged; override;
-    {$ENDIF VisualCLX}
+    procedure Resize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseEnter(Control: TControl); override;
@@ -471,22 +468,11 @@ begin
 end;
 {$ENDIF VCL}
 
-{$IFDEF VCL}
-procedure TJvCustomDropButton.WMSize(var Msg: TWMSize);
+procedure TJvCustomDropButton.Resize;
 begin
-  inherited;
+  inherited Resize; 
   Invalidate;
 end;
-{$ENDIF VCL}
-
-
-{$IFDEF VisualCLX}
-procedure TJvCustomDropButton.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  Invalidate;
-end;
-{$ENDIF VisualCLX}
 
 procedure TJvColorSquare.ColorChanged;
 begin

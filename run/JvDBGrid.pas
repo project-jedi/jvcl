@@ -2016,7 +2016,7 @@ begin
 
   // do nothing if not authorized to size columns
   if not (dgColumnResize in Options) then
-    exit;
+    Exit;
 
   if (State = gsNormal) and (Y <= RowHeights[0]) then
   begin
@@ -2082,11 +2082,11 @@ begin
   end;
 end;
 
-{$IFNDEF COMPOILER6_UP}
+{$IFNDEF COMPILER6_UP}
 procedure TJvDBGrid.FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
 begin
   MoveColRow(ACol, ARow, MoveAnchor, True);
-  InvalidateEditor; 
+  InvalidateEditor;
   Click;
 end;
 {$ENDIF !COMPILER6_UP}

@@ -76,7 +76,7 @@ uses
   Types, QGraphics, QControls, QForms, QExtCtrls, QStdCtrls, QMenus, QButtons,
   QImgList,
   {$ENDIF VisualCLX}
-  JvComponent, JVCLVer;
+  JVCLVer, JvComponent, JvExButtons;
 
 type
   { VCL Buttons unit does not publish TJvButtonGlyph  class,
@@ -189,7 +189,7 @@ type
     procedure SetMargin(Value: Integer);
     procedure SetWidth(const Value: Integer);
     procedure SetFont(Value: TFont);
-    procedure FontChanged(Sender: TObject);
+    procedure FontChange(Sender: TObject);
     procedure SetDown(const Value: Boolean);
     procedure SetVisible(const Value: Boolean);
   protected
@@ -219,7 +219,7 @@ type
 
   TPaintButtonEvent = procedure(Sender: TObject; IsDown, IsDefault: Boolean; State: TButtonState) of object;
 
-  TJvaColorButton = class(TBitBtn)
+  TJvaColorButton = class(TJvExBitBtn)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FCanvas: TControlCanvas;
@@ -244,7 +244,7 @@ type
     property OnPaint: TPaintButtonEvent read FOnPaint write FOnPaint;
   end;
 
-  TJvNoFrameButton = class(TSpeedButton)
+  TJvNoFrameButton = class(TJvExSpeedButton)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FGlyphDrawer: TJvButtonGlyph;
@@ -928,7 +928,7 @@ begin
   FGlyph := TJvButtonGlyph.Create;
   TJvButtonGlyph(FGlyph).OnChange := GlyphChanged;
   FFont := TFont.Create;
-  FFont.OnChange := FontChanged;
+  FFont.OnChange := FontChange;
   FBPos := FindButtonPos;
   FMouseLButtonDown := False;
   FPress := False;
@@ -1264,7 +1264,7 @@ begin
   end;
 end;
 
-procedure TJvaCaptionButton.FontChanged(Sender: TObject);
+procedure TJvaCaptionButton.FontChange(Sender: TObject);
 begin
   Changed;
 end;

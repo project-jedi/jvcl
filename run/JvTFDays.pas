@@ -63,6 +63,8 @@ uses
   {$ENDIF USEJVCL}
   JvTFUtils;
 
+// (ahuser) do not convert to JvExVCL. This package is USEJVCL'ed
+
 const
    AbsMinColWidth = 5;
    SizingThreshold = 5;
@@ -1076,7 +1078,6 @@ type
     procedure CNRequestRefresh(var Msg: TCNRequestRefresh); message CN_REQUESTREFRESH;
     procedure WMTimer(var Message: TWMTimer); message WM_TIMER;
 
-    // (ahuser) do not convert to JvExVCL. This package is USEJVCL'ed
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;

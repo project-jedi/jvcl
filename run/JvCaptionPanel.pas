@@ -124,16 +124,13 @@ type
     procedure DrawRotatedText(Rotation: Integer);
     procedure DrawButtons;
     {$IFDEF VCL}
-    procedure WMSize(var Msg: TWMNoParams); message WM_SIZE;
     procedure WMNCLButtonUp(var Msg: TWMNCLButtonUp); message WM_NCLBUTTONUP;
     {$ENDIF VCL}
     procedure SetOutlookLook(const Value: Boolean);
     procedure DoCaptionFontChange(Semder:TObject);
   protected
     procedure Paint; override;
-    {$IFDEF VisualCLX}
-    procedure BoundsChanged; override;
-    {$ENDIF VisualCLX}
+    procedure Resize; override;
 
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     {$IFDEF VCL}
@@ -837,19 +834,11 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
-procedure TJvCaptionPanel.WMSize(var Msg: TWMNoParams);
+procedure TJvCaptionPanel.Resize;
 begin
-  inherited;
+  inherited Resize;
   Repaint;
 end;
-{$ELSE}
-procedure TJvCaptionPanel.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  Repaint;
-end;
-{$ENDIF VCL}
 
 function TJvCaptionPanel.CanStartDrag: Boolean;
 begin

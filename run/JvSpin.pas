@@ -98,7 +98,9 @@ type
     {$ENDIF JVCLThemesEnabled}
 
     procedure TimerExpired(Sender: TObject);
+    {$IFDEF VCL}
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
+    {$ENDIF VCL}
   protected
     procedure EnabledChanged; override;
     procedure Paint; override;
@@ -221,18 +223,21 @@ type
     procedure SetButtonKind(Value: TSpinButtonKind);
     procedure SetDecimal(NewValue: Byte);
     procedure SetEditRect;
-    procedure SetThousands(const Value: Boolean);
+    procedure SetThousands(Value: Boolean);
     procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
+    {$IFDEF VCL}
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
-    procedure WMCut(var Msg: TWMCut); message WM_CUT;
-    procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
-    procedure WMMouseWheel(var Msg: TWMMouseWheel); message WM_MOUSEWHEEL;
-    procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    {$ENDIF VCL}
   protected
     //Polaris up to protected
     FButtonKind: TSpinButtonKind;
+    function DoAllowPaste: Boolean; override;
+    function DoAllowCut: Boolean; override;
+    procedure DoKillFocus(FocusedWnd: HWND); override;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
+    procedure Resize; override;
     procedure EnabledChanged; override;
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -265,6 +270,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    {$IFDEF VisualCLX}
+    
+    {$ENDIF VisualCLX}
+
     property AsInteger: Longint read GetAsInteger write SetAsInteger default 0;
     property Text;
     //Polaris  published
@@ -2059,7 +2069,7 @@ begin
   end;
 end;
 
-procedure TJvCustomSpinEdit.SetThousands(const Value: Boolean);
+procedure TJvCustomSpinEdit.SetThousands(Value: Boolean);
 begin
   if ValueType <> vtHex then
     FThousands := Value;
@@ -2129,28 +2139,37 @@ begin
   end;
 end;
 
-procedure TJvCustomSpinEdit.WMCut(var Msg: TWMCut);
+procedure TJvCustomSpinEdit.DoKillFocus(FocusedWnd: HWND);
 begin
-  if not FEditorEnabled or ReadOnly then
-    Exit;
-  inherited;
-end;
-
-procedure TJvCustomSpinEdit.WMKillFocus(var Message: TWMKillFocus);
-begin
-  if ([coCropBeyondLimit, coCheckOnExit] <= CheckOptions) and not (csDesigning in ComponentState) then
+  if ([coCropBeyondLimit, coCheckOnExit] <= CheckOptions) and
+     not (csDesigning in ComponentState) then
     SetValue(CheckValue(Value));
-  inherited;
+  inherited DoKillFocus(FocusedWnd);
 end;
 
-procedure TJvCustomSpinEdit.WMMouseWheel(var Msg: TWMMouseWheel);
+function TJvCustomSpinEdit.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
 begin
-  if Msg.WheelDelta > 0 then
+  if WheelDelta > 0 then
     UpClick(nil)
   else
     DownClick(nil);
+  Result := True;
 end;
 
+function TJvCustomSpinEdit.DoAllowPaste: Boolean;
+begin
+  Result := (FEditorEnabled and not ReadOnly) and
+    inherited DoAllowPaste;
+end;
+
+function TJvCustomSpinEdit.DoAllowCut: Boolean;
+begin
+  Result := (FEditorEnabled and not ReadOnly) and
+    inherited DoAllowCut;
+end;
+
+(*   (ahuser) see the new DoAllowPaste() method
 procedure TJvCustomSpinEdit.WMPaste(var Msg: TWMPaste);
 begin
   if not FEditorEnabled or ReadOnly then
@@ -2169,12 +2188,12 @@ begin
   end;
   }
 end;
+*)
 
-procedure TJvCustomSpinEdit.WMSize(var Msg: TWMSize);
+procedure TJvCustomSpinEdit.Resize;
 var
   MinHeight: Integer;
 begin
-  inherited;
   MinHeight := GetMinHeight;
   { text edit bug: if size to less than minheight, then edit ctrl does
     not display the text }
@@ -2184,6 +2203,7 @@ begin
   begin
     ResizeButton;
     SetEditRect;
+    inherited Resize;
   end;
 end;
 

@@ -135,9 +135,6 @@ type
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
-    {$ELSE}
-    procedure BoundsChanged; override;
     {$ENDIF VCL}
     procedure Loaded; override;
     procedure Resize; override;
@@ -238,6 +235,9 @@ type
 implementation
 uses
   JvMouseTimer;
+
+const
+  BkModeTransparent = TRANSPARENT;
 
 { TJvArrangeSettings }
 
@@ -400,9 +400,10 @@ begin
     Canvas.Brush.Color := FFlatBorderColor;
     {$IFDEF VCL}
     Canvas.FrameRect(ClientRect);
-    {$ELSE}
-    FrameRect(Canvas, ClientRect);
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FrameRect(Canvas, ClientRect);
+    {$ENDIF VisualCLX}
     Canvas.Brush.Color := Color;
   end
   else
@@ -430,11 +431,7 @@ begin
       X := ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2;
       Y := ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2;
       if Transparent then
-        {$IFDEF VCL}
-        SetBkMode(Handle, Windows.TRANSPARENT);
-        {$ELSE}
-        SetBkMode(Handle, QWindows.TRANSPARENT);
-        {$ENDIF VCL}
+        SetBkMode(Handle, BkModeTransparent);
       TextOut(X, Y, 'o');
     end;
 end;
@@ -444,7 +441,7 @@ begin
   inherited AdjustSize;
   if Transparent then
   begin
-   // (ahuser) That is the only way to draw the border of the contained control.
+   // (ahuser) That is the only way to draw the border of the contained controls.
     Width := Width + 1;
     Width := Width - 1;
   end;
@@ -482,10 +479,8 @@ end;
 
 procedure TJvPanel.DrawCaption;
 const
-  Alignments: array[TAlignment] of Longint =
-  (DT_LEFT, DT_RIGHT, DT_CENTER);
-  WordWrap: array[Boolean] of Longint =
-  (DT_SINGLELINE, DT_WORDBREAK);
+  Alignments: array[TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  WordWrap: array[Boolean] of Longint = (DT_SINGLELINE, DT_WORDBREAK);
 var
   ATextRect: TRect;
   BevelSize: Integer;
@@ -495,11 +490,7 @@ begin
   begin
     if Caption <> '' then
     begin
-      {$IFDEF VCL}
-      SetBkMode(Handle, Windows.TRANSPARENT);
-      {$ELSE}
-      SetBkMode(Handle, QWindows.TRANSPARENT);
-      {$ENDIF VCL}
+      SetBkMode(Handle, BkModeTransparent);
       Font := Self.Font;
       ATextRect := GetClientRect;
       InflateRect(ATextRect, -BorderWidth, -BorderWidth);
@@ -514,9 +505,10 @@ begin
       //calculate required rectangle size
       {$IFDEF VCL}
       DrawText(Canvas.Handle, PChar(Caption), -1, ATextRect, Flags or DT_CALCRECT);
-      {$ELSE}
-      DrawTextW(Canvas.Handle, PWideChar(Caption), -1, ATextRect, Flags or DT_CALCRECT);
       {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      DrawTextW(Canvas.Handle, PWideChar(Caption), -1, ATextRect, Flags or DT_CALCRECT);
+      {$ENDIF VisualCLX}
       // adjust the rectangle placement
       OffsetRect(ATextRect, 0, -ATextRect.Top + (Height - (ATextRect.Bottom - ATextRect.Top)) div 2);
       case Alignment of
@@ -529,15 +521,14 @@ begin
       if not Enabled then
         Font.Color := clGrayText;
       //draw text
+      if Transparent then
+        SetBkMode(Canvas.Handle, BkModeTransparent);
       {$IFDEF VCL}
-      if Transparent then
-        SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
       DrawText(Canvas.Handle, PChar(Caption), -1, ATextRect, Flags);
-      {$ELSE}
-      if Transparent then
-        SetBkMode(Canvas.Handle, QWindows.TRANSPARENT);
-      DrawTextW(Canvas.Handle, PWideChar(Caption), -1, ATextRect, Flags);
       {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      DrawTextW(Canvas.Handle, PWideChar(Caption), -1, ATextRect, Flags);
+      {$ENDIF VisualCLX}
     end;
   end;
 end;
@@ -730,17 +721,6 @@ begin
   if Transparent then Invalidate;
 end;
 
-{$IFDEF VCL}
-procedure TJvPanel.WMSize(var Message: TWMSize);
-{$ELSE}
-procedure TJvPanel.BoundsChanged;
-{$ENDIF VCL}
-begin
-  inherited;
-  if FArrangeSettings.AutoArrange then
-    ArrangeControls;
-end;
-
 procedure TJvPanel.Resize;
 begin
   if FArrangeSettings.AutoArrange then
@@ -885,9 +865,10 @@ begin
     if OldHeight <> Height then
       {$IFDEF VCL}
       SendMessage(GetFocus, WM_PAINT, 0, 0);
-      {$ELSE}
-      UpdateWindow(GetFocus);
       {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      UpdateWindow(GetFocus);
+      {$ENDIF VisualCLX}
   finally
     FArrangeControlActive := False;
   end;

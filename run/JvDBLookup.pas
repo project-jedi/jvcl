@@ -381,9 +381,9 @@ type
     procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
   protected
+    procedure Resize; override;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
@@ -3235,9 +3235,9 @@ begin
       inherited;
 end;
 
-procedure TJvDBLookupCombo.WMSize(var Msg: TWMSize);
+procedure TJvDBLookupCombo.Resize;
 begin
-  inherited;
+  inherited Resize;
   if not (csReading in ComponentState) and (Height < GetMinHeight) then
     Height := GetMinHeight
   else

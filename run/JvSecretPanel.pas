@@ -88,10 +88,10 @@ type
     procedure UpdateMemoryImage;
     procedure GlyphChanged(Sender: TObject);
     procedure LinesChanged(Sender: TObject);
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
-    procedure WMSize(var Msg: TMessage); message WM_SIZE;
   protected
+    procedure FontChanged; override;
+    procedure ColorChanged; override;
+    procedure Resize; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure Paint; override;
     procedure PaintClient(Canvas: TCanvas; Rect: TRect); virtual;
@@ -228,23 +228,23 @@ begin
   end;
 end;
 
-procedure TJvSecretPanel.CMFontChanged(var Msg: TMessage);
+procedure TJvSecretPanel.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   if Active then
     UpdateMemoryImage;
 end;
 
-procedure TJvSecretPanel.CMColorChanged(var Msg: TMessage);
+procedure TJvSecretPanel.ColorChanged;
 begin
-  inherited;
+  inherited ColorChanged;
   if Active then
     UpdateMemoryImage;
 end;
 
-procedure TJvSecretPanel.WMSize(var Msg: TMessage);
+procedure TJvSecretPanel.Resize;
 begin
-  inherited;
+  inherited Resize;
   if Active then
   begin
     UpdateMemoryImage;

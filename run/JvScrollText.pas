@@ -72,7 +72,7 @@ type
     procedure TextMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure TextMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   protected
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -455,11 +455,12 @@ begin
   end;
 end;
 
-procedure TJvScrollText.WMSize(var Msg: TWMSize);
+procedure TJvScrollText.Resize;
 begin
   FText.Width := Width;
   if FText.Height < Height then
     FText.Height := Height;
+  inherited Resize;
 end;
 
 function TJvScrollText.GetAlignment: TAlignment;
