@@ -586,7 +586,7 @@ uses
   cxGridTableView,cxGridCustomView,
   cxGrid, cxGridCustomTableView, cxGridDBDataDefinitions,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
-  JvDynControlEngineTools, JvConsts, JvJCLUtils;
+  JvDynControlEngineTools, JvConsts, JvJCLUtils, TypInfo;
 
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
@@ -2419,11 +2419,15 @@ begin
         Control.Width := FieldDefaultWidth
       else
       begin
-//        if TAccesscxCustomGridTableItem(AGridItem).Width > 0 then
-//          Control.Width := TAccesscxCustomGridTableItem(AGridItem).Width;
-         if GridDataBinding.Field.Size > 0 then
-           Control.Width :=
-             TAccessCustomControl(AControl).Canvas.TextWidth('X') * GridDataBinding.Field.Size ;
+        if UseFieldSizeForWidth then
+          if GridDataBinding.Field.Size > 0 then
+            Control.Width :=
+              TAccessCustomControl(AControl).Canvas.TextWidth('X') * GridDataBinding.Field.Size
+          else
+        else
+          if GridDataBinding.Field.DisplayWidth > 0 then
+            Control.Width :=
+              TAccessCustomControl(AControl).Canvas.TextWidth('X') * GridDataBinding.Field.DisplayWidth;
         if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
           Control.Width := FieldMaxWidth
         else
@@ -2435,11 +2439,12 @@ begin
           with Control as IJvDynControlReadOnly do
             ControlSetReadOnly(TcxGridColumn(AGridItem).Properties.ReadOnly);
 
-      if Control is TcxCustomEdit then
-      begin
-//        TAccesscxCustomEdit(Control).Properties.ReadOnly :=TcxGridColumn(AGridItem).Properties.ReadOnly;
-//        TAccesscxCustomEdit(Control).Properties := TcxGridColumn(AGridItem).Properties;
-      end;
+      if UseParentColorForReadOnly then
+        // Use ParentColor when the field is ReadOnly
+        if not ADataSource.DataSet.CanModify or GridDataBinding.Field.ReadOnly then
+          if isPublishedProp(Control, 'ParentColor') then
+            SetOrdProp(Control, 'ParentColor', Ord(True));
+
       LabelControl := GetDynControlEngine.CreateLabelControlPanel(AControl, AControl,
         '', '&' + AGridItem.Caption, Control, LabelOnTop, LabelDefaultWidth);
       if FieldWidthStep > 0 then
