@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvAutoSave, JVCLVer;
+  JVCLVer;
 
 type
   TJvRadioButton = class(TRadioButton)
@@ -44,12 +44,10 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FOnRestored: TNotifyEvent;
     FHotTrack: Boolean;
     FHotFont: TFont;
     FFontSave: TFont;
     FOver: Boolean;
-    FAutoSave: TJvAutoSave;
     procedure SetHotFont(const Value: TFont);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
@@ -58,13 +56,10 @@ type
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
   public
-    procedure SetChecked(Value: Boolean); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Loaded; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
@@ -72,7 +67,6 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnRestored: TNotifyEvent read FOnRestored write FOnRestored;
   end;
 
 implementation
@@ -86,21 +80,13 @@ begin
   FOver := False;
   FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
-  FAutoSave := TJvAutoSave.Create(Self);
 end;
 
 destructor TJvRadioButton.Destroy;
 begin
   FFontSave.Free;
   FHotFont.Free;
-  FAutoSave.Free;
   inherited Destroy;
-end;
-
-procedure TJvRadioButton.SetChecked(Value: Boolean);
-begin
-  inherited SetChecked(Value);
-  FAutoSave.SaveValue(Checked);
 end;
 
 procedure TJvRadioButton.CreateParams(var Params: TCreateParams);
@@ -159,19 +145,6 @@ end;
 procedure TJvRadioButton.SetHotFont(const Value: TFont);
 begin
   FHotFont.Assign(Value);
-end;
-
-procedure TJvRadioButton.Loaded;
-var
-  B: Boolean;
-begin
-  inherited Loaded;
-  if FAutoSave.LoadValue(B) then
-  begin
-    Checked := B;
-    if Assigned(FOnRestored) then
-      FOnRestored(Self);
-  end;
 end;
 
 end.

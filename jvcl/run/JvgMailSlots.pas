@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, JvComponent, Graphics,
-  Controls, Forms, Dialogs, ExtCrls;
+  Controls, Forms, Dialogs, ExtCtrls;
 
 type
   TOnNewMessage = procedure(Sender: TObject; MessageText: string) of object;

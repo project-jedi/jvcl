@@ -14,7 +14,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvRegAuto, JvConsts, Classes;
+  JvFormPlacement, JvConsts, Classes;
 
 resourcestring
   RS_JvHLEditorMsg = 'Please select "JvHLEditor" first';
@@ -64,19 +64,17 @@ end;
 procedure TJvHLEdPropDlgEditor.Edit;
 var
   PakName: string;
-  NewRegAuto: TJvRegAuto;
-  OldRegAuto: TJvRegAuto;
+  NewRegAuto: TJvFormStorage;
+  OldRegAuto: TJvFormStorage;
 begin
   if (Component as TJvHLEdPropDlg).JvHLEditor <> nil then
     begin
-      NewRegAuto := TJvRegAuto.Create(nil);
+      NewRegAuto := TJvFormStorage.Create(nil);
       try
-        NewRegAuto.UseReg := False;
-        NewRegAuto.UseIni := True;
-        NewRegAuto.UseStr := False;
+        NewRegAuto.UseRegistry := false;
         SetLength(PakName, MAX_PATH);
         SetLength(PakName, GetModuleFileName(hInstance, PChar(PakName), MAX_PATH));
-        NewRegAuto.IniFile := ExtractFilePath(PakName) + srJvHLEdPropDlgIni;
+        NewRegAuto.IniFileName := ExtractFilePath(PakName) + srJvHLEdPropDlgIni;
         with Component as TJvHLEdPropDlg do
         begin
           OldRegAuto := RegAuto;

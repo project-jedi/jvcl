@@ -161,9 +161,13 @@ type
     FStoredProps: TStrings;
     FStoredValues: TJvStoredValues;
     procedure SetStoredProps(Value: TStrings);
-    procedure SeTJvStoredValues(Value: TJvStoredValues);
-    function GeTJvStoredValue(const Name: string): Variant;
-    procedure SeTJvStoredValue(const Name: string; Value: Variant);
+    procedure SetStoredValues(Value: TJvStoredValues);
+    function GetStoredValue(const Name: string): Variant;
+    procedure SetStoredValue(const Name: string; Value: Variant);
+    function GetDefaultStoredValue(const Name: string;
+      Default: Variant): Variant;
+    procedure SetDefaultStoredValue(const Name: string; Default: Variant;
+      const Value: Variant);
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -176,10 +180,11 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetNotification;
-    property StoredValue[const Name: string]: Variant read GeTJvStoredValue write SeTJvStoredValue;
+    property StoredValue[const Name: string]: Variant read GetStoredValue write SetStoredValue;
+    property DefaultValue[const Name: string;Default:Variant]: Variant read GetDefaultStoredValue write SetDefaultStoredValue;
   published
     property StoredProps: TStrings read FStoredProps write SetStoredProps;
-    property StoredValues: TJvStoredValues read FStoredValues write SeTJvStoredValues;
+    property StoredValues: TJvStoredValues read FStoredValues write SetStoredValues;
   end;
 
   TJvIniLink = class(TPersistent)
@@ -212,7 +217,7 @@ type
     FOnSave: TJvStoredValueEvent;
     FOnRestore: TJvStoredValueEvent;
     function IsValueStored: Boolean;
-    function GeTJvStoredValues: TJvStoredValues;
+    function GetStoredValues: TJvStoredValues;
   protected
     function GetDisplayName: string; override;
     procedure SetDisplayName(const Value: string); override;
@@ -222,7 +227,7 @@ type
     procedure Clear;
     procedure Save; virtual;
     procedure Restore; virtual;
-    property StoredValues: TJvStoredValues read GeTJvStoredValues;
+    property StoredValues: TJvStoredValues read GetStoredValues;
   published
     property Name: string read FName write SetDisplayName;
     property Value: Variant read FValue write FValue stored IsValueStored;
@@ -236,8 +241,8 @@ type
     FStorage: TJvFormPlacement;
     function GetValue(const Name: string): TJvStoredValue;
     procedure SetValue(const Name: string; StoredValue: TJvStoredValue);
-    function GeTJvStoredValue(const Name: string): Variant;
-    procedure SeTJvStoredValue(const Name: string; Value: Variant);
+    function GetStoredValue(const Name: string): Variant;
+    procedure SetStoredValue(const Name: string; Value: Variant);
     function GetItem(Index: Integer): TJvStoredValue;
     procedure SetItem(Index: Integer; StoredValue: TJvStoredValue);
   public
@@ -248,7 +253,7 @@ type
     property Storage: TJvFormPlacement read FStorage write FStorage;
     property Items[Index: Integer]: TJvStoredValue read GetItem write SetItem; default;
     property Values[const Name: string]: TJvStoredValue read GetValue write SetValue;
-    property StoredValue[const Name: string]: Variant read GeTJvStoredValue write SeTJvStoredValue;
+    property StoredValue[const Name: string]: Variant read GetStoredValue write SetStoredValue;
   end;
 
 
@@ -1004,17 +1009,17 @@ begin
   SetNotification;
 end;
 
-procedure TJvFormStorage.SeTJvStoredValues(Value: TJvStoredValues);
+procedure TJvFormStorage.SetStoredValues(Value: TJvStoredValues);
 begin
   FStoredValues.Assign(Value);
 end;
 
-function TJvFormStorage.GeTJvStoredValue(const Name: string): Variant;
+function TJvFormStorage.GetStoredValue(const Name: string): Variant;
 begin
   Result := StoredValues.StoredValue[Name];
 end;
 
-procedure TJvFormStorage.SeTJvStoredValue(const Name: string; Value: Variant);
+procedure TJvFormStorage.SetStoredValue(const Name: string; Value: Variant);
 begin
   StoredValues.StoredValue[Name] := Value;
 end;
@@ -1183,7 +1188,7 @@ begin
   inherited;
 end;
 
-function TJvStoredValue.GeTJvStoredValues: TJvStoredValues;
+function TJvStoredValue.GetStoredValues: TJvStoredValues;
 begin
   if Collection is TJvStoredValues then
     Result := TJvStoredValues(Collection)
@@ -1257,7 +1262,7 @@ begin
   inherited SetItem(Index, TCollectionItem(StoredValue));
 end;
 
-function TJvStoredValues.GeTJvStoredValue(const Name: string): Variant;
+function TJvStoredValues.GetStoredValue(const Name: string): Variant;
 var
   StoredValue: TJvStoredValue;
 begin
@@ -1268,7 +1273,7 @@ begin
     Result := StoredValue.Value;
 end;
 
-procedure TJvStoredValues.SeTJvStoredValue(const Name: string; Value: Variant);
+procedure TJvStoredValues.SetStoredValue(const Name: string; Value: Variant);
 var
   StoredValue: TJvStoredValue;
 begin
@@ -1317,6 +1322,23 @@ var
 begin
   for I := 0 to Count - 1 do
     Items[I].Restore;
+end;
+
+function TJvFormStorage.GetDefaultStoredValue(const Name: string;
+  Default: Variant): Variant;
+begin
+  Result := StoredValue[Name];
+  if Result = NULL then
+    Result := Default;
+end;
+
+procedure TJvFormStorage.SetDefaultStoredValue(const Name: string;
+  Default: Variant; const Value: Variant);
+begin
+  if Value = NULL then
+    StoredValue[Name] := Default
+  else
+    StoredValue[Name] := Value;
 end;
 
 end.

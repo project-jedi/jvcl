@@ -20,11 +20,10 @@ uses
   JvListComb, JvPageScroller, JvRegistryTreeView, JvRollOut, JvScrollPanel,
   JvScrollText, JvSpacer, JvSpeedBar, JvSplit, JvSplitter, JvSwitch, JvSyncSplitter,
   JvTransparentButton, JvTransLED, JvxClock, JvSpeedbarSetupForm,
-  JvColorForm, JvDsgnIntf, JvImageDrawThread, JvRegAuto, JvWinampLabel, JvPlaylist, JvComponentPanel,
+  JvColorForm, JvDsgnIntf, JvImageDrawThread, JvWinampLabel, JvPlaylist, JvComponentPanel,
   JvButtons, JvCaptionPanel, JvScrollMax, JvUninstallControls, JvMovableBevel,
-  JvRegAutoEditorForm, JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor, JvFooterEditor,
-  JvSpeedbarForm,
-  JvDsgnEditors;
+  JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor, JvFooterEditor,
+  JvSpeedbarForm, JvDsgnEditors;
 
 {$R ..\resources\JvCtrlsReg.dcr}
 
@@ -62,7 +61,7 @@ begin
     TJvAnalogClock, TJvClock, TJvxClock,
     TJvZoom, TJvDice
     ]);
-  RegisterComponents(SPaletteNonVisual,[TJvHint, TJvRegAuto]);
+  RegisterComponents(SPaletteNonVisual,[TJvHint{, TJvRegAuto}]);
 
   RegisterPropertyEditor(typeinfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
   RegisterPropertyEditor(typeinfo(TJvLabelBehaviorName),TJvBehaviorLabel,'Behavior',TJvLabelBehaviorProperty);
@@ -78,11 +77,11 @@ begin
   RegisterComponentEditor(TJvImageListBox, TJvStringsEditor);
   RegisterComponentEditor(TJvImageComboBox, TJvStringsEditor);
   RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
-  RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor);
+//  RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor);
 
   RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);
   RegisterClass(TJvScrollMaxBand);
-
+  RegisterClass(TJvFooterBtn);
 end;
 
 end.

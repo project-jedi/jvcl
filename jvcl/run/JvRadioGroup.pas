@@ -33,7 +33,7 @@ interface
 uses
   Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls,
-  JVCLVer, JvAutoSave;
+  JVCLVer;
 
 type
   TJvRadioGroup = class(TRadioGroup)
@@ -45,28 +45,22 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FOnRestored: TNotifyEvent;
     FOver: Boolean;
-    FAutoSave: TJvAutoSave;
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
   public
     destructor Destroy; override;
     constructor Create(AOwner: TComponent); override;
-    procedure Loaded; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnRestored: TNotifyEvent read FOnRestored write FOnRestored;
   end;
 
 implementation
@@ -77,12 +71,10 @@ begin
   FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FOver := False;
-  FAutoSave := TJvAutoSave.Create(Self);
 end;
 
 destructor TJvRadioGroup.Destroy;
 begin
-  FAutoSave.Free;
   inherited Destroy;
 end;
 
@@ -124,25 +116,6 @@ begin
   end;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
-end;
-
-procedure TJvRadioGroup.Loaded;
-var
-  I: Integer;
-begin
-  inherited Loaded;
-  if FAutoSave.LoadValue(I) then
-  begin
-    ItemIndex := I;
-    if Assigned(FOnRestored) then
-      FOnRestored(Self);
-  end;
-end;
-
-procedure TJvRadioGroup.CMExit(var Msg: TCMExit);
-begin
-  inherited;
-  FAutoSave.SaveValue(ItemIndex);
 end;
 
 end.

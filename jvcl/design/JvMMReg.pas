@@ -30,7 +30,7 @@ procedure Register;
 begin
   RegisterComponents(SPaletteImageAnimator,[
     TJvAnimate, TJvBmpAnimator, TJvPicClip,
-    TJvImageRotate, TJvImageTransform, TJvImageWindow,
+    TJvImageRotate, TJvImageTransform, TJvImageWindow, TJvImageSquare,
     TJvStarfield, {$IFDEF USE_JV_GIF}TJvGIFAnimator, {$ENDIF} TJvAnimatedImage, TJvSpecialImage
     ]);
   RegisterComponents(SPaletteBarPanel,[
