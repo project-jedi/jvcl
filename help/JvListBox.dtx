@@ -1,0 +1,384 @@
+----------------------------------------------------------------------------------------------------
+@@JvListBox.pas
+Summary
+  Contains the TJvCustomListBox component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Sébastien Buysse
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox
+<GROUP TJvCustomListBox>
+Summary
+  Base class from which all enhanced list box controls are derived.
+Description
+  TJvCustomListBox encapsulates new behavior common to all enhanced list boxes by introducing methods
+  and properties that provide ability to:
+
+  * Create a virtual list box.
+  * Align the strings in the list box.
+  * Search for strings that have a specific prefix or substring.
+  * Alter the selection in various ways.
+  * Specify the horizontally scrollable width of the list box.
+  * Respond when the user scrolls a scroll bar of the list box.
+  
+  Do not create instances of TJvCustomListBox. Use TJvCustomListBox as a base class when declaring 
+  list boxes, that will use the new behavior introduced in TJvCustomListBox. 
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.AboutJVCL
+  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.Alignment
+Summary
+  Determines how the text is aligned within the list box control.
+Description
+  Use Alignment to change the way the text is aligned within the listbox control. These are the possible
+  values:
+
+  <TABLE>
+  Value           Meaning
+  -----           -------
+  taLeftJustify   Align text on the left side in the edit control.
+  taCenter        Center the text in the edit control.
+  taRightJustify  Align text on the right side in the edit control.
+  </TABLE>
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.Count
+Summary
+  Indicates the number of items in the list box.
+Description
+  Use Count to determine the number of items in the list box. You can only set Count when the Style 
+  property is lbVirtual or lbVirtualOwnerDraw, or OwnerData is set to True, in which case you must set
+  this property.
+See Also
+  OwnerData
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.DeleteAllButSelected
+Summary
+  Deletes all strings that are not selected from the list box.
+Description
+  Call DeleteAllButSelected to delete all strings, that are not selected from the list box.
+Note
+  MultiSelect must be set to True.
+See Also
+  DeleteAllButSelected, DeleteSelected, InvertSelection, SelectAll, UnselectAll
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.DeleteExactString
+Summary
+  Deletes specific strings from the list box.
+Description
+  Call DeleteExactString to remove strings from the list box that are equal to Value. 
+Parameters
+  Value         - The string value to be removed from the list box.
+  All           - Specifies whether to delete all strings that match Value.
+  CaseSensitive - Specifies whether the strings in the list box must be compared case-sensitive with
+                  Value.
+See Also
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.DeleteSelected
+Summary
+  Deletes the selected items from the list box
+Description
+  Call DeleteSelected to delete the selected items from the list box.
+See Also
+  DeleteAllButSelected, DeleteSelected, InvertSelection, SelectAll, UnselectAll
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the list box.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+See Also
+  HotTrack
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.HorzExtent
+Summary
+  Specifies the horizontally scrollable width of the list box, in pixels. 
+Description
+  Use HorzExtent to specify the number of pixels by which the list box can be scrolled horizontally.
+  If the actual width of the list box is smaller than HorzExtent, and ScrollBars equals ssHorizontal or
+  ssBoth, the list box displays the horizontal scroll bar. If the actual width of the list box is equal
+  to or greater than HorzExtent, the horizontal scroll bar is hidden. 
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.HotTrack
+Summary
+  Specifies whether the list box is highlighted when the mouse passes over it.
+Description
+  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font 
+  specified by HotTrackFont is used for the list box text. When HotTrack is False, there is no visual 
+  feedback when the mouse passes over the list box.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.InvertSelection
+Summary
+  Invert item selection.
+Description
+  If the MultiSelect property is True, InvertSelection selects all items that are current deselected, 
+  and deselects all items that are currently selected.
+
+  If the MultiSelect property is False, InvertSelection does nothing.
+See Also
+  DeleteAllButSelected, DeleteSelected, InvertSelection, SelectAll, UnselectAll
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.MoveSelectedDown
+Summary
+  Moves the selected strings one position down in the list box.
+Description
+  Use the MoveSelectedDown method to move all selected strings one position down in the list box. If
+  the last item in the list box is selected then no items are moved.
+See Also
+  MoveSelectedUp
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.MoveSelectedUp
+Summary
+  Moves the selected strings one position up in the list box.
+Description
+  Use the MoveSelectedDown method to move all selected strings one position up in the list box. If
+  the first item in the list box is selected then no items are moved.
+See Also
+  MoveSelectedDown
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.OnAddString
+<COMBINEWITH TJvListboxChange>
+Summary
+  Occurs when a new string is added.
+Description
+  Write an OnAddString event handler to respond when a new string is added to the list box.
+Parameters
+  Sender - The object that triggered the event.
+  Item   - Indicates the string that has been added.
+See Also
+  OnChange, OnDeleteString
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.OnChange
+Summary
+  Occurs when a new string is added or a string in the list box is deleted.
+Description
+  Write an OnChange event handler to respond when a new string is added to the list box or when 
+  a string is deleted from the list box.
+See Also
+  OnAddString, OnDeleteString
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.OnCtl3DChanged
+Summary
+  Occurs when the Ctl3D property of the list box changes.
+Description
+  Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.OnDeleteString
+<COMBINEWITH TJvListboxChange>
+Summary
+  Occurs when a string in the list box is deleted.
+Description
+  Write an OnDeleteString event handler to respond when a string is deleted from the list box.
+Parameters
+  Sender - The object that triggered the event.
+  Item   - Indicates the string that has been deleted.
+See Also
+  OnAddString, OnChange
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.OnGetText
+<COMBINEWITH TJvListBoxDataEvent>
+Summary
+  Occurs immediately before a string is displayed in the list box.
+Description
+  Use OnGetText to dynamically supply the items in the list box. Set Text to a string value that must
+  be displayed at position Index in the list box.
+
+  OnGetText occurs only if OwnerData is True.
+Parameters
+  Sender - The object that triggered the event.
+  Index  - The index of the desired item.
+  Text   - Determines the string that is displayed at position Index in the list box.
+See Also
+  OwnerData
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.OnHorizontalScroll
+<COMBINEWITH TJvScrollEvent>
+Summary
+  Occurs when the user scrolls the horizontal scroll bar with the mouse or keyboard.
+Description
+  Write an OnHorizontalScroll event handler to respont when the user scrolls the horizontal scroll bar.
+  Set dontScroll to False to prevent the list box's horizontal scroll bar to scroll in response of this
+  event. Set dontScroll to True to allow the list box's horizontal scroll bar to scroll in response of
+  this event.
+  
+  Use Msg to determine whether to set dontScroll to True or False.
+Parameters
+  sender     - The object that triggered the event.
+  Msg        - Represents the parameters of the Windows message.
+  dontScroll - Determines whether the list box will respond on the scroll event, and adjust the 
+               horizontal scroll bar.
+See Also
+  OnVerticalScroll
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.OnMouseEnter
+Summary
+  Occurs when the mouse pointer moves over the list box.
+Description
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  list box.
+See Also
+  HotTrack, OnMouseLeave
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.OnMouseLeave
+Summary
+  Occurs when the mouse pointer moves off the list box.
+Description
+  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  list box. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  event handler.
+See Also
+  HotTrack, OnMouseEnter
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the list box changes.
+Description
+  Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+See Also
+  OnCtl3DChanged
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.OnSelectCancel
+Summary
+  Occurs when the selection in the list box is cancelled.
+Description
+  Write an OnSelectCancel event handler to respond when the selection in the list box is cancelled.
+  For example, if you change property MultiSelect or Sorted, the list box cancels the selection in
+  the list box, and triggers an OnSelectCancel event.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.OnVerticalScroll
+<COMBINEWITH TJvScrollEvent>
+Summary
+  Occurs when the user scrolls the vertical scroll bar with the mouse or keyboard.
+Description
+  Write an OnVerticalScroll event handler to respont when the user scrolls the vertical scroll bar.
+  Set dontScroll to False to prevent the list box's vertical scroll bar to scroll in response of this
+  event. Set dontScroll to True to allow the list box's vertical scroll bar to scroll in response of
+  this event.
+  
+  Use Msg to determine whether to set dontScroll to True or False.
+Parameters
+  sender     - The object that triggered the event.
+  Msg        - Represents the parameters of the Windows message.
+  dontScroll - Determines whether the list box will respond on the scroll event, and adjust the 
+               vertical scroll bar.
+See Also
+  OnVerticalScroll
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.OwnerData
+Summary
+  Specifies whether the list box control is virtual.
+Description
+  Set OwnerData to True to specify that the list box is virtual. A virtual list box can contain a 
+  huge number of strings. Specifically, in Windows 95, 98 and Me the maximum number is 32,767; In 
+  Windows 2000 and XP the maximum number is 2,147,483,647. However, you must manage the items of a virtual
+  list box using the OnGetText event handler. 
+  
+  When creating a virtual list box, you must set the Count property to the number of items in the virtual
+  list.
+
+  The only information contained in a virtual list box control is the selection and focus information.
+  No object can be associated with a string in a virtual list box.
+See Also
+  Count, OnGetText
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.ScrollBars
+Summary
+  Determines whether the list box control has scroll bars.
+Description
+  Use ScrollBars to give a list box control horizontal or vertical scroll bars. ScrollBars can take 
+  one of the following values:
+  <TABLE>
+  Value	         Meaning
+  -----          -------
+  ssNone         The control has no scroll bars.
+  ssHorizontal   The control has a single scroll bar on the bottom edge.
+  ssVertical     The control has a single scroll bar on the right edge.
+  ssBoth         The control has a scroll bar on both the bottom and right edges.
+  </TABLE>
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.SearchExactString
+Summary
+  Returns the position of a string in the list.
+Description
+  Call SearchExactString to obtain the position of the first occurrence of a string that matches Value.
+  A string matches Value if it is identical to Value or, if CaseSensitive is False, if it differs only in
+  case. 
+Parameters
+  Value         - The string to search for.
+  CaseSensitive - Indicates whether the match must be case-sensitive.
+See Also
+  SearchPrefix, SearchSubString
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.SearchPrefix
+Summary
+  Returns the position of a string in the list.
+Description
+  Call SearchPrefix to obtain the position of the first occurrence of a string that has a prefix that
+  matches Value. A prefix matches Value if it is identical to Value or, if CaseSensitive is False, if
+  it differs only in case. 
+Parameters
+  Value         - The prefix to search for.
+  CaseSensitive - Indicates whether the match must be case-sensitive.
+See Also
+  SearchExactString, SearchSubString
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.SearchSubString
+Summary
+  Returns the position of a string in the list.
+Description
+  Call SearchSubString to obtain the position of the first occurrence of a string that has a substring
+  that matches Value. A substring matches Value if it is identical to Value or, if CaseSensitive is 
+  False, if it differs only in case. 
+Parameters
+  Value         - The substring to search for.
+  CaseSensitive - Indicates whether the match must be case-sensitive.
+See Also
+  SearchExactString, SearchPrefix
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.SelectAll
+Summary
+  Selects all items in the list box.
+Description
+  Use SelectAll to select all items in the list box.
+See Also
+  DeleteAllButSelected, DeleteSelected, InvertSelection, UnselectAll
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.Sorted
+Summary
+  Specifies whether the items in a list box are arranged alphabetically.
+Description
+  Use Sorted to sort the items by setting its value to True. If Sorted is False, the items are unsorted. 
+  When Sorted is True, items are automatically added or inserted into the list box in alphabetical order.
+Note
+  Sorted raises an exception when set to True and OwnerData is True; Sorted has no effect if Listbox's 
+  style is lbVirtual or lbVirtualOwnerDraw
+See Also
+  OwnerData
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.UnselectAll
+Summary
+  Deselects all items in the list box.
+Description
+  Use UnselectAll to deselect all items in the list box.
+See Also
+  DeleteAllButSelected, DeleteSelected, InvertSelection, SelectAll
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.UpdateCount
+Summary
+  Updates the list box's item count.
+Description
+  UpdateCount is called automatically when the list box's item count is changed. Call UpdateCount to
+  explicitly set the list box's item count.
+See Also
+  Count, OnGetText
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.UpdateHorzExtent
+Summary
+  Updates the horizontally scrollable width of the list box.
+Description
+  UpdateHorzExtent is called automatically when the list box's horizontally scrollable width is changed.
+  Call UpdateHorzExtent to explicitly set the list box's horizontally scrollable width.
+See Also
+  HorzExtent

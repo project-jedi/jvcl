@@ -30,7 +30,7 @@
 ----------------------------------------------------------------------------------------------------
 @@JvSysComp.pas
 Summary
-  Contains the TJvCreateProcess and TJvCPSStartupInfo component.
+  Contains the TJvCreateProcess, TJvProcessEntry and TJvCPSStartupInfo components.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Petr Vones
@@ -39,8 +39,8 @@ Author
 Summary
   EJvProcessError is the exception class for TJvCreateProcess components.
 Description
-  EJvProcessError is raised when the user calls a method of TJvCreateProcess while State has an 
-  invalid value.
+  EJvProcessError is raised when the user calls a method of TJvCreateProcess while <LINK TJvCreateProcess.State,
+  State> has an invalid value.
   
   For example, if TJvCreateProcess is waiting for a process to end, calling Run raises an 
   EJvProcessError error.
@@ -59,12 +59,13 @@ Description
 @@TJvCPSFlag.cfNewConsole
   The new process has a new console, instead of inheriting its parent's console (the default). For 
   more information, see 'Creation of a Console' in the MSDN library. 
-  This option is only valid if CreationFlags doesn't include cfDetached.  
+  This option is only valid if <LINK TJvCreateProcess.CreationFlags,CreationFlags> doesn't include 
+  cfDetached.  
 @@TJvCPSFlag.cfNewProcGroup
   The new process is the root process of a new process group. The process group includes all processes 
   that are descendants of this root process. The process identifier of the new process group is the 
-  same as the process identifier, which is returned in the 
-  <LINK TJvCreateProcess.ProcessInformation, ProcessInformation> property. 
+  same as the process identifier, which is returned in the <LINK TJvCreateProcess.ProcessInfo,
+  ProcessInfo> property. 
 @@TJvCPSFlag.cfSeparateWdm
   Windows NT/2000/XP: This flag is valid only when starting a 16-bit Windows-based application. If 
   set, the new process runs in a private Virtual DOS Machine (VDM). By default, all 16-bit Windows-based
@@ -81,16 +82,16 @@ Description
   The new process is run in the shared Virtual DOS Machine.
 @@TJvCPSFlag.cfSuspended
   The primary thread of the new process is created in a suspended state, and does not run until the 
-  ResumeThread function is called.
+  <LINK TJvCreateProcess.ResumeThread,ResumeThread> function is called.
 @@TJvCPSFlag.cfUnicode
-  Windows NT/2000/XP: Indicates the format of the <LINK TJvCreateProcess.Environment, Environment> 
-  property. If this flag is set, property <LINK TJvCreateProcess.Environment, Environment> uses Unicode 
+  Windows NT/2000/XP: Indicates the format of the <LINK TJvCreateProcess.Environment,Environment> 
+  property. If this flag is set, property <LINK TJvCreateProcess.Environment,Environment> uses Unicode 
   characters. Otherwise, the environment block uses ANSI characters.
 @@TJvCPSFlag.cfDetached
   For console processes, the new process does not inherit its parent's console (the default). The 
   new process can call the AllocConsole function at a later time to create a console. For more 
   information, see 'Creation of a Console' in the MSDN library. 
-  This option is only valid if CreationFlags doesn't include cfNewConsole.  
+  This option is only valid if <TJvCreateProcess.CreationFlags,CreationFlags> doesn't include cfNewConsole.  
 See Also
   Priority, Run
 ----------------------------------------------------------------------------------------------------
@@ -105,7 +106,6 @@ Description
   creates a new process. Set DefaultWindowState to True to ignore this property.
 
   ShowWindow can have any of the following values:
-  
 @@TJvCPSShowWindow.swHide
   The external application window is hidden. If it was active, another window is activated.
 @@TJvCPSShowWindow.swMinimize
@@ -239,7 +239,11 @@ See Also
   DefaultPosition, DefaultSize, Height, Top, Width
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSStartupInfo.ShowWindow
-<COMBINEWITH TJvCPSShowWindow>
+Summary
+  Specifies how the launched application window appears.
+Description
+  Use ShowWindow to indicate how you want the application window to appear when TJvCreateProcess 
+  creates a new process. Set DefaultWindowState to True to ignore this property.
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSStartupInfo.StartupInfo
 Summary
@@ -296,18 +300,6 @@ Description
   TJvCreateProcess has started a process, and is now waiting for it to end; the process can be stopped
   by calling Terminate. The user cannot call Run until the process ends, or StopWaiting must be called 
   to stop waiting for the process to end. 
-----------------------------------------------------------------------------------------------------
-@@TJvCPSTerminateEvent
-Summary
-  Occurs after a process created with TJvCreateProcess has ended.
-Description
-  Write an OnTerminate event handler to execute code after the process finishes executing. WaitForTerminate
-  must be set to True, otherwise OnTerminate will not be triggered.
-Parameters
-  Sender   - The object that triggered this event.
-  ExitCode - Indicates the termination status of the specified process. 
-See Also
-  WaitForTerminate
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess
 <TITLEIMG TJvCreateProcess>
@@ -472,7 +464,10 @@ See Also
   ApplicationName, Run
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.CreationFlags
-<COMBINEWITH TJvCPSFlag>
+Summary
+  Controls the creation of the process.
+Description
+  Use CreationFlags to control the creation of the process.
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.CurrentDirectory
 Summary
@@ -503,9 +498,24 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.OnTerminate
 <COMBINEWITH TJvCPSTerminateEvent>
+Summary
+  Occurs after a process created with TJvCreateProcess has ended.
+Description
+  Write an OnTerminate event handler to execute code after the process finishes executing. WaitForTerminate
+  must be set to True, otherwise OnTerminate will not be triggered.
+Parameters
+  Sender   - The object that triggered this event.
+  ExitCode - Indicates the termination status of the specified process. 
+See Also
+  WaitForTerminate
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.Priority
-<COMBINEWITH TJvProcessPriority>
+Summary
+  Controls the priority class of a process created with TJvCreateProcess.
+Description
+  Priority controls the new process's priority class, which is used to determine the scheduling 
+  priorities of the process's threads. The system schedules CPU cycles to each process based 
+  on a priority scale; the Priority property adjusts a process's priority higher or lower on the scale. 
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.ProcessInfo
 Summary

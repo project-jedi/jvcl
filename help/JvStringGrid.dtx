@@ -32,50 +32,6 @@ Summary
 Author
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
-@@TCaptionClickEvent
-Summary
-  Occurs when the user clicks a fixed cell.
-Description
-  Write an OnCaptionClick event handler to take specific action when the user clicks a fixed cell.
-  Fixed cells are specified by the FixedCols and FixedRows properties.
-Parameters
-  sender - The grid that has fired this event.
-  aCol   - Indicates the column index of the fixed cell that is clicked.
-  aRow   - Indicates the row index of the fixed cell that is clicked.
-----------------------------------------------------------------------------------------------------
-@@TExitCellEvent
-Summary
-  Occurs when a cell loses the input focus. 
-Description
-  Write an OnExitCell event handler to take specific action when the input focus shifts away from 
-  a cell.
-Parameters
-  Sender   - The grid that has fired this event.
-  aCol     - Indicate the column index of the cell that loses the input focus.
-  aRow     - Indicate the row index of the cell that loses the input focus.
-  edittext - The text of the cell that loses the input focus.
-----------------------------------------------------------------------------------------------------
-@@TGetCellAlignmentEvent
-Summary
-  Occurs when the grid request the alignment of a cell.
-Description
-  Write an OnGetCellAlignment event handler to provide the grid with an alignment for a specific cell. 
-  Set the cellAlignment parameter to the alignment for the cell specified by the ACol and ARow parameters. 
-  cellAlignment is set to the value of property Alignment, so if you don't alter cellAlignment, the cell
-  is aligned as specified by Alignment.
-  
-  OnGetCellAlignment is fired just before the cell is drawn, or if the user calls GetCellAlignment.
-Parameters
-  Sender        - The grid that has fired this event.
-  aCol          - Indicates the column index of the cell that loses the input focus.
-  aRow          - Indicates the row index of the cell that loses the input focus.
-  State         - Indicates whether the cell has input focus, whether the cell is selected, and whether 
-                   the cell is a fixed (nonscrolling) cell.
-  cellAlignment - Specifies the alignment for the cell sepcified by the ACol and ARow parameters. If you
-                   don't alter cellAlignment the cell is aligned as specified by Alignment.
-See Also
-  Alignment, GetCellAlignment
-----------------------------------------------------------------------------------------------------
 @@TGMActivateCell
 Summary
   TGMActivateCell is a message used to activate a cell message.
@@ -422,6 +378,16 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnCaptionClick
 <COMBINEWITH TCaptionClickEvent>
+@@TCaptionClickEvent
+Summary
+  Occurs when the user clicks a fixed cell.
+Description
+  Write an OnCaptionClick event handler to take specific action when the user clicks a fixed cell.
+  Fixed cells are specified by the FixedCols and FixedRows properties.
+Parameters
+  sender - The grid that has fired this event.
+  aCol   - Indicates the column index of the fixed cell that is clicked.
+  aRow   - Indicates the row index of the fixed cell that is clicked.
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnCtl3DChanged
 Summary
@@ -431,9 +397,38 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnExitCell
 <COMBINEWITH TExitCellEvent>
+Summary
+  Occurs when a cell loses the input focus. 
+Description
+  Write an OnExitCell event handler to take specific action when the input focus shifts away from 
+  a cell.
+Parameters
+  Sender   - The grid that has fired this event.
+  aCol     - Indicate the column index of the cell that loses the input focus.
+  aRow     - Indicate the row index of the cell that loses the input focus.
+  edittext - The text of the cell that loses the input focus.
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnGetCellAlignment
 <COMBINEWITH TGetCellAlignmentEvent>
+Summary
+  Occurs when the grid request the alignment of a cell.
+Description
+  Write an OnGetCellAlignment event handler to provide the grid with an alignment for a specific cell. 
+  Set the cellAlignment parameter to the alignment for the cell specified by the ACol and ARow parameters. 
+  cellAlignment is set to the value of property Alignment, so if you don't alter cellAlignment, the cell
+  is aligned as specified by Alignment.
+  
+  OnGetCellAlignment is fired just before the cell is drawn, or if the user calls GetCellAlignment.
+Parameters
+  Sender        - The grid that has fired this event.
+  aCol          - Indicates the column index of the cell that loses the input focus.
+  aRow          - Indicates the row index of the cell that loses the input focus.
+  State         - Indicates whether the cell has input focus, whether the cell is selected, and whether 
+                   the cell is a fixed (nonscrolling) cell.
+  cellAlignment - Specifies the alignment for the cell sepcified by the ACol and ARow parameters. If you
+                   don't alter cellAlignment the cell is aligned as specified by Alignment.
+See Also
+  Alignment, GetCellAlignment
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnHorizontalScroll
 Summary

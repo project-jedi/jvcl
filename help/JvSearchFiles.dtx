@@ -10,7 +10,7 @@
   * Include soSearchFiles in Options. Exclude soSearchDirs from Options.
   * Set DirOption to doIncludeSubDirs.
   * Add 'Jv*' to the mask list <LINK TJvSearchParams.FileMasks,FileMasks> of FileParams.
-  * Include stFileMask in <LINK TJvSearchParams.SearchType,FileParams.SearchType>.
+  * Include stFileMask in <LINK TJvSearchParams.SearchTypes,FileParams.SearchTypes>.
   * Set RootDirectory to 'C:\Source\'.
   * Call Search.
   
@@ -18,9 +18,9 @@
   
   * Include soSearchDirs in Options. Exclude soSearchFiles from Options.
   * Set DirOption to doIncludeSubDirs.
-  * Set <LINK TJvAttributes.ReadOnly,DirParams.Attributes.ReadOnly> to tsMustBeSet.
+  * Set <LINK TJvSearchAttributes.ReadOnly,DirParams.Attributes.ReadOnly> to tsMustBeSet.
   * Set <LINK TJvSearchParams.LastChangeAfter,DirParams.LastChangeAfter> to '1-1-2000'.
-  * Include stAttribute and stLastChangeAfter in <LINK TJvSearchParams.SearchType,DirParams.SearchType>.
+  * Include stAttribute and stLastChangeAfter in <LINK TJvSearchParams.SearchTypes,DirParams.SearchTypes>.
   * Set RootDirectory to 'C:\'.
   * Call Search.
 
@@ -31,19 +31,20 @@
   * Set DirOption to doExcludeInvalidDirs.
   * Set DirParams.Attributes.Encrypted to tsMustBeSet.
   * Add 'test' and 'dummy' to the mask list FileMasks of DirParams.
-  * Include stAttribute and stFileMask in DirParams.SearchType.
-  * Set the <LINK TJvAttributes.ReadOnly,ReadOnly>, <LINK TJvAttributes.Hidden,Hidden>, 
-    <LINK TJvAttributes.System,System>, <LINK TJvAttributes.Normal,Normal>, <LINK TJvAttributes.SparseFile,
-    SparseFile>, <LINK TJvAttributes.ReparsePoint,ReparsePoint>, <LINK TJvAttributes.Compressed,
-    Compressed>, <LINK TJvAttributes.OffLine,OffLine>, <LINK TJvAttributes.NotContentIndexed,
-    NotContentIndexed> and <LINK TJvAttributes.Encrypted,Encrypted> properties of 
-    <LINK TJvAttributes,FileParams.Attributes> to tsMustBeUnset and set
-    <LINK TJvAttributes.Archive,Archive> and <LINK TJvAttributes.Temporary,Temporary> to tsDontCare.
+  * Include stAttribute and stFileMask in <LINK TJvSearchParams.SearchTypes,DirParams.SearchTypes>.
+  * Set the <LINK TJvSearchAttributes.ReadOnly,ReadOnly>, <LINK TJvSearchAttributes.Hidden,Hidden>, 
+    <LINK TJvSearchAttributes.System,System>, <LINK TJvSearchAttributes.Normal,Normal>, 
+    <LINK TJvSearchAttributes.SparseFile,SparseFile>, <LINK TJvSearchAttributes.ReparsePoint,ReparsePoint>,
+    <LINK TJvSearchAttributes.Compressed,Compressed>, <LINK TJvSearchAttributes.OffLine,OffLine>, 
+    <LINK TJvSearchAttributes.NotContentIndexed,NotContentIndexed> and <LINK TJvSearchAttributes.Encrypted,
+    Encrypted> properties of <LINK TJvSearchAttributes,FileParams.Attributes> to tsMustBeUnset and set
+    <LINK TJvSearchAttributes.Archive,Archive> and <LINK TJvSearchAttributes.Temporary,Temporary> to 
+    tsDontCare.
     Or alternatively set <LINK TJvSearchParams.ExcludeAttr,FileParams.ExcludeAttr> to
-    not (FILE_ATTRIBUTE_TEMPORARY or FILE_ATTRIBUTE_ARCHIVE), and <LINK TJvSearchParams.IncludeAttr,
+    'not (FILE_ATTRIBUTE_TEMPORARY or FILE_ATTRIBUTE_ARCHIVE)', and <LINK TJvSearchParams.IncludeAttr,
     FileParams.IncludeAttr> to 0.
   * Set <LINK TJvSearchParams.MinSize,FileParams.MinSize> to 1000000.
-  * Include stAttribute and stMinSize in <LINK TJvSearchParams.SearchType,FileParams.SearchType>.
+  * Include stAttribute and stMinSize in <LINK TJvSearchParams.SearchTypes,FileParams.SearchTypes>.
   * Set RootDirectory to 'C:\temp\dir\'.
   * Include soExcludeFilesInRootDir in Options.
   * Call Search.   
@@ -83,19 +84,6 @@ Description
   Searches in RootDirectory and it's sub-directories, but doesn't search for files or directories in
   invalid - as specified by DirParams - directories, and the sub-directories of an invalid directory.
 ----------------------------------------------------------------------------------------------------
-@@TJvErrorResponse
-Summary
-  Specifies how a TJvSearchFiles component should react on errors.
-Description
-  The TJvErrorResponse type defines values describing the reaction of a TJvSearchFiles component on
-  errors. TJvErrorResponse can have any of the following values:
-@@TJvErrorResponse.erAbort
-  Abort the entire search operation; Search will return with result False.
-@@TJvErrorResponse.erIgnore
-  Abort the search operation in the directory where the error occurred, and continue in the next.
-@@TJvErrorResponse.erRaise
-  Raise a system error.
-----------------------------------------------------------------------------------------------------
 @@TJvSearchAttributes
 <GROUP TJvSearchFiles>
 Summary
@@ -113,7 +101,7 @@ Description
   Use the other properties to specify per attribute whether it must be included, must not be included, or may
   be included. 
   
-  Include stAttribute in <LINK TJvSeachParams.SeachType,SearchType> to actually limit the search result. 
+  Include stAttribute in <LINK TJvSearchParams.SearchTypes,SearchTypes> to actually limit the search result. 
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchAttributes.Archive
 Summary
@@ -123,7 +111,7 @@ Description
   Archive to tsMustBeUnSet to exclude these files or directories. If Archive is set to tsDontCare 
   then archive files or directories aren't excluded in the search result.
 
-  Include stAttribute in <LINK TJvSeachParams.SeachType,SearchType> to actually limit the search result. 
+  Include stAttribute in <LINK TJvSearchParams.SearchTypes,SearchTypes> to actually limit the search result. 
 See Also
   Compressed, Encrypted, Hidden, Normal, NotContentIndexed, OffLine, ReadOnly, ReparsePoint,
   SparseFile, System, Temporary
@@ -136,7 +124,7 @@ Description
   Compressed to tsMustBeUnSet to exclude these files or directories. If Compressed is set to tsDontCare 
   then compressed files or directories aren't excluded in the search result.
 
-  Include stAttribute in <LINK TJvSeachParams.SeachType,SearchType> to actually limit the search result. 
+  Include stAttribute in <LINK TJvSearchParams.SearchTypes,SearchTypes> to actually limit the search result. 
 See Also
   Archive, Encrypted, Hidden, Normal, NotContentIndexed, OffLine, ReadOnly, ReparsePoint,
   SparseFile, System, Temporary
@@ -149,7 +137,7 @@ Description
   Encrypted to tsMustBeUnSet to exclude these files or directories. If Encrypted is set to tsDontCare 
   then encrypted files or directories aren't excluded in the search result.
 
-  Include stAttribute in <LINK TJvSeachParams.SeachType,SearchType> to actually limit the search result. 
+  Include stAttribute in <LINK TJvSearchParams.SearchTypes,SearchTypes> to actually limit the search result. 
 See Also
   Archive, Compressed, Hidden, Normal, NotContentIndexed, OffLine, ReadOnly, ReparsePoint,
   SparseFile, System, Temporary
@@ -163,7 +151,7 @@ Description
   be included in the search result. Set ExcludeAttr to specify the exclude attributes at once. Use the
   other properties of TJvSearchAttributes to specify the exclude attributes per attribute.
 
-  Include stAttribute in <LINK TJvSeachParams.SeachType,SearchType> to actually limit the search result. 
+  Include stAttribute in <LINK TJvSearchParams.SearchTypes,SearchTypes> to actually limit the search result. 
 See Also
   IncludeAttr
 ----------------------------------------------------------------------------------------------------
@@ -176,7 +164,7 @@ Description
   directories. If Hidden is set to tsDontCare then hidden files or directories aren't excluded in the
   search result.
 
-  Include stAttribute in <LINK TJvSeachParams.SeachType,SearchType> to actually limit the search result. 
+  Include stAttribute in <LINK TJvSearchParams.SearchTypes,SearchTypes> to actually limit the search result. 
 See Also
   Archive, Compressed, Encrypted, Normal, NotContentIndexed, OffLine, ReadOnly, ReparsePoint,
   SparseFile, System, Temporary
@@ -190,7 +178,7 @@ Description
   be included in the search result. Set IncludeAttr to specify the include attributes at once. Use the
   other properties of TJvSearchAttributes to specify the include attributes per attribute.
 
-  Include stAttribute in <LINK TJvSeachParams.SeachType,SearchType> to actually limit the search result. 
+  Include stAttribute in <LINK TJvSearchParams.SearchTypes,SearchTypes> to actually limit the search result. 
 See Also
   ExcludeAttr
 ----------------------------------------------------------------------------------------------------
@@ -205,7 +193,7 @@ Description
   exclude these files. If Normal is set to tsDontCare then normal files aren't excluded in the search
   result.
 
-  Include stAttribute in <LINK TJvSeachParams.SeachType,SearchType> to actually limit the search result. 
+  Include stAttribute in <LINK TJvSearchParams.SearchTypes,SearchTypes> to actually limit the search result. 
 See Also
   Archive, Compressed, Encrypted, Hidden, NotContentIndexed, OffLine, ReadOnly, ReparsePoint,
   SparseFile, System, Temporary
@@ -219,7 +207,7 @@ Description
   exclude these files or directories. If NotContentIndexed is set to tsDontCare then non-indexed files
   or directories aren't excluded in the search result.
 
-  Include stAttribute in <LINK TJvSeachParams.SeachType,SearchType> to actually limit the search result. 
+  Include stAttribute in <LINK TJvSearchParams.SearchTypes,SearchTypes> to actually limit the search result. 
 See Also
   Archive, Compressed, Encrypted, Hidden, Normal, OffLine, ReadOnly, ReparsePoint,
   SparseFile, System, Temporary
@@ -232,7 +220,7 @@ Description
   result. Set OffLine to tsMustBeUnSet to exclude these files or directories. If OffLine is set to
   tsDontCare then off-line files or directories aren't excluded in the search result.
 
-  Include stAttribute in <LINK TJvSeachParams.SeachType,SearchType> to actually limit the search result. 
+  Include stAttribute in <LINK TJvSearchParams.SearchTypes,SearchTypes> to actually limit the search result. 
 See Also
   Archive, Compressed, Encrypted, Hidden, Normal, NotContentIndexed, ReadOnly, ReparsePoint,
   SparseFile, System, Temporary
@@ -245,7 +233,7 @@ Description
   ReadOnly to tsMustBeUnSet to exclude these files or directories. If ReadOnly is set to tsDontCare 
   then read-only files or directories aren't excluded in the search result.
 
-  Include stAttribute in <LINK TJvSeachParams.SeachType,SearchType> to actually limit the search result. 
+  Include stAttribute in <LINK TJvSearchParams.SearchTypes,SearchTypes> to actually limit the search result. 
 See Also
   Archive, Compressed, Encrypted, Hidden, Normal, NotContentIndexed, OffLine, ReparsePoint,
   SparseFile, System, Temporary
@@ -260,7 +248,7 @@ Description
   ReparsePoint is set to tsDontCare then files or directories with an reparse point aren't excluded
   in the search result.
 
-  Include stAttribute in <LINK TJvSeachParams.SeachType,SearchType> to actually limit the search result. 
+  Include stAttribute in <LINK TJvSearchParams.SearchTypes,SearchTypes> to actually limit the search result. 
 See Also
   Archive, Compressed, Encrypted, Hidden, Normal, NotContentIndexed, OffLine, ReadOnly, SparseFile, 
   System, Temporary
@@ -273,7 +261,7 @@ Description
   tsMustBeUnSet to exclude these files. If SparseFile is set to tsDontCare then sparse files aren't
   excluded in the search result.
 
-  Include stAttribute in <LINK TJvSeachParams.SeachType,SearchType> to actually limit the search result. 
+  Include stAttribute in <LINK TJvSearchParams.SearchTypes,SearchTypes> to actually limit the search result. 
 Note  
   Directories can't have this attribute set.
 See Also
@@ -289,7 +277,7 @@ Description
   to exclude these files or directories. If System is set to tsDontCare then system files or directories
   aren't excluded in the search result.
 
-  Include stAttribute in <LINK TJvSeachParams.SeachType,SearchType> to actually limit the search result. 
+  Include stAttribute in <LINK TJvSearchParams.SearchTypes,SearchTypes> to actually limit the search result. 
 See Also
   Archive, Compressed, Encrypted, Hidden, Normal, NotContentIndexed, OffLine, ReadOnly, ReparsePoint,
   SparseFile, Temporary
@@ -381,7 +369,9 @@ See Also
   Files, Options
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.DirOption
-<COMBINEWITH TJvDirOption>
+Summary
+  Determines the kind of search.
+Description
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.DirParams
 Summary
@@ -399,6 +389,17 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.ErrorResponse
 <COMBINEWITH TJvErrorResponse>
+Summary
+  Specifies how a TJvSearchFiles component should react on errors.
+Description
+  The TJvErrorResponse type defines values describing the reaction of a TJvSearchFiles component on
+  errors. TJvErrorResponse can have any of the following values:
+@@TJvErrorResponse.erAbort
+  \Abort the entire search operation; Search will return with result False.
+@@TJvErrorResponse.erIgnore
+  \Abort the search operation in the directory where the error occurred, and continue in the next.
+@@TJvErrorResponse.erRaise
+  Raise a system error.
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.FileParams
 Summary
@@ -448,6 +449,7 @@ See Also
   DirParams, Options, RootDirectory
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.OnAbort
+
 Summary
   Occurs when the user calls Abort while the component is searching for files.
 Description
@@ -456,6 +458,7 @@ See Also
   Abort
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.OnBeginScanDir
+<COMBINEWITH TJvFileSearchEvent>
 Summary
   Occurs when the component starts searching for files and directories in a directory.
 Description
@@ -468,6 +471,7 @@ See Also
   OnFindDirectory, OnFindFile
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.OnCheck
+<COMBINEWITH TJvCheckEvent>
 Summary
   Occurs if a file or directory needs to be checked whether it's valid.
 Description
@@ -482,6 +486,7 @@ See Also
   FindData
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.OnError
+<COMBINEWITH TJvSearchFilesError>
 Summary
   Occurs if an error occurred while scanning for files or directories.
 Description
@@ -496,6 +501,7 @@ See Also
   ErrorResponse
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.OnFindDirectory
+<COMBINEWITH TJvFileSearchEvent>
 Summary
   Occurs when a valid directory is found.
 Description
@@ -509,6 +515,7 @@ See Also
   OnBeginScanDir, OnFindFile, Options
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.OnFindFile
+<COMBINEWITH TJvFileSearchEvent>
 Summary
   Occurs when a valid file is found.
 Description
@@ -522,7 +529,40 @@ See Also
   OnBeginScanDir, OnFindDirectory, Options
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.Options
-<COMBINEWITH TJvSearchOption>
+Summary
+  Specifies various behavioral properties of the search component.
+Description
+  Set Options to include the desired properties for the search component. Options is a set drawn from
+  the following values:  
+  <TABLE>
+  Value                    Meaning
+  -----                    -------
+  soAllowDuplicates        Allow duplicate file or directory names be stored in the Files and Directories
+                            lists. If soOwnerData is included in Options then this flag is ignored. 
+  soCheckRootDirValid      Checks whether the root directory is valid as specified by DirParams. If the
+                            root directory isn't valid then no search for files or directories is performed
+                            in that directory; if also DirOption equals doExcludeSubDirs or 
+                            doExcludeInvalidSubDirs then no search at all is performed. Otherwise the
+                            component only searches for files or directories in the sub-directories of 
+                            the root directory.
+  soExcludeFilesInRootDir  Disables searching for files or directories in the root directory as specified
+                            by RootDirectory. If DirOption equals doExcludeSubDirs then no search at all
+                            is performed.
+  soOwnerData              Doesn't fill the Files and Directories lists with found file or directory names
+                            while searching.
+  soSearchDirs             Searches for directories; ie if a valid - as specified by DirParams - directory
+                            is found, the component will trigger an OnFindDirectory event, add the directory
+                            name to the Directories list - if soOwnerData isn't included in Options - and
+                            update TotalDirectories and TotalFileSize.
+  soSearchFiles            Searches for files; ie if a valid - as specified by FileParams - file is found,
+                            the component will trigger an OnFindFile event, add the file name to the Files
+                            list - if soOwnerData isn't included in Options - and update TotalFileSize and
+                            TotalFiles.
+  soSorted                 Automatically sorts the strings in the Files and Directories lists. If soOwnerData
+                            is included in Options then this flag is ignored.
+  soStripDirs              Strips the path of a directory or file name before inserting it in the Files
+                            and Directories lists.
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.RootDirectory
 Summary
@@ -781,7 +821,16 @@ See Also
   MaxSize, SearchTypes
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchParams.SearchTypes
-<COMBINEWITH TJvSearchType>
+Summary
+  Specifies the parameters that a file or directory must be matched to, to decide whether it can be
+  added to the search results.
+Description
+  Use SearchTypes to specify the parameters that a file or directory must be matched to, to decide
+  whether it can be added to the search results. 
+  
+  If DirOption equals doExcludeInvalidDirs or doExcludeCompleteInvalidDirs then property SearchTypes
+  of DirParams also indicates the parameters that a directory must be matched to, to decide whether 
+  the component must search in that directory for other files or directories.
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchType
 Summary
