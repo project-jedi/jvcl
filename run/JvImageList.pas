@@ -255,7 +255,7 @@ uses
 resourcestring
   // (usc) there is no real need to move this string to JvResource.pas because
   //       hopefully ikMappedResourceBitmap will be supported soon
-  RsNotSupportedItemKind = 'The item kind %s is not supported so far.';
+  RsENotSupportedItemKind = 'The item kind %s is not supported so far.';
 
 {$IFDEF UNIX}
 const
@@ -473,7 +473,7 @@ procedure TJvImageListItem.SetKind(AKind: TJvImageListItemKind);
 begin
   // (usc) remove when MappedResourceBitmap support is finished
   if AKind = ikMappedResourceBitmap then
-    raise EJvImageListError.CreateResFmt(@RsNotSupportedItemKind, ['ikMappedResourceBitmap']);
+    raise EJvImageListError.CreateResFmt(@RsENotSupportedItemKind, ['ikMappedResourceBitmap']);
 
   if FKind <> AKind then
   begin
