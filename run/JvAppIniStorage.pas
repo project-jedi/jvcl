@@ -70,8 +70,8 @@ type
     procedure DoWriteFloat(const Path: string; Value: Extended); override;
     function DoReadString(const Path: string; const Default: string): string; override;
     procedure DoWriteString(const Path: string; const Value: string); override;
-    function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
-    procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
+    function DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer; override;
+    procedure DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer); override;
     property DefaultSection: string read FDefaultSection write FDefaultSection;
     property IniFile: TMemIniFile read FIniFile;
   public
@@ -114,7 +114,7 @@ const
   cSectionHeaderEnd = ']';
   cKeyValueSeparator = '=';
 
-function BinStrToBuf(Value: string; var Buf; BufSize: Integer): Integer;
+function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
 var
   P: PChar;
 begin
@@ -134,7 +134,7 @@ begin
   end;
 end;
 
-function BufToBinStr(const Buf; BufSize: Integer): string;
+function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
 var
   P: PChar;
   S: string;
@@ -269,7 +269,7 @@ begin
   WriteValue(Section, Key, Value);
 end;
 
-function TJvCustomAppIniStorage.DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
+function TJvCustomAppIniStorage.DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer;
 var
   Section: string;
   Key: string;
@@ -285,7 +285,7 @@ begin
     Result := 0;
 end;
 
-procedure TJvCustomAppIniStorage.DoWriteBinary(const Path: string; const Buf; BufSize: Integer);
+procedure TJvCustomAppIniStorage.DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer);
 var
   Section: string;
   Key: string;

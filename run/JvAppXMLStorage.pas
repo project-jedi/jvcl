@@ -86,8 +86,8 @@ type
     procedure DoWriteFloat(const Path: string; Value: Extended); override;
     function DoReadString(const Path: string; const Default: string): string; override;
     procedure DoWriteString(const Path: string; const Value: string); override;
-    function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
-    procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
+    function DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer; override;
+    procedure DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer); override;
 
     property Xml: TJvSimpleXml read FXml;
     property RootNodeName: string read GetRootNodeName write SetRootNodeName;
@@ -132,7 +132,7 @@ const
   cCount = 'Count';
   cEmptyPath = 'EmptyPath';
 
-function BinStrToBuf(Value: string; var Buf; BufSize: Integer): Integer;
+function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
 var
   P: PChar;
 begin
@@ -151,7 +151,7 @@ begin
   end;
 end;
 
-function BufToBinStr(const Buf; BufSize: Integer): string;
+function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
 var
   P: PChar;
   S: string;
@@ -395,6 +395,7 @@ var
   ParentPath: string;
   ValueName: string;
   ANode: TJvSimpleXmlElem;
+  Buffer: Extended;
 begin
   if AutoReload and not IsUpdating then
     Reload;
@@ -454,7 +455,7 @@ begin
     Flush;
 end;
 
-function TJvCustomAppXMLStorage.DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
+function TJvCustomAppXMLStorage.DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer;
 var
   Value: string;
 begin
@@ -464,7 +465,7 @@ begin
   Result := BinStrToBuf(Value, Buf, BufSize);
 end;
 
-procedure TJvCustomAppXMLStorage.DoWriteBinary(const Path: string; const Buf; BufSize: Integer);
+procedure TJvCustomAppXMLStorage.DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer);
 begin
   if AutoReload and not IsUpdating then
     Reload;
