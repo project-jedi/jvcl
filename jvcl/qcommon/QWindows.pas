@@ -1247,6 +1247,7 @@ resourcestring
   SFOpenError = 'Unable to open file %s';
   SReadError = 'Error reading file';
   SWriteError = 'Error writing file';
+  SQThreadError = 'Thread Error in QWindows: %s (%d)';
 
 function CopyFile(lpExistingFileName, lpNewFileName: PChar;
   bFailIfExists: LongBool): LongBool; overload;
@@ -1270,6 +1271,24 @@ procedure OutputDebugString(lpOutputString: PChar);
 
 
 function GetCurrentProcess: THandle;
+
+function TerminateThread(ThreadID: TThreadID; RetVal: integer): LongBool;
+//
+// The Windows API's  SuspendThread & ResumeThread are functions.
+// With QWindows / Linux these are procedures
+//
+procedure SuspendThread(ThreadID: TThreadID);
+procedure ResumeThread(ThreadID: TThreadID);
+function GetThreadPolicy(ThreadID: TThreadID): integer;
+procedure SetThreadPolicy(ThreadID: TThreadID; value: integer);
+function GetThreadPriority(ThreadID: TThreadID): integer;
+function SetThreadPriority(ThreadID: TThreadID; priority: integer):LongBool;
+
+const
+  THREAD_PRIORITY_ERROR_RETURN = 255;
+type
+  TThreadPriority = integer;
+
 
 // virtual memory handling
 const
@@ -6087,6 +6106,82 @@ function GetCurrentProcess: THandle;
 begin
   Result := THandle(0);
 end;
+
+function CheckThreadError(ErrCode: Integer): integer;
+begin
+  if ErrCode <> 0 then
+    raise EThread.CreateResFmt(@SQThreadError, [SysErrorMessage(ErrCode), ErrCode]);
+  Result := ErrCode;
+end;
+
+function TerminateThread(ThreadID: TThreadID; RetVal: integer): LongBool;
+begin
+  case RetVal of
+  0:
+    Result := CheckThreadError(pthread_kill(ThreadID, SIGQUIT)) = 0;
+  130:
+    Result := CheckThreadError(pthread_kill(ThreadID, SIGABRT)) = 0; /// CTRL_C
+  else
+    Result := CheckThreadError(pthread_kill(ThreadID, SIGKILL))= 0; // unmaskable
+  end;
+end;
+
+procedure SuspendThread(ThreadID: TThreadID);
+begin
+  CheckThreadError(pthread_kill(ThreadID, SIGSTOP));
+end;
+
+procedure ResumeThread(ThreadID: TThreadID);
+begin
+  CheckThreadError(pthread_kill(ThreadID, SIGCONT));
+end;
+
+function GetThreadPolicy(ThreadID: TThreadID): integer;
+var
+  SP: TSchedParam;
+begin
+  CheckThreadError(pthread_getschedparam(ThreadID, Result, SP));
+end;
+
+procedure SetThreadPolicy(ThreadID: TThreadID; value: integer);
+var
+  SP: TSchedParam;
+begin
+  if Value <> GetThreadPolicy(ThreadID) then
+  begin
+    SP.sched_priority := GetThreadPriority(ThreadID);
+    CheckThreadError(pthread_setschedparam(ThreadID, Value, @SP));
+  end;
+end;
+
+function GetThreadPriority(ThreadID: TThreadID): TThreadPriority;
+var
+  P: Integer;
+  SP: TSchedParam;
+begin
+  if CheckThreadError(pthread_getschedparam(ThreadID, P, SP)) <> 0
+  then
+    Result := THREAD_PRIORITY_ERROR_RETURN
+  else
+    Result := SP.sched_priority;
+end;
+
+function SetThreadPriority(ThreadID: TThreadID; priority: integer): LongBool; 	// handle to the thread
+var
+  SP: TSchedParam;
+  P: integer;
+begin
+  if priority <> GetThreadPriority(ThreadID) then
+  begin
+    SP.sched_priority := priority;
+    P:= GetThreadPolicy(ThreadID);
+    CheckThreadError(pthread_setschedparam(ThreadID, P, @SP));
+    Result := errno = 0;
+  end
+  else
+    Result := true;
+end;
+
 
 function VirtualProtect(lpAddress: Pointer; dwSize, flNewProtect: Cardinal;
   lpflOldProtect: Pointer): LongBool; overload;
