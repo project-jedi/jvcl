@@ -62,7 +62,7 @@ type
     FFilters: TList;
     procedure Initialize(FilterStr: string);
   public
-    constructor Create(FilterStr: string);
+    constructor Create(const FilterStr: string);
     destructor Destroy; override;
     property Name: string read FName write FName;
     property Filters: TList read FFilters write FFilters;
@@ -1365,7 +1365,7 @@ end;
 
 //=== { TJvXMLFilter } =======================================================
 
-constructor TJvXMLFilter.Create(FilterStr: string);
+constructor TJvXMLFilter.Create(const FilterStr: string);
 begin
   inherited Create;
   Filters := TList.Create;

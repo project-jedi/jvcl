@@ -388,14 +388,14 @@ var
   CalcRect: TRect;
 
   {$IFDEF VCL}
-  procedure DoDrawText(Handle: HDC; ACaption: string; var ARect: TRect;
+  procedure DoDrawText(Handle: HDC; const ACaption: string; var ARect: TRect;
     Flags: Integer);
   begin
     DrawText(Handle, PChar(ACaption), -1, ARect, Flags);
   end;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  procedure DoDrawText(Handle: HDC; ACaption: TCaption; var ARect: TRect;
+  procedure DoDrawText(Handle: HDC; const ACaption: TCaption; var ARect: TRect;
     Flags: Integer);
   begin
     SetPainterFont(Handle, AFont);
