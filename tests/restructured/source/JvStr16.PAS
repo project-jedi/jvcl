@@ -25,7 +25,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvJvStr16;
+unit JvStr16;
 
 interface
 
