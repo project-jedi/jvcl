@@ -35,7 +35,7 @@ unit JvQScrollBar;
 interface
 
 uses
-  SysUtils, Classes, QGraphics, QControls, QForms, QStdCtrls,
+  SysUtils, Classes, QGraphics, QControls, QForms, QStdCtrls, QStyle,
   JvQExStdCtrls;
 
 type
@@ -43,6 +43,8 @@ type
   private
     FHotTrack: Boolean;
     procedure SetHotTrack(Value: Boolean);
+    procedure SetDefaultStyle(Value: TDefaultStyle);
+    function GetDefaultStyle: TDefaultStyle;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -54,6 +56,7 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
+    property DefaultStyle: TDefaultStyle read GetDefaultStyle write SetDefaultStyle default dsSystemDefault;
   end;
 
 implementation
@@ -67,7 +70,18 @@ constructor TJvScrollBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHotTrack := False;
+  DefaultStyle := dsMotif;
   // ControlStyle := ControlStyle + [csAcceptsControls];
+end;
+
+procedure TJvScrollBar.SetDefaultStyle(Value: TDefaultStyle);
+begin
+  Style.DefaultStyle := Value;
+end;
+
+function TJvScrollBar.GetDefaultStyle: TDefaultStyle;
+begin
+  Result := Style.DefaultStyle;
 end;
 
 procedure TJvScrollBar.MouseEnter(Control: TControl);
@@ -75,7 +89,7 @@ begin
   if csDesigning in ComponentState then
     Exit;
   if not MouseOver then
-  begin 
+  begin
     inherited MouseEnter(Control);
   end;
 end;
@@ -83,7 +97,7 @@ end;
 procedure TJvScrollBar.MouseLeave(Control: TControl);
 begin
   if MouseOver then
-  begin 
+  begin
     inherited MouseLeave(Control);
   end;
 end;

@@ -53,32 +53,34 @@ type
     FPosition: Integer;
     FScrollAmount: TJvScrollAmount;
     FScrollIntervall: TJvScrollAmount;
-    FMediaFile: TFileName;
     FOnBeforeScroll: TNotifyEvent;
     FOnAfterScroll: TNotifyEvent;
-    FLoopMedia: Boolean;
     FScrollLength: TJvScrollAmount;
     FScrollDirection: TJvContentScrollDirection;
-    FLoopCount: Integer;
-    FCurLoop: Integer;
     // FScrollStart: Integer;
+    FCurLoop: Integer;
+    FLoopCount: Integer;
+    {$IFDEF MSWINDOWS}
+    FLoopMedia: Boolean;
+    FMediaFile: TFileName;
+    procedure SetLoopMedia(Value: Boolean);
+    procedure SetMediaFile(Value: TFileName);
+    {$ENDIF MSWINDOWS}
     procedure SetActive(Value: Boolean);
+    procedure SetLoopCount(Value: Integer);
     procedure SetScrollAmount(Value: TJvScrollAmount);
     procedure SetScrollIntervall(Value: TJvScrollAmount);
-    procedure SetMediaFile(Value: TFileName);
     procedure DoTimer(Sender: TObject);
     procedure CreateTimer;
     procedure FreeTimer;
-    procedure SetLoopMedia(Value: Boolean);
     procedure SetScrollLength(Value: TJvScrollAmount);
     procedure SetScrollDirection(Value: TJvContentScrollDirection);
-    procedure SetLoopCount(Value: Integer);
     // procedure SetScrollStart(const Value: Integer);
   protected
     procedure Paint; override;
     procedure DoBeforeScroll; dynamic;
-    procedure DoAfterScroll; dynamic;  
-    procedure SetText(const Value: TCaption); override; 
+    procedure DoAfterScroll; dynamic;
+    procedure SetText(const Value: TCaption); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -93,8 +95,8 @@ type
     {$IFDEF MSWINDOWS}
     property MediaFile: TFileName read FMediaFile write SetMediaFile;
     property LoopMedia: Boolean read FLoopMedia write SetLoopMedia default True;
+    {$ENDIF MSWINDOWS}
     property LoopCount: Integer read FLoopCount write SetLoopCount default -1;
-    {$ENDIF MSWINDOWS} 
     property Action;
     property Anchors;
     property Constraints;
@@ -156,7 +158,9 @@ begin
   FScrollIntervall := 50;
   FScrollLength := 250;
   FScrollDirection := sdUp;
+  {$IFDEF MSWINDOWS}
   FLoopMedia := True;
+  {$ENDIF MSWINDOWS}
   FLoopCount := -1;
 end;
 
@@ -167,8 +171,10 @@ begin
 end;
 
 procedure TJvContentScroller.CreateTimer;
+{$IFDEF MSWINDOWS}
 var
   Flag: Integer;
+{$ENDIF MSWINDOWS}
 begin
   if not Assigned(FTimer) then
     FTimer := TTimer.Create(nil);
@@ -305,6 +311,7 @@ begin
   FScrollIntervall := Value;
 end;
 
+{$IFDEF MSWINDOWS}
 procedure TJvContentScroller.SetMediaFile(Value: TFileName);
 begin
   FMediaFile := Value;
@@ -314,6 +321,7 @@ procedure TJvContentScroller.SetLoopMedia(Value: Boolean);
 begin
   FLoopMedia := Value;
 end;
+{$ENDIF MSWINDOWS}
 
 procedure TJvContentScroller.SetScrollLength(Value: TJvScrollAmount);
 begin

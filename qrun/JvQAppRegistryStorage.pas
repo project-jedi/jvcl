@@ -111,6 +111,7 @@ type
     property Root read GetRoot write SetRoot;
     property SubStorages;
     property UseOldDefaultRoot: Boolean read FUseOldDefaultRoot write SetUseOldDefaultRoot stored True default False ;
+    property ReadOnly;
   end;
 
 implementation

@@ -72,6 +72,7 @@ type
     procedure MaxChanged; virtual;
     procedure Paint; override;
   public
+    property Canvas;
     procedure UpdateGradient;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

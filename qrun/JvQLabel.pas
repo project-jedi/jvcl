@@ -63,6 +63,9 @@ uses
   QWindows, QMessages, Classes, QGraphics, QControls, QStdCtrls, QImgList, 
   JvQTypes, JvQComponent, JvQDataProvider, JvQExControls;
 
+const
+  clGrayText = clDisabledText;  
+
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
   TJvLabelRotateAngle = -360..360;

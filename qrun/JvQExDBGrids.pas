@@ -72,8 +72,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -91,9 +91,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-
-  { QControl }
-  TJvExPubCustomDBGrid = class(TJvExCustomDBGrid);
   
   { QControl begin }
   TJvExDBGrid = class(TDBGrid)
@@ -123,8 +120,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -142,9 +139,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-
-  { QControl }
-  TJvExPubDBGrid = class(TJvExDBGrid);
   
 
 implementation
@@ -175,18 +169,16 @@ begin
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
       CM_HINTSHOW:
-      begin
         case FHintColor of
           clNone   : HintInfo^.HintColor := Application.HintColor;
           clDefault: HintInfo^.HintColor := GetHintColor(Parent);
         else
           HintInfo^.HintColor := FHintcolor;
         end;
-      end;
-    else
-      inherited Dispatch(Mesg);
+
     end;
   end;
+  inherited Dispatch(Mesg);
 end;
 
 procedure TJvExCustomDBGrid.CMHitTest(var Mesg: TJvMessage);
@@ -296,7 +288,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    WndProc(TMessage(Mesg))
+    inherited Dispatch(Mesg);
 end;
 
 function TJvExCustomDBGrid.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -342,18 +334,16 @@ begin
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
       CM_HINTSHOW:
-      begin
         case FHintColor of
           clNone   : HintInfo^.HintColor := Application.HintColor;
           clDefault: HintInfo^.HintColor := GetHintColor(Parent);
         else
           HintInfo^.HintColor := FHintcolor;
         end;
-      end;
-    else
-      inherited Dispatch(Mesg);
+
     end;
   end;
+  inherited Dispatch(Mesg);
 end;
 
 procedure TJvExDBGrid.CMHitTest(var Mesg: TJvMessage);
@@ -463,7 +453,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    WndProc(TMessage(Mesg))
+    inherited Dispatch(Mesg);
 end;
 
 function TJvExDBGrid.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;

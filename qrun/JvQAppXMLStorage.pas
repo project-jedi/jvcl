@@ -43,9 +43,21 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   Classes,
-  JvQAppStorage, JvQSimpleXml;
+  JvQAppStorage, JvQPropertyStore, JvQSimpleXml;
 
 type
+
+  TJvAppXMLStorageOptions = class(TJvAppStorageOptions)
+  private
+    FWhiteSpaceReplacement: string;
+  protected
+    procedure SetWhiteSpaceReplacement(const Value: string);
+  public
+    constructor Create ; override;
+  published
+    property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write SetWhiteSpaceReplacement;
+  end;
+
   // This is the base class for an in memory XML file storage
   // There is at the moment only one derived class that simply
   // allows to flush into a disk file.
@@ -54,12 +66,13 @@ type
   // a class (nothing much is involved, use the AsString property).
   TJvCustomAppXMLStorage = class(TJvCustomAppMemoryFileStorage)
   protected
-    FWhiteSpaceReplacement: string;
     FXml: TJvSimpleXml;
+
+    class function GetStorageOptionsClass: TJvAppStorageOptionsClass; override;
+
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
 
-    procedure SetWhiteSpaceReplacement(const Value: string);
     function EnsureNoWhiteSpaceInNodeName(NodeName: string): string;
 
     function DefaultExtension : string; override;
@@ -96,7 +109,6 @@ type
 
     property Xml: TJvSimpleXml read FXml;
     property RootNodeName: string read GetRootNodeName write SetRootNodeName;
-    property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write SetWhiteSpaceReplacement;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -119,8 +131,15 @@ type
     property RootNodeName;
     property SubStorages;
     property OnGetFileName;
-    property WhiteSpaceReplacement;
   end;
+
+procedure StorePropertyStoreToXmlFile (iPropertyStore : TJvCustomPropertyStore;
+                                       const iFileName : string;
+                                       const iAppStoragePath : string = '');
+procedure LoadPropertyStoreFromXmlFile (iPropertyStore : TJvCustomPropertyStore;
+                                        const iFileName : string;
+                                        const iAppStoragePath : string = '');
+
 
 implementation
 
@@ -129,7 +148,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, TypInfo,
-  JclStrings,
+  JclStrings, JvQJCLUtils,
   JvQTypes, JvQConsts, JvQResources;
 
 const
@@ -137,42 +156,27 @@ const
   cCount = 'Count';
   cEmptyPath = 'EmptyPath';
 
-function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
-var
-  P: PChar;
+
+//=== { TJvAppXMLStorageOptions } ===================================================
+
+constructor TJvAppXMLStorageOptions.Create ;
 begin
-  if Odd(Length(Value)) then
-    Value := cNullDigit + Value;
-  if (Length(Value) div 2) < BufSize then
-    BufSize := Length(Value) div 2;
-  Result := 0;
-  P := PChar(Value);
-  while (BufSize > 0) do
-  begin
-    PChar(Buf)[Result] := Chr(StrToInt('$' + P[0] + P[1]));
-    Inc(Result);
-    Dec(BufSize);
-    Inc(P, 2);
-  end;
+  inherited Create;
+  WhiteSpaceReplacement := '';  // to keep the original behaviour
 end;
 
-function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
-var
-  P: PChar;
-  S: string;
+procedure TJvAppXMLStorageOptions.SetWhiteSpaceReplacement(
+  const Value: string);
 begin
-  SetLength(Result, BufSize * 2);
-  P := PChar(Result);
-  Inc(P, (BufSize - 1) * 2); // Point to end of string ^
-  while BufSize > 0 do
+  if Value <> FWhiteSpaceReplacement then
   begin
-    S := IntToHex(Ord(PChar(Buf)[BufSize]), 2);
-    P[0] := S[1];
-    P[1] := S[2];
-    Dec(P, 2);
-    Dec(BufSize);
-  end;
+    if StrContainsChars(Value, AnsiWhiteSpace, True) then
+      raise EJVCLException.CreateRes(@RsEWhiteSpaceReplacementCannotContainSpaces)
+    else
+      FWhiteSpaceReplacement := Value;
+  end
 end;
+
 
 //=== { TJvCustomAppXMLStorage } ===================================================
 
@@ -181,7 +185,6 @@ begin
   inherited Create(AOwner);
   FXml := TJvSimpleXml.Create(nil);
   RootNodeName := 'Configuration';
-  WhiteSpaceReplacement := '';  // to keep the original behaviour
 end;
 
 destructor TJvCustomAppXMLStorage.Destroy;
@@ -192,6 +195,11 @@ begin
   FXml.Free;
 end;
 
+class function TJvCustomAppXMLStorage.GetStorageOptionsClass: TJvAppStorageOptionsClass;
+begin
+  Result := TJvAppXMLStorageOptions;
+end;
+
 function TJvCustomAppXMLStorage.EnsureNoWhiteSpaceInNodeName(
   NodeName: string): string;
 var
@@ -200,7 +208,9 @@ var
   InsertIndex: Integer;
   WhiteSpaceCount: Integer;
   FixedNodeName: string;
+  WhiteSpaceReplacement: string;
 begin
+  WhiteSpaceReplacement := TJvAppXMLStorageOptions(StorageOptions).WhiteSpaceReplacement;
   if StrContainsChars(NodeName, AnsiWhiteSpace, False) then
   begin
     WSRLength := Length(WhiteSpaceReplacement);
@@ -380,7 +390,9 @@ begin
   begin
     try
       StrValue := Node.Items.ItemNamed[ValueName].Value;
-      Result := StrToFloat(StrValue);
+      // Result := StrToFloat(StrValue);
+      if BinStrToBuf(StrValue, @Result, SizeOf(Result)) <> SizeOf(Result) then
+        Result := Default;
     except
       if StorageOptions.DefaultIfReadConvertError then
         Result := Default
@@ -407,7 +419,8 @@ begin
   SplitKeyPath(Path, ParentPath, ValueName);
   ANode := CreateAndSetNode(ParentPath);
   Xml.Options := [sxoAutoCreate, sxoAutoIndent];
-  ANode.Items.ItemNamed[ValueName].Value := FloatToStr(Value);
+//  ANode.Items.ItemNamed[ValueName].Value := FloatToStr(Value);
+  ANode.Items.ItemNamed[ValueName].Value := BufToBinStr(@Value, SizeOf(Value));
   Xml.Options := [sxoAutoIndent];
   if AutoFlush and not IsUpdating then
     Flush;
@@ -712,18 +725,6 @@ begin
   Xml.LoadFromString(Value);
 end;
 
-procedure TJvCustomAppXMLStorage.SetWhiteSpaceReplacement(
-  const Value: string);
-begin
-  if Value <> FWhiteSpaceReplacement then
-  begin
-    if StrContainsChars(Value, AnsiWhiteSpace, True) then
-      raise EJVCLException.CreateRes(@RsEWhiteSpaceReplacementCannotContainSpaces)
-    else
-      FWhiteSpaceReplacement := Value;
-  end
-end;
-
 function TJvCustomAppXMLStorage.DefaultExtension : string;
 begin
   Result := 'xml';
@@ -733,7 +734,7 @@ end;
 
 procedure TJvAppXMLFileStorage.Flush;
 begin
-  if FullFileName <> '' then
+  if (FullFileName <> '') and not Readonly then
     Xml.SaveToFile(FullFileName);
 end;
 
@@ -741,6 +742,66 @@ procedure TJvAppXMLFileStorage.Reload;
 begin
   if FileExists(FullFileName) and not IsUpdating then
     Xml.LoadFromFile(FullFileName);
+end;
+
+//=== { Common procedures } ===============================================
+
+procedure StorePropertyStoreToXmlFile (iPropertyStore : TJvCustomPropertyStore;
+                                       const iFileName : string;
+                                       const iAppStoragePath : string = '');
+Var
+  AppStorage : TJvAppXmlFileStorage;
+  SaveAppStorage : TJvCustomAppStorage;
+  SaveAppStoragePath : string;
+begin
+  if not Assigned(iPropertyStore) then
+    exit;
+  AppStorage := TJvAppXmlFileStorage.Create(Nil);
+  try
+    AppStorage.Location := flCustom;
+    AppStorage.FileName := iFileName;
+    SaveAppStorage := iPropertyStore.AppStorage;
+    SaveAppStoragePath := iPropertyStore.AppStoragePath;
+    try
+      iPropertyStore.AppStoragePath := iAppStoragePath;
+      iPropertyStore.AppStorage := AppStorage;
+      iPropertyStore.StoreProperties;
+    finally
+      iPropertyStore.AppStoragePath := SaveAppStoragePath;
+      iPropertyStore.AppStorage := SaveAppStorage;
+    end;
+  finally
+    AppStorage.Free;
+  end;
+end;
+
+procedure LoadPropertyStoreFromXmlFile (iPropertyStore : TJvCustomPropertyStore;
+                                        const iFileName : string;
+                                        const iAppStoragePath : string = '');
+Var
+  AppStorage : TJvAppXmlFileStorage;
+  SaveAppStorage : TJvCustomAppStorage;
+  SaveAppStoragePath : string;
+begin
+  if not Assigned(iPropertyStore) then
+    exit;
+  AppStorage := TJvAppXmlFileStorage.Create(Nil);
+  try
+    AppStorage.Location := flCustom;
+    AppStorage.FileName := iFileName;
+    SaveAppStorage := iPropertyStore.AppStorage;
+    SaveAppStoragePath := iPropertyStore.AppStoragePath;
+    try
+      iPropertyStore.AppStoragePath := iAppStoragePath;
+      iPropertyStore.AppStorage := AppStorage;
+      iPropertyStore.LoadProperties;
+    finally
+      iPropertyStore.AppStoragePath := SaveAppStoragePath;
+      iPropertyStore.AppStorage := SaveAppStorage;
+    end;
+  finally
+    AppStorage.Free;
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}

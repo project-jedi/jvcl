@@ -75,7 +75,6 @@ type
     procedure FontChanged; override;
     procedure EnabledChanged;override;
     procedure SetAutoSize(Value: Boolean);   
-    procedure RecreateWnd;
     procedure StateChanged(State: TToggleState); override; 
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
@@ -354,14 +353,6 @@ begin
   if Assigned(FLinkedControls) and not (csDestroying in ComponentState) then
     LinkedControls.Notification(AComponent, Operation);
 end;
-
-
-procedure TJvRadioButton.RecreateWnd;
-begin
-  RecreateWidget;
-end;
-
-
 
 {$IFDEF UNITVERSIONING}
 const

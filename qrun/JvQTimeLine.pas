@@ -280,8 +280,7 @@ type
       Shift: TShiftState);
     function HasMoved(P: TPoint): Boolean;
     function GetHint: string;
-    procedure SetHint(const Value: string); 
-    procedure RecreateWnd; 
+    procedure SetHint(const Value: string);
   protected
     // Some helper functions for selection
     procedure AddToSelection(AItem: TJvTimeItem); overload;
@@ -2521,13 +2520,6 @@ begin
   inherited Hint := Value;
   FOldHint := Value;
 end;
-
-
-procedure TJvCustomTimeLine.RecreateWnd;
-begin
-  RecreateWidget;
-end;
-
 
 // initialization
 //  SystemParametersInfo(SPI_GETKEYBOARDDELAY, 0, @FInitRepeatPause, 0);

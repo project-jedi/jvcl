@@ -214,8 +214,6 @@ begin
   inherited Destroy;
 end;
 
-
-
 procedure TJvXPCustomContainer.HookEnabledChanged;
 var
   I: Integer;

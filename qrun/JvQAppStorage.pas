@@ -89,9 +89,9 @@ interface
 
 uses
   SysUtils, Classes, TypInfo,
-  {$IFDEF UNIX}
+  {$IFDEF LINUX}
   JvQJCLUtils,
-  {$ENDIF UNIX}
+  {$ENDIF LINUX}
   JvQComponent, JvQTypes;
 
 const
@@ -167,9 +167,11 @@ type
     FUpdateCount: Integer;
     FAutoReload: Boolean;
     FCurrentInstanceCreateEvent: TJvAppStorageObjectListItemCreateEvent;
+    FReadOnly: Boolean;
     function GetUpdating: Boolean;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
 
     //Returns the property count of an instance
     function GetPropCount(Instance: TPersistent): Integer;
@@ -367,6 +369,10 @@ type
     function EncryptPropertyValue(Value: string): string;
     function DecryptPropertyValue(Value: string): string;
 
+    procedure SetReadOnly (Value: Boolean);
+    function GetReadOnly: Boolean;
+    function GetPhysicalReadOnly : Boolean; virtual;
+
     property SubStorages: TJvAppSubStorages read FSubStorages write SetSubStorages;
     procedure Loaded; override;
   public
@@ -552,7 +558,12 @@ type
     { Root of any values to be read/written. This value is combined with the path given in one of
       the Read*/Write* methods to determine the actual key used. It's always relative to the value
       of Root (which is an absolute path) }
-    property Path: string Read GetPath Write SetPath;
+    property Path: string read GetPath write SetPath;
+    { Defines if the Storage-Component is readonly or not.
+      If Readonly is true all Calls to an Write*-Procedure will be ignored.
+      The property is calulated by a combination of setting the
+      property ReadOnly and Result of the function GetPhysicalReadOnly }
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default false;
   published
     property StorageOptions: TJvCustomAppStorageOptions read FStorageOptions write SetStorageOptions;
     property OnTranslatePropertyName: TJvAppStoragePropTranslateEvent read FOnTranslatePropertyName
@@ -603,6 +614,7 @@ type
     procedure WriteEnumerationInt(const Path: string; TypeInfo: PTypeInfo; const Value); override;
     procedure ReadSetInt(const Path: string; ATypeInfo: PTypeInfo; const Default; out Value); override;
     procedure WriteSetInt(const Path: string; ATypeInfo: PTypeInfo; const Value); override;
+    property ReadOnly;
   published
     property SubStorages;
   end;
@@ -632,7 +644,7 @@ type
     procedure SetDefaultIfValueNotExists(Value: Boolean); virtual;
     function IsValueListString(const AValue, AList: string): Boolean; virtual;
   public
-    constructor Create;
+    constructor Create; virtual;
     function DefaultTrueString: string;
     function DefaultFalseString: string;
     function IsValueTrueString(Value: string): Boolean;
@@ -732,6 +744,7 @@ type
     FLocation: TFileLocation;
     FLoadedFinished: Boolean;
     FOnGetFileName: TJvAppStorageGetFileNameEvent;
+    FPhysicalReadOnly: Boolean;
 
     function GetAsString: string; virtual; abstract;
     procedure SetAsString(const Value: string); virtual; abstract;
@@ -751,11 +764,17 @@ type
       read FOnGetFileName write FOnGetFileName;
       // OnGetFileName triggered on Location = flCustom
 
+    function GetPhysicalReadOnly : Boolean; override;
+
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
 
+    procedure Reload; override;
+
     property FullFileName: TFileName read GetFullFileName;
+  published
+    property ReadOnly;
   end;
 
 // (marcelb) moved back; the constants are useful to the outside world after a call to GetStoredValues
@@ -771,7 +790,7 @@ implementation
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING} 
   JclFileUtils, JclStrings, JclSysInfo, JclRTTI, JclMime,
   JvQPropertyStore, JvQConsts, JvQResources;
 
@@ -995,6 +1014,7 @@ begin
   FStorageOptions := GetStorageOptionsClass.Create;
   FSubStorages := TJvAppSubStorages.Create(Self);
   FCryptEnabledStatus := 0;
+  FReadOnly := False;
 end;
 
 destructor TJvCustomAppStorage.Destroy;
@@ -1627,7 +1647,8 @@ var
   TargetPath: string;
 begin
   ResolvePath(Path, TargetStore, TargetPath);
-  TargetStore.DeleteValueInt(TargetPath);
+  if not TargetStore.ReadOnly then
+    TargetStore.DeleteValueInt(TargetPath);
 end;
 
 procedure TJvCustomAppStorage.DeleteSubTree(const Path: string);
@@ -1636,7 +1657,8 @@ var
   TargetPath: string;
 begin
   ResolvePath(Path, TargetStore, TargetPath);
-  TargetStore.DeleteSubTreeInt(Path);
+  if not TargetStore.ReadOnly then
+    TargetStore.DeleteSubTreeInt(Path);
 end;
 
 function TJvCustomAppStorage.ReadInteger(const Path: string; Default: Integer): Integer;
@@ -1654,7 +1676,8 @@ var
   TargetPath: string;
 begin
   ResolvePath(Path, TargetStore, TargetPath);
-  TargetStore.WriteIntegerInt(TargetPath, Value);
+  if not TargetStore.ReadOnly then
+    TargetStore.WriteIntegerInt(TargetPath, Value);
 end;
 
 function TJvCustomAppStorage.ReadFloat(const Path: string; Default: Extended): Extended;
@@ -1672,7 +1695,8 @@ var
   TargetPath: string;
 begin
   ResolvePath(Path, TargetStore, TargetPath);
-  TargetStore.WriteFloatInt(TargetPath, Value);
+  if not TargetStore.ReadOnly then
+    TargetStore.WriteFloatInt(TargetPath, Value);
 end;
 
 function TJvCustomAppStorage.ReadString(const Path: string; const Default: string): string;
@@ -1690,7 +1714,8 @@ var
   TargetPath: string;
 begin
   ResolvePath(Path, TargetStore, TargetPath);
-  TargetStore.WriteStringInt(TargetPath, Value);
+  if not TargetStore.ReadOnly then
+    TargetStore.WriteStringInt(TargetPath, Value);
 end;
 
 function TJvCustomAppStorage.ReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer;
@@ -1708,7 +1733,8 @@ var
   TargetPath: string;
 begin
   ResolvePath(Path, TargetStore, TargetPath);
-  TargetStore.WriteBinaryInt(TargetPath, Buf, BufSize);
+  if not TargetStore.ReadOnly then
+    TargetStore.WriteBinaryInt(TargetPath, Buf, BufSize);
 end;
 
 function TJvCustomAppStorage.ReadDateTime(const Path: string; Default: TDateTime): TDateTime;
@@ -1726,7 +1752,8 @@ var
   TargetPath: string;
 begin
   ResolvePath(Path, TargetStore, TargetPath);
-  TargetStore.WriteDateTimeInt(TargetPath, Value);
+  if not TargetStore.ReadOnly then
+    TargetStore.WriteDateTimeInt(TargetPath, Value);
 end;
 
 function TJvCustomAppStorage.ReadBoolean(const Path: string; Default: Boolean): Boolean;
@@ -1744,7 +1771,8 @@ var
   TargetPath: string;
 begin
   ResolvePath(Path, TargetStore, TargetPath);
-  TargetStore.WriteBooleanInt(TargetPath, Value);
+  if not TargetStore.ReadOnly then
+    TargetStore.WriteBooleanInt(TargetPath, Value);
 end;
 
 function TJvCustomAppStorage.ReadList(const Path: string; const List: TObject;
@@ -1774,13 +1802,16 @@ var
   I: Integer;
 begin
   ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
-  Delete(TargetPath, Length(TargetPath) - 1, 2);
-  PrevListCount := TargetStore.ReadIntegerInt(ConcatPaths([TargetPath, cCount]), 0);
-  TargetStore.WriteIntegerInt(ConcatPaths([TargetPath, cCount]), ItemCount);
-  for I := 0 to ItemCount - 1 do
-    OnWriteItem(TargetStore, TargetPath, List, I, ItemName);
-  if (PrevListCount > ItemCount) and Assigned(OnDeleteItems) then
-    OnDeleteItems(TargetStore, TargetPath, List, ItemCount, PrevListCount - 1, ItemName);
+  if not TargetStore.ReadOnly then
+  begin
+    Delete(TargetPath, Length(TargetPath) - 1, 2);
+    PrevListCount := TargetStore.ReadIntegerInt(ConcatPaths([TargetPath, cCount]), 0);
+    TargetStore.WriteIntegerInt(ConcatPaths([TargetPath, cCount]), ItemCount);
+    for I := 0 to ItemCount - 1 do
+      OnWriteItem(TargetStore, TargetPath, List, I, ItemName);
+    if (PrevListCount > ItemCount) and Assigned(OnDeleteItems) then
+      OnDeleteItems(TargetStore, TargetPath, List, ItemCount, PrevListCount - 1, ItemName);
+  end;
 end;
 
 function TJvCustomAppStorage.ReadObjectList(const Path: string; List: TList;
@@ -2025,7 +2056,8 @@ var
   TargetPath: string;
 begin
   ResolvePath(Path, TargetStore, TargetPath);
-  TargetStore.WriteEnumerationInt(TargetPath, TypeInfo, Value);
+  if not TargetStore.ReadOnly then
+    TargetStore.WriteEnumerationInt(TargetPath, TypeInfo, Value);
 end;
 
 procedure TJvCustomAppStorage.ReadSetInt(const Path: string;
@@ -2139,7 +2171,8 @@ var
   TargetPath: string;
 begin
   ResolvePath(Path, TargetStore, TargetPath);
-  TargetStore.WriteSetInt(TargetPath, ATypeInfo, Value);
+  if not TargetStore.ReadOnly then
+    TargetStore.WriteSetInt(TargetPath, ATypeInfo, Value);
 end;
 
 
@@ -2190,6 +2223,8 @@ begin
             TJvCustomPropertyStore(SubObj).AppStoragePath := Path;
             TJvCustomPropertyStore(SubObj).LoadProperties;
           end
+          else if SubObj is TCollection then
+            ReadCollection(Path, TCollection(SubObj), ClearFirst)
           else
             ReadPersistent(Path, TPersistent(SubObj), True, ClearFirst);
       end;
@@ -2244,6 +2279,8 @@ begin
             TJvCustomPropertyStore(SubObj).AppStorage := Self;
             TJvCustomPropertyStore(SubObj).StoreProperties;
           end
+          else if SubObj is TCollection then
+            WriteCollection(Path, TCollection(SubObj))
           else
             WritePersistent(Path, TPersistent(SubObj), Recursive, nil);
       end;
@@ -2341,6 +2378,24 @@ begin
     Result := TJvCustomPropertyStore(Instance).TranslatePropertyName(Result)
   else
     DoTranslatePropertyName(Instance, Result, Reading);
+end;
+
+procedure TJvCustomAppStorage.SetReadOnly (Value: Boolean);
+begin
+  fReadOnly := Value;
+end;
+
+function TJvCustomAppStorage.GetReadOnly: Boolean;
+begin
+  if csDesigning in ComponentState then
+    Result := fReadOnly
+  else
+    Result := fReadOnly OR GetPhysicalReadOnly;
+end;
+
+function TJvCustomAppStorage.GetPhysicalReadOnly : Boolean;
+begin
+  Result := False;
 end;
 
 procedure TJvCustomAppStorage.GetStoredValues(const Path: string;
@@ -2704,12 +2759,24 @@ begin
   inherited Create(AOwner);
   FLocation := flExeFile;
   FLoadedFinished := False;
+  FPhysicalReadOnly := False;
 end;
 
 procedure TJvCustomAppMemoryFileStorage.Loaded;
 begin
   inherited Loaded;
   FLoadedFinished := True;
+end;
+
+procedure TJvCustomAppMemoryFileStorage.Reload;
+begin
+  FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
+  inherited Reload;
+end;
+
+function TJvCustomAppMemoryFileStorage.GetPhysicalReadOnly : Boolean;
+begin
+  Result := FPhysicalReadOnly;
 end;
 
 function TJvCustomAppMemoryFileStorage.DoGetFileName: TFileName;
@@ -2761,6 +2828,7 @@ begin
   if FFileName <> PathAddExtension(Value, DefaultExtension) then
   begin
     FFileName := PathAddExtension(Value, DefaultExtension);
+    FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
     if FLoadedFinished and not IsUpdating then
       Reload;
   end;
@@ -2771,6 +2839,7 @@ begin
   if FLocation <> Value then
   begin
     FLocation := Value;
+    FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
     if FLoadedFinished and not IsUpdating then
       Reload;
   end;

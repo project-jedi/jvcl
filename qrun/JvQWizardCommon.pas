@@ -263,6 +263,10 @@ begin
         ARect.Bottom := ARect.Bottom - Offset.Y;
       end;
     end;
+    if (ALayout = ilTop) and (AHeight > AGraphic.Height) then
+      ARect.Bottom := ARect.Top + AGraphic.Height;
+    if (Align = iaLeft) and (AWidth > AGraphic.Width) then
+      ARect.Right := ARect.Left + AGraphic.Width;
     ARect.Left := ARect.Left + Offset.X;
     ARect.Top := ARect.Top + Offset.Y;
     if (Align = iaStretch) or (ALayout = ilStretch) then

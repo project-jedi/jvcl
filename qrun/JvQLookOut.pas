@@ -38,13 +38,12 @@ uses
   SysUtils, Classes,
   QWindows, QMessages,  
   QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QButtons, QMenus, QImgList, 
-  Qt,
+  Qt, 
   JvQJCLUtils, JvQTypes, JvQConsts, JvQComponent, JvQThemes, JvQExControls, JvQExButtons;
 
 const
   CM_IMAGESIZECHANGED = CM_BASE + 200;
   CM_LEAVEBUTTON = CM_BASE + 201;
-  WM_NCPAINT = $0085;
 
 type
   TJvButtonBorder = (bbDark, bbLight, bbMono);
@@ -1047,8 +1046,8 @@ begin
     Msg.Msg := CM_BUTTONPRESSED;
     Msg.Index := FGroupIndex;
     Msg.Control := Self;
-    Msg.Result := 0;
-    Parent.Broadcast(Msg);
+    Msg.Result := 0;  
+    BroadcastMsg(Parent, Msg); 
   end;
 end;
 
@@ -1294,7 +1293,7 @@ begin
   begin
     Canvas.Brush.Color := clBlack;
     with Canvas do
-      FrameRect(Canvas, R);
+      FrameRect( Canvas,  R);
     Canvas.Brush.Color := Color;
   end;
 
@@ -1461,8 +1460,8 @@ begin
       Msg.WParam := 0;
       Msg.LParam := Longint(Self);
       Msg.Result := 0;
-      Invalidate;
-      Parent.Broadcast(Msg);
+      Invalidate;  
+      BroadcastMsg(Parent, Msg); 
     end;
   end
   else
@@ -2057,10 +2056,10 @@ begin
     Msg.Msg := CM_IMAGESIZECHANGED;
     Msg.WParam := Longint(Ord(FImageSize));
     Msg.LParam := Longint(Self);
-    Msg.Result := 0;
+    Msg.Result := 0;  
     if Parent <> nil then
-      Parent.Broadcast(Msg);
-    Broadcast(Msg);
+      BroadcastMsg(Parent, Msg);
+    BroadcastMsg(self, Msg); 
   end;
 end;
 
@@ -2477,8 +2476,8 @@ begin
     Msg.Msg := CM_IMAGESIZECHANGED;
     Msg.WParam := Longint(Ord(FImageSize));
     Msg.LParam := Longint(Self);
-    Msg.Result := 0;
-    Broadcast(Msg);
+    Msg.Result := 0;  
+    BroadcastMsg(Self, Msg); 
   end;
 end;
 

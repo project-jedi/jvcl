@@ -72,8 +72,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -112,9 +112,8 @@ type
     property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinControl }
   private
-    FCanvas: TControlCanvas;
+    FCanvas: TCanvas;
     FDoubleBuffered: Boolean;
-    function GetCanvas: TCanvas;
   protected
     procedure Paint; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
@@ -122,11 +121,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Canvas: TCanvas read GetCanvas;
-  end;
-
-  { QWinControl }
-  TJvExPubBitBtn = class(TJvExBitBtn)
+    property Canvas: TCanvas read FCanvas;
   end;
   
   { QControl begin }
@@ -157,8 +152,8 @@ type
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
-    property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
+    property DragCursor: TCursor read FDragCursor write FDragCursor stored False; { not implemented }
+    property DragKind: TDragKind read FDragKind write FDragKind stored false; { not implemented }
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
@@ -176,9 +171,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-
-  { QControl }
-  TJvExPubSpeedButton = class(TJvExSpeedButton);
   
 
 implementation
@@ -193,6 +185,8 @@ begin
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
   FDoubleBuffered := True;
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
   
 end;
 
@@ -205,53 +199,25 @@ end;
   
 { WinControl Paint }
 
-function TJvExBitBtn.GetCanvas: TCanvas;
-begin
-  if not Assigned(FCanvas) then
-  begin
-    FCanvas := TControlCanvas.Create;
-    FCanvas.Control := self;
-  end;
-  Result := FCanvas;
-end;
-
-
-//procedure TJvEx##NameOfClass.Paint;
-//begin
-//  TControlCanvas(Canvas).StopPaint;
-//  inherited Painting(Handle, QPainter_clipRegion(Canvas.Handle));
-//  TControlCanvas(Canvas).StartPaint;
-//end;
-
 
 procedure TJvExBitBtn.Paint;
-var
-  ForcedPaintEvent: QPaintEventH;
 begin
-//  ForcedPaintEvent := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), False);
-    ForcedPaintEvent := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), True);
-  try
-    ControlState := ControlState + [csWidgetPainting];
-    TControlCanvas(Canvas).StopPaint;
-    try
-      QObject_event(Handle, ForcedPaintEvent);
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
-  finally
-    QPaintEvent_destroy(ForcedPaintEvent);
-    TControlCanvas(Canvas).StartPaint;
-  end;
+  TControlCanvas(Canvas).StopPaint;
+  inherited Painting(Handle, QPainter_clipRegion(Canvas.Handle));
+  TControlCanvas(Canvas).StartPaint;
 end;
 
 procedure TJvExBitBtn.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
+  if QRegion_isEmpty(EventRegion) then
+    Exit;
+//  QPainter_setClipping(Canvas.Handle, True);
   TControlCanvas(Canvas).StartPaint;
   try
+    QPainter_setClipRegion(Canvas.Handle, EventRegion);
     Canvas.Brush.Assign(Brush);
     Canvas.Font.Assign(Font);
     RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
-    QPainter_setClipping(Canvas.Handle, True);
     Paint;
   finally
     TControlCanvas(Canvas).StopPaint;
@@ -265,16 +231,15 @@ begin
   begin
     case Msg of
       { WinControl Messages }
-      WM_GETDLGCODE   : Result := InputKeysToDlgCodes(InputKeys);
-      WM_KILLFOCUS    : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS     : DoSetFocus(FocusedWnd);
-      CM_FONTCHANGED  : FInternalFontChanged(Font);
-
-      CM_HINTSHOW:
+      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
+      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
+      CM_FONTCHANGED : FInternalFontChanged(Font);
+      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
+      WM_GETDLGCODE:
       begin
-        HintInfo^.HintColor := GetHintcolor(Self);
+        Result := InputKeysToDlgCodes(InputKeys);
+        Exit;
       end;
-
       WM_ERASEBKGND:
       begin
         Canvas.Start;
@@ -283,16 +248,15 @@ begin
         finally
           Canvas.Stop;
         end;
+        Exit;
       end;
       { Control Messages }
       CM_FOCUSCHANGED: FocusChanged;
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
-
-    else
-      inherited Dispatch(Mesg);
     end;
   end;
+  inherited Dispatch(Mesg);
 end;
 { QWinControl Common }
 procedure TJvExBitBtn.CMDesignHitTest(var Mesg: TJvMessage);
@@ -397,7 +361,8 @@ end;
 
 procedure TJvExBitBtn.RecreateWnd;
 begin
-  RecreateWidget;
+  if not (csRecreating in ControlState) then
+    RecreateWidget;
 end;
 
 procedure TJvExBitBtn.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -502,7 +467,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    WndProc(TMessage(Mesg))
+    inherited Dispatch(Mesg);
 end;
 
 function TJvExBitBtn.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -549,18 +514,16 @@ begin
       CM_MOUSEENTER: FMouseOver := True;
       CM_MOUSELEAVE: FMouseOver := False;
       CM_HINTSHOW:
-      begin
         case FHintColor of
           clNone   : HintInfo^.HintColor := Application.HintColor;
           clDefault: HintInfo^.HintColor := GetHintColor(Parent);
         else
           HintInfo^.HintColor := FHintcolor;
         end;
-      end;
-    else
-      inherited Dispatch(Mesg);
+
     end;
   end;
+  inherited Dispatch(Mesg);
 end;
 
 procedure TJvExSpeedButton.CMHitTest(var Mesg: TJvMessage);
@@ -670,7 +633,7 @@ begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
   else
-    WndProc(TMessage(Mesg))
+    inherited Dispatch(Mesg);
 end;
 
 function TJvExSpeedButton.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;

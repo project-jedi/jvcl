@@ -188,7 +188,6 @@ type
     function ControlGetState(Index: Integer): TCheckBoxState;
   end;
 
-
 implementation
 
 {$IFDEF UNITVERSIONING}

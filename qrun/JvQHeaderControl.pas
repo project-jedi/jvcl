@@ -40,6 +40,7 @@ uses
 type
   TJvHeaderControl = class(TJvExHeaderControl)
   published
+    property Font;
     property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;

@@ -173,8 +173,7 @@ begin
   Result := false;
   strlist := TStringList.Create;
   try
-    strlist.Delimiter := PathDelim;
-    strlist.DelimitedText := Key;
+    ExtractStrings([PathDelim], [], PChar(Key), strList );
     Ininame := RootKey;
     i := 0;
     while (i < strlist.Count) and

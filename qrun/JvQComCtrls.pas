@@ -779,11 +779,9 @@ var
 begin
   Result := inherited HintShow(HintInfo);
 
-  if FHintSource = hsDefault then
+  if (FHintSource = hsDefault) or Result or (Self <> HintInfo.HintControl) then
     Exit;
 
-  if Result then
-    Exit;
   (*
       hsDefault,    // use default hint behaviour (i.e as regular control)
       hsForceMain,  // use the main controls hint even if subitems have hints
@@ -793,8 +791,6 @@ begin
       );
   *)
 
-  if Result or (Self <> HintInfo.HintControl) then
-    Exit; // strange, hint requested by other component. Why should we deal with it?
   with HintInfo.CursorPos do
     TabNo := IndexOfTabAt(X, Y); // X&Y are expected in Client coordinates
 
@@ -803,11 +799,14 @@ begin
   else
     Tab := nil;
   if (FHintSource = hsForceMain) or ((FHintSource = hsPreferMain) and (GetShortHint(Hint) <> '')) then
-    HintInfo.HintStr := GetShortHint(Hint)
+    HintInfo.HintStr := GetShortHint(Self.Hint)
   else
-  if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and
-    (GetShortHint(Tab.Hint) <> ''))) then
-    HintInfo.HintStr := GetShortHint(Tab.Hint)
+  if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and (GetShortHint(Tab.Hint) <> ''))
+    or ((FHintSource = hsPreferMain) and (GetShortHint(Hint) = ''))) then
+  begin
+    HintInfo.HintStr := GetShortHint(Tab.Hint);
+    HintInfo.CursorRect := TabRect(TabNo);
+  end;
 end;
 
 type

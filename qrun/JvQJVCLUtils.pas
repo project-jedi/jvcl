@@ -3139,12 +3139,23 @@ begin
         begin
           rcNormalPosition.Left := StrToIntDef(ExtractWord(1, PosStr, Delims), Left);
           rcNormalPosition.Top := StrToIntDef(ExtractWord(2, PosStr, Delims), Top);
+        end
+        else
+        begin
+          rcNormalPosition.Left :=  Left;
+          rcNormalPosition.Top :=  Top;
         end;
         if fpSize in Options then
         begin
-          rcNormalPosition.Right := StrToIntDef(ExtractWord(3, PosStr, Delims), Left + Width);
-          rcNormalPosition.Bottom := StrToIntDef(ExtractWord(4, PosStr, Delims), Top + Height);
-        end;
+          rcNormalPosition.Right := rcNormalPosition.Left +StrToIntDef(ExtractWord(3, PosStr, Delims), Width)-StrToIntDef(ExtractWord(1, PosStr, Delims), Left);
+          rcNormalPosition.Bottom := rcNormalPosition.Top +StrToIntDef(ExtractWord(4, PosStr, Delims), Height)-StrToIntDef(ExtractWord(2, PosStr, Delims), Top);
+        end
+        else
+          if fpLocation in Options then
+          begin
+            rcNormalPosition.Right := rcNormalPosition.Left + Width;
+            rcNormalPosition.Bottom := rcNormalPosition.Top + Height;
+          end;
       end;
       DataFound := DataFound and (Screen.PixelsPerInch = AppStorage.ReadInteger(
         StorePath + '\' + siPixels, Screen.PixelsPerInch));

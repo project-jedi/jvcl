@@ -38,11 +38,8 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  Qt,
-  {$ENDIF LINUX}
-  QWindows, QClipbrd, 
+  {$ENDIF MSWINDOWS} 
+  Qt, QWindows, QClipbrd, 
   SysUtils, Classes, Contnrs, QGraphics, QControls, QForms, QStdCtrls, QDialogs,
   QExtCtrls,
   JvQComponent, JvQDynControlEngine, JvQTypes;
@@ -218,6 +215,7 @@ const
 //--------------------------------------------------------------------------------------------------
 
 // Additional values for DefaultButton, CancelButton and HelpButton parameters
+
 type
   TMsgDlgBtn =
     (mbNone, mbOk, mbCancel, mbYes, mbNo, mbAbort, mbRetry, mbIgnore,
@@ -225,8 +223,9 @@ type
   TMsgDlgButtons = set of TMsgDlgBtn;
 
 
-const
-//  mbNone = TMsgDlgBtn(-1);
+
+
+const 
   mbDefault = TMsgDlgBtn(-2);
 
 procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
@@ -429,15 +428,15 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QConsts, Math, TypInfo,
   {$IFDEF MSWINDOWS}
   JclRegistry,
   {$ENDIF MSWINDOWS}
   JclBase, JclSysUtils,
-  JvQDynControlEngineIntf, JvQConsts, JvQResources, JvQFinalize;
-
-const
-  sUnitName = 'JvDSADialogs';
+  JvQDynControlEngineIntf, JvQConsts, JvQResources;
 
 const
   cDSAStateValueName = 'DSA_State'; // do not localize
@@ -454,10 +453,7 @@ var
 function CheckMarkTexts: TStrings;
 begin
   if GlobalCheckMarkTexts = nil then
-  begin
     GlobalCheckMarkTexts := TStringList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalCheckMarkTexts));
-  end;
   Result := GlobalCheckMarkTexts;
 end;
 
@@ -477,7 +473,7 @@ end;
 constructor TDSAMessageForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 
 begin
-  inherited CreateNew(AOwner, Dummy); 
+  inherited CreateNew(AOwner, Dummy);
   FTimer := TTimer.Create(Self);
   FTimer.Enabled := False;
   FTimer.Interval := 1000;
@@ -520,8 +516,8 @@ end;
 
 procedure TDSAMessageForm.HelpButtonClick(Sender: TObject);
 begin
-  CancelAutoClose;  
-  Application.ContextHelp(HelpContext); 
+  CancelAutoClose;
+  Application.ContextHelp(HelpContext);
 end;
 
 procedure TDSAMessageForm.TimerEvent(Sender: TObject);
@@ -718,7 +714,7 @@ begin
       else
         SetRect(TextRect, 0, 0, Screen.Width div 2, 0);  
       DrawText(Canvas, Msg, Length(Msg) + 1, TextRect,
-        DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly); 
+        DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK); 
 
       IconTextWidth := TextRect.Right;
       IconTextHeight := TextRect.Bottom;
@@ -726,7 +722,7 @@ begin
       begin
         SetRect(TempRect, 0, 0, Screen.Width div 2, 0);  
         DrawText(Canvas, CheckCaption, Length(CheckCaption) + 1, TempRect,
-          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly); 
+          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK); 
         ChkTextWidth := TempRect.Right;
       end
       else
@@ -736,7 +732,7 @@ begin
         SetRect(TempRect, 0, 0, Screen.Width div 2, 0);  
         DrawText(Canvas, Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)]),
           Length(Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)])) + 1, TempRect,
-          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly); 
+          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK); 
         TimeoutTextWidth := TempRect.Right;
       end
       else
@@ -869,7 +865,6 @@ begin
   if not Assigned(GlobalDSARegister) then
   begin
     GlobalDSARegister := TDSARegister.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalDSARegister));
    // register
     RegisterDSACheckMarkText(ctkShow, RsDSActkShowText);
     RegisterDSACheckMarkText(ctkAsk, RsDSActkAskText);
@@ -1513,35 +1508,23 @@ end;
 const
   Captions: array [TMsgDlgType] of string =
     (SMsgDlgWarning, SMsgDlgError, SMsgDlgInformation, SMsgDlgConfirm, '');
-  {$IFDEF MSWINDOWS}
-  IconIDs: array [TMsgDlgType] of PChar =
-    (IDI_EXCLAMATION, IDI_HAND, IDI_ASTERISK, IDI_QUESTION, nil);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+
   IconIDs: array [TMsgDlgType] of QMessageBoxIcon =
     (QMessageBoxIcon_Warning,  QMessageBoxIcon_Critical, QMessageBoxIcon_Information,
-     QMessageBoxIcon_Information, QMessageBoxIcon_NoIcon);
-  {$ENDIF LINUX}
+     QMessageBoxIcon_NoIcon, QMessageBoxIcon_NoIcon);
 
   // TMsgDlgType = (mtCustom, mtInformation, mtWarning, mtError, mtConfirmation);
-(*
-  ButtonCaptions: array [TMsgDlgBtn] of string =
-   (SMsgDlgHelp, SMsgDlgOK, SMsgDlgCancel, SMsgDlgYes,
-    SMsgDlgNo, SMsgDlgAbort, SMsgDlgRetry, SMsgDlgIgnore,
-    SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll);
-*)
+//    (mbNone, mbOk, mbCancel, mbYes, mbNo, mbAbort, mbRetry, mbIgnore,
+//     mbAll, mbNoToAll, mbYesToAll, mbHelp);
+
   ButtonCaptions: array [TMsgDlgBtn] of string =
    ('', SMsgDlgOK, SMsgDlgCancel, SMsgDlgYes,
     SMsgDlgNo, SMsgDlgAbort, SMsgDlgRetry, SMsgDlgIgnore,
     SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll, SMsgDlgHelp);
   ModalResults: array [TMsgDlgBtn] of Integer =
    (0, mrOk, mrCancel, mrYes, mrNo, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
-    mrYesToAll, mrOK);
-(*
-  ModalResults: array [TMsgDlgBtn] of Integer =
-   (0, mrOk, mrCancel, mrYes, mrNo, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
-    mrYesToAll);
-*)
+    mrYesToAll, 0);
+
 function DlgCaption(const DlgType: TMsgDlgType): string;
 begin
   Result := Captions[DlgType];
@@ -1549,16 +1532,11 @@ end;
 
 function DlgPic(const DlgType: TMsgDlgType): TGraphic;
 begin
-  {$IFDEF MSWINDOWS}
-  if IconIDs[DlgType] <> nil then
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
   if IconIDs[DlgType] <> QMessageBoxIcon_NoIcon then
-  {$ENDIF LINUX}
   begin
     Result := TIcon.Create;
-    try  
-      // TODO 
+    try
+      // TODO
     except
       Result.Free;
       raise;
@@ -2024,7 +2002,6 @@ begin
   begin
     GlobalRegStore :=
       TDSARegStorage.Create(HKEY_CURRENT_USER, 'Software\' + Application.Title + '\DSA');
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalRegStore));
   end;
   Result := TDSARegStorage(GlobalRegStore);
 end;
@@ -2037,10 +2014,7 @@ var
 function DSAQueueStore: TDSAQueueStorage;
 begin
   if GlobalQueueStore = nil then
-  begin
     GlobalQueueStore := TDSAQueueStorage.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalQueueStore));
-  end;
   Result := TDSAQueueStorage(GlobalQueueStore);
 end;
 
@@ -2365,10 +2339,31 @@ begin
     Result := 0;
 end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
 
 finalization
-  FinalizeUnit(sUnitName);
+  FreeAndNil(GlobalCheckMarkTexts);
+  FreeAndNil(GlobalDSARegister);
+  FreeAndNil(GlobalQueueStore);
+  {$IFDEF MSWINDOWS}
+  FreeAndNil(GlobalRegStore);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.
 

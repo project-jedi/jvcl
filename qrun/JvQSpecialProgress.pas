@@ -237,9 +237,12 @@ begin
     UpdateBuffer;
   end;
   if (ClientWidth > 2) and (ClientHeight > 2) then
-  begin  
+  begin
+    FBuffer.Canvas.Start;
     BitBlt(Canvas, 0, 0, ClientWidth, ClientHeight,
-      FBuffer.Canvas, 0, 0, SRCCOPY); 
+      FBuffer.Canvas, 0, 0, SRCCOPY);
+    FBuffer.SaveToFile('JvQSpecialProgress.bmp');  
+    FBuffer.Canvas.Stop;  
   end;
 end;
 
@@ -616,7 +619,7 @@ begin
     Exit;
   FBuffer.Width := ClientWidth;
   FBuffer.Height := ClientHeight;
-
+  FBuffer.Canvas.start;
   if FSolid then
     PaintSolid
   else
@@ -625,7 +628,7 @@ begin
   PaintBackground;
   PaintText;
   PaintRectangle;
-
+  FBuffer.Canvas.Stop;
   Repaint;
 end;
 

@@ -1026,12 +1026,12 @@ begin
     TempRect := ARect;
     if not (gdFixed in AState) then
     begin
-      Canvas.Brush.Color := clBtnFace;
-      Canvas.Font.Color := clBtnText;
+      Canvas.Brush.Color := clButton;
+      Canvas.Font.Color := clButtonText;
       Style := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
       if (FCellDown.X = ACol) and (FCellDown.Y = ARow) then
-        Style := Style or DFCS_PUSHED; 
-      RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]); 
+        Style := Style or DFCS_PUSHED;
+      RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
       DrawFrameControl(Canvas.Handle, TempRect, DFC_BUTTON, Style);
     end;
     inherited DrawCell(ACol,ARow,ARect,AState);
@@ -1052,7 +1052,7 @@ begin
         ([goDrawFocusSelected, goRowSelect] * Options <> [])) then
       begin
         Brush.Color := clHighlight;
-        Font.Color := clHighlightText;
+        Font.Color := clHighlightedText;
       end
       else
       begin
@@ -1063,7 +1063,7 @@ begin
       end;
       FillRect(ARect);
     end;
-  Down := FFixedCellsButtons and (gdFixed in AState) and 
+  Down := FFixedCellsButtons and (gdFixed in AState) and
     not (csLoading in ComponentState) and FPressed and FDefaultDrawing and
     (FPressedCell.X = ACol) and (FPressedCell.Y = ARow);
   inherited DefaultDrawing := FDefaultDrawing;
@@ -1082,7 +1082,7 @@ begin
       Dec(ARect.Top, GridLineWidth);
     end;
   end;
-  if FDefaultDrawing and 
+  if FDefaultDrawing and
      (gdFixed in AState) then
   begin
     FrameFlags1 := 0;
@@ -1106,8 +1106,8 @@ begin
       else
       if ((FrameFlags1 and BF_BOTTOM) = 0) and
         (goFixedVertLine in Options) then
-        Inc(TempRect.Bottom, GridLineWidth); 
-      RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]); 
+        Inc(TempRect.Bottom, GridLineWidth);
+      RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags2);
     end;

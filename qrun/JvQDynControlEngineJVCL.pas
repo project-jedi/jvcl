@@ -35,7 +35,7 @@ interface
 uses
   Classes, QControls, QStdCtrls, QExtCtrls, QComCtrls, QMask, QForms, QGraphics,
   QButtons, QDialogs, QFileCtrlS,
-  JvQMaskEdit, JvQDateTimePicker, JvQBitBtn, JvQCheckBox, JvQBaseEdits,
+  JvQMaskEdit, JvQBitBtn, JvQCheckBox, JvQBaseEdits,
   JvQLabel, JvQListBox, JvQMemo, JvQPanel, JvQRadioGroup, JvQToolEdit,
   JvQScrollBox, JvQStaticText, JvQComboBox, JvQImage, JvQSpin,
   JvQDynControlEngine, JvQDynControlEngineIntf;

@@ -1961,19 +1961,21 @@ end;
 function TJvSimpleXMLProp.SaveToString: string;
 var
   AEncoder: TJvSimpleXML;
+  tmp:string;
 begin
   AEncoder := GetSimpleXML;
+  tmp := FValue;
   if Pointer <> '' then
   begin
     if AEncoder <> nil then
-      AEncoder.DoEncodeValue(FValue);
-    Result := Format(' %s:%s="%s"', [Pointer, Name, FValue]);
+      AEncoder.DoEncodeValue(tmp);
+    Result := Format(' %s:%s="%s"', [Pointer, Name, tmp]);
   end
   else
   begin
     if AEncoder <> nil then
-      AEncoder.DoEncodeValue(FValue);
-    Result := Format(' %s="%s"', [Name, FValue]);
+      AEncoder.DoEncodeValue(tmp);
+    Result := Format(' %s="%s"', [Name, tmp]);
   end;
 end;
 
@@ -2116,7 +2118,7 @@ end;
 
 procedure TJvSimpleXMLElemClassic.SaveToStream(const Stream: TStream; const Level: string; Parent: TJvSimpleXML);
 var
-  St, AName: string;
+  St, AName, tmp: string;
   LevelAdd: string;
 begin
   AName := Name;
@@ -2132,6 +2134,7 @@ begin
 
   if (Items.Count = 0) then
   begin
+    tmp := FValue;
     if (Name <> '') then
     begin
       if Value = '' then
@@ -2139,8 +2142,8 @@ begin
       else
       begin
         if GetSimpleXML <> nil then
-          GetSimpleXML.DoEncodeValue(FValue);
-        St := '>' + FValue + '</' + AName + '>' + sLineBreak;
+          GetSimpleXML.DoEncodeValue(tmp);
+        St := '>' + tmp + '</' + AName + '>' + sLineBreak;
       end;
       Stream.Write(St[1], Length(St));
     end;
@@ -2402,13 +2405,14 @@ end;
 
 procedure TJvSimpleXMLElemText.SaveToStream(const Stream: TStream; const Level: string; Parent: TJvSimpleXML);
 var
-  St: string;
+  St, tmp: string;
 begin
   if Value <> '' then
   begin
+    tmp := Value;
     if GetSimpleXML <> nil then
-      GetSimpleXML.DoEncodeValue(FValue);
-    St := Level + Value + sLineBreak;
+      GetSimpleXML.DoEncodeValue(tmp);
+    St := Level + tmp + sLineBreak;
     Stream.Write(St[1], Length(St));
   end;
   if Parent <> nil then
