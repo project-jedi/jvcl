@@ -122,13 +122,15 @@ type
     procedure DoClearText;
   end;
 
+{$IDEF VCL}
 const
-{$IFDEF VCL}
   CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
 {$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$IDEF }
+const
   CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
 {$ENDIF VisualCLX}
+
 type
   { Add IJvDenySubClassing to the base class list if the control should not
     be themed by the ThemeManager (www.delphi-gems.de).
@@ -658,13 +660,13 @@ procedure Control_ControlsListChanged(Instance: TControl; Control: TControl;
 {$IFDEF COMPILER5}
 procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
 {$ENDIF COMPILER5}
-{$ENDIF VCL}
 
 // jump targets:
 
 function JvExDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
 
 
+{$ENDIF VCL}
 
 {$IFDEF VisualCLX}
 function WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
@@ -714,9 +716,14 @@ type
 constructor TFreeNotificationHelper.Create(AInstance: TComponent; AIntfPtr: PInterface);
 begin
   inherited Create(nil);
-  FInstance := AInstance;
   FIntfPtr := AIntfPtr;
-  FInstance.FreeNotification(Self);
+  if csDestroying in AInstance.CompnentState then
+    FInstance := nil
+  else
+  begin
+    FInstance := AInstance;
+    FInstance.FreeNotification(Self);
+  end;
 end;
 
 destructor TFreeNotificationHelper.Destroy;
@@ -735,6 +742,9 @@ procedure TFreeNotificationHelper.Notification(Component: TComponent; Operation:
 begin
   if (Operation = opRemove) and (Component = FInstance) then
   begin
+   // (ahuser) The component destroys the whole list so the following line could
+   //          be removed (but who knowns what the Delphi IDE will do without
+   //          this line.
     FInstance.RemoveFreeNotification(Self);
     FInstance := nil;
     FIntfPtr^ := nil;
