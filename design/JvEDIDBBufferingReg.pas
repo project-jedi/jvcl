@@ -38,12 +38,12 @@ uses
   JvDsgnConsts,
   JvEDIDBBuffering {, JvEDITCPServer, JvEDITCPClient};
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 {$R ..\Resources\JvEDIDBBufferingReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvEDIDBBufferingReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF VisualCLX}
 
 procedure Register;
 begin
