@@ -27,16 +27,32 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvCtrls;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, ImgList, ActnList,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls, ImgList, ActnList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QStdCtrls, QImgList, QActnList, Types, QWindows,
+  {$ENDIF VisualCLX}
   JvButton, JvFinalize;
+
+{$IFDEF VisualCLX}
+const
+  ODS_DISABLED = 1;
+  ODS_SELECTED = 2;
+  ODS_FOCUS    = 4;
+  
+type
+  TDrawItemStruct = record
+    itemState: Integer;
+  end;
+{$ENDIF VisualCLX}
 
 type
   TJvImgBtnLayout = (blImageLeft, blImageRight);
@@ -93,17 +109,25 @@ type
     procedure SetOwnerDraw(const Value: Boolean);
     procedure SetMargin(const Value: Integer);
     procedure SetSpacing(const Value: Integer);
+    {$IFDEF VCL}
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure CNMeasureItem(var Msg: TWMMeasureItem); message CN_MEASUREITEM;
     procedure WMDestroy(var Msg: TWMDestroy); message WM_DESTROY;
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
+    {$ENDIF VCL}
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
   protected
+    {$IFDEF VisualCLX}
+    procedure DestroyWidget; override;
+    procedure Paint; override;
+    {$ENDIF VisualCLX}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect);
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+    {$ENDIF VCL}
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct); dynamic;
     function GetActionLinkClass: TControlActionLinkClass; override;
     function GetCustomCaption: string; dynamic;
@@ -114,7 +138,7 @@ type
     procedure InvalidateImage;
     function IsImageVisible: Boolean;
     procedure Loaded; override;
-    procedure SetButtonStyle(ADefault: Boolean); override;
+    procedure SetButtonStyle(ADefault: Boolean); {$IFDEF VCL} override; {$ENDIF}
     procedure ShowNextFrame;
     procedure StartAnimate;
     procedure StopAnimate;
@@ -177,17 +201,29 @@ type
     property OnMouseLeave;
     property OnParentColorChange;
     property OwnerDraw;
+    {$IFDEF VCL}
     property OnButtonDraw;
+    {$ENDIF VCL}
     property OnGetAnimateIndex;
   end;
 
 implementation
 
 uses
+  {$IFDEF VCL}
   Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
   JvThemes, JvJCLUtils;
 
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCtrls.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvCtrls.res}
+{$ENDIF LINUX}
 
 const
   sUnitName = 'JvCtrls';
@@ -258,6 +294,7 @@ begin
     Images:= nil;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomImageButton.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -271,6 +308,7 @@ begin
   if FAnimate then
     StartAnimate;
 end;
+{$ENDIF VCL}
 
 procedure TJvCustomImageButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 begin
@@ -346,7 +384,12 @@ begin
         while (Control <> nil) and (Control.HelpContext = 0) do
           Control := Control.Parent;
         if Control <> nil then
+          {$IFDEF VCL}
           Application.HelpContext(Control.HelpContext)
+          {$ENDIF VCL}
+          {$IFDEF VisualCLX}
+          Application.HelpSystem.ShowContextHelp(Control.HelpContext, Application.HelpFile)
+          {$ENDIF VisualCLX}
         else
           inherited Click;
       end;
@@ -371,7 +414,7 @@ procedure TJvCustomImageButton.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FMouseInControl and Enabled and (GetCapture = 0) then
+  if not FMouseInControl and Enabled and (GetCapture = NullHandle) then
   begin
     FMouseInControl := True;
     inherited MouseEnter(Control);
@@ -397,6 +440,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomImageButton.CNDrawItem(var Msg: TWMDrawItem);
 begin
   if csDestroying in ComponentState then
@@ -421,6 +465,40 @@ begin
     itemHeight := Height;
   end;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvCustomImageButton.Paint;
+var
+  DrawItemStruct: TDrawItemStruct;
+begin
+  if csDestroying in ComponentState then
+    Exit;
+
+  with DrawItemStruct do
+  begin
+    itemState := 0;
+    if Focused then
+      itemState := ODS_FOCUS;
+    if not Enabled then
+      itemState := ODS_DISABLED;
+    if Default then
+      itemState := ODS_SELECTED;
+  end;
+
+  FCanvas.Handle := inherited Canvas.Handle;
+  FCanvas.Start(False);
+  try
+    FCanvas.Font := Font;
+    if FOwnerDraw and Assigned(FOnButtonDraw) then
+      FOnButtonDraw(Self, DrawItemStruct)
+    else
+      DrawItem(DrawItemStruct);
+  finally
+    FCanvas.Stop;
+    FCanvas.Handle := NullHandle;
+  end;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvCustomImageButton.DrawButtonFocusRect(const RectContent: TRect);
 begin
@@ -521,10 +599,18 @@ begin
     Exit;
   with ImageBounds do
     if IsImageVisible then
+      {$IFDEF VCL}
       if Assigned(FImages) then
         FImages.Draw(FCanvas, Left, Top, GetImageIndex, Enabled)
       else
         DefaultImgBtnImagesList.Draw(FCanvas, Left, Top, GetKindImageIndex, Enabled);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      if Assigned(FImages) then
+        FImages.Draw(FCanvas, Left, Top, GetImageIndex, itImage, Enabled)
+      else
+        DefaultImgBtnImagesList.Draw(FCanvas, Left, Top, GetKindImageIndex, itImage, Enabled);
+      {$ENDIF VisualCLX}
 end;
 
 procedure TJvCustomImageButton.DrawButtonText(TextBounds: TRect; TextEnabled: Boolean);
@@ -633,12 +719,27 @@ begin
 end;
 
 class procedure TJvCustomImageButton.InitializeDefaultImageList;
+{$IFDEF VisualCLX}
+var
+  ResBmp: TBitmap;
+{$ENDIF VisualCLX}
 begin
   if not Assigned(DefaultImgBtnImagesList) then
   begin
     DefaultImgBtnImagesList := TImageList.CreateSize(18, 18);
     AddFinalizeObjectNil(sUnitName, TObject(DefaultImgBtnImagesList));
+    {$IFDEF VCL}
     DefaultImgBtnImagesList.ResourceLoad(rtBitmap, 'JVIMGBTNDEFAULT', clOlive);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    ResBmp := TBitmap.Create;
+    try
+      ResBmp.LoadFromResourceName(0, 'JVIMGBTNDEFAULT');
+      DefaultImgBtnImagesList.AddMasked(ResBmp, clOlive);
+    finally
+      ResBmp.Free;
+    end;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -845,6 +946,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomImageButton.WMDestroy(var Msg: TWMDestroy);
 begin
   StopAnimate;
@@ -855,6 +957,15 @@ procedure TJvCustomImageButton.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
 begin
   Perform(WM_LBUTTONDOWN, Msg.Keys, Longint(Msg.Pos));
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvCustomImageButton.DestroyWidget;
+begin
+  StopAnimate;
+  inherited DestroyWidget;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvCustomImageButton.WMTimer(var Msg: TWMTimer);
 begin

@@ -40,7 +40,8 @@ uses
   {$IFDEF VisualCLX}
   QImgList,
   {$ENDIF VisualCLX}
-  JvDsgnEditors;
+  JvDsgnEditors,
+  JvRollOut;
 
 type
   // property editor for IndexCollapsed and IndexExpanded on a TJvRollOut to
@@ -58,9 +59,6 @@ type
   end;
 
 implementation
-
-uses
-  JvRollOut;
 
 //=== TJvRollOutOptionsImagesProperty ========================================
 

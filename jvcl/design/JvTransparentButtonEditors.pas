@@ -30,13 +30,19 @@ unit JvTransparentButtonEditors;
 interface
 
 uses
+  SysUtils,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  {$IFDEF VCL}
   ImgList,
-  JvDsgnEditors;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QImgList,
+  {$ENDIF VisualCLX}
+  JvDsgnEditors, JvTransparentButton;
 
 type
   TJvTBImagesProperty = class(TJvDefaultImageIndexProperty)
@@ -45,10 +51,6 @@ type
   end;
 
 implementation
-
-uses
-  SysUtils,
-  JvTransparentButton;
 
 function TJvTBImagesProperty.ImageList: TCustomImageList;
 begin
