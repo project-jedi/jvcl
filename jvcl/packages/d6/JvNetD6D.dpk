@@ -28,7 +28,7 @@ package JvNetD6D;
 
 requires
   JvNetD6R,
-  designide,
+  DesignIde,
   JvStdCtrlsD6D;
 
 contains

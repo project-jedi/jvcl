@@ -28,6 +28,7 @@ package JvBandsD7D;
 
 requires
   JvCoreD7R,
+  JvCoreD7D,
   designide,
   JvBandsD7R;
 

@@ -28,6 +28,7 @@ package JvBandsD6D;
 
 requires
   JvCoreD6R,
+  JvCoreD6D,
   designide,
   JvBandsD6R;
 

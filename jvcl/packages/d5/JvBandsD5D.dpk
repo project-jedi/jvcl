@@ -28,8 +28,8 @@ package JvBandsD5D;
 
 requires
   JvCoreD5R,
-  
-  JvBandsD5R;
+  JvBandsD5R,
+  JvCoreD5D;
 
 contains
   JvBandObjectDLLWizardForm in '..\..\design\JvBandObjectDLLWizardForm.pas' {zWizardForm},

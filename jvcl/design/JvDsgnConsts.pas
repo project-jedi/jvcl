@@ -84,6 +84,26 @@ resourcestring
   //=== JvDataConsumerItemSelectForm.pas =====================================
   SDataProviderItemSelector = 'DataProvider Item Selector';
 
+  //=== JvDataContextManagerForm.pas =========================================
+  SDataProviderContextManager = 'DataProvider Context Manager';
+
+  //=== JvDataEmbeddedEditor.pas =============================================
+  SAllFilesFilter = 'All Files (*.*)|*.*';
+
+  //=== JvDataProviderDesignerForm.pas =======================================
+  SDataProviderDesigner = 'DataProvider Designer';
+  SInternalErrorUnableToRetrieveContext = 'Internal error: unable to retrieve context list';
+
+  //=== JvDataProviderEditors.pas ============================================
+  SSpecifiedProviderIsNotATComponentDe = 'Specified provider is not a TComponent descendant';
+  STreeDesigner = 'Tree designer...';
+  SContextManager = 'Context manager...';
+  SInvalidVerbd = 'Invalid verb#: %d';
+
+  //=== JvDataProviderItemDesign.pas =========================================
+  SUnknown = '<unknown>';
+  SNoItem = '<no item>';
+
   //=== DataProvider design time constants ===================================
   SDataProviderDesignerCaption = 'Editing %s%s...';
   SDataProviderContextManCaption = 'Editing contexts for ''%s''...';

@@ -33,13 +33,18 @@ unit JvDataProviderEditors;
 interface
 
 uses
-  Classes, {$IFNDEF COMPILER6_UP}DsgnIntf, Menus,{$ELSE}DesignIntf, DesignEditors, DesignMenus, {$ENDIF}
+  Classes,
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors, DesignMenus,
+  {$ELSE}
+  DsgnIntf, Menus,
+  {$ENDIF COMPILER6_UP}
   JvDataProvider, JvDataProviderImpl;
 
 type
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   TGetPropEditProc = TGetPropProc;
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 
   TJvDataConsumerExtPropertyEditor = class(TPropertyEditor)
   protected
@@ -60,12 +65,12 @@ type
     procedure PrepareItem(Index: Integer; const AItem: TMenuItem); override;
     {$ELSE}
     procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
 
   TJvDataConsumerProperty = class(TEnumProperty)
   private
-    OrgStrProc: TGetStrProc;
+    FOrgStrProc: TGetStrProc;
     procedure CheckAndAddComp(const S: string);
   protected
     function GetConsumerServiceAt(Index: Integer): TJvDataConsumer;
@@ -117,24 +122,23 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
-resourcestring
-  sSpecifiedProviderIsNotATComponentDe = 'Specified provider is not a TComponent descendant.';
-  sTreeDesigner = 'Tree designer...';
-  sContextManager = 'Context manager...';
-  sInvalidVerbd = 'Invalid verb#: %d';
-
 implementation
 
 uses
-  {$IFNDEF COMPILER6_UP}Consts,{$ELSE}RTLConsts,{$ENDIF} SysUtils, TypInfo,
-  JvDataConsumerContextSelectForm, JvDataConsumerItemSelectForm, JvDataProviderDesignerForm,
-  JvDataContextManagerForm;
+  SysUtils, TypInfo,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ELSE}
+  Consts,
+  {$ENDIF COMPILER6_UP}
+  JvDataConsumerContextSelectForm, JvDataConsumerItemSelectForm,
+  JvDataProviderDesignerForm, JvDataContextManagerForm, JvDsgnConsts;
 
 type
   TOpenSvc = class(TJvDataConsumer);
   TOpenConsumerAggregate = class(TJvDataConsumerAggregatedObject);
 
-//===TJvDataConsumerExtPropertyEditor===============================================================
+//=== TJvDataConsumerExtPropertyEditor =======================================
 
 function TJvDataConsumerExtPropertyEditor.GetConsumerExt: TJvDataConsumerAggregatedObject;
 begin
@@ -151,7 +155,7 @@ begin
   Result := TOpenConsumerAggregate(GetConsumerExt).ConsumerImpl;
 end;
 
-//===TJvDataConsumerProperty========================================================================
+//=== TJvDataConsumerProperty ================================================
 
 procedure TJvDataConsumerProperty.CheckAndAddComp(const S: string);
 var
@@ -159,13 +163,13 @@ var
   Prov: IJvDataProvider;
   Ref: IUnknown;
 begin
-  if @OrgStrProc <> nil then
+  if Assigned(FOrgStrProc) then
   begin
     Comp := Designer.GetComponent(S);
-    if (Comp <> nil) then
+    if Comp <> nil then
       with Comp do
         if GetInterface(IInterfaceComponentReference, Ref) and GetInterface(IJvDataProvider, Prov) then
-      OrgStrProc(S);
+          FOrgStrProc(S);
   end;
 end;
 
@@ -191,7 +195,7 @@ var
   {$IFNDEF COMPILER6_UP}
   CompRef: IInterfaceComponentReference;
   ProvComp: TComponent;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 begin
   Svc := GetConsumerServiceAt(Index);
   if Svc <> nil then
@@ -200,7 +204,7 @@ begin
     if Value <> nil then
     begin
       if not Supports(Value, IInterfaceComponentReference, CompRef) then
-        raise EPropertyError.Create(sSpecifiedProviderIsNotATComponentDe);
+        raise EPropertyError.Create(SSpecifiedProviderIsNotATComponentDe);
       ProvComp := CompRef.GetComponent;
     end
     else
@@ -208,7 +212,7 @@ begin
     Svc.Provider := ProvComp;
     {$ELSE}
     Svc.Provider := Value;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     Modified;
   end;
 end;
@@ -241,12 +245,13 @@ var
   Components: IDesignerSelections;
 begin
   Components := CreateSelectionList;
-  Components.Add({$IFNDEF COMPILER6_UP}MakeIPersistent({$ENDIF}ConsumerSvcExt{$IFNDEF COMPILER6_UP}){$ENDIF});
   {$IFDEF COMPILER6_UP}
+  Components.Add(ConsumerSvcExt);
   GetComponentProperties(Components, tkAny, Designer, Proc);
   {$ELSE}
+  Components.Add(MakeIPersistent(ConsumerSvcExt));
   GetComponentProperties((Components as IComponentList).GetComponentList, tkAny, Designer, Proc);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
 function TJvDataConsumerProperty.AllEqual: Boolean;
@@ -257,7 +262,7 @@ end;
 function TJvDataConsumerProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paValueList, paSubProperties, paSortList
-    {$IFDEF COMPILER6_UP}, paVolatileSubproperties{$ENDIF}];
+    {$IFDEF COMPILER6_UP}, paVolatileSubproperties {$ENDIF}];
 end;
 
 procedure TJvDataConsumerProperty.GetProperties(Proc: TGetPropEditProc);
@@ -271,10 +276,11 @@ var
 begin
   if GetProviderIntf = nil then
     Result := ''
-  else if Supports(GetProviderIntf, IInterfaceComponentReference, ICR) then
+  else
+  if Supports(GetProviderIntf, IInterfaceComponentReference, ICR) then
     Result := ICR.GetComponent.Name
   else
-    raise EPropertyError.Create(sSpecifiedProviderIsNotATComponentDe);
+    raise EPropertyError.Create(SSpecifiedProviderIsNotATComponentDe);
 end;
 
 procedure TJvDataConsumerProperty.SetValue(const Value: string);
@@ -317,16 +323,15 @@ end;
 
 procedure TJvDataConsumerProperty.GetValues(Proc: TGetStrProc);
 begin
-  OrgStrProc := Proc;
+  FOrgStrProc := Proc;
   try
     Designer.GetComponentNames(GetTypeData(TComponent.ClassInfo), CheckAndAddComp);
   finally
-    OrgStrProc := nil;
+    FOrgStrProc := nil;
   end;
 end;
 
-//===TJvDataProviderTreeProperty====================================================================
-
+//=== TJvDataProviderTreeProperty ============================================
 procedure TJvDataProviderTreeProperty.Edit;
 begin
   DesignProvider(TJvCustomDataProvider(GetComponent(0)), Designer, GetName);
@@ -346,7 +351,7 @@ procedure TJvDataProviderTreeProperty.SetValue(const Value: string);
 begin
 end;
 
-//===TJvDataProviderItemIDProperty==================================================================
+//=== TJvDataProviderItemIDProperty ==========================================
 
 procedure TJvDataProviderItemIDProperty.Edit;
 begin
@@ -374,7 +379,7 @@ begin
         Result := '[ID:' + Item.GetID + ']';
     end
     else
-      Result := '(none)';
+      Result := SNone;
   finally
     GetConsumerImpl.Leave;
   end;
@@ -384,7 +389,7 @@ procedure TJvDataProviderItemIDProperty.SetValue(const Value: string);
 begin
 end;
 
-//===TJvDataConsumerContextEditor===================================================================
+//=== TJvDataConsumerContextEditor ===========================================
 
 procedure TJvDataConsumerContextProperty.Edit;
 begin
@@ -431,9 +436,11 @@ begin
   end;
 end;
 
-//===TJvConsumerNotifyComponentProperty=============================================================
+//=== TJvConsumerNotifyComponentProperty =====================================
 
 function TJvConsumerNotifyComponentProperty.IsValidComp(AComponent: TComponent): Boolean;
+const
+ cProvider = 'Provider';
 var
   PI: PPropInfo;
   Obj: TObject;
@@ -444,10 +451,10 @@ begin
   Result := (AComponent is GetTypeData(GetPropType)^.ClassType);
   if Result then
   begin
-    PI := TypInfo.GetPropInfo(AComponent, 'Provider');
+    PI := TypInfo.GetPropInfo(AComponent, cProvider);
     if PI <> nil then
     begin
-      Obj := TypInfo.GetObjectProp(AComponent, 'Provider');
+      Obj := TypInfo.GetObjectProp(AComponent, cProvider);
       Result := Supports(Obj, IJvDataConsumer, Consumer) and
         Supports(Consumer, IJvDataConsumerClientNotify, TmpNotifier) and
         Supports(TJvDataConsumerClientNotifyItem(GetComponent(0)).List.Server.Controller,
@@ -460,7 +467,7 @@ end;
 
 procedure TJvConsumerNotifyComponentProperty.CheckAndAddComp(const S: string);
 begin
-  if (@EnumProc <> nil) and (S <> '') and IsValidComp(Designer.GetComponent(S)) then
+  if Assigned(EnumProc) and (S <> '') and IsValidComp(Designer.GetComponent(S)) then
     EnumProc(S);
 end;
 
@@ -474,7 +481,7 @@ begin
   end;
 end;
 
-//===TJvProviderEditor==============================================================================
+//=== TJvProviderEditor ======================================================
 
 function TJvProviderEditor.Provider: IJvDataProvider;
 begin
@@ -485,7 +492,8 @@ procedure TJvProviderEditor.Edit;
 begin
   if Provider.AllowProviderDesigner then
     ExecuteVerb(0)
-  else if Provider.AllowContextManager then
+  else
+  if Provider.AllowContextManager then
     ExecuteVerb(1)
   else
     inherited Edit;
@@ -505,11 +513,11 @@ function TJvProviderEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := sTreeDesigner;
+      Result := STreeDesigner;
     1:
-      Result := sContextManager;
+      Result := SContextManager;
     else
-      Result := Format(sInvalidVerbd, [Index]);
+      Result := Format(SInvalidVerbd, [Index]);
   end;
 end;
 
@@ -522,7 +530,7 @@ end;
 procedure TJvProviderEditor.PrepareItem(Index: Integer; const AItem: TMenuItem);
 {$ELSE}
 procedure TJvProviderEditor.PrepareItem(Index: Integer; const AItem: IMenuItem);
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 begin
   case Index of
     0:

@@ -28,6 +28,7 @@ package JvDBD7D;
 
 requires
   JvDBD7R,
+  JvCoreD7D,
   designide,
   dclstd,
   dcldb;

@@ -28,6 +28,7 @@ package JvMMD7D;
 
 requires
   JvMMD7R,
+  JvCoreD7D,
   designide,
   JvCmpD7R,
   vcl,

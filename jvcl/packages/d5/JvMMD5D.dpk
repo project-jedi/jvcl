@@ -28,6 +28,7 @@ package JvMMD5D;
 
 requires
   JvMMD5R,
+  JvCoreD5D,
   DJCL50,
   JvCmpD5R;
 
