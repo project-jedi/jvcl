@@ -14,9 +14,11 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.c
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s):
+Michael Beck [mbeck@bigfoot.com].
+Ain Valtin - ReadOnly, Alignment, Layout, RightButton
 
-Last Modified: 2002-06-03
+Last Modified: 2003-12-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -53,11 +55,19 @@ type
     FCanvas: TControlCanvas;
     FHotTrackFontOptions: TJvTrackFOntOptions;
     FWordWrap: boolean;
+    FReadOnly: boolean;
+    FAlignment: TAlignment;
+    FLayout: TTextLayout;
+    FRightButton: boolean;
     procedure SetHotFont(const Value: TFont);
     procedure SetAssociated(const Value: TControl);
     function GetCanvas: TCanvas;
     procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
     procedure SetWordWrap(const Value: boolean);
+    procedure SetAlignment(const Value: TAlignment);
+    procedure SetLayout(const Value: TTextLayout);
+    procedure SetReadOnly(const Value: boolean);
+    procedure SetRightButton(const Value: boolean);
   protected
     procedure SetAutoSize(Value: boolean);
 {$IFDEF COMPILER6_UP} override;
@@ -74,6 +84,7 @@ type
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure CalcAutoSize; virtual;
   public
+
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
@@ -83,6 +94,11 @@ type
     property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property Alignment:TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property Layout:TTextLayout read FLayout write SetLayout default tlTop;
+    property ReadOnly:boolean read FReadOnly write SetReadOnly default false;
+    // show button on right side of control
+    property RightButton:boolean read FRightButton write SetRightButton;
     property Associated: TControl read FAssociated write SetAssociated;
     property AutoSize: boolean read FAutoSize write SetAutoSize default true;
     property HotTrack: boolean read FHotTrack write FHotTrack default false;
@@ -110,15 +126,19 @@ begin
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   FCanvas.Control := Self;
-  FHotTrack := false;
+  FHotTrack := False;
   FHotFont := TFont.Create;
   FFontSave := TFont.Create;
   FColor := clInfoBk;
-  FOver := false;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  FOver := False;
+//  ControlStyle := ControlStyle + [csAcceptsControls];
   FHotTrackFontOptions := DefaultTrackFontOptions;
-  FAutoSize := true;
-  FWordWrap := false;
+  FAutoSize := True;
+  FWordWrap := False;
+  FReadOnly := False;
+  FAlignment := taLeftJustify;
+  FRightButton := false;
+  FLayout := tlTop;
 end;
 
 destructor TJvCheckBox.Destroy;
@@ -132,16 +152,24 @@ end;
 
 procedure TJvCheckBox.Toggle;
 begin
-  inherited Toggle;
-  if Assigned(FAssociated) then
-    FAssociated.Enabled := Checked;
+  if not ReadOnly then
+  begin
+    inherited Toggle;
+    if Assigned(FAssociated) then
+      FAssociated.Enabled := Checked;
+  end;
 end;
 
 procedure TJvCheckBox.CreateParams(var Params: TCreateParams);
+const
+  cAlign:array[TAlignment] of word = (BS_LEFT, BS_RIGHT, BS_CENTER);
+  cRightButton:array[boolean] of word = (0, BS_RIGHTBUTTON);
+  cLayout:array[TTextLayout] of word = (BS_TOP, BS_VCENTER, BS_BOTTOM);
+  cWordWrap:array[boolean] of word = (0,BS_MULTILINE);
 begin
   inherited CreateParams(Params);
-  if WordWrap then
-    Params.Style := Params.Style or BS_MULTILINE or BS_TOP;
+  with Params do
+    Style := Style or cAlign[Alignment] or cLayout[Layout] or cRightButton[RightButton] or cWordWrap[WordWrap];
 end;
 
 procedure TJvCheckBox.CMCtl3DChanged(var Msg: TMessage);
@@ -321,6 +349,39 @@ begin
   begin
     FWordWrap := Value;
     if Value then AutoSize := false;
+    RecreateWnd;
+  end;
+end;
+
+procedure TJvCheckBox.SetAlignment(const Value: TAlignment);
+begin
+  if FAlignment <> Value then
+  begin
+    FAlignment := Value;
+    recreateWnd;
+  end;
+end;
+
+procedure TJvCheckBox.SetLayout(const Value: TTextLayout);
+begin
+  if FLayout <> Value then
+  begin
+    FLayout := Value;
+    RecreateWnd;
+  end;
+end;
+
+procedure TJvCheckBox.SetReadOnly(const Value: boolean);
+begin
+  if FReadOnly <> Value then
+    FReadOnly := Value;
+end;
+
+procedure TJvCheckBox.SetRightButton(const Value: boolean);
+begin
+  if FRightButton <> Value then
+  begin
+    FRightButton := Value;
     RecreateWnd;
   end;
 end;
