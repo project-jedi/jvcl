@@ -27,6 +27,7 @@ description : text parser
 Known Issues:
   Some russian comments were translated to english; these comments are marked
   with [translated]
+
 -----------------------------------------------------------------------------}
 
 {$I JVCL.Inc}
@@ -91,7 +92,6 @@ function IsStringConstant(const St: string): Boolean;
 function IsIntConstant(const St: string): Boolean;
 function IsRealConstant(const St: string): Boolean;
 function IsIdentifier(const ID: string): Boolean;
-function IsIdentifer(const ID: string): Boolean; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
 function GetStringValue(const St: string): string;
 procedure ParseString(const S: string; Ss: TStrings);
 
@@ -598,11 +598,6 @@ begin
       Exit;
   end;
   Result := True;
-end;
-
-function IsIdentifer(const ID: string): Boolean; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
-begin
-  Result := IsIdentifier(ID);
 end;
 
 function GetStringValue(const St: string): string;

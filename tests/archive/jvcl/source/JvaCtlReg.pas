@@ -260,7 +260,7 @@ begin
      'GutterColor', 'GutterWidth',
      'RightMarginVisible', 'RightMargin', 'RightMarginColor',
 
-     'OnGetLineAttr', 'OnReservedWord', 'OnCompletionIdentifer',
+     'OnGetLineAttr', 'OnReservedWord', 'OnCompletionIdentifier',
      'OnCompletionDrawItem', 'OnCompletionMeasureItem', 'OnCompletionTemplate',
      'OnChange', 'OnChangeStatus', 'OnSelectionChange']);
 
@@ -278,7 +278,7 @@ begin
      'GutterColor', 'GutterWidth',
      'RightMarginVisible', 'RightMargin', 'RightMarginColor',
 
-     'OnGetLineAttr', 'OnReservedWord', 'OnCompletionIdentifer',
+     'OnGetLineAttr', 'OnReservedWord', 'OnCompletionIdentifier',
      'OnCompletionDrawItem', 'OnCompletionMeasureItem', 'OnCompletionTemplate',
      'OnChange', 'OnChangeStatus', 'OnSelectionChange']);
 

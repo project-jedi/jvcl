@@ -62,7 +62,7 @@ type
   private
     Component: TPersistent;
     JvInterpreterP: TJvInterpreterProgram;
-    procedure JvInterpreterPGetValue(Sender: TObject; Identifer: string;
+    procedure JvInterpreterPGetValue(Sender: TObject; Identifier: string;
       var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);
   public
     procedure SetValue(const Value: string); override;
@@ -74,14 +74,14 @@ type
 type
   THackJvInterpreterProgram = class(TJvInterpreterProgram);
 
-procedure TJvIntegerProperty.JvInterpreterPGetValue(Sender: TObject; Identifer: string;
+procedure TJvIntegerProperty.JvInterpreterPGetValue(Sender: TObject; Identifier: string;
   var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);
 var
   Com: TComponent;
 begin
   if (Component is TComponent) and (Args.Obj = nil) then
   begin
-    Com := (Component as TComponent).Owner.FindComponent(Identifer);
+    Com := (Component as TComponent).Owner.FindComponent(Identifier);
     if Com <> nil then
     begin
       Value := O2V(Com);
@@ -92,7 +92,7 @@ begin
       Args.Obj := Component;
       Args.ObjTyp := varObject;
       try
-        Done := THackJvInterpreterProgram(JvInterpreterP).GetValue(Identifer, Value, Args);
+        Done := THackJvInterpreterProgram(JvInterpreterP).GetValue(Identifier, Value, Args);
       finally
         Args.Obj := nil;
         Args.ObjTyp := 0;

@@ -253,7 +253,7 @@ begin
     begin
       Comment.ForeColor := 1;
       Reserved.ForeColor := 2;
-      Identifer.ForeColor := 3;
+      Identifier.ForeColor := 3;
       Symbol.ForeColor := 4;
       Strings.ForeColor := 5;
       Number.ForeColor := 6;
@@ -374,7 +374,7 @@ begin
   SaveColor(ARAHLEditor.Colors.Symbol, 'Symbol');
   SaveColor(ARAHLEditor.Colors.Comment, 'Comment');
   SaveColor(ARAHLEditor.Colors.Reserved, 'Reserved');
-  SaveColor(ARAHLEditor.Colors.Identifer, 'Identifer');
+  SaveColor(ARAHLEditor.Colors.Identifier, 'Identifier');
   SaveColor(ARAHLEditor.Colors.Preproc, 'Preproc');
   SaveColor(ARAHLEditor.Colors.FunctionCall, 'FunctionCall');
   SaveColor(ARAHLEditor.Colors.Declaration, 'Declaration');
@@ -420,7 +420,7 @@ begin
   LoadColor(ARAHLEditor.Colors.Symbol, clBlue, clWindow, [], 'Symbol');
   LoadColor(ARAHLEditor.Colors.Comment, clOlive, clWindow, [fsItalic], 'Comment');
   LoadColor(ARAHLEditor.Colors.Reserved, clWindowText, clWindow, [fsBold], 'Reserved');
-  LoadColor(ARAHLEditor.Colors.Identifer, clWindowText, clWindow, [], 'Identifer');
+  LoadColor(ARAHLEditor.Colors.Identifier, clWindowText, clWindow, [], 'Identifier');
   LoadColor(ARAHLEditor.Colors.Preproc, clGreen, clWindow, [], 'Preproc');
   LoadColor(ARAHLEditor.Colors.FunctionCall, clWindowText, clWindow, [], 'FunctionCall');
   LoadColor(ARAHLEditor.Colors.Declaration, clWindowText, clWindow, [], 'Declaration');
@@ -700,8 +700,8 @@ begin
         SC := RAHLEditor1.Colors.Comment;
       2: { Reserved word }
         SC := RAHLEditor1.Colors.Reserved;
-      3: { Identifer }
-        SC := RAHLEditor1.Colors.Identifer;
+      3: { Identifier }
+        SC := RAHLEditor1.Colors.Identifier;
       4: { Symbol }
         SC := RAHLEditor1.Colors.Symbol;
       5: { String }

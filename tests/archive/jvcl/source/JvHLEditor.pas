@@ -130,8 +130,6 @@ type
     FDeclaration: TJvSymbolColor;
     FStatement: TJvSymbolColor;
     FPlainText: TJvSymbolColor;
-    function GetIdentifer: TJvSymbolColor; {deprecated;}
-    procedure SetIdentifer(const Value: TJvSymbolColor); {deprecated;}
   public
     constructor Create;
     destructor Destroy; override;
@@ -143,7 +141,6 @@ type
     property Symbol: TJvSymbolColor read FSymbol write FSymbol;
     property Reserved: TJvSymbolColor read FReserved write FReserved;
     property Identifier: TJvSymbolColor read FIdentifier write FIdentifier;
-    property Identifer: TJvSymbolColor read GetIdentifer write SetIdentifer stored False; {deprecated;}
     property Preproc: TJvSymbolColor read FPreproc write FPreproc;
     property FunctionCall: TJvSymbolColor read FFunctionCall write FFunctionCall;
     property Declaration: TJvSymbolColor read FDeclaration write FDeclaration;
@@ -380,15 +377,6 @@ begin
     inherited Assign(Source);
 end;
 
-function TJvColors.GetIdentifer: TJvSymbolColor; {deprecated;}
-begin
-  Result := Identifier;
-end;
-
-procedure TJvColors.SetIdentifer(const Value: TJvSymbolColor); {deprecated;}
-begin
-  Identifier := Value;
-end;
 
 //=== TJvHLEditor ============================================================
 

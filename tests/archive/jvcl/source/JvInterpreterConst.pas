@@ -82,14 +82,14 @@ const
 
      (ID: 101; Description: 'Error in remark'), // (rom) in comment?
      (ID: 103; Description: '%s expected but %s found'),
-     (ID: 104; Description: 'Undeclared identifer ''%s'''),
+     (ID: 104; Description: 'Undeclared Identifier ''%s'''),
      (ID: 105; Description: 'Type of expression must be boolean'),
      (ID: 106; Description: 'Class type required'),
      (ID: 107; Description: ' not allowed before else'),
      (ID: 108; Description: 'Type of expression must be integer'),
      (ID: 109; Description: 'Record, object or class type required'),
      (ID: 110; Description: 'Missing operator or semicolon'),
-     (ID: 111; Description: 'Identifer redeclared: ''%s'''),
+     (ID: 111; Description: 'Identifier redeclared: ''%s'''),
 
      (ID: 171; Description: 'Array index out of bounds'),
      (ID: 172; Description: 'Too many array bounds'),
@@ -112,7 +112,7 @@ const
      (ID: 201; Description: 'Calling ''%s'' failed: ''%s'''),
 
      (ID: 301; Description: 'Expression'),
-     (ID: 302; Description: 'Identifer'),
+     (ID: 302; Description: 'Identifier'),
      (ID: 303; Description: 'Declaration'),
      (ID: 304; Description: 'End of File'),
      (ID: 305; Description: 'Class declaration'),

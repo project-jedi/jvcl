@@ -342,11 +342,11 @@ end;
 { function DefineCursor was typed from
   book "Secrets of Delphi 2" by Ray Lischner }
 
-function DefineCursor(Identifer: PChar): TCursor;
+function DefineCursor(Identifier: PChar): TCursor;
 var
   Handle: HCURSOR;
 begin
-  Handle := LoadCursor(HInstance, Identifer);
+  Handle := LoadCursor(HInstance, Identifier);
   if Handle = 0 then
     raise EOutOfResources.Create('Cannot load cursor resource');
   for Result := 1 to High(TCursor) do

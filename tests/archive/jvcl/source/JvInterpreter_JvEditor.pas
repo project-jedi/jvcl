@@ -654,7 +654,7 @@ begin
     AddConst(cJvEditor, 'ecGotoBookmark7', ecGotoBookmark7);
     AddConst(cJvEditor, 'ecGotoBookmark8', ecGotoBookmark8);
     AddConst(cJvEditor, 'ecGotoBookmark9', ecGotoBookmark9);
-//    AddConst(cJvEditor, 'ecCompletionIdentifers', ecCompletionIdentifers);
+    AddConst(cJvEditor, 'ecCompletionIdentifiers', ecCompletionIdentifiers);
     AddConst(cJvEditor, 'ecCompletionTemplates', ecCompletionTemplates);
     AddConst(cJvEditor, 'ecRecordMacro', ecRecordMacro);
     AddConst(cJvEditor, 'ecPlayMacro', ecPlayMacro);

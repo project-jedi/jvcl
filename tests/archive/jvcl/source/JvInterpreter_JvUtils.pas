@@ -213,7 +213,7 @@ begin
   Value := TextWidth(Args.Values[0]);
 end;
 
-{ function DefineCursor(Identifer: PChar): TCursor; }
+{ function DefineCursor(Identifier: PChar): TCursor; }
 
 procedure JvInterpreter_DefineCursor(var Value: Variant; Args: TJvInterpreterArgs);
 begin

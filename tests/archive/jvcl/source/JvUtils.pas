@@ -332,7 +332,7 @@ function BitmapFromBitmap(SrcBitmap: TBitmap; const AWidth, AHeight, Index: Inte
 function TextWidth(AStr: string): Integer;
 { DefineCursor load cursor from resource, and return
   available cursor number, assigned to it }
-function DefineCursor(Identifer: PChar): TCursor;
+function DefineCursor(Identifier: PChar): TCursor;
 
 {**** other routines - }
 { FindFormByClass returns first form with specified
@@ -2684,11 +2684,11 @@ end;
 { function DefineCursor was typed from
   book "Secrets of Delphi 2" by Ray Lischner }
 
-function DefineCursor(Identifer: PChar): TCursor;
+function DefineCursor(Identifier: PChar): TCursor;
 var
   Handle: HCursor;
 begin
-  Handle := LoadCursor(hInstance, Identifer);
+  Handle := LoadCursor(hInstance, Identifier);
   if Handle = 0 then
     raise EOutOfResources.Create('Cannot load cursor resource');
   for Result := 1 to High(TCursor) do

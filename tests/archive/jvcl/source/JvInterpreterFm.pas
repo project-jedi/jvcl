@@ -74,7 +74,7 @@ type
     FJvInterpreterFm: TJvInterpreterFm;
     FMethodList: TList;
     FFreeJvInterpreterFm: Boolean;
-    FClassIdentifer: string;
+    FClassIdentifier: string;
     FUnitName: string;
     procedure FixupMethods;
   protected
@@ -99,9 +99,9 @@ type
     FOnFreeDfmStream: TJvInterpreterFreeDfmStream;
     procedure LoadForm(AForm: TJvInterpreterForm);
   protected
-    function GetValue(Identifer: string; var Value: Variant;
+    function GetValue(Identifier: string; var Value: Variant;
       var Args: TJvInterpreterArgs): Boolean; override;
-    function SetValue(Identifer: string; const Value: Variant;
+    function SetValue(Identifier: string; const Value: Variant;
       var Args: TJvInterpreterArgs): Boolean; override;
     function GetUnitSource(UnitName: string; var Source: string): Boolean;
       override;
@@ -420,35 +420,35 @@ begin
     Form.Visible := False;
 end;
 
-function TJvInterpreterFm.GetValue(Identifer: string; var Value: Variant;
+function TJvInterpreterFm.GetValue(Identifier: string; var Value: Variant;
   var Args: TJvInterpreterArgs): Boolean;
 var
-  JvInterpreterSrcClass: TJvInterpreterIdentifer;
+  JvInterpreterSrcClass: TJvInterpreterIdentifier;
   JvInterpreterForm: TJvInterpreterForm;
 
   function GetFromForm(Form: TJvInterpreterForm): Boolean;
   var
     Com: TComponent;
   begin
-    if Cmp(Identifer, 'Self') then
+    if Cmp(Identifier, 'Self') then
     begin
       Value := O2V(Form);
       Result := True;
       Exit;
     end;
-    Com := Form.FindComponent(Identifer);
+    Com := Form.FindComponent(Identifier);
     if Com = nil then
     begin
-      if (LocalVars <> nil) and (LocalVars.FindVar('', Identifer) <> nil) then
+      if (LocalVars <> nil) and (LocalVars.FindVar('', Identifier) <> nil) then
       begin
-        Result := LocalVars.GetValue(Identifer, Value, Args);
+        Result := LocalVars.GetValue(Identifier, Value, Args);
         Exit;
       end;
       { may be TForm method or published property }
       Args.Obj := Form;
       Args.ObjTyp := varObject;
       try
-        Result := inherited GetValue(Identifer, Value, Args);
+        Result := inherited GetValue(Identifier, Value, Args);
       finally
         Args.Obj := nil;
         Args.ObjTyp := 0;
@@ -469,10 +469,10 @@ begin
     (Args.Obj is TJvInterpreterForm) then
   begin
     { run-time form creation }
-    if Cmp(Identifer, 'Create') then
+    if Cmp(Identifier, 'Create') then
     begin
       JvInterpreterSrcClass := THackAdapter(Adapter).GetSrcClass(
-        (Args.Obj as TJvInterpreterForm).FClassIdentifer);
+        (Args.Obj as TJvInterpreterForm).FClassIdentifier);
       (Args.Obj as TJvInterpreterForm).FUnitName := JvInterpreterSrcClass.UnitName;
       LoadForm(Args.Obj as TJvInterpreterForm);
       Value := O2V(Args.Obj);
@@ -489,7 +489,7 @@ begin
     Exit;
 
   { run-time form creation }
-  JvInterpreterSrcClass := THackAdapter(Adapter).GetSrcClass(Identifer);
+  JvInterpreterSrcClass := THackAdapter(Adapter).GetSrcClass(Identifier);
   if JvInterpreterSrcClass <> nil then
   begin
     {$IFDEF COMPILER4_UP}
@@ -497,30 +497,30 @@ begin
     {$ELSE}
     JvInterpreterForm := TJvInterpreterForm.CreateNew(Application, 0);
     {$ENDIF COMPILER4_UP}
-    JvInterpreterForm.FClassIdentifer := Identifer;
+    JvInterpreterForm.FClassIdentifier := Identifier;
     Value := O2V(JvInterpreterForm);
     Result := True;
     Exit;
   end;
 
-  Result := Result or inherited GetValue(Identifer, Value, Args);
+  Result := Result or inherited GetValue(Identifier, Value, Args);
 end;
 
-function TJvInterpreterFm.SetValue(Identifer: string; const Value: Variant;
+function TJvInterpreterFm.SetValue(Identifier: string; const Value: Variant;
   var Args: TJvInterpreterArgs): Boolean;
 begin
   if (Args.Obj = nil) and (CurInstance is TJvInterpreterForm) then
   begin
-    if (LocalVars <> nil) and (LocalVars.FindVar('', Identifer) <> nil) then
+    if (LocalVars <> nil) and (LocalVars.FindVar('', Identifier) <> nil) then
     begin
-      Result := LocalVars.SetValue(Identifer, Value, Args);
+      Result := LocalVars.SetValue(Identifier, Value, Args);
       Exit;
     end;
     { may be TForm method or published property }
     Args.Obj := CurInstance;
     Args.ObjTyp := varObject;
     try
-      Result := inherited SetValue(Identifer, Value, Args);
+      Result := inherited SetValue(Identifier, Value, Args);
     finally
       Args.Obj := nil;
       Args.ObjTyp := 0;
@@ -528,7 +528,7 @@ begin
   end
   else
     Result := False;
-  Result := Result or inherited SetValue(Identifer, Value, Args);
+  Result := Result or inherited SetValue(Identifier, Value, Args);
 end;
 
 function TJvInterpreterFm.GetUnitSource(UnitName: string; var Source: string): Boolean;

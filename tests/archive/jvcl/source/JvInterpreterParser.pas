@@ -73,7 +73,7 @@ function TypToken(const TTyp: TTokenTyp): string;
 const
   ttUnknown = -1; { unknown error - internal error in most cases - for debugging }
   ttEmpty = 0; { end of file - eof }
-  ttIdentifer = 10; { identifer }
+  ttIdentifier = 10; { Identifier }
   ttInteger = 11; { Integer constant }
   ttDouble = 12; { double constant }
   ttString = 13; { string constant }
@@ -489,7 +489,7 @@ begin
           begin
           end
           else
-            { may be identifer }
+            { may be Identifier }
             {$IFDEF Delphi}
             if not (T1 in StIdFirstSymbols) then
             {$ELSE}
@@ -508,7 +508,7 @@ begin
                   Result := ttUnknown;
                   Exit;
                 end;
-              Result := ttIdentifer;
+              Result := ttIdentifier;
             end;
           end;
         end;
