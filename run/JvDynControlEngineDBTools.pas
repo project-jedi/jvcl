@@ -123,7 +123,7 @@ end;
 function TJvDynControlDataSourceEditDialog.GetDynControlEngineDB: TJvDynControlEngineDB;
 begin
   if Assigned(FDynControlEngineDB) then
-    Result := DynControlEngineDB
+    Result := FDynControlEngineDB
   else
     Result := DefaultDynControlEngineDB;
 end;
