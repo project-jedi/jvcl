@@ -80,14 +80,14 @@ type
 type
   { (rb) Stupid name, feel free to change :) }
   TJvBrowsableObjectClass = (
-    ocFolders, //SHCONTF_FOLDERS,
-    ocNonFolders, //SHCONTF_NONFOLDERS,
-    ocIncludeHidden, //SHCONTF_INCLUDEHIDDEN,
-    ocInitOnFirstNext, //SHCONTF_INIT_ON_FIRST_NEXT,
-    ocNetPrinterSrch, //SHCONTF_NETPRINTERSRCH,
-    ocSharable, //SHCONTF_SHAREABLE,
-    ocStorage //SHCONTF_STORAGE
-    );
+    ocFolders,          //SHCONTF_FOLDERS,
+    ocNonFolders,       //SHCONTF_NONFOLDERS,
+    ocIncludeHidden,    //SHCONTF_INCLUDEHIDDEN,
+    ocInitOnFirstNext,  //SHCONTF_INIT_ON_FIRST_NEXT,
+    ocNetPrinterSrch,   //SHCONTF_NETPRINTERSRCH,
+    ocSharable,         //SHCONTF_SHAREABLE,
+    ocStorage           //SHCONTF_STORAGE
+  );
   TJvBrowsableObjectClasses = set of TJvBrowsableObjectClass;
 
   TJvBrowseAcceptChange = procedure(Sender: TObject; const NewFolder: string;
@@ -177,7 +177,6 @@ type
   // (p3) shouldn't TOptionsDir be changed to T(Jv)OptionsDirectories?
   TOptionsDir = set of TOptionsDirectory;
 
-  // (rom) changed name
   {$IFDEF COMPILER6_UP}
   TJvBrowseForFolderDialog = class(TJvCommonDialogF, IFolderFilter)
   {$ELSE}
@@ -270,7 +269,7 @@ type
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property Options: TOptionsDir read FOptions write SetOptions default
       [odStatusAvailable, odNewDialogStyle];
-    property Position: TJvFolderPos read FPosition write FPosition default fpDefault;
+    property Position: TJvFolderPos read FPosition write FPosition default fpScreenCenter;
     property RootDirectory: TFromDirectory read FRootDirectory write SetRootDirectory default fdNoSpecialFolder;
     property RootDirectoryPath: string read GetRootDirectoryPath write SetRootDirectoryPath
       stored IsRootDirectoryPathStored;
@@ -890,7 +889,7 @@ constructor TJvBrowseForFolderDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOptions := [odStatusAvailable, odNewDialogStyle];
-  FPosition := fpDefault;
+  FPosition := fpScreenCenter; // ahuser: changed from fpDefault - I think no one wants the dialog in the right bottom corner
   FRootDirectory := fdNoSpecialFolder;
   FObjectInstance := JvMakeObjectInstance(MainWndProc);
 end;
