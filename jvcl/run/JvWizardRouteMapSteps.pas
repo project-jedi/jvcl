@@ -243,7 +243,7 @@ begin
   
   // YW - Ignore all disabled pages at run time
   APage := Wizard.FindNextPage(PageIndex, -1, not (csDesigning in ComponentState));
-  if Assigned(APage) then
+  if Assigned(APage) and (PageIndex <> - 1) then
   begin
     TextRect := GetPreviousStepRect;
     ArrowRect := GetPreviousArrowRect;
@@ -269,7 +269,7 @@ begin
 
   // YW - Ignore all disabled pages at run time
   APage := Wizard.FindNextPage(PageIndex, 1, not (csDesigning in ComponentState));
-  if Assigned(APage) then
+  if Assigned(APage) and (PageIndex <> - 1) then
   begin
     TextRect := GetNextStepRect;
     ArrowRect := GetNextArrowRect;
