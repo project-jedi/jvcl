@@ -42,7 +42,7 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvConsts, JvZoom, JvBehaviorLabel, JvArrowButton,
-  JvaScrollText, JvCaptionButton, JvClock, JvContentScroller, JvColorBox,
+  JvaScrollText, JvCaptionButton, JvxClock, JvContentScroller, JvColorBox,
   JvColorButton, JvDice, JvDriveCtrls, JvFooter, JvGroupHeader, JvHint,
   JvHtControls, JvInstallLabel, JvItemsPanel, JvListComb, JvPageScroller,
   JvRegistryTreeView, JvRollOut, JvScrollPanel, JvScrollText, JvSpacer,
@@ -74,7 +74,7 @@ begin
     TJvContentScroller, TJvPageScroller, TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(SPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter]);
-  RegisterComponents(SPaletteVisual, [TJvClock,
+  RegisterComponents(SPaletteVisual, [TJvxClock,
     TJvZoom, TJvDice, TJvCharMap]);
   RegisterComponents(SPaletteNonVisual, [TJvHint {, TJvRegAuto}]);
 
