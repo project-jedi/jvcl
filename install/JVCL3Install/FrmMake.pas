@@ -361,14 +361,21 @@ begin
    // *****
    // C++BUILDER .dcp creation
    // *****
-    i := CaptureExecute(
+    { The batch file creates a Error.dat file in the package directory. This
+      is better than checking the errorlevel because under Win9x/ME the
+      errorlevel is allways 0. }
+    DeleteFile(JVCLPackageDir + '\Error.dat');
+    {i := }CaptureExecute(
                 'makejcldcp4bcb.bat',
                 IntToStr(FTarget.MajorVersion)+ ' '+
                 '"' + FTarget.RootDir + '" '+
                 '"' + FTarget.JCLDir + '"',
                 JVCLPackageDir,
                 CaptureLine);
-    Result := i=1;     // Note: the batch file returns 1...
+    //Result := i=1;     // Note: the batch file returns 1...
+    Result := not FileExists(JVCLPackageDir + '\Error.dat');
+    DeleteFile(JVCLPackageDir + '\Error.dat');
+    
 {    // create Delphi packages for BCB .dcp compilation
     Files := TStringList.Create; // files that were created
     try
