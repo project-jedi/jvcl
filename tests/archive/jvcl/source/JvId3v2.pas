@@ -492,8 +492,8 @@ type
 implementation
 
 uses
-  JclUnicode, JclFileUtils,
-  JvMaxMin;
+  Math,
+  JclUnicode, JclFileUtils;
 
 procedure ConvertHeaderSize(var P);
 {             Byte1    Byte2    Byte3    Byte4
