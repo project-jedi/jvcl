@@ -32,8 +32,7 @@ unit JvClipbrd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Contnrs, Clipbrd,
-  JvFinalize;
+  Windows, Messages, Classes, Clipbrd;
 
 type
   // the type of the event fired when a format has been added with delayed
@@ -243,8 +242,8 @@ function JvClipboard: TJvClipboard;
 implementation
 
 uses
-  Consts,
-  JvTypes, JvJVCLUtils, JvResources;
+  SysUtils, Consts,
+  JvTypes, JvJVCLUtils, JvResources, JvFinalize;
 
 const
   sUnitName = 'JvClipbrd';

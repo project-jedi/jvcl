@@ -30,14 +30,11 @@ unit JvButtonPersistent;
 interface
 
 uses
-  SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, StdCtrls, Buttons,
+  Windows, Messages,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QStdCtrls, QButtons,
-  {$ENDIF VisualCLX}
-  JvSpeedButton, JvButton, JvTypes;
+  Classes, Graphics, Controls,
+  JvTypes;
 
 type
   TJvButtonPersistent = class(TPersistent)
@@ -81,6 +78,10 @@ type
   end;
 
 implementation
+
+uses
+  StdCtrls, Buttons,
+  JvSpeedButton, JvButton;
 
 constructor TJvButtonPersistent.Create;
 begin

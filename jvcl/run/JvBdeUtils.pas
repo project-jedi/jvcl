@@ -32,11 +32,7 @@ unit JvBdeUtils;
 interface
 
 uses
-  Windows, SysUtils, Bde, Registry,
-  {$IFDEF COMPILER6_UP}
-  Variants, RTLConsts,
-  {$ENDIF COMPILER6_UP}
-  Classes, DB, DBTables, IniFiles,
+  Windows, Bde, Classes, DB, DBTables,
   JvDBUtils;
 
 type
@@ -225,8 +221,11 @@ procedure GetXYByPos(const S: string; const Pos: Integer; var X, Y: Integer);
 implementation
 
 uses
-  Forms, Controls, Dialogs, Consts, DBConsts, Math,
-  BDEConst, DBCommon,
+  SysUtils, Registry, Forms, Controls, Dialogs, Consts, Math,
+  IniFiles, DBConsts, BDEConst, DBCommon,
+  {$IFDEF COMPILER6_UP}
+  Variants, RTLConsts,
+  {$ENDIF COMPILER6_UP}
   JvConsts, JvJVCLUtils, JvJCLUtils, JvTypes, JvResources;
 
 { Utility routines }

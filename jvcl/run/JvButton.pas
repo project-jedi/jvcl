@@ -30,15 +30,15 @@ unit JvButton;
 interface
 
 uses
-  SysUtils, Classes,
+  Classes,
   {$IFDEF VCL}
   Windows, Messages,
   {$ENDIF VCL}
-  Graphics, Controls, Forms, StdCtrls, Menus, Buttons,
   {$IFDEF VisualCLX}
   Qt, QWindows,
   {$ENDIF VisualCLX}
-  JvComponent, JvConsts, JvTypes, JvExStdCtrls, JvThemes, JvFinalize;
+  Graphics, Controls, Menus, Buttons,
+  JvComponent, JvConsts, JvTypes, JvExStdCtrls;
 
 type
   TJvButtonMouseState = (bsMouseInside, bsMouseDown);
@@ -172,7 +172,8 @@ type
 implementation
 
 uses
-  JvJVCLUtils;
+  SysUtils, Forms,
+  JvJVCLUtils, JvThemes, JvFinalize;
 
 const
   sUnitName = 'JvButton';

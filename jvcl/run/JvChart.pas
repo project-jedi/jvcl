@@ -57,19 +57,14 @@ unit JvChart;
 interface
 
 uses
-  SysUtils, Classes,
   {$IFDEF MSWINDOWS}
-  Windows,
+  Windows, Messages,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
-  Messages, Graphics, Controls,
-  Forms, Dialogs, ExtCtrls, Printers, Clipbrd,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QExtCtrls, QPrinters, QClipbrd,
   Types, QWindows,
   {$ENDIF VisualCLX}
-  JvComponent, JvJCLUtils, JvResources;
+  Classes, Graphics, Controls,
+  JvComponent;
 
 const
   JvChartVersion = 300; // ie, version 3.00
@@ -583,18 +578,15 @@ type
     property OnChartClick: TJvChartClickEvent read FOnChartClick write FOnChartClick;
   end;
 
-//var
-// JvChart_PaintCounter : Integer;
-
 implementation
 
 uses
-  Math, // VCL math: function isNan, constant NaN.
+  SysUtils, Math, Forms, Dialogs, Printers, Clipbrd,
   {$IFDEF COMPILER5}
   JclMath, // function isNan for Delphi 5  (ahuser)
+  JvJCLUtils, // StrToFloatDef
   {$ENDIF COMPILER5}
-  JvJVCLUtils,
-  JvConsts;
+  JvJVCLUtils, JvConsts, JvResources;
 
 const
   CHART_SANITY_LIMIT = 30000;
@@ -1454,10 +1446,6 @@ end;
 
 procedure TJvChart.Paint; { based on TImage.Paint }
 begin
-  // April 2004 - Flicker Reduction!
-//  Inc(JvChart_PaintCounter);
-//  OutputDebugString(PChar('JvChart_PaintCounter='+IntToStr(JvChart_PaintCounter)));
-
   if csDesigning in ComponentState then // or (Options.ChartKind = ckChartNone) then // Blank.
     DesignModePaint
   else
@@ -3962,9 +3950,6 @@ begin
     TempData.Free;
   end;
 end;
-
-//initialization {debug code}
-// JvChart_PaintCounter := 0;
 
 end.
 

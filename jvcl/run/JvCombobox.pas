@@ -30,9 +30,11 @@ unit JvCombobox;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvDataProvider, JvDataProviderIntf, JvMaxPixel, JvItemsSearchs,
-  JvExStdCtrls;
+  {$IFDEF VCL}
+  Windows, Messages,
+  {$ENDIF VCL}
+  Classes, Graphics, Controls, StdCtrls,
+  JvDataProvider, JvMaxPixel, JvExStdCtrls;
 
 type
   TJvCustomComboBox = class;
@@ -262,11 +264,12 @@ type
 implementation
 
 uses
-  Consts, TypInfo,
+  SysUtils, Consts, TypInfo,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
-  JvConsts, JvResources;
+  JvDataProviderIntf, 
+  JvItemsSearchs, JvConsts, JvResources;
 
 //=== { TJvComboBoxStrings } =================================================
 

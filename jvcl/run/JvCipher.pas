@@ -31,7 +31,7 @@ unit JvCipher;
 interface
 
 uses
-  SysUtils, Classes,
+  Classes,
   JvComponent;
 
 type
@@ -86,6 +86,9 @@ type
   end;
 
 implementation
+
+uses
+  SysUtils;
 
 //=== { TJvCustomCipher } ==========================================================
 

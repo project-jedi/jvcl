@@ -36,14 +36,12 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, StdCtrls, Dialogs, ExtCtrls,
-  Buttons, Menus,
+  Windows, Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QWindows, QGraphics, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls,
-  QButtons, QMenus,
+  Types, QWindows,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
+  Classes, Graphics, Controls, Forms, Dialogs,
   JvColorBox;
 
 type
@@ -107,6 +105,7 @@ type
 implementation
 
 uses
+  SysUtils, ExtCtrls,
   JvColorForm, JvResources;
 
 constructor TJvColorButton.Create(AOwner: TComponent);

@@ -31,13 +31,13 @@ unit JvColorProvider;
 interface
 
 uses
-  Classes, Contnrs,
   {$IFDEF VCL}
-  Windows, Graphics, Dialogs,
+  Windows,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QWindows, QGraphics, QDialogs,
+  Types, QWindows,
   {$ENDIF VisualCLX}
+  Classes, Contnrs, Graphics, Dialogs,
   JclBase,
   JvDataProvider, JvDataProviderIntf, JvTypes;
 
@@ -514,13 +514,8 @@ uses
   {$ELSE}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF VCL}
   Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls,
-  {$ENDIF VisualCLX}
-  JclRTTI, JclStrings,
+  JclStrings,
   JvJVCLUtils, JvConsts, JvResources;
 
 const

@@ -30,12 +30,12 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Graphics, Controls, StdCtrls,
+  Windows,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QStdCtrls, Types, QWindows,
+  Types, QWindows,
   {$ENDIF VisualCLX}
-  Classes;
+  Classes, Controls;
 
 procedure BoxMoveSelectedItems(SrcList, DstList: TWinControl);
 procedure BoxMoveAllItems(SrcList, DstList: TWinControl);
@@ -51,10 +51,11 @@ function BoxCanDropItem(List: TWinControl; X, Y: Integer;
 
 implementation
 
-{$IFDEF VCL}
 uses
-  JvxCheckListBox;
-{$ENDIF VCL}
+  {$IFDEF VCL}
+  JvxCheckListBox,
+  {$ENDIF VCL}
+  StdCtrls;
 
 {$IFDEF VisualCLX}
 const

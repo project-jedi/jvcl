@@ -32,22 +32,14 @@ unit JvClock;
 interface
 
 uses
-  SysUtils,  Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls,
-  Forms, ExtCtrls, Menus,
+  Windows, Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls,
-  QForms, QExtCtrls, QMenus, QWindows,
+  Types, QWindows,
   {$ENDIF VisualCLX}
-  {$IFDEF COMPILER6}
-  RTLConsts,
-  {$ENDIF COMPILER6}
-  {$IFDEF COMPILER7_UP}
-  SysConst,
-  {$ENDIF COMPILER7_UP}
-  JvTimer, JvComponent, JvThemes, JvExControls;
+  Classes, Graphics, Controls,
+  JvTimer, JvComponent, JvExControls;
 
 type
   TShowClock = (scDigital, scAnalog);
@@ -189,16 +181,16 @@ type
 
 implementation
 
-{$IFDEF VCL}
 uses
-  Consts;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-uses
-  QConsts;
-{$ENDIF VisualCLX}
+  {$IFDEF COMPILER6}
+  RTLConsts,
+  {$ENDIF COMPILER6}
+  {$IFDEF COMPILER7_UP}
+  SysConst,
+  {$ENDIF COMPILER7_UP}
+  SysUtils, Forms, ExtCtrls, Consts,
+  JvThemes;
 
-// (rom) changed to var
 var
   Registered: Boolean = False;
 

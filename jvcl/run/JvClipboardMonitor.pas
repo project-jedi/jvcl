@@ -32,12 +32,10 @@ interface
 uses
   Windows, Messages,
   {$IFDEF VCL}
-  Forms, Clipbrd,
+  Clipbrd,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms,
-  {$ENDIF VisualCLX}
-  SysUtils, Classes, JvComponent;
+  Classes,
+  JvComponent;
 
 type
   TJvClipboardMonitor = class(TJvComponent)
@@ -66,7 +64,7 @@ function LoadClipboardFromStream(Stream: TStream): Word;
 implementation
 
 uses
-  JvJVCLUtils;
+  Forms, JvJVCLUtils;
 
 procedure SaveClipboardToStream(Format: Word; Stream: TStream);
 var

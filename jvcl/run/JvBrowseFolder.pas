@@ -46,9 +46,8 @@ interface
 {$ENDIF BCB6}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  ShellAPI, ShlObj, ActiveX,
-  JvBaseDlg, JvJCLUtils;
+  Windows, Messages, Classes, ShlObj,
+  JvBaseDlg;
 
 const
   { Interfaces from ShObjIdl.h }
@@ -296,8 +295,8 @@ function BrowseComputer(var AComputerName: string; const DlgText: string;
 implementation
 
 uses
-  Consts, FileCtrl,
-  JvJVCLUtils, JvConsts, JvResources, JvTypes;
+  SysUtils, ActiveX, Controls, Forms, FileCtrl, Consts,
+  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources, JvTypes;
 
 type
   TSHGetFolderPathProc = function(hWnd: HWND; csidl: Integer; hToken: THandle;

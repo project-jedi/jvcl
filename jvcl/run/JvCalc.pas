@@ -32,17 +32,14 @@ unit JvCalc;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}
-  Variants,
-  {$ENDIF COMPILER6_UP}
-  Classes,
-  Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Menus, ExtCtrls, Buttons, Clipbrd,
-  SysUtils, // SysUtils after Windows because both define Beep
+  {$IFDEF VCL}
+  Windows, Messages,
+  {$ENDIF VCL}
+  Classes, Controls, Forms, StdCtrls, Menus, ExtCtrls,
   {$IFDEF VisualCLX}
   QImgList,
   {$ENDIF VisualCLX}
-  JvToolEdit, JvSpeedButton, JvBaseDlg, JvExExtCtrls;
+  JvBaseDlg;
 
 const
   DefCalcPrecision = 15;
@@ -126,7 +123,11 @@ procedure SetupPopupCalculator(PopupCalc: TWinControl; APrecision: Byte;
 implementation
 
 uses
-  Math,
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  SysUtils, Math, Graphics, Buttons, Clipbrd,
+  JvToolEdit, JvSpeedButton, JvExExtCtrls,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
 
 {$IFDEF MSWINDOWS}

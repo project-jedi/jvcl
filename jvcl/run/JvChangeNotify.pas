@@ -45,14 +45,7 @@ unit JvChangeNotify;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows,
-  {$IFDEF VCL}
-  Messages, Graphics, Controls, Forms, Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs,
-  {$ENDIF VisualCLX}
+  Windows, Classes,
   JvComponent;
 
 type
@@ -149,7 +142,8 @@ function ActionsToString(Actions: TJvChangeActions): string;
 implementation
 
 uses
-  JvJCLUtils, JvConsts, JvResources, JvTypes;
+  SysUtils, 
+  JvJCLUtils, JvResources, JvTypes;
   // JvJCLUtils for DirectoryExists
 
 function ActionsToString(Actions: TJvChangeActions): string;

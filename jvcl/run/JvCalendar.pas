@@ -34,7 +34,7 @@ unit JvCalendar;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, CommCtrl, ComCtrls,
+  Windows, Messages, CommCtrl, Classes, Graphics, Controls, Forms,
   JvComponent, JvTypes, JvExControls;
 
 type
@@ -283,6 +283,7 @@ function DayStatesToString(Days: TMonthDayState): string;
 implementation
 
 uses
+  SysUtils, ComCtrls,
   JvResources;
 
 const

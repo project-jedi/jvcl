@@ -35,11 +35,14 @@ unit JvCheckedMaskEdit;
 interface
 
 uses
-  Windows, Messages, Forms, SysUtils, Classes, Controls, Graphics, StdCtrls,
+  {$IFDEF VCL}
+  Windows, Messages,
+  {$ENDIF VCL}
+  Classes, Controls, StdCtrls,
   {$IFDEF VisualCLX}
   QComboEdits, JvQExComboEdits, QComCtrlsEx,
   {$ENDIF VisualCLX}
-  Mask, JvMaskEdit;
+  JvMaskEdit;
 
 type
   {$IFDEF VCL}
@@ -183,6 +186,7 @@ type
 implementation
 
 uses
+  SysUtils, Forms,
   JvTypes, JvResources, JvThemes;
 
 //=== { TJvCustomCheckedMaskEdit } ===========================================

@@ -50,13 +50,12 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages, Forms, Graphics, Controls, Dialogs, ExtCtrls, StdCtrls, Buttons, Menus,
+  Windows, Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QForms, QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, QButtons,
-  QMenus, Types,
+  Types,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
+  Classes, Graphics, Controls, Forms, Menus,
   JvComponent;
 
 type
@@ -165,6 +164,7 @@ type
 implementation
 
 uses
+  ExtCtrls, Buttons,
   JvThemes;
 
 const

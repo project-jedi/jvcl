@@ -30,9 +30,8 @@ unit JvClipboardViewer;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Clipbrd, Forms,
-  StdCtrls, ExtCtrls, Menus, Grids,
-  JvExControls, JvExForms, JvExGrids;
+  Windows, Messages, Classes, Graphics, 
+  JvExForms;
 
 type
   TClipboardViewFormat = (cvDefault, cvEmpty, cvUnknown, cvText, cvBitmap,
@@ -103,8 +102,8 @@ function ClipboardFormatToView(Value: Word): TClipboardViewFormat;
 implementation
 
 uses
-  Math,
-  JvJVCLUtils, JvJCLUtils, JvResources;
+  Math, Controls, Forms, StdCtrls, ExtCtrls, Grids, Clipbrd,
+  JvExGrids, JvJVCLUtils, JvJCLUtils, JvResources;
 
 { Utility routines }
 
