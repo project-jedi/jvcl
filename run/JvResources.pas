@@ -1607,6 +1607,42 @@ resourcestring
   RsEMaxNumberOfIDsExceededd = 'Max number of ID''s exceeded (%d)';
   RsEMaxStackSizeExceededd = 'Max stack size exceeded (%d)';
 
+//=== JvProgramVersionCheck.pas ==============================================
+resourcestring
+  RsPVFailedUnableToConnectTo = 'Failed: Unable to connect to %s';
+  RsPVFailedUnableToGet = 'Failed: Unable to get %s';
+  RsPVDownloadFailed = 'Failed: %s';
+  RsPVDefaultVersioninfoFileName = 'versioninfo.ini';
+  RsPVTempFileNameExtension = '.temp';
+  RsPVSiceB = '%6f B';
+  RsPVSiceKB = '%6.2f KB';
+  RsPVSiceMB = '%6.2f MB';
+  RsPVSiceGB = '%6.2f GB';
+  RsPVCReleaseTypeAlpha = 'Alpha';
+  RsPVCReleaseTypeBeta = 'Beta';
+  RsPVCReleaseTypeProduction = 'Production';
+
+  RsPVCDownloading = 'Downloading ...';
+  RsPVCDialogCaption = '%s Upgrade Check';
+  RsPVCDialogExecuteButton = '&Execute';
+  RsPVCNewVersionAvailable = 'A new version (%s) of %s is available!';
+  RsPVCChooseWhichVersion = 'Which &version do you want to install?';
+  RsPVCChooseOperation = '&Choose Operation';
+  RsPVCOperationIgnore = 'I&gnore';
+  RsPVCOperationDownloadOnly = 'Download/Copy &Only';
+  RsPVCOperationDownloadInstall = 'Download/Copy and &Install';
+  RsPVCWhatNewInS = 'What''s new in %s';
+  RsPVCChangesBetween = 'Changes between %s and %s';
+  RsPVCFileDownloadNotSuccessful =
+    'The file download was not successful!' + sLineBreak + 'Please try again manually.';
+  RsPVCDownloadSuccessfulInstallManually =
+    'The file download was successful.' + sLineBreak + 'Install manually from: %s';
+  RsPVCErrorStartingSetup = 'Error starting the setup process.';
+  RsPVCDownloadSuccessfullInstallNow =
+    'The file download was successful.' + sLineBreak +
+    'Do you want to close and install?';
+  RsPVInfoButtonCaption = 'Info';
+
 //=== JvPrvwRender.pas =======================================================
 resourcestring
   RsEAPrintPreviewComponentMustBeAssigne = 'A PrintPreview component must be assigned in CreatePreview!';
