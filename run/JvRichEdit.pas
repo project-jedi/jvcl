@@ -553,6 +553,9 @@ type
     FOnConversionProgress: TRichEditProgressEvent;
     FForceUndo: Boolean;
     FUseFixedPopup: Boolean;
+    // From CCR
+    FOnInPlaceActivate: TNotifyEvent;
+    FOnInPlaceDeactivate: TNotifyEvent;
 
     function GetAdvancedTypography: Boolean;
     function GetAutoURLDetect: Boolean;
@@ -687,6 +690,9 @@ type
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
     property ForceUndo: Boolean read FForceUndo write FForceUndo default True;
     property UseFixedPopup: Boolean read FUseFixedPopup write FUseFixedPopup default True;
+    // from CCR
+    property OnInPlaceActivate: TNotifyEvent read FOnInPlaceActivate write FOnInPlaceActivate;
+    property OnInPlaceDeactivate: TNotifyEvent read FOnInPlaceDeactivate write FOnInPlaceDeactivate;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -734,6 +740,8 @@ type
     procedure ClearUndo;
     procedure Redo;
     procedure StopGroupTyping;
+    procedure CloseActiveObject; // from CCR
+
     property CanFindNext: Boolean read GetCanFindNext;
     property CanRedo: Boolean read GetCanRedo;
     property CanPaste: Boolean read GetCanPaste;
@@ -838,6 +846,9 @@ type
     property OnParentColorChange;
     property OnVerticalScroll;
     property OnHorizontalScroll;
+    // From CCR
+    property OnInPlaceActivate;
+    property OnInPlaceDeactivate;
   end;
 
 var
@@ -2392,6 +2403,12 @@ begin
         end;
     end;
   end;
+end;
+
+procedure TJvCustomRichEdit.CloseActiveObject;
+begin
+  if FRichEditOle <> nil then
+    IRichEditOle(FRichEditOle).InPlaceDeactivate;
 end;
 
 procedure TJvCustomRichEdit.CMBiDiModeChanged(var Msg: TMessage);
@@ -3967,6 +3984,7 @@ begin
         Form.ActiveOleControl := Self;
         if AllowInPlace and CanFocus then
           SetFocus;
+        if Assigned(FOnInPlaceActivate) then FOnInPlaceActivate(Self); // CCR
       end
       else
       begin
@@ -3977,6 +3995,7 @@ begin
           Windows.SetFocus(Handle);
           SelectionChange;
         end;
+        if Assigned(FOnInPlaceDeactivate) then FOnInPlaceDeactivate(Self); //  CCR
       end;
   except
     Application.HandleException(Self);
