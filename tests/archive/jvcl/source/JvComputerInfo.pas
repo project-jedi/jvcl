@@ -127,7 +127,7 @@ begin
   if isNT then
   begin
     nSize := sizeof(buf);
-    GetComputerName(buf,nSize);
+    Windows.GetComputerName(buf,nSize);
     Result := buf;
   end
   else
