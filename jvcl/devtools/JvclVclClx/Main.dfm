@@ -4,7 +4,7 @@ object FormMain: TFormMain
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'JVCL VCL to CLX Converter'
-  ClientHeight = 268
+  ClientHeight = 396
   ClientWidth = 641
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,15 +18,15 @@ object FormMain: TFormMain
   PixelsPerInch = 96
   TextHeight = 13
   object LblProgress: TLabel
-    Left = 8
-    Top = 200
+    Left = 15
+    Top = 320
     Width = 55
     Height = 13
     Caption = 'LblProgress'
   end
   object Label1: TLabel
     Left = 16
-    Top = 72
+    Top = 128
     Width = 78
     Height = 13
     Caption = '&Output directory:'
@@ -34,7 +34,7 @@ object FormMain: TFormMain
   end
   object Label2: TLabel
     Left = 16
-    Top = 152
+    Top = 199
     Width = 71
     Height = 13
     Caption = '&JVCL directory:'
@@ -44,12 +44,12 @@ object FormMain: TFormMain
     Left = 424
     Top = 1
     Width = 6
-    Height = 268
+    Height = 345
     Shape = bsLeftLine
   end
   object BtnExecute: TButton
-    Left = 8
-    Top = 240
+    Left = 24
+    Top = 366
     Width = 75
     Height = 25
     Caption = '&Execute'
@@ -57,15 +57,15 @@ object FormMain: TFormMain
     OnClick = BtnExecuteClick
   end
   object ProgressBar: TProgressBar
-    Left = 8
-    Top = 216
-    Width = 409
+    Left = 15
+    Top = 336
+    Width = 403
     Height = 17
     TabOrder = 5
   end
   object EditOutDir: TJvDirectoryEdit
     Left = 16
-    Top = 88
+    Top = 144
     Width = 401
     Height = 21
     ButtonFlat = False
@@ -84,22 +84,22 @@ object FormMain: TFormMain
     Top = 16
     Width = 209
     Height = 17
-    Caption = '&Single file / directory:'
+    Caption = '&Single file:'
     TabOrder = 0
   end
-  object RBtnAll: TRadioButton
+  object RBtnDir: TRadioButton
     Left = 8
-    Top = 128
+    Top = 73
     Width = 201
     Height = 17
-    Caption = '&All JVCL JVCLX files'
+    Caption = '&Directory'
     Checked = True
     TabOrder = 3
     TabStop = True
   end
   object BtnQuit: TButton
-    Left = 344
-    Top = 240
+    Left = 339
+    Top = 366
     Width = 75
     Height = 25
     Caption = '&Quit'
@@ -108,7 +108,7 @@ object FormMain: TFormMain
   end
   object EditJVCLDir: TJvDirectoryEdit
     Left = 16
-    Top = 168
+    Top = 215
     Width = 401
     Height = 21
     DialogKind = dkWin32
@@ -148,5 +148,29 @@ object FormMain: TFormMain
     Height = 17
     Caption = '&Force overwrite'
     TabOrder = 9
+  end
+  object ListBox1: TListBox
+    Left = 15
+    Top = 254
+    Width = 400
+    Height = 57
+    ItemHeight = 13
+    TabOrder = 12
+  end
+  object RBtnAll: TRadioButton
+    Left = 8
+    Top = 176
+    Width = 113
+    Height = 17
+    Caption = '&All JVCL JVCLX files'
+    TabOrder = 13
+  end
+  object EditDirectory: TJvDirectoryEdit
+    Left = 16
+    Top = 96
+    Width = 401
+    Height = 21
+    ButtonFlat = False
+    TabOrder = 14
   end
 end

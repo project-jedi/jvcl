@@ -29,7 +29,7 @@ unit JvclVclClxCvt;
 interface
 
 uses
-  SysUtils, Classes, VclClxCvt, PackageInformation, PackageModels;
+  SysUtils, Classes, VclClxCvt, PackageInformation, PackageModels, JclFileUtils, JclDateTime;
 
 type
   TJVCLConverter = class(TVCLConverter)
@@ -122,16 +122,16 @@ end;
 
 function TJVCLConverter.ChangeFileName(const Name: String): String;
 begin
-  if AnsiStartsText('Jv', Name) then
+  Result := Name;
+  if AnsiStartsStr('Jv', Name) then
   begin
-    Result := Name;
     Insert('Q', Result, 3);
-  end;
+  end
 end;
 
 procedure TJVCLConverter.TranslateUnit(var AName: String);
 begin
-  if AnsiStartsText('Jv', AName) then
+  if AnsiStartsStr('Jv', AName) then
     Insert('Q', AName, 3)
   else
     inherited TranslateUnit(AName);
@@ -207,7 +207,7 @@ begin
     TargetList.Add('allclx');
     FModel.ExpandTargets(TargetList);
 
-   // get JCLX compatble all files
+   // get JCLX compatible all files
     for TargetIndex := 0 to TargetList.Count - 1 do
     begin
       Target := FModel.FindTarget(TargetList[TargetIndex]);
@@ -223,7 +223,11 @@ begin
             if not SameFileName(GetDestFilename(Filename), Filename) and
                not IgnoredFile(Filename) then
             begin
-              FileList.Add(Filename); // .pas file
+              if not FileExists(GetDestFilename(Filename)) or  Cvt.ForceOverwrite or
+                (FileTimeToDateTime(GetFileLastWrite(FileName)) >
+                 FileTimeToDateTime(GetFileLastWrite(GetDestFilename(Filename))))
+              then
+                FileList.Add(Filename); // .pas file
               {Filename := ChangeFileExt(Filename, '.dfm');
               if FileExists(Filename) then
                 FileList.Add(Filename); // .dfm file}
