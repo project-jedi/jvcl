@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Completed but needs review (p3)
+##Status: Completed (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvInstallLabel.pas
 Summary
@@ -35,9 +35,9 @@ Summary
   Lists images available for the items in the label.
 Description
   ImageList is a list of bitmaps that can be displayed to the left of any
-  item in the label. Each item can specify an image from this list by using the SetImage routine.
+  item in the label. Each item can specify an image from this list by using the <LINK SetImage> routine.
 See Also
-  SetImage, DefaultImage
+  <LINK SetImage>, DefaultImage
 ----------------------------------------------------------------------------------------------------
 @@TJvInstallLabel.ImageOffset
 Summary
@@ -55,7 +55,7 @@ Summary
   The text strings that are displayed on the label.
 Description
   Lines is of type TStrings and each item in Lines is displayed on a separate line in the label
-  along with an optional image. Use the methods of TStrings (Add, Delete, Assign etc) to change the
+  along with an optional image. Use the methods of TStrings (Add, \Delete, Assign etc) to change the
   content of the label.
 See Also
   LineSpacing, ImageOffset, TextOffset, TStrings
@@ -80,7 +80,7 @@ Parameters
   ImageIndex - Index of the image to display.
   LineStyle  - \Font style for the exclusive item.
 See Also
-  SetImage, SetStyle, Styles
+  <LINK SetImage>, <LINK SetStyle>, Styles
 ----------------------------------------------------------------------------------------------------
 @@TJvInstallLabel.SetImage
 Summary
@@ -91,7 +91,7 @@ Parameters
   LineIndex  - Index of the item to change.
   ImageIndex - The new image index for the item.
 See Also
-   SetExclusive, SetStyle, Styles
+   <LINK SetExclusive>, <LINK SetStyle>, Styles
 ----------------------------------------------------------------------------------------------------
 @@TJvInstallLabel.SetStyle
 Summary
@@ -103,7 +103,7 @@ Parameters
   ImageIndex - The new image index for the item.
   LineStyle  - The new font style for the item.
 See Also
-  SetImage, SetExclusive, Styles
+  <LINK SetImage>, <LINK SetExclusive>, Styles
 ----------------------------------------------------------------------------------------------------
 @@TJvInstallLabel.Styles
 Summary
@@ -112,7 +112,7 @@ Description
   Use Styles to access the font styles used on individual items in the label. Index must be between
   0 and Lines.Count - 1.
 See Also
-  Lines, SetStyle, SetExclusive, SetImage
+  Lines, <LINK SetStyle>, <LINK SetExclusive>, <LINK SetImage>
 ----------------------------------------------------------------------------------------------------
 @@TJvInstallLabel.TextOffset
 Summary

@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Locked by Remko Bonte
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvLabel.pas
 Summary
@@ -11,12 +11,19 @@ Author
 @@TJvLabel
 <TITLEIMG TJvLabel>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.LabelsAndStatic
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Can simulate a clickable link and render text at a specific angle.
 Description
-  Write here a description
+  To simulate a clickabe link, do the following:
+
+  * Set AutoOpenURL to true.
+  * Set URL to a specific \URL or object, that will be opened when the user clicks the label.
+  * Set HotTrack to true, and change HotTrackFont so the user gets feedback when the mouse
+    passes over the label.
+
+  Use property Angle to display the label text at a specific angle.
 ----------------------------------------------------------------------------------------------------
 @@TJvLabel.Angle
 Summary
@@ -28,9 +35,10 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvLabel.AutoOpenURL
 Summary
-  Write here a summary (1 line)
+  Specifies whether to automatically open the associated \URL when the user clicks the label.
 Description
-  Write here a description
+  Set AutoOpenURL to true to automatically open the \URL or object specified by property URL when the
+  user clicks the label.
 See Also
   URL
 ----------------------------------------------------------------------------------------------------
@@ -48,17 +56,17 @@ See Also
 Summary
   Specifies whether the label is highlighted when the mouse passes over it.
 Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
-  specified by HotTrackFont is used for the label text. When HotTrack is False, there is no visual
+  Set HotTrack to true to provide visual feedback about which item is under the mouse; the font
+  specified by HotTrackFont is used for the label text. When HotTrack is false, there is no visual
   feedback when the mouse passes over the label.
 See Also
   HotTrackFont
 ----------------------------------------------------------------------------------------------------
 @@TJvLabel.HotTrackFont
 Summary
-  Specifies the font used when the mouse passes over the label and HotTrack is True.
+  Specifies the font used when the mouse passes over the label and HotTrack is true.
 Description
-  When the mouse passes over the label and HotTrack is set to True, HotTrackFont is used as the font
+  When the mouse passes over the label and HotTrack is set to true, HotTrackFont is used as the font
   for the label text.
   To change to a new font, specify a new TFont object. To modify a font, change the value of the
   Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
@@ -71,7 +79,7 @@ Summary
 Description
   \Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
 See Also
-  OnCtl3DChanged
+  OnParentColorChange
 ----------------------------------------------------------------------------------------------------
 @@TJvLabel.OnParentColorChange
 Summary
@@ -83,8 +91,28 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvLabel.URL
 Summary
-  Write here a summary (1 line)
+  Specifies an URL associated with the label.
 Description
-  Write here a description
+  Use URL to associate an URL, an executable file, a document file, or a folder with the label.
+  If AutoOpenURL is set to true and the user clicks on the label, then the object specified by URL
+  is opened.
+
+  You might want to adjust property HotTrackFont to visually simulate a clickable link.
+
+  Some examples:
+  <AUTOLINK OFF>
+  <CODE>
+  { URL }
+  JvLabel1.URL := 'http://jvcl.sourceforge.net/';
+
+  { Executable file }
+  JvLabel1.URL := Application.ExeName;
+
+  { Folder }
+  JvLabel1.URL := ExtractFilePath(Application.ExeName);
+  </CODE>
+  </AUTOLINK OFF>
+Note
+  If AutoOpenURL is set to false, then URL is ignored.
 See Also
-  AutoOpenURL
+  AutoOpenURL, HotTrackFont
