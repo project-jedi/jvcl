@@ -2,12 +2,12 @@ program JvAviCapDemo;
 
 uses
   Forms,
-  MainForm in 'MainForm.pas' {frmMain};
+  JvAviCapDemoFrmU in 'JvAviCapDemoFrmU.pas' {JvAviCapDemoFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TJvAviCapDemoFrm, JvAviCapDemoFrm);
   Application.Run;
 end.
