@@ -1,4 +1,32 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvPrvwDoc.pas, released on yyyy-mm-dd.
+
+The Initial Developer of the Original Code is Peter Thörnqvist.
+Portions created by Peter Thörnqvist are Copyright (c) 2003 by Peter Thörnqvist.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: yyyy-mm-dd
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
 {$I JVCL.INC}
+{$IFOPT D+}
+{$DEFINE DEBUG}
+{$ENDIF}
 unit JvPrvwDoc;
 { TODO :
     * Adjust zoom when Cols or Rows change - DONE
@@ -31,7 +59,8 @@ unit JvPrvwDoc;
 
 interface
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms, Dialogs;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms, Dialogs,
+  JvComponent;
 
 const
   WM_PREVIEWADDPAGE = WM_USER + 1001;
@@ -48,6 +77,7 @@ type
     PageRect, PrintRect: TRect) of object;
   TJvDrawPageEvent = procedure(Sender: TObject; PageIndex: integer; Canvas: TCanvas;
     PageRect, PrintRect: TRect; var NeedMorePages: boolean) of object;
+  TJvScrollHintEvent = procedure(Sender: TObject; AScrollPos: integer; var AHint: string) of object;
   TJvCustomPreviewControl = class;
 
   IJvPrinter = interface
@@ -183,7 +213,7 @@ type
     property ScaleMode: TJvPreviewScaleMode read FScaleMode write SetScaleMode default smFullPage;
   end;
 
-  TJvCustomPreviewControl = class(TCustomControl)
+  TJvCustomPreviewControl = class(TJvCustomControl)
   private
     FDummy: integer;
     FBuffer: TBitmap;
@@ -211,6 +241,7 @@ type
     FOnDeviceInfoChange: TNotifyEvent;
     FOnScaleModeChange: TNotifyEvent;
     FOnOptionsChange: TNotifyEvent;
+    FOnScrollHint: TJvScrollHintEvent;
     procedure DoOptionsChange(Sender: TObject);
     procedure DoDeviceInfoChange(Sender: TObject);
     procedure DoScaleModeChange(Sender: TObject);
@@ -245,6 +276,7 @@ type
 
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       MousePos: TPoint): Boolean; override;
+    procedure DoScrollHint(NewPos: integer);
 
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DrawPages(ACanvas: TCanvas; Offset: TPoint);
@@ -265,13 +297,14 @@ type
     property OnAddPage: TJvDrawPageEvent read FOnAddPage write FOnAddPage;
     property OnVertScroll: TScrollEvent read FOnVertScroll write FOnVertScroll;
     property OnHorzScroll: TScrollEvent read FOnHorzScroll write FOnHorzScroll;
-    property OnAfterScroll:TNotifyEvent read FOnAfterScroll write FOnAfterScroll;
+    property OnAfterScroll: TNotifyEvent read FOnAfterScroll write FOnAfterScroll;
+    property OnScrollHint: TJvScrollHintEvent read FOnScrollHint write FOnScrollHint;
     property OnDrawPreviewPage: TJvDrawPreviewEvent read FOnDrawPreviewPage write FOnDrawPreviewPage;
 
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property OnDeviceInfoChange:TNotifyEvent read FOnDeviceInfoChange write FOnDeviceInfoChange;
-    property OnOptionsChange:TNotifyEvent read FOnOptionsChange write FOnOptionsChange;
-    property OnScaleModeChange:TNotifyEvent read FOnScaleModeChange write FOnScaleModeChange;
+    property OnDeviceInfoChange: TNotifyEvent read FOnDeviceInfoChange write FOnDeviceInfoChange;
+    property OnOptionsChange: TNotifyEvent read FOnOptionsChange write FOnOptionsChange;
+    property OnScaleModeChange: TNotifyEvent read FOnScaleModeChange write FOnScaleModeChange;
 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X: Integer; Y: Integer); override;
@@ -374,11 +407,22 @@ type
 
 implementation
 
-uses Math;
-//uses
-//  FlatSB;
+var
+  HintWindow: THintWindow = nil;
+
+function GetHintWindow: THintWindow;
+begin
+  if HintWindow = nil then
+  begin
+    HintWindow := HintWindowClass.Create(Application);
+    HintWindow.Visible := false;
+  end;
+  Result := HintWindow;
+end;
+
 
 // returns Value rounded up to nearest integer
+
 function ceil(Value: double): integer;
 begin
   Result := trunc(Value);
@@ -387,6 +431,7 @@ begin
 end;
 
 // returns greater of Val1 and Val2
+
 function Max(Val1, Val2: integer): integer;
 begin
   Result := Val1;
@@ -395,6 +440,7 @@ begin
 end;
 
 // returns lesser of Val1 and Val2
+
 function Min(Val1, Val2: integer): integer;
 begin
   Result := Val1;
@@ -410,6 +456,7 @@ begin
 end;
 
 // returns true if Inner is completely within Outer
+
 function RectInRect(Inner, Outer: TRect): boolean;
 begin
   Result :=
@@ -420,7 +467,8 @@ begin
 end;
 
 // returns true if any part of Inner is "visible" inside Outer
-// (any edge of Inner within Outer or Outer within Inner) 
+// (any edge of Inner within Outer or Outer within Inner)
+
 function PartialInRect(Inner, Outer: TRect): boolean;
 begin
   Result :=
@@ -431,6 +479,7 @@ begin
 end;
 
 // use our own EnsureRange since D5 doesn't have it
+
 function EnsureRange(const AValue, AMin, AMax: Integer): integer;
 begin
   Result := AValue;
@@ -1011,7 +1060,7 @@ procedure TJvCustomPreviewControl.DrawPages(ACanvas: TCanvas; Offset: TPoint);
 var i, j, k, m, AOffsetX, AOffsetY, APageIndex: integer;
   APageRect, APrintRect: TRect;
   si: TScrollInfo;
-  tmp:boolean;
+  tmp: boolean;
   function CanDrawPage(APageIndex: integer; APageRect: TRect): boolean;
   begin
     Result := (APageIndex < PageCount) or (PageCount = 0);
@@ -1021,7 +1070,7 @@ var i, j, k, m, AOffsetX, AOffsetY, APageIndex: integer;
     if not Result then
       Result := RectInRect(APageRect, ClientRect)
     else
-      Result := PartialInRect(APageRect,ClientRect);
+      Result := PartialInRect(APageRect, ClientRect);
   end;
 begin
   APageRect := FPreviewRect;
@@ -1040,16 +1089,18 @@ begin
     FillRect(ClipRect);
     Pen.Color := clBlack;
     Pen.Style := psDot;
+{$IFDEF DEBUG}
     Polyline([
-      Point(AOffsetX,AOffsetY),
-        Point(AOffsetX, AOffsetY+FMaxHeight),
-        Point(AOffsetX+FMaxWidth, AOffsetY+FMaxHeight),
-        Point(AOffsetX+FMaxWidth, AOffsetY),
-        Point(AOffsetX,AOffsetY)
+      Point(AOffsetX, AOffsetY),
+        Point(AOffsetX, AOffsetY + FMaxHeight),
+        Point(AOffsetX + FMaxWidth, AOffsetY + FMaxHeight),
+        Point(AOffsetX + FMaxWidth, AOffsetY),
+        Point(AOffsetX, AOffsetY)
         ]);
+{$ENDIF}
     Pen.Style := psSolid;
     APageIndex := k * TotalCols;
-    m := Max(0,PageCount - 1);
+    m := Max(0, PageCount - 1);
 //    if not IsPageMode and (k > 0) then
 //      Dec(k);
     for i := k to m do
@@ -1184,7 +1235,7 @@ begin
 end;
 
 procedure TJvCustomPreviewControl.WMSize(var Message: TWMSize);
-var tmpRow:integer;
+var tmpRow: integer;
 begin
   inherited;
   if IsPageMode then
@@ -1195,7 +1246,8 @@ begin
 end;
 
 procedure TJvCustomPreviewControl.WMHScroll(var Msg: TWMHScroll);
-var si: TScrollInfo; NewPos, AIncrement: integer;
+var si: TScrollInfo;
+  NewPos, AIncrement: integer;
 begin
   if IsPageMode then
     Exit;
@@ -1230,17 +1282,20 @@ begin
   FScrollPos.X := NewPos;
   si.nPos := NewPos;
   SetScrollInfo(Handle, SB_HORZ, si, true);
-  if Assigned(FOnAfterScroll) then FOnAfterScroll(self);
+  if Assigned(FOnAfterScroll) then
+    FOnAfterScroll(self);
   Refresh;
 end;
 
 procedure TJvCustomPreviewControl.WMVScroll(var Msg: TWMVScroll);
-var si: TScrollInfo; NewPos, AIncrement: integer;
+var si: TScrollInfo;
+  NewPos, AIncrement: integer;
 begin
   AIncrement := FPageHeight + Options.VertSpacing;
   if not IsPageMode then
     AIncrement := AIncrement div 3;
-  if AIncrement < 1 then AIncrement := 1; 
+  if AIncrement < 1 then
+    AIncrement := 1;
 
   FillChar(si, sizeof(TScrollInfo), 0);
   si.cbSize := sizeof(TScrollInfo);
@@ -1266,6 +1321,7 @@ begin
     SB_ENDSCROLL:
       Exit;
   end;
+
   NewPos := EnsureRange(NewPos, si.nMin, si.nMax);
   if Assigned(FOnVertScroll) then
     FOnVertScroll(self, TScrollCode(Msg.ScrollCode), NewPos);
@@ -1274,7 +1330,9 @@ begin
   FScrollPos.Y := NewPos;
   si.nPos := NewPos;
   SetScrollInfo(Handle, SB_VERT, si, true);
-  if Assigned(FOnAfterScroll) then FOnAfterScroll(self);
+  DoScrollHint(NewPos);
+  if Assigned(FOnAfterScroll) then
+    FOnAfterScroll(self);
   Refresh;
 end;
 
@@ -1607,7 +1665,8 @@ end;
 
 function TJvCustomPreviewControl.IsPageMode: boolean;
 begin
-  Result := Options.ScaleMode in [smFullPage, smAutoScale, smColsRows];
+  Result := (Options.ScaleMode in [smFullPage, smAutoScale, smColsRows])
+    or ((Options.ScaleMode = smScale) and (FPageHeight + Options.VertSpacing * 2 <= ClientHeight));
 end;
 
 procedure TJvCustomPreviewControl.UpdateScale;
@@ -1641,6 +1700,36 @@ begin
       end;
     smColsRows:
       Options.FScale := GetOptimalScale;
+  end;
+end;
+
+procedure TJvCustomPreviewControl.DoScrollHint(NewPos: integer);
+var S: string;
+  HW: THintWindow;
+  pt: TPoint;
+  rc:TRect;
+begin
+  // stolen from SynEdit, thanks guys!
+  if Assigned(FOnScrollHint) then
+  begin
+    S := '';
+    FOnScrollHint(self, NewPos, S);
+    if S <> '' then
+    begin
+      HW := GetHintWindow;
+      if not HW.Visible then
+      begin
+        HW.Color := Application.HintColor;
+        HW.Visible := true;
+      end;
+      rc := Rect(0, 0, HW.Canvas.TextWidth(S) + 6,
+        HW.Canvas.TextHeight(S) + 4);
+      pt := ClientToScreen(Point(ClientWidth - rc.Right - 4, 10));
+      OffsetRect(rc, pt.x, pt.y);
+      HW.ActivateHint(rc, s);
+      HW.Invalidate;
+      HW.Update;
+    end;
   end;
 end;
 

@@ -1,12 +1,39 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvPrvwRender.pas, released on yyyy-mm-dd.
+
+The Initial Developer of the Original Code is Peter Thörnqvist.
+Portions created by Peter Thörnqvist are Copyright (c) 2003 by Peter Thörnqvist.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: yyyy-mm-dd
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+{$I JVCL.INC}
 unit JvPrvwRender;
 
 interface
 uses
-  Windows, SysUtils, Messages, Classes, Controls, Graphics, Dialogs, ComCtrls, JvPrvwDoc, RichEdit, Printers;
+  Windows, SysUtils, Messages, Classes, Controls, Graphics,
+  Dialogs, ComCtrls, JvComponent, JvPrvwDoc, RichEdit, Printers;
 
 type
   EPrintPreviewError = Exception;
-  TJvCustomPreviewer = class(TComponent)
+  TJvCustomPreviewer = class(TJvComponent)
   private
     FPrintPreview: TJvCustomPreviewControl;
     FOldAddPage: TJvDrawPageEvent;
@@ -59,7 +86,7 @@ type
   published
     property PrintPreview;
     property Strings: TStrings read FStrings write SetStrings;
-    property Font:TFont read FFont write SetFont;
+    property Font: TFont read FFont write SetFont;
   end;
 
   TJvPreviewGraphicItem = class(TCollectionItem)
@@ -113,24 +140,29 @@ type
   TJvControlPreviewer = class(TJvCustomPreviewer)
   private
     FControl: TControl;
+    FProportional: boolean;
+    FCenter: boolean;
+    FStretch: boolean;
+    FTransparent: boolean;
     procedure SetControl(const Value: TControl);
-    procedure DrawSubControl(ADC:HDC;AWidth,AHeight:integer; AControl:TControl);
-    procedure DrawWinControl(ADC: HDC; AWidth,AHeight:integer; AWinControl: TWinControl);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
     procedure DoAddPage(Sender: TObject; PageIndex: Integer;
       Canvas: TCanvas; PageRect: TRect; PrintRect: TRect;
       var NeedMorePages: Boolean); override;
+    procedure DrawControl(ACanvas: TCanvas; AWidth, AHeight: integer);
+  public
+    constructor Create(AOwner: TComponent); override;
+
   published
     property PrintPreview;
     property Control: TControl read FControl write SetControl;
     function CreatePreview(Append: boolean): boolean; override;
-    { TODO:
     property Center: boolean read FCenter write FCenter default true;
     property Proportional: boolean read FProportional write FProportional default true;
     property Stretch: boolean read FStretch write FStretch default true;
-    }
+    property Transparent:boolean read FTransparent write FTransparent; 
   end;
 
   // a class that implements the IJvPrinter interface
@@ -150,7 +182,7 @@ type
     procedure SetPrintPreview(const Value: TJvCustomPreviewControl);
     procedure SetNumCopies(const Value: Integer);
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation);override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     { IJvPrinter }
     procedure BeginDoc;
     procedure EndDoc;
@@ -164,7 +196,7 @@ type
     procedure SetTitle(const Value: string);
   public
     procedure Print;
-    procedure Assign(Source: TPersistent);override;
+    procedure Assign(Source: TPersistent); override;
 
     property Collate: Boolean read FCollate write FCollate default False;
     property Copies: Integer read FCopies write SetNumCopies default 0;
@@ -175,13 +207,13 @@ type
 
     property Printer: TPrinter read FPrinter write SetPrinter;
     property PrintPreview: TJvCustomPreviewControl read FPrintPreview write SetPrintPreview;
-    property Title:string read GetTitle write SetTitle;
+    property Title: string read GetTitle write SetTitle;
   end;
 
 implementation
 uses
   Forms;
-  
+
 type
   TAccessPrvwDoc = class(TJvCustomPreviewControl);
   TAccessGraphicControl = class(TGraphicControl);
@@ -407,7 +439,7 @@ var i, IncValue: integer;
 begin
   if not FFinished then
   begin
-    Canvas.Font  := Font;
+    Canvas.Font := Font;
     ARect := PrintRect;
 
     GetTextMetrics(Canvas.Handle, tm);
@@ -457,38 +489,33 @@ begin
     Result := inherited CreatePreview(Append);
 end;
 
-
-procedure TJvControlPreviewer.DrawWinControl(ADC:HDC;AWidth,AHeight:integer; AWinControl:TWinControl);
-var i:integer;
-begin
-  AWinControl.PaintTo(ADC, 0, 0);
-{  for i := 0 to AWinControl.ControlCount - 1 do
-    if AWinControl.Controls[i] is TWinControl then
-      DrawWinControl(ADC, AWidth,AHeight, TWinControl(AWinControl.Controls[i]))
-    else
-      DrawSubControl(ADC,AWidth,AHeight, AWinControl.Controls[i]);
-}      
-end;
-
 procedure TJvControlPreviewer.DoAddPage(Sender: TObject;
   PageIndex: Integer; Canvas: TCanvas; PageRect, PrintRect: TRect;
   var NeedMorePages: Boolean);
-var Bitmap: TBitmap;ARect:TRect;
+var Bitmap: TBitmap;
+  ARect: TRect;
 begin
   NeedMorePages := false;
   Bitmap := TBitmap.Create;
   try
-    Bitmap.Width := Control.Width;
-    Bitmap.Height := Control.Height;
-    Bitmap.PixelFormat := pf32bit;
-    Bitmap.Canvas.FillRect(Bitmap.Canvas.ClipRect);
-    if Control is TWinControl then
-      DrawWinControl(Bitmap.Canvas.Handle,Bitmap.Width,Bitmap.Height,TWinControl(Control))
+    if Control is TCustomForm then
+    begin
+      Bitmap.Width := Control.ClientWidth;
+      Bitmap.Height := Control.ClientHeight;
+    end
     else
-      DrawSubControl(Bitmap.Canvas.Handle,Bitmap.Width,Bitmap.Height,Control);
+    begin
+      Bitmap.Width := Control.Width;
+      Bitmap.Height := Control.Height;
+    end;
+    Bitmap.PixelFormat := pf32bit;
+    Bitmap.HandleType := bmDIB;
+    Bitmap.Canvas.FillRect(Bitmap.Canvas.ClipRect);
+    DrawControl(Bitmap.Canvas, Bitmap.Width, Bitmap.Height);
+    Bitmap.Transparent := Transparent;
     if (Bitmap.Width > 0) and (Bitmap.Height > 0) then
     begin
-      ARect := CalcDestRect(Bitmap.Width, Bitmap.Height, PrintRect, true, true, true);
+      ARect := CalcDestRect(Bitmap.Width, Bitmap.Height, PrintRect, Stretch, Proportional, Center);
       Canvas.StretchDraw(ARect, Bitmap);
     end;
   finally
@@ -516,19 +543,40 @@ begin
   end;
 end;
 
-
-procedure TJvControlPreviewer.DrawSubControl(ADC: HDC; AWidth,AHeight:integer; AControl: TControl);
-var SaveIndex:integer;
+procedure TJvControlPreviewer.DrawControl(ACanvas: TCanvas; AWidth, AHeight: integer);
+var SaveIndex: integer;
+  ADC: HDC;
 begin
-  SaveIndex := SaveDC(ADC);
+  ACanvas.Lock;
   try
-    MoveWindowOrg(ADC,0,0);
-    IntersectClipRect(ADC,0,0,AWidth,AHeight);
-    AControl.Perform(WM_ERASEBKGND, ADC, 0);
-    AControl.Perform(WM_PAINT,ADC,0);
+    ADC := ACanvas.Handle;
+    if Control is TWinControl then
+      TWinControl(Control).PaintTo(ADC, 0, 0)
+    else if Control <> nil then
+    begin
+      SaveIndex := SaveDC(ADC);
+      try
+//        Control.ControlState := Control.ControlState + [csPaintCopy];
+        MoveWindowOrg(ADC, 0, 0);
+        IntersectClipRect(ADC, 0, 0, Control.Width, Control.Height);
+        Control.Perform(WM_ERASEBKGND, ADC, 0);
+        Control.Perform(WM_PAINT, ADC, 0);
+      finally
+        RestoreDC(ADC, SaveIndex);
+//        Control.ControlState := Control.ControlState - [csPaintCopy];
+      end;
+    end
   finally
-    RestoreDC(ADC,SaveIndex);
+    ACanvas.Unlock;
   end;
+end;
+
+constructor TJvControlPreviewer.Create(AOwner: TComponent);
+begin
+  inherited;
+  FStretch := true;
+  FProportional := true;
+  FCenter := true;
 end;
 
 { TJvPreviewGraphicItems }
@@ -618,22 +666,22 @@ end;
 procedure TJvGraphicPreviewer.DoAddPage(Sender: TObject;
   PageIndex: integer; Canvas: TCanvas; PageRect, PrintRect: TRect;
   var NeedMorePages: boolean);
-var img:TImageList;
+var img: TImageList;
 begin
   with Images[PageIndex] do
     if (PageIndex < Images.Count) and (Picture.Height > 0) and (Picture.Width > 0) and (Picture.Graphic <> nil)
       and not Picture.Graphic.Empty then
+    begin
+      if (Picture.Graphic is TIcon) then
       begin
-        if (Picture.Graphic is TIcon) then
-        begin
-          img := TImageList.CreateSize(Picture.Width,Picture.Height);
-          try
-            img.AddIcon(Picture.Icon);
-            img.getBitmap(0,Picture.Bitmap);
-          finally
-            img.Free;
-          end;
+        img := TImageList.CreateSize(Picture.Width, Picture.Height);
+        try
+          img.AddIcon(Picture.Icon);
+          img.getBitmap(0, Picture.Bitmap);
+        finally
+          img.Free;
         end;
+      end;
       Canvas.StretchDraw(DestRect(PrintRect), Picture.Graphic);
     end;
   NeedMorePages := PageIndex < Images.Count - 1;
@@ -651,22 +699,22 @@ begin
   CheckActive;
   if Source is TJvPreviewPrinter then
   begin
-    Collate     := TJvPreviewPrinter(Source).Collate;
-    Copies      := TJvPreviewPrinter(Source).Copies;
-    FromPage    := TJvPreviewPrinter(Source).FromPage;
-    Options     := TJvPreviewPrinter(Source).Options;
-    PrintRange  := TJvPreviewPrinter(Source).PrintRange;
-    ToPage      := TJvPreviewPrinter(Source).ToPage;
-    Title       := TJvPreviewPrinter(Source).Title;
+    Collate := TJvPreviewPrinter(Source).Collate;
+    Copies := TJvPreviewPrinter(Source).Copies;
+    FromPage := TJvPreviewPrinter(Source).FromPage;
+    Options := TJvPreviewPrinter(Source).Options;
+    PrintRange := TJvPreviewPrinter(Source).PrintRange;
+    ToPage := TJvPreviewPrinter(Source).ToPage;
+    Title := TJvPreviewPrinter(Source).Title;
   end
   else if Source is TPrintDialog then
   begin
-    Collate     := TPrintDialog(Source).Collate;
-    Copies      := TPrintDialog(Source).Copies;
-    FromPage    := TPrintDialog(Source).FromPage;
-    Options     := TPrintDialog(Source).Options;
-    PrintRange  := TPrintDialog(Source).PrintRange;
-    ToPage      := TPrintDialog(Source).ToPage;
+    Collate := TPrintDialog(Source).Collate;
+    Copies := TPrintDialog(Source).Copies;
+    FromPage := TPrintDialog(Source).FromPage;
+    Options := TPrintDialog(Source).Options;
+    PrintRange := TPrintDialog(Source).PrintRange;
+    ToPage := TPrintDialog(Source).ToPage;
   end
   else
     inherited;
@@ -747,7 +795,7 @@ begin
 end;
 
 procedure TJvPreviewPrinter.Print;
-var AMin,AMax:integer;
+var AMin, AMax: integer;
 begin
   if PrintPreview = nil then
     raise EPrintPreviewError.Create('No PrintPreview assigned!');
@@ -758,10 +806,10 @@ begin
   end
   else
   begin
-    AMin := FromPage-1;
-    AMax := ToPage-1;
+    AMin := FromPage - 1;
+    AMax := ToPage - 1;
   end;
-  PrintPreview.PrintRange(self,AMin,AMax,Copies,Collate);
+  PrintPreview.PrintRange(self, AMin, AMax, Copies, Collate);
 end;
 
 procedure TJvPreviewPrinter.SetNumCopies(const Value: Integer);
