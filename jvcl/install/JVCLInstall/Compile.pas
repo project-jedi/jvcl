@@ -1045,19 +1045,18 @@ begin
   DeleteFile(ChangeFileExt(ProjectGroup.Filename, '.mak'));
 end;
 
-function ReplaceTargetMacros(S: string; TargetConfig: ITargetConfig): string;
+function ReplaceTargetMacros(const S: string; TargetConfig: ITargetConfig): string;
 var
   ps: Integer;
 begin
-  ps := Pos('%t', S);
+  Result := S;
+  ps := Pos('%t', Result);
   if ps > 0 then
   begin
-    Delete(S, ps, 2);
+    Delete(Result, ps, 2);
     Insert(Format('%s%d', [LowerCase(TargetTypes[TargetConfig.Target.IsBCB]), TargetConfig.Target.Version]),
-      S, ps);
-  end
-  else
-    Result := S;
+      Result, ps);
+  end;
 end;
 
 /// <summary>
