@@ -152,7 +152,7 @@ type
     var NewStartDate: TDateTime; var NewLevel: Integer) of object;
   TJvItemMovingEvent = procedure(Sender: TObject; Item: TJvTimeItem; var
     AllowMove: Boolean) of object;
-  TJvItemMouseMove = procedure (Sender:TObject; Item:TJvTimeItem; X, Y:integer) of object;
+  TJvItemMouseMove = procedure(Sender: TObject; Item: TJvTimeItem; X, Y: Integer) of object;
 
   TJvTLScrollBtn = class(TJvGraphicControl)
   private
@@ -236,12 +236,12 @@ type
     FShowHiddenItemHints: Boolean;
     FOnItemDblClick: TJvTimeItemClickEvent;
     FCanvas: TControlCanvas;
-    FAutoDrag:boolean;// automatic (or allowed) drag start 
+    FAutoDrag: Boolean;// automatic (or allowed) drag start 
     FStartPos: TPoint;
     FStates: TJvTimeLineStates;
     FRangeAnchor: TJvTimeItem;
     FAutoSize: Boolean;
-    FShowSelection: boolean;
+    FShowSelection: Boolean;
     FOnItemMouseMove: TJvItemMouseMove;
     FSupportsColor: TColor;
     procedure SetHelperYears(Value: Boolean);
@@ -294,7 +294,7 @@ type
     function HasMoved(P: TPoint): Boolean;
     function GetHint: string;
     procedure SetHint(const Value: string);
-    procedure SetShowSelection(const Value: boolean);
+    procedure SetShowSelection(const Value: Boolean);
     procedure SetSupportsColor(const Value: TColor); 
     procedure RecreateWnd; 
   protected
@@ -305,7 +305,7 @@ type
     procedure ClearSelection; 
     function ItemMoving(Item: TJvTimeItem): Boolean; virtual;
     procedure ItemMoved(Item: TJvTimeItem; var NewDate: TDateTime; var NewLevel: Integer); virtual;
-    function ItemMouseMove(X, Y:integer):boolean;virtual;
+    function ItemMouseMove(X, Y: Integer): Boolean; virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -351,7 +351,7 @@ type
     property YearWidth: TJvYearWidth read FYearWidth write SetYearWidth default 140;
     property TopOffset: Integer read FTopOffset write SetTopOffset default 21;
     property ShowMonthNames: Boolean read FShowMonths write SetShowMonths;
-    property ShowSelection:boolean read FShowSelection write SetShowSelection default false; 
+    property ShowSelection: Boolean read FShowSelection write SetShowSelection default False; 
     property ShowDays: Boolean read FShowDays write SetShowDays default False;
     property FirstVisibleDate: TDate read FFirstDate write SetFirstDate;
     property Images: TCustomImageList read FImages write SetImages;
@@ -360,7 +360,7 @@ type
     //    property ItemAlign: TItemAlign read FItemAlign write SetItemAlign default tiCenter;
     property VertSupports: Boolean read FSupportLines write SetSupportLines default False;
     property HorzSupports: Boolean read FHorzSupport write SetHorzSupport;
-    property SupportsColor:TColor read FSupportsColor write SetSupportsColor default clBtnFace;
+    property SupportsColor: TColor read FSupportsColor write SetSupportsColor default clBtnFace;
     property Style: TJvTimeLineStyle read FStyle write SetStyle default tlDefault;
     property TopLevel: Integer read FTopLevel write SetTopLevel default 0;
     property ScrollArrows: TJvScrollArrows read FScrollArrows write
@@ -375,7 +375,7 @@ type
     property OnSaveItem: TJvStreamItemEvent read FOnSaveItem write FOnSaveItem;
     property OnLoadItem: TJvStreamItemEvent read FOnLoadItem write FOnLoadItem;
     property OnItemMoved: TJvItemMovedEvent read FOnItemMoved write FOnItemMoved;
-    property OnItemMouseMove:TJvItemMouseMove read FOnItemMouseMove write FOnItemMouseMove;
+    property OnItemMouseMove: TJvItemMouseMove read FOnItemMouseMove write FOnItemMouseMove;
     property OnItemMoving: TJvItemMovingEvent read FOnItemMoving write FOnItemMoving;
   public
     constructor Create(AOwner: TComponent); override;
@@ -406,7 +406,7 @@ type
     property Align;
     property Color;
     property Cursor;
-    property DoubleBuffered default true;
+    property DoubleBuffered default True;
     property DragLine;
     property Enabled;
     property Height;
@@ -1433,7 +1433,7 @@ begin
     //OutputDebugString('Drag pending');
 
   inherited MouseUp(Button, Shift, X, Y);
-  FAutoDrag := false;
+  FAutoDrag := False;
 end;
 
 procedure TJvCustomTimeLine.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -2246,17 +2246,18 @@ begin
     FOnItemMoved(Self, Item, NewDate, NewLevel);
 end;
 
-function TJvCustomTimeLine.ItemMouseMove(X, Y: integer):boolean;
-var AItem:TJvTimeItem;
+function TJvCustomTimeLine.ItemMouseMove(X, Y: Integer): Boolean;
+var
+  AItem: TJvTimeItem;
 begin
-  Result := false;
+  Result := False;
   if Assigned(FOnItemMouseMove) then
   begin
     AItem := ItemAtPos(X, Y);
     if AItem <> nil then
     begin
       FOnItemMouseMove(Self, AItem, X, Y);
-      Result := true;
+      Result := True;
     end;
   end;
 end;
@@ -2387,7 +2388,7 @@ end;
 procedure TJvCustomTimeLine.DblClick;
 var
   Tmp: Boolean;
-  P:TPoint;
+  P: TPoint;
 begin
   Tmp := DragLine;
   try
@@ -2409,7 +2410,8 @@ begin
 end;
 
 procedure TJvCustomTimeLine.Click;
-var P:TPoint;
+var
+  P: TPoint;
 begin
   inherited Click;
   if QWindows.GetCursorPos(P) then
@@ -2556,7 +2558,6 @@ begin
   end;
 end;
 
-
 function TJvCustomTimeLine.GetHint: string;
 begin
   Result := inherited Hint;
@@ -2569,7 +2570,7 @@ begin
 end;
 
 
-procedure TJvCustomTimeLine.SetShowSelection(const Value: boolean);
+procedure TJvCustomTimeLine.SetShowSelection(const Value: Boolean);
 begin
   if FShowSelection <> Value then
   begin
@@ -2606,10 +2607,6 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
-
-
-
-
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

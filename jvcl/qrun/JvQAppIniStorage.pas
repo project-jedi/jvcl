@@ -655,10 +655,15 @@ end;
 //=== { TJvAppIniFileStorage } ===============================================
 
 procedure TJvAppIniFileStorage.Flush;
+var
+ path:String;
 begin
   if (FullFileName <> '') and not ReadOnly then
   begin
     IniFile.Rename(FullFileName, False);
+
+    path := ExtractFilePath(IniFile.FileName);
+    ForceDirectories(path); // NEW! Otherwise it would throw an exception when application is shutting down.
     IniFile.UpdateFile;
   end;
 end;
