@@ -65,7 +65,6 @@ type
     procedure SetTransparent(Value: Boolean);
     procedure ImageChanged(Sender: TObject);
     procedure TimerExpired(Sender: TObject);
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
     function GetPalette: HPALETTE; override;
@@ -215,7 +214,7 @@ begin
   begin
     FCache.Free;
     FCache := nil;
-    Result := TBitmap.Create;
+    Result := TJvLockedBitmap.Create;
   end;
   Result.Canvas.Lock;
   try
@@ -532,8 +531,6 @@ begin
   begin
     Lock;
     try
-      if Value then
-        HookBitmap;
       if Assigned(FTimer) then
         FTimer.SyncEvent := not Value;
       FAsyncDrawing := Value;
@@ -563,11 +560,6 @@ begin
       PictureChanged;
     end;
   end;
-end;
-
-procedure TJvGIFAnimator.WMSize(var Msg: TWMSize);
-begin
-  inherited;
 end;
 
 end.

@@ -184,6 +184,12 @@ type
 
 //procedure HookBitmap;
 
+type
+  TJvLockedBitmap = class(TBitmap)
+  protected
+    procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
+  end;
+
 implementation
 
 uses
@@ -195,12 +201,6 @@ uses
 
 // (rom) do we really need this ugly hack?
 // (ahuser) lets try without the hook by using TJvLockedBitmap directly
-
-type
-  TJvLockedBitmap = class(TBitmap)
-  protected
-    procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
-  end;
 
 procedure TJvLockedBitmap.Draw(ACanvas: TCanvas; const Rect: TRect);
 begin
