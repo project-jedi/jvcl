@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -21,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-07-15
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -163,6 +162,9 @@ procedure TfrmJvDataConsumerItemSelect.UpdateViewList;
 var
   ViewList: IJvDataConsumerViewList;
   ItemSelect: IJvDataConsumerItemSelect;
+  
+  I: Integer;
+  
 begin
   if Supports(fmeTreeList.Provider as IJvDataConsumer, IJvDataConsumerViewList, ViewList) then
   begin
@@ -170,16 +172,10 @@ begin
     try
       if ViewList.Count = 0 then
         ViewList.RebuildView;
-      fmeTreeList.lvProvider.Items.BeginUpdate;
-      try
-       // (ahuser) Is this the same as the VCL line?
-        while fmeTreeList.lvProvider.Items.Count > ViewList.Count do
-          fmeTreeList.lvProvider.Items.Delete(fmeTreeList.lvProvider.Items.Count - 1);
-        while fmeTreeList.lvProvider.Items.Count < ViewList.Count do
-          fmeTreeList.lvProvider.Items.Add;
-      finally
-        fmeTreeList.lvProvider.Items.EndUpdate;
-      end;
+      
+      
+      {TODO : CLX does not support virtual ListViews}
+      
       if Supports(Consumer as IJvDataConsumer, IJvDataConsumerItemSelect, ItemSelect) then
         if ItemSelect.GetItem <> nil then
         begin

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-01-01
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,15 +35,18 @@ interface
 
 uses
   SysUtils, Classes,
-
-
+  
+  
   QGraphics, QControls, QForms, QTypes, QExtCtrls, QDialogs, QComCtrls,
-  QToolWin, QStdCtrls, QMenus, QActnList, QImgList, QWindows,
-
-
+  QToolWin, QStdCtrls, QMenus, QActnList, QImgList, ClxDesignWindows,
+  
+  
   DesignEditors, DesignIntf,
+  
+  
   QDesignWindows,
-
+  
+  
   JvQValidators;
 
 type
@@ -64,11 +66,6 @@ type
     acMoveUp: TAction;
     acMoveDown: TAction;
     popForm: TPopupMenu;
-    RequiredFieldValidator2: TMenuItem;
-    RangeValidator2: TMenuItem;
-    RegularExpressionValidator2: TMenuItem;
-    CompareValidator2: TMenuItem;
-    CustomValidator2: TMenuItem;
     N1: TMenuItem;
     Delete1: TMenuItem;
     N2: TMenuItem;
@@ -76,11 +73,6 @@ type
     MoveDown1: TMenuItem;
     procedure alEditorUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure acNewRequiredExecute(Sender: TObject);
-    procedure acNewCompareExecute(Sender: TObject);
-    procedure acNewRangeExecute(Sender: TObject);
-    procedure acNewRegExpExecute(Sender: TObject);
-    procedure acNewCustomExecute(Sender: TObject);
     procedure acDeleteExecute(Sender: TObject);
     procedure lbValidatorsClick(Sender: TObject);
     procedure acMoveUpExecute(Sender: TObject);
@@ -100,11 +92,11 @@ type
     procedure AddValidatorClasses;
   public
     procedure Activated; override;
-
+    
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override;
-
+    
     function GetEditState: TEditState; override;
     property Validator: TJvValidators read FValidator write SetValidator;
   end;
@@ -117,8 +109,14 @@ type
   end;
 
   TJvPropertyValidateProperty = class(TStringProperty)
-    function GetAttributes: TPropertyAttributes; override;
   public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+  end;
+
+  TJvPropertyToCompareProperty = class(TStringProperty)
+  public
+    function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
@@ -366,30 +364,6 @@ begin
     acDelete.Enabled;
 end;
 
-procedure TfrmValidatorsEditor.acNewRequiredExecute(Sender: TObject);
-begin
-  AddNew(TJvRequiredFieldValidator);
-end;
-
-procedure TfrmValidatorsEditor.acNewCompareExecute(Sender: TObject);
-begin
-  AddNew(TJvCompareValidator);
-end;
-
-procedure TfrmValidatorsEditor.acNewRangeExecute(Sender: TObject);
-begin
-  AddNew(TJvRangeValidator);
-end;
-
-procedure TfrmValidatorsEditor.acNewRegExpExecute(Sender: TObject);
-begin
-  AddNew(TJvRegularExpressionValidator);
-end;
-
-procedure TfrmValidatorsEditor.acNewCustomExecute(Sender: TObject);
-begin
-  AddNew(TJvCustomValidator);
-end;
 
 procedure TfrmValidatorsEditor.acDeleteExecute(Sender: TObject);
 begin
@@ -454,13 +428,18 @@ begin
     if I - K < 9 then
       A.ShortCut := ShortCut(Ord('0') + I + 1 - K, [ssCtrl]);
     A.OnExecute := DoAddNewValidator;
-    M := TMenuItem.Create(Self);
+    M := TMenuItem.Create(popNew);
     M.Action := A;
     if I = 0 then
     begin
+      
       btnNew.Action := A;
     end;
     popNew.Items.Add(M);
+    M := TMenuItem.Create(popForm);
+    M.Action := A;
+    
+    popForm.Items.Insert(I,M);
   end;
   if J < 2 then
     btnNew.Style := tbsButton
@@ -512,6 +491,48 @@ begin
 end;
 
 
+
+{ TJvPropertyToCompareProperty }
+
+function TJvPropertyToCompareProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paValueList, paSortList];
+end;
+
+procedure TJvPropertyToCompareProperty.GetValues(Proc: TGetStrProc);
+const
+  ValidKinds: TTypeKinds =
+    [tkInteger, tkChar, tkEnumeration, tkFloat, tkString, tkSet,
+     tkWChar, tkLString, tkWString, tkVariant, tkInt64];
+var
+  PropList: PPropList;
+  PropInfo: PPropInfo;
+  I, J: Integer;
+  C: TControl;
+begin
+  if not (GetComponent(0) is TJvControlsCompareValidator) then
+    Exit;
+  C := TJvControlsCompareValidator(GetComponent(0)).CompareToControl;
+  if C = nil then
+    Exit;
+  J := GetPropList(PTypeInfo(C.ClassInfo), ValidKinds, nil);
+  if J > 0 then
+  begin
+    GetMem(PropList, J * SizeOf(Pointer));
+    J := GetPropList(PTypeInfo(C.ClassInfo), ValidKinds, PropList);
+    if J > 0 then
+    try
+      for I := 0 to J - 1 do
+      begin
+        PropInfo := PropList^[I];
+        if (PropInfo <> nil) and (PropInfo.PropType^.Kind in ValidKinds) then
+          Proc(PropInfo.Name);
+      end;
+    finally
+      FreeMem(PropList);
+    end;
+  end;
+end;
 
 end.
 

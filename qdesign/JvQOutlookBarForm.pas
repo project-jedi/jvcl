@@ -35,17 +35,16 @@ interface
 
 uses
   SysUtils, Classes,
-
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-
+  
   
   QControls, QForms, QToolWin,
   QMenus, QActnList, QComCtrls, QImgList,
   DesignEditors, DesignIntf, DesignMenus, ClxDesignWindows,
   
-  JvQOutlookBar, QTypes, QExtCtrls;
+  JvQOutlookBar;
 
 type
   
@@ -597,7 +596,6 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-function TFrmOLBEditor.GetRegPath: string;
 const
   cRegKey = '/JVCL/OutlookBar Editor';
 begin
