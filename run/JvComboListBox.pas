@@ -45,7 +45,7 @@ type
   // (p3) these types should *not* be moved to JvTypes (they are only used here)!
   TJvComboListBoxDrawStyle = (dsOriginal, dsStretch, dsProportional);
   TJvComboListDropDownEvent = procedure(Sender: TObject; Index: Integer;
-    X, Y:Integer; var AllowDrop:Boolean) of object;
+    X, Y: Integer; var AllowDrop: Boolean) of object;
   TJvComboListDrawTextEvent = procedure(Sender: TObject; Index: Integer;
     const AText: string; R: TRect; var DefaultDraw: Boolean) of object;
   TJvComboListDrawImageEvent = procedure(Sender: TObject; Index: Integer;
@@ -53,7 +53,8 @@ type
 
   TJvComboListBox = class(TJvCustomListBox)
   private
-    FMouseOver, FPushed: Boolean;
+    FMouseOver: Boolean;
+    FPushed: Boolean;
     FDropdownMenu: TPopupMenu;
     FDrawStyle: TJvComboListBoxDrawStyle;
     FOnDrawImage: TJvComboListDrawImageEvent;
@@ -70,17 +71,16 @@ type
   protected
     procedure InvalidateItem(Index: Integer);
     procedure DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed: Boolean);
-    procedure DrawItem(Index: Integer; Rect: TRect;
-      State: TOwnerDrawState); override;
+    procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure Resize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer);  override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);  override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function DoDrawImage(Index: Integer; APicture: TPicture; R: TRect): Boolean; virtual;
     function DoDrawText(Index: Integer; const AText: string; R: TRect): Boolean; virtual;
-    function DoDropDown(Index,X,Y:Integer):Boolean;virtual;
+    function DoDropDown(Index, X, Y: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     function AddText(const S: string): Integer;
@@ -91,13 +91,12 @@ type
     procedure Delete(Index: Integer);
   published
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 20;
-    property HotTrackCombo: Boolean read FHotTrackCombo write SetHotTrackCombo default false;
+    property HotTrackCombo: Boolean read FHotTrackCombo write SetHotTrackCombo default False;
     property DropdownMenu: TPopupMenu read FDropdownMenu write FDropdownMenu;
     property DrawStyle: TJvComboListBoxDrawStyle read FDrawStyle write SetDrawStyle default dsOriginal;
     property OnDrawText: TJvComboListDrawTextEvent read FOnDrawText write FOnDrawText;
     property OnDrawImage: TJvComboListDrawImageEvent read FOnDrawImage write FOnDrawImage;
-    property OnDropDown:TJvComboListDropDownEvent read FOnDropDown write FOnDropDown;
-
+    property OnDropDown: TJvComboListDropDownEvent read FOnDropDown write FOnDropDown;
     property Align;
     property Anchors;
     property BiDiMode;
@@ -111,12 +110,13 @@ type
     property Enabled;
     property ExtendedSelect;
     property Font;
+    property HotTrack;
+    property HintColor;
     property ImeMode;
     property ImeName;
     property IntegralHeight;
     property ItemHeight default 17;
     property Items;
-
     property MultiSelect;
     property ParentBiDiMode;
     property ParentColor;
@@ -149,9 +149,6 @@ type
     property OnMouseUp;
     property OnStartDock;
     property OnStartDrag;
-    property HotTrack;
-    property HintColor;
-
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
@@ -162,6 +159,18 @@ type
   end;
 
 implementation
+
+constructor TJvComboListBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Style := lbOwnerDrawFixed;
+  ScrollBars := ssVertical;
+  FDrawStyle := dsOriginal;
+  FButtonWidth := 20;
+  FLastHotTrack := -1;
+  ItemHeight := 17;
+  // ControlStyle := ControlStyle + [csCaptureMouse];
+end;
 
 function TJvComboListBox.AddImage(P: TPicture): Integer;
 begin
@@ -182,25 +191,13 @@ begin
   if FMouseOver then
   begin
     InvalidateItem(ItemIndex);
-    FMouseOver := false;
+    FMouseOver := False;
   end;
   if HotTrackCombo and (FLastHotTrack > -1) then
   begin
     InvalidateItem(FLastHotTrack);
     FLastHotTrack := -1;
   end;
-end;
-
-constructor TJvComboListBox.Create(AOwner: TComponent);
-begin
-  inherited;
-  Style := lbOwnerDrawFixed;
-  ScrollBars := ssVertical;
-  FDrawStyle := dsOriginal;
-  FButtonWidth := 20;
-  FLastHotTrack := -1;
-  ItemHeight := 17;
-//  ControlStyle := ControlStyle + [csCaptureMouse];
 end;
 
 procedure TJvComboListBox.Delete(Index: Integer);
@@ -215,7 +212,7 @@ end;
 function TJvComboListBox.DestRect(Picture: TPicture; ARect: TRect): TRect;
 var
   W, H, CW, CH: Integer;
-  xyaspect: Double;
+  XYAspect: Double;
 
 begin
   W := Picture.Width;
@@ -226,25 +223,25 @@ begin
   begin
     if (DrawStyle = dsProportional) and (W > 0) and (H > 0) then
     begin
-      xyaspect := W / H;
+      XYAspect := W / H;
       if W > H then
       begin
         W := CW;
-        H := trunc(CW / xyaspect);
+        H := Trunc(CW / XYAspect);
         if H > CH then // woops, too big
         begin
           H := CH;
-          W := trunc(CH * xyaspect);
+          W := Trunc(CH * XYAspect);
         end;
       end
       else
       begin
         H := CH;
-        W := trunc(CH * xyaspect);
+        W := Trunc(CH * XYAspect);
         if W > CW then // woops, too big
         begin
           W := CW;
-          H := trunc(CW / xyaspect);
+          H := Trunc(CW / XYAspect);
         end;
       end;
     end
@@ -268,21 +265,23 @@ end;
 
 function TJvComboListBox.DoDrawImage(Index: Integer; APicture: TPicture; R: TRect): Boolean;
 begin
-  Result := true;
-  if Assigned(FOnDrawImage) then FOnDrawImage(Self, Index, APicture, R, Result);
+  Result := True;
+  if Assigned(FOnDrawImage) then
+    FOnDrawImage(Self, Index, APicture, R, Result);
 end;
 
 function TJvComboListBox.DoDrawText(Index: Integer; const AText: string; R: TRect): Boolean;
 begin
-  Result := true;
-  if Assigned(FOnDrawText) then FOnDrawText(Self, Index, AText, R, Result);
+  Result := True;
+  if Assigned(FOnDrawText) then
+    FOnDrawText(Self, Index, AText, R, Result);
 end;
 
 function TJvComboListBox.DoDropDown(Index, X, Y: Integer): Boolean;
 begin
-  Result := true;
+  Result := True;
   if Assigned(FOnDropDown) then
-    FOnDropDown(self, Index, X,Y,Result);
+    FOnDropDown(Self, Index, X, Y, Result);
 end;
 
 procedure TJvComboListBox.DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed: Boolean);
@@ -314,17 +313,18 @@ procedure TJvComboListBox.DrawItem(Index: Integer; Rect: TRect;
 var
   P: TPicture;
   B: TBitmap;
-  aPoints: array[0..4] of TPoint;
+  Points: array [0..4] of TPoint;
   TmpRect: TRect;
   Pt: TPoint;
-  i: Integer;
+  I: Integer;
 begin
-  if (Index < 0) or (Index >= Items.Count) or Assigned(OnDrawItem) then Exit;
+  if (Index < 0) or (Index >= Items.Count) or Assigned(OnDrawItem) then
+    Exit;
   Canvas.Lock;
   try
     Canvas.Brush.Color := Self.Color;
 
-    if (Items.Objects[Index] is TPicture) then
+    if Items.Objects[Index] is TPicture then
       P := TPicture(Items.Objects[Index])
     else
       P := nil;
@@ -368,33 +368,25 @@ begin
           TmpRect, DT_WORDBREAK or DT_LEFT or DT_TOP or DT_EDITCONTROL or DT_NOPREFIX or DT_END_ELLIPSIS);
     end;
 
-  // draw the combo button
+    // draw the combo button
     GetCursorPos(Pt);
     Pt := ScreenToClient(Pt);
-    i := ItemAtPos(Pt, true);
-    if (not HotTrackCombo and (State * [odSelected, odFocused] <> [])) or (HotTrackCombo and (i = Index)) then
+    I := ItemAtPos(Pt, True);
+    if (not HotTrackCombo and (State * [odSelected, odFocused] <> [])) or (HotTrackCombo and (I = Index)) then
     begin
-    // draw frame
+      // draw frame
       Canvas.Brush.Style := bsClear;
-      if HotTrackCombo then
-      begin
-        Canvas.Pen.Color := clHighlight;
-        Canvas.Pen.Width := 1;
-      end
-      else
-      begin
-        Canvas.Pen.Color := clHighlight;
-        Canvas.Pen.Width := 2;
-      end;
+      Canvas.Pen.Color := clHighlight;
+      Canvas.Pen.Width := 1 + Ord(not HotTrackCombo);
 
-      aPoints[0] := Point(Rect.Left, Rect.Top);
-      aPoints[1] := Point(Rect.Right - 2, Rect.Top);
-      aPoints[2] := Point(Rect.Right - 2, Rect.Bottom - 2);
-      aPoints[3] := Point(Rect.Left, Rect.Bottom - 2);
-      aPoints[4] := Point(Rect.Left, Rect.Top);
-      Canvas.Polygon(aPoints);
+      Points[0] := Point(Rect.Left, Rect.Top);
+      Points[1] := Point(Rect.Right - 2, Rect.Top);
+      Points[2] := Point(Rect.Right - 2, Rect.Bottom - 2);
+      Points[3] := Point(Rect.Left, Rect.Bottom - 2);
+      Points[4] := Point(Rect.Left, Rect.Top);
+      Canvas.Polygon(Points);
 
-    // draw button body
+      // draw button body
       if ButtonWidth > 2 then // 2 because Pen.Width is 2
       begin
         TmpRect := Classes.Rect(Rect.Right - ButtonWidth - 1,
@@ -456,31 +448,30 @@ begin
     R.Right := R.Right - ButtonWidth;
     // don't redraw content, just button
     ExcludeClipRect(Canvas.Handle, R.Left, R.Top, R.Right, R.Bottom);
-    InvalidateRect(Handle, @R2, false);
+    InvalidateRect(Handle, @R2, False);
   end;
 end;
 
 procedure TJvComboListBox.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  i: Integer;
+  I: Integer;
   R: TRect;
   P: TPoint;
   Msg: TMsg;
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if (ItemIndex > -1) then
+  if ItemIndex > -1 then
   begin
     P := Point(X, Y);
-    i := ItemAtPos(P, true);
-    R := ItemRect(i);
-    if (i = ItemIndex) and (X >= R.Right - ButtonWidth)
-      and (X <= R.Right) then
+    I := ItemAtPos(P, True);
+    R := ItemRect(I);
+    if (I = ItemIndex) and (X >= R.Right - ButtonWidth) and (X <= R.Right) then
     begin
-      FMouseOver := true;
-      FPushed := true;
-      InvalidateItem(i);
-      if (DropdownMenu <> nil) and DoDropDown(i, X, Y) then
+      FMouseOver := True;
+      FPushed := True;
+      InvalidateItem(I);
+      if (DropdownMenu <> nil) and DoDropDown(I, X, Y) then
       begin
         case DropdownMenu.Alignment of
           paRight:
@@ -506,34 +497,35 @@ end;
 procedure TJvComboListBox.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   P: TPoint;
-  i: Integer;
+  I: Integer;
   R: TRect;
 begin
   if (DropdownMenu <> nil) or HotTrackCombo then
   begin
     P := Point(X, Y);
-    i := ItemAtPos(P, true);
-    R := ItemRect(i);
-    if HotTrackCombo and (i <> FLastHotTrack) then
+    I := ItemAtPos(P, True);
+    R := ItemRect(I);
+    if HotTrackCombo and (I <> FLastHotTrack) then
     begin
       if FLastHotTrack > -1 then
         InvalidateItem(FLastHotTrack);
-      FLastHotTrack := i;
+      FLastHotTrack := I;
       if FLastHotTrack > -1 then
         InvalidateItem(FLastHotTrack);
     end;
-    if ((i = ItemIndex) or HotTrackCombo) and (X >= R.Right - ButtonWidth) and (X <= R.Right) then
+    if ((I = ItemIndex) or HotTrackCombo) and (X >= R.Right - ButtonWidth) and (X <= R.Right) then
     begin
       if not FMouseOver then
       begin
-        FMouseOver := true;
-        InvalidateItem(i);
+        FMouseOver := True;
+        InvalidateItem(I);
       end;
     end
-    else if FMouseOver then
+    else
+    if FMouseOver then
     begin
-      FMouseOver := false;
-      InvalidateItem(i);
+      FMouseOver := False;
+      InvalidateItem(I);
     end;
   end;
   inherited MouseMove(Shift, X, Y);
@@ -542,10 +534,10 @@ end;
 procedure TJvComboListBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  inherited MouseUp(Button , Shift, X, Y);
+  inherited MouseUp(Button, Shift, X, Y);
   if FPushed then
   begin
-    FPushed := false;
+    FPushed := False;
     InvalidateItem(ItemIndex);
   end;
 end;
@@ -587,7 +579,7 @@ end;
 
 procedure TJvComboListBox.Resize;
 begin
-  inherited Resize;                     
+  inherited Resize;
   Invalidate;
 end;
 
