@@ -1185,6 +1185,7 @@ var
   ColorSettings: IJvColorProviderSettings;
   MapIdx: Integer;
 begin
+  ColorArray := nil; // make the compiler happy (andreas)
   case List of
     0:
       ColorArray := FStdColors;
