@@ -17,8 +17,9 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Robert Marquardt copied implementation of TJvCheckBox
+Peter Thörnqvist- added LinkedControls property
 
-Last Modified: 2003-12-22
+Last Modified: 2004-01-26
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -40,7 +41,7 @@ uses
   QGraphics, QControls, QForms, QStdCtrls, Types, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
-  JvTypes, JvExStdCtrls;
+  JvTypes, JvExStdCtrls, JvLinkedControls;
 
 type
   TJvRadioButton = class(TJvExRadioButton)
@@ -59,8 +60,7 @@ type
     FAlignment: TAlignment;
     FLayout: TTextLayout;
     FLeftText: Boolean;
-    FLinkedControls:TStringlist;
-    FLinkOptions: TJvLinkedControlsOptions;
+    FLinkedControls:TJvLinkedControls;
     function GetCanvas: TCanvas;
     function GetReadOnly: Boolean;
     procedure SetHotTrackFont(const Value: TFont);
@@ -70,10 +70,11 @@ type
     procedure SetLayout(const Value: TTextLayout);
     procedure SetReadOnly(const Value: Boolean);
     procedure SetLeftText(const Value: Boolean);
-    function GetLinkedControls: TStrings;
-    procedure SetLinkedControls(const Value: TStrings);
+    function GetLinkedControls: TJvLinkedControls;
+    procedure SetLinkedControls(const Value: TJvLinkedControls);
     procedure BmSetCheck(var Msg:TMessage); message BM_SETCHECK;
   protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation);override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
@@ -102,8 +103,8 @@ type
     property Layout: TTextLayout read FLayout write SetLayout default tlCenter;
     // show text to the left of the radio bullet
     property LeftText: Boolean read FLeftText write SetLeftText default False;
-    property LinkedControls:TStrings read GetLinkedControls write SetLinkedControls;
-    property LinkOptions:TJvLinkedControlsOptions read FLinkOptions write FLinkOptions default [loLinkChecked, loLinkEnabled];
+    // link the enabled state of other controls to the checked and/or enabled state of this control
+    property LinkedControls:TJvLinkedControls read GetLinkedControls write SetLinkedControls;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     property OnMouseEnter;
@@ -132,9 +133,8 @@ begin
   FAlignment := taLeftJustify;
   FLeftText := False;
   FLayout := tlCenter;
-  FLinkedControls := TStringlist.Create;
+  FLinkedControls := TJvLinkedControls.Create(self);
   FLinkedControls.OnChange := LinkedControlsChange;
-  FLinkOptions := [loLinkChecked, loLinkEnabled];
 end;
 
 destructor TJvRadioButton.Destroy;
@@ -339,23 +339,21 @@ procedure TJvRadioButton.CheckLinkedControls;
 var
   i:integer;
   F:TCustomForm;
-  C:TComponent;
 begin
-  if LinkOptions = [] then Exit;
   F := GetParentForm(self);
   if F = nil then Exit;
-  for i := 0 to FLinkedControls.Count - 1 do
+  for i := 0 to LinkedControls.Count - 1 do
   begin
-    C := F.FindComponent(FLinkedControls[i]);
-    if (C is TControl) and (C <> self) then
-      TControl(C).Enabled :=
-          ((LinkOptions = [loLinkChecked, loLinkEnabled]) and Checked and Enabled)
-          or ((LinkOptions = [loLinkChecked]) and Checked)
-          or ((LinkOptions = [loLinkEnabled]) and Enabled);
+    if LinkedControls[i].Control = nil then Continue;
+    with LinkedControls[i] do
+      Control.Enabled :=
+        ((Options = [loLinkChecked, loLinkEnabled]) and self.Checked and self.Enabled)
+        or ((Options = [loLinkChecked]) and self.Checked)
+        or ((Options = [loLinkEnabled]) and self.Enabled);
   end;
 end;
 
-function TJvRadioButton.GetLinkedControls: TStrings;
+function TJvRadioButton.GetLinkedControls: TJvLinkedControls;
 begin
   Result := FLinkedControls;
 end;
@@ -365,7 +363,7 @@ begin
   CheckLinkedControls;
 end;
 
-procedure TJvRadioButton.SetLinkedControls(const Value: TStrings);
+procedure TJvRadioButton.SetLinkedControls(const Value: TJvLinkedControls);
 begin
   FLinkedControls.Assign(Value);
 end;
@@ -380,6 +378,14 @@ procedure TJvRadioButton.EnabledChanged;
 begin
   inherited;
   CheckLinkedControls;
+end;
+
+procedure TJvRadioButton.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Assigned(FLinkedControls) and not (csDestroying in ComponentState) then
+    LinkedControls.Notification(AComponent, Operation);
 end;
 
 end.

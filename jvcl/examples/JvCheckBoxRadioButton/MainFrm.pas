@@ -11,7 +11,6 @@ type
   TForm1 = class(TForm)
     chkShowToolTips: TJvCheckBox;
     edPrefix: TJvEdit;
-    btnEdit: TSpeedButton;
     rbOption1: TJvRadioButton;
     rbOption2: TJvRadioButton;
     rbOption3: TJvRadioButton;
@@ -23,7 +22,6 @@ type
     lblPrefix: TJvLabel;
     ImageList1: TImageList;
     chkShowPrefix: TJvCheckBox;
-    procedure btnEditClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -35,19 +33,6 @@ var
 
 implementation
 
-uses
-  TypInfo, JvLinkedControlsEditorForm;
-
 {$R *.dfm}
-
-procedure TForm1.btnEditClick(Sender: TObject);
-var S:TStrings;
-begin
-  if IsPublishedProp(ActiveControl,'LinkedControls') then
-  begin
-    S := TStrings(GetOrdProp(ActiveControl,'LinkedControls'));
-    EditLinkedControls(ActiveControl, S);
-  end;
-end;
 
 end.

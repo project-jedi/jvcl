@@ -54,7 +54,6 @@ uses
   JvPanel, JvMonthCalendar, JvControlPanelButton, JvStartMenuButton,
   JvRecentMenuButton, JvFavoritesButton, JvImageList, JvListBox, JvBrowseFolder,
   JvTransparentPanel, JvCheckedItemsForm, JvColorCombo, JvProgressEditor,
-  JvLinkedControlsEditor,
   JvDsgnEditors;
 
 {$R ..\resources\JvStdCtrlsReg.dcr}
@@ -105,8 +104,6 @@ begin
   RegisterPropertyEditor(TypeInfo(Boolean), TJvMainMenu, cOwnerDraw, nil);
   RegisterPropertyEditor(TypeInfo(Boolean), TJvPopupMenu, cOwnerDraw, nil);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedButton, 'Caption', TJvHintProperty);
-//  RegisterPropertyEditor(TypeInfo(TStrings), TJvCheckBox, 'LinkedControls', TJvLinkedControlsProperty);
-  RegisterPropertyEditor(TypeInfo(TStrings), TJvRadioButton, 'LinkedControls', TJvLinkedControlsProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
 end;
 

@@ -18,8 +18,9 @@ Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Ain Valtin - ReadOnly, Alignment, Layout, RightButton
 Robert Marquardt RightButton renamed to LeftText
+Peter Thörnqvist- added LinkedControls property
 
-Last Modified: 2003-12-22
+Last Modified: 2004-01-26
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -54,7 +55,6 @@ type
     FFontSave: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
     FAutoSize: Boolean;
-//    FAssociated: TControl;
     FCanvas: TControlCanvas;
     FWordWrap: Boolean;
     FAlignment: TAlignment;
@@ -64,7 +64,6 @@ type
     function GetCanvas: TCanvas;
     function GetReadOnly: Boolean;
     procedure SetHotTrackFont(const Value: TFont);
-//    procedure SetAssociated(const Value: TControl);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure SetWordWrap(const Value: Boolean);
     procedure SetAlignment(const Value: TAlignment);
@@ -102,9 +101,8 @@ type
     property Canvas: TCanvas read GetCanvas;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-//    property Associated: TControl read FAssociated write SetAssociated;
+    // link the enabled state of other controls to the checked and/or enabled state of this control
     property LinkedControls:TJvLinkedControls read GetLinkedControls write SetLinkedControls;
-//    property LinkOptions:TJvLinkedControlsOptions read FLinkOptions write FLinkOptions default [loLinkChecked, loLinkEnabled];
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
@@ -144,7 +142,6 @@ begin
   FLayout := tlCenter;
   FLinkedControls := TJvLinkedControls.Create(self);
   FLinkedControls.OnChange := LinkedControlsChange;
-//  FLinkOptions := [loLinkChecked, loLinkEnabled];
 end;
 
 destructor TJvCheckBox.Destroy;
@@ -421,8 +418,14 @@ begin
 end;
 
 procedure TJvCheckBox.ReadAssociated(Reader:TReader);
+var C:TComponent;
 begin
-  FLinkedControls.Add.Control := FindComponent(Reader.ReadIdent) as TControl;
+  if (Owner <> nil) then
+    C := Owner.FindComponent(Reader.ReadIdent)
+  else
+    C := nil;
+  if (C is TControl) and (LinkedControls <> nil) then
+    LinkedControls.Add.Control := TControl(C);
 end;
 
 procedure TJvCheckBox.DefineProperties(Filer: TFiler);
@@ -445,14 +448,10 @@ end;
 
 procedure TJvCheckBox.Notification(AComponent: TComponent;
   Operation: TOperation);
-var i:integer;
 begin
-  inherited;
-  if (AComponent is TControl) and (Operation = opRemove) then
-    for i := 0 to LinkedControls.Count - 1 do
-      if AComponent = LinkedControls[i].Control then
-        LinkedControls[i].Control := nil;
-
+  inherited Notification(AComponent, Operation);
+  if Assigned(FLinkedControls) then
+    LinkedControls.Notification(AComponent, Operation);
 end;
 
 end.
