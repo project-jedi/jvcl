@@ -20,29 +20,29 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-03-15
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
 { Description. }
 
-unit JvQColorTrackbar;
+unit JvQColorTrackBar;
 
 interface
 
 uses
   SysUtils, Classes,
-
-
-  Types, QControls, QGraphics, QForms, QWindows,
-  JvQComponent;
   
+  
+  Types, QControls, QGraphics, QForms, QWindows,
+  
+  JvQComponent;
+
 type
   TJvColorTrackBarIndicator = (tbiArrow, tbiLine);
   TJvColorTrackBarIndicators = set of TJvColorTrackBarIndicator;
@@ -147,12 +147,8 @@ begin
   BmpImage.Height := Height - TopOffset;
   R := Rect(0, 0, BmpImage.Width, BmpImage.Height);
   GradientFillRect(BmpImage.Canvas, R, ColorFrom, ColorTo, fdLeftToRight, 255);
-  BmpImage.Canvas.Start;
   if BorderStyle = bsSingle then
     DrawEdge(BmpImage.Canvas.Handle, R, EDGE_SUNKEN, BF_TOP or BF_RIGHT or BF_BOTTOM or BF_LEFT);
-  BmpImage.Canvas.Stop;
-
-  BmpImage.SaveToFile('Updategradient.bmp');
 end;
 
 constructor TJvColorTrackBar.Create(AOwner: TComponent);
@@ -213,7 +209,10 @@ begin
     UpdateGradient;
   Canvas.Pen.Color := Color;
   Canvas.Brush.Color := Color;
-  BitBlt(Canvas.Handle, WidthOffset div 2 , TopOffset , BmpImage.Width, BmpImage.Height, BmpImage.Canvas.Handle, 0, 0, SrcCopy);
+  
+  
+  Canvas.Draw(WidthOffset div 2, TopOffset, BmpImage); 
+  
   R := Rect(0, 0, Width, TopOffset);
   Canvas.FillRect(R);
   X := PosToX(Position);

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,8 +20,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-09-20
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -33,6 +31,7 @@ Known Issues:
   with [translated]
 
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -48,12 +47,12 @@ unit JvQHLParser;
 interface
 
 uses
-  SysUtils, Classes, JvQTypes, JvQJCLUtils,
+  SysUtils, Classes,
   
   
-  QQDialogs,
+  QDialogs,
   
-  JvQWStrUtils;
+  JvQTypes, JvQJCLUtils, JvQWStrUtils;
 
 const
   ieBadRemark = 1;

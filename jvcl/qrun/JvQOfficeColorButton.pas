@@ -123,7 +123,7 @@ type
     procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen postion
     
     
-    procedure InitWidget; override;
+    procedure Loaded; override;
     
     procedure SetEnabled( const  Value: Boolean); override;
     procedure FontChanged; override;
@@ -399,9 +399,9 @@ end;
 
 
 
-procedure TJvCustomOfficeColorButton.InitWidget;
+procedure TJvCustomOfficeColorButton.Loaded;
 begin
-  inherited InitWidget;
+  inherited;
   AdjustSize;
 end;
 

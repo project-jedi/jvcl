@@ -115,7 +115,6 @@ type
     //property OnGetSiteInfo;
     //property OnStartDock;
     //property OnUnDock;
-    //property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
     
@@ -233,8 +232,7 @@ begin
     // clear background.
     Rect := GetClientRect;
     Brush.Color := TJvXPWinControl(Parent).Color;
-    FillRect(Rect);
-
+    
     // draw designtime rect.
     if csDesigning in ComponentState then
       DrawFocusRect(Rect);
@@ -277,8 +275,10 @@ var
 
   procedure DrawGradient(const Bitmap: TBitmap);
   begin
-    BitBlt(Canvas.Handle, R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
-      FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
+    
+    
+    Canvas.Draw( R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1, Bitmap);
+    
   end;
 
 begin
@@ -306,9 +306,12 @@ begin
           begin
             if ClipW <> 0 then
               DrawGradient(FHlGradient);
-            BitBlt(Handle, R.Left + 3 + ClipW, (ClientHeight - FCheckSize) div 2 + 1 +
-              ClipW, FCheckSize - 2 - ClipW * 2, FCheckSize - 2 - ClipW * 2,
-              FBgGradient.Canvas.Handle, 0, 0, SRCCOPY);
+            
+            
+            Draw(R.Left + 3 + ClipW,
+                 (ClientHeight - FCheckSize) div 2 + 1
+                 + ClipW, FBgGradient);
+            
           end
           else
             DrawGradient(FCkGradient);

@@ -26,7 +26,6 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
-
 {$I jvcl.inc}
 
 unit JvQPageListEditorForm;
@@ -37,13 +36,13 @@ uses
   SysUtils, Classes,
   
   
-  QGraphics, QControls, QForms, QDialogs, Types, QTypes, QExtCtrls,
+  QGraphics, QControls, QForms, QDialogs, Types, QTypes,
   QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus,
-
-
-  DesignIntf, DesignWindows, ClxDesignWindows, StrUtils,
-
-  JvQPageList;
+  
+  
+  DesignIntf, DesignEditors, ClxDesignWindows,
+  
+  JvQPageList, QExtCtrls;
 
 type
   
@@ -81,12 +80,13 @@ type
   public
     property PageList:TJvCustomPageList read FPageList write SetPageList;
     procedure Activated; override;
-
-    function UniqueName(Component: TComponent): string; override;
-
+    
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override;
+    
+    function UniqueName(Component: TComponent): string; override;
+    
     
     function GetEditState: TEditState; override;
   end;
@@ -227,19 +227,13 @@ begin
     UpdateList(lbPages.ItemIndex);
 end;
 
+
 function TfrmPageListEditor.UniqueName(Component: TComponent): string;
-var
-  Temp: string;
 begin
-  Result := '';
-  if Component <> nil then
-    Temp := Component.ClassName
-  else
-    Temp := TJvStandardPage.ClassName;
-  if (UpCase(Temp[1]) = 'T') and (Length(Temp) > 1) then
-    System.Delete(Temp, 1, 1);
-  Result := Designer.UniqueName(Temp);
+  Result := Designer.UniqueName(Component.ClassName);
 end;
+
+
 
 function TfrmPageListEditor.GetEditState: TEditState;
 begin

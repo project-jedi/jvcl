@@ -75,9 +75,11 @@ type
     FHotTrack: Boolean;
     FCurvature: Integer;
     FHotTrackBorder: Integer;
+    FBorderColor: TColor;
     
     FHotTrackFontOptions: TJvTrackFontOptions;
     FActiveFontOptions: TJvTrackFontOptions;
+    FTextOnly: Boolean;
     
     procedure SetItemHeight(const Value: Integer);
     procedure SetHorzOffset(const Value: Integer);
@@ -96,6 +98,8 @@ type
     
     procedure SetActiveFontOptions(const Value: TJvTrackFontOptions);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+    procedure SetBorderColor(Value: TColor);
+    procedure SetTextOnly(const Value: Boolean);
     
   protected
     procedure DrawPageItem(ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer); virtual;
@@ -129,7 +133,9 @@ type
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
     
+    property TextOnly: Boolean read FTextOnly write SetTextOnly default False;
     property IncludeDisabled: Boolean read FIncludeDisabled write SetIncludeDisabled default False;
+    property BorderColor: TColor read FBorderColor write SetBorderColor default clNavy;
     property ItemColor: TColor read FItemColor write SetItemColor default clCream;
     property ItemHeight: Integer read FItemHeight write SetItemHeight default 25;
     property ItemText: TRouteMapListItemText read FItemText write SetItemText default itCaption;
@@ -164,11 +170,13 @@ begin
   FClickable := True;
   FAlignment := taCenter;
   FTextOffset := 8;
+  FBorderColor := clNavy;
   FItemColor := clCream;
   FItemText := itCaption;
   FHotTrack := True;
   FCurvature := 9;
   FHotTrackBorder := 2;
+  FTextOnly := False;
 end;
 
 destructor TJvWizardRouteMapList.Destroy;
@@ -242,7 +250,10 @@ var
 begin
   Canvas.Brush.Style := bsSolid;
   Canvas.Brush.Color := Color;
-  Canvas.Pen.Color := clNavy;
+  if BorderColor = clNone then
+    Canvas.Pen.Color := Color
+  else
+    Canvas.Pen.Color := BorderColor;
   GetCursorPos(P);
   P := ScreenToClient(P);
   R := ClientRect;
@@ -299,47 +310,54 @@ begin
         itSubtitle:
           S := Pages[PageIndex].Subtitle.Text;
       end;
-      if Rounded then
-        ACanvas.RoundRect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom, Curvature, Curvature)
-      else
-        ACanvas.Rectangle(ARect);
-      if ShowImages and Assigned(Wizard) and Assigned(Wizard.HeaderImages) then
+
+      if not TextOnly then
       begin
-        ATop := ((ARect.Bottom - ARect.Top) - Wizard.HeaderImages.Height) div 2;
-        BkColor := ACanvas.Brush.Color;
-        case Alignment of
-          taLeftJustify:
-            begin
-              Wizard.HeaderImages.Draw(ACanvas, ARect.Left + 4, ARect.Top + ATop, Pages[PageIndex].Header.ImageIndex,
-                Pages[PageIndex].Enabled);
-              Inc(ARect.Left, Wizard.HeaderImages.Width + 4);
-            end;
-          taRightJustify:
-            begin
-              Wizard.HeaderImages.Draw(ACanvas, ARect.Right - Wizard.HeaderImages.Width - 4, ARect.Top + ATop,
-                Pages[PageIndex].Header.ImageIndex, Pages[PageIndex].Enabled);
-              Dec(ARect.Right, Wizard.HeaderImages.Width + 4);
-            end;
-          taCenter:
-            begin
-              ALeft := ((ARect.Right - ARect.Left) - Wizard.HeaderImages.Width) div 2;
-              Inc(ARect.Top, 4);
-              Wizard.HeaderImages.Draw(ACanvas, ARect.Left + ALeft, ARect.Top + 8,
-                Pages[PageIndex].Header.ImageIndex, Pages[PageIndex].Enabled);
-              Inc(ARect.Top, Wizard.HeaderImages.Height);
-//              if ItemText = itSubtitle then
-//                Inc(ARect.Top, 16);
-            end;
-        end;
-        if not Pages[PageIndex].Enabled then
+        if Rounded then
+          ACanvas.RoundRect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom, Curvature, Curvature)
+        else
+          ACanvas.Rectangle(ARect);
+        if ShowImages and Assigned(Wizard) and Assigned(Wizard.HeaderImages) then
         begin
-          
-          
-          QWindows.SetBkColor(ACanvas.Handle, BkColor);
-          QWindows.SetTextColor(ACanvas.Handle, ColorToRGB(clGrayText));
-          
+          ATop := ((ARect.Bottom - ARect.Top) - Wizard.HeaderImages.Height) div 2;
+          BkColor := ACanvas.Brush.Color;
+          case Alignment of
+            taLeftJustify:
+              begin
+                Wizard.HeaderImages.Draw(ACanvas, ARect.Left + 4, ARect.Top + ATop, Pages[PageIndex].Header.ImageIndex,
+                  Pages[PageIndex].Enabled);
+                Inc(ARect.Left, Wizard.HeaderImages.Width + 4);
+              end;
+            taRightJustify:
+              begin
+                Wizard.HeaderImages.Draw(ACanvas, ARect.Right - Wizard.HeaderImages.Width - 4, ARect.Top + ATop,
+                  Pages[PageIndex].Header.ImageIndex, Pages[PageIndex].Enabled);
+                Dec(ARect.Right, Wizard.HeaderImages.Width + 4);
+              end;
+            taCenter:
+              begin
+                ALeft := ((ARect.Right - ARect.Left) - Wizard.HeaderImages.Width) div 2;
+                Inc(ARect.Top, 4);
+                Wizard.HeaderImages.Draw(ACanvas, ARect.Left + ALeft, ARect.Top + 8,
+                  Pages[PageIndex].Header.ImageIndex, Pages[PageIndex].Enabled);
+                Inc(ARect.Top, Wizard.HeaderImages.Height);
+  //              if ItemText = itSubtitle then
+  //                Inc(ARect.Top, 16);
+              end;
+          end;
+          if not Pages[PageIndex].Enabled then
+          begin
+            
+            
+            QWindows.SetBkColor(ACanvas.Handle, BkColor);
+            QWindows.SetTextColor(ACanvas.Handle, ColorToRGB(clGrayText));
+            
+          end;
         end;
-      end;
+      end
+      else
+        ACanvas.Brush.Style := bsClear;
+
       case Alignment of
         taLeftJustify:
           Inc(ARect.Left, TextOffset);
@@ -357,7 +375,7 @@ begin
         DrawText(ACanvas.Handle, PChar(S), Length(S), ARect,
           cAlignment[Alignment] or cWordWrap[ItemText = itSubtitle] or DT_VCENTER or DT_EDITCONTROL or
           DT_EXTERNALLEADING or DT_END_ELLIPSIS);
-      if HotTrack and (HotTrackBorder > 0) and PtInRect(AOrigRect, MousePos) then
+      if not TextOnly and HotTrack and (HotTrackBorder > 0) and PtInRect(AOrigRect, MousePos) then
       begin
         ACanvas.Brush.Style := bsClear;
         ACanvas.Pen.Color := HotTrackFont.Color;
@@ -527,6 +545,24 @@ begin
 end;
 
 
+
+procedure TJvWizardRouteMapList.SetBorderColor(Value: TColor);
+begin
+  if Value <> FBorderColor then
+  begin
+    FBorderColor := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvWizardRouteMapList.SetTextOnly(const Value: Boolean);
+begin
+  if Value <> FTextOnly then
+  begin
+    FTextOnly := Value;
+    Invalidate;
+  end;
+end;
 
 end.
 

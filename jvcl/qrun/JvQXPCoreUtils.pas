@@ -280,6 +280,7 @@ procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
   begin
     
     
+    SetPenColor(ACanvas.handle, ACanvas.Font.Color);
     DrawText(ACanvas.Handle, WideString(AText), -1, Rect, Flags);
     
   end;
@@ -343,7 +344,7 @@ begin
   try
     ColorMap.Assign(Bitmap);
     Bitmap.Dormant;
-    Bitmap.FreeImage;
+    
     with ColorMap.Canvas do
     begin
       Brush.Color := AColor;
@@ -353,10 +354,13 @@ begin
       Bitmap.TransparentColor := clBlack;
       Bitmap.Transparent := true;
       Draw(0,0, Bitmap);
-      Bitmap.TransparentColor := clFuchsia;
       
     end;
+    
+    Bitmap.FreeImage;
     Bitmap.Assign(ColorMap);
+    Bitmap.TransparentMode := tmAuto;
+    
     
   finally
     ColorMap.Free;

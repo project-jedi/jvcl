@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,7 +20,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-09-03
 Added editors for JvFooter and JvGroupHeader
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -28,6 +27,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -37,19 +37,93 @@ unit JvQDsgnEditors;
 
 interface
 uses
+  Classes, SysUtils,
   
   
-  QForms, QControls, QGraphics, QExtCtrls, {Tabs,} QDialogs,
-  QExtDlgs, QMenus, QStdCtrls, QImgList, QWindows, Types,
+  QForms, QControls, QGraphics, QExtCtrls, QDialogs, QTypes,
+  QExtDlgs, QMenus, QStdCtrls, QImgList, Types, QWindows, ClxImgEdit,
   
   DsnConst,
   
   RTLConsts, DesignIntf, DesignEditors, DesignMenus,
   
+
+  ClxEditors
   
-  Classes, SysUtils;
+  ;
+  
+
+
+//
+// asn: taken from VCLEditors
+//
+type
+{ ICustomPropertyDrawing
+  Implementing this interface allows a property editor to take over the object
+  inspector's drawing of the name and the value. If paFullWidthName is returned
+  by IProperty.GetAttributes then only PropDrawName will be called. Default
+  implementation of both these methods are provided in DefaultPropDrawName
+  and DefaultPropDrawValue in this unit. }
+  ICustomPropertyDrawing = interface
+    ['{E1A50419-1288-4B26-9EFA-6608A35F0824}']
+    procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect;
+      ASelected: Boolean);
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+      ASelected: Boolean);
+  end;
+
+{ ICustomPropertyDrawing
+  Implemention this interface allows a property editor to take over the drawing
+  of the drop down list box displayed by the property editor. This is only
+  meaningful to implement if the property editor returns paValueList from
+  IProperty.GetAttributes. The Value parameter is the result of
+  IProperty.GetValue. The implementations ListMeasureWidth and ListMeasureHeight
+  can be left blank since the var parameter is filled in to reasonable defaults
+  by the object inspector. A default implementation of ListDrawValue is supplied
+  in the DefaultPropertyListDrawValue procedure included in this unit }
+  ICustomPropertyListDrawing = interface
+    ['{BE2B8CF7-DDCA-4D4B-BE26-2396B969F8E0}']
+    procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
+      var AWidth: Integer);
+    procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
+      var AHeight: Integer);
+    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
+      const ARect: TRect; ASelected: Boolean);
+  end;
+
+(*)
+type
+  TJvQColorProperty = class(TIntegerProperty, ICustomPropertyDrawing,
+    ICustomPropertyListDrawing)
+  public
+    procedure Edit; override;
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: string; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    procedure SetValue(const Value: string); override;
+
+    { ICustomPropertyListDrawing }
+    procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
+      var AHeight: Integer);
+    procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
+      var AWidth: Integer);
+    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
+      const ARect: TRect; ASelected: Boolean);
+
+    { CustomPropertyDrawing }
+    procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect;
+      ASelected: Boolean);
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+      ASelected: Boolean);
+  end;
+(*)
+
 
 type
+  // Special TClassProperty, that show events along with all other properties
+  // This is only useful with version 5 and before
+
+
   TJvHintProperty = class(TStringProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
@@ -87,34 +161,18 @@ type
 
   TJvStringsEditor = class(TDefaultEditor)
   protected
-
+    
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
-
+    
     function GetStringsName: string; virtual;
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
-  (*)
-  TJvDateTimeExProperty = class(TDateTimeProperty)
-  public
-    procedure Edit; override;
-    function GetAttributes: TPropertyAttributes; override;
-  end;
 
-  TJvDateExProperty = class(TDateProperty)
-  public
-    procedure Edit; override;
-    function GetAttributes: TPropertyAttributes; override;
-  end;
+  
 
-  TJvTimeExProperty = class(TTimeProperty)
-  public
-    procedure Edit; override;
-    function GetAttributes: TPropertyAttributes; override;
-  end;
-  (*)
   TJvShortCutProperty = class(TIntegerProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
@@ -123,6 +181,29 @@ type
     procedure SetValue(const Value: string); override;
   end;
 
+  
+  TJvDefaultImageIndexProperty = class(TIntegerProperty, ICustomPropertyDrawing, ICustomPropertyListDrawing)
+  protected
+    function ImageList: TCustomImageList; virtual;
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
+    procedure ListMeasureWidth(const Value: string;
+      ACanvas: TCanvas; var AWidth: Integer); virtual;
+    procedure ListMeasureHeight(const Value: string;
+      ACanvas: TCanvas; var AHeight: Integer); virtual;
+    procedure ListDrawValue(const Value: string;
+      ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean); virtual;
+    procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect;
+      ASelected: Boolean);
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+      ASelected: Boolean);
+  end;
+  
+
+  {$IFDEF COMPILER5}
   TJvDefaultImageIndexProperty = class(TIntegerProperty)
   protected
     function ImageList: TCustomImageList; virtual;
@@ -131,20 +212,16 @@ type
     procedure SetValue(const Value: string); override;
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
-    (*)
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
       var AWidth: Integer); override;
     procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
       var AHeight: Integer); override;
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
       const ARect: TRect; ASelected: Boolean); override;
-
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean); override;
-    (*)
   end;
-
-  
+  {$ENDIF COMPILER5}
 
   TJvNosortEnumProperty = class(TEnumProperty)
   public
@@ -162,9 +239,8 @@ type
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
   end;
-
+                  
 type
-{$IFDEF _LINUX}
   TJvImageListEditor = class(TComponentEditor)
   private
     procedure SaveAsBitmap(ImageList: TImageList);
@@ -173,7 +249,6 @@ type
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
-{$ENDIF LINUX}
 
   TJvWeekDayProperty = class(TEnumProperty)
     function GetAttributes: TPropertyAttributes; override;
@@ -185,8 +260,19 @@ type
     procedure SetValue(const Value: string); override;
   end;
 
+procedure DefaultPropertyDrawName(Prop: TPropertyEditor; Canvas: TCanvas;
+  const Rect: TRect);
+procedure DefaultPropertyDrawValue(Prop: TPropertyEditor; Canvas: TCanvas;
+  const Rect: TRect);
+procedure DefaultPropertyListDrawValue(const Value: string; Canvas: TCanvas;
+  const Rect: TRect; Selected: Boolean);
+
 
 implementation
+
+
+{$WARN UNIT_PLATFORM OFF}
+
 
 uses
   TypInfo, Math,
@@ -292,10 +378,7 @@ end;
 procedure TJvDirectoryProperty.Edit;
 var
   AName: string;
-  
-  
-  FolderName: WideString;
-  
+  FolderName: widestring;
   C: TPersistent;
 begin
   C := GetComponent(0);
@@ -434,72 +517,118 @@ function TJvStringsEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
-(*)
-//=== TJvDateTimeExProperty ==================================================
 
-procedure TJvDateTimeExProperty.Edit;
-var
-  D: TDateTime;
+
+
+//=== TJvDefaultImageIndexProperty ===========================================
+
+
+
+function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
+const
+  cImageList = 'ImageList';
+  cImages = 'Images';
 begin
-  D := GetFloatValue;
-  if D = 0.0 then
-    D := Now;
-  if TFrmSelectDateTimeDlg.SelectDateTime(D, dstDateTime) then
-  begin
-    SetFloatValue(D);
-    Designer.Modified;
+  if TypInfo.GetPropInfo(GetComponent(0), cImageList) <> nil then
+    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), cImageList))
+  else
+  if TypInfo.GetPropInfo(GetComponent(0), cImages) <> nil then
+    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), cImages))
+  else
+    Result := nil;
+end;
+
+function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paValueList, paSortList, paMultiSelect, paRevertable];
+end;
+
+function TJvDefaultImageIndexProperty.GetValue: string;
+begin
+  Result := IntToStr(GetOrdValue);
+end;
+
+procedure TJvDefaultImageIndexProperty.SetValue(const Value: string);
+var
+  XValue: Integer;
+begin
+  try
+    XValue := StrToInt(Value);
+    SetOrdValue(XValue);
+  except
+    inherited SetValue(Value);
   end;
 end;
 
-function TJvDateTimeExProperty.GetAttributes: TPropertyAttributes;
+procedure TJvDefaultImageIndexProperty.GetValues(Proc: TGetStrProc);
+var
+  Tmp: TCustomImageList;
+  I: Integer;
 begin
-  Result := inherited GetAttributes + [paDialog];
+  Tmp := ImageList;
+  if Assigned(Tmp) then
+    for I := 0 to Tmp.Count - 1 do
+      Proc(IntToStr(I));
 end;
 
-//=== TJvDateExProperty ======================================================
-
-procedure TJvDateExProperty.Edit;
+procedure TJvDefaultImageIndexProperty.ListMeasureWidth(const Value: string; ACanvas: TCanvas; var AWidth: Integer);
 var
-  D: TDateTime;
+  Tmp: TCustomImageList;
 begin
-  D := GetFloatValue;
-  if D = 0.0 then
-    D := Now;
-  if TFrmSelectDateTimeDlg.SelectDateTime(D, dstDate) then
+  Tmp := ImageList;
+  if Assigned(Tmp) then
+    AWidth := Tmp.Width + ACanvas.TextHeight(Value) + 4;
+end;
+
+procedure TJvDefaultImageIndexProperty.ListMeasureHeight(const Value: string; ACanvas: TCanvas; var AHeight: Integer);
+var
+  Tmp: TCustomImageList;
+begin
+  Tmp := ImageList;
+  if Assigned(Tmp) then
+    AHeight := Max(Tmp.Height + 2, ACanvas.TextHeight(Value) + 2);
+end;
+
+procedure TJvDefaultImageIndexProperty.ListDrawValue(const Value: string; ACanvas:
+  TCanvas; const ARect: TRect; ASelected: Boolean);
+var
+  Tmp: TCustomImageList;
+  R: TRect;
+begin
+  DefaultPropertyListDrawValue(Value, ACanvas, ARect, ASelected);
+  Tmp := ImageList;
+  if Tmp <> nil then
   begin
-    SetFloatValue(D);
-    Designer.Modified;
+    R := ARect;
+    ACanvas.FillRect(ARect);
+    Tmp.Draw(ACanvas, ARect.Left, ARect.Top, StrToInt(Value));
+    OffsetRect(R, Tmp.Width + 2, 0);
+    DrawText(ACanvas.Handle, PChar(Value), -1, R, 0);
   end;
 end;
 
-function TJvDateExProperty.GetAttributes: TPropertyAttributes;
+procedure TJvDefaultImageIndexProperty.PropDrawName(ACanvas: TCanvas;
+  const ARect: TRect; ASelected: Boolean);
 begin
-  Result := inherited GetAttributes + [paDialog];
+  DefaultPropertyDrawName(Self, ACanvas, ARect);
 end;
 
-//=== TJvTimeExProperty ======================================================
-
-procedure TJvTimeExProperty.Edit;
+procedure TJvDefaultImageIndexProperty.PropDrawValue(ACanvas: TCanvas;
+  const ARect: TRect; ASelected: Boolean);
 var
-  D: TDateTime;
+  Tmp: TCustomImageList;
 begin
-  D := GetFloatValue;
-  if D = 0.0 then
-    D := Now
-  else // (p3) we need the date part or we might get a "Must be in ShowCheckBox mode" error
-    D := SysUtils.Date + Frac(D);
-  if TFrmSelectDateTimeDlg.SelectDateTime(D, dstTime) then
-  begin
-    SetFloatValue(Frac(D)); // (p3) only return the time portion
-    Designer.Modified;
-  end;
+  Tmp := ImageList;
+  if (GetVisualValue <> '') and Assigned(Tmp) then
+    ListDrawValue(GetVisualValue, ACanvas, ARect, ASelected)
+  else
+    DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
 
-function TJvTimeExProperty.GetAttributes: TPropertyAttributes;
-begin
-  Result := inherited GetAttributes + [paDialog];
-end;
-(*)
+
+
+{$IFDEF COMPILER5}
+
 function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
 const
   cImageList = 'ImageList';
@@ -547,8 +676,6 @@ begin
       Proc(IntToStr(I));
 end;
 
-
-(*)
 procedure TJvDefaultImageIndexProperty.ListDrawValue(const Value: string;
   ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
 var
@@ -586,6 +713,7 @@ begin
   if Assigned(Tmp) then
     AWidth := Tmp.Width + ACanvas.TextHeight(Value) + 4;
 end;
+
 procedure TJvDefaultImageIndexProperty.PropDrawValue(ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
 begin
@@ -594,9 +722,8 @@ begin
 //  else
   inherited PropDrawValue(ACanvas, ARect, ASelected);
 end;
-(*)
 
-
+{$ENDIF COMPILER5}
 
 //=== TJvShortCutProperty ======================================================
 
@@ -681,8 +808,7 @@ end;
 
 procedure TJvFilenameProperty.OnDialogShow(Sender: TObject);
 begin
-  // (rom) Where does chx1 come from?
-
+//  SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(RsStripFilePath));
 end;
 
 //=== TJvExeNameProperty =====================================================
@@ -734,7 +860,6 @@ begin
     SetFloatValue(StrToFloat(Value));
 end;
 
-{$IFDEF _LINUX}
 procedure TJvImageListEditor.SaveAsBitmap(ImageList: TImageList);
 var
   Bitmap: TBitmap;
@@ -765,7 +890,7 @@ begin
             for I := 0 to ImageList.Count - 1 do
               ImageList.Draw(Canvas, ImageList.Width * I, 0, I);
 //            HandleType := bmDIB;
-            if PixelFormat in [pf16bit] then
+            if PixelFormat in [pf8bit, pf16bit] then
             try
               PixelFormat := pf24bit;
             except
@@ -812,8 +937,6 @@ function TJvImageListEditor.GetVerbCount: Integer;
 begin
   Result := 2;
 end;
-{$ENDIF LINUX}
-
 
 //=== TJvWeekDayProperty =====================================================
 
@@ -851,6 +974,182 @@ begin
   else
     inherited SetValue(Value);
 end;
+
+{ TJvPersistentProperty }
+
+
+(*)
+procedure TJvQColorProperty.Edit;
+var
+  ColorDialog: TColorDialog;
+  IniFile: TIniFile;
+
+  procedure GetCustomColors;
+  begin
+    if BaseRegistryKey = '' then Exit;
+    IniFile := TRegIniFile.Create(BaseRegistryKey);
+    try
+      IniFile.ReadSectionValues(SCustomColors, ColorDialog.CustomColors);
+    except
+      { Ignore errors reading values }
+    end;
+  end;
+
+  procedure SaveCustomColors;
+  var
+    I, P: Integer;
+    S: string;
+  begin
+    if IniFile <> nil then
+      with ColorDialog do
+        for I := 0 to CustomColors.Count - 1 do
+        begin
+          S := CustomColors.Strings[I];
+          P := Pos('=', S);
+          if P <> 0 then
+          begin
+            S := Copy(S, 1, P - 1);
+            IniFile.WriteString(SCustomColors, S,
+              CustomColors.Values[S]);
+          end;
+        end;
+  end;
+begin
+  IniFile := nil;
+  ColorDialog := TColorDialog.Create(Application);
+  try
+    GetCustomColors;
+    ColorDialog.Color := GetOrdValue;
+    ColorDialog.HelpContext := hcDColorEditor;
+    ColorDialog.Options := [cdShowHelp];
+    if ColorDialog.Execute then SetOrdValue(ColorDialog.Color);
+    SaveCustomColors;
+  finally
+    IniFile.Free;
+    ColorDialog.Free;
+  end;
+end;
+
+function TJvQColorProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paDialog, paValueList, paRevertable];
+end;
+
+function TJvQColorProperty.GetValue: string;
+begin
+  Result := ColorToString(TColor(GetOrdValue));
+end;
+
+procedure TJvQColorProperty.GetValues(Proc: TGetStrProc);
+begin
+  GetColorValues(Proc);
+end;
+
+procedure TJvQColorProperty.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+  ASelected: Boolean);
+begin
+  if GetVisualValue <> '' then
+    ListDrawValue(GetVisualValue, ACanvas, ARect, True{ASelected})
+  else
+    DefaultPropertyDrawValue(Self, ACanvas, ARect);
+end;
+
+procedure TJvQColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
+  const ARect: TRect; ASelected: Boolean);
+  function ColorToBorderColor(AColor: TColor): TColor;
+  type
+    TColorQuad = record
+      Red,
+      Green,
+      Blue,
+      Alpha: Byte;
+    end;
+  begin
+    if (TColorQuad(AColor).Red > 192) or
+       (TColorQuad(AColor).Green > 192) or
+       (TColorQuad(AColor).Blue > 192) then
+      Result := clBlack
+    else if ASelected then
+      Result := clWhite
+    else
+      Result := AColor;
+  end;
+var
+  Right: Integer;
+  OldPenColor, OldBrushColor: TColor;
+begin
+  Right := (ARect.Bottom - ARect.Top) {* 2} + ARect.Left;
+  with ACanvas do
+  begin
+    // save off things
+    OldPenColor := Pen.Color;
+    OldBrushColor := Brush.Color;
+
+    // frame things
+    Pen.Color := Brush.Color;
+    Rectangle(ARect.Left, ARect.Top, Right, ARect.Bottom);
+
+    // set things up and do the work
+    Brush.Color := StringToColor(Value);
+    Pen.Color := ColorToBorderColor(ColorToRGB(Brush.Color));
+    Rectangle(ARect.Left + 1, ARect.Top + 1, Right - 1, ARect.Bottom - 1);
+
+    // restore the things we twiddled with
+    Brush.Color := OldBrushColor;
+    Pen.Color := OldPenColor;
+    DefaultPropertyListDrawValue(Value, ACanvas, Rect(Right, ARect.Top, ARect.Right,
+      ARect.Bottom), ASelected);
+  end;
+end;
+
+procedure TJvQColorProperty.ListMeasureWidth(const Value: string;
+  ACanvas: TCanvas; var AWidth: Integer);
+begin
+  AWidth := AWidth + ACanvas.TextHeight('M') {* 2};
+end;
+
+procedure TJvQColorProperty.SetValue(const Value: string);
+var
+  NewValue: Longint;
+begin
+  if IdentToColor(Value, NewValue) then
+    SetOrdValue(NewValue)
+  else
+    inherited SetValue(Value);
+end;
+
+procedure TJvQColorProperty.ListMeasureHeight(const Value: string;
+  ACanvas: TCanvas; var AHeight: Integer);
+begin
+  // No implemenation necessary
+end;
+
+procedure TJvQColorProperty.PropDrawName(ACanvas: TCanvas; const ARect: TRect;
+  ASelected: Boolean);
+begin
+  DefaultPropertyDrawName(Self, ACanvas, ARect);
+end;
+(*)
+
+procedure DefaultPropertyDrawName(Prop: TPropertyEditor; Canvas: TCanvas;
+  const Rect: TRect);
+begin
+  Canvas.TextRect(Rect, Rect.Left + 1, Rect.Top + 1, Prop.GetName);
+end;
+
+procedure DefaultPropertyDrawValue(Prop: TPropertyEditor; Canvas: TCanvas;
+  const Rect: TRect);
+begin
+  Canvas.TextRect(Rect, Rect.Left + 1, Rect.Top + 1, Prop.GetVisualValue);
+end;
+
+procedure DefaultPropertyListDrawValue(const Value: string; Canvas: TCanvas;
+  const Rect: TRect; Selected: Boolean);
+begin
+  Canvas.TextRect(Rect, Rect.Left + 1, Rect.Top + 1, Value);
+end;
+
+
 
 end.
 

@@ -39,14 +39,14 @@ procedure Register;
 implementation
 uses
   Classes,
-  
-  
+
+
   QControls, QStdCtrls, QExtCtrls, QGraphics, QActnList, QImgList, QDialogs,
   QTypes,
-  
-  
+
+
   DesignEditors, DesignIntf,
-  
+
   JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVQCLVer, JvQComponent,
   JvQActions, JvQActnResForm, JvQJVCLAboutForm, JvQDsgnEditors, JvQIDEZoom,
   JvQJVCLAboutEditor, JvQBaseDlgEditor, {JvQColorEditor,} JvQPaintBoxEditor,
@@ -56,7 +56,7 @@ uses
   JvQColorProviderEditors, JvQDataProviderEditors, JvQDataProvider,
   JvQDataProviderIntf, JvQColorProvider,
   {$ENDIF MSWINDOWS}
-  
+
   JvQAppStorage, JvQAppStorageSelectList;
 
 
@@ -83,14 +83,14 @@ begin
   // all other compilers, it doesn't need anything as it is declared as
   // a SubComponent. However, we want to hide the Name and Tag property
   // in this case, thus the registration of 'nil' property editors
-  
+
   RegisterPropertyEditor(TypeInfo(TComponentName), TJvPersistent, 'Name', nil);
   RegisterPropertyEditor(TypeInfo(Longint), TJvPersistent, 'Tag', nil);
-  
+
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+//  RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
 
-  
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
@@ -114,7 +114,7 @@ begin
   RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
 //  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
 
-  
+
 
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 

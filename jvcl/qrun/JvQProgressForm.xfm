@@ -2,8 +2,8 @@ object frmProgress: TfrmProgress
   Left = 411
   Top = 226
   Width = 316
-  Height = 165
-  VertScrollBar.Range = 149
+  Height = 149
+  VertScrollBar.Range = 141
   HorzScrollBar.Range = 42
   ActiveControl = btnCancel
   BorderIcons = []
@@ -37,6 +37,18 @@ object frmProgress: TfrmProgress
     Width = 284
     Height = 16
     Anchors = [akLeft, akTop, akRight]
+    Caption = 'caption'
+    Color = clMaroon
+    Font.Color = clWhite
+    Font.Height = 11
+    Font.Name = 'MS Sans Serif'
+    Font.Pitch = fpVariable
+    Font.Style = []
+    Font.Weight = 40
+    ParentColor = False
+    ParentFont = False
+    Position = 50
+    Smooth = True
   end
   object Label1: TLabel
     Left = 16
@@ -47,7 +59,7 @@ object frmProgress: TfrmProgress
   end
   object btnCancel: TButton
     Left = 224
-    Top = 124
+    Top = 116
     Width = 75
     Height = 25
     Anchors = [akTop, akRight]

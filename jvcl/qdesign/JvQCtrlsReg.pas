@@ -40,10 +40,10 @@ implementation
 
 uses
   Classes,
-  
-  
+
+
   QControls, QImgList, QActnList, QTypes,
-  
+
 
   DesignEditors, DesignIntf,
 
@@ -78,9 +78,8 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteButton, [TJvTransparentButton,
     TJvTransparentButton2, TJvArrowButton, TJvColorButton,
-    TJvHTButton, TJvSpacer, TJvSwitch, {TJvColorBox, TJvColorSquare,
-    TJvDropButton,} TJvOfficeColorButton, TJvOfficeColorPanel]);
-  RegisterComponents(RsPaletteBarPanel, [{$IFDEF LINUX}TJvSpeedBar,{$ENDIF}
+    TJvHTButton, TJvSpacer, TJvSwitch, TJvOfficeColorButton, TJvOfficeColorPanel]);
+  RegisterComponents(RsPaletteBarPanel, [TJvSpeedBar,
     TJvCaptionPanel, TJvItemsPanel, TJvMovableBevel, TJvRollOut,
     TJvFooter, TJvGroupHeader, TJvComponentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel,
@@ -93,6 +92,7 @@ begin
   RegisterComponents(RsPaletteNonVisual, [TJvHint {, TJvRegAuto}]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
+  RegisterPropertyEditor(TypeInfo(WideString), TComponent, 'Hint', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(TJvLabelBehaviorName), TJvBehaviorLabel, 'Behavior', TJvLabelBehaviorProperty);
 //  RegisterPropertyEditor(TypeInfo(TCursor), TJvxSplitter, 'Cursor', nil);
   //RegisterPropertyEditor(TypeInfo(TDateTime), TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
@@ -102,12 +102,9 @@ begin
 //  RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'DownIndex', TJvTBImagesProperty);
 //  RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'GrayIndex', TJvTBImagesProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvRollOutImageOptions, '', TJvRollOutOptionsImagesProperty);
-  {$IFDEF LINUX}
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedItem, 'BtnCaption', TStringProperty);
   RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
   RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);
-  {$ENDIF LINUX}
-
 //  RegisterComponentEditor(TJvScrollMax, TJvScrollMaxEditor);
   RegisterComponentEditor(TJvRollOut, TJvRollOutDefaultEditor);
   RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);

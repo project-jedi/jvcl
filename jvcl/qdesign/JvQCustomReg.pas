@@ -45,20 +45,15 @@ uses
 
   //FiltEdit,
 
-  //ToolsAPI,
+  ToolsAPI,
   JclSchedule,
   JvQDsgnConsts,
   JvQGammaPanel, JvQInspector, JvQLinkLabel,
-  JvQTMTimeLine,
+  JvQTMTimeLine, JvQLookOut, JvQOutlookBar,
   JvQValidateEdit,
-  JvQChart;
+  JvQOutlookBarEditors, JvQLookoutEditor, JvQChart;
 
-{$IFDEF MSWINDOWS}
-{$R ..\resources\JvCustomReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvCustomReg.dcr}
-{$ENDIF LINUX}
 
 procedure Register;
 const
@@ -68,9 +63,10 @@ const
   cSchedule = 'Schedule';
   cFilter = 'Filter';
 begin
-//  RegisterComponents(RsPaletteButton, [TJvLookOutButton, TJvExpressButton]);
+  RegisterComponents(RsPaletteButton, [TJvLookOutButton, TJvExpressButton]);
   RegisterComponents(RsPaletteEdit, [TJvValidateEdit]);
-  RegisterComponents(RsPaletteBarPanel, [TJvGammaPanel]);
+  RegisterComponents(RsPaletteBarPanel, [TJvGammaPanel, TJvOutlookBar,
+    TJvLookout, {TJvLookOutPage, } TJvExpress]);
   RegisterComponents(RsPaletteLabel, [TJvLinkLabel]);
 //  RegisterComponents(RsPaletteImageAnimator, [TJvThumbView, TJvThumbnail,
 //    TJvThumbImage]);
@@ -78,6 +74,36 @@ begin
     TJvInspectorDotNETPainter, TJvTMTimeLine, TJvChart]);
 //  RegisterComponents(RsPaletteNonVisual, [TJvTrayIcon, TJvScheduledEvents,
 //    TJvBalloonHint]);
+
+  RegisterPropertyEditor(TypeInfo(Integer), TJvCustomOutlookBar,
+    cActivePageIndex, TJvOutlookBarActivePageEditor);
+  RegisterPropertyEditor(TypeInfo(TJvOutlookBarPages), TJvCustomOutlookBar,
+    '', TJvOutlookBarPagesPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TJvOutlookBarButtons), TJvOutlookBarPage,
+    '', TJvOutlookBarPagesPropertyEditor);
+//  RegisterPropertyEditor(TypeInfo(Integer), TJvOutlookBarButton,
+//    cImageIndex, TJvOutlookBarButtonImageIndexProperty);
+//  RegisterPropertyEditor(TypeInfo(TJvColors), TJvHLEditor,
+//    cColors, TJvHLEditorColorProperty);
+//  RegisterPropertyEditor(TypeInfo(TJvColors), TJvWideHLEditor,
+//    cColors, TJvHLEditorColorProperty);
+//  RegisterPropertyEditor(TypeInfo(IJclSchedule), TJvEventCollectionItem,
+//    cSchedule, TJvSchedulePropertyEditor);
+//  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvLookoutButton,
+//    cImageIndex, TJvLookOutImageIndexProperty);
+//  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvExpressButton,
+//    cImageIndex, TJvLookOutImageIndexProperty);
+//  RegisterPropertyEditor(TypeInfo(string), TJvThumbView,
+//    cFilter, TFilterProperty);
+
+//  RegisterComponentEditor(TJvHLEdPropDlg, TJvHLEdPropDlgEditor);
+  RegisterComponentEditor(TJvCustomOutlookBar, TJvOutlookBarComponentEditor);
+//  RegisterComponentEditor(TJvCustomTimeLine, TJvTimeLineEditor);
+  RegisterComponentEditor(TJvLookOut, TJvLookOutEditor);
+  RegisterComponentEditor(TJvLookOutPage, TJvLookOutPageEditor);
+  RegisterComponentEditor(TJvExpress, TJvExpressEditor);
+//  RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventComponentEditor);
+  RegisterClass(TJvLookoutPage);
 end;
 
 end.

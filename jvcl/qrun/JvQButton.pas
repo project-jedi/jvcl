@@ -686,9 +686,9 @@ begin
   if (Parent <> nil) and Parent.HandleAllocated then
   begin
     R := BoundsRect;
-    InvalidateRect(Parent.Handle,@R, True);
+    Parent.InvalidateRect(R, True);
   end;
-  Repaint;
+  Invalidate;
 end;
 
 // == TJvDropDownButton ===================================================
