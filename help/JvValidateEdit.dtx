@@ -5,7 +5,7 @@ Summary
   Contains the TJvValidateEdit component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  
+  Christopher Latta
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTextValidateEvent
 <TITLE TJvCustomTextValidateEvent type>
@@ -13,185 +13,255 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit
 Summary
-  Write here a summary (1 line)
+Edit control that can restrict it's content to only accept
+valid input.
+
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
+TJvCustomValidateEdit is a base class for edit controls that
+can restrict user input and format it's content. To put a
+validating edit control on a form, don't use
+TJvCustomValidateEdit. Instead, use a derived component like
+TJvValidateEdit.
+
 @@TJvCustomValidateEdit.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.AsCurrency
 Summary
-  Write here a summary (1 line)
+Represents the Text property as a Currency value.
+
 Description
-  Write here a description
+Use AsCurrency to read the value of the Text property into an
+\object or variable of type Currency or to assign a Currency
+value to the Text property.
+
+
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+AsFloat, AsInteger, Text, Value
+
+Note
+If the current value of Text cannot be represented as a
+currency value, AsCurrency returns 0.
+
 @@TJvCustomValidateEdit.AsFloat
 Summary
-  Write here a summary (1 line)
+Represents the Text property as a Double value.
+
 Description
-  Write here a description
+Use AsFloat to read the value of the Text property into an
+\object or variable of type Double or to assign a Double
+value to the Text property.
+
+Note
+If the current value of Text cannot be represented as a
+Double value, AsFloat returns 0.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+AsCurrency, AsInteger, Text, Value
+
 @@TJvCustomValidateEdit.AsInteger
 Summary
-  Write here a summary (1 line)
+Represents the field’s value as a 32-bit integer.
+
 Description
-  Write here a description
+Use AsInteger to read the value of the Text property into an
+\object or variable of type integer or to assign a 32-bit
+integer value to the Text property.
+
+Note
+If the current value of Text cannot be represented as an
+integer value, AsInteger returns 0.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+AsCurrency, AsFloat, Text, Value
+
 @@TJvCustomValidateEdit.Assign
 Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
+Copies the properties of another instance to this object.
+
 Description
-  Write here a description
+Use Assign to copy the properties of another
+TJvCustomValidateEdit (or descendant) to this object. The
+properties copied are CriticalPoints, DisplayFormat,
+DecimalPlaces, MinValue, MaxValue, HasMinValue, HasMaxValue
+and ZeroEmpty.
+
+
+
+If Source is not derived from TJvCustomValidateEdit, Assign
+calls inherited Assign.
+
 Parameters
-  Source - Description for this parameter
+Source :  The object to copy from.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+
 @@TJvCustomValidateEdit.AutoAlignment
 Summary
-  Write here a summary (1 line)
+Specifies if alignment is changed automatically.
+
 Description
-  Write here a description
+Use AutoAlignment to specify if the alignmnt of the text is
+automatically changed when the DisplayFormat is changed. If
+AutoAlignment is true, DisplayFormat's that are numeric in
+nature are right-justified and all others are left-justified.
+Set AutoAlignment to false to control the Alignment manually.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+DisplayFormat, Alignment
+
 @@TJvCustomValidateEdit.CheckChars
 Summary
-  Write here a summary (1 line)
+Specifies the character to check.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvCustomValidateEdit.CriticalPoints
 Summary
-  Write here a summary (1 line)
+Specifies the points to compare input values against.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvCustomValidateEdit.DecimalPlaces
 Summary
-  Write here a summary (1 line)
+Specifies the number of decimals to display.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvCustomValidateEdit.DisplayFormat
 Summary
-  Write here a summary (1 line)
+Specifies the format to use for display.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvCustomValidateEdit.DisplayPrefix
 Summary
-  Write here a summary (1 line)
+Specifies a prefix to display when the edit doesn't have
+focus.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvCustomValidateEdit.DisplaySuffix
 Summary
-  Write here a summary (1 line)
+Specifies a suffix to display when the edit doesn't have
+focus.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvCustomValidateEdit.EditText
 Summary
-  Write here a summary (1 line)
+The current value of Text.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvCustomValidateEdit.HasMaxValue
 Summary
-  Write here a summary (1 line)
+Specifies if the MaxValue property is used.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvCustomValidateEdit.HasMinValue
 Summary
-  Write here a summary (1 line)
+Specifies if the MinValue property is used.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvCustomValidateEdit.MaxValue
 Summary
-  Write here a summary (1 line)
+Specifies the maximum allowed value.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvCustomValidateEdit.MinValue
 Summary
-  Write here a summary (1 line)
+Specifies the minimum allowed value.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvCustomValidateEdit.OnCustomValidate
 Summary
-  Write here a summary (1 line)
+Occurs when the control needs to validate input and
+DisplayFormat is dfCustom.
+
 Description
-  Write here a description
+Write here a description
+
 Parameters
-  Sender  - Description for this parameter
-  Key     - Description for this parameter
-  AText   - Description for this parameter
-  Pos     - Description for this parameter
-  IsValid - Description for this parameter
+Sender :   \Description for this parameter
+Key :      \Description for this parameter
+AText :    \Description for this parameter
+Pos :      \Description for this parameter
+IsValid :  \Description for this parameter
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvCustomValidateEdit.OnValueChanged
 Summary
-  Write here a summary (1 line)
+Occurs when the value in the edit changes.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvCustomValidateEdit.Text
 Summary
   Write here a summary (1 line)
@@ -203,31 +273,46 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.Value
 Summary
-  Write here a summary (1 line)
+The value of Text expressed as a variant.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvCustomValidateEdit.ZeroEmpty
 Summary
-  Write here a summary (1 line)
+Specifies if an empty Text property should be interpreted as
+the value 0.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
+
 @@TJvValidateEdit
 <TITLEIMG TJvValidateEdit>
 JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
+  GROUP=JVCL.EditsMemosAndCombos.Edits FLAG=Component
+
 Summary
-  Write here a summary (1 line)
+  Edit control that can restrict it's content to only accept valid input.
+
 Description
-  Write here a description
+  Use a TJvValidateEdit when you need to restrict what the user
+  can type into the control. A TJvValidateEdit can both format
+  the text in the control as well as restrict the allowable
+  characters the user can type into it. For example, to
+  restrict the user to only type integer values, set
+  DisplayFormat to dfInteger.
+
+  TJvValidateEdit is derived from TJvCustomValidateEdit,
+  publishes most of it's properties but doesn't add any new
+  functionality.
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPoints
 Summary
@@ -317,10 +402,12 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat
 <TITLE TJvValidateEditDisplayFormat type>
+
 Summary
-  Write here a summary (1 line)
+Defines available display formats.
+
 Description
-  Write here a description
+
 @@TJvValidateEditDisplayFormat.dfAlphabetic
   Description for dfAlphabetic
 @@TJvValidateEditDisplayFormat.dfAlphaNumeric

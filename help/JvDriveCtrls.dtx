@@ -3,7 +3,7 @@
 @@JvDriveCtrls.pas
 <GROUP JVCL.FileRef>
 Summary
-  Contains the TJvDriveCtrls component.
+  Contains various drive, folder and file displaying controls.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
@@ -11,10 +11,10 @@ Author
 @@TJvDirectoryListBox
 <TITLEIMG TJvDirectoryListBox>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.ListsAndTrees.Lists
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Displays a list of folders.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
@@ -23,7 +23,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.AutoExpand
 Summary
-  Write here a summary (1 line)
+  Specifies if the selected folder expands when selected.
 Description
   Write here a description
 See Also
@@ -32,18 +32,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.CaseSensitive
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDirectoryListBox.CreateWnd
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
+  Specifies whether the list is case sensitive. 
 Description
   Write here a description
 See Also
@@ -52,7 +41,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.Directory
 Summary
-  Write here a summary (1 line)
+  Specifies the currently selected directory.
 Description
   Write here a description
 See Also
@@ -61,7 +50,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.DirLabel
 Summary
-  Write here a summary (1 line)
+  Specifies a label that is used to display the current directory.
 Description
   Write here a description
 See Also
@@ -70,7 +59,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.Drive
 Summary
-  Write here a summary (1 line)
+  Specifies the currently selected drive.
 Description
   Write here a description
 See Also
@@ -79,7 +68,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.DriveCombo
 Summary
-  Write here a summary (1 line)
+  Specifies a combobox that displays the current drive.
 Description
   Write here a description
 See Also
@@ -88,7 +77,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.FileList
 Summary
-  Write here a summary (1 line)
+  Specifies a listbox that lists the file sin the currently selected directory.
 Description
   Write here a description
 See Also
@@ -97,7 +86,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.GetItemPath
 Summary
-  Write here a summary (1 line)
+  Returns the full path of an item in the list.
 Description
   Write here a description
 Parameters
@@ -110,7 +99,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.Items
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the currently visible directories.
 Description
   Write here a description
 See Also
@@ -119,7 +108,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.OnChange
 Summary
-  Write here a summary (1 line)
+  Occurs when the current directory is changed.
 Description
   Write here a description
 See Also
@@ -128,7 +117,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.OpenCurrent
 Summary
-  Write here a summary (1 line)
+  Expands the currently selected directory so it's sub-directories becomes visible.
 Description
   Write here a description
 See Also
@@ -137,7 +126,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.PreserveCase
 Summary
-  Write here a summary (1 line)
+  Specifies whether case is preserved or not.
 Description
   Write here a description
 See Also
@@ -146,7 +135,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.Update
 Summary
-  Write here a summary (1 line)
+  Updates the directory listing.
 Description
   Write here a description
 See Also
@@ -156,10 +145,10 @@ See Also
 @@TJvDriveCombo
 <TITLEIMG TJvDriveCombo>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.EditsMemosAndCombos.Combos
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A combobox that displays the available drives on the system.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
@@ -174,7 +163,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCombo.Drive
 Summary
-  Write here a summary (1 line)
+  Specifies the currently selected drive.
 Description
   Write here a description
 See Also
@@ -183,7 +172,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCombo.DriveTypes
 Summary
-  Write here a summary (1 line)
+  Specifies what drive types to show in the list.
 Description
   Write here a description
 See Also
@@ -192,7 +181,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCombo.ImageSize
 Summary
-  Write here a summary (1 line)
+  Specifies the image size of the icons in the list.
 Description
   Write here a description
 See Also
@@ -201,7 +190,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCombo.Items
 Summary
-  Write here a summary (1 line)
+  Provides ndexed access to all drives in the list.
 Description
   Write here a description
 See Also
@@ -210,7 +199,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCombo.Offset
 Summary
-  Write here a summary (1 line)
+  Specifies how far from the left edge an item is drawn.
 Description
   Write here a description
 See Also
@@ -219,7 +208,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCombo.Refresh
 Summary
-  Write here a summary (1 line)
+  Updates the list of drives.
 Description
   Write here a description
 See Also
@@ -229,23 +218,12 @@ See Also
 @@TJvDriveList
 <TITLEIMG TJvDriveList>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.ListsAndTrees.Lists
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A listbox that displays a list of drives available on the system.
 Description
   Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDriveList.CreateWnd
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveList.Drive
 Summary
@@ -345,7 +323,7 @@ Description
 @@TJvFileListBox
 <TITLEIMG TJvFileListBox>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.ListsAndTrees.Lists
   FLAG=Component
 Summary
   Write here a summary (1 line)

@@ -3,7 +3,7 @@
 @@JvTransparentButton.pas
 <GROUP JVCL.FileRef>
 Summary
-  Contains the TJvTransBtn component.
+  Contains the TJvTransparentButton and TJvTransparentButton2 controls.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
@@ -11,71 +11,81 @@ Author
 @@TJvFrameStyle
 <TITLE TJvFrameStyle type>
 Summary
-  Write here a summary (1 line)
+  Defines the available button frame styles.
 Description
-  Write here a description
+  The TJvFrameStyle type is used to define different button frame styles for TJvTransparentButton
+  and TJvTransparentButton2.
 @@TJvFrameStyle.fsRegular
-  Description for fsRegular
+  Button frame is drawn as a raised border (white/dark gray).
 @@TJvFrameStyle.fsIndent
-  Description for fsIndent
+  Button frame is drawn as a sunken border (dark gray/white).
 @@TJvFrameStyle.fsExplorer
-  Description for fsExplorer
+  Button frame is drawn as a raised border but only when the mouse cursor is
+  inside the button (white/dark gray).
 @@TJvFrameStyle.fsNone
-  Description for fsNone
+  Button has no frame.
 @@TJvFrameStyle.fsLight
-  Description for fsLight
+  Button frame uses a light color scheme (white/gray).
 @@TJvFrameStyle.fsDark
-  Description for fsDark
+  Button frame uses a dark color scheme (dark gray/black).
 @@TJvFrameStyle.fsMono
-  Description for fsMono
+  Button frame uses a monochrome color scheme (white/black)
 ----------------------------------------------------------------------------------------------------
 @@TJvTextAlign
 <TITLE TJvTextAlign type>
 Summary
-  Write here a summary (1 line)
+  Defines the available text alignment styles.
 Description
-  Write here a description
+  The TJvTextAlign type is used to define seeral different text alignments for the text in a TJvTransparentButton
+  and TJvTransparentButton2.
 @@TJvTextAlign.ttaTopLeft
-  Description for ttaTopLeft
+  Text is aligned to the top/left of the button.
 @@TJvTextAlign.ttaTop
-  Description for ttaTop
+  Text is aligned to the top/center of the button.
 @@TJvTextAlign.ttaTopRight
-  Description for ttaTopRight
+  Text is aligned to the top/right of the button.
 @@TJvTextAlign.ttaRight
-  Description for ttaRight
+  Text is aligned to the right/center of the button.
 @@TJvTextAlign.ttaBottomRight
-  Description for ttaBottomRight
+  Text is aligned to the bottom/right of the button.
 @@TJvTextAlign.ttaBottom
-  Description for ttaBottom
+  Text is aligned to the bottom/center of the button.
 @@TJvTextAlign.ttaBottomLeft
-  Description for ttaBottomLeft
+  Text is aligned to the bottom/leftof the button.
 @@TJvTextAlign.ttaLeft
-  Description for ttaLeft
+  Text is aligned to the left/center of the button.
 @@TJvTextAlign.ttaCenter
-  Description for ttaCenter
+  Text is centered on the button.
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton
 <TITLEIMG TJvTransparentButton>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Buttons.Push
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A button that can display images and text and also can align text and image in various ways.
 Description
-  Write here a description
+  Use TJvTransparentButton when you need a button that can:
+    * display an image as well as text.
+    * align the text and image in several positions.
+    * use different frame colors.
+    * be transparent or opaque.
+    * display multi-line strings.
+    * automatically create disabled and "hot" images.
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.AutoGray
 Summary
-  Write here a summary (1 line)
+  Specifies if a special, gray, image is displayed when the mouse is outside the button.
 Description
-  Write here a description
+  Use AutoGray to set whether the image on the button is automatically transformed to a gray
+  scale image when the mouse leaves the button. When the mouse enters the button again, the image
+  is displayed in color. This property only has effect if FrameStyle is fsExplorer and an Image is assigned.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FrameStyle, Glyph
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.BorderWidth
 Summary
-  Write here a summary (1 line)
+  Specifies the width of the buttons border.
 Description
   Write here a description
 See Also
@@ -84,61 +94,93 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.FrameStyle
 Summary
-  Write here a summary (1 line)
+  Specifies the appearance of the button's frame.
 Description
-  Write here a description
+  Use FrameStyle to specify the appearance of the button's frame. When FrameStyle is fsExplorer, the
+  frame is only displayed when the mouse is inside the button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FrameStyle
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.Glyph
 Summary
-  Write here a summary (1 line)
+  Specifies the bitmap that appears on the button.
 Description
-  Write here a description
+  Use the Open dialog box that appears as an editor in the Object Inspector to choose a bitmap file
+  (with a .BMP extension) to use on the button, or specify a TBitmap object at runtime.
+
+  You can provide up to four images within a single bitmap. All images must be the same size and
+  next to each other in a row. Bit buttons display one of these images depending on their state.
+
+  Image position	Button state	Description
+
+  First	Up	This image appears when the button is up (unselected). This image is also used when the button has focus (for example, if the user tabs to it); in this case, a focus rectangle is drawn around the button. If no other images exist in the bitmap, bit buttons also use this image for all other states.
+  Second	Disabled	This image usually appears dimmed to indicate that the button can't be selected.
+  Third	Clicked	This image appears when the button is clicked. The Up image reappears when the user releases the mouse button.
+  Fourth	Down	This image appears when the button stays down (indicating that it remains selected).
+
+  If only one image is present, bit buttons attempt to represent the other states by altering the image
+  slightly for the different states, although the Down state is always the same as the Up state. If
+  you aren't satisfied with the results, you can provide additional images in the bitmap.
+
+  If you have multiple images in a bitmap, you must specify the number of images that are in the
+  bitmap with the NumGlyphs property.
+Note
+  The lower left pixel of the bitmap is reserved for the "transparent" color. Any pixel in
+  the bitmap which matches that lower left pixel will be transparent.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  NumGlyph
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.NumGlyphs
 Summary
-  Write here a summary (1 line)
+  Indicates the number of images that are in the graphic specified in the
+  Glyph property for use on the button.
 Description
-  Write here a description
+  If you have multiple images in a bitmap, you must specify the number of images that are in the bitmap
+  with the NumGlyphs property. Valid NumGlyphs values are 1 to 4. The default value is 1.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Glyph
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.Offset
 Summary
-  Write here a summary (1 line)
+  Determines how far the image and text is shifted when the button is pressed.
 Description
-  Write here a description
+  Use Offset to specify how far the image and text is moved on the button when the button is pressed.
+  A value of 1 (the default) will shift the image and text one pixel to the right and 1 pixel down
+  when the button is pressed. To achieve other effects, alter this value.
+
+  This property only has meaning if ShowPressed is set to true.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ShowPressed
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.ShowPressed
 Summary
-  Write here a summary (1 line)
+  Specifies if the button is drawn in it's depressed state when the left mouse button is clicked on
+  the button.
 Description
-  Write here a description
+  Use ShowPressed to set whether the button is drawn as a depressed button when the left mouse is
+  clicked and held on the button. The normal behavior for a button is to show the user that it has been
+  pressed by moving the image and text down and right 1 pixel but you can acheive other effects by setting
+  this value to false.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Offset
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.Spacing
 Summary
-  Write here a summary (1 line)
+  Determines where the image and text appear on the button.
 Description
-  Write here a description
+  Spacing determines the number of pixels between the image (specified in the Glyph property)
+  and the text (specified in the Caption property). The default value is 4 pixels.
+
+  If Spacing is a positive number, its value is the number of pixels between the image and text. If
+  Spacing is 0, no pixels will be between the image and text. If Spacing is -1, the text appears
+  centered between the image and the button edge. The number of pixels between the image and text is
+  equal to the number of pixels between the text and the button edge opposite the glyph.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Glyph, Offset, TextAlign
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.TextAlign
 Summary
-  Write here a summary (1 line)
+  Specifies where the text is placed on the button.
 Description
   Write here a description
 See Also
@@ -147,7 +189,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.Transparent
 Summary
-  Write here a summary (1 line)
+  Indicates whether the background can be seen through the button.
 Description
   Write here a description
 See Also
@@ -166,7 +208,7 @@ See Also
 @@TJvTransparentButton2
 <TITLEIMG TJvTransparentButton2>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Buttons.Push
   FLAG=Component
 Summary
   Write here a summary (1 line)

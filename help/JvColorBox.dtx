@@ -3,7 +3,7 @@
 @@JvColorBox.pas
 <GROUP JVCL.FileRef>
 Summary
-  Contains the TJvColorBox component.
+  Contains controls used by the TJvColorButton.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
@@ -14,22 +14,22 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Displays the Windows standard colors as a set of 5x4 color squares.
 Description
-  Write here a description
+  Use TJvColorBox when you need to display the Windows standard colors in a control.
 ----------------------------------------------------------------------------------------------------
 @@TJvColorBox.BorderStyle
 Summary
-  Write here a summary (1 line)
+  Determines the appearance of the control’s border.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use BorderStyle to affect the visual appearance of the controls border. BorderStyle
+  can have a value of either bsSingle or bsNone. If BorderStyle is bsSingle, the
+  control has a single-line border around the client area. If BorderStyle is bsNone, there
+  will be no border.
 ----------------------------------------------------------------------------------------------------
 @@TJvColorBox.OnColorClick
 Summary
-  Write here a summary (1 line)
+  Occurs when one of the color squares are clicked by the user.
 Description
   Write here a description
 See Also
@@ -39,7 +39,7 @@ See Also
 @@TJvColorClickEvent
 <TITLE TJvColorClickEvent type>
 Summary
-  Write here a summary (1 line)
+  Event type for color square click events.
 Description
   Write here a description
   This type is used by (for reference):
@@ -56,7 +56,7 @@ See Also
 @@TJvColorSquare
 <TITLEIMG TJvColorSquare>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Graphics.Shapes
   FLAG=Component
 Summary
   Write here a summary (1 line)

@@ -1,9 +1,9 @@
-## Locked by Peter Thörnqvist
+## Needs review (GROUP changed)
 ----------------------------------------------------------------------------------------------------
 @@JvUninstallControls.pas
 <GROUP JVCL.FileRef>
 Summary
-  Contains the TJvUninstallControls component.
+  Contains components that can display uninstall information registered on the computer.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
@@ -11,13 +11,14 @@ Author
 @@TJvUCBDisplayMode
 <TITLE TJvUCBDisplayMode type>
 Summary
-  Write here a summary (1 line)
+  Specifies from which registry key(s) to read information.
 Description
-  Write here a description
+  The TJvUCBDisplayMode type is used to specify the registry hives to read uninstall information from.
+  Windows can store uninstall info in two different hives, HKEY_LOCAL_MACHINE and HKEY_CURRENT_USER.
 @@TJvUCBDisplayMode.hkCurrentUser
-  Description for hkCurrentUser
+  Read uninstall information from the HKEY_CURRENT_USER hive.
 @@TJvUCBDisplayMode.hkLocalMachine
-  Description for hkLocalMachine
+  Read uninstall information from the HKEY_LOCAL_MACHINE hive.
 ----------------------------------------------------------------------------------------------------
 @@TJvUCBDisplayModes
 <TITLE TJvUCBDisplayModes type>
@@ -26,127 +27,136 @@ Description
 @@TJvUninstallComboBox
 <TITLEIMG TJvUninstallComboBox>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.EditAndCombos.Combos
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A combobox that displays uninstall information.
 Description
-  Write here a description
+  Use a TJvUninstallComboBox when you need to display uninstall information to the end-user
+  in a compact, space efficient way. The TJvUninstallComboBox control has several properties to control
+  what do display. Modify DisplayMode to specify what registry hives to read uninstall information from,
+  set ShowAll as appropriate to show or hide "unfriendly" entries. Set Sorted to true to sort the list.
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallComboBox.DisplayMode
 Summary
-  Write here a summary (1 line)
+  Specify what registry hive or hives to read uninstall info from.
 Description
-  Write here a description
+  Use DisplayMode to specify the hives the component reads information from. If DisplayMode is set
+  to an empty set, no information is shown.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvUCBDisplayModes
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallComboBox.DisplayName
 Summary
-  Write here a summary (1 line)
+  Contains the display name of the currently selected item in the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  \Read DisplayName to retrieve the "user friendly" name of the currently selected item in the control.
+  If no item is selected, this property returns an empty string.
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallComboBox.Items
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the uninstall strings.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Items to access the retrieved uninstall information strings using an index. Each item in Items is either the
+  user friendly name (same as DisplayName) or (if DisplayName is empty and ShowAll is true), the name of the related
+  registry folder. Valid values of the index is between 0 and Items.Count - 1
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallComboBox.Section
 Summary
-  Write here a summary (1 line)
+  Contains the section name of the currently selected item in the control.
 Description
-  Write here a description
+  \Read Section to retrieve the name of the currently selected section in the control.
+  If no item is selected, this property returns an empty string.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ItemIndex, Items, DisplayName
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallComboBox.ShowAll
 Summary
-  Write here a summary (1 line)
+  Specifies if all uninstall items should be displayed.
 Description
-  Write here a description
+  Use ShowAll to specify whether all items are shown or not. If ShowAll is true, even items that have
+  an empty DisplayName are added to the list and shown. If false, only items with a DisplayName are listed
+  in Items.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Items, DisplayName
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallComboBox.UninstallString
 Summary
-  Write here a summary (1 line)
+  Contains the command-line to uninstall the selected application.
 Description
-  Write here a description
+  \Read UninstallString to access the command-line necessary to uninstall the application. If no item is
+  selected, this property returns an empty string. Make sure you check the validity of the string
+  before using it. The string might be invalid for several reasons:
+    * the information in the uninstall registry hive is incorrect
+    * there is no uninstall information
+    * there is no selected item
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ItemIndex, Items, DisplayName
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallListBox
 <TITLEIMG TJvUninstallListBox>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.ListsAndTrees.Lists
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A listbox that displays uninstall information.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallListBox.DisplayMode
 Summary
-  Write here a summary (1 line)
+Summary
+  Specify what registry hive or hives to read uninstall info from.
 Description
-  Write here a description
+  Use DisplayMode to specify the hives the component reads information from. If DisplayMode is set
+  to an empty set, no information is shown.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvUCBDisplayModes
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallListBox.DisplayName
 Summary
-  Write here a summary (1 line)
+  Contains the display name of the currently selected item in the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  \Read DisplayName to retrieve the "user friendly" name of the currently selected item in the control.
+  If no item is selected, this property returns an empty string.
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallListBox.Items
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the uninstall strings.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Items to access the retrieved uninstall information strings using an index. Each item in Items is either the
+  user friendly name (same as DisplayName) or (if DisplayName is empty and ShowAll is true), the name of the related
+  registry folder. Valid values of the index is between 0 and Items.Count - 1
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallListBox.Section
 Summary
-  Write here a summary (1 line)
+  Contains the section name of the currently selected item in the control.
 Description
-  Write here a description
+  \Read Section to retrieve the name of the currently selected section in the control.
+  If no item is selected, this property returns an empty string.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ItemIndex, Items, DisplayName
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallListBox.ShowAll
 Summary
-  Write here a summary (1 line)
+  Specifies if all uninstall items should be displayed.
 Description
-  Write here a description
+  Use ShowAll to specify whether all items are shown or not. If ShowAll is true, even items that have
+  an empty DisplayName are added to the list and shown. If false, only items with a DisplayName are listed
+  in Items.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Items, DisplayName
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallListBox.UninstallString
 Summary
-  Write here a summary (1 line)
+  Contains the command-line to uninstall the selected application.
 Description
-  Write here a description
+  \Read UninstallString to access the command-line necessary to uninstall the application. If no item is
+  selected, this property returns an empty string. Make sure you check the validity of the string
+  before using it. The string might be invalid for several reasons:
+    * the information in the uninstall registry hive is incorrect
+    * there is no uninstall information
+    * there is no selected item
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ItemIndex, Items, DisplayName
+

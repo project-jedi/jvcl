@@ -1,3 +1,5 @@
+# Locked by Peter Thörnqvist (updates for new JvThreadTimer implementation)
+----------------------------------------------------------------------------------------------------
 @@JvThreadTimer.pas
 Summary
   Contains the TJvThreadTimer component.
@@ -13,8 +15,9 @@ JVCLInfo
 Summary
   TTimer replacement that utilizes a thread and has a higher accuracy. 
 Description
-  This component is a replacement for the TTimer component, with a better accuracy (1 millisecond). 
-  TJvThreadTimer uses a TJvThreadTimerClass thread instead of the Windows API timer functions, and 
+  This component is a replacement for the TTimer component, with a better accuracy (1 millisecond)
+  and without consuming a window handle for the timer. 
+  TJvThreadTimer uses an internal thread instead of the Windows API timer functions, and
   can have an accuracy of a millisecond, but it will consume more CPU than a TTimer.
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadTimer.Create
@@ -23,14 +26,15 @@ Summary
 Description
   Use \Create to create and initialize a new TJvThreadTimer object.
   
-  \Create calls the inherited \Create method, creates a TJvThreadTimerClass and then sets the initial 
-  values for the timer as follows: 
-  
-  * Delay is set to 100.
+  \Create calls the inherited \Create method, creates a thread and then sets the initial
+  values for the timer as follows:
+
+  * Interval is set to 100.
+  * Enabled is set to false
 Parameters
   AOwner - A component, typically the form, that is responsible for freeing the timer.
 See Also
-  Delay
+  Interval
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadTimer.Destroy
 Summary
@@ -41,58 +45,35 @@ Description
 See Also
   Create
 ----------------------------------------------------------------------------------------------------
-@@TJvThreadTimer.Active
+@@TJvThreadTimer.Enabled
 Summary
   \Controls whether the timer generates OnTimer events periodically.
 Description
-  Use Active to enable or disable the timer. If Active is True, the timer responds normally. If Active
-  is False, the timer does not generate OnTimer events. The default is True.
+  Use Enabled to enable or disable the timer. If Enabled is True, the timer responds normally. If Enabled
+  is False, the timer does not generate OnTimer events. The default is False.
 See Also
   OnTimer
 ----------------------------------------------------------------------------------------------------
-@@TJvThreadTimer.Delay
+@@TJvThreadTimer.Interval
 Summary
-  Determines the amount of time, in milliseconds, that passes before the timer component initiates 
+  Determines the amount of time, in milliseconds, that passes before the timer component initiates
   another OnTimer event.
 Description
-  Delay determines how frequently the OnTimer event occurs. Each time the specified interval passes,
+  Interval determines how frequently the OnTimer event occurs. Each time the specified interval passes,
   the OnTimer event occurs.
 
-  Use Delay to specify any cardinal value as the interval between OnTimer events. The default value
+  Use Interval to specify any cardinal value as the interval between OnTimer events. The default value
   is 100 (1/10 second).
 See Also
   OnTimer
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadTimer.OnTimer
 Summary
-  Occurs when a specified amount of time, determined by the Delay property, has passed.
+  Occurs when a specified amount of time, determined by the Interval property, has passed.
 Description
   \Write an OnTimer event handler to execute an action at regular intervals.
 
-  The Delay property of a timer determines how frequently the OnTimer event occurs. Each time the
+  The Interval property of a timer determines how frequently the OnTimer event occurs. Each time the
   specified interval passes, the OnTimer event occurs.
-----------------------------------------------------------------------------------------------------
-@@TJvThreadTimerClass
-Summary
-  Background thread for the TJvThreadTimer control.
-Description
-  TJvThreadTimerClass is the background thread that handles the timing. The Execute
-  method will call the Call method for each Delay, which in turn will trigger an event to notify
-  the TJvThreadTimer.
-----------------------------------------------------------------------------------------------------
-@@TJvThreadTimerClass.Call
-Summary
-  Synchronize method.
-Description
-  Call is the synchronized method which will trigger an event to notify the TJvThreadTimer.
-See Also
-  Execute
-----------------------------------------------------------------------------------------------------
-@@TJvThreadTimerClass.Execute
-Summary
-  Thread's main code loop.
-Description
-  Execute is the thread's main code loop. It will delay for the specified amount (as set by the
-  timer) and then triggers an event, using the synchronized Call method.
-See Also
-  Call
+
+

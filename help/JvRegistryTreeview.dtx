@@ -1,9 +1,9 @@
-## Locked by Peter Thörnqvist
+## Needs review (p3)
 ----------------------------------------------------------------------------------------------------
-@@JvRegTV.pas
+@@JvRegistryTreeView.pas
 <GROUP JVCL.FileRef>
 Summary
-  Contains the TJvRegTV component.
+  Contains the TJvRegistryTreeView component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
@@ -11,199 +11,211 @@ Author
 @@TJvRegistryTreeView
 <TITLEIMG TJvRegistryTreeView>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.ListsAndTrees.Trees
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Treeview that displays the hives and subnodes of the registry.
 Description
-  Write here a description
+  Use a TJvRegistryTreeview as a simple way of displaying the content of the registry with no
+  coding necessary.
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.AddBinaryValue
 Summary
-  Write here a summary (1 line)
+  Adds a binary value at the specified location.
 Description
-  Write here a description
+  Use AddBinaryValue to add a new binary value to the specified key.
 Parameters
-  ParentNode - Description for this parameter
-  Name       - Description for this parameter
-  Buf        - Description for this parameter
-  BufSize    - Description for this parameter
+  ParentNode - The node that should contain the new value.
+  Name       - The name of the new value.
+  Buf        - The data to save.
+  BufSize    - The size of the data.
 Return value
-  Describe here what the function returns
+  Returns the newly created node or nil if no node was created.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AddDWORDValue, AddStringValue, AddKey
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.AddDWORDValue
 Summary
-  Write here a summary (1 line)
+  Adds a DWORD value at the specified location.
 Description
-  Write here a description
+  Use AddDWORDValue to add a new or update an existing DWORD value in the specified key.
 Parameters
-  ParentNode - Description for this parameter
-  Name       - Description for this parameter
-  Value      - Description for this parameter
+  ParentNode - The node that should contain the new value.
+  Name       - The name of the new or existing value.
+  Value      - The value.
 Return value
-  Describe here what the function returns
+  Returns the newly created node or nil if no node was created.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AddBinaryValue, AddStringValue, AddKey
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.AddKey
 Summary
-  Write here a summary (1 line)
+  Adds a new key at the specified location.
 Description
-  Write here a description
+  Use AddKey to add a new key to the registry. The key is added as the child of the specified node.
 Parameters
-  ParentNode - Description for this parameter
-  KeyName    - Description for this parameter
+  ParentNode - The parent of the new key.
+  KeyName    - The name of the key to create.
 Return value
-  Describe here what the function returns
+  Returns the newly created node or nil if no node was created.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AddBinaryValue, AddDWORDValue, AddStringValue
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.AddStringValue
 Summary
-  Write here a summary (1 line)
+  Adds a string value at the specified location.
 Description
-  Write here a description
+  Use AddStringValue to add a new or update an existing string value in the specified key.
 Parameters
-  ParentNode - Description for this parameter
-  Name       - Description for this parameter
-  Value      - Description for this parameter
+  ParentNode - The node that should contain the new value.
+  Name       - The name of the value.
+  Value      - The value.
 Return value
-  Describe here what the function returns
+  Returns the newly created node or nil if no node was created.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AddBinaryValue, AddDWORDValue, AddKey
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.CurrentKey
 Summary
-  Write here a summary (1 line)
+  Specifies the currently select key (node) in the treeview.
 Description
-  Write here a description
+  \Read CurrentKey to access the HKEY value of the currently selected key. You can use the returned value
+  as a parameter to Windows API functions that expect a HKEY as parameter.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CurrentPath, ShortPath
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.CurrentPath
 Summary
-  Write here a summary (1 line)
+  Specifies the path to the currently selected key including the "My Computer" root item.
 Description
-  Write here a description
+  \Read CurrentPath to get the full path to the currently selected node in the tree, including the
+  text on the "My Computer" root item. Nodes are delimited by '\' characters.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CurrentKey, ShortPath, RootCaption
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.DefaultCaption
 Summary
-  Write here a summary (1 line)
+  Specifies the caption for items with empty names (default items) when displayed in the ListView.
 Description
-  Write here a description
+  Use DefaultCaption to change the text displayed in the ListView when an item doesn't have a name
+  of it's own. Registry keys always have one, unnamed, item and this property is used to set a
+  display name for it.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DefaultNoValueCaption
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.DefaultNoValueCaption
 Summary
-  Write here a summary (1 line)
+  Specifies the text to display when an unnamed item doesn't have a value.
 Description
-  Write here a description
+  Use DefaultNoValueCaption to set the text to display in ListView when an unnamed item doesn't
+  have a value. This string is only used when the value of the unnamed item is empty.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DefaultCaption
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.Items
 Summary
-  Write here a summary (1 line)
+  Lists the individual nodes that appear in the tree view control.
 Description
-  Write here a description
+  Individual nodes in a tree view are TTreeNode objects. These individual nodes can be accessed by
+  using the Items property along with the item's index into the tree view. The Items property
+  if this component should be considered as read-only although you can add new nodes in code.
+Note
+  Adding new nodes using Items, will not affect the regitry. To add new keys and values to the registry
+  use the functions provided specifically by the TJvRegistryTreeview.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AddKey, AddBinaryValue, AddDWORDValue, AddStringValue
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.ListView
 Summary
-  Write here a summary (1 line)
+  Specifies a listview used to display the content of the selected node.
 Description
-  Write here a description
+  Assign a listview to the ListVIew proprety to have it automatically populated when the selected
+  node in the treeview changes. If you display the items in report mode, add columns to the listview
+  with the follwoing names: "\Name", "\Value", "\Type". The "\Type" column doesn't have to be added
+  if you don't want to display the data type for items. If the listview is assigned, some items
+  are given the text values specified by DefaultCaption and DefaultNoValueCaption.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DefaultCaption, DefaultNoValueCaption
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.LoadKey
 Summary
-  Write here a summary (1 line)
+  Creates a subkey under the root key and loads registry information from a file into the newly created subkey.
 Description
-  Write here a description
+  Call LoadKey to:
+  1  Create a new subkey under the root key, and
+  2  Load registry information from a file into the subkey. Registry information can include data values, subkeys, and data values for those subkeys.
+
+  LoadKey is intended to simplify creation of a key, its values and subkeys, and the values for those
+  subkeys in a single operation. A key, its subkeys, and all data values of the key and its
+  subkeys is called a hive. Rather than creating each key and value separately, an application can read
+  a hive from a file. This is especially useful for applications that users can reconfigure at run time.
 Parameters
-  Filename - Description for this parameter
+  Filename - The location of the file containing registry information to store in the subkey. The file specified by FileName must be one previously created using the SaveKey function or the RegSaveKey Windows API function. On systems that use a file allocation table (FAT), FileName cannot include an extension.
 Return value
-  Describe here what the function returns
+  Returns true if the data was succesfully loaded.
+Note
+  The key to load data into is determined by the CurrentKey property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SaveKey
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.RefreshNode
 Summary
-  Write here a summary (1 line)
+  Updates the node's data.
 Description
-  Write here a description
+  Call RefreshNode to refresh the display for the selected node. To re-read all data from the registry,
+  set Node to nil. Calling RefreshNode will:
+    1  Delete the subnodes in the treeview, and
+    2 Re-read all the data from the registry again
 Parameters
-  Node - Description for this parameter
+  Node - The node to refresh
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.RegistryKeys
 Summary
-  Write here a summary (1 line)
+  Specifies the registry keys ("hives") to display in the tree.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set RegistryKeys to define what nodes are displayed in the treeview. If RegistryKeys is set to [],
+  nothing will be displayed. The default is to display HKEY_LOCLA_MACHINE and HKEY_LOCAL_USER.
+Note
+  Not all available values are available on all versions of Windows. If a specific hive is not found, it
+  is silently skipped.
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.RootCaption
 Summary
-  Write here a summary (1 line)
+  Specifies the text to display for the root item in the treeview.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The root of the treeview displays a "My Computer" icon. This node is not an actual node in the
+  registry but is provided to emulate the way the regedit.exe application displays the registry.
+  Use RootCaption to change the text displayed for this node. By default, the text is set to "My Computer".
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.SaveKey
 Summary
-  Write here a summary (1 line)
+  Opens the specified key with the security access value KEY_ALL_ACCESS and saves the specified key
+  and all of its subkeys and values to a hive file.
 Description
-  Write here a description
+  Call SaveKey to open a key with a security access value of KEY_ALL_ACCESS, and save the key
+  and its subkeys and data values to a hive file. A hive is a discrete collection of keys,
+  subkeys, and values that is rooted at the top of the registry hierarchy.
+
+  The key to save is read from the CurrentKey property.
+
+  Files created by SaveKey can be passed to the LoadKey function.
 Parameters
-  Filename - Description for this parameter
+  Filename - the file into which to save the key information. It must be the name of a new file that does not already exist. On FAT file systems FileName cannot include an extension.
 Return value
-  Describe here what the function returns
+  If SaveKey is successful it returns True.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LoadKey
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.ShortPath
 Summary
-  Write here a summary (1 line)
+  Returns the path to the current node without including the "My Computer" root node.
 Description
-  Write here a description
+  Use ShortPath when you need to retrieve a path string to the currently selected node. ShortPath is
+  just like CurrentPath but does not include the value of the "My Computer" item in the string.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvRegistryTreeView.ShowHint
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CurrentPath
+

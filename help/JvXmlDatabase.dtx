@@ -1,3 +1,4 @@
+# Locked by Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@JvXmlDatabase.pas
 <GROUP JVCL.FileRef>
@@ -5,48 +6,77 @@ Summary
   Contains the TJvXmlDatabase component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  
+  Sebastien Buyssé  
 ----------------------------------------------------------------------------------------------------
 @@TJvXmlDatabase
 <TITLEIMG TJvXmlDatabase>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Internet.XML
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A component to access the content of an XML file using SQL like syntax.
+
 Description
-  Write here a description
+TJvXMLDatabase is a component to retrieve data from an XML
+file using SQL like syntax. Specify the SQL string by
+assigning to the Query property. This component also has
+limited support for update statements.
+
+
+Note
+    * All columns in the WHERE clause must be part of the
+      SELECT clause as well
+    * WHERE conditions must be enclosed in parenthesizes (i.e
+      WHERE (Col1=5) AND Col2='Noodles')
+    * Update statements are limited to simple operations (i.e
+      SET Col1 = Col1 + 1, Col2 = 'FooBar')
 ----------------------------------------------------------------------------------------------------
 @@TJvXmlDatabase.Query
 Summary
-  Write here a summary (1 line)
+Specifies the SQL like string to use to retrieve data from
+the XML file.
+
 Description
-  Write here a description
+Call Query to send an SQL statement to the XML file or files
+and optionally retrieve any results
+
 Parameters
-  AQuery - Description for this parameter
-Return value
-  Describe here what the function returns
+AQuery :  The SQL string to send to the XML file or files.
+Returns
+A TJvXMLQuery instance that describes any returned values.
+Use the return value to iterate over all found nodes.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+TJvXMLQuery
 ----------------------------------------------------------------------------------------------------
 @@TJvXmlDatabase.SaveTables
 Summary
-  Write here a summary (1 line)
+Saves changes made to all loaded tables (XML files).
+
 Description
-  Write here a description
+Call SaveTables to save modifications done to any loaded
+table. Tables are loaded as required by queries. If your
+queries makes changes to the loaded XML files (using update
+statements like SET), the changes will notbe saved back to
+file unless SaveTables is called
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+Query
 ----------------------------------------------------------------------------------------------------
 @@TJvXmlDatabase.TablesPath
 Summary
-  Write here a summary (1 line)
+Specifies where XML files are located.
+
 Description
-  Write here a description
+Use TablePath to specify the path to the data (XML) files.
+This path is used in conjuction with filenames in the SQL
+statement sent in Query to determine what file or files to
+read from. For example, if TablePath is set to
+'C:\\temp\\tables' and Query contains 'SELECT * FROM
+data1.xml', the component will look for the file C:\\temp\\tables\\data1.xml.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+Query
 ----------------------------------------------------------------------------------------------------
 @@TJvXmlDatabaseException
 Summary
@@ -60,6 +90,7 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+----------------------------------------------------------------------------------------------------
 @@TJvXmlInstruction.xiSelect
   Description for xiSelect
 @@TJvXmlInstruction.xiUpdate
@@ -86,27 +117,33 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvXmlQuery
 Summary
-  Write here a summary (1 line)
+Class that is used to return query information.
+
 Description
-  Write here a description
+Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXmlQuery.LastId
 Summary
-  Write here a summary (1 line)
+Specifies the last used id
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvXmlQuery.Results
 Summary
-  Write here a summary (1 line)
+Contains the results from the last successful query.
+
 Description
-  Write here a description
+Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+List here other properties, methods (comma seperated) Remove
+the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvXmlQueryAssignement
 Summary
