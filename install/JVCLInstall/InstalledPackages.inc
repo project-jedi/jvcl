@@ -10,8 +10,8 @@ end;
 
 function Opt_QuickReport(Target: TCompileTarget): Boolean;
 begin
-  Result := FileExists(Target.RootDir + Target.VersionedPackage('\lib\qrpt.dcp')) or
-            FileExists(Target.RootDir + Target.VersionedPackage('\lib\obj\qrpt.dcp')) or
+  Result := FileExists(Target.RootDir + Target.VersionedDCPs('\lib\qrpt.dcp')) or
+            FileExists(Target.RootDir + Target.VersionedDCPs('\lib\obj\qrpt.dcp')) or
             Opt_QuickReport4(Target);
 end;
 
@@ -19,24 +19,24 @@ end;
 { Internet Components }
 function Opt_InternetComponents(Target: TCompileTarget): Boolean;
 begin
-  Result := (FileExists(Target.RootDir + Target.VersionedPackage('\lib\vclie.dcp')) and
-             FileExists(Target.RootDir + Target.VersionedPackage('\lib\inet.dcp'))) 
+  Result := (FileExists(Target.RootDir + Target.VersionedDCPs('\lib\vclie.dcp')) and
+             FileExists(Target.RootDir + Target.VersionedDCPs('\lib\inet.dcp')))
             or
-            (FileExists(Target.RootDir + Target.VersionedPackage('\lib\obj\vclie.dcp')) and
-             FileExists(Target.RootDir + Target.VersionedPackage('\lib\obj\inet.dcp')));
+            (FileExists(Target.RootDir + Target.VersionedDCPs('\lib\obj\vclie.dcp')) and
+             FileExists(Target.RootDir + Target.VersionedDCPs('\lib\obj\inet.dcp')));
 end;
 
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 
-procedure TTargetConfig.UpdateJVCLConfig;
+procedure TTargetConfig.UpdateOptions;
 begin
   // quickreport configuration
-  JVCLConfig.Enabled['QREPORT4'] := JVCLConfig.Enabled['QREPORT4'] and Opt_QuickReport4(Target);
-  JVCLConfig.Enabled['JVCL_UseQuickReport'] := JVCLConfig.Enabled['JVCL_UseQuickReport'] and Opt_QuickReport(Target);
+  EnableOption('QREPORT4', Opt_QuickReport4(Target));
+  EnableOption('JVCL_UseQuickReport', Opt_QuickReport(Target));
 
   // internet components
-  JVCLConfig.Enabled['INTERNET_COMPONENTS'] := JVCLConfig.Enabled['INTERNET_COMPONENTS'] and Opt_InternetComponents(Target);
+  EnableOption('INTERNET_COMPONENTS', Opt_InternetComponents(Target));
 end;
 

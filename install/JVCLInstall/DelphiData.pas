@@ -78,17 +78,17 @@ type
     FEdition: string;
     FRootDir: string;
     FBDSProjectsDir: string;
-    FBrowsingPaths: TStrings;
+    FBrowsingPaths: TStringList;
     FDCPOutputDir: string;
     FBPLOutputDir: string;
-    FPackageSearchPaths: TStrings;
-    FSearchPaths: TStrings;
+    FPackageSearchPaths: TStringList;
+    FSearchPaths: TStringList;
     FDisabledPackages: TDelphiPackageList;
     FKnownPackages: TDelphiPackageList;
     FKnownIDEPackages: TDelphiPackageList;
     FHKLMRegistryKey: string;
     FRegistryKey: string;
-    FDebugDcuPaths: TStrings;
+    FDebugDcuPaths: TStringList;
 
     procedure LoadFromRegistry;
     function ReadBDSProjectsDir: string;
@@ -110,8 +110,9 @@ type
     function IsPersonal: Boolean;
     function DisplayName: string;
 
-    function VersionedPackage(const Filename: string): string;
-      { returns the filename + version + extension for Delphi 5 and BCB 5 }
+    function VersionedDCPs(const Filename: string): string;
+      { returns the filename + version + extension for Delphi 5 and BCB 5
+        else it returns the Filename. }
 
     function FindPackage(const PackageName: string): TDelphiPackage;
     function FindPackageEx(const PackageNameStart: string): TDelphiPackage;
@@ -141,12 +142,12 @@ type
     property LatestUpdate: Integer read FLatestUpdate;
     property LatestRTLPatch: Integer read FLatestRTLPatch;
 
-    property BrowsingPaths: TStrings read FBrowsingPaths; // with macros
+    property BrowsingPaths: TStringList read FBrowsingPaths; // with macros
     property DCPOutputDir: string read FDCPOutputDir; // with macros
     property BPLOutputDir: string read FBPLOutputDir; // with macros
-    property PackageSearchPaths: TStrings read FPackageSearchPaths; // with macros
-    property SearchPaths: TStrings read FSearchPaths; // with macros
-    property DebugDcuPaths: TStrings read FDebugDcuPaths; // with macros
+    property PackageSearchPathList: TStringList read FPackageSearchPaths; // with macros
+    property SearchPaths: TStringList read FSearchPaths; // with macros
+    property DebugDcuPaths: TStringList read FDebugDcuPaths; // with macros
 
     property BDSProjectsDir: string read FBDSProjectsDir;
     property BplDir: string read GetBplDir; // macros are expanded
@@ -356,6 +357,11 @@ begin
   FSearchPaths := TStringList.Create;
   FDebugDcuPaths := TStringList.Create;
 
+  FBrowsingPaths.Duplicates := dupIgnore;
+  FPackageSearchPaths.Duplicates := dupIgnore;
+  FSearchPaths.Duplicates := dupIgnore;
+  FDebugDcuPaths.Duplicates := dupIgnore;
+
   FDisabledPackages := TDelphiPackageList.Create;
   FKnownIDEPackages := TDelphiPackageList.Create;
   FKnownPackages := TDelphiPackageList.Create;
@@ -455,8 +461,7 @@ begin
     Result := Find(KnownPackages);
 end;
 
-function TCompileTarget.FindPackageEx(
-  const PackageNameStart: string): TDelphiPackage;
+function TCompileTarget.FindPackageEx(const PackageNameStart: string): TDelphiPackage;
 
   function Find(List: TDelphiPackageList): TDelphiPackage;
   var
@@ -584,9 +589,7 @@ begin
       ConvertPathList(Reg.ReadString('Search Path'), FSearchPaths); // do not localize
     end;
     if Reg.OpenKeyReadOnly(RegistryKey + '\Debugging') then // do not localize
-    begin
       ConvertPathList(Reg.ReadString('Debug DCUs Path'), FDebugDcuPaths); // do not localize
-    end;
   finally
     Reg.Free;
   end;
@@ -788,7 +791,7 @@ begin
     Result := '';
 end;
 
-function TCompileTarget.VersionedPackage(const Filename: string): string;
+function TCompileTarget.VersionedDCPs(const Filename: string): string;
 begin
   if Version > 5 then
     Result := Filename

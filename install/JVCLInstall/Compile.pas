@@ -110,7 +110,7 @@ type
     procedure CreateProjectGroupMakefile(ProjectGroup: TProjectGroup; AutoDepend: Boolean);
     function GenerateResources(TargetConfig: ITargetConfig): Boolean;
     function DeleteFormDataFiles(ProjectGroup: TProjectGroup): Boolean;
-    function CopyFormDataFiles(ProjectGroup: TProjectGroup): Boolean;
+    function CopyFormDataFiles(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
     function PrepareJCL(TargetConfig: ITargetConfig; Force: Boolean): Boolean;
 
     function IsCondition(const Condition: string; TargetConfig: ITargetConfig): Boolean;
@@ -739,11 +739,11 @@ end;
 /// CopyFormDataFiles copies the .dfm, .xfm files to the lib-path.
 /// This function is only called for non developer installations.
 /// </summary>
-function TJVCLCompiler.CopyFormDataFiles(ProjectGroup: TProjectGroup): Boolean;
+function TJVCLCompiler.CopyFormDataFiles(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
 var
   Files: TStrings;
   i: Integer;
-  Dir, DestDir, DestFile: string;
+  Dir, DestDir, DestFile, DebugDestDir: string;
 begin
   Result := True;
   Files := TStringList.Create;
@@ -751,6 +751,7 @@ begin
 {**}DoProgress('', 0, 100, pkOther);
 
     DestDir := ProjectGroup.TargetConfig.UnitOutDir;
+    DebugDestDir := DestDir + PathDelim + 'debug';
 
     if ProjectGroup.IsVCLX then
     begin
@@ -771,6 +772,12 @@ begin
       begin
 {**}    DoProgress(ExtractFileName(Files[i]), i, Files.Count, pkOther);
         CopyFile(PChar(Files[i]), PChar(DestFile), False);
+      end;
+      if DebugUnits then
+      begin
+        DestFile := DebugDestDir + PathDelim + ExtractFileName(Files[i]);
+        if FileAge(Files[i]) > FileAge(DestFile) then
+          CopyFile(PChar(Files[i]), PChar(DestFile), False);
       end;
     end;
 {**}  DoProgress('', 0, Files.Count, pkOther);
@@ -857,16 +864,18 @@ begin
     if TargetConfig.GenerateMapFiles then
       DccOpt := DccOpt + ' -GD';
 
-    if (not DebugUnits) or (not TargetConfig.DeveloperInstall) then
-    begin
-      DccOpt := DccOpt + ' -DJVCL_NO_DEBUGINFO';
+    if (not DebugUnits) then
+      DccOpt := DccOpt + ' -DJVCL_NO_DEBUGINFO'
+    else
+      { DeveloperInstall always use Debug units in the Jvcl\Lib\xx directory }
+    if not TargetConfig.DeveloperInstall then
       CreateDir(TargetConfig.UnitOutDir + '\debug');
-    end;
 
     { set PATH envvar and add all directories that contain .bpl files }
     PathList := TStringList.Create;
     try
       PathList.Duplicates := dupIgnore;
+
       PathList.Add(GetWindowsDir);
       PathList.Add(GetSystemDir);
       PathList.Add(GetWindowsDir + '\Command'); // Win9x
@@ -879,6 +888,7 @@ begin
         and Target.BplDir. }
       PathList.Add(ExtractShortPathName(TargetConfig.Target.BplDir));
 
+      { Add paths with .bpl files from the PATH environment variable }
       BplPaths := TStringList.Create;
       try
         StrToPathList(StartupEnvVarPath, BplPaths);
@@ -893,21 +903,6 @@ begin
     finally
       PathList.Free;
     end;
-(*    Path := GetWindowsDir + ';' + GetSystemDir + ';' + GetWindowsDir + '\Command';
-    if TargetConfig.DcpDir <> TargetConfig.BplDir then
-      Path := ExtractShortPathName(TargetConfig.Target.RootDir) + ';' +
-              ExtractShortPathName(TargetConfig.BplDir) + ';' +
-              ExtractShortPathName(TargetConfig.DcpDir) + ';' +
-              Path
-    else
-      Path := ExtractShortPathName(TargetConfig.Target.RootDir) + ';' +
-              ExtractShortPathName(TargetConfig.BplDir) + ';' +
-              Path;}
-    { Add original BPL directory for "common" BPLs, but add it as the very last
-      path to prevent collisions between packages in TargetConfig.BplDir and
-      Target.BplDir. }
-    Path := Path + ';' + ExtractShortPathName(TargetConfig.Target.BplDir);
-*)
 
     BrowsePaths := '';
     for i := 0 to TargetConfig.Target.BrowsingPaths.Count - 1 do
@@ -1079,7 +1074,7 @@ begin
         resource generation section in this method.
         The files are only copied for a non-developer installation and for
         BCB. }
-      CopyFormDataFiles(ProjectGroup);
+      CopyFormDataFiles(ProjectGroup, DebugUnits);
     end
     else
 {**}  GetProjectIndex; // increase progress
