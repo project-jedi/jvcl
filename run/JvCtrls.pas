@@ -94,9 +94,6 @@ type
     procedure SetMargin(const Value: Integer);
     procedure SetSpacing(const Value: Integer);
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure CNMeasureItem(var Msg: TWMMeasureItem); message CN_MEASUREITEM;
     procedure WMDestroy(var Msg: TWMDestroy); message WM_DESTROY;
@@ -122,6 +119,9 @@ type
     procedure StartAnimate;
     procedure StopAnimate;
     procedure RestartAnimate;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure FontChanged; override;
     class procedure InitializeDefaultImageList;
   public
     constructor Create(AOwner: TComponent); override;
@@ -352,22 +352,18 @@ begin
   Invalidate;
 end;
 
-procedure TJvCustomImageButton.CMFontChanged(var Msg: TMessage);
+procedure TJvCustomImageButton.FontChanged;
 begin
   inherited;
   Invalidate;
 end;
 
-procedure TJvCustomImageButton.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomImageButton.MouseEnter(Control: TControl);
 begin
-  inherited;
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
   if not FMouseInControl and Enabled and (GetCapture = 0) then
   begin
     FMouseInControl := True;
-    DoMouseEnter;
+    inherited;
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
       Repaint;
@@ -375,13 +371,12 @@ begin
   end;
 end;
 
-procedure TJvCustomImageButton.CMMouseLeave(var Msg: TMessage);
+procedure TJvCustomImageButton.MouseLeave(Control: TControl);
 begin
-  inherited;
   if FMouseInControl and Enabled and not Dragging then
   begin
     FMouseInControl := False;
-    DoMouseLeave;
+    inherited;
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
       Repaint;
