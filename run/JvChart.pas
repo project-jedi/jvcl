@@ -72,11 +72,13 @@ const
   JvChartVersion = 300; // ie, version 3.00
 
   JvDefaultHintColor = TColor($00DDFBFA);
+  JvDefaultAvgLineColor = TColor($00EEDDDD);
 
   JvDefaultYLegends = 20;
   MaxShowXValueInLegends = 10;
 
   // Special indices to GetPenColor(index)
+  jvChartAverageLineColorIndex   = -6;
   jvChartDivisionLineColorIndex  = -5;
   jvChartShadowColorIndex        = -4;
   jvChartAxisColorIndex          = -3;
@@ -299,6 +301,7 @@ type
     FPaperColor: TColor;
     FAxisLineColor: TColor;
     FHintColor: TColor;
+    FAverageLineColor:TColor;
     FCursorColor    :TColor; // Sample indicator - Cursor color
     FCursorStyle    :TPenStyle; // Cursor style.
 
@@ -450,6 +453,8 @@ type
     property PaperColor: TColor read FPaperColor write SetPaperColor;
     property AxisLineColor: TColor read FAxisLineColor write FAxisLineColor;
     property HintColor: TColor read FHintColor write FHintColor default JvDefaultHintColor;
+    property AverageLineColor:TColor read FAverageLineColor write FAverageLineColor default JvDefaultAvgLineColor;
+
 
     property CursorColor :TColor read FCursorColor write FCursorColor;
     property CursorStyle :TPenStyle read FCursorStyle write FCursorStyle;
@@ -839,6 +844,7 @@ constructor TJvChartYAxisOptions.Create(owner:TJvChartOptions); //virtual;
 begin
     inherited Create;
     FOwner := owner;
+
     FYLegends := TStringList.Create;
     FMaxYDivisions := 20;
     FMinYDivisions := 5;
@@ -1003,7 +1009,7 @@ begin
   FOwner := Owner;
 
   FAutoUpdateGraph  := true;
-  
+
   FPrimaryYAxis := TJvChartYAxisOptions.Create(Self);
   FSecondaryYAxis := TJvChartYAxisOptions.Create(Self);
 
@@ -1050,6 +1056,7 @@ begin
 
   FPaperColor := clWhite;
   FAxisLineColor := clBlack;
+  FAverageLineColor := JvDefaultAvgLineColor;
 
   FHeaderFont := TFont.Create;
   FLegendFont := TFont.Create;
@@ -1113,8 +1120,11 @@ begin
 // Don't check for out of range values, since we use that on purpose in this
 // function. Okay, ugly, but it works. -WP.
 
-  if Index < jvChartDivisionLineColorIndex then
+  if Index < jvChartAverageLineColorIndex then
     Result := clBtnFace
+  else
+  if Index = jvChartAverageLineColorIndex then
+    Result := FAverageLineColor
   else
   if Index = jvChartDivisionLineColorIndex then // horizontal and vertical division line color
     Result := clLtGray // TODO Make this a property.
@@ -1123,13 +1133,13 @@ begin
     Result := clLtGray  // TODO Make this a property.
   else
   if Index = jvChartAxisColorIndex then
-    Result := FAxisLineColor // TODO Make this a property.
+    Result := FAxisLineColor // get property.
   else
   if Index = jvChartHintColorIndex then
-    Result := FHintColor // TODO Make this a property.
+    Result := FHintColor // Get property.
   else
   if Index = jvChartPaperColorIndex then
-    Result := FPaperColor // TODO Make this a property.
+    Result := FPaperColor // Get property.
   else
   if Index >= 0 then
     Result := FPenColors[Index]
@@ -2062,6 +2072,9 @@ var
           for I := 0 to Options.PenCount - 1 do begin
             if not Options.GetPenValueLabel(I) then
                 continue;
+
+            PenAxisOpt := Options.GetPenAxis(I); // Get whether this pen is plotted using the lefthand or righthand Y axis.
+                
             for J := 0 to Options.XValueCount - 1 do
             begin
                 V := FData.Value[I, J];
@@ -2226,15 +2239,14 @@ var
         {add average line for the type...}
         if Options.ChartKind = ckChartBarAverage then
         begin
-          SetLineColor(-3);
+          SetLineColor(jvChartAverageLineColorIndex);
           ChartCanvas.MoveTo(Round(xOrigin + 1 * Options.XPixelGap),
-            Round(yOrigin - ((Options.AverageValue[1] / Options.GetPenAxis(I).YGap) * Options.PrimaryYAxis.YPixelGap)));
-          for J := 2 to Options.XValueCount do
+            Round(yOrigin - ((Options.AverageValue[1] / Options.PrimaryYAxis.YGap) * Options.PrimaryYAxis.YPixelGap)));
+          for J := 0 to Options.XValueCount do
             MyPenLineTo(Round(xOrigin + J * Options.XPixelGap),
-              Round(yOrigin - ((Options.AverageValue[J] / Options.GetPenAxis(I).YGap) * Options.PrimaryYAxis.YPixelGap)));
+              Round(yOrigin - ((Options.AverageValue[J] / Options.PrimaryYAxis.YGap) * Options.PrimaryYAxis.YPixelGap)));
           SetLineColor(-3);
-        end;
-
+         end;
         // NEW: Add markers to bar chart:
         PlotGraphChartMarkers;
 
