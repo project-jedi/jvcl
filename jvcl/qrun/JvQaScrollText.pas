@@ -181,7 +181,7 @@ begin
     DrawDesignFrame(Canvas, ClientRect);
     Canvas.Draw(0, 0, FForeImage.Picture.Graphic);
   end
-  else
+  else if NOT (csDestroying in ComponentState) then
     Canvas.Draw(0, 0, FScrollImage.Picture.Graphic);
 end;
 

@@ -61,7 +61,7 @@ uses
 const
   clGrayText = clDark; // (ahuser) This is wrong in QGraphics.
                        //          Since when is clGrayText = clLight = clWhite?
-
+  
 
 type
   TJvCustomEdit = class(TJvExCustomEdit)
@@ -83,6 +83,7 @@ type
     
     FPasswordChar: Char;
     FNullPixmap: QPixmapH;
+    
     
     function GetPasswordChar: Char;
     procedure SetAlignment(Value: TAlignment);
@@ -112,6 +113,7 @@ type
     function GetPopupMenu: TPopupMenu; override;
 
     
+    
     procedure Paint; override;
     procedure TextChanged; override;
     procedure KeyPress(var Key: Char); override;
@@ -129,12 +131,14 @@ type
     function IsEmpty: Boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
     
     procedure Loaded; override;
   protected
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoHint: Boolean read FAutoHint write SetAutoHint default False;
     property Caret: TJvCaret read FCaret write SetCaret;
+    
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property PasswordChar: Char read GetPasswordChar write SetPasswordChar;
     // set to True to disable read/write of PasswordChar and read of Text
@@ -241,7 +245,7 @@ begin
   FCaret.OnChanged := CaretChanged;
   FStreamedSelLength := 0;
   FStreamedSelStart := 0;
-  FUseFixedPopup := True;  // asn: clx not implemented yet
+  FUseFixedPopup := True; // asn: clx not implemented yet
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
   FGroupIndex := -1;
@@ -409,6 +413,7 @@ end;
 
 
 
+
 procedure TJvCustomEdit.Paint;
 var
   S: TCaption;
@@ -424,7 +429,7 @@ begin
     else
       S := StrFillChar(PasswordChar, Length(Text));
     if not PaintEdit(Self, S, FAlignment, False, {0,} FDisabledTextColor,
-       Focused, Flat, Canvas) then
+      Focused, Flat, Canvas) then
       inherited Paint;
   end;
 end;
@@ -510,7 +515,7 @@ begin
     for I := 0 to Owner.ComponentCount - 1 do
       if Owner.Components[I] is TJvCustomEdit then
         if ({(Owner.Components[I].Name <> Self.Name)}
-           (Owner.Components[I] <> Self) and // (ahuser) this is better and faster
+          (Owner.Components[I] <> Self) and // (ahuser) this is better and faster
           ((Owner.Components[I] as TJvCustomEdit).GroupIndex <> -1) and
           ((Owner.Components[I] as TJvCustomEdit).GroupIndex = FGroupIndex)) then
           (Owner.Components[I] as TJvCustomEdit).Caption := '';
@@ -621,17 +626,17 @@ begin
     try
       C.Control := Self;
       
-      
-      if GetTextExtentPoint32W(C.Handle, PWideChar(Text), Length(Text), Size) then
-      
-      begin
-        if (ClientWidth <= Size.cx) then
-          Hint := Text
+        
+        if GetTextExtentPoint32W(C.Handle, PWideChar(Text), Length(Text), Size) then
+          
+        begin
+          if (ClientWidth <= Size.cx) then
+            Hint := Text
+          else
+            Hint := FOldHint;
+        end
         else
           Hint := FOldHint;
-      end
-      else
-        Hint := FOldHint;
     finally
       C.Free;
     end;
@@ -656,6 +661,8 @@ begin
   inherited Resize;
   UpdateAutoHint;
 end;
+
+
 
 end.
 

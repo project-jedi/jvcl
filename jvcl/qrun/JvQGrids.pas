@@ -1074,7 +1074,8 @@ begin
       Style := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
       if (FCellDown.X = aCol) and (FCellDown.Y = aRow) then
         Style := Style or DFCS_PUSHED;
-      DrawFrameControl(Canvas.Handle, TempRect, DFC_BUTTON, Style);
+      SetBkMode(Canvas.Handle, OPAQUE);  
+      DrawFrameControl(Canvas, TempRect, DFC_BUTTON, Style);
     end;
     inherited DrawCell(ACol,ARow,ARect,AState);
     Exit;
@@ -1106,7 +1107,7 @@ begin
       FillRect(ARect);
     end;
   Down := FFixedCellsButtons and (gdFixed in AState) and
-    
+
     not (csLoading in ComponentState) and FPressed and FDefaultDrawing and
     (FPressedCell.X = ACol) and (FPressedCell.Y = ARow);
   inherited DefaultDrawing := FDefaultDrawing;
@@ -1126,7 +1127,7 @@ begin
     end;
   end;
   if FDefaultDrawing and
-     
+
      (gdFixed in AState) then
   begin
     FrameFlags1 := 0;
@@ -1150,8 +1151,10 @@ begin
       else if ((FrameFlags1 and BF_BOTTOM) = 0) and
         (goFixedVertLine in Options) then
         Inc(TempRect.Bottom, GridLineWidth);
+      Canvas.Start;
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags2);
+      Canvas.Stop;
     end;
   end;
   if FDefaultDrawing and not (csDesigning in ComponentState) and

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -21,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-04-05
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -181,7 +180,8 @@ begin
   begin
     if Context.Contexts = GetContexts then
       Result := TContextItem.CreateCtx(Self, Context)
-    else if Recursive then
+    else
+    if Recursive then
     begin
       SetLength(CtxStack, 128); // reserve some space; should be enough for most situations
       CtxIdx := 0;

@@ -105,8 +105,6 @@ type
     FAutoAlignment: Boolean;
     FOldFontChange: TNotifyEvent;
     procedure DisplayText;
-    function IsValidChar(const S: string; Key: Char; Posn: Integer): boolean; virtual;
-    function MakeValid(ParseString: string): string;
     function ScientificStrToFloat(SciString: string): Double;
     procedure SetHasMaxValue(NewValue: Boolean);
     procedure SetHasMinValue(NewValue: Boolean);
@@ -142,13 +140,13 @@ type
     procedure EnforceMinValue;
     
   protected
+    function IsValidChar(const S: string; Key: Char; Posn: Integer): boolean; virtual;
+    function MakeValid(ParseString: string): string;virtual;
     procedure Change; override; // (ahuser) CM_CHANGED is only called by TCustomEdit.Change
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoClipboardPaste; override;
-    
     procedure SetText(const NewValue: TCaption); override;
-    
     property CheckChars: string read FCheckChars write SetCheckChars;
     property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces;
     property DisplayFormat: TJvValidateEditDisplayFormat read FDisplayFormat
@@ -161,7 +159,6 @@ type
     property OnCustomValidate: TJvCustomTextValidateEvent
       read FOnCustomValidate write FOnCustomValidate;
     property OnValueChanged: TNotifyEvent read FOnValueChanged write FOnValueChanged;
-    property Text: TCaption read GetText write SetText;
     property Value: Variant read GetValue write SetValue;
     property ZeroEmpty: Boolean read FZeroEmpty write SetZeroEmpty;
     property DisplayPrefix: string read FDisplayPrefix write SetDisplayPrefix;
@@ -200,10 +197,10 @@ type
     property Color;
     property Constraints;
     property CriticalPoints;
-    property DecimalPlaces default 0;
     property DisabledColor;
     property DisabledTextColor;
     property DisplayFormat default dfInteger;
+    property DecimalPlaces default 0; // (chrislatta) Must be after DisplayFormat to stream properly
     property DisplayPrefix;
     property DisplaySuffix;
     property DragMode;
@@ -369,7 +366,6 @@ var
 begin
   if FDisplayFormat <> NewValue then
   begin
-    EnterText := FEditText;
     OldFormat := FDisplayFormat;
     FDisplayFormat := NewValue;
     case FDisplayFormat of
@@ -473,7 +469,6 @@ begin
     begin
       // ...or just display the value
       EditText := FEditText;
-      DoValueChanged;
     end;
   end;
 end;
@@ -503,7 +498,6 @@ end;
 
 procedure TJvCustomValidateEdit.SetAsInteger(NewValue: Integer);
 begin
-  EnterText := FEditText;
   case FDisplayFormat of
     dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfCustom,
     dfNonCheckChars, dfNone:
@@ -517,7 +511,6 @@ begin
     dfCurrency, dfFloat, dfInteger, dfPercent, dfScientific, dfYear:
       EditText := IntToStr(IntRangeValue(NewValue));
   end;
-  DoValueChanged;
 end;
 
 function TJvCustomValidateEdit.GetAsCurrency: Currency;
@@ -536,7 +529,6 @@ end;
 
 procedure TJvCustomValidateEdit.SetAsCurrency(NewValue: Currency);
 begin
-  EnterText := FEditText;
   case FDisplayFormat of
     dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfCustom,
     dfNonCheckChars, dfNone:
@@ -550,7 +542,6 @@ begin
     dfCurrency, dfFloat, dfInteger, dfPercent, dfScientific, dfYear:
       EditText := CurrToStr(CurrRangeValue(NewValue));
   end;
-  DoValueChanged;
 end;
 
 function TJvCustomValidateEdit.GetAsFloat: Double;
@@ -571,7 +562,6 @@ end;
 
 procedure TJvCustomValidateEdit.SetAsFloat(NewValue: Double);
 begin
-  EnterText := FEditText;
   case FDisplayFormat of
     dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfCustom,
     dfNonCheckChars, dfNone:
@@ -588,7 +578,6 @@ begin
     dfScientific:
       EditText := Format('%e', [FloatRangeValue(NewValue)]);
   end;
-  DoValueChanged;
 end;
 
 function TJvCustomValidateEdit.GetValue: Variant;
@@ -636,7 +625,6 @@ end;
 
 procedure TJvCustomValidateEdit.DoClipboardPaste;
 begin
-  EnterText := FEditText;
   inherited DoClipboardPaste;
   EditText := MakeValid(inherited Text);
 end;
@@ -720,9 +708,15 @@ end;
 
 procedure TJvCustomValidateEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
+// if Key = VK_DELETE then    EditText := MakeValid(inherited Text);
+  if Key = VK_ESCAPE then
+  begin
+    Key := 0;
+    EditText := EnterText;
+    SelStart := 0;
+    SelLength := length(FEditText);
+  end;
   inherited KeyDown(Key, Shift);
-  if Key = VK_DELETE then
-    EditText := MakeValid(inherited Text);
 end;
 
 function TJvCustomValidateEdit.CurrRangeValue(CheckValue: Currency): Currency;
@@ -773,13 +767,13 @@ begin
     EnForceMaxValue;
     EnforceMinValue;
   end;
-  ChangeText(FEditText);
+//  ChangeText(FEditText); 
   DisplayText;
+  DoValueChanged;
 end;
 
 procedure TJvCustomValidateEdit.DoSetFocus(FocusedWnd: HWND);
 begin
-  EnterText := FEditText;
   DisplayText;
   inherited DoSetFocus(FocusedWnd);
 end;
@@ -799,10 +793,7 @@ begin
   try
     S := FDisplayPrefix + NewValue + FDisplaySuffix;
     if S <> inherited Text then
-      
-    
-    inherited SetText(S);
-    
+      inherited SetText(S);
   finally
     FSelfChange := False;
   end;
@@ -811,7 +802,8 @@ end;
 procedure TJvCustomValidateEdit.DisplayText;
 begin
   // The number types need to be formatted
-  if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
+  if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfInteger, dfOctal,
+     dfPercent, dfScientific, dfYear]) and
     (AsFloat = 0) and FZeroEmpty then
     ChangeText('')
   else
@@ -931,8 +923,12 @@ end;
 
 procedure TJvCustomValidateEdit.DoValueChanged;
 begin
-  if Assigned(FOnValueChanged) and (EnterText <> FEditText) then
-    FOnValueChanged(Self);
+  try
+    if Assigned(FOnValueChanged) and (EnterText <> FEditText) then
+      FOnValueChanged(Self);
+  finally
+    EnterText := FEditText;
+  end;
 end;
 
 {procedure TJvCustomValidateEdit.CMChanged(var Message: TMessage);}
@@ -949,11 +945,8 @@ begin
   inherited Change;
 end;
 
-
-
 procedure TJvCustomValidateEdit.SetText(const NewValue: TCaption);
 begin
-  EnterText := FEditText;
   EditText := NewValue;
   DoValueChanged;
 end;

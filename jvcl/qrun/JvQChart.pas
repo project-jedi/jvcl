@@ -761,7 +761,8 @@ begin
 
     // DON'T KNOW WHY WE NEEDED THIS. REMOVED IT.
     (*
-  if (YGap>0.0) then begin
+  if (YGap>0.0) then
+  begin
     CheckYDivisions := Round((YMax + (YGap - 1)) / YGap);
     if CheckYDivisions<>YDivisions then
         YDivisions :=CheckYDivisions;
@@ -816,7 +817,8 @@ end;
 
 (*procedure TJvChartYAxisOptions.SetYGap(newYgap: Double);
 begin
-  if (FYGap < 5.0) and (YMax>100) then begin
+  if (FYGap < 5.0) and (YMax>100) then
+  begin
     OutputDebugString('Bug');
   end;
 
@@ -1930,8 +1932,9 @@ var
           ((J = MinIndex[I]) or (J = MaxIndex[I]))) then // Always show max/mins
         begin
           // TODO: EVENT FOR END-USER-CUSTOMIZED OR FORMATTED LABELS
-          //if Assigned(FOnGetValueLabel) then begin
-          //    FOnGetValueLabel(Sender, {Pen}I, {Sample#}J, {Value}V, {var}Text );
+          //if Assigned(FOnGetValueLabel) then
+          //begin
+          //  FOnGetValueLabel(Sender, {Pen}I, {Sample#}J, {Value}V, {var}Text );
           //end
           if Length(Text) > 0 then
           begin
@@ -2882,10 +2885,13 @@ end;
 begin
   MyAxisFont;
 
-  if Options.FXLegendHoriz <  then begin
+  if Options.FXLegendHoriz <  then
+  begin
       Options.FXLegendHoriz := Options.XStartOffset;
       Width := Options.XEnd;
-  end else begin
+  end
+  else
+  begin
       Width := Options.XEnd-(Options.FXLegendHoriz-Options.XStartOffset);
   end;
 
@@ -2952,7 +2958,9 @@ begin
       XOrigin :=Options.XStartOffset + XPixelGap*(Options.XOrigin);
 
       GetXValue   := Round((X-XOrigin)/XPixelGap);
-   end else GetXValue := 0;
+   end
+   else
+     GetXValue := 0;
 end;
 
 function  TJvChart.GetYValue(X,Y:Integer): Double;
@@ -2969,7 +2977,9 @@ begin
       YOrigin      := Options.YStartOffset +
                      Round(YPixelGap*(Options.PrimaryYAxis.YDivisions-Options.YOrigin));
       GetYValue   := ((YOrigin-Y)/YPixelGap)*Options.PrimaryYAxis.YGap;
-   end else GetYValue := 0;
+   end
+   else
+     GetYValue := 0;
 end;
 }
 

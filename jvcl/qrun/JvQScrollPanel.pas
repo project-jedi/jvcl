@@ -125,7 +125,7 @@ type
   protected
     procedure Visiblechanged; override;
     procedure EnabledChanged; override;
-    procedure SetParent(const AParent: TWinControl); override;
+    procedure SetParent( const  AParent: TWinControl); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property Align default alTop;
     property Height default 35;
@@ -167,6 +167,7 @@ type
     property Hint;
     property ParentShowHint;
     property PopupMenu;
+    
     property Color;
     property ParentColor;
     property OnEnter;
@@ -214,7 +215,8 @@ begin
 
     Y := 0;
     SR := Rect(0,0,W,H);
-    while y < Dest.Height do begin
+    while y < Dest.Height do
+    begin
       X := 0;
       while X < Dest.Width do
       begin
@@ -485,7 +487,7 @@ begin
   if AOwner is TWinControl then
     Parent := TWinControl(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls];
-
+  
   FScrollDirection := sdHorizontal;
   FScrollAmount := 16;
   Align := alTop;
@@ -649,7 +651,7 @@ end;
 
 procedure TJvCustomScrollPanel.SetupArrows;
 begin
-  if FUpLeft = nil then
+  if FUpLeft <> nil then
     Exit;
   FUpLeft := TJvScrollButton.Create(Self);
   FUpLeft.FreeNotification(Self);
@@ -660,7 +662,7 @@ begin
   FDownRight.Kind := sbRight;
 end;
 
-procedure TJvCustomScrollPanel.SetParent(const AParent: TWinControl);
+procedure TJvCustomScrollPanel.SetParent( const  AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if FUpLeft = nil then

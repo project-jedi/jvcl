@@ -113,7 +113,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
     
-//    function GetColor: TColor;
+    function GetColor: TColor;
     function GetDoubleBuffered: Boolean;
     procedure Paint;
     
@@ -330,7 +330,6 @@ type
   protected
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
-    Procedure AdjustPainter(Painter: QPainterH); override;
     procedure PaintRequest; override;
   
   end;
@@ -355,6 +354,8 @@ type
     procedure ParentColorChanged; override;
   private
     FDoubleBuffered: Boolean;
+    function GetColor: TColor;
+    procedure SetColor(Value: TColor);
     function GetDoubleBuffered: Boolean;
     procedure SetDoubleBuffered(Value: Boolean);
   protected
@@ -363,7 +364,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
-//    property Color: TColor read GetColor write SetColor;
+    property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   
@@ -594,19 +595,14 @@ begin
       OriginalPainter := Canvas.Handle;
       Canvas.Handle := QPainter_create(Pixmap);
       TControlCanvas(Canvas).StartPaint;
-      {$IFDEF MSWINDOWS}
       QPainter_setClipRegion(Canvas.Handle, EventRegion);
       QPainter_setClipping(Canvas.Handle, True);
       R := Rect(0, 0, 0, 0);
       QRegion_boundingRect(EventRegion, @R);
-      {$ENDIF MSWINDOWS}
-      {$IFDEF LINUX}
-       R:= Rect(0,0, Instance.Width, Instance.Height);
-      {$ENDIF LINUX}
     end;
 
     try
-      Canvas.Brush.Color := Color;
+      Canvas.Brush.Color := Intf.GetColor;
       QPainter_setFont(Canvas.Handle, Font.Handle);
       QPainter_setPen(Canvas.Handle, Font.FontPen);
       Canvas.Font.Assign(Font);
@@ -768,13 +764,13 @@ begin
       TC := QColor(Color);
       QWidget_setBackgroundColor(Handle, TC);
       QColor_destroy(TC);
-    end;
+    end; 
     NotifyControls(CM_PARENTCOLORCHANGED);
     Invalidate;
   end;
 end;
 
-{$IFDEF _COMPILER6}
+{$IFDEF COMPILER6}
 
 // redirect Kylix 3 / Delphi 7 function names to Delphi 6 available function
 {$IF not declared(PatchedVCLX)}
@@ -1119,8 +1115,7 @@ begin
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  Color := clBackground;
-  DoubleBuffered := true;
+  
 end;
 
 destructor TJvExWinControl.Destroy;
@@ -1247,19 +1242,6 @@ begin
   end;
 end;
 
-procedure TJvExGraphicControl.AdjustPainter(Painter: QPainterH);
-var
-  p: TPoint;
-begin
-  if (Parent.Width > 0) and (Parent.Height > 0) then
-  begin
-    p := PainterOffset(Canvas);
-    QPainter_translate(Painter, p.x, p.y);
-    QPainter_setClipRect(Painter, p.x, p.y, Width, Height);
-  end;
-end;
-
-
 
 
 
@@ -1315,7 +1297,6 @@ function TJvExCustomControl.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-
 procedure TJvExCustomControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   WidgetControl_Painting(Self, Canvas, EventRegion);
@@ -1337,6 +1318,20 @@ end;
 procedure TJvExCustomControl.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
+end;
+
+function TJvExCustomControl.GetColor: TColor;
+begin
+  Result := Brush.Color;
+end;
+
+procedure TJvExCustomControl.SetColor(Value: TColor);
+begin
+  if Brush.Color <> Value then
+  begin
+    inherited Color := Value;
+    Brush.Color := Value;
+  end;
 end;
 
 function TJvExCustomControl.GetDoubleBuffered: Boolean;
@@ -1396,13 +1391,13 @@ begin
   SetCopyRectMode(Self, cmVCL);
   {$IFEND}
   inherited Create(AOwner);
-  Color := clBackground;
+  
   DoubleBuffered := True;
 end;
 
 destructor TJvExCustomControl.Destroy;
 begin
-
+  
   inherited Destroy;
 end;
 

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,8 +20,6 @@ All Rights Reserved.
 
 Contributor(s):
   Maciej Kaczkowski
-
-Last Modified: 2004-02-02
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -102,10 +100,11 @@ Maciej Kaczkowski:
       when alignement is not left (need to rebuild the ItemHTDrawEx draw
       function)
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
-unit JvQHtControls;
+unit JvQHTControls;
 
 interface
 
@@ -120,7 +119,7 @@ uses
 type
   THyperLinkClick = procedure (Sender: TObject; LinkName: string) of object;
 
-  TJvCustomHTListBox = class(TCustomListBox)
+  TJvCustomHTListBox = class(TJvExCustomListBox)
   private
     FHyperLinkClick: THyperLinkClick;
     FHideSel: Boolean;
@@ -134,7 +133,8 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure FontChanged; override;
-
+    
+    
     procedure Loaded; override;
     function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean; override;
     
@@ -368,7 +368,7 @@ function PrepareText(a: string):string;
 implementation
 
 uses
-  JclLogic,
+  Math,
   JvQJVCLUtils, JvQConsts;
 
 const
@@ -555,11 +555,12 @@ var
 
 begin
   // (p3) remove warnings
-//  OldFontColor := 0;
-//  OldBrushColor := 0;
-//  RemFontColor := 0;
-//  RemBrushColor := 0;
-// OldAlignment := taLeftJustify;
+  OldFontColor := 0;
+  OldBrushColor := 0;
+  RemFontColor := 0;
+  RemBrushColor := 0;
+  OldAlignment := taLeftJustify;
+  OldFont := TFont.Create;
 
   if Canvas <> nil then
   begin
@@ -569,10 +570,7 @@ begin
     OldAlignment  := Alignment;
     RemFontColor  := Canvas.Font.Color;
     RemBrushColor := Canvas.Brush.Color;
-  end
-  else
-    exit;
-  OldFont := TFont.Create;
+  end;
   try
     Alignment := taLeftJustify;
     IsLink := False;
@@ -807,12 +805,13 @@ constructor TJvCustomHTListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   // Kaczkowski
+  
   ColorHighlight := clHighlight;
   ColorHighlightText := clHighlightText;
   ColorDisabledText := clGrayText;
-//  Style := lbOwnerDrawVariable;
   // Kaczkowski
 end;
+
 
 procedure TJvCustomHTListBox.Loaded;
 begin
@@ -821,49 +820,36 @@ begin
 end;
 
 
+
+
 function TJvCustomHTListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState): Boolean;
 
 begin
-//  if (csLoading in ComponentState) or not assigned(Canvas) then
-//  begin
-//    Result := false;
-//    exit;
-//  end;
-  if not (csLoading in ComponentState)
-  then
-  begin
-
   if odSelected in State then
   begin
    Canvas.Brush.Color := FSelectedColor;
    Canvas.Font.Color  := FSelectedTextColor;
   end;
-  Canvas.Font := Font;
-  ItemHeight := CanvasMaxTextHeight(Canvas);
   if not Enabled then
     Canvas.Font.Color := FDisabledTextColor;
 
   Canvas.FillRect(Rect);
   ItemHTDraw(Canvas, Rect, State, Items[Index]);
-
+  
   Result := True;
-  end
-  else
-    Result := False;
+  
 end;
 
 
 
 procedure TJvCustomHTListBox.FontChanged;
 begin
-//  inherited FontChanged;
-//  Canvas.Font := Font;
-//  ItemHeight := CanvasMaxTextHeight(Canvas);
+  inherited FontChanged;
+  if not Assigned(Canvas) then
+    Exit; // VisualCLX needs this
   Canvas.Font := Font;
-  ItemHeight := Canvas.TextHeight('W');
-  Invalidate;
-
+  ItemHeight := CanvasMaxTextHeight(Canvas);
 end;
 
 procedure TJvCustomHTListBox.SetHideSel(Value: Boolean);
@@ -886,7 +872,8 @@ var
 begin
   inherited MouseMove(Shift,X,Y);
   I := Self.ItemAtPos(Point(X, Y), True);
-  if I = -1 then exit;
+  if I = -1 then
+    Exit;
   R := Self.ItemRect(I);
   State := [];
   if Self.Selected[i] then
@@ -962,6 +949,7 @@ begin
     Canvas.Font.Color := FDisabledTextColor;
 
   Canvas.FillRect(Rect);
+  Inc(Rect.Left, 2);
   ItemHTDraw(Canvas, Rect, State, Items[Index]);
   
   

@@ -370,6 +370,8 @@ begin
   end;
 end;
 
+
+
 procedure TJvExBitBtn.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -401,6 +403,9 @@ asm
 end;
 
 
+
+
+
 constructor TJvExBitBtn.Create(AOwner: TComponent);
 begin
   WindowProc := WndProc;
@@ -415,7 +420,6 @@ end;
 
 destructor TJvExBitBtn.Destroy;
 begin
-  
   FCanvas.Free;
   inherited Destroy;
 end;
@@ -424,6 +428,7 @@ procedure TJvExBitBtn.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
+
 
 
 end.

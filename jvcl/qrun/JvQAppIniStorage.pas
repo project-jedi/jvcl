@@ -53,11 +53,9 @@ type
   TJvCustomAppIniStorage = class(TJvCustomAppMemoryFileStorage)
   protected
     FIniFile: TMemIniFile;
-    FDefaultSection : string;
-
+    FDefaultSection: string;
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
-    
     procedure EnumFolders(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
     procedure EnumValues(const Path: string; const Strings: TStrings;
@@ -69,7 +67,6 @@ type
     procedure WriteValue(const Section, Key, Value: string); virtual;
     procedure RemoveValue(const Section, Key: string); virtual;
     procedure DeleteSubTreeInt(const Path: string); override;
-
     procedure SplitKeyPath(const Path: string; out Key, ValueName: string); override;
     function ValueStoredInt(const Path: string): Boolean; override;
     procedure DeleteValueInt(const Path: string); override;
@@ -81,9 +78,7 @@ type
     procedure DoWriteString(const Path: string; Value: string); override;
     function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
     procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
-
-    property DefaultSection : string read FDefaultSection write FDefaultSection;
-
+    property DefaultSection: string read FDefaultSection write FDefaultSection;
     property IniFile: TMemIniFile read FIniFile;
   public
     constructor Create(AOwner: TComponent); override;
@@ -93,11 +88,10 @@ type
   // This class handles the flushing into a disk file
   // and publishes a few properties for them to be
   // used by the user in the IDE
-  TJvAppIniFileStorage = class (TJvCustomAppIniStorage)
+  TJvAppIniFileStorage = class(TJvCustomAppIniStorage)
   public
     procedure Flush; override;
     procedure Reload; override;
-
     property AsString;
     property IniFile;
   published
@@ -107,7 +101,6 @@ type
     property Location;
     property DefaultSection;
     property SubStorages;
-
     property OnGetFileName;
   end;
 
@@ -145,7 +138,7 @@ begin
     BufSize := Length(Value) div 2;
   Result := 0;
   P := PChar(Value);
-  while (BufSize > 0) do
+  while BufSize > 0 do
   begin
     PChar(Buf)[Result] := Chr(StrToInt('$' + P[0] + P[1]));
     Inc(Result);
@@ -172,7 +165,21 @@ begin
   end;
 end;
 
-//=== TJvCustomAppIniStorage =========================================================
+//=== TJvCustomAppIniStorage =================================================
+
+constructor TJvCustomAppIniStorage.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FIniFile := TMemIniFile.Create(Name);
+end;
+
+destructor TJvCustomAppIniStorage.Destroy;
+begin
+  inherited Destroy;
+  // Has to be done AFTER inherited, see comment in
+  // TJvCustomAppMemoryFileStorage
+  FIniFile.Free;
+end;
 
 procedure TJvCustomAppIniStorage.SplitKeyPath(const Path: string; out Key, ValueName: string);
 begin
@@ -310,7 +317,8 @@ begin
     RefPath := GetAbsPath(Path);
     if RefPath = '' then
       RefPath := DefaultSection;
-    if AutoReload and not IsUpdating then Reload;
+    if AutoReload and not IsUpdating then
+      Reload;
     IniFile.ReadSections(Strings);
     I := Strings.Count - 1;
     while I >= 0 do
@@ -344,7 +352,8 @@ begin
     RefPath := GetAbsPath(Path);
     if RefPath = '' then
       RefPath := DefaultSection;
-    if AutoReload and not IsUpdating then Reload;
+    if AutoReload and not IsUpdating then
+      Reload;
     IniFile.ReadSectionValues(RefPath, Strings);
     for I := Strings.Count - 1 downto 0 do
     begin
@@ -380,7 +389,8 @@ begin
 end;
 
 function TJvCustomAppIniStorage.ReadValue(const Section, Key: string): string;
-var ASection:string;
+var
+  ASection: string;
 begin
   if IniFile <> nil then
   begin
@@ -397,7 +407,8 @@ begin
 end;
 
 procedure TJvCustomAppIniStorage.WriteValue(const Section, Key, Value: string);
-var ASection:string;
+var
+  ASection: string;
 begin
   if IniFile <> nil then
   begin
@@ -408,7 +419,8 @@ begin
     if (ASection = '') or (ASection[1] = '.') then
       raise EJVCLAppStorageError.Create(RsEWriteValueFailed);
     IniFile.WriteString(ASection, Key, Value);
-    if AutoFlush and not IsUpdating then Flush;
+    if AutoFlush and not IsUpdating then
+      Flush;
   end;
 end;
 
@@ -423,7 +435,8 @@ begin
     TopSection := GetAbsPath(Path);
     Sections := TStringList.Create;
     try
-      if AutoReload and not IsUpdating then Reload;
+      if AutoReload and not IsUpdating then
+        Reload;
       IniFile.ReadSections(Sections);
       if TopSection = '' then
         for I := 0 to Sections.Count - 1 do
@@ -432,7 +445,8 @@ begin
         for I := 0 to Sections.Count - 1 do
           if Pos(TopSection, Sections[I]) = 1 then
             IniFile.EraseSection(Sections[I]);
-      if AutoFlush and not IsUpdating then Flush;
+      if AutoFlush and not IsUpdating then
+        Flush;
     finally
       Sections.Free;
     end;
@@ -440,11 +454,13 @@ begin
 end;
 
 procedure TJvCustomAppIniStorage.RemoveValue(const Section, Key: string);
-var ASection:string;
+var
+  ASection: string;
 begin
   if IniFile <> nil then
   begin
-    if AutoReload and not IsUpdating then Reload;
+    if AutoReload and not IsUpdating then
+      Reload;
     // Changed by Jens Fudickar to support DefaultSections; Similar to ReadValue
     if (Section = '') or (Section[1] = '.') then
       ASection := DefaultSection + Section
@@ -456,28 +472,17 @@ begin
     if IniFile.ValueExists(ASection, Key) then
     begin
       IniFile.DeleteKey(ASection, Key);
-      if AutoFlush and not IsUpdating then Flush;
+      if AutoFlush and not IsUpdating then
+        Flush;
     end
-    else if IniFile.SectionExists(ASection + '\' + Key) then
+    else
+    if IniFile.SectionExists(ASection + '\' + Key) then
     begin
       IniFile.EraseSection(ASection + '\' + Key);
-      if AutoFlush and not IsUpdating then Flush;
+      if AutoFlush and not IsUpdating then
+        Flush;
     end;
   end;
-end;
-
-constructor TJvCustomAppIniStorage.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FIniFile := TMemIniFile.Create(Name);
-end;
-
-destructor TJvCustomAppIniStorage.Destroy;
-begin
-  inherited Destroy;
-  // Has to be done AFTER inherited, see comment in
-  // TJvCustomAppMemoryFileStorage
-  FIniFile.Free;
 end;
 
 function TJvCustomAppIniStorage.PathExistsInt(const Path: string): boolean;
@@ -485,7 +490,8 @@ var
   Section: string;
   Key: string;
 begin
-  if AutoReload and not IsUpdating then Reload;
+  if AutoReload and not IsUpdating then
+    Reload;
   SplitKeyPath(Path, Section, Key);
   Result := IniFile.SectionExists(Section + '\' + Key);
 end;
@@ -499,7 +505,8 @@ begin
   RefPath := GetAbsPath(Path);
   if RefPath = '' then
     RefPath := DefaultSection;
-  if AutoReload and not IsUpdating then Reload;
+  if AutoReload and not IsUpdating then
+    Reload;
   Result := IniFile.SectionExists(RefPath);
   if Result and ListIsValue and IniFile.ValueExists(RefPath, cCount) then
   begin
@@ -545,7 +552,7 @@ begin
   end;
 end;
 
-{ TJvAppIniFileStorage }
+//=== TJvAppIniFileStorage ===================================================
 
 procedure TJvAppIniFileStorage.Flush;
 begin

@@ -187,6 +187,9 @@ type
 
 implementation
 
+uses
+  JvQConsts;
+
 //=== TJvCapBtn ==============================================================
 
 constructor TJvCapBtn.Create(AOwner: TComponent);
@@ -341,7 +344,8 @@ begin
 
   if not Enabled then
     Flags := Flags or DFCS_INACTIVE
-  else if FDown and FMouseDown and Enabled then
+  else
+  if FDown and FMouseDown and Enabled then
     Flags := Flags or DFCS_PUSHED;
   if FFlat then
     Flags := Flags or DFCS_FLAT;
@@ -358,7 +362,8 @@ begin
       R := ClientRect;
       if FDown and FMouseDown then
         Frame3D(Canvas, R, clBtnShadow, clBtnHighLight, 1)
-      else if FOver then
+      else
+      if FOver then
         Frame3D(Canvas, R, clBtnHighLight, clBtnShadow, 1)
       else
         Frame3D(Canvas, R, clBtnFace, clBtnFace, 1);
@@ -516,7 +521,7 @@ begin
   if BorderStyle = bsSingle then
   begin
     DrawShadePanel(Canvas, R, false, 1, nil);
-    InflateRect(R, -1, -1);
+    InflateRect(R, -2, -2);
   end;
   
   with Canvas do
@@ -534,7 +539,8 @@ begin
   begin
     if CaptionPosition = dpLeft then
       FCaptionWidth := GetSystemMetrics(SM_CYCAPTION) - 3 + FlatOffset
-    else if CaptionPosition = dpRight then
+    else
+    if CaptionPosition = dpRight then
       FCaptionWidth := GetSystemMetrics(SM_CYCAPTION) - 4 + FlatOffset
     else
       FCaptionWidth := GetSystemMetrics(SM_CYCAPTION) - 5 + FlatOffset
@@ -579,7 +585,7 @@ procedure TJvCaptionPanel.DrawRotatedText(Rotation: Integer);
 var
   
   
-  x, y: integer;
+  X, Y: Integer;
   
   R: TRect;
   tH, tW: Integer;
@@ -614,7 +620,7 @@ begin
             if not FIcon.Empty then
               Dec(Y, FIcon.Height + 3)
             else
-              Dec(Y)
+              Dec(Y);
             
           end;
         dpTop, dpBottom:
@@ -625,7 +631,7 @@ begin
             if not FIcon.Empty then
               Inc(X, FIcon.Width + 3)
             else
-              Inc(X)
+              Inc(X);
             
             
           end;
@@ -803,8 +809,6 @@ begin
 end;
 
 procedure TJvCaptionPanel.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-const
-  SC_DRAGMOVE = $F012;
 begin
   inherited MouseDown(Button, Shift, X, Y);
 
@@ -817,10 +821,10 @@ begin
     SetZOrder(True);
     FDragging := True;
     ReleaseCapture;
-   
+    
     SetCapture(Handle);
     FAnchorPos := Point(X, Y);
-   
+    
   end;
 end;
 

@@ -12,7 +12,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvVCLUtils.PAS, released on 2002-09-24.
+The Original Code is: JvJVCLUtils.PAS, released on 2002-09-24.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
@@ -49,7 +49,14 @@ uses
   QDialogs, QComCtrls, QImgList, QGrids, QWinCursors, QWindows,
   
   IniFiles,
-  JvQTypes, JvQFinalize;
+  JclBase, JclSysUtils, JclStrings, JvQJCLUtils,
+  JvQAppStorage, JvQTypes, JvQFinalize;
+
+
+
+function Icon2Bitmap(Ico: TIcon): TBitmap;
+function Bitmap2Icon(bmp: TBitmap): TIcon;
+
 
 
 
@@ -73,6 +80,7 @@ procedure GetValueBitmap(var Dest: TBitmap; const Source: TBitmap);
 
 
 {$IFDEF MSWINDOWS}
+
 type
   TJvWallpaperStyle = (wpTile, wpCenter, wpStretch);
 
@@ -179,7 +187,7 @@ type
 
 procedure WriteText(ACanvas: TCanvas; ARect: TRect; DX, DY: Integer;
   const Text: string; Alignment: TAlignment; WordWrap: Boolean; ARightToLeft:
-    Boolean = False);
+  Boolean = False);
 procedure DrawCellText(Control: TCustomControl; ACol, ARow: Longint;
   const s: string; const ARect: TRect; Align: TAlignment;
   VertAlign: TVertAlignment); overload;
@@ -192,7 +200,7 @@ procedure DrawCellText(Control: TCustomControl; ACol, ARow: Longint;
 procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
   const s: string; const ARect: TRect; Align: TAlignment;
   VertAlign: TVertAlignment; WordWrap: Boolean; ARightToLeft: Boolean);
-    overload;
+overload;
 procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
   Bmp: TGraphic; Rect: TRect);
 
@@ -272,6 +280,9 @@ function GetDefaultIniName: string;
 
 type
   TOnGetDefaultIniName = function: string;
+  TPlacementOption = (fpState, fpSize, fpLocation, fpActiveControl);
+  TPlacementOptions = set of TPlacementOption;
+  TPlacementOperation = (poSave, poRestore);
 
 var
   OnGetDefaultIniName: TOnGetDefaultIniName = nil;
@@ -284,9 +295,16 @@ function FindShowForm(FormClass: TFormClass; const Caption: string): TForm;
 function ShowDialog(FormClass: TFormClass): Boolean;
 function InstantiateForm(FormClass: TFormClass; var Reference): TForm;
 
+procedure SaveFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage; Options: TPlacementOptions);
+procedure RestoreFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage; Options: TPlacementOptions);
+
+procedure SaveMDIChildren(MainForm: TForm; const AppStorage: TJvCustomAppStorage);
+procedure RestoreMDIChildren(MainForm: TForm; const AppStorage: TJvCustomAppStorage);
+procedure RestoreGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorage);
+procedure SaveGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorage);
+
 function StrToIniStr(const Str: string): string;
 function IniStrToStr(const Str: string): string;
-
 
 // Ini Utilitie Functions
 // Added by RDB
@@ -318,6 +336,17 @@ procedure IniDeleteKey(IniFile: TObject; const Section, Ident: string);
 }
 
 
+
+{ Internal using utilities }
+
+procedure InternalSaveFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
+  const StorePath: string; Options: TPlacementOptions = [fpState, fpSize, fpLocation]);
+procedure InternalRestoreFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
+  const StorePath: string; Options: TPlacementOptions = [fpState, fpSize, fpLocation]);
+procedure InternalSaveGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorage; const StorePath: string);
+procedure InternalRestoreGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorage; const StorePath: string);
+procedure InternalSaveMDIChildren(MainForm: TForm; const AppStorage: TJvCustomAppStorage; const StorePath: string);
+procedure InternalRestoreMDIChildren(MainForm: TForm; const AppStorage: TJvCustomAppStorage; const StorePath: string);
 
 { end JvAppUtils }
 { begin JvGraph }
@@ -457,7 +486,6 @@ function GetAppHandle: HWND;
 procedure DrawArrow(Canvas: TCanvas; Rect: TRect; Color: TColor = clBlack; Direction: TAnchorKind = akBottom);
 
 implementation
-
 uses
   SysConst,
   
@@ -468,28 +496,25 @@ uses
   QConsts,
   
   Math,
-  JvQConsts, JvQProgressUtils, JvQResources,
-  JvQJCLUtils;
+  JclSysInfo,
+  JvQConsts, JvQProgressUtils, JvQResources;
+
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvConsts.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvConsts.res}
+{$ENDIF LINUX}
 
 const
   sUnitName = 'JvJVCLUtils';
-
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvQConsts.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-{$R ../Resources/JvQConsts.res}
-{$ENDIF LINUX}
-
-
-{$IFDEF MSWINDOWS}
-const
+  {$IFDEF MSWINDOWS}
   RC_ControlRegistry = 'Control Panel\Desktop';
   RC_WallPaperStyle = 'WallpaperStyle';
   RC_WallpaperRegistry = 'Wallpaper';
   RC_TileWallpaper = 'TileWallpaper';
   RC_RunCpl = 'rundll32.exe shell32,Control_RunDLL ';
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
 
 function GetAppHandle: HWND;
 begin
@@ -522,6 +547,23 @@ begin
 end;
 
 
+type
+  TOpenIcon = class(TIcon);
+
+function Icon2Bitmap(Ico: TIcon): TBitmap;
+begin
+  Result := TBitmap.Create;
+  TOpenIcon(Ico).AssignTo(Result);
+end;
+
+function Bitmap2Icon(bmp: TBitmap): TIcon;
+begin
+  Result := TIcon.Create;
+  Result.Assign(bmp);
+end;
+
+
+
 
 procedure RGBToHSV(R, G, B: Integer; var H, S, V: Integer);
 
@@ -529,7 +571,7 @@ procedure RGBToHSV(R, G, B: Integer; var H, S, V: Integer);
 var
   QC: QColorH;
 begin
-  QC := QColor_create(R, G , B);
+  QC := QColor_create(R, G, B);
   QColor_getHsv(QC, @H, @S, @V);
   QColor_destroy(QC);
 end;
@@ -607,6 +649,7 @@ end;
 *)
 
 {$IFDEF MSWINDOWS}
+
 procedure SetWallpaper(const Path: string);
 begin
   SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(Path),
@@ -640,6 +683,7 @@ begin
   end;
   SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, nil, SPIF_SENDWININICHANGE);
 end;
+
 {$ENDIF MSWINDOWS}
 
 procedure GetRBitmap(var Dest: TBitmap; const Source: TBitmap);
@@ -839,7 +883,7 @@ end;
 procedure CenterHeight(const pc, pcParent: TControl);
 begin
   pc.Top := //pcParent.Top +
-  ((pcParent.Height - pc.Height) div 2);
+    ((pcParent.Height - pc.Height) div 2);
 end;
 
 function ToRightOf(const pc: TControl; piSpace: Integer): Integer;
@@ -1031,6 +1075,7 @@ begin
 end;
 
 { Transparent bitmap }
+
 
 
 
@@ -1292,7 +1337,7 @@ begin
         MonoBmp.Canvas.Start;
         Start;
         try
-        
+          
           if DrawHighlight then
           begin
             Brush.Color := HighLightColor;
@@ -1306,7 +1351,7 @@ begin
           SetBkColor(Handle, clWhite);
           BitBlt(Handle, 0, 0, RectWidth(IRect), RectHeight(IRect),
             MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-        
+          
         finally
           Stop;
           MonoBmp.Canvas.Stop;
@@ -1328,7 +1373,6 @@ begin
   Result := CreateDisabledBitmapEx(FOriginal, OutlineColor,
     clBtnFace, clBtnHighlight, clBtnShadow, True);
 end;
-
 
 
 
@@ -1450,7 +1494,7 @@ function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
 
 var
   Bmp: TBitmap;
-
+  
 begin
   with TImageList.CreateSize(Bitmap.Width, Bitmap.Height) do
   try
@@ -1514,6 +1558,7 @@ begin
     Windows.ReleaseDC(0, DC);
   end;
 end;
+
 {$ENDIF MSWINDOWS}
 
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint):
@@ -1742,18 +1787,30 @@ var
   ColorBand: TRect; { Color band rectangular coordinates }
   i, Delta: Integer;
   Brush: HBRUSH;
+  TmpColor:TCOlor;
 begin
   
   Canvas.Start;
-  try
   
+    
+  try
     if (StartColor = clNone) and (EndColor = clNone) then
       Exit;
-    if Not (IsRectEmpty(ARect) and
-           (GetMapMode(Canvas.Handle) = MM_TEXT) ) then
+    if not (IsRectEmpty(ARect) and (GetMapMode(Canvas.Handle) = MM_TEXT)) then
     begin
       StartColor := ColorToRGB(StartColor);
       EndColor := ColorToRGB(EndColor);
+      if Direction in [fdBottomToTop, fdRightToLeft] then
+      begin
+        // just swap the colors
+        TmpColor := StartColor;
+        StartColor := EndColor;
+        EndColor := TmpColor;
+        if Direction = fdBottomToTop then
+          Direction := fdTopToBottom
+        else
+          Direction := fdLeftToRight;
+      end;
       if (Colors < 2) or (StartColor = EndColor) then
       begin
         Brush := CreateSolidBrush(ColorToRGB(StartColor));
@@ -1761,35 +1818,17 @@ begin
         DeleteObject(Brush);
         Exit;
       end;
-      case Direction of
-        fdTopToBottom, fdLeftToRight:
-        begin
           { Set the Red, Green and Blue colors }
-          StartRGB[0] := GetRValue(StartColor);
-          StartRGB[1] := GetGValue(StartColor);
-          StartRGB[2] := GetBValue(StartColor);
+      StartRGB[0] := GetRValue(StartColor);
+      StartRGB[1] := GetGValue(StartColor);
+      StartRGB[2] := GetBValue(StartColor);
           { Calculate the difference between begin and end RGB values }
-          RGBDelta[0] := GetRValue(EndColor) - StartRGB[0];
-          RGBDelta[1] := GetGValue(EndColor) - StartRGB[1];
-          RGBDelta[2] := GetBValue(EndColor) - StartRGB[2];
-        end;
-      fdBottomToTop, fdRightToLeft:
-        begin
-          { Set the Red, Green and Blue colors }
-          { Reverse of TopToBottom and LeftToRight directions }
-          StartRGB[0] := GetRValue(EndColor);
-          StartRGB[1] := GetGValue(EndColor);
-          StartRGB[2] := GetBValue(EndColor);
-          { Calculate the difference between begin and end RGB values }
-          { Reverse of TopToBottom and LeftToRight directions }
-          RGBDelta[0] := GetRValue(StartColor) - StartRGB[0];
-          RGBDelta[1] := GetGValue(StartColor) - StartRGB[1];
-          RGBDelta[2] := GetBValue(StartColor) - StartRGB[2];
-        end;
-      end;
+      RGBDelta[0] := GetRValue(EndColor) - StartRGB[0];
+      RGBDelta[1] := GetGValue(EndColor) - StartRGB[1];
+      RGBDelta[2] := GetBValue(EndColor) - StartRGB[2];
       { Calculate the color band's coordinates }
       ColorBand := ARect;
-      if Direction in [fdTopToBottom, fdBottomToTop] then
+      if Direction = fdTopToBottom then
       begin
         Colors := Max(2, Min(Colors, RectHeight(ARect)));
         Delta := RectHeight(ARect) div Colors;
@@ -1807,21 +1846,19 @@ begin
       { Perform the fill }
       if Delta > 0 then
       begin
-        for i := 0 to Colors do
+        for i := 0 to Colors - 1 do
         begin
-          case Direction of
+          if Direction = fdTopToBottom then
           { Calculate the color band's top and bottom coordinates }
-          fdTopToBottom, fdBottomToTop:
-            begin
-              ColorBand.Top := ARect.Top + i * Delta;
-              ColorBand.Bottom := ColorBand.Top + Delta;
-            end;
+          begin
+            ColorBand.Top := ARect.Top + i * Delta;
+            ColorBand.Bottom := ColorBand.Top + Delta;
+          end
           { Calculate the color band's left and right coordinates }
-          fdLeftToRight, fdRightToLeft:
-            begin
-              ColorBand.Left := ARect.Left + i * Delta;
-              ColorBand.Right := ColorBand.Left + Delta;
-            end;
+          else
+          begin
+            ColorBand.Left := ARect.Left + i * Delta;
+            ColorBand.Right := ColorBand.Left + Delta;
           end;
         { Calculate the color band's color }
           Brush := CreateSolidBrush(RGB(
@@ -1832,41 +1869,35 @@ begin
           DeleteObject(Brush);
         end;
       end;
-      if Direction in [fdTopToBottom, fdBottomToTop] then
+      if Direction = fdTopToBottom then
         Delta := RectHeight(ARect) mod Colors
       else
         Delta := RectWidth(ARect) mod Colors;
       if Delta > 0 then
       begin
-        case Direction of
+        if Direction = fdTopToBottom then
         { Calculate the color band's top and bottom coordinates }
-        fdTopToBottom, fdBottomToTop:
-          begin
-            ColorBand.Top := ARect.Bottom - Delta;
-            ColorBand.Bottom := ColorBand.Top + Delta;
-          end;
+        begin
+          ColorBand.Top := ARect.Bottom - Delta;
+          ColorBand.Bottom := ColorBand.Top + Delta;
+        end
+        else
         { Calculate the color band's left and right coordinates }
-        fdLeftToRight, fdRightToLeft:
-          begin
-            ColorBand.Left := ARect.Right - Delta;
-            ColorBand.Right := ColorBand.Left + Delta;
-          end;
+        begin
+          ColorBand.Left := ARect.Right - Delta;
+          ColorBand.Right := ColorBand.Left + Delta;
         end;
-        case Direction of
-        fdTopToBottom, fdLeftToRight:
-            Brush := CreateSolidBrush(EndColor);
-        else {fdBottomToTop, fdRightToLeft }
-          Brush := CreateSolidBrush(StartColor);
-        end;
+        Brush := CreateSolidBrush(EndColor);
         FillRect(Canvas.Handle, ColorBand, Brush);
         DeleteObject(Brush);
       end;
-    end;  //  if Not (IsRectEmpty(ARect) and ...
-  
+    end; //  if Not (IsRectEmpty(ARect) and ...
   finally
+    
     Canvas.Stop;
+    
+    
   end;
-  
 end;
 
 function GetAveCharSize(Canvas: TCanvas): TPoint;
@@ -2011,6 +2042,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+
 var
   OLEDragCursorsLoaded: Boolean = False;
 
@@ -2034,19 +2066,20 @@ begin
     if Handle = 0 then
       Handle := LoadLibraryEx(cOle32DLL, 0, LOAD_LIBRARY_AS_DATAFILE);
     if Handle <> 0 then // (p3) don't free the lib handle!
-      try
-        Screen.Cursors[crNoDrop] := LoadCursor(Handle, PChar(1));
-        Screen.Cursors[crDrag] := LoadCursor(Handle, PChar(2));
-        Screen.Cursors[crMultiDrag] := LoadCursor(Handle, PChar(3));
-        Screen.Cursors[crMultiDragLink] := LoadCursor(Handle, PChar(4));
-        Screen.Cursors[crDragAlt] := LoadCursor(Handle, PChar(5));
-        Screen.Cursors[crMultiDragAlt] := LoadCursor(Handle, PChar(6));
-        Screen.Cursors[crMultiDragLinkAlt] := LoadCursor(Handle, PChar(7));
-        Result := True;
-      except
-      end;
+    try
+      Screen.Cursors[crNoDrop] := LoadCursor(Handle, PChar(1));
+      Screen.Cursors[crDrag] := LoadCursor(Handle, PChar(2));
+      Screen.Cursors[crMultiDrag] := LoadCursor(Handle, PChar(3));
+      Screen.Cursors[crMultiDragLink] := LoadCursor(Handle, PChar(4));
+      Screen.Cursors[crDragAlt] := LoadCursor(Handle, PChar(5));
+      Screen.Cursors[crMultiDragAlt] := LoadCursor(Handle, PChar(6));
+      Screen.Cursors[crMultiDragLinkAlt] := LoadCursor(Handle, PChar(7));
+      Result := True;
+    except
+    end;
   end;
 end;
+
 {$ENDIF MSWINDOWS}
 
 procedure SetDefaultJVCLCursors;
@@ -2095,7 +2128,7 @@ const
     DT_RIGHT or DT_EXPANDTABS or DT_NOPREFIX,
     DT_CENTER or DT_EXPANDTABS or DT_NOPREFIX);
   WrapFlags: array[Boolean] of Integer = (0, DT_WORDBREAK);
-
+  
 
 begin
   ACanvas.TextRect(ARect, ARect.Left + DX, ARect.Top + DY,
@@ -2180,6 +2213,7 @@ begin
 end;
 
 { TJvDesktopCanvas }
+
 destructor TJvDesktopCanvas.Destroy;
 begin
   FreeHandle;
@@ -2297,6 +2331,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+
 { Check if this is the active Windows task }
 { Copied from implementation of FORMS.PAS  }
 type
@@ -2325,7 +2360,9 @@ begin
   Windows.EnumThreadWindows(GetCurrentThreadID, @CheckTaskWindow, Longint(@Info));
   Result := Info.Found;
 end;
+
 {$ENDIF MSWINDOWS}
+
 {$IFDEF LINUX}
 function IsForegroundTask: Boolean;
 begin
@@ -2434,6 +2471,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+
 function TargetFileName(const FileName: TFileName): TFileName;
 begin
   Result := FileName;
@@ -2499,6 +2537,7 @@ begin
   Pointer(psl) := nil;
   Pointer(ppf) := nil;
 end;
+
 {$ENDIF MSWINDOWS}
 
 var
@@ -2605,13 +2644,13 @@ begin
   if Assigned(OnGetDefaultIniName) then
     Result := OnGetDefaultIniName
   else
-  {$IFDEF LINUX}
+    {$IFDEF LINUX}
     Result := GetEnvironmentVariable('HOME') + PathDelim +
       '.' + ExtractFileName(Application.ExeName);
-  {$ENDIF LINUX}
-  {$IFDEF MSWINDOWS}
-  Result := ExtractFileName(ChangeFileExt(Application.ExeName, '.ini'));
-  {$ENDIF MSWINDOWS}
+    {$ENDIF LINUX}
+    {$IFDEF MSWINDOWS}
+    Result := ExtractFileName(ChangeFileExt(Application.ExeName, '.ini'));
+    {$ENDIF MSWINDOWS}
 end;
 
 function GetDefaultIniRegKey: string;
@@ -2724,15 +2763,26 @@ begin
   until N = 0;
 end;
 
+{ The following strings should not be localized }
+const
+  siFlags = 'Flags';
+  siShowCmd = 'ShowCmd';
+  siMinMaxPos = 'MinMaxPos';
+  siNormPos = 'NormPos';
+  siPixels = 'PixelsPerInch';
+  siMDIChild = 'MDI Children';
+  siListCount = 'Count';
+  siItem = 'Item%d';
+
 (*
 function IniReadString(IniFile: TObject; const Section, Ident,
   Default: string): string;
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     Result := TRegIniFile(IniFile).ReadString(Section, Ident, Default)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       Result := TCustomIniFile(IniFile).ReadString(Section, Ident, Default)
     else
@@ -2744,11 +2794,11 @@ procedure IniWriteString(IniFile: TObject; const Section, Ident,
 var
   s: string;
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).WriteString(Section, Ident, Value)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
   begin
     s := Value;
     if s <> '' then
@@ -2765,11 +2815,11 @@ end;
 function IniReadInteger(IniFile: TObject; const Section, Ident: string;
   Default: Longint): Longint;
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     Result := TRegIniFile(IniFile).ReadInteger(Section, Ident, Default)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       Result := TCustomIniFile(IniFile).ReadInteger(Section, Ident, Default)
     else
@@ -2779,11 +2829,11 @@ end;
 procedure IniWriteInteger(IniFile: TObject; const Section, Ident: string;
   Value: Longint);
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).WriteInteger(Section, Ident, Value)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       TCustomIniFile(IniFile).WriteInteger(Section, Ident, Value);
 end;
@@ -2791,11 +2841,11 @@ end;
 function IniReadBool(IniFile: TObject; const Section, Ident: string;
   Default: Boolean): Boolean;
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     Result := TRegIniFile(IniFile).ReadBool(Section, Ident, Default)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       Result := TCustomIniFile(IniFile).ReadBool(Section, Ident, Default)
     else
@@ -2805,33 +2855,33 @@ end;
 procedure IniWriteBool(IniFile: TObject; const Section, Ident: string;
   Value: Boolean);
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).WriteBool(Section, Ident, Value)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       TCustomIniFile(IniFile).WriteBool(Section, Ident, Value);
 end;
 
 procedure IniEraseSection(IniFile: TObject; const Section: string);
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).EraseSection(Section)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       TCustomIniFile(IniFile).EraseSection(Section);
 end;
 
 procedure IniDeleteKey(IniFile: TObject; const Section, Ident: string);
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).DeleteKey(Section, Ident)
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     if IniFile is TCustomIniFile then
       TCustomIniFile(IniFile).DeleteKey(Section, Ident);
 end;
@@ -2840,12 +2890,298 @@ procedure IniReadSections(IniFile: TObject; Strings: TStrings);
 begin
   if IniFile is TCustomIniFile then
     TCustomIniFile(IniFile).ReadSections(Strings)
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   else if IniFile is TRegIniFile then
     TRegIniFile(IniFile).ReadSections(Strings);
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
 end;
 *)
+
+{$HINTS OFF}
+type
+  {*******************************************************}
+  { !! ATTENTION Nasty implementation                     }
+  {*******************************************************}
+  {                                                       }
+  { This class definition was copied from FORMS.PAS.      }
+  { It is needed to access some private fields of TForm.  }
+  {                                                       }
+  { Any changes in the underlying classes may cause       }
+  { errors in this implementation!                        }
+  {                                                       }
+  {*******************************************************}
+
+  TJvNastyForm = class(TScrollingWinControl)
+  private
+    FActiveControl: TWinControl;
+    FFocusedControl: TWinControl;
+    FBorderIcons: TBorderIcons;
+    FBorderStyle: TFormBorderStyle;
+    FSizeChanging: Boolean;
+    FWindowState: TWindowState; { !! }
+  end;
+
+  TOpenComponent = class(TComponent);
+  {$HINTS ON}
+
+function CrtResString: string;
+begin
+  Result := Format('(%dx%d)', [GetSystemMetrics(SM_CXSCREEN),
+    GetSystemMetrics(SM_CYSCREEN)]);
+end;
+
+function ReadPosStr(AppStorage: TJvCustomAppStorage; const Path: string): string;
+begin
+  if AppStorage.ValueStored(Path + CrtResString) then
+    Result := AppStorage.ReadString(Path + CrtResString)
+  else
+    Result := AppStorage.ReadString(Path);
+end;
+
+procedure WritePosStr(AppStorage: TJvCustomAppStorage; const Path, Value: string);
+begin
+  AppStorage.WriteString(Path + CrtResString, Value);
+  AppStorage.WriteString(Path, Value);
+end;
+
+procedure InternalSaveMDIChildren(MainForm: TForm; const AppStorage:
+  TJvCustomAppStorage;
+  const StorePath: string);
+var
+  i: Integer;
+begin
+  if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
+    raise EInvalidOperation.Create(SNoMDIForm);
+  AppStorage.DeleteSubTree(AppStorage.ConcatPaths([StorePath, siMDIChild]));
+  if MainForm.MDIChildCount > 0 then
+  begin
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
+      siListCount]),
+        MainForm.MDIChildCount);
+    for i := 0 to MainForm.MDIChildCount - 1 do
+      AppStorage.WriteString(AppStorage.ConcatPaths([StorePath, siMDIChild,
+        Format(siItem, [i])]),
+          MainForm.MDIChildren[i].ClassName);
+  end;
+end;
+
+procedure InternalRestoreMDIChildren(MainForm: TForm; const AppStorage:
+  TJvCustomAppStorage;
+  const StorePath: string);
+var
+  i: Integer;
+  Count: Integer;
+  FormClass: TFormClass;
+begin
+  if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
+    raise EInvalidOperation.Create(SNoMDIForm);
+  StartWait;
+  try
+    Count := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
+      siListCount]), 0);
+    if Count > 0 then
+    begin
+      for i := 0 to Count - 1 do
+      begin
+        FormClass :=
+          TFormClass(GetClass(AppStorage.ReadString(AppStorage.ConcatPaths([StorePath,
+          siMDIChild, Format(siItem, [i])]), '')));
+        if FormClass <> nil then
+          InternalFindShowForm(FormClass, '', False);
+      end;
+    end;
+  finally
+    StopWait;
+  end;
+end;
+
+procedure SaveMDIChildren(MainForm: TForm; const AppStorage: TJvCustomAppStorage);
+begin
+  InternalSaveMDIChildren(MainForm, AppStorage, '');
+end;
+
+procedure RestoreMDIChildren(MainForm: TForm; const AppStorage:
+  TJvCustomAppStorage);
+begin
+  InternalRestoreMDIChildren(MainForm, AppStorage, '');
+end;
+
+procedure InternalSaveFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
+  const StorePath: string; Options: TPlacementOptions = [fpState, fpSize, fpLocation]);
+var
+  Placement: TWindowPlacement;
+begin
+  if Options = [fpActiveControl] then
+    Exit;
+  Placement.Length := SizeOf(TWindowPlacement);
+  GetWindowPlacement(Form.Handle, @Placement);
+  with Placement, TForm(Form) do
+  begin
+    if (Form = Application.MainForm) and AppMinimized then
+      ShowCmd := SW_SHOWMINIMIZED;
+    
+    if (fpState in Options) then
+      AppStorage.WriteInteger(StorePath + '\' + siShowCmd, ShowCmd);
+    if ([fpSize, fpLocation] * Options <> []) then
+    begin
+      AppStorage.WriteInteger(StorePath + '\' + siFlags, Flags);
+      AppStorage.WriteInteger(StorePath + '\' + siPixels, Screen.PixelsPerInch);
+      WritePosStr(AppStorage, StorePath + '\' + siMinMaxPos, Format('%d,%d,%d,%d',
+        [ptMinPosition.X, ptMinPosition.Y, ptMaxPosition.X, ptMaxPosition.Y]));
+      WritePosStr(AppStorage, StorePath + '\' + siNormPos, Format('%d,%d,%d,%d',
+        [rcNormalPosition.Left, rcNormalPosition.Top, rcNormalPosition.Right,
+        rcNormalPosition.Bottom]));
+    end;
+  end;
+end;
+
+procedure InternalRestoreFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
+  const StorePath: string; Options: TPlacementOptions = [fpState, fpSize, fpLocation]);
+const
+  Delims = [',', ' '];
+var
+  PosStr: string;
+  Placement: TWindowPlacement;
+  WinState: TWindowState;
+  DataFound: Boolean;
+begin
+  if Options = [fpActiveControl] then
+    Exit;
+  Placement.Length := SizeOf(TWindowPlacement);
+  GetWindowPlacement(Form.Handle, @Placement);
+  with Placement, TForm(Form) do
+  begin
+    if not IsWindowVisible(Form.Handle) then
+      ShowCmd := SW_HIDE;
+    if ([fpSize, fpLocation] * Options <> []) then
+    begin
+      DataFound := False;
+      AppStorage.ReadInteger(StorePath + '\' + siFlags, Flags);
+      PosStr := ReadPosStr(AppStorage, StorePath + '\' + siMinMaxPos);
+      if PosStr <> '' then
+      begin
+        DataFound := True;
+        if fpLocation in Options then
+        begin
+          ptMinPosition.X := StrToIntDef(ExtractWord(1, PosStr, Delims), 0);
+          ptMinPosition.Y := StrToIntDef(ExtractWord(2, PosStr, Delims), 0);
+        end;
+        if fpSize in Options then
+        begin
+          ptMaxPosition.X := StrToIntDef(ExtractWord(3, PosStr, Delims), 0);
+          ptMaxPosition.Y := StrToIntDef(ExtractWord(4, PosStr, Delims), 0);
+        end;
+      end;
+      PosStr := ReadPosStr(AppStorage, StorePath + '\' + siNormPos);
+      if PosStr <> '' then
+      begin
+        DataFound := True;
+        if fpLocation in Options then
+        begin
+          rcNormalPosition.Left := StrToIntDef(ExtractWord(1, PosStr, Delims), Left);
+          rcNormalPosition.Top := StrToIntDef(ExtractWord(2, PosStr, Delims), Top);
+        end;
+        if fpSize in Options then
+        begin
+          rcNormalPosition.Right := StrToIntDef(ExtractWord(3, PosStr, Delims), Left + Width);
+          rcNormalPosition.Bottom := StrToIntDef(ExtractWord(4, PosStr, Delims), Top + Height);
+        end;
+      end;
+      DataFound := DataFound and (Screen.PixelsPerInch = AppStorage.ReadInteger(
+        StorePath + '\' + siPixels, Screen.PixelsPerInch));
+      if DataFound then
+      begin
+        
+          
+          if not (BorderStyle in [fbsSizeable, fbsSizeToolWin]) then
+            
+            rcNormalPosition := Rect(rcNormalPosition.Left,
+              rcNormalPosition.Top,
+              rcNormalPosition.Left + Width, rcNormalPosition.Top + Height);
+        if rcNormalPosition.Right > rcNormalPosition.Left then
+        begin
+          if (Position in [poScreenCenter, poDesktopCenter]) and
+            not (csDesigning in ComponentState) then
+          begin
+            TOpenComponent(Form).SetDesigning(True);
+            try
+              Position := poDesigned;
+            finally
+              TOpenComponent(Form).SetDesigning(False);
+            end;
+          end;
+          SetWindowPlacement(Handle, @Placement);
+        end;
+      end;
+    end;
+    if fpState in Options then
+    begin
+      WinState := wsNormal;
+      { default maximize MDI main form }
+      if ((Application.MainForm = Form) or
+        (Application.MainForm = nil)) and ((FormStyle = fsMDIForm) or
+        ((FormStyle = fsNormal) and (Position = poDefault))) then
+        WinState := wsMaximized;
+      ShowCmd := AppStorage.ReadInteger(StorePath + '\' + siShowCmd, SW_HIDE);
+      case ShowCmd of
+        SW_SHOWNORMAL, SW_RESTORE, SW_SHOW:
+          WinState := wsNormal;
+        SW_MINIMIZE, SW_SHOWMINIMIZED, SW_SHOWMINNOACTIVE:
+          WinState := wsMinimized;
+        SW_MAXIMIZE:
+          WinState := wsMaximized;
+      end;
+      
+        WindowState := WinState;
+    end;
+    Update;
+  end;
+end;
+
+procedure InternalSaveGridLayout(Grid: TCustomGrid; const AppStorage:
+  TJvCustomAppStorage;
+  const StorePath: string);
+var
+  i: Longint;
+begin
+  for i := 0 to TDrawGrid(Grid).ColCount - 1 do
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, Format(siItem,
+        [i])]),
+      TDrawGrid(Grid).ColWidths[i]);
+end;
+
+procedure InternalRestoreGridLayout(Grid: TCustomGrid; const AppStorage:
+  TJvCustomAppStorage;
+  const StorePath: string);
+var
+  i: Longint;
+begin
+  for i := 0 to TDrawGrid(Grid).ColCount - 1 do
+    TDrawGrid(Grid).ColWidths[i] :=
+      AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath,
+      Format(siItem, [i])]), TDrawGrid(Grid).ColWidths[i]);
+end;
+
+procedure RestoreGridLayout(Grid: TCustomGrid; const AppStorage:
+  TJvCustomAppStorage);
+begin
+  InternalRestoreGridLayout(Grid, AppStorage, GetDefaultSection(Grid));
+end;
+
+procedure SaveGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorage);
+begin
+  InternalSaveGridLayout(Grid, AppStorage, GetDefaultSection(Grid));
+end;
+
+procedure SaveFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage; Options: TPlacementOptions);
+begin
+  InternalSaveFormPlacement(Form, AppStorage, GetDefaultSection(Form), Options);
+end;
+
+procedure RestoreFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage; Options: TPlacementOptions);
+begin
+  InternalRestoreFormPlacement(Form, AppStorage, GetDefaultSection(Form), Options);
+end;
 
 
 { end JvAppUtils }
@@ -3792,20 +4128,24 @@ var
   Src, Dest: Pointer;
   C: Byte;
 begin
-  if Header.biBitCount = 24 then begin
+  if Header.biBitCount = 24 then
+  begin
     Exit;
   end;
   Scanline := ((Header.biWidth * Header.biBitCount + 31) div 32) * 4;
   NewScanline := ((Header.biWidth * 3 + 3) and not 3);
-  for Y := 0 to Header.biHeight - 1 do begin
+  for Y := 0 to Header.biHeight - 1 do
+  begin
     Src := HugeOffset(Data, Y * Scanline);
     Dest := HugeOffset(NewData, Y * NewScanline);
     case Header.biBitCount of
       1:
       begin
         C := 0;
-        for X := 0 to Header.biWidth - 1 do begin
-          if (X and 7) = 0 then begin
+        for X := 0 to Header.biWidth - 1 do
+        begin
+          if (X and 7) = 0 then
+          begin
             C := Byte(Src^);
             Src := HugeOffset(Src, 1);
           end
@@ -3821,7 +4161,8 @@ begin
       4:
       begin
         X := 0;
-        while X < Header.biWidth - 1 do begin
+        while X < Header.biWidth - 1 do
+        begin
           C := Byte(Src^);
           Src := HugeOffset(Src, 1);
           PByte(Dest)^ := Colors[C shr 4].rgbBlue;
@@ -3838,7 +4179,8 @@ begin
           Dest := HugeOffset(Dest, 1);
           Inc(X, 2);
         end;
-        if X < Header.biWidth then begin
+        if X < Header.biWidth then
+        begin
           C := Byte(Src^);
           PByte(Dest)^ := Colors[C shr 4].rgbBlue;
           Dest := HugeOffset(Dest, 1);
@@ -3850,7 +4192,8 @@ begin
       end;
       8:
       begin
-        for X := 0 to Header.biWidth - 1 do begin
+        for X := 0 to Header.biWidth - 1 do
+        begin
           C := Byte(Src^);
           Src := HugeOffset(Src, 1);
           PByte(Dest)^ := Colors[C].rgbBlue;
@@ -4034,7 +4377,7 @@ var
   Button: TToolButton;
 begin
   if AForm.FormStyle = fsMDIForm then
-    raise Exception.CreateRes(@RsNotForMdi);
+    raise EJclError.CreateResRec(@RsNotForMdi);
   if AMenu = nil then
     AMenu := AForm.Menu;
   if AMenu = nil then
@@ -4179,7 +4522,7 @@ begin
   ListView.Columns.BeginUpdate;
   try
     with ListView.Columns do
-    
+      
     if ListView.Tag and $FF = Column.Index then
       ListView.Tag := ListView.Tag xor $100
     else
@@ -4307,9 +4650,9 @@ begin
     end;
     if MakeVisible and (TempItem <> nil) then
       
-      
-      TempItem.MakeVisible;
-      
+    
+    TempItem.MakeVisible;
+    
   end;
 end;
 
@@ -4365,11 +4708,19 @@ var
   tt: TTextMetric;
 begin
   // (ahuser) Qt returns different values for TextHeight('Ay') and TextHeigth(#1..#255)
+  
+  Canvas.Start;  // if it is called outside a paint event
+  RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
+  
   GetTextMetrics(Canvas.Handle, tt);
+  
+  Canvas.Stop;
+  
   Result := tt.tmHeight;
 end;
 
 {$IFDEF MSWINDOWS}
+
 //=== AllocateHWndEx =========================================================
 
 const
@@ -4419,7 +4770,7 @@ begin
     UtilWindowExClass.lpszClassName := PChar(AClassName);
 
   ClassRegistered := Windows.GetClassInfo(HInstance, UtilWindowExClass.lpszClassName,
-     TempClass);
+    TempClass);
   if not ClassRegistered or (TempClass.lpfnWndProc <> @DefWindowProc) then
   begin
     if ClassRegistered then
@@ -4455,6 +4806,7 @@ begin
   Classes.FreeObjectInstance(ObjectInstance);
   
 end;
+
 {$ENDIF MSWINDOWS}
 
 
@@ -4475,7 +4827,6 @@ begin
   except
   end;
 end;
-
 
 const
   Lefts = ['[', '{', '('];
@@ -4508,7 +4859,6 @@ begin
   if Pos('S', UpperCase(Styles)) > 0 then
     Include(Result, fsStrikeOut);
 end;
-
 
 
 
@@ -4588,7 +4938,7 @@ end;
 
 procedure DrawArrow(Canvas: TCanvas; Rect: TRect; Color: TColor = clBlack; Direction: TAnchorKind = akBottom);
 var
-  i,Size: integer;
+  i, Size: integer;
 begin
   Size := Rect.Right - Rect.Left;
   if Odd(Size) then

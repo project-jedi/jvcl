@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove att slcdug dott org].
 
-Last Modified: 2000-06-15
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -81,7 +80,7 @@ type
     function RecordLast: Boolean;
     procedure RecordPost;
     function RecordFind(AText: string): Boolean;
-    procedure DisPlay;
+    procedure Display;
   published
     property CSVFileName: string read FCSVFileName write SetCSVFileName;
     property CSVFieldNames: TStrings read FCSVFieldNames write SetCSVFieldNames;
@@ -95,7 +94,7 @@ type
     procedure SetCSVDataBase(const Value: TJvCSVBase);
     procedure SetCSVField(const Value: string);
   protected
-    procedure Notification(Acomponent: TComponent; Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
     property CSVDataBase: TJvCSVBase read FCSVDataBase write SetCSVDataBase;
     property CSVField: string read FCSVField write SetCSVField;
@@ -108,7 +107,7 @@ type
     procedure SetCSVDataBase(const Value: TJvCSVBase);
     procedure SetCSVField(const Value: string);
   protected
-    procedure Notification(Acomponent: TComponent; Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
     property CSVDataBase: TJvCSVBase read FCSVDataBase write SetCSVDataBase;
     property CSVField: string read FCSVField write SetCSVField;
@@ -121,7 +120,7 @@ type
     procedure SetCSVDataBase(const Value: TJvCSVBase);
     procedure SetCSVField(const Value: string);
   protected
-    procedure Notification(Acomponent: TComponent; Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
   published
     property CSVDataBase: TJvCSVBase read FCSVDataBase write SetCSVDataBase;
@@ -152,10 +151,10 @@ type
     procedure btnRefreshClick(Sender: TObject);
     procedure SetCSVDataBase(const Value: TJvCSVBase);
   protected
-    procedure Notification(Acomponent: TComponent; Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoBoundsChanged; override;
   public
-    constructor Create(AOwner: Tcomponent); override;
+    constructor Create(AOwner: TComponent); override;
     
   published
     property CSVDataBase: TJvCSVBase read FCSVDataBase write SetCSVDataBase;
@@ -173,7 +172,7 @@ uses
 {$R ../Resources/JvCSVBase.res}
 {$ENDIF LINUX}
 
-{ TJvCSVBase }
+//=== TJvCSVBase =============================================================
 
 constructor TJvCSVBase.Create(AOwner: TComponent);
 begin
@@ -184,6 +183,15 @@ begin
   FCSVFieldNames := TStringList.Create;
   FDBCursor := -1;
   FDBOpen := False;
+end;
+
+destructor TJvCSVBase.Destroy;
+begin
+  FDB.Free;
+  FDBRecord.Free;
+  FDBFields.Free;
+  FCSVFieldNames.Free;
+  inherited Destroy;
 end;
 
 procedure TJvCSVBase.DataBaseClose;
@@ -296,23 +304,14 @@ begin
   end;
 end;
 
-destructor TJvCSVBase.Destroy;
-begin
-  FDB.Free;
-  FDBRecord.Free;
-  FDBFields.Free;
-  FCSVFieldNames.Free;
-  inherited Destroy;
-end;
-
 procedure TJvCSVBase.RecordNew;
 var
-  i: Integer;
+  I: Integer;
 begin
   if FDBCursor <> -1 then
   begin
     FDBRecord.Clear;
-    for i := 0 to FDBFields.Count - 1 do
+    for I := 0 to FDBFields.Count - 1 do
       FDBRecord.Append('-');
     FDB.Append(FDBRecord.CommaText);
     FDBCursor := FDB.Count - 1;
@@ -339,19 +338,20 @@ end;
 
 function TJvCSVBase.RecordFind(AText: string): Boolean;
 var
-  i, from: Integer;
+  I, from: Integer;
   fs: string;
 begin
   Result := False;
-  if FDBCursor < 1 then Exit;
+  if FDBCursor < 1 then
+    Exit;
   if FDBCursor < (FDB.Count - 1) then
   begin
     from := FDBCursor + 1;
     fs := LowerCase(AText);
-    for i := from to FDB.Count - 1 do
-      if Pos(fs, LowerCase(FDB[i])) > 0 then
+    for I := from to FDB.Count - 1 do
+      if Pos(fs, LowerCase(FDB[I])) > 0 then
       begin
-        FDBCursor := i;
+        FDBCursor := I;
         FDBRecord.CommaText := FDB[FDBCursor];
         Result := True;
         DoCursorChange;
@@ -375,12 +375,13 @@ end;
 
 procedure TJvCSVBase.RecordGet(NameValues: TStrings);
 var
-  i: Integer;
+  I: Integer;
 begin
   NameValues.Clear;
-  if FDBCursor < 1 then Exit;
-  for i := 0 to FDBFields.Count - 1 do
-    NameValues.Append(FDBFields[i] + '=' + FDBRecord[i]);
+  if FDBCursor < 1 then
+    Exit;
+  for I := 0 to FDBFields.Count - 1 do
+    NameValues.Append(FDBFields[I] + '=' + FDBRecord[I]);
 end;
 
 function TJvCSVBase.RecordLast: Boolean;
@@ -428,14 +429,14 @@ end;
 
 procedure TJvCSVBase.RecordSet(NameValues: TStrings);
 var
-  i, Index: Integer;
+  I, Index: Integer;
   FieldName: string;
 begin
   if NameValues.Count > 0 then
   begin
-    for i := 0 to NameValues.Count - 1 do
+    for I := 0 to NameValues.Count - 1 do
     begin
-      FieldName := NameValues.names[i];
+      FieldName := NameValues.names[I];
       Index := FDBFields.IndexOf(FieldName);
       if Index <> -1 then
         FDBRecord[Index] := NameValues.Values[FieldName];
@@ -467,49 +468,51 @@ end;
 
 procedure TJvCSVBase.DisplayFields(NameValues: TStrings);
 var
-  Aform: TForm;
-  i, Index: Integer;
+  AForm: TForm;
+  I, Index: Integer;
   ed: TJvCSVEdit;
   cbo: TJvCSVComboBox;
   ck: TJvCSVCheckBox;
   AField: string;
 begin
-  Aform := TForm(Self.Owner);
-  for i := 0 to aForm.ComponentCount - 1 do
-    if aform.Components[i].ClassName = 'TJvCSVEdit' then
+  AForm := TForm(Self.Owner);
+  for I := 0 to aForm.ComponentCount - 1 do
+    if AForm.Components[I].ClassName = 'TJvCSVEdit' then
     begin
-      ed := TJvCSVEdit(aform.Components[i]);
+      ed := TJvCSVEdit(AForm.Components[I]);
       if ed.CSVDataBase = Self then
       begin
-        Afield := ed.CSVField;
+        AField := ed.CSVField;
         Index := CSVFieldNames.IndexOf(AField);
         if Index <> -1 then
           if FDBCursor > 0 then
             ed.Text := FDBRecord[Index]
           else
-            ed.Text := '[' + Afield + ']';
+            ed.Text := '[' + AField + ']';
       end;
     end
-    else if aform.Components[i].ClassName = 'TJvCSVComboBox' then
+    else
+    if AForm.Components[I].ClassName = 'TJvCSVComboBox' then
     begin
-      cbo := TJvCSVComboBox(aform.Components[i]);
+      cbo := TJvCSVComboBox(AForm.Components[I]);
       if cbo.CSVDataBase = Self then
       begin
-        Afield := cbo.CSVField;
+        AField := cbo.CSVField;
         Index := CSVFieldNames.IndexOf(AField);
         if Index <> -1 then
           if FDBCursor > 0 then
             cbo.Text := FDBRecord[Index]
           else
-            cbo.Text := '[' + Afield + ']';
+            cbo.Text := '[' + AField + ']';
       end;
     end
-    else if aform.Components[i].ClassName = 'TJvCSVCheckBox' then
+    else
+    if AForm.Components[I].ClassName = 'TJvCSVCheckBox' then
     begin
-      ck := TJvCSVCheckBox(aform.Components[i]);
+      ck := TJvCSVCheckBox(AForm.Components[I]);
       if ck.CSVDataBase = Self then
       begin
-        Afield := ck.CSVField;
+        AField := ck.CSVField;
         Index := CSVFieldNames.IndexOf(AField);
         if Index <> -1 then
           if FDBCursor > 0 then
@@ -533,51 +536,54 @@ begin
   end;
 end;
 
-procedure TJvCSVBase.DisPlay;
+procedure TJvCSVBase.Display;
 begin
-  doCursorChange;
+  DoCursorChange;
 end;
 
 procedure TJvCSVBase.RecordPost;
 var
-  Aform: TForm;
-  i, Index: Integer;
+  AForm: TForm;
+  I, Index: Integer;
   ed: TJvCSVEdit;
   cbo: TJvCSVComboBox;
   ck: TJvCSVCheckBox;
   AField: string;
 begin
-  if FDBCursor < 1 then Exit;
-  Aform := TForm(Self.Owner);
-  for i := 0 to aForm.ComponentCount - 1 do
-    if aform.Components[i].ClassName = 'TJvCSVEdit' then
+  if FDBCursor < 1 then
+    Exit;
+  AForm := TForm(Self.Owner);
+  for I := 0 to aForm.ComponentCount - 1 do
+    if AForm.Components[I].ClassName = 'TJvCSVEdit' then
     begin
-      ed := TJvCSVEdit(aform.Components[i]);
+      ed := TJvCSVEdit(AForm.Components[I]);
       if ed.CSVDataBase = Self then
       begin
-        Afield := ed.CSVField;
+        AField := ed.CSVField;
         Index := CSVFieldNames.IndexOf(AField);
         if Index <> -1 then
           FDBRecord[Index] := ed.Text;
       end;
     end
-    else if aform.Components[i].ClassName = 'TJvCSVComboBox' then
+    else
+    if AForm.Components[I].ClassName = 'TJvCSVComboBox' then
     begin
-      cbo := TJvCSVComboBox(aform.Components[i]);
+      cbo := TJvCSVComboBox(AForm.Components[I]);
       if cbo.CSVDataBase = Self then
       begin
-        Afield := cbo.CSVField;
+        AField := cbo.CSVField;
         Index := CSVFieldNames.IndexOf(AField);
         if Index <> -1 then
           FDBRecord[Index] := cbo.Text;
       end;
     end
-    else if aform.Components[i].ClassName = 'TJvCSVCheckBox' then
+    else
+    if AForm.Components[I].ClassName = 'TJvCSVCheckBox' then
     begin
-      ck := TJvCSVCheckBox(aform.Components[i]);
+      ck := TJvCSVCheckBox(AForm.Components[I]);
       if ck.CSVDataBase = Self then
       begin
-        Afield := ck.CSVField;
+        AField := ck.CSVField;
         Index := CSVFieldNames.IndexOf(AField);
         if Index <> -1 then
           if ck.Checked then
@@ -591,25 +597,23 @@ begin
   FDB.SaveToFile(CSVFileName);
 end;
 
-{ TCSVFileNameProperty }
-
 procedure TJvCSVBase.SetCSVFieldNames(const Value: TStrings);
 var
-  oldfile: string;
+  OldFile: string;
 begin
   if (CSVFileName <> '') and (Value.Count > 0) then
   begin
     OldFile := CSVFileName;
     DataBaseClose;
     FCSVFieldNames.Assign(Value);
-    DataBaseRestructure(oldFile, Value);
+    DataBaseRestructure(OldFile, Value);
     DataBaseOpen(OldFile);
   end;
 end;
 
-{ TJvCSVEdit }
+//=== TJvCSVEdit =============================================================
 
-procedure TJvCSVEdit.Notification(Acomponent: TComponent;
+procedure TJvCSVEdit.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
@@ -631,13 +635,23 @@ begin
   begin
     FCSVField := Value;
     if Assigned(FCSVDataBase) then
-      CSVDataBase.display;
+      CSVDataBase.Display;
   end;
 end;
 
-{ TCSVFieldProperty }
+//=== TJvCSVNavigator ========================================================
 
-{ TJvCSVNavigator }
+constructor TJvCSVNavigator.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  
+  Height := 24;
+  Width := 217;
+  CreateButtons;
+  
+  ControlStyle := ControlStyle - [csSetCaption];
+  
+end;
 
 procedure TJvCSVNavigator.btnAddClick(Sender: TObject);
 begin
@@ -699,28 +713,16 @@ begin
     CSVDataBase.display;
 end;
 
-constructor TJvCSVNavigator.Create(AOwner: Tcomponent);
-begin
-  inherited Create(AOwner);
-  
-  Height := 24;
-  Width := 217;
-  CreateButtons;
-  
-  ControlStyle := ControlStyle - [csSetCaption];
-  
-end;
-
 procedure TJvCSVNavigator.CreateButtons;
 
   procedure ib(b: TSpeedButton);
   begin
     b.Width := 23;
     b.Height := 22;
-    b.flat := True;
-    b.parent := Self;
-    b.top := 1;
-    showhint := True;
+    b.Flat := True;
+    b.Parent := Self;
+    b.Top := 1;
+    ShowHint := True;
   end;
 
 begin
@@ -817,7 +819,7 @@ end;
 
 
 
-procedure TJvCSVNavigator.Notification(Acomponent: TComponent;
+procedure TJvCSVNavigator.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
@@ -828,7 +830,8 @@ end;
 procedure TJvCSVNavigator.DoBoundsChanged;
 begin
   Height := 24;
-  if Width < 221 then Width := 221;
+  if Width < 221 then
+    Width := 221;
   inherited DoBoundsChanged;
 end;
 
@@ -837,9 +840,9 @@ begin
   FCSVDataBase := Value;
 end;
 
-{ TJvCSVComboBox }
+//=== TJvCSVComboBox =========================================================
 
-procedure TJvCSVComboBox.Notification(Acomponent: TComponent;
+procedure TJvCSVComboBox.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
@@ -865,9 +868,9 @@ begin
   end;
 end;
 
-{ TJvCSVCheckBox }
+//=== TJvCSVCheckBox =========================================================
 
-procedure TJvCSVCheckBox.Notification(Acomponent: TComponent;
+procedure TJvCSVCheckBox.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
@@ -889,7 +892,7 @@ begin
   begin
     FCSVField := Value;
     if Assigned(FCSVDataBase) then
-      CSVDataBase.display;
+      CSVDataBase.Display;
   end;
 end;
 

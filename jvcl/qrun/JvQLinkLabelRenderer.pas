@@ -177,6 +177,7 @@ end;
 procedure TDefaultRenderer.RenderNode(const Canvas: TCanvas; Rect: TRect;
   const Node: TAreaNode);
 begin
+  Canvas.Start;
   FTextHandler := TTextHandler.Create(Rect,
     Node.StartingPoint.X, Node.StartingPoint.Y, Canvas);
   // End of Bianconi #2
@@ -187,6 +188,7 @@ begin
   finally
     FTextHandler := nil;
   end;
+  Canvas.Stop;
 end;
 
 procedure TDefaultRenderer.RenderTree(const Canvas: TCanvas; Rect: TRect;

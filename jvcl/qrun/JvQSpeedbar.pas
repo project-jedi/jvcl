@@ -34,10 +34,12 @@ interface
 
 uses
   SysUtils, Classes, IniFiles,
-
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+
+  
+  
   QMenus, QButtons, QControls, QWindows, QGraphics, Types,
   QForms, QImgList, QActnList, QExtCtrls, QGrids, QTypes,
   
@@ -1600,7 +1602,7 @@ var
   I, Idx: Integer;
   Sect: TJvSpeedBarSection;
 begin
-  if FSections = nil then exit;
+  if csCreating in ControlState then exit;
   for I := 0 to FSections.Count - 1 do
     if FSections[I] <> nil then
     begin
@@ -2169,7 +2171,7 @@ begin
     if sfOffsetY in Flags then
       FOffset.Y := MulDiv(FOffset.Y, M, D);
     UpdateGridSize;
-    inherited ChangeScale(M, D, MH, DH);
+    inherited ChangeScale(M, D , MH, DH );
     ApplyButtonSize;
     AlignItemsToGrid;
     FScaleFlags := [];
