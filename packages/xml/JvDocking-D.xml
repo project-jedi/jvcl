@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvDocking" Design="-1">
+  <Description>JVCL Docking Components</Description>
+  <C5PFlags/>
+  <C6PFlags/>
+  <C5Libs/>
+  <C6Libs/>
+  <Requires>
+    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7p" Condition=""/>
+    <Package Name="JvDocking-R" Targets="all" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvDockingReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDockPropertyEditors.pas" Targets="all" Formname="" Condition=""/>
+  </Contains>
+</Package>

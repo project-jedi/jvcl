@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvDocking" Design="0">
+  <Description>JVCL Docking Components Runtime Package</Description>
+  <C5PFlags/>
+  <C6PFlags/>
+  <C5Libs/>
+  <C6Libs/>
+  <Requires>
+    <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
+    <Package Name="vcl" Targets="C6,D6,D7,D6p,D7p" Condition=""/>
+    <Package Name="vclx50" Targets="C5,D5,D5s" Condition=""/>
+    <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvDockControlForm.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockDelphiStyle.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockGlobals.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockHashTable.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockInfo.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockSupportClass.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockSupportControl.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockSupportProc.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockTree.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockVCStyle.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockVIDStyle.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockVSNetStyle.pas" Targets="all" Formname="" Condition=""/>
+  </Contains>
+</Package>
