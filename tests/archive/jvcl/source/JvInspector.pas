@@ -4482,6 +4482,8 @@ begin
     Y := P.Y + HeightOf(Rects[iprValueArea]);
     if Y + ListBox.Height > Screen.Height then
       Y := P.Y - TListBox(ListBox).Height;
+    if P.X + Listbox.Width > Screen.Width then
+      P.X := Screen.Width - Listbox.Width;
     SetWindowPos(ListBox.Handle, HWND_TOP, P.X, Y, 0, 0,
       SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
     FDroppedDown := True;
