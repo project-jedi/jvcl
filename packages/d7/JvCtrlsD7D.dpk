@@ -27,9 +27,12 @@ package JvCtrlsD7D;
 {$IMPLICITBUILD ON}
 
 requires
-  JvCtrlsD7R;
+  JvCtrlsD7R,
+  designide,
+  rtl;
 
 contains
-  JvCtrlsReg in '..\..\design\JvCtrlsReg.pas';
+  JvCtrlsReg in '..\..\design\JvCtrlsReg.pas',
+  JvBehaviorLabelEditor in '..\..\design\JvBehaviorLabelEditor.pas';
 
 end.
