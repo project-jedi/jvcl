@@ -20,6 +20,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 // $Id$
+{$A8,B-,C+,D+,E-,F-,G+,H+,I+,J-,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
 unit dpp_PascalParser;
 
@@ -27,6 +28,14 @@ interface
 
 uses
   SysUtils, Classes;
+
+{$IFDEF ConditionalExpressions}
+ {$IF RTLVersion >= 15.00}
+  {$WARN UNSAFE_TYPE OFF}
+  {$WARN UNSAFE_CODE OFF}
+  {$WARN UNSAFE_CAST OFF}
+ {$IFEND}
+{$ENDIF}
 
 const
   WhiteChars = [#1..#32];
