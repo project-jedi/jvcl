@@ -33,10 +33,7 @@ interface
 uses Classes,
 {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
-{$ELSE}
-  LibIntf, DsgnIntf,
-{$ENDIF}
-  SysUtils, DB;
+{$ELSE}LibIntf, DsgnIntf,{$ENDIF} SysUtils, DB;
 
 { Register data aware custom controls and components }
 
@@ -119,11 +116,12 @@ begin
 
   { Data aware components and controls }
   RegisterComponents('Jv Data Controls', [
-{$IFDEF COMPILER3_UP}TJvMemoryData, {$ENDIF}
     TJvDBGrid, TJvDBLookupList, TJvDBLookupCombo, TJvLookupEdit, TJvDBDateEdit,
       TJvDBCalcEdit, TJvDBComboEdit, {$IFDEF WIN32}TJvDBRichEdit, {$ENDIF}
-    TJvDBStatusLabel, TJvDBComboBox]);
-  RegisterComponents({LoadStr(srRXTools)}'JvX Tools', [TJvLoginDialog]);
+      TJvDBStatusLabel, TJvDBComboBox]);
+
+  RegisterComponents('Jv Data Access', [{$IFDEF COMPILER3_UP}TJvMemoryData, {$ENDIF}TJvLoginDialog]);
+
 {$IFDEF COMPILER3_UP}
   RegisterNonActiveX([TJvMemoryData, TJvDBGrid, TJvDBDateEdit,
     TJvDBStatusLabel, TJvDBComboBox, TJvDBLookupList,
