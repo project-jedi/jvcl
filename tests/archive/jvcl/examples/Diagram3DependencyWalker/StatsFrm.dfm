@@ -12,6 +12,7 @@ object frmUnitStats: TfrmUnitStats
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poMainFormCenter
   DesignSize = (
     376
     344)

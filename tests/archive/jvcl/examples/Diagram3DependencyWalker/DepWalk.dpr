@@ -3,7 +3,9 @@ program DepWalk;
 uses
   Forms,
   MainFrm in 'MainFrm.pas' {frmMain},
-  StatsFrm in 'StatsFrm.pas' {frmUnitStats};
+  StatsFrm in 'StatsFrm.pas' {frmUnitStats},
+  PrintFrm in 'PrintFrm.pas' {frmPrint},
+  DepWalkConsts in 'DepWalkConsts.pas';
 
 {$R *.res}
 

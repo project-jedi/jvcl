@@ -886,6 +886,9 @@ object frmMain: TfrmMain
       object N2: TMenuItem
         Caption = '-'
       end
+      object Find1: TMenuItem
+        Action = acFind
+      end
       object Clear1: TMenuItem
         Action = acClear
       end
@@ -1281,6 +1284,12 @@ object frmMain: TfrmMain
       Caption = 'Print...'
       ShortCut = 16464
       OnExecute = acPrintExecute
+    end
+    object acFind: TAction
+      Category = 'Edit'
+      Caption = 'Find...'
+      ShortCut = 16454
+      OnExecute = acFindExecute
     end
   end
   object popDiagram: TPopupMenu

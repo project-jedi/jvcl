@@ -66,6 +66,8 @@ type
     acDelDiagram: TAction;
     acPrint: TAction;
     Print1: TMenuItem;
+    acFind: TAction;
+    Find1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure SbMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -83,6 +85,7 @@ type
     procedure acUnitStatsExecute(Sender: TObject);
     procedure acDelDiagramExecute(Sender: TObject);
     procedure acPrintExecute(Sender: TObject);
+    procedure acFindExecute(Sender: TObject);
   private
     { Private declarations }
     FPrintFormat:TPrintFormat;
@@ -486,7 +489,7 @@ begin
   finally
     SuspendRedraw(sb, false);
   end;
-  StatusBar1.Panels[0].Text := Format('Done (%d units parsed, %d diagram units available)',
+  StatusBar1.Panels[0].Text := Format('Done (%d units parsed, %d units in diagram)',
     [Files.Count, FFileShapes.Count]);
 end;
 
@@ -498,13 +501,6 @@ begin
   WaitCursor;
   FFileShapes.Clear;
   TJvCustomDiagramShape.DeleteAllShapes(sb);
-
-  // this is faster than freeing explicitly:
-//  CreateScrollBox(Panel1);
-  {  for i := ComponentCount - 1 downto 0 do
-      if Components[i] is TJvBitmapShape then
-        TJvBitmapShape(Components[i]).Free; // this will free both the caption and the connector(s)
-  }
   FLeft := FStartX;
   FTop := FStartY;
   StatusBar1.Panels[0].Text := '  Ready';
@@ -941,6 +937,25 @@ begin
   end;
 end;
 
+
+procedure TfrmMain.acFindExecute(Sender: TObject);
+var S:string;i:integer;
+begin
+  S := '';
+  if InputQuery('Find','Name:',S) and (S <> '') then
+  begin
+    i := FFileShapes.IndexOf(S);
+    if i < 0 then
+      ShowMessageFmt('"%s" not found!',[S])
+    else
+    begin
+      TJvCustomDiagramShape(FFileShapes.Objects[i]).Selected := true;
+      // (p3) the caption (mostly) extends further to the right than the image,
+      // so scroll the caption to make as much of the shape as possible visible
+      sb.ScrollInView(TJvCustomDiagramShape(FFileShapes.Objects[i]).Caption);
+    end;
+  end;
+end;
 
 end.
 
