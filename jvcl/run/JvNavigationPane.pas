@@ -364,6 +364,30 @@ type
     property OnStartDrag;
   end;
 
+  TJvNavPanelToolButton = class(TJvCustomGraphicButton)
+  private
+    FChangeLink: TChangeLink;
+    FCaption: TCaption;
+    FImages: TCustomImageList;
+    FImageIndex: TImageIndex;
+    FButtonType: TJvNavIconButtonType;
+    procedure DoImagesChange(Sender: TObject);
+    procedure SetButtonType(const Value: TJvNavIconButtonType);
+    procedure SetCaption(const Value: TCaption);
+    procedure SetImageIndex(const Value: TImageIndex);
+    procedure SetImages(const Value: TCustomImageList);
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Paint;override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property Images: TCustomImageList read FImages write SetImages;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
+    property ButtonType: TJvNavIconButtonType read FButtonType write SetButtonType;
+    property Caption:TCaption read FCaption write SetCaption;
+  end;
+
   TJvNavPanelButton = class(TJvCustomGraphicButton)
   private
     FImageIndex: TImageIndex;
@@ -633,7 +657,7 @@ type
     property Height default 41;
 
     property Buttons: TJvNavPaneToolButtons read FButtons write SetButtons;
-    property ButtonColor: TColor read FButtonColor write SetButtonColor default $C08000;
+    property ButtonColor: TColor read FButtonColor write SetButtonColor default $A6A5A6;
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 30;
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 21;
     property Color default clWindow;
@@ -3053,23 +3077,23 @@ end;
 procedure TJvNavPaneToolPanel.ButtonsChanged;
 var
   i: Integer;
-  B: TJvNavIconButton;
+  B: TJvNavPanelToolButton;
 begin
   FRealButtons.Clear;
   for i := 0 to Buttons.Count - 1 do
   begin
-    B := TJvNavIconButton.Create(nil);
+    B := TJvNavPanelToolButton.Create(nil);
     B.Visible := False;
-    B.SetBounds(0, 0, ButtonWidth - 1, ButtonHeight - 1);
+    B.SetBounds(0, 0, ButtonHeight - 1, ButtonHeight - 3);
     B.ButtonType := nibImage;
     B.Images := Images;
     B.ImageIndex := Buttons[i].ImageIndex;
     B.Enabled := Buttons[i].Enabled;
     B.Parent := Self;
-    B.Colors.ButtonSelectedColorFrom := clNone;
-    B.Colors.ButtonSelectedColorTo := clNone;
-    B.Colors.ButtonHotColorFrom := clNone;
-    B.Colors.ButtonHotColorTo := clNone;
+//    B.Colors.ButtonSelectedColorFrom := clNone;
+//    B.Colors.ButtonSelectedColorTo := clNone;
+//    B.Colors.ButtonHotColorFrom := clNone;
+//    B.Colors.ButtonHotColorTo := clNone;
     B.Tag := i;
     B.OnClick := InternalButtonClick;
     FRealButtons.Add(B);
@@ -3093,7 +3117,7 @@ begin
   FChangeLink.OnChange := DoImagesChange;
   FColorFrom := $FFF7CE;
   FColorTo := $E7A67B;
-  FButtonColor := $C08000;
+  FButtonColor := $A6A5A6;
   FButtonWidth := 30;
   FButtonHeight := 21;
   FHeaderHeight := 29;
@@ -3216,7 +3240,7 @@ end;
 procedure TJvNavPaneToolPanel.InternalButtonClick(Sender: TObject);
 begin
   if Assigned(FOnButtonClick) then
-    FOnButtonClick(Self, TJvNavIconButton(Sender).Tag);
+    FOnButtonClick(Self, TJvNavPanelToolButton(Sender).Tag);
 end;
 
 procedure TJvNavPaneToolPanel.Notification(AComponent: TComponent;
@@ -3236,6 +3260,7 @@ procedure TJvNavPaneToolPanel.Paint;
 var
   R, R2: TRect;
   i, X, Y: Integer;
+  B:TJvNavPanelToolButton;
 begin
   // first, fill the background
   Canvas.Lock;
@@ -3293,28 +3318,25 @@ begin
       Canvas.FillRect(Rect(R2.Right - EdgeRounding, R2.Top, R2.Right - 1, R2.Top + EdgeRounding));
       Canvas.FillRect(Rect(R2.Left, R2.Bottom - EdgeRounding, R2.Left + EdgeRounding, R2.Bottom - 1));
       Canvas.Pen.Style := psSolid;
-      Y := R2.Top - 1;
+      Y := R2.Top + 1;
       // adjust the buttons and draw the dividers
       for i := 0 to Buttons.Count - 1 do
       begin
         X := R2.Left + ButtonWidth * i;
-        with TJvNavIconButton(FRealButtons[i]) do
-        begin
-//          Images := Self.Images;
-          Left := X;
-          Top := Y;
-          Visible := True;
-        end;
+        B := TJvNavPanelToolButton(FRealButtons[i]);
+        B.Left := X  + (ButtonWidth - B.Width) div 2;
+        B.Top := Y;
+        B.Visible := True;
         if i > 0 then
         begin
-          Canvas.Pen.Color := clBtnFace;
-          Canvas.MoveTo(X, R2.Top + 3);
+          Canvas.Pen.Color := $E7EBEF;
+          Canvas.MoveTo(X, R2.Top + 2);
           Canvas.LineTo(X, R2.Bottom - 3);
         end;
         if i < Buttons.Count - 1 then
         begin
-          Canvas.Pen.Color := clWhite;
-          Canvas.MoveTo(X + ButtonWidth - 1, R2.Top + 2);
+          Canvas.Pen.Color := $CED3D6;
+          Canvas.MoveTo(X + ButtonWidth - 1, R2.Top + 1);
           Canvas.LineTo(X + ButtonWidth - 1, R2.Bottom - 4);
         end;
       end;
@@ -3329,17 +3351,16 @@ begin
   end;
 end;
 
-procedure TJvNavPaneToolPanel.SetBounds(ALeft, ATop, AWidth,
-  AHeight: Integer);
+procedure TJvNavPaneToolPanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   inherited;
   if Parent <> nil then
   begin
-    FCloseButton.SetBounds(ClientWidth - 22, 0, 22, HeaderHeight);
+    FCloseButton.SetBounds(ClientWidth - 18, (HeaderHeight - 22) div 2, 18, 22);
     if FCloseButton.Visible then
-      FDropDown.SetBounds(FCloseButton.Left - 23, 0, 22, HeaderHeight)
+      FDropDown.SetBounds(FCloseButton.Left - 19, (HeaderHeight - 22) div 2, 18, 22)
     else
-      FDropDown.SetBounds(ClientWidth - 22, 0, 22, HeaderHeight)
+      FDropDown.SetBounds(ClientWidth - 18, (HeaderHeight - 22) div 2, 18, 22);
   end;
 end;
 
@@ -3443,7 +3464,7 @@ begin
       FImages.FreeNotification(Self);
     end;
     for i := 0 to Buttons.Count -1 do
-      TJvNavIconButton(FRealButtons[i]).Images := FImages;
+      TJvNavPanelToolButton(FRealButtons[i]).Images := FImages;
     Invalidate;
   end;
 end;
@@ -3566,6 +3587,104 @@ begin
   inherited Update(Item);
   if FPanel <> nil then
     FPanel.ButtonsChanged;
+end;
+
+{ TJvNavPanelToolButton }
+
+constructor TJvNavPanelToolButton.Create(AOwner: TComponent);
+begin
+  inherited;
+  FChangeLink := TChangeLink.Create;
+  FChangeLink.OnChange := DoImagesChange;
+end;
+
+destructor TJvNavPanelToolButton.Destroy;
+begin
+  FChangeLink.Free;
+  inherited;
+end;
+
+procedure TJvNavPanelToolButton.DoImagesChange(Sender: TObject);
+begin
+  Invalidate;
+end;
+
+procedure TJvNavPanelToolButton.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited;
+  if (Operation = opRemove) and (AComponent = Images) then
+    Images:= nil;
+end;
+
+procedure TJvNavPanelToolButton.Paint;
+var R:TRect;
+begin
+//  inherited;
+  R := ClientRect;
+  if MouseStates <> [] then
+  begin
+    Canvas.Pen.Color := $6B2408;
+    if (bsMouseInside in MouseStates) then
+      Canvas.Brush.Color := $D6BEB5;
+    if (bsMouseDown in MouseStates) or Down then
+      Canvas.Brush.Color := $B59284;
+    Canvas.Rectangle(ClientRect);
+  end;
+{  if Caption <> '' then
+  begin
+    Canvas.Font := Font;
+    SetBkMode(Canvas.Handle, TRANSPARENT);
+    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_LEFT or DT_VCENTER or DT_NOPREFIX);
+    if Assigned(Images) then // draw image to the right
+      Images.Draw(Canvas, Width - Images.Width - 4, (Height - Images.Height) div 2, ImageIndex, dsTransparent, itImage, Enabled);
+  end
+  else}
+  if Assigned(Images) then
+    Images.Draw(Canvas, (Width - Images.Width) div 2, (Height - Images.Height) div 2, ImageIndex, dsTransparent, itImage, Enabled);
+end;
+
+procedure TJvNavPanelToolButton.SetButtonType(const Value: TJvNavIconButtonType);
+begin
+  if FButtonType <> Value then
+  begin
+    FButtonType := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvNavPanelToolButton.SetCaption(const Value: TCaption);
+begin
+  if FCaption <> Value then
+  begin
+    FCaption := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvNavPanelToolButton.SetImageIndex(const Value: TImageIndex);
+begin
+  if FImageIndex <> Value then
+  begin
+    FImageIndex := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvNavPanelToolButton.SetImages(const Value: TCustomImageList);
+begin
+  if FImages <> Value then
+  begin
+    if FImages <> nil then
+      FImages.UnRegisterChanges(FChangeLink);
+    FImages := Value;
+    if FImages <> nil then
+    begin
+      FImages.RegisterChanges(FChangeLink);
+      FImages.FreeNotification(Self);
+    end;
+    Invalidate;
+  end;
 end;
 
 initialization
