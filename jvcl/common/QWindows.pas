@@ -40,7 +40,7 @@ unit QWindows;
 interface
 
 uses
-  Types, StrUtils, SysUtils, Classes, Math, SyncObjs,
+  Types, StrUtils, SysUtils, Classes, Math, Contnrs, SyncObjs,
   QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QButtons;
 
 const
@@ -167,7 +167,7 @@ const
   clCream = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
 
-  INFINITE = LongWord($FFFFFFFF); // Infinite timeout
+  INFINITE = Longword($FFFFFFFF); // Infinite timeout
   
 type
   HWND = QWidgetH;
@@ -179,6 +179,9 @@ type
   HFONT = QFontH;
   UINT = Cardinal;
   BOOL = LongBool;
+  HGDIOBJ = Pointer;
+
+  COLORREF = TColorRef;
 
   TWinControl = TWidgetControl;
   TControlClass = class of TControl;
@@ -193,8 +196,8 @@ type
   PMessage = ^TMessage;
   TMessage = packed record
     Msg: Integer;
-    WParam: Integer;
-    LParam: Integer;
+    WParam: Longint;
+    LParam: Longint;
     Result: Integer;
   end;
 
@@ -332,6 +335,16 @@ type
   end;
   TTextMetric = tagTEXTMETRICA;
 
+  { Logical Pen }
+  PLogPen = ^TLogPen;
+  tagLOGPEN = packed record
+    lopnStyle: UINT;
+    lopnWidth: TPoint;
+    lopnColor: COLORREF;
+  end;
+  TLogPen = tagLOGPEN;
+  LOGPEN = tagLOGPEN;
+
   PtagBITMAP = ^tagBITMAP;
   tagBITMAP = packed record
     //bmType: Longint;
@@ -360,6 +373,13 @@ type
   TBitmapInfoHeader = tagBITMAPINFOHEADER;
   BITMAPINFOHEADER = tagBITMAPINFOHEADER;
 
+  PBitmapInfo = ^TBitmapInfo;
+  tagBITMAPINFO = packed record
+    bmiHeader: TBitmapInfoHeader;
+    bmiColors: array[0..0] of TRGBQuad;
+  end;
+  TBitmapInfo = tagBITMAPINFO;
+  BITMAPINFO = tagBITMAPINFO;
 
 { brushes }
 function CreateSolidBrush(crColor: TColorRef): QBrushH;
@@ -415,6 +435,8 @@ function StretchBlt(dst: QPainterH; dx, dy, dw, dh: Integer;
 function StretchBlt(dst: QPainterH; dx, dy, dw, dh: Integer; src: QPainterH;
   sx, sy, sw, sh: Integer; Rop: RasterOp): LongBool; overload;
 
+
+{ TODO -oahuser : StretchBlt function should use the flag }
 function GetStretchBltMode(DC: QPainterH): Integer;
 function SetStretchBltMode(DC: QPainterH; StretchMode: Integer): Integer;
 
@@ -500,10 +522,55 @@ function SetPenColor(Handle: QPainterH; Color: TColor): TColor;
 function CreateCompatibleDC(Handle: QPainterH; Width: Integer = 1; Height: Integer = 1): QPainterH;
 function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPixmapH;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; Bits: Pointer): QPixmapH;
-function GetObject(Handle: QPixmapH; Size: Cardinal; Data: PtagBITMAP): Boolean;
+function CreateDIBitmap(Handle: QPainterH; var InfoHeader: TBitmapInfoHeader;
+  dwUsage: Longword; InitBits: PChar; var InitInfo: TBitmapInfo; wUsage: Cardinal): QPixmapH;
+
+{ constants for CreateDIBitmap }
+const
+  CBM_INIT = 4;     { initialize bitmap  }
+
+  DIB_RGB_COLORS = 0;
+  // DIB_PAL_COLORS = 1; // not supported by CreateDIBitmap
+
+
+function GetBitmapBits(Bitmap: QPixmapH; Count: Longint; Bits: Pointer): Longint;
+function SetBitmapBits(Bitmap: QPixmapH; Count: Longint; Bits: Pointer): Longint;
+
+function GetObject(Handle: QPixmapH; Size: Cardinal; Data: PtagBITMAP): Boolean; overload;
+function GetObject(Handle: QPenH; Size: Cardinal; Data: PLogPen): Boolean; overload;
+
+{ Stock Logical Objects }
+type
+  TStockObject = (
+    WHITE_BRUSH = 0,
+    LTGRAY_BRUSH = 1,
+    GRAY_BRUSH = 2,
+    DKGRAY_BRUSH = 3,
+    BLACK_BRUSH = 4,
+    NULL_BRUSH = 5,
+    WHITE_PEN = 6,
+    BLACK_PEN = 7,
+    NULL_PEN = 8,
+    OEM_FIXED_FONT = 10,
+    ANSI_FIXED_FONT = 11,
+    ANSI_VAR_FONT = 12,
+    SYSTEM_FONT = 13,
+    DEVICE_DEFAULT_FONT = 14,
+    DEFAULT_PALETTE = 15,
+    SYSTEM_FIXED_FONT = $10,
+    DEFAULT_GUI_FONT = 17,
+    DC_BRUSH = 18,
+    DC_PEN = 19
+  );
+
+const
+  HOLLOW_BRUSH = NULL_BRUSH;
+  STOCK_LAST = DC_PEN;
+
+function GetStockObject(fnObject: TStockObject): HGDIOBJ;
 
 // DeleteObject is intended to destroy the Handle returned by CreateCompatibleBitmap
-// (it destroys the Painter AND PaintDevice) 
+// (it destroys the Painter AND PaintDevice)
 function DeleteObject(Handle: QPainterH): LongBool; overload;
 function DeleteObject(Handle: QPixmapH): LongBool; overload;
 function GetDC(Handle: QWidgetH): QPainterH; overload;
@@ -524,7 +591,9 @@ function ExtTextOut(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
   R: PRect; pText: PChar; Len: Integer; lpDx: Pointer): LongBool; overload;
 function ExtTextOutW(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
   R: PRect; pText: PWideChar; Len: Integer; lpDx: Pointer): LongBool;
-function SetTextAlign(Handle: QPainterH; Mode: Cardinal): Cardinal; 
+
+{ TODO -oahuser : text functions (ExtTextOut, TextOut) should use these flags }
+function SetTextAlign(Handle: QPainterH; Mode: Cardinal): Cardinal;
 function GetTextAlign(Handle: QPainterH): Cardinal;
 
 const
@@ -545,13 +614,18 @@ function GetTextExtentPoint32W(Handle: QPainterH; pText: PWideChar; Len: Integer
 function FrameRect(Handle: QPainterH; const R: TRect; Brush: QBrushH): LongBool; overload;
 procedure FrameRect(Canvas: TCanvas; const R: TRect); overload;
 function DrawFocusRect(Handle: QPainterH; const R: TRect): LongBool;
-function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType, uState: LongWord): LongBool;
+function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType, uState: Longword): LongBool;
+  { missing DrawFrameControl flags:
+      DFC_SCROLL: all
+      DFC_BUTTON: all except DFCS_PUSHBUTTON
+      DFC_POPUPMENU: all  }
 function InvertRect(Handle: QPainterH; const R: TRect): LongBool;
+function Rectangle(Handle: QPainterH; Left, Top, Right, Bottom: Integer): LongBool;
 function RoundRect(Handle: QPainterH; Left, Top, Right, Bottom, X3, Y3: Integer): LongBool;
 function Ellipse(Handle: QPainterH; Left, Top, Right, Bottom: Integer): LongBool;
-function LineTo(Handle: QPainterH; X, Y:Integer): LongBool;
-function MoveToEx(Handle: QPainterH; X, Y:Integer; oldpos: PPoint): LongBool;
-function DrawIcon(Handle: QPainterH; X, Y: Integer; hIcon: QPixMapH): LongBool;
+function LineTo(Handle: QPainterH; X, Y: Integer): LongBool;
+function MoveToEx(Handle: QPainterH; X, Y: Integer; Point: PPoint): LongBool;
+function DrawIcon(Handle: QPainterH; X, Y: Integer; hIcon: QPixmapH): LongBool;
 function DrawIconEx(Handle: QPainterH; X, Y: Integer; hIcon: QPixmapH;
   W, H: Integer; istepIfAniCur: Integer; hbrFlickerFreeDraw: QBrushH;
   diFlags: Cardinal): LongBool;
@@ -666,6 +740,7 @@ type
     HORZRES,         {Horizontal width in pixels}
     VERTRES,         {Vertical height in pixels}
     BITSPIXEL,       {Number of bits per pixel}
+    PLANES,          {Number of planes}
     NUMCOLORS,
     LOGPIXELSX,      {Logical pixelsinch in X}
     LOGPIXELSY,      {Logical pixelsinch in Y}
@@ -727,8 +802,10 @@ function WindowFromDC(Handle: QPainterH): QWidgetH;
 function ChildWindowFromPoint(hWndParent: QWidgetH; Point: TPoint): QWidgetH; // hWndParent is ignored under Linux
 function WindowFromPoint(Point: TPoint): QWidgetH;
 function GetClassName(Handle: QWidgetH; Buffer: PChar; MaxCount: Integer): Integer;
+function IsIconic(Handle: QWidgetH): LongBool;
 
 function HWND_DESKTOP: QWidgetH;
+function GetDesktopWindow: QWidgetH;
 function InvalidateRect(Handle: QWidgetH; R: PRect; EraseBackground: Boolean): LongBool;
 function UpdateWindow(Handle: QWidgetH): LongBool;
 function IsChild(ParentHandle, ChildHandle: QWidgetH): LongBool;
@@ -746,11 +823,11 @@ function SmallPointToPoint(const P: TSmallPoint): TPoint;
 function PointToSmallPoint(const P: TPoint): TSmallPoint;
 
 function SetWindowPos(Wnd, WndInsertAfter: QWidgetH; X, Y, cx, cy: Integer;
-  uFlags: LongWord): LongBool; overload;
+  uFlags: Longword): LongBool; overload;
 function SetWindowPos(Wnd, WndInsertAfter: Cardinal; X, Y, cx, cy: Integer;
-  uFlags: LongWord): LongBool; overload;
+  uFlags: Longword): LongBool; overload;
 function SetWindowPos(Wnd: QWidgetH; WndInsertAfter: Cardinal; X, Y, cx, cy: Integer;
-  uFlags: LongWord): LongBool; overload;
+  uFlags: Longword): LongBool; overload;
 
 const
   { SetWindowPos Flags }
@@ -860,7 +937,7 @@ type
     RGN_DIFF,  // Combines the parts of hrgnSrc1 that are not part of hrgnSrc2.
     RGN_OR,    // Creates the union of two combined regions.
     RGN_XOR    // Creates the union of two combined regions except for any overlapping areas.
-    );
+  );
 
 function CombineRgn(DestRgn, Source1, Source2: QRegionH; Operation: TCombineMode): Integer;
 function CreateEllipticRgn(Left, Top, Right, Bottom: Integer): QRegionH;
@@ -942,6 +1019,17 @@ function PostMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongB
 function SendMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer;
 
 
+function SetTimer(Wnd: QWidgetH; IDEvent, Elapse: Cardinal;
+  TimerFunc: Pointer): Cardinal; overload;
+function SetTimer(Wnd: Cardinal; IDEvent, Elapse: Cardinal;
+  TimerFunc: Pointer): Cardinal; overload;
+function KillTimer(Wnd: QWidgetH; IDEvent: Cardinal): LongBool; overload;
+function KillTimer(Wnd: Cardinal; IDEvent: Cardinal): LongBool; overload;
+
+const
+  WM_USER             = $0400;
+  WM_TIMER            = $0113;
+
 {$IFDEF LINUX}
 
 resourcestring
@@ -962,10 +1050,13 @@ function CopyFile(const source: string; const destination: string;
 function FileGetSize(const FileName: string): Cardinal;
 function FileGetAttr(const FileName: string): Integer;
 //function GetUserName(lpBuffer: PChar; var nSize: DWORD): LongBool;
-//function GetComputerName(lpBuffer: PChar; var nSize: DWORD): LongBool;
+function GetComputerName(Buffer: PChar; var Size: Cardinal): LongBool;
 function MakeIntResource(Value: Integer): PChar;
 function GetTickCount: Cardinal;
 procedure MessageBeep(Value: Integer);   // value ignored
+
+const
+  MAX_COMPUTERNAME_LENGTH = 15;
 
 {$ENDIF LINUX}
 
@@ -1415,7 +1506,7 @@ type
   TOpenWidgetControl = class(TWidgetControl);
 
 function SetWindowPos(Wnd, WndInsertAfter: QWidgetH; X, Y, cx, cy: Integer;
-  uFlags: LongWord): LongBool;
+  uFlags: Longword): LongBool;
 var
   R, Geometry: TRect;
   WidgetFlags: Cardinal;
@@ -1537,13 +1628,13 @@ begin
 end;
 
 function SetWindowPos(Wnd, WndInsertAfter: Cardinal; X, Y, cx, cy: Integer;
-  uFlags: LongWord): LongBool;
+  uFlags: Longword): LongBool;
 begin
   Result := SetWindowPos(QWidgetH(Wnd), QWidgetH(WndInsertAfter), X, Y, cx, cy, uFlags);
 end;
 
 function SetWindowPos(Wnd: QWidgetH; WndInsertAfter: Cardinal; X, Y, cx, cy: Integer;
-  uFlags: LongWord): LongBool;
+  uFlags: Longword): LongBool;
 begin
   Result := SetWindowPos(Wnd, QWidgetH(WndInsertAfter), X, Y, cx, cy, uFlags);
 end;
@@ -2109,6 +2200,18 @@ begin
   end;
 end;
 
+function IsIconic(Handle: QWidgetH): LongBool;
+begin
+  Result := False;
+  if Handle = nil then
+    Exit;
+  try
+    Result := QWidget_isMinimized(Handle);
+  except
+    Result := False;
+  end;
+end;
+
 function ClientToScreen(Handle: QWidgetH; var Point: TPoint): LongBool;
 begin
   try
@@ -2328,14 +2431,15 @@ var
 begin
   if GetPainterInfo(Handle, P) and (P.IsCompatibleDC) then
   begin
-    Result := QPixmapH(QPainter_device(Handle)); // IsCompatihbleDC -> device is QPixmapH
+    Result := QPixmapH(QPainter_device(Handle)); // IsCompatibleDC -> device is QPixmapH
     if QPainter_isActive(Handle) then
       QPainter_end(Handle);
 
     QPainter_begin(Handle, Bitmap);
   end
   else
-    Result := nil;
+    //Result := nil;
+    raise Exception.Create('SelectObject(HBITMAP) is limited to CreateCompatibleDC handles');
 end;
 
 function GetRegionType(rgn: QRegionH): Integer;
@@ -2889,6 +2993,8 @@ begin
         Result := QPaintDeviceMetrics_width(pdm); // Horizontal width in pixels
       BITSPIXEL:
         Result := QPaintDeviceMetrics_Depth(pdm); // Number of bits per pixel
+      PLANES:
+        Result := 1;
       NUMCOLORS:
         Result := QPaintDeviceMetrics_numColors(pdm);
       LOGPIXELSX:
@@ -3540,14 +3646,14 @@ begin
   end;
 end;
 
-function DrawIcon(Handle: QPainterH; X, Y: Integer; hIcon: QPixMapH): LongBool;
+function DrawIcon(Handle: QPainterH; X, Y: Integer; hIcon: QPixmapH): LongBool;
 var
-  point: TPoint;
+  Pt: TPoint;
 begin
-  point.X := X;
-  point.Y := Y;
+  Pt.X := X;
+  Pt.Y := Y;
   try
-    QPainter_drawPixmap(Handle, @point, hIcon);
+    QPainter_drawPixmap(Handle, @Pt, hIcon);
     Result := True;
   except
     Result := False;
@@ -3594,7 +3700,6 @@ begin
       try
         FillRect(TempDC, R, hbrFlickerFreeDraw);
         QPainter_drawPixmap(TempDC, 0, 0, hIcon, istepIfAniCur * W, 0, W, H);
-        MapPainterLP(Handle, X, Y);
         BitBlt(Handle, X, Y, W, H, TempDC, 0, 0, RasterOp_CopyRop);
         Result := True;
       except
@@ -3700,7 +3805,7 @@ begin
   end;
 end;
 
-function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType, uState: LongWord): LongBool;
+function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType, uState: Longword): LongBool;
 const
   Mask = $00FF;
 var
@@ -3973,9 +4078,7 @@ begin
   except
     Result := False;
   end;
-(*  DFC_CAPTION = 1;
-  DFC_MENU = 2;
-  DFC_SCROLL = 3;
+(* DFC_SCROLL = 3;
   DFC_BUTTON = 4;
   DFC_POPUPMENU = 5;
 
@@ -3993,6 +4096,7 @@ begin
   DFCS_BUTTONRADIO = 4;
   DFCS_BUTTON3STATE = 8;
 
+  // ****
   DFCS_INACTIVE = $100;
   DFCS_PUSHED = $200;
   DFCS_CHECKED = $400;
@@ -4024,12 +4128,11 @@ begin
   end;
 end;
 
-function MoveToEx(Handle: QPainterH; X, Y:Integer; oldpos: PPoint): LongBool;
+function MoveToEx(Handle: QPainterH; X, Y:Integer; Point: PPoint): LongBool;
 begin
   try
-    if oldpos <> nil
-    then
-      QPainter_pos(Handle, oldpos);
+    if Point <> nil then
+      QPainter_pos(Handle, Point);
     QPainter_moveTo(Handle, X, Y);
     Result := True;
   except
@@ -4093,22 +4196,37 @@ end;
 function CreateCompatibleDC(Handle: QPainterH; Width: Integer = 1; Height: Integer = 1): QPainterH;
 var
   Pixmap: QPixmapH;
+  DesktopPainter: Boolean;
 begin
   Result := nil;
   try
-    Pixmap := CreateCompatibleBitmap(Handle, Width, Height);
-    if Pixmap = nil then
-      Exit;
-    Result := QPainter_create(Pixmap);
+    if Handle = nil then
+    begin
+      Handle := GetDC(0);
+      DesktopPainter := True;
+    end
+    else
+      DesktopPainter := False;
     try
-      SetPainterInfo(Result).IsCompatibleDC := True;
-      QPainter_setPen(Result, QPainter_pen(Handle));
-      QPainter_setBackgroundColor(Result, QPainter_BackgroundColor(Handle));
-      QPainter_setFont(Result, QPainter_Font(Handle));
-      QPainter_begin(Result, QPainter_device(Result));
-    except
-      DeleteObject(Result);
-      Result := nil;
+      Pixmap := CreateCompatibleBitmap(Handle, Width, Height);
+      if Pixmap = nil then
+        Exit;
+      Result := QPainter_create(Pixmap);
+      try
+        SetPainterInfo(Result).IsCompatibleDC := True;
+        QPainter_setPen(Result, QPainter_pen(Handle));
+        QPainter_setBackgroundColor(Result, QPainter_BackgroundColor(Handle));
+        QPainter_setFont(Result, QPainter_Font(Handle));
+
+        if not QPainter_isActive(Result) then
+          QPainter_begin(Result, QPainter_device(Result));
+      except
+        DeleteObject(Result);
+        Result := nil;
+      end;
+    finally
+      if DesktopPainter then
+        ReleaseDC(0, Handle);
     end;
   except
     Result := nil;
@@ -4118,39 +4236,216 @@ end;
 function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPixmapH;
 var
   pdm: QPaintDeviceMetricsH;
+  DesktopPainter: Boolean;
 begin
-  if (Width <= 0) or (Height <= 0) or (QPainter_device(Handle) = nil) then
-    Result := nil
-  else
+  Result := nil;
+  if (Width <= 0) or (Height <= 0) then
+    Exit;
+  if Handle = nil then
   begin
-    try
-      pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
-      Result := QPixmap_create(Width, Height, QPaintDeviceMetrics_depth(pdm),
-        QPixmapOptimization_DefaultOptim);
-      QPaintDeviceMetrics_destroy(pdm);
-    except
-      Result := nil;
+    Handle := GetDC(0);
+    DesktopPainter := True;
+  end
+  else
+    DesktopPainter := False;
+  try
+    if QPainter_device(Handle) <> nil then
+    begin
+      try
+        pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
+        Result := QPixmap_create(Width, Height, QPaintDeviceMetrics_depth(pdm),
+          QPixmapOptimization_DefaultOptim);
+        QPaintDeviceMetrics_destroy(pdm);
+      except
+        Result := nil;
+      end;
     end;
+  finally
+    if DesktopPainter then
+      ReleaseDC(0, Handle);
+  end;
+end;
+
+function Convert24To32(Bits: PByte; PixelCount: Cardinal): PByte;
+var
+  i: Integer;
+  P: PByte;
+begin
+  GetMem(Result, PixelCount * 4);
+  P := Result;
+  for i := 0 to PixelCount - 1 do
+  begin
+    P^ := PByte(Bits)^;
+    Inc(Bits);
+    Inc(P);
+    P^ := PByte(Bits)^;
+    Inc(Bits);
+    Inc(P);
+    P^ := PByte(Bits)^;
+    Inc(Bits);
+    Inc(P);
+    P^ := 0;
+    Inc(P);
   end;
 end;
 
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; Bits: Pointer): QPixmapH;
+var
+  Image: QImageH;
+  Data: PByte;
 begin
   if (Width <= 0) or (Height <= 0) or (Planes <= 0) or (BitCount <= 0) then
     Result := nil
   else
   begin
     try
-      Result := QPixmap_create(Width, Height, BitCount, QPixmapOptimization_DefaultOptim);
-      if (Result <> nil) and (Bits <> nil) then
+      Data := PByte(Bits);
+      if BitCount = 24 then
       begin
-        QPixmap_loadFromData(Result, Bits, (Width * Height * BitCount) div 8,
-          'XBM', // (ahuser) is this correct?
-          QPixmapColorMode_Auto);
+        BitCount := 32;
+        if Bits <> nil then
+          // convert InitBits
+          Data := Convert24To32(Bits, Width * Height);
+      end;
+      try
+        if Data = nil then
+          Result := QPixmap_create(Width, Height, BitCount, QPixmapOptimization_DefaultOptim)
+        else
+        begin
+          Image := QImage_create(Width, Height, BitCount, 0, QImageEndian_IgnoreEndian);
+          try
+            Move(Data^, QImage_bits(Image)^, (Width * Height * BitCount + 7) div 8);
+            Result := QPixmap_create;
+            try
+              QPixmap_convertFromImage(Result, Image, QPixmapColorMode_Auto);
+            except
+              QPixmap_destroy(Result);
+              Result := nil;
+            end;
+          finally
+            QImage_destroy(Image);
+          end;
+        end;
+      finally
+        if Data <> Bits then
+          FreeMem(Data);
       end;
     except
       Result := nil;
     end;
+  end;
+end;
+
+function CreateDIBitmap(Handle: QPainterH; var InfoHeader: TBitmapInfoHeader;
+  dwUsage: Longword; InitBits: PChar; var InitInfo: TBitmapInfo; wUsage: Cardinal): QPixmapH;
+var
+  Image: QImageH;
+  Data: PByte;
+  NumColors: Integer;
+begin
+  with InfoHeader do
+  begin
+    if (biWidth <= 0) or (biHeight <= 0) or (biPlanes <> 1) or (biBitCount <= 0) then
+      Result := nil
+    else
+    begin
+      Data := PByte(InitBits);
+      if biBitCount = 24 then
+      begin
+        biBitCount := 32;
+        if (InitBits <> nil) and (dwUsage = CBM_INIT) then
+          // convert InitBits
+          Data := Convert24To32(PByte(InitBits), biWidth * biHeight);
+      end;
+      try
+        try
+          case biBitCount of
+            1: NumColors := 1;
+            4: NumColors := 16; // (ahuser) is this supported by Qt ?
+            8: NumColors := 256;
+          else
+            NumColors := 0;
+          end;
+          Image := QImage_create(biWidth, biHeight, biBitCount, NumColors, QImageEndian_IgnoreEndian);
+          try
+            if (dwUsage = CBM_INIT) then
+            begin
+              if (InitBits <> nil) then
+                Move(Data^, QImage_bits(Image)^, (biWidth * biHeight * biBitCount + 7) div 8);
+              case biBitCount of
+                1: Move(InitInfo.bmiColors[0], QImage_colorTable(Image)^, 1 * SizeOf(QRgb));
+                4: Move(InitInfo.bmiColors[0], QImage_colorTable(Image)^, 16 * SizeOf(QRgb)); // (ahuser) is this supported by Qt ?
+                8: Move(InitInfo.bmiColors[0], QImage_colorTable(Image)^, 256 * SizeOf(QRgb));
+              end;
+            end;
+
+            Result := QPixmap_create;
+            try
+              QPixmap_convertFromImage(Result, Image, QPixmapColorMode_Auto);
+            except
+              QPixmap_destroy(Result);
+              Result := nil;
+            end;
+          finally
+            QImage_destroy(Image);
+          end;
+        except
+          Result := nil;
+        end;
+      finally
+        if Data <> PByte(InitBits) then
+          FreeMem(Data);
+      end;
+    end;
+  end;
+end;
+
+function GetBitmapBits(Bitmap: QPixmapH; Count: Longint; Bits: Pointer): Longint;
+var
+  Image: QImageH;
+begin
+  Result := 0;
+  if (Bitmap = nil) or (Count <= 0) then
+    Exit;
+  try
+    Image := QImage_create;
+    try
+      QPixmap_convertToImage(Bitmap, Image);
+      Result := (QImage_width(Image) * QImage_height(Image) * QImage_depth(Image) + 7) div 8;
+      if Count < Result then
+        Result := Count;
+      if Result > 0 then
+        Move(QImage_bits(Image)^, Bits^, Result);
+    finally
+      QImage_destroy(Image);
+    end;
+  except
+    Result := 0;
+  end;
+end;
+
+function SetBitmapBits(Bitmap: QPixmapH; Count: Longint; Bits: Pointer): Longint;
+var
+  Image: QImageH;
+begin
+  Result := 0;
+  if (Bitmap = nil) or (Count <= 0) then
+    Exit;
+  try
+    Image := QImage_create;
+    try
+      QPixmap_convertToImage(Bitmap, Image);
+      Result := (QImage_width(Image) * QImage_height(Image) * QImage_depth(Image) + 7) div 8;
+      if Count < Result then
+        Result := Count;
+      if Result > 0 then
+        Move(Bits^, QImage_bits(Image)^, Result);
+      QPixmap_convertFromImage(Bitmap, Image, QPixmapColorMode_Auto);
+    finally
+      QImage_destroy(Image);
+    end;
+  except
+    Result := 0;
   end;
 end;
 
@@ -4169,6 +4464,70 @@ begin
     end;
   end;
 end;
+
+function GetObject(Handle: QPenH; Size: Cardinal; Data: PLogPen): Boolean;
+begin
+  Result := False;
+  if (Handle <> nil) and (Size > 0) and (Data <> nil) then
+  begin
+    try
+      Data.lopnStyle := Cardinal(QPen_style(Handle));
+      Data.lopnWidth := Point(QPen_width(Handle), 0);
+      Data.lopnColor := QColorColor(QPen_color(Handle));
+      Result := True;
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+type
+{ TODO -oahuser : Implement a StockObjectResourceList and change all DeleteObject() functions to look for a stock object. }
+  TStockObjectResource = class(TObject)
+    Obj: TStockObject;
+    Handle: HGDIOBJ;
+    destructor Destroy; override;
+  end;
+
+  TStockObjectResourceList = class(TObjectList)
+  end;
+
+destructor TStockObjectResource.Destroy;
+begin
+  case Obj of
+    WHITE_BRUSH..NULL_BRUSH:
+      QBrush_destroy(QBrushH(Handle));
+    WHITE_PEN..NULL_PEN:
+      QPen_destroy(QPenH(Handle));
+    {...}
+  end;
+  inherited Destroy;
+end;
+
+function GetStockObject(fnObject: TStockObject): HGDIOBJ;
+const
+  BrushColors: array[WHITE_BRUSH..BLACK_BRUSH] of TColor =
+    (clWhite, clLtGray, clGray, clDkGray, clBlack);
+begin
+  case fnObject of
+    WHITE_BRUSH..BLACK_BRUSH:
+      Result := CreateSolidBrush(BrushColors[fnObject]);
+    NULL_BRUSH:
+      Result := QBrush_create(BrushStyle_NoBrush);
+
+    WHITE_PEN:
+      Result := CreatePen(PS_SOLID, 1, clWhite);
+    BLACK_PEN:
+      Result := CreatePen(PS_SOLID, 1, clBlack);
+    NULL_PEN:
+      Result := CreatePen(PS_NULL, 1, clWhite);
+
+    {...}
+  else
+    Result := nil;
+  end;
+end;
+
 
 function SetPixel(Handle: QPainterH; X, Y: Integer; Color: TColorRef): TColorRef;
 var
@@ -4302,6 +4661,11 @@ end;
 function HWND_DESKTOP: QWidgetH;
 begin
   Result := QApplication_desktop;
+end;
+
+function GetDesktopWindow: QWidgetH;
+begin
+  Result := HWND_DESKTOP;
 end;
 
 // maps DT_ alignment flags to Qt (extended) alignment flags
@@ -4473,6 +4837,25 @@ begin
   Result := CopyFile(EF, NF, bFailIfExists);
 end;
 
+function GetComputerName(Buffer: PChar; var Size: Cardinal): LongBool;
+var
+  S: string;
+begin
+  try
+    SetLength(S, 255);
+    if gethostname(PChar(S), Length(S)) = -1 then
+      Result := ''
+    else
+      SetLength(S, StrLen(PChar(Result)));
+    Size := Length(S) + 1;
+    Result := (S <> '');
+    if Result then
+      StrLCopy(Buffer, PChar(S), Size - 1);
+  except
+    Result := False;
+  end;
+end;
+
 function MakeIntResource(Value: Integer): PChar;
 begin
   Result := PChar(Value and $0000ffff);
@@ -4482,6 +4865,7 @@ procedure MessageBeep(Value: Integer);
 begin
   QApplication_beep;
 end;
+
 
 var
   StartTimeVal: TTimeVal;
@@ -4506,6 +4890,59 @@ begin
 end;
 
 {$ENDIF LINUX}
+
+
+
+type
+  TQtObject = class(TObject)
+  private
+    FHandle: QObjectH;
+    FHooks: QObject_hookH;
+  protected
+    function MainEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; virtual;
+  public
+    constructor Create(const AName: string = '');
+    destructor Destroy; override;
+    property Handle: QObjectH read FHandle;
+    property Hooks: QObject_hookH read FHooks;
+  end;
+
+constructor TQtObject.Create(const AName: string = '');
+var
+  Method: TMethod;
+begin
+  inherited Create;
+  FHandle := QObject_create(nil, Pointer(AName));
+  FHooks := QObject_hook_create(FHandle);
+  TEventFilterMethod(Method) := MainEventFilter;
+  Qt_hook_hook_events(FHooks, Method);
+end;
+
+destructor TQtObject.Destroy;
+begin
+  QObject_hook_destroy(FHooks);
+  QObject_destroy(FHandle);
+  inherited Destroy;
+end;
+
+function TQtObject.MainEventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+begin
+  try
+    Result := EventFilter(Sender, Event);
+  except
+    on E: Exception do
+    begin
+      Application.ShowException(E);
+      Result := False;
+    end;
+  end;
+end;
+
+function TQtObject.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; 
+begin
+  Result := False; // default handling
+end;
 
 const
   QEventType_CMDispatchMessagePost = QEventType(Integer(QEventType_ClxUser) - 1);
@@ -4611,8 +5048,8 @@ begin
     M^.Msg.WParam := WParam;
     M^.Msg.LParam := LParam;
     M^.Msg.Result := 0;
-    InstallAppEventFilter;
 
+    InstallAppEventFilter;
     QApplication_postEvent(Handle, QCustomEvent_create(QEventType_CMDispatchMessagePost, M));
     Result := True;
   except
@@ -4641,7 +5078,6 @@ begin
     M.Msg.Result := 0;
 
     InstallAppEventFilter;
-
     Event := QCustomEvent_create(QEventType_CMDispatchMessageSend, @M);
     try
       if GetCurrentThreadId = MainThreadID then
@@ -4667,6 +5103,167 @@ begin
   end;
 end;
 
+{ ---- Timer ---- }
+
+var
+  TimerList: TObjectList = nil;
+
+type
+  TTimerProc = procedure(hwnd: HWND; uMsg: Cardinal; idEvent: Cardinal;
+    dwTime: Cardinal); stdcall;
+
+  TTimerItem = class(TQtObject)
+  private
+    FWidget: QWidgetH;
+    FId, FTimerId: Cardinal;
+    FTimerProc: TTimerProc;
+  protected
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
+  public
+    destructor Destroy; override;
+    procedure SetTimer(AWidget: QWidgetH; AId: Cardinal; Elapse: Cardinal;
+      ATimerProc: TTimerProc);
+    procedure KillTimer;
+    class function FindTimerItem(Widget: QWidgetH; Id: Cardinal): TTimerItem;
+
+    property Widget: QWidgetH read FWidget;
+    property Id: Cardinal read FId;
+    property TimerProc: TTimerProc read FTimerProc;
+  end;
+
+destructor TTimerItem.Destroy;
+begin
+  if FTimerId <> 0 then
+    KillTimer;
+  TimerList.Extract(Self);
+  inherited Destroy;
+end;
+
+procedure TTimerItem.SetTimer(AWidget: QWidgetH; AId: Cardinal; Elapse: Cardinal;
+  ATimerProc: TTimerProc);
+begin
+  if FTimerId <> 0 then
+    KillTimer;
+  FWidget := AWidget;
+  FId := AId;
+  FTimerProc := ATimerProc;
+  FTimerId := QObject_startTimer(Handle, Elapse);
+  if FWidget = nil then
+    FId := FTimerId
+  else
+  if FId = 0 then
+    FId := Cardinal(Self);
+end;
+
+procedure TTimerItem.KillTimer;
+begin
+  if FTimerId <> 0 then
+  begin
+    QObject_killTimer(Handle, FTimerId);
+    FTimerId := 0;
+  end;
+end;
+
+function TTimerItem.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+var
+  Control: TWidgetControl;
+begin
+  if QEvent_type(Event) = QEventType_Timer then
+  begin
+    if Assigned(FTimerProc) then
+      FTimerProc(Widget, WM_TIMER, FId, GetTickCount)
+    else
+    if Widget <> nil then
+    begin
+      Control := FindControl(Widget);
+      if Control <> nil then
+        Perform(Control, WM_TIMER, Id, Longint(@TimerProc))
+      else
+        Free; // Control no more exists
+    end
+    else
+      Free; // Timer is not used ( should not happen )
+    Result := True;
+    Exit;
+  end;
+  Result := inherited EventFilter(Sender, Event);
+end;
+
+class function TTimerItem.FindTimerItem(Widget: QWidgetH; Id: Cardinal): TTimerItem;
+var
+  i: Integer;
+begin
+  if TimerList = nil then
+    TimerList := TObjectList.Create;
+
+  for i := 0 to TimerList.Count - 1 do
+  begin
+    Result := TTimerItem(TimerList[i]);
+    if (Id <> 0) then
+    begin
+      if (Result.Widget = Widget) and (Result.Id = Id) then
+        Exit;
+    end
+    else
+    if (Widget <> nil) then
+    begin
+      if (Result.Widget = Widget) and (Result.Id = Id) then
+        Exit;
+    end;
+  end;
+  Result := nil;
+end;
+
+function SetTimer(Wnd: QWidgetH; IDEvent, Elapse: Cardinal;
+  TimerFunc: Pointer): Cardinal;
+var
+  Item: TTimerItem;
+begin
+  Result := 0;
+  if ((Wnd = nil) and (TimerFunc = nil)) or
+     ((IDEvent = 0) and (TimerFunc = nil)) then
+    Exit;
+  try
+    Item := TTimerItem.FindTimerItem(Wnd, IDEvent);
+    if Item = nil then
+    begin
+      Item := TTimerItem.Create('SetTimerObject');
+      TimerList.Add(Item);
+    end;
+    Item.SetTimer(Wnd, IDEvent, Elapse, TimerFunc);
+    Result := Integer(Item);
+  except
+    Result := 0;
+  end;
+end;
+
+function SetTimer(Wnd: Cardinal; IDEvent, Elapse: Cardinal;
+  TimerFunc: Pointer): Cardinal;
+begin
+  Result := SetTimer(QWidgetH(Wnd), IDEvent, Elapse, TimerFunc);
+end;
+
+function KillTimer(Wnd: QWidgetH; IDEvent: Cardinal): LongBool;
+var
+  Item: TTimerItem;
+begin
+  Result := False;
+  try
+    Item := TTimerItem.FindTimerItem(Wnd, IDEvent);
+    if Item <> nil then
+    begin
+      TimerList.Remove(Item);
+      Result := True;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+function KillTimer(Wnd: Cardinal; IDEvent: Longword): LongBool;
+begin
+  Result := KillTimer(QWidgetH(Wnd), IDEvent);
+end;
 
 { ------------ Caret -------------- }
 { (C) 2003 Andreas Hausladen <Andreas.Hausladen@gmx.de> }
@@ -4977,6 +5574,7 @@ initialization
 
 finalization
   GlobalCaret.Free;
+  TimerList.Free;
   if Assigned(AppEventFilterHook) then
     QObject_hook_destroy(AppEventFilterHook);
   FreePainterInfos;
