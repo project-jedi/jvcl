@@ -130,13 +130,13 @@ begin
     Exit;
   with TJvClrFrm(FColorForm) do
   begin
-    CD.Options := FOptions;
+    ColorDialog.Options := FOptions;
     OtherBtn.Caption := FOtherCaption;
-    CD.CustomColors.Assign(FCustomColors);
+    ColorDialog.CustomColors.Assign(FCustomColors);
     if ArrowWidth = 0 then
     begin
-      if CD.Execute then
-        FColor := CD.Color;
+      if ColorDialog.Execute then
+        FColor := ColorDialog.Color;
       MouseUp(mbLeft, [], X, Y);
     end
     else

@@ -82,14 +82,15 @@ type
   end;
 
 const
-  DbErrorHelpCtx: THelpContext = 0;
+  DbErrorHelpCtx = THelpContext(0);
 
 procedure DbErrorIntercept;
 
 implementation
 
 uses
-  Consts, Windows, BDE, JvConsts;
+  Consts, Windows, BDE,
+  JvConsts;
 
 {$R *.dfm}
 
@@ -260,6 +261,11 @@ begin
   Inc(FCurItem);
   ShowError;
 end;
+
+initialization
+
+finalization
+  FreeAndNil(DbEngineErrorDlg);
 
 end.
 

@@ -37,7 +37,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes,
-  Controls, Forms, StdCtrls, ComCtrls, JvComponent;
+  Controls, Forms, StdCtrls, ComCtrls,
+  JvComponent;
 
 type
   TJvProgressComponent = class(TJvComponent)
@@ -60,6 +61,7 @@ type
     procedure FormOnCancel(Sender: TObject);
     procedure SetProgress(Index: Integer; AValue: Integer);
   public
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Execute;
     procedure ProgressStepIt;
@@ -67,10 +69,10 @@ type
   published
     property Caption: TCaption read FCaption write SetCaption;
     property InfoLabel: TCaption read FInfoLabel write SetInfoLabel;
-    property ProgressMin: Integer index 0 read FProgressMin write SetProgress;
-    property ProgressMax: Integer index 1 read FProgressMax write SetProgress;
-    property ProgressStep: Integer index 2 read FProgressStep write SetProgress;
-    property ProgressPosition: Integer index 3 read FProgressPosition write SetProgress;
+    property ProgressMin: Integer index 0 read FProgressMin write SetProgress default 0;
+    property ProgressMax: Integer index 1 read FProgressMax write SetProgress default 100;
+    property ProgressStep: Integer index 2 read FProgressStep write SetProgress default 1;
+    property ProgressPosition: Integer index 3 read FProgressPosition write SetProgress default 0;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
   end;
 
@@ -78,6 +80,12 @@ implementation
 
 uses
   JvConsts;
+
+type
+  TJvProgressForm = class(TForm)
+  private
+    procedure WMUser1(var Msg: TMessage); message WM_USER + 1;
+  end;
 
 function ChangeTopException(E: TObject): TObject;
 type
@@ -93,7 +101,7 @@ begin
   { if linker error occured with message "unresolved external 'System::RaiseList'" try
     comment this function implementation, compile,
     then uncomment and compile again. }
-{$IFDEF VCL}
+  {$IFDEF VCL}
   {$IFDEF COMPILER6_UP}
   {$WARN SYMBOL_DEPRECATED OFF}
   {$ENDIF}
@@ -104,31 +112,40 @@ begin
   end
   else
     Result := nil;
-{$ENDIF VCL}
-{$IFDEF LINUX}
+  {$ENDIF VCL}
+  {$IFDEF LINUX}
   // XXX: changing exception in stack frame is not supported on Kylix
   Writeln('ChangeTopException');
   Result := E;
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
 end;
 
-{##################### From JvUtils unit #####################}
+//=== TJvProgressComponent ===================================================
 
-type
-  TJvProgressForm = class(TForm)
-  private
-    procedure WMUser1(var Msg: TMessage); message WM_USER + 1;
-  end;
+constructor TJvProgressComponent.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FProgressMin := 0;
+  FProgressMax := 100;
+  FProgressStep := 1;
+  FProgressPosition := 0;
+end;
+
+destructor TJvProgressComponent.Destroy;
+begin
+  FForm.Free;
+  inherited Destroy;
+end;
 
 procedure TJvProgressComponent.Execute;
 begin
-{$IFDEF BCB}
+  {$IFDEF BCB}
   if not Assigned(FForm) then
     FForm := TJvProgressForm.CreateNew(Self, 1);
-{$ELSE}
+  {$ELSE}
   if not Assigned(FForm) then
     FForm := TJvProgressForm.CreateNew(Self);
-{$ENDIF BCB}
+  {$ENDIF BCB}
   try
     FForm.Caption := Caption;
     with FForm do
@@ -192,7 +209,7 @@ end;
 
 procedure TJvProgressComponent.FormOnShow(Sender: TObject);
 begin
-  PostMessage(FForm.Handle, WM_USER + 1, integer(self), 0);
+  PostMessage(FForm.Handle, WM_USER + 1, Integer(Self), 0);
 end;
 
 procedure TJvProgressComponent.FormOnCancel(Sender: TObject);
@@ -267,12 +284,6 @@ procedure TJvProgressComponent.ProgressStepIt;
 begin
   if FForm <> nil then
     FProgressBar.StepIt;
-end;
-
-destructor TJvProgressComponent.Destroy;
-begin
-  FForm.Free;
-  inherited Destroy;
 end;
 
 end.

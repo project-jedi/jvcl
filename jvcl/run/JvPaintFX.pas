@@ -39,98 +39,98 @@ type
   // Type of a filter for use with Stretch()
   TFilterProc = function(Value: Single): Single;
   TLightBrush = (lbBrightness, lbContrast, lbSaturation,
-    lbfisheye, lbrotate, lbtwist, lbrimple,
+    lbFisheye, lbrotate, lbtwist, lbrimple,
     mbHor, mbTop, mbBottom, mbDiamond, mbWaste, mbRound,
-    mbround2, mbSplitRound, mbSplitWaste);
+    mbRound2, mbSplitRound, mbSplitWaste);
 
   TJvPaintFX = class(TComponent)
   public
-    procedure Solarize(const Src: TBitmap; var Dst: TBitmap; Amount: Integer);
-    procedure Posterize(const Src: TBitmap; var Dst: TBitmap; Amount: Integer);
-    procedure Blend(const Src1, Src2: TBitmap; var Dst: TBitmap; Amount: Single);
-    procedure ExtractColor(const Dst: TBitmap; AColor: TColor);
-    procedure ExcludeColor(const Dst: TBitmap; AColor: TColor);
-    procedure Turn(Src, Dst: TBitmap);
-    procedure TurnRight(Src, Dst: TBitmap);
-    procedure HeightMap(const Dst: TBitmap; Amount: Integer);
-    procedure TexturizeTile(const Dst: TBitmap; Amount: Integer);
-    procedure TexturizeOverlap(const Dst: TBitmap; Amount: Integer);
-    procedure RippleRandom(const Dst: TBitmap; Amount: Integer);
-    procedure RippleTooth(const Dst: TBitmap; Amount: Integer);
-    procedure RippleTriangle(const Dst: TBitmap; Amount: Integer);
-    procedure Triangles(const Dst: TBitmap; Amount: Integer);
-    procedure DrawMandelJulia(const Dst: TBitmap; x0, y0, x1, y1: Single;
+    class procedure Solarize(const Src: TBitmap; var Dst: TBitmap; Amount: Integer);
+    class procedure Posterize(const Src: TBitmap; var Dst: TBitmap; Amount: Integer);
+    class procedure Blend(const Src1, Src2: TBitmap; var Dst: TBitmap; Amount: Single);
+    class procedure ExtractColor(const Dst: TBitmap; AColor: TColor);
+    class procedure ExcludeColor(const Dst: TBitmap; AColor: TColor);
+    class procedure Turn(Src, Dst: TBitmap);
+    class procedure TurnRight(Src, Dst: TBitmap);
+    class procedure HeightMap(const Dst: TBitmap; Amount: Integer);
+    class procedure TexturizeTile(const Dst: TBitmap; Amount: Integer);
+    class procedure TexturizeOverlap(const Dst: TBitmap; Amount: Integer);
+    class procedure RippleRandom(const Dst: TBitmap; Amount: Integer);
+    class procedure RippleTooth(const Dst: TBitmap; Amount: Integer);
+    class procedure RippleTriangle(const Dst: TBitmap; Amount: Integer);
+    class procedure Triangles(const Dst: TBitmap; Amount: Integer);
+    class procedure DrawMandelJulia(const Dst: TBitmap; x0, y0, x1, y1: Single;
       Niter: Integer; Mandel: Boolean);
-    procedure FilterXBlue(const Dst: TBitmap; Min, Max: Integer);
-    procedure FilterXGreen(const Dst: TBitmap; Min, Max: Integer);
-    procedure FilterXRed(const Dst: TBitmap; Min, Max: Integer);
-    procedure FilterBlue(const Dst: TBitmap; Min, Max: Integer);
-    procedure FilterGreen(const Dst: TBitmap; Min, Max: Integer);
-    procedure FilterRed(const Dst: TBitmap; Min, Max: Integer);
-    procedure Emboss(var Bmp: TBitmap);
-    procedure Plasma(Src1, Src2, Dst: TBitmap; Scale, Turbulence: Single);
-    procedure Shake(Src, Dst: TBitmap; Factor: Single);
-    procedure ShakeDown(Src, Dst: TBitmap; Factor: Single);
-    procedure KeepBlue(const Dst: TBitmap; Factor: Single);
-    procedure KeepGreen(const Dst: TBitmap; Factor: Single);
-    procedure KeepRed(const Dst: TBitmap; Factor: Single);
-    procedure Mandelbrot(const Dst: TBitmap; Factor: Integer);
-    procedure MaskMandelbrot(const Dst: TBitmap; Factor: Integer);
-    procedure FoldRight(Src1, Src2, Dst: TBitmap; Amount: Single);
-    procedure QuartoOpaque(Src, Dst: TBitmap);
-    procedure SemiOpaque(Src, Dst: TBitmap);
-    procedure ShadowDownLeft(const Dst: TBitmap);
-    procedure ShadowDownRight(const Dst: TBitmap);
-    procedure ShadowUpLeft(const Dst: TBitmap);
-    procedure ShadowUpRight(const Dst: TBitmap);
-    procedure Darkness(const Dst: TBitmap; Amount: Integer);
-    procedure Trace(const Dst: TBitmap; Intensity: Integer);
-    procedure FlipRight(const Dst: TBitmap);
-    procedure FlipDown(const Dst: TBitmap);
-    procedure SpotLight(const Dst: TBitmap; Amount: Integer; Spot: TRect);
-    procedure SplitLight(const Dst: TBitmap; Amount: Integer);
-    procedure MakeSeamlessClip(var Dst: TBitmap; Seam: Integer);
-    procedure Wave(const Dst: TBitmap; Amount, Inference, Style: Integer);
-    procedure Mosaic(const Bm: TBitmap; Size: Integer);
-    procedure SmoothRotate(var Src, Dst: TBitmap; CX, CY: Integer;
+    class procedure FilterXBlue(const Dst: TBitmap; Min, Max: Integer);
+    class procedure FilterXGreen(const Dst: TBitmap; Min, Max: Integer);
+    class procedure FilterXRed(const Dst: TBitmap; Min, Max: Integer);
+    class procedure FilterBlue(const Dst: TBitmap; Min, Max: Integer);
+    class procedure FilterGreen(const Dst: TBitmap; Min, Max: Integer);
+    class procedure FilterRed(const Dst: TBitmap; Min, Max: Integer);
+    class procedure Emboss(var Bmp: TBitmap);
+    class procedure Plasma(Src1, Src2, Dst: TBitmap; Scale, Turbulence: Single);
+    class procedure Shake(Src, Dst: TBitmap; Factor: Single);
+    class procedure ShakeDown(Src, Dst: TBitmap; Factor: Single);
+    class procedure KeepBlue(const Dst: TBitmap; Factor: Single);
+    class procedure KeepGreen(const Dst: TBitmap; Factor: Single);
+    class procedure KeepRed(const Dst: TBitmap; Factor: Single);
+    class procedure Mandelbrot(const Dst: TBitmap; Factor: Integer);
+    class procedure MaskMandelbrot(const Dst: TBitmap; Factor: Integer);
+    class procedure FoldRight(Src1, Src2, Dst: TBitmap; Amount: Single);
+    class procedure QuartoOpaque(Src, Dst: TBitmap);
+    class procedure SemiOpaque(Src, Dst: TBitmap);
+    class procedure ShadowDownLeft(const Dst: TBitmap);
+    class procedure ShadowDownRight(const Dst: TBitmap);
+    class procedure ShadowUpLeft(const Dst: TBitmap);
+    class procedure ShadowUpRight(const Dst: TBitmap);
+    class procedure Darkness(const Dst: TBitmap; Amount: Integer);
+    class procedure Trace(const Dst: TBitmap; Intensity: Integer);
+    class procedure FlipRight(const Dst: TBitmap);
+    class procedure FlipDown(const Dst: TBitmap);
+    class procedure SpotLight(const Dst: TBitmap; Amount: Integer; Spot: TRect);
+    class procedure SplitLight(const Dst: TBitmap; Amount: Integer);
+    class procedure MakeSeamlessClip(var Dst: TBitmap; Seam: Integer);
+    class procedure Wave(const Dst: TBitmap; Amount, Inference, Style: Integer);
+    class procedure Mosaic(const Bm: TBitmap; Size: Integer);
+    class procedure SmoothRotate(var Src, Dst: TBitmap; CX, CY: Integer;
       Angle: Single);
-    procedure SmoothResize(var Src, Dst: TBitmap);
-    procedure Twist(var Bmp, Dst: TBitmap; Amount: Integer);
-    procedure SplitBlur(const Dst: TBitmap; Amount: Integer);
-    procedure GaussianBlur(const Dst: TBitmap; Amount: Integer);
-    procedure Smooth(const Dst: TBitmap; Weight: Integer);
-    procedure GrayScale(const Dst: TBitmap);
-    procedure AddColorNoise(const Dst: TBitmap; Amount: Integer);
-    procedure AddMonoNoise(const Dst: TBitmap; Amount: Integer);
-    procedure Contrast(const Dst: TBitmap; Amount: Integer);
-    procedure Lightness(const Dst: TBitmap; Amount: Integer);
-    procedure Saturation(const Dst: TBitmap; Amount: Integer);
-    procedure Spray(const Dst: TBitmap; Amount: Integer);
-    procedure AntiAlias(const Dst: TBitmap);
-    procedure AntiAliasRect(const Dst: TBitmap; XOrigin, YOrigin, XFinal, YFinal: Integer);
-    procedure SmoothPoint(const Dst: TBitmap; XK, YK: Integer);
-    procedure FishEye(var Bmp, Dst: TBitmap; Amount: Single);
-    procedure Marble(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
-    procedure Marble2(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
-    procedure Marble3(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
-    procedure Marble4(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
-    procedure Marble5(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
-    procedure Marble6(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
-    procedure Marble7(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
-    procedure Marble8(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
-    procedure SqueezeHor(Src, Dst: TBitmap; Amount: Integer; Style: TLightBrush);
-    procedure SplitRound(Src, Dst: TBitmap; Amount: Integer; Style: TLightBrush);
-    procedure Tile(Src, Dst: TBitmap; Amount: Integer);
+    class procedure SmoothResize(var Src, Dst: TBitmap);
+    class procedure Twist(var Bmp, Dst: TBitmap; Amount: Integer);
+    class procedure SplitBlur(const Dst: TBitmap; Amount: Integer);
+    class procedure GaussianBlur(const Dst: TBitmap; Amount: Integer);
+    class procedure Smooth(const Dst: TBitmap; Weight: Integer);
+    class procedure GrayScale(const Dst: TBitmap);
+    class procedure AddColorNoise(const Dst: TBitmap; Amount: Integer);
+    class procedure AddMonoNoise(const Dst: TBitmap; Amount: Integer);
+    class procedure Contrast(const Dst: TBitmap; Amount: Integer);
+    class procedure Lightness(const Dst: TBitmap; Amount: Integer);
+    class procedure Saturation(const Dst: TBitmap; Amount: Integer);
+    class procedure Spray(const Dst: TBitmap; Amount: Integer);
+    class procedure AntiAlias(const Dst: TBitmap);
+    class procedure AntiAliasRect(const Dst: TBitmap; XOrigin, YOrigin, XFinal, YFinal: Integer);
+    class procedure SmoothPoint(const Dst: TBitmap; XK, YK: Integer);
+    class procedure FishEye(var Bmp, Dst: TBitmap; Amount: Single);
+    class procedure Marble(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
+    class procedure Marble2(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
+    class procedure Marble3(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
+    class procedure Marble4(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
+    class procedure Marble5(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
+    class procedure Marble6(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
+    class procedure Marble7(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
+    class procedure Marble8(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
+    class procedure SqueezeHor(Src, Dst: TBitmap; Amount: Integer; Style: TLightBrush);
+    class procedure SplitRound(Src, Dst: TBitmap; Amount: Integer; Style: TLightBrush);
+    class procedure Tile(Src, Dst: TBitmap; Amount: Integer);
     // Interpolator
     // Src:	Source bitmap
     // Dst:	Destination bitmap
     // Filter:	Weight calculation filter
     // AWidth:	Relative sample radius
-    procedure Stretch(Src, Dst: TBitmap; Filter: TFilterProc; AWidth: Single);
-    procedure Grow(Src1, Src2, Dst: TBitmap; Amount: Single; X, Y: Integer);
-    procedure Invert(Src: TBitmap);
-    procedure MirrorRight(Src: TBitmap);
-    procedure MirrorDown(Src: TBitmap);
+    class procedure Stretch(Src, Dst: TBitmap; Filter: TFilterProc; AWidth: Single);
+    class procedure Grow(Src1, Src2, Dst: TBitmap; Amount: Single; X, Y: Integer);
+    class procedure Invert(Src: TBitmap);
+    class procedure MirrorRight(Src: TBitmap);
+    class procedure MirrorDown(Src: TBitmap);
   end;
 
 // Sample filters for use with Stretch()
@@ -354,7 +354,7 @@ begin
     Result := 0.0;
 end;
 
-procedure TJvPaintFX.AddColorNoise(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.AddColorNoise(const Dst: TBitmap; Amount: Integer);
 var
   Line: PJvRGBArray;
   X, Y: Integer;
@@ -376,7 +376,7 @@ begin
   Dst.PixelFormat := OPF;
 end;
 
-procedure TJvPaintFX.AddMonoNoise(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.AddMonoNoise(const Dst: TBitmap; Amount: Integer);
 var
   Line: PJvRGBArray;
   X, Y, A: Integer;
@@ -399,18 +399,18 @@ begin
   Dst.PixelFormat := OPF;
 end;
 
-procedure TJvPaintFX.AntiAlias(const Dst: TBitmap);
+class procedure TJvPaintFX.AntiAlias(const Dst: TBitmap);
 begin
   JvJCLUtils.AntiAlias(Dst);
 end;
 
-procedure TJvPaintFX.AntiAliasRect(const Dst: TBitmap; XOrigin, YOrigin,
+class procedure TJvPaintFX.AntiAliasRect(const Dst: TBitmap; XOrigin, YOrigin,
   XFinal, YFinal: Integer);
 begin
   JvJCLUtils.AntiAliasRect(Dst, XOrigin, YOrigin, XFinal, YFinal);
 end;
 
-procedure TJvPaintFX.Contrast(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.Contrast(const Dst: TBitmap; Amount: Integer);
 var
   Line: PJvRGBArray;
   rg, gg, bg, R, G, B, X, Y: Integer;
@@ -449,7 +449,7 @@ begin
   Dst.PixelFormat := OPF;
 end;
 
-procedure TJvPaintFX.FishEye(var Bmp, Dst: TBitmap; Amount: Single);
+class procedure TJvPaintFX.FishEye(var Bmp, Dst: TBitmap; Amount: Single);
 var
   xmid, ymid: Single;
   fx, fy: Single;
@@ -561,7 +561,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.GaussianBlur(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.GaussianBlur(const Dst: TBitmap; Amount: Integer);
 var
   I: Integer;
   OPF: TPixelFormat;
@@ -573,7 +573,7 @@ begin
   Dst.PixelFormat := OPF;
 end;
 
-procedure TJvPaintFX.GrayScale(const Dst: TBitmap);
+class procedure TJvPaintFX.GrayScale(const Dst: TBitmap);
 var
   Line: PJvRGBArray;
   Gray, X, Y: Integer;
@@ -595,7 +595,7 @@ begin
   Dst.PixelFormat := OPF;
 end;
 
-procedure TJvPaintFX.Lightness(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.Lightness(const Dst: TBitmap; Amount: Integer);
 var
   Line: PJvRGBArray;
   R, G, B, X, Y: Integer;
@@ -619,7 +619,7 @@ begin
   Dst.PixelFormat := OPF;
 end;
 
-procedure TJvPaintFX.Darkness(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.Darkness(const Dst: TBitmap; Amount: Integer);
 var
   Line: PJvRGBArray;
   R, G, B, X, Y: Integer;
@@ -643,7 +643,7 @@ begin
   Dst.PixelFormat := OPF;
 end;
 
-procedure TJvPaintFX.Marble(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
+class procedure TJvPaintFX.Marble(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   X, XM, Y, YM: Integer;
@@ -683,7 +683,7 @@ begin
   Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Marble2(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
+class procedure TJvPaintFX.Marble2(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   X, XM, Y, YM: Integer;
@@ -723,7 +723,7 @@ begin
   Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Marble3(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
+class procedure TJvPaintFX.Marble3(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   X, XM, Y, YM: Integer;
@@ -763,7 +763,7 @@ begin
   Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Marble4(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
+class procedure TJvPaintFX.Marble4(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   X, XM, Y, YM: Integer;
@@ -803,7 +803,7 @@ begin
   Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Marble5(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
+class procedure TJvPaintFX.Marble5(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   X, XM, Y, YM: Integer;
@@ -843,7 +843,7 @@ begin
   Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Marble6(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
+class procedure TJvPaintFX.Marble6(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   X, XM, Y, YM: Integer;
@@ -883,7 +883,7 @@ begin
   Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Marble7(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
+class procedure TJvPaintFX.Marble7(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   X, XM, Y, YM: Integer;
@@ -923,7 +923,7 @@ begin
   Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Marble8(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
+class procedure TJvPaintFX.Marble8(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   X, XM, Y, YM: Integer;
@@ -966,7 +966,7 @@ begin
   Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Saturation(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.Saturation(const Dst: TBitmap; Amount: Integer);
 var
   Line: PJvRGBArray;
   Gray, R, G, B, X, Y: Integer;
@@ -987,7 +987,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.Smooth(const Dst: TBitmap; Weight: Integer);
+class procedure TJvPaintFX.Smooth(const Dst: TBitmap; Weight: Integer);
 var
   Line, Line1, Line2, Line3: PJvRGBArray;
   W, H, X, Y: Integer;
@@ -1046,7 +1046,7 @@ begin
   Dst.PixelFormat := OPF;
 end;
 
-procedure TJvPaintFX.SmoothPoint(const Dst: TBitmap; XK, YK: Integer);
+class procedure TJvPaintFX.SmoothPoint(const Dst: TBitmap; XK, YK: Integer);
 var
   Pixel: TColor;
   B, G, R: Cardinal;
@@ -1074,7 +1074,7 @@ begin
     end;
 end;
 
-procedure TJvPaintFX.SmoothResize(var Src, Dst: TBitmap);
+class procedure TJvPaintFX.SmoothResize(var Src, Dst: TBitmap);
 var
   X, Y, xP, yP, yP2, xP2: Integer;
   Read, Read2: PByteArray;
@@ -1126,7 +1126,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.SmoothRotate(var Src, Dst: TBitmap; CX, CY: Integer;
+class procedure TJvPaintFX.SmoothRotate(var Src, Dst: TBitmap; CX, CY: Integer;
   Angle: Single);
 type
   TFColor = record B, G, R: Byte
@@ -1206,7 +1206,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.SplitBlur(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.SplitBlur(const Dst: TBitmap; Amount: Integer);
 var
   p0, p1, p2: pbytearray;
   CX, X, Y: Integer;
@@ -1255,7 +1255,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.Spray(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.Spray(const Dst: TBitmap; Amount: Integer);
 var
   I, J, X, Y, W, H, Val: Integer;
 begin
@@ -1272,7 +1272,7 @@ begin
     end;
 end;
 
-procedure TJvPaintFX.Mosaic(const Bm: TBitmap; Size: Integer);
+class procedure TJvPaintFX.Mosaic(const Bm: TBitmap; Size: Integer);
 var
   X, Y, i, j: Integer;
   p1, p2: PJvRGBArray;
@@ -1302,7 +1302,7 @@ begin
   until Y >= bm.Height;
 end;
 
-procedure TJvPaintFX.Twist(var Bmp, Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.Twist(var Bmp, Dst: TBitmap; Amount: Integer);
 var
   fxmid, fymid: Single;
   txmid, tymid: Single;
@@ -1447,7 +1447,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.Wave(const Dst: TBitmap; Amount, Inference, Style: Integer);
+class procedure TJvPaintFX.Wave(const Dst: TBitmap; Amount, Inference, Style: Integer);
 var
   X, Y: Integer;
   Bitmap: TBitmap;
@@ -1483,7 +1483,7 @@ begin
   Bitmap.Free;
 end;
 
-procedure TJvPaintFX.MakeSeamlessClip(var Dst: TBitmap; Seam: Integer);
+class procedure TJvPaintFX.MakeSeamlessClip(var Dst: TBitmap; Seam: Integer);
 var
   p0, p1, p2: pbytearray;
   H, W, i, j, sv, sh: Integer;
@@ -1534,7 +1534,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.SplitLight(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.SplitLight(const Dst: TBitmap; Amount: Integer);
 var
   X, Y, I: Integer;
   P: PJvRGBArray;
@@ -1562,7 +1562,7 @@ begin
   Dst.PixelFormat := OPF;
 end;
 
-procedure TJvPaintFX.SqueezeHor(Src, Dst: TBitmap; Amount: Integer; Style: TLightBrush);
+class procedure TJvPaintFX.SqueezeHor(Src, Dst: TBitmap; Amount: Integer; Style: TLightBrush);
 var
   dx, X, Y, c, CX: Integer;
   R: TRect;
@@ -1629,7 +1629,7 @@ begin
   bm.Free;
 end;
 
-procedure TJvPaintFX.Tile(Src, Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.Tile(Src, Dst: TBitmap; Amount: Integer);
 var
   w2, h2, i, j: Integer;
   Bmp: TBitmap;
@@ -1688,7 +1688,7 @@ type
   TRGBList = packed array[0..0] of TColorRGB;
   PRGBList = ^TRGBList;
 
-procedure TJvPaintFX.Stretch(Src, Dst: TBitmap; Filter: TFilterProc;
+class procedure TJvPaintFX.Stretch(Src, Dst: TBitmap; Filter: TFilterProc;
   AWidth: Single);
 var
   xscale, yscale: Single; // Zoom Scale factors
@@ -2048,7 +2048,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.Grow(Src1, Src2, Dst: TBitmap; Amount: Single; X, Y: Integer);
+class procedure TJvPaintFX.Grow(Src1, Src2, Dst: TBitmap; Amount: Single; X, Y: Integer);
 var
   Bmp: TBitmap;
 begin
@@ -2061,7 +2061,7 @@ begin
   Bmp.Free;
 end;
 
-procedure TJvPaintFX.SpotLight(const Dst: TBitmap; Amount: Integer; Spot: TRect);
+class procedure TJvPaintFX.SpotLight(const Dst: TBitmap; Amount: Integer; Spot: TRect);
 var
   Bmp: TBitmap;
 begin
@@ -2079,7 +2079,7 @@ begin
   Bmp.Free;
 end;
 
-procedure TJvPaintFX.FlipDown(const Dst: TBitmap);
+class procedure TJvPaintFX.FlipDown(const Dst: TBitmap);
 var
   Bmp: TBitmap;
   W, H, X, Y: Integer;
@@ -2107,7 +2107,7 @@ begin
   Bmp.Free;
 end;
 
-procedure TJvPaintFX.FlipRight(const Dst: TBitmap);
+class procedure TJvPaintFX.FlipRight(const Dst: TBitmap);
 var
   dest: TBitmap;
   W, H, X, Y: Integer;
@@ -2135,7 +2135,7 @@ begin
   dest.Free;
 end;
 
-procedure TJvPaintFX.Trace(const Dst: TBitmap; Intensity: Integer);
+class procedure TJvPaintFX.Trace(const Dst: TBitmap; Intensity: Integer);
 var
   X, Y, i: Integer;
   P1, P2, P3, P4: PByteArray;
@@ -2287,7 +2287,7 @@ begin
   Bitmap.Free;
 end;
 
-procedure TJvPaintFX.ShadowUpLeft(const Dst: TBitmap);
+class procedure TJvPaintFX.ShadowUpLeft(const Dst: TBitmap);
 var
   X, Y: Integer;
   Bitmap: TBitmap;
@@ -2314,7 +2314,7 @@ begin
   Bitmap.Free;
 end;
 
-procedure TJvPaintFX.ShadowUpRight(const Dst: TBitmap);
+class procedure TJvPaintFX.ShadowUpRight(const Dst: TBitmap);
 var
   X, Y: Integer;
   Bitmap: TBitmap;
@@ -2341,7 +2341,7 @@ begin
   Bitmap.Free;
 end;
 
-procedure TJvPaintFX.ShadowDownLeft(const Dst: TBitmap);
+class procedure TJvPaintFX.ShadowDownLeft(const Dst: TBitmap);
 var
   X, Y: Integer;
   Bitmap: TBitmap;
@@ -2368,7 +2368,7 @@ begin
   Bitmap.Free;
 end;
 
-procedure TJvPaintFX.ShadowDownRight(const Dst: TBitmap);
+class procedure TJvPaintFX.ShadowDownRight(const Dst: TBitmap);
 var
   X, Y: Integer;
   Bitmap: TBitmap;
@@ -2395,7 +2395,7 @@ begin
   Bitmap.Free;
 end;
 
-procedure TJvPaintFX.SemiOpaque(Src, Dst: TBitmap);
+class procedure TJvPaintFX.SemiOpaque(Src, Dst: TBitmap);
 var
   B: TBitmap;
   P: Pbytearray;
@@ -2437,7 +2437,7 @@ begin
 
 end;
 
-procedure TJvPaintFX.QuartoOpaque(Src, Dst: TBitmap);
+class procedure TJvPaintFX.QuartoOpaque(Src, Dst: TBitmap);
 var
   B: TBitmap;
   P: Pbytearray;
@@ -2478,7 +2478,7 @@ begin
   B.Free;
 end;
 
-procedure TJvPaintFX.FoldRight(Src1, Src2, Dst: TBitmap; Amount: Single);
+class procedure TJvPaintFX.FoldRight(Src1, Src2, Dst: TBitmap; Amount: Single);
 var
   W, H, X, Y, xf, xf0: Integer;
   ps1, ps2, pd: pbytearray;
@@ -2519,7 +2519,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.Mandelbrot(const Dst: TBitmap; Factor: Integer);
+class procedure TJvPaintFX.Mandelbrot(const Dst: TBitmap; Factor: Integer);
 const
   maxX = 1.25;
   minX = -2;
@@ -2580,7 +2580,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.MaskMandelbrot(const Dst: TBitmap; Factor: Integer);
+class procedure TJvPaintFX.MaskMandelbrot(const Dst: TBitmap; Factor: Integer);
 var
   bm: TBitmap;
 begin
@@ -2594,7 +2594,7 @@ begin
   bm.Free;
 end;
 
-procedure TJvPaintFX.KeepBlue(const Dst: TBitmap; Factor: Single);
+class procedure TJvPaintFX.KeepBlue(const Dst: TBitmap; Factor: Single);
 var
   X, Y, W, H: Integer;
   Line: pbytearray;
@@ -2614,7 +2614,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.KeepGreen(const Dst: TBitmap; Factor: Single);
+class procedure TJvPaintFX.KeepGreen(const Dst: TBitmap; Factor: Single);
 var
   X, Y, W, H: Integer;
   Line: pbytearray;
@@ -2634,7 +2634,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.KeepRed(const Dst: TBitmap; Factor: Single);
+class procedure TJvPaintFX.KeepRed(const Dst: TBitmap; Factor: Single);
 var
   X, Y, W, H: Integer;
   Line: pbytearray;
@@ -2654,7 +2654,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.Shake(Src, Dst: TBitmap; Factor: Single);
+class procedure TJvPaintFX.Shake(Src, Dst: TBitmap; Factor: Single);
 var
   X, Y, H, W, dx: Integer;
   p: pbytearray;
@@ -2690,7 +2690,7 @@ begin
 
 end;
 
-procedure TJvPaintFX.ShakeDown(Src, Dst: TBitmap; Factor: Single);
+class procedure TJvPaintFX.ShakeDown(Src, Dst: TBitmap; Factor: Single);
 var
   X, Y, H, W, dy: Integer;
   p, p2, p3: pbytearray;
@@ -2731,7 +2731,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.Plasma(Src1, Src2, Dst: TBitmap; Scale, Turbulence: Single);
+class procedure TJvPaintFX.Plasma(Src1, Src2, Dst: TBitmap; Scale, Turbulence: Single);
 var
   cval, sval: array[0..255] of Integer;
   i, X, Y, W, H, XX, YY: Integer;
@@ -2770,7 +2770,7 @@ begin
   ;
 end;
 
-procedure TJvPaintFX.SplitRound(Src, Dst: TBitmap; Amount: Integer; Style: TLightBrush);
+class procedure TJvPaintFX.SplitRound(Src, Dst: TBitmap; Amount: Integer; Style: TLightBrush);
 var
   X, Y, W, c, c00, dx, CX: Integer;
   R, R00: TRect;
@@ -2826,7 +2826,7 @@ begin
   bm2.Free;
 end;
 
-procedure TJvPaintFX.Emboss(var Bmp: TBitmap);
+class procedure TJvPaintFX.Emboss(var Bmp: TBitmap);
 var
   X, Y: Integer;
   p1, p2: Pbytearray;
@@ -2845,7 +2845,7 @@ begin
 
 end;
 
-procedure TJvPaintFX.FilterRed(const Dst: TBitmap; Min, Max: Integer);
+class procedure TJvPaintFX.FilterRed(const Dst: TBitmap; Min, Max: Integer);
 var
   c, X, Y: Integer;
   p1: pbytearray;
@@ -2866,7 +2866,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.FilterGreen(const Dst: TBitmap; Min, Max: Integer);
+class procedure TJvPaintFX.FilterGreen(const Dst: TBitmap; Min, Max: Integer);
 var
   c, X, Y: Integer;
   p1: pbytearray;
@@ -2887,7 +2887,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.FilterBlue(const Dst: TBitmap; Min, Max: Integer);
+class procedure TJvPaintFX.FilterBlue(const Dst: TBitmap; Min, Max: Integer);
 var
   c, X, Y: Integer;
   p1: pbytearray;
@@ -2908,7 +2908,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.FilterXRed(const Dst: TBitmap; Min, Max: Integer);
+class procedure TJvPaintFX.FilterXRed(const Dst: TBitmap; Min, Max: Integer);
 var
   c, X, Y: Integer;
   p1: pbytearray;
@@ -2927,7 +2927,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.FilterXGreen(const Dst: TBitmap; Min, Max: Integer);
+class procedure TJvPaintFX.FilterXGreen(const Dst: TBitmap; Min, Max: Integer);
 var
   c, X, Y: Integer;
   p1: pbytearray;
@@ -2946,7 +2946,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.FilterXBlue(const Dst: TBitmap; Min, Max: Integer);
+class procedure TJvPaintFX.FilterXBlue(const Dst: TBitmap; Min, Max: Integer);
 var
   c, X, Y: Integer;
   p1: pbytearray;
@@ -2965,7 +2965,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.DrawMandelJulia(const Dst: TBitmap; x0, y0, x1, y1: Single; Niter: Integer; Mandel: Boolean);
+class procedure TJvPaintFX.DrawMandelJulia(const Dst: TBitmap; x0, y0, x1, y1: Single; Niter: Integer; Mandel: Boolean);
 const
   //Number if colors. If this is changed, the number of mapped colors must also be changed
   nc = 16;
@@ -3043,7 +3043,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.Invert(Src: TBitmap);
+class procedure TJvPaintFX.Invert(Src: TBitmap);
 var
   W, H, X, Y: Integer;
   p: pbytearray;
@@ -3063,7 +3063,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.MirrorRight(Src: TBitmap);
+class procedure TJvPaintFX.MirrorRight(Src: TBitmap);
 var
   W, H, X, Y: Integer;
   p: pbytearray;
@@ -3083,7 +3083,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.MirrorDown(Src: TBitmap);
+class procedure TJvPaintFX.MirrorDown(Src: TBitmap);
 var
   W, H, X, Y: Integer;
   p1, p2: pbytearray;
@@ -3106,7 +3106,7 @@ end;
 
 // resample image as triangles
 
-procedure TJvPaintFX.Triangles(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.Triangles(const Dst: TBitmap; Amount: Integer);
 type
   Ttriplet = record
     R, G, B: Byte;
@@ -3156,7 +3156,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.RippleTooth(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.RippleTooth(const Dst: TBitmap; Amount: Integer);
 var
   X, Y: Integer;
   P1, P2: PByteArray;
@@ -3181,7 +3181,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.RippleTriangle(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.RippleTriangle(const Dst: TBitmap; Amount: Integer);
 var
   X, Y: Integer;
   P1, P2: PByteArray;
@@ -3222,7 +3222,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.RippleRandom(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.RippleRandom(const Dst: TBitmap; Amount: Integer);
 var
   X, Y: Integer;
   P1, P2: PByteArray;
@@ -3246,7 +3246,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.TexturizeOverlap(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.TexturizeOverlap(const Dst: TBitmap; Amount: Integer);
 var
   W, H, X, Y, xo: Integer;
   bm: TBitmap;
@@ -3274,7 +3274,7 @@ begin
   bm.Free;
 end;
 
-procedure TJvPaintFX.TexturizeTile(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.TexturizeTile(const Dst: TBitmap; Amount: Integer);
 var
   W, H, X, Y: Integer;
   bm: TBitmap;
@@ -3301,7 +3301,7 @@ begin
   bm.Free;
 end;
 
-procedure TJvPaintFX.HeightMap(const Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.HeightMap(const Dst: TBitmap; Amount: Integer);
 var
   bm: TBitmap;
   W, H, X, Y: Integer;
@@ -3334,7 +3334,7 @@ begin
   bm.Free;
 end;
 
-procedure TJvPaintFX.Turn(Src, Dst: TBitmap);
+class procedure TJvPaintFX.Turn(Src, Dst: TBitmap);
 var
   W, H, X, Y: Integer;
   ps, pd: pbytearray;
@@ -3358,7 +3358,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.TurnRight(Src, Dst: TBitmap);
+class procedure TJvPaintFX.TurnRight(Src, Dst: TBitmap);
 var
   W, H, X, Y: Integer;
   ps, pd: pbytearray;
@@ -3382,7 +3382,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.ExtractColor(const Dst: TBitmap; AColor: TColor);
+class procedure TJvPaintFX.ExtractColor(const Dst: TBitmap; AColor: TColor);
 var
   X, Y: Integer;
   P: PJvRGBArray;
@@ -3422,13 +3422,13 @@ begin
   Dst.PixelFormat := OPF;
 end;
 
-procedure TJvPaintFX.ExcludeColor(const Dst: TBitmap; AColor: TColor);
+class procedure TJvPaintFX.ExcludeColor(const Dst: TBitmap; AColor: TColor);
 begin
   Dst.TransparentColor := AColor;
   Dst.Transparent := True;
 end;
 
-procedure TJvPaintFX.Blend(const Src1, Src2: TBitmap; var Dst: TBitmap; Amount: Single);
+class procedure TJvPaintFX.Blend(const Src1, Src2: TBitmap; var Dst: TBitmap; Amount: Single);
 var
   W, H, X, Y: Integer;
   ps1, ps2, pd: pbytearray;
@@ -3454,7 +3454,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.Solarize(const Src: TBitmap; var Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.Solarize(const Src: TBitmap; var Dst: TBitmap; Amount: Integer);
 var
   X, Y: Integer;
   P: PJvRGBArray;
@@ -3481,7 +3481,7 @@ begin
   Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Posterize(const Src: TBitmap; var Dst: TBitmap; Amount: Integer);
+class procedure TJvPaintFX.Posterize(const Src: TBitmap; var Dst: TBitmap; Amount: Integer);
 var
   X, Y: Integer;
   PD: PJvRGBArray;

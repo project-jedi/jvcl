@@ -91,7 +91,6 @@ resourcestring
   SNullText = '(none)';
 
 {$IFNDEF COMPILER6_UP}
-
 function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
 begin
   try
@@ -101,7 +100,7 @@ begin
     Result := False;
   end;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 constructor TJvDateTimePicker.Create(AOwner: TComponent);
 begin
@@ -151,10 +150,10 @@ begin
   if Result then
     SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(FNullText)))
   {$IFDEF COMPILER6_UP}
-  // (p3) the Format property doesn't exists in D5: what to do?
+  // (p3) the Format property doesn't exist in D5: what to do?
   else
     SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(Format)));
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvDateTimePicker.SetNullDate(const Value: TDateTime);

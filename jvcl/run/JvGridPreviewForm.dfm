@@ -1,4 +1,4 @@
-object jvGridPreviewF: TJvGridPreviewF
+object JvGridPreviewForm: TJvGridPreviewForm
   Left = 213
   Top = 177
   Width = 603
@@ -21,7 +21,7 @@ object jvGridPreviewF: TJvGridPreviewF
     Left = 157
     Top = 0
     Width = 438
-    Height = 365
+    Height = 362
     Align = alClient
     Ctl3D = True
     ParentCtl3D = False
@@ -39,7 +39,7 @@ object jvGridPreviewF: TJvGridPreviewF
     Left = 0
     Top = 0
     Width = 157
-    Height = 365
+    Height = 362
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
@@ -142,7 +142,7 @@ object jvGridPreviewF: TJvGridPreviewF
       Left = 7
       Top = 7
       Width = 117
-      Height = 24
+      Height = 21
       TabOrder = 0
       Text = 'Header'
       OnChange = HeaderChange
@@ -170,7 +170,7 @@ object jvGridPreviewF: TJvGridPreviewF
       Left = 7
       Top = 101
       Width = 46
-      Height = 26
+      Height = 22
       MaxValue = 400
       MinValue = 0
       TabOrder = 2
@@ -210,16 +210,16 @@ object jvGridPreviewF: TJvGridPreviewF
       TabOrder = 4
       OnClick = MarginsClick
     end
-    object previewpage: TSpinEdit
+    object PreviewPage: TSpinEdit
       Left = 7
       Top = 262
       Width = 46
-      Height = 26
+      Height = 22
       MaxValue = 1
       MinValue = 1
       TabOrder = 5
       Value = 1
-      OnChange = previewpageChange
+      OnChange = PreviewPageChange
     end
     object cklive: TCheckBox
       Left = 7

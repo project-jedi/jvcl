@@ -35,18 +35,18 @@ uses
   JvTypes, JvComponent;
 
 type
-  TOnTest = function(Sender: TObject; Index: Integer; Member: PByte): Byte of object;
+  TJvTestMember = function(Sender: TObject; Index: Integer; Member: PByte): Byte of object;
 
   TJvGenetic = class(TJvComponent)
   private
     FMembers: TStringList;
     FGeneration: Integer;
     FSize: Integer;
-    FNumbers: Integer;
-    FOnTestMember: TOnTest;
-    FCrossover: Real;
-    FMutateProbability: Real;
-    procedure SetNumbers(const Value: Integer);
+    FCount: Integer;
+    FOnTestMember: TJvTestMember;
+    FCrossover: Double;
+    FMutationProbability: Double;
+    procedure SetCount(const Value: Integer);
     procedure SetSize(const Value: Integer);
     procedure KillThemAll(Value: TStringList);
     function Generate(Father, Mother: PByte; Size: Integer): PByte;
@@ -56,18 +56,17 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure NewGeneration;
     procedure NextGeneration;
     function GetMember(Index: Integer): PByte;
-    function GetAverage: Real;
-  published
+    function GetAverage: Double;
     property Generation: Integer read FGeneration;
+  published
     property MemberSize: Integer read FSize write SetSize default 4;
-    property Numbers: Integer read FNumbers write SetNumbers default 10;
-    property OnTestMember: TOnTest read FOnTestMember write FOnTestMember;
-    property CrossoverProbability: Real read FCrossover write FCrossover;
-    property MutateProbability: Real read FMutateProbability write FMutateProbability;
+    property Count: Integer read FCount write SetCount default 10;
+    property CrossoverProbability: Double read FCrossover write FCrossover;
+    property MutationProbability: Double read FMutationProbability write FMutationProbability;
+    property OnTestMember: TJvTestMember read FOnTestMember write FOnTestMember;
   end;
 
 implementation
@@ -79,7 +78,7 @@ type
   end;
 
 resourcestring
-  RC_NoTest = 'TJvGenetic: OnTestMember must be Assigned !';
+  RC_NoTest = 'TJvGenetic: OnTestMember must be assigned';
 
 constructor TJvGenetic.Create(AOwner: TComponent);
 begin
@@ -87,10 +86,10 @@ begin
   FMembers := TStringList.Create;
   Randomize;
   FGeneration := 0;
-  FNumbers := 10;
+  FCount := 10;
   FSize := 4;
   FCrossover := 0.6;
-  FMutateProbability := 0.003;
+  FMutationProbability := 0.003;
 end;
 
 destructor TJvGenetic.Destroy;
@@ -107,8 +106,8 @@ end;
 
 function TJvGenetic.Generate(Father, Mother: PByte; Size: Integer): PByte;
 var
-  i, Count: Integer;
-  p, s: PByte;
+  I, Count: Integer;
+  P, S: PByte;
 begin
   if DoCrossover then
     Count := Random(Size - 1)
@@ -116,33 +115,33 @@ begin
     Count := Size;
 
   Result := AllocMem(Size);
-  p := Result;
-  s := Father;
-  for i := 0 to Count - 1 do
+  P := Result;
+  S := Father;
+  for I := 0 to Count - 1 do
   begin
-    p^ := Mutate(s^);
-    Inc(p);
-    Inc(s);
+    P^ := Mutate(S^);
+    Inc(P);
+    Inc(S);
   end;
-  s := Mother;
-  Inc(s, Count);
-  for i := Count to Size - 1 do
+  S := Mother;
+  Inc(S, Count);
+  for I := Count to Size - 1 do
   begin
-    p^ := Mutate(s^);
-    Inc(p);
-    Inc(s);
+    P^ := Mutate(S^);
+    Inc(P);
+    Inc(S);
   end;
 end;
 
-function TJvGenetic.GetAverage: Real;
+function TJvGenetic.GetAverage: Double;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := 0.0;
   if FMembers.Count <> 0 then
   begin
-    for i := 0 to FMembers.Count - 1 do
-      Result := Result + TGeneticMember(FMembers.Objects[i]).Points;
+    for I := 0 to FMembers.Count - 1 do
+      Result := Result + TGeneticMember(FMembers.Objects[I]).Points;
     Result := Result / FMembers.Count;
   end;
 end;
@@ -164,47 +163,47 @@ end;
 
 function TJvGenetic.Mutate(Value: Byte): Byte;
 var
-  b: Byte;
-  i: Integer;
+  B: Byte;
+  I: Integer;
 begin
-  b := $80;
+  B := $80;
   Result := Value;
-  for i := 0 to 7 do
+  for I := 0 to 7 do
   begin
-    if Random < FMutateProbability then
+    if Random < FMutationProbability then
     begin
-      if (Result and b) = 0 then
-        Result := Result or b
+      if (Result and B) = 0 then
+        Result := Result or B
       else
-        Result := Result and (not b);
+        Result := Result and (not B);
     end;
-    b := b shr 1;
+    B := B shr 1;
   end;
 end;
 
 procedure TJvGenetic.NewGeneration;
 var
-  i, j: Integer;
+  I, J: Integer;
   Member: TGeneticMember;
-  p: PByte;
+  P: PByte;
 begin
-  if (FNumbers > 0) and (FSize > 0) then
+  if (FCount > 0) and (FSize > 0) then
   begin
     KillThemAll(FMembers);
     FGeneration := 0;
-    for i := 0 to FNumbers - 1 do
+    for I := 0 to FCount - 1 do
     begin
       Member := TGeneticMember.Create;
       Member.Data := AllocMem(FSize);
-      p := Member.Data;
-      for j := 0 to FSize - 1 do
+      P := Member.Data;
+      for J := 0 to FSize - 1 do
       begin
-        Byte(p^) := Random(256);
-        Inc(p);
+        Byte(P^) := Random(256);
+        Inc(P);
       end;
       if not Assigned(FOnTestMember) then
         raise EJVCLException.Create(RC_NoTest);
-      Member.Points := FOnTestMember(Self, i, Member.Data);
+      Member.Points := FOnTestMember(Self, I, Member.Data);
       FMembers.AddObject('', TObject(Member));
     end;
   end;
@@ -212,51 +211,50 @@ end;
 
 procedure TJvGenetic.NextGeneration;
 var
-  a, b, tot: Cardinal;
-  i: Integer;
+  A, B, Tot: Cardinal;
+  I: Integer;
   Father, Mother: Integer;
   FGenerat: TStringList;
   Member: TGeneticMember;
 begin
-  if (FNumbers > 0) and (FSize > 0) then
+  if (FCount > 0) and (FSize > 0) then
   begin
     Inc(FGeneration);
 
     //Compute the sum of Points
-    tot := 0;
-    for i := 0 to FNumbers - 1 do
-      Inc(tot, TGeneticMember(FMembers.Objects[i]).Points);
+    Tot := 0;
+    for I := 0 to FCount - 1 do
+      Inc(Tot, TGeneticMember(FMembers.Objects[I]).Points);
 
     //Create new Generation
     FGenerat := TStringList.Create;
-    for i := 0 to FNumbers do
+    for I := 0 to FCount do
     begin
-      a := Random(tot);
-      b := TGeneticMember(FMembers.Objects[0]).Points;
+      A := Random(Tot);
+      B := TGeneticMember(FMembers.Objects[0]).Points;
       Father := 0;
-      while b < a do
+      while B < A do
       begin
         Inc(Father);
-        Inc(b, TGeneticMember(FMembers.Objects[Father]).Points);
+        Inc(B, TGeneticMember(FMembers.Objects[Father]).Points);
       end;
 
-      a := Random(tot);
-      b := TGeneticMember(FMembers.Objects[0]).Points;
+      A := Random(Tot);
+      B := TGeneticMember(FMembers.Objects[0]).Points;
       Mother := 0;
-      while b < a do
+      while B < A do
       begin
         Inc(Mother);
-        Inc(b, TGeneticMember(FMembers.Objects[Mother]).Points);
+        Inc(B, TGeneticMember(FMembers.Objects[Mother]).Points);
       end;
 
       //Copy, Crossover and mutate
       Member := TGeneticMember.Create;
       Member.Data := Generate(TGeneticMember(FMembers.Objects[Mother]).Data,
-        TGeneticMember(FMembers.Objects[Father]).Data,
-        FSize);
+        TGeneticMember(FMembers.Objects[Father]).Data, FSize);
 
       if Assigned(FOnTestMember) then
-        Member.Points := FOnTestMember(Self, i, Member.Data)
+        Member.Points := FOnTestMember(Self, I, Member.Data)
       else
         raise EJVCLException.Create(RC_NoTest);
 
@@ -269,11 +267,11 @@ begin
   end;
 end;
 
-procedure TJvGenetic.SetNumbers(const Value: Integer);
+procedure TJvGenetic.SetCount(const Value: Integer);
 begin
-  if FNumbers <> Value then
+  if FCount <> Value then
   begin
-    FNumbers := Value;
+    FCount := Value;
     KillThemAll(FMembers);
     FGeneration := 0;
   end;

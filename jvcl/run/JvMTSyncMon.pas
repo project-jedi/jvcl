@@ -23,23 +23,24 @@ located at http://www.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$I JEDI.INC}
+
+{$I JVCL.INC}
+
 unit JvMTSyncMon;
 
 interface
 
 uses
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows,
-{$ENDIF}
+  {$ENDIF MSWINDOWS}
   SysUtils, Classes, Contnrs, SyncObjs,
   JvMTThreading, JvMTSync, JvMTConsts;
 
 type
   TMTCondition = class;
 
-  TMTMonitor = class (TObject)
+  TMTMonitor = class(TObject)
   private
     FActiveThread: TMTThread;
     FConditions: TObjectList;
@@ -69,7 +70,7 @@ type
     property Condition[ID: Integer]: TMTCondition read GetCondition; default;
   end;
 
-  TMTCondition = class (TObject)
+  TMTCondition = class(TObject)
   private
     FID: Integer;
     FMonitor: TMTMonitor;
@@ -84,7 +85,6 @@ type
     property Monitor: TMTMonitor read FMonitor;
   end;
 
-
 implementation
 
 // Invalid is -1 pointer. The nil pointer is used for the main VCL thread
@@ -92,24 +92,26 @@ const
   InvalidThreadPtr = TMTThread(-1);
 
 {$IFDEF LINUX}
+
 function InterlockedIncrement(var I: Integer): Integer;
 asm
-        MOV     EDX, 1
-        XCHG    EAX, EDX
-   LOCK XADD    [EDX], EAX
-        INC     EAX
+        MOV       EDX, 1
+        XCHG      EAX, EDX
+        LOCK XADD [EDX], EAX
+        INC       EAX
 end;
 
 function InterlockedDecrement(var I: Integer): Integer;
 asm
-        MOV     EDX, -1
-        XCHG    EAX, EDX
-   LOCK XADD    [EDX], EAX
-        DEC     EAX
+        MOV       EDX, -1
+        XCHG      EAX, EDX
+        LOCK XADD [EDX], EAX
+        DEC       EAX
 end;
+
 {$ENDIF LINUX}
 
-{ TMTMonitor }
+//=== TMTMonitor =============================================================
 
 constructor TMTMonitor.Create;
 begin
@@ -226,15 +228,14 @@ begin
   FNext.Wait;
 end;
 
-
-{ TMTCondition }
+//=== TMTCondition ===========================================================
 
 constructor TMTCondition.Create(AMonitor: TMTMonitor; AID: Integer);
 begin
   inherited Create;
   FID := AID;
   FMonitor := AMonitor;
-  FXSem := TMTSemaphore.Create(0,1);
+  FXSem := TMTSemaphore.Create(0, 1);
 end;
 
 destructor TMTCondition.Destroy;
