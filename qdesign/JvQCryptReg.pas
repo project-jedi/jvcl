@@ -39,8 +39,8 @@ procedure Register;
 implementation
 
 uses
-  Classes, 
-  JvQZlibMultiple, 
+  Classes,
+  JvQZlibMultiple,
   {$IFDEF MSWINDOWS}
   JvQCabFile,
   {$ENDIF MSWINDOWS}
@@ -61,8 +61,8 @@ begin
     TJvXORCipher, TJvCaesarCipher, TJvGenetic,
     {$IFDEF MSWINDOWS}
     TJvCABFile,
-    {$ENDIF MSWINDOWS} 
-    TJvZlibMultiple, 
+    {$ENDIF MSWINDOWS}
+    TJvZlibMultiple,
     TJvSerialMaker]);
 end;
 

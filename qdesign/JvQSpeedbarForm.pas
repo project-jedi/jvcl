@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -19,13 +20,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -35,19 +35,14 @@ interface
 
 uses
   SysUtils, Classes,
-  
-
-  Types, QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, QButtons, QGrids, QMenus, QWindows, 
-
-  
-  DesignIntf, DesignEditors, ClxDesignWindows,
-  
-  
+  QWindows, Types, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QButtons, QGrids, QMenus, QMessages,
+  DesignIntf, DesignEditors,
+  QDesignWindows, 
   {$IFDEF MSWINDOWS}
-  JvQAppRegistryStorage,
+  JvAppRegistryStorage,
   {$ENDIF MSWINDOWS}
-  JvQSpeedButton, JvQSpeedbar, JvQFormPlacement,
+  JvQSpeedButton, JvQSpeedBar, JvQFormPlacement,
   JvQConsts, JvQComponent, JvQAppStorage, QTypes;
 
 type
@@ -58,7 +53,7 @@ type
     sRow: Integer;
   end;
 
-  TJvSpeedbarEditor = class(TClxDesignWindow)
+  TJvSpeedbarEditor = class(TDesignWindow)
     SectionsBox: TGroupBox;
     NewSection: TButton;
     DelSection: TButton;
@@ -77,6 +72,8 @@ type
     CopyMenu: TMenuItem;
     PasteMenu: TMenuItem;
     CutMenu: TMenuItem;
+    FormPlacement1: TJvFormStorage;
+    AppStorage: TJvAppRegistryStorage;
     procedure DelSectionClick(Sender: TObject);
     procedure AddButtonClick(Sender: TObject);
     procedure RemoveButtonClick(Sender: TObject);
@@ -148,16 +145,12 @@ type
     procedure CMSpeedBarChanged(var Msg: TMessage); message CM_SPEEDBARCHANGED;
   protected
     procedure Activated; override;
-  public
     function UniqueName(Component: TComponent): string; override;
-    
+  public 
     procedure ItemsModified(const Designer: IDesigner); override;
-    procedure DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean); override;
-    
-    function GetEditState: TEditState; override;
-    
-    function EditAction(Action: TEditAction): Boolean; override;
-    
+    procedure DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean); override; 
+    function GetEditState: TEditState; override; 
+    function EditAction(Action: TEditAction): Boolean; override; 
     property JvSpeedBar: TJvSpeedBar read FBar write SetJvSpeedBar;
     property OwnerForm: TCustomForm read GetForm;
   end;
@@ -174,10 +167,7 @@ uses
   TypInfo, Math,
   JvQPropertyStorage, JvQDsgnConsts, JvQDsgnTypes, JvQJVCLUtils;
 
-
-
 {$R *.xfm}
-
 
 //== Utility routines ========================================================
 
@@ -261,7 +251,7 @@ begin
     Temp := TJvSpeedItem.ClassName;
   if (UpCase(Temp[1]) = 'T') and (Length(Temp) > 1) then
     System.Delete(Temp, 1, 1);
-  Result := Designer.UniqueName(Component.ClassName);
+  Result := Designer.UniqueName(Temp);
 end;
 
 function TJvSpeedbarEditor.GetEditState: TEditState;
@@ -303,10 +293,8 @@ var
 begin
   if CheckSpeedBar and Active then
   begin
-    //Designer.GetSelections(FCompList);
-    
-    FCompList := TDesignerSelections.Create;
-    
+    //Designer.GetSelections(FCompList); 
+    FCompList := TDesignerSelections.Create; 
     if not SelectBar then
     begin
       if (ActiveControl = SectionList) or (ActiveControl = SectionName) then
@@ -327,10 +315,8 @@ end;
 
 procedure TJvSpeedbarEditor.DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean);
 
-begin
-  
-  if ADesigner.Root = OwnerForm then
-  
+begin 
+  if ADesigner.Root = OwnerForm then 
     Free;
 end;
 
@@ -406,10 +392,8 @@ end;
 
 function TJvSpeedbarEditor.CheckSpeedBar: Boolean;
 begin
-  Result := (FBar <> nil) and (FBar.Owner <> nil) and (FBar.Parent <> nil) and
-    
-    (Designer.Root <> nil);
-    
+  Result := (FBar <> nil) and (FBar.Owner <> nil) and (FBar.Parent <> nil) and 
+    (Designer.Root <> nil); 
 end;
 
 function TJvSpeedbarEditor.CurrentSection: Integer;
@@ -460,10 +444,8 @@ begin
 end;
 
 function TJvSpeedbarEditor.GetForm: TCustomForm;
-begin
-  
-  Result := TCustomForm(Designer.Root); { GetParentForm(FBar) }
-  
+begin 
+  Result := TCustomForm(Designer.Root); { GetParentForm(FBar) } 
 end;
 
 procedure TJvSpeedbarEditor.UpdateListHeight;
@@ -589,11 +571,9 @@ begin
     Sect := SectionList.Row;
     if (Sect >= 0) and (Sect < FBar.SectionCount) then
     begin
-//      Self.ValidateRename(FBar.Sections[Sect],
-      
+//      Self.ValidateRename(FBar.Sections[Sect], 
       TCustomForm(Designer.Root).DesignerHook.ValidateRename(FBar.Sections[Sect],
-        FBar.Sections[Sect].Name, '');
-      
+        FBar.Sections[Sect].Name, ''); 
       try
         while FBar.ItemsCount(Sect) > 0 do
         begin
@@ -616,11 +596,8 @@ procedure TJvSpeedbarEditor.Copy;
 var
   CompList: TDesignerSelectionList;
   Item: TJvSpeedItem;
-begin
-  
-  CompList := TDesignerSelections.Create;
-  
-  
+begin 
+  CompList := TDesignerSelections.Create;  
     Item := ItemByRow(ButtonsList.Row);
     if Item <> nil then
     begin
@@ -628,8 +605,7 @@ begin
       CompList.Add(Item);
       CopyComponents(OwnerForm, CompList);
       Item.UpdateSection;
-    end;
-  
+    end; 
 end;
 
 procedure TJvSpeedbarEditor.Paste;
@@ -637,19 +613,15 @@ var
   CompList: TDesignerSelectionList;
 begin
   if CheckSpeedBar then
-  begin
-    
-    CompList := TDesignerSelections.Create;
-    
-    
+  begin 
+    CompList := TDesignerSelections.Create;  
       FBar.OnAddItem := OnPasteItem;
       try
         PasteComponents(OwnerForm, FBar, CompList);
       finally
         FBar.OnAddItem := nil;
       end;
-      UpdateData;
-    
+      UpdateData; 
   end;
 end;
 
@@ -690,7 +662,7 @@ begin
       raise;
     end
   else
-    raise EJvSpeedbarError.Create(RsESBItemNotCreate);
+    raise EJvSpeedbarError.CreateRes(@RsESBItemNotCreate);
 end;
 
 procedure TJvSpeedbarEditor.RemoveButtonClick(Sender: TObject);
@@ -831,12 +803,8 @@ begin
 end;
 
 procedure TJvSpeedbarEditor.ButtonsListDblClick(Sender: TObject);
-const
-  {$IFDEF BCB}
-  cSender: string[7] = '*Sender';
-  {$ELSE}
-  cSender: string[6] = 'Sender';
-  {$ENDIF BCB}
+const 
+  cSender: string[6] = 'Sender'; 
   cObject: string[7] = 'TObject';
   cClick = 'Click';
   cOnClick = 'OnClick';
@@ -1013,7 +981,7 @@ begin
   FDrag := False;
   if NewStyleControls then
     Font.Style := [];
-//  AppStorage.Root := SDelphiKey;
+  AppStorage.Root := SDelphiKey;
 end;
 
 procedure TJvSpeedbarEditor.FormDestroy(Sender: TObject);

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,10 +35,8 @@ unit JvQSegmentedLEDDisplayEditors;
 interface
 
 uses
-  Classes, Graphics, Menus, Windows,
-  
-  DesignEditors, DesignIntf, DesignMenus, VCLEditors, 
-  
+  Classes, Types, QGraphics, QMenus, QWindows, 
+  DesignEditors, DesignIntf, DesignMenus, ClxEditors,  
   JvQSegmentedLEDDisplay;
 
 type
@@ -61,26 +60,20 @@ type
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
-    function GetVerbCount: Integer; override;
-    
-    procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
-    
+    function GetVerbCount: Integer; override; 
+    procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override; 
   end;
 
-  TUnlitColorProperty = class(TColorProperty , ICustomPropertyDrawing, ICustomPropertyListDrawing )
-    
+  TUnlitColorProperty = class(TColorProperty , ICustomPropertyDrawing, ICustomPropertyListDrawing ) 
     procedure ICustomPropertyListDrawing.ListDrawValue = ListDrawValue;
-    procedure ICustomPropertyDrawing.PropDrawValue = PropDrawValue;
-    
+    procedure ICustomPropertyDrawing.PropDrawValue = PropDrawValue; 
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean); 
-    
-    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
-    
+      const ARect: TRect; ASelected: Boolean);  
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean); 
   end;
 
 implementation

@@ -36,9 +36,9 @@ unit JvQProviderTreeListDsgnFrame;
 interface
 
 uses
-  SysUtils, Classes,  
-  QWindows, QGraphics, QControls, QForms, QDialogs,
-  QComCtrls, QImgList, QMenus, QActnList,  
+  SysUtils, Classes,
+  QWindows, QMessages, Types, QGraphics, QControls, QForms, QDialogs,
+  QComCtrls, QImgList, QMenus, QActnList, 
   DesignIntf, DesignEditors, 
   JvQDataProviderIntf, JvQProviderTreeListFrame, JvQDsgnTypes;
 
@@ -95,10 +95,7 @@ implementation
 uses 
   JvQTypes, JvQDsgnConsts, JvQConsts;
 
-
-
 {$R *.xfm}
-
 
 function TfmeJvProviderTreeListDsgn.DoBeforeNew(Kind: Integer): Boolean;
 begin

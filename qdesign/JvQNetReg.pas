@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-03-22
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -39,19 +39,15 @@ procedure Register;
 implementation
 
 uses
-  Classes,
-
-  DesignEditors, DesignIntf,
-
+  Classes, 
+  DesignEditors, DesignIntf, 
   {$IFDEF MSWINDOWS}
-  {JvQMail,  JvQMailEditor,} JvQUrlGrabbers,
-  JvQUrlListGrabber, JvQUrlListGrabberEditors,
-  JvQHtmlParser,  JvQHtmlParserEditor,
+  JvMail, JvMailEditor,
+  JvUrlListGrabber, JvUrlGrabbers, JvUrlListGrabberEditors,
   {$ENDIF MSWINDOWS}
+  JvQHtmlParser, JvQHtmlParserEditor, 
   JvQTypes, JvQDsgnConsts,
-  JvQStringListToHtml, JvQFormToHtml, JvQRgbToHtml,  JvQStrToHtml;
-
-
+  JvQStringListToHtml, JvQFormToHtml, JvQRgbToHtml, JvQStrToHtml;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvNetReg.dcr}
@@ -60,19 +56,18 @@ uses
 {$R ../Resources/JvNetReg.dcr}
 {$ENDIF LINUX}
 
-
 procedure Register;
 begin
   RegisterComponents(RsPaletteInterNetWork, [
     {$IFDEF MSWINDOWS}
     TJvFTPURLGrabber, TJvHTTPURLGrabber,
-    TJvLocalFileURLGrabber, {TJvMail,} TJvHTMLParser,
+    TJvLocalFileURLGrabber, TJvMail,
     {$ENDIF MSWINDOWS}
-    TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML
+    TJvHTMLParser, 
     {$IFDEF MSWINDOWS}
-    ,TJvUrlListGrabber
+    TJvUrlListGrabber,
     {$ENDIF MSWINDOWS}
-    ]);
+    TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML]);
   {$IFDEF MSWINDOWS}
   RegisterPropertyEditor(TypeInfo(TJvParserInfoList),
     TJvHTMLParser, 'Parser', TJvHTMLParserEditor);
@@ -81,7 +76,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvUrlGrabberDefaultPropertiesList),
     TJvUrlListGrabber, '', TJvUrlGrabberDefaultPropertiesListEditor);
   RegisterPropertyEditor(TypeInfo(TJvCustomUrlGrabberDefaultProperties),
-    TJvUrlGrabberDefPropEdTrick, '', TJvUrlGrabberDefaultPropertiesEditor);
+    TJvUrlGrabberDefPropEdTrick, '', TJvUrlGrabberDefaultPropertiesEditor); 
   {$ENDIF MSWINDOWS}
 end;
 

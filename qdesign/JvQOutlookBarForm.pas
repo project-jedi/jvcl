@@ -125,7 +125,7 @@ uses
   Registry,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  JvQQRegistryIniFile,
+  JvQRegistryIniFile,
   {$ENDIF LINUX}  
   QDialogs, 
   JvQConsts, JvQDsgnConsts;
