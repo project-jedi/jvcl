@@ -35,7 +35,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, CommCtrl,
-  ComCtrls, JvShlWApi, JvComponent;
+  ComCtrls, JvComponent;
 
 type
   EMonthCalError = class(Exception);
@@ -277,6 +277,16 @@ begin
       Result := Result or (1 shl (R - 1));
   end;
 end;
+
+type
+  // (p3) from ShLwAPI
+  TDLLVersionInfo = packed record
+    cbSize:DWord;
+    dwMajorVersion:DWord;
+    dwMinorVersion:DWord;
+    dwBuildNumber:DWord;
+    dwPlatformID:DWord;
+  end;
 
 function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: integer): boolean;
 var hDLL, hr: THandle;
