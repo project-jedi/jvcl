@@ -30,7 +30,7 @@ object FrameConfigPage: TFrameConfigPage
     object LblDxgettextHomepage: TLabel
       Left = 8
       Top = 74
-      Width = 176
+      Width = 146
       Height = 13
       Cursor = crHandPoint
       Hint = 
@@ -38,13 +38,15 @@ object FrameConfigPage: TFrameConfigPage
         'gettext.sourceforge.net<c:black>'#13#10'<c:red>The gnugettext.pas unit' +
         ' will be added to the contains list'#13#10'of the JvCore-R package. Th' +
         'at means that you cannot add'#13#10'it to another package.'
-      Caption = 'LblDxgettextHomepage (not required)'
+      Caption = 'dxgettext &support (not required)'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsUnderline]
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       Visible = False
       OnClick = LblDxgettextHomepageClick
     end

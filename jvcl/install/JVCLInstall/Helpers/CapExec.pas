@@ -32,13 +32,13 @@ unit CapExec;
 interface
 
 uses
-  Windows, SysUtils, Classes, Dialogs;
+  Windows, SysUtils, Classes;
 
 type
   TCaptureLine = procedure(const Line: string; var Aborted: Boolean) of object;
 
 function CaptureExecute(const App, Args, Dir: string; CaptureLine: TCaptureLine;
-  CtrlCAbort: Boolean = False): Integer;
+  OnIdle: TNotifyEvent = nil; CtrlCAbort: Boolean = False): Integer;
 
 
 implementation
@@ -50,7 +50,7 @@ begin
 end;
 
 function CaptureExecute(const App, Args, Dir: string; CaptureLine: TCaptureLine;
-  CtrlCAbort: Boolean = False): Integer;
+  OnIdle: TNotifyEvent = nil; CtrlCAbort: Boolean = False): Integer;
 const
   CtrlCBuffer: array[0..7] of Char = #3#3#3#3#3#3#3#3;
 var
@@ -139,7 +139,11 @@ begin
         CloseHandle(ProcessInfo.hThread);
         try
           while (WaitForSingleObject(ProcessInfo.hProcess, 30) = WAIT_TIMEOUT) and (not Aborted) do
+          begin
             ProcessInput;
+            if Assigned(OnIdle) then
+              OnIdle(nil);
+          end;
           ProcessInput;
           if Line <> '' then
             CaptureLine(Line, Aborted);

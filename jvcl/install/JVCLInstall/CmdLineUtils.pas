@@ -42,6 +42,7 @@ type
     FIgnoreBCB: Boolean;
     FIgnoreDelphi: Boolean;
     FHelp: Boolean;
+    FLang: string;
 
     FItemList: TObjectList;
     FAutoUpdate: Boolean;
@@ -64,6 +65,7 @@ type
     property AutoUpdate: Boolean read FAutoUpdate write FAutoUpdate;
 
     property Help: Boolean read FHelp;
+    property Lang: string read FLang;
   end;
 
 var
@@ -79,8 +81,9 @@ begin
   AddSpace;
   AddDir('--jcl-path=', 'Set the JCL root directory to X.', FJclPath);
   AddBool('--keep-files', 'Do not call "clean".', FKeepFiles);
-  AddBool('--autoupdate', 'Updates all IDEs where JVCL 3 is installed.', FAutoUpdate); 
+  AddBool('--autoupdate', 'Updates all IDEs where JVCL 3 is installed.', FAutoUpdate);
   AddSpace;
+  AddString('--lang=', 'Sets the Installer''s language to X.', FLang);
   AddBool('--help', 'Show this screen.', FHelp);
   AddBool('/?', '', FHelp);
   AddBool('-h', '', FHelp);
@@ -205,7 +208,8 @@ begin
     if Item.Help <> '' then
     begin
       S := Item.Name;
-      if Item is TStringItem then S := S + 'X';
+      if Item is TStringItem then
+        S := S + 'X';
       WriteLn(PadString(S, 20), '  ', Item.Help);
     end;
   end;
