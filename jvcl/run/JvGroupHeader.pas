@@ -127,6 +127,9 @@ type
 
 implementation
 
+uses
+  JvThemes;
+
 //=== TJvGroupHeaderOptions ==================================================
 
 constructor TJvGroupHeaderOptions.Create;
@@ -192,6 +195,7 @@ constructor TJvGroupHeader.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
+  IncludeThemeStyle(Self, [csParentBackground]);
   Font.Name := 'Tahoma';
   Width := 200;
   Height := 17;
@@ -254,7 +258,7 @@ begin
     begin
       Brush.Color := Self.Color;
       Brush.Style := bsSolid;
-      FillRect(ClientRect);
+      DrawThemedBackground(Self, Canvas, ClientRect);
     end;
     Brush.Style := bsClear;
     Rect := ClientRect;
