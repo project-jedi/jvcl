@@ -21,7 +21,7 @@ type
       * Add a word to the ignore list (btnIgnoreAll)
 
     This form doesn't implement everything needed for a professional looking form (i.e only
-      enable buttons as needed) but it can serve as a base for a more compltet implementation.
+      enable buttons as needed) but it can serve as a base for a more complete implementation.
   }
 
   TJvReplaceTextEvent = procedure(Sender: TObject; StartIndex, ALength: integer; const NewText: string) of object;
@@ -88,11 +88,16 @@ implementation
 {$R *.dfm}
 
 procedure TfrmSpellChecker.FormCreate(Sender: TObject);
+var S:string;
 begin
   ASpellChecker := TJvSpellChecker.Create(self);
   // Dictionaries are plain text files, one word per row, preferably sorted.
   // If you don't load a dictionary, all words are misspelled and you won't get any suggestions
-  ASpellChecker.Dictionary := ExtractFilePath(Application.ExeName) + 'english.dic';
+  S := ExtractFilePath(Application.ExeName) + 'english.dic';
+  if FileExists(S) then
+    ASpellChecker.Dictionary := S
+  else
+    ShowMessage('Dictionary file not found: make sure you have an english.dic file in the exe folder!'); 
 //  ASpellChecker.UserDictionary.LoadFromFile(Application.ExeName + 'custom.dic'); // you need to create this
   // set up a custom ignore filter:
   ASpellChecker.OnCanIgnore := DoCanIgnore;
