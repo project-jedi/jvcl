@@ -26,13 +26,22 @@ package JvUIBD7R;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl;
+  rtl,
+  vcl,
+  vclx,
+  JvCoreD7R,
+  DJCL70,
+  vcljpg,
+  dbrtl;
 
 contains
   JvUIBase in '..\..\run\JvUIBase.pas',
   JvUIBError in '..\..\run\JvUIBError.pas',
   JvUIBLib in '..\..\run\JvUIBLib.pas',
   JvUIB in '..\..\run\JvUIB.pas',
-  JvUIBConst in '..\..\run\JvUIBConst.pas';
+  JvUIBConst in '..\..\run\JvUIBConst.pas',
+  JvUIBSQLParser in '..\..\run\JvUIBSQLParser.pas',
+  JvUIBDataSet in '..\..\run\JvUIBDataSet.pas',
+  JvUIBMetaData in '..\..\run\JvUIBMetaData.pas';
 
 end.
