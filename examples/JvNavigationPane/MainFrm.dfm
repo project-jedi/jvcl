@@ -16,6 +16,7 @@ object Form1: TForm1
   PixelsPerInch = 96
   TextHeight = 13
   object PopupMenu1: TPopupMenu
+    Left = 120
     object HideAll1: TMenuItem
       Caption = 'Hide All'
       OnClick = HideAll1Click
@@ -35,15 +36,42 @@ object Form1: TForm1
       Caption = 'Change Font'
       OnClick = ChangeFont1Click
     end
-    object Destroy1: TMenuItem
-      Caption = 'Destroy'
-      OnClick = Destroy1Click
+    object Colors1: TMenuItem
+      Caption = 'Colors'
+      object Standard1: TMenuItem
+        Caption = 'Standard'
+        Checked = True
+        GroupIndex = 1
+        RadioItem = True
+        OnClick = SchemaClick
+      end
+      object Blue1: TMenuItem
+        Tag = 1
+        Caption = 'Blue'
+        GroupIndex = 1
+        RadioItem = True
+        OnClick = SchemaClick
+      end
+      object Silver1: TMenuItem
+        Tag = 2
+        Caption = 'Silver'
+        GroupIndex = 1
+        RadioItem = True
+        OnClick = SchemaClick
+      end
+      object Olive1: TMenuItem
+        Tag = 3
+        Caption = 'Olive'
+        GroupIndex = 1
+        RadioItem = True
+        OnClick = SchemaClick
+      end
     end
   end
   object LargeImages: TImageList
     Height = 20
     Width = 24
-    Left = 64
+    Left = 168
     Bitmap = {
       494C010106000900040018001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000600000003C0000000100100000000000002D
@@ -647,5 +675,22 @@ object Form1: TForm1
       00000000000080030000000000008003C001000000008003E007000000008003
       F01F0000FFFF8007FC3F0000FFFFFC7F00000000000000000000000000000000
       000000000000}
+  end
+  object JvNavPaneStyleManager1: TJvNavPaneStyleManager
+    Colors.SplitterColorFrom = 14059090
+    Colors.SplitterColorTo = 9715984
+    Colors.DividerColorFrom = 16771022
+    Colors.DividerColorTo = 15181435
+    Colors.HeaderColorFrom = 14059090
+    Colors.HeaderColorTo = 9715984
+    Colors.ButtonColorFrom = 16771022
+    Colors.ButtonColorTo = 15181435
+    Colors.ButtonHotColorFrom = 9234431
+    Colors.ButtonHotColorTo = 1087215
+    Colors.ButtonSelectedColorFrom = 5496319
+    Colors.ButtonSelectedColorTo = 883654
+    Colors.FrameColor = 9711616
+    Left = 224
+    Top = 8
   end
 end

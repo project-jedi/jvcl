@@ -77,7 +77,7 @@ const
 
 begin
   RegisterComponents('Jv NavPane',[TJvNavigationPane, TJvNavIconButton, TJvNavPanelButton,
-    TJvNavPanelHeader, TJvNavPanelDivider, TJvOutlookSplitter]);
+    TJvNavPanelHeader, TJvNavPanelDivider, TJvOutlookSplitter, TJvNavPaneStyleManager]);
 
   RegisterComponents(RsPaletteListComboTree, [TJvSettingsTreeView,
     TJvPageListTreeView, TJvPageList]);
