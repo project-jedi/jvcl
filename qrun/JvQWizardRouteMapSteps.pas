@@ -50,6 +50,7 @@ type
   private
     FIndent: Integer;
     FNextStepText: string;
+    FActiveStepFormat: string;
     FPreviousStepText: string;
     FShowDivider: Boolean;
     FShowNavigators: Boolean;
@@ -60,11 +61,15 @@ type
     function GetNextArrowRect: TRect;
     procedure SetIndent(const Value: Integer);
     procedure SetNextStepText(const Value: string);
+    procedure SetActiveStepFormat(const Value: string);
     procedure SetPreviousStepText(const Value: string);
     procedure SetShowDivider(const Value: Boolean);
     procedure SetShowNavigators(const Value: Boolean);
     function DetectPageCount(var ActivePageIndex: Integer): Integer; // Add by Yu Wei
     function DetectPage(const Pt: TPoint): TJvWizardCustomPage; // Add by Yu Wei
+    function StoreActiveStepFormat: Boolean;
+    function StoreNextStepText: Boolean;
+    function StorePreviousStepText: Boolean;
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     function PageAtPos(Pt: TPoint): TJvWizardCustomPage; override;
@@ -75,8 +80,9 @@ type
     property Color default clBackground;
     property Font;
     property Indent: Integer read FIndent write SetIndent default 5;
-    property PreviousStepText: string read FPreviousStepText write SetPreviousStepText;
-    property NextStepText: string read FNextStepText write SetNextStepText;
+    property PreviousStepText: string read FPreviousStepText write SetPreviousStepText stored StorePreviousStepText;
+    property ActiveStepFormat: string read FActiveStepFormat write SetActiveStepFormat stored StoreActiveStepFormat;
+    property NextStepText: string read FNextStepText write SetNextStepText stored StoreNextStepText;
     property ShowDivider: Boolean read FShowDivider write SetShowDivider default True;
     property ShowNavigators: Boolean read FShowNavigators write SetShowNavigators  default True;
   end;
@@ -97,6 +103,7 @@ begin
   Color := clBackground;
   Font.Color := clWhite;
   FPreviousStepText := RsBackTo;
+  FActiveStepFormat := RsActiveStepFormat;
   FNextStepText := RsNextStep;
   FShowDivider := True;
   FShowNavigators := True;
@@ -221,7 +228,7 @@ begin
   Canvas.Font.Style:= [fsBold];
   Canvas.Brush.Style:= bsClear;
 
-  S := Format(RsActiveStepFormat, [ActivePageIndex, TotalPageCount]);
+  S := Format(ActiveStepFormat, [ActivePageIndex, TotalPageCount]);
   StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
 
@@ -243,7 +250,7 @@ begin
   
   // YW - Ignore all disabled pages at run time
   APage := Wizard.FindNextPage(PageIndex, -1, not (csDesigning in ComponentState));
-  if Assigned(APage) then
+  if Assigned(APage) and (PageIndex <> - 1) then
   begin
     TextRect := GetPreviousStepRect;
     ArrowRect := GetPreviousArrowRect;
@@ -269,7 +276,7 @@ begin
 
   // YW - Ignore all disabled pages at run time
   APage := Wizard.FindNextPage(PageIndex, 1, not (csDesigning in ComponentState));
-  if Assigned(APage) then
+  if Assigned(APage) and (PageIndex <> - 1) then
   begin
     TextRect := GetNextStepRect;
     ArrowRect := GetNextArrowRect;
@@ -322,6 +329,15 @@ begin
   end;
 end;
 
+procedure TJvWizardRouteMapSteps.SetActiveStepFormat(const Value: string);
+begin
+  if FActiveStepFormat <> Value then
+  begin
+    FActiveStepFormat := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TJvWizardRouteMapSteps.SetPreviousStepText(const Value: string);
 begin
   if FPreviousStepText <> Value then
@@ -340,6 +356,21 @@ begin
     FShowNavigators := Value;
     Invalidate;
   end;
+end;
+
+function TJvWizardRouteMapSteps.StoreActiveStepFormat: Boolean;
+begin
+  Result := ActiveStepFormat <> RsActiveStepFormat;
+end;
+
+function TJvWizardRouteMapSteps.StoreNextStepText: Boolean;
+begin
+  Result := NextStepText <> RsNextStep;
+end;
+
+function TJvWizardRouteMapSteps.StorePreviousStepText: Boolean;
+begin
+  Result := PreviousStepText <> RsBackTo;
 end;
 
 end.

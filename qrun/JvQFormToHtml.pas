@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -45,7 +44,7 @@ uses
 type
   TJvFormToHtml = class(TJvComponent)
   public
-    procedure FormToHtml(const Form: TCustomForm; Path: string);
+    procedure FormToHtml(const Form: TCustomForm; const Filename: string);
   end;
 
 implementation
@@ -60,7 +59,7 @@ begin
   Result := Result + 'font-family:' + Font.Name;
 end;
 
-procedure TJvFormToHtml.FormToHtml(const Form: TCustomForm; Path: string);
+procedure TJvFormToHtml.FormToHtml(const Form: TCustomForm; const Filename: string);
 var
   I, J: Integer;
   C: TComponent;
@@ -229,7 +228,7 @@ begin
       HTML.Add(St);
   end;
   HTML.Add('</BODY></HTML>');
-  HTML.SaveToFile(Path);
+  HTML.SaveToFile(Filename);
   HTML.Free;
 end;
 

@@ -670,7 +670,7 @@ type
     property Colors;
     property StyleManager;
     property Constraints;
-
+    property DoubleBuffered;
     property DragMode;
     property DropDownMenu;
     property Enabled;

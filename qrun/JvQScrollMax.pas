@@ -14,7 +14,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvScrollMax.PAS, released on 2002-07-04.
 
-The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
+The Initial Developers of the Original Code are: Andrei Prygounkov <a dott prygounkov att gmx dott de>
 Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
@@ -47,7 +47,10 @@ interface
 
 uses
   SysUtils, Classes,
+  
+  
   QWindows, Types, QGraphics, QForms, QExtCtrls, QControls, QButtons,
+  
   JvQButtons, JvQComponent;
 
 const
@@ -112,7 +115,7 @@ type
     procedure UpdateSize(ATop: Integer);
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     function CollapsedHeight: Integer;
-    procedure ChangeScale(M, D, MH, DH: Integer); override;
+    procedure ChangeScale(M, D, MH, DH : Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -136,8 +139,8 @@ type
     property OnCanCollapse: TOnCanCollapse read FOnCanCollapse write FOnCanCollapse;
     property Left stored False;
     property Top stored False;
-    property Width stored False;
-    property Height stored False;
+    property Width;
+    property Height;
     property Color;
     property Font;
     property ParentColor;
@@ -150,8 +153,7 @@ type
     property OnDragOver;
     property OnEndDrag;
     property OnStartDrag;
-//    property BiDiMode;
-//    property ParentBiDiMode;
+    
   end;
 
   TJvScrollMaxBands = class(TJvCustomControl)
@@ -178,7 +180,10 @@ type
     procedure SetParam(Index, Value: Integer);
     procedure SetInclusive(Value: Boolean);
   protected
+    
+    
     procedure CreateWidget; override;
+    
     procedure SetTrackBar;
     procedure Loaded; override;
     procedure Resize; override;
@@ -234,11 +239,11 @@ type
     procedure SetScrollBarVisible(const Value: Boolean);
     procedure SetOneExpanded(const Value: Boolean);
   protected
-
+    
     procedure Loaded; override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function GetChildParent: TComponent; override;
-//    procedure CreateParams(var Params: TCreateParams); override;
+    
     procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -269,7 +274,6 @@ type
     property BevelWidth;
     property BorderStyle;
     property Color;
-//    property DragCursor;
     property DragMode;
     property Enabled;
     property Font;
@@ -287,25 +291,12 @@ type
     property OnEndDrag;
     property OnStartDrag;
   public
-//    property DockManager;
+    
   published
     property Anchors;
     //property AutoSize;
-  //  property BiDiMode;
     property Constraints;
-  //  property UseDockManager default True;
-  //  property DockSite;
-  //  property DragKind;
-  //  property ParentBiDiMode;
-   // property OnCanResize;
-    property OnConstrainedResize;
-    // property OnDockDrop;
-    // property OnDockOver;
-    // property OnEndDock;
-    // property OnGetSiteInfo;
-    //property OnStartDock;
-    //property OnUnDock;
-
+    
   end;
 
   EJvScrollMaxError = class(Exception);
@@ -320,12 +311,10 @@ uses
   JvQDsgnIntf, JvQJVCLUtils, JvQConsts, JvQThemes, JvQResources;
 
 { Cursors resources }
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvScrollMax.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+
+
 {$R ../Resources/JvScrollMax.res}
-{$ENDIF LINUX}
+
 
 function PanelBorder(Panel: TCustomPanel): Integer;
 begin
@@ -363,7 +352,7 @@ type
   TJvScroller = class(TPanel)
   private
     Yy: Integer;
-//    procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -397,13 +386,8 @@ begin
   end;
 end;
 
-(*)
-procedure TJvScroller.CMDesignHitTest(var Msg: TCMDesignHitTest);
-begin
-  with (Owner as TJvPanelScrollBar) do
-    Msg.Result := Integer(FDesignInteractive and (FPage <> FMax - FMin + 1));
-end;
-(*)
+
+
 //=== TJvPanelScrollBar ===========================================================
 
 constructor TJvPanelScrollBar.Create(AOwner: TComponent);
@@ -512,28 +496,27 @@ begin
   SetTrackBar;
 end;
 
+
+
+
 procedure TJvPanelScrollBar.CreateWidget;
 begin
   inherited CreateWidget;
   SetTrackBar;
 end;
 
+
 //=== TJvBandBtn =============================================================
 
 type
   TJvBandBtn = class(TJvNoFrameButton)
   private
-//    procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    
   protected
     procedure FontChanged; override;
   end;
 
-(*
-procedure TJvBandBtn.CMDesignHitTest(var Msg: TCMDesignHitTest);
-begin
-  Msg.Result := 1;
-end;
-*)
+
 
 procedure TJvBandBtn.FontChanged;
 begin
@@ -545,7 +528,7 @@ begin
       Canvas.Font := Self.Font;
       // (rom) please check this change
       //FButton.Height := Canvas.TextHeight('W') + 4;
-      FButton.Height := CanvasMaxTextHeight(Canvas)+2;
+      FButton.Height := CanvasMaxTextHeight(Canvas) + 4;
       Invalidate;
     end;
 end;
@@ -577,7 +560,7 @@ begin
     NoBorder := False;
     ParentColor := True;
     {o}
-//    FButton.ParentBiDiMode := True;
+    
   end;
   Expanded := True;
 end;
@@ -590,9 +573,9 @@ end;
 procedure TJvScrollMaxBand.Loaded;
 begin
   inherited Loaded;
-  Perform(self, CM_PARENTBEVELEDCHANGED, 0, 0);
-  Perform(self, CM_PARENTBUTTONVISIBLECHANGED, 0, 0);
-  Perform(self, CM_PARENTBUTTONFONTCHANGED, 0, 0);
+  Perform(CM_PARENTBEVELEDCHANGED, 0, 0);
+  Perform(CM_PARENTBUTTONVISIBLECHANGED, 0, 0);
+  Perform(CM_PARENTBUTTONFONTCHANGED, 0, 0);
 end;
 
 procedure TJvScrollMaxBand.DoBoundsChanged;
@@ -685,7 +668,7 @@ begin
   begin
     FParentButtonFont := Value;
     if Parent <> nil then
-      Perform(self, CM_PARENTBUTTONFONTCHANGED, 0, 0);
+      Perform(CM_PARENTBUTTONFONTCHANGED, 0, 0);
   end;
 end;
 
@@ -731,7 +714,7 @@ begin
   begin
     FParentButtonVisible := Value;
     if Parent <> nil then
-      Perform(self, CM_PARENTBUTTONVISIBLECHANGED, 0, 0);
+      Perform(CM_PARENTBUTTONVISIBLECHANGED, 0, 0);
   end;
 end;
 
@@ -767,7 +750,7 @@ begin
   begin
     FParentBeveled := Value;
     if Parent <> nil then
-      Perform(self, CM_PARENTBEVELEDCHANGED, 0, 0);
+      Perform(CM_PARENTBEVELEDCHANGED, 0, 0);
   end;
 end;
 
@@ -806,9 +789,9 @@ begin
   inherited SetParent(AParent);
   if not (csLoading in ComponentState) then
   begin
-    Perform(self, CM_PARENTBEVELEDCHANGED, 0, 0);
-    Perform(self, CM_PARENTBUTTONVISIBLECHANGED, 0, 0);
-    Perform(self, CM_PARENTBUTTONFONTCHANGED, 0, 0);
+    Perform(CM_PARENTBEVELEDCHANGED, 0, 0);
+    Perform(CM_PARENTBUTTONVISIBLECHANGED, 0, 0);
+    Perform(CM_PARENTBUTTONFONTCHANGED, 0, 0);
   end;
 end;
 
@@ -879,7 +862,10 @@ const
 var
   R: TRect;
 begin
+  
+  
   if Canvas.Handle <> nil then
+  
   begin
     if csDesigning in ComponentState then
       DrawDesignFrame(Canvas, ClientRect);
@@ -892,7 +878,10 @@ begin
         R.Top := 1;
       R.Right := Width - R.Left;
       R.Bottom := Height - 1;
-      QWindows.DrawEdge(Canvas.Handle, R, EDGE_ETCHED, Ex[FExpanded]);
+      
+      QWindows.
+      
+      DrawEdge(Canvas.Handle, R, EDGE_ETCHED, Ex[FExpanded]);
       if ButtonVisible then
       begin
         Canvas.Brush.Color := Color;
@@ -929,9 +918,9 @@ begin
   end;
 end;
 
-procedure TJvScrollMaxBand.ChangeScale(M, D, MH, DH: Integer);
+procedure TJvScrollMaxBand.ChangeScale(M, D, MH, DH : Integer);
 begin
-  inherited ChangeScale(M, D, MH, DH);
+  inherited ChangeScale(M, D, MH, DH );
   ExpandedHeight := FExpandedHeight * M div D;
 end;
 
@@ -1051,7 +1040,10 @@ var
 begin
   if (csDesigning in ComponentState) and
     (ControlCount = 0) and
+    
+    
     (Canvas.Handle <> nil) then
+    
   begin
     R := ClientRect;
     Canvas.Font.Color := clAppWorkSpace;
@@ -1101,7 +1093,7 @@ begin
     Visible := True;
     DesignInteractive := True;
   end;
-
+  
 end;
 
 destructor TJvScrollMax.Destroy;
@@ -1111,17 +1103,8 @@ begin
 end;
 
 
-(*)
-procedure TJvScrollMax.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  with Params do
-  begin
-    Style := Style or WS_CLIPCHILDREN;
-    ExStyle := ExStyle or WS_EX_CONTROLPARENT;
-  end;
-end;
-(*)
+
+
 
 procedure TJvScrollMax.Loaded;
 begin

@@ -772,8 +772,11 @@ end;
 
 procedure TJvFormPlacement.UpdatePlacement;
 const
-  Metrics: array [fbsSingle..fbsSizeToolWin] of TSysMetrics =
+  
+  
+  Metrics: array[fbsSingle..fbsSizeToolWin] of TSysMetrics =
     (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME, SM_CXBORDER, SM_CXFRAME);
+  
 var
   Placement: TWindowPlacement;
 begin
@@ -785,10 +788,13 @@ begin
       GetWindowPlacement(Form.Handle, @Placement);
       if not IsWindowVisible(Form.Handle) then
         Placement.ShowCmd := SW_HIDE;
+      
+      
       if Form.BorderStyle <> fbsNone then
+      
       begin
         Placement.ptMaxPosition.X := -GetSystemMetrics(Metrics[Form.BorderStyle]);
-        Placement.ptMaxPosition.Y := -GetSystemMetrics(Metrics[Form.BorderStyle]);
+        Placement.ptMaxPosition.Y := -GetSystemMetrics(Succ(Metrics[Form.BorderStyle]));
       end
       else
         Placement.ptMaxPosition := Point(0, 0);
@@ -808,7 +814,10 @@ begin
     Active := False;
     try
       if (not FPreventResize) and FDefMaximize and
-        (Form.BorderStyle <> fbsDialog) then    ///////
+        
+        
+        (Form.BorderStyle <> fbsDialog) then
+        
         Form.BorderIcons := Form.BorderIcons + [biMaximize]
       else
         Form.BorderIcons := Form.BorderIcons - [biMaximize];

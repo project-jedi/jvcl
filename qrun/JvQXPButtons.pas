@@ -347,6 +347,7 @@ begin
   FCkGradient := TBitmap.Create; // clicked gradient
   FFcGradient := TBitmap.Create; // focused gradient
   FHlGradient := TBitmap.Create; // Highlight gradient
+  DoubleBuffered := True;
 end;
 
 destructor TJvXPCustomButton.Destroy;
@@ -401,7 +402,7 @@ begin
     FDefault := Value;
     
     
-    Perform(GetParentForm(Self), CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl));
+    Perform(CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl));
     
   end;
 end;
@@ -828,8 +829,8 @@ begin
     begin
       Bitmap := TBitmap.Create;
       try
-        Bitmap.LoadFromResourceName(hInstance, PChar(Copy(GetEnumName(TypeInfo(TJvXPToolType),
-          Ord(FToolType)), 3, MAXINT)));
+        Bitmap.LoadFromResourceName(hInstance, Copy(GetEnumName(TypeInfo(TJvXPToolType),
+          Ord(FToolType)), 3, MAXINT));
         if (dsClicked in DrawState) and (dsHighlight in DrawState) then
           JvXPColorizeBitmap(Bitmap, clWhite)
         else if not Enabled then

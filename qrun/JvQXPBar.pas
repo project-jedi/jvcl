@@ -1103,11 +1103,7 @@ begin
   FShowLinkCursor := True;
   FShowRollButton := True;
   FVisibleItems := TJvXPBarVisibleItems.Create(Self);
-  
-  // asn: TODO: implement doublebuffering
-  //      For now prevent background drawing, to reduce flickering
-  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
-  
+  DoubleBuffered := True;
 end;
 
 destructor TJvXPCustomWinXPBar.Destroy;
@@ -1513,10 +1509,10 @@ end;
 procedure TJvXPCustomWinXPBar.DoDrawItem(const Index: Integer; State: TJvXPDrawState);
 var
   Bitmap: TBitmap;
-  
-  
+
+
   ItemCaption: TCaption;
-  
+
   ItemRect: TRect;
   HasImages: Boolean;
 begin
@@ -1548,12 +1544,12 @@ begin
       if (ItemCaption = '') and ((csDesigning in ComponentState) or (ControlCount = 0)) then
         ItemCaption := Format('(%s %d)', [RsUntitled, Index]);
       Inc(ItemRect.Left, 20);
-      
-      
-      SetPenColor(Handle, Canvas.Font.Color);
+
+
+      SetQPainterFont(Handle, Canvas.Font);
       DrawTextW(Handle, PWideChar(ItemCaption), -1, ItemRect, DT_SINGLELINE or
         DT_VCENTER or DT_END_ELLIPSIS);
-      
+
     end;
   finally
     Bitmap.Free;
@@ -1561,6 +1557,7 @@ begin
 end;
 
 procedure TJvXPCustomWinXPBar.Paint;
+
 var
   Rect: TRect;
   Bitmap: TBitmap;
@@ -1573,27 +1570,26 @@ begin
     Rect := GetClientRect;
 
     { fill non-client area }
-    
+
     Brush.Color := TJvXPWinControl(parent).Color;
     with Rect do
       FillRect(Bounds(Left, Top, Right-Left, 5));
-    
+
     Inc(Rect.Top, 5 + FHeaderHeight);
     Brush.Color := FColors.BodyColor; //$00F7DFD6;
     FillRect(Rect);
     Dec(Rect.Top, FHeaderHeight);
 
     { draw header }
-    
-    
-    if not Rolling then
-      FillGradient(Handle, Bounds(0, Rect.Top, Width, FHeaderHeight),
-        32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal);
-    
+
+
+    FillGradient(Handle, Bounds(0, Rect.Top, Width, FHeaderHeight),
+      32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal);
+
 
     { draw frame... }
     Brush.Color := clWhite;
-    FrameRect(Canvas, Rect);
+    FrameRect(canvas, Rect);
 
     { ...with cutted edges }
     OwnColor := TJvXPWinControl(Parent).Color;
@@ -1670,19 +1666,18 @@ begin
     end;
 
     { draw caption }
-    SetBkMode(Handle, Transparent);
+    //SetBkMode(Handle, Transparent);
     Font.Assign(FHeaderFont);
     if FHotTrack and (dsHighlight in DrawState) and (FHitTest <> htNone) and (FHotTrackColor <> clNone) then
       Font.Color := FHotTrackColor;
     Rect.Bottom := Rect.Top + FHeaderHeight;
     Dec(Rect.Right, 3);
-    
-    
-    SetPenColor(Handle, Font.Color);
-    if not Rolling then   // reduces flickering 
-      DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
+
+
+    SetQPainterFont(Handle, FHeaderFont);
+    DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
         DT_END_ELLIPSIS or DT_NOPREFIX);
-    
+
     { draw visible items }
     Brush.Color := FColors.BodyColor;
     if not FCollapsed or FRolling then

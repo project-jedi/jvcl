@@ -134,7 +134,7 @@ begin
   FCaptions := TStringList.Create;
   FHints := THintStringList.Create;
   FColors := TStringList.Create;
-  
+//  DoubleBuffered := true;
 end;
 
 destructor TJvArrayButton.Destroy;
@@ -212,7 +212,7 @@ var
 
   procedure DrawDown;
   begin
-    
+
     begin
       DrawBackground(BackColor);
       Frame3D(Self.Canvas, R, clblack, clBtnHighlight, 1);

@@ -45,7 +45,7 @@ uses
   Types, QWindows,
   
   SysUtils, Classes,
-  JvQTypes, JvQSpeedButton, JvQJCLUtils, JvQExGrids;
+  JvQTypes, JvQExGrids;
 
 type
   TDayOfWeek = 0..6;
@@ -158,9 +158,15 @@ uses
   QConsts,
   
   Math,
-  JvQThemes, JvQConsts, JvQResources, JvQToolEdit, JvQJVCLUtils;
+  JvQThemes, JvQConsts, JvQResources, JvQJCLUtils,
+  JvQToolEdit, JvQSpeedButton;
 
-{$R ../Resources/JvPickDate.Res}
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvPickDate.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvPickDate.res}
+{$ENDIF LINUX}
 
 const
   SBtnGlyphs: array [0..3] of PChar =
@@ -907,7 +913,7 @@ var
   Control, BackPanel: TWinControl;
 begin
   inherited Create(AOwner);
-  FFourDigitYear := FourDigitYear;
+  FFourDigitYear := IsFourDigitYear;
   Height := Max(PopupCalendarSize.Y, 120);
   Width := Max(PopupCalendarSize.X, 180);
   {$IFDEF LINUX}

@@ -280,7 +280,7 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-
+    
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseEnter;
@@ -497,7 +497,6 @@ type
 const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
-  NullHandle = nil;
 
 var
   // (rom) changed to var
@@ -2089,7 +2088,7 @@ begin
           try
             with Mask do
             begin
-              //Monochrome := True;
+              Monochrome := True;
               Height := iHeight;
               Width := iWidth;
             end;

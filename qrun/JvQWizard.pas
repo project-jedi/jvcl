@@ -372,6 +372,7 @@ type
     FAlignment: TJvWizardLeftRight;
     
   protected
+    function StoreCaption: Boolean; virtual;
     
     procedure VisibleChanged; override;
     
@@ -400,13 +401,14 @@ type
     function GetButtonWidth: Integer;
     procedure SetButtonWidth(const Value: Integer);
   protected
+    function StoreCaption: Boolean; virtual;
     property Control: TJvWizardButtonControl read FControl write FControl;
   published
     property Glyph: TBitmap read GetGlyph write SetGlyph;
-    property Caption: string read GetCaption write SetCaption;
+    property Caption: string read GetCaption write SetCaption stored StoreCaption;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs;
-    property Layout: TButtonLayout read GetLayout write SetLayout;
-    property ModalResult: TModalResult read GetModalResult write SetModalResult;
+    property Layout: TButtonLayout read GetLayout write SetLayout default blGlyphLeft;
+    property ModalResult: TModalResult read GetModalResult write SetModalResult default mrNone;
     property Width: Integer read GetButtonWidth write SetButtonWidth;
   end;
 
@@ -798,9 +800,8 @@ type
     procedure SetButtonBarHeight(Value: Integer);
     procedure SetActivePage(Page: TJvWizardCustomPage);
     procedure SetHeaderImages(Value: TCustomImageList);
-    function GetButtonClick(const Index: TJvWizardButtonKind): TNotifyEvent;
-    procedure SetButtonClick(const Index: TJvWizardButtonKind;
-      const Value: TNotifyEvent);
+    function GetButtonClick(Index: Integer): TNotifyEvent;
+    procedure SetButtonClick(Index: Integer; const Value: TNotifyEvent);
     procedure ImageListChange(Sender: TObject);
     procedure CreateNavigateButtons;
     procedure ChangeActivePage(Page: TJvWizardCustomPage);
@@ -825,7 +826,7 @@ type
     procedure RemovePage(Page: TJvWizardCustomPage);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetButtonControlClass(AKind: TJvWizardButtonKind): TJvWizardButtonControlClass; virtual;
-    procedure DoActivePageChanging(var ToPage: TJvWizardCustomPage); dynamic; 
+    procedure DoActivePageChanging(var ToPage: TJvWizardCustomPage); dynamic;
     procedure DoActivePageChanged; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
@@ -864,13 +865,16 @@ type
     property OnSelectLastPage: TJvWizardSelectPageEvent read FOnSelectLastPage write FOnSelectLastPage;
     property OnSelectNextPage: TJvWizardSelectPageEvent read FOnSelectNextPage write FOnSelectNextPage;
     property OnSelectPriorPage: TJvWizardSelectPageEvent read FOnSelectPriorPage write FOnSelectPriorPage;
-    property OnStartButtonClick: TNotifyEvent index bkStart read GetButtonClick write SetButtonClick;
-    property OnLastButtonClick: TNotifyEvent index bkLast read GetButtonClick write SetButtonClick;
-    property OnBackButtonClick: TNotifyEvent index bkBack read GetButtonClick write SetButtonClick;
-    property OnNextButtonClick: TNotifyEvent index bkNext read GetButtonClick write SetButtonClick;
-    property OnFinishButtonClick: TNotifyEvent index bkFinish read GetButtonClick write SetButtonClick;
-    property OnCancelButtonClick: TNotifyEvent index bkCancel read GetButtonClick write SetButtonClick;
-    property OnHelpButtonClick: TNotifyEvent index bkHelp read GetButtonClick write SetButtonClick;
+
+    // (ahuser) BCB cannot handle enum types as index.
+    property OnStartButtonClick: TNotifyEvent index Integer(bkStart) read GetButtonClick write SetButtonClick;
+    property OnLastButtonClick: TNotifyEvent index Integer(bkLast) read GetButtonClick write SetButtonClick;
+    property OnBackButtonClick: TNotifyEvent index Integer(bkBack) read GetButtonClick write SetButtonClick;
+    property OnNextButtonClick: TNotifyEvent index Integer(bkNext) read GetButtonClick write SetButtonClick;
+    property OnFinishButtonClick: TNotifyEvent index Integer(bkFinish) read GetButtonClick write SetButtonClick;
+    property OnCancelButtonClick: TNotifyEvent index Integer(bkCancel) read GetButtonClick write SetButtonClick;
+    property OnHelpButtonClick: TNotifyEvent index Integer(bkHelp) read GetButtonClick write SetButtonClick;
+
     property OnActivePageChanged: TNotifyEvent read FOnActivePageChanged write FOnActivePageChanged;
     property OnActivePageChanging: TJvWizardChangingPageEvent read FOnActivePageChanging write FOnActivePageChanging;
 
@@ -882,9 +886,11 @@ type
 
 implementation
 
+
+
 uses
   QConsts, JvQResources;
-  
+
 
 const
   ciButtonWidth = 75;
@@ -898,7 +904,7 @@ type
   // (ahuser) introduced for refactoring the WizardButtons
   TJvWizardBaseButton = class(TJvWizardButtonControl)
   protected
-    procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); virtual; abstract;
+    procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); virtual;
     procedure SelectPage; virtual;
   public
     procedure Click; override;
@@ -909,6 +915,7 @@ type
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
     procedure SelectPage; override;
+    function StoreCaption: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -918,6 +925,7 @@ type
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
     procedure SelectPage; override;
+    function StoreCaption: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -927,6 +935,7 @@ type
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
     procedure SelectPage; override;
+    function StoreCaption: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -936,6 +945,7 @@ type
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
     procedure SelectPage; override;
+    function StoreCaption: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -944,6 +954,7 @@ type
   TJvWizardFinishButton = class(TJvWizardBaseButton)
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
+    function StoreCaption: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -952,6 +963,7 @@ type
   TJvWizardCancelButton = class(TJvWizardBaseButton)
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
+    function StoreCaption: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -960,6 +972,7 @@ type
   TJvWizardHelpButton = class(TJvWizardBaseButton)
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
+    function StoreCaption: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Click; override;
@@ -982,6 +995,11 @@ begin
   end;
   Kind := bkCustom;
   Anchors := [akRight, akBottom];
+end;
+
+function TJvWizardButtonControl.StoreCaption: Boolean;
+begin
+  Result := True;
 end;
 
 
@@ -1024,6 +1042,11 @@ begin
   // default action: nothing
 end;
 
+procedure TJvWizardBaseButton.ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean);
+begin
+  // do nothing (make Delphi 5 compiler happy)
+end;
+
 { TJvWizardStartButton }
 
 constructor TJvWizardStartButton.Create(AOwner: TComponent);
@@ -1038,6 +1061,7 @@ end;
 
 procedure TJvWizardStartButton.ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean);
 begin
+  inherited ButtonClick(Page, Stop);
   if Assigned(Page.FOnStartButtonClick) then
     Page.FOnStartButtonClick(Page, Stop);
 end;
@@ -1045,6 +1069,11 @@ end;
 procedure TJvWizardStartButton.SelectPage;
 begin
   FWizard.SelectFirstPage;
+end;
+
+function TJvWizardStartButton.StoreCaption: Boolean;
+begin
+  Result := Caption <> RsFirstButtonCaption;
 end;
 
 { TJvWizardLastButton }
@@ -1070,6 +1099,11 @@ begin
   FWizard.SelectLastPage;
 end;
 
+function TJvWizardLastButton.StoreCaption: Boolean;
+begin
+  Result := Caption <> RsLastButtonCaption;
+end;
+
 { TJvWizardBackButton }
 
 constructor TJvWizardBackButton.Create(AOwner: TComponent);
@@ -1091,6 +1125,11 @@ end;
 procedure TJvWizardBackButton.SelectPage;
 begin
   FWizard.SelectPriorPage;
+end;
+
+function TJvWizardBackButton.StoreCaption: Boolean;
+begin
+  Result := Caption <> RsBackButtonCaption;
 end;
 
 { TJvWizardNextButton }
@@ -1116,6 +1155,11 @@ begin
   FWizard.SelectNextPage;
 end;
 
+function TJvWizardNextButton.StoreCaption: Boolean;
+begin
+  Result := Caption <> RsNextButtonCaption;
+end;
+
 { TJvWizardFinishButton }
 
 constructor TJvWizardFinishButton.Create(AOwner: TComponent);
@@ -1131,6 +1175,11 @@ procedure TJvWizardFinishButton.ButtonClick(Page: TJvWizardCustomPage; var Stop:
 begin
   if Assigned(Page.FOnFinishButtonClick) then
     Page.FOnFinishButtonClick(Page, Stop);
+end;
+
+function TJvWizardFinishButton.StoreCaption: Boolean;
+begin
+  Result := Caption <> RsFinishButtonCaption;
 end;
 
 { TJvWizardCancelButton }
@@ -1150,6 +1199,11 @@ procedure TJvWizardCancelButton.ButtonClick(Page: TJvWizardCustomPage; var Stop:
 begin
   if Assigned(Page.FOnCancelButtonClick) then
     Page.FOnCancelButtonClick(Page, Stop);
+end;
+
+function TJvWizardCancelButton.StoreCaption: Boolean;
+begin
+  Result := Caption <> SCancelButton;
 end;
 
 { TJvWizardHelpButton }
@@ -1196,6 +1250,11 @@ procedure TJvWizardHelpButton.ButtonClick(Page: TJvWizardCustomPage; var Stop: B
 begin
   if Assigned(Page.FOnHelpButtonClick) then
     Page.FOnHelpButtonClick(Page, Stop);
+end;
+
+function TJvWizardHelpButton.StoreCaption: Boolean;
+begin
+  Result := Caption <> SHelpButton;
 end;
 
 { TJvWizardNavigateButton }
@@ -1288,6 +1347,11 @@ begin
     if Assigned(FControl.FWizard) then
       FControl.FWizard.RepositionButtons;
   end;
+end;
+
+function TJvWizardNavigateButton.StoreCaption: Boolean;
+begin
+  Result := not Assigned(FControl) or FControl.StoreCaption;
 end;
 
 { TJvWizardRouteMapControl }
@@ -1425,7 +1489,12 @@ begin
     if Assigned(APage) and ((csDesigning in ComponentState) or
       (APage.Enabled and APage.EnableJumpToPage)) then  // Nonn
     begin
-      PageIndex := APage.PageIndex;
+      if APage.PageIndex = PageIndex + 1 then
+        Wizard.SelectNextPage
+      else if APage.PageIndex = PageIndex - 1 then
+        Wizard.SelectPriorPage
+      else
+        PageIndex := APage.PageIndex;
     end;
   end;
   inherited MouseDown(Button, Shift, X, Y);
@@ -2541,9 +2610,9 @@ begin
     { YW - Don't need to set width property }
     AButton := GetButtonControlClass(AKind).Create(Self);
     try
+      AButton.Parent := Self;
       AButton.Height := ciButtonHeight;
       AButton.Wizard := Self;
-      AButton.Parent := Self;
     finally
       FNavigateButtons[AKind] := TJvWizardNavigateButton.Create;
       FNavigateButtons[AKind].Control := AButton;
@@ -2865,19 +2934,18 @@ begin
     FActivePage.Invalidate;
 end;
 
-function TJvWizard.GetButtonClick(const Index: TJvWizardButtonKind): TNotifyEvent;
+function TJvWizard.GetButtonClick(Index: Integer): TNotifyEvent;
 begin
-  if Assigned(FNavigateButtons[Index].Control) then
-    Result := FNavigateButtons[Index].Control.OnClick
+  if Assigned(FNavigateButtons[TJvWizardButtonKind(Index)].Control) then
+    Result := FNavigateButtons[TJvWizardButtonKind(Index)].Control.OnClick
   else
     Result := nil;
 end;
 
-procedure TJvWizard.SetButtonClick(const Index: TJvWizardButtonKind;
-  const Value: TNotifyEvent);
+procedure TJvWizard.SetButtonClick(Index: Integer; const Value: TNotifyEvent);
 begin
-  if Assigned(FNavigateButtons[Index].Control) then
-    FNavigateButtons[Index].Control.OnClick := Value;
+  if Assigned(FNavigateButtons[TJvWizardButtonKind(Index)].Control) then
+    FNavigateButtons[TJvWizardButtonKind(Index)].Control.OnClick := Value;
 end;
 
 function TJvWizard.GetPageCount: Integer;
@@ -2965,7 +3033,6 @@ var
   end;
 
 begin
-  try
   if FButtonBarHeight > ciButtonHeight then
   begin
     AButtonSet := [bkBack, bkNext, bkCancel];
@@ -3007,8 +3074,6 @@ begin
       with FNavigateButtons[AButtonKind] do
         FControl.SetBounds(0, 0, FControl.Width, 0); // YW - Must keep the width
     end;
-  end;
-  except
   end;
 end;
 

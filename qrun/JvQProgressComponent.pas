@@ -202,7 +202,7 @@ procedure TJvProgressComponent.FormOnShow(Sender: TObject);
 begin
   
   
-  PostMsg(FForm.Handle, CM_SHOWEVENT, 0, Integer(Self));
+  PostMessage(FForm.Handle, CM_SHOWEVENT, 0, Integer(Self));
   
 end;
 

@@ -134,9 +134,8 @@ type
 
 
   TJvXPWinControl = class(TJvWinControl)
-    function GetColor: TColor;
   published
-    property Color: TColor read GetColor;
+    property Color;
   end;
 
   { baseclass for focusable control descendants. }
@@ -348,12 +347,6 @@ uses
 
 {$R ../Resources/JvXPCore.res}
 
-
-function  TJvXPWinControl.GetColor: TColor;
-begin
-  Result := QColorColor(QWidget_backgroundColor(Handle));
-end;
-
 //=== TJvXPCustomComponent ===================================================
 
 constructor TJvXPCustomComponent.Create(AOwner: TComponent);
@@ -379,7 +372,6 @@ begin
   FIsLocked := False;
   FIsSibling := False;
   FModalResult := 0;
-  
 end;
 
 
@@ -772,6 +764,7 @@ begin
   inherited Create(AOwner);
   FStyle := TJvXPStyle.Create(Self);
   FStyleManager := nil;
+  DoubleBuffered := true;
 end;
 
 destructor TJvXPCustomStyleControl.Destroy;

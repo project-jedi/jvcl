@@ -57,8 +57,7 @@ uses
   QMask, QImgList, QActnList, QExtDlgs, QComboEdits, QWindows, Types,
   JvQExComboEdits,
   
-  JvQComponent, JvQSpeedButton, JvQJCLUtils, JvQTypes, JvQExControls, JvQExMask,
-  JvQFinalize;
+  JvQSpeedButton, JvQTypes, JvQExMask, JvQExForms;
 
 const
   scAltDown = scAlt + VK_DOWN;
@@ -70,7 +69,7 @@ type
   TCloseUpEvent = procedure(Sender: TObject; Accept: Boolean) of object;
   TPopupAlign = (epaRight, epaLeft);
 
-  TJvPopupWindow = class(TCustomForm)
+  TJvPopupWindow = class(TJvExCustomForm)
   private
     FEditor: TWinControl;
     FCloseUp: TCloseUpEvent;
@@ -824,16 +823,18 @@ uses
   QConsts,
   
   
-  JvQThemes, JvQResources, JvQJVCLUtils, JvQPickDate,
-  JvQConsts;
+  JvQFinalize, JvQThemes, JvQResources, JvQConsts, JvQJCLUtils, JvQExControls,
+  JvQPickDate, JvQJVCLUtils;
 
 const
   sUnitName = 'JvToolEdit';
 
-
-
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvToolEdit.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvToolEdit.res}
-
+{$ENDIF LINUX}
 
 type
   TCustomEditHack = class(TCustomEdit);
@@ -845,8 +846,7 @@ const
   sFileBmp = 'JV_FEDITBMP';  { Filename editor button glyph }
   sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
 
-  sDirXPBmp = 'JV_SEDITXPBMP';
-  sFileXPBmp = 'JV_FEDITXPBMP';
+  
 
 
   { TDateHook is used to only have 1 hook per application for monitoring
@@ -867,6 +867,7 @@ var
   GDefaultComboEditImagesList: TImageList = nil;
   GDirImageIndex: TImageIndex = -1;
   GFileImageIndex: TImageIndex = -1;
+  
 
 //=== Local procedures =======================================================
 
@@ -1125,7 +1126,7 @@ begin
     with ACanvas do
     begin
       EditRect := Rect(0, 0, 0, 0);
-      SendMsg(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
+      SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
       if IsRectEmpty(EditRect) then
       begin
         EditRect := ed.ClientRect;
@@ -2421,7 +2422,6 @@ begin
   begin
     Bmp := TBitmap.Create;
     try
-      //Bmp.Handle := LoadBitmap(HInstance, sDateBmp);
       Bmp.LoadFromResourceName(HInstance, sDateBmp);
       GDateImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
     finally
@@ -2459,7 +2459,7 @@ end;
 function TJvCustomDateEdit.FourDigitYear: Boolean;
 begin
   Result := (FYearDigits = dyFour) or ((FYearDigits = dyDefault) and
-   JvQJCLUtils.FourDigitYear);
+   IsFourDigitYear);
 end;
 
 function TJvCustomDateEdit.GetCalendarHints: TStrings;
@@ -2893,15 +2893,14 @@ end;
 class function TJvDirectoryEdit.DefaultImageIndex: TImageIndex;
 var
   Bmp: TBitmap;
-  ResName: string;
 begin
+  
+
   if GDirImageIndex < 0 then
   begin
     Bmp := TBitmap.Create;
     try
-      
-        ResName := sDirBmp;
-      Bmp.LoadFromResourceName(HInstance, ResName);
+      Bmp.LoadFromResourceName(HInstance, sDirBmp);
       GDirImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
     finally
       Bmp.Free;
@@ -3077,6 +3076,8 @@ procedure TJvFileDirEdit.ClearFileList;
 begin
 end;
 
+
+
 constructor TJvFileDirEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -3228,15 +3229,14 @@ end;
 class function TJvFilenameEdit.DefaultImageIndex: TImageIndex;
 var
   Bmp: TBitmap;
-  ResName: string;
 begin
+  
+
   if GFileImageIndex < 0 then
   begin
     Bmp := TBitmap.Create;
     try
-      
-        ResName := sFileBmp;
-      Bmp.LoadFromResourceName(HInstance, ResName);
+      Bmp.LoadFromResourceName(HInstance, sFileBmp);
       GFileImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
     finally
       Bmp.Free;
