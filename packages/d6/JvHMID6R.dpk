@@ -33,6 +33,7 @@ requires
 
 contains
   JvSegmentedLEDDisplay in '..\..\run\JvSegmentedLEDDisplay.pas',
-  JvLED in '..\..\run\JvLED.pas';
+  JvLED in '..\..\run\JvLED.pas',
+  JvRadioControl in '..\..\run\JvRadioControl.pas';
 
 end.
