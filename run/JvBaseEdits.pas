@@ -19,7 +19,7 @@ Contributor(s):
   Polaris Software
   Andreas Hausladen
 
-Last Modified: 2003-04-03
+Last Modified: 2004-02-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -37,14 +37,21 @@ unit JvBaseEdits;
 interface
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Controls, Menus,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Menus,
   Forms, StdCtrls, Mask, Buttons, ImgList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QMenus, QForms, QStdCtrls, QMask, QButtons, QImgList,
+  QWindows, QTypes,
+  {$ENDIF VisualCLX}
   JvToolEdit;
 
 type
   TJvCustomNumEdit = class(TJvCustomComboEdit)
   private
-    FCanvas: TControlCanvas;
+    FCanvas: TControlCanvas; // asn: never created
     FAlignment: TAlignment;
     FFocused: Boolean;
     FValue: Extended;
@@ -74,12 +81,23 @@ type
     procedure SetZeroEmpty(Value: Boolean);
     procedure SetFormatOnEditing(Value: Boolean);
     function GetText: string;
+               {$IFDEF VisualCLX}
+                reintroduce;
+                {$ENDIF VisualCLX}
     procedure SetText(const AValue: string);
+               {$IFDEF VisualCLX}
+                reintroduce;
+                {$ENDIF VisualCLX}
     function TextToValText(const AValue: string): string;
     //Polaris    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
     function IsFormatStored: Boolean;
+    {$IFDEF VCL}
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    {$ENDIF VCL}
   protected
+    {$IFDEF VisualCLX}
+    procedure Paint; override;
+    {$ENDIF VisualCLX}
     procedure DoClipboardPaste; override;
     procedure SetBeepOnError(Value: Boolean); override;
 
@@ -134,13 +152,22 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
+    {$IFDEF VCL}
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property ImeMode;
+    property ImeName;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
     property Align; //Polaris
     property Alignment;
     property Anchors;
     property AutoSelect;
     property AutoSize;
     property BeepOnError;
-    property BiDiMode;
     property BorderStyle;
     property CheckOnExit;
     property ClipboardCommands; // RDB
@@ -151,19 +178,14 @@ type
     property DisabledColor; // RDB
     property DisabledTextColor; // RDB
     property DisplayFormat;
-    property DragCursor;
-    property DragKind;
     property DragMode;
     property Enabled;
     property Font;
     property FormatOnEditing;
     property HideSelection;
-    property ImeMode;
-    property ImeName;
     property MaxLength;
     property MaxValue;
     property MinValue;
-    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -182,7 +204,6 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -192,7 +213,6 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -209,6 +229,16 @@ type
   { (rb) why no ButtonFlat property? }
   TJvCalcEdit = class(TJvCustomCalcEdit)
   published
+    {$IFDEF VCL}
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property ParentBiDiMode;
+    property ImeMode;
+    property ImeName;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
     property Action;
     property Align; //Polaris
     property Alignment;
@@ -224,7 +254,6 @@ type
     property DecimalPlaces;
     property DirectInput;
     property DisplayFormat;
-    property DragCursor;
     property DragMode;
     property Enabled;
     property EnablePopupChange;
@@ -236,12 +265,7 @@ type
     property ButtonWidth;
     property HideSelection;
     property Anchors;
-    property BiDiMode;
     property Constraints;
-    property DragKind;
-    property ParentBiDiMode;
-    property ImeMode;
-    property ImeName;
     property MaxLength;
     property MaxValue;
     property MinValue;
@@ -275,8 +299,6 @@ type
     property OnMouseUp;
     property OnContextPopup;
     property OnStartDrag;
-    property OnEndDock;
-    property OnStartDock;
     (* ++ RDB ++ *)
     property ClipboardCommands;
     property DisabledTextColor;
@@ -287,10 +309,20 @@ type
 implementation
 
 uses
-  Consts, Math,
-  JvJCLUtils, JvCalc, JvConsts, JvResources;
+  {$IFDEF VCL}
+  Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
+  Math, JvJCLUtils, JvCalc, JvConsts, JvResources;
 
+{$IFDEF MSWINDOWS}
 {$R ..\resources\JvBaseEdits.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvBaseEdits.res}
+{$ENDIF LINUX}
 
 const
   sCalcBmp = 'JV_CEDITBMP'; { Numeric editor button glyph }
@@ -371,6 +403,10 @@ begin
   finally
     ControlState := ControlState - [csCreating];
   end;
+  {$IFDEF VisualCLX}
+  FCanvas := TControlCanvas.Create;
+  FCanvas.control := self;
+  {$ENDIF VisualCLX}
 end;
 
 destructor TJvCustomNumEdit.Destroy;
@@ -451,7 +487,8 @@ begin
     Key := #0;
   end
   else
-  if Ord(Key) = VK_ESCAPE then
+//  if Ord(Key) = VK_ESCAPE then
+  if Key = #27 then
   begin
     Reset;
     Key := #0;
@@ -731,6 +768,7 @@ begin
     Result := '-0';
 end;
 
+
 procedure TJvCustomNumEdit.SetText(const AValue: string);
 begin
   if not (csReading in ComponentState) then
@@ -833,6 +871,7 @@ begin
     Invalidate;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomNumEdit.WMPaint(var Msg: TWMPaint);
 var
   S: string;
@@ -845,6 +884,22 @@ begin
     FCanvas, Msg) then
     inherited;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvCustomNumEdit.Paint;
+var
+  S: string;
+begin
+  if PopupVisible then
+    S := TJvPopupWindow(FPopup).GetPopupText
+  else
+    S := GetDisplayText;
+  if not PaintComboEdit(Self, S, FAlignment, true ,FFocused and not PopupVisible,
+    FCanvas) then
+    inherited;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvCustomNumEdit.FontChanged;
 begin
@@ -902,7 +957,7 @@ begin
   inherited Create(AOwner);
   ControlState := ControlState + [csCreating];
   try
-    FPopup := TJvPopupWindow(CreatePopupCalculator(Self, BiDiMode));
+    FPopup := TJvPopupWindow(CreatePopupCalculator(Self {$IFDEF VCL}, BiDiMode {$ENDIF VCL}));
     TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
     UpdatePopup;
   finally
@@ -924,7 +979,8 @@ begin
   if GCalcImageIndex < 0 then
   begin
     Bmp := TBitmap.Create;
-    Bmp.Handle := LoadBitmap(HInstance, sCalcBmp);
+    //Bmp.Handle := LoadBitmap(HInstance, sCalcBmp);
+    Bmp.LoadFromResourceName(HInstance, sCalcBmp);
     GCalcImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
     Bmp.Free;
   end;
