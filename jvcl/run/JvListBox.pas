@@ -1047,7 +1047,9 @@ var
   Flags: Longint;
   ActualRect: TRect;
 begin
-  // JvBMPListBox:
+   if csDestroying in ComponentState then
+    Exit;
+ // JvBMPListBox:
   // draw text transparently
   if ScrollBars in [ssHorizontal, ssBoth] then
   begin
@@ -1209,7 +1211,7 @@ var
   Canvas: TCanvas;
   ClipComplexity: Integer;
 begin
-  if (ADC = 0) or not Background.DoDraw then
+ if (ADC = 0) or not Background.DoDraw or (csDestroying in ComponentState) then
     Exit;
   ClientRect := Self.ClientRect;
   ClipComplexity := GetClipBox(ADC, ClipBox);
@@ -1252,6 +1254,8 @@ end;
 procedure TJvCustomListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if Assigned(OnDrawItem) then
     inherited DrawItem(Index, Rect, State)
   else

@@ -100,6 +100,8 @@ var
   IsDown: Boolean;
   R: TRect;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   FCanvas.Handle := DrawItemStruct.hDC;
   R := ClientRect;
   IsDown := DrawItemStruct.itemState and ODS_SELECTED <> 0;

@@ -141,6 +141,8 @@ var
   R: TRect;
   BevelOuter: TPanelBevel;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if DefaultStyle then
   begin
     inherited Paint;

@@ -49,8 +49,6 @@ uses Windows, SysUtils, Messages, Classes, Controls, Forms, Graphics, {Menus,}
      StdCtrls, {ExtCtrls, Mask,} Buttons, {ComCtrls,} Db, DBCtrls, JvDBLookup;
 
 type
-{ TJvDBLookupComboEdit }
-
   TJvDBLookupComboEdit = class(TJvDBLookupEdit)
   private
     FDataLink: TFieldDataLink;
@@ -419,6 +417,8 @@ var
   AAlignment: TAlignment;
   ExStyle: DWORD;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   AAlignment := Alignment;//FAlignment;
   if UseRightToLeftAlignment then ChangeBiDiModeAlignment(AAlignment);
   if ((AAlignment = taLeftJustify) or FFocused) and

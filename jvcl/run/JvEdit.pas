@@ -509,6 +509,8 @@ var
   Canvas: TControlCanvas;
   S: string;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if Enabled then
     inherited
   else

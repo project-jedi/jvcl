@@ -2933,6 +2933,8 @@ var
   Details: TThemedElementDetails;
   {$ENDIF}
 begin
+  if csDestroying in ComponentState then
+    Exit;
   Canvas.Font := Font;
   Canvas.Brush.Color := Color;
   Selected := FFocused and not FListVisible and  not (csPaintCopy in ControlState);

@@ -335,6 +335,8 @@ var
   end;
 
 begin
+  if csDestroying in ComponentState then
+    Exit;
   // initialize
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   Rect := ClientRect;
@@ -553,6 +555,8 @@ var
   end;
 
 begin
+  if csDestroying in ComponentState then
+    Exit;
   // initialize
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   Rect := ClientRect;
@@ -697,6 +701,8 @@ var
   end;
 
 begin
+  if csDestroying in ComponentState then
+    Exit;
   // initialize
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   Rect := ClientRect;
@@ -841,6 +847,8 @@ var
   end;
 
 begin
+  if csDestroying in ComponentState then
+    Exit;
   // initialize
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   Rect := ClientRect;
@@ -983,6 +991,8 @@ var
   end;
 
 begin
+  if csDestroying in ComponentState then
+    Exit;
   // initialize
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   Rect := ClientRect;
@@ -1126,6 +1136,8 @@ var
   end;
 
 begin
+  if csDestroying in ComponentState then
+    Exit;
   // initialize
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   Rect := ClientRect;
@@ -1459,6 +1471,8 @@ var
   end;
 
 begin
+  if csDestroying in ComponentState then
+    Exit;
   // initialize
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   Rect := ClientRect;
@@ -1617,6 +1631,8 @@ var
   end;
 
 begin
+  if csDestroying in ComponentState then
+    Exit;
   // initialize
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   Rect := ClientRect;
@@ -1753,6 +1769,8 @@ var
   R, Ri: TRect;
   x4, y4: integer;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   // initialize
   x4 := (width div 4) - 1;
   y4 := (height div 4) - 1;
@@ -1903,6 +1921,8 @@ var
   OdsDown, OdsFocus, ActionFocus: Boolean;
   Rect: TRect;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   // initialize
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   Rect := ClientRect;
@@ -2035,6 +2055,8 @@ var
   end;
 
 begin
+  if csDestroying in ComponentState then
+    Exit;
   // initialize
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   Rect := ClientRect;
@@ -2188,6 +2210,8 @@ var
   end;
 
 begin
+  if csDestroying in ComponentState then
+    Exit;
   // initialize
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   Rect := ClientRect;
@@ -2339,6 +2363,8 @@ var
   end;
 
 begin
+  if csDestroying in ComponentState then
+    Exit;
   // initialize
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   Rect := ClientRect;
@@ -2492,6 +2518,8 @@ var
   end;
 
 begin
+  if csDestroying in ComponentState then
+    Exit;
   // initialize
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   Rect := ClientRect;

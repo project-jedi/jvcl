@@ -1447,6 +1447,7 @@ begin
   inherited Create(AOwner);
   FGlyphDrawer := TJvButtonGlyph.Create;
   FCanvas := TControlCanvas.Create;
+  // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Control := Self;
 end;
 
@@ -1454,7 +1455,6 @@ destructor TJvaColorButton.Destroy;
 begin
   FreeAndNil(FGlyphDrawer);
   inherited Destroy;
-  // (rom) destroy Canvas AFTER inherited Destroy
   FreeAndNil(FCanvas);
 end;
 
@@ -1476,6 +1476,8 @@ var
   IsDown, IsDefault: Boolean;
   State: TButtonState;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   DrawItemStruct := Msg.DrawItemStruct^;
   FCanvas.Handle := DrawItemStruct.hDC;
   with DrawItemStruct do
@@ -1507,7 +1509,7 @@ var
   R: TRect;
   Flags: Longint;
 begin
-  if FCanvas.Handle = 0 then
+  if (csDestroying in ComponentState) or (FCanvas.Handle = 0) then
     Exit;
 
   R := ClientRect;
@@ -1570,7 +1572,6 @@ begin
     FCanvas.Brush.Color := Color;  {clBtnFace}
     DrawFocusRect(FCanvas.Handle, R);
   end;
-
 end;
 
 // == TJvNoFrameButton =======================================================

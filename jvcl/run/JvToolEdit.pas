@@ -861,16 +861,21 @@ var
   ButtonWidth: Integer;
   R: TRect;
 begin
-  SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@R));
-  if Editor.BiDiMode = bdRightToLeft then
-    ButtonWidth := R.Left - 1
-  else
-    ButtonWidth := Editor.ClientWidth - R.Right - 2;
-  if ButtonWidth < 0 then
-    ButtonWidth := 0;
+  if not (csDestroying in Editor.ComponentState) then
+  begin
+    SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@R));
+    if Editor.BiDiMode = bdRightToLeft then
+      ButtonWidth := R.Left - 1
+    else
+      ButtonWidth := Editor.ClientWidth - R.Right - 2;
+    if ButtonWidth < 0 then
+      ButtonWidth := 0;
 
-  Result := PaintEdit(Editor, AText, AAlignment, Editor.PopupVisible,
-    ButtonWidth, Editor.FDisabledTextColor, StandardPaint, ACanvas, Msg);
+    Result := PaintEdit(Editor, AText, AAlignment, Editor.PopupVisible,
+      ButtonWidth, Editor.FDisabledTextColor, StandardPaint, ACanvas, Msg);
+  end
+  else
+    Result := True;
 end;
 
 function PaintEdit(Editor: TCustomEdit; const AText: string;
@@ -891,6 +896,8 @@ const
     (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
 begin
   Result := True;
+  if csDestroying in Editor.ComponentState then
+    Exit;
   with TCustomEditAccess(Editor) do
   begin
     if UseRightToLeftAlignment then
@@ -1209,6 +1216,8 @@ end;
 
 procedure TJvCustomComboEdit.WMEraseBkgnd(var Msg: TWmEraseBkgnd);
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if Enabled then
     inherited
   else
