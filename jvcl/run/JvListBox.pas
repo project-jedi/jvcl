@@ -133,8 +133,6 @@ type
   end;
   TJvListBoxStringsClass = class of TJvListBoxStrings;
 
-//  TJvListBoxMeasureStyle = (lmsStandard, lmsAfterCreate, lmsBeforeDraw);
-
   TJvCustomListBox = class(TCustomListBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -266,6 +264,7 @@ type
     function ItemRect(Index: Integer): TRect;
     function ItemsShowing: TStrings; virtual;
 
+    procedure MeasureProviderItem(Index, WidthAvail: Integer; var ASize: TSize);
     procedure MeasureString(const S: string; WidthAvail: Integer; var ASize: TSize);
 
     procedure DefaultDrawItem(Index: Integer; ARect: TRect;
@@ -1545,6 +1544,7 @@ end;
 procedure TJvCustomListBox.MeasureItem(Index: Integer;
   var Height: Integer);
 var
+  AvailWidth: Integer;
   LSize: TSize;
 begin
   if Assigned(OnMeasureItem) or (not MultiLine and not IsProviderSelected) or
@@ -1553,15 +1553,62 @@ begin
   else
   begin
     if LimitToClientWidth then
-      MeasureString(ItemsShowing[Index], ClientWidth, LSize)
+      AvailWidth := ClientWidth
     else
-      MeasureString(ItemsShowing[Index], 0, LSize);
+      AvailWidth := MaxInt;
+
+    if IsProviderSelected then
+      MeasureProviderItem(Index, AvailWidth, LSize)
+    else
+      MeasureString(ItemsShowing[Index], AvailWidth, LSize);
+
     Height := LSize.cy;
   end;
 end;
 
-procedure TJvCustomListBox.MeasureString(const S: string;
-  WidthAvail: Integer; var ASize: TSize);
+procedure TJvCustomListBox.MeasureProviderItem(Index, WidthAvail: Integer; var ASize: TSize);
+var
+  VL: IJvDataConsumerViewList;
+  Item: IJvDataItem;
+  ItemsRenderer: IJvDataItemsRenderer;
+  ItemRenderer: IJvDataItemRenderer;
+  ItemText: IJvDataItemText;
+begin
+  Canvas.Font := Font;
+  { Note: doing the TextHeight unconditionally makes sure the font is properly
+    selected into the device context. }
+  ASize.cy := Canvas.TextHeight('Wy');
+  ASize.cx := ClientWidth - 4;
+  Provider.Enter;
+  try
+    if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+    begin
+      Item := VL.Item(Index);
+      if Item <> nil then
+      begin
+        if Supports(Item, IJvDataItemRenderer, ItemRenderer) then
+          ASize := ItemRenderer.Measure(Canvas)
+        else if DP_FindItemsRenderer(Item, ItemsRenderer) then
+          ASize := ItemsRenderer.MeasureItem(Canvas, Item)
+        else if Supports(Item, IJvDataItemText, ItemText) then
+          ASize := Canvas.TextExtent(ItemText.Caption)
+        else
+          ASize := Canvas.TextExtent(SDataItemRenderHasNoText);
+        Inc(ASize.cx, VL.ItemLevel(Index) * VL.LevelIndent);
+      end;
+    end;
+  finally
+    Provider.Leave;
+  end;
+  { Note: item height in a listbox is limited to 255 pixels since Windows
+    stores the height in a single byte.}
+  if ASize.cy > 255 then
+    ASize.cy := 255;
+  if ASize.cy < ItemHeight then
+    ASize.cy := ItemHeight;
+end;
+
+procedure TJvCustomListBox.MeasureString(const S: string; WidthAvail: Integer; var ASize: TSize);
 var
   Flags: Longint;
   R: TRect;
