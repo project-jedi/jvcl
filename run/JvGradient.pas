@@ -75,7 +75,6 @@ constructor TJvGradient.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csOpaque];
-
   FBufferWidth := 0;
   FBufferHeight := 0;
   FSteps := 100;
@@ -96,7 +95,7 @@ procedure TJvGradient.Paint;
 var
   I: Integer;
   J, K: Real;
-  Deltas: array[0..2] of Real; //R,G,B
+  Deltas: array [0..2] of Real; //R,G,B
   R: TRect;
   LStartRGB, LEndRGB: TColor;
   LSteps: Word;
@@ -277,30 +276,42 @@ end;
 
 procedure TJvGradient.SetStyle(Value: TJvGradStyle);
 begin
-  FStyle := Value;
-  FBufferWidth := 0;
-  Invalidate;
+  if FStyle <> Value then
+  begin
+    FStyle := Value;
+    FBufferWidth := 0;
+    Invalidate;
+  end;
 end;
 
 procedure TJvGradient.SetStartColor(Value: TColor);
 begin
-  FStartColor := Value;
-  FBufferWidth := 0;
-  Invalidate;
+  if FStartColor <> Value then
+  begin
+    FStartColor := Value;
+    FBufferWidth := 0;
+    Invalidate;
+  end;
 end;
 
 procedure TJvGradient.SetSteps(Value: Word);
 begin
-  FSteps := Value;
-  FBufferWidth := 0;
-  Invalidate;
+  if FSteps <> Value then
+  begin
+    FSteps := Value;
+    FBufferWidth := 0;
+    Invalidate;
+  end;
 end;
 
 procedure TJvGradient.SetEndColor(Value: TColor);
 begin
-  FEndColor := Value;
-  FBufferWidth := 0;
-  Invalidate;
+  if FEndColor <> Value then
+  begin
+    FEndColor := Value;
+    FBufferWidth := 0;
+    Invalidate;
+  end;
 end;
 
 end.
