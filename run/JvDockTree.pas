@@ -521,6 +521,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF JVCLThemesEnabled}
+  JvThemes,
+  {$ENDIF JVCLThemesEnabled}
   Consts, SysUtils, Math,
   JvDockControlForm, JvDockSupportProc, JvDockGlobals, JvDockVSNetStyle;
 
@@ -3437,12 +3440,30 @@ procedure TJvDockTree.DrawDockGrabber(Control: TControl;
   procedure DrawCloseButton(Left, Top: Integer);
   var
     ADockClient: TJvDockClient;
+    {$IFDEF JVCLThemesEnabled}
+    Details: TThemedElementDetails;
+    CurrentThemeType: TThemedWindow;
+    {$ENDIF JVCLThemesEnabled}
   begin
     ADockClient := FindDockClient(Control);
     if (ADockClient <> nil) and not ADockClient.EnableCloseButton then
       Exit;
-    DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + GrabberSize - 2,
-      Top + GrabberSize - 2), DFC_CAPTION, DFCS_CAPTIONCLOSE);
+    // MF
+    {$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesAvailable and ThemeServices.ThemesEnabled then
+    begin
+      if GrabberSize < 14 then
+        CurrentThemeType := twSmallCloseButtonNormal
+      else
+        CurrentThemeType := twCloseButtonNormal;
+      Details := ThemeServices.GetElementDetails(CurrentThemeType);
+      ThemeServices.DrawElement(Canvas.Handle, Details, Rect(Left, Top,
+        Left + GrabberSize - 2, Top + GrabberSize - 2));
+    end
+    else
+      {$ENDIF JVCLThemesEnabled}
+      DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + GrabberSize - 2,
+        Top + GrabberSize - 2), DFC_CAPTION, DFCS_CAPTIONCLOSE);
   end;
 
   procedure DrawGrabberLine(Left, Top, Right, Bottom: Integer);

@@ -201,6 +201,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF JVCLThemesEnabled}
+  JvThemes,
+  {$ENDIF JVCLThemesEnabled}
   Consts, SysUtils, ExtCtrls,
   JvDockSupportProc, JvDockGlobals;
 
@@ -937,6 +940,11 @@ procedure TJvDockVCTree.DrawDockGrabber(Control: TControl;
 var
   lbVCDockZone: TJvDockVCZone;
   DrawRect: TRect;
+  {$IFDEF JVCLThemesEnabled}
+  Details: TThemedElementDetails;
+  CurrentThemeTypeBtn: TThemedWindow;
+  CurrentThemeTypeSB: TThemedScrollBar;
+  {$ENDIF JVCLThemesEnabled}
 
   procedure DrawCloseButton(Left, Top: Integer);
   var
@@ -947,8 +955,19 @@ var
       ADockClient := FindDockClient(Control);
       if (ADockClient <> nil) and (not ADockClient.EnableCloseButton) then
         Exit;
-      DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
-        Top + ButtonHeight), DFC_CAPTION, DFCS_CAPTIONCLOSE or Integer(lbVCDockZone.CloseBtnDown) * DFCS_PUSHED)
+      {$IFDEF JVCLThemesEnabled}
+      if ThemeServices.ThemesAvailable and ThemeServices.ThemesEnabled then
+      begin
+        CurrentThemeTypeBtn := twSmallCloseButtonNormal;
+        if lbVCDockZone.CloseBtnDown then
+          CurrentThemeTypeBtn := twSmallCloseButtonPushed;
+        Details := ThemeServices.GetElementDetails(CurrentThemeTypeBtn);
+        ThemeServices.DrawElement(Canvas.Handle, Details, Rect(Left, Top, Left + ButtonWidth, Top + ButtonHeight));
+      end
+      else
+        {$ENDIF JVCLThemesEnabled}
+        DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
+          Top + ButtonHeight), DFC_CAPTION, DFCS_CAPTIONCLOSE or Integer(lbVCDockZone.CloseBtnDown) * DFCS_PUSHED)
     end;
   end;
 
@@ -957,9 +976,19 @@ var
     {$IFDEF COMPILER6_UP}
     ArrowOrient: array [TAlign] of DWORD =
       (0, DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT, 0, 0);
+    {$IFDEF JVCLThemesEnabled}
+    ArrowOrientTheme: array [TAlign] of TThemedScrollBar =
+      (tsScrollBarDontCare, tsArrowBtnUpNormal, tsArrowBtnDownNormal, tsArrowBtnLeftNormal,
+       tsArrowBtnRightNormal, tsScrollBarDontCare, tsScrollBarDontCare);
+    {$ENDIF JVCLThemesEnabled}
     {$ELSE}
     ArrowOrient: array [TAlign] of DWORD =
-      (0, DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT, 0);
+    (0, DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT, 0);
+    {$IFDEF JVCLThemesEnabled}
+    ArrowOrientTheme: array [TAlign] of TThemedScrollBar =
+      (tsScrollBarDontCare, tsArrowBtnUpNormal, tsArrowBtnDownNormal, tsArrowBtnLeftNormal,
+       tsArrowBtnRightNormal, tsScrollBarDontCare);
+    {$ENDIF JVCLThemesEnabled}
     {$ENDIF COMPILER6_UP}
     CurrArrow: array [Boolean, TDockOrientation] of TAlign =
       ((alNone, alLeft, alTop), (alNone, alRight, alBottom));
@@ -972,10 +1001,23 @@ var
       InActive := not ((lbVCDockZone.ParentZone.Orientation <> DockSiteOrientation) and
         (lbVCDockZone.ParentZone.VisibleChildCount >= 2));
       IsMaximum := lbVCDockZone.ZoneSizeStyle in [zssMaximum];
-      DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
-        Top + ButtonHeight), DFC_SCROLL,
-        ArrowOrient[CurrArrow[IsMaximum, DockSiteOrientation]] +
-        Cardinal(InActive) * (DFCS_INACTIVE) + Cardinal(lbVCDockZone.ExpandButtonDown) * DFCS_PUSHED);
+      {$IFDEF JVCLThemesEnabled}
+      if ThemeServices.ThemesAvailable and ThemeServices.ThemesEnabled then
+      begin
+        CurrentThemeTypeSB := ArrowOrientTheme[CurrArrow[IsMaximum, DockSiteOrientation]];
+        if lbVCDockZone.ExpandButtonDown then
+          CurrentThemeTypeSB := TThemedScrollBar(Ord(CurrentThemeTypeSB) + 2);
+        if InActive then
+          CurrentThemeTypeSB := TThemedScrollBar(Ord(CurrentThemeTypeSB) + 3);
+        Details := ThemeServices.GetElementDetails(CurrentThemeTypeSB);
+        ThemeServices.DrawElement(Canvas.Handle, Details, Rect(Left, Top, Left + ButtonWidth, Top + ButtonHeight));
+      end
+      else
+      {$ENDIF JVCLThemesEnabled}
+        DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
+          Top + ButtonHeight), DFC_SCROLL,
+          ArrowOrient[CurrArrow[IsMaximum, DockSiteOrientation]] +
+          Cardinal(InActive) * (DFCS_INACTIVE) + Cardinal(lbVCDockZone.ExpandButtonDown) * DFCS_PUSHED);
     end;
   end;
 

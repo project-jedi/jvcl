@@ -45,6 +45,7 @@ type
     FSystemInfo: Boolean;
     FActiveFont: TFont;
     FInactiveFont: TFont;
+
     procedure SetActiveTitleEndColor(const Value: TColor);
     procedure SetActiveTitleStartColor(const Value: TColor);
     procedure SetInactiveTitleEndColor(const Value: TColor);
@@ -550,6 +551,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF JVCLThemesEnabled}
+  JvThemes,
+  {$ENDIF JVCLThemesEnabled}
   SysUtils, Math, Forms, 
   JvDockSupportProc, JvDockGlobals;
 
@@ -2247,6 +2251,10 @@ procedure TJvDockVIDTree.DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone; Lef
 var
   AZone: TJvDockAdvZone;
   ADockClient: TJvDockClient;
+  {$IFDEF JVCLThemesEnabled}
+  Details: TThemedElementDetails;
+  CurrentThemeType: TThemedWindow;
+  {$ENDIF JVCLThemesEnabled}
 begin
   AZone := TJvDockAdvZone(Zone);
   if AZone <> nil then
@@ -2254,8 +2262,28 @@ begin
     ADockClient := FindDockClient(Zone.ChildControl);
     if (ADockClient <> nil) and not ADockClient.EnableCloseButton then
       Exit;
-    DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
-      Top + ButtonHeight), DFC_CAPTION, DFCS_CAPTIONCLOSE or Integer(AZone.CloseBtnDown) * DFCS_PUSHED)
+    {$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesAvailable and ThemeServices.ThemesEnabled then
+    begin
+      if GrabberSize <= 18 then
+      begin
+        CurrentThemeType := twSmallCloseButtonNormal;
+        if AZone.CloseBtnDown then
+          CurrentThemeType := twSmallCloseButtonPushed;
+      end
+      else
+      begin
+        CurrentThemeType := twCloseButtonNormal;
+        if AZone.CloseBtnDown then
+          CurrentThemeType := twCloseButtonPushed;
+      end;
+      Details := ThemeServices.GetElementDetails(CurrentThemeType);
+      ThemeServices.DrawElement(Canvas.Handle, Details, Rect(Left, Top, Left + ButtonWidth, Top + ButtonHeight));
+    end
+    else
+      {$ENDIF JVCLThemesEnabled}
+      DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
+        Top + ButtonHeight), DFC_CAPTION, DFCS_CAPTIONCLOSE or Integer(AZone.CloseBtnDown) * DFCS_PUSHED)
   end;
 end;
 
@@ -4460,7 +4488,7 @@ initialization
 
 finalization
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 
