@@ -39,7 +39,6 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
     FFFFFF1FFFFFFE3FFFFFFC7FFFFFF8FFFFFFF1FFFFFFF3FFFFFFFFFFFFFF0000}
   OldCreateOrder = True
   Position = poDefaultPosOnly
-  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -176,11 +175,5 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
       Caption = '&Enabled'
       OnClick = EnabledItemClick
     end
-  end
-  object FormPlacement: TJvFormStorage
-    RegistryRoot = hkClassesRoot
-    StoredValues = <>
-    Left = 88
-    Top = 16
   end
 end

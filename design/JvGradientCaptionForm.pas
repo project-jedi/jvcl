@@ -37,8 +37,8 @@ uses
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF}
-  JvxCtrls, JvFormPlacement, JvToolEdit, JvGradientCaption, JvListBox, JvCtrls,
-  JvComponent;
+  JvFormPlacement, JvGradientCaption, JvListBox, JvCtrls,
+  JvComponent, JvToolEdit;
 
 type
   TGradCaptionsEditor = class(TForm)
@@ -61,7 +61,7 @@ type
     ColorDialog: TColorDialog;
     GradientCaption: TJvGradientCaption;
     FormStorage: TJvFormStorage;
-    CaptionList: TJvListBox;
+    CaptionList: TListBox;
     CaptionFont: TJvComboEdit;
     procedure FormCreate(Sender: TObject);
     procedure CaptionListClick(Sender: TObject);

@@ -39,7 +39,7 @@ uses
   {$ENDIF}
   StdCtrls, ExtCtrls,
   ExtDlgs,
-  JvIconList, JvSpeedbar, JvComponent;
+  JvIconList, ImgList, ComCtrls, ToolWin;
 
 type
   TIconListDialog = class(TForm)
@@ -62,14 +62,14 @@ type
     Label3: TLabel;
     IdxLabel: TLabel;
     ScrollBar: TScrollBar;
-    JvSpeedBar1: TJvSpeedBar;
-    JvSpeedbarSection1: TJvSpeedbarSection;
-    Load: TJvSpeedItem;
-    LoadAni: TJvSpeedItem;
-    Delete: TJvSpeedItem;
-    Clear: TJvSpeedItem;
-    Copy: TJvSpeedItem;
-    Paste: TJvSpeedItem;
+    ToolBar1: TToolBar;
+    Load: TToolButton;
+    Delete: TToolButton;
+    Clear: TToolButton;
+    Copy: TToolButton;
+    Paste: TToolButton;
+    LoadAni: TToolButton;
+    ImageList1: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure LoadClick(Sender: TObject);

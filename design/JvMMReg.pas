@@ -9,7 +9,7 @@ procedure Register;
 implementation
 {.$DEFINE USE_JV_GIF}
 uses
-  Classes,
+  Classes, Graphics,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -20,7 +20,7 @@ uses
   JvImageRotate, JvImageTransform, JvImageWindow, JvPcx,
   JvStarfield, JvWaitingGradient, JvWaitingProgress, JvWavePlayer,
   JvSpecialProgress, JvSlider, {$IFDEF USE_JV_GIF} JvGIF, JvGIFCtrl, {$ENDIF} JvID3v2Base, JvAnimatedImage,
-  JvSpecialImage, JvAVICapture,
+  JvSpecialImage, JvAVICapture, JvPictureEditors,
 
   JvAnimatedEditor, JvID3v2EditorForm, JvPictureEditForm, JvIconListForm, JvAVICaptureEditors;
 
@@ -51,6 +51,9 @@ begin
   RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
   RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
   RegisterComponentEditor(TJvID3Controller, TJvID3ControllerEditor);
+  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+  RegisterPropertyEditor(typeinfo(TPicture),TObject,'',TJvPictProperty);
+  {$ENDIF}
 
   {$IFDEF USE_JV_GIF}
   RegisterComponentEditor(TJvGIFAnimator, TJvGraphicsEditor);

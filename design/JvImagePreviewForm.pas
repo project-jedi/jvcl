@@ -33,7 +33,7 @@ interface
 uses
   Windows,
   SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls, FileCtrl,
-  JvxCtrls, JvPicClip, JvFormPlacement, JvComponent;
+  JvPicClip, JvFormPlacement, JvComponent, Buttons;
 
 type
   TImageForm = class(TForm)
@@ -55,7 +55,7 @@ type
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
-    PreviewBtn: TJvSpeedButton;
+    PreviewBtn: TSpeedButton;
     procedure FileListBoxClick(Sender: TObject);
     procedure StretchCheckClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
