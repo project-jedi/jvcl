@@ -81,11 +81,11 @@ type
     Exit1: TMenuItem;
     N2: TMenuItem;
     ToolBar1: TToolBar;
-    ToolButton1: TToolButton;
-    ToolButton2: TToolButton;
-    ToolButton3: TToolButton;
-    ToolButton4: TToolButton;
-    ToolButton5: TToolButton;
+    btnAddFiles: TToolButton;
+    btnOpenRepository: TToolButton;
+    btnConvert: TToolButton;
+    btnAboutMe: TToolButton;
+    btnExit: TToolButton;
     ActionList1: TActionList;
     StandardImages: TImageList;
     FileExit1: TFileExit;
@@ -96,20 +96,20 @@ type
     ToolButton6: TToolButton;
     ToolButton7: TToolButton;
     ToolButton8: TToolButton;
-    ToolButton9: TToolButton;
+    btnDeleteFiles: TToolButton;
     Remove1: TMenuItem;
     RemoveFiles: TAction;
     SaveData: TAction;
-    ToolButton10: TToolButton;
+    btnSaveRepository: TToolButton;
     SaveConversionData1: TMenuItem;
     DeleteLine: TAction;
-    ToolButton11: TToolButton;
+    btnDeleteLine: TToolButton;
     DeleteLine1: TMenuItem;
     Options1: TMenuItem;
     mnuBackup: TMenuItem;
     mnuWholeWords: TMenuItem;
     NewLine: TAction;
-    ToolButton12: TToolButton;
+    btnInsertNewLine: TToolButton;
     InsertLine1: TMenuItem;
     mnuReplaceFileNames: TMenuItem;
     JvSearchFiles1: TJvSearchFiles;
@@ -121,6 +121,8 @@ type
     JvBrowseFolder1: TJvBrowseFolder;
     N3: TMenuItem;
     mnuFileMask: TMenuItem;
+    btnNewRepository: TToolButton;
+    NewRepository: TAction;
     procedure btnAddClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
@@ -141,13 +143,13 @@ type
     procedure mnuWholeWordsClick(Sender: TObject);
     procedure mnuReplaceFileNamesClick(Sender: TObject);
     procedure IterateSubdirectoriesExecute(Sender: TObject);
-    procedure JvSearchFiles1FindFile(Sender: TObject;
-      SearchRec: _WIN32_FIND_DATAA; Path: string);
     procedure mnuSimulateClick(Sender: TObject);
     procedure SearchListColumnClick(Sender: TObject; Column: TListColumn);
     procedure mnuFileMaskClick(Sender: TObject);
     procedure ActionList1Update(Action: TBasicAction;
       var Handled: Boolean);
+    procedure JvSearchFiles1FindFile(Sender: TObject; const AName: string);
+    procedure NewRepositoryExecute(Sender: TObject);
   private
     { Private declarations }
     fCurrentDataFile: string;
@@ -415,20 +417,20 @@ end;
 procedure TfrmMain.btnSaveClick(Sender: TObject);
 begin
   with TSaveDialog.Create(nil) do
-  try
-    Filename := ExtractFileName(fCurrentDataFile);
-    Filter := 'Conversion files (*.dat)|*.dat';
-    DefaultExt := 'dat';
-    Options := Options + [ofOverWritePrompt];
-    if Execute then { Display Open dialog box }
-    begin
-      fCurrentDataFile := FileName;
-      vleUnits.Strings.SaveToFile(fCurrentDataFile);
-      SaveData.Enabled := False;
-    end;
-  finally // wrap up
-    Free;
-  end; // try/finally
+    try
+      Filename := ExtractFileName(fCurrentDataFile);
+      Filter := 'Conversion files (*.dat)|*.dat';
+      DefaultExt := 'dat';
+      Options := Options + [ofOverWritePrompt];
+      if Execute then { Display Open dialog box }
+        begin
+          fCurrentDataFile := FileName;
+          vleUnits.Strings.SaveToFile(fCurrentDataFile);
+          SaveData.Enabled := False;
+        end;
+    finally // wrap up
+      Free;
+    end; // try/finally
 end;
 
 procedure TfrmMain.btnDeleteClick(Sender: TObject);
@@ -516,19 +518,19 @@ end;
 
 procedure TfrmMain.IterateSubdirectoriesExecute(Sender: TObject);
 begin
-  JvBrowseFolder1.Directory := ExcludeTrailingPathDelimiter(JvSearchFiles1.FilePath);
+  JvBrowseFolder1.Directory := ExcludeTrailingPathDelimiter(JvSearchFiles1.RootDirectory);
   if JvBrowseFolder1.Execute then
     begin
-      JvSearchFiles1.FilePath := JvBrowseFolder1.Directory;
-      if JvSearchFiles1.FileMask = '' then
-        JvSearchFiles1.FileMask := '*.pas;*.dpr;*.dpk';
+      JvSearchFiles1.RootDirectory := JvBrowseFolder1.Directory;
+      if JvSearchFiles1.SearchParams.FileMask = '' then
+        JvSearchFiles1.SearchParams.FileMask := '*.pas;*.dpr;*.dpk';
       JvSearchFiles1.Search;
     end;
 end;
 
-procedure TfrmMain.JvSearchFiles1FindFile(Sender: TObject; SearchRec: _WIN32_FIND_DATAA; Path: string);
+procedure TfrmMain.JvSearchFiles1FindFile(Sender: TObject; const AName: string);
 begin
-  AddFiles(path + SearchRec.cFileName);
+  AddFiles(AName);
 end;
 
 procedure TfrmMain.mnuSimulateClick(Sender: TObject);
@@ -598,8 +600,8 @@ begin
   try
     with TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini')) do
       try
-        JvSearchFiles1.FilePath := ReadString('Settings', 'Path', '');
-        JvSearchFiles1.FileMask := ReadString('Settings', 'Mask', '*.dpr;*.dpk;*.pas');
+        JvSearchFiles1.RootDirectory := ReadString('Settings', 'Path', '');
+        JvSearchFiles1.SearchParams.FileMask := ReadString('Settings', 'Mask', '*.dpr;*.dpk;*.pas');
         fCurrentDataFile := ReadString('Settings', 'DATFile', '');
         mnuBackup.Checked := ReadBool('Settings', 'Backup', true);
         mnuWholeWords.Checked := ReadBool('Settings', 'WholeWords', true);
@@ -620,8 +622,8 @@ begin
   try
     with TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini')) do
       try
-        WriteString('Settings', 'Path', JvSearchFiles1.FilePath);
-        WriteString('Settings', 'Mask', JvSearchFiles1.FileMask);
+        WriteString('Settings', 'Path', JvSearchFiles1.RootDirectory);
+        WriteString('Settings', 'Mask', JvSearchFiles1.SearchParams.FileMask);
         WriteString('Settings', 'DATFile', fCurrentDataFile);
         WriteBool('Settings', 'Backup', mnuBackup.Checked);
         WriteBool('Settings', 'WholeWords', mnuWholeWords.Checked);
@@ -640,9 +642,9 @@ procedure TfrmMain.mnuFileMaskClick(Sender: TObject);
 var
   S: string;
 begin
-  S := JvSearchFiles1.FileMask;
+  S := JvSearchFiles1.SearchParams.FileMask;
   if InputQuery('File Mask', 'Set new file mask:', S) and (S <> '') then
-    JvSearchFiles1.FileMask := S;
+    JvSearchFiles1.SearchParams.FileMask := S;
 end;
 
 procedure TfrmMain.ActionList1Update(Action: TBasicAction;
@@ -651,6 +653,16 @@ const
   cViewColor: array[boolean] of TColor = (clWindow, clBtnFace);
 begin
   SearchList.Color := cViewColor[mnuSimulate.Checked];
+end;
+
+procedure TfrmMain.NewRepositoryExecute(Sender: TObject);
+var
+  i: integer;
+begin
+  btnSaveClick(self);
+  for i := vleUnits.Strings.Count downto 1 do
+    vleUnits.DeleteRow(i);
+  fCurrentDataFile := '';
 end;
 
 initialization

@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 286
-  Top = 265
+  Left = 359
+  Top = 490
   Width = 471
   Height = 386
   Caption = 'JVCL Conversion Utility'
@@ -108,12 +108,12 @@ object frmMain: TfrmMain
       Top = 0
       Action = IterateSubdirectories
     end
-    object ToolButton1: TToolButton
+    object btnAddFiles: TToolButton
       Left = 23
       Top = 0
       Action = FileOpen
     end
-    object ToolButton9: TToolButton
+    object btnDeleteFiles: TToolButton
       Left = 46
       Top = 0
       Action = RemoveFiles
@@ -126,7 +126,7 @@ object frmMain: TfrmMain
       ImageIndex = 89
       Style = tbsSeparator
     end
-    object ToolButton5: TToolButton
+    object btnExit: TToolButton
       Left = 77
       Top = 0
       Action = FileExit1
@@ -139,41 +139,46 @@ object frmMain: TfrmMain
       ImageIndex = 89
       Style = tbsSeparator
     end
-    object ToolButton2: TToolButton
+    object btnNewRepository: TToolButton
       Left = 108
+      Top = 0
+      Action = NewRepository
+    end
+    object btnOpenRepository: TToolButton
+      Left = 131
       Top = 0
       Action = OpenData
     end
-    object ToolButton12: TToolButton
-      Left = 131
+    object btnInsertNewLine: TToolButton
+      Left = 154
       Top = 0
       Action = NewLine
     end
-    object ToolButton11: TToolButton
-      Left = 154
+    object btnDeleteLine: TToolButton
+      Left = 177
       Top = 0
       Action = DeleteLine
     end
-    object ToolButton10: TToolButton
-      Left = 177
+    object btnSaveRepository: TToolButton
+      Left = 200
       Top = 0
       Action = SaveData
     end
-    object ToolButton3: TToolButton
-      Left = 200
+    object btnConvert: TToolButton
+      Left = 223
       Top = 0
       Action = Convert
     end
     object ToolButton8: TToolButton
-      Left = 223
+      Left = 246
       Top = 0
       Width = 8
       Caption = 'ToolButton8'
       ImageIndex = 89
       Style = tbsSeparator
     end
-    object ToolButton4: TToolButton
-      Left = 231
+    object btnAboutMe: TToolButton
+      Left = 254
       Top = 0
       Action = AboutMe
     end
@@ -348,6 +353,13 @@ object frmMain: TfrmMain
       Hint = 'Scan Subdirectories and add files'
       ImageIndex = 14
       OnExecute = IterateSubdirectoriesExecute
+    end
+    object NewRepository: TAction
+      Category = 'Conversion'
+      Caption = 'NewRepository'
+      Hint = 'Create New Repository'
+      ImageIndex = 1
+      OnExecute = NewRepositoryExecute
     end
   end
   object StandardImages: TImageList
@@ -4587,7 +4599,6 @@ object frmMain: TfrmMain
       000000000000}
   end
   object JvSearchFiles1: TJvSearchFiles
-    OwnerData = True
     OnFindFile = JvSearchFiles1FindFile
     Left = 48
     Top = 88
