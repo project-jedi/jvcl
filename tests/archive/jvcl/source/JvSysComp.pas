@@ -25,6 +25,8 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
+unit JvSysComp;
 {$I JVCL.INC}
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
@@ -34,19 +36,38 @@ Known Issues:
 This unit is only supported on Windows!
 {$ENDIF}
 
-unit JvSysComp;
-
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
 {$IFDEF COMPILER5_UP}Contnrs, {$ENDIF}ShellAPI, JclBase, JclStrings, JclSysInfo,
-  JclFileUtils, JvComponent;
+  JclFileUtils, JvComponent, SyncObjs;
+
+const
+  CCPS_BufferSize = 1024;
+  CCPS_MaxBufferSize = 65536;
 
 type
   EJvProcessError = EJclError;
 
   TJvProcessPriority = (ppIdle, ppNormal, ppHigh, ppRealTime);
+
+  TJvConsoleOption = (coOwnerData, coRedirect);
+  TJvConsoleOptions = set of TJvConsoleOption;
+
+  TJvCPSReadEvent = procedure(Sender: TObject; const S: string) of object;
+  TJvCPSTerminateEvent = procedure(Sender: TObject; ExitCode: DWORD) of object;
+
+  TJvRWHandles = record
+    Read: THandle;
+    Write: THandle;
+  end;
+
+  TJvRWEHandles = record
+    Read: THandle;
+    Write: THandle;
+    Error: THandle;
+  end;
 
   TJvProcessEntry = class(TObject)
   private
@@ -63,21 +84,21 @@ type
     class function PriorityText(Priority: TJvProcessPriority): string;
     function Terminate: Boolean;
     property FileName: TFileName read FFileName;
-    property LargeIconIndex: Integer index SHGFI_LARGEICON read GetSystemIconIndex;
+    property LargeIconIndex: Integer index SHGFI_LARGEICON read
+      GetSystemIconIndex;
     property Priority: TJvProcessPriority read GetPriority write SetPriority;
     property ProcessID: DWORD read FProcessID;
     property ProcessName: string read FProcessName;
-    property SmallIconIndex: Integer index SHGFI_SMALLICON read GetSystemIconIndex;
+    property SmallIconIndex: Integer index SHGFI_SMALLICON read
+      GetSystemIconIndex;
   end;
 
-
+  TJvCPSBuffer = array[0..CCPS_BufferSize - 1] of Char;
   TJvCPSState = (psReady, psRunning, psWaiting);
   TJvCPSFlag = (cfDefaultErrorMode, cfNewConsole, cfNewProcGroup, cfSeparateWdm,
     cfSharedWdm, cfSuspended, cfUnicode, cfDetached);
   TJvCPSFlags = set of TJvCPSFlag;
   TJvCPSShowWindow = (swHide, swMinimize, swMaximize, swNormal);
-
-  TJvCPSTerminateEvent = procedure(Sender: TObject; ExitCode: DWORD) of object;
 
   TJvCPSStartupInfo = class(TPersistent)
   private
@@ -104,14 +125,20 @@ type
     property Title: string read FTitle write FTitle;
     property Left: Integer read FLeft write FLeft default 0;
     property Top: Integer read FTop write FTop default 0;
-    property DefaultPosition: Boolean read FDefaultPosition write FDefaultPosition default True;
+    property DefaultPosition: Boolean read FDefaultPosition write
+      FDefaultPosition default True;
     property Width: Integer read FWidth write FWidth default 0;
     property Height: Integer read FHeight write FHeight default 0;
-    property DefaultSize: Boolean read FDefaultSize write FDefaultSize default True;
-    property ShowWindow: TJvCPSShowWindow read FShowWindow write FShowWindow default swNormal;
-    property DefaultWindowState: Boolean read FDefaultWindowState write FDefaultWindowState default True;
-    property ForceOnFeedback: Boolean read FForceOnFeedback write FForceOnFeedback default False;
-    property ForceOffFeedback: Boolean read FForceOffFeedback write FForceOffFeedback default False;
+    property DefaultSize: Boolean read FDefaultSize write FDefaultSize default
+      True;
+    property ShowWindow: TJvCPSShowWindow read FShowWindow write FShowWindow
+      default swNormal;
+    property DefaultWindowState: Boolean read FDefaultWindowState write
+      FDefaultWindowState default True;
+    property ForceOnFeedback: Boolean read FForceOnFeedback write
+      FForceOnFeedback default False;
+    property ForceOffFeedback: Boolean read FForceOffFeedback write
+      FForceOffFeedback default False;
   end;
 
   TJvCreateProcess = class(TJvComponent)
@@ -126,17 +153,45 @@ type
     FPriority: TJvProcessPriority;
     FProcessInfo: TProcessInformation;
     FWaitForTerminate: Boolean;
+    FConsoleOptions: TJvConsoleOptions;
+
     FOnTerminate: TJvCPSTerminateEvent;
-    WaitThread: TThread;
+    FOnRead: TJvCPSReadEvent;
+    FOnRawRead: TJvCPSReadEvent;
+
+    FWaitThread: TThread;
+    FReadThread: TThread;
+
+    FHandle: THandle;
+    FCurrentLine: string; // Last output of the console with no #10 char.
+    FCursorPosition: Integer; // Position of the cursor on FCurrentLine
+    FConsoleOutput: TStrings;
+    FParseBuffer: TJvCPSBuffer;
+    FExitCode: Cardinal;
+
     procedure SetWaitForTerminate(const Value: Boolean);
     procedure WaitThreadOnTerminate(Sender: TObject);
-    function GetProcessInfo: TProcessInformation;
+    procedure ReadThreadOnTerminate(Sender: TObject);
     procedure SetEnvironment(const Value: TStrings);
+    function GetHandle: THandle;
   protected
     procedure CheckRunning;
     procedure CheckNotWaiting;
     procedure CloseProcessHandles;
     procedure TerminateWaitThread;
+
+    procedure HandleReadEvent;
+    procedure ParseConsoleOutput(Data: PChar; ASize: Cardinal);
+    procedure DoReadEvent;
+    procedure DoRawReadEvent(Data: PChar; const ASize: Cardinal);
+    procedure DoTerminateEvent;
+
+    procedure WndProc(var Message: TMessage);
+    procedure MainWndProc(var Message: TMessage);
+    property Handle: THandle read GetHandle;
+
+    procedure CloseRead;
+    procedure CloseWrite;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -144,24 +199,40 @@ type
     procedure Run;
     procedure StopWaiting;
     procedure Terminate;
-    property ProcessInfo: TProcessInformation read GetProcessInfo;
+
+    function Write(const S: string): Boolean;
+    function WriteLn(const S: string): Boolean;
+
+    property ProcessInfo: TProcessInformation read FProcessInfo;
     property State: TJvCPSState read FState;
+    property ConsoleOutput: TStrings read FConsoleOutput;
   published
-    property ApplicationName: string read FApplicationName write FApplicationName;
+    property ApplicationName: string read FApplicationName write
+      FApplicationName;
     property CommandLine: string read FCommandLine write FCommandLine;
-    property CreationFlags: TJvCPSFlags read FCreationFlags write FCreationFlags default [];
-    property CurrentDirectory: string read FCurrentDirectory write FCurrentDirectory;
+    property CreationFlags: TJvCPSFlags read FCreationFlags write FCreationFlags
+      default [];
+    property CurrentDirectory: string read FCurrentDirectory write
+      FCurrentDirectory;
     property Environment: TStrings read FEnvironment write SetEnvironment;
-    property Priority: TJvProcessPriority read FPriority write FPriority default ppNormal;
-    property StartupInfo: TJvCPSStartupInfo read FStartupInfo write FStartupInfo;
-    property WaitForTerminate: Boolean read FWaitForTerminate write SetWaitForTerminate default True;
-    property OnTerminate: TJvCPSTerminateEvent read FOnTerminate write FOnTerminate;
+    property Priority: TJvProcessPriority read FPriority write FPriority default
+      ppNormal;
+    property StartupInfo: TJvCPSStartupInfo read FStartupInfo write
+      FStartupInfo;
+    property WaitForTerminate: Boolean read FWaitForTerminate write
+      SetWaitForTerminate default True;
+    property ConsoleOptions: TJvConsoleOptions read FConsoleOptions write
+      FConsoleOptions default [coOwnerData];
+    property OnTerminate: TJvCPSTerminateEvent read FOnTerminate write
+      FOnTerminate;
+    property OnRead: TJvCPSReadEvent read FOnRead write FOnRead;
+    property OnRawRead: TJvCPSReadEvent read FOnRawRead write FOnRawRead;
   end;
 
 implementation
 
 uses
-  TLHelp32, Psapi,
+  TLHelp32, Psapi, JvMaxMin,
   JclSysUtils, JvFunctions;
 
 resourcestring
@@ -175,35 +246,12 @@ resourcestring
   RsRealTime = 'RealTime';
 
 const
-  MaxProcessCount = 1024;
+  CM_READ = WM_USER + 1;
+
+  //MaxProcessCount = 4096;
   ProcessPriorities: array[TJvProcessPriority] of DWORD =
   (IDLE_PRIORITY_CLASS, NORMAL_PRIORITY_CLASS, HIGH_PRIORITY_CLASS,
     REALTIME_PRIORITY_CLASS);
-
-function StrContainChars(const S: AnsiString; Chars: TSysCharSet; CheckAllChars: Boolean): Boolean;
-var
-  I: Integer;
-  C: Char;
-begin
-  Result := False;
-  if CheckAllChars then
-  begin
-    for I := 1 to Length(S) do
-    begin
-      C := S[I];
-      if C in Chars then
-        Chars := Chars - [C];
-    end;
-    Result := (Chars = []);
-  end
-  else
-    for I := 1 to Length(S) do
-      if S[I] in Chars then
-      begin
-        Result := True;
-        Break;
-      end;
-end;
 
 function InternalCloseApp(ProcessID: DWORD; UseQuit: Boolean): Boolean;
 type
@@ -216,18 +264,18 @@ type
 var
   EnumWinRec: TEnumWinRec;
 
-  function EnumWinProc(Wnd: HWND; Param: PEnumWinRec): BOOL; stdcall;
+  function EnumWinProc(Wnd: HWND; Param: PEnumWinRec): bool; stdcall;
   var
     PID, TID: DWORD;
   begin
     TID := GetWindowThreadProcessId(Wnd, @PID);
-    if PID = Param^.ProcessID then
+    if PID = Param.ProcessID then
     begin
-      if Param^.PostQuit then
+      if Param.PostQuit then
         PostThreadMessage(TID, WM_QUIT, 0, 0)
       else if IsWindowVisible(Wnd) then
         PostMessage(Wnd, WM_CLOSE, 0, 0);
-      Param^.FoundWin := True;
+      Param.FoundWin := True;
     end;
     Result := True;
   end;
@@ -260,6 +308,95 @@ begin
   end
   else
     Result := True;
+end;
+
+procedure ConstructPipe(
+  var ConsoleHandles: TJvRWEHandles;
+  var LocalHandles: TJvRWHandles);
+var
+  LHandles: TJvRWHandles;
+  LSecurityAttr: TSecurityAttributes;
+  LSecurityDesc: TSecurityDescriptor;
+  Ok: Boolean;
+begin
+  { http://support.microsoft.com/default.aspx?scid=KB;EN-US;q190351& }
+  { http://community.borland.com/article/0,1410,10387,00.html }
+
+  FillChar(LSecurityAttr, SizeOf(TSecurityAttributes), 0);
+  FillChar(ConsoleHandles, SizeOf(TJvRWEHandles), 0);
+  FillChar(LocalHandles, SizeOf(TJvRWHandles), 0);
+  FillChar(LHandles, SizeOf(TJvRWHandles), 0);
+  Ok := False;
+
+  // Set up the security attributes struct.
+  LSecurityAttr.nLength := SizeOf(TSecurityAttributes);
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  begin
+    // Initialize security descriptor (Windows NT)
+    InitializeSecurityDescriptor(@LSecurityDesc, SECURITY_DESCRIPTOR_REVISION);
+    SetSecurityDescriptorDacl(@LSecurityDesc, True, nil, False);
+    LSecurityAttr.lpSecurityDescriptor := @LSecurityDesc;
+  end
+  else
+    LSecurityAttr.lpSecurityDescriptor := nil;
+  LSecurityAttr.bInheritHandle := True;
+
+  try
+    // Create the child output pipe.
+    if not CreatePipe(LHandles.Read, ConsoleHandles.Write, @LSecurityAttr, 0)
+      then
+      RaiseLastOSError;
+
+    // Create a duplicate of the output write handle for the std error
+    // write handle. This is necessary in case the child application
+    // closes one of its std output handles.
+    if not DuplicateHandle(GetCurrentProcess, ConsoleHandles.Write,
+      GetCurrentProcess,
+      @ConsoleHandles.Error, // Address of new handle.
+      0, True, // Make it inheritable.
+      DUPLICATE_SAME_ACCESS) then
+      RaiseLastOSError;
+
+    // Create the child input pipe.
+    if not CreatePipe(ConsoleHandles.Read, LHandles.Write, @LSecurityAttr, 0)
+      then
+      RaiseLastOSError;
+
+    // Create new output read handle and the input write handles. Set
+    // the Properties to FALSE. Otherwise, the child inherits the
+    // properties and, as a result, non-closeable handles to the pipes
+    // are created.
+    if not DuplicateHandle(GetCurrentProcess, LHandles.Read,
+      GetCurrentProcess,
+      @LocalHandles.Read, // Address of new handle.
+      0, False, // Make it uninheritable.
+      DUPLICATE_SAME_ACCESS) then
+      RaiseLastOSError;
+
+    if not DuplicateHandle(GetCurrentProcess, LHandles.Write,
+      GetCurrentProcess,
+      @LocalHandles.Write, // Address of new handle.
+      0, False, // Make it uninheritable.
+      DUPLICATE_SAME_ACCESS) then
+      RaiseLastOSError;
+
+    Ok := True;
+  finally
+    // Close inheritable copies of the handles you do not want to be
+    // inherited.
+    SafeCloseHandle(LHandles.Read);
+    SafeCloseHandle(LHandles.Write);
+
+    if not Ok then
+    begin
+      // Some error occurred; close all possibly created handles
+      SafeCloseHandle(ConsoleHandles.Read);
+      SafeCloseHandle(ConsoleHandles.Write);
+      SafeCloseHandle(ConsoleHandles.Error);
+      SafeCloseHandle(LocalHandles.Read);
+      SafeCloseHandle(LocalHandles.Write);
+    end;
+  end;
 end;
 
 { TJvProcessEntry }
@@ -310,12 +447,14 @@ function TJvProcessEntry.GetSystemIconIndex(IconType: Integer): Integer;
 var
   FileInfo: TSHFileInfo;
 begin
-  ZeroMemory(@FileInfo, Sizeof(FileInfo));
-  SHGetFileInfo(PChar(FileName), 0, FileInfo, Sizeof(FileInfo), SHGFI_SYSICONINDEX or IconType);
+  ZeroMemory(@FileInfo, SizeOf(FileInfo));
+  SHGetFileInfo(PChar(FileName), 0, FileInfo, SizeOf(FileInfo),
+    SHGFI_SYSICONINDEX or IconType);
   Result := FileInfo.iIcon;
 end;
 
-class function TJvProcessEntry.PriorityText(Priority: TJvProcessPriority): string;
+class function TJvProcessEntry.PriorityText(Priority: TJvProcessPriority):
+  string;
 const
   PriorityTexts: array[TJvProcessPriority] of PResStringRec =
   (@RsIdle, @RsNormal, @RsHigh, @RsRealTime);
@@ -379,10 +518,10 @@ const
   ShowWindowValues: array[TJvCPSShowWindow] of DWORD =
   (SW_HIDE, SW_SHOWMINIMIZED, SW_SHOWMAXIMIZED, SW_SHOWNORMAL);
 begin
-  ZeroMemory(@Result, Sizeof(TStartupInfo));
+  ZeroMemory(@Result, SizeOf(TStartupInfo));
   with Result do
   begin
-    cb := Sizeof(TStartupInfo);
+    cb := SizeOf(TStartupInfo);
     if Length(FDesktop) > 0 then
       lpDesktop := PChar(FDesktop);
     if Length(FTitle) > 0 then
@@ -411,7 +550,7 @@ begin
   end;
 end;
 
-{ TJvCreateProcess }
+{ Threads which monitor the created process }
 
 type
   TJvWaitForProcessThread = class(TThread)
@@ -426,6 +565,53 @@ type
     destructor Destroy; override;
     procedure TerminateThread;
   end;
+
+  TJvReadThread = class(TThread)
+  private
+    // Read end of the pipe
+    FReadHandle: THandle;
+    // Critical sections to synchronize access to the buffers
+    FReadLock: TCriticalSection;
+    // Handle to the TJvCreateProcess
+    FDestHandle: THandle;
+
+    FInputBuffer: PChar;
+    FInputBufferSize: Cardinal;
+    FInputBufferEnd: Cardinal;
+  protected
+    procedure CopyToBuffer(Buffer: PChar; ASize: Cardinal);
+    procedure Execute; override;
+  public
+    constructor Create(AReadHandle, ADestHandle: THandle);
+    destructor Destroy; override;
+    procedure CloseRead;
+    function ReadBuffer(var ABuffer: TJvCPSBuffer; out ABufferSize: Cardinal):
+      Boolean;
+    procedure TerminateThread;
+  end;
+
+  TJvConsoleThread = class(TJvWaitForProcessThread)
+  private
+    // Write end of the pipe
+    FWriteHandle: THandle;
+    FWriteEvent: THandle;
+    // Critical sections to synchronize access to the buffers
+    FWriteLock: TCriticalSection;
+
+    // Fixed size buffer; maybe change to sizeable
+    FOutputBuffer: TJvCPSBuffer;
+    FOutputBufferEnd: Cardinal;
+  protected
+    procedure Execute; override;
+    function TryWrite: Boolean;
+  public
+    constructor Create(ProcessHandle: DWORD; AWriteHandle: THandle);
+    destructor Destroy; override;
+    function Write(const S: string): Boolean;
+    procedure CloseWrite;
+  end;
+
+{ TJvCreateProcess }
 
 procedure TJvCreateProcess.CheckNotWaiting;
 begin
@@ -451,6 +637,18 @@ begin
   OSCheck(SafeCloseHandle(FProcessInfo.hThread));
 end;
 
+procedure TJvCreateProcess.CloseRead;
+begin
+  if Assigned(FReadThread) and (FReadThread is TJvReadThread) then
+    TJvReadThread(FReadThread).CloseRead;
+end;
+
+procedure TJvCreateProcess.CloseWrite;
+begin
+  if Assigned(FWaitThread) and (FWaitThread is TJvConsoleThread) then
+    TJvConsoleThread(FWaitThread).CloseWrite;
+end;
+
 constructor TJvCreateProcess.Create(AOwner: TComponent);
 begin
   inherited;
@@ -460,6 +658,8 @@ begin
   FState := psReady;
   FWaitForTerminate := True;
   FStartupInfo := TJvCPSStartupInfo.Create;
+  FConsoleOutput := TStringList.Create;
+  FConsoleOptions := [coOwnerData];
 end;
 
 destructor TJvCreateProcess.Destroy;
@@ -468,12 +668,178 @@ begin
   //  CloseProcessHandles;
   FreeAndNil(FEnvironment);
   FreeAndNil(FStartupInfo);
+  if FHandle <> 0 then
+{$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FHandle);
   inherited;
+  FConsoleOutput.Free;
 end;
 
-function TJvCreateProcess.GetProcessInfo: TProcessInformation;
+procedure TJvCreateProcess.DoRawReadEvent(Data: PChar; const ASize: Cardinal);
+var
+  S: string;
 begin
-  Result := FProcessInfo;
+  if Assigned(FOnRawRead) then
+  begin
+    // Do copy because of possible #0's etc.
+    SetLength(S, ASize);
+    Move(Data^, PChar(S)^, ASize);
+    FOnRawRead(Self, S);
+  end;
+end;
+
+procedure TJvCreateProcess.DoReadEvent;
+begin
+  { Notify user and update current line & cursor }
+  if not (coOwnerData in ConsoleOptions) then
+    FConsoleOutput.Add(FCurrentLine);
+  if Assigned(FOnRead) then
+    FOnRead(Self, FCurrentLine);
+  FCurrentLine := '';
+  FCursorPosition := 0;
+end;
+
+procedure TJvCreateProcess.DoTerminateEvent;
+begin
+  FState := psReady;
+  CloseProcessHandles;
+  if Assigned(FOnTerminate) then
+    FOnTerminate(Self, FExitCode);
+end;
+
+function TJvCreateProcess.GetHandle: THandle;
+begin
+  if FHandle = 0 then
+    FHandle := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}AllocateHWnd(WndProc);
+  Result := FHandle;
+end;
+
+procedure TJvCreateProcess.HandleReadEvent;
+var
+  ASize: Cardinal;
+begin
+  { Copy the data from the read thread to the this (main) thread and
+    parse the console output }
+  if Assigned(FReadThread) and (FReadThread is TJvReadThread) then
+    while Assigned(FReadThread) and
+      TJvReadThread(FReadThread).ReadBuffer(FParseBuffer, ASize) do
+      ParseConsoleOutput(FParseBuffer, ASize);
+end;
+
+procedure TJvCreateProcess.MainWndProc(var Message: TMessage);
+begin
+  try
+    WndProc(Message);
+  except
+    Application.HandleException(Self);
+  end;
+end;
+
+procedure TJvCreateProcess.ParseConsoleOutput(Data: PChar; ASize: Cardinal);
+var
+  P, Q: PChar;
+
+  procedure DoOutput;
+    { Copy chunk [Q..P) to the current line & Update cursor position }
+  var
+    ChunkSize: Integer;
+  begin
+    ChunkSize := P - Q;
+    if ChunkSize <= 0 then
+      Exit;
+
+    { Does the chunck fit on the current line.. }
+    if Length(FCurrentLine) < FCursorPosition + ChunkSize then
+      { .. if not resize current line }
+      SetLength(FCurrentLine, FCursorPosition + ChunkSize);
+
+    { Move the chunk to the current line }
+    Move(Q^, (PChar(FCurrentLine) + FCursorPosition)^, ChunkSize);
+
+    { Update the cursor }
+    Inc(FCursorPosition, ChunkSize);
+  end;
+
+  procedure DoTab;
+  begin
+    { Does the chunck (8 spaces) fit on the current line.. }
+    if Length(FCurrentLine) < FCursorPosition + 8 then
+      { .. if not resize current line }
+      SetLength(FCurrentLine, FCursorPosition + 8);
+
+    { Fill 8 spaces on the currentline at the cursor position }
+    FillChar((PChar(FCurrentLine) + FCursorPosition)^, 8, #32);
+
+    { Update the cursor }
+    Inc(FCursorPosition, 8);
+  end;
+
+begin
+  DoRawReadEvent(Data, ASize);
+
+  P := Data;
+  Q := Data;
+
+  while Cardinal(P - Data) < ASize do
+    case P^ of
+      #0, #7: // NULL and BELL
+        begin
+          { Replace with space }
+          P^ := #32;
+          Inc(P);
+        end;
+      #8: // back space
+        begin
+          DoOutput;
+          Dec(FCursorPosition);
+          if FCursorPosition < 0 then
+            FCursorPosition := 0;
+          Inc(P);
+          Q := P;
+        end;
+      #9: // tab
+        begin
+          { Replace with 8 spaces }
+          DoOutput;
+          DoTab;
+          Inc(P);
+          Q := P;
+        end;
+      #10: // line feed
+        begin
+          DoOutput;
+          DoReadEvent;
+          Inc(P);
+          Q := P;
+        end;
+      #13: // cariage return
+        begin
+          DoOutput;
+          FCursorPosition := 0;
+          Inc(P);
+          Q := P;
+        end;
+    else
+      Inc(P);
+    end;
+  DoOutput;
+end;
+
+procedure TJvCreateProcess.ReadThreadOnTerminate(Sender: TObject);
+begin
+  { Read for the last time data from the read thread }
+  HandleReadEvent;
+  if FCurrentLine <> '' then
+    DoReadEvent;
+  FReadThread := nil;
+
+  { We only send a TerminateEvent if both the read thread and the wait thread
+    have terminated; usually the read thread will terminate before the wait
+    thread: }
+
+  { Has the FWaitThread already finished? }
+  if not Assigned(FWaitThread) then
+    { ..if so notify the user }
+    DoTerminateEvent;
 end;
 
 procedure TJvCreateProcess.Run;
@@ -483,15 +849,23 @@ const
     CREATE_SEPARATE_WOW_VDM, CREATE_SHARED_WOW_VDM, CREATE_SUSPENDED,
     CREATE_UNICODE_ENVIRONMENT, DETACHED_PROCESS);
 var
+  LConsoleHandles: TJvRWEHandles; // Handles which the console will use
+  LLocalHandles: TJvRWHandles; // Handles which we will use
+  LStartupInfo: TStartupInfo;
+
   Flags: DWORD;
   F: TJvCPSFlag;
   AppName, CurrDir: PChar;
   EnvironmentData: PChar;
+  DoRedirect: Boolean;
 begin
   CheckNotWaiting;
   FState := psReady;
+  FCurrentLine := '';
+  FCursorPosition := 0;
+  DoRedirect := coRedirect in ConsoleOptions;
 
-  ZeroMemory(@FProcessInfo, Sizeof(FProcessInfo));
+  ZeroMemory(@FProcessInfo, SizeOf(FProcessInfo));
   Flags := ProcessPriorities[FPriority];
   for F := Low(TJvCPSFlag) to High(TJvCPSFlag) do
     if F in FCreationFlags then
@@ -503,26 +877,65 @@ begin
   else
     StringsToMultiSz(EnvironmentData, FEnvironment);
 
-  if not CreateProcess(AppName, PChar(FCommandLine), nil, nil, False, Flags,
-    EnvironmentData, CurrDir, FStartupInfo.StartupInfo, FProcessInfo) then
-  begin
-    FreeMultiSz(EnvironmentData);
-    RaiseLastOSError;
-  end
-  else
-    FreeMultiSz(EnvironmentData);
+  try
+    LStartupInfo := FStartupInfo.GetStartupInfo;
 
-  if FWaitForTerminate then
-  begin
-    WaitThread := TJvWaitForProcessThread.Create(FProcessInfo.hProcess);
-    WaitThread.OnTerminate := WaitThreadOnTerminate;
-    WaitThread.Resume;
-    FState := psWaiting;
-  end
-  else
-  begin
-    CloseProcessHandles;
-    FState := psRunning;
+    if DoRedirect then
+    begin
+      ConstructPipe(LConsoleHandles, LLocalHandles);
+
+      with LStartupInfo do
+      begin
+        dwFlags := dwFlags or STARTF_USESTDHANDLES;
+        hStdOutput := LConsoleHandles.Write;
+        hStdInput := LConsoleHandles.Read;
+        hStdError := LConsoleHandles.Error;
+      end;
+    end;
+
+    if not CreateProcess(AppName, PChar(FCommandLine), nil, nil, DoRedirect,
+      Flags, EnvironmentData, CurrDir, LStartupInfo, FProcessInfo) then
+    begin
+      CloseProcessHandles;
+      RaiseLastOSError;
+    end;
+
+    if DoRedirect then
+    begin
+      FWaitThread := TJvConsoleThread.Create(FProcessInfo.hProcess,
+        LLocalHandles.Write);
+      FWaitThread.OnTerminate := WaitThreadOnTerminate;
+      FWaitThread.Resume;
+
+      FReadThread := TJvReadThread.Create(LLocalHandles.Read, Handle);
+      FReadThread.OnTerminate := ReadThreadOnTerminate;
+      FReadThread.Resume;
+
+      FState := psWaiting;
+    end
+    else if FWaitForTerminate then
+    begin
+      FWaitThread := TJvWaitForProcessThread.Create(FProcessInfo.hProcess);
+      FWaitThread.OnTerminate := WaitThreadOnTerminate;
+      FWaitThread.Resume;
+      FState := psWaiting;
+    end
+    else
+    begin
+      { http://support.microsoft.com/default.aspx?scid=KB;EN-US;Q124121& }
+      WaitForInputIdle(FProcessInfo.hProcess, INFINITE);
+      CloseProcessHandles;
+      FState := psRunning;
+    end;
+  finally
+    // Close pipe handles (do not continue to modify the parent).
+    // You need to make sure that no handles to the write end of the
+    // output pipe are maintained in this process or else the pipe will
+    // not close when the child process exits and the ReadFile will hang.
+    SafeCloseHandle(LConsoleHandles.Write);
+    SafeCloseHandle(LConsoleHandles.Read);
+    SafeCloseHandle(LConsoleHandles.Error);
+    FreeMultiSz(EnvironmentData);
   end;
 end;
 
@@ -551,10 +964,30 @@ end;
 
 procedure TJvCreateProcess.TerminateWaitThread;
 begin
-  if (FState = psWaiting) and Assigned(WaitThread) then
+  { This is a dangerous function; because the read thread uses a blocking
+    function there's no way we can stop it (normally); just signal the
+    thread that is has to end;
+
+    Note that thus it's the user responsibility to ensure that the console
+    will end. If the console ends, the read thread will end also.
+
+    An console can (always?) be ended by calling 'TJvCreateProcess.Terminate'
+  }
+
+  if FState = psWaiting then
   begin
-    WaitThread.OnTerminate := nil;
-    TJvWaitForProcessThread(WaitThread).TerminateThread;
+    if Assigned(FWaitThread) then
+    begin
+      FWaitThread.OnTerminate := nil;
+      TJvWaitForProcessThread(FWaitThread).TerminateThread;
+      FWaitThread := nil;
+    end;
+    if Assigned(FReadThread) then
+    begin
+      FReadThread.OnTerminate := nil;
+      TJvReadThread(FReadThread).TerminateThread;
+      FReadThread := nil;
+    end;
     FState := psReady;
     CloseProcessHandles;
   end;
@@ -562,11 +995,201 @@ end;
 
 procedure TJvCreateProcess.WaitThreadOnTerminate(Sender: TObject);
 begin
-  FState := psReady;
-  WaitThread := nil;
-  CloseProcessHandles;
-  if Assigned(FOnTerminate) then
-    FOnTerminate(Self, TJvWaitForProcessThread(Sender).FExitCode);
+  FWaitThread := nil;
+
+  if (Sender is TJvConsoleThread) and Assigned(FReadThread) then
+  begin
+    // FReadThread is not yet terminated.
+    FReadThread.Terminate;
+    // Force the read on the input to return by closing the handle.
+    TJvReadThread(FReadThread).CloseRead;
+  end;
+
+  { We only send a TerminateEvent if both the read thread and the wait thread
+    have terminated; usually the read thread will terminate before the wait
+    thread: }
+
+  FExitCode := TJvWaitForProcessThread(Sender).FExitCode;
+  if not Assigned(FReadThread) then
+    DoTerminateEvent;
+end;
+
+procedure TJvCreateProcess.WndProc(var Message: TMessage);
+begin
+  case Message.Msg of
+    CM_READ:
+      HandleReadEvent;
+  end;
+end;
+
+function TJvCreateProcess.Write(const S: string): Boolean;
+begin
+  Result := Assigned(FWaitThread) and (FWaitThread is TJvConsoleThread) and
+    TJvConsoleThread(FWaitThread).Write(S);
+end;
+
+function TJvCreateProcess.WriteLn(const S: string): Boolean;
+begin
+  Result := Write(S + #13#10);
+end;
+
+{ TJvConsoleThread }
+
+procedure TJvConsoleThread.CloseWrite;
+begin
+  FWriteLock.Acquire;
+  try
+    SafeCloseHandle(FWriteHandle);
+  finally
+    FWriteLock.Release;
+  end;
+end;
+
+constructor TJvConsoleThread.Create(ProcessHandle: DWORD;
+  AWriteHandle: THandle);
+begin
+  inherited Create(ProcessHandle);
+
+  FWriteLock := TCriticalSection.Create;
+
+  // Note: TJvConsoleThread is responsible for closing the FWriteHandle
+  FWriteHandle := AWriteHandle;
+
+  FWriteEvent := CreateEvent(
+    nil, // No security attributes
+    True, // Manual reset
+    False, // Initial state
+    nil // No name
+    );
+end;
+
+destructor TJvConsoleThread.Destroy;
+begin
+  SafeCloseHandle(FWriteHandle);
+  SafeCloseHandle(FWriteEvent);
+  inherited;
+  FWriteLock.Free;
+end;
+
+procedure TJvConsoleThread.Execute;
+var
+  WaitHandles: array[0..2] of THandle;
+  HandleCount: Cardinal;
+begin
+  WaitHandles[0] := FCloseEvent;
+  WaitHandles[1] := FProcessHandle;
+  WaitHandles[2] := FWriteEvent;
+  HandleCount := 3;
+
+  WaitForInputIdle(FProcessHandle, INFINITE);
+
+  while not Terminated do
+    case WaitForMultipleObjects(HandleCount, @WaitHandles, False, INFINITE) of
+      WAIT_OBJECT_0:
+        begin
+          // Close event fired; exit
+          FExitCode := MAXDWORD;
+          Exit;
+        end;
+      WAIT_OBJECT_0 + 1:
+        begin
+          // process ended; exit
+          GetExitCodeProcess(FProcessHandle, FExitCode);
+          Exit;
+        end;
+      WAIT_OBJECT_0 + 2:
+        // Write event fired; try to write
+        if not TryWrite then
+          // No longer respond when write event fires
+          HandleCount := 2;
+    else
+      Exit;
+    end;
+end;
+
+function TJvConsoleThread.TryWrite: Boolean;
+// Write data in FOutputBuffer to the pipe (FWriteHandle)
+// Result = False; if console or user has closed the pipe.
+var
+  BytesWritten: Cardinal;
+  BytesToWrite: Cardinal;
+begin
+  Result := True;
+
+  FWriteLock.Acquire;
+  try
+    try
+      { Check handle inside lock, because it can be closed by another thread, by
+        calling CloseWrite }
+      if FWriteHandle = 0 then
+        Exit;
+
+      if FOutputBufferEnd <= 0 then
+        Exit;
+
+      BytesToWrite := FOutputBufferEnd;
+
+      if not WriteFile(FWriteHandle, FOutputBuffer, BytesToWrite, BytesWritten,
+        nil) then
+      begin
+        { WriteFile documentation on MSDN states that WriteFile returns
+          ERROR_BROKEN_PIPE if the console closes it's read handle, but that
+          seems incorrect; check it anyway }
+        if (GetLastError = ERROR_NO_DATA) or
+          (GetLastError = ERROR_BROKEN_PIPE) then
+          // Pipe was closed (normal exit path).
+          SafeCloseHandle(FWriteHandle);
+        Exit;
+      end;
+
+      if BytesWritten <= 0 then
+        Exit;
+
+      if BytesWritten < BytesToWrite then
+        Move(FOutputbuffer[BytesWritten], FOutputBuffer[0],
+          BytesToWrite - BytesWritten);
+
+      Dec(FOutputBufferEnd, BytesWritten);
+    finally
+      Result := FWriteHandle <> 0;
+      if FOutputBufferEnd = 0 then
+        ResetEvent(FWriteEvent);
+    end;
+  finally
+    FWriteLock.Release;
+  end;
+end;
+
+function TJvConsoleThread.Write(const S: string): Boolean;
+// Add S to FOutputBuffer; actual writing is done in TryWrite.
+// This function is executed in the context of the main thread;
+// FWriteLock is for synchronization with the write thread.
+begin
+  if Length(S) <= 0 then
+  begin
+    Result := True;
+    Exit;
+  end;
+
+  FWriteLock.Acquire;
+  try
+    Result := FWriteHandle <> 0;
+    if not Result then
+      Exit;
+
+    Result := Cardinal(Length(S)) + FOutputBufferEnd <= CCPS_BufferSize;
+    if not Result then
+      Exit;
+
+    Move(PChar(S)^, FOutputBuffer[FOutputBufferEnd], Length(S));
+    Inc(FOutputBufferEnd, Length(S));
+
+    if FOutputBufferEnd > 0 then
+      // Notify the TJvConsoleThread that there is some data to write
+      SetEvent(FWriteEvent);
+  finally
+    FWriteLock.Release;
+  end;
 end;
 
 { TJvWaitForProcessThread }
@@ -582,7 +1205,7 @@ end;
 
 destructor TJvWaitForProcessThread.Destroy;
 begin
-  CloseHandle(FCloseEvent);
+  SafeCloseHandle(FCloseEvent);
   inherited;
 end;
 
@@ -609,4 +1232,131 @@ begin
   SetEvent(FCloseEvent);
 end;
 
+{ TJvReadThread }
+
+procedure TJvReadThread.CloseRead;
+begin
+  FReadLock.Acquire;
+  try
+    SafeCloseHandle(FReadHandle);
+  finally
+    FReadLock.Release;
+  end;
+end;
+
+procedure TJvReadThread.CopyToBuffer(Buffer: PChar; ASize: Cardinal);
+// Copy data in Buffer (with size ASize) to FInputBuffer.
+begin
+  FReadLock.Acquire;
+  try
+    if FInputBufferEnd + ASize > FInputBufferSize then
+    begin
+      // Safety check..
+      if FInputBufferSize > CCPS_MaxBufferSize then
+        // ..main thread seems to be blocked; flush the input buffer
+        FInputBufferEnd := 0
+      else
+      begin
+        // Need to upscale FInputBuffer
+        FInputBufferSize := FInputBufferSize * 2;
+        ReallocMem(FInputBuffer, FInputBufferSize);
+      end;
+    end;
+
+    // Do the copy
+    Move(Buffer[0], FInputBuffer[FInputBufferEnd], ASize);
+    Inc(FInputBufferEnd, ASize);
+  finally
+    FReadLock.Release;
+  end;
+
+  // Notify TJvCreateProcess that data has been read from the pipe
+  PostMessage(FDestHandle, CM_READ, 0, 0);
+end;
+
+constructor TJvReadThread.Create(AReadHandle, ADestHandle: THandle);
+begin
+  inherited Create(True);
+
+  FreeOnTerminate := True;
+  Priority := tpLower;
+
+  FReadLock := TCriticalSection.Create;
+
+  // Note: TJvReadThread is responsible for closing the FReadHandle
+  FReadHandle := AReadHandle;
+  FDestHandle := ADestHandle;
+
+  FInputBuffer := nil;
+  FInputBufferSize := CCPS_BufferSize;
+  FInputBufferEnd := 0;
+  ReallocMem(FInputBuffer, FInputBufferSize);
+end;
+
+destructor TJvReadThread.Destroy;
+begin
+  SafeCloseHandle(FReadHandle);
+  inherited;
+  ReallocMem(FInputBuffer, 0);
+  FReadLock.Free;
+end;
+
+procedure TJvReadThread.Execute;
+// Read data from the pipe (FReadHandle) to Buffer
+var
+  Buffer: array[0..CCPS_BufferSize - 1] of Char;
+  BytesRead: Cardinal;
+begin
+  while not Terminated do
+  begin
+    { ReadFile will block until *some* data is available on the pipe }
+    if not ReadFile(FReadHandle, Buffer, CCPS_BufferSize, BytesRead, nil) then
+    begin
+      { Only exit if last error is ERROR_BROKEN_PIPE, thus
+        ignore other errors }
+      if GetLastError = ERROR_BROKEN_PIPE then
+        { pipe done - normal exit path. }
+        Exit;
+    end
+    else
+      CopyToBuffer(Buffer, BytesRead);
+  end;
+end;
+
+function TJvReadThread.ReadBuffer(var ABuffer: TJvCPSBuffer;
+  out ABufferSize: Cardinal): Boolean;
+// Copy FInputBuffer to ABuffer.
+// This function is executed in the context of the main thread;
+// FReadLock is for synchronization with the read thread.
+begin
+  FReadLock.Acquire;
+  try
+    Result := FInputBufferEnd > 0;
+    if not Result then
+      Exit;
+
+    ABufferSize := Min(FInputBufferEnd, CCPS_BufferSize);
+
+    // Copy the data from FInputBuffer to ABuffer.
+    Move(FInputBuffer[0], ABuffer[0], ABufferSize);
+
+    // If not all data in FInputBuffer is copied to ABuffer, then place
+    // the data not copied at the begin of FInputBuffer.
+    if FInputBufferEnd > ABufferSize then
+      Move(FInputBuffer[ABufferSize], FInputBuffer[0],
+        FInputBufferEnd - ABufferSize);
+
+    Dec(FInputBufferEnd, ABufferSize);
+  finally
+    FReadLock.Release;
+  end;
+end;
+
+procedure TJvReadThread.TerminateThread;
+begin
+  Terminate;
+  CloseRead;
+end;
+
 end.
+
