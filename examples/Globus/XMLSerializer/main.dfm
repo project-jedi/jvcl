@@ -1,7 +1,8 @@
 object fglXMLSerializerDemo: TfglXMLSerializerDemo
   Left = 347
   Top = 219
-  BorderStyle = bsDialog
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'JvgXMLSerializer demo'
   ClientHeight = 159
   ClientWidth = 407
