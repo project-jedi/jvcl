@@ -98,7 +98,7 @@ const
   JVCLSourcePaths = '..\..\common;..\..\run;..\..\design';
 
 
-implementation                          
+implementation
 
 const
   DefaultMakeFile =
@@ -329,7 +329,7 @@ begin
       Lines.Add('..\devtools\bin\pg.exe: ');
       Lines.Add(#9'@echo ** Generating packages...');
       Lines.Add(#9'@cd ..\devtools');
-      Lines.Add(#9'@make pg.exe');
+      Lines.Add(#9'@$(MAKE) pg.exe');
       Lines.Add(#9'@cd ..\packages');
       Lines.Add('');
     end;
