@@ -28,7 +28,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{.$DEFINE DEBUG}
+{$DEFINE DEBUG}
 
 unit jvBandObject;
 
@@ -99,6 +99,7 @@ type
     FOleCommandTarget: IOleCommandTarget;
     SavedWndProc: TWndMethod;
     HasFocus: Boolean;
+    FHook: HHook;
   protected
     function CreateBandForm(const ParentWnd: HWnd): TjvBandForm; virtual; abstract;
     procedure BandWndProc(var Message: TMessage);
@@ -160,10 +161,6 @@ type
 
   TzCommBandObject = class(TzContextMenuBandObject)
   end;
-
-var
- lForms: TList;
- FHook: HHook;
 
 implementation
 
@@ -591,6 +588,9 @@ begin
     end
     else
       Hide;
+  {$IFDEF Debug}
+  zTraceLog(ClassName + '.ShowDW() End');
+  {$ENDIF}
 end;
 
 function TzCustomBandObject.CloseDW(dwReserved: DWORD): HResult;
@@ -599,12 +599,22 @@ begin
   zTraceLog(ClassName + '.CloseDW()');
   {$ENDIF}
   Result := NOERROR;
-  if not Assigned(FBandForm) then
-    Exit;
-  ShowDW(False);
-  FBandForm.Close;
-  lForms.Extract(FBandForm);
-  FBandForm := nil;
+  try
+    try
+      if not Assigned(FBandForm) then
+        Exit;
+      ShowDW(False);
+      //FBandForm.Release;  //XXX
+      if FHook<>0 then
+      begin
+        UnhookWindowsHookEx(FHook);
+        FHook := 0;
+      end;
+    finally
+      FBandForm := nil;
+    end;
+  except
+  end;
 end;
 
 function TzCustomBandObject.ResizeBorderDW(var prcBorder: TRect;
@@ -682,11 +692,10 @@ begin
       end;
       FBandForm := CreateBandForm(ParentWnd);
 
-      lForms.Add(FBandForm);
       SavedWndProc := FBandform.WindowProc;
       FBandform.WindowProc := BandWndProc;
 
-      SetWindowsHookEx(WH_GETMESSAGE, MethodToProcedure(self,self.MethodAddress('MsgHookProc')),HInstance,GetCurrentThreadID);
+      FHook := SetWindowsHookEx(WH_GETMESSAGE, MethodToProcedure(self,self.MethodAddress('MsgHookProc')),HInstance,GetCurrentThreadID);
     end;
     if pUnkSite.QueryInterface(IInputObjectSite, FSite) <> S_OK then // implicit FSite.AddRef;
     begin
@@ -1087,9 +1096,13 @@ begin
     begin
       lOk := false;
       with PMsg(Pointer(lParam))^ do
+      begin
         if (((message = WM_KEYDOWN) or (message = WM_KEYUP)) and
           ((wParam = VK_BACK) )) then
-          lOk := true;
+          lOk := true
+        else if (Message=WM_MOUSEMOVE) then //Enable Flat effects!
+          Application.HandleMessage;
+      end;
       if lOk then
         if IsDialogMessage(FBandForm.Handle,PMsg(Pointer(lParam))^) then
           PMsg(lParam)^.message := WM_NULL;
@@ -1099,11 +1112,5 @@ begin
   result := CallNextHookEx(FHook, nCode, wParam, lParam);
 end;
 
-initialization
-//  FHook := SetWindowsHookEx(WH_GETMESSAGE, GetMsgHookProc,HInstance, GetCurrentThreadId);
-  lForms := TList.Create;
-finalization
-//  UnhookWindowsHookEx(FHook);
-  lForms.Free;
 end.
 
