@@ -1,4 +1,4 @@
-## Needs review (GROUP changed)
+## Completed but needs review (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvChangeNotify.pas
 <GROUP JVCL.FileRef>
@@ -12,16 +12,15 @@ Author
 <TITLE ActionsToString function>
 
 Summary
-Converts an action to it's string representation.
+  Converts an action to it's string representation.
 
 Description
-Call ActionsToString to convert a set of TJvChangeAction
-items to a user friendly string.
+  Call ActionsToString to convert a set of TJvChangeAction items to a user friendly string.
 
 Parameters
-Actions :  The actions to convert.
+  Actions :  The actions to convert.
 Returns
-\Returns a user friendly string describing a set of actions.
+  \Returns a user friendly string describing a set of actions.
 
 @@TJvChangeAction
 <TITLE TJvChangeAction type>
@@ -102,9 +101,9 @@ Summary
   Occurs when a change is detected in the monitored directory.
 Description
   \Write a handler for this event to take specific actions when one of the events in Actions
-  have occured in the monitored directory. For example, use this event to update a list of changes.
+  have occurred in the monitored directory. For example, use this event to update a list of changes.
 See Also
-  Actions, Directory  
+  Actions, Directory
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeItems
 Summary
@@ -144,7 +143,7 @@ Description
   </CODE>
   <AUTOLINK ON>
 See Also
-  TJvChangeItem, TJvChangeNotify, TJvChangeNotify.Notifications  
+  TJvChangeItem, TJvChangeNotify, TJvChangeNotify.Notifications
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeNotify
 <TITLEIMG TJvChangeNotify>
@@ -178,7 +177,7 @@ See Also
 Summary
   Specifies the time interval between monitoring checks.
 Description
-  Use CheckInterval to set the number of milliseconds between checks on monitored directories. The defalt value for
+  Use CheckInterval to set the number of milliseconds between checks on monitored directories. The default value for
   CheckInterval is 100 milliseconds. To change CheckInterval, Active must be false.
 See Also
   Notifications, Active
@@ -187,7 +186,7 @@ See Also
 Summary
   Contains a list of monitored directories.
 Description
-  Use Notifiations to manage the directories that should be monitored by the component. To manage the
+  Use Notifications to manage the directories that should be monitored by the component. To manage the
   Notifications at design time, click the Notifications property in the Object Inspector to display the
   Collection Editor. To manage Notifications at runtime, use Notifications.Add and Notifications.Delete
   to add and remove items.

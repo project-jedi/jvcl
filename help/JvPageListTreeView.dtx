@@ -1,4 +1,4 @@
-## Needs review (peter3)
+## Completed but needs review (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvPageListTreeView.pas
 <GROUP JVCL.FileRef>
@@ -38,7 +38,7 @@ Description
 Parameters
   AIndex - the 0-based index of the page to check if it can be activated.
 Return Value
-  Should return true if the page at AIndex can be activated or false otherwise. If AIndex is outside the allowable range for th epage list, return false.
+  Should return true if the page at AIndex can be activated or false otherwise. If AIndex is outside the allowable range for the page list, return false.
 ----------------------------------------------------------------------------------------------------
 @@IPageList.SetActivePageIndex@integer
 Summary
@@ -68,7 +68,7 @@ Description
 Parameters
   AIndex - the 0-based index of the page whose caption is to be returned.
 Return Value
-  A string representing the caption of the page. If AIndex is outside the allowable range, this function shold return an
+  A string representing the caption of the page. If AIndex is outside the allowable range, this function should return an
   empty string or the value "unknown" or similar and not raise an exception or generate an error.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage
@@ -121,12 +121,12 @@ Summary
   Called before the page is painted.
 Description
   OnBeforePaint is of type TJvPageCanPaintEvent and is called just prior to painting. Assign an event handler to this event
-  to perform any special drawing before the default painting has started. To supress normal drawing, set the DefaultDraw parameter to false.
+  to perform any special drawing before the default painting has started. To suppress normal drawing, set the DefaultDraw parameter to false.
 Parameters
   Sender      - The control that is calling this event.
   ACanvas     - The canvas to draw on
   ARect       - The rect area to draw within
-  DefaultDraw - Variablet hat determines if the default drawing is to be performed after the event returns. Set this to false to supress normal drawing of the page.
+  DefaultDraw - Variable that determines if the default drawing is to be performed after the event returns. Set this to false to suppress normal drawing of the page.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.OnCtl3DChanged
 Summary
@@ -316,7 +316,7 @@ Description
   Write an OnChange event handler to take specific actions when the active page has changed.
   To access the new active page, access either the <LINK ActivePage,ActivePage> or <LINK ActivePageIndex,ActivePageIndex> properties.
 See Also
-  OnChanging, ActivePage, ActivePageINdex
+  OnChanging, ActivePage, ActivePageIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.OnChanging
 Summary
@@ -332,7 +332,7 @@ Description
   To access the currently active page, access either the <LINK ActivePage,ActivePage> or <LINK ActivePageIndex,ActivePageIndex> properties.
 
 Parameters
-  Sender      - The page lsit that triggered the event
+  Sender      - The page list that triggered the event
   PageIndex   - the index of the page that is to become selected
   AllowChange - set to false to disallow the change. This parameter is true by default.
 See Also
@@ -414,9 +414,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.PrevPage
 Summary
-  Activates the page preceeding the active page.
+  Activates the page preceding the active page.
 Description
-  Call PrevPage to activate the page preceeding the currently active page. If the first page is active,
+  Call PrevPage to activate the page preceding the currently active page. If the first page is active,
   PrevPage moves to the last page. If there are no pages in the list or only one page, PrevPage does nothing.
 See Also
   NextPage, FindNextPage
@@ -539,7 +539,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageListTreeView.PageLinks
 Summary
-  Used at design-time to set up the assocaition between tree nodes and pages in a PageList.
+  Used at design-time to set up the association between tree nodes and pages in a PageList.
 Description
   This property is only used at design-time to set up the association between a node and the page that
   should be displayed by the IPageList implementation when that node is selected. To set up a page link association
@@ -560,7 +560,7 @@ Description
   that is activated is determined by the value of the selected nodes PageIndex property.
 
 See Also
-  List here other properties, methods (comma seperated)
+  List here other properties, methods (comma separated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSettingsTreeView
@@ -740,7 +740,7 @@ Summary
   Specifies which image is displayed when a node is in it's normal state and is not currently selected.
 Description
   Use the ImageIndex property with the Images property of the tree view to specify the image for the node in it's normal state.
-  If the node has childrens, use the ExpandedIndex and CollapsedIndex properties instead.
+  If the node has children, use the ExpandedIndex and CollapsedIndex properties instead.
 See Also
   CollapsedIndex, ExpandedIndex, SelectedIndex
 ----------------------------------------------------------------------------------------------------
@@ -749,7 +749,7 @@ Summary
   Specifies which image is displayed when a node is in it's selected state.
 Description
   Use the SelectedIndex property with the Images property of the tree view to specify the image for the node in it's selected state.
-  If the node has childrens, use the ExpandedIndex and CollapsedIndex properties instead.
+  If the node has children, use the ExpandedIndex and CollapsedIndex properties instead.
 See Also
   CollapsedIndex, ExpandedIndex, ImageIndex
 ----------------------------------------------------------------------------------------------------

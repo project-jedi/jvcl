@@ -1,4 +1,4 @@
-# Needs review (GROUP changed)
+# Completed but needs review (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvEnterTab.pas
 <GROUP JVCL.FileRef>
@@ -26,14 +26,14 @@ Description
   in the "form". Windows program use the TAB character instead
   but many users still prefer using the ENTER key. Especially
   when working with the numeric keypad, using ENTER as TAB
-  speeds up data entry manyfold.
+  speeds up data entry manifold.
 
 Note
   TJvEnterAsTab is actually a visual component (derived from
   TGraphicControl) but it behaves as a TComponent both at
   design as well as runtime. The reason for this is that by
   inheriting from a visual control, there is no need to create
-  a hidden window to recieve the keypresses since this
+  a hidden window to receive the key presses since this
   functionality is already built into visual controls.
 
 @@TJvEnterAsTab.AllowDefault
@@ -42,7 +42,7 @@ Summary
 Description
   Use AllowDefault to specify if button controls should process the ENTER key themselves. For example,
   when this property is true and the currently active control on the form is a button, the button will
-  be clicked when the user presses ENTER. If this propert yis set to false, focus is moved to the next
+  be clicked when the user presses ENTER. If this property is set to false, focus is moved to the next
   control instead.
 ----------------------------------------------------------------------------------------------------
 @@TJvEnterAsTab.EnterAsTab
@@ -57,6 +57,6 @@ See Also
 Summary
   Sets the size of the control.
 Description
-  TJvEnterAsTab overrides the SetBounds method to restrict the size fo the component so it appears to be a
+  TJvEnterAsTab overrides the SetBounds method to restrict the size for the component so it appears to be a
   non-visual component. Specifically, width and height are never allowed to change from the default
   28 by 28 pixels.

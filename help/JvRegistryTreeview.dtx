@@ -1,4 +1,4 @@
-## Needs review (p3)
+## Completed but needs review (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvRegistryTreeView.pas
 <GROUP JVCL.FileRef>
@@ -123,7 +123,7 @@ Description
   using the Items property along with the item's index into the tree view. The Items property
   if this component should be considered as read-only although you can add new nodes in code.
 Note
-  Adding new nodes using Items, will not affect the regitry. To add new keys and values to the registry
+  Adding new nodes using Items, will not affect the registry. To add new keys and values to the registry
   use the functions provided specifically by the TJvRegistryTreeview.
 See Also
   AddKey, AddBinaryValue, AddDWORDValue, AddStringValue
@@ -132,9 +132,9 @@ See Also
 Summary
   Specifies a listview used to display the content of the selected node.
 Description
-  Assign a listview to the ListVIew proprety to have it automatically populated when the selected
+  Assign a listview to the ListView property to have it automatically populated when the selected
   node in the treeview changes. If you display the items in report mode, add columns to the listview
-  with the follwoing names: "\Name", "\Value", "\Type". The "\Type" column doesn't have to be added
+  with the following names: "\Name", "\Value", "\Type". The "\Type" column doesn't have to be added
   if you don't want to display the data type for items. If the listview is assigned, some items
   are given the text values specified by DefaultCaption and DefaultNoValueCaption.
 See Also
@@ -155,7 +155,7 @@ Description
 Parameters
   Filename - The location of the file containing registry information to store in the subkey. The file specified by FileName must be one previously created using the SaveKey function or the RegSaveKey Windows API function. On systems that use a file allocation table (FAT), FileName cannot include an extension.
 Return value
-  Returns true if the data was succesfully loaded.
+  Returns true if the data was successfully loaded.
 Note
   The key to load data into is determined by the CurrentKey property.
 See Also
@@ -178,7 +178,7 @@ Summary
   Specifies the registry keys ("hives") to display in the tree.
 Description
   Set RegistryKeys to define what nodes are displayed in the treeview. If RegistryKeys is set to [],
-  nothing will be displayed. The default is to display HKEY_LOCLA_MACHINE and HKEY_LOCAL_USER.
+  nothing will be displayed. The default is to display HKEY_LOCAL_MACHINE and HKEY_LOCAL_USER.
 Note
   Not all available values are available on all versions of Windows. If a specific hive is not found, it
   is silently skipped.

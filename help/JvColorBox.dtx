@@ -1,4 +1,4 @@
-## Locked by Peter Thörnqvist
+## Completed but needs review (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvColorBox.pas
 <GROUP JVCL.FileRef>
@@ -11,7 +11,7 @@ Author
 @@TJvColorBox
 <TITLEIMG TJvColorBox>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Graphics.Shapes, JVCL.PanelsBevelsAndGroups.Panels
   FLAG=Component
 Summary
   Displays the Windows standard colors as a set of 5x4 color squares.
@@ -31,27 +31,18 @@ Description
 Summary
   Occurs when one of the color squares are clicked by the user.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Write a handler for the OnColorClick event to take specific action when the user clicks on one of
+  the color squares.
 ----------------------------------------------------------------------------------------------------
 @@TJvColorClickEvent
 <TITLE TJvColorClickEvent type>
 Summary
   Event type for color square click events.
 Description
-  Write here a description
-  This type is used by (for reference):
-    TJvColorBox.OnColorClick
-    TJvColorSquare.OnColorClick
 Parameters
-  Sender - Description for this parameter
-  Button - Description for this parameter
-  Color  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender - The object whose event handler is called.
+  Button - The mouse button that was used to click the color square.
+  Color  - The Color of the square
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSquare
 <TITLEIMG TJvColorSquare>
@@ -59,72 +50,69 @@ JVCLInfo
   GROUP=JVCL.Graphics.Shapes
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A component that can display a color and optionally draw a frame around it's edge when the mouse hovers over it.
 Description
-  Write here a description
+  TJvColorSquare is used by the TJvColorBox and TJvColorButton to manage and display the individual colors
+  in the color grids. To display a color in a window that also can highlight the current selection by
+  drawing a special frame around the edge, use TJvColorSquare.
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSquare.BorderStyle
 Summary
-  Write here a summary (1 line)
+  Determines the appearance of the control’s border.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use BorderStyle to affect the visual appearance of the controls border. BorderStyle
+  can have a value of either bsSingle or bsNone. If BorderStyle is bsSingle, the
+  control has a single-line border around the client area. If BorderStyle is bsNone, there
+  will be no border.
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSquare.Color
 Summary
-  Write here a summary (1 line)
+  Specifies the background color of the control.
 Description
-  Write here a description
+  Use Color to read or change the background color of the control.
+
+  If a control's ParentColor property is true, then changing the Color property of the control's
+  parent automatically changes the Color property of the control. When the value of the
+  Color property is changed, the control's ParentColor property is automatically set to false.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ParentColor
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSquare.OnChange
 Summary
-  Write here a summary (1 line)
+  Occurs when the color of the button changes.
 Description
-  Write here a description
+  Write a handler for the OnChange event to take specific action when the color of the control changes.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnColorClick
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSquare.OnColorClick
 Summary
-  Write here a summary (1 line)
+  Occurs when the user clicks on the square with the mouse.
 Description
-  Write here a description
+  Write a handler for the OnColorClick event to take specific action when the user clicks on
+  the color squares using either mouse button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnChange
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDropButton
 Summary
-  Write here a summary (1 line)
+  A button that can display a drop-down arrow at the side of the button.
 Description
-  Write here a description
+  The TJvCustomDropButton is used as the basis for the TJvColorButton component. Derive a new control
+  from TJvCustomDropButton when you need a button that can draw a drop-arrow and react to both
+  button clicks as well as drop arrow clicks.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDropButton.ArrowWidth
 Summary
-  Write here a summary (1 line)
+  Specifies the width of the arrow part of the button.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use ArrowWidth to specify the width of the arrow part of the button. The arrow image will be
+  sized accordingly.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDropButton.DropDown
 Summary
-  Write here a summary (1 line)
+  Specifies a pop up menu that is used as the drop down for the arrow.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDropButton
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Use DropDown to assign a popup menu to use as the drop down menu for the button. When the user clicks
+  the arrow part of the button, the menu is displayed below the button.
+

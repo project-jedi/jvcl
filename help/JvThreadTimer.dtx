@@ -1,11 +1,11 @@
-# Locked by Peter Thörnqvist (updates for new JvThreadTimer implementation)
+## Completed but needs review (p3) 
 ----------------------------------------------------------------------------------------------------
 @@JvThreadTimer.pas
 Summary
   Contains the TJvThreadTimer component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  Sébastien Buysse
+  Sébastien Buysse, Ivo Bauer
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadTimer
 <TITLEIMG TJvThreadTimer>
@@ -15,8 +15,9 @@ JVCLInfo
 Summary
   TTimer replacement that utilizes a thread and has a higher accuracy. 
 Description
-  This component is a replacement for the TTimer component, with a better accuracy (1 millisecond)
-  and without consuming a window handle for the timer. 
+  This component is a replacement for the TTimer component with a better accuracy (1 millisecond)
+  and without consuming a window handle for the timer.
+   
   TJvThreadTimer uses an internal thread instead of the Windows API timer functions, and
   can have an accuracy of a millisecond, but it will consume more CPU than a TTimer.
 ----------------------------------------------------------------------------------------------------
@@ -31,6 +32,7 @@ Description
 
   * Interval is set to 100.
   * Enabled is set to false
+  * Priority is set to tpNormal
 Parameters
   AOwner - A component, typically the form, that is responsible for freeing the timer.
 See Also
@@ -75,5 +77,14 @@ Description
 
   The Interval property of a timer determines how frequently the OnTimer event occurs. Each time the
   specified interval passes, the OnTimer event occurs.
-
-
+----------------------------------------------------------------------------------------------------
+@@TJvThreadTimer.Priority
+Summary
+  Determines the thread's scheduling priority relative to other threads in the process.
+Description
+  Priority indicates the priority used when scheduling the thread. Adjust the priority higher or lower
+  as needed.
+Warning
+  Boosting the thread priority of a CPU intensive operation may "starve" the other
+  threads in the application. Only apply priority boosts to threads that spend most
+  of their time waiting for external events.
