@@ -40,8 +40,8 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvGlobusC6D.cpp"/>
-    <INCLUDEPATH value="..\..\design;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\design;..\..\dcu;..\..\resources;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <INCLUDEPATH value="..\..\design;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\design;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>

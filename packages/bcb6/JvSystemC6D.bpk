@@ -29,8 +29,8 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvSystemC6D.cpp"/>
-    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;..\..\design;..\..\common"/>
-    <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\debug;..\..\design;$(BCB)\lib\obj;$(BCB)\lib;..\..\dcu;..\..\resources"/>
+    <INCLUDEPATH value="..\..\design;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\design;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>

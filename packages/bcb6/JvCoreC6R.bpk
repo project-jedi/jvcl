@@ -34,8 +34,8 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvCoreC6R.cpp"/>
-    <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
+    <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\design;..\..\run;..\..\common;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
