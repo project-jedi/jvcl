@@ -18,8 +18,10 @@ format<br>
 format<br>
 </a><a href="#Template_Files_Format">Template Files format<br>
 </a><a href="#Include_File_parsing">Include File parsing<br>
-</a><a href="#Detailed_Generation_process">Detailed generation process<br>
-</a><a href="#Command_line_reference">Command line reference<br>
+</a><a href="#Detailed_Generation_process">Detailed generation process</a><br>
+Conditions parsing<br>
+<a href="#Detailed_Generation_process"></a><a
+ href="#Command_line_reference">Command line reference<br>
 </a><a href="#Notes_to_developers">Notes to developers<br>
 </a><br>
 <h2><a name="Introduction"></a>Introduction</h2>
@@ -89,16 +91,14 @@ Package Source XML files to generate the final output files.<br>
       <td style="vertical-align: top;"><a href="#Include_File_parsing">Include
 File</a><br>
       </td>
-      <td style="vertical-align: top;">The Delphi packages are Pascal
-source files and as such can contain conditional compilation
-directives. In C++ Builder,&nbsp; package source files are XML files
-and
-as a result do not support conditions. Hence when modifications are
-done to
-an include file that have impact on which files are to be included in a
-package, you must regenerate the packages for C++ Builder. The
+      <td style="vertical-align: top;">It is possible to specify
+conditions for inclusion of packages and source files in packages. The
 conditions are read from the include file given to the package
-generator.<br>
+generator. Because the syntax of these conditions can be quite complex,
+the packages must be regenerated whenever the given include file has
+changed so that packages are synchronised with it. If you don't
+regenerate the packages, you may have errors when compiling the
+packages. <br>
       </td>
     </tr>
     <tr>
@@ -347,9 +347,9 @@ package is required.<br>
             </td>
             <td style="vertical-align: top;">The condition under which
 the package is required. If empty, no condition is necessary to
-require the package in the current one. When the condition has a
-leeding exclamation mark the package is only required when the
-condition is not true.<br>
+require the package in the current one. Please see the '<a
+ href="#Conditions_parsing">Conditions parsing</a>' section for details
+about the available operators.<br>
             </td>
           </tr>
         </tbody>
@@ -398,9 +398,9 @@ colon, a space and TFrame or TDataModule (as in 'myFrame: TFrame').<br>
             </td>
             <td style="vertical-align: top;">The condition under which
 the file is to be included. If empty, no
-condition is necessary to include the file. When the condition has a
-leeding exclamation mark the package is only required when the
-condition is not true.</td>
+condition is necessary to include the file. Please see the '<a
+ href="#Conditions_parsing">Conditions parsing</a>' section for details
+about the available operators.</td>
           </tr>
         </tbody>
       </table>
@@ -1320,8 +1320,10 @@ the line starts a 'Requires' section <span style="font-weight: bold;">then<br>
  style="font-weight: bold;">do</span><br>
 <div style="margin-left: 40px;">Do the required replacements in the
 read lines<br>
+<span style="font-weight: bold;">If</span> there is no condition or the
+condition(s) evaluate to True <span style="font-weight: bold;">then</span><br>
 </div>
-<div style="margin-left: 40px;">Copy the modified lines read in the
+<div style="margin-left: 80px;">Copy the modified lines read in the
 memory output file <br>
 </div>
 </div>
@@ -1335,8 +1337,12 @@ memory output file <br>
 <div style="margin-left: 80px;">Do the required replacements in the
 read lines<br>
 </div>
-<div style="margin-left: 80px;">Copy the modified lines read in the
+<div style="margin-left: 80px;"><span style="font-weight: bold;">If</span>
+there is no condition or the condition(s) evaluate to True <span
+ style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;">Copy the modified lines read in the
 memory output file<br>
+</div>
 </div>
 <span style="font-weight: bold;">else if</span> the line starts a
 'Forms' section <span style="font-weight: bold;">then</span><br>
@@ -1347,8 +1353,12 @@ memory output file<br>
 <div style="margin-left: 80px;">Do the required replacements in the
 read lines<br>
 </div>
-<div style="margin-left: 80px;">Copy the modified lines read in the
+<div style="margin-left: 80px;"><span style="font-weight: bold;">If</span>
+there is no condition or the condition(s) evaluate to True <span
+ style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;">Copy the modified lines read in the
 memory output file<br>
+</div>
 </div>
 <span style="font-weight: bold;"></span><span style="font-weight: bold;"></span><span
  style="font-weight: bold;">else if</span> the line starts a 'Libs'
@@ -1360,9 +1370,12 @@ section <span style="font-weight: bold;">then</span><br>
 <div style="margin-left: 80px;">Do the required replacements in the
 read lines<br>
 </div>
-<div style="margin-left: 80px;">Copy the modified lines read in the
+<div style="margin-left: 40px;">
+<div style="margin-left: 40px;">Copy the modified lines read in the
 memory output file<br>
 </div>
+</div>
+<div style="margin-left: 80px;"></div>
 <span style="font-weight: bold;"></span><span style="font-weight: bold;">else</span><br>
 <div style="margin-left: 40px;">Do the appropriate replacements in the
 line<br>
@@ -1427,6 +1440,95 @@ the personal target. This is done by repeating all steps from the line
 where note 4 is. As the target name is a personal target, it has no
 associated personal target and the test for a difference between
 'flavours' is unnecessary. <br>
+<br>
+<h2><a name="Conditions_parsing"></a>Conditions parsing</h2>
+A simple parser is used to read the conditions applied to the various
+items of the package XML source files. Here is its specification:<br>
+<br>
+<div style="margin-left: 40px;">Syntax:<br>
+</div>
+<div style="margin-left: 80px;">
+<table style="text-align: left; width: 100%;" border="0" cellspacing="0"
+ cellpadding="0">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; width: 1px;">&lt;b-exp&gt;</td>
+      <td style="vertical-align: top;">::= &lt;b-term&gt; ( [ "|" |
+"||" | "^" ] &lt;b-term&gt; )*</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 1px;">&lt;b-term&gt;<br>
+      </td>
+      <td style="vertical-align: top;">::= &lt;b-notfactor&gt; ( [
+"&amp;" | "&amp;&amp;" ] &lt;b-notfactor&gt; )*</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 1px;">&lt;b-notfactor&gt;</td>
+      <td style="vertical-align: top;">::= &lt;b-factor&gt; | "!"
+&lt;b-factor&gt;</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 1px;">&lt;b-factor&gt;</td>
+      <td style="vertical-align: top;">::= "(" &lt;b-exp&gt; ")" |
+&lt;ident&gt;</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<br>
+<div style="margin-left: 40px;">Symbols:<br>
+<div style="margin-left: 40px;">
+<table style="text-align: left; width: 100%;" border="0" cellspacing="0"
+ cellpadding="0">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; width: 1px; white-space: nowrap;">!<br>
+      </td>
+      <td style="vertical-align: top;">not<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 1px; white-space: nowrap;">&amp;,
+&amp;&amp;<br>
+      </td>
+      <td style="vertical-align: top;">and<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 1px; white-space: nowrap;">|,
+||<br>
+      </td>
+      <td style="vertical-align: top;">or<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 1px; white-space: nowrap;">^<br>
+      </td>
+      <td style="vertical-align: top;">xor<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+</div>
+</div>
+<div style="margin-left: 40px;">Examples:<br>
+</div>
+<div style="margin-left: 80px;">
+<table style="text-align: left; width: 90%;" border="0" cellspacing="0"
+ cellpadding="0">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><code>!A
+&amp;&amp; (B || C) || (D &amp;&amp; E) &amp;&amp; F || G || H<br>
+      <br>
+QREPORT4 &amp; JvclUseQuickReport<br>
+      </code></td>
+    </tr>
+  </tbody>
+</table>
+</div>
 <br>
 <h2><a name="Command_line_reference"></a>Command line reference</h2>
 pg.exe is the command line version of the package generator. It has
