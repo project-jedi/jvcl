@@ -52,7 +52,7 @@ const
   TransactionSetKeyName = 'TS';
 
 type
-
+  // (rom) bad names. Not "On" but "Event"
   TJvOnAfterProfiledTransactionSet = procedure(TransactionSet: TEDIObject) of object;
   TJvOnAfterProfiledSegment = procedure(Segment: TEDIObject) of object;
 
@@ -74,8 +74,8 @@ type
     procedure ClearProfile; virtual;
     procedure AddElement(SegmentId, ElementId, ElementType: string;
       MaximumLength: Integer); virtual;
-    procedure UpdateElement(SegmentId, ElementId, ElementType: string; MaximumLength,
-      Count: Integer); virtual;
+    procedure UpdateElement(SegmentId, ElementId, ElementType: string;
+      MaximumLength, Count: Integer); virtual;
     procedure AddSegment(SegmentId, OwnerLoopId, ParentLoopId: string); virtual;
     procedure AddLoop(OwnerLoopId, ParentLoopId: string); virtual;
     function ElementExist(SegmentId, ElementId: string): Boolean; virtual;
@@ -131,6 +131,7 @@ type
     property Items[Index: Integer]: TJvEDIFieldDef read GetItem write SetItem; default;
   end;
 
+  // (rom) bad names. No "On".
   TJvOnTableExistsEvent = procedure(TableName: string; var TableExists: Boolean) of object;
   TJvOnTableProfileEvent = procedure(FieldDefs: TJvEDIFieldDefs; TableName: string) of object;
   TJvOnCreateTableEvent = TJvOnTableProfileEvent;
@@ -142,7 +143,6 @@ type
 
   TJvEDIDBBuffer = class(TJvComponent)
   private
-    { Private declarations }
     FElementProfiles: TDataSet;
     FSegmentProfiles: TDataSet;
     FLoopProfiles: TDataSet;
@@ -160,12 +160,11 @@ type
     FOnAlterTable: TJvOnAlterTableEvent;
     FOnResolveFieldDefDataType: TJvOnResolveFieldDefTypeEvent;
     FOnBeforeApplyElementFilter: TJvOnBeforeApplyElementFilterEvent;
-    procedure CreateFieldDefs(FieldDefs: TJvEDIFieldDefs; TableName, OwnerLoopId,
-      ParentLoopId: string; DefaultUpdateStatus: TUpdateStatus);
+    procedure CreateFieldDefs(FieldDefs: TJvEDIFieldDefs;
+      TableName, OwnerLoopId, ParentLoopId: string; DefaultUpdateStatus: TUpdateStatus);
     procedure CreateLoopFieldDefs(FieldDefs: TJvEDIFieldDefs; TableName, ParentLoopId: string;
       DefaultUpdateStatus: TUpdateStatus);
   protected
-    { Protected declarations }
     procedure DoBeforeOpenDataSets; virtual;
     procedure DoAfterOpenDataSets; virtual;
     procedure DoBeforeCloseDataSets; virtual;
@@ -182,12 +181,10 @@ type
     procedure CloseProfileDataSets; virtual;
     function TableExists(TableName: string): Boolean; virtual;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SyncProfilesWithBuffer; virtual;
   published
-    { Published declarations }
     property ElementProfiles: TDataSet read FElementProfiles write FElementProfiles;
     property SegmentProfiles: TDataSet read FSegmentProfiles write FSegmentProfiles;
     property LoopProfiles: TDataSet read FLoopProfiles write FLoopProfiles;
@@ -217,10 +214,12 @@ type
   end;
 
 implementation
-{$IFDEF COMPILER6_UP}
+
 uses
-  Variants;
-{$ENDIF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  JvResources, JvTypes;
 
 const
   Default_LoopKeyPrefix = 'Loop_';
@@ -228,7 +227,23 @@ const
   Default_SegmentKeyPrefix = '';
   Default_ElementNonKeyPrefix = 'E';
 
-{ TJvEDIDBProfiler }
+//=== TJvEDIDBProfiler =======================================================
+
+constructor TJvEDIDBProfiler.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FElementProfiles := nil;
+  FSegmentProfiles := nil;
+  FLoopProfiles := nil;
+end;
+
+destructor TJvEDIDBProfiler.Destroy;
+begin
+  FElementProfiles := nil;
+  FSegmentProfiles := nil;
+  FLoopProfiles := nil;
+  inherited Destroy;
+end;
 
 procedure TJvEDIDBProfiler.AddElement(SegmentId, ElementId, ElementType: string;
   MaximumLength: Integer);
@@ -281,22 +296,6 @@ begin
     FLoopProfiles.Delete;
 end;
 
-constructor TJvEDIDBProfiler.Create(AOwner: TComponent);
-begin
-  FElementProfiles := nil;
-  FSegmentProfiles := nil;
-  FLoopProfiles := nil;
-  inherited;
-end;
-
-destructor TJvEDIDBProfiler.Destroy;
-begin
-  FElementProfiles := nil;
-  FSegmentProfiles := nil;
-  FLoopProfiles := nil;
-  inherited;
-end;
-
 procedure TJvEDIDBProfiler.DoAfterProfiledSegment(Segment: TEDIObject);
 begin
   if Assigned(FOnAfterProfiledSegment) then
@@ -345,7 +344,7 @@ begin
   end;
 end;
 
-{ TJvEDIDBSpecProfiler }
+//=== TJvEDIDBSpecProfiler ===================================================
 
 procedure TJvEDIDBSpecProfiler.BuildProfile(EDIFileSpec: TEDIFileSpec);
 var
@@ -357,7 +356,7 @@ var
   ElementList: TStrings;
 begin
   if (FElementProfiles = nil) or (FSegmentProfiles = nil) or (FLoopProfiles = nil) then
-    raise Exception.Create('Not all profile datasets have been assigned.');
+    raise EJVCLException.Create(RsENoProfileDatasets);
   FElementProfiles.Filtered := False;
   FSegmentProfiles.Filtered := False;
   FLoopProfiles.Filtered := False;
@@ -365,7 +364,6 @@ begin
   for I := 0 to EDIFileSpec.InterchangeControlCount - 1 do
   begin
     for F := 0 to EDIFileSpec[I].FunctionalGroupCount - 1 do
-    begin
       for T := 0 to EDIFileSpec[I][F].TransactionSetCount - 1 do
       begin
         TransactionSet := TEDITransactionSetSpec(EDIFileSpec[I][F][T]);
@@ -393,17 +391,16 @@ begin
             else
               UpdateElement(Segment.SegmentID, Element.Id, Element.ElementType,
                 Element.MaximumLength, StrToInt(ElementList.Values[Element.Id]));
-          end; // for E
+          end;
           DoAfterProfiledSegment(Segment);
-        end; // for S
+        end;
         DoAfterProfiledTransactionSet(TransactionSet);
-      end; // for T
-    end; // for F
-  end; // for I
+      end;
+    end;
   ElementList.Free;
 end;
 
-{ TJvEDIDBSEFProfiler }
+//=== TJvEDIDBSEFProfiler ====================================================
 
 procedure TJvEDIDBSEFProfiler.BuildProfile(EDISEFFile: TEDISEFFile);
 var
@@ -418,7 +415,7 @@ var
   ElementList: TObjectList;
 begin
   if (FElementProfiles = nil) or (FSegmentProfiles = nil) or (FLoopProfiles = nil) then
-    raise Exception.Create('Not all profile datasets have been assigned.');
+    raise EJVCLException.Create(RsENoProfileDatasets);
   FElementProfiles.Filtered := False;
   FSegmentProfiles.Filtered := False;
   FLoopProfiles.Filtered := False;
@@ -458,30 +455,30 @@ begin
               else
                 UpdateElement(SEFSegment.Id, SEFElement.Id, SEFElement.ElementType,
                   SEFElement.MaximumLength, StrToInt(ElementStrList.Values[Id]));
-            end; // if
-          end; // for E
+            end;
+          end;
         finally
           ElementStrList.Free;
           ElementList.Free;
-        end; // try
+        end;
         DoAfterProfiledSegment(SEFSegment);
-      end; // for J
+      end;
     finally
       SegmentList.Free;
-    end; // try
+    end;
     DoAfterProfiledTransactionSet(SEFSet);
-  end; // for I
+  end;
 end;
 
-{ TJclEDIFieldDef }
+//=== TJclEDIFieldDef ========================================================
 
 constructor TJvEDIFieldDef.Create(Collection: TCollection);
 begin
-  inherited;
+  inherited Create(Collection);
   FUpdateStatus := usUnmodified;
 end;
 
-{ TJvEDIFieldDefs }
+//=== TJvEDIFieldDefs ========================================================
 
 function TJvEDIFieldDefs.Add: TJvEDIFieldDef;
 begin
@@ -500,10 +497,24 @@ end;
 
 procedure TJvEDIFieldDefs.Update(Item: TCollectionItem);
 begin
-  inherited;
+  inherited Update(Item);
 end;
 
-{ TJvEDIDBBuffer }
+//=== TJvEDIDBBuffer =========================================================
+
+constructor TJvEDIDBBuffer.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FLoopKeyPrefix := Default_LoopKeyPrefix;
+  FKeySuffix := Default_KeySuffix;
+  FSegmentKeyPrefix := Default_SegmentKeyPrefix;
+  FElementNonKeyPrefix := Default_ElementNonKeyPrefix;
+end;
+
+destructor TJvEDIDBBuffer.Destroy;
+begin
+  inherited Destroy;
+end;
 
 procedure TJvEDIDBBuffer.CloseProfileDataSets;
 begin
@@ -515,20 +526,6 @@ begin
   if FLoopProfiles.Active then
     FSegmentProfiles.Close;
   DoAfterCloseDataSets;
-end;
-
-constructor TJvEDIDBBuffer.Create(AOwner: TComponent);
-begin
-  inherited;
-  FLoopKeyPrefix := Default_LoopKeyPrefix;
-  FKeySuffix := Default_KeySuffix;
-  FSegmentKeyPrefix := Default_SegmentKeyPrefix;
-  FElementNonKeyPrefix := Default_ElementNonKeyPrefix;
-end;
-
-destructor TJvEDIDBBuffer.Destroy;
-begin
-  inherited;
 end;
 
 procedure TJvEDIDBBuffer.DoAfterOpenDataSets;
@@ -624,19 +621,26 @@ begin
       FieldDef.FieldType := FElementProfiles.FieldByName(Field_ElementType).AsString;
       if FieldDef.FieldType = '' then
         FieldDef.DataType := ftString
-      else if FieldDef.FieldType[1] = EDIDataType_Numeric then
+      else
+      if FieldDef.FieldType[1] = EDIDataType_Numeric then
         FieldDef.DataType := ftInteger
-      else if FieldDef.FieldType = EDIDataType_Decimal then
+      else
+      if FieldDef.FieldType = EDIDataType_Decimal then
         FieldDef.DataType := ftFloat
-      else if FieldDef.FieldType = EDIDataType_Identifier then
+      else
+      if FieldDef.FieldType = EDIDataType_Identifier then
         FieldDef.DataType := ftString
-      else if FieldDef.FieldType = EDIDataType_String then
+      else
+      if FieldDef.FieldType = EDIDataType_String then
         FieldDef.DataType := ftString
-      else if FieldDef.FieldType = EDIDataType_Date then
+      else
+      if FieldDef.FieldType = EDIDataType_Date then
         FieldDef.DataType := ftDate
-      else if FieldDef.FieldType = EDIDataType_Time then
+      else
+      if FieldDef.FieldType = EDIDataType_Time then
         FieldDef.DataType := ftTime
-      else if FieldDef.FieldType = EDIDataType_Binary then
+      else
+      if FieldDef.FieldType = EDIDataType_Binary then
         FieldDef.DataType := ftBlob
       else
         FieldDef.DataType := ftString;
@@ -645,7 +649,7 @@ begin
       DoResolveFieldDefDataType(FieldDef);
     end;
     FElementProfiles.Next;
-  end; //  while
+  end;
 end;
 
 procedure TJvEDIDBBuffer.OpenProfileDataSets;
@@ -674,14 +678,15 @@ begin
       CreateLoopFieldDefs(FieldDefs, TableName, ParentLoopId, usInserted);
       DoCreateTable(FieldDefs, TableName);
     end
-    else if OwnerLoopId <> NA_LoopId then
+    else
+    if OwnerLoopId <> NA_LoopId then
     begin
       CreateLoopFieldDefs(FieldDefs, TableName, ParentLoopId, usUnmodified);
       DoCheckForFieldChanges(FieldDefs, TableName);
       DoAlterTable(FieldDefs, TableName);
     end;
     FLoopProfiles.Next;
-  end;  
+  end;
   while not FSegmentProfiles.Eof do
   begin
     TableName := FSegmentProfiles.FieldByName(Field_SegmentId).AsString;
@@ -722,7 +727,7 @@ var
   FieldDef: TJvEDIFieldDef;
 begin
   FieldDefs.Clear;
-  if TableName = 'N/A' then
+  if TableName = NA_LoopId then
     Exit;
   //Primary Key
   FieldDef := FieldDefs.Add;
@@ -751,3 +756,4 @@ begin
 end;
 
 end.
+

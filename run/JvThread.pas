@@ -202,6 +202,7 @@ begin
 end;
 
 {$IFDEF LINUX}
+
 function TJvThread.GetPolicy(Thread: THandle): integer;
 begin
   Result := 0;
@@ -214,6 +215,7 @@ begin
   if Thread <> 0 then
     SetThreadPriority(Thread, Policy);
 end;
+
 {$ENDIF LINUX}
 
 procedure TJvThread.QuitThread(Thread: THandle);
@@ -259,15 +261,15 @@ end;
 procedure TJvThread.Terminate;
 var
   List: TList;
-  i: Integer;
+  I: Integer;
 begin
   List := FThreads.LockList;
   try
-    for i := 0 to List.Count - 1 do
+    for I := 0 to List.Count - 1 do
     begin
-      TJvHideThread(List[i]).Terminate;
-      if TJvHideThread(List[i]).Suspended then
-        TJvHideThread(List[i]).Resume;
+      TJvHideThread(List[I]).Terminate;
+      if TJvHideThread(List[I]).Suspended then
+        TJvHideThread(List[I]).Resume;
     end;
   finally
     FThreads.UnlockList;
@@ -300,15 +302,15 @@ end;
 
 function TJvThread.GetTerminated: Boolean;
 var
-  i: Integer;
+  I: Integer;
   List: TList;
 begin
   Result := True;
   List := FThreads.LockList;
   try
-    for i := 0 to List.Count - 1 do
+    for I := 0 to List.Count - 1 do
     begin
-      Result := Result and TJvHideThread(List[i]).Terminated;
+      Result := Result and TJvHideThread(List[I]).Terminated;
       if not Result then
         Break;
     end;
@@ -319,7 +321,8 @@ end;
 
 //=== TJvHideThread ==========================================================
 
-constructor TJvHideThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer);
+constructor TJvHideThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent;
+  Params: Pointer);
 begin
   inherited Create(True);
   FSender := Sender;
@@ -345,7 +348,6 @@ begin
     end;
   end;
 end;
-
 
 initialization
   SyncMtx := CreateMutex(nil, False, 'VCLJvThreadMutex');
