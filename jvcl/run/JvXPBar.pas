@@ -2068,7 +2068,7 @@ var
         32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal);
       {$ENDIF VisualCLX}
 
-{ draw frame... }
+      { draw frame... }
       ACanvas.Brush.Color := FColors.FBorderColor;
       {$IFDEF VCL}ACanvas.{$ENDIF VCL}FrameRect({$IFDEF VisualCLX}ACanvas, {$ENDIF}R);
 
@@ -2134,8 +2134,8 @@ var
         Dec(R.Right, 25);
       end;
       Inc(R.Left, 22);
-      Canvas.Pen.Color := FColors.SeparatorColor;
-      JvXPDrawLine(Canvas, 1, ARect.Top + FHeaderHeight, Width - 1, ARect.Top + FHeaderHeight);
+      ACanvas.Pen.Color := FColors.SeparatorColor;
+      JvXPDrawLine(ACanvas, 1, ARect.Top + FHeaderHeight, Width - 1, ARect.Top + FHeaderHeight);
       if not FIcon.Empty then
       begin
         ACanvas.Draw(2, 0, FIcon);
@@ -2146,7 +2146,7 @@ var
 
     { draw seperator line }
     ACanvas.Pen.Color := FColors.SeparatorColor;
-    JvXPDrawLine(Canvas, 1, ARect.Top + FHeaderHeight, Width - 1, ARect.Top + FHeaderHeight);
+    JvXPDrawLine(ACanvas, 1, ARect.Top + FHeaderHeight, Width - 1, ARect.Top + FHeaderHeight);
 
     { draw icon }
     Inc(ARect.Left, 22);
