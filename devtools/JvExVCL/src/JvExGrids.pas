@@ -50,9 +50,13 @@ type
   {$ENDIF COMPILER5}
 
   WINCONTROL_DECL_DEFAULT(InplaceEdit)
+
   WINCONTROL_DECL_DEFAULT(CustomGrid)
+
   {$IFDEF COMPILER6_UP}
+
   WINCONTROL_DECL_DEFAULT(CustomDrawGrid)
+
   WINCONTROL_DECL_DEFAULT(InplaceEditList)
 
   TJvExPubInplaceEditList = class(TJvExInplaceEditList)
@@ -76,7 +80,6 @@ type
   {$ENDIF COMPILER5}
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -90,13 +93,19 @@ const
 implementation
 
 WINCONTROL_IMPL_DEFAULT(InplaceEdit)
+
 WINCONTROL_IMPL_DEFAULT(CustomGrid)
+
 {$IFDEF COMPILER6_UP}
+
 WINCONTROL_IMPL_DEFAULT(CustomDrawGrid)
+
 WINCONTROL_IMPL_DEFAULT(InplaceEditList)
+
 {$ENDIF COMPILER6_UP}
 
 WINCONTROL_IMPL_DEFAULT(DrawGrid)
+
 {$IFDEF COMPILER5}
 function TJvExDrawGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
 begin
@@ -105,6 +114,7 @@ end;
 {$ENDIF COMPILER5}
 
 WINCONTROL_IMPL_DEFAULT(StringGrid)
+
 {$IFDEF COMPILER5}
 function TJvExStringGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
 begin
@@ -112,8 +122,8 @@ begin
 end;
 {$ENDIF COMPILER5}
 
-initialization
 {$IFDEF UNITVERSIONING}
+initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

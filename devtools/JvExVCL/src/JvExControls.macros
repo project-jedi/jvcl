@@ -53,10 +53,10 @@
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
     {$IFDEF COMPILER5}
-     {$IFNDEF HASAUTOSIZE}
+    {$IFNDEF HASAUTOSIZE}
     procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
     procedure SetAutoSize(Value: Boolean); virtual;
-     {$ENDIF !HASAUTOSIZE}
+    {$ENDIF !HASAUTOSIZE}
     {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
@@ -251,7 +251,8 @@ begin
 end;
 
 {$IFDEF COMPILER5}
- {$IFNDEF HASAUTOSIZE}
+{$IFNDEF HASAUTOSIZE}
+
 procedure TJvEx##ClassName.CMSetAutoSize(var Msg: TMessage);
 begin
   SetAutoSize(Msg.WParam <> 0);
@@ -261,7 +262,8 @@ procedure TJvEx##ClassName.SetAutoSize(Value: Boolean);
 begin
   TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF !HASAUTOSIZE}
+
+{$ENDIF !HASAUTOSIZE}
 {$ENDIF COMPILER5}
 *)
 
@@ -288,7 +290,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
-{ VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in an other order than
+{ VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvEx##ClassName.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
@@ -356,7 +358,6 @@ end;
 (*$DEFINE CONTROL_WNDPROC_CASES
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
-
     CM_DIALOGCHAR:
       with TCMDialogChar(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
@@ -366,12 +367,10 @@ end;
     CM_HITTEST:
       with TCMHitTest(Msg) do
         Result := Integer(HitTest(XPos, YPos));
-
     CM_MOUSEENTER:
       MouseEnter(TControl(Msg.LParam));
     CM_MOUSELEAVE:
       MouseLeave(TControl(Msg.LParam));
-
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -406,14 +405,12 @@ end;
 // ****************** WinControl WndProc implementation *******************
 (*$DEFINE WINCONTROL_WNDPROC_CASES
     CONTROL_WNDPROC_CASES
-
     CM_CURSORCHANGED:
       CursorChanged;
     CM_SHOWINGCHANGED:
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
-
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -424,18 +421,15 @@ end;
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
-
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
       FocusKilled(HWND(Msg.WParam));
-
     WM_SIZE:
       begin
         inherited WndProc(Msg);
         BoundsChanged;
       end;
-
     WM_ERASEBKGND:
       begin
         IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against Stock-Objects from Canvas
@@ -449,8 +443,7 @@ end;
           RestoreDC(HDC(Msg.WParam), IdSaveDC);
         end;
       end;
-    WM_PRINTCLIENT,
-    WM_PRINT: // VCL bug fix
+    WM_PRINTCLIENT, WM_PRINT: // VCL bug fix
       begin
         IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against changes
         try
@@ -487,32 +480,26 @@ end;
 // ****************** EditControl WndProc implementation *******************
 (*$DEFINE EDITCONTROL_WNDPROC_CASES
     WINCONTROL_WNDPROC_CASES
-
     WM_CLEAR:
       if caClear in ClipboardCommands then
         inherited WndProc(Msg)
       else
         Msg.Result := 1;
-
-    WM_UNDO,
-    EM_UNDO:
+    WM_UNDO, EM_UNDO:
       if caUndo in ClipboardCommands then
         inherited WndProc(Msg)
       else
         Msg.Result := 1;
-
     WM_COPY:
       if caCopy in ClipboardCommands then
         inherited WndProc(Msg)
       else
         Msg.Result := 1;
-
     WM_CUT:
       if caCut in ClipboardCommands then
         inherited WndProc(Msg)
       else
         Msg.Result := 1;
-
     WM_PASTE:
       if caPaste in ClipboardCommands then
         inherited WndProc(Msg)
@@ -547,7 +534,9 @@ END_CONSTRUCTOR
 CONTROL_IMPL(ClassName)
 
 CONTROL_WNDPROC(ClassName)
-{------------------------------------------------------------------------------}
+
+//============================================================================
+
 *)
 
 (*$DEFINE WINCONTROL_IMPL_DEFAULT(ClassName)
@@ -557,7 +546,9 @@ END_CONSTRUCTOR
 WINCONTROL_IMPL(ClassName)
 
 WINCONTROL_WNDPROC(ClassName)
-{------------------------------------------------------------------------------}
+
+//============================================================================
+
 *)
 
 (*$DEFINE EDITCONTROL_IMPL_DEFAULT(ClassName)
@@ -567,6 +558,8 @@ END_CONSTRUCTOR
 EDITCONTROL_IMPL(ClassName)
 
 EDITCONTROL_WNDPROC(ClassName)
-{------------------------------------------------------------------------------}
+
+//============================================================================
+
 *)
 

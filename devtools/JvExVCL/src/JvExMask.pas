@@ -81,6 +81,7 @@ BEGIN_EDITCONTROL_CONSTRUCTOR(CustomMaskEdit)
 END_CONSTRUCTOR
 
 EDITCONTROL_IMPL(CustomMaskEdit)
+
 EDITCONTROL_WNDPROC(CustomMaskEdit)
 
 procedure TJvExCustomMaskEdit.DoBeepOnError;
@@ -99,6 +100,7 @@ BEGIN_EDITCONTROL_CONSTRUCTOR(MaskEdit)
 END_CONSTRUCTOR
 
 EDITCONTROL_IMPL(MaskEdit)
+
 EDITCONTROL_WNDPROC(MaskEdit)
 
 procedure TJvExMaskEdit.DoBeepOnError;
@@ -112,8 +114,8 @@ begin
   FBeepOnError := Value;
 end;
 
-initialization
 {$IFDEF UNITVERSIONING}
+initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

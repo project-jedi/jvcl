@@ -77,10 +77,10 @@ type
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
     {$IFDEF COMPILER5}
-     {$IFNDEF HASAUTOSIZE}
+    {$IFNDEF HASAUTOSIZE}
     procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
     procedure SetAutoSize(Value: Boolean); virtual;
-     {$ENDIF !HASAUTOSIZE}
+    {$ENDIF !HASAUTOSIZE}
     {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
@@ -227,7 +227,8 @@ begin
 end;
 
 {$IFDEF COMPILER5}
- {$IFNDEF HASAUTOSIZE}
+{$IFNDEF HASAUTOSIZE}
+
 procedure TJvExCheckListBox.CMSetAutoSize(var Msg: TMessage);
 begin
   SetAutoSize(Msg.WParam <> 0);
@@ -237,7 +238,8 @@ procedure TJvExCheckListBox.SetAutoSize(Value: Boolean);
 begin
   TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF !HASAUTOSIZE}
+
+{$ENDIF !HASAUTOSIZE}
 {$ENDIF COMPILER5}
 
 procedure TJvExCheckListBox.BoundsChanged;
@@ -259,7 +261,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
-{ VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in an other order than
+{ VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExCheckListBox.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
@@ -317,7 +319,6 @@ begin
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
-
     CM_DIALOGCHAR:
       with TCMDialogChar(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
@@ -327,12 +328,10 @@ begin
     CM_HITTEST:
       with TCMHitTest(Msg) do
         Result := Integer(HitTest(XPos, YPos));
-
     CM_MOUSEENTER:
       MouseEnter(TControl(Msg.LParam));
     CM_MOUSELEAVE:
       MouseLeave(TControl(Msg.LParam));
-
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -351,14 +350,12 @@ begin
       ParentColorChanged;
     CM_PARENTSHOWHINTCHANGED:
       ParentShowHintChanged;
-
     CM_CURSORCHANGED:
       CursorChanged;
     CM_SHOWINGCHANGED:
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
-
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -369,18 +366,15 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
-
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
       FocusKilled(HWND(Msg.WParam));
-
     WM_SIZE:
       begin
         inherited WndProc(Msg);
         BoundsChanged;
       end;
-
     WM_ERASEBKGND:
       begin
         IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against Stock-Objects from Canvas
@@ -394,8 +388,7 @@ begin
           RestoreDC(HDC(Msg.WParam), IdSaveDC);
         end;
       end;
-    WM_PRINTCLIENT,
-    WM_PRINT: // VCL bug fix
+    WM_PRINTCLIENT, WM_PRINT: // VCL bug fix
       begin
         IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against changes
         try
@@ -416,10 +409,11 @@ begin
     inherited WndProc(Msg);
   end;
 end;
-{------------------------------------------------------------------------------}
 
-initialization
+//============================================================================
+
 {$IFDEF UNITVERSIONING}
+initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
