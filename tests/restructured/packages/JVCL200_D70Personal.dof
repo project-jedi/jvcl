@@ -1,0 +1,3 @@
+[Directories]
+UnitOutputDir=..\lib7
+SearchPath=..\source;..\common
