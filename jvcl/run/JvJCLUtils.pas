@@ -693,7 +693,8 @@ function PtInRectInclusive(R: TRect; Pt: TPoint): Boolean;
 // Works like PtInRect but excludes all edges from comparision
 function PtInRectExclusive(R: TRect; Pt: TPoint): Boolean;
 
-function FourDigitYear: Boolean;
+function FourDigitYear: Boolean; {$IFDEF COMPILER6_UP}deprecated;{$ENDIF}
+function IsFourDigitYear: Boolean;
 
 { moved from JvJVCLUTils }
 
@@ -951,8 +952,8 @@ function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
 {$ENDIF VCL}
 
 {$IFDEF MSWINDOWS}
-{ BrowseForFolder displays Browse For Folder dialog }
-function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: string): Boolean;
+{ BrowseForFolderNative displays Browse For Folder dialog }
+function BrowseForFolderNative(const Handle: HWND; const Title: string; var Folder: string): Boolean;
 {$ENDIF MSWINDOWS}
 
 procedure AntiAlias(Clip: TBitmap);
@@ -4756,6 +4757,11 @@ end;
 
 function FourDigitYear: Boolean;
 begin
+  Result := IsFourDigitYear;
+end;
+
+function IsFourDigitYear: Boolean;
+begin
   Result := Pos('YYYY', AnsiUpperCase(ShortDateFormat)) > 0;
 end;
 { end JvDateUtil }
@@ -7962,7 +7968,7 @@ end;
 
 {$IFDEF MSWINDOWS}
 
-function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: string): Boolean;
+function BrowseForFolderNative(const Handle: HWND; const Title: string; var Folder: string): Boolean;
 var
   BrowseInfo: TBrowseInfo;
   Id: PItemIDList;

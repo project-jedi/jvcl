@@ -845,7 +845,7 @@ procedure TJvFormPlacement.FormCloseQuery(Sender: TObject; var CanClose: Boolean
 begin
   if Assigned(FSaveFormCloseQuery) then
     FSaveFormCloseQuery(Sender, CanClose);
-  if CanClose and IsActive and (Owner is TCustomForm) and (Form.Handle <> 0) then
+  if CanClose and IsActive and (Owner is TCustomForm) and (Form.Handle <> NullHandle) then
   try
     SaveFormPlacement;
   except
@@ -871,8 +871,14 @@ end;
 
 procedure TJvFormPlacement.UpdatePlacement;
 const
-  Metrics: array [bsSingle..bsSizeToolWin] of Word =
+  {$IFDEF VCL}
+  Metrics: array[bsSingle..bsSizeToolWin] of Word =
     (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME, SM_CXBORDER, SM_CXFRAME);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Metrics: array[fbsSingle..fbsSizeToolWin] of TSysMetrics =
+    (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME, SM_CXBORDER, SM_CXFRAME);
+  {$ENDIF ViszalCLX}
 var
   Placement: TWindowPlacement;
 begin
@@ -884,10 +890,15 @@ begin
       GetWindowPlacement(Form.Handle, @Placement);
       if not IsWindowVisible(Form.Handle) then
         Placement.ShowCmd := SW_HIDE;
+      {$IFDEF VCL}
       if Form.BorderStyle <> bsNone then
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      if Form.BorderStyle <> fbsNone then
+      {$ENDIF VisualCLX}
       begin
         Placement.ptMaxPosition.X := -GetSystemMetrics(Metrics[Form.BorderStyle]);
-        Placement.ptMaxPosition.Y := -GetSystemMetrics(Metrics[Form.BorderStyle] + 1);
+        Placement.ptMaxPosition.Y := -GetSystemMetrics(Succ(Metrics[Form.BorderStyle]));
       end
       else
         Placement.ptMaxPosition := Point(0, 0);
@@ -907,7 +918,12 @@ begin
     Active := False;
     try
       if (not FPreventResize) and FDefMaximize and
+        {$IFDEF VCL}
         (Form.BorderStyle <> bsDialog) then
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        (Form.BorderStyle <> fbsDialog) then
+        {$ENDIF VisualCLX}
         Form.BorderIcons := Form.BorderIcons + [biMaximize]
       else
         Form.BorderIcons := Form.BorderIcons - [biMaximize];

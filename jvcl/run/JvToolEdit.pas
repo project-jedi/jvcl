@@ -56,8 +56,7 @@ uses
   QMask, QImgList, QActnList, QExtDlgs, QComboEdits, QWindows, Types,
   JvExComboEdits,
   {$ENDIF VisualCLX}
-  JvComponent, JvSpeedButton, JvJCLUtils, JvTypes, JvExControls, JvExMask,
-  JvFinalize;
+  JvSpeedButton, JvTypes, JvExMask, JvExForms;
 
 const
   scAltDown = scAlt + VK_DOWN;
@@ -69,7 +68,7 @@ type
   TCloseUpEvent = procedure(Sender: TObject; Accept: Boolean) of object;
   TPopupAlign = (epaRight, epaLeft);
 
-  TJvPopupWindow = class(TCustomForm)
+  TJvPopupWindow = class(TJvExCustomForm)
   private
     FEditor: TWinControl;
     FCloseUp: TCloseUpEvent;
@@ -941,18 +940,18 @@ uses
   {$IFDEF VCL}
   Consts, JvBrowseFolder, ActiveX,
   {$ENDIF VCL}
-  JvThemes, JvResources, JvJVCLUtils, JvPickDate,
-  JvConsts;
+  JvFinalize, JvThemes, JvResources, JvConsts, JvJCLUtils, JvExControls,
+  JvPickDate, JvJVCLUtils;
 
 const
   sUnitName = 'JvToolEdit';
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvToolEdit.res}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvToolEdit.res}
-{$ENDIF VisualCLX}
+{$ENDIF LINUX}
 
 type
   TCustomEditHack = class(TCustomEdit);
@@ -1516,7 +1515,7 @@ begin
     with ACanvas do
     begin
       EditRect := Rect(0, 0, 0, 0);
-      SendMsg(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
+      SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
       if IsRectEmpty(EditRect) then
       begin
         EditRect := ed.ClientRect;
@@ -3067,7 +3066,6 @@ begin
   begin
     Bmp := TBitmap.Create;
     try
-      //Bmp.Handle := LoadBitmap(HInstance, sDateBmp);
       Bmp.LoadFromResourceName(HInstance, sDateBmp);
       GDateImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
     finally
@@ -3107,7 +3105,7 @@ end;
 function TJvCustomDateEdit.FourDigitYear: Boolean;
 begin
   Result := (FYearDigits = dyFour) or ((FYearDigits = dyDefault) and
-   {$IFDEF VCL}JvJCLUtils.{$ELSE}JvQJCLUtils.{$ENDIF}FourDigitYear);
+   IsFourDigitYear);
 end;
 
 function TJvCustomDateEdit.GetCalendarHints: TStrings;

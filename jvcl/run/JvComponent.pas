@@ -35,9 +35,15 @@ uses
   {$IFDEF USE_DXGETTEXT}
   gnugettext,
   {$ENDIF USE_DXGETTEXT}
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Windows, Messages, Controls,
+  Controls,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Qt, Types, QWindows,
+  {$ENDIF VisualCLX}
   JVCLVer, JvExControls, JvExExtCtrls, JvExComCtrls, JvExForms, JvExStdCtrls;
 
 type
@@ -73,18 +79,22 @@ type
 
 //=== TJvPopupListBox ========================================================
 
-{$IFDEF VCL}
 type
   TJvPopupListBox = class(TJvExCustomListBox)
   private
     FSearchText: string;
     FSearchTickCount: Longint;
   protected
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
-	procedure KeyPress(var Key: Char); override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure CreateWidget; override;
+    function WidgetFlags: Integer; override;
+    {$ENDIF VisualCLX}
+    procedure KeyPress(var Key: Char); override;
   end;
-{$ENDIF VCL}
 
 implementation
 
@@ -104,9 +114,8 @@ end;
 
 {$ENDIF USE_DXGETTEXT}
 
-{$IFDEF VCL}
-
 //=== TJvPopupListBox ========================================================
+{$IFDEF VCL}
 procedure TJvPopupListBox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -125,6 +134,23 @@ begin
   Windows.SetParent(Handle, 0);
   CallWindowProc(DefWndProc, Handle, WM_SETFOCUS, 0, 0);
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvPopupListBox.CreateWidget;
+begin
+  inherited CreateWidget;
+  QWidget_setFocus(Handle);
+end;
+
+function TJvPopupListBox.WidgetFlags: Integer;
+begin
+  Result := Integer(WidgetFlags_WType_Popup) or         // WS_POPUPWINDOW 
+            Integer(WidgetFlags_WStyle_NormalBorder) or // WS_BORDER
+            Integer(WidgetFlags_WStyle_Tool) or         // WS_EX_TOOLWINDOW
+            Integer(WidgetFlags_WStyle_StaysOnTop);     // WS_EX_TOPMOST
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvPopupListBox.KeyPress(var Key: Char);
 var
@@ -143,15 +169,15 @@ begin
         FSearchTickCount := TickCount;
         if Length(FSearchText) < 32 then
           FSearchText := FSearchText + Key;
+        {$IFDEF VCL}
         SendMessage(Handle, LB_SELECTSTRING, WORD(-1),
           Longint(PChar(FSearchText)));
+        {$ENDIF VCL}
         Key := #0;
       end;
   end;
   inherited KeyPress(Key);
 end;
-
-{$ENDIF VCL}
 
 {$IFDEF USE_DXGETTEXT}
 

@@ -524,9 +524,9 @@ end;
 { TJvRegularExpressionValidator }
 
 function MatchesMask(const Filename, Mask: string; const SearchFlags: TSearchFlags = [sfCaseSensitive]): boolean;
-var
+{var
   URE: TURESearch;
-  SL: TWideStringList;
+  SL: TWideStringList;}
 begin
   Result := Masks.MatchesMask(Filename,Mask);
   (*
