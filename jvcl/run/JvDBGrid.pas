@@ -24,6 +24,20 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+-----------------------------------------------------------------------------
+INFO: Draw events are triggered in this order:
+
+- Title cells:
+OnGetBtnParams
+OnDrawColumnTitle
+
+- Data cells:
+OnGetCellParams
+OnDrawColumnCell
+
+OnGetCellProps and OnDrawDataCell are obsolete.
+-----------------------------------------------------------------------------
+
 Known Issues:
 - THE AlwaysShowEditor OPTION IS NOT COMPATIBLE WITH CUSTOM EDIT CONTROLS AND BOOLEAN EDITOR.
   Custom edit controls and boolean editor are deactivated when this option is set to True.
@@ -334,8 +348,8 @@ type
     procedure UpdateTabStops(ALimit: Integer = -1);
     procedure ShowColumnsDialog;
     procedure CloseControl; // Hide the current edit control and give the focus to the grid 
-    procedure InitializeColumnsWidth(const FixedWidth: Integer;
-                                     const SetMinWidth, SetMaxWidth: Boolean);
+    procedure InitializeColumnsWidth(const MinWidth, MaxWidth: Integer;
+      const DisplayWholeTitle: Boolean; const FixedWidths: array of Integer);
     property SelectedRows;
     property SelCount: Longint read GetSelCount;
     property Canvas;
@@ -3048,51 +3062,72 @@ begin
   end;
 end;
 
-procedure TJvDBGrid.InitializeColumnsWidth(const FixedWidth: Integer;
-                                           const SetMinWidth, SetMaxWidth: Boolean);
+procedure TJvDBGrid.InitializeColumnsWidth(const MinWidth, MaxWidth: Integer;
+  const DisplayWholeTitle: Boolean; const FixedWidths: array of Integer);
 var
-  I,
+  SavedValue: Boolean;
+  I, J,
   AWidth: Integer;
 begin
-  // Resize the grid columns to a fixed width (or their default width)
-  // and ensure they are wide enough for the title caption
-  // e.g. with FixedWidth = 0, columns width = default width
-  // e.g. with FixedWidth = 100, columns width = 100 or title caption width if wider
-  for I := 0 to Columns.Count - 1 do
-    if Columns[I].Visible then
-    begin
-      if FixedWidth < 1 then
-        AWidth := Columns[I].DefaultWidth
-      else
+  // Resize the grid columns with the given widths (0 = default width) and
+  // ensure they are wide enough for the title caption (optional).
+  // If there are more columns than widths in FixedWidths, the last given width
+  // is used for the remaining columns.
+  // If Min/MaxWidth < 0, the Min/MaxColumnWidth value is set automatically.
+  // If Min/MaxWidth = 0, the Min/MaxColumnWidth value is not modified.
+  // If Min/MaxWidth > 0, the Min/MaxColumnWidth value is set to the given value.
+  SavedValue := AutoSizeColumns;
+  FAutoSizeColumns := False;
+  try
+    J := Low(FixedWidths);
+    if MinWidth > 0 then
+      FMinColumnWidth := MinWidth
+    else
+    if MinWidth < 0 then
+      FMinColumnWidth := FixedWidths[J];
+    if MaxWidth > 0 then
+      FMaxColumnWidth := MaxWidth
+    else
+    if MaxWidth < 0 then
+      FMaxColumnWidth := FixedWidths[J];
+    for I := 0 to Columns.Count - 1 do
+      if Columns[I].Visible then
       begin
-        AWidth := FixedWidth;
-        if dgTitles in Options then
+        if FixedWidths[J] < 1 then
+          AWidth := Columns[I].DefaultWidth
+        else
         begin
-          Canvas.Font.Assign(Columns[I].Title.Font);
-          if Canvas.TextWidth(Columns[I].Title.Caption) + 4 > AWidth then
-            AWidth := Canvas.TextWidth(Columns[I].Title.Caption) + 4;
+          AWidth := FixedWidths[J];
+          if (dgTitles in Options) and DisplayWholeTitle then
+          begin
+            Canvas.Font.Assign(Columns[I].Title.Font);
+            if Canvas.TextWidth(Columns[I].Title.Caption) + 4 > AWidth then
+              AWidth := Canvas.TextWidth(Columns[I].Title.Caption) + 4;
+          end;
         end;
+        if AWidth < MinColumnWidth then
+        begin
+          if MinWidth < 0 then
+            FMinColumnWidth := AWidth
+          else
+          if MinColumnWidth > 0 then
+            AWidth := MinColumnWidth;
+        end;
+        if AWidth > MaxColumnWidth then
+        begin
+          if MaxWidth < 0 then
+            FMaxColumnWidth := AWidth
+          else
+          if MaxColumnWidth > 0 then
+            AWidth := MaxColumnWidth;
+        end;
+        Columns[I].Width := AWidth;
+        if J < High(FixedWidths) then
+          J := J + 1;
       end;
-      if SetMinWidth and (MinColumnWidth < 1) then
-        FMinColumnWidth := AWidth
-      else
-      if AWidth < MinColumnWidth then
-      begin
-        if SetMinWidth then
-          FMinColumnWidth := AWidth
-        else
-          AWidth := MinColumnWidth;
-      end;
-      if AWidth > MaxColumnWidth then
-      begin
-        if SetMaxWidth then
-          FMaxColumnWidth := AWidth
-        else
-        if MaxColumnWidth > 0 then
-          AWidth := MaxColumnWidth;
-      end;
-      Columns[I].Width := AWidth;
-    end;
+  finally
+    AutoSizeColumns := SavedValue;
+  end;
 end;
 
 procedure TJvDBGrid.Resize;
