@@ -58,6 +58,8 @@ type
   TJvCustomTabBar = class;
   TJvTabBarItem = class;
 
+  TJvTabBarOrientation = (toTop, toBottom);
+
   TJvGetModifiedEvent = procedure(Sender: TJvTabBarItem; var Modified: Boolean) of object;
   TJvGetEnabledEvent = procedure(Sender: TJvTabBarItem; var Enabled: Boolean) of object;
 
@@ -301,6 +303,7 @@ type
     FHint: TCaption;
     FFlatScrollButtons: Boolean;
     FAllowTabMoving: Boolean;
+    FOrientation: TJvTabBarOrientation;
 
     function GetLeftTab: TJvTabBarItem;
     procedure SetLeftTab(Value: TJvTabBarItem);
@@ -319,6 +322,7 @@ type
     procedure SetHint(const Value: TCaption);
     procedure SetFlatScrollButtons(const Value: Boolean);
     procedure SetPageList(const Value: TCustomControl);
+    procedure SetOrientation(const Value: TJvTabBarOrientation);
   protected
     procedure Resize; override;
     procedure CalcTabsRects;
@@ -377,6 +381,7 @@ type
     property ClosingTab: TJvTabBarItem read FClosingTab;
 
     // Options
+    property Orientation: TJvTabBarOrientation read FOrientation write SetOrientation default toTop;
     property CloseButton: Boolean read FCloseButton write SetCloseButton default True;
     property RightClickSelect: Boolean read FRightClickSelect write FRightClickSelect default True;
     property HotTracking: Boolean read FHotTracking write FHotTracking default False;
@@ -405,6 +410,7 @@ type
     property Height default 23;
     property Hint;
 
+    property Orientation;
     property CloseButton;
     property RightClickSelect;
     property HotTracking;
@@ -510,6 +516,7 @@ begin
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := ImagesChanged;
 
+  FOrientation := toTop;
   FRightClickSelect := True;
   FCloseButton := True;
   FAutoFreeClosed := True;
@@ -1349,6 +1356,16 @@ begin
   end;
 end;
 
+procedure TJvCustomTabBar.SetOrientation(const Value: TJvTabBarOrientation);
+begin
+  if Value <> FOrientation then
+  begin
+    FOrientation := Value;
+    CalcTabsRects;
+    Repaint;
+  end;
+end;
+
 //=== { TJvTabBarItem } ======================================================
 
 constructor TJvTabBarItem.Create(Collection: TCollection);
@@ -1416,12 +1433,12 @@ begin
     if FLeft = -1 then
       TabBar.CalcTabsRects; // not initialized
 
-    case TabBar.Align of
-      alBottom:
+    case TabBar.Orientation of
+      toBottom:
           Result := Rect(FLeft, 0,
             FLeft + TabBar.GetTabWidth(Self), 0 + TabBar.GetTabHeight(Self));
     else
-      // Top
+      // toTop
       Result := Rect(FLeft, TabBar.ClientHeight - TabBar.GetTabHeight(Self),
           FLeft + TabBar.GetTabWidth(Self), TabBar.ClientHeight);
     end;
@@ -1699,8 +1716,8 @@ begin
     Brush.Style := bsClear;
     Pen.Color := BorderColor;
     Pen.Width := 1;
-    case TabBar.Align of
-      alBottom:
+    case TabBar.Orientation of
+      toBottom:
         begin
           MoveTo(0, R.Bottom - 1);
           LineTo(0, 0);
@@ -1711,7 +1728,7 @@ begin
           LineTo(0, R.Bottom - 1);
         end;
     else
-      // Top
+      // toTop
       MoveTo(0, R.Bottom - 1);
       LineTo(0, 0);
       LineTo(R.Right - 1, 0);
@@ -1783,8 +1800,8 @@ begin
       FillRect(R);
 
       Pen.Color := ControlDivideColor;
-      case Tab.TabBar.Align of
-        alBottom:
+      case Tab.TabBar.Orientation of
+        toBottom:
           begin
             MoveTo(R.Left, R.Top);
             LineTo(R.Left, R.Bottom - 1);
@@ -1792,7 +1809,7 @@ begin
             LineTo(R.Right - 1, R.Top - 1{end});
           end;
       else
-        // Top
+        // toTop
         MoveTo(R.Left, R.Bottom - 1);
         LineTo(R.Left, R.Top);
         LineTo(R.Right - 1, R.Top);
