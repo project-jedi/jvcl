@@ -1384,8 +1384,9 @@ begin
       Self.GradientTo := GradientTo;
       Self.GradientFrom := GradientFrom;
       Self.SeparatorColor := SeparatorColor;
+      Exit;
     end;
-  // (rom) else inherited Assign(Source) missing?
+  inherited Assign(Source);
 end;
 
 procedure TJvXPBarColors.Change;

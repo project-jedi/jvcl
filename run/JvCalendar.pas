@@ -423,14 +423,17 @@ begin
     SourceName := 'nil'
   else
     SourceName := Source.ClassName;
-  if (Source = nil) or not (Source is TJvMonthCalColors) then
-    raise EConvertError.CreateResFmt(@RsECannotAssign, [SourceName, ClassName]);
-  FBackColor := TJvMonthCalColors(Source).BackColor;
-  FTextColor := TJvMonthCalColors(Source).TextColor;
-  FTitleBackColor := TJvMonthCalColors(Source).TitleBackColor;
-  FTitleTextColor := TJvMonthCalColors(Source).TitleTextColor;
-  FMonthBackColor := TJvMonthCalColors(Source).MonthBackColor;
-  FTrailingTextColor := TJvMonthCalColors(Source).TrailingTextColor;
+  if (Source is TJvMonthCalColors) and (Source <> Self)then
+  begin
+    FBackColor := TJvMonthCalColors(Source).BackColor;
+    FTextColor := TJvMonthCalColors(Source).TextColor;
+    FTitleBackColor := TJvMonthCalColors(Source).TitleBackColor;
+    FTitleTextColor := TJvMonthCalColors(Source).TitleTextColor;
+    FMonthBackColor := TJvMonthCalColors(Source).MonthBackColor;
+    FTrailingTextColor := TJvMonthCalColors(Source).TrailingTextColor;
+    Exit;
+  end;
+  inherited Assign(SOurce);
 end;
 
 procedure TJvMonthCalColors.SetColor(Index: Integer; Value: TColor);

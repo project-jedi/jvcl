@@ -5310,8 +5310,9 @@ begin
     finally
       EndUpdate;
     end;
+    Exit;
   end;
-  // (rom) else inherited Assign(Source) missing?
+  inherited Assign(Source);
 end;
 
 end.

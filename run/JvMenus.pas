@@ -355,7 +355,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure Assign(JvMainMenu: TJvMainMenu); reintroduce; overload;
+    procedure Assign(Source: TPersistent); override;
     procedure Refresh;
     procedure Popup(X, Y: Integer); override;
     procedure DefaultDrawItem(Item: TMenuItem; Rect: TRect;
@@ -694,7 +694,7 @@ type
     property CheckedImageBackColorSelected: TColor read FCheckedImageBackColorSelected write FCheckedImageBackColorSelected default DefaultXPCheckedImageBackColorSelected;
   end;
 
-{ Utility routines }
+  { Utility routines }
 
 procedure SetDefaultMenuFont(AFont: TFont);
 function UseFlatMenubars: Boolean;
@@ -716,7 +716,6 @@ const
 
   // The space between a menu item text and its shortcut
   ShortcutSpacing = '        ';
-
 
 function CreateMenuItemPainterFromStyle(Style: TJvMenuStyle; Menu: TMenu): TJvCustomMenuItemPainter;
 begin
@@ -756,7 +755,7 @@ const
 var
   B: BOOL;
 begin
-  Result:= IsWinXP_UP and SystemParametersInfo(SPI_GETFLATMENU, 0, @B, 0) and B;
+  Result := IsWinXP_UP and SystemParametersInfo(SPI_GETFLATMENU, 0, @B, 0) and B;
 end;
 
 procedure MenuWndMessage(Menu: TMenu; var AMsg: TMessage; var Handled: Boolean);
@@ -1173,7 +1172,7 @@ begin
           SaveIndex := SaveDC(DC);
           try
             FCanvas.Handle := DC;
-            FCanvas.Font := Screen.MenuFont; 
+            FCanvas.Font := Screen.MenuFont;
             if Item.Default then
               Canvas.Font.Style := Canvas.Font.Style + [fsBold];
             GetActiveItemPainter.Menu := Self;
@@ -1556,11 +1555,11 @@ end;
 
 procedure TJvPopupMenu.Popup(X, Y: Integer);
 const
-  Flags: array [Boolean, TPopupAlignment] of Word =
-   ((TPM_LEFTALIGN, TPM_RIGHTALIGN, TPM_CENTERALIGN),
+  Flags: array[Boolean, TPopupAlignment] of Word =
+  ((TPM_LEFTALIGN, TPM_RIGHTALIGN, TPM_CENTERALIGN),
     (TPM_RIGHTALIGN, TPM_LEFTALIGN, TPM_CENTERALIGN));
-  Buttons: array [TTrackButton] of Word =
-    (TPM_RIGHTBUTTON, TPM_LEFTBUTTON);
+  Buttons: array[TTrackButton] of Word =
+  (TPM_RIGHTBUTTON, TPM_LEFTBUTTON);
 var
   FOnPopup: TNotifyEvent;
 begin
@@ -1729,7 +1728,7 @@ begin
           SaveIndex := SaveDC(DC);
           try
             FCanvas.Handle := DC;
-            FCanvas.Font := Screen.MenuFont; 
+            FCanvas.Font := Screen.MenuFont;
             if Item.Default then
               Canvas.Font.Style := Canvas.Font.Style + [fsBold];
             GetActiveItemPainter.Menu := Self;
@@ -1749,23 +1748,28 @@ begin
   end;
 end;
 
-procedure TJvPopupMenu.Assign(JvMainMenu: TJvMainMenu);
+procedure TJvPopupMenu.Assign(Source:TPersistent);
 begin
-  AutoHotKeys := JvMainMenu.AutoHotkeys;
-  AutoLineReduction := JvMainMenu.AutoLineReduction;
-  BiDiMode := JvMainMenu.BiDiMode;
-  Cursor := JvMainMenu.Cursor;
-  DisabledImages := JvMainMenu.DisabledImages;
-  HotImages := JvMainMenu.HotImages;
-  ImageMargin.Assign(JvMainMenu.ImageMargin);
-  Images := JvMainMenu.Images;
-  ImageSize.Assign(JvMainMenu.ImageSize);
-  ParentBiDiMode := JvMainMenu.ParentBiDiMode;
-  ShowCheckMarks := JvMainMenu.ShowCheckMarks;
-  Style := JvMainMenu.Style;
-  Tag := JvMainMenu.Tag;
-  TextMargin := JvMainMenu.TextMargin;
-  TextVAlignment := JvMainMenu.TextVAlignment;
+  if Source is TJvPopupMenu then
+  begin
+    AutoHotKeys := TJvPopupMenu(Source).AutoHotkeys;
+    AutoLineReduction := TJvPopupMenu(Source).AutoLineReduction;
+    BiDiMode := TJvPopupMenu(Source).BiDiMode;
+    Cursor := TJvPopupMenu(Source).Cursor;
+    DisabledImages := TJvPopupMenu(Source).DisabledImages;
+    HotImages := TJvPopupMenu(Source).HotImages;
+    ImageMargin.Assign(TJvPopupMenu(Source).ImageMargin);
+    Images := TJvPopupMenu(Source).Images;
+    ImageSize.Assign(TJvPopupMenu(Source).ImageSize);
+    ParentBiDiMode := TJvPopupMenu(Source).ParentBiDiMode;
+    ShowCheckMarks := TJvPopupMenu(Source).ShowCheckMarks;
+    Style := TJvPopupMenu(Source).Style;
+    Tag := TJvPopupMenu(Source).Tag;
+    TextMargin := TJvPopupMenu(Source).TextMargin;
+    TextVAlignment := TJvPopupMenu(Source).TextVAlignment;
+    Exit;
+  end;
+  inherited Assign(Source);
 end;
 
 procedure TJvPopupMenu.ReadState(Reader: TReader);
@@ -2013,8 +2017,7 @@ begin
   begin
     if Flags and DT_LEFT = DT_LEFT then
       Flags := Flags and (not DT_LEFT) or DT_RIGHT
-    else
-    if Flags and DT_RIGHT = DT_RIGHT then
+    else if Flags and DT_RIGHT = DT_RIGHT then
       Flags := Flags and (not DT_RIGHT) or DT_LEFT;
     Flags := Flags or DT_RTLREADING;
   end;
@@ -2184,8 +2187,7 @@ begin
     end
       // else, we may have a valid glyph, but we won't use it if
       // the item is a separator
-    else
-    if Assigned(FGlyph) and not FGlyph.Empty and
+    else if Assigned(FGlyph) and not FGlyph.Empty and
       (Item.Caption <> Separator) then
     begin
       // Draw the corresponding back of an item
@@ -2206,11 +2208,9 @@ begin
           I := 0;
           if mdDisabled in State then
             I := 1
-          else
-          if mdChecked in State then
+          else if mdChecked in State then
             I := 3
-          else
-          if mdSelected in State then
+          else if mdSelected in State then
             I := 2;
           if I > FNumGlyphs - 1 then
             I := 0;
@@ -2230,10 +2230,9 @@ begin
         Canvas.Draw(ImageRect.Left, ImageRect.Top, FGlyph);
       end;
     end
-    // at last, if there is no image given by the user, there may
-    // be a check mark to draw instead
-    else
-    if Item.Checked and not ShowCheckMarks then
+      // at last, if there is no image given by the user, there may
+      // be a check mark to draw instead
+    else if Item.Checked and not ShowCheckMarks then
     begin
       DrawCheckedImageBack(ImageAndMarginRect);
       DrawCheckImage(ImageRect);
@@ -2247,7 +2246,7 @@ begin
     else
     begin
       // find the largest text element
-      MaxWidth := Canvas.TextWidth(DelChars(Item.Caption, '&') + ShortcutSpacing{Tab + Tab});
+      MaxWidth := Canvas.TextWidth(DelChars(Item.Caption, '&') + ShortcutSpacing {Tab + Tab});
       if (Item.Parent <> nil) and (Item.ShortCut <> scNone) then
       begin
         for I := 0 to Item.Parent.Count - 1 do
@@ -2350,25 +2349,25 @@ begin
         Exit;
       end;
 
-      for I := 0 to Item.Parent.Count - 1 do
+    for I := 0 to Item.Parent.Count - 1 do
+    begin
+      tmpWidth := Canvas.TextWidth(DelChars(Item.Parent.Items[I].Caption, '&'));
+      if tmpWidth > MaxWidth then
+        MaxWidth := tmpWidth;
+
+      // if the item has childs, then add the required
+      // width for an arrow. It is considered to be the width of
+      // two spaces.
+      if Item.Parent.Items[I].Count > 0 then
+        OneItemHasChildren := True;
+
+      if Item.Parent.Items[I].ShortCut <> scNone then
       begin
-        tmpWidth := Canvas.TextWidth(DelChars(Item.Parent.Items[I].Caption, '&'));
-        if tmpWidth > MaxWidth then
-          MaxWidth := tmpWidth;
-
-        // if the item has childs, then add the required
-        // width for an arrow. It is considered to be the width of
-        // two spaces.
-        if Item.Parent.Items[I].Count > 0 then
-          OneItemHasChildren := True;
-
-        if Item.Parent.Items[I].ShortCut <> scNone then
-        begin
-          tmpWidth := Canvas.TextWidth(ShortcutToText(Item.Parent.Items[I].ShortCut));
-          if tmpWidth > ShortcutWidth then
-            ShortcutWidth := tmpWidth;
-        end;
+        tmpWidth := Canvas.TextWidth(ShortcutToText(Item.Parent.Items[I].ShortCut));
+        if tmpWidth > ShortcutWidth then
+          ShortcutWidth := tmpWidth;
       end;
+    end;
     Result := MaxWidth;
 
     // If there was a shortcut in any of the items,
@@ -2378,8 +2377,7 @@ begin
       Inc(Result, ShortcutWidth);
       Inc(Result, Canvas.TextWidth(ShortcutSpacing));
     end
-    else
-    if OneItemHasChildren then
+    else if OneItemHasChildren then
       Inc(Result, Canvas.TextWidth('  '));
   end
   else
@@ -2493,8 +2491,7 @@ function TJvCustomMenuItemPainter.GetImageHeight: Integer;
 begin
   if Assigned(Images) then
     Result := Images.Height
-  else
-  if Assigned(FGlyph) then
+  else if Assigned(FGlyph) then
     Result := FGlyph.Height
   else
     Result := ImageSize.Height;
@@ -2504,8 +2501,7 @@ function TJvCustomMenuItemPainter.GetImageWidth: Integer;
 begin
   if Assigned(Images) then
     Result := Images.Width
-  else
-  if Assigned(FGlyph) then
+  else if Assigned(FGlyph) then
     Result := FGlyph.Width
   else
     Result := ImageSize.Width;
@@ -2625,8 +2621,7 @@ begin
     FMainMenu := TJvMainMenu(Value);
     FPopupMenu := nil;
   end
-  else
-  if Value is TJvPopupMenu then
+  else if Value is TJvPopupMenu then
   begin
     FMainMenu := nil;
     FPopupMenu := TJvPopupMenu(Value);
@@ -2642,8 +2637,7 @@ function TJvCustomMenuItemPainter.GetCanvas: TCanvas;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.Canvas
-  else
-  if Assigned(FPopupMenu) then
+  else if Assigned(FPopupMenu) then
     Result := FPopupMenu.Canvas
   else
     Result := nil;
@@ -2919,20 +2913,19 @@ begin
         Pen.Assign(SelectionFramePen);
         Rectangle(ARect);
       end
+      else if UseFlatMenubars then
+      begin
+        Brush.Color := GetSysColor(COLOR_MENUBAR);
+        Brush.Style := bsSolid;
+        FillRect(ARect);
+      end
       else
-        if UseFlatMenubars then
-        begin
-          Brush.Color := GetSysColor(COLOR_MENUBAR);
-          Brush.Style := bsSolid;
-          FillRect(ARect);
-        end
-        else
-        begin
-          Brush.Color := clBtnFace;
-          Brush.Style := bsSolid;
-          Pen.Style := psClear;
-          Rectangle(ARect);
-        end;
+      begin
+        Brush.Color := clBtnFace;
+        Brush.Style := bsSolid;
+        Pen.Style := psClear;
+        Rectangle(ARect);
+      end;
     end;
   end;
 end;
@@ -3254,18 +3247,28 @@ end;
 
 procedure TJvImageMargin.Assign(Source: TPersistent);
 begin
-  Left := TJvImageMargin(Source).Left;
-  Right := TJvImageMargin(Source).Right;
-  Top := TJvImageMargin(Source).Top;
-  Bottom := TJvImageMargin(Source).Bottom;
+  if Source is TJvImageMargin then
+  begin
+    Left := TJvImageMargin(Source).Left;
+    Right := TJvImageMargin(Source).Right;
+    Top := TJvImageMargin(Source).Top;
+    Bottom := TJvImageMargin(Source).Bottom;
+    Exit;
+  end;
+  inherited Assign(Source);
 end;
 
 //=== TJvMenuImageSize =======================================================
 
 procedure TJvMenuImageSize.Assign(Source: TPersistent);
 begin
-  Height := TJvMenuImageSize(Source).Height;
-  Width := TJvMenuImageSize(Source).Width;
+  if Source is TJvMenuImageSize then
+  begin
+    Height := TJvMenuImageSize(Source).Height;
+    Width := TJvMenuImageSize(Source).Width;
+    Exit;
+  end;
+  inherited Assign(Source);
 end;
 
 initialization

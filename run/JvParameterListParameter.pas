@@ -23,7 +23,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-// for FileCtrl.pas and QFileCtrls.pas 
+// for FileCtrl.pas and QFileCtrls.pas
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}
@@ -192,7 +192,7 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   published
-//    property AutoSize: Boolean read FAutoSize write SetAutoSize;
+    //    property AutoSize: Boolean read FAutoSize write SetAutoSize;
     property Center: Boolean read FCenter write FCenter;
     property IncrementalDisplay: Boolean read FIncrementalDisplay write FIncrementalDisplay;
     property Transparent: Boolean read FTransparent write FTransparent;
@@ -487,7 +487,7 @@ function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; con
   const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
   const HelpButton: TMsgDlgBtn = mbHelp;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult;
-  
+
 implementation
 
 uses
@@ -501,12 +501,12 @@ function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; con
 begin
   Result :=
     {$IFDEF VCL}
-    JvDSADialogs.
+  JvDSADialogs.
     {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    JvQDSADialogs.
+  {$IFDEF VisualCLX}
+  JvQDSADialogs.
     {$ENDIF VisualCLX}
-    MessageDlg(Msg, DlgType, Buttons, HelpCtx, Center, Timeout, DefaultButton,
+  MessageDlg(Msg, DlgType, Buttons, HelpCtx, Center, Timeout, DefaultButton,
     CancelButton, HelpButton, ADynControlEngine);
 end;
 
@@ -544,9 +544,12 @@ end;
 procedure TJvButtonParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  Glyph := TJvButtonParameter(Source).Glyph;
-  Layout := TJvButtonParameter(Source).Layout;
-  NumGlyphs := TJvButtonParameter(Source).NumGlyphs;
+  if Source is TJvButtonParameter then
+  begin
+    Glyph := TJvButtonParameter(Source).Glyph;
+    Layout := TJvButtonParameter(Source).Layout;
+    NumGlyphs := TJvButtonParameter(Source).NumGlyphs;
+  end;
 end;
 
 procedure TJvButtonParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
@@ -641,8 +644,7 @@ begin
       if FramePanel.Width <= 0 then
         FramePanel.Width := WinControl.Width;
     end
-    else
-    if RightSpace > 0 then
+    else if RightSpace > 0 then
       if FramePanel.Width > 0 then
         WinControl.Width := FramePanel.Width - RightSpace
       else
@@ -650,8 +652,7 @@ begin
         FramePanel.Width := WinControl.Width;
         WinControl.Width := WinControl.Width - RightSpace;
       end
-    else
-    if FramePanel.Width > 0 then
+    else if FramePanel.Width > 0 then
       WinControl.Width := FramePanel.Width
     else
       FramePanel.Width := WinControl.Width;
@@ -676,8 +677,7 @@ begin
       if FramePanel.Width <= 0 then
         FramePanel.Width := WinControl.Width;
     end
-    else
-    if RightSpace > 0 then
+    else if RightSpace > 0 then
       if FramePanel.Width > 0 then
         WinControl.Width := FramePanel.Width - RightSpace
       else
@@ -685,8 +685,7 @@ begin
         FramePanel.Width := WinControl.Width;
         WinControl.Width := WinControl.Width - RightSpace;
       end
-    else
-    if FramePanel.Width > 0 then
+    else if FramePanel.Width > 0 then
       WinControl.Width := FramePanel.Width
     else
       FramePanel.Width := WinControl.Width;
@@ -698,8 +697,7 @@ begin
         WinControl.Height := Height - (LabelControl.Height + 3)
       else
         WinControl.Height := Height
-    else
-    if Assigned(LabelControl) then
+    else if Assigned(LabelControl) then
       FramePanel.Height := WinControl.Height + LabelControl.Height + 3
     else
       FramePanel.Height := WinControl.Height;
@@ -708,8 +706,8 @@ begin
   begin
     if LabelWidth > 0 then
       LabelControl.Width := LabelWidth;
- //    ELSE
- //      LabelControl.Width :=
+    //    ELSE
+    //      LabelControl.Width :=
     WinControl.Top := LabelControl.Top;
     WinControl.Left := LabelControl.Left + LabelControl.Width + 4;
     if FramePanel.Height > 0 then
@@ -754,7 +752,7 @@ end;
 procedure TJvBasePanelEditParameter.SetHeight(Value: Integer);
 begin
   inherited SetHeight(Value);
-  if Assigned (FramePanel) then
+  if Assigned(FramePanel) then
     FramePanel.Height := Value;
   ArrangeLabelAndWinControlOnPanel;
 end;
@@ -762,7 +760,7 @@ end;
 procedure TJvBasePanelEditParameter.SetWidth(Value: Integer);
 begin
   inherited SetWidth(Value);
-  if Assigned (FramePanel) then
+  if Assigned(FramePanel) then
     FramePanel.Width := Value;
   ArrangeLabelAndWinControlOnPanel;
 end;
@@ -776,10 +774,13 @@ end;
 procedure TJvBasePanelEditParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  LabelArrangeMode := TJvBasePanelEditParameter(Source).LabelArrangeMode;
-  LabelWidth := TJvBasePanelEditParameter(Source).LabelWidth;
-  EditWidth := TJvBasePanelEditParameter(Source).EditWidth;
-  RightSpace := TJvBasePanelEditParameter(Source).RightSpace;
+  if Source is TJvBasePanelEditParameter then
+  begin
+    LabelArrangeMode := TJvBasePanelEditParameter(Source).LabelArrangeMode;
+    LabelWidth := TJvBasePanelEditParameter(Source).LabelWidth;
+    EditWidth := TJvBasePanelEditParameter(Source).EditWidth;
+    RightSpace := TJvBasePanelEditParameter(Source).RightSpace;
+  end;
 end;
 
 //=== TJvLabelParameter ======================================================
@@ -825,12 +826,15 @@ end;
 procedure TJvImageParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  Picture := TJvImageParameter(Source).Picture;
-//  AutoSize := TJvImageParameter(Source).AutoSize;
-  Center := TJvImageParameter(Source).Center;
-  IncrementalDisplay := TJvImageParameter(Source).IncrementalDisplay;
-  Stretch := TJvImageParameter(Source).Stretch;
-  Transparent := TJvImageParameter(Source).Transparent;
+  if Source is TJvImageParameter then
+  begin
+    Picture := TJvImageParameter(Source).Picture;
+    //  AutoSize := TJvImageParameter(Source).AutoSize;
+    Center := TJvImageParameter(Source).Center;
+    IncrementalDisplay := TJvImageParameter(Source).IncrementalDisplay;
+    Stretch := TJvImageParameter(Source).Stretch;
+    Transparent := TJvImageParameter(Source).Transparent;
+  end;
 end;
 
 function TJvImageParameter.GetParameterNameExt: string;
@@ -847,7 +851,7 @@ begin
     with ITmpImage do
     begin
       ControlSetPicture(Picture);
-//      ControlSetAutoSize(AutoSize);
+      //      ControlSetAutoSize(AutoSize);
       ControlSetIncrementalDisplay(IncrementalDisplay);
       ControlSetCenter(Center);
       ControlSetStretch(Stretch);
@@ -894,8 +898,11 @@ end;
 procedure TJvPanelParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  BevelInner := TJvPanelParameter(Source).BevelInner;
-  BevelOuter := TJvPanelParameter(Source).BevelOuter;
+  if Source is TJvPanelParameter then
+  begin
+    BevelInner := TJvPanelParameter(Source).BevelInner;
+    BevelOuter := TJvPanelParameter(Source).BevelOuter;
+  end;
 end;
 
 function TJvPanelParameter.GetParameterNameExt: string;
@@ -1029,7 +1036,7 @@ procedure TJvListParameter.SetAsVariant(Value: Variant);
 begin
   if VariantAsItemIndex then
     if VarType(Value) in [varSmallInt, varInteger, varByte
-      {$IFDEF COMPILER6_UP}, varShortInt, varWord, varLongWord {$ENDIF}] then
+      {$IFDEF COMPILER6_UP}, varShortInt, varWord, varLongWord{$ENDIF}] then
       ItemIndex := Value
     else
       inherited SetAsString(Value)
@@ -1059,8 +1066,7 @@ begin
     FItemIndex := Value;
   if VariantAsItemIndex then
     inherited SetAsVariant(FItemIndex)
-  else
-  if (Value >= 0) and (Value < ItemList.Count) then
+  else if (Value >= 0) and (Value < ItemList.Count) then
     inherited SetAsVariant(ItemList[Value])
   else
     inherited SetAsVariant('');
@@ -1076,8 +1082,7 @@ begin
     Index := -1;
   if VariantAsItemIndex then
     Result := Index
-  else
-  if (Index >= 0) and (Index < ItemList.Count) then
+  else if (Index >= 0) and (Index < ItemList.Count) then
     Result := ItemList[Index]
   else
     Result := '';
@@ -1103,9 +1108,12 @@ end;
 procedure TJvListParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  ItemList.Assign(TJvListParameter(Source).ItemList);
-  ItemIndex := TJvListParameter(Source).ItemIndex;
-  Sorted := TJvListParameter(Source).Sorted;
+  if Source is TJvListParameter then
+  begin
+    ItemList.Assign(TJvListParameter(Source).ItemList);
+    ItemIndex := TJvListParameter(Source).ItemIndex;
+    Sorted := TJvListParameter(Source).Sorted;
+  end;
 end;
 
 procedure TJvListParameter.SearchItemIndex(Search: string);
@@ -1133,9 +1141,9 @@ end;
 procedure TJvListParameter.SetData;
 begin
   inherited SetData;
- //  IF Assigned (
- //  IF Assigned (WinControl) THEN
- //    ItemList.IndexOf (AsString) := ItemIndex;
+  //  IF Assigned (
+  //  IF Assigned (WinControl) THEN
+  //    ItemList.IndexOf (AsString) := ItemIndex;
 end;
 
 //=== TJvRadioGroupParameter =================================================
@@ -1143,7 +1151,8 @@ end;
 procedure TJvRadioGroupParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  Columns := TJvRadioGroupParameter(Source).Columns;
+  if Source is TJvRadioGroupParameter then
+    Columns := TJvRadioGroupParameter(Source).Columns;
 end;
 
 procedure TJvRadioGroupParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
@@ -1174,8 +1183,11 @@ end;
 procedure TJvComboBoxParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  Sorted := TJvComboBoxParameter(Source).Sorted;
-  NewEntriesAllowed := TJvComboBoxParameter(Source).NewEntriesAllowed;
+  if Source is TJvComboBoxParameter then
+  begin
+    Sorted := TJvComboBoxParameter(Source).Sorted;
+    NewEntriesAllowed := TJvComboBoxParameter(Source).NewEntriesAllowed;
+  end;
 end;
 
 function TJvComboBoxParameter.GetParameterNameExt: string;
@@ -1219,7 +1231,8 @@ end;
 procedure TJvListBoxParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  Sorted := TJvListBoxParameter(Source).Sorted;
+  if Source is TJvListBoxParameter then
+    Sorted := TJvListBoxParameter(Source).Sorted;
 end;
 
 function TJvListBoxParameter.GetParameterNameExt: string;
@@ -1261,7 +1274,8 @@ end;
 procedure TJvTimeParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  Format := TJvTimeParameter(Source).Format;
+  if Source is TJvTimeParameter then
+    Format := TJvTimeParameter(Source).Format;
 end;
 
 function TJvTimeParameter.GetParameterNameExt: string;
@@ -1288,9 +1302,12 @@ end;
 procedure TJvDateTimeParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  Format := TJvDateTimeParameter(Source).Format;
-  MaxDate := TJvDateTimeParameter(Source).MaxDate;
-  MinDate := TJvDateTimeParameter(Source).MinDate;
+  if Source is TJvDateTimeParameter then
+  begin
+    Format := TJvDateTimeParameter(Source).Format;
+    MaxDate := TJvDateTimeParameter(Source).MaxDate;
+    MinDate := TJvDateTimeParameter(Source).MinDate;
+  end;
 end;
 
 function TJvDateTimeParameter.GetParameterNameExt: string;
@@ -1322,9 +1339,12 @@ end;
 procedure TJvDateParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  Format := TJvDateParameter(Source).Format;
-  MinDate := TJvDateParameter(Source).MinDate;
-  MaxDate := TJvDateParameter(Source).MaxDate;
+  if Source is TJvDateParameter then
+  begin
+    Format := TJvDateParameter(Source).Format;
+    MinDate := TJvDateParameter(Source).MinDate;
+    MaxDate := TJvDateParameter(Source).MaxDate;
+  end;
 end;
 
 function TJvDateParameter.GetParameterNameExt: string;
@@ -1367,12 +1387,15 @@ end;
 procedure TJvEditParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  EditMask := TJvEditParameter(Source).EditMask;
-  PasswordChar := TJvEditParameter(Source).PasswordChar;
-  LabelWidth := TJvEditParameter(Source).LabelWidth;
-  EditWidth := TJvEditParameter(Source).EditWidth;
-  LabelArrangeMode := TJvEditParameter(Source).LabelArrangeMode;
-  RightSpace := TJvEditParameter(Source).RightSpace;
+  if Source is TJvEditParameter then
+  begin
+    EditMask := TJvEditParameter(Source).EditMask;
+    PasswordChar := TJvEditParameter(Source).PasswordChar;
+    LabelWidth := TJvEditParameter(Source).LabelWidth;
+    EditWidth := TJvEditParameter(Source).EditWidth;
+    LabelArrangeMode := TJvEditParameter(Source).LabelArrangeMode;
+    RightSpace := TJvEditParameter(Source).RightSpace;
+  end;
 end;
 
 function TJvEditParameter.GetParameterNameExt: string;
@@ -1414,7 +1437,8 @@ end;
 procedure TJvButtonEditParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  OnButtonClick := TJvButtonEditParameter(Source).OnButtonClick;
+  if Source is TJvButtonEditParameter then
+    OnButtonClick := TJvButtonEditParameter(Source).OnButtonClick;
 end;
 
 //=== TJvNumberEditParameter ================================================
@@ -1422,7 +1446,8 @@ end;
 procedure TJvNumberEditParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  EditorType := TJvNumberEditParameter(Source).EditorType;
+  if Source is TJvNumberEditParameter then
+    EditorType := TJvNumberEditParameter(Source).EditorType;
 end;
 
 //=== TJvIntegerEditParameter ================================================
@@ -1442,8 +1467,7 @@ var
 begin
   if (EditorType = netCalculate) and DynControlEngine.IsControlTypeRegistered(jctCalculateEdit) then
     WinControl := DynControlEngine.CreateCalculateControl(Self, AParameterParent, GetParameterName)
-  else
-  if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
+  else if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
     WinControl := DynControlEngine.CreateSpinControl(Self, AParameterParent, GetParameterName)
   else
     WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
@@ -1472,8 +1496,11 @@ end;
 procedure TJvIntegerEditParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  MinValue := TJvIntegerEditParameter(Source).MinValue;
-  MaxValue := TJvIntegerEditParameter(Source).MaxValue;
+  if Source is TJvIntegerEditParameter then
+  begin
+    MinValue := TJvIntegerEditParameter(Source).MinValue;
+    MaxValue := TJvIntegerEditParameter(Source).MaxValue;
+  end;
 end;
 
 function TJvIntegerEditParameter.Validate(var AData: Variant): Boolean;
@@ -1526,8 +1553,7 @@ begin
   WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
   if (EditorType = netCalculate) and DynControlEngine.IsControlTypeRegistered(jctCalculateEdit) then
     WinControl := DynControlEngine.CreateCalculateControl(Self, AParameterParent, GetParameterName)
-  else
-  if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
+  else if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
     WinControl := DynControlEngine.CreateSpinControl(Self, AParameterParent, GetParameterName)
   else
     WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
@@ -1556,8 +1582,11 @@ end;
 procedure TJvDoubleEditParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  MinValue := TJvDoubleEditParameter(Source).MinValue;
-  MaxValue := TJvDoubleEditParameter(Source).MaxValue;
+  if Source is TJvDoubleEditParameter then
+  begin
+    MinValue := TJvDoubleEditParameter(Source).MinValue;
+    MaxValue := TJvDoubleEditParameter(Source).MaxValue;
+  end;
 end;
 
 function TJvDoubleEditParameter.Validate(var AData: Variant): Boolean;
@@ -1596,13 +1625,16 @@ end;
 procedure TJvFileNameParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  DialogKind := TJvFileNameParameter(Source).DialogKind;
-  DefaultExt := TJvFileNameParameter(Source).DefaultExt;
-  Filter := TJvFileNameParameter(Source).Filter;
-  FilterIndex := TJvFileNameParameter(Source).FilterIndex;
-  InitialDir := TJvFileNameParameter(Source).InitialDir;
-  DialogOptions := TJvFileNameParameter(Source).DialogOptions;
-  DialogTitle := TJvFileNameParameter(Source).DialogTitle;
+  if Source is TJvFileNameParameter then
+  begin
+    DialogKind := TJvFileNameParameter(Source).DialogKind;
+    DefaultExt := TJvFileNameParameter(Source).DefaultExt;
+    Filter := TJvFileNameParameter(Source).Filter;
+    FilterIndex := TJvFileNameParameter(Source).FilterIndex;
+    InitialDir := TJvFileNameParameter(Source).InitialDir;
+    DialogOptions := TJvFileNameParameter(Source).DialogOptions;
+    DialogTitle := TJvFileNameParameter(Source).DialogTitle;
+  end;
 end;
 
 function TJvFileNameParameter.GetParameterNameExt: string;
@@ -1681,11 +1713,14 @@ end;
 procedure TJvDirectoryParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  InitialDir := TJvDirectoryParameter(Source).InitialDir;
-  {$IFDEF VCL}
-  DialogOptions := TJvDirectoryParameter(Source).DialogOptions;
-  {$ENDIF VCL}
-  DialogTitle := TJvDirectoryParameter(Source).DialogTitle;
+  if Source is TJvDirectoryParameter then
+  begin
+    InitialDir := TJvDirectoryParameter(Source).InitialDir;
+    {$IFDEF VCL}
+    DialogOptions := TJvDirectoryParameter(Source).DialogOptions;
+    {$ENDIF VCL}
+    DialogTitle := TJvDirectoryParameter(Source).DialogTitle;
+  end;
 end;
 
 function TJvDirectoryParameter.GetParameterNameExt: string;

@@ -422,7 +422,7 @@ const
   cFalse = 'FALSE';
   cTrue = 'TRUE';
 
-//=== TJvParameterListMessages ===============================================
+  //=== TJvParameterListMessages ===============================================
 
 constructor TJvParameterListMessages.Create;
 begin
@@ -526,11 +526,16 @@ end;
 
 procedure TJvParameterListEnableDisableReason.Assign(Source: TPersistent);
 begin
+  if Source is TJvParameterListEnableDisableReason then
+  begin
+    AsVariant := TJvParameterListEnableDisableReason(Source).AsVariant;
+    IsEmpty := TJvParameterListEnableDisableReason(Source).IsEmpty;
+    IsNotEmpty := TJvParameterListEnableDisableReason(Source).IsNotEmpty;
+    RemoteParameterName := TJvParameterListEnableDisableReason(Source).RemoteParameterName;
+    Exit;
+  end;
   inherited Assign(Source);
-  AsVariant := TJvParameterListEnableDisableReason(Source).AsVariant;
-  IsEmpty := TJvParameterListEnableDisableReason(Source).IsEmpty;
-  IsNotEmpty := TJvParameterListEnableDisableReason(Source).IsNotEmpty;
-  RemoteParameterName := TJvParameterListEnableDisableReason(Source).RemoteParameterName;
+
 end;
 
 //=== TJvParameterListEnableDisableReasonList ================================
@@ -759,15 +764,15 @@ end;
 procedure TJvBaseParameter.SetAsVariant(Value: Variant);
 begin
   FValue := Value;
- //  if Assigned(FJvDynControlData) then
- //    FJvDynControlData.Value := Value;
+  //  if Assigned(FJvDynControlData) then
+  //    FJvDynControlData.Value := Value;
 end;
 
 function TJvBaseParameter.GetAsVariant: Variant;
 begin
- //  if Assigned(FJvDynControlData) then
- //    Result := FJvDynControlData.Value
- //  else
+  //  if Assigned(FJvDynControlData) then
+  //    Result := FJvDynControlData.Value
+  //  else
   Result := FValue;
 end;
 
@@ -905,23 +910,27 @@ end;
 
 procedure TJvBaseParameter.Assign(Source: TPersistent);
 begin
+  if Source is TJvBaseParameter then
+  begin
+    AsVariant := TJvBaseParameter(Source).AsVariant;
+    Caption := TJvBaseParameter(Source).Caption;
+    SearchName := TJvBaseParameter(Source).SearchName;
+    Width := TJvBaseParameter(Source).Width;
+    Height := TJvBaseParameter(Source).Height;
+    Required := TJvBaseParameter(Source).Required;
+    ParentParameterName := TJvBaseParameter(Source).ParentParameterName;
+    StoreValueToAppStorage := TJvBaseParameter(Source).StoreValueToAppStorage;
+    StoreValueCrypted := TJvBaseParameter(Source).StoreValueCrypted;
+    TabOrder := TJvBaseParameter(Source).TabOrder;
+    FParameterList := TJvBaseParameter(Source).ParameterList;
+    Color := TJvBaseParameter(Source).Color;
+    ReadOnly := TJvBaseParameter(Source).ReadOnly;
+    Enabled := TJvBaseParameter(Source).Enabled;
+    FEnableReasons.Assign(TJvBaseParameter(Source).FEnableReasons);
+    FDisableReasons.Assign(TJvBaseParameter(Source).FDisableReasons);
+    Exit;
+  end;
   inherited Assign(Source);
-  AsVariant := TJvBaseParameter(Source).AsVariant;
-  Caption := TJvBaseParameter(Source).Caption;
-  SearchName := TJvBaseParameter(Source).SearchName;
-  Width := TJvBaseParameter(Source).Width;
-  Height := TJvBaseParameter(Source).Height;
-  Required := TJvBaseParameter(Source).Required;
-  ParentParameterName := TJvBaseParameter(Source).ParentParameterName;
-  StoreValueToAppStorage := TJvBaseParameter(Source).StoreValueToAppStorage;
-  StoreValueCrypted := TJvBaseParameter(Source).StoreValueCrypted;
-  TabOrder := TJvBaseParameter(Source).TabOrder;
-  FParameterList := TJvBaseParameter(Source).ParameterList;
-  Color := TJvBaseParameter(Source).Color;
-  ReadOnly := TJvBaseParameter(Source).ReadOnly;
-  Enabled := TJvBaseParameter(Source).Enabled;
-  FEnableReasons.Assign(TJvBaseParameter(Source).FEnableReasons);
-  FDisableReasons.Assign(TJvBaseParameter(Source).FDisableReasons);
 end;
 
 function TJvBaseParameter.Validate(var AData: Variant): Boolean;
@@ -1028,19 +1037,23 @@ end;
 
 procedure TJvParameterList.Assign(Source: TPersistent);
 begin
+  if Source is TJvParameterList then
+  begin
+    Messages.Assign(TJvParameterList(Source).Messages);
+    ArrangeSettings := TJvParameterList(Source).ArrangeSettings;
+    AppStorage := TJvParameterList(Source).AppStorage;
+    Width := TJvParameterList(Source).Width;
+    Height := TJvParameterList(Source).Height;
+    MaxWidth := TJvParameterList(Source).MaxWidth;
+    MaxHeight := TJvParameterList(Source).MaxHeight;
+    OkButtonVisible := TJvParameterList(Source).OkButtonVisible;
+    CancelButtonVisible := TJvParameterList(Source).CancelButtonVisible;
+    FIntParameterList.Assign(TJvParameterList(Source).FIntParameterList);
+    HistoryEnabled := TJvParameterList(Source).HistoryEnabled;
+    AppStoragePath := TJvParameterList(Source).AppStoragePath;
+    Exit;
+  end;
   inherited Assign(Source);
-  Messages.Assign(TJvParameterList(Source).Messages);
-  ArrangeSettings := TJvParameterList(Source).ArrangeSettings;
-  AppStorage := TJvParameterList(Source).AppStorage;
-  Width := TJvParameterList(Source).Width;
-  Height := TJvParameterList(Source).Height;
-  MaxWidth := TJvParameterList(Source).MaxWidth;
-  MaxHeight := TJvParameterList(Source).MaxHeight;
-  OkButtonVisible := TJvParameterList(Source).OkButtonVisible;
-  CancelButtonVisible := TJvParameterList(Source).CancelButtonVisible;
-  FIntParameterList.Assign(TJvParameterList(Source).FIntParameterList);
-  HistoryEnabled := TJvParameterList(Source).HistoryEnabled;
-  AppStoragePath := TJvParameterList(Source).AppStoragePath;
 end;
 
 procedure TJvParameterList.SetAppStoragePath(Value: string);
@@ -1333,16 +1346,15 @@ begin
     Exit;
   for I := 0 to Count - 1 do
     if Parameters[I].Visible then
- //      if Parameters[I] is TJvTabControlParameter then
- //        for J := 0 to TJvTabControlParameter(Parameters[I]).Tabs.Count - 1 do
-//          if Uppercase(Parameters[I].SearchName + '.' + TJvTabControlParameter(Parameters[I]).Tabs[J]) = Uppercase(SearchName) then
-//          begin
-//            Result := TWinControl(TJvTabControlParameter(Parameters[I]).TabWinControls.Objects[J]);
-//            break;
-//          end   {*** IF Uppercase(TJvBaseParameter(Objects[I]).SearchName) = Uppercase(ASearchName) THEN ***}
-//          else
-    else
-    if UpperCase(Parameters[I].SearchName) = UpperCase(SearchName) then
+      //      if Parameters[I] is TJvTabControlParameter then
+      //        for J := 0 to TJvTabControlParameter(Parameters[I]).Tabs.Count - 1 do
+     //          if Uppercase(Parameters[I].SearchName + '.' + TJvTabControlParameter(Parameters[I]).Tabs[J]) = Uppercase(SearchName) then
+     //          begin
+     //            Result := TWinControl(TJvTabControlParameter(Parameters[I]).TabWinControls.Objects[J]);
+     //            break;
+     //          end   {*** IF Uppercase(TJvBaseParameter(Objects[I]).SearchName) = Uppercase(ASearchName) THEN ***}
+     //          else
+    else if UpperCase(Parameters[I].SearchName) = UpperCase(SearchName) then
     begin
       Parameter := Parameters[I];
       if Parameter is TJvArrangeParameter then
@@ -1534,11 +1546,11 @@ begin
         Parameters[I].WinControlData := Parameters[I].AsVariant;
       end;
     HandleEnableDisable;
- //    for I := 0 to Count - 1 do
- //      if Parameters[I].Visible then
- //        if Assigned(Parameters[I].WinControl) then
- //          if Assigned(THackWinControl(Parameters[I].WinControl).OnExit) then
- //            THackWinControl(Parameters[I].WinControl).OnExit(Parameters[I].WinControl);
+    //    for I := 0 to Count - 1 do
+    //      if Parameters[I].Visible then
+    //        if Assigned(Parameters[I].WinControl) then
+    //          if Assigned(THackWinControl(Parameters[I].WinControl).OnExit) then
+    //            THackWinControl(Parameters[I].WinControl).OnExit(Parameters[I].WinControl);
   finally
     ArrangePanel.EnableArrange;
   end;
@@ -1560,7 +1572,7 @@ begin
     ScrollBox.AutoScroll := True;
   end;
   if (ArrangePanel.Height > ScrollBox.Height) {OR
-     (ArrangePanel.Height > MaxHeight) } then
+  (ArrangePanel.Height > MaxHeight) }then
     ScrollBox.AutoScroll := True;
 end;
 
@@ -1653,8 +1665,7 @@ function TJvParameterList.GetCurrentWidth: Integer;
 begin
   if Width > 0 then
     Result := Width
-  else
-  if Assigned(ArrangePanel) then
+  else if Assigned(ArrangePanel) then
     if ArrangePanel.Align in [alTop, alBottom, alClient] then
       Result := ArrangePanel.ArrangeWidth
     else
@@ -1669,8 +1680,7 @@ function TJvParameterList.GetCurrentHeight: Integer;
 begin
   if Height > 0 then
     Result := Height
-  else
-  if Assigned(ArrangePanel) then
+  else if Assigned(ArrangePanel) then
   begin
     if ArrangePanel.Align in [alleft, alRight, alClient] then
       Result := ArrangePanel.ArrangeHeight
