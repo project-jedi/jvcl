@@ -18,7 +18,7 @@ type
     { Public declarations }
   end;
 
-procedure AddMessage(Msg : string);
+procedure AddMessage(const Msg : string);
 
 var
   frmGenMessages: TfrmGenMessages;
@@ -26,7 +26,7 @@ var
 implementation
 
 {$R *.dfm}
-procedure AddMessage(Msg : string);
+procedure AddMessage(const Msg : string);
 begin
   frmGenMessages.memMessages.Lines.Add(msg);
   SendMessage(frmGenMessages.memMessages.Handle, EM_LINESCROLL, frmGenMessages.memMessages.Lines.Count, 0);

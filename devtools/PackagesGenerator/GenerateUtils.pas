@@ -7,18 +7,18 @@ uses
   Classes;
 
 type
-  TGenerateCallback = procedure (msg : string);
+  TGenerateCallback = procedure (const msg : string);
 
 // YOU MUST CALL THIS PROCEDURE BEFORE ANY OTHER IN THIS FILE
 // AND EVERYTIME YOU CHANGE THE MODEL NAME
 // (except Generate as it will call it automatically)
-function LoadConfig(XmlFileName : string; ModelName : string; var ErrMsg : string) : Boolean;
+function LoadConfig(const XmlFileName : string; const ModelName : string; var ErrMsg : string) : Boolean;
 
 function Generate(packages : TStrings;
                    targets : TStrings;
                    callback : TGenerateCallback;
-                   XmlFileName : string;
-                   ModelName : string;
+                   const XmlFileName : string;
+                   const ModelName : string;
                    var ErrMsg : string;
                    makeDof : Boolean = False;
                    path : string = '';
@@ -29,7 +29,7 @@ function Generate(packages : TStrings;
 
 procedure EnumerateTargets(targets : TStrings);
 
-procedure EnumeratePackages(Path : string; packages : TStrings);
+procedure EnumeratePackages(const Path : string; packages : TStrings);
 
 procedure ExpandTargets(targets : TStrings);
 
@@ -125,7 +125,7 @@ type
     FName: string;
     FIfDefs: TStringList;
   public
-    constructor Create(Name : string; IfDefs : TStringList);
+    constructor Create(const Name : string; IfDefs : TStringList);
     destructor Destroy; override;
 
     property Name : string read FName write FName;
@@ -213,7 +213,7 @@ begin
   end;
 end;
 
-function StartsWidth(SubStr, S: string): Boolean;
+function StartsWidth(const SubStr, S: string): Boolean;
 var
   i, Len: Integer;
 begin
@@ -245,7 +245,7 @@ begin
 end;
 
 
-procedure SendMsg(Msg : string);
+procedure SendMsg(const Msg : string);
 begin
   if Assigned(GCallBack) then
     GCallBack(Msg);
@@ -321,7 +321,8 @@ begin
   Result := True;
 end;
 
-function LoadConfig(XmlFileName : string; ModelName : string; var ErrMsg : string) : Boolean;
+function LoadConfig(const XmlFileName : string; const ModelName : string;
+  var ErrMsg : string) : Boolean;
 var
   xml : TJvSimpleXml;
   Node : TJvSimpleXmlElem;
@@ -412,7 +413,7 @@ begin
   end;
 end;
 
-function GetPersoTarget(Target : string) : string;
+function GetPersoTarget(const Target : string) : string;
 begin
   if TargetList[Target] <> nil then
     Result := TargetList[Target].PName
@@ -420,41 +421,46 @@ begin
     Result := Target;
 end;
 
-function GetNonPersoTarget(PersoTarget : string) : string;
+function GetNonPersoTarget(const PersoTarget : string) : string;
 var
   i : integer;
   Target : TTarget;
 begin
   Result := PersoTarget;
-  i := 0;
-  while (i < TargetList.Count) and (Result = PersoTarget) do
+  for i := 0 to TargetList.Count - 1 do
   begin
     Target := TargetList.Items[i];
-    if Target.PName = PersoTarget then
+    if SameText(Target.PName, PersoTarget) then
+    begin
       Result := Target.Name;
-    Inc(i);
+      Break;
+    end;
   end;
 end;
 
-function DirToTarget(dir : string) : string;
+function DirToTarget(const dir : string) : string;
 var
   i : integer;
   Target : TTarget;
 begin
   Result := '';
-  i := 0;
-  while (i < TargetList.Count) and (Result = '') do
+  for i := 0 to TargetList.Count - 1 do
   begin
     Target := TargetList.Items[i];
     if Target.Dir = dir then
-      Result := Target.Name
-    else if Target.PDir = dir then
+    begin
       Result := Target.Name;
-    Inc(i);
+      Break;
+    end
+    else if Target.PDir = dir then
+    begin
+      Result := Target.Name;
+      Break;
+    end;
   end;
 end;
 
-function TargetToDir(target : string) : string;
+function TargetToDir(const target : string) : string;
 begin
   if Assigned(TargetList[target]) then
     Result := TargetList[target].Dir
@@ -464,7 +470,7 @@ begin
     raise Exception.CreateFmt('Target "%s" not found.', [target]);
 end;
 
-function ExpandPackageName(Name, target, prefix, format : string) : string;
+function ExpandPackageName(Name: string; const target, prefix, format : string) : string;
 var
   Env : string;
   Ver : string;
@@ -508,7 +514,8 @@ begin
   end;
 end;
 
-function BuildPackageName(packageNode : TJvSimpleXmlElem; target : string; prefix : string; Format : string) : string;
+function BuildPackageName(packageNode : TJvSimpleXmlElem;
+  const target, prefix, Format : string) : string;
 var
   Name : string;
 begin
@@ -523,7 +530,7 @@ begin
   end;
 end;
 
-function IsNotInPerso(Node : TJvSimpleXmlElem; target : string) : Boolean;
+function IsNotInPerso(Node : TJvSimpleXmlElem; const target : string) : Boolean;
 var
   persoTarget : string;
   targets : TStringList;
@@ -546,7 +553,7 @@ begin
   end;
 end;
 
-function IsOnlyInPerso(Node : TJvSimpleXmlElem; target : string) : Boolean;
+function IsOnlyInPerso(Node : TJvSimpleXmlElem; const target : string) : Boolean;
 var
   persoTarget : string;
   targets : TStringList;
@@ -569,7 +576,8 @@ begin
   end;
 end;
 
-procedure EnsureCondition(lines: TStrings; Node : TJvSimpleXmlElem; target : string);
+procedure EnsureCondition(lines: TStrings; Node : TJvSimpleXmlElem;
+  const target : string);
 var
   Condition : string;
 begin
@@ -660,17 +668,15 @@ begin
   end;
 end;
 
-function GetUnitName(FileName : string) : string;
+function GetUnitName(const FileName : string) : string;
 begin
   Result := PathExtractFileNameNoExt(FileName);
 end;
 
-procedure EnsureProperSeparator(var Name : string; target : string);
+procedure EnsureProperSeparator(var Name : string; const target : string);
 begin
   // ensure that the path separator stored in the xml file is
   // replaced by the one for the system we are targeting
-
-  target := AnsiLowerCase(target);
 
   // first ensure we only have backslashes
   StrReplace(Name, '/', '\', [rfReplaceAll]);
@@ -679,7 +685,8 @@ begin
   StrReplace(Name, '\', TargetList[GetNonPersoTarget(target)].PathSep, [rfReplaceAll]);
 end;
 
-procedure ApplyFormName(fileNode : TJvSimpleXmlElem; Lines : TStrings; target : string);
+procedure ApplyFormName(fileNode : TJvSimpleXmlElem; Lines : TStrings;
+  const target : string);
 var
   formName : string;
   formType : string;
@@ -793,17 +800,14 @@ var
 begin
   ExpandTargets(targets);
   // now remove "perso" targets
-  i := 0;
-  while i < targets.count do
+  for i := targets.Count - 1 downto 0 do
   begin
     if not Assigned(TargetList.ItemsByName[targets[i]]) then
-      targets.Delete(i)
-    else
-      inc(i);
+      targets.Delete(i);
   end;
 end;
 
-function IsIncluded(Node : TJvSimpleXmlElem; target : string) : Boolean;
+function IsIncluded(Node : TJvSimpleXmlElem; const target : string) : Boolean;
 var
   targets : TStringList;
 begin
@@ -874,7 +878,8 @@ begin
   end;
 end;
 
-function HasFileChanged(const OutFileName, TemplateFileName: string; OutLines: TStrings; TimeStampLine: Integer): Boolean;
+function HasFileChanged(const OutFileName, TemplateFileName: string;
+  OutLines: TStrings; TimeStampLine: Integer): Boolean;
 var
   CurLines: TStrings;
 begin
@@ -913,7 +918,7 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-function FileSetDate(const Filename:string; FileAge:Integer):Integer;
+function FileSetDate(const Filename: string; FileAge:Integer):Integer;
 var
    Handle: Integer;
 begin
@@ -929,15 +934,17 @@ end;
 procedure AdjustEndingSemicolon(Lines: TStrings);
 var
   S: string;
+  Len: Integer;
 begin
   if Lines.Count > 0 then
   begin
     S := Lines[Lines.Count - 1];
-    if S <> '' then
+    Len := Length(S);
+    if Len > 0 then
     begin
-      if S[Length(S)] = ',' then
+      if S[Len] = ',' then
       begin
-        Delete(S, Length(S), 1);
+        Delete(S, Len, 1);
         Lines[Lines.Count - 1] := S;
         //Lines.Add('');
       end;
@@ -945,7 +952,9 @@ begin
   end;
 end;
 
-function ApplyTemplateAndSave(path, target, package, extension, prefix, format : string; template : TStrings; xml : TJvSimpleXml; templateName, xmlName : string; mostRecentFileDate : TDateTime) : string;
+function ApplyTemplateAndSave(const path, target, package, extension,
+  prefix, format : string; template : TStrings; xml : TJvSimpleXml;
+  const templateName, xmlName : string; const mostRecentFileDate : TDateTime) : string;
 var
   OutFileName : string;
   oneLetterType : string;
@@ -1305,8 +1314,8 @@ end;
 function Generate(packages : TStrings;
                    targets : TStrings;
                    callback : TGenerateCallback;
-                   XmlFileName : string;
-                   ModelName : string;
+                   const XmlFileName : string;
+                   const ModelName : string;
                    var ErrMsg : string;
                    makeDof : Boolean = False;
                    path : string = '';
@@ -1396,8 +1405,7 @@ begin
   XmlFileCache := TObjectList.Create;
   try
     // for all targets
-    i := 0;
-    while i < targets.Count do
+    for i := 0 to targets.Count - 1 do
     begin
       target := targets[i];
       SendMsg(SysUtils.Format('Generating packages for %s', [target]));
@@ -1475,7 +1483,6 @@ begin
       else
         SendMsg(SysUtils.Format(#9'No template found for %s' , [target]));
       FindClose(rec);
-      Inc(i);
     end;
   finally
     XmlFileCache.Free;
@@ -1504,7 +1511,7 @@ begin
   end;
 end;
 
-procedure EnumeratePackages(Path : string; packages : TStrings);
+procedure EnumeratePackages(const Path : string; packages : TStrings);
 var
   rec : TSearchRec;
 begin
@@ -1550,7 +1557,7 @@ end;
 destructor TTarget.Destroy;
 begin
   FDefines.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TTarget.GetDir: string;
@@ -1611,13 +1618,12 @@ var
   i : integer;
 begin
   Result := nil;
-  i := 0;
-  while (i < count) and (Result = nil) do
-  begin
+  for i := 0 to Count - 1 do
     if SameText(TTarget(Items[i]).Name, name) then
+    begin
       Result := TTarget(Items[i]);
-    Inc(i);
-  end;
+      Break;
+    end;
 end;
 
 procedure TTargetList.SetItems(index: integer; const Value: TTarget);
@@ -1674,13 +1680,12 @@ var
   i : integer;
 begin
   Result := nil;
-  i := 0;
-  while (i < count) and (Result = nil) do
-  begin
+  for i := 0 to Count - 1 do
     if SameText(TAlias(Items[i]).Name, name) then
+    begin
       Result := TAlias(Items[i]);
-    Inc(i);
-  end;
+      Break;
+    end;
 end;
 
 procedure TAliasList.SetItems(index: integer; const Value: TAlias);
@@ -1690,7 +1695,7 @@ end;
 
 { TDefine }
 
-constructor TDefine.Create(Name : string; IfDefs : TStringList);
+constructor TDefine.Create(const Name : string; IfDefs : TStringList);
 begin
   inherited Create;
 
@@ -1703,7 +1708,7 @@ destructor TDefine.Destroy;
 begin
   FIfDefs.Free;
   
-  inherited;
+  inherited Destroy;
 end;
 
 { TDefinesList }
@@ -1750,25 +1755,29 @@ begin
   Result := TDefine(inherited Items[index]);
 end;
 
-function TDefinesList.IsDefined(const Condition, Target : string; DefineLimit : Integer = -1): Boolean;
+function TDefinesList.IsDefined(const Condition, Target : string;
+  DefineLimit : Integer = -1): Boolean;
 var
   I : Integer;
   Define : TDefine;
 begin
   if DefineLimit = -1 then
+    DefineLimit := Count
+  else
+  if DefineLimit > Count then
     DefineLimit := Count;
 
   Result := False;
   Define := nil;
-  I := 0;
-  while (I < Count) and (I < DefineLimit) and not Result do
+  for i := 0 to DefineLimit - 1 do
   begin
-    Define := Items[I];
-    Result := CompareText(Define.Name, Condition) = 0;
-    Inc(I);
+    if CompareText(Items[I].Name, Condition) = 0 then
+    begin
+      Result := True;
+      Define := Items[I];
+      Break;
+    end;
   end;
-  If I = Count then
-    Define := nil;
 
   // If the condition is not defined by its name, maybe it
   // is as a consequence of the target we use
