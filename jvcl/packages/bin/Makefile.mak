@@ -124,7 +124,8 @@ Bpg2Make.exe:
 	@cd $(DEVTOOLS)
 	$(MAKE) $(QUIET) -f makefile.mak Bpg2Make.exe
 	@cd $(DEVTOOLS_BACK)
-	"$(DEVTOOLS)\bin\Bpg2Make.exe" "..\$(PKGDIR) Packages.bpg"
+	@IF EXIST  "..\$(PKGDIR) Packages.bpg" "$(DEVTOOLS)\bin\Bpg2Make.exe" "..\$(PKGDIR) Packages.bpg"
+	@IF EXIST  "..\$(PKGDIR) Packages.bdsgroup" "$(DEVTOOLS)\bin\Bpg2Make.exe" "..\$(PKGDIR) Packages.bdsgroup"
 
 ################################################################################
 GenerateAllPackages:
