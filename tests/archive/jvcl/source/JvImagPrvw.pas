@@ -25,13 +25,21 @@ Known Issues:
 
 {$I JVCL.INC}
 
+{$IFDEF COMPILER6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF}
+
 unit JvImagPrvw;
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 interface
 
 uses SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Classes, Graphics, Forms, Controls, FileCtrl, StdCtrls, ExtCtrls, Buttons,
-  JvxCtrls, JvPicClip, JvPlacemnt, JvObjStr, JvSpeedButton;
+  Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons,
+  JvxCtrls, JvPicClip, JvPlacemnt, JvObjStr, JvSpeedButton, FileCtrl;
 
 type
   TImageForm = class(TForm)

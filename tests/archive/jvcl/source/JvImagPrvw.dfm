@@ -50,7 +50,7 @@ object ImageForm: TImageForm
     Width = 146
     Height = 15
     AutoSize = False
-    Caption = 'D:\...\dev\restructured\source'
+    Caption = 'C:\...\JEDI\JVCL\packages'
   end
   object ImageName: TLabel
     Left = 319

@@ -124,7 +124,8 @@ type
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
-    procedure ListDrawValue(const Value: string; ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean); virtual;
+    procedure ListDrawValue(const Value: string; ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
+    {$IFDEF DELPHI5}override{$ELSE}virtual{$ENDIF};
   end;
 
 function TJvColorProperty.GetValue: string;
