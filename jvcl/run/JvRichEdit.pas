@@ -41,6 +41,8 @@ unit JvRichEdit;
 
 interface
 
+{$HPPEMIT '#define CHARFORMAT2A Richedit::CHARFORMAT2A'}
+
 uses
   Windows,
   ActiveX, ComObj,
@@ -74,7 +76,7 @@ type
     FType: TJvAttributeType;
     procedure AssignFont(Font: TFont);
     procedure GetAttributes(var Format: TCharFormat2);
-    procedure SetAttributes(var Format: TCharFormat2);
+    procedure SetAttributes(var Format: RichEdit.TCharFormat2);
     function GetBackColor: TColor;
     function GetCharset: TFontCharset;
     function GetColor: TColor;
@@ -111,7 +113,7 @@ type
     procedure SetUnderlineColor(const Value: TUnderlineColor);
     procedure SetUnderlineType(Value: TUnderlineType);
   protected
-    procedure InitFormat(var Format: TCharFormat2);
+    procedure InitFormat(var Format: RichEdit.TCharFormat2);
     procedure AssignTo(Dest: TPersistent); override;
   public
     constructor Create(AOwner: TJvCustomRichEdit; AttributeType: TJvAttributeType);
