@@ -48,6 +48,10 @@ type
     lblSource: TLabel;
     mmSource: TMemo;
     btnTest: TButton;
+    cxAutoClose: TCheckBox;
+    edAutoCloseDelay: TEdit;
+    lblAutoCloseUnit: TLabel;
+    cxAutoCloseShow: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure imgWarningClick(Sender: TObject);
     procedure rbWarningClick(Sender: TObject);
@@ -78,6 +82,9 @@ type
     procedure cxCustomTitleClick(Sender: TObject);
     procedure btnTestClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
+    procedure cxAutoCloseClick(Sender: TObject);
+    procedure edAutoCloseDelayChange(Sender: TObject);
+    procedure cxAutoCloseShowClick(Sender: TObject);
   private
     { Private declarations }
     procedure DlgSettingChanged;
@@ -87,6 +94,8 @@ type
     procedure HandleMessageDlgEx;
     function GenerateSource: string;
     function GetCenter: TDlgCenterKind;
+    function GetTimeout: Integer;
+    function GetTimeoutValue: string;
     function GetCustomButtonNames: TDynStringArray;
     function GetCustomButtonResults: TDynIntegerArray;
     function GetCustomCancelButton: Integer;
@@ -179,6 +188,8 @@ begin
   cxCustomTitle.Checked := cxCustomTitle.Checked or (
     (rbCustom.Checked) and (PicType <> 0)
   );
+  edAutoCloseDelay.Enabled := cxAutoClose.Checked;
+  cxAutoCloseShow.Enabled := cxAutoClose.Checked;
 
   // Enable/disable controls
   btnSelectIcon.Enabled := rbCustom.Checked;
@@ -199,15 +210,16 @@ begin
     begin
       if rbCustom.Checked and (PicType <> 0) then { custom picture }
         DSAMessageDlg(TempDSA_ID, edCustomTitle.Text, mmMessage.Lines.Text,
-          imgCustom.Picture.Graphic, GetStdButtons, 0, GetCenter, GetStdDefaultButton,
+          imgCustom.Picture.Graphic, GetStdButtons, 0, GetCenter, GetTimeout, GetStdDefaultButton,
             GetStdCancelButton, GetStdHelpButton)
       else
-        DSAMessageDlg(TempDSA_ID, edCustomTitle.Text, mmMessage.Lines.Text, GetDlgType, GetStdButtons, 0, GetCenter,
-          GetStdDefaultButton, GetStdCancelButton, GetStdHelpButton);
+        DSAMessageDlg(TempDSA_ID, edCustomTitle.Text, mmMessage.Lines.Text, GetDlgType,
+          GetStdButtons, 0, GetCenter, GetTimeout, GetStdDefaultButton, GetStdCancelButton,
+          GetStdHelpButton);
     end
     else { if not cxCustomTitle.Checked then }
-      DSAMessageDlg(TempDSA_ID, mmMessage.Lines.Text, GetDlgType, GetStdButtons, 0, GetCenter, GetStdDefaultButton,
-        GetStdCancelButton, GetStdHelpButton);
+      DSAMessageDlg(TempDSA_ID, mmMessage.Lines.Text, GetDlgType, GetStdButtons, 0, GetCenter,
+        GetTimeout, GetStdDefaultButton, GetStdCancelButton, GetStdHelpButton);
   finally
     TempDSARegDestroy;
   end;
@@ -222,16 +234,16 @@ begin
       if rbCustom.Checked and (PicType <> 0) then { custom picture }
         DSAMessageDlgEx(TempDSA_ID, edCustomTitle.Text, mmMessage.Lines.Text,
           imgCustom.Picture.Graphic, GetCustomButtonNames, GetCustomButtonResults, 0, GetCenter,
-          GetCustomDefaultButton, GetCustomCancelButton, GetCustomHelpButton)
+          GetTimeout, GetCustomDefaultButton, GetCustomCancelButton, GetCustomHelpButton)
       else
         DSAMessageDlgEx(TempDSA_ID, edCustomTitle.Text, mmMessage.Lines.Text, GetDlgType,
-          GetCustomButtonNames, GetCustomButtonResults, 0, GetCenter, GetCustomDefaultButton,
-          GetCustomCancelButton, GetCustomHelpButton);
+          GetCustomButtonNames, GetCustomButtonResults, 0, GetCenter, GetTimeout,
+          GetCustomDefaultButton, GetCustomCancelButton, GetCustomHelpButton);
     end
     else { if not cxCustomTitle.Checked then }
       DSAMessageDlgEx(TempDSA_ID, mmMessage.Lines.Text, GetDlgType, GetCustomButtonNames,
-        GetCustomButtonResults, 0, GetCenter, GetCustomDefaultButton, GetCustomCancelButton,
-        GetCustomHelpButton);
+        GetCustomButtonResults, 0, GetCenter, GetTimeout, GetCustomDefaultButton,
+        GetCustomCancelButton, GetCustomHelpButton);
   finally
     TempDSARegDestroy;
   end;
@@ -243,14 +255,14 @@ begin
   begin
     if rbCustom.Checked and (PicType <> 0) then { custom picture }
       MessageDlg(edCustomTitle.Text, mmMessage.Lines.Text, imgCustom.Picture.Graphic, GetStdButtons,
-        0, GetCenter, GetStdDefaultButton, GetStdCancelButton, GetStdHelpButton)
+        0, GetCenter, GetTimeout, GetStdDefaultButton, GetStdCancelButton, GetStdHelpButton)
     else
       MessageDlg(edCustomTitle.Text, mmMessage.Lines.Text, GetDlgType, GetStdButtons, 0, GetCenter,
-        GetStdDefaultButton, GetStdCancelButton, GetStdHelpButton);
+        GetTimeout, GetStdDefaultButton, GetStdCancelButton, GetStdHelpButton);
   end
   else { if not cxCustomTitle.Checked then }
-    MessageDlg(mmMessage.Lines.Text, GetDlgType, GetStdButtons, 0, GetCenter, GetStdDefaultButton,
-      GetStdCancelButton, GetStdHelpButton);
+    MessageDlg(mmMessage.Lines.Text, GetDlgType, GetStdButtons, 0, GetCenter, GetTimeout,
+      GetStdDefaultButton, GetStdCancelButton, GetStdHelpButton);
 end;
 
 procedure TfrmMessageDlgEditor.HandleMessageDlgEx;
@@ -259,16 +271,16 @@ begin
   begin
     if rbCustom.Checked and (PicType <> 0) then { custom picture }
       MessageDlgEx(edCustomTitle.Text, mmMessage.Lines.Text, imgCustom.Picture.Graphic,
-        GetCustomButtonNames, GetCustomButtonResults, 0, GetCenter, GetCustomDefaultButton,
-        GetCustomCancelButton, GetCustomHelpButton)
+        GetCustomButtonNames, GetCustomButtonResults, 0, GetCenter, GetTimeout,
+        GetCustomDefaultButton, GetCustomCancelButton, GetCustomHelpButton)
     else
       MessageDlgEx(edCustomTitle.Text, mmMessage.Lines.Text, GetDlgType, GetCustomButtonNames,
-        GetCustomButtonResults, 0, GetCenter, GetCustomDefaultButton, GetCustomCancelButton,
-        GetCustomHelpButton);
+        GetCustomButtonResults, 0, GetCenter, GetTimeout, GetCustomDefaultButton,
+        GetCustomCancelButton, GetCustomHelpButton);
   end
   else { if not cxCustomTitle.Checked then }
     MessageDlgEx(mmMessage.Lines.Text, GetDlgType, GetCustomButtonNames, GetCustomButtonResults, 0,
-      GetCenter, GetCustomDefaultButton, GetCustomCancelButton, GetCustomHelpButton);
+      GetCenter, GetTimeout, GetCustomDefaultButton, GetCustomCancelButton, GetCustomHelpButton);
 end;
 
 function TfrmMessageDlgEditor.GenerateSource: string;
@@ -299,7 +311,28 @@ function TfrmMessageDlgEditor.GenerateSource: string;
 
   function RequireCenter: Boolean;
   begin
-    Result := not rbCenterScreen.Checked or (
+    Result := not rbCenterScreen.Checked or cxAutoClose.Checked or (
+      // for non-extended dialogs: button defaults are not met
+      rbStdButtons.Checked and (
+        (cbDefaultButton.ItemIndex <> 0) or
+        (cbCancelButton.ItemIndex <> 0) or (
+          (cbHelpButton.ItemIndex <> 0) and
+          (cbHelpButton.Text <> 'mbHelp')
+        )
+      )
+    ) or (
+      // for extended dialogs: button defaults are not met
+      rbCustomButtons.Checked and (
+        (cbDefaultButton.ItemIndex <> 1) or
+        (cbCancelButton.ItemIndex <> 2) or
+        (cbHelpButton.ItemIndex <> 0)
+      )
+    );
+  end;
+
+  function RequireAutoClose: Boolean;
+  begin
+    Result := cxAutoClose.Checked or (
       // for non-extended dialogs: button defaults are not met
       rbStdButtons.Checked and (
         (cbDefaultButton.ItemIndex <> 0) or
@@ -483,6 +516,9 @@ begin
   if RequireCenter then
     Result := Result + ', ' + GetCenterName;
 
+  if RequireAutoClose then
+    Result := Result + ', ' + GetTimeoutValue;
+
   if RequireDefaultButton then
     Result := Result + ', ' + DefaultButtonName;
 
@@ -508,6 +544,23 @@ begin
     Result := dckActiveForm
   else
     Result := dckScreen;
+end;
+
+function TfrmMessageDlgEditor.GetTimeout: Integer;
+begin
+  if cxAutoClose.Checked then
+  begin
+    Result := StrToInt(edAutoCloseDelay.Text);
+    if not cxAutoCloseShow.Checked then
+      Result := -Result;
+  end
+  else
+    Result := 0;
+end;
+
+function TfrmMessageDlgEditor.GetTimeoutValue: string;
+begin
+  Result := IntToStr(GetTimeout);
 end;
 
 function TfrmMessageDlgEditor.GetCustomButtonNames: TDynStringArray;
@@ -912,6 +965,21 @@ end;
 procedure TfrmMessageDlgEditor.btnCloseClick(Sender: TObject);
 begin
   Close
+end;
+
+procedure TfrmMessageDlgEditor.cxAutoCloseClick(Sender: TObject);
+begin
+  DlgSettingChanged;
+end;
+
+procedure TfrmMessageDlgEditor.edAutoCloseDelayChange(Sender: TObject);
+begin
+  DlgSettingChanged;
+end;
+
+procedure TfrmMessageDlgEditor.cxAutoCloseShowClick(Sender: TObject);
+begin
+  DlgSettingChanged;
 end;
 
 end.

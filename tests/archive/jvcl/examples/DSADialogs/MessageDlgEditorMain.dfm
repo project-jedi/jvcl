@@ -1,10 +1,12 @@
 object frmMessageDlgEditor: TfrmMessageDlgEditor
-  Left = 292
-  Top = 85
+  Left = 406
+  Top = 185
   Width = 518
-  Height = 559
-  Caption = 'DSA MessageDlg editor'
+  Height = 540
+  Caption = 'MessageDlg editor'
   Color = clBtnFace
+  Constraints.MaxWidth = 518
+  Constraints.MinWidth = 518
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -17,16 +19,17 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
   TextHeight = 13
   object lblSource: TLabel
     Left = 15
-    Top = 418
+    Top = 405
     Width = 37
     Height = 13
     Caption = 'Source:'
   end
   object btnClose: TButton
     Left = 430
-    Top = 504
+    Top = 485
     Width = 75
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'Close'
     TabOrder = 0
     OnClick = btnCloseClick
@@ -154,26 +157,26 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
     Left = 5
     Top = 125
     Width = 500
-    Height = 164
+    Height = 116
     Caption = ' Buttons '
     TabOrder = 2
     object lblDefaultButton: TLabel
       Left = 10
-      Top = 138
+      Top = 90
       Width = 37
       Height = 13
       Caption = 'Default:'
     end
     object lblCancelButton: TLabel
       Left = 175
-      Top = 138
+      Top = 90
       Width = 36
       Height = 13
       Caption = 'Cancel:'
     end
     object lblHelpButton: TLabel
       Left = 340
-      Top = 138
+      Top = 90
       Width = 25
       Height = 13
       Caption = 'Help:'
@@ -202,7 +205,7 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
       Left = 10
       Top = 36
       Width = 151
-      Height = 82
+      Height = 43
       OnClickCheck = clbStdButtonsClickCheck
       IntegralHeight = True
       ItemHeight = 13
@@ -222,9 +225,9 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
     end
     object mmCustomButtons: TMemo
       Left = 175
-      Top = 36
+      Top = 35
       Width = 316
-      Height = 85
+      Height = 45
       Enabled = False
       Lines.Strings = (
         'Yes=mrYes'
@@ -244,7 +247,7 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
     end
     object cbDefaultButton: TComboBox
       Left = 60
-      Top = 133
+      Top = 85
       Width = 101
       Height = 21
       Style = csDropDownList
@@ -254,7 +257,7 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
     end
     object cbCancelButton: TComboBox
       Left = 225
-      Top = 133
+      Top = 85
       Width = 101
       Height = 21
       Style = csDropDownList
@@ -264,7 +267,7 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
     end
     object cbHelpButton: TComboBox
       Left = 390
-      Top = 133
+      Top = 85
       Width = 101
       Height = 21
       Style = csDropDownList
@@ -275,9 +278,9 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
   end
   object gbOther: TGroupBox
     Left = 5
-    Top = 293
+    Top = 245
     Width = 500
-    Height = 116
+    Height = 151
     Caption = ' Other settings '
     TabOrder = 3
     object lblHelpContext: TLabel
@@ -293,6 +296,13 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
       Width = 46
       Height = 13
       Caption = 'Message:'
+    end
+    object lblAutoCloseUnit: TLabel
+      Left = 120
+      Top = 120
+      Width = 46
+      Height = 13
+      Caption = 'second(s)'
     end
     object rbCenterScreen: TRadioButton
       Left = 10
@@ -360,12 +370,40 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
       TabOrder = 6
       OnChange = mmMessageChange
     end
+    object cxAutoClose: TCheckBox
+      Left = 10
+      Top = 118
+      Width = 76
+      Height = 17
+      Caption = 'Auto close:'
+      TabOrder = 7
+      OnClick = cxAutoCloseClick
+    end
+    object edAutoCloseDelay: TEdit
+      Left = 85
+      Top = 115
+      Width = 31
+      Height = 21
+      TabOrder = 8
+      Text = '10'
+      OnChange = edAutoCloseDelayChange
+    end
+    object cxAutoCloseShow: TCheckBox
+      Left = 175
+      Top = 120
+      Width = 106
+      Height = 17
+      Caption = 'Show countdown'
+      TabOrder = 9
+      OnClick = cxAutoCloseShowClick
+    end
   end
   object mmSource: TMemo
     Left = 65
-    Top = 418
+    Top = 405
     Width = 431
-    Height = 79
+    Height = 69
+    Anchors = [akLeft, akTop, akRight, akBottom]
     ReadOnly = True
     ScrollBars = ssBoth
     TabOrder = 4
@@ -373,7 +411,7 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
   end
   object btnTest: TButton
     Left = 350
-    Top = 505
+    Top = 485
     Width = 75
     Height = 25
     Caption = 'Test'
