@@ -217,6 +217,18 @@ type
     property PasswordChar: Char read FPasswordChar write FPasswordChar;
   end;
 
+  TJvButtonEditParameter = class(TJvEditParameter)
+  private
+    FOnButtonClick: TNotifyEvent;
+  protected
+    function GetParameterNameExt: string; override;
+    procedure CreateWinControl(AParameterParent: TWinControl); override;
+  public
+    procedure Assign(Source: TPersistent); override;
+  published
+    property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
+  end;
+
   TJvNumberEditorType = (netEdit, netSpin, netCalculate);
 
   TJvNumberEditParameter = class(TJvEditParameter)
@@ -1363,11 +1375,41 @@ begin
 end;
 
 procedure TJvEditParameter.CreateWinControl(AParameterParent: TWinControl);
+var
+  DynCtrlEdit: IJvDynControlEdit;
 begin
   WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
- //  MaskEdit.PasswordChar := PasswordChar;
- //  MaskEdit.EditMask := EditMask;
- //  MaskEdit.EditText := AsString;
+  if Supports(WinControl, IJvDynControlEdit, DynCtrlEdit) then
+  begin
+    DynCtrlEdit.ControlSetPasswordChar(PasswordChar);
+    DynCtrlEdit.ControlSetEditMask(EditMask);
+  end;
+end;
+
+//=== TJvButtonEditParameter ================================================
+
+function TJvButtonEditParameter.GetParameterNameExt: string;
+begin
+  Result := 'ButtonEdit';
+end;
+
+procedure TJvButtonEditParameter.CreateWinControl(AParameterParent: TWinControl);
+var
+  DynCtrlEdit: IJvDynControlEdit;
+begin
+  WinControl := DynControlEngine.CreateButtonEditControl(Self, AParameterParent, GetParameterName, FOnButtonClick);
+  if Supports(WinControl, IJvDynControlEdit, DynCtrlEdit) then
+  begin
+    DynCtrlEdit.ControlSetPasswordChar(PasswordChar);
+    DynCtrlEdit.ControlSetEditMask(EditMask);
+  end;
+end;
+
+
+procedure TJvButtonEditParameter.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  OnButtonClick := TJvButtonEditParameter(Source).OnButtonClick;
 end;
 
 //=== TJvNumberEditParameter ================================================
@@ -1390,6 +1432,8 @@ begin
 end;
 
 procedure TJvIntegerEditParameter.CreateWinControl(AParameterParent: TWinControl);
+var
+  DynCtrlEdit: IJvDynControlEdit;
 begin
   if (EditorType = netCalculate) and DynControlEngine.IsControlTypeRegistered(jctCalculateEdit) then
     WinControl := DynControlEngine.CreateCalculateControl(Self, AParameterParent, GetParameterName)
@@ -1398,9 +1442,11 @@ begin
     WinControl := DynControlEngine.CreateSpinControl(Self, AParameterParent, GetParameterName)
   else
     WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
- //  MaskEdit.PasswordChar := PasswordChar;
- //  MaskEdit.EditMask := EditMask;
- //  MaskEdit.EditText := AsString;
+  if Supports(WinControl, IJvDynControlEdit, DynCtrlEdit) then
+  begin
+    DynCtrlEdit.ControlSetPasswordChar(PasswordChar);
+    DynCtrlEdit.ControlSetEditMask(EditMask);
+  end;
 end;
 
 procedure TJvIntegerEditParameter.SetWinControlProperties;
@@ -1469,6 +1515,8 @@ begin
 end;
 
 procedure TJvDoubleEditParameter.CreateWinControl(AParameterParent: TWinControl);
+var
+  DynCtrlEdit: IJvDynControlEdit;
 begin
   WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
   if (EditorType = netCalculate) and DynControlEngine.IsControlTypeRegistered(jctCalculateEdit) then
@@ -1478,9 +1526,11 @@ begin
     WinControl := DynControlEngine.CreateSpinControl(Self, AParameterParent, GetParameterName)
   else
     WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
- //  MaskEdit.PasswordChar := PasswordChar;
- //  MaskEdit.EditMask := EditMask;
- //  MaskEdit.EditText := AsString;
+  if Supports(WinControl, IJvDynControlEdit, DynCtrlEdit) then
+  begin
+    DynCtrlEdit.ControlSetPasswordChar(PasswordChar);
+    DynCtrlEdit.ControlSetEditMask(EditMask);
+  end;
 end;
 
 procedure TJvDoubleEditParameter.SetWinControlProperties;

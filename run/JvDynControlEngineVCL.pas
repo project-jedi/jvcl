@@ -35,7 +35,7 @@ uses
   JvDynControlEngine, JvDynControlEngineIntf;
 
 type
-  TJvDynControlVCLMaskEdit = class (TMaskEdit, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlReadOnly)
+  TJvDynControlVCLMaskEdit = class (TMaskEdit, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlReadOnly, IJvDynControlEdit)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -49,7 +49,49 @@ type
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
+
+    //IJvDynControlEdit
+    procedure ControlSetPasswordChar(Value: Char);
+    procedure ControlSetEditMask(Value: string);
   end;
+
+  TJvDynControlVCLButtonEdit = class (TPanel, IUnknown, IJvDynControl, IJvDynControlData,
+    IJvDynControlReadOnly, IJvDynControlEdit, IJvDynControlButtonEdit,
+    IJvDynControlButton)
+  private
+    FEditControl: TMaskEdit;
+    FButton: TBitBtn;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetValue(Value: variant);
+    function ControlGetValue: variant;
+
+    //IJvDynControlEdit
+    procedure ControlSetPasswordChar(Value: Char);
+    procedure ControlSetEditMask(Value: string);
+
+    //IJvDynControlButtonEdit
+    procedure ControlSetOnButtonClick(Value: TNotifyEvent);
+    procedure ControlSetButtonCaption(Value: string);
+
+    //IJvDynControlButton
+    procedure ControlSetGlyph(Value: TBitmap);
+    procedure ControlSetNumGlyphs(Value: integer);
+    procedure ControlSetLayout(Value: TButtonLayout);
+  end;
+
 
   TJvDynControlVCLFileNameEdit = class (TPanel, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlFileName, IJvDynControlReadOnly)
@@ -451,6 +493,124 @@ end;
 function TJvDynControlVCLMaskEdit.ControlGetValue: variant;
 begin
   Result := Text;
+end;
+
+procedure TJvDynControlVCLMaskEdit.ControlSetPasswordChar(Value: Char);
+begin
+  PasswordChar := Value;
+end;
+
+procedure TJvDynControlVCLMaskEdit.ControlSetEditMask(Value: string);
+begin
+  EditMask := Value;
+end;
+
+//=== TJvDynControlVCLButtonEdit ================================================
+
+constructor TJvDynControlVCLButtonEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FEditControl := TMaskEdit.Create(AOwner);
+  FEditControl.Parent := Self;
+  FButton     := TBitBtn.Create(AOwner);
+  FButton.Parent := Self;
+  FButton.Align := alRight;
+  FButton.Caption := '...';
+  Height      := FEditControl.Height;
+  FButton.Width := Height;
+  FEditControl.Align := alClient;
+  BevelInner  := bvNone;
+  BevelOuter  := bvNone;
+end;
+
+destructor TJvDynControlVCLButtonEdit.Destroy;
+begin
+  FreeAndNil(FEditControl);
+  FreeAndNil(FButton);
+  inherited Destroy;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetReadOnly(Value: boolean);
+begin
+  FEditControl.ReadOnly := Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetCaption(Value: string);
+begin
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetTabOrder(Value: integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  FEditControl.OnChange := Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  FEditControl.OnClick := Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetValue(Value: variant);
+begin
+  FEditControl.Text := Value;
+end;
+
+function TJvDynControlVCLButtonEdit.ControlGetValue: variant;
+begin
+  Result := FEditControl.Text;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetPasswordChar(Value: Char);
+begin
+  FEditControl.PasswordChar := Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetEditMask(Value: string);
+begin
+  FEditControl.EditMask := Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetOnButtonClick(Value: TNotifyEvent);
+begin
+  FButton.OnClick:= Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetButtonCaption(Value: string);
+begin
+  FButton.Caption := Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetGlyph(Value: TBitmap);
+begin
+  FButton.Glyph.Assign(Value);
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetNumGlyphs(Value: integer);
+begin
+  FButton.NumGlyphs := Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetLayout(Value: TButtonLayout);
+begin
+  FButton.Layout := Value;
 end;
 
 //=== TJvDynControlVCLFileNameEdit ===========================================
@@ -1600,11 +1760,12 @@ initialization
   IntDynControlEngineVCL.RegisterControl(jctTimeEdit, TJvDynControlVCLTimeEdit);
   IntDynControlEngineVCL.RegisterControl(jctDateEdit, TJvDynControlVCLDateEdit);
   IntDynControlEngineVCL.RegisterControl(jctEdit, TJvDynControlVCLMaskEdit);
- //  IntDynControlEngineVCL.RegisterControl(jctCalculateEdit, TJvDynControlVCLMaskEdit);
- //  IntDynControlEngineVCL.RegisterControl(jctSpinEdit, TJvDynControlVCLMaskEdit);
+//  IntDynControlEngineVCL.RegisterControl(jctCalculateEdit, TJvDynControlVCLMaskEdit);
+//  IntDynControlEngineVCL.RegisterControl(jctSpinEdit, TJvDynControlVCLMaskEdit);
   IntDynControlEngineVCL.RegisterControl(jctDirectoryEdit, TJvDynControlVCLDirectoryEdit);
   IntDynControlEngineVCL.RegisterControl(jctFileNameEdit, TJvDynControlVCLFileNameEdit);
   IntDynControlEngineVCL.RegisterControl(jctMemo, TJvDynControlVCLMemo);
+  IntDynControlEngineVCL.RegisterControl(jctButtonEdit, TJvDynControlVCLButtonEdit);
   SetDefaultDynControlEngine(IntDynControlEngineVCL);
 
 finalization

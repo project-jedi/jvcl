@@ -65,6 +65,12 @@ type
     property ControlItems: TStrings read ControlGetItems write ControlSetItems;
   end;
 
+  IJvDynControlEdit = interface
+    ['{8E70DDD2-2D22-4EA9-B8E2-A25DE3162942}']
+    procedure ControlSetPasswordChar(Value: Char);
+    procedure ControlSetEditMask(Value: string);
+  end;
+
   IJvDynControlLabel = interface
     ['{247D29CD-ABA4-4F87-A25D-4987BD950F0C}']
     procedure ControlSetFocusControl(Value: TWinControl);
@@ -146,6 +152,12 @@ type
     procedure ControlSetGlyph(Value: TBitmap);
     procedure ControlSetNumGlyphs(Value: Integer);
     procedure ControlSetLayout(Value: TButtonLayout);
+  end;
+
+  IJvDynControlButtonEdit = interface
+    ['{F5A108E0-0B89-4CD7-9FAE-1547F00CEF62}']
+    procedure ControlSetOnButtonClick(Value: TNotifyEvent);
+    procedure ControlSetButtonCaption(Value: string);
   end;
 
   IJvDynControlMemo = interface

@@ -38,7 +38,7 @@ type
     jctEdit, jctCheckBox, jctComboBox, jctGroupBox, jctImage, jctRadioGroup,
     jctMemo, jctListBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit,
     jctCalculateEdit, jctSpinEdit, jctDirectoryEdit, jctFileNameEdit,
-    jctButton, jctForm);
+    jctButton, jctButtonEdit, jctForm);
 
   TJvAfterCreateControl = procedure(AControl: TControl) of object;
 
@@ -103,6 +103,8 @@ type
       AButtonName: string; ACaption: string; AHint: string;
       AOnClick: TNotifyEvent; ADefault: Boolean = False;
       ACancel: Boolean = False): TButton; virtual;
+    function CreateButtonEditControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string; AOnButtonClick: TNotifyEvent): TWinControl; virtual;
     function CreateForm(ACaption: string; AHint: string): TCustomForm; virtual;
 
     function IsControlTypeRegistered(const ADynControlType: TJvDynControlType): Boolean;
@@ -424,8 +426,12 @@ end;
 
 function TJvDynControlEngine.CreateEditControl(AOwner: TComponent;
   AParentControl: TWinControl; AControlName: string): TWinControl;
+var
+  DynCtrlEdit: IJvDynControlEdit;
 begin
   Result := TWinControl(CreateControl(jctEdit, AOwner, AParentControl, AControlName));
+  if not Supports(Result, IJvDynControlEdit, DynCtrlEdit) then
+    raise EIntfCastError.Create(RsEIntfCastError);
 end;
 
 function TJvDynControlEngine.CreateCheckboxControl(AOwner: TComponent;
@@ -568,6 +574,17 @@ begin
   Result.Default := ADefault;
   Result.Cancel := ACancel;
   Result.OnClick := AOnClick;
+end;
+
+function TJvDynControlEngine.CreateButtonEditControl(AOwner: TComponent; AParentControl: TWinControl;
+      AControlName: string; AOnButtonClick: TNotifyEvent): TWinControl;
+var
+  DynCtrlButtonEdit: IJvDynControlButtonEdit;
+begin
+  Result := TWinControl(CreateControl(jctButtonEdit, AOwner, AParentControl, AControlName));
+  if not Supports(Result, IJvDynControlButtonEdit, DynCtrlButtonEdit) then
+    raise EIntfCastError.Create(RsEIntfCastError);
+  DynCtrlButtonEdit.ControlSetOnButtonClick(AOnButtonClick);
 end;
 
 function TJvDynControlEngine.CreateForm(ACaption: string; AHint: string): TCustomForm;
