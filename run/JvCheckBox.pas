@@ -38,7 +38,7 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, StdCtrls,
   {$ELSE}
-  QGraphics, QControls, QForms, QStdCtrls,
+  Types, QWindows, QGraphics, QControls, QForms, QStdCtrls,
   {$ENDIF VCL}
   JVCLVer, JvTypes, JvExStdCtrls;
 
@@ -77,17 +77,25 @@ type
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL}{$IFDEF COMPILER6_UP} override;{$ENDIF}{$ENDIF}
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure Toggle; override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure AdjustSize; override;
+    {$ENDIF VisualCLX}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
-    procedure Toggle; override;
     procedure Click; override;
     procedure SetChecked(Value: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    {$IFDEF VisualCLX}
+    procedure Toggle; override;
+    {$ENDIF VisualCLX}
     property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
@@ -159,6 +167,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvCheckBox.CreateParams(var Params: TCreateParams);
 const
   cAlign: array [TAlignment] of Word = (BS_LEFT, BS_RIGHT, BS_CENTER);
@@ -171,6 +180,7 @@ begin
     Style := Style or cAlign[Alignment] or cLayout[Layout] or
       cLeftText[LeftText] or cWordWrap[WordWrap];
 end;
+{$ENDIF VCL}
 
 procedure TJvCheckBox.MouseEnter(AControl: TControl);
 begin
@@ -243,8 +253,13 @@ begin
   // This is slower than GetTextExtentPoint but it does consider hotkeys
   if Caption <> '' then
   begin
+    {$IFDEF VCL}
     DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
+    {$ELSE}
+    DrawTextW(FCanvas.Handle, PWideChar(Caption), Length(Caption), R,
+      Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
+    {$ENDIF VCL}
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
   end
@@ -270,9 +285,11 @@ procedure TJvCheckBox.SetAutoSize(Value: Boolean);
 begin
   if FAutoSize <> Value then
   begin
+    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     // inherited SetAutoSize(Value);
     {$ENDIF COMPILER6_UP}
+    {$ENDIF VCL}
     FAutoSize := Value;
     if Value then
       WordWrap := False;
@@ -333,7 +350,11 @@ begin
     FWordWrap := Value;
     if Value then
       AutoSize := False;
+    {$IFDEF VCl}
     RecreateWnd;
+    {$ELSE}
+    RecreateWidget;
+    {$ENDIF VCL}
   end;
 end;
 
@@ -342,7 +363,11 @@ begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
+    {$IFDEF VCl}
     RecreateWnd;
+    {$ELSE}
+    RecreateWidget;
+    {$ENDIF VCL}
   end;
 end;
 
@@ -351,7 +376,11 @@ begin
   if FLayout <> Value then
   begin
     FLayout := Value;
+    {$IFDEF VCl}
     RecreateWnd;
+    {$ELSE}
+    RecreateWidget;
+    {$ENDIF VCL}
   end;
 end;
 
@@ -365,7 +394,11 @@ begin
   if FLeftText <> Value then
   begin
     FLeftText := Value;
+    {$IFDEF VCl}
     RecreateWnd;
+    {$ELSE}
+    RecreateWidget;
+    {$ENDIF VCL}
   end;
 end;
 
@@ -373,6 +406,14 @@ function TJvCheckBox.GetReadOnly: Boolean;
 begin
   Result := ClicksDisabled;
 end;
+
+{$IFDEF VisualCLX}
+procedure TJvCheckBox.AdjustSize;
+begin
+  inherited AdjustSize;
+  CalcAutoSize;
+end;
+{$ENDIF VisualCLX}
 
 end.
 
