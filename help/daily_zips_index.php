@@ -65,8 +65,8 @@ The latest version is available for download below<br>
     </tr>
     <tr>
       <td style="vertical-align: top; white-space: nowrap;"><a href="JVCL3-Latest.zip">JVCL3-Latest.zip</a>
-      (<a href=<?php print '"http://obones.free.fr/jvcl_daily/JVCL3-'.GetShortFileDate("JVCL3-Latest.zip").'.zip"'?>>Mirror</a>)
-      </td>
+      (<a href=<?php print '"http://obones.free.fr/jvcl_daily/JVCL3-'.GetShortFileDate("JVCL3-Latest.zip").'.zip"'?>>Mirror</a>,
+       <a href=<?php print '"http://obones.free.fr/jvcl_daily/JVCL3-'.GetShortFileDate("JVCL3-Latest.zip").'.7z"'?>>7zip</a>)</td>
       <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileDate("JVCL3-Latest.zip"); ?>
       </td>
       <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileSize("JVCL3-Latest.zip");?>
@@ -77,8 +77,8 @@ including the examples and the installer.<br>
     </tr>
     <tr>
       <td style="vertical-align: top; white-space: nowrap;"><a href="JVCL3-Source-Latest.zip">JVCL3-Source-Latest.zip</a>
-      (<a href=<?php print '"http://obones.free.fr/jvcl_daily/JVCL3-Source-'.GetShortFileDate("JVCL3-Source-Latest.zip").'.zip"'?>>Mirror</a>)
-      </td>
+      (<a href=<?php print '"http://obones.free.fr/jvcl_daily/JVCL3-Source-'.GetShortFileDate("JVCL3-Source-Latest.zip").'.zip"'?>>Mirror</a>,
+       <a href=<?php print '"http://obones.free.fr/jvcl_daily/JVCL3-Source-'.GetShortFileDate("JVCL3-Source-Latest.zip").'.7z"'?>>7zip</a>)</td>
       <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileDate("JVCL3-Source-Latest.zip"); ?>
       </td>
       <td style="vertical-align: top; white-space: nowrap;"><?php print GetDisplayFileSize("JVCL3-Source-Latest.zip");?>
@@ -126,7 +126,8 @@ or you can also grab one of the previous complete or source packages.<br>
         $filename_full = str_replace("JVCL3-Source-2", "JVCL3-2", $filename);
         echo '<tr>'."\n";
         echo '  <td style="vertical-align: top; white-space: nowrap;"><a href="'.$filename_full.'">'.$filename_full.'</a>'."\n";
-        echo '  (<a href="http://obones.free.fr/jvcl_daily/'.$filename_full.'">Mirror</a>)'."\n";
+        echo '  (<a href="http://obones.free.fr/jvcl_daily/'.$filename_full.'">Mirror</a>,'."\n";
+        echo '   <a href="http://obones.free.fr/jvcl_daily/'.str_replace(".zip", ".7z", $filename_full).'">7zip</a>)'."\n";
         echo '  </td>'."\n";
         echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileDate($filename_full)."\n";
         echo '  </td>'."\n";
@@ -137,7 +138,8 @@ or you can also grab one of the previous complete or source packages.<br>
         echo '</tr>'."\n";
         echo '<tr>'."\n";
         echo '  <td style="vertical-align: top; white-space: nowrap;"><a href="'.$filename.'">'.$filename.'</a>'."\n";
-        echo '  (<a href="http://obones.free.fr/jvcl_daily/'.$filename.'">Mirror</a>)'."\n";
+        echo '  (<a href="http://obones.free.fr/jvcl_daily/'.$filename.'">Mirror</a>,'."\n";
+        echo '   <a href="http://obones.free.fr/jvcl_daily/'.str_replace(".zip", ".7z", $filename).'">7zip</a>)'."\n";
         echo '  </td>'."\n";
         echo '  <td style="vertical-align: top; white-space: nowrap;">'.GetDisplayFileDate($filename)."\n";
         echo '  </td>'."\n";
@@ -152,7 +154,9 @@ or you can also grab one of the previous complete or source packages.<br>
 </table>
 <br>
 The dates are presented according to the ISO standard (YYYY-MM-DD) and the hours are those of the web server (US Pacific time).<br>
-Please note that it may take up to two hours for the mirror to get updated after a file has been published here.<br>
+Please note that it may take up to two hours for the mirror to get updated after a file has been published here. It is located in 
+France, and also hosts the <a href="http://www.7-zip.org/">7zip</a> files. Those archives contain the same files as the zip 
+archives but are about 50% smaller.<br>
 <br>
 Should you have any problems with those files, please do not hesitate
 to contact us on our newsgroup here:<br>
