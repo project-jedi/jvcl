@@ -171,6 +171,11 @@ begin
   end;
 end;
 
+{$IFDEF COMPILER5}
+type
+  UTF8String = type string;
+{$ENDIF COMPILER5}
+
 function LoadUtf8File(const Filename: string): string;
 var
   Content: UTF8String;
