@@ -86,7 +86,7 @@ begin
  {determines whether a window is the child (or grand^x-child) of another}
   LParent := AChild;
   // (rom) changed to while loop
-  while (LParent <> AParent) and (LParent <> 0);
+  while (LParent <> AParent) and (LParent <> 0) do
     LParent := GetParent(LParent);
   Result := (LParent = AParent) and (LParent <> 0);
 end;

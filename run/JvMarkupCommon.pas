@@ -25,9 +25,13 @@ Known Issues:
   * Classes extracted from JvMarkupLabel and JvMarkupViewer (duplicates)
   
 -----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
 unit JvMarkupCommon;
 
 interface
+
 uses
   Windows, SysUtils, Classes, Controls, Graphics;
   
@@ -56,9 +60,8 @@ type
     procedure SetEolText(const Value: string);
     procedure SetSolText(const Value: string);
     procedure SetBreakLine(const Value: Boolean);
-  protected
   public
-    procedure Break(ACanvas: TCanvas; Available: Integer);
+    procedure Breakup(ACanvas: TCanvas; Available: Integer);
     property Text: string read FText write SetText;
     property SolText: string read FSolText write SetSolText;
     property EolText: string read FEolText write SetEolText;
@@ -73,64 +76,62 @@ type
   end;
 
   TJvHTMLElementStack = class(TList)
-  private
-  protected
   public
     destructor Destroy; override;
     procedure Clear; override;
     // will free ALL elements in the stack
-    procedure push(Element: TJvHTMLElement);
-    function pop: TJvHTMLElement;
+    procedure Push(Element: TJvHTMLElement);
+    function Pop: TJvHTMLElement;
     // calling routine is responsible for freeing the element.
-    function peek: TJvHTMLElement;
+    function Peek: TJvHTMLElement;
     // calling routine must NOT free the element
   end;
 
 
 implementation
 
-{ TJvHTMLElement }
+//=== TJvHTMLElement =========================================================
 
-procedure TJvHTMLElement.Break(ACanvas: TCanvas; Available: Integer);
+procedure TJvHTMLElement.Breakup(ACanvas: TCanvas; Available: Integer);
 var
-  s: string;
-  i, w: integer;
+  S: string;
+  I, W: Integer;
 begin
-  Acanvas.font.name := fontname;
-  Acanvas.font.size := fontsize;
-  Acanvas.font.style := fontstyle;
-  Acanvas.font.color := fontcolor;
-  if solText = '' then
-    s := Text
+  ACanvas.Font.Name := FontName;
+  ACanvas.Font.Size := FontSize;
+  ACanvas.Font.Style := FontStyle;
+  ACanvas.Font.Color := FontColor;
+  if SolText = '' then
+    S := Text
   else
-    s := Eoltext;
-  if acanvas.TextWidth(s) <= available then
+    S := EolText;
+  if ACanvas.TextWidth(S) <= Available then
   begin
-    soltext := s;
-    eoltext := '';
-    exit;
+    SolText := S;
+    EolText := '';
+    Exit;
   end;
-  for i := length(s) downto 1 do
+  for I := Length(S) downto 1 do
   begin
-    if s[i] = ' ' then
+    if S[I] = ' ' then
     begin
-      w := acanvas.TextWidth(copy(s, 1, i));
-      if w <= available then
+      W := ACanvas.TextWidth(Copy(S, 1, I));
+      if W <= Available then
       begin
-        soltext := copy(s, 1, i);
-        eoltext := copy(s, i + 1, length(s));
-        exit;
+        SolText := Copy(S, 1, I);
+        EolText := Copy(S, I + 1, Length(S));
+        Break;
       end;
     end;
   end;
 end;
 
-procedure TJvHTMLElement.SetAscent(const Value: integer);
+procedure TJvHTMLElement.SetAscent(const Value: Integer);
 begin
   FAscent := Value;
 end;
 
-procedure TJvHTMLElement.SetBreakLine(const Value: boolean);
+procedure TJvHTMLElement.SetBreakLine(const Value: Boolean);
 begin
   FBreakLine := Value;
 end;
@@ -150,7 +151,7 @@ begin
   FFontName := Value;
 end;
 
-procedure TJvHTMLElement.SetFontSize(const Value: integer);
+procedure TJvHTMLElement.SetFontSize(const Value: Integer);
 begin
   FFontSize := Value;
 end;
@@ -160,7 +161,7 @@ begin
   FFontStyle := Value;
 end;
 
-procedure TJvHTMLElement.SetHeight(const Value: integer);
+procedure TJvHTMLElement.SetHeight(const Value: Integer);
 begin
   FHeight := Value;
 end;
@@ -175,60 +176,50 @@ begin
   FText := Value;
 end;
 
-procedure TJvHTMLElement.SetWidth(const Value: integer);
+procedure TJvHTMLElement.SetWidth(const Value: Integer);
 begin
   FWidth := Value;
 end;
 
-{ TJvHTMLElementStack }
-
-procedure TJvHTMLElementStack.Clear;
-var
-  i, c: integer;
-begin
-  c := count;
-  if c > 0 then
-    for i := 0 to c - 1 do
-      TJvHTMLElement(items[i]).free;
-  inherited;
-end;
+//=== TJvHTMLElementStack ====================================================
 
 destructor TJvHTMLElementStack.Destroy;
 begin
-  clear;
-  inherited;
+  Clear;
+  inherited Destroy;
 end;
 
-function TJvHTMLElementStack.peek: TJvHTMLElement;
+procedure TJvHTMLElementStack.Clear;
 var
-  c: integer;
+  I: Integer;
 begin
-  c := count;
-  if c = 0 then
-    result := nil
+  for I := Count - 1 downto 0 do
+    TJvHTMLElement(Items[I]).Free;
+  inherited Clear;
+end;
+
+function TJvHTMLElementStack.Peek: TJvHTMLElement;
+begin
+  if Count = 0 then
+    Result := nil
+  else
+    Result := TJvHTMLElement(Items[Count - 1]);
+end;
+
+function TJvHTMLElementStack.Pop: TJvHTMLElement;
+begin
+  if Count = 0 then
+    Result := nil
   else
   begin
-    result := TJvHTMLElement(items[c - 1]);
+    Result := TJvHTMLElement(Items[Count - 1]);
+    Delete(Count - 1);
   end;
 end;
 
-function TJvHTMLElementStack.pop: TJvHTMLElement;
-var
-  c: integer;
+procedure TJvHTMLElementStack.Push(Element: TJvHTMLElement);
 begin
-  c := count;
-  if c = 0 then
-    result := nil
-  else
-  begin
-    result := TJvHTMLElement(items[c - 1]);
-    delete(c - 1);
-  end;
-end;
-
-procedure TJvHTMLElementStack.push(Element: TJvHTMLElement);
-begin
-  add(Element);
+  Add(Element);
 end;
 
 end.

@@ -30,8 +30,7 @@ unit JvSplashWindow;
 interface
 
 uses
-  Windows,
-  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   JvAnimatedImage;
 
 type
