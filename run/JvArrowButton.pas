@@ -21,29 +21,28 @@ Last Modified: 2003-10-25
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  The TJvArrowButton component implements an arrow button like
+  the ones used in Office 97: one button and one arrow with
+  separate events.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{ The TJvArrowButton component implements an arrow button like
-  the ones used in Office 97: one button and one arrow with
-  separate events. }
 
 unit JvArrowButton;
 
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes, Menus,
   {$IFDEF COMPLIB_VCL}
   Windows, Messages, Controls, Forms, Graphics, Buttons, CommCtrl,
-  Menus,
-  {$ENDIF}
+  {$ENDIF COMPLIB_VCL}
   {$IFDEF COMPLIB_CLX}
   Types, QControls, QForms, QGraphics, QButtons, QImgList,
-  Menus,
-  {$ENDIF}
+  {$ENDIF COMPLIB_CLX}
   JvClxUtils, JvComponent;
 
 type
@@ -119,7 +118,7 @@ type
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: Integer read FMargin write SetMargin default -1;
     property NumGlyphs: TNumGlyphs read GetNumGlyphs write SetNumGlyphs default 1;
-    property ParentFont;
+    property ParentFont default True;
     property ParentShowHint;
     property PressBoth: Boolean read FPressBoth write FPressBoth default True;
     property ShowHint;
@@ -159,7 +158,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function GetList(AWidth, AHeight: Integer): TGlyphList;
-    procedure ReturnList(List: TGlyphList);
+    procedure ReturnList(var List: TGlyphList);
     function Empty: Boolean;
   end;
 
@@ -167,7 +166,7 @@ type
   private
     FOriginal: TBitmap;
     FGlyphList: TGlyphList;
-    FIndexs: array[TButtonState] of Integer;
+    FIndexs: array [TButtonState] of Integer;
     FTransparentColor: TColor;
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
@@ -201,11 +200,13 @@ begin
   Canvas.LineTo(X2, Y2);
 end;
 
+// (rom) best move to JCL
+
 procedure GrayedBitmap(Bmp: TBitmap);
 var
-  i, j, W, H: Integer;
+  I, J, W, H: Integer;
   ColT: TColor;
-  Col: Longint;
+  Col: TColor;
 begin
   if Bmp.Empty then
     Exit;
@@ -214,15 +215,16 @@ begin
   H := Bmp.Height;
   ColT := Bmp.Canvas.Pixels[0, 0];
 
-  for i := 0 to W do
-    for j := 0 to H do
+  // (rom) speed up by using Scanline
+  for I := 0 to W do
+    for J := 0 to H do
     begin
-      Col := Bmp.Canvas.Pixels[i, j];
+      Col := Bmp.Canvas.Pixels[I, J];
       if (Col <> clWhite) and (Col <> ColT) then
         Col := clBlack
       else
         Col := ColT;
-      Bmp.Canvas.Pixels[i, j] := Col;
+      Bmp.Canvas.Pixels[I, J] := Col;
     end;
 end;
 
@@ -296,14 +298,12 @@ begin
   GlyphLists.Add(Result);
 end;
 
-procedure TGlyphCache.ReturnList(List: TGlyphList);
+procedure TGlyphCache.ReturnList(var List: TGlyphList);
 begin
-  if List = nil then
-    Exit;
-  if List.Count = 0 then
+  if (List <> nil) and (List.Count = 0) then
   begin
     GlyphLists.Remove(List);
-    List.Free;
+    FreeAndNil(List);
   end;
 end;
 
@@ -323,6 +323,7 @@ procedure CreateBrushPattern;
 var
   X, Y: Integer;
 begin
+  Pattern.Free; // (rom) just to be sure
   Pattern := TBitmap.Create;
   Pattern.Width := 8;
   Pattern.Height := 8;
@@ -358,10 +359,7 @@ begin
   FOriginal.Free;
   Invalidate;
   if Assigned(GlyphCache) and GlyphCache.Empty then
-  begin
-    GlyphCache.Free;
-    GlyphCache := nil;
-  end;
+    FreeAndNil(GlyphCache);
   inherited Destroy;
 end;
 
@@ -369,14 +367,13 @@ procedure TButtonGlyph.Invalidate;
 var
   I: TButtonState;
 begin
-  for I := Low(I) to High(I) do
+  for I := Low(TButtonState) to High(TButtonState) do
   begin
     if FIndexs[I] <> -1 then
       FGlyphList.Delete(FIndexs[I]);
     FIndexs[I] := -1;
   end;
   GlyphCache.ReturnList(FGlyphList);
-  FGlyphList := nil;
 end;
 
 procedure TButtonGlyph.GlyphChanged(Sender: TObject);
@@ -434,7 +431,7 @@ begin
   Result := FIndexs[State];
   if Result <> -1 then
     Exit;
-  if (FOriginal.Width or FOriginal.Height) = 0 then
+  if (FOriginal.Width = 0) or (FOriginal.Height = 0) then
     Exit;
   IWidth := FOriginal.Width div FNumGlyphs;
   IHeight := FOriginal.Height;
@@ -565,9 +562,7 @@ procedure TButtonGlyph.DrawButtonGlyph(Canvas: TCanvas; const GlyphPos: TPoint;
 var
   Index: Integer;
 begin
-  if FOriginal = nil then
-    Exit;
-  if (FOriginal.Width = 0) or (FOriginal.Height = 0) then
+  if (FOriginal = nil) or (FOriginal.Width = 0) or (FOriginal.Height = 0) then
     Exit;
   Index := CreateButtonGlyph(State);
   with GlyphPos do
@@ -581,7 +576,8 @@ end;
 
 procedure TButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TButtonState);
-var S: string;
+var
+  S: string;
 begin
   S := Caption;
   with Canvas do
@@ -743,13 +739,17 @@ begin
   FGlyph := TButtonGlyph.Create;
   TButtonGlyph(FGlyph).OnChange := GlyphChanged;
   FFillFont := TFont.Create;
-  FFillFOnt.Assign(Font);
-  ParentFont := True;
-  FSpacing := 4;
-  FMargin := -1;
+  FFillFont.Assign(Font);
+  FAllowAllUp := False;
   FArrowWidth := 13;
-  FPressBoth := True;
+  FGroupIndex := 0;
+  ParentFont := True;
+  FDown := False;
+  FFlat := False;
   FLayout := blGlyphLeft;
+  FMargin := -1;
+  FSpacing := 4;
+  FPressBoth := True;
   Inc(ButtonCount);
 end;
 
@@ -759,10 +759,7 @@ begin
   FFillFont.Free;
   Dec(ButtonCount);
   if ButtonCount = 0 then
-  begin
-    Pattern.Free;
-    Pattern := nil;
-  end;
+    FreeAndNil(Pattern);
   inherited Destroy;
 end;
 
@@ -838,10 +835,10 @@ begin
 
   { calculate were to put arrow part }
   PaintRect := Rect(Width - FArrowWidth, 0, Width, Height);
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
     Dec(PaintRect.Left);
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   Push := FArrowClick or (FPressBoth and (FState in [bsDown, bsExclusive]));
   if Push then
   begin
@@ -902,7 +899,6 @@ var
   P: TPoint;
 begin
   if FFlat then
-  begin
     if Enabled then
     begin
       GetCursorPos(P);
@@ -912,7 +908,6 @@ begin
       else
         Perform(CM_MOUSEENTER, 0, 0);
     end;
-  end;
 end;
 
 procedure TJvArrowButton.Loaded;
@@ -959,7 +954,7 @@ begin
 
   if FArrowClick then
     if Assigned(FOnDrop) then
-      FOnDrop(self);
+      FOnDrop(Self);
   FArrowClick := False;
   Repaint;
 end;
@@ -1241,10 +1236,10 @@ begin
     FMouseInControl := True;
     Repaint;
   end;
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and Enabled and not Flat then
     Repaint;
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 procedure TJvArrowButton.CMMouseLeave(var Msg: TMessage);
@@ -1255,10 +1250,10 @@ begin
     FMouseInControl := False;
     Invalidate;
   end;
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and Enabled and not Flat then
     Invalidate;
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 end.
