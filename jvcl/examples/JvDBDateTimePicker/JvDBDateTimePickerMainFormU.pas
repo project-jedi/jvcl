@@ -52,11 +52,11 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TJvDBDateTimePickerMainForm.FormCreate(Sender: TObject);
 begin
-  Table1.Active := true;
+  Table1.Active := True;
 end;
 
 end.

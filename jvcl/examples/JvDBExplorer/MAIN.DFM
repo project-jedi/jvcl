@@ -61,7 +61,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
   end
   object BottomPanel: TPanel
     Left = 0
-    Top = 171
+    Top = 168
     Width = 472
     Height = 20
     Align = alBottom
@@ -188,9 +188,9 @@ object DBExplorerMainForm: TDBExplorerMainForm
     Version = 9
     BevelOuter = bvNone
     TabOrder = 1
-    OnApplyAlign = SpeedBarApplyAlign
-    OnPosChanged = SpeedBarPosChanged
-    OnResize = SpeedBarResize
+    OnApplyAlign = JvSpeedbarApplyAlign
+    OnPosChanged = JvSpeedbarPosChanged
+    OnResize = JvSpeedbarResize
     InternalVer = 1
     object DBNavigator: TDBNavigator
       Left = 266
@@ -846,7 +846,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
         OnClick = OptionsClick
       end
       object CustomizeSpeedbar: TMenuItem
-        Caption = '&Customize JvSpeedbar...'
+        Caption = '&Customize Speedbar...'
         Hint = 'Customize JvSpeedbar'
         OnClick = CustomizeToolbarItemClick
       end
@@ -856,7 +856,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
         OnClick = UserHelpItemClick
       end
       object FlatButtonsItem: TMenuItem
-        Caption = '&Flat JvSpeedbar Buttons'
+        Caption = '&Flat Speedbar Buttons'
         Hint = 'Add or remove the 3D-border when the button is unselected'
         OnClick = FlatButtonsItemClick
       end

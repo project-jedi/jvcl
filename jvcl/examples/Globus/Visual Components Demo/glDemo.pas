@@ -245,7 +245,6 @@ type
     glLabel21: TJvgLabel;
     glLabel22: TJvgLabel;
     glListBox4: TJvgListBox;
-    Image7: TImage;
     glCheckListBox1: TJvgCheckListBox;
     ImageList2: TImageList;
     glAskListBox1: TJvgAskListBox;
