@@ -381,7 +381,7 @@ constructor TJoystick.CreateJoy(AOwner: TComponent; Joy: Integer);
 begin
   FJoyNumber := Joy;
   if joyGetDevCaps(Joy, @FJoy, SizeOf(FJoy)) = MMSYSERR_NODRIVER then
-    raise Exception.Create('Unable to initialize joystick driver');
+    raise EJVCLException.Create('Unable to initialize joystick driver');
   FCap := [];
   if (JOYCAPS_HASZ and FJoy.wCaps) = JOYCAPS_HASZ then
     FCap := FCap + [joHasZCoordinate];

@@ -167,7 +167,7 @@ function EditGraphic(Graphic: TGraphic; AClass: TGraphicClass;
 implementation
 
 uses TypInfo, SysUtils, Clipbrd, Consts, ShellApi, LibHelp, JvClipIcon, JvGraph,
-  JvVCLUtils, JvAppUtils, JvConst, JvDirFrm, JvFileUtil;
+  JvVCLUtils, JvAppUtils, JvConst, JvDirFrm, JvFileUtil, JvTypes;
 
 {$B-}
 {$IFDEF WIN32}
@@ -383,7 +383,7 @@ begin
       if (PictureEditor.Picture.Graphic = nil) or
          (PictureEditor.Picture.Graphic is PictureEditor.GraphicClass) then
         SetOrdValue(LongInt(PictureEditor.Picture.Graphic))
-      else raise Exception.Create(ResStr(SInvalidPropertyValue));
+      else raise EJVCLException.Create(ResStr(SInvalidPropertyValue));
   finally
     PictureEditor.Free;
   end;

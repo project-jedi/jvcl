@@ -282,8 +282,8 @@ type
   end;
 
 implementation
-
-uses Consts, Forms, SysUtils, JvVCLUtils, JvMaxMin, JvConst;
+uses 
+  Consts, Forms, SysUtils, JvVCLUtils, JvMaxMin, JvConst, JvTypes;
 
 {$IFDEF WIN32}
  {$R *.Res}
@@ -824,7 +824,7 @@ procedure TJvCustomSlider.SetIncrement(Value: Longint);
 begin
   if not (csReading in ComponentState) and ((Value > MaxValue - MinValue) or
     (Value < 1)) then
-    raise Exception.CreateFmt(ResStr(SOutOfRange), [1, MaxValue - MinValue]);
+    raise EJVCLException.CreateFmt(ResStr(SOutOfRange), [1, MaxValue - MinValue]);
   if (Value > 0) and (FIncrement <> Value) then begin
     FIncrement := Value;
     Self.Value := FValue;

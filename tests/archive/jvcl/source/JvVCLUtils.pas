@@ -2635,7 +2635,7 @@ begin
     Error.ErrorCode := ErrorCode;
     raise Error;
 {$ELSE}
-    raise Exception.CreateFmt('%s (%d)', [SysErrorMessage(ErrorCode),
+    raise EJVCLException.CreateFmt('%s (%d)', [SysErrorMessage(ErrorCode),
       ErrorCode]);
 {$ENDIF}
   end;
@@ -2651,7 +2651,7 @@ var
 begin
   if not RetVal then begin
     LastError := GetLastError;
-    raise Exception.CreateFmt('%s (%d)', [SysErrorMessage(LastError),
+    raise EJVCLException.CreateFmt('%s (%d)', [SysErrorMessage(LastError),
       LastError]);
   end;
   Result := RetVal;

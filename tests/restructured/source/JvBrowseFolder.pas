@@ -93,6 +93,9 @@ type
   end;
 
 implementation
+uses
+  JvTypes;
+  
   
 const
   BIF_BROWSEINCLUDEURLS = $0080;
@@ -263,7 +266,7 @@ begin
 
   ShellVersion := GetShellVersion;
   if ShellVersion < $00040000 then
-    raise Exception.Create('Shell not compatible with BrowseForFolder');
+    raise EJVCLException.Create('Shell not compatible with BrowseForFolder');
 
   ZeroMemory(@BrowseInfo, SizeOf(BrowseInfo));
 

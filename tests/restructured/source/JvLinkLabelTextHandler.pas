@@ -53,10 +53,10 @@ unit JvLinkLabelTextHandler;
 interface
 
 uses
-  Graphics, Classes, Windows, SysUtils, JvLinkLabelTree, JvLinkLabelTools;
+  Graphics, Classes, Windows, SysUtils, JvLinkLabelTree, JvLinkLabelTools, JvTypes;
 
 type
-  ETextHandlerError = class(Exception);
+  ETextHandlerError = class(EJVCLException);
 
   IStartingPosObserver = interface
     procedure StartingPosUpdated(PosX, PosY: Integer; const Node: TAreaNode);

@@ -123,6 +123,8 @@ type
   end;
 
 implementation
+uses
+  JvTypes;
 
 const
   // (p3) fixed as suggested by Remko Bonte
@@ -225,7 +227,7 @@ procedure TJvWinampLabel.SetPicture(Value: TPicture);
 begin
   FPicture.Assign(Value);
   if (FPicture.Bitmap.Width <> 155) or (FPicture.Bitmap.Height <> 18) then
-    raise Exception.Create(RC_InvalidSkin);
+    raise EJVCLException.Create(RC_InvalidSkin);
   FText := '';
   Invalidate;
 end;

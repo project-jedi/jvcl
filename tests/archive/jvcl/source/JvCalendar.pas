@@ -35,10 +35,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, CommCtrl,
-  ComCtrls, JvComponent;
+  ComCtrls, JvComponent, JvTypes;
 
 type
-  EMonthCalError = class(Exception);
+  EMonthCalError = class(EJVCLException);
   TJvMonthCalWeekDay = (mcLocale, mcMonday, mcTuesday, mcWednesday, mcThursday, mcFriday, mcSaturday, mcSunday);
   TJvMonthCalSelEvent = procedure(Sender: TObject; StartDate, EndDate: TDateTime) of object;
   TJvMonthCalStateEvent = procedure(Sender: TObject; Date: TDateTime; Count: integer; var DayStateArray: array of TMonthDayState) of object;

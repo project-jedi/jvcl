@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -65,13 +65,15 @@ type
   protected
     { Protected declarations }
     procedure Paint; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetStyle(LineIndex, ImageIndex: integer; LineStyle: TFontStyles);
-    procedure SetExclusive(LineIndex, ImageIndex: integer; LineStyle: TFontStyles);
+    procedure SetExclusive(LineIndex, ImageIndex: integer; LineStyle:
+      TFontStyles);
     procedure SetImage(LineIndex, ImageIndex: integer);
     property Styles[Index: integer]: TFontStyles read GetStyles write SetStyles;
   published
@@ -82,12 +84,15 @@ type
     property DefaultImage: integer read FIndex write SetIndex default -1;
     property ImageList: TImageList read FImageList write SetImageList;
     property Lines: TStrings read FLines write SetLines;
-    property LineSpacing: integer read FLineSpacing write SetLineSpacing default 10;
+    property LineSpacing: integer read FLineSpacing write SetLineSpacing default
+      10;
     property ShowHint;
     property ParentShowHint;
     property ParentFont;
-    property TextOffset: integer read FTextOffset write SetTextOffset default 24;
-    property ImageOffset: integer read FImageOffset write SetImageOffset default 2;
+    property TextOffset: integer read FTextOffset write SetTextOffset default
+      24;
+    property ImageOffset: integer read FImageOffset write SetImageOffset default
+      2;
     property DragCursor;
     property DragMode;
     property PopupMenu;
@@ -105,6 +110,8 @@ resourcestring
   SListOutOfBounds = 'List index out of bounds (%d)';
 
 implementation
+uses
+  JvTypes;
 
 type
   PStyles = ^TStyles;
@@ -115,7 +122,7 @@ type
 
 procedure Error(Msg: string; Args: array of const);
 begin
-  raise Exception.CreateFmt(Msg, Args);
+  raise EJVCLException.CreateFmt(Msg, Args);
 end;
 
 constructor TJvInstallLabel.Create(AOwner: TComponent);
@@ -159,7 +166,7 @@ begin
   while FStyles.Count < FLines.Count do
   begin
     New(aStyle);
-    aStyle^.Style := Font.Style; { default }
+    aStyle^.Style := Font.Style;        { default }
     aStyle^.Index := FIndex;
     FStyles.Add(aStyle);
   end;
@@ -238,7 +245,8 @@ begin
   end;
 end;
 
-procedure TJvInstallLabel.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TJvInstallLabel.Notification(AComponent: TComponent; Operation:
+  TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (AComponent = FImageList) and (Operation = opRemove) then
@@ -246,7 +254,9 @@ begin
 end;
 
 procedure TJvInstallLabel.Paint;
-var tmp, H, W, i: integer; aRect: TRect; aHandle: THandle;
+var tmp, H, W, i: integer;
+  aRect: TRect;
+  aHandle: THandle;
 begin
   inherited Paint;
   with inherited Canvas do
@@ -278,18 +288,21 @@ begin
     W := Canvas.TextWidth(FLines[i]);
     tmp := i * (H + FLineSpacing) + FLineSpacing;
     aRect := Rect(FTextOffset, tmp, FTextOffset + W, tmp + H);
-    DrawText(aHandle, PChar(FLines[i]), -1, aRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX or DT_NOCLIP);
+    DrawText(aHandle, PChar(FLines[i]), -1, aRect, DT_CENTER or DT_VCENTER or
+      DT_SINGLELINE or DT_NOPREFIX or DT_NOCLIP);
     if Assigned(FImageList) then
     begin
       aRect.Top := aRect.Top + ((aRect.Bottom - aRect.Top) div 2);
-      FImageList.Draw(Canvas, FImageOffset, aRect.Top - FImageList.Height div 2, PStyles(FStyles[i])^.Index);
+      FImageList.Draw(Canvas, FImageOffset, aRect.Top - FImageList.Height div 2,
+        PStyles(FStyles[i])^.Index);
     end;
   end;
 end;
 
 { set the style of this line without affecting any others }
 
-procedure TJvInstallLabel.SetStyle(LineIndex, ImageIndex: integer; LineStyle: TFontStyles);
+procedure TJvInstallLabel.SetStyle(LineIndex, ImageIndex: integer; LineStyle:
+  TFontStyles);
 begin
   CheckBounds(LineIndex);
   UpdateStyles;
@@ -300,7 +313,8 @@ end;
 
 { reset all lines to default style except this one  }
 
-procedure TJvInstallLabel.SetExclusive(LineIndex, ImageIndex: integer; LineStyle: TFontStyles);
+procedure TJvInstallLabel.SetExclusive(LineIndex, ImageIndex: integer;
+  LineStyle: TFontStyles);
 var i: integer;
 begin
   CheckBounds(LineIndex);

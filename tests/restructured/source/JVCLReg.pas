@@ -165,7 +165,7 @@ uses
   JvChangeNotify, JvEnterTab, JvFindFiles,
   JvFileInfo, JvItemsPanel, JvDsgnEditors, JvCntScr, JvCmdEdit,
   JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBarEditor, JvSHFmt,
-  JvInspector, JvHidControllerClass, JvAnalogClock;
+  JvInspector, JvHidControllerClass, JvAnalogClock, JvRadioCtl;
 
 {******************************************************************************}
 
@@ -296,7 +296,8 @@ begin
     JvSpacer.TJvSpacer,
       TJvDivider,
       TJvArrow,
-      TJvHighlighter
+      TJvHighlighter,
+      TJvRadioControl
       ]);
 
   // Jv Win32

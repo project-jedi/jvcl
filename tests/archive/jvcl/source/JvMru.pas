@@ -66,7 +66,7 @@ interface
 
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms, Dialogs,
-  JvComponent;
+  JvComponent, JvTypes;
 
 type
   TJvHKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers, hkCurrentConfig);
@@ -170,7 +170,7 @@ type
     property OnEnumData: TOnEnumData read FOnEnumData write FOnEnumData;
   end;
 
-  EMruException = class(Exception);
+  EMruException = class(EJVCLException);
 
 implementation 
 uses 

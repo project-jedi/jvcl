@@ -32,10 +32,10 @@ interface
 
 uses
   SysUtils, Windows, Classes, Contnrs, TypInfo, Controls, StdCtrls, Graphics,
-  Messages, IniFiles, JVCLVer;
+  Messages, IniFiles, JVCLVer, JvTypes;
 
 {$A+,B-,C+,E-,F-,G+,H+,I+,J+,K-,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Z1}
-{$I jedi.inc}
+{$I JEDI.INC}
 
 resourcestring
   sJvInspItemHasParent = 'Item already assigned to another parent.';
@@ -122,7 +122,7 @@ type
   TJvInspConfKeyEvent = procedure(const SectionName: string; var ItemName: string; var ATypeInfo: PTypeInfo; var Allow: Boolean) of object;
 
   { Exceptions }
-  EJvInspector = class(Exception);
+  EJvInspector = class(EJVCLException);
   EJvInspectorItem = class(EJvInspector);
   EJvInspectorData = class(EJvInspector);
   EJvInspectorReg = class(EJvInspector);

@@ -80,10 +80,10 @@ begin
       FSetupRenameError := GetProcAddress(FDll, 'SetupRenameErrorA');
     end
     else
-      raise Exception.Create(RC_ErrorSetupDll);
+      raise EJVCLException.Create(RC_ErrorSetupDll);
   end
   else
-    raise Exception.Create(RC_ErrorOwner);
+    raise EJVCLException.Create(RC_ErrorOwner);
 end;
 
 {**************************************************}

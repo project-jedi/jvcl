@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, Registry, JvHRas32,
-  JvComponent;
+  JvComponent, JvTypes;
 
 type
   TJvRas32 = class(TJvComponent)
@@ -138,7 +138,7 @@ type
     function EditConnection(Index: Integer): Boolean;
   end;
 
-  ERasError = class(Exception);
+  ERasError = class(EJVCLException);
 
 implementation
 

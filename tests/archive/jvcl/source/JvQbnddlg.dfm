@@ -1,4 +1,4 @@
-object QueryParamsDialog: TJvQueryParamsDialog
+object JvQueryParamsDialog: TJvQueryParamsDialog
   Left = 210
   Top = 119
   ActiveControl = ParamList

@@ -64,7 +64,7 @@ type
 
 implementation
 uses
-  Registry, iniFiles, TypInfo;
+  Registry, IniFiles, TypInfo, jvTypes;
 
 { TJvAppInfo }
 
@@ -89,7 +89,7 @@ begin
             tkFloat:                    SetFloatProp(self,PropList[i],StrToFloat(Value));
             tkString,tkLString:         SetStrProp(self,PropList[i],Value);
           else
-             raise Exception.CreateFmt('Invalid property: %s',[PropList[i].Name]);
+             raise EJVCLException.CreateFmt('Invalid property: %s',[PropList[i].Name]);
           end;
         Inc(i);
       end;
@@ -116,7 +116,7 @@ begin
             tkFloat:                 SetFloatProp(self,PropList[i],StrToFloat(Value));
             tkString,tkLString:      SetStrProp(self,PropList[i],Value);
           else
-             raise Exception.CreateFmt('Invalid property: %s',[PropList[i].Name]);
+             raise EJVCLException.CreateFmt('Invalid property: %s',[PropList[i].Name]);
           end;
         Inc(i);
       end;
@@ -145,7 +145,7 @@ begin
           tkString,tkLString:
             Value := GetStrProp(self,PropList[i]);
         else
-          raise Exception.CreateFmt('Invalid property: %s',[PropList[i].Name]);
+          raise EJVCLException.CreateFmt('Invalid property: %s',[PropList[i].Name]);
         end;
         Reg.WriteString(Section,PropList[i].Name,Value);
         Inc(i);
@@ -174,7 +174,7 @@ begin
           tkString,tkLString:
             Value := GetStrProp(self,PropList[i]);
           else
-             raise Exception.CreateFmt('Invalid property: %s',[PropList[i].Name]);
+             raise EJVCLException.CreateFmt('Invalid property: %s',[PropList[i].Name]);
           end;
           Ini.WriteString(Section,PropList[i].Name,Value);
           Inc(i);
@@ -207,7 +207,7 @@ end;
 procedure TJvAppInfo.CheckPath;
 begin
   if SavePath = '' then
-    raise Exception.Create('No path specified');
+    raise EJVCLException.Create('No path specified');
 end;
 
 constructor TJvAppInfo.Create;

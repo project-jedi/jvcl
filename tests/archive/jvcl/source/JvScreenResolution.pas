@@ -51,6 +51,7 @@ type
 
 implementation
 uses
+  Jvtypes,
 {$IFDEF DELPHI6_UP}
   RTLConsts
 {$ELSE}
@@ -72,7 +73,7 @@ end;
 function TJvScreenResolution.GetMode(Index: integer): TDevMode;
 begin
   if (Index < 0) or (Index >= Count) then
-    raise Exception.CreateFmt(SListIndexError,[Index]);
+    raise EJVCLException.CreateFmt(SListIndexError,[Index]);
   EnumDisplaySettings(nil,Index,Result);
 end;
 

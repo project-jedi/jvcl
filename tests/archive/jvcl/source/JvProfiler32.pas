@@ -34,10 +34,11 @@ unit JvProfiler32;
 
 interface
 uses
-  Windows, Dialogs, ComCtrls, StdCtrls, Controls, Classes, ExtCtrls, Forms,JvComponent;
+  Windows, Dialogs, ComCtrls, StdCtrls, Controls, Classes, ExtCtrls, Forms,
+    JvComponent;
 
 const
-  MaxProfEntries = 1024; { maximum number of "blocks" to profile }
+  MaxProfEntries = 1024;                { maximum number of "blocks" to profile }
   MaxStackSize = 1024; { maximum nesting of blocks at any one time }
 
 var
@@ -115,14 +116,15 @@ type
   end;
 
 implementation
-
 uses
-  SysUtils;
+  SysUtils, JvTypes;
+
 const
   DefCaption = 'Profiler 32 Report';
   EmptyLine = '0.00';
   DefHeader = 'Profiler 32 run %s by "%s" (machine %s).';
-  DefHeader2 = 'Profiler 32 - (C) 1996 Certified Software Corp, portions Copyright (C) 1997 by Peter Thörnqvist; all rights reserved.';
+  DefHeader2 =
+    'Profiler 32 - (C) 1996 Certified Software Corp, portions Copyright (C) 1997 by Peter Thörnqvist; all rights reserved.';
 
 {$R *.DFM}
 
@@ -142,7 +144,8 @@ type
   end;
 
 function GetUserNamePas: string;
-var Buff: array[0..255] of char; i:Cardinal;
+var Buff: array[0..255] of char;
+  i: Cardinal;
 begin
   i := 255;
   GetUserName(Buff, i);
@@ -150,7 +153,8 @@ begin
 end;
 
 function GetComputerNamePas: string;
-var Buff: array[0..255] of char; i: Cardinal;
+var Buff: array[0..255] of char;
+  i: Cardinal;
 begin
   i := 255;
   GetComputerName(Buff, i);
@@ -178,9 +182,10 @@ begin
   for i := 0 to FNames.Count - 1 do
   begin
     if Length(Trim(FNames[i])) < 1 then
-      Continue; { skip empty ID's }
+      Continue;                         { skip empty ID's }
     if FLastProc > MaxProfEntries then
-      raise Exception.CreateFmt('Max number of ID''s exceeded (%d)', [MaxProfEntries - 1]);
+      raise EJVCLException.CreateFmt('Max number of ID''s exceeded (%d)',
+        [MaxProfEntries - 1]);
     Inc(FLastProc);
     with FProfileInfo[FLastProc] do
     begin
@@ -207,7 +212,8 @@ begin
   begin
     Snap := GetTickCount;
     if FStackSize > MaxStackSize then
-      raise Exception.CreateFmt('Max stack size exceeded (%d)', [MaxStackSize]);
+      raise EJVCLException.CreateFmt('Max stack size exceeded (%d)',
+        [MaxStackSize]);
     Inc(FStackSize);
 
     with FStack[FStackSize] do
@@ -343,13 +349,13 @@ begin
     with ProfileInfo[ThisProc] do
     begin
       LItem := lvReport.Items.Add;
-      LItem.Caption := StringID; { function ID }
+      LItem.Caption := StringID;        { function ID }
       if Calls <> 0 then
       begin
-        LItem.SubItems.Add(Format('%4.2f', [TimeSpent * 1.0])); { Total time spent here }
+        LItem.SubItems.Add(Format('%4.2f', [TimeSpent * 1.0]));  { Total time spent here }
         LItem.Subitems.Add(IntToStr(Calls)); { Total number of calls }
-        LItem.SubItems.Add(Format('%4.2f', [TimeSpent / Calls])); { average time }
-        LItem.SubItems.Add(Format('%4.2f', [TimeSpent / TotalSum * 100])); { percentage }
+        LItem.SubItems.Add(Format('%4.2f', [TimeSpent / Calls]));  { average time }
+        LItem.SubItems.Add(Format('%4.2f', [TimeSpent / TotalSum * 100]));  { percentage }
       end
       else
       begin
@@ -359,7 +365,8 @@ begin
         LItem.SubItems.Add(EmptyLine);
       end;
     end;
-  Caption := Format('%s -  total elapsed time: %d (ms)', [DefCaption, TotalSum]);
+  Caption := Format('%s -  total elapsed time: %d (ms)', [DefCaption,
+    TotalSum]);
   lvReport.Items.EndUpdate;
 end;
 
@@ -373,7 +380,8 @@ begin
   end;
 end;
 
-function DefSort(lParam1, lParam2: TListItem; lParamSort: integer): integer stdcall;
+function DefSort(lParam1, lParam2: TListItem; lParamSort: integer): integer
+  stdcall;
 var l1, l2: Extended;
 begin
   if lParamSort = 0 then
@@ -404,7 +412,9 @@ begin
 end;
 
 procedure TProfReport.SaveBtnClick(Sender: TObject);
-var OutList: TStringList; S: string; i, j: integer;
+var OutList: TStringList;
+  S: string;
+  i, j: integer;
 begin
   with TSaveDialog.Create(nil) do
   begin
@@ -412,7 +422,8 @@ begin
     if Execute then
     begin
       OutList := TStringList.Create;
-      OutList.Add(Format(DefHeader, [DateToStr(Now), GetUserNamePas, GetComputerNamePas]));
+      OutList.Add(Format(DefHeader, [DateToStr(Now), GetUserNamePas,
+        GetComputerNamePas]));
       OutList.Add(DefHeader2);
       S := '';
       for i := 0 to lvReport.Columns.Count - 1 do

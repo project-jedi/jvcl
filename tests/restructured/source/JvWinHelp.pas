@@ -73,7 +73,7 @@ begin
   while FOwner.GetParentComponent <> nil do
     FOwner := FOwner.GetParentComponent;
   if not (FOwner is TForm) then
-    raise Exception.Create(RC_OwnerForm);
+    raise EJVCLException.Create(RC_OwnerForm);
 end;
 
 {**************************************************}

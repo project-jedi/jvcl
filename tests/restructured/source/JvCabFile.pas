@@ -102,7 +102,7 @@ begin
   if FDll <> 0 then
     FSetupIterateCabinet := GetProcAddress(FDll, 'SetupIterateCabinetA')
   else
-    raise Exception.Create(RC_SetupApiDll);
+    raise EJVCLException.Create(RC_SetupApiDll);
 end;
 {**************************************************}
 

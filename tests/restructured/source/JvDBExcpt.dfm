@@ -95,11 +95,6 @@ object JvBdeErrorDlg: TJvBdeErrorDlg
       Height = 13
       Alignment = taRightJustify
       AutoSize = False
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Shell Dlg 2'
-      HotTrackFont.Style = []
     end
     object NativeLabel: TJvxLabel
       Left = 87
@@ -108,11 +103,6 @@ object JvBdeErrorDlg: TJvBdeErrorDlg
       Height = 13
       Alignment = taRightJustify
       AutoSize = False
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Shell Dlg 2'
-      HotTrackFont.Style = []
     end
     object DbMessageText: TMemo
       Left = 7

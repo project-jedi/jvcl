@@ -52,7 +52,7 @@ type
     CutMenu: TMenuItem;
     CopyMenu: TMenuItem;
     PasteMenu: TMenuItem;
-    FormStorage: TJvFormPlacement;
+    FormStorage: TJvFormStorage;
     DeleteMenu: TMenuItem;
     N1: TMenuItem;
     NewMenu: TMenuItem;
@@ -136,7 +136,7 @@ type
 
 implementation
 
-uses Consts, {$IFDEF WIN32} JvConst, {$ENDIF} JvLConst, JvDsgn;
+uses Consts, {$IFDEF WIN32} JvConst, {$ENDIF} JvLConst, JvDsgn, JvTypes;
 
 {$R *.DFM}
 
@@ -502,7 +502,7 @@ begin
       Item.Free;
       raise;
     end
-  else raise Exception.CreateRes(srEventNotCreate);
+  else raise EJVCLException.CreateRes(srEventNotCreate);
 end;
 
 procedure TJvTimerItemsEditor.CutClick(Sender: TObject);

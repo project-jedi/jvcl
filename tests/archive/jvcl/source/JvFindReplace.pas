@@ -134,6 +134,8 @@ resourcestring
   SNoEditAssigned = 'No edit control assigned!';
 
 implementation
+uses
+  JvTypes;
 
 type
   TFoundText = record
@@ -145,7 +147,7 @@ type
 
 procedure Error;
 begin
-  Exception.Create(SNoEditAssigned);
+  EJVCLException.Create(SNoEditAssigned);
 end;
 
 { utility }

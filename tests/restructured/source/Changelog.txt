@@ -1,7 +1,18 @@
+2002-07-16
+- Added JvRadioControl donated by Rudy Velthius
+- Readded all BMP's and PNG's with upper case names to facilitate auto generation
+
+2002-07-15
+- Moved several forms that wasn't used to \archive\installer. These were part of the already archived installer package
+- Readded JvFormProgress (deleted by mistake)
+
 2002-07-14
 - TJvTrayIcon: Restructured all visibility options 
 - TJvTrayIcon: Added autohide capability and design mode
 - TJvTrayIcon: Removed timer when not animated
+- Moved TJvDBProgressBar from JvProgressBar to new unit JvDBProgressBar.pas
+- Fixed corrupted DFM files from converted RxLib
+- Added RunDLL32 and RunDLL32Internal functions to JvFunctions
 
 2002-07-13
 - Fixed CRLF corruption - couldn't open files in D5 (is this due to D6 or CVS?)
@@ -19,7 +30,7 @@
 - JvStartMenuBtn:now folders are placed ahead of files + added Options property to include items from the Common and All Users Start Menus
 
 2002-07-10
-- Added packages for Delphi 6 Personal
+- Added packages for Delphi 6 Personal (JVCL200_R60Personal and JVCL200_D60Personal)
 - Modified JvProgressBar to support D6 Personal
 
 2002-07-08

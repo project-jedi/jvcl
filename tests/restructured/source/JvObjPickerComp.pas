@@ -29,38 +29,35 @@ unit JvObjPickerComp;
 // TODO OWNER
 
 interface
-
 uses
-  Windows, ActiveX, Classes, ComObj, JvObjSel, SysUtils, JvBaseDlg;
+  Windows, ActiveX, Classes, ComObj, JvObjSel, SysUtils, JvBaseDlg, JvTypes;
 
 type
-
   // indicates the type of scope
-
   TScopeType = (
     stTargetComputer,
-    stUpLevelJoinedDomain,      // an uplevel domain joined by the target computer
-    stDownLevelJoinedDomain,    // a downlevel domain joined by the target computer
-    stEnterpriseDomain,         // all Windows 2000 domains of which the target computer is a member
-    stGlobalCatalog,            // all domains in the enterprise
-    stExternalUpLevelDomain,    // all trusted, uplevel domains external to the enterprise
-    stExternalDownLevelDomain,  // all trusted, downlevel domains external to the enterprise
-    stWorkGroup,                // a workgroup joined by the target computer
-    stUserEnteredUpLevelScope,  // enables the user to enter an up level scope
+    stUpLevelJoinedDomain, // an uplevel domain joined by the target computer
+    stDownLevelJoinedDomain, // a downlevel domain joined by the target computer
+    stEnterpriseDomain, // all Windows 2000 domains of which the target computer is a member
+    stGlobalCatalog,                    // all domains in the enterprise
+    stExternalUpLevelDomain, // all trusted, uplevel domains external to the enterprise
+    stExternalDownLevelDomain, // all trusted, downlevel domains external to the enterprise
+    stWorkGroup, // a workgroup joined by the target computer
+    stUserEnteredUpLevelScope, // enables the user to enter an up level scope
     stUserEnteredDownLevelScope // enables the user to enter a down level scope
-  );
+    );
   TScopeTypes = set of TScopeType;
 
   // scope flags
 
   TScopeFlag = (
-    sfStartingScope,            // scope should be initially selected (only one scope can have this flag set)
-    sfProviderWinNT,            // ADSPath is converted to use the WinNT provider
-    sfProviderLDAP,             // ADSPath is converted to use the LDAP provider
-    sfProviderGC,               // ADSPath is converted to use the GC provider
-    sfSidPath,                  // ADSPath with an objectSID attribute are converted to the form LDAP://<SID=x>
-    sfDownLevelBuiltInPath      // If not specified, ADSPath for downlevel, well-known objects are empty
-  );
+    sfStartingScope, // scope should be initially selected (only one scope can have this flag set)
+    sfProviderWinNT, // ADSPath is converted to use the WinNT provider
+    sfProviderLDAP, // ADSPath is converted to use the LDAP provider
+    sfProviderGC, // ADSPath is converted to use the GC provider
+    sfSidPath, // ADSPath with an objectSID attribute are converted to the form LDAP://<SID=x>
+    sfDownLevelBuiltInPath // If not specified, ADSPath for downlevel, well-known objects are empty
+    );
   TScopeFlags = set of TScopeFlag;
 
   // up level filter flags. if a flag is set, the object picker includes the specified object when the scope is
@@ -79,12 +76,12 @@ type
     ulDomainLocalSecurityGroups,
     ulContacts,
     ulComputers
-  );
+    );
   TUpLevelFilters = set of TUpLevelFilter;
 
   // down level filter flags. if a flag is set, the object picker includes the specified object when the scope is
   // selected. e.g. if ulUsers is included, users are displayed..
-  
+
   TDownLevelFilter = (
     dlUsers,
     dlLocalGroups,
@@ -107,12 +104,12 @@ type
     dlLocalService,
     dlNetworkService,
     dlRemoteLogon
-  );
+    );
   TDownLevelFilters = set of TDownLevelFilter;
 
   // represents a single scope and it's associated filter
 
-  TObjectPickerScope = class (TCollectionItem)
+  TObjectPickerScope = class(TCollectionItem)
   private
     FDownLevelFilter: TDownLevelFilters;
     FDcName: string;
@@ -126,26 +123,32 @@ type
     procedure Assign(Source: TPersistent); override;
   published
     // filter flags for down level scopes
-    property DownLevelFilter: TDownLevelFilters read FDownLevelFilter write FDownLevelFilter default [];
+    property DownLevelFilter: TDownLevelFilters read FDownLevelFilter write
+      FDownLevelFilter default [];
     // name of a domain controller of the domain which the target computer is a member of, can be empty
     property DcName: string read FDcName write FDcName;
     // indicates whether this scope was succesfully initialized
     property Result: HRESULT read FResult default S_OK;
     // the type of scope (e.g. enterprise domain, global catalog or computer)
-    property ScopeTypes: TScopeTypes read FScopeTypes write FScopeTypes default [];
+    property ScopeTypes: TScopeTypes read FScopeTypes write FScopeTypes default
+      [];
     // flags  that indicate the format of the returned ADSPath and whether this scope should be initially selected
-    property ScopeFlags: TScopeFlags read FScopeFlags write FScopeFlags default [];
+    property ScopeFlags: TScopeFlags read FScopeFlags write FScopeFlags default
+      [];
     // filter flags for up level scope in either mode (native or mixed)
-    property UpLevelFilterBoth: TUpLevelFilters read FUpLevelFilterBoth write FUpLevelFilterBoth default [];
+    property UpLevelFilterBoth: TUpLevelFilters read FUpLevelFilterBoth write
+      FUpLevelFilterBoth default [];
     // filter flags for up level scope in native mode
-    property UpLevelFilterNative: TUpLevelFilters read FUpLevelFilterNative write FUpLevelFilterNative default [];
+    property UpLevelFilterNative: TUpLevelFilters read FUpLevelFilterNative write
+      FUpLevelFilterNative default [];
     // filter flags for up level scope in mixed mode
-    property UpLevelFilterMixed: TUpLevelFilters read FUpLevelFilterMixed write FUpLevelFilterMixed default [];
+    property UpLevelFilterMixed: TUpLevelFilters read FUpLevelFilterMixed write
+      FUpLevelFilterMixed default [];
   end;
 
   // list of scopes
 
-  TObjectPickerScopes = class (TCollection)
+  TObjectPickerScopes = class(TCollection)
   private
     //OWNER FOwner: TComponent;
     function GetItem(Index: Integer): TObjectPickerScope;
@@ -161,10 +164,11 @@ type
     // the owner of this class
     //OWNER function Owner: TComponent;
     // list of scopes
-    property Items[Index: Integer]: TObjectPickerScope read GetItem write SetItem; default;
+    property Items[Index: Integer]: TObjectPickerScope read GetItem write
+      SetItem; default;
   end;
 
-  TObjectPickerSelection = class (TObject)
+  TObjectPickerSelection = class(TObject)
   private
     FAttributeCount: Integer;
     FSelection: PDsSelection;
@@ -175,7 +179,8 @@ type
     function GetScopeTypes: TScopeTypes;
     function GetUPN: string;
   public
-    constructor Create(const Selection: PDsSelection; const AttributeCount: Integer);
+    constructor Create(const Selection: PDsSelection; const AttributeCount:
+      Integer);
     // the Relative Distinquishged Name (RDN) of the object
     property Name: string read GetName;
     // the object's ADSPath. format depends on what flags you specified for the scope the object was selected from
@@ -195,7 +200,7 @@ type
 
   // class encapsulating the selection list. it contains the list of selected objects
 
-  TObjectPickerSelections = class (TObject)
+  TObjectPickerSelections = class(TObject)
   private
     FItems: array of TObjectPickerSelection;
     FMedium: TStgMedium;
@@ -213,20 +218,21 @@ type
     // the number of entries in the Items list
     property Count: Integer read GetCount;
     // list of objects, each represents a single selected object
-    property Items[Index: Integer]: TObjectPickerSelection read GetItem; default;
+    property Items[Index: Integer]: TObjectPickerSelection read GetItem;
+      default;
   end;
 
   // Global Object Picker options
 
   TObjectPickerOption = (
-    opAllowMultiSelect,           // allow selection of multiple objects
-    opSkipTargetComputerDCCheck   // skip DC check if target computer is a domain controller
-  );
+    opAllowMultiSelect,                 // allow selection of multiple objects
+    opSkipTargetComputerDCCheck // skip DC check if target computer is a domain controller
+    );
   TObjectPickerOptions = set of TObjectPickerOption;
 
   // the Object Picker dialog component
 
-  TJvObjectPickerDialog = class (TJvCommonDialog)
+  TJvObjectPickerDialog = class(TJvCommonDialog)
   private
     FAttributes: TStrings;
     FObjectPicker: IDsObjectPicker;
@@ -240,7 +246,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     // executes (displays) the object picker dialog
-    function Execute: Boolean;override;
+    function Execute: Boolean; override;
     // resets the object picker. clears all options, scopes and attributes
     procedure Reset;
     // the list of selected objects is available through this class
@@ -249,7 +255,8 @@ type
     // list of additional attributes the Object Picker should retrieve for all selected objects
     property Attributes: TStrings read FAttributes write SetAttributes;
     // global options, see TObjectPickerOptions
-    property Options: TObjectPickerOptions read FOptions write FOptions default [];
+    property Options: TObjectPickerOptions read FOptions write FOptions default
+      [];
     // the available scopes and their filters
     property Scopes: TObjectPickerScopes read FScopes write SetScopes;
     // the target computer the Object Picker uses to determine the joined domain and enterprise. the Object Picker
@@ -259,7 +266,7 @@ type
 
   // object picker exception class
 
-  EObjectPickerError = class (Exception)
+  EObjectPickerError = class(EJVCLException)
     // just to be able to distinquish between exceptions raised by the Object Picker specifically and all others
   end;
 
@@ -281,42 +288,68 @@ end;
 function ScopeTypesToOrdinal(const ScopeTypes: TScopeTypes): Cardinal;
 begin
   Result := 0;
-  if stTargetComputer in ScopeTypes then Result := Result or DSOP_SCOPE_TYPE_TARGET_COMPUTER;
-  if stUpLevelJoinedDomain in ScopeTypes then Result := Result or DSOP_SCOPE_TYPE_UPLEVEL_JOINED_DOMAIN;
-  if stDownLevelJoinedDomain in ScopeTypes then Result := Result or DSOP_SCOPE_TYPE_DOWNLEVEL_JOINED_DOMAIN;
-  if stEnterpriseDomain in ScopeTypes then Result := Result or DSOP_SCOPE_TYPE_ENTERPRISE_DOMAIN;
-  if stGlobalCatalog in ScopeTypes then Result := Result or DSOP_SCOPE_TYPE_GLOBAL_CATALOG;
-  if stExternalUpLevelDomain in ScopeTypes then Result := Result or DSOP_SCOPE_TYPE_EXTERNAL_UPLEVEL_DOMAIN;
-  if stExternalDownLevelDomain in ScopeTypes then Result := Result or DSOP_SCOPE_TYPE_EXTERNAL_DOWNLEVEL_DOMAIN;
-  if stWorkGroup in ScopeTypes then Result := Result or DSOP_SCOPE_TYPE_WORKGROUP;
-  if stUserEnteredUpLevelScope in ScopeTypes then Result := Result or DSOP_SCOPE_TYPE_USER_ENTERED_UPLEVEL_SCOPE;
-  if stUserEnteredDownLevelScope in ScopeTypes then Result := Result or DSOP_SCOPE_TYPE_USER_ENTERED_DOWNLEVEL_SCOPE;
+  if stTargetComputer in ScopeTypes then
+    Result := Result or DSOP_SCOPE_TYPE_TARGET_COMPUTER;
+  if stUpLevelJoinedDomain in ScopeTypes then
+    Result := Result or DSOP_SCOPE_TYPE_UPLEVEL_JOINED_DOMAIN;
+  if stDownLevelJoinedDomain in ScopeTypes then
+    Result := Result or DSOP_SCOPE_TYPE_DOWNLEVEL_JOINED_DOMAIN;
+  if stEnterpriseDomain in ScopeTypes then
+    Result := Result or DSOP_SCOPE_TYPE_ENTERPRISE_DOMAIN;
+  if stGlobalCatalog in ScopeTypes then
+    Result := Result or DSOP_SCOPE_TYPE_GLOBAL_CATALOG;
+  if stExternalUpLevelDomain in ScopeTypes then
+    Result := Result or DSOP_SCOPE_TYPE_EXTERNAL_UPLEVEL_DOMAIN;
+  if stExternalDownLevelDomain in ScopeTypes then
+    Result := Result or DSOP_SCOPE_TYPE_EXTERNAL_DOWNLEVEL_DOMAIN;
+  if stWorkGroup in ScopeTypes then
+    Result := Result or DSOP_SCOPE_TYPE_WORKGROUP;
+  if stUserEnteredUpLevelScope in ScopeTypes then
+    Result := Result or DSOP_SCOPE_TYPE_USER_ENTERED_UPLEVEL_SCOPE;
+  if stUserEnteredDownLevelScope in ScopeTypes then
+    Result := Result or DSOP_SCOPE_TYPE_USER_ENTERED_DOWNLEVEL_SCOPE;
 end;
 
 function OrdinalToScopeTypes(const Ordinal: Cardinal): TScopeTypes;
 begin
   Result := [];
-  if (Ordinal and DSOP_SCOPE_TYPE_TARGET_COMPUTER) <> 0 then Include(Result, stTargetComputer);
-  if (Ordinal and DSOP_SCOPE_TYPE_UPLEVEL_JOINED_DOMAIN) <> 0 then Include(Result, stUpLevelJoinedDomain);
-  if (Ordinal and DSOP_SCOPE_TYPE_DOWNLEVEL_JOINED_DOMAIN) <> 0 then Include(Result, stDownLevelJoinedDomain);
-  if (Ordinal and DSOP_SCOPE_TYPE_ENTERPRISE_DOMAIN) <> 0 then Include(Result, stEnterpriseDomain);
-  if (Ordinal and DSOP_SCOPE_TYPE_GLOBAL_CATALOG) <> 0 then Include(Result, stGlobalCatalog);
-  if (Ordinal and DSOP_SCOPE_TYPE_EXTERNAL_UPLEVEL_DOMAIN) <> 0 then Include(Result, stExternalUpLevelDomain);
-  if (Ordinal and DSOP_SCOPE_TYPE_EXTERNAL_DOWNLEVEL_DOMAIN) <> 0 then Include(Result, stExternalDownLevelDomain);
-  if (Ordinal and DSOP_SCOPE_TYPE_WORKGROUP) <> 0 then Include(Result, stWorkGroup);
-  if (Ordinal and DSOP_SCOPE_TYPE_USER_ENTERED_UPLEVEL_SCOPE) <> 0 then Include(Result, stUserEnteredUpLevelScope);
-  if (Ordinal and DSOP_SCOPE_TYPE_USER_ENTERED_DOWNLEVEL_SCOPE) <> 0 then Include(Result, stUserEnteredDownLevelScope);
+  if (Ordinal and DSOP_SCOPE_TYPE_TARGET_COMPUTER) <> 0 then
+    Include(Result, stTargetComputer);
+  if (Ordinal and DSOP_SCOPE_TYPE_UPLEVEL_JOINED_DOMAIN) <> 0 then
+    Include(Result, stUpLevelJoinedDomain);
+  if (Ordinal and DSOP_SCOPE_TYPE_DOWNLEVEL_JOINED_DOMAIN) <> 0 then
+    Include(Result, stDownLevelJoinedDomain);
+  if (Ordinal and DSOP_SCOPE_TYPE_ENTERPRISE_DOMAIN) <> 0 then
+    Include(Result, stEnterpriseDomain);
+  if (Ordinal and DSOP_SCOPE_TYPE_GLOBAL_CATALOG) <> 0 then
+    Include(Result, stGlobalCatalog);
+  if (Ordinal and DSOP_SCOPE_TYPE_EXTERNAL_UPLEVEL_DOMAIN) <> 0 then
+    Include(Result, stExternalUpLevelDomain);
+  if (Ordinal and DSOP_SCOPE_TYPE_EXTERNAL_DOWNLEVEL_DOMAIN) <> 0 then
+    Include(Result, stExternalDownLevelDomain);
+  if (Ordinal and DSOP_SCOPE_TYPE_WORKGROUP) <> 0 then
+    Include(Result, stWorkGroup);
+  if (Ordinal and DSOP_SCOPE_TYPE_USER_ENTERED_UPLEVEL_SCOPE) <> 0 then
+    Include(Result, stUserEnteredUpLevelScope);
+  if (Ordinal and DSOP_SCOPE_TYPE_USER_ENTERED_DOWNLEVEL_SCOPE) <> 0 then
+    Include(Result, stUserEnteredDownLevelScope);
 end;
 
 function ScopeFlagsToOrdinal(const ScopeFlags: TScopeFlags): Cardinal;
 begin
   Result := 0;
-  if sfStartingScope in ScopeFlags then Result := Result or DSOP_SCOPE_FLAG_STARTING_SCOPE;
-  if sfProviderWinNT in ScopeFlags then Result := Result or DSOP_SCOPE_FLAG_WANT_PROVIDER_WINNT;
-  if sfProviderLDAP in ScopeFlags then Result := Result or DSOP_SCOPE_FLAG_WANT_PROVIDER_LDAP;
-  if sfProviderGC in ScopeFlags then Result := Result or DSOP_SCOPE_FLAG_WANT_PROVIDER_GC;
-  if sfSidPath in ScopeFlags then Result := Result or DSOP_SCOPE_FLAG_WANT_SID_PATH;
-  if sfDownLevelBuiltInPath in ScopeFlags then Result := Result or DSOP_SCOPE_FLAG_WANT_DOWNLEVEL_BUILTIN_PATH;
+  if sfStartingScope in ScopeFlags then
+    Result := Result or DSOP_SCOPE_FLAG_STARTING_SCOPE;
+  if sfProviderWinNT in ScopeFlags then
+    Result := Result or DSOP_SCOPE_FLAG_WANT_PROVIDER_WINNT;
+  if sfProviderLDAP in ScopeFlags then
+    Result := Result or DSOP_SCOPE_FLAG_WANT_PROVIDER_LDAP;
+  if sfProviderGC in ScopeFlags then
+    Result := Result or DSOP_SCOPE_FLAG_WANT_PROVIDER_GC;
+  if sfSidPath in ScopeFlags then
+    Result := Result or DSOP_SCOPE_FLAG_WANT_SID_PATH;
+  if sfDownLevelBuiltInPath in ScopeFlags then
+    Result := Result or DSOP_SCOPE_FLAG_WANT_DOWNLEVEL_BUILTIN_PATH;
   //DSOP_SCOPE_FLAG_DEFAULT_FILTER_USERS        = $00000040;
   //DSOP_SCOPE_FLAG_DEFAULT_FILTER_GROUPS       = $00000080;
   //DSOP_SCOPE_FLAG_DEFAULT_FILTER_COMPUTERS    = $00000100;
@@ -326,51 +359,86 @@ end;
 function UpLevelFilterToOrdinal(const Filter: TUpLevelFilters): Cardinal;
 begin
   Result := 0;
-  if ulIncludeAdvancedView in Filter then Result := Result or DSOP_FILTER_INCLUDE_ADVANCED_VIEW;
-  if ulUsers in Filter then Result := Result or DSOP_FILTER_USERS;
-  if ulBuiltInGroups in Filter then Result := Result or DSOP_FILTER_BUILTIN_GROUPS;
-  if ulWellKnownPrincipals in Filter then Result := Result or DSOP_FILTER_WELL_KNOWN_PRINCIPALS;
-  if ulUniversalDistributionListGroups in Filter then Result := Result or DSOP_FILTER_UNIVERSAL_GROUPS_DL;
-  if ulUniversalSecurityGroups in Filter then Result := Result or DSOP_FILTER_UNIVERSAL_GROUPS_SE;
-  if ulGlobalDistributionListGroups in Filter then Result := Result or DSOP_FILTER_GLOBAL_GROUPS_DL;
-  if ulGlobalSecurityGroups in Filter then Result := Result or DSOP_FILTER_GLOBAL_GROUPS_SE;
-  if ulDomainLocalDistributionListGroups in Filter then Result := Result or DSOP_FILTER_DOMAIN_LOCAL_GROUPS_DL;
-  if ulDomainLocalSecurityGroups in Filter then Result := Result or DSOP_FILTER_DOMAIN_LOCAL_GROUPS_SE;
-  if ulContacts in Filter then Result := Result or DSOP_FILTER_CONTACTS;
-  if ulComputers in Filter then Result := Result or DSOP_FILTER_COMPUTERS;
+  if ulIncludeAdvancedView in Filter then
+    Result := Result or DSOP_FILTER_INCLUDE_ADVANCED_VIEW;
+  if ulUsers in Filter then
+    Result := Result or DSOP_FILTER_USERS;
+  if ulBuiltInGroups in Filter then
+    Result := Result or DSOP_FILTER_BUILTIN_GROUPS;
+  if ulWellKnownPrincipals in Filter then
+    Result := Result or DSOP_FILTER_WELL_KNOWN_PRINCIPALS;
+  if ulUniversalDistributionListGroups in Filter then
+    Result := Result or DSOP_FILTER_UNIVERSAL_GROUPS_DL;
+  if ulUniversalSecurityGroups in Filter then
+    Result := Result or DSOP_FILTER_UNIVERSAL_GROUPS_SE;
+  if ulGlobalDistributionListGroups in Filter then
+    Result := Result or DSOP_FILTER_GLOBAL_GROUPS_DL;
+  if ulGlobalSecurityGroups in Filter then
+    Result := Result or DSOP_FILTER_GLOBAL_GROUPS_SE;
+  if ulDomainLocalDistributionListGroups in Filter then
+    Result := Result or DSOP_FILTER_DOMAIN_LOCAL_GROUPS_DL;
+  if ulDomainLocalSecurityGroups in Filter then
+    Result := Result or DSOP_FILTER_DOMAIN_LOCAL_GROUPS_SE;
+  if ulContacts in Filter then
+    Result := Result or DSOP_FILTER_CONTACTS;
+  if ulComputers in Filter then
+    Result := Result or DSOP_FILTER_COMPUTERS;
 end;
 
 function DownLevelFilterToOrdinal(const Filter: TDownLevelFilters): Cardinal;
 begin
   Result := 0;
-  if dlUsers in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_USERS;
-  if dlLocalGroups in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_LOCAL_GROUPS;
-  if dlGlobalGroups in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_GLOBAL_GROUPS;
-  if dlComputers in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_COMPUTERS;
-  if dlWorld in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_WORLD;
-  if dlAuthenticatedUser in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_AUTHENTICATED_USER;
-  if dlAnonymous in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_ANONYMOUS;
-  if dlBatch in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_BATCH;
-  if dlCreatorOwner in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_CREATOR_OWNER;
-  if dlCreatorGroup in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_CREATOR_GROUP;
-  if dlDialUp in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_DIALUP;
-  if dlInteractive in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_INTERACTIVE;
-  if dlNetwork in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_NETWORK;
-  if dlService in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_SERVICE;
-  if dlSystem in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_SYSTEM;
-  if dlExcludeBuiltinGroups in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_EXCLUDE_BUILTIN_GROUPS;
-  if dlTerminalServer in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_TERMINAL_SERVER;
-  if dlAllWellKnownSids in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_ALL_WELLKNOWN_SIDS;
-  if dlLocalService in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_LOCAL_SERVICE;
-  if dlNetworkService in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_NETWORK_SERVICE;
-  if dlRemoteLogon in Filter then Result := Result or DSOP_DOWNLEVEL_FILTER_REMOTE_LOGON;
+  if dlUsers in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_USERS;
+  if dlLocalGroups in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_LOCAL_GROUPS;
+  if dlGlobalGroups in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_GLOBAL_GROUPS;
+  if dlComputers in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_COMPUTERS;
+  if dlWorld in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_WORLD;
+  if dlAuthenticatedUser in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_AUTHENTICATED_USER;
+  if dlAnonymous in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_ANONYMOUS;
+  if dlBatch in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_BATCH;
+  if dlCreatorOwner in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_CREATOR_OWNER;
+  if dlCreatorGroup in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_CREATOR_GROUP;
+  if dlDialUp in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_DIALUP;
+  if dlInteractive in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_INTERACTIVE;
+  if dlNetwork in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_NETWORK;
+  if dlService in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_SERVICE;
+  if dlSystem in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_SYSTEM;
+  if dlExcludeBuiltinGroups in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_EXCLUDE_BUILTIN_GROUPS;
+  if dlTerminalServer in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_TERMINAL_SERVER;
+  if dlAllWellKnownSids in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_ALL_WELLKNOWN_SIDS;
+  if dlLocalService in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_LOCAL_SERVICE;
+  if dlNetworkService in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_NETWORK_SERVICE;
+  if dlRemoteLogon in Filter then
+    Result := Result or DSOP_DOWNLEVEL_FILTER_REMOTE_LOGON;
 end;
 
 function OptionsToOrdinal(const Options: TObjectPickerOptions): Cardinal;
 begin
   Result := 0;
-  if opAllowMultiSelect in Options then Result := Result or DSOP_FLAG_MULTISELECT;
-  if opSkipTargetComputerDCCheck in Options then Result := Result or DSOP_FLAG_SKIP_TARGET_COMPUTER_DC_CHECK;
+  if opAllowMultiSelect in Options then
+    Result := Result or DSOP_FLAG_MULTISELECT;
+  if opSkipTargetComputerDCCheck in Options then
+    Result := Result or DSOP_FLAG_SKIP_TARGET_COMPUTER_DC_CHECK;
 end;
 
 { TObjectPickerScope }
@@ -388,7 +456,8 @@ begin
     FUpLevelFilterNative := TObjectPickerScope(Source).UpLevelFilterNative;
     FUpLevelFilterMixed := TObjectPickerScope(Source).UpLevelFilterMixed;
   end
-  else inherited Assign(Source);
+  else
+    inherited Assign(Source);
 end;
 
 { TObjectPickerScopes }
@@ -404,9 +473,11 @@ var
 begin
   if Source is TObjectPickerScopes then
   begin
-    for I := 0 to TCollection(Source).Count - 1 do Add.Assign(TCollection(Source).Items[I]);
+    for I := 0 to TCollection(Source).Count - 1 do
+      Add.Assign(TCollection(Source).Items[I]);
   end
-  else inherited Assign(Source);
+  else
+    inherited Assign(Source);
 end;
 
 constructor TObjectPickerScopes.Create({OWNER AOwner: TComponent});
@@ -420,7 +491,8 @@ begin
   Result := TObjectPickerScope(inherited Items[Index]);
 end;
 
-procedure TObjectPickerScopes.Initialize(var ScopesInitInfo: array of TDsOpScopeInitInfo);
+procedure TObjectPickerScopes.Initialize(var ScopesInitInfo: array of
+  TDsOpScopeInitInfo);
 var
   I: Integer;
 begin
@@ -430,10 +502,14 @@ begin
     ScopesInitInfo[I].cbSize := SizeOf(TDsOpScopeInitInfo);
     ScopesInitInfo[I].flType := ScopeTypesToOrdinal(Items[I].ScopeTypes);
     ScopesInitInfo[I].flScope := ScopeFlagsToOrdinal(Items[I].ScopeFlags);
-    ScopesInitInfo[I].FilterFlags.Uplevel.flBothModes := UpLevelFilterToOrdinal(Items[I].UpLevelFilterBoth);
-    ScopesInitInfo[I].FilterFlags.Uplevel.flMixedModeOnly := UpLevelFilterToOrdinal(Items[I].UpLevelFilterMixed);
-    ScopesInitInfo[I].FilterFlags.Uplevel.flNativeModeOnly := UpLevelFilterToOrdinal(Items[I].UpLevelFilterNative);
-    ScopesInitInfo[I].FilterFlags.flDownlevel := DownLevelFilterToOrdinal(Items[I].DownLevelFilter);
+    ScopesInitInfo[I].FilterFlags.Uplevel.flBothModes :=
+      UpLevelFilterToOrdinal(Items[I].UpLevelFilterBoth);
+    ScopesInitInfo[I].FilterFlags.Uplevel.flMixedModeOnly :=
+      UpLevelFilterToOrdinal(Items[I].UpLevelFilterMixed);
+    ScopesInitInfo[I].FilterFlags.Uplevel.flNativeModeOnly :=
+      UpLevelFilterToOrdinal(Items[I].UpLevelFilterNative);
+    ScopesInitInfo[I].FilterFlags.flDownlevel :=
+      DownLevelFilterToOrdinal(Items[I].DownLevelFilter);
     ScopesInitInfo[I].pwzDcName := PWideChar(WideString(Items[I].DcName));
     ScopesInitInfo[I].pwzADsPath := nil;
     ScopesInitInfo[I].hr := S_OK;
@@ -445,14 +521,16 @@ end;
 //OWNER   Result := FOwner;
 //OWNER end;
 
-procedure TObjectPickerScopes.SetItem(Index: Integer; Value: TObjectPickerScope);
+procedure TObjectPickerScopes.SetItem(Index: Integer; Value:
+  TObjectPickerScope);
 begin
   TObjectPickerScope(inherited Items[Index]).Assign(Value);
 end;
 
 { TObjectPickerSelection }
 
-constructor TObjectPickerSelection.Create(const Selection: PDsSelection; const AttributeCount: Integer);
+constructor TObjectPickerSelection.Create(const Selection: PDsSelection; const
+  AttributeCount: Integer);
 begin
   inherited Create;
   FAttributeCount := AttributeCount;
@@ -466,10 +544,13 @@ end;
 
 function TObjectPickerSelection.GetAttribute(Index: Integer): OleVariant;
 type
-  TOleVariantArray = array [0..(MaxInt div SizeOf(OleVariant)) - 1] of OleVariant;
+  TOleVariantArray = array[0..(MaxInt div SizeOf(OleVariant)) - 1] of
+    OleVariant;
   POleVariantArray = ^TOleVariantArray;
 begin
-  if (Index < 0) or (Index >= AttributeCount) then raise EObjectPickerError.CreateResFmt(@RsAttributeIndexOutOfBounds, [Index]);
+  if (Index < 0) or (Index >= AttributeCount) then
+    raise EObjectPickerError.CreateResFmt(@RsAttributeIndexOutOfBounds,
+      [Index]);
   Result := POleVariantArray(FSelection^.pvarFetchedAttributes)^[Index];
 end;
 
@@ -507,7 +588,8 @@ var
 begin
   if FSelections <> nil then
   begin
-    for I := 0 to Length(FItems) - 1 do FItems[I].Free;
+    for I := 0 to Length(FItems) - 1 do
+      FItems[I].Free;
     SetLength(FItems, 0);
     GlobalUnlock(FMedium.hGlobal);
     ReleaseStgMedium(FMedium);
@@ -518,21 +600,26 @@ end;
 function TObjectPickerSelections.GetAttributeCount: Integer;
 begin
   Result := -1;
-  if FSelections <> nil then Result := FSelections^.cFetchedAttributes
+  if FSelections <> nil then
+    Result := FSelections^.cFetchedAttributes
 end;
 
 function TObjectPickerSelections.GetCount: Integer;
 begin
   Result := -1;
-  if FSelections <> nil then Result := FSelections^.cItems;
+  if FSelections <> nil then
+    Result := FSelections^.cItems;
 end;
 
-function TObjectPickerSelections.GetItem(Index: Integer): TObjectPickerSelection;
+function TObjectPickerSelections.GetItem(Index: Integer):
+  TObjectPickerSelection;
 begin
   Result := nil;
   if FSelections <> nil then
   begin
-    if (Index < 0) or (Index >= Count) then raise EObjectPickerError.CreateResFmt(@RsSelectionIndexOutOfBounds, [Index]);
+    if (Index < 0) or (Index >= Count) then
+      raise EObjectPickerError.CreateResFmt(@RsSelectionIndexOutOfBounds,
+        [Index]);
     Result := FItems[Index];
   end;
 end;
@@ -559,11 +646,14 @@ begin
     SetLength(FItems, FSelections^.cItems);
     for I := 0 to FSelections^.cItems - 1 do
     begin
-      {$R-}Selection := @FSelections^.aDsSelection[I];{$R+}
-      FItems[I] := TObjectPickerSelection.Create(Selection, FSelections^.cFetchedAttributes);
+{$R-}Selection := @FSelections^.aDsSelection[I];
+{$R+}
+      FItems[I] := TObjectPickerSelection.Create(Selection,
+        FSelections^.cFetchedAttributes);
     end;
   end
-  else OleCheck(HR);
+  else
+    OleCheck(HR);
 end;
 
 { TObjectPicker }
@@ -606,7 +696,8 @@ var
     else
     begin
       SetLength(Attrs, Attributes.Count);
-      for I := 0 to Attributes.Count - 1 do Attrs[I] := WideString(Attributes[I]);
+      for I := 0 to Attributes.Count - 1 do
+        Attrs[I] := WideString(Attributes[I]);
       InitInfo.apwzAttributeNames := @Attrs[0];
     end;
   end;
@@ -615,12 +706,14 @@ var
   var
     I: Integer;
   begin
-    for I := 0 to Scopes.Count - 1 do Scopes[I].FResult := ScopesInitInfo[I].hr;
+    for I := 0 to Scopes.Count - 1 do
+      Scopes[I].FResult := ScopesInitInfo[I].hr;
   end;
 
 begin
   Result := False;
-  OleCheck(CoCreateInstance(CLSID_DsObjectPicker, nil, CLSCTX_INPROC_SERVER, IID_IDsObjectPicker, FObjectPicker));
+  OleCheck(CoCreateInstance(CLSID_DsObjectPicker, nil, CLSCTX_INPROC_SERVER,
+    IID_IDsObjectPicker, FObjectPicker));
   FillChar(InitInfo, SizeOf(InitInfo), 0);
   InitInfo.cbSize := SizeOf(InitInfo);
   InitInfo.flOptions := OptionsToOrdinal(FOptions);
@@ -632,7 +725,8 @@ begin
   Selection.FreeSelection;
   HR := FObjectPicker.Initialize(InitInfo);
   // (p3) this won't raise a second exception
-  if not Succeeded(HR) then Exit;
+  if not Succeeded(HR) then
+    Exit;
   PropogateInitResults;
 //  OleCheck(HR);
   HR := FObjectPicker.InvokeDialog(0, DataObj);
@@ -671,3 +765,4 @@ begin
 end;
 
 end.
+

@@ -36,7 +36,7 @@ RTLConsts,
 {$ENDIF}
 SysUtils, Classes, Messages, Menus, Buttons, Controls, Graphics, Forms,
   {$IFDEF Delphi4_Up} ImgList, ActnList, {$ENDIF} ExtCtrls, Grids, IniFiles,
-  JvxCtrls, JvPlacemnt{, JvComponent};
+  JvTypes, JvxCtrls, JvPlacemnt;
 
 const
   DefButtonWidth = 24;
@@ -45,7 +45,7 @@ const
 type
   TJvSpeedItem = class;
   TJvSpeedbarSection = class;
-  EJvSpeedbarError = class(Exception);
+  EJvSpeedbarError = class(EJVCLException);
 
 { TJvSpeedBar }
 
@@ -61,6 +61,7 @@ type
   TApplyAlignEvent = procedure (Sender: TObject; Align: TAlign;
     var Apply: Boolean) of object;
 
+  
   TJvSpeedBar = class(TCustomPanel)
   private
     FSections: TList;
@@ -68,7 +69,7 @@ type
     FOrientation: TBarOrientation;
     FAlign: TAlign;
     FButtonSize: TPoint;
-    FButtonStyle: TButtonStyle;
+    FButtonStyle: Buttons.TButtonStyle;
     FGridSize: TPoint;
     FOffset: TPoint;
     FEditWin: HWnd;

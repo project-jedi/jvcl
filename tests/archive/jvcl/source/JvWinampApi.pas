@@ -107,7 +107,7 @@ type
     procedure SetEqualizer(Value: TWinampEqualizer);
   end;
 
-  EWinampError = class(Exception);
+  EWinampError = class(EJVCLException);
 
 implementation
 

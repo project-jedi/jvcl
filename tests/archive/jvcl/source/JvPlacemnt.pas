@@ -300,7 +300,7 @@ uses SysUtils,
 {$IFDEF Delphi3_Up}
   Consts,
 {$ENDIF Delphi3_Up}
-  JvAppUtils, JvStrUtils, JvProps;
+  JvAppUtils, JvStrUtils, JvProps, JvTypes;
 
 const
 { The following string should not be localized }
@@ -1141,7 +1141,7 @@ procedure TJvStoredValue.SetDisplayName(const Value: string);
 begin
   if (Value <> '') and (AnsiCompareText(Value, FName) <> 0) and
     (Collection is TJvStoredValues) and (TJvStoredValues(Collection).IndexOf(Value) >= 0) then
-    raise Exception.Create(SDuplicateString);
+    raise EJVCLException.Create(SDuplicateString);
   FName := Value;
   inherited;
 end;

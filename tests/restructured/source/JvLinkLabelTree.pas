@@ -37,10 +37,10 @@ unit JvLinkLabelTree;
 interface
 
 uses
-  Graphics, Windows, Classes, SysUtils, JvLinkLabelTools;
+  Graphics, Windows, Classes, SysUtils, JvLinkLabelTools, JvTypes;
 
 type
-  ENodeError = class(Exception);
+  ENodeError = class(EJVCLException);
 
   { Object hierarchy:
 

@@ -184,7 +184,7 @@ uses
 {$IFDEF Delphi3_Up}
   Consts,
 {$ENDIF}
-  JvStrUtils;
+  JvStrUtils, JvTypes;
 
 const
   XorVersion = 1;
@@ -317,7 +317,7 @@ procedure TJvMacro.SetDisplayName(const Value: string);
 begin
   if (Value <> '') and (AnsiCompareText(Value, FName) <> 0) and
     (Collection is TJvMacros) and (TJvMacros(Collection).IndexOf(Value) >= 0) then
-    raise Exception.Create(SDuplicateString);    
+    raise EJVCLException.Create(SDuplicateString);    
   FName := Value;
   inherited;
 end;
@@ -432,7 +432,7 @@ function TJvMacros.MacroByName(const Value: string): TJvMacro;
 begin
   Result := FindMacro(Value);
   if Result = nil then
-    raise Exception.Create(SInvalidPropertyValue);
+    raise EJVCLException.Create(SInvalidPropertyValue);
 end;
 
 function TJvMacros.FindMacro(const Value: string): TJvMacro;

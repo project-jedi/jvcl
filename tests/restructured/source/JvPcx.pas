@@ -70,7 +70,7 @@ type
     procedure WriteData(Stream: TStream); override;
   end;
 
-  EPcxError = class(Exception);
+  EPcxError = class(EJVCLException);
 
 implementation
 

@@ -53,6 +53,8 @@ type
   end;
 
 implementation
+uses
+  JvTypes;
 
 { TJvSyncSplitter }
 resourcestring
@@ -71,7 +73,7 @@ begin
   if Value <> Self then
     FPartner := Value
   else
-    raise Exception.Create(eInvalidPartner);
+    raise EJVCLException.Create(eInvalidPartner);
 end;
 
 procedure TJvSyncSplitter.WndProc(var Message: TMessage);

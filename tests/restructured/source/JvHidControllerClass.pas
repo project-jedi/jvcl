@@ -319,16 +319,16 @@ function HidCheck(const RetVal: NTSTATUS): NTSTATUS; overload;
 function HidCheck(const RetVal: LongBool): LongBool; overload;
 function HidError(const RetVal: NTSTATUS): NTSTATUS;
 
-// to register the component in the palette
-procedure Register;
 
 implementation
+uses
+  JvTypes;
 
 {.$R HidControllerClass.dcr}
 
 type
-  EControllerError = class(Exception);
-  EHidClientError  = class(Exception);
+  EControllerError = class(EJVCLException);
+  EHidClientError  = class(EJVCLException);
 
 var
   // counter to prevent a second TJvHidDeviceController instance
@@ -1699,17 +1699,6 @@ begin
     raise EHidClientError.Create('HidClient Error: ' + ErrBuf);
   end;
   Result := RetVal;
-end;
-
-//------------------------------------------------------------------------------
-
-// We place the component on the new 'Project JEDI' palette.
-// This is to encourage you to become a member.
-// Have a look at http://delphi-jedi.org for further details.
-
-procedure Register;
-begin
-  RegisterComponents('Project JEDI', [TJvHidDeviceController]);
 end;
 
 end.

@@ -182,6 +182,8 @@ type
   end;
 
 implementation
+uses
+  JvTypes;
 
 function Max(Val1, Val2: integer): integer;
 begin
@@ -239,7 +241,7 @@ var TmpBmp, Bmp: TBitmap; i: integer;
 begin
   if not Assigned(FImageList) then
   begin
-    Exception.Create('ImageList not Assigned!');
+    EJVCLException.Create('ImageList not Assigned!');
     Exit;
   end;
   Bmp := TBitmap.Create;

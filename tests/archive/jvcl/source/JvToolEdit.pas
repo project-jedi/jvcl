@@ -36,7 +36,7 @@ RTLConsts, Variants,
 {$ENDIF}
 Classes,
   StdCtrls, Controls, Messages, SysUtils, Forms, Graphics, Menus, Buttons,
-  Dialogs, JvxCtrls, FileCtrl, Mask, JvDateUtil;
+  Dialogs, JvxCtrls, FileCtrl, Mask, JvDateUtil, JvTypes;
 
 const
   scAltDown = scAlt + vk_Down;
@@ -761,7 +761,7 @@ type
 {$ENDIF}
   end;
 
-  EComboEditError = class(Exception);
+  EComboEditError = class(EJVCLException);
 
 { Utility routines }
 

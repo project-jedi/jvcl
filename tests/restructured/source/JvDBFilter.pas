@@ -32,10 +32,10 @@ interface
 
 {$IFDEF WIN32}
 uses SysUtils, Windows, Messages, Classes, Controls, Forms,
-  Graphics, Menus, StdCtrls, ExtCtrls, Bde, DB, DBTables{, JvComponent};
+  Graphics, Menus, StdCtrls, ExtCtrls, Bde, DB, DBTables, JvTypes;
 {$ELSE}
 uses SysUtils, WinTypes, WinProcs, Messages, Classes, Controls, Forms,
-  Graphics, Menus, StdCtrls, ExtCtrls, DBITypes, DB, DBTables;
+  Graphics, Menus, StdCtrls, ExtCtrls, DBITypes, DB, DBTables, JvTypes;
 {$ENDIF}
 
 type
@@ -139,7 +139,7 @@ type
     property OnReleaseCapture: TNotifyEvent read FOnReleaseCapture write FOnReleaseCapture;
   end;
 
-  EFilterError = class(Exception);
+  EFilterError = class(EJVCLException);
 
 procedure DropAllFilters(DataSet: TDataSet);
 {$IFNDEF Delphi3_Up}

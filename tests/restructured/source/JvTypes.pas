@@ -119,7 +119,7 @@ type
   TJvDirMask = (dmFileNameChange, dmDirnameChange, dmAttributesChange, dmSizeChange, dmLastWriteChange,
     dmSecurityChange);
   TJvDirMasks = set of TJvDirMask;
-  EJvDirectoryError = class(Exception);
+  EJvDirectoryError = class(EJVCLException);
   TListEvent = procedure(Sender: TObject; Title: string; Handle: THandle) of object;
 
   TOnPrnProgress = procedure(Sender: TObject; Current, Total: Integer) of object;

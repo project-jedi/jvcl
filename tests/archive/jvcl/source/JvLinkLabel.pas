@@ -39,10 +39,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvLinkLabelParser, JvLinkLabelRenderer, JvLinkLabelTree, JVCLVer;
+  JvLinkLabelParser, JvLinkLabelRenderer, JvLinkLabelTree, JVCLVer, JvTypes;
 
 type
-  ELinkLabelError = class(Exception);
+  ELinkLabelError = class(EJVCLException);
 
   TJvCustomLinkLabel = class;
   TLinkClickEvent = procedure(Sender: TObject; LinkNumber: Integer;

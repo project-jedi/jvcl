@@ -53,7 +53,7 @@ type
   TExcepInfo = EXCEPINFO;
   PDispIDList = ^TDispIDList;
   TDispIDList = array[0..MaxDispArgs] of TDispID;
-  EOleError = class(Exception);
+  EOleError = class(EJVCLException);
 {$ENDIF WIN32}
 
 {$IFNDEF Delphi3_Up}

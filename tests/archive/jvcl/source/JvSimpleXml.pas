@@ -188,6 +188,8 @@ resourcestring
 {$ENDIF COMPILER6_UP}
 
 implementation
+uses
+  JvTypes;
 
 {$IFNDEF COMPILER6_UP}
 var
@@ -462,7 +464,7 @@ var
       end;
     end;
     if count = 0 then
-      raise Exception.Create(RS_INVALID_SimpleXml)
+      raise EJVCLException.Create(RS_INVALID_SimpleXml)
     else
       Stream.Position := k;
     result := Trim(Result);
@@ -498,7 +500,7 @@ var
       end;
     end;
     if count = 0 then
-      raise Exception.Create(RS_INVALID_SimpleXml)
+      raise EJVCLException.Create(RS_INVALID_SimpleXml)
     else
       Stream.Position := k;
   end;

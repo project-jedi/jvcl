@@ -70,7 +70,7 @@ function EditQueryParams(DataSet: TDataSet; List: TParams;
 
 implementation
 
-uses DbConsts, {$IFDEF Delphi3_Up} BdeConst, {$ENDIF} JvVCLUtils;
+uses DbConsts, {$IFDEF Delphi3_Up} BdeConst, {$ENDIF} JvVCLUtils, JvTypes;
 
 {$R *.DFM}
 
@@ -214,7 +214,7 @@ begin
     if ParamValue.Text <> '' then NullValue.Checked := False;
     if (TypeList.Text = '') and TypeList.CanFocus then begin
       TypeList.SetFocus;
-      raise Exception.Create(ResStr(SInvalidParamFieldType));
+      raise EJVCLException.Create(ResStr(SInvalidParamFieldType));
     end;
     if ParamValue.Text = '' then
       with InitList.ParamByName(ParamList.Items[ParamList.ItemIndex]) do

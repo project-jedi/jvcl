@@ -90,6 +90,8 @@ type
 
 
 implementation
+uses
+  JvTypes;
 
 // helper object for file mappings
 type
@@ -134,7 +136,7 @@ var
   S,D:string;
 begin
   if Length(FSourceFiles.Text) = 0 then
-    Exception.Create('No files specified to TJvSHFileOperation Execute function');
+    EJVCLException.Create('No files specified to TJvSHFileOperation Execute function');
 
   FillChar(SFOS,sizeof(TShFileOpStruct),#0);
 

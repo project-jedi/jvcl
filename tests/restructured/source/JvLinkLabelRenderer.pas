@@ -39,10 +39,10 @@ unit JvLinkLabelRenderer;
 interface
 
 uses
-  Windows, Graphics, JvLinkLabelTree, Classes, SysUtils, JvLinkLabelTextHandler;
+  Windows, Graphics, JvLinkLabelTree, Classes, SysUtils, JvLinkLabelTextHandler, JvTypes;
 
 type
-  ERendererError = class(Exception);
+  ERendererError = class(EJVCLException);
 
   IRenderer = interface
     function GetLinkColor: TColor;

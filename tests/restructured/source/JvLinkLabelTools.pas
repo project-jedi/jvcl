@@ -35,13 +35,13 @@ unit JvLinkLabelTools;
 interface
 
 uses
-  Windows, SysUtils, Classes;
+  Windows, SysUtils, Classes, JvTypes;
 
 const
   Space = ' ';
 
 type
-  EGenericToolsError = class(Exception);
+  EGenericToolsError = class(EJVCLException);
 
   TStaticObject = class(TObject)
   public

@@ -115,10 +115,12 @@ type
 function MakeValidMask(const Mask: string): string;
 
 implementation
-{$IFNDEF DELPHI6_UP}
 uses
-  FileCtrl;
+  JvTypes
+{$IFNDEF DELPHI6_UP}
+  ,FileCtrl
 {$ENDIF}
+  ;
 
 { adds backslash to end of path if not already there }
 
@@ -196,14 +198,14 @@ var FFlags: integer; i: TJvSearchOption;
 var NewDrive, CurDrive: char;
 begin
   if (FMaskList.Count = 0) then
-    raise Exception.Create('No filemask specified');
+    raise EJVCLException.Create('No filemask specified');
   FSearching := true;
   FFlags := 0;
   FAbort := False;
   FItems.Clear;
   FTotalFileSize := 0;
   if not DirectoryExists(FPath) then
-    raise Exception.CreateFmt('%s does not exist!', [FPath]);
+    raise EJVCLException.CreateFmt('%s does not exist!', [FPath]);
   for i := Low(FOpts) to High(FOpts) do
     if i in FOptions then
       FFlags := FFlags or FOpts[I];

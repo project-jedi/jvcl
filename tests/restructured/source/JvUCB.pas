@@ -283,7 +283,7 @@ begin
         end;
         // peter3: this shouldn't be called
 //        else
-//          raise Exception.CreateFmt('Unable to open key %s', [cUninstallPath]);
+//          raise EJVCLException.CreateFmt('Unable to open key %s', [cUninstallPath]);
         Items.AddStrings(S);
         S.Clear;
       end;
@@ -417,7 +417,7 @@ begin
         end;
         // peter3: this shouldn't be called
 //        else
-//          raise Exception.CreateFmt('Unable to open key %s', [cUninstallPath]);
+//          raise EJVCLException.CreateFmt('Unable to open key %s', [cUninstallPath]);
       end;
   finally
     FFolders.Assign(FTmpFolders);

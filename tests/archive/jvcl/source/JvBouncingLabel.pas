@@ -58,7 +58,9 @@ type
   end;
 
 implementation
-
+uses
+  JvTypes;
+  
 resourcestring
   RC_MustBeWinControl = 'Owner must be of type TWinControl';
 
@@ -142,7 +144,7 @@ begin
   if AOwner is TWinControl then
     FForm := AOwner as TWinControl
   else
-    raise Exception.Create(RC_MustBeWinControl);
+    raise EJVCLException.Create(RC_MustBeWinControl);
 end;
 
 {**************************************************}
