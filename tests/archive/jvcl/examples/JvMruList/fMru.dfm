@@ -44,14 +44,14 @@ object Form1: TForm1
       TabOrder = 0
       Text = 'Software\MruList'
     end
-    object Button1: TButton
+    object btnOpen: TButton
       Left = 332
       Top = 28
       Width = 75
       Height = 25
       Caption = '&Open'
       TabOrder = 1
-      OnClick = Button1Click
+      OnClick = btnOpenClick
     end
     object SpinEdit1: TSpinEdit
       Left = 94
@@ -72,7 +72,7 @@ object Form1: TForm1
     ItemHeight = 13
     TabOrder = 1
   end
-  object Button2: TButton
+  object btnRefresh: TButton
     Left = 338
     Top = 86
     Width = 87
@@ -80,9 +80,9 @@ object Form1: TForm1
     Caption = '&Refresh'
     Enabled = False
     TabOrder = 2
-    OnClick = Button2Click
+    OnClick = btnRefreshClick
   end
-  object Button3: TButton
+  object btnFirst: TButton
     Left = 338
     Top = 128
     Width = 87
@@ -90,9 +90,9 @@ object Form1: TForm1
     Caption = '&Get First one'
     Enabled = False
     TabOrder = 3
-    OnClick = Button3Click
+    OnClick = btnFirstClick
   end
-  object Button4: TButton
+  object btnDeleteFirst: TButton
     Left = 338
     Top = 170
     Width = 87
@@ -100,9 +100,9 @@ object Form1: TForm1
     Caption = '&Delete First one'
     Enabled = False
     TabOrder = 4
-    OnClick = Button4Click
+    OnClick = btnDeleteFirstClick
   end
-  object Button5: TButton
+  object btnAdd: TButton
     Left = 338
     Top = 212
     Width = 87
@@ -110,7 +110,7 @@ object Form1: TForm1
     Caption = '&Add'
     Enabled = False
     TabOrder = 5
-    OnClick = Button5Click
+    OnClick = btnAddClick
   end
   object JvMruList1: TJvMruList
     SubKey = 'Software\MruTest'

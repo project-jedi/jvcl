@@ -12,21 +12,21 @@ type
     GroupBox1: TGroupBox;
     Edit1: TEdit;
     Label1: TLabel;
-    Button1: TButton;
+    btnOpen: TButton;
     ListBox1: TListBox;
-    Button2: TButton;
-    Button3: TButton;
-    Button4: TButton;
-    Button5: TButton;
+    btnRefresh: TButton;
+    btnFirst: TButton;
+    btnDeleteFirst: TButton;
+    btnAdd: TButton;
     Label2: TLabel;
     SpinEdit1: TSpinEdit;
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure JvMruList1EnumText(Sender: TObject; Value: String;
+    procedure btnOpenClick(Sender: TObject);
+    procedure btnRefreshClick(Sender: TObject);
+    procedure JvMruList1EnumText(Sender: TObject; Value: string;
       Index: Integer);
-    procedure Button3Click(Sender: TObject);
-    procedure Button4Click(Sender: TObject);
-    procedure Button5Click(Sender: TObject);
+    procedure btnFirstClick(Sender: TObject);
+    procedure btnDeleteFirstClick(Sender: TObject);
+    procedure btnAddClick(Sender: TObject);
   private
   public
   end;
@@ -38,47 +38,52 @@ implementation
 
 {$R *.DFM}
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.btnOpenClick(Sender: TObject);
 begin
-   self.JvMruList1.SubKey:=self.Edit1.text;
-   self.JvMruList1.MaxItems:=self.SpinEdit1.Value;
-   self.button2.enabled:=true;
-   self.button3.enabled:=true;
-   self.button4.enabled:=true;
-   self.button5.enabled:=true;
-   Button2Click(self);
+  JvMruList1.SubKey := Edit1.text;
+  JvMruList1.MaxItems := SpinEdit1.Value;
+  btnRefresh.enabled := true;
+  btnFirst.enabled := true;
+  btnDeleteFirst.enabled := true;
+  btnAdd.enabled := true;
+  btnRefresh.Click;
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TForm1.btnRefreshClick(Sender: TObject);
 begin
-   self.ListBox1.Clear;
-   self.JvMruList1.EnumItems;
+  ListBox1.Clear;
+  JvMruList1.EnumItems;
 end;
 
-procedure TForm1.JvMruList1EnumText(Sender: TObject; Value: String;
+procedure TForm1.JvMruList1EnumText(Sender: TObject; Value: string;
   Index: Integer);
 begin
-   self.ListBox1.items.add(Value);
+  ListBox1.Items.Add(Value);
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);
+procedure TForm1.btnFirstClick(Sender: TObject);
 begin
-   self.ListBox1.clear;
-   self.JvMruList1.GetMostRecentItem;
+  ListBox1.clear;
+  JvMruList1.GetMostRecentItem;
 end;
 
-procedure TForm1.Button4Click(Sender: TObject);
+procedure TForm1.btnDeleteFirstClick(Sender: TObject);
 begin
-   self.JvMruList1.DeleteString;
+  JvMruList1.DeleteItem(0);
+  btnRefresh.Click;
 end;
 
-procedure TForm1.Button5Click(Sender: TObject);
+procedure TForm1.btnAddClick(Sender: TObject);
 var
-  st:string;
+  st: string;
 begin
-   st:=InputBox('','Enter text','');
-   if st<>'' then
-      self.JvMruList1.AddString(st);
+  st := InputBox('', 'Enter text', '');
+  if st <> '' then
+  begin
+    JvMruList1.AddString(st);
+    btnRefresh.Click;
+  end;
 end;
 
 end.
+
