@@ -7,7 +7,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
     <Package Name="CJCL" Targets="C6" Condition=""/>
     <Package Name="JvEDI-R" Targets="all" Condition=""/>

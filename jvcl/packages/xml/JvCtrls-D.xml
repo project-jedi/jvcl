@@ -26,12 +26,13 @@
   <Contains>
     <File Name="..\..\design\JvHTHintForm.pas" Targets="all" Formname="JvHintEditor" Condition=""/>
     <File Name="..\..\design\JvScrollMaxEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvSpeedbarForm.pas" Targets="all" Formname="JvSpeedbarEditor" Condition=""/>
+    <File Name="..\..\design\JvSpeedbarForm.pas" Targets="allbutclx" Formname="JvSpeedbarEditor" Condition=""/>
     <File Name="..\..\design\JvBehaviorLabelEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvCtrlsReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvFooterEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvGroupHeaderEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvTransparentButtonEditors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvRollOutEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQSpeedbarForm.pas" Targets="allclx" Formname="JvSpeedbarEditor" Condition=""/>
   </Contains>
 </Package>
