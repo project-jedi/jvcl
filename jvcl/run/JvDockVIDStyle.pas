@@ -1521,7 +1521,11 @@ begin
       else
         inherited InsertControl(Control, InsertAt, DropCtl);
 
-      DockRect := gi_DockRect;
+      { (rb) no idea what gi_DockRect should be doing, but prevent it is used
+        before it is set (by checking whether it is empty). Using it when the rect
+        is empty causes align problems }
+      if not IsRectEmpty(gi_DockRect) then
+        DockRect := gi_DockRect;
     end;
     ForEachAt(nil, UpdateZone);
   finally
@@ -1939,9 +1943,15 @@ var
 begin
   if Msg.Msg = CM_DOCKCLIENT then
   begin
-    Align := TCMDockClient(Msg).DockSource.DropAlign;
-    TCMDockClient(Msg).DockSource.DockRect := gi_DockRect;
-    GetDockEdge(gi_DockRect, TCMDockClient(Msg).DockSource.DragPos, Align, TCMDockClient(Msg).DockSource.Control);
+    { (rb) no idea what gi_DockRect should be doing, but prevent it is used
+      before it is set (by checking whether it is empty). Using it when the rect
+      is empty causes align problems }
+    if not IsRectEmpty(gi_DockRect) then
+    begin
+      Align := TCMDockClient(Msg).DockSource.DropAlign;
+      TCMDockClient(Msg).DockSource.DockRect := gi_DockRect;
+      GetDockEdge(gi_DockRect, TCMDockClient(Msg).DockSource.DragPos, Align, TCMDockClient(Msg).DockSource.Control);
+    end;
   end;
   inherited WindowProc(Msg);
 end;

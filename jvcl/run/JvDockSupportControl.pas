@@ -794,17 +794,24 @@ begin
     begin
       DockableForm := TJvDockableForm(CMUnDockClient.Client);
       if DockableForm.FloatingChild <> nil then
-        // (rom) useless try finally
-        try
-          if Self is TJvDockTabPageControl then
-            DockableForm.FloatingChild.ManualDock(Self)
-          else
-            DockableForm.FloatingChild.Dock(Self, Rect(0, 0, 0, 0));
-          DockableForm.FloatingChild.Visible := True;
-          if Self is TJvDockCustomPanel then
-            JvDockManager.ReplaceZoneChild(DockableForm, DockableForm.FloatingChild);
-        finally
+      begin
+        if Self is TJvDockTabPageControl then
+          DockableForm.FloatingChild.ManualDock(Self)
+        else
+        begin
+          DisableAlign;
+          try
+            { using a null-rect as parameter for Dock causes align problems }
+//            DockableForm.FloatingChild.Dock(Self, Rect(0, 0, 0, 0));
+            DockableForm.FloatingChild.Dock(Self, Self.BoundsRect);
+          finally
+            EnableAlign;
+          end;
         end;
+        DockableForm.FloatingChild.Visible := True;
+        if Self is TJvDockCustomPanel then
+          JvDockManager.ReplaceZoneChild(DockableForm, DockableForm.FloatingChild);
+      end;
     end;
   end;
   inherited WndProc(Msg);

@@ -1471,10 +1471,7 @@ begin
     JvDockLockWindow(nil);
     try
       JvDockInfoTree.AppStorage := AppStorage;
-      if AppStoragePath <> '' then
-        JvDockInfoTree.AppStoragePath := AppStoragePath
-      else
-        JvDockInfoTree.AppStoragePath := AppStorage.Path;
+      JvDockInfoTree.AppStoragePath := AppStoragePath;
       try
         JvGlobalDockIsLoading := True;
         JvDockInfoTree.ReadInfoFromAppStorage;
@@ -1693,10 +1690,7 @@ begin
         end;
 
       JvDockInfoTree.AppStorage := AppStorage;
-      if AppStoragePath <> '' then
-        JvDockInfoTree.AppStoragePath := AppStoragePath
-      else
-        JvDockInfoTree.AppStoragePath := AppStorage.Path;
+      JvDockInfoTree.AppStoragePath := AppStoragePath;
       JvDockInfoTree.WriteInfoToAppStorage;
     finally
       JvDockInfoTree.Free;
@@ -4346,8 +4340,8 @@ function TJvDockPanel.CustomUnDock(Source: TJvDockDragDockObject; NewTarget: TWi
 begin
   ShowDockPanel(False, nil);
   Result := inherited CustomUnDock(Source, NewTarget, Client);
-  if not (Client is TJvDockableForm) then
-    SetDockSite(TForm(Client), True);
+  if not (Client is TJvDockableForm) and (Client is TWinControl) then
+    SetDockSite(TWinControl(Client), True);
 end;
 
 procedure TJvDockPanel.DockDrop(Source: TDragDockObject; X, Y: Integer);
