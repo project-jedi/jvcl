@@ -33,8 +33,8 @@ unit JvProgressBar;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, JVCLVer,
-  DB, DBCtrls;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, JVCLVer
+  {$IFNDEF D6PersonalEdition}, DB, DBCtrls{$ENDIF};
 
 type
   TJvProgressBar = class(TProgressBar)
@@ -64,6 +64,7 @@ type
     property Color;
   end;
 
+  {$IFNDEF D6PersonalEdition}
   TJvDBProgressBar = class(TJvProgressBar)
   private
     FDataLink: TFieldDataLink;
@@ -81,7 +82,8 @@ type
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
   end;
-  
+  {$ENDIF}
+
 implementation
 const
   PBM_SETBARCOLOR = WM_USER + 9; // lParam = bar color
@@ -139,6 +141,7 @@ begin
   SendMessage(Handle, PBM_SETBARCOLOR, 0, ColorToRGB(FBarColor));
 end;
 
+{$IFNDEF D6PersonalEdition}
 { TJvDBProgressBar }
 
 constructor TJvDBProgressBar.Create(AOwner: TComponent);
@@ -189,4 +192,5 @@ begin
     Position := Min;
 end;
 
+{$ENDIF}
 end.
