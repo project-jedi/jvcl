@@ -184,20 +184,7 @@ begin
           if SendCmdLine then
             AppInstances.SendCmdLineParams(sAppInstancesWindowClassName, Handle);
 
-          // terminate this process (Form.OnCreate is not executed yet)
-
-          { DoneApplication destroys all formulars in the Forms unit's
-            finalization section. At that moment the OnDestroy events are fired.
-            To prevent this we set the OnDestroy event of the Owner to nil. }
-          if Owner <> nil then
-          begin
-            if Owner is TForm then
-              TForm(Owner).OnDestroy := nil
-            else
-            if Owner is TDataModule then
-              TDataModule(Owner).OnDestroy := nil;
-          end;
-          AppInstances.KillInstance;
+          TerminateProcess(GetCurrentProcess, 0);
         end;
       end;
 end;
