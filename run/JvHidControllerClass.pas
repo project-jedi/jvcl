@@ -39,7 +39,7 @@ uses
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.25';
+  cHidControllerClassVersion = '1.0.26';
 
   // strings from the registry for CheckOutByClass
   cHidNoClass = 'HIDClass';
