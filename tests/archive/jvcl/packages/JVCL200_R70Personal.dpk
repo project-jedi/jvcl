@@ -46,7 +46,7 @@ package JVCL200_R70Personal;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'Runtime support package for JEDI-VCL Components'}
 {$RUNONLY}
-{$IMPLICITBUILD OFF}
+{$IMPLICITBUILD ON}
 {$DEFINE D7PersonalEdition}
 
 requires

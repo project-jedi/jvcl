@@ -46,7 +46,7 @@ package JVCL200_D70Personal;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JEDI-VCL Components for Delphi 7 Personal'}
 {$DESIGNONLY}
-{$IMPLICITBUILD OFF}
+{$IMPLICITBUILD ON}
 {$DEFINE D7PersonalEdition}
 
 requires
