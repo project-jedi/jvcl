@@ -800,8 +800,8 @@ uses ShellAPI, Consts, {$IFDEF COMPILER3_UP} ExtDlgs, {$ENDIF} JvCConst, JvVCLUt
 {$ENDIF}
 
 const
-  sFileBmp = 'FEDITBMP'; { Filename and directory editor button glyph }
-  sDateBmp = 'DEDITBMP'; { Date editor button glyph }
+  sFileBmp = 'JV_FEDITBMP'; { Filename and directory editor button glyph }
+  sDateBmp = 'JV_DEDITBMP'; { Date editor button glyph }
 
 { Utility routines }
 

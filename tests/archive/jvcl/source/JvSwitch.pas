@@ -144,7 +144,7 @@ type
 
 implementation
 
-uses JvVCLUtils;
+uses JvVCLUtils;              
 
 {$IFDEF WIN32}
  {$R *.Res}
@@ -153,7 +153,7 @@ uses JvVCLUtils;
 {$ENDIF}
 
 const
-  ResName: array [Boolean] of PChar = ('SWITCH_OFF', 'SWITCH_ON');
+  ResName: array [Boolean] of PChar = ('JV_SWITCH_OFF', 'JV_SWITCH_ON');
   BorderStyles: array[TBorderStyle] of Longint = (0, WS_BORDER);
 
 { TJvSwitch component }

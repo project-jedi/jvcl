@@ -303,7 +303,7 @@ uses Consts, JvStrUtils, JvVCLUtils, JvMaxMin, JvCalc;
  {$R *.Res}
 
 const
-  sCalcBmp = 'CEDITBMP'; { Numeric editor button glyph }
+  sCalcBmp = 'JV_CEDITBMP'; { Numeric editor button glyph }
   CalcBitmap: TBitmap = nil;
 
 type

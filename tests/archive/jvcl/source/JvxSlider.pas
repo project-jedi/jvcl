@@ -293,7 +293,7 @@ uses
 
 const
   ImagesResNames: array[TSliderImage] of PChar =
-    ('W95_HTB', 'W95_HRL', 'W95_VTB', 'W95_VRL');
+    ('JV_W95_HTB', 'JV_W95_HRL', 'JV_W95_VTB', 'JV_W95_VRL');
   Indent = 6;
   JumpInterval = 400;
 

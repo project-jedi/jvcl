@@ -148,7 +148,7 @@ implementation
 
 const
   ResName: array [TJvDiceValue] of PChar =
-   ('DICE1', 'DICE2', 'DICE3', 'DICE4', 'DICE5', 'DICE6');
+   ('JV_DICE1', 'JV_DICE2', 'JV_DICE3', 'JV_DICE4', 'JV_DICE5', 'JV_DICE6');
 
 { TJvDice }
 

@@ -812,12 +812,12 @@ type
 
 const
   GridBmpNames: array[TGridPicture] of PChar =
-    ('DBG_BLOB', 'DBG_MEMO', 'DBG_PICT', 'DBG_OLE', 'DBG_OBJECT', 'DBG_DATA',
-     'DBG_NOTEMPTY', 'DBG_SMDOWN', 'DBG_SMUP');
+    ('JV_DBG_BLOB', 'JV_DBG_MEMO', 'JV_DBG_PICT', 'JV_DBG_OLE', 'JV_DBG_OBJECT', 'JV_DBG_DATA',
+     'JV_DBG_NOTEMPTY', 'JV_DBG_SMDOWN', 'JV_DBG_SMUP');
   GridBitmaps: array[TGridPicture] of TBitmap =
     (nil, nil, nil, nil, nil, nil, nil, nil, nil);
-  bmMultiDot = 'DBG_MSDOT';
-  bmMultiArrow = 'DBG_MSARROW';
+  bmMultiDot = 'JV_DBG_MSDOT';
+  bmMultiArrow = 'JV_DBG_MSARROW';
 
 function GetGridBitmap(BmpType: TGridPicture): TBitmap;
 begin

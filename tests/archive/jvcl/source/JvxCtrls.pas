@@ -1975,7 +1975,7 @@ function CheckBitmap: TBitmap;
 begin
   if FCheckBitmap = nil then begin
     FCheckBitmap := TBitmap.Create;
-    FCheckBitmap.Handle := LoadBitmap(hInstance, 'CHECK_IMAGES');
+    FCheckBitmap.Handle := LoadBitmap(hInstance, 'JV_CHECK_IMAGES');
   end;
   Result := FCheckBitmap;
 end;
