@@ -37,6 +37,9 @@
         inspector (and not to an inline edit control) the HideSelectColor and
         HideSelectTextColor properties are used instead of the SelectedColor
         and SelectedTextColor properties.
+      - .Net painter issue: divider line between two categories were missing
+        the pixels where the divider between the name and value should have
+        been.
     Apr 10, 2004, Marcel Bestebroer:
       - Double clicking a category item will now expand/collapse regardless
         of the position of the mouse (used to work only when clicking left of
@@ -4873,7 +4876,7 @@ begin
     ApplyCanvasState(Canvas, SaveIdx);
   end;
 
-  if not (Item.IsCategory) or (Item.Level > 0) then
+  if not (Item.IsCategory) then
     PaintDivider(Rects[iprItem].Left + Inspector.DividerAbs, Pred(Rects[iprItem].Top),
       Rects[iprItem].Bottom);
 
