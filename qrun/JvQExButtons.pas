@@ -88,6 +88,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -99,7 +100,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -107,7 +108,8 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinControl }
   private
     FCanvas: TControlCanvas;
@@ -116,12 +118,11 @@ type
   protected
     procedure Paint; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas;
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QWinControl }
@@ -364,29 +365,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExBitBtn.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExBitBtn.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExBitBtn.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExBitBtn.DoOnFontChanged(Sender: TObject);

@@ -43,12 +43,14 @@ type
   TJvEasterEgg = class(TJvComponent)
   private
     FActive: Boolean;
+    FEventHook: QObject_hookH;
     FOnEggFound: TNotifyEvent;
     FControlKeys: TShiftState;
     FEgg: string;
     FForm: TCustomForm;
-    FCurString: string;  
-    function NewEventFilter(Sender: QObjectH; Event: QEventH): Boolean; 
+    FCurString: string;
+    FHook: string;
+    function NewEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -60,8 +62,6 @@ type
   end;
 
 implementation
-
-
 
 function DownCase(Ch: Char): Char;
 begin
@@ -78,18 +78,16 @@ begin
   FActive := True;
   FControlKeys := [ssAlt];
   FForm := GetParentForm(TControl(AOwner));
-//  if (FForm <> nil) and not (csDesigning in ComponentState) then
-//    InstallApplicationHook(NewEventFilter);
+  if (FForm <> nil) and not (csDesigning in ComponentState) then
+    FEventHook := InstallApplicationEventHook(NewEventFilter);
 end;
 
 destructor TJvEasterEgg.Destroy;
 begin
-//  if (FForm <> nil) and not (csDesigning in ComponentState) then
-//    UninstallApplicationHook(NewEventFilter); 
+  if assigned(FEventHook) then
+    QObject_hook_destroy(FEventHook);
   inherited Destroy;
 end;
-
-
 
 function TJvEasterEgg.NewEventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 var

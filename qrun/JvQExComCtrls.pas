@@ -88,6 +88,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -99,7 +100,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -107,7 +108,8 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
@@ -161,6 +163,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -172,7 +175,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -180,7 +183,8 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
@@ -234,6 +238,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -245,7 +250,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -253,7 +258,8 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
@@ -307,6 +313,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -318,7 +325,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -326,7 +333,8 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
@@ -380,6 +388,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -391,7 +400,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -399,7 +408,8 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
@@ -453,6 +463,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -464,7 +475,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -472,7 +483,8 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
@@ -526,6 +538,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -537,7 +550,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -545,7 +558,8 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
@@ -599,6 +613,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -610,7 +625,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -618,7 +633,8 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinControl }
   private
     FCanvas: TControlCanvas;
@@ -627,12 +643,11 @@ type
   protected
     procedure Paint; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas;
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QWinControl }
@@ -683,6 +698,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -694,7 +710,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -702,7 +718,8 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinControl }
   private
     FCanvas: TControlCanvas;
@@ -711,12 +728,11 @@ type
   protected
     procedure Paint; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas;
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QWinControl }
@@ -767,6 +783,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -778,7 +795,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -786,14 +803,15 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
-  protected
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
+  private
     FDoubleBuffered: Boolean;
+  protected
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QCustomControl }
@@ -843,6 +861,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -854,7 +873,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -862,14 +881,15 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
-  protected
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
+  private
     FDoubleBuffered: Boolean;
+  protected
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QCustomControl }
@@ -919,6 +939,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -930,7 +951,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -938,7 +959,8 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
@@ -992,6 +1014,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -1003,7 +1026,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -1011,7 +1034,8 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
@@ -1066,6 +1090,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -1077,7 +1102,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -1085,14 +1110,15 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
-  protected
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
+  private
     FDoubleBuffered: Boolean;
+  protected
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QCustomControl }
@@ -1142,6 +1168,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -1153,7 +1180,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -1161,14 +1188,15 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
-  protected
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
+  private
     FDoubleBuffered: Boolean;
+  protected
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QCustomControl }
@@ -1269,6 +1297,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -1280,7 +1309,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -1288,14 +1317,15 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
-  protected
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
+  private
     FDoubleBuffered: Boolean;
+  protected
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QCustomControl }
@@ -1345,6 +1375,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -1356,7 +1387,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -1364,14 +1395,15 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
-  protected
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
+  private
     FDoubleBuffered: Boolean;
+  protected
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QCustomControl }
@@ -1421,6 +1453,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -1432,7 +1465,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -1440,14 +1473,15 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
-  protected
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
+  private
     FDoubleBuffered: Boolean;
+  protected
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QCustomControl }
@@ -1497,6 +1531,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -1508,7 +1543,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -1516,14 +1551,15 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
-  protected
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
+  private
     FDoubleBuffered: Boolean;
+  protected
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QCustomControl }
@@ -1573,6 +1609,7 @@ type
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
     procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
@@ -1584,7 +1621,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -1592,7 +1629,8 @@ type
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
   { QWinControl }
   private
     FCanvas: TControlCanvas;
@@ -1601,12 +1639,11 @@ type
   protected
     procedure Paint; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas;
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QWinControl }
@@ -1741,29 +1778,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExCustomHeaderControl.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExCustomHeaderControl.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExCustomHeaderControl.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExCustomHeaderControl.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExCustomHeaderControl.DoOnFontChanged(Sender: TObject);
@@ -2035,29 +2061,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExHeaderControl.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExHeaderControl.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExHeaderControl.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExHeaderControl.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExHeaderControl.DoOnFontChanged(Sender: TObject);
@@ -2329,29 +2344,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExCustomIconView.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExCustomIconView.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExCustomIconView.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExCustomIconView.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExCustomIconView.DoOnFontChanged(Sender: TObject);
@@ -2623,29 +2627,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExIconView.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExIconView.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExIconView.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExIconView.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExIconView.DoOnFontChanged(Sender: TObject);
@@ -2917,29 +2910,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExCustomViewControl.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExCustomViewControl.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExCustomViewControl.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExCustomViewControl.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExCustomViewControl.DoOnFontChanged(Sender: TObject);
@@ -3211,29 +3193,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExCustomListView.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExCustomListView.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExCustomListView.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExCustomListView.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExCustomListView.DoOnFontChanged(Sender: TObject);
@@ -3505,29 +3476,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExListView.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExListView.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExListView.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExListView.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExListView.DoOnFontChanged(Sender: TObject);
@@ -3856,29 +3816,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExCustomSpinEdit.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExCustomSpinEdit.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExCustomSpinEdit.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExCustomSpinEdit.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExCustomSpinEdit.DoOnFontChanged(Sender: TObject);
@@ -4207,29 +4156,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExSpinEdit.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExSpinEdit.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExSpinEdit.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExSpinEdit.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExSpinEdit.DoOnFontChanged(Sender: TObject);
@@ -4502,29 +4440,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExCustomTabControl.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExCustomTabControl.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExCustomTabControl.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExCustomTabControl.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExCustomTabControl.DoOnFontChanged(Sender: TObject);
@@ -4797,29 +4724,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExTabControl.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExTabControl.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExTabControl.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExTabControl.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExTabControl.DoOnFontChanged(Sender: TObject);
@@ -5091,29 +5007,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExCustomTreeView.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExCustomTreeView.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExCustomTreeView.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExCustomTreeView.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExCustomTreeView.DoOnFontChanged(Sender: TObject);
@@ -5385,29 +5290,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExTreeView.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExTreeView.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExTreeView.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExTreeView.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExTreeView.DoOnFontChanged(Sender: TObject);
@@ -5681,29 +5575,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExAnimate.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExAnimate.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExAnimate.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExAnimate.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExAnimate.DoOnFontChanged(Sender: TObject);
@@ -5976,29 +5859,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExPageControl.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExPageControl.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExPageControl.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExPageControl.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExPageControl.DoOnFontChanged(Sender: TObject);
@@ -6438,29 +6310,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExStatusBar.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExStatusBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExStatusBar.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExStatusBar.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExStatusBar.DoOnFontChanged(Sender: TObject);
@@ -6733,29 +6594,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExTabSheet.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExTabSheet.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExTabSheet.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExTabSheet.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExTabSheet.DoOnFontChanged(Sender: TObject);
@@ -7028,29 +6878,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExToolBar.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExToolBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExToolBar.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExToolBar.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExToolBar.DoOnFontChanged(Sender: TObject);
@@ -7323,29 +7162,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExToolButton.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExToolButton.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExToolButton.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExToolButton.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExToolButton.DoOnFontChanged(Sender: TObject);
@@ -7674,29 +7502,18 @@ begin
   inherited DoExit;
 end;
 
-function TJvExTrackBar.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvExTrackBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
 procedure TJvExTrackBar.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExTrackBar.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
 procedure TJvExTrackBar.DoOnFontChanged(Sender: TObject);
