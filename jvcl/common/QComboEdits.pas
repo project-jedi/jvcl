@@ -17,14 +17,14 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-01-19
+Last Modified: 2004-01-23
 
 The TCustomComboEdit and TCustomComboMaskEdit controls allow the usage of an
 edit rect and other client controls.
 
 Usage:
   If you want to add a client control set the client control's parent to the
-  Client property.
+  ClientArea property.
 
 Known Issues:
 ----------------------------------------------------------------------------}
@@ -90,6 +90,7 @@ type
     procedure AdjustClientRect(var Rect: TRect); override;
     function GetClientRect: TRect; override;
     procedure SetParent(const Value: TWidgetControl); override;
+    procedure SetZOrder(TopMost: Boolean); override;
 
     procedure DoFlatChanged; virtual;
     procedure EnabledChanged; override;
@@ -210,6 +211,7 @@ type
     procedure AdjustClientRect(var Rect: TRect); override;
     function GetClientRect: TRect; override;
     procedure SetParent(const Value: TWidgetControl); override;
+    procedure SetZOrder(TopMost: Boolean); override;
 
     procedure DoFlatChanged; virtual;
     procedure EnabledChanged; override;
@@ -577,6 +579,11 @@ begin
   end;
 end;
 
+procedure TCustomComboEdit.SetZOrder(TopMost: Boolean);
+begin
+  FBorder.SetZOrder(TopMost);
+end;
+
 function TCustomComboEdit.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 var
   AAnchors: TAnchors;
@@ -890,6 +897,11 @@ begin
       BoundsRect := R; // calls AdjustClientArea
     end;
   end;
+end;
+
+procedure TCustomComboMaskEdit.SetZOrder(TopMost: Boolean);
+begin
+  FBorder.SetZOrder(TopMost);
 end;
 
 function TCustomComboMaskEdit.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
