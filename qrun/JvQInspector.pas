@@ -5374,7 +5374,8 @@ begin
     InvalidateItem;
     if Accept then
     begin
-      EditCtrl.Text := ListValue;
+      if Assigned(EditCtrl) then
+        EditCtrl.Text := ListValue;
       Apply;
     end;
   end;
@@ -6427,7 +6428,7 @@ end;
 
 procedure TJvCustomInspectorItem.Undo;
 begin
-  if Editing then
+  if Editing and Assigned(EditCtrl) then
   begin
     if Data.IsAssigned then
       EditCtrl.Text := DisplayValue
@@ -6568,7 +6569,7 @@ begin
     BFlags := 0;
     if iifValueList in Flags then
     begin
-      if not EditCtrl.Enabled then
+      if Assigned(EditCtrl) and (not EditCtrl.Enabled) then
         BFlags := DFCS_INACTIVE
       else
       if Pressed then

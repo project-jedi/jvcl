@@ -1160,7 +1160,7 @@ end;
 procedure TJvSIMConnector.Connect;
 var
   Pi, Po: TPoint;
-  R: Trect;
+  R: TRect;
   D, d2, xw, yh: Integer;
   Wc: TWinControl;
   Vi: Boolean;
@@ -1208,25 +1208,25 @@ var
         begin
           sRev := TJvSimReverse(Wc.Controls[J]);
           // now check if P is the output area
-          pl := SRev.Gates[1].Pos;
+          pl := sRev.Gates[1].Pos;
           R := Rect(sRev.Left + pl.X, sRev.Top - D, sRev.Left + pl.X + 12, sRev.Top + pl.Y + 12);
-          if PtInRect(R, Pi) and SRev.Gates[1].Active then
+          if PtInRect(R, Pi) and sRev.Gates[1].Active then
           begin // output
-            vi := SRev.Output1;
+            Vi := sRev.Output1;
             Exit;
           end;
-          pl := SRev.Gates[2].Pos;
+          pl := sRev.Gates[2].Pos;
           R := Rect(sRev.Left - D, sRev.Top + pl.Y, sRev.Left + pl.X + 12, sRev.Top + pl.Y + 12);
-          if PtInRect(R, Pi) and SRev.Gates[2].Active then
+          if PtInRect(R, Pi) and sRev.Gates[2].Active then
           begin // output
-            vi := SRev.Output2;
+            Vi := sRev.Output2;
             Exit;
           end;
-          pl := SRev.Gates[3].Pos;
+          pl := sRev.Gates[3].Pos;
           R := Rect(sRev.Left + pl.X, sRev.Top + pl.Y, sRev.Left + pl.X + 12, sRev.Top + sRev.Height + D);
-          if PtInRect(R, Pi) and SRev.Gates[3].Active then
+          if PtInRect(R, Pi) and sRev.Gates[3].Active then
           begin // output
-            vi := SRev.Output3;
+            Vi := sRev.Output3;
             Exit;
           end;
         end;
@@ -1240,22 +1240,22 @@ var
         begin
           sLog := TJvLogic(Wc.Controls[J]);
           // now check if P is in one of the 3 output area's
-          R := Rect(sLog.Left + 33, sLog.Top, sLog.Left + slog.Width + FConSize, sLog.Top + 22);
-          if PtInRect(R, Pi) and SLog.Gates[3].Active then
+          R := Rect(sLog.Left + 33, sLog.Top, sLog.Left + sLog.Width + FConSize, sLog.Top + 22);
+          if PtInRect(R, Pi) and sLog.Gates[3].Active then
           begin // output is gate 3
-            vi := SLog.Output1;
+            Vi := sLog.Output1;
             Exit;
           end;
-          R := Rect(sLog.Left + 33, sLog.Top + 23, sLog.Left + slog.Width + FConSize, sLog.Top + 44);
-          if PtInRect(R, Pi) and SLog.Gates[4].Active then
+          R := Rect(sLog.Left + 33, sLog.Top + 23, sLog.Left + sLog.Width + FConSize, sLog.Top + 44);
+          if PtInRect(R, Pi) and sLog.Gates[4].Active then
           begin // output is gate 4
-            vi := SLog.Output2;
+            Vi := sLog.Output2;
             Exit;
           end;
-          R := Rect(sLog.Left + 33, sLog.Top + 45, sLog.Left + slog.Width + FConSize, sLog.Top + 64);
-          if PtInRect(R, Pi) and SLog.Gates[5].Active then
+          R := Rect(sLog.Left + 33, sLog.Top + 45, sLog.Left + sLog.Width + FConSize, sLog.Top + 64);
+          if PtInRect(R, Pi) and sLog.Gates[5].Active then
           begin // output is gate 5
-            vi := SLog.Output3;
+            Vi := sLog.Output3;
             Exit;
           end;
         end;
@@ -1277,7 +1277,7 @@ var
         if PtInRect(R, Po) then
         begin
           sLight := TJvSimLight(Wc.Controls[J]);
-          SLight.Lit := Vi;
+          sLight.Lit := Vi;
           Exit;
         end;
       end
@@ -1290,11 +1290,11 @@ var
         begin
           sRev := TJvSimReverse(Wc.Controls[J]);
           // now check if P is in the input area
-          pl := SRev.Gates[0].Pos;
+          pl := sRev.Gates[0].Pos;
           R := Rect(sRev.Left + pl.X, sRev.Top + pl.Y, sRev.Left + sRev.Width + D, sRev.Top + pl.Y + 12);
-          if PtInRect(R, Po) and SRev.Gates[0].Active then
+          if PtInRect(R, Po) and sRev.Gates[0].Active then
           begin // input
-            SRev.Input1 := vi;
+            sRev.Input1 := Vi;
             Exit;
           end;
         end;
@@ -1309,21 +1309,21 @@ var
           sLog := TJvLogic(Wc.Controls[J]);
           // now check if P is in one of the 3 input area's
           R := Rect(sLog.Left - D, sLog.Top, sLog.Left + 32, sLog.Top + 22);
-          if PtInRect(R, Po) and SLog.Gates[0].Active then
+          if PtInRect(R, Po) and sLog.Gates[0].Active then
           begin // input is gate 0
-            SLog.Input1 := vi;
+            sLog.Input1 := Vi;
             Exit;
           end;
           R := Rect(sLog.Left - D, sLog.Top + 23, sLog.Left + 32, sLog.Top + 44);
-          if PtInRect(R, Po) and SLog.Gates[1].Active then
+          if PtInRect(R, Po) and sLog.Gates[1].Active then
           begin // input is gate 1
-            SLog.input2 := vi;
+            sLog.Input2 := Vi;
             Exit;
           end;
           R := Rect(sLog.Left - D, sLog.Top + 45, sLog.Left + 32, sLog.Top + 64);
-          if PtInRect(R, Po) and SLog.Gates[2].Active then
+          if PtInRect(R, Po) and sLog.Gates[2].Active then
           begin // input is gate 2
-            SLog.Input3 := vi;
+            sLog.Input3 := Vi;
             Exit;
           end;
         end;
@@ -1399,7 +1399,7 @@ var
         begin
           sLight := TJvSimLight(Wc.Controls[J]);
           FDisCon := sLight;
-          //SLight.Lit:=False;
+          //sLight.Lit:=False;
           Exit;
         end;
       end
@@ -1413,27 +1413,27 @@ var
           sLog := TJvLogic(Wc.Controls[J]);
           // now check if P is in one of the 3 input area's
           R := Rect(sLog.Left - D, sLog.Top, sLog.Left + 32, sLog.Top + 22);
-          if PtInRect(R, Po) and SLog.Gates[0].Active then
+          if PtInRect(R, Po) and sLog.Gates[0].Active then
           begin // input is gate 0
             FDisCon := sLog;
             FDisConI := 1;
-            //            SLog.Input1:=False;
+            //            sLog.Input1:=False;
             Exit;
           end;
           R := Rect(sLog.Left - D, sLog.Top + 23, sLog.Left + 32, sLog.Top + 44);
-          if PtInRect(R, Po) and SLog.Gates[1].Active then
+          if PtInRect(R, Po) and sLog.Gates[1].Active then
           begin // input is gate 1
             FDisCon := sLog;
             FDisConI := 2;
-            //            SLog.input2:=False;
+            //            sLog.Input2:=False;
             Exit;
           end;
           R := Rect(sLog.Left - D, sLog.Top + 45, sLog.Left + 32, sLog.Top + 64);
-          if PtInRect(R, Po) and SLog.Gates[2].Active then
+          if PtInRect(R, Po) and sLog.Gates[2].Active then
           begin // input is gate 2
             FDisCon := sLog;
             FDisConI := 3;
-            //            SLog.Input3:=False;
+            //            sLog.Input3:=False;
             Exit;
           end;
         end;
@@ -1667,7 +1667,7 @@ begin
       SurfCol := clLime
     else
       SurfCol := clRed;
-    LitCol := clwhite
+    LitCol := clWhite;
   end
   else
   begin
@@ -1687,7 +1687,7 @@ begin
     Brush.Color := clSilver;
     FillRect(Rect(X, Y, X + 12, Y + 13));
     Brush.Style := bsClear;
-    Pen.Color := clgray;
+    Pen.Color := clGray;
     Ellipse(X, Y, X + 12, Y + 13);
     Pen.Color := clBlack;
     Brush.Color := SurfCol;
@@ -2019,7 +2019,7 @@ end;
 
 procedure TJvSimButton.PaintLed(Pt: TPoint; Lit: Boolean);
 var
-  SurfCol, LitCol: Tcolor;
+  SurfCol, LitCol: TColor;
   X, Y: Integer;
 begin
   X := Pt.X;
@@ -2185,7 +2185,7 @@ procedure TJvSimLight.Paint;
 var
   TlPoly, BrPoly: array [0..2] of TPoint;
   xw, yh: Integer;
-  R: Trect;
+  R: TRect;
   HiColor, LoColor, SurfCol: TColor;
 
   procedure DrawFrame;
@@ -2237,7 +2237,7 @@ begin
   BrPoly[0] := Point(Left + xw, Top);
   BrPoly[1] := Point(Left + xw, Top + yh);
   BrPoly[2] := Point(Left, Top + yh);
-  Canvas.Pen.Style := pssolid;
+  Canvas.Pen.Style := psSolid;
   HiColor := clBtnHighlight;
   LoColor := clBtnShadow;
   DrawFrame;
@@ -2689,7 +2689,7 @@ end;
 
 procedure TJvSimReverse.PaintLed(Index: Integer);
 var
-  SurfCol, LitCol: Tcolor;
+  SurfCol, LitCol: TColor;
   P: TPoint;
   X, Y: Integer;
   Lit: Boolean;
