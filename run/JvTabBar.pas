@@ -1137,14 +1137,19 @@ begin
     Exit;
 
   LastLeftIndex := FLeftIndex;
-  repeat
-    CalcTabsRects;
-    R := Tab.DisplayRect;
-    if R.Right > FBarWidth then
-      Inc(FLeftIndex)
-    else
-      Break;
-  until FLeftIndex = Tabs.Count - 1;
+  if FBarWidth > 0 then
+  begin
+    repeat
+      CalcTabsRects;
+      R := Tab.DisplayRect;
+      if R.Right > FBarWidth then
+        Inc(FLeftIndex)
+      else
+        Break;
+    until FLeftIndex = Tabs.Count - 1;
+  end
+  else
+    FLeftIndex := 0;
   if (R.Left < 0) and (FLeftIndex > 0) then
     Dec(FLeftIndex); // bar is too small
   if FLeftIndex <> LastLeftIndex then
