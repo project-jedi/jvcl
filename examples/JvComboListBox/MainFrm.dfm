@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 198
-  Top = 107
+  Left = 237
+  Top = 105
   AutoScroll = False
   Caption = 'Form1'
   ClientHeight = 436
@@ -1661,6 +1661,7 @@ object Form1: TForm1
           0000000000000082848400008400008400008400000000000000008400008400
           0084000084000084000084000084000084000084000084000084000084000084
           0000}
+        Transparent = True
       end
     end
     object btnLoadImage: TButton
