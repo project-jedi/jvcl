@@ -24,6 +24,8 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Changes:
+2003-09-13:
+  * Turned into a consumer
 2003-08-17:
   * Implementation moved to TJvCustomLabel. TJvLabel now only publishes properties and events.
 2003-03-24:
@@ -100,6 +102,7 @@ type
     property HotTrackFontOptions;
     property Images;
     property ImageIndex;
+    property Provider;
     property Spacing;
     property URL;
     property OnCtl3DChanged;
