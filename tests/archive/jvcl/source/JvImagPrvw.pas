@@ -31,7 +31,7 @@ interface
 
 uses SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
   Classes, Graphics, Forms, Controls, FileCtrl, StdCtrls, ExtCtrls, Buttons,
-  JvxCtrls, JvPicClip, JvPlacemnt, ObjStr, JvSpeedButton;
+  JvxCtrls, JvPicClip, JvPlacemnt, JvObjStr, JvSpeedButton;
 
 type
   TImageForm = class(TForm)

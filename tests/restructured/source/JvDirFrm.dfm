@@ -1,4 +1,4 @@
-object DirectoryListDialog: TJvDirectoryListDialog
+object JvDirectoryListDialog: TJvDirectoryListDialog
   Left = 206
   Top = 99
   ActiveControl = DirectoryList
@@ -18,7 +18,7 @@ object DirectoryListDialog: TJvDirectoryListDialog
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object DirectoryList: TTextListBox
+  object DirectoryList: TJvTextListBox
     Left = 8
     Top = 12
     Width = 245

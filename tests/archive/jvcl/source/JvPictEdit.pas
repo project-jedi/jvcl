@@ -12,10 +12,7 @@ The Original Code is: JvPictEdit.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
-Portions copyright  (c) 1995, 1997 Borland International 
-Portions copyright (c) 1995, 1996 AO ROSNO     
-Portions copyright (c) 1997 Master-Bank        
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -27,27 +24,24 @@ Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
+{$I JVCL.INC}
 
 unit JvPictEdit;
+
 
 interface
 
 uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
   Messages, Classes, Graphics, Forms, Controls, Dialogs, Buttons,
-  {$IFDEF Delphi6_Up}
-RTLConsts,  DesignIntf, DesignEditors,  VCLEditors,
-{$ELSE}
-  LibIntf, DsgnIntf,
-{$ENDIF}
-  StdCtrls, ExtCtrls, JvPlacemnt, JvClipMon,
-  {$IFDEF Delphi3_Up} ExtDlgs, ComCtrls, {$ELSE} JvImagPrvw, {$ENDIF} Menus,
-  JvMRUList, JvxCtrls;
+  RTLConsts, DesignIntf, DesignEditors, VCLEditors, StdCtrls, ExtCtrls, 
+  {$IFDEF DELPHI_D3} ExtDlgs, ComCtrls, {$ELSE} JvImagPrvw, {$ENDIF} Menus,
+  JvMRUList, JvPlacemnt, JvxCtrls, JvClipMon;
 
 type
 
-{ TJvPictureEditDialog }
+{ TPictureEditDialog }
 
-  TJvPictureEditDialog = class(TForm)
+  TPictureEditDialog = class(TForm)
     Load: TButton;
     Save: TButton;
     Copy: TButton;
@@ -88,7 +82,7 @@ type
     Pic: TPicture;
     FIconColor: TColor;
     FClipMonitor: TJvClipboardMonitor;
-{$IFDEF Delphi3_Up}
+{$IFDEF DELPHI_D3}
     FProgress: TProgressBar;
     FProgressPos: Integer;
     FileDialog: TOpenPictureDialog;
@@ -107,7 +101,7 @@ type
     procedure UpdateClipboard(Sender: TObject);
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DROPFILES;
     procedure WMDestroy(var Msg: TMessage); message WM_DESTROY;
-{$IFDEF Delphi3_Up}
+{$IFDEF DELPHI_D3}
     procedure GraphicProgress(Sender: TObject; Stage: TProgressStage;
       PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
 {$ENDIF}
@@ -124,7 +118,7 @@ type
   private
     FGraphicClass: TGraphicClass;
     FPicture: TPicture;
-    FPicDlg: TJvPictureEditDialog;
+    FPicDlg: TPictureEditDialog;
     FDecreaseColors: Boolean;
     procedure SetPicture(Value: TPicture);
     procedure SetGraphicClass(Value: TGraphicClass);
@@ -132,7 +126,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function Execute: Boolean;
-    property PicDlg: TJvPictureEditDialog read FPicDlg;
+    property PicDlg: TPictureEditDialog read FPicDlg;
     property GraphicClass: TGraphicClass read FGraphicClass write SetGraphicClass;
     property Picture: TPicture read FPicture write SetPicture;
   end;
@@ -164,18 +158,8 @@ type
 
   TJvGraphicsEditor = class(TDefaultEditor)
   public
-{$IFDEF Delphi6_Up}
-    procedure EditProperty(const PropertyEditor: IProperty;
-      var Continue: Boolean); override;
-{$ELSE}
-    procedure EditProperty(PropertyEditor: TPropertyEditor;
-      var Continue, FreeEditor: Boolean); override;
-{$ENDIF}
+    procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
   end;
-
-
-
-
 
 function EditGraphic(Graphic: TGraphic; AClass: TGraphicClass;
   const DialogCaption: string): Boolean;
@@ -184,7 +168,6 @@ implementation
 
 uses TypInfo, SysUtils, Clipbrd, Consts, ShellApi, LibHelp, JvClipIcon, JvGraph,
   JvVCLUtils, JvAppUtils, JvConst, JvDirFrm, JvFileUtil;
-
 
 {$B-}
 {$IFDEF WIN32}
@@ -245,7 +228,7 @@ constructor TJvPictEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FPicture := TPicture.Create;
-  FPicDlg := TJvPictureEditDialog.Create(Self);
+  FPicDlg := TPictureEditDialog.Create(Self);
   FGraphicClass := TGraphic;
   FPicDlg.GraphicClass := FGraphicClass;
 end;
@@ -427,41 +410,35 @@ end;
 
 { TJvGraphicsEditor }
 
-{$IFDEF Delphi6_Up}
-procedure TJvGraphicsEditor.EditProperty(const PropertyEditor: IProperty;
-  var Continue: Boolean);
-{$ELSE}
-procedure TJvGraphicsEditor.EditProperty(PropertyEditor: TPropertyEditor;
-  var Continue, FreeEditor: Boolean);
-{$ENDIF}
+procedure TJvGraphicsEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
 var
   PropName: string;
 begin
-  PropName := PropertyEditor.GetName;
+  PropName := Prop.GetName;
   if (CompareText(PropName, 'PICTURE') = 0) or
     (CompareText(PropName, 'IMAGE') = 0) or
     (CompareText(PropName, 'GLYPH') = 0) then
   begin
-    PropertyEditor.Edit;
+    Prop.Edit;
     Continue := False;
   end;
 end;
 
-{ TJvPictureEditDialog }
+{ TPictureEditDialog }
 
-procedure TJvPictureEditDialog.SetGraphicClass(Value: TGraphicClass);
+procedure TPictureEditDialog.SetGraphicClass(Value: TGraphicClass);
 begin
   FGraphicClass := Value;
   CheckEnablePaste;
   DecreaseBox.Enabled := (GraphicClass = TBitmap) or (GraphicClass = TGraphic);
 end;
 
-procedure TJvPictureEditDialog.CheckEnablePaste;
+procedure TPictureEditDialog.CheckEnablePaste;
 begin
   Paste.Enabled := EnablePaste(GraphicClass);
 end;
 
-procedure TJvPictureEditDialog.ValidateImage;
+procedure TPictureEditDialog.ValidateImage;
 var
   Enable: Boolean;
 begin
@@ -471,8 +448,8 @@ begin
   Copy.Enabled := Enable;
 end;
 
-{$IFDEF Delphi3_Up}
-procedure TJvPictureEditDialog.GraphicProgress(Sender: TObject; Stage: TProgressStage;
+{$IFDEF DELPHI_D3}
+procedure TPictureEditDialog.GraphicProgress(Sender: TObject; Stage: TProgressStage;
   PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
 begin
   if Stage in [psStarting, psEnding] then begin
@@ -489,15 +466,15 @@ begin
 end;
 {$ENDIF}
 
-procedure TJvPictureEditDialog.UpdateClipboard(Sender: TObject);
+procedure TPictureEditDialog.UpdateClipboard(Sender: TObject);
 begin
   CheckEnablePaste;
 end;
 
-procedure TJvPictureEditDialog.FormCreate(Sender: TObject);
+procedure TPictureEditDialog.FormCreate(Sender: TObject);
 begin
   Pic := TPicture.Create;
-{$IFDEF Delphi3_Up}
+{$IFDEF DELPHI_D3}
   FileDialog := TOpenPictureDialog.Create(Self);
   SaveDialog := TSavePictureDialog.Create(Self);
   UsePreviewBox.Visible := False;
@@ -537,18 +514,18 @@ begin
   CheckEnablePaste;
 end;
 
-function TJvPictureEditDialog.GetDecreaseColors: Boolean;
+function TPictureEditDialog.GetDecreaseColors: Boolean;
 begin
   Result := DecreaseBox.Checked;
 end;
 
-procedure TJvPictureEditDialog.FormDestroy(Sender: TObject);
+procedure TPictureEditDialog.FormDestroy(Sender: TObject);
 begin
   FClipMonitor.Free;
   Pic.Free;
 end;
 
-procedure TJvPictureEditDialog.LoadFile(const FileName: string);
+procedure TPictureEditDialog.LoadFile(const FileName: string);
 begin
   Application.ProcessMessages;
   StartWait;
@@ -561,13 +538,13 @@ begin
   ValidateImage;
 end;
 
-procedure TJvPictureEditDialog.LoadClick(Sender: TObject);
-{$IFNDEF Delphi3_Up}
+procedure TPictureEditDialog.LoadClick(Sender: TObject);
+{$IFNDEF DELPHI_D3}
 var
   FileName: string;
 {$ENDIF}
 begin
-{$IFNDEF Delphi3_Up}
+{$IFNDEF DELPHI_D3}
   if UsePreviewBox.Checked then begin
     FileName := '';
     if DirExists(FileDialog.InitialDir) then
@@ -584,12 +561,12 @@ begin
     if FileDialog.Execute then begin
       Self.LoadFile(FileDialog.Filename);
     end;
-{$IFNDEF Delphi3_Up}
+{$IFNDEF DELPHI_D3}
   end;
 {$ENDIF}
 end;
 
-procedure TJvPictureEditDialog.SaveClick(Sender: TObject);
+procedure TPictureEditDialog.SaveClick(Sender: TObject);
 begin
   if (Pic.Graphic <> nil) and not Pic.Graphic.Empty then begin
     with SaveDialog do begin
@@ -607,18 +584,18 @@ begin
   end;
 end;
 
-procedure TJvPictureEditDialog.DecreaseBMPColors;
+procedure TPictureEditDialog.DecreaseBMPColors;
 begin
   if ValidPicture(Pic) and (Pic.Graphic is TBitmap) and DecreaseColors then
     SetBitmapPixelFormat(Pic.Bitmap, pf4bit, DefaultMappingMethod);
 end;
 
-procedure TJvPictureEditDialog.CopyClick(Sender: TObject);
+procedure TPictureEditDialog.CopyClick(Sender: TObject);
 begin
   CopyPicture(Pic, FIconColor);
 end;
 
-procedure TJvPictureEditDialog.PasteClick(Sender: TObject);
+procedure TPictureEditDialog.PasteClick(Sender: TObject);
 begin
   if (Pic <> nil) then begin
     PastePicture(Pic, GraphicClass);
@@ -628,7 +605,7 @@ begin
   end;
 end;
 
-procedure TJvPictureEditDialog.ImagePaintBoxPaint(Sender: TObject);
+procedure TPictureEditDialog.ImagePaintBoxPaint(Sender: TObject);
 var
   DrawRect: TRect;
   SNone: string;
@@ -678,19 +655,19 @@ begin
   end;
 end;
 
-procedure TJvPictureEditDialog.CreateHandle;
+procedure TPictureEditDialog.CreateHandle;
 begin
   inherited CreateHandle;
   DragAcceptFiles(Handle, True);
 end;
 
-procedure TJvPictureEditDialog.WMDestroy(var Msg: TMessage);
+procedure TPictureEditDialog.WMDestroy(var Msg: TMessage);
 begin
   DragAcceptFiles(Handle, False);
   inherited;
 end;
 
-procedure TJvPictureEditDialog.WMDropFiles(var Msg: TWMDropFiles);
+procedure TPictureEditDialog.WMDropFiles(var Msg: TWMDropFiles);
 var
   AFileName: array[0..255] of Char;
   Num: Cardinal;
@@ -709,7 +686,7 @@ begin
   end;
 end;
 
-procedure TJvPictureEditDialog.UpdatePathsMenu;
+procedure TPictureEditDialog.UpdatePathsMenu;
 var
   I: Integer;
 begin
@@ -719,7 +696,7 @@ begin
   end;
 end;
 
-procedure TJvPictureEditDialog.ClearClick(Sender: TObject);
+procedure TPictureEditDialog.ClearClick(Sender: TObject);
 begin
   Pic.Graphic := nil;
   ImagePaintBox.Invalidate;
@@ -728,7 +705,7 @@ begin
   Copy.Enabled := False;
 end;
 
-procedure TJvPictureEditDialog.HelpBtnClick(Sender: TObject);
+procedure TPictureEditDialog.HelpBtnClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;
@@ -737,7 +714,7 @@ const
   sBackColorIdent = 'ClipboardBackColor';
   sFileDir = 'FileDialog.InitialDir';
 
-procedure TJvPictureEditDialog.FormStorageRestorePlacement(Sender: TObject);
+procedure TPictureEditDialog.FormStorageRestorePlacement(Sender: TObject);
 begin
   FIconColor := TColor(IniReadInteger(FormStorage.IniFileObject,
     FormStorage.IniSection, sBackColorIdent, clBtnFace));
@@ -745,7 +722,7 @@ begin
     FormStorage.IniSection, sFileDir, FileDialog.InitialDir);
 end;
 
-procedure TJvPictureEditDialog.FormStorageSavePlacement(Sender: TObject);
+procedure TPictureEditDialog.FormStorageSavePlacement(Sender: TObject);
 begin
   IniWriteInteger(FormStorage.IniFileObject, FormStorage.IniSection,
     sBackColorIdent, FIconColor);
@@ -753,13 +730,13 @@ begin
     sFileDir, FileDialog.InitialDir);
 end;
 
-procedure TJvPictureEditDialog.PathsClick(Sender: TObject);
+procedure TPictureEditDialog.PathsClick(Sender: TObject);
 begin
   if EditFolderList(PathsMRU.Strings) then
     UpdatePathsMenu;
 end;
 
-procedure TJvPictureEditDialog.PathsMRUClick(Sender: TObject;
+procedure TPictureEditDialog.PathsMRUClick(Sender: TObject;
   const RecentName, Caption: string; UserData: Longint);
 begin
   if DirExists(RecentName) then begin
@@ -772,12 +749,12 @@ begin
   UpdatePathsMenu;
 end;
 
-procedure TJvPictureEditDialog.PathsMenuPopup(Sender: TObject);
+procedure TPictureEditDialog.PathsMenuPopup(Sender: TObject);
 begin
   UpdatePathsMenu;
 end;
 
-procedure TJvPictureEditDialog.PathsMRUChange(Sender: TObject);
+procedure TPictureEditDialog.PathsMRUChange(Sender: TObject);
 begin
   PathsBtn.Enabled := PathsMRU.Strings.Count > 0;
 end;

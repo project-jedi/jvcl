@@ -97,11 +97,6 @@ object JvErrorDialog: TJvErrorDialog
       Alignment = taRightJustify
       AutoSize = False
       Caption = 'Error address: '
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Shell Dlg 2'
-      HotTrackFont.Style = []
     end
     object TypeLabel: TJvxLabel
       Left = 53
@@ -111,11 +106,6 @@ object JvErrorDialog: TJvErrorDialog
       Alignment = taRightJustify
       AutoSize = False
       Caption = 'Error Type: '
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Shell Dlg 2'
-      HotTrackFont.Style = []
     end
     object MessageText: TMemo
       Left = 7

@@ -1,4 +1,4 @@
-object DualListForm: TJvDualListForm
+object JvDualListForm: TJvDualListForm
   Left = 198
   Top = 100
   ActiveControl = SrcList
@@ -39,7 +39,7 @@ object DualListForm: TJvDualListForm
     Width = 5
     Height = 13
   end
-  object SrcList: TTextListBox
+  object SrcList: TJvTextListBox
     Left = 12
     Top = 30
     Width = 164
@@ -57,7 +57,7 @@ object DualListForm: TJvDualListForm
     OnDragOver = SrcListDragOver
     OnKeyDown = SrcListKeyDown
   end
-  object DstList: TTextListBox
+  object DstList: TJvTextListBox
     Left = 216
     Top = 30
     Width = 164

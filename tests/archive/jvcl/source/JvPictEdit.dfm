@@ -1,4 +1,4 @@
-object JvPictureEditDialog: TJvPictureEditDialog
+object PictureEditDialog: TPictureEditDialog
   Left = 202
   Top = 102
   BorderIcons = [biSystemMenu]
@@ -66,6 +66,14 @@ object JvPictureEditDialog: TJvPictureEditDialog
       Top = 15
       Width = 237
       Height = 237
+    end
+    object PathsBtn: TJvxSpeedButton
+      Left = 307
+      Top = 186
+      Width = 22
+      Height = 25
+      DropDownMenu = PathsMenu
+      Enabled = False
     end
     object ImagePanel: TPanel
       Left = 10
@@ -153,10 +161,32 @@ object JvPictureEditDialog: TJvPictureEditDialog
     State = cbChecked
     TabOrder = 2
   end
+  object FormStorage: TJvFormStorage
+    IniFileName = 'DELPHI.INI'
+    IniSection = 'RX.ImageEditor'
+    Options = [fpPosition]
+    OnSavePlacement = FormStorageSavePlacement
+    OnRestorePlacement = FormStorageRestorePlacement
+    StoredProps.Strings = (
+      'UsePreviewBox.Checked'
+      'DecreaseBox.Checked')
+    StoredValues = <>
+    Left = 32
+    Top = 30
+  end
   object PathsMenu: TPopupMenu
     Alignment = paRight
     OnPopup = PathsMenuPopup
     Left = 60
+    Top = 30
+  end
+  object PathsMRU: TJvMRUManager
+    Capacity = 30
+    IniStorage = FormStorage
+    ShowAccelChar = False
+    OnChange = PathsMRUChange
+    OnClick = PathsMRUClick
+    Left = 88
     Top = 30
   end
 end
