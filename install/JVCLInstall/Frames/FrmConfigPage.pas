@@ -407,8 +407,8 @@ begin
       else
         CheckBoxIDERegister.State := cbGrayed;
       end;
-      BtnEditJvclInc.Visible := False;
       CheckBoxGenerateMapFiles.State := TCheckBoxState(Installer.Data.GenerateMapFiles);
+      BtnEditJvclInc.Caption := RsEditJvclIncAll;
 
       CheckBoxDebugUnits.State := TCheckBoxState(Installer.Data.DebugUnits);
     end
@@ -417,7 +417,6 @@ begin
       // for selected
       TargetConfig := SelTargetConfig;
       BtnEditJvclInc.Caption := Format(RsEditJvclInc, [LowerCase(TargetTypes[TargetConfig.Target.IsBCB]), TargetConfig.Target.Version]);
-      BtnEditJvclInc.Visible := True;
 
       CheckBoxDeveloperInstall.Checked := TargetConfig.DeveloperInstall;
       CheckBoxDebugUnits.Checked := TargetConfig.DebugUnits;
@@ -475,7 +474,11 @@ end;
 
 procedure TFrameConfigPage.BtnEditJvclIncClick(Sender: TObject);
 begin
-  Assert(SelTargetConfig <> nil);
+  if SelTargetConfig = nil then
+  begin
+    MessageDlg(RsEditJvclIncAllError, mtError, [mbOk], 0);
+    Exit;
+  end;
 
   if FormJvclIncConfig.imgProjectJEDI.Picture.Graphic = nil then
     FormJvclIncConfig.imgProjectJEDI.Picture.Assign(FormMain.ImageLogo.Picture);
