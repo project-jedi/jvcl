@@ -39,7 +39,7 @@ uses
   JvExExtCtrls, JvExComCtrls, JvExControls;
 
 type
-  TForm1 = class(TForm)
+  TGLDemoFrm = class(TForm)
     pcMain: TJvgPageControl;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
@@ -269,13 +269,15 @@ type
   end;
 
 var
-  Form1: TForm1;
+  GLDemoFrm: TGLDemoFrm;
 
 implementation
+
 uses JvgUtils, HShape, shellApi, glHelpPanel_demo;
+
 {$R *.DFM}
 
-procedure TForm1.pcMainChange(Sender: TObject);
+procedure TGLDemoFrm.pcMainChange(Sender: TObject);
 begin
   with (sender as TJvgPageControl) do
   begin
@@ -285,7 +287,7 @@ begin
   end;
 end;
 
-procedure TForm1.FreeFlyingText1TextLineChanging(Sender: TObject;
+procedure TGLDemoFrm.FreeFlyingText1TextLineChanging(Sender: TObject;
   LineNum: Integer);
 begin
 //  with FreeFlyingText1 do
@@ -293,17 +295,19 @@ begin
 //  else Direction:=fsdRaising;
 end;
 
-procedure TForm1.sbShowHoleShapeDemoClick(Sender: TObject);
+procedure TGLDemoFrm.sbShowHoleShapeDemoClick(Sender: TObject);
 begin
-  Form2.ShowModal;
+  if not assigned(HShapeFrm) then
+    HShapeFrm := THShapeFrm.create(Application);
+  HShapeFrm.ShowModal;
 end;
 
-procedure TForm1.Panel1Click(Sender: TObject);
+procedure TGLDemoFrm.Panel1Click(Sender: TObject);
 begin
   close;
 end;
 
-procedure TForm1.glTabControl3GetItemColor(Sender: TObject; Index: Integer;
+procedure TGLDemoFrm.glTabControl3GetItemColor(Sender: TObject; Index: Integer;
   var Color: TColor);
 begin
   if Index = (Sender as TJvgTabControl).TabIndex then
@@ -313,7 +317,7 @@ begin
   end;
 end;
 
-procedure TForm1.TrackBarChange(Sender: TObject);
+procedure TGLDemoFrm.TrackBarChange(Sender: TObject);
 begin
   glProgress1.Percent := TrackBar.Position;
   glProgress2.Percent := 100 - TrackBar.Position;
@@ -325,7 +329,7 @@ begin
   glProgress8.Percent := 100 - TrackBar.Position;
 end;
 
-procedure TForm1.FormActivate(Sender: TObject);
+procedure TGLDemoFrm.FormActivate(Sender: TObject);
 var
   Node: TTreeNode;
 begin
@@ -343,12 +347,12 @@ begin
   tvInstallDemo.SetStateIndex(Node, ncsUndefined);
 end;
 
-procedure TForm1.lCiteClick(Sender: TObject);
+procedure TGLDemoFrm.lCiteClick(Sender: TObject);
 begin
   ShellExecute(0, 'open', Pchar(lCite.Caption), '', '', SW_SHOW);
 end;
 
-procedure TForm1.glFlyingTextTextLineChanging(Sender: TObject; LineNum: Integer);
+procedure TGLDemoFrm.glFlyingTextTextLineChanging(Sender: TObject; LineNum: Integer);
 begin
   with glFlyingText do
   begin
@@ -358,7 +362,7 @@ begin
   end;
 end;
 
-procedure TForm1.sbTglHelpPanelClick(Sender: TObject);
+procedure TGLDemoFrm.sbTglHelpPanelClick(Sender: TObject);
 begin
   fTglHelpPanel.ShowModal;
 end;

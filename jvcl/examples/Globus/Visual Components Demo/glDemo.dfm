@@ -1,4 +1,4 @@
-object Form1: TForm1
+object GLDemoFrm: TGLDemoFrm
   Left = 318
   Top = 203
   BorderIcons = []
@@ -85,7 +85,6 @@ object Form1: TForm1
     ParentShowHint = False
     ShowHint = False
     TabHeight = 110
-    TabIndex = 11
     TabOrder = 0
     TabStop = False
     TabWidth = 17
@@ -1226,7 +1225,6 @@ object Form1: TForm1
         Top = 0
         Width = 538
         Height = 17
-        DragReorder = False
         Sections = <
           item
             AllowClick = False
@@ -1245,7 +1243,6 @@ object Form1: TForm1
         Top = 141
         Width = 538
         Height = 17
-        DragReorder = False
         Sections = <
           item
             AllowClick = False
@@ -3850,7 +3847,6 @@ object Form1: TForm1
         Top = 0
         Width = 5
         Height = 336
-        Cursor = crHSplit
         Align = alRight
         ResizeStyle = rsUpdate
       end
@@ -4111,7 +4107,7 @@ object Form1: TForm1
           Width = 274
           Height = 158
           GlyphChecked.Data = {
-            460B0000424D460B00000000000036080000280000000E0000000E0000000100
+            46070000424D460700000000000036040000280000000E0000000E0000000100
             2000000000001003000000000000000000000001000000000000000000000000
             FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00C0DCC0000000
             FF0000FF000000FFFF00FF000000FF00FF00FFFF000000FFFF00FF000000FF00
@@ -4171,7 +4167,7 @@ object Form1: TForm1
             000000FF00006F706F006F706F006F706F006F706F0000FF000000FF000000FF
             000000FF000000FF0000}
           GlyphUnChecked.Data = {
-            460B0000424D460B00000000000036080000280000000E0000000E0000000100
+            46070000424D460700000000000036040000280000000E0000000E0000000100
             2000000000001003000000000000000000000001000000000000000000000000
             FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00C0DCC0000000
             FF0000FF000000FFFF00FF000000FF00FF00FFFF000000FFFF00FF000000FF00
@@ -4951,7 +4947,7 @@ object Form1: TForm1
           Gradient3D.Depth = 10
           Gradient3D.GType = fgt3D
           ScalePercent = 10
-          StepScaleFactor = 1.08000004291534
+          StepScaleFactor = 1.080000042915344000
           ResultFont.Charset = DEFAULT_CHARSET
           ResultFont.Color = clWhite
           ResultFont.Height = -120
@@ -4982,7 +4978,7 @@ object Form1: TForm1
         Top = -1
         Width = 534
         Height = 17
-        Value = 1025
+        Value = 1025.000000000000000000
         DigitSize.X = 6
         DigitSize.Y = 7
         PassiveColor = clBlack
@@ -4998,7 +4994,7 @@ object Form1: TForm1
       object glDigits5: TJvgDigits
         Left = 6
         Top = 59
-        Value = 566745
+        Value = 566745.000000000000000000
         DigitSize.X = 10
         DigitSize.Y = 21
         Positions = 10
@@ -5012,7 +5008,7 @@ object Form1: TForm1
       object glDigits6: TJvgDigits
         Left = 7
         Top = 160
-        Value = 123
+        Value = 123.000000000000000000
         DigitSize.X = 10
         DigitSize.Y = 21
         Gap = 2
@@ -5026,7 +5022,7 @@ object Form1: TForm1
       object glDigits7: TJvgDigits
         Left = 6
         Top = 191
-        Value = 1.123456789
+        Value = 1.123456789000000000
         DigitSize.X = 10
         DigitSize.Y = 21
         ActiveColor = clAqua
@@ -5041,7 +5037,7 @@ object Form1: TForm1
         Left = 65
         Top = 224
         Width = 100
-        Value = 1.123456789
+        Value = 1.123456789000000000
         DigitSize.X = 5
         DigitSize.Y = 21
         Bevel.Inner = bvLowered
@@ -5054,7 +5050,7 @@ object Form1: TForm1
       object glDigits9: TJvgDigits
         Left = 8
         Top = 94
-        Value = 1.123456789
+        Value = 1.123456789000000000
         DigitSize.X = 10
         DigitSize.Y = 11
         Bevel.Inner = bvLowered
@@ -5069,7 +5065,7 @@ object Form1: TForm1
         Top = 287
         Width = 73
         Height = 16
-        Value = 1.123456789
+        Value = 1.123456789000000000
         DigitSize.X = 3
         DigitSize.Y = 7
         Bevel.Inner = bvLowered
@@ -5083,7 +5079,7 @@ object Form1: TForm1
         Top = 306
         Width = 73
         Height = 16
-        Value = 1.123456789
+        Value = 1.123456789000000000
         DigitSize.X = 3
         DigitSize.Y = 5
         Gap = 0
@@ -5097,7 +5093,7 @@ object Form1: TForm1
         Left = 6
         Top = 22
         Height = 32
-        Value = 1.123456789
+        Value = 1.123456789000000000
         DigitSize.X = 10
         DigitSize.Y = 23
         ActiveColor = clBtnHighlight
@@ -5115,7 +5111,7 @@ object Form1: TForm1
         Left = 5
         Top = 21
         Height = 32
-        Value = 1.123456789
+        Value = 1.123456789000000000
         DigitSize.X = 10
         DigitSize.Y = 23
         ActiveColor = clBtnShadow
@@ -5132,7 +5128,7 @@ object Form1: TForm1
       object glDigits1a: TJvgDigits
         Left = 7
         Top = 127
-        Value = 1.123456789
+        Value = 1.123456789000000000
         DigitSize.X = 10
         DigitSize.Y = 21
         Gap = 3
@@ -5149,7 +5145,7 @@ object Form1: TForm1
         Top = 306
         Width = 73
         Height = 16
-        Value = 1.123456789
+        Value = 1.123456789000000000
         DigitSize.X = 3
         DigitSize.Y = 7
         ActiveColor = clYellow
@@ -5164,7 +5160,7 @@ object Form1: TForm1
         Left = 65
         Top = 256
         Width = 100
-        Value = 1.123456789
+        Value = 1.123456789000000000
         DigitSize.X = 5
         DigitSize.Y = 21
         ActiveColor = clLime
@@ -5304,7 +5300,7 @@ object Form1: TForm1
               Top = 0
               Width = 33
               Height = 17
-              Value = 30.3
+              Value = 30.300000000000000000
               DigitSize.X = 5
               DigitSize.Y = 9
               ActiveColor = 4227327
@@ -5354,7 +5350,7 @@ object Form1: TForm1
               Top = 0
               Width = 33
               Height = 17
-              Value = 2.23
+              Value = 2.230000000000000000
               DigitSize.X = 5
               DigitSize.Y = 9
               ActiveColor = 12451773
@@ -5404,7 +5400,7 @@ object Form1: TForm1
               Top = 0
               Width = 33
               Height = 17
-              Value = 0.23
+              Value = 0.230000000000000000
               DigitSize.X = 5
               DigitSize.Y = 9
               ActiveColor = 16761152
@@ -5530,7 +5526,7 @@ object Form1: TForm1
             Top = 68
             Width = 54
             Height = 20
-            Value = 2
+            Value = 2.000000000000000000
             DigitSize.X = 6
             DigitSize.Y = 11
             ActiveColor = 8421631
@@ -5547,7 +5543,7 @@ object Form1: TForm1
             Top = 44
             Width = 54
             Height = 20
-            Value = 456
+            Value = 456.000000000000000000
             DigitSize.X = 6
             DigitSize.Y = 11
             ActiveColor = 16763742
@@ -5564,7 +5560,7 @@ object Form1: TForm1
             Top = 20
             Width = 54
             Height = 20
-            Value = 36
+            Value = 36.000000000000000000
             DigitSize.X = 6
             DigitSize.Y = 11
             ActiveColor = 8453888
@@ -5697,7 +5693,7 @@ object Form1: TForm1
             Top = 0
             Width = 33
             Height = 17
-            Value = 30.3
+            Value = 30.300000000000000000
             DigitSize.X = 5
             DigitSize.Y = 9
             ActiveColor = 4227327
@@ -5746,7 +5742,7 @@ object Form1: TForm1
             Top = 0
             Width = 33
             Height = 17
-            Value = 2.23
+            Value = 2.230000000000000000
             DigitSize.X = 5
             DigitSize.Y = 9
             ActiveColor = 12451773
@@ -5795,7 +5791,7 @@ object Form1: TForm1
             Top = 0
             Width = 33
             Height = 17
-            Value = 0.23
+            Value = 0.230000000000000000
             DigitSize.X = 5
             DigitSize.Y = 9
             ActiveColor = 16761152
@@ -6036,7 +6032,7 @@ object Form1: TForm1
         object glGroupBox2a: TJvgGroupBox
           Left = 0
           Top = 0
-          Width = 177
+          Width = 179
           Height = 14
           Align = alTop
           Caption = ' GroupBox '
@@ -6111,7 +6107,7 @@ object Form1: TForm1
         object glGroupBox1a: TJvgGroupBox
           Left = 0
           Top = 14
-          Width = 177
+          Width = 179
           Height = 107
           Align = alTop
           Caption = ' GroupBox '
@@ -6211,7 +6207,7 @@ object Form1: TForm1
         object glGroupBox2: TJvgGroupBox
           Left = 0
           Top = 121
-          Width = 177
+          Width = 179
           Height = 164
           Align = alTop
           Caption = ' GroupBox '
@@ -8170,7 +8166,6 @@ object Form1: TForm1
         Top = 0
         Width = 5
         Height = 336
-        Cursor = crHSplit
       end
       object glBevel6a: TJvgBevel
         Left = 0
@@ -8718,16 +8713,11 @@ object Form1: TForm1
         Width = 417
         Height = 49
         Max = 100
-        Orientation = trHorizontal
         PageSize = 1
-        Frequency = 1
         Position = 45
-        SelEnd = 0
-        SelStart = 0
         TabOrder = 0
         ThumbLength = 15
         TickMarks = tmTopLeft
-        TickStyle = tsAuto
         OnChange = TrackBarChange
       end
     end

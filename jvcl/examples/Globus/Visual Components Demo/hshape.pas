@@ -36,7 +36,7 @@ uses
   JvgShape, JvgHoleShape, JvgBevel, JvComponent, JvExControls;
 
 type
-  TForm2 = class(TForm)
+  THShapeFrm = class(TForm)
     FreeHoleShape2: TJvgHoleShape;
     FreeHoleShape3: TJvgHoleShape;
     FreeHoleShape4: TJvgHoleShape;
@@ -62,7 +62,7 @@ type
   end;
 
 var
-  Form2: TForm2;
+  HShapeFrm: THShapeFrm;
 
 implementation
 

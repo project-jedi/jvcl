@@ -1,4 +1,4 @@
-object Form2: TForm2
+object HShapeFrm: THShapeFrm
   Left = 262
   Top = 201
   HorzScrollBar.Visible = False
