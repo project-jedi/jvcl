@@ -47,7 +47,8 @@ uses
   
   DesignEditors, DesignIntf,
 
-  JvQBehaviorLabelEditor, JvQHTHintForm, JvQFooterEditor, JvQGroupHeaderEditor,
+  JvQBehaviorLabelEditor, JvQHTHintForm, JvQFooterEditor,
+  JvQGroupHeaderEditor, 
 
   JvQDsgnConsts,
   JvQOfficeColorButton, JvQOfficeColorPanel,
