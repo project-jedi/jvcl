@@ -78,8 +78,12 @@ type
     property Constraints;
     property Color;
     property Cursor;
+    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
     property DragMode;
     property GradientWidth: Integer read FGradientWidth write SetGradientWidth;
     property Enabled;
@@ -91,7 +95,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
-    property AlwaysRestart:boolean read FAlwaysRestart write FAlwaysRestart default False; 
+    property AlwaysRestart:boolean read FAlwaysRestart write FAlwaysRestart default False;
     property StartColor: TColor read FStartColor write SetStartColor default clBtnFace;
     property Visible;
     property Width default 100;
@@ -99,12 +103,10 @@ type
     property OnClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseUp;
     property OnMouseMove;
-    property OnStartDock;
     property OnStartDrag;
     property OnMouseEnter;
     property OnMouseLeave;
