@@ -105,6 +105,7 @@ type
     Label18: TLabel;
     Label19: TLabel;
     Label20: TLabel;
+    chkShowTodayIcon: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure btnFontClick(Sender: TObject);
     procedure btnMonthFontClick(Sender: TObject);
@@ -144,9 +145,10 @@ type
     procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
     procedure btnLineColorClick(Sender: TObject);
+    procedure chkShowTodayIconClick(Sender: TObject);
   private
     { Private declarations }
-    sl:TJvTMTimeline;
+    JvTimeLine1:TJvTMTimeline;
     procedure DoClick(Sender: TObject);
     procedure DoDateChange(Sender: TObject);
     procedure DoDblClick(Sender: TObject);
@@ -169,22 +171,22 @@ var
   i : integer;
 begin
   ForceCurrentDirectory := true;
-  sl              := TJvTMTimeline.Create(self);
-  sl.Parent       := self;
-  sl.PopUpMenu    := popTimeline;
-  sl.OnChange     := DoDateChange;
-  sl.OnClick      := DoClick;
-  sl.OnDblClick   := DoDblClick;
-  sl.Images       := il16;
-  sl.Align        := alClient;
-  sl.Hint         := 'Double-click a date to edit it''s memo content.'#13#10'Right-click to display pop-up menu.';
+  JvTimeLine1              := TJvTMTimeline.Create(self);
+  JvTimeLine1.Parent       := self;
+  JvTimeLine1.PopUpMenu    := popTimeline;
+  JvTimeLine1.OnChange     := DoDateChange;
+  JvTimeLine1.OnClick      := DoClick;
+  JvTimeLine1.OnDblClick   := DoDblClick;
+  JvTimeLine1.Images       := il16;
+  JvTimeLine1.Align        := alClient;
+  JvTimeLine1.Hint         := 'Double-click a date to edit it''s memo content.'#13#10'Right-click to display pop-up menu.';
   dtpSelDate.Date     := Date;
   dtpFirstDate.Date   := Date-7;
   dtpImageDate.Date   := Date+7;
-  udDayWidth.Position := sl.DayWidth;
-  chkReadOnly.Checked := sl.ReadOnly;
-  sl.Date := dtpFirstDate.Date;
-  sl.SelDate := dtpSelDate.Date;
+  udDayWidth.Position := JvTimeLine1.DayWidth;
+  chkReadOnly.Checked := JvTimeLine1.ReadOnly;
+  JvTimeLine1.Date := dtpFirstDate.Date;
+  JvTimeLine1.SelDate := dtpSelDate.Date;
   lbObjFontStyle.Checked[2] := true;
   for i := 0 to il16.Count - 1 do
   begin
@@ -194,7 +196,7 @@ begin
       Caption := IntToStr(i);
     end;
   end;
-  Splitter1.Top := sl.Height + 5;
+  Splitter1.Top := JvTimeLine1.Height + 5;
 end;
 
 // Free any stringlists still around in the Objects array by calling the ClearObjects method
@@ -204,7 +206,7 @@ end;
 // You can freely mix object types in the array: the will be freed correctly anyway
 procedure TTMTimeLineMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  sl.ClearObjects;
+  JvTimeLine1.ClearObjects;
 end;
 
 // just update the controls when an item in the listview is clicked
@@ -230,8 +232,8 @@ begin
     DefaultExt := 'TM';
     if Execute then
     begin
-      sl.OnReadObject := DoObjectLoad;
-      sl.LoadFromFile(Filename);
+      JvTimeLine1.OnReadObject := DoObjectLoad;
+      JvTimeLine1.LoadFromFile(Filename);
     end;
   finally
     Free;
@@ -246,8 +248,8 @@ begin
     DefaultExt := 'TM';
     if Execute then
     begin
-      sl.OnWriteObject := DoObjectSave;
-      sl.SaveToFile(Filename);
+      JvTimeLine1.OnWriteObject := DoObjectSave;
+      JvTimeLine1.SaveToFile(Filename);
     end;
   finally
     Free;
@@ -259,14 +261,14 @@ end;
 // set imageindex for the chosen date
 procedure TTMTimeLineMainForm.btnAddClick(Sender: TObject);
 begin
-  sl.ImageIndex[dtpImageDate.DateTime] := udImageNo.Position;
+  JvTimeLine1.ImageIndex[dtpImageDate.DateTime] := udImageNo.Position;
 end;
 
 // OnChange is called whenever the FirstDate (the first visible date) changes
 // This happens when the user scrolls the display or when you set FirstDate programmatically
 procedure TTMTimeLineMainForm.DoDateChange(Sender:TObject);
 begin
-  dtpFirstDate.Date := sl.Date;
+  dtpFirstDate.Date := JvTimeLine1.Date;
   StatusBarResize(Sender);
 end;
 
@@ -275,8 +277,8 @@ end;
 // If right-click select is true, Date is updated when you right-click too
 procedure TTMTimeLineMainForm.DoClick(Sender:TObject);
 begin
-  dtpSelDate.Date := sl.SelDate;
-  dtpImageDate.Date := sl.SelDate;
+  dtpSelDate.Date := JvTimeLine1.SelDate;
+  dtpImageDate.Date := JvTimeLine1.SelDate;
 end;
 
 // display the memo contents when double.clicking: the day number is
@@ -291,9 +293,9 @@ procedure TTMTimeLineMainForm.btnFontClick(Sender: TObject);
 begin
   with TFontDialog.Create(nil) do
   try
-    Font := sl.Font;
+    Font := JvTimeLine1.Font;
     if Execute then
-      sl.Font := Font;
+      JvTimeLine1.Font := Font;
   finally
     Free;
   end;
@@ -304,9 +306,9 @@ procedure TTMTimeLineMainForm.btnMonthFontClick(Sender: TObject);
 begin
   with TFontDialog.Create(nil) do
   try
-    Font := sl.MonthFont;
+    Font := JvTimeLine1.MonthFont;
     if Execute then
-      sl.MonthFont := Font;
+      JvTimeLine1.MonthFont := Font;
   finally
     Free;
   end;
@@ -317,21 +319,21 @@ end;
 // the selection frame is also removed
 procedure TTMTimeLineMainForm.chkReadOnlyClick(Sender: TObject);
 begin
-  sl.ReadOnly := chkReadOnly.Checked;
+  JvTimeLine1.ReadOnly := chkReadOnly.Checked;
   StatusBarResize(Sender);
 end;
 
 // enabled is not the same as read-only!
 procedure TTMTimeLineMainForm.chkEnabledClick(Sender: TObject);
 begin
-  sl.Enabled := chkEnabled.Checked;
+  JvTimeLine1.Enabled := chkEnabled.Checked;
 end;
 
 // DayWidth is simply the width in pixels for one day
 procedure TTMTimeLineMainForm.udDayWidthClick(Sender: TObject; Button: TUDBtnType);
 begin
-  sl.DayWidth := udDayWidth.Position;
-  udDayWidth.Position := sl.DayWidth;
+  JvTimeLine1.DayWidth := udDayWidth.Position;
+  udDayWidth.Position := JvTimeLine1.DayWidth;
   StatusBarResize(Sender);
 end;
 
@@ -340,9 +342,9 @@ procedure TTMTimeLineMainForm.btnColorClick(Sender: TObject);
 begin
   with TColorDialog.Create(nil) do
   try
-    Color := sl.Color;
+    Color := JvTimeLine1.Color;
     if Execute then
-      sl.Color := Color;
+      JvTimeLine1.Color := Color;
   finally
     Free;
   end;
@@ -354,19 +356,19 @@ procedure TTMTimeLineMainForm.chkFlatClick(Sender: TObject);
 const
   cBStyle:array [boolean] of TBorderStyle = (bsSingle,bsNone);
 begin
-  sl.BorderStyle := cBStyle[chkFlat.Checked];
+  JvTimeLine1.BorderStyle := cBStyle[chkFlat.Checked];
 end;
 
 // update the first visible date from the datetimepicker
 procedure TTMTimeLineMainForm.dtpFirstDateChange(Sender: TObject);
 begin
-  sl.Date := dtpFirstDate.Date;
+  JvTimeLine1.Date := dtpFirstDate.Date;
 end;
 
 // update the selected date from the datetimepicker
 procedure TTMTimeLineMainForm.dtpSelDateChange(Sender: TObject);
 begin
-  sl.SelDate := dtpSelDate.Date;
+  JvTimeLine1.SelDate := dtpSelDate.Date;
 end;
 
 // change the selection frame Pen color
@@ -377,10 +379,10 @@ procedure TTMTimeLineMainForm.btnPenColorClick(Sender: TObject);
 begin
   with TColorDialog.Create(nil) do
   try
-    Color := sl.Selection.Pen.Color;
+    Color := JvTimeLine1.Selection.Pen.Color;
     if Execute then
     begin
-      sl.Selection.Pen.Color := Color;
+      JvTimeLine1.Selection.Pen.Color := Color;
     end;
   finally
     Free;
@@ -390,7 +392,7 @@ end;
 // change the Selection frame Pen's width
 procedure TTMTimeLineMainForm.udPenWidthClick(Sender: TObject; Button: TUDBtnType);
 begin
-  sl.Selection.Pen.Width := udPenWidth.Position;
+  JvTimeLine1.Selection.Pen.Width := udPenWidth.Position;
 end;
 
 // changes the background Color of Today 
@@ -398,9 +400,9 @@ procedure TTMTimeLineMainForm.btnTodayColorClick(Sender: TObject);
 begin
   with TColorDialog.Create(nil) do
   try
-    Color := sl.TodayColor;
+    Color := JvTimeLine1.TodayColor;
     if Execute then
-      sl.TodayColor := Color;
+      JvTimeLine1.TodayColor := Color;
   finally
     Free;
   end;
@@ -410,20 +412,20 @@ end;
 // the TJvTLTimeline.Date value
 procedure TTMTimeLineMainForm.chkRClickClick(Sender: TObject);
 begin
-  sl.RightClickSelect := chkRClick.Checked;
+  JvTimeLine1.RightClickSelect := chkRClick.Checked;
 end;
 
 // move today to the middle of the timeline; looks better
 procedure TTMTimeLineMainForm.mnuTodayClick(Sender: TObject);
 begin
-  sl.Date := Date - sl.VisibleDays div 2;
+  JvTimeLine1.Date := Date - JvTimeLine1.VisibleDays div 2;
 end;
 
 // add or replace the image at the currently selected date
 // if the imageindex is < 0 or > Images.Count - 1, the image is removed
 procedure TTMTimeLineMainForm.mnuInsertImageClick(Sender: TObject);
 begin
-  sl.ImageIndex[sl.SelDate] := udImageNo.Position;
+  JvTimeLine1.ImageIndex[JvTimeLine1.SelDate] := udImageNo.Position;
 end;
 
 // the SmallChange value is used when you scroll without holding any additional
@@ -431,19 +433,19 @@ end;
 // the arrow-keys
 procedure TTMTimeLineMainForm.udScrollSmallClick(Sender: TObject; Button: TUDBtnType);
 begin
-  sl.SmallChange := udScrollSmall.Position;
+  JvTimeLine1.SmallChange := udScrollSmall.Position;
 end;
 
 // the LargeChange value is used when you hold the Ctrl key while scrolling
 procedure TTMTimeLineMainForm.udScrollLargeClick(Sender: TObject; Button: TUDBtnType);
 begin
-  sl.LargeChange := udScrollLarge.Position;
+  JvTimeLine1.LargeChange := udScrollLarge.Position;
 end;
 
 // remove an image by setting the imageindex to -1
 procedure TTMTimeLineMainForm.mnuRemoveImageClick(Sender: TObject);
 begin
-  sl.ImageIndex[sl.SelDate] := -1;
+  JvTimeLine1.ImageIndex[JvTimeLine1.SelDate] := -1;
 end;
 
 // Get or create a TStringlist for the selected date.
@@ -453,11 +455,11 @@ var S:TStringlist;i:integer;Ico:TIcon;
 begin
 // WARNING: if you store integers or other ordinal values in the Objects array
 // you will get an AV if you call the ClearObjects method:
-//  sl.Objects[sl.Date] := TObject(Random(100));
+//  JvTimeLine1.Objects[JvTimeLine1.Date] := TObject(Random(100));
 
-  S := TStringlist(sl.Objects[sl.SelDate]);
+  S := TStringlist(JvTimeLine1.Objects[JvTimeLine1.SelDate]);
   // here's a trick: extract the image from the imagelist and assign t to the icon property of the form:
-  i := sl.ImageIndex[sl.SelDate];
+  i := JvTimeLine1.ImageIndex[JvTimeLine1.SelDate];
   if i > -1 then
   begin
     Ico := TIcon.Create;
@@ -472,22 +474,22 @@ begin
   // That way, you can keep all the creating and freeing stuff in the
   // dialog unit instead of in the calling unit.
   // This reduces the dialog call to a one-liner:
-  TMemoEditFrm.Edit(S,sl.SelDate,Ico); // the Edit function automatically updates S if the user clicked OK in the dialog
+  TMemoEditFrm.Edit(S,JvTimeLine1.SelDate,Ico); // the Edit function automatically updates S if the user clicked OK in the dialog
   
   if Length(trim(S.Text)) = 0 then
   begin // there is no text, so free the stringlist to conserve memory
     S.Free;
     S := nil;
   end;
-  sl.Objects[sl.SelDate] := S; // either way, store the value (nil or TStringlist)
-  // if Objects[sl.Date] has a non-nil value, the day number is underlined for that date
+  JvTimeLine1.Objects[JvTimeLine1.SelDate] := S; // either way, store the value (nil or TStringlist)
+  // if Objects[JvTimeLine1.Date] has a non-nil value, the day number is underlined for that date
   Ico.Free;
 end;
 
 // changes the widths of the scrollbuttons
 procedure TTMTimeLineMainForm.udButtonWidthClick(Sender: TObject; Button: TUDBtnType);
 begin
-  sl.ButtonWidth := udButtonWidth.Position;
+  JvTimeLine1.ButtonWidth := udButtonWidth.Position;
   StatusBarResize(Sender);
 end;
 
@@ -549,62 +551,62 @@ begin
     if Checked[3] then
       Include(F,fsStrikeOut);
   end;
-  sl.ObjectsFontStyle := F;
+  JvTimeLine1.ObjectsFontStyle := F;
 end;
 
 // move to the selected day and center it on the display
 procedure TTMTimeLineMainForm.mnuGotoDateClick(Sender: TObject);
 begin
-  sl.Date := sl.SelDate - sl.VisibleDays div 2;
+  JvTimeLine1.Date := JvTimeLine1.SelDate - JvTimeLine1.VisibleDays div 2;
 end;
 
 // update the statusbar whnever anything changes
 procedure TTMTimeLineMainForm.StatusBarResize(Sender: TObject);
 begin
-  StatusBar.Panels[0].Text := Format('Visible days: %d',[sl.VisibleDays]);
-  StatusBar.Panels[1].Text := Format('Last visible date: %s',[DateToStr(sl.LastVisibleDate)]);
+  StatusBar.Panels[0].Text := Format('Visible days: %d',[JvTimeLine1.VisibleDays]);
+  StatusBar.Panels[1].Text := Format('Last visible date: %s',[DateToStr(JvTimeLine1.LastVisibleDate)]);
 end;
 
 // display options:
 procedure TTMTimeLineMainForm.chkShowMonthsClick(Sender: TObject);
 begin
-  sl.ShowMonths := chkShowMonths.Checked;
+  JvTimeLine1.ShowMonths := chkShowMonths.Checked;
 end;
 
 procedure TTMTimeLineMainForm.chkShowWeeksClick(Sender: TObject);
 begin
-  sl.ShowWeeks := chkShowWeeks.Checked;
+  JvTimeLine1.ShowWeeks := chkShowWeeks.Checked;
 end;
 
 procedure TTMTimeLineMainForm.chkShowTodayClick(Sender: TObject);
 begin
-  sl.ShowToday := chkShowToday.Checked;
+  JvTimeLine1.ShowToday := chkShowToday.Checked;
 end;
 
 // handling the wheel:
 procedure TTMTimeLineMainForm.FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
-  if  not sl.Focused and (ControlAtPos(ScreenToClient(MousePos),false,true) is TJvTMTimeline) then
+  if  not JvTimeLine1.Focused and (ControlAtPos(ScreenToClient(MousePos),false,true) is TJvTMTimeline) then
   begin
     Handled := true;
     if ssCtrl in Shift then
-      sl.ScrollDate(self,-udScrollSmall.Position)
+      JvTimeLine1.ScrollDate(self,-udScrollSmall.Position)
     else
-      sl.ScrollDate(self,-udScrollLarge.Position);
+      JvTimeLine1.ScrollDate(self,-udScrollLarge.Position);
   end;
 end;
 
 procedure TTMTimeLineMainForm.FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
-  if  not sl.Focused and (ControlAtPos(ScreenToClient(MousePos),false,true) is TJvTMTimeline) then
+  if  not JvTimeLine1.Focused and (ControlAtPos(ScreenToClient(MousePos),false,true) is TJvTMTimeline) then
   begin
     Handled := true;
     if ssCtrl in Shift then
-      sl.ScrollDate(self,udScrollSmall.Position)
+      JvTimeLine1.ScrollDate(self,udScrollSmall.Position)
     else
-      sl.ScrollDate(self,udScrollLarge.Position);
+      JvTimeLine1.ScrollDate(self,udScrollLarge.Position);
   end;
 end;
 
@@ -612,13 +614,18 @@ procedure TTMTimeLineMainForm.btnLineColorClick(Sender: TObject);
 begin
   with TColorDialog.Create(nil) do
   try
-    Color := sl.LineColor;
+    Color := JvTimeLine1.LineColor;
     if Execute then
-      sl.LineColor := Color;
+      JvTimeLine1.LineColor := Color;
   finally
     Free;
   end;
 
+end;
+
+procedure TTMTimeLineMainForm.chkShowTodayIconClick(Sender: TObject);
+begin
+  JvTimeLine1.ShowTodayIcon := chkShowTodayIcon.Checked;
 end;
 
 end.
