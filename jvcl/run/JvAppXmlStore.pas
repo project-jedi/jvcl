@@ -38,18 +38,17 @@ uses
   Libc,
   {$ENDIF LINUX}
   SysUtils, Classes, IniFiles,
-  JvAppStore,
-  JvSimpleXml;
+  JvAppStore, JvSimpleXml;
 
 type
   TJvAppXmlStore = class(TJvCustomAppStore)
   private
-    FFileName : TFilename;
+    FFileName: TFileName;
+    FXml: TJvSimpleXml;
     function GetFileName: TFileName;
     procedure SetFileName(const Value: TFileName);
     function GetRootNodeName: string;
   protected
-    FXml: TJvSimpleXml;
     procedure SetRootNodeName(const Value: string);
     function ValueExists(const NodeName, Attribute : string): Boolean; virtual;
     function ReadValue(const NodeName, Attribute : string): string; virtual;
@@ -76,11 +75,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Flush;
-
-    property Xml : TJvSimpleXml read FXml;
+    property Xml: TJvSimpleXml read FXml;
   published
     property FileName: TFileName read GetFileName write SetFileName;
-    property RootNodeName : string read GetRootNodeName write SetRootNodeName;
+    property RootNodeName: string read GetRootNodeName write SetRootNodeName;
   end;
 
 implementation
@@ -131,7 +129,21 @@ begin
   end;
 end;
 
-{ TJvAppXmlStore }
+//=== TJvAppXmlStore =========================================================
+
+constructor TJvAppXmlStore.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FXml := TJvSimpleXml.Create(nil);
+  RootNodeName := 'Configuration';
+end;
+
+destructor TJvAppXmlStore.Destroy;
+begin
+  Flush;
+  FXml.Free;
+  inherited Destroy;
+end;
 
 procedure TJvAppXmlStore.SetRootNodeName(const Value: string);
 begin
@@ -290,21 +302,18 @@ begin
   FXml.Root.Items.ItemNamed[NodeName].Items.Delete(Attribute);
 end;
 
-function TJvAppXmlStore.ValueExists(const NodeName,
-  Attribute: string): Boolean;
+function TJvAppXmlStore.ValueExists(const NodeName, Attribute: string): Boolean;
 var
   Node : TJvSimpleXmlElem;
 begin
   Node := FXml.Root.Items.ItemNamed[NodeName];
-  Result := Assigned(Node) and
-            Assigned(Node.Items.ItemNamed[Attribute]);
+  Result := Assigned(Node) and Assigned(Node.Items.ItemNamed[Attribute]);
 end;
 
-procedure TJvAppXmlStore.WriteValue(const NodeName, Attribute,
-  Value: string);
+procedure TJvAppXmlStore.WriteValue(const NodeName, Attribute, Value: string);
 var
-  Node : TJvSimpleXmlElem;
-  Attr : TJvSimpleXmlElem;
+  Node: TJvSimpleXmlElem;
+  Attr: TJvSimpleXmlElem;
 begin
   Node := FXml.Root.Items.ItemNamed[NodeName];
   if not Assigned(Node) then
@@ -312,23 +321,9 @@ begin
 
   Attr := Node.Items.ItemNamed[Attribute];
   if not Assigned(Attr) then
-    Node.Items.Add(Attribute,Value)
+    Node.Items.Add(Attribute, Value)
   else
     Attr.Value := Value;
-end;
-
-constructor TJvAppXmlStore.Create(AOwner: TComponent);
-begin
-  inherited;
-  FXml := TJvSimpleXml.Create(nil);
-  RootNodeName := 'Configuration';
-end;
-
-destructor TJvAppXmlStore.Destroy;
-begin
-  Flush;
-  FXml.Free;
-  inherited;
 end;
 
 procedure TJvAppXmlStore.Flush;
@@ -360,9 +355,7 @@ begin
 
   Strings.Clear;
   for I := 0 to FXml.Root.Items.Count - 1 do
-  begin
     Strings.Add(FXml.Root.Items[I].Name);
-  end;
 
   I := Strings.Count - 1;
   while I >= 0 do

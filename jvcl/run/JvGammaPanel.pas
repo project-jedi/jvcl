@@ -21,6 +21,9 @@ Last Modified: 2000-02-28
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Modifications:
+  2/11/2000 Added the Align and AutoSize property (Request of Brad T.)
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
@@ -28,22 +31,16 @@ Known Issues:
 
 unit JvGammaPanel;
 
-{*******************************************************}
-{  Modifications:                                       }
-{     2/11/2000 Added the Align and AutoSize property   }
-{               (Request of Brad T.)                    }
-{*******************************************************}
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Dialogs, ExtCtrls, StdCtrls,
-  JvTypes, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Dialogs,
+  ExtCtrls, StdCtrls,
+  JvTypes, JvComponent;
 
 type
-  TJvGammaPanel = class(TWinControl)
+  TJvGammaPanel = class(TJvWinControl)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FForegroundColor: TColor;
     FBackgroundColor: TColor;
     LastCol: TColor;
@@ -70,14 +67,14 @@ type
     procedure Color2Click(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property AutoSize;
-    property OnChangeColor: TJvChangeColorEvent read FOnChangeColor write FOnChangeColor;
+    property Height default 250;
+    property Width default 65;
     property ForegroundColor: TColor read FForegroundColor write SetForegroundColor default clBlack;
     property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default clWhite;
+    property OnChangeColor: TJvChangeColorEvent read FOnChangeColor write FOnChangeColor;
   end;
 
 implementation
@@ -96,167 +93,184 @@ begin
   FBackgroundColor := clWhite;
 
   FPanel1 := TPanel.Create(Self);
-  FPanel1.Parent := Self;
-  FPanel1.Width := 65;
-  FPanel1.Height := 250;
-  FPanel1.Align := alClient;
-  FPanel1.BevelInner := bvLowered;
-  FPanel1.BevelOuter := bvRaised;
-  FPanel1.Visible := True;
+  with FPanel1 do
+  begin
+    Parent := Self;
+    Width := 65;
+    Height := 250;
+    Align := alClient;
+    BevelInner := bvLowered;
+    BevelOuter := bvRaised;
+    Visible := True;
+  end;
 
   FPanel2 := TPanel.Create(FPanel1);
-  FPanel2.Parent := FPanel1;
-  FPanel2.Left := 5;
-  FPanel2.Top := 5;
-  FPanel2.Width := 55;
-  FPanel2.Height := 105;
-  FPanel2.BevelInner := bvLowered;
-  FPanel2.BevelOuter := bvRaised;
-  FPanel2.Visible := True;
+  with FPanel2 do
+  begin
+    Parent := FPanel1;
+    Left := 5;
+    Top := 5;
+    Width := 55;
+    Height := 105;
+    BevelInner := bvLowered;
+    BevelOuter := bvRaised;
+    Visible := True;
+  end;
 
   FPanel3 := TPanel.Create(FPanel1);
-  FPanel3.Parent := FPanel1;
-  FPanel3.Left := 5;
-  FPanel3.Top := 115;
-  FPanel3.Width := 55;
-  FPanel3.Height := 50;
-  FPanel3.BevelInner := bvLowered;
-  FPanel3.BevelOuter := bvRaised;
-  FPanel3.Visible := True;
+  with FPanel3 do
+  begin
+    Parent := FPanel1;
+    Left := 5;
+    Top := 115;
+    Width := 55;
+    Height := 50;
+    BevelInner := bvLowered;
+    BevelOuter := bvRaised;
+    Visible := True;
+  end;
 
   FPanel4 := TPanel.Create(FPanel1);
-  FPanel4.Parent := FPanel1;
-  FPanel4.Left := 5;
-  FPanel4.Top := 170;
-  FPanel4.Width := 55;
-  FPanel4.Height := 75;
-  FPanel4.BevelInner := bvLowered;
-  FPanel4.BevelOuter := bvRaised;
-  FPanel4.Visible := True;
+  with FPanel4 do
+  begin
+    Parent := FPanel1;
+    Left := 5;
+    Top := 170;
+    Width := 55;
+    Height := 75;
+    BevelInner := bvLowered;
+    BevelOuter := bvRaised;
+    Visible := True;
+  end;
 
   FRLabel := TLabel.Create(FPanel4);
-  FRLabel.Top := 2;
-  FRLabel.Left := 5;
-  FRLabel.Font.Size := 8;
-  FRLabel.AutoSize := True;
-  FRLabel.Font.Name := 'Arial';
-  FRLabel.Caption := RsDefaultR;
-  FRLabel.Transparent := True;
-  FRLabel.Parent := FPanel4;
+  with FRLabel do
+  begin
+    Top := 2;
+    Left := 5;
+    Font.Size := 8;
+    AutoSize := True;
+    Font.Name := 'Arial';
+    Caption := RsDefaultR;
+    Transparent := True;
+    Parent := FPanel4;
+  end;
 
   FGLabel := TLabel.Create(FPanel4);
-  FGLabel.Top := 14;
-  FGLabel.Left := 5;
-  FGLabel.AutoSize := True;
-  FGLabel.Font.Name := 'Arial';
-  FGLabel.Font.Size := 8;
-  FGLabel.Caption := RsDefaultG;
-  FGLabel.Transparent := True;
-  FGLabel.Parent := FPanel4;
+  with FGLabel do
+  begin
+    Top := 14;
+    Left := 5;
+    AutoSize := True;
+    Font.Name := 'Arial';
+    Font.Size := 8;
+    Caption := RsDefaultG;
+    Transparent := True;
+    Parent := FPanel4;
+  end;
 
   FBLabel := TLabel.Create(FPanel4);
-  FBLabel.Top := 26;
-  FBLabel.Left := 5;
-  FBLabel.Font.Size := 8;
-  FBLabel.Font.Name := 'arial';
-  FBLabel.AutoSize := True;
-  FBLabel.Caption := RsDefaultB;
-  FBLabel.Transparent := True;
-  FBLabel.Parent := FPanel4;
+  with FBLabel do
+  begin
+    Top := 26;
+    Left := 5;
+    Font.Size := 8;
+    Font.Name := 'arial';
+    AutoSize := True;
+    Caption := RsDefaultB;
+    Transparent := True;
+    Parent := FPanel4;
+  end;
 
   FGamma := TImage.Create(FPanel2);
-  FGamma.Parent := FPanel2;
-  FGamma.Stretch := False;
-  FGamma.Center := True;
-  FGamma.AutoSize := True;
-  FGamma.Picture.Bitmap.PixelFormat := pf24bit;
-  FGamma.Width := 55;
-  FGamma.Height := 105;
-  FGamma.OnMouseDown := ChangeColor;
-  FGamma.OnMouseMove := ColorSeek;
-  FGamma.Align := alClient;
-  FGamma.Picture.Bitmap.LoadFromResourceName(HInstance, 'COLORS');
-  FGamma.Cursor := crCross;
+  with FGamma do
+  begin
+    Parent := FPanel2;
+    Stretch := False;
+    Center := True;
+    AutoSize := True;
+    Picture.Bitmap.PixelFormat := pf24bit;
+    Width := 55;
+    Height := 105;
+    OnMouseDown := ChangeColor;
+    OnMouseMove := ColorSeek;
+    Align := alClient;
+    Picture.Bitmap.LoadFromResourceName(HInstance, 'COLORS');
+    Cursor := crCross;
+  end;
 
   FChoosed := TImage.Create(FPanel4);
-  FChoosed.Top := 40;
-  FChoosed.Left := 12;
-  FChoosed.Width := 30;
-  FChoosed.Height := 30;
-  FChoosed.Parent := FPanel4;
-  FChoosed.Visible := True;
-  FChoosed.Stretch := False;
-  FChoosed.Align := alNone;
-  FChoosed.Picture.Bitmap := TBItmap.Create;
-  FChoosed.Picture.Bitmap.Width := FChoosed.Width;
-  FChoosed.Picture.Bitmap.Height := FChoosed.Height;
-  FChoosed.Canvas.Brush.Color := clBlack;
-  FChoosed.Canvas.Brush.Style := bsSolid;
-  FChoosed.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
+  with FChoosed do
+  begin
+    Top := 40;
+    Left := 12;
+    Width := 30;
+    Height := 30;
+    Parent := FPanel4;
+    Visible := True;
+    Stretch := False;
+    Align := alNone;
+    Picture.Bitmap := TBitmap.Create;
+    Picture.Bitmap.Width := Width;
+    Picture.Bitmap.Height := Height;
+    Canvas.Brush.Color := clBlack;
+    Canvas.Brush.Style := bsSolid;
+    Canvas.FillRect(Rect(0, 0, Width, Height));
+  end;
 
   FForegroundColorImg := TImage.Create(FPanel3);
+  with FForegroundColorImg do
+  begin
+    Left := 5;
+    Top := 5;
+    Width := 25;
+    Height := 25;
+    Picture.Bitmap := TBitmap.Create;
+    Picture.Bitmap.Width := FChoosed.Width;
+    Picture.Bitmap.Height := FChoosed.Height;
+    Canvas.Brush.Color := clBlack;
+    Canvas.Brush.Style := bsSolid;
+    Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
+    Hint := RsHint2;
+    ShowHint := True;
+    OnClick := Color1Click;
+    Parent := FPanel3;
+    Visible := True;
+  end;
+
   FBackgroundColorImg := TImage.Create(FPanel3);
-  FForegroundColorImg.Left := 5;
-  FForegroundColorImg.Top := 5;
-  FForegroundColorImg.Width := 25;
-  FForegroundColorImg.Height := 25;
-
-  FBackgroundColorImg.Left := 25;
-  FBackgroundColorImg.Top := 20;
-  FBackgroundColorImg.Height := 25;
-  FBackgroundColorImg.Width := 25;
-  FBackgroundColorImg.Visible := True;
-  FForegroundColorImg.Visible := True;
-  FForegroundColorImg.Parent := FPanel3;
-  FBackgroundColorImg.Parent := FPanel3;
-
-  FBackgroundColorImg.Picture.Bitmap := TBItmap.Create;
-  FBackgroundColorImg.Picture.Bitmap.Width := FChoosed.Width;
-  FBackgroundColorImg.Picture.Bitmap.Height := FChoosed.Height;
-  FBackgroundColorImg.Canvas.Brush.Color := clWhite;
-  FBackgroundColorImg.Canvas.Brush.Style := bsSolid;
-  FBackgroundColorImg.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
-  FBackgroundColorImg.Hint := RsHint1;
-  FBackgroundColorImg.ShowHint := True;
-  FBackgroundColorImg.OnClick := Color2Click;
-
-  FForegroundColorImg.Picture.Bitmap := TBItmap.Create;
-  FForegroundColorImg.Picture.Bitmap.Width := FChoosed.Width;
-  FForegroundColorImg.Picture.Bitmap.Height := FChoosed.Height;
-  FForegroundColorImg.Canvas.Brush.Color := clBlack;
-  FForegroundColorImg.Canvas.Brush.Style := bsSolid;
-  FForegroundColorImg.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
-  FForegroundColorImg.Hint := RsHint2;
-  FForegroundColorImg.ShowHint := True;
-  FForegroundColorImg.OnClick := Color1Click;
+  with FBackgroundColorImg do
+  begin
+    Left := 25;
+    Top := 20;
+    Height := 25;
+    Width := 25;
+    Picture.Bitmap := TBitmap.Create;
+    Picture.Bitmap.Width := FChoosed.Width;
+    Picture.Bitmap.Height := FChoosed.Height;
+    Canvas.Brush.Color := clWhite;
+    Canvas.Brush.Style := bsSolid;
+    Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
+    Hint := RsHint1;
+    ShowHint := True;
+    OnClick := Color2Click;
+    Parent := FPanel3;
+    Visible := True;
+  end;
 
   FXLabel := TLabel.Create(FPanel3);
-  FXLabel.Left := 7;
-  FXLabel.Top := 32;
-  FXLabel.AutoSize := True;
-  FXLabel.Caption := RsLabelCaption;
-  FXLabel.Hint := RsLabelHint;
-  FXLabel.OnClick := Exchange;
-  FXLabel.ShowHint := True;
-  FXLabel.Visible := True;
-  FXLabel.Parent := FPanel3;
-end;
-
-destructor TJvGammaPanel.Destroy;
-begin
-  FXLabel.Free;
-  FBackgroundColorImg.Free;
-  FForegroundColorImg.Free;
-  FGamma.Free;
-  FChoosed.Free;
-  FRLabel.Free;
-  FGLabel.Free;
-  FBLabel.Free;
-  FPanel2.Free;
-  FPanel3.Free;
-  FPanel4.Free;
-  FPanel1.Free;
-  inherited Destroy;
+  with FXLabel do
+  begin
+    Left := 7;
+    Top := 32;
+    AutoSize := True;
+    Caption := RsLabelCaption;
+    Hint := RsLabelHint;
+    OnClick := Exchange;
+    ShowHint := True;
+    Visible := True;
+    Parent := FPanel3;
+  end;
 end;
 
 procedure TJvGammaPanel.ChangeColor(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -307,7 +321,7 @@ var
   Col: TColor;
 begin
   Col := FGamma.Picture.Bitmap.Canvas.Pixels[X, Y];
-  LastCol := col;
+  LastCol := Col;
   FRLabel.Caption := Format(RsRedFormat, [GetRValue(Col)]);
   FGLabel.Caption := Format(RsGreenFormat, [GetGValue(Col)]);
   FBLabel.Caption := Format(RsBlueFormat, [GetBValue(Col)]);
@@ -359,9 +373,9 @@ end;
 
 procedure TJvGammaPanel.WMSize(var Msg: TWMSize);
 begin
-  Self.Width := 65;
-  Self.Height := 250;
-  Self.FForegroundColorImg.BringToFront;
+  Width := 65;
+  Height := 250;
+  FForegroundColorImg.BringToFront;
 end;
 
 end.

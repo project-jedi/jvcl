@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, Controls, Forms,
-  JvJVCLUtils {, JvComponent};
+  JvJVCLUtils, JvComponent;
 
 type
   TFormRequestEvent = procedure(Sender: TObject; CurrentForm: TCustomForm;
@@ -41,7 +41,7 @@ type
   TJvFormHistory = class;
   TFormHistoryCommand = (hcNone, hcAdd, hcBack, hcForward, hcGoto);
 
-  TJvMergeManager = class(TComponent)
+  TJvMergeManager = class(TJvComponent)
   private
     FMergeFrame: TWinControl;
     FFormHistory: TJvFormHistory;
@@ -51,7 +51,7 @@ type
     FOnChange: TNotifyEvent;
     FOnReorder: TFormReorderEvent;
     function IsForm: Boolean;
-    function NotIsForm: Boolean;
+    function MergeFrameStored: Boolean;
     procedure ReadForm(Reader: TReader);
     procedure WriteForm(Writer: TWriter);
     procedure SetMergeFrame(Value: TWinControl);
@@ -69,7 +69,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Merge(AForm: TCustomForm; Show: Boolean);
-    procedure UnMergeMainMenu(AForm:TCustomForm);
+    procedure UnmergeMainMenu(AForm:TCustomForm);
     procedure MergeMainMenu(AForm:TCustomForm;Force:boolean);
     function GotoForm(AForm: TCustomForm): Boolean;
     function GotoFormClass(AFormClass: TFormClass): Boolean;
@@ -78,13 +78,11 @@ type
     procedure GotoHistoryIndex(HistoryIndex: Integer);
     property FormHistory: TJvFormHistory read FFormHistory;
     property ActiveForm: TCustomForm read GetActiveForm write SetActiveForm;
-    property HistoryCommand: TFormHistoryCommand read FHistoryCommand
-      write FHistoryCommand;
+    property HistoryCommand: TFormHistoryCommand read FHistoryCommand write FHistoryCommand;
   published
-    property MergeFrame: TWinControl read FMergeFrame write SetMergeFrame stored NotIsForm;
+    property MergeFrame: TWinControl read FMergeFrame write SetMergeFrame stored MergeFrameStored;
     property OnGetBackForm: TFormRequestEvent read FOnGetBackForm write FOnGetBackForm;
-    property OnGetForwardForm: TFormRequestEvent read FOnGetForwardForm
-      write FOnGetForwardForm;
+    property OnGetForwardForm: TFormRequestEvent read FOnGetForwardForm write FOnGetForwardForm;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnReorder: TFormReorderEvent read FOnReorder write FOnReorder;
   end;
@@ -98,7 +96,6 @@ type
     function GetForm(Index: Integer): TCustomForm;
   public
     constructor Create;
-    destructor Destroy; override;
     procedure AddForm(AForm: TCustomForm);
     procedure DeleteHistoryItem(Index: Integer);
     function RemoveItem(Item: TComponent): Boolean;
@@ -125,15 +122,14 @@ begin
   inherited Destroy;
 end;
 
-function TJvMergeManager.NotIsForm: Boolean;
+function TJvMergeManager.MergeFrameStored: Boolean;
 begin
   Result := (MergeFrame <> nil) and not (MergeFrame is TCustomForm);
 end;
 
 function TJvMergeManager.IsForm: Boolean;
 begin
-  Result := (MergeFrame <> nil) and ((MergeFrame = Owner) and
-    (Owner is TCustomForm));
+  Result := (MergeFrame <> nil) and ((MergeFrame = Owner) and (Owner is TCustomForm));
 end;
 
 procedure TJvMergeManager.ReadForm(Reader: TReader);
@@ -338,21 +334,13 @@ begin
   FHistoryCapacity := 10;
 end;
 
-destructor TJvFormHistory.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TJvFormHistory.SetCurrent(Value: Integer);
 begin
   if Value < 0 then
     Value := -1;
   if Value > Count - 1 then
     Value := Count - 1;
-  if FCurrent <> Value then
-  begin
-    FCurrent := Value;
-  end;
+  FCurrent := Value;
 end;
 
 procedure TJvFormHistory.SetHistoryCapacity(Value: Integer);
@@ -361,9 +349,7 @@ var
 begin
   if Value < FHistoryCapacity then
     for I := 0 to Count - Value do
-    begin
       RemoveItem(Forms[0]);
-    end;
   FHistoryCapacity := Value;
 end;
 
@@ -415,19 +401,22 @@ begin
 end;
 
 procedure TJvMergeManager.MergeMainMenu(AForm: TCustomForm;Force:boolean);
-var F:TCustomForm;
+var
+  F: TCustomForm;
 begin
   F := GetParentForm(MergeFrame);
-  if (F <> nil) and (F.Menu <> nil) and (AForm <> nil) and (AForm.Menu <> nil) and (Force or AForm.Menu.AutoMerge) then
-      F.Menu.Merge(AForm.Menu);
+  if (F <> nil) and (F.Menu <> nil) and (AForm <> nil) and
+    (AForm.Menu <> nil) and (Force or AForm.Menu.AutoMerge) then
+    F.Menu.Merge(AForm.Menu);
 end;
 
-procedure TJvMergeManager.UnMergeMainMenu(AForm: TCustomForm);
-var F:TCustomForm;
+procedure TJvMergeManager.UnmergeMainMenu(AForm: TCustomForm);
+var
+  F: TCustomForm;
 begin
   F := GetParentForm(MergeFrame);
   if (F <> nil) and (F.Menu <> nil) and (AForm <> nil) and (AForm.Menu <> nil) then
-    F.Menu.UnMerge(AForm.Menu);
+    F.Menu.Unmerge(AForm.Menu);
 end;
 
 end.

@@ -31,13 +31,13 @@ unit JvAni;
 interface
 
 uses
+  SysUtils, Classes, Consts,
   {$IFDEF VCL}
   Windows, Graphics, Forms, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QForms, QExtCtrls, Types,
   {$ENDIF QForms}
-  SysUtils, Classes, Consts,
   JvTypes;
 
 type
@@ -243,7 +243,7 @@ var
   begin
     l := ReadDWord;
 
-    //Check for integrity of the data
+    // Check for integrity of the data
     if (l > 0) and (l < FImage.Size - FImage.Position) then
     begin
       Dec(dw, l);
@@ -468,7 +468,7 @@ begin
 end;
 
 initialization
-  RegisterClass(TJvAni);
+  Classes.RegisterClass(TJvAni);
   TPicture.RegisterFileFormat(RsAniExtension, RsAniFilterName, TJvAni);
 
 finalization

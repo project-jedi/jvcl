@@ -23,6 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvMarkupLabel;
@@ -32,42 +33,40 @@ unit JvMarkupLabel;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, JvComponent, JvMarkupCommon;
+  Windows, SysUtils, Classes, Graphics, Controls,
+  JvComponent, JvMarkupCommon;
 
 type
   TJvMarkupLabel = class(TJvGraphicControl)
   private
-    { Private declarations }
-    ElementStack: TJvHTMLElementStack;
-    TagStack: TJvHTMLElementStack;
+    FElementStack: TJvHTMLElementStack;
+    FTagStack: TJvHTMLElementStack;
     FText: string;
     FBackColor: TColor;
-    FMarginLeft: integer;
-    FMarginRight: integer;
-    FMarginTop: integer;
-    procedure ParseHTML(s: string);
+    FMarginLeft: Integer;
+    FMarginRight: Integer;
+    FMarginTop: Integer;
+    procedure ParseHTML(S: string);
     procedure RenderHTML;
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
     procedure SetBackColor(const Value: TColor);
     procedure SetText(const Value: string);
-    procedure SetMarginLeft(const Value: integer);
-    procedure SetMarginRight(const Value: integer);
-    procedure SetMarginTop(const Value: integer);
-  protected
-    { Protected declarations }
+    procedure SetMarginLeft(const Value: Integer);
+    procedure SetMarginRight(const Value: Integer);
+    procedure SetMarginTop(const Value: Integer);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
   published
-    { Published declarations }
+    property BackColor: TColor read FBackColor write SetBackColor default clWhite;
+    property Height default 100;
+    property MarginLeft: Integer read FMarginLeft write SetMarginLeft default 5;
+    property MarginRight: Integer read FMarginRight write SetMarginRight default 5;
+    property MarginTop: Integer read FMarginTop write SetMarginTop default 5;
     property Text: string read FText write SetText;
-    property BackColor: TColor read FBackColor write SetBackColor;
-    property MarginLeft: integer read FMarginLeft write SetMarginLeft;
-    property MarginRight: integer read FMarginRight write SetMarginRight;
-    property MarginTop: integer read FMarginTop write SetMarginTop;
+    property Width default 200;
   end;
 
 implementation
@@ -75,436 +74,435 @@ implementation
 uses
   JvConsts, JvThemes;
 
-
-{ TJvMarkupLabel }
-
 constructor TJvMarkupLabel.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   IncludeThemeStyle(Self, [csParentBackground]);
-  Elementstack := TJvHTMLElementStack.Create;
-  TagStack := TJvHTMLElementStack.Create;
-  FBackcolor := clwhite;
+  FElementStack := TJvHTMLElementStack.Create;
+  FTagStack := TJvHTMLElementStack.Create;
+  FBackColor := clWhite;
   Width := 200;
   Height := 100;
   FMarginLeft := 5;
   FMarginRight := 5;
-  FMargintop := 5;
+  FMarginTop := 5;
 end;
 
 destructor TJvMarkupLabel.Destroy;
 begin
-  ElementStack.free;
-  TagStack.free;
-  inherited;
+  FElementStack.Free;
+  FTagStack.Free;
+  inherited Destroy;
 end;
 
 procedure TJvMarkupLabel.HTMLClearBreaks;
 var
-  i, c: integer;
+  I: Integer;
   El: TJvHTMLElement;
 begin
-  c := ElementStack.Count;
-  if c = 0 then exit;
-  for i := 0 to c - 1 do
+  for I := 0 to FElementStack.Count - 1 do
   begin
-    el := TJvHTMLElement(ElementStack.items[i]);
-    el.SolText := '';
-    el.EolText := '';
+    El := TJvHTMLElement(FElementStack.Items[I]);
+    El.SolText := '';
+    El.EolText := '';
   end;
 end;
 
 procedure TJvMarkupLabel.HTMLElementDimensions;
 var
-  i, c: integer;
+  I: Integer;
   El: TJvHTMLElement;
-  h, a, w: integer;
-  tm: Textmetric;
-  s: string;
+  Tm: TEXTMETRIC;
 begin
-  c := ElementStack.Count;
-  if c = 0 then exit;
-  for i := 0 to c - 1 do
+  for I := 0 to FElementStack.Count - 1 do
   begin
-    el := TJvHTMLElement(ElementStack.items[i]);
-    s := el.Text;
-    canvas.font.name := el.FontName;
-    canvas.font.size := el.FontSize;
-    canvas.font.style := el.FontStyle;
-    canvas.font.Color := el.FontColor;
-    gettextmetrics(canvas.handle, tm);
-    h := tm.tmHeight;
-    a := tm.tmAscent;
-    w := canvas.TextWidth(s);
-    el.Height := h;
-    el.Ascent := a;
-    el.Width := w;
+    El := TJvHTMLElement(FElementStack.Items[I]);
+    Canvas.Font.Name := El.FontName;
+    Canvas.Font.Size := El.FontSize;
+    Canvas.Font.Style := El.FontStyle;
+    Canvas.Font.Color := El.FontColor;
+    GetTextMetrics(Canvas.Handle, Tm);
+    El.Height := Tm.tmHeight;
+    El.Ascent := Tm.tmAscent;
+    El.Width := Canvas.TextWidth(El.Text);
   end;
 end;
 
 procedure TJvMarkupLabel.Paint;
 begin
   RenderHTML;
-
 end;
 
-procedure TJvMarkupLabel.ParseHTML(s: string);
+procedure TJvMarkupLabel.ParseHTML(S: string);
 var
-  p: integer;
+  P: Integer;
   se, st: string;
   ftext: string;
-  fstyle: TfontStyles;
+  fstyle: TFontStyles;
   fname: string;
-  fsize: integer;
-  fbreakLine: boolean;
-  aColor, fColor: Tcolor;
+  fsize: Integer;
+  BreakLine: Boolean;
+  aColor, fColor: TColor;
   Element: TJvHTMLElement;
 
-  function HTMLStringToColor(v: string; var col: Tcolor): boolean;
+  function HTMLStringToColor(V: string; var Col: TColor): Boolean;
   var
     vv: string;
   begin
-    if copy(v, 1, 1) <> '#' then
+    if Copy(V, 1, 1) <> '#' then
     begin
-      vv := 'cl' + v;
+      vv := 'cl' + V;
       try
-        col := stringtoColor(vv);
-        result := true;
+        Col := StringToColor(vv);
+        Result := True;
       except
-        result := false;
+        Result := False;
       end;
     end
     else
     begin
       try
-        vv := '$' + copy(v, 6, 2) + copy(v, 4, 2) + copy(v, 2, 2);
-        col := stringtocolor(vv);
-        result := true;
+        vv := '$' + Copy(V, 6, 2) + Copy(V, 4, 2) + Copy(V, 2, 2);
+        Col := StringToColor(vv);
+        Result := True;
       except
-        result := false;
+        Result := False;
       end
     end
   end;
 
-  procedure pushTag;
+  procedure PushTag;
   begin
     Element := TJvHTMLElement.Create;
-    element.FontName := fname;
-    element.FontSize := fsize;
-    element.FontStyle := fstyle;
-    element.FontColor := fColor;
-    TagStack.push(Element);
+    Element.FontName := fname;
+    Element.FontSize := fsize;
+    Element.FontStyle := fstyle;
+    Element.FontColor := fColor;
+    FTagStack.Push(Element);
   end;
 
-  procedure popTag;
+  procedure PopTag;
   begin
-    Element := TagStack.pop;
-    if element <> nil then
+    Element := FTagStack.Pop;
+    if Element <> nil then
     begin
-      fname := element.FontName;
-      fsize := element.FontSize;
-      fstyle := element.FontStyle;
-      fcolor := element.FontColor;
+      fname := Element.FontName;
+      fsize := Element.FontSize;
+      fstyle := Element.FontStyle;
+      fcolor := Element.FontColor;
       Element.Free;
     end;
   end;
 
-  procedure pushElement;
+  procedure PushElement;
   begin
     Element := TJvHTMLElement.Create;
     Element.Text := ftext;
-    element.FontName := fname;
-    element.FontSize := fsize;
-    element.FontStyle := fstyle;
-    element.FontColor := fColor;
-    element.BreakLine := fBreakLine;
-    fBreakLine := false;
-    ElementStack.push(Element);
+    Element.FontName := fname;
+    Element.FontSize := fsize;
+    Element.FontStyle := fstyle;
+    Element.FontColor := fColor;
+    Element.BreakLine := BreakLine;
+    BreakLine := False;
+    FElementStack.Push(Element);
   end;
 
-  procedure parseTag(ss: string);
+  procedure ParseTag(ss: string);
   var
-    pp: integer;
+    pp: Integer;
     atag, apar, aval: string;
-    havepar: boolean;
+    havepar: Boolean;
   begin
-    ss := trim(ss);
-    havepar := false;
-    pp := pos(' ', ss);
-    if pp = 0 then
-    begin // tag only
-      atag := ss;
-    end
+    ss := Trim(ss);
+    havepar := False;
+    pp := Pos(' ', ss);
+    if pp = 0 then // tag only
+      atag := ss
     else
-    begin // tag + atrributes
-      atag := copy(ss, 1, pp - 1);
-      ss := trim(copy(ss, pp + 1, length(ss)));
-      havepar := true;
+    begin // tag + attributes
+      atag := Copy(ss, 1, pp - 1);
+      ss := Trim(Copy(ss, pp + 1, Length(ss)));
+      havepar := True;
     end;
     // handle atag
-    atag := lowercase(atag);
+    atag := LowerCase(atag);
     if atag = 'br' then
-      fBreakLine := true
-    else if atag = 'b' then
+      BreakLine := True
+    else
+    if atag = 'b' then
     begin // bold
-      pushtag;
-      fstyle := fstyle + [fsbold];
+      PushTag;
+      fstyle := fstyle + [fsBold];
     end
-    else if atag = '/b' then
+    else
+    if atag = '/b' then
     begin // cancel bold
-      fstyle := fstyle - [fsbold];
-      poptag;
+      fstyle := fstyle - [fsBold];
+      PopTag;
     end
-    else if atag = 'i' then
+    else
+    if atag = 'I' then
     begin // italic
-      pushtag;
-      fstyle := fstyle + [fsitalic];
+      PushTag;
+      fstyle := fstyle + [fsItalic];
     end
-    else if atag = '/i' then
+    else
+    if atag = '/I' then
     begin // cancel italic
-      fstyle := fstyle - [fsitalic];
-      poptag;
+      fstyle := fstyle - [fsItalic];
+      PopTag;
     end
-    else if atag = 'u' then
+    else
+    if atag = 'u' then
     begin // underline
-      pushtag;
-      fstyle := fstyle + [fsunderline];
+      PushTag;
+      fstyle := fstyle + [fsUnderline];
     end
-    else if atag = '/u' then
+    else
+    if atag = '/u' then
     begin // cancel underline
-      fstyle := fstyle - [fsunderline];
-      poptag;
+      fstyle := fstyle - [fsUnderline];
+      PopTag;
     end
-    else if atag = 'font' then
-    begin
-      pushtag;
-    end
-    else if atag = '/font' then
-    begin
-      poptag;
-    end;
+    else
+    if atag = 'font' then
+      PushTag
+    else
+    if atag = '/font' then
+      PopTag;
     if havepar then
     begin
       repeat
-        pp := pos('="', ss);
+        pp := Pos('="', ss);
         if pp > 0 then
         begin
-          aPar := lowercase(trim(copy(ss, 1, pp - 1)));
-          delete(ss, 1, pp + 1);
-          pp := pos('"', ss);
+          aPar := LowerCase(Trim(Copy(ss, 1, pp - 1)));
+          Delete(ss, 1, pp + 1);
+          pp := Pos('"', ss);
           if pp > 0 then
           begin
-            aVal := copy(ss, 1, pp - 1);
-            delete(ss, 1, pp);
+            aVal := Copy(ss, 1, pp - 1);
+            Delete(ss, 1, pp);
             if aPar = 'face' then
-            begin
-              fname := aVal;
-            end
-            else if aPar = 'size' then
-            try
-              fsize := strtoint(aval);
-            except
-            end
-            else if aPar = 'color' then
-            try
-              if HTMLStringToColor(aval, aColor) then
-                fcolor := aColor;
-            except
-            end
+              fname := aVal
+            else
+            if aPar = 'size' then
+              try
+                fsize := StrToInt(aval);
+              except
+              end
+            else
+            if aPar = 'color' then
+              try
+                if HTMLStringToColor(aval, aColor) then
+                  fcolor := aColor;
+              except
+              end;
           end;
         end;
       until pp = 0;
     end;
   end;
+
 begin
-  ElementStack.Clear;
-  TagStack.Clear;
+  FElementStack.Clear;
+  FTagStack.Clear;
   fstyle := [];
   fname := 'arial';
   fsize := 12;
-  fColor := clblack;
-  fBreakLine := false;
+  fColor := clBlack;
+  BreakLine := False;
   repeat
-    p := pos('<', s);
-    if p = 0 then
+    P := Pos('<', S);
+    if P = 0 then
     begin
-      fText := s;
+      fText := S;
       PushElement;
     end
     else
     begin
-      if p > 1 then
+      if P > 1 then
       begin
-        se := copy(s, 1, p - 1);
+        se := Copy(S, 1, P - 1);
         ftext := se;
-        pushElement;
-        delete(s, 1, p - 1);
+        PushElement;
+        Delete(S, 1, P - 1);
       end;
-      p := pos('>', s);
-      if p > 0 then
+      P := Pos('>', S);
+      if P > 0 then
       begin
-        st := copy(s, 2, p - 2);
-        delete(s, 1, p);
-        parseTag(st);
+        st := Copy(S, 2, P - 2);
+        Delete(S, 1, P);
+        ParseTag(st);
       end;
     end;
-  until p = 0;
+  until P = 0;
 end;
 
 procedure TJvMarkupLabel.RenderHTML;
 var
-  R: trect;
-  x, y, xav, clw: integer;
-  baseline: integer;
-  i, c: integer;
-  el: TJvHTMLElement;
-  eol: boolean;
-  ml: integer; // margin left
-  isol, ieol: integer;
-  maxheight, maxascent: integer;
-  pendingBreak: boolean;
+  R: TRect;
+  x, y, xav, clw: Integer;
+  baseline: Integer;
+  I, C: Integer;
+  El: TJvHTMLElement;
+  eol: Boolean;
+  ml: Integer; // margin left
+  isol, ieol: Integer;
+  maxheight, maxascent: Integer;
+  pendingBreak: Boolean;
 
   procedure SetFont(ee: TJvHTMLElement);
   begin
-    with canvas do
+    with Canvas do
     begin
-      font.name := ee.FontName;
-      font.Size := ee.FontSize;
-      font.Style := ee.FontStyle;
-      font.Color := ee.FontColor;
+      Font.Name := ee.FontName;
+      Font.Size := ee.FontSize;
+      Font.Style := ee.FontStyle;
+      Font.Color := ee.FontColor;
     end;
   end;
 
   procedure RenderString(ee: TJvHTMLElement);
   var
     ss: string;
-    ww: integer;
+    ww: Integer;
   begin
     SetFont(ee);
-    if ee.soltext <> '' then
+    if ee.SolText <> '' then
     begin
       ss := ee.SolText;
-      ww := canvas.TextWidth(ss);
-      canvas.TextOut(x, y + baseline - ee.Ascent, ss);
+      ww := Canvas.TextWidth(ss);
+      Canvas.TextOut(x, y + baseline - ee.Ascent, ss);
       x := x + ww;
     end;
   end;
 
 begin
-  ieol := 0; // Not Needed but removes warning.
-  R := clientrect;
-  canvas.Brush.color := BackColor;
+  ieol := 0;
+  R := ClientRect;
+  Canvas.Brush.Color := BackColor;
   DrawThemedBackground(Self, Canvas, R);
-  c := ElementStack.Count;
-  if c = 0 then exit;
+  C := FElementStack.Count;
+  if C = 0 then
+    Exit;
   HTMLClearBreaks;
   clw := ClientWidth - FMarginRight;
   ml := MarginLeft;
-  canvas.Brush.style := bsclear;
+  Canvas.Brush.Style := bsClear;
   y := FMarginTop;
   isol := 0;
-  pendingBreak := false;
+  pendingBreak := False;
   repeat
-    i := isol;
+    I := isol;
     xav := clw;
     maxHeight := 0;
     maxAscent := 0;
-    eol := false;
+    eol := False;
     repeat // scan line
-      el := TJvHTMLElement(ElementStack.items[i]);
-      if el.BreakLine then
+      El := TJvHTMLElement(FElementStack.Items[I]);
+      if El.BreakLine then
       begin
         if not pendingBreak then
         begin
-          pendingBreak := true;
-          ieol := i;
-          break;
+          pendingBreak := True;
+          ieol := I;
+          Break;
         end
         else
-          pendingBreak := false;
+          pendingBreak := False;
       end;
-      if el.Height > maxheight then maxheight := el.Height;
-      if el.Ascent > maxAscent then maxAscent := el.Ascent;
-      el.Breakup(canvas, xav);
-      if el.soltext <> '' then
+      if El.Height > maxheight then
+        maxheight := El.Height;
+      if El.Ascent > maxAscent then
+        maxAscent := El.Ascent;
+      El.Breakup(Canvas, xav);
+      if El.SolText <> '' then
       begin
-        xav := xav - canvas.TextWidth(el.Soltext);
-        if el.EolText = '' then
+        xav := xav - Canvas.TextWidth(El.SolText);
+        if El.EolText = '' then
         begin
-          if i >= c - 1 then
+          if I >= C - 1 then
           begin
-            eol := true;
-            ieol := i;
+            eol := True;
+            ieol := I;
           end
           else
-          begin
-            inc(i);
-          end
+            Inc(I);
         end
         else
         begin
-          eol := true;
-          ieol := i;
+          eol := True;
+          ieol := I;
         end;
       end
       else
       begin // eol
-        eol := true;
-        ieol := i;
+        eol := True;
+        ieol := I;
       end;
     until eol;
     // render line
     x := ml;
     baseline := maxAscent;
-    for i := isol to ieol do
+    for I := isol to ieol do
     begin
-      el := TJvHTMLElement(ElementStack.items[i]);
-      RenderString(el);
+      El := TJvHTMLElement(FElementStack.Items[I]);
+      RenderString(El);
     end;
     y := y + maxHeight;
     isol := ieol;
-  until (ieol >= c - 1) and (el.EolText = '');
+  until (ieol >= C - 1) and (El.EolText = '');
 end;
 
 procedure TJvMarkupLabel.SetBackColor(const Value: TColor);
 begin
-  if value <> FBackColor then
+  if FBackColor <> Value then
   begin
-    FBackcolor := Value;
-    invalidate;
+    FBackColor := Value;
+    Invalidate;
   end;
 end;
 
-procedure TJvMarkupLabel.SetMarginLeft(const Value: integer);
+procedure TJvMarkupLabel.SetMarginLeft(const Value: Integer);
 begin
-  FMarginLeft := Value;
-  invalidate;
+  if FMarginLeft <> Value then
+  begin
+    FMarginLeft := Value;
+    Invalidate;
+  end;
 end;
 
-procedure TJvMarkupLabel.SetMarginRight(const Value: integer);
+procedure TJvMarkupLabel.SetMarginRight(const Value: Integer);
 begin
-  FMarginRight := Value;
-  invalidate;
+  if FMarginRight <> Value then
+  begin
+    FMarginRight := Value;
+    Invalidate;
+  end;
 end;
 
-procedure TJvMarkupLabel.SetMarginTop(const Value: integer);
+procedure TJvMarkupLabel.SetMarginTop(const Value: Integer);
 begin
-  FMarginTop := Value;
-  invalidate;
+  if FMarginTop <> Value then
+  begin
+    FMarginTop := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvMarkupLabel.SetText(const Value: string);
-var
-  s: string;
 begin
-  if Value = FText then Exit;
-  s := Value;
-  s := StringReplace(s, sLineBreak, ' ', [rfreplaceall]);
-  s := Trimright(s);
-  parseHTML(s);
-  HTMLElementDimensions;
-  FText := s;
-  invalidate;
+  if Value <> FText then
+  begin
+    FText := Value;
+    FText := StringReplace(FText, sLineBreak, ' ', [rfReplaceAll]);
+    FText := TrimRight(FText);
+    ParseHTML(FText);
+    HTMLElementDimensions;
+    Invalidate;
+  end;
 end;
 
 end.
+
