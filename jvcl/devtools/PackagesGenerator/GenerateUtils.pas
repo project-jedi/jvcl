@@ -30,6 +30,8 @@ procedure EnumeratePackages(Path : string; packages : TStrings);
 
 procedure ExpandTargets(targets : TStrings);
 
+procedure ExpandTargetsNoPerso(targets : TStrings);
+
 function PackagesLocation : string;
 
 var
@@ -483,6 +485,22 @@ begin
     targets.Assign(expandedTargets);
   finally
     expandedTargets.Free;
+  end;
+end;
+
+procedure ExpandTargetsNoPerso(targets : TStrings);
+var
+  i : integer;
+begin
+  ExpandTargets(targets);
+  // now remove "perso" targets
+  i := 0;
+  while i < targets.count do
+  begin
+    if not Assigned(TargetList.ItemsByName[targets[i]]) then
+      targets.Delete(i)
+    else
+      inc(i);
   end;
 end;
 

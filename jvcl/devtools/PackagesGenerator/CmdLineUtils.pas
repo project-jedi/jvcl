@@ -129,6 +129,7 @@ begin
    // EnumeratePackages() needs this 
     if packagesPath = '' then
       packagesPath := PackagesLocation;
+      
     if PathIsAbsolute(packagesPath) then
       packagesPath := packagesPath
     else
@@ -136,7 +137,7 @@ begin
 
 
     StrToStrings(targetList, ',', targets, False);
-    ExpandTargets(targets);
+    ExpandTargetsNoPerso(targets);
 
     packages := TStringList.Create;
     try
