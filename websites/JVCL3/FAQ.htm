@@ -126,6 +126,28 @@ function ToggleVisible(objId) {
 <div id="FAQ15" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
 <img src="images/a.gif" border=0 width="12" height="12">&nbsp;Yes, we will continue to support and develop RXLib but within the constraints of JVCL. This means that RXLib components can be merged, replaced, archived and renamed at any time as we see fit (indeed, this has already happened to a few of the original RXLib components). <br><br>JVCL will try to preserve backward compatibility, taking into account the cost for JVCL (maintenance, stopping of future development, not being able to fix bugs etc). If we think it is better for the JVCL as a whole to make changes that break backward compatibility, we will do the changes.<br><br>This standpoint is not RXLib specific. We reserve the right to do the same with any library or component donated to JVCL.<br><br></div>
 
+<img src="images/q.gif" border=0 width="12" height="12">&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible('FAQ16');">C++ 
+Builder: Why isn't anything updated when I use the '<<' or '>>' operator on a Set property (Font.Style, JvWizard.EnabledButtons...)</a>
+<br>
+<div id="FAQ16" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
+<img src="images/a.gif" border=0 width="12" height="12">&nbsp;This is a BUG in C++ Builder related to
+the way the '<<' and '>>' operators work, as reported in Quality Central under bug #9359. For instance,
+if you want to add "fsBold" to the Font style, the following code is not reliable.<br>
+<br>
+<code>
+  Font->Style << fsBold;
+</code><br>
+<br>
+Use that one instead:<br>
+<br>
+<code>
+  Font->Style = TFontStyles(Font->Style) << fsBold;
+</code><br>
+<br>
+This is the only way you can be sure that the internal value will be set AND the property setter, 
+if any, will be called.
+</div>
+
 
 </body>
 </html>
