@@ -70,6 +70,7 @@ EMPTYLINE
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
+    FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -93,9 +94,12 @@ EMPTYLINE
     procedure VisibleChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; dynamic;
+    property MouseOver: Boolean read FMouseOver write FMouseOver;  
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$IFNDEF COMPILER6_UP}
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+
+{$IFNDEF COMPILER6_UP}
   {$IFDEF HASAUTOSIZE}
     procedure SetAutoSize(Value: Boolean); dynamic
   {$IFDEF PUBLISHAUTOSIZE}
@@ -103,7 +107,7 @@ EMPTYLINE
   {$ENDIF PUBLISHAUTOSIZE}
     property AutoSize: Boolean read GetAutoSize write SetAutoSize;
   {$ENDIF HASAUTOSIZE}
-  {$ENDIF !COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
@@ -145,10 +149,10 @@ EMPTYLINE
   private
     FInputKeys: TInputKeys;
   protected
-    procedure BoundsChanged; dynamic;
+    procedure BoundsChanged; {$IFNDEF HASBOUNDSCHANGED} dynamic {$ELSE} override {$ENDIF};
     procedure CursorChanged; dynamic;
-    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
+    procedure DoKillFocus(NextWnd: HWND); dynamic;
+    procedure DoSetFocus(PreviousWnd: HWND); dynamic;
     procedure GotFocus; dynamic;
     procedure LostFocus; dynamic;
     function DoEraseBackground(ACanvas: TCanvas; LParam: Integer): Boolean; dynamic;
@@ -375,12 +379,14 @@ end;
 
 procedure TJvEx##ClassName.MouseEnter(AControl: TControl);
 begin
+  FMouseOver := True;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
 procedure TJvEx##ClassName.MouseLeave(AControl: TControl);
 begin
+  FMouseOver := False;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
@@ -453,12 +459,15 @@ JV_IMPL_CONTROL_COMMON(ClassName)
 *)
 
 (*$DEFINE JV_IMPL_WINCONTROL_MESSAGES
-      { WinControl Messages }     
-      CM_GOTFOCUS, WM_SETFOCUS: GotFocus;
-      CM_LOSTFOCUS, WM_KILLFOCUS: LostFocus;
-      WM_GETDLGCODE: if not (ikNative in FInputKeys) then
-                       Result := InputKeysToDlgCodes(FInputKeys);
-      WM_ERASEBKGND:
+      { WinControl Messages }
+      CM_GOTFOCUS           : GotFocus;
+      CM_LOSTFOCUS          : LostFocus;
+      WM_SETFOCUS           : DoSetFocus(FocusedWnd);
+      WM_KILLFOCUS          : if not (csFocusing in ControlState) then
+                                DoKillFocus(FocusedWnd);
+      WM_GETDLGCODE         : if not (ikNative in FInputKeys) then
+                                Result := InputKeysToDlgCodes(FInputKeys);
+      WM_ERASEBKGND :
       begin
         ACanvas := GetCanvas(Self);
         if Assigned(ACanvas) then
@@ -498,23 +507,21 @@ end;
 procedure TJvEx##ClassName.GotFocus;
 begin
   { notification }
-  DoSetFocus(Mouse.Capture)
 end;
 
 procedure TJvEx##ClassName.LostFocus;
 begin
   { notification }
-  DoKillFocus(Mouse.Capture)
 end;
 
-procedure TJvEx##ClassName.DoSetFocus(FocusedWnd: HWND);
+procedure TJvEx##ClassName.DoSetFocus(PreviousWnd: HWND);
 begin
-
+  Perform(CM_GOTFOCUS, 0, 0);
 end;
 
-procedure TJvEx##ClassName.DoKillFocus(FocusedWnd: HWND);
+procedure TJvEx##ClassName.DoKillFocus(NextWnd: HWND);
 begin
-
+  Perform(CM_LOSTFOCUS, 0, 0);
 end;
 
 function TJvEx##ClassName.DoEraseBackground(ACanvas: TCanvas; LParam: Integer): Boolean;
@@ -525,6 +532,9 @@ end;
 procedure TJvEx##ClassName.BoundsChanged;
 begin
   { notification }
+  {$IFDEF HASBOUNDSCHANGED}
+  inherited BoundsChanged;
+  {$ENDIF HASBOUNDSCHANGED}
 end;
 
 procedure TJvEx##ClassName.CursorChanged;
@@ -580,7 +590,9 @@ begin
     case Msg of
       JV_IMPL_CONTROL_MESSAGES
       JV_IMPL_WINCONTROL_MESSAGES
-      WM_CLEAR, WM_COPY, WM_CUT, WM_PASTE, WM_UNDO, EM_UNDO:
+
+      WM_CLEAR, WM_COPY, WM_CUT,
+      WM_PASTE, WM_UNDO, EM_UNDO:
         Handled := DoClipBoardCommands(msg, FClipBoardCommands);
     end;
   end;
@@ -597,6 +609,8 @@ JV_IMPL_WINCONTROL_COMMON(ClassName)
 JV_IMPL_CONTROL_COMMON(ClassName)
 *)
 
+// ********************** CUSTOMFORM **************************
+
 (*$DEFINE JV_IMPL_CUSTOMFORM(ClassName)
 { CustomForm }
 constructor TJvEx##ClassName.CreateNew(AOwner: TComponent; Dummy: Integer);
@@ -608,8 +622,6 @@ begin
 end;
   EMPTYLINE
 *) // MACRO END JV_IMPL_CUSTOMFORM
-
-// ************************************************
 
 (*$DEFINE JV_CUSTOMFORM_IMPL(ClassName)
 JV_IMPL_WINCONTROL_CREATE(ClassName)

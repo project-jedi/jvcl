@@ -48,16 +48,18 @@ type
   TEditStyle = (esSimple, esEllipsis, esPickList);
   {$ENDIF HAS_GRID_EDITSTYLE}
 
-
+  {$DEFINE HASBOUNDSCHANGED}
   JV_WINCONTROL(InplaceEdit)
+  {$UNDEF HASBOUNDSCHANGED}
   JV_WINCONTROL(CustomGrid)
   {$IFDEF COMPILER6_UP}
   JV_WINCONTROL(CustomDrawGrid)
+  {$DEFINE HASBOUNDSCHANGED}
   JV_WINCONTROL(InplaceEditList)
+  {$UNDEF HASBOUNDSCHANGED}
   {$ENDIF COMPILER6_UP}
 
   JV_WINCONTROL_BEGIN(DrawGrid)
-  JV_CONSTRUCTOR
   {$IFNDEF HAS_GRID_EDITSTYLE}
   protected
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
@@ -65,38 +67,45 @@ type
   JV_WINCONTROL_END(DrawGrid)
 
   JV_WINCONTROL_BEGIN(StringGrid)
-  JV_CONSTRUCTOR
   {$IFNDEF HAS_GRID_EDITSTYLE}
   protected
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
   {$ENDIF !HAS_GRID_EDITSTYLE}
-  JV_CUSTOMCONTROL_END(StringGrid)
+  JV_WINCONTROL_END(StringGrid)
 
 implementation
 
+{$DEFINE HASBOUNDSCHANGED}
 JV_WINCONTROL_IMPL(InplaceEdit)
+{$UNDEF HASBOUNDSCHANGED}
+
 JV_WINCONTROL_IMPL(CustomGrid)
+
 {$IFDEF COMPILER6_UP}
 JV_WINCONTROL_IMPL(CustomDrawGrid)
+
+{$DEFINE HASBOUNDSCHANGED}
 JV_WINCONTROL_IMPL(InplaceEditList)
+{$UNDEF HASBOUNDSCHANGED}
+
 {$ENDIF COMPILER6_UP}
 
-JV_CUSTOMCONTROL_IMPL_BEGIN(DrawGrid)
 {$IFNDEF HAS_GRID_EDITSTYLE}
 function TJvExDrawGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
 begin
   Result := esSimple;
 end;
 {$ENDIF !HAS_GRID_EDITSTYLE}
-JV_CUSTOMCONTROL_IMPL_END(DrawGrid)
 
-JV_CUSTOMCONTROL_IMPL_BEGIN(StringGrid)
+JV_WINCONTROL_IMPL(DrawGrid)
+
 {$IFNDEF HAS_GRID_EDITSTYLE}
 function TJvExStringGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
 begin
   Result := esSimple;
 end;
 {$ENDIF !HAS_GRID_EDITSTYLE}
-JV_CUSTOMCONTROL_IMPL_END(StringGrid)
+
+JV_WINCONTROL_IMPL(StringGrid)
 
 end.
