@@ -272,6 +272,7 @@ type
            in Items, see comment at TJvCustomListBox.LBAddString }
     FDisplayNames: TStringList;
     FOnDriveChangeError: TJvDriveChangeError;
+    FShowAllFolders: boolean;
     function GetDrive: Char;
     procedure SetFileList(Value: TJvFileListBox);
     procedure SetDirLabel(Value: TLabel);
@@ -282,7 +283,7 @@ type
     procedure SetDirectory(const NewDirectory: string); virtual;
     procedure ResetItemHeight;
     procedure SetDriveCombo(const Value: TJvDriveCombo);
-    procedure SetAutoExpand(const Value: Boolean);
+    procedure SetShowAllFolders(const Value: boolean);
   protected
     FImages: TImageList;
     FDirectory: string;
@@ -312,7 +313,7 @@ type
     property CaseSensitive: Boolean read FCaseSensitive;
   published
     property Align;
-    property AutoExpand: Boolean read FAutoExpand write SetAutoExpand default True;
+    property AutoExpand: Boolean read FAutoExpand write FAutoExpand default True;
     property BorderStyle;
     property BevelInner;
     property BevelOuter;
@@ -336,6 +337,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property ShowAllFolders:boolean read FShowAllFolders write SetShowAllFolders default False;
     property ShowHint;
     property ScrollBars default ssNone;
     property TabOrder;
@@ -1142,13 +1144,16 @@ end;
 
 function TJvDirectoryListBox.ReadDirectoryNames(const ParentDirectory: string;
   DirectoryList: TStrings): Integer;
+const
+  cAttr:array[boolean] of Integer = (faDirectory,
+    {$IFDEF VCL}faReadOnly or faHidden or faSysFile or faArchive or {$ENDIF}faDirectory);
 var
   Status: Integer;
   SearchRec: TSearchRec;
 begin
   Result := 0;
   DirectoryList.BeginUpdate;
-  Status := FindFirst(ConcatPaths(ParentDirectory, AllFilePattern), faDirectory, SearchRec);
+  Status := FindFirst(ConcatPaths(ParentDirectory, AllFilePattern), cAttr[ShowAllFolders], SearchRec);
   try
     while Status = 0 do
     begin
@@ -1450,9 +1455,13 @@ begin
   inherited Click;
 end;
 
-procedure TJvDirectoryListBox.SetAutoExpand(const Value: Boolean);
+procedure TJvDirectoryListBox.SetShowAllFolders(const Value: boolean);
 begin
-  FAutoExpand := Value;
+  if FShowAllFolders <> Value then
+  begin
+    FShowAllFolders := Value;
+    BuildList;
+  end;
 end;
 
 //=== TJvFileListBox =========================================================
