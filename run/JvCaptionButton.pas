@@ -147,8 +147,8 @@ type
     FNeedRecalculate: Boolean;
     FRgnChanged: Boolean;
     FSaveRgn: HRgn;
-    FShowHint: boolean;
-    FParentShowHint: boolean;
+    FShowHint: Boolean;
+    FParentShowHint: Boolean;
 
     {tool tip specific}
     FToolTipHandle: THandle;
@@ -229,8 +229,8 @@ type
     procedure DoActionChange(Sender: TObject);
 
     function MouseOnButton(X, Y: Integer; const TranslateToScreenCoord: Boolean): Boolean;
-    procedure SetParentShowHint(const Value: boolean);
-    procedure SetShowHint(const Value: boolean);
+    procedure SetParentShowHint(const Value: Boolean);
+    procedure SetShowHint(const Value: Boolean);
   protected
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
     procedure CalcButtonParts(ACanvas: TCanvas; ButtonRect: TRect; var RectText, RectImage: TRect);
@@ -238,7 +238,7 @@ type
     procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
-    procedure MouseMove(Shift: TShiftState; X, Y: integer); virtual;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure UpdateButtonRect(Wnd: THandle);
 
@@ -253,7 +253,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Assign(Source:TPersistent);override;
+    procedure Assign(Source: TPersistent); override;
     procedure InitiateAction; virtual;
     procedure ResetButton;
     procedure Click; dynamic;
@@ -266,8 +266,8 @@ type
     property ButtonWidth: Integer read FWidth write SetWidth default 0;
     property Caption: string read FCaption write SetCaption stored IsCaptionStored;
     property Down: Boolean read FDown write SetDown;
-    property ShowHint: boolean read FShowHint write SetShowHint default false;
-    property ParentShowHint: boolean read FParentShowHint write SetParentShowHint default true;
+    property ShowHint: Boolean read FShowHint write SetShowHint default False;
+    property ParentShowHint: Boolean read FParentShowHint write SetParentShowHint default True;
     property Enabled: Boolean read FEnabled write SetEnabled stored IsEnabledStored default True;
     property Font: TFont read FFont write SetFont;
     property Hint: string read FHint write FHint stored IsHintStored;
@@ -565,7 +565,7 @@ begin
 
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
-  FParentShowHint := true;
+  FParentShowHint := True;
 
   Hook;
 end;
@@ -738,7 +738,7 @@ begin
     end
     else
     begin
-      Font.Color := self.Font.Color;
+      Font.Color := Self.Font.Color;
       DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
     end;
   end;
@@ -1103,7 +1103,8 @@ end;
 
 procedure TJvCaptionButton.HandleNCMouseMove(
   var Msg: TWMNCHitMessage);
-var IsOnButton:boolean;
+var
+  IsOnButton: Boolean;
 begin
   IsOnButton := MouseOnButton(Msg.XCursor, Msg.YCursor, False);
   if Visible then
@@ -1116,10 +1117,11 @@ begin
     end;
    // (p3) only handle mouse move if we are inside the button or it will be triggered for the entire NC area
     if IsOnButton then
-      with TWmMouseMove(Msg) do
+      with TWMMouseMove(Msg) do
         MouseMove(KeysToShiftState(Keys), XPos, YPos);
   end;
 end;
+
 procedure TJvCaptionButton.HandleNCPaintAfter(Wnd: THandle; var Msg: TWMNCPaint);
 begin
   if FRgnChanged then
@@ -1288,10 +1290,10 @@ begin
     FOnMouseDown(Self, Button, Shift, X, Y);
 end;
 
-procedure TJvCaptionButton.MouseMove(Shift: TShiftState; X, Y: integer);
+procedure TJvCaptionButton.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   if Assigned(FOnMouseMove) then
-    FOnMouseMove(self, Shift, X, Y);
+    FOnMouseMove(Self, Shift, X, Y);
 end;
 
 function TJvCaptionButton.MouseOnButton(X, Y: Integer;
@@ -1514,13 +1516,13 @@ begin
   end;
 end;
 
-procedure TJvCaptionButton.SetParentShowHint(const Value: boolean);
+procedure TJvCaptionButton.SetParentShowHint(const Value: Boolean);
 begin
   if FParentShowHint <> Value then
   begin
     FParentShowHint := Value;
     if FParentShowHint then
-      FSHowHint := ParentForm.ShowHint;
+      FShowHint := ParentForm.ShowHint;
   end;
 end;
 
@@ -1533,12 +1535,12 @@ begin
   end;
 end;
 
-procedure TJvCaptionButton.SetShowHint(const Value: boolean);
+procedure TJvCaptionButton.SetShowHint(const Value: Boolean);
 begin
-  if FSHowHint <> Value then
+  if FShowHint <> Value then
   begin
     FShowHint := Value;
-    FParentShowHint := false;
+    FParentShowHint := False;
   end;
 end;
 
@@ -1680,6 +1682,31 @@ begin
   Result := False;
 
   case Msg.Msg of
+    {$IFDEF JVCLThemesEnabled}
+    WM_THEMECHANGED,
+    CM_SYSCOLORCHANGE:
+    {$ENDIF}
+      begin
+        FNeedRecalculate := True;
+        {$IFDEF JVCLThemesEnabled}
+        { force theme data refresh, needed when
+
+          * Switching from 'windows classic' style to 'windows XP' style
+            ( delphi 7 bug) }
+        ThemeServices.ApplyThemeChange;
+        {$ENDIF}
+      end;
+    CM_SYSFONTCHANGED:
+      begin
+        FNeedRecalculate := True;
+        {$IFDEF JVCLThemesEnabled}
+        { force theme data refresh, needed when
+
+          * Non-themed application and switching system font size }
+        if not ThemeServices.ThemesEnabled then
+          ThemeServices.ApplyThemeChange;
+        {$ENDIF}
+      end;
     WM_SETTEXT:
       { Caption text may overwrite the button, so redraw }
       Redraw(rkIndirect);
@@ -1703,19 +1730,12 @@ end;
 function TJvCaptionButton.WndProcBefore(var Msg: TMessage): Boolean;
 begin
   case Msg.Msg of
-    {$IFDEF JVCLThemesEnabled}
-    WM_THEMECHANGED:
+    CM_SHOWHINTCHANGED:
       begin
-        FNeedRecalculate := True;
+        if ParentShowHint then
+          FShowHint := ParentForm.ShowHint;
         Result := False;
       end;
-    {$ENDIF}
-    CM_SHOWHINTCHANGED:
-    begin
-      if ParentShowHint then
-        FShowHint := ParentForm.ShowHint;
-      Result := False;
-    end;
     CM_MOUSELEAVE, CM_MOUSEENTER:
       begin
         if FMouseInControl then
