@@ -207,6 +207,7 @@ type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Reset; override;
+    property AlwaysEnableButton default True;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -221,6 +222,7 @@ type
     property Canvas: TCanvas read GetCanvas;
   published
     //Polaris
+    property AlwaysShowPopup default True;
     property Align;
     property Action;
     property AutoSelect;
@@ -324,6 +326,7 @@ type
     function IsValidDate(Value: TDateTime): Boolean;
     // Polaris
     procedure PopupDropDown(DisableEdit: Boolean); override;
+    property AlwaysEnableButton default True;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -335,6 +338,7 @@ type
     property Canvas: TCanvas read GetCanvas;
   published
     // Polaris
+    property AlwaysShowPopup default True;
     property DateAutoBetween;
     property MinDate;
     property MaxDate;
@@ -463,6 +467,7 @@ type
     procedure Loaded; override;
     //Polaris
     procedure PopupDropDown(DisableEdit: Boolean); override;
+    property AlwaysEnableButton default True;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -474,6 +479,7 @@ type
     property Value;
   published
     //Polaris
+    property AlwaysShowPopup default True;
     property Align;
     property DecimalPlaceRound;
 
@@ -1147,6 +1153,7 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   inherited ReadOnly := True;
   AlwaysEnableButton := True;
+  AlwaysShowPopup := True;
 end;
 
 destructor TJvDBComboEdit.Destroy;
@@ -1418,6 +1425,7 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   Self.OnAcceptDate := AfterPopup;
   AlwaysEnableButton := True;
+  AlwaysShowPopup := True;
   inherited ReadOnly := True;
   UpdateMask;
 end;
@@ -1541,9 +1549,9 @@ end;
 
 procedure TJvDBDateEdit.PopupDropDown(DisableEdit: Boolean);
 begin
-  if not ReadOnly then
-    FDataLink.Edit;
-  inherited PopupDropDown(DisableEdit);
+  {if not ReadOnly then} // checked in FDataLink.Edit via CanModify
+  if AlwaysShowPopup or FDataLink.Edit then
+    inherited PopupDropDown(DisableEdit);
 end;
 
 function TJvDBDateEdit.GetCanvas: TCanvas;
@@ -1755,6 +1763,7 @@ begin
   FDataLink.OnEditingChange := EditingChange;
   FDataLink.OnUpdateData := UpdateFieldData;
   inherited ReadOnly := True;
+  AlwaysShowPopup := True;
   AlwaysEnableButton := True;
 end;
 
@@ -1855,9 +1864,9 @@ end;
 
 procedure TJvDBCalcEdit.PopupDropDown(DisableEdit: Boolean);
 begin
-  if not ReadOnly then
-    FDataLink.Edit;
-  inherited PopupDropDown(DisableEdit);
+  {if not ReadOnly then} // checked in FDataLink.Edit via CanModify
+  if AlwaysShowPopup or FDataLink.Edit then
+    inherited PopupDropDown(DisableEdit);
 end;
 
 function TJvDBCalcEdit.EditCanModify: Boolean;
