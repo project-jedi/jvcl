@@ -188,6 +188,9 @@ constructor TJvTimerEvent.Create(ACollection: TCollection);
 begin
   FHandle := INVALID_HANDLE_VALUE;
   inherited Create(ACollection);
+  {$IFDEF COMPILER5}
+  (GetOwner as TJvTimerEvents).Notify(Self, cnAdded); // invoke missing Notify
+  {$ENDIF COMPILER5}
   FCycled := True;
   FRepeatCount := 0;
   FEnabled := True;
@@ -206,6 +209,9 @@ end;
 destructor TJvTimerEvent.Destroy;
 begin
   FOnTimer := nil;
+  {$IFDEF COMPILER5}
+  (GetOwner as TJvTimerEvents).Notify(Self, cnDeleted); // invoke missing Notify
+  {$ENDIF COMPILER5}
   inherited Destroy;
 end;
 
