@@ -560,13 +560,34 @@ begin
   Stream.Seek(-Pos, soFromCurrent);
 end;
 
+procedure CopyStream(Source,Dest:TStream);
+var
+  BufSize, N: Integer;
+  Buffer: PChar;
+begin
+  BufSize := $F000;
+  GetMem(Buffer, BufSize);
+  try
+    N := Source.Read(Buffer^,BufSize);
+    while N = BufSize do
+    begin
+      Dest.Write(Buffer^,BufSize);
+      N := Source.Read(Buffer^,BufSize);
+    end;
+    if N > 0 then
+      N := Dest.Write(Buffer^,N);
+  finally
+    FreeMem(Buffer, BufSize);
+  end;
+end;
+
 procedure TJvSurvey.DecompressStream(Source, Dest: TStream);
 var
   ZStream: TDecompressionStream;
 begin
   ZStream := TDecompressionStream.Create(Source);
   try
-    Dest.CopyFrom(ZStream,ZStream.Size); // decompress - doesn't work with Count = 0
+    CopyStream(ZStream,Dest); // decompress - doesn't work with Count = 0
   finally
     ZStream.Free;
   end;
