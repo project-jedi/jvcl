@@ -7,6 +7,13 @@ Changelog for JVCL 3.0
 - JVCL Installer and build.exe have been updated to allow Delphi 2005 installation/compilation // ahuser
 - bpg2mak.exe is compatible with Delphi 2005 .bdsgroup file format // ahuser
 2004-11-22:
+- TJvBalloonHint:
+  * Allow user to set hint font and color by assigning from Screen.HintFont and Application.HintColor when appropriate.
+  * Expand tab (#9) characters
+  * Try to avoid placing the window outside the screen bounds and if it does happen, make sure it is the bottom part of the window that isn't visible // peter3
+- TJvListView: 
+  * Several bugs with the load and save methods fixed
+  * Reimplemented some save/load methods using stringlists // peter3
 - TJvZoom:
   * Added ZoomPercentage - opposite of ZoomLevel
   * Added CrosshairPicture. Use instead of CrossHairColor/CrossHairSize. Still need to set CrossHair to true to use.
