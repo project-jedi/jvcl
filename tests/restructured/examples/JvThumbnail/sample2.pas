@@ -4,8 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, FileCtrl, ComCtrls, JvBaseThumbnail, JvThumbImage, JvThumbNails,
-  JvBasethb, JvThumbNail;
+  StdCtrls, ExtCtrls, FileCtrl, ComCtrls, JvBaseThumbnail, JvThumbImage, JvThumbNails ;
 
 type
   TForm2 = class(TForm)

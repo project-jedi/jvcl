@@ -43,7 +43,6 @@ object Form1: TForm1
       'C:\Program\adaptec'
       'C:\Program\adaptec\shared'
       'C:\Program\adaptec\shared\ecdc engine')
-    ScrollWidth = 413
     TabOrder = 1
     FileList = JvFileListBox1
     DriveCombo = DriveCombo1

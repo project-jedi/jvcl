@@ -48,7 +48,6 @@ object Form1: TForm1
       Top = 10
       Width = 208
       Height = 95
-      HelpType = htKeyword
       AutoSize = True
     end
     object Label1: TLabel
@@ -56,7 +55,6 @@ object Form1: TForm1
       Top = 120
       Width = 213
       Height = 161
-      HelpType = htKeyword
       AutoSize = False
       Caption = 
         'This is a demo of the TJvContentScroller component. Load the Tes' +

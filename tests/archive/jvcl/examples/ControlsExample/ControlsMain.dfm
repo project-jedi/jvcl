@@ -43,7 +43,6 @@ object MainFrom: TMainFrom
     Height = 360
     ActivePage = TabSheet1
     Align = alClient
-    TabIndex = 0
     TabOrder = 1
     ClientBorderWidth = 0
     DrawTabShadow = False

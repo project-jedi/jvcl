@@ -24,7 +24,6 @@ object Form1: TForm1
     HotTrack = True
     ParentShowHint = False
     ShowHint = True
-    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Hint = 'Table Demo'

@@ -165,7 +165,6 @@ object Form1: TForm1
     object View1: TMenuItem
       Caption = 'View'
       object Statusbar2: TMenuItem
-        AutoCheck = True
         Caption = 'Statusbar'
         Checked = True
         OnClick = Statusbar2Click

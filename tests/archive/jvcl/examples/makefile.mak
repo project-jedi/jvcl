@@ -74,7 +74,11 @@ DBexpl32.exe \
 RxDemo.exe \
 RxGIFAnm.exe \
 JvTranslatorProj.exe \
-JvThumbnailDemo.exe
+JvThumbnailDemo.exe \
+BasicDemo.exe \
+CollectionDemo.exe \
+SimpleHIDWrite.exe \
+GreyMouser.exe 
 
 #---------------------------------------------------------------------------------------------------
 
@@ -342,3 +346,24 @@ JvThumbnailDemo.exe: JvThumbnail\JvThumbnailDemo.dpr
   cd JvThumbnail
   $(DCC) $&.dpr
   cd ..
+
+BasicDemo.exe: HID\BasicDemo\BasicDemo.dpr
+  cd HID\BasicDemo
+  $(DCCH) $&.dpr
+  cd ..\..
+
+CollectionDemo.exe: HID\CollectionDemo\CollectionDemo.dpr
+  cd HID\CollectionDemo
+  $(DCCH) $&.dpr
+  cd ..\..
+
+SimpleHIDWrite.exe: HID\ReadWriteDemo\SimpleHIDWrite.dpr
+  cd HID\ReadWriteDemo
+  $(DCCH) $&.dpr
+  cd ..\..
+
+GreyMouser.exe: HID\ThreadDemo\GreyMouser.dpr
+  cd HID\ThreadDemo
+  $(DCCH) $&.dpr
+  cd ..\..
+

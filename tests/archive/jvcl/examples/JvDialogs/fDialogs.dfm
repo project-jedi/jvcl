@@ -20,7 +20,6 @@ object Form1: TForm1
     Height = 611
     ActivePage = TabSheet1
     Align = alClient
-    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Windows Dialogs'
