@@ -11,13 +11,15 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
     Top = 0
     Width = 762
-    Height = 242
+    Height = 238
     Align = alClient
     Color = clOlive
     Constraints.MinHeight = 183
@@ -37,6 +39,7 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
       ShowHint = True
       StartColor = clBlack
       Step = 0
+      TextOption = toPercent
     end
     object Gauge1: TGauge
       Left = 8
@@ -77,12 +80,12 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
       Max = 100
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 1
+      TabOrder = 0
     end
   end
   object Panel2: TPanel
     Left = 0
-    Top = 242
+    Top = 238
     Width = 762
     Height = 303
     Align = alBottom
@@ -208,7 +211,7 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
       Width = 97
       Height = 17
       Caption = 'Solid'
-      TabOrder = 4
+      TabOrder = 5
       OnClick = chbSolidClick
     end
     object chbTextVisible: TCheckBox
@@ -217,7 +220,7 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
       Width = 97
       Height = 17
       Caption = 'Text Visible'
-      TabOrder = 5
+      TabOrder = 7
       OnClick = chbTextVisibleClick
     end
     object chbTextCentered: TCheckBox
@@ -235,7 +238,7 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
       Width = 97
       Height = 17
       Caption = 'Transparent'
-      TabOrder = 7
+      TabOrder = 8
     end
     object chbGradientBlocks: TCheckBox
       Left = 584
@@ -243,7 +246,7 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
       Width = 97
       Height = 17
       Caption = 'Gradient Blocks'
-      TabOrder = 8
+      TabOrder = 4
       OnClick = chbGradientBlocksClick
     end
     object rgrFont: TRadioGroup
@@ -262,7 +265,7 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
         'Font 6'
         'Font 7'
         'Font 8')
-      TabOrder = 9
+      TabOrder = 10
       OnClick = rgrFontClick
     end
     object Panel3: TPanel
@@ -270,7 +273,7 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
       Top = 136
       Width = 169
       Height = 161
-      TabOrder = 10
+      TabOrder = 12
       object lblMinimum: TLabel
         Left = 8
         Top = 8
@@ -341,8 +344,17 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
       Width = 153
       Height = 17
       Caption = 'Panel Double Buffered'
-      TabOrder = 11
+      TabOrder = 9
       OnClick = chbPanelDoubleBufferedClick
+    end
+    object btnRandom: TButton
+      Left = 440
+      Top = 224
+      Width = 137
+      Height = 73
+      Caption = 'Random'
+      TabOrder = 11
+      OnClick = btnRandomClick
     end
   end
 end
