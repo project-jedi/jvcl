@@ -21,7 +21,7 @@
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
     <Package Name="vcljpg50" Targets="D5,D5s" Condition=""/>
     <Package Name="vclx50" Targets="D5,D5s" Condition=""/>
-    <Package Name="vcljpg" Targets="D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="vcljpg" Targets="D6,D6p,D7,D7p,D9" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvPageListTreeView.pas" Targets="all" Formname="" Condition=""/>

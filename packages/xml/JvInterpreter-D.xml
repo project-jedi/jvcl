@@ -19,14 +19,14 @@
     <Package Name="vclbde50" Targets="C5" Condition=""/>
     <Package Name="qrpt50" Targets="C5" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
-    <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="vcldb" Targets="C6,C6p" Condition=""/>
     <Package Name="bdertl" Targets="C6,C6p" Condition=""/>
-    <Package Name="qrpt" Targets="C6,C6p" Condition=""/>
+    <Package Name="qrpt" Targets="C6,C6p" Condition="JVCL_UseQuickReport"/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvInterpreterReg.pas" Targets="allbutclx" Formname="" Condition=""/>

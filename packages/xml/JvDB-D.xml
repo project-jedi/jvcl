@@ -17,8 +17,8 @@
     <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
     <Package Name="vcldb50" Targets="C5,C5s" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="dcldb" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
+    <Package Name="dcldb" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="CJCLVCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
@@ -26,7 +26,7 @@
     <Package Name="vcldb" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="dclstd50" Targets="D5,D5s" Condition=""/>
-    <Package Name="dclstd" Targets="D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="dclstd" Targets="D6,D6p,D7,D7p,D9" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvSelectDataSetForm.pas" Targets="allbutclx" Formname="JvSelectDataSetForm" Condition=""/>
