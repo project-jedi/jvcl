@@ -31,9 +31,17 @@ unit JvJVCLAboutForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Forms, IniFiles, StdCtrls,
-  ExtCtrls,
-  JclSysInfo, JclWin32, JVCLVer, JvBaseDlg, Dialogs, jpeg, Buttons, JvComponent;
+{$IFDEF MSWINDOWS}
+  Windows, Messages, JclWin32,
+{$ENDIF MSWINDOWS}
+  SysUtils, Classes, IniFiles,
+{$IFDEF VCL}
+  Controls, Forms, StdCtrls, ExtCtrls, Dialogs, Buttons, Jpeg,
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+  QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons, {Jpeg,}
+{$ENDIF VisualCLX}
+  JclSysInfo, JVCLVer, JvBaseDlg, JvComponent;
 
 type
   TJvJVCLAboutForm = class(TJvForm)
@@ -96,7 +104,7 @@ implementation
 uses
   JvJVCLUtils, JvJCLUtils;
 
-{$R *.DFM}
+{$R *.dfm}
 
 const
   cOptions = 'Options';
@@ -107,19 +115,26 @@ const
   cJVCLIni = '\JVCL.ini';
 
 procedure TJvJVCLAboutForm.FormShow(Sender: TObject);
+{$IFDEF MSWINDOWS}
 var
   VersionInfo: TOSVersionInfoEx;
+{$ENDIF MSWINDOWS}
 begin
+  lblVersion.Caption := 'Version: ' + JVCL_VERSIONSTRING;
+{$IFDEF MSWINDOWS}
   FillChar(VersionInfo, SizeOf(TOSVersionInfoEx), #0);
   VersionInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfoEx);
   JclWin32.GetVersionEx(@VersionInfo);
-  lblVersion.Caption := 'Version: ' + JVCL_VERSIONSTRING;
   if VersionInfo.wServicePackMajor = 0 then
     lblWindowsVersion.Caption := Format('%s (Build %u)',
       [GetWindowsVersionString, VersionInfo.dwBuildNumber])
   else
     lblWindowsVersion.Caption := Format('%s (Build %u: %s)',
       [GetWindowsVersionString, VersionInfo.dwBuildNumber, GetWindowsServicePackVersionString]);
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+  lblWindowsVersion.Caption := GetOSVersionString;
+{$ENDIF LINUX}
   lblMemory.Caption := Format('%u KB', [GetTotalPhysicalMemory div 1024]);
   lblCopyRight.Caption := 'Copyright © Project JEDI, 1999 - ' + FormatDateTime('yyyy', Now);
 //  LoadOptions;
@@ -130,7 +145,9 @@ procedure TJvJVCLAboutForm.Panel1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   ReleaseCapture;
+{$IFDEF VCL}
   Perform(WM_SYSCOMMAND, SC_MOVE + 2, 0);
+{$ENDIF VCL}
 end;
 
 procedure TJvJVCLAboutForm.btnHelpClick(Sender: TObject);

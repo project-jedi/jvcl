@@ -24,7 +24,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-{$I WINDOWSONLY.INC}
 
 unit JvJVCLUtils;
 
@@ -661,9 +660,6 @@ implementation
 uses
   Consts, SysConst, CommCtrl, MMSystem, ShlObj, ActiveX, Math,
   JclSysInfo,
-  {$IFDEF VisualCLX}
-  QWinCursors,
-  {$ENDIF VisualCLX}
   JvConsts, JvProgressUtils;
 
 {$IFDEF MSWINDOWS}
