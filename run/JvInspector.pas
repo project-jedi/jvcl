@@ -29,6 +29,14 @@
       - Index out of range errors and/or AV could show up when closing an
         application. This happened mostly in cases where you had a number
         of class items with sub items for the properties of that class.
+      - Corrected OnEnter/OnExit behavior of the inspector (often got fired
+        when switching from edit control back to inspector or edit control
+        of next/previous item).
+      - Added 'hide selection' support. The DotNET painter is currently the
+        only painter that supports this. When focus is moved out of the
+        inspector (and not to an inline edit control) the HideSelectColor and
+        HideSelectTextColor properties are used instead of the SelectedColor
+        and SelectedTextColor properties.
     Apr 10, 2004, Marcel Bestebroer:
       - Double clicking a category item will now expand/collapse regardless
         of the position of the mouse (used to work only when clicking left of
@@ -406,6 +414,7 @@ type
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure DoSetFocus(Focuseded: HWND); override;
+    procedure DoKillFocus(Focuseded: HWND); override;
     {$IFDEF VisualCLX}
     procedure Scrolled(Sender: TObject; ScrollCode: TScrollCode;
       var ScrollPos: Integer); dynamic;
@@ -572,6 +581,8 @@ type
     function GetCollapseImage: TBitmap; virtual;
     function GetDividerColor: TColor; virtual;
     function GetExpandImage: TBitmap; virtual;
+    function GetHideSelectColor: TColor; virtual;
+    function GetHideSelectTextColor: TColor; virtual;
     function GetNameColor: TColor; virtual;
     function GetNameHeight(const AItem: TJvCustomInspectorItem): Integer; virtual;
     function GetRects(const Index: TInspectorPaintRect): TRect; virtual;
@@ -590,6 +601,8 @@ type
     procedure SetCategoryColor(const Value: TColor); virtual;
     procedure SetCategoryTextColor(const Value: TColor); virtual;
     procedure SetDividerColor(const Value: TColor); virtual;
+    procedure SetHideSelectColor(const Value: TColor); virtual;
+    procedure SetHideSelectTextColor(const Value: TColor); virtual;
     procedure SetNameColor(const Value: TColor); virtual;
     procedure SetRects(const Index: TInspectorPaintRect; const ARect: TRect); virtual;
     procedure SetSelectedColor(const Value: TColor); virtual;
@@ -613,6 +626,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetInspector(const AInspector: TJvCustomInspector); virtual;
+    property HideSelectColor: TColor read GetHideSelectColor write SetHideSelectColor;
+    property HideSelectTextColor: TColor read GetHideSelectTextColor write SetHideSelectTextColor;
     property SelectedColor: TColor read GetSelectedColor write SetSelectedColor;
     property SelectedTextColor: TColor read GetSelectedTextColor write SetSelectedTextColor;
   published
@@ -665,13 +680,22 @@ type
 
   TJvInspectorDotNETPainter = class(TJvInspectorBorlandNETBasePainter)
   private
+    FHideSelectColor: TColor;
+    FHideSelectTextColor: TColor;
     FOnSetItemColors: TOnJvInspectorSetItemColors;
   protected
     procedure ApplyNameFont; override;
+    function GetHideSelectColor: TColor; override;
+    function GetHideSelectTextColor: TColor; override;
     procedure DoPaint; override;
+    procedure InitializeColors; override;
     procedure PaintDivider(const X, YTop, YBottom: Integer); override;
+    procedure SetHideSelectColor(const Value: TColor); override;
+    procedure SetHideSelectTextColor(const Value: TColor); override;
   published
     property DividerColor default clBtnFace;
+    property HideSelectColor default clBtnFace;
+    property HideSelectTextColor default clHighlightText;
     property SelectedColor default clHighlight;
     property SelectedTextColor default clHighlightText;
     property OnSetItemColors: TOnJvInspectorSetItemColors read FOnSetItemColors write FOnSetItemColors;
@@ -705,8 +729,8 @@ type
     FDisplayName: string;
     FDroppedDown: Boolean;
     FEditCtrl: TCustomEdit;
+    FEditCtrlDestroying: Boolean;
     {$IFDEF VCL}
-//    FEditChanged :Boolean;
     FEditWndPrc: TWndMethod;
     {$ENDIF VCL}
     FEditing: Boolean;
@@ -762,6 +786,7 @@ type
     // Defines what to do when the property editor of this inspector item is invoked.  Ie, '...' button is clicked on items with iifEdit in their flags.
     procedure Edit; virtual;
     procedure EditChange(Sender: TObject); virtual;
+    procedure EditFocusLost(Sender: TObject); dynamic;
     procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
       virtual;
     procedure EditMouseDown(Sender: TObject; Button: TMouseButton;
@@ -785,6 +810,7 @@ type
     function GetDisplayValue: string; virtual;
     function GetDroppedDown: Boolean; virtual;
     function GetEditCtrl: TCustomEdit; virtual;
+    function GetEditCtrlDestroying: Boolean; virtual;
     function GetEditing: Boolean; virtual;
     function GetExpanded: Boolean; virtual;
     function GetFlags: TInspectorItemFlags; virtual;
@@ -855,6 +881,7 @@ type
     property Category: TJvCustomInspectorItem read GetCategory;
     property DroppedDown: Boolean read GetDroppedDown;
     property EditCtrl: TCustomEdit read GetEditCtrl;
+    property EditCtrlDestroying: Boolean read GetEditCtrlDestroying;
     {$IFDEF VCL}
     property EditWndPrc: TWndMethod read FEditWndPrc;
     {$ENDIF VCL}
@@ -968,6 +995,8 @@ type
     function GetColumnCount: Integer; virtual;
     function GetColumns(I: Integer): TJvInspectorCompoundColumn; virtual;
     function GetDisplayName: string; override;
+    function GetEditCtrl: TCustomEdit; override;
+    function GetEditCtrlDestroying: Boolean; override;
     function GetEditing: Boolean; override;
     function GetSelectedColumn: TJvInspectorCompoundColumn; virtual;
     function GetSelectedColumnIndex: Integer; virtual;
@@ -3755,8 +3784,17 @@ end;
 procedure TJvCustomInspector.DoSetFocus(Focuseded: HWND);
 begin
   inherited DoSetFocus(Focuseded);
-  if Selected <> nil then
+  if (Selected <> nil) and not Selected.EditCtrlDestroying then
     Selected.SetFocus;
+  Invalidate;
+end;
+
+procedure TJvCustomInspector.DoKillFocus(Focuseded: HWND);
+begin
+  inherited DoKillFocus(Focuseded);
+{  if (Selected <> nil) and Selected.Editing and (Selected.EditCtrl.Handle <> Focuseded) then
+    Selected.EditCtrl.Invalidate;}
+  Invalidate;
 end;
 
 procedure TJvCustomInspector.WMHScroll(var Msg: TWMScroll);
@@ -4105,6 +4143,16 @@ begin
     Result := FInternalExpandButton;
 end;
 
+function TJvInspectorPainter.GetHideSelectColor: TColor;
+begin
+  Result := SelectedColor;
+end;
+
+function TJvInspectorPainter.GetHideSelectTextColor: TColor;
+begin
+  Result := SelectedTextColor;
+end;
+
 function TJvInspectorPainter.GetNameColor: TColor;
 begin
   Result := FNameColor;
@@ -4329,6 +4377,14 @@ begin
     if not Initializing and not Loading then
       Inspector.Invalidate;
   end;
+end;
+
+procedure TJvInspectorPainter.SetHideSelectColor(const Value: TColor);
+begin
+end;
+
+procedure TJvInspectorPainter.SetHideSelectTextColor(const Value: TColor);
+begin
 end;
 
 procedure TJvInspectorPainter.SetNameColor(const Value: TColor);
@@ -4752,14 +4808,32 @@ begin
   inherited ApplyNameFont;
   if (Item = Inspector.Selected) and not (Item is TJvInspectorCustomCompoundItem) then
   begin
-    Canvas.Brush.Color := SelectedColor;
-    Canvas.Font.Color := SelectedTextColor;
+    if Inspector.Focused then
+    begin
+      Canvas.Brush.Color := SelectedColor;
+      Canvas.Font.Color := SelectedTextColor;
+    end
+    else
+    begin
+      Canvas.Brush.Color := HideSelectColor;
+      Canvas.Font.Color := HideSelectTextColor;
+    end;
   end
   else
   if (Item.IsCategory) and (Item.Level = 0) then
     Canvas.Brush.Color := CategoryColor
   else
     Canvas.Brush.Color := BackgroundColor;
+end;
+
+function TJvInspectorDotNETPainter.GetHideSelectColor: TColor;
+begin
+  Result := FHideSelectColor;
+end;
+
+function TJvInspectorDotNETPainter.GetHideSelectTextColor: TColor;
+begin
+  Result := FHideSelectTextColor;
 end;
 
 procedure TJvInspectorDotNETPainter.DoPaint;
@@ -4809,7 +4883,12 @@ begin
     TJvInspectorCustomCompoundItem(Item).SingleName or (TJvInspectorCustomCompoundItem(Item).SelectedColumnIndex = 0))
     and ((Item.Level > 0) or
     not (Item.IsCategory)) then
-    Canvas.Brush.Color := SelectedColor;
+  begin
+    if Inspector.Focused then
+      Canvas.Brush.Color := SelectedColor
+    else
+      Canvas.Brush.Color := HideSelectColor;
+  end;
   Canvas.FillRect(PreNameRect);
   ApplyNameFont;
   Canvas.FillRect(Rects[iprNameArea]);
@@ -4849,6 +4928,12 @@ begin
   RestoreCanvasState(Canvas, SaveIdx);
 end;
 
+procedure TJvInspectorDotNETPainter.InitializeColors;
+begin
+  inherited InitializeColors;
+  SetDefaultProp(Self, ['HideSelectColor', 'HideSelectTextColor']);
+end;
+
 procedure TJvInspectorDotNETPainter.PaintDivider(const X, YTop, YBottom: Integer);
 begin
   with Canvas do
@@ -4857,6 +4942,26 @@ begin
     MoveTo(X, YTop);
     LineTo(X, YBottom);
   end
+end;
+
+procedure TJvInspectorDotNETPainter.SetHideSelectColor(const Value: TColor);
+begin
+  if Value <> HideSelectColor then
+  begin
+    FHideSelectColor := Value;
+    if not Initializing and not Loading then
+      Inspector.Invalidate;
+  end;
+end;
+
+procedure TJvInspectorDotNETPainter.SetHideSelectTextColor(const Value: TColor);
+begin
+  if Value <> HideSelectTextColor then
+  begin
+    FHideSelectTextColor := Value;
+    if not Initializing and not Loading then
+      Inspector.Invalidate;
+  end;
 end;
 
 //=== TJvInspectorItemSizing =================================================
@@ -5326,6 +5431,12 @@ begin
   end;
 end;
 
+procedure TJvCustomInspectorItem.EditFocusLost(Sender: TObject);
+begin
+  if Inspector.HandleAllocated and not Inspector.Focused then
+    Inspector.Invalidate;
+end;
+
 procedure TJvCustomInspectorItem.EditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -5559,6 +5670,11 @@ end;
 function TJvCustomInspectorItem.GetEditCtrl: TCustomEdit;
 begin
   Result := FEditCtrl;
+end;
+
+function TJvCustomInspectorItem.GetEditCtrlDestroying: Boolean;
+begin
+  Result := FEditCtrlDestroying;
 end;
 
 function TJvCustomInspectorItem.GetEditorText: string; {NEW:WAP}
@@ -5949,10 +6065,17 @@ begin
   begin
     if EditCtrl <> nil then
     begin
-      {$IFDEF VCL}
-      EditCtrl.WindowProc := Edit_WndProc;
-      {$ENDIF VCL}
-      EditCtrl.Free;
+      FEditCtrlDestroying := True;
+      try
+        if Inspector.CanFocus then
+          Inspector.SetFocus;
+        {$IFDEF VCL}
+        EditCtrl.WindowProc := Edit_WndProc;
+        {$ENDIF VCL}
+        EditCtrl.Free;
+      finally
+        FEditCtrlDestroying := False;
+      end;
     end;
     FEditCtrl := Value;
 
@@ -6566,6 +6689,7 @@ begin
       Memo.WordWrap := True;
       Memo.WantReturns := False;
       Memo.ScrollBars := ssVertical;
+      Memo.OnExit := EditFocusLost;
       {.$IFDEF VCL}
       { marcelb: removed this stuff; it's not needed at all (especially with the new SaveValues
         method) and it has the weird side effect of selecting the next item.
@@ -6581,6 +6705,7 @@ begin
       Edit.OnContextPopup := Inspector.FOnEditorContextPopup;
       Edit.OnKeyUp := Inspector.FOnEditorKeyUp;
       Edit.OnKeyPress := Inspector.FOnEditorKeyPress;
+      Edit.OnExit := EditFocusLost;
       {.$IFDEF VCL}
       { marcelb: removed this stuff; it's not needed at all (especially with the new SaveValues
         method) and it has the weird side effect of selecting the next item.
@@ -6653,12 +6778,9 @@ begin
 end;
 
 procedure TJvCustomInspectorItem.DoneEdit(const CancelEdits: Boolean);
-var
-  HadFocus: Boolean;
 begin
   if Editing then
   begin
-    HadFocus := EditFocused;
     if DroppedDown then
       CloseUp(False);
     if not CancelEdits and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) then
@@ -6669,12 +6791,9 @@ begin
     FreeAndNil(FListBox);
 
     SetEditCtrl(nil);
-//    FEditChanged := false;
     {$IFDEF VCL}
     FEditWndPrc := nil;
     {$ENDIF VCL}
-    if HadFocus then
-      SetFocus;
   end;
   FEditing := False;
 end;
@@ -7006,6 +7125,19 @@ begin
   end;
 end;
 
+function TJvInspectorCustomCompoundItem.GetEditCtrl: TCustomEdit;
+begin
+  if (SelectedColumn <> nil) then
+    Result := SelectedColumn.Item.EditCtrl
+  else
+    Result := nil;
+end;
+
+function TJvInspectorCustomCompoundItem.GetEditCtrlDestroying: Boolean;
+begin
+  Result := (SelectedColumn <> nil) and SelectedColumn.Item.EditCtrlDestroying;
+end;
+
 function TJvInspectorCustomCompoundItem.GetEditing: Boolean;
 begin
   Result := (SelectedColumn <> nil) and SelectedColumn.Item.Editing;
@@ -7288,8 +7420,16 @@ begin
   begin
     if (Inspector.Selected = Self) then
     begin
-      ACanvas.Brush.Color := Inspector.Painter.SelectedColor;
-      ACanvas.Font.Color := Inspector.Painter.SelectedTextColor;
+      if Inspector.Focused then
+      begin
+        ACanvas.Brush.Color := Inspector.Painter.SelectedColor;
+        ACanvas.Font.Color := Inspector.Painter.SelectedTextColor;
+      end
+      else
+      begin
+        ACanvas.Brush.Color := Inspector.Painter.HideSelectColor;
+        ACanvas.Font.Color := Inspector.Painter.HideSelectTextColor;
+      end;
       with Rects[iprNameArea] do
         ACanvas.FillRect(Rect(Left, Top, Right, Bottom));
     end
@@ -7317,8 +7457,16 @@ begin
       begin
         if (Inspector.Selected = Self) and (I = SelectedColumnIndex) then
         begin
-          ACanvas.Brush.Color := Inspector.Painter.SelectedColor;
-          ACanvas.Font.Color := Inspector.Painter.SelectedTextColor;
+          if Inspector.Focused then
+          begin
+            ACanvas.Brush.Color := Inspector.Painter.SelectedColor;
+            ACanvas.Font.Color := Inspector.Painter.SelectedTextColor;
+          end
+          else
+          begin
+            ACanvas.Brush.Color := Inspector.Painter.HideSelectColor;
+            ACanvas.Font.Color := Inspector.Painter.HideSelectTextColor;
+          end;
           with Col.Item.Rects[iprName] do
             ACanvas.FillRect(Rect(Left, RTop, Right, RBottom));
         end
