@@ -3,7 +3,7 @@ unit SearchingForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, JvListView, Buttons, JvBitBtn, JclStrings,
   JvLabel;
 
@@ -43,6 +43,7 @@ var
   ListItem: TListItem;
   Found : Boolean;
 begin
+  Found := false;
   try
     Screen.Cursor := crHourglass;
 

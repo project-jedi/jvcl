@@ -1,9 +1,9 @@
 unit OtherStandAlone;
-
+{$I JVCL.INC}
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvLabel, JvHotLink, ComCtrls;
 
 type
@@ -65,6 +65,9 @@ var
 implementation
 
 uses
+  {$IFNDEF COMPILER6_UP}
+  FileCtrl,
+  {$ENDIF}
   ShellAPI, JclStrings;
 
 {$R *.dfm}
@@ -168,7 +171,7 @@ begin
  fileOrDirName := ExtractFilePath(Application.ExeName) + (aJvLbl).hint;
  StrReplace(fileOrDirName, 'jvcl\bin\', '', [rfIgnoreCase]);
 
- if directoryExists(fileOrDirName) or fileExists(fileOrDirName) then
+ if DirectoryExists(fileOrDirName) or FileExists(fileOrDirName) then
  begin
    aJvLbl.font.Color := clNavy; // now it is visited
    aJvLbl.Tag := 1;

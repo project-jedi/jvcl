@@ -27,7 +27,7 @@
 ******************************************************************}
 
 unit Unitmain;
-
+{$I JVCL.INC}
 interface
 
 uses
@@ -195,6 +195,7 @@ begin
     JvCaptionPanel1.Caption:= TheFormArray[ID].Caption;
 
     // check if the form has a mainMenu and plug it in
+    {$IFDEF COMPILER6_UP}
     if TheFormArray[ID].Menu <> nil then
     begin
        TheToolBar := TjvToolBar.Create(TheFormArray[ID]);
@@ -202,6 +203,7 @@ begin
        TheToolBar.Menu := TheFormArray[ID].Menu;
        TheToolBar.Flat := true;
     end;
+    {$ENDIF COMPILER6_UP}
   end;
   //save the last form
   FormID := ID;

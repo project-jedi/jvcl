@@ -1,9 +1,9 @@
 unit JvID3v1MainFormU;
-
+{$I JVCL.INC}
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvComponent, StdCtrls, Mask, JvToolEdit,
   JvDragDrop, JvId3v1, ComCtrls, ToolWin, ActnList, ImgList, JvJVCLAbout,
   JvBaseDlg, JvTipOfDay, JvBalloonHint;
@@ -67,19 +67,28 @@ var
   JvID3v1MainForm: TJvID3v1MainForm;
 
 implementation
-
-uses DateUtils;
+{$IFDEF COMPILER6_UP}
+uses
+  DateUtils;
+{$ENDIF}  
 
 {$R *.dfm}
+
+{$IFNDEF COMPILER6_UP}
+function AnsiDeQuotedStr(S:string;Quote:Char):string;
+var P:PChar;
+begin
+  P := PChar(S);
+  Result := AnsiExtractQuotedStr(P,Quote);
+end;
+{$ENDIF}
 
 procedure TJvID3v1MainForm.ChangeFileNameTo(S: string);
 begin
   JvFilenameEdit1.Text := S;
-
-  S := AnsiDequotedStr(S, '"');
+  S := AnsiDeQuotedStr(S, '"');
   JvFilenameEdit1.Hint := S;
   JvId3v11.FileName := S;
-
   UpdateCtrls;
   UpdateCaption;
 end;
