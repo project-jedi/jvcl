@@ -43,7 +43,7 @@ type
   TUserNotifyEvent = procedure(Sender: TObject; Param: Integer) of object;
   TDataAvailableEvent = procedure(Sender: TObject; Kind: TJvAppInstDataKind;
     Data: Pointer; Size: Integer) of object;
-    { Data contains the date and is released when the function returns }
+    { Data contains the sent data and is released when the function returns }
   TCmdLineReceivedEvent = procedure(Sender: TObject; CmdLine: TStrings) of object;
 
   { TJvAppInstance encapsulates the TJclAppInstance class. To set a
@@ -81,12 +81,12 @@ type
     destructor Destroy; override;
     procedure Check;
     procedure UserNotify(Param: Integer);
-    function SendData(DataKind: TJclAppInstDataKind;  Data: Pointer; Size: Integer): Boolean;
+    function SendData(DataKind: TJclAppInstDataKind; Data: Pointer; Size: Integer): Boolean;
     property AppInstances: TJclAppInstances read GetAppInstances;
   published
     property Active: Boolean read FActive write FActive default True;
     property AutoActivate: Boolean read FAutoActivate write FAutoActivate default True;
-     { AutoActivateFirst: True means that the first instance is brought to front
+     { AutoActivate: True means that the first instance is brought to front
        by the second process instance. }
     property MaxInstances: Integer read FMaxInstances write FMaxInstances default 1;
      { MaxInstances: 0 means no restriction }
