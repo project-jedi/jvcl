@@ -1,16 +1,7 @@
 package globus;
 
-{
-- Предупреждения типа "Unit '<Name>' implicitly imported into package '<Name>'" нормальны!
 
-- При проблемах компиляции установитие параметр Options/Description/Build Control/Explict Rebuild
-  в окне Package
 
-- (c) Chudin Andrey(aka Xelby) 1998-2002 - avchudin@yandex.ru
-}
-
-{$R *.res}
-{$R 'reggllib.dcr'}
 {$ALIGN 8}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
@@ -34,7 +25,7 @@ package globus;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'GVCL - Globus VCL Extension Library'}
 {$IMPLICITBUILD ON}
-
+{$R '..\source\regall.dcr'}
 requires
   vcl,
   vclx,
@@ -43,9 +34,10 @@ requires
   bdertl,
   qrpt,
   vcljpg,
-  designide;
+  designide,
+  vclie;
 
 contains
-  JvgRegLibDelphi in 'JvgRegLibDelphi.pas';
+  JvgRegLibDelphi in '..\source\JvgRegLibDelphi.pas';
 
 end.
