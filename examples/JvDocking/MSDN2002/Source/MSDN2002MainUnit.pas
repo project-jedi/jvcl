@@ -286,8 +286,14 @@ begin
 end;
 
 procedure TMSDN2002.DefaultDockLayout;
-begin
 
+  procedure VSNetDockForm(AForm: TForm; APanel: TJvDockVSNETPanel);
+  begin
+    AForm.ManualDock(APanel,nil,APanel.Align);
+    APanel.ShowDockPanel(True, AForm);
+    APanel.DoHideControl(AForm);
+  end;
+begin
   lbDockServer1.RightDockPanel.Width := 180;
   lbDockServer1.LeftDockPanel.Width := 180;
   lbDockServer1.BottomDockPanel.Height := 100;
@@ -295,44 +301,32 @@ begin
 //  ContentsForm.Width := 180;
   ContentsForm.Top := 10000;
 //  ContentsForm.Visible := true;
-  ContentsForm.ManualDock(lbDockServer1.RightDockPanel,nil, alNone);
-  lbDockServer1.RightDockPanel.ShowDockPanel(true,ContentsForm);
-  TJvDockVSNETPanel(lbDockServer1.RightDockPanel).DoHideControl(ContentsForm);
+  VSNetDockForm(ContentsForm, lbDockServer1.RightDockPanel as TJvDockVSNETPanel);
 
 //  FavoritesForm.Width := 180;
   FavoritesForm.Top := 10000;
 //  FavoritesForm.Visible := true;
-  FavoritesForm.ManualDock(FavoritesForm,nil,alNone);
-  lbDockServer1.RightDockPanel.ShowDockPanel(true,FavoritesForm);
-  TJvDockVSNETPanel(lbDockServer1.RightDockPanel).DoHideControl(FavoritesForm);
+  VSNetDockForm(FavoritesForm, lbDockServer1.RightDockPanel as TJvDockVSNETPanel);
 
 //  IndexForm.Width := 180;
   IndexForm.Top := 10000;
 //  IndexForm.Visible := true;
-  IndexForm.ManualDock(IndexForm,lbDockServer1.LeftDockPanel,alLeft);
-  lbDockServer1.LeftDockPanel.ShowDockPanel(true,IndexForm);
-  TJvDockVSNETPanel(lbDockServer1.LeftDockPanel).DoAutoHideControl(IndexForm);
+  VSNetDockForm(IndexForm, lbDockServer1.LeftDockPanel as TJvDockVSNETPanel);
 
 //  IndexResultForm.Width := 180;
   IndexResultForm.Top := 10000;
 //  IndexResultForm.Visible := true;
-  IndexResultForm.ManualDock(IndexResultForm,lbDockServer1.LeftDockPanel,alLeft);
-  lbDockServer1.LeftDockPanel.ShowDockPanel(true,IndexResultForm);
-  TJvDockVSNETPanel(lbDockServer1.LeftDockPanel).DoAutoHideControl(IndexResultForm);
+  VSNetDockForm(IndexResultForm, lbDockServer1.LeftDockPanel as TJvDockVSNETPanel);
 
 //  SearchForm.Height := 100;
   SearchForm.Top := 10000;
 //  SearchForm.Visible := true;
-  SearchForm.ManualDock(SearchForm,lbDockServer1.BottomDockPanel,alBottom);
-  lbDockServer1.BottomDockPanel.ShowDockPanel(true,SearchForm);
-  TJvDockVSNETPanel(lbDockServer1.BottomDockPanel).DoAutoHideControl(SearchForm);
+  VSNetDockForm(SearchForm, lbDockServer1.BottomDockPanel as TJvDockVSNETPanel);
 
 //  SearchResultForm.Height := 100;
   SearchResultForm.Top := 10000;
 //  SearchResultForm.Visible := true;
-  SearchResultForm.ManualDock(SearchResultForm,lbDockServer1.BottomDockPanel,alBottom);
-  lbDockServer1.BottomDockPanel.ShowDockPanel(true,SearchResultForm);
-  TJvDockVSNETPanel(lbDockServer1.BottomDockPanel).DoAutoHideControl(SearchResultForm);
+  VSNetDockForm(SearchResultForm, lbDockServer1.BottomDockPanel as TJvDockVSNETPanel);
 end;
 
 procedure TMSDN2002.LoadToolFormLayout;
