@@ -4334,7 +4334,8 @@ var
 begin
   if DroppedDown then
   begin
-    ShowScrollBar(Inspector.Handle, SB_BOTH, False);
+    if Inspector.HandleAllocated then
+      ShowScrollBar(Inspector.Handle, SB_BOTH, False);
     if GetCapture <> 0 then
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
     if ListBox.ItemIndex > -1 then
