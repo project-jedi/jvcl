@@ -7,8 +7,8 @@
 msgid ""
 msgstr "#-#-#-#-#  ..\\..\\run\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-10-10 20:24\n"
-"PO-Revision-Date: 2003-10-10 20:24\n"
+"POT-Creation-Date: 2003-10-19 20:15\n"
+"PO-Revision-Date: 2003-10-19 20:15\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,8 +16,8 @@ msgstr "#-#-#-#-#  ..\\..\\run\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "X-Generator: Dxgettext 1.1.1\n"
 "#-#-#-#-#  ..\\..\\design\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-10-10 20:23\n"
-"PO-Revision-Date: 2003-10-10 20:23\n"
+"POT-Creation-Date: 2003-10-19 20:14\n"
+"PO-Revision-Date: 2003-10-19 20:14\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,8 +25,8 @@ msgstr "#-#-#-#-#  ..\\..\\run\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "X-Generator: Dxgettext 1.1.1\n"
 "#-#-#-#-#  ..\\..\\common\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-10-10 20:23\n"
-"PO-Revision-Date: 2003-10-10 20:23\n"
+"POT-Creation-Date: 2003-10-19 20:14\n"
+"PO-Revision-Date: 2003-10-19 20:14\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -785,6 +785,10 @@ msgstr ""
 msgid "Error #"
 msgstr ""
 
+msgid "%d is an invalid driver index. The maximum value is "
+"%d"
+msgstr ""
+
 msgid "Control '%s' has no parent window"
 msgstr ""
 
@@ -844,6 +848,19 @@ msgid "Write Change"
 msgstr ""
 
 msgid "Security Change"
+msgstr ""
+
+msgid "Cannot change %s when active"
+msgstr ""
+
+msgid "Invalid or empty path (%s)"
+msgstr ""
+
+msgid "Maximum of %d items allowed"
+msgstr ""
+
+msgid "Invalid or empty path (\"%s\") at index "
+"%d"
 msgstr ""
 
 msgid "Data: index cannot be negative"
@@ -1672,76 +1689,6 @@ msgstr ""
 msgid "Uncknown property: %s"
 msgstr ""
 
-msgid "device cannot be identified"
-msgstr ""
-
-msgid "device cannot be opened"
-msgstr ""
-
-msgid "Only one TJvHidDeviceController allowed per "
-"program"
-msgstr ""
-
-msgid "HID Error: a boolean function failed"
-msgstr ""
-
-msgid "device not plugged in"
-msgstr ""
-
-msgid "invalid preparsed data"
-msgstr ""
-
-msgid "invalid report type"
-msgstr ""
-
-msgid "invalid report length"
-msgstr ""
-
-msgid "usage not found"
-msgstr ""
-
-msgid "value out of range"
-msgstr ""
-
-msgid "bad logical or physical values"
-msgstr ""
-
-msgid "buffer too small"
-msgstr ""
-
-msgid "8042 key translation impossible"
-msgstr ""
-
-msgid "incompatible report ID"
-msgstr ""
-
-msgid "not a value array"
-msgstr ""
-
-msgid "is a value array"
-msgstr ""
-
-msgid "data index not found"
-msgstr ""
-
-msgid "data index out of range"
-msgstr ""
-
-msgid "button not pressed"
-msgstr ""
-
-msgid "report does not exist"
-msgstr ""
-
-msgid "not implemented"
-msgstr ""
-
-msgid "unknown HID error %x"
-msgstr ""
-
-msgid "HID Error: "
-msgstr ""
-
 msgid "Jv hint"
 msgstr ""
 
@@ -1751,32 +1698,47 @@ msgstr ""
 msgid "Not active"
 msgstr ""
 
-msgid "Couldn't read data from stream"
+msgid "FAllowedEncodings is empty"
+msgstr ""
+
+msgid "Already reading or writing"
 msgstr ""
 
 msgid "Already reading/writing frame"
 msgstr ""
 
+msgid "Already using temp stream"
+msgstr ""
+
 msgid "Can't call CanRead while writing"
 msgstr ""
 
-msgid "Not reading frame"
+msgid "Controller doesn't support compression"
 msgstr ""
 
-msgid "Not writing frame"
+msgid "Controller doesn't support CRC"
+msgstr ""
+
+msgid "Controller doesn't support encryption"
+msgstr ""
+
+msgid "Controller doesn't support footer"
+msgstr ""
+
+msgid "Could not find allowable encoding"
+msgstr ""
+
+msgid "Couldn't read data from stream"
+msgstr ""
+
+msgid "Error in frame %s (%s), %s"
 msgstr ""
 
 msgid "Frame size differs from actually amount of data "
 "written"
 msgstr ""
 
-msgid "FAllowedEncodings is empty"
-msgstr ""
-
-msgid "Could not find allowable encoding"
-msgstr ""
-
-msgid "Can't write value in v2.2; too big"
+msgid "Frame size is too big"
 msgstr ""
 
 msgid "Language is not of length 3"
@@ -1785,10 +1747,7 @@ msgstr ""
 msgid "No temp stream"
 msgstr ""
 
-msgid "Already reading or writing"
-msgstr ""
-
-msgid "Already using temp stream"
+msgid "Not reading frame"
 msgstr ""
 
 msgid "Not using temp stream"
@@ -1797,25 +1756,13 @@ msgstr ""
 msgid "Not writing"
 msgstr ""
 
-msgid "Error in frame %s (%s), %s"
-msgstr ""
-
-msgid "Controller doesn't support compression"
-msgstr ""
-
-msgid "Controller doesn't support encryption"
-msgstr ""
-
-msgid "Frame size is too big"
-msgstr ""
-
-msgid "Controller doesn't support footer"
+msgid "Not writing frame"
 msgstr ""
 
 msgid "Tag is too big"
 msgstr ""
 
-msgid "Controller doesn't support CRC"
+msgid "Can't write value in v2.2; too big"
 msgstr ""
 
 msgid "Frame ID size can only be 3 or 4"
@@ -2201,6 +2148,9 @@ msgid "missing \"endselect\""
 msgstr ""
 
 msgid "Structure stack is empty."
+msgstr ""
+
+msgid "not implemented"
 msgstr ""
 
 msgid "Schedule is active. Reading a new schedule can only be done on "
@@ -4578,6 +4528,9 @@ msgid "RegAuto property is not assigned"
 msgstr ""
 
 msgid "Browse"
+msgstr ""
+
+msgid "All files (*)|*"
 msgstr ""
 
 msgid "Select a Date"
