@@ -1,6 +1,6 @@
 object frmAboutMe: TfrmAboutMe
-  Left = 492
-  Top = 406
+  Left = 436
+  Top = 166
   Width = 237
   Height = 383
   Caption = 'About Me'
@@ -11,6 +11,7 @@ object frmAboutMe: TfrmAboutMe
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poOwnerFormCenter
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -33,7 +34,7 @@ object frmAboutMe: TfrmAboutMe
     object Comments: TLabel
       Left = 95
       Top = 136
-      Width = 58
+      Width = 56
       Height = 13
       Caption = '2002-09-10'
       WordWrap = True
@@ -464,7 +465,8 @@ object frmAboutMe: TfrmAboutMe
         #9'              Dave Jewell '
         #9'              Martin Waldenburg'
         ''
-        'Contributors:     Peter Th'#246'rnqvist')
+        'Contributors:     Peter Th'#246'rnqvist'
+        #9'          Arioch')
       TabOrder = 0
     end
   end
