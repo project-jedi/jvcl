@@ -68,13 +68,13 @@ type
 
   TJvOutlookBarButton = class(TCollectionItem)
   private
-    FImageIndex: Integer;
+    FImageIndex: TImageIndex;
     FCaption: TCaption;
     FTag: Integer;
     FDown: Boolean;
     FEnabled: boolean;
     procedure SetCaption(const Value: TCaption);
-    procedure SetImageIndex(const Value: Integer);
+    procedure SetImageIndex(const Value: TImageIndex);
     procedure SetDown(const Value: Boolean);
     procedure Change;
     procedure SetEnabled(const Value: boolean);
@@ -87,7 +87,7 @@ type
     procedure EditCaption;
   published
     property Caption: TCaption read FCaption write SetCaption;
-    property ImageIndex: Integer read FImageIndex write SetImageIndex;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
     property Tag: Integer read FTag write FTag;
     property Down: Boolean read FDown write SetDown default False;
     property Enabled: boolean read FEnabled write SetEnabled default True;
@@ -123,7 +123,7 @@ type
     FButtons: TJvOutlookBarButtons;
     FFont: TFont;
     FDownFont: TFont;
-    FImageIndex: Integer;
+    FImageIndex: TImageIndex;
     FAlignment: TAlignment;
     FEnabled: boolean;
     procedure SetButtonSize(const Value: TJvBarButtonSize);
@@ -137,7 +137,7 @@ type
     procedure SetButtons(const Value: TJvOutlookBarButtons);
     procedure SetParentFont(const Value: Boolean);
     procedure SetFont(const Value: TFont);
-    procedure SetImageIndex(const Value: Integer);
+    procedure SetImageIndex(const Value: TImageIndex);
     procedure SetAlignment(const Value: TAlignment);
     procedure DoFontChange(Sender: TObject);
     procedure SetDownFont(const Value: TFont);
@@ -149,7 +149,6 @@ type
   protected
     procedure DoPictureChange(Sender: TObject);
     function GetDisplayName: string; override;
-    { TODO: implement ImageIndex and Alignment }
   public
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
@@ -164,7 +163,7 @@ type
     property Caption: TCaption read FCaption write SetCaption;
     property Color: TColor read FColor write SetColor;
     property DownFont: TFont read FDownFont write SetDownFont;
-    property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property Font: TFont read FFont write SetFont;
     property Picture: TPicture read FPicture write SetPicture;
     property ParentButtonSize: Boolean read FParentButtonSize write SetParentButtonSize default True;
@@ -712,7 +711,7 @@ begin
   end;
 end;
 
-procedure TJvOutlookBarButton.SetImageIndex(const Value: Integer);
+procedure TJvOutlookBarButton.SetImageIndex(const Value: TImageIndex);
 begin
   if FImageIndex <> Value then
   begin
@@ -991,7 +990,7 @@ begin
     Result := inherited GetDisplayName;
 end;
 
-procedure TJvOutlookBarPage.SetImageIndex(const Value: Integer);
+procedure TJvOutlookBarPage.SetImageIndex(const Value: TImageIndex);
 begin
   if FImageIndex <> Value then
   begin
