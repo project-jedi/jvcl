@@ -29,3 +29,6 @@ Known Issues:
 This unit is only supported for VCL!
 {$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
+
+{$I windowsonly.inc}
+
