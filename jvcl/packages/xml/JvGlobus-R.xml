@@ -28,10 +28,7 @@
     <Package Name="vclie" Targets="C6,D6,D7" Condition=""/>
     <Package Name="bdertl" Targets="C6" Condition=""/>
     <Package Name="vclsmp50" Targets="D5,D5s" Condition=""/>
-    <Package Name="DJCL50" Targets="D5,D5s" Condition=""/>
-    <Package Name="DJCL60" Targets="D6,D6p" Condition=""/>
     <Package Name="vclsmp" Targets="D6,D6p,D7p" Condition=""/>
-    <Package Name="DJCL70" Targets="D7p" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvgReportParamsEditor.pas" Targets="all" Formname="" Condition=""/>

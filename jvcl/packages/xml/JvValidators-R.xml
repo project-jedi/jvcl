@@ -12,9 +12,6 @@
     <Package Name="CJCL60" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vclx50" Targets="D5,D5s" Condition=""/>
-    <Package Name="DJCL50" Targets="D5,D5s" Condition=""/>
-    <Package Name="DJCL60" Targets="D6,D6p" Condition=""/>
-    <Package Name="DJCL70" Targets="D7,D7p" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvValidators.pas" Targets="all" Formname="" Condition=""/>
