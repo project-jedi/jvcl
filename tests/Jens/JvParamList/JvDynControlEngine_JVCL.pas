@@ -142,10 +142,18 @@ type
     procedure ControlSetDialogOptions(Value: TSelectDirOpts);
   end;
 
-  TJvDynControlJVCLDateTimeEdit = class (TJvDateTimePicker, IUnknown,
-    IJvDynControl, IJvDynControlData)
+  TJvDynControlJVCLDateTimeEdit = class (TJvPanel, IUnknown,
+    IJvDynControl, IJvDynControlData, IJvDynControlDate)
+  private
+    FDatePicker: TJvDateTimePicker;
+    FTimePicker: TJvDateTimePicker;
+  protected
+    procedure ControlResize(Sender: TObject);
   public
+    constructor Create(aOwner: TComponent); override;
+    destructor Destroy; override;
     procedure ControlSetDefaultProperties;
+
     procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
@@ -157,16 +165,54 @@ type
 
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
+
+    // IJvDynControlDate
+    procedure ControlSetMinDate(Value: TDateTime);
+    procedure ControlSetMaxDate(Value: TDateTime);
+    procedure ControlSetFormat(Value: string);
   end;
 
-  TJvDynControlJVCLDateEdit = class (TJvDynControlJVCLDateTimeEdit)
+  TJvDynControlJVCLDateEdit = class (TJvDateTimePicker, IUnknown,
+    IJvDynControl, IJvDynControlData, IJvDynControlDate)
   public
     procedure ControlSetDefaultProperties;
+
+    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetValue(Value: variant);
+    function ControlGetValue: variant;
+
+    // IJvDynControlDate
+    procedure ControlSetMinDate(Value: TDateTime);
+    procedure ControlSetMaxDate(Value: TDateTime);
+    procedure ControlSetFormat(Value: string);
   end;
 
-  TJvDynControlJVCLTimeEdit = class (TJvDynControlJVCLDateTimeEdit)
+  TJvDynControlJVCLTimeEdit = class (TJvDateTimePicker, IUnknown,
+    IJvDynControl, IJvDynControlData, IJvDynControlTime)
   public
     procedure ControlSetDefaultProperties;
+
+    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetValue(Value: variant);
+    function ControlGetValue: variant;
+
+    procedure ControlSetFormat(Value: string);
   end;
 
   TJvDynControlJVCLCheckBox = class (TJvCheckBox, IUnknown,
@@ -340,7 +386,7 @@ type
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
     procedure ControlSetFocusControl(Value: TWinControl);
-    procedure ControlSetWordWrap(Value: Boolean);
+    procedure ControlSetWordWrap(Value: boolean);
   end;
 
   TJvDynControlJVCLStaticText = class (TJvStaticText, IUnknown, IJvDynControl)
@@ -724,20 +770,62 @@ end;
 
 //=== TJvDynControlJVCLDateTimeEdit ==========================================
 
+constructor TJvDynControlJVCLDateTimeEdit.Create(aOwner: TComponent);
+begin
+  inherited Create(aOwner);
+  Caption  := '';
+  BorderStyle := bsNone;
+  BevelInner := bvNone;
+  BevelOuter := bvNone;
+  FDatePicker := TJvDateTimePicker.Create(self);
+  FDatePicker.Parent := self;
+  FDatePicker.Align := alLeft;
+  FDatePicker.Top := 0;
+  FDatePicker.Left := 0;
+  FTimePicker := TJvDateTimePicker.Create(self);
+  FTimePicker.Align := alClient;
+  FTimePicker.Parent := self;
+  FTimePicker.Top := 0;
+  FTimePicker.Left := 0;
+  Height   := FDatePicker.Height;
+  Width    := FDatePicker.Width + FTimePicker.Width;
+  OnResize := ControlResize;
+  ControlResize(nil);
+  FDatePicker.DateFormat := dfShort;
+  FDatePicker.DateMode := dmComboBox;
+  FDatePicker.Kind     := dtkDate;
+  FTimePicker.DateFormat := dfShort;
+  FTimePicker.DateMode := dmUpDown;
+  FTimePicker.Kind     := dtkTime;
+end;
+
+destructor TJvDynControlJVCLDateTimeEdit.Destroy;
+begin
+  FreeAndNil(FDatePicker);
+  FreeAndNil(FTimePicker);
+  inherited Destroy;
+end;
+
+procedure TJvDynControlJVCLDateTimeEdit.ControlResize(Sender: TObject);
+begin
+  FDatePicker.Height := round(Height / 2);
+  FTimePicker.Height := Height;
+  FDatePicker.Width  := round(Width / 2);
+end;
+
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetDefaultProperties;
 begin
-  DateFormat := dfShort;
-  DateMode := dmComboBox;
-  Kind := dtkDate;
 end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetReadOnly(Value: boolean);
 begin
-//  ReadOnly := Value;
+ //FTimePicker.ReadOnly := Value;
+ //FDatePicker.ReadOnly := Value;
 end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetCaption(Value: string);
 begin
+  //Caption := Value;
 end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetTabOrder(Value: integer);
@@ -747,32 +835,55 @@ end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnEnter(Value: TNotifyEvent);
 begin
-  OnEnter := Value;
+  FDatePicker.OnEnter := Value;
+  FTimePicker.OnEnter := Value;
 end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnExit(Value: TNotifyEvent);
 begin
-  OnExit := Value;
+  FDatePicker.OnExit := Value;
+  FTimePicker.OnExit := Value;
 end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnChange(Value: TNotifyEvent);
 begin
-  OnChange := Value;
+  FDatePicker.OnChange := Value;
+  FTimePicker.OnChange := Value;
 end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
+
 end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetValue(Value: variant);
 begin
-  Text := Value;
+  FDatePicker.Date := Value;
+  FTimePicker.Time := Value;
 end;
 
 function TJvDynControlJVCLDateTimeEdit.ControlGetValue: variant;
 begin
-  Result := Text;
+  Result := trunc(FDatePicker.Date) + (trunc(FTimePicker.Time) - FTimePicker.Time);
 end;
+
+// IJvDynControlDate
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetMinDate(Value: TDateTime);
+begin
+  FDatePicker.MinDate := Value;
+end;
+
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetMaxDate(Value: TDateTime);
+begin
+  FDatePicker.MaxDate := Value;
+end;
+
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetFormat(Value: string);
+begin
+  FDatePicker.Format := Value;
+  FTimePicker.Format := Value;
+end;
+
 
 //=== TJvDynControlJVCLDateEdit ==============================================
 
@@ -783,14 +894,122 @@ begin
   Kind := dtkDate;
 end;
 
+procedure TJvDynControlJVCLDateEdit.ControlSetReadOnly(Value: boolean);
+begin
+  Enabled := Value;
+end;
+
+procedure TJvDynControlJVCLDateEdit.ControlSetCaption(Value: string);
+begin
+end;
+
+procedure TJvDynControlJVCLDateEdit.ControlSetTabOrder(Value: integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlJVCLDateEdit.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlJVCLDateEdit.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlJVCLDateEdit.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  OnChange := Value;
+end;
+
+procedure TJvDynControlJVCLDateEdit.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvDynControlJVCLDateEdit.ControlSetValue(Value: variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlJVCLDateEdit.ControlGetValue: variant;
+begin
+  Result := Text;
+end;
+
+// IJvDynControlDate
+procedure TJvDynControlJVCLDateEdit.ControlSetMinDate(Value: TDateTime);
+begin
+  MinDate := Value;
+end;
+
+procedure TJvDynControlJVCLDateEdit.ControlSetMaxDate(Value: TDateTime);
+begin
+  MaxDate := Value;
+end;
+
+procedure TJvDynControlJVCLDateEdit.ControlSetFormat(Value: string);
+begin
+  Format := Value;
+end;
+
 //=== TJvDynControlJVCLTimeEdit ==============================================
 
 procedure TJvDynControlJVCLTimeEdit.ControlSetDefaultProperties;
 begin
   DateFormat := dfShort;
+  Kind     := dtkTime;
   DateMode := dmUpDown;
-  Kind := dtkTime;
 end;
+
+procedure TJvDynControlJVCLTimeEdit.ControlSetReadOnly(Value: boolean);
+begin
+  Enabled := Value;
+end;
+
+procedure TJvDynControlJVCLTimeEdit.ControlSetCaption(Value: string);
+begin
+end;
+
+procedure TJvDynControlJVCLTimeEdit.ControlSetTabOrder(Value: integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlJVCLTimeEdit.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlJVCLTimeEdit.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlJVCLTimeEdit.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  OnChange := Value;
+end;
+
+procedure TJvDynControlJVCLTimeEdit.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvDynControlJVCLTimeEdit.ControlSetValue(Value: variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlJVCLTimeEdit.ControlGetValue: variant;
+begin
+  Result := Text;
+end;
+
+procedure TJvDynControlJVCLTimeEdit.ControlSetFormat(Value: string);
+begin
+  Format := Value;
+end;
+
 
 //=== TJvDynControlJVCLCheckBox ==============================================
 
@@ -800,6 +1019,7 @@ end;
 
 procedure TJvDynControlJVCLCheckBox.ControlSetReadOnly(Value: boolean);
 begin
+  Enabled := false;
 end;
 
 procedure TJvDynControlJVCLCheckBox.ControlSetCaption(Value: string);
@@ -1338,7 +1558,7 @@ begin
   FocusControl := Value;
 end;
 
-procedure TJvDynControlJVCLLabel.ControlSetWordWrap(Value: Boolean);
+procedure TJvDynControlJVCLLabel.ControlSetWordWrap(Value: boolean);
 begin
   WordWrap := Value;
 end;

@@ -63,7 +63,7 @@ type
   IJvDynControlLabel = interface
     ['{247D29CD-ABA4-4F87-A25D-4987BD950F0C}']
     procedure ControlSetFocusControl(Value: TWinControl);
-    procedure ControlSetWordWrap(Value: Boolean);
+    procedure ControlSetWordWrap(Value: boolean);
   end;
 
   TJvDynControlFileNameDialogKind = (jdkOpen, jdkOpenPicture, jdkSave, jdkSavePicture);
@@ -89,6 +89,18 @@ type
   IJvDynControlComboBox = interface
     ['{9E9B46D8-2BAD-4BAA-BFDC-88FA0F3C847D}']
     procedure ControlSetNewEntriesAllowed(Value: boolean);
+  end;
+
+  IJvDynControlDate = interface
+    ['{AB9EBBAB-5158-4371-A2CF-07F6D0AB86BB}']
+    procedure ControlSetMinDate(Value: TDateTime);
+    procedure ControlSetMaxDate(Value: TDateTime);
+    procedure ControlSetFormat(Value: string);
+  end;
+
+  IJvDynControlTime = interface
+    ['{E4FF3356-62C4-4C80-B9D6-2C956D21058F}']
+    procedure ControlSetFormat(Value: string);
   end;
 
   IJvDynControlRadioGroup = interface

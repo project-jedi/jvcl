@@ -287,6 +287,8 @@ type
     procedure HistorySaveClick(Sender: TObject);
     procedure HistoryClearClick(Sender: TObject);
 
+    procedure DialogShow(Sender: TObject);
+
     property IntParameterList: TStringList read FIntParameterList;
 
     property ParameterDialog: TCustomForm read FParameterDialog;
@@ -1150,6 +1152,7 @@ begin
     FormStyle := fsNormal;
     BorderStyle := bsDialog;
     Position := poScreenCenter;
+    OnShow   := DialogShow;
   end;
 
   if Height > 0 then
@@ -1326,6 +1329,15 @@ begin
   ParameterListSelectList.ManageSelectList(Messages.HistoryClearCaption);
 end;
 
+procedure TJvParameterList.DialogShow(Sender: TObject);
+begin
+  if Count > 0 then
+    if Parameters[0].Visible then
+      if Assigned(Parameters[0].WinControl) then
+        Parameters[0].WinControl.SetFocus;
+end;
+
+
 procedure TJvParameterList.CreateWinControlsOnParent(ParameterParent: TWinControl);
 var
   I: integer;
@@ -1343,8 +1355,7 @@ begin
   RightPanel.Parent := ScrollBox;
   with RightPanel do
   begin
-    //Align := alNone;
-    Transparent := True;
+    Transparent := true;
     Align   := alRight;
     BorderStyle := bsNone;
     BevelInner := bvNone;
@@ -1360,8 +1371,7 @@ begin
   ArrangePanel.Name := 'MainArrangePanel';
   with ArrangePanel do
   begin
-    //Align := alNone;
-    Transparent := True;
+    Transparent := true;
     Align := alTop;
     BorderStyle := bsNone;
     BevelInner := bvNone;
@@ -1400,8 +1410,7 @@ begin
     Exit;
   RightPanel.Visible   := false;
   ScrollBox.AutoScroll := false;
-  if (ArrangePanel.Width > ScrollBox.Width) {OR
-     (ArrangePanel.Width > MaxWidth) }then
+  if (ArrangePanel.Width > ScrollBox.Width) then
   begin
     RightPanel.Visible   := true;
     ScrollBox.AutoScroll := true;

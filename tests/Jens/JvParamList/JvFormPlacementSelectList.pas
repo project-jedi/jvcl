@@ -63,7 +63,7 @@ uses
  //  FSelectList := TStringList.Create;
  //  FCheckEntries := True;
  //end;
- //
+
  //destructor TJvAppStoreSelectList.Destroy;
  //begin
  //  FreeAndNil(FSelectList);

@@ -379,13 +379,16 @@ function TJvDynControlEngine.CreateLabelControl(AOwner: TComponent;
   AFocusControl: TWinControl): TControl;
 var
   DynCtrl: IJvDynControl;
+  DynCtrlLabel: IJvDynControlLabel;
 begin
   Result := CreateControl(jctLabel, AOwner, AParentControl, AControlName);
   if not Supports(Result, IJvDynControl, DynCtrl) then
     raise EIntfCastError.Create(SIntfCastError);
   with DynCtrl do
     ControlSetCaption(ACaption);
-  with DynCtrl as IJvDynControlLabel do
+  if not Supports(Result, IJvDynControlLabel, DynCtrlLabel) then
+    raise EIntfCastError.Create(SIntfCastError);
+  with DynCtrlLabel  do
     ControlSetFocusControl(AFocusControl);
 end;
 
@@ -442,12 +445,9 @@ end;
 function TJvDynControlEngine.CreateComboBoxControl(AOwner: TComponent;
   AParentControl: TWinControl; AControlName: string; AItems: TStrings): TWinControl;
 var
-  DynCtrl: IJvDynControl;
   DynCtrlItems: IJvDynControlItems;
 begin
   Result := TWinControl(CreateControl(jctComboBox, AOwner, AParentControl, AControlName));
-  if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create(SIntfCastError);
   if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
     raise EIntfCastError.Create(SIntfCastError);
   DynCtrlItems.ControlSetItems(AItems);
@@ -476,15 +476,21 @@ function TJvDynControlEngine.CreateRadioGroupControl(AOwner: TComponent;
   ACaption: string; AItems: TStrings; AItemIndex: Integer = 0): TWinControl;
 var
   DynCtrl: IJvDynControl;
+  DynCtrlItems : IJvDynControlItems;
+  DynCtrlData  : IJvDynControlData;
 begin
   Result := TWinControl(CreateControl(jctRadioGroup, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
     raise EIntfCastError.Create(SIntfCastError);
   with DynCtrl do
     ControlSetCaption(ACaption);
-  with DynCtrl as IJvDynControlItems do
-    ControlItems := AItems;
-  with DynCtrl as IJvDynControlData do
+  if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
+    raise EIntfCastError.Create(SIntfCastError);
+  with DynCtrlItems  do
+    ControlSetItems (AItems);
+  if not Supports(Result, IJvDynControlData, DynCtrlData) then
+    raise EIntfCastError.Create(SIntfCastError);
+  with DynCtrlData do
     ControlValue := AItemIndex;
 end;
 
@@ -502,12 +508,12 @@ end;
 function TJvDynControlEngine.CreateListBoxControl(AOwner: TComponent;
   AParentControl: TWinControl; AControlName: string; AItems: TStrings): TWinControl;
 var
-  DynCtrl: IJvDynControl;
+  DynCtrlItems :IJvDynControlItems;
 begin
   Result := TWinControl(CreateControl(jctListBox, AOwner, AParentControl, AControlName));
-  if not Supports(Result, IJvDynControl, DynCtrl) then
+  if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
     raise EIntfCastError.Create(SIntfCastError);
-  with DynCtrl as IJvDynControlItems do
+  with DynCtrlItems do
     ControlSetItems(AItems);
 end;
 

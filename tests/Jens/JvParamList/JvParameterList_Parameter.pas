@@ -333,12 +333,21 @@ type
     property Sorted: boolean read FSorted write FSorted;
   end;
 
+  TJvTimeParameter = class (TJvBasePanelEditParameter)
+  private
+    FFormat: string;
+  protected
+    function GetParameterNameExt: string; override;
+    procedure CreateWinControl(AParameterParent: TWinControl); override;
+  public
+    procedure Assign(Source: TPersistent); override;
+  published
+    property Format: string read FFormat write FFormat;
+  end;
+
   TJvDateTimeParameter = class (TJvBasePanelEditParameter)
   private
-    FCalAlignment: TDTCalAlignment;
-    FDateFormat: TDTDateFormat;
-    FDateMode: TDTDateMode;
-    FKind: TDateTimeKind;
+    FFormat: string;
     FMaxDate: TDate;
     FMinDate: TDate;
   protected
@@ -347,13 +356,27 @@ type
   public
     procedure Assign(Source: TPersistent); override;
   published
-    property CalAlignment: TDTCalAlignment read FCalAlignment write FCalAlignment;
-    property DateFormat: TDTDateFormat read FDateFormat write FDateFormat;
-    property DateMode: TDTDateMode read FDateMode write FDateMode;
-    property Kind: TDateTimeKind read FKind write FKind;
+    property Format: string read FFormat write FFormat;
     property MaxDate: TDate read FMaxDate write FMaxDate;
     property MinDate: TDate read FMinDate write FMinDate;
   end;
+
+  TJvDateParameter = class (TJvBasePanelEditParameter)
+  private
+    FFormat: string;
+    FMaxDate: TDate;
+    FMinDate: TDate;
+  protected
+    function GetParameterNameExt: string; override;
+    procedure CreateWinControl(AParameterParent: TWinControl); override;
+  public
+    procedure Assign(Source: TPersistent); override;
+  published
+    property Format: string read FFormat write FFormat;
+    property MaxDate: TDate read FMaxDate write FMaxDate;
+    property MinDate: TDate read FMinDate write FMinDate;
+  end;
+
 
   TJvMemoParameter = class (TJvBasePanelEditParameter)
   private
@@ -946,15 +969,35 @@ begin
   inherited SetWinControlData(Value);
 end;
 
+//=== TJvTimeParameter ===================================================
+
+procedure TJvTimeParameter.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  Format := TJvTimeParameter(Source).Format;
+end;
+
+function TJvTimeParameter.GetParameterNameExt: string;
+begin
+  Result := 'Time';
+end;
+
+procedure TJvTimeParameter.CreateWinControl(AParameterParent: TWinControl);
+var
+  DynControlTime: IJvDynControlTime;
+begin
+  WinControl := DynControlEngine.CreateTimeControl(Self, AParameterParent, GetParameterName);
+  if Supports(WinControl, IJvDynControlTime, DynControlTime) then
+    DynControlTime.ControlSetFormat(Format);
+end;
+
+
 //=== TJvDateTimeParameter ===================================================
 
 procedure TJvDateTimeParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  CalAlignment := TJvDateTimeParameter(Source).CalAlignment;
-  DateFormat := TJvDateTimeParameter(Source).DateFormat;
-  DateMode := TJvDateTimeParameter(Source).DateMode;
-  Kind    := TJvDateTimeParameter(Source).Kind;
+  Format  := TJvDateTimeParameter(Source).Format;
   MaxDate := TJvDateTimeParameter(Source).maxDate;
   MinDate := TJvDateTimeParameter(Source).MinDate;
 end;
@@ -965,15 +1008,48 @@ begin
 end;
 
 procedure TJvDateTimeParameter.CreateWinControl(AParameterParent: TWinControl);
+var
+  DynControlDate: IJvDynControlDate;
 begin
   WinControl := DynControlEngine.CreateDateTimeControl(Self, AParameterParent, GetParameterName);
- //  DateTime.CalAlignment:= CalAlignment;
- //  DateTime.DateFormat := DateFormat;
- //  DateTime.DateMode:= DateMode;
- //  DateTime.Kind:= Kind;
- //  DateTime.MaxDate:= maxDate;
- //  DateTime.MinDate:= MinDate;
+  if Supports(WinControl, IJvDynControlDate, DynControlDate) then
+    with DynControlDate do
+    begin
+      ControlSetFormat(Format);
+      ControlSetMinDate(MinDate);
+      ControlSetMaxDate(MaxDate);
+    end;
 end;
+
+//=== TJvDateParameter ===================================================
+
+procedure TJvDateParameter.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  Format  := TJvDateParameter(Source).Format;
+  MaxDate := TJvDateParameter(Source).maxDate;
+  MinDate := TJvDateParameter(Source).MinDate;
+end;
+
+function TJvDateParameter.GetParameterNameExt: string;
+begin
+  Result := 'Date';
+end;
+
+procedure TJvDateParameter.CreateWinControl(AParameterParent: TWinControl);
+var
+  DynControlDate: IJvDynControlDate;
+begin
+  WinControl := DynControlEngine.CreateDateControl(Self, AParameterParent, GetParameterName);
+  if Supports(WinControl, IJvDynControlDate, DynControlDate) then
+    with DynControlDate do
+    begin
+      ControlSetFormat(Format);
+      ControlSetMinDate(MinDate);
+      ControlSetMaxDate(MaxDate);
+    end;
+end;
+
 
 //=== TJvEditParameter =======================================================
 

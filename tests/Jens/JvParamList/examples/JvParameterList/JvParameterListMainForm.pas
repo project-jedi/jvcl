@@ -2,7 +2,7 @@ unit JvParameterListMainForm;
 
 interface
 
-{.$DEFINE INCLUDE_DEVEXP_CX}
+{$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
@@ -12,7 +12,7 @@ uses
   cxButtons, cxListBox, cxRadioGroup, cxLookAndFeelPainters,
   cxDropDownEdit, cxCalendar, cxSpinEdit, cxTimeEdit, cxCheckBox, cxMemo,
   cxTextEdit, cxMaskEdit, cxControls, cxContainer, cxEdit, cxLabel,
-  cxImage, cxCheckListBox, 
+  cxImage, cxCheckListBox,
   cxGroupBox,
   {$ENDIF}
   ExtCtrls, JvFormPlacement, JvComponent, JvAppStore,
@@ -21,7 +21,7 @@ uses
   JvMaskEdit, JvSpin, JvBaseEdits;
 
 type
-  TForm1 = class(TForm)
+  TForm1 = class (TForm)
     Edit1: TEdit;
     Button1: TButton;
     Button2: TButton;
@@ -84,7 +84,7 @@ type
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
-    procedure ShowTest1 (CONST aDynControlEngine : tJvDynControlEngine);
+    procedure ShowTest1(const aDynControlEngine: tJvDynControlEngine);
   end;
 
 var
@@ -94,173 +94,204 @@ implementation
 
 {$R *.dfm}
 
-Uses JvDynControlEngine_VCL,
-     JvDynControlEngine_JVCL,
-     JclBase,
-     JvFormPlacementSelectList
+uses JvDynControlEngine_VCL,
+  JvDynControlEngine_JVCL,
+  JclBase,
+  JvFormPlacementSelectList,
+  JvDynControlEngine_VCLRed
      {$IFDEF INCLUDE_DEVEXP_CX}
-     ,JvDynControlEngine_DevExpCx
-     ,cxLookAndFeels, JvDynControlEngine_VCLRed
-     {$ENDIF}
-     ;
+  , JvDynControlEngine_DevExpCx
+  , cxLookAndFeels
+{$ENDIF}
+  ;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  ShowTest1 (nil);
+  ShowTest1(nil);
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
-  ShowTest1 (DynControlEngine_VCL);
+  ShowTest1(DynControlEngine_VCL);
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 begin
-  ShowTest1 (DynControlEngine_JVCL);
+  ShowTest1(DynControlEngine_JVCL);
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 begin
   {$IFDEF INCLUDE_DEVEXP_CX}
-  ShowTest1 (DynControlEngine_DevExpCx);
+  ShowTest1(DynControlEngine_DevExpCx);
   {$ENDIF}
 end;
 
-procedure TForm1.ShowTest1 (CONST aDynControlEngine : tJvDynControlEngine);
-Var ParameterList : TJvParameterList;
-    Parameter     : TJvBaseParameter;
+procedure TForm1.ShowTest1(const aDynControlEngine: tJvDynControlEngine);
+var
+  ParameterList: TJvParameterList;
+  Parameter:     TJvBaseParameter;
 begin
   ParameterList := TJvParameterList.Create(self);
   try
-    IF Assigned (aDynControlEngine) THEN
+    if Assigned(aDynControlEngine) then
       ParameterList.DynControlEngine := aDynControlEngine;
     {$IFDEF INCLUDE_DEVEXP_CX}
-    IF ParameterList.DynControlEngine IS tJvDynControlEngine_DevExpCx THEN
-      WITH tJvDynControlEngine_DevExpCx(ParameterList.DynControlEngine) DO
-      Begin
-        Case DevExpCxLookAndFeelRadioGroup.ItemIndex OF
-          1 : cxProperties.LookAndFeel.Kind := lfFlat;
-          2 : cxProperties.LookAndFeel.Kind := lfUltraFlat;
-        Else
-          cxProperties.LookAndFeel.Kind := lfStandard;
-        End;
+    if ParameterList.DynControlEngine is tJvDynControlEngine_DevExpCx then
+      with tJvDynControlEngine_DevExpCx(ParameterList.DynControlEngine) do
+      begin
+        case DevExpCxLookAndFeelRadioGroup.ItemIndex of
+          1: cxProperties.LookAndFeel.Kind := lfFlat;
+          2: cxProperties.LookAndFeel.Kind := lfUltraFlat;
+          else
+            cxProperties.LookAndFeel.Kind := lfStandard;
+        end;
         CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
         if ThickLinesCheckBox.Checked then
           CxProperties.StyleController.Style.BorderStyle := ebsThick
         else
           CxProperties.StyleController.Style.BorderStyle := ebsNone;
-      End;
+      end;
     {$ENDIF}
+    Parameter := tjvTimeParameter.Create(ParameterList);
+    with tjvTimeParameter(Parameter) do
+    begin
+      SearchName := 'TimeTest';
+      Caption    := 'TimeTest';
+      Format     := 'HH:mm:ss';
+      Width      := 100;
+      AsDate     := Now;
+    end;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvDateParameter.Create(ParameterList);
+    with tjvDateParameter(Parameter) do
+    begin
+      SearchName := 'DateTest';
+      Caption    := 'DateTest';
+      Width      := 80;
+      AsDate     := Now;
+    end;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvDateTimeParameter.Create(ParameterList);
+    with tjvDateTimeParameter(Parameter) do
+    begin
+      SearchName := 'DateTimeTest';
+      Caption    := 'DateTimeTest';
+      AsDate     := Now;
+      Width      := 200;
+      Height     := 50;
+    end;
+    ParameterList.AddParameter(Parameter);
     Parameter := tjvEditParameter.Create(ParameterList);
-    With Parameter Do
-    Begin
+    with Parameter do
+    begin
       SearchName := 'EditTest';
-      Caption := 'EditTest';
-      AsString := Edit1.text;
-    End;
+      Caption    := 'EditTest';
+      AsString   := Edit1.Text;
+    end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvCheckboxParameter.Create(ParameterList);
-    With Parameter Do
-    Begin
+    with Parameter do
+    begin
       SearchName := 'CheckboxTest';
-      Caption := '&Checkbox';
-    End;
+      Caption    := '&Checkbox';
+    end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvIntegerEditParameter.Create(ParameterList);
-    With Parameter Do
-    Begin
+    with Parameter do
+    begin
       SearchName := 'IntegerTest';
-      Caption := 'IntegerTest';
-    End;
+      Caption    := 'IntegerTest';
+    end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvIntegerEditParameter.Create(ParameterList);
-    With tjvIntegerEditParameter(Parameter) Do
-    Begin
+    with tjvIntegerEditParameter(Parameter) do
+    begin
       SearchName := 'IntegerTestCalc';
-      Caption := 'IntegerTest Calc';
+      Caption    := 'IntegerTest Calc';
       EditorType := netCalculate;
-    End;
+    end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvIntegerEditParameter.Create(ParameterList);
-    With tjvIntegerEditParameter(Parameter) Do
-    Begin
+    with tjvIntegerEditParameter(Parameter) do
+    begin
       SearchName := 'IntegerTestSpin';
-      Caption := 'IntegerTest Spin';
+      Caption    := 'IntegerTest Spin';
       EditorType := netSpin;
-    End;
+    end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvFileNameParameter.Create(ParameterList);
-    With Parameter Do
-    Begin
+    with Parameter do
+    begin
       SearchName := 'FileNameTest';
-      Caption := 'FileNameTest';
-    End;
+      Caption    := 'FileNameTest';
+    end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvDirectoryParameter.Create(ParameterList);
-    With Parameter Do
-    Begin
+    with Parameter do
+    begin
       SearchName := 'DirectoryTest';
-      Caption := 'DirectoryTest';
-    End;
+      Caption    := 'DirectoryTest';
+    end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvMemoParameter.Create(ParameterList);
-    With tjvMemoParameter(Parameter) Do
-    Begin
+    with tjvMemoParameter(Parameter) do
+    begin
       SearchName := 'MemoTest';
-      Caption := 'MemoTest';
-      Height := 60;
-      Scrollbars := ssBoth	;
-    End;
+      Caption    := 'MemoTest';
+      Height     := 60;
+      Scrollbars := ssBoth;
+    end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvRadioGroupParameter.Create(ParameterList);
-    With tjvRadioGroupParameter(Parameter) Do
-    Begin
+    with tjvRadioGroupParameter(Parameter) do
+    begin
       SearchName := 'RadioGroupTest';
-      Caption := '&RadioGroupTest';
-      ItemList.Add ('Test&1');
-      ItemList.Add ('Test&2');
-      ItemList.Add ('Test&3');
-      ItemList.Add ('Test&4');
-      ItemList.Add ('Test&5');
+      Caption    := '&RadioGroupTest';
+      ItemList.Add('Test&1');
+      ItemList.Add('Test&2');
+      ItemList.Add('Test&3');
+      ItemList.Add('Test&4');
+      ItemList.Add('Test&5');
       Columns := 2;
-    End;
+    end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvListBoxParameter.Create(ParameterList);
-    With tjvListBoxParameter(Parameter) Do
-    Begin
+    with tjvListBoxParameter(Parameter) do
+    begin
       SearchName := 'ListBoxTest';
-      Caption := '&ListBoxTest';
-      ItemList.Add ('Listbox Test&1');
-      ItemList.Add ('Listbox Test&2');
-      ItemList.Add ('Listbox Test&3');
+      Caption    := '&ListBoxTest';
+      ItemList.Add('Listbox Test&1');
+      ItemList.Add('Listbox Test&2');
+      ItemList.Add('Listbox Test&3');
       Height := 80;
-      Width := 80;
-    End;
+      Width  := 80;
+    end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvImageParameter.Create(ParameterList);
-    With tjvImageParameter(Parameter) Do
-    Begin
-      Picture := Image1.Picture;
+    with tjvImageParameter(Parameter) do
+    begin
+      Picture    := Image1.Picture;
       SearchName := 'PictureTest';
-      Caption := 'PictureTest';
+      Caption    := 'PictureTest';
 //      AutoSize := True;
-      Height := 180;
-      Width := 240;
-    End;
+      Height     := 180;
+      Width      := 240;
+    end;
     ParameterList.AddParameter(Parameter);
     ParameterList.AutoHeight := AutoHeightCheckBox.Checked;
     ParameterList.AutoWidth := AutoWidthCheckBox.Checked;
-    ParameterList.MaxHeight := strtoint (MaxHeightEdit.Text);
-    ParameterList.MaxWidth := strtoint (MaxWidthEdit.Text);
-    ParameterList.Height := strtoint (HeightEdit.Text);
-    ParameterList.Width := strtoint (WidthEdit.Text);
+    ParameterList.MaxHeight := StrToInt(MaxHeightEdit.Text);
+    ParameterList.MaxWidth := StrToInt(MaxWidthEdit.Text);
+    ParameterList.Height := StrToInt(HeightEdit.Text);
+    ParameterList.Width := StrToInt(WidthEdit.Text);
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
     ParameterList.AppStore := JvAppRegistryStore;
     ParameterList.Path := 'Dialog 1';
-    IF LoadFromCheckBox.Checked THEN
+    if LoadFromCheckBox.Checked then
       ParameterList.LoadData;
-    IF ParameterList.ShowParameterDialog THEN
-      IF StoreToCheckBox.Checked THEN
+    if ParameterList.ShowParameterDialog then
+      if StoreToCheckBox.Checked then
         ParameterList.storeData;
 //    Edit1.text := ParameterList.parameterByName('RadioGroupTest').AsString;
   finally
@@ -273,14 +304,14 @@ end;
 procedure TForm1.FormShow(Sender: TObject);
 begin
   {$IFNDEF INCLUDE_DEVEXP_CX}
-  Button4.Enabled := False;
-  DevExpCxLookAndFeelRadioGroup.Enabled := FALSE;
-  DevExpCxStyleGroupBox.Enabled := FALSE;
-  ShadowCheckBox.Enabled := FALSE;
-  ThickLinesCheckBox.Enabled := FALSE;
-  CxRadioButton.Enabled := False;
+  Button4.Enabled := false;
+  DevExpCxLookAndFeelRadioGroup.Enabled := false;
+  DevExpCxStyleGroupBox.Enabled := false;
+  ShadowCheckBox.Enabled := false;
+  ThickLinesCheckBox.Enabled := false;
+  CxRadioButton.Enabled := false;
   if CxRadioButton.Checked then
-    VCLRadioButton.Checked := True;
+    VCLRadioButton.Checked := true;
   {$ENDIF}
   JvImage1.Picture.Assign(Image1.Picture);
   JvImage1.Invalidate;
@@ -290,13 +321,14 @@ begin
 end;
 
 procedure TForm1.BitBtn1Click(Sender: TObject);
-VAR FormStorageSelectList : tJvFormStorageSelectList;
+var
+  FormStorageSelectList: tJvFormStorageSelectList;
 begin
 //  SetDynControlEngine_DevExpCxDefault;
-  FormStorageSelectList := tJvFormStorageSelectList.Create (Self);
+  FormStorageSelectList := tJvFormStorageSelectList.Create(Self);
   try
     FormStorageSelectList.FormStorage := JvFormStorage2;
-    FormStorageSelectList.SelectPath := 'SelectTest';
+    FormStorageSelectList.SelectPath  := 'SelectTest';
 //    MessageDlg(FormStorageSelectList.GetSelectPath(sloLoad), mtWarning, [mbOK], 0);
     FormStorageSelectList.RestoreFormStorage;
   finally
@@ -305,12 +337,13 @@ begin
 end;
 
 procedure TForm1.BitBtn2Click(Sender: TObject);
-VAR FormStorageSelectList : tJvFormStorageSelectList;
+var
+  FormStorageSelectList: tJvFormStorageSelectList;
 begin
-  FormStorageSelectList := tJvFormStorageSelectList.Create (Self);
+  FormStorageSelectList := tJvFormStorageSelectList.Create(Self);
   try
     FormStorageSelectList.FormStorage := JvFormStorage2;
-    FormStorageSelectList.SelectPath := 'SelectTest';
+    FormStorageSelectList.SelectPath  := 'SelectTest';
 //    MessageDlg(FormStorageSelectList.GetSelectPath(sloStore), mtWarning, [mbOK], 0);
     FormStorageSelectList.SaveFormStorage;
   finally
@@ -322,20 +355,20 @@ end;
 procedure TForm1.DevExpCxLookAndFeelRadioGroupClick(Sender: TObject);
 begin
   {$IFDEF INCLUDE_DEVEXP_CX}
-  WITH DynControlEngine_DevExpCx DO
-  Begin
-    Case DevExpCxLookAndFeelRadioGroup.ItemIndex OF
-      1 : cxProperties.LookAndFeel.Kind := lfFlat;
-      2 : cxProperties.LookAndFeel.Kind := lfUltraFlat;
-    Else
-      cxProperties.LookAndFeel.Kind := lfStandard;
-    End;
+  with DynControlEngine_DevExpCx do
+  begin
+    case DevExpCxLookAndFeelRadioGroup.ItemIndex of
+      1: cxProperties.LookAndFeel.Kind := lfFlat;
+      2: cxProperties.LookAndFeel.Kind := lfUltraFlat;
+      else
+        cxProperties.LookAndFeel.Kind := lfStandard;
+    end;
     CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
     if ThickLinesCheckBox.Checked then
       CxProperties.StyleController.Style.BorderStyle := ebsThick
     else
       CxProperties.StyleController.Style.BorderStyle := ebsSingle;
-  End;
+  end;
   {$ENDIF}
 end;
 
@@ -343,16 +376,14 @@ procedure TForm1.VCLRadioButtonClick(Sender: TObject);
 begin
   {$IFDEF INCLUDE_DEVEXP_CX}
   if CxRadioButton.Checked then
-    SetDefaultDynControlEngine (DynControlEngine_DevExpCx)
-  else
-  {$ENDIF}
+    SetDefaultDynControlEngine(DynControlEngine_DevExpCx)
+  else  {$ENDIF}
   if JVCLRadioButton.Checked then
-    SetDefaultDynControlEngine (DynControlEngine_JVCL)
+    SetDefaultDynControlEngine(DynControlEngine_JVCL)
+  else if VCLRedRadioButton.Checked then
+    SetDefaultDynControlEngine(DynControlEngine_VCLRed)
   else
-  if VCLRedRadioButton.Checked then
-    SetDefaultDynControlEngine (DynControlEngine_VCLRed)
-  else
-    SetDefaultDynControlEngine (DynControlEngine_VCL);
+    SetDefaultDynControlEngine(DynControlEngine_VCL);
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -375,7 +406,7 @@ end;
 
 procedure TForm1.Button7Click(Sender: TObject);
 var
-  Pic: TPicture;
+  Pic:    TPicture;
   BtnCap: TDynStringArray;
 begin
   Pic := TPicture.Create;
@@ -403,7 +434,7 @@ end;
 
 procedure TForm1.Button11Click(Sender: TObject);
 begin
-  ShowTest1 (DynControlEngine_VCLRed);
+  ShowTest1(DynControlEngine_VCLRed);
 end;
 
 end.
