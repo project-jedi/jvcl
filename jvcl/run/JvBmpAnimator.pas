@@ -21,26 +21,28 @@ Last Modified: 2003-10-28
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A bitmap animator: animates an imagelist consisting of multiple likesized bitmaps
+  like the explorer logo in Internet Explorer or Netscape Navigator.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I jvcl.inc}
+{$I JVCL.INC}
 
 unit JvBmpAnimator;
 
 interface
-
-{ A bitmap animator: animates an imagelist consisting of multiple likesized bitmaps
-  like the explorer logo in Internet Explorer and Netscape Navigator. }
 
 uses
   SysUtils,  Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, CommCtrl,
   ExtCtrls, ImgList,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QGraphics, QControls,  QExtCtrls, QImgList,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent;
 
 
@@ -59,7 +61,8 @@ type
     FSpeed: Integer;
     FTransparent: Boolean;
     FAutoSize: Boolean;
-    FStart, FStop: Integer;
+    FStart: Integer;
+    FStop: Integer;
     FPosition: Integer;
     FDirection: TJvAnimateDirection;
     FGoingUp: Boolean;
@@ -82,7 +85,7 @@ type
     {$IFDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
     property Centered: Boolean read FCenter write SetCenter;
     property Color default clBtnFace;
@@ -194,7 +197,6 @@ begin
           if (FIndex < 0) or (FIndex < FStart) then
             FIndex := FStop;
         end;
-
       tdFwdBack, tdBackFwd:
         begin
           if FGoingUp then
@@ -251,7 +253,6 @@ begin
 end;
 
 {$IFDEF COMPILER6_UP}
-
 procedure TJvCustomBmpAnimator.SetAutoSize(Value: Boolean);
 begin
   if FAutoSize <> Value then
@@ -264,7 +265,7 @@ begin
     end;
   end;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvCustomBmpAnimator.SetTransparent(Value: Boolean);
 begin
@@ -287,13 +288,13 @@ end;
 
 procedure TJvCustomBmpAnimator.SetImage(Value: TCustomImageList);
 begin
-  if FImagelist <> nil then
+  if FImageList <> nil then
   begin
     FImageList.UnRegisterChanges(FImageChangeLink);
     SetNumGlyphs(0);
   end;
 
-  FImagelist := Value;
+  FImageList := Value;
   if FImageList <> nil then
   begin
     FImageList.RegisterChanges(FImageChangeLink);
@@ -409,7 +410,7 @@ begin
       Rectangle(GetClientRect);
       {$ELSE}
       FrameRect(GetClientRect);
-      {$ENDIF}
+      {$ENDIF VisualCLX}
     end;
 end;
 

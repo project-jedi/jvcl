@@ -80,7 +80,7 @@ type
     procedure DoPictureChange(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
     procedure ApplyClick;
-    function UsesPictures:boolean;
+    function UsesPictures: Boolean;
   protected
     procedure Click; override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -241,13 +241,14 @@ end;
 // "if Assigned(Picture) and (Picture.Graphic is TBitmap) and Transparent and"...
 // but then the PicEnter image will be assigned as soon as the mouse enters the component as no
 // transparency detection is possible (TGraphic doesn't have the necessary TransparentColor and Canvas.Pixels)
+// (rom) improved
 
 procedure TJvImage.CMHitTest(var Msg: TCMHitTest);
 begin
   inherited;
-  if Assigned(Picture) and Assigned(Picture.Bitmap) and Transparent and
-    (Msg.XPos < Picture.Bitmap.Width) and (Msg.YPos < Picture.Bitmap.Height) and
-    (Picture.Bitmap.Canvas.Pixels[Msg.XPos, Msg.YPos] = (Picture.Bitmap.TransparentColor and $FFFFFF)) then
+  if (not UsesPictures) and Assigned(Picture) and (Picture.Graphic is TBitmap) and
+    Transparent and (Msg.XPos < Picture.Bitmap.Width) and (Msg.YPos < Picture.Bitmap.Height) and
+    (Picture.Bitmap.Canvas.Pixels[Msg.XPos, Msg.YPos] = ColorToRGB(Picture.Bitmap.TransparentColor)) then
     Msg.Result := 0;
 end;
 
@@ -269,6 +270,7 @@ procedure TJvImage.SetState(Value: TPicState);
   begin
     Result := (Value <> nil) and (Value.Width > 0) and (Value.Height > 0);
   end;
+
 begin
   case Value of
     stDefault:
@@ -311,12 +313,12 @@ begin
   Invalidate;
 end;
 
-function TJvImage.UsesPictures: boolean;
+function TJvImage.UsesPictures: Boolean;
 begin
-  Result := (Pictures.PicEnter.Graphic <> nil)
-    or (Pictures.PicClicked1.Graphic <> nil)
-    or (Pictures.PicClicked2.Graphic <> nil)
-    or (Pictures.PicDown.Graphic <> nil);
+  Result := Assigned(Pictures.PicEnter.Graphic) or
+    Assigned(Pictures.PicClicked1.Graphic) or
+    Assigned(Pictures.PicClicked2.Graphic) or
+    Assigned(Pictures.PicDown.Graphic);
 end;
 
 //=== TJvPictures ============================================================

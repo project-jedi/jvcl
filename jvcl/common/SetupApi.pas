@@ -50,7 +50,7 @@ interface
 (*$HPPEMIT '#include "setupapi.h"'*)
 
 uses
-  Windows, Commctrl;
+  Windows, CommCtrl;
 
 type
   PPWSTR    = ^PWideChar;
@@ -305,9 +305,9 @@ const
 // Setup callback notification routine type
 //
 type
-  TSPFileCallbackA = function (Context: Pointer; Notification: UINT;
+  TSPFileCallbackA = function(Context: Pointer; Notification: UINT;
     Param1, Param2: UINT_PTR): UINT; stdcall;
-  TSPFileCallbackW = function (Context: Pointer; Notification: UINT;
+  TSPFileCallbackW = function(Context: Pointer; Notification: UINT;
     Param1, Param2: UINT_PTR): UINT; stdcall;
   TSPFileCallback = TSPFileCallbackA;
 
@@ -1182,7 +1182,7 @@ type
 //
 // Callback routine for giving progress notification during detection
 //
-  PDetectProgressNotify = function (ProgressNotifyParam: Pointer; DetectComplete: DWORD): BOOL; stdcall;
+  PDetectProgressNotify = function(ProgressNotifyParam: Pointer; DetectComplete: DWORD): BOOL; stdcall;
 
 // where:
 //     ProgressNotifyParam - value supplied by caller requesting detection.
@@ -1628,7 +1628,7 @@ const
 // Setup callback routine for comparing detection signatures
 //
 type
-  TSPDetsigCmpProc = function (DeviceInfoSet: HDEVINFO; NewDeviceData,
+  TSPDetsigCmpProc = function(DeviceInfoSet: HDEVINFO; NewDeviceData,
     ExistingDeviceData: PSPDevInfoData; CompareContext: Pointer): DWORD; stdcall;
 
 //

@@ -20,14 +20,15 @@ Last Modified: 2000-02-28
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-******************************************************************************
-
- JvInspector XVCL data layer. Provides access to TJvxNode and descendants.
- XVCL can be obtained from the XVCL home page, located at
- http://xvcl.sourceforge.net
+Description:
+  JvInspector XVCL data layer. Provides access to TJvxNode and descendants.
+  XVCL can be obtained from the XVCL home page, located at
+  http://xvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
 
 unit JvInspXVCL;
 
@@ -95,8 +96,8 @@ end;
 function TJvInspectorxNodeData.GetAsOrdinal: Int64;
 begin
   CheckReadAccess;
-  if JvxNode.TypeInfo^.Kind in [tkInteger, tkChar, tkEnumeration, tkSet,
-    tkWChar, tkClass] then
+  if JvxNode.TypeInfo^.Kind in
+    [tkInteger, tkChar, tkEnumeration, tkSet, tkWChar, tkClass] then
   begin
     if GetTypeData(JvxNode.TypeInfo).OrdType = otULong then
       Result := Cardinal(JvxNode.AsInteger)
@@ -283,8 +284,8 @@ begin
   Result := (JvxNode <> nil);
 end;
 
-class function TJvInspectorxNodeData.New(const AParent: TJvCustomInspectorItem; const AName: string;
-  const AJvxNode: TJvxNode): TJvCustomInspectorItem;
+class function TJvInspectorxNodeData.New(const AParent: TJvCustomInspectorItem;
+  const AName: string; const AJvxNode: TJvxNode): TJvCustomInspectorItem;
 var
   Data: TJvInspectorxNodeData;
 begin

@@ -61,7 +61,6 @@ type
     FOnExtractFile: TOnExtractFile;
     FOnNeed: TOnNeedNewCabinet;
     FTmpString: string;
-    FDll: HMODULE;
     procedure SetFileName(const Value: TFileName);
     procedure SetFiles(const Value: TStringList);
     procedure RefreshFiles;
@@ -83,76 +82,23 @@ type
 implementation
 
 uses
+  SetupApi,
   JvConsts, JvResources;
-
-const
-  SPFILENOTIFY_CabinetINFO    = $00000010;
-  SPFILENOTIFY_FILEINCabinet  = $00000011;
-  SPFILENOTIFY_NEEDNEWCabinet = $00000012;
-  SPFILENOTIFY_FILEEXTRACTED  = $00000013;
-  SPFILENOTIFY_FILEOPDELAYED  = $00000014;
-  FILEOP_ABORT   = 0;
-  FILEOP_DOIT    = 1;
-  FILEOP_SKIP    = 2;
-  FILEOP_RETRY   = FILEOP_DOIT;
-  FILEOP_NEWPATH = 4;
-
-  cSetupIterateCabinet = 'SetupIterateCabinetA';
-
-type
-  UINT_PTR = DWORD;
-
-  TSPFileCallback = function(Context: Pointer; Notification: UINT;
-    Param1, Param2: UINT_PTR): UINT; stdcall;
-  TSetupIterateCabinet = function(const CabinetFile: PAnsiChar; Reserved: DWORD;
-    MsgHandler: TSPFileCallback; Context: Pointer): LongBool; stdcall;
-
-  PFileInCabinetInfo = ^TFileInCabinetInfo;
-  FILE_IN_Cabinet_INFO = packed record
-    NameInCabinet: PAnsiChar;
-    FileSize: DWORD;
-    Win32Error: DWORD;
-    DosDate: Word;
-    DosTime: Word;
-    DosAttribs: Word;
-    FullTargetName: array [0..MAX_PATH - 1] of AnsiChar;
-  end;
-  TFileInCabinetInfo = FILE_IN_Cabinet_INFO;
-
-  PCabinetInfo = ^TCabinetInfo;
-  Cabinet_INFO = packed record
-    CabinetPath: PAnsiChar;
-    CabinetFile: PAnsiChar;
-    DiskName: PAnsiChar;
-    SetId: Word;
-    CabinetNumber: Word;
-  end;
-  TCabinetInfo = Cabinet_INFO;
-
-  PFilePaths = ^TFilePaths;
-  FILEPATHS = packed record
-    Target: PAnsiChar;
-    Source: PAnsiChar; // not used for delete operations
-    Win32Error: UINT;
-    Flags: DWORD; // such as SP_COPY_NOSKIP for copy errors
-  end;
-  TFilePaths = FILEPATHS;
 
 constructor TJvCABFile.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FFiles := TStringList.Create;
   FFileName := '';
-  FDll := LoadLibrary('SETUPAPI.DLL');
-  if FDll = 0 then
+  LoadSetupApi;
+  if not IsSetupApiLoaded then
     raise EJVCLException.Create(RsEErrorSetupDll);
 end;
 
 destructor TJvCABFile.Destroy;
 begin
   FFiles.Free;
-  if FDll <> 0 then
-    FreeLibrary(FDll);
+  UnloadSetupApi;
   inherited Destroy;
 end;
 
@@ -180,15 +126,15 @@ begin
   else
     Exit;
 
-  //this callback is only for listing files in a Cabinet ... pouet pouet !
-  if Notification = SPFILENOTIFY_FILEINCabinet then //found a file in the Cabinet
+  // this callback is only for listing files in a Cabinet ... pouet pouet !
+  if Notification = SPFILENOTIFY_FILEINCABINET then // found a file in the Cabinet
   begin
     Result := FILEOP_SKIP;
     CAB := PFileInCabinetInfo(Param1);
     Sender.FFiles.Add(StrPas(CAB^.NameInCabinet));
   end
   else
-  if Notification = SPFILENOTIFY_CabinetINFO then //give Cabinet info
+  if Notification = SPFILENOTIFY_CABINETINFO then // give Cabinet info
   begin
     if Assigned(Sender.FOnCABInfo) and (Param1 <> 0) then
     begin
@@ -220,11 +166,11 @@ begin
   else
     Exit;
 
-  //this callback is only for listing files in a Cabinet ...
-  if Notification = SPFILENOTIFY_CabinetINFO then
+  // this callback is only for listing files in a Cabinet ...
+  if Notification = SPFILENOTIFY_CABINETINFO then
     Result := 0
   else
-  if Notification = SPFILENOTIFY_FILEINCabinet then //found a file in the Cabinet
+  if Notification = SPFILENOTIFY_FILEINCABINET then // found a file in the Cabinet
   begin
     try
       Result := FILEOP_DOIT;
@@ -232,7 +178,7 @@ begin
 
       if Sender.FDestPath[Length(Sender.FDestPath)] = '\' then
       begin
-        //extract all
+        // extract all
         Path := Sender.FDestPath + StrPas(CAB^.NameInCabinet);
         for I := 1 to Length(Path) do
           CAB^.FullTargetName[I-1] := Path[I];
@@ -243,7 +189,7 @@ begin
       end
       else
       begin
-        //Extract specific file
+        // Extract specific file
         if UpperCase(ExtractFileName(Sender.FDestPath)) = UpperCase(StrPas(CAB^.NameInCabinet)) then
         begin
           Path := Sender.FDestPath;
@@ -275,7 +221,7 @@ begin
       Result := ERROR_BAD_COMMAND;
   end
   else
-  if Notification = SPFILENOTIFY_NEEDNEWCabinet then
+  if Notification = SPFILENOTIFY_NEEDNEWCABINET then
   begin
     if Param1 <> 0 then
     begin
@@ -301,10 +247,7 @@ begin
 end;
 
 procedure TJvCABFile.RefreshFiles;
-var
-  SetupIterateCabinet: TSetupIterateCabinet;
 begin
-  SetupIterateCabinet := GetProcAddress(FDll, cSetupIterateCabinet);
   FFiles.Clear;
   if SetupIterateCabinet(PChar(FFileName), 0, CBack, @Self) then
     if Assigned(FOnFiles) then
@@ -312,10 +255,7 @@ begin
 end;
 
 function TJvCABFile.ExtractAll(DestPath: string): Boolean;
-var
-  SetupIterateCabinet: TSetupIterateCabinet;
 begin
-  SetupIterateCabinet := GetProcAddress(FDll, cSetupIterateCabinet);
   if DestPath[Length(DestPath)] <> PathDelim then
     DestPath := DestPath + PathDelim;
   FDestPath := DestPath;
@@ -323,10 +263,7 @@ begin
 end;
 
 function TJvCABFile.ExtractFile(FileName, DestPath: string): Boolean;
-var
-  SetupIterateCabinet: TSetupIterateCabinet;
 begin
-  SetupIterateCabinet := GetProcAddress(FDll, cSetupIterateCabinet);
   if DestPath[Length(DestPath)] <> PathDelim then
     DestPath := DestPath + PathDelim;
   FDestPath := DestPath + FileName;

@@ -21,22 +21,22 @@ Last Modified: 2003-11-13
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A data-aware variation of the DatePickerEdit component.
+
+  Notable features:
+
+  - The inherited NoDateText mechanism is enhanced and utilized to support proper
+     handling of NULL values.
+
+  - If EnforceRequired is set to True (default) you should not have to worry
+    about setting ShowCheckBox. If the associated field has the Required flag set
+    ShowCheckBox will automatically be False.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{ A data-aware variation of the DatePickerEdit component.
-
- Notable features:
-
- - The inherited NoDateText mechansim is enhanced and utilized to support proper
-  handling of NULL values.
-
- - If EnforceRequired is set to True (default) you should not have to worry
-  about setting ShowCheckbox. If the associated field has the Required flag set
-  ShowCheckbox will automatically be False.
-}
 
 unit JvDBDatePickerEdit;
 
@@ -51,17 +51,17 @@ type
   private
     FDataLink: TFieldDataLink;
     FEnforceRequired: Boolean;
-    procedure ValidateShowCheckbox; overload;
-    function ValidateShowCheckbox(const AValue: Boolean): Boolean; overload;
+    procedure ValidateShowCheckBox; overload;
+    function ValidateShowCheckBox(const AValue: Boolean): Boolean; overload;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     procedure SetDataField(const AValue: string);
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetEnforceRequired(const AValue: Boolean);
-    procedure WMCut(var AMessage: TMessage); message WM_CUT;
-    procedure WMPaste(var AMessage: TMessage); message WM_PASTE;
-    procedure WMUndo(var AMessage: TMessage); message WM_UNDO;
-    procedure CMGetDataLink(var AMessage: TMessage); message CM_GETDATALINK;
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
+    procedure WMUndo(var Msg: TMessage); message WM_UNDO;
+    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
@@ -71,7 +71,7 @@ type
     procedure DropDown; override;
     function EditCanModify: Boolean; override;
     procedure SetChecked(const AValue: Boolean); override;
-    procedure SetShowCheckbox(const AValue: Boolean); override;
+    procedure SetShowCheckBox(const AValue: Boolean); override;
     procedure UpdateDisplay; override;
     function GetEnableValidation: Boolean; override;
     function ValidateDate(const ADate: TDateTime): Boolean; override;
@@ -118,8 +118,8 @@ type
     property GroupIndex;
     property HintColor;
     property HotTrack;
-//    property MaxYear default 2900;
-//    property MinYear default 1900;
+    // property MaxYear default 2900;
+    // property MinYear default 1900;
     property NoDateShortcut;
     property NoDateText;
     property ParentColor;
@@ -128,7 +128,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
-    property ShowCheckbox;
+    property ShowCheckBox;
     property TabOrder;
     property Visible;
     property OnChange;
@@ -160,7 +160,7 @@ implementation
 uses
   {$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   SysUtils;
 
 constructor TJvCustomDBDatePickerEdit.Create(AOwner: TComponent);
@@ -238,7 +238,7 @@ end;
 
 procedure TJvCustomDBDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
 begin
-  if(IsLinked and FDataLink.Editing) then
+  if IsLinked and FDataLink.Editing then
     try
       FDataLink.UpdateRecord;
     except
@@ -251,31 +251,31 @@ end;
 procedure TJvCustomDBDatePickerEdit.SetDataField(const AValue: string);
 begin
   FDataLink.FieldName := AValue;
-  ValidateShowCheckbox;
+  ValidateShowCheckBox;
 end;
 
 procedure TJvCustomDBDatePickerEdit.SetDataSource(const AValue: TDataSource);
 begin
   FDataLink.DataSource := AValue;
-  ValidateShowCheckbox;
+  ValidateShowCheckBox;
 end;
 
 procedure TJvCustomDBDatePickerEdit.SetEnforceRequired(const AValue: Boolean);
 begin
   FEnforceRequired := AValue;
-  ValidateShowCheckbox;
+  ValidateShowCheckBox;
 end;
 
-procedure TJvCustomDBDatePickerEdit.SetShowCheckbox(const AValue: Boolean);
+procedure TJvCustomDBDatePickerEdit.SetShowCheckBox(const AValue: Boolean);
 begin
-  inherited SetShowCheckbox(ValidateShowCheckbox(AValue));
+  inherited SetShowCheckBox(ValidateShowCheckBox(AValue));
 end;
 
 procedure TJvCustomDBDatePickerEdit.UpdateData(Sender: TObject);
 begin
   if IsLinked and FDataLink.Editing then
     if not Checked then
-      FDataLink.Field.Value := NULL
+      FDataLink.Field.Value := Null
     else
       FDataLink.Field.AsDateTime := Self.Date;
 end;
@@ -288,17 +288,16 @@ begin
   begin
     Checked := False;
     if not (csDesigning in ComponentState) then
-      Text := EmptyStr;
+      Text := '';
   end;
 end;
 
-procedure TJvCustomDBDatePickerEdit.ValidateShowCheckbox;
+procedure TJvCustomDBDatePickerEdit.ValidateShowCheckBox;
 begin
-  inherited SetShowCheckbox(ValidateShowCheckbox(ShowCheckbox));
+  inherited SetShowCheckBox(ValidateShowCheckBox(ShowCheckBox));
 end;
 
-function TJvCustomDBDatePickerEdit.ValidateShowCheckbox(
-  const AValue: Boolean): Boolean;
+function TJvCustomDBDatePickerEdit.ValidateShowCheckBox(const AValue: Boolean): Boolean;
 begin
   Result := AValue;
   if EnforceRequired and IsLinked then
@@ -321,15 +320,15 @@ end;
 
 function TJvCustomDBDatePickerEdit.ValidateDate(const ADate: TDateTime): Boolean;
 begin
-  Result := (not IsLinked) or (FDataLink.DataSet.IsEmpty)
-    or (not FDataLink.Editing)
-    or ((not Focused) and (FDataLink.DataSet.State = dsInsert) and FDataLink.Field.IsNull)
-    or (inherited ValidateDate(ADate));
+  Result := (not IsLinked) or (FDataLink.DataSet.IsEmpty) or
+    (not FDataLink.Editing) or
+    ((not Focused) and (FDataLink.DataSet.State = dsInsert) and FDataLink.Field.IsNull) or
+    (inherited ValidateDate(ADate));
 end;
 
-procedure TJvCustomDBDatePickerEdit.CMGetDataLink(var AMessage: TMessage);
+procedure TJvCustomDBDatePickerEdit.CMGetDataLink(var Msg: TMessage);
 begin
-  AMessage.Result := Integer(FDataLink);
+  Msg.Result := Integer(FDataLink);
 end;
 
 procedure TJvCustomDBDatePickerEdit.DropDown;
@@ -354,19 +353,19 @@ begin
   end;
 end;
 
-procedure TJvCustomDBDatePickerEdit.WMCut(var AMessage: TMessage);
+procedure TJvCustomDBDatePickerEdit.WMCut(var Msg: TMessage);
 begin
   if EditCanModify then
     inherited;
 end;
 
-procedure TJvCustomDBDatePickerEdit.WMPaste(var AMessage: TMessage);
+procedure TJvCustomDBDatePickerEdit.WMPaste(var Msg: TMessage);
 begin
   if EditCanModify then
     inherited;
 end;
 
-procedure TJvCustomDBDatePickerEdit.WMUndo(var AMessage: TMessage);
+procedure TJvCustomDBDatePickerEdit.WMUndo(var Msg: TMessage);
 begin
   if EditCanModify then
     inherited;
