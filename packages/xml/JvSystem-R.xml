@@ -54,6 +54,7 @@
     <File Name="..\..\run\JvTimer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTimerList.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvWndProcHook.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDebugHandler.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\Ras32.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\Hid.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\ModuleLoader.pas" Targets="allbutclx" Formname="" Condition=""/>
