@@ -402,7 +402,7 @@ object FormMain: TFormMain
       Top = 117
       Width = 99
       Height = 25
-      Caption = '&Edit jvc.inc'
+      Caption = '&Edit jvcl.inc'
       TabOrder = 4
       OnClick = BtnAdvancedOptionsClick
       Glyph.Data = {
