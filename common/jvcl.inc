@@ -116,6 +116,15 @@ OLE automation calls (for VCL only). }
 { Used by JvTimeFrameWork, see JvTFDays.pas for more info on time blocks. }
 {$DEFINE Jv_TIMEBLOCKS}
 
+{ This activates the unit versioning system where each JVCL unit gets a record that defines
+which revision, date and filename the unit has. }
+{$DEFINE UNITVERSIONING}
+
+{$IFDEF NO_UNITVERSIONING}
+ {$UNDEF UNITVERSIONING}
+{$ENDIF}
+
+
 // Automatic defines for entry level Delphi's:
 {$IFDEF D5Standard}
  {$DEFINE DelphiPersonalEdition}
