@@ -800,6 +800,9 @@ msgstr "Label"
 msgid "CheckBoxRed0"
 msgstr ""
 
+msgid "(%s %d)"
+msgstr ""
+
 #. JvFullColorCircleFrm..PanelAxisSettings..CheckBoxRed1..Caption
 #: JvFullColorCircleForm.dfm:418
 msgid "CheckBoxRed1"
