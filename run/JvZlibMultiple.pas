@@ -31,13 +31,13 @@ interface
 
 uses
   SysUtils, Classes,
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Graphics, Controls, Dialogs,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QGraphics, QControls, QDialogs, Types,
-{$ENDIF VisualCLX}
-  ZLib, JvComponent, JvJCLUtils;
+  {$ENDIF VisualCLX}
+  ZLib, JvComponent;
 
 type
   TFileEvent = procedure(Sender: TObject; const FileName: string) of object;
@@ -52,6 +52,7 @@ type
     FOnDecompressedFile: TFileEvent;
   protected
     procedure AddFile(FileName, Directory, FilePath: string; DestStream: TStream);
+    procedure DoProgress(Position, Total: Integer); virtual;
   public
     // compresses a list of files (can contain wildcards)
     // NOTE: caller must free returned stream!
@@ -82,10 +83,11 @@ type
 
 implementation
 
-{$IFNDEF COMPILER6_UP}
 uses
-  FileCtrl, JvJCLUtils;
-{$ENDIF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
+  FileCtrl,
+  {$ENDIF !COMPILER6_UP}
+  JvJCLUtils;
 
 {*******************************************************}
 {  Format of the File:                                  }
@@ -182,8 +184,7 @@ begin
       repeat
         Count := FileStream.Read(Buffer, SizeOf(Buffer));
         ZStream.Write(Buffer, Count);
-        if Assigned(FOnProgress) then
-          FOnProgress(Self, FileStream.Position, FileStream.Size);
+        DoProgress(FileStream.Position, FileStream.Size);
       until Count = 0;
     finally
       ZStream.Free;
@@ -268,8 +269,7 @@ var
   FileStream: TFileStream;
   ZStream: TDecompressionStream;
   CStream: TMemoryStream;
-  B: Byte;
-  Tab: array[1..256] of Char;
+  B, LastPos: Byte;
   S: string;
   Count, FileSize, I: Integer;
   Buffer: array[0..1023] of Byte;
@@ -281,24 +281,25 @@ begin
   begin
     //Read and force the directory
     Stream.Read(B, SizeOf(B));
-    { (RB) Can be improved }
-    Stream.Read(Tab, B);
-    S := '';
-    for I := 1 to B do
-      S := S + Tab[I];
+    SetLength(S, B);
+    if B > 0 then
+      Stream.Read(S[1], B);
     ForceDirectories(Directory + S);
     if (Length(S) > 0) then
       S := IncludeTrailingPathDelimiter(S);
 
     //This make files decompress either on Directory or Directory+SavedRelativePath
-    if not RelativePaths then S := '';
+    if not RelativePaths then
+      S := '';
 
     //Read filename
     Stream.Read(B, SizeOf(B));
-    { (RB) Can be improved }
-    Stream.Read(Tab, B);
-    for I := 1 to B do
-      S := S + Tab[I];
+    if B > 0 then
+    begin
+      LastPos := Length(S);
+      SetLength(S, LastPos + B);
+      Stream.Read(S[LastPos + 1], B);
+    end;
 
     Stream.Read(FileSize, SizeOf(FileSize));
     Stream.Read(I, SizeOf(I));
@@ -315,7 +316,6 @@ begin
         FileStream := TFileStream.Create(S, fmCreate or fmShareExclusive);
         ZStream := TDecompressionStream.Create(CStream);
         try
-
           if Assigned(FOnDecompressingFile) then
             FOnDecompressingFile(Self, S);
 
@@ -323,8 +323,7 @@ begin
           repeat
             Count := ZStream.Read(Buffer, SizeOf(Buffer));
             FileStream.Write(Buffer, Count);
-            if Assigned(FOnProgress) then
-              FOnProgress(Self, FileStream.Size, FileSize);
+            DoProgress(FileStream.Size, FileSize);
           until Count = 0;
 
           if Assigned(FOnDecompressedFile) then
@@ -352,6 +351,12 @@ begin
   finally
     Stream.Free;
   end;
+end;
+
+procedure TJvZlibMultiple.DoProgress(Position, Total: Integer);
+begin
+  if Assigned(FOnProgress) then
+    FOnProgress(Self, Position, Total);
 end;
 
 end.
