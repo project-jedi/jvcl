@@ -114,8 +114,6 @@ Known Issues and Updates:
 // since the CSV file itself contains insufficient information to guess the
 // field types.
 //
-// TODO: Make it default to all string types if no field types
-// are provided.
 //
 // Example CsvFieldDef string:
 //   ABC:$80,DEFG:$140,HIJKLMN:%,OPQRST:@
@@ -950,7 +948,14 @@ begin
   end;
   FIsFiltered := true;
   if Active then begin
-    GotoBookmark(m);
+    try
+        GotoBookmark(m);
+    except
+        on  E:EDatabaseError do begin
+            First;
+            exit;
+        end;
+    end;
     if (Self.RecNo>=0) then begin
       pRow := PCsvRow( FData[Self.RecNo] );
       if (pRow^.filtered) then
@@ -2534,6 +2539,8 @@ begin
     FData.DeleteRow(FData.Count - 1);
    // Refresh controls.
   First;
+  if FSavesChanges then
+      DeleteFile(GetFileName);
 end;
 
 // InternalCompare of two records, of a specific field index.
@@ -3473,11 +3480,9 @@ var
   Values: array[1..6] of integer; //year,month,day,hour,minute,second in that order.
   ch: char;
   t, u, len, Index: integer;
-//  Done: boolean;
 begin
   Result := 0.0; // default result.
   len := Length(AsciiDateStr);
-//  Done := false;
 
  // validate ranges:
 
@@ -3493,7 +3498,6 @@ begin
     begin
       if (Index > len) then
       begin
-//        Done := true; // reached end!
         break;
       end;
       ch := AsciiDateStr[Index];
@@ -3507,7 +3511,6 @@ begin
 
       if (Index > len) then
       begin
-//        Done := true; // reached end!
         break;
       end;
     end;
