@@ -14,9 +14,6 @@
 #include "IniFiles.hpp"
 #include <ImgList.hpp>
 
-#pragma message "put me in JvInspector.pas"
-#define TJvCustomInspectorItem Jvinspector::TJvCustomInspectorItem
-
 //---------------------------------------------------------------------------
 class TfrmMain : public TForm
 {
@@ -28,7 +25,11 @@ __published:	// IDE-managed Components
   void __fastcall FormShow(TObject *Sender);
   void __fastcall FormCreate(TObject *Sender);
   void __fastcall JvInspector1AfterItemCreate(TObject *Sender,
-          const TJvCustomInspectorItem *Item);
+          TJvCustomInspectorItem *Item);
+
+  // This method MUST be published or the retrieval of its address
+  // by MethodAddress will return NULL
+  void __fastcall Edit1Change2(TObject* Sender);
 private:	// User declarations
   bool BoolsAsChecks;
   TIniFile* INI;
@@ -36,11 +37,10 @@ private:	// User declarations
   void __fastcall AddGlobalSettings();
   void __fastcall AddFormAndControls();
   void __fastcall AddCompoundTest();
-  void __fastcall AddCtrl(const TJvCustomInspectorItem* Parent, const TControl* Ctrl);
+  void __fastcall AddCtrl(TJvCustomInspectorItem* Parent, TControl* Ctrl);
   void __fastcall AddINIFile();
   void __fastcall AddVarious();
-  void __fastcall ChangeChkState(const TJvCustomInspectorItem* Item);
-  void __fastcall Edit1Change2(TObject* Sender);
+  void __fastcall ChangeChkState(TJvCustomInspectorItem* Item);
   void __fastcall GetBoolsAsChecks(TJvInspectorEventData* Sender, __int64& Value);
   void __fastcall SetBoolsAsChecks(TJvInspectorEventData* Sender, __int64& Value);
   void __fastcall OnINISection(AnsiString& SectionName, bool& Parse);
