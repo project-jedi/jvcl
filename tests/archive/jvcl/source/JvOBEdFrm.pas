@@ -129,7 +129,7 @@ begin
   if Assigned(tvOLBar.Images) then
   begin
     cbImages.Items.AddObject('(none)',nil);
-    for i := 1 to tvOLBar.Images.Count - 1 do
+    for i := 1 to tvOLBar.Images.Count do
       cbImages.Items.AddObject(Format('%u',[i-1]),TObject(i))
   end
   else
@@ -200,9 +200,9 @@ begin
     if (tvOLBar.Images = nil) then
       i := StrToIntDef(cbImages.Text,tvOLBar.Selected.ImageIndex)
     else if cbImages.ItemIndex > -1 then
-      i := integer(cbImages.Items.Objects[cbImages.ItemIndex]) - 1
+      i := cbImages.ItemIndex - 1
     else
-      i := StrToIntDef(cbImages.Text,tvOLBar.Selected.ImageIndex);
+      i := -1; // StrToIntDef(cbImages.Text,tvOLBar.Selected.ImageIndex);
     acApply.Enabled := acApply.Enabled or 
       (tvOLBar.Selected.Text <> edCaption.Text) or (tvOLBar.Selected.ImageIndex <> i);
     tvOLBar.Selected.ImageIndex := i;
@@ -222,7 +222,7 @@ begin
       if Node.ImageIndex > -1 then
       begin
         if tvOLBar.Images <> nil then
-          cbImages.ItemIndex := cbImages.Items.IndexOfObject(TObject(Node.ImageIndex)) + 1
+          cbImages.ItemIndex := Node.ImageIndex + 1
         else
           cbImages.Text := IntToStr(Node.ImageIndex);
       end
@@ -303,9 +303,9 @@ begin
     if cbImages.Style = csDropDown then
       i := StrToIntDef(cbImages.Text,tvOLBar.Selected.ImageIndex)
     else if cbImages.ItemIndex > -1 then
-      i := integer(cbImages.Items.Objects[cbImages.ItemIndex]) - 1
+      i := cbImages.ItemIndex - 1
     else
-      i := 0;
+      i := -1;
     acApply.Enabled := acApply.Enabled or (tvOLBar.Selected.ImageIndex <> i);
     tvOLBar.Selected.ImageIndex := i;
     tvOLBar.Selected.SelectedIndex := i;
