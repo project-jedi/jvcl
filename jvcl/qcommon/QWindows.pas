@@ -368,6 +368,8 @@ function UnionRect(var Dst: TRect; R1, R2: TRect): LongBool;
 function CopyRect(var Dst: TRect; const Src: TRect): LongBool; overload;
 function SubtractRect(var dR: TRect; const R1, R2: TRect): LongBool;
 function CenterRect(InnerRect, OuterRect: TRect): TRect;
+function PtInRect(const R: TRect; pt: TPoint): LongBool;
+
 
 type
   TRGBQuad = packed record
@@ -535,7 +537,8 @@ const
 function DPtoLP(Handle: QPainterH; var Points; Count: Integer): LongBool;
 function LPtoDP(Handle: QPainterH; var Points; Count: Integer): LongBool;
 function SetWindowOrgEx(Handle: QPainterH; X, Y: Integer; OldOrg: PPoint): LongBool;
-function GetWindowOrgEx(Handle: QPainterH; Org: PPoint): LongBool;
+function GetWindowOrgEx(Handle: QPainterH; Org: PPoint): LongBool; overload;
+function GetWindowOrgEx(Handle: QPainterH; var Org: TPoint): LongBool; overload;
 { limited implementations of }
 function BitBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
   XSrc, YSrc: Integer; Rop: RasterOp; IgnoreMask: Boolean = true): LongBool; overload;
@@ -1081,6 +1084,7 @@ function GetActiveWindow: HWND;
 function GetForegroundWindow: HWND;
 procedure SetActiveWindow(Handle: HWND);
 function InvalidateRect(Handle: QWidgetH; R: PRect; EraseBackground: Boolean): LongBool;
+function ValidateRect(hWnd: QWidgetH; R: PRect): LongBool;
 function UpdateWindow(Handle: QWidgetH): LongBool;
 function IsChild(ParentHandle, ChildHandle: QWidgetH): LongBool;
 function IsWindowEnabled(Handle: QWidgetH): LongBool;
@@ -1102,6 +1106,10 @@ function SetWindowPos(Wnd, WndInsertAfter: Cardinal; X, Y, cx, cy: Integer;
   uFlags: Longword): LongBool; overload;
 function SetWindowPos(Wnd: QWidgetH; WndInsertAfter: Cardinal; X, Y, cx, cy: Integer;
   uFlags: Longword): LongBool; overload;
+
+
+{ Controls.pas implements, so we need it, too }
+procedure MoveWindowOrg(DC: HDC; DX, DY: Integer);
 
 const
   { SetWindowPos Flags }
@@ -2457,6 +2465,14 @@ begin
   Result := SetWindowPos(Wnd, QWidgetH(WndInsertAfter), X, Y, cx, cy, uFlags);
 end;
 
+procedure MoveWindowOrg(DC: HDC; DX, DY: Integer);
+var
+  P: TPoint;
+begin
+  GetWindowOrgEx(DC, P);
+  SetWindowOrgEx(DC, P.X - DX, P.Y - DY, nil);
+end;
+
 function IsWindowVisible(Handle: QWidgetH): LongBool;
 begin
   Result := QWidget_isVisible(Handle);
@@ -3250,7 +3266,7 @@ end;
 function InvalidateRect(Handle: QWidgetH; R: PRect; EraseBackground: Boolean): LongBool;
 begin
   Result := False;
-  if Handle <> nil then
+  if Handle = nil then
     Exit;
   try
     QWidget_repaint(Handle, R, erasebackground);
@@ -3258,6 +3274,12 @@ begin
   except
     Result := False;
   end;
+end;
+
+function ValidateRect(hWnd: QWidgetH; R: PRect): LongBool;
+begin
+  // not implemented
+  Result := True;
 end;
 
 function UpdateWindow(Handle: QWidgetH): LongBool;
@@ -3889,6 +3911,11 @@ begin
   end;
 end;
 
+function GetWindowOrgEx(Handle: QPainterH; var Org: TPoint): LongBool;
+begin
+  GetWindowOrgEx(Handle, @Org);
+end;
+
 function SetWindowOrgEx(Handle: QPainterH; X, Y: Integer; OldOrg: PPoint): LongBool;
 var
   R :TRect;
@@ -4265,6 +4292,13 @@ begin
   except
     Result := False;
   end;
+end;
+
+function PtInRect(const R: TRect; pt: TPoint): LongBool;
+begin
+  with R do
+    Result := (pt.X >= Left) and (pt.X <= Right) and
+              (pt.Y >= Top) and (pt.Y <= Bottom); 
 end;
 
 procedure TextOutAngle(Handle: QPainterH; Angle, Left, Top: Integer; Text: WideString);
