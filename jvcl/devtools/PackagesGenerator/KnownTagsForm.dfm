@@ -3,7 +3,7 @@ object frmKnownTags: TfrmKnownTags
   Top = 107
   BorderStyle = bsDialog
   Caption = 'Known replacement tags'
-  ClientHeight = 363
+  ClientHeight = 411
   ClientWidth = 580
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -13,13 +13,17 @@ object frmKnownTags: TfrmKnownTags
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  DesignSize = (
+    580
+    411)
   PixelsPerInch = 96
   TextHeight = 13
   object bbtOk: TBitBtn
-    Left = 247
-    Top = 324
+    Left = 253
+    Top = 374
     Width = 85
     Height = 29
+    Anchors = [akLeft, akBottom]
     Caption = 'Ok'
     Default = True
     ModalResult = 1
@@ -81,10 +85,11 @@ object frmKnownTags: TfrmKnownTags
   object pctSections: TPageControl
     Left = 8
     Top = 8
-    Width = 561
-    Height = 305
-    ActivePage = tshFilesAndForms
-    TabIndex = 2
+    Width = 563
+    Height = 356
+    ActivePage = tshOutside
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    TabIndex = 0
     TabOrder = 1
     object tshOutside: TTabSheet
       Caption = 'Outside any repeating section'
@@ -251,6 +256,36 @@ object frmKnownTags: TfrmKnownTags
         Caption = 
           'Replaced by '#39'RUN'#39' or '#39'DESIGN'#39' depending of the type of the packa' +
           'ge'
+      end
+      object lblDateTime: TLabel
+        Left = 8
+        Top = 276
+        Width = 71
+        Height = 13
+        Caption = '%DATETIME%'
+      end
+      object lblDateTimeUsage: TLabel
+        Left = 208
+        Top = 276
+        Width = 332
+        Height = 13
+        Caption = 
+          'The UTC generation date and time formatted as '#39'dd-mm-yyyy  hh:nn' +
+          ':ss'#39
+      end
+      object lblXmlName: TLabel
+        Left = 8
+        Top = 300
+        Width = 69
+        Height = 13
+        Caption = '%XMLNAME%'
+      end
+      object lblXmlNameUsage: TLabel
+        Left = 208
+        Top = 300
+        Width = 148
+        Height = 13
+        Caption = 'The description of the package'
       end
     end
     object tshPackages: TTabSheet

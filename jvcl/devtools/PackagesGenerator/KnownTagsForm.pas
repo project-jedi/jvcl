@@ -53,6 +53,10 @@ type
     lblFormPathName: TLabel;
     lblFormPathNameUsage: TLabel;
     lblNote: TLabel;
+    lblDateTime: TLabel;
+    lblDateTimeUsage: TLabel;
+    lblXmlName: TLabel;
+    lblXmlNameUsage: TLabel;
   private
     { Private declarations }
   public
