@@ -136,7 +136,7 @@ type
 
 implementation
 
-//=== TJvXPCustomCheckControl ================================================
+//=== { TJvXPCustomCheckControl } ============================================
 
 constructor TJvXPCustomCheckControl.Create(AOwner: TComponent);
 begin
@@ -274,7 +274,7 @@ begin
    end;
 end;
 
-//=== TJvXPCheckbox ==========================================================
+//=== { TJvXPCheckbox } ======================================================
 
 procedure TJvXPCheckbox.DrawCheckSymbol(const R: TRect);
 var

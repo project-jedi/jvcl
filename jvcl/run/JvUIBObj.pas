@@ -196,7 +196,7 @@ begin
     Result := Result * VarArray^.Bounds[LDim].ElementCount;
 end;
 
-//=== TJvUIBClient ===========================================================
+//=== { TJvUIBClient } =======================================================
 
 constructor TJvUIBProxy.Create;
 begin
@@ -289,7 +289,7 @@ begin
   FTCPClient.Port := Value;
 end;
 
-//=== TJvUIBObject ===========================================================
+//=== { TJvUIBObject } =======================================================
 
 constructor TJvUIBStub.Create(Connection: TIdTCPServerConnection);
 begin
@@ -307,7 +307,7 @@ procedure TJvUIBStub.Invoke(MethodID: Integer);
 begin
 end;
 
-//=== TJvUIBConnection =======================================================
+//=== { TJvUIBConnection } ===================================================
 
 procedure TJvUIBConnection.BeginWrite;
 begin

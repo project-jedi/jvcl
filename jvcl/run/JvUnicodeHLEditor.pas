@@ -194,7 +194,7 @@ begin
   end;
 end;
 
-//=== TJvWideHLEditor ============================================================
+//=== { TJvWideHLEditor } ========================================================
 
 constructor TJvWideHLEditor.Create(AOwner: TComponent);
 begin

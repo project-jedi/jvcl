@@ -176,7 +176,7 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-//=== TJvTranslator ==========================================================
+//=== { TJvTranslator } ======================================================
 
 constructor TJvTranslator.Create(AOwner: TComponent);
 begin
@@ -892,7 +892,7 @@ begin
   end;
 end;
 
-//=== TJvTranslatorStrings ===================================================
+//=== { TJvTranslatorStrings } ===============================================
 
 constructor TJvTranslatorStrings.Create(AOwner: TComponent);
 begin

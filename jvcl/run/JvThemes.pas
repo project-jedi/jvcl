@@ -1366,7 +1366,7 @@ begin
   Result := GlobalThemeHooks;
 end;
 
-//=== TThemeHookList =========================================================
+//=== { TThemeHookList } =====================================================
 
 constructor TThemeHookList.Create;
 begin
@@ -1439,7 +1439,7 @@ begin
   end;
 end;
 
-//=== TThemeHook =============================================================
+//=== { TThemeHook } =========================================================
 
 constructor TThemeHook.Create(AControl: TControl);
 begin
@@ -1613,7 +1613,7 @@ begin
   end;
 end;
 
-//=== TThemeHookComponent ====================================================
+//=== { TThemeHookComponent } ================================================
 
 procedure TThemeHookComponent.Notification(AComponent: TComponent; Operation: TOperation);
 var

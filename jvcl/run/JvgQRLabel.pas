@@ -87,7 +87,7 @@ uses
   SysUtils, Controls,
   JvgUtils;
 
-//=== TJvgQRLabel ============================================================
+//=== { TJvgQRLabel } ========================================================
 
 constructor TJvgQRLabel.Create(AOwner: TComponent);
 begin
@@ -262,7 +262,7 @@ begin
   end;
 end;
 
-//=== TJvgQRDBText ===========================================================
+//=== { TJvgQRDBText } =======================================================
 
 procedure TJvgQRDBText.Paint;
 begin

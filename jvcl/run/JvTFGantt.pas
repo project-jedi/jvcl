@@ -141,7 +141,7 @@ resourcestring
   RsThisIsTheMinorScale = 'This is the Minor Scale';
 {$ENDIF USEJVCL}
 
-//=== TJvTFGantt =============================================================
+//=== { TJvTFGantt } =========================================================
 
 constructor TJvTFGantt.Create(AOwner: TComponent);
 begin
@@ -491,7 +491,7 @@ begin
 }
 end;
 
-//=== TJvTFGanttScaleFormat ==================================================
+//=== { TJvTFGanttScaleFormat } ==============================================
 
 constructor TJvTFGanttScaleFormat.Create;
 begin
@@ -516,7 +516,7 @@ begin
   FFont.Assign(Value);
 end;
 
-//=== TJvTFGanttScrollBar ====================================================
+//=== { TJvTFGanttScrollBar } ================================================
 
 constructor TJvTFGanttScrollBar.Create(AOwner: TComponent);
 begin

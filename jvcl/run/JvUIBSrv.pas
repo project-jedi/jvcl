@@ -93,7 +93,7 @@ implementation
 uses
   IdThread, IdException, IdStackConsts, IdTCPConnection;
 
-//=== TJvUIBServer ===========================================================
+//=== { TJvUIBServer } =======================================================
 
 constructor TJvUIBServer.Create;
 begin
@@ -216,7 +216,7 @@ begin
   end;
 end;
 
-//=== TJvUIBObjectFactory ====================================================
+//=== { TJvUIBObjectFactory } ================================================
 
 constructor TJvUIBObjectFactory.Create(Server: TJvUIBServer;
   NetClass: TJvUIBStubClass; const ClassID: TGUID);
@@ -239,7 +239,7 @@ begin
   inherited Destroy;
 end;
 
-//=== TJvUIBPeerThread =======================================================
+//=== { TJvUIBPeerThread } ===================================================
 
 procedure TJvUIBPeerThread.CleanUp;
 begin

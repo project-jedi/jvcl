@@ -80,7 +80,7 @@ uses
   {$ENDIF VisualCLX}
   JvJVCLUtils;
 
-//=== TJvTimerThread =========================================================
+//=== { TJvTimerThread } =====================================================
 
 type
   TJvTimerThread = class(TThread)
@@ -144,7 +144,7 @@ begin
   until Terminated;
 end;
 
-//=== TJvTimer ===============================================================
+//=== { TJvTimer } ===========================================================
 
 constructor TJvTimer.Create(AOwner: TComponent);
 begin

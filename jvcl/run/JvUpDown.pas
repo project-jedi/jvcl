@@ -195,7 +195,7 @@ const
   UDM_GETPOS32 = WM_USER + 114;
   UDS_HOTTRACK = $0100;
 
-//=== TJvCustomUpDown ========================================================
+//=== { TJvCustomUpDown } ====================================================
 
 constructor TJvCustomUpDown.Create(AOwner: TComponent);
 begin
@@ -445,7 +445,7 @@ begin
   // do nothing
 end;
 
-//=== TJvUpDown ==============================================================
+//=== { TJvUpDown } ==========================================================
 
 procedure TJvUpDown.UpdateAssociate;
 begin
@@ -457,7 +457,7 @@ begin
       TCustomEdit(FAssociate).Text := IntToStr(Position);
 end;
 
-//=== TJvCustomDomainUpDown ==================================================
+//=== { TJvCustomDomainUpDown } ==============================================
 
 constructor TJvCustomDomainUpDown.Create(AOwner: TComponent);
 begin

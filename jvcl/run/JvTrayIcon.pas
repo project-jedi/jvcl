@@ -391,7 +391,7 @@ begin
   end;
 end;
 
-//=== TJvTrayIcon ============================================================
+//=== { TJvTrayIcon } ========================================================
 
 function TJvTrayIcon.AcceptBalloons: Boolean;
 begin

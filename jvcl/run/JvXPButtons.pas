@@ -294,7 +294,7 @@ type
 
 implementation
 
-//=== TJvXPCustomButtonActionLink ============================================
+//=== { TJvXPCustomButtonActionLink } ========================================
 
 destructor TJvXPCustomButtonActionLink.Destroy;
 begin
@@ -320,7 +320,7 @@ begin
   (FClient as TJvXPCustomButton).Invalidate;
 end;
 
-//=== TJvXPCustomButton ======================================================
+//=== { TJvXPCustomButton } ==================================================
 
 constructor TJvXPCustomButton.Create(AOwner: TComponent);
 begin

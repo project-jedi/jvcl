@@ -320,7 +320,7 @@ uses
 const
   sUnitName = 'JvxCheckListBox';
 
-//=== TJvListBoxStrings ======================================================
+//=== { TJvListBoxStrings } ==================================================
 
 type
   TJvListBoxStrings = class(TStrings)
@@ -399,7 +399,7 @@ begin
     ListBox.Refresh;
 end;
 
-//=== TJvxCustomListBox ======================================================
+//=== { TJvxCustomListBox } ==================================================
 
 { TJvxCustomListBox implementation copied from STDCTRLS.PAS and modified }
 
@@ -1169,7 +1169,7 @@ begin
   inherited;
 end;
 
-//=== TJvCheckListBoxItem ====================================================
+//=== { TJvCheckListBoxItem } ================================================
 
 type
   TJvCheckListBoxItem = class
@@ -1197,7 +1197,7 @@ begin
   Result := FState = cbChecked;
 end;
 
-//=== TJvCheckListBoxStrings =================================================
+//=== { TJvCheckListBoxStrings } =============================================
 
 type
   TJvCheckListBoxStrings = class(TJvListBoxStrings)
@@ -1240,7 +1240,7 @@ begin
   end;
 end;
 
-//=== TJvxCheckListBox =======================================================
+//=== { TJvxCheckListBox } ===================================================
 
 // (rom) changed to var
 var

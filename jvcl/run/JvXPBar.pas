@@ -603,7 +603,7 @@ begin
     Result := 1;
 end;
 
-//=== TJvXPBarItemActionLink =================================================
+//=== { TJvXPBarItemActionLink } =============================================
 
 procedure TJvXPBarItemActionLink.AssignClient(AClient: TObject);
 begin
@@ -1099,7 +1099,7 @@ begin
   end;
 end;
 
-//=== TJvXPBarItems ==========================================================
+//=== { TJvXPBarItems } ======================================================
 
 constructor TJvXPBarItems.Create(WinXPBar: TJvXPCustomWinXPBar);
 begin
@@ -1205,7 +1205,7 @@ begin
     end;
 end;
 
-//=== TJvXPBarVisibleItems ===================================================
+//=== { TJvXPBarVisibleItems } ===============================================
 
 constructor TJvXPBarVisibleItems.Create(WinXPBar: TJvXPCustomWinXPBar);
 begin
@@ -1260,7 +1260,7 @@ begin
     FItems.Delete(FItems.IndexOf(Item));
 end;
 
-//=== TJvXPFadeThread ========================================================
+//=== { TJvXPFadeThread } ====================================================
 
 constructor TJvXPFadeThread.Create(WinXPBar: TJvXPCustomWinXPBar;
   RollDirection: TJvXPBarRollDirection);
@@ -1321,7 +1321,7 @@ begin
       Ord(FRollDirection = rdCollapse), 0);
 end;
 
-//=== TJvXPBarColors =========================================================
+//=== { TJvXPBarColors } =====================================================
 
 constructor TJvXPBarColors.Create;
 {$IFDEF JVCLThemesEnabled}
@@ -1468,7 +1468,7 @@ begin
   end;
 end;
 
-//=== TJvXPCustomWinXPBar ====================================================
+//=== { TJvXPCustomWinXPBar } ================================================
 
 constructor TJvXPCustomWinXPBar.Create(AOwner: TComponent);
 const

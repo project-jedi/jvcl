@@ -241,7 +241,7 @@ type
     function ReadString(const Section, Ident, Default: string): string;
   end;
 
-//=== TJvUninstallInfo ====================================================
+//=== { TJvUninstallInfo } ================================================
 
 destructor TJvUninstallInfo.Destroy;
 begin
@@ -264,7 +264,7 @@ begin
   FProperties.Assign(Value);
 end;}
 
-//=== TSafeRegIniFile ====================================================
+//=== { TSafeRegIniFile } ================================================
 
 function TSafeRegIniFile.ReadString(const Section, Ident, Default: string): string;
 var
@@ -433,7 +433,7 @@ begin
   end;
 end;
 
-//=== TJvUninstallComboBox ===================================================
+//=== { TJvUninstallComboBox } ===============================================
 
 constructor TJvUninstallComboBox.Create(AComponent: TComponent);
 begin
@@ -586,7 +586,7 @@ begin
   end;
 end;
 
-//=== TJvUninstallListBox ====================================================
+//=== { TJvUninstallListBox } ================================================
 
 constructor TJvUninstallListBox.Create(AComponent: TComponent);
 begin

@@ -781,7 +781,7 @@ begin
   end;
 end;
 
-//=== TJvOrganizeFavoritesDialog =============================================
+//=== { TJvOrganizeFavoritesDialog } =========================================
 
 function TJvOrganizeFavoritesDialog.Execute: Boolean;
 var
@@ -807,7 +807,7 @@ begin
   Result := True;
 end;
 
-//=== TJvAppletDialog ========================================================
+//=== { TJvAppletDialog } ====================================================
 
 const
   CPL_INIT = 1;
@@ -937,7 +937,7 @@ begin
 end;
 {$ENDIF VCL}
 
-//=== TJvComputerNameDialog ==================================================
+//=== { TJvComputerNameDialog } ==============================================
 
 constructor TJvComputerNameDialog.Create(AOwner: TComponent);
 begin
@@ -981,7 +981,7 @@ begin
     FComputerName := NameBuffer;
 end;
 
-//=== TJvBrowseFolderDialog ==================================================
+//=== { TJvBrowseFolderDialog } ==============================================
 
 constructor TJvBrowseFolderDialog.Create(AOwner: TComponent);
 begin
@@ -1026,7 +1026,7 @@ begin
   FreePIDL(BrowseInfo.pidlRoot);
 end;
 
-//=== TJvFormatDialog ========================================================
+//=== { TJvFormatDialog } ====================================================
 
 constructor TJvFormatDriveDialog.Create(AOwner: TComponent);
 begin
@@ -1218,7 +1218,7 @@ begin
   end;
 end;
 
-//=== TJvOutOfMemoryDialog ===================================================
+//=== { TJvOutOfMemoryDialog } ===============================================
 
 function TJvOutOfMemoryDialog.Execute: Boolean;
 var
@@ -1245,7 +1245,7 @@ begin
     raise EWinDialogError.CreateRes(@RsENotSupported);
 end;
 
-//=== TJvShellAboutDialog ====================================================
+//=== { TJvShellAboutDialog } ================================================
 
 constructor TJvShellAboutDialog.Create(AOwner: TComponent);
 begin
@@ -1294,7 +1294,7 @@ begin
   Result := True;
 end;
 
-//=== TJvRunDialog ===========================================================
+//=== { TJvRunDialog } =======================================================
 
 constructor TJvRunDialog.Create(AOwner: TComponent);
 begin
@@ -1358,7 +1358,7 @@ begin
   FIcon.Assign(Value);
 end;
 
-//=== TJvObjectPropertiesDialog ==============================================
+//=== { TJvObjectPropertiesDialog } ==========================================
 
 function TJvObjectPropertiesDialog.Execute: Boolean;
 var
@@ -1423,14 +1423,14 @@ begin
   end;
 end;
 
-//=== TJvNewLinkDialog =======================================================
+//=== { TJvNewLinkDialog } ===================================================
 
 procedure TJvNewLinkDialog.Execute;
 begin
   NewLinkHere(0, 0, PChar(DestinationFolder), 0);
 end;
 
-//=== TJvAddHardwareDialog ===================================================
+//=== { TJvAddHardwareDialog } ===============================================
 
 procedure TJvAddHardwareDialog.Execute;
 var
@@ -1578,14 +1578,14 @@ end;
 
 // (rom) ExecuteApplet function removed
 
-//=== TJvOpenWithDialog ======================================================
+//=== { TJvOpenWithDialog } ==================================================
 
 procedure TJvOpenWithDialog.Execute;
 begin
   SHOpenWith(0, 0, PChar(FileName), SW_SHOW);
 end;
 
-//=== TJvDiskFullDialog ======================================================
+//=== { TJvDiskFullDialog } ==================================================
 
 constructor TJvDiskFullDialog.Create(AOwner: TComponent);
 begin
@@ -1619,14 +1619,14 @@ begin
   FDriveChar := Value;
 end;
 
-//=== TJvExitWindowsDialog ===================================================
+//=== { TJvExitWindowsDialog } ===============================================
 
 procedure TJvExitWindowsDialog.Execute;
 begin
   SHShutDownDialog(GetForegroundWindow);
 end;
 
-//=== TJvChangeIconDialog ====================================================
+//=== { TJvChangeIconDialog } ================================================
 
 function TJvChangeIconDialog.Execute: Boolean;
 var
@@ -1673,7 +1673,7 @@ begin
 end;
 
 {$IFDEF VCL}
-//=== TJvOpenDialog2000 ======================================================
+//=== { TJvOpenDialog2000 } ==================================================
 
 function TJvOpenDialog2000.Execute: Boolean;
 begin
@@ -1683,7 +1683,7 @@ begin
     Result := inherited Execute;
 end;
 
-//=== TJvSaveDialog2000 ======================================================
+//=== { TJvSaveDialog2000 } ==================================================
 
 function TJvSaveDialog2000.Execute: Boolean;
 begin

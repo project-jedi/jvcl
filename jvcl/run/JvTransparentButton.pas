@@ -418,7 +418,7 @@ begin
   end;
 end;
 
-//=== TJvTransparentButton ===================================================
+//=== { TJvTransparentButton } ===============================================
 
 procedure TJvTransparentButton.CalcGlyphCount;
 var GlyphNum:Integer;
@@ -949,7 +949,7 @@ begin
   Result := TJvTransparentButtonActionLink;
 end;
 
-//=== TJvTransparentButton2 ==================================================
+//=== { TJvTransparentButton2 } ==============================================
 
 constructor TJvTransparentButton2.Create(AOwner: TComponent);
 begin

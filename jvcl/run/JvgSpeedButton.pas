@@ -123,7 +123,7 @@ type
 
 implementation
 
-//=== TJvgSpeedButton ========================================================
+//=== { TJvgSpeedButton } ====================================================
 
 constructor TJvgSpeedButton.Create(AOwner: TComponent);
 begin
@@ -331,7 +331,7 @@ begin
   end;
 end;
 
-//=== TJvgExtSpeedButton =====================================================
+//=== { TJvgExtSpeedButton } =================================================
 
 constructor TJvgExtSpeedButton.Create(AOwner: TComponent);
 begin

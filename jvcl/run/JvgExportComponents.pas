@@ -243,7 +243,7 @@ begin
 end;
 {$ENDIF COMPILER5}
 
-//=== TJvgCommonExport =======================================================
+//=== { TJvgCommonExport } ===================================================
 
 procedure TJvgCommonExport.Execute;
 begin
@@ -305,7 +305,7 @@ begin
     FOnGetTableName(Self, nil, ATableName);
 end;
 
-//=== TJvgExportExcel ========================================================
+//=== { TJvgExportExcel } ====================================================
 
 constructor TJvgExportExcel.Create(AOwner: TComponent);
 begin
@@ -522,7 +522,7 @@ begin
   FSubHeaderFont.Assign(Value);
 end;
 
-//=== TJvgExportHTML =========================================================
+//=== { TJvgExportHTML } =====================================================
 
 constructor TJvgExportHTML.Create(AOwner: TComponent);
 begin
@@ -570,7 +570,7 @@ begin
   FStyles.Assign(Value);
 end;
 
-//=== TJvgExportDataset ======================================================
+//=== { TJvgExportDataset } ==================================================
 
 procedure TJvgExportDataset.Execute;
 var
@@ -629,7 +629,7 @@ begin
   end;
 end;
 
-//=== TJvgExportXML ==========================================================
+//=== { TJvgExportXML } ======================================================
 (*
 procedure TJvgExportXML.Execute;
 var

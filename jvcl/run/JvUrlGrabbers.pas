@@ -261,7 +261,7 @@ begin
   end;
 end;
 
-//=== TJvHttpUrlGrabber ======================================================
+//=== { TJvHttpUrlGrabber } ==================================================
 
 constructor TJvHttpUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
 begin
@@ -288,7 +288,7 @@ begin
   Result := 'HTTP';
 end;
 
-//=== TJvFtpUrlGrabber =======================================================
+//=== { TJvFtpUrlGrabber } ===================================================
 
 constructor TJvFtpUrlGrabber.Create(AOwner: TComponent);
 begin
@@ -324,7 +324,7 @@ begin
   Result := 'FTP';
 end;
 
-//=== TJvFtpUrlGrabberDefaultProperties ======================================
+//=== { TJvFtpUrlGrabberDefaultProperties } ==================================
 
 constructor TJvFtpUrlGrabberDefaultProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);
 begin
@@ -349,7 +349,7 @@ begin
   Result := TJvFtpUrlGrabber.GetSupportedURLName;
 end;
 
-//=== TJvFtpUrlGrabberThread =================================================
+//=== { TJvFtpUrlGrabberThread } =============================================
 
 procedure TJvFtpUrlGrabberThread.Closed;
 begin
@@ -479,7 +479,7 @@ begin
   Result := TJvFtpUrlGrabber(FGrabber);
 end;
 
-//=== TJvHttpUrlGrabberThread ================================================
+//=== { TJvHttpUrlGrabberThread } ============================================
 
 constructor TJvHttpUrlGrabberThread.Create(Grabber: TJvCustomUrlGrabber);
 begin
@@ -630,14 +630,14 @@ begin
   Result := TJvHttpUrlGrabber(FGrabber);
 end;
 
-//=== TJvHttpUrlGrabberDefaultProperties =====================================
+//=== { TJvHttpUrlGrabberDefaultProperties } =================================
 
 function TJvHttpUrlGrabberDefaultProperties.GetSupportedURLName: string;
 begin
   Result := TJvHttpUrlGrabber.GetSupportedURLName;
 end;
 
-//=== TJvLocalFileUrlGrabber =================================================
+//=== { TJvLocalFileUrlGrabber } =============================================
 
 constructor TJvLocalFileUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
 begin
@@ -673,7 +673,7 @@ begin
   Result := 'LocalFile';
 end;
 
-//=== TJvLocalFileUrlGrabberThread ===========================================
+//=== { TJvLocalFileUrlGrabberThread } =======================================
 
 procedure TJvLocalFileUrlGrabberThread.Execute;
 var
@@ -747,7 +747,7 @@ begin
     FileName := ExpandUNCFilename(FileName);
 end;
 
-//=== TJvLocalFileUrlGrabberProperties =======================================
+//=== { TJvLocalFileUrlGrabberProperties } ===================================
 
 constructor TJvLocalFileUrlGrabberProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);
 begin
