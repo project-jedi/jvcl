@@ -133,7 +133,7 @@ bplJvQXPCtrlsK3D.so: k3/JvQXPCtrlsK3D.dpk
 bplJvQUIBK3D.so: k3per/JvQUIBK3D.dpk
 	$(DCC)
 
-bplJvQInspectorK3R.so: k3/JvQInspectorK3R.dpk
+bplJvQInspectorK3R.so: k3per/JvQInspectorK3R.dpk
 	$(DCC)
 
 bplJvQInspectorK3D.so: k3/JvQInspectorK3D.dpk
