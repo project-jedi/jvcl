@@ -31,12 +31,14 @@ unit JvBaseDlg;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JVCLVer, JvComponent;
 
 type
-  TJvCommonDialog = class(TJvComponent)
-  public
-    function Execute: Boolean; virtual; abstract;
+  TJvCommonDialog = class(TCommonDialog)
+  private
+    FAboutJVCL: TJVCLAboutInfo;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvCommonDialogP = class(TJvComponent)

@@ -35,7 +35,8 @@ unit JvPageSetup;
 interface
 
 uses
-  Windows, Classes, Dialogs, Messages, Graphics, CommDlg, JVCLVer, JvComponent;
+  Windows, Classes, Dialogs, Messages, Graphics, CommDlg,
+  JVCLVer, JvComponent, JvBaseDlg;
 
 const
   // Internal events
@@ -87,7 +88,7 @@ type
     PageSetupRec: TPageSetupDlg; PaintWhat: TJvPSPaintWhat; Canvas: TCanvas;
     Rect: TRect; var NoDefaultPaint: Boolean) of object;
 
-  TJvPageSetupDialog = class(TCommonDialog)
+  TJvPageSetupDialog = class(TJvCommonDialog)
   private
     FOptions: TJvPageOptions;
     FFlags: DWORD;
@@ -98,7 +99,6 @@ type
     FInitPaper, FInitFlags: Integer;
     FPageSetupRec: TPageSetupDlg;
     FPaintWhat: TJvPSPaintWhat;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetOptions(aValue: TJvPageOptions);
     function DoExecute(aShow: Boolean): Boolean;
 
@@ -126,7 +126,6 @@ type
     procedure GetDefaults; virtual;
     property PaperSize: TPoint read FPaperSize;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Margin: TJvMarginSize read FMargin;
     property MinMargin: TJvMarginSize read FMinMargin;
     property Options: TJvPageOptions read FOptions write SetOptions
