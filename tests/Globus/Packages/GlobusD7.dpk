@@ -1,8 +1,8 @@
-package GlobusD5;
+package GlobusD7;
 
-{$R *.RES}
+{$R *.res}
 {$R '..\resources\reggllib.dcr'}
-{$ALIGN ON}
+{$ALIGN 8}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO ON}
@@ -24,20 +24,20 @@ package GlobusD5;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'GVCL - Globus VCL Extention Library'}
-{$IMPLICITBUILD OFF}
+{$IMPLICITBUILD ON}
 
 requires
-  vcl50,
-  Vclx50,
-  Vcldb50,
-  VclSmp50,
-  Vclbde50,
-  Qrpt50,
-  vcljpg50,
-  vclie50,
-  DJCL50,
-  JVCL200_R50,
-  GlobusR5;
+  vcl,
+  Vclx,
+  Vcldb,
+  VclSmp,
+  Qrpt,
+  vcljpg,
+  vclie,
+  designide,
+  DJCL70,
+  JVCL200_R70,
+  GlobusR7;
 
 contains
   JvgRegLibDelphi in '..\Source\JvgRegLibDelphi.pas',

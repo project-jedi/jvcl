@@ -139,7 +139,8 @@ uses Classes,
    JvgMultiResources,
    JvgPage,
    //   JvgPointEditor,
-   JvgProgress;
+   JvgProgress,
+   JvgLabelEditor;
 
 procedure Register;
 begin
@@ -227,14 +228,15 @@ begin
 
    RegisterComponentEditor(TJvgReport, TJvgReportCompEditor);
 
-   RegisterPropertyEditor(TypeInfo(TStringList), TJvgReport, 'Report',
-      TJvgRepProperty);
+   RegisterPropertyEditor(TypeInfo(TStringList), TJvgReport, 'Report', TJvgRepProperty);
 
    RegisterComponentEditor(TJvgReportEditor, TJvgReportCompEditor);
 
    RegisterComponentEditor(TJvgShadow, TJvgShadowEditor);
 
    RegisterComponentEditor(TJvgHelpPanel, TJvgHelpPanelEditor);
+
+   RegisterComponentEditor(TJvgLabel, TJvgLabelEditor);
 
    RegisterPropertyEditor(TypeInfo(TJvgResStringList), TJvgMultipleResources,
       'Resources', TJvgResourcesProperty);
