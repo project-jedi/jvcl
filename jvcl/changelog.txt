@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-01-16:
+- renamed TCustomJvDBTreeView to TJvCustomDBTreeView // ahuser
 2004-01-15:
 - Extracted TJvDBGrid from JvDBControls into its own unit, JvDBGrid // peter3
 - Added JvDBGrid additions from Lionel Reynaud // peter3

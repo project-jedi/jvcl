@@ -229,4 +229,4 @@ _deBR_=dlBR
 _deDOT_=dlDOT
 BackgrColor=BackgroundColor
 InsertSpSymbolAt=InsertSpecialSymbolAt
-
+TCustomJvDBTreeView=TJvCustomDBTreeView
