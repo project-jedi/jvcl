@@ -538,9 +538,12 @@ end;
 function TJvCustomValidateEdit.GetValue: Variant;
 begin
   case FDisplayFormat of
-    dfCurrency: Result := StrToCurrDef(FEditText,0);
-    dfFloat, dfPercent, dfScientific: StrToFloatDef(FEditText,0);
-    dfInteger, dfYear: Result := StrToIntDef(Text,0);
+    dfCurrency:
+      Result := StrToCurrDef(FEditText,0);
+    dfFloat, dfPercent, dfScientific:
+      Result := StrToFloatDef(FEditText,0);
+    dfInteger, dfYear:
+      Result := StrToIntDef(Text,0);
     else
       Result := inherited Text;
   end;
