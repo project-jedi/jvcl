@@ -35,7 +35,7 @@ uses
   Classes, Graphics, Controls, Forms,
   Dialogs, JvHotLink, StdCtrls, ExtCtrls, jpeg, JvLabel,
 {$IFDEF DELPHI5}DsgnIntf, {$ENDIF}{$IFDEF DELPHI6_UP}DesignEditors, DesignIntf, {$ENDIF}
-  JVCLVer, JvComponent, Buttons, IniFiles ;
+  JVCLVer, JvComponent, Buttons, IniFiles;
 
 type
   TJVCLAboutDialogProperty = class(TPropertyEditor)
@@ -84,8 +84,8 @@ type
 
   private
     { Private declarations }
-    FHelpFile:String;
-    FHelpDirectory:String;
+    FHelpFile: string;
+    FHelpDirectory: string;
     procedure LoadOptions;
     procedure SaveOptions;
   public
@@ -125,7 +125,6 @@ begin
   Result := 'Version ' + JVCL_VERSIONSTRING;
 end;
 
-
 { TJvJVCLAboutForm }
 
 procedure TJvJVCLAboutForm.btnOKClick(Sender: TObject);
@@ -137,14 +136,14 @@ procedure TJvJVCLAboutForm.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params do
-    begin
-      Style := (Style or WS_POPUP) and (not WS_DLGFRAME);
-    end;
+  begin
+    Style := (Style or WS_POPUP) and (not WS_DLGFRAME);
+  end;
 end;
 
 procedure TJvJVCLAboutForm.FormShow(Sender: TObject);
 begin
-  lblVersion.Caption := 'Version: '+JVCL_VERSIONSTRING;
+  lblVersion.Caption := 'Version: ' + JVCL_VERSIONSTRING;
   lblCopyRight.Caption := 'Copyright© Project JEDI, 1999 - ' + FormatDateTime('yyyy', Now);
 end;
 
@@ -164,37 +163,42 @@ end;
 procedure TJvJVCLAboutForm.FormCreate(Sender: TObject);
 begin
   LoadOptions;
-  if FHelpFile='' then btnHelp.Enabled:=False else btnHelp.Enabled := True;
+  if FHelpFile = '' then
+    btnHelp.Enabled := False
+  else
+    btnHelp.Enabled := True;
 end;
 
 procedure TJvJVCLAboutForm.btnOptionsClick(Sender: TObject);
 begin
-
   if OpenDialog1.Execute then
-    begin
-      FHelpFile:= ExtractFileName(OpenDialog1.FileName);
-      FHelpDirectory:= ExtractFileDir(OpenDialog1.FileName);
-      SaveOptions;
-    if FHelpFile='' then btnHelp.Enabled:=False else btnHelp.Enabled := True;
-    end;
+  begin
+    FHelpFile := ExtractFileName(OpenDialog1.FileName);
+    FHelpDirectory := ExtractFileDir(OpenDialog1.FileName);
+    SaveOptions;
+    if FHelpFile = '' then
+      btnHelp.Enabled := False
+    else
+      btnHelp.Enabled := True;
+  end;
 end;
 
 procedure TJvJVCLAboutForm.LoadOptions;
 var
   l, t, w, h: integer;
 begin
-  with TIniFile.create(ExtractFileDir(Application.exename)+'\JVCL.ini') do
-    try
-      l := ReadInteger('Options', 'Bounds.Left', 0);
-      t := ReadInteger('Options', 'Bounds.Top', 0);
-      w := ReadInteger('Options', 'Bounds.Width', -1);
-      h := ReadInteger('Options', 'Bounds.Height', -1);
+  with TIniFile.create(ExtractFileDir(Application.exename) + '\JVCL.ini') do
+  try
+    l := ReadInteger('Options', 'Bounds.Left', 0);
+    t := ReadInteger('Options', 'Bounds.Top', 0);
+    w := ReadInteger('Options', 'Bounds.Width', -1);
+    h := ReadInteger('Options', 'Bounds.Height', -1);
 
-      FHelpFile := ReadString('Options', 'Help.File', '');
-      FHelpDirectory := ReadString('Options', 'Help.Directory', '');
-    finally
-      free;
-    end;
+    FHelpFile := ReadString('Options', 'Help.File', '');
+    FHelpDirectory := ReadString('Options', 'Help.Directory', '');
+  finally
+    free;
+  end;
 
   //make sure the form is positioned on screen ...
   //(ie make sure nobody's fiddled with the INI file!)
@@ -206,26 +210,26 @@ end;
 
 procedure TJvJVCLAboutForm.SaveOptions;
 begin
-  with TIniFile.create(ExtractFileDir(Application.exename)+'\JVCL.ini') do
-    try
-      if windowState = wsNormal then
-        begin
-          WriteInteger('Options', 'Bounds.Left', self.Left);
-          WriteInteger('Options', 'Bounds.Top', self.Top);
-          WriteInteger('Options', 'Bounds.Width', self.Width);
-          WriteInteger('Options', 'Bounds.Height', self.Height);
-        end;
-
-      WriteString('Options', 'Help.File', FHelpFile);
-      WriteString('Options', 'Help.Directory', FHelpDirectory);
-    finally
-      free;
+  with TIniFile.create(ExtractFileDir(Application.exename) + '\JVCL.ini') do
+  try
+    if windowState = wsNormal then
+    begin
+      WriteInteger('Options', 'Bounds.Left', self.Left);
+      WriteInteger('Options', 'Bounds.Top', self.Top);
+      WriteInteger('Options', 'Bounds.Width', self.Width);
+      WriteInteger('Options', 'Bounds.Height', self.Height);
     end;
+
+    WriteString('Options', 'Help.File', FHelpFile);
+    WriteString('Options', 'Help.Directory', FHelpDirectory);
+  finally
+    free;
+  end;
 end;
 
 procedure TJvJVCLAboutForm.FormDestroy(Sender: TObject);
 begin
-SaveOptions;
+  SaveOptions;
 end;
 
 end.

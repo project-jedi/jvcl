@@ -43,8 +43,6 @@ type
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
     FOnUrl: TOnLinkClick;
-    FLeft: Integer;
-    FTop: Integer;
     procedure AddToPopup(Item: TMenuItem; Path: string);
     procedure UrlClick(Sender: TObject);
   public
@@ -156,7 +154,6 @@ end;
 
 {*******************************************************}
 
-
 procedure TJvControlPanel.AddToPopup(Item: TMenuItem; Path: string);
 var
   t: TSearchRec;
@@ -202,9 +199,14 @@ end;
 {*******************************************************}
 
 procedure TJvControlPanel.Click;
+var P: TPoint;
 begin
   inherited;
-  FPopup.Popup(FLeft + Left, FTop + Top + Height + 20);
+  if PArent <> nil then
+  begin
+    P := Parent.ClientToScreen(Point(Left, Top + Height));
+    FPopup.Popup(P.x, P.y);
+  end;
 end;
 
 {*******************************************************}
@@ -212,8 +214,6 @@ end;
 constructor TJvControlPanel.Create(AOwner: TComponent);
 begin
   inherited;
-  FLeft := GetParentForm(TControl(AOwner)).Left;
-  FTop := GetParentForm(TControl(AOwner)).Top;
   FDirs := TJvDirectories.Create(Self);
   FPopup := TPopupMenu.Create(Self);
 end;
@@ -233,8 +233,6 @@ begin
     if st[Length(st)] <> '\' then
       st := st + '\';
     AddToPopup(TMenuItem(FPopup.Items), st);
-    FTop := (Owner as TForm).Top;
-    FLeft := (Owner as TForm).Left;
     PopupMenu := FPopup;
   end;
 end;
@@ -261,3 +259,4 @@ begin
 end;
 
 end.
+
