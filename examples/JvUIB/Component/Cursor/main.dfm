@@ -38,6 +38,7 @@ object MainForm: TMainForm
     DatabaseName = 'D:\EMPLOYEE.DB'
     UserName = 'SYSDBA'
     PassWord = 'masterkey'
+    LibraryName = 'gds32.dll'
     Left = 8
     Top = 16
   end
@@ -47,22 +48,21 @@ object MainForm: TMainForm
     Top = 16
   end
   object SelectQuery: TJvUIBQuery
-    Transaction = Transaction
     SQL.Strings = (
       'SELECT proj_id, dept_no, projected_budget '
       'FROM proj_dept_budget WHERE fiscal_year = 1994'
       'FOR UPDATE OF projected_budget')
+    Transaction = Transaction
     CachedFetch = False
-    UseCursor = True
     Left = 72
     Top = 16
   end
   object UpdateQuery: TJvUIBQuery
-    Transaction = Transaction
     SQL.Strings = (
       '')
-    CachedFetch = False
+    Transaction = Transaction
     OnError = etmStayIn
+    CachedFetch = False
     Left = 104
     Top = 16
   end
