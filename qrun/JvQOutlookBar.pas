@@ -246,8 +246,6 @@ type
     procedure CMCaptionEditCancel(var Msg: TMessage); message CM_CAPTION_EDIT_CANCEL;
 
 
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
 
     procedure DoButtonEdit(NewText: string; B: TJvOutlookBarButton);
     procedure DoPageEdit(NewText: string; P: TJvOutlookBarPage);
@@ -256,7 +254,9 @@ type
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure FontChanged; override;
-    
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+
     function GetButtonHeight(PageIndex: Integer): Integer;
     function GetButtonFrameRect(PageIndex, ButtonIndex: Integer): TRect;
     function GetButtonTextRect(PageIndex, ButtonIndex: Integer): TRect;
@@ -275,7 +275,7 @@ type
     function DoPageChanging(Index: Integer): Boolean; virtual;
     procedure DoPageChange(Index: Integer); virtual;
     procedure DoButtonClick(Index: Integer); virtual;
-    procedure DoContextPopup(constMousePos: TPoint; var Handled: Boolean); override;
+    procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); override;
     function DoDrawBackGround: boolean;
     function DoDrawPage(ARect: TRect; Index: integer): boolean;
     function DoDrawPageButton(ARect: TRect; Index: integer; Down: boolean): boolean;
@@ -1199,17 +1199,17 @@ begin
       case Pages[Index].Alignment of
         taLeftJustify:
           begin
-            PageImages.Draw(Canvas, 4, ATop + 1, Pages[Index].ImageIndex, Pages[Index].Enabled);
+            PageImages.Draw(Canvas, 4, ATop + 1, Pages[Index].ImageIndex, itImage, Pages[Index].Enabled);
             Inc(R.Left, PageImages.Width + 8);
           end;
         taCenter: // draw images to the left but don't offset the text
           begin
-            PageImages.Draw(Canvas, 4, ATop + 2, Pages[Index].ImageIndex, Pages[Index].Enabled);
+            PageImages.Draw(Canvas, 4, ATop + 2, Pages[Index].ImageIndex, itImage, Pages[Index].Enabled);
           end;
         taRightJustify:
           begin
             PageImages.Draw(Canvas, R.Right - PageImages.Width - 4, ATop + 2,
-              Pages[Index].ImageIndex, Pages[Index].Enabled);
+              Pages[Index].ImageIndex, itImage, Pages[Index].Enabled);
             Dec(R.Right, PageImages.Width + 8);
           end;
       end;
@@ -1238,11 +1238,11 @@ begin
     begin
       OffsetRect(R, 1, 1);
       Canvas.Font.Color := clWhite;
-      DrawText(Canvas.Handle, PChar(Pages[Index].Caption), -1, R, Flags);
+      DrawTextW(Canvas.Handle, PWideChar(Pages[Index].Caption), -1, R, Flags);
       OffsetRect(R, -1, -1);
       Canvas.Font.Color := clGrayText;
     end;
-    DrawText(Canvas.Handle, PChar(Pages[Index].Caption), -1, R, Flags);
+    DrawTextW(Canvas, PWideChar(Pages[Index].Caption), -1, R, Flags);
   finally
     Canvas.Font.Color := SavedColor;
   end;
@@ -1323,7 +1323,8 @@ begin
                 try
                   if LargeImages <> nil then
                     LargeImages.Draw(Canvas, R.Left + ((R.Right - R.Left) - LargeImages.Width) div 2, R.Top + 4,
-                      Pages[Index].Buttons[I].ImageIndex, Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
+                      Pages[Index].Buttons[I].ImageIndex, itImage,
+                      Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
                 finally
                   RestoreDC(Canvas.Handle, SavedDC);
                 end;
@@ -1336,7 +1337,7 @@ begin
                   else
                     Canvas.Font.Color := clGrayText;
                 end;
-                DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
+                DrawTextW(Canvas.Handle, PWideChar(Pages[Index].Buttons[I].Caption), -1, R3,
                   DT_EXPANDTABS or DT_SINGLELINE or DT_CENTER or DT_VCENTER);
               finally
                 Canvas.Font.Color := SavedColor;
@@ -1349,7 +1350,8 @@ begin
                 SavedDC := SaveDC(Canvas.Handle);
                 try
                   if SmallImages <> nil then
-                    SmallImages.Draw(Canvas, R.Left + 2, R.Top + 2, Pages[Index].Buttons[I].ImageIndex, Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
+                    SmallImages.Draw(Canvas, R.Left + 2, R.Top + 2, Pages[Index].Buttons[I].ImageIndex,
+                     itImage, Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
                 finally
                   RestoreDC(Canvas.Handle, SavedDC);
                 end;
@@ -1362,7 +1364,7 @@ begin
                   else
                     Canvas.Font.Color := clGrayText;
                 end;
-                DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
+                DrawTextW(Canvas.Handle, PWideChar(Pages[Index].Buttons[I].Caption), -1, R3,
                   DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP);
               finally
                 Canvas.Font.Color := SavedColor;
@@ -2026,7 +2028,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOutlookBar.DoContextPopup(constMousePos: TPoint;
+procedure TJvCustomOutlookBar.DoContextPopup(const MousePos: TPoint;
   var Handled: Boolean);
 var
   P: TPersistent;

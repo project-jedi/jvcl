@@ -276,13 +276,11 @@ var
   procedure DrawGradient(const Bitmap: TBitmap);
   begin
     
-    Bitmap.Canvas.Start;
-    
-    BitBlt(Canvas.Handle, R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
-      FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
-    
-    Bitmap.Canvas.Stop;
-    
+
+    BitBlt(Canvas, R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
+      FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas, 0, 0, SRCCOPY);
+
+
   end;
 
 begin
@@ -310,12 +308,9 @@ begin
           begin
             if ClipW <> 0 then
               DrawGradient(FHlGradient);
-            
-
             BitBlt(Canvas, R.Left + 3 + ClipW, (ClientHeight - FCheckSize) div 2 + 1 +
               ClipW, FCheckSize - 2 - ClipW * 2, FCheckSize - 2 - ClipW * 2,
               FBgGradient.Canvas, 0, 0, SRCCOPY);
-
 
           end
           else

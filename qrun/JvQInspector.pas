@@ -34,6 +34,7 @@
       - Exposed DropDownCount to specify the number of rows in a drop down
         list (Mantis #1646).
       - Fixed minor issue regarding item heights (Mantis #1647).
+      - Added default bkTile to TJvCustomInspector.BevelKind property.
     Apr 23, 2004, Marcel Bestebroer:
       - Added OnItemValueError event, which is fired when an exception occurs
         during the Item's Apply method. If no handler is assigned, the
@@ -158,7 +159,6 @@ const
   WM_VSCROLL = 102;
   CM_DEACTIVATE = 100;
   CM_ACTIVATE = 103;
-
   // WM_xSCROLL ScrollCodes
   SB_BOTTOM = 1;
   SB_ENDSCROLL = 2;
@@ -188,18 +188,23 @@ type
     Result: Integer;
   end;
 
-type
   TOpenEdit = class(TWidgetControl)
   private
     procedure SetModified(Value: boolean);
     function GetModified: boolean;
     procedure SetOnChange(Value: TNotifyEvent);
     function GetOnChange: TNotifyEvent;
+    procedure SetReadOnly(Value: Boolean);
+    function GetReadOnly: boolean;
+    procedure SetBorderStyle(Value: TBorderStyle);
+    function GetBorderStyle: TBorderStyle;
   public
     procedure SelectAll;
     property Text: TCaption read GetText write SetText;
     property Modified: boolean read GetModified write SetModified;
     property OnChange: TNotifyEvent read GetOnchange write SetOnChange;
+    property ReadOnly: boolean read GetReadOnly write SetReadOnly;
+    property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle;
   end;
 
 type
@@ -495,6 +500,7 @@ type
       write SetAfterItemCreate;
     property BeforeItemCreate: TInspectorItemBeforeCreateEvent
       read GetBeforeItemCreate write SetBeforeItemCreate;
+    
     property BeforeSelection: TInspectorItemBeforeSelectEvent read GetBeforeSelection write SetBeforeSelection;
     property Painter: TJvInspectorPainter read GetPainter write SetPainter;
     property PaintGeneration: Integer read FPaintGen;
@@ -776,9 +782,7 @@ type
     FDisplayIndex: Integer;
     FDisplayName: string;
     FDroppedDown: Boolean;
-
     FEditCtrl: TOpenEdit;
-
     FEditCtrlDestroying: Boolean;
     
     FEditing: Boolean;
@@ -851,9 +855,10 @@ type
     function GetDisplayParent: TJvCustomInspectorItem; virtual;
     function GetDisplayValue: string; virtual;
     function GetDroppedDown: Boolean; virtual;
-
+    
+    
     function GetEditCtrl: TOpenEdit; virtual;
-
+    
     function GetEditCtrlDestroying: Boolean; virtual;
     function GetEditing: Boolean; virtual;
     function GetExpanded: Boolean; virtual;
@@ -898,9 +903,10 @@ type
     procedure SetDisplayIndexValue(const Value: Integer); virtual;
     procedure SetDisplayName(Value: string); virtual;
     procedure SetDisplayValue(const Value: string); virtual;
-
+    
+    
     procedure SetEditCtrl(const Value: TOpenEdit); virtual;
-
+    
     procedure SetEditing(const Value: Boolean); virtual;
     procedure SetExpanded(Value: Boolean); virtual;
     procedure SetFlags(const Value: TInspectorItemFlags); virtual;
@@ -926,10 +932,10 @@ type
     property BaseCategory: TJvCustomInspectorItem read GetBaseCategory;
     property Category: TJvCustomInspectorItem read GetCategory;
     property DroppedDown: Boolean read GetDroppedDown;
-
-    property EditCtrl: TOpenEdit read GetEditCtrl;
-
     property EditCtrlDestroying: Boolean read GetEditCtrlDestroying;
+    
+    
+    property EditCtrl: TOpenEdit read GetEditCtrl;
     
     property IsCompoundColumn: Boolean read GetIsCompoundColumn;
     property LastPaintGeneration: Integer read FLastPaintGen;
@@ -1042,9 +1048,7 @@ type
     function GetColumnCount: Integer; virtual;
     function GetColumns(I: Integer): TJvInspectorCompoundColumn; virtual;
     function GetDisplayName: string; override;
-
     function GetEditCtrl: TOpenEdit; override;
-
     function GetEditCtrlDestroying: Boolean; override;
     function GetEditing: Boolean; override;
     function GetSelectedColumn: TJvInspectorCompoundColumn; virtual;
@@ -2020,53 +2024,99 @@ uses
 
 const
   sUnitName = 'JvInspector';
+    
+// BCB Type Info support
+var
+  GlobalTypeInfoHelpersList: TClassList;
+
+
 
 procedure TOpenEdit.SetModified(Value: boolean);
 begin
-  if self.InheritsFrom(TCustomEdit)
+  if self.InheritsFrom(TEdit)
   then
-    TCustomEdit(self).Modified := Value
-  else if self.InheritsFrom(TCustomMemo)
+    TEdit(self).Modified := Value
+  else if self.InheritsFrom(TMemo)
   then
-    TCustomMemo(self).Modified := Value;
+    TMemo(self).Modified := Value;
 end;
 
 function TOpenEdit.GetModified: boolean;
 begin
-  if self.InheritsFrom(TCustomEdit)
+  if self.InheritsFrom(TEdit)
   then
-    Result := TCustomEdit(self).Modified
-  else if self.InheritsFrom(TCustomMemo)
+    Result := TEdit(self).Modified
+  else if self.InheritsFrom(TMemo)
   then
-    Result := TCustomMemo(self).Modified
+    Result := TMemo(self).Modified
   else
     Result := false;
 end;
 
-type
-  TOpenCustomEdit = class(TCustomEdit);
-  TOpenCustomMemo = class(TCustomMemo);
-
 procedure TOpenEdit.SetOnChange(Value: TNotifyEvent);
 begin
-  if self.InheritsFrom(TCustomEdit)
+  if self.InheritsFrom(TEdit)
   then
-    TOpenCustomEdit(self).OnChange := Value
-  else if self.InheritsFrom(TCustomMemo)
+    TEdit(self).OnChange := Value
+  else if self.InheritsFrom(TMemo)
   then
-    TOpenCustomMemo(self).OnChange := Value;
+    TMemo(self).OnChange := Value;
 end;
 
 function TOpenEdit.GetOnChange: TNotifyEvent;
 begin
-  if self.InheritsFrom(TCustomEdit)
+  if self.InheritsFrom(TEdit)
   then
-    Result := TCustomEdit(self).OnChange
-  else if self.InheritsFrom(TCustomMemo)
+    Result := TEdit(self).OnChange
+  else if self.InheritsFrom(TMemo)
   then
-    Result := TCustomMemo(self).OnChange
+    Result := TMemo(self).OnChange
   else
     Result := nil;
+end;
+
+procedure TOpenEdit.SetReadOnly(Value: boolean);
+begin
+  if self.InheritsFrom(TEdit)
+  then
+    TEdit(self).ReadOnly := Value
+  else if self.InheritsFrom(TMemo)
+  then
+    TMemo(self).ReadOnly := Value;
+end;
+
+function TOpenEdit.GetReadOnly: boolean;
+begin
+  if self.InheritsFrom(TEdit)
+  then
+    Result := TEdit(self).ReadOnly
+  else if self.InheritsFrom(TMemo)
+  then
+    Result := TMemo(self).ReadOnly
+  else
+    Result := false;
+end;
+
+procedure TOpenEdit.SetBorderStyle(Value: TBorderStyle);
+begin
+  if self.InheritsFrom(TEdit)
+  then
+    TEdit(self).BorderStyle := Value
+  else if self.InheritsFrom(TMemo)
+  then
+    TMemo(self).BorderStyle := Value;
+end;
+
+function TOpenEdit.GetBorderStyle: TBorderStyle;
+begin
+  if self.InheritsFrom(TEdit)
+  then
+    Result := TBorderStyle(TEdit(self).BorderStyle)
+  else if self.InheritsFrom(TMemo)
+  then
+    Result := TMemo(self).BorderStyle
+  else
+    Result := bsNone;
 end;
 
 procedure TOpenEdit.SelectAll;
@@ -2079,11 +2129,6 @@ begin
     TCustomMemo(self).SelectAll;
 end;
 
-
-
-// BCB Type Info support
-var
-  GlobalTypeInfoHelpersList: TClassList;
 
 function TypeInfoHelpersList: TClassList;
 begin
@@ -2130,8 +2175,7 @@ type
   PMethod = ^TMethod;
   PComp = ^Comp;
   PPointer = ^Pointer;
-//  TOpenEdit = class(TCustomEdit);
-
+  
 var
   GlobalGenItemReg: TJvInspectorRegister = nil;
   GlobalVarItemReg: TJvInspectorRegister = nil;
@@ -6035,7 +6079,10 @@ procedure TJvCustomInspectorItem.SetDisplayValue(const Value: string);
 begin
 end;
 
+
+
 procedure TJvCustomInspectorItem.SetEditCtrl(const Value: TOpenEdit);
+
 begin
   if EditCtrl <> Value then
   begin
@@ -6045,7 +6092,7 @@ begin
       try
         if Inspector.CanFocus then
           Inspector.SetFocus;
-
+        
         EditCtrl.Free;
       finally
         FEditCtrlDestroying := False;
@@ -6652,7 +6699,7 @@ begin
       Memo.OnExit := OnInternalEditControlExiting; // NEW. VCL only.
       FEditChanged := False; }
       {.$ENDIF VCL}
-      SetEditCtrl(Memo);
+      SetEditCtrl(TOpenEdit(Memo));
     end
     else
     begin
@@ -6670,7 +6717,7 @@ begin
       Edit.OnExit := OnInternalEditControlExiting;
       FEditChanged := False;}
       {.$ENDIF VCL}
-      SetEditCtrl(Edit);
+      SetEditCtrl(TOpenEdit(Edit));
 
     end;
     if iifEditFixed in Flags then
@@ -6683,8 +6730,8 @@ begin
     begin
       TOpenEdit(EditCtrl).Color := clWindow;
     end;
-    
-    TOpenEdit(EditCtrl).AutoSize := False;
+
+    //TOpenEdit(EditCtrl).AutoSize := False;
     if iifValueList in Flags then
     begin
       

@@ -113,6 +113,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
     
+//    function GetColor: TColor;
     function GetDoubleBuffered: Boolean;
     procedure Paint;
     
@@ -362,6 +363,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
+//    property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   
@@ -599,7 +601,7 @@ begin
     end;
 
     try
-      // Canvas.Brush.Color := Instance.Color;
+      Canvas.Brush.Color := Color;
       QPainter_setFont(Canvas.Handle, Font.Handle);
       QPainter_setPen(Canvas.Handle, Font.FontPen);
       Canvas.Font.Assign(Font);
@@ -767,7 +769,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6}
+{$IFDEF _COMPILER6}
 
 // redirect Kylix 3 / Delphi 7 function names to Delphi 6 available function
 {$IF not declared(PatchedVCLX)}
@@ -1327,13 +1329,8 @@ begin
 end;
 
 procedure TJvExCustomControl.ColorChanged;
-var
-  QC: QColorH;
 begin
   TWidgetControl_ColorChanged(Self);
-  QC := QColor(Color);
-  QWidget_setBackgroundColor(Handle, QC);
-  QColor_destroy(QC);
 end;
 
 function TJvExCustomControl.GetDoubleBuffered: Boolean;

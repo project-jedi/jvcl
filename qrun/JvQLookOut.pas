@@ -332,10 +332,10 @@ type
     procedure ScrollChildren(Start: Word); virtual;
     procedure AlignControls(Control: TControl; var Rect: TRect); override;
     procedure SetParent( const  AParent: TWinControl); override;
-    
-    
+
+
     procedure CreateWidget; override;
-    
+
     procedure SmoothScroll(AControl: TControl; NewTop, AInterval: Integer; Smooth: Boolean); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -369,7 +369,7 @@ type
     property ShowPressed: Boolean read FShowPressed write FShowPressed default False;
     property Caption: TCaption read FCaption write SetCaption;
     property Color;
-    
+
     property DragMode;
     property ShowHint;
     property Visible;
@@ -1246,7 +1246,7 @@ begin
       Canvas.Font := Font;
 
     //    W := FSpacing  + W;
-//    SetBkMode(Canvas.Handle, Windows.Transparent);
+    SetBkMode(Canvas.Handle, QWindows.Transparent);
     R := GetClientRect;
     if (ImageSize = isLarge) and Assigned(FLargeImages) then
       R.Top := R.Top + FLargeImages.Height + (FSpacing * 2)
@@ -2100,8 +2100,8 @@ end;
 
 procedure TJvLookOutPage.SetBitmap(Value: TBitmap);
 begin
-  FBitmap.Assign(Value);
-  if FBitmap.Empty then
+  Bitmap.Assign(Value);
+  if Bitmap.Empty then
     ControlStyle := ControlStyle - [csOpaque]
   else
     ControlStyle := ControlStyle + [csOpaque];
@@ -2247,7 +2247,7 @@ begin
   { draw top caption }
   R := GetClientRect;
   R.Bottom := cHeight;
-//  SetBkMode(DC, Windows.Transparent);
+  SetBkMode(DC, QWindows.Transparent);
   if FCaption <> '' then
   begin
     if not Enabled then
@@ -2318,7 +2318,7 @@ begin
     FPopUpMenu.Popup(Tmp.X, Tmp.Y);
     { wait 'til menu is Done }
 //    while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
-      {nothing};
+//      {nothing};
     FDown := False;
   end
   else
@@ -2707,7 +2707,7 @@ end;
 procedure TJvExpress.Paint;
 begin
   
-  Perform(WM_NCPAINT, 0, 0);
+  Perform(WM_NCPAINT, 1, 0);
   
   if not FBitmap.Empty then
   begin
