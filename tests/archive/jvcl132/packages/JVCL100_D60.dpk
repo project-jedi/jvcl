@@ -35,6 +35,7 @@ requires
 
 contains
   JVCLReg in '..\Source\JVCLReg.pas',
+  JvAlarmsEditor in '..\Source\JvAlarmsEditor.pas',
   JvBaseDlgEditor in '..\Source\JvBaseDlgEditor.pas',
   JvCommonDialogDEditor in '..\Source\JvCommonDialogDEditor.pas',
   JvFormFinish in '..\Source\JvFormFinish.pas' {FormEnd},

@@ -37,7 +37,6 @@ requires
 contains
   JvAddPrinter in '..\Source\JvAddPrinter.pas',
   JvAlarms in '..\Source\JvAlarms.pas',
-  JvAlarmsEditor in '..\Source\JvAlarmsEditor.pas',
   JvAngleLabel in '..\Source\JvAngleLabel.pas',
   JvAni in '..\Source\JvAni.pas',
   JvAnimate in '..\Source\JvAnimate.pas',
@@ -330,7 +329,6 @@ contains
   JvLinkLabelTools in '..\Source\JvLinkLabelTools.pas',
   JvDiagramShape in '..\Source\JvDiagramShape.pas',
   jvWinDialogs in '..\Source\jvWinDialogs.pas',
-  //------------------------------------------------
   JvArrowBtn in '..\Source\JvArrowBtn.pas',
   JvBmpAnim in '..\Source\JvBmpAnim.pas',
   JvCaptionButton in '..\Source\JvCaptionButton.pas',
@@ -374,11 +372,10 @@ contains
   JvOLBar in '..\Source\JvOLBar.pas',
   JvTMTL in '..\Source\JvTMTL.pas',
   JvColorForm in '..\Source\JvColorForm.pas' {JvClrFrm},
-//----------------------------------
   JvArrow in '..\Source\JvArrow.pas',
   JvTypedEdit in '..\Source\JvTypedEdit.pas',
   JvDateTimeNullPicker in '..\Source\JvDateTimeNullPicker.pas',
-  JvYesNoPicker in '..\Source\JvYesNoPicker.pas' ,
+  JvYesNoPicker in '..\Source\JvYesNoPicker.pas',
   JvMemoEx in '..\Source\JvMemoEx.pas',
   JvShLwApi in '..\Source\JvShLwApi.pas';
 
