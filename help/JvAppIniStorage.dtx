@@ -16,7 +16,7 @@ JVCLInfo
   GROUP=JVCL.System
   FLAG=Component
 Summary
-  INI-file based application data storage.
+  INI file based application data storage.
 Description
   TJvAppIniFileStorage is a data storage backend that stores the data in an INI file.
 
@@ -53,7 +53,7 @@ Description
    
   Note: If you leave this property blank, the component will not load or save the values in a file.
 See Also
-  Location
+  Location, Reload
 
 
 ----------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ Description
   Flush is called automatically when the component is destroyed or AutoFlush is set to True and a
   call to a writing function has been done.
 See Also
-  AutoFlush
+  AutoFlush, Reload
 
 
 ----------------------------------------------------------------------------------------------------
@@ -76,8 +76,8 @@ Summary
 Description
   This property gives You direct access to the internal INI file object that the component uses as 
   a storage for its data. This is provided if you want to directly access the INI file object, for 
-  instance if you share want to add your own sections in it. Be very careful not to break anything 
-  while doing so.
+  instance if you want to add your own sections in it. Be very careful not to break anything while 
+  doing so.
 
 
 ----------------------------------------------------------------------------------------------------
