@@ -147,6 +147,18 @@ Description
   * the <LINK TJvEventCollectionItem.Schedule, (recurring) schedule> for the event.
   * the <LINK TJvEventCollectionItem.OnExecute, handler> for the event.
 ----------------------------------------------------------------------------------------------------
+@@TJvEventCollectionItem.ActualTriggerTime
+Summary
+  Determines the actual date and time at which the event was triggered.
+Description
+  ActualTriggerTime will report the date and time at which the event was triggered. 
+  
+  If your application is busy, there might be difference between actual trigger time and requested
+  trigger time. To find out what date and time the event should have been triggered you can check
+  the value of RequestedTriggerTime.
+See Also
+  RequestedTriggerTime, NextFire
+----------------------------------------------------------------------------------------------------
 @@TJvEventCollectionItem.CountMissedEvents
 Summary
   Specifies if events missed since the start of the schedule or since the last saved state should be
@@ -187,12 +199,39 @@ Summary
 Description
   NextFire determines the timestamp at which the event will be fired again.
   
-  If there are no more events NextFire will hold NullStamp
+  If there are no more events NextFire will hold NullStamp.
 
   If a snooze request has been issued NextFire will hold the timestamp at which the snooze interval
   has passed.
 
   If the schedule has not ended NextFire will hold the timestamp fo the next event.
+See Also
+  NextScheduleFire, Snooze
+----------------------------------------------------------------------------------------------------
+@@TJvEventCollectionItem.NextScheduleFire
+Summary
+  Determines the next date and time at which the event is scheduled to fire again.
+Description
+  NextScheduleFire determines the timestamp at which the event will be fired again, according to the
+  Schedule. It will not take any snooze requests into account.
+  
+  If there are no more events NextScheduleFire will hold NullStamp, regardless of any outstanding
+  Snooze requests.
+See Also
+  NextFire, Snooze
+----------------------------------------------------------------------------------------------------
+@@TJvEventCollectionItem.RequestedTriggerTime
+Summary
+  Determines the date and time at which the event was supposed to be triggered.
+Description
+  RequestedTriggerTime will report the date and time at which the event was scheduled to be 
+  triggered (either throught the schedule or because of a Snooze request).
+  
+  If your application is busy, there might be difference between actual trigger time and requested
+  trigger time. To find out what date and time the event should was triggered you can check
+  the value of ActualTriggerTime.
+See Also
+  ActualTriggerTime, NextFire, NextScheduleFire, Snooze
 ----------------------------------------------------------------------------------------------------
 @@TJvEventCollectionItem.Schedule
 Summary
