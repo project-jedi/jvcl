@@ -14,9 +14,10 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):dejoy(dejoy@ynl.gov.cn)
+Contributor(s):
+dejoy(dejoy@ynl.gov.cn)
 
-Last Modified: 2004-02-6
+Last Modified: 2004-02-26
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
