@@ -29,7 +29,7 @@ unit JvExControls;
 interface
 uses
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, JclSysUtils,
+  Windows, Messages, Controls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, QControls, QForms,
@@ -309,6 +309,11 @@ begin
   Result := 0;
   if ssAlt in Shift then
     Result := Result or AltMask;
+end;
+
+function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer; 
+asm
+        CALL    System.@FindDynaClass
 end;
 
 function InheritMsg(Self: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
