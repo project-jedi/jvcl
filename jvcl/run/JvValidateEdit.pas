@@ -123,7 +123,7 @@ type
     procedure SetEditText(const NewValue: string);
     procedure ChangeText(const NewValue: string);
     function BaseToInt(const BaseValue: string; Base: Byte): Integer;
-    function IntToBase(NewValue, Base: Byte): string;
+    function IntToBase(NewValue: Integer; Base: Byte): string;
     procedure DoValueChanged;
     procedure SetDisplayPrefix(const NewValue: string);
     procedure SetDisplaySuffix(const NewValue: string);
@@ -927,7 +927,7 @@ begin
     Inc(Result, Trunc(BaseCharToInt(BaseValue[I]) * Power(Base, Length(BaseValue) - I)));
 end;
 
-function TJvCustomValidateEdit.IntToBase(NewValue, Base: Byte): string;
+function TJvCustomValidateEdit.IntToBase(NewValue:Integer; Base: Byte): string;
 var
   iDivisor, iRemainder, I: Cardinal;
   iBaseIterations: Integer;
