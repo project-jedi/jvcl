@@ -48,15 +48,12 @@ type
     { (rb) JvBaseEdits.pas name: FFormatting }
     FInternalChange: Boolean;
     FOnCheckClick: TNotifyEvent;
-    {$IFDEF VisualCLX}
-    FOnEnabledChanged: TNotifyEvent;
-    {$ENDIF VisualCLX}
     procedure CheckClick(Sender: TObject);
     function GetShowCheckBox: Boolean;
   protected
     procedure DoCheckClick; dynamic;
     {$IFDEF VCL}
-    procedure DoKillFocusEvent(const ANextControl: TWinControl); override;
+    procedure DoKillFocus(const ANextControl: TWinControl); override;
     {$ENDIF VCL}
     procedure EnabledChanged; override;
 
@@ -82,9 +79,6 @@ type
     property Checked: Boolean read GetChecked write SetChecked;
     property ShowCheckBox: Boolean read GetShowCheckBox write SetShowCheckbox default False;
     property OnCheckClick: TNotifyEvent read FOnCheckClick write FOnCheckClick;
-    {$IFDEF VisualCLX}
-    property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -223,10 +217,11 @@ begin
   DoCheckClick;
 end;
 
+{ TODO -oahuser -cCLX : Isn't that also something for VCL? }
 {$IFDEF VisualCLX}
 procedure TJvCustomCheckedMaskEdit.ColorChanged;
 begin
-  inherited;
+  inherited ColorChanged;
   if Assigned(FCheck) then
     FCheck.Color := Color;
 end;
@@ -257,13 +252,11 @@ begin
     FOnCheckClick(Self);
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomCheckedMaskEdit.DoKillFocusEvent(const ANextControl: TWinControl);
+procedure TJvCustomCheckedMaskEdit.DoKillFocus(const ANextControl: TWinControl);
 begin
   if ANextControl <> FCheck then
-    inherited DoKillFocusEvent(ANextControl);
+    inherited DoKillFocus(ANextControl);
 end;
-{$ENDIF VCL}
 
 procedure TJvCustomCheckedMaskEdit.EnabledChanged;
 begin

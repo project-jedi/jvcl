@@ -38,137 +38,117 @@ unit JvExButtons;
 interface
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  Windows, Messages, Graphics, Controls, Forms, Buttons, StdCtrls,
+  Windows, Messages,
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
-  Classes, SysUtils,
+  SysUtils, Classes, Graphics, Controls, Forms, Buttons, StdCtrls,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
- {$DEFINE NeedMouseEnterLeave}
-
 type
-  TJvExSpeedButton = class(TSpeedButton, IJvControlEvents, IPerformControl)
-  {$IFDEF VCL}
-  protected
-   // IJvControlEvents
-    procedure VisibleChanged; dynamic;
-    procedure EnabledChanged; dynamic;
-    procedure TextChanged; dynamic;
-    procedure FontChanged; dynamic;
-    procedure ColorChanged; dynamic;
-    procedure ParentFontChanged; dynamic;
-    procedure ParentColorChanged; dynamic;
-    procedure ParentShowHintChanged; dynamic;
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
-    function HitTest(X, Y: Integer): Boolean; dynamic;
-    procedure MouseEnter(Control: TControl); dynamic;
-    procedure MouseLeave(Control: TControl); dynamic;
-    {$IFNDEF HASAUTOSIZE}
-     {$IFNDEF COMPILER6_UP}
-    procedure SetAutoSize(Value: Boolean); virtual;
-     {$ENDIF !COMPILER6_UP}
-    {$ENDIF !HASAUTOSIZE}
-  public
-    procedure Dispatch(var Msg); override;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  // IJvControlEvents
-  public
-    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-    function IsRightToLeft: Boolean;
-  protected
-    WindowProc: TClxWindowProc;
-    procedure WndProc(var Msg: TMessage); virtual;
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
-  {$ENDIF VisualCLX}
+  TJvExSpeedButton = class(TSpeedButton, IJvExControl)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
-  {$IFDEF NeedMouseEnterLeave}
+    {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
+    {$ENDIF VCL}
+    FOnParentColorChanged: TNotifyEvent;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
   protected
+    procedure WndProc(var Msg: TMessage); override;
+    procedure FocusChanged(AControl: TWinControl); dynamic;
+    procedure VisibleChanged; reintroduce; dynamic;
+    procedure EnabledChanged; reintroduce; dynamic;
+    procedure TextChanged; reintroduce; virtual;
+    procedure ColorChanged; reintroduce; dynamic;
+    procedure FontChanged; reintroduce; dynamic;
+    procedure ParentFontChanged; reintroduce; dynamic;
+    procedure ParentColorChanged; reintroduce; dynamic;
+    procedure ParentShowHintChanged; reintroduce; dynamic;
+    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; reintroduce; virtual;
+    function HintShow(var HintInfo: THintInfo): Boolean; reintroduce; dynamic;
+    function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
+    procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
+    procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
+    {$IFDEF COMPILER5}
+     {$IFNDEF HASAUTOSIZE}
+    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
+    procedure SetAutoSize(Value: Boolean); virtual;
+     {$ENDIF !HASAUTOSIZE}
+    {$ENDIF COMPILER5}
+    property MouseOver: Boolean read FMouseOver write FMouseOver;
+    property HintColor: TColor read FHintColor write FHintColor default clDefault;
+    {$IFDEF VCL}
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF NeedMouseEnterLeave}
-  protected
-    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure FocusChanged(Control: TWinControl); dynamic;
-    property MouseOver: Boolean read FMouseOver write FMouseOver;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    {$ENDIF VCL}
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  {$IFDEF VCL}
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-    FAboutJVCLX: TJVCLAboutInfo;
-  published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  {$ENDIF VisualCLX}
-  
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  end;
-
-  TJvExPubSpeedButton = class(TJvExSpeedButton)
-  {$IFDEF VCL}
   published
-    property BiDiMode;
-    property DragCursor;
-    property DragKind;
-    property DragMode;
-    property ParentBiDiMode;
-    property OnEndDock;
-    property OnStartDock;
-  {$ENDIF VCL}
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
-  
-  TJvExBitBtn = class(TBitBtn, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  {$IFDEF VCL}
+  TJvExBitBtn = class(TBitBtn, IJvExControl)
+  private
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
+    FMouseOver: Boolean;
+    {$IFDEF VCL}
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+    {$ENDIF VCL}
+    FOnParentColorChanged: TNotifyEvent;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
   protected
-   // IJvControlEvents
-    procedure VisibleChanged; dynamic;
-    procedure EnabledChanged; dynamic;
-    procedure TextChanged; dynamic;
-    procedure FontChanged; dynamic;
-    procedure ColorChanged; dynamic;
-    procedure ParentFontChanged; dynamic;
-    procedure ParentColorChanged; dynamic;
-    procedure ParentShowHintChanged; dynamic;
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
-    function HitTest(X, Y: Integer): Boolean; dynamic;
-    procedure MouseEnter(Control: TControl); dynamic;
-    procedure MouseLeave(Control: TControl); dynamic;
-    {$IFNDEF HASAUTOSIZE}
-     {$IFNDEF COMPILER6_UP}
+    procedure WndProc(var Msg: TMessage); override;
+    procedure FocusChanged(AControl: TWinControl); dynamic;
+    procedure VisibleChanged; reintroduce; dynamic;
+    procedure EnabledChanged; reintroduce; dynamic;
+    procedure TextChanged; reintroduce; virtual;
+    procedure ColorChanged; reintroduce; dynamic;
+    procedure FontChanged; reintroduce; dynamic;
+    procedure ParentFontChanged; reintroduce; dynamic;
+    procedure ParentColorChanged; reintroduce; dynamic;
+    procedure ParentShowHintChanged; reintroduce; dynamic;
+    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; reintroduce; virtual;
+    function HintShow(var HintInfo: THintInfo): Boolean; reintroduce; dynamic;
+    function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
+    procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
+    procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
+    {$IFDEF COMPILER5}
+     {$IFNDEF HASAUTOSIZE}
+    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
     procedure SetAutoSize(Value: Boolean); virtual;
-     {$ENDIF !COMPILER6_UP}
-    {$ENDIF !HASAUTOSIZE}
+     {$ENDIF !HASAUTOSIZE}
+    {$ENDIF COMPILER5}
+    property MouseOver: Boolean read FMouseOver write FMouseOver;
+    property HintColor: TColor read FHintColor write FHintColor default clDefault;
+    {$IFDEF VCL}
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    {$ENDIF VCL}
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
-    procedure Dispatch(var Msg); override;
+    constructor Create(AOwner: TComponent); override;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   protected
-   // IJvWinControlEvents
-    procedure BoundsChanged; reintroduce; dynamic; 
-    procedure CursorChanged; dynamic;
-    procedure ShowingChanged; dynamic;
-    procedure ShowHintChanged; dynamic;
-    procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
-    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
+    procedure BoundsChanged; reintroduce; virtual;
+    procedure CursorChanged; reintroduce; dynamic;
+    procedure ShowingChanged; reintroduce; dynamic;
+    procedure ShowHintChanged; reintroduce; dynamic;
+    procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    procedure GetDlgCode(var Code: TDlgCodes); virtual;
+    procedure FocusSet(PrevWnd: HWND); virtual;
+    procedure FocusKilled(NextWnd: HWND); virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF JVCLThemesEnabledD56}
   private
     function GetParentBackground: Boolean;
@@ -176,96 +156,7 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  // IJvControlEvents
-  public
-    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-    function IsRightToLeft: Boolean;
-  protected
-    WindowProc: TClxWindowProc;
-    procedure WndProc(var Msg: TMessage); virtual;
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
-  private
-    FDoubleBuffered: Boolean;
-    InternalFontChanged: TNotifyEvent;
-    procedure OnFontChanged(Sender: TObject);
-  protected
-    procedure DoFontChanged(Sender: TObject); dynamic;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
-    function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
-    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure PaintWindow(PaintDevice: QPaintDeviceH);
-    function WidgetFlags: Integer; override;
-    procedure CreateWnd; dynamic;
-    procedure CreateWidget; override;
-    procedure RecreateWnd;
-  public
-    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
-  {$ENDIF VisualCLX}
-  private
-    FHintColor: TColor;
-    FMouseOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
-  {$IFDEF NeedMouseEnterLeave}
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
-  protected
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF NeedMouseEnterLeave}
-  protected
-    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure FocusChanged(Control: TWinControl); dynamic;
-    property MouseOver: Boolean read FMouseOver write FMouseOver;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  {$IFDEF VCL}
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-    FAboutJVCLX: TJVCLAboutInfo;
-  published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  {$ENDIF VisualCLX}
-  protected
-    procedure GetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
-    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF VisualCLX}
-  private
-    FCanvas: TCanvas;
-  protected
-    procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  {$ENDIF VisualCLX}
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   end;
-
-  TJvExPubBitBtn = class(TJvExBitBtn)
-  {$IFDEF VCL}
-  published
-    property BiDiMode;
-    property DragCursor;
-    property DragKind;
-    property DragMode;
-    property ParentBiDiMode;
-    property OnEndDock;
-    property OnStartDock;
-  {$ENDIF VCL}
-  end;
-  
 
 {$IFDEF UNITVERSIONING}
 const
@@ -279,491 +170,460 @@ const
 
 implementation
 
-{$IFDEF VCL}
-procedure TJvExSpeedButton.Dispatch(var Msg);
-asm
-        JMP     DispatchMsg
+constructor TJvExSpeedButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHintColor := clDefault;
+end;
+
+function TJvExSpeedButton.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Msg := Msg;
+  Mesg.WParam := WParam;
+  Mesg.LParam := LParam;
+  Mesg.Result := 0;
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
 end;
 
 procedure TJvExSpeedButton.VisibleChanged;
-asm
-        MOV     EDX, CM_VISIBLECHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_VISIBLECHANGED);
 end;
 
 procedure TJvExSpeedButton.EnabledChanged;
-asm
-        MOV     EDX, CM_ENABLEDCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_ENABLEDCHANGED);
 end;
 
 procedure TJvExSpeedButton.TextChanged;
-asm
-        MOV     EDX, CM_TEXTCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_TEXTCHANGED);
 end;
 
 procedure TJvExSpeedButton.FontChanged;
-asm
-        MOV     EDX, CM_FONTCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_FONTCHANGED);
 end;
 
 procedure TJvExSpeedButton.ColorChanged;
-asm
-        MOV     EDX, CM_COLORCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_COLORCHANGED);
 end;
 
 procedure TJvExSpeedButton.ParentFontChanged;
-asm
-        MOV     EDX, CM_PARENTFONTCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_PARENTFONTCHANGED);
+end;
+
+procedure TJvExSpeedButton.ParentColorChanged;
+begin
+  BaseWndProc(CM_PARENTCOLORCHANGED);
+  if Assigned(OnParentColorChange) then
+    OnParentColorChange(Self);
 end;
 
 procedure TJvExSpeedButton.ParentShowHintChanged;
-asm
-        MOV     EDX, CM_PARENTSHOWHINTCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_PARENTSHOWHINTCHANGED);
 end;
 
-function TJvExSpeedButton.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
+function TJvExSpeedButton.WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean;
 begin
-  Result := InheritMsgEx(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
-end;
-
-function TJvExSpeedButton.HintShow(var HintInfo: THintInfo): Boolean;
-begin
-  if FHintColor <> clNone then
-    HintInfo.HintColor := FHintColor;
-  Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProc(CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
 end;
 
 function TJvExSpeedButton.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := InheritMsgEx(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
-procedure TJvExSpeedButton.MouseEnter(Control: TControl);
+function TJvExSpeedButton.HintShow(var HintInfo: THintInfo): Boolean;
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
+  GetHintColor(HintInfo, Self, FHintColor);
+  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
-procedure TJvExSpeedButton.MouseLeave(Control: TControl);
+procedure TJvExSpeedButton.MouseEnter(AControl: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
+  FMouseOver := True;
+  {$IFDEF VCL}
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+  {$ENDIF VCL}
+  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
 end;
 
-procedure TJvExSpeedButton.ParentColorChanged;
+procedure TJvExSpeedButton.MouseLeave(AControl: TControl);
 begin
-  InheritMsg(Self, CM_PARENTCOLORCHANGED);
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
+  FMouseOver := False;
+  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  {$IFDEF VCL}
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+  {$ENDIF VCL}
 end;
 
-{$IFNDEF HASAUTOSIZE}
- {$IFNDEF COMPILER6_UP}
+procedure TJvExSpeedButton.FocusChanged(AControl: TWinControl);
+begin
+  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+end;
+
+{$IFDEF COMPILER5}
+ {$IFNDEF HASAUTOSIZE}
+procedure TJvExSpeedButton.CMSetAutoSize(var Msg: TMessage);
+begin
+  SetAutoSize(Msg.WParam <> 0);
+end;
+
 procedure TJvExSpeedButton.SetAutoSize(Value: Boolean);
 begin
   TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF !COMPILER6_UP}
-{$ENDIF !HASAUTOSIZE}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvExSpeedButton.MouseEnter(Control: TControl);
-begin
-  Control_MouseEnter(Self, Control, FMouseOver);
-  inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
-end;
-
-procedure TJvExSpeedButton.MouseLeave(Control: TControl);
-begin
-  Control_MouseLeave(Self, Control, FMouseOver);
-  inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
-end;
-
-procedure TJvExSpeedButton.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-function TJvExSpeedButton.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-var
-  Mesg: TMessage;
-begin
-  Mesg.Result := 0;
-  if Self <> nil then
-  begin
-    Mesg.Msg := Msg;
-    Mesg.WParam := WParam;
-    Mesg.LParam := LParam;
-    WindowProc(Mesg);
-  end;
-  Result := Mesg.Result;
-end;
+ {$ENDIF !HASAUTOSIZE}
+{$ENDIF COMPILER5}
 
 procedure TJvExSpeedButton.WndProc(var Msg: TMessage);
 begin
-  Dispatch(Msg);
-end;
+  case Msg.Msg of
+    CM_DENYSUBCLASSING:
+      Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
 
-function TJvExSpeedButton.IsRightToLeft: Boolean;
-begin
-  Result := False;
-end;
-  
-{$ENDIF VisualCLX}
-procedure TJvExSpeedButton.CMFocusChanged(var Msg: TCMFocusChanged);
-begin
-  inherited;
-  FocusChanged(Msg.Sender);
-end;
+    CM_DIALOGCHAR:
+      with TCMDialogChar(Msg) do
+        Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
+    CM_HINTSHOW:
+      with TCMHintShow(Msg) do
+        Result := Integer(HintShow(HintInfo^));
+    CM_HITTEST:
+      with TCMHitTest(Msg) do
+        Result := Integer(HitTest(XPos, YPos));
 
-procedure TJvExSpeedButton.FocusChanged(Control: TWinControl);
-begin
+    CM_MOUSEENTER:
+      MouseEnter(TControl(Msg.LParam));
+    CM_MOUSELEAVE:
+      MouseLeave(TControl(Msg.LParam));
+
+    CM_VISIBLECHANGED:
+      VisibleChanged;
+    CM_ENABLEDCHANGED:
+      EnabledChanged;
+    CM_TEXTCHANGED:
+      TextChanged;
+    CM_FONTCHANGED:
+      FontChanged;
+    CM_COLORCHANGED:
+      ColorChanged;
+    CM_FOCUSCHANGED:
+      FocusChanged(TWinControl(Msg.LParam));
+    CM_PARENTFONTCHANGED:
+      ParentFontChanged;
+    CM_PARENTCOLORCHANGED:
+      ParentColorChanged;
+    CM_PARENTSHOWHINTCHANGED:
+      ParentShowHintChanged;
+  else
+    inherited WndProc(Msg);
+  end;
 end;
-  
-constructor TJvExSpeedButton.Create(AOwner: TComponent);
+{------------------------------------------------------------------------------}
+constructor TJvExBitBtn.Create(AOwner: TComponent);
 begin
-  {$IFDEF VisualCLX}
-  WindowProc := WndProc;
-  {$ENDIF VisualCLX}
   inherited Create(AOwner);
-  FHintColor := Application.HintColor;
-  
+  FHintColor := clDefault;
 end;
 
-destructor TJvExSpeedButton.Destroy;
+function TJvExBitBtn.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+var
+  Mesg: TMessage;
 begin
-  
-  inherited Destroy;
-end;
- 
-{$IFDEF VCL}
-procedure TJvExBitBtn.Dispatch(var Msg);
-asm
-        JMP     DispatchMsg
+  Mesg.Msg := Msg;
+  Mesg.WParam := WParam;
+  Mesg.LParam := LParam;
+  Mesg.Result := 0;
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
 end;
 
 procedure TJvExBitBtn.VisibleChanged;
-asm
-        MOV     EDX, CM_VISIBLECHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_VISIBLECHANGED);
 end;
 
 procedure TJvExBitBtn.EnabledChanged;
-asm
-        MOV     EDX, CM_ENABLEDCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_ENABLEDCHANGED);
 end;
 
 procedure TJvExBitBtn.TextChanged;
-asm
-        MOV     EDX, CM_TEXTCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_TEXTCHANGED);
 end;
 
 procedure TJvExBitBtn.FontChanged;
-asm
-        MOV     EDX, CM_FONTCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_FONTCHANGED);
 end;
 
 procedure TJvExBitBtn.ColorChanged;
-asm
-        MOV     EDX, CM_COLORCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_COLORCHANGED);
 end;
 
 procedure TJvExBitBtn.ParentFontChanged;
-asm
-        MOV     EDX, CM_PARENTFONTCHANGED
-        JMP     InheritMsg
-end;
-
-procedure TJvExBitBtn.ParentShowHintChanged;
-asm
-        MOV     EDX, CM_PARENTSHOWHINTCHANGED
-        JMP     InheritMsg
-end;
-
-function TJvExBitBtn.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
 begin
-  Result := InheritMsgEx(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
-end;
-
-function TJvExBitBtn.HintShow(var HintInfo: THintInfo): Boolean;
-begin
-  if FHintColor <> clNone then
-    HintInfo.HintColor := FHintColor;
-  Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
-end;
-
-function TJvExBitBtn.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := InheritMsgEx(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
-end;
-
-procedure TJvExBitBtn.MouseEnter(Control: TControl);
-begin
-  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
-end;
-
-procedure TJvExBitBtn.MouseLeave(Control: TControl);
-begin
-  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
+  BaseWndProc(CM_PARENTFONTCHANGED);
 end;
 
 procedure TJvExBitBtn.ParentColorChanged;
 begin
-  InheritMsg(Self, CM_PARENTCOLORCHANGED);
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
+  BaseWndProc(CM_PARENTCOLORCHANGED);
+  if Assigned(OnParentColorChange) then
+    OnParentColorChange(Self);
 end;
 
-{$IFNDEF HASAUTOSIZE}
- {$IFNDEF COMPILER6_UP}
+procedure TJvExBitBtn.ParentShowHintChanged;
+begin
+  BaseWndProc(CM_PARENTSHOWHINTCHANGED);
+end;
+
+function TJvExBitBtn.WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean;
+begin
+  Result := BaseWndProc(CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
+end;
+
+function TJvExBitBtn.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+end;
+
+function TJvExBitBtn.HintShow(var HintInfo: THintInfo): Boolean;
+begin
+  GetHintColor(HintInfo, Self, FHintColor);
+  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+end;
+
+procedure TJvExBitBtn.MouseEnter(AControl: TControl);
+begin
+  FMouseOver := True;
+  {$IFDEF VCL}
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+  {$ENDIF VCL}
+  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+end;
+
+procedure TJvExBitBtn.MouseLeave(AControl: TControl);
+begin
+  FMouseOver := False;
+  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  {$IFDEF VCL}
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+  {$ENDIF VCL}
+end;
+
+procedure TJvExBitBtn.FocusChanged(AControl: TWinControl);
+begin
+  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+end;
+
+{$IFDEF COMPILER5}
+ {$IFNDEF HASAUTOSIZE}
+procedure TJvExBitBtn.CMSetAutoSize(var Msg: TMessage);
+begin
+  SetAutoSize(Msg.WParam <> 0);
+end;
+
 procedure TJvExBitBtn.SetAutoSize(Value: Boolean);
 begin
   TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF !COMPILER6_UP}
-{$ENDIF !HASAUTOSIZE}
+ {$ENDIF !HASAUTOSIZE}
+{$ENDIF COMPILER5}
+
 procedure TJvExBitBtn.BoundsChanged;
 begin
 end;
 
 procedure TJvExBitBtn.CursorChanged;
-asm
-        MOV     EDX, CM_CURSORCHANGED
-        JMP     InheritMsg
-end;
-
-procedure TJvExBitBtn.ShowHintChanged;
-asm
-        MOV     EDX, CM_SHOWHINTCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_CURSORCHANGED);
 end;
 
 procedure TJvExBitBtn.ShowingChanged;
-asm
-        MOV     EDX, CM_SHOWINGCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_SHOWINGCHANGED);
 end;
 
+procedure TJvExBitBtn.ShowHintChanged;
+begin
+  BaseWndProc(CM_SHOWHINTCHANGED);
+end;
+
+{ VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in an other order than
+  the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExBitBtn.ControlsListChanging(Control: TControl; Inserting: Boolean);
-asm
-        JMP     Control_ControlsListChanging
+begin
+  if Inserting then
+    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
 
 procedure TJvExBitBtn.ControlsListChanged(Control: TControl; Inserting: Boolean);
-asm
-        JMP     Control_ControlsListChanged
+begin
+  if not Inserting then
+    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
-function TJvExBitBtn.GetParentBackground: Boolean;
-asm
-        JMP     JvThemes.GetParentBackground
-end;
-
-procedure TJvExBitBtn.SetParentBackground(Value: Boolean);
-asm
-        JMP     JvThemes.SetParentBackground
-end;
-{$ENDIF JVCLThemesEnabledD56}
-  
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvExBitBtn.MouseEnter(Control: TControl);
-begin
-  Control_MouseEnter(Self, Control, FMouseOver);
-  inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
-end;
-
-procedure TJvExBitBtn.MouseLeave(Control: TControl);
-begin
-  Control_MouseLeave(Self, Control, FMouseOver);
-  inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
-end;
-
-procedure TJvExBitBtn.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-function TJvExBitBtn.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-var
-  Mesg: TMessage;
-begin
-  Mesg.Result := 0;
-  if Self <> nil then
-  begin
-    Mesg.Msg := Msg;
-    Mesg.WParam := WParam;
-    Mesg.LParam := LParam;
-    WindowProc(Mesg);
-  end;
-  Result := Mesg.Result;
-end;
-
-procedure TJvExBitBtn.WndProc(var Msg: TMessage);
-begin
-  Dispatch(Msg);
-end;
-
-function TJvExBitBtn.IsRightToLeft: Boolean;
-begin
-  Result := False;
-end;
-  
-function TJvExBitBtn.NeedKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
-begin
-  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
-    inherited NeedKey(Key, Shift, KeyText));
-end;
-
-procedure TJvExBitBtn.OnFontChanged(Sender: TObject);
-var
-  FontChangedEvent: QEventH;
-begin
-  FontChangedEvent := QEvent_create(QEventType_FontChanged);
-  if FontChangedEvent <> nil then
-    QApplication_postEvent(Handle, FontChangedEvent);
-end;
-
-procedure TJvExBitBtn.DoFontChanged(Sender: TObject);
-begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(Self);
-end;
-
-procedure TJvExBitBtn.RecreateWnd;
-begin
-  RecreateWidget;
-end;
-
-procedure TJvExBitBtn.CreateWidget;
-begin
-  CreateWnd;
-end;
-
-procedure TJvExBitBtn.CreateWnd;
-begin
-  inherited CreateWidget;
-end;
-
-function TJvExBitBtn.WidgetFlags: Integer;
-begin
-  Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
-    Integer(WidgetFlags_WMouseNoMask);
-end;
-
-function TJvExBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-begin
-  Result := inherited EventFilter(Sender, Event);
-  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
-end;
-
-procedure TJvExBitBtn.PaintWindow(PaintDevice: QPaintDeviceH);
-begin
-  WidgetControl_PaintTo(Self, PaintDevice, 0, 0);
-end;
-
-procedure TJvExBitBtn.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-begin
-  WidgetControl_PaintTo(Self, PaintDevice, X, Y);
-end;
-  
-{$ENDIF VisualCLX}
-procedure TJvExBitBtn.CMFocusChanged(var Msg: TCMFocusChanged);
-begin
-  inherited;
-  FocusChanged(Msg.Sender);
-end;
-
-procedure TJvExBitBtn.FocusChanged(Control: TWinControl);
-begin
-end;
-  
 procedure TJvExBitBtn.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExBitBtn.DoSetFocus(FocusedWnd: HWND);
+procedure TJvExBitBtn.FocusSet(PrevWnd: HWND);
 begin
+  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
 end;
 
-procedure TJvExBitBtn.DoKillFocus(FocusedWnd: HWND);
+procedure TJvExBitBtn.FocusKilled(NextWnd: HWND);
 begin
+  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
 end;
 
-function TJvExBitBtn.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-asm
-        JMP     DefaultPaintBackground
-end;
-  
-constructor TJvExBitBtn.Create(AOwner: TComponent);
+function TJvExBitBtn.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  {$IFDEF VisualCLX}
-  WindowProc := WndProc;
-  {$ENDIF VisualCLX}
-  inherited Create(AOwner);
-  {$IFDEF VisualCLX}
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
-  InternalFontChanged := Font.OnChange;
-  Font.OnChange := OnFontChanged;
-  {$ENDIF VisualCLX}
-  FHintColor := Application.HintColor;
-  
+  Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvExBitBtn.Painting(Sender: QObjectH; EventRegion: QRegionH);
+{$IFDEF JVCLThemesEnabledD56}
+function TJvExBitBtn.GetParentBackground: Boolean;
 begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
+  Result := JvThemes.GetParentBackground(Self);
 end;
 
-procedure TJvExBitBtn.Paint;
+procedure TJvExBitBtn.SetParentBackground(Value: Boolean);
 begin
-  WidgetControl_DefaultPaint(Self, Canvas);
+  JvThemes.SetParentBackground(Self, Value);
 end;
-{$ENDIF VisualCLX}
+{$ENDIF JVCLThemesEnabledD56}
 
-destructor TJvExBitBtn.Destroy;
+procedure TJvExBitBtn.WndProc(var Msg: TMessage);
+var
+  IdSaveDC: Integer;
+  DlgCodes: TDlgCodes;
+  Canvas: TCanvas;
 begin
-  inherited Destroy;
-end;
-  
+  case Msg.Msg of
+    CM_DENYSUBCLASSING:
+      Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
 
-{$IFDEF UNITVERSIONING}
+    CM_DIALOGCHAR:
+      with TCMDialogChar(Msg) do
+        Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
+    CM_HINTSHOW:
+      with TCMHintShow(Msg) do
+        Result := Integer(HintShow(HintInfo^));
+    CM_HITTEST:
+      with TCMHitTest(Msg) do
+        Result := Integer(HitTest(XPos, YPos));
+
+    CM_MOUSEENTER:
+      MouseEnter(TControl(Msg.LParam));
+    CM_MOUSELEAVE:
+      MouseLeave(TControl(Msg.LParam));
+
+    CM_VISIBLECHANGED:
+      VisibleChanged;
+    CM_ENABLEDCHANGED:
+      EnabledChanged;
+    CM_TEXTCHANGED:
+      TextChanged;
+    CM_FONTCHANGED:
+      FontChanged;
+    CM_COLORCHANGED:
+      ColorChanged;
+    CM_FOCUSCHANGED:
+      FocusChanged(TWinControl(Msg.LParam));
+    CM_PARENTFONTCHANGED:
+      ParentFontChanged;
+    CM_PARENTCOLORCHANGED:
+      ParentColorChanged;
+    CM_PARENTSHOWHINTCHANGED:
+      ParentShowHintChanged;
+
+    CM_CURSORCHANGED:
+      CursorChanged;
+    CM_SHOWINGCHANGED:
+      ShowingChanged;
+    CM_SHOWHINTCHANGED:
+      ShowHintChanged;
+
+    CM_CONTROLLISTCHANGE:
+      if Msg.LParam <> 0 then
+        ControlsListChanging(TControl(Msg.WParam), True)
+      else
+        ControlsListChanged(TControl(Msg.WParam), False);
+    CM_CONTROLCHANGE:
+      if Msg.LParam = 0 then
+        ControlsListChanging(TControl(Msg.WParam), False)
+      else
+        ControlsListChanged(TControl(Msg.WParam), True);
+
+    WM_SETFOCUS:
+      FocusSet(HWND(Msg.WParam));
+    WM_KILLFOCUS:
+      FocusKilled(HWND(Msg.WParam));
+
+    WM_SIZE:
+      begin
+        inherited WndProc(Msg);
+        BoundsChanged;
+      end;
+
+    WM_ERASEBKGND:
+      begin
+        IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against Stock-Objects from Canvas
+        Canvas := TCanvas.Create;
+        try
+          Canvas.Handle := HDC(Msg.WParam);
+          Msg.Result := Ord(DoEraseBackground(Canvas, Msg.LParam));
+        finally
+          Canvas.Handle := 0;
+          Canvas.Free;
+          RestoreDC(HDC(Msg.WParam), IdSaveDC);
+        end;
+      end;
+    WM_PRINTCLIENT,
+    WM_PRINT: // VCL bug fix
+      begin
+        IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against changes
+        try
+          inherited WndProc(Msg);
+        finally
+          RestoreDC(HDC(Msg.WParam), IdSaveDC);
+        end;
+      end;
+    WM_GETDLGCODE:
+      begin
+        inherited WndProc(Msg);
+        DlgCodes := [dcNative] + DlgcToDlgCodes(Msg.Result);
+        GetDlgCode(DlgCodes);
+        if not (dcNative in DlgCodes) then
+          Msg.Result := DlgCodesToDlgc(DlgCodes);
+      end;
+  else
+    inherited WndProc(Msg);
+  end;
+end;
+{------------------------------------------------------------------------------}
+
 initialization
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

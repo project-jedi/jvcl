@@ -57,10 +57,10 @@ type
     FOnSetFocus: TJvFocusChangeEvent;
   protected
     function GetEdit: TCustomEdit;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocusEvent(const APreviousControl: TWinControl); dynamic;
-    procedure DoKillFocusEvent(const ANextControl: TWinControl); dynamic;
+    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure DoFocusSet(const APreviousControl: TWinControl); dynamic;
+    procedure DoFocusKilled(const ANextControl: TWinControl); dynamic;
     procedure DoClose(var Action: TCloseAction); override;
     procedure DoShow; override;
     {$IFDEF VCL}
@@ -218,23 +218,23 @@ begin
   Result := TCustomEdit(Owner);
 end;
 
-procedure TJvCustomDropDownForm.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomDropDownForm.FocusKilled(NextWnd: HWND);
 begin
-  if IsChildWindow(FocusedWnd, Self.Handle) then
-    inherited DoKillFocus(FocusedWnd)
+  if IsChildWindow(NextWnd, Self.Handle) then
+    inherited FocusKilled(NextWnd)
   else
   begin
     FLeaving := True;
     try
-      inherited DoKillFocus(FocusedWnd);
-      DoKillFocusEvent(FindControl(FocusedWnd));
+      inherited FocusKilled(NextWnd);
+      DoFocusKilled(FindControl(NextWnd));
     finally
       FLeaving := False;
     end;
   end;
 end;
 
-procedure TJvCustomDropDownForm.DoKillFocusEvent(const ANextControl: TWinControl);
+procedure TJvCustomDropDownForm.DoFocusKilled(const ANextControl: TWinControl);
 begin
   if Assigned(FOnKillFocus) then
     FOnKillFocus(Self, ANextControl);
@@ -242,23 +242,23 @@ begin
     Close;
 end;
 
-procedure TJvCustomDropDownForm.DoSetFocus(FocusedWnd: HWND);
+procedure TJvCustomDropDownForm.FocusSet(PrevWnd: HWND);
 begin
-  if IsChildWindow(FocusedWnd, Self.Handle) then
-    inherited DoSetFocus(FocusedWnd)
+  if IsChildWindow(PrevWnd, Self.Handle) then
+    inherited FocusSet(PrevWnd)
   else
   begin
     FEntering := True;
     try
-      inherited DoSetFocus(FocusedWnd);
-      DoSetFocusEvent(FindControl(FocusedWnd));
+      inherited FocusSet(PrevWnd);
+      DoFocusSet(FindControl(PrevWnd));
     finally
       FEntering := False;
     end;
   end;
 end;
 
-procedure TJvCustomDropDownForm.DoSetFocusEvent(const APreviousControl: TWinControl);
+procedure TJvCustomDropDownForm.DoFocusSet(const APreviousControl: TWinControl);
 begin
   if Assigned(FOnSetFocus) then
     FOnSetFocus(Self, APreviousControl);

@@ -33,26 +33,40 @@ WARNINGHEADER
 interface
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Windows, Messages, Graphics, Controls, Forms, ToolWin,
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
   Classes, SysUtils,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
- {$DEFINE NeedMouseEnterLeave}
-
 type
-  JV_WINCONTROL_EVENTS(ScrollingWinControl)
-  JV_WINCONTROL_EVENTS(ScrollBox)
-  JV_WINCONTROL_EVENTS(CustomFrame)
-  JV_WINCONTROL_EVENTS(Frame)
-  JV_CUSTOMFORM_EVENTS(CustomForm) // do not implement Painting() but CreateNew
-  JV_CUSTOMFORM_EVENTS(Form) // do not implement Painting() but CreateNew
-  JV_WINCONTROL_EVENTS(ToolWindow)
+  WINCONTROL_DECL_DEFAULT(ScrollingWinControl)
+  WINCONTROL_DECL_DEFAULT(ScrollBox)
+  WINCONTROL_DECL_DEFAULT(CustomFrame)
+  WINCONTROL_DECL_DEFAULT(Frame)
+  WINCONTROL_DECL_DEFAULT(ToolWindow)
+
+  TJvExCustomForm = class(TCustomForm, IJvExControl)
+  WINCONTROL_DECL
+  protected
+    procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
+    procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
+  public
+    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
+  end;
+
+  TJvExForm = class(TForm, IJvExControl)
+  WINCONTROL_DECL
+  protected
+    procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
+    procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
+  public
+    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
+  end;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -73,16 +87,66 @@ const
   UIS_CLEAR      = 2;
   UIS_INITIALIZE = 3;
 
-JV_WINCONTROL_EVENTS_IMPL(ScrollingWinControl)
-JV_WINCONTROL_EVENTS_IMPL(ScrollBox)
-JV_WINCONTROL_EVENTS_IMPL(CustomFrame)
-JV_WINCONTROL_EVENTS_IMPL(Frame)
-JV_CUSTOMFORM_EVENTS_IMPL(CustomForm)
-JV_CUSTOMFORM_EVENTS_IMPL(Form)
-JV_WINCONTROL_EVENTS_IMPL(ToolWindow)
+WINCONTROL_IMPL_DEFAULT(ScrollingWinControl)
+WINCONTROL_IMPL_DEFAULT(ScrollBox)
+WINCONTROL_IMPL_DEFAULT(CustomFrame)
+WINCONTROL_IMPL_DEFAULT(Frame)
+WINCONTROL_IMPL_DEFAULT(ToolWindow)
+WINCONTROL_IMPL_DEFAULT(CustomForm)
 
-{$IFDEF UNITVERSIONING}
+constructor TJvExCustomForm.CreateNew(AOwner: TComponent; Dummy: Integer);
+begin
+  inherited CreateNew(AOwner, Dummy);
+  FHintColor := clDefault;
+end;
+
+procedure TJvExCustomForm.CMShowingChanged(var Msg: TMessage);
+begin
+  if Showing then
+    SendMessage(Handle, WM_CHANGEUISTATE, UIS_INITIALIZE, 0);
+  inherited;
+end;
+
+procedure TJvExCustomForm.CMDialogKey(var Msg: TCMDialogKey);
+begin
+  case Msg.CharCode of
+    VK_LEFT..VK_DOWN, VK_TAB:
+      SendMessage(Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEFOCUS), 0);
+    VK_MENU:
+      SendMessage(Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEFOCUS or UISF_HIDEACCEL), 0);
+  end;
+  inherited;
+end;
+
+WINCONTROL_IMPL_DEFAULT(Form)
+
+constructor TJvExForm.CreateNew(AOwner: TComponent; Dummy: Integer);
+begin
+  inherited CreateNew(AOwner, Dummy);
+  FHintColor := clDefault;
+end;
+
+procedure TJvExForm.CMShowingChanged(var Msg: TMessage);
+begin
+  if Showing then
+    SendMessage(Handle, WM_CHANGEUISTATE, UIS_INITIALIZE, 0);
+  inherited;
+end;
+
+procedure TJvExForm.CMDialogKey(var Msg: TCMDialogKey);
+begin
+  case Msg.CharCode of
+    VK_LEFT..VK_DOWN, VK_TAB:
+      SendMessage(Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEFOCUS), 0);
+    VK_MENU:
+      SendMessage(Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEFOCUS or UISF_HIDEACCEL), 0);
+  end;
+  inherited;
+end;
+
+
 initialization
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

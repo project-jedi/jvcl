@@ -33,21 +33,19 @@ WARNINGHEADER
 interface
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  Windows, Messages, Graphics, Controls, Forms, Buttons, StdCtrls,
+  Windows, Messages,
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
-  Classes, SysUtils,
+  SysUtils, Classes, Graphics, Controls, Forms, Buttons, StdCtrls,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
- {$DEFINE NeedMouseEnterLeave}
-
 type
-  JV_CONTROL_EVENTS(SpeedButton)
-  JV_WINCONTROL_EVENTS(BitBtn)
+  CONTROL_DECL_DEFAULT(SpeedButton)
+  WINCONTROL_DECL_DEFAULT(BitBtn)
 
 {$IFDEF UNITVERSIONING}
 const
@@ -61,11 +59,11 @@ const
 
 implementation
 
-JV_CONTROL_EVENTS_IMPL(SpeedButton)
-JV_WINCONTROL_EVENTS_IMPL(BitBtn)
+CONTROL_IMPL_DEFAULT(SpeedButton)
+WINCONTROL_IMPL_DEFAULT(BitBtn)
 
-{$IFDEF UNITVERSIONING}
 initialization
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

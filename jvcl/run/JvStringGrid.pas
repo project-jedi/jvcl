@@ -276,8 +276,8 @@ type
     procedure DoEditButtonClick; override;
     procedure UpdateContents; override; //WP-New! - Put items into listbox!
     {$ENDIF COMPILER6_UP}
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
   public
     constructor Create(Owner: TComponent); override;//WP-New!
     //property ActiveList: TWinControl read FActiveList write FActiveList;//WP-New!
@@ -320,17 +320,17 @@ begin
 end;
 {$ENDIF VCL}
 
-procedure TExInplaceEditList.DoKillFocus(FocusedWnd: HWND);
+procedure TExInplaceEditList.FocusKilled(NextWnd: HWND);
 begin
   TJvStringGrid(Grid).ExitCell(Text, FLastCol, FLastRow);
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(NextWnd);
 end;
 
-procedure TExInplaceEditList.DoSetFocus(FocusedWnd: HWND);
+procedure TExInplaceEditList.FocusSet(PrevWnd: HWND);
 begin
   FLastCol := TJvStringGrid(Grid).Col;
   FLastRow := TJvStringGrid(Grid).Row;
-  inherited DoSetFocus(FocusedWnd);
+  inherited FocusSet(PrevWnd);
 end;
 
 {$IFDEF COMPILER6_UP}

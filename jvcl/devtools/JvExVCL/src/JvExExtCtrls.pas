@@ -33,45 +33,48 @@ WARNINGHEADER
 interface
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  Windows, Messages, Graphics, Controls, Forms, ExtCtrls,
+  Windows, Messages,
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
-  Classes, SysUtils,
+  SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
- {$DEFINE NeedMouseEnterLeave}
-
 type
-  JV_CONTROL_EVENTS(Shape)
-  JV_CONTROL_EVENTS(PaintBox)
-  JV_CONTROL_EVENTS(Image)
-  JV_CONTROL_EVENTS(Bevel)
-  JV_WINCONTROL_EVENTS(CustomPanel)
-  JV_WINCONTROL_EVENTS(CustomRadioGroup)
+  CONTROL_DECL_DEFAULT(Shape)
+  CONTROL_DECL_DEFAULT(PaintBox)
+  CONTROL_DECL_DEFAULT(Image)
+  CONTROL_DECL_DEFAULT(Bevel)
+  WINCONTROL_DECL_DEFAULT(CustomPanel)
 
-  JV_CONTROL_EVENTS_BEGIN(Splitter)
-  JV_CONSTRUCTOR
+  TJvExPubCustomPanel = class(TJvExCustomPanel)
+  COMMON_PUBLISHED
+  end;
+  
+  WINCONTROL_DECL_DEFAULT(CustomRadioGroup)
+
+  TJvExSplitter = class(TSplitter, IJvExControl)
+  CONTROL_DECL
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-  JV_CONTROL_EVENTS_END(Splitter)
+  end;
 
-  JV_WINCONTROL_EVENTS(CustomControlBar)
-  JV_WINCONTROL_EVENTS(ControlBar)
-  JV_WINCONTROL_EVENTS(Panel)
-  JV_WINCONTROL_EVENTS(RadioGroup)
-  JV_WINCONTROL_EVENTS(Page)
-  JV_WINCONTROL_EVENTS(Notebook)
-  JV_WINCONTROL_EVENTS(Header)
+  WINCONTROL_DECL_DEFAULT(CustomControlBar)
+  WINCONTROL_DECL_DEFAULT(ControlBar)
+  WINCONTROL_DECL_DEFAULT(Panel)
+  WINCONTROL_DECL_DEFAULT(RadioGroup)
+  WINCONTROL_DECL_DEFAULT(Page)
+  WINCONTROL_DECL_DEFAULT(Notebook)
+  WINCONTROL_DECL_DEFAULT(Header)
   {$IFDEF COMPILER6_UP}
-  JV_CONTROL_EVENTS(BoundLabel)
-  JV_WINCONTROL_EVENTS(CustomLabeledEdit)
-  JV_WINCONTROL_EVENTS(LabeledEdit)
-  JV_WINCONTROL_EVENTS(CustomColorBox)
-  JV_WINCONTROL_EVENTS(ColorBox)
+  CONTROL_DECL_DEFAULT(BoundLabel)
+  WINCONTROL_DECL_DEFAULT(CustomLabeledEdit)
+  WINCONTROL_DECL_DEFAULT(LabeledEdit)
+  WINCONTROL_DECL_DEFAULT(CustomColorBox)
+  WINCONTROL_DECL_DEFAULT(ColorBox)
   {$ENDIF COMPILER6_UP}
 
 // SplitterMouseDownFix fixes a bug in the VCL that causes the splitter to no
@@ -91,31 +94,30 @@ const
 
 implementation
 
-JV_CONTROL_EVENTS_IMPL(Shape)
-JV_CONTROL_EVENTS_IMPL(PaintBox)
-JV_CONTROL_EVENTS_IMPL(Image)
-JV_CONTROL_EVENTS_IMPL(Bevel)
-JV_WINCONTROL_EVENTS_IMPL(CustomPanel)
-JV_WINCONTROL_EVENTS_IMPL(CustomRadioGroup)
-JV_WINCONTROL_EVENTS_IMPL(CustomControlBar)
-JV_WINCONTROL_EVENTS_IMPL(ControlBar)
-JV_WINCONTROL_EVENTS_IMPL(Panel)
-JV_WINCONTROL_EVENTS_IMPL(RadioGroup)
-JV_WINCONTROL_EVENTS_IMPL(Page)
-JV_WINCONTROL_EVENTS_IMPL(Notebook)
-JV_WINCONTROL_EVENTS_IMPL(Header)
+CONTROL_IMPL_DEFAULT(Shape)
+CONTROL_IMPL_DEFAULT(PaintBox)
+CONTROL_IMPL_DEFAULT(Image)
+CONTROL_IMPL_DEFAULT(Bevel)
+WINCONTROL_IMPL_DEFAULT(CustomPanel)
+WINCONTROL_IMPL_DEFAULT(CustomRadioGroup)
+WINCONTROL_IMPL_DEFAULT(CustomControlBar)
+WINCONTROL_IMPL_DEFAULT(ControlBar)
+WINCONTROL_IMPL_DEFAULT(Panel)
+WINCONTROL_IMPL_DEFAULT(RadioGroup)
+WINCONTROL_IMPL_DEFAULT(Page)
+WINCONTROL_IMPL_DEFAULT(Notebook)
+WINCONTROL_IMPL_DEFAULT(Header)
 {$IFDEF COMPILER6_UP}
-JV_CONTROL_EVENTS_IMPL(BoundLabel)
-JV_WINCONTROL_EVENTS_IMPL(CustomLabeledEdit)
-JV_WINCONTROL_EVENTS_IMPL(LabeledEdit)
-JV_WINCONTROL_EVENTS_IMPL(CustomColorBox)
-JV_WINCONTROL_EVENTS_IMPL(ColorBox)
+CONTROL_IMPL_DEFAULT(BoundLabel)
+WINCONTROL_IMPL_DEFAULT(CustomLabeledEdit)
+WINCONTROL_IMPL_DEFAULT(LabeledEdit)
+WINCONTROL_IMPL_DEFAULT(CustomColorBox)
+WINCONTROL_IMPL_DEFAULT(ColorBox)
 {$ENDIF COMPILER6_UP}
 
-JV_CONTROL_EVENTS_IMPL(Splitter)
+CONTROL_IMPL_DEFAULT(Splitter)
 
-procedure TJvExSplitter.MouseDown(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TJvExSplitter.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   SplitterMouseDownFix(Self);
   inherited MouseDown(Button, Shift, X, Y);
@@ -209,8 +211,9 @@ begin
   end;
 end;
 
-{$IFDEF UNITVERSIONING}
+
 initialization
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

@@ -143,7 +143,7 @@ type
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure Paint; override;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     {$IFDEF VCL}
     procedure AdjustSize; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -796,12 +796,12 @@ begin
   end;
 end;
 
-function TJvPanel.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvPanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if Transparent and not IsThemed then
     Result := True
   else
-    Result := inherited PaintBackground(Canvas, Param);
+    Result := inherited DoEraseBackground(Canvas, Param);
 end;
 
 procedure TJvPanel.SetMultiLine(const Value: Boolean);

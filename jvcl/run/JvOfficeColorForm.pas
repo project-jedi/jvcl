@@ -122,7 +122,7 @@ type
     function WidgetFlags: Integer; override;
     procedure Paint; override;
     {$ENDIF VisualCLX}
-    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
     procedure ShowingChanged; override;
     property OnShowingChanged: TNotifyEvent read FOnShowingChanged write FOnShowingChanged;
     property OnKillFocus: TNotifyEvent read FOnKillFocus write FOnKillFocus;
@@ -370,9 +370,9 @@ begin
     FOnShowingChanged(ActiveControl);
 end;
 
-procedure TJvOfficeColorForm.DoKillFocus(FocusedWnd: HWND);
+procedure TJvOfficeColorForm.FocusKilled(NextWnd: HWND);
 begin
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(NextWnd);
   if Assigned(FOnKillFocus) and not DropDownMoving then
     FOnKillFocus(ActiveControl);
 end;

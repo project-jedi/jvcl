@@ -130,7 +130,7 @@ type
     procedure DrawSmallImages;
     procedure DrawLargeImages;
     procedure ImageListChange(Sender: TObject);
-    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_JVBUTTONPRESSED;
+    procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_JVBUTTONPRESSED;
     procedure CMParentImageSizeChanged(var Msg: TMessage); message CM_IMAGESIZECHANGED;
     procedure CMLeaveButton(var Msg: TMessage); message CM_LEAVEBUTTON;
     function ParentVisible: Boolean;
@@ -1072,7 +1072,7 @@ end;
 
 procedure TJvCustomLookOutButton.UpdateExclusive;
 var
-  Msg: TJvCMButtonPressed;
+  Msg: TCMButtonPressed;
 begin
   if (FGroupIndex <> 0) and (Parent <> nil) then
   begin
@@ -1402,7 +1402,7 @@ begin
   end;
 end;
 
-procedure TJvCustomLookOutButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
+procedure TJvCustomLookOutButton.CMButtonPressed(var Msg: TCMButtonPressed);
 var
   Sender: TJvCustomLookOutButton;
 begin

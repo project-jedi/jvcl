@@ -304,7 +304,7 @@ type
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     {$ENDIF VisualCLX}
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure FontChanged; override;
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
@@ -2534,7 +2534,7 @@ begin
   Inc(Result, 4);
 end;
 
-function TJvCustomOutlookBar.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomOutlookBar.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   // don't redraw background: we always fill it anyway
   Result := True;

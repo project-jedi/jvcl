@@ -38,52 +38,72 @@ unit JvExDBGrids;
 interface
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  Windows, Messages, Graphics, Controls, Forms, DBGrids,
+  Windows, Messages,
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
-  Classes, SysUtils,
+  SysUtils, Classes, Graphics, Controls, Forms, DBGrids,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
- {$DEFINE NeedMouseEnterLeave}
-
 type
-  TJvExCustomDBGrid = class(TCustomDBGrid, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  {$IFDEF VCL}
+  TJvExCustomDBGrid = class(TCustomDBGrid, IJvExControl)
+  private
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
+    FMouseOver: Boolean;
+    {$IFDEF VCL}
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+    {$ENDIF VCL}
+    FOnParentColorChanged: TNotifyEvent;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
   protected
-   // IJvControlEvents
-    procedure VisibleChanged; dynamic;
-    procedure EnabledChanged; dynamic;
-    procedure TextChanged; dynamic;
-    procedure FontChanged; dynamic;
-    procedure ColorChanged; dynamic;
-    procedure ParentFontChanged; dynamic;
-    procedure ParentColorChanged; dynamic;
-    procedure ParentShowHintChanged; dynamic;
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
-    function HitTest(X, Y: Integer): Boolean; dynamic;
-    procedure MouseEnter(Control: TControl); dynamic;
-    procedure MouseLeave(Control: TControl); dynamic;
-    {$IFNDEF HASAUTOSIZE}
-     {$IFNDEF COMPILER6_UP}
+    procedure WndProc(var Msg: TMessage); override;
+    procedure FocusChanged(AControl: TWinControl); dynamic;
+    procedure VisibleChanged; reintroduce; dynamic;
+    procedure EnabledChanged; reintroduce; dynamic;
+    procedure TextChanged; reintroduce; virtual;
+    procedure ColorChanged; reintroduce; dynamic;
+    procedure FontChanged; reintroduce; dynamic;
+    procedure ParentFontChanged; reintroduce; dynamic;
+    procedure ParentColorChanged; reintroduce; dynamic;
+    procedure ParentShowHintChanged; reintroduce; dynamic;
+    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; reintroduce; virtual;
+    function HintShow(var HintInfo: THintInfo): Boolean; reintroduce; dynamic;
+    function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
+    procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
+    procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
+    {$IFDEF COMPILER5}
+     {$IFNDEF HASAUTOSIZE}
+    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
     procedure SetAutoSize(Value: Boolean); virtual;
-     {$ENDIF !COMPILER6_UP}
-    {$ENDIF !HASAUTOSIZE}
+     {$ENDIF !HASAUTOSIZE}
+    {$ENDIF COMPILER5}
+    property MouseOver: Boolean read FMouseOver write FMouseOver;
+    property HintColor: TColor read FHintColor write FHintColor default clDefault;
+    {$IFDEF VCL}
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    {$ENDIF VCL}
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
-    procedure Dispatch(var Msg); override;
+    constructor Create(AOwner: TComponent); override;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   protected
-   // IJvWinControlEvents
-    procedure BoundsChanged; reintroduce; dynamic; 
-    procedure CursorChanged; dynamic;
-    procedure ShowingChanged; dynamic;
-    procedure ShowHintChanged; dynamic;
-    procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
-    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
+    procedure BoundsChanged; reintroduce; virtual;
+    procedure CursorChanged; reintroduce; dynamic;
+    procedure ShowingChanged; reintroduce; dynamic;
+    procedure ShowHintChanged; reintroduce; dynamic;
+    procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    procedure GetDlgCode(var Code: TDlgCodes); virtual;
+    procedure FocusSet(PrevWnd: HWND); virtual;
+    procedure FocusKilled(NextWnd: HWND); virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF JVCLThemesEnabledD56}
   private
     function GetParentBackground: Boolean;
@@ -91,129 +111,62 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  // IJvControlEvents
-  public
-    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-    function IsRightToLeft: Boolean;
-  protected
-    WindowProc: TClxWindowProc;
-    procedure WndProc(var Msg: TMessage); virtual;
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
+  end;
+  TJvExDBGrid = class(TDBGrid, IJvExControl)
   private
-    FDoubleBuffered: Boolean;
-    InternalFontChanged: TNotifyEvent;
-    procedure OnFontChanged(Sender: TObject);
-  protected
-    procedure DoFontChanged(Sender: TObject); dynamic;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
-    function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
-    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure PaintWindow(PaintDevice: QPaintDeviceH);
-    function WidgetFlags: Integer; override;
-    procedure CreateWnd; dynamic;
-    procedure CreateWidget; override;
-    procedure RecreateWnd;
-  public
-    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
-  {$ENDIF VisualCLX}
-  private
+    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FMouseOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
-  {$IFDEF NeedMouseEnterLeave}
+    {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
+    {$ENDIF VCL}
+    FOnParentColorChanged: TNotifyEvent;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
   protected
+    procedure WndProc(var Msg: TMessage); override;
+    procedure FocusChanged(AControl: TWinControl); dynamic;
+    procedure VisibleChanged; reintroduce; dynamic;
+    procedure EnabledChanged; reintroduce; dynamic;
+    procedure TextChanged; reintroduce; virtual;
+    procedure ColorChanged; reintroduce; dynamic;
+    procedure FontChanged; reintroduce; dynamic;
+    procedure ParentFontChanged; reintroduce; dynamic;
+    procedure ParentColorChanged; reintroduce; dynamic;
+    procedure ParentShowHintChanged; reintroduce; dynamic;
+    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; reintroduce; virtual;
+    function HintShow(var HintInfo: THintInfo): Boolean; reintroduce; dynamic;
+    function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
+    procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
+    procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
+    {$IFDEF COMPILER5}
+     {$IFNDEF HASAUTOSIZE}
+    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
+    procedure SetAutoSize(Value: Boolean); virtual;
+     {$ENDIF !HASAUTOSIZE}
+    {$ENDIF COMPILER5}
+    property MouseOver: Boolean read FMouseOver write FMouseOver;
+    property HintColor: TColor read FHintColor write FHintColor default clDefault;
+    {$IFDEF VCL}
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF NeedMouseEnterLeave}
-  protected
-    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure FocusChanged(Control: TWinControl); dynamic;
-    property MouseOver: Boolean read FMouseOver write FMouseOver;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    {$ENDIF VCL}
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  {$IFDEF VCL}
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-    FAboutJVCLX: TJVCLAboutInfo;
-  published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  {$ENDIF VisualCLX}
-  protected
-    procedure GetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
-    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF VisualCLX}
-  private
-    FCanvas: TCanvas;
-  protected
-    procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  end;
-
-  TJvExPubCustomDBGrid = class(TJvExCustomDBGrid)
-  {$IFDEF VCL}
   published
-    property BiDiMode;
-    property DragCursor;
-    property DragKind;
-    property DragMode;
-    property ParentBiDiMode;
-    property OnEndDock;
-    property OnStartDock;
-  {$ENDIF VCL}
-  end;
-  
-  TJvExDBGrid = class(TDBGrid, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  {$IFDEF VCL}
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   protected
-   // IJvControlEvents
-    procedure VisibleChanged; dynamic;
-    procedure EnabledChanged; dynamic;
-    procedure TextChanged; dynamic;
-    procedure FontChanged; dynamic;
-    procedure ColorChanged; dynamic;
-    procedure ParentFontChanged; dynamic;
-    procedure ParentColorChanged; dynamic;
-    procedure ParentShowHintChanged; dynamic;
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
-    function HitTest(X, Y: Integer): Boolean; dynamic;
-    procedure MouseEnter(Control: TControl); dynamic;
-    procedure MouseLeave(Control: TControl); dynamic;
-    {$IFNDEF HASAUTOSIZE}
-     {$IFNDEF COMPILER6_UP}
-    procedure SetAutoSize(Value: Boolean); virtual;
-     {$ENDIF !COMPILER6_UP}
-    {$ENDIF !HASAUTOSIZE}
-  public
-    procedure Dispatch(var Msg); override;
-  protected
-   // IJvWinControlEvents
-    procedure BoundsChanged; reintroduce; dynamic; 
-    procedure CursorChanged; dynamic;
-    procedure ShowingChanged; dynamic;
-    procedure ShowHintChanged; dynamic;
-    procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
-    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
+    procedure BoundsChanged; reintroduce; virtual;
+    procedure CursorChanged; reintroduce; dynamic;
+    procedure ShowingChanged; reintroduce; dynamic;
+    procedure ShowHintChanged; reintroduce; dynamic;
+    procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    procedure GetDlgCode(var Code: TDlgCodes); virtual;
+    procedure FocusSet(PrevWnd: HWND); virtual;
+    procedure FocusKilled(NextWnd: HWND); virtual;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF JVCLThemesEnabledD56}
   private
     function GetParentBackground: Boolean;
@@ -221,96 +174,7 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  // IJvControlEvents
-  public
-    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-    function IsRightToLeft: Boolean;
-  protected
-    WindowProc: TClxWindowProc;
-    procedure WndProc(var Msg: TMessage); virtual;
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
-  private
-    FDoubleBuffered: Boolean;
-    InternalFontChanged: TNotifyEvent;
-    procedure OnFontChanged(Sender: TObject);
-  protected
-    procedure DoFontChanged(Sender: TObject); dynamic;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
-    function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
-    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure PaintWindow(PaintDevice: QPaintDeviceH);
-    function WidgetFlags: Integer; override;
-    procedure CreateWnd; dynamic;
-    procedure CreateWidget; override;
-    procedure RecreateWnd;
-  public
-    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
-  {$ENDIF VisualCLX}
-  private
-    FHintColor: TColor;
-    FMouseOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
-  {$IFDEF NeedMouseEnterLeave}
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
-  protected
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF NeedMouseEnterLeave}
-  protected
-    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure FocusChanged(Control: TWinControl); dynamic;
-    property MouseOver: Boolean read FMouseOver write FMouseOver;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  {$IFDEF VCL}
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-    FAboutJVCLX: TJVCLAboutInfo;
-  published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  {$ENDIF VisualCLX}
-  protected
-    procedure GetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
-    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF VisualCLX}
-  private
-    FCanvas: TCanvas;
-  protected
-    procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  {$ENDIF VisualCLX}
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   end;
-
-  TJvExPubDBGrid = class(TJvExDBGrid)
-  {$IFDEF VCL}
-  published
-    property BiDiMode;
-    property DragCursor;
-    property DragKind;
-    property DragMode;
-    property ParentBiDiMode;
-    property OnEndDock;
-    property OnStartDock;
-  {$ENDIF VCL}
-  end;
-  
 
 {$IFDEF UNITVERSIONING}
 const
@@ -324,629 +188,594 @@ const
 
 implementation
 
-{$IFDEF VCL}
-procedure TJvExCustomDBGrid.Dispatch(var Msg);
-asm
-        JMP     DispatchMsg
+constructor TJvExCustomDBGrid.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHintColor := clDefault;
+end;
+
+function TJvExCustomDBGrid.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Msg := Msg;
+  Mesg.WParam := WParam;
+  Mesg.LParam := LParam;
+  Mesg.Result := 0;
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
 end;
 
 procedure TJvExCustomDBGrid.VisibleChanged;
-asm
-        MOV     EDX, CM_VISIBLECHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_VISIBLECHANGED);
 end;
 
 procedure TJvExCustomDBGrid.EnabledChanged;
-asm
-        MOV     EDX, CM_ENABLEDCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_ENABLEDCHANGED);
 end;
 
 procedure TJvExCustomDBGrid.TextChanged;
-asm
-        MOV     EDX, CM_TEXTCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_TEXTCHANGED);
 end;
 
 procedure TJvExCustomDBGrid.FontChanged;
-asm
-        MOV     EDX, CM_FONTCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_FONTCHANGED);
 end;
 
 procedure TJvExCustomDBGrid.ColorChanged;
-asm
-        MOV     EDX, CM_COLORCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_COLORCHANGED);
 end;
 
 procedure TJvExCustomDBGrid.ParentFontChanged;
-asm
-        MOV     EDX, CM_PARENTFONTCHANGED
-        JMP     InheritMsg
-end;
-
-procedure TJvExCustomDBGrid.ParentShowHintChanged;
-asm
-        MOV     EDX, CM_PARENTSHOWHINTCHANGED
-        JMP     InheritMsg
-end;
-
-function TJvExCustomDBGrid.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
 begin
-  Result := InheritMsgEx(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
-end;
-
-function TJvExCustomDBGrid.HintShow(var HintInfo: THintInfo): Boolean;
-begin
-  if FHintColor <> clNone then
-    HintInfo.HintColor := FHintColor;
-  Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
-end;
-
-function TJvExCustomDBGrid.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := InheritMsgEx(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
-end;
-
-procedure TJvExCustomDBGrid.MouseEnter(Control: TControl);
-begin
-  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
-end;
-
-procedure TJvExCustomDBGrid.MouseLeave(Control: TControl);
-begin
-  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
+  BaseWndProc(CM_PARENTFONTCHANGED);
 end;
 
 procedure TJvExCustomDBGrid.ParentColorChanged;
 begin
-  InheritMsg(Self, CM_PARENTCOLORCHANGED);
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
+  BaseWndProc(CM_PARENTCOLORCHANGED);
+  if Assigned(OnParentColorChange) then
+    OnParentColorChange(Self);
 end;
 
-{$IFNDEF HASAUTOSIZE}
- {$IFNDEF COMPILER6_UP}
+procedure TJvExCustomDBGrid.ParentShowHintChanged;
+begin
+  BaseWndProc(CM_PARENTSHOWHINTCHANGED);
+end;
+
+function TJvExCustomDBGrid.WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean;
+begin
+  Result := BaseWndProc(CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
+end;
+
+function TJvExCustomDBGrid.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+end;
+
+function TJvExCustomDBGrid.HintShow(var HintInfo: THintInfo): Boolean;
+begin
+  GetHintColor(HintInfo, Self, FHintColor);
+  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+end;
+
+procedure TJvExCustomDBGrid.MouseEnter(AControl: TControl);
+begin
+  FMouseOver := True;
+  {$IFDEF VCL}
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+  {$ENDIF VCL}
+  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+end;
+
+procedure TJvExCustomDBGrid.MouseLeave(AControl: TControl);
+begin
+  FMouseOver := False;
+  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  {$IFDEF VCL}
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+  {$ENDIF VCL}
+end;
+
+procedure TJvExCustomDBGrid.FocusChanged(AControl: TWinControl);
+begin
+  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+end;
+
+{$IFDEF COMPILER5}
+ {$IFNDEF HASAUTOSIZE}
+procedure TJvExCustomDBGrid.CMSetAutoSize(var Msg: TMessage);
+begin
+  SetAutoSize(Msg.WParam <> 0);
+end;
+
 procedure TJvExCustomDBGrid.SetAutoSize(Value: Boolean);
 begin
   TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF !COMPILER6_UP}
-{$ENDIF !HASAUTOSIZE}
+ {$ENDIF !HASAUTOSIZE}
+{$ENDIF COMPILER5}
+
 procedure TJvExCustomDBGrid.BoundsChanged;
 begin
 end;
 
 procedure TJvExCustomDBGrid.CursorChanged;
-asm
-        MOV     EDX, CM_CURSORCHANGED
-        JMP     InheritMsg
-end;
-
-procedure TJvExCustomDBGrid.ShowHintChanged;
-asm
-        MOV     EDX, CM_SHOWHINTCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_CURSORCHANGED);
 end;
 
 procedure TJvExCustomDBGrid.ShowingChanged;
-asm
-        MOV     EDX, CM_SHOWINGCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_SHOWINGCHANGED);
 end;
 
+procedure TJvExCustomDBGrid.ShowHintChanged;
+begin
+  BaseWndProc(CM_SHOWHINTCHANGED);
+end;
+
+{ VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in an other order than
+  the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExCustomDBGrid.ControlsListChanging(Control: TControl; Inserting: Boolean);
-asm
-        JMP     Control_ControlsListChanging
+begin
+  if Inserting then
+    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
 
 procedure TJvExCustomDBGrid.ControlsListChanged(Control: TControl; Inserting: Boolean);
-asm
-        JMP     Control_ControlsListChanged
+begin
+  if not Inserting then
+    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
-function TJvExCustomDBGrid.GetParentBackground: Boolean;
-asm
-        JMP     JvThemes.GetParentBackground
-end;
-
-procedure TJvExCustomDBGrid.SetParentBackground(Value: Boolean);
-asm
-        JMP     JvThemes.SetParentBackground
-end;
-{$ENDIF JVCLThemesEnabledD56}
-  
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvExCustomDBGrid.MouseEnter(Control: TControl);
-begin
-  Control_MouseEnter(Self, Control, FMouseOver);
-  inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
-end;
-
-procedure TJvExCustomDBGrid.MouseLeave(Control: TControl);
-begin
-  Control_MouseLeave(Self, Control, FMouseOver);
-  inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
-end;
-
-procedure TJvExCustomDBGrid.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-function TJvExCustomDBGrid.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-var
-  Mesg: TMessage;
-begin
-  Mesg.Result := 0;
-  if Self <> nil then
-  begin
-    Mesg.Msg := Msg;
-    Mesg.WParam := WParam;
-    Mesg.LParam := LParam;
-    WindowProc(Mesg);
-  end;
-  Result := Mesg.Result;
-end;
-
-procedure TJvExCustomDBGrid.WndProc(var Msg: TMessage);
-begin
-  Dispatch(Msg);
-end;
-
-function TJvExCustomDBGrid.IsRightToLeft: Boolean;
-begin
-  Result := False;
-end;
-  
-function TJvExCustomDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
-begin
-  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
-    inherited NeedKey(Key, Shift, KeyText));
-end;
-
-procedure TJvExCustomDBGrid.OnFontChanged(Sender: TObject);
-var
-  FontChangedEvent: QEventH;
-begin
-  FontChangedEvent := QEvent_create(QEventType_FontChanged);
-  if FontChangedEvent <> nil then
-    QApplication_postEvent(Handle, FontChangedEvent);
-end;
-
-procedure TJvExCustomDBGrid.DoFontChanged(Sender: TObject);
-begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(Self);
-end;
-
-procedure TJvExCustomDBGrid.RecreateWnd;
-begin
-  RecreateWidget;
-end;
-
-procedure TJvExCustomDBGrid.CreateWidget;
-begin
-  CreateWnd;
-end;
-
-procedure TJvExCustomDBGrid.CreateWnd;
-begin
-  inherited CreateWidget;
-end;
-
-function TJvExCustomDBGrid.WidgetFlags: Integer;
-begin
-  Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
-    Integer(WidgetFlags_WMouseNoMask);
-end;
-
-function TJvExCustomDBGrid.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-begin
-  Result := inherited EventFilter(Sender, Event);
-  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
-end;
-
-procedure TJvExCustomDBGrid.PaintWindow(PaintDevice: QPaintDeviceH);
-begin
-  WidgetControl_PaintTo(Self, PaintDevice, 0, 0);
-end;
-
-procedure TJvExCustomDBGrid.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-begin
-  WidgetControl_PaintTo(Self, PaintDevice, X, Y);
-end;
-  
-{$ENDIF VisualCLX}
-procedure TJvExCustomDBGrid.CMFocusChanged(var Msg: TCMFocusChanged);
-begin
-  inherited;
-  FocusChanged(Msg.Sender);
-end;
-
-procedure TJvExCustomDBGrid.FocusChanged(Control: TWinControl);
-begin
-end;
-  
 procedure TJvExCustomDBGrid.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExCustomDBGrid.DoSetFocus(FocusedWnd: HWND);
+procedure TJvExCustomDBGrid.FocusSet(PrevWnd: HWND);
 begin
+  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
 end;
 
-procedure TJvExCustomDBGrid.DoKillFocus(FocusedWnd: HWND);
+procedure TJvExCustomDBGrid.FocusKilled(NextWnd: HWND);
 begin
+  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
 end;
 
-function TJvExCustomDBGrid.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-asm
-        JMP     DefaultPaintBackground
-end;
-  
-constructor TJvExCustomDBGrid.Create(AOwner: TComponent);
+function TJvExCustomDBGrid.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  {$IFDEF VisualCLX}
-  WindowProc := WndProc;
-  {$ENDIF VisualCLX}
+  Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+end;
+
+{$IFDEF JVCLThemesEnabledD56}
+function TJvExCustomDBGrid.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvExCustomDBGrid.SetParentBackground(Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+{$ENDIF JVCLThemesEnabledD56}
+
+procedure TJvExCustomDBGrid.WndProc(var Msg: TMessage);
+var
+  IdSaveDC: Integer;
+  DlgCodes: TDlgCodes;
+  Canvas: TCanvas;
+begin
+  case Msg.Msg of
+    CM_DENYSUBCLASSING:
+      Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+
+    CM_DIALOGCHAR:
+      with TCMDialogChar(Msg) do
+        Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
+    CM_HINTSHOW:
+      with TCMHintShow(Msg) do
+        Result := Integer(HintShow(HintInfo^));
+    CM_HITTEST:
+      with TCMHitTest(Msg) do
+        Result := Integer(HitTest(XPos, YPos));
+
+    CM_MOUSEENTER:
+      MouseEnter(TControl(Msg.LParam));
+    CM_MOUSELEAVE:
+      MouseLeave(TControl(Msg.LParam));
+
+    CM_VISIBLECHANGED:
+      VisibleChanged;
+    CM_ENABLEDCHANGED:
+      EnabledChanged;
+    CM_TEXTCHANGED:
+      TextChanged;
+    CM_FONTCHANGED:
+      FontChanged;
+    CM_COLORCHANGED:
+      ColorChanged;
+    CM_FOCUSCHANGED:
+      FocusChanged(TWinControl(Msg.LParam));
+    CM_PARENTFONTCHANGED:
+      ParentFontChanged;
+    CM_PARENTCOLORCHANGED:
+      ParentColorChanged;
+    CM_PARENTSHOWHINTCHANGED:
+      ParentShowHintChanged;
+
+    CM_CURSORCHANGED:
+      CursorChanged;
+    CM_SHOWINGCHANGED:
+      ShowingChanged;
+    CM_SHOWHINTCHANGED:
+      ShowHintChanged;
+
+    CM_CONTROLLISTCHANGE:
+      if Msg.LParam <> 0 then
+        ControlsListChanging(TControl(Msg.WParam), True)
+      else
+        ControlsListChanged(TControl(Msg.WParam), False);
+    CM_CONTROLCHANGE:
+      if Msg.LParam = 0 then
+        ControlsListChanging(TControl(Msg.WParam), False)
+      else
+        ControlsListChanged(TControl(Msg.WParam), True);
+
+    WM_SETFOCUS:
+      FocusSet(HWND(Msg.WParam));
+    WM_KILLFOCUS:
+      FocusKilled(HWND(Msg.WParam));
+
+    WM_SIZE:
+      begin
+        inherited WndProc(Msg);
+        BoundsChanged;
+      end;
+
+    WM_ERASEBKGND:
+      begin
+        IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against Stock-Objects from Canvas
+        Canvas := TCanvas.Create;
+        try
+          Canvas.Handle := HDC(Msg.WParam);
+          Msg.Result := Ord(DoEraseBackground(Canvas, Msg.LParam));
+        finally
+          Canvas.Handle := 0;
+          Canvas.Free;
+          RestoreDC(HDC(Msg.WParam), IdSaveDC);
+        end;
+      end;
+    WM_PRINTCLIENT,
+    WM_PRINT: // VCL bug fix
+      begin
+        IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against changes
+        try
+          inherited WndProc(Msg);
+        finally
+          RestoreDC(HDC(Msg.WParam), IdSaveDC);
+        end;
+      end;
+    WM_GETDLGCODE:
+      begin
+        inherited WndProc(Msg);
+        DlgCodes := [dcNative] + DlgcToDlgCodes(Msg.Result);
+        GetDlgCode(DlgCodes);
+        if not (dcNative in DlgCodes) then
+          Msg.Result := DlgCodesToDlgc(DlgCodes);
+      end;
+  else
+    inherited WndProc(Msg);
+  end;
+end;
+{------------------------------------------------------------------------------}
+constructor TJvExDBGrid.Create(AOwner: TComponent);
+begin
   inherited Create(AOwner);
-  {$IFDEF VisualCLX}
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
-  InternalFontChanged := Font.OnChange;
-  Font.OnChange := OnFontChanged;
-  {$ENDIF VisualCLX}
-  FHintColor := Application.HintColor;
-  
+  FHintColor := clDefault;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvExCustomDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+function TJvExDBGrid.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+var
+  Mesg: TMessage;
 begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
-end;
-
-procedure TJvExCustomDBGrid.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-{$ENDIF VisualCLX}
-
-destructor TJvExCustomDBGrid.Destroy;
-begin
-  inherited Destroy;
-end;
-  
-{$IFDEF VCL}
-procedure TJvExDBGrid.Dispatch(var Msg);
-asm
-        JMP     DispatchMsg
+  Mesg.Msg := Msg;
+  Mesg.WParam := WParam;
+  Mesg.LParam := LParam;
+  Mesg.Result := 0;
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
 end;
 
 procedure TJvExDBGrid.VisibleChanged;
-asm
-        MOV     EDX, CM_VISIBLECHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_VISIBLECHANGED);
 end;
 
 procedure TJvExDBGrid.EnabledChanged;
-asm
-        MOV     EDX, CM_ENABLEDCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_ENABLEDCHANGED);
 end;
 
 procedure TJvExDBGrid.TextChanged;
-asm
-        MOV     EDX, CM_TEXTCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_TEXTCHANGED);
 end;
 
 procedure TJvExDBGrid.FontChanged;
-asm
-        MOV     EDX, CM_FONTCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_FONTCHANGED);
 end;
 
 procedure TJvExDBGrid.ColorChanged;
-asm
-        MOV     EDX, CM_COLORCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_COLORCHANGED);
 end;
 
 procedure TJvExDBGrid.ParentFontChanged;
-asm
-        MOV     EDX, CM_PARENTFONTCHANGED
-        JMP     InheritMsg
-end;
-
-procedure TJvExDBGrid.ParentShowHintChanged;
-asm
-        MOV     EDX, CM_PARENTSHOWHINTCHANGED
-        JMP     InheritMsg
-end;
-
-function TJvExDBGrid.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
 begin
-  Result := InheritMsgEx(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
-end;
-
-function TJvExDBGrid.HintShow(var HintInfo: THintInfo): Boolean;
-begin
-  if FHintColor <> clNone then
-    HintInfo.HintColor := FHintColor;
-  Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
-end;
-
-function TJvExDBGrid.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := InheritMsgEx(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
-end;
-
-procedure TJvExDBGrid.MouseEnter(Control: TControl);
-begin
-  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
-end;
-
-procedure TJvExDBGrid.MouseLeave(Control: TControl);
-begin
-  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
+  BaseWndProc(CM_PARENTFONTCHANGED);
 end;
 
 procedure TJvExDBGrid.ParentColorChanged;
 begin
-  InheritMsg(Self, CM_PARENTCOLORCHANGED);
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
+  BaseWndProc(CM_PARENTCOLORCHANGED);
+  if Assigned(OnParentColorChange) then
+    OnParentColorChange(Self);
 end;
 
-{$IFNDEF HASAUTOSIZE}
- {$IFNDEF COMPILER6_UP}
+procedure TJvExDBGrid.ParentShowHintChanged;
+begin
+  BaseWndProc(CM_PARENTSHOWHINTCHANGED);
+end;
+
+function TJvExDBGrid.WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean;
+begin
+  Result := BaseWndProc(CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
+end;
+
+function TJvExDBGrid.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+end;
+
+function TJvExDBGrid.HintShow(var HintInfo: THintInfo): Boolean;
+begin
+  GetHintColor(HintInfo, Self, FHintColor);
+  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+end;
+
+procedure TJvExDBGrid.MouseEnter(AControl: TControl);
+begin
+  FMouseOver := True;
+  {$IFDEF VCL}
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+  {$ENDIF VCL}
+  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+end;
+
+procedure TJvExDBGrid.MouseLeave(AControl: TControl);
+begin
+  FMouseOver := False;
+  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  {$IFDEF VCL}
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+  {$ENDIF VCL}
+end;
+
+procedure TJvExDBGrid.FocusChanged(AControl: TWinControl);
+begin
+  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+end;
+
+{$IFDEF COMPILER5}
+ {$IFNDEF HASAUTOSIZE}
+procedure TJvExDBGrid.CMSetAutoSize(var Msg: TMessage);
+begin
+  SetAutoSize(Msg.WParam <> 0);
+end;
+
 procedure TJvExDBGrid.SetAutoSize(Value: Boolean);
 begin
   TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF !COMPILER6_UP}
-{$ENDIF !HASAUTOSIZE}
+ {$ENDIF !HASAUTOSIZE}
+{$ENDIF COMPILER5}
+
 procedure TJvExDBGrid.BoundsChanged;
 begin
 end;
 
 procedure TJvExDBGrid.CursorChanged;
-asm
-        MOV     EDX, CM_CURSORCHANGED
-        JMP     InheritMsg
-end;
-
-procedure TJvExDBGrid.ShowHintChanged;
-asm
-        MOV     EDX, CM_SHOWHINTCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_CURSORCHANGED);
 end;
 
 procedure TJvExDBGrid.ShowingChanged;
-asm
-        MOV     EDX, CM_SHOWINGCHANGED
-        JMP     InheritMsg
+begin
+  BaseWndProc(CM_SHOWINGCHANGED);
 end;
 
+procedure TJvExDBGrid.ShowHintChanged;
+begin
+  BaseWndProc(CM_SHOWHINTCHANGED);
+end;
+
+{ VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in an other order than
+  the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExDBGrid.ControlsListChanging(Control: TControl; Inserting: Boolean);
-asm
-        JMP     Control_ControlsListChanging
+begin
+  if Inserting then
+    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
 
 procedure TJvExDBGrid.ControlsListChanged(Control: TControl; Inserting: Boolean);
-asm
-        JMP     Control_ControlsListChanged
+begin
+  if not Inserting then
+    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
-function TJvExDBGrid.GetParentBackground: Boolean;
-asm
-        JMP     JvThemes.GetParentBackground
-end;
-
-procedure TJvExDBGrid.SetParentBackground(Value: Boolean);
-asm
-        JMP     JvThemes.SetParentBackground
-end;
-{$ENDIF JVCLThemesEnabledD56}
-  
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvExDBGrid.MouseEnter(Control: TControl);
-begin
-  Control_MouseEnter(Self, Control, FMouseOver);
-  inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
-end;
-
-procedure TJvExDBGrid.MouseLeave(Control: TControl);
-begin
-  Control_MouseLeave(Self, Control, FMouseOver);
-  inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
-end;
-
-procedure TJvExDBGrid.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-function TJvExDBGrid.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-var
-  Mesg: TMessage;
-begin
-  Mesg.Result := 0;
-  if Self <> nil then
-  begin
-    Mesg.Msg := Msg;
-    Mesg.WParam := WParam;
-    Mesg.LParam := LParam;
-    WindowProc(Mesg);
-  end;
-  Result := Mesg.Result;
-end;
-
-procedure TJvExDBGrid.WndProc(var Msg: TMessage);
-begin
-  Dispatch(Msg);
-end;
-
-function TJvExDBGrid.IsRightToLeft: Boolean;
-begin
-  Result := False;
-end;
-  
-function TJvExDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
-begin
-  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
-    inherited NeedKey(Key, Shift, KeyText));
-end;
-
-procedure TJvExDBGrid.OnFontChanged(Sender: TObject);
-var
-  FontChangedEvent: QEventH;
-begin
-  FontChangedEvent := QEvent_create(QEventType_FontChanged);
-  if FontChangedEvent <> nil then
-    QApplication_postEvent(Handle, FontChangedEvent);
-end;
-
-procedure TJvExDBGrid.DoFontChanged(Sender: TObject);
-begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(Self);
-end;
-
-procedure TJvExDBGrid.RecreateWnd;
-begin
-  RecreateWidget;
-end;
-
-procedure TJvExDBGrid.CreateWidget;
-begin
-  CreateWnd;
-end;
-
-procedure TJvExDBGrid.CreateWnd;
-begin
-  inherited CreateWidget;
-end;
-
-function TJvExDBGrid.WidgetFlags: Integer;
-begin
-  Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
-    Integer(WidgetFlags_WMouseNoMask);
-end;
-
-function TJvExDBGrid.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-begin
-  Result := inherited EventFilter(Sender, Event);
-  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
-end;
-
-procedure TJvExDBGrid.PaintWindow(PaintDevice: QPaintDeviceH);
-begin
-  WidgetControl_PaintTo(Self, PaintDevice, 0, 0);
-end;
-
-procedure TJvExDBGrid.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-begin
-  WidgetControl_PaintTo(Self, PaintDevice, X, Y);
-end;
-  
-{$ENDIF VisualCLX}
-procedure TJvExDBGrid.CMFocusChanged(var Msg: TCMFocusChanged);
-begin
-  inherited;
-  FocusChanged(Msg.Sender);
-end;
-
-procedure TJvExDBGrid.FocusChanged(Control: TWinControl);
-begin
-end;
-  
 procedure TJvExDBGrid.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExDBGrid.DoSetFocus(FocusedWnd: HWND);
+procedure TJvExDBGrid.FocusSet(PrevWnd: HWND);
 begin
+  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
 end;
 
-procedure TJvExDBGrid.DoKillFocus(FocusedWnd: HWND);
+procedure TJvExDBGrid.FocusKilled(NextWnd: HWND);
 begin
+  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
 end;
 
-function TJvExDBGrid.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-asm
-        JMP     DefaultPaintBackground
-end;
-  
-constructor TJvExDBGrid.Create(AOwner: TComponent);
+function TJvExDBGrid.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  {$IFDEF VisualCLX}
-  WindowProc := WndProc;
-  {$ENDIF VisualCLX}
-  inherited Create(AOwner);
-  {$IFDEF VisualCLX}
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
-  InternalFontChanged := Font.OnChange;
-  Font.OnChange := OnFontChanged;
-  {$ENDIF VisualCLX}
-  FHintColor := Application.HintColor;
-  
+  Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvExDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+{$IFDEF JVCLThemesEnabledD56}
+function TJvExDBGrid.GetParentBackground: Boolean;
 begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
+  Result := JvThemes.GetParentBackground(Self);
 end;
 
-procedure TJvExDBGrid.Paint;
+procedure TJvExDBGrid.SetParentBackground(Value: Boolean);
 begin
-  WidgetControl_DefaultPaint(Self, Canvas);
+  JvThemes.SetParentBackground(Self, Value);
 end;
-{$ENDIF VisualCLX}
+{$ENDIF JVCLThemesEnabledD56}
 
-destructor TJvExDBGrid.Destroy;
+procedure TJvExDBGrid.WndProc(var Msg: TMessage);
+var
+  IdSaveDC: Integer;
+  DlgCodes: TDlgCodes;
+  Canvas: TCanvas;
 begin
-  inherited Destroy;
-end;
-  
+  case Msg.Msg of
+    CM_DENYSUBCLASSING:
+      Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
 
-{$IFDEF UNITVERSIONING}
+    CM_DIALOGCHAR:
+      with TCMDialogChar(Msg) do
+        Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
+    CM_HINTSHOW:
+      with TCMHintShow(Msg) do
+        Result := Integer(HintShow(HintInfo^));
+    CM_HITTEST:
+      with TCMHitTest(Msg) do
+        Result := Integer(HitTest(XPos, YPos));
+
+    CM_MOUSEENTER:
+      MouseEnter(TControl(Msg.LParam));
+    CM_MOUSELEAVE:
+      MouseLeave(TControl(Msg.LParam));
+
+    CM_VISIBLECHANGED:
+      VisibleChanged;
+    CM_ENABLEDCHANGED:
+      EnabledChanged;
+    CM_TEXTCHANGED:
+      TextChanged;
+    CM_FONTCHANGED:
+      FontChanged;
+    CM_COLORCHANGED:
+      ColorChanged;
+    CM_FOCUSCHANGED:
+      FocusChanged(TWinControl(Msg.LParam));
+    CM_PARENTFONTCHANGED:
+      ParentFontChanged;
+    CM_PARENTCOLORCHANGED:
+      ParentColorChanged;
+    CM_PARENTSHOWHINTCHANGED:
+      ParentShowHintChanged;
+
+    CM_CURSORCHANGED:
+      CursorChanged;
+    CM_SHOWINGCHANGED:
+      ShowingChanged;
+    CM_SHOWHINTCHANGED:
+      ShowHintChanged;
+
+    CM_CONTROLLISTCHANGE:
+      if Msg.LParam <> 0 then
+        ControlsListChanging(TControl(Msg.WParam), True)
+      else
+        ControlsListChanged(TControl(Msg.WParam), False);
+    CM_CONTROLCHANGE:
+      if Msg.LParam = 0 then
+        ControlsListChanging(TControl(Msg.WParam), False)
+      else
+        ControlsListChanged(TControl(Msg.WParam), True);
+
+    WM_SETFOCUS:
+      FocusSet(HWND(Msg.WParam));
+    WM_KILLFOCUS:
+      FocusKilled(HWND(Msg.WParam));
+
+    WM_SIZE:
+      begin
+        inherited WndProc(Msg);
+        BoundsChanged;
+      end;
+
+    WM_ERASEBKGND:
+      begin
+        IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against Stock-Objects from Canvas
+        Canvas := TCanvas.Create;
+        try
+          Canvas.Handle := HDC(Msg.WParam);
+          Msg.Result := Ord(DoEraseBackground(Canvas, Msg.LParam));
+        finally
+          Canvas.Handle := 0;
+          Canvas.Free;
+          RestoreDC(HDC(Msg.WParam), IdSaveDC);
+        end;
+      end;
+    WM_PRINTCLIENT,
+    WM_PRINT: // VCL bug fix
+      begin
+        IdSaveDC := SaveDC(HDC(Msg.WParam)); // protect DC against changes
+        try
+          inherited WndProc(Msg);
+        finally
+          RestoreDC(HDC(Msg.WParam), IdSaveDC);
+        end;
+      end;
+    WM_GETDLGCODE:
+      begin
+        inherited WndProc(Msg);
+        DlgCodes := [dcNative] + DlgcToDlgCodes(Msg.Result);
+        GetDlgCode(DlgCodes);
+        if not (dcNative in DlgCodes) then
+          Msg.Result := DlgCodesToDlgc(DlgCodes);
+      end;
+  else
+    inherited WndProc(Msg);
+  end;
+end;
+{------------------------------------------------------------------------------}
+
+
 initialization
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

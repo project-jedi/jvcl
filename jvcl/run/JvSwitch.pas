@@ -69,7 +69,7 @@ type
     procedure WriteBinaryData(Stream: TStream);
   protected
     procedure FocusChanged(Control: TWinControl); override;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure TextChanged; override;
@@ -330,7 +330,7 @@ begin
     SetFocus;
 end;
 
-function TJvSwitch.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvSwitch.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := True; // the component paints the background in Paint
 end;

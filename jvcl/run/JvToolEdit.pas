@@ -303,17 +303,17 @@ type
     {$IFDEF VCL}
     procedure WndProc(var Msg: TMessage); override;
     {$ENDIF VCL}
-    procedure DoClearText; override;
-    procedure DoClipboardCut; override;
-    procedure DoClipboardPaste; override;
+    procedure WMClear(var Msg: TMessage); message WM_CLEAR;
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure AdjustSize; override;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure DoEnter; override;
     procedure DoCtl3DChanged; virtual;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     { Repositions the child controls; checkbox }
     procedure UpdateControls; virtual;
     { Updates the margins of the edit box }
@@ -1746,7 +1746,7 @@ begin
       if not ed.Enabled then
       begin
         if Supports(ed, IJvWinControlEvents) then
-          (ed as IJvWinControlEvents).PaintBackground(ACanvas, 0);
+          (ed as IJvWinControlEvents).DoEraseBackground(ACanvas, 0);
         ACanvas.Brush.Style := bsClear;
         ACanvas.Font.Color := DisabledTextColor;
         ACanvas.TextRect(EditRect, X, EditRect.Top + 1, S);
@@ -2253,7 +2253,7 @@ begin
   inherited Change;
 end;
 
-procedure TJvCustomComboEdit.DoClearText;
+procedure TJvCustomComboEdit.WMClear(var Msg: TMessage);
 begin
   Text := '';
 end;
@@ -2263,16 +2263,16 @@ begin
   EditButtonClick(Self);
 end;
 
-procedure TJvCustomComboEdit.DoClipboardCut;
+procedure TJvCustomComboEdit.WMCut(var Msg: TMessage);
 begin
   if FDirectInput and not ReadOnly then
-    inherited DoClipboardCut;
+    inherited;
 end;
 
-procedure TJvCustomComboEdit.DoClipboardPaste;
+procedure TJvCustomComboEdit.WMPaste(var Msg: TMessage);
 begin
   if FDirectInput and not ReadOnly then
-    inherited DoClipboardPaste;
+    inherited;
   UpdateGroup;
 end;
 
@@ -2298,14 +2298,14 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-procedure TJvCustomComboEdit.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomComboEdit.FocusKilled(NextWnd: HWND);
 var
   Sender: TWinControl;
 begin
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(NextWnd);
   FFocused := False;
 
-  Sender := FindControl(FocusedWnd);
+  Sender := FindControl(NextWnd);
   if (Sender <> Self) and (Sender <> FPopup) and
     {(Sender <> FButton)} ((FPopup <> nil) and
     not FPopup.ContainsControl(Sender)) then
@@ -2317,14 +2317,14 @@ begin
   end;
 end;
 
-function TJvCustomComboEdit.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomComboEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := True;
   if csDestroying in ComponentState then
     { (rb) Implementation diffs; some return True other False }
     Exit;
   if Enabled then
-    Result := inherited PaintBackground(Canvas, Param)
+    Result := inherited DoEraseBackground(Canvas, Param)
   else
   begin
     Canvas.Brush.Color := FDisabledColor;
@@ -2333,9 +2333,9 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.DoSetFocus(FocusedWnd: HWND);
+procedure TJvCustomComboEdit.FocusSet(PrevWnd: HWND);
 begin
-  inherited DoSetFocus(FocusedWnd);
+  inherited FocusSet(PrevWnd);
   FFocused := True;
   SetShowCaret;
 end;

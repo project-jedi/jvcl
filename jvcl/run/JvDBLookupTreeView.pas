@@ -126,8 +126,8 @@ type
     procedure SetReadOnly(Value: Boolean);
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
     procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
@@ -168,11 +168,6 @@ type
     FLookupMode: Boolean;
     FOnDropDown: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
-    {added by zelen}
-    {$IFDEF JVCLThemesEnabled}
-    FOver: Boolean;
-    {$ENDIF JVCLThemesEnabled}
-    {/added by zelen}
     FMasterField: string;      {new}
     FDetailField: string;      {new}
     FIconField: string;        {new}
@@ -200,7 +195,7 @@ type
     FOnGetImageIndex: TTVExpandedEvent;
   protected
     procedure FontChanged; override;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -300,7 +295,7 @@ type
   private
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
   protected
-    procedure DoSetFocus(FocusedWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
     procedure DblClick; override;
   end;
 
@@ -364,7 +359,7 @@ type
     procedure SetOnCustomDraw(const Value: TTVCustomDrawEvent);
     procedure SetOnCustomDrawItem(const Value: TTVCustomDrawItemEvent);
   protected
-    procedure DoSetFocus(FocusedWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure ListLinkActiveChanged; override;
   public
@@ -832,17 +827,17 @@ begin
   Code := [dcWantArrows, dcWantChars];
 end;
 
-procedure TJvDBLookupControl.DoKillFocus(FocusedWnd: HWND);
+procedure TJvDBLookupControl.FocusKilled(NextWnd: HWND);
 begin
   FFocused := False;
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(NextWnd);
   Invalidate;
 end;
 
-procedure TJvDBLookupControl.DoSetFocus(FocusedWnd: HWND);
+procedure TJvDBLookupControl.FocusSet(PrevWnd: HWND);
 begin
   FFocused := True;
-  inherited DoSetFocus(FocusedWnd);
+  inherited FocusSet(PrevWnd);
   Invalidate;
 end;
 
@@ -939,7 +934,7 @@ begin
     if FPressed then
       State := tcDropDownButtonPressed
     else
-    if FOver and not FListVisible then
+    if MouseOver and not FListVisible then
       State := tcDropDownButtonHot
     else
       State := tcDropDownButtonNormal;
@@ -1397,9 +1392,9 @@ begin
     end;
 end;
 
-procedure TJvPopupTree.DoSetFocus(FocusedWnd: HWND);
+procedure TJvPopupTree.FocusSet(PrevWnd: HWND);
 begin
-  inherited DoSetFocus(FocusedWnd);
+  inherited FocusSet(PrevWnd);
   (Owner.Owner as TJvDBLookupTreeViewCombo).SetFocus;
 end;
 
@@ -1517,7 +1512,7 @@ begin
   end;
 end;
 
-procedure TJvDBLookupTreeView.DoSetFocus(FocusedWnd: HWND);
+procedure TJvDBLookupTreeView.FocusSet(PrevWnd: HWND);
 begin
   FTree.SetFocus;
 end;
@@ -1712,10 +1707,10 @@ begin
     end;
 end;
 
-procedure TJvDBLookupTreeViewCombo.DoKillFocus(FocusedWnd: HWND);
+procedure TJvDBLookupTreeViewCombo.FocusKilled(NextWnd: HWND);
 begin
-  if (Handle <> FocusedWnd) and (FDataList.Handle <> FocusedWnd) and
-    (FDataList.FTree.Handle <> FocusedWnd) then
+  if (Handle <> NextWnd) and (FDataList.Handle <> NextWnd) and
+    (FDataList.FTree.Handle <> NextWnd) then
     CloseUp(False);
 end;
 
@@ -1729,27 +1724,20 @@ begin
     Exit;
   inherited MouseEnter(Control);
   {Windows XP themes use hot track states, hence we have to update the drop down button.}
-  if ThemeServices.ThemesEnabled and not FOver and not (csDesigning in ComponentState) then
-  begin
-    FOver := True;
+  if ThemeServices.ThemesEnabled and not MouseOver and not (csDesigning in ComponentState) then
     Invalidate;
-  end;
 end;
 
 procedure TJvDBLookupTreeViewCombo.MouseLeave(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  inherited MouseLeave(Control);
-  if ThemeServices.ThemesEnabled and FOver then
-  begin
-    FOver := False;
+  if ThemeServices.ThemesEnabled and MouseOver then
     Invalidate;
-  end;
+  inherited MouseLeave(Control);
 end;
 
 {$ENDIF JVCLThemesEnabled}
-
 {/added by zelen}
 
 {$IFDEF UNITVERSIONING}

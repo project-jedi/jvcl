@@ -305,7 +305,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure BoundsChanged; override;
     procedure GetDlgCode(var Code: TDlgCodes); override;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     procedure DoScrollHint(NewPos: Integer);
     procedure CreateParams(var Params: TCreateParams); override;
@@ -1263,9 +1263,9 @@ begin
   FOptions.Assign(Value);
 end;
 
-function TJvCustomPreviewControl.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomPreviewControl.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  //  inherited PaintBackground(Canvas, Param);
+  //  inherited DoEraseBackground(Canvas, Param);
   Result := True;
 end;
 

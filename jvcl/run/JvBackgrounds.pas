@@ -138,7 +138,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    function PaintBackground(AClient: TWinControl; DC: HDC): Boolean;
+    function DoEraseBackground(AClient: TWinControl; DC: HDC): Boolean;
   published
     property AutoSizeTile: Boolean read FAutoSizeTile write SetAutoSizeTile
       default True;
@@ -549,7 +549,7 @@ begin
   begin
     if not IsIconic(AClient.Handle) then
       if not TWinControlAccessProtected(AClient).FDoubleBuffered or (Msg.wParam = Msg.lParam) then
-        PaintBackground(AClient,
+        DoEraseBackground(AClient,
           TWMEraseBkgnd(Msg).DC);
     Msg.Result := 1;
   end;
@@ -575,10 +575,10 @@ begin
       try
         DC := BeginPaint(AClient.Handle, PS);
         //AClient.Perform(WM_ERASEBKGND, MemDC, MemDC);
-        PaintBackground(AClient, MemDC);
+        DoEraseBackground(AClient, MemDC);
         Msg.Result := AClient.Perform(WM_PAINT, MemDC, 0);
       {TWMPaint(Msg).DC := MemDC;
-      AClient.Dispatch(Msg);
+      AClient.Dispatch(Msg); // (ahuser) bad idea because JvExVCL does not want this
       TWMPaint(Msg).DC := 0;}
         BitBlt(DC, 0, 0, ClientRect.Right, ClientRect.Bottom, MemDC, 0, 0, SRCCOPY);
         EndPaint(AClient.Handle, PS);
@@ -825,7 +825,7 @@ begin
   RestoreDC(DC, SaveIndex);
 end;
 
-function TJvBackgroundImage.PaintBackground(AClient: TWinControl; DC: HDC): Boolean;
+function TJvBackgroundImage.DoEraseBackground(AClient: TWinControl; DC: HDC): Boolean;
 var
   Graphic: TGraphic;
   Bmp: TBitmap;
@@ -1417,7 +1417,7 @@ begin
       if FClientIsMDIForm then
       begin
         if Msg = WM_ERASEBKGND then
-          if FEnabled and PaintBackground(FClient, TWMEraseBkgnd(Message).DC) then
+          if FEnabled and DoEraseBackground(FClient, TWMEraseBkgnd(Message).DC) then
           begin
             Result := 1;
             Exit;

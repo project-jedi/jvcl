@@ -140,9 +140,9 @@ type
     function IsValidChar(const S: string; Key: Char; Posn: Integer): Boolean; virtual;
     function MakeValid(ParseString: string): string;virtual;
     procedure Change; override;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
-    procedure DoClipboardPaste; override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure SetText(const NewValue: TCaption); override;
     property CheckChars: string read FCheckChars write SetCheckChars;
     property TrimDecimals: Boolean read FTrimDecimals write SetTrimDecimals;
@@ -667,9 +667,9 @@ begin
   inherited KeyPress(Key);
 end;
 
-procedure TJvCustomValidateEdit.DoClipboardPaste;
+procedure TJvCustomValidateEdit.WMPaste(var Msg: TMessage);
 begin
-  inherited DoClipboardPaste;
+  inherited;
   EditText := MakeValid(inherited Text);
 end;
 
@@ -816,17 +816,17 @@ begin
   DoValueChanged;
 end;
 
-procedure TJvCustomValidateEdit.DoSetFocus(FocusedWnd: HWND);
+procedure TJvCustomValidateEdit.FocusSet(PrevWnd: HWND);
 begin
   DisplayText;
-  inherited DoSetFocus(FocusedWnd);
+  inherited FocusSet(PrevWnd);
 end;
 
-procedure TJvCustomValidateEdit.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomValidateEdit.FocusKilled(NextWnd: HWND);
 begin
   if not (csDestroying in ComponentState) then
     EditText := inherited Text;
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(NextWnd);
 end;
 
 procedure TJvCustomValidateEdit.ChangeText(const NewValue: string);

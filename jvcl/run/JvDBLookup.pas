@@ -153,8 +153,8 @@ type
     procedure UpdateDisplayValue;
     function EmptyRowVisible: Boolean;
   protected
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
     procedure GetDlgCode(var Code: TDlgCodes); override;
     function GetReadOnly: Boolean;virtual;
     procedure SetReadOnly(Value: Boolean);virtual;
@@ -380,7 +380,7 @@ type
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
   protected
-    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
     procedure BoundsChanged; override;
     procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure EnabledChanged; override;
@@ -1456,17 +1456,17 @@ begin
   Code := [dcWantArrows, dcWantChars];
 end;
 
-procedure TJvLookupControl.DoKillFocus(FocusedWnd: HWND);
+procedure TJvLookupControl.FocusKilled(NextWnd: HWND);
 begin
   FFocused := False;
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(NextWnd);
   Invalidate;
 end;
 
-procedure TJvLookupControl.DoSetFocus(FocusedWnd: HWND);
+procedure TJvLookupControl.FocusSet(PrevWnd: HWND);
 begin
   FFocused := True;
-  inherited DoSetFocus(FocusedWnd);
+  inherited FocusSet(PrevWnd);
   Invalidate;
 end;
 
@@ -3245,9 +3245,9 @@ begin
   Code := [dcButton, dcWantAllKeys, dcWantArrows, dcWantChars];
 end;
 
-procedure TJvDBLookupCombo.DoKillFocus(FocusedWnd: HWND);
+procedure TJvDBLookupCombo.FocusKilled(NextWnd: HWND);
 begin
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(NextWnd);
   CloseUp(False);
 end;
 

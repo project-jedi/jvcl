@@ -49,7 +49,7 @@ type
   protected
     procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string); virtual;
     procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string); virtual;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     {$IFDEF VCL}
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
     {$ENDIF VCL}
@@ -113,10 +113,10 @@ begin
   inherited Destroy;
 end;
 
-function TJvControlBar.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvControlBar.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if Picture.Graphic <> nil then
-    Result := inherited PaintBackground(Canvas, Param)
+    Result := inherited DoEraseBackground(Canvas, Param)
   else
   begin
     DrawThemedBackground(Self, Canvas.Handle, ClientRect, Parent.Brush.Handle);

@@ -133,7 +133,7 @@ type
     procedure TimerExpired(Sender: TObject);
     procedure UpdateExclusive;
     procedure SetHotTrackOptions(Value: TJvSpeedButtonHotTrackOptions);
-    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_JVBUTTONPRESSED;
+    procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_JVBUTTONPRESSED;
     {$IFDEF VCL}
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
     procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK;
@@ -861,7 +861,7 @@ begin
   inherited Click;
 end;
 
-procedure TJvCustomSpeedButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
+procedure TJvCustomSpeedButton.CMButtonPressed(var Msg: TCMButtonPressed);
 var
   Sender: TControl;
 begin
@@ -1620,7 +1620,7 @@ end;
 
 procedure TJvCustomSpeedButton.UpdateExclusive;
 var
-  Msg: TJvCMButtonPressed;
+  Msg: TCMButtonPressed;
 begin
   if (FGroupIndex <> 0) and (Parent <> nil) then
   begin
@@ -1725,14 +1725,14 @@ begin
   UpdateTracking;
 end;
 
+{$ENDIF VCL}
+
 {Inserted by (ag) 2004-09-04}
 procedure TJvCustomSpeedButton.SetHotTrackOptions(Value: TJvSpeedButtonHotTrackOptions);
 begin
   FHotTrackOptions.Assign(Value);
 end;
 {Insert End}
-
-{$ENDIF VCL}
 
 //=== { TJvGlyphCache } ======================================================
 

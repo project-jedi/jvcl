@@ -81,7 +81,7 @@ type
     procedure SetArrowWidth(Value: Integer);
     procedure SetFillFont(Value: TFont);
     procedure UpdateTracking;
-    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_BUTTONPRESSED;
+    procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_BUTTONPRESSED;
     {$IFDEF VCL}
     procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK;
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
@@ -1097,7 +1097,7 @@ end;
 
 procedure TJvArrowButton.UpdateExclusive;
 var
-  Msg: TJvCMButtonPressed;
+  Msg: TCMButtonPressed;
 begin
   if (GroupIndex <> 0) and (Parent <> nil) then
   begin
@@ -1217,7 +1217,7 @@ begin
   Repaint;
 end;
 
-procedure TJvArrowButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
+procedure TJvArrowButton.CMButtonPressed(var Msg: TCMButtonPressed);
 var
   Sender: TJvArrowButton;
   {$IFDEF JVCLThemesEnabled}

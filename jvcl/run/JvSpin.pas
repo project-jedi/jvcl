@@ -217,11 +217,9 @@ type
     {$ENDIF VCL}
   protected
     FButtonKind: TSpinButtonKind;
-    {$IFDEF VCL}
-    procedure DoClipboardPaste; override;
-    procedure DoClipboardCut; override;
-    {$ENDIF VCL}
-    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
+    procedure FocusKilled(NextWnd: HWND); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
     procedure BoundsChanged; override;
@@ -842,17 +840,16 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomSpinEdit.DoClipboardCut;
+procedure TJvCustomSpinEdit.WMCut(var Msg: TMessage);
 begin
   if FEditorEnabled and not ReadOnly then
-    inherited DoClipboardCut;
+    inherited;
 end;
 
-procedure TJvCustomSpinEdit.DoClipboardPaste;
+procedure TJvCustomSpinEdit.WMPaste(var Msg: TMessage);
 begin
   if FEditorEnabled and not ReadOnly then
-    inherited DoClipboardPaste;
+    inherited;
 
   { Polaris code:
   if not FEditorEnabled or ReadOnly then
@@ -866,7 +863,6 @@ begin
   end;
   }
 end;
-{$ENDIF VCL}
 
 procedure TJvCustomSpinEdit.DoEnter;
 begin
@@ -895,12 +891,12 @@ begin
   inherited DoExit;
 end;
 
-procedure TJvCustomSpinEdit.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomSpinEdit.FocusKilled(NextWnd: HWND);
 begin
   if ([coCropBeyondLimit, coCheckOnExit] <= CheckOptions) and
     not (csDesigning in ComponentState) then
     SetValue(CheckValue(Value));
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(NextWnd);
 end;
 
 function TJvCustomSpinEdit.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;

@@ -75,8 +75,6 @@ type
     Result: Longint;
   end;
 
-  TJvCMButtonPressed = TCMButtonPressed; { for backward compatibility }
-
   THintString = string;
   THintStringList = TStringList;
 
@@ -115,7 +113,7 @@ type
 
 const
   NullHandle = nil; { clx uses typed pointers ! }
-  ikButton = ikReturn;
+  ikButton = ikReturns;
 {$ENDIF VisualCLX}
 
 type
@@ -165,7 +163,7 @@ type
   TJvFTPProgressEvent = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
   // from JvComponent.pas
-  TJvClipboardCommand = (caCopy, caCut, caPaste, caUndo);
+  TJvClipboardCommand = (caCopy, caCut, caPaste, caClear, caUndo);
   TJvClipboardCommands = set of TJvClipboardCommand;
 
   // used in JvButton
@@ -461,7 +459,7 @@ const
     (Value: clDisabledBackground;      Constant: 'clDisabledBackground';      Description: RsClDisabledBackground),
     (Value: clDisabledShadow;          Constant: 'clDisabledShadow';          Description: RsClDisabledShadow),
     (Value: clDisabledHighlight;       Constant: 'clDisabledHighlight';       Description: RsClDisabledHighlight),
-    (Value: clDisabledHighlightedText; Constant: 'clDisabledHighlightedText'; Description: RsClDisabledHighlightedText),
+    (Value: clDisabledHighlightedText; Constant: 'clDisabledHighlightedText'; Description: RsClDisabledHighlightedText)
     {$ENDIF VisualCLX}
   );
 

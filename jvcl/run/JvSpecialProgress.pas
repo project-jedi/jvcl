@@ -89,7 +89,7 @@ type
     procedure PaintRectangle;
     procedure PaintNonSolid;
     procedure PaintSolid;
-    procedure PaintBackground;
+    procedure DoEraseBackground;
     procedure PaintText;
   protected
     procedure Paint; override;
@@ -257,7 +257,7 @@ begin
   end;
 end;
 
-procedure TJvSpecialProgress.PaintBackground;
+procedure TJvSpecialProgress.DoEraseBackground;
 begin
   if FBlock >= ClientWidth - 2 then
     Exit;
@@ -641,7 +641,7 @@ begin
   else
     PaintNonSolid;
 
-  PaintBackground;
+  DoEraseBackground;
   PaintText;
   PaintRectangle;
 

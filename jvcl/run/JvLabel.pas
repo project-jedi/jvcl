@@ -59,7 +59,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, StdCtrls, ImgList, 
-  JvTypes, JvComponent, JvDataProvider;
+  JvTypes, JvComponent, JvDataProvider, JvExControls;
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
@@ -129,7 +129,7 @@ type
   protected
     procedure DoDrawCaption(var Rect: TRect; Flags: Integer);virtual;
     procedure DoProviderDraw(var Rect: TRect; Flags: Integer);virtual;
-    procedure FocusChanged(Control: TWinControl); override;
+    procedure FocusChanged(AControl: TWinControl); override;
     procedure TextChanged; override;
     procedure FontChanged; override;
     function WantKey(Key: Integer; Shift: TShiftState;
@@ -1050,18 +1050,18 @@ begin
       MouseLeave(Self);
 end;
 
-procedure TJvCustomLabel.FocusChanged(Control: TWinControl);
+procedure TJvCustomLabel.FocusChanged(AControl: TWinControl);
 var
   Active: Boolean;
 begin
-  Active := Assigned(FFocusControl) and (Control = FFocusControl);
+  Active := Assigned(FFocusControl) and (AControl = FFocusControl);
   if FFocused <> Active then
   begin
     FFocused := Active;
     if FShowFocus then
       Invalidate;
   end;
-  inherited FocusChanged(Control);
+  inherited FocusChanged(AControl);
 end;
 
 procedure TJvCustomLabel.TextChanged;

@@ -63,7 +63,7 @@ type
     procedure SetFlat(const Value: Boolean);
     procedure SetDown(Value: Boolean);
 
-    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_JVBUTTONPRESSED;
+    procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_JVBUTTONPRESSED;
     procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE;
     {$IFDEF VCL}
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
@@ -557,7 +557,7 @@ end;
 
 procedure TJvCustomGraphicButton.UpdateExclusive;
 var
-  Msg: TJvCMButtonPressed;
+  Msg: TCMButtonPressed;
   {$IFDEF VisualCLX}
   I: Integer;
   {$ENDIF VisualCLX}
@@ -577,7 +577,7 @@ begin
   end;
 end;
 
-procedure TJvCustomGraphicButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
+procedure TJvCustomGraphicButton.CMButtonPressed(var Msg: TCMButtonPressed);
 begin
   ButtonPressed(TJvCustomGraphicButton(Msg.Control), Msg.Index);
 end;

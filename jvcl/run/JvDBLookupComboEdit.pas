@@ -79,9 +79,9 @@ type
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
-    procedure DoClipboardCut; override;
-    procedure DoClipboardPaste; override;
-    procedure DoUndo; override;
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
+    procedure WMUndo(var Msg: TMessage); message WM_UNDO;
     procedure DoEnter; override;
     procedure DoExit; override;
 
@@ -384,22 +384,22 @@ begin
   FDataLink.Field.Text := Text;
 end;
 
-procedure TJvDBLookupComboEdit.DoUndo;
+procedure TJvDBLookupComboEdit.WMUndo(var Msg: TMessage);
 begin
   FDataLink.Edit;
-  inherited DoUndo;
+  inherited;
 end;
 
-procedure TJvDBLookupComboEdit.DoClipboardPaste;
+procedure TJvDBLookupComboEdit.WMPaste(var Msg: TMessage);
 begin
   FDataLink.Edit;
-  inherited DoClipboardPaste;
+  inherited;
 end;
 
-procedure TJvDBLookupComboEdit.DoClipboardCut;
+procedure TJvDBLookupComboEdit.WMCut(var Msg: TMessage);
 begin
   FDataLink.Edit;
-  inherited DoClipboardCut;
+  inherited;
 end;
 
 procedure TJvDBLookupComboEdit.DoEnter;
