@@ -57,7 +57,8 @@ const MaxInitStrNum = 9;
 { String Class Functions - uses Delphi String objects instead of Pascal PChars }
 
 {new 2003}
-function StrSplit( const inString:String; const splitChar:Char; var OutStrings:Array of String;MaxSplit:Integer):Integer; // New function! Split a string into an array of strings.
+function StrSplit( const inString:String; const splitChar,quoteChar:Char; var OutStrings:Array of String;MaxSplit:Integer):Integer;
+
 
 { circa 1998-2001 classic functions }
 function StrStrip(s:string):string; // Strip whitespace, carriage returns, linefeeds.
@@ -68,6 +69,7 @@ function BuildPathName( PathName, FileName:string):string;
 function StrEatWhiteSpace(s:string):string;
 function HexToAscii(s:string):string;
 function AsciiToHex(s:string):string;
+function StripQuotes( s1:String) : String;
 
 { TStringList helper functions }
 function GetIntValueFromResultString( VarName : String; ResultStrings:TStringList;DefVal:Integer):Integer;
@@ -81,7 +83,8 @@ function ValidIntLiteral(s1:PChar) : Boolean;
 function ValidHexLiteral(s1:PChar) : Boolean;
 function HexPcharToInt(s1 : PChar) : Integer;
 function ValidStringLiteral(s1:PChar) : Boolean;
-function StripQuotes( s1:PChar ) : String;
+function StripPCharQuotes( s1:PChar ) : String;
+
 function ValidIdentifier( s1: PChar ) : Boolean;
 function EndChar( x : char ) : Boolean;
 procedure GetToken( s1,s2:PChar );
@@ -243,12 +246,26 @@ begin
 end;
 
 { Strip quotes and return as a real Delphi String }
-function StripQuotes( s1:PChar ) : String;
-var
-  tempbuf: array [0..128] of char;
+function StripQuotes( s1:String ) : String;
 begin
+  if ValidStringLiteral(PChar(s1)) then
+     result := Copy(s1,2,Length(s1)-2)
+  else
+     result := s1;
+end;
+
+
+// This function is limited to 1 to 254 characters:
+function StripPcharQuotes( s1:PChar ) : String;
+var
+  tempbuf: array [0..256] of char;
+  l:Integer;
+begin
+   l := strlen(s1);
+   if (l>255) then
+      l := 255;
   if ValidStringLiteral(s1) then begin
-     StrLCopy(tempbuf,s1+1,strlen(s1)-2 );
+     StrLCopy(tempbuf,s1+1,l-2 );
   end;
   result := String(tempbuf);
 end;
@@ -799,11 +816,13 @@ end;
 // XXX OutStrings array must be dimensioned to start at element ZERO,
 //     if it starts at element 1, then you'll get exceptions XXX
 //------------------------------------------------------------------------------------------
-function StrSplit( const inString:String; const splitChar:Char; var OutStrings:Array of String;MaxSplit:Integer):Integer;
+function StrSplit( const inString:String; const splitChar,quoteChar:Char; var OutStrings:Array of String;MaxSplit:Integer):Integer;
 var
   t,Len,SplitCounter:Integer;
   Ch:Char;
+  inQuotes:Boolean;
 begin
+   inQuotes := false;
    Len := Length(inString);
    for t := Low(OutStrings)  to High(OutStrings) do begin // clear array that is passed in!
         OutStrings[t] := ''; // Array
@@ -813,14 +832,17 @@ begin
 
    for t := 1 to Len do begin
         Ch := inString[t];
-        if (Ch = splitChar) then begin
+        if (Ch = splitChar) and (not inQuotes) then begin
                 Inc(SplitCounter);
                 if SplitCounter>MaxSplit then begin
                         result := -1; // Error!
                         exit;
                 end;
-        end else
+        end else begin
           OutStrings[SplitCounter] := OutStrings[SplitCounter] + ch;
+          if (ch = quoteChar) then
+              inQuotes := not inQuotes;
+        end;
    end;
    Inc(SplitCounter);
    result := SplitCounter;
