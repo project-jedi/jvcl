@@ -26,6 +26,7 @@ type
     Table1Salary: TFloatField;
     procedure FormShow(Sender: TObject);
     procedure btnOpenCloseDSClick(Sender: TObject);
+    procedure btnCloseClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -51,6 +52,11 @@ begin
     btnOpenCloseDS.Caption := 'Open table'
   else
     btnOpenCloseDS.Caption := 'Close table'
+end;
+
+procedure TForm1.btnCloseClick(Sender: TObject);
+begin
+Close;
 end;
 
 end.

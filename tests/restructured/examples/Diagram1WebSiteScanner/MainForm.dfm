@@ -1,6 +1,6 @@
 object MainDlg: TMainDlg
-  Left = 199
-  Top = 146
+  Left = 274
+  Top = 151
   Width = 593
   Height = 397
   Caption = 'Web site mapper'
@@ -2602,15 +2602,10 @@ object MainDlg: TMainDlg
     Left = 398
     Top = 275
   end
-  object NMHTTP1: TNMHTTP
-    Port = 0
-    ReportLevel = 0
-    Body = 'Default.htm'
-    Header = 'Head.txt'
-    InputFileMode = False
-    OutputFileMode = False
-    ProxyPort = 0
-    Left = 442
-    Top = 275
+  object JvHttpGrabber1: TJvHttpGrabber
+    Agent = 'TJvHttpGrabber Component'
+    OnDoneStream = JvHttpGrabber1DoneStream
+    Left = 218
+    Top = 131
   end
 end

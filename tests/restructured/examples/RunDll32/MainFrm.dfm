@@ -1,6 +1,6 @@
 object Form2: TForm2
-  Left = 404
-  Top = 243
+  Left = 593
+  Top = 303
   BorderStyle = bsDialog
   Caption = 'RunDLL32 demo'
   ClientHeight = 219
@@ -32,46 +32,52 @@ object Form2: TForm2
     ParentFont = False
     OnClick = Label1Click
   end
-  object edModule: TLabeledEdit
+  object lblModule: TLabel
+    Left = 8
+    Top = 14
+    Width = 67
+    Height = 14
+    Caption = '&Module Name:'
+  end
+  object lblFunc: TLabel
+    Left = 8
+    Top = 55
+    Width = 74
+    Height = 14
+    Caption = '&Function Name:'
+  end
+  object lblCmdLine: TLabel
+    Left = 8
+    Top = 96
+    Width = 73
+    Height = 14
+    Caption = '&Command Line:'
+  end
+  object edModule: TEdit
     Left = 8
     Top = 32
     Width = 458
     Height = 22
     Anchors = [akLeft, akTop, akRight]
-    EditLabel.Width = 67
-    EditLabel.Height = 14
-    EditLabel.Caption = '&Module Name:'
-    LabelPosition = lpAbove
-    LabelSpacing = 3
     TabOrder = 0
     Text = 'shell32.dll'
     OnChange = edModuleChange
   end
-  object edFunc: TLabeledEdit
+  object edFunc: TEdit
     Left = 8
     Top = 72
     Width = 489
     Height = 22
     Anchors = [akLeft, akTop, akRight]
-    EditLabel.Width = 74
-    EditLabel.Height = 14
-    EditLabel.Caption = '&Function Name:'
-    LabelPosition = lpAbove
-    LabelSpacing = 3
     TabOrder = 2
     Text = 'Control_RunDLL'
   end
-  object edCmdLine: TLabeledEdit
+  object edCmdLine: TEdit
     Left = 8
     Top = 112
     Width = 489
     Height = 22
     Anchors = [akLeft, akTop, akRight]
-    EditLabel.Width = 73
-    EditLabel.Height = 14
-    EditLabel.Caption = '&Command Line:'
-    LabelPosition = lpAbove
-    LabelSpacing = 3
     TabOrder = 3
     Text = 'desk.cpl,,3'
   end

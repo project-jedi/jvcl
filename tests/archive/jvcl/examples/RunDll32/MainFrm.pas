@@ -9,9 +9,12 @@ uses
 
 type
   TForm2 = class(TForm)
-    edModule: TLabeledEdit;
-    edFunc: TLabeledEdit;
-    edCmdLine: TLabeledEdit;
+    edModule: TEdit;
+    edFunc: TEdit;
+    edCmdLine: TEdit;
+    lblModule: TLabel;
+    lblFunc: TLabel;
+    lblCmdLine: TLabel;	
     chkWait: TCheckBox;
     btnBrowse: TButton;
     btnRun: TButton;

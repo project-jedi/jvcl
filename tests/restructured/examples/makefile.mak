@@ -78,8 +78,14 @@ JvThumbnailDemo.exe \
 BasicDemo.exe \
 CollectionDemo.exe \
 SimpleHIDWrite.exe \
-GreyMouser.exe 
-
+GreyMouser.exe \
+InspectorDBExample.exe \
+InspExample.exe \
+JvOutlookPanelProj.exe \
+RunDLL32Demo.exe \
+SpecialProgressTestPrj.exe \
+SystemPopupTest.exe
+ 
 #---------------------------------------------------------------------------------------------------
 
 ArrowButtonDemo.exe: ArrowButton\ArrowButtonDemo.dpr
@@ -366,4 +372,34 @@ GreyMouser.exe: HID\ThreadDemo\GreyMouser.dpr
   cd HID\ThreadDemo
   $(DCCH) $&.dpr
   cd ..\..
+
+InspectorDBExample.exe: JvInspectorDBDemo\InspectorDBExample.dpr
+  cd JvInspectorDBDemo
+  $(DCC) $&.dpr
+  cd ..
+
+InspExample.exe: JvInspectorDemo\InspExample.dpr
+  cd JvInspectorDemo
+  $(DCC) $&.dpr
+  cd ..
+
+JvOutlookPanelProj.exe: JvOutlookPanel\JvOutlookPanelProj.dpr
+  cd JvOutlookPanel
+  $(DCC) $&.dpr
+  cd ..
+
+RunDLL32Demo.exe: RunDll32\RunDLL32Demo.dpr
+  cd RunDll32
+  $(DCC) $&.dpr
+  cd ..
+
+SpecialProgressTestPrj.exe: JvSpecialProgress\SpecialProgressTestPrj.dpr
+  cd JvSpecialProgress
+  $(DCC) $&.dpr
+  cd ..
+
+SystemPopupTest.exe: JvSystemPopUp2\SystemPopupTest.dpr
+  cd JvSystemPopUp2
+  $(DCC) $&.dpr
+  cd ..
 

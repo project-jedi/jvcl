@@ -86,6 +86,7 @@ object Form1: TForm1
     Anchors = [akRight, akBottom]
     Caption = 'Exit'
     TabOrder = 3
+    OnClick = btnCloseClick
   end
   object JvInspectorBorlandPainter1: TJvInspectorBorlandPainter
     Left = 92
