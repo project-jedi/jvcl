@@ -1,0 +1,55 @@
+inherited fmeJvProviderToolbar: TfmeJvProviderToolbar
+  inherited tbrToolbar: TToolBar
+    Wrapable = False
+    OnResize = tbrToolbarResize
+    inherited tbAddItem: TToolButton
+      Left = 195
+    end
+    inherited tbDeleteItem: TToolButton
+      Left = 281
+    end
+    inherited tbDeleteSubItems: TToolButton
+      Left = 367
+    end
+    inherited tbDivider1: TToolButton
+      Left = 453
+    end
+    inherited tbMoveUp: TToolButton
+      Left = 461
+    end
+    inherited tbMoveDown: TToolButton
+      Left = 547
+    end
+    object tbDivider2: TToolButton
+      Left = 2
+      Top = 5
+      Width = 8
+      Height = 39
+      Style = tbsSeparator
+      Caption = 'tbDivider2'
+      ImageIndex = 5
+    end
+    object pnlContexts: TPanel
+      Left = 10
+      Top = 5
+      Width = 185
+      Height = 36
+      Align = alCustom
+      BevelOuter = bvNone
+      PopupMenu = pmToolbar
+      TabOrder = 0
+      OnResize = pnlContextsResize
+      object cbContexts: TComboBox
+        Left = 0
+        Top = 7
+        Width = 185
+        Height = 21
+        Style = csDropDownList
+        Anchors = [akLeft, akRight]
+        ItemHeight = 15
+        PopupMenu = pmToolbar
+        TabOrder = 0
+      end
+    end
+  end
+end
