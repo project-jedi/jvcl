@@ -29,6 +29,8 @@ Guide</a>. Describes how to install JVCL in C++Builder.</li>
   <li><a href="help/Build%20Status.html">Build status</a>. Contains
 info on the current build status of the JVCL for supported Delphi and
 BCB versions.</li>
+  <li><a href="help/localization.html">Localization</a>. Contains infomrmation
+    on how to enable localization support in JVCL.</li>
 </ul>
 <h3>&nbsp;</h3>
 <h2>Changes in this version</h2>
@@ -56,7 +58,7 @@ translations, INC files and the like</p>
 tools</p>
 <p>&nbsp; <b>\Dict</b> - dictionary files for TJvSpellChecker</p>
 <p>&nbsp; <b>\examples</b> - all available demos</p>
-<p>&nbsp; <b>\help</b> - contains the help file(s)</p>
+<p>&nbsp; <b>\help</b> - contains the help file(s) and additional documentation</p>
 <p>&nbsp; <b>\images</b> - original images and rc files for the
 palette icons</p>
 <p>&nbsp; <b>\Includes</b> - C/C++ include files for UIB</p>
@@ -68,11 +70,10 @@ installer</p>
 <p>&nbsp; <b>\lib\d6</b> - dcu output for D6 packages</p>
 <p>&nbsp; <b>\lib\d7</b> - dcu output for D7 packages</p>
 <p>&nbsp; <b>\lib\k3</b> - dcu output for Kylix3 packages<br>
-</p>
-<p>&nbsp; <b>\locale</b> - contains the DxGettext template and some
+&nbsp; <b>\locale</b> - contains the DxGettext template and some
 ready to use translations<br>
+&nbsp; <b>\packages</b> 
 </p>
-<p>&nbsp; <b>\packages</b> </p>
 <p>&nbsp;&nbsp;&nbsp; <b>\c5</b> - packages for C++Builder 5</p>
 <p>&nbsp;&nbsp;&nbsp; <b>\c6</b> - packages for C++Builder 6</p>
 <p>&nbsp;&nbsp;&nbsp; <b>\c6per</b> - modified packages for
@@ -90,14 +91,14 @@ Personal Edition<br>
 <p>&nbsp;&nbsp;&nbsp; <b>\k3</b> - packages for&nbsp;Kylix 3</p>
 <p>&nbsp;&nbsp;&nbsp; <b>\xml</b> - Source xml files for the packages.
 All the packages are generated from these files.<br>
+&nbsp; <b>\Resources</b> - contains res, dcr and other resource
+files used at either run or design time
 </p>
-<p>&nbsp; <b>\Resources</b> - contains res, dcr and other resource
-files used at either run or design time</p>
 <p>&nbsp; <b>\run</b> - contains units used at run-time</p>
 <p>&nbsp;</p>
-<p>Depending on which distribution of JVCL you download, all folders
+<p>Depending on which distribution of JVCL you download, some folders
 and files
-might not be included.</p>
+might not be created on your system.</p>
 <p>&nbsp;</p>
 <h4><a name="Theming"></a>Theming</h4>
 <p>Several visual JVCL controls supports XP theming (more will likely
@@ -129,10 +130,16 @@ All strings that get displayed to the user are stored in resource
 strings. If you want the JVCL to display those strings in other
 languages, you should use DxGettext as this is the only localization
 method supported by the JVCL group. You must turn on the use of
-DxGettext in jvcl.inc and compile the JVCL with it for the support to
-be complete. Please refer to the <a href="help/localization.html">Localization</a>
-page for more details on this topic.<br>
+DxGettext in jvcl.inc and recompile the JVCL packages for the support to
+be complete. Please refer to the <a href="help/localization.html">localization</a>
+documentation for more details on this topic.<br>
 <br>
+<h4>CLX support</h4>
+<p>CLS support is being worked on but is not yet fully available. To learn more
+about CLX support in JVCL and keep updated on the current status, you are
+recommended to subscribe to our newsgroups. See contact information at the end
+of this document for information on how to access the newsgroups.</p>
+<p>&nbsp;</p>
 <h4>Available distributions</h4>
 <p>The JVCL is&nbsp;available in three different distributions. These
 are:</p>
@@ -144,6 +151,11 @@ demo folders </li>
   <li><strong>Full </strong>- contains everything in the CVS
 repository as well as the latest release of JCL</li>
 </ul>
+<p dir="ltr">&nbsp;</p>
+<p dir="ltr">Each of the &quot;stand-alone&quot; packages are also available as
+separate distributions (see USEJVCL below for a list of stand-alone packages).
+In case we get enough requests, we might also provide each package as a separate
+distribution.</p>
 <p dir="ltr">&nbsp;</p>
 <h4>New package layout</h4>
 <p>Previous versions of JVCL had one run-time and one design-time
@@ -161,7 +173,8 @@ following packages are currently available:</p>
       <th>Package</th>
       <th>Description</th>
       <th>Contains</th>
-      <th>Required JVCL packages (required by design-time package)</th>
+      <th>Required JVCL packages (packages in parenthesisses are required by the
+        design-time package)</th>
     </tr>
     <tr>
       <td>JvCore</td>
@@ -533,7 +546,8 @@ TJvContextProvider</p>
       <p>TJvDBComboEdit</p>
       <p>TJvDBDateEdit</p>
       <p>TJvDBCalcEdit</p>
-      <p>TJvDBStatusLabel</p>
+      <p>TJvDBStatusLabel<br>
+      TJvHTDBLabel</p>
       </td>
       <td>JvCore, JvStdCtrls,</td>
     </tr>
@@ -857,7 +871,6 @@ definition of USEJVCL, you MUST regenerate the packages using the
 PackageGenerator available in $(JVCL)\devtools<br>
 5. Not available in Standard and Personal versions.<br>
 <br>
-</p>
 <h4>New components added</h4>
 <p>&nbsp;</p>
 <p>The following new components and libraries has been added since JVCL
