@@ -37,8 +37,8 @@ uses
   Classes, QControls, QStdCtrls, QExtCtrls, QComCtrls, QMask, QForms,
   QGraphics, QButtons, QDialogs, QFileCtrls,
   JvQMaskEdit, {JvQDateTimePicker,} JvQBitBtn, JvQCheckBox, JvQBaseEdits,
-  JvQLabel, JvQListBox, JvQMemo, JvQPanel, JvQRadioGroup, JvQToolEdit,
-  JvQScrollBox, JvQStaticText, JvQComboBox, JvQImage, JvQSpin,
+  JvQLabel, {JvQListBox,} JvQMemo, JvQPanel, JvQRadioGroup, JvQToolEdit,
+  JvQScrollBox, {JvQStaticText,} JvQComboBox, JvQImage, JvQSpin,
   JvQDynControlEngine, JvQDynControlEngineIntf;
 
 type

@@ -33,8 +33,12 @@ unit JvQParameterListParameter;
 interface
 
 uses
-  Classes, SysUtils, StdCtrls, ExtCtrls, Graphics, Forms,
-  Controls, FileCtrl, Dialogs, ComCtrls, Buttons,
+  Classes, SysUtils,
+  
+  
+  QStdCtrls, QExtCtrls, Types, QGraphics, QForms, 
+  QControls, QFileCtrlS, QDialogs, QComCtrls, QButtons,
+  
   
   Variants,
   
@@ -739,11 +743,17 @@ end;
 
 procedure TJvBasePanelEditParameter.SetHeight(Value: Integer);
 begin
+  inherited SetHeight(Value);
+  if Assigned (FramePanel) then
+    FramePanel.Height := Value;
   ArrangeLabelAndWinControlOnPanel;
 end;
 
 procedure TJvBasePanelEditParameter.SetWidth(Value: Integer);
 begin
+  inherited SetWidth(Value);
+  if Assigned (FramePanel) then
+    FramePanel.Width := Value;
   ArrangeLabelAndWinControlOnPanel;
 end;
 

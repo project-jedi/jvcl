@@ -32,12 +32,16 @@ unit JvQParameterList;
 interface
 
 uses
-  Classes, SysUtils, QStdCtrls, QExtCtrls, QGraphics, QForms, QControls,
-  QDialogs, QComCtrls,
+  Classes, SysUtils,
+
+  
+  
+  QStdCtrls, QExtCtrls, Types, QGraphics, QForms, QControls, QDialogs, QComCtrls,
+  
   
   Variants,
   
-  JvQTypes, JvQDynControlEngine, JvQDynControlEngineIntf, jvQDsaDialogs,
+  JvQTypes, JvQDynControlEngine, JvQDynControlEngineIntf, JvQDSADialogs,
   JvQComponent, JvQPanel, JvQPropertyStore, JvQAppStorage, JvQAppStorageSelectList;
 
 type
@@ -1166,7 +1170,7 @@ var
 begin
   FreeAndNil(FParameterDialog);
 
-  FParameterDialog := DynControlEngine.CreateForm('', '');
+  FParameterDialog := DynControlEngine.CreateForm(Messages.Caption, '');
 
   with TForm(ParameterDialog) do
   begin

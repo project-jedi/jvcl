@@ -594,8 +594,10 @@ begin
       OriginalPainter := Canvas.Handle;
       Canvas.Handle := QPainter_create(Pixmap);
       TControlCanvas(Canvas).StartPaint;
+      {$IFDEF MSWINDOWS}
       QPainter_setClipRegion(Canvas.Handle, EventRegion);
       QPainter_setClipping(Canvas.Handle, True);
+      {$ENDIF MSWINDOWS}
       R := Rect(0, 0, 0, 0);
       QRegion_boundingRect(EventRegion, @R);
     end;
@@ -1310,6 +1312,7 @@ function TJvExCustomControl.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
+
 procedure TJvExCustomControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   WidgetControl_Painting(Self, Canvas, EventRegion);

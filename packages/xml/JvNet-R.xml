@@ -19,14 +19,14 @@
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvUrlListGrabber.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUrlListGrabber.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormToHtml.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvHtmlParser.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvHtmlParser.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvMail.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvRgbToHtml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvRichEditToHtml.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvStringListToHtml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvStrToHtml.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvUrlGrabbers.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUrlGrabbers.pas" Targets="windows" Formname="" Condition=""/>
   </Contains>
 </Package>

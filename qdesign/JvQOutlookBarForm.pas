@@ -36,17 +36,23 @@ interface
 uses
   SysUtils, Classes,
 
+  {$IFDEF MSWINDOWS}
   Windows,
-  
-  QControls, QForms, QToolWin,
+  {$ENDIF MSWINDOWS}
+  QControls, QForms, QToolWin, QTypes, QExtCtrls,
   QMenus, QActnList, QComCtrls, QImgList,
   DesignEditors, DesignIntf, DesignMenus, ClxDesignWindows,
-  
-  JvQOutlookBar, QTypes, QExtCtrls;
+  {$IFDEF LINUX}
+  JvQRegistryIniFile,
+  {$ENDIF LINUX}
+
+  JvQOutlookBar;
 
 type
-  
-  
+  {$IFDEF LINUX}
+  TRegIniFile = TJvRegistryIniFile;
+  {$ENDIF LINUX}
+
   TFrmOLBEditor = class(TClxDesignWindow)
   
     tbTop: TToolBar;
@@ -128,9 +134,9 @@ type
 implementation
 
 uses
+  {$IFDEF MSWINDOWS}
   Registry,
-  
-  
+  {$ENDIF MSWINDOWS}
   QDialogs,
   
   JvQConsts, JvQDsgnConsts;
@@ -540,10 +546,12 @@ begin
   //  ClientWidth := Max(ClientWidth, btnDown.Left + btnDown.Width + 4);
 end;
 
+
 procedure TFrmOLBEditor.StoreSettings;
 var
   R: TRegIniFile;
 begin
+{$IFDEF MSWINDOWS}
   R := TRegIniFile.Create;
   try
     R.RootKey := HKEY_CURRENT_USER;
@@ -556,12 +564,14 @@ begin
   finally
     R.Free;
   end;
+{$ENDIF MSWINDOWS}
 end;
 
 procedure TFrmOLBEditor.LoadSettings;
 var
   R: TRegIniFile;
 begin
+{$IFDEF MSWINDOWS}
   R := TRegIniFile.Create;
   try
     R.RootKey := HKEY_CURRENT_USER;
@@ -576,6 +586,7 @@ begin
   finally
     R.Free;
   end;
+{$ENDIF MSWINDOWS}
 end;
 
 function TFrmOLBEditor.GetRegPath: string;

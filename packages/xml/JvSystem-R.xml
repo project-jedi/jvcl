@@ -55,14 +55,14 @@
     <File Name="..\..\run\JvThread.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvThreadTimer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTimer.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTimerList.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTimerList.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvWndProcHook.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\Ras32.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\Hid.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\ModuleLoader.pas" Targets="" Formname="" Condition=""/>
     <File Name="..\..\common\DBT.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\SetupApi.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAppXmlStorage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppXMLStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvComputerInfoEx.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>

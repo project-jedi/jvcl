@@ -54,7 +54,7 @@
     <File Name="..\..\run\JvCursor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvAnimate.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAnimatedImage.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvColorTrackBar.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvColorTrackbar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\common\VFW.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -24,7 +24,7 @@
     <Package Name="vcljpg" Targets="D7,D7p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvDynControlEngineJVCL.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineJVCL.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvImageList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvItemsSearchs.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLabel.pas" Targets="all" Formname="" Condition=""/>
@@ -41,7 +41,7 @@
     <File Name="..\..\run\JvRecentMenuButton.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvRichEdit.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvScrollBar.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvScrollBox.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScrollBox.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvSecretPanel.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvShape.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpeedButton.pas" Targets="all" Formname="" Condition=""/>

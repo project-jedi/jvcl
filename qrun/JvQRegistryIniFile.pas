@@ -16,13 +16,13 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-10-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  Under construction.
 -----------------------------------------------------------------------------}
+// $Id$
 
 unit JvQRegistryIniFile;
 
@@ -31,6 +31,12 @@ interface
 uses
   Classes, SysUtils, IniFiles;
 
+
+//
+// returns user homedir (string!)
+//
+function HKEY_CURRENT_USER: string;
+  
 type
   TJvRegistryIniFile = class(TObject)
   private
@@ -39,7 +45,21 @@ type
     FSection: string;
     FIniFile: TIniFile;
     function GetFilename: string;
+    procedure SetRoot(Value: string);
   protected
+    //
+    //  Keyname to IniFile/Section conversion:
+    //
+    //  - .borland = does not exist:
+    //    .borland/.jvcl/Settings -> Inifile = .borland/.jvcl , Section = [Settings]
+    //    .borland/jvcl/Settings -> IniFile = .borland, Section = [jvcl/Settings]
+    //
+    //  - .borland = existing dir:
+    //    .borland/jvcl/Settings -> Inifile = .borland/jvcl , Section = [Settings]
+    //
+    //  - .borland = existing inifile
+    //    .borland/.jvcl/Settings -> Inifile = .borland , Section = [.jvcl/Settings]
+    //
     function Key2IniSection(const Key: string; out ininame: string;
       out section: string; AllowCreate: boolean = false): boolean; dynamic;
   public
@@ -74,7 +94,10 @@ type
     procedure WriteTime(const Ident: string; Value: TDateTime);
     property CurrentKey: string read FSection;
     property CurrentRoot: string read GetFilename;
+    property RootKey: string read FHKEY write SetRoot;
   end;
+
+  TRegIniFile = TJvRegistryIniFile;
 
 implementation
 
@@ -89,6 +112,11 @@ begin
   raise EJvRegIniFileException.CreateResFmt(@SInvalidRegType, [Name]);
 end;
 
+function HKEY_CURRENT_USER: string;
+begin
+  Result := GetEnvironmentVariable('HOME');
+end;
+
 constructor TJvRegistryIniFile.Create(const Root: string);
 begin
   inherited Create;
@@ -96,7 +124,7 @@ begin
   then
     FHKey := Root
   else
-    FHKey := GetEnvironmentVariable('HOME'); //+ '/.' + ExtractFileName(Application.ExeName));
+    FHKey := HKEY_CURRENT_USER; //+ '/.' + ExtractFileName(Application.ExeName));
 end;
 
 destructor TJvRegistryIniFile.Destroy;
@@ -105,6 +133,19 @@ begin
   then
     FIniFile.Free;
   inherited;
+end;
+
+procedure TJvRegistryIniFile.SetRoot(Value: string);
+begin
+  if Value <> FHKEY then
+  begin
+    if assigned(FIniFile) then
+    begin
+      FIniFile.Free;
+      FIniFile := nil;
+    end;
+    FHKEY := Value;
+  end;
 end;
 
 function TJvRegistryIniFile.GetFilename: string;
