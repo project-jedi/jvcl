@@ -37,7 +37,7 @@ uses
 type
   TJvgTagParser = class(TObject)
   private
-    FTagParams: TStrings;
+    FTagParams: TStringList;
     FAttributeFilter: TStringList;
   public
     constructor Create;

@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I jvcl.inc}
+{$I JVCL.INC}
 
 unit JvBevel;
 
@@ -32,45 +32,45 @@ interface
 
 uses
   SysUtils, Classes,
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Windows, Messages, Graphics, ExtCtrls, Controls, Forms,
-{$ELSE}
+  {$ELSE}
   QGraphics, QExtCtrls, QControls, QForms,
-{$ENDIF}
+  {$ENDIF VCL}
   JVCLVer;
 
 type
   TJvBevel = class(TBevel)
   private
-    FColor: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOver: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
   protected
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-  {$ELSE}
+    {$ELSE}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
-  {$ENDIF}
+    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     property OnEndDock;
     property OnStartDock;
-  {$ENDIF}
+    {$ENDIF VCL}
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
@@ -84,7 +84,7 @@ implementation
 constructor TJvBevel.Create(AOwner: TComponent);
 begin
   inherited;
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
   FOver := False;
 end;
 
@@ -94,15 +94,15 @@ begin
 {$ELSE}
 procedure TJvBevel.MouseEnter(AControl: TControl);
 begin
-  inherited;
-{$ENDIF}
+  inherited MouseEnter(AControl);
+{$ENDIF VCL}
   if not FOver then
   begin
     FSaved := Application.HintColor;
     // for D7...
     if csDesigning in ComponentState then
       Exit;
-    Application.HintColor := FColor;
+    Application.HintColor := FHintColor;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
@@ -115,8 +115,8 @@ begin
 {$ELSE}
 procedure TJvBevel.MouseLeave(AControl: TControl);
 begin
-  inherited;
-{$ENDIF}
+  inherited MouseLeave(AControl);
+{$ENDIF VCL}
   if FOver then
   begin
     Application.HintColor := FSaved;

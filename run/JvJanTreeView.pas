@@ -162,7 +162,7 @@ type
     FColorFormulas: boolean;
     FFormuleColor: TColor;
     FDefaultExt: string;
-    FFilename: string;
+    FFileName: TFileName;
     FSearchText: string;
     procedure ParseVariables;
     procedure nodeduplicate(mytree: TJvJanTreeview; fromnode, tonode: ttreenode);
@@ -175,7 +175,7 @@ type
     procedure SetColorFormulas(const Value: boolean);
     procedure SetFormuleColor(const Value: TColor);
     procedure SetDefaultExt(const Value: string);
-    procedure SetFilename(const Value: string);
+    procedure SetFileName(const Value: TFileName);
   protected
     { Protected declarations }
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
@@ -201,12 +201,11 @@ type
     procedure DoCloseTree;
     procedure Recalculate;
   published
-    { Published declarations }
     property KeyMappings: TTreeKeyMappings read FKeyMappings write SetKeyMappings;
     property KeymappingsEnabled: boolean read FKeyMappingsEnabled write SetKeyMappingsEnabled;
     property ColorFormulas: boolean read FColorFormulas write SetColorFormulas;
     property FormuleColor: TColor read FFormuleColor write SetFormuleColor;
-    property Filename: string read FFilename write SetFilename;
+    property FileName: TFileName read FFilename write SetFileName;
     property DefaultExt: string read FDefaultExt write SetDefaultExt;
   end;
 
@@ -1354,7 +1353,7 @@ begin
   FDefaultExt := Value;
 end;
 
-procedure TJvJanTreeview.SetFilename(const Value: string);
+procedure TJvJanTreeview.SetFilename(const Value: TFileName);
 begin
   FFilename := Value;
 end;

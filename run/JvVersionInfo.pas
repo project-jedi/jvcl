@@ -31,7 +31,8 @@ unit JvVersionInfo;
 
 interface
 
-uses Windows;
+uses
+  Windows, SysUtils;
 
 type
   TVersionLanguage =
@@ -67,8 +68,8 @@ type
     FBuffer: PChar;
     FHandle: DWORD;
     procedure ReadVersionInfo;
-    function GetFileName: string;
-    procedure SetFileName(const Value: string);
+    function GetFileName: TFileName;
+    procedure SetFileName(const Value: TFileName);
     function GetTranslation: Pointer;
     function GetFixedFileInfo: PVSFixedFileInfo;
     function GetFileLongVersion: TLongVersion;
@@ -94,7 +95,7 @@ type
     constructor Create(const AFileName: string);
     destructor Destroy; override;
     function GetVerValue(const VerName: string): string;
-    property FileName: string read GetFileName write SetFileName;
+    property FileName: TFileName read GetFileName write SetFileName;
     property Valid: Boolean read FValid;
     property FixedFileInfo: PVSFixedFileInfo read GetFixedFileInfo;
     property FileLongVersion: TLongVersion read GetFileLongVersion;
@@ -143,7 +144,6 @@ const
 implementation
 
 uses
-  SysUtils,
   JvJVCLUtils, JvJCLUtils, JvTypes;
 
 constructor TJvVersionInfo.Create(const AFileName: string);
@@ -175,12 +175,12 @@ begin
   end;
 end;
 
-function TJvVersionInfo.GetFileName: string;
+function TJvVersionInfo.GetFileName: TFileName;
 begin
   Result := StrPas(FFileName);
 end;
 
-procedure TJvVersionInfo.SetFileName(const Value: string);
+procedure TJvVersionInfo.SetFileName(const Value: TFileName);
 begin
   if FBuffer <> nil then
     FreeMem(FBuffer, FSize);

@@ -53,7 +53,7 @@ type
     Label5: TLabel;
     Shape1: TShape;
     lURL: TLabel;
-    glSmallFontsDefence1: TJvgSmallFontsDefence;
+    glSmallFontsDefence1: TJvgSmallFontsDefense;
     Label7: TLabel;
     reComments: TRichEdit;
     glShadow1: TJvgShadow;

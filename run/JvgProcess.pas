@@ -34,17 +34,16 @@ interface
 //...simple process managment
 
 uses
-  Windows, Messages, Classes, Forms,
+  Windows, SysUtils, Messages, Classes, Forms,
   JVComponent;
 
 type
   TJvgProcess = class(TJvComponent)
   private
-    FRunning: Boolean;
-    FFileName: string;
-    FOnTerminated: TNotifyEvent;
-    FSi: TStartupInfo;
     FInfo: TProcessInformation;
+    FRunning: Boolean;
+    FFileName: TFileName;
+    FOnTerminated: TNotifyEvent;
   public
     destructor Destroy; override;
     function Run: Boolean;
@@ -53,7 +52,7 @@ type
     property Info: TProcessInformation read FInfo;
     property Running: Boolean read FRunning;
   published
-    property FileName: string read FFileName write FFileName;
+    property FileName: TFileName read FFileName write FFileName;
     property OnTerminated: TNotifyEvent read FOnTerminated write FOnTerminated;
   end;
 
@@ -94,16 +93,18 @@ begin
 end;
 
 function TJvgProcess.Run: Boolean;
+var
+  Si: TStartupInfo;
 begin
   Result := False;
   if Running then
     Exit;
-  FillChar(FSi, SizeOf(FSi), #0);
-  FSi.cb := SizeOf(FSi);
-  GetStartupInfo(FSi);
-  FSi.wShowWindow := SW_NORMAL;
+  FillChar(Si, SizeOf(Si), #0);
+  Si.cb := SizeOf(Si);
+  GetStartupInfo(Si);
+  Si.wShowWindow := SW_NORMAL;
   FRunning := CreateProcess(PChar(FFileName), nil, nil, nil, False,
-    NORMAL_PRIORITY_CLASS, nil, nil, FSi, FInfo);
+    NORMAL_PRIORITY_CLASS, nil, nil, Si, FInfo);
   Result := FRunning;
   if FRunning then
   begin

@@ -98,17 +98,20 @@ begin
     Sty := Sty or IDF_NOFOREGROUND;
 
   SetupRenameError := GetProcAddress(SetupApiDllHandle, 'SetupRenameErrorA');
-  case SetupRenameError(OwnerWindow, PCharOrNil(Title), PChar(FSourceFile),
-    PChar(FDestFile), FWin32ErrorCode, Sty) of
-    DPROMPT_SUCCESS:
-      Result := dsSuccess;
-    DPROMPT_CANCEL:
-      Result := dsCancel;
-    DPROMPT_SKIPFILE:
-      Result := dsSkipfile;
+  if Assigned(SetupRenameError) then
+    case SetupRenameError(OwnerWindow, PCharOrNil(Title), PChar(FSourceFile),
+      PChar(FDestFile), FWin32ErrorCode, Sty) of
+      DPROMPT_SUCCESS:
+        Result := dsSuccess;
+      DPROMPT_CANCEL:
+        Result := dsCancel;
+      DPROMPT_SKIPFILE:
+        Result := dsSkipfile;
+    else
+      Result := dsError;
+    end
   else
     Result := dsError;
-  end;
 end;
 
 end.

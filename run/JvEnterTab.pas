@@ -51,8 +51,8 @@ type
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
   published
-    property EnterAsTab: Boolean read FEnterAsTab write FEnterAsTab default true;
-    property AllowDefault: Boolean read FAllowDefault write FAllowDefault default true;
+    property EnterAsTab: Boolean read FEnterAsTab write FEnterAsTab default True;
+    property AllowDefault: Boolean read FAllowDefault write FAllowDefault default True;
   end;
 
 implementation
@@ -85,10 +85,10 @@ end;
 
 procedure TJvEnterAsTab.CMDialogKey(var Msg: TCMDialogKey);
 begin
-  if (GetParentForm(Self).ActiveControl is TButtonControl) and (FAllowDefault) then
+  if (GetParentForm(Self).ActiveControl is TButtonControl) and AllowDefault then
     inherited
   else
-  if (Msg.CharCode = VK_RETURN) and FEnterAsTab then
+  if (Msg.CharCode = VK_RETURN) and EnterAsTab then
   begin
     GetParentForm(Self).Perform(CM_DIALOGKEY, VK_TAB, 0);
     Msg.Result := 1;

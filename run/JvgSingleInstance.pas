@@ -33,7 +33,7 @@ unit JvgSingleInstance;
 interface
 
 uses
-  Windows, Messages, Classes, Forms, Dialogs, SyncObjs, SysUtils,
+  Windows, Classes, SyncObjs, SysUtils, Forms,
   JvComponent;
 
 type
@@ -100,7 +100,8 @@ end.
 }
 
 constructor TJvgSingleInstance.Create(AOwner: TComponent);
-var S1, S2: string;
+var
+  S1, S2: string;
 begin
   inherited Create(AOwner);
   if csDesigning in ComponentState then

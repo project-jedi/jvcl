@@ -389,8 +389,8 @@ type
     // sets the previewing property and starts or stop previewing accordingly
     procedure SetPreviewing(nPreviewing: Boolean);
     // sets and gets the filename for capture
-    procedure SetFileName(nFileName: string);
-    function GetFileName: string;
+    procedure SetFileName(nFileName: TFileName);
+    function GetFileName: TFileName;
     // sets the file size to allocate before capture. This might speed up capture as
     // the file won't need to be grown
     procedure SetFileSizeAlloc(nFileSizeAlloc: Cardinal);
@@ -513,7 +513,7 @@ type
     property AudioFormat: TJvAudioFormat read FAudioFormat;
     property CaptureSettings: TJvCaptureSettings read FCaptureSettings;
     property DriverIndex: TJvDriverIndex read FDriverIndex write SetDriverIndex;
-    property FileName: string read GetFileName write SetFileName;
+    property FileName: TFileName read GetFileName write SetFileName;
     property FileSizeAlloc: Cardinal read FFileSizeAlloc write SetFileSizeAlloc;
     property MCIDevice: string read GetMCIDevice write SetMCIDevice;
     property NoFile: Boolean read FNoFile write SetNoFile;
@@ -1133,7 +1133,7 @@ begin
     StartPreview;
 end;
 
-procedure TJvAVICapture.SetFileName(nFileName: string);
+procedure TJvAVICapture.SetFileName(nFileName: TFileName);
 begin
   if FHWnd <> 0 then
   begin
@@ -1143,7 +1143,7 @@ begin
   end;
 end;
 
-function TJvAVICapture.GetFileName: string;
+function TJvAVICapture.GetFileName: TFileName;
 var
   Name: array [0..MAX_PATH] of Char;
 begin
