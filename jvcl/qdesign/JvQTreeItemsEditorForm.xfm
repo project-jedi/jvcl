@@ -176,7 +176,6 @@ object frmTreeViewItems: TfrmTreeViewItems
         ItemHeight = 15
         TabOrder = 0
         OnChange = edNodeTextChange
-        OnDrawItem = cbImageIndexDrawItem
       end
       object cbSelected: TComboBox
         Left = 100
@@ -187,7 +186,6 @@ object frmTreeViewItems: TfrmTreeViewItems
         ItemHeight = 15
         TabOrder = 1
         OnChange = edNodeTextChange
-        OnDrawItem = cbImageIndexDrawItem
       end
       object cbState: TComboBox
         Left = 100
@@ -198,7 +196,6 @@ object frmTreeViewItems: TfrmTreeViewItems
         ItemHeight = 15
         TabOrder = 2
         OnChange = edNodeTextChange
-        OnDrawItem = cbStateDrawItem
       end
       object edNodeText: TEdit
         Left = 58

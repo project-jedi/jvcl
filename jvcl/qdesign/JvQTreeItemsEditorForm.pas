@@ -47,7 +47,7 @@ uses
   
   
   DesignEditors, DesignIntf;
-  
+
 
 type
   TJvTreeItemsProperty = class(TClassProperty)
@@ -118,7 +118,7 @@ type
     procedure acDeleteExecute(Sender: TObject);
     procedure acItemsUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure cbImageIndexDrawItem(Control: TWinControl; Index: Integer;
-      Rect: TRect; State: TOwnerDrawState);
+      Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
     procedure cbStateDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure acNodeMoveUpExecute(Sender: TObject);
@@ -146,13 +146,13 @@ type
   private
     FPropagateEnabled: Boolean;
   protected
-    procedure EnabledChanged; override;
+//    procedure EnabledChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property PropagateEnabled: Boolean read FPropagateEnabled write FPropagateEnabled default True;
   end;
-  
+
 
 
 procedure ShowTreeNodeEditor(TreeView:TCustomTreeView);
@@ -187,12 +187,14 @@ begin
   PropagateEnabled := True;
 end;
 
+(*)
 procedure TGroupBox.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
   if PropagateEnabled then
     Broadcast(Msg);
 end;
+(*)
 
 //=== TfrmTreeViewItems ======================================================
 
@@ -205,8 +207,8 @@ begin
       tvItems.Selected.ImageIndex);
     tvItems.Selected.SelectedIndex := StrToIntDef(cbSelected.Text,
       tvItems.Selected.SelectedIndex);
-    tvItems.Selected.StateIndex := StrToIntDef(cbState.Text,
-      tvItems.Selected.StateIndex);
+//    tvItems.Selected.StateIndex := StrToIntDef(cbState.Text,
+//      tvItems.Selected.StateIndex);
   end;
 end;
 
@@ -267,7 +269,7 @@ begin
     edNodeText.Text := Node.Text;
     cbImage.ItemIndex := AddCB(cbImage, Node.ImageIndex);
     cbSelected.ItemIndex := AddCB(cbSelected, Node.SelectedIndex);
-    cbState.ItemIndex := AddCB(cbState, Node.StateIndex);
+//    cbState.ItemIndex := AddCB(cbState, Node.StateIndex);
     edNodeText.OnChange := edNodeTextChange;
   end;
   gbProperties.Enabled := tvItems.Selected <> nil;
@@ -353,7 +355,8 @@ begin
       f.cbImage.Tag := Integer(il);
       f.cbSelected.Tag := Integer(il);
     end;
-    il := THackTreeView(Treeview).StateImages;
+//    il := THackTreeView(Treeview).StateImages;
+    il := nil;
     if il <> nil then
     begin
       f.cbState.Style := csOwnerDrawFixed;
@@ -378,7 +381,7 @@ begin
 end;
 
 procedure TfrmTreeViewItems.cbImageIndexDrawItem(Control: TWinControl;
-  Index: Integer; Rect: TRect; State: TOwnerDrawState);
+  Index: Integer; Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
 var
   DrawOffset, DrawIndex: Integer;
   il: TImageList;
@@ -397,6 +400,7 @@ begin
   Rect.Left := Rect.Left + DrawOffset;
   DrawText(CB.Canvas.Handle, PChar(Format('%d', [DrawIndex])), -1, Rect,
     DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+  Handled := true;
 end;
 
 procedure TfrmTreeViewItems.cbStateDrawItem(Control: TWinControl;
