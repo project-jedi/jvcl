@@ -174,7 +174,7 @@ type
     function GetScopeTypes: TScopeTypes;
     function GetUPN: string;
   public
-    constructor Create(const Selection: PDsSelection; const AttributeCount: Integer);
+    constructor Create( Selection: PDsSelection; const AttributeCount: Integer);
     // the Relative Distinquishged Name (RDN) of the object
     property Name: string read GetName;
     // the object's ADSPath. format depends on what flags you specified for the scope the object was selected from
@@ -509,7 +509,7 @@ end;
 
 //=== TObjectPickerSelection =================================================
 
-constructor TObjectPickerSelection.Create(const Selection: PDsSelection;
+constructor TObjectPickerSelection.Create( Selection: PDsSelection;
   const AttributeCount: Integer);
 begin
   inherited Create;

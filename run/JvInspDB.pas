@@ -89,7 +89,7 @@ type
     FTypeInfo: PTypeInfo;
   public
     constructor Create(const AFieldName, AFieldTable: string; const AFieldType: TFieldType;
-      const ATypeInfo: PTypeInfo);
+       ATypeInfo: PTypeInfo);
     function MatchValue(const ADataObj: TJvCustomInspectorData): Integer; override;
     function MatchPercent(const ADataObj: TJvCustomInspectorData): Integer; override;
     property FieldName: string read FFieldName;
@@ -575,7 +575,7 @@ end;
 //=== TJvInspectorTFieldTypeRegItem ==========================================
 
 constructor TJvInspectorTFieldTypeRegItem.Create(const AFieldName, AFieldTable: string;
-  const AFieldType: TFieldType; const ATypeInfo: PTypeInfo);
+  const AFieldType: TFieldType;  ATypeInfo: PTypeInfo);
 begin
   inherited Create(nil);
   FFieldName := AFieldName;

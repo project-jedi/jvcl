@@ -26,6 +26,15 @@
 
  RECENT CHANGES:
 
+    Feb 8, 2004, Olivier Sannier obones@meloo.com
+      - Introduced the TJvTypeInfoHelper class to help C++ Builder
+        users to get Type Information
+      - Corrected heaps of C++ Builder compatibility problems, especially
+        with parameters that are const pointers
+    Oct 10, 2003, Andreas Hausladen andreas.hausladen@gmx.de
+      - implemented Theming and MouseWheel
+    Oct 1, 2003, Warren Postma warrenpstma@hotmail.com
+      - New Name, UserData properties in TJvInspectorCustomCategoryItem
     September 30, Warren Postma warrenpstma@hotmail.com
       - New string property Name, in inspector and category items
         (TJvCustomInspectorItem, and descendants, ie TJvInspectorCustomCategoryItem )
@@ -34,10 +43,6 @@
         sometimes duplicated by the Item.Data.Name, but sometimes Item.Data is nil,
         so this becomes important as a backup.
       - System Sound (Beep) on enter key removed.
-    Oct 1, 2003, Warren Postma warrenpstma@hotmail.com
-      - New Name, UserData properties in TJvInspectorCustomCategoryItem
-    Oct 10, 2003, Andreas Hausladen andreas.hausladen@gmx.de
-      - implemented Theming and MouseWheel
 
 -----------------------------------------------------------------------------}
 
@@ -101,6 +106,7 @@ type
 {$ENDIF VisualCLX}
 
 type
+  // early declarations
   TJvCustomInspector = class;
   TJvInspectorPainter = class;
   TJvInspectorItemSizing = class;
@@ -114,8 +120,22 @@ type
   TJvInspectorEventData = class;
   TJvInspectorPropData = class;
 
+  // For some reason, the hpp generator won't recognize our early
+  // declarations just yet, so we output them manually.
+  // In the process, we are careful to enclose them in a namespace
+  // declaration or we would create two ambiguities for those classes.
+  // The first one being between TJvCustomInspectorItem and
+  // Jvinspector::TJvCustomInspectorItem.
+  // This would puzzle the users quite a bit when they use the header
+  // and would force them to use an ugly #define to lift the ambiguity.
+  // And even so, this would trigger other problems.
+  // So we'd better be careful here. 
+  {$HPPEMIT 'namespace Jvinspector'}
+  {$HPPEMIT '{'}
   {$HPPEMIT 'class TJvCustomInspectorItem;'}
   {$HPPEMIT 'class TJvCustomInspectorData;'}
+  (*$HPPEMIT '}'*)
+  {$HPPEMIT ''}
 
   TInspectorItemFlag = (iifReadonly, iifHidden, iifExpanded, iifVisible,
     iifQualifiedNames, iifAutoUpdate, iifMultiLine, iifValueList,
@@ -150,14 +170,22 @@ type
   TJvInspectorItemInstances = array of TJvCustomInspectorItem;
   TJvInspectorDataInstances = array of TJvCustomInspectorData;
 
-  TInspectorItemEvent = procedure(Sender: TObject; const Item: TJvCustomInspectorItem) of object;
-  TInspectorItemBeforeCreateEvent = procedure(Sender: TObject; const Data: TJvCustomInspectorData; var ItemClass:
+  // Don't use the const qualifier on events when compiling for BCB
+  // because this would lead to the generation of a parameter that is
+  // a non const pointer to a const object.
+  // Then this would trigger warnings about using non const methods on
+  // a const object when we modify the properties of the object.
+  // We would have liked to be able to generate a const pointer to a
+  // non const object (which is what the Delphi declaration is) but the
+  // HPP Generator is compeletely flawed in this area
+  TInspectorItemEvent = procedure(Sender: TObject;  Item: TJvCustomInspectorItem) of object;
+  TInspectorItemBeforeCreateEvent = procedure(Sender: TObject;  Data: TJvCustomInspectorData; var ItemClass:
     TJvInspectorItemClass) of object;
-  TInspectorItemBeforeSelectEvent = procedure(Sender: TObject; const NewItem: TJvCustomInspectorItem; var Allow:
+  TInspectorItemBeforeSelectEvent = procedure(Sender: TObject;  NewItem: TJvCustomInspectorItem; var Allow:
     Boolean) of object;
-  TInspectorDataEvent = procedure(Sender: TObject; const Data: TJvCustomInspectorData) of object;
-  TInspectorItemGetValueListEvent = procedure(const Item: TJvCustomInspectorItem; const Values: TStrings) of object;
-  TInspectorItemSortCompare = function(const Item1, Item2: TJvCustomInspectorItem): Integer of object;
+  TInspectorDataEvent = procedure(Sender: TObject;  Data: TJvCustomInspectorData) of object;
+  TInspectorItemGetValueListEvent = procedure( Item: TJvCustomInspectorItem;  Values: TStrings) of object;
+  TInspectorItemSortCompare = function( Item1, Item2: TJvCustomInspectorItem): Integer of object;
   TJvInspAsFloat = procedure(Sender: TJvInspectorEventData; var Value: Extended) of object;
   TJvInspAsInt64 = procedure(Sender: TJvInspectorEventData; var Value: Int64) of object;
   TJvInspAsMethod = procedure(Sender: TJvInspectorEventData; var Value: TMethod) of object;
@@ -1255,7 +1283,25 @@ type
     FRegistered: Boolean;
     FOnValueChanged: TNotifyEvent;
   protected
-    constructor CreatePrim(const AName: string; const ATypeInfo: PTypeInfo);
+    // Remove the const qualifier when compiling with BCB. This is quite
+    // similar to the problem aforementioned with events but is more
+    // serious as it prevents the program from linking:
+    // With the const qualifier, the ATypeInfo parameter gets exported
+    // by the linker as a constant pointer to a non constant object
+    // (TTypeInfo const *) whereas the HPP generator declares the parameter
+    // as a non constant pointer to a constant object (const TTypeInfo *).
+    // This leads to the linker not finding the code for the method
+    // because the const qualifier is misplaced.
+    // The linker is correct in its work because it reflects exactly what
+    // the Delphi construct means, but once again the HPP generator is
+    // wrong and there is no way to go around this problem but to remove
+    // the const qualifier for the parameter in the Delphi source code.
+    // The problem arises only when the type of the parameter is a Pointer
+    // in Delphi. For instance, a constant parameter of type TForm would
+    // be output as 'const TForm*' by both the Linker and HPP generator,
+    // thus not triggerring any error, even if this doesn't respect the
+    // meaning of the Delphi construct which is 'TForm const *'
+    constructor CreatePrim(const AName: string;  ATypeInfo: PTypeInfo);
     procedure CheckReadAccess; virtual;
     procedure CheckWriteAccess; virtual;
     procedure DoDataChanged;
@@ -1283,7 +1329,7 @@ type
     procedure SetAsOrdinal(const Value: Int64); virtual; abstract;
     procedure SetAsString(const Value: string); virtual; abstract;
     procedure SetName(const Value: string); virtual;
-    procedure SetTypeInfo(const Value: PTypeInfo); virtual;
+    procedure SetTypeInfo( Value: PTypeInfo); virtual;
     function SupportsMethodPointers: Boolean; virtual;
   public
     constructor Create;
@@ -1361,9 +1407,13 @@ type
     function IsAssigned: Boolean; override;
     function IsInitialized: Boolean; override;
     class function ItemRegister: TJvInspectorRegister; override;
-    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const
+    class function New(const AParent: TJvCustomInspectorItem; const AName: string;  ATypeInfo: PTypeInfo; const
       AAddress: Pointer): TJvCustomInspectorItem; reintroduce; overload;
     // REMOVED BECAUSE OF A BCB INCOMPATIBILITY:
+    // Untyped parameters are output as void* which is exactly the same
+    // as the output for Pointer, thus leading to the exact same
+    // declaration. If you used this version before, simply replace
+    // the AVar parameter by @AVar
     //    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AVar): TJvCustomInspectorItem; overload;
     procedure SetAsSet(const Buf); override;
     property Address: Pointer read GetAddress write SetAddress;
@@ -1390,7 +1440,7 @@ type
     procedure SetAsOrdinal(const Value: Int64); override;
     procedure SetAsString(const Value: string); override;
     procedure SetInstance(const Value: TObject); virtual;
-    procedure SetProp(const Value: PPropInfo); virtual;
+    procedure SetProp( Value: PPropInfo); virtual;
     function SupportsMethodPointers: Boolean; override;
   public
     procedure GetAsSet(var Buf); override;
@@ -1399,7 +1449,7 @@ type
     function IsInitialized: Boolean; override;
     class function ItemRegister: TJvInspectorRegister; override;
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
-      const PropInfo: PPropInfo): TJvCustomInspectorItem; reintroduce; overload;
+       PropInfo: PPropInfo): TJvCustomInspectorItem; reintroduce; overload;
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
       const PropName: string): TJvCustomInspectorItem; reintroduce; overload;
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
@@ -1408,7 +1458,7 @@ type
       const NameList: array of string; const ExcludeList: Boolean = False;
       const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances;
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
-      const PropInfos: PPropList; const PropCount: Integer): TJvInspectorItemInstances; reintroduce; overload;
+       PropInfos: PPropList; const PropCount: Integer): TJvInspectorItemInstances; reintroduce; overload;
     procedure SetAsSet(const Buf); override;
     property Instance: TObject read GetInstance write SetInstance;
     property Prop: PPropInfo read GetProp write SetProp;
@@ -1473,7 +1523,7 @@ type
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
     function IsInitialized: Boolean; override;
-    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo):
+    class function New(const AParent: TJvCustomInspectorItem; const AName: string;  ATypeInfo: PTypeInfo):
       TJvCustomInspectorItem; reintroduce; overload;
     procedure SetAsSet(const Buf); override;
     property OnGetAsFloat: TJvInspAsFloat read FOnGetAsFloat write SetOnGetAsFloat;
@@ -1499,7 +1549,7 @@ type
     FKey: string;
     FSection: string;
   protected
-    constructor CreatePrim(const AName, ASection, AKey: string; const ATypeInfo: PTypeInfo);
+    constructor CreatePrim(const AName, ASection, AKey: string;  ATypeInfo: PTypeInfo);
     function ExistingValue: Boolean; virtual; abstract;
     function GetAsFloat: Extended; override;
     function GetAsInt64: Int64; override;
@@ -1538,7 +1588,7 @@ type
   public
     function ReadValue: string; override;
     class function New(const AParent: TJvCustomInspectorItem; const AName, ASection, AKey: string;
-      const ATypeInfo: PTypeInfo; const AINIFile: TCustomIniFile): TJvCustomInspectorItem; reintroduce; overload;
+       ATypeInfo: PTypeInfo; const AINIFile: TCustomIniFile): TJvCustomInspectorItem; reintroduce; overload;
     class function New(const AParent: TJvCustomInspectorItem; const ASection: string;
       const AINIFile: TCustomIniFile; const AOnAddKey: TJvInspConfKeyEvent): TJvInspectorItemInstances; reintroduce;
         overload;
@@ -1598,9 +1648,9 @@ type
     FTypeInfo: PTypeInfo;
   protected
     function GetTypeInfo: PTypeInfo; virtual;
-    procedure SetTypeInfo(const Value: PTypeInfo); virtual;
+    procedure SetTypeInfo( Value: PTypeInfo); virtual;
   public
-    constructor Create(const AItemClass: TJvInspectorItemClass; const ATypeInfo: PTypeInfo);
+    constructor Create(const AItemClass: TJvInspectorItemClass;  ATypeInfo: PTypeInfo);
     function MatchValue(const ADataObj: TJvCustomInspectorData): Integer; override;
     function MatchPercent(const ADataObj: TJvCustomInspectorData): Integer; override;
     property TypeInfo: PTypeInfo read GetTypeInfo;
@@ -1636,7 +1686,7 @@ type
     FTypeInfo: PTypeInfo;
   public
     constructor Create(const AItemClass: TJvInspectorItemClass; const AObjectClass: TClass;
-      const AName: string; const ATypeInfo: PTypeInfo);
+      const AName: string;  ATypeInfo: PTypeInfo);
     function Compare(const ADataObj: TJvCustomInspectorData;
       const Item: TJvCustomInspectorRegItem): Integer; override;
     function MatchValue(const ADataObj: TJvCustomInspectorData): Integer; override;
@@ -1655,6 +1705,128 @@ const
   cJvInspectorString = 'string';
   cJvInspectorSet = 'set';
 
+// All the declarations below are to help support Type Info under C++ Builder
+
+// we add missing typedefs for some Delphi types
+{$HPPEMIT 'typedef __int64 Int64;'}
+{$HPPEMIT 'typedef double Real;'}
+{$HPPEMIT ''}
+
+// The TJvTypeInfoHelper class is provided here to help C++ Builder users
+// get type information for base types.
+// In Delphi, to get the Type Info for an Integer, we would have done
+// TypeInfo(Integer). But with C++ Builder, the TypeInfo function
+// doesn't exist. We will then define a macro to do it for us, but with
+// the drawback that it will only work with types that have been declared
+// in a registered TypeInfo helper class.
+// As recommended by the help, we get the value we need by
+// calling GetPropInfo on a published property of an existing object.
+// But we need a TTypeInfo pointer, so we access the PropType
+// member of the PPropInfo returned by GetPropInfo.
+// Please see RegisterPropertyEditor in C++ Builder help for
+// the example that inspired this bizarre construct.
+type
+  // The class MUST be a class derived from TPersistent
+  // to get the RTTI information
+  TJvTypeInfoHelper = class (TPersistent)
+  private
+    FAnsiCharProp   : AnsiChar;
+    FAnsiStringProp : AnsiString;
+    FBooleanProp    : Boolean;
+    FByteProp       : Byte;
+    FByteBoolProp   : ByteBool;
+    FCardinalProp   : Cardinal;
+    FCharProp       : Char;
+    FDoubleProp     : Double;
+    FExtendedProp   : Extended;
+    FInt64Prop      : Int64;
+    FIntegerProp    : Integer;
+    FLongBoolProp   : LongBool;
+    FLongintProp    : Longint;
+    FRealProp       : Real;
+    FShortintProp   : Shortint;
+    FSingleProp     : Single;
+    FSmallintProp   : Smallint;
+    FTDateTimeProp  : TDateTime;
+    FWideCharProp   : WideChar;
+    FWordProp       : Word;
+    FWordBoolProp   : WordBool;
+  published
+    // These are the base Delphi types
+    property AnsiCharProp   : AnsiChar   read FAnsiCharProp;
+    property AnsiStringProp : AnsiString read FAnsiStringProp;
+    property BooleanProp    : Boolean    read FBooleanProp;
+    property ByteProp       : Byte       read FByteProp;
+    property ByteBoolProp   : ByteBool   read FByteBoolProp;
+    property CardinalProp   : Cardinal   read FCardinalProp;
+    property CharProp       : Char       read FCharProp;
+    property DoubleProp     : Double     read FDoubleProp;
+    property ExtendedProp   : Extended   read FExtendedProp;
+    property Int64Prop      : Int64      read FInt64Prop;
+    property IntegerProp    : Integer    read FIntegerProp;
+    property LongBoolProp   : LongBool   read FLongBoolProp;
+    property LongintProp    : Longint    read FLongintProp;
+    property RealProp       : Real       read FRealProp;
+    property ShortintProp   : Shortint   read FShortintProp;
+    property SingleProp     : Single     read FSingleProp;
+    property SmallintProp   : Smallint   read FSmallintProp;
+    property TDateTimeProp  : TDateTime  read FTDateTimeProp;
+    property WideCharProp   : WideChar   read FWideCharProp;
+    property WordProp       : Word       read FWordProp;
+    property WordBoolProp   : WordBool   read FWordBoolProp;
+    // These are the C++ Builder types that don't exist in Delphi
+    // Some C++ types are different from Delphi types only by case
+    // and are not represented here
+    property __int64Prop        : Int64      read FInt64Prop;
+    property boolProp           : Boolean    read FBooleanProp;
+    property floatProp          : Single     read FSingleProp;
+    property intProp            : Integer    read FIntegerProp;
+    property longProp           : Integer    read FIntegerProp;
+    property long_doubleProp    : Extended   read FExtendedProp;
+    property shortProp          : Smallint   read FSmallintProp;
+    property signed_charProp    : Shortint   read FShortintProp;
+    property signed_intProp     : Integer    read FIntegerProp;
+    property signed_longProp    : Integer    read FIntegerProp;
+    property signed_shortProp   : Smallint   read FSmallintProp;
+    property unsigned_charProp  : Byte       read FByteProp;
+    property unsigned_intProp   : Cardinal   read FCardinalProp;
+    property unsigned_longProp  : Cardinal   read FCardinalProp;
+    property unsigned_shortProp : Byte       read FByteProp;
+  end;
+  TJvTypeInfoHelperClass = class of TJvTypeInfoHelper;
+
+// This function returns the type info associated with the given type name
+// It will go through the collection of known TypeInfoHelpers and try
+// to find one that contains a property named TypeName+'Prop'
+// The first one it finds will be used to return the PTypeInfo pointer
+function TypeInfoFromName(TypeName : string): PTypeInfo;
+
+// Register the given class as a TypeInfo helper
+procedure RegisterTypeInfoHelper(AClass: TJvTypeInfoHelperClass);
+
+// We define here a set of macros to help C++ Builder programmers
+// gather Type Info by typing code very similar to Delphi code where
+// one only has to type TypeInfo(typename) to get the correct result
+
+// Those first two are required to convert a macro argument
+// to a string. Hence STR(hello) is equivalent to "hello"
+{$HPPEMIT '#define _STR(x) #x'}
+{$HPPEMIT '#define STR(x) _STR(x)'}
+
+// This macro gives an expression that gives the TypeInfo for a given
+// type, using the given class. It will look for a published property
+// named type + "Prop" in the given class.
+{$HPPEMIT '#define TypeInfoFromClass(class, type) *(GetPropInfo(__typeinfo(class), STR(type) "Prop" )->PropType)'}
+
+// This macro is a shortcut for all base types. If you use it for any
+// other type, the compilation will work, but an access violation will
+// occur at runtime because a property of your type couldn't be found
+// in the TJvTypeInfoHelper class declared above.
+// You should declare a class with a published property of your type
+// and use the TypeInfoFromClass macro.
+{$HPPEMIT '#define TypeInfo(type) TypeInfoFromName(STR(type))'}
+{$HPPEMIT ''}
+
 implementation
 
 uses
@@ -1669,7 +1841,39 @@ uses
   QDialogs, QForms, QButtons, QConsts,
   {$ENDIF VisualCLX}
   JclRTTI, JclLogic,
-  JvJCLUtils, JvJVCLUtils, JvThemes, JvResources;
+  JvJCLUtils, JvJVCLUtils, JvThemes, JvResources, JclStrings;
+
+// BCB Type Info support
+var
+  TypeInfoHelpersList : TClassList;
+    
+function TypeInfoFromName(TypeName : string): PTypeInfo;
+var
+  I : Integer;
+  PropInfo : PPropInfo;
+begin
+  // replace spaces by underscores
+  StrReplace(TypeName, ' ', '_', [rfReplaceAll]);
+
+  I := 0;
+  PropInfo := nil;
+
+  while (I<TypeInfoHelpersList.Count) and (PropInfo=Nil) do
+  begin
+    PropInfo := GetPropInfo(TypeInfoHelpersList[I], TypeName+'Prop');
+    Inc(I);
+  end;
+  
+  if PropInfo <> nil then
+    Result := PropInfo.PropType^
+  else
+    Result := nil;
+end;
+
+procedure RegisterTypeInfoHelper(AClass: TJvTypeInfoHelperClass);
+begin
+  TypeInfoHelpersList.Add(AClass);
+end;
 
 type
   PMethod = ^TMethod;
@@ -9051,7 +9255,7 @@ end;
 //=== TJvCustomInspectorData =================================================
 
 constructor TJvCustomInspectorData.CreatePrim(const AName: string;
-  const ATypeInfo: PTypeInfo);
+  {$IFNDEF BCB}const{$ENDIF} ATypeInfo: PTypeInfo);
 begin
   inherited Create;
   Name := AName;
@@ -9211,7 +9415,7 @@ begin
   end;
 end;
 
-procedure TJvCustomInspectorData.SetTypeInfo(const Value: PTypeInfo);
+procedure TJvCustomInspectorData.SetTypeInfo( Value: PTypeInfo);
 begin
   if Value <> TypeInfo then
   begin
@@ -9580,7 +9784,7 @@ begin
   Result := GlobalVarItemReg;
 end;
 
-class function TJvInspectorVarData.New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo:
+class function TJvInspectorVarData.New(const AParent: TJvCustomInspectorItem; const AName: string;  ATypeInfo:
   PTypeInfo; const AAddress: Pointer): TJvCustomInspectorItem;
 var
   Data: TJvInspectorVarData;
@@ -9770,7 +9974,7 @@ begin
   end;
 end;
 
-procedure TJvInspectorPropData.SetProp(const Value: PPropInfo);
+procedure TJvInspectorPropData.SetProp( Value: PPropInfo);
 begin
   if Prop <> Value then
   begin
@@ -9824,7 +10028,7 @@ begin
 end;
 
 class function TJvInspectorPropData.New(const AParent: TJvCustomInspectorItem;
-  const AInstance: TObject; const PropInfo: PPropInfo): TJvCustomInspectorItem;
+  const AInstance: TObject;  PropInfo: PPropInfo): TJvCustomInspectorItem;
 var
   Data: TJvInspectorPropData;
 begin
@@ -9902,7 +10106,7 @@ begin
 end;
 
 class function TJvInspectorPropData.New(const AParent: TJvCustomInspectorItem;
-  const AInstance: TObject; const PropInfos: PPropList;
+  const AInstance: TObject;  PropInfos: PPropList;
   const PropCount: Integer): TJvInspectorItemInstances;
 var
   I: Integer;
@@ -10362,7 +10566,7 @@ begin
 end;
 
 class function TJvInspectorEventData.New(const AParent: TJvCustomInspectorItem; const AName: string;
-  const ATypeInfo: PTypeInfo): TJvCustomInspectorItem;
+   ATypeInfo: PTypeInfo): TJvCustomInspectorItem;
 var
   Data: TJvInspectorEventData;
 begin
@@ -10398,7 +10602,7 @@ end;
 //=== TJvInspectorCustomConfData =============================================
 
 constructor TJvInspectorCustomConfData.CreatePrim(const AName, ASection, AKey: string;
-  const ATypeInfo: PTypeInfo);
+   ATypeInfo: PTypeInfo);
 begin
   inherited CreatePrim(AName, ATypeInfo);
   FKey := AKey;
@@ -10646,7 +10850,7 @@ begin
 end;
 
 class function TJvInspectorINIFileData.New(const AParent: TJvCustomInspectorItem; const AName,
-  ASection, AKey: string; const ATypeInfo: PTypeInfo;
+  ASection, AKey: string;  ATypeInfo: PTypeInfo;
   const AINIFile: TCustomIniFile): TJvCustomInspectorItem;
 var
   Data: TJvInspectorINIFileData;
@@ -10920,13 +11124,13 @@ begin
   Result := FTypeInfo;
 end;
 
-procedure TJvInspectorTypeInfoRegItem.SetTypeInfo(const Value: PTypeInfo);
+procedure TJvInspectorTypeInfoRegItem.SetTypeInfo( Value: PTypeInfo);
 begin
   FTypeInfo := Value;
 end;
 
 constructor TJvInspectorTypeInfoRegItem.Create(const AItemClass: TJvInspectorItemClass;
-  const ATypeInfo: PTypeInfo);
+   ATypeInfo: PTypeInfo);
 begin
   inherited Create(AItemClass);
   FTypeInfo := ATypeInfo;
@@ -11035,7 +11239,7 @@ begin
 end;
 
 constructor TJvInspectorPropRegItem.Create(const AItemClass: TJvInspectorItemClass;
-  const AObjectClass: TClass; const AName: string; const ATypeInfo: PTypeInfo);
+  const AObjectClass: TClass; const AName: string;  ATypeInfo: PTypeInfo);
 begin
   inherited Create(AItemClass);
   FObjectClass := AObjectClass;
@@ -11288,6 +11492,8 @@ initialization
   RegisterTypeKinds;
   RegisterConsts;
   DataRegister := TJvInspDataReg.Create;
+  TypeInfoHelpersList := TClassList.Create;
+  RegisterTypeInfoHelper(TJvTypeInfoHelper);
 
 finalization
   DataRegister.Free; // Can't use FreeAndNil as it will set DataRegister to nil before it's destroyed.
@@ -11301,6 +11507,7 @@ finalization
   GlobalInspReg.Free;
   GlobalInspReg := nil;
   FreeAndNil(GlobalCanvasStack);
+  TypeInfoHelpersList.Free;
 
 end.
 

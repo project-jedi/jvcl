@@ -996,15 +996,15 @@ type
     function ReadNextLine: string;
     function ReadItem(out AName: string): string;
     procedure WriteLn(const S: string);
-    function ReadEnum(const AName: string; const TypeInfo: PTypeInfo): Integer;
+    function ReadEnum(const AName: string;  TypeInfo: PTypeInfo): Integer;
     function ReadInt(const AName: string): Int64;
-    procedure ReadSet(const AName: string; out Value; const TypeInfo: PTypeInfo);
+    procedure ReadSet(const AName: string; out Value;  TypeInfo: PTypeInfo);
     function ReadStamp(const AName: string): TTimeStamp;
     function ReadStampDate(const AName: string): Integer;
     function ReadStampTime(const AName: string): Integer;
-    procedure WriteEnum(const AName: string; const Ordinal: Integer; const TypeInfo: PTypeInfo);
+    procedure WriteEnum(const AName: string; const Ordinal: Integer;  TypeInfo: PTypeInfo);
     procedure WriteInt(const AName: string; const Value: Int64);
-    procedure WriteSet(const AName: string; const Value; const TypeInfo: PTypeInfo);
+    procedure WriteSet(const AName: string; const Value;  TypeInfo: PTypeInfo);
     procedure WriteStamp(const AName: string; const Stamp: TTimeStamp);
     procedure WriteStampDate(const AName: string; const Date: Integer);
     procedure WriteStampTime(const AName: string; const Time: Integer);
@@ -1421,7 +1421,7 @@ begin
   Stream.WriteBuffer(S2[1], Length(S2));
 end;
 
-function TTxtStore.ReadEnum(const AName: string; const TypeInfo: PTypeInfo): Integer;
+function TTxtStore.ReadEnum(const AName: string;  TypeInfo: PTypeInfo): Integer;
 var
   ItemName: string;
   Value: string;
@@ -1443,7 +1443,7 @@ begin
   Result := StrToInt64(Value);
 end;
 
-procedure TTxtStore.ReadSet(const AName: string; out Value; const TypeInfo: PTypeInfo);
+procedure TTxtStore.ReadSet(const AName: string; out Value;  TypeInfo: PTypeInfo);
 var
   ItemName: string;
   StrValue: string;
@@ -1499,7 +1499,7 @@ begin
   end;
 end;
 
-procedure TTxtStore.WriteEnum(const AName: string; const Ordinal: Integer; const TypeInfo: PTypeInfo);
+procedure TTxtStore.WriteEnum(const AName: string; const Ordinal: Integer;  TypeInfo: PTypeInfo);
 begin
   WriteLn(AName + ' = ' + GetEnumName(TypeInfo, Ordinal));
 end;
@@ -1509,7 +1509,7 @@ begin
   WriteLn(AName + ' = ' + IntToStr(Value));
 end;
 
-procedure TTxtStore.WriteSet(const AName: string; const Value; const TypeInfo: PTypeInfo);
+procedure TTxtStore.WriteSet(const AName: string; const Value;  TypeInfo: PTypeInfo);
 begin
   WriteLn(AName + ' = ' + JclSetToStr(TypeInfo, Value));
 end;
