@@ -180,7 +180,6 @@ type
     function TableExists(TableName: string): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure SyncProfilesWithBuffer; virtual;
   published
     property ElementProfiles: TDataSet read FElementProfiles write FElementProfiles;
@@ -507,11 +506,6 @@ begin
   FKeySuffix := Default_KeySuffix;
   FSegmentKeyPrefix := Default_SegmentKeyPrefix;
   FElementNonKeyPrefix := Default_ElementNonKeyPrefix;
-end;
-
-destructor TJvEDIDBBuffer.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvEDIDBBuffer.CloseProfileDataSets;

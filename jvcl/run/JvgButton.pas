@@ -220,6 +220,8 @@ resourcestring
   RsEErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
 {$ENDIF USEJVCL}
 
+//=== TJvgBtnGlyphs ==========================================================
+
 constructor TJvgBtnGlyphs.Create;
 begin
   inherited Create;
@@ -264,6 +266,8 @@ procedure TJvgBtnGlyphs.SetGlyphDisabled(Value: TBitmap);
 begin
   GlyphDisabled.Assign(Value);
 end;
+
+//=== TJvgButton =============================================================
 
 constructor TJvgButton.Create(AOwner: TComponent);
 begin
@@ -1430,6 +1434,8 @@ begin
     if (ParentForm.Components[I] is TJvgButton) then
       TJvgButton(ParentForm.Components[I]).FTestMode := Value;
 end;
+
+//=== TJvgGlyphsIndexes ======================================================
 
 constructor TJvgGlyphsIndexes.Create;
 begin

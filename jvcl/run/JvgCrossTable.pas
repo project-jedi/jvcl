@@ -351,7 +351,6 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
   public
-
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Print;
@@ -405,6 +404,7 @@ const
 
 constructor TJvgPrintCrossTableFonts.Create;
 begin
+  inherited Create;
   FTitles := TFont.Create;
   FColCaptions := TFont.Create;
   FRowCaptions := TFont.Create;
@@ -421,7 +421,7 @@ begin
   FCells.Free;
   FResults.Free;
   FIntermediateResults.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvgPrintCrossTableFonts.SetTitles(Value: TFont);
@@ -506,18 +506,18 @@ end;
 
 destructor TJvgPrintCrossTable.Destroy;
 begin
-  inherited;
   ColumnsList.Free;
   RowsList.Free;
   Fonts.Free;
   Colors.Free;
   FIndentsInSantim.Free;
   Font_.Free;
+  inherited Destroy;
 end;
 
 procedure TJvgPrintCrossTable.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   if fcoVertColCaptionsFont in Options then
   begin
     FFonts.ColCaptions.Handle := CreateRotatedFont(Fonts.ColCaptions, 900);
@@ -526,10 +526,10 @@ begin
     FFonts.ColCaptions.Handle := CreateRotatedFont(Fonts.ColCaptions, 0);
 end;
 
-procedure TJvgPrintCrossTable.Notification(AComponent: TComponent; Operation:
-  TOperation);
+procedure TJvgPrintCrossTable.Notification(AComponent: TComponent;
+  Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = DataSet) then
     DataSet := nil;
 end;

@@ -106,7 +106,6 @@ type
     procedure DoProgress(Position: Integer; var Terminate: Boolean); virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure Find; virtual;
     procedure FindAgain; virtual;
     procedure Replace; virtual;
@@ -292,11 +291,6 @@ begin
   FKeepText := False;
   FShowDialogs := True;
   FPosition := Point(-1, -1);
-end;
-
-destructor TJvFindReplace.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvFindReplace.Find;

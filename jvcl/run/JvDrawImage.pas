@@ -327,6 +327,63 @@ begin
     Result := N;
 end;
 
+constructor TJvDrawImage.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 256;
+  Height := 256;
+  Clip := TBitmap.Create;
+  FZoomClip := TBitmap.Create;
+  FAirBrush := TJvAirBrush.Create(Self);
+  FX := TJvPaintFX.Create(Self);
+  TargetPoint := point(0, 0);
+  NSpiro := 40;
+  RangeTransColor := clwhite;
+  zoomrect := rect(0, 0, 50, 50);
+  mycliprect := rect(0, 0, 256, 256);
+  //spiral number, direction and Factor
+  Spirals := 3;
+  spiralfactor := 0.99;
+  spiraldir := 1;
+  // number of points for Star shape
+  StarPoints := 5;
+  Stars := 1;
+  // tolerance for straight line Drawing
+  myslinetol := 5;
+
+  mypenstyle := pssolid;
+  // number of Blocks wide and heigh
+  Blocks := 32;
+  // rounding of roundrect
+  myround := 10;
+  // default Drawing Mode
+  Shape := 'line';
+  FillSinPixs;
+  FillGonio;
+  TraceB := $00;
+  FShapes := TStringList.Create;
+  BuildShapeList;
+  PainterEffectsF := TPainterEffectsForm.Create(Self);
+  PainterEffectsF.setDrawImage(Self);
+  QuickPreviewF := TQuickPreviewForm.Create(Self);
+  QuickPreviewF.SetDrawImage(Self);
+  PainterQBF := TPainterQBForm.Create(Self);
+  PainterQBF.setDrawImage(Self);
+end;
+
+destructor TJvDrawImage.Destroy;
+begin
+  FShapes.Free;
+  Clip.Free;
+  FZoomClip.Free;
+  FAirBrush.Free;
+  FX.Free;
+  PainterEffectsF.Free;
+  QuickPreviewF.Free;
+  PainterQBF.Free;
+  inherited Destroy;
+end;
+
 // Start of filter procedures
 
 procedure TJvDrawImage.FillGonio;
@@ -3883,51 +3940,6 @@ begin
   begin
     myDraw := False;
   end;
-end; // end of mouseup
-
-constructor TJvDrawImage.Create(AOwner: TComponent);
-begin
-  inherited;
-  Width := 256;
-  Height := 256;
-  Clip := TBitmap.Create;
-  FZoomClip := TBitmap.Create;
-  FAirBrush := TJvAirBrush.Create(Self);
-  FX := TJvPaintFX.Create(Self);
-  TargetPoint := point(0, 0);
-  NSpiro := 40;
-  RangeTransColor := clwhite;
-  zoomrect := rect(0, 0, 50, 50);
-  mycliprect := rect(0, 0, 256, 256);
-  //spiral number, direction and Factor
-  Spirals := 3;
-  spiralfactor := 0.99;
-  spiraldir := 1;
-  // number of points for Star shape
-  StarPoints := 5;
-  Stars := 1;
-  // tolerance for straight line Drawing
-  myslinetol := 5;
-
-  mypenstyle := pssolid;
-  // number of Blocks wide and heigh
-  Blocks := 32;
-  // rounding of roundrect
-  myround := 10;
-  // default Drawing Mode
-  Shape := 'line';
-  FillSinPixs;
-  FillGonio;
-  TraceB := $00;
-  FShapes := TStringList.Create;
-  BuildShapeList;
-  PainterEffectsF := TPainterEffectsForm.Create(Self);
-  PainterEffectsF.setDrawImage(Self);
-  QuickPreviewF := TQuickPreviewForm.Create(Self);
-  QuickPreviewF.SetDrawImage(Self);
-  PainterQBF := TPainterQBForm.Create(Self);
-  PainterQBF.setDrawImage(Self);
-
 end;
 
 procedure TJvDrawImage.BuildShapeList;
@@ -4040,19 +4052,6 @@ var
 begin
   for I := Low(Names) to High(Names) do
     FShapes.Append(Names[I]);
-end;
-
-destructor TJvDrawImage.Destroy;
-begin
-  FShapes.Free;
-  Clip.Free;
-  FZoomClip.Free;
-  FAirBrush.Free;
-  FX.Free;
-  PainterEffectsF.Free;
-  QuickPreviewF.Free;
-  PainterQBF.Free;
-  inherited;
 end;
 
 procedure TJvDrawImage.SetPolygonChecked(const Value: Boolean);

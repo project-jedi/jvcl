@@ -48,7 +48,6 @@ type
     procedure SetDefaultSystemCaptionInfo; override;
   public
     constructor Create(ADockStyle: TJvDockBasicStyle); override;
-    destructor Destroy; override;
   end;
 
   TJvDockVSNETTabServerOption = class(TJvDockVIDTabServerOption)
@@ -99,7 +98,6 @@ type
     FVisible: Boolean;
   public
     constructor Create(ABlock: TJvDockVSBlock; AForm: TForm; AWidth: Integer; AIndex: Integer); virtual;
-    destructor Destroy; override;
   end;
 
   TJvDockBlockType = (btConjoinBlock, btTabBlock);
@@ -263,7 +261,6 @@ type
     procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure CreateVSChannel;
     procedure DestroyVSChannel;
     procedure DoAutoHideControl(Control: TWinControl);
@@ -282,7 +279,6 @@ type
     procedure SetParent(AParent: TWinControl); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure ShowDockPanel(MakeVisible: Boolean; Client: TControl;
       PanelSizeFrom: TJvDockSetDockPanelSizeFrom); override;
     property VSChannel: TJvDockVSChannel read GetVSChannel;
@@ -351,7 +347,6 @@ type
   public
     constructor Create(DockSite: TWinControl;
       DockZoneClass: TJvDockZoneClass); override;
-    destructor Destroy; override;
   end;
 
   TJvDockVSNETTabSheet = class(TJvDockVIDTabSheet)
@@ -370,7 +365,6 @@ type
 
   TJvDockVSNETTabPageControl = class(TJvDockVIDTabPageControl)
   protected
-    procedure CreatePanel; override;
     procedure ShowControl(AControl: TControl); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -471,7 +465,6 @@ type
     procedure OnCustomTimer(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure PopupForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer); virtual;
     procedure HideForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer); virtual;
   end;
@@ -950,11 +943,6 @@ begin
   CaptionRightOffset := 5;
 end;
 
-destructor TJvDockVSNETTree.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TJvDockVSNETTree.BeginDrag(Control: TControl; Immediate: Boolean;
   Threshold: Integer);
 begin
@@ -1352,11 +1340,6 @@ begin
   SystemInfo := True;
 end;
 
-destructor TJvDockVSNETConjoinServerOption.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TJvDockVSNETConjoinServerOption.SetDefaultSystemCaptionInfo;
 begin
   inherited SetDefaultSystemCaptionInfo;
@@ -1476,11 +1459,6 @@ begin
   inherited Create(AOwner);
   TabSheetClass := TJvDockVSNETTabSheet;
   TabPanelClass := TJvDockVSNETTabPanel;
-end;
-
-procedure TJvDockVSNETTabPageControl.CreatePanel;
-begin
-  inherited CreatePanel;
 end;
 
 procedure TJvDockVSNETTabPageControl.ShowControl(AControl: TControl);
@@ -2276,11 +2254,6 @@ begin
   FVSChannelClass := TJvDockVSChannel;
 end;
 
-destructor TJvDockVSNETPanel.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TJvDockVSNETPanel.CreateVSChannel;
 begin
   if (FVSChannelClass <> nil) and
@@ -2393,11 +2366,6 @@ begin
   FVisible := AForm.Visible;
 end;
 
-destructor TJvDockVSPane.Destroy;
-begin
-  inherited Destroy;
-end;
-
 //=== TJvDockVSPopupPanel ====================================================
 
 constructor TJvDockVSPopupPanel.Create(AOwner: TComponent);
@@ -2412,11 +2380,6 @@ begin
   end;
   Anchors := [akLeft, akRight, akTop, akBottom];
   BoundsRect := Rect(0, 0, 0, 0);
-end;
-
-destructor TJvDockVSPopupPanel.Destroy;
-begin
-  inherited Destroy;
 end;
 
 function TJvDockVSPopupPanel.CreateDockManager: IDockManager;
@@ -2841,11 +2804,6 @@ begin
   FState := asPopup;
 end;
 
-destructor TPopupPanelAnimate.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TPopupPanelAnimate.HideForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer);
 begin
   if FVSChannel <> nil then
@@ -3031,8 +2989,7 @@ begin
   FTabColor := clBtnFace;
 end;
 
-procedure TJvDockVSNETChannelOption.ResetDockClientOption(
-  ADockClient: TJvDockClient);
+procedure TJvDockVSNETChannelOption.ResetDockClientOption(ADockClient: TJvDockClient);
 var
   VSChannel: TJvDockVSChannel;
 

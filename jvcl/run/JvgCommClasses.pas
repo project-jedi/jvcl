@@ -840,7 +840,7 @@ end;
 
 constructor TJvgIllumination.Create;
 begin
-  inherited;
+  inherited Create;
   //..defaults
   FShadowDepth := 2;
 end;
@@ -859,7 +859,7 @@ end;
 
 constructor TJvgLabelTextStyles.Create;
 begin
-  inherited;
+  inherited Create;
   //..defaults
   FActive := fstRaised;
   FPassive := fstRaised;
@@ -902,7 +902,7 @@ end;
 
 constructor TJvgCustomTextColors.Create;
 begin
-  inherited;
+  inherited Create;
   //..defaults
   FText := clBlack;
   FTextDisabled := clGray;
@@ -975,7 +975,7 @@ end;
 
 constructor TJvgCustomLabelColors.Create;
 begin
-  inherited;
+  inherited Create;
   //..defaults
   FTextActive := clBlack;
   FDelineateActive := clWhite;
@@ -1052,7 +1052,7 @@ end;
 
 constructor TJvgGroupBoxColors.Create;
 begin
-  inherited;
+  inherited Create;
   //..defaults
   FCaption := clBtnFace;
   FCaptionActive := clBtnFace;
@@ -1099,7 +1099,7 @@ end;
 
 constructor TJvgExtBevelOptions.Create;
 begin
-  inherited;
+  inherited Create;
   //..defaults
   FActive := True;
   FBevelPenStyle := psSolid;
@@ -1155,7 +1155,7 @@ destructor TJvgCustomListBoxItemStyle.Destroy;
 begin
   FFont.Free;
   FBevel.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvgCustomListBoxItemStyle.SetOnChanged(Value: TNotifyEvent);
@@ -1218,7 +1218,7 @@ destructor TJvgListBoxItemStyle.Destroy;
 begin
   FGradient.Free;
   FTextGradient.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvgListBoxItemStyle.SetOnChanged(Value: TNotifyEvent);
@@ -1238,7 +1238,7 @@ end;
 destructor TJvgAskListBoxItemStyle.Destroy;
 begin
   FBtnFont.Free;
-  inherited;
+  inherited Destroy; 
 end;
 
 procedure TJvgAskListBoxItemStyle.SetBtnColor(Value: TColor);
@@ -1272,7 +1272,7 @@ end;
 
 constructor TJvgCustomBoxStyle.Create;
 begin
-  inherited;
+  inherited Create;
   FPenStyle := psSolid;
   FHighlightColor := clBtnHighlight;
   FShadowColor := clBtnShadow;
@@ -1309,7 +1309,7 @@ end;
 
 constructor TJvgCustomTextBoxStyle.Create;
 begin
-  inherited;
+  inherited Create;
   FTextColor := clBlack;
   FBackgroundColor := clWindow;
 end;
@@ -1336,7 +1336,7 @@ end;
 
 constructor TJvgBevelLines.Create;
 begin
-  inherited;
+  inherited Create;
   FStyle := bvLowered;
   FThickness := 1;
 end;

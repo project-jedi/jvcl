@@ -48,7 +48,6 @@ type
     procedure ResetDockControlOption; override;
   public
     constructor Create(ADockStyle: TJvDockBasicStyle); override;
-    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   published
     property BorderWidth: Integer read FBorderWidth write SetBorderWidth default 4;
@@ -69,7 +68,6 @@ type
     procedure CreateTabServerOption(var Option: TJvDockBasicTabServerOption); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     function CanSetEachOtherDocked(ADockBaseControl: TJvDockBaseControl): Boolean; override;
     {$IFNDEF USEJVCL}
     function GetControlName: string; override;
@@ -118,7 +116,6 @@ type
     procedure DoSetChildSizeStyle(ZoneSizeStyle: TJvDockZoneSizeStyle);
   public
     constructor Create(Tree: TJvDockTree); override;
-    destructor Destroy; override;
     procedure Insert(DockSize: Integer; Hide: Boolean); override;
     procedure Remove(DockSize: Integer; Hide: Boolean); override;
     procedure InsertOrRemove(DockSize: Integer; Insert: Boolean; Hide: Boolean); override;
@@ -237,11 +234,6 @@ begin
   ConjoinPanelZoneClass := TJvDockVCZone;
   ConjoinServerOptionClass := TJvDockVCConjoinServerOption;
   TabServerOptionClass := TJvDockVCTabServerOption;
-end;
-
-destructor TJvDockVCStyle.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvDockVCStyle.AssignConjoinServerOption(APanel: TJvDockCustomPanel);
@@ -1383,11 +1375,6 @@ begin
   FExpandButtonDown := False;
 end;
 
-destructor TJvDockVCZone.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TJvDockVCZone.DoSetChildSizeStyle(ZoneSizeStyle: TJvDockZoneSizeStyle);
 var
   Zone: TJvDockVCZone;
@@ -2062,11 +2049,6 @@ constructor TJvDockVCConjoinServerOption.Create(ADockStyle: TJvDockBasicStyle);
 begin
   inherited Create(ADockStyle);
   BorderWidth := 4;
-end;
-
-destructor TJvDockVCConjoinServerOption.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvDockVCConjoinServerOption.Assign(Source: TPersistent);
