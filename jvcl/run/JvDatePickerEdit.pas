@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Peter Thörnqvist.
 
-Last Modified: 2003-11-10
+Last Modified: 2004-03-03
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -110,6 +110,7 @@ type
     FDateError: Boolean;
     FDeleting: Boolean;
     FDateFigures: TJvDateFigures;
+    FInternalDateFormat,
     FDateFormat: string;
     FDropFo: TJvDropCalendar;
     FEnableValidation: Boolean;
@@ -129,7 +130,7 @@ type
     function IsEmptyMaskText(const AText: string): Boolean; //TODO: make IsEmptyMaskText protected
     function AttemptTextToDate(const AText: string; var ADate: TDateTime;
       const AForce: Boolean = False; const ARaise: Boolean = False): Boolean;
-    function DateFormatToEditMask(const ADateFormat: string): string;
+    function DateFormatToEditMask(var ADateFormat: string): string;
     function DateToText(const ADate: TDateTime): string;
     procedure ParseFigures(var AFigures: TJvDateFigures; AFormat: string);
     procedure RaiseNoDate;
@@ -390,7 +391,7 @@ end;
 
 function TJvCustomDatePickerEdit.DateToText(const ADate: TDateTime): string;
 begin
-  Result := FormatDateTime(DateFormat, ADate);
+  Result := FormatDateTime(FInternalDateFormat, ADate);
 end;
 
 function TJvCustomDatePickerEdit.GetDate: TDateTime;
@@ -494,7 +495,7 @@ begin
     OldDate := ADate;
     OldFormat := ShortDateFormat;
     try
-      ShortDateFormat := Self.DateFormat;
+      ShortDateFormat := FInternalDateFormat;
       try
         if AllowNoDate and IsEmptyMaskText(AText) then
           ADate := 0.0
@@ -698,22 +699,22 @@ begin
 end;
 
 function TJvCustomDatePickerEdit.DateFormatToEditMask(
-  const ADateFormat: string): string;
+  var ADateFormat: string): string;
 begin
+  StrReplace(ADateFormat, 'dddddd', LongDateFormat, []);
+  StrReplace(ADateFormat, 'ddddd', ShortDateFormat, []);
+  StrReplace(ADateFormat, 'dddd', '', []); // unsupported: DoW as full name
+  StrReplace(ADateFormat, 'ddd', '', []); // unsupported: DoW as abbrev
+  StrReplace(ADateFormat, 'MMMM', 'MM', []);
+  StrReplace(ADateFormat, 'MMM', 'M', []);
   Result := ADateFormat;
-  StrReplace(Result, 'dddddd', LongDateFormat, []);
-  StrReplace(Result, 'ddddd', ShortDateFormat, []);
-  StrReplace(Result, 'dddd', '', []); // unsupported: DoW as full name
-  StrReplace(Result, 'ddd', '', []); // unsupported: DoW as abbrev
   StrReplace(Result, 'dd', '00', []);
   StrReplace(Result, 'd', '90', []);
-  StrReplace(Result, 'mmmm', '90', [rfIgnoreCase]);
-  StrReplace(Result, 'mmm', '00', [rfIgnoreCase]);
-  StrReplace(Result, 'mm', '00', [rfIgnoreCase]);
-  StrReplace(Result, 'm', '90', [rfIgnoreCase]);
+  StrReplace(Result, 'MM', '00', []);
+  StrReplace(Result, 'M', '90', []);
   StrReplace(Result, 'yyyy', '9900', []);
   StrReplace(Result, 'yy', '00', []);
-  StrReplace(Result, DateSeparator, '/', [rfReplaceAll]);
+//  StrReplace(Result, DateSeparator, '/', [rfReplaceAll]);
   Result := '!' + Trim(Result) + ';1;_';
 end;
 
@@ -725,8 +726,9 @@ end;
 procedure TJvCustomDatePickerEdit.SetDateFormat(const AValue: string);
 begin
   FDateFormat := AValue;
-  ParseFigures(FDateFigures, FDateFormat);
-  FMask := DateFormatToEditMask(FDateFormat);
+  FInternalDateFormat := FDateFormat;
+  FMask := DateFormatToEditMask(FInternalDateFormat);
+  ParseFigures(FDateFigures, FInternalDateFormat);
   BeginInternalChange;
   try
     EditMask := EmptyStr;
