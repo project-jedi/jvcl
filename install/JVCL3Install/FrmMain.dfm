@@ -707,8 +707,8 @@ object FormMain: TFormMain
     Width = 185
     Height = 17
     Hint = 
-      'Activate this option if you are a JVCL developer.'#13#10'This adds the' +
-      ' \run and \design directory to the library paths.'
+      'Activate this option if you do not want the installer to'#13#10'change' +
+      ' the IDE'#39's settings but compile the packages.'
     Caption = 'Compile only (error check)'
     ParentShowHint = False
     ShowHint = True
