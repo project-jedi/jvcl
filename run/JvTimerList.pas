@@ -60,10 +60,11 @@ type
   TAllTimersEvent = procedure(Sender: TObject; Handle: Longint) of object;
 
   TJvTimerEvent = class;
-  TJvTimerList  = class;
+  TJvTimerList = class;
   {$IFNDEF COMPILER6_UP}
   TCollectionNotification = (cnAdded, cnDeleted);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
+
   // (rom) used THandle where needed
   TJvTimerEvents = class(TOwnedCollection)
   private
@@ -71,15 +72,16 @@ type
     FStartInterval: Longint;
     FSequence: Longint;
     FParent: TJvTimerList;
-    function GetItem(Index: integer): TJvTimerEvent;
-    procedure SetItem(Index: integer; const Value: TJvTimerEvent);
+    function GetItem(Index: Integer): TJvTimerEvent;
+    procedure SetItem(Index: Integer; const Value: TJvTimerEvent);
   protected
     procedure CalculateInterval(StartTicks: Longint);
     procedure UpdateEvents(StartTicks: Longint);
     function ProcessEvents: Boolean;
-    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); {$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification);
+      {$IFDEF COMPILER6_UP} override; {$ENDIF}
   public
-    constructor Create(AOwner:TPersistent);
+    constructor Create(AOwner: TPersistent);
     procedure Activate;
     procedure Deactivate;
     procedure DeleteByHandle(AHandle: THandle); virtual;
@@ -89,10 +91,10 @@ type
     function GetEnabledCount: Integer;
     procedure Sort;
 
-    function Add:TJvTimerEvent;
-    procedure Assign(Source:TPersistent);override;
-    property Items[Index:integer]:TJvTimerEvent read GetItem write SetItem;default;
-    property EnabledCount:Integer read GetEnabledCount;
+    function Add: TJvTimerEvent;
+    procedure Assign(Source: TPersistent); override;
+    property Items[Index: Integer]: TJvTimerEvent read GetItem write SetItem; default;
+    property EnabledCount: Integer read GetEnabledCount;
   end;
 
   TJvTimerEvent = class(TCollectionItem)
@@ -117,7 +119,7 @@ type
     property Handle: THandle read FHandle;
     property ExecCount: Integer read FExecCount;
     property TimerList: TJvTimerList read FParentList;
-    constructor Create(ACollection:TCollection);override;
+    constructor Create(ACollection: TCollection); override;
   published
     property Cycled: Boolean read FCycled write FCycled default True;
     property RepeatCount: Integer read FRepeatCount write SetRepeatCount default 0;
@@ -162,11 +164,11 @@ const
   MaxTimerInterval: Longint = High(Longint);
 
 var
-  IsDesigning:Boolean = false;
+  IsDesigning: Boolean = False;
 
 //=== TJvTimerEvent ==========================================================
 
-constructor TJvTimerEvent.Create(ACollection:TCollection);
+constructor TJvTimerEvent.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
   FCycled := True;
@@ -246,7 +248,7 @@ constructor TJvTimerList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   IsDesigning := csDesigning in ComponentState;
-  FEvents := TJvTimerEvents.Create(self);
+  FEvents := TJvTimerEvents.Create(Self);
   FWndHandle := INVALID_HANDLE_VALUE;
   Events.Deactivate;
 end;
@@ -316,21 +318,21 @@ end;
 
 procedure TJvTimerList.UpdateTimer;
 var
-  FTimerInterval: Cardinal;
+  TimerInterval: Cardinal;
 begin
   if not (csDesigning in ComponentState) then
   begin
     if Events.FInterval <= MaxTimerInterval then
-      FTimerInterval := Events.FInterval
+      TimerInterval := Events.FInterval
     else
     if (Events.FInterval - Events.FStartInterval) <= MaxTimerInterval then
     begin
-      FTimerInterval := Cardinal(Events.FInterval - Events.FStartInterval);
+      TimerInterval := Cardinal(Events.FInterval - Events.FStartInterval);
       Events.FStartInterval := 0;
     end
     else
     begin
-      FTimerInterval := MaxTimerInterval;
+      TimerInterval := MaxTimerInterval;
       Events.FStartInterval := Events.FStartInterval + MaxTimerInterval;
     end;
     if not (csDesigning in ComponentState) and (FWndHandle <> INVALID_HANDLE_VALUE) then
@@ -340,7 +342,7 @@ begin
         Events.Deactivate
       else
       if Events.FInterval > 0 then
-        if SetTimer(FWndHandle, 1, FTimerInterval, nil) = 0 then
+        if SetTimer(FWndHandle, 1, TimerInterval, nil) = 0 then
         begin
           Events.Deactivate;
           raise EOutOfResources.Create(SNoTimers);
@@ -353,7 +355,6 @@ procedure TJvTimerList.SetEvents(const Value: TJvTimerEvents);
 begin
   FEvents.Assign(Value);
 end;
-
 
 procedure TJvTimerList.SetActive(Value: Boolean);
 var
@@ -395,7 +396,15 @@ begin
     FOnTimers(Self, Event.Handle);
 end;
 
-{ TJvTimerEvents }
+//===TJvTimerEvents ==========================================================
+
+constructor TJvTimerEvents.Create(AOwner: TPersistent);
+begin
+  if not (AOwner is TJvTimerList) then
+    raise EJVCLException.Create(RsEOwnerMustBeTJvTimerList);
+  inherited Create(AOwner, TJvTimerEvent);
+  FParent := TJvTimerList(AOwner);
+end;
 
 procedure TJvTimerEvents.Activate;
 begin
@@ -408,21 +417,21 @@ begin
   {$IFNDEF COMPILER6_UP}
   // (p3) yuk! some hack...
   Notify(Result, cnAdded);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
-
 procedure TJvTimerEvents.Assign(Source: TPersistent);
-var i:integer;
+var
+  I: Integer;
 begin
   if Source is TJvTimerEvents then
   begin
     Clear;
-    for i := 0 to TJvTimerEvents(Source).Count - 1 do
-      Add.Assign(TJvTimerEvents(Source).Items[i]);
+    for I := 0 to TJvTimerEvents(Source).Count - 1 do
+      Add.Assign(TJvTimerEvents(Source).Items[I]);
     Exit;
   end;
-  inherited;
+  inherited Assign(Source);
 end;
 
 procedure TJvTimerEvents.CalculateInterval(StartTicks: Integer);
@@ -471,14 +480,6 @@ begin
   end;
 end;
 
-constructor TJvTimerEvents.Create(AOwner: TPersistent);
-begin
-  if not (AOwner is TJvTimerList) then
-    raise EJVCLException.Create(RsEOwnerMustBeTJvTimerList);
-  inherited Create(AOwner,TJvTimerEvent);
-  FParent := TJvTimerList(AOwner); 
-end;
-
 procedure TJvTimerEvents.Deactivate;
 begin
   if not (csLoading in FParent.ComponentState) then
@@ -509,7 +510,7 @@ begin
       Inc(Result);
 end;
 
-function TJvTimerEvents.GetItem(Index: integer): TJvTimerEvent;
+function TJvTimerEvents.GetItem(Index: Integer): TJvTimerEvent;
 begin
   Result := TJvTimerEvent(inherited Items[Index]);
 end;
@@ -542,16 +543,16 @@ end;
 procedure TJvTimerEvents.Notify(Item: TCollectionItem;
   Action: TCollectionNotification);
 begin
-  inherited;
+  inherited Notify(Item, Action);
   if Action = cnAdded then
-  with TJvTimerEvent(Item) do
-  begin
-    FHandle := NextHandle;
-    FParentList := self.FParent;
-    CalculateInterval(GetTickCount);
-    Sort;
-    FParent.UpdateTimer;
-  end;
+    with TJvTimerEvent(Item) do
+    begin
+      FHandle := NextHandle;
+      FParentList := Self.FParent;
+      CalculateInterval(GetTickCount);
+      Sort;
+      FParent.UpdateTimer;
+    end;
 end;
 
 function TJvTimerEvents.ProcessEvents: Boolean;
@@ -582,8 +583,7 @@ begin
   end;
 end;
 
-procedure TJvTimerEvents.SetItem(Index: integer;
-  const Value: TJvTimerEvent);
+procedure TJvTimerEvents.SetItem(Index: Integer; const Value: TJvTimerEvent);
 begin
   inherited Items[Index] := Value;
 end;
@@ -616,8 +616,6 @@ begin
     if Items[I].Enabled then
       Items[I].FLastExecute := StartTicks;
 end;
-
-
 
 end.
 

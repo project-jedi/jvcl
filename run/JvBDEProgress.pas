@@ -33,16 +33,15 @@ uses
   Classes,
   Bde,
   Controls, DB, DBTables,
-  JvTimer {, JvComponent};
+  JvTimer, JvComponent;
 
 type
   TOnMessageChange = procedure(Sender: TObject; const Msg: string) of object;
   TOnPercentChange = procedure(Sender: TObject; PercentDone: Integer) of object;
   TOnProgressEvent = procedure(Sender: TObject; var AbortQuery: Boolean) of object;
-  TOnTraceEvent = procedure(Sender: TObject; Flag: TTraceFlag;
-    const Msg: string) of object;
+  TOnTraceEvent = procedure(Sender: TObject; Flag: TTraceFlag; const Msg: string) of object;
 
-  TJvDBProgress = class(TComponent)
+  TJvDBProgress = class(TJvComponent)
   private
     FActive: Boolean;
     FStartTime: Longint;
@@ -100,7 +99,16 @@ type
     property OnProgress: TOnProgressEvent read FOnProgress write FOnProgress;
   end;
 
-{ TJvDBCallback - for internal use only }
+implementation
+
+uses
+  Windows, Forms, SysUtils, StdCtrls, Math,
+  JvProgressUtils;
+
+const
+  cbQRYPROGRESS = cbRESERVED4;
+
+//=== TJvDBCallback ==========================================================
 
 type
   TJvDBCallbackEvent = function(CBInfo: Pointer): CBRType of object;
@@ -128,17 +136,6 @@ type
     destructor Destroy; override;
   end;
 
-implementation
-
-uses
-  Math,
-  Windows,
-  Forms, SysUtils, StdCtrls,
-  JvProgressUtils;
-
-const
-  cbQRYPROGRESS = cbRESERVED4;
-
 function BdeCallBack(CallType: CBType; Data: Longint; CBInfo: Pointer): CBRType; stdcall;
 begin
   if Data <> 0 then
@@ -148,8 +145,6 @@ begin
   else
     Result := cbrUSEDEF;
 end;
-
-//=== TJvDBCallback ==========================================================
 
 constructor TJvDBCallback.Create(AOwner: TObject; CBType: CBType;
   CBBufSize: Cardinal; CallbackEvent: TJvDBCallbackEvent;
@@ -239,7 +234,6 @@ begin
 end;
 
 //=== TJvSessionLink =========================================================
-
 
 type
   TJvSessionLink = class(TDatabase)
@@ -367,7 +361,7 @@ begin
           SizeOf(DBIQryProgress), QryProgressCallback, dcChain);
       end
       else
-        if not Value and (FGenProgressCallback <> nil) then
+      if not Value and (FGenProgressCallback <> nil) then
       begin
         Sessions.CurrentSession := GetDBSession;
         FGenProgressCallback.Free;
@@ -587,10 +581,8 @@ begin
       Result := cbrABORT;
   end;
   with CallInfo^ do
-  begin
     PcntDone := (stepsCompleted / Max(1, stepsInQry)) *
       (elemCompleted / Max(1, totElemInStep));
-  end;
   SetPercent(Round(PcntDone * 100));
 end;
 

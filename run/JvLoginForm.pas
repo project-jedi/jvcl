@@ -58,7 +58,7 @@ type
     FAllowEmptyPassword: Boolean;
     FUpdateCaption: TUpdateCaption;
     FAppStorage: TJvCustomAppStorage;
-    FAppStoragePath : String;
+    FAppStoragePath: string;
     FLocked: Boolean;
     FUnlockDlgShowing: Boolean;
     FSaveOnRestore: TNotifyEvent;
@@ -68,11 +68,11 @@ type
     FOnUnlockApp: TUnlockAppEvent;
     FOnIconDblClick: TNotifyEvent;
     {$IFDEF VCL}
-    FPasswordChar: char;
-    {$ENDIF}
+    FPasswordChar: Char;
+    {$ENDIF VCL}
     function GetLoggedUser: string;
     function UnlockHook(var Msg: TMessage): Boolean;
-    procedure SeTJvAppStorage(Value : TJvCustomAppStorage);
+    procedure SetAppStorage(Value: TJvCustomAppStorage);
   protected
     function CheckUnlock(const UserName, Password: string): Boolean; dynamic;
     function CreateLoginForm(UnlockMode: Boolean): TJvLoginForm; virtual;
@@ -90,15 +90,15 @@ type
     property MaxPasswordLen: Integer read FMaxPasswordLen write FMaxPasswordLen default 0;
     property UpdateCaption: TUpdateCaption read FUpdateCaption write FUpdateCaption default ucNoChange;
     {$IFDEF VCL}
-    property PasswordChar:char read FPasswordChar write FPasswordChar default '*';
-    {$ENDIF}
+    property PasswordChar: Char read FPasswordChar write FPasswordChar default '*';
+    {$ENDIF VCL}
     property AfterLogin: TNotifyEvent read FAfterLogin write FAfterLogin;
     property BeforeLogin: TNotifyEvent read FBeforeLogin write FBeforeLogin;
     property OnUnlock: TCheckUnlockEvent read FOnUnlock write FOnUnlock; { obsolete }
     property OnUnlockApp: TUnlockAppEvent read FOnUnlockApp write FOnUnlockApp;
     property OnIconDblClick: TNotifyEvent read FOnIconDblClick write FOnIconDblClick;
-    property AppStorage: TJvCustomAppStorage read FAppStorage write SeTJvAppStorage;
-    property AppStoragePath : String read FAppStoragePath write FAppStoragePath;
+    property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
+    property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -226,7 +226,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomLogin.SeTJvAppStorage(Value : TJvCustomAppStorage);
+procedure TJvCustomLogin.SetAppStorage(Value : TJvCustomAppStorage);
 begin
   FAppStorage := Value;
 end;
@@ -370,8 +370,8 @@ begin
     end;
     PasswordEdit.MaxLength := FMaxPasswordLen;
     {$IFDEF VCL}
-    PasswordEdit.PasswordChar := PassWordChar;
-    {$ENDIF}
+    PasswordEdit.PasswordChar := PasswordChar;
+    {$ENDIF VCL}
     AttemptNumber := Self.AttemptNumber;
   end;
 end;
@@ -408,9 +408,7 @@ function TJvCustomLogin.UnlockHook(var Msg: TMessage): Boolean;
       Popup := GetLastActivePopup(Application.Handle);
       if (Popup <> 0) and IsWindowVisible(Popup) and
         (WindowClassName(Popup) = TJvLoginForm.ClassName) then
-      begin
         SetForegroundWindow(Popup);
-      end;
       Result := False;
       Exit;
     end;
@@ -440,7 +438,7 @@ begin
         if WParam <> 0 then
           UnlockHook := not DoUnlock;
       WM_SYSCOMMAND:
-        if (WParam and $FFF0 = SC_RESTORE) or (WParam and $FFF0 = SC_ZOOM) then
+        if ((WParam and $FFF0) = SC_RESTORE) or ((WParam and $FFF0) = SC_ZOOM) then
           UnlockHook := not DoUnlock;
     end;
   end;
@@ -455,10 +453,8 @@ begin
   Loading := csLoading in ComponentState;
   inherited Loaded;
   if not (csDesigning in ComponentState) and Loading then
-  begin
     if Active and not Login then
       TerminateApplication;
-  end;
 end;
 
 procedure TJvLoginDialog.OkButtonClick(Sender: TObject);
@@ -496,13 +492,13 @@ end;
 procedure TJvLoginDialog.WriteUserName(const UserName: string);
 begin
   if Assigned(AppStorage) then
-    AppStorage.WriteString (AppStorage.ConcatPaths([AppStoragePath, RsLastLoginUserName]), UserName);
+    AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, RsLastLoginUserName]), UserName);
 end;
 
 function TJvLoginDialog.ReadUserName(const UserName: string): string;
 begin
   if Assigned(AppStorage) then
-    Result := AppStorage.ReadString (AppStorage.ConcatPaths([AppStoragePath, RsLastLoginUserName]), UserName)
+    Result := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, RsLastLoginUserName]), UserName)
   else
     Result := UserName;
 end;
@@ -538,7 +534,7 @@ begin
   {$IFDEF VCL}
   if Icon.Empty then
     Icon.Handle := LoadIcon(0, IDI_APPLICATION);
-  {$ENDIF}
+  {$ENDIF VCL}
   AppIcon.Picture.Assign(Icon);
   AppTitleLabel.Caption := Format(RsAppTitleLabel, [Application.Title]);
   PasswordLabel.Caption := RsPasswordLabel;

@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Robert Love [rlove@slcdug.org].
-Lionel Renaud
+Lionel Reynaud
 
 Last Modified: 2004-01-10
 

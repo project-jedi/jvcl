@@ -274,10 +274,10 @@ begin
     if Assigned(FRasDial) then
     begin
       if FPath <> '' then
-        r := FRasDial(nil, PChar(FPath), @RASDialParams, $FFFFFFFF, FHandle, FConnection)
+        R := FRasDial(nil, PChar(FPath), @RASDialParams, $FFFFFFFF, FHandle, FConnection)
       else
-        r := FRasDial(nil, nil, @RASDialParams, $FFFFFFFF, FHandle, FConnection);
-      Result := r = 0;
+        R := FRasDial(nil, nil, @RASDialParams, $FFFFFFFF, FHandle, FConnection);
+      Result := R = 0;
     end
     else
       Result := False;
@@ -361,7 +361,7 @@ begin
           Rc := 0;
           Break;
         end;
-        sleep(10);
+        Sleep(10);
         Inc(I);
         if I > 9 then
           Break; // don't want an infinite loop...
@@ -403,9 +403,7 @@ begin
     RasDial.dwSize := SizeOf(TRasDialParams);
 
     if Assigned(FRasGetEntryDialParams) then
-    begin
       if FRasGetEntryDialParams(nil, RasDial, Res) = 0 then
-      begin
         with RasDial do
         begin
           FUsername := StrPas(szUsername);
@@ -414,8 +412,6 @@ begin
           FCallBack := StrPas(szCallbackNumber);
           FPhone := StrPas(szPhoneNumber);
         end;
-      end;
-    end;
   end;
 end;
 
@@ -496,7 +492,7 @@ begin
     end;
   end
   else
-    Msg.Result := DefWindowProc(FHandle, Msg.Msg, Msg.wParam, Msg.lParam);
+    Msg.Result := DefWindowProc(FHandle, Msg.Msg, Msg.WParam, Msg.LParam);
 end;
 
 function TJvRas32.GetPhoneBook: TStrings;
