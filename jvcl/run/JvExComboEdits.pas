@@ -82,7 +82,7 @@ type
   public
     procedure Dispatch(var Msg); override;
   protected
-   // IJvWinControlEvents
+   // IJvStdControlEvents
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -106,19 +106,20 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
-  private
-    FDoubleBuffered: Boolean;
-    function GetColor: TColor;
-    procedure SetColor(Value: TColor);
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
-    property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -227,7 +228,7 @@ type
   public
     procedure Dispatch(var Msg); override;
   protected
-   // IJvWinControlEvents
+   // IJvStdControlEvents
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -251,19 +252,20 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
-  private
-    FDoubleBuffered: Boolean;
-    function GetColor: TColor;
-    procedure SetColor(Value: TColor);
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
-    property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -373,7 +375,7 @@ type
   public
     procedure Dispatch(var Msg); override;
   protected
-   // IJvWinControlEvents
+   // IJvStdControlEvents
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -397,19 +399,20 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
-  private
-    FDoubleBuffered: Boolean;
-    function GetColor: TColor;
-    procedure SetColor(Value: TColor);
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
-    property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -525,7 +528,7 @@ type
   public
     procedure Dispatch(var Msg); override;
   protected
-   // IJvWinControlEvents
+   // IJvStdControlEvents
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -549,19 +552,20 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
-  private
-    FDoubleBuffered: Boolean;
-    function GetColor: TColor;
-    procedure SetColor(Value: TColor);
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
-    property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -786,11 +790,12 @@ asm
     JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
+
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvExCustomComboEdit.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -800,7 +805,7 @@ end;
 
 procedure TJvExCustomComboEdit.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -839,11 +844,6 @@ function TJvExCustomComboEdit.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-procedure TJvExCustomComboEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
-end;
-
 function TJvExCustomComboEdit.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -857,23 +857,28 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExCustomComboEdit.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExCustomComboEdit.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExCustomComboEdit.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
+procedure TJvExCustomComboEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
+
 procedure TJvExCustomComboEdit.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
-end;
-
-function TJvExCustomComboEdit.GetColor: TColor;
-begin
-  Result := Brush.Color;
-end;
-
-procedure TJvExCustomComboEdit.SetColor(Value: TColor);
-begin
-  if Brush.Color <> Value then
-  begin
-    inherited Color := Value;
-    Brush.Color := Value;
-  end;
 end;
 
 function TJvExCustomComboEdit.GetDoubleBuffered: Boolean;
@@ -968,8 +973,8 @@ procedure TJvExCustomComboEdit.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
-{$ENDIF VisualCLX}
 
+{$ENDIF VisualCLX}
 procedure TJvExCustomComboEdit.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
@@ -1043,7 +1048,6 @@ begin
 end;
 
 {$ENDIF VisualCLX}
-
 
 
 {$IFDEF VCL}
@@ -1175,11 +1179,12 @@ asm
     JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
+
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvExComboEdit.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -1189,7 +1194,7 @@ end;
 
 procedure TJvExComboEdit.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -1228,11 +1233,6 @@ function TJvExComboEdit.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-procedure TJvExComboEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
-end;
-
 function TJvExComboEdit.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -1246,23 +1246,28 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExComboEdit.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExComboEdit.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExComboEdit.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
+procedure TJvExComboEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
+
 procedure TJvExComboEdit.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
-end;
-
-function TJvExComboEdit.GetColor: TColor;
-begin
-  Result := Brush.Color;
-end;
-
-procedure TJvExComboEdit.SetColor(Value: TColor);
-begin
-  if Brush.Color <> Value then
-  begin
-    inherited Color := Value;
-    Brush.Color := Value;
-  end;
 end;
 
 function TJvExComboEdit.GetDoubleBuffered: Boolean;
@@ -1357,8 +1362,8 @@ procedure TJvExComboEdit.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
-{$ENDIF VisualCLX}
 
+{$ENDIF VisualCLX}
 procedure TJvExComboEdit.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
@@ -1432,7 +1437,6 @@ begin
 end;
 
 {$ENDIF VisualCLX}
-
 
 
 
@@ -1572,11 +1576,12 @@ asm
     JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
+
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvExCustomComboMaskEdit.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -1586,7 +1591,7 @@ end;
 
 procedure TJvExCustomComboMaskEdit.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -1625,11 +1630,6 @@ function TJvExCustomComboMaskEdit.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-procedure TJvExCustomComboMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
-end;
-
 function TJvExCustomComboMaskEdit.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -1643,23 +1643,28 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExCustomComboMaskEdit.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExCustomComboMaskEdit.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExCustomComboMaskEdit.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
+procedure TJvExCustomComboMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
+
 procedure TJvExCustomComboMaskEdit.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
-end;
-
-function TJvExCustomComboMaskEdit.GetColor: TColor;
-begin
-  Result := Brush.Color;
-end;
-
-procedure TJvExCustomComboMaskEdit.SetColor(Value: TColor);
-begin
-  if Brush.Color <> Value then
-  begin
-    inherited Color := Value;
-    Brush.Color := Value;
-  end;
 end;
 
 function TJvExCustomComboMaskEdit.GetDoubleBuffered: Boolean;
@@ -1756,8 +1761,8 @@ procedure TJvExCustomComboMaskEdit.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
-{$ENDIF VisualCLX}
 
+{$ENDIF VisualCLX}
 procedure TJvExCustomComboMaskEdit.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
@@ -1831,7 +1836,6 @@ begin
 end;
 
 {$ENDIF VisualCLX}
-
 
 procedure TJvExCustomComboMaskEdit.DoBeepOnError;
 begin
@@ -1975,11 +1979,12 @@ asm
     JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
+
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvExComboMaskEdit.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -1989,7 +1994,7 @@ end;
 
 procedure TJvExComboMaskEdit.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -2028,11 +2033,6 @@ function TJvExComboMaskEdit.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-procedure TJvExComboMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
-end;
-
 function TJvExComboMaskEdit.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -2046,23 +2046,28 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExComboMaskEdit.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExComboMaskEdit.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExComboMaskEdit.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
+procedure TJvExComboMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
+
 procedure TJvExComboMaskEdit.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
-end;
-
-function TJvExComboMaskEdit.GetColor: TColor;
-begin
-  Result := Brush.Color;
-end;
-
-procedure TJvExComboMaskEdit.SetColor(Value: TColor);
-begin
-  if Brush.Color <> Value then
-  begin
-    inherited Color := Value;
-    Brush.Color := Value;
-  end;
 end;
 
 function TJvExComboMaskEdit.GetDoubleBuffered: Boolean;
@@ -2159,8 +2164,8 @@ procedure TJvExComboMaskEdit.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
-{$ENDIF VisualCLX}
 
+{$ENDIF VisualCLX}
 procedure TJvExComboMaskEdit.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
@@ -2234,7 +2239,6 @@ begin
 end;
 
 {$ENDIF VisualCLX}
-
 
 procedure TJvExComboMaskEdit.DoBeepOnError;
 begin

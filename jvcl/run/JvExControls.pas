@@ -109,8 +109,8 @@ type
     {$ENDIF VCL}
   end;
 
-  IJvWinControlEvents = interface(IPerformControl)
-    ['{B5F7FB62-78F0-481D-AFF4-7A24ED6776A0}']
+  IJvStdControlEvents = interface(IPerformControl)
+    ['{62259013-4F43-44BC-AA8C-9E862F9FEE36}']
     procedure DoBoundsChanged;
     procedure CursorChanged;
     procedure ShowingChanged;
@@ -121,12 +121,18 @@ type
     procedure DoSetFocus(FocusedWnd: HWND);  // WM_SETFOCUS
     procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
+  end;
+
+
+  IJvWinControlEvents = interface(IJvStdControlEvents)
+    ['{B5F7FB62-78F0-481D-AFF4-7A24ED6776A0}']
     {$IFDEF VisualCLX}
-    function GetColor: TColor;
     function GetDoubleBuffered: Boolean;
     procedure Paint;
     {$ENDIF VisualCLX}
   end;
+
+
 
   IJvCustomControlEvents = interface(IPerformControl)
     ['{7804BD3A-D7A5-4314-9259-6DE08A0DC38A}']
@@ -282,7 +288,7 @@ type
   public
     procedure Dispatch(var Msg); override;
   protected
-   // IJvWinControlEvents
+   // IJvStdControlEvents
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -306,19 +312,20 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
-  private
-    FDoubleBuffered: Boolean;
-    function GetColor: TColor;
-    procedure SetColor(Value: TColor);
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
-    property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -477,7 +484,7 @@ type
 
   {$UNDEF CONSTRUCTORCODE}
   {$DEFINE CONSTRUCTORCODE DoubleBuffered := True;}
-  TJvExCustomControl = class(TCustomControl,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExCustomControl = class(TCustomControl,   IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -503,7 +510,7 @@ type
   public
     procedure Dispatch(var Msg); override;
   protected
-   // IJvWinControlEvents
+   // IJvStdControlEvents
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -527,19 +534,20 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
-  private
-    FDoubleBuffered: Boolean;
-    function GetColor: TColor;
-    procedure SetColor(Value: TColor);
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
-    property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -599,7 +607,7 @@ type
   {$UNDEF CONSTRUCTORCODE}
   {$DEFINE CONSTRUCTORCODE}
 
-  TJvExHintWindow = class(THintWindow,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExHintWindow = class(THintWindow,   IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -625,7 +633,7 @@ type
   public
     procedure Dispatch(var Msg); override;
   protected
-   // IJvWinControlEvents
+   // IJvStdControlEvents
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -649,19 +657,20 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
-  private
-    FDoubleBuffered: Boolean;
-    function GetColor: TColor;
-    procedure SetColor(Value: TColor);
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
-    property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -746,7 +755,7 @@ procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolea
   var FSavedHintColor: TColor; FHintColor: TColor; var Event: TNotifyEvent);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-procedure Control_MouseEnter(Instance: TControl; var FMouseOver: Boolean;
+procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolean;
   var FSavedHintColor: TColor; FHintColor: TColor);
 {$ENDIF VisualCLX}
 
@@ -755,7 +764,7 @@ procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolea
   var FSavedHintColor: TColor; var Event: TNotifyEvent);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-procedure Control_MouseLeave(var FMouseOver: Boolean; FSavedHintColor: TColor);
+procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean; FSavedHintColor: TColor);
 {$ENDIF VisualCLX}
 
 function DefaultDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
@@ -1144,14 +1153,14 @@ procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolea
   var FSavedHintColor: TColor; FHintColor: TColor; var Event: TNotifyEvent);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-procedure Control_MouseEnter(Instance: TControl; var FMouseOver: Boolean;
+procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolean;
   var FSavedHintColor: TColor; FHintColor: TColor);
 {$ENDIF VisualCLX}
 begin
-  // (HEG) Control is nil iff Instance is the control that the mouse has left.
+  // (HEG) VCL: Control is nil iff Instance is the control that the mouse has left.
   // Otherwise this is just a notification that the mouse entered
   // one of it's child controls
-  if (Control = nil) and not FMouseOver and not (csDesigning in Instance.ComponentState) then
+  if {$IFDEF VCL}(Control = nil) and{$ENDIF} not FMouseOver and not (csDesigning in Instance.ComponentState) then
   begin
     FMouseOver := True;
     FSavedHintColor := Application.HintColor;
@@ -1172,13 +1181,13 @@ procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolea
   var FSavedHintColor: TColor; var Event: TNotifyEvent);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-procedure Control_MouseLeave(var FMouseOver: Boolean; FSavedHintColor: TColor);
+procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean; FSavedHintColor: TColor);
 {$ENDIF VisualCLX}
 begin
   // (HEG) Control is nil iff Instance is the control that the mouse has left.
   // Otherwise this is just a notification that the mouse left
   // one of it's child controls
-  if (Control = nil) and FMouseOver and not (csDesigning in Instance.ComponentState) then
+  if {$IFDEF VCL}(Control = nil) and{$ENDIF} FMouseOver and not (csDesigning in Instance.ComponentState) then
   begin
     FMouseOver := False;
     Application.HintColor := FSavedHintColor;
@@ -1236,25 +1245,19 @@ begin
     begin
       Pixmap := QPixmap_create(Instance.Width, Instance.Height, -1, QPixmapOptimization_DefaultOptim);
       // fill with parent's background if the control has a parent
-      if Instance.Parent <> nil then
-        QPixmap_fill(Pixmap, Instance.Parent.Handle, QWidget_x(Instance.Handle), QWidget_y(Instance.Handle));
+//      if Instance.Parent <> nil then
+//        QPixmap_fill(Pixmap, Instance.Parent.Handle, QWidget_x(Instance.Handle), QWidget_y(Instance.Handle));
       OriginalPainter := Canvas.Handle;
       Canvas.Handle := QPainter_create(Pixmap);
       TControlCanvas(Canvas).StartPaint;
-      {$IFDEF MSWINDOWS}
       QPainter_setClipRegion(Canvas.Handle, EventRegion);
       QPainter_setClipping(Canvas.Handle, True);
       R := Rect(0, 0, 0, 0);
       QRegion_boundingRect(EventRegion, @R);
-      {$ENDIF MSWINDOWS}
-      {$IFDEF LINUX}
-      // asn: region ignored, so paint all
-      R := Rect(0, 0, Width, Height);
-      {$ENDIF LINUX}
     end;
 
     try
-      Canvas.Brush.Color := Intf.GetColor;
+      Canvas.Brush.Color := Instance.Brush.Color;
       QPainter_setFont(Canvas.Handle, Font.Handle);
       QPainter_setPen(Canvas.Handle, Font.FontPen);
       Canvas.Font.Assign(Font);
@@ -1307,6 +1310,7 @@ begin
         TControlCanvas(Canvas).StopPaint;
         QPainter_destroy(Canvas.Handle);
         Canvas.Handle := OriginalPainter;
+        QPainter_setClipRegion(Canvas.Handle, EventRegion);
         if (R.Right - R.Left > 0) or (R.Bottom - R.Top > 0) then
           bitBlt(QPainter_device(Canvas.Handle), R.Left, R.Top,
             Pixmap, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
@@ -1405,17 +1409,22 @@ end;
 procedure TWidgetControl_ColorChanged(Instance: TWidgetControl);
 var
   TC: QColorH;
+  Intf: IJvWinControlEvents;
 begin
   with TWidgetControlAccessProtected(Instance) do
   begin
     HandleNeeded;
+    Instance.GetInterface(IJvWinControlEvents, Intf);
     if Bitmap.Empty then
     begin
       Palette.Color := Color;
       Brush.Color := Color;
-      TC := QColor(Color);
-      QWidget_setBackgroundColor(Handle, TC);
-      QColor_destroy(TC);
+      if not Intf.GetDoubleBuffered then
+      begin
+        TC := QColor(Color);
+        QWidget_setBackgroundColor(Handle, TC);
+        QColor_destroy(TC);
+      end;
     end;
     NotifyControls(CM_PARENTCOLORCHANGED);
     Invalidate;
@@ -1638,7 +1647,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExControl.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -1648,7 +1657,7 @@ end;
 
 procedure TJvExControl.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -1845,11 +1854,12 @@ asm
     JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
+
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvExWinControl.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -1859,7 +1869,7 @@ end;
 
 procedure TJvExWinControl.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -1898,11 +1908,6 @@ function TJvExWinControl.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-procedure TJvExWinControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
-end;
-
 function TJvExWinControl.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -1916,23 +1921,28 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExWinControl.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExWinControl.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExWinControl.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
+procedure TJvExWinControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
+
 procedure TJvExWinControl.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
-end;
-
-function TJvExWinControl.GetColor: TColor;
-begin
-  Result := Brush.Color;
-end;
-
-procedure TJvExWinControl.SetColor(Value: TColor);
-begin
-  if Brush.Color <> Value then
-  begin
-    inherited Color := Value;
-    Brush.Color := Value;
-  end;
 end;
 
 function TJvExWinControl.GetDoubleBuffered: Boolean;
@@ -2027,6 +2037,7 @@ procedure TJvExWinControl.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
+
 {$ENDIF VisualCLX}
 
 {$IFDEF VCL}
@@ -2123,7 +2134,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExGraphicControl.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -2133,7 +2144,7 @@ end;
 
 procedure TJvExGraphicControl.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -2361,11 +2372,12 @@ asm
     JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
+
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvExCustomControl.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -2375,7 +2387,7 @@ end;
 
 procedure TJvExCustomControl.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -2414,11 +2426,6 @@ function TJvExCustomControl.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-procedure TJvExCustomControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
-end;
-
 function TJvExCustomControl.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -2432,23 +2439,28 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExCustomControl.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExCustomControl.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExCustomControl.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
+procedure TJvExCustomControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
+
 procedure TJvExCustomControl.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
-end;
-
-function TJvExCustomControl.GetColor: TColor;
-begin
-  Result := Brush.Color;
-end;
-
-procedure TJvExCustomControl.SetColor(Value: TColor);
-begin
-  if Brush.Color <> Value then
-  begin
-    inherited Color := Value;
-    Brush.Color := Value;
-  end;
 end;
 
 function TJvExCustomControl.GetDoubleBuffered: Boolean;
@@ -2666,11 +2678,12 @@ asm
     JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
+
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvExHintWindow.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -2680,7 +2693,7 @@ end;
 
 procedure TJvExHintWindow.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -2719,11 +2732,6 @@ function TJvExHintWindow.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-procedure TJvExHintWindow.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
-end;
-
 function TJvExHintWindow.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -2737,23 +2745,28 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExHintWindow.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExHintWindow.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExHintWindow.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
+procedure TJvExHintWindow.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
+
 procedure TJvExHintWindow.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
-end;
-
-function TJvExHintWindow.GetColor: TColor;
-begin
-  Result := Brush.Color;
-end;
-
-procedure TJvExHintWindow.SetColor(Value: TColor);
-begin
-  if Brush.Color <> Value then
-  begin
-    inherited Color := Value;
-    Brush.Color := Value;
-  end;
 end;
 
 function TJvExHintWindow.GetDoubleBuffered: Boolean;
