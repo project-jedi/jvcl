@@ -1479,9 +1479,9 @@ type
   protected
     function ExistingValue: Boolean; override;
     function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; override;
-    function ReadValue: string; override;
     procedure WriteValue(Value: string); override;
   public
+    function ReadValue: string; override;
     class function New(const AParent: TJvCustomInspectorItem; const AName, ASection, AKey: string;
       const ATypeInfo: PTypeInfo; const AINIFile: TCustomIniFile): TJvCustomInspectorItem; reintroduce;overload;
     class function New(const AParent: TJvCustomInspectorItem; const ASection: string;
