@@ -29,6 +29,27 @@ program buildtarget;
 uses
   Windows;
 
+type
+  TTarget = record
+    Name: string;
+    PerName: string;
+    PerDir: string;
+  end;
+
+var
+  Version: string;
+  Edition: string;
+  Root: string;
+  JVCLRoot: string;
+  PkgDir: string;
+  UnitOutDir: string;
+  MakeOptions: string;
+
+  Editions: array of string = nil;
+  Targets: array of TTarget = nil;
+
+
+
 function ExtractFileDir(const S: string): string;
 var
   ps: Integer;
@@ -68,16 +89,6 @@ begin
   attr := GetFileAttributes(PChar(Filename));
   Result := (attr <> $FFFFFFFF) and (attr and FILE_ATTRIBUTE_DIRECTORY = 0);
 end;
-
-type
-  TTarget = record
-    Name: string;
-    PerName: string;
-    PerDir: string;
-  end;
-
-var
-  Targets: array of TTarget = nil;
 
 type
   IAttr = interface
@@ -289,15 +300,6 @@ begin
   end;
 end;
 
-var
-  Version: string;
-  Edition: string;
-  Root: string;
-  JVCLRoot: string;
-  PkgDir: string;
-  UnitOutDir: string;
-  Editions: array of string = nil;
-
 
 procedure LoadTargetNames;
 var
@@ -374,16 +376,30 @@ begin
   end;
 end;
 
+function Execute(const Cmd: string): Integer;
+var
+  ProcessInfo: TProcessInformation;
+  StartupInfo: TStartupInfo;
+begin
+  StartupInfo.cb := SizeOf(StartupInfo);
+  GetStartupInfo(StartupInfo);
+  if CreateProcess(nil, PChar(Cmd), nil, nil, True, 0, nil, nil, StartupInfo, ProcessInfo) then
+  begin
+    CloseHandle(ProcessInfo.hThread);
+    WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+    GetExitCodeProcess(ProcessInfo.hProcess, Cardinal(Result));
+    CloseHandle(ProcessInfo.hProcess);
+  end
+  else
+    Result := -1;
+end;
+
 var
   KeyName: string;
   reg: HKEY;
   len: Longint;
   RegTyp: LongWord;
-  MakeOptions, S: string;
-
-  ProcessInfo: TProcessInformation;
-  StartupInfo: TStartupInfo;
-  Cmd: string;
+  S: string;
   i, Count: Integer;
 begin
   JVCLRoot := ExtractFileDir(ParamStr(0)); // $(JVCL)\Packages\bin
@@ -472,27 +488,23 @@ begin
     SetEnvironmentVariable('ROOT', PChar(Root));
     SetEnvironmentVariable('JVCLROOT', PChar(JVCLRoot));
     SetEnvironmentVariable('VERSION', PChar(Version));
+    SetEnvironmentVariable('UNITOUTDIR', PChar(UnitOutDir));
+
+    if (UpCase(PkgDir[3]) = 'P') or (UpCase(PkgDir[3]) = 'S') then
+    begin
+      SetEnvironmentVariable('PKGDIR', PChar(Copy(PkgDir, 1, 2)));
+      SetEnvironmentVariable('EDITION', PChar(Copy(Edition, 1, 2)));
+      Execute('"' + Root + '\bin\make.exe" -f makefile.mak pg.exe');
+    end;
+
     SetEnvironmentVariable('EDITION', PChar(Edition));
     SetEnvironmentVariable('PKGDIR', PChar(PkgDir));
-    SetEnvironmentVariable('UNITOUTDIR', PChar(UnitOutDir));
-    Cmd := '"' + Root + '\bin\make.exe" -f makefile.mak' + MakeOptions;
 
-    StartupInfo.cb := SizeOf(StartupInfo);
-    GetStartupInfo(StartupInfo);
-    if CreateProcess(nil, PChar(Cmd), nil, nil, True, 0, nil, nil, StartupInfo, ProcessInfo) then
+    ExitCode := Execute('"' + Root + '\bin\make.exe" -f makefile.mak' + MakeOptions);
+    if ExitCode <> 0 then
     begin
-      CloseHandle(ProcessInfo.hThread);
-      WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
-      GetExitCodeProcess(ProcessInfo.hProcess, Cardinal(ExitCode));
-      CloseHandle(ProcessInfo.hProcess);
-      if ExitCode <> 0 then
-      begin
-        WriteLn('Press ENTER to continue');
-        ReadLn;
-      end;
-    end
-    else
-      Halt(1);
-
+      WriteLn('Press ENTER to continue');
+      ReadLn;
+    end;
   end;
 end.
