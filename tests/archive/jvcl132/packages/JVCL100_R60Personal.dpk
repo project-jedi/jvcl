@@ -234,7 +234,7 @@ contains
   JvStarfield in '..\Source\JvStarfield.pas',
   JvStartMenuBtn in '..\Source\JvStartMenuBtn.pas',
   JvStaticText in '..\Source\JvStaticText.pas',
-  JvStatusBar2 in '..\Source\JvStatusBar2.pas',
+  JvStatusBar in '..\Source\JvStatusBar.pas',
   JvStringGrid in '..\Source\JvStringGrid.pas',
   JvStringListToHtml in '..\Source\JvStringListToHtml.pas',
   JvStrToHtml in '..\Source\JvStrToHtml.pas',
@@ -254,7 +254,7 @@ contains
   JvTrayIcon in '..\Source\JvTrayIcon.pas',
   JvTreeView2 in '..\Source\JvTreeView2.pas',
   JvTypes in '..\Source\JvTypes.pas',
-  JvUpDown2 in '..\Source\JvUpDown2.pas',
+  JvUpDown in '..\Source\JvUpDown.pas',
   JvVigenereCipher in '..\Source\JvVigenereCipher.pas',
   JvVisualId3v1 in '..\Source\JvVisualId3v1.pas',
   JvVisualId3v2 in '..\Source\JvVisualId3v2.pas',
@@ -294,7 +294,6 @@ contains
   JvGroupBox in '..\Source\JvGroupBox.pas',
   JvReorderListBox in '..\Source\JvReorderListBox.pas',
   JvSyncSplitter in '..\Source\JvSyncSplitter.pas',
-  JvUpDown in '..\Source\JvUpDown.pas',
   JvPopupMemo in '..\Source\JvPopupMemo.pas',
   JvScrollEvStringGrid in '..\Source\JvScrollEvStringGrid.pas',
   JvSizeablePanel in '..\Source\JvSizeablePanel.pas',
@@ -375,5 +374,11 @@ contains
   JvDateTimeNullPicker in '..\Source\JvDateTimeNullPicker.pas',
   JvYesNoPicker in '..\Source\JvYesNoPicker.pas' ,
   JvMemoEx in '..\Source\JvMemoEx.pas',
-  JvShLwApi in '..\Source\JvShLwApi.pas';
+  JvShLwApi in '..\Source\JvShLwApi.pas',
+
+  JvSpinEdit in '..\Source\JvSpinEdit.pas',
+  JvTranslator in '..\Source\JvTranslator.pas',
+  JvSimpleXml in '..\Source\JvSimpleXml.pas',
+  JvHotkeyEx in '..\Source\JvHotkeyEx.pas';
+
 end.
