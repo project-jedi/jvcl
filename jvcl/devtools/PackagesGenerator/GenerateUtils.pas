@@ -563,7 +563,7 @@ begin
   StrReplace(Name, '/', '\', [rfReplaceAll]);
 
   // and if the environment is kylix, replace all them by forward slashes
-  if TargetList[GetNonPersoTarget(target)].Env = 'k' then
+  if TargetList[GetNonPersoTarget(target)].Env = 'K' then
     StrReplace(Name, '\', '/', [rfReplaceAll]);
 end;
 
