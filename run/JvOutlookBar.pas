@@ -80,6 +80,9 @@ type
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
     property Tag: Integer read FTag write FTag;
     property Down: Boolean read FDown write SetDown default False;
+    // TODO
+    // property Enabled;
+    // propery Visible;
   end;
 
   TJvOutlookBarButtons = class(TOwnedCollection)
@@ -157,6 +160,9 @@ type
     property ParentFont: Boolean read FParentFont write SetParentFont default False;
     property ParentColor: Boolean read FParentColor write SetParentColor;
     property TopButtonIndex: Integer read FTopButtonIndex write SetTopButtonIndex;
+    // TODO
+    // property Enabled;
+    // propery Visible;
   end;
 
   TJvOutlookBarPages = class(TOwnedCollection)
@@ -2249,25 +2255,17 @@ begin
 end;
 
 procedure TJvCustomOutlookBar.CMDialogChar(var Message: TCMDialogChar);
-var I, J:integer;
+var I:integer;
 begin
-  if CanFocus then
-  for I := 0 to FPages.Count - 1 do
+  if CanFocus and (ActivePage <> nil) then
   begin
-    if IsAccel(Message.CharCode, Pages[I].Caption) then
-    begin
-      Message.Result := 1;
-      ActivePageIndex := I;
-      Exit;
-    end;
-    for J := 0 to Pages[I].Buttons.Count - 1 do
-    if IsAccel(Message.CharCode, Pages[I].Buttons[J].Caption) then
-    begin
-      Message.Result := 1;
-      ActivePageIndex := I;
-      DoButtonClick(J);
-      Exit;
-    end;
+    for I := 0 to ActivePage.Buttons.Count - 1 do
+      if IsAccel(Message.CharCode, ActivePage.Buttons[I].Caption) then
+      begin
+        Message.Result := 1;
+        DoButtonClick(I);
+        Exit;
+      end;
   end;
 
   inherited;
