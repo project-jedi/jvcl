@@ -42,6 +42,11 @@ uses
   {$ENDIF VisualCLX}
   JvComponent, JvExControls;
 
+{$IFDEF VisualCLX}
+resourcestring
+  SInvalidImage = 'Invalid Image';
+{$ENDIF VisualCLX}
+
 type
   TDate = TDateTime;
   TJvTLSelFrame = class(TPersistent)
@@ -325,7 +330,12 @@ type
 implementation
 
 uses
+  {$IFDEF VCL}
   Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
   JvJVCLUtils, JvThemes;
 
 {$IFDEF MSWINDOWS}
@@ -801,7 +811,7 @@ end;
 
 procedure TJvCustomTMTimeline.Paint;
 begin
-  if not Showing then
+  if not Showing or (csLoading in ComponentState) then
     Exit;
   inherited Canvas.Font := Font;
   DrawDates(inherited Canvas);
@@ -1037,8 +1047,12 @@ end;
 procedure TJvCustomTMTimeline.EnabledChanged;
 begin
   inherited EnabledChanged;
-  FLeftBtn.Enabled := Enabled;
-  FRightBtn.Enabled := Enabled;
+  // asn: VisualCLX inherited Create emits EnableChanged event
+  if Assigned(FRightBtn) then
+  begin
+    FLeftBtn.Enabled := Enabled;
+    FRightBtn.Enabled := Enabled;
+  end;
   Invalidate;
 end;
 
