@@ -46,6 +46,7 @@ uses
   JvEasterEgg, JvGradient, JvGradientHeaderPanel, JvId3v1, JvId3v2,
   JvImageRotate, JvImageTransform, JvImageSquare, JvPcx, JvStarfield,
   JvWaitingGradient, JvWaitingProgress, JvWavePlayer, JvSpecialProgress,
+  JvColorTrackBar,
   {$IFDEF USE_JV_GIF}
   JvGIF, JvGIFCtrl,
   {$ENDIF USE_JV_GIF}
@@ -67,7 +68,7 @@ begin
     TJvImageSquare, TJvStarfield, {$IFDEF USE_JV_GIF} TJvGIFAnimator, {$ENDIF}
     TJvAnimatedImage, TJvSpecialImage, TJvAVICapture]);
   RegisterComponents(RsPaletteBarPanel, [TJvGradientHeaderPanel, TJvGradient,
-    TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress]);
+    TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress, TJvColorTrackBar]);
   RegisterComponents(RsPaletteNonVisual, [TJvID3v1, TJvID3v2, TJvWavePlayer]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSlider]);
 

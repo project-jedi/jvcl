@@ -54,7 +54,7 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteCustom, [TJvPluginManager]);
+  RegisterComponents(RsPalettePlugin, [TJvPluginManager]);
 
   // Bianconi
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvPluginCommand,
