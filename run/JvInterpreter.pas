@@ -174,10 +174,6 @@ Upcoming JVCL 3.00
 
 {.$DEFINE JvInterpreter_DEBUG}
 
-{$IFDEF VCL}
-{$DEFINE JvInterpreter_OLEAUTO}
-{$ENDIF VCL}
-
 unit JvInterpreter;
 
 interface

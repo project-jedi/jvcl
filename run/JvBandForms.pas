@@ -33,8 +33,6 @@ interface
 uses
   Windows, Messages, ComObj, Classes, Forms, Controls, Menus;
 
-// (rom) T2H IFDEFs should be removed
-
 type
   {:Band object mode flag.
   @enum bmfVariableHeight  Height of the band object can be changed.
@@ -78,16 +76,12 @@ type
     function GetActualSize: TPointL;
     procedure SetContextMenu(const Value: TPopupMenu);
   protected
-    {$IFNDEF T2H}
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     property _BandObject: TComObject read FBandObject;
-    {$ENDIF T2H}
   public
-    {$IFNDEF T2H}
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    {$ENDIF T2H}
     {:Band form constructor.
     Use this constructor to create a band form.<br>
     The band object wizard generates code which calls this constructor
@@ -101,9 +95,7 @@ type
     @param BandObject     The band object associated with the band form.
     }
     constructor CreateBandForm(const ParentWindow: HWND; const BandObject: TComObject);
-    {$IFNDEF T2H}
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
-    {$ENDIF T2H}
     {:Returns the minimum size of the band form in a TPointL structure.
     Minimum size is obtained from in the properties Constraints.MinWidth and
     Constraints.MinHeight.<br>
@@ -141,7 +133,6 @@ type
     }
     property BandActualSize: TPointL read GetActualSize;
     // Below are from TForm (Probably more properties should be hidden)
-    {$IFNDEF T2H}
     //  procedure ArrangeIcons;
     //  procedure Cascade;
     //  procedure Next;
@@ -153,7 +144,6 @@ type
     //  property MDIChildCount;
     //  property MDIChildren;
     //  property TileMode;
-    {$ENDIF T2H}
   published
     {:Specifies the band object's mode flags.
     Used by IDeskBand::GetBandInfo.
@@ -220,7 +210,6 @@ type
     @seeAlso <see property="BandMaxSize">
     }
     property Constraints;
-    {$IFNDEF T2H}
     property Action;
     property ActiveControl;
     property Align;
@@ -294,7 +283,6 @@ type
     property OnShow;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF T2H}
   end;
 
 implementation

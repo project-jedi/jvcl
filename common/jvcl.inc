@@ -27,38 +27,36 @@ Known Issues:
  {$UNDEF JVCLThemesEnabled}
 {$ENDIF}
 
-
 { Enable this define if you want to register property and component editors included in
- JVCL for non-JVCL components as well }
+JVCL for non-JVCL components as well. }
 {.$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
 { Some new libraries and packages (currently JvUIB, JvWizard and JvTimeFrameWork) can be
-  installed either in "stand-alone" mode or in "JVCL" mode. These packages use the
-  USEJVCL define to determine whether they are installed in JVCL mode or not.
-  By default, this define is enabled.
-  NOTE: if you undefine USEJVCL, you can/should remove JvCoreXXX.dcp from the
-  requires node in the affected package(s) }
+installed either in "stand-alone" mode or in "JVCL" mode. These packages use the
+USEJVCL define to determine whether they are installed in JVCL mode or not.
+By default, this define is enabled.
+NOTE: if you undefine USEJVCL, you can/should remove JvCoreXXX.dcp from the
+requires node in the affected package(s). }
 {$DEFINE USEJVCL}
 
 { Enable this define if you have the dxgettext (http://dxgettext.sourceforge.net)
-  translation tool installed and want to use it with the JVCL. }
+translation tool installed and want to use it with the JVCL. }
 {.$DEFINE USE_DXGETTEXT}
 
-
 {$IFDEF BCB}
-  {$ObjExportAll ON}
+ {$ObjExportAll ON}
 {$ENDIF}
 
-{ Activate this define if you are using Delphi 5 Standard or one of the D6/D7 Personal Editions }
+{ Activate this define if you are using Delphi 5 Standard or one of the D6/D7 Personal Editions. }
 {.$DEFINE DelphiPersonalEdition}
 
 { Activate this define if you have Mike Lischke's Theme Manager
-  (http://www.lischke-online.de) installed and available and
-  you are using D6/BCB6 or below. The ThemeManager package must
-  be compiled as "never-build package". }
+(http://www.lischke-online.de) installed and available and
+you are using D6/BCB6 or below. The ThemeManager package must
+be compiled as "never-build package". }
 {.$DEFINE JVCLThemesEnabled}
 
-{ D7 has theme support built in...}
+// D7 has theme support built in...
 {$IFDEF COMPILER7_UP}
  {$DEFINE JVCLThemesEnabled}
 {$ELSE}
@@ -72,27 +70,40 @@ Known Issues:
  {$UNDEF JVCLThemesEnabledD56}
 {$ENDIF}
 
-{ Activates MIDAS components (DBRemoteLogin)}
-{ NOTE: if you activate this, you must also manually add JvDlgsXXX.dcp to the requires node of JvDBXXX.bpk !!!]
+{ Activates MIDAS components (DBRemoteLogin).
+NOTE: if you activate this, you must also manually add JvDlgsXXX.dcp to
+the requires node of JvDBXXX.bpk !!! }
 {.$DEFINE Jv_MIDAS}
 
 { This define enables GIF image support. Deactivate this define
-  if you are using another GIF image support library. }
+if you are using another GIF image support library. }
 {$DEFINE USE_JV_GIF}
 
 { Activate this define if you do not want to use TGauge Borland sample
-  component in TDBProgress component and FileUtil routines. In this case
-  TProgressBar component will be used }
+component in TDBProgress component and FileUtil routines. In this case
+TProgressBar component will be used. }
 {$DEFINE USE_PROGRESSBAR}
 
 { This define controls whether FourDigitYear variable is used to control
-  date format in TDateEdit, TDBDateEdit components. When this define is not
-  active the ShortDateFormat variable is used instead }
+date format in TDateEdit, TDBDateEdit components. When this define is not
+active the ShortDateFormat variable is used instead. }
 {$DEFINE USE_FOUR_DIGIT_YEAR}
 
 { This define controls whether a popup calendar is used as default
-  instead of a modal dialog in TDateEdit, TDBDateEdit components }
+instead of a modal dialog in TDateEdit, TDBDateEdit components. }
 {$DEFINE DEFAULT_POPUP_CALENDAR}
+
+{ This define controls whether JvInterpreter handles
+OLE automation calls (for VCL only). }
+{$DEFINE JvInterpreter_OLEAUTO}
+
+// only allowed for VCL
+{$IFNDEF VCL}
+ {$UNDEF JvInterpreter_OLEAUTO}
+{$ENDIF}
+
+{ Used by JvTimeFrameWork, see JvTFDays.pas for more info on time blocks. }
+{$DEFINE Jv_TIMEBLOCKS}
 
 // Automatic defines for entry level Delphi's:
 {$IFDEF D5Standard}
@@ -109,10 +120,7 @@ Known Issues:
 
 // Reduces warnings on D7:
 {$IFDEF COMPILER7_UP}
-  {$WARN UNSAFE_TYPE OFF}
-  {$WARN UNSAFE_CODE OFF}
-  {$WARN UNSAFE_CAST OFF}
+ {$WARN UNSAFE_TYPE OFF}
+ {$WARN UNSAFE_CODE OFF}
+ {$WARN UNSAFE_CAST OFF}
 {$ENDIF}
-
-{ Used by JvTimeFrameWork, see JvTFDays.pas for more info on time blocks }
-{$DEFINE TIMEBLOCKS}

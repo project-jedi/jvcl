@@ -33,13 +33,13 @@ interface
 
 // This version of the source contains modifications which enable the use
 // of time blocks.  These modifications can be found by doing a search for
-// "DEF TIMEBLOCKS".  Previously, two versions were released; one which did
+// "DEF Jv_TIMEBLOCKS".  Previously, two versions were released; one which did
 // NOT support timeblocks and one which did support timeblocks.  (Hence the
 // use of the compiler defines.)
 //
 // These two versions are in the process of being integrated.  The compiler
 // defines remain as an indicator of exactly what has been changed.  All
-// lines that are NOT compiled ({$IFNDEF TIMEBLOCKS} and {$ELSE}) remain
+// lines that are NOT compiled ({$IFNDEF Jv_TIMEBLOCKS} and {$ELSE}) remain
 // as a reference during the transition, but have been commented out to
 // reduce confusion.  Many of these lines are marked by a "// remove" comment.
 //
@@ -77,14 +77,14 @@ const
 type
   EJvTFDaysError = class(Exception);
 
- {$IFDEF TIMEBLOCKS}
+ {$IFDEF Jv_TIMEBLOCKS}
  // remove TTFDayOfWeek and TTFDaysOfWeek, they are found in JvTFUtils
  //TTFDayOfWeek = (dowSunday, dowMonday, dowTuesday, dowWednesday,
    //            dowThursday, dowFriday, dowSaturday);
  //TTFDaysOfWeek = set of TTFDayOfWeek;
 
   EJvTFBlockGranError = class(EJvTFDaysError);
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
  // Forward declarations
   TJvTFDays = class;
@@ -94,11 +94,11 @@ type
   TJvTFDaysTemplate = class;
   TJvTFDaysHdrAttr = class;
 
-  {$IFDEF TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
  // okay to leave
   TJvTFDaysTimeBlocks = class;
   TJvTFDaysTimeBlock = class;
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
   TJvTFDaysCoord = record
     Col: Integer;
@@ -308,7 +308,7 @@ type
   TJvTFDaysState = (agsNormal, agsSizeCol, agsSizeRow, agsSizeColHdr,
     agsSizeRowHdr, agsMoveCol, agsSizeAppt, agsMoveAppt);
 
-  {$IFDEF TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
  // ok
   TJvTFColTitleStyle = (ctsSingleClip, ctsSingleEllipsis, ctsMultiClip,
     ctsMultiEllipsis, ctsHide, ctsRotated);
@@ -316,7 +316,7 @@ type
  // remove
  //TJvTFColTitleStyle = (ctsSingleClip, ctsSingleEllipsis, ctsMultiClip,
    //             ctsMultiEllipsis, ctsHide);
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
   TJvTFDaysThresholds = class(TPersistent)
   private
@@ -374,7 +374,7 @@ type
   TJvTFUpdateTitlesEvent = procedure(Sender: TObject; Col: TJvTFDaysCol;
     var NewGroupTitle, NewTitle: string) of object;
 
- {$IFDEF TIMEBLOCKS}
+ {$IFDEF Jv_TIMEBLOCKS}
  // ok
   TJvTFDaysTimeBlock = class(TCollectionItem)
   private
@@ -466,7 +466,7 @@ type
        write SetSelBlockHdrAttr;
     property SnapMove: Boolean read FSnapMove write FSnapMove default True;
   end;
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
   TJvTFDaysCol = class(TCollectionItem)
   private
@@ -600,20 +600,20 @@ type
     FFont: TFont;
     FParentFont: Boolean;
     FFrame3D: Boolean;
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     FFrameColor: TColor;
     FTitleRotation: Integer;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
     procedure SetColor(Value: TColor);
     procedure SetFont(Value: TFont);
     procedure SetParentFont(Value: Boolean);
     procedure SetFrame3D(Value: Boolean);
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     procedure SetFrameColor(Value: TColor);
     procedure SetTitleRotation(Value: Integer);
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
   protected
     procedure Change;
     procedure FontChange(Sender: TObject);
@@ -627,13 +627,13 @@ type
     property Font: TFont read FFont write SetFont;
     property ParentFont: Boolean read FParentFont write SetParentFont default True;
     property Frame3D: Boolean read FFrame3D write SetFrame3D default True;
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     property FrameColor: TColor read FFrameColor write SetFrameColor
        nodefault;
     property TitleRotation: Integer read FTitleRotation write SetTitleRotation
        default 0;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
   end;
 
   TJvTFTimeStampStyle = (tssNone, tssFullI, tssHalfI, tssBlock);
@@ -805,11 +805,11 @@ type
     FGridStartTime: TTime;
     FGridEndTime: TTime;
 
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     FTimeBlockProps: TJvTFDaysBlockProps;
     FTimeBlocks: TJvTFDaysTimeBlocks;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
    // visual appearance attr's
     FHdrAttr: TJvTFDaysHdrAttr;
@@ -833,11 +833,11 @@ type
     FEditor: TJvTFInPlaceApptEditor;
     FHintProps: TJvTFHintProps;
 
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     FWeekend: TTFDaysOfWeek;
     FWeekendColor: TColor;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
    // Row/Col Sizing/Moving Events
     FOnSizeCol: TJvTFDragRowColEvent;
@@ -898,10 +898,10 @@ type
     function CheckSBVis: Boolean;
     procedure SetOnShowHint(Value: TJvTFShowHintEvent);
     function GetOnShowHint: TJvTFShowHintEvent;
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
     // ok
     procedure UpdateWeekendFillPic;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
    // row, col layout
     procedure SetGranularity(Value: Integer);
@@ -927,12 +927,12 @@ type
     procedure SetGridStartTime(Value: TTime);
     procedure SetGridEndTime(Value: TTime);
 
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     procedure SetTimeBlockProps(Value: TJvTFDaysBlockProps);
    // ok
     procedure SetTimeBlocks(Value: TJvTFDaysTimeBlocks);
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
    // visual appearance attr's
     procedure SetHdrAttr(Value: TJvTFDaysHdrAttr);
@@ -954,22 +954,22 @@ type
     procedure SeTJvTFHintProps(Value: TJvTFHintProps);
     procedure DrawDither(aCanvas: TCanvas; aRect: TRect; Color1, Color2: TColor);
 
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     procedure SetWeekend(Value: TTFDaysOfWeek);
    // ok
     procedure SetWeekendColor(Value: TColor);
    procedure SetDitheredBackground(const Value: boolean);
-   {$ENDIF TIMEBLOCKS}
+   {$ENDIF Jv_TIMEBLOCKS}
   protected
     FState: TJvTFDaysState;
     FHint: TJvTFHint;
     FNeedCheckSBParams: Boolean;
     PaintBuffer: TBitmap;
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     FWeekendFillPic: TBitmap;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
     FBeginDraggingCoord: TJvTFDaysCoord;
     FDraggingCoord: TJvTFDaysCoord;
@@ -1030,14 +1030,14 @@ type
     procedure GetApptDrawInfo(DrawInfo: TJvTFDaysApptDrawInfo;
        anAppt: TJvTFAppt; Attr: TJvTFDaysApptAttr);
 
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok to REPLACE old DrawFrame
     procedure DrawFrame(aCanvas: TCanvas; aRect: TRect; Draw3D: Boolean;
        FrameColour: TColor);
     {$ELSE}
     // obsolete
     //procedure DrawFrame(aCanvas: TCanvas; aRect: TRect; Draw3D: Boolean);
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
     procedure DrawAppts(aCanvas: TCanvas; DrawAll: Boolean);
     procedure AdjustForMargins(var aRect: TRect);
@@ -1056,7 +1056,7 @@ type
     procedure DrawColGroupHdr(aCanvas: TCanvas; Index: Integer;
        IsGroupHdr: Boolean);
 
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     procedure DrawBlockHdr(aCanvas: TCanvas; BlockIndex: Integer);
    // ok
@@ -1066,7 +1066,7 @@ type
    // REMOVE, replaced by DrawAngleText in JvTFUtils
    //procedure DrawAngleText(aCanvas: TCanvas; aRect: TRect; aAngle: Integer;
     //aTxt: String);
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
    // message handlers
     procedure Resize; override;
@@ -1152,13 +1152,13 @@ type
     procedure SetSelEnd(Value: TPoint);
     procedure QuickEntry(Key: Char); virtual;
 
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     procedure EnsureBlockRules(GridGran, BlockGran: Integer; DayStart: TTime);
    // ok
     function ValidateBlockRules(GridGran, BlockGran: Integer;
        DayStart: TTime): Boolean;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
   public
 
     function GeTJvTFHintClass: TJvTFHintClass; dynamic;
@@ -1189,7 +1189,7 @@ type
     function VirtualGroupHdrRect(Col: Integer): TRect;
     procedure GetGroupStartEndCols(Col: Integer; var StartCol, EndCol: Integer);
 
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     function RowToTimeBlock(aRow: Integer): Integer;
    // ok
@@ -1203,7 +1203,7 @@ type
     procedure GetBlockStartEndRows(Row: Integer; var StartRow, EndRow: Integer);
    // ok
     function VirtualBlockHdrRect(Row: Integer): TRect;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
    // editor management routines
     procedure EditAppt(Col: Integer; Appt: TJvTFAppt);
@@ -1241,10 +1241,10 @@ type
     procedure CalcStartEndRows(anAppt: TJvTFAppt; SchedDate: TDate;
        var StartRow, EndRow: Integer);
 
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     function IsWeekend(ColIndex: Integer): Boolean;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
    // date navigation methods
     procedure PrevDate;
@@ -1278,10 +1278,10 @@ type
     procedure SelApptCell(anAppt: TJvTFAppt; aCol: Integer);
     function GroupHdrIsSelected(aCol: Integer): Boolean;
 
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     function BlockHdrIsSelected(aRow: Integer): Boolean;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
     function EnumSelCells: TDynPointArray;
     function EnumSelCols: TDynIntArray;
@@ -1314,11 +1314,11 @@ type
     property GridStartTime: TTime read FGridStartTime write SetGridStartTime;
     property GridEndTime: TTime read FGridEndTime write SetGridEndTime;
 
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     property TimeBlocks: TJvTFDaysTimeBlocks read FTimeBlocks write SetTimeBlocks;
     property TimeBlockProps: TJvTFDaysBlockProps read FTimeBlockProps write SetTimeBlockProps;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
    // visual appearance properties
     property ApptAttr: TJvTFDaysApptAttr read FApptAttr write SetApptAttr;
@@ -1350,12 +1350,12 @@ type
     property SelGroupHdrAttr: TJvTFDaysHdrAttr read FSelGroupHdrAttr
        write SetSelGroupHdrAttr;
 
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
    // ok
     property Weekend: TTFDaysOfWeek read FWeekend write SetWeekend
        default [dowSunday, dowSaturday];
     property WeekendColor: TColor read FWeekendColor write SetWeekendColor default clSilver;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
    // navigation/selection properties
     property LeftCol: Integer read FLeftCol write SetLeftCol;
@@ -1753,12 +1753,12 @@ type
     property GridEndTime: TTime read FGridEndTime write SetGridEndTime;
   end;
 
-{$IFDEF TIMEBLOCKS}
+{$IFDEF Jv_TIMEBLOCKS}
 // REMOVE, replaced by DOWToBorl in JvTFUtils
 //function DOWToBorl(aDOW: TTFDayOfWeek): Integer;
 // REMOVE, replaced by BorlToDOW in JvTFUtils
 //function BorlToDOW(BorlDOW: Integer): TTFDayOfWeek;
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
 {$HPPEMIT '#undef TDate'}
 {$HPPEMIT '#undef TTime'}
@@ -1880,7 +1880,7 @@ begin
     Result := I2;
 end;
 
-{$IFDEF TIMEBLOCKS}
+{$IFDEF Jv_TIMEBLOCKS}
 {
 // remove
 function DOWToBorl(aDOW: TTFDayOfWeek): Integer;
@@ -1894,7 +1894,7 @@ begin
   Result := TTFDayOfWeek(BorlDOW - 1);
 end;
 }
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
 { TJvTFApptMapApptData }
 
@@ -3730,10 +3730,10 @@ begin
 
   FColor := clBtnFace;
   FFrame3D := True;
-  {$IFDEF TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
   // ok
   FFrameColor := clBlack;
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 end;
 
 destructor TJvTFDaysHdrAttr.Destroy;
@@ -3779,7 +3779,7 @@ begin
   end;
 end;
 
-{$IFDEF TIMEBLOCKS}
+{$IFDEF Jv_TIMEBLOCKS}
 // ok
 
 procedure TJvTFDaysHdrAttr.SetFrameColor(Value: TColor);
@@ -3801,7 +3801,7 @@ begin
     Change;
   end;
 end;
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
 procedure TJvTFDaysHdrAttr.Change;
 begin
@@ -3825,12 +3825,12 @@ begin
     Font.Assign(TJvTFDaysHdrAttr(Source).Font);
     Font.OnChange := FontChange;
     ParentFont := TJvTFDaysHdrAttr(Source).ParentFont;
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
     // ok
     FFrameColor := TJvTFDaysHdrAttr(Source).FrameColor;
     // ok
     FTitleRotation := TJvTFDaysHdrAttr(Source).TitleRotation;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
   finally
     Change;
   end
@@ -4211,7 +4211,7 @@ begin
   FGridLineColor := clGray;
   FDitheredBackground := True;
 
-  {$IFDEF TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
   // all ok
   FWeekend := [dowSunday, dowSaturday];
   FWeekendColor := clSilver;
@@ -4219,7 +4219,7 @@ begin
   FWeekendFillPic.Height := 16;
   FWeekendFillPic.Width := 16;
   UpdateWeekendFillPic;
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
   // Create internal objects
   FVScrollBar := TJvTFDaysScrollBar.Create(Self);
@@ -4279,11 +4279,11 @@ begin
 
   FCols := TJvTFDaysCols.Create(Self);
 
-  {$IFDEF TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
   // ok
   FTimeBlocks := TJvTFDaysTimeBlocks.Create(Self);
   FTimeBlockProps := TJvTFDaysBlockProps.Create(Self);
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
   FEditor := TJvTFInPlaceApptEditor.Create(Self);
   with FEditor do
@@ -4325,12 +4325,12 @@ begin
   FApptBar.Free;
   FPrimeTime.Free;
 
-  {$IFDEF TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
   // all ok
   FTimeBlocks.Free;
   FTimeBlockProps.Free;
   FWeekendFillPic.Free;
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
   FCols.Free;
   FEditor.Free;
@@ -4396,13 +4396,13 @@ begin
 
   with FHScrollBar do
   begin
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
     // ok
     Left := CalcBlockRowHdrsWidth;
     {$ELSE}
     // remove
     //Left := RowHdrWidth;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
     if vsbVert in VisibleScrollBars then
       Width := FVScrollBar.Left - Left
@@ -4426,13 +4426,13 @@ var
   function CalcDataRect(ForScrollBars: TJvTFVisibleScrollBars): TRect;
   begin
     Result := GetClientRect;
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
       // ok
     Inc(Result.Left, CalcBlockRowHdrsWidth);
     {$ELSE}
       // remove
       //Inc(Result.Left, RowHdrWidth);
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
       //group Inc(Result.Top, ColHdrHeight);
     Inc(Result.Top, CalcGroupColHdrsHeight);
@@ -4557,10 +4557,10 @@ begin
 
   if Value <> FGranularity then
   begin
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
     // ok
     EnsureBlockRules(Value, TimeBlockProps.BlockGran, TimeBlockProps.DayStart);
-   {$ENDIF TIMEBLOCKS}
+   {$ENDIF Jv_TIMEBLOCKS}
 
     aTime := RowToTime(TopRow);
     FGranularity := Value;
@@ -4732,12 +4732,12 @@ procedure TJvTFDays.SetFocusedRow(Value: Integer);
 begin
   // ALLOW -1 TO INDICATE NO SELECTED ROW
 
-  {$IFDEF TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
   // ok
   if (Value <> -1) and (RowToTimeBlock(Value) = -1) and
     (TimeBlocks.Count > 0) then
     Exit;
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
   if Value <> FFocusedRow then
     if (Value >= -1) and (Value < RowCount) then
@@ -5034,12 +5034,12 @@ begin
     if vsbVert in VisibleScrollBars then
       DrawCorner(Canvas, agcTopRight);
 
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
     // all ok
     FillBlockHdrDeadSpace(Canvas);
     for I := 0 to TimeBlocks.Count - 1 do
       DrawBlockHdr(Canvas, I);
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
     BottomRow := TopRow + VisibleRows - 1;
     if RowHdrType = rhFancy then
@@ -5071,7 +5071,7 @@ begin
       0, 0, 0, 0, DST_BITMAP or DSS_UNION or DSS_DISABLED);
 end;
 
-{$IFNDEF TIMEBLOCKS}
+{$IFNDEF Jv_TIMEBLOCKS}
 // OBSOLETE
 {
 Procedure TJvTFDays.DrawDataCell(aCanvas: TCanvas; ColIndex, RowIndex: Integer);
@@ -5253,9 +5253,9 @@ Begin
    FOnDrawDataCell(Self, aCanvas, aRect, ColIndex, RowIndex);
 End;
 }
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
-{$IFDEF TIMEBLOCKS}
+{$IFDEF Jv_TIMEBLOCKS}
 // ok
 
 procedure TJvTFDays.DrawDataCell(aCanvas: TCanvas; ColIndex, RowIndex: Integer);
@@ -5512,7 +5512,7 @@ begin
   if Assigned(FOnDrawDataCell) then
     FOnDrawDataCell(Self, aCanvas, aRect, ColIndex, RowIndex);
 end;
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
 procedure TJvTFDays.DrawEmptyColHdr(aCanvas: TCanvas);
 var
@@ -5520,13 +5520,13 @@ var
 begin
   with aRect do
   begin
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
     // ok
     Left := CalcBlockRowHdrsWidth;
     {$ELSE}
     // remove
     //Left := RowHdrWidth;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
     Top := 0;
     Right := Left + GetDataWidth;
     //group Bottom := ColHdrHeight;
@@ -6168,13 +6168,13 @@ begin
   case Corner of
    //group agcTopLeft   : aRect := Rect(0, 0, RowHdrWidth, ColHdrHeight);
     agcTopLeft :
-      {$IFDEF TIMEBLOCKS}
+      {$IFDEF Jv_TIMEBLOCKS}
     // ok
       aRect := Rect(0, 0, CalcBlockRowHdrsWidth, CalcGroupColHdrsHeight);
       {$ELSE}
     // remove
     //  aRect := Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight);
-      {$ENDIF TIMEBLOCKS}
+      {$ENDIF Jv_TIMEBLOCKS}
 
       agcTopRight :
       begin
@@ -6185,7 +6185,7 @@ begin
       end;
 
     agcBottomLeft :
-      {$IFDEF TIMEBLOCKS}
+      {$IFDEF Jv_TIMEBLOCKS}
     // ok
       aRect := Rect(0, ClientHeight - FHScrollBar.Height,
         CalcBlockRowHdrsWidth, ClientHeight);
@@ -6193,7 +6193,7 @@ begin
     // remove
     //  aRect := Rect(0,  ClientHeight - FHScrollBar.Height,
       //        RowHdrWidth, ClientHeight);
-      {$ENDIF TIMEBLOCKS}
+      {$ENDIF Jv_TIMEBLOCKS}
 
       agcBottomRight: aRect := Rect(ClientWidth - FVScrollBar.Width - 1,
         ClientHeight - FHScrollBar.Height - 1,
@@ -6206,7 +6206,7 @@ begin
     FillRect(aRect);
 
     if HdrAttr.Frame3D then
-      {$IFDEF TIMEBLOCKS}
+      {$IFDEF Jv_TIMEBLOCKS}
       // ok
       DrawFrame(aCanvas, aRect,
         not ((Corner = agcTopLeft) and not HdrAttr.Frame3D),
@@ -6215,7 +6215,7 @@ begin
       // remove
       //DrawFrame(aCanvas, aRect,
        //      not ((Corner = agcTopLeft) and not HdrAttr.Frame3D))
-      {$ENDIF TIMEBLOCKS}
+      {$ENDIF Jv_TIMEBLOCKS}
     else
     begin
       case Corner of
@@ -6229,13 +6229,13 @@ begin
             LineTo(aRect.Right, aRect.Bottom - 1);
           end
           else
-            {$IFDEF TIMEBLOCKS}
+            {$IFDEF Jv_TIMEBLOCKS}
            // ok
             DrawFrame(aCanvas, aRect, False, GridLineColor);
             {$ELSE}
            // remove
            //DrawFrame(aCanvas, aRect, False);
-            {$ENDIF TIMEBLOCKS}
+            {$ENDIF Jv_TIMEBLOCKS}
 
             agcTopRight :
           begin
@@ -6273,24 +6273,24 @@ var
 begin
   with aRect do
   begin
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
     // ok
     Left := CalcBlockHdrWidth;
     {$ELSE}
     // remove
     //Left := 0;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
     //group Top := ColHdrHeight + (Index - TopRow) * RowHeight;
     Top := CalcGroupColHdrsHeight + (Index - TopRow) * RowHeight;
 
-    {$IFDEF TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
     // ok
     Right := Left + RowHdrWidth;
     {$ELSE}
     // remove
     //Right := RowHdrWidth;
-    {$ENDIF TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
     Bottom := Top + RowHeight;
   end;
@@ -6314,13 +6314,13 @@ begin
     Windows.InflateRect(aRect, 2, 2);
   end;
 
-  {$IFDEF TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
   // ok
   DrawFrame(aCanvas, aRect, UseAttr.Frame3D, UseAttr.FrameColor);
   {$ELSE}
   // remove
   //DrawFrame(aCanvas, aRect, UseAttr.Frame3D);
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
   if Assigned(FOnDrawRowHdr) then
     FOnDrawRowHdr(Self, aCanvas, aRect, Index, RowIsSelected(Index));
@@ -6425,13 +6425,13 @@ var
   PTxt: PChar;
   Flags: UINT;
 begin
-  {$IFDEF TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
   // ok
   ColLeft := CalcBlockRowHdrsWidth;
   {$ELSE}
   // remove
   //ColLeft := RowHdrWidth;
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
   Tallest := 0;
   for I := 0 to Cols.Count - 1 do
@@ -6475,7 +6475,7 @@ begin
   Result := Tallest;
 end;
 
-{$IFNDEF TIMEBLOCKS}
+{$IFNDEF Jv_TIMEBLOCKS}
 // remove
 {
 procedure TJvTFDays.DrawFrame(aCanvas: TCanvas; aRect: TRect; Draw3D: Boolean);
@@ -6509,7 +6509,7 @@ begin
    End;
 end;
 }
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
 
 procedure TJvTFDays.DrawAppts(aCanvas: TCanvas; DrawAll: Boolean);
@@ -6740,7 +6740,7 @@ begin
       begin
         with aRect do
         begin
-          {$IFDEF TIMEBLOCKS}
+          {$IFDEF Jv_TIMEBLOCKS}
             // ok
           Left := CalcBlockHdrWidth;
           Right := Left + RowHdrWidth - MinorTickLength;
@@ -6748,7 +6748,7 @@ begin
             // remove
             //Left := 0;
             //Right := RowHdrWidth - MinorTickLength;
-          {$ENDIF TIMEBLOCKS}
+          {$ENDIF Jv_TIMEBLOCKS}
 
           Top := VirtualCellRect(-1, HourStartRow(PrevHour)).Top;
             //group If Top < ColHdrHeight Then
@@ -8060,7 +8060,7 @@ begin
     NewEndDT := Trunc(Appt.EndDate) + Frac(Appt.EndTime);
 end;
 
-{$IFNDEF TIMEBLOCKS}
+{$IFNDEF Jv_TIMEBLOCKS}
 // remove
 {
 procedure TJvTFDays.CalcMoveStartEnd(Appt: TJvTFAppt; Coord: TJvTFDaysCoord;
@@ -8094,9 +8094,9 @@ begin
   EndDT := NewEnd;
 end;
 }
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
-{$IFDEF TIMEBLOCKS}
+{$IFDEF Jv_TIMEBLOCKS}
 // ok
 
 procedure TJvTFDays.CalcMoveStartEnd(Appt: TJvTFAppt; Coord: TJvTFDaysCoord;
@@ -8152,7 +8152,7 @@ begin
   StartDT := NewStart;
   EndDT := NewEnd;
 end;
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
 procedure TJvTFDays.EnsureCol(aCol: Integer);
 begin
@@ -8443,7 +8443,7 @@ begin
       Greater(FSelStart.Y, FSelEnd.Y));
 end;
 
-{$IFNDEF TIMEBLOCKS}
+{$IFNDEF Jv_TIMEBLOCKS}
 // remove
 {
 procedure TJvTFDays.SetSelStart(Value: TPoint);
@@ -8454,9 +8454,9 @@ begin
   Invalidate;
 end;
 }
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
-{$IFDEF TIMEBLOCKS}
+{$IFDEF Jv_TIMEBLOCKS}
 // ok
 
 procedure TJvTFDays.SetSelStart(Value: TPoint);
@@ -8482,9 +8482,9 @@ begin
 //  DoNavigate;
   Invalidate;
 end;
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
-{$IFNDEF TIMEBLOCKS}
+{$IFNDEF Jv_TIMEBLOCKS}
 // remove
 {
 procedure TJvTFDays.SetSelEnd(Value: TPoint);
@@ -8606,9 +8606,9 @@ begin
    End;
 end;
 }
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
-{$IFDEF TIMEBLOCKS}
+{$IFDEF Jv_TIMEBLOCKS}
 // ok
 
 procedure TJvTFDays.SetSelEnd(Value: TPoint);
@@ -8779,7 +8779,7 @@ begin
     end;
   end;
 end;
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
 procedure TJvTFDays.QuickEntry(Key: Char);
 var
@@ -8858,13 +8858,13 @@ function TJvTFDays.GetDataAreaRect: TRect;
 begin
   Result := GetAdjClientRect;
 
-  {$IFDEF TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
   // ok
   Inc(Result.Left, CalcBlockRowHdrsWidth);
   {$ELSE}
   // remove
   //Inc(Result.Left, RowHdrWidth);
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
   //group Inc(Result.Top, ColHdrHeight);
   Inc(Result.Top, CalcGroupColHdrsHeight);
@@ -8880,7 +8880,7 @@ begin
   Result := RectHeight(GetDataAreaRect);
 end;
 
-{$IFNDEF TIMEBLOCKS}
+{$IFNDEF Jv_TIMEBLOCKS}
 // remove
 {
 function TJvTFDays.PtToCell(X, Y: Integer): TJvTFDaysCoord;
@@ -8993,9 +8993,9 @@ begin
   Result.DragAccept := (Result.Row > gcHdr) and (Result.Col > gcHdr);
 end;
 }
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
-{$IFDEF TIMEBLOCKS}
+{$IFDEF Jv_TIMEBLOCKS}
 // ok
 
 function TJvTFDays.PtToCell(X, Y: Integer): TJvTFDaysCoord;
@@ -9119,9 +9119,9 @@ begin
 
   Result.DragAccept := (Result.Row > gcHdr) and (Result.Col > gcHdr);
 end;
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
-{$IFNDEF TIMEBLOCKS}
+{$IFNDEF Jv_TIMEBLOCKS}
 // remove
 {
 function TJvTFDays.CellRect(Col, Row: Integer): TRect;
@@ -9187,9 +9187,9 @@ begin
     Result := EmptyRect;
 end;
 }
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
-{$IFDEF TIMEBLOCKS}
+{$IFDEF Jv_TIMEBLOCKS}
 // ok
 
 function TJvTFDays.CellRect(Col, Row: Integer): TRect;
@@ -9268,9 +9268,9 @@ begin
   else // non-visible data col
     Result := EmptyRect;
 end;
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
-{$IFNDEF TIMEBLOCKS}
+{$IFNDEF Jv_TIMEBLOCKS}
 // remove
 {
 function TJvTFDays.VirtualCellRect(Col, Row: Integer): TRect;
@@ -9315,9 +9315,9 @@ begin
     End;
 end;
 }
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
-{$IFDEF TIMEBLOCKS}
+{$IFDEF Jv_TIMEBLOCKS}
 // ok
 
 function TJvTFDays.VirtualCellRect(Col, Row: Integer): TRect;
@@ -9366,7 +9366,7 @@ begin
       end;
     end;
 end;
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
 function TJvTFDays.GetApptRect(Col: Integer; Appt: TJvTFAppt): TRect;
 var
@@ -10878,13 +10878,13 @@ begin
   for I := GroupStartCol to GroupEndCol do
     Inc(GroupWidth, Cols[I].Width);
 
-  {$IFDEF TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
   // ok
   Result.Left := CalcBlockRowHdrsWidth;
   {$ELSE}
   // remove
   //Result.Left := RowHdrWidth;
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
   // At most, only one of the following For loops will execute
   // depending on whether Col is to the left or to the right of LeftCol
@@ -11071,7 +11071,7 @@ begin
     if RectWidth(CalcRect) > RectWidth(TxtRect) then
       StrPCopy(PTxt, '');
   end
-  {$IFDEF TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
   // okay to leave
   else if (ColTitleStyle = ctsRotated) then
    //DrawAngleText(aCanvas, TxtRect, UseAttr.TitleRotation, Txt);
@@ -11080,16 +11080,16 @@ begin
   {$ELSE}
   // remove
   //; // semi-colon needed to terminate last end
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
-  {$IFDEF TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
   // okay to leave
     if ColTitleStyle <> ctsRotated then
       Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
   {$ELSE}
   // remove
   //Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
     StrDispose(PTxt);
 
@@ -11105,13 +11105,13 @@ begin
     }
   end;
 
-  {$IFDEF TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
   // okay to leave
   DrawFrame(aCanvas, aRect, UseAttr.Frame3D, UseAttr.FrameColor);
   {$ELSE}
   // remove
   //DrawFrame(aCanvas, aRect, UseAttr.Frame3D);
-  {$ENDIF TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
   if IsGroupHdr then
   begin
@@ -11123,7 +11123,7 @@ begin
 end;
 
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-{$IFDEF TIMEBLOCKS}
+{$IFDEF Jv_TIMEBLOCKS}
 // ok
 
 procedure TJvTFDays.SetTimeBlocks(Value: TJvTFDaysTimeBlocks);
@@ -11569,7 +11569,7 @@ begin
   end;
 end;
 
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -14568,7 +14568,7 @@ begin
     FOnMove(Self, CurIndex, NewIndex);
 end;
 
-{$IFDEF TIMEBLOCKS}
+{$IFDEF Jv_TIMEBLOCKS}
 // ok
 { TJvTFDaysTimeBlock }
 
@@ -14872,7 +14872,7 @@ begin
   FSelBlockHdrAttr.Assign(Value);
   DaysControl.Invalidate;
 end;
-{$ENDIF TIMEBLOCKS}
+{$ENDIF Jv_TIMEBLOCKS}
 
 { TJvTFDaysApptDrawInfo }
 

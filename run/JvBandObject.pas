@@ -105,10 +105,8 @@ type
     procedure BandWndProc(var Msg: TMessage);
     procedure FocusChange(HasFocus: Boolean);
   public
-    {$IFNDEF T2H}
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
-    {$ENDIF T2H}
     function BandInfoChanged: HRESULT;
     function Maximize: HRESULT;
     function ShowAllBands: HRESULT;
