@@ -102,6 +102,9 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnKeyDown;
+    property OnKeyUp;
+    property OnKeyPress;
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
