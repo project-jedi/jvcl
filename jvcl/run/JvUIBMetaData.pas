@@ -37,16 +37,37 @@ type
   TTriggerPrefix = (Before, After);
   TTriggerSuffix = (Insert, Update, Delete);
   TTriggerSuffixes = set of TTriggerSuffix;
-
-  TUpdateRule = (
-    Restrict,
-    Cascade,
-    SetNull,
-    SetDefault
-  );
-
+  TIndexOrder = (IoDescending, IoAscending);
+  TUpdateRule = (Restrict, Cascade, SetNull, SetDefault);
   TTableFieldInfo = (fPrimary, fForeign, fIndice, fUnique);
   TTableFieldInfos = set of TTableFieldInfo;
+
+  // indentation = inherit
+  TMetaNodeType = (
+    MetaNode,
+      MetaDatabase,
+      MetaException,
+      MetaGenerator,
+      MetaCheck,
+      MetaTrigger,
+      MetaUDF,
+      MetaView,
+      MetaProcedure,
+      MetaRole,
+      MetaTable,
+      MetaBaseField,
+        MetaUDFField,
+        MetaField,
+          MetaProcInField,
+          MetaProcOutField,
+          MetaTableField,
+            MetaDomain,
+      MetaConstraint,
+        MetaForeign,
+        MetaIndex,
+        MetaPrimary,
+        MetaUnique
+  );
 
 const
   BreakLine = #13#10;
@@ -101,15 +122,6 @@ const
     'AND (RC.RDB$RELATION_NAME = ?) '+
     'ORDER BY RC.RDB$RELATION_NAME, IDX.RDB$FIELD_POSITION';
 
-//  QRYIndex =
-//    'SELECT IDX.RDB$INDEX_NAME, ISG.RDB$FIELD_NAME, IDX.RDB$UNIQUE_FLAG, '+
-//    'IDX.RDB$INDEX_INACTIVE FROM RDB$INDICES IDX '+
-//    'LEFT JOIN RDB$INDEX_SEGMENTS ISG ON ISG.RDB$INDEX_NAME = IDX.RDB$INDEX_NAME '+
-//    'LEFT JOIN RDB$RELATION_CONSTRAINTS C ON IDX.RDB$INDEX_NAME = C.RDB$INDEX_NAME '+
-//    'WHERE (C.RDB$CONSTRAINT_NAME IS NULL) AND ((IDX.RDB$INDEX_TYPE = 0) OR (IDX.RDB$INDEX_TYPE IS NULL)) AND '+
-//    '(IDX.RDB$RELATION_NAME = ?) ORDER BY IDX.RDB$RELATION_NAME, '+
-//    'IDX.RDB$INDEX_NAME, ISG.RDB$FIELD_POSITION';
-
   QRYIndex =
     'SELECT IDX.RDB$INDEX_NAME, ISG.RDB$FIELD_NAME, IDX.RDB$UNIQUE_FLAG, '+
     'IDX.RDB$INDEX_INACTIVE, IDX.RDB$INDEX_TYPE FROM RDB$INDICES IDX '+
@@ -117,7 +129,6 @@ const
     'LEFT JOIN RDB$RELATION_CONSTRAINTS C ON IDX.RDB$INDEX_NAME = C.RDB$INDEX_NAME '+
     'WHERE (C.RDB$CONSTRAINT_NAME IS NULL) AND (IDX.RDB$RELATION_NAME = ?) '+
     'ORDER BY IDX.RDB$RELATION_NAME, IDX.RDB$INDEX_NAME, ISG.RDB$FIELD_POSITION';
-
 
   QRYForeign =
     'SELECT A.RDB$CONSTRAINT_NAME, B.RDB$UPDATE_RULE, B.RDB$DELETE_RULE, '+
@@ -186,44 +197,20 @@ const
     'FROM RDB$FUNCTIONS WHERE (RDB$SYSTEM_FLAG IS NULL) ORDER BY RDB$FUNCTION_NAME';
 
   QRYUDFFields =
-    'select RDB$FIELD_TYPE, RDB$FIELD_SCALE, RDB$FIELD_LENGTH, RDB$FIELD_PRECISION, '+
+    'SELECT RDB$FIELD_TYPE, RDB$FIELD_SCALE, RDB$FIELD_LENGTH, RDB$FIELD_PRECISION, '+
     'RDB$CHARACTER_SET_ID, RDB$FIELD_SUB_TYPE, RDB$ARGUMENT_POSITION, RDB$MECHANISM '+
-    'from RDB$FUNCTION_ARGUMENTS where RDB$FUNCTION_NAME = ? '+
+    'FROM RDB$FUNCTION_ARGUMENTS WHERE RDB$FUNCTION_NAME = ? '+
     'ORDER BY RDB$ARGUMENT_POSITION';
 
   QRYRoles =
-    'select RDB$ROLE_NAME, RDB$OWNER_NAME from rdb$roles';
+    'SELECT RDB$ROLE_NAME, RDB$OWNER_NAME FROM RDB$ROLES';
 
 type
-  TMetaNodeType = (
-    MetaNode,
-      MetaDatabase,
-      MetaException,
-      MetaGenerator,
-      MetaCheck,
-      MetaTrigger,
-      MetaUDF,
-      MetaView,
-      MetaProcedure,
-      MetaRole,
-      MetaTable,
-      MetaBaseField,
-        MetaUDFField,
-        MetaField,
-          MetaProcInField,
-          MetaProcOutField,
-          MetaTableField,
-            MetaDomain,
-      MetaConstraint,
-        MetaForeign,
-        MetaIndex,
-        MetaPrimary,
-        MetaUnique
-  );
-
-
-
+  // forward declarations
   TMetaNode = class;
+  TMetaDomain = class;
+  TMetaTable = class;
+
   TMetaNodeClass = class of TMetaNode;
 
   TNodeItem = record
@@ -275,7 +262,6 @@ type
     property Value: Integer read FValue;
   end;
 
-
   TMetaBaseField = class(TMetaNode)
   private
     FScale: Word;
@@ -326,8 +312,6 @@ type
     class function NodeType: TMetaNodeType; override;
   end;
 
-  TMetaDomain = class;
-
   TMetaTableField = class(TMetaField)
   private
     FDefaultValue: string;
@@ -346,7 +330,6 @@ type
     property Domain: TMetaDomain read GetDomain;
     property FieldInfos: TTableFieldInfos read FInfos;
   end;
-
 
   TMetaDomain = class(TMetaTableField)
   protected
@@ -388,7 +371,6 @@ type
     procedure SaveToDDL(Stream: TStringStream); override;
   end;
 
-  TMetaTable = class;
   TMetaForeign = class(TMetaConstraint)
   private
     FForTable: Integer;
@@ -422,10 +404,6 @@ type
     procedure SaveToStream(Stream: TStream); override;
     property Constraint: string read FConstraint;
   end;
-
-
-
-  TIndexOrder = (IoDescending, IoAscending);
 
   TMetaIndex = class(TMetaConstraint)
   private
