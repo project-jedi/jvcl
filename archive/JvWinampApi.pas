@@ -355,6 +355,7 @@ var
 begin
   RefreshAndCheckHandle;
   CopyData.dwData := IPC_PLAYFILE;
+  FillChar(Data, SizeOf(Data), 0); // (ahuser) otherwise WinAmp will get strange symbols
   StrPCopy(Data, FileName);
   CopyData.lpData := @Data;
   CopyData.cbData := Length(FileName);
