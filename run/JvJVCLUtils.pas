@@ -2562,7 +2562,7 @@ begin
       { Perform the fill }
       if Delta > 0 then
       begin
-        for i := 0 to Colors do
+        for i := 0 to Colors - 1 do
         begin
           if Direction = fdTopToBottom then
           { Calculate the color band's top and bottom coordinates }
@@ -2585,29 +2585,29 @@ begin
           DeleteObject(Brush);
         end;
       end;
-    end;
-    if Direction = fdTopToBottom then
-      Delta := RectHeight(ARect) mod Colors
-    else
-      Delta := RectWidth(ARect) mod Colors;
-    if Delta > 0 then
-    begin
       if Direction = fdTopToBottom then
-        { Calculate the color band's top and bottom coordinates }
-      begin
-        ColorBand.Top := ARect.Bottom - Delta;
-        ColorBand.Bottom := ColorBand.Top + Delta;
-      end
+        Delta := RectHeight(ARect) mod Colors
       else
-        { Calculate the color band's left and right coordinates }
+        Delta := RectWidth(ARect) mod Colors;
+      if Delta > 0 then
       begin
-        ColorBand.Left := ARect.Right - Delta;
-        ColorBand.Right := ColorBand.Left + Delta;
+        if Direction = fdTopToBottom then
+        { Calculate the color band's top and bottom coordinates }
+        begin
+          ColorBand.Top := ARect.Bottom - Delta;
+          ColorBand.Bottom := ColorBand.Top + Delta;
+        end
+        else
+        { Calculate the color band's left and right coordinates }
+        begin
+          ColorBand.Left := ARect.Right - Delta;
+          ColorBand.Right := ColorBand.Left + Delta;
+        end;
+        Brush := CreateSolidBrush(EndColor);
+        FillRect(Canvas.Handle, ColorBand, Brush);
+        DeleteObject(Brush);
       end;
-      Brush := CreateSolidBrush(EndColor);
-      FillRect(Canvas.Handle, ColorBand, Brush);
-      DeleteObject(Brush);
-    end; //  if Not (IsRectEmpty(ARect) and ...
+    end; //  if Not (IsRectEmpty(ARect) and ...    
   finally
 {$IFDEF VisualCLX}
     Canvas.Stop;
