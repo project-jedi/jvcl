@@ -29,7 +29,7 @@ unit JvLogFile;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms,
+  SysUtils, Classes, Controls, Forms, Contnrs,
   JvComponent;
 
 type
@@ -38,14 +38,32 @@ type
     Time: string;
     Title: string;
     Description: string;
+
+    function GetOutputString: string;
+  end;
+
+  TJvLogRecordList = class(TObjectList)
+  private
+    function GetItem(Index: Integer): TJvLogRecord;
+    procedure SetItem(Index: Integer; const ALogRecord: TJvLogRecord);
+  public
+    property Items[Index: Integer]: TJvLogRecord read GetItem write SetItem; default;
   end;
 
   TJvLogFile = class(TJvComponent)
   private
-    FList: TList;
+    FList: TJvLogRecordList;
     FOnClose: TNotifyEvent;
     FOnShow: TNotifyEvent;
+    FFileName: TFilename;
+    FActive: Boolean;
+    FAutoSave: Boolean;
+    FSizeLimit: Cardinal;
     function GetElement(Index: Integer): TJvLogRecord;
+    procedure SetAutoSave(const Value: Boolean);
+    procedure DoAutoSave;
+    procedure EnsureSize;
+    procedure SetFileName(const Value: TFilename);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -64,6 +82,12 @@ type
 
     procedure ShowLog(Title: string);
   published
+    // (obones) some extra properties to make transparent use a bit easier
+    property FileName: TFilename read FFileName write SetFileName;
+    property Active: Boolean read FActive write FActive default True;
+    property AutoSave: Boolean read FAutoSave write SetAutoSave default False;
+    property SizeLimit: Cardinal read FSizeLimit write FSizeLimit default 0;  // 0 for infinity
+
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
   end;
@@ -76,15 +100,43 @@ uses
   {$ENDIF UNITVERSIONING}
   JvLogForm, JvConsts;
 
+// === { TJvLogRecord } =======================================
+
+function TJvLogRecord.GetOutputString: string;
+begin
+  Result := '[' + Time + ']' + StringReplace(Title, '>', '>>', [rfReplaceAll]) +
+            '>' + Description + sLineBreak;
+end;
+
+// === { TJvLogRecordList } ===================================
+
+function TJvLogRecordList.GetItem(Index: Integer): TJvLogRecord;
+begin
+  Result := TJvLogRecord(inherited Items[Index]);
+end;
+
+procedure TJvLogRecordList.SetItem(Index: Integer;
+  const ALogRecord: TJvLogRecord);
+begin
+  inherited Items[Index] := ALogRecord;
+end;
+
+// === { TJvLogFile } =========================================
+
 constructor TJvLogFile.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FList := TList.Create;
+  FList := TJvLogRecordList.Create(True);
+
+  // Set default values
+  FActive := True;
+  FAutoSave := False;
+  FSizeLimit := 0;
 end;
 
 destructor TJvLogFile.Destroy;
 begin
-  Clear;
+  DoAutoSave;
   FList.Free;
   inherited Destroy;
 end;
@@ -93,11 +145,16 @@ procedure TJvLogFile.Add(const Time, Title, Description: string);
 var
   LogRecord: TJvLogRecord;
 begin
+  if not Active then // Do not log if not active (obones)
+    Exit;
+    
   LogRecord := TJvLogRecord.Create;
   LogRecord.Time := Time;
   LogRecord.Title := Title;
   LogRecord.Description := Description;
   FList.Add(LogRecord);
+  EnsureSize;
+  DoAutoSave;
 end;
 
 procedure TJvLogFile.Add(const Title, Description: string);
@@ -106,16 +163,9 @@ begin
 end;
 
 procedure TJvLogFile.Clear;
-var
-  I: Integer;
 begin
-  // (rom) improved
-  for I := 0 to FList.Count - 1 do
-  begin
-    TJvLogRecord(FList.Items[I]).Free;
-    FList.Items[I] := nil;
-  end;
   FList.Clear;
+  DoAutoSave;
 end;
 
 function TJvLogFile.Count: Integer;
@@ -125,13 +175,52 @@ end;
 
 procedure TJvLogFile.Delete(Index: Integer);
 begin
-  TJvLogRecord(FList.Items[Index]).Free;
   FList.Delete(Index);
+  DoAutoSave;
+end;
+
+procedure TJvLogFile.DoAutoSave;
+begin
+  if AutoSave then
+    SaveToFile(Filename);
+end;
+
+procedure TJvLogFile.EnsureSize;
+var
+  SavedAutoSave: Boolean;
+  I, J : Integer;
+  Size : Cardinal;
+begin
+  if SizeLimit > 0 then
+  begin
+    // prevent file from being updated while we modify it
+    SavedAutoSave := FAutoSave;
+    AutoSave := False;
+
+    // Calculate size, starting from the last item, so that
+    // we will only delete the oldest items if required.
+    I := FList.Count-1;
+    Size := 0;
+    while (I >= 0) and (Size < SizeLimit) do
+    begin
+      Inc(Size, Length(FList[I].GetOutputString));
+      Dec(I);
+    end;
+
+    // Delete any left over items
+    if (I >= 0) and (Size >= SizeLimit) then
+      for J := 0 to I do
+        Delete(0);
+
+    // Restore saved value and force save if required
+    FAutoSave := SavedAutoSave;
+    DoAutoSave;
+  end;
 end;
 
 function TJvLogFile.GetElement(Index: Integer): TJvLogRecord;
 begin
-  Result := TJvLogRecord(FList.Items[Index]);
+  Result := TJvLogRecord(FList[Index]);
 end;
 
 procedure TJvLogFile.LoadFromFile(FileName: TFileName);
@@ -151,8 +240,12 @@ var
   I, J, L: Integer;
   LogRecord: TJvLogRecord;
   Found: Boolean;
+  SavedAutoSave : Boolean;
 begin
+  SavedAutoSave := AutoSave;
+  AutoSave := False;
   Clear;
+  AutoSave := SavedAutoSave;
   with TStringList.Create do
   try
     LoadFromStream(Stream);
@@ -227,15 +320,25 @@ begin
   with TStringList.Create do
   try
     for I := 0 to FList.Count - 1 do
-      with TJvLogRecord(FList.Items[I]) do
+      with FList[I] do
       begin
-        St := '[' + Time + ']' + StringReplace(Title, '>', '>>', [rfReplaceAll]) +
-          '>' + Description + sLineBreak;
+        St := GetOutputString;
         Stream.WriteBuffer(Pointer(St)^, Length(St));
       end;
   finally
     Free;
   end;
+end;
+
+procedure TJvLogFile.SetAutoSave(const Value: Boolean);
+begin
+  FAutoSave := Value and (Filename <> '');  // can't autosave if no filename (obones)
+end;
+
+procedure TJvLogFile.SetFilename(const Value: TFilename);
+begin
+  FFilename := Value;
+  LoadFromFile(Filename);
 end;
 
 procedure TJvLogFile.ShowLog(Title: string);
@@ -249,7 +352,7 @@ begin
     begin
       Items.BeginUpdate;
       for I := 0 to FList.Count - 1 do
-        with TJvLogRecord(FList[I]) do
+        with FList[I] do
           with Items.Add do
           begin
             Caption := Time;
