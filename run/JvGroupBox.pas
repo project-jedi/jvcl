@@ -193,7 +193,7 @@ begin
       Font := Self.Font;
       H := TextHeight('0');
       R := Rect(0, H div 2 - 1, Width, Height);
-      {$IFDEF VCl}
+      {$IFDEF VCL}
       if Ctl3D then
       {$ELSE}
       if True then

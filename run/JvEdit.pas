@@ -50,10 +50,10 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, StdCtrls, Forms, Menus,
   JvCaret, JvToolEdit,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QStdCtrls, QDialogs, QForms,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent, JvMaxPixel, JVCLVer, JvExStdCtrls;
 
 type
@@ -68,7 +68,7 @@ type
     FClipboardCommands: TJvClipboardCommands;
     FOldCommands: TJvClipboardCommands;
     FGroupIndex: Integer;
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     FAlignment: TAlignment;
     FCaret: TJvCaret;
     FHotTrack: Boolean;
@@ -98,7 +98,7 @@ type
     procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
     procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
-  {$ENDIF}
+    {$ENDIF VCL}
     procedure SetGroupIndex(const Value: Integer);
     procedure UpdateEdit;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands);
@@ -106,11 +106,11 @@ type
     procedure Change; override;
     procedure KeyDown(var Key:Word;Shift:TSHiftState);override;
     procedure MaxPixelChanged(Sender: TObject);
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     procedure SetSelLength(Value: Integer); override;
     procedure SetSelStart(Value: Integer); override;
     function GetPopupMenu: TPopupMenu; override;
-  {$ENDIF}
+    {$ENDIF VCL}
     procedure EnabledChanged; override;
     procedure ParentColorChanged; override;
     procedure MouseEnter(AControl: TControl); override;
@@ -119,13 +119,13 @@ type
     function IsEmpty: Boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     procedure DefaultHandler(var Msg); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Loaded; override;
-  {$ENDIF}
+    {$ENDIF VCL}
   protected
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Caret: TJvCaret read FCaret write SetCaret;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
@@ -136,7 +136,7 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property Text: string read GetText write SetText;
     property UseFixedPopup:boolean read FUseFixedPopup write FUseFixedPopup default true;
-  {$ENDIF}
+    {$ENDIF VCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands write SetClipboardCommands default
       [caCopy..caUndo];
@@ -149,13 +149,13 @@ type
 
   TJvEdit = class(TJvCustomEdit)
   published
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property Caret;
     property DragCursor;
@@ -171,11 +171,11 @@ type
     property PopupMenu;
     property ProtectPassword;
     property UseFixedPopup; // asn: clx not implemented yet
-  {$ENDIF}
-  {$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     property EchoMode;
     property InputKeys;
-  {$ENDIF}
+    {$ENDIF VisualCLX}
     property AboutJVCL;
     property Align;
     property Alignment;
@@ -237,7 +237,7 @@ implementation
 uses
   {$IFDEF VCL}
   JvFixedEditPopup,
-  {$ENDIF}
+  {$ENDIF VCL}
   Math;
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
@@ -257,7 +257,7 @@ begin
   FStreamedSelLength := 0;
   FStreamedSelStart := 0;
   FUseFixedPopup := True;  // asn: clx not implemented yet
-  {$ENDIF}
+  {$ENDIF VCL}
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
   FGroupIndex := -1;
@@ -268,7 +268,7 @@ begin
   FMaxPixel.Free;
   {$IFDEF VCL}
   FCaret.Free;
-  {$ENDIF}
+  {$ENDIF VCL}
   inherited Destroy;
 end;
 
@@ -279,7 +279,7 @@ begin
   SelStart := FStreamedSelStart;
   SelLength := FStreamedSelLength;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 procedure TJvCustomEdit.Change;
 var
@@ -322,7 +322,7 @@ begin
   begin
     FSaved := Application.HintColor;
     Application.HintColor := FColor;
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     if FHotTrack then
     begin
       I := SelStart;
@@ -331,7 +331,7 @@ begin
       SelStart := I;
       SelLength := J;
     end;
-  {$ENDIF VCL}
+    {$ENDIF VCL}
     FOver := True;
   end;
   inherited MouseEnter(AControl);
@@ -376,7 +376,7 @@ begin
   FHotTrack := Value;
   Ctl3D := not FHotTrack;  // asn: in clx not implemented
 end;
-{$ENDIF VCl}
+{$ENDIF VCL}
 
 function TJvCustomEdit.IsEmpty: Boolean;
 begin
@@ -408,6 +408,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomEdit.SetDisabledColor(const Value: TColor);
 begin
   if FDisabledColor <> Value then
@@ -505,6 +506,7 @@ begin
   FCaret.DestroyCaret;
   inherited;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvCustomEdit.Enabledchanged;
@@ -515,10 +517,10 @@ end;
 
 {$IFDEF VisualCLX}
 procedure TJvCustomEdit.CopyToClipboard;
-{$ENDIF}
+{$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvCustomEdit.WMCopy(var Msg: TWMCopy);
-{$ENDIF}
+{$ENDIF VCL}
 begin
   if caCopy in ClipBoardCommands then
     inherited;
@@ -526,10 +528,10 @@ end;
 
 {$IFDEF VisualCLX}
 procedure TJvCustomEdit.CutToClipboard;
-{$ENDIF}
+{$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvCustomEdit.WMCut(var Msg: TWMCut);
-{$ENDIF}
+{$ENDIF VCL}
 begin
   if caCut in ClipBoardCommands then
     inherited;
@@ -537,10 +539,10 @@ end;
 
 {$IFDEF VisualCLX}
 procedure TJvCustomEdit.PasteFromClipboard;
-{$ENDIF}
+{$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvCustomEdit.WMPaste(var Msg: TWMPaste);
-{$ENDIF}
+{$ENDIF VCL}
 begin
   if caPaste in ClipBoardCommands then
     inherited;
@@ -549,16 +551,17 @@ end;
 
 {$IFDEF VisualCLX}
 procedure TJvCustomEdit.Undo;
-{$ENDIF}
+{$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvCustomEdit.WMUndo(var Msg: TWMUndo);
-{$ENDIF}
+{$ENDIF VCL}
 begin
   if caUndo in ClipBoardCommands then
     inherited;
 end;
 
 {$IFDEF VCL}
+
 function TJvCustomEdit.GetReadOnly: Boolean;
 begin
   Result := inherited ReadOnly;
@@ -577,7 +580,8 @@ begin
   else
     FClipboardCommands := FOldCommands;
 end;
-{$ENDIF}
+
+{$ENDIF VCL}
 
 procedure TJvCustomEdit.SetGroupIndex(const Value: Integer);
 begin
@@ -607,6 +611,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomEdit.SetText(const Value: string);
 begin
   inherited Text := Value;
@@ -661,7 +666,8 @@ begin
   else
     Result := inherited PasswordChar;
 end;
-{$ENDIF}
+
+{$ENDIF VCL}
 
 procedure TJvCustomEdit.KeyDown(var Key: Word; Shift: TSHiftState);
 begin
@@ -670,6 +676,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomEdit.SetSelLength(Value: Integer);
 begin
   if csReading in ComponentState then
@@ -693,7 +700,8 @@ begin
   if (Result = nil) and UseFixedPopup then
     Result := FixedDefaultEditPopUp(self);
 end;
-{$ENDIF}
+
+{$ENDIF VCL}
 
 end.
 

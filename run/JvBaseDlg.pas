@@ -43,7 +43,7 @@ uses
 type
   {$IFDEF VisualCLX}
   TCommonDialog = TCustomDialog;
-  {$ENDIF}
+  {$ENDIF VisualCLX}
 
   TJvCommonDialog = class(TCommonDialog)
   private
