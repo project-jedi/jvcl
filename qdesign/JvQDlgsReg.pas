@@ -50,7 +50,7 @@ uses
   JvQDsgnConsts,
   JvQBaseDlg, JvQCommonExecDlg, JvQTipOfDay,
   JvQActnResForm, JvQProgressComponent,
-  JvQImageDlg, JvQDualList,
+  JvQImageDlg, JvQDualList, {JvQDSADialogs,}
   JvQProgressDialog, JvQBaseDlgEditor, JvQTipOfDayEditor;
 
 {$R ../Resources/JvDlgsReg.dcr}
@@ -59,7 +59,7 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteDialog, [
     TOpenPictureDialog, TSavePictureDialog, TPrinterSetupDialog,
-    TJvDualListDialog, TJvImageDialog,
+    TJvDualListDialog, TJvImageDialog, {TJvDSADialog,}
     TJvProgressDialog, TJvProgressComponent, TJvTipOfDay]);
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
 

@@ -112,7 +112,7 @@ begin
   RegisterPropertyEditor(TypeInfo(Currency), BaseClass, '', TJvFloatProperty);
 
   RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
-  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
+//  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
 
   
 
