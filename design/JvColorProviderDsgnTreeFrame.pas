@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-12-02
+Last Modified: 2004-02-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

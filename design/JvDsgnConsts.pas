@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-06-27
+Last Modified: 2004-02-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -145,6 +145,7 @@ resourcestring
 resourcestring
   RsCustomColorsEllipsis = 'Custom colors...';
   RsColorMsg = 'Copy standard and system colors from the default context?';
+  RsDesigning = 'Designing %s';
 
 //=== JvColorProviderEditors.pas =============================================
 resourcestring
