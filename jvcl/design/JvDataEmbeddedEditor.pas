@@ -32,7 +32,7 @@ interface
 uses
   SysUtils, Classes, Dialogs,
   {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf,
+  DesignEditors, DesignIntf, DesignMenus, 
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -42,16 +42,20 @@ type
   TJvDataEmbeddedComponentEditor = class(TComponentEditor)
   private
     procedure LoadDataFromFile(Comp: TJvDataEmbedded);
+    procedure ViewAsText;
   public
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
+    {$IFDEF COMPILER6_UP}
+    procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
+    {$ENDIF COMPILER6_UP}
   end;
 
 implementation
 
 uses
-  JvDsgnConsts;
+  JvDsgnConsts, Windows, ShellAPI, JclFileUtils;
 
 procedure TJvDataEmbeddedComponentEditor.LoadDataFromFile(Comp: TJvDataEmbedded);
 var
@@ -81,19 +85,62 @@ end;
 
 procedure TJvDataEmbeddedComponentEditor.ExecuteVerb(Index: Integer);
 begin
-  if Index = 0 then
+  case Index of
+  0:
     LoadDataFromFile(Component as TJvDataEmbedded);
+  1:
+    (Component as TJvDataEmbedded).Size := 0;
+  2:
+    ViewAsText;
+  end;
 end;
 
 function TJvDataEmbeddedComponentEditor.GetVerb(Index: Integer): string;
 begin
-  if Index = 0 then
+  case Index of
+  0:
     Result := RsLoadFromFileEllipsis;
+  1:
+    Result := RsClearEmbeddedData;
+  2:
+    Result := RsViewEmbeddedDataAsText;
+  end;
 end;
 
 function TJvDataEmbeddedComponentEditor.GetVerbCount: Integer;
 begin
-  Result := 1;
+  Result := 3;
+end;
+
+{$IFDEF COMPILER6_UP}
+procedure TJvDataEmbeddedComponentEditor.PrepareItem(Index: Integer;
+  const AItem: IMenuItem);
+begin
+  inherited;
+  case Index of
+  1,2:
+    AItem.Enabled := (Component as TJvDataEmbedded).Data.Size > 0;
+  end;
+end;
+{$ENDIF COMPILER6_UP}
+
+procedure TJvDataEmbeddedComponentEditor.ViewAsText;
+var
+  F:TFileStream;
+  S:string;
+begin
+  S := FileGetTempName('JVCL');
+  F := TFileStream.Create(S,fmCreate);
+  try
+    (Component as TJvDataEmbedded).DataSaveToStream(F);
+  finally
+    F.Free;
+  end;
+  ShellExecute(GetActiveWindow, 'open','notepad.exe',PChar(S),PChar(ExtractFilePath(S)),SW_SHOWNORMAL);
+  // (p3) not 100% kosher, but seems to work most of the time
+  // if anyone knows a better way to delete the temp file, please fix
+  sleep(300);
+  DeleteFile(PChar(S));
 end;
 
 end.
