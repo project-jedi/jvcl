@@ -196,8 +196,13 @@ type
 
 function TJvInterpreterReader.FindMethod(Root: TComponent;
   const MethodName: string): Pointer;
+var
+  Len: Integer;
 begin
-  Result := NewStr(MethodName);
+  // (rom) explicit allocation instead of deprecated NewStr
+  Len := StrLen(PChar(MethodName))+1;
+  GetMem(Result, Len);
+  Move(PChar(MethodName)^, Result^, Len);
   TJvInterpreterForm(Root).FMethodList.Add(Result);
 end;
 
@@ -222,7 +227,7 @@ var
   I: Integer;
 begin
   for I := 0 to FMethodList.Count - 1 do
-    DisposeStr(FMethodList[I]);
+    FreeMem(FMethodList[I]);
   FMethodList.Free;
   inherited Destroy;
   if FFreeJvInterpreterFm then
@@ -236,7 +241,7 @@ procedure TJvInterpreterForm.FixupMethods;
     TypeInf: PTypeInfo;
     TypeData: PTypeData;
     PropList: PPropList;
-    NumProps: word;
+    NumProps: Word;
     I: Integer;
     F: Integer;
     Method: TMethod;
