@@ -5,12 +5,11 @@
 ----------------------------------------------------------------------------------------------------
 @@JvExDBGrids.pas
 Summary
-  Contains components that extend the components from Delphi's DBGrids.pas with generic properties
-  and CLX code.
+  Contains components that extend the components from Delphi's DBGrids.pas with generic properties and
+  CLX code.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Andreas Hausladen
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDBGrid
@@ -18,7 +17,7 @@ Summary
   Base class for extended data-aware grids.
 Description
   TJvExCustomDBGrid is a base class for classes in the JVCL library that descend from TCustomDBGrid.
-  
+
   Do not create instances of TJvExCustomDBGrid. Use a descendant of TJvExCustomDBGrid or create your
   own descendant class.
 
@@ -32,8 +31,8 @@ Summary
   Determines the color of the hint boxes for the Help Hints for the grid.
 Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor
-  assign it a new TColor value.
+  HintColor property in the constructor when the application is created. To change the HintColor assign
+  it a new TColor value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDBGrid.MouseOver
@@ -73,12 +72,22 @@ Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvExCustomDBGrid.ParentBackground
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvExDBGrid
 Summary
   Base class for extended data-aware grids.
 Description
   TJvExDBGrid is a base class for classes in the JVCL library that descend from TDBGrid.
-  
+
   Do not create instances of TJvExDBGrid. The TJvDBGrid class provides a generic implementation of
   TJvExDBGrid. You can also create your own descendant class.
 
@@ -92,8 +101,8 @@ Summary
   Determines the color of the hint boxes for the Help Hints for the grid.
 Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor
-  assign it a new TColor value.
+  HintColor property in the constructor when the application is created. To change the HintColor assign
+  it a new TColor value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExDBGrid.MouseOver
@@ -131,4 +140,14 @@ Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExDBGrid.ParentBackground
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 

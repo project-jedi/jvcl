@@ -7,6 +7,7 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Andreas Hausladen
+
 ----------------------------------------------------------------------------------------------------
 @@TCmdLineReceivedEvent
 <TITLE TCmdLineReceivedEvent type>
@@ -23,8 +24,8 @@ Author
 Summary
   The type for event handlers that respond when another application instance is created or destroyed.
 Description
-  TInstanceChangeEvent is the type for event handlers that respond when another application instance
-  is created or destroyed.
+  TInstanceChangeEvent is the type for event handlers that respond when another application instance is
+  created or destroyed.
 Parameters
   Sender    - TJvAppInstance object.
   ProcessId - The process id of the created or destroyed application instance.
@@ -40,13 +41,12 @@ JVCLInfo
 Summary
   Allows you to control the number of application instances running at the same time.
 Description
-  The TJvAppInstances component encapsulates the TJclAppInstance class. It allows you to control
-  the number of application instances running at the
-  same time. If a new instance is rejected it can send its command line and other commands to the
-  first instance.
+  The TJvAppInstances component encapsulates the TJclAppInstance class. It allows you to control the
+  number of application instances running at the same time. If a new instance is rejected it can send
+  its command line and other commands to the first instance.
 
-  To set a UniqueAppIdGuidStr you must call JclAppInst.JclAppInstances in the initialization section
-  of a unit or before the forms are created (OnCreate is too late).
+  To set a UniqueAppIdGuidStr you must call JclAppInst.JclAppInstances in the initialization section of
+  a unit or before the forms are created (OnCreate is too late).
 
   This class is not thread safe.
 
@@ -76,8 +76,8 @@ Description
 Summary
   Tests for an existing instance.
 Description
-  If Check finds an existing application instance, it will communicate with the first instance and
-  then terminate.
+  If Check finds an existing application instance, it will communicate with the first instance and then
+  terminate.
 
   Check is called by the Loaded method. So there is no need to call it directly.
 
@@ -103,8 +103,8 @@ Description
 Summary
   Occurs after a command line is received.
 Description
-  Install an event handler for this event if you want to receive the command lines from other
-  rejected instances.
+  Install an event handler for this event if you want to receive the command lines from other rejected
+  instances.
 Parameters
   Sender  - Calling TJvAppInstances object.
   CmdLine - Contains the command line arguments (1 to ParamCount).

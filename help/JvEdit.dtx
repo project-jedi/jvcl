@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Incomplete
+##Status: Completed, Incomplete
 ##Skip: TJvCustomEdit.PasswordChar
 ##Skip: TJvCustomEdit.Text
 ----------------------------------------------------------------------------------------------------
@@ -9,7 +9,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit
@@ -37,11 +36,11 @@ Description
   Use Alignment to indicate text alignment in the edit box. These are the possible values:
 
   <TABLE>
-  Value           Meaning
-  -----           -------
-  taLeftJustify   Align text on the left side in the edit control.
-  taCenter        Center the text in the edit control.
-  taRightJustify  Align text on the right side in the edit control.
+    Value           Meaning
+    --------------  -------------------------------------------------
+    taLeftJustify   Align text on the left side in the edit control.
+    taCenter        Center the text in the edit control.
+    taRightJustify  Align text on the right side in the edit control.
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -49,15 +48,14 @@ Description
 Summary
   Specifies whether the control's hint is set to the current text.
 Description
-  Use AutoHint to indicate whether the text of the control is automatically displayed as the
-  control's hint.
+  Use AutoHint to indicate whether the text of the control is automatically displayed as the control's
+  hint.
 
   If AutoHint is true, the hint is changed according to the following rules:
 
-    * If the original hint
-      is non-empty, it is only set if the text doesn't fit in the control. The original
-      hint is automatically restored when the text fits.
-    * If the original hint is empty, it is always set to be equivalent to the text.
+  * If the original hint is non-empty, it is only set if the text doesn't fit in the control. The
+    original hint is automatically restored when the text fits.
+  * If the original hint is empty, it is always set to be equivalent to the text.
 Note
   To store a default hint value, AutoUpdate must be set to false.
 See Also
@@ -118,8 +116,8 @@ See Also
 Summary
   Determines whether the control appears flat.
 Description
-  When Flat is false, the control has raised borders, which create a three-dimensional look.
-  Setting Flat to true gives the control flat borders.
+  When Flat is false, the control has raised borders, which create a three-dimensional look. Setting
+  Flat to true gives the control flat borders.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.GroupIndex
@@ -128,9 +126,9 @@ Summary
 Description
   When GroupIndex is set to -1, the edit control behaves as normal.
 
-  Edit controls with the same GroupIndex property value (other than -1), work together as a group.
-  When the user enters one of these edit controls, the text on the other edits belonging to the same
-  group will be cleared.
+  Edit controls with the same GroupIndex property value (other than -1), work together as a group. When
+  the user enters one of these edit controls, the text on the other edits belonging to the same group
+  will be cleared.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.HintColor
@@ -138,8 +136,8 @@ Summary
   Determines the color of the hint boxes for the Help Hints for the edit control.
 Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor
-  assign it a new TColor value.
+  HintColor property in the constructor when the application is created. To change the HintColor assign
+  it a new TColor value.
 See Also
   TJvCustomEdit.HotTrack
 
@@ -148,8 +146,8 @@ See Also
 Summary
   Specifies whether the edit control is highlighted when the mouse passes over it.
 Description
-  Set HotTrack to true to provide visual feedback about which item is under the mouse. When HotTrack
-  is false, there is no visual feedback when the mouse passes over the edit control.
+  Set HotTrack to true to provide visual feedback about which item is under the mouse. When HotTrack is
+  false, there is no visual feedback when the mouse passes over the edit control.
 Note
   The HotTrack property only works if BorderStyle is set to bsSingle and BevelKind is set to bvNone.
 
@@ -203,9 +201,9 @@ Description
   Use the UseFixedPopup property to specify whether to replace the default system popup menu with a
   fixed popup menu.
 
-  The fixed popup menu fixes problems such as incorrectly displaying the Paste command as enabled
-  even when the edit is set to read-only, and works in combination with the <LINK
-  TJvExCustomEdit.ClipboardCommands,ClipboardCommands> property.
+  The fixed popup menu fixes problems such as incorrectly displaying the Paste command as enabled even
+  when the edit is set to read-only, and works in combination with the <LINK
+  TJvExCustomEdit.ClipboardCommands, ClipboardCommands> property.
 
   Set UseFixedPopup to true (the default) to use the fixed popup menu, or set it to false to use the
   default implementation.

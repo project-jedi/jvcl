@@ -19,7 +19,6 @@ Summary
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 
-
 ----------------------------------------------------------------------------------------------------
 @@EJVCLDbGridException
 Summary
@@ -33,12 +32,9 @@ Description
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = set of Char; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  set of Char; - for reference)
+
 ----------------------------------------------------------------------------------------------------
 @@TCheckTitleBtnEvent
 <TITLE TCheckTitleBtnEvent type>
@@ -100,8 +96,8 @@ Description
 Summary
   Indicates whether moving beyond the last row in the grid, automatically inserts a new row.
 Description
-  Use AutoAppend to specify whether new records are automatically appended when the user tries to
-  move beyond the last row in the grid.
+  Use AutoAppend to specify whether new records are automatically appended when the user tries to move
+  beyond the last row in the grid.
 Note
   Due to the design of the base TCustomDBGrid, AutoAppend does not work correctly when dgTabs is in
   Options and the user tabs beyond the last row.
@@ -111,23 +107,22 @@ Note
 Summary
   Indicates the column that will be autosized when the grid or its columns are resized.
 Description
-  Use AutoSizeColumnIndex to specify the column or columns that are auto sized. AutoSizeColumnIndex
-  can be set to any of the following values:
+  Use AutoSizeColumnIndex to specify the column or columns that are auto sized. AutoSizeColumnIndex can
+  be set to any of the following values:
 
   <TABLE>
-  Value   Meaning
-  -----   -------
-  -2      Indicates that the right-most visible column should be auto
-           sized. If the number of visible columns changes
-           so might the column that is sized.
-  -1      Auto size all visible columns proportionally.
-  0..n    Auto size the column with the specified index. If n >= Columns.Count, autosizing is
-           disabled.
+    Value  Meaning
+    -----  -----------------------------------------------------------------------------------
+    -2     Indicates that the right-most visible column should be auto sized. If the number
+             of visible columns changes so might the column that is sized.
+    -1     Auto size all visible columns proportionally.
+    0..n   Auto size the column with the specified index. If n > = Columns.Count, autosizing
+             is disabled.
   </TABLE>
 
   Auto sizing is only active when AutoSizeColumns is true and all visible columns in the grid can be
-  shown without a horizontal scrollbar. The values of MinColumnWidth and MaxColumnWidth are also
-  taken into consideration when auto sizing.
+  shown without a horizontal scrollbar. The values of MinColumnWidth and MaxColumnWidth are also taken
+  into consideration when auto sizing.
 See Also
   TJvDBGrid.AutoSizeColumns, TJvDBGrid.MaxColumnWidth, TJvDBGrid.MinColumnWidth
 
@@ -156,14 +151,13 @@ See Also
 Summary
   Indicates whether the grid tries to change the sort index of the dataset or not.
 Description
-  Use AutoSort when you want the grid to sort automatically when a column is clicked (TitleButtons
-  must be set to true).
-  If AutoSort is true, the grid can sort the columns automatically if all of the following criteria
-  are true:
+  Use AutoSort when you want the grid to sort automatically when a column is clicked (TitleButtons must
+  be set to true). If AutoSort is true, the grid can sort the columns automatically if all of the
+  following criteria are true:
 
-    * The dataset has a published property named "\IndexDefs" of type TIndexDefs
-    * The dataset has a published property named "\IndexName" of type string
-    * There is an index in IndexName that contains the name of the filed of the clicked column
+  * The dataset has a published property named "\IndexDefs" of type TIndexDefs
+  * The dataset has a published property named "\IndexName" of type string
+  * There is an index in IndexName that contains the name of the filed of the clicked column
 See Also
   OnTitleClick
 
@@ -174,6 +168,7 @@ Summary
 Description
   Use BeepOnError to specify whether errors in input triggers a speaker beep. The standard DBGrid
   always beeps on errors. Set BeepOnError to false to suppress this behavior.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.CharList
 Summary
@@ -181,18 +176,20 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated) Remove the 'See Also' section if there are no
-  references
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.ClearSelection
 Summary
   Clears the selection in the grid when the user moves to a new cell in MultiSelect mode.
 Description
   Set ClearSelection to true to remove any additional selected rows when the user moves to a new cell
-  in the grid and MultiSelect is true.
-  If ClearSelection is false, multi selected rows remains selected when the user navigates the grid.
+  in the grid and MultiSelect is true. If ClearSelection is false, multi selected rows remains selected
+  when the user navigates the grid.
 See Also
   MultiSelect
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.CloseControl
 Summary
@@ -202,6 +199,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.EditControls
 Summary
@@ -227,11 +225,11 @@ See Also
 Summary
   Moves focus to the specified selected row.
 Description
-  Use GotoSelection to move the focus in a multi selected grid to a new row. When MultiSelect is
-  false or no rows are selected, this procedure does nothing.
+  Use GotoSelection to move the focus in a multi selected grid to a new row. When MultiSelect is false
+  or no rows are selected, this procedure does nothing.
 Parameters
   Index - Index of the selected row. For example: if there are two selected rows, then index 0 moves
-  to the first selected row and index 1 to the second.
+           to the first selected row and index 1 to the second.
 See Also
   MultiSelect
 
@@ -247,6 +245,7 @@ Description
   property of all the used fields.
 See Also
   TJvDBGrid.Load, TJvDBGrid.LoadFromAppStore, TJvDBGrid.Save, TJvDBGrid.SaveToAppStore
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.InitializeColumnsWidth
 Summary
@@ -261,6 +260,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.Load
 Summary
@@ -348,12 +348,12 @@ Summary
 Description
   Write a handler for this event to modify the appearance of the title buttons.
 Parameters
-  Sender     - The grid that triggered the event.
-  Field      - The field of the cell.
-  AFont      - The cell's font.
-  Background - The cell's background color.
+  Sender      - The grid that triggered the event.
+  Field       - The field of the cell.
+  AFont       - The cell's font.
+  Background  - The cell's background color.
   ASortMarker - The sort marker to display.
-  IsDown     - Indicates whether the button is down or not.
+  IsDown      - Indicates whether the button is down or not.
 See Also
   TJvDBGrid.OnGetCellParams, TJvDBGrid.OnGetCellProps
 
@@ -393,8 +393,8 @@ See Also
 Summary
   Occurs when a cell in the grid wants to display its hint.
 Description
-  Write a handler for this event to provide custom hints for the cells in the grid. This event is
-  only triggered if hints are enabled and ShowCellHint is true.
+  Write a handler for this event to provide custom hints for the cells in the grid. This event is only
+  triggered if hints are enabled and ShowCellHint is true.
 Parameters
   Sender   - The grid that triggered the event.
   Field    - The field the column displays.
@@ -435,9 +435,8 @@ Summary
   Occurs when the arrow in the indicator column is clicked.
 Description
   Write a handler for this event to be notified when the title arrow in the indicator column is
-  clicked.
-  This event is only triggered when TitleArrow is true, the titles and indicator row are visible and
-  the right mouse button is clicked.
+  clicked. This event is only triggered when TitleArrow is true, the titles and indicator row are
+  visible and the right mouse button is clicked.
 See Also
   Options
 
@@ -461,9 +460,10 @@ Description
 Summary
   Specifies whether pressing the Enter key posts the changes to the dataset.
 Description
-  Use PostOnEnter to specify whether pressing the Enter key automatically posts data to the
-  underlying dataset.
-  If PostOnEnter is false, the user must move to another cell before the modified data is committed.
+  Use PostOnEnter to specify whether pressing the Enter key automatically posts data to the underlying
+  dataset. If PostOnEnter is false, the user must move to another cell before the modified data is
+  committed.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.RegisterLayoutChangeLink
 Summary
@@ -475,6 +475,7 @@ Parameters
   Link - The object to register
 See Also
   TJvLayoutChangeLink
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.RowResize
 Summary
@@ -579,12 +580,14 @@ Description
 
   The grid will display custom images for the following field types:
 
-  ftBytes, ftVarBytes, ftBlob, ftTypedBinary, ftOraBlob<P>
-  ftMemo, ftOraClob<P>
-  ftGraphic <P>
-  ftParadoxOle, ftDBaseOle<P>
-  ftCursor, ftReference, ftDataSet<P>
+  <PRE>
+  ftBytes, ftVarBytes, ftBlob, ftTypedBinary, ftOraBlob
+  ftMemo, ftOraClob
+  ftGraphic
+  ftParadoxOle, ftDBaseOle
+  ftCursor, ftReference, ftDataSet
   ftBoolean
+  </PRE>
 Note
   If the OnGetText and OnSetText events are assigned, ShowGlyphs does nothing.
 See Also
@@ -605,10 +608,10 @@ See Also
 Summary
   Specifies the field to display a sort marker for.
 Description
-  Use SortedField to indicate the field that should be used to sort the grid. If the dataset in use
-  has the properties 'IndexDefs' and 'IndexName' and IndexDefs contains a definition for the value in
-  SortedField, IndexName will be changed automatically to the value of SortedField when a title
-  button is clicked.
+  Use SortedField to indicate the field that should be used to sort the grid. If the dataset in use has
+  the properties 'IndexDefs' and 'IndexName' and IndexDefs contains a definition for the value in
+  SortedField, IndexName will be changed automatically to the value of SortedField when a title button
+  is clicked.
 See Also
   TJvDBGrid.AutoSort, TJvDBGrid.OnTitleBtnClick
 
@@ -619,8 +622,8 @@ Summary
 Description
   Use SortMarker to indicate the sort arrow to display for the current sort column. The current sort
   column is determined by the value of the SortedField property. Note that setting SortedField and
-  SortMaker does not guarantee that the column will be sorted. For an explanation of when the grid
-  can sort the columns automatically, see the AutoSort topic.
+  SortMaker does not guarantee that the column will be sorted. For an explanation of when the grid can
+  sort the columns automatically, see the AutoSort topic.
 See Also
   TJvDBGrid.AutoSort, TJvDBGrid.OnTitleBtnClick, TJvDBGrid.SortedField, TJvDBGrid.TitleButtons
 
@@ -629,8 +632,8 @@ See Also
 Summary
   Specifies whether a down pointing arrow is displayed in the indicator column.
 Description
-  Use TitleArrow to indicate whether the indicator column displays a down pointing arrow or not.
-  When TitleArrow is true, clicking the arrow displays the select column dialog.
+  Use TitleArrow to indicate whether the indicator column displays a down pointing arrow or not. When
+  TitleArrow is true, clicking the arrow displays the select column dialog.
 See Also
   TJvDBGrid.ShowColumnsDialog
 
@@ -657,6 +660,7 @@ Description
   grid.
 See Also
   PopupMenu
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.TitleRowHeight
 Summary
@@ -666,6 +670,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.ToggleRowSelection
 Summary
@@ -675,18 +680,20 @@ Description
   false, this method does nothing.
 See Also
   MultiSelect
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.UnregisterLayoutChangeLink
 Summary
   Unregisters the given TJvLayoutChangeLink object with the grid
 Description
   The given link object will be removed from the list of registered link objects, its OnChange object
-  will no more be called when the grid layout changes.
-  If it was not present in the list, nothing happens.
+  will no more be called when the grid layout changes. If it was not present in the list, nothing
+  happens.
 Parameters
   Link - The link object to unregister
 See Also
   TJvLayoutChangeLink
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.UnselectAll
 Summary
@@ -733,6 +740,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGridControl.FitCell
 Summary
@@ -740,8 +748,9 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated) Remove the 'See Also' section if there are no
-  references
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGridControls
 Summary
@@ -774,6 +783,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGridControls.ControlByName
 Summary
@@ -787,6 +797,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGridControls.Items
 Summary
@@ -798,6 +809,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGridControlSize
 <TITLE TJvDBGridControlSize type>
@@ -808,16 +820,24 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDBGridControlSize.fcCellSize
   Description for fcCellSize
+
+----------------------------------------------------------------------------------------------------
 @@TJvDBGridControlSize.fcDesignSize
   Description for fcDesignSize
+
+----------------------------------------------------------------------------------------------------
 @@TJvDBGridControlSize.fcBiggest
   Description for fcBiggest
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGridLayoutChangeEvent
 <TITLE TJvDBGridLayoutChangeEvent type>
 <COMBINE TJvDBGridLayoutChangeLink.OnChange>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGridLayoutChangeKind
 <TITLE TJvDBGridLayoutChangeKind type>
@@ -828,16 +848,22 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDBGridLayoutChangeKind.lcSizeChanged
   Description for lcSizeChanged
+
+----------------------------------------------------------------------------------------------------
 @@TJvDBGridLayoutChangeKind.lcTopLeftChanged
   Description for lcTopLeftChanged
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGridLayoutChangeLink
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGridLayoutChangeLink.DoChange
 Summary
@@ -850,6 +876,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGridLayoutChangeLink.OnChange
 Summary
@@ -862,26 +889,36 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDialogColumnStrings
 Summary
   Class that holds the strings to use in a TJvDBGrid select column dialog at run-time.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDialogColumnStrings.Caption
 Summary
   The text to display in the select columns dialogs caption.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDialogColumnStrings.NoSelectionWarning
 Summary
-  The text to use for the warning message in the select columns dialog when the user tries to hide
-  all columns.
+  The text to use for the warning message in the select columns dialog when the user tries to hide all
+  columns.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDialogColumnStrings.OK
 Summary
   The caption to use on the OK button on the select columns dialog.
+Description
+  Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDialogColumnStrings.RealNamesOption
 Summary
@@ -891,6 +928,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTitleHintEvent
 <TITLE TJvTitleHintEvent type>
@@ -906,11 +944,11 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TSelectColumn.scDataBase
-Fields are displayed in the same order as in the dataset.
+  Fields are displayed in the same order as in the dataset.
 
 ----------------------------------------------------------------------------------------------------
 @@TSelectColumn.scGrid
-Fields are displayed in the same order as in the grid.
+  Fields are displayed in the same order as in the grid.
 
 ----------------------------------------------------------------------------------------------------
 @@TSortMarker
@@ -922,15 +960,15 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TSortMarker.smNone
-Do not display a sort marker.
+  Do not display a sort marker.
 
 ----------------------------------------------------------------------------------------------------
 @@TSortMarker.smDown
-Arrow pointing down.
+  Arrow pointing down.
 
 ----------------------------------------------------------------------------------------------------
 @@TSortMarker.smUp
-Arrow pointing up.
+  Arrow pointing up.
 
 ----------------------------------------------------------------------------------------------------
 @@TTitleClickEvent
@@ -946,3 +984,4 @@ Parameters
   Field  - The field the column displays.
 See Also
   TJvDBGrid.OnTitleBtnClick, TJvDBGrid.OnTitleBtnDblClick
+

@@ -8,24 +8,23 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@FindFilesDlg
 <TITLE FindFilesDlg function>
 Summary
   Displays Windows' built-in search files dialog.
 Description
-  Call FindFilesDlg to access the file search functionality built into Windows Explorer.
-  If you are running Windows 95, 98 or NT, this function displays a dialog. If you are using Windows
-  2000 or XP, this function displays a search panel inside Windows Explorer.
-  
+  Call FindFilesDlg to access the file search functionality built into Windows Explorer. If you are
+  running Windows 95, 98 or NT, this function displays a dialog. If you are using Windows 2000 or XP,
+  this function displays a search panel inside Windows Explorer.
+
   This function is a wrapper for the TJvFindFilesDialog component so you don't need to create an
   instance of the component at run-time.
 Parameters
   StartIn       - The start folder if the folder is a file system directory.
   SpecialFolder - The start folder if the folder is one of the special folders available in Windows.
-  UseFolder     - Controls whether StartIn or SpecialFolder is used. Set to true to use
-  SpecialFolder, to false to use Directory.
+  UseFolder     - Controls whether StartIn or SpecialFolder is used. Set to true to use SpecialFolder,
+                   to false to use Directory.
 See Also
   TJvFindFilesDialog
 
@@ -38,9 +37,9 @@ JVCLInfo
 Summary
   Simplifies searching for files.
 Description
-  Use a TJvFindFilesDialog to access the file search functionality built into Windows Explorer.
-  If you are running Windows 95, 98 or NT, this component displays a dialog. If you are using
-  Windows 2000 or XP, it displays a search panel inside Windows Explorer.
+  Use a TJvFindFilesDialog to access the file search functionality built into Windows Explorer. If you
+  are running Windows 95, 98 or NT, this component displays a dialog. If you are using Windows 2000 or
+  XP, it displays a search panel inside Windows Explorer.
 Note
   This component doesn't give much control of the search. Specifically, you can't access the files
   found when the search has completed. If you need a file search engine with full control of options
@@ -84,8 +83,7 @@ Summary
   Specifies what property is used for the root search folder.
 Description
   Use UseSpecialFolder to specify whether the Directory or SpecialFolder property is used as the root
-  folder for the search. Set this value to false to use Directory and to true to use
-  SpecialFolder.
+  folder for the search. Set this value to false to use Directory and to true to use SpecialFolder.
 See Also
   TJvFindFilesDialog.Directory, TJvFindFilesDialog.SpecialFolder
 
@@ -95,71 +93,70 @@ See Also
 Summary
   Defines the different special system folders available in Windows.
 Description
-  TJvSpecialFolder is the type for the <LINK TJvFindFilesDialog.SpecialFolder, SpecialFolder>
-  property of the TJvFindFilesDialog component. It defines all allowable special folders on the
-  system.
+  TJvSpecialFolder is the type for the <LINK TJvFindFilesDialog.SpecialFolder, SpecialFolder> property
+  of the TJvFindFilesDialog component. It defines all allowable special folders on the system.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfRecycleBin
-The folder is the recycle bin folder.
+  The folder is the recycle bin folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfControlPanel
-The folder is the control panel folder.
+  The folder is the control panel folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfDesktop
-The folder is the user's desktop folder.
+  The folder is the user's desktop folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfDesktopDirectory
-The folder is the user's root folder.
+  The folder is the user's root folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfMyComputer
-The folder is the user's "My Computer" folder.
+  The folder is the user's "My Computer" folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfFonts
-The folder is the user's font folder.
+  The folder is the user's font folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfNetHood
-The folder is the user's "Network Neighbourhood" folder.
+  The folder is the user's "Network Neighbourhood" folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfNetwork
-The folder is the user's network connections folder.
+  The folder is the user's network connections folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfPersonal
-The folder is the user's personal folder.
+  The folder is the user's personal folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfPrinters
-The folder is the computers printers folder.
+  The folder is the computers printers folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfPrograms
-The folder is the user's programs folder.
+  The folder is the user's programs folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfRecent
-The folder is the user's recent documents folder.
+  The folder is the user's recent documents folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfSendTo
-The folder is the user's "Send To" folder.
+  The folder is the user's "Send To" folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfStartMenu
-The folder is the user's start menu folder.
+  The folder is the user's start menu folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.stStartUp
-The folder is the user's start up folder.
+  The folder is the user's start up folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialFolder.sfTemplates
-The folder is the user's templates folder.
+  The folder is the user's templates folder.
 

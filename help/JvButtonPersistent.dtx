@@ -8,7 +8,6 @@ Summary
 Author
   Sébastien Buysse
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonPersistent
 Summary
@@ -21,8 +20,8 @@ Description
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the
-  inherited method
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Parameters
   Sender - Description for this parameter
 See Also
@@ -76,7 +75,7 @@ Summary
 Description
   Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
   specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual
-  feedback when the mouse passes over the <xxx>.
+  feedback when the mouse passes over the <xxx> .
 See Also
   HotGlyph, OnMouseEnter, OnMouseLeave
 
@@ -86,9 +85,8 @@ Summary
   Specifies the font used when the mouse passes over the <xxx> and HotTrack is True.
 Description
   When the mouse passes over the <xxx> and HotTrack is set to True, HotTrackFont is used as the font
-  for the <xxx> text.
-  To change to a new font, specify a new TFont object. To modify a font, change the value of the
-  Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
+  for the <xxx> text. To change to a new font, specify a new TFont object. To modify a font, change the
+  value of the Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
 See Also
   HotGlyph
 
@@ -98,19 +96,18 @@ Summary
   Specifies how changes to the Font affects HotTrackFont.
 Description
   HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
-  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all
-  property changes in Font are copied to HotTrackFont except Color changes.
-  Note that hoFollowFont must be included for any properties to be copied at all.
-  To implement the HotTrackFontOptions property in a new control, you should perform the following
-  steps:
+  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
+  changes in Font are copied to HotTrackFont except Color changes. Note that hoFollowFont must be
+  included for any properties to be copied at all. To implement the HotTrackFontOptions property in a
+  new control, you should perform the following steps:
 
-    * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set it's default
-      value to be DefaultTrackFontOptions (defined in JvTypes).
-    * Set the default value in the constructor.
-    * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
-      JvJVCLUtils) after calling inherited.
-    * Add a call to UpdateTrackFont in SetHotTrackFontOptions
+  * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
+  * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set it's default
+    value to be DefaultTrackFontOptions (defined in JvTypes).
+  * Set the default value in the constructor.
+  * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
+    JvJVCLUtils) after calling inherited.
+  * Add a call to UpdateTrackFont in SetHotTrackFontOptions
 See Also
   TJvButtonPersistent.HotTrack, TJvButtonPersistent.HotTrackFont
 

@@ -10,7 +10,6 @@ Summary
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 
-
 ----------------------------------------------------------------------------------------------------
 @@CreateCalculatorForm
 <TITLE CreateCalculatorForm function>
@@ -20,8 +19,8 @@ Description
   Call CreateCalculatorForm to create a calculator dialog that will be used several times in an
   application.
 Note
-  CreateCalculatorForm does not display the dialog form. The application must display this form when
-  it is needed by calling its ShowModal method.
+  CreateCalculatorForm does not display the dialog form. The application must display this form when it
+  is needed by calling its ShowModal method.
 Parameters
   AOwner       - The owner of the dialog.
   AHelpContext - Context number for online Help.
@@ -34,11 +33,11 @@ See Also
 Summary
   Create a calculator dialog to be used as a popup.
 Description
-  Call CreatePopupCalculator to create a calculator popup window that will be used several times in
-  an application.
+  Call CreatePopupCalculator to create a calculator popup window that will be used several times in an
+  application.
 Note
-  CreatePopupCalculator does not display the dialog form. The application must display this window
-  when it is needed by calling its Show method.
+  CreatePopupCalculator does not display the dialog form. The application must display this window when
+  it is needed by calling its Show method.
 Parameters
   AOwner    - The owner of the dialog.
   ABiDiMode - The bi-directional mode for the window.
@@ -56,7 +55,7 @@ Parameters
   PopupCalc    - The popup calculator to initizize.
   APrecision   - The precision used in formatting the value in the calculator's display.
   ABeepOnError - Specifies whether the calculator beeps when the user tries to enter an invalid
-  character.
+                  character.
 See Also
   CreatePopupCalculator, TJvCalculator.BeepOnError, TJvCalculator.Precision
 
@@ -69,10 +68,10 @@ JVCLInfo
 Summary
   Displays a simple calculator.
 Description
-  TJvCalculator displays a modal Windows dialog box for calculating values. The dialog does not
-  appear at runtime until it is activated by a call to the Execute method. When the user clicks
-  OK, the dialog closes and the calculated result is stored in the Value property.
-  
+  TJvCalculator displays a modal Windows dialog box for calculating values. The dialog does not appear
+  at runtime until it is activated by a call to the Execute method. When the user clicks OK, the dialog
+  closes and the calculated result is stored in the Value property.
+
   You can preview this dialog at design-time, by right-clicking the component and clicking
   'Preview...'.
 
@@ -89,8 +88,8 @@ Description
 Summary
   Represents the value that is displayed in the calculator's edit box.
 Description
-  Use the CalcDisplay property to retrieve the value that is displayed in the calculator's edit box
-  as a double.
+  Use the CalcDisplay property to retrieve the value that is displayed in the calculator's edit box as
+  a double.
 See Also
   TJvCalculator.OnDisplayChange, TJvCalculator.Value
 
@@ -117,9 +116,9 @@ See Also
 Summary
   Specifies the context number for online Help.
 Description
-  The HelpContext property is an integer value that determines which Help screen appears when the
-  user requests context-sensitive online Help. If HelpContext is set to the default value of 0, the
-  dialog inherits the Help context of its parent.
+  The HelpContext property is an integer value that determines which Help screen appears when the user
+  requests context-sensitive online Help. If HelpContext is set to the default value of 0, the dialog
+  inherits the Help context of its parent.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.Memory
@@ -164,12 +163,12 @@ See Also
 Summary
   Determines the precision used in formatting the value in the calculator's display.
 Description
-  Use Precision to set the number of digits beyond the decimal point the value should be formatted to before rounding begins. T
-  e default value of Precision is 15 decimal places. Precision <i>does</i> affect the actual
-  floating-point value that the calculator uses.
+  Use Precision to set the number of digits beyond the decimal point the value should be formatted to
+  before rounding begins. T e default value of Precision is 15 decimal places. Precision <I>does</I>
+  affect the actual floating-point value that the calculator uses.
 Note
-  Precision must be greater than or equal to 2. Trying to set Precision to a value less than 2
-  changes the value of Precision to 2.
+  Precision must be greater than or equal to 2. Trying to set Precision to a value less than 2 changes
+  the value of Precision to 2.
 See Also
   TJvCalculator.CalcDisplay
 
@@ -186,10 +185,9 @@ Summary
   Indicates the result of the last calculation.
 Description
   The Value property returns the result of the last calculation done in the calculator dialog.
-  
-  To make a value appear by default in the calculator dialog’s edit box, assign a value to Value in
-  the Object
-  Inspector or in program code. Programmatic changes to Value have no effect while the dialog is
+
+  To make a value appear by default in the calculator dialog’s edit box, assign a value to Value in the
+  Object Inspector or in program code. Programmatic changes to Value have no effect while the dialog is
   active, use CalcDisplay for this purpose.
 See Also
   TJvCalculator.CalcDisplay, TJvCalculator.Memory, TJvCalculator.Precision

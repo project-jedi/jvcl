@@ -10,7 +10,6 @@ Summary
 Author
   Sébastien Buysse
 
-
 ----------------------------------------------------------------------------------------------------
 @@BrowseComputer
 <TITLE BrowseComputer function>
@@ -93,247 +92,282 @@ Description
   Use a TFromDirectory value to specify a specific folder in a unique system-independent way.
 Note
   Some flags are not supported on all Shell32.dll versions, these flags are marked with a version
-  number.
-  This version number indicates that the programming element was first implemented in that version
-  and will also be found in all subsequent versions of the DLL. If no version number is specified,
-  the programming element is implemented in all versions.
+  number. This version number indicates that the programming element was first implemented in that
+  version and will also be found in all subsequent versions of the DLL. If no version number is
+  specified, the programming element is implemented in all versions.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdNoSpecialFolder
-Specifies that the directory specified by <LINK TJvBrowseForFolderDialog.Directory,Directory> should be used.
+  Specifies that the directory specified by <LINK TJvBrowseForFolderDialog.Directory, Directory> should
+  be used.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdRootFolder
-The namespace root (the desktop folder).
+  The namespace root (the desktop folder).
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdRecycleBin
-The virtual folder containing the objects in the user's Recycle Bin.
+  The virtual folder containing the objects in the user's Recycle Bin.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdControlPanel
-The virtual folder containing icons for the Control Panel applications.
+  The virtual folder containing icons for the Control Panel applications.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdDesktop
-The virtual folder representing the windows desktop, the root of the namespace.
+  The virtual folder representing the windows desktop, the root of the namespace.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdDesktopDirectory
-The file system directory used to physically store file objects on the desktop (not to be confused with the desktop folder itself). A typical path is C:\\Documents and Settings\\<i>username</i>\\Desktop.
+  The file system directory used to physically store file objects on the desktop (not to be confused
+  with the desktop folder itself). A typical path is C:\\Documents and
+  Settings\\<I>username</I>\\Desktop.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdMyComputer
-The virtual folder representing My Computer, containing everything on the local computer: storage devices, printers, and Control Panel. The folder may also contain mapped network drives.
+  The virtual folder representing My Computer, containing everything on the local computer: storage
+  devices, printers, and Control Panel. The folder may also contain mapped network drives.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdFonts
-A virtual folder containing fonts. A typical path is C:\\Windows\\Fonts.
+  A virtual folder containing fonts. A typical path is C:\\Windows\\Fonts.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdNetHood
-A file system directory containing the link objects that may exist in the My Network Places virtual folder. It is not the same as fdNetwork, which represents the network namespace root. A typical path is C:\\Documents and Settings\\<i>username</i>\\NetHood.
+  A file system directory containing the link objects that may exist in the My Network Places virtual
+  folder. It is not the same as fdNetwork, which represents the network namespace root. A typical path
+  is C:\\Documents and Settings\\<I>username</I>\\NetHood.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdNetwork
-A virtual folder representing Network Neighborhood, the root of the network namespace hierarchy.
+  A virtual folder representing Network Neighborhood, the root of the network namespace hierarchy.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdPersonal
-The file system directory used to physically store a user's common repository of documents. A typical path is C:\\Documents and Settings\\<i>username</i>\\My Documents. This should be distinguished from the virtual
-My Documents folder in the namespace, identified by fdMyDocuments.
+  The file system directory used to physically store a user's common repository of documents. A typical
+  path is C:\\Documents and Settings\\<I>username</I>\\My Documents. This should be distinguished from
+  the virtual My Documents folder in the namespace, identified by fdMyDocuments.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdPrinters
-The virtual folder containing installed printers.
+  The virtual folder containing installed printers.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdPrograms
-The file system directory that contains the user's program groups (which are themselves file system directories). A typical path is C:\\Documents and Settings\\<i>username</i>\\Start Menu\\Programs.
+  The file system directory that contains the user's program groups (which are themselves file system
+  directories). A typical path is C:\\Documents and Settings\\<I>username</I>\\Start Menu\\Programs.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdRecent
-The file system directory that contains shortcuts to the user's most recently used documents. A typical path is C:\\Documents and Settings\\<i>username</i>\\My Recent Documents.
+  The file system directory that contains shortcuts to the user's most recently used documents. A
+  typical path is C:\\Documents and Settings\\<I>username</I>\\My Recent Documents.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdSendTo
-The file system directory that contains Send To menu items. A typical path is
-C:\\Documents and Settings\\<i>username</i>\\SendTo.
+  The file system directory that contains Send To menu items. A typical path is C:\\Documents and
+  Settings\\<I>username</I>\\SendTo.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdStartMenu
-The file system directory containing Start menu items. A typical path is
-C:\\Documents and Settings\\<i>username</i>\\Start Menu.
+  The file system directory containing Start menu items. A typical path is C:\\Documents and
+  Settings\\<I>username</I>\\Start Menu.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdStartup
-The file system directory that corresponds to the user's Startup program group. The system starts these programs whenever any user logs onto windows NT or starts windows 95. A typical path is
-C:\\Documents and Settings\\<i>username</i>\\Start Menu\\Programs\\Startup.
+  The file system directory that corresponds to the user's Startup program group. The system starts
+  these programs whenever any user logs onto windows NT or starts windows 95. A typical path is
+  C:\\Documents and Settings\\<I>username</I>\\Start Menu\\Programs\\Startup.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdTemplates
-The file system directory that serves as a common repository for document templates. A typical path is
-C:\\Documents and Settings\\<i>username</i>\\Templates.
+  The file system directory that serves as a common repository for document templates. A typical path
+  is C:\\Documents and Settings\\<I>username</I>\\Templates.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdStartUpNonLocalized
-The file system directory that corresponds to the user's nonlocalized Startup program group.
+  The file system directory that corresponds to the user's nonlocalized Startup program group.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonStartUpNonLocalized
-The file system directory that corresponds to the nonlocalized Startup program group for all users.
-Valid only for windows NT systems.
+  The file system directory that corresponds to the nonlocalized Startup program group for all users.
+  Valid only for windows NT systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonDocuments
-The file system directory that contains documents that are common to all users. A typical paths is
-C:\\Documents and Settings\\All Users\\Documents. Valid for windows NT systems, and windows 95 and 98 systems with Shfolder.dll installed.
+  The file system directory that contains documents that are common to all users. A typical paths is
+  C:\\Documents and Settings\\All Users\\Documents. Valid for windows NT systems, and windows 95 and 98
+  systems with Shfolder.dll installed.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonFavorites
-The file system directory that serves as a common repository for favorite items common to all users. Valid only for windows NT systems.
+  The file system directory that serves as a common repository for favorite items common to all users.
+  Valid only for windows NT systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonPrograms
-The file system directory that contains the directories for the common program groups that appear on the Start menu for all users. A typical path is C:\\Documents and Settings\\All Users\\Start Menu\\Programs.
-Valid only for windows NT systems.
+  The file system directory that contains the directories for the common program groups that appear on
+  the Start menu for all users. A typical path is C:\\Documents and Settings\\All Users\\Start
+  Menu\\Programs. Valid only for windows NT systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonStartUp
-The file system directory that contains the programs that appear in the Startup folder for all users.
-A typical path is C:\\Documents and Settings\\All Users\\Start Menu\\Programs\\Startup. Valid only for windows NT systems.
+  The file system directory that contains the programs that appear in the Startup folder for all users.
+  A typical path is C:\\Documents and Settings\\All Users\\Start Menu\\Programs\\Startup. Valid only
+  for windows NT systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonTemplates
-The file system directory that contains the templates that are available to all users. A typical path is C:\\Documents and Settings\\All Users\\Templates. Valid only for windows NT systems.
+  The file system directory that contains the templates that are available to all users. A typical path
+  is C:\\Documents and Settings\\All Users\\Templates. Valid only for windows NT systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCookies
-The file system directory that serves as a common repository for Internet cookies. A typical path is C:\\Documents and Settings\\<i>username</i>\\Cookies.
+  The file system directory that serves as a common repository for Internet cookies. A typical path is
+  C:\\Documents and Settings\\<I>username</I>\\Cookies.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdFavorites
-The file system directory that serves as a common repository for the user's favorite items.
-A typical path is C:\\Documents and Settings\\<i>username</i>\\Favorites.
+  The file system directory that serves as a common repository for the user's favorite items. A typical
+  path is C:\\Documents and Settings\\<I>username</I>\\Favorites.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdHistory
-The file system directory that serves as a common repository for Internet history items.
+  The file system directory that serves as a common repository for Internet history items.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdInternet
-A virtual folder representing the Internet.
+  A virtual folder representing the Internet.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdMyMusic
-The file system directory that serves as a common repository for music files. A typical path is C:\\Documents and Settings\\User\\My Documents\\My Music.
+  The file system directory that serves as a common repository for music files. A typical path is
+  C:\\Documents and Settings\\User\\My Documents\\My Music.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdPrinthood
-The file system directory that contains the link objects that can exist in the \Printers virtual folder. A typical path is C:\\Documents and Settings\\<i>username</i>\\PrintHood.
+  The file system directory that contains the link objects that can exist in the \Printers virtual
+  folder. A typical path is C:\\Documents and Settings\\<I>username</I>\\PrintHood.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdConnections
-A virtual folder that contains network and dial-up connections.
+  A virtual folder that contains network and dial-up connections.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdAppData
-<B>Version 4.71.</B> The file system directory that serves as a common repository for application-specific data. A typical path is C:\\Documents and Settings\\<i>username</i>\\\Application \Data.
+  <B>Version 4.71.</B> The file system directory that serves as a common repository for
+  application-specific data. A typical path is C:\\Documents and
+  Settings\\<I>username</I>\\\Application \Data.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdInternetCache
-<B>Version 4.72.</B> The file system directory that serves as a common repository for temporary
-Internet files. A typical path is
-C:\\Documents and Settings\\<i>username</i>\\Local Settings\\Temporary Internet Files.
+  <B>Version 4.72.</B> The file system directory that serves as a common repository for temporary
+  Internet files. A typical path is C:\\Documents and Settings\\<I>username</I>\\Local
+  Settings\\Temporary Internet Files.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdAdminTools
-<B>Version 5.0.</B> The file system directory that is used to store administrative tools for an individual user.
+  <B>Version 5.0.</B> The file system directory that is used to store administrative tools for an
+  individual user.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonAdminTools
-<B>Version 5.0.</B> The file system directory containing administrative tools for all users of the computer.
+  <B>Version 5.0.</B> The file system directory containing administrative tools for all users of the
+  computer.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonAppData
-<B>Version 5.0.</B> The file system directory containing application data for all users. A typical path is C:\\Documents and Settings\\All Users\\\Application \Data.
+  <B>Version 5.0.</B> The file system directory containing application data for all users. A typical
+  path is C:\\Documents and Settings\\All Users\\\Application \Data.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdLocalAppData
-<B>Version 5.0.</B> The file system directory that serves as a data repository for local (nonroaming) applications. A typical path is C:\\Documents and Settings\\<i>username</i>\\Local Settings\\\Application \Data.
+  <B>Version 5.0.</B> The file system directory that serves as a data repository for local (nonroaming)
+  applications. A typical path is C:\\Documents and Settings\\<I>username</I>\\Local
+  Settings\\\Application \Data.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdMyPictures
-<B>Version 5.0.</B> The file system directory that serves as a common repository for image files. A typical path is C:\\Documents and Settings\\<i>username</i>\\My Documents\\My Pictures.
+  <B>Version 5.0.</B> The file system directory that serves as a common repository for image files. A
+  typical path is C:\\Documents and Settings\\<I>username</I>\\My Documents\\My Pictures.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdProfile
-<B>Version 5.0.</B> The user's profile folder. A typical path is C:\\Documents and Settings\\<i>username</i>.
-Applications should not create files or folders at this level; they should put their data under the locations referred to by fdAppData or fdLocalAppData.
+  <B>Version 5.0.</B> The user's profile folder. A typical path is C:\\Documents and
+  Settings\\<I>username</I>. Applications should not create files or folders at this level; they should
+  put their data under the locations referred to by fdAppData or fdLocalAppData.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdProgramFiles
-<B>Version 5.0.</B> The Program Files folder. A typical path is C:\\Program Files.
+  <B>Version 5.0.</B> The Program Files folder. A typical path is C:\\Program Files.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdProgramFilesCommon
-<B>Version 5.0.</B> A folder for components that are shared across applications. A typical path is
-C:\\Program Files\\Common. Valid only for windows NT, 2000 and XP systems. Not valid for windows Me.
+  <B>Version 5.0.</B> A folder for components that are shared across applications. A typical path is
+  C:\\Program Files\\Common. Valid only for windows NT, 2000 and XP systems. Not valid for windows Me.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdSystem
-<B>Version 5.0.</B> The windows \System folder. A typical path is C:\\Windows\\System32.
+  <B>Version 5.0.</B> The windows \System folder. A typical path is C:\\Windows\\System32.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdWindows
-<B>Version 5.0.</B> The windows directory or SYSROOT. This corresponds to the %windir% or %SYSTEMROOT% environment variables. A typical path is C:\\Windows.
+  <B>Version 5.0.</B> The windows directory or SYSROOT. This corresponds to the %windir% or
+  %SYSTEMROOT% environment variables. A typical path is C:\\Windows.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCDBurnArea
-<B>Version 6.0.</B> The file system directory acting as a staging area for files waiting to be written to CD. A typical path is
-C:\\Documents and Settings\\<i>username</i>\\Local Settings\\\Application \Data\\Microsoft\\CD Burning.
+  <B>Version 6.0.</B> The file system directory acting as a staging area for files waiting to be
+  written to CD. A typical path is C:\\Documents and Settings\\<I>username</I>\\Local
+  Settings\\\Application \Data\\Microsoft\\CD Burning.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonMusic
-<B>Version 6.0.</B> The file system directory that serves as a repository for music files common to all users. A typical path is C:\\Documents and Settings\\All Users\\Documents\\My Music.
+  <B>Version 6.0.</B> The file system directory that serves as a repository for music files common to
+  all users. A typical path is C:\\Documents and Settings\\All Users\\Documents\\My Music.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonPictures
-<B>Version 6.0.</B> The file system directory that serves as a repository for image files common to all users. A typical path is C:\\Documents and Settings\\All Users\\Documents\\My Pictures.
+  <B>Version 6.0.</B> The file system directory that serves as a repository for image files common to
+  all users. A typical path is C:\\Documents and Settings\\All Users\\Documents\\My Pictures.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonVideo
-<B>Version 6.0.</B> The file system directory that serves as a repository for video files common to all users. A typical path is C:\\Documents and Settings\\All Users\\Documents\\My Videos.
+  <B>Version 6.0.</B> The file system directory that serves as a repository for video files common to
+  all users. A typical path is C:\\Documents and Settings\\All Users\\Documents\\My Videos.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdMyDocuments
-<B>Version 6.0.</B> The virtual folder representing the My Documents desktop item. This should not be confused with fdPersonal, which represents the file system folder that physically stores the documents.
+  <B>Version 6.0.</B> The virtual folder representing the My Documents desktop item. This should not be
+  confused with fdPersonal, which represents the file system folder that physically stores the
+  documents.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdMyVideo
-<B>Version 6.0.</B> The file system directory that serves as a common repository for video files.
-A typical path is C:\\Documents and Settings\\<i>username</i>\\My Documents\\My Videos.
+  <B>Version 6.0.</B> The file system directory that serves as a common repository for video files. A
+  typical path is C:\\Documents and Settings\\<I>username</I>\\My Documents\\My Videos.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdProfiles
-<B>Version 6.0.</B> The file system directory containing user profile folders. A typical path is
-C:\\Documents and Settings.
+  <B>Version 6.0.</B> The file system directory containing user profile folders. A typical path is
+  C:\\Documents and Settings.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdResources
-The windows system resource directory. A typical path is C:\\Windows\\Resources.
+  The windows system resource directory. A typical path is C:\\Windows\\Resources.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdResourcesLocalized
-The windows localized system resource directory. A typical path is C:\\Windows\\Resources\\<i>langid</i>.
+  The windows localized system resource directory. A typical path is
+  C:\\Windows\\Resources\\<I>langid</I>.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonOEMLinks
-The folder containing links to OEM specific applications for all users.
+  The folder containing links to OEM specific applications for all users.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdComputersNearMe
-A virtual folder that contains links to nearby computers on the network. Nearness it is established by common work group membership.
+  A virtual folder that contains links to nearby computers on the network. Nearness it is established
+  by common work group membership.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowsableObjectClass
@@ -347,31 +381,31 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowsableObjectClass.ocFolders
-\Include items that are folders in the enumeration.
+  \Include items that are folders in the enumeration.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowsableObjectClass.ocNonFolders
-\Include items that are not folders in the enumeration.
+  \Include items that are not folders in the enumeration.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowsableObjectClass.ocIncludeHidden
-\Include hidden items in the enumeration.
+  \Include hidden items in the enumeration.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowsableObjectClass.ocInitOnFirstNext
-allow EnumObject() to return before validating enum
+  allow EnumObject() to return before validating enum
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowsableObjectClass.ocNetPrinterSrch
-The caller is looking for printer objects.
+  The caller is looking for printer objects.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowsableObjectClass.ocSharable
-The caller is looking for remote shares.
+  The caller is looking for remote shares.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowsableObjectClass.ocStorage
-\Include items with accessible storage and their ancestors.
+  \Include items with accessible storage and their ancestors.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowsableObjectClasses
@@ -397,23 +431,22 @@ Description
 
   It supports:
 
-    * Setting the root folder in the dialog box: You can specify a special folder as root folder from
-      which to start browsing by setting property RootDirectory. Alternatively you can use
-      RootDirectoryPath to specify a normal folder as root folder. Only the specified folder and any
-      subfolders that are beneath it in the namespace hierarchy will appear in the dialog box. Use
-      property
-      Directory to make an item selected by default in the dialog’s box
-    * Setting your own instructions text: Use the properties Title and StatusText for this task. You
-      can also change the text while the dialog is displayed by calling
-      <LINK TJvBrowseForFolderDialog.SetStatusText, SetStatusText>.
-    * Changing the OK button text: You can change text OK button text while the dialog is displayed
-      by calling <LINK TJvBrowseForFolderDialog.SetOKText, SetOKText>.
-    * Events that notify about selection changes and validation: Use OnChange to respond when the
-      selection has changed in the Browse dialog box. Use OnAcceptChange to enable or disable the OK
-      button depending on the value of the newly selected item.
-    * Customize filtering (Only for windows XP): Windows XP enables you to filter out items that you
-      don't want to be displayed in the dialog. Write event handlers for the OnGetEnumFlags and
-      OnShouldShow events for this task.
+  * Setting the root folder in the dialog box: You can specify a special folder as root folder from
+    which to start browsing by setting property RootDirectory. Alternatively you can use
+    RootDirectoryPath to specify a normal folder as root folder. Only the specified folder and any
+    subfolders that are beneath it in the namespace hierarchy will appear in the dialog box. Use
+    property Directory to make an item selected by default in the dialog’s box
+  * Setting your own instructions text: Use the properties Title and StatusText for this task. You can
+    also change the text while the dialog is displayed by calling <LINK
+    TJvBrowseForFolderDialog.SetStatusText, SetStatusText>.
+  * Changing the OK button text: You can change text OK button text while the dialog is displayed by
+    calling <LINK TJvBrowseForFolderDialog.SetOKText, SetOKText>.
+  * Events that notify about selection changes and validation: Use OnChange to respond when the
+    selection has changed in the Browse dialog box. Use OnAcceptChange to enable or disable the OK
+    button depending on the value of the newly selected item.
+  * Customize filtering (Only for windows XP): Windows XP enables you to filter out items that you
+    don't want to be displayed in the dialog. Write event handlers for the OnGetEnumFlags and
+    OnShouldShow events for this task.
 
   You can preview this dialog at design-time, by right-clicking the component and clicking
   'Preview...'.
@@ -427,7 +460,7 @@ Description
 
   To make an item selected by default in the dialog’s box, assign a value to Directory in the Object
   Inspector or in program code. Programmatic changes to Directory have no effect while the dialog is
-  active, use <LINK SetSelection@string,SetSelection> for this purpose.
+  active, use <LINK SetSelection@string, SetSelection> for this purpose.
 See Also
   SetSelection
 
@@ -457,8 +490,8 @@ See Also
 Summary
   Specifies the window handle of the dialog.
 Description
-  The Handle property, which provides access to the dialog’s window handle after a call to Execute,
-  can be used in the event handlers. Handle is reset to 0 after the dialog closes.
+  The Handle property, which provides access to the dialog’s window handle after a call to Execute, can
+  be used in the event handlers. Handle is reset to 0 after the dialog closes.
 See Also
   TJvBrowseForFolderDialog.OnInitialized, Execute
 
@@ -467,8 +500,8 @@ See Also
 Summary
   Specifies the context number for online Help.
 Description
-  The HelpContext property is an integer value that determines which Help screen appears when the
-  user requests context-sensitive online Help.
+  The HelpContext property is an integer value that determines which Help screen appears when the user
+  requests context-sensitive online Help.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseForFolderDialog.OnAcceptChange
@@ -481,7 +514,7 @@ Parameters
   Sender    - The TJvBrowseForFolderDialog component that has sent this event.
   NewFolder - Specifies the newly selected item.
   Accept    - Set to true to enable the dialog's OK button, set to false to disable the dialog's OK
-            button.
+               button.
 See Also
   TJvBrowseForFolderDialog.OnChange, TJvBrowseForFolderDialog.OnValidateFailed,
   TJvBrowseForFolderDialog.SetOKEnabled
@@ -491,9 +524,9 @@ See Also
 Summary
   Occurs after the selection has changed in the Browse dialog box.
 Description
-  Write an OnChange event handler to take specific actions when the user selects an item in the
-  Browse dialog box. For example you can call <LINK TJvBrowseForFolderDialog.SetStatusText,
-  SetStatusText> to change the status text depending on the newly selected item.
+  Write an OnChange event handler to take specific actions when the user selects an item in the Browse
+  dialog box. For example you can call <LINK TJvBrowseForFolderDialog.SetStatusText, SetStatusText> to
+  change the status text depending on the newly selected item.
 
   Alternatively use the OnAcceptChange event to enable or disable the Browse dialog's OK button,
   depending on the newly selected item.
@@ -509,15 +542,15 @@ See Also
 Summary
   Occurs for each Shell folder before the dialog displays it.
 Description
-  Write an OnGetEnumFlags event handler to specify which classes of objects in a Shell folder should
-  be enumerated.
+  Write an OnGetEnumFlags event handler to specify which classes of objects in a Shell folder should be
+  enumerated.
 Note
   Only for windows XP systems.
 Parameters
   Sender  - The TJvBrowseForFolderDialog component that has sent this event.
   AFolder - Indicates the Shell folder that is to be displayed.
   Flags   - Set Flags to the classes of objects that should be enumerated in the folder specified by
-            AFolder.
+             AFolder.
 See Also
   TJvBrowseForFolderDialog.OnShouldShow
 
@@ -533,15 +566,15 @@ Description
 Summary
   Occurs for each item in a folder before the dialog displays it.
 Description
-  Write an OnShouldShow event handler to specify which individual items of a folder should be
-  displayed in the dialog.
+  Write an OnShouldShow event handler to specify which individual items of a folder should be displayed
+  in the dialog.
 Note
   Only for windows XP systems.
 Parameters
   Sender - The TJvBrowseForFolderDialog component that has sent this event.
   Item   - Indicates the item that is to be displayed.
   DoShow - Set to true to have the item displayed, set to false to prevent the item from being
-  displayed.
+            displayed.
 See Also
   TJvBrowseForFolderDialog.OnGetEnumFlags
 
@@ -550,8 +583,8 @@ See Also
 Summary
   Occurs when the user typed an invalid name into the edit box of the Browse dialog box.
 Description
-  Write an OnValidateFailed event handler to respond when the user types an invalid name into the
-  edit box of the Browse dialog box.
+  Write an OnValidateFailed event handler to respond when the user types an invalid name into the edit
+  box of the Browse dialog box.
 
   Set the CanCloseDialog parameter to false to prevent the dialog from closing. The OnValidateFailed
   event handler is responsible for telling the user why the dialog doesn’t close.
@@ -563,7 +596,7 @@ Parameters
   Sender         - The TJvBrowseForFolderDialog component that has sent this event.
   AEditText      - Specifies the invalid name.
   CanCloseDialog - Set to true to allow the dialog to be dismissed, set to false to keep the dialog
-                 displayed.
+                    displayed.
 See Also
   TJvBrowseForFolderDialog.OnAcceptChange, TJvBrowseForFolderDialog.OnChange,
   TJvBrowseForFolderDialog.SetOKEnabled
@@ -573,28 +606,30 @@ See Also
 Summary
   Determines the appearance and behavior of the Browse dialog box.
 Description
-  Use the Options property to customize the appearance and functionality of the dialog. Use these
-  flags to specify:
+  Use the Options property to customize the appearance and functionality of the dialog. Use these flags
+  to specify:
 
   * Which items should be displayed in the dialog. (Folders, \Printers, URL's)
-  * Which visual controls should be displayed in the dialog. (Edit control, "\New Folder" button,
-    usage hint label)
+  * Which visual controls should be displayed in the dialog. (Edit control, "\New Folder" button, usage
+    hint label)
   * Whether the new user interface should be used.
   * Whether names entered into the edit box should be validated.
 
-  Note that the component enforces a correct setting of Options; thus, by including a flag in
-  Options, some more flags may be included or excluded from Options.
+  Note that the component enforces a correct setting of Options; thus, by including a flag in Options,
+  some more flags may be included or excluded from Options.
 See Also
   TJvBrowseForFolderDialog.Directory
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseForFolderDialog.Pidl
 Summary
   Indicates the selected item as pointer to an item identifier list.
 Description
-  Read LastPidl to retrieve the selected item as pointer to an item identifier list, after a
-  successful call to Execute.
+  Read LastPidl to retrieve the selected item as pointer to an item identifier list, after a successful
+  call to Execute.
 See Also
   TJvBrowseForFolderDialog.Directory, TJvBrowseForFolderDialog.DisplayName
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseForFolderDialog.Position
 Summary
@@ -608,8 +643,8 @@ Summary
   Specifies the location of the root folder from which to start browsing.
 Description
   Use RootDirectory to specify a special folder as root folder from which to start browsing. Only the
-  specified folder and any subfolders that are beneath it in the namespace hierarchy will appear in
-  the dialog box.
+  specified folder and any subfolders that are beneath it in the namespace hierarchy will appear in the
+  dialog box.
 
   Property RootDirectory can be used to specify a specific folder which may not have the same name or
   location on any given system. For example, the system folder may be "C:\\Windows" on one system and
@@ -626,8 +661,8 @@ Summary
   Specifies the location of the root folder from which to start browsing.
 Description
   Use RootDirectoryPath to specify the location of the root folder from which to start browsing. Only
-  the specified folder and any subfolders that are beneath it in the namespace hierarchy will appear
-  in the dialog box.
+  the specified folder and any subfolders that are beneath it in the namespace hierarchy will appear in
+  the dialog box.
 
   Use RootDirectory instead of RootDirectoryPath to specify the root directory in a unique
   system-independent way.
@@ -668,7 +703,7 @@ Description
   SetOKEnabled in an OnChange event handler to enable or disable the button depending on the newly
   selected item. But for this specific purpose you can also use OnAcceptChange.
 
-  Calls to SetOKEnabled do have no effect while the dialog is <i>not</i> active.
+  Calls to SetOKEnabled do have no effect while the dialog is <I>not</I> active.
 Parameters
   Value - Set to true to enable the OK button. To disable the OK button, set Value to false.
 See Also
@@ -681,10 +716,10 @@ Summary
   Sets the text that is displayed on the Browse dialog box's OK Button.
 Description
   Call SetOKText to set the text that is displayed on the Browse dialog box's OK button. For example
-  you can call SetOKText in an OnInitialized event handler, or call it in an OnChange to set the
-  button text to a specific text depending on the newly selected item.
+  you can call SetOKText in an OnInitialized event handler, or call it in an OnChange to set the button
+  text to a specific text depending on the newly selected item.
 
-  Calls to SetOKText do have no effect while the dialog is <i>not</i> active.
+  Calls to SetOKText do have no effect while the dialog is <I>not</I> active.
 Parameters
   AText - Specifies the desired text for the OK Button.
 
@@ -704,11 +739,10 @@ Summary
 Description
   Call SetSelection to select a folder in the Browse dialog. The folder to select can be specified as
   pointer to an item identifier list (PIDL) or as a \string. For example you can call SetSelection in
-  an
-  OnInitialized event handler, but for this specific purpose you can also use property Directory.
+  an OnInitialized event handler, but for this specific purpose you can also use property Directory.
 
-  Calls to SetSelection do have no effect while the dialog is <I>not</I> active, use property
-  Directory for this purpose.
+  Calls to SetSelection do have no effect while the dialog is <I>not</I> active, use property Directory
+  for this purpose.
 Parameters
   APath  - Specifies the path to expand as a \string.
   IDList - Specifies the path to expand as pointer to an item identifier list.
@@ -720,13 +754,13 @@ See Also
 Summary
   Sets the status text in the Browse dialog box.
 Description
-  Call SetStatusText to change the \string that is displayed above the tree view control in the
-  dialog box.
+  Call SetStatusText to change the \string that is displayed above the tree view control in the dialog
+  box.
 
-  Calls to SetStatusText or SetStatusTextW do have no effect while the dialog is <i>not</i> active,
-  use property StatusText for this purpose.
+  Calls to SetStatusText or SetStatusTextW do have no effect while the dialog is <I>not</I> active, use
+  property StatusText for this purpose.
 
-  Flag odNewDialogStyle must <i>not</i> be included in Options, otherwise this procedure will fail.
+  Flag odNewDialogStyle must <I>not</I> be included in Options, otherwise this procedure will fail.
 Parameters
   AText - Specifies the desired status text.
 See Also
@@ -745,12 +779,12 @@ Description
   Use StatusText in combination with Title to specify a \string that is displayed above the tree view
   control in the dialog box. This \string can be used to specify instructions to the user.
 
-  Title may consist of two lines of text. You can add another line by including flag
-  odStatusAvailable in Options, and setting property StatusText.
+  Title may consist of two lines of text. You can add another line by including flag odStatusAvailable
+  in Options, and setting property StatusText.
 
-  Setting StatusText to an empty \string and including flag odStatusAvailable in Options, will
-  display the path of the last selected directory above the tree view control. (Only if
-  odNewDialogStyle is <I>not</I> included in Options)
+  Setting StatusText to an empty \string and including flag odStatusAvailable in Options, will display
+  the path of the last selected directory above the tree view control. (Only if odNewDialogStyle is
+  <I>not</I> included in Options)
 
   You can also call <LINK TJvBrowseForFolderDialog.SetStatusText, SetStatusText> when the dialog is
   active to change the status text.
@@ -768,14 +802,15 @@ Description
   Use Title in combination with StatusText to specify a \string that is displayed above the tree view
   control in the dialog box. This \string can be used to specify instructions to the user.
 
-  Title may consist of two lines of text. You can add another line by including flag
-  odStatusAvailable in Options, and setting property StatusText.
+  Title may consist of two lines of text. You can add another line by including flag odStatusAvailable
+  in Options, and setting property StatusText.
 See Also
   TJvBrowseForFolderDialog.StatusText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDirChange
 <TITLE TJvDirChange type>
+<COMBINE TJvBrowseForFolderDialog.OnChange>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFolderPos
@@ -787,31 +822,33 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFolderPos.fpDefault
-The form appears in a position on the screen and with a height and width determined by the operating system.
+  The form appears in a position on the screen and with a height and width determined by the operating
+  system.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFolderPos.fpScreenCenter
-The dialog is positioned in the center of the screen.
+  The dialog is positioned in the center of the screen.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFolderPos.fpFormCenter
-The dialog is positioned in the center of the form that is the owner of the component. If the component has no form as owner it's positioned in the center of the application’s main form.
+  The dialog is positioned in the center of the form that is the owner of the component. If the
+  component has no form as owner it's positioned in the center of the application’s main form.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFolderPos.fpTopLeft
-The dialog is positioned in the upper left corner of the screen.
+  The dialog is positioned in the upper left corner of the screen.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFolderPos.fpTopRight
-The dialog is positioned in the upper right corner of the screen.
+  The dialog is positioned in the upper right corner of the screen.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFolderPos.fpBottomLeft
-The dialog is positioned in the lower left corner of the screen.
+  The dialog is positioned in the lower left corner of the screen.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFolderPos.fpBottomRight
-The dialog is positioned in the lower right corner of the screen.
+  The dialog is positioned in the lower right corner of the screen.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvGetEnumFlagsEvent
@@ -845,68 +882,82 @@ Description
   \TOptionsDir is a set of TOptionsDirectory values.
 Note
   Some flags are not supported on all Shell32.dll versions, these flags are marked with a version
-  number.
-  This version number indicates that the programming element was first implemented in that version
-  and will also be found in all subsequent versions of the DLL. If no version number is specified,
-  the programming element is implemented in all versions.
+  number. This version number indicates that the programming element was first implemented in that
+  version and will also be found in all subsequent versions of the DLL. If no version number is
+  specified, the programming element is implemented in all versions.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odBrowseForComputer
-Only returns computers. If the user selects anything other than a computer, the OK button is grayed.
+  Only returns computers. If the user selects anything other than a computer, the OK button is grayed.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odOnlyDirectory
-Not used.
+  Not used.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odOnlyPrinters
-Only returns printers. If the user selects anything other than a printer, the OK button is grayed.
+  Only returns printers. If the user selects anything other than a printer, the OK button is grayed.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odNoBelowDomain
-Does not include network folders below the domain level in the dialog box's tree view control.
+  Does not include network folders below the domain level in the dialog box's tree view control.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odSystemAncestorsOnly
-Only returns file system ancestors. An ancestor is a subfolder that is beneath the root folder in the namespace hierarchy. If the user selects an ancestor of the root folder that is not part of the file system, the OK button is grayed.
+  Only returns file system ancestors. An ancestor is a subfolder that is beneath the root folder in the
+  namespace hierarchy. If the user selects an ancestor of the root folder that is not part of the file
+  system, the OK button is grayed.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odFileSystemDirectoryOnly
-Only returns file system directories. If the user selects folders that are not part of the file system, the OK button is grayed.
+  Only returns file system directories. If the user selects folders that are not part of the file
+  system, the OK button is grayed.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odStatusAvailable
-Includes a status area in the dialog box. When property <LINK TJvBrowseForFolderDialog.SetStatusText, StatusText> is set to an empty string then the component will display the path of the last selected directory above the tree view control. Otherwise the text specified by StatusText will be displayed. Flag \odNewDialogStyle must <I>not</I> be set.
+  Includes a status area in the dialog box. When property <LINK TJvBrowseForFolderDialog.SetStatusText,
+  StatusText> is set to an empty string then the component will display the path of the last selected
+  directory above the tree view control. Otherwise the text specified by StatusText will be displayed.
+  Flag \odNewDialogStyle must <I>not</I> be set.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odIncludeFiles
-<B>Version 4.71.</B> The Browse dialog box will display files as well as folders.
+  <B>Version 4.71.</B> The Browse dialog box will display files as well as folders.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odIncludeUrls
-<B>Version 5.0.</B> The Browse dialog box can display URLs.
+  <B>Version 5.0.</B> The Browse dialog box can display URLs.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odEditBox
-<B>Version 4.71.</B> Includes an edit control in the Browse dialog box that allows the user to type the name of an item.
+  <B>Version 4.71.</B> Includes an edit control in the Browse dialog box that allows the user to type
+  the name of an item.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odNewDialogStyle
-<B>Version 5.0.</B> Uses the new user interface. Setting this flag provides the user with a larger dialog box that can be resized. The dialog box has several new capabilities including: drag and drop capability within the dialog box, reordering, shortcut menus, new folders, delete, and other shortcut menu commands.
+  <B>Version 5.0.</B> Uses the new user interface. Setting this flag provides the user with a larger
+  dialog box that can be resized. The dialog box has several new capabilities including: drag and drop
+  capability within the dialog box, reordering, shortcut menus, new folders, delete, and other shortcut
+  menu commands.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odShareable
-<B>Version 5.0.</B> The Browse dialog box can display shareable resources on remote systems. It is intended for applications that want to expose remote shares on a local system. The odNewDialogStyle flag must also be set.
+  <B>Version 5.0.</B> The Browse dialog box can display shareable resources on remote systems. It is
+  intended for applications that want to expose remote shares on a local system. The odNewDialogStyle
+  flag must also be set.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odUsageHint
-<B>Version 6.0.</B> When combined with odNewDialogStyle, adds a usage hint to the dialog box in place of the edit box. Flag odEditBox overrides this flag.
+  <B>Version 6.0.</B> When combined with odNewDialogStyle, adds a usage hint to the dialog box in place
+  of the edit box. Flag odEditBox overrides this flag.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odNoNewButtonFolder
-<B>Version 6.0.</B> Does not include the "\New Folder" button in the Browse dialog box.
+  <B>Version 6.0.</B> Does not include the "\New Folder" button in the Browse dialog box.
 
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDirectory.odValidate
-<B>Version 4.71.</B> If the user types an invalid name into the edit box, the Browse dialog box will trigger the <LINK TJvBrowseForFolderDialog.OnValidateFailed, OnValidateFailed> event. Flag odEditBox must also be set.
+  <B>Version 4.71.</B> If the user types an invalid name into the edit box, the Browse dialog box will
+  trigger the <LINK TJvBrowseForFolderDialog.OnValidateFailed, OnValidateFailed> event. Flag odEditBox
+  must also be set.
 

@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Incomplete (peter3)
+##Status: Completed, Incomplete (peter3)
 ##Skip: TJvCapBtn
 ----------------------------------------------------------------------------------------------------
 @@JvCaptionPanel.pas
@@ -8,7 +8,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAutoDragStartEvent
@@ -31,8 +30,8 @@ See Also
 Summary
   Indicates if the caption button should rendered in a flat style.
 Description
-  Flat indicates if the caption button should be rendered in a flat style. When set to True the
-  button is rendered in a flat look, when set to False it is rendered in a non flat look.
+  Flat indicates if the caption button should be rendered in a flat style. When set to True the button
+  is rendered in a flat look, when set to False it is rendered in a non flat look.
 See Also
   TJvCaptionPanel
 
@@ -67,29 +66,29 @@ See Also
 Summary
   Type used to define the button kind of a TJvCaptionPanel button.
 Description
-  TJvCapBtnStyle is the type used to indicate the style of a TJvCapBtn, a button of a
-  TJvCaptionPanel. The style determines the icon shown in the button, but does not influence the
-  panel in anyway (For example, capClose will not close the panel when the button is clicked).
+  TJvCapBtnStyle is the type used to indicate the style of a TJvCapBtn, a button of a TJvCaptionPanel.
+  The style determines the icon shown in the button, but does not influence the panel in anyway (For
+  example, capClose will not close the panel when the button is clicked).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCapBtnStyle.capClose
-The caption panel button is a close button.
+  The caption panel button is a close button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCapBtnStyle.capMax
-The caption panel button is a maximize button.
+  The caption panel button is a maximize button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCapBtnStyle.capMin
-The caption panel button is a minimize button.
+  The caption panel button is a minimize button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCapBtnStyle.capRestore
-The caption panel button is a restore button.
+  The caption panel button is a restore button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCapBtnStyle.capHelp
-The caption panel button is a help button.
+  The caption panel button is a help button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCapBtnStyles
@@ -105,8 +104,8 @@ JVCLInfo
 Summary
   A panel with a caption bar.
 Description
-  TJvCaptionPanel is a panel with a caption bar so it looks like a form. The caption panel will
-  contain the caption of the panel along with 0 or more caption buttons.
+  TJvCaptionPanel is a panel with a caption bar so it looks like a form. The caption panel will contain
+  the caption of the panel along with 0 or more caption buttons.
 
   To use a panel with a caption in your form:
 
@@ -117,8 +116,8 @@ Description
   * Specify the <LINK TJvCaptionPanel.CaptionFont, font> of the caption bar.
   * Specify the <LINK TJvCaptionPanel.CaptionPosition, position> of the caption bar.
   * Specify if <LINK TJvCaptionPanel.FlatButtons, flat buttons> are needed.
-  * Assign an <LINK TJvCaptionPanel.OnButtonClick, OnButtonClick event handler> to take action when
-     a caption button is clicked.
+  * Assign an <LINK TJvCaptionPanel.OnButtonClick, OnButtonClick event handler> to take action when a
+    caption button is clicked.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionPanel.AutoDrag
@@ -137,9 +136,9 @@ See Also
 Summary
   Determines which caption buttons to use.
 Description
-  Buttons indicates which buttons are to be shown in the caption bar of the panel. The style
-  indicates the icon to be shown in the button. The button will not result in any action other than
-  specified in OnButtonClick event handler.
+  Buttons indicates which buttons are to be shown in the caption bar of the panel. The style indicates
+  the icon to be shown in the button. The button will not result in any action other than specified in
+  OnButtonClick event handler.
 
   Buttons are shown in this order (left to right for top and bottom bars, bottom to top for left bars
   and top to bottom for right bars):
@@ -160,8 +159,8 @@ See Also
 Summary
   Caption to be shown.
 Description
-  Caption holds the text to be rendered in the caption bar of the panel, optionally rotated for
-  caption bars that are left or right aligned.
+  Caption holds the text to be rendered in the caption bar of the panel, optionally rotated for caption
+  bars that are left or right aligned.
 See Also
   TJvCaptionPanel.Buttons, TJvCaptionPanel.CaptionColor, TJvCaptionPanel.CaptionFont,
   TJvCaptionPanel.CaptionPosition
@@ -178,7 +177,7 @@ Description
 Summary
   Font of the caption bar.
 Description
-  CaptionFont  is the font of the caption bar.
+  CaptionFont is the font of the caption bar.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionPanel.CaptionPosition
@@ -196,8 +195,8 @@ See Also
 Summary
   Called in response to the user clicking a caption button.
 Description
-  ClickButton is called in response to the user clicking a caption button. ClickButton will trigger
-  the OnButtonClick event if a handler is assigned to it.
+  ClickButton is called in response to the user clicking a caption button. ClickButton will trigger the
+  OnButtonClick event if a handler is assigned to it.
 Parameters
   Button - The button style of the button clicked.
 See Also
@@ -208,8 +207,8 @@ See Also
 Summary
   Called when the user stops dragging the panel.
 Description
-  DoLeaveDrag is called when the user stops draggin the panel and AutoDrag is set to True.
-  DoLeaveDrag will trigger the OnEndAutoDrag event if a handler is assigned to it.
+  DoLeaveDrag is called when the user stops draggin the panel and AutoDrag is set to True. DoLeaveDrag
+  will trigger the OnEndAutoDrag event if a handler is assigned to it.
 See Also
   TJvCaptionPanel.AutoDrag, TJvCaptionPanel.OnEndAutoDrag
 
@@ -226,14 +225,13 @@ Description
 Summary
   Specifies the icon to display in the caption area of the panel
 Description
-  Use Icon to specify an icon to display in the caption area of the panel. Th eposition of the icon
-  is adjusted depending on the value of CaptionPosition.
+  Use Icon to specify an icon to display in the caption area of the panel. Th eposition of the icon is
+  adjusted depending on the value of CaptionPosition.
 See Also
   TJvCaptionPanel.CaptionPosition
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionPanel.OnButtonClick
-<COMBINEWITH TJvCapBtnEvent>
 Summary
   Responds to the user clicking a caption button.
 Description
@@ -256,8 +254,8 @@ See Also
 Summary
   Occurs when the user starts to drag the panel.
 Description
-  Write a handler for this event to be notified when th euser starts dragging the panel. Set
-  AllowDrag to false to cancel the drag.
+  Write a handler for this event to be notified when th euser starts dragging the panel. Set AllowDrag
+  to false to cancel the drag.
 Parameters
   Sender    - The panel that triggered the event.
   AllowDrag - Set to false to prevent the user from dragging the panel.
@@ -268,6 +266,7 @@ Summary
   Specifies the visual appearance of the panel.
 Description
   Set OutlookLook to true to have the panel mimic the way similar panels appear in MS Outlook(R)
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionPanel.Resizable
 Summary
@@ -277,6 +276,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDrawPosition
 <TITLE TJvDrawPosition type>
@@ -287,17 +287,17 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDrawPosition.dpLeft
-The caption bar is aligned to left edge of the panel.
+  The caption bar is aligned to left edge of the panel.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDrawPosition.dpTop
-The caption bar is aligned to top edge of the panel.
+  The caption bar is aligned to top edge of the panel.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDrawPosition.dpRight
-The caption bar is aligned to right edge of the panel.
+  The caption bar is aligned to right edge of the panel.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDrawPosition.dpBottom
-The caption bar is aligned to bottom edge of the panel.
+  The caption bar is aligned to bottom edge of the panel.
 

@@ -8,11 +8,10 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckTreeView
 <TITLEIMG TJvCheckTreeView>
-JVCLINFO
+JVCLInfo
   GROUP=JVCL.ListsAndTrees.Trees
   FLAG=Component
 Summary
@@ -20,11 +19,10 @@ Summary
 Description
   Use TJvCheckTreeView when you need to display checkboxes and/or radio buttons in a treeview.
   TJvCheckTreeView can display and automatically handle the check/uncheck logic for radio buttons as
-  well as checkboxes.
-  In addition, not all nodes in the treeview need to have checkboxes or radio buttons. You can freely
-  mix and match checkboxes, radio buttons and "empty" items on every level in the treeview. You can
-  use your own checkbox images by assigning an imagelist to the StateImages property containing the
-  images you want to use.
+  well as checkboxes. In addition, not all nodes in the treeview need to have checkboxes or radio
+  buttons. You can freely mix and match checkboxes, radio buttons and "empty" items on every level in
+  the treeview. You can use your own checkbox images by assigning an imagelist to the StateImages
+  property containing the images you want to use.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckTreeView.CheckBox
@@ -89,9 +87,9 @@ Summary
   Class used to store checkbox options in a TJvCheckBoxTreeView.
 Description
   The TJvTreeViewCheckBoxOptions class is the class used to store checkbox option settings in the
-  TJvCheckTreeView components CheckBoxOptions property. Since this property is a class, it is
-  displayed as a nested property set in the Object Inspector. An instance of this class is created
-  automatically by the treeview. Do not create instances of this class yourself.
+  TJvCheckTreeView components CheckBoxOptions property. Since this property is a class, it is displayed
+  as a nested property set in the Object Inspector. An instance of this class is created automatically
+  by the treeview. Do not create instances of this class yourself.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewCheckBoxOptions.CascadeLevels
@@ -99,9 +97,8 @@ Summary
   Specifies the number of levels a toggle propagates.
 Description
   \Read CascadeLevels to determine how many levels a toggle of a node propagates. If this property is
-  0, no propagation takes place, if it is 1, toggling a node also toggles all checkbox node on the
-  next sublevel.
-  To toggle all subnodes regardless of depth, set CascadeLevels to -1.
+  0, no propagation takes place, if it is 1, toggling a node also toggles all checkbox node on the next
+  sublevel. To toggle all subnodes regardless of depth, set CascadeLevels to -1.
 See Also
   TJvTreeViewCheckBoxOptions.CascadeOptions
 
@@ -149,8 +146,8 @@ See Also
 Summary
   Specifies the image to use for unchecked radio buttons.
 Description
-  RadioUncheckedIndex is the 1-based image index into the StateImages image list for an unchecked
-  radio button.
+  RadioUncheckedIndex is the 1-based image index into the StateImages image list for an unchecked radio
+  button.
 See Also
   StateImages, CheckBoxOptions
 
@@ -159,11 +156,10 @@ See Also
 Summary
   Specifies what checkbox implementation to use.
 Description
-  Use Style to specify if checkboxes are to be displayed and what implementation to use.
-  To use the JVCL implementation, set Style to cbsJVCL, to use Microsoft's native implementation, set
-  Style
-  to cbsNative. To disable any checkboxes, set Style to cbsNone. When Style is cbsNone, the control
-  works like a normal treeview.
+  Use Style to specify if checkboxes are to be displayed and what implementation to use. To use the
+  JVCL implementation, set Style to cbsJVCL, to use Microsoft's native implementation, set Style to
+  cbsNative. To disable any checkboxes, set Style to cbsNone. When Style is cbsNone, the control works
+  like a normal treeview.
 
   For a more in-depth explanation of the Style property, see the help topic for <LINK
   TJvTVCheckBoxStyle, TJvTVCheckBoxStyle>.
@@ -189,11 +185,11 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTVCascadeOption.poOnCheck
-Propagate to child nodes only when the node is toggled to the on state.
+  Propagate to child nodes only when the node is toggled to the on state.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTVCascadeOption.poOnUnCheck
-Propagate to child nodes only when the node is toggled to the off state.
+  Propagate to child nodes only when the node is toggled to the off state.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTVCascadeOptions
@@ -210,17 +206,17 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTVCheckBoxStyle.cbsNone
-No checkboxes or radio buttons are displayed. Works like a normal treeview.
+  No checkboxes or radio buttons are displayed. Works like a normal treeview.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTVCheckBoxStyle.cbsNative
-Use MS implementation of checkboxes. With this option you can only display
-checkboxes and not radioitems. You can't set up your own images
-using the StateImages/StateIndex properties of the treeview since this
-is overridden by the MS implementation
+  Use MS implementation of checkboxes. With this option you can only display checkboxes and not
+  radioitems. You can't set up your own images using the StateImages/StateIndex properties of the
+  treeview since this is overridden by the MS implementation
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTVCheckBoxStyle.cbsJVCL
-Use the custom JVCL style. With this option you can display any type
-of images by setting up your own StateImages image list and change the index properties for CheckBoxCheckedIndex, CheckBoxUnCheckedIndex, RadioButtonCheckedIndex and RadioButtonUnCheckedIndex.
+  Use the custom JVCL style. With this option you can display any type of images by setting up your own
+  StateImages image list and change the index properties for CheckBoxCheckedIndex,
+  CheckBoxUnCheckedIndex, RadioButtonCheckedIndex and RadioButtonUnCheckedIndex.
 

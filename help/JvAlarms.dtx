@@ -1,5 +1,5 @@
 ##Package: Cmp
-##Status: Incomplete
+##Status: Completed, Incomplete
 ----------------------------------------------------------------------------------------------------
 @@JvAlarms.pas
 Summary
@@ -7,6 +7,7 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarmEvent
 <TITLE TJvAlarmEvent type>
@@ -74,9 +75,6 @@ Description
   name, an initial fire date/time and the trigger kind (repeat interval).
 Parameters
   Index - 0-based index of the alarm. Allowable values are 0 .. Count-1
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarms
@@ -87,17 +85,17 @@ JVCLInfo
 Summary
   Programmable timer.
 Description
-  TJvAlarm is a non-visible component that provides you with a programmable timer. The component
-  allows multiple alarms to be added, each of which can be set to repeat at a specified interval or
-  not at all.
+  TJvAlarm is a non-visible component that provides you with a programmable timer. The component allows
+  multiple alarms to be added, each of which can be set to repeat at a specified interval or not at
+  all.
 
   To add scheduled tasks to you application you should:
 
   * Drop a TJvAlarms on a form or data module.
   * Write a handler for the <LINK TJvAlarms.OnAlarm, OnAlarm> event.
   * Set the Active property to True.
-  * Add tasks to the component using the Add method in run time or the Alarms property editor in
-     design time.
+  * Add tasks to the component using the Add method in run time or the Alarms property editor in design
+    time.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarms.Active
@@ -114,14 +112,14 @@ See Also
 Summary
   Adds a new alarm.
 Description
-  Add adds a new alarm to the component. To add an alarm you need to provide a name (the alarm's
-  ID), a date/time when the alarm should fire and the kind of alarm (default's to one-shot).
+  Add adds a new alarm to the component. To add an alarm you need to provide a name (the alarm's ID), a
+  date/time when the alarm should fire and the kind of alarm (default's to one-shot).
 Parameters
-  AName -  Name of the alarm. The name is the only way you can identify an alarm during an OnAlarm
-            event.
-  ATime -  Date and time at which the alarm should go off.
-  AKind -  The kind of alarm to be added. Kind will default to tkOneShot, meaning that the alarm
-            will fire only once and at the specified time.
+  AName - Name of the alarm. The name is the only way you can identify an alarm during an OnAlarm
+           event.
+  ATime - Date and time at which the alarm should go off.
+  AKind - The kind of alarm to be added. Kind will default to tkOneShot, meaning that the alarm will
+           fire only once and at the specified time.
 See Also
   TJvAlarms.Alarms, TJvAlarms.Delete, TJvAlarms.OnAlarm, TJvTriggerKind
 
@@ -147,8 +145,8 @@ Parameters
 Summary
   Calls the OnAlarm event.
 Description
-  DoAlarm is a protected method that will call the assigned OnAlarm event if present. It's intended
-  for descendants to call the OnAlarm event from their own code.
+  DoAlarm is a protected method that will call the assigned OnAlarm event if present. It's intended for
+  descendants to call the OnAlarm event from their own code.
 Parameters
   Alarm       - Reference to the alarm that fired.
   TriggerTime - The time the alarm went off.
@@ -170,8 +168,8 @@ Summary
   Flag that indicates if the alarm component is running.
 Description
   Running indicates if the component is active and has alarms waiting to be fired. If the components
-  Active property is set to False, Running will also be False. When Active is set to True, Running
-  will be True as long as Count > 0.
+  Active property is set to False, Running will also be False. When Active is set to True, Running will
+  be True as long as Count > 0.
 See Also
   TJvAlarms.Active
 

@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Needs review
+##Status: Completed, Needs review
 ----------------------------------------------------------------------------------------------------
 @@JvAppXMLStorage.pas
 Summary
@@ -9,10 +9,40 @@ Author
   Olivier Sannier
 
 ----------------------------------------------------------------------------------------------------
+@@LoadPropertyStoreFromXmlFile
+<TITLE LoadPropertyStoreFromXmlFile procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  iPropertyStore  - Description for this parameter
+  iFileName       - Description for this parameter
+  iAppStoragePath - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@StorePropertyStoreToXmlFile
+<TITLE StorePropertyStoreToXmlFile procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  iPropertyStore  - Description for this parameter
+  iFileName       - Description for this parameter
+  iAppStoragePath - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvAppXMLFileStorage
 <TITLEIMG TJvAppXMLFileStorage>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Storage
   FLAG=Component
 Summary
   Storage component based on a XML file.
@@ -27,19 +57,21 @@ Description
 @@TJvAppXMLFileStorage.AutoFlush
 Summary
   If set to True, the Flush method will be called whenever a modification has been made to the in
-  memory file.
-  If set to False, the disk file will only be updated when you call Flush or when the component is
-  destroyed.
+  memory file. If set to False, the disk file will only be updated when you call Flush or when the
+  component is destroyed.
+Description
+  Write here a description
 See Also
   TJvAppXMLFileStorage.AutoReload, TJvAppXMLFileStorage.Flush
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppXMLFileStorage.AutoReload
 Summary
-  If set to True, the Reload method will be called whenever an information is about to be read from
-  the in memory file.
-  If set to False, the disk file will only be read when you call Reload or when the FileName property
-  is set.
+  If set to True, the Reload method will be called whenever an information is about to be read from the
+  in memory file. If set to False, the disk file will only be read when you call Reload or when the
+  FileName property is set.
+Description
+  Write here a description
 See Also
   FileName
 
@@ -47,6 +79,9 @@ See Also
 @@TJvAppXMLFileStorage.Flush
 Summary
   Flushes the content of the in memory file into the file indicated by FileName
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 See Also
   FileName
 
@@ -54,25 +89,45 @@ See Also
 @@TJvAppXMLFileStorage.Reload
 Summary
   Reloads the xml in memory file from the file indicated by FileName
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 See Also
   FileName
+
+----------------------------------------------------------------------------------------------------
+@@TJvAppXMLStorageOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvAppXMLStorageOptions.WhiteSpaceReplacement
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppXMLStorage
 Summary
   This is the ancestor for all XML storage backend
 Description
-  This component provides the basis for an in memory XML storage backend. Derive a class from this
-  one and implement the virtual methods to store the in memory XML file in the appropriate media
-  (file, database...)
+  This component provides the basis for an in memory XML storage backend. Derive a class from this one
+  and implement the virtual methods to store the in memory XML file in the appropriate media (file,
+  database...)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppXMLStorage.CreateAndSetNode
 Summary
   Creates the indicated node and sets FCurrentNode
 Description
-  Reads the separated Key string and sets FCurrentNode to the last one, having created all the
-  required XML nodes including the last one
+  Reads the separated Key string and sets FCurrentNode to the last one, having created all the required
+  XML nodes including the last one
 Parameters
   Key - The key to create
 See Also
@@ -91,6 +146,9 @@ See Also
 @@TJvCustomAppXMLStorage.GetAsString
 Summary
   Property getter for the AsString property
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Return value
   The content of the in memory XML file as a string
 See Also
@@ -107,14 +165,13 @@ Parameters
   StartNode - Where to start in the XML document
 Return value
   Returns the last node in path, if it exists. Returns nil in all other cases
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppXMLStorage.GetRootNodeName
 Summary
   Property getter for RootNodeName
+Description
+  Write here a description
 See Also
   TJvCustomAppXMLStorage.RootNodeName
 
@@ -129,6 +186,9 @@ Description
 @@TJvCustomAppXMLStorage.SetAsString
 Summary
   Property setter for AsString
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Parameters
   Value - The new value for AsString
 See Also
@@ -138,20 +198,13 @@ See Also
 @@TJvCustomAppXMLStorage.SetRootNodeName
 Summary
   Property setter for RootNodeName
+Description
+  Write here a description
 Parameters
   Value - The new value for RootNodeName
 See Also
   TJvCustomAppXMLStorage.RootNodeName
 
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.WhiteSpaceReplacement
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppXMLStorage.Xml
 Summary

@@ -8,32 +8,29 @@ Summary
 Author
   Joe Doe.
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret
 Summary
   Helper object to store caret settings in.
 Description
-  TJvCaret is a helper object to store the settings for the custom caret in. It is used by some of
-  the edit controls in JVCL, but it can be used for any control that is derived from TWinControl.
+  TJvCaret is a helper object to store the settings for the custom caret in. It is used by some of the
+  edit controls in JVCL, but it can be used for any control that is derived from TWinControl.
 
   If Bitmap is assigned, the Width and Height properties are set to 0 and Gray is set to false.
 
   If Gray is set to true or Width and/or Height are specified, Bitmap is ignored.
 
-  If no bitmap has been assigned, Gray is set to false and both Width and Height are 0, no custom
-  caret will be created, but the standard Windows caret will be used instead.
+  If no bitmap has been assigned, Gray is set to false and both Width and Height are 0, no custom caret
+  will be created, but the standard Windows caret will be used instead.
 
   A control that wants to use a custom caret should take care of the following:
 
-  * As soon as your
-    control has focus (and your application is the active application) you may call
+  * As soon as your control has focus (and your application is the active application) you may call
     TJvCaret.CreateCaret to create and display the caret (if needed you can use the Windows API call
     for HideCaret to temporarily hide it).
-  * If the control loses focus or the application will be deactivated (because another application
-    gets focus) you must call TJvCaret.DestroyCaret
-  * Use the Window API calls to hide/show the caret
-    or to get or change its location (HideCaret,
+  * If the control loses focus or the application will be deactivated (because another application gets
+    focus) you must call TJvCaret.DestroyCaret
+  * Use the Window API calls to hide/show the caret or to get or change its location (HideCaret,
     ShowCaret, GetCaretPos, SetCaretPos respectively).
 
 ----------------------------------------------------------------------------------------------------
@@ -64,16 +61,15 @@ Summary
   Indicates whether a caret has been created.
 Description
   CaretCreated indicates whether a caret has been created. If CaretCreated is true, CreateCaret has
-  created a
-  caret which has not been destroyed yet by a call to DestroyCaret.
+  created a caret which has not been destroyed yet by a call to DestroyCaret.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.CaretOwner
 Summary
   Reference to the control that owns this caret object.
 Description
-  CaretOwner references the control that owns this caret object. It is set automatically when the
-  caret object instance is created.
+  CaretOwner references the control that owns this caret object. It is set automatically when the caret
+  object instance is created.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.Changed
@@ -98,9 +94,9 @@ Description
 Summary
   Provides methods to read and write the bitmap.
 Description
-  DefineProperties is called automatically by the streaming system that loads and saves VCL
-  components. Because the streaming system does not deal properly with published persistent property
-  on another nested persistent, a pseudoproperty is used to save the Bitmap.
+  DefineProperties is called automatically by the streaming system that loads and saves VCL components.
+  Because the streaming system does not deal properly with published persistent property on another
+  nested persistent, a pseudoproperty is used to save the Bitmap.
 Parameters
   Filer - The filer component used to for loading and saving the component and its properties.
 
@@ -127,13 +123,13 @@ See Also
 Summary
   Determines if the caret should be grayed.
 Description
-  Gray indicates whether the caret should be rendered in a gray state. When set to true the caret
-  will render in a gray color.
+  Gray indicates whether the caret should be rendered in a gray state. When set to true the caret will
+  render in a gray color.
 
   Setting Gray will result in Bitmap being ignored.
 Note
-  Gray carets seem to be unsupported under Windows 95. The Gray property will have no effect on
-  Windows 95 operating systems.
+  Gray carets seem to be unsupported under Windows 95. The Gray property will have no effect on Windows
+  95 operating systems.
 See Also
   TJvCaret.Bitmap, TJvCaret.Height, TJvCaret.Width
 
@@ -143,8 +139,8 @@ Summary
   Determines the height of the custom cursor.
 Description
   Height is the height of the custom cursor. If left at 0, the caret will get the default height,
-  unless a Bitmap is specified, Gray is set to false and Width is also set to 0, in which case
-  Bitmap is used as a caret.
+  unless a Bitmap is specified, Gray is set to false and Width is also set to 0, in which case Bitmap
+  is used as a caret.
 
   Setting Height to a non-zero value will result in Bitmap being ignored.
 See Also
@@ -155,8 +151,8 @@ See Also
 Summary
   Determines if the caret is the default caret.
 Description
-  IsDefaultCaret indicates if the caret is the default (Windows) caret. This method is used
-  internally by CreateCaret and DestroyCaret.
+  IsDefaultCaret indicates if the caret is the default (Windows) caret. This method is used internally
+  by CreateCaret and DestroyCaret.
 See Also
   TJvCaret.CreateCaret, TJvCaret.DestroyCaret, TJvCaret.UsingBitmap
 
@@ -172,8 +168,8 @@ Description
 Summary
   Number of calls to BeginUpdate that have not been matched by a call to EndUpdate.
 Description
-  UpdateCount indicates the number of calls to BeginUpdate issued that have not been matched by a
-  call to EndUpdate. While UpdateCount > 0, the OnChanged event will never fire.
+  UpdateCount indicates the number of calls to BeginUpdate issued that have not been matched by a call
+  to EndUpdate. While UpdateCount > 0, the OnChanged event will never fire.
 See Also
   TJvCaret.BeginUpdate, TJvCaret.EndUpdate, TJvCaret.OnChanged
 
@@ -192,9 +188,9 @@ See Also
 Summary
   Determines the width of the custom cursor.
 Description
-  Width is the width of the custom cursor. If left at 0, the caret will get the default width, unless
-  a Bitmap is specified, Gray is set to false and Height is also set to 0, in which case
-  Bitmap is used as a caret.
+  Width is the width of the custom cursor. If left at 0, the caret will get the default width, unless a
+  Bitmap is specified, Gray is set to false and Height is also set to 0, in which case Bitmap is used
+  as a caret.
 
   Setting Width to a non-zero value will result in Bitmap being ignored.
 See Also

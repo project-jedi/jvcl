@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Locked by peter3
+##Status: Completed, Locked by peter3
 ----------------------------------------------------------------------------------------------------
 @@JvComputerInfoEx.pas
 Summary
@@ -7,19 +7,22 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
 ----------------------------------------------------------------------------------------------------
 @@DEV_BROADCAST_HDR
 <TITLE DEV_BROADCAST_HDR type>
 Summary
   See <EXTLINK
-  http://msdn.microsoft.com/library/en-us/devio/base/dev_broadcast_hdr_str.asp>MSDN</EXTLINK> for
-  more info.
+  http://msdn.microsoft.com/library/en-us/devio/base/dev_broadcast_hdr_str.asp>MSDN</EXTLINK> for more
+  info.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@DEV_BROADCAST_HDR.dbch_size
   See <EXTLINK
-  http://msdn.microsoft.com/library/en-us/devio/base/dev_broadcast_hdr_str.asp>MSDN</EXTLINK> for
-  more info.
+  http://msdn.microsoft.com/library/en-us/devio/base/dev_broadcast_hdr_str.asp>MSDN</EXTLINK> for more
+  info.
 
 ----------------------------------------------------------------------------------------------------
 @@DEV_BROADCAST_HDR.dbch_devicetype
@@ -30,8 +33,8 @@ Summary
 ----------------------------------------------------------------------------------------------------
 @@DEV_BROADCAST_HDR.dbch_reserved
   See <EXTLINK
-  http://msdn.microsoft.com/library/en-us/devio/base/dev_broadcast_hdr_str.asp>MSDN</EXTLINK> for
-  more info.
+  http://msdn.microsoft.com/library/en-us/devio/base/dev_broadcast_hdr_str.asp>MSDN</EXTLINK> for more
+  info.
 
 ----------------------------------------------------------------------------------------------------
 @@DEV_BROADCAST_VOLUME
@@ -41,7 +44,7 @@ Summary
   http://msdn.microsoft.com/library/en-us/devio/base/dev_broadcast_volume_str.asp>MSDN</EXTLINK> for
   more info.
 Description
-
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@DEV_BROADCAST_VOLUME.dbcv_size
@@ -72,20 +75,24 @@ Description
   See <EXTLINK
   http://msdn.microsoft.com/library/en-us/devio/base/dev_broadcast_volume_str.asp>MSDN</EXTLINK> for
   more info.
+
 ----------------------------------------------------------------------------------------------------
 @@EJVCLComputerInfoEx
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@PDevBroadcastHdr
 <TITLE PDevBroadcastHdr type>
 <COMBINE TDevBroadcastHdr>
+
 ----------------------------------------------------------------------------------------------------
 @@PDevBroadcastVolume
 <TITLE PDevBroadcastVolume type>
 <COMBINE TDevBroadcastVolume>
+
 ----------------------------------------------------------------------------------------------------
 @@TDevBroadcastHdr
 <TITLE TDevBroadcastHdr type>
@@ -114,12 +121,14 @@ Description
   Encapsulates the ACCESSTIMEOUT structure. This is a read/write class and all properties are
   writeable.
 See Also
-  <a href=http://msdn.microsoft.com/library/en-us/msaa/access_4rci.asp>MSDN</a>
+  <EXTLINK http://msdn.microsoft.com/library/en-us/msaa/access_4rci.asp>MSDN</EXTLINK>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAccessTimeOut.Flags
 Summary
   Provides access to the flags for TJvAccessTimeOut.
+Description
+  Write here a description
 See Also
   TJvAccessTimeOutFlags
 
@@ -128,14 +137,16 @@ See Also
 Summary
   Provides direct access to the underlying Windows API structure.
 Description
-  Use NativeType when you need to access the Windows API structure this class encapsulates. If you
-  need to change several properties of the class at once, it is recommended to use NativeType instead
-  of the individual properties of the class as each change triggers a separate call to NativeType.
+  Use NativeType when you need to access the Windows API structure this class encapsulates. If you need
+  to change several properties of the class at once, it is recommended to use NativeType instead of the
+  individual properties of the class as each change triggers a separate call to NativeType.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAccessTimeOut.TimeOutMS
 Summary
   Specifies the time-out period, in milliseconds.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAccessTimeOutFlags
@@ -153,29 +164,32 @@ Summary
   Encapsulates APM information.
 Description
   Encapsulates APM (Advanced Power Managment) information. This is a read-only class.
-
 Note
-  The system is only capable of estimating BatteryFullLifeTime based on calculations on
-  BatteryLifeTime and BatteryLifePercent. Without smart battery subsystems, this value may not be
-  accurate enough to be useful.
+  The system is only capable of estimating BatteryFullLifeTime based on calculations on BatteryLifeTime
+  and BatteryLifePercent. Without smart battery subsystems, this value may not be accurate enough to be
+  useful.
 See Also
   GetPowerStatus
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAPMInfo.BatteryFlag
-This property only have meaning on portable computers that run off batteries.
 Summary
-  Provides access to the current status of the computer battery.
+  This property only have meaning on portable computers that run off batteries. Provides access to the
+  current status of the computer battery.
 Description
-  \\Read BatteryFlag to learn the current status of the computers battery. BatteryFlag can have one
-  of the following values:
+  \\Read BatteryFlag to learn the current status of the computers battery. BatteryFlag can have one of
+  the following values:
 
-  abfHigh     - the battery has a high charge
-  abfLow     - the battery has a low charge
-  abfCritical  - the battery is very low and must be charged immediately
-  abfCharging - the battery is charging
-  abfNoBattery - there is no battery inserted
-  abfUnknown - the battery status is unknown or an error occurred
+  <TABLE>
+    Value         Meaning
+    ------------  -------------------------------------------------------
+    abfHigh       the battery has a high charge
+    abfLow        the battery has a low charge
+    abfCritical   the battery is very low and must be charged immediately
+    abfCharging   the battery is charging
+    abfNoBattery  there is no battery inserted
+    abfUnknown    the battery status is unknown or an error occurred
+  </TABLE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAPMInfo.BatteryFullLifeTime
@@ -189,8 +203,8 @@ Description
 Summary
   Specifies life time of fully charged battery as a percentage.
 Description
-  Percentage of full battery charge remaining. This member can be a value in the range 0 to 100, or
-  255 if status is unknown.
+  Percentage of full battery charge remaining. This member can be a value in the range 0 to 100, or 255
+  if status is unknown.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAPMInfo.BatteryLifeTime
@@ -206,9 +220,11 @@ Summary
 Description
   AC power status. This member can be one of the following values:
 
-  alsOffline - Offline
-  alsOnline - Online
-  alsUnknown - Unknown
+  <TABLE>
+    alsOffline  Offline
+    alsOnline   Online
+    alsUnknown  Unknown
+  </TABLE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppVersions
@@ -222,8 +238,8 @@ Description
 Summary
   Provides information about the current ADO version.
 Description
-  Use ADO to access the version number of the currently installed ADO (Advanced Data Objects)
-  version. If ADO is not installed, this property returns an empty string.
+  Use ADO to access the version number of the currently installed ADO (Advanced Data Objects) version.
+  If ADO is not installed, this property returns an empty string.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppVersions.BDE
@@ -233,19 +249,13 @@ Description
   Use BDE to access the version number of the currently installed BDE (Borland Database Engine)
   version. If BDE is not installed, this property returns an empty string.
 
-
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppVersions.DirectX
 Summary
   Provides information about the current DirectX version.
 Description
-  Use DirectX to access the version number of the currently installed DirectX version. If DirectX  is
+  Use DirectX to access the version number of the currently installed DirectX version. If DirectX is
   not installed (highly unlikely), this property returns an empty string.
-
-
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppVersions.InternetExplorer
@@ -256,17 +266,13 @@ Description
   version. If InternetExplorer is not installed (highly unlikely), this property returns an empty
   string.
 
-
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppVersions.OpenGL
 Summary
   Provides information about the current OpenGL version.
 Description
-  Use OpenGL to access the version number of the currently installed OpenGL (Graphic Library)
-  version. If OpenGL is not installed, this property returns an empty string.
-
+  Use OpenGL to access the version number of the currently installed OpenGL (Graphic Library) version.
+  If OpenGL is not installed, this property returns an empty string.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBIOSInfo
@@ -317,15 +323,15 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCleanBoot.cbNormal
-The computer was booted normally.
+  The computer was booted normally.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCleanBoot.cbFailSafe
-The computer was booted in "Fail Safe" mode.
+  The computer was booted in "Fail Safe" mode.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCleanBoot.cbFailSafeNetwork
-The computer was booted in "Fail Safe" mode with networking enabled.
+  The computer was booted in "Fail Safe" mode with networking enabled.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCompactingEvent
@@ -334,47 +340,48 @@ The computer was booted in "Fail Safe" mode with networking enabled.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx
+<TITLEIMG TJvComputerInfoEx>
+JVCLInfo
+  GROUP=JVCL.System
+  FLAG=Component
 Summary
   Contains subclasses and properties with various information about the computer and its subsystems,
   settings and status.
 Description
   Use TJvComputerInfoEx when you need to access information about the currently running computer.
-  TJvComputerInfoEx contains a large set of subclasses for each logical subsystem on the computer.
-  For more information on the various subclasses and the information they provide, see APM, BIOS,
-  Colors, CPU, Folders, Identification, Keyboard, Memory, Metrics, Misc, OS, Screen and System.
+  TJvComputerInfoEx contains a large set of subclasses for each logical subsystem on the computer. For
+  more information on the various subclasses and the information they provide, see APM, BIOS, Colors,
+  CPU, Folders, Identification, Keyboard, Memory, Metrics, Misc, OS, Screen and System.
 
-  You can also use the events of TJvComputerInfoEx to be notified when certain system events occur.
-  See the help for the TJvComputerInfoEx events for more information.
+  You can also use the events of TJvComputerInfoEx to be notified when certain system events occur. See
+  the help for the TJvComputerInfoEx events for more information.
 
-  The subclasses can be divided into read-only and read-write classes. Read-write classes can be subdivided into partial and fully writeable. Partial read-write classes o
-  ly provide write access to some of its properties. If you try to change a read-only property at
-  run-time, an EJVCLComputerInfoEx exception is raised.
+  The subclasses can be divided into read-only and read-write classes. Read-write classes can be
+  subdivided into partial and fully writeable. Partial read-write classes o ly provide write access to
+  some of its properties. If you try to change a read-only property at run-time, an EJVCLComputerInfoEx
+  exception is raised.
 
   To find out if a subclass is read-only, use code like:
 
-
+  <AUTOLINK OFF>
   <CODE>
-
    if JvComputerInfoEx1.Misc is TJvReadOnlyInfo then
     ...
-
   </CODE>
-
+  <AUTOLINK ON>
 
   To find out if a subclass is writeable, use code like:
 
-
+  <AUTOLINK OFF>
   <CODE>
-
    if JvComputerInfoEx1.Folders is TJvWriteableInfo then
     ...
-
   </CODE>
+  <AUTOLINK ON>
 
-
-  Sub-classes are instantiated on-demand which means that sub-classes that you don\\'t use will not be created nor will the system be
-  queried for the information the sub-classes provide. This saves you a lot of time and memory at
-  run-time.
+  Sub-classes are instantiated on-demand which means that sub-classes that you don\\'t use will not be
+  created nor will the system be queried for the information the sub-classes provide. This saves you a
+  lot of time and memory at run-time.
 See Also
   APM, BIOS, Colors, CPU, Folders, Identification, Keyboard, Memory, Metrics, Misc, OS, Screen, System
 
@@ -406,6 +413,7 @@ Summary
 Description
   Use the subproperties of CPU to access various information related to the CPU such as its model,
   family and speed. This is a read-only class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.FileInfo
 Summary
@@ -415,6 +423,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.Folders
 Summary
@@ -430,9 +439,9 @@ Description
 Summary
   Provides access to identification information.
 Description
-  Use the subproperties of Identification to access information about computer and user
-  identification. Among other things, this class provides information about computer name, user name,
-  workgroup, domain, IP adress as well as information about the volumes installed.
+  Use the subproperties of Identification to access information about computer and user identification.
+  Among other things, this class provides information about computer name, user name, workgroup,
+  domain, IP adress as well as information about the volumes installed.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.Keyboard
@@ -450,8 +459,8 @@ Description
 Summary
   Provides access to memory related information.
 Description
-  Use the subproperties of Memory to access memory related information like the size of the swap
-  file, memory load, total and free physical, page and virtual memory.
+  Use the subproperties of Memory to access memory related information like the size of the swap file,
+  memory load, total and free physical, page and virtual memory.
 
   This is a read-only class.
 
@@ -460,9 +469,9 @@ Description
 Summary
   Provides access to metric information.
 Description
-  Use the subproperties of Metrics to access metric information about the computer. Metric
-  information includes all the items that can be returned by the Windows API function
-  GetSystemMetrics as well as a few others.
+  Use the subproperties of Metrics to access metric information about the computer. Metric information
+  includes all the items that can be returned by the Windows API function GetSystemMetrics as well as a
+  few others.
 
   This is a read-write class but only <LINK TJvMetricsInfo.CursorX>, <LINK TJvMetricsInfo.CursorY>,
   <LINK TJvMetricsInfo.CaretX> and <LINK TJvMetricsInfo.CaretY> are writeable.
@@ -478,9 +487,9 @@ Description
   the other subclasses of TJvComputerInfoEx. Misc contains such diverse information as wallpaper
   settings, time running, whether NetBIOs is installed, screensaver location and the hardware profile.
 
-  This is a read-write class and you can write to the <LINK TJvMiscInfo.ScreenSaver,ScreenSaver>,
-  <LINK TJvMiscInfo.Pattern,Pattern>, <LINK TJvMiscInfo.Wallpaper,Wallpaper>, <LINK
-  TJvMiscInfo.WallpaperStyle, <LINK TJvMiscInfo.WallpaperTiled> and <LINK
+  This is a read-write class and you can write to the <LINK TJvMiscInfo.ScreenSaver, ScreenSaver>,
+  <LINK TJvMiscInfo.Pattern, Pattern>, <LINK TJvMiscInfo.Wallpaper, Wallpaper>, <LINK
+  TJvMiscInfo.WallpaperStyle>, <LINK TJvMiscInfo.WallpaperTiled> and <LINK
   TJvMiscInfo.CurrentColorScheme, CurrentColorScheme> properties.
 
 ----------------------------------------------------------------------------------------------------
@@ -488,15 +497,15 @@ Description
 Summary
   Occurs when the system is compacting memory
 Description
-  This event occurs when Windows detects more than 12.5 percent of system time over a 30- to
-  60-second interval is being spent compacting memory. This indicates that system memory is low.
+  This event occurs when Windows detects more than 12.5 percent of system time over a 30- to 60-second
+  interval is being spent compacting memory. This indicates that system memory is low.
 
   This event is triggered in response to a WM_COMPACTING message from the system.
 Parameters
   Sender - The object that triggered the event.
   Ratio  - Specifies the ratio of central processing unit (CPU) time currently spent by Windows
-  compacting memory to CPU time currently spent by Windows performing other operations. For example,
-  0x8000 represents 50 percent of CPU time spent compacting memory.
+            compacting memory to CPU time currently spent by Windows performing other operations. For
+            example, 0x8000 represents 50 percent of CPU time spent compacting memory.
 See Also
   WM_COMPACTING
 
@@ -518,15 +527,15 @@ See Also
 Summary
   Occurs when a device is added or removed from the system.
 Description
-  \\Write a handler for this event to take specific actions when devices are added or removed from
-  the computer. If you only want to handle device additions, use OnDeviceAdded instead. If you only
-  want to handle device removals, use OnDeviceRemoved instead.
+  \\Write a handler for this event to take specific actions when devices are added or removed from the
+  computer. If you only want to handle device additions, use OnDeviceAdded instead. If you only want to
+  handle device removals, use OnDeviceRemoved instead.
 
   This event is triggered in response to a WM_DEVICECHANGE.
 Parameters
   Sender - The object that triggered the event.
   Event  - Either DBT_DEVICEARRIVAL (device added) or DBT_DEVICEREMOVECOMPLETE (device removed)
-  Data   - Pointer to a  DEV_BROADCAST_HDR structure with additional information.
+  Data   - Pointer to a DEV_BROADCAST_HDR structure with additional information.
 See Also
   WM_DEVICECHANGE, DBT_DEVICEARRIVAL, DBT_DEVICEREMOVECOMPLETE
 
@@ -571,7 +580,6 @@ Parameters
   BitsPerPixel - The new number of bits per pixel
   ScreenWidth  - The new screen width
   ScreenHeight - The new screen height
-
 See Also
   WM_DISPLAYCHANGE
 
@@ -627,15 +635,15 @@ Description
   \\Write a handler for this event to take specific actions when a power-management event has
   occurred.
 
-  This event is triggered in response to a WM_POWER or a WM_POWERBROADCAST message. Note that the WM_POWER is provided
-  or backward compatibility with 16-bit systems and should be relatively rare (or non-existent) in
-  32-bit systems.
+  This event is triggered in response to a WM_POWER or a WM_POWERBROADCAST message. Note that the
+  WM_POWER is provided or backward compatibility with 16-bit systems and should be relatively rare (or
+  non-existent) in 32-bit systems.
 Parameters
   Sender - The object that triggered the event.
   Event  - The event that was triggered. For more information, see the on-line help for
-  WM_POWERBROADCAST.
+            WM_POWERBROADCAST.
   Data   - Function-specific data. For most messages, this parameter is reserved and not used. For
-  more information, see the on-line help for WM_POWERBROADCAST.
+            more information, see the on-line help for WM_POWERBROADCAST.
 See Also
   WM_POWER, WM_POWERBROADCAST
 
@@ -649,27 +657,26 @@ Description
 
   The Section parameter is not particularly useful in determining which system parameter changed. For
   example, when the string is a registry name, it typically indicates only the leaf node in the
-  registry, not the whole path. In addition, some applications send this message with Section set to
-  an empty string. In general, when you handle this event, you should check and reload any system
+  registry, not the whole path. In addition, some applications send this message with Section set to an
+  empty string. In general, when you handle this event, you should check and reload any system
   parameter settings that are used by your application.
 
   This event is triggered in response to a WM_SETTINGCHANGE message.
-
-
 Parameters
   Sender  - The object that triggered the event.
   Flag    - The parameter that was changed. This value is the same as the uiAction parameter to
-  SystemParametersInfo.
+             SystemParametersInfo.
   Section - A string that indicates the area containing the system parameter that was changed. For
-  example, this string can be the name of a registry key or the name of a section in the WIN.INI file.
+             example, this string can be the name of a registry key or the name of a section in the
+             WIN.INI file.
 See Also
   WM_SETTINGCHANGE, SystemParametersInfo
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.OnSpoolerStatusChange
-The WM_SPOOLERSTATUS message is not supported after Windows XP.
 Summary
-  Occurs whenever a job is added to or removed from the Print Manager queue.
+  The WM_SPOOLERSTATUS message is not supported after Windows XP. Occurs whenever a job is added to or
+  removed from the Print Manager queue.
 Description
   \\Write a handler for this event to take specific actions when print jobs are added or removed from
   the print queue.
@@ -678,7 +685,6 @@ Description
 
   This event is advisory and does not have guaranteed delivery semantics. Applications should not
   assume that they will receive this event for every change in spooler status.
-
 Parameters
   Sender    - The object that triggered the event.
   JobStatus - Specifies the PR_JOBSTATUS flag.
@@ -728,8 +734,8 @@ See Also
 Summary
   Provides access to OS version information.
 Description
-  Use the subproperties of OS to access information relating to the currently running OS version on
-  the computer.
+  Use the subproperties of OS to access information relating to the currently running OS version on the
+  computer.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.ReadOnly
@@ -742,8 +748,8 @@ Description
   have their ReadOnly property changed as well. Thus, you do not have to change each subclass
   individually.
 
-  To make some subclasses read-only and some read-write, set ReadOnly of TJvComputerInfoEx to False
-  and then set the ReadOnly property of individual subclasses as you see fit.
+  To make some subclasses read-only and some read-write, set ReadOnly of TJvComputerInfoEx to False and
+  then set the ReadOnly property of individual subclasses as you see fit.
 
   Classes derived from TJvReadOnlyInfo do not have a ReadOnly property since they are read-only by
   design.
@@ -767,9 +773,9 @@ See Also
 Summary
   Restores the default system icons.
 Description
-  Call ResetSystemIcons to restore the system icons to their default values and sizes.
-  ResetSystemIcons also rebuilds the icon cache that is used for the Quick Launch bar (an item that
-  is known for corrupting its icons frequently).
+  Call ResetSystemIcons to restore the system icons to their default values and sizes. ResetSystemIcons
+  also rebuilds the icon cache that is used for the Quick Launch bar (an item that is known for
+  corrupting its icons frequently).
 Return value
   Returns True if the system icons could be restored.
 See Also
@@ -780,11 +786,11 @@ See Also
 Summary
   Provides access to screen related information.
 Description
-  Use the subproperties of Screen to access information about the screen like its size, bits per
-  pixel and refresh frequency.
+  Use the subproperties of Screen to access information about the screen like its size, bits per pixel
+  and refresh frequency.
 
   This is a read-write class and you can write to <LINK TJvScreenInfo.BitsPerPixel, BitsPerPixel>,
-  <LINK TJvScreenInfo.Flags,Flags>, <LINK TJvScreenInfo.Width, Width>, <LINK TJvScreenInfo.Height,
+  <LINK TJvScreenInfo.Flags, Flags>, <LINK TJvScreenInfo.Width, Width>, <LINK TJvScreenInfo.Height,
   Height> and <LINK TJvScreenInfo.Hz, Hz>,
 
 ----------------------------------------------------------------------------------------------------
@@ -792,8 +798,8 @@ Description
 Summary
   Provides access to system related information.
 Description
-  Use the subproperties of System to access system related information. Basically, this class
-  provides access to the same information you can get from SystemParametersInfo.
+  Use the subproperties of System to access system related information. Basically, this class provides
+  access to the same information you can get from SystemParametersInfo.
 
   This is a writeable class and you can write to all subproperties except ScreenSaverRunning and
   WindowsExtension.
@@ -814,8 +820,8 @@ Description
 Summary
   Provides information specific to AMD.
 Description
-  Use AMDSpecific when accessing AMD specific information. If the CPU is not an AMD, this property
-  has no valid data.
+  Use AMDSpecific when accessing AMD specific information. If the CPU is not an AMD, this property has
+  no valid data.
 
   Use CPUType to determine the type of CPU.
 See Also
@@ -836,12 +842,10 @@ See Also
 Summary
   Provides information specific to Cyrix.
 Description
-  Use CyrixSpecific when accessing Cyrix specific information. If the CPU is not a Cyrix, this
-  property has no valid data.
+  Use CyrixSpecific when accessing Cyrix specific information. If the CPU is not a Cyrix, this property
+  has no valid data.
 
   Use CPUType to determine the type of CPU.
-
-
 See Also
   TJvCPUInfo.AMDSpecific, TJvCPUInfo.CPUType, TJvCPUInfo.IntelSpecific
 
@@ -904,10 +908,6 @@ Description
   property has no valid data.
 
   Use CPUType to determine the type of CPU.
-
-
-
-
 See Also
   TJvCPUInfo.AMDSpecific, TJvCPUInfo.CPUType, TJvCPUInfo.CyrixSpecific
 
@@ -1041,23 +1041,23 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUType.cpuUnknown
-The CPU type and/or make cannot be determined.
+  The CPU type and/or make cannot be determined.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUType.cpuIntel
-The CPU is manufactured by Intel.
+  The CPU is manufactured by Intel.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUType.cpuCyrix
-The CPU is a Cyrix manufactured by AMD.
+  The CPU is a Cyrix manufactured by AMD.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUType.cpuAMD
-The CPU is manufactured by AMD.
+  The CPU is manufactured by AMD.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCPUType.cpuCrusoe
-The CPU is a Crusoe manufactured by Transmeta.
+  The CPU is a Crusoe manufactured by Transmeta.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDeviceChangeEvent
@@ -1080,12 +1080,8 @@ The CPU is a Crusoe manufactured by Transmeta.
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = set of (dmGrayScale, dmInterlaced); - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  set of (dmGrayScale, dmInterlaced); - for reference)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveChangeEvent
@@ -1093,14 +1089,15 @@ See Also
 Summary
   Occurs when a drive is added or removed from the computer.
 Description
-  TJvDriveChangeEvent is the event type for  <LINK TJvComputerInfoEx.OnDeviceAdded> and <LINK
-  TJvComputerInfoEx.OnDeviceRemoved>. These events are triggered when a device is added or removed
-  from the computer.
+  TJvDriveChangeEvent is the event type for <LINK TJvComputerInfoEx.OnDeviceAdded> and <LINK
+  TJvComputerInfoEx.OnDeviceRemoved>. These events are triggered when a device is added or removed from
+  the computer.
 Parameters
   Sender - The object that triggered the event.
   Drive  - The drive that was added or removed.
 See Also
   OnDeviceAdded, OnDeviceRemoved
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExeType
 <TITLE TJvExeType type>
@@ -1111,22 +1108,34 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvExeType.etNone
   Description for etNone
+
+----------------------------------------------------------------------------------------------------
 @@TJvExeType.etMSDos
   Description for etMSDos
+
+----------------------------------------------------------------------------------------------------
 @@TJvExeType.etWin16
   Description for etWin16
+
+----------------------------------------------------------------------------------------------------
 @@TJvExeType.etWin32
   Description for etWin32
+
+----------------------------------------------------------------------------------------------------
 @@TJvExeType.etConsole
   Description for etConsole
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.Attributes
 Summary
@@ -1136,6 +1145,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.AttrString
 Summary
@@ -1145,6 +1155,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.DisplayName
 Summary
@@ -1154,6 +1165,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.ExeType
 Summary
@@ -1163,6 +1175,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.FileName
 Summary
@@ -1172,6 +1185,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.GetFileInfo
 Summary
@@ -1188,6 +1202,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.Icon
 Summary
@@ -1197,6 +1212,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.IconHandle
 Summary
@@ -1206,6 +1222,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.IconIndex
 Summary
@@ -1215,6 +1232,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.IconLocation
 Summary
@@ -1224,6 +1242,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.LargeImages
 Summary
@@ -1233,6 +1252,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.Modifiers
 Summary
@@ -1242,6 +1262,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.SmallImages
 Summary
@@ -1251,6 +1272,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.TypeString
 Summary
@@ -1260,19 +1282,16 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFilterKeyFlags
 <TITLE TJvFilterKeyFlags type>
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = set of (fkfAvailable, fkfClickOn, fkfFilterKeysOn, fkfHotKeyActive, fkfHotkeySound,
-  fkfConfirmHotKey, fkfIndicator); - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  set of (fkfAvailable, fkfClickOn, fkfFilterKeysOn, fkfHotKeyActive, fkfHotkeySound, fkfConfirmHotKey,
+  fkfIndicator); - for reference)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFilterKeys
@@ -1316,11 +1335,9 @@ See Also
 Summary
   Provides direct access to the underlying Windows API structure.
 Description
-  Use NativeType when you need to access the Windows API structure this class encapsulates. If you
-  need to change several properties of the class at once, it is recommended to use NativeType instead
-  of the individual properties of the class as each change triggers a separate call to NativeType.
-
-
+  Use NativeType when you need to access the Windows API structure this class encapsulates. If you need
+  to change several properties of the class at once, it is recommended to use NativeType instead of the
+  individual properties of the class as each change triggers a separate call to NativeType.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFilterKeys.RepeatMSec
@@ -1348,22 +1365,22 @@ See Also
 Summary
   Defines the available font smoothing methods.
 Description
-  TJvFontSmoothingType is the type of <LINK TJvSystemParametersInfo.FontSmoothingType> and defines
-  the available font smoothing methods.
+  TJvFontSmoothingType is the type of <LINK TJvSystemParametersInfo.FontSmoothingType> and defines the
+  available font smoothing methods.
 See Also
   TJvSystemParametersInfo
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFontSmoothingType.fstStandard
-Description for fstStandard
+  Description for fstStandard
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFontSmoothingType.fstClearType
-Description for fstClearType
+  Description for fstClearType
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFontSmoothingType.fstDocking
-Description for fstDocking
+  Description for fstDocking
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHardwareProfile
@@ -1407,11 +1424,9 @@ See Also
 Summary
   Provides direct access to the underlying Windows API structure.
 Description
-  Use NativeType when you need to access the Windows API structure this class encapsulates. If you
-  need to change several properties of the class at once, it is recommended to use NativeType instead
-  of the individual properties of the class as each change triggers a separate call to NativeType.
-
-
+  Use NativeType when you need to access the Windows API structure this class encapsulates. If you need
+  to change several properties of the class at once, it is recommended to use NativeType instead of the
+  individual properties of the class as each change triggers a separate call to NativeType.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHighContrast
@@ -1445,9 +1460,9 @@ See Also
 Summary
   Provides direct access to the underlying Windows API structure.
 Description
-  Use NativeType when you need to access the Windows API structure this class encapsulates. If you
-  need to change several properties of the class at once, it is recommended to use NativeType instead
-  of the individual properties of the class as each change triggers a separate call to NativeType.
+  Use NativeType when you need to access the Windows API structure this class encapsulates. If you need
+  to change several properties of the class at once, it is recommended to use NativeType instead of the
+  individual properties of the class as each change triggers a separate call to NativeType.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHighContrastFlags
@@ -1455,13 +1470,9 @@ Description
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = set of (hcfAvailable, hcfConfirmHotKey, hcfHighContrastOn, hcfHotkeyActive,
-  hcfHotkeyAvailable, hcfHotkeySound, hcfIndicator); - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  set of (hcfAvailable, hcfConfirmHotKey, hcfHighContrastOn, hcfHotkeyActive, hcfHotkeyAvailable,
+  hcfHotkeySound, hcfIndicator); - for reference)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHWDockInfo
@@ -1469,13 +1480,8 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = set of (diDocked, diUndocked, diUserSupplied, diUserDocked, diUserUndocked); - for
-  reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  set of (diDocked, diUndocked, diUserSupplied, diUserDocked, diUserUndocked); - for reference)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIconMetrics
@@ -1509,10 +1515,9 @@ See Also
 Summary
   Provides direct access to the underlying Windows API structure.
 Description
-  Use NativeType when you need to access the Windows API structure this class encapsulates. If you
-  need to change several properties of the class at once, it is recommended to use NativeType instead
-  of the individual properties of the class as each change triggers a separate call to NativeType.
-
+  Use NativeType when you need to access the Windows API structure this class encapsulates. If you need
+  to change several properties of the class at once, it is recommended to use NativeType instead of the
+  individual properties of the class as each change triggers a separate call to NativeType.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIconMetrics.TitleWrap
@@ -1533,6 +1538,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvIconModifier
 <TITLE TJvIconModifier type>
@@ -1543,28 +1549,43 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvIconModifier.imNormal
   Description for imNormal
+
+----------------------------------------------------------------------------------------------------
 @@TJvIconModifier.imOverlay
   Description for imOverlay
+
+----------------------------------------------------------------------------------------------------
 @@TJvIconModifier.imSelected
   Description for imSelected
+
+----------------------------------------------------------------------------------------------------
 @@TJvIconModifier.imOpen
   Description for imOpen
+
+----------------------------------------------------------------------------------------------------
 @@TJvIconModifier.imShellSize
   Description for imShellSize
+
+----------------------------------------------------------------------------------------------------
 @@TJvIconModifier.imSmall
   Description for imSmall
+
 ----------------------------------------------------------------------------------------------------
 @@TJvIconModifiers
 <TITLE TJvIconModifiers type>
 <COMBINE TJvIconModifier>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvIdentification
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvIdentification.Comment
 Summary
@@ -1574,6 +1595,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvIdentification.DomainName
 Summary
@@ -2618,6 +2640,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ShowSounds
 Summary
@@ -2627,6 +2650,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SlowMachine
 Summary
@@ -2636,6 +2660,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SmallCaptionButtonHeight
 Summary
@@ -2645,6 +2670,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SmallCaptionButtonWidth
 Summary
@@ -2654,6 +2680,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SmallIconHeight
 Summary
@@ -2663,6 +2690,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SmallIconWidth
 Summary
@@ -2725,11 +2753,9 @@ See Also
 Summary
   Provides direct access to the underlying Windows API structure.
 Description
-  Use NativeType when you need to access the Windows API structure this class encapsulates. If you
-  need to change several properties of the class at once, it is recommended to use NativeType instead
-  of the individual properties of the class as each change triggers a separate call to NativeType.
-
-
+  Use NativeType when you need to access the Windows API structure this class encapsulates. If you need
+  to change several properties of the class at once, it is recommended to use NativeType instead of the
+  individual properties of the class as each change triggers a separate call to NativeType.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMinimizedMetrics.VertGap
@@ -2833,17 +2859,17 @@ See Also
 Summary
   Provides access to the location of the screensaver.
 Description
-  \\Read ScreenSaver to access the location of the current screen saver file. Change ScreenSaver to
-  set a new ScreenSaver. Setting ScreenSaver to an emtpy string, disables the screen saver completely.
+  \\Read ScreenSaver to access the location of the current screen saver file. Change ScreenSaver to set
+  a new ScreenSaver. Setting ScreenSaver to an emtpy string, disables the screen saver completely.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMiscInfo.TimeRunning
 Summary
   Returns the time elapsed since the computer was started.
 Description
-  Read TimeRunning to determine the time elapsed since the computer was started. The returned value
-  is in milliseconds. Note that this method uses GetTickCount so if the computer has been running for
-  more than 42 days, the counter will rollover to 0 and the returned value will be incorrect.
+  Read TimeRunning to determine the time elapsed since the computer was started. The returned value is
+  in milliseconds. Note that this method uses GetTickCount so if the computer has been running for more
+  than 42 days, the counter will rollover to 0 and the returned value will be incorrect.
 See Also
   TimeRunningAsString
 
@@ -2854,8 +2880,8 @@ Summary
 Description
   Read TimeRunningAsString to get the time elapsed since the computer was started as a string. The
   returned value is preformatted as the number of days, hours, minutes and seconds. Note that this
-  method uses GetTickCount so if the computer has been running for more than 42 days, the counter
-  will rollover to 0 and the returned value will be incorrect.
+  method uses GetTickCount so if the computer has been running for more than 42 days, the counter will
+  rollover to 0 and the returned value will be incorrect.
 See Also
   TimeRunning
 
@@ -2941,11 +2967,9 @@ See Also
 Summary
   Provides direct access to the underlying Windows API structure.
 Description
-  Use NativeType when you need to access the Windows API structure this class encapsulates. If you
-  need to change several properties of the class at once, it is recommended to use NativeType instead
-  of the individual properties of the class as each change triggers a separate call to NativeType.
-
-
+  Use NativeType when you need to access the Windows API structure this class encapsulates. If you need
+  to change several properties of the class at once, it is recommended to use NativeType instead of the
+  individual properties of the class as each change triggers a separate call to NativeType.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMouseKeys.TimeToMaxSpeed
@@ -2963,13 +2987,9 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = set of (mkfAvailable, mkfConfirmHotKey, mkfHotkeyActive, mkfHotkeySound, mkfIndicator,
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  set of (mkfAvailable, mkfConfirmHotKey, mkfHotkeyActive, mkfHotkeySound, mkfIndicator,
   mkfMouseKeysOn, mkfModifiers, mkfReplaceNumbers); - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNonClientMetrics
@@ -3063,9 +3083,9 @@ See Also
 Summary
   Provides direct access to the underlying Windows API structure.
 Description
-  Use NativeType when you need to access the Windows API structure this class encapsulates. If you
-  need to change several properties of the class at once, it is recommended to use NativeType instead
-  of the individual properties of the class as each change triggers a separate call to NativeType.
+  Use NativeType when you need to access the Windows API structure this class encapsulates. If you need
+  to change several properties of the class at once, it is recommended to use NativeType instead of the
+  individual properties of the class as each change triggers a separate call to NativeType.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNonClientMetrics.ScrollHeight
@@ -3133,6 +3153,7 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOSVersionInfo.OSVersion
 Summary
@@ -3142,6 +3163,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOSVersionInfo.ProductID
 Summary
@@ -3228,15 +3250,11 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  This type is used by (for reference):
-    TJvComputerInfoEx.OnPaletteChanged
-    TJvComputerInfoEx.OnPaletteChanging
+  This type is used by (for reference): TJvComputerInfoEx.OnPaletteChanged
+  TJvComputerInfoEx.OnPaletteChanging
 Parameters
   Sender - Description for this parameter
   Wnd    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPowerBroadcastEvent
@@ -3264,9 +3282,9 @@ Summary
 Description
   Use BitsPerPixel to set and retrieve the screen resolution as bits per pixel.
 
-  IMPORTANT!
-  Do not try to set an invalid or unavailable BitsPerPixel as this could potentionally damage your
-  screen! Use ScreenModes to find the available screen resolutions before changing this value
+  IMPORTANT! Do not try to set an invalid or unavailable BitsPerPixel as this could potentionally
+  damage your screen! Use ScreenModes to find the available screen resolutions before changing this
+  value
 See Also
   TJvScreenInfo.ScreenModes
 
@@ -3478,9 +3496,9 @@ See Also
 Summary
   Provides direct access to the underlying Windows API structure.
 Description
-  Use NativeType when you need to access the Windows API structure this class encapsulates. If you
-  need to change several properties of the class at once, it is recommended to use NativeType instead
-  of the individual properties of the class as each change triggers a separate call to NativeType.
+  Use NativeType when you need to access the Windows API structure this class encapsulates. If you need
+  to change several properties of the class at once, it is recommended to use NativeType instead of the
+  individual properties of the class as each change triggers a separate call to NativeType.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeys.Port
@@ -3508,12 +3526,8 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = set of (serkfAvailable, serkfIndicator, serkfSerialKeysOn); - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  set of (serkfAvailable, serkfIndicator, serkfSerialKeysOn); - for reference)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeysPortState
@@ -3528,15 +3542,15 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeysPortState.psSerialKeysIgnored
-Description for psSerialKeysIgnored
+  Description for psSerialKeysIgnored
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeysPortState.psSerialKeysAware
-Description for psSerialKeysAware
+  Description for psSerialKeysAware
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialKeysPortState.psSerialKeysAlways
-Description for psSerialKeysAlways
+  Description for psSerialKeysAlways
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingChangeEvent
@@ -3595,9 +3609,9 @@ See Also
 Summary
   Provides direct access to the underlying Windows API structure.
 Description
-  Use NativeType when you need to access the Windows API structure this class encapsulates. If you
-  need to change several properties of the class at once, it is recommended to use NativeType instead
-  of the individual properties of the class as each change triggers a separate call to NativeType.
+  Use NativeType when you need to access the Windows API structure this class encapsulates. If you need
+  to change several properties of the class at once, it is recommended to use NativeType instead of the
+  individual properties of the class as each change triggers a separate call to NativeType.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundSentry.TextEffect
@@ -3665,12 +3679,9 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = set of (ssfAvailable, ssfSoundSentryOn, ssfIndicator); - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  set of (ssfAvailable, ssfSoundSentryOn, ssfIndicator); - for reference)
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryGrafEffect
 <TITLE TJvSoundSentryGrafEffect type>
@@ -3681,10 +3692,15 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryGrafEffect.ssgfNone
   Description for ssgfNone
+
+----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryGrafEffect.ssgfDisplay
   Description for ssgfDisplay
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryTextEffect
 <TITLE TJvSoundSentryTextEffect type>
@@ -3695,14 +3711,23 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryTextEffect.sstfNone
   Description for sstfNone
+
+----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryTextEffect.sstfChars
   Description for sstfChars
+
+----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryTextEffect.sstfBorder
   Description for sstfBorder
+
+----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryTextEffect.sstfDisplay
   Description for sstfDisplay
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryWindowsEffect
 <TITLE TJvSoundSentryWindowsEffect type>
@@ -3713,34 +3738,46 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryWindowsEffect.sswfNone
   Description for sswfNone
+
+----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryWindowsEffect.sswfTitle
   Description for sswfTitle
+
+----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryWindowsEffect.sswfWindow
   Description for sswfWindow
+
+----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryWindowsEffect.sswfDisplay
   Description for sswfDisplay
+
+----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryWindowsEffect.sswfCustom
   Description for sswfCustom
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpoolerChangeEvent
 <TITLE TJvSpoolerChangeEvent type>
 <COMBINE TJvComputerInfoEx.OnSpoolerStatusChange>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStickyKeysFlags
 <TITLE TJvStickyKeysFlags type>
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = set of (skfStickyKeysOn, skfAvailable, skfHotkeyActive, skfConfirmHotKey, skfHotKeySound, skfIndicator, skfAudibleFeedback, skfTriState, skfTwoKeysOff, skfLeftAltLatched, skfLeftCtrlLatched, skfLeftShiftLatched, skfRightAltLatched, skfRightCtrlLatched, skfRightShiftLatched, skfLeftWinLatched, skfRightWinLatched, skfLeftAltLocked, skfLeftCtrlLocked, skfLeftShiftLocked
-   skfRightAltLocked, skfRightCtrlLocked, skfRightShiftLocked, skfLeftWinLocked, skfRightWinLocked);
-  - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  set of (skfStickyKeysOn, skfAvailable, skfHotkeyActive, skfConfirmHotKey, skfHotKeySound,
+  skfIndicator, skfAudibleFeedback, skfTriState, skfTwoKeysOff, skfLeftAltLatched, skfLeftCtrlLatched,
+  skfLeftShiftLatched, skfRightAltLatched, skfRightCtrlLatched, skfRightShiftLatched,
+  skfLeftWinLatched, skfRightWinLatched, skfLeftAltLocked, skfLeftCtrlLocked, skfLeftShiftLocked
+  skfRightAltLocked, skfRightCtrlLocked, skfRightShiftLocked, skfLeftWinLocked, skfRightWinLocked); -
+  for reference)
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo
 Summary
@@ -3751,6 +3788,7 @@ Description
   platforms.
 
   TJvSystemColorsInfo is a read-write class and all properties are writeable.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DDarkShadow
 Summary
@@ -3760,6 +3798,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DFace
 Summary
@@ -3769,6 +3808,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DHighlight
 Summary
@@ -3778,6 +3818,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DLight
 Summary
@@ -3787,6 +3828,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DShadow
 Summary
@@ -3796,6 +3838,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorActiveBorder
 Summary
@@ -3805,6 +3848,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorActiveCaption
 Summary
@@ -3814,6 +3858,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorAppWorkspace
 Summary
@@ -3823,6 +3868,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorBackground
 Summary
@@ -3832,6 +3878,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorBtnFace
 Summary
@@ -3841,6 +3888,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorBtnText
 Summary
@@ -3850,6 +3898,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorCaptionText
 Summary
@@ -3859,6 +3908,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorGradientActiveCaption
 Summary
@@ -3868,6 +3918,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorGradientInactiveCaption
 Summary
@@ -3877,6 +3928,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorGrayText
 Summary
@@ -3886,6 +3938,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorHighlight
 Summary
@@ -3895,6 +3948,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorHighlightText
 Summary
@@ -3904,6 +3958,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorHotLight
 Summary
@@ -3913,6 +3968,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorInactiveBorder
 Summary
@@ -4337,6 +4393,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.TrailingPathDelimiter
 Summary
@@ -4346,6 +4403,7 @@ Description
   TrailingPathDelimiter is True, a path delimiter (\'\\\' on Windows) is added to the end of the path
   unless already present. If TrailingPathDelimiter is False, a path delimiter is removed from the end
   of the path if present.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Windows
 Summary
@@ -4982,6 +5040,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ScreenSaverRunning
 Summary
@@ -4991,6 +5050,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ScreenSaveTimeOut
 Summary
@@ -5000,6 +5060,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.SelectionFade
 Summary
@@ -5009,6 +5070,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.SerialKeys
 Summary
@@ -5018,6 +5080,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ShowIMEUI
 Summary
@@ -5027,6 +5090,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ShowSounds
 Summary
@@ -5036,6 +5100,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.SnapToDefaultButton
 Summary
@@ -5045,6 +5110,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.SoundSentry
 Summary
@@ -5054,6 +5120,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.StickyKeys
 Summary
@@ -5063,6 +5130,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ToggleKeys
 Summary
@@ -5072,6 +5140,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ToolTipAnimation
 Summary
@@ -5081,6 +5150,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ToolTipFade
 Summary
@@ -5090,6 +5160,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.UIEffects
 Summary
@@ -5099,6 +5170,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.WheelScrollLines
 Summary
@@ -5108,6 +5180,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.WindowsExtensions
 Summary
@@ -5117,6 +5190,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.WorkArea
 Summary
@@ -5126,19 +5200,17 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvToggleKeysFlags
 <TITLE TJvToggleKeysFlags type>
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = set of (tkfAvailable, tkfConfirmHotkey, tkfHotkeyActive, tkfHotkeySound, tkfToggleKeysOn);
-  - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  set of (tkfAvailable, tkfConfirmHotkey, tkfHotkeyActive, tkfHotkeySound, tkfToggleKeysOn); - for
+  reference)
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWallpaperStyle
 <TITLE TJvWallpaperStyle type>
@@ -5149,54 +5221,70 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvWallpaperStyle.wsCenter
   Description for wsCenter
+
+----------------------------------------------------------------------------------------------------
 @@TJvWallpaperStyle.wsUnused
   Description for wsUnused
+
+----------------------------------------------------------------------------------------------------
 @@TJvWallpaperStyle.wsStretch
   Description for wsStretch
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWindowsArrange
 <TITLE TJvWindowsArrange type>
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = set of (waDown, waLeft, waRight, waUp, waBottomLeft, waBottomRight, waHide, waTopLeft,
-  waTopRight); - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  set of (waDown, waLeft, waRight, waUp, waBottomLeft, waBottomRight, waHide, waTopLeft, waTopRight); -
+  for reference)
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWriteableInfo
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWriteableInfo.ReadOnly
 Summary
   Makes the class read-only.
 Description
   Set ReadOnly to true to make a read-write (TJvWriteableInfo) class behave like a read-only class
-  (TJvReadOnlyInfo), i.e property assignment raises an
-  EJVCLComputerInfoEx exception at run.time.
+  (TJvReadOnlyInfo), i.e property assignment raises an EJVCLComputerInfoEx exception at run.time.
 
   If you change the value of <LINK TJvComputerInfoEx.ReadOnly>, any subclasses derived from
   TJvWriteableInfo will also have their ReadOnly property changed to match.
 See Also
   TJvComputerInfoEx, TJvReadOnlyInfo, TJvWriteableInfo
+
 ----------------------------------------------------------------------------------------------------
 @@TWMDeviceChange
 <TITLE TWMDeviceChange type>
 Summary
   Message cracker record for WM_DEVICECHANGE
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
 @@TWMDeviceChange.Msg
   Description for Msg
+
+----------------------------------------------------------------------------------------------------
 @@TWMDeviceChange.Event
   Description for Event
+
+----------------------------------------------------------------------------------------------------
 @@TWMDeviceChange.dwData
   Description for dwData
+
+----------------------------------------------------------------------------------------------------
 @@TWMDeviceChange.Result
   Description for Result
+

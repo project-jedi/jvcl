@@ -9,7 +9,6 @@ Author
   Petr Vones (petr dott v att mujmail dott cz)
   Sebastien Buysse (TJvTabControl)
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvHintSource
 <TITLE TJvHintSource type>
@@ -22,36 +21,36 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHintSource.hsDefault
-Display the default hint.
+  Display the default hint.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHintSource.hsForceMain
-Always display the main hint. If no main hint is available, display nothing.
+  Always display the main hint. If no main hint is available, display nothing.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHintSource.hsForceChildren
-Always display a child hint. If no child hint is available, display nothing.
+  Always display a child hint. If no child hint is available, display nothing.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHintSource.hsPreferMain
-Display the main hint. If no main hint is available, display a child hint (if available).
+  Display the main hint. If no main hint is available, display a child hint (if available).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHintSource.hsPreferChildren
-Display the child hint. If no child hint is available, display the main hint (if available).
+  Display the child hint. If no child hint is available, display the main hint (if available).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddress
 <TITLEIMG TJvIPAddress>
 JVCLInfo
-  GROUP=JVCL.Edits
+  GROUP=JVCL.EditsMemosAndCombos.Edits
   FLAG=Component
 Summary
   An edit control that can display and edit IP values.
 Description
-  Use a TJvIPAddress when you need to display IP values to your users. TJvIPAddress has separate
-  fields for each part of the IP address as well as several properties, methods and events to limit
-  the input in each field.
+  Use a TJvIPAddress when you need to display IP values to your users. TJvIPAddress has separate fields
+  for each part of the IP address as well as several properties, methods and events to limit the input
+  in each field.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddress.Address
@@ -59,9 +58,6 @@ Summary
   Indicates the IP address as an integer value
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddress.AddressValues
@@ -69,9 +65,6 @@ Summary
   Provides access to individual address values.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddress.ClearAddress
@@ -79,9 +72,6 @@ Summary
   Empties the control.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddress.IsBlank
@@ -89,11 +79,6 @@ Summary
   Resturns true if the control is empty.
 Description
   Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddress.OnChange
@@ -135,8 +120,8 @@ See Also
 Summary
   Allow the TAB key to browse though the IP fields
 Description
-  Set TabThroughFields to True if you want to allow the user to browse
-  through the IP fields with the TAB key.
+  Set TabThroughFields to True if you want to allow the user to browse through the IP fields with the
+  TAB key.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddressChanging
@@ -156,11 +141,11 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddressMinMax.Min
-Description for Min
+  Description for Min
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddressMinMax.Max
-Description for Max
+  Description for Max
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddressRange
@@ -379,7 +364,7 @@ See Also
 @@TJvPageControl
 <TITLEIMG TJvPageControl>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.CommCtrl,JVCL.PagesAndTabs
   FLAG=Component
 Summary
   Write here a summary (1 line)
@@ -419,11 +404,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvPageControl.HintColor
 Summary
-  Determines the color of the hint boxes for the Help Hints for the <xxx>.
+  Determines the color of the hint boxes for the Help Hints for the <xxx> .
 Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor
-  assign it a new TColor value.
+  HintColor property in the constructor when the application is created. To change the HintColor assign
+  it a new TColor value.
 See Also
   HotTrack
 
@@ -470,9 +455,8 @@ Summary
   Supports custom drawing.
 Description
   Assign a TJvTabControlPainter or descendant to this property to apply custom drawing to the tabs of
-  the control.
-  Use the properties of the specific painter to adjust the appearance of the tabs. To enable custom
-  drawing, you must also set the OwnerDraw property to true.
+  the control. Use the properties of the specific painter to adjust the appearance of the tabs. To
+  enable custom drawing, you must also set the OwnerDraw property to true.
 See Also
   OwnerDraw
 
@@ -490,15 +474,15 @@ See Also
 @@TJvTabControl
 <TITLEIMG TJvTabControl>
 JVCLInfo
-  GROUP=JVCL.PagesAndTabs
+  GROUP=JVCL.CommCtrl,JVCL.PagesAndTabs
   FLAG=Component
 Summary
   Adds events that can be used for hot tracking as well as support for custom painters.
 Description
   TJvTabControl is a tab control that supports extended features.
 
-  You can use OnMouseEnter and OnMouseLeave to alter the controls look or behavoir, when the user
-  moves the mouse pointer over the control.
+  You can use OnMouseEnter and OnMouseLeave to alter the controls look or behavoir, when the user moves
+  the mouse pointer over the control.
 
   Use property HintColor to change the color of the hint boxes for the tab control.
 
@@ -508,8 +492,8 @@ Summary
   Determines the color of the hint boxes for the Help Hints for the tab control.
 Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor
-  assign it a new TColor value.
+  HintColor property in the constructor when the application is created. To change the HintColor assign
+  it a new TColor value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTabControl.OnParentColorChange
@@ -534,9 +518,8 @@ Summary
   Supports custom drawing.
 Description
   Assign a TJvTabControlPainter or descendant to this property to apply custom drawing to the tabs of
-  the control.
-  Use the properties of the specific painter to adjust the appearance of the tabs. To enable custom
-  drawing, you must also set the OwnerDraw property to true.
+  the control. Use the properties of the specific painter to adjust the appearance of the tabs. To
+  enable custom drawing, you must also set the OwnerDraw property to true.
 See Also
   OwnerDraw
 
@@ -551,7 +534,7 @@ Description
 @@TJvTabDefaultPainter
 <TITLEIMG TJvTabDefaultPainter>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.PagesAndTabs
   FLAG=Component
 Summary
   Write here a summary (1 line)
@@ -712,7 +695,7 @@ See Also
 @@TJvTrackBar
 <TITLEIMG TJvTrackBar>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.CommCtrl,JVCL.Bars.SlideAndProgress.Sliders
   FLAG=Component
 Summary
   Write here a summary (1 line)
@@ -722,11 +705,11 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvTrackBar.HintColor
 Summary
-  Determines the color of the hint boxes for the Help Hints for the <xxx>.
+  Determines the color of the hint boxes for the Help Hints for the <xxx> .
 Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor
-  assign it a new TColor value.
+  HintColor property in the constructor when the application is created. To change the HintColor assign
+  it a new TColor value.
 See Also
   HotTrack
 
@@ -808,19 +791,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTrackToolTipSide.tsLeft
-Description for tsLeft
+  Description for tsLeft
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTrackToolTipSide.tsTop
-Description for tsTop
+  Description for tsTop
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTrackToolTipSide.tsRight
-Description for tsRight
+  Description for tsRight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTrackToolTipSide.tsBottom
-Description for tsBottom
+  Description for tsBottom
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeNode
@@ -877,7 +860,7 @@ See Also
 @@TJvTreeView
 <TITLEIMG TJvTreeView>
 JVCLInfo
-  GROUP=JVCL.TreesAndLists
+  GROUP=JVCL.CommCtrl,JVCL.ListsAndTrees.Trees
   FLAG=Component
 Summary
   Write here a summary (1 line)
@@ -971,11 +954,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.HintColor
 Summary
-  Determines the color of the hint boxes for the Help Hints for the <xxx>.
+  Determines the color of the hint boxes for the Help Hints for the <xxx> .
 Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor
-  assign it a new TColor value.
+  HintColor property in the constructor when the application is created. To change the HintColor assign
+  it a new TColor value.
 See Also
   HotTrack
 
@@ -1060,8 +1043,8 @@ See Also
 Summary
   Specifies the color to use for the node connection line.
 Description
-  Use LineColor to specify the color used for the line connecting nodes in the tree. ShowLines must
-  be true for this property to have any effect.
+  Use LineColor to specify the color used for the line connecting nodes in the tree. ShowLines must be
+  true for this property to have any effect.
 See Also
   ShowLines
 
@@ -1080,18 +1063,18 @@ See Also
 Summary
   Specifies a menu that is used as the items of the tree view.
 Description
-  Assign a TMenu (or a descendant, like TMainMenu or TPopupMenu) to the Menu property of the control
-  to make the treeview use the menu's items for its structure.
+  Assign a TMenu (or a descendant, like TMainMenu or TPopupMenu) to the Menu property of the control to
+  make the treeview use the menu's items for its structure.
 
   When a menu is assigned, clicking a node in the tree view has the same effect as clicking the menu
   item itself (see MenuDblClick for details).
 
   Only menu items with valid captions (all captions except '-' and '') are added to the treeview.
 Note
-  TJvTreeView replaces the OnChange event of the assigned TMenu to be notified about changes in the menu's structure. The original OnChange
-  vent is called automatically (if assigned). If you need to replace the menu's OnChange event at
-  run-time, you should first set Menu to nil, replace the
-  OnChange event and reset the Menu property to its previous value.
+  TJvTreeView replaces the OnChange event of the assigned TMenu to be notified about changes in the
+  menu's structure. The original OnChange vent is called automatically (if assigned). If you need to
+  replace the menu's OnChange event at run-time, you should first set Menu to nil, replace the OnChange
+  event and reset the Menu property to its previous value.
 
   Failing to do so can cause errors and even Access Violation exceptions in your program.
 See Also
@@ -1106,8 +1089,8 @@ Description
   called when single-clicking or when double-clicking the node.
 
   If MenuDblClick is false, the menu item's OnClick event is called when the item is selected, either
-  with the mouse or the keyboard. If MenuDblClick is true, the user must double-click the item with
-  the mouse or select it and press either SPACE or ENTER.
+  with the mouse or the keyboard. If MenuDblClick is true, the user must double-click the item with the
+  mouse or select it and press either SPACE or ENTER.
 See Also
   TJvTreeView.Menu
 
@@ -1141,8 +1124,8 @@ Description
 Summary
   Occurs when the user is canceling the editing of a node text.
 Description
-  Write a handler for this event to take specific actions when the user cancels the editing of a
-  node's text.
+  Write a handler for this event to take specific actions when the user cancels the editing of a node's
+  text.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnHorizontalScroll
@@ -1160,8 +1143,7 @@ Summary
 Description
   Write a handler for this event to take specific action when clicking a node in the tree changes the
   active tab of an associated page control. This event only occurs when a page control is assigned to
-  the
-  PageControl property and a matching tab is found.
+  the PageControl property and a matching tab is found.
 Parameters
   Sender - The control that triggered the event.
   Item   - The selected node
@@ -1200,8 +1182,8 @@ See Also
 Summary
   Specifies a page control to associate with the control.
 Description
-  Assign a TPageControl (or descendant) to this property to make the treeview automatically change
-  the active tab when a node is clicked in the treeview.
+  Assign a TPageControl (or descendant) to this property to make the treeview automatically change the
+  active tab when a node is clicked in the treeview.
 
   By default, the treeview searches the tabs of the page control for a a caption matching the text of
   the node. If no tab is found, the active tab is not changed.

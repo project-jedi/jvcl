@@ -1,6 +1,5 @@
 ##Package: DB
 ##Status: Completed (peter3), Review
-##New Group: JVCL.DBAware.Storage
 ----------------------------------------------------------------------------------------------------
 @@JvAppDBStorage.pas
 Summary
@@ -8,15 +7,19 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
 ----------------------------------------------------------------------------------------------------
 @@EJvAppDBStorageError
 Summary
   Exception class used by TJvCustomAppDBStorage.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppDBStorage
+<TITLEIMG TJvAppDBStorage>
 JVCLInfo
-  GROUP=JVCL.DBAware.Storage
+  GROUP=JVCL.DBAware,JVCL.Storage
   FLAG=Component
 Summary
   Dataset based application data storage.
@@ -31,8 +34,8 @@ Summary
 Description
   TJvCustomAppDBStorage is a data storage backend that reads and writes the data to a dataset.
 
-  As a descendant of TJvCustomAppStorage it provides the standard interface for storing data (such
-  as settings, form positions and sizes, etc) in a dataset.
+  As a descendant of TJvCustomAppStorage it provides the standard interface for storing data (such as
+  settings, form positions and sizes, etc) in a dataset.
 
   The component introduces and publishes several new properties: DataSource, to indicate the dataset
   used for storage, SectionField, KeyField and ValueField that indicates the fields in the dataset to
@@ -49,9 +52,8 @@ Summary
   Links the storage to a dataset.
 Description
   Specify the data source component that identifies the dataset in which the target fields are found.
-  To allow the storage to represent the data for the fields, both the DataSource and the
-  SectionField, KeyField and
-  ValueField properties must be set.
+  To allow the storage to represent the data for the fields, both the DataSource and the SectionField,
+  KeyField and ValueField properties must be set.
 
   If DataSource is nil, use the OnRead and OnWrite events to \read and \write data.
 See Also
@@ -73,8 +75,8 @@ See Also
 Summary
   Occurs when data is read.
 Description
-  Write a handler for the OnRead event to take specific action when data is read from storage. You
-  can use OnRead even if DataSource or any of the fields are unassigned.
+  Write a handler for the OnRead event to take specific action when data is read from storage. You can
+  use OnRead even if DataSource or any of the fields are unassigned.
 Parameters
   Sender  - The TJvCustomAppDBStorage that called the event.
   Section - The name of the section to read.

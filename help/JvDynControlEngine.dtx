@@ -8,7 +8,6 @@ Summary
 Author
   Jens Fudickar
 
-
 ----------------------------------------------------------------------------------------------------
 @@DefaultDynControlEngine
 <TITLE DefaultDynControlEngine function>
@@ -53,13 +52,171 @@ See Also
 Summary
   Defines the metaclass for TControl.
 Description
-  TControlClass is the metaclass for TControl. Its value is the class reference for
-  TControl or for one of its descendants.
+  TControlClass is the metaclass for TControl. Its value is the class reference for TControl or for one
+  of its descendants.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAfterCreateControl
 <TITLE TJvAfterCreateControl type>
-<COMBINE TJvDynControlEngine.OnAfterCreateControl>
+<COMBINE TJvCustomDynControlEngine.OnAfterCreateControl>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.CreateControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControlType   - Description for this parameter
+  AOwner         - Description for this parameter
+  AParentControl - Description for this parameter
+  AControlName   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.CreateControlClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControlClass  - Description for this parameter
+  AOwner         - Description for this parameter
+  AParentControl - Description for this parameter
+  AControlName   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.IsControlTypeRegistered
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ADynControlType - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.IsControlTypeValid
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ADynControlType - Description for this parameter
+  AControlClass   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.OnAfterCreateControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.RegisterControlType
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ADynControlType - Description for this parameter
+  AControlClass   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.SetControlCaption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.SetControlOnClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.SetControlOnEnter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.SetControlOnExit
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.SetControlTabOrder
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlEngine
@@ -155,6 +312,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlEngine.CreateComboBoxControl
 Summary
@@ -166,40 +324,6 @@ Parameters
   AParentControl - Description for this parameter
   AControlName   - Description for this parameter
   AItems         - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControlType   - Description for this parameter
-  AOwner         - Description for this parameter
-  AParentControl - Description for this parameter
-  AControlName   - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateControlClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControlClass  - Description for this parameter
-  AOwner         - Description for this parameter
-  AParentControl - Description for this parameter
-  AControlName   - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -353,6 +477,26 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDynControlEngine.CreateLabelControlPanel
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AOwner             - Description for this parameter
+  AParentControl     - Description for this parameter
+  AControlName       - Description for this parameter
+  ACaption           - Description for this parameter
+  AFocusControl      - Description for this parameter
+  ALabelOnTop        - Description for this parameter
+  ALabelDefaultWidth - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDynControlEngine.CreateListBoxControl
 Summary
   Write here a summary (1 line)
@@ -488,110 +632,6 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.IsControlTypeRegistered
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ADynControlType - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.OnAfterCreateControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.RegisterControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ADynControlType - Description for this parameter
-  AControlClass   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.SetControlCaption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-  Value    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.SetControlOnClick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-  Value    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.SetControlOnEnter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-  Value    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.SetControlOnExit
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-  Value    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.SetControlTabOrder
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-  Value    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvDynControlType
 <TITLE TJvDynControlType type>
 Summary
@@ -604,89 +644,165 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctLabel
-Description for jctLabel
+  Description for jctLabel
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctStaticText
-Description for jctStaticText
+  Description for jctStaticText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctPanel
-Description for jctPanel
+  Description for jctPanel
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctScrollBox
-Description for jctScrollBox
+  Description for jctScrollBox
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctEdit
-Description for jctEdit
+  Description for jctEdit
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctCheckBox
-Description for jctCheckBox
+  Description for jctCheckBox
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctComboBox
-Description for jctComboBox
+  Description for jctComboBox
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctGroupBox
-Description for jctGroupBox
+  Description for jctGroupBox
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctImage
-Description for jctImage
+  Description for jctImage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctRadioGroup
-Description for jctRadioGroup
+  Description for jctRadioGroup
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctMemo
-Description for jctMemo
+  Description for jctMemo
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctListBox
-Description for jctListBox
+  Description for jctListBox
+
+----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctCheckListBox
   Description for jctCheckListBox
+
+----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctDateTimeEdit
-Description for jctDateTimeEdit
+  Description for jctDateTimeEdit
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctDateEdit
-Description for jctDateEdit
+  Description for jctDateEdit
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctTimeEdit
-Description for jctTimeEdit
+  Description for jctTimeEdit
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctCalculateEdit
-Description for jctCalculateEdit
+  Description for jctCalculateEdit
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctSpinEdit
-Description for jctSpinEdit
+  Description for jctSpinEdit
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctDirectoryEdit
-Description for jctDirectoryEdit
+  Description for jctDirectoryEdit
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctFileNameEdit
-Description for jctFileNameEdit
+  Description for jctFileNameEdit
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctButton
-Description for jctButton
+  Description for jctButton
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctButtonEdit
-Description for jctButtonEdit
+  Description for jctButtonEdit
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlType.jctForm
-Description for jctForm
+  Description for jctForm
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBEdit
+  Description for jctDBEdit
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBText
+  Description for jctDBText
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBListBox
+  Description for jctDBListBox
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBCheckBox
+  Description for jctDBCheckBox
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBComboBox
+  Description for jctDBComboBox
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBImage
+  Description for jctDBImage
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBRadioGroup
+  Description for jctDBRadioGroup
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBMemo
+  Description for jctDBMemo
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBDateTimeEdit
+  Description for jctDBDateTimeEdit
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBDateEdit
+  Description for jctDBDateEdit
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBTimeEdit
+  Description for jctDBTimeEdit
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBCalculateEdit
+  Description for jctDBCalculateEdit
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBSpinEdit
+  Description for jctDBSpinEdit
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBDirectoryEdit
+  Description for jctDBDirectoryEdit
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBFileNameEdit
+  Description for jctDBFileNameEdit
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBGrid
+  Description for jctDBGrid
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBButtonEdit
+  Description for jctDBButtonEdit
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlType.jctDBNavigator
+  Description for jctDBNavigator
 

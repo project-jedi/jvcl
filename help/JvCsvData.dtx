@@ -12,6 +12,7 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Warren Postma
+
 ----------------------------------------------------------------------------------------------------
 @@CsvRowClearDirtyBit
 <TITLE CsvRowClearDirtyBit procedure>
@@ -22,6 +23,7 @@ Description
 Parameters
   Row         - row record
   ColumnIndex - column index
+
 ----------------------------------------------------------------------------------------------------
 @@CsvRowGetColumnMarker
 <TITLE CsvRowGetColumnMarker function>
@@ -32,6 +34,7 @@ Description
 Parameters
   Row         - row record
   ColumnIndex - column index
+
 ----------------------------------------------------------------------------------------------------
 @@CsvRowGetDirtyBit
 <TITLE CsvRowGetDirtyBit function>
@@ -42,6 +45,7 @@ Description
 Parameters
   Row         - row record
   ColumnIndex - column index
+
 ----------------------------------------------------------------------------------------------------
 @@CsvRowItemCopy
 <TITLE CsvRowItemCopy function>
@@ -54,6 +58,7 @@ Parameters
   Dest       - Destination row record
   FieldIndex - Field beginning
   FieldSize  - Field length in bytes
+
 ----------------------------------------------------------------------------------------------------
 @@CsvRowSetColumnMarker
 <TITLE CsvRowSetColumnMarker procedure>
@@ -65,6 +70,7 @@ Parameters
   Row          - row record
   ColumnIndex  - Field/Column Index
   ColumnMarker - Position of marker
+
 ----------------------------------------------------------------------------------------------------
 @@CsvRowSetDirtyBit
 <TITLE CsvRowSetDirtyBit procedure>
@@ -75,6 +81,7 @@ Description
 Parameters
   Row         - row record
   ColumnIndex - Field/Column index
+
 ----------------------------------------------------------------------------------------------------
 @@CsvRowToString
 <TITLE CsvRowToString procedure>
@@ -85,6 +92,7 @@ Description
 Parameters
   RowItem   - Row in
   RowString - String out (buffer)
+
 ----------------------------------------------------------------------------------------------------
 @@DateTimeToTimeTHex
 <TITLE DateTimeToTimeTHex function>
@@ -92,13 +100,15 @@ Summary
   Encode Date/Time as Hex string.
 Description
   Convert Delphi TDateTime to POSIX TIME_T Integer and then convert the Integer (32 bit) into a
-  hexadecimal string, and then store that as the value of the CSV date field. Not very human
-  readable, but very robust and easy to parse by computer.
+  hexadecimal string, and then store that as the value of the CSV date field. Not very human readable,
+  but very robust and easy to parse by computer.
 Parameters
   ADateTime          - The date time value to encode.
-  TimeZoneCorrection - Timezone correction is zero unless you need to correct for different timezones.
+  TimeZoneCorrection - Timezone correction is zero unless you need to correct for different
+                        timezones.
 See Also
   DateTimeToTimeToIsoAscii
+
 ----------------------------------------------------------------------------------------------------
 @@DateTimeToTimeToIsoAscii
 <TITLE DateTimeToTimeToIsoAscii function>
@@ -110,15 +120,15 @@ Parameters
   ADateTime - The date time value to encode.
 See Also
   DateTimeToTimeTHex
+
 ----------------------------------------------------------------------------------------------------
 @@EJvCsvDataSetError
 Summary
   Exception class for dataset errors.
 Description
   This class is used, instead of just raising a bare Exception, so you can craft your exception
-  handling.
-  If you are doing a dataset operation and you want to handle only errors raised by a TJvCsvDataSet,
-  you can write this:
+  handling. If you are doing a dataset operation and you want to handle only errors raised by a
+  TJvCsvDataSet, you can write this:
   <AUTOLINK OFF>
   <CODE>
   try
@@ -130,15 +140,15 @@ Description
   end;
   </CODE>
   <AUTOLINK ON>
+
 ----------------------------------------------------------------------------------------------------
 @@EJvCsvKeyError
 Summary
   Exception class for CSV key errors. Invalid or duplicate primary key.
 Description
   This class is used, instead of just raising a bare Exception, so you can craft your exception
-  handling.
-  If you are doing a dataset operation and you want to handle only errors raised by a TJvCsvDataSet
-  that are due to invalid/duplicate primary keys.
+  handling. If you are doing a dataset operation and you want to handle only errors raised by a
+  TJvCsvDataSet that are due to invalid/duplicate primary keys.
 
   <AUTOLINK OFF>
   <CODE>
@@ -151,6 +161,7 @@ Description
   end;
   </CODE>
   <AUTOLINK ON>
+
 ----------------------------------------------------------------------------------------------------
 @@GetCsvRowItem
 <TITLE GetCsvRowItem function>
@@ -163,6 +174,7 @@ Parameters
   ColumnIndex - Which column to read.
 See Also
   SetCsvRowItem
+
 ----------------------------------------------------------------------------------------------------
 @@JvCsvBackupPreviousFiles
 <TITLE JvCsvBackupPreviousFiles function>
@@ -173,6 +185,7 @@ Description
 Parameters
   FileName - The base filename of the backup file.
   MaxFiles - The maximum number of backup files to keep with the same base Filename.
+
 ----------------------------------------------------------------------------------------------------
 @@JvCsvWildcardMatch
 <TITLE JvCsvWildcardMatch function>
@@ -192,18 +205,22 @@ Parameters
   Pattern - A pattern to be matched, can have special wildcard characters, for example 'Bob%'
 See Also
   SetFilter
+
 ----------------------------------------------------------------------------------------------------
 @@PCsvColumn
 <TITLE PCsvColumn type>
 <COMBINE TJvCsvColumn>
+
 ----------------------------------------------------------------------------------------------------
 @@PCsvRow
 <TITLE PCsvRow type>
 <COMBINE TJvCsvRow>
+
 ----------------------------------------------------------------------------------------------------
 @@PtrToPtrToCsvRow
 <TITLE PtrToPtrToCsvRow type>
 <COMBINE PCsvRow>
+
 ----------------------------------------------------------------------------------------------------
 @@SetCsvRowItem
 <TITLE SetCsvRowItem procedure>
@@ -217,6 +234,7 @@ Parameters
   NewValue    - new value (pchar)
 See Also
   GetCsvRowItem
+
 ----------------------------------------------------------------------------------------------------
 @@StringToCsvRow
 <TITLE StringToCsvRow procedure>
@@ -228,10 +246,11 @@ Parameters
   RowString             - Original string
   Separator             - Description for this parameter
   RowItem               - Row record to fill data into.
-  PermitEscapeSequences - Is this row allowed to contain escape sequences? Header row usually No,
-  Data rows Usually Yes.
+  PermitEscapeSequences - Is this row allowed to contain escape sequences? Header row usually No, Data
+                           rows Usually Yes.
   EnquoteBackslash      - Are we using the custom backslashing enquoting method (usually this should
-  be false)?
+                           be false)?
+
 ----------------------------------------------------------------------------------------------------
 @@TimeTAsciiToDateTime
 <TITLE TimeTAsciiToDateTime function>
@@ -241,19 +260,21 @@ Description
   Convert ISO DateTime string in the format (YYYY-MM-DD HH:MM:SS) into a Delphi TDateTime.
 Parameters
   AsciiDateStr - A date time value in ISO string format.
+
 ----------------------------------------------------------------------------------------------------
 @@TimeTHexToDateTime
 <TITLE TimeTHexToDateTime function>
 Summary
   Decode hex string to date Time.
 Description
-  Takes the hexadecimal value, treats it as a POSIX TIME_T value (seconds since Jan 1, 1970), and
-  then convert it to TDateTime.
+  Takes the hexadecimal value, treats it as a POSIX TIME_T value (seconds since Jan 1, 1970), and then
+  convert it to TDateTime.
 Parameters
   HexStr             - A hex value.
   TimeZoneCorrection - Incoming timezone correction. Usually 0 if all data is in UTC.
 See Also
   DateTimeToTimeTHex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvBookmark
 <TITLE TJvCsvBookmark type>
@@ -261,27 +282,40 @@ Summary
   A bookmark object (pointer type) used by Data Set Bookmark operations
 Description
   A bookmark object (pointer type) used by Data Set Bookmark operations
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvBookmark.Flag
   Flag is a standard field required for bookmark types
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvBookmark.Data
   Data is a standard field required for bookmark types
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvColumn
 <TITLE TJvCsvColumn type>
 Summary
   CSV Column Data Record
 Description
-  A CSV Column Field Definition Record is one of the columns created while parsing the CsvFieldDef
-  list of fields.
-  It is not necessary for end users to know about this record type.
+  A CSV Column Field Definition Record is one of the columns created while parsing the CsvFieldDef list
+  of fields. It is not necessary for end users to know about this record type.
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvColumn.FFlag
   The CSV Field Type is stored in FFlag.
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvColumn.FKeyFlag
   Description for FKeyFlag
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvColumn.FPhysical
   The Physical Column number is stored in FPhysical.
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvColumn.FFieldDef
   The corresponding VCL Field Def object for this CsvColumn record.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvColumnFlag
 <TITLE TJvCsvColumnFlag type>
@@ -289,24 +323,38 @@ Summary
   Enumerated Values for TJvCsvColumn.FFlag
 Description
   Enumerated List of column types used in TJvCsvColumn.FFlag
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvColumnFlag.jcsvNull
   A NULL column descriptor (not yet initialized, or invalid).
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvColumnFlag.jcsvString
   A string field.
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvColumnFlag.jcsvNumeric
   A numeric field (integer or float)
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvColumnFlag.jcsvAsciiDateTime
   A datetime field with the date/time stored as an ISO string
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvColumnFlag.jcsvGMTDateTime
   A datetime field with the date/time stored as a HEX encoded UTC TIME_T timestamp.
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvColumnFlag.jcsvTZDateTime
   A datetime field with the date/time stored as a HEX encoded TIME_T timestamp in a local timezone.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvColumns
 Summary
   A TList based list of TJvCsvColumn records.
 Description
   A list of column records.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvColumns.AddColumn
 Summary
@@ -315,12 +363,14 @@ Description
   Insert a new TJvCsvColumn.
 Parameters
   Item - New record.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvColumns.Clear
 Summary
   Erase all Columns.
 Description
   Erase all Columns.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvColumns.FindByFieldNo
 Summary
@@ -331,6 +381,7 @@ Parameters
   FieldNo - Field index (0=first field in logical order defined in program)
 Return value
   Returns associated TJvCsvColumn record, or Nil.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvColumns.FindByName
 Summary
@@ -341,31 +392,33 @@ Parameters
   FieldName - Field name
 Return value
   Returns associated TJvCsvColumn record, or Nil.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvDataSet
 <TITLEIMG TJvCsvDataSet>
 JVCLInfo
-  GROUP=JVCL.Miscel
+  GROUP=JVCL.DBAware.Providers.Datasets
   FLAG=Component
 Summary
   In-memory TDataSet component similar to TTable.
 Description
   An in-memory TDataSet component similar to TTable but with optional saving to CSV file, and which,
-  unlike using TTable in CSV mode, does not utilize the BDE, or any external database access layers
-  to do its work.
+  unlike using TTable in CSV mode, does not utilize the BDE, or any external database access layers to
+  do its work.
 
   Since this component inherits from TDataSet, you can use it with any standard VCL data aware
   components. Remember to link to a DataSource, before you can link this to any data aware controls!
 
   This component inherits from TJvCustomCsvDataSet. See TJvCustomCsvDataSet for more internal details.
 
-  To Use TJvCSVDataSet, and any other component that you create that inherits from
-  TJvCustomCsvDataSet you *must* first set up the important Property called CsvFieldDef.
+  To Use TJvCSVDataSet, and any other component that you create that inherits from TJvCustomCsvDataSet
+  you *must* first set up the important Property called CsvFieldDef.
 
   \Note that rather than editing the CsvFieldDef yourself, you should click on the property editor
   button ([...]) on the right side of the CsvFieldDef field, in the Object Inspector.
 See Also
   TJvCsvDataSet.CsvFieldDef
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvDataSet.FieldDefs
 Summary
@@ -381,18 +434,22 @@ Description
   TDataSet descendant, such as TTable.FieldDefs, or TCLientDataSet.FieldDefs.
 See Also
   TJvCsvDataSet.CsvFieldDef,TClientDataSet.FieldDefs,TTable.FieldDefs
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvOnGetFieldData
 <TITLE TJvCsvOnGetFieldData type>
 <COMBINE TJvCustomCsvDataSet.OnGetFieldData>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvOnSetFieldData
 <TITLE TJvCsvOnSetFieldData type>
 <COMBINE TJvCustomCsvDataSet.OnSetFieldData>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvOnSpecialData
 <TITLE TJvCsvOnSpecialData type>
 <COMBINE TJvCustomCsvDataSet.OnSpecialData>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRow
 <TITLE TJvCsvRow type>
@@ -400,28 +457,46 @@ Summary
   Internal in-memory row data object stored inside a TJvCsvDataSet.
 Description
   Row objects contain one line of a CSV file, parsed into columns.
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvRow.IsDirty
   The row object's dirty bits. True means row been modified and not yet saved to disk.
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvRow.Columns
   Number of columns in this row.
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvRow.Index
   Description for Index
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvRow.WordField
   Array of indexes to the beginning of each csv column.
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvRow.Text
   The raw CSV row text.
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvRow.Bookmark
   The bookmark object for this row.
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvRow.Filtered
   Description for Filtered
+
+----------------------------------------------------------------------------------------------------
 @@TJvCsvRow.RecursionFlag
   Description for RecursionFlag
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows
 Summary
   A TList of TJvCsvRow objects.
 Description
   A TList of TJvCsvRow objects.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.AddRow
 Summary
@@ -430,6 +505,7 @@ Description
   Call AddRow to add a row.
 Parameters
   Item - New row object.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.AddRowStr
 Summary
@@ -439,12 +515,14 @@ Description
 Parameters
   Item      - A Csv string.
   Separator - Description for this parameter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.Clear
 Summary
   Deletes all rows.
 Description
   Call Clear to delete all rows.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.DeleteRow
 Summary
@@ -453,19 +531,19 @@ Description
   Call DeleteRow to Delete one row.
 Parameters
   RowIndex - row number (record number) to be deleted.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.EnquoteBackslash
 Summary
   Specifies whether the component supports enquoting using backslashes.
 Description
   Advanced. A design time property which specifies whether the component supports enquoting using
-  backslashes.
-  This is NOT the default behaviour. Most programs use doubling of quotes ("") instead of backslashes.
-  Only set this to true if you know what you are doing.
+  backslashes. This is NOT the default behaviour. Most programs use doubling of quotes ("") instead of
+  backslashes. Only set this to true if you know what you are doing.
 
-  If quotes appear inside a string, enquote them using backslash-quote sequence instead of
-  quote-quote sequence.
-  Non-standard CSV extension.See Also
+  If quotes appear inside a string, enquote them using backslash-quote sequence instead of quote-quote
+  sequence. Non-standard CSV extension.See Also
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.GetARowItem
 Summary
@@ -477,6 +555,7 @@ Parameters
   ColumnIndex - What column to read
 Return value
   The value for that row/column.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.GetRowPtr
 Summary
@@ -487,6 +566,7 @@ Parameters
   RowIndex - Record number to get.
 Return value
   Pointer to a row object.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.GetRowStr
 Summary
@@ -497,6 +577,7 @@ Parameters
   RowIndex - Description for this parameter
 Return value
   Returns row as a string.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.InsertRow
 Summary
@@ -506,6 +587,7 @@ Description
 Parameters
   Position - The 0-based index where the new item should be inserted.
   Item     - The item to insert.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.SetARowItem
 Summary
@@ -516,6 +598,7 @@ Parameters
   RowIndex    - What row to get.
   ColumnIndex - which column to modify.
   Value       - new value for that column.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.SetRowStr
 Summary
@@ -526,6 +609,7 @@ Parameters
   RowIndex  - What row.
   Value     - The csv data.
   Separator - Description for this parameter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.UserData
 Summary
@@ -536,6 +620,7 @@ Parameters
   Index - The 0-based index of the item to access or write to.
 See Also
   TJvCsvRows.UserTag
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.UserTag
 Summary
@@ -546,6 +631,7 @@ Parameters
   Index - The 0-based index of the item to access or write to.
 See Also
   TJvCsvRows.UserData
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet
 Summary
@@ -556,10 +642,10 @@ Description
   If you read further, we'll assume you want to write a custom component and inherit from
   TJvCustomCsvDataSet. Okay then.
 
-  You can use this class as a base class for your own Comma Separated Variable File component.
-  This base class is fully functional is the same as TJvCsvDataSet, except it has no published
-  properties. See the documentation for TJvCsvDataSet if you want to see the version that has all
-  properties published (for use at design time).
+  You can use this class as a base class for your own Comma Separated Variable File component. This
+  base class is fully functional is the same as TJvCsvDataSet, except it has no published properties.
+  See the documentation for TJvCsvDataSet if you want to see the version that has all properties
+  published (for use at design time).
 
   You can create your own custom component, inherit from TJvCustomCsvDataSet, publish the properties
   your users will need, then just drop the component onto a form, and Connect it to a DataSource, and
@@ -568,62 +654,78 @@ Description
   No runtime files and no external database link required.
 See Also
   TJvCsvDataSet.CsvFieldDef
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.AppendedFieldCount
 Summary
   Returns number of fields that were automatically appended to the file-in-memory when the file was
   loaded from the disk.
 Description
-  This CSV data component solves a common problem of flat file data users, which is what to do when
-  new fields need to be added to an existing program that uses CSV file data.  The solution this
-  component implements is to allow backwards compatibility with all CSV files that contain a subset
-  of the fields defined by your CsvFieldDef.
+  This CSV data component solves a common problem of flat file data users, which is what to do when new
+  fields need to be added to an existing program that uses CSV file data. The solution this component
+  implements is to allow backwards compatibility with all CSV files that contain a subset of the fields
+  defined by your CsvFieldDef.
 
-  For example, suppose you have a file called Users.csv, and it has two columns (NAME,ADDRESS), and you want to add PHONE_NUMBER.  The TJvC
-  vDataSet is smart enough to open the old file with only NAME,ADDRESS, and to fix up the CSV file
-  in-memory, so that it now contains the PHONE_NUMBER field.  In this case, you can check if this
-  happened to you by getting AppendedFieldCount.
+  For example, suppose you have a file called Users.csv, and it has two columns (NAME,ADDRESS), and you
+  want to add PHONE_NUMBER. The TJvC vDataSet is smart enough to open the old file with only
+  NAME,ADDRESS, and to fix up the CSV file in-memory, so that it now contains the PHONE_NUMBER field.
+  In this case, you can check if this happened to you by getting AppendedFieldCount.
 
   If you call Flush and save the new CSV file, the new field name will be appended to the CSV header
-  (first line of the file), and the file may now be incompatible with other programs if they expect
-  and can only accept the original file fields. Because this automatic upgrading may be a problem,
-  your program may want to warn users before they overwrite a file with a new CSV file that now has
-  more columns than it formerly had.
+  (first line of the file), and the file may now be incompatible with other programs if they expect and
+  can only accept the original file fields. Because this automatic upgrading may be a problem, your
+  program may want to warn users before they overwrite a file with a new CSV file that now has more
+  columns than it formerly had.
 
   In practice, this makes database upgrades seamless, in most cases, it requires no special handling
   from the user.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.AppendRowString
 Summary
   This allows you to add a new row to an open dataset, in CSV string form.
 Description
   AppendRowString allows you to add a new dataset row in ONE LINE of code, instead of writing:
-        DataSet.Append;
-         DataSetFIELD1.Value := 'xxx';
-         DataSetFIELD2.Value := 'xxx';
-           .. one line for each field ...
-        DataSet.Post;
-     Instead, if your dataset had three columns ('NAME,ADDRESS,PHONE'), you could write:
-            DataSet.AppendRowString('BOB,10 FRONT STREET,555-1212');
-     One common way of using this is to call GetRowAsString from one dataset, and
-     then adding that row to another dataset, like this:
-                CsvDataSet2.AppendRowString(CsvDataSet1.GetRowAsString);
+  <AUTOLINK OFF>
+  <CODE>
+  DataSet.Append;
+  DataSetFIELD1.Value := 'xxx';
+  DataSetFIELD2.Value := 'xxx';
+  .. one line for each field ...
+  DataSet.Post;
+  </CODE>
+  <AUTOLINK ON>
+  Instead, if your dataset had three columns ('NAME,ADDRESS,PHONE'), you could write:
+  <AUTOLINK OFF>
+  <CODE>
+  DataSet.AppendRowString('BOB,10 FRONT STREET,555-1212');
+  </CODE>
+  <AUTOLINK ON>
+  One common way of using this is to call GetRowAsString from one dataset, and then adding that row to
+  another dataset, like this:
+  <AUTOLINK OFF>
+  <CODE>
+  CsvDataSet2.AppendRowString(CsvDataSet1.GetRowAsString);
+  </CODE>
+  <AUTOLINK ON>
 Parameters
   RowAsString - Description for this parameter
 See Also
   TJvCustomCsvDataSet.GetRowAsString
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.AppendWith
 Summary
   Adds contents of a TStrings object to the existing rows in the database.
 Description
   Appends more data in CSV format. Useful for incrementally loading a large dataset from multiple
-  files, a bit at a time.  For example, you might have daily log files stored with the date as part
-  of their filename,and you might want to load up all the data for a certain range of dates.
+  files, a bit at a time. For example, you might have daily log files stored with the date as part of
+  their filename,and you might want to load up all the data for a certain range of dates.
 Parameters
   Strings - The CSV data as a list of Strings (object TStrings).
 See Also
   TJvCustomCsvDataSet.AssignFromStrings, TJvCustomCsvDataSet.OpenWith
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.AssignFromStrings
 Summary
@@ -631,63 +733,65 @@ Summary
 Description
   Clear previous data, if any, and insert new data from the given TStrings list.
 Parameters
-  Strings -  The CSV data as a list of Strings (object TStrings).
+  Strings - The CSV data as a list of Strings (object TStrings).
 See Also
   TJvCustomCsvDataSet.AppendWith, TJvCustomCsvDataSet.AssignToStrings, TJvCustomCsvDataSet.OpenWith
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.AssignToStrings
 Summary
   Gets the contents of the CSV table and addes them to a TStrings string list, which you provide.
 Description
-  Gets the contents of the CSV table and addes them to a TStrings string list, which you provide.
-  The string list you pass in will be cleared, and all rows from the table will be added.
+  Gets the contents of the CSV table and addes them to a TStrings string list, which you provide. The
+  string list you pass in will be cleared, and all rows from the table will be added.
 Parameters
   Strings - The results in a string list (the string list you pass in will be cleared, and all rows
-  from the table will be added)
+             from the table will be added)
 See Also
   TJvCustomCsvDataSet.AssignFromStrings
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.AutoBackupCount
 Summary
-  If greater than zero, automatically numbered backups of the CSV file are kept.
-  Backups go in the Backup subdirectory, below wherever the CSV file itself is located.
+  If greater than zero, automatically numbered backups of the CSV file are kept. Backups go in the
+  Backup subdirectory, below wherever the CSV file itself is located.
 Description
-  The automatic backup feature of the TJvCsvDataset is  similar to the way the old VMS operating
-  system used to work. Every time you saved a file, numbered backups are kept.
+  The automatic backup feature of the TJvCsvDataset is similar to the way the old VMS operating system
+  used to work. Every time you saved a file, numbered backups are kept.
 
   The reason for this feature is that disk space is cheap, and lost or even partially corrupt data is
-  very very inconvenient. If you kept the last 10 (for example) versions of your
-  CSV file in a Backup directory, directly underneath where your main CSV files go, then recovery
-  from a bad edit, or a corrupt file, should be much easier.  The only reason I can think of to set
-  this to zero is if losing this file is a matter of no importance, or of the creation of the backup
-  files is in  some way causing a problem.
+  very very inconvenient. If you kept the last 10 (for example) versions of your CSV file in a Backup
+  directory, directly underneath where your main CSV files go, then recovery from a bad edit, or a
+  corrupt file, should be much easier. The only reason I can think of to set this to zero is if losing
+  this file is a matter of no importance, or of the creation of the backup files is in some way causing
+  a problem.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.CaseInsensitive
 Summary
   CSV Key Uniqueness and Key Comparisons are case insensitive mode if True, or else they are case
   sensitive.
 Description
-  If you have defined a Key for this table, and the keys are unique,
-  then this property defines whether or not two keys that differ only by their case would be allowed.
-  For example, if the key field was ID, and was a string, then having two records, one with key 'ABC'
-  and one with key 'Abc', then adding the second would cause a a key access violation.
+  If you have defined a Key for this table, and the keys are unique, then this property defines whether
+  or not two keys that differ only by their case would be allowed. For example, if the key field was
+  ID, and was a string, then having two records, one with key 'ABC' and one with key 'Abc', then adding
+  the second would cause a a key access violation.
 See Also
-  CsvKeyDef
-  CsvUniqueKeys
-  FindByCsvKey
+  CsvKeyDef CsvUniqueKeys FindByCsvKey
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.Changed
 Summary
   This is the World-Famous 'Dirty Bit'.
 Description
-  If anything in the data set (any field, on any row) has changed, and the changes have not been
-  saved to disk (via Flush), then the current data has been changed. You can either call Flush to
-  save the data, when it has changed, or you can set Active to false. (If the SavesChanges property
-  is set.)
-  It should get set True if you change anything or add or delete anything from the dataset.
-  It gets set back to false when you call Flush.
+  If anything in the data set (any field, on any row) has changed, and the changes have not been saved
+  to disk (via Flush), then the current data has been changed. You can either call Flush to save the
+  data, when it has changed, or you can set Active to false. (If the SavesChanges property is set.) It
+  should get set True if you change anything or add or delete anything from the dataset. It gets set
+  back to false when you call Flush.
 See Also
   TJvCustomCsvDataSet.Flush
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.ClearFilter
 Summary
@@ -696,6 +800,7 @@ Description
   Make all filtered rows visible again.
 See Also
   TJvCustomCsvDataSet.SetFilter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.CloneRow
 Summary
@@ -707,6 +812,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.CopyFromDataset
 Summary
@@ -720,6 +826,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.CreatePaths
 Summary
@@ -729,36 +836,39 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.CsvFieldDef
 Summary
   Comma separated list of field names.
 Description
-  The CSVFieldDef property is the most important property in the CSVDataSet.
-  You MUST set it up (using the property editor or by typing a valid CSVFieldDef string) before you
-  can use the CSV Data Set.
+  The CSVFieldDef property is the most important property in the CSVDataSet. You MUST set it up (using
+  the property editor or by typing a valid CSVFieldDef string) before you can use the CSV Data Set.
 
   A CSVFieldDef string is a comma separated list of field names. After each field name, an optional
   colon may be used to separate the field name from field options, which are described below.
 
-  - Fieldname must start with a Letter (A-Z) and can contain Letters, Numbers and Underscores.
-  - Field Types are described below. $ is a string. Other punctuation indicates other types.
-  - Length ONLY applies to string fields.
+  * Fieldname must start with a Letter (A-Z) and can contain Letters, Numbers and Underscores.
+  * Field Types are described below. $ is a string. Other punctuation indicates other types.
+  * Length ONLY applies to string fields.
 
   <TABLE>
-  Field Types     Meaning
-  -----------     -------
+    Field Types  Meaning
+    -----------  -----------------------------------------------------------------------------
 
-   $              string (ftString) - also used if no character is given. May be followed by the
-                  length, a length of 80 is assumed if "$" is used without a specific length (For
-                  example, ABC:$100 is a field named ABC, type string, string length 100).
-   %              whole integer value (ftInteger)
-   &              floating point value (ftFloat)
-   @              Ascii datetime value (ftDateTime) as YYYY/MM/DD HH:MM:SS (Component Specific)
-   #              Hex-Ascii Timestamp (A93F38C9) seconds since Jan 1, 1970 GMT (Component Specific)
-   ^              Hex-Ascii Timestamp (A93F38CP) corrected to local timezone (Component Specific)
-   !              Boolean Field (0 in csv file=false, not 0 = true, blank = NULL)
-   </TABLE>
+    $            string (ftString) - also used if no character is given. May be followed by
+                   the length, a length of 80 is assumed if "$" is used without a specific
+                   length (For example, ABC:$100 is a field named ABC, type string, string
+                   length 100).
+    %            whole integer value (ftInteger)
+    &            floating point value (ftFloat)
+    @            Ascii datetime value (ftDateTime) as YYYY/MM/DD HH:MM:SS (Component Specific)
+    #            Hex-Ascii Timestamp (A93F38C9) seconds since Jan 1, 1970 GMT (Component
+                   Specific)
+    ^            Hex-Ascii Timestamp (A93F38CP) corrected to local timezone (Component
+                   Specific)
+    !            Boolean Field (0 in csv file=false, not 0 = true, blank = NULL)
+  </TABLE>
 
   CsvFieldDef string Example:
   <AUTOLINK OFF>
@@ -768,35 +878,32 @@ Description
   <AUTOLINK ON>
 Note
   You can use the built-in property editor (Click ...) Instead of manually typing the CsvFieldDef.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.CsvKeyDef
 Summary
   Primary Key Definition.
 Description
   Blank means no primary key. The main reason for setting a primary key is so you can enforce primary
-  key uniqueness.  You might also want to easily sort the file in primary key order.
-  Primary Key fields MUST Be the first fields logically (and usually, physically) in the CSV file.
+  key uniqueness. You might also want to easily sort the file in primary key order. Primary Key fields
+  MUST Be the first fields logically (and usually, physically) in the CSV file.
 
-  That is to say, the CsvKeyDef cannot be set to 'A,C' if the first line of the csv file is is
-  'A,B,C'.
-  If you want  fields 'A,C' to be the key, the CSV file fields themselves MUST be ordered 'A,C, ....
-  ' logically.
+  That is to say, the CsvKeyDef cannot be set to 'A,C' if the first line of the csv file is is 'A,B,C'.
+  If you want fields 'A,C' to be the key, the CSV file fields themselves MUST be ordered 'A,C, .... '
+  logically.
 See Also
-  CsvUniqueKeys
-  CaseInsensitive
-  FindByCsvKey
-  IsKeyUnique
+  CsvUniqueKeys CaseInsensitive FindByCsvKey IsKeyUnique
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.CsvUniqueKeys
 Summary
   Are Unique Keys Enforced when rows are added or modified?
 Description
-  If CsvKeyDef is set, then this property defines whether or not two rows/records with the the same
-  key can exist.  If you want the dataset to enforce key uniqueness, you must set this.
+  If CsvKeyDef is set, then this property defines whether or not two rows/records with the the same key
+  can exist. If you want the dataset to enforce key uniqueness, you must set this.
 See Also
-  CsvKeyDef
-  CaseInsensitive
-  FindByCsvKey
+  CsvKeyDef CaseInsensitive FindByCsvKey
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.CurrentRowAsString
 Summary
@@ -808,6 +915,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.CustomFilter
 Summary
@@ -819,25 +927,27 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.DeleteRows
 Summary
   Quickly zap a range of rows from a dataset.
 Description
-  If you loaded 1000+ lines from a file, and you only need the middle 300 lines, you can now quickly zap an entire range
-  f rows. This is much faster (and has no dataset refresh-speed issues) than manually deleting
-  row-by-row.
+  If you loaded 1000+ lines from a file, and you only need the middle 300 lines, you can now quickly
+  zap an entire range f rows. This is much faster (and has no dataset refresh-speed issues) than
+  manually deleting row-by-row.
 Parameters
   FromRow - Description for this parameter
   ToRow   - Description for this parameter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.EmptyTable
 Summary
   Clears everything from the table.
 Description
-  Call EmptyTable to erase all rows.
-  WARNING: If SavesToDisk is true, it also erases the file on disk.
-           That is, EmptyTable implies a call to Flush.
+  Call EmptyTable to erase all rows. WARNING: If SavesToDisk is true, it also erases the file on disk.
+  That is, EmptyTable implies a call to Flush.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.EnquoteBackslash
 Summary
@@ -847,48 +957,50 @@ Description
   This is NOT the default behaviour. Most programs use doubling of quotes ("") instead of backslashes.
   Only set this to true if you know what you are doing.
 
-  If quotes appear inside a string, enquote them using backslash-quote sequence instead of
-  quote-quote sequence.
-  Non-standard CSV extension.
+  If quotes appear inside a string, enquote them using backslash-quote sequence instead of quote-quote
+  sequence. Non-standard CSV extension.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.ExportCsvFile
 Summary
   Writes contents of memory to the disk as a csv file.
 Description
-  Writes contents of memory to the disk as a csv file.
-  Use this only if you want to save to a file other than the Filename property in the component.
-  If you just want to save the table to the file that it was loaded from, call Flush instead.
+  Writes contents of memory to the disk as a csv file. Use this only if you want to save to a file
+  other than the Filename property in the component. If you just want to save the table to the file
+  that it was loaded from, call Flush instead.
 Parameters
   FileName - The file to write to.
 See Also
   TJvCustomCsvDataSet.FileName, TJvCustomCsvDataSet.Flush
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.ExportRows
 Summary
   Allows selective export of only a certain range of rows from a dataset.
 Description
-  If you have 1000 rows in memory and want to save only a certain range of them, you can do this
-  easily with one line.
+  If you have 1000 rows in memory and want to save only a certain range of them, you can do this easily
+  with one line.
 Parameters
   FileName - Description for this parameter
   FromRow  - Description for this parameter
   ToRow    - Description for this parameter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.ExtendedHeaderInfo
 Summary
   Probably never used. Leave it false.
 Description
   The original author of this component has no idea why you would set ExtendedHeaderInfo to true, but
-  if you do, the user-specified CsvFieldDef is used as the first line of CSV files that are assigned
-  as strings, otherwise, the GetColumnsAsString is used.
-  Has no effect if HasHeaderRow is false.
+  if you do, the user-specified CsvFieldDef is used as the first line of CSV files that are assigned as
+  strings, otherwise, the GetColumnsAsString is used. Has no effect if HasHeaderRow is false.
 See Also
   TJvCustomCsvDataSet.HasHeaderRow
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.FileName
 Summary
-  The filename that this dataset component loads its data from when opening, and saves it back to
-  when closing.
+  The filename that this dataset component loads its data from when opening, and saves it back to when
+  closing.
 Description
   Can be either a filename (with no path) which must be located in the current working directory, or
   can be a fully qualified filename (with a path) in which case it can be anywhere on your filesystem
@@ -896,21 +1008,21 @@ Description
   set LoadsFromFile and/or SavesChanges properties to true.
 See Also
   TJvCsvDataSet.LoadsFromFile,TJvCsvDataSet.SavesChanges
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.FindByCsvKey
 Summary
   Key lookup for datasets where CsvKeyDef is set.
 Description
-  If your key fields are defined as 'FOO,BAR' you can
-  do a quick lookup for the record where FOO=Y and BAR=X, by
-  calling FindByCsvKey('Y,X').
+  If your key fields are defined as 'FOO,BAR' you can do a quick lookup for the record where FOO=Y and
+  BAR=X, by calling FindByCsvKey('Y,X').
 Parameters
   Key - The key values as Strings, separated by commas if there is more than one key field.
 Return value
   Returns true if the record was found.
 See Also
-  CsvKeyDef
-  CaseInsensitive
+  CsvKeyDef CaseInsensitive
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.Flush
 Summary
@@ -920,25 +1032,22 @@ Description
   property).
 See Also
   TJvCustomCsvDataSet.ExportCsvFile, TJvCustomCsvDataSet.FileName
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.GetAsString
 Summary
-  For Experts Only.   Return the string value of a particular field.
+  For Experts Only. Return the string value of a particular field.
 Description
-  Grab a particular field (by field index), for a particular
-  row (by record number), and get its value as a String.
-  Description
-  The values are returned in the format they will be stored in,
-  in the CSV file. So for example, a string field value that has a comma in it, will be returned with
-  the quotes around it that must be used for string literal values in a CSV file.
+  Grab a particular field (by field index), for a particular row (by record number), and get its value
+  as a String. The values are returned in the format they will be stored in, in the CSV file. So for
+  example, a string field value that has a comma in it, will be returned with the quotes around it that
+  must be used for string literal values in a CSV file.
 Parameters
   Row    - Description for this parameter
   Column - Description for this parameter
 Return value
   Returns a value in the raw format, exactly as it will be stored in in the CSV file.
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.GetAutoincrement
 Summary
@@ -952,21 +1061,22 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.GetColumnsAsString
 Summary
   Returns CSV Column names in logical order.
 Description
   Returns string containing all the CSV Column names (usually the first line of the CSV file), and
-  return as a string.
-  Does the same thing as GetCsvHeader. The only difference is that GetColumnsAsString uses the order
-  of the columns as we are using them in memory, and GetCsvHeader gets the columns in the order that
-  they appear in the file.
+  return as a string. Does the same thing as GetCsvHeader. The only difference is that
+  GetColumnsAsString uses the order of the columns as we are using them in memory, and GetCsvHeader
+  gets the columns in the order that they appear in the file.
 Return value
   \Returns a string with all the columns names in a comma separated list. (For example,
   'ABC,DEF,GHI,JKL,...')
 See Also
   TJvCustomCsvDataSet.GetCsvHeader
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.GetCsvHeader
 Summary
@@ -980,6 +1090,7 @@ Return value
   'ABC,DEF,GHI,JKL,...')
 See Also
   TJvCustomCsvDataSet.GetColumnsAsString
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.GetRowAsString
 Summary
@@ -992,35 +1103,35 @@ Return value
   A data record in CSV format.
 See Also
   TJvCustomCsvDataSet.GetColumnsAsString, TJvCustomCsvDataSet.GetCsvHeader
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.GetUserData
 Summary
   Get the user data (pointer) value for a particular record (specified by record number)
 Description
-  Retrieve a User data (pointer) value previously set by SetUserData.
-  This value is NOT saved as part of the CSV file.
+  Retrieve a User data (pointer) value previously set by SetUserData. This value is NOT saved as part
+  of the CSV file.
 Parameters
   RecNo - Record number (0=first record,1=next one,2..,3..,... -1=last record)
 Return value
   Returns pointer. If UserData has not been set, or recno is out of range, returns nil.
 See Also
-  SetUserData
-  SetAllUserData
-  OnGetFieldData
+  SetUserData SetAllUserData OnGetFieldData
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.GetUserTag
 Summary
   Get the user tag (integer) value for a particular record (specified by record number)
 Description
-  Retrieve a User tag (integer) value previously set by SetUserTag.
-  This value is NOT saved as part of the CSV file.
+  Retrieve a User tag (integer) value previously set by SetUserTag. This value is NOT saved as part of
+  the CSV file.
 Parameters
   RecNo - Record number (0=first record,1=next one,2..,3..,... -1=last record)
 Return value
   Returns pointer. If UserTag has not been set, or recno is out of range, returns 0.
 See Also
-  SetUserTag
-  OnGetFieldData
+  SetUserTag OnGetFieldData
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.HasHeaderRow
 Summary
@@ -1032,6 +1143,7 @@ Description
   If you set this property, the component expects CSV files will begin with a header row. If you set
   this to false, then we assume that the header row equals the CsvFieldDef property, in exactly the
   same field order, with no more and no less fields.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.HeaderRow
 Summary
@@ -1041,15 +1153,17 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.InternalData
 Summary
   Protected internal property
 Description
-  This property contains the actual Rows of CSV data.
-  It is never manipulated directly by the end user.
+  This property contains the actual Rows of CSV data. It is never manipulated directly by the end
+  user.
 See Also
   FieldDefs
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.IsKeyUnique
 Summary
@@ -1061,6 +1175,7 @@ Return value
   Returns true if key is unique.
 See Also
   TJvCustomCsvDataSet.CsvKeyDef
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.LoadFromFile
 Summary
@@ -1072,6 +1187,7 @@ Parameters
   FileName - The file to be loaded from
 See Also
   TJvCustomCsvDataSet.LoadsFromFile
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.LoadsFromFile
 Summary
@@ -1079,81 +1195,71 @@ Summary
   property to true.
 Description
   Set this to true to automatically load contents of the CSV Filename when you set the table Active
-  property to true.
-  Leaving this set to true is generally helpful both at design time and run time, and should be only
-  turned off if you really need to.
+  property to true. Leaving this set to true is generally helpful both at design time and run time, and
+  should be only turned off if you really need to.
 
-  If the property Filename points to a valid file, then the component will load that file when you
-  set the Active property to true. If you don't, it's up to you to load your component data up
-  manually.
+  If the property Filename points to a valid file, then the component will load that file when you set
+  the Active property to true. If you don't, it's up to you to load your component data up manually.
 See Also
-  TJvCsvDataSet.FileName
-  LoadFromFile
+  TJvCsvDataSet.FileName LoadFromFile
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.OnGetFieldData
 Summary
   Event fired when field data is going to be provided to a data aware control.
 Description
-  An OnGetFieldData event written by the end user allows the end user to create a Virtual DataSet
-  where the data  in the CSV rows is really just a cache
-  which can be updated when displayed but which we really are fetching from
-  somewhere else.
+  An OnGetFieldData event written by the end user allows the end user to create a Virtual DataSet where
+  the data in the CSV rows is really just a cache which can be updated when displayed but which we
+  really are fetching from somewhere else.
 Parameters
   Sender    - Description for this parameter
   UserTag   - The record's tag (integer) property
   UserData  - The record's data (pointer) property. Perhaps this is the custom object that contains
-  the actual data?
+               the actual data?
   FieldName - The field name we are being asked for?
   Value     - var parameter - This is where you put the actual value (encoded as a CSV string) to be
-  provided to the data aware control.
+               provided to the data aware control.
 See Also
-  OnSetFieldData
-  GetUserTag
-  SetUserTag
-  GetUserData
-  SetUserData
+  OnSetFieldData GetUserTag SetUserTag GetUserData SetUserData
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.OnSetFieldData
 Summary
   Event fired when field data is going to be updated from data aware control back into our Dataset.
 Description
-  An OnSetFieldData event written by the end user allows the end user to create a Virtual DataSet
-  where the data  in the CSV rows is really just a cache
-  which can be updated when displayed and when a change is made to the cached data, the change can
-  also automatically be written to the place where the data really came from.
+  An OnSetFieldData event written by the end user allows the end user to create a Virtual DataSet where
+  the data in the CSV rows is really just a cache which can be updated when displayed and when a change
+  is made to the cached data, the change can also automatically be written to the place where the data
+  really came from.
 Parameters
   Sender    - Description for this parameter
   UserTag   - The record's tag (integer) property
   UserData  - The record's data (pointer) property. Perhaps this is the custom object that contains
-  the actual data?
+               the actual data?
   FieldName - The field name we are being asked for?
   Value     - This is the new changed field value (encoded as a CSV string) which is being put into
-  the CSV file.
+               the CSV file.
 See Also
-  OnGetFieldData
-  GetUserTag
-  SetUserTag
-  GetUserData
-  SetUserData
-  SetAllUserData
+  OnGetFieldData GetUserTag SetUserTag GetUserData SetUserData SetAllUserData
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.OnSpecialData
 Summary
   Occurs when metadata is embedded in a csv data file.
 Description
-  This event fires, if metadata is embedded in a csv data file. The metadata escape sequence is '>>'
+  This event fires, if metadata is embedded in a csv data file. The metadata escape sequence is '> > '
   at the beginning of the file. This allows CSV files to have comments or metadata associated with
-  them.
-  Note that this is a proprietary extension to the CSV file format, and is not expected to be
+  them. Note that this is a proprietary extension to the CSV file format, and is not expected to be
   interoperable with other CSV reading/writing software, unless you strip the special data before
   sending it to these other files.
 
-  When we encounter a CSV data row that starts with '>>', it is skipped, and this event fires.
+  When we encounter a CSV data row that starts with '> > ', it is skipped, and this event fires.
 Parameters
   Sender     - Component sending the event
   Index      - File line number
-  NonCsvData - The data that came in that is special metadata. ('>>DATESAVED: THIS DATA WAS SAVED ON
-  MAY 3, 2003')
+  NonCsvData - The data that came in that is special metadata. ('> > DATESAVED: THIS DATA WAS SAVED ON
+                MAY 3, 2003')
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.OpenFileName
 Summary
@@ -1163,6 +1269,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.OpenWith
 Summary
@@ -1174,6 +1281,7 @@ Parameters
   Strings - The starting data.
 See Also
   TJvCustomCsvDataSet.AssignFromStrings
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.ReadOnly
 Summary
@@ -1182,16 +1290,18 @@ Description
   Data is non-modifiable (read only). Only set this to true if the contents of the data are complete
   static once loaded from a CSV file. Mutually exclusive property: SavesChanges.
 
-  If you set this property to true, then no editing will be permitted by data aware components, and
-  any direct writes to field values will cause an exception to be raised.
+  If you set this property to true, then no editing will be permitted by data aware components, and any
+  direct writes to field values will cause an exception to be raised.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.Refresh
 Summary
   Refresh all data aware controls that are currently connected to this dataset.
 Description
   In the enabling and disabling of datasets and controls, it is possible for a refresh event to get
-  lost, and in that case, a manual Refresh on a dataset will cause all data aware controls connected
-  to this data source to be refreshed.
+  lost, and in that case, a manual Refresh on a dataset will cause all data aware controls connected to
+  this data source to be refreshed.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.SavesChanges
 Summary
@@ -1202,29 +1312,31 @@ Description
   property: ReadOnly. Permits writing the changes to the csv file. If you don't set this, then any
   changes are lost when you exit your program, or when you set the Active property to false. This can
   be handy if any modifications are only intended to be temporary and not persistent.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.SaveToFile
 Summary
   Save entire contents to the specified filename.
 Description
-   The property SavesToFile is ignored in this special case.
-   NORMALLY, if SavesToFile property is set you call Flush instead, and you don't have  to provide
-  the filename, since you might usually be saving back to the file from which you loaded.
+  The property SavesToFile is ignored in this special case. NORMALLY, if SavesToFile property is set
+  you call Flush instead, and you don't have to provide the filename, since you might usually be saving
+  back to the file from which you loaded.
 Parameters
   FileName - The filename to save to
 See Also
   SavesToFile
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.Separator
 Summary
   Advanced Users Only. Specify Custom Separator Character.
 Description
-  Default is ',' (comma). If you aren't sure what to do, leave this field alone.
-  Normally CSV files use a comma to separate fields, but other ASCII delimited file types, such as
-  TAB (Chr(9)) are possible.  Set this to the character you wish to use to separate the fields. Some
-  values are not valid, such as Carriage Return, Linefeed,
-  Space, Quotes, Escape characters, etc. Also, using any alphanumeric character would be a very very
-  bad idea.
+  Default is ',' (comma). If you aren't sure what to do, leave this field alone. Normally CSV files use
+  a comma to separate fields, but other ASCII delimited file types, such as TAB (Chr(9)) are possible.
+  Set this to the character you wish to use to separate the fields. Some values are not valid, such as
+  Carriage Return, Linefeed, Space, Quotes, Escape characters, etc. Also, using any alphanumeric
+  character would be a very very bad idea.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.SetAllUserData
 Summary
@@ -1234,8 +1346,8 @@ Description
 Parameters
   Data - A pointer. Use nil here to clear all user data.
 See Also
-  SetUserData
-  GetUserData
+  SetUserData GetUserData
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.SetAllUserTags
 Summary
@@ -1245,22 +1357,20 @@ Description
 Parameters
   TagValue - The value to set all user tags to.
 See Also
-  SetUserTag
-  GetUserTag
+  SetUserTag GetUserTag
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.SetFilter
 Summary
   Make only certain rows in a dataset visible.
 Description
-  This allows simple master-detail or category-by-category
-  behaviour to be emulated, where changing rows in one dataset (scrolling) could be used to set
-  filtering on a second dataset.
-  To filter on more than one field, you first ClearFilter, then you call
-  SetFilter several times, each time, the dataset is scanned once, and non-matching rows are marked
-  hidden. When the user views the dataset, only the matching rows are viewed.
-  The patterns can contain wildcards, such as '%' for AnyString, or '?' for matching any Single
-  Character.
-  These wildcards were chosen because they are similar to the wildcards used in SQL Databases.
+  This allows simple master-detail or category-by-category behaviour to be emulated, where changing
+  rows in one dataset (scrolling) could be used to set filtering on a second dataset. To filter on more
+  than one field, you first ClearFilter, then you call SetFilter several times, each time, the dataset
+  is scanned once, and non-matching rows are marked hidden. When the user views the dataset, only the
+  matching rows are viewed. The patterns can contain wildcards, such as '%' for AnyString, or '?' for
+  matching any Single Character. These wildcards were chosen because they are similar to the wildcards
+  used in SQL Databases.
 
   A very specialized feature is the ability to check for several different values, by combining the
   values with a vertical-pipe (|) symbol. To match a string that starts with either A or B or C, use
@@ -1273,6 +1383,7 @@ Parameters
   Pattern   - This is a pattern, with optional wildcards, that the Field value must match.
 See Also
   TJvCustomCsvDataSet.ClearFilter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.SetFilterOnNull
 Summary
@@ -1285,68 +1396,66 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.SetUserData
 Summary
   Set the user data (pointer) for a specified record, by record number (recno).
 Description
-  Each row has an internal user-data Pointer for GUI links. You can
-  set it with this procedure.
-  This value is NOT saved in the CSV file.
+  Each row has an internal user-data Pointer for GUI links. You can set it with this procedure. This
+  value is NOT saved in the CSV file.
 Parameters
   RecNo    - Description for this parameter
   NewValue - new value (pointer)
 See Also
-  SetUserTag
-  OnGetFieldData
-  SetAllUserData
+  SetUserTag OnGetFieldData SetAllUserData
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.SetUserTag
 Summary
   Set the user tag (integer) for a specified record, by record number (recno).
 Description
-  Each row has an internal user-tag (integer) property for custom
-  filtering or other end-user purposes. You can set it with this procedure.
-  This value is NOT saved in the CSV file.
+  Each row has an internal user-tag (integer) property for custom filtering or other end-user purposes.
+  You can set it with this procedure. This value is NOT saved in the CSV file.
 Parameters
   RecNo    - Description for this parameter
   NewValue - new value (pointer)
 See Also
-  SetUserData
-  OnGetFieldData
+  SetUserData OnGetFieldData
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.Sort
 Summary
   Sort a dataset by one or more fields, in ascending or descending order.
 Description
   Sort a dataset (reorder all the records), in ascending order or descending order, by one or more
-  fields.
-  After calling Sort, call Flush to write the reordered file to disk, if you want the change to be
-  permanent.
+  fields. After calling Sort, call Flush to write the reordered file to disk, if you want the change to
+  be permanent.
 Parameters
   SortFields - What fields will be sorted, comma separated list in a string.
   Ascending  - If true, the sort will be in ascending order, if false, descending order.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.StoreDefs
 Summary
   Advanced Users Only. Leave it at Default value of true.
 Description
-  If true, we persist the FieldDefs in the Form/Datamodule's 'DFM' file.
-  This property should ALWAYS be set to true, unless you don't want the Field Definitions stored in
-  the Delphi TForm/TDataModule
-  that you are using this component in. If your component will only ever use Dynamically Generated
-  Field Definitions then you can set this to false.
+  If true, we persist the FieldDefs in the Form/Datamodule's 'DFM' file. This property should ALWAYS be
+  set to true, unless you don't want the Field Definitions stored in the Delphi TForm/TDataModule that
+  you are using this component in. If your component will only ever use Dynamically Generated Field
+  Definitions then you can set this to false.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.TableName
 Summary
   A read only property. Returns the same value as TJvCsvDataSet.Filename.
 Description
-  TableName property. An alias for TJvCsvDataSet.Filename.
-  This property MUST be set before you can open a file from the disk.  It can be set to a fully
-  qualified path, or you can just put a filename here without a path, or you can specify a
-  subdirectory path (relative pathname, beginning with a dot).
-  This path name will be relative to the current working directory of your application, when it
+  TableName property. An alias for TJvCsvDataSet.Filename. This property MUST be set before you can
+  open a file from the disk. It can be set to a fully qualified path, or you can just put a filename
+  here without a path, or you can specify a subdirectory path (relative pathname, beginning with a
+  dot). This path name will be relative to the current working directory of your application, when it
   starts.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.TimeZoneCorrection
 Summary
@@ -1354,18 +1463,18 @@ Summary
 Description
   If you are using data sets from multiple different time zones, you need to put the timezone
   correction data into the TimeZoneCorrection property. If all your TIME_T timestamps are in UTC
-  (Greenwich Mean Time), then  you should leave this property set to zero. This property has NO
-  effect on ASCII datetime fields, which are assumed to be using the local timezone (as set up in
-  your operating system's timezone configuration).
+  (Greenwich Mean Time), then you should leave this property set to zero. This property has NO effect
+  on ASCII datetime fields, which are assumed to be using the local timezone (as set up in your
+  operating system's timezone configuration).
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.UserData
 Summary
   A user-defined Pointer property for the currently active row in the dataset.
 Description
-  The current row of the dataset can have a special user-data property, per row.
-  This is helpful if you want to go through a dataset, and flag certain rows as 'selected', and for
-  other user-defined purposes.
-  This data is NOT stored as part of the CSV file and exists only in memory.
+  The current row of the dataset can have a special user-data property, per row. This is helpful if you
+  want to go through a dataset, and flag certain rows as 'selected', and for other user-defined
+  purposes. This data is NOT stored as part of the CSV file and exists only in memory.
 
   Example:
   <AUTOLINK OFF>
@@ -1382,15 +1491,15 @@ Description
   <AUTOLINK ON>
 See Also
   UserTag - same idea as UserData, but instead of a pointer, it's an integer.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.UserTag
 Summary
   A user-defined Integer property for the currently active row in the dataset.
 Description
-  The current row of the dataset can have a special user-tag property, per row.
-  This is helpful if you want to go through a dataset, and flag certain rows as 'selected', and for
-  other user-defined purposes.
-  This data is NOT stored as part of the CSV file and exists only in memory.
+  The current row of the dataset can have a special user-tag property, per row. This is helpful if you
+  want to go through a dataset, and flag certain rows as 'selected', and for other user-defined
+  purposes. This data is NOT stored as part of the CSV file and exists only in memory.
 
   Example:
   <AUTOLINK OFF>
@@ -1407,12 +1516,14 @@ Description
   <AUTOLINK ON>
 See Also
   UserData - Same idea as UserTag, but it's a pointer.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.ValidateHeaderRow
 Summary
   Checks if first row of CSV file is valid.
 Description
   Checks if first row of CSV file is valid.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet._ClearFilter
 Summary
@@ -1421,6 +1532,7 @@ Description
   Internal Use Only.
 See Also
   TJvCustomCsvDataSet.ClearFilter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSetFilterFunction
 <TITLE TJvCustomCsvDataSetFilterFunction type>
@@ -1430,6 +1542,4 @@ Description
   Nothing in this unit.
 Parameters
   RecNo - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+

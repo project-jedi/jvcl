@@ -11,7 +11,6 @@ Summary
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCalcEdit
 <TITLEIMG TJvCalcEdit>
@@ -31,9 +30,9 @@ Description
 Summary
   Base class for the TJvCalcEdit control.
 Description
-  Use TJvCustomCalcEdit as a base class when creating custom combo edits that can be used for
-  entering numbers. Do not create instances of TJvCustomCalcEdit. Instead, to put a combo edit
-  control for entering numbers on a form, use a TJvCustomCalcEdit descendant such as TJvCalcEdit.
+  Use TJvCustomCalcEdit as a base class when creating custom combo edits that can be used for entering
+  numbers. Do not create instances of TJvCustomCalcEdit. Instead, to put a combo edit control for
+  entering numbers on a form, use a TJvCustomCalcEdit descendant such as TJvCalcEdit.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNumEdit
@@ -52,11 +51,11 @@ Description
   Use Alignment to indicate text alignment in the edit box. These are the possible values:
 
   <TABLE>
-  \Value              Meaning
-  -----               -------
-  taLeftJustify       Align text on the left side in the edit control.
-  taCenter            Center the text in the edit control.
-  taRightJustify      Align text on the right side in the edit control.
+    \Value          Meaning
+    --------------  -------------------------------------------------
+    taLeftJustify   Align text on the left side in the edit control.
+    taCenter        Center the text in the edit control.
+    taRightJustify  Align text on the right side in the edit control.
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -77,8 +76,8 @@ Summary
 Description
   If a MinValue or MaxValue is specified, then the user can enter an invalid number (i.e., an out of
   range value). Set CheckOnExit to true to let the control check (on exit of the control) whether the
-  value the user entered is in the range specified by MinValue and MaxValue. If the value is not in
-  the range, an exception is raised.
+  value the user entered is in the range specified by MinValue and MaxValue. If the value is not in the
+  range, an exception is raised.
 
   Set CheckOnExit to false, to let the control automatically crop invalid values on exit of the
   control, so its value is in the range specified by MinValue and MaxValue.
@@ -93,21 +92,21 @@ Description
   The control rounds the internal stored value after the number of digits beyond the decimal point as
   specified by DecimalPlaces.
 
-  Set DecimalPlaceRound to true to round to the nearest. If two are equally near then rounding is
-  done away from zero. Set DecimalPlaceRound to false to use the default Round-like rounding:
+  Set DecimalPlaceRound to true to round to the nearest. If two are equally near then rounding is done
+  away from zero. Set DecimalPlaceRound to false to use the default Round-like rounding:
 
   If DecimalPlaces equals 2, then:
   <TABLE>
-  \Value        False            True
-  -----         -----            ----
-  0,124         0,12             0,12
-  0,125         0,12             0,13
-  0,126         0,13             0,13
-  0,135         0,14             0,14
-  0,145         0,14             0,15
-  -0,124        -0,12            -0,12
-  -0,125        -0,12            -0,12
-  -0,126        -0,13            -0,13
+    \Value  False  True
+    ------  -----  -----
+    0,124   0,12   0,12
+    0,125   0,12   0,13
+    0,126   0,13   0,13
+    0,135   0,14   0,14
+    0,145   0,14   0,15
+    -0,124  -0,12  -0,12
+    -0,125  -0,12  -0,12
+    -0,126  -0,13  -0,13
   </TABLE>
 See Also
   TJvCustomNumEdit.DecimalPlaces
@@ -117,22 +116,21 @@ See Also
 Summary
   Specifies the precision for the floating-point value.
 Description
-  Use DecimalPlaces to set the number of digits beyond the decimal point that the floating-point
-  value of the control should be formatted to before rounding begins. Use DecimalPlaceRound to alter
-  the way the value is rounded after the number of the digits beyond the decimal point specified by
+  Use DecimalPlaces to set the number of digits beyond the decimal point that the floating-point value
+  of the control should be formatted to before rounding begins. Use DecimalPlaceRound to alter the way
+  the value is rounded after the number of the digits beyond the decimal point specified by
   DecimalPlaces.
 
-  Use DisplayFormat to change the
-  format of the floating-point value when it is displayed as a text string in the edit box, but note
-  that DecimalPlaces may also affect that displayed text string:
+  Use DisplayFormat to change the format of the floating-point value when it is displayed as a text
+  string in the edit box, but note that DecimalPlaces may also affect that displayed text string:
 
   <TABLE>
-  Entered value     DisplayFormat     DecimalPlaces         Displayed text string   Stored value
-  -------------     -------------     -------------         ---------------------   ------------
-  0.1234            0.###             2                     0.12                    0.12
-  0.1234            0.###             3                     0.123                   0.123
-  0.1234            0.###             4                     0.123                   0.1234
-  0.1234            0.####            4                     0.1234                  0.1234
+    Entered value  DisplayFormat  DecimalPlaces  Displayed text string  Stored value
+    -------------  -------------  -------------  ---------------------  ------------
+    0.1234         0.###          2              0.12                   0.12
+    0.1234         0.###          3              0.123                  0.123
+    0.1234         0.###          4              0.123                  0.1234
+    0.1234         0.####         4              0.1234                 0.1234
   </TABLE>
 Note
   DecimalPlaces affects the actual floating-point value that is stored in the control.
@@ -148,17 +146,18 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNumEdit.DisplayFormat
 Summary
   Specifies the format for the displayed number.
 Description
   Use DisplayFormat to specify a custom format string for the number display. Note that DisplayFormat
-  is only used when the popup calculator is <i>not</i> showing and the user is <i>not</i> entering a
+  is only used when the popup calculator is <I>not</I> showing and the user is <I>not</I> entering a
   number in the edit box (i.e., the control has no focus).
 
-  The value of DisplayFormat does not affect the actual stored floating-point value.
-  See Delphi help at FormatFloat to view which format specifiers are supported in the format string.
+  The value of DisplayFormat does not affect the actual stored floating-point value. See Delphi help at
+  FormatFloat to view which format specifiers are supported in the format string.
 Note
   Ensure that DecimalPlaces is large enough for the DisplayFormat. For example, if DisplayFormat is
   '0.###' then DecimalPlaces must be minimal 3.
@@ -180,9 +179,9 @@ See Also
 Summary
   Specifies whether text should be formatted while editing.
 Description
-  Set FormatOnEditing to true to let the control format the text while the user enters a number in
-  the edit box. For example, the control will automatically insert thousand symbols while the user
-  enters a number, if FormatOnEditing is set to true.
+  Set FormatOnEditing to true to let the control format the text while the user enters a number in the
+  edit box. For example, the control will automatically insert thousand symbols while the user enters a
+  number, if FormatOnEditing is set to true.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNumEdit.Formatting
@@ -196,8 +195,8 @@ Description
 Summary
   Specifies the maximum value the user can enter into the number edit control.
 Description
-  MaxValue specifies the maximum for the Value property. Use CheckOnExit to specify what should
-  happen if the user enters a number greater than MaxValue.
+  MaxValue specifies the maximum for the Value property. Use CheckOnExit to specify what should happen
+  if the user enters a number greater than MaxValue.
 Note
   No check is done if MinValue equals MaxValue.
 See Also

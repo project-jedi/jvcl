@@ -8,7 +8,6 @@ Summary
 Author
   "rossen".
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvEmbeddedFormLink
 <TITLEIMG TJvEmbeddedFormLink>
@@ -19,21 +18,19 @@ Summary
   Makes a form embedable.
 Description
   Drop a TJvEmbeddedFormLink on a form to make it embedable in a TJvEmbeddedFormPanel. The
-  TJvEmbeddedFormLink instance needs to be assigned to the FormLink property of a
-  TJvEmbeddedFormPanel on another form.
+  TJvEmbeddedFormLink instance needs to be assigned to the FormLink property of a TJvEmbeddedFormPanel
+  on another form.
 
   To make the embedding work, you need to perform the following steps:
 
-    * Drop a TJvEmbeddedFormLink
-      on each form in your application that you want to be embedable. These forms
-      must be auto-created by Delphi if you want to set up the links at design-time.
-    * Drop one or more TJvEmbeddedFormPanels on each form that you want to embed other forms.
-    * Add the forms with TJvEmbeddedFormLinks to the uses clause of the forms with
-      TJvEmbeddedFormPanels.
-    * Set the FormLink property of each TJvEmbeddedFormPanel to the TJvEmbeddedFormLink component of
-      the
-      form to embed. The embedded form should now be visible in the TJvEmbeddedFormPanel even at
-      design-time.
+  * Drop a TJvEmbeddedFormLink on each form in your application that you want to be embedable. These
+    forms must be auto-created by Delphi if you want to set up the links at design-time.
+  * Drop one or more TJvEmbeddedFormPanels on each form that you want to embed other forms.
+  * Add the forms with TJvEmbeddedFormLinks to the uses clause of the forms with
+    TJvEmbeddedFormPanels.
+  * Set the FormLink property of each TJvEmbeddedFormPanel to the TJvEmbeddedFormLink component of the
+    form to embed. The embedded form should now be visible in the TJvEmbeddedFormPanel even at
+    design-time.
 Note
   You can only have one TJvEmbeddedFormLink on each form.
 
@@ -41,7 +38,7 @@ Note
 @@TJvEmbeddedFormPanel
 <TITLEIMG TJvEmbeddedFormPanel>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.PanelsBevelsAndGroups.Panels
   FLAG=Component
 Summary
   Provides a surface to embed a form in.
@@ -51,16 +48,14 @@ Description
 
   To make the embedding work, you need to perform the following steps:
 
-    * Drop a TJvEmbeddedFormLink
-      on each form in your application that you want to be embedable. These forms
-      must be auto-created by Delphi if you want to set up the links at design-time.
-    * Drop one or more TJvEmbeddedFormPanels on each form that you want to embed other forms.
-    * Add the forms with TJvEmbeddedFormLinks to the uses clause of the forms with
-      TJvEmbeddedFormPanels.
-    * Set the FormLink property of each TJvEmbeddedFormPanel to the TJvEmbeddedFormLink component of
-      the
-      form to embed. The embedded form should now be visible in the TJvEmbeddedFormPanel even at
-      design-time.
+  * Drop a TJvEmbeddedFormLink on each form in your application that you want to be embedable. These
+    forms must be auto-created by Delphi if you want to set up the links at design-time.
+  * Drop one or more TJvEmbeddedFormPanels on each form that you want to embed other forms.
+  * Add the forms with TJvEmbeddedFormLinks to the uses clause of the forms with
+    TJvEmbeddedFormPanels.
+  * Set the FormLink property of each TJvEmbeddedFormPanel to the TJvEmbeddedFormLink component of the
+    form to embed. The embedded form should now be visible in the TJvEmbeddedFormPanel even at
+    design-time.
 Note
   You can have multiple TJvEmbeddedFormPanels on each form and TJvEmbeddedFormPanels can be nested.
 
@@ -70,9 +65,6 @@ Summary
   Specifies whether the embedded form is visible at all times.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEmbeddedFormPanel.ClearLinkedForm
@@ -80,9 +72,6 @@ Summary
   Removes the linked form from the control and resets the painting.
 Description
   This is a protected member, you don't have to describe these
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEmbeddedFormPanel.DockLinkedForm
@@ -99,9 +88,6 @@ Summary
   Specifies the form link component used to embed a form in the control.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEmbeddedFormPanel.InitLinkedForm
@@ -130,9 +116,6 @@ Summary
   Indicates the form that is linked to the control.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEmbeddedFormPanel.OnFormDestroy
@@ -143,6 +126,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEmbeddedFormPanel.UndockLinkedForm
 Summary
@@ -159,15 +143,15 @@ See Also
 @@TJvEmbeddedInstanceFormPanel
 <TITLEIMG TJvEmbeddedInstanceFormPanel>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.PanelsBevelsAndGroups.Panels
   FLAG=Component
 Summary
   Provides a surface to embed a form in.
 Description
   TJvEmbeddedInstanceFormPanel derives from TJvEmbeddedFormPanel but creates a free-standing instance
-  of the specified form class instead of referring to a common, auto-created instance.
-  With this control, each control has its own instance of the specified form and thus isn't affected
-  by changes made to the form in other TJvEmbeddedFormPanel controls.
+  of the specified form class instead of referring to a common, auto-created instance. With this
+  control, each control has its own instance of the specified form and thus isn't affected by changes
+  made to the form in other TJvEmbeddedFormPanel controls.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEmbeddedPaintProcedure
@@ -175,9 +159,5 @@ Description
 Summary
   Write here a summary (1 line)
 Description
-  This type is used by (for reference):
-    Nothing in this unit.
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This type is used by (for reference): Nothing in this unit.
 

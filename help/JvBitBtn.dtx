@@ -8,7 +8,6 @@ Summary
 Author
   Sébastien Buysse
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvBitBtn
 <TITLEIMG TJvBitBtn>
@@ -18,18 +17,18 @@ JVCLInfo
 Summary
   An extended version of the TBitBtn control.
 Description
-  TJvBitBtn extends the standard TBitBtn with hot tracking, a colored hint, the possibility to attach
-  a drop down menu and OnMouseEnter, OnMouseLeave and OnParentColorChange events.
+  TJvBitBtn extends the standard TBitBtn with hot tracking, a colored hint, the possibility to attach a
+  drop down menu and OnMouseEnter, OnMouseLeave and OnParentColorChange events.
 
   To use a JvBitBtn button
 
   * drop a TJvBitBtn on a form.
-  * Set HotTrack to true to provide visual feedback when the mouse is over the button. Use
-     HotTrackFont and HotGlyph to alter the appearance of the button when it is under the mouse.
+  * Set HotTrack to true to provide visual feedback when the mouse is over the button. Use HotTrackFont
+    and HotGlyph to alter the appearance of the button when it is under the mouse.
   * Use HintColor to change the color of the hint box for the button
   * Use DropDownMenu to attach a popup menu as drop down menu to the button.
   * Write code for the OnMouseEnter, OnMouseLeave or OnParentColorChange event if any special
-     processing is needed on any of these events.
+    processing is needed on any of these events.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBitBtn.Canvas
@@ -44,18 +43,18 @@ Description
 Summary
   Identifies a pop-up menu associated with the button.
 Description
-  Assign a value to DropDownMenu to make a menu appear when the button is pressed (To display the
-  menu programmatically, call the button’s Click method). If the menu’s AutoPopup property is set to
-  true, the menu appears automatically. If AutoPopup is false, display the menu by calling the menu’s
-  Popup method in the button’s OnClick event handler.
+  Assign a value to DropDownMenu to make a menu appear when the button is pressed (To display the menu
+  programmatically, call the button’s Click method). If the menu’s AutoPopup property is set to true,
+  the menu appears automatically. If AutoPopup is false, display the menu by calling the menu’s Popup
+  method in the button’s OnClick event handler.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBitBtn.HintColor
 Summary
   Determines the color of the Help Hint boxes of the button.
 Description
-  Use HintColor to specify the hint box color. Default this color has the value clInfoBk.
-  To change the HintColor assign it a new TColor value.
+  Use HintColor to specify the hint box color. Default this color has the value clInfoBk. To change the
+  HintColor assign it a new TColor value.
 See Also
   TJvBitBtn.HotTrack
 
@@ -64,10 +63,9 @@ See Also
 Summary
   Specifies the bitmap that appears on the button when the mouse points to it.
 Description
-  Set HotGlyph to a bitmap object that contains the image that should appear on the face of the
-  button when the mouse passes over it at runtime. If HotGlyph is unassigned, the
-  button retains its regular image (specified by the Glyph property) when the mouse passes over the
-  button.
+  Set HotGlyph to a bitmap object that contains the image that should appear on the face of the button
+  when the mouse passes over it at runtime. If HotGlyph is unassigned, the button retains its regular
+  image (specified by the Glyph property) when the mouse passes over the button.
 See Also
   TJvBitBtn.HotTrack, TJvBitBtn.HotTrackFont
 
@@ -76,8 +74,8 @@ See Also
 Summary
   Specifies whether the button is highlighted when the mouse passes over it.
 Description
-  Set HotTrack to true to provide visual feedback when the button is under the mouse. When HotTrack
-  is false, there is no visual feedback when the mouse passes over the button.
+  Set HotTrack to true to provide visual feedback when the button is under the mouse. When HotTrack is
+  false, there is no visual feedback when the mouse passes over the button.
 See Also
   OnMouseEnter, OnMouseLeave
 
@@ -87,9 +85,8 @@ Summary
   Specifies the font used when the mouse passes over the button, and HotTrack is true.
 Description
   When the mouse passes over the button and HotTrack is set to true, HotTrackFont is used as the font
-  for the button text.
-        To change the font, change the value of the Charset, Color, Height, Name, Pitch, Size, and/or
-  Style of the HotTrackFont property.
+  for the button text. To change the font, change the value of the Charset, Color, Height, Name, Pitch,
+  Size, and/or Style of the HotTrackFont property.
 See Also
   TJvBitBtn.HotGlyph, TJvBitBtn.HotTrack, TJvBitBtn.HotTrackFontOptions
 
@@ -99,21 +96,21 @@ Summary
   Specifies how changes to the Font affects HotTrackFont.
 Description
   HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
-  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all
-  property changes in Font are copied to HotTrackFont except Color changes.
+  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
+  changes in Font are copied to HotTrackFont except Color changes.
 
   Note that hoFollowFont must be included for any properties to be copied at all.
 
   To implement the HotTrackFontOptions property in a new control, you should perform the following
   steps:
 
-    * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default
-       value to be DefaultTrackFontOptions (defined in JvTypes).
-    * Set the default value in the constructor.
-    * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
-       JvJVCLUtils) after calling inherited.
-    * Add a call to UpdateTrackFont in SetHotTrackFontOptions
+  * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
+  * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default
+    value to be DefaultTrackFontOptions (defined in JvTypes).
+  * Set the default value in the constructor.
+  * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
+    JvJVCLUtils) after calling inherited.
+  * Add a call to UpdateTrackFont in SetHotTrackFontOptions
 See Also
   TJvBitBtn.HotTrack, TJvBitBtn.HotTrackFont
 

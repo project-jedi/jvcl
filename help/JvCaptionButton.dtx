@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Incomplete
+##Status: Completed, Incomplete
 ##Skip: TJvCaptionButtonActionLink
 ##Skip: TJvCaptionButtonActionLinkClass
 ##Skip: TJvRedrawKind
@@ -10,7 +10,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
-
 
 ----------------------------------------------------------------------------------------------------
 @@AlphaBlend
@@ -27,55 +26,55 @@ Description
   destination device context. The source coordinates are transformed by using the transformation
   currently specified for the source device context.
 
-  An error occurs (and the function returns FALSE) if the source device context identifies an
-  enhanced metafile device context.
+  An error occurs (and the function returns FALSE) if the source device context identifies an enhanced
+  metafile device context.
 
-  If destination and source bitmaps do not have the same color format, \\AlphaBlend converts the
-  source bitmap to match the destination bitmap.
+  If destination and source bitmaps do not have the same color format, \\AlphaBlend converts the source
+  bitmap to match the destination bitmap.
 
   \\AlphaBlend does not support mirroring. If either the width or height of the source or destination
   is negative, this call will fail.
 
-  When rendering to a printer, first call GetDeviceCaps with SHADEBLENDCAPS to determine if the
-  printer supports blending with AlphaBlend. Note that, for a display DC, all blending operations are
-  supported and these flags represent whether the operations are accelerated.
+  When rendering to a printer, first call GetDeviceCaps with SHADEBLENDCAPS to determine if the printer
+  supports blending with AlphaBlend. Note that, for a display DC, all blending operations are supported
+  and these flags represent whether the operations are accelerated.
 
   If the source and destination are the same surface, that is, they are both the screen or the same
   memory bitmap and the source and destination rectangles overlap, an error occurs and the function
   returns FALSE.
 
-  The source rectangle must lie completely within the source surface, otherwise an error occurs and
-  the function returns FALSE.
+  The source rectangle must lie completely within the source surface, otherwise an error occurs and the
+  function returns FALSE.
 
   AlphaBlend fails if the width or height of the source or destination is negative.
-
 Note
-  The SourceConstantAlpha member of BLENDFUNCTION specifies an alpha transparency value to be used on the entire source bitmap. The SourceConstantAlpha value is combined with any per-pixel alpha values. If SourceConstantAlpha is 0, it is assumed that the image is transparent. Set the Sourc
-  ConstantAlpha value to 255 (which indicates that the image is opaque) when you only want to use
-  per-pixel alpha values.
+  The SourceConstantAlpha member of BLENDFUNCTION specifies an alpha transparency value to be used on
+  the entire source bitmap. The SourceConstantAlpha value is combined with any per-pixel alpha values.
+  If SourceConstantAlpha is 0, it is assumed that the image is transparent. Set the Sourc ConstantAlpha
+  value to 255 (which indicates that the image is opaque) when you only want to use per-pixel alpha
+  values.
 
   AlphaBlend is supported starting with Windows 98. With previous versions, it does nothing.
-
 Parameters
   hdcDest       - Handle to the destination device context.
   nXOriginDest  - Specifies the x-coordinate, in logical units, of the upper-left corner of the
-                  destination rectangle.
+                   destination rectangle.
   nYOriginDest  - Specifies the y-coordinate, in logical units, of the upper-left corner of the
-  destination rectangle.
+                   destination rectangle.
   nWidthDest    - Specifies the width, in logical units, of the destination rectangle.
   nHeightDest   - Specifies the height, in logical units, of the destination rectangle.
   hdcSrc        - Handle to the source device context.
-  nXOriginSrc   - Specifies the x-coordinate, in logical units, of the upper-left corner of the
-                  source rectangle.
-  nYOriginSrc   - Specifies the y-coordinate, in logical units, of the upper-left corner of the
-  source rectangle.
+  nXOriginSrc   - Specifies the x-coordinate, in logical units, of the upper-left corner of the source
+                   rectangle.
+  nYOriginSrc   - Specifies the y-coordinate, in logical units, of the upper-left corner of the source
+                   rectangle.
   nWidthSrc     - Specifies the width, in logical units, of the source rectangle.
   nHeightSrc    - Specifies the height, in logical units, of the source rectangle.
   BlendFunction - Specifies the alpha-blending function for source and destination bitmaps, a global
-  alpha value to be applied to the entire source bitmap, and format information for the source
-  bitmap. The source and destination blend functions are currently limited to AC_SRC_OVER. See the
-  BLENDFUNCTION and EMRALPHABLEND structures.
-Return Value
+                   alpha value to be applied to the entire source bitmap, and format information for
+                   the source bitmap. The source and destination blend functions are currently limited
+                   to AC_SRC_OVER. See the BLENDFUNCTION and EMRALPHABLEND structures.
+Return value
   If the function succeeds, the return value is TRUE. If the function fails, the return value is
   FALSE.
 
@@ -94,18 +93,17 @@ Description
   To use a caption button:
 
   * Drop a TJvCaptionButton on a form.
-  * Specify if it is shown as a <LINK TJvCaptionButton.Standard,standard button> (Minimize,
-     Maximize button etc).
-  * If it's not a standard button, specify a <LINK TJvCaptionButton.Caption,caption> and/or    <LINK
-     TJvCaptionButton.ImageIndex,image>.
-  * You can <LINK TJvCaptionButton.Action,assign an action> to the caption button.
+  * Specify if it is shown as a <LINK TJvCaptionButton.Standard, standard button> (Minimize, Maximize
+    button etc).
+  * If it's not a standard button, specify a <LINK TJvCaptionButton.Caption, caption> and/or <LINK
+    TJvCaptionButton.ImageIndex, image>.
+  * You can <LINK TJvCaptionButton.Action, assign an action> to the caption button.
   * Use the ButtonLeft, ButtonTop and Position properties to horizontally and vertically position the
-     button, or you can leave them to their default values, to position the button on the default
-     place: next to
-     the left most default caption button.
+    button, or you can leave them to their default values, to position the button on the default place:
+    next to the left most default caption button.
   * Use the ButtonHeight and ButtonWidth properties to alter the size of the button, or you can leave
-     them to their default values, to get a caption button that has the same size as the default
-     caption buttons.
+    them to their default values, to get a caption button that has the same size as the default caption
+    buttons.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionButton.Action
@@ -113,9 +111,9 @@ Summary
   Designates the action associated with the caption button.
 Description
   Action designates the action object that is associated with the caption button. Actions allow an
-  application to centralize the response to user commands. When a control is associated with an
-  action, the action determines the appropriate properties and events of the control (such as whether
-  the control is enabled or how it responds to an OnClick event).
+  application to centralize the response to user commands. When a control is associated with an action,
+  the action determines the appropriate properties and events of the control (such as whether the
+  control is enabled or how it responds to an OnClick event).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionButton.ActionLink
@@ -144,8 +142,8 @@ See Also
 Summary
   Determines the height of the button.
 Description
-  ButtonHeight determines the height of the button. Set ButtonHeight to 0 to set the button's height
-  to the default height.
+  ButtonHeight determines the height of the button. Set ButtonHeight to 0 to set the button's height to
+  the default height.
 See Also
   TJvCaptionButton.ButtonLeft, TJvCaptionButton.ButtonTop, TJvCaptionButton.ButtonWidth
 
@@ -177,8 +175,8 @@ See Also
 Summary
   Determines the width of the button.
 Description
-  ButtonWidth determines the width of the button. Set ButtonWidth to 0 to set the button's width to
-  the default width.
+  ButtonWidth determines the width of the button. Set ButtonWidth to 0 to set the button's width to the
+  default width.
 See Also
   TJvCaptionButton.ButtonHeight, TJvCaptionButton.ButtonLeft, TJvCaptionButton.ButtonTop
 
@@ -208,11 +206,11 @@ See Also
 Summary
   Determines the state of the button.
 Description
-  Down determines if the button is pressed (true) or not (false). Down is a read only property and
-  can only be controlled through the UI.
+  Down determines if the button is pressed (true) or not (false). Down is a read only property and can
+  only be controlled through the UI.
 
-  If Toggle is set to true, Down will toggle from false to true and vice versa each time it the
-  button is clicked.
+  If Toggle is set to true, Down will toggle from false to true and vice versa each time it the button
+  is clicked.
 
   If Toggle is set to false, Down will be true when the left mouse button is down and will revert to
   false when the left mouse button is released.
@@ -246,8 +244,8 @@ See Also
 Summary
   Forces the button to be drawn using an alternate algorithm.
 Description
-  Use ForceDrawSimple to force an alternate drawing algorithm when the application is run under
-  Windows XP and you are using themes.
+  Use ForceDrawSimple to force an alternate drawing algorithm when the application is run under Windows
+  XP and you are using themes.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionButton.Hint
@@ -266,9 +264,9 @@ See Also
 Summary
   Identifies the image that appears on the caption button.
 Description
-  Use ImageIndex to specify an image that appears on the button. ImageIndex is the (0-offset) index
-  of the image in the TCustomImageList component that is available through the caption button’s
-  Images property.
+  Use ImageIndex to specify an image that appears on the button. ImageIndex is the (0-offset) index of
+  the image in the TCustomImageList component that is available through the caption button’s Images
+  property.
 Note
   It is only used for non-standard buttons (Standard = tsbNone).
 See Also
@@ -316,8 +314,8 @@ Description
 Summary
   Specifies where the image appears on the bitmap button.
 Description
-  Layout indicates whether the text appears either on the left of the button (cbImageLeft) or the
-  right of the button (cbImageRight).
+  Layout indicates whether the text appears either on the left of the button (cbImageLeft) or the right
+  of the button (cbImageRight).
 Note
   It is only used for non-standard buttons (Standard = tsbNone).
 See Also
@@ -333,9 +331,9 @@ Description
   The margin is the space between the image (or caption) edge and the button edge. The format of the
   edges depends on the alignment of the image and text (specified in the Alignment property). For
   example, if Alignment is taLeftJustify, the margin appears between the left edge of the image (or
-  caption) and the left edge of the button.
-  If Margin is 3, three pixels separate the image (or caption) and the button edges. If Margin is 0,
-  there is no space between the image (or caption) and the button edges.
+  caption) and the left edge of the button. If Margin is 3, three pixels separate the image (or
+  caption) and the button edges. If Margin is 0, there is no space between the image (or caption) and
+  the button edges.
 
   If Margin is -1 (the default value), the caption button uses a default margin.
 Note
@@ -376,9 +374,9 @@ Parameters
   Button - The mouse button released.
   Shift  - The shift state when the button was released.
   X      - The X position where the button was released, relative to upper left corner of the
-           control.
+            control.
   Y      - The Y position where the button was released, relative to upper left corner of the
-           control.
+            control.
 See Also
   TJvCaptionButton.MouseDown, TJvCaptionButton.OnMouseUp
 
@@ -398,8 +396,8 @@ Summary
 Description
   Write an OnMouseDown event handler to respond to mouse button presses over the control.
 
-  Use the Shift parameter of the OnMouseMove event handler, to determine to the state of the shift
-  keys and mouse buttons. Shift keys are the Shift, Ctrl, and Alt keys or shift key-mouse button
+  Use the Shift parameter of the OnMouseMove event handler, to determine to the state of the shift keys
+  and mouse buttons. Shift keys are the Shift, Ctrl, and Alt keys or shift key-mouse button
   combinations. X and Y are pixel coordinates of the new location of the mouse pointer in the client
   area of the Sender.
 See Also
@@ -413,8 +411,8 @@ Description
   Use the OnMouseMove event handler to respond when the mouse pointer moves after the control has
   captured the mouse.
 
-  Use the Shift parameter of the OnMouseMove event handler, to determine to the state of the shift
-  keys and mouse buttons. Shift keys are the Shift, Ctrl, and Alt keys or shift key-mouse button
+  Use the Shift parameter of the OnMouseMove event handler, to determine to the state of the shift keys
+  and mouse buttons. Shift keys are the Shift, Ctrl, and Alt keys or shift key-mouse button
   combinations. X and Y are pixel coordinates of the new location of the mouse pointer in the client
   area of the Sender.
 See Also
@@ -427,8 +425,8 @@ Summary
 Description
   Write an OnMouseDown event handler to respond to mouse button presses over the control.
 
-  Use the Shift parameter of the OnMouseMove event handler, to determine to the state of the shift
-  keys and mouse buttons. Shift keys are the Shift, Ctrl, and Alt keys or shift key-mouse button
+  Use the Shift parameter of the OnMouseMove event handler, to determine to the state of the shift keys
+  and mouse buttons. Shift keys are the Shift, Ctrl, and Alt keys or shift key-mouse button
   combinations. X and Y are pixel coordinates of the new location of the mouse pointer in the client
   area of the Sender.
 See Also
@@ -459,8 +457,8 @@ See Also
 Summary
   Determines where a control looks to find out if its Help \Hint should be shown.
 Description
-  Use ParentShowHint to ensure that all the controls on a form either uniformly show their Help
-  Hints or uniformly do not show them.
+  Use ParentShowHint to ensure that all the controls on a form either uniformly show their Help Hints
+  or uniformly do not show them.
 
   If ParentShowHint is true, the control uses the \ShowHint property value of its parent. If
   ParentShowHint is false, the control uses the value of its own ShowHint property.
@@ -478,10 +476,10 @@ See Also
 Summary
   Determines the horizontal position of the caption button on the form's caption.
 Description
-  Use property Position to specify a horizontal position for the caption button. Set Position to 0
-  (the default) to position the button next to the left most default caption button on the form's
-  caption. If you use more than 1 custom caption buttons, you can set Position to 1 to position it
-  next to the custom caption button with Position set to 0, etc.
+  Use property Position to specify a horizontal position for the caption button. Set Position to 0 (the
+  default) to position the button next to the left most default caption button on the form's caption.
+  If you use more than 1 custom caption buttons, you can set Position to 1 to position it next to the
+  custom caption button with Position set to 0, etc.
 
   Alternatively use ButtonLeft to specify a horizontal position for the caption button.
 See Also
@@ -499,18 +497,18 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionButton.ShowHint
 Summary
-  Determines whether the control displays a Help \Hint when the mouse pointer rests momentarily on
-  the control.
+  Determines whether the control displays a Help \Hint when the mouse pointer rests momentarily on the
+  control.
 Description
   The Help \Hint is the value of the Hint property, which is displayed in a box just beneath the
-  control.
-  Use ShowHint to determine whether a Help \Hint appears for the control.
+  control. Use ShowHint to determine whether a Help \Hint appears for the control.
 
   To enable Help \Hint for a particular control, the application ShowHint property must be true and
   either
 
   * the control’s own ShowHint property must be true, or
   * the control’s ParentShowHint property must be true and its parent's ShowHint property must be
+
   true.
 
   Changing the ShowHint value automatically sets the ParentShowHint property to false.
@@ -552,8 +550,8 @@ Description
   If Toggle is set to true, <LINK Down> will toggle between true and false every time the user clicks
   the button.
 
-  If Toggle is set to false, <LINK Down> will be set to true when the left mouse button is pressed
-  and set to false when the mouse button is released.
+  If Toggle is set to false, <LINK Down> will be set to true when the left mouse button is pressed and
+  set to false when the mouse button is released.
 See Also
   <LINK Down>
 
@@ -571,7 +569,7 @@ See Also
 @@TJvCaptionButtonLayout
 <TITLE TJvCaptionButtonLayout type>
 Summary
-  Defines values for the <LINK TJvCaptionButton.Layout,Layout> property of caption buttons.
+  Defines values for the <LINK TJvCaptionButton.Layout, Layout> property of caption buttons.
 Description
   TJvCaptionButtonLayout defines the location of an image on a button.
 See Also
@@ -579,11 +577,11 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionButtonLayout.cbImageLeft
-The image appears near the left side of the button.
+  The image appears near the left side of the button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionButtonLayout.cbImageRight
-The image appears near the right side of the button.
+  The image appears near the right side of the button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardButton
@@ -597,31 +595,31 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardButton.tsbNone
-The caption button is not a standard button.
+  The caption button is not a standard button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardButton.tsbClose
-The caption button is a close button.
+  The caption button is a close button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardButton.tsbHelp
-The caption button is a help button.
+  The caption button is a help button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardButton.tsbMax
-The caption button is a maximizing button.
+  The caption button is a maximizing button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardButton.tsbMin
-The caption button is a minimizing button.
+  The caption button is a minimizing button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardButton.tsbRestore
-The caption button is a restore button.
+  The caption button is a restore button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardButton.tsbMinimizeToTray
-The caption button is a "minimize to tray"  button.
+  The caption button is a "minimize to tray" button.
 
 ----------------------------------------------------------------------------------------------------
 @@TransparentBlt
@@ -637,12 +635,11 @@ Description
   transparency.
 
   If the source and destination rectangles are not the same size, the source bitmap is stretched to
-  match the destination rectangle. When the SetStretchBltMode function is used, the iStretchMode
-  modes of BLACKONWHITE and WHITEONBLACK are converted to COLORONCOLOR for the TransparentBlt
-  function.
+  match the destination rectangle. When the SetStretchBltMode function is used, the iStretchMode modes
+  of BLACKONWHITE and WHITEONBLACK are converted to COLORONCOLOR for the TransparentBlt function.
 
-  The destination device context specifies the transformation type for the destination coordinates.
-  The source device context specifies the transformation type for the source coordinates.
+  The destination device context specifies the transformation type for the destination coordinates. The
+  source device context specifies the transformation type for the source coordinates.
 
   TransparentBlt does not mirror a bitmap if either the width or height, of either the source or
   destination, is negative.
@@ -650,18 +647,16 @@ Description
   Windows 95/98: TransparentBlt contains a memory leak that can exhaust system resources. To draw a
   transparent bitmap using BitBlt, see Knowledge Base article 79212.
 
-  Windows 98/Me, Windows 2000/XP: When used in a multiple monitor system, both hdcSrc and hdcDest
-  must refer to the same device or the function will fail. To transfer data between DCs for different
+  Windows 98/Me, Windows 2000/XP: When used in a multiple monitor system, both hdcSrc and hdcDest must
+  refer to the same device or the function will fail. To transfer data between DCs for different
   devices, convert the memory bitmap to a DIB by calling GetDIBits. To display the DIB to the second
   device, call SetDIBits or StretchDIBits.
-
-
 Parameters
   hdcDest       - Handle to the destination device context.
   nXOriginDest  - Specifies the x-coordinate, in logical units, of the upper-left corner of the
-  destination rectangle.
+                   destination rectangle.
   nYOriginDest  - Specifies the y-coordinate, in logical units, of the upper-left corner of the
-  destination rectangle.
+                   destination rectangle.
   nWidthDest    - Specifies the width, in logical units, of the destination rectangle.
   hHeightDest   - Handle to the height, in logical units, of the destination rectangle.
   hdcSrc        - Handle to the source device context.

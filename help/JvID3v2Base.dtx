@@ -16,14 +16,13 @@ Summary
 Author
   Remko Bonte
 
-
 ----------------------------------------------------------------------------------------------------
 @@EJvID3Error
 Summary
   The exception class for ID3 errors.
 Description
-  EJvID3Error is raised when a component detects an ID3 error. Use EJvID3Error in an exception
-  handling block or to create an ID3 exception.
+  EJvID3Error is raised when a component detects an ID3 error. Use EJvID3Error in an exception handling
+  block or to create an ID3 exception.
 
 ----------------------------------------------------------------------------------------------------
 @@ExtToMIMEType
@@ -35,14 +34,14 @@ Description
 
   For example:
   <TABLE>
-  Ext            Result
-  ---            ------
-  .jpg           image/jpeg
-  .png           image/png
-  .gif           image/gif
-  .tif           image/tiff
-  .pic           image/x-pict
-  .bmp           image/bitmap
+    Ext   Result
+    ----  ------------
+    .jpg  image/jpeg
+    .png  image/png
+    .gif  image/gif
+    .tif  image/tiff
+    .pic  image/x-pict
+    .bmp  image/bitmap
   </TABLE>
 Parameters
   Ext - The file extension to convert.
@@ -55,17 +54,16 @@ See Also
 Summary
   Converts an ID3 v2 genre string to a displayable genre string.
 Description
-
   For example:
   <TABLE>
-  Parameter                          Returns
-  ------------------------------     -------
-  (21)                               Ska
-  (4)Eurodisco                       Disco Eurodisco
-  (51)(39)                           Techno-Industrial Noise
-  '((I can figure out any genre)     (I can figure out any genre)
-  (55)((I think...)                  Dream (I think...)
-  (RX)')                             Remix
+    Parameter                       Returns
+    ------------------------------  ----------------------------
+    (21)                            Ska
+    (4)Eurodisco                    Disco Eurodisco
+    (51)(39)                        Techno-Industrial Noise
+    '((I can figure out any genre)  (I can figure out any genre)
+    (55)((I think...)               Dream (I think...)
+    (RX)')                          Remix
   </TABLE>
 Parameters
   AGenre - The ID3 v2 genre string to convert.
@@ -94,14 +92,14 @@ Description
 
   Examples are:
   <TABLE>
-  MIMEType       Result
-  --------       ------
-  image/jpeg     .jpg
-  image/png      .png
-  image/gif      .gif
-  image/tiff     .tif
-  image/x-pict   .pic
-  image/bitmap   .bmp
+    MIMEType      Result
+    ------------  ------
+    image/jpeg    .jpg
+    image/png     .png
+    image/gif     .gif
+    image/tiff    .tif
+    image/x-pict  .pic
+    image/bitmap  .bmp
   </TABLE>
 Parameters
   MIMEType - The MIME string to convert.
@@ -115,14 +113,14 @@ Summary
   Converts a displayable genre string to an ID3 v2 genre string.
 Description
   <TABLE>
-  Parameter                          Returns
-  ---------------------------        -------
-  Ska                                (21)
-  Disco Eurodisco                    (4)Eurodisco
-  Techno-Industrial Noise            (51)(39)
-  (I can figure out any genre)       ((I can figure out any genre)
-  Dream (I think...)                 (55)((I think...)
-  Remix                              (RX)
+    Parameter                     Returns
+    ----------------------------  -----------------------------
+    Ska                           (21)
+    Disco Eurodisco               (4)Eurodisco
+    Techno-Industrial Noise       (51)(39)
+    (I can figure out any genre)  ((I can figure out any genre)
+    Dream (I think...)            (55)((I think...)
+    Remix                         (RX)
   </TABLE>
 Parameters
   ANiceGenre - The displayable genre string to convert.
@@ -135,13 +133,12 @@ Summary
   Represents an audio encryption frame in a tag.
 Description
   Use TJvID3AudioEncryptionFrame to represent an audio encryption frame in a tag. Such a frame has
-  <LINK TJvID3Frame.FrameID,frame identifier> fiAudioCrypto ("AENC").
+  <LINK TJvID3Frame.FrameID, frame identifier> fiAudioCrypto ("AENC").
 
   This frame indicates if the actual audio stream is encrypted, and by whom.
 
-  The frame contains a URL containing an email address, or a link to a location where an email
-  address can be found, that belongs to the organisation responsible for this specific encrypted
-  audio file.
+  The frame contains a URL containing an email address, or a link to a location where an email address
+  can be found, that belongs to the organisation responsible for this specific encrypted audio file.
 
   PreviewStart and PreviewLength are described in frames, and are pointers to an unencrypted part of
   the audio. If no part is unencrypted, these fields should be left zeroed.
@@ -149,23 +146,24 @@ Description
   TJvID3GeneralObjFrame is a TJvID3BinaryFrame descendant. The binary data can optionally contain a
   datablock required for decryption of the audio.
 
-  There may be more than one audio encryption frames in a tag, but only
-  one with the same OwnerID 'Owner identifier'.
+  There may be more than one audio encryption frames in a tag, but only one with the same OwnerID
+  'Owner identifier'.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3AudioEncryptionFrame.Find
 Summary
   Returns a TJvID3AudioEncryptionFrame frame with a specific owner identifier.
 Description
-  Call Find to search in an ID3 tag for an audio encryption frame with a specific owner identifier
-  and determine if it exists. The tag controller specified by AController must be active - Do this by
-  setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
+  Call Find to search in an ID3 tag for an audio encryption frame with a specific owner identifier and
+  determine if it exists. The tag controller specified by AController must be active - Do this by
+  setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open,
+  Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AOwnerID    - The owner identifier to search for.
-Return Value
-  Returns a TJvID3AudioEncryptionFrame frame, if there is such a frame in the tag controlled by the
-  tag controller specified by the AController parameter. Otherwise returns nil.
+Return value
+  Returns a TJvID3AudioEncryptionFrame frame, if there is such a frame in the tag controlled by the tag
+  controller specified by the AController parameter. Otherwise returns nil.
 See Also
   TJvID3AudioEncryptionFrame.FindOrCreate
 
@@ -175,18 +173,16 @@ Summary
   Returns a TJvID3AudioEncryptionFrame frame with a specific owner identifier.
 Description
   Call FindOrCreate to search in an ID3 tag for an audio encryption frame with a specific owner
-  identifier.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  identifier. If there is no such frame then one is created. The tag controller specified by
+  AController must be active - Do this by setting <LINK TJvID3Controller.Active, Active> to true or
+  calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AOwnerID    - The owner identifier to search for.
-Return Value
-  Returns a TJvID3AudioEncryptionFrame frame with the specified owner identifier, that was found in
-  the ID3 tag, or - when no such frame was found - a newly created frame.
-  If a new frame is created, its OwnerID property will be set to the value specified by the AOwnerID
-  parameter.
+Return value
+  Returns a TJvID3AudioEncryptionFrame frame with the specified owner identifier, that was found in the
+  ID3 tag, or - when no such frame was found - a newly created frame. If a new frame is created, its
+  OwnerID property will be set to the value specified by the AOwnerID parameter.
 See Also
   TJvID3AudioEncryptionFrame.Find
 
@@ -196,8 +192,8 @@ Summary
   Identifies who is responsible for this specific encrypted audio file.
 Description
   Use OwnerID to specify a \URL containing an email address, or a link to a location where an email
-  address can be found, that belongs to the organisation responsible for this specific encrypted
-  audio file. Questions regarding the encrypted audio should be sent to the email address specified.
+  address can be found, that belongs to the organisation responsible for this specific encrypted audio
+  file. Questions regarding the encrypted audio should be sent to the email address specified.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3AudioEncryptionFrame.PreviewLength
@@ -259,20 +255,18 @@ Description
 Summary
   Base class for frames that contain a binary field.
 Description
-  TJvID3BinaryFrame encapsulates the fundamental behavior common to frames that contain a binary
-  field.
-  TJvID3BinaryFrame introduces new properties to manipulate, load and save binary data to and from
-  the frame.
+  TJvID3BinaryFrame encapsulates the fundamental behavior common to frames that contain a binary field.
+  TJvID3BinaryFrame introduces new properties to manipulate, load and save binary data to and from the
+  frame.
 
   You can use TJvID3BinaryFrame directly to represent a music CD identifier frame in a tag. Such a
-  frame has <LINK TJvID3Frame.FrameID,frame identifier> fiCDID ("MCDI"). The frame consists of a
-  binary dump of the
-  Table Of Contents, TOC, from the CD.
+  frame has <LINK TJvID3Frame.FrameID, frame identifier> fiCDID ("MCDI"). The frame consists of a
+  binary dump of the Table Of Contents, TOC, from the CD.
 
   In addition, TJvID3BinaryFrame is the direct ancestor of the following frame components:
 
   * TJvID3SkipFrame, that is used when the tag controller encounters an unknown frame in the tag, and
-     encapsulates the data belonging to that unknown frame.
+    encapsulates the data belonging to that unknown frame.
   * TJvID3GeneralObjFrame, that can encapsulate any type of file.
   * TJvID3AudioEncryptionFrame, that can encapsulate a datablock required for decryption of the audio.
   * TJvID3PictureFrame, that can encapsulate a picture as binary data.
@@ -293,11 +287,11 @@ Summary
 Description
   Call Find to search in an ID3 tag for a binary frame with a specific frame identifier and determine
   if it exists. The tag controller specified by AController must be active - Do this by setting <LINK
-  TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
+  TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
+Return value
   Returns a TJvID3BinaryFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -308,16 +302,16 @@ See Also
 Summary
   Returns a TJvID3BinaryFrame frame with a specific frame identifier.
 Description
-  Call FindOrCreate to search in an ID3 tag for a binary frame with a specific frame identifier.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  Call FindOrCreate to search in an ID3 tag for a binary frame with a specific frame identifier. If
+  there is no such frame then one is created. The tag controller specified by AController must be
+  active - Do this by setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK
+  TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
-  Returns a TJvID3BinaryFrame frame with the specified frame identifier, that was found in the ID3
-  tag, or - when no such frame was found - a newly created frame.
+Return value
+  Returns a TJvID3BinaryFrame frame with the specified frame identifier, that was found in the ID3 tag,
+  or - when no such frame was found - a newly created frame.
 See Also
   TJvID3BinaryFrame.Find
 
@@ -329,12 +323,12 @@ Description
   Call GetData to return the data in a field to a buffer. GetData is intended primarily for internal
   use.
 
-  P must have sufficient space allocated for the data. Use the DataSize property to determine the
-  space required.
+  P must have sufficient space allocated for the data. Use the DataSize property to determine the space
+  required.
 Parameters
   P    - The buffer where to the binary data of the frame will be copied.
   Size - The number of bytes P points to. This may be smaller than property DataSize.
-Return Value
+Return value
   Returns true on success, false on failure.
 See Also
   TJvID3BinaryFrame.SaveToFile, TJvID3BinaryFrame.SaveToStream, TJvID3BinaryFrame.SetData
@@ -346,10 +340,9 @@ Summary
 Description
   Use LoadFromFile to load the contents of a file into the binary field of the frame.
 
-  LoadFromFile reallocates the memory buffer so that the contents of the file will exactly fit. It
-  sets the DataSize property accordingly, and then reads the entire contents of the file into the
-  memory buffer.
-  Thus, LoadFromFile will discard any pre-existing data stored in the frame.
+  LoadFromFile reallocates the memory buffer so that the contents of the file will exactly fit. It sets
+  the DataSize property accordingly, and then reads the entire contents of the file into the memory
+  buffer. Thus, LoadFromFile will discard any pre-existing data stored in the frame.
 
   \Example:
   <AUTOLINK OFF>
@@ -375,12 +368,13 @@ Summary
   Loads the entire contents of a stream into the binary field of the frame.
 Description
   Use LoadFromStream to copy the contents of a stream into the binary field of the frame.
-  LoadFromStream always sets the Position of the source stream to 0, before streaming in the number
-  of bytes indicated by the source stream’s Size property.
+  LoadFromStream always sets the Position of the source stream to 0, before streaming in the number of
+  bytes indicated by the source stream’s Size property.
 
-  LoadFromStream reallocates the internal buffer of the binary field so that the contents of the stream will exactly fit. It sets the DataSize property accordingly, and then read
-   the entire contents of the stream into the binary field. Thus, LoadFromStream will discard any
-  pre-existing data stored in the binary field of the tag.
+  LoadFromStream reallocates the internal buffer of the binary field so that the contents of the stream
+  will exactly fit. It sets the DataSize property accordingly, and then read the entire contents of the
+  stream into the binary field. Thus, LoadFromStream will discard any pre-existing data stored in the
+  binary field of the tag.
 
   \Example:
   <AUTOLINK OFF>
@@ -493,7 +487,7 @@ Description
 Parameters
   P    - Holds the new data for the binary field.
   Size - The number of bytes P points to.
-Return Value
+Return value
   Returns true on success, false on failure.
 See Also
   TJvID3BinaryFrame.GetData, TJvID3BinaryFrame.LoadFromFile, TJvID3BinaryFrame.LoadFromStream
@@ -503,20 +497,21 @@ See Also
 Summary
   Represents a frame consisting of text in a specific language and a description.
 Description
-  The following <LINK TJvID3FrameID,frame identifiers> are supported by TJvID3ContentFrame.
+  The following <LINK TJvID3FrameID, frame identifiers> are supported by TJvID3ContentFrame.
 
   <TABLE>
-  Frame ID, name              \Description
-  -----------------           ------------
-  fiComment -                 The 'content' frame is indended for any kind of full text information that does
-   <C>COMM</C>                 not fit in any other frame.
-  fiUnsyncedLyrics -          The 'Unsynchronized lyric/text transcription' frame contains the lyrics
-   <C>USLT</C>                 of the song or a text transcription of other vocal activities.
+    Frame ID, name                    \Description
+    --------------------------------  --------------------------------------------------------
+    fiComment - <C> COMM </C>         The 'content' frame is indended for any kind of full
+                                        text information that does not fit in any other frame.
+    fiUnsyncedLyrics - <C> USLT </C>  The 'Unsynchronized lyric/text transcription' frame
+                                        contains the lyrics of the song or a text
+                                        transcription of other vocal activities.
   </TABLE>
 
   There may be more than one TJvID3ContentFrame frame in each tag, but only one with the same <LINK
-  TJvID3ContentFrame.Language,language> and
-  <LINK TJvID3ContentFrame.Description,content descriptor>.
+  TJvID3ContentFrame.Language, language> and <LINK TJvID3ContentFrame.Description, content
+  descriptor>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3ContentFrame.Description
@@ -539,13 +534,13 @@ See Also
 Summary
   Returns a TJvID3ContentFrame frame with a specific frame identifier.
 Description
-  Call Find to search in an ID3 tag for a content frame with a specific frame identifier and
-  determine if it exists. The tag controller specified by AController must be active - Do this by
-  setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
+  Call Find to search in an ID3 tag for a content frame with a specific frame identifier and determine
+  if it exists. The tag controller specified by AController must be active - Do this by setting <LINK
+  TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
+Return value
   Returns a TJvID3ContentFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -556,14 +551,14 @@ See Also
 Summary
   Returns a TJvID3ContentFrame frame with a specific frame identifier.
 Description
-  Call FindOrCreate to search in an ID3 tag for a content frame with a specific frame identifier.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  Call FindOrCreate to search in an ID3 tag for a content frame with a specific frame identifier. If
+  there is no such frame then one is created. The tag controller specified by AController must be
+  active - Do this by setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK
+  TJvID3Controller.Open, Open>.
 Parameters
   AController - The tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
+Return value
   Returns a TJvID3ContentFrame frame with the specified frame identifier, that was found in the ID3
   tag, or - when no such frame was found - a newly created frame.
 See Also
@@ -574,8 +569,8 @@ See Also
 Summary
   Specifies the language identifier for this frame.
 Description
-  Use Language to specify the language identifier for the content of the frame (as specified by
-  Text or TextW). The value of Language must be in ISO-639-2 format.
+  Use Language to specify the language identifier for the content of the frame (as specified by Text or
+  TextW). The value of Language must be in ISO-639-2 format.
 See Also
   TJvID3ContentFrame.Text, TJvID3ContentFrame.TextW
 
@@ -631,8 +626,8 @@ Summary
 Description
   Call AddFrame to add a frame with frame identifier AFrameID to the tag.
 
-  Certain frames may only appear once in a tag regardless of its value. For example, there may only
-  be one fiAlbum frame in a tag. So you might want to check CanAddFrame before calling AddFrame.
+  Certain frames may only appear once in a tag regardless of its value. For example, there may only be
+  one fiAlbum frame in a tag. So you might want to check CanAddFrame before calling AddFrame.
 
   Alternatively, you can use the FindOrCreate methods of frames to a specific frame component:
 
@@ -650,9 +645,11 @@ Description
       TJvID3TextFrame(Frame).Text := 'The white album';
   end;
   </CODE>
+  <AUTOLINK ON>
 
   Or:
 
+  <AUTOLINK OFF>
   <CODE>
   begin
     { JvID3v21 is the tag controller }
@@ -663,7 +660,7 @@ Description
   <AUTOLINK ON>
 Parameters
   AFrameID - Specifies the frame identifier to add.
-Return Value
+Return value
   Returns the added frame.
 See Also
   TJvID3Controller.CanAddFrame, TJvID3Frames.FrameByID
@@ -685,11 +682,11 @@ Description
   Call CanAddFrame to check whether a frame with a frame identifier as specified by parameter AFrameID
   can be added to the tag controlled by the tag controller.
 
-  Certain frames may only appear once in a tag regardless of its value. For example, there may only
-  be one fiAlbum frame in a tag.
+  Certain frames may only appear once in a tag regardless of its value. For example, there may only be
+  one fiAlbum frame in a tag.
 Parameters
   AFrameID - The frame identifier of the frame.
-Return Value
+Return value
   Returns true if a frame with a frame identifier as specified by AFrameID can be added to the tag.
   Returns false otherwise.
 See Also
@@ -712,18 +709,17 @@ Summary
 Description
   Call Commit to write a modified tag to the file specified by property FileName.
 
-  You can use WriteEncodingAs and WriteVersionAs to enforce that the frames in the tag will be
-  written with a specific encoding, and enforce the tag to be writen as a specific version, resp.
-  It is recommended to use Version instead of WriteVersionAs.
+  You can use WriteEncodingAs and WriteVersionAs to enforce that the frames in the tag will be written
+  with a specific encoding, and enforce the tag to be writen as a specific version, resp. It is
+  recommended to use Version instead of WriteVersionAs.
 
-  When you call <LINK TJvID3Controller.Commit,Commit> the tag controller checks whether all frames in
-  the tag are unique and whether the values of the frames are correct. Depending on the value of
-  <LINK TJvID3Controller.Options,Options> the duplicate frames are removed and invalid values are
-  corrected or an error is raised.
+  When you call <LINK TJvID3Controller.Commit, Commit> the tag controller checks whether all frames in
+  the tag are unique and whether the values of the frames are correct. Depending on the value of <LINK
+  TJvID3Controller.Options, Options> the duplicate frames are removed and invalid values are corrected
+  or an error is raised.
 
-  The tag controller specified by AController must
-  be active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  The tag controller specified by AController must be active - Do this by setting <LINK
+  TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open, Open>.
 See Also
   TJvID3Controller.Erase, TJvID3Frames.CheckFrames, TJvID3Frames.RemoveEmptyFrames
 
@@ -732,26 +728,28 @@ See Also
 Summary
   Copies the ID3 v1 tag of the file to the relevant frames of the ID3 v2 tag.
 Description
-  Call CopyFromID3v1 to copy the ID3 v1 tag of the file specified by the FileName property to the
-  ID3 v2 tag. The new tag isn't actually writtten to the file until you call Commit.
+  Call CopyFromID3v1 to copy the ID3 v1 tag of the file specified by the FileName property to the ID3
+  v2 tag. The new tag isn't actually writtten to the file until you call Commit.
 
   The ID3 v2 frames that correspond to ID3 v1 fields are:
 
   <TABLE>
-  ID3 v1        ID3 v2 frame ID                               Implemented by
-  ------        ---------------                               --------------
-  SongName      fiTitle                                       TJvID3TextFrame
-  Artist        fiLeadArtist                                  TJvID3SimpleListFrame
-  Album         fiAlbum                                       TJvID3TextFrame
-  Year          fiRecordingTime (v2.4.0) or fiYear (v2.3.0)   TJvID3TimestampFrame, TJvID3NumberFrame resp.
-  Comment       fiComment                                     TJvID3ContentFrame
-  Genre         fiContentType                                 TJvID3TextFrame
+    ID3 v1    ID3 v2 frame ID                           Implemented by
+    --------  ----------------------------------------  ----------------------------------------
+    SongName  fiTitle                                   TJvID3TextFrame
+    Artist    fiLeadArtist                              TJvID3SimpleListFrame
+    Album     fiAlbum                                   TJvID3TextFrame
+    Year      fiRecordingTime (v2.4.0) or fiYear        TJvID3TimestampFrame, TJvID3NumberFrame
+                (v2.3.0)                                  resp.
+    Comment   fiComment                                 TJvID3ContentFrame
+    Genre     fiContentType                             TJvID3TextFrame
   </TABLE>
+
   The tag controller must be active - Do this by setting Active to true or calling Open.
 Parameters
-  DoOverwrite - Specifies whether to overwrite the values of existing frames by the values of the
-                 ID3 v1 tag.
-Return Value
+  DoOverwrite - Specifies whether to overwrite the values of existing frames by the values of the ID3
+                 v1 tag.
+Return value
   Returns true on success, false on failure.
 See Also
   <LINK CopyFromID3v1Ctrl>, <LINK CopyToID3v1>, <LINK CopyToID3v1Ctrl>
@@ -761,16 +759,16 @@ See Also
 Summary
   Copies the properties of the ID3 v1 component to the relevant frames of the ID3 v2 tag.
 Description
-  Call CopyFromID3v1Ctrl to copy the properties of the ID3 v1 component to the
-  ID3 v2 tag. The new tag isn't actually writtten to the file until you call Commit.
+  Call CopyFromID3v1Ctrl to copy the properties of the ID3 v1 component to the ID3 v2 tag. The new tag
+  isn't actually writtten to the file until you call Commit.
 
   See <LINK CopyFromID3v1> for a list of ID3 v2 frames that correspond to ID3 v1 fields.
 
   The tag controller must be active - Do this by setting Active to true or calling Open.
 Parameters
   AID3v1      - The ID3 v1 component.
-  DoOverwrite - Specifies whether to overwrite the values of existing frames by the values of the
-                 ID3 v1 tag.
+  DoOverwrite - Specifies whether to overwrite the values of existing frames by the values of the ID3
+                 v1 tag.
 See Also
   <LINK CopyFromID3v1>, <LINK CopyToID3v1>, <LINK CopyToID3v1Ctrl>
 
@@ -786,9 +784,9 @@ Description
 
   The tag controller must be active - Do this by setting Active to true or calling Open.
 Parameters
-  DoOverwrite - Specifies whether to overwrite the values of existing frames by the values of the
-                 ID3 v1 tag.
-Return Value
+  DoOverwrite - Specifies whether to overwrite the values of existing frames by the values of the ID3
+                 v1 tag.
+Return value
   Returns true on success, false on failure.
 See Also
   <LINK CopyFromID3v1>, <LINK CopyFromID3v1Ctrl>, <LINK CopyToID3v1Ctrl>
@@ -805,8 +803,8 @@ Description
   The tag controller must be active - Do this by setting Active to true or calling Open.
 Parameters
   AID3v1      - The ID3 v1 component.
-  DoOverwrite - Specifies whether to overwrite the values of existing frames by the values of the
-                 ID3 v1 tag.
+  DoOverwrite - Specifies whether to overwrite the values of existing frames by the values of the ID3
+                 v1 tag.
 See Also
   <LINK CopyFromID3v1>, <LINK CopyFromID3v1Ctrl>, <LINK CopyToID3v1>
 
@@ -815,11 +813,10 @@ See Also
 Summary
   Returns a pointer to the tag editor.
 Description
-  Use Designer to determine whether the tag is currently being edited and, if so, to access the
-  Frames editor. When the \Frames editor, is created for a tag controller at design time, it sets the
-  Designer property to itself. When the \Frames editor is destroyed, the Designer property is set
-  back to nil. A \Frames editor enables a
-  developer to alter the frames of a tag at design time.
+  Use Designer to determine whether the tag is currently being edited and, if so, to access the Frames
+  editor. When the \Frames editor, is created for a tag controller at design time, it sets the Designer
+  property to itself. When the \Frames editor is destroyed, the Designer property is set back to nil. A
+  \Frames editor enables a developer to alter the frames of a tag at design time.
 See Also
   TJvID3Controller.Frames
 
@@ -853,7 +850,7 @@ Summary
 Description
   Call \Erase to remove the ID3 v2 tag from the file specified by FileName.
 
-  The tag controller does <i>not</i> have to be active, when you call \Erase.
+  The tag controller does <I>not</I> have to be active, when you call \Erase.
 See Also
   TJvID3Controller.Commit
 
@@ -864,8 +861,8 @@ Summary
 Description
   Use ExtendedHeader to access the extended header of the tag.
 
-  The information provided by ExtendedHeader is only valid if hfExtendedHeader is included in
-  property <LINK TJvID3Header.Flags,Flags> of Header.
+  The information provided by ExtendedHeader is only valid if hfExtendedHeader is included in property
+  <LINK TJvID3Header.Flags, Flags> of Header.
 See Also
   TJvID3Controller.Header
 
@@ -885,7 +882,7 @@ Summary
 Description
   Use FileName to specify the name of the file to associate with this tag controller.
 
-  You can change FileName when the tag controller is <LINK TJvID3Controller.Active,active>. If so,
+  You can change FileName when the tag controller is <LINK TJvID3Controller.Active, active>. If so,
   then the tag controller will read the tag of the new specified file.
 See Also
   TJvID3Controller.Active
@@ -900,9 +897,9 @@ Description
   frame identifier in the tag.
 Parameters
   AFrameID - The frame identifier to search for.
-  Frame    - Returns the first frame in the tag with AFrameID as frame identifier, or nil if no
-        such frame was found.
-Return Value
+  Frame    - Returns the first frame in the tag with AFrameID as frame identifier, or nil if no such
+              frame was found.
+Return value
   Returns true when a frame was found, or false otherwise.
 See Also
   <LINK FindNextFrame>
@@ -939,7 +936,7 @@ Parameters
   AFrameID - The frame identifier to search for.
   From     - Specifies the frame after which to search for the frame identifier. FindNextFrame sets
               From to the next frame found or nil if no such frame was found.
-Return Value
+Return value
   Returns true when a frame was found, or false otherwise.
 See Also
   <LINK FindFirstFrame>
@@ -960,8 +957,8 @@ See Also
 Summary
   Lists all frame components of the tag.
 Description
-  Use Frames to access frames components. The order of
-  frame components in Frames corresponds directly to the order of the frames in the tag of the file.
+  Use Frames to access frames components. The order of frame components in Frames corresponds directly
+  to the order of the frames in the tag of the file.
 
   The preferred method for retrieving and assigning field values is to use the FindOrCreate method of
   TJvID3Frame descendants.
@@ -977,7 +974,7 @@ Description
   parameter AFrameID, in the tag controlled by the tag controller.
 Parameters
   AFrameID - Specifies the frame identifier to search for.
-Return Value
+Return value
   Returns the number of frames with a specific frame identifier.
 See Also
   TJvID3Controller.HasFrame, TJvID3Frame.FrameID
@@ -991,7 +988,7 @@ Description
   identifier as specified by parameter AFrameID.
 Parameters
   AFrameID - Specifies the frame identifier to search for.
-Return Value
+Return value
   Returns true if the tag controlled by the tag controller contains a frame with AFrameID as frame
   identifier, otherwise returns false.
 See Also
@@ -1011,8 +1008,8 @@ See Also
 Summary
   Indicates whether the tag is modified.
 Description
-  \Check Modified to determine whether the tag is modified. If Modified is true, the tag controlled
-  by the tag controller is modified. If false, the tag is not modified.
+  \Check Modified to determine whether the tag is modified. If Modified is true, the tag controlled by
+  the tag controller is modified. If false, the tag is not modified.
 See Also
   TJvID3Controller.Commit, TJvID3Controller.Erase
 
@@ -1021,14 +1018,14 @@ See Also
 Summary
   Opens the tag controller.
 Description
-  Call Open to set the Active property of a tag controller to true. When Active is set to true, the
-  tag controller is populated with frames read from the ID3 v2 tag from the file specified by
-  FileName. The frames can be modified and you can add or delete specific frames. When you are done
-  you can call Commit to write the changed tag back to the file.
+  Call Open to set the Active property of a tag controller to true. When Active is set to true, the tag
+  controller is populated with frames read from the ID3 v2 tag from the file specified by FileName. The
+  frames can be modified and you can add or delete specific frames. When you are done you can call
+  Commit to write the changed tag back to the file.
 
-  You can use ReadEncodingAs to enforce a specific encoding for <i>all</i> frames in a tag after it
-  has been read. Use ReadVersionAs to automatically translate the version of a tag to a specific
-  version after it has been read.
+  You can use ReadEncodingAs to enforce a specific encoding for <I>all</I> frames in a tag after it has
+  been read. Use ReadVersionAs to automatically translate the version of a tag to a specific version
+  after it has been read.
 See Also
   TJvID3Controller.Active, TJvID3Controller.Close, TJvID3Controller.Commit
 
@@ -1047,18 +1044,18 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Controller.ReadEncodingAs
 Summary
-  Enforces a specific encoding for <i>all</i> frames in a tag after it has been read.
+  Enforces a specific encoding for <I>all</I> frames in a tag after it has been read.
 Description
-  Use ReadEncodingAs to enforce a specific encoding for <i>all</i> frames in a tag after it has been
+  Use ReadEncodingAs to enforce a specific encoding for <I>all</I> frames in a tag after it has been
   read.
 
   You can either specify:
 
-  * that you don't want that all frames are translated to a specific encoding after a tag has   been
-    read; the <LINK TJvID3Frame.Encoding,Encoding> property of frames might be different
-    after the tag has been read.
-  * a specific encoding for all frames: then the tag controller will translate the values of   all
-    frames to a specific encoding after it's read from the file.
+  * that you don't want that all frames are translated to a specific encoding after a tag has been
+    read; the <LINK TJvID3Frame.Encoding, Encoding> property of frames might be different after the tag
+    has been read.
+  * a specific encoding for all frames: then the tag controller will translate the values of all frames
+    to a specific encoding after it's read from the file.
 See Also
   TJvID3Controller.WriteEncodingAs, TJvID3Frame.Encoding
 
@@ -1067,8 +1064,8 @@ See Also
 Summary
   Indicates what the version of the tag will be after it has been read.
 Description
-  Read ReadVersion to determine what the version of a tag will be after it has been read. The value
-  of ReadVersion depends on the values of ReadVersionAs and Version.
+  Read ReadVersion to determine what the version of a tag will be after it has been read. The value of
+  ReadVersion depends on the values of ReadVersionAs and Version.
 See Also
   TJvID3Controller.ReadVersionAs, TJvID3Controller.Version, TJvID3Controller.WriteVersion,
   TJvID3Controller.WriteVersionAs
@@ -1078,12 +1075,12 @@ See Also
 Summary
   Enforces a specific version of the tag after it has been read.
 Description
-  Use ReadVersionAs to automatically translate the version of a tag to a specific version after it
-  has been read.
+  Use ReadVersionAs to automatically translate the version of a tag to a specific version after it has
+  been read.
 
-  If a value other than ifvDontCare is specified, the tag controller will translate - after the tag
-  has been read - all frames that
-  are not available or deprecated for the specified version to their available counterpart.
+  If a value other than ifvDontCare is specified, the tag controller will translate - after the tag has
+  been read - all frames that are not available or deprecated for the specified version to their
+  available counterpart.
 See Also
   TJvID3Controller.Version, TJvID3Controller.WriteVersionAs
 
@@ -1095,7 +1092,7 @@ Description
   Use TagSize to determine the the size of the complete ID3 v2 tag after unsychronisation, including
   padding, excluding the header but not excluding the extended header.
 
-  The tag controller must be <LINK TJvID3Controller.Active,active>, otherwise TagSize returns 0.
+  The tag controller must be <LINK TJvID3Controller.Active, active>, otherwise TagSize returns 0.
 See Also
   TJvID3Controller.Header
 
@@ -1104,8 +1101,8 @@ See Also
 Summary
   Specifies the version of the tag.
 Description
-  Use Version to determine the version of the tag or translate the tag to a specific version.
-  Supported versions are:
+  Use Version to determine the version of the tag or translate the tag to a specific version. Supported
+  versions are:
 
   * ID3 tag version 2.2.0 (ive2_2).
   * ID3 tag version 2.3.0 (ive2_3).
@@ -1122,49 +1119,49 @@ Description
   * Only version 2.4.0 supports UTF-16BE and UTF-8 encoding for frames (See TJvID3Frame.Encoding).
   * Version 2.4.0 tags can include a tag footer. (not implemented by TJvID3Controller).
   * Unsynchronisation is done on frame level in version 2.4.0, instead of on tag level.
-  * Some frames are deprecated as of version 2.4.0, others are introduced in version 2.4.0. By
-    changing property Version the tag controller automatically translates deprecated frames to
-    newly introduced frames and vice versa. For example, if you change Version from ive2_4 to
-    ive2_3, the tag controller, will remove fiInvolvedPeople2 and fiMusicianCreditList frames,
-    and combine these into a new fiInvolvedPeople frame.
+  * Some frames are deprecated as of version 2.4.0, others are introduced in version 2.4.0. By changing
+    property Version the tag controller automatically translates deprecated frames to newly introduced
+    frames and vice versa. For example, if you change Version from ive2_4 to ive2_3, the tag
+    controller, will remove fiInvolvedPeople2 and fiMusicianCreditList frames, and combine these into a
+    new fiInvolvedPeople frame.
 
   Deprecated frames as of version 2.4.0
   <TABLE>
-  TJvID3FrameID         Name        Implemented By            Use instead
-  -------------         ====        --------------            -----------
-  fiDate                TDAT        TJvID3TextFrame           fiRecordingTime
-  fiEqualization        EQUA        -                         fiEqualization2
-  fiInvolvedPeople      IPLS        TJvID3DoubleListFrame     fiInvolvedPeople2, fiMusicianCreditList
-  fiOrigYear            TORY        TJvID3NumberFrame         fiOrigReleaseTime
-  fiRecordingDates      TRDA        TJvID3TextFrame           fiRecordingTime
-  fiSize                TSIZ        TJvID3NumberFrame         -
-  fiTime                TIME        TJvID3TextFrame           fiRecordingTime
-  fiVolumeAdj           RVAD        -                         fiVolumeAdj2
-  fiYear                TYER        TJvID3NumberFrame         fiRecordingTime
+    TJvID3FrameID     Name  Implemented By         Use instead
+    ----------------  ====  ---------------------  ---------------------------------------
+    fiDate            TDAT  TJvID3TextFrame        fiRecordingTime
+    fiEqualization    EQUA  -                      fiEqualization2
+    fiInvolvedPeople  IPLS  TJvID3DoubleListFrame  fiInvolvedPeople2, fiMusicianCreditList
+    fiOrigYear        TORY  TJvID3NumberFrame      fiOrigReleaseTime
+    fiRecordingDates  TRDA  TJvID3TextFrame        fiRecordingTime
+    fiSize            TSIZ  TJvID3NumberFrame      -
+    fiTime            TIME  TJvID3TextFrame        fiRecordingTime
+    fiVolumeAdj       RVAD  -                      fiVolumeAdj2
+    fiYear            TYER  TJvID3NumberFrame      fiRecordingTime
   </TABLE>
 
   \Frames introduced in version 2.4.0.
   <TABLE>
-  TJvID3FrameID         Name        Implemented By
-  -------------         ====        --------------
-  fiAlbumSortOrder      TSOA        TJvID3TextFrame
-  fiAudioSeekPoint      ASPI        -
-  fiEncodingTime        TDEN        TJvID3TimestampFrame
-  fiEqualization2       EQU2        -
-  fiInvolvedPeople2     TIPL        TJvID3DoubleListFrame
-  fiMood                TMOO        TJvID3TextFrame
-  fiMusicianCreditList  TMCL        TJvID3DoubleListFrame
-  fiOrigReleaseTime     TDOR        TJvID3TimestampFrame
-  fiPerformerSortOrder  TSOP        TJvID3TextFrame
-  fiProducedNotice      TPRO        TJvID3TextFrame
-  fiRecordingTime       TDRC        TJvID3TimestampFrame
-  fiReleaseTime         TDRL        TJvID3TimestampFrame
-  fiSeekFrame           SEEK        -
-  fiSetSubTitle         TSST        TJvID3TextFrame
-  fiSignature           SIGN        -
-  fiTaggingTime         TDTG        TJvID3TimestampFrame
-  fiTitleSortOrder      TSOT        TJvID3TextFrame
-  fiVolumeAdj2          RVA2        -
+    TJvID3FrameID         Name  Implemented By
+    --------------------  ====  ---------------------
+    fiAlbumSortOrder      TSOA  TJvID3TextFrame
+    fiAudioSeekPoint      ASPI  -
+    fiEncodingTime        TDEN  TJvID3TimestampFrame
+    fiEqualization2       EQU2  -
+    fiInvolvedPeople2     TIPL  TJvID3DoubleListFrame
+    fiMood                TMOO  TJvID3TextFrame
+    fiMusicianCreditList  TMCL  TJvID3DoubleListFrame
+    fiOrigReleaseTime     TDOR  TJvID3TimestampFrame
+    fiPerformerSortOrder  TSOP  TJvID3TextFrame
+    fiProducedNotice      TPRO  TJvID3TextFrame
+    fiRecordingTime       TDRC  TJvID3TimestampFrame
+    fiReleaseTime         TDRL  TJvID3TimestampFrame
+    fiSeekFrame           SEEK  -
+    fiSetSubTitle         TSST  TJvID3TextFrame
+    fiSignature           SIGN  -
+    fiTaggingTime         TDTG  TJvID3TimestampFrame
+    fiTitleSortOrder      TSOT  TJvID3TextFrame
+    fiVolumeAdj2          RVA2  -
   </TABLE>
 See Also
   TJvID3Controller.ReadVersionAs, TJvID3Controller.WriteVersionAs
@@ -1172,19 +1169,19 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Controller.WriteEncodingAs
 Summary
-  Enforces with which encoding <i>all</i> frames in a tag should be written.
+  Enforces with which encoding <I>all</I> frames in a tag should be written.
 Description
-  Use WriteEncodingAs to enforce that <i>all</i> frames in a tag will be written with a specific
+  Use WriteEncodingAs to enforce that <I>all</I> frames in a tag will be written with a specific
   encoding.
 
   You can either specify:
 
-  * that you don't want that all frames will be written with a specific encoding: the   <LINK
-    TJvID3Frame.Encoding,Encoding> property of a frame determines with which encoding a frame
-    will be written.
-  * a specific encoding for all frames: then the tag controller will translate the values of   all
-    frames to a specific encoding before it's written to the file. Note that the tag controller
-    will not change any of the values of a frame in the translation process.
+  * that you don't want that all frames will be written with a specific encoding: the <LINK
+    TJvID3Frame.Encoding, Encoding> property of a frame determines with which encoding a frame will be
+    written.
+  * a specific encoding for all frames: then the tag controller will translate the values of all frames
+    to a specific encoding before it's written to the file. Note that the tag controller will not
+    change any of the values of a frame in the translation process.
 See Also
   TJvID3Controller.ReadEncodingAs, TJvID3Frame.Encoding
 
@@ -1208,11 +1205,11 @@ Description
 
   You can either specify:
 
-  * that you don't care with what version the tag will be written: the tag will be written   with the
+  * that you don't care with what version the tag will be written: the tag will be written with the
     version as specified by Version, or
   * a specific version as which the tag will be written.
 Note
-  The tag controller will <i>not</i> translate frames that are not available or deprecated for the
+  The tag controller will <I>not</I> translate frames that are not available or deprecated for the
   specified version. These frames will simply not be written to the tag. Change the value of property
   Version before writing the tag to the file, to automatically translate the frames.
 See Also
@@ -1223,9 +1220,10 @@ See Also
 Summary
   Base class for Frame designers.
 Description
-  Use TJvID3ControllerDesigner when defining a design-time editor, such as the \Frames editor, that enables a developer to specify the frames that belong to a tag at design time. The tag designer is specified as the
-  LINK TJvID3Controller.Designer,Designer> property of a tag controller that uses it to enable
-  design-time specification of its structure.
+  Use TJvID3ControllerDesigner when defining a design-time editor, such as the \Frames editor, that
+  enables a developer to specify the frames that belong to a tag at design time. The tag designer is
+  specified as the LINK TJvID3Controller.Designer,Designer> property of a tag controller that uses it
+  to enable design-time specification of its structure.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3ControllerDesigner.BeginDesign
@@ -1253,8 +1251,8 @@ See Also
 Summary
   Enables notifications from the tag controller.
 Description
-  Call EndDesign when changes to the tag are complete. EndDesign re-enables notifications from the
-  tag controller.
+  Call EndDesign when changes to the tag are complete. EndDesign re-enables notifications from the tag
+  controller.
 See Also
   TJvID3ControllerDesigner.BeginDesign, TJvID3ControllerDesigner.Controller
 
@@ -1265,8 +1263,7 @@ Summary
 Description
   Call ID3Event to pass information about data events to the tag designer.
 
-  The ID3Event method for TJvID3ControllerDesigner does nothing when informed of a data event.
-  Override
+  The ID3Event method for TJvID3ControllerDesigner does nothing when informed of a data event. Override
   this method to allow the tag designer to respond to different types of events.
 Parameters
   Event - The type of event that is occurring.
@@ -1284,11 +1281,11 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3ControllerOption.coAutoCorrect
-Corrects the values of frames in the tag before a tag is written to a file.
+  Corrects the values of frames in the tag before a tag is written to a file.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3ControllerOption.coRemoveEmptyFrames
-Automatically removes empty frames before a tag is written to a file.
+  Automatically removes empty frames before a tag is written to a file.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3ControllerOptions
@@ -1315,24 +1312,28 @@ Summary
   Represents a frame containing the names of those involved, and how they were involved with the
   audio.
 Description
-  The following <LINK TJvID3FrameID,frame identifiers> are supported by TJvID3DoubleListFrame.
+  The following <LINK TJvID3FrameID, frame identifiers> are supported by TJvID3DoubleListFrame.
 
   <TABLE>
-  Frame ID, name              Description
-  -----------------           -----------
-  fiInvolvedPeople -          The 'Involved people list' frame contains the names of those involved, and
-   <C>IPLS</C>                 how they were involved. <b>(Not in v2.4.0 tags)</b>
-  fiMusicianCreditList -      The 'Musician credits list' frame is intended as a mapping between
-   <C>TMCL</C>                 instruments and the musician that played it. <b>(Only in v2.4.0 tags)</b>
-  fiInvolvedPeople2 -         The 'Involved people list' is very similar to the musician credits
-   <C>TIPL</C>                 list, but maps between functions, like producer, and names. <b>(Only in v2.4.0 tags)</b>
+    Frame ID, name                        Description
+    ------------------------------------  ----------------------------------------------------
+    fiInvolvedPeople - <C> IPLS </C>      The 'Involved people list' frame contains the names
+                                            of those involved, and how they were involved.
+                                            <B>(Not in v2.4.0 tags)</B>
+    fiMusicianCreditList - <C> TMCL </C>  The 'Musician credits list' frame is intended as a
+                                            mapping between instruments and the musician that
+                                            played it. <B>(Only in v2.4.0 tags)</B>
+    fiInvolvedPeople2 - <C> TIPL </C>     The 'Involved people list' is very similar to the
+                                            musician credits list, but maps between
+                                            functions, like producer, and names. <B>(Only in
+                                            v2.4.0 tags)</B>
   </TABLE>
 
   The fiInvolvedPeople frame is deprecated as of version 2.4 and replaced by fiMusicianCreditList and
   fiInvolvedPeople2. These last two are only valid in version 2.4.
 
-  There may only be one fiInvolvedPeople frame in a version 2.2 or version 2.3 tag, and there may
-  only be one fiMusicianCreditList and one fiInvolvedPeople2 frame in a version 2.4 tag.
+  There may only be one fiInvolvedPeople frame in a version 2.2 or version 2.3 tag, and there may only
+  be one fiMusicianCreditList and one fiInvolvedPeople2 frame in a version 2.4 tag.
 See Also
   TJvID3Controller.Version
 
@@ -1343,11 +1344,12 @@ Summary
 Description
   Call Find to search in an ID3 tag for a double list frame with a specific frame identifier and
   determine if it exists. The tag controller specified by AController must be active - Do this by
-  setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
+  setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open,
+  Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
+Return value
   Returns a TJvID3DoubleListFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -1360,14 +1362,14 @@ Summary
 Description
   Call FindOrCreate to search in an ID3 tag for a double list frame with a specific frame identifier.
   If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  active - Do this by setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK
+  TJvID3Controller.Open, Open>.
 Parameters
   AController - The tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
-  Returns a TJvID3DoubleListFrame frame with the specified frame identifier, that was found in the
-  ID3 tag, or - when no such frame was found - a newly created frame.
+Return value
+  Returns a TJvID3DoubleListFrame frame with the specified frame identifier, that was found in the ID3
+  tag, or - when no such frame was found - a newly created frame.
 See Also
   TJvID3DoubleListFrame.Find
 
@@ -1380,10 +1382,11 @@ Description
 
   If you add a string to the list, the string should have the name-value format:
 
+  <PRE>
   Sam Williams=Horns
   John Cornfield=Percussion
   Some guy=Mixer
-
+  </PRE>
   Use Encoding to specify whether to use List or ListW.
 See Also
   TJvID3DoubleListFrame.Names, TJvID3DoubleListFrame.Values, TJvID3Frame.Encoding
@@ -1413,8 +1416,8 @@ See Also
 Summary
   Represents the value part of a string associated with a given index.
 Description
-  Read Values or ValuesW to access the name part of a string. Values (ValuesW) is the value part of
-  the string at Index, where 0 is the first string, 1 is the second string, and so on.
+  Read Values or ValuesW to access the name part of a string. Values (ValuesW) is the value part of the
+  string at Index, where 0 is the first string, 1 is the second string, and so on.
 
   Use Encoding to determine whether to use Values or ValuesW.
 See Also
@@ -1432,11 +1435,10 @@ Description
   An extended header of an ID3 v2 tag contains:
 
   * The CRC of the tag: See TotalFrameCRC.
-  * Some <LINK TJvID3ExtendedHeader.Flags,flags> that specify extended options for the tag.
+  * Some <LINK TJvID3ExtendedHeader.Flags, flags> that specify extended options for the tag.
 Note
-  The information in TJvID3ExtendedHeader is only valid
-  if hfExtendedHeader is included in the <LINK TJvID3Header.Flags,Flags> property of <LINK
-  TJvID3Controller.Header,Header>.
+  The information in TJvID3ExtendedHeader is only valid if hfExtendedHeader is included in the <LINK
+  TJvID3Header.Flags, Flags> property of <LINK TJvID3Controller.Header, Header>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3ExtendedHeader.Flags
@@ -1451,9 +1453,9 @@ Description
   * whether the tag is an update.
   * whether CRC data is included in the tag. The CRC data can be used to check the integrity of the
     audio data.
-  * <b>v2.4.0</b> whether restrictions specifiers are included in the tag. For some applications   it
-    might be desired to restrict a tag in more ways than imposed by the ID3v2 specification. Note
-    that the presence of these restrictions does not affect how the tag is decoded, merely how it was
+  * <B>v2.4.0</B> whether restrictions specifiers are included in the tag. For some applications it
+    might be desired to restrict a tag in more ways than imposed by the ID3v2 specification. Note that
+    the presence of these restrictions does not affect how the tag is decoded, merely how it was
     restricted before encoding.
 See Also
   TJvID3ExtendedHeader.TotalFrameCRC
@@ -1482,9 +1484,9 @@ See Also
 Summary
   Indicates the CRC data for the frames.
 Description
-  Read TotalFrameCRC to determine the CRC-32 data for the frames. The tag controller calculates the
-  CRC before unsynchronisation on the data between the extended header and the padding, i.e.
-  the frames and only the frames.
+  Read TotalFrameCRC to determine the CRC-32 data for the frames. The tag controller calculates the CRC
+  before unsynchronisation on the data between the extended header and the padding, i.e. the frames and
+  only the frames.
 Note
   Only valid when hefCRCDataPresent is included in Flags.
 See Also
@@ -1495,8 +1497,8 @@ See Also
 Summary
   Contains information about a MP3 file.
 Description
-  The TJvID3FileInfo object contains information about a MP3 file, as found in the MPEG Audio
-  Frame Header, and in the Xing or extended Info tag if those exists.
+  The TJvID3FileInfo object contains information about a MP3 file, as found in the MPEG Audio Frame
+  Header, and in the Xing or extended Info tag if those exists.
 
   This information indicates how the MP3 file is encoded.
 
@@ -1507,8 +1509,8 @@ Summary
 Description
   Read Bitrate to determine the bitrate of the MP3 file.
 Note
-  MPEG files may have variable bitrate (VBR). This means that bitrate in the file may change per
-  frame. If so, then Bitrate indicates the average bitrate in the file.
+  MPEG files may have variable bitrate (VBR). This means that bitrate in the file may change per frame.
+  If so, then Bitrate indicates the average bitrate in the file.
 See Also
   TJvID3FileInfo.IsVBR
 
@@ -1531,8 +1533,8 @@ Description
 Summary
   Specifies the emphasis of the MP3 file.
 Description
-  The emphasis tells the decoder that the file must be de-emphasized, i.e.,
-  the decoder must 're-equalize' the sound after a Dolby-like noise supression. It is rarely used.
+  The emphasis tells the decoder that the file must be de-emphasized, i.e., the decoder must
+  're-equalize' the sound after a Dolby-like noise supression. It is rarely used.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3FileInfo.FileSize
@@ -1568,8 +1570,8 @@ See Also
 Summary
   Indicates the location in the MP3 file where at the MPEG header is found.
 Description
-  Read HeaderFoundAt to determine the location in the MP3 file where the MPEG Audio
-  Frame Header was found. If HeaderFoundAt is smaller than 0, then no MPEG header was found.
+  Read HeaderFoundAt to determine the location in the MP3 file where the MPEG Audio Frame Header was
+  found. If HeaderFoundAt is smaller than 0, then no MPEG header was found.
 See Also
   TJvID3FileInfo.IsValid
 
@@ -1578,11 +1580,11 @@ See Also
 Summary
   Indicates whether a valid MPEG header is found in the MP3 file.
 Description
-  Read IsValid to determine whether the information provided by the properties of the file info
-  object are valid.
+  Read IsValid to determine whether the information provided by the properties of the file info object
+  are valid.
 
-  IsValid is true if a valid MPEG header is found in the MP3 file. If so, then HeaderFoundAt
-  indicates the position in the file where the MPEG header tag was found.
+  IsValid is true if a valid MPEG header is found in the MP3 file. If so, then HeaderFoundAt indicates
+  the position in the file where the MPEG header tag was found.
 See Also
   TJvID3FileInfo.HeaderFoundAt
 
@@ -1591,8 +1593,8 @@ See Also
 Summary
   Indicates whether the MP3 file has a variable bitrate (VBR).
 Description
-  MPEG files may have variable bitrate (VBR). This means that bitrate in the file may change per
-  frame. If IsVbr is true then property Bitrate indicates the average bitrate in the file.
+  MPEG files may have variable bitrate (VBR). This means that bitrate in the file may change per frame.
+  If IsVbr is true then property Bitrate indicates the average bitrate in the file.
 See Also
   TJvID3FileInfo.Bitrate
 
@@ -1625,31 +1627,31 @@ Description
   needed bits. These bits are dynamically determined by an encoder in Joint stereo mode, and Joint
   Stereo can be changed from one frame to another, or even switched on or off.
 
-  Complete frequency range of MPEG file is divided in subbands. There are 32 subbands.
-  For Layer I & II, ModeExtension determines frequency range (bands) where intensity stereo is
-  applied.
-  For Layer III, ModeExtension determines which type of joint stereo is used (intensity stereo or m/s
-  stereo). Frequency range is determined within decompression algorithm.
+  Complete frequency range of MPEG file is divided in subbands. There are 32 subbands. For Layer I &
+  II, ModeExtension determines frequency range (bands) where intensity stereo is applied. For Layer
+  III, ModeExtension determines which type of joint stereo is used (intensity stereo or m/s stereo).
+  Frequency range is determined within decompression algorithm.
 
   Layer I & II:
   <TABLE>
-  Value         Frequency range
-  -------       ---------------
-  meModeExt0    bands 4 to 31
-  meModeExt1    bands 8 to 31
-  meModeExt2    bands 12 to 31
-  meModeExt3    bands 16 to 31
+    Value       Frequency range
+    ----------  ---------------
+    meModeExt0  bands 4 to 31
+    meModeExt1  bands 8 to 31
+    meModeExt2  bands 12 to 31
+    meModeExt3  bands 16 to 31
   </TABLE>
 
   Layer III:
   <TABLE>
-  Value         \Intensity stereo    MS stereo
-  -------       ----------------     ---------
-  meModeExt0    off                  off
-  meModeExt1    on                   off
-  meModeExt2    off                  on
-  meModeExt3    on                   on
+    Value       \Intensity stereo  MS stereo
+    ----------  -----------------  ---------
+    meModeExt0  off                off
+    meModeExt1  on                 off
+    meModeExt2  off                on
+    meModeExt3  on                 on
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3FileInfo.Read
 Summary
@@ -1683,12 +1685,12 @@ Summary
 Description
   Read Version to determine the MPEG version of the MP3 file, as found in the MPEG header tag.
   <TABLE>
-  Value         Meaning
-  -----         -------
-  mvVersion1    MPEG Version 1 (ISO/IEC 11172-3)
-  mvVersion2    MPEG Version 2 (ISO/IEC 13818-3)
-  mvVersion25   MPEG Version 2.5
-  mvReserved    An undefined MPEG version
+    Value        Meaning
+    -----------  --------------------------------
+    mvVersion1   MPEG Version 1 (ISO/IEC 11172-3)
+    mvVersion2   MPEG Version 2 (ISO/IEC 13818-3)
+    mvVersion25  MPEG Version 2.5
+    mvReserved   An undefined MPEG version
   </TABLE>
 See Also
   TJvID3FileInfo.Layer
@@ -1706,22 +1708,23 @@ Description
   * \Check the values of the frame.
   * Determine whether a specific frame can be added to the tag.
 
-  Do not create instances of TJvID3Frame. TJvID3Frame descendants are created automatically each time
-  a tag controller is activated.
+  Do not create instances of TJvID3Frame. TJvID3Frame descendants are created automatically each time a
+  tag controller is activated.
 
   A frame in a tag is always treated as one of the following TJvID3Frame descendant classes below:
 
   <TABLE>
-  TJvID3AudioEncryptionFrame                 TJvID3PopularimeterFrame
-  TJvID3BinaryFrame                          TJvID3SimpleListFrame
-  TJvID3ContentFrame                         TJvID3SkipFrame
-  TJvID3DoubleListFrame                      TJvID3TermsOfUseFrame
-  TJvID3GeneralObjFrame                      TJvID3TextFrame
-  TJvID3NumberFrame                          TJvID3TimestampFrame
-  TJvID3OwnershipFrame                       TJvID3URLFrame
-  TJvID3PictureFrame                         TJvID3URLUserFrame
-  TJvID3PlayCounterFrame                     TJvID3UserFrame
+    TJvID3AudioEncryptionFrame  TJvID3PopularimeterFrame
+    TJvID3BinaryFrame           TJvID3SimpleListFrame
+    TJvID3ContentFrame          TJvID3SkipFrame
+    TJvID3DoubleListFrame       TJvID3TermsOfUseFrame
+    TJvID3GeneralObjFrame       TJvID3TextFrame
+    TJvID3NumberFrame           TJvID3TimestampFrame
+    TJvID3OwnershipFrame        TJvID3URLFrame
+    TJvID3PictureFrame          TJvID3URLUserFrame
+    TJvID3PlayCounterFrame      TJvID3UserFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Frame.CanAddFrame
 Summary
@@ -1730,12 +1733,12 @@ Description
   Call CanAddFrame to check whether a frame with a frame identifier as specified by parameter AFrameID
   can be added to the tag controlled by the tag controller.
 
-  Certain frames may only appear once in a tag regardless of its value. For example, there may only
-  be one fiAlbum frame in a tag.
+  Certain frames may only appear once in a tag regardless of its value. For example, there may only be
+  one fiAlbum frame in a tag.
 Parameters
   AController - The tag controller that holds an ID3 v2 tag where to add the frame.
   AFrameID    - The frame identifier of the frame.
-Return Value
+Return value
   Returns true if a frame with a frame identifier as specified by AFrameID can be added to the tag.
   Returns false otherwise.
 See Also
@@ -1752,15 +1755,15 @@ Description
   When HandleError is set to heAutoCorrect, then CheckFrame will auto correct invalid frames.
 Parameters
   HandleError - Specifies how to handle errors.
-Return Value
+Return value
   The return value of CheckFrame depends on the value of HandleError:
 
   <TABLE>
-  HandleError           Return value
-  -----------           ------------
-  heAutoCorrect         Always returns true.
-  heRaise               Raises an error when the frame is invalid, otherwise returns true.
-  heBoolean             Returns false when the frame is invalid, otherwise returns true.
+    HandleError    Return value
+    -------------  ------------------------------------------------------------------
+    heAutoCorrect  Always returns true.
+    heRaise        Raises an error when the frame is invalid, otherwise returns true.
+    heBoolean      Returns false when the frame is invalid, otherwise returns true.
   </TABLE>
 See Also
   TJvID3Frames.ChangeToVersion
@@ -1780,9 +1783,9 @@ Summary
   Identifies the tag controller to which a frame belongs.
 Description
   \Check the value of Controller to determine the tag controller that uses the frame component to
-  represent one of the ID3 frames from the tag it controls. Applications should not directly assign
-  the Controller property of a frame. It is assigned automatically when the frame is created, by
-  calling AddFrame.
+  represent one of the ID3 frames from the tag it controls. Applications should not directly assign the
+  Controller property of a frame. It is assigned automatically when the frame is created, by calling
+  AddFrame.
 See Also
   TJvID3Controller.AddFrame
 
@@ -1793,31 +1796,30 @@ Summary
 Description
   Use Encoding to specify an encoding for the frame. Possible encodings are:
 
-   * ISO-8859-1.
-   * UTF-16 encoded Unicode with BOM.
-   * UTF-16BE encoded Unicode without BOM. (only for version 2.4)
-   * UTF-8 encoded Unicode. (only for version 2.4)
+  * ISO-8859-1.
+  * UTF-16 encoded Unicode with BOM.
+  * UTF-16BE encoded Unicode without BOM. (only for version 2.4)
+  * UTF-8 encoded Unicode. (only for version 2.4)
 
   Some frames allow different types of text encoding for specific fields of the frame (such as the
-  <LINK TJvID3TextFrame.Text,text> field of TJvID3TextFrame);
-  other fields are always represented as ISO-8859-1 characters (such as TJvID3PictureFrame.MIMEType).
+  <LINK TJvID3TextFrame.Text, text> field of TJvID3TextFrame); other fields are always represented as
+  ISO-8859-1 characters (such as TJvID3PictureFrame.MIMEType).
 
-  Property Encoding specifies the encoding of <i>all</i> fields that allow different types of text
+  Property Encoding specifies the encoding of <I>all</I> fields that allow different types of text
   encoding of a frame. Frames that do not have fields that allow different types of text encoding,
   ignore the value of Encoding.
 
-  Fields that allow different types of text encoding are typically accessable via two properties.
-  One that has the name of the field as name, and can be used to access the ISO-8859-1 encoding of
-  the field.
-  The other has the name of the field postfixed with 'W' as name, and can be used to access the
-  unicode encoding of the field. Examples are <LINK TJvID3PictureFrame.Description,Description> and
-  <LINK TJvID3PictureFrame.DescriptionW,DescriptionW>, <LINK TJvID3GeneralObjFrame.FileName,FileName>
-  and <LINK TJvID3GeneralObjFrame.FileNameW,FileNameW> etc.
+  Fields that allow different types of text encoding are typically accessable via two properties. One
+  that has the name of the field as name, and can be used to access the ISO-8859-1 encoding of the
+  field. The other has the name of the field postfixed with 'W' as name, and can be used to access the
+  unicode encoding of the field. Examples are <LINK TJvID3PictureFrame.Description, Description> and
+  <LINK TJvID3PictureFrame.DescriptionW, DescriptionW>, <LINK TJvID3GeneralObjFrame.FileName, FileName>
+  and <LINK TJvID3GeneralObjFrame.FileNameW, FileNameW> etc.
 
-  You can use the <LINK TJvID3Controller.ReadEncodingAs,ReadEncodingAs> property of a tag controller
-  to specify the encoding of <i>all</i> frames after a tag has been read. Use the <LINK
-  TJvID3Controller.WriteEncodingAs,WriteEncodingAs> property to specify with which encoding
-  <i>all</i> frames are written to a tag.
+  You can use the <LINK TJvID3Controller.ReadEncodingAs, ReadEncodingAs> property of a tag controller
+  to specify the encoding of <I>all</I> frames after a tag has been read. Use the <LINK
+  TJvID3Controller.WriteEncodingAs, WriteEncodingAs> property to specify with which encoding <I>all</I>
+  frames are written to a tag.
 See Also
   TJvID3Controller.ReadEncodingAs, TJvID3Controller.WriteEncodingAs
 
@@ -1826,8 +1828,8 @@ See Also
 Summary
   Specifies with which method the frame is encrypted.
 Description
-  Use the EncryptionID to specify with which method the frame is encrypted. <b>Encryption is not
-  supported by TJvID3Controller.</b>
+  Use the EncryptionID to specify with which method the frame is encrypted. <B>Encryption is not
+  supported by TJvID3Controller.</B>
 Note
   EncryptionID is only valid if fhfIsEncrypted is included in Flags.
 See Also
@@ -1858,9 +1860,8 @@ Description
   identified by a 4 character long name. FrameID identifies the frame by the TJvID3FrameID type and
   FrameName identifies the frame by the 4 characters.
 
-  Read or set FrameID to determine or specify the frame identifier for the frame. When setting
-  FrameID be sure that the frame identifier is supported by that specific TJvID3Frame descendant
-  class.
+  Read or set FrameID to determine or specify the frame identifier for the frame. When setting FrameID
+  be sure that the frame identifier is supported by that specific TJvID3Frame descendant class.
 
   \Example:
   <AUTOLINK OFF>
@@ -1940,13 +1941,13 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Frame.Index
 Summary
-  Specifies the frame component’s index in the <LINK TJvID3Controller.Frames,Frames> property of the
+  Specifies the frame component’s index in the <LINK TJvID3Controller.Frames, Frames> property of the
   tag controller.
 Description
   Use the Index property to:
 
   * Find the position of the frame in the tag.
-  * Change the order of a frame's position in the tag by changing the value of Index. Changing   the
+  * Change the order of a frame's position in the tag by changing the value of Index. Changing the
     Index value affects the position of the frames in the ID3 v2 tag.
 Note
   The frame order can also be changed by dragging and dropping frames in the \Frames editor at design
@@ -1962,8 +1963,7 @@ Description
   Read IsEmpty to determine whether the frame is empty.
 
   The tag controller uses this property when coRemoveEmptyFrames is included in <LINK
-  TJvID3Controller.Options,Options> to determine whether a frame can
-  be removed from the tag.
+  TJvID3Controller.Options, Options> to determine whether a frame can be removed from the tag.
 See Also
   TJvID3Frame.Clear
 
@@ -1981,8 +1981,8 @@ Description
 Summary
   Defines the metaclass for TJvID3Frame.
 Description
-  TJvID3FrameClass is the metaclass for TJvID3Frame. Its value is the class reference for
-  TJvID3Frame or for one of its descendants.
+  TJvID3FrameClass is the metaclass for TJvID3Frame. Its value is the class reference for TJvID3Frame
+  or for one of its descendants.
 See Also
   TJvID3Frame
 
@@ -1991,8 +1991,8 @@ See Also
 Summary
   Holds the frame (TJvID3Frame) objects that represent the frames in an ID3 v2 tag.
 Description
-  TJvID3Frames is used by a tag controller to manage the frame objects that correspond to frames in
-  the tag.
+  TJvID3Frames is used by a tag controller to manage the frame objects that correspond to frames in the
+  tag.
 
   Use the properties and methods of TJvID3Frames to:
 
@@ -2008,9 +2008,9 @@ Description
   Applications do not normally call the Add method directly. When frame objects are created, Add is
   called automatically by the tag controller.
 
-  Certain frames may only appear once in a tag regardless of its value. For example, there may only
-  be one fiAlbum frame in a tag. Therefore use FindOrCreate to add frames to the tag, which checks
-  whether there already exists such frame in the tag. For example:
+  Certain frames may only appear once in a tag regardless of its value. For example, there may only be
+  one fiAlbum frame in a tag. Therefore use FindOrCreate to add frames to the tag, which checks whether
+  there already exists such frame in the tag. For example:
 
   <AUTOLINK OFF>
   <CODE>
@@ -2047,25 +2047,25 @@ Description
   CheckFrame is used by a tag controller, to check whether the value(s) of the frames in the tag are
   valid.
 
-  CheckFrame check for each frame in the tag, whether its values are correct. For example specifying
-  an invalid language such as 'AAA' for the language property of a picture frame is incorrect.
-  CheckFrame also checks whether all frames are unique in the tag. See CheckIsUnique for more info.
+  CheckFrame check for each frame in the tag, whether its values are correct. For example specifying an
+  invalid language such as 'AAA' for the language property of a picture frame is incorrect. CheckFrame
+  also checks whether all frames are unique in the tag. See CheckIsUnique for more info.
 
-  When HandleError is set to heAutoCorrect, then CheckFrame will auto correct invalid frames,
-  duplicate frames will then be removed of the tag.
+  When HandleError is set to heAutoCorrect, then CheckFrame will auto correct invalid frames, duplicate
+  frames will then be removed of the tag.
 
-  When you call <LINK TJvID3Controller.Commit,Commit> the tag controller always checks the value(s)
-  of all frames are valid, and whether all frames in the tag are unique.
+  When you call <LINK TJvID3Controller.Commit, Commit> the tag controller always checks the value(s) of
+  all frames are valid, and whether all frames in the tag are unique.
 Parameters
   HandleError - Specifies how to handle errors.
-Return Value
+Return value
   The return value of CheckFrame depends on the value of HandleError:
   <TABLE>
-  HandleError           Return value
-  -----------           ------------
-  heAutoCorrect         Always returns true.
-  heRaise               Raises an error when a frame is invalid, otherwise returns true.
-  heBoolean             Returns false when a frame is invalid, otherwise returns true.
+    HandleError    Return value
+    -------------  ----------------------------------------------------------------
+    heAutoCorrect  Always returns true.
+    heRaise        Raises an error when a frame is invalid, otherwise returns true.
+    heBoolean      Returns false when a frame is invalid, otherwise returns true.
   </TABLE>
 See Also
   TJvID3Frame.ChangeToVersion
@@ -2075,25 +2075,25 @@ See Also
 Summary
   Checks whether a specific frame is unique in the tag.
 Description
-  Call CheckIsUnique to check whether a specific frame is unique in the tag.
-  The ID3 v2 specification forbids that there are duplicate frames in the tag. What makes a frame a
-  duplicate of another frame depends on the frame identifier, for example:
+  Call CheckIsUnique to check whether a specific frame is unique in the tag. The ID3 v2 specification
+  forbids that there are duplicate frames in the tag. What makes a frame a duplicate of another frame
+  depends on the frame identifier, for example:
 
-  * A <LINK TJvID3CustomTextFrame,text frame> is a duplicate of another text frame if it has the same
+  * A <LINK TJvID3CustomTextFrame, text frame> is a duplicate of another text frame if it has the same
     frame identifier. For example, there may be only one fiAlbum frame in a tag.
-  * A <LINK TJvID3ContentFrame,content frame> is a duplicate of another content frame if it has the
-    same <LINK TJvID3ContentFrame.Language,language> and <LINK TJvID3ContentFrame.Description,
-    content descriptor>.
-  * A <LINK TJvID3PictureFrame,picture frame> is a duplicate of another picture frame if it has the
-    same content descriptor (<LINK TJvID3PictureFrame.PictureType,PictureType> and
-    <LINK TJvID3PictureFrame.Description,Description>) or both
-    <LINK TJvID3PictureFrame.PictureType,PictureType> properties are set to ptOther or ptFileIcon.
+  * A <LINK TJvID3ContentFrame, content frame> is a duplicate of another content frame if it has the
+    same <LINK TJvID3ContentFrame.Language, language> and <LINK TJvID3ContentFrame.Description, content
+    descriptor>.
+  * A <LINK TJvID3PictureFrame, picture frame> is a duplicate of another picture frame if it has the
+    same content descriptor (<LINK TJvID3PictureFrame.PictureType, PictureType> and <LINK
+    TJvID3PictureFrame.Description, Description>) or both <LINK TJvID3PictureFrame.PictureType,
+    PictureType> properties are set to ptOther or ptFileIcon.
 
-  When you call <LINK TJvID3Controller.Commit,Commit> the tag controller always checks whether all
+  When you call <LINK TJvID3Controller.Commit, Commit> the tag controller always checks whether all
   frames in the tag are unique.
 Parameters
   Frame - The frame to check.
-Return Value
+Return value
   Returns true if no duplicate frame of the specific frame was found in the tag; returns false
   otherwise.
 See Also
@@ -2128,14 +2128,14 @@ Description
   identified by a 4 character long name. FrameID identifies the frame by the TJvID3FrameID type and
   FrameName identifies the frame by the 4 characters.
 Note
-  FindFrame differs from the FrameByName method only when the named frame is not in the list. When
-  the frame is not found, FindFrame returns nil, while FrameByName raises an exception.
+  FindFrame differs from the FrameByName method only when the named frame is not in the list. When the
+  frame is not found, FindFrame returns nil, while FrameByName raises an exception.
 Parameters
   FrameID   - The frame identifier of the frame for which to search.
   FrameName - The frame name of the frame for which to search.
-Return Value
-  If FindFrame finds a frame with a matching name,
-  it returns the TJvID3Frame component for the specified frame. Otherwise it returns nil.
+Return value
+  If FindFrame finds a frame with a matching name, it returns the TJvID3Frame component for the
+  specified frame. Otherwise it returns nil.
 See Also
   TJvID3Frame.FrameName, TJvID3Frames.FrameByID, TJvID3Frames.FrameByName
 
@@ -2151,13 +2151,13 @@ Description
   Call FrameByID to determine if a specified frame component is referenced in the TJvID3Frames object.
 
   The tag controller uses the TJvID3FrameID type to identify frames. In the tag itself the frames are
-  identified by a 4 character long name. Parameter FrameID identifies the frame by the
-  TJvID3FrameID type.
+  identified by a 4 character long name. Parameter FrameID identifies the frame by the TJvID3FrameID
+  type.
 Parameters
-  FrameID   - The frame identifier of the frame for which to search.
-Return Value
-  FrameByID returns the TJvID3Frame component for the specified
-  frame. If the frame can not be found, an exception is raised.
+  FrameID - The frame identifier of the frame for which to search.
+Return value
+  FrameByID returns the TJvID3Frame component for the specified frame. If the frame can not be found,
+  an exception is raised.
 See Also
   FindFrame
 
@@ -2175,9 +2175,9 @@ Note
   frame is not found, FrameByName raises an exception, while FindFrame returns nil.
 Parameters
   FrameName - The frame name of an existing frame.
-Return Value
-  FrameByName returns the TJvID3Frame component for the specified
-  frame. If the frame can not be found, an exception is raised.
+Return value
+  FrameByName returns the TJvID3Frame component for the specified frame. If the frame can not be found,
+  an exception is raised.
 See Also
   FindFrame
 
@@ -2198,8 +2198,8 @@ See Also
 Summary
   Returns all frame identifiers in the tag.
 Description
-  Use GetFrameIDs to retrieve all <LINK TJvID3Frame.FrameID,frame identifiers> in the tag.
-Return Value
+  Use GetFrameIDs to retrieve all <LINK TJvID3Frame.FrameID, frame identifiers> in the tag.
+Return value
   Returns all frame identifiers in the tag as a set of TJvID3FrameID values.
 See Also
   TJvID3Frames.GetFrameNames
@@ -2211,9 +2211,8 @@ Summary
 Description
   Call GetFrameNames to fill a list with the frame names for all frames in the frames object.
 Parameters
-
   List - A TStrings descendant that receives the frame names. List must be created and maintained by
-         the application.
+          the application.
 See Also
   TJvID3Frames.FrameByID, TJvID3Frames.FrameByName, TJvID3Frames.Frames, TJvID3Frames.GetFrameIDs
 
@@ -2225,11 +2224,11 @@ Description
   Call IndexOf to get the index for a frame in the Frames array. Specify the frame as the Frame
   parameter.
 
-  The first frame in the array has index 0, the second frame has index 1, and so on. If a frame is
-  not in the Frames array, IndexOf returns -1.
+  The first frame in the array has index 0, the second frame has index 1, and so on. If a frame is not
+  in the Frames array, IndexOf returns -1.
 Parameters
   Frame - The frame for which to search.
-Return Value
+Return value
   Returns the index of the frame object in the Frames array. Returns -1, if the frame is not in the
   Frames array.
 See Also
@@ -2243,8 +2242,8 @@ Description
   Applications do not normally call the Remove method directly. After a frame is removed, all of the
   items that follow it are moved up in index position and the Count is reduced by one.
 Note
-  Unlike the Clear method, which frees the frame components when it removes them, Remove does not
-  free the specified frame component.
+  Unlike the Clear method, which frees the frame components when it removes them, Remove does not free
+  the specified frame component.
 Parameters
   Frame - The frame which to delete from the Frames array.
 See Also
@@ -2256,9 +2255,8 @@ Summary
   Removes all empty frames from the Frames array.
 Description
   Call RemoveEmptyFrames to remove all empty frames from the Frames array. The <LINK
-  TJvID3Frame.IsEmpty,IsEmpty> property of
-  a frame indicates whether the frame is empty. For example a text information frame is empty if the
-  Text or TextW is set to an empty string.
+  TJvID3Frame.IsEmpty, IsEmpty> property of a frame indicates whether the frame is empty. For example a
+  text information frame is empty if the Text or TextW is set to an empty string.
 See Also
   TJvID3Frame.IsEmpty
 
@@ -2267,16 +2265,16 @@ See Also
 Summary
   Represents a general encapsulated object frame.
 Description
-  Use TJvID3GeneralObjFrame to represent a general encapsulated object frame in a tag. Such a frame
-  has <LINK TJvID3Frame.FrameID,frame identifier> fiGeneralObject ("GEOB").
+  Use TJvID3GeneralObjFrame to represent a general encapsulated object frame in a tag. Such a frame has
+  <LINK TJvID3Frame.FrameID, frame identifier> fiGeneralObject ("GEOB").
 
   In this frame any type of file can be encapsulated.
 
-  TJvID3GeneralObjFrame is a TJvID3BinaryFrame descendant; thus, the encapsulated object is
-  accessible as binary data.
+  TJvID3GeneralObjFrame is a TJvID3BinaryFrame descendant; thus, the encapsulated object is accessible
+  as binary data.
 
   There may be more than one fiGeneralObject frame in each tag, but only one with the same <LINK
-  TJvID3GeneralObjFrame.ContentDescription,content descriptor>.
+  TJvID3GeneralObjFrame.ContentDescription, content descriptor>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3GeneralObjFrame.ContentDescription
@@ -2315,12 +2313,12 @@ Summary
 Description
   Call Find to search in an ID3 tag for a general encapsulated object frame with a specific content
   descriptor and determine if it exists. The tag controller specified by AController must be active -
-  Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  Do this by setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK
+  TJvID3Controller.Open, Open>.
 Parameters
   AController         - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AContentDescription - The content descriptor to search for.
-Return Value
+Return value
   Returns a TJvID3GeneralObjFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -2336,18 +2334,16 @@ Summary
   Returns a TJvID3GeneralObjFrame frame with a specific content descriptor.
 Description
   Call FindOrCreate to search in an ID3 tag for general encapsulated object frame with a specific
-  content descriptor.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  content descriptor. If there is no such frame then one is created. The tag controller specified by
+  AController must be active - Do this by setting <LINK TJvID3Controller.Active, Active> to true or
+  calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController         - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AContentDescription - The content descriptor to search for.
-Return Value
-  Returns a TJvID3GeneralObjFrame frame with the specified owner identifier, that was found in the
-  ID3 tag, or - when no such frame was found - a newly created frame.
-  If a new frame is created, its ContentDescription property will be set to the value specified by the
-  AContentDescription parameter.
+Return value
+  Returns a TJvID3GeneralObjFrame frame with the specified owner identifier, that was found in the ID3
+  tag, or - when no such frame was found - a newly created frame. If a new frame is created, its
+  ContentDescription property will be set to the value specified by the AContentDescription parameter.
 See Also
   Find
 
@@ -2384,15 +2380,15 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3HandleError.heAutoCorrect
-Auto corrects (if possible) encountered errors.
+  Auto corrects (if possible) encountered errors.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3HandleError.heRaise
-Raises an exception when encountering errors.
+  Raises an exception when encountering errors.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3HandleError.heBoolean
-Gives a true/false result when encountering errors.
+  Gives a true/false result when encountering errors.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Header
@@ -2401,13 +2397,13 @@ Summary
 Description
   A header of an ID3 v2 tag contains:
 
-  * The version of the tag: See MajorVersion and RevisionNumber. The value returned by the   <LINK
-    TJvID3Controller.Version,Version> property of a tag controller is determined by these values.
+  * The version of the tag: See MajorVersion and RevisionNumber. The value returned by the <LINK
+    TJvID3Controller.Version, Version> property of a tag controller is determined by these values.
   * The complete size of the tag: See Size.
-  * Some <LINK TJvID3Header.Flags,flags> that specify options for the tag. For example, if
-    hfExtendedHeader   is included in these flags then the tag contains an extended header, and the
-    information from the
-    <LINK TJvID3Controller.ExtendedHeader,ExtendedHeader> property of the tag controller is valid.
+  * Some <LINK TJvID3Header.Flags, flags> that specify options for the tag. For example, if
+    hfExtendedHeader is included in these flags then the tag contains an extended header, and the
+    information from the <LINK TJvID3Controller.ExtendedHeader, ExtendedHeader> property of the tag
+    controller is valid.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Header.Flags
@@ -2428,8 +2424,8 @@ See Also
 Summary
   Indicates whether the file has an ID3 v2 tag.
 Description
-  Read HasTag to determine whether the file specified by <LINK TJvID3Controller.FileName,FileName>
-  has an ID3 v2 tag.
+  Read HasTag to determine whether the file specified by <LINK TJvID3Controller.FileName, FileName> has
+  an ID3 v2 tag.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Header.MajorVersion
@@ -2439,12 +2435,12 @@ Description
   Read MajorVersion to determine the major version of the tag.
 
   <TABLE>
-  Version         TJvID3Controller.Version     MajorVersion    RevisionNumber
-  -------         ------------------------     ============    ==============
-  2.2.0           ive2_2                        2               0
-  2.2.1           ive2_2                        2               1
-  2.3.0           ive2_3                        3               0
-  2.4.0           ive2_4                        4               0
+    Version  TJvID3Controller.Version  MajorVersion  RevisionNumber
+    -------  ------------------------  ============  ==============
+    2.2.0    ive2_2                    2             0
+    2.2.1    ive2_2                    2             1
+    2.3.0    ive2_3                    3             0
+    2.4.0    ive2_4                    4             0
   </TABLE>
 See Also
   TJvID3Controller.Version
@@ -2477,29 +2473,35 @@ Description
 
   There may only be one text information frame of its kind in a tag.
 
-  The following <LINK TJvID3FrameID,frame identifiers> are supported by TJvID3NumberFrame.
+  The following <LINK TJvID3FrameID, frame identifiers> are supported by TJvID3NumberFrame.
 
   <TABLE>
-  Frame ID, name                  Description
-  ----------------------          -----------
-  fiBPM -                         The 'BPM' frame contains the number of beats per minute in the main part
-   <c>TBPM</c>                     of the audio.
-  fiOrigYear -                    The 'Original release year' frame is intended for the year when the original
-   <c>TORY</c>                     recording, if for example the music in the file should be a cover of a
-                                   previously released song, was released. <b>(Not in v2.4.0 tags)</b>
-  fiPlaylistDelay -               The 'Playlist delay' defines the numbers of milliseconds of silence
-   <c>TDLY</c>                     that should be inserted before this audio. The value zero indicates
-                                   that this is a part of a multifile audio track that should be played continuously.
-  fiSize -                        The 'Size' frame contains the size of the audiofile in bytes, excluding
-   <c>TSIZ</c>                     the ID3 v2 tag. <b>(Not in v2.4.0 tags)</b>
-  fiSongLen -                     The '\Length' frame contains the length of the audio file in milliseconds.
-   <c>TLEN</c>
-  fiYear -                        The 'Year' frame contains the year of the recording. <b>(Not in v2.4.0 tags)</b>
-   <c>TYER</c>
+    Frame ID, name                   Description
+    -------------------------------  ---------------------------------------------------------
+    fiBPM - <c> TBPM </c>            The 'BPM' frame contains the number of beats per minute
+                                       in the main part of the audio.
+    fiOrigYear - <c> TORY </c>       The 'Original release year' frame is intended for the
+                                       year when the original recording, if for example the
+                                       music in the file should be a cover of a previously
+                                       released song, was released. <B>(Not in v2.4.0
+                                       tags)</B>
+    fiPlaylistDelay - <c> TDLY </c>  The 'Playlist delay' defines the numbers of milliseconds
+                                       of silence that should be inserted before this audio.
+                                       The value zero indicates that this is a part of a
+                                       multifile audio track that should be played
+                                       continuously.
+    fiSize - <c> TSIZ </c>           The 'Size' frame contains the size of the audiofile in
+                                       bytes, excluding the ID3 v2 tag. <B>(Not in v2.4.0
+                                       tags)</B>
+    fiSongLen - <c> TLEN </c>        The '\Length' frame contains the length of the audio
+                                       file in milliseconds.
+    fiYear - <c> TYER </c>           The 'Year' frame contains the year of the recording.
+                                       <B>(Not in v2.4.0 tags)</B>
   </TABLE>
-  Use the Value property to specify the numerical value of the frame, for example:
-  <AUTOLINK OFF>
 
+  Use the Value property to specify the numerical value of the frame, for example:
+
+  <AUTOLINK OFF>
   <CODE>
  { Sets the value of the BMP frame to 120 }
   TJvID3NumberFrame.FindOrCreate(MyTagController, fiBPM).Value := 120;
@@ -2515,12 +2517,12 @@ Summary
 Description
   Call Find to search in an ID3 tag for a numerical text information frame with a specific frame
   identifier and determine if it exists. The tag controller specified by AController must be active -
-  Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  Do this by setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK
+  TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
+Return value
   Returns a TJvID3NumberFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -2532,16 +2534,15 @@ Summary
   Returns a TJvID3NumberFrame frame with a specific frame identifier.
 Description
   Call FindOrCreate to search in an ID3 tag for a numerical text information frame with a specific
-  frame identifier.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  frame identifier. If there is no such frame then one is created. The tag controller specified by
+  AController must be active - Do this by setting <LINK TJvID3Controller.Active, Active> to true or
+  calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
-  Returns a TJvID3NumberFrame frame with the specified owner identifier, that was found in the ID3
-  tag, or - when no such frame was found - a newly created frame.
+Return value
+  Returns a TJvID3NumberFrame frame with the specified owner identifier, that was found in the ID3 tag,
+  or - when no such frame was found - a newly created frame.
 See Also
   TJvID3NumberFrame.Find
 
@@ -2558,11 +2559,11 @@ Summary
   Represents an ownership frame in a tag.
 Description
   Use TJvID3OwnershipFrame to represent an ownership frame in a tag. Such a frame has <LINK
-  TJvID3Frame.FrameID,frame identifier> fiOwnership ("OWNE").
+  TJvID3Frame.FrameID, frame identifier> fiOwnership ("OWNE").
 
-  The ownership frame might be used as a reminder of a made transaction or, if signed, as proof.
-  Note that the <LINK TJvID3TermsOfUseFrame,fiTermsOfUse> and <LINK TJvID3TextFrame,fiFileOwner>
-  frames are good to use in conjunction with this one.
+  The ownership frame might be used as a reminder of a made transaction or, if signed, as proof. Note
+  that the <LINK TJvID3TermsOfUseFrame, fiTermsOfUse> and <LINK TJvID3TextFrame, fiFileOwner> frames
+  are good to use in conjunction with this one.
 
   There may only be one ownership frame in a tag.
 
@@ -2580,12 +2581,12 @@ See Also
 Summary
   Returns a TJvID3OwnershipFrame frame.
 Description
-  Call Find to search in an ID3 tag for an ownership frame
-  and determine if it exists. The tag controller specified by AController must be active - Do this by
-  setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
+  Call Find to search in an ID3 tag for an ownership frame and determine if it exists. The tag
+  controller specified by AController must be active - Do this by setting <LINK
+  TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
-Return Value
+Return value
   Returns a TJvID3OwnershipFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -2596,13 +2597,12 @@ See Also
 Summary
   Returns a TJvID3OwnershipFrame frame.
 Description
-  Call FindOrCreate to search in an ID3 tag for an ownership frame.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  Call FindOrCreate to search in an ID3 tag for an ownership frame. If there is no such frame then one
+  is created. The tag controller specified by AController must be active - Do this by setting <LINK
+  TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
-Return Value
+Return value
   Returns a TJvID3OwnershipFrame frame with the specified owner identifier, that was found in the ID3
   tag, or - when no such frame was found - a newly created frame.
 See Also
@@ -2615,10 +2615,9 @@ Summary
 Description
   Use PricePayed to specify the price payed.
 
-  The first three characters of PricePayed should contain the currency used for
-  the transaction, encoded according to ISO 4217 alphabetic currency code.
-  Concatenated to this is the actual price paid, as a numerical string using "." as the decimal
-  separator.
+  The first three characters of PricePayed should contain the currency used for the transaction,
+  encoded according to ISO 4217 alphabetic currency code. Concatenated to this is the actual price
+  paid, as a numerical string using "." as the decimal separator.
 See Also
   TJvID3OwnershipFrame.DateOfPurch, TJvID3OwnershipFrame.Seller
 
@@ -2642,25 +2641,24 @@ See Also
 Summary
   Represents a picture frame in a tag.
 Description
-  Use TJvID3PictureFrame to represent a picture frame in a tag. Such a frame
-  has <LINK TJvID3Frame.FrameID,frame identifier> fiPicture ("APIC").
+  Use TJvID3PictureFrame to represent a picture frame in a tag. Such a frame has <LINK
+  TJvID3Frame.FrameID, frame identifier> fiPicture ("APIC").
 
   This frame contains a picture directly related to the audio file.
 
-  * MIMEType specifies the image format and subtype for the image.
-    In the event that the MIME media type name is omitted, "image/" will be implied.
-    The "image/png" or "image/jpeg" picture format should be used when interoperability is
-    wanted.
-  * Description is a short description of the picture, represented as a terminated textstring.
-    The description has a maximum length of 64 characters, but may be empty.
+  * MIMEType specifies the image format and subtype for the image. In the event that the MIME media
+    type name is omitted, "image/" will be implied. The "image/png" or "image/jpeg" picture format
+    should be used when interoperability is wanted.
+  * Description is a short description of the picture, represented as a terminated textstring. The
+    description has a maximum length of 64 characters, but may be empty.
 
   There may be several pictures attached to one file, each in their individual TJvID3PictureFrame
-  frame, but only one with the same content descriptor. There may only be one picture with
-  PictureType ptOther or ptFileIcon respectively.
+  frame, but only one with the same content descriptor. There may only be one picture with PictureType
+  ptOther or ptFileIcon respectively.
 
-  There is the possibility to put only a link to the image file by setting MIMEType to "-->" and set
-  property URL to a complete \URL. The use of linked files
-  should however be used sparingly since there is the risk of separation of files.
+  There is the possibility to put only a link to the image file by setting MIMEType to "--> " and set
+  property URL to a complete \URL. The use of linked files should however be used sparingly since there
+  is the risk of separation of files.
 
   The following example adds a frame with a picture selected by the user to the tag:
   <AUTOLINK OFF>
@@ -2708,11 +2706,11 @@ Summary
 Description
   Call Find to search in an ID3 tag for a picture frame with a specific picture type and determine if
   it exists. The tag controller specified by AController must be active - Do this by setting <LINK
-  TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
+  TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AType       - Specifies the picture type to search for.
-Return Value
+Return value
   Returns a TJvID3PictureFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -2723,18 +2721,17 @@ See Also
 Summary
   Returns a TJvID3PictureFrame frame with a specific picture type.
 Description
-  Call FindOrCreate to search in an ID3 tag for a picture frame with a specific picture type.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  Call FindOrCreate to search in an ID3 tag for a picture frame with a specific picture type. If there
+  is no such frame then one is created. The tag controller specified by AController must be active - Do
+  this by setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK
+  TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AType       - Specifies the picture type to search for.
-Return Value
-  Returns a TJvID3PictureFrame frame with the specified picture type, that was found in the ID3
-  tag, or - when no such frame was found - a newly created frame.
-  If a new frame is created, its PictureType property will be set to the value specified by the AType
-  parameter.
+Return value
+  Returns a TJvID3PictureFrame frame with the specified picture type, that was found in the ID3 tag, or
+  - when no such frame was found - a newly created frame. If a new frame is created, its PictureType
+  property will be set to the value specified by the AType parameter.
 See Also
   TJvID3PictureFrame.Find, TJvID3PictureFrame.PictureType
 
@@ -2755,8 +2752,7 @@ See Also
 Summary
   Specifies the type of picture.
 Description
-  Use PictureType to specify a type of picture for the picture contained in this
-  TJvID3PictureFrame.
+  Use PictureType to specify a type of picture for the picture contained in this TJvID3PictureFrame.
 
   There may only be one picture with PictureType ptOther or ptFileIcon respectively, in a tag.
 See Also
@@ -2767,9 +2763,9 @@ See Also
 Summary
   Specifies a link to an image.
 Description
-  There is the possibility to put only a link to the image file by setting MIMEType to "-->" and set
-  property URL to a complete \URL. The use of linked files
-  should however be used sparingly since there is the risk of separation of files.
+  There is the possibility to put only a link to the image file by setting MIMEType to "--> " and set
+  property URL to a complete \URL. The use of linked files should however be used sparingly since there
+  is the risk of separation of files.
 
   A URL may be relative, e.g. "picture.png".
 See Also
@@ -2781,10 +2777,10 @@ Summary
   Represents a play counter frame.
 Description
   Use TJvID3PlayCounterFrame to represent a play counter frame in a tag. Such a frame has <LINK
-  TJvID3Frame.FrameID,frame identifier> fiPlayCounter ("PCNT").
+  TJvID3Frame.FrameID, frame identifier> fiPlayCounter ("PCNT").
 
-  This is simply a counter of the number of times a file has been played. The value is increased by
-  one every time the file begins to play.
+  This is simply a counter of the number of times a file has been played. The value is increased by one
+  every time the file begins to play.
 
   Use property Counter to specifies the number of times a file has been played.
 
@@ -2804,12 +2800,12 @@ Description
 Summary
   Returns a TJvID3PlayCounterFrame frame.
 Description
-  Call Find to search in an ID3 tag for a play counter frame
-  and determine if it exists. The tag controller specified by AController must be active - Do this by
-  setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
+  Call Find to search in an ID3 tag for a play counter frame and determine if it exists. The tag
+  controller specified by AController must be active - Do this by setting <LINK
+  TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
-Return Value
+Return value
   Returns a TJvID3PlayCounterFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -2820,15 +2816,14 @@ See Also
 Summary
   Returns a TJvID3PlayCounterFrame frame.
 Description
-  Call FindOrCreate to search in an ID3 tag for a play counter frame.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  Call FindOrCreate to search in an ID3 tag for a play counter frame. If there is no such frame then
+  one is created. The tag controller specified by AController must be active - Do this by setting <LINK
+  TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
-Return Value
-  Returns a TJvID3PlayCounterFrame frame, that was found in the ID3 tag, or - when no such frame
-  was found - a newly created frame.
+Return value
+  Returns a TJvID3PlayCounterFrame frame, that was found in the ID3 tag, or - when no such frame was
+  found - a newly created frame.
 See Also
   TJvID3PlayCounterFrame.Find
 
@@ -2838,20 +2833,20 @@ Summary
   Represents a populari meter frame.
 Description
   Use TJvID3PopularimeterFrame to represent a populari meter frame in a tag. Such a frame has <LINK
-  TJvID3Frame.FrameID,frame identifier> fiPopularimeter ("POPM").
+  TJvID3Frame.FrameID, frame identifier> fiPopularimeter ("POPM").
 
   The purpose of this frame is to specify how good an audio file is. Many interesting applications
   could be found to this frame such as a playlist that features better audiofiles more often than
   others or it could be used to profile a person's taste and find other 'good' files by comparing
   people's profiles.
 
-  The frame is very simple. It contains the <LINK TJvID3PopularimeterFrame.EMailAddress,email
-  address> to the user, a <LINK TJvID3PopularimeterFrame.Rating,rating> and a <LINK
-  TJvID3PopularimeterFrame.Counter,play counter>, intended to be increased with one for every time
-  the file is played.
+  The frame is very simple. It contains the <LINK TJvID3PopularimeterFrame.EMailAddress, email address>
+  to the user, a <LINK TJvID3PopularimeterFrame.Rating, rating> and a <LINK
+  TJvID3PopularimeterFrame.Counter, play counter>, intended to be increased with one for every time the
+  file is played.
 
   There may be more than one populari meter frame in each tag, but only one with the same <LINK
-  TJvID3PopularimeterFrame.EMailAddress,email address>.
+  TJvID3PopularimeterFrame.EMailAddress, email address>.
 See Also
   TJvID3PlayCounterFrame
 
@@ -2882,11 +2877,12 @@ Summary
 Description
   Call Find to search in an ID3 tag for a popularimeter frame with a specific email address and
   determine if it exists. The tag controller specified by AController must be active - Do this by
-  setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
+  setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open,
+  Open>.
 Parameters
   AController   - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AEmailAddress - The email address to search for.
-Return Value
+Return value
   Returns a TJvID3PopularimeterFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -2901,18 +2897,17 @@ See Also
 Summary
   Returns a TJvID3PopularimeterFrame frame with a specific email address.
 Description
-  Call FindOrCreate to search in an ID3 tag for a popularimeter frame with a specific email address.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  Call FindOrCreate to search in an ID3 tag for a popularimeter frame with a specific email address. If
+  there is no such frame then one is created. The tag controller specified by AController must be
+  active - Do this by setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK
+  TJvID3Controller.Open, Open>.
 Parameters
   AController   - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AEmailAddress - The email address to search for.
-Return Value
+Return value
   Returns a TJvID3PopularimeterFrame frame with the specified owner identifier, that was found in the
-  ID3 tag, or - when no such frame was found - a newly created frame.
-  If a new frame is created, its EMailAddress property will be set to the value specified by the
-  AEmailAddress parameter.
+  ID3 tag, or - when no such frame was found - a newly created frame. If a new frame is created, its
+  EMailAddress property will be set to the value specified by the AEmailAddress parameter.
 See Also
   Find
 
@@ -2925,8 +2920,8 @@ See Also
 Summary
   Specifies how good an audio file is.
 Description
-  Use Rating to speciy how good an audio file is. The rating is 1-255 where 1 is worst and 255 is
-  best. 0 is unknown.
+  Use Rating to speciy how good an audio file is. The rating is 1-255 where 1 is worst and 255 is best.
+  0 is unknown.
 See Also
   TJvID3PopularimeterFrame.Counter, TJvID3PopularimeterFrame.EMailAddress
 
@@ -2941,26 +2936,30 @@ Description
 
   There may only be one text information frame of its kind in a tag.
 
-  The following <LINK TJvID3FrameID,frame identifiers> are supported by TJvID3SimpleListFrame.
+  The following <LINK TJvID3FrameID, frame identifiers> are supported by TJvID3SimpleListFrame.
 
   <TABLE>
-  Frame ID, name              Description
-  -----------------           -----------
-  fiComposer -                The 'Composer(s)' frame is intended for the name of the composer(s).
-   <C>TCOM</C>
-  fiLanguage -                The 'Language(s)' frame should contain the languages of the text or
-   <C>TLAN</C>                 lyrics spoken or sung in the audio. The language is represented with three characters
-                               according to ISO-639-2
-  fiLeadArtist -              The 'Lead artist(s)/Lead performer(s)/Soloist(s)/Performing group' is
-   <C>TPE1</C>                 used for the main artist(s).
-  fiLyricist -                The 'Lyricist(s)/Text writer(s)' frame is intended for the writer(s) of
-   <C>TEXT</C>                 the text or lyrics in the recording.
-  fiOrigArtist -              The 'Original artist(s)/performer(s)' frame is intended for the
-   <C>TOPE</C>                 performer(s) of the original recording, if for example the music in
-                               the file should be a cover of a previously released song.
-  fiOrigLyricist -            The 'Original lyricist(s)/text writer(s)' frame is intended for the
-   <C>TOLY</C>                 text writer(s) of the original recording, if for example the music
-                               in the file should be a cover of a previously released song.
+    Frame ID, name                  Description
+    ------------------------------  ----------------------------------------------------------
+    fiComposer - <C> TCOM </C>      The 'Composer(s)' frame is intended for the name of the
+                                      composer(s).
+    fiLanguage - <C> TLAN </C>      The 'Language(s)' frame should contain the languages of
+                                      the text or lyrics spoken or sung in the audio. The
+                                      language is represented with three characters according
+                                      to ISO-639-2
+    fiLeadArtist - <C> TPE1 </C>    The 'Lead artist(s)/Lead
+                                      performer(s)/Soloist(s)/Performing group' is used for
+                                      the main artist(s).
+    fiLyricist - <C> TEXT </C>      The 'Lyricist(s)/Text writer(s)' frame is intended for
+                                      the writer(s) of the text or lyrics in the recording.
+    fiOrigArtist - <C> TOPE </C>    The 'Original artist(s)/performer(s)' frame is intended
+                                      for the performer(s) of the original recording, if for
+                                      example the music in the file should be a cover of a
+                                      previously released song.
+    fiOrigLyricist - <C> TOLY </C>  The 'Original lyricist(s)/text writer(s)' frame is
+                                      intended for the text writer(s) of the original
+                                      recording, if for example the music in the file should
+                                      be a cover of a previously released song.
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -2968,13 +2967,13 @@ Description
 Summary
   Returns a TJvID3SimpleListFrame frame with a specific frame identifier.
 Description
-  Call Find to search in an ID3 tag for a list frame with a specific frame identifier and determine
-  if it exists. The tag controller specified by AController must be active - Do this by setting <LINK
-  TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
+  Call Find to search in an ID3 tag for a list frame with a specific frame identifier and determine if
+  it exists. The tag controller specified by AController must be active - Do this by setting <LINK
+  TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
+Return value
   Returns a TJvID3SimpleListFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -2985,18 +2984,17 @@ See Also
 Summary
   Returns a TJvID3SimpleListFrame frame with a specific frame identifier.
 Description
-  Call FindOrCreate to search in an ID3 tag for a list frame with a specific frame identifier.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  Call FindOrCreate to search in an ID3 tag for a list frame with a specific frame identifier. If there
+  is no such frame then one is created. The tag controller specified by AController must be active - Do
+  this by setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK
+  TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
-  Returns a TJvID3SimpleListFrame frame with the specified frame identifier, that was found in the
-  ID3 tag, or - when no such frame was found - a newly created frame.
-  If a new frame is created, its FrameID property will be set to the value specified by the AFrameID
-  parameter.
+Return value
+  Returns a TJvID3SimpleListFrame frame with the specified frame identifier, that was found in the ID3
+  tag, or - when no such frame was found - a newly created frame. If a new frame is created, its
+  FrameID property will be set to the value specified by the AFrameID parameter.
 See Also
   TJvID3SimpleListFrame.Find
 
@@ -3047,8 +3045,8 @@ Summary
 Description
   The TJvID3SkipFrame is used by the tag controller to represent frames it doesn't know.
 
-  TJvID3SkipFrame is a TJvID3BinaryFrame descendant; thus, the data of the unknown frame is
-  accessible as binary data.
+  TJvID3SkipFrame is a TJvID3BinaryFrame descendant; thus, the data of the unknown frame is accessible
+  as binary data.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3TermsOfUseFrame
@@ -3056,10 +3054,10 @@ Summary
   Represents a frame containing the terms of use of the file.
 Description
   Use TJvID3TermsOfUseFrame to represent a play counter frame in a tag. Such a frame has <LINK
-  TJvID3Frame.FrameID,frame identifier> fiTermsOfUse ("USER").
+  TJvID3Frame.FrameID, frame identifier> fiTermsOfUse ("USER").
 
-  This frame contains a brief description of the terms of use and ownership of the file. More
-  detailed information concerning the legal terms might be available through the fiWWWCopyright frame.
+  This frame contains a brief description of the terms of use and ownership of the file. More detailed
+  information concerning the legal terms might be available through the fiWWWCopyright frame.
   (represented by TJvID3URLFrame).
 
   There may only be one TJvID3TermsOfUseFrame frame in a tag.
@@ -3069,12 +3067,12 @@ Description
 Summary
   Returns a TJvID3TermsOfUseFrame frame.
 Description
-  Call Find to search in an ID3 tag for a terms of use frame with a
-  and determine if it exists. The tag controller specified by AController must be active - Do this by
-  setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
+  Call Find to search in an ID3 tag for a terms of use frame with a and determine if it exists. The tag
+  controller specified by AController must be active - Do this by setting <LINK
+  TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
-Return Value
+Return value
   Returns a TJvID3TermsOfUseFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -3085,15 +3083,14 @@ See Also
 Summary
   Returns a TJvID3TermsOfUseFrame frame.
 Description
-  Call FindOrCreate to search in an ID3 tag for a terms of use frame.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  Call FindOrCreate to search in an ID3 tag for a terms of use frame. If there is no such frame then
+  one is created. The tag controller specified by AController must be active - Do this by setting <LINK
+  TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
-Return Value
-  Returns a TJvID3TermsOfUseFrame frame, that was found
-  in the ID3 tag, or - when no such frame was found - a newly created frame.
+Return value
+  Returns a TJvID3TermsOfUseFrame frame, that was found in the ID3 tag, or - when no such frame was
+  found - a newly created frame.
 See Also
   TJvID3TermsOfUseFrame.Find
 
@@ -3102,8 +3099,8 @@ See Also
 Summary
   Specifies the language identifier for this frame.
 Description
-  Use Language to specify the language identifier for the content of the frame (as specified by
-  Text or TextW). The value of Language must be in ISO-639-2 format.
+  Use Language to specify the language identifier for the content of the frame (as specified by Text or
+  TextW). The value of Language must be in ISO-639-2 format.
 See Also
   TJvID3TermsOfUseFrame.Text, TJvID3TermsOfUseFrame.TextW
 
@@ -3129,8 +3126,8 @@ See Also
 Summary
   Represents a text information frame in a tag.
 Description
-  The text information frames are the most important frames, containing information like artist,
-  album and more. There may only be one text information frame of its kind in a tag.
+  The text information frames are the most important frames, containing information like artist, album
+  and more. There may only be one text information frame of its kind in a tag.
 
   Use the Text or TextW property to specify the value of the frame, for example:
   <AUTOLINK OFF>
@@ -3146,87 +3143,119 @@ Description
 
   There may only be one text information frame of its kind in a tag.
 
-  The following <LINK TJvID3FrameID,frame identifiers> are supported by TJvID3TextFrame.
+  The following <LINK TJvID3FrameID, frame identifiers> are supported by TJvID3TextFrame.
 
   <TABLE>
-  Frame ID, name              Description
-  -----------------           -----------
-  fiAlbum -                   The 'Album/Movie/Show title' frame is intended for the title of the
-   <C>TALB</C>                 recording (or source of sound) from which the audio in the file is taken.
-  fiAlbumSortOrder -          The 'Album sort order' frame defines a string which should be used
-   <C>TSOA</C>                 instead of the album name (fiAlbum) for sorting purposes. E.g. an album
-                               named "A Soundtrack" might preferably be sorted as "Soundtrack". <b>(Only in v2.4.0 tags)</b>
-  fiBand -                    The 'Band/Orchestra/Accompaniment' frame is used for additional
-   <C>TPE2</C>                 information about the performers in the recording.
-  fiConductor -               The 'Conductor' frame is used for the name of the conductor.
-   <C>TPE3</C>
-  fiContentGroup -            The 'Content group description' frame is used if the sound belongs to
-   <C>TIT1</C>                 a larger category of sounds/music. For example, classical music is
-                               often sorted in different musical sections (e.g. "Piano Concerto",
-                               "Weather - Hurricane").
-  fiContentType -
-   <C>TCON</C>
-  fiCopyright -               The 'Copyright message' frame is intended for
-   <C>TCOP</C>                 the copyright holder of the original sound, not the audio file itself.
-  fiDate -                    The 'Date' frame contains the the date for the recording. <b>(Not in v2.4.0 tags)</b>
-   <C>TDAT</C>
-  fiEncodedBy -               The 'Encoded by' frame contains the name of the person or
-   <C>TENC</C>                 organisation that encoded the audio file.
-  fiEncoderSettings -         The 'Software/Hardware and settings used for encoding' frame
-   <C>TSSE</C>                 includes the used audio encoder and its settings when the file was
-                               encoded. Hardware refers to hardware encoders, not the computer on
-                               which a program was run.
-  fiFileOwner -               The 'File owner/licensee' frame contains the name of the owner or
-   <C>TOWN</C>                 licensee of the file and its contents.
-  fiFileType -                The 'File type' frame indicates which type of audio this tag defines.
-   <C>TFLT</C>
-  fiISRC -                    The 'ISRC' frame should contain the International Standard Recording
-   <C>TSRC</C>                 Code (12 characters).
-  fiInitialKey -              The 'Initial key' frame contains the musical key in which the sound
-   <C>TKEY</C>                 starts.
-  fiMediaType -               The 'Media type' frame describes from which media the sound
-   <C>TMED</C>                 originated.
-  fiMixArtist -               The 'Interpreted, remixed, or otherwise modified by' frame contains
-   <C>TPE4</C>                 more information about the people behind a remix and similar
-                               interpretations of another existing piece.
-  fiMood -                    The 'Mood' frame is intended to reflect the mood of the audio with a
-   <C>TMOO</C>                 few keywords, e.g. "Romantic" or "Sad". <b>(Only in v2.4.0 tags)</b>
-  fiNetRadioOwner -           The 'Internet radio station owner' frame contains the name of the
-   <C>TRSO</C>                 owner of the internet radio station from which the audio is streamed.
-  fiNetRadioStation -         The 'Internet radio station name' frame contains the name of the
-   <C>TRSN</C>                 internet radio station from which the audio is streamed.
-  fiOrigAlbum -               The 'Original album/movie/show title' frame is intended for the title
-   <C>TOAL</C>                 of the original recording (or source of sound), if for example the
-                               music in the file should be a cover of a previously released song.
-  fiOrigFileName -            The 'Original filename' frame contains the preferred filename for the
-   <C>TOFN</C>                 file, since some media doesn't allow the desired length of the filename.
-  fiPartInSet -               The 'Part of a set' frame is a numeric string that describes which
-   <C>TPOS</C>                 part of a set the audio came from. This frame is used if the source described in the fiAlbum
-                               frame is divided into several mediums, e.g. a double CD. The value MAY be extended with a "/"
-                               character and a numeric string containing the total number of parts in the set. E.g. "1/2".
-  fiPerformerSortOrder -      The 'Performer sort order' frame defines a string which should be
-   <C>TSOP</C>                 used instead of the performer (TPE2) for sorting purposes. <b>(Only in v2.4.0 tags)</b>
-  fiProducedNotice -          The 'Produced notice' frame is intended for the production copyright
-   <C>TPRO</C>                 holder of the original sound, not the audio file itself. <b>(Only in v2.4.0 tags)</b>
-  fiPublisher -               The 'Publisher' frame simply contains the name of the label or
-   <C>TPUB</C>                 publisher.
-  fiRecordingDates -          The 'Recording dates' frame contains the recording dates,
-   <C>TRDA</C>                 E.g. "4th-7th June, 12th June" in combination with the fiYear frame. <b>(Not in v2.4.0 tags)</b>
-  fiSetSubTitle -             The 'Set subtitle' frame is intended for the subtitle of the part of
-   <C>TSST</C>                 a set this track belongs to. <b>(Only in v2.4.0 tags)</b>
-  fiSubTitle -                The 'Subtitle/Description refinement' frame is used for information
-   <C>TIT3</C>                 directly related to the contents title (e.g. "Op. 16" or "Performed
-                               live at Wembley").
-  fiTime -                    The '\Time' frame contains the time for the recording. <b>(Not in v2.4.0 tags)</b>
-   <C>TIME</C>
-  fiTitle -                   The 'Title/Songname/Content description' frame is the actual name of the piece
-   <C>TIT2</C>                 (e.g. "Adagio", "Hurricane Donna").
-  fiTitleSortOrder -          The 'Title sort order' frame defines a string which should be used
-   <C>TSOT</C>                 instead of the title (TIT2) for sorting purposes. <b>(Only in v2.4.0 tags)</b>
-  fiTrackNum -                The 'Track number/Position in set' frame is a numeric string containing
-   <C>TRCK</C>                 the order number of the audio-file on its original recording. This MAY be extended with a "/"
-                               character and a numeric string containing the total number of tracks/elements on the original
-                               recording. E.g. "4/9".
+    Frame ID, name                        Description
+    ------------------------------------  ----------------------------------------------------
+    fiAlbum - <C> TALB </C>               The 'Album/Movie/Show title' frame is intended for
+                                            the title of the recording (or source of sound)
+                                            from which the audio in the file is taken.
+    fiAlbumSortOrder - <C> TSOA </C>      The 'Album sort order' frame defines a string which
+                                            should be used instead of the album name
+                                            (fiAlbum) for sorting purposes. E.g. an album
+                                            named "A Soundtrack" might preferably be sorted
+                                            as "Soundtrack". <B>(Only in v2.4.0 tags)</B>
+    fiBand - <C> TPE2 </C>                The 'Band/Orchestra/Accompaniment' frame is used
+                                            for additional information about the performers
+                                            in the recording.
+    fiConductor - <C> TPE3 </C>           The 'Conductor' frame is used for the name of the
+                                            conductor.
+    fiContentGroup - <C> TIT1 </C>        The 'Content group description' frame is used if
+                                            the sound belongs to a larger category of
+                                            sounds/music. For example, classical music is
+                                            often sorted in different musical sections (e.g.
+                                            "Piano Concerto", "Weather - Hurricane").
+    fiContentType - <C> TCON </C>
+    fiCopyright - <C> TCOP </C>           The 'Copyright message' frame is intended for the
+                                            copyright holder of the original sound, not the
+                                            audio file itself.
+    fiDate - <C> TDAT </C>                The 'Date' frame contains the the date for the
+                                            recording. <B>(Not in v2.4.0 tags)</B>
+    fiEncodedBy - <C> TENC </C>           The 'Encoded by' frame contains the name of the
+                                            person or organisation that encoded the audio
+                                            file.
+    fiEncoderSettings - <C> TSSE </C>     The 'Software/Hardware and settings used for
+                                            encoding' frame includes the used audio encoder
+                                            and its settings when the file was encoded.
+                                            Hardware refers to hardware encoders, not the
+                                            computer on which a program was run.
+    fiFileOwner - <C> TOWN </C>           The 'File owner/licensee' frame contains the name
+                                            of the owner or licensee of the file and its
+                                            contents.
+    fiFileType - <C> TFLT </C>            The 'File type' frame indicates which type of audio
+                                            this tag defines.
+    fiISRC - <C> TSRC </C>                The 'ISRC' frame should contain the International
+                                            Standard Recording Code (12 characters).
+    fiInitialKey - <C> TKEY </C>          The 'Initial key' frame contains the musical key in
+                                            which the sound starts.
+    fiMediaType - <C> TMED </C>           The 'Media type' frame describes from which media
+                                            the sound originated.
+    fiMixArtist - <C> TPE4 </C>           The 'Interpreted, remixed, or otherwise modified
+                                            by' frame contains more information about the
+                                            people behind a remix and similar interpretations
+                                            of another existing piece.
+    fiMood - <C> TMOO </C>                The 'Mood' frame is intended to reflect the mood of
+                                            the audio with a few keywords, e.g. "Romantic" or
+                                            "Sad". <B>(Only in v2.4.0 tags)</B>
+    fiNetRadioOwner - <C> TRSO </C>       The 'Internet radio station owner' frame contains
+                                            the name of the owner of the internet radio
+                                            station from which the audio is streamed.
+    fiNetRadioStation - <C> TRSN </C>     The 'Internet radio station name' frame contains
+                                            the name of the internet radio station from which
+                                            the audio is streamed.
+    fiOrigAlbum - <C> TOAL </C>           The 'Original album/movie/show title' frame is
+                                            intended for the title of the original recording
+                                            (or source of sound), if for example the music in
+                                            the file should be a cover of a previously
+                                            released song.
+    fiOrigFileName - <C> TOFN </C>        The 'Original filename' frame contains the
+                                            preferred filename for the file, since some media
+                                            doesn't allow the desired length of the filename.
+    fiPartInSet - <C> TPOS </C>           The 'Part of a set' frame is a numeric string that
+                                            describes which part of a set the audio came
+                                            from. This frame is used if the source described
+                                            in the fiAlbum frame is divided into several
+                                            mediums, e.g. a double CD. The value MAY be
+                                            extended with a "/" character and a numeric
+                                            string containing the total number of parts in
+                                            the set. E.g. "1/2".
+    fiPerformerSortOrder - <C> TSOP </C>  The 'Performer sort order' frame defines a string
+                                            which should be used instead of the performer
+                                            (TPE2) for sorting purposes. <B>(Only in v2.4.0
+                                            tags)</B>
+    fiProducedNotice - <C> TPRO </C>      The 'Produced notice' frame is intended for the
+                                            production copyright holder of the original
+                                            sound, not the audio file itself. <B>(Only in
+                                            v2.4.0 tags)</B>
+    fiPublisher - <C> TPUB </C>           The 'Publisher' frame simply contains the name of
+                                            the label or publisher.
+    fiRecordingDates - <C> TRDA </C>      The 'Recording dates' frame contains the recording
+                                            dates, E.g. "4th-7th June, 12th June" in
+                                            combination with the fiYear frame. <B>(Not in
+                                            v2.4.0 tags)</B>
+    fiSetSubTitle - <C> TSST </C>         The 'Set subtitle' frame is intended for the
+                                            subtitle of the part of a set this track belongs
+                                            to. <B>(Only in v2.4.0 tags)</B>
+    fiSubTitle - <C> TIT3 </C>            The 'Subtitle/Description refinement' frame is used
+                                            for information directly related to the contents
+                                            title (e.g. "Op. 16" or "Performed live at
+                                            Wembley").
+    fiTime - <C> TIME </C>                The '\Time' frame contains the time for the
+                                            recording. <B>(Not in v2.4.0 tags)</B>
+    fiTitle - <C> TIT2 </C>               The 'Title/Songname/Content description' frame is
+                                            the actual name of the piece (e.g. "Adagio",
+                                            "Hurricane Donna").
+    fiTitleSortOrder - <C> TSOT </C>      The 'Title sort order' frame defines a string which
+                                            should be used instead of the title (TIT2) for
+                                            sorting purposes. <B>(Only in v2.4.0 tags)</B>
+    fiTrackNum - <C> TRCK </C>            The 'Track number/Position in set' frame is a
+                                            numeric string containing the order number of the
+                                            audio-file on its original recording. This MAY be
+                                            extended with a "/" character and a numeric
+                                            string containing the total number of
+                                            tracks/elements on the original recording. E.g.
+                                            "4/9".
   </TABLE>
 See Also
   TJvID3NumberFrame, TJvID3TimestampFrame
@@ -3238,13 +3267,14 @@ Summary
 Description
   Call Find to search in an ID3 tag for a text information frame with a specific frame identifier and
   determine if it exists. The tag controller specified by AController must be active - Do this by
-  setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
+  setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open,
+  Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
-  Returns a TJvID3TextFrame frame, if there is such a frame in the tag controlled by the tag
-  controller specified by the AController parameter. Otherwise returns nil.
+Return value
+  Returns a TJvID3TextFrame frame, if there is such a frame in the tag controlled by the tag controller
+  specified by the AController parameter. Otherwise returns nil.
 See Also
   TJvID3TextFrame.FindOrCreate
 
@@ -3254,16 +3284,15 @@ Summary
   Returns a TJvID3TextFrame frame with a specific frame identifier.
 Description
   Call FindOrCreate to search in an ID3 tag for a text information frame with a specific frame
-  identifier.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  identifier. If there is no such frame then one is created. The tag controller specified by
+  AController must be active - Do this by setting <LINK TJvID3Controller.Active, Active> to true or
+  calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
-  Returns a TJvID3TextFrame frame with the specified frame identifier, that was found in the ID3
-  tag, or - when no such frame was found - a newly created frame.
+Return value
+  Returns a TJvID3TextFrame frame with the specified frame identifier, that was found in the ID3 tag,
+  or - when no such frame was found - a newly created frame.
 See Also
   TJvID3TextFrame.Find
 
@@ -3287,8 +3316,8 @@ See Also
 Summary
   Represents a timestamp text information frame in a tag.
 Description
-  The text information frames are the most important frames, containing information like artist,
-  album and more. There may only be one text information frame of its kind in a tag.
+  The text information frames are the most important frames, containing information like artist, album
+  and more. There may only be one text information frame of its kind in a tag.
 
   Use the Value property to specify the timestamp value of the frame, for example:
   <AUTOLINK OFF>
@@ -3298,24 +3327,25 @@ Description
   </CODE>
   <AUTOLINK ON>
 
-  There may only be one text information frame of its kind in a tag. All the TJvID3TimestampFrame's
-  are only valid in <LINK TJvID3Controller.Version,version 2.4.0> tags.
+  There may only be one text information frame of its kind in a tag. All the TJvID3TimestampFrame's are
+  only valid in <LINK TJvID3Controller.Version, version 2.4.0> tags.
 
-  The following <LINK TJvID3FrameID,frame identifiers> are supported by TJvID3TimestampFrame.
+  The following <LINK TJvID3FrameID, frame identifiers> are supported by TJvID3TimestampFrame.
 
   <TABLE>
-  Frame ID, name              Description
-  -----------------           -----------
-  fiEncodingTime -            The 'Encoding time' frame contains a timestamp describing when the
-   <C>TDEN</C>                 audio was encoded.
-  fiOrigReleaseTime -         The 'Original release time' frame contains a timestamp describing
-   <C>TDOR</C>                 when the original recording of the audio was released.
-  fiRecordingTime -           The 'Recording time' frame contains a timestamp describing when the
-   <C>TDRC</C>                 audio was recorded.
-  fiReleaseTime -             The 'Release time' frame contains a timestamp describing when the
-   <C>TDRL</C>                 audio was first released.
-  fiTaggingTime -             The 'Tagging time' frame contains a timestamp describing then the
-   <C>TDTG</C>                 audio was tagged.
+    Frame ID, name                     Description
+    ---------------------------------  -------------------------------------------------------
+    fiEncodingTime - <C> TDEN </C>     The 'Encoding time' frame contains a timestamp
+                                         describing when the audio was encoded.
+    fiOrigReleaseTime - <C> TDOR </C>  The 'Original release time' frame contains a timestamp
+                                         describing when the original recording of the audio
+                                         was released.
+    fiRecordingTime - <C> TDRC </C>    The 'Recording time' frame contains a timestamp
+                                         describing when the audio was recorded.
+    fiReleaseTime - <C> TDRL </C>      The 'Release time' frame contains a timestamp
+                                         describing when the audio was first released.
+    fiTaggingTime - <C> TDTG </C>      The 'Tagging time' frame contains a timestamp
+                                         describing then the audio was tagged.
   </TABLE>
 See Also
   TJvID3NumberFrame, TJvID3TextFrame
@@ -3327,12 +3357,12 @@ Summary
 Description
   Call Find to search in an ID3 tag for a timestamp text information frame with a specific frame
   identifier and determine if it exists. The tag controller specified by AController must be active -
-  Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  Do this by setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK
+  TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
+Return value
   Returns a TJvID3TimestampFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -3344,14 +3374,13 @@ Summary
   Returns a TJvID3TimestampFrame frame with a specific frame identifier.
 Description
   Call FindOrCreate to search in an ID3 tag for a timestamp text information frame with a specific
-  frame identifier.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  frame identifier. If there is no such frame then one is created. The tag controller specified by
+  AController must be active - Do this by setting <LINK TJvID3Controller.Active, Active> to true or
+  calling <LINK TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
+Return value
   Returns a TJvID3TimestampFrame frame with the specified frame identifier, that was found in the ID3
   tag, or - when no such frame was found - a newly created frame.
 See Also
@@ -3372,11 +3401,11 @@ Summary
 Description
   Use TJvID3URLFrame to represent a \URL link frame in a tag.
 
-  With these frames dynamic data such as webpages with touring information, price information or
-  plain \ordinary news can be added to the tag. There may only be one \URL link frame of its kind in
-  a tag, except when stated otherwise in the frame description.
+  With these frames dynamic data such as webpages with touring information, price information or plain
+  \ordinary news can be added to the tag. There may only be one \URL link frame of its kind in a tag,
+  except when stated otherwise in the frame description.
 
-  All \URL link <LINK TJvID3Frame.FrameName,frame names> begins with "W". Only \URL link frame names
+  All \URL link <LINK TJvID3Frame.FrameName, frame names> begins with "W". Only \URL link frame names
   begins with "W".
 
   Use the URL property to specify the \URL link of the frame, for example:
@@ -3389,28 +3418,36 @@ Description
 
   There may only be one text information frame of its kind in a tag.
 
-  The following <LINK TJvID3FrameID,frame identifiers> are supported by TJvID3URLFrame.
+  The following <LINK TJvID3FrameID, frame identifiers> are supported by TJvID3URLFrame.
 
   <TABLE>
-  Frame ID, name              Description
-  -----------------           -----------
-  fiWWWArtist -               The 'Official artist/performer web page' frame is a \URL pointing at the artists
-   <C>WOAR</C>                 \official web page. There may be more than one "WOAR" frame in a tag if the audio
-                               contains more than one performer, but not with the same content.
-  fiWWWAudioFile -            The 'Official audio file web page' frame is a \URL pointing at a file specific web
-   <C>WOAF</C>                 page.
-  fiWWWAudioSource -          The 'Official audio source web page' frame is a \URL pointing at the official web page
-   <C>WOAS</C>                 for the source of the audio file, e.g. a movie.
-  fiWWWCommercialInfo -       The 'Commercial information' frame is a \URL pointing at a web page with information
-   <C>WCOM</C>                 such as where the album can be bought.
-  fiWWWCopyright -            The 'Copyright/Legal information' frame is a \URL pointing at a web page where the
-   <C>WCOP</C>                 terms of use and ownership of the file is described.
-  fiWWWPayment -              The 'Payment' frame is a \URL pointing at a web page that will handle the process of
-   <C>WPAY</C>                 paying for this file.
-  fiWWWPublisher -            The 'Publishers official web page' frame is a \URL pointing at the official web page
-   <C>WPUB</C>                 for the publisher.
-  fiWWWRadioPage -            The 'Official internet radio station homepage' contains a \URL pointing at the
-   <C>WORS</C>                 homepage of the internet radio station.
+    Frame ID, name                       Description
+    -----------------------------------  -----------------------------------------------------
+    fiWWWArtist - <C> WOAR </C>          The 'Official artist/performer web page' frame is a
+                                           \URL pointing at the artists \official web page.
+                                           There may be more than one "WOAR" frame in a tag
+                                           if the audio contains more than one performer, but
+                                           not with the same content.
+    fiWWWAudioFile - <C> WOAF </C>       The 'Official audio file web page' frame is a \URL
+                                           pointing at a file specific web page.
+    fiWWWAudioSource - <C> WOAS </C>     The 'Official audio source web page' frame is a \URL
+                                           pointing at the official web page for the source
+                                           of the audio file, e.g. a movie.
+    fiWWWCommercialInfo - <C> WCOM </C>  The 'Commercial information' frame is a \URL
+                                           pointing at a web page with information such as
+                                           where the album can be bought.
+    fiWWWCopyright - <C> WCOP </C>       The 'Copyright/Legal information' frame is a \URL
+                                           pointing at a web page where the terms of use and
+                                           ownership of the file is described.
+    fiWWWPayment - <C> WPAY </C>         The 'Payment' frame is a \URL pointing at a web page
+                                           that will handle the process of paying for this
+                                           file.
+    fiWWWPublisher - <C> WPUB </C>       The 'Publishers official web page' frame is a \URL
+                                           pointing at the official web page for the
+                                           publisher.
+    fiWWWRadioPage - <C> WORS </C>       The 'Official internet radio station homepage'
+                                           contains a \URL pointing at the homepage of the
+                                           internet radio station.
   </TABLE>
 See Also
   TJvID3URLUserFrame
@@ -3422,13 +3459,14 @@ Summary
 Description
   Call Find to search in an ID3 tag for a \URL link frame with a specific frame identifier and
   determine if it exists. The tag controller specified by AController must be active - Do this by
-  setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
+  setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open,
+  Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
-  Returns a TJvID3URLFrame frame, if there is such a frame in the tag controlled by the tag
-  controller specified by the AController parameter. Otherwise returns nil.
+Return value
+  Returns a TJvID3URLFrame frame, if there is such a frame in the tag controlled by the tag controller
+  specified by the AController parameter. Otherwise returns nil.
 See Also
   TJvID3URLFrame.FindOrCreate
 
@@ -3437,16 +3475,16 @@ See Also
 Summary
   Returns a TJvID3URLFrame frame with a specific frame identifier.
 Description
-  Call FindOrCreate to search in an ID3 tag for a \URL link frame with a specific frame identifier.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  Call FindOrCreate to search in an ID3 tag for a \URL link frame with a specific frame identifier. If
+  there is no such frame then one is created. The tag controller specified by AController must be
+  active - Do this by setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK
+  TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return Value
-  Returns a TJvID3URLFrame frame with the specified frame identifier, that was found in the ID3
-  tag, or - when no such frame was found - a newly created frame.
+Return value
+  Returns a TJvID3URLFrame frame with the specified frame identifier, that was found in the ID3 tag, or
+  - when no such frame was found - a newly created frame.
 See Also
   TJvID3URLFrame.Find
 
@@ -3463,12 +3501,11 @@ Summary
   Represents a user defined \URL link frame in a tag.
 Description
   Use TJvID3URLUserFrame to represent a user defined \URL link frame in a tag. Such a frame has <LINK
-  TJvID3Frame.FrameID,frame identifier> fiWWWUser ("WXXX").
+  TJvID3Frame.FrameID, frame identifier> fiWWWUser ("WXXX").
 
   This frame is intended for \URL links concerning the audiofile in a similar way to the other
-  "W"-frames.
-  The frame consists of a <LINK TJvID3URLUserFrame.Description,description> of the string and the
-  actual URL.
+  "W"-frames. The frame consists of a <LINK TJvID3URLUserFrame.Description, description> of the string
+  and the actual URL.
 
   There may be more than one user defined \URL link frame in each tag, but only one with the same
   description.
@@ -3480,8 +3517,8 @@ See Also
 Summary
   Specifies a description for the \URL.
 Description
-  Use Description or DescriptionW to specify a string for the description field in the user defined
-  URL link frame.
+  Use Description or DescriptionW to specify a string for the description field in the user defined URL
+  link frame.
 
   Use Encoding to specify whether to use Description or DescriptionW.
 See Also
@@ -3498,13 +3535,14 @@ Summary
 Description
   Call Find to search in an ID3 tag for a user defined \URL link frame with a specific index and
   determine if it exists. The tag controller specified by AController must be active - Do this by
-  setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
+  setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open,
+  Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   Index       - Specifies the index of the user defined \URL link frame. Specifying 0 for Index
-  searches                for the first user defined \URL link frame in the tag, specifying 1 for the
-  second, etc.
-Return Value
+                 searches for the first user defined \URL link frame in the tag, specifying 1 for the
+                 second, etc.
+Return value
   Returns a TJvID3URLUserFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -3517,14 +3555,14 @@ Summary
 Description
   Call FindOrCreate to search in an ID3 tag for a user defined \URL link frame with a specific index.
   If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  active - Do this by setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK
+  TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   Index       - Specifies the index of the user defined \URL link frame. Specifying 0 for Index
-  searches                for the first user defined \URL link frame in the tag, specifying 1 for the
-  second, etc.
-Return Value
+                 searches for the first user defined \URL link frame in the tag, specifying 1 for the
+                 second, etc.
+Return value
   Returns a TJvID3URLUserFrame frame with the specified owner identifier, that was found in the ID3
   tag, or - when no such frame was found - a newly created frame.
 See Also
@@ -3547,7 +3585,7 @@ Summary
   Represents a user defined text information frame in a tag.
 Description
   Use TJvID3UserFrame to represent a user defined text information frame in a tag. Such a frame has
-  <LINK TJvID3Frame.FrameID,frame identifier> fiUserText ("TXXX").
+  <LINK TJvID3Frame.FrameID, frame identifier> fiUserText ("TXXX").
 
   This frame is intended for one-string text information concerning the audiofile in a similar way to
   the other text frames.
@@ -3574,16 +3612,17 @@ See Also
 Summary
   Returns a TJvID3UserFrame frame with a specific index.
 Description
-  Call Find to search in an ID3 tag for a user defined text information frame with a specific index
-  and determine if it exists. The tag controller specified by AController must be active - Do this by
-  setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
+  Call Find to search in an ID3 tag for a user defined text information frame with a specific index and
+  determine if it exists. The tag controller specified by AController must be active - Do this by
+  setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK TJvID3Controller.Open,
+  Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   Index       - Specifies the index of the user defined text frame. Specifying 0 for Index searches
-               for the first user defined text frame in the tag, specifying 1 for the second, etc.
-Return Value
-  Returns a TJvID3UserFrame frame, if there is such a frame in the tag controlled by the tag
-  controller specified by the AController parameter. Otherwise returns nil.
+                 for the first user defined text frame in the tag, specifying 1 for the second, etc.
+Return value
+  Returns a TJvID3UserFrame frame, if there is such a frame in the tag controlled by the tag controller
+  specified by the AController parameter. Otherwise returns nil.
 See Also
   TJvID3UserFrame.FindOrCreate
 
@@ -3593,17 +3632,16 @@ Summary
   Returns a TJvID3UserFrame frame with a specific index.
 Description
   Call FindOrCreate to search in an ID3 tag for a user defined text information frame with a specific
-  index.
-  If there is no such frame then one is created. The tag controller specified by AController must be
-  active - Do this by setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK
-  TJvID3Controller.Open,Open>.
+  index. If there is no such frame then one is created. The tag controller specified by AController
+  must be active - Do this by setting <LINK TJvID3Controller.Active, Active> to true or calling <LINK
+  TJvID3Controller.Open, Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   Index       - Specifies the index of the user defined text frame. Specifying 0 for Index searches
-               for the first user text link frame in the tag, specifying 1 for the second, etc.
-Return Value
-  Returns a TJvID3UserFrame frame with the specified owner identifier, that was found in the ID3
-  tag, or - when no such frame was found - a newly created frame.
+                 for the first user text link frame in the tag, specifying 1 for the second, etc.
+Return value
+  Returns a TJvID3UserFrame frame with the specified owner identifier, that was found in the ID3 tag,
+  or - when no such frame was found - a newly created frame.
 See Also
   TJvID3UserFrame.Find
 
@@ -3634,19 +3672,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGBit.mbProtection
-Protected by CRC.
+  Protected by CRC.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGBit.mbPrivate
-Value depends on the application.
+  Value depends on the application.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGBit.mbCopyrighted
-Audio is copyrighted.
+  Audio is copyrighted.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGBit.mbOriginal
-Original media/Copy of original media.
+  Original media/Copy of original media.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGBits
@@ -3665,19 +3703,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGChannelMode.mcStereo
-Stereo
+  Stereo
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGChannelMode.mcJointStereo
-\Intensity Stereo (also called Joint Stereo)
+  \Intensity Stereo (also called Joint Stereo)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGChannelMode.mcDualChannel
-Dual channel
+  Dual channel
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGChannelMode.mcSingleChannel
-Mono
+  Mono
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGEmphasis
@@ -3691,19 +3729,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGEmphasis.meNone
-None.
+  None.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGEmphasis.me5015ms
-50/15 ms
+  50/15 ms
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGEmphasis.meReserved
-Reserved
+  Reserved
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGEmphasis.meCCITJ17
-CCIT J.17
+  CCIT J.17
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGLayer
@@ -3717,19 +3755,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGLayer.mlNotDefined
-An undefined layer.
+  An undefined layer.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGLayer.mlLayerIII
-Layer III.
+  Layer III.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGLayer.mlLayerII
-Layer II.
+  Layer II.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGLayer.mlLayerI
-Layer I.
+  Layer I.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGModeExtension
@@ -3743,19 +3781,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGModeExtension.meModeExt0
-Mode extension 0.
+  Mode extension 0.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGModeExtension.meModeExt1
-Mode extension 1.
+  Mode extension 1.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGModeExtension.meModeExt2
-Mode extension 2.
+  Mode extension 2.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGModeExtension.meModeExt3
-Mode extension 3.
+  Mode extension 3.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGVersion
@@ -3769,17 +3807,17 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGVersion.mvVersion25
-MPEG version 2.5
+  MPEG version 2.5
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGVersion.mvReserved
-An undefined MPEG version
+  An undefined MPEG version
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGVersion.mvVersion2
-MPEG version 2
+  MPEG version 2
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGVersion.mvVersion1
-MPEG version 1
+  MPEG version 1
 

@@ -11,7 +11,6 @@ Summary
 Author
   Sébastien Buysse
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvDragAcceptEvent
 <TITLE TJvDragAcceptEvent type>
@@ -33,10 +32,10 @@ Description
   * Drop a TJvDragDrop component on a form.
   * Set DropTarget to the control that should accept dropped files.
   * Set property AcceptDrag to true; this means that now the control accepts dropped files.
-  * Write an OnDrop event handler, that will respond when the user drops files on the    <LINK
-     TJvDragDrop.DropTarget,drop target>.
-  * At run-time, set TargetStrings to a TStrings descendant, that should automatically receive   the
-     list of dropped files.
+  * Write an OnDrop event handler, that will respond when the user drops files on the <LINK
+    TJvDragDrop.DropTarget, drop target>.
+  * At run-time, set TargetStrings to a TStrings descendant, that should automatically receive the list
+    of dropped files.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDragDrop.AcceptDrag
@@ -53,8 +52,8 @@ Summary
   Specifies the control that accepts dropped files.
 Description
   Use DropTarget to specify the control that accepts dropped files, it can be set to any TWincontrol
-  descendant. The OnDrop event is fired when files are dropped on the drop target and AcceptDrag is
-  set to true.
+  descendant. The OnDrop event is fired when files are dropped on the drop target and AcceptDrag is set
+  to true.
 See Also
   TJvDragDrop.AcceptDrag
 
@@ -90,14 +89,13 @@ Description
   Use TargetStrings to assign a TStrings descendant that will automatically receive the names of the
   files dropped on the drop target. For example:
 
- 
   <AUTOLINK OFF>
   <CODE>
   JvDragDrop1.TargetStrings := ListBox1.Items; 
   </CODE>
   <AUTOLINK ON>
-  When files are dropped on the drop target, the list box will be
-  filled with a list of the names of the dropped files.
+  When files are dropped on the drop target, the list box will be filled with a list of the names of
+  the dropped files.
 See Also
   TJvDragDrop.DropTarget, TJvDragDrop.OnDrop
 
@@ -128,28 +126,28 @@ Parameters
 Summary
   Defines the possible effects that can be applied to the cursor in a drag and drop event.
 Description
-  TJvDropEffect defines the possible modifiers that can be added to a cursor to provide visual
-  feedback to the user about the current drag and drop action.
+  TJvDropEffect defines the possible modifiers that can be added to a cursor to provide visual feedback
+  to the user about the current drag and drop action.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDropEffect.deNone
-No cursor modifiers applied.
+  No cursor modifiers applied.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDropEffect.deCopy
-Modify cursor to include copy modifier.
+  Modify cursor to include copy modifier.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDropEffect.deMove
-Modify cursor to include move modifier.
+  Modify cursor to include move modifier.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDropEffect.deLink
-Modify cursor to include link modifier.
+  Modify cursor to include link modifier.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDropEffect.deScroll
-Modify cursor to include scroll modifier.
+  Modify cursor to include scroll modifier.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDropEvent
@@ -172,9 +170,9 @@ Description
   * Drop a TJvDropTarget component on a form.
   * Set Control to the control that should accept dropped files.
   * Set property AcceptDrag to true; this means that now the control accepts dropped files.
-  * Write an OnDragDrop event handler, that will respond when the user drops files on the    <LINK
-     TJvDropTarget.Control,drop target>. Use the methods of the component in the event handle,
-     to retrieve the file names, content etc. of the dropped files.
+  * Write an OnDragDrop event handler, that will respond when the user drops files on the <LINK
+    TJvDropTarget.Control, drop target>. Use the methods of the component in the event handle, to
+    retrieve the file names, content etc. of the dropped files.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDropTarget.AcceptDrag
@@ -191,8 +189,8 @@ Summary
   The control that accept dragged content.
 Description
   Set control to point to a control on your form to make that control accept dragged files. When a
-  valid control is assigned and AcceptDrag is true, the cursor will turn into an accept cursor when
-  it hovers above the control in a drag and drop action.,
+  valid control is assigned and AcceptDrag is true, the cursor will turn into an accept cursor when it
+  hovers above the control in a drag and drop action.,
 See Also
   TJvDropTarget.AcceptDrag
 
@@ -201,8 +199,8 @@ See Also
 Summary
   Pointer to the underlying Windows data object instance.
 Description
-  Use DataObject when you need to access the Windows IDataObject underlying the component. For
-  example, this property might be necessary when call native API functions.
+  Use DataObject when you need to access the Windows IDataObject underlying the component. For example,
+  this property might be necessary when call native API functions.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDropTarget.GetFileContent
@@ -246,8 +244,8 @@ See Also
 Summary
   Retrieves the names of the dropped files.
 Description
-  Call GetFilenames to fill a TStrings with the names of the dropped files. GetFilenames is
-  equivalent to GetFileDescrNames but uses the HDROP handle to retrieve the names.
+  Call GetFilenames to fill a TStrings with the names of the dropped files. GetFilenames is equivalent
+  to GetFileDescrNames but uses the HDROP handle to retrieve the names.
 Parameters
   List - The list to save the filenames to.
 Return value
@@ -260,9 +258,9 @@ See Also
 Summary
   Called when the drag and drop needs to know if the dragged files will be accepted.
 Description
-  Write a handler for the OnDragAccept event to specify whether the dragged files can be dropped on
-  the control. Set the value of Accept to true to accept the files, to false to not accept them.
-  accepted by the control. For example, you can call
+  Write a handler for the OnDragAccept event to specify whether the dragged files can be dropped on the
+  control. Set the value of Accept to true to accept the files, to false to not accept them. accepted
+  by the control. For example, you can call
 Parameters
   Sender - The TJvDropTarget that called the event.
   Accept - Set this to true to accept the files, false otherwise.
@@ -292,9 +290,6 @@ Summary
 Description
   Write a handler for the OnDragEnter event to take specific action when the mouse cursor enters the
   control in a drag and drop action.
-  ##Parameters
-  ##  Sender - The TJvDropTarget that called the event.
-  ##  Effect - The effect to apply to the mouse cursor.
 See Also
   TJvDropTarget.OnDragLeave
 
@@ -317,9 +312,6 @@ Summary
 Description
   Write a handler for the OnDragOver event to take specific action when the user drags files over the
   control.
-  ##Parameters
-  ##  Sender - The TJvDropTarget that called the event.
-  ##  Effect - The effect to apply to the mouse cursor.
 See Also
   TJvDropTarget.OnDragAccept, TJvDropTarget.OnDragEnter, TJvDropTarget.OnDragLeave
 

@@ -9,7 +9,6 @@ Summary
 Author
   Sébastien Buysse
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox
 <TITLEIMG TJvCheckBox>
@@ -24,8 +23,8 @@ Description
   There are 3 main added functionalities:
 
   * The CheckBox can be Associated with another component and control its enabled property.
-  * Mouse movements can be tracked through 2 added events OnMouseEnter/OnMouseLeave and change the
-    Font automatically (HotTrack, HotTrackFont).
+  * Mouse movements can be tracked through 2 added events OnMouseEnter/OnMouseLeave and change the Font
+    automatically (HotTrack, HotTrackFont).
   * The state of the control can automatically be saved to the registry.
 
   To use TJvCheckBox
@@ -34,8 +33,8 @@ Description
   * Set the Top, Left, Width and Height of the component with the mouse or through the object
     Inspector.
   * Optionally set the Associated control to be enabled/disabled by toggling the Checkbox
-  * Set the Caption (if you want a multi-line caption set Autosize to False and adjust the size   of
-     the control accordingly).
+  * Set the Caption (if you want a multi-line caption set Autosize to False and adjust the size of the
+    control accordingly).
   * Optionally set the HotTrack property and define the HotTrackFont.
   * Optionally set the Hintcolor.
   * Optionally set the AutoSave properties.
@@ -59,10 +58,9 @@ Summary
   Determines whether control automatically resizes to accommodate the Caption.
 Description
   Use AutoSize to make the control adjust its size automatically so the client area accommodates the
-  height and width of the captionj. When AutoSize is False, the check box is fixed in size.
-  When AutoSize is True, the client size readjusts whenever the caption changes. The client size of
-  the control is also readjusted when the Font property changes.
-  By default, AutoSize is False.
+  height and width of the captionj. When AutoSize is False, the check box is fixed in size. When
+  AutoSize is True, the client size readjusts whenever the caption changes. The client size of the
+  control is also readjusted when the Font property changes. By default, AutoSize is False.
 
   Leaving AutoSize to False and adjusting the size manually allows control of the Wordwrap of the
   Caption.
@@ -89,8 +87,8 @@ See Also
 Summary
   Determines whether control automatically tracks the mouse hovering over the control.
 Description
-  Use HotTrack to specify that the font defined in HotTrackFont will be used instead of the normal
-  font (ParentFont/Control FOnt) when the mouse cursor is hovering over the control.
+  Use HotTrack to specify that the font defined in HotTrackFont will be used instead of the normal font
+  (ParentFont/Control FOnt) when the mouse cursor is hovering over the control.
 See Also
   OnMouseEnter, OnMouseLeave
 
@@ -99,8 +97,8 @@ See Also
 Summary
   Font used when the mouse cursor is hovering over the control.
 Description
-  Use HotTrackFont to specify the font to be used instead of the normal font (ParentFont/
-  Control Font) when HotTrack is set to <b>True</b> and the mouse cursor is hovering over the control.
+  Use HotTrackFont to specify the font to be used instead of the normal font (ParentFont/ Control Font)
+  when HotTrack is set to <B>True</B> and the mouse cursor is hovering over the control.
 See Also
   OnMouseEnter, OnMouseLeave
 
@@ -110,22 +108,21 @@ Summary
   Specifies how changes to the Font affects HotTrackFont.
 Description
   HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
-  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all
-  property changes in Font are copied to HotTrackFont except Color changes.
+  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
+  changes in Font are copied to HotTrackFont except Color changes.
 
   Note that hoFollowFont must be included for any properties to be copied at all.
 
   To implement the HotTrackFontOptions property in a new control, you should perform the following
   steps:
 
-    * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default
-      value
-      to be DefaultTrackFontOptions (defined in JvTypes).
-    * Set the default value in the constructor.
-    * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
-      JvJVCLUtils) after calling inherited.
-    * Add a call to UpdateTrackFont in SetHotTrackFontOptions
+  * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
+  * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default
+    value to be DefaultTrackFontOptions (defined in JvTypes).
+  * Set the default value in the constructor.
+  * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
+    JvJVCLUtils) after calling inherited.
+  * Add a call to UpdateTrackFont in SetHotTrackFontOptions
 See Also
   TJvCheckBox.HotTrack, TJvCheckBox.HotTrackFont
 
@@ -134,8 +131,8 @@ See Also
 Summary
   Specifies the vertical placement of the text.
 Description
-  Set Layout to specify how the text of the check box is placed within the ClientRect of the check
-  box control. Layout is the vertical analog to the Alignment property.
+  Set Layout to specify how the text of the check box is placed within the ClientRect of the check box
+  control. Layout is the vertical analog to the Alignment property.
 See Also
   TJvCheckBox.Alignment
 
@@ -144,8 +141,8 @@ See Also
 Summary
   Specifies whether to show the text on the left or the right of the check box.
 Description
-  Set LeftText to false (the default) to show the text on the right of the check box.
-  Set LeftText to true to show the text on the left of the check box.
+  Set LeftText to false (the default) to show the text on the right of the check box. Set LeftText to
+  true to show the text on the left of the check box.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.LinkedControls
@@ -168,9 +165,9 @@ Description
 Summary
   Specifies whether the check box text wraps when it is too long for the width of the check box.
 Description
-  Set WordWrap to true to allow the check box to display multiple line of text. When WordWrap is
-  true, text that is too wide for the check box control wraps at the right margin and continues in
-  additional lines.
+  Set WordWrap to true to allow the check box to display multiple line of text. When WordWrap is true,
+  text that is too wide for the check box control wraps at the right margin and continues in additional
+  lines.
 
   Set WordWrap to false to limit the check box to a single line. When WordWrap is false, text that is
   too wide for the check box appears truncated.

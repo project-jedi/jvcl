@@ -10,7 +10,6 @@ Summary
 Author
   Olivier Sannier
 
-
 ----------------------------------------------------------------------------------------------------
 @@PJvVideoHdr
 <TITLE PJvVideoHdr type>
@@ -32,9 +31,9 @@ Description
 Summary
   This class describes the Audio Format used in the video stream.
 Description
-  Read the values to know what audio format is used, set the values to choose the audio format you
-  want to use. When setting values, ensure they are correct and then call Apply.
-  If some values are not correct for your configuration, Apply will return false.
+  Read the values to know what audio format is used, set the values to choose the audio format you want
+  to use. When setting values, ensure they are correct and then call Apply. If some values are not
+  correct for your configuration, Apply will return false.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAudioFormat.Apply
@@ -43,9 +42,8 @@ Summary
   this audio format is linked to.
 Description
   When you make modifications to the values of the properties, you must call this function or your
-  changes will be ignored when you start grabbing.
-  The most common and simple audio format to use is WAVE_FORMAT_PCM as it is always available on all
-  machines but it doesn't provide any compression.
+  changes will be ignored when you start grabbing. The most common and simple audio format to use is
+  WAVE_FORMAT_PCM as it is always available on all machines but it doesn't provide any compression.
 Return value
   True if the values were correct and successfully applied, false otherwise.
 
@@ -54,12 +52,11 @@ Return value
 Summary
   The average number of bytes per second in the audio stream.
 Description
-  This value must be calculated according to the provider of the audio format you want to use and
-  that you indicated by setting the value of FormatTag.
-  Please note that if FormatTag is equal to WAVE_FORMAT_PCM, the value of AvgBytesPerSec will be
-  ignored and will be computed according to the recommendation for this format:
+  This value must be calculated according to the provider of the audio format you want to use and that
+  you indicated by setting the value of FormatTag. Please note that if FormatTag is equal to
+  WAVE_FORMAT_PCM, the value of AvgBytesPerSec will be ignored and will be computed according to the
+  recommendation for this format:
 
- 
   <AUTOLINK OFF>
   <CODE>
      AvgBytesPerSec := SamplesPerSec * ((Channels * BitsPerSample) div 8) 
@@ -86,7 +83,6 @@ Description
   This value depends on the value of FormatTag. If it is equal to WAVE_FORMAT_PCM, then the value of
   BlockAlign will be ignored and computed according to.
 
- 
   <AUTOLINK OFF>
   <CODE>
      BlockAlign := (Channels * BitsPerSample) div 8 
@@ -110,9 +106,8 @@ See Also
 Summary
   Some extra data required by the format indicated by FormatTag.
 Description
-  If FormatTag is equal to WAVE_FORMAT_PCM, then the value of Extra is ignored.
-  Please refer to the provider of the audio format you want to use for information on the data to put
-  in this buffer.
+  If FormatTag is equal to WAVE_FORMAT_PCM, then the value of Extra is ignored. Please refer to the
+  provider of the audio format you want to use for information on the data to put in this buffer.
 See Also
   TJvAudioFormat.FillWaveFormatEx, TJvAudioFormat.FormatTag
 
@@ -131,10 +126,9 @@ Summary
   Fills a WAVEFORMATEX structure with the informations contained in the properties.
 Description
   The WAVEFORMATEX structure will be filled with the required informations from the properties of the
-  TJvAudioFormat object. If the FormatTag is WAVE_FORMAT_PCM, the values will be set to comply with
-  the recommendations for this format.
-  If set to another value, the properties will be copied straight into the structure without any
-  check.
+  TJvAudioFormat object. If the FormatTag is WAVE_FORMAT_PCM, the values will be set to comply with the
+  recommendations for this format. If set to another value, the properties will be copied straight into
+  the structure without any check.
 Parameters
   wfex - The WAVEFORMATEX structure to be filled.
 See Also
@@ -179,9 +173,9 @@ Summary
   An encapsulation of the AVICap API allowing to capture live video.
 Description
   The TJvAVICapture component can be dropped on any form or frame and will display the video stream
-  captured by a video device installed under Windows. You can perform live previews, record movies
-  (and save them to avi files) or even capture single frames. A direct access is provided to the
-  frames so that you can process them if you want.
+  captured by a video device installed under Windows. You can perform live previews, record movies (and
+  save them to avi files) or even capture single frames. A direct access is provided to the frames so
+  that you can process them if you want.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.AbortCapture
@@ -265,8 +259,8 @@ Summary
   Tries to connect the component to the given driver.
 Description
   Generally, there is only one driver on a given system. You then choose a different source depending
-  on what you want to capture.
-  If the given driver index is invalid, an EInvalidDriverIndexError exception is triggered.
+  on what you want to capture. If the given driver index is invalid, an EInvalidDriverIndexError
+  exception is triggered.
 Parameters
   Driver - The index of the driver to connect to.
 Return value
@@ -318,9 +312,8 @@ Summary
   The index of the driver to which the component is connected.
 Description
   Generally, there is only one driver on a given system. You then choose a different source depending
-  on what you want to capture.
-  Setting this value to -1 calls Disconnect.
-  Setting this value to anything between 0 and 9 calls Connect with that Value.
+  on what you want to capture. Setting this value to -1 calls Disconnect. Setting this value to
+  anything between 0 and 9 calls Connect with that Value.
 See Also
   TJvAVICapture.Connect, TJvAVICapture.Connected, TJvAVICapture.Disconnect
 
@@ -329,8 +322,8 @@ See Also
 Summary
   The name of the driver the component is connected to.
 Description
-  If the component is not connected to any driver, DriverName returns the value of
-  NOT_CONNECTED (which is 'Not \Connected' unless localized).
+  If the component is not connected to any driver, DriverName returns the value of NOT_CONNECTED (which
+  is 'Not \Connected' unless localized).
 See Also
   TJvAVICapture.Connected
 
@@ -376,9 +369,8 @@ Summary
   The minimum file size for a capture into a file.
 Description
   An empty file of that size will be created when capture starts. This prevents the system from
-  constantly reallocating space for the capture file and thus saves processing power.
-  When the capture is finished, the filesize will be truncated to the extent at which the capture
-  required it.
+  constantly reallocating space for the capture file and thus saves processing power. When the capture
+  is finished, the filesize will be truncated to the extent at which the capture required it.
 See Also
   TJvAVICapture.FileName, TJvAVICapture.StartCapture, TJvAVICapture.StopCapture
 
@@ -423,8 +415,8 @@ See Also
 Summary
   The event triggered when you want to use precise capture control.
 Description
-  Please refer to the WiN32 API for details on using the precise capture control
-  Will only be triggered if ueCapControl is in UsedEvents.
+  Please refer to the WiN32 API for details on using the precise capture control Will only be triggered
+  if ueCapControl is in UsedEvents.
 Parameters
   Sender - The TJvAVICapture component triggering the event.
   nState - The state in which the capture is (refer to API for details).
@@ -437,8 +429,8 @@ See Also
 Summary
   The event triggered in case of an error.
 Description
-  This event is called whenever the system encountered an error during a capture session
-  This event will only be triggered if ueError is in UsedEvents.
+  This event is called whenever the system encountered an error during a capture session This event
+  will only be triggered if ueError is in UsedEvents.
 Parameters
   Sender - The TJvAVICapture component triggering the event.
   nErr   - The error number.
@@ -451,8 +443,8 @@ See Also
 Summary
   The event triggered when a frame is ready, in a non streaming capture session.
 Description
-  A non streaming capture session is generally a frame by frame capture session.
-  This event will only be triggered if ueFrame is in UsedEvents.
+  A non streaming capture session is generally a frame by frame capture session. This event will only
+  be triggered if ueFrame is in UsedEvents.
 Parameters
   Sender   - The TJvAVICapture component triggering the event.
   videoHdr - A PJvVideoHdr structure containing informations about the frame.
@@ -464,8 +456,8 @@ See Also
 Summary
   The event triggered in case of a status change.
 Description
-  Use this event to follow the progress of a capture session.
-  This event will only be triggered if ueStatus is in UsedEvents.
+  Use this event to follow the progress of a capture session. This event will only be triggered if
+  ueStatus is in UsedEvents.
 Parameters
   Sender - The TJvAVICapture component triggering the event.
   nId    - The id of the status change (see win32 API for more details).
@@ -479,8 +471,8 @@ Summary
   The event triggered when a frame is ready, in a streaming capture session.
 Description
   This event is triggered just before the frame is written to disk. So if you make any changes to the
-  frame in this event, they will be written to disk.
-  This event will only be triggered if ueVideoStream is in UsedEvents.
+  frame in this event, they will be written to disk. This event will only be triggered if ueVideoStream
+  is in UsedEvents.
 Parameters
   Sender   - The TJvAVICapture component triggering the event.
   videoHdr - A PJvVideoHdr structure containing informations about the frame.
@@ -493,8 +485,7 @@ Summary
   The event triggered when an audio buffer is ready, during streaming capture.
 Description
   This event is triggered just before the buffer is written do disk, leaving you the opportunity to
-  modify it if needed.
-  This event will only be triggered if ueAudioStream is in UsedEvents.
+  modify it if needed. This event will only be triggered if ueAudioStream is in UsedEvents.
 Parameters
   Sender  - The TJvAVICapture component triggering the event.
   waveHdr - The audio header describing the buffer.
@@ -506,9 +497,9 @@ See Also
 Summary
   The event triggered when the driver is yielding.
 Description
-  This a good place to put a call to Application.ProcessMessages even if you must ensure
-  that this call doesn't take too long as the capture is suspended until the end of this event.
-  This event will only be triggered if ueYield is in UsedEvents.
+  This a good place to put a call to Application.ProcessMessages even if you must ensure that this call
+  doesn't take too long as the capture is suspended until the end of this event. This event will only
+  be triggered if ueYield is in UsedEvents.
 Parameters
   Sender - The TJvAVICapture component triggering the event.
 See Also
@@ -519,9 +510,8 @@ See Also
 Summary
   Specifies whether to use overlay display.
 Description
-  True if using overlay display.
-  This can only be set to True if the driver can do Overlay display. You can determine this by
-  looking at DriverCaps for the dcOverlay value.
+  True if using overlay display. This can only be set to True if the driver can do Overlay display. You
+  can determine this by looking at DriverCaps for the dcOverlay value.
 See Also
   TJvAVICapture.DriverCaps, TJvAVICapture.Previewing
 
@@ -539,8 +529,8 @@ See Also
 Summary
   The requested number of Frames Per Second for a previewing session.
 Description
-  Do not set this value too high, as the rendering during a previewing session is done using
-  GDI calls, known to be highly CPU demanding.
+  Do not set this value too high, as the rendering during a previewing session is done using GDI calls,
+  known to be highly CPU demanding.
 See Also
   TJvAVICapture.PreviewFrameDelay, TJvAVICapture.Previewing
 
@@ -549,8 +539,8 @@ See Also
 Summary
   The time between two preview frames in milliseconds.
 Description
-  Do not set this value too low, as the rendering during a previewing session is done using
-  GDI calls, known to be highly CPU demanding.
+  Do not set this value too low, as the rendering during a previewing session is done using GDI calls,
+  known to be highly CPU demanding.
 See Also
   TJvAVICapture.PreviewFPS, TJvAVICapture.Previewing
 
@@ -591,8 +581,8 @@ Return value
 Summary
   The scrolling position of the video stream in the window.
 Description
-  You can set the position of the video in the AVICap window with this property.
-  This only affects preview or overlay rendering.
+  You can set the position of the video in the AVICap window with this property. This only affects
+  preview or overlay rendering.
 See Also
   TJvAVICapture.VideoLeft, TJvAVICapture.VideoTop
 
@@ -738,8 +728,8 @@ See Also
 Summary
   The title of the AVICap window.
 Description
-  This is required upon creation of the underlying AVICap window and can be used to search this
-  window using FindWindow.
+  This is required upon creation of the underlying AVICap window and can be used to search this window
+  using FindWindow.
 See Also
   TJvAVICapture.Handle
 
@@ -784,8 +774,8 @@ See Also
 Summary
   The capture settings for the capture session.
 Description
-  The TJvCaptureSettings class contains all the properties you can set to modify the behaviour of
-  the TJvAVICapture object to which the TJvCaptureSettings is linked to.
+  The TJvCaptureSettings class contains all the properties you can set to modify the behaviour of the
+  TJvAVICapture object to which the TJvCaptureSettings is linked to.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.AbortLeftMouse
@@ -821,8 +811,8 @@ Return value
 Summary
   The size in bytes of each audio buffer.
 Description
-  If left at the default value of 0, the size of each audio buffer will be the maximum of 10 kbytes
-  and 0.5 seconds of audio data.
+  If left at the default value of 0, the size of each audio buffer will be the maximum of 10 kbytes and
+  0.5 seconds of audio data.
 See Also
   TJvCaptureSettings.AudioMaster, TJvCaptureSettings.CaptureAudio
 
@@ -858,8 +848,8 @@ Description
 Summary
   The requested number of Frames Per Second.
 Description
-  This is only a requested number and may not be respected by the capture system if the processing
-  load is too high.
+  This is only a requested number and may not be respected by the capture system if the processing load
+  is too high.
 See Also
   TJvCaptureSettings.FrameDelay
 
@@ -868,8 +858,8 @@ See Also
 Summary
   The requested delay between two frames in microsecond.
 Description
-  This is only a requested number and may not be respected by the capture system if the processing
-  load is too high.
+  This is only a requested number and may not be respected by the capture system if the processing load
+  is too high.
 See Also
   TJvCaptureSettings.FPS
 
@@ -878,10 +868,10 @@ See Also
 Summary
   The virtual key that will abort the capture session if pressed.
 Description
-  Set this value to a virtual key that will cancel the capture session if pressed. This defaults to
-  the Esc key. You should use the TJvVirtualKeySelectionFrame selection frame (in
-  JvVirtualKeySelectionFrame.pas)
-  to allow your user to choose a virtual key, while being sure the value returned is correct.
+  Set this value to a virtual key that will cancel the capture session if pressed. This defaults to the
+  Esc key. You should use the TJvVirtualKeySelectionFrame selection frame (in
+  JvVirtualKeySelectionFrame.pas) to allow your user to choose a virtual key, while being sure the
+  value returned is correct.
 See Also
   TJvCaptureSettings.AbortLeftMouse, TJvCaptureSettings.AbortRightMouse,
   TJvCaptureSettings.LimitEnabled, TJvCaptureSettings.TimeLimit
@@ -941,8 +931,8 @@ See Also
 Summary
   The number of audio buffers to use.
 Description
-  This is a requested value and may not be respected. The higher the value, the less chances to miss
-  on audio data, but the higher the processing load and the memory usage.
+  This is a requested value and may not be respected. The higher the value, the less chances to miss on
+  audio data, but the higher the processing load and the memory usage.
 See Also
   TJvCaptureSettings.AudioBufferSize, TJvCaptureSettings.NumVideoBuffer
 
@@ -951,8 +941,8 @@ See Also
 Summary
   The number of video buffers to use.
 Description
-  This is a requested value and may not be respected. The higher the value, the less chances to miss
-  on video data, but the higher the processing load and the memory usage.
+  This is a requested value and may not be respected. The higher the value, the less chances to miss on
+  video data, but the higher the processing load and the memory usage.
 Note
   It seems that this value is not taken into account under Windows 32Bit.
 See Also
@@ -965,16 +955,16 @@ Summary
 Description
   When capturing a video stream, the processing load may not allow to capture every frame sent by the
   video device. Those frames are then dropped. If the ratio of dropped frames on captured frames is
-  above this percentage, the capture is ended in error. This means that if you were grabbing in a
-  file, that file will not be complete.
+  above this percentage, the capture is ended in error. This means that if you were grabbing in a file,
+  that file will not be complete.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.StepCapture2x
 Summary
   Controls whether or not to capture at twice the size of the orignal stream.
 Description
-  If set to true, the resulting stream will have its width and height doubled
-  at the expense of processing power.
+  If set to true, the resulting stream will have its width and height doubled at the expense of
+  processing power.
 See Also
   TJvCaptureSettings.StepCaptureAverageFrames
 
@@ -983,8 +973,8 @@ See Also
 Summary
   Controls the number of frames to be sampled to calculate a frame when using step capture.
 Description
-  This is only taken into account when doing step capture. The given number of frames will be
-  captured and averaged to generate the resulting frame.
+  This is only taken into account when doing step capture. The given number of frames will be captured
+  and averaged to generate the resulting frame.
 See Also
   TJvCaptureSettings.StepCapture2x
 
@@ -1002,8 +992,8 @@ See Also
 Summary
   Updates the properties of the object according to the values from the TJvAVICapture object.
 Description
-  This ensures synchronization between the object and the underlying system object. You shouldn't
-  have to call this method directly.
+  This ensures synchronization between the object and the underlying system object. You shouldn't have
+  to call this method directly.
 See Also
   TJvCaptureSettings.Apply
 
@@ -1013,9 +1003,8 @@ Summary
   Controls whether or not the capture will block the calling thread.
 Description
   If set to true, when the capture starts, a separate thread is created allowing the thread launching
-  the capture to continue.
-  Reentrance issues must then be considered to avoid the user to launch twice the capture, for
-  instance.
+  the capture to continue. Reentrance issues must then be considered to avoid the user to launch twice
+  the capture, for instance.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDriverCaps
@@ -1026,14 +1015,14 @@ Description
   This is a set of the following values. One or more may be present.
 
   <TABLE>
-  Value                  Meaning
-  -----                  -------
-  dcOverlay              The driver can do overlay rendering
-  dcDlgVideoSource       The driver can display a dialog to choose video source
-  dcDlgVideoFormat       The driver can display a dialog to choose video format
-  dcDlgVideoDisplay      The driver can display a dialog to choose video display
-  dcCaptureInitialized   The capture driver is initialized
-  dcSuppliesPalettes     The driver supplies palettes
+    Value                 Meaning
+    --------------------  -------------------------------------------------------
+    dcOverlay             The driver can do overlay rendering
+    dcDlgVideoSource      The driver can display a dialog to choose video source
+    dcDlgVideoFormat      The driver can display a dialog to choose video format
+    dcDlgVideoDisplay     The driver can display a dialog to choose video display
+    dcCaptureInitialized  The capture driver is initialized
+    dcSuppliesPalettes    The driver supplies palettes
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1042,8 +1031,8 @@ Description
 Summary
   The index of the driver to use.
 Description
-  As the maximum number of drivers in the system is 10, this type has been created to ensure the
-  value is always correct. -1 specifies that no connection is established.
+  As the maximum number of drivers in the system is 10, this type has been created to ensure the value
+  is always correct. -1 specifies that no connection is established.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvNumAudioBuffer
@@ -1060,17 +1049,16 @@ Summary
   A palette to use for the capture session.
 Description
   When capturing at a Bit Depth of 8 or less bits, a palette must be used to render the frames. This
-  class provides the encapsulation around the palette offered by the system.
-  The easiest way to use it is to let the system create a palette automatically by calling
-  AutoCreate.
+  class provides the encapsulation around the palette offered by the system. The easiest way to use it
+  is to let the system create a palette automatically by calling AutoCreate.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPalette.AutoCreate
 Summary
   Automatically create the best palette.
 Description
-  The best possible palette will be created for a maximum number of nbColors. It will be computed
-  from the first nbFrames frames in the video stream.
+  The best possible palette will be created for a maximum number of nbColors. It will be computed from
+  the first nbFrames frames in the video stream.
 Parameters
   nbFrames - The number of frames to consider for the creation of the palette.
   nbColors - The maximum number of colors the palette can contain.
@@ -1097,11 +1085,10 @@ See Also
 Summary
   Indicates that the current frame must be taken into account to manually create the palette.
 Description
-  Use this call from a frame callback and set the flag to true to indicate that the current frame
-  must be considered when creating the palette. Continue calling this method with flag set to true as
-  long as you need it.
-  Then call it again with flag set to false, to finalize the palette and pass it to the capture
-  driver that will now use it.
+  Use this call from a frame callback and set the flag to true to indicate that the current frame must
+  be considered when creating the palette. Continue calling this method with flag set to true as long
+  as you need it. Then call it again with flag set to false, to finalize the palette and pass it to the
+  capture driver that will now use it.
 Parameters
   Flag     - True to continue the creation, false to stop the creation.
   nbColors - Maximum number of colors in the palette.
@@ -1126,8 +1113,8 @@ See Also
 Summary
   Saves the current palette in a file.
 Description
-  Tries to save the current palette into a file that could be loaded later with Load.
-  The usual extension for such files is .pal.
+  Tries to save the current palette into a file that could be loaded later with Load. The usual
+  extension for such files is .pal.
 Parameters
   FileName - The name of the file to create.
 Return value
@@ -1162,15 +1149,16 @@ Description
   their associated handler exists. The set is made of these possible values:
 
   <TABLE>
-  Value              Meaning
-  -----              -------
-  ueCapControl       the <LINK TJvAVICapture.OnCapControl,OnCapControl> event will be triggered
-  ueError            the <LINK TJvAVICapture.OnError,OnError> event will be triggered
-  ueFrame            the <LINK TJvAVICapture.OnFrame,OnFrame> event will be triggered
-  ueStatus           the <LINK TJvAVICapture.OnStatus,OnStatus> event will be triggered
-  ueVideoStream      the <LINK TJvAVICapture.OnVideoStream,OnVideoStream> event will be triggered
-  ueWaveStream       the <LINK TJvAVICapture.OnWaveStream,OnWaveStream> event will be triggered
-  ueYield            the <LINK TJvAVICapture.OnYield,OnYield> event will be triggered
+    Value          Meaning
+    -------------  ---------------------------------------------------------------------------
+    ueCapControl   the <LINK TJvAVICapture.OnCapControl, OnCapControl> event will be triggered
+    ueError        the <LINK TJvAVICapture.OnError, OnError> event will be triggered
+    ueFrame        the <LINK TJvAVICapture.OnFrame, OnFrame> event will be triggered
+    ueStatus       the <LINK TJvAVICapture.OnStatus, OnStatus> event will be triggered
+    ueVideoStream  the <LINK TJvAVICapture.OnVideoStream, OnVideoStream> event will be
+                     triggered
+    ueWaveStream   the <LINK TJvAVICapture.OnWaveStream, OnWaveStream> event will be triggered
+    ueYield        the <LINK TJvAVICapture.OnYield, OnYield> event will be triggered
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1179,44 +1167,43 @@ Description
 Summary
   Indicates which video dialog to display
 Description
-  Using this value doesn't ensure the corresponding dialog will be shown as the driver may not
-  provide it.
+  Using this value doesn't ensure the corresponding dialog will be shown as the driver may not provide
+  it.
 See Also
   TJvDriverCaps
 
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoDialog.vdSource
-The video source dialog.
+  The video source dialog.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoDialog.vdFormat
-The video format dialog.
+  The video format dialog.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoDialog.vdDisplay
-The video display dialog.
+  The video display dialog.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoDialog.vdCompression
-The video compression dialog.
+  The video compression dialog.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoFormat
 Summary
   Contains the description of the Video format used by the device.
 Description
-  The TJvAVICapture component to which the video format is related to must be connected for the
-  values of this object to make sense. Use these values to gather information about the video stream
-  you are capturing.
+  The TJvAVICapture component to which the video format is related to must be connected for the values
+  of this object to make sense. Use these values to gather information about the video stream you are
+  capturing.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoFormat.BitDepth
 Summary
   The number of bits per pixel.
 Description
-  Read-Only. Usually 8, 16, 24 or 32.
-  This value is to be read in conjunction with PixelFormat and Compression to determine
-  the format of the stream being grabbed.
+  Read-Only. Usually 8, 16, 24 or 32. This value is to be read in conjunction with PixelFormat and
+  Compression to determine the format of the stream being grabbed.
 See Also
   TJvVideoFormat.Compression, TJvVideoFormat.PixelFormat
 
@@ -1226,18 +1213,18 @@ Summary
   The compression used by the frames.
 Description
   Each frame may be compressed using the given compression. The value can take the values you can get
-  in the biCompression member of a BITMAPINFOHEADER structure.
-  At the moment of writing, these values are:
+  in the biCompression member of a BITMAPINFOHEADER structure. At the moment of writing, these values
+  are:
 
   <TABLE>
-  Value         Meaning
-  -----         -------
-  BI_RGB        No compression
-  BI_RLE8       Run Length Encoding with a BitDepth equal to 8
-  BI_RLE4       Run Length Encoding with a BitDepth equal to 4
-  BI_BITFIELDS  No compression with a BitDepth equal to 16 or 32
-  BI_JPEG       JPEG compression (Win98/Me/2k/XP only)
-  BI_PNG        PNG compression (Win98/Me/2k/XP only)
+    Value         Meaning
+    ------------  ------------------------------------------------
+    BI_RGB        No compression
+    BI_RLE8       Run Length Encoding with a BitDepth equal to 8
+    BI_RLE4       Run Length Encoding with a BitDepth equal to 4
+    BI_BITFIELDS  No compression with a BitDepth equal to 16 or 32
+    BI_JPEG       JPEG compression (Win98/Me/2k/XP only)
+    BI_PNG        PNG compression (Win98/Me/2k/XP only)
   </TABLE>
 See Also
   TJvVideoFormat.BitDepth, TJvVideoFormat.PixelFormat

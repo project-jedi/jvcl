@@ -1,5 +1,5 @@
 ##Package: Globus
-##Status: Needs review
+##Status: Completed, Needs review
 ----------------------------------------------------------------------------------------------------
 @@JvgXMLSerializer.pas
 Summary
@@ -8,26 +8,33 @@ Summary
 Author
   Andrey V. Chudin,
 
-
 ----------------------------------------------------------------------------------------------------
 @@EJvgXMLCloseTagNotFoundException
 Summary
   Exception triggered when a closing tag has not been found
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@EJvgXMLOpenTagNotFoundException
 Summary
   Exception triggered when an opening tag has not been found
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@EJvgXMLSerializerException
 Summary
   This exception class doesn't seem to be used
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@EJvgXMLUnknownPropertyException
 Summary
   Exception triggered when an unknown property is found in the XML data
+Description
+  Write here a description
 See Also
   IgnoreUnknownTags
 
@@ -40,30 +47,33 @@ See Also
 @@TJvgXMLSerializer
 <TITLEIMG TJvgXMLSerializer>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Internet.ConvertersAndParsers.XML
   FLAG=Component
 Summary
   This component converts a given component to XML and back according to published interface of its
   class.
 Description
   The root tag is named after the class of the object. Inner tags are named after the names of the
-  published properties.
-  Tag containing TCollectionItem are named after the name of the class.
+  published properties. Tag containing TCollectionItem are named after the name of the class.
 
   Tags' nesting is unlimited and reproduces the whole published interface of the class of the given
   object
 
-  The following types are supported: integers, floats, enumerations,  sets, strings and chars,
-  variants, classes, stringlists and collections.
+  The following types are supported: integers, floats, enumerations, sets, strings and chars, variants,
+  classes, stringlists and collections.
 
-  Limitations: - Each object can have only one collection of any given collection item class
-  - TStrings derivatives must not have any published properties
-  - Procedure types (events) are not supported
+  Limitations:
+
+  * Each object can have only one collection of any given collection item class
+  * TStrings derivatives must not have any published properties
+  * Procedure types (events) are not supported
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.BeforeParsing
 Summary
   Event triggered just before deserializing a component
+Description
+  Write here a description
 Parameters
   Sender - The TJvgXMLSerialize component about to deserialize
   Buffer - The raw data as read from the stream
@@ -98,11 +108,15 @@ See Also
 @@TJvgXMLSerializer.ExcludeDefaultValues
 Summary
   If True, skip properties with default values
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.ExcludeEmptyValues
 Summary
   If True, skip properties with empty values
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.GenerateDTD
@@ -127,14 +141,16 @@ Description
 @@TJvgXMLSerializer.IgnoreUnknownTags
 Summary
   Ignore unknown tags when loading XML
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.OnGetXMLHeader
 Summary
   Event triggered when about to write the XML header
 Description
-  The header is the a string that will be written as the first thing in the output file.
-  Usually, you would give something like this:
+  The header is the a string that will be written as the first thing in the output file. Usually, you
+  would give something like this:
 
   <AUTOLINK OFF>
   <CODE>
@@ -154,13 +170,15 @@ See Also
 Summary
   If true, replaces special characters in the property values
 Description
-  Special characters are '<' and '>' and get replaced by '&lt;' and '&gt;' respectively
-  The replacement happens either at loading or saving time
+  Special characters are ' <' and '> ' and get replaced by '&lt;' and '&gt;' respectively The
+  replacement happens either at loading or saving time
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.Serialize
 Summary
   Writes a component into the given stream
+Description
+  Write here a description
 Parameters
   Component - The component to write into the stream
   Stream    - The stream to write into
@@ -171,6 +189,9 @@ See Also
 @@TJvgXMLSerializer.StrongConformity
 Summary
   Requires XML to have all the corresponding tags for all class types
+Description
+  Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.tickCount
 Summary
@@ -180,15 +201,20 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.tickCounter
 Summary
   This public variable is not used in the component
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.WrapCollections
 Summary
   If True, collections are stored in individual XML nodes
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializerException
@@ -197,8 +223,7 @@ Summary
   Defines the metaclass for XMLSerializerException.
 Description
   TJvgXMLSerializerException is the metaclass for XMLSerializerException. Its value is the class
-  reference for
-  XMLSerializerException or for one of its descendants.
+  reference for XMLSerializerException or for one of its descendants.
 
 ----------------------------------------------------------------------------------------------------
 @@TOnGetXMLHeader
@@ -209,4 +234,6 @@ Description
 @@XMLSerializerException
 Summary
   This is the ancestor for all exceptions that TJvgXMLSerializer can trigger
+Description
+  Write here a description
 

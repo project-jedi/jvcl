@@ -8,7 +8,6 @@ Summary
 Author
   Peter Thornqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBox
 <TITLEIMG TJvComboListBox>
@@ -18,9 +17,9 @@ JVCLInfo
 Summary
   A listbox that displays a combobox overlaying the selected item.
 Description
-  TJvComboListBox is an ownerdrawn listbox that displays a combobox overlaying the selected item.
-  If you assign a TPopupMenu to the DropdownMenu property, the menu is displayed when the user clicks
-  on the combobox button. This component inherits from TJvCustomListBox and publishes many of its
+  TJvComboListBox is an ownerdrawn listbox that displays a combobox overlaying the selected item. If
+  you assign a TPopupMenu to the DropdownMenu property, the menu is displayed when the user clicks on
+  the combobox button. This component inherits from TJvCustomListBox and publishes many of its
   properties and events as well as adding new ones like DropdownMenu, DrawStyle, OnDrawImage and
   OnDrawText.
 
@@ -29,9 +28,9 @@ Description
 Summary
   Adds an image to the listbox.
 Description
-  Use AddImage to add a TPicture to the Items list. AddImage is a helper function that assures that
-  the image is copied to an internal TPicture and added to the Items.Objects list.
-  You can also call Items.AddObject directly if you prefer.
+  Use AddImage to add a TPicture to the Items list. AddImage is a helper function that assures that the
+  image is copied to an internal TPicture and added to the Items.Objects list. You can also call
+  Items.AddObject directly if you prefer.
 Parameters
   P - The picture to add. A copy is created internally and added to the Items.Objects list.
 Return value
@@ -65,8 +64,8 @@ Description
 Summary
   Deletes an item from the Items list.
 Description
-  Delete is equivalent to Items.Delete but also makes sure that if the item delted contains a
-  TPicture, the picture is freed.
+  Delete is equivalent to Items.Delete but also makes sure that if the item delted contains a TPicture,
+  the picture is freed.
 Parameters
   Index - \Index of the item to delete.
 See Also
@@ -86,9 +85,8 @@ See Also
 Summary
   Determines the popupmenu to display when the user clicks the combobox button.
 Description
-  Assign a TPopupMenu to the DropdownMenu to display it when the user clicks the combobox button in
-  the listbox.
-  DropdownMenu is separate from PopupMenu but can point to the same TPopupMenu if necessary.
+  Assign a TPopupMenu to the DropdownMenu to display it when the user clicks the combobox button in the
+  listbox. DropdownMenu is separate from PopupMenu but can point to the same TPopupMenu if necessary.
 See Also
   PopupMenu
 
@@ -97,9 +95,9 @@ See Also
 Summary
   Specifies whether a combobox is highlighted when the mouse passes over it.
 Description
-  Set HotTrackCombo to true to provide visual feedback about which combobox is under the mouse
-  When HotTrackCombo is false, there is no visual feedback when the mouse passes over items of the
-  list box.
+  Set HotTrackCombo to true to provide visual feedback about which combobox is under the mouse When
+  HotTrackCombo is false, there is no visual feedback when the mouse passes over items of the list
+  box.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBox.InsertImage
@@ -109,7 +107,7 @@ Description
   Call InsertImage to insert an image at the specified location.
 Parameters
   Index - The index where the image should be inserted.
-  P - the image to insert.
+  P     - the image to insert.
 See Also
   Items
 
@@ -121,7 +119,7 @@ Description
   Call InsertText to insert a string at the specified location.
 Parameters
   Index - The index where the string should be inserted.
-  S - the string to insert.
+  S     - the string to insert.
 See Also
   Items
 
@@ -170,7 +168,7 @@ Parameters
   X         - Horizontal pixel coordinates of the mouse pointer in the client area of the Sender.
   Y         - Vertical pixel coordinates of the mouse pointer in the client area of the Sender.
   AllowDrop - Set to true if the drop-down attempt can proceed and false if the attempt to drop-down
-              should be aborted.
+               should be aborted.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBoxDrawStyle
@@ -183,15 +181,16 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBoxDrawStyle.dsOriginal
-Draw the image at original size. The image is clipped to the size of the drawing area. If the image is smaller than the display rect, it is centered accordingly.
+  Draw the image at original size. The image is clipped to the size of the drawing area. If the image
+  is smaller than the display rect, it is centered accordingly.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBoxDrawStyle.dsStretch
-The image is stretched to fill the entire drawing area.
+  The image is stretched to fill the entire drawing area.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBoxDrawStyle.dsProportional
-The image is sized proportionally to the display area and centered.
+  The image is sized proportionally to the display area and centered.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListDrawImageEvent

@@ -9,15 +9,14 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvImageItem
 Summary
   Defines an item in the Items array of a TJvImagesViewer control.
 Description
   The TJvImagesViewer displays images either from disk or from other sources. Each item in its Items
-  array is of type TJvImageItem. Use the properties and methods of TJvImageItem to modify how the
-  image is displayed in the TJvImagesViewer control.
+  array is of type TJvImageItem. Use the properties and methods of TJvImageItem to modify how the image
+  is displayed in the TJvImagesViewer control.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageItem.Caption
@@ -31,10 +30,10 @@ Description
 Summary
   Specifies the file name of the file on disk the item is displaying.
 Description
-  Use Filename to set the file on disk the item should be displaying. When changing Filename, the
-  item is not updated directly. Instead, Picture is set to nil and the next time the TJvImagesViewer
-  control requests the image, it is loaded from disk. This means that an item that is never
-  displayed, will not be loaded at all.
+  Use Filename to set the file on disk the item should be displaying. When changing Filename, the item
+  is not updated directly. Instead, Picture is set to nil and the next time the TJvImagesViewer control
+  requests the image, it is loaded from disk. This means that an item that is never displayed, will not
+  be loaded at all.
 See Also
   TJvImageItem.Picture
 
@@ -43,9 +42,9 @@ See Also
 Summary
   Provides access to the image the item is displaying.
 Description
-  Use the Picture property to access the image the item is displaying or to modify the properties of the image. For example, if you want to dis
-  lay images that are not on disk, assign an image from another source to the Picture property at
-  run-time.
+  Use the Picture property to access the image the item is displaying or to modify the properties of
+  the image. For example, if you want to dis lay images that are not on disk, assign an image from
+  another source to the Picture property at run-time.
 See Also
   TJvImageItem.FileName
 
@@ -56,13 +55,23 @@ Summary
 Description
   ReduceMemoryUsage minimizes the memory used by the item by freeing the Picture object but only if
   Filename specifies an existing file (no check is done to determine if Filename is a valid image
-  file).
-  When the Picture property of the item is accessed the next time, the image is recreated from disk.
+  file). When the Picture property of the item is accessed the next time, the image is recreated from
+  disk.
 
-  You don't have to call ReduceMemoryUsage directly. It is called automatically by the
-  TJvImagesViewer when its Options.ReduceMemoryUsage property is true.
+  You don't have to call ReduceMemoryUsage directly. It is called automatically by the TJvImagesViewer
+  when its Options.ReduceMemoryUsage property is true.
 See Also
   TJvImageItem.FileName, TJvImageItem.Picture
+
+----------------------------------------------------------------------------------------------------
+@@TJvImageItem.Refresh
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageLoadErrorEvent
@@ -78,11 +87,10 @@ JVCLInfo
 Summary
   Control that can display images in a grid like fashion.
 Description
-  Use the TJvImagesViewer control when you need to display images from disk files or from other
-  sources in a grid like control. To display images from disk files, use the Directory and FileMask
-  properties to specify what images should be displayed and from where. To display images from other
-  sources, set the Count property and use each item's Picture property to assign the images to
-  display.
+  Use the TJvImagesViewer control when you need to display images from disk files or from other sources
+  in a grid like control. To display images from disk files, use the Directory and FileMask properties
+  to specify what images should be displayed and from where. To display images from other sources, set
+  the Count property and use each item's Picture property to assign the images to display.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImagesViewer.Directory
@@ -92,8 +100,8 @@ Description
   Use the Directory property to specify the directory to search for image files. Directory in
   combination with FileMask defines the file types to find.
 
-  If you set Directory to an empty string, it will be expanded to the current directory (as returned
-  by GetCurrentDir).
+  If you set Directory to an empty string, it will be expanded to the current directory (as returned by
+  GetCurrentDir).
 Note
   Changing Directory triggers the LoadImages method.
 See Also
@@ -104,14 +112,16 @@ See Also
 Summary
   Specifies the file mask to use to filter the files to display.
 Description
-  Use FileMask to specify the file types to display in the control. FileMask can contain multiple
-  file masks and accepts wildcards. Separate individual items with comma or semi-colon. Each
-  individual mask item is concatenated with the value of Directory and a search is done on that value.
+  Use FileMask to specify the file types to display in the control. FileMask can contain multiple file
+  masks and accepts wildcards. Separate individual items with comma or semi-colon. Each individual mask
+  item is concatenated with the value of Directory and a search is done on that value.
 
-  The following examples are all valid file masks: <EXAMPLE> <C> *.gif
+  The following examples are all valid file masks:
+  <PRE>
+  *.gif
   *.bmp;*.jpg;*.jpeg
-  Jv*.bm?,*.g*,*.ico,*.ani,*.cur </C>
-  </EXAMPLE>
+  Jv*.bm?,*.g*,*.ico,*.ani,*.cur 
+  </PRE>
 Note
   Changing FileMask triggers the LoadImages method.
 See Also
@@ -143,9 +153,9 @@ Summary
   Occurs just before the loading of images starts.
 Description
   Write a handler for the OnLoadBegin event to take specific action just before the image loading
-  begin.
-  Image loading begins when you call LoadImages or change the Directory or FileMask properties and
-  ends when all image files matching the file mask in FileMask located in Directory has been loaded.
+  begin. Image loading begins when you call LoadImages or change the Directory or FileMask properties
+  and ends when all image files matching the file mask in FileMask located in Directory has been
+  loaded.
 See Also
   TJvImagesViewer.Directory, TJvImagesViewer.FileMask, TJvImagesViewer.LoadImages,
   TJvImagesViewer.OnLoadEnd
@@ -156,8 +166,8 @@ Summary
   Occurs after the loading of images completed.
 Description
   Write a handler for the OnLoadEnd event to take specific action just after the image loading ends.
-  Image loading begins when you call LoadImages or change the Directory or FileMask properties and
-  ends when all image files matching the file mask in FileMask located in Directory has been loaded.
+  Image loading begins when you call LoadImages or change the Directory or FileMask properties and ends
+  when all image files matching the file mask in FileMask located in Directory has been loaded.
 See Also
   TJvImagesViewer.Directory, TJvImagesViewer.FileMask, TJvImagesViewer.LoadImages,
   TJvImagesViewer.OnLoadBegin
@@ -167,15 +177,14 @@ See Also
 Summary
   Occurs when an error occurs while loading an image.
 Description
-  Write a handler for the OnLoadError event to take specific actions when an error occurs while
-  loading an image from file. For example, if the image file is corrupted or the file does not
-  contain a recognized
-  image format, this event is triggered.
+  Write a handler for the OnLoadError event to take specific actions when an error occurs while loading
+  an image from file. For example, if the image file is corrupted or the file does not contain a
+  recognized image format, this event is triggered.
 Parameters
   Sender   - The object that triggered the event.
   E        - The Exception object that was triggered.
   FileName - The file that triggered the event. This is empty if the image is loaded from some other
-             source than a file on disk (like the clipboard or a TPicture object).
+              source than a file on disk (like the clipboard or a TPicture object).
   Handled  - Set this parameter to true if you want to handle the error yourself. If Handled is false
               (the default), no error is reported and the item is removed from the Items property. If
               Handled is set to true, the image is cleared and the exception is raised but the item is
@@ -186,32 +195,32 @@ Parameters
 Summary
   Occurs periodically during slow operations that affect the image being loaded.
 Description
-  OnLoadProgress is generated by the particular graphic that the picture object contains.
-  Whether OnLoadProgress occurs depends upon the type of graphic the item is loading. Some graphics
-  generate this event, others do not. Jpeg images, for example, generate an OnLoadProgress event.
+  OnLoadProgress is generated by the particular graphic that the picture object contains. Whether
+  OnLoadProgress occurs depends upon the type of graphic the item is loading. Some graphics generate
+  this event, others do not. Jpeg images, for example, generate an OnLoadProgress event.
 
   Write an OnLoadProgress event handler to provide the user with feedback during slow operations such
   as loading large compressed images.
+Note
+  The PercentDone parameter is only an approximation. With some image formats, the value of PercentDone
+  may actually decrease from the value in previous events, as the graphic object discovers there is
+  more work to do.
 Parameters
   Sender      - The object that triggered the event.
   Item        - The item that is being loaded.
   Stage       - Indicates whether the operation is beginning, continuing, or ending. If the event
-  handler               displays an indicator such as a progress bar, the indicator can be created
-                when Stage is psStarting, updated while Stage is psRunning, and removed when Stage is
-  psEnding.
-  PercentDone - An approximation of how much of the operation has completed. Use PercentDone to
-  update               the position of a progress bar or other indicator.
+                 handler displays an indicator such as a progress bar, the indicator can be created
+                 when Stage is psStarting, updated while Stage is psRunning, and removed when Stage is
+                 psEnding.
+  PercentDone - An approximation of how much of the operation has completed. Use PercentDone to update
+                 the position of a progress bar or other indicator.
   RedrawNow   - True if the control should be redrawn.
-  R           - Indicates whether the image can safely be drawn on screen at this point.
-                The R parameter specifies the portion of the image that has changed and needs to be
-  redrawn.
+  R           - Indicates whether the image can safely be drawn on screen at this point. The R
+                 parameter specifies the portion of the image that has changed and needs to be
+                 redrawn.
   Msg         - Contains one or two words that describe what operation is occurring. For example, the
-  value               of Msg could be a string such as Loading, Storing, or Reducing colors. The Msg
-  string can also be empty.
-Note
-  The PercentDone parameter is only an approximation. With some image formats, the value of
-  PercentDone may actually decrease from the value in previous events, as the graphic object
-  discovers there is more work to do.
+                 value of Msg could be a string such as Loading, Storing, or Reducing colors. The Msg
+                 string can also be empty.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImagesViewer.Options
@@ -231,8 +240,8 @@ Summary
   Class used for the Options property in a TJvImagesViewer.
 Description
   TJvImageViewerOptions is the class type for the Options property in a TJvImagesViewer.
-  TJvImageViewerOptions derives from TJvCustomItemViewerOptions and publishes many of its properties
-  as well as introducing new ones.
+  TJvImageViewerOptions derives from TJvCustomItemViewerOptions and publishes many of its properties as
+  well as introducing new ones.
 See Also
   TJvCustomItemViewerOptions, TJvImagesViewer
 
@@ -252,8 +261,8 @@ Summary
   Specifies the color to use when an item is hot tracked.
 Description
   Use HotColor to specify the color to use when an item i shot tracked. This property only has effect
-  when HotTrack is true. If HotColor is set to clNone, no frame is displayed when the mouse hovers
-  over the item, regardless of the HotTrack setting.
+  when HotTrack is true. If HotColor is set to clNone, no frame is displayed when the mouse hovers over
+  the item, regardless of the HotTrack setting.
 See Also
   HotTrack
 
@@ -262,8 +271,8 @@ See Also
 Summary
   Specifies the size of the frame of a hot tracked item.
 Description
-  Use HotFrameSize to specify the size of the frame when an item is hot tracked. This property only
-  has effect when HotTrack is true,
+  Use HotFrameSize to specify the size of the frame when an item is hot tracked. This property only has
+  effect when HotTrack is true,
 See Also
   HotTrack
 

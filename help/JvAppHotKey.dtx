@@ -7,6 +7,7 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHotKey
 <TITLEIMG TJvApplicationHotKey>
@@ -24,8 +25,8 @@ Description
   * Drop a TJvApplicationHotKey component on a form or data module.
   * Assign a <B>unique</B> <LINK TJvApplicationHotKey.HotKey, hot key combination> to the component.
   * <LINK TJvApplicationHotKey.OnHotKey, Assign a handler> to the notification event.
-  * You may assign a handler to OnHotKeyRegisterFailed to respond when the registration of the hot
-     key combination failed.
+  * You may assign a handler to OnHotKeyRegisterFailed to respond when the registration of the hot key
+    combination failed.
   * Activate the component by setting property Active to true.
 
 ----------------------------------------------------------------------------------------------------
@@ -34,8 +35,8 @@ Summary
   Indicates the active state of the component.
 Description
   Active indicates whether or not the hot key combination is registered and active. When set to True,
-  the event will be generated for the key combination, otherwise the key combination is not
-  registered and no event will be generated for the key combination.
+  the event will be generated for the key combination, otherwise the key combination is not registered
+  and no event will be generated for the key combination.
 See Also
   TJvApplicationHotKey.HotKey, TJvApplicationHotKey.OnHotKey
 
@@ -70,7 +71,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHotKey.OnHotKeyRegisterFailed
-<COMBINEWITH TJvHotKeyRegisterFailed>
 Summary
   Occurs when the registration of a hot key combination failed.
 Description
@@ -87,4 +87,5 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvHotKeyRegisterFailed
 <TITLE TJvHotKeyRegisterFailed type>
+<COMBINE TJvApplicationHotKey.OnHotKeyRegisterFailed>
 

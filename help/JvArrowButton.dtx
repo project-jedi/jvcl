@@ -8,7 +8,6 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton
 <TITLEIMG TJvArrowButton>
@@ -26,9 +25,9 @@ Description
 Summary
   Flags if all buttons in a group can be up (depressed).
 Description
-  AllowAllUp indicates whether or not buttons in the same group all can have the up or depressed
-  state. When set to True, all buttons may be in the up state, otherwise at least one button in a
-  group must be pressed.
+  AllowAllUp indicates whether or not buttons in the same group all can have the up or depressed state.
+  When set to True, all buttons may be in the up state, otherwise at least one button in a group must
+  be pressed.
 See Also
   TJvArrowButton.Down, TJvArrowButton.GroupIndex
 
@@ -45,8 +44,8 @@ Summary
   Indicates if the button is down.
 Description
   Down indicates whether or not the button is pressed or in its down state. Setting this property to
-  True will set the Down state of all other buttons with the same GroupIndex to False. If
-  AllowAllUp = False, you can not set Down to False.
+  True will set the Down state of all other buttons with the same GroupIndex to False. If AllowAllUp =
+  False, you can not set Down to False.
 See Also
   TJvArrowButton.AllowAllUp, TJvArrowButton.GroupIndex
 
@@ -93,7 +92,7 @@ Summary
 Description
   GroupIndex holds the index of the group this button is part of. This can be used to simulate radio
   buttons using a group of arrow buttons.
-  
+
   When the group index of buttons are equal and set to a value <> 0, only 1 button of that group is
   allowed to be left in the down state. Clicking on another button will set that button to the down
   state and release any other button that might be in the down state.
@@ -105,16 +104,16 @@ See Also
 Summary
   Specifies the location of the image and caption.
 Description
-  Layout specifies where the image and caption are rendered on the button. See TSpeedButton.Layout
-  for more information.
+  Layout specifies where the image and caption are rendered on the button. See TSpeedButton.Layout for
+  more information.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.Margin
 Summary
   Space between the border and the image/caption.
 Description
-  Margin specifies the number of pixels between the button edge and the image or caption. Margin
-  works exactly like TSpeedButton.Margin.
+  Margin specifies the number of pixels between the button edge and the image or caption. Margin works
+  exactly like TSpeedButton.Margin.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.NumGlyphs
@@ -141,8 +140,8 @@ See Also
 Summary
   Specifies if both the button and the arrow should be pressed simultaniously.
 Description
-  PressBoth indicates whether or not both the button as well as the arrow should be pressed when one
-  of the two is clicked. By default this property is set to True.
+  PressBoth indicates whether or not both the button as well as the arrow should be pressed when one of
+  the two is clicked. By default this property is set to True.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.Spacing

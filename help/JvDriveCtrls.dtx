@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Incomplete (peter3)
+##Status: Completed, Incomplete (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvDriveCtrls.pas
 Summary
@@ -7,7 +7,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox
@@ -19,9 +18,9 @@ Summary
   Represents a list box control that is aware of the directory structure of the current drive.
 Description
   Use TJvDirectoryListBox when you need to display a list of folders to the user. TJvDirectoryListBox
-  implements the generic behavior introduced in TJvCustomListBox. TJvDirectoryListBox publishes many
-  of the properties inherited from TJvCustomListBox and introduces new behavior to let the user
-  change directories or drives.
+  implements the generic behavior introduced in TJvCustomListBox. TJvDirectoryListBox publishes many of
+  the properties inherited from TJvCustomListBox and introduces new behavior to let the user change
+  directories or drives.
 See Also
   TJvDriveCombo, TJvDriveList, TJvFileListBox
 
@@ -48,14 +47,14 @@ See Also
 Summary
   Determines the current directory for the directory list box control.
 Description
-  The directory list box displays the value of the Directory property as the current directory in
-  the list box.
+  The directory list box displays the value of the Directory property as the current directory in the
+  list box.
 
   If the form contains a file list box, you can set the FileList property to have the file list box
   automatically display the files from the directory specified by the Directory property. If the form
   contains a label, you can set the DirLabel property to have the currently selected directory
-  displayed in the label. If the form has a drive combobox, you can set the DriveCombo property to
-  have the currently selected drive displayed in the combobox.
+  displayed in the label. If the form has a drive combobox, you can set the DriveCombo property to have
+  the currently selected drive displayed in the combobox.
 See Also
   TJvDirectoryListBox.DirLabel, TJvDirectoryListBox.DriveCombo, TJvDirectoryListBox.FileList
 
@@ -85,9 +84,8 @@ Summary
   Specifies a combobox that displays the current drive.
 Description
   When the current drive changes in the directory list box, the current drive in the DriveCombo
-  changes.
-  When the current drive in the DriveCombo changes, the current drive in the directory list box
-  changes.
+  changes. When the current drive in the DriveCombo changes, the current drive in the directory list
+  box changes.
 See Also
   TJvDirectoryListBox.Directory, TJvDirectoryListBox.DirLabel, TJvDirectoryListBox.FileList
 
@@ -139,9 +137,9 @@ See Also
 Summary
   Occurs when a change of the current drive failed.
 Description
-  Write an OnDriveChangeError to respond when changing the current drive failed. Set NewDrive to #0
-  to cancel the drive change. If you do not set NewDrive to #0, TJvDirectoryListBox retries to set
-  the current drive to the value of NewDrive.
+  Write an OnDriveChangeError to respond when changing the current drive failed. Set NewDrive to #0 to
+  cancel the drive change. If you do not set NewDrive to #0, TJvDirectoryListBox retries to set the
+  current drive to the value of NewDrive.
 Parameters
   Sender   - Sender of this event.
   NewDrive - Determines the drive to which the component tries to set the current drive to.
@@ -153,8 +151,8 @@ See Also
 Summary
   Opens the selected directory.
 Description
-  OpenCurrent opens the directory selected in the directory list box, as if the user had
-  double-clicked the directory.
+  OpenCurrent opens the directory selected in the directory list box, as if the user had double-clicked
+  the directory.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.PreserveCase
@@ -261,9 +259,9 @@ Description
 Summary
   Updates the list of drives.
 Description
-  Call Refresh to update the display in the list. When you call Refresh, the combobox clears the
-  list, scans the system for drives and fills the Items array again, finally resetting the selected
-  item to be the previously selected item.
+  Call Refresh to update the display in the list. When you call Refresh, the combobox clears the list,
+  scans the system for drives and fills the Items array again, finally resetting the selected item to
+  be the previously selected item.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveList
@@ -275,8 +273,8 @@ Summary
   A listbox that displays a list of drives available on the system.
 Description
   Use TJvDriveList to display a list of available drives on the system. TJvDriveList derives from
-  TJvCustomListBox, exposes many of its properties and adds functionality to also display local as
-  well as networked drives along with an icon representing the drive type.
+  TJvCustomListBox, exposes many of its properties and adds functionality to also display local as well
+  as networked drives along with an icon representing the drive type.
 See Also
   TJvDirectoryListBox, TJvDriveCombo, TJvFileListBox
 
@@ -306,8 +304,8 @@ Summary
   Provides indexed access to the drives in the control.
 Description
   Use Drives to access a specific drive in the list based on it's index. Valid indices range from 0 to
-  DriveCount - 1. For example, when MultiSelect is true, you can use Drives and DriveCount to create
-  a list of drives the user has selected:
+  DriveCount - 1. For example, when MultiSelect is true, you can use Drives and DriveCount to create a
+  list of drives the user has selected:
   <AUTOLINK OFF>
   <CODE>
   var
@@ -370,8 +368,8 @@ Description
 Summary
   Occurs when the selection in the listbox changes.
 Description
-  Write a handler for the \OnChange event to take specific action when the selected item in the
-  listbox changes.
+  Write a handler for the \OnChange event to take specific action when the selected item in the listbox
+  changes.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveList.Refresh
@@ -388,12 +386,8 @@ Description
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = JvTypes.TJvDriveType; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  JvTypes.TJvDriveType; - for reference)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveTypes
@@ -401,12 +395,8 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = JvTypes.TJvDriveTypes; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  JvTypes.TJvDriveTypes; - for reference)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFileListBox
@@ -450,7 +440,7 @@ Description
 Summary
   Specifies how file extensions are displayed.
 Description
-  Use ForceFileExtensions to specify how file extensions are displayed. If ForceFileExtensions is
-  true, file extensions are always displayed. If ForceFileExtensions is false, file extensions are
-  displayed according to the user's settings in Windows Explorer.
+  Use ForceFileExtensions to specify how file extensions are displayed. If ForceFileExtensions is true,
+  file extensions are always displayed. If ForceFileExtensions is false, file extensions are displayed
+  according to the user's settings in Windows Explorer.
 

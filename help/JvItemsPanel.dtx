@@ -9,7 +9,6 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvItemsPanel
 <TITLEIMG TJvItemsPanel>
@@ -31,9 +30,9 @@ Description
   Set AutoGrow to true to make the control resize to show all buttons. When AutoGrow is set to true,
   the following happens:
 
-    * AutoSize is set to false.
-    * Align is set to alNone.
-    * The Height or Width (depending on the value of Orientation) is set to ItemHeight * Items.Count.
+  * AutoSize is set to false.
+  * Align is set to alNone.
+  * The Height or Width (depending on the value of Orientation) is set to ItemHeight * Items.Count.
 See Also
   Height, Width
 
@@ -42,9 +41,9 @@ See Also
 Summary
   Specifies how buttons are sized.
 Description
-  Use AutoSize to specify how buttons are sized when the control is sized. If AutoSize is true,
-  buttons are sized so all buttons can be seen in the control. If AutoSize is false, buttons are
-  sized according to the ItemHeight property. If AutoSize is set to true, AutoGrow is set to false.
+  Use AutoSize to specify how buttons are sized when the control is sized. If AutoSize is true, buttons
+  are sized so all buttons can be seen in the control. If AutoSize is false, buttons are sized
+  according to the ItemHeight property. If AutoSize is set to true, AutoGrow is set to false.
 See Also
   TJvItemsPanel.AutoGrow, TJvItemsPanel.ItemHeight
 
@@ -64,9 +63,8 @@ Summary
   Returns the item at the specified position.
 Description
   Call GetItemAt to obtain the index for the item found at the position specified by the X and Y
-  parameters.
-  X and Y specify the coordinates of the position, in pixels, relative to the top left corner of the
-  control. If there is no item at the location, GetItemAt returns -1.
+  parameters. X and Y specify the coordinates of the position, in pixels, relative to the top left
+  corner of the control. If there is no item at the location, GetItemAt returns -1.
 Parameters
   X - The X coordinate of the location.
   Y - The Y coordinate of the location.
@@ -90,8 +88,8 @@ Summary
   Specifies whether items are highlighted when the mouse passes over them.
 Description
   Set HotTrack to True to provide visual feedback about which item is under the mouse; the color
-  specified by HotTrackColor is used for the frame around the item. When HotTrack is False, there is
-  no visual feedback when the mouse passes over the item.
+  specified by HotTrackColor is used for the frame around the item. When HotTrack is False, there is no
+  visual feedback when the mouse passes over the item.
 See Also
   TJvItemsPanel.HotTrackColor
 
@@ -110,8 +108,8 @@ See Also
 Summary
   Specifies the size of items in the control.
 Description
-  Use ItemHeight to specify the size of items in the control. ItemHeight is not used if
-  AutoSize is true.
+  Use ItemHeight to specify the size of items in the control. ItemHeight is not used if AutoSize is
+  true.
 
   Depending on the value of Orientation, ItemHeight affects either the height (Orientation is
   opVertical) or the width (Orientation is opHorizontal) of the items.
@@ -133,8 +131,8 @@ See Also
 Summary
   Occur when an item is clicked and Clickable is set to true.
 Description
-  Write a handler for the OnItemClick event to take specific action when the user clicks an item in
-  the control.
+  Write a handler for the OnItemClick event to take specific action when the user clicks an item in the
+  control.
 Parameters
   Sender    - The object that triggered the event.
   ItemIndex - The index of the item that was clicked.
@@ -147,9 +145,9 @@ Summary
   Specifies the display direction of the items.
 Description
   Use Orientation to specify how the items in the control are displayed. If Orientation is
-  poHorizontal, items are displayed from left to right and ItemHeight refers to the width of the
-  items, if Orientation is poVertical, items are displayed from top to bottom and ItemHeight refers
-  to the height of the items.
+  poHorizontal, items are displayed from left to right and ItemHeight refers to the width of the items,
+  if Orientation is poVertical, items are displayed from top to bottom and ItemHeight refers to the
+  height of the items.
 See Also
   TJvItemsPanel.ItemHeight
 
@@ -164,14 +162,14 @@ See Also
 Summary
   Type used to specify the orientation of items in a TJvItemsPanel.
 Description
-  TJvPanelOrientation is used for the <LINK TJvItemsPanel.Orientation, Orientation> property to
-  specify how items are displayed in the control.
+  TJvPanelOrientation is used for the <LINK TJvItemsPanel.Orientation, Orientation> property to specify
+  how items are displayed in the control.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPanelOrientation.poHorizontal
-Items are displayed from left to right.
+  Items are displayed from left to right.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPanelOrientation.poVertical
-Items are displayed from top to bottom.
+  Items are displayed from top to bottom.
 

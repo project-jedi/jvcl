@@ -1,5 +1,5 @@
 ##Package: Inspector
-##Status: Locked
+##Status: Completed,Locked
 ##Skip: TItemRowSizing
 ##Skip: TJvInspectorDataInstances
 ##Skip: TJvInspectorItemInstances
@@ -131,7 +131,7 @@ Indicates the item's name in single name mode is obtained from the DisplayName o
 
 ----------------------------------------------------------------------------------------------------
 @@TInspectorCompoundItemFlag.icifSingleNameUseFirstCol
-Description for icifSingleNameUseFirstCol
+  Description for icifSingleNameUseFirstCol
 
 ----------------------------------------------------------------------------------------------------
 @@TInspectorCompoundItemFlags
@@ -3364,7 +3364,7 @@ See Also
 @@TJvInspectorBorlandPainter
 <TITLEIMG TJvInspectorBorlandPainter>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Graphics
   FLAG=Component
 Summary
   Inspector painter class for Borland style.
@@ -4285,7 +4285,7 @@ See Also
 @@TJvInspectorDotNETPainter
 <TITLEIMG TJvInspectorDotNETPainter>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Graphics
   FLAG=Component
 Summary
   Inspector painter class for .NET / Visual Studio style.
@@ -4818,11 +4818,11 @@ Description
   --------          -------
   irsItemHeight     Item will resize in steps of the inspector's ItemHeight property.
   irsNameHeight     Item will resize in steps of the height of the text 'Wy' rendered in the item's
-                    name font.
+                     name font.
   irsValueHeight    Item will resize in steps of the height of the text 'Wy' rendered in the item's
-                    value font.
+                     value font.
   irsNoReSize       Resizing will be turned of. Setting SizingFactor to this value will set
-                      MinHeight to irsItemHeight.
+                     MinHeight to irsItemHeight.
   </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter
@@ -5706,8 +5706,8 @@ Summary
 Description
   This is an overloaded function/procedure, if possible you may combine the description of all these
   functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
-  same name.
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
 Parameters
   RegItem - Description for this parameter
   ItemClass - Description for this parameter
@@ -5972,7 +5972,7 @@ Description
   * Use AddInstance to add to a handler instance (such as forms and data modules).
   * Use AddMethod to add a handler to an instance.
   * Optionally in addition to or instead of the above AddInstance/AddMethod, assign an   <LINK
-  TJvCustomInspectorItem.OnGetValueList, OnGetValueList> event handler to provide
+    TJvCustomInspectorItem.OnGetValueList, OnGetValueList> event handler to provide
     additionally selectable handlers.
 
   TJvCustomInspectorData registers this item for the TMethod (event) type.
@@ -6436,7 +6436,7 @@ Description
     objects class inherits from the given
     class.
   Different RTTI, no class type or not        0
-  inheriting from class
+    inheriting from class
   </table>
   Thus, if the registration item represents the type info for TComponent and
   the data instance points to TWinControl, the MatchValue will be 50 (ie. not
@@ -6560,7 +6560,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TOnJvInspectorMouseDown
 <TITLE TOnJvInspectorMouseDown type>
-<COMBINE TJvCustomInspector.OnMouseDown>
+##<COMBINE TJvCustomInspector.OnMouseDown>
 
 ----------------------------------------------------------------------------------------------------
 @@TOnJvInspectorSetItemColors

@@ -8,24 +8,23 @@ Summary
 Author
   Olivier Sannier
 
-
 ----------------------------------------------------------------------------------------------------
 @@JvClipboard
 <TITLE JvClipboard function>
 Summary
   Returns an instance of TJvClipboard to be used by the application.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard
 Summary
   The new clipboard object, with added power !
 Description
-  Clearly, TJvClipboard now allows you to use delayed rendering through the OnRenderFormat event.
-  All methods have been overriden to allow specifying delayed rendering. See their documentation for
-  details.
-  However, SetAsHandle has not been overriden as it is enough to set its second parameter to 0 to get
-  delayed rendering
-  Do not create a TJvClipboard yourself, use the JvClipboard function instead
+  Clearly, TJvClipboard now allows you to use delayed rendering through the OnRenderFormat event. All
+  methods have been overriden to allow specifying delayed rendering. See their documentation for
+  details. However, SetAsHandle has not been overriden as it is enough to set its second parameter to 0
+  to get delayed rendering Do not create a TJvClipboard yourself, use the JvClipboard function instead
 See Also
   JvClipboard
 
@@ -52,14 +51,17 @@ Description
 @@TJvClipboard.Clear
 Summary
   Clears the clipboard
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard.Close
 Summary
   Closes the clipboard
 Description
-  The clipboard is effectively closed when the internal reference counter reaches 0.
-  Hence, for every call to Open, there must be a call to Close
+  The clipboard is effectively closed when the internal reference counter reaches 0. Hence, for every
+  call to Open, there must be a call to Close
 See Also
   TJvClipboard.Open
 
@@ -69,18 +71,16 @@ Summary
   Ensures the delayed rendering formats are rendered before destroying the clipboard object
 Description
   To ensure that the formats using delayed rendering are saved when the application terminates, it is
-  necessary that we get their values before actually destroying the underlying window (which handle
-  is given by the Handle property)
-  As a result, the OnRenderFormat event will be fired for every format with delayed rendering still
-  in the clipboard.
-  This could lead to memory problems if the format is quite big.
-  You should then asks the user if he wants to keep the big objects available for other programs
-  If you don't call this method and some formats are in the clipboard with delayed rendering, it will
-  be called upon destruction of the clipboard, which is likely to happen after the destruction of the
-  object where the event is set. I let you imagine the consequences...
-  So you should call this function from the destructor (or the OnDestroy event) of the component
-  where the OnRenderFormat event handler is set (eg, the main form) as this component is likely to be
-  destroyed before the clipboard itself.
+  necessary that we get their values before actually destroying the underlying window (which handle is
+  given by the Handle property) As a result, the OnRenderFormat event will be fired for every format
+  with delayed rendering still in the clipboard. This could lead to memory problems if the format is
+  quite big. You should then asks the user if he wants to keep the big objects available for other
+  programs If you don't call this method and some formats are in the clipboard with delayed rendering,
+  it will be called upon destruction of the clipboard, which is likely to happen after the destruction
+  of the object where the event is set. I let you imagine the consequences... So you should call this
+  function from the destructor (or the OnDestroy event) of the component where the OnRenderFormat event
+  handler is set (eg, the main form) as this component is likely to be destroyed before the clipboard
+  itself.
 See Also
   TJvClipboard.Handle, TJvClipboard.OnRenderFormat
 
@@ -89,12 +89,11 @@ See Also
 Summary
   Gets a buffer of the given format
 Description
-  The format must be present in the clipboard. If not the function returns false.
-  The buffer and the size parameters must be set to the correct size for the specified format. If
-  they are too small, the data will be truncated, resulting in corrupted values on your side (but
-  you're the one who knows what to do with that).
-  If they are too large, the application will crash as it will be asking the system for more data
-  than available
+  The format must be present in the clipboard. If not the function returns false. The buffer and the
+  size parameters must be set to the correct size for the specified format. If they are too small, the
+  data will be truncated, resulting in corrupted values on your side (but you're the one who knows what
+  to do with that). If they are too large, the application will crash as it will be asking the system
+  for more data than available
 Parameters
   Format - The format ID
   Buffer - An allocated buffer
@@ -121,19 +120,20 @@ Description
   you will get an exception when the format is rendered.
 Parameters
   Sender   - The object triggering the event. Cleary, will always be the value returned by
-  JvClipboard, unless you call the event yourself
+              JvClipboard, unless you call the event yourself
   Format   - The format needing rendering
-  Buffer   - The buffer where the rendered data has to be or has been put. You may change the value
-  of the buffer parameter to point on a memory that will survive the exit of your handler. Clearly,
-  you can't give a pointer to a local variable or use a PChar() conversion. Alternatively, you can
-  allocate some memory with GetMem(), copy your data in the buffer and set the MustFree parameter to
-  true to ask the clipboard to free the memory for you (done using FreeMem). Setting buffer to nil
-  will make the system remove this format from the clipboard, but this is not a documented behaviour
+  Buffer   - The buffer where the rendered data has to be or has been put. You may change the value of
+              the buffer parameter to point on a memory that will survive the exit of your handler.
+              Clearly, you can't give a pointer to a local variable or use a PChar() conversion.
+              Alternatively, you can allocate some memory with GetMem(), copy your data in the buffer
+              and set the MustFree parameter to true to ask the clipboard to free the memory for you
+              (done using FreeMem). Setting buffer to nil will make the system remove this format from
+              the clipboard, but this is not a documented behaviour
   Size     - The size in bytes of the data available in the buffer. Setting size to 0 will make the
-  system remove this format from the clipboard, but this is not a documented behaviour
-  MustFree - set to False by default. If you set this to True, the clipboard will call
-  FreeMem(buffer) after having copied the data in the system clipboard. This is useful only if you
-  allocated the buffer using GetMem()
+              system remove this format from the clipboard, but this is not a documented behaviour
+  MustFree - set to False by default. If you set this to True, the clipboard will call FreeMem(buffer)
+              after having copied the data in the system clipboard. This is useful only if you
+              allocated the buffer using GetMem()
 See Also
   TJvClipboard.AddDelayed
 
@@ -164,8 +164,8 @@ Summary
   Adds the given buffer to memory
 Description
   This method has been overriden to allow setting Buffer to nil and thus asking to use delayed
-  rendering. If you do so, you MUST provide an OnRenderFormat event handler
-  If Buffer <> nil then the inherited method is called
+  rendering. If you do so, you MUST provide an OnRenderFormat event handler If Buffer <> nil then the
+  inherited method is called
 Parameters
   Format - The format to add
   Buffer - The buffer containing the data
@@ -179,8 +179,8 @@ Summary
   Overloaded version of the same procedure in TClipboard that now allows you to specify delayed
   rendering.
 Description
-  If delayed is set to False, the inherited method is called else, the format is added in the
-  clipboard for delayed rendering and you MUST provide an OnRenderFormat event;
+  If delayed is set to False, the inherited method is called else, the format is added in the clipboard
+  for delayed rendering and you MUST provide an OnRenderFormat event;
 Parameters
   Component - The component to copy in the clipboard
   Delayed   - If True, delayed rendering will be used
@@ -193,8 +193,8 @@ Summary
   Overloaded version of the same procedure in TClipboard that now allows you to specify delayed
   rendering.
 Description
-  If delayed is set to False, the inherited method is called else, the format is added in the
-  clipboard for delayed rendering and you MUST provide an OnRenderFormat event;
+  If delayed is set to False, the inherited method is called else, the format is added in the clipboard
+  for delayed rendering and you MUST provide an OnRenderFormat event;
 Parameters
   Buffer  - The text buffer. A final #0 is expected to stop the string
   Delayed - If True, delayed rendering will be used

@@ -9,15 +9,14 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@DayStatesToString
 <TITLE DayStatesToString function>
 Summary
   Converts a TMonthDayState value into a comma separated list.
 Description
-  DayStatesToString converts a TMonthDayState value into a comma separated list of those days that
-  are set as bold in the Days parameter.
+  DayStatesToString converts a TMonthDayState value into a comma separated list of those days that are
+  set as bold in the Days parameter.
 
   If no days are set, an empty string is returned.
 Parameters
@@ -42,7 +41,7 @@ Description
   StringToDayStates converts a comma separated list of day numbers into a TMonthDayState value. The
   string may not contain spaces. Numbers that fall outside the range 1..31 are ignored.
 Parameters
-  S    - String containing a comma separated list of day numbers.
+  S - String containing a comma separated list of day numbers.
 See Also
   <LINK DayStatesToString>
 
@@ -51,17 +50,17 @@ See Also
 Summary
   Base component that serves as a wrapper around the MicroSoft® MonthCalendar control.
 Description
-  TJvCustomMonthCalendar is the base component for MicroSoft® MonthCalendar control wrappers. Never
-  use a TJvCustomMonthCalendar control directly but rather one of its descendants. Currently
-  JEDI-VCL provides you with one descendant: TJvMonthCalendar2.
+  TJvCustomMonthCalendar is the base component for MicroSoft® MonthCalendar control wrappers. Never use
+  a TJvCustomMonthCalendar control directly but rather one of its descendants. Currently JEDI-VCL
+  provides you with one descendant: TJvMonthCalendar2.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.Bold
 Summary
   Sets and retrieves bold information for a date.
 Description
-  Bold holds bold day state information. Using the three array indices you can set or retrieve the
-  bold state of specific date.
+  Bold holds bold day state information. Using the three array indices you can set or retrieve the bold
+  state of specific date.
 
   When setting the bold state for a date where the Year index is set to 0, the bold state applies for
   every year on the given day and month.
@@ -85,8 +84,8 @@ Description
 
   daylist is a comma separated string denoting the days to be set to the bold state.
 
-  The first format denotes a recurring item, for which the specified days are set to the bold state
-  for every year accessed.
+  The first format denotes a recurring item, for which the specified days are set to the bold state for
+  every year accessed.
 
   The second format denotes a single item, for which the specified days are set to the bold state in
   the specified year only.
@@ -102,8 +101,8 @@ See Also
 Summary
   Indicates the border type to place around the control.
 Description
-  BorderStyle indicates what kind of border should be drawn around the control. By default it is set
-  to bsNone.
+  BorderStyle indicates what kind of border should be drawn around the control. By default it is set to
+  bsNone.
 
   * bsSingle: a single border is drawn around the control.
   * bsNone: no border is drawn around the control.
@@ -157,21 +156,21 @@ See Also
 Summary
   \Create and instantiates a month calender with the specified appearance.
 Description
-  CreateWithAppearance will create a month calendar with a given appearance instance. The normal
-  Create constructor will call this method with a new appearance instance and sets the
-  AOwnsAppearance parameter to True.
+  CreateWithAppearance will create a month calendar with a given appearance instance. The normal Create
+  constructor will call this method with a new appearance instance and sets the AOwnsAppearance
+  parameter to True.
 
   Other controls that use this calendar as drop down or popup call this constructor to specify the
   appearance.
 Parameters
-  AOwner -          The owner component of the calendar.
-  AAppearance -     The appearance instance. This instance will determine how the calendar will be
-                    shown.
-  AOwnsAppearance - Determines if the passed appearance instance is owned by the calendar control.
-                    If set to True, the passes instance will be owned by the calendar (and
-                    subsequently freed when the calendar is destroyed). If set to False the caller
-                    is responsible of the instance. <B>WARNING:</B> The passed instance should
-                    <B>not</B> be freed before the calendar is disposed.
+  AOwner          - The owner component of the calendar.
+  AAppearance     - The appearance instance. This instance will determine how the calendar will be
+                     shown.
+  AOwnsAppearance - Determines if the passed appearance instance is owned by the calendar control. If
+                     set to True, the passes instance will be owned by the calendar (and subsequently
+                     freed when the calendar is destroyed). If set to False the caller is responsible
+                     of the instance. <B>WARNING:</B> The passed instance should <B>not</B> be freed
+                     before the calendar is disposed.
 See Also
   TJvMonthCalAppearance
 
@@ -222,8 +221,8 @@ See Also
 Summary
   Sets and retrieves bold information for a month.
 Description
-  Days holds bold day state information for a whole month. The string should be a comma separated
-  list of day numbers.
+  Days holds bold day state information for a whole month. The string should be a comma separated list
+  of day numbers.
 
   When setting the Days value for a year set to 0, the state is set for every year.
 Parameters
@@ -238,8 +237,8 @@ Summary
   Generates an OnSelChange event.
 Description
   DoDateChange will generate an OnSelChange event. DoDateChange is called each time the user changes
-  the month calendar (selecting, scrolling, etc). If an OnSelChange event handler has been assigned
-  it will be triggered.
+  the month calendar (selecting, scrolling, etc). If an OnSelChange event handler has been assigned it
+  will be triggered.
 Parameters
   StartDate - The start date of the selection
   EndDate   - The end date of the selection
@@ -266,8 +265,8 @@ Summary
 Description
   DoGetDayState is called whenever the MicroSoft MonthCalendar control needs day state info.
 
-  DoGetDayState will fill the day state list with the values as set by the Bold, BoldDays and/or
-  Days properties.
+  DoGetDayState will fill the day state list with the values as set by the Bold, BoldDays and/or Days
+  properties.
 
   If an OnGetDayState event handler has been assigned it will be triggered.
 Parameters
@@ -308,7 +307,7 @@ Description
   month.
 Parameters
   Partial - Flag to include partially visible months. When set to True partially visible months are
-          included.
+             included.
 See Also
   TJvCustomMonthCalendar.LastVisibleDate
 
@@ -317,11 +316,11 @@ See Also
 Summary
   Determines the last visible date.
 Description
-  LastVisibleDate determines the lasst visible date. If the Partial parameter is set to True,
-  partially visible months are included, otherwise it's the last day of the last fully visible month.
+  LastVisibleDate determines the lasst visible date. If the Partial parameter is set to True, partially
+  visible months are included, otherwise it's the last day of the last fully visible month.
 Parameters
   Partial - Flag to include partially visible months. When set to True partially visible months are
-          included.
+             included.
 See Also
   TJvCustomMonthCalendar.FirstVisibleDate
 
@@ -375,11 +374,11 @@ See Also
 Summary
   Responds when the control needs to get the day states.
 Description
-  Write an OnGetDayState event handler to set day states that are not set by the Bold, BoldDays
-  and/or Days properties.
+  Write an OnGetDayState event handler to set day states that are not set by the Bold, BoldDays and/or
+  Days properties.
 Parameters
   Sender        - Reference to the object generating the event. Usually this will be a
-                  TJvCustomMonthCalendar descendant.
+                   TJvCustomMonthCalendar descendant.
   Date          - The starting date for the request. This will always be the first day of a month
   Count         - The number of days requested.
   DayStateArray - An array to retieve the day states in.
@@ -440,9 +439,9 @@ Description
   It also assumes the first month in the array is the first (partially) visible month of the control.
 Parameters
   MonthCount - Number of months to pass to the control
-  DayStates  - Array with day states for each month. Must be large enough to hold MonthCount
-      elements or the number of partially visible months, whichever is the largest. The
-               first element is assumed to be the first (partially) visible month.
+  DayStates  - Array with day states for each month. Must be large enough to hold MonthCount elements
+                or the number of partially visible months, whichever is the largest. The first element
+                is assumed to be the first (partially) visible month.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.ShowToday
@@ -459,8 +458,8 @@ See Also
 Summary
   Sets today's date for the control.
 Description
-  Today sets today's date for the calendar control. If either CircleToday or ShowToday is set to
-  True, the value set in Today will be reflected in the display.
+  Today sets today's date for the calendar control. If either CircleToday or ShowToday is set to True,
+  the value set in Today will be reflected in the display.
 See Also
   TJvCustomMonthCalendar.CircleToday, TJvCustomMonthCalendar.ShowToday
 
@@ -489,8 +488,7 @@ Summary
   Specifies whether week numbers should be displayed.
 Description
   Use WeekNumbers to specify whether week numbers should be displayed to the left of each week. When
-  set to
-  True week numbers will be visible.
+  set to True week numbers will be visible.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalAppearance
@@ -515,15 +513,15 @@ Description
 
   Daylist is a comma separated string denoting the days to be set to the bold state.
 
-  The first format denotes a recurring item, for which the specified days are set to the bold state
-  for every year accessed.
+  The first format denotes a recurring item, for which the specified days are set to the bold state for
+  every year accessed.
 
   The second format denotes a single item, for which the specified days are set to the bold state in
   the specified year only.
 
   Adding a date already in the list, replaces the old item.
 
-  Use the <LINK TJvCustomMonthCalendar.Days,Days> and <LINK TJvCustomMonthCalendar.Bold,Bold>
+  Use the <LINK TJvCustomMonthCalendar.Days, Days> and <LINK TJvCustomMonthCalendar.Bold, Bold>
   properties to simplify adding and removing bolding info.
 See Also
   <LINK StringToDayStates>
@@ -584,8 +582,7 @@ Summary
   Specifies whether week numbers should be displayed.
 Description
   Use WeekNumbers to specify whether week numbers should be displayed to the left of each week. When
-  set to
-  True week numbers will be visible.
+  set to True week numbers will be visible.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalColors
@@ -666,11 +663,11 @@ Summary
   A wrapper component for the MS MonthCal control available in ComCtl32.dll versions 4.70 and above.
 Description
   TJvMonthCalendar2 is a wrapper component for the MicroSoft Month Calendar control that is available
-  in <B>ComCtl32.dll, version 4.70 and above</B>. The control is the same as Delphi's
-  TMonthCalendar control, but has an easier interface.
+  in <B>ComCtl32.dll, version 4.70 and above</B>. The control is the same as Delphi's TMonthCalendar
+  control, but has an easier interface.
 
-  The control displays a maximum of 12 months at a time, but you can't set the number of visible
-  months as this is automatically calculated from the controls size. If the window is larger than the
+  The control displays a maximum of 12 months at a time, but you can't set the number of visible months
+  as this is automatically calculated from the controls size. If the window is larger than the
   displayed months, they are centered in the window.
 
   Sizing the window programmatically for best fit is problematic: the control needs one size for
@@ -690,7 +687,7 @@ Description
   descendant.
 Parameters
   Sender    - Reference to the object generating the event. Usually this will be a
-              TJvCustomMonthCalendar descendant.
+               TJvCustomMonthCalendar descendant.
   StartDate - Starting date of the selection.
   EndDate   - Ending date of the selection.
 See Also
@@ -700,6 +697,7 @@ See Also
 @@TJvMonthCalStateEvent
 <TITLE TJvMonthCalStateEvent type>
 <COMBINE TJvCustomMonthCalendar.OnGetDayState>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay
 <TITLE TJvMonthCalWeekDay type>
@@ -708,38 +706,39 @@ Summary
 Description
   TJvMonthCalWeekDay is used by the month calendar to determine which day of the week is the first to
   be shown.
+See Also
+  TJvCustomMonthCalendar.FirstDayOfWeek
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcLocale
-The first day of the week is determined by the system locale. This usually is Monday as specified by the ISO 8601 specification.
+  The first day of the week is determined by the system locale. This usually is Monday as specified by
+  the ISO 8601 specification.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcMonday
-The first day of the week is Monday.
+  The first day of the week is Monday.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcTuesday
-The first day of the week is Tuesday.
+  The first day of the week is Tuesday.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcWednesday
-The first day of the week is Wednesday.
+  The first day of the week is Wednesday.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcThursday
-The first day of the week is Thursday.
+  The first day of the week is Thursday.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcFriday
-The first day of the week is Friday.
+  The first day of the week is Friday.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcSaturday
-The first day of the week is Saturday.
+  The first day of the week is Saturday.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcSunday
-The first day of the week is Sunday.
-See Also
-  TJvCustomMonthCalendar.FirstDayOfWeek
+  The first day of the week is Sunday.
 

@@ -1,5 +1,5 @@
 ##Package: EDI
-##Status: Needs review
+##Status: Completed, Needs review
 ----------------------------------------------------------------------------------------------------
 @@JvEDIDBBuffering.pas
 Summary
@@ -7,7 +7,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Raymond Alexander.
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAfterProfiledSegmentEvent
@@ -57,7 +56,7 @@ JVCLInfo
 Summary
   Use this component to create and update an EDI database buffer.
 Description
-  This is the generic TDataSet compatible EDI Database buffer component.  For best results create a
+  This is the generic TDataSet compatible EDI Database buffer component. For best results create a
   descendent component for TDataSet compatible third party components.
 
   Element , Loop, and Segment profile datasets are needed.
@@ -70,16 +69,18 @@ Description
   The default prefix for element field names is "E".
 
   Examples:
+  <PRE>
       Element 0143 is assigned the field name "E143_1".
       Element 0329 is assigned the field name "E329_1".
+  </PRE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.ElementProfiles
 Summary
   The dataset that contains element profiles.
 Description
-  The element profile is the collection of elements with the maximum length and usage used in a
-  segment in transactions across all profiled EDI specification files.
+  The element profile is the collection of elements with the maximum length and usage used in a segment
+  in transactions across all profiled EDI specification files.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.KeySuffix
@@ -89,8 +90,10 @@ Description
   The default suffix for key field names is "_Id".
 
   Examples:
+  <PRE>
       Key field for segment table "ST" is assigned "ST_Id"
       Key field for loop table "0100" is assigned "Loop_0100_Id"
+  </PRE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.LoopKeyPrefix
@@ -100,8 +103,10 @@ Description
   The default loop key field name prefix is ""Loop_".
 
   Examples:
+  <PRE>
       Key field for loop table "0100" is assigned "Loop_0100_Id"
       Key field for loop table "0200" is assigned "Loop_0200_Id"
+  </PRE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.LoopProfiles
@@ -133,9 +138,14 @@ Description
   Write the code here to alter a table based on the field definitions in the FieldDefs parameter.
 
   Each field definition status should be examined for the following values:
-      usModified - Indicates the field was altered.
-      usInserted - Indicates the field is new.
-      usDeleted - Indicates the field should be deleted.
+
+  <TABLE>
+    Value       Meaning
+    ----------  --------------------------------------
+    usModified  Indicates the field was altered.
+    usInserted  Indicates the field is new.
+    usDeleted   Indicates the field should be deleted.
+  </TABLE>
 Parameters
   FieldDefs - The field definitions of the table.
   TableName - The name of the table.
@@ -150,7 +160,7 @@ Description
 Parameters
   DataSet     - The ElementProfile dataset.
   TableName   - The segment id table name that should be used to filter the correct element profile
-  records.
+                 records.
   ApplyFilter - For TDataSet components that do not support filters set the parameter to False.
 
 ----------------------------------------------------------------------------------------------------
@@ -173,14 +183,18 @@ Summary
   This event occurs when checking for changes to a table.
 Description
   Write the code to check for changes to a table by comparing the current table field definitions to
-  the field definitions given in the FieldDefs parameter.  Update the field definitions in the
-  FieldsDefs as necessary .  Usually this involves changing the status of the field definitions in
-  the FieldsDefs parameter to one of the following values:
+  the field definitions given in the FieldDefs parameter. Update the field definitions in the
+  FieldsDefs as necessary . Usually this involves changing the status of the field definitions in the
+  FieldsDefs parameter to one of the following values:
 
-      usUnmodified - Default value
-      usModified - Indicates the field was altered.
-      usInserted - Indicates the field is new.
-      usDeleted - Indicates the field should be deleted.
+  <TABLE>
+    Value             Meaning
+    ----------------  --------------------------------------
+    usUnmodified      Default value
+    usModified        Indicates the field was altered.
+    usInserted        Indicates the field is new.
+    usDeleted         Indicates the field should be deleted.
+  </TABLE>
 
   Changes to the FieldsDefs parameter will end up being used in the TJvEDIDBBuffer.OnAlterTable event.
 Parameters
@@ -202,17 +216,22 @@ Parameters
 Summary
   Resolve field types in this event.
 Description
-  Change field definition properties using this event.  Using this event is optional.
+  Change field definition properties using this event. Using this event is optional.
 
   By default the following EDI Types map to the following TFieldTypes:
-      EDIDataType_Numeric    -> ftInteger
-      EDIDataType_Decimal    -> ftFloat
-      EDIDataType_Identifier -> ftString
-      EDIDataType_String     -> ftString
-      EDIDataType_Date       -> ftDate
-      EDIDataType_Time       -> ftTime
-      EDIDataType_Binary     -> ftBlob
-      Any custom types       -> ftString
+
+  <TABLE>
+    EDI Type                TFieldType
+    ----------------------  ----------
+    EDIDataType_Numeric     ftInteger
+    EDIDataType_Decimal     ftFloat
+    EDIDataType_Identifier  ftString
+    EDIDataType_String      ftString
+    EDIDataType_Date        ftDate
+    EDIDataType_Time        ftTime
+    EDIDataType_Binary      ftBlob
+    Any custom types        ftString
+  </TABLE>
 Parameters
   FieldDef - The field definition to examine and change.
 
@@ -221,7 +240,7 @@ Parameters
 Summary
   Occurs when the existence of a table needs to be determined.
 Description
-  Write the code necessary to determine if the table exists in the EDI database buffer.  If the table
+  Write the code necessary to determine if the table exists in the EDI database buffer. If the table
   does not exist then the OnCreateTable event will be raised.
 Parameters
   TableName   - The table name to check the existence of.
@@ -239,8 +258,8 @@ Description
 Summary
   The dataset that contains segment profiles.
 Description
-  The segment profile is the collection of segments and their loop relationships in transactions of
-  all profiled EDI specification files.
+  The segment profile is the collection of segments and their loop relationships in transactions of all
+  profiled EDI specification files.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.SyncProfilesWithBuffer
@@ -257,8 +276,8 @@ Description
   The pupose of a TJvEDIDBProfiler decendent component is to build the ElementProfiles,
   SegmentProfiles, and LoopProfiles datasets for use with a TJvEDIDBBuffering type component.
 
-  Create descendents of this component and override the abstract method BuildProfile in order to
-  enable building profiles for different EDI specification file formats.
+  Create descendents of this component and override the abstract method BuildProfile in order to enable
+  building profiles for different EDI specification file formats.
 
   The profiles become a sum of all EDI specification files that are profiled.
 
@@ -317,8 +336,8 @@ Summary
 Description
   This method is designed to be called by the BuildProfile method and uses TDataSet compatible code.
 Parameters
-  SegmentId     - The segment id of the segment that the element is contained in.
-  ElementId     - The element id of the element.
+  SegmentId - The segment id of the segment that the element is contained in.
+  ElementId - The element id of the element.
 Return value
   If the element profile is found then the function returns True.
 
@@ -327,8 +346,8 @@ Return value
 Summary
   The dataset that contains element profiles.
 Description
-  The element profile is the collection of elements with the maximum length and usage used in a
-  segment in transactions across all profiled EDI specification files.
+  The element profile is the collection of elements with the maximum length and usage used in a segment
+  in transactions across all profiled EDI specification files.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.LoopExist
@@ -367,7 +386,7 @@ Description
   The event is used to advance progress bars and update status indicators.
 Parameters
   TransactionSet - This parameter must be cast to its proper type in order to use it in an event
-  handler.
+                    handler.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.SegmentExist
@@ -387,8 +406,8 @@ Return value
 Summary
   The dataset that contains segment profiles.
 Description
-  The segment profile is the collection of segments and their loop relationships in transactions of
-  all profiled EDI specification files.
+  The segment profile is the collection of segments and their loop relationships in transactions of all
+  profiled EDI specification files.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.UpdateElement
@@ -401,9 +420,9 @@ Parameters
   ElementId     - Parameter used to locate correct record for update.
   ElementType   - Parameter
   MaximumLength - If the parameter value is greater than the current value then the current value is
-  updated.
+                   updated.
   Count         - If the parameter value is greater than the current value then the current value is
-  updated.
+                   updated.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBSEFProfiler
@@ -444,7 +463,7 @@ Summary
 Description
   See TJvEDIDBProfiler.BuildProfile
 Parameters
-  EDIFileSpec -  The EDI SDK EDI specification file object to be profiled.
+  EDIFileSpec - The EDI SDK EDI specification file object to be profiled.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIFieldDef
@@ -472,9 +491,9 @@ Description
 Summary
   The EDI field type.
 Description
-  Usually assigned to one of the following constants:  EDIDataType_Numeric, EDIDataType_Decimal,
+  Usually assigned to one of the following constants: EDIDataType_Numeric, EDIDataType_Decimal,
   EDIDataType_Identifier, EDIDataType_String, EDIDataType_Date, EDIDataType_Time, or
-  EDIDataType_Binary.  Custom values can also be assigned.
+  EDIDataType_Binary. Custom values can also be assigned.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIFieldDef.MaximumLength
@@ -488,7 +507,7 @@ Description
 Summary
   The update status of the field.
 Description
-  Can have one of the following values:  usUnmodified, usModified, usInserted, or usDeleted.
+  Can have one of the following values: usUnmodified, usModified, usInserted, or usDeleted.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIFieldDefs
@@ -519,6 +538,7 @@ Parameters
 @@TJvResolveFieldDefTypeEvent
 <TITLE TJvOnResolveFieldDefTypeEvent type>
 <COMBINE TJvEDIDBBuffer.OnResolveFieldDefType>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTableExistsEvent
 <TITLE TJvTableExistsEvent type>

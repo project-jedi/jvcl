@@ -1,5 +1,5 @@
 ##Package: MM
-##Status: Needs review
+##Status: Completed, Needs review
 ##Skip: TJvLockedBitmap
 ----------------------------------------------------------------------------------------------------
 @@JvAnimatedImage.pas
@@ -8,7 +8,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-
 
 ----------------------------------------------------------------------------------------------------
 @@TGlyphOrientation
@@ -22,17 +21,17 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TGlyphOrientation.goHorizontal
-The Glyph will be cut horizontally
+  The Glyph will be cut horizontally
 
 ----------------------------------------------------------------------------------------------------
 @@TGlyphOrientation.goVertical
-The glyph will be cut vertically
+  The glyph will be cut vertically
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage
 <TITLEIMG TJvAnimatedImage>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Graphics.Animations
   FLAG=Component
 Summary
   A component that takes a glyph, cuts it along one direction to create frames to be displayed as an
@@ -45,6 +44,8 @@ Description
 @@TJvAnimatedImage.Active
 Summary
   If true, the animation is being performed.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.AsyncDrawing
@@ -88,6 +89,8 @@ See Also
 @@TJvAnimatedImage.InactiveGlyph
 Summary
   The sub-glyph to display when the image is inactive
+Description
+  Write here a description
 See Also
   TJvAnimatedImage.Active, TJvAnimatedImage.GlyphNum
 
@@ -95,6 +98,8 @@ See Also
 @@TJvAnimatedImage.Interval
 Summary
   The interval in milliseconds between each frame
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.NumGlyphs
@@ -109,11 +114,15 @@ See Also
 @@TJvAnimatedImage.OnFrameChanged
 Summary
   Event triggered when the current frame has been changed
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.OnStart
 Summary
   Even triggered when the animation starts (by setting Active to True)
+Description
+  Write here a description
 See Also
   TJvAnimatedImage.OnStop
 
@@ -121,15 +130,18 @@ See Also
 @@TJvAnimatedImage.OnStop
 Summary
   Event triggered when the animation stops (by setting Active to False)
+Description
+  Write here a description
 See Also
   TJvAnimatedImage.OnStart
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.Orientation
 Summary
   The orientation used to create the frames from Glyph
 Description
-  If orientation is goHorizontal, the Glyph property will be cut along its width
-  If orientation is goVertical, the Glyph property will be cut along its height
+  If orientation is goHorizontal, the Glyph property will be cut along its width If orientation is
+  goVertical, the Glyph property will be cut along its height
 See Also
   TJvAnimatedImage.Glyph, TJvAnimatedImage.NumGlyphs
 
@@ -137,19 +149,29 @@ See Also
 @@TJvAnimatedImage.Stretch
 Summary
   If true, the image is stretched to fit in the control size
+Description
+  Write here a description
 See Also
   AutoSize
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.Transparent
 Summary
   If True the background of the image is transparent.
+Description
+  Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.TransparentColor
 Summary
   Indicate which color is to be considered transparent in the glyph
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageControl
 Summary
   This is a control that displays an image using buffered painting
+Description
+  Write here a description
 

@@ -1,5 +1,5 @@
 ##Package: Custom
-##Status: Incomplete
+##Status: Completed, Incomplete
 ##Skip: PHintData
 ##Skip: THintData
 ##Skip: TJvBalloonHint.Handle
@@ -12,7 +12,6 @@ Summary
 Author
   Remko Bonte
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimationStyle
 <TITLE TJvAnimationStyle type>
@@ -23,55 +22,55 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimationStyle.atNone
-No animation.
+  No animation.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimationStyle.atSlide
-Slides the window from bottom to top or from top to bottom depending on the position of the balloon.
+  Slides the window from bottom to top or from top to bottom depending on the position of the balloon.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimationStyle.atRoll
-Rolls the window from bottom to top or from top to bottom depending on the position of the balloon.
+  Rolls the window from bottom to top or from top to bottom depending on the position of the balloon.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimationStyle.atRollHorNeg
-Rolls the window from right to left.
+  Rolls the window from right to left.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimationStyle.atRollHorPos
-Rolls the window from left to right.
+  Rolls the window from left to right.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimationStyle.atRollVerNeg
-Rolls the window from bottom to top.
+  Rolls the window from bottom to top.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimationStyle.atRollVerPos
-Rolls the window from top to bottom.
+  Rolls the window from top to bottom.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimationStyle.atSlideHorNeg
-Slides the window from right to left.
+  Slides the window from right to left.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimationStyle.atSlideHorPos
-Slides the window from left to right.
+  Slides the window from left to right.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimationStyle.atSlideVerNeg
-Slides the window from bottom to top.
+  Slides the window from bottom to top.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimationStyle.atSlideVerPos
-Slides the window from top to bottom.
+  Slides the window from top to bottom.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimationStyle.atCenter
-Makes the window appear to expand outward.
+  Makes the window appear to expand outward.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimationStyle.atBlend
-Uses a fade effect.
+  Uses a fade effect.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHintOption
@@ -87,16 +86,18 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHintOption.ahShowHeaderInHint
-Shows a header in the balloon hint windows. The \string specified by <LINK TJvBalloonHint.DefaultHeader,
-DefaultHeader> is used as header.
+  Shows a header in the balloon hint windows. The \string specified by <LINK
+  TJvBalloonHint.DefaultHeader, DefaultHeader> is used as header.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHintOption.ahShowIconInHint
-Shows an icon in the balloon hint windows. The properties <LINK TJvBalloonHint.DefaultIcon,DefaultIcon>, <LINK TJvBalloonHint.DefaultImageIndex,DefaultImageIndex> and <LINK TJvBalloonHint.Images,Images> determine the icon.
+  Shows an icon in the balloon hint windows. The properties <LINK TJvBalloonHint.DefaultIcon,
+  DefaultIcon>, <LINK TJvBalloonHint.DefaultImageIndex, DefaultImageIndex> and <LINK
+  TJvBalloonHint.Images, Images> determine the icon.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHintOption.ahPlaySound
-Plays a sound when a balloon shaped hint window displays.
+  Plays a sound when a balloon shaped hint window displays.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHintOptions
@@ -118,40 +119,39 @@ Description
   * Replace the application hint window with a balloon shaped hint window.
   * Display balloons attached to a specific control.
 
-  Set UseBalloonAsApplicationHint to true to replace the application hint window with a balloon
-  shaped hint window. Use the flags of ApplicationHintOptions to display a header or icon in the
-  balloon hint, or to play a sound when a hint shows.
+  Set UseBalloonAsApplicationHint to true to replace the application hint window with a balloon shaped
+  hint window. Use the flags of ApplicationHintOptions to display a header or icon in the balloon hint,
+  or to play a sound when a hint shows.
 
   To display a balloon attached to a control, call ActivateHint. You can specify the header, message,
   icon that should be displayed in the balloon and the amount of time the balloon should be visible.
 
-  Alternatively, use ActivateHintPos or ActivateHintRect to display a balloon at a specific position
-  on the desktop or form.
+  Alternatively, use ActivateHintPos or ActivateHintRect to display a balloon at a specific position on
+  the desktop or form.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonHint.ActivateHint@TControl@string@string@Integer
 Summary
   Displays a balloon window anchored to a control.
 Description
-  Call ActivateHint to display the ballooon window anchored to a control specified by the ACtrl
+  Call ActivateHint to display the balloon window anchored to a control specified by the ACtrl
   parameter.
 
   ActivateHint ensures that the balloon window appears entirely on screen.
 
-  After the component displays a balloon window, it automatically deactivates it after a time period
-  - specified by the VisibleTime parameter - has elapsed, or when it receives a message that requires
+  After the component displays a balloon window, it automatically deactivates it after a time period -
+  specified by the VisibleTime parameter - has elapsed, or when it receives a message that requires
   hiding the hint message. Set VisibleTime to 0 to disable the automatic deactivation.
 
-  To hide a balloon window that is activated directly by calling ActivateHint,
-  ActivateHintPos or ActivateHintRect, use the CancelHint method.
+  To hide a balloon window that is activated directly by calling ActivateHint, ActivateHintPos or
+  ActivateHintRect, use the CancelHint method.
 
   Use Options to specify that the component must use default values as specified by DefaultHeader,
   DefaultImageIndex and DefaultIcon, instead of the values of the parameters that may be given.
 Parameters
   ACtrl       - The anchor control for the balloon. Depending on the value of DefaultBalloonPosition,
                  the balloon is placed below or above this control. The component will ensure that the
-                 balloon
-                 window maintains its position relative to the parent window of this control.
+                 balloon window maintains its position relative to the parent window of this control.
   AHint       - The hint message for the balloon.
   AHeader     - The header for the balloon.
   VisibleTime - The maximum time in milliseconds that the balloon is visible.
@@ -173,14 +173,14 @@ See Also
 Summary
   Displays a balloon hint window at a specified position.
 Description
-  Call ActivateHintPos to display the ballooon window with its stem
-  point at the coordinate provided by the AAnchorPosition parameter.
+  Call ActivateHintPos to display the balloon window with its stem point at the coordinate provided by
+  the AAnchorPosition parameter.
 
   ActivateHintPos ensures that the balloon window appears entirely on screen.
 
-  After the component displays a balloon window, it automatically deactivates it after a time period
-  - specified by the VisibleTime parameter - has elapsed. Set VisibleTime to 0 to disable the
-  automatic deactivation.
+  After the component displays a balloon window, it automatically deactivates it after a time period -
+  specified by the VisibleTime parameter - has elapsed. Set VisibleTime to 0 to disable the automatic
+  deactivation.
 
   To hide a balloon window that is activated directly by calling ActivateHint, ActivateHintPos and
   ActivateHintRect, use the CancelHint method.
@@ -193,8 +193,8 @@ Parameters
   AAnchorWindow   - The window where to the balloon window is anchored to. The component will ensure
                      that the balloon window maintains its position relative to the anchor window. May
                      be set to nil.
-  AAnchorPosition - The position of the balloon's stem point within the client rectangle of the
-                     window specified by AAnchorWindow.
+  AAnchorPosition - The position of the balloon's stem point within the client rectangle of the window
+                     specified by AAnchorWindow.
   AHeader         - The header for the balloon.
   AHint           - The hint message for the balloon.
   VisibleTime     - The maximum time in milliseconds that the balloon is visible.
@@ -208,14 +208,14 @@ See Also
 Summary
   Displays a balloon hint window at a specified position.
 Description
-  Call ActivateHintRect to display the ballooon window with its stem
-  point at either the top or the bottom of the rectangle provided by the ARect parameter.
+  Call ActivateHintRect to display the balloon window with its stem point at either the top or the
+  bottom of the rectangle provided by the ARect parameter.
 
   ActivateHintRect ensures that the balloon window appears entirely on screen.
 
-  After the component displays a balloon window, it automatically deactivates it after a time period
-  - specified by the VisibleTime parameter - has elapsed. Set VisibleTime to 0 to disable the
-  automatic deactivation.
+  After the component displays a balloon window, it automatically deactivates it after a time period -
+  specified by the VisibleTime parameter - has elapsed. Set VisibleTime to 0 to disable the automatic
+  deactivation.
 
   To hide a balloon window that is activated directly by calling ActivateHint, ActivateHintPos and
   ActivateHintRect, use the CancelHint method.
@@ -250,12 +250,12 @@ Description
   Use the ApplicationHintOptions property to customize the appearance and functionality of balloon
   shaped application hint windows. Use these flags to
 
-  * Specify whether to use the default values as specified by DefaultHeader, DefaultIcon   and
-     DefaultImageIndex.
+  * Specify whether to use the default values as specified by DefaultHeader, DefaultIcon and
+    DefaultImageIndex.
   * Specify whether to play a sound when a balloon shaped application hint window displays.
 Note
-  Set UseBalloonAsApplicationHint to true to replace the application hint window with a balloon
-  shaped hint window.
+  Set UseBalloonAsApplicationHint to true to replace the application hint window with a balloon shaped
+  hint window.
 See Also
   TJvBalloonHint.Options
 
@@ -267,8 +267,8 @@ Description
   Call CancelHint to cancel the display of a balloon window that was activated by a call to
   ActivateHint, ActivateHintPos or ActivateHintRect.
 
-  The component calls CancelHint internally if the specified visible time elapsed or when it receives
-  a message that requires hiding the hint message.
+  The component calls CancelHint internally if the specified visible time elapsed or when it receives a
+  message that requires hiding the hint message.
 See Also
   ActivateHint
 
@@ -304,8 +304,8 @@ See Also
 Summary
   Specifies the position of the balloon relatively to the stem.
 Description
-  Use DefaultBalloonPosition to specify the desired position of the balloon relatively to the stem.
-  The balloon position may be changed by the component, if the balloon doesn't fit on the screen.
+  Use DefaultBalloonPosition to specify the desired position of the balloon relatively to the stem. The
+  balloon position may be changed by the component, if the balloon doesn't fit on the screen.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonHint.DefaultHeader
@@ -314,8 +314,7 @@ Summary
 Description
   Use DefaultHeader to specify a header for the balloon windows, that is used,
 
-  * By application hint
-     windows, if ahShowHeaderInHint is included in ApplicationHintOptions.
+  * By application hint windows, if ahShowHeaderInHint is included in ApplicationHintOptions.
   * By balloons displayed by calling ActivateHint, if boUseDefaultHeader is included in Options.
 See Also
   TJvBalloonHint.ApplicationHintOptions, TJvBalloonHint.Options
@@ -339,9 +338,8 @@ Summary
 Description
   Use DefaultImageIndex to specify an image for the balloon windows, that is used,
 
-  * By application
-     hint windows, if ahShowIconInHint is included in ApplicationHintOptions, and DefaultIcon is set
-     to ikCustom.
+  * By application hint windows, if ahShowIconInHint is included in ApplicationHintOptions, and
+    DefaultIcon is set to ikCustom.
   * By balloons displayed by calling ActivateHint, if boUseDefaultImageIndex is included in Options.
 See Also
   TJvBalloonHint.ApplicationHintOptions, TJvBalloonHint.Options
@@ -362,7 +360,7 @@ Description
   To display an image from Images in balloons displayed by calling ActivateHint, either
 
   * Call ActivateHint with parameter AImageIndex set to the index of the image to be displayed in the
-     balloon window.
+    balloon window.
 
   or
 
@@ -381,8 +379,8 @@ Description
   fired when the user clicks the close button on the balloon hint. Use the OnCloseBtnClick event
   handler to respond when the user clicks the close button.
 Note
-  This event does <i>not</i> occur for application hint windows, only for balloon hints launched with
-  a call to ActivateHint, ActivateHintRect etc.
+  This event does <I>not</I> occur for application hint windows, only for balloon hints launched with a
+  call to ActivateHint, ActivateHintRect etc.
 See Also
   TJvBalloonHint.OnCloseBtnClick, TJvBalloonHint.OnDblClick
 
@@ -393,8 +391,8 @@ Summary
 Description
   Use OnClose to perform special processing when the balloon closes.
 Note
-  This event does <i>not</i> occur for application hint windows, only for balloon hints launched with
-  a call to ActivateHint, ActivateHintRect etc.
+  This event does <I>not</I> occur for application hint windows, only for balloon hints launched with a
+  call to ActivateHint, ActivateHintRect etc.
 See Also
   TJvBalloonHint.OnCloseBtnClick
 
@@ -409,8 +407,8 @@ Description
 
   Include boShowCloseBtn in Options, otherwise no close button is shown.
 Note
-  This event does <i>not</i> occur for application hint windows, only for balloon hints launched with
-  a call to ActivateHint, ActivateHintRect etc.
+  This event does <I>not</I> occur for application hint windows, only for balloon hints launched with a
+  call to ActivateHint, ActivateHintRect etc.
 See Also
   TJvBalloonHint.OnBalloonClick, TJvBalloonHint.OnClose, TJvBalloonHint.Options
 
@@ -423,8 +421,8 @@ Description
   fired when the user clicks the close button on the balloon hint. Use the OnCloseBtnClick event
   handler to respond when the user clicks the close button.
 Note
-  This event does <i>not</i> occur for application hint windows, only for balloon hints launched with
-  a call to ActivateHint, ActivateHintRect etc.
+  This event does <I>not</I> occur for application hint windows, only for balloon hints launched with a
+  call to ActivateHint, ActivateHintRect etc.
 See Also
   TJvBalloonHint.OnBalloonClick, TJvBalloonHint.OnCloseBtnClick
 
@@ -440,8 +438,8 @@ Description
   key plus mouse-button combinations. Shift keys are the Shift, Ctrl, and Alt keys. X and Y are the
   pixel coordinates of the mouse pointer in the client area of the Sender.
 Note
-  This event does <i>not</i> occur for application hint windows, only for balloon hints launched with
-  a call to ActivateHint, ActivateHintRect etc.
+  This event does <I>not</I> occur for application hint windows, only for balloon hints launched with a
+  call to ActivateHint, ActivateHintRect etc.
 See Also
   TJvBalloonHint.OnBalloonClick, TJvBalloonHint.OnMouseUp
 
@@ -450,16 +448,16 @@ See Also
 Summary
   Occurs when the user moves the mouse pointer while the mouse pointer is over a balloon hint.
 Description
-  Use the OnMouseMove event handler to respond when the mouse pointer moves after the balloon hint
-  has captured the mouse.
+  Use the OnMouseMove event handler to respond when the mouse pointer moves after the balloon hint has
+  captured the mouse.
 
-  Use the Shift parameter of the OnMouseMove event handler, to determine to the state of the shift
-  keys and mouse buttons. Shift keys are the Shift, Ctrl, and Alt keys or shift key-mouse button
+  Use the Shift parameter of the OnMouseMove event handler, to determine to the state of the shift keys
+  and mouse buttons. Shift keys are the Shift, Ctrl, and Alt keys or shift key-mouse button
   combinations. X and Y are pixel coordinates of the new location of the mouse pointer in the client
   area of the Sender.
 Note
-  This event does <i>not</i> occur for application hint windows, only for balloon hints launched with
-  a call to ActivateHint, ActivateHintRect etc.
+  This event does <I>not</I> occur for application hint windows, only for balloon hints launched with a
+  call to ActivateHint, ActivateHintRect etc.
 See Also
   TJvBalloonHint.OnMouseDown, TJvBalloonHint.OnMouseUp
 
@@ -472,30 +470,30 @@ Description
   Use an OnMouseUp event handler to implement special processing when the user releases a mouse
   button.
 
-  The OnMouseUp event handler can respond to left, right, or center mouse button presses and shift
-  key plus mouse-button combinations. Shift keys are the Shift, Ctrl, and Alt keys. X and Y are the
-  pixel coordinates of the mouse pointer in the client area of the Sender.
+  The OnMouseUp event handler can respond to left, right, or center mouse button presses and shift key
+  plus mouse-button combinations. Shift keys are the Shift, Ctrl, and Alt keys. X and Y are the pixel
+  coordinates of the mouse pointer in the client area of the Sender.
 Note
-  This event does <i>not</i> occur for application hint windows, only for balloon hints launched with
-  a call to ActivateHint, ActivateHintRect etc.
+  This event does <I>not</I> occur for application hint windows, only for balloon hints launched with a
+  call to ActivateHint, ActivateHintRect etc.
 See Also
   TJvBalloonHint.OnBalloonClick, TJvBalloonHint.OnMouseDown
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonHint.Options
 Summary
-  Determines the appearance and behavior of balloon windows displayed by calling
-  ActivateHint, ActivateHintPos or ActivateHintRect.
+  Determines the appearance and behavior of balloon windows displayed by calling ActivateHint,
+  ActivateHintPos or ActivateHintRect.
 Description
   Use the Options property to customize the appearance and functionality of balloon windows displayed
   by calling ActivateHint, ActivateHintPos or ActivateHintRect. Use these flags to
 
-  * Specify whether to use the default values as specified by DefaultHeader, DefaultIcon   and
-     DefaultImageIndex.
+  * Specify whether to use the default values as specified by DefaultHeader, DefaultIcon and
+    DefaultImageIndex.
   * Specify whether to play a sound and/or use custom special effect when a balloon window displays.
-     Custom special effects are only available on windows XP systems: Note that because the balloon
-     windows have a drop shadow, using custom animation may produces visually
-     distracting, jerky animations.
+    Custom special effects are only available on windows XP systems: Note that because the balloon
+    windows have a drop shadow, using custom animation may produces visually distracting, jerky
+    animations.
   * Specify whether to show a close button in the balloon window.
 See Also
   TJvBalloonHint.ApplicationHintOptions
@@ -505,9 +503,9 @@ See Also
 Summary
   Specifies whether to use the balloon window as standard hint window for the application.
 Description
-  Use UseBalloonAsApplicationHint to specify whether to use the balloon window as standard hint
-  window for the application. Use the ApplicationHintOptions to alter the appearance and behavior of
-  balloon shaped application hint windows.
+  Use UseBalloonAsApplicationHint to specify whether to use the balloon window as standard hint window
+  for the application. Use the ApplicationHintOptions to alter the appearance and behavior of balloon
+  shaped application hint windows.
 See Also
   TJvBalloonHint.ApplicationHintOptions
 
@@ -515,41 +513,41 @@ See Also
 @@TJvBalloonOption
 <TITLE TJvBalloonOption type>
 Summary
-  Defines values that determines the behavior of balloon windows displayed by
-  calling ActivateHint, ActivateHintPos or ActivateHintRect.
+  Defines values that determines the behavior of balloon windows displayed by calling ActivateHint,
+  ActivateHintPos or ActivateHintRect.
 Description
   The \TJvBalloonOption values determine the behavior of balloon windows displayed by calling <LINK
-  TJvBalloonHint.ActivateHint, ActivateHint>, <LINK TJvBalloonHint.ActivateHintPos, ActivateHintPos>
-  or
+  TJvBalloonHint.ActivateHint, ActivateHint>, <LINK TJvBalloonHint.ActivateHintPos, ActivateHintPos> or
   <LINK TJvBalloonHint.ActivateHintRect, ActivateHintRect>.
 
   \TJvBalloonOptions is a set of \TJvBalloonOption.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonOption.boUseDefaultHeader
-Uses the header as specified by property <LINK TJvBalloonHint.DefaultHeader,DefaultHeader>.
+  Uses the header as specified by property <LINK TJvBalloonHint.DefaultHeader, DefaultHeader>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonOption.boUseDefaultIcon
-Uses the icon as specified by property <LINK TJvBalloonHint.DefaultIcon,DefaultIcon>.
+  Uses the icon as specified by property <LINK TJvBalloonHint.DefaultIcon, DefaultIcon>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonOption.boUseDefaultImageIndex
-Uses the image index as specified by property <LINK TJvBalloonHint.DefaultImageIndex,
-DefaultImageIndex>.
+  Uses the image index as specified by property <LINK TJvBalloonHint.DefaultImageIndex,
+  DefaultImageIndex>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonOption.boShowCloseBtn
-Shows a close button in the balloon window.
+  Shows a close button in the balloon window.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonOption.boCustomAnimation
-<B>Windows XP</B> Shows the balloon window with custom special effects, as specified by <LINK TJvBalloonHint.CustomAnimationStyle,CustomAnimationStyle> and
-<LINK TJvBalloonHint.CustomAnimationTime,CustomAnimationTime>.
+  <B>Windows XP</B> Shows the balloon window with custom special effects, as specified by <LINK
+  TJvBalloonHint.CustomAnimationStyle, CustomAnimationStyle> and <LINK
+  TJvBalloonHint.CustomAnimationTime, CustomAnimationTime>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonOption.boPlaySound
-Plays a sound when the balloon shows.
+  Plays a sound when the balloon shows.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonOptions
@@ -566,29 +564,29 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonPosition.bpAuto
-Automatically positions the balloon depending on its initial position on the screen.
+  Automatically positions the balloon depending on its initial position on the screen.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonPosition.bpLeftDown
-Positions the balloon on the lower left of the stem.
+  Positions the balloon on the lower left of the stem.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonPosition.bpRightDown
-Positions the balloon on the lower right of the stem.
+  Positions the balloon on the lower right of the stem.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonPosition.bpLeftUp
-Positions the balloon on the upper left of the stem.
+  Positions the balloon on the upper left of the stem.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonPosition.bpRightUp
-Positions the balloon on the upper right of the stem.
+  Positions the balloon on the upper right of the stem.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonWindow
 Summary
-  Implements a balloon shaped pop-up window that appears over a control at runtime when the control
-  has its ShowHint property set to true.
+  Implements a balloon shaped pop-up window that appears over a control at runtime when the control has
+  its ShowHint property set to true.
 Description
   TJvBalloonWindow is used to display a balloon shaped Help Hint pop-up window directly from an
   application.
@@ -618,29 +616,29 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIconKind.ikCustom
-Uses an image from the image list specified by <LINK TJvBalloonHint.Images,Images>.
+  Uses an image from the image list specified by <LINK TJvBalloonHint.Images, Images>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIconKind.ikNone
-No icon.
+  No icon.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIconKind.ikApplication
-The default application icon.
+  The default application icon.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIconKind.ikError
-Icon containing a red stop sign.
+  Icon containing a red stop sign.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIconKind.ikInformation
-Icon containing a blue "i".
+  Icon containing a blue "i".
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIconKind.ikQuestion
-The question mark icon.
+  The question mark icon.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvIconKind.ikWarning
-Icon containing a yellow exclamation point symbol.
+  Icon containing a yellow exclamation point symbol.
 
