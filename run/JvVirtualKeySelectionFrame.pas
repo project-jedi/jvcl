@@ -80,118 +80,130 @@ begin
 end;
 
 procedure TJvVirtualKeySelectionFrame.EnumKeys;
-var i : integer;
+type
+  TKeyElem = record
+    Name: PChar;
+    Value: Word;
+  end;
+const
+  VirtualKeys: array [0..100] of TKeyElem =
+   (
+    (Name: 'VK_LBUTTON';    Value: VK_LBUTTON),
+    (Name: 'VK_RBUTTON';    Value: VK_RBUTTON),
+    (Name: 'VK_CANCEL';     Value: VK_CANCEL),
+    (Name: 'VK_MBUTTON';    Value: VK_MBUTTON),
+    (Name: 'VK_BACK';       Value: VK_BACK),
+    (Name: 'VK_TAB';        Value: VK_TAB),
+    (Name: 'VK_CLEAR';      Value: VK_CLEAR),
+    (Name: 'VK_RETURN';     Value: VK_RETURN),
+    (Name: 'VK_SHIFT';      Value: VK_SHIFT),
+    (Name: 'VK_CONTROL';    Value: VK_CONTROL),
+    (Name: 'VK_MENU';       Value: VK_MENU),
+    (Name: 'VK_PAUSE';      Value: VK_PAUSE),
+    (Name: 'VK_CAPITAL';    Value: VK_CAPITAL),
+    (Name: 'VK_KANA';       Value: VK_KANA),
+    (Name: 'VK_HANGUL';     Value: VK_HANGUL),
+    (Name: 'VK_JUNJA';      Value: VK_JUNJA),
+    (Name: 'VK_FINAL';      Value: VK_FINAL),
+    (Name: 'VK_HANJA';      Value: VK_HANJA),
+    (Name: 'VK_KANJI';      Value: VK_KANJI),
+    (Name: 'VK_CONVERT';    Value: VK_CONVERT),
+    (Name: 'VK_NONCONVERT'; Value: VK_NONCONVERT),
+    (Name: 'VK_ACCEPT';     Value: VK_ACCEPT),
+    (Name: 'VK_MODECHANGE'; Value: VK_MODECHANGE),
+    (Name: 'VK_ESCAPE';     Value: VK_ESCAPE),
+    (Name: 'VK_SPACE';      Value: VK_SPACE),
+    (Name: 'VK_PRIOR';      Value: VK_PRIOR),
+    (Name: 'VK_NEXT';       Value: VK_NEXT),
+    (Name: 'VK_END';        Value: VK_END),
+    (Name: 'VK_HOME';       Value: VK_HOME),
+    (Name: 'VK_LEFT';       Value: VK_LEFT),
+    (Name: 'VK_UP';         Value: VK_UP),
+    (Name: 'VK_RIGHT';      Value: VK_RIGHT),
+    (Name: 'VK_DOWN';       Value: VK_DOWN),
+    (Name: 'VK_SELECT';     Value: VK_SELECT),
+    (Name: 'VK_PRINT';      Value: VK_PRINT),
+    (Name: 'VK_EXECUTE';    Value: VK_EXECUTE),
+    (Name: 'VK_SNAPSHOT';   Value: VK_SNAPSHOT),
+    (Name: 'VK_INSERT';     Value: VK_INSERT),
+    (Name: 'VK_DELETE';     Value: VK_DELETE),
+    (Name: 'VK_HELP';       Value: VK_HELP),
+    (Name: 'VK_LWIN';       Value: VK_LWIN),
+    (Name: 'VK_RWIN';       Value: VK_RWIN),
+    (Name: 'VK_APPS';       Value: VK_APPS),
+    (Name: 'VK_NUMPAD0';    Value: VK_NUMPAD0),
+    (Name: 'VK_NUMPAD1';    Value: VK_NUMPAD1),
+    (Name: 'VK_NUMPAD2';    Value: VK_NUMPAD2),
+    (Name: 'VK_NUMPAD3';    Value: VK_NUMPAD3),
+    (Name: 'VK_NUMPAD4';    Value: VK_NUMPAD4),
+    (Name: 'VK_NUMPAD5';    Value: VK_NUMPAD5),
+    (Name: 'VK_NUMPAD6';    Value: VK_NUMPAD6),
+    (Name: 'VK_NUMPAD7';    Value: VK_NUMPAD7),
+    (Name: 'VK_NUMPAD8';    Value: VK_NUMPAD8),
+    (Name: 'VK_NUMPAD9';    Value: VK_NUMPAD9),
+    (Name: 'VK_MULTIPLY';   Value: VK_MULTIPLY),
+    (Name: 'VK_ADD';        Value: VK_ADD),
+    (Name: 'VK_SEPARATOR';  Value: VK_SEPARATOR),
+    (Name: 'VK_SUBTRACT';   Value: VK_SUBTRACT),
+    (Name: 'VK_DECIMAL';    Value: VK_DECIMAL),
+    (Name: 'VK_DIVIDE';     Value: VK_DIVIDE),
+    (Name: 'VK_F1';         Value: VK_F1),
+    (Name: 'VK_F2';         Value: VK_F2),
+    (Name: 'VK_F3';         Value: VK_F3),
+    (Name: 'VK_F4';         Value: VK_F4),
+    (Name: 'VK_F5';         Value: VK_F5),
+    (Name: 'VK_F6';         Value: VK_F6),
+    (Name: 'VK_F7';         Value: VK_F7),
+    (Name: 'VK_F8';         Value: VK_F8),
+    (Name: 'VK_F9';         Value: VK_F9),
+    (Name: 'VK_F10';        Value: VK_F10),
+    (Name: 'VK_F11';        Value: VK_F11),
+    (Name: 'VK_F12';        Value: VK_F12),
+    (Name: 'VK_F13';        Value: VK_F13),
+    (Name: 'VK_F14';        Value: VK_F14),
+    (Name: 'VK_F15';        Value: VK_F15),
+    (Name: 'VK_F16';        Value: VK_F16),
+    (Name: 'VK_F17';        Value: VK_F17),
+    (Name: 'VK_F18';        Value: VK_F18),
+    (Name: 'VK_F19';        Value: VK_F19),
+    (Name: 'VK_F20';        Value: VK_F20),
+    (Name: 'VK_F21';        Value: VK_F21),
+    (Name: 'VK_F22';        Value: VK_F22),
+    (Name: 'VK_F23';        Value: VK_F23),
+    (Name: 'VK_F24';        Value: VK_F24),
+    (Name: 'VK_NUMLOCK';    Value: VK_NUMLOCK),
+    (Name: 'VK_SCROLL';     Value: VK_SCROLL),
+    (Name: 'VK_LSHIFT';     Value: VK_LSHIFT),
+    (Name: 'VK_RSHIFT';     Value: VK_RSHIFT),
+    (Name: 'VK_LCONTROL';   Value: VK_LCONTROL),
+    (Name: 'VK_RCONTROL';   Value: VK_RCONTROL),
+    (Name: 'VK_LMENU';      Value: VK_LMENU),
+    (Name: 'VK_RMENU';      Value: VK_RMENU),
+    (Name: 'VK_PROCESSKEY'; Value: VK_PROCESSKEY),
+    (Name: 'VK_ATTN';       Value: VK_ATTN),
+    (Name: 'VK_CRSEL';      Value: VK_CRSEL),
+    (Name: 'VK_EXSEL';      Value: VK_EXSEL),
+    (Name: 'VK_EREOF';      Value: VK_EREOF),
+    (Name: 'VK_PLAY';       Value: VK_PLAY),
+    (Name: 'VK_ZOOM';       Value: VK_ZOOM),
+    (Name: 'VK_NONAME';     Value: VK_NONAME),
+    (Name: 'VK_PA1';        Value: VK_PA1),
+    (Name: 'VK_OEM_CLEAR';  Value: VK_OEM_CLEAR)
+   );
+var
+  I: Integer;
 begin
   with cmbVirtualKey.Items do
   begin
     // add the easy ones
-    for i := ord('0') to ord('9') do
-      AddObject('VK_'+chr(i),  TObject(i));
-    for i := ord('A') to ord('Z') do
-      AddObject('VK_'+chr(i),  TObject(i));
+    for I := Ord('0') to Ord('9') do
+      AddObject('VK_'+Chr(I), TObject(I));
+    for I := Ord('A') to Ord('Z') do
+      AddObject('VK_'+Chr(I), TObject(I));
 
     // then add the others...
-    AddObject('VK_LBUTTON',    TObject(VK_LBUTTON));
-    AddObject('VK_RBUTTON',    TObject(VK_RBUTTON));
-    AddObject('VK_CANCEL',     TObject(VK_CANCEL));
-    AddObject('VK_MBUTTON',    TObject(VK_MBUTTON));
-    AddObject('VK_BACK',       TObject(VK_BACK));
-    AddObject('VK_TAB',        TObject(VK_TAB));
-    AddObject('VK_CLEAR',      TObject(VK_CLEAR));
-    AddObject('VK_RETURN',     TObject(VK_RETURN));
-    AddObject('VK_SHIFT',      TObject(VK_SHIFT));
-    AddObject('VK_CONTROL',    TObject(VK_CONTROL));
-    AddObject('VK_MENU',       TObject(VK_MENU));
-    AddObject('VK_PAUSE',      TObject(VK_PAUSE));
-    AddObject('VK_CAPITAL',    TObject(VK_CAPITAL));
-    AddObject('VK_KANA',       TObject(VK_KANA));
-    AddObject('VK_HANGUL',     TObject(VK_HANGUL));
-    AddObject('VK_JUNJA',      TObject(VK_JUNJA));
-    AddObject('VK_FINAL',      TObject(VK_FINAL));
-    AddObject('VK_HANJA',      TObject(VK_HANJA));
-    AddObject('VK_KANJI',      TObject(VK_KANJI));
-    AddObject('VK_CONVERT',    TObject(VK_CONVERT));
-    AddObject('VK_NONCONVERT', TObject(VK_NONCONVERT));
-    AddObject('VK_ACCEPT',     TObject(VK_ACCEPT));
-    AddObject('VK_MODECHANGE', TObject(VK_MODECHANGE));
-    AddObject('VK_ESCAPE',     TObject(VK_ESCAPE));
-    AddObject('VK_SPACE',      TObject(VK_SPACE));
-    AddObject('VK_PRIOR',      TObject(VK_PRIOR));
-    AddObject('VK_NEXT',       TObject(VK_NEXT));
-    AddObject('VK_END',        TObject(VK_END));
-    AddObject('VK_HOME',       TObject(VK_HOME));
-    AddObject('VK_LEFT',       TObject(VK_LEFT));
-    AddObject('VK_UP',         TObject(VK_UP));
-    AddObject('VK_RIGHT',      TObject(VK_RIGHT));
-    AddObject('VK_DOWN',       TObject(VK_DOWN));
-    AddObject('VK_SELECT',     TObject(VK_SELECT));
-    AddObject('VK_PRINT',      TObject(VK_PRINT));
-    AddObject('VK_EXECUTE',    TObject(VK_EXECUTE));
-    AddObject('VK_SNAPSHOT',   TObject(VK_SNAPSHOT));
-    AddObject('VK_INSERT',     TObject(VK_INSERT));
-    AddObject('VK_DELETE',     TObject(VK_DELETE));
-    AddObject('VK_HELP',       TObject(VK_HELP));
-    AddObject('VK_LWIN',       TObject(VK_LWIN));
-    AddObject('VK_RWIN',       TObject(VK_RWIN));
-    AddObject('VK_APPS',       TObject(VK_APPS));
-    AddObject('VK_NUMPAD0',    TObject(VK_NUMPAD0));
-    AddObject('VK_NUMPAD1',    TObject(VK_NUMPAD1));
-    AddObject('VK_NUMPAD2',    TObject(VK_NUMPAD2));
-    AddObject('VK_NUMPAD3',    TObject(VK_NUMPAD3));
-    AddObject('VK_NUMPAD4',    TObject(VK_NUMPAD4));
-    AddObject('VK_NUMPAD5',    TObject(VK_NUMPAD5));
-    AddObject('VK_NUMPAD6',    TObject(VK_NUMPAD6));
-    AddObject('VK_NUMPAD7',    TObject(VK_NUMPAD7));
-    AddObject('VK_NUMPAD8',    TObject(VK_NUMPAD8));
-    AddObject('VK_NUMPAD9',    TObject(VK_NUMPAD9));
-    AddObject('VK_MULTIPLY',   TObject(VK_MULTIPLY));
-    AddObject('VK_ADD',        TObject(VK_ADD));
-    AddObject('VK_SEPARATOR',  TObject(VK_SEPARATOR));
-    AddObject('VK_SUBTRACT',   TObject(VK_SUBTRACT));
-    AddObject('VK_DECIMAL',    TObject(VK_DECIMAL));
-    AddObject('VK_DIVIDE',     TObject(VK_DIVIDE));
-    AddObject('VK_F1',         TObject(VK_F1));
-    AddObject('VK_F2',         TObject(VK_F2));
-    AddObject('VK_F3',         TObject(VK_F3));
-    AddObject('VK_F4',         TObject(VK_F4));
-    AddObject('VK_F5',         TObject(VK_F5));
-    AddObject('VK_F6',         TObject(VK_F6));
-    AddObject('VK_F7',         TObject(VK_F7));
-    AddObject('VK_F8',         TObject(VK_F8));
-    AddObject('VK_F9',         TObject(VK_F9));
-    AddObject('VK_F10',        TObject(VK_F10));
-    AddObject('VK_F11',        TObject(VK_F11));
-    AddObject('VK_F12',        TObject(VK_F12));
-    AddObject('VK_F13',        TObject(VK_F13));
-    AddObject('VK_F14',        TObject(VK_F14));
-    AddObject('VK_F15',        TObject(VK_F15));
-    AddObject('VK_F16',        TObject(VK_F16));
-    AddObject('VK_F17',        TObject(VK_F17));
-    AddObject('VK_F18',        TObject(VK_F18));
-    AddObject('VK_F19',        TObject(VK_F19));
-    AddObject('VK_F20',        TObject(VK_F20));
-    AddObject('VK_F21',        TObject(VK_F21));
-    AddObject('VK_F22',        TObject(VK_F22));
-    AddObject('VK_F23',        TObject(VK_F23));
-    AddObject('VK_F24',        TObject(VK_F24));
-    AddObject('VK_NUMLOCK',    TObject(VK_NUMLOCK));
-    AddObject('VK_SCROLL',     TObject(VK_SCROLL));
-    AddObject('VK_LSHIFT',     TObject(VK_LSHIFT));
-    AddObject('VK_RSHIFT',     TObject(VK_RSHIFT));
-    AddObject('VK_LCONTROL',   TObject(VK_LCONTROL));
-    AddObject('VK_RCONTROL',   TObject(VK_RCONTROL));
-    AddObject('VK_LMENU',      TObject(VK_LMENU));
-    AddObject('VK_RMENU',      TObject(VK_RMENU));
-    AddObject('VK_PROCESSKEY', TObject(VK_PROCESSKEY));
-    AddObject('VK_ATTN',       TObject(VK_ATTN));
-    AddObject('VK_CRSEL',      TObject(VK_CRSEL));
-    AddObject('VK_EXSEL',      TObject(VK_EXSEL));
-    AddObject('VK_EREOF',      TObject(VK_EREOF));
-    AddObject('VK_PLAY',       TObject(VK_PLAY));
-    AddObject('VK_ZOOM',       TObject(VK_ZOOM));
-    AddObject('VK_NONAME',     TObject(VK_NONAME));
-    AddObject('VK_PA1',        TObject(VK_PA1));
-    AddObject('VK_OEM_CLEAR',  TObject(VK_OEM_CLEAR));
+    for I := Low(VirtualKeys) to High(VirtualKeys) do
+      AddObject(VirtualKeys[I].Name, TObject(VirtualKeys[I].Value));
   end;
 end;
 

@@ -160,7 +160,7 @@ implementation
 uses
   JvThemes, JvResources;
 
-{$R ..\Resources\JvCSVBase}
+{$R ..\Resources\JvCSVBase.res}
 
 { TJvCSVBase }
 
@@ -723,7 +723,7 @@ begin
   with FbtnFirst do
   begin
     ib(FbtnFirst);
-    Glyph.LoadFromResourceName(HInstance, 'FIRST');
+    Glyph.LoadFromResourceName(HInstance, 'JVCSVFIRST');
     Left := 1;
     OnClick := BtnFirstClick;
     hint := RsFirstHint;
@@ -733,7 +733,7 @@ begin
   with FbtnPrevious do
   begin
     ib(FbtnPrevious);
-    Glyph.LoadFromResourceName(HInstance, 'PREVIOUS');
+    Glyph.LoadFromResourceName(HInstance, 'JVCSVPREVIOUS');
     Left := 25;
     OnClick := BtnPreviousClick;
     hint := RsPreviousHint;
@@ -743,7 +743,7 @@ begin
   with FbtnFind do
   begin
     ib(FbtnFind);
-    Glyph.LoadFromResourceName(HInstance, 'FIND');
+    Glyph.LoadFromResourceName(HInstance, 'JVCSVFIND');
     Left := 49;
     OnClick := BtnFindClick;
     hint := RsFindHint;
@@ -753,7 +753,7 @@ begin
   with FbtnNext do
   begin
     ib(FbtnNext);
-    Glyph.LoadFromResourceName(HInstance, 'NEXT');
+    Glyph.LoadFromResourceName(HInstance, 'JVCSVNEXT');
     Left := 73;
     OnClick := BtnNextClick;
     hint := RsNextHint;
@@ -763,7 +763,7 @@ begin
   with FbtnLast do
   begin
     ib(FbtnLast);
-    Glyph.LoadFromResourceName(HInstance, 'LAST');
+    Glyph.LoadFromResourceName(HInstance, 'JVCSVLAST');
     Left := 97;
     OnClick := BtnLastClick;
     hint := RsLastHint;
@@ -773,7 +773,7 @@ begin
   with FbtnAdd do
   begin
     ib(FbtnAdd);
-    Glyph.LoadFromResourceName(HInstance, 'ADD');
+    Glyph.LoadFromResourceName(HInstance, 'JVCSVADD');
     Left := 121;
     OnClick := BtnAddClick;
     hint := RsAddHint;
@@ -783,7 +783,7 @@ begin
   with FbtnDelete do
   begin
     ib(FbtnDelete);
-    Glyph.LoadFromResourceName(HInstance, 'DELETE');
+    Glyph.LoadFromResourceName(HInstance, 'JVCSVDELETE');
     Left := 145;
     OnClick := BtnDeleteClick;
     hint := RsDeleteHint;
@@ -793,7 +793,7 @@ begin
   with FbtnPost do
   begin
     ib(FbtnPost);
-    Glyph.LoadFromResourceName(HInstance, 'POST');
+    Glyph.LoadFromResourceName(HInstance, 'JVCSVPOST');
     Left := 169;
     OnClick := BtnPostClick;
     hint := RsPostHint;
@@ -803,7 +803,7 @@ begin
   with FbtnRefresh do
   begin
     ib(FbtnRefresh);
-    Glyph.LoadFromResourceName(HInstance, 'REFRESH');
+    Glyph.LoadFromResourceName(HInstance, 'JVCSVREFRESH');
     Left := 193;
     OnClick := BtnRefreshClick;
     hint := RsRefreshHint;
