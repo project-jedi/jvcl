@@ -898,7 +898,7 @@ procedure TJvLookupControl.DataLinkRecordChanged(Field: TField);
 begin
   if (Field = nil) or (Field = FMasterField) then
   begin
-    if FMasterField <> nil then
+    if (FMasterField <> nil) and FMasterField.DataSet.Active then
     begin
       SetValueKey(FMasterField.AsString);
     end
@@ -1071,6 +1071,8 @@ begin
       DataSource := nil;
     if (FLookupLink <> nil) and (AComponent = LookupSource) then
       LookupSource := nil;
+    if AComponent = FMasterField then
+      FMasterField := nil;
   end;
 end;
 
