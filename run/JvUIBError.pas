@@ -26,7 +26,9 @@
 
 
 unit JvUIBError;
+{$IFNDEF BCB}
 {$I JCL.INC}
+{$ENDIF}
 {$I JvUIB.inc}
 
 interface

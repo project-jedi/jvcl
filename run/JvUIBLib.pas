@@ -30,7 +30,9 @@
 
 unit JvUIBLib;
 
+{$IFNDEF BCB}
 {$I JCL.INC}
+{$ENDIF}
 {$I JvUIB.inc}
 
 interface
@@ -631,7 +633,11 @@ function TryStrToInt(const S: string; out Value: Integer): Boolean;
 {$ENDIF}
 
 implementation
-uses JvUIBConst;
+uses JvUIBConst
+{$IFDEF BCB}
+, Variants
+{$ENDIF}
+;
 
 //******************************************************************************
 // Errors handling
