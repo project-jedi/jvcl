@@ -404,7 +404,6 @@ function TJVCLCompiler.PrepareJCL(TargetConfig: ITargetConfig; Force: Boolean): 
 var
   Args: string;
   TargetPkgDir, TargetXmlDir, S: string;
-  DcpDir: string;
 begin
   Result := False;
   TargetPkgDir := Format('%s\packages\c%d',
@@ -420,9 +419,9 @@ begin
        FileExists(Format('%s\CJclVcl%s.dcp', [BplDir, S])) then
     begin
        if (CompareFileAge('%s\CJcl%s.dcp', [BplDir, S],
-                      '%s\CJcl.lib', [DcpDir]) > 0) and
+                          '%s\CJcl.lib', [DcpDir]) > 0) and
           (CompareFileAge('%s\CJclVcl%s.dcp', [BplDir, S],
-                      '%s\CJclVcl.lib', [DcpDir]) > 0) then
+                          '%s\CJclVcl.lib', [DcpDir]) > 0) then
        begin
          Result := True;
          Exit; // nothing to do
@@ -441,7 +440,6 @@ begin
   end;
 
   // redirect DCPDir to the BPLDir
-  DcpDir := GetEnvironmentVariable('DCPDIR');
   SetEnvironmentVariable('DCPDIR', PChar(TargetConfig.BplDir));
   try
     Args := '-f MakeJCLDcp4BCB.mak';
@@ -476,7 +474,7 @@ begin
     end;
   finally
     // restore
-    SetEnvironmentVariable('DCPDIR', Pointer(DcpDir));
+    SetEnvironmentVariable('DCPDIR', Pointer(TargetConfig.DcpDir));
   end;
 
   DoPackageProgress(nil, '', 0, 100);
