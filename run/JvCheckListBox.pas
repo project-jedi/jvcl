@@ -35,8 +35,8 @@ unit JvCheckListBox;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, CheckLst, Controls, Forms,
-  JvItemsSearchs, JvExCheckLst;
+  Windows, Messages, SysUtils, Classes, Controls,
+  JvExCheckLst;
 
 type
   TJvCheckListBox = class(TJvExCheckListBox)
@@ -98,6 +98,9 @@ type
   end;
 
 implementation
+
+uses
+  JvItemsSearchs;
 
 type
   // Used for the load/save methods

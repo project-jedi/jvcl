@@ -67,13 +67,13 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, CommCtrl,
-  Buttons, JvWndProcHook,
+  Windows, Messages,
+  JvWndProcHook,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QButtons, QImgList, QWindows,
+  Types, QImgList, QWindows,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
+  Classes, Graphics, Controls, Forms, Buttons,
   JvComponent, JvExButtons;
 
 type
@@ -277,7 +277,8 @@ type
 implementation
 
 uses
-  Math,
+  CommCtrl,
+  SysUtils, Math,
   JvHtControls, JvDsgnIntf, JvConsts, JvResources, JvTypes, JvThemes;
 
 type
