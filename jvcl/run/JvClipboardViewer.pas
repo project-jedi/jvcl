@@ -31,7 +31,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Clipbrd, Forms,
-  StdCtrls, ExtCtrls, Menus, Grids, JvExControls, JvExForms, JvExGrids;
+  StdCtrls, ExtCtrls, Menus, Grids,
+  JvExControls, JvExForms, JvExGrids;
 
 type
   TClipboardViewFormat = (cvDefault, cvEmpty, cvUnknown, cvText, cvBitmap,
@@ -61,17 +62,16 @@ type
     procedure Resize; override;
     procedure CreateWnd; override;
     procedure DestroyWindowHandle; override;
-    procedure DoImage(Image:TBitmap);dynamic;
-    procedure DoText(const AText:string);dynamic;
+    procedure DoImage(Image: TBitmap); dynamic;
+    procedure DoText(const AText: string); dynamic;
     procedure Change; dynamic;
     procedure CreatePaintControl; virtual;
     function GetDrawFormat: TClipboardViewFormat; virtual;
     function ValidFormat(Format: TClipboardViewFormat): Boolean; dynamic;
-    property ViewFormat: TClipboardViewFormat read FViewFormat write
-      SetViewFormat stored False;
+    property ViewFormat: TClipboardViewFormat read FViewFormat write SetViewFormat stored False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property OnImage:TJvOnImageEvent read FOnImage write FOnImage;
-    property OnText:TJvOnTextEvent read FOnText write FOnText;
+    property OnImage: TJvOnImageEvent read FOnImage write FOnImage;
+    property OnText: TJvOnTextEvent read FOnText write FOnText;
   public
     constructor Create(AOwner: TComponent); override;
     class function CanDrawFormat(ClipboardFormat: Word): Boolean;
@@ -502,7 +502,7 @@ begin
           if Clipboard.HasFormat(CF_TEXT) then
             PasteFromClipboard
           else
-            if (Format = cvText) and Clipboard.HasFormat(CF_COMPONENT) then
+          if (Format = cvText) and Clipboard.HasFormat(CF_COMPONENT) then
           begin
             Instance := Clipboard.GetComponent(Self, Self);
             try
@@ -512,7 +512,7 @@ begin
             end;
           end
           else
-            if IsEmptyClipboard then
+          if IsEmptyClipboard then
             Text := RsClipboardEmpty
           else
             Text := RsClipboardUnknown;
@@ -542,13 +542,11 @@ begin
             end;
           end
           else
-            if ((Format = cvBitmap) and Clipboard.HasFormat(CF_BITMAP))
-            or ((Format = cvMetafile) and (Clipboard.HasFormat(CF_METAFILEPICT))
-            or Clipboard.HasFormat(CF_ENHMETAFILE))
-            or ((Format = cvPicture) and Clipboard.HasFormat(CF_PICTURE)) then
-          begin
+          if ((Format = cvBitmap) and Clipboard.HasFormat(CF_BITMAP)) or
+            ((Format = cvMetafile) and (Clipboard.HasFormat(CF_METAFILEPICT)) or
+            Clipboard.HasFormat(CF_ENHMETAFILE)) or
+            ((Format = cvPicture) and Clipboard.HasFormat(CF_PICTURE)) then
             Picture.Assign(Clipboard);
-          end;
         end;
         CenterControl(TImage(FPaintControl));
       end;
@@ -659,7 +657,7 @@ end;
 procedure TJvCustomClipboardViewer.WMDrawClipboard(var Msg: TMessage);
 var
   Format: Word;
-  B:TBitmap;
+  B: TBitmap;
 begin
   ForwardMessage(Msg);
   Format := ViewToClipboardFormat(ViewFormat);
@@ -739,7 +737,7 @@ function TJvCustomClipboardViewer.GetDrawFormat: TClipboardViewFormat;
     if Clipboard.HasFormat(CF_ICON) then
       Result := cvIcon
     else
-      if Clipboard.HasFormat(CF_PICTURE) then
+    if Clipboard.HasFormat(CF_PICTURE) then
       Result := cvPicture
     else
     if Clipboard.HasFormat(CF_COMPONENT) then
