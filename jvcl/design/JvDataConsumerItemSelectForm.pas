@@ -32,8 +32,14 @@ unit JvDataConsumerItemSelectForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, Types,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}
@@ -79,7 +85,12 @@ implementation
 uses
   JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 function IsConsumerItemSelectForm(Form: TJvBaseDesign; const Args: array of const): Boolean;
 begin

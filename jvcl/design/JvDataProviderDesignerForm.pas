@@ -32,8 +32,15 @@ unit JvDataProviderDesignerForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ActnList, Menus, ImgList, ToolWin, ComCtrls, StdCtrls, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs,
+  QActnList, QMenus, QImgList, QToolWin, QComCtrls, QStdCtrls, QExtCtrls,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}
@@ -91,7 +98,12 @@ procedure DesignProvider(AProvider: IJvDataProvider;
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 uses
   CommCtrl,

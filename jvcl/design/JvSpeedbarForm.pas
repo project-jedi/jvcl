@@ -39,7 +39,7 @@ uses
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, Grids, Menus,
   JvSpeedButton, JvSpeedBar, JvFormPlacement,
-  JvConsts, JvComponent, JvAppStorage, JvAppRegistryStorage;
+  JvConsts, JvComponent, JvAppStorage, JvAppRegistryStorage, JvPlacemnt;
 
 type
   TSelectData = record
@@ -172,7 +172,12 @@ uses
   TypInfo, Math,
   JvPropertyStorage, JvDsgnConsts, JvDsgnTypes, JvJVCLUtils;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 //== Utility routines ========================================================
 

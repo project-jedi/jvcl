@@ -42,7 +42,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, QActnList, QMenus, QImgList,
-  QComCtrls, QExtCtrls,
+  QComCtrls, QExtCtrls, Types,
   {$ENDIF VisualCLX}
   JvBaseDsgnFrame;
 

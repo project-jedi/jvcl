@@ -31,8 +31,15 @@ unit JvProviderToolbarFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ActnList, Menus, ImgList, ComCtrls, ToolWin, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, Types,
+  QStdCtrls, QActnList, QMenus, QImgList, QComCtrls, QToolWin, QExtCtrls,
+  {$ENDIF}
   JvStdToolbarDsgnFrame;
 
 type
@@ -49,7 +56,12 @@ type
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 procedure TfmeJvProviderToolbar.ResizeContextsComboBox;
 begin

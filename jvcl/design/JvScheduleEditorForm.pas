@@ -31,7 +31,13 @@ unit JvScheduleEditorForm;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls, ExtCtrls, AppEvnts,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Controls, Forms, StdCtrls, ComCtrls, ExtCtrls, AppEvnts,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QStdCtrls, QComCtrls, QExtCtrls, Types,
+  {$ENDIF}
   JclSchedule;
 
 type
@@ -161,7 +167,12 @@ uses
   JclDateTime,
   JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 procedure DecodeTimeStampTime(const Stamp: TTimeStamp;
   var ADays, AHour, AMinute, ASecond, AMSec: Word);

@@ -32,11 +32,16 @@ unit JvActnResForm;
 interface
 
 uses
-  SysUtils, Classes, ActnList, ImgList,
+  {$IFDEF VCL}
+  ActnList, ImgList,  Controls,
   {$IFNDEF COMPILER6_UP}
   Forms,
   {$ENDIF COMPILER6_UP}
-  Controls;
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QActnList, QImgList, QControls, QForms,
+  {$ENDIF}
+  SysUtils, Classes;
 
 type
   TJvStandardActions = class(TDataModule)
@@ -51,6 +56,11 @@ type
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 end.

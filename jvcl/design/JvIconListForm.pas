@@ -30,10 +30,23 @@ unit JvIconListForm;
 interface
 
 uses
-  Windows, Messages, Classes, Graphics, Forms, Controls, Dialogs,
+  Classes, Graphics,
+  {$IFDEF VCL}
+  Windows, Messages, Forms, Controls, Dialogs,
   StdCtrls, ExtCtrls, ExtDlgs, ImgList, ComCtrls, ToolWin,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QForms, QControls, QDialogs,
+  QStdCtrls, QExtCtrls, QExtDlgs, QImgList, QComCtrls, QToolWin,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, DesignEditors, VCLEditors,
+  RTLConsts, DesignIntf, DesignEditors,
+  {$IFDEF VCL}
+  VCLEditors,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  CLXEditors,
+  {$ENDIF}
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -110,10 +123,21 @@ procedure EditIconList(IconList: TJvIconList);
 implementation
 
 uses
-  SysUtils, Clipbrd, Consts, Math,
+  SysUtils,
+  {$IFDEF VCL}
+  Clipbrd, Consts,
+  {$ELSE}
+  QClipbrd, QConsts,
+  {$ENDIF}
+  Math,
   JvJVCLUtils, JvJCLUtils, JvDsgnConsts, JvAniFile;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 {$D-}
 

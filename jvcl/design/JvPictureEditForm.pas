@@ -30,10 +30,17 @@ unit JvPictureEditForm;
 interface
 
 uses
-  Windows, Messages, Classes, Graphics, Forms, Controls, Dialogs, Menus,
+  Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Forms, Controls, Dialogs, Menus,
   StdCtrls, ExtCtrls, ExtDlgs, Buttons,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QForms, QControls, QDialogs, QMenus,
+  QStdCtrls, QExtCtrls, QExtDlgs, QButtons, Types,
+  {$ENDIF}
   JvMRUManager, JvFormPlacement, JvClipboardMonitor, JvComponent,
-  JvAppStorage, JvAppRegistryStorage;
+  JvAppStorage, JvAppRegistryStorage, JvMRUList, JvPlacemnt, QTypes;
 
 type
   TPictureEditDialog = class(TJvForm)
@@ -100,10 +107,24 @@ type
 implementation
 
 uses
-  TypInfo, SysUtils, Clipbrd, Consts, ShellAPI, LibHelp,
+  TypInfo, SysUtils,
+  {$IFDEF VCL}
+  Clipbrd, Consts,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QClipbrd, QConsts,
+  {$ENDIF}
+  {$IFDEF MSWINDOWS}
+  ShellAPI, LibHelp,
+  {$ENDIF}
   JvJVCLUtils, JvJCLUtils, JvConsts, JvDsgnConsts, JvDirectoryListForm, JvTypes;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 procedure CopyPicture(Pict: TPicture; BackColor: TColor);
 begin

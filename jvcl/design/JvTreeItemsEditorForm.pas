@@ -29,15 +29,21 @@ Changes:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvTreeItemsEditorForm;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ActnList, ComCtrls, Menus, StdActns,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls,
+  QActnList, QComCtrls, QMenus, QStdActns, QWindows, Types, QTypes,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf;
   {$ELSE}
@@ -133,7 +139,7 @@ type
   public
     class function Edit(TreeView: TCustomTreeView): Boolean;
   end;
-
+  {$IFDEF VCL}
   TGroupBox = class(StdCtrls.TGroupBox)
   private
     FPropagateEnabled: Boolean;
@@ -143,16 +149,40 @@ type
   published
     property PropagateEnabled: Boolean read FPropagateEnabled write FPropagateEnabled default True;
   end;
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  TGroupBox = class(QStdCtrls.TGroupBox)
+  private
+    FPropagateEnabled: Boolean;
+  protected
+    procedure EnabledChanged; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property PropagateEnabled: Boolean read FPropagateEnabled write FPropagateEnabled default True;
+  end;
+  {$ENDIF}
+
 
 procedure ShowTreeNodeEditor(TreeView:TCustomTreeView);
 
 implementation
 
 uses
+  {$IFDEF VCL}
   ImgList,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QImgList,
+  {$ENDIF}
   JvPageListTreeView, JvPageLinkEditorForm, JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 type
   THackTreeView = class(TCustomTreeView);

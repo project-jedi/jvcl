@@ -31,7 +31,13 @@ unit JvFormWallpaperEditor;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, Controls, Forms,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, Types,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}

@@ -31,9 +31,16 @@ unit JvDataConsumerContextSelectForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls,
-  JvBaseDsgnForm, JvProviderTreeListFrame, JvDataProviderIntf;
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs,
+  QExtCtrls, QStdCtrls, Types,
+  {$ENDIF}
+  JvBaseDsgnForm, JvProviderTreeListFrame, JvDataProviderIntf, Classes;
 
 type
   TfrmDataConsumerContextSelect = class(TJvBaseDesign)
@@ -55,7 +62,12 @@ implementation
 uses
   JvContextProvider, JvTypes, JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 function ConsumerSelectContext(AConsumer: IJvDataConsumer): Boolean;
 var

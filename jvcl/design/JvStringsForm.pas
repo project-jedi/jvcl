@@ -33,7 +33,13 @@ unit JvStringsForm;
 interface
 
 uses
-  Windows, Classes, Forms, Controls, Dialogs, StdCtrls, ExtCtrls,
+  Classes,
+  {$IFDEF VCL}
+  Windows, Forms, Controls, Dialogs, StdCtrls, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QDialogs, QStdCtrls, QControls, QExtCtrls, QWindows,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}
@@ -68,10 +74,18 @@ type
 implementation
 
 uses
-  SysUtils, LibHelp,
+  SysUtils,
+  {$IFDEF VCL}
+  LibHelp,
+  {$ENDIF}
   JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 procedure TJvStrEditDlg.FileOpen(Sender: TObject);
 begin

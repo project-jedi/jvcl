@@ -30,14 +30,21 @@ unit JvMinMaxForm;
 interface
 
 uses
-  Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows,  Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Buttons, Mask, Consts,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, Types,
+  QStdCtrls, QExtCtrls, QButtons, QMask, QConsts,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, VCLEditors, DesignEditors,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvJVCLUtils, JvFormPlacement, JvComponent;
+  JvJVCLUtils, JvFormPlacement, JvComponent ;
 
 type
   TMinMaxInfoEditDialog = class(TJvForm)
@@ -94,7 +101,12 @@ function EditMinMaxInfo(AComponent: TJvFormPlacement): Boolean;
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 {$D-}
 

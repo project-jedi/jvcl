@@ -32,8 +32,15 @@ unit JvColorProviderDesignerForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ActnList,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QButtons, QActnList,
+  Types,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}
@@ -87,7 +94,12 @@ implementation
 uses
   JvConsts, JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 function IsColorProviderDesingForm(Form: TJvBaseDesign; const Args: array of const): Boolean;
 begin

@@ -29,15 +29,21 @@ Changes:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvPageLinkEditorForm;
 
 interface
 
 uses
-  Windows, Forms, Classes, SysUtils, Controls, StdCtrls, ExtCtrls, ComCtrls,
+  Classes, SysUtils,
+  {$IFDEF VCL}
+  Windows, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls,
   ActnList, Menus,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QForms, QControls, QStdCtrls, QExtCtrls, QComCtrls,
+  QActnList, QMenus,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignEditors, Variants, DesignIntf,
   {$ELSE}
@@ -92,7 +98,12 @@ implementation
 uses
   JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 type
   THackTreeView = class(TJvCustomPageListTreeView);

@@ -33,8 +33,15 @@ unit JvCsvDataForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, Buttons, StdCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms,
+  QDialogs, QExtCtrls, QButtons, QStdCtrls, Types, 
+  {$ENDIF}
   JvTypes, JvComponent;
 
 type
@@ -58,6 +65,7 @@ type
     SpeedButtonMoveFieldUp: TSpeedButton;
     SpeedButtonMoveFieldDown: TSpeedButton;
     LabelKey: TLabel;
+    Bevel2: TBevel;
     procedure ButtonOkClick(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -93,7 +101,12 @@ implementation
 uses
   JvCsvData, JvCsvParse, JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 procedure TJvCsvDefStrDialog.UpdateCsvStr;
 var

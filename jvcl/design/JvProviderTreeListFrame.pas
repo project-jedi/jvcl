@@ -32,8 +32,13 @@ unit JvProviderTreeListFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, ComCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, QComCtrls, Types,
+  {$ENDIF}
   JvDataProvider, JvDataProviderIntf;
 
 type
@@ -107,10 +112,17 @@ type
 implementation
 
 uses
+  {$IFDEF VCL}
   CommCtrl,
+  {$ENDIF}
   JvDsgnConsts, JvConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 function GetItemIndexAt(LV: TListView; X, Y: Integer): Integer;
 var

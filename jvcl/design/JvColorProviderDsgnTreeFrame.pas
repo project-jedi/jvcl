@@ -32,8 +32,14 @@ unit JvColorProviderDsgnTreeFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ImgList, Menus, ActnList, ComCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, QImgList, QMenus, QActnList, QComCtrls,
+  {$ENDIF}
   JvProviderTreeListDsgnFrame;
 
 type
@@ -51,7 +57,12 @@ type
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 uses
   JclStrings,

@@ -59,7 +59,12 @@ uses
   {$ENDIF USEJVCL}
   JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps, JvWizardEditorForm;
 
+{$IFDEF MSWINDOWS}
 {$R ..\resources\JvWizardReg.dcr}
+{$ENDIF}
+{$IFDEF LINUX}
+{$R ../Resources/JvWizardReg.dcr}
+{$ENDIF}
 
 {$IFNDEF USEJVCL}
 resourcestring
