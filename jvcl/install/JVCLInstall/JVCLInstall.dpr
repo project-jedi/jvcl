@@ -32,6 +32,9 @@ uses
   JvGnugettext,
   Forms,
   Main in 'Main.pas' {FormMain},
+  {$IFDEF DEBUG}
+  ExceptionDlg in 'Debug\ExceptionDlg.pas',
+  {$ENDIF DEBUG}
   Core in 'Core.pas',
   JVCL3Install in 'JVCL3Install.pas',
   PageBuilder in 'PageBuilder.pas',
