@@ -4,9 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvTypedEdit, JvCalculatorBox, JvEdit, JvFloatEdit, JvButtonBox,
-  JvImageBox, JvDirectoryBox, JvCustomBox, JvFileNameBox, JvCurrEdit,
-  JvToolEdit, Mask;
+  StdCtrls, JvTypedEdit, JvEdit, JvFloatEdit, JvCurrEdit, JvToolEdit, Mask;
 
 type
   TJvEdits = class(TFrame)

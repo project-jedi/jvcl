@@ -33,10 +33,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvComponent, JvBaseDlg, JvPasswordForm, StdCtrls, JvExchListboxes,
-  JvLoginDlg, JvNagScreen, JvSerialDlg, JvTipsOfDay, JvImageDlg,
-  JvCalculator, JvProgressDlg, JvCommonDialogD, JvDiskPrompt, JvCopyError,
+  JvLoginDlg, JvNagScreen, JvSerialDlg, JvImageDlg,
+  JvProgressDlg, JvCommonDialogD, JvDiskPrompt, JvCopyError,
   JvDeleteError, JvPageSetup, JvPageSetupTitled, JvSHFmt, JvObjPickerComp,
-  JvCalc;
+  JvCalc, JvTipOfDay;
 
 type
   TJvDialogs = class(TFrame)
@@ -123,13 +123,13 @@ end;
 
 procedure TJvDialogs.Button6Click(Sender: TObject);
 var
-  TOD : TJvTipsofday;
+  TOD : TJvTipOfDay;
 begin
-  TOD := TJvTipsOfDay.Create(NIL);
-  TOD.Hints.Append('Hintline 1');
-  TOD.Hints.Append('Hintline 2');
-  TOD.Hints.Append('Hintline 3');
-  TOD.Hints.Append('Hintline 4');
+  TOD := TJvTipOfDay.Create(NIL);
+  TOD.Tips.Append('Hintline 1');
+  TOD.Tips.Append('Hintline 2');
+  TOD.Tips.Append('Hintline 3');
+  TOD.Tips.Append('Hintline 4');
   TOD.Execute;
   tod.free;
 end;

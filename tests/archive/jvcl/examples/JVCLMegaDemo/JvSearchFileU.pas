@@ -4,8 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvComponent, JvSearchFile, StdCtrls, JvListBox, JvCtrls, JvCustomBox,
-  JvDirectoryBox, JvSearchFiles, Mask, JvToolEdit;
+  JvComponent, StdCtrls, JvListBox, JvCtrls, JvSearchFiles, Mask, JvToolEdit;
 
 type
   TJvSearchFileFrm = class(TFrame)

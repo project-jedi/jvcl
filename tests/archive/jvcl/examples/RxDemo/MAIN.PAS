@@ -7,7 +7,7 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, Gauges, ExtCtrls, Menus, JvDBPrgrss, JvPlacemnt, JvSpeedbar,
-  JvAppEvent, JvSplit, JvxAnimate, JvShell, JvMenus, JvPicclip,
+  JvAppEvent, JvSplit, JvxAnimate, JvMenus, JvPicclip,
   JvComponent, JvTrayIcon;
 
 type

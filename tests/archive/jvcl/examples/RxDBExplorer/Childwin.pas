@@ -32,7 +32,7 @@ interface
 uses WinTypes, WinProcs, Messages, Classes, Graphics, Forms, Controls, DB,
   JvDBLists, Tabs, ExtCtrls, JvSplit, DBTables, Grids, DBGrids, JvDBCtrl,
   JvQuery, StdCtrls, Buttons, JvPlacemnt, JvDBIndex, JvDBSecur, Menus, Dialogs,
-  JvShell, JvDBPrgrss, JvPicclip, ComCtrls, JvxAnimate, JvxCtrls
+  JvDBPrgrss, JvPicclip, ComCtrls, JvxAnimate, JvxCtrls
   {$IFDEF USE_QR2}, QuickRpt, QRPrntr, QRExtra, QRPrev, Printers,
   QRCtrls, JvComponent {$ENDIF USE_QR2};
 

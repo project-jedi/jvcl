@@ -4,8 +4,7 @@ interface
 
 uses 
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvCalculatorBox, JvCustomBox, JvButtonBox, StdCtrls, JvTypedEdit, JvEdit,
-  JvPopupMemo, JvLinkLabel, JvAngleLabel, JvReversedLabel, JvLabel,
+  StdCtrls, JvTypedEdit, JvEdit, JvPopupMemo, JvLinkLabel, JvAngleLabel, JvReversedLabel, JvLabel,
   JvBlinkingLabel, JvSpin, JvToolEdit, Mask, JvCurrEdit, JvComCtrls;
 
 type

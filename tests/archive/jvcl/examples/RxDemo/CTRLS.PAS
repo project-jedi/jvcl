@@ -6,7 +6,7 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, JvPlacemnt, StdCtrls, JvxCtrls, TabNotBk, JvxSlider, ExtCtrls,
   JvSwitch, Mask, JvToolEdit, Spin, JvCurrEdit, FileCtrl, JvSplit, Grids,
-  Outline, DirOutln, JvDice, JvxClock, JvxAnimate, JvSpin, JvCombos,
+  Outline, DirOutln, JvDice, JvxClock, JvxAnimate, JvSpin, 
   ComCtrls, JvComponent, JvColorCombo, JvCombobox, JvEdit;
 
 type

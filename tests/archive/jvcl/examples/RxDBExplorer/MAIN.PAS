@@ -13,7 +13,7 @@ interface
 
 uses Windows, SysUtils, Classes, Graphics, Forms, Controls, Menus,
   StdCtrls, Dialogs, Buttons, Messages, ExtCtrls, JvDBPrgrss, JvPlacemnt,
-  DB, DBTables, DBCtrls, JvSpeedbar, JvDBCtrl, JvDBSecur, JvShell, JvAppEvent,
+  DB, DBTables, DBCtrls, JvSpeedbar, JvDBCtrl, JvDBSecur, JvAppEvent,
   JvMRUList, ComCtrls, JvxCtrls, JvComponent;
 
 type
@@ -184,7 +184,7 @@ implementation
 
 uses DBInpReq, DBCbRest, SQLMon, Bde, JvVCLUtils, ChildWin, OpenDlg, 
   JvAppUtils, JvDBUtils, IniFiles, JvxLoginDlg, RenDlg, About, Options, OptDlg,
-  JvBdeUtils, BdeProp, UserHelp, JvHints;
+  JvBdeUtils, BdeProp, UserHelp, JvHints, ShellAPI;
 
 const
   SEmptyWarning = 'Table %s will be emptied. All data will be lost. Continue?';
@@ -746,6 +746,19 @@ end;
 procedure TDBExplorerMainForm.UserHelpItemClick(Sender: TObject);
 begin
   CustomizeHelp(HelpList.Strings);
+end;
+
+type
+  TExecState = (esNormal, esMinimized, esMaximized, esHidden);
+const
+  ShowCommands: array[TExecState] of Integer =
+    (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED, SW_HIDE);
+
+function FileExecute(const FileName, Params, StartDir: string;
+  InitialState: TExecState): THandle;
+begin
+  Result := ShellExecute(Application.Handle, nil, PChar(FileName),
+    PChar(Params), PChar(StartDir), ShowCommands[InitialState]);
 end;
 
 procedure TDBExplorerMainForm.HelpListClick(Sender: TObject;

@@ -75,7 +75,7 @@ uses
   JvUtilsU,
   JvControlsU,
   JvAniViewerU,          // A Simple ANI Viewer
-  JvSearchFile,
+  JvSearchFiles,
   JvSearchFileU,
   JvMousePositionnerU,
   JvDataEmbeddedPU,
