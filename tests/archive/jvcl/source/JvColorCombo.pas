@@ -664,7 +664,7 @@ end;
 function TJvColorComboBox.GetColorName(AColor: TColor; const Default: string): string;
 var tmp: string;
 begin
-  if (Default = FOther) and (FOther <> '') then
+  if (Default <> '') then
   begin
     Result := Default;
     Exit;
