@@ -40,8 +40,8 @@ unit QWindows;
 interface
 
 uses
-  QForms, QControls, QGraphics, QTypes, Qt, QConsts,
-  Types, StrUtils, Math, SysUtils, Classes;
+  Types, StrUtils, SysUtils, Classes, Math,
+  QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls;
 
 const
   { Windows VK_ keycodes to Qt key }
@@ -161,7 +161,7 @@ type
   HCURSOR = QCursorH;
   HRGN = QRegionH;
   HBRUSH = QBrushH;
-  HBITMAP = QPainterH;
+  HBITMAP = QPixmapH;
   HDC = QPainterH;
   HFONT = QFontH;
   UINT = Cardinal;
@@ -274,6 +274,8 @@ const
   PS_JOIN_ROUND    = 128; // PenJoinStyle_RoundJoin
   PS_JOIN_MASK     = $C0; // PenCapStyle_MPenCapStyle
 
+function DPtoLP(Handle: QPainterH; var Points; Count: Integer): LongBool;
+function LPtoDP(Handle: QPainterH; var Points; Count: Integer): LongBool;
 function SetWindowOrgEx(Handle: QPainterH; X, Y: Integer; OldOrg: PPoint): LongBool;
 function GetWindowOrgEx(Handle: QPainterH; Org: PPoint): LongBool;
 { limited implementations of }
@@ -283,6 +285,8 @@ function BitBlt(DestDC: QPainterH; X, Y, W, H: Integer; SrcDC: QPainterH;
   XSrc, YSrc: Integer; WinRop: Cardinal): LongBool; overload;
 function PatBlt(Handle: QPainterH; X, Y, W, H: Integer;
   WinRop: Cardinal): LongBool; //overload;
+function StretchBlt(DestHandle: QPainterH; X, Y, Width, Height: Integer; SrcHandle: QPainterH;
+  XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: RasterOp): LongBool;
 
 const
   { bitblt:  windows dwRop values
@@ -351,25 +355,28 @@ const
   TRANSPARENT = 1; // BGMode_TransparentMode
   OPAQUE      = 2; // BGMode_OpaqueMode
 
-function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPainterH;
+function CreateCompatibleDC(Handle: QPainterH; Width: Integer = 1; Height: Integer = 1): QPainterH;
+function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPixmapH;
 // DeleteObject is intended to destroy the Handle returned by CreateCompatibleBitmap
 // (it destroys the Painter AND PaintDevice) 
 function DeleteObject(Handle: QPainterH): LongBool; overload;
+function DeleteObject(Handle: QPixmapH): LongBool; overload;
 function GetDC(Handle: QWidgetH): QPainterH; overload;
 function GetDC(Handle: Integer): QPainterH; overload;
 
-procedure ReleaseDC(wdgtH: QWidgetH; Handle: QPainterH); overload;
-procedure ReleaseDC(wdgtH: Integer; Handle: QPainterH); overload;
+function ReleaseDC(wdgtH: QWidgetH; Handle: QPainterH): Integer; overload;
+function ReleaseDC(wdgtH: Integer; Handle: QPainterH): Integer; overload;
+function DeleteDC(Handle: QPainterH): LongBool;
 
 function RestoreDC(Handle: QPainterH; nSavedDC: Integer): LongBool;
 function SaveDC(Handle: QPainterH): Integer;
 
 function ExtTextOut(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
-  R: PRect; Text: WideString; len: Integer;lpDx: Pointer): LongBool; overload;
+  R: PRect; Text: WideString; Len: Integer; lpDx: Pointer): LongBool; overload;
 function ExtTextOut(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
-  R: PRect; pText: PChar; len: Integer;lpDx: Pointer): LongBool; overload;
+  R: PRect; pText: PChar; Len: Integer; lpDx: Pointer): LongBool; overload;
 function ExtTextOutW(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
-  R: PRect; pText: PWideChar; len: Integer;lpDx: Pointer): LongBool;
+  R: PRect; pText: PWideChar; Len: Integer; lpDx: Pointer): LongBool;
 
 const
   { ExtTextOut format flags }
@@ -406,10 +413,10 @@ const
   DI_DEFAULTSIZE = 8;
 
 
-function DrawText(Handle: QPainterH; var text: WideString; len: Integer;
+function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
 { limited implementation of }
-function DrawText(Handle: QPainterH; text: PChar; len: Integer;
+function DrawText(Handle: QPainterH; Text: PChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
 
 const
@@ -459,18 +466,18 @@ function GetSystemMetrics(PropItem: TSysMetrics): Integer;
 
 type
   TDeviceCap = (
-  HORZSIZE,        {Horizontal size in millimeters}
-  VERTSIZE,        {Vertical size in millimeters}
-  HORZRES,         {Horizontal width in pixels}
-  VERTRES,         {Vertical height in pixels}
-  BITSPIXEL,       {Number of bits per pixel}
-  NUMCOLORS,
-  LOGPIXELSX,      {Logical pixelsinch in X}
-  LOGPIXELSY,      {Logical pixelsinch in Y}
-  PHYSICALWIDTH,   {Physical Width in device units}
-  PHYSICALHEIGHT,  {Physical Height in device units}
-  PHYSICALOFFSETX, {Physical Printable Area X margin}
-  PHYSICALOFFSETY  {Physical Printable Area Y margin}
+    HORZSIZE,        {Horizontal size in millimeters}
+    VERTSIZE,        {Vertical size in millimeters}
+    HORZRES,         {Horizontal width in pixels}
+    VERTRES,         {Vertical height in pixels}
+    BITSPIXEL,       {Number of bits per pixel}
+    NUMCOLORS,
+    LOGPIXELSX,      {Logical pixelsinch in X}
+    LOGPIXELSY,      {Logical pixelsinch in Y}
+    PHYSICALWIDTH,   {Physical Width in device units}
+    PHYSICALHEIGHT,  {Physical Height in device units}
+    PHYSICALOFFSETX, {Physical Printable Area X margin}
+    PHYSICALOFFSETY  {Physical Printable Area Y margin}
   );
 
 { (very) limited implementations of }
@@ -520,6 +527,7 @@ function GetFocus: QWidgetH;
 function GetParent(Handle: QWidgetH): QWidgetH;
 function GetWindowPlacement(Handle: QWidgetH; W: PWindowPlacement): LongBool;
 function GetWindowRect(Handle: QWidgetH; var  R: TRect): LongBool;
+function WindowFromDC(Handle: QPainterH): QWidgetH;
 
 function HWND_DESKTOP: QWidgetH;
 function InvalidateRect(Handle: QWidgetH; R: PRect; erasebackground: Boolean): LongBool;
@@ -612,7 +620,10 @@ function SelectObject(Handle: QPainterH; Font: QFontH): QFontH; overload;
 function SelectObject(Handle: QPainterH; Brush: QBrushH): QBrushH; overload;
 function SelectObject(Handle: QPainterH; Pen: QPenH): QPenH; overload;
 
-// region related API's 
+// limited to CreateCompatibleDC Handles.
+function SelectObject(Handle: QPainterH; Bitmap: QPixmapH): QPixmapH; overload;
+
+// region related API's
 type
   TCombineMode = (
     RGN_AND,	// Creates the intersection of the two combined regions.
@@ -629,11 +640,12 @@ function CreateEllipticRgnIndirect(Rect: TRect): QRegionH;
 function CreatePolygonRgn(const Points; Count, FillMode: Integer): QRegionH;
 function CreateRectRgn(left, top, right, bottom: Integer): QRegionH;
 function CreateRectRgnIndirect(Rect: TRect): QRegionH;
-//function CreateRoundRectRgn(Left, Top, Right, Bottom, Width, Height: Integer): QRegionH;
+function CreateRoundRectRgn(x1, y1, x2, y2, WidthEllipse, HeightEllipse: Integer): QRegionH;
 function DeleteObject(Region: QRegionH): LongBool; overload;
 function EqualRgn(Rgn1, Rgn2: QRegionH): LongBool;
 function FillRgn(Handle: QPainterH; Region: QRegionH; Brush: QBrushH): LongBool;
 function GetClipRgn(Handle: QPainterH; rgn: QRegionH): Integer;
+function ExcludeClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer;
 function IntersectClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer;
 function InvertRgn(Handle: QPainterH; Region: QRegionH): LongBool;
 function OffsetClipRgn(Handle: QPainterH; X, Y: Integer): Integer;
@@ -650,7 +662,7 @@ const
   // CombineRgn return values
   NULLREGION    = 1;     // Region is empty
   SIMPLEREGION  = 2;     // Region is a rectangle
-  COMPLEXREGION = 3;	   // Region is not a rectangle
+  COMPLEXREGION = 3;     // Region is not a rectangle
   ERROR	        = 0;     // Region error
   RGN_ERROR     = ERROR;
 
@@ -664,7 +676,7 @@ function TruncatePath(const FilePath: string; Canvas: TCanvas; MaxLen: Integer):
 function TruncateName(const Name: WideString; Canvas: TCanvas; MaxLen: Integer): WideString;
 
 
-procedure TextOutAngle(ACanvas: TCanvas;Angle, Left, Top: Integer; Text: WideString);
+procedure TextOutAngle(ACanvas: TCanvas; Angle, Left, Top: Integer; Text: WideString);
 //
 
 procedure CopyMemory(Dest: Pointer; Src: Pointer; Len: Cardinal);
@@ -672,8 +684,16 @@ procedure FillMemory(Dest: Pointer; Len: Cardinal; Fill: Byte);
 procedure MoveMemory(Dest: Pointer; Src: Pointer; Len: Cardinal);
 procedure ZeroMemory(Dest: Pointer; Len: Cardinal);
 
+{ ------------ Caret -------------- }
+function CreateCaret(Widget: QWidgetH; Pixmap: QPixmapH; Width, Height: Integer): Boolean; overload;
+function CreateCaret(Widget: QWidgetH; ColorCaret: Cardinal; Width, Height: Integer): Boolean; overload;
 function GetCaretBlinkTime: Cardinal;
 function SetCaretBlinkTime(uMSeconds: Cardinal): LongBool;
+function HideCaret(Widget: QWidgetH): Boolean;
+function ShowCaret(Widget: QWidgetH): Boolean;
+function SetCaretPos(X, Y: Integer): Boolean;
+function GetCaretPos(var Pt: TPoint): Boolean;
+function DestroyCaret: Boolean;
 
 function GetDoubleClickTime: Cardinal;
 function SetDoubleClickTime(Interval: Cardinal): LongBool;
@@ -708,34 +728,101 @@ procedure MessageBeep(Value: Integer);   // value ignored
 
 {$ENDIF LINUX}
 
-function DPtoLP(Handle: QPainterH; var Points; Count: Integer): LongBool;
-function LPtoDP(Handle: QPainterH; var Points; Count: Integer): LongBool;
-function ExcludeClipRect(Handle: QPainterH; x0, y0, x1, y1: Integer): Integer;
-function IntersectClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer; // improved
-function SelectClipRgn(Handle: QPainterH; Region: QRegionH): integer; // improved
-function CreateRoundRectRgn(x1, y1, x2, y2, WidthEllipse, HeightEllipse: Integer): QRegionH;
-function StretchBlt(DestHandle: QPainterH; X, Y, Width, Height: Integer; SrcHandle: QPainterH;
-  XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: RasterOp): LongBool;
-function GetClientRect(Handle: QWidgetH; var R: TRect): LongBool; // improved
-function WindowFromDC(Handle: QPainterH): QWidgetH;
-
-{ ------------ Caret -------------- }
-function CreateCaret(Widget: QWidgetH; Pixmap: QPixmapH; Width, Height: Integer): Boolean; overload;
-function CreateCaret(Widget: QWidgetH; ColorCaret: Cardinal; Width, Height: Integer): Boolean; overload;
-function GetCaretBlinkTime: Cardinal;
-function SetCaretBlinkTime(MSeconds: Cardinal): Boolean;
-function HideCaret(Widget: QWidgetH): Boolean;
-function ShowCaret(Widget: QWidgetH): Boolean;
-function SetCaretPos(X, Y: Integer): Boolean;
-function GetCaretPos(var Pt: TPoint): Boolean;
-function DestroyCaret: Boolean;
-
 implementation
 
 {$IFDEF LINUX}
 uses
-  Libc;
+  Libc, Windows;
 {$ENDIF LINUX}
+{$IFDEF MSWINDOWS}
+uses
+  Windows;
+{$ENDIF MSWINDOWS}
+
+// easier QColor handling:
+type
+  IQColorGuard = interface
+    function Handle: QColorH;
+  end;
+
+  TQColorGuard = class(TInterfacedObject, IQColorGuard)
+  private
+    FHandle: QColorH;
+  public
+    constructor Create(AColor: TColor);
+    destructor Destroy; override;
+    function Handle: QColorH;
+  end;
+
+{ TQColorGuard }
+constructor TQColorGuard.Create(AColor: TColor);
+begin
+  inherited Create;
+  FHandle := QColor(AColor);
+end;
+
+destructor TQColorGuard.Destroy;
+begin
+  QColor_destroy(FHandle);
+  inherited Destroy;
+end;
+
+function TQColorGuard.Handle: QColorH;
+begin
+  Result := FHandle;
+end;
+
+function QColorEx(Color: TColor): IQColorGuard;
+begin
+  Result := TQColorGuard.Create(Color);
+end;
+
+
+// used internally
+procedure MapPainterLP(Handle: QPainterH; var x, y: Integer); overload;
+var
+  Matrix: QWMatrixH;
+begin
+  if QPainter_hasWorldXForm(Handle) then
+  begin
+    Matrix := QPainter_worldMatrix(Handle);
+    QWMatrix_map(Matrix, x, y, @x, @y);
+  end;
+end;
+
+procedure MapPainterLP(Handle: QPainterH; var x0, y0, x1, y1: Integer); overload;
+var
+  Matrix: QWMatrixH;
+begin
+  if QPainter_hasWorldXForm(Handle) then
+  begin
+    Matrix := QPainter_worldMatrix(Handle);
+    QWMatrix_map(Matrix, x0, y0, @x0, @y0);
+    QWMatrix_map(Matrix, x1, y1, @x1, @y1);
+  end;
+end;
+
+procedure MapPainterLP(Handle: QPainterH; var R: TRect); overload;
+var
+  Matrix: QWMatrixH;
+begin
+  if QPainter_hasWorldXForm(Handle) then
+  begin
+    Matrix := QPainter_worldMatrix(Handle);
+    QWMatrix_map(Matrix, PRect(@R), PRect(@R));
+  end;
+end;
+
+procedure MapPainterLP(Handle: QPainterH; var Pt: TPoint); overload;
+var
+  Matrix: QWMatrixH;
+begin
+  if QPainter_hasWorldXForm(Handle) then
+  begin
+    Matrix := QPainter_worldMatrix(Handle);
+    QWMatrix_map(Matrix, PPoint(@Pt), PPoint(@Pt));
+  end;
+end;
 
 function DrawTextBiDiModeFlagsReadingOnly: Longint;
 begin
@@ -754,7 +841,7 @@ end;
 
 function CreatePen(Style, Width: Integer; Color: TColorRef): QPenH;
 begin
-  Result := QPen_create(QColor(Color), Width, PenStyle(Style));
+  Result := QPen_create(QColorEx(Color).Handle, Width, PenStyle(Style));
 end;
 
 function DeleteObject(Handle: QPenH): LongBool;
@@ -769,12 +856,12 @@ end;
 
 function CreateSolidBrush(crColor: TColorRef): QBrushH;
 begin
-  Result := QBrush_create(QColor(crColor), BrushStyle_SolidPattern);
+  Result := QBrush_create(QColorEx(crColor).Handle, BrushStyle_SolidPattern);
 end;
 
 function CreateHatchBrush(bStyle: BrushStyle; crColor: TColorRef): QBrushH;
 begin
-  Result := QBrush_create(QColor(crColor), bStyle);
+  Result := QBrush_create(QColorEx(crColor).Handle, bStyle);
 end;
 
 function DeleteObject(Handle: QBrushH): LongBool;
@@ -843,15 +930,21 @@ begin
 end;
 
 function GetClientRect(Handle: QWidgetH; var R: TRect): LongBool;
+var
+  Control: TWidgetControl;
 begin
   try
-    QWidget_rect(Handle, @R);
+    // some CLX controls have a modified ClientRect
+    Control := FindControl(Handle);
+    if Control <> nil then
+      R := Control.ClientRect
+    else
+      QWidget_rect(Handle, @R);
     Result := True;
   except
     Result := False;
   end;
 end;
-
 
 function ShowWindow(Handle: QWidgetH; showCmd: UInt): LongBool;
 begin
@@ -899,20 +992,21 @@ end;
 
 function SetBkMode(Handle: QPainterH; BkMode: Integer): Integer;
 begin
+  Result := 0;
   case QPainter_BackgroundMode(Handle) of
-  BGMode_TransparentMode: Result := TRANSPARENT; // BGMode_TransparentMode
-  BGMode_OpaqueMode: Result := OPAQUE; // BGMode_OpaqueMode
+    BGMode_TransparentMode: Result := TRANSPARENT; // BGMode_TransparentMode
+    BGMode_OpaqueMode: Result := OPAQUE; // BGMode_OpaqueMode
   end;
   case BkMode of
-  TRANSPARENT: QPainter_setBackgroundMode(Handle, BGMode_TransparentMode);
-  OPAQUE: QPainter_setBackgroundMode(Handle, BGMode_OpaqueMode);
+    TRANSPARENT: QPainter_setBackgroundMode(Handle, BGMode_TransparentMode);
+    OPAQUE: QPainter_setBackgroundMode(Handle, BGMode_OpaqueMode);
   end;
 end;
 
 function SetPenColor(Handle: QPainterH; Color: TColor): TColor;
 begin
   Result :=  QColorColor(QPen_color(QPainter_pen(Handle)));
-  QPainter_setPen(Handle, QColor(Color));
+  QPainter_setPen(Handle, QColorEx(Color).Handle);
 end;
 
 function SetTextColor(Handle: QPainterH; Color: TColor): TColor;
@@ -923,13 +1017,13 @@ end;
 function SetBkColor(Handle: QPainterH; Color: TColor): TColor;
 begin
   Result := QColorColor(QPainter_BackGroundColor(Handle));
-  QPainter_setBackGroundColor(Handle, QColor(Color));
+  QPainter_setBackGroundColor(Handle, QColorEx(Color).Handle);
 end;
 
 function SetDCBrushColor(Handle: QPainterH; Color: TColorRef): TColorRef;
 begin
   Result := QColorColor(QBrush_color(QPainter_brush(Handle)));
-  QPainter_setBrush(Handle, QColor(Color));
+  QPainter_setBrush(Handle, QColorEx(Color).Handle);
 end;
 
 function SetDCPenColor(Handle: QPainterH; Color: TColorRef): TColorRef;
@@ -973,44 +1067,44 @@ var
   TempDC: QPainterH;
 begin
   case WinRop of
-  BLACKNESS:   Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_ClearROP);
-  DSTINVERT:   Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NotROP);
-  MERGECOPY:   Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_OrROP);
-  MERGEPAINT:  Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NotOrRop);
-  NOTSRCCOPY:  Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NotCopyROP);
-  NOTSRCERASE: Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NorROP);
-  SRCAND:      Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_AndROP);
-  SRCCOPY:     Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_CopyROP);
-  SRCERASE:    Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_AndNotROP);
-  SRCINVERT:   Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_XorROP);
-  SRCPAINT:    Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_OrROP);
-  WHITENESS:   Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_SetROP);
-  PATCOPY:     Result := PatternPaint(DestDc, X, Y, W, H, RasterOp_CopyROP);
-  PATINVERT:   Result := PatternPaint(DestDc, X, Y, W, H, RasterOp_XorROP);
-  ROP_DSna:    Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NotAndROP);
-  ROP_D:       Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NopROP);
-  ROP_SDno:    Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_OrNotROP);
-  ROP_DSan:    Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NandROP);
-  PATPAINT:
-  begin  // DPSnoo   = PDSnoo
-    Result := BitBlt(DestDc, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NotOrRop); // DSno
-    if Result then
-      Result := PatternPaint(DestDc, X, Y, W, H, RasterOp_XOrROP);
-  end;
-  ROP_DSPDxax:
-  begin
-    TempDC := CreateCompatibleBitmap(DestDC, W, H);
-    try
-        // copy destDC to pixmap
-      BitBlt(TempDC, 0, 0, W, H, DestDC, X, Y,  RasterOp_CopyROP);
-      BitBlt(TempDC, 0, 0, W, H, nil, 0, 0, PATINVERT);  // PDx
-      BitBlt(TempDC, 0, 0, W, H, SrcDC, XSrc, YSrc, RasterOp_AndROP); // SPDxa
-      Result := BitBlt(DestDC, X, Y, W, H, TempDC, 0, 0, RasterOp_XorROP); // DSPDxax
-    except
-      Result := False;
-    end;
-    DeleteObject(TempDC);
-  end;
+    BLACKNESS:   Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_ClearROP);
+    DSTINVERT:   Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NotROP);
+    MERGECOPY:   Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_OrROP);
+    MERGEPAINT:  Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NotOrRop);
+    NOTSRCCOPY:  Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NotCopyROP);
+    NOTSRCERASE: Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NorROP);
+    SRCAND:      Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_AndROP);
+    SRCCOPY:     Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_CopyROP);
+    SRCERASE:    Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_AndNotROP);
+    SRCINVERT:   Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_XorROP);
+    SRCPAINT:    Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_OrROP);
+    WHITENESS:   Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_SetROP);
+    PATCOPY:     Result := PatternPaint(DestDC, X, Y, W, H, RasterOp_CopyROP);
+    PATINVERT:   Result := PatternPaint(DestDC, X, Y, W, H, RasterOp_XorROP);
+    ROP_DSna:    Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NotAndROP);
+    ROP_D:       Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NopROP);
+    ROP_SDno:    Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_OrNotROP);
+    ROP_DSan:    Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NandROP);
+    PATPAINT:
+      begin  // DPSnoo   = PDSnoo
+        Result := BitBlt(DestDC, X, Y, W, H, SrcDC, XSrc, YSrc, RasterOp_NotOrRop); // DSno
+        if Result then
+          Result := PatternPaint(DestDC, X, Y, W, H, RasterOp_XOrROP);
+      end;
+    ROP_DSPDxax:
+      begin
+        TempDC := CreateCompatibleDC(DestDC, W, H);
+        try
+            // copy DestDC to pixmap
+          BitBlt(TempDC, 0, 0, W, H, DestDC, X, Y,  RasterOp_CopyROP);
+          BitBlt(TempDC, 0, 0, W, H, nil, 0, 0, PATINVERT);  // PDx
+          BitBlt(TempDC, 0, 0, W, H, SrcDC, XSrc, YSrc, RasterOp_AndROP); // SPDxa
+          Result := BitBlt(DestDC, X, Y, W, H, TempDC, 0, 0, RasterOp_XorROP); // DSPDxax
+        except
+          Result := False;
+        end;
+        DeleteObject(TempDC);
+      end;
   else
     Result := False;
   end;
@@ -1027,7 +1121,7 @@ begin
   dp.Y := Y;
   sr := Bounds(XSrc, YSrc, W, H);
   try
-    BitBlt(QPainter_device(DestDC), @dp, QPainter_device(SrcDC), @sr, Rop);
+    Qt.bitBlt(QPainter_device(DestDC), @dp, QPainter_device(SrcDC), @sr, Rop);
   except
     Result := False;
   end;
@@ -1036,6 +1130,55 @@ end;
 function PatBlt(Handle: QPainterH; X, Y, W, H: Integer; WinRop: Cardinal): LongBool;
 begin
   Result := BitBlt(Handle, X, Y, W, H, Handle, X, Y, WinRop);
+end;
+
+function StretchBlt(DestHandle: QPainterH; X, Y, Width, Height: Integer; SrcHandle: QPainterH;
+  XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: RasterOp): LongBool;
+var
+  Pixmap: QPixmapH;
+  NewMatrix: QWMatrixH;
+  SavedRop: RasterOp;
+begin
+  Result := False;
+  if (DestHandle = nil) or (SrcHandle = nil) then
+    Exit;
+  Result := True;
+  try
+    Pixmap := QPixmap_create(SrcWidth, SrcHeight, 32, QPixmapOptimization_BestOptim);
+    try
+      // copy to pixmap
+      Qt.bitBlt(Pixmap, 0, 0, QPainter_device(SrcHandle),
+        XSrc, YSrc, SrcWidth, SrcHeight,
+        RasterOp_CopyROP, True);
+
+      // draw stretched pixmap
+      SavedRop := QPainter_rasterOp(DestHandle);
+      try
+        QPainter_setRasterOp(DestHandle, Rop);
+        QPainter_saveWorldMatrix(DestHandle);
+        try
+          NewMatrix := QWMatrix_create(
+            Width / SrcWidth, 0,  // x factor
+            0, Height / SrcHeight, // y factor
+            X, Y); // translate
+          try
+            QPainter_setWorldMatrix(DestHandle, NewMatrix, True);
+            QPainter_drawPixmap(DestHandle, 0, 0, Pixmap, 0, 0, SrcWidth, SrcHeight);
+          finally
+            QWMatrix_destroy(NewMatrix);
+          end;
+        finally
+          QPainter_restoreWorldMatrix(DestHandle);
+        end;
+      finally
+        QPainter_setRasterOp(DestHandle, SavedRop);
+      end;
+    finally
+      QPixmap_destroy(Pixmap);
+    end;
+  except
+    Result := False;
+  end;
 end;
 
 function SetROP2(Handle: QPainterH; Rop: Integer): Integer;
@@ -1080,10 +1223,9 @@ end;
 function BringWindowToTop(Handle: QWidgetH): LongBool;
 begin
   try
-    while not QWidget_isTopLevel(Handle)
-    do
+    while not QWidget_isTopLevel(Handle) do
       Handle := QWidget_parentWidget(Handle);
-    QWidget_Show(Handle);
+    QWidget_show(Handle);
     QWidget_raise(Handle);
     Result := True;
   except
@@ -1098,7 +1240,7 @@ begin
     if Result then
     begin
       if Restore then
-        QWidget_Show(Handle);
+        QWidget_show(Handle);
       QWidget_setActiveWindow(Handle);
     end;
   except
@@ -1132,6 +1274,32 @@ begin
   end;
 end;
 
+function WindowFromDC(Handle: QPainterH): QWidgetH;
+var
+  WinId: Cardinal;
+  {$IFDEF MSWINDOWS}
+  WinDC: Windows.HDC;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  dev: QPaintDeviceH;
+  {$ENDIF LINUX}
+begin
+  Result := nil;
+  WinId := 0;
+  {$IFDEF MSWINDOWS}
+  WinDC := QPainter_handle(Handle);
+  if WinDC <> 0 then
+    WinId := Cardinal(Windows.WindowFromDC(WinDC));
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  dev := QPainter_device(Handle);
+  if dev <> nil then
+    WinId := Cardinal(QPaintDevice_handle(dev));
+  {$ENDIF LINUX}
+  if WinId <> 0 then
+    Result := QWidget_find(WinId);
+end;
+
 function ClientToScreen(Handle: QWidgetH; var Point: TPoint): LongBool;
 begin
   try
@@ -1163,17 +1331,17 @@ begin
     if not IsChild(WidgetTo, WidgetFrom) then
     begin
       Result := 0;
-      exit;
+      Exit;
     end
     else if nr > 0 then
     begin
       QWidget_mapTo(WidgetFrom, p1, WidgetTo, @p2);
-      Result := (((p2.Y - p1.Y) shl 16) and $FFFF0000) +
+      Result := (((p2.Y - p1.Y) shl 16) and Integer($FFFF0000)) +
                 ((p2.X - p1.X) and $FFFF);
       for i:= 0 to nr-1 do
       begin
         QWidget_mapTo(WidgetFrom, p1, WidgetTo, p1);
-        inc(p1);
+        Inc(p1);
       end;
     end
     else
@@ -1211,36 +1379,36 @@ const
   ButtonEscape = $200;
 begin
   case (WinFlags and $7) of
-  MB_OKCANCEL:
-    begin
-      Button0 := ButtonOk;
-      Button1 := ButtonCancel or ButtonEscape;
-      Button2 := 0;
-    end;
-  MB_ABORTRETRYIGNORE:
-    begin
-      Button0 := ButtonAbort;
-      Button1 := ButtonRetry or ButtonDefault;
-      Button2 := ButtonIgnore;
-    end;
-  MB_YESNOCANCEL:
-    begin
-      Button0 := ButtonYes;
-      Button1 := ButtonNo;
-      Button2 := ButtonCancel or ButtonEscape;
-    end;
-  MB_YESNO:
-    begin
-      Button0 := ButtonYes;
-      Button1 := ButtonNo or ButtonEscape;
-      Button2 := 0;
-    end;
-  MB_RETRYCANCEL:
-    begin
-      Button0 := ButtonRetry;
-      Button1 := ButtonCancel or ButtonEscape;
-      Button2 := 0;
-    end;
+    MB_OKCANCEL:
+      begin
+        Button0 := ButtonOk;
+        Button1 := ButtonCancel or ButtonEscape;
+        Button2 := 0;
+      end;
+    MB_ABORTRETRYIGNORE:
+      begin
+        Button0 := ButtonAbort;
+        Button1 := ButtonRetry or ButtonDefault;
+        Button2 := ButtonIgnore;
+      end;
+    MB_YESNOCANCEL:
+      begin
+        Button0 := ButtonYes;
+        Button1 := ButtonNo;
+        Button2 := ButtonCancel or ButtonEscape;
+      end;
+    MB_YESNO:
+      begin
+        Button0 := ButtonYes;
+        Button1 := ButtonNo or ButtonEscape;
+        Button2 := 0;
+      end;
+    MB_RETRYCANCEL:
+      begin
+        Button0 := ButtonRetry;
+        Button1 := ButtonCancel or ButtonEscape;
+        Button2 := 0;
+      end;
   else     // MB_OK and non supported
     begin
       Button0 := ButtonOk or ButtonEscape;
@@ -1249,22 +1417,22 @@ begin
     end;
   end;
   case (WinFlags and $300) of
-  MB_DEFBUTTON2: Button1 := Button1 or ButtonDefault;
-  MB_DEFBUTTON3: Button2 := Button2 or ButtonDefault;
+    MB_DEFBUTTON2: Button1 := Button1 or ButtonDefault;
+    MB_DEFBUTTON3: Button2 := Button2 or ButtonDefault;
   else
   // MB_DEFBUTTON1:
     Button0 := Button0 or ButtonDefault;
   end;
   case (WinFlags and $F0) of
-  MB_ICONINFORMATION:
-    Result := QMessageBox_information(parent, @caption, @text,
-                                      button0, button1, button2);
-  MB_ICONWARNING:
-    Result := QMessageBox_warning(parent, @caption, @text,
-                                      button0, button1, button2);
-  MB_ICONQUESTION:
-    Result := QMessageBox_information(parent, @caption, @text,
-                                      button0, button1, button2);
+    MB_ICONINFORMATION:
+      Result := QMessageBox_information(parent, @caption, @text,
+                                        button0, button1, button2);
+    MB_ICONWARNING:
+      Result := QMessageBox_warning(parent, @caption, @text,
+                                        button0, button1, button2);
+    MB_ICONQUESTION:
+      Result := QMessageBox_information(parent, @caption, @text,
+                                        button0, button1, button2);
   else
 //  MB_ICONSTOP:
     Result := QMessageBox_critical(parent, @caption, @text,
@@ -1313,6 +1481,20 @@ begin
   QPainter_setPen(Handle, Pen);
 end;
 
+function SelectObject(Handle: QPainterH; Bitmap: QPixmapH): QPixmapH;
+begin
+  if StrComp(QObject_name(QObjectH(Handle)), 'CompatibleDC') = 0 then
+  begin
+    Result := QPixmapH(QPainter_device(Handle));
+    if QPainter_isActive(Handle) then
+      QPainter_end(Handle);
+
+    QPainter_begin(Handle, Bitmap);
+  end
+  else
+    Result := nil;
+end;
+
 function GetRegionType(rgn: QRegionH): Integer;
 var
   R: TRect;
@@ -1356,6 +1538,58 @@ begin
   Result := QRegion_create(@Rect, QRegionRegionType_Rectangle);
 end;
 
+function CreateRoundRectRgn(x1, y1, x2, y2, WidthEllipse, HeightEllipse: Integer): QRegionH;
+var
+  Ellipse, R: QRegionH;
+begin
+  Result := CreateRectRgn(x1 + WidthEllipse div 2, y1 + HeightEllipse div 2,
+                          x2 - WidthEllipse div 2, y2 - HeightEllipse div 2);
+  try
+    // left/top corner
+    Ellipse := CreateEllipticRgn(x1, y1, x1 + WidthEllipse, y1 + HeightEllipse);
+    CombineRgn(Result, Result, Ellipse, RGN_OR);
+    DeleteObject(Ellipse);
+
+    // right/top corner
+    Ellipse := CreateEllipticRgn(x2 - WidthEllipse, y1, x2, y1 + HeightEllipse);
+    CombineRgn(Result, Result, Ellipse, RGN_OR);
+    DeleteObject(Ellipse);
+
+    // left/bottom corner
+    Ellipse := CreateEllipticRgn(x1, y2 - HeightEllipse, x1 + WidthEllipse, y2);
+    CombineRgn(Result, Result, Ellipse, RGN_OR);
+    DeleteObject(Ellipse);
+
+    // right/bottom corner
+    Ellipse := CreateEllipticRgn(x2 - WidthEllipse, y2 - HeightEllipse, x2, y2);
+    CombineRgn(Result, Result, Ellipse, RGN_OR);
+    DeleteObject(Ellipse);
+
+    // top rect
+    R := CreateRectRgn(x1 - WidthEllipse, y1, x2 - WidthEllipse, y1 + HeightEllipse);
+    CombineRgn(Result, Result, R, RGN_OR);
+    DeleteObject(R);
+
+    // bottom rect
+    R := CreateRectRgn(x1 - WidthEllipse, y2 - HeightEllipse, x2 - WidthEllipse, y2);
+    CombineRgn(Result, Result, R, RGN_OR);
+    DeleteObject(R);
+
+    // left rect
+    R := CreateRectRgn(x1, y1 + HeightEllipse, x1 + WidthEllipse, y2 - HeightEllipse);
+    CombineRgn(Result, Result, R, RGN_OR);
+    DeleteObject(R);
+
+    // right rect
+    R := CreateRectRgn(x2 - WidthEllipse, y1 + HeightEllipse, x2, y2 - HeightEllipse);
+    CombineRgn(Result, Result, R, RGN_OR);
+    DeleteObject(R);
+  except
+    DeleteObject(Result);
+    Result := nil;
+  end;
+end;
+
 function CreatePolygonRgn(const Points; Count, FillMode: Integer): QRegionH;
 var
   pts: TPointArray;
@@ -1368,7 +1602,7 @@ begin
   begin
     pts[i].X := p.X;
     pts[i].Y := p.Y;
-    inc(p);
+    Inc(p);
   end;
   Result := QRegion_create(@pts, Fillmode = WINDING);
 end;
@@ -1384,21 +1618,43 @@ begin
   end;
 end;
 
-function IntersectClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer;
+function ExcludeClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer;
 var
-  rgn, rrgn: QRegionH;
-  R: TRect;
+  ExcludeRgn, Rgn: QRegionH;
 begin
-  SetRect(R, X1, Y1, X2, Y2);
-  rrgn := QRegion_create(@R, QRegionRegionType_Rectangle);
+  MapPainterLP(Handle, X1, Y1, X2, Y2);
+  ExcludeRgn := QRegion_create(X1, Y1, X2 - X1, Y2 - Y1, QRegionRegionType_Rectangle);
   try
-    rgn := QPainter_clipRegion(Handle);
-    QRegion_intersect(rgn, rgn, rrgn);
-    Result := GetRegionType(rgn);
+    Rgn := QPainter_clipRegion(Handle);
+    QRegion_subtract(Rgn, Rgn, ExcludeRgn);
+    QPainter_setClipping(Handle, True);
+    Result := GetRegionType(Rgn);
   except
     Result := RGN_ERROR;
   end;
-  QRegion_destroy(rrgn);
+  QRegion_destroy(ExcludeRgn);
+end;
+
+function IntersectClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer;
+var
+  IntersectRgn, Rgn: QRegionH;
+  ClipRect: TRect;
+begin
+  SetRect(ClipRect, X1, Y2, X2, Y2);
+  MapPainterLP(Handle, ClipRect);
+  IntersectRgn := QRegion_create(@ClipRect, QRegionRegionType_Rectangle);
+  try
+    Rgn := QPainter_clipRegion(Handle);
+    if QRegion_isNull(Rgn) then
+      QRegion_unite(Rgn, Rgn, IntersectRgn)
+    else
+      QRegion_intersect(Rgn, Rgn, IntersectRgn);
+    QPainter_setClipping(Handle, True);
+    Result := GetRegionType(Rgn);
+  except
+    Result := RGN_ERROR;
+  end;
+  QRegion_destroy(IntersectRgn);
 end;
 
 function SetRectRgn(Rgn: QRegionH; X1, Y1, X2, Y2: Integer): LongBool;
@@ -1513,6 +1769,7 @@ var
   R: TRect;
   hasClipping: Boolean;
 begin
+  oRgn := nil;
   Result := False;
   QPainter_save(Handle);
   hasClipping := QPainter_hasClipping(Handle);
@@ -1561,6 +1818,63 @@ begin
     Result := False;
   end;
   QRegion_destroy(tmpRgn);
+end;
+
+function LPtoDP(Handle: QPainterH; var Points; Count: Integer): LongBool;
+var
+  Matrix: QWMatrixH;
+  P: PPoint;
+begin
+  Result := True;
+  try
+    if QPainter_hasWorldXForm(Handle) then
+    begin
+      Matrix := QPainter_worldMatrix(Handle);
+      P := @Points;
+      while Count > 0 do
+      begin
+        Dec(Count);
+        QWMatrix_map(Matrix, P, P);
+        Inc(P);
+      end;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+function DPtoLP(Handle: QPainterH; var Points; Count: Integer): LongBool;
+var
+  Matrix, InvertedMatrix: QWMatrixH;
+  P: PPoint;
+  Invertable: Boolean;
+begin
+  Result := True;
+  try
+    if QPainter_hasWorldXForm(Handle) then
+    begin
+      Matrix := QPainter_worldMatrix(Handle);
+      InvertedMatrix := QWMatrix_create;
+      try
+        Invertable := False;
+        QWMatrix_invert(Matrix, InvertedMatrix, @Invertable);
+        if Invertable then
+        begin
+          P := @Points;
+          while Count > 0 do
+          begin
+            Dec(Count);
+            QWMatrix_map(InvertedMatrix, P, P);
+            Inc(P);
+          end;
+        end;
+      finally
+        QWMatrix_destroy(InvertedMatrix);
+      end;
+    end;
+  except
+    Result := False;
+  end;
 end;
 
 function SetViewPortOrgEx(Handle: QPainterH; X, Y: Integer; OldOrg: PPoint): LongBool;
@@ -1666,21 +1980,6 @@ end;
 procedure ZeroMemory(Dest: Pointer; Len: Cardinal);
 begin
   FillChar(Dest^, Len, 0);
-end;
-
-function GetCaretBlinkTime: Cardinal;
-begin
-  Result := QApplication_cursorFlashTime;
-end;
-
-function SetCaretBlinkTime(uMSeconds: Cardinal): LongBool;
-begin
-  Result := True;
-  try
-    QApplication_setCursorFlashTime(uMSeconds);
-  except
-    Result := False;
-  end;
 end;
 
 function GetDoubleClickTime: Cardinal;
@@ -1818,10 +2117,10 @@ end;
 
 function UnionRect(var Dst: TRect; R1, R2: TRect): LongBool;
 begin
+  Result := True;
   if IsRectEmpty(R1) then
   begin
-    if IsRectEmpty(R2)
-    then
+    if IsRectEmpty(R2) then
       Result := False  // both empty
     else
     begin
@@ -1829,9 +2128,8 @@ begin
       Result := True;
     end;
   end
-  else if IsRectEmpty(R2)
-  then
-    with R1 do dst := rect(left, top, right, bottom)
+  else if IsRectEmpty(R2) then
+    with R1 do Dst := Rect(Left, Top, Right, Bottom)
   else
     with Dst do
     begin
@@ -1990,7 +2288,7 @@ begin
         if Words[I] = ' '
         then
           break;
-        inc(I);
+        Inc(I);
       until I > Length(Words);
       Result := ShortedText + '...';
       QPainter_boundingRect(Handle, @R1, @R2, Flags, PWideString(@Result), -1, nil);
@@ -2031,7 +2329,7 @@ begin
       then
       begin
         Result := F;
-        exit;
+        Exit;
       end
     end;
     {$ENDIF LINUX}
@@ -2053,12 +2351,12 @@ begin
           while (I > 0)  and (TextWidth(Handle, Paths.DelimitedText, 0) > MaxLen) do
           begin
             dec(I);
-            Paths[k] := AnsiLeftStr(Curpath, I) + Ellipses;// remove a character
+            Paths[k] := LeftStr(Curpath, I) + Ellipses;// remove a character
           end;
           if TextWidth(Handle, Paths.DelimitedText, 0)<= MaxLen then
           begin
             Result := Paths.DelimitedText;
-            exit;
+            Exit;
           end;
         end
       end;
@@ -2078,7 +2376,7 @@ begin
         while (I > 0)  and (TextWidth(Handle, Paths.DelimitedText,0) > MaxLen) do
         begin
           dec(I);
-          Paths[I] := AnsiLeftStr(Curpath, I) + Ellipses;// remove a character
+          Paths[I] := LeftStr(Curpath, I) + Ellipses;// remove a character
         end;
       end;
       Result := Paths.DelimitedText;    // will be something .../Progr...
@@ -2102,12 +2400,12 @@ begin
   Canvas.stop;
 end;
 
-function DrawText(Handle :QPainterH; var text: WideString; len: Integer;
+function DrawText(Handle :QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer;
 var
-  flags: Integer;
+  Flags: Integer;
   R2: TRect;  // bliep bliep bl...
-  caption: WideString;
+  Caption: WideString;
   FontSaved, FontSet: QFontH;
   function HidePrefix(txt: WideString): WideString;
   begin
@@ -2130,13 +2428,15 @@ var
   end;
 
 begin
+  FontSaved := nil;
+  FontSet := nil;
   if WinFlags and DT_INTERNAL <> 0 then
   begin
     FontSaved := QPainter_Font(Handle);
     QApplication_font(FontSet, nil);
     QPainter_setFont(Handle, FontSet);
   end;
-  flags := Win2QtAlign(CheckTabStop(WinFlags));
+  Flags := Win2QtAlign(CheckTabStop(WinFlags));
   (*  TODO
   if WinFlags and DT_PREFIXONLY <> 0 then
   begin
@@ -2164,9 +2464,8 @@ begin
       Caption := text;
     end;
     QPainter_DrawText(Handle, @R, flags, PWideString(@Caption), len, @R2, nil);
-    if ModifyString and flags <> 0
-    then
-      text := Caption;
+    if ModifyString and flags <> 0 then
+      Text := Caption;
     Result := R2.Bottom - R2.Top;
   end
   else
@@ -2175,28 +2474,26 @@ begin
     Result := R.bottom - R.Top;
   end;
   if WinFlags and DT_INTERNAL <> 0 then
-  begin
     QPainter_setFont(Handle, FontSaved);
-  end;
 end;
 
-function DrawText(Handle :QPainterH; text: PChar; len: Integer;
+function DrawText(Handle :QPainterH; Text: PChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer;
 var
-  wtext: WideString;
-  atext: string;
+  WText: WideString;
+  AText: string;
 begin
-  wtext := text;
-  Result := DrawText(Handle, wtext, Len, R, WinFlags);
+  WText := Text;
+  Result := DrawText(Handle, WText, Len, R, WinFlags);
   if DT_MODIFYSTRING and WinFlags <> 0 then
   begin
-    atext := wtext;
-    strcopy(text, PChar(atext));
+    AText := WText;
+    StrCopy(Text, PChar(AText));
   end;
 end;
 
 function ExtTextOut(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
-  R: PRect; Text: WideString; len: Integer;lpDx: Pointer): LongBool;
+  R: PRect; Text: WideString; Len: Integer; lpDx: Pointer): LongBool;
 begin
   try
     if WinFlags and ETO_CLIPPED = 0 then
@@ -2214,7 +2511,7 @@ begin
 end;
 
 function ExtTextOut(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
-  R: PRect; pText: PChar; len: Integer; lpDx: Pointer): LongBool;
+  R: PRect; pText: PChar; Len: Integer; lpDx: Pointer): LongBool;
 var
   ws: WideString;
 begin
@@ -2223,7 +2520,7 @@ begin
 end;
 
 function ExtTextOutW(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
-  R: PRect; pText: PWideChar; len: Integer; lpDx: Pointer): LongBool;
+  R: PRect; pText: PWideChar; Len: Integer; lpDx: Pointer): LongBool;
 var
   ws: WideString;
 begin
@@ -2295,7 +2592,7 @@ begin
   begin
     R := Bounds(0, 0, W, H);
     try
-      TempDC := CreateCompatibleBitmap(Handle, W, H);
+      TempDC := CreateCompatibleDC(Handle, W, H);
       try
         FillRect(TempDC, R, hbrFlickerFreeDraw);
         QPainter_drawPixmap(TempDC, 0, 0, hIcon, istepIfAniCur * W, 0, W, H);
@@ -2432,42 +2729,102 @@ begin
   Result := GetDC(QWidgetH(Handle));
 end;
 
-procedure ReleaseDC(wdgtH: QWidgetH; Handle: QPainterH);
+function ReleaseDC(wdgtH: QWidgetH; Handle: QPainterH): Integer;
 begin
-  // asn: wdgtH ignored
-  QPainter_end(Handle);
-  QPainter_destroy(Handle);
+  try
+    // asn: wdgtH ignored
+    //QPainter_end(Handle); // done by QPainter_destroy
+    QPainter_destroy(Handle);
+    Result := 1;
+  except
+    Result := 0;
+  end;
 end;
 
-procedure ReleaseDC(wdgtH: Integer; Handle: QPainterH);
+function ReleaseDC(wdgtH: Integer; Handle: QPainterH): Integer;
 begin
-  ReleaseDC(QWidgetH(wdgtH), Handle);
+  Result := ReleaseDC(QWidgetH(wdgtH), Handle);
 end;
 
-function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPainterH;
+function DeleteDC(Handle: QPainterH): LongBool;
+begin
+  if StrComp(QObject_name(QObjectH(Handle)), 'CompatibleDC') = 0 then
+    Result := DeleteObject(Handle)
+  else
+    Result := ReleaseDC(0, Handle) = 1;
+end;
+
+function CreateCompatibleDC(Handle: QPainterH; Width: Integer = 1; Height: Integer = 1): QPainterH;
+var
+  pdm: QPaintDeviceMetricsH;
+begin
+  try
+    pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
+    try
+      Result := QPainter_create(CreateCompatibleBitmap(Handle, Width, Height));
+      try
+        QObject_setName(QObjectH(Result), 'CompatibleDC');
+        QPainter_begin(Result, QPainter_device(Result));
+      except
+        DeleteObject(Result);
+        Result := nil;
+      end;
+    finally
+      QPaintDeviceMetrics_destroy(pdm);
+    end;
+  except
+    Result := nil;
+  end;
+end;
+
+function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPixmapH;
+var
+  pdm: QPaintDeviceMetricsH;
+begin
+  if (Width <= 0) or (Height <= 0) then
+    Result := nil
+  else
+  begin
+    pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
+    try
+      Result := QPixmap_create(Width, Height, QPaintDeviceMetrics_depth(pdm),
+                               QPixmapOptimization_DefaultOptim);
+    finally
+      QPaintDeviceMetrics_destroy(pdm);
+    end;
+  end;
+end;
+
+(*function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPainterH;
 var
   depth: Integer;
-  pixmap: QPixmapH;
+  Pixmap: QPixmapH;
   pdm: QPaintDeviceMetricsH;
 begin
   pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
   try
     depth := QPaintDeviceMetrics_depth(pdm);
-    pixmap := QPixmap_create(Width, Height, depth,
-                           QPixmapOptimization_DefaultOptim);
+    Pixmap := QPixmap_create(Width, Height, depth,
+                             QPixmapOptimization_DefaultOptim);
     try
-      Result := QPainter_create(pixmap);
-      QPainter_setPen(Result, QPainter_pen(Handle));
-      QPainter_setBackgroundColor(Result, QPainter_BackgroundColor(Handle));
-      QPainter_setFont(Result, QPainter_Font(Handle));
-      QPainter_begin(Result, QPainter_device(Result));
+      Result := QPainter_create(Pixmap);
+      try
+        QObject_setName(QObjectH(Result), 'CompatibleDC');
+        QPainter_setPen(Result, QPainter_pen(Handle));
+        QPainter_setBackgroundColor(Result, QPainter_BackgroundColor(Handle));
+        QPainter_setFont(Result, QPainter_Font(Handle));
+        QPainter_begin(Result, QPainter_device(Result));
+      except
+        QPainter_destroy(Result);
+      end;
     except
+      QPixmap_destroy(Pixmap);
       Result := nil;
     end;
   finally
     QPaintDeviceMetrics_destroy(pdm);
   end;
-end;
+end;*)
 
 function SetPixel(Handle: QPainterH; X, Y: Integer; Color: TColorRef): TColorRef;
 var
@@ -2486,26 +2843,43 @@ begin
 end;
 
 function GetPixel(Handle: QPainterH; X, Y: Integer): TColorRef;
+{$IFDEF LINUX}
 var
   depth: Integer;
   pixmap: QPixmapH;
   pdm: QPaintDeviceMetricsH;
   tempDC: QPainterH;
   img: QImageH;
+{$ENDIF LINUX}  
 begin
-  pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
   try
+    MapPainterLP(Handle, X, Y);
+   {$IFDEF MSWINDOWS}
+    Result := Windows.GetPixel(QPainter_handle(Handle), X, Y);
+   {$ENDIF}
+   {$IFDEF LINUX}
+    pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
     depth := QPaintDeviceMetrics_depth(pdm);
     QPaintDeviceMetrics_destroy(pdm);
-    pixmap := QPixmap_create(2, 2, depth, QPixmapOptimization_NoOptim);
-    tempDC := QPainter_create(pixmap);
-    bitblt(tempDC, 0, 0, 1, 1, Handle, X, Y, RasterOp_CopyROP);
-    img := QImage_create;
-    QPixmap_convertToImage(pixmap, img);
-    Result := QImage_pixelIndex(img, 0, 0);
-    QImage_destroy(img);
-    QPainter_destroy(tempdc);
-    QPixmap_destroy(pixmap);
+    img := nil;
+    tempdc := nil;
+    pixmap := nil;
+    try
+      pixmap := QPixmap_create(2, 2, depth, QPixmapOptimization_NoOptim);
+      tempDC := QPainter_create(pixmap);
+      Qt.bitblt(tempDC, 0, 0, 1, 1, Handle, X, Y, RasterOp_CopyROP);
+      img := QImage_create;
+      QPixmap_convertToImage(pixmap, img);
+      Result := QImage_pixelIndex(img, 0, 0);
+    finally
+      if Assigned(img) then
+        QImage_destroy(img);
+      if Assigend(tempdc) then
+        QPainter_destroy(tempdc);
+      if Assigned(pixmap) then
+        QPixmap_destroy(pixmap);
+    end;
+   {$ENDIF LINUX} 
   except
     Result := 0;
   end;
@@ -2513,15 +2887,28 @@ end;
 
 function DeleteObject(Handle: QPainterH): LongBool;
 var
-  pixmap: QPaintDeviceH;
+  Pixmap: QPaintDeviceH;
+  IsCompatible: Boolean;
 begin
   try
-    pixmap := QPainter_device(Handle); // get paintdevice
-    if QPainter_isActive(Handle)
-    then
+    Pixmap := QPainter_device(Handle); // get paintdevice
+    if QPainter_isActive(Handle) then
       QPainter_end(Handle);
+
+    IsCompatible := StrComp(QObject_name(QObjectH(Handle)), 'CompatibleDC') = 0;
     QPainter_destroy(Handle);  // destroy painter
-    QPixmap_destroy(QPixmapH(pixmap)); // destroy pixmap paintdevice
+    if IsCompatible then
+      QPixmap_destroy(QPixmapH(Pixmap)); // destroy pixmap paintdevice
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
+function DeleteObject(Handle: QPixmapH): LongBool;
+begin
+  try
+    QPixmap_destroy(Handle);
     Result := True;
   except
     Result := False;
@@ -2616,9 +3003,6 @@ end;
 
 {$IFDEF LINUX}
 
-uses
-  Libc;
-
 function FileGetAttr(const FileName: string): Integer;
 var
   sr: TSearchRec;
@@ -2664,7 +3048,7 @@ begin
     DestName := Destination;
   if FailIfExists  and FileExists(DestName) then
   begin
-    exit;
+    Exit;
   end;
   GetMem(CopyBuffer, ChunkSize);
   try
@@ -2769,312 +3153,6 @@ end;
 
 {$ENDIF LINUX}
 
-// used internally
-procedure MapPainterLP(Handle: QPainterH; var x, y: Integer); overload;
-var
-  Matrix: QWMatrixH;
-begin
-  if QPainter_hasWorldXForm(Handle) then
-  begin
-    Matrix := QPainter_worldMatrix(Handle);
-    QWMatrix_map(Matrix, x, y, @x, @y);
-  end;
-end;
-
-procedure MapPainterLP(Handle: QPainterH; var x0, y0, x1, y1: Integer); overload;
-var
-  Matrix: QWMatrixH;
-begin
-  if QPainter_hasWorldXForm(Handle) then
-  begin
-    Matrix := QPainter_worldMatrix(Handle);
-    QWMatrix_map(Matrix, x0, y0, @x0, @y0);
-    QWMatrix_map(Matrix, x1, y1, @x1, @y1);
-  end;
-end;
-
-procedure MapPainterLP(Handle: QPainterH; var R: TRect); overload;
-var
-  Matrix: QWMatrixH;
-begin
-  if QPainter_hasWorldXForm(Handle) then
-  begin
-    Matrix := QPainter_worldMatrix(Handle);
-    QWMatrix_map(Matrix, PRect(@R), PRect(@R));
-  end;
-end;
-
-procedure MapPainterLP(Handle: QPainterH; var Pt: TPoint); overload;
-var
-  Matrix: QWMatrixH;
-begin
-  if QPainter_hasWorldXForm(Handle) then
-  begin
-    Matrix := QPainter_worldMatrix(Handle);
-    QWMatrix_map(Matrix, PPoint(@Pt), PPoint(@Pt));
-  end;
-end;
-
-function LPtoDP(Handle: QPainterH; var Points; Count: Integer): LongBool;
-var
-  Matrix: QWMatrixH;
-  P: PPoint;
-begin
-  Result := True;
-  try
-    if QPainter_hasWorldXForm(Handle) then
-    begin
-      Matrix := QPainter_worldMatrix(Handle);
-      P := @Points;
-      while Count > 0 do
-      begin
-        Dec(Count);
-        QWMatrix_map(Matrix, P, P);
-        Inc(P);
-      end;
-    end;
-  except
-    Result := False;
-  end;
-end;
-
-function DPtoLP(Handle: QPainterH; var Points; Count: Integer): LongBool;
-var
-  Matrix: QWMatrixH;
-  P: PPoint;
-  dx, dy, m11, m12, m21, m22: Double;
-begin
-  Result := True;
-  try
-    if QPainter_hasWorldXForm(Handle) then
-    begin
-      Matrix := QPainter_worldMatrix(Handle);
-      P := @Points;
-      while Count > 0 do
-      begin
-        Dec(Count);
-        dx := QWMatrix_dx(Matrix);
-        dy := QWMatrix_dy(Matrix);
-        m11 := QWMatrix_m11(Matrix);
-        m12 := QWMatrix_m12(Matrix);
-        m21 := QWMatrix_m21(Matrix);
-        m22 := QWMatrix_m22(Matrix);
-
-        with P^ do
-        begin
-          X := Round(X / m11 - Y / m21 - dx);
-          Y := Round(X / m12 - Y / m22 - dy);
-        end;
-        Inc(P);
-      end;
-    end;
-  except
-    Result := False;
-  end;
-end;
-
-function ExcludeClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer;
-var
-  ExcludeRgn, Rgn: QRegionH;
-begin
-  MapPainterLP(Handle, X1, Y1, X2, Y2);
-  ExcludeRgn := QRegion_create(X1, Y1, X2 - X1, Y2 - Y1, QRegionRegionType_Rectangle);
-  try
-    Rgn := QPainter_clipRegion(Handle);
-    QRegion_subtract(Rgn, Rgn, ExcludeRgn);
-    QPainter_setClipping(Handle, True);
-    Result := GetRegionType(Rgn);
-  except
-    Result := RGN_ERROR;
-  end;
-  QRegion_destroy(ExcludeRgn);
-end;
-
-function IntersectClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer;
-var
-  IntersectRgn, Rgn: QRegionH;
-  ClipRect: TRect;
-begin
-  SetRect(ClipRect, X1, Y2, X2, Y2);
-  MapPainterLP(Handle, ClipRect);
-  IntersectRgn := QRegion_create(@ClipRect, QRegionRegionType_Rectangle);
-  try
-    Rgn := QPainter_clipRegion(Handle);
-    if QRegion_isNull(Rgn) then
-      QRegion_unite(Rgn, Rgn, IntersectRgn)
-    else
-      QRegion_intersect(Rgn, Rgn, IntersectRgn);
-    QPainter_setClipping(Handle, True);
-    Result := GetRegionType(Rgn);
-  except
-    Result := RGN_ERROR;
-  end;
-  QRegion_destroy(IntersectRgn);
-end;
-
-function SelectClipRgn(Handle: QPainterH; Region: QRegionH): integer;
-var
-  rgn: QRegionH;
-  x, y: Integer;
-begin
-  try
-    x := 0;
-    y := 0;
-    MapPainterLP(Handle, x, y);
-    rgn := QRegion_create(Region);
-    try
-      QRegion_translate(rgn, x, y);
-      QPainter_setClipRegion(Handle , rgn);
-    finally
-      QRegion_destroy(rgn);
-    end;
-    QPainter_setClipping(Handle, True);
-    Result := GetRegionType(Region);
-  except
-    Result := RGN_ERROR;
-  end;
-end;
-
-function CreateRoundRectRgn(x1, y1, x2, y2, WidthEllipse, HeightEllipse: Integer): QRegionH;
-var
-  Ellipse, R: QRegionH;
-begin
-  Result := CreateRectRgn(x1 + WidthEllipse div 2, y1 + HeightEllipse div 2,
-                          x2 - WidthEllipse div 2, y2 - HeightEllipse div 2);
-
-  // left/top corner
-  Ellipse := CreateEllipticRgn(x1, y1, x1 + WidthEllipse, y1 + HeightEllipse);
-  CombineRgn(Result, Result, Ellipse, RGN_OR);
-  DeleteObject(Ellipse);
-
-  // right/top corner
-  Ellipse := CreateEllipticRgn(x2 - WidthEllipse, y1, x2, y1 + HeightEllipse);
-  CombineRgn(Result, Result, Ellipse, RGN_OR);
-  DeleteObject(Ellipse);
-
-  // left/bottom corner
-  Ellipse := CreateEllipticRgn(x1, y2 - HeightEllipse, x1 + WidthEllipse, y2);
-  CombineRgn(Result, Result, Ellipse, RGN_OR);
-  DeleteObject(Ellipse);
-
-  // right/bottom corner
-  Ellipse := CreateEllipticRgn(x2 - WidthEllipse, y2 - HeightEllipse, x2, y2);
-  CombineRgn(Result, Result, Ellipse, RGN_OR);
-  DeleteObject(Ellipse);
-
-  // top rect
-  R := CreateRectRgn(x1 - WidthEllipse, y1, x2 - WidthEllipse, y1 + HeightEllipse);
-  CombineRgn(Result, Result, R, RGN_OR);
-  DeleteObject(Ellipse);
-
-  // bottom rect
-  R := CreateRectRgn(x1 - WidthEllipse, y2 - HeightEllipse, x2 - WidthEllipse, y2);
-  CombineRgn(Result, Result, R, RGN_OR);
-  DeleteObject(Ellipse);
-
-  // left rect
-  R := CreateRectRgn(x1, y1 + HeightEllipse, x1 + WidthEllipse, y2 - HeightEllipse);
-  CombineRgn(Result, Result, R, RGN_OR);
-  DeleteObject(Ellipse);
-
-  // right rect
-  R := CreateRectRgn(x2 - WidthEllipse, y1 + HeightEllipse, x2, y2 - HeightEllipse);
-  CombineRgn(Result, Result, R, RGN_OR);
-  DeleteObject(Ellipse);
-end;
-
-function StretchBlt(DestHandle: QPainterH; X, Y, Width, Height: Integer; SrcHandle: QPainterH;
-  XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: RasterOp): LongBool;
-var
-  Pixmap: QPixmapH;
-  NewMatrix: QWMatrixH;
-  SavedRop: RasterOp;
-begin
-  Result := False;
-  if (DestHandle = nil) or (SrcHandle = nil) then
-    Exit;
-  Result := True;
-  try
-    Pixmap := QPixmap_create(SrcWidth, SrcHeight, 32, QPixmapOptimization_BestOptim);
-    try
-      // copy to pixmap
-      bitBlt(Pixmap, 0, 0, QPainter_device(SrcHandle),
-        XSrc, YSrc, SrcWidth, SrcHeight,
-        RasterOp_CopyROP, True);
-
-      // draw stretched pixmap
-      SavedRop := QPainter_rasterOp(DestHandle);
-      try
-        QPainter_setRasterOp(DestHandle, Rop);
-        QPainter_saveWorldMatrix(DestHandle);
-        try
-          NewMatrix := QWMatrix_create(
-            Width / SrcWidth, 0,  // x factor
-            0, Height / SrcHeight, // y factor
-            X, Y); // translate
-          try
-            QPainter_setWorldMatrix(DestHandle, NewMatrix, True);
-            QPainter_drawPixmap(DestHandle, 0, 0, Pixmap, 0, 0, SrcWidth, SrcHeight);
-          finally
-            QWMatrix_destroy(NewMatrix);
-          end;
-        finally
-          QPainter_restoreWorldMatrix(DestHandle);
-        end;
-      finally
-        QPainter_setRasterOp(DestHandle, SavedRop);
-      end;
-    finally
-      QPixmap_destroy(Pixmap);
-    end;
-  except
-    Result := False;
-  end;
-end;
-
-function GetClientRect(Handle: QWidgetH; var R: TRect): LongBool;
-var
-  Control: TWidgetControl;
-begin
-  try
-    // some CLX controls have a user modified ClientRect
-    Control := FindControl(Handle);
-    if Control <> nil then
-      R := Control.ClientRect
-    else
-      QWidget_rect(Handle, @R);
-    Result := True;
-  except
-    Result := False;
-  end;
-end;
-
-function WindowFromDC(Handle: QPainterH): QWidgetH;
-var
-  WinId: Cardinal;
-  {$IFDEF MSWINDOWS}
-  WinDC: Windows.HDC;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  dev: QPaintDeviceH;
-  {$ENDIF LINUX}
-begin
-  Result := nil;
-  WinId := 0;
-  {$IFDEF MSWINDOWS}
-  WinDC := QPainter_handle(Handle);
-  if WinDC <> 0 then
-    WinId := Cardinal(Windows.WindowFromDC(WinDC));
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  dev := QPainter_device(Handle);
-  if dev <> nil then
-    WinId := Cardinal(QPaintDevice_handle(dev));
-  {$ENDIF LINUX}
-  if WinId <> 0 then
-    Result := QWidget_find(WinId);
-end;
-
 { ------------ Caret -------------- }
 type
   TEmulatedCaret = class(TObject)
@@ -3133,22 +3211,29 @@ end;
 
 function GetCaretBlinkTime: Cardinal;
 begin
-  GlobalCaret.Lock;
-  try
-    Result := GlobalCaret.Timer.Interval;
-  finally
-    GlobalCaret.Unlock;
-  end;
+  {$IFDEF MSWINDOWS}
+  Result := Windows.GetCaretBlinkTime;
+  {$ELSE}
+  Result := QApplication_cursorFlashTime;
+  {$ENDIF}
 end;
 
-function SetCaretBlinkTime(MSeconds: Cardinal): Boolean;
+function SetCaretBlinkTime(uMSeconds: Cardinal): LongBool;
 begin
   Result := True;
-  GlobalCaret.Lock;
   try
-    GlobalCaret.Timer.Interval := MSeconds;
-  finally
-    GlobalCaret.Unlock;
+    {$IFDEF MSWINDOWS}
+    Windows.SetCaretBlinkTime(uMSeconds);
+    {$ENDIF}
+    QApplication_setCursorFlashTime(uMSeconds);
+    GlobalCaret.Lock;
+    try
+      GlobalCaret.Timer.Interval := GetCaretBlinkTime;
+    finally
+      GlobalCaret.Unlock;
+    end;
+  except
+    Result := False;
   end;
 end;
 
@@ -3213,11 +3298,7 @@ begin
 
   FTimer := TTimer.Create(nil);
   FTimer.Enabled := False;
-  {$IFDEF MSWINDOWS}
-  FTimer.Interval := Windows.GetCaretBlinkTime;
-  {$ELSE}
-  FTimer.Interval := 800;
-  {$ENDIF MSWINDOWS}
+  FTimer.Interval := GetCaretBlinkTime;
   FTimer.OnTimer := DoTimer;
 end;
 
@@ -3266,7 +3347,7 @@ begin
     DestDev := QWidget_to_QPaintDevice(FWidget);
     R := Rect(0, 0, QPixmap_width(FPixmap), QPixmap_height(FPixmap));
 
-    BitBlt(DestDev, @FPos, FPixmap, @R, RasterOp_XorROP);
+    Qt.bitBlt(DestDev, @FPos, FPixmap, @R, RasterOp_XorROP);
     FShown := not FShown;
   end;
 end;
@@ -3337,10 +3418,8 @@ begin
   else
   begin
     case Color of
-      0:
-        QC := QColor(clWhite);
-      1:
-        QC := QColor(clGray);
+      0: QC := QColor(clWhite);
+      1: QC := QColor(clGray);
     else
       Result := nil;
       Exit;
