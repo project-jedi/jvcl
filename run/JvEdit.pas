@@ -74,6 +74,7 @@ type
     FProtectPassword: Boolean;
     FStreamedSelLength: Integer;
     FStreamedSelStart: Integer;
+    FUseFixedPopup: boolean;
     procedure SetCaret(const Value: TJvCaret);
     procedure CaretChanged(Sender: TObject); dynamic;
     procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
@@ -110,6 +111,7 @@ type
     procedure SetSelLength(Value: Integer); override;
     procedure SetSelStart(Value: Integer); override;
     procedure KeyDown(var Key:Word;Shift:TSHiftState);override;
+    function GetPopupMenu: TPopupMenu; override;
   public
     procedure DefaultHandler(var Msg); override;
     function IsEmpty: Boolean;
@@ -120,6 +122,7 @@ type
   protected
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
+    property UseFixedPopup:boolean read FUseFixedPopup write FUseFixedPopup default true;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Caret: TJvCaret read FCaret write SetCaret;
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands write SetClipboardCommands default
@@ -230,7 +233,7 @@ type
 implementation
 
 uses
-  Math;
+  JvFixedEditPopup, Math;
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin
@@ -249,6 +252,7 @@ begin
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
   FGroupIndex := -1;
+  FUseFixedPopup := true;
   FStreamedSelLength := 0;
   FStreamedSelStart := 0;
 end;
@@ -648,6 +652,13 @@ procedure TJvCustomEdit.KeyDown(var Key: Word; Shift: TSHiftState);
 begin
   UpdateEdit;
   inherited;
+end;
+
+function TJvCustomEdit.GetPopupMenu: TPopupMenu;
+begin
+  Result := inherited GetPopupMenu;
+  if (Result = nil) and UseFixedPopup then // user has not assigned his own popup menu, so use fixed default
+    Result := FixedDefaultEditPopUp(self);
 end;
 
 end.

@@ -80,4 +80,9 @@ Known Issues:
 {$DEFINE DelphiPersonalEdition}
 {$ENDIF}
 
+{$IFDEF COMPILER7_UP}
+  {$WARN UNSAFE_TYPE OFF}
+  {$WARN UNSAFE_CODE OFF}
+  {$WARN UNSAFE_CAST OFF}
+{$ENDIF}
 

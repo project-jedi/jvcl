@@ -18,7 +18,8 @@ PROJECTS = DJCL50.bpl JvCoreD5R.bpl JvCoreD5D.bpl JvSystemD5R.bpl \
   JvInterpreterD5D.bpl JvBandsD5R.bpl JvBandsD5D.bpl JvPluginD5R.bpl \
   JvPluginD5D.bpl JvJansD5R.bpl JvJansD5D.bpl JvGlobusD5R.bpl JvGlobusD5D.bpl \
   JvPrintPreviewD5R.bpl JvPrintPreviewD5D.bpl JvPageCompsD5R.bpl \
-  JvPageCompsD5D.bpl JvValidatorsD5R.bpl JvValidatorsD5D.bpl
+  JvPageCompsD5D.bpl JvValidatorsD5R.bpl JvValidatorsD5D.bpl JvUIBD5R.bpl \
+  JvUIBD5D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -150,6 +151,12 @@ JvValidatorsD5R.bpl: D5\JvValidatorsD5R.dpk
   $(DCC)
 
 DJCL50.bpl: ..\..\..\JCL\packages\DJCL50.dpk
+  $(DCC)
+
+JvUIBD5D.bpl: d5\JvUIBD5D.dpk
+  $(DCC)
+
+JvUIBD5R.bpl: d5\JvUIBD5R.dpk
   $(DCC)
 
 

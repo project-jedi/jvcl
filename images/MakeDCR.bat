@@ -15,3 +15,4 @@ brc32 JvSystemReg.rc -r -fo..\Resources\JvSystemReg.dcr
 brc32 JvPluginReg.rc -r -fo..\Resources\JvPluginReg.dcr
 brc32 JvJansReg.rc -r -fo..\Resources\JvJansReg.dcr
 brc32 JvGlobusReg.rc -r -fo..\Resources\JvGlobusReg.dcr
+brc32 JvUIBReg.rc -r -fo..\Resources\JvUIBReg.dcr
