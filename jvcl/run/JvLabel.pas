@@ -754,15 +754,17 @@ begin
     if FLayout <> tlTop then
     begin
       DoDrawText(Rect, DrawStyle or DT_CALCRECT);
-      Rect.Left := ClientRect.Left + Margin;
-      Rect.Right := ClientRect.Right - Margin;
-      Rect.Top := ClientRect.Top + Margin;
-      Rect.Bottom := ClientRect.Bottom - Margin;
-//      Inc(Rect.Top, YOffsetFrame);
+      Rect.Left := Margin;
+      Rect.Right := Width - Margin;
+      if Layout <> tlCenter then
+      begin
+        Rect.Top := Max(Rect.Top, Margin);
+        Rect.Bottom := Min(Rect.Bottom, Height - Margin);
+      end;
       if FLayout = tlBottom then
-        OffsetRect(Rect, 0, Height - Rect.Bottom)
+        OffsetRect(Rect, 0, (Height - Rect.Bottom) div 2)
       else
-        OffsetRect(Rect, 0, (Height - Rect.Bottom) div 2);
+        OffsetRect(Rect, 0, (Height - Rect.Bottom) div 2 - Margin div 2);
     end;
     DoDrawText(Rect, DrawStyle);
     if FShowFocus and Assigned(FFocusControl) and FFocused and
