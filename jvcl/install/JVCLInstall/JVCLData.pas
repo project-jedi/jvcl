@@ -87,8 +87,6 @@ type
     function GetGenerateMapFiles: Boolean;
     procedure SetJCLDir(const Value: string);
     function GetJVCLConfig: TJVCLConfig;
-    function GetQuickReport: Boolean;
-    function GetQuickReport4: Boolean;
   private
     { ITargetConfig }
     function GetInstance: TObject;
@@ -113,6 +111,8 @@ type
     procedure DoCleanPalette(reg: TRegistry; const Name: string;
       RemoveEmptyPalettes: Boolean);
     function RegisterProjectGroupToIDE(ProjectGroup: TProjectGroup): Boolean;
+
+    procedure UpdateJVCLConfig;
   public
     property Target: TCompileTarget read GetTarget;
     property Owner: TJVCLData read FOwner;
@@ -160,9 +160,6 @@ type
 
     property DxgettextDir: string read GetDxgettextDir;
       // Directory where dxgettext is installed or ''. (special handling for Delphi/BCB 5)
-
-    property QuickReport: Boolean read GetQuickReport;
-    property QuickReport4: Boolean read GetQuickReport4;
 
     property InstalledJVCLVersion: Integer read FInstalledJVCLVersion;
       // InstalledJVCLVersion returns the version of the installed JVCL.
@@ -1173,12 +1170,11 @@ begin
     end
     else
       JVCLConfig.LoadFromFile(Filename);
-    // set (hidden) personal edition configuration 
+
+    // set (hidden) personal edition configuration
     JVCLConfig.Enabled['DelphiPersonalEdition'] := Target.IsPersonal;
 
-    // QuickReport configuration
-    JVCLConfig.Enabled['QREPORT4'] := JVCLConfig.Enabled['QREPORT4'] or QuickReport4;
-    JVCLConfig.Enabled['JVCL_UseQuickReport'] := JVCLConfig.Enabled['JVCL_UseQuickReport'] or QuickReport;
+    UpdateJVCLConfig;
   finally
     Ini.Free;
   end;
@@ -1438,14 +1434,6 @@ begin
 {**}DoProgress(RsComplete, MaxSteps, MaxSteps);
 end;
 
-function TTargetConfig.GetQuickReport: Boolean;
-begin
-  Result := FileExists(Target.BplDir + '\qrpt.dcp') or GetQuickReport4;
-end;
-
-function TTargetConfig.GetQuickReport4: Boolean;
-begin
-  Result := FileExists(Target.RootDir + Format('\qr4run%s%d.bpl', [LowerCase(TargetTypes[Target.IsBCB]), Target.Version]));
-end;
+{$I InstalledPackages.inc}
 
 end.
