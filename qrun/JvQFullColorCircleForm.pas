@@ -38,7 +38,8 @@ uses
   QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms,
   QExtCtrls, QStdCtrls, QMask, 
   JvQFullColorDialogs, JvQFullColorCtrls, JvQFullColorSpaces, JvQFullColorRotate,
-  JvQExMask, JvQSpin, JvQExStdCtrls, JvQExControls, JvQComponent;
+  JvQExMask, JvQSpin, JvQExStdCtrls, JvQExControls, JvQComponent,
+  QComboEdits, JvQExComboEdits;
 
 type
   TJvFullColorCircleFrm = class(TForm)
