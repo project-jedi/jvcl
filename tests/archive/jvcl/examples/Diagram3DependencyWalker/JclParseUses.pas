@@ -98,6 +98,8 @@ resourcestring
   SInvalidUnit = 'Invalid unit';
   SInvalidUses = 'Invalid uses clause';
 
+function PeekIdentifier(var P:PChar):boolean;forward;
+
 function PeekKeyword(var P: PChar; Keyword: PChar): Boolean; forward;
 function ReadIdentifier(var P: PChar): string; forward;
 procedure SkipCommentsAndBlanks(var P: PChar); forward;
@@ -122,7 +124,7 @@ var
   KeywordLen: Integer;
 begin
   KeywordLen := StrLen(Keyword);
-  Result := StrLComp(P, Keyword, KeywordLen) = 0;
+  Result := StrLIComp(P, Keyword, KeywordLen) = 0;
   if Result then
     Inc(P, KeywordLen);
 end;
@@ -154,10 +156,19 @@ var
   KeywordLen: Integer;
 begin
   KeywordLen := StrLen(Keyword);
-  Result := StrLComp(P, Keyword, KeywordLen) = 0;
+  Result := StrLIComp(P, KeyWord, KeywordLen) = 0;
 end;
 
 //----------------------------------------------------------------------------
+
+function PeekIdentifier(var P: PChar):boolean;
+var Q:PChar;
+begin
+  Q := P;
+  Result := CheckIdentifier(P);
+  P := Q;
+end;
+
 
 function ReadIdentifier(var P: PChar): string;
 var
@@ -279,7 +290,8 @@ begin
       ';':
         Break;
       else
-        raise EUsesListError.Create(SInvalidUses);
+        if not PeekIdentifier(P) then
+          raise EUsesListError.Create(SInvalidUses);
     end;
   end;
 end;
@@ -341,7 +353,8 @@ begin
       ';':
         Break;
       else
-        raise EUsesListError.Create(SInvalidUses);
+        if not PeekIdentifier(P) then
+          raise EUsesListError.Create(SInvalidUses);
     end;
   end;
 end;
@@ -370,6 +383,7 @@ begin
         raise EUsesListError.Create(SInvalidUses);
       SkipCommentsAndBlanks(P);
 
+
       if PeekKeyword(P, 'in') then
       begin
         Inc(P, 2);
@@ -377,7 +391,7 @@ begin
         if P^ <> '''' then
           raise EUsesListError.Create(SInvalidUses);
         Inc(P);
-        
+
         while not (P^ in [#0, '''']) do
           Inc(P);
         if P^ <> '''' then
@@ -395,10 +409,10 @@ begin
             Break;
           end;
         else
-          raise EUsesListError.Create(SInvalidUses);
+          if not PeekIdentifier(P) then
+            raise EUsesListError.Create(SInvalidUses)
       end;
     end;
-
     SetString(FText, PStart, P - PStart);
   end;
 end;
@@ -841,6 +855,11 @@ begin
 
   // check 'unit' label
   SkipCommentsAndBlanks(P);
+  while (P^ <> #0) and not PeekKeyword(P, 'unit') do
+  begin
+    SkipChars(P, [#1..#255] - Blanks);
+    SkipCommentsAndBlanks(P);
+  end;
   if not CheckKeyword(P, SUnit) then
     raise EUsesListError.Create(SInvalidUnit);
   SkipCommentsAndBlanks(P);
@@ -851,7 +870,12 @@ begin
     raise EUsesListError.Create(SInvalidUnit);
   Inc(P);
   // check 'interface' label
-  SkipCommentsAndBlanks(P);
+//  SkipCommentsAndBlanks(P);
+  while (P^ <> #0) and not PeekKeyword(P, 'interface') do
+  begin
+    SkipChars(P, [#1..#255] - Blanks);
+    SkipCommentsAndBlanks(P);
+  end;
   if not CheckKeyword(P, 'interface') then
     raise EUsesListError.Create(SInvalidUnit);
   SkipCommentsAndBlanks(P);
