@@ -330,7 +330,8 @@ end;
 
 procedure TJvAppXMLStorage.Flush;
 begin
-  FXml.SaveToFile(FFileName);
+  if FFileName <> '' then
+    FXml.SaveToFile(FFileName);
 end;
 
 function TJvAppXMLStorage.GetFileName: TFileName;
