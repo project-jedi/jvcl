@@ -1,3 +1,5 @@
+2002-12-21
+ Added JvBallonHint // remko
 2002-11-19
 - Added Transparent and Multiline property to JvPanel. // peter3, pongtawat
 2002-11-18
