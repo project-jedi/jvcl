@@ -97,6 +97,7 @@ type
     property HintColor;
     property HotTrack;
     property HotTrackFont;
+    property HotTrackFontOptions;
     property Images;
     property ImageIndex;
     property Spacing;

@@ -43,7 +43,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms,
-  JVCLVer;
+  JVCLVer, JvTypes;
 
 type
   TJvTextMargins = class(TPersistent)
@@ -82,6 +82,7 @@ type
     FShowAccelChar: Boolean;
     FTextMargins: TJvTextMargins;
     FWordWrap: Boolean;
+    FHotTrackFontOptions: TJvTrackFOntOptions;
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
@@ -92,6 +93,7 @@ type
     procedure SetShowAccelChar(Value: Boolean);
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetLayout(const Value: TTextLayout);
+
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
@@ -100,6 +102,7 @@ type
     procedure SetTextMargins(const Value: TJvTextMargins);
     procedure SetWordWrap(const Value: Boolean);
     procedure DoMarginsChange(Sender: TObject);
+    procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
   protected
     procedure Loaded; override;
     procedure AdjustBounds; dynamic;
@@ -116,6 +119,7 @@ type
     property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultHotTrackOptions;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Layout: TTextLayout read FLayout write SetLayout;
     property WordWrap: Boolean read FWordWrap write SetWordWrap;
@@ -155,6 +159,7 @@ type
     property HintColor;
     property HotTrack;
     property HotTrackFont;
+    property HotTrackFontOptions;
     property Layout;
     property ParentBiDiMode;
     property ParentColor;
@@ -186,6 +191,8 @@ type
   end;
 
 implementation
+uses
+  JvJVCLUtils;
 
 //=== TJvCustomStaticText ====================================================
 
@@ -207,6 +214,7 @@ begin
   Height := 17;
   FAutoSize := True;
   FShowAccelChar := True;
+  FHotTrackFontOptions := DefaultHotTrackOptions;
   //  ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
@@ -393,6 +401,7 @@ procedure TJvCustomStaticText.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   AdjustBounds;
+  UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
 procedure TJvCustomStaticText.CMTextChanged(var Msg: TMessage);
@@ -498,6 +507,15 @@ begin
   Invalidate;
 end;
 
+procedure TJvCustomStaticText.SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
+begin
+  if FHotTrackFontOptions <> Value then
+  begin
+    FHotTrackFontOptions := Value;
+    UpdateTrackFont(HotTrackFont, Font,FHotTrackFontOptions);
+  end;
+end;
+
 //=== TJvTextMargins =========================================================
 
 procedure TJvTextMargins.Change;
@@ -523,6 +541,7 @@ begin
     Change;
   end;
 end;
+
 
 end.
 

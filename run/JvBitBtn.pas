@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Buttons, Menus,
-  JVCLVer;
+  JVCLVer, JvTypes;
 
 type
   TJvBitBtn = class(TBitBtn)
@@ -50,12 +50,16 @@ type
     FHotTrack: Boolean;
     FHotFont: TFont;
     FFontSave: TFont;
+    FHotTrackFontOptions: TJvTrackFontOptions;
     procedure SetGlyph(Value: TBitmap);
     procedure SetHotFont(const Value: TFont);
+    procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+
   public
     procedure Click; override;
     constructor Create(AOwner: TComponent); override;
@@ -64,6 +68,7 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
+    property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
     property HotGlyph: TBitmap read FGlyph write SetGlyph;
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property DropDownMenu: TPopupMenu read FDropDown write FDropDown;
@@ -73,6 +78,8 @@ type
   end;
 
 implementation
+uses
+  JvJVCLUtils;
 
 constructor TJvBitBtn.Create(AOwner: TComponent);
 begin
@@ -85,6 +92,7 @@ begin
   FGlyph := TBitmap.Create;
   FOldGlyph := TBitmap.Create;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  FHotTrackFontOptions := DefaultTrackFontOptions;
 end;
 
 destructor TJvBitBtn.Destroy;
@@ -164,6 +172,21 @@ end;
 procedure TJvBitBtn.SetHotFont(const Value: TFont);
 begin
   FHotFont.Assign(Value);
+end;
+
+procedure TJvBitBtn.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+begin
+  if FHotTrackFontOptions <> Value then
+  begin
+    FHotTrackFontOptions := Value;
+    UpdateTrackFont(HotTrackFont, Font,FHotTrackFontOptions);
+  end;
+end;
+
+procedure TJvBitBtn.CMFontChanged(var Message: TMessage);
+begin
+  inherited;
+  UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
 end.

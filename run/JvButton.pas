@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Menus, Controls,
-  Forms, JvComponent, JVCLVer;
+  Forms, JvComponent, JVCLVer, JvTypes;
 
 const
   CM_FORCESIZE = WM_USER + 777;
@@ -115,6 +115,7 @@ type
     FOver: Boolean;
     FWordWrap: boolean;
     FForceSameSize: boolean;
+    FHotTrackFontOptions: TJvTrackFontOptions;
     procedure SetHotFont(const Value: TFont);
     procedure SetWordWrap(const Value: boolean);
     procedure SetForceSameSize(const Value: boolean);
@@ -123,6 +124,8 @@ type
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
     procedure DoMouseEnter; dynamic;
     procedure DoMouseLeave; dynamic;
@@ -142,6 +145,7 @@ type
     property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
+    property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultHotTrackOptions;
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FonMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -154,6 +158,8 @@ type
 //  TJvButton = class(TJvCustomButton);
 
 implementation
+uses
+  JvJVCLUtils;
 
 const
   JvBtnLineSeparator = '|';
@@ -405,6 +411,7 @@ begin
   FOver := False;
   FWordWrap := true;
   FForceSameSize := false;
+  FHotTrackFontOptions := DefaultHotTrackOptions;
 end;
 
 destructor TJvCustomButton.Destroy;
@@ -605,6 +612,21 @@ begin
     if Sender <> Self then
       with NewSize do
         inherited SetBounds(Left, Top, X, Y);
+end;
+
+procedure TJvCustomButton.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+begin
+  if FHotTrackFontOptions <> Value then
+  begin
+    FHotTrackFontOptions := Value;
+    UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
+  end;
+end;
+
+procedure TJvCustomButton.CMFontChanged(var Message: TMessage);
+begin
+  inherited;
+  UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
 end.

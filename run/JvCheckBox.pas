@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JVCLVer;
+  JVCLVer, JvTypes;
 
 type
   TJvCheckBox = class(TCheckBox)
@@ -51,9 +51,11 @@ type
     FAutoSize: Boolean;
     FAssociated: TControl;
     FControlCanvas: TControlCanvas;
+    FHotTrackFontOptions: TJvTrackFOntOptions;
     procedure SetHotFont(const Value: TFont);
     procedure SetAssociated(const Value: TControl);
     function GetCanvas: TCanvas;
+    procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
   protected
     property Canvas: TCanvas read GetCanvas;
     procedure SetAutoSize(Value: Boolean);{$IFDEF COMPILER6_UP} override;{$ENDIF}
@@ -81,6 +83,8 @@ type
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
+    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultHotTrackOptions;
+
     property HintColor: TColor read FColor write FColor default clInfoBk;
 
     property OnMouseEnter: TNotifyEvent read FonMouseEnter write FonMouseEnter;
@@ -90,7 +94,9 @@ type
   end;
 
 implementation
-
+uses
+  JvJVCLUtils;
+  
 {**************************************************}
 
 constructor TJvCheckBox.Create(AOwner: TComponent);
@@ -102,6 +108,7 @@ begin
   FColor := clInfoBk;
   FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  FHotTrackFontOptions := DefaultHotTrackOptions;
 end;
 
 destructor TJvCheckBox.Destroy;
@@ -251,6 +258,7 @@ procedure TJvCheckBox.CMFontchanged(var Message: TMessage);
 begin
   inherited;
   CalcAutoSize;
+  UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
 procedure TJvCheckBox.CalcAutoSize;
@@ -269,6 +277,15 @@ begin
       ClientWidth := AWidth;
       ClientHeight := AHeight;
     end;
+  end;
+end;
+
+procedure TJvCheckBox.SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
+begin
+  if FHotTrackFontOptions <> Value then
+  begin
+    FHotTrackFontOptions := Value;
+    UpdateTrackFont(HotTrackFont, Font,FHotTrackFontOptions);
   end;
 end;
 
