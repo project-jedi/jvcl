@@ -68,10 +68,52 @@ function Supports(const Intf: IInterface; const IID: TGUID): Boolean; overload;
 function FileSetReadOnly(const FileName: string; ReadOnly: Boolean): Boolean;
 {$ENDIF COMPILER5}
 
+procedure ClearEnvironment;
+{ ClearEnvironment deletes almost all environment variables }
+
 implementation
 
 uses
   DelphiData;
+
+procedure ClearEnvironment;
+var
+  EnvP, P, StartP: PChar;
+  S: string;
+begin
+  EnvP := GetEnvironmentStrings;
+  if EnvP <> nil then
+  begin
+    try
+      P := EnvP;
+      StartP := P;
+      repeat
+        while P^ <> #0 do
+          Inc(P);
+        if P^ = #0 then
+        begin
+          SetString(S, StartP, P - StartP);
+          S := Copy(S, 1, Pos('=', S) - 1);
+          if S <> '' then
+          begin
+            { Delete the environment variable }
+            if (S <> 'TEMP') and (S <> 'ComSpec') and (S <> 'OS') and
+               (S <> 'PATHEXT') and (S <> 'windir') and (S <> 'systemroot') then
+              SetEnvironmentVariable(PChar(S), nil);
+          end;
+
+          Inc(P);
+          if P^ = #0 then
+            Break; // finished
+
+          StartP := P;
+        end;
+      until False;
+    finally
+      FreeEnvironmentStrings(EnvP);
+    end;
+  end;
+end;
 
 function WordWrapString(const S: string; Width: Integer = 75): string;
 var

@@ -56,12 +56,14 @@ type
     FOwner: TJVCLData;
     FTarget: TCompileTarget;
     FInstalledJVCLVersion: Integer;
+    FDefaultJCLDir: string;
     FJCLDir: string;
+    FDefaultHppDir: string;
+    FHppDir: string;
     FMissingJCL: Boolean;
     FOutdatedJCL: Boolean;
     FCompiledJCL: Boolean;
     FInstallJVCL: Boolean;
-    FHppDir: string;
 
     FDeveloperInstall: Boolean;
     FCleanPalettes: Boolean;
@@ -576,13 +578,15 @@ begin
   FTarget := ATarget;
 
   FInstallMode := [pkVcl];
-  FHppDir := Format(sBCBIncludeDir, [Target.RootDir]);
+  FDefaultHppDir := Format(sBCBIncludeDir, [Target.RootDir]);
+  FHppDir := FDefaultHppDir;
   FCleanPalettes := True;
   FDeveloperInstall := False;
   FAutoDependencies := True;
   FBplDir := Target.BplDir;
   FDcpDir := Target.DcpDir;
-  FJCLDir := CmdOptions.JclPath;
+  FDefaultJCLDir := CmdOptions.JclPath;
+  FJCLDir := FDefaultJCLDir;
   Init;
   FInstallJVCL := CanInstallJVCL;
 
@@ -648,7 +652,6 @@ procedure TTargetConfig.Init;
             Result := Dir;
             Break;
           end;
-
         end;
       end;
 
@@ -709,13 +712,10 @@ begin
   if (Target.IsBCB and
       FileExists(Format('%s\CJcl%s.dcp', [BplDir, S])) and
       FileExists(Format('%s\CJclVcl%s.dcp', [BplDir, S])))
-
      or
-
      (not Target.IsBCB and
       FileExists(Format('%s\DJcl%s.dcp', [BplDir, S])) and
       FileExists(Format('%s\DJclVcl%s.dcp', [BplDir, S])))
-      
      then
   begin
     FCompiledJCL := True;
@@ -737,6 +737,8 @@ begin
         FMissingJCL := False;
     end;}
   end;
+
+  FDefaultJCLDir := JCLDir;
 end;
 
 function TTargetConfig.CanInstallJVCL: Boolean;
@@ -1054,11 +1056,26 @@ begin
   FileSetReadOnly(IniFileName, False);
   Ini := TMemIniFile.Create(IniFileName);
   try
-    Ini.WriteString(Target.DisplayName, 'JCLDir', JCLDir); // do not localize
-    if Target.IsBCB then
+    if JCLDir = FDefaultJCLDir then
+      Ini.DeleteKey(Target.DisplayName, 'JCLDir') // do not localize
+    else
+      Ini.WriteString(Target.DisplayName, 'JCLDir', JCLDir); // do not localize
+
+    if not Target.IsBCB or (HppDir = FDefaultHppDir) then
+      Ini.DeleteKey(Target.DisplayName, 'HPPDir') // do not localize
+    else
       Ini.WriteString(Target.DisplayName, 'HPPDir', HppDir); // do not localize
-    Ini.WriteString(Target.DisplayName, 'BPLDir', BplDir); // do not localize
-    Ini.WriteString(Target.DisplayName, 'DCPDir', DcpDir); // do not localize
+
+    if BplDir = Target.BplDir then
+      Ini.DeleteKey(Target.DisplayName, 'BPLDir') // do not localize
+    else
+      Ini.WriteString(Target.DisplayName, 'BPLDir', BplDir); // do not localize
+
+    if DcpDir = Target.DcpDir then
+      Ini.DeleteKey(Target.DisplayName, 'DCPDir') // do not localize
+    else
+      Ini.WriteString(Target.DisplayName, 'DCPDir', DcpDir); // do not localize
+
     Ini.WriteBool(Target.DisplayName, 'DeveloperInstall', DeveloperInstall); // do not localize
     Ini.WriteBool(Target.DisplayName, 'CleanPalettes', CleanPalettes); // do not localize
     for Kind := pkFirst to pkLast do
