@@ -131,7 +131,10 @@ end;
 {**************************************************************}
 procedure TJvSpinEdit.DoEditChange(Sender: TObject);
 begin
-  FEdit.Text := IntToStr(FUpDown.Position);
+  if Thousands and (FUpDown.Position > 999) then
+    FEdit.Text := FloatToStrF(FUpDown.Position, ffNumber, 18, 0)
+  else
+    FEdit.Text := IntToStr(FUpDown.Position);
   if Assigned(FOnChange) then
     FOnChange(self);
 end;
@@ -213,6 +216,10 @@ end;
 procedure TJvSpinEdit.SetPosition(const Value: Integer);
 begin
   FUpDown.Position := Value;
+  if Thousands and (FUpDown.Position > 999) then
+    FEdit.Text := FloatToStrF(FUpDown.Position, ffNumber, 18, 0)
+  else
+    FEdit.Text := IntToStr(FUpDown.Position);
 end;
 {**************************************************************}
 procedure TJvSpinEdit.SetTabStop(const Value: Boolean);
@@ -223,6 +230,10 @@ end;
 procedure TJvSpinEdit.SetText(const Value: string);
 begin
   FUpDown.Position := StrToIntDef(Value,FUpDown.Position);
+  if Thousands and (FUpDown.Position > 999) then
+    FEdit.Text := FloatToStrF(FUpDown.Position, ffNumber, 18, 0)
+  else
+    FEdit.Text := IntToStr(FUpDown.Position);
 end;
 {**************************************************************}
 procedure TJvSpinEdit.SetThousands(const Value: Boolean);
