@@ -97,7 +97,6 @@ type
     procedure UpdateInactive;
     procedure TimerExpired(Sender: TObject);
     function TransparentStored: Boolean;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
     function GetPalette: HPALETTE; override;
@@ -796,11 +795,6 @@ begin
       Unlock;
     end;
   end;
-end;
-
-procedure TJvAnimatedImage.WMSize(var Msg: TWMSize);
-begin
-  inherited;
 end;
 
 end.
