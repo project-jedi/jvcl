@@ -611,14 +611,21 @@ end;
 procedure TJvCustomNumEdit.DataChanged;
 var
   EditFormat: string;
+  WasModified: Boolean;
 begin
   EditFormat := '0';
   if FDecimalPlaces > 0 then
     EditFormat := EditFormat + '.' + MakeStr('#', FDecimalPlaces);
-  if (FValue = 0.0) and FZeroEmpty then
-    EditText := ''
-  else
-    EditText := FormatFloat(EditFormat, CheckValue(FValue, False));
+  { Changing EditText sets Modified to false }
+  WasModified := Modified;
+  try
+    if (FValue = 0.0) and FZeroEmpty then
+      EditText := ''
+    else
+      EditText := FormatFloat(EditFormat, CheckValue(FValue, False));
+  finally
+    Modified := WasModified;
+  end;
 end;
 
 function TJvCustomNumEdit.CheckValue(NewValue: Extended;
@@ -827,13 +834,17 @@ end;
 procedure TJvCustomNumEdit.DoClipboardPaste;
 var
   S: string;
+  WasModified: Boolean;
 begin
+  WasModified := Modified;
   S := EditText;
   try
     inherited DoClipboardPaste;
     UpdateData;
   except
+    { Changing EditText sets Modified to false }
     EditText := S;
+    Modified := WasModified;
     SelectAll;
     if CanFocus then
       SetFocus;
