@@ -39,7 +39,7 @@ package JvQJansK3D;
 
 requires
   JvQJansK3R,
-  JvQJansK3D
+  JvQCoreK3D
   ;
 
 contains

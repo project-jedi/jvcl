@@ -177,6 +177,7 @@ const
   clSkyBlue = TColor($F0CAA6);
   clCream = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
+  clWindowFrame = cl3DDkShadow;
 
   INFINITE = Longword($FFFFFFFF); // Infinite timeout
   INVALID_HANDLE_VALUE = DWORD(-1);
@@ -533,7 +534,10 @@ function BitBlt(DestCanvas: TCanvas; X, Y, Width, Height: Integer; SrcCanvas: TC
 function PainterOffset(Canvas: TCanvas): TPoint;
 //procedure CopyRect(Canvas: TCanvas
 function PatBlt(Handle: QPainterH; X, Y, Width, Height: Integer;
-  WinRop: Cardinal): LongBool; //overload;
+  WinRop: Cardinal): LongBool; overload;
+function PatBlt(Canvas: TCanvas; X, Y, Width, Height: Integer;
+  WinRop: Cardinal): LongBool; overload;
+
 procedure CopyRect(DstCanvas: TCanvas; const Dest: TRect; Canvas: TCanvas;
   const Source: TRect); overload;
 
@@ -902,8 +906,9 @@ function DrawTextW(Handle: QPainterH; Text: PWideChar; Len: Integer;
 //
 function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
-function DrawText(Canvas :TCanvas; const Text: TCaption; Len: Integer;
+function DrawText(Canvas :TCanvas; Text: TCaption; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
+
 function DrawTextW(Canvas :TCanvas; Text: PWideChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
 
@@ -2706,6 +2711,13 @@ end;
 function PatBlt(Handle: QPainterH; X, Y, Width, Height: Integer; WinRop: Cardinal): LongBool;
 begin
   Result := BitBlt(Handle, X, Y, Width, Height, Handle, X, Y, WinRop);
+end;
+
+function PatBlt(Canvas: TCanvas; X, Y, Width, Height: Integer; WinRop: Cardinal): LongBool;
+begin
+  Canvas.Start;
+  Result := BitBlt(Canvas.Handle, X, Y, Width, Height, Canvas.Handle, X, Y, WinRop);
+  Canvas.Stop;
 end;
 
 
@@ -4597,7 +4609,7 @@ begin
   end;
 end;
 
-function DrawText(Canvas :TCanvas;const Text: TCaption; Len: Integer;
+function DrawText(Canvas: TCanvas; Text: TCaption; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer;
 var
   ws: WideString;
@@ -4611,7 +4623,6 @@ begin
     Stop;
   end;
 end;
-
 
 function DrawTextEx(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
@@ -8322,6 +8333,7 @@ finalization
   WaitObjectList.Free;
   {$ENDIF LINUX}
 end.
+
 
 
 
