@@ -114,6 +114,7 @@ class function TFramePackageSelection.Build(Installer: TInstaller;
   Client: TWinControl): TFramePackageSelection;
 begin
   Result := TFramePackageSelection.Create(Client);
+  Installer.PackageInstaller.Translate(Result);
   Result.FInstaller := Installer;
   Result.Parent := Client;
   Result.Align := alClient;

@@ -67,6 +67,7 @@ class function TFrameUnInstall.Build(Installer: TInstaller;
   Client: TWinControl): TFrameUninstall;
 begin
   Result := TFrameUninstall.Create(Client);
+  Installer.PackageInstaller.Translate(Result);
   Result.FInstaller := Installer;
   Result.Parent := Client;
   Result.Align := alClient;
