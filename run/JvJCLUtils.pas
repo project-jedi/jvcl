@@ -1591,10 +1591,10 @@ begin
   while DosError = 0 do
   begin
     {$IFDEF MSWINDOWS}
-    {$WARN SYMBOL_PLATFORM OFF}
+    {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
     if (AnsiCompareText(SearchRec.FindData.cFileName, FileName) = 0) or
       (AnsiCompareText(SearchRec.FindData.cAlternateFileName, FileName) = 0) then
-    {$WARN SYMBOL_PLATFORM ON}
+    {$WARNINGS ON}
     {$ENDIF MSWINDOWS}
     {$IFDEF LINUX}
     if AnsiCompareStr(SearchRec.Name, FileName) = 0 then
@@ -2059,9 +2059,9 @@ end;
 function DeleteReadOnlyFile(const FileName: TFileName): Boolean;
 begin
   {$IFDEF MSWINDOWS}
-  {$WARN SYMBOL_PLATFORM OFF}
+  {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
   FileSetAttr(FileName, 0); {clear Read Only Flag}
-  {$WARN SYMBOL_PLATFORM ON}
+  {$WARNINGS ON}
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   FileSetReadOnly(FileName, False);
@@ -3582,9 +3582,9 @@ begin
           SetClipboardData(Format, Data);
           if Palette <> 0 then
             SetClipboardData(CF_PALETTE, Palette);
-          {$WARN SYMBOL_PLATFORM OFF}
+          {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
           Data := GlobalAlloc(HeapAllocFlags, Stream.Size);
-          {$WARN SYMBOL_PLATFORM ON}
+          {$WARNINGS ON}
           try
             if Data <> 0 then
             begin
@@ -5879,9 +5879,9 @@ function HasAttr(const FileName: string; Attr: Integer): Boolean;
 var
   FileAttr: Integer;
 begin
-  {$WARN SYMBOL_PLATFORM OFF}
+  {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
   FileAttr := FileGetAttr(FileName);
-  {$WARN SYMBOL_PLATFORM ON}
+  {$WARNINGS ON}
   Result := (FileAttr >= 0) and (FileAttr and Attr = Attr);
 end;
 
@@ -6048,9 +6048,9 @@ begin
     Result := '';
     Exit
   end;
-  {$WARN SYMBOL_PLATFORM OFF}
+  {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
   FN := CmdLine;
-  {$WARN SYMBOL_PLATFORM ON}
+  {$WARNINGS ON}
   if FN[0] = '"' then
   begin
     FN := StrScan(FN + 1, '"');
@@ -6070,9 +6070,9 @@ begin
     end;
   end
   else
-    {$WARN SYMBOL_PLATFORM OFF}
+    {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
     Result := Copy(CmdLine, Length(ParamStr(0)) + 1, 260);
-    {$WARN SYMBOL_PLATFORM ON}
+    {$WARNINGS ON}
   while (Length(Result) > 0) and (Result[1] = ' ') do
     Delete(Result, 1, 1);
   Result := ReplaceString(Result, '"', '');
@@ -6088,9 +6088,9 @@ var
 begin
   {$IFDEF MSWINDOWS}
   if FileGetInfo(FileName, SearchRec) then
-    {$WARN SYMBOL_PLATFORM OFF}
+    {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
     Result := ExtractFilePath(ExpandFileName(FileName)) + SearchRec.FindData.cFileName
-    {$WARN SYMBOL_PLATFORM ON}
+    {$WARNINGS ON}
   else
     Result := FileName;
   {$ENDIF MSWINDOWS}
@@ -7588,18 +7588,18 @@ end;
 function AllocMemo(Size: Longint): Pointer;
 begin
   if Size > 0 then
-    {$WARN SYMBOL_PLATFORM OFF} // for HeapAllocFlags
+    {$WARNINGS OFF} // for HeapAllocFlags  WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
     Result := GlobalAllocPtr(HeapAllocFlags or GMEM_ZEROINIT, Size)
-    {$WARN SYMBOL_PLATFORM ON}
+    {$WARNINGS ON}
   else
     Result := nil;
 end;
 
 function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
 begin
-  {$WARN SYMBOL_PLATFORM OFF} // for HeapAllocFlags
+  {$WARNINGS OFF} // for HeapAllocFlags  WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
   Result := GlobalReallocPtr(fpBlock, Size, HeapAllocFlags or GMEM_ZEROINIT);
-  {$WARN SYMBOL_PLATFORM ON}
+  {$WARNINGS ON}
 end;
 
 procedure FreeMemo(var fpBlock: Pointer);
