@@ -295,18 +295,15 @@ type
     procedure AdjustHeight;
     procedure ButtonClick; dynamic;
     procedure Change; override;
+    procedure CreateWnd; override;
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    procedure CreateWnd; override;
     {$IFDEF COMPILER7_UP}
     procedure CreateAutoComplete; virtual;
     procedure UpdateAutoComplete; virtual;
     function GetAutoCompleteSource: IUnknown; virtual;
     {$ENDIF COMPILER7_UP}
     {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure CreateWidget; override;
-    {$ENDIF VisualCLX}
     procedure DefineProperties(Filer: TFiler); override;
     procedure DoChange; virtual; //virtual Polaris
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -1868,7 +1865,7 @@ begin
   {$IFDEF VisualCLX}
   FBtnControl.Parent := Self.ClientArea;
   FBtnControl.Left := Self.ClientArea.Width - DefEditBtnWidth;
-  Anchors := [akRight, akTop, akBottom];
+  FBtnControl.Anchors := [akRight, akTop, akBottom];
   {$ENDIF VisualCLX}
   FButton := TJvEditButton.Create(Self);
   FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
@@ -2125,20 +2122,12 @@ begin
   { Notification }
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvCustomComboEdit.CreateWidget;
-begin
-  inherited CreateWidget;
-  UpdateControls;
-  UpdateMargins;
-end;
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
 procedure TJvCustomComboEdit.CreateWnd;
 begin
   inherited CreateWnd;
   UpdateControls;
   UpdateMargins;
+  {$IFDEF VCL}
   {$IFDEF COMPILER7_UP}
   if AutoCompleteOptions <> [] then
   begin
@@ -2146,8 +2135,8 @@ begin
     UpdateAutoComplete;
   end;
   {$ENDIF COMPILER7_UP}
+  {$ENDIF VCL}
 end;
-{$ENDIF VCL}
 
 {$IFDEF COMPILER6_UP}
 {$IFDEF VCL}
@@ -2156,9 +2145,8 @@ procedure TJvCustomComboEdit.CustomAlignPosition(Control: TControl;
   var AlignRect: TRect; AlignInfo: TAlignInfo);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-procedure TJvCustomComboEdit.CustomAlignPosition(Control: TControl;
-  var NewLeft, NewTop, NewWidth, NewHeight: Integer;
-  var AlignRect: TRect ; AlignInfo: TAlignInfo);
+procedure TJvCustomComboEdit.CustomAlignPosition(Control: TControl; var NewLeft,
+      NewTop, NewWidth, NewHeight: Integer; var AlignRect: TRect);
 {$ENDIF VisualCLX}
 begin
   if Control = FBtnControl then
@@ -4085,9 +4073,9 @@ begin
     Pos := 1;
     while Pos <= Length(Text) do
     begin
-      Temp := ShortToLongPath(ExtractSubstr(Text, Pos, [';']));
+      Temp := ShortToLongPath(ExtractSubstr(Text, Pos, [PathSep]));
       if (Result <> '') and (Temp <> '') then
-        Result := Result + ';';
+        Result := Result + PathSep;
       Result := Result + Temp;
     end;
   end;
@@ -4106,9 +4094,9 @@ begin
     Pos := 1;
     while Pos <= Length(Text) do
     begin
-      Temp := LongToShortPath(ExtractSubstr(Text, Pos, [';']));
+      Temp := LongToShortPath(ExtractSubstr(Text, Pos, [PathSep]));
       if (Result <> '') and (Temp <> '') then
-        Result := Result + ';';
+        Result := Result + PathSep;
       Result := Result + Temp;
     end;
   end;
@@ -4132,10 +4120,10 @@ begin
     if InitialDir <> '' then
       Temp := InitialDir
     else
-      Temp := '\';
+      Temp := PathDelim;
   end;
   if not DirectoryExists(Temp) then
-    Temp := '\';
+    Temp := PathDelim;
   DisableSysErrors;
   try
     {$IFDEF VCL}
@@ -4163,7 +4151,7 @@ begin
     if (Text = '') or not MultipleDirs then
       Text := Temp
     else
-      Text := Text + ';' + Temp;
+      Text := Text + PathSep + Temp;
     if (Temp <> '') and DirectoryExists(Temp) then
       InitialDir := Temp;
   end;
@@ -4180,7 +4168,7 @@ begin
   if (Text = '') or not MultipleDirs then
     Text := Temp
   else
-    Text := Text + ';' + Temp;
+    Text := Text + PathSep + Temp;
 end;
 
 //=== { TJvEditButton } ======================================================
