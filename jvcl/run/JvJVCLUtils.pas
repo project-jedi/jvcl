@@ -36,16 +36,16 @@ uses
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   {$IFDEF MSWINDOWS}
-  ShellAPI, Registry,
+  Windows, Messages, ShellAPI, Registry,
   {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   SysUtils, Classes,
   {$IFDEF VisualCLX}
-  Qt, QWinCursors,
+  Qt, QWinCursors, QWindows,
   {$ENDIF VisualCLX}
-  Windows, Messages, Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus,
+  Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus,
   Dialogs, ComCtrls, ImgList, Grids, IniFiles,
   {$IFNDEF NO_JCL}
   JclBase,
@@ -189,9 +189,9 @@ function GetControlPanelApplet(const AFileName: string; Strings: TStrings;
 
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint): Boolean;
 function PaletteColor(Color: TColor): Longint;
-{$IFDEF VCL}
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
 procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
+{$IFDEF VCL}
 procedure ShowMDIClientEdge(ClientHandle: THandle; ShowEdge: Boolean);
 {$ENDIF VCL}
 procedure Delay(MSecs: Longint);
@@ -262,6 +262,7 @@ overload;
 procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
   Bmp: TGraphic; Rect: TRect);
 
+{$IFDEF VCL}
 type
   TJvDesktopCanvas = class(TCanvas)
   private
@@ -273,6 +274,16 @@ type
     procedure SetOrigin(X, Y: Integer);
     procedure FreeHandle;
   end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+type
+  TJvDesktopCanvas = class(TQtCanvas)
+  protected
+    procedure CreateHandle; override;
+  public
+    procedure SetOrigin(X, Y: Integer);
+  end;
+{$ENDIF VisualCLX}
 
   { end from JvVCLUtils }
 
@@ -658,7 +669,7 @@ procedure DeallocateHWndEx(Wnd: Windows.HWND);
 
 function JvMakeObjectInstance(Method: TWndMethod): Pointer;
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
-{$ENDIF MSWINDOWS}
+{$ENDIF  MSWINDOWS}
 
 {$IFNDEF COMPILER6_UP}
 function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
@@ -2252,7 +2263,7 @@ end;
 type
   TCustomControlAccessProtected = class(TCustomControl);
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
 var
@@ -2284,8 +2295,54 @@ begin
     Windows.ReleaseDC(0, DC);
   end;
 end;
+{$ENDIF VCL}
 
-{$ENDIF MSWINDOWS}
+{$IFDEF VisualCLX}
+procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
+var
+  Canvas: TJvDeskTopCanvas;
+  I: integer;
+begin
+  Canvas := TJvDeskTopCanvas.Create;
+  with Canvas do
+    try
+      StartPaint;
+      try
+        for I := 1 to Width do
+        begin
+          DrawFocusRect(ScreenRect);
+          InflateRect(ScreenRect, -1, -1);
+        end;
+      finally
+        StopPaint;
+      end;
+    finally
+      Free;
+    end;
+end;
+
+procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
+var
+  Canvas: TJvDeskTopCanvas;
+  I: Integer;
+  R: TRect;
+begin
+  Canvas := TJvDeskTopCanvas.Create;
+  with Canvas do
+    try
+      StartPaint;
+      try
+        R := Rect(RectOrg.X, RectOrg.Y, RectEnd.X, RectEnd.Y);
+        QWindows.InvertRect(Handle, R);
+      finally
+        StopPaint;
+      end;
+    finally
+      Free;
+    end;
+end;
+{$ENDIF VISUALCLX}
+
 
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint):
   Boolean;
@@ -3123,6 +3180,15 @@ end;
 
 //=== { TJvDesktopCanvas } ===================================================
 
+{$IFDEF VisualCLX}
+procedure TJvDesktopCanvas.CreateHandle;
+begin
+  inherited CreateHandle;
+  QtHandle := GetDesktopWindow;
+end;
+{$ENDIF VisualCLX}
+
+{$IFDEF VCL}
 destructor TJvDesktopCanvas.Destroy;
 begin
   FreeHandle;
@@ -3131,26 +3197,33 @@ end;
 
 procedure TJvDesktopCanvas.CreateHandle;
 begin
-  if FDC = NullHandle then
+  if FDC = 0 then
     FDC := GetWindowDC(GetDesktopWindow);
   Handle := FDC;
 end;
 
 procedure TJvDesktopCanvas.FreeHandle;
 begin
-  if FDC <> NullHandle then
+  if FDC <> 0 then
   begin
-    Handle := NullHandle;
+    Handle := 0;
     ReleaseDC(GetDesktopWindow, FDC);
-    FDC := NullHandle;
+    FDC := 0;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvDesktopCanvas.SetOrigin(X, Y: Integer);
 var
   FOrigin: TPoint;
 begin
+  {$IFDEF VisualCLX}
+  StartPaint;
+  {$ENDIF VisualCLX}
   SetWindowOrgEx(Handle, -X, -Y, @FOrigin);
+  {$IFDEF VisualCLX}
+  StopPaint;
+  {$ENDIF VisualCLX}
 end;
 
 // (rom) moved to file end to minimize W- switch impact at end of function
