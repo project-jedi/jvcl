@@ -51,17 +51,20 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  TypInfo,
+  SysUtils, TypInfo,
   JvFullColorSpaces;
+
+//=== { TJvColorIDEEditor } ==================================================
 
 function TJvColorIDEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList, paRevertable, paNotNestable];
+  Result := [paValueList, paSortList, paRevertable, paRevertable,
+             paNotNestable, paMultiSelect];
 end;
 
 function TJvColorIDEditor.GetValue: string;
 begin
-  Result := ColorSpaceManager.ColorSpace[TJvColorSpaceID(GetOrdValue)].ShortName;
+  Result := ColorSpaceManager.ColorSpace[TJvFullColorSpaceID(GetOrdValue)].ShortName;
 end;
 
 procedure TJvColorIDEditor.GetValues(Proc: TGetStrProc);
@@ -82,7 +85,7 @@ begin
     for I := 0 to Count - 1 do
     begin
       CS := ColorSpaceByIndex[I];
-      if CS.ShortName = Value then
+      if (CompareText(CS.ShortName,Value)=0) then
       begin
         SetOrdValue(Ord(CS.ID));
         Exit;
@@ -92,7 +95,7 @@ end;
 
 procedure Register;
 begin
-  RegisterPropertyEditor(TypeInfo(TJvColorSpaceID), nil, '', TJvColorIDEditor);
+  RegisterPropertyEditor(TypeInfo(TJvFullColorSpaceID), nil, '', TJvColorIDEditor);
 end;
 
 {$IFDEF UNITVERSIONING}

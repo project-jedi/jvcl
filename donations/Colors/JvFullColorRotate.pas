@@ -46,14 +46,14 @@ type
   TJvAxisDelta = array [TJvAxisIndex] of TJvRotateValue;
 
   TJvColorDelta = record
-    ColorID: TJvColorSpaceID;
+    ColorID: TJvFullColorSpaceID;
     AxisRed: TJvAxisDelta;
     AxisGreen: TJvAxisDelta;
     AxisBlue: TJvAxisDelta;
   end;
 
 function ChangeColorDeltaSpace(ColorDelta: TJvColorDelta;
-  NewID: TJvColorSpaceID): TJvColorDelta;
+  NewID: TJvFullColorSpaceID): TJvColorDelta;
 function RotateColor(AColor: TJvFullColor;
   AColorDelta: TJvColorDelta): TJvFullColor;
 procedure RotateBitmap(SourceBitmap, DestBitmap: TBitmap;
@@ -68,7 +68,7 @@ uses
   Math;
 
 function ChangeColorDeltaSpace(ColorDelta: TJvColorDelta;
-  NewID: TJvColorSpaceID): TJvColorDelta;
+  NewID: TJvFullColorSpaceID): TJvColorDelta;
 var
   I: TJvAxisIndex;
   SourceColorSpace, DestColorSpace: TJvColorSpace;
@@ -118,7 +118,7 @@ var
   ValueRed, ValueGreen, ValueBlue: TJvFullColor;
   ColorRed, ColorGreen, ColorBlue: TJvFullColor;
   SourceColorSpace, DeltaColorSpace: TJvColorSpace;
-  LColorID: TJvColorSpaceID;
+  LColorID: TJvFullColorSpaceID;
   LColor: TColor;
 
   function DoRotate(AValue: TJvFullColor; AAxisDelta: TJvAxisDelta): TColor;

@@ -35,20 +35,20 @@ uses
 
 type
   TJvAxisIndex = (axIndex0, axIndex1, axIndex2);
-  TJvColorSpaceID = type Byte;
+  TJvFullColorSpaceID = type Byte;
   TJvFullColor = type Cardinal;
 
 const
-  csRGB = TJvColorSpaceID(1 shl 2);
-  csHLS = TJvColorSpaceID(2 shl 2);
-  csCMY = TJvColorSpaceID(3 shl 2);
-  csYUV = TJvColorSpaceID(4 shl 2);
-  csHSV = TJvColorSpaceID(5 shl 2);
-  csYIQ = TJvColorSpaceID(6 shl 2);
-  csYCC = TJvColorSpaceID(7 shl 2);
-  csXYZ = TJvColorSpaceID(8 shl 2);
-  csLAB = TJvColorSpaceID(9 shl 2);
-  csDEF = TJvColorSpaceID(10 shl 2);
+  csRGB = TJvFullColorSpaceID(1 shl 2);
+  csHLS = TJvFullColorSpaceID(2 shl 2);
+  csCMY = TJvFullColorSpaceID(3 shl 2);
+  csYUV = TJvFullColorSpaceID(4 shl 2);
+  csHSV = TJvFullColorSpaceID(5 shl 2);
+  csYIQ = TJvFullColorSpaceID(6 shl 2);
+  csYCC = TJvFullColorSpaceID(7 shl 2);
+  csXYZ = TJvFullColorSpaceID(8 shl 2);
+  csLAB = TJvFullColorSpaceID(9 shl 2);
+  csDEF = TJvFullColorSpaceID(10 shl 2);
 
   csMIN = csRGB;
   csMAX = csDEF;
@@ -87,7 +87,7 @@ const
 type
   TJvColorSpace = class(TPersistent)
   private
-    FID: TJvColorSpaceID;
+    FID: TJvFullColorSpaceID;
   protected
     function GetAxisName(Index: TJvAxisIndex): string; virtual;
     function GetAxisMin(Index: TJvAxisIndex): Byte; virtual;
@@ -97,10 +97,10 @@ type
     function GetShortName: string; virtual;
     function GetNumberOfColors: Cardinal; virtual;
   public
-    constructor Create(ColorID: TJvColorSpaceID); virtual;
+    constructor Create(ColorID: TJvFullColorSpaceID); virtual;
     function ConvertFromColor(AColor: TColor): TJvFullColor; virtual;
     function ConvertToColor(AColor: TJvFullColor): TColor; virtual;
-    property ID: TJvColorSpaceID read FID;
+    property ID: TJvFullColorSpaceID read FID;
     property NumberOfColors: Cardinal read GetNumberOfColors;
     property Name: string read GetName;
     property ShortName: string read GetShortName;
@@ -238,7 +238,7 @@ type
     function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
     function GetNumberOfColors: Cardinal; override;
   public
-    constructor Create(ColorID: TJvColorSpaceID); override;
+    constructor Create(ColorID: TJvFullColorSpaceID); override;
     destructor Destroy; override;
     function ConvertFromColor(AColor: TColor): TJvFullColor; override;
     function ConvertToColor(AColor: TJvFullColor): TColor; override;
@@ -251,17 +251,17 @@ type
     function GetCount: Integer;
     function GetColorSpaceByIndex(Index: Integer): TJvColorSpace;
   protected
-    function GetColorSpace(ID: TJvColorSpaceID): TJvColorSpace; virtual;
+    function GetColorSpace(ID: TJvFullColorSpaceID): TJvColorSpace; virtual;
   public
     procedure RegisterColorSpace(NewColorSpace: TJvColorSpace);
     constructor Create;
     destructor Destroy; override;
-    function ConvertToID(AColor: TJvFullColor; DestID: TJvColorSpaceID): TJvFullColor;
+    function ConvertToID(AColor: TJvFullColor; DestID: TJvFullColorSpaceID): TJvFullColor;
     function ConvertToColor(AColor: TJvFullColor): TColor;
     function ConvertFromColor(AColor: TColor): TJvFullColor;
-    function GetColorSpaceID(AColor: TJvFullColor): TJvColorSpaceID;
+    function GetColorSpaceID(AColor: TJvFullColor): TJvFullColorSpaceID;
 
-    property ColorSpace[ID: TJvColorSpaceID]: TJvColorSpace read GetColorSpace;
+    property ColorSpace[ID: TJvFullColorSpaceID]: TJvColorSpace read GetColorSpace;
     property ColorSpaceByIndex[Index: Integer]: TJvColorSpace read GetColorSpaceByIndex;
     property Count: Integer read GetCount;
   end;
@@ -422,7 +422,7 @@ end;
 
 //=== { TJvColorSpace } ======================================================
 
-constructor TJvColorSpace.Create(ColorID: TJvColorSpaceID);
+constructor TJvColorSpace.Create(ColorID: TJvFullColorSpaceID);
 begin
   inherited Create;
   if (ColorID >= csMIN) and (ColorID <= csMAX) then
@@ -1374,7 +1374,7 @@ end;
 
 //=== { TJvDEFColorSpace } ===================================================
 
-constructor TJvDEFColorSpace.Create(ColorID: TJvColorSpaceID);
+constructor TJvDEFColorSpace.Create(ColorID: TJvFullColorSpaceID);
 begin
   inherited Create(ColorID);
   FDelphiColors := TStringList.Create;
@@ -1489,9 +1489,10 @@ begin
   inherited Destroy;
 end;
 
-function TJvColorSpaceManager.ConvertToID(AColor: TJvFullColor; DestID: TJvColorSpaceID): TJvFullColor;
+function TJvColorSpaceManager.ConvertToID(AColor: TJvFullColor;
+  DestID: TJvFullColorSpaceID): TJvFullColor;
 var
-  SourceID: TJvColorSpaceID;
+  SourceID: TJvFullColorSpaceID;
   Color: TColor;
 begin
   SourceID := GetColorSpaceID(AColor);
@@ -1529,18 +1530,18 @@ begin
     end;
 end;
 
-function TJvColorSpaceManager.GetColorSpaceID(AColor: TJvFullColor): TJvColorSpaceID;
+function TJvColorSpaceManager.GetColorSpaceID(AColor: TJvFullColor): TJvFullColorSpaceID;
 var
   I: Integer;
 begin
-  Result := TJvColorSpaceID(AColor shr 24) and csID_MASK;
+  Result := TJvFullColorSpaceID(AColor shr 24) and csID_MASK;
   for I := 0 to Count - 1 do
     if ColorSpaceByIndex[I].ID = Result then
       Exit;
   raise EJvColorSpaceError.CreateResFmt(@RsErr_IllegalID, [Ord(Result)]);
 end;
 
-function TJvColorSpaceManager.GetColorSpace(ID: TJvColorSpaceID): TJvColorSpace;
+function TJvColorSpaceManager.GetColorSpace(ID: TJvFullColorSpaceID): TJvColorSpace;
 var
   I: Integer;
 begin

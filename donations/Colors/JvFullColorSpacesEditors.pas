@@ -48,7 +48,7 @@ type
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
     procedure Edit; override;
-    procedure EditSpace(AColorID: TJvColorSpaceID);
+    procedure EditSpace(AColorID: TJvFullColorSpaceID);
     procedure SetColor(AFullColor: TJvFullColor);
     // ICustomPropertyDrawing
     procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
@@ -240,7 +240,7 @@ begin
     EditSpace(ColorSpaceManager.GetColorSpaceID(GetOrdValue));
 end;
 
-procedure TJvFullColorProperty.EditSpace(AColorID: TJvColorSpaceID);
+procedure TJvFullColorProperty.EditSpace(AColorID: TJvFullColorSpaceID);
 var
   LColor: TJvFullColor;
 begin
@@ -488,7 +488,7 @@ procedure TJvFullColorAxisProperty.SetValue(const Value: string);
 var
   AxisValue: Byte;
   LColor: TJvFullColor;
-  LColorID: TJvColorSpaceID;
+  LColorID: TJvFullColorSpaceID;
 begin
   AxisValue := HexToInt(Value);
   LColor := TJvFullColor(GetOrdValue);

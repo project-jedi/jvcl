@@ -93,7 +93,7 @@ object JvFullColorCircleForm: TJvFullColorCircleForm
       RedColor = 67108864
       GreenColor = 67108864
       BlueColor = 67108864
-      Styles = [crShowLines, crShowRed, crShowGreen, crShowBlue]
+      Styles = [csShowLines, csShowRed, csShowGreen, csShowBlue]
       CrossSize = 10
       CrossCenter = 3
       CrossStyle.Width = 3

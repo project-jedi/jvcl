@@ -35,12 +35,12 @@ uses
   JvFullColorSpaces, JvFullColorRotate, JvTypes;
 
 type
-  TJvColorAxisConfig = (acXYZ, acXZY, acYXZ, acYZX, acZXY, acZYX);
-  TJvColorOrientation = (coNormal, coInverse);
+  TJvFullColorAxisConfig = (acXYZ, acXZY, acYXZ, acYZX, acZXY, acZYX);
+  TJvFullColorOrientation = (coNormal, coInverse);
   TJvArrowPosition = (apNormal, apOpposite);
 
 type
-  TKeyCode = (kcLeft, kcRight, kcUp, kcDown);
+  TJvKeyCode = (kcLeft, kcRight, kcUp, kcDown);
 
   TJvFullColorMouseEvent = procedure(Sender: TObject; ColorX, ColorY: Byte) of object;
   TJvFullColorComponent = class;
@@ -54,7 +54,7 @@ type
   private
     FAutoMouse: Boolean;
     FFullColor: TJvFullColor;
-    FAxisConfig: TJvColorAxisConfig;
+    FAxisConfig: TJvFullColorAxisConfig;
     FOnColorChange: TNotifyEvent;
     FOnAxisConfigChange: TNotifyEvent;
     FOnColorSpaceChange: TNotifyEvent;
@@ -64,7 +64,7 @@ type
     FCreating: Boolean;
     FWantDrawBuffer: Boolean;
     function GetColorSpace: TJvColorSpace;
-    procedure SetAxisConfig(const Value: TJvColorAxisConfig);
+    procedure SetAxisConfig(const Value: TJvFullColorAxisConfig);
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
@@ -85,7 +85,7 @@ type
     procedure DrawBuffer; virtual;
     procedure ColorSpaceChange; virtual;
     procedure CalcSize; virtual;
-    procedure KeyMove(KeyCode: TKeyCode; MoveCount: Integer); virtual;
+    procedure KeyMove(KeyCode: TJvKeyCode; MoveCount: Integer); virtual;
     procedure InvalidateCursor; virtual; abstract;
     property WantDrawBuffer: Boolean read FWantDrawBuffer write SetWantDrawBuffer;
   public
@@ -95,7 +95,7 @@ type
   published
     property AutoMouse: Boolean read FAutoMouse write FAutoMouse default True;
     property FullColor: TJvFullColor read FFullColor write SetFullColor;
-    property AxisConfig: TJvColorAxisConfig read FAxisConfig write SetAxisConfig default acXYZ;
+    property AxisConfig: TJvFullColorAxisConfig read FAxisConfig write SetAxisConfig default acXYZ;
     property OnMouseMove;
     property OnMouseDown;
     property OnMouseUp;
@@ -153,7 +153,7 @@ type
     procedure DrawBuffer; override;
     procedure CalcSize; override;
     procedure AxisConfigChange; override;
-    procedure KeyMove(KeyCode: TKeyCode; MoveCount: Integer); override;
+    procedure KeyMove(KeyCode: TJvKeyCode; MoveCount: Integer); override;
     procedure InvalidateCursor; override;
     function GetCursorPosition: TPoint;
     procedure Paint; override;
@@ -169,14 +169,14 @@ type
     property ColorTrackBar: TJvFullColorTrackBar read FColorTrackBar write SetColorTrackBar;
   end;
 
-  TJvColorCircleStyle = (crShowLines, crShowCommon, crShowRed, crShowGreen, crShowBlue,
-    cr3ButtonsMouse, cr3ButtonsCommon);
+  TJvFullColorCircleStyle = (csShowLines, csShowCommon, csShowRed, csShowGreen,
+    csShowBlue, cs3ButtonsMouse, cs3ButtonsCommon);
 
-  TJvColorCircleStyles = set of TJvColorCircleStyle;
+  TJvFullColorCircleStyles = set of TJvFullColorCircleStyle;
 
   TJvFullColorCircle = class(TJvFullColorComponent2D)
   private
-    FStyles: TJvColorCircleStyles;
+    FStyles: TJvFullColorCircleStyles;
     FGreenColor: TJvFullColor;
     FBlueColor: TJvFullColor;
     FRedColor: TJvFullColor;
@@ -201,7 +201,7 @@ type
     procedure SetBlueColor(const Value: TJvFullColor);
     procedure SetGreenColor(const Value: TJvFullColor);
     procedure SetRedColor(const Value: TJvFullColor);
-    procedure SetStyles(const Value: TJvColorCircleStyles);
+    procedure SetStyles(const Value: TJvFullColorCircleStyles);
     procedure SetInvertRadius(const Value: Boolean);
     procedure SetInvertRotation(const Value: Boolean);
     procedure SetCrossCenter(Value: Integer);
@@ -244,7 +244,7 @@ type
     property GreenColor: TJvFullColor read FGreenColor write SetGreenColor default fclRGBLime;
     property BlueColor: TJvFullColor read FBlueColor write SetBlueColor default fclRGBBlue;
     // (rom) set default value
-    property Styles: TJvColorCircleStyles read FStyles write SetStyles;
+    property Styles: TJvFullColorCircleStyles read FStyles write SetStyles;
     property CrossSize: Integer read FCrossSize write SetCrossSize default 5;
     property CrossCenter: Integer read FCrossCenter write SetCrossCenter default 1;
     property CrossStyle: TPen read FCrossStyle write SetCrossStyle;
@@ -267,7 +267,7 @@ type
   TJvFullColorTrackBar = class(TJvFullColorComponent)
   private
     FArrowPosition: TJvArrowPosition;
-    FColorOrientation: TJvColorOrientation;
+    FColorOrientation: TJvFullColorOrientation;
     FOrientation: TTrackBarOrientation;
     FBarWidth: Integer;
     FFullColorDrawing: Boolean;
@@ -279,7 +279,7 @@ type
     FValueX: Byte;
     FLink: TComponent;
     procedure SetArrowPosition(const Value: TJvArrowPosition);
-    procedure SetColorOrientation(const Value: TJvColorOrientation);
+    procedure SetColorOrientation(const Value: TJvFullColorOrientation);
     procedure SetOrientation(const Value: TTrackBarOrientation);
     procedure SetBarWidth(const Value: Integer);
     procedure SetArrowWidth(const Value: Integer);
@@ -300,7 +300,7 @@ type
     procedure DrawBuffer; override;
     procedure ColorSpaceChange; override;
     procedure AxisConfigChange; override;
-    procedure KeyMove(KeyCode: TKeyCode; MoveCount: Integer); override;
+    procedure KeyMove(KeyCode: TJvKeyCode; MoveCount: Integer); override;
     procedure InvalidateCursor; override;
     procedure Paint; override;
     function GetCursorPosition: TJvCursorPoints;
@@ -314,7 +314,7 @@ type
     property ArrowColor: TColor read FArrowColor write SetArrowColor default clBlack;
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 9;
     property ArrowPosition: TJvArrowPosition read FArrowPosition write SetArrowPosition default apNormal;
-    property ColorOrientation: TJvColorOrientation read FColorOrientation write SetColorOrientation default coNormal;
+    property ColorOrientation: TJvFullColorOrientation read FColorOrientation write SetColorOrientation default coNormal;
     property Orientation: TTrackBarOrientation read FOrientation write SetOrientation default trHorizontal;
     property BarWidth: Integer read FBarWidth write SetBarWidth default 10;
     property ValueX: Byte read FValueX write SetValueX stored IsValueXStored;
@@ -378,29 +378,34 @@ type
     property RoundShapeHeight: Integer read FRoundShapeHeight write SetRoundShapeHeight default 4;
   end;
 
-  TJvColorSpaceFormat = (cfName, cfShortName, cfBoth);
+  TJvFullColorSpaceFormat = (cfName, cfShortName, cfBoth);
+
+  TJvFullColorSpaceFormatEvent = procedure (Sender:TObject; AColorSpace:TJvColorSpace;
+                                            out ACaption:string) of object;
 
   TJvFullColorSpaceCombo = class(TCustomComboBox)
   private
     FAllowVariable: Boolean;
-    FItemFormat: TJvColorSpaceFormat;
+    FItemFormat: TJvFullColorSpaceFormat;
+    FOnFormatItem: TJvFullColorSpaceFormatEvent;
     function GetColorSpace: TJvColorSpace;
     procedure SetAllowVariable(const Value: Boolean);
     procedure SetColorSpace(const Value: TJvColorSpace);
-    procedure SetColorSpaceID(const Value: TJvColorSpaceID);
-    function GetColorSpaceID: TJvColorSpaceID;
-    procedure SetItemFormat(const Value: TJvColorSpaceFormat);
+    procedure SetColorSpaceID(const Value: TJvFullColorSpaceID);
+    function GetColorSpaceID: TJvFullColorSpaceID;
+    procedure SetItemFormat(const Value: TJvFullColorSpaceFormat);
   protected
-    procedure MakeList; virtual;
     procedure CreateWnd; override;
   public
     constructor Create(AOwner: TComponent); override;
     property SelectedSpace: TJvColorSpace read GetColorSpace write SetColorSpace;
+    procedure MakeList; virtual;
   published
     property AllowVariable: Boolean read FAllowVariable write SetAllowVariable default True;
     // (rom) set default value
-    property ColorSpaceID: TJvColorSpaceID read GetColorSpaceID write SetColorSpaceID default csRGB;
-    property ItemFormat: TJvColorSpaceFormat read FItemFormat write SetItemFormat default cfBoth;
+    property ColorSpaceID: TJvFullColorSpaceID read GetColorSpaceID write SetColorSpaceID default csRGB;
+    property ItemFormat: TJvFullColorSpaceFormat read FItemFormat write SetItemFormat default cfBoth;
+    property OnFormatItem: TJvFullColorSpaceFormatEvent read FOnFormatItem write FOnFormatItem;
     property AutoDropDown;
     property BevelEdges;
     property BevelInner;
@@ -453,25 +458,28 @@ type
     property OnStartDrag;
   end;
 
-  TJvColorAxisConfigFormat = (afShort, afIndent, afComplete);
+  TJvFullColorAxisConfigFormat = (afShort, afIndent, afComplete);
+
+  TJvFullColorAxisFormatEvent = procedure (Sender:TObject; AAxisConfig:TJvFullColorAxisConfig;
+                                            out ACaption:string) of object;
 
   TJvFullColorAxisCombo = class(TCustomComboBox)
   private
-    FItemFormat: TJvColorAxisConfigFormat;
-    FColorID: TJvColorSpaceID;
-    procedure SetItemFormat(const Value: TJvColorAxisConfigFormat);
-    procedure SetSelected(const Value: TJvColorAxisConfig);
-    procedure SetColorID(const Value: TJvColorSpaceID);
-    function GetSelected: TJvColorAxisConfig;
+    FItemFormat: TJvFullColorAxisConfigFormat;
+    FColorID: TJvFullColorSpaceID;
+    procedure SetItemFormat(const Value: TJvFullColorAxisConfigFormat);
+    procedure SetSelected(const Value: TJvFullColorAxisConfig);
+    procedure SetColorID(const Value: TJvFullColorSpaceID);
+    function GetSelected: TJvFullColorAxisConfig;
   protected
     procedure MakeList; virtual;
     procedure CreateWnd; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property ItemFormat: TJvColorAxisConfigFormat read FItemFormat write SetItemFormat default afComplete;
-    property Selected: TJvColorAxisConfig read GetSelected write SetSelected;
-    property ColorID: TJvColorSpaceID read FColorID write SetColorID default csRGB;
+    property ItemFormat: TJvFullColorAxisConfigFormat read FItemFormat write SetItemFormat default afComplete;
+    property Selected: TJvFullColorAxisConfig read GetSelected write SetSelected;
+    property ColorID: TJvFullColorSpaceID read FColorID write SetColorID default csRGB;
     property AutoDropDown;
     property BevelEdges;
     property BevelInner;
@@ -641,14 +649,14 @@ type
     property Visible;
   end;
 
-function GetIndexAxis(AxisConfig: TJvColorAxisConfig; AxisID: TJvAxisIndex): TJvAxisIndex;
-function GetIndexAxisX(AxisConfig: TJvColorAxisConfig): TJvAxisIndex;
-function GetIndexAxisY(AxisConfig: TJvColorAxisConfig): TJvAxisIndex;
-function GetIndexAxisZ(AxisConfig: TJvColorAxisConfig): TJvAxisIndex;
+function GetIndexAxis(AxisConfig: TJvFullColorAxisConfig; AxisID: TJvAxisIndex): TJvAxisIndex;
+function GetIndexAxisX(AxisConfig: TJvFullColorAxisConfig): TJvAxisIndex;
+function GetIndexAxisY(AxisConfig: TJvFullColorAxisConfig): TJvAxisIndex;
+function GetIndexAxisZ(AxisConfig: TJvFullColorAxisConfig): TJvAxisIndex;
 function ColorSpaceToString(AColorSpace: TJvColorSpace;
-  ItemFormat: TJvColorSpaceFormat): string;
-function AxisConfigToString(AxisConfig: TJvColorAxisConfig;
-  ItemFormat: TJvColorAxisConfigFormat; AColorSpace: TJvColorSpace): string;
+  ItemFormat: TJvFullColorSpaceFormat): string;
+function AxisConfigToString(AxisConfig: TJvFullColorAxisConfig;
+  ItemFormat: TJvFullColorAxisConfigFormat; AColorSpace: TJvColorSpace): string;
 
 procedure Register;
 
@@ -667,17 +675,11 @@ resourcestring
   RsEDuplicateTrackBar = 'TrackBar already used by component "%s"';
   //RsEDuplicateTrackBar = 'TrackBar déjà utilisée par le composant "%s"';
 
-const
-  MaxPixelCount = 32767;
 type
-  PFullColorArray = ^TFullColorArray;
-  TFullColorArray = array[0..MaxPixelCount] of TJvFullColor;
-
-type
-  TJvColorAxisConfigs = array[TJvAxisIndex] of TJvAxisIndex;
+  TJvFullColorAxisConfigs = array[TJvAxisIndex] of TJvAxisIndex;
 
 const
-  TabAxisConfigs: array[TJvColorAxisConfig] of TJvColorAxisConfigs =
+  TabAxisConfigs: array[TJvFullColorAxisConfig] of TJvFullColorAxisConfigs =
   ((axIndex0, axIndex1, axIndex2),
     (axIndex0, axIndex2, axIndex1),
     (axIndex1, axIndex0, axIndex2),
@@ -685,7 +687,7 @@ const
     (axIndex1, axIndex2, axIndex0),
     (axIndex2, axIndex1, axIndex0));
 
-function ColorSpaceToString(AColorSpace: TJvColorSpace; ItemFormat: TJvColorSpaceFormat): string;
+function ColorSpaceToString(AColorSpace: TJvColorSpace; ItemFormat: TJvFullColorSpaceFormat): string;
 begin
   case ItemFormat of
     cfName:
@@ -697,13 +699,13 @@ begin
   end;
 end;
 
-function AxisConfigToString(AxisConfig: TJvColorAxisConfig; ItemFormat: TJvColorAxisConfigFormat;
-  AColorSpace: TJvColorSpace): string;
+function AxisConfigToString(AxisConfig: TJvFullColorAxisConfig;
+  ItemFormat: TJvFullColorAxisConfigFormat; AColorSpace: TJvColorSpace): string;
 var
   Str: string;
-  AxisConfigs: TJvColorAxisConfigs;
+  AxisConfigs: TJvFullColorAxisConfigs;
 begin
-  Str := GetEnumName(TypeInfo(TJvColorAxisConfig), Ord(AxisConfig));
+  Str := GetEnumName(TypeInfo(TJvFullColorAxisConfig), Ord(AxisConfig));
   case ItemFormat of
     afShort:
       Result := Copy(Str, 3, Length(Str) - 2);
@@ -717,22 +719,22 @@ begin
   end;
 end;
 
-function GetIndexAxis(AxisConfig: TJvColorAxisConfig; AxisID: TJvAxisIndex): TJvAxisIndex;
+function GetIndexAxis(AxisConfig: TJvFullColorAxisConfig; AxisID: TJvAxisIndex): TJvAxisIndex;
 begin
   Result := TabAxisConfigs[AxisConfig][AxisID];
 end;
 
-function GetIndexAxisX(AxisConfig: TJvColorAxisConfig): TJvAxisIndex;
+function GetIndexAxisX(AxisConfig: TJvFullColorAxisConfig): TJvAxisIndex;
 begin
   Result := TabAxisConfigs[AxisConfig][axIndex0];
 end;
 
-function GetIndexAxisY(AxisConfig: TJvColorAxisConfig): TJvAxisIndex;
+function GetIndexAxisY(AxisConfig: TJvFullColorAxisConfig): TJvAxisIndex;
 begin
   Result := TabAxisConfigs[AxisConfig][axIndex1];
 end;
 
-function GetIndexAxisZ(AxisConfig: TJvColorAxisConfig): TJvAxisIndex;
+function GetIndexAxisZ(AxisConfig: TJvFullColorAxisConfig): TJvAxisIndex;
 begin
   Result := TabAxisConfigs[AxisConfig][axIndex2];
 end;
@@ -800,7 +802,7 @@ end;
 
 procedure TJvFullColorComponent.SetFullColor(const Value: TJvFullColor);
 var
-  OldColorID: TJvColorSpaceID;
+  OldColorID: TJvFullColorSpaceID;
   OldColor: TJvFullColor;
 begin
   if Value <> FullColor then
@@ -851,7 +853,7 @@ begin
   end;
 end;
 
-procedure TJvFullColorComponent.SetAxisConfig(const Value: TJvColorAxisConfig);
+procedure TJvFullColorComponent.SetAxisConfig(const Value: TJvFullColorAxisConfig);
 begin
   if FAxisConfig <> Value then
   begin
@@ -905,7 +907,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvFullColorComponent.KeyMove(KeyCode: TKeyCode; MoveCount: Integer);
+procedure TJvFullColorComponent.KeyMove(KeyCode: TJvKeyCode; MoveCount: Integer);
 begin
   Invalidate;
 end;
@@ -1055,7 +1057,7 @@ var
   IndexX, IndexY: Byte;
   MinX, MaxX, MinY, MaxY: Byte;
   TempColor: TJvFullColor;
-  Line: PFullColorArray;
+  Line: PJvFullColorArray;
   PosX, PosY, I: Integer;
 begin
   AxisX := GetIndexAxisX(AxisConfig);
@@ -1394,7 +1396,7 @@ begin
   inherited AxisConfigChange;
 end;
 
-procedure TJvFullColorPanel.KeyMove(KeyCode: TKeyCode; MoveCount: Integer);
+procedure TJvFullColorPanel.KeyMove(KeyCode: TJvKeyCode; MoveCount: Integer);
 var
   IndexAxisX, IndexAxisY: TJvAxisIndex;
   ValueX, ValueY: Integer;
@@ -1459,7 +1461,7 @@ begin
   FCrossGreenColor := clGreen;
   FCrossRedColor := clMaroon;
   FCrossBlueColor := clNavy;
-  FStyles := [crShowLines, crShowRed, crShowGreen, crShowBlue];
+  FStyles := [csShowLines, csShowRed, csShowGreen, csShowBlue];
 end;
 
 destructor TJvFullColorCircle.Destroy;
@@ -1493,7 +1495,7 @@ var
   SqrYRadius1: Integer;
   AngleUnit, AngleUnitPi, YRadius1: Extended;
   Magic1, Magic2, Magic3: Byte;
-  Line: PFullColorArray;
+  Line: PJvFullColorArray;
 begin
   AxisRadius := GetIndexAxisX(AxisConfig);
   AxisAngle := GetIndexAxisY(AxisConfig);
@@ -1624,15 +1626,15 @@ begin
     DrawFrame(CrossSize, CrossSize);
     Draw(CrossSize, CrossSize, FBuffer);
 
-    if crShowCommon in Styles then
+    if csShowCommon in Styles then
       DrawCross(FullColor, CrossStyle.Color)
     else
     begin
-      if crShowBlue in Styles then
+      if csShowBlue in Styles then
         DrawCross(BlueColor, CrossBlueColor);
-      if crShowRed in Styles then
+      if csShowRed in Styles then
         DrawCross(RedColor, CrossRedColor);
-      if crShowGreen in Styles then
+      if csShowGreen in Styles then
         DrawCross(GreenColor, CrossGreenColor);
     end;
   end;
@@ -1641,7 +1643,7 @@ end;
 
 function TJvFullColorCircle.FullColorToPosition(AFullColor: TJvFullColor): TPoint;
 var
-  ColorID: TJvColorSpaceID;
+  ColorID: TJvFullColorSpaceID;
   RadiusIndex, AngleIndex: TJvAxisIndex;
   Radius, RadiusMax, RadiusMin, Angle, AngleMax, AngleMin: Integer;
   Radius1: Integer;
@@ -1745,20 +1747,20 @@ var
 
 begin
   LFullColor := PositionToFullColor(Point(X - CrossSize, Y - CrossSize));
-  if crShowCommon in Styles then
+  if csShowCommon in Styles then
   begin
     if (ssLeft in Shift) or
-      ((cr3ButtonsMouse in Styles) and (cr3ButtonsCommon in Styles)) then
+      ((cs3ButtonsMouse in Styles) and (cs3ButtonsCommon in Styles)) then
       FullColor := LFullColor;
   end
   else
-  if cr3ButtonsMouse in Styles then
+  if cs3ButtonsMouse in Styles then
   begin
-    if (ssLeft in Shift) and (crShowRed in Styles) then
+    if (ssLeft in Shift) and (csShowRed in Styles) then
       RedColor := LFullColor;
-    if (ssMiddle in Shift) and (crShowGreen in Styles) then
+    if (ssMiddle in Shift) and (csShowGreen in Styles) then
       GreenColor := LFullColor;
-    if (ssRight in Shift) and (crShowBlue in Styles) then
+    if (ssRight in Shift) and (csShowBlue in Styles) then
       BlueColor := LFullColor;
   end
   else
@@ -1774,21 +1776,21 @@ begin
     else
     if FDraggingColor = rcCommon then
     begin
-      if (crShowGreen in Styles) and MoveColor(FGreenColor) then
+      if (csShowGreen in Styles) and MoveColor(FGreenColor) then
       begin
         FDraggingColor := rcGreen;
         if Assigned(FOnGreenColorChange) then
           FOnGreenColorChange(Self);
       end
       else
-      if (crShowRed in Styles) and MoveColor(FRedColor) then
+      if (csShowRed in Styles) and MoveColor(FRedColor) then
       begin
         FDraggingColor := rcRed;
         if Assigned(FOnRedColorChange) then
           FOnRedColorChange(Self);
       end
       else
-      if (crShowBlue in Styles) and MoveColor(FBlueColor) then
+      if (csShowBlue in Styles) and MoveColor(FBlueColor) then
       begin
         FDraggingColor := rcBlue;
         if Assigned(FOnBlueColorChange) then
@@ -1812,7 +1814,7 @@ end;
 
 procedure TJvFullColorCircle.ConvertToID(NewFullColor: TJvFullColor);
 var
-  ColorID: TJvColorSpaceID;
+  ColorID: TJvFullColorSpaceID;
   Change: Boolean;
 begin
   with ColorSpaceManager do
@@ -2000,7 +2002,7 @@ begin
   end;
 end;
 
-procedure TJvFullColorCircle.SetStyles(const Value: TJvColorCircleStyles);
+procedure TJvFullColorCircle.SetStyles(const Value: TJvFullColorCircleStyles);
 begin
   if FStyles <> Value then
   begin
@@ -2493,7 +2495,7 @@ begin
   Result := not ValueYAuto;
 end;
 
-procedure TJvFullColorTrackBar.KeyMove(KeyCode: TKeyCode; MoveCount: Integer);
+procedure TJvFullColorTrackBar.KeyMove(KeyCode: TJvKeyCode; MoveCount: Integer);
 var
   IndexAxisZ: TJvAxisIndex;
   ValueZ: Integer;
@@ -2617,7 +2619,7 @@ begin
   end;
 end;
 
-procedure TJvFullColorTrackBar.SetColorOrientation(const Value: TJvColorOrientation);
+procedure TJvFullColorTrackBar.SetColorOrientation(const Value: TJvFullColorOrientation);
 begin
   if FColorOrientation <> Value then
   begin
@@ -2994,7 +2996,7 @@ begin
     Result := nil;
 end;
 
-function TJvFullColorSpaceCombo.GetColorSpaceID: TJvColorSpaceID;
+function TJvFullColorSpaceCombo.GetColorSpaceID: TJvFullColorSpaceID;
 var
   CS: TJvColorSpace;
 begin
@@ -3009,7 +3011,8 @@ procedure TJvFullColorSpaceCombo.MakeList;
 var
   Index: Integer;
   LColorSpace: TJvColorSpace;
-  OldColorID: TJvColorSpaceID;
+  OldColorID: TJvFullColorSpaceID;
+  ACaption:string;
 begin
   OldColorID := ColorSpaceID;
   with ColorSpaceManager, Items do
@@ -3019,7 +3022,12 @@ begin
     begin
       LColorSpace := ColorSpaceByIndex[Index];
       if (LColorSpace.ID <> csDEF) or AllowVariable then
-        AddObject(ColorSpaceToString(LColorSpace, ItemFormat), LColorSpace);
+      begin
+        if Assigned(FOnFormatItem)
+          then FOnFormatItem(Self,LColorSpace,ACaption)
+          else ACaption:=ColorSpaceToString(LColorSpace, ItemFormat);
+        AddObject(ACaption, LColorSpace);
+      end;
     end;
   end;
   ColorSpaceID := OldColorID;
@@ -3046,12 +3054,12 @@ begin
     end;
 end;
 
-procedure TJvFullColorSpaceCombo.SetColorSpaceID(const Value: TJvColorSpaceID);
+procedure TJvFullColorSpaceCombo.SetColorSpaceID(const Value: TJvFullColorSpaceID);
 begin
   SetColorSpace(ColorSpaceManager.ColorSpace[Value]);
 end;
 
-procedure TJvFullColorSpaceCombo.SetItemFormat(const Value: TJvColorSpaceFormat);
+procedure TJvFullColorSpaceCombo.SetItemFormat(const Value: TJvFullColorSpaceFormat);
 begin
   if FItemFormat <> Value then
   begin
@@ -3076,14 +3084,14 @@ begin
   MakeList;
 end;
 
-function TJvFullColorAxisCombo.GetSelected: TJvColorAxisConfig;
+function TJvFullColorAxisCombo.GetSelected: TJvFullColorAxisConfig;
 begin
-  Result := TJvColorAxisConfig(ItemIndex);
+  Result := TJvFullColorAxisConfig(ItemIndex);
 end;
 
 procedure TJvFullColorAxisCombo.MakeList;
 var
-  Index: TJvColorAxisConfig;
+  Index: TJvFullColorAxisConfig;
   LColorSpace: TJvColorSpace;
   OldItemIndex: Integer;
 begin
@@ -3092,13 +3100,13 @@ begin
   with Items do
   begin
     Clear;
-    for Index := Low(TJvColorAxisConfig) to High(TJvColorAxisConfig) do
+    for Index := Low(TJvFullColorAxisConfig) to High(TJvFullColorAxisConfig) do
       Add(AxisConfigToString(Index, ItemFormat, LColorSpace));
   end;
   ItemIndex := OldItemIndex;
 end;
 
-procedure TJvFullColorAxisCombo.SetColorID(const Value: TJvColorSpaceID);
+procedure TJvFullColorAxisCombo.SetColorID(const Value: TJvFullColorSpaceID);
 begin
   if FColorID <> Value then
   begin
@@ -3107,7 +3115,7 @@ begin
   end;
 end;
 
-procedure TJvFullColorAxisCombo.SetItemFormat(const Value: TJvColorAxisConfigFormat);
+procedure TJvFullColorAxisCombo.SetItemFormat(const Value: TJvFullColorAxisConfigFormat);
 begin
   if FItemFormat <> Value then
   begin
@@ -3116,7 +3124,7 @@ begin
   end;
 end;
 
-procedure TJvFullColorAxisCombo.SetSelected(const Value: TJvColorAxisConfig);
+procedure TJvFullColorAxisCombo.SetSelected(const Value: TJvFullColorAxisConfig);
 begin
   ItemIndex := Ord(Value);
 end;

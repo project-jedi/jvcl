@@ -85,7 +85,7 @@ type
     FOnCloseQuery: TCloseQueryEvent;
     FOnShow: TNotifyEvent;
     FHelpContext: THelpContext;
-    FOldColorSpace: TJvColorSpaceID;
+    FOldColorSpace: TJvFullColorSpaceID;
     function GetFullColor: TJvFullColor;
     procedure SetFullColor(const Value: TJvFullColor);
     procedure SetHelpContext(const Value: THelpContext);
@@ -96,7 +96,7 @@ type
     procedure FormApply(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    property OldColorSpace: TJvColorSpaceID read FOldColorSpace;
+    property OldColorSpace: TJvFullColorSpaceID read FOldColorSpace;
   public
     constructor Create(AOwner: TComponent); override;
     function Execute: Boolean;

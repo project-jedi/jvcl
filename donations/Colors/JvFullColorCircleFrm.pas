@@ -354,7 +354,7 @@ procedure TJvFullColorCircleForm.UpdateDeltaValue;
 var
   I: TJvAxisIndex;
   ComAxis: array [TJvAxisIndex] of Integer;
-  LColorID: TJvColorSpaceID;
+  LColorID: TJvFullColorSpaceID;
 
   function CheckRange(Value: Integer; AMin: Byte; AMax: Byte): Byte;
   begin
@@ -437,9 +437,9 @@ begin
   LabelCommon.Enabled := EnabledA;
   JvFullColorTrackBarCommon.Visible := EnabledA;
   if EnabledA then
-    JvColorCircle.Styles := JvColorCircle.Styles + [crShowCommon]
+    JvColorCircle.Styles := JvColorCircle.Styles + [csShowCommon]
   else
-    JvColorCircle.Styles := JvColorCircle.Styles - [crShowCommon];
+    JvColorCircle.Styles := JvColorCircle.Styles - [csShowCommon];
 
   EnabledA := (coRed in Options) or (coBlue in Options) or (coGreen in Options);
 
