@@ -66,9 +66,13 @@ type
     function GetTime: TTime;
     procedure WriteReg(Base: HKEY; KeyName, ValueName, Value: string);
     function ReadReg(Base: HKEY; KeyName, ValueName: string): string;
-  protected
-  public
+    function GetLoggedOnUser: string;
+    function GetRealComputerName:string;
   published
+    // (p3)
+    property RealComputerName:string read GetRealComputerName;
+    property LoggedOnUser:string read GetLoggedOnUser;
+
     property ComputerName: string read GetComputerName write SetComputerName;
     property Username: string read GetUsername write SetUsername;
     property Company: string read GetCompany write SetCompany;
@@ -323,6 +327,30 @@ end;
 procedure TJvComputerInfo.SetWorkGroup(const Value: string);
 begin
   WriteReg(HKEY_LOCAL_MACHINE, RC_VnetKey, 'Workgroup', Value);
+end;
+
+function TJvComputerInfo.GetLoggedOnUser: string;
+var
+  buf:array[0..255] of char;  // too large really, but who knows if it'll change?
+  nSize:{$IFDEF COMPILER6_UP}Cardinal{$ELSE}integer{$ENDIF};
+begin
+  nSize := sizeof(buf);
+  if Windows.GetUserName(buf,nSize) then
+    Result := buf
+  else
+    Result := '';
+end;
+
+function TJvComputerInfo.GetRealComputerName: string;
+var
+  buf:array[0..255] of char;  // too large really, but who knows if it'll change?
+  nSize:{$IFDEF COMPILER6_UP}Cardinal{$ELSE}integer{$ENDIF};
+begin
+  nSize := sizeof(buf);
+  if Windows.GetComputerName(buf,nSize) then
+    Result := buf
+  else
+    Result := buf;
 end;
 
 end.
