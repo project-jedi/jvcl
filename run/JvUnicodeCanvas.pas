@@ -30,13 +30,10 @@ unit JvUnicodeCanvas;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Graphics,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, Types, QGraphics, QWindows,
+  Qt,
   {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Graphics,
   JvJCLUtils;
 
 type
