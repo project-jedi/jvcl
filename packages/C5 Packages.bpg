@@ -38,7 +38,8 @@ PROJECTS = JvCoreC5R.bpl JvCoreC5D.bpl                     \
            JvXPCtrlsC5R.bpl JvXPCtrlsC5D.bpl               \
            JvDockingC5R.bpl JvDockingC5D.bpl               \
            JvDotNetCtrlsC5R.bpl JvDotNetCtrlsC5D.bpl       \
-           JvEDIC5R.bpl JvEDIC5D.bpl
+           JvEDIC5R.bpl JvEDIC5D.bpl                       \
+           JvInspectorC5R.bpl JvInspectorC5D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------

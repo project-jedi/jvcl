@@ -22,7 +22,8 @@ PROJECTS = JvCoreC6R.bpl JvCoreC6D.bpl JvSystemC6R.bpl JvSystemC6D.bpl \
   JvTimeFrameworkC6R.bpl JvTimeFrameworkC6D.bpl JvHMIC6R.bpl JvHMIC6D.bpl \
   JvManagedThreadsC6R.bpl JvManagedThreadsC6D.bpl JvXPCtrlsC6R.bpl \
   JvXPCtrlsC6D.bpl JvDockingC6R.bpl JvDockingC6D.bpl JvDotNetCtrlsC6R.bpl \
-  JvDotNetCtrlsC6D.bpl JvEDIC6R.bpl JvEDIC6D.bpl
+  JvDotNetCtrlsC6D.bpl JvEDIC6R.bpl JvEDIC6D.bpl JvInspectorC6R.bpl \
+  JvInspectorC6D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
