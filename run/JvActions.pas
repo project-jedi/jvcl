@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2000-10-04
+Last Modified: 2004-01-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -25,17 +25,23 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvActions;
 
 interface
 
 uses
-  Windows, Classes, ActnList, ShellAPI,
-  JclMapi;
+  JclMapi,
+  {$IFDEF WINDOWS}
+  Windows, ShellAPI, ActnList,
+  {$ENDIF WINDOWS}
+  {$IFDEF LINUX}
+  QWindows, QActnList,
+  {$ENDIF LINUX}
+  Classes;
 
 type
+  {$IFDEF MSWINDOWS}
   TJvSendMailOptions = class(TPersistent)
   private
     FMailer: TJclEmail;
@@ -84,6 +90,7 @@ type
   published
     property MailOptions: TJvSendMailOptions read FMailOptions write FMailOptions;
   end;
+{$ENDIF WINDOWS}
 
   TJvWebAction = class(TAction)
   private
@@ -101,6 +108,8 @@ implementation
 
 uses
   JvJVCLUtils, JvJCLUtils;
+
+{$IFDEF MSWINDOWS}
 
 //=== TJvSendMailAction ======================================================
 
@@ -225,6 +234,7 @@ procedure TJvSendMailOptions.SetSubject(const Value: string);
 begin
   Mailer.Subject := Value;
 end;
+{$ENDIF WINDOWS}
 
 //=== TJvWebAction ===========================================================
 
