@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-10-01:
+- added Delphi 6 Personal Edition packages
 2003-09-30
 - updated the installation guide for BCB specific steps // olivier
 2003-09-29
