@@ -3,7 +3,7 @@ object JvSIMDViewFrm: TJvSIMDViewFrm
   Top = 354
   Width = 850
   Height = 305
-  Caption = 'JvSIMDViewFrm'
+  Caption = ')'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

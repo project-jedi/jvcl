@@ -77,16 +77,20 @@ type
     procedure MenuItemCpuInfoClick(Sender: TObject);
     procedure PopupMenuRegsPopup(Sender: TObject);
   private
-    FServices:IOTADebuggerServices;
+    FDebugServices:IOTADebuggerServices;
+//    FServices: IOTAServices;
     FVectorFrame:TJvVectorFrame;
     FDisplay:TJvXMMContentType;
     FFormat:TJvSIMDFormat;
     FCpuInfo: TCpuInfo;
     FCpuInfoValid: Boolean;
+    FSSECaption: string;
+    FOldThreadID: Cardinal;
     procedure SetDisplay(const Value: TJvXMMContentType);
     procedure SetFormat(const Value: TJvSIMDFormat);
   protected
     procedure DoClose(var Action: TCloseAction); override;
+    procedure UpdateActions; override;
   public
     constructor Create (AOwner:TComponent;
      AServices:IOTADebuggerServices); reintroduce;
@@ -97,6 +101,9 @@ type
     function CpuInfo: TCpuInfo;
     property Format:TJvSIMDFormat read FFormat write SetFormat;
     property Display:TJvXMMContentType read FDisplay write SetDisplay;
+    property DebugServices: IOTADebuggerServices read FDebugServices;
+    property SSECaption: string read FSSECaption write FSSECaption;
+//    property Services: IOTAServices read FServices;
   end;
 
 implementation
@@ -115,7 +122,8 @@ var
 begin
   inherited Create(AOwner);
   FCpuInfoValid := False;
-  FServices:=AServices;
+  FOldThreadID := 0;
+  FDebugServices:=AServices;
   ListBoxMXCSR.Items.Clear;
   with CpuInfo do
     for I:=mbInvalidOperationException to mbFlushToZero do
@@ -315,8 +323,32 @@ var
   OldBitValue:Cardinal;
   Index:Integer;
   BitId:TJvMXCSRBits;
+  AProcess: IOTAProcess;
+  AThread: IOTAThread;
 begin
-  GetVectorContext(FServices.CurrentProcess.CurrentThread.Handle,NewVectorFrame);
+  AProcess := nil;
+  AThread := nil;
+  if (DebugServices.ProcessCount >0) then
+    AProcess := DebugServices.CurrentProcess;
+  if (AProcess <> nil) and (AProcess.ThreadCount > 0) then
+    AThread := AProcess.CurrentThread;
+  if (AThread = nil) or (AThread.State = tsNone) or (AThread.GetOSThreadID = 0)
+    or (AThread.Handle = 0) then
+  begin
+    Close;
+    Exit;
+  end;
+
+  if (AThread.State = tsRunnable) then
+  begin
+    Caption := SysUtils.Format('%s <running>',[SSECaption]);
+    Exit;
+  end;
+
+  if (DebugServices.CurrentProcess.ThreadCount > 1) then
+    Caption := SysUtils.Format('%s Thread : %d',[SSECaption,AThread.GetOSThreadID])
+  else Caption := SSECaption;
+  GetVectorContext(AThread.Handle,NewVectorFrame);
   for Index:=0 to ListBoxMXCSR.Items.Count-1 do
     with ListBoxMXCSR, Items do
   begin
@@ -351,7 +383,7 @@ end;
 
 procedure TJvSIMDViewFrm.SetThreadValues;
 begin
-  SetVectorContext(FServices.CurrentProcess.CurrentThread.Handle,FVectorFrame);
+  SetVectorContext(DebugServices.CurrentProcess.CurrentThread.Handle,FVectorFrame);
   GetThreadValues;
 end;
 
@@ -473,7 +505,7 @@ begin
     with TJvSIMDModifyFrm.Create(Self) do
   begin
     Icon.Assign(Self.Icon);
-    if (Execute(Display,Format,FVectorFrame.XMMRegisters.LongXMM[ListBoxRegs.ItemIndex-1]))
+    if (Execute(DebugServices.CurrentProcess.CurrentThread,Display,Format,FVectorFrame.XMMRegisters.LongXMM[ListBoxRegs.ItemIndex-1]))
       then SetThreadValues;
     Free;
   end;
@@ -494,6 +526,27 @@ end;
 procedure TJvSIMDViewFrm.PopupMenuRegsPopup(Sender: TObject);
 begin
   MenuItemModify.Enabled := ListBoxRegs.ItemIndex>0;
+end;
+
+procedure TJvSIMDViewFrm.UpdateActions;
+var
+  CurrentThreadID: Cardinal;
+  AProcess: IOTAProcess;
+  AThread: IOTAThread;
+begin
+  inherited UpdateActions;
+  CurrentThreadID := 0;
+  AProcess := nil;
+  AThread := nil;
+  if (DebugServices.ProcessCount > 0) then
+    AProcess := DebugServices.CurrentProcess;
+  if (AProcess <> nil) and (AProcess.ThreadCount > 0) then
+    AThread := AProcess.CurrentThread;
+  if (AThread <> nil) and (AThread.State in [tsStopped, tsBlocked]) then
+    CurrentThreadID := AThread.GetOSThreadID;
+  if (CurrentThreadID <> 0) and (CurrentThreadID <> FOldThreadID) then
+    GetThreadValues;
+  FOldThreadID := CurrentThreadID;
 end;
 
 end.

@@ -52,12 +52,14 @@ type
     FDisplay: TJvXMMContentType;
     FFormat: TJvSIMDFormat;
     FXMMRegister: TJvXMMRegister;
+    //FDebugServices: IOTADebuggerServices;
     FServices: IOTAServices;
     FLabelList: TList;
     FHistory: TStringList;
+    FThread: IOTAThread;
   public
-    function Execute(ADisplay: TJvXMMContentType; AFormat: TJvSIMDFormat;
-                     var ARegister: TJvXMMRegister):Boolean;
+    function Execute(AThread: IOTAThread; ADisplay: TJvXMMContentType;
+      AFormat: TJvSIMDFormat; var ARegister: TJvXMMRegister):Boolean;
     procedure UpdateDisplay;
     procedure UpdateFormat;
     procedure LoadHistory;
@@ -68,7 +70,9 @@ type
     property Display: TJvXMMContentType read FDisplay;
     property Format: TJvSIMDFormat read FFormat;
     property History: TStringList read FHistory;
+    //property DebugServices: IOTADebuggerServices read FDebugServices;
     property Services: IOTAServices read FServices;
+    property Thread: IOTAThread read FThread;
   end;
 
 implementation
@@ -90,7 +94,7 @@ const
 
 { TJvSIMDModifyFrm }
 
-function TJvSIMDModifyFrm.Execute(ADisplay: TJvXMMContentType;
+function TJvSIMDModifyFrm.Execute(AThread: IOTAThread; ADisplay: TJvXMMContentType;
   AFormat: TJvSIMDFormat; var ARegister: TJvXMMRegister): Boolean;
 begin
   FXMMRegister := ARegister;

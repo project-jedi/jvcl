@@ -142,7 +142,7 @@ begin
     FForm:=TJvSIMDViewFrm.Create(Application,FDebuggerServices);
     FForm.Icon:=FIcon;
     FForm.OnDestroy:=FormDestroy;
-    FForm.Caption := GetSSEString;
+    FForm.SSECaption := GetSSEString;
   end;
   FForm.Show;
 end;
@@ -155,13 +155,15 @@ begin
   if CpuInfo.SSE = 0 then
       FSSEAction.Enabled:=False
   else begin
-    AProcess:=FDebuggerServices.CurrentProcess;
-    AThread:=nil;
-    if (AProcess<>nil)
-      then AThread:=AProcess.CurrentThread;
-    if (AThread<>nil)
-      then FSSEAction.Enabled:=AThread.State in [tsStopped, tsBlocked]
-      else FSSEAction.Enabled:=False;
+    AThread := nil;
+    AProcess := nil;
+    if (FDebuggerServices.ProcessCount > 0) then
+      AProcess:=FDebuggerServices.CurrentProcess;
+    if (AProcess<>nil) and (AProcess.ThreadCount > 0) then
+      AThread:=AProcess.CurrentThread;
+    if (AThread<>nil) then
+      FSSEAction.Enabled:=AThread.State in [tsStopped, tsBlocked]
+    else FSSEAction.Enabled:=False;
   end;
 end;
 
@@ -396,7 +398,7 @@ procedure TDebuggerNotifier.EvaluteComplete(const ExprStr,
   ResultStr: string; CanModify: Boolean; ResultAddress,
   ResultSize: LongWord; ReturnCode: Integer);
 begin
-
+  ShowMessage('Evaluate complete');
 end;
 
 function TDebuggerNotifier.FindProcessReference(
@@ -517,7 +519,8 @@ end;
 
 procedure TDebuggerNotifier.ThreadNotify(Reason: TOTANotifyReason);
 begin
-  if (Reason=nrStopped) then Owner.Refresh;
+  if (Reason <> nrRunning) then
+    Owner.Refresh;
 end;
 
 {$IFDEF UNITVERSIONING}
