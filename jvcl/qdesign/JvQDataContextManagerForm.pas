@@ -36,8 +36,8 @@ unit JvQDataContextManagerForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs, Types,  
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms, QDialogs, 
   DesignIntf, DesignEditors, 
   JvQDataProviderDesignerForm, QMenus, QActnList,
   JvQProviderTreeListFrame, JvQBaseDsgnFrame, JvQBaseDsgnToolbarFrame,

@@ -35,9 +35,8 @@ unit JvQPaintBoxEditor;
 interface
 
 uses
-  SysUtils, Classes,  
-  QForms, QGraphics, QImgList, QDialogs, QControls, Types,   
-  DesignIntf, DesignEditors, DesignMenus; 
+  SysUtils, Classes, QWindows, QForms, QGraphics, QImgList, QDialogs, QControls, 
+  CLXEditors, DesignIntf, DesignEditors, DesignMenus; 
 
 type
   TJvPaintBoxEditor = class(TDefaultEditor)

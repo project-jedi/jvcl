@@ -37,7 +37,7 @@ interface
 
 uses
   SysUtils, Classes,
-  Types, QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
+  QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
   QComCtrls, QImgList, QMenus, QActnList, 
   DesignIntf, DesignEditors, 
   JvQDataProviderIntf, JvQProviderTreeListFrame, JvQDsgnTypes;

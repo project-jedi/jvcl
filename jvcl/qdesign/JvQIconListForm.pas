@@ -34,10 +34,9 @@ unit JvQIconListForm;
 interface
 
 uses
-  Classes,  
-  QForms, QControls, QDialogs, QStdCtrls, QExtCtrls, QExtDlgs,
-  QImgList, QComCtrls, QGraphics, QToolWin, ClxEditors,  
-  RTLConsts, DesignIntf, DesignEditors,  
+  Classes, QWindows, QMessages, QForms, QControls, QDialogs, QGraphics,
+  QStdCtrls, QExtCtrls, QExtDlgs, QImgList, QComCtrls, QToolWin, 
+  RTLConsts, DesignIntf, DesignEditors, CLXEditors, 
   JvQIconList, JvQComponent;
 
 type

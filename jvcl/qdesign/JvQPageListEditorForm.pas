@@ -36,7 +36,7 @@ interface
 
 uses
   SysUtils, Classes, 
-  Types, QGraphics, QControls, QForms, QDialogs, QActnList, QImgList,
+  QGraphics, QControls, QForms, QDialogs, QActnList, QImgList,
   QComCtrls, QStdCtrls, QToolWin, QMenus, 
   QExtCtrls, QTypes,  
   DesignIntf, DesignEditors, QDesignWindows, 
@@ -269,8 +269,8 @@ begin
     Page := nil;
     if (Index >= 0) and (Index < FPageList.PageCount) then
       Page := TJvCustomPageAccess(FPageList.Pages[Index]);
-    Designer.SelectComponent(Page);
     PageList.ActivePage := Page;
+    Designer.SelectComponent(Page);
     Designer.Modified;
   end;
 end;

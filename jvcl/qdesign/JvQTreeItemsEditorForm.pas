@@ -41,9 +41,8 @@ interface
 
 uses
   SysUtils, Classes, 
-  DesignEditors, DesignIntf,  
-  QTypes, 
-  Types, QWindows, QMessages, QGraphics, QControls, QForms,
+  DesignEditors, DesignIntf, 
+  QWindows, QMessages, QGraphics, QControls, QForms,
   QDialogs, QStdCtrls, QExtCtrls, QActnList, QComCtrls, QMenus, QStdActns;
 
 type

@@ -34,7 +34,7 @@ unit JvQColorEditor;
 interface
 
 uses
-  SysUtils, Classes, Types, QWindows, QGraphics, 
+  SysUtils, Classes, QWindows, QGraphics, 
   RTLConsts, DesignIntf, DesignEditors, CLXEditors,  
   QDialogs,
   {$IFDEF MSWINDOWS}

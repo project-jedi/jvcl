@@ -35,9 +35,9 @@ unit JvQFooterEditor;
 interface
 
 uses
-  SysUtils, Classes,  
-  QForms, QGraphics, QImgList, QDialogs, QControls,   
-  DesignIntf, DesignEditors, DesignMenus; 
+  SysUtils, Classes,
+  QWindows, QForms, QGraphics, QImgList, QDialogs, QControls, 
+  CLXEditors, DesignIntf, DesignEditors, DesignMenus; 
 
 type
   TJvFooterEditor = class(TComponentEditor)

@@ -35,9 +35,9 @@ unit JvQProviderToolbarFrame;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs, Types, QStdCtrls, QActnList,
-  QMenus, QImgList, QComCtrls, QToolWin, QExtCtrls, 
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QActnList, QMenus, QImgList, QComCtrls, QToolWin, QExtCtrls,
   JvQStdToolbarDsgnFrame;
 
 type

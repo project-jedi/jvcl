@@ -39,7 +39,7 @@ uses
   Classes, SysUtils, 
   DesignIntf, DesignEditors, CLXEditors,  
   JvQDsgnEditors, 
-  Types, QWindows, QForms, QImgList, QActnList, QGraphics,
+  QWindows, QForms, QImgList, QActnList, QGraphics,
   TypInfo;
 
 type 

@@ -35,9 +35,8 @@ unit JvQFormPropertiesForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QForms, QStdCtrls, QButtons, QExtCtrls, QConsts, Types,  
-  RTLConsts, DesignIntf, DesignEditors,  
+  SysUtils, Classes, QControls, QForms, QStdCtrls, QButtons, QExtCtrls, QConsts, 
+  RTLConsts, DesignIntf, DesignEditors, CLXEditors, 
   JvQJVCLUtils, JvQFormPlacement, JvQPropertyStorage, JvQComponent;
 
 { TODO -oJVCL -cREIMPLEMENT :

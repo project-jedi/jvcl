@@ -35,8 +35,8 @@ unit JvQNavPaneEditors;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QForms, QToolWin, QMenus, QActnList, QComCtrls, QImgList,  
+  SysUtils, Classes,
+  QWindows, QControls, QForms, QToolWin, QMenus, QActnList, QComCtrls, QImgList, 
   DesignEditors, DesignIntf, DesignMenus, QDesignWindows, 
   JvQDsgnEditors, JvQNavigationPane;
 

@@ -37,8 +37,7 @@ unit JvQHTHintForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QForms, QStdCtrls, Types, QWindows,  
+  SysUtils, Classes, QWindows, QControls, QForms, QStdCtrls, 
   DesignIntf, DesignEditors, 
   JvQHint, JvQComponent;
 

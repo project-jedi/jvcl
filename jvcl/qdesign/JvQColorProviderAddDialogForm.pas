@@ -36,8 +36,9 @@ unit JvQColorProviderAddDialogForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QControls, QForms, QDialogs, QButtons, QStdCtrls, 
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
+  QButtons, QStdCtrls,
   JvQColorProvider, JvQDataProvider, JvQDataProviderIntf, JvQTypes;
 
 type

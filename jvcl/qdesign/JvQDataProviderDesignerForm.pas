@@ -36,9 +36,9 @@ unit JvQDataProviderDesignerForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs,
-  QActnList, QMenus, QImgList, QToolWin, QComCtrls, QStdCtrls, QExtCtrls,  
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
+  QActnList, QMenus, QImgList, QToolWin, QComCtrls, QStdCtrls, QExtCtrls, 
   DesignIntf, DesignEditors, 
   JvQBaseDsgnForm, JvQDataProvider, JvQDataProviderItemDesign, JvQDataProviderIntf,
   JvQProviderTreeListFrame, JvQBaseDsgnFrame, JvQBaseDsgnToolbarFrame,

@@ -36,9 +36,9 @@ unit JvQColorProviderDesignerForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QButtons, QActnList,
-  Types,  
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QButtons, QActnList, 
   DesignIntf, DesignEditors, 
   JvQBaseDsgnForm, JvQProviderTreeListFrame, JvQComponent,
   JvQDataProvider, JvQDataProviderIntf, JvQContextProvider,

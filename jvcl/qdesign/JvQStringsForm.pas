@@ -38,8 +38,7 @@ unit JvQStringsForm;
 interface
 
 uses
-  Classes,  
-  QForms, QControls, QDialogs, QStdCtrls, QExtCtrls, QWindows,  
+  Classes, QWindows, QForms, QControls, QDialogs, QStdCtrls, QExtCtrls, 
   DesignIntf, DesignEditors, 
   JvQComponent;
 
@@ -74,10 +73,7 @@ uses
   SysUtils, 
   JvQDsgnConsts;
 
-
-
 {$R *.xfm}
-
 
 procedure TJvStrEditDlg.FileOpen(Sender: TObject);
 begin

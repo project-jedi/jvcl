@@ -40,7 +40,7 @@ uses
   Windows, Messages,
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
-  Types, QGraphics, QControls, QForms, QDialogs, QActnList, QMenus, QImgList, QToolWin,
+  QGraphics, QControls, QForms, QDialogs, QActnList, QMenus, QImgList, QToolWin,
   QComCtrls, QExtCtrls,
   JvQBaseDsgnFrame;
 

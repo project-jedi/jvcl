@@ -35,9 +35,9 @@ unit JvQGroupHeaderEditor;
 interface
 
 uses
-  SysUtils, Classes,  
-  QWindows, QForms, QGraphics, QImgList, QDialogs, QControls,   
-  DesignIntf, DesignEditors, DesignMenus; 
+  SysUtils, Classes,
+  QWindows, QForms, QGraphics, QImgList, QDialogs, QControls, 
+  CLXEditors, DesignIntf, DesignEditors, DesignMenus; 
 
 type
   TJvGroupHeaderEditor = class(TComponentEditor)

@@ -35,7 +35,7 @@ unit JvQSegmentedLEDDisplayMappingForm;
 interface
 
 uses
-  Types, QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms, QDialogs, QStdCtrls,  
+  QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms, QDialogs, QStdCtrls,  
   DesignIntf, DesignEditors, 
   JvQBaseDsgnForm, JvQSegmentedLEDDisplayMapperFrame, JvQSegmentedLEDDisplay,
   JvQBaseDsgnFrame, JvQDsgnTypes;

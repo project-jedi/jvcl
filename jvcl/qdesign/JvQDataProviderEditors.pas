@@ -119,8 +119,12 @@ type
 implementation
 
 uses
-  SysUtils, TypInfo, 
-  RTLConsts, 
+  SysUtils, TypInfo,
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ELSE}
+  QConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   JvQDataConsumerContextSelectForm, JvQDataConsumerItemSelectForm,
   JvQDataProviderDesignerForm, JvQDataContextManagerForm, JvQDsgnConsts;
 

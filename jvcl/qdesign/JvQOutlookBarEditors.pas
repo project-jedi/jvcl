@@ -35,10 +35,10 @@ unit JvQOutlookBarEditors;
 interface
 
 uses
-  SysUtils, Classes,  
+  SysUtils, Classes,
   QWindows, QControls, QForms, QToolWin,
-  QMenus, QActnList, QComCtrls, QImgList,
-  DesignEditors, DesignIntf, DesignMenus, ClxDesignWindows, 
+  QMenus, QActnList, QComCtrls, QImgList, 
+  DesignEditors, DesignIntf, DesignMenus, QDesignWindows, 
   JvQDsgnEditors, JvQOutlookBar;
 
 type

@@ -41,10 +41,12 @@ unit JvQPageLinkEditorForm;
 interface
 
 uses
-  Classes, SysUtils,  
-  QForms, QControls, QStdCtrls, QExtCtrls, QComCtrls,
-  QActnList, QMenus,  
-  DesignEditors, Variants, DesignIntf, 
+  Classes, SysUtils, QWindows, QForms, QControls, QStdCtrls, QExtCtrls, QComCtrls,
+  QActnList, QMenus,
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS} 
+  DesignEditors, DesignIntf, 
   JvQPageList, JvQPageListTreeView, JvQComponent;
 
 type

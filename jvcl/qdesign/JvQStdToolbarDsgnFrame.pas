@@ -36,9 +36,9 @@ unit JvQStdToolbarDsgnFrame;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs, QComCtrls, QActnList, QMenus,
-  QImgList, QToolWin, QExtCtrls, 
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms, QDialogs, QComCtrls, QActnList,
+  QMenus, QImgList, QToolWin, QExtCtrls,
   JvQBaseDsgnToolbarFrame;
 
 type

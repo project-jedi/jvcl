@@ -36,8 +36,8 @@ unit JvQDataConsumerItemSelectForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, Types,  
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QExtCtrls, 
   DesignIntf, DesignEditors, 
   JvQBaseDsgnForm, JvQProviderTreeListFrame, JvQDataProvider, JvQDataProviderIntf,
   JvQDsgnTypes;
