@@ -3017,6 +3017,13 @@ begin
 end;
 
 function TJvMiscInfo.GetTimeRunning: Int64;
+begin
+  Result := GetTickCount64;
+end;
+(*
+Added to JvJVCLUtils:
+
+function GetTickCount64: Int64;
 var
   QFreq, QCount:Int64;
 begin
@@ -3028,6 +3035,7 @@ begin
        Result := (QCount div QFreq) * 1000;
   end;
 end;
+*)
 
 function TJvMiscInfo.GetTimeRunningAsString: string;
 var
