@@ -733,7 +733,7 @@ begin
   if Assigned(FGlyphCollapsed) then
     GlyphWidth := max(FGlyphCollapsed.Width, GlyphWidth);
 
-  DrawText(Canvas.Handle, PChar(Text), Length(Text), R, DT_LEFT or DT_SINGLELINE or DT_CALCRECT);
+  Windows.DrawText(Canvas.Handle, PChar(Text), Length(Text), R, DT_LEFT or DT_SINGLELINE or DT_CALCRECT);
 
   Inc(R.Right, Interspace + GlyphWidth);
   with CaptionBorder do

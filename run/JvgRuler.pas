@@ -114,7 +114,7 @@ begin
             S := IntToStr(Pt.X)
           else
             S := IntToStr(Trunc(X));
-          DrawText(Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_CENTER);
+          Windows.DrawText(Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_CENTER);
         end;
         MoveTo(Pt.X, Height - Offset[X = Trunc(X)]);
         LineTo(Pt.X, Height - 1);
@@ -131,7 +131,7 @@ begin
             S := IntToStr(Pt.Y)
           else
             S := IntToStr(Trunc(Y));
-          DrawText(Handle, PChar(S), Length(S), R, DT_SINGLELINE or
+          Windows.DrawText(Handle, PChar(S), Length(S), R, DT_SINGLELINE or
             DT_CENTER or DT_VCENTER);
         end;
         MoveTo(Width - Offset[Y = Trunc(Y)], Pt.Y);

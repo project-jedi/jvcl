@@ -187,7 +187,7 @@ begin
 
   if FIsDown then
     OffsetRect(R, 1, 1);
-  DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R,
+  Windows.DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R,
     DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
   R := ClientRect;

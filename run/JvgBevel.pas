@@ -37,11 +37,17 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, Graphics, ExtCtrls, Forms,
+  {$IFDEF USEJVCL}
   JvComponent,
+  {$ENDIF USEJVCL}
   JvgTypes, JvgCommClasses, JvgUtils;
 
 type
+  {$IFDEF USEJVCL}
   TJvgBevel = class(TJvGraphicControl)
+  {$ELSE}
+  TJvgBevel = class(TGraphicControl)
+  {$ENDIF USEJVCL}
   private
     FBevelInner: TPanelBevel;
     FBevelOuter: TPanelBevel;
@@ -96,12 +102,16 @@ type
     property BevelPenWidth: Word read FBevelPenWidth write SetBevelPenWidth default 1;
     property InteriorOffset: Word read FInteriorOffset write SetInteriorOffset default 0;
     property Gradient: TJvgGradient read FGradient write FGradient;
+    {$IFDEF USEJVCL}
     property HintColor;
+    {$ENDIF USEJVCL}
     property VertLines: TJvgBevelLines read FVertLines write FVertLines;
     property HorLines: TJvgBevelLines read FHorLines write FHorLines;
+    {$IFDEF USEJVCL}
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
+    {$ENDIF USEJVCL}
   end;
 
 implementation

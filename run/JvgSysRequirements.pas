@@ -84,10 +84,10 @@ type
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
-  {$IFDEF USEJVCL}
   JvResources;
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring

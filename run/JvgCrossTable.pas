@@ -730,10 +730,10 @@ begin
     else
     begin
       R_ := R;
-      DrawText(Handle, PChar(Str), -1, R_, DT_CENTER or DT_WORDBREAK or
+      Windows.DrawText(Handle, PChar(Str), -1, R_, DT_CENTER or DT_WORDBREAK or
         DT_CALCRECT);
       R.Top := R.Top + max(0, (R.Bottom - R_.Bottom) div 2);
-      DrawText(Handle, PChar(Str), -1, R, DT_CENTER or DT_WORDBREAK);
+      Windows.DrawText(Handle, PChar(Str), -1, R, DT_CENTER or DT_WORDBREAK);
     end;
   end;
 end;
@@ -769,12 +769,11 @@ begin
       Font.Assign(Font_);
     end;
     if not fCanPrint then
-      exit;
+      Exit;
     R := Rect(LeftIndent, 10, PageWidth - RightIndent, PageHeight -
       BottomIndent);
     SetBkMode(Handle, TRANSPARENT);
-    DrawText(Handle, PChar(Str), -1, R, AlignFlags);
-
+    Windows.DrawText(Handle, PChar(Str), -1, R, AlignFlags);
   end;
 end;
 

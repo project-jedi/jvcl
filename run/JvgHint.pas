@@ -204,7 +204,7 @@ begin
   HW := TJvgHintWindow.Create(Application);
   R := Bounds(X, Y, 10, 10);
 
-  DrawText(HW.Canvas.Handle, PChar(Caption), Length(Caption), R, DT_WORDBREAK or DT_CALCRECT);
+  Windows.DrawText(HW.Canvas.Handle, PChar(Caption), Length(Caption), R, DT_WORDBREAK or DT_CALCRECT);
   HW.ActivateHint(R, Caption);
 end;
 
@@ -319,10 +319,10 @@ begin
   Canvas.Font.Assign(FHintComponent.Style.Font);
   InflateRect(R, -1, -1);
   if ClientRect.Bottom - ClientRect.Top > Canvas.TextHeight('Y') * 2 then
-    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R,
+    Windows.DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R,
       DT_VCENTER or DT_WORDBREAK or cAlignments[FHintComponent.Alignment])
   else
-    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R,
+    Windows.DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R,
       DT_VCENTER or DT_SINGLELINE or cAlignments[FHintComponent.Alignment]);
 end;
 
