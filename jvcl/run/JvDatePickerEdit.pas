@@ -113,6 +113,7 @@ type
     FNoDateShortcut: TShortcut;
     FNoDateText: string;
     FStoreDate: Boolean;
+    FAlwaysReturnEditDate: Boolean;
 //    FMinYear: Word;
 //    FMaxYear: Word;
     procedure ButClick(Sender: TObject);
@@ -156,6 +157,7 @@ type
     procedure ClearMask;
     procedure RestoreMask;
     property AllowNoDate: Boolean read FAllowNoDate write SetAllowNoDate default True;
+    property AlwaysReturnEditDate: Boolean read FAlwaysReturnEditDate write FAlwaysReturnEditDate default True;
     property CalendarAppearance: TJvMonthCalAppearance read FCalAppearance write SetCalAppearance;
     property Date: TDateTime read GetDate write SetDate stored FStoreDate;
     property DateFormat: string read FDateFormat write SetDateFormat stored IsDateFormatStored;
@@ -261,6 +263,7 @@ begin
   inherited Create(AOwner);
 
   FAllowNoDate := True;
+  FAlwaysReturnEditDate := True;
   FDate := SysUtils.Date;
   FDateError := False;
   FDropFo := nil;
@@ -317,6 +320,7 @@ end;
 procedure TJvCustomDatePickerEdit.CalSelect(Sender: TObject);
 begin
   Self.Date := FDropFo.SelDate;
+  NotifyIfChanged;
 end;
 
 procedure TJvCustomDatePickerEdit.Clear;
@@ -533,8 +537,6 @@ begin
   if InternalChanging then
     Exit;
 
-  inherited Change;
-
   FDateError := False;
 
   if [csDesigning, csDestroying] * ComponentState <> [] then
@@ -554,24 +556,31 @@ begin
     end
     else
       if EnableValidation then
-    begin
-      lActFig := ActiveFigure;
-
-      if lActFig.Figure <> dfNone then
       begin
-        lFigVal := StrToIntDef(Trim(Copy(Text, lActFig.Start, lActFig.Length)), 0);
-        if SelStart = lActFig.Start + lActFig.Length - 1 then
-          case lActFig.Figure of
-            dfDay:
-              EnforceRange(1, 31);
-            dfMonth:
-              EnforceRange(1, 12);
-            dfYear:
+        lActFig := ActiveFigure;
+
+        if lActFig.Figure <> dfNone then
+        begin
+          lFigVal := StrToIntDef(Trim(Copy(Text, lActFig.Start, lActFig.Length)), 0);
+          if SelStart = lActFig.Start + lActFig.Length - 1 then
+            case lActFig.Figure of
+              dfDay:
+                EnforceRange(1, 31);
+              dfMonth:
+                EnforceRange(1, 12);
+              dfYear:
                 {EnforceRange( MinYear, MaxYear)}; //year-validation still under development
-          end;
+            end;
+        end;
+       {make sure querying the date in an OnChange event handler always reflects
+        the current contents of the control and not just the last valid value.}
+        lDate := 0;
+        AttemptTextToDate(Text, lDate, lActFig.Figure = dfYear);
+        if AlwaysReturnEditDate then
+          FDate := lDate;
       end;
-    end;
   end;
+  inherited Change;
 end;
 
 function TJvCustomDatePickerEdit.IsNoDateShortcutStored: Boolean;
