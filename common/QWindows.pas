@@ -457,7 +457,8 @@ function GetTextExtentPoint32(Handle: QPainterH; pText: PChar; Len: Integer;
 function GetTextExtentPoint32W(Handle: QPainterH; pText: PWideChar; Len: Integer;
   var Size: TSize): LongBool;
 
-procedure FrameRect(Canvas: TCanvas; const R: TRect);
+function FrameRect(Handle: QPainterH; const R: TRect; Brush: QBrushH): LongBool; overload;
+procedure FrameRect(Canvas: TCanvas; const R: TRect); overload;
 function DrawFocusRect(Handle: QPainterH; const R: TRect): LongBool;
 function InvertRect(Handle: QPainterH; const R: TRect): LongBool;
 function RoundRect(Handle: QPainterH; Left, Top, Right, Bottom, X3, Y3: Integer): LongBool;
@@ -712,8 +713,10 @@ function DeleteObject(Region: QRegionH): LongBool; overload;
 function EqualRgn(Rgn1, Rgn2: QRegionH): LongBool;
 function FillRgn(Handle: QPainterH; Region: QRegionH; Brush: QBrushH): LongBool;
 function GetClipRgn(Handle: QPainterH; rgn: QRegionH): Integer;
-function ExcludeClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer;
-function IntersectClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer;
+function ExcludeClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer; overload;
+function ExcludeClipRect(Handle: QPainterH; const R: TRect): Integer; overload;
+function IntersectClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer; overload;
+function IntersectClipRect(Handle: QPainterH; const R: TRect): Integer; overload;
 function InvertRgn(Handle: QPainterH; Region: QRegionH): LongBool;
 function OffsetClipRgn(Handle: QPainterH; X, Y: Integer): Integer;
 function OffsetRgn(Region: QRegionH; X, Y: Integer): Integer;
@@ -1366,21 +1369,18 @@ end;
 
 function BitBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
   XSrc, YSrc: Integer; Rop: RasterOp): LongBool;
-var
-  dp: TPoint;
-  sr: TRect;
 begin
   if (DestDC = nil) or (SrcDC = nil) then
     Result := False
   else
   begin
     Result := True;
-    dp.X := X;
-    dp.Y := Y;
-    sr := Bounds(XSrc, YSrc, Width, Height);
+   // Windows's BitBlt uses logical units  
+    MapPainterLP(DestDC, X, Y);
+    MapPainterLP(SrcDC, XSrc, YSrc, Width, Height);
     try
-      Qt.bitBlt(QPainter_device(DestDC), dp.X, dp.Y, QPainter_device(SrcDC),
-        sr.Left, sr.Top, sr.Right - sr.Left, sr.Bottom - sr.Top, Rop,
+      Qt.bitBlt(QPainter_device(DestDC), X, Y, QPainter_device(SrcDC),
+        XSrc, YSrc, Width, Height, Rop,
         True); // ignore the Mask because Windows's BitBlt does not use Masks
     except
       Result := False;
@@ -1399,7 +1399,18 @@ function StretchBlt(dst: QPainterH; dx, dy, dw, dh: Integer;
 var
   bmp1, bmp2: QPixmapH;
   painter : QPainterH;
+  d_sx, d_sy, d_sw, d_sh: Integer;
+  d_dx, d_dy, d_dw, d_dh: Integer;
 begin
+  Result := False;
+  if dst = nil then
+    Exit;
+ // Windows's StretchBlt uses logical units
+  d_sx := sx;d_sy := sy;d_sw := sw;d_sh := sh;
+  d_dx := dx;d_dy := dy;d_dw := dw;d_dh := dh;
+  MapPainterLP(dst, d_dx, d_dy, d_dw, d_dh);
+  MapPainterLP(src, d_sx, d_sy, d_sw, d_sh);
+
   // written by André Snepvangers
   // - supports same winrop as bitblt(..., winrop)
   // - destination and source don't have to be compatible with one and another
@@ -1407,16 +1418,17 @@ begin
     bmp1 := nil;
     bmp2 := nil;
     try
-      bmp1 := CreateCompatibleBitmap(src, sw, sh);
-      bmp2 := CreateCompatibleBitmap(dst, dw, dh);
-      Qt.bitBlt(bmp1, 0, 0, QPainter_device(Src), sx, sy, sw, sh,
+     // temporary bitmaps are in device units
+      bmp1 := CreateCompatibleBitmap(src, d_sw, d_sh);
+      bmp2 := CreateCompatibleBitmap(dst, d_dw, d_dh);
+      Qt.bitBlt(bmp1, 0, 0, QPainter_device(Src), d_sx, d_sy, d_sw, d_sh,
         RasterOp_CopyROP, True);
       painter := QPainter_create(bmp2);
       QPainter_save(painter);
-      QPainter_scale(painter, dw/sw, dh/sh);
-      QPainter_drawPixmap(painter, 0, 0, bmp1, 0, 0, sw, sh);
+      QPainter_scale(painter, d_dw/d_sw, d_dh/d_sh);
+      QPainter_drawPixmap(painter, 0, 0, bmp1, 0, 0, d_sw, d_sh);
       QPainter_restore(painter);
-      Result := BitBlt(dst, dx, dy, dw, dh, Painter, 0, 0, winrop);
+      Result := BitBlt(dst, dx, dy, dw, dh, Painter, 0, 0, winrop); // maps logical units
       QPainter_destroy(Painter);
     finally
       if Assigned(bmp1) then
@@ -1908,6 +1920,12 @@ begin
   QRegion_destroy(ExcludeRgn);
 end;
 
+function ExcludeClipRect(Handle: QPainterH; const R: TRect): Integer;
+begin
+  with R do
+    Result := ExcludeClipRect(Handle, Left, Top, Right, Bottom);
+end;
+
 function IntersectClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer;
 var
   IntersectRgn, Rgn: QRegionH;
@@ -1928,6 +1946,12 @@ begin
     Result := RGN_ERROR;
   end;
   QRegion_destroy(IntersectRgn);
+end;
+
+function IntersectClipRect(Handle: QPainterH; const R: TRect): Integer;
+begin
+  with R do
+    Result := IntersectClipRect(Handle, Left, Top, Right, Bottom);
 end;
 
 function SetRectRgn(Rgn: QRegionH; X1, Y1, X2, Y2: Integer): LongBool;
@@ -3109,24 +3133,40 @@ begin
   end;
 end;
 
-procedure FrameRect(Canvas: TCanvas; const R: TRect);
+function FrameRect(Handle: QPainterH; const R: TRect; Brush: QBrushH): LongBool;
 var
-  BorderR: TRect;
-  Brush: TBrush;
+  Pen: QPenH;
 begin
-  BorderR := R;
-  InflateRect(BorderR, 1, 1);
-  Brush := TBrush.Create;
+  Result := False;
+  if (Handle = nil) or (R.Right - R.Left <= 0) or (R.Bottom - R.Top <= 0) or
+     (Brush = nil) then
+    Exit;
   try
-    Brush.Assign(Canvas.Brush);
+    Pen := nil;
+    QPainter_save(Handle);
     try
-      Canvas.Brush.Style := bsClear;
-      Canvas.Rectangle(BorderR);
+      Pen := QPen_create(QBrush_color(Brush), 1, PenStyle_SolidLine);
+      QPainter_setPen(Handle, Pen);
+      QPainter_setBrush(Handle, BrushStyle_NoBrush);
+      QPainter_drawRect(Handle, @R);
     finally
-      Canvas.Brush.Assign(Brush);
+      if Assigned(Pen) then
+        QPen_destroy(Pen);
+      QPainter_restore(Handle);
     end;
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
+procedure FrameRect(Canvas: TCanvas; const R: TRect);
+begin
+  Canvas.Start;
+  try
+    FrameRect(Canvas.Handle, R, Canvas.Brush.Handle);
   finally
-    Brush.Free;
+    Canvas.Stop;
   end;
 end;
 
