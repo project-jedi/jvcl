@@ -44,7 +44,9 @@ type
   private
     FItems: TStrings;
     FItemHeight: Integer;
+    {$IFDEF COMPILER6_UP}
     FAutoSize: Boolean;
+    {$ENDIF}
     FAutoGrow: Boolean;
     FDown: Boolean;
     FClickable: Boolean;
