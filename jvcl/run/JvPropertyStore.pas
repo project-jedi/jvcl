@@ -647,10 +647,11 @@ var
 begin
   if FreeObjects then
     for I := 0 to Count - 1 do
-    begin
-      Objects[I].Free;
-      Objects[I] := nil;
-    end;
+      if Assigned(Objects[I]) then
+      begin
+        Objects[I].Free;
+        Objects[I] := nil;
+      end;
   if Assigned(Items) then
     Items.Clear;
   inherited Clear;
@@ -668,12 +669,18 @@ end;
 
 function TJvCustomPropertyListStore.GetString(Index: Integer): string;
 begin
-  Result := Items.Strings[Index];
+  if Assigned(Items) then
+    Result := Items.Strings[Index]
+  else
+    Result := '';
 end;
 
 function TJvCustomPropertyListStore.GetObject(Index: Integer): TObject;
 begin
-  Result := Items.Objects[Index];
+  if Assigned(Items) then
+    Result := Items.Objects[Index]
+  else
+    Result := nil;
 end;
 
 procedure TJvCustomPropertyListStore.SetString(Index: Integer; Value: string);
