@@ -314,6 +314,9 @@ var
   I: Integer;
   J: Integer;
   CompName: string;
+  Res: Integer;
+  SR: TSearchRec;
+  SL2: TStrings;
 begin
   if AnsiSameText('JVCL.', Copy(FileName, Length(HelpPath) + 1, 5)) then
     Exit;
@@ -335,7 +338,32 @@ begin
           begin
             CompName := Copy(Trim(SL[J]), 4, Length(Trim(SL[J])) - 3);
             if SL.IndexOf('@@' + CompName) > -1 then
-              AddToGroups(CompName, Copy(Trim(SL[I]), 8, Length(Trim(SL[I])) - 8), FileName);
+              AddToGroups(CompName, Copy(Trim(SL[I]), 8, Length(Trim(SL[I])) - 8), FileName)
+            else
+            begin
+              // Check additional files
+              SL2 := TStringList.Create;
+              try
+                Res := FindFirst(Copy(FileName, 1, Length(FileName) - 4) + '*.dtx', faDirectory, SR);
+                try
+                  while Res = 0 do
+                  begin
+                    SL2.LoadFromFile(HelpPath + SR.FindData.cFileName);
+                    if SL2.IndexOf('@@' + CompName) > -1 then
+                    begin
+                      Res := -1;
+                      AddToGroups(CompName, Copy(Trim(SL[I]), 8, Length(Trim(SL[I])) - 8), HelpPath + SR.FindData.cFileName);
+                    end
+                    else
+                      Res := FindNext(SR);
+                  end;
+                finally
+                  FindClose(SR);
+                end;
+              finally
+                SL2.Free;
+              end;
+            end;
           end;
         end;
         Inc(I);
@@ -413,11 +441,12 @@ end;
 procedure TfrmGrpOverviewGen.btnBuildClick(Sender: TObject);
 begin
   mmLog.Lines.Clear;
-  LogIndent := 0;
+  AddLog('This is an old tool. Use the new commandline tool GenGroups instead.');
+{  LogIndent := 0;
   CreateGroupList;
   AddComponentsToGroups;
   WriteGroupOverviews;
-  AddLog('Done!');
+  AddLog('Done!');}
 end;
 
 initialization
