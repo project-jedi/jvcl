@@ -38,12 +38,10 @@ uses
 type
   TPassForm = class(TForm)
     Label1: TLabel;
-    BuEdit1: TJvEdit;
-    BUBitBtn1: TJvBitBtn;
-    BUBitBtn2: TJvBitBtn;
+    edPassword: TJvEdit;
+    btnOK: TButton;
+    btnCancel: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-  private
-  public
   end;
 
 var
@@ -58,8 +56,7 @@ implementation
 procedure TPassForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Action := caFree;
-  if Assigned(BUBitBtn2.OnClick) then
-    BUBitBtn2.OnClick(Self);
+  btnCancel.Click;
 end;
 
 end.

@@ -69,10 +69,10 @@ implementation
 
 resourcestring
   RC_PassEnter = 'Enter password';
-  RC_OkCaption = '&Ok';
+  RC_OkCaption = '&OK';
   RC_CancelCaption = '&Cancel';
   RC_PassChar = '*';
-  RC_LabelPassCaption = 'Username';
+  RC_LabelPassCaption = '&Password:';
 
   {**************************************************}
 
@@ -83,10 +83,10 @@ begin
   try
     Can := False;
     if Assigned(FOnOk) then
-      FOnOk(Self, FPass.buEdit1.Text, Can);
+      FOnOk(Self, FPass.edPassword.Text, Can);
     if Can then
     begin
-      FPass.buBitBtn2.OnClick := nil;
+      FPass.btnCancel.OnClick := nil;
       FPass.Close;
     end;
   except
@@ -122,13 +122,13 @@ begin
     if FPass = nil then
       FPass := TPassForm.Create(Application);
     FPass.Caption := FTitle;
-    FPass.buBitbtn1.Caption := FOkCaption;
-    FPass.buBitBtn2.Caption := FCancelCaption;
+    FPass.btnOK.Caption := FOkCaption;
+    FPass.btnCancel.Caption := FCancelCaption;
     FPass.label1.Caption := FLabelCaption;
-    FPass.buedit1.Text := FTextValue;
-    FPass.buedit1.PasswordChar := FPassChar;
-    FPass.BuBitbtn1.onclick := OnOkClick;
-    FPass.bubitbtn2.onclick := OnCancelClick;
+    FPass.edPassword.Text := FTextValue;
+    FPass.edPassword.PasswordChar := FPassChar;
+    FPass.btnOK.onclick := OnOkClick;
+    FPass.btnCancel.onclick := OnCancelClick;
     FPass.ShowModal;
   finally
     FPass.Free;

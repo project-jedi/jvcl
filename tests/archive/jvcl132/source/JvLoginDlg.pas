@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvLoginDlg;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
@@ -46,53 +46,55 @@ type
     FPassword: string;
   protected
   public
-    constructor Create(AOwner: TComponent);override;
+    constructor Create(AOwner: TComponent); override;
   published
-    property FirstLabel:string read FCaption write FCaption;
-    property SecondLabel:string read FCaption2 write FCaption2;
-    property Username:string read FUsername write FUsername;
-    property Password:string read FPassword write FPassword;
-    property Title:string read FTitle write FTitle;
-    function Execute:boolean;override;
+    property FirstLabel: string read FCaption write FCaption;
+    property SecondLabel: string read FCaption2 write FCaption2;
+    property Username: string read FUsername write FUsername;
+    property Password: string read FPassword write FPassword;
+    property Title: string read FTitle write FTitle;
+    function Execute: boolean; override;
   end;
 
 implementation
 
 resourcestring
-   RC_LabelPassCaption     =     'Username';
-   RC_Label2Caption        =     'Password';
-   RC_TitleLogin           =     'Enter login';
+  RC_LabelPassCaption = '&Username:';
+  RC_Label2Caption = '&Password:';
+  RC_TitleLogin = 'Login';
 
-{**************************************************}
+  {**************************************************}
+
 constructor TJvLoginDlg.Create(AOwner: TComponent);
 begin
-   FCaption:=RC_LabelPassCaption;
-   FCaption2:=RC_Label2Caption;
-   FTitle:=RC_TitleLogin;
-   FUsername:='';
-   FPassword:='';
-   inherited;
+  FCaption := RC_LabelPassCaption;
+  FCaption2 := RC_Label2Caption;
+  FTitle := RC_TitleLogin;
+  FUsername := '';
+  FPassword := '';
+  inherited;
 end;
 {**************************************************}
+
 function TJvLoginDlg.Execute: boolean;
 begin
-   with TFormLogi.Create(Application) do
-   begin
-      caption:=FTitle;
-      Label1.Caption:=FCaption;
-      Label2.Caption:=FCaption2;
-      BuEdit1.Text:=FUsername;
-      BuEdit2.Text:=FPassword;
-      showmodal;
-      if tag=1 then
-      begin
-         result:=true;
-         FUSername:=buEdit1.text;
-         FPassword:=buEdit2.text;
-      end
-      else result:=false;
-      free;
-   end;
+  with TFormLogi.Create(Application) do
+  try
+    Caption := FTitle;
+    Label1.Caption := FCaption;
+    Label2.Caption := FCaption2;
+    edUserName.Text := FUsername;
+    edPassword.Text := FPassword;
+    Result := Showmodal = mrOK;
+    if Result then
+    begin
+      FUsername := edUserName.Text;
+      FPassword := edPassword.Text;
+    end;
+  finally
+    Free;
+  end;
 end;
 {**************************************************}
 end.
+

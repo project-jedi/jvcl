@@ -38,15 +38,11 @@ uses
 type
   TFormLogi = class(TForm)
     Label1: TLabel;
-    BuEdit1: TJvEdit;
+    edUserName: TJvEdit;
     Label2: TLabel;
-    BuEdit2: TJvEdit;
-    BUBitBtn1: TJvBitBtn;
-    BUBitBtn2: TJvBitBtn;
-    procedure BUBitBtn1Click(Sender: TObject);
-    procedure BUBitBtn2Click(Sender: TObject);
-  private
-  public
+    edPassword: TJvEdit;
+    btnOK: TButton;
+    btnCancel: TButton;
   end;
 
 var
@@ -56,19 +52,6 @@ implementation
 
 {$R *.DFM}
 
-{**************************************************}
 
-procedure TFormLogi.BUBitBtn1Click(Sender: TObject);
-begin
-  Tag := 1;
-  Close;
-end;
-
-{**************************************************}
-
-procedure TFormLogi.BUBitBtn2Click(Sender: TObject);
-begin
-  Close;
-end;
 
 end.

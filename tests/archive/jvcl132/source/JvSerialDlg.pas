@@ -58,8 +58,8 @@ type
 implementation
 
 resourcestring
-  RC_Serial1Caption = 'Name';
-  RC_Serial2Caption = 'Serial';
+  RC_Serial1Caption = '&Name:';
+  RC_Serial2Caption = '&Serial:';
   RC_SerialTitle = 'Enter Serial';
 
   {**************************************************}
@@ -78,19 +78,20 @@ end;
 function TJvSerialDlg.Execute: Boolean;
 begin
   with TFormLogi.Create(Application) do
-  begin
+  try
     Caption := FTitle;
     Label1.Caption := FCaption;
     Label2.Caption := FCaption2;
-    BuEdit1.Text := FUsername;
-    BuEdit2.Text := FPassword;
+    edUserName.Text := FUsername;
+    edPassword.Text := FPassword;
     ShowModal;
-    Result := Tag = 1;
+    Result := ShowModal = mrOK;
     if Result then
     begin
-      FUsername := buEdit1.Text;
-      FPassword := buEdit2.Text;
+      FUsername := edUserName.Text;
+      FPassword := edPassword.Text;
     end;
+  finally
     Free;
   end;
 end;

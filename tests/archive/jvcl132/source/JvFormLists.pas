@@ -38,69 +38,62 @@ type
   TFormListb = class(TForm)
     ListBox1: TListBox;
     ListBox2: TListBox;
-    BUBitBtn1: TJvBitBtn;
-    BUBitBtn2: TJvBitBtn;
     Bevel1: TBevel;
-    BULabel1: TJvLabel;
-    BULabel2: TJvLabel;
-    BUBitBtn3: TJvBitBtn;
-    BUBitBtn4: TJvBitBtn;
-    procedure BUButton1Click(Sender: TObject);
-    procedure BUButton2Click(Sender: TObject);
-    procedure BUBitBtn1Click(Sender: TObject);
-    procedure BUBitBtn2Click(Sender: TObject);
+    lblColumn1: TJvLabel;
+    lblColumn2: TJvLabel;
+    btnLeft: TButton;
+    btnRight: TButton;
+    btnOK: TButton;
+    btnCancel: TButton;
+    procedure btnLeftClick(Sender: TObject);
+    procedure btnRightClick(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
+    class function Execute(const ACaption,AColCaption1,AColCaption2:string;List1,List2:TStrings):boolean;
   end;
-
-var
-  FormListb: TFormListb;
 
 implementation
 
 {$R *.DFM}
 
-{************************************************************}
-procedure TFormListb.BUButton1Click(Sender: TObject);
+
+procedure TFormListb.btnLeftClick(Sender: TObject);
 begin
-   self.tag:=1;
-   self.close;
+  ListBox2.CopySelection(ListBox1);
+  while ListBox2.SelCount > 0 do
+    ListBox2.DeleteSelected;
 end;
-{************************************************************}
-procedure TFormListb.BUButton2Click(Sender: TObject);
+
+procedure TFormListb.btnRightClick(Sender: TObject);
 begin
-   self.tag:=0;
-   self.close;
+  ListBox1.CopySelection(ListBox2);
+  while ListBox1.SelCount > 0 do
+    ListBox1.DeleteSelected;
 end;
-{************************************************************}
-procedure CopySelected(De,Vers:TListbox);
-var
-   i:Integer;
+
+class function TFormListb.Execute(const ACaption,AColCaption1, AColCaption2: string;
+  List1, List2: TStrings): boolean;
+var f:TFormListb;
 begin
-   i:=0;
-   while i<de.Items.count do
-   begin
-      if de.Selected[i] then
-      begin
-         vers.Items.AddObject(de.items[i],de.items.objects[i]);
-         de.Items.delete(i);
-      end
-      else inc(i);
-   end;
+  f := self.Create(Application);
+  try
+    f.Caption := ACaption;
+    f.lblColumn1.Caption := AColCaption1;
+    f.lblColumn2.Caption := AColCaption2;
+    f.ListBox1.Items.Assign(List1);
+    f.ListBox2.Items.Assign(List2);
+    Result := f.ShowModal = mrOK;
+    if Result then
+    begin
+      List1.Assign(f.ListBox1.Items);
+      List2.Assign(f.ListBox2.Items);
+    end;
+  finally
+    f.Free;
+  end;
 end;
-{************************************************************}
-procedure TFormListb.BUBitBtn1Click(Sender: TObject);
-begin
-   //add (from 1 to 2)
-   CopySelected(self.listbox2,self.listbox1);
-end;
-{************************************************************}
-procedure TFormListb.BUBitBtn2Click(Sender: TObject);
-begin
-   //remove
-   CopySelected(self.listbox1,self.listbox2);
-end;
-{************************************************************}
+
 end.
+
