@@ -8,43 +8,57 @@ Summary
 Author
   Andrei Prygounkov
 ----------------------------------------------------------------------------------------------------
-@@ItemHtDraw
-<TITLE ItemHtDraw function>
+@@ItemHTDraw
+<TITLE ItemHTDraw function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Canvas       - Description for this parameter
-  Rect         - Description for this parameter
-  State        - Description for this parameter
-  Text         - Description for this parameter
-  HideSelColor - Description for this parameter
+  Canvas - Description for this parameter
+  Rect   - Description for this parameter
+  State  - Description for this parameter
+  Text   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@ItemHtDrawEx
-<TITLE ItemHtDrawEx procedure>
+@@ItemHTDrawEx
+<TITLE ItemHTDrawEx procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Canvas       - Description for this parameter
-  Rect         - Description for this parameter
-  State        - Description for this parameter
-  Text         - Description for this parameter
-  HideSelColor - Description for this parameter
-  PlainItem    - Description for this parameter
-  Width        - Description for this parameter
-  CalcWidth    - Description for this parameter
+  Canvas      - Description for this parameter
+  Rect        - Description for this parameter
+  State       - Description for this parameter
+  Text        - Description for this parameter
+  Width       - Description for this parameter
+  CalcWidth   - Description for this parameter
+  MouseX      - Description for this parameter
+  MouseY      - Description for this parameter
+  MouseOnLink - Description for this parameter
+  LinkName    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@ItemHtPlain
-<TITLE ItemHtPlain function>
+@@ItemHTHeight
+<TITLE ItemHTHeight function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas - Description for this parameter
+  Text   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@ItemHTPlain
+<TITLE ItemHTPlain function>
 Summary
   Write here a summary (1 line)
 Description
@@ -55,18 +69,44 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@ItemHtWidth
-<TITLE ItemHtWidth function>
+@@ItemHTWidth
+<TITLE ItemHTWidth function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Canvas       - Description for this parameter
-  Rect         - Description for this parameter
-  State        - Description for this parameter
-  Text         - Description for this parameter
-  HideSelColor - Description for this parameter
+  Canvas - Description for this parameter
+  Rect   - Description for this parameter
+  State  - Description for this parameter
+  Text   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@PrepareText
+<TITLE PrepareText function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  a - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@THyperLinkClick
+<TITLE THyperLinkClick type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvHTLabel.OnHyperLinkClick
+    TJvHTListBox.OnHyperLinkClick
+Parameters
+  Sender   - Description for this parameter
+  LinkName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -81,11 +121,49 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
+@@TJvHTComboBox.ColorDisabledText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvHTComboBox.ColorHighlight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvHTComboBox.ColorHighlightText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvHTComboBox.DropWidth
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvHTComboBox.GetHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -104,6 +182,19 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvHTComboBox.SetHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  value - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -118,17 +209,7 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvHtListBox
-<TITLEIMG TJvHtListBox>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvHtListBox.HideSel
+@@TJvHTLabel.OnHyperLinkClick
 Summary
   Write here a summary (1 line)
 Description
@@ -137,11 +218,68 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvHtListBox.PlainItems
+@@TJvHTListBox
+<TITLEIMG TJvHTListBox>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvHTListBox.ColorDisabledText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvHTListBox.ColorHighlight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvHTListBox.ColorHighlightText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvHTListBox.HideSel
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvHTListBox.OnHyperLinkClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvHTListBox.PlainItems
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

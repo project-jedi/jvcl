@@ -123,7 +123,7 @@ Description
 
   This frame indicates if the actual audio stream is encrypted, and by whom.
 
-  The frame contains a URL containing an email address, or a link to a location where an email
+  The frame contains an URL containing an email address, or a link to a location where an email
   address can be found, that belongs to the organisation responsible for this specific encrypted audio file.
 
   PreviewStart and PreviewLength are described in frames, and are pointers to an
@@ -174,7 +174,7 @@ See Also
 Summary
   Identifies who is responsible for this specific encrypted audio file.
 Description
-  Use OwnerID to specify an URL containing an email address, or a link to a location where an email
+  Use OwnerID to specify an \URL containing an email address, or a link to a location where an email
   address can be found, that belongs to the organisation responsible for this specific encrypted
   audio file. Questions regarding the encrypted audio should be sent to the email address specified.
 ----------------------------------------------------------------------------------------------------
@@ -3089,7 +3089,7 @@ Description
   \ordinary news can be added to the tag. There may only be one \URL link frame of its kind in an tag,
   except when stated otherwise in the frame description.
 
-  All \URL link <LINK TJvID3Frame.FrameName,frame names> begins with "W". Only URL link frame
+  All \URL link <LINK TJvID3Frame.FrameName,frame names> begins with "W". Only \URL link frame
   names begins with "W".
 
   Use the URL property to specify the \URL link of the frame, for example:
@@ -3118,7 +3118,7 @@ Description
    <C>WCOM</C>                 such as where the album can be bought.
   fiWWWCopyright -            The 'Copyright/Legal information' frame is a \URL pointing at a web page where the
    <C>WCOP</C>                 terms of use and ownership of the file is described.
-  fiWWWPayment -              The 'Payment' frame is a URL pointing at a web page that will handle the process of
+  fiWWWPayment -              The 'Payment' frame is an \URL pointing at a web page that will handle the process of
    <C>WPAY</C>                 paying for this file.
   fiWWWPublisher -            The 'Publishers official web page' frame is a \URL pointing at the official web page
    <C>WPUB</C>                 for the publisher.
@@ -3165,7 +3165,7 @@ See Also
 Summary
   Specifies the URL.
 Description
-  Use URL to specify a URL for the frame.
+  Use \URL to specify an \URL for the frame.
 ----------------------------------------------------------------------------------------------------
 @@TJvID3URLUserFrame
 Summary
@@ -3184,10 +3184,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3URLUserFrame.Description
 Summary
-  Specifies a description for the /URL.
+  Specifies a description for the \URL.
 Description
   Use Description or DescriptionW to specify a string for the description field in the user defined
-  URL link frame.
+  \URL link frame.
 
   Use Encoding to specify whether to use Description or DescriptionW.
 See Also
@@ -3235,7 +3235,7 @@ See Also
 Summary
   Specifies the URL.
 Description
-  Use URL to specify a string for the URL field in the user defined URL link frame.
+  Use \URL to specify a string for the \URL field in the user defined \URL link frame.
 
   An URLs may be relative, e.g. "picture.png", "../doc.txt".
 See Also

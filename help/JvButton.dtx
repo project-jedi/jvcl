@@ -8,19 +8,22 @@ Summary
 Author
   Sébastien Buysse
 ---------------------------------------------------------------------------------------------------
-@@TCmForceSize
-<TITLE TCmForceSize type>
+@@TCMForceSize
+<TITLE TCMForceSize type>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-@@TCmForceSize.Msg
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TCMForceSize.Msg
   Description for Msg
-@@TCmForceSize.Sender
+@@TCMForceSize.Sender
   Description for Sender
-@@TCmForceSize.NewSize
+@@TCMForceSize.NewSize
   Description for NewSize
-@@TCmForceSize.Result
+@@TCMForceSize.Result
   Description for Result
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonMouseState
@@ -29,6 +32,9 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 @@TJvButtonMouseState.bsMouseInside
   Description for bsMouseInside
 @@TJvButtonMouseState.bsMouseDown
@@ -50,10 +56,8 @@ Description
 @@TJvCustomButton.Click
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -102,7 +106,7 @@ Summary
 Description
   When the mouse passes over the <xxx> and HotTrack is set to True, HotTrackFont is used as the font
   for the <xxx> text.
-  To change to a new font, specify a new TFont object. To modify a font, change the value of the
+  To change to a new font, specify a new TFont object. To modify a font, change the value of the 
   Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
 See Also
   HotGlyph, HotTrack
@@ -114,9 +118,7 @@ Description
   HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
   the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
   changes in Font are copied to HotTrackFont except Color changes.
-
   Note that hoFollowFont must be included for any properties to be copied at all.
-
   To implement the HotTrackFontOptions property in a new control, you should perform the following steps:
     * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
     * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set it's default value
@@ -166,10 +168,8 @@ See Also
 @@TJvCustomButton.SetBounds
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
   ALeft   - Description for this parameter
   ATop    - Description for this parameter
@@ -193,6 +193,15 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.AllowAllUp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.Caption
 Summary
@@ -238,6 +247,55 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.GroupIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.HotTrack
+Summary
+  Specifies whether the <xxx> is highlighted when the mouse passes over it.
+Description
+  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font 
+  specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual 
+  feedback when the mouse passes over the <xxx>.
+See Also 
+  HotGlyph, HotTrackFont, OnMouseEnter, OnMouseLeave
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.HotTrackFont
+Summary
+  Specifies the font used when the mouse passes over the <xxx> and HotTrack is True.
+Description
+  When the mouse passes over the <xxx> and HotTrack is set to True, HotTrackFont is used as the font
+  for the <xxx> text.
+  To change to a new font, specify a new TFont object. To modify a font, change the value of the 
+  Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
+See Also
+  HotGlyph, HotTrack
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.HotTrackFontOptions
+Summary
+  Specifies how changes to the Font affects HotTrackFont.
+Description
+  HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
+  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
+  changes in Font are copied to HotTrackFont except Color changes.
+  Note that hoFollowFont must be included for any properties to be copied at all.
+  To implement the HotTrackFontOptions property in a new control, you should perform the following steps:
+    * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
+    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set it's default value
+      to be DefaultTrackFontOptions (defined in JvTypes).
+    * Set the default value in the constructor.
+    * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in JvJVCLUtils)
+      after calling inherited.
+    * Add a call to UpdateTrackFont in SetHotTrackFontOptions
+See Also
+  HotTrack, HotTrackFont
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.MouseStates
 Summary
@@ -287,10 +345,8 @@ See Also
 @@TJvCustomGraphicButton.SetBounds
 Summary
   Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
   ALeft   - Description for this parameter
   ATop    - Description for this parameter

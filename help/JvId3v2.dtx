@@ -1,5 +1,5 @@
 ##Package: MM
-##Status: Generated
+##Status: Locked
 ----------------------------------------------------------------------------------------------------
 @@JvId3v2.pas
 Summary
@@ -10,9 +10,17 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Images
 Summary
-  Write here a summary (1 line)
+  Encapsulates the picture frames in an ID3 v2 tag.
 Description
   Write here a description
+
+  <TABLE>
+  --------------         -----------------------
+  Frame name             APIC
+  Frame ID               fiPicture
+  Versions               All
+  Implemented by         TJvID3PictureFrame
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Images.Infos
 Summary
@@ -20,8 +28,7 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Pictures
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Images.Pictures
 Summary
@@ -29,14 +36,21 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Infos
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Ipl
 Summary
-  Write here a summary (1 line)
+  Encapsulates the involved people frames in an ID3 v2 tag.
 Description
   Write here a description
+
+  <TABLE>
+  --------------         -----------------------
+  Frame name             WPUB
+  Frame ID               fiWWWPublisher
+  Versions               All
+  Implemented by         TJvID3URLFrame
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Ipl.ItemCount
 Summary
@@ -76,36 +90,46 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Owner
 Summary
-  Write here a summary (1 line)
+  Encapsulates an ownership frame in an ID3 v2 tag.
 Description
   Write here a description
+
+  <TABLE>
+  --------------         -----------------------
+  Frame name             OWNE
+  Frame ID               fiOwnership
+  Versions               2.3, 2.4
+  Implemented by         TJvID3OwnershipFrame
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Owner.DatePurchased
 Summary
-  Write here a summary (1 line)
+  Specifies the date of purchase.
 Description
-  Write here a description
+  Use DatePurchased to specify the date of purchase.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Price, Seller
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Owner.Price
 Summary
-  Write here a summary (1 line)
+  Specifies the price payed.
 Description
-  Write here a description
+  Use Price to specify the price payed.
+
+  The first three characters of Price should contain the currency used for
+  the transaction, encoded according to ISO 4217 alphabetic currency code.
+  Concatenated to this is the actual price paid, as a numerical string using "." as the
+  decimal separator.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DateOfPurch, Seller
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Owner.Seller
 Summary
-  Write here a summary (1 line)
+  Specifies the name of the seller.
 Description
-  Write here a description
+  Use Seller to specify the name of the seller.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DatePurchased, Price
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Persistent
 Summary
@@ -115,7 +139,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures
 Summary
-  Write here a summary (1 line)
+  Encapsules the data fields of picture frames in an ID3 v2 tag.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
@@ -310,7 +334,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc
 Summary
-  Write here a summary (1 line)
+  Encapsules the descriptions fields of picture frames in an ID3 v2 tag.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
@@ -505,489 +529,934 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Popularimeter
 Summary
-  Write here a summary (1 line)
+  Encapsulates a populari meter frame.
 Description
   Write here a description
+
+  <TABLE>
+  --------------         -----------------------
+  Frame name             POPM
+  Frame ID               fiPopularimeter
+  Versions               All
+  Implemented by         TJvID3PopularimeterFrame
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Popularimeter.Counter
 Summary
-  Write here a summary (1 line)
+  Specifies a play counter for this audio file.
 Description
-  Write here a description
+  Use Counter to determine or specify the number of times a file has been played.
+
+  The value of Counter should be increased with one for every time the file is played.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Rating, TJvID3PlayCounterFrame.Counter
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Popularimeter.EmailAddress
 Summary
-  Write here a summary (1 line)
+  Specifies an email address to the user.
 Description
-  Write here a description
+  Use EmailAddress to specify the email address to the user that made the rating.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Rating
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Popularimeter.Rating
 Summary
-  Write here a summary (1 line)
+  Specifies how good an audio file is.
 Description
-  Write here a description
+  Use Rating to speciy how good an audio file is. The rating is 1-255 where 1 is worst and 255 is
+  best. 0 is unknown.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Counter, EmailAddress
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text
 Summary
-  Write here a summary (1 line)
+  Provides easy access to the text frames in an ID3 v2 tag.
 Description
-  Write here a description
+  [version]
+  [different types]
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Album
 Summary
-  Write here a summary (1 line)
+  Specifies the title of the recording from which the audio is taken.
 Description
-  Write here a description
+  Property Album represents the value of the 'Album/Movie/Show title' frame. It is intended for the
+  title of the recording (or source of sound) from which the audio in the file is taken.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TALB
+  Frame ID               fiAlbum
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AlbumSortOrder, PartInSet, TrackNum
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.AlbumSortOrder
 Summary
-  Write here a summary (1 line)
+  Specifies a string to be used when sorting album names.
 Description
-  Write here a description
+  Property AlbumSortOrder represents the value of the 'Album sort order' frame. It specifies a string
+  which should be used instead of the <LINK TJvID3Text.Album,album name> for sorting purposes. 
+  E.g. an album named "A Soundtrack" might preferably be sorted as "Soundtrack".
+
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TSOA
+  Frame ID               fiAlbumSortOrder
+  Versions               2.4
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Album
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Band
 Summary
-  Write here a summary (1 line)
+  Specifies additional information about the performers.
 Description
-  Write here a description
+  Property Band represents the value of the 'Band/Orchestra/Accompaniment' frame. It is used for 
+  additional information about the performers in the recording.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TPE2
+  Frame ID               fiBand
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Conductor
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.BPM
 Summary
-  Write here a summary (1 line)
+  Specifies the number of beats per minute in the audio.
 Description
-  Write here a description
+  Property BPM represents the value of the 'BPM' frame. It contains the number of beats per minute in the
+  main part of the audio.
+   
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TBPM
+  Frame ID               fiBPM
+  Versions               All
+  Implemented by         TJvID3NumberFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SongLen
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Composer
 Summary
-  Write here a summary (1 line)
+  Specifies the name of the composer.
 Description
-  Write here a description
+  Property Composer represents the value of the 'Composer' frame. It is intended for the name of the
+  composer.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TCOM
+  Frame ID               fiComposer
+  Versions               All
+  Implemented by         TJvID3SimpleListFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Conductor
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Conductor
 Summary
-  Write here a summary (1 line)
+  Specifies the name of the conductor.
 Description
-  Write here a description
+  Property Conductor represents the value of the 'Conductor' frame. It is used for the name of the
+  conductor.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TPE3
+  Frame ID               fiConductor
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Band, Composer
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.ContentGroup
 Summary
-  Write here a summary (1 line)
+  Specifies a content group description for the audio.
 Description
-  Write here a description
+  Property ContentGroup represents the value of the 'Content group description' frame. It is used if
+  the sound belongs to a larger category of sounds/music. For example, classical music is often sorted
+  in different musical sections (e.g. "Piano Concerto", "Weather - Hurricane").
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TIT1
+  Frame ID               fiContentGroup
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ContentType, Title 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.ContentType
 Summary
-  Write here a summary (1 line)
+  Specifies the content type.
 Description
-  Write here a description
+  Property ContentType represents the value of the 'AContent type' frame. 
+  The 'Content type', which ID3v1 was stored as a one byte numeric
+   value only, is now a string. You may use one or several of the ID3v1
+   types as numerical strings, or, since the category list would be
+   impossible to maintain with accurate and up to date categories,
+   define your own. Example: "21" $00 "Eurodisco" $00
+   You may also use any of the following keywords:
+   
+     RX  Remix
+     CR  Cover
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TCON
+  Frame ID               fiContentType
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ContentGroup, Mood
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Copyright
 Summary
-  Write here a summary (1 line)
+  Specifies the copyright holder of the original sound.
 Description
-  Write here a description
+  Property Copyright represents the value of the 'Copyright message' frame. It is intended for
+  the copyright holder of the original sound, not the audio file itself. The absence of this frame 
+  means only that the copyright information is unavailable or has been removed, and must not be
+  interpreted to mean that the audio is public domain. 
+  
+  Every time this field is displayed the field must be preceded with "Copyright (C) ", where (C) is
+  one character showing a C in a circle.
+
+  Copyright must begin with a year and a space character (five characters).
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TCOP
+  Frame ID               fiCopyright
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ProducedNotice
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Date
 Summary
-  Write here a summary (1 line)
+  Specifies the date for the recording of the audio.
 Description
-  Write here a description
+  Property Date represents the value of the 'Date' frame. It contains the date for the recording.
+  
+  This field is always four characters long; format is DDMM, with DD the days and MM the months.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TDAT
+  Frame ID               fiDate
+  Versions               2.2, 2.3, replaced by RecordingTime in 2.4
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RecordingDates, RecordingTime, Time, Year
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.EncodedBy
 Summary
-  Write here a summary (1 line)
+  Specifies the person or organisation that encoded the audio file.
 Description
-  Write here a description
+  Property EncodedBy represents the value of the 'Encoded by' frame. It contains the name of the 
+  person or organisation that encoded the audio file. This field may contain a copyright message,
+  if the audio file also is copyrighted by the encoder.
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TENC
+  Frame ID               fiEncodedBy
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EncoderSettings
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.EncoderSettings
 Summary
-  Write here a summary (1 line)
+  Specifies the used audio encoder and its settings.
 Description
-  Write here a description
+  Property EncoderSettings represents the value of the 'Software/Hardware and settings used for
+  encoding' frame. It includes the used audio encoder and its settings when the file was encoded.
+  Hardware refers to hardware encoders, not the computer on which a program was run.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TSSE
+  Frame ID               fiEncoderSettings
+  Versions               2.3, 2.4
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EncodedBy
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.EncodingTime
 Summary
-  Write here a summary (1 line)
+  Specifies the time when the audio was encoded.
 Description
-  Write here a description
+  Property EncodingTime represents the value of the 'Encoding time' frame. It contains a timestamp
+  describing when the audio was encoded.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TDEN
+  Frame ID               fiEncodingTime
+  Versions               2.4
+  Implemented by         TJvID3TimeStampFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TaggingTime
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.FileOwner
 Summary
-  Write here a summary (1 line)
+  Specifies the owner or licensee of the file and it's contents.
 Description
-  Write here a description
+  Property FileOwner represents the value of the 'File owner/licensee' frame. It contains the name
+  of the owner or licensee of the file and it's contents.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TOWN
+  Frame ID               fiFileOwner
+  Versions               2.3, 2.4
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Copyright, ProducedNotice
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.FileType
 Summary
-  Write here a summary (1 line)
+  Specifies which type of audio this tag defines.
 Description
-  Write here a description
+  Property FileType represents the value of the 'File type' frame. It indicates which type of audio
+  this tag defines.
+
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TFLT
+  Frame ID               fiFileType
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MediaType
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.InitialKey
 Summary
-  Write here a summary (1 line)
+  Specifies the musical key in which the sound starts.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Property InitialKey represents the value of the 'Initial key' frame. It contains the musical key 
+  in which the sound starts. It is represented as a string with a maximum length of three characters.
+  The ground keys are represented with "A","B","C","D","E", "F" and "G" and halfkeys represented 
+  with "b" and "#". Minor is represented as "m", e.g. "Dbm". Off key is represented with an "o" only.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TKEY
+  Frame ID               fiInitialKey
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.ISRC
 Summary
-  Write here a summary (1 line)
+  Specifies the ISRC code.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Property ISRC represents the value of the 'ISRC' frame. It should contain the International 
+  Standard Recording Code (ISO 3901). It should be 12 characters long.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TSRC
+  Frame ID               fiISRC
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Language
 Summary
-  Write here a summary (1 line)
+  Specifies the language(s) of the text or lyrics in the audio.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Property Language represents the value of the 'Language' frame. It should contain the languages of
+  the text or lyrics spoken or sung in the audio. The language is represented with three characters
+  according to ISO-639-2. 
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TLAN
+  Frame ID               fiLanguage
+  Versions               All
+  Implemented by         TJvID3SimpleListFrame
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.LeadArtist
 Summary
-  Write here a summary (1 line)
+  Specifies the main artist.
 Description
-  Write here a description
+  Property LeadArtist represents the value of the 'Lead artist/Lead performer/Soloist/Performing group' frame. 
+  It is used for the main artist.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TPE1
+  Frame ID               fiLeadArtist
+  Versions               All
+  Implemented by         TJvID3SimpleListFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Band, OrigArtist
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Lyricist
 Summary
-  Write here a summary (1 line)
+  Specifies the writer of the text or lyrics in the recording.
 Description
-  Write here a description
+  Property Lyricist represents the value of the 'Lyricist/Text writer' frame. It is intended 
+  for the writer of the text or lyrics in the recording.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TEXT
+  Frame ID               fiLyricist
+  Versions               All
+  Implemented by         TJvID3SimpleListFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OrigLyricist
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.MediaType
 Summary
-  Write here a summary (1 line)
+  Specifies from which media the sound orginated.
 Description
-  Write here a description
+  Property MediaType represents the value of the 'Media type' frame. It describes from which media 
+  the sound originated.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TMED
+  Frame ID               fiMediaType
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FileType
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.MixArtist
 Summary
-  Write here a summary (1 line)
+  Specifies information about the people behind a remix.
 Description
-  Write here a description
+  Property MixArtist represents the value of the 'Interpreted, remixed, or otherwise modified by' frame. 
+  It contains more information about the people behind a remix and similar interpretations of another
+  existing piece.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TPE4
+  Frame ID               fiMixArtist
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LeadArtist
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Mood
 Summary
-  Write here a summary (1 line)
+  Specifies the mood of the audio.
 Description
-  Write here a description
+  Property Mood represents the value of the 'Mood' frame. It is intended to reflect the mood of the
+  audio with a few keywords, e.g. "Romantic" or "Sad".
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TMOO
+  Frame ID               fiMood
+  Versions               2.4
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ContentType
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.NetRadioOwner
 Summary
-  Write here a summary (1 line)
+  Specifies the owner of the internet radio station.
 Description
-  Write here a description
+  Property NetRadioOwner represents the value of the 'Internet radio station owner' frame. It contains
+  the name of the owner of the internet radio station from which the audio is streamed.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TRSO
+  Frame ID               fiNetRadioOwner
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  NetRadioStation
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.NetRadioStation
 Summary
-  Write here a summary (1 line)
+  Specifies the internet radio station.
 Description
-  Write here a description
+  Property NetRadioStation represents the value of the 'nternet radio station name' frame. It contains
+  the name of the internet radio station from which the audio is streamed.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TRSN
+  Frame ID               fiNetRadioStation
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  NetRadioOwner
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.OrigAlbum
 Summary
-  Write here a summary (1 line)
+  Specifies the title of the original recording.
 Description
-  Write here a description
+  Property OrigAlbum represents the value of the 'Original album/movie/show title' frame. It is intended
+  for the title of the original recording (or source of sound), if for example the music in the file 
+  should be a cover of a previously released song.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TOAL
+  Frame ID               fiOrigAlbum
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Album, OrigArtist
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.OrigArtist
 Summary
-  Write here a summary (1 line)
+  Specifies the performer of the original recording.
 Description
-  Write here a description
+  Property OrigArtist represents the value of the 'Original artist/performer' frame. It is intended
+  for the performer of the original recording, if for example the music in the file should be a cover
+  of a previously released song.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TOPE
+  Frame ID               fiOrigArtist
+  Versions               All
+  Implemented by         TJvID3SimpleListFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LeadArtist, OrigAlbum
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.OrigFileName
 Summary
-  Write here a summary (1 line)
+  Specifies the preferred filename for the file.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Property OrigFileName represents the value of the 'Original filename' frame. It contains the preferred
+  filename for the file, since some media doesn't allow the desired length of the filename. The
+  filename is case sensitive and includes its suffix.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TOFN
+  Frame ID               fiOrigFileName
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.OrigLyricist
 Summary
-  Write here a summary (1 line)
+  Specifies the text writer of the original recording.
 Description
-  Write here a description
+  Property OrigLyricist represents the value of the 'Original lyricist/text writer' frame. It is
+  intended for the text writer of the original recording, if for example the music in the file should 
+  be a cover of a previously released song.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TOLY
+  Frame ID               fiOrigLyricist
+  Versions               All
+  Implemented by         TJvID3SimpleListFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Lyricist
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.OrigReleaseTime
 Summary
-  Write here a summary (1 line)
+  Specifies the release time of the original recording.
 Description
-  Write here a description
+  Property OrigReleaseTime represents the value of the 'Original release time' frame. It contains a
+  timestamp describing when the original recording of the audio was released. 
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TDOR
+  Frame ID               fiOrigReleaseTime
+  Versions               2.4
+  Implemented by         TJvID3TimeStampFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OrigAlbum, OrigArtist, ReleaseTime
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.OrigYear
 Summary
-  Write here a summary (1 line)
+  TORY
 Description
-  Write here a description
+  Property OrigYear represents the value of the 'Original release year' frame. It is intended for the
+  year when the original recording, if for example the music in the file should be a cover of a 
+  previously released song, was released. 
+  
+  This frames is always four characters long.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TORY
+  Frame ID               fiOrigYear
+  Versions               2.2, 2.3, replaced by OrigReleaseTime in 2.4
+  Implemented by         TJvID3NumberFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OrigReleaseTime
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.PartInSet
 Summary
-  Write here a summary (1 line)
+  Specifies which part of a set the audio came from.
 Description
-  Write here a description
+  Property PartInSet represents the value of the 'Part of a set' frame. It describes which part of a
+  set the audio came from. This frame is used if the source described by the <LINK TJvID3Text.Album,Album>
+  property is divided into several mediums, e.g. a double CD. 
+  
+  The value may be extended with a "/" character and a numeric string containing the total number of 
+  parts in the set. E.g. "1/2".
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TPOS
+  Frame ID               fiPartInSet
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Album, SetSubTitle, TrackNum
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.PerformerSortOrder
 Summary
-  Write here a summary (1 line)
+  Specifies a string to be used when sorting performer names.
 Description
-  Write here a description
+  Property PerformerSortOrder represents the value of the 'Performer sort order' frame. It defines a
+  string which should be used instead of the <LINK TJvID3Text.Band,performer> for sorting purposes.
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TSOP
+  Frame ID               fiPerformerSortOrder
+  Versions               2.4
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Band
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.PlaylistDelay
 Summary
-  Write here a summary (1 line)
+  Specifies the number of milliseconds of silence that should be inserted before this audio.
 Description
-  Write here a description
+  Property PlaylistDelay represents the value of the 'Playlist delay' frame. It defines the numbers
+  of milliseconds of silence that should be inserted before this audio. The value zero indicates
+  that this is a part of a multifile audio track that should be played continuously.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TDLY
+  Frame ID               fiPlaylistDelay
+  Versions               All
+  Implemented by         TJvID3NumberFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SongLen
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.ProducedNotice
 Summary
-  Write here a summary (1 line)
+  Specifies the production copyright holder of the original sound.
 Description
-  Write here a description
+  Property ProducedNotice represents the value of the 'Produced notice' frame. It is intended for
+  the production copyright holder of the original sound, not the audio file itself. The absence of
+  this frame means only that the production copyright information is unavailable or has been removed
+  and must not be interpreted to mean that the audio is public domain. 
+  
+  Every time this field is displayed the field must be preceded with "Produced (P) ", where (P) is
+  one character showing a P in a circle.
+
+  ProducedNotice must begin with a year and a space character (five characters).
+
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TPRO
+  Frame ID               fiProducedNotice
+  Versions               2.4
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Copyright
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Publisher
 Summary
-  Write here a summary (1 line)
+  Specifies the name of the label or publisher.
 Description
-  Write here a description
+  Property Publisher represents the value of the 'Publisher' frame. It contains the name of the label or
+  publisher.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TPUB
+  Frame ID               fiPublisher
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ProducedNotice
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.RecordingDates
 Summary
-  Write here a summary (1 line)
+  Specifies the recording dates of the audio.
 Description
-  Write here a description
+  Property RecordingDates represents the value of the 'Recording dates' frame. It is intended to be
+  used as complement to the Year, Date and Time frames. E.g. "4th-7th June, 12th June" in 
+  combination with the Year frame.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TRDA
+  Frame ID               fiRecordingDates
+  Versions               2.2, 2.3, replaced by RecordingTime in 2.4
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Date, RecordingTime, Time, Year
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.RecordingTime
 Summary
-  Write here a summary (1 line)
+  Specifies the time when the audio was recorded.
 Description
-  Write here a description
+  Property RecordingTime represents the value of the 'Recording time' frame. It contains a timestamp
+  describing when the audio was recorded. 
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TDRC
+  Frame ID               fiRecordingTime
+  Versions               2.4
+  Implemented by         TJvID3TimeStampFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ReleaseTime
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.ReleaseTime
 Summary
-  Write here a summary (1 line)
+  Specifies the time when the audio was first released.
 Description
-  Write here a description
+  Property ReleaseTime represents the value of the 'Release time' frame. It contains a timestamp
+  describing when the audio was first released. 
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TDRL
+  Frame ID               fiReleaseTime
+  Versions               2.4
+  Implemented by         TJvID3TimeStampFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OrigReleaseTime, RecordingTime
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.SetSubTitle
 Summary
-  Write here a summary (1 line)
+  Specifies the subtitle of the part of a set this track belongs to.
 Description
-  Write here a description
+  Property SetSubTitle represents the value of the 'Set subtitle' frame. It is intended for the
+  subtitle of the part of a set this track belongs to.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TSST
+  Frame ID               fiSetSubTitle
+  Versions               2.4
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PartInSet, SubTitle
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Size
 Summary
-  Write here a summary (1 line)
+  Specifies the size of the audiofile in bytes.
 Description
-  Write here a description
+  Property Size represents the value of the 'Size' frame. It contains the size of the audiofile in 
+  bytes, excluding the ID3v2 tag.  
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TSIZ
+  Frame ID               fiSize
+  Versions               2.2, 2.3
+  Implemented by         TJvID3NumberFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SongLen
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.SongLen
 Summary
-  Write here a summary (1 line)
+  Specifies the length of the audio file in milliseconds.
 Description
-  Write here a description
+  Property SongLen represents the value of the 'Length' frame. It contains the length of the audio
+  file in milliseconds.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TLEN
+  Frame ID               fiSongLen
+  Versions               All
+  Implemented by         TJvID3NumberFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PlaylistDelay, Size
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.SubTitle
 Summary
-  Write here a summary (1 line)
+  Specifies information directly related to the contests title.
 Description
-  Write here a description
+  Property SubTitle represents the value of the 'Subtitle/Description refinement' frame. It is used
+  for information directly related to the contents title (e.g. "Op. 16" or "Performed live at Wembley").
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TIT3
+  Frame ID               fiSubTitle
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SetSubTitle, Title
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.TaggingTime
 Summary
-  Write here a summary (1 line)
+  Specifies the time when the audio was tagged.
 Description
-  Write here a description
+  Property TaggingTime represents the value of the 'Tagging time' frame. It contains a timestamp
+  describing then the audio was tagged. 
+
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TDTG
+  Frame ID               fiTaggingTime
+  Versions               2.4
+  Implemented by         TJvID3TimeStampFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EncodingTime
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Time
 Summary
-  Write here a summary (1 line)
+  Specifies the time for the recording of the audio.
 Description
-  Write here a description
+  Property Time represents the value of the 'Time' frame. It contains the time for the recording.
+  
+  This field is always four characters long; format is HHMM, with HH the hours and MM the minutes.
+
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TIME
+  Frame ID               fiTime
+  Versions               2.2, 2.3, replaced by RecordingTime in 2.4
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Date, RecordingDates, RecordingTime, Year
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Title
 Summary
-  Write here a summary (1 line)
+  Specifies the actual name of the audio.
 Description
-  Write here a description
+  Property Title represents the value of the 'Title/Songname/Content description' frame. It contains the
+  actual name of the piece (e.g. "Adagio", "Hurricane Donna").
+   
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TIT2
+  Frame ID               fiTitle
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ContentGroup, SubTitle, TitleSortOrder
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.TitleSortOrder
 Summary
-  Write here a summary (1 line)
+  Specifies a string to be used when sorting title names.
 Description
-  Write here a description
+  Property TitleSortOrder represents the value of the 'Title sort order' frame. It defines a string 
+  which should be used instead of the <LINK TJvID3Text.Title,title> for sorting purposes.
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TSOT
+  Frame ID               fiTitleSortOrder
+  Versions               2.4
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Title
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.TrackNum
 Summary
-  Write here a summary (1 line)
+  Specifies the order number of the audio-file on its original recording.
 Description
-  Write here a description
+  Property TrackNum represents the value of the 'Track number/Position in set' frame. It contains the
+  order number of the audio-file on its original recording. This may be extended with a "/" character
+  and a numeric string containing the total number of tracks/elements on the original recording.
+  E.g. "4/9".
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TRCK
+  Frame ID               fiTrackNum
+  Versions               All
+  Implemented by         TJvID3TextFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Album, PartInSet
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Year
 Summary
-  Write here a summary (1 line)
+  Specifies the year of the recording of the audio.
 Description
-  Write here a description
+  Property Year represents the value of the 'Year' frame. It contains the year of the recording.
+  
+  This frames is always four characters long.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             TYER
+  Frame ID               fiYear
+  Versions               2.2, 2.3, replaced by RecordingTime in 2.4
+  Implemented by         TJvID3NumberFrame
+  </TABLE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Date, RecordingDates, RecordingTime, Time
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDText
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
+  <TABLE>
+  --------------         -----------------------
+  Frame name             WPUB
+  Frame ID               fiWWWPublisher
+  Versions               All
+  Implemented by         TJvID3URLFrame
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDText.Add
 Summary
@@ -1042,6 +1511,14 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
+  <TABLE>
+  --------------         -----------------------
+  Frame name             WPUB
+  Frame ID               fiWWWPublisher
+  Versions               All
+  Implemented by         TJvID3URLFrame
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDUrl.Add
 Summary
@@ -1057,12 +1534,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDUrl.Description
 Summary
-  Write here a summary (1 line)
+  Specifies a description for the \URL.
 Description
-  Write here a description
+  Use Description to specify a string for the description field in the user defined URL link frame.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  URL
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDUrl.ItemCount
 Summary
@@ -1084,17 +1560,18 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDUrl.URL
 Summary
-  Write here a summary (1 line)
+  Specifies the URL.
 Description
-  Write here a description
+  Use URL to specify a string for the URL field in the user defined URL link frame.
+
+  An URLs may be relative, e.g. "picture.png", "../doc.txt".
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Description
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2
 <TITLEIMG TJvID3v2>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Multimedia.Audio
   FLAG=Component
 Summary
   Write here a summary (1 line)
@@ -1103,7 +1580,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.Images
 Summary
-  Write here a summary (1 line)
+  Provides easy access to the picture frames in an ID3 v2 tag.
 Description
   Write here a description
 See Also
@@ -1112,7 +1589,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.InvolvedPeople
 Summary
-  Write here a summary (1 line)
+  Provides easy access to the text frames in an ID3 v2 tag.
 Description
   Write here a description
 See Also
@@ -1121,7 +1598,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.Owner
 Summary
-  Write here a summary (1 line)
+  Provides easy access to the text frames in an ID3 v2 tag.
 Description
   Write here a description
 See Also
@@ -1130,7 +1607,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.PlayCounter
 Summary
-  Write here a summary (1 line)
+  Provides easy access to the text frames in an ID3 v2 tag.
 Description
   Write here a description
 See Also
@@ -1139,7 +1616,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.Popularimeter
 Summary
-  Write here a summary (1 line)
+  Provides easy access to the text frames in an ID3 v2 tag.
 Description
   Write here a description
 See Also
@@ -1148,39 +1625,35 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.Texts
 Summary
-  Write here a summary (1 line)
+  Provides easy access to the text frames in an ID3 v2 tag.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UserDefinedText, Web
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.UserDefinedText
 Summary
-  Write here a summary (1 line)
+  Provides easy access to the user defined text frames in an ID3 v2 tag.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Texts, UserDefinedWeb
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.UserDefinedWeb
 Summary
-  Write here a summary (1 line)
+  Provides easy access to the user defined \URL link frames in an ID3 v2 tag.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UserDefinedText, Web
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.Web
 Summary
-  Write here a summary (1 line)
+  Provides easy access to the \URL link frames in an ID3 v2 tag.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Texts, UserDefinedWeb
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web
 Summary
@@ -1190,72 +1663,144 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.Artist
 Summary
-  Write here a summary (1 line)
+  Specifies the URL of the artists official webpage.
 Description
-  Write here a description
+  Property Artist represents the value of the 'Official artist/performer webpage' frame. It is an URL
+  pointing at the artists official webpage. 
+   
+  <TABLE>
+  --------------         -----------------------
+  Frame name             WOAR
+  Frame ID               fiWWWArtist
+  Versions               All
+  Implemented by         TJvID3URLFrame
+  </TABLE>
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.AudioFile
 Summary
-  Write here a summary (1 line)
+  Specifies the URL of a file specific webpage.
 Description
-  Write here a description
+  Property AudioFile represents the value of the 'Official audio file webpage' frame. It is an URL
+  pointing at a file specific webpage.
+   
+  <TABLE>
+  --------------         -----------------------
+  Frame name             WOAF
+  Frame ID               fiWWWAudioFile
+  Versions               All
+  Implemented by         TJvID3URLFrame
+  </TABLE>
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.AudioSource
 Summary
-  Write here a summary (1 line)
+  Specifies the URL of the offical webpage for the source of the audio file.
 Description
-  Write here a description
+  Property AudioSource represents the value of the 'Official audio source webpage' frame. It is an 
+  URL pointing at the official webpage for the source of the audio file, e.g. a movie.
+   
+  <TABLE>
+  --------------         -----------------------
+  Frame name             WOAS
+  Frame ID               fiWWWAudioSource
+  Versions               All
+  Implemented by         TJvID3URLFrame
+  </TABLE>
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.CommercialInfo
 Summary
-  Write here a summary (1 line)
+  Specifies the URL of a webpage with commercial information about the audio.
 Description
-  Write here a description
+  Property CommercialInfo represents the value of the 'Commercial information' frame. It is an URL
+  pointing at a webpage with information such as where the album can be bought. 
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             WCOM
+  Frame ID               fiWWWCommercialInfo
+  Versions               All
+  Implemented by         TJvID3URLFrame
+  </TABLE>
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.Copyright
 Summary
-  Write here a summary (1 line)
+  Specifies the URL of a webpage where the terms of use and ownership of the file is described.
 Description
-  Write here a description
+  Property Copyright represents the value of the 'Copyright/Legal information' frame. It is an URL
+  pointing at a webpage where the terms of use and ownership of the file is described.
+   
+  <TABLE>
+  --------------         -----------------------
+  Frame name             WCOP
+  Frame ID               fiWWWCopyright
+  Versions               All
+  Implemented by         TJvID3URLFrame
+  </TABLE>
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.Payment
 Summary
-  Write here a summary (1 line)
+  Specifies the URL of a webpage that will handle the process of paying for this file.
 Description
-  Write here a description
+  Property Payment represents the value of the 'Payment' frame. It is a URL pointing at a webpage
+  that will handle the process of paying for this file.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             WPAY
+  Frame ID               fiWWWPayment
+  Versions               All
+  Implemented by         TJvID3URLFrame
+  </TABLE>
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.Publisher
 Summary
-  Write here a summary (1 line)
+  Specifies the URL of the official webpage for the publisher.
 Description
-  Write here a description
+  Property Publisher represents the value of the 'Publishers official webpage' frame. It is an 
+  URL pointing at the official webpage for the publisher.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             WPUB
+  Frame ID               fiWWWPublisher
+  Versions               All
+  Implemented by         TJvID3URLFrame
+  </TABLE>
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.RadioPage
 Summary
-  Write here a summary (1 line)
+  Specifies the URL of the homepage of the internet radio station.
 Description
-  Write here a description
+  Property RadioPage represents the value of the 'Official Internet radio station homepage' frame. 
+  It contains a URL pointing at the homepage of the internet radio station.
+  
+  <TABLE>
+  --------------         -----------------------
+  Frame name             WORS
+  Frame ID               fiWWWRadioPage
+  Versions               All
+  Implemented by         TJvID3URLFrame
+  </TABLE>
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
