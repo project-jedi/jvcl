@@ -32,11 +32,34 @@ unit JvDSADialogs;
 interface
 
 uses
-  Classes, Contnrs, Controls, Dialogs, ExtCtrls, Forms, Graphics, SysUtils, Windows,
+  Classes, Contnrs, Controls, StdCtrls, Dialogs, ExtCtrls, Forms, Graphics, SysUtils, Windows,
   JclBase, JvComponent, JvTypes;
 
 type
   TDlgCenterKind = (dckScreen, dckMainForm, dckActiveForm);
+//=== TDSAMessageForm ========================================================
+
+  TDSAMessageForm = class(TForm)
+  private
+    FTimeout: Integer;
+    FTimer: TTimer;
+    FCountdown: TLabel;
+  protected
+    procedure CustomKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure CustomMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
+      Y: Integer);
+    procedure CustomShow(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
+    procedure TimerEvent(Sender: TObject);
+    procedure WriteToClipBoard(Text: String);
+    function GetFormText: String;
+    function TimeoutUnit(Secs: Integer): string;
+    procedure CancelAutoClose;
+  public
+    constructor CreateNew(AOwner: TComponent); reintroduce;
+    function IsDSAChecked: Boolean;
+    property Timeout: Integer read FTimeout write FTimeout;
+  end;
 
 //--------------------------------------------------------------------------------------------------
 // DSA storage and registration classes, types, constants and exceptions
@@ -417,9 +440,8 @@ type
   end;
 
 implementation
-
 uses
-  Consts, StdCtrls, Math, TypInfo,
+  Consts, Math, TypInfo,
   JclRegistry, JclSysUtils;
 
 {$IFNDEF DELPHI6_UP}
@@ -483,31 +505,6 @@ begin
   else
     Result := '';
 end;
-
-//=== TDSAMessageForm ========================================================
-
-type
-  TDSAMessageForm = class(TForm)
-  private
-    FTimeout: Integer;
-    FTimer: TTimer;
-    FCountdown: TLabel;
-  protected
-    procedure CustomKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure CustomMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
-      Y: Integer);
-    procedure CustomShow(Sender: TObject);  
-    procedure HelpButtonClick(Sender: TObject);
-    procedure TimerEvent(Sender: TObject);
-    procedure WriteToClipBoard(Text: String);
-    function GetFormText: String;
-    function TimeoutUnit(Secs: Integer): string;
-    procedure CancelAutoClose;
-  public
-    constructor CreateNew(AOwner: TComponent); reintroduce;
-    function IsDSAChecked: Boolean;
-    property Timeout: Integer read FTimeout write FTimeout;
-  end;
 
 constructor TDSAMessageForm.CreateNew(AOwner: TComponent);
 var
