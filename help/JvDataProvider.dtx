@@ -848,4 +848,448 @@ Parameters
   Item - Reference to the item to delete.
 See Also
   Delete, Add
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemsDesigner
+Summary
+  Support interface for IJvDataItems that handles item design at the item list level.
+Description
+  IJvDataItemsDesigner is an optional supporting interface for IJvDataItems that is used solely by
+  the Data Provider Tree Designer. It generates a list of item types that can be added. Upon
+  selection from the menu the requested item is created by the NewByKind method and is then added
+  to the list by using the IJvDataItemsManagement.Add method.
+
+  IJvDataItemsDesigner is only usable if IJvDataItemsManagement is also supported by IJvDataItems.
+  If this is not the case, the new items can't be added to the list which makes it quite useless.
+See Also
+  IJvDataItemsManagement, IJvDataItems, IJvDataItemDesigner
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemsDesigner.GetCount
+Summary
+  Returns the number of item kinds.
+Description
+  GetCount returns the number of item kinds this designer can generate.
+See Also
+  GetKind, NewByKind
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemsDesigner.GetKind
+Summary
+  Retrieve the menu caption for an item kind.
+Description
+  GetKind will retrieve a caption (usable for the designer menu) for a given item kind. The first
+  item kind has an index of 0, so the valid range of Index is 0..GetCount-1.
+
+  If an invalid index is specified, the function returns False (Caption is undefined in this case).
+Parameters
+  Index -   Index of the item kind for which to retrieve the catpion. Index is a 0-based value. If
+            the specified index is invalid the function will return nil.
+  Caption - If the function returns True, this parameter will return the caption for the menu item
+            to generate.
+See Also
+  GetCount
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemsDesigner.NewByKind
+Summary
+  Creates a specific type of Data Item.
+Description
+  NewByKind will create a new Data Item instance with properties and supporting interface depending
+  on the kind specified.
+
+  Which item type is created depends solely on the implementation of the interface.
+Parameters
+  Kind -  Index of the item type to create. This is a 0-based value. If the specified index is
+          invalid the function either returns nil or generates an exception (depending on the
+          implementation).
+See Also
+  GetCount
+----------------------------------------------------------------------------------------------------
+@@IJvDataItem
+Summary
+  Single Data Item.
+Description
+  IJvDataItem is the main interface for a single Data Item. A reference to this interface is
+  returned whenever an item is requested from the item list.
+
+  IJvDataItem only provides in some basic 'administrative' tasks and information. For Data Items to
+  be generally usable they will usally also support and implement IJvDataItemText and optionally
+  IJvDataItemImage, IJvDataItemBasicAction.
+
+  In addition some implementation may support implementation specific interface (e.g. an item
+  representing a color might support an interface that allows access to the TColor value). Which
+  interfaces are supported completely depends on what type of item you are dealing with.
+
+  A Data Item may also support IJvDataItems (a list of Data Items) which means the item supports
+  sub items.
+----------------------------------------------------------------------------------------------------
+@@IJvDataItem.GetItems
+Summary
+  Retrieves the reference to the IJvDataItems owner of this item.
+Description
+  GetItems retrieves the reference to the IJvDataItems owner of this item. It's the Items property's
+  read method.
+See Also
+  Items, GetIndex, IsParentOf
+----------------------------------------------------------------------------------------------------
+@@IJvDataItem.GetIndex
+Summary
+  Retrieves the item's index in the owning list.
+Description
+  GetIndex retrieves the item's index in the owning list (represented by the Items property).
+See Also
+  Items
+----------------------------------------------------------------------------------------------------
+@@IJvDataItem.GetImplementer
+Summary
+  Reference to the implementing object.
+Description
+  GetImplementer returns a reference to the TObject instance implementing the IJvDataItem
+  interface. This method should be used with care, as you can never be sure which object implements
+  the interface. Callers should never assume a specific object unless it is enforced in the
+  implementation of the various objects.
+----------------------------------------------------------------------------------------------------
+@@IJvDataItem.GetID
+Summary
+  Retrieves the ID value of the Data Item.
+Description
+  GetID will retrieve the item's (usually unique) ID value. The ID value can be used to search for
+  a specific item if it's not known where in the tree that item resided.
+
+  Normally the ID will be unique throughout the tree. There can be situations where this is not the
+  case. Never assume the ID is unique and always usable to retrieve a specific item.
+----------------------------------------------------------------------------------------------------
+@@IJvDataItem.ContextDestroying
+Summary
+  Called when a context is about to be destroyed.
+Description
+  ContextDestroying is called whenever a context is about to be destroyed. It's generally used to
+  remove context-specific data relating to this context (or child contexts) from the item.
+Parameters
+  Context - Context about to be destroyed,
+----------------------------------------------------------------------------------------------------
+@@IJvDataItem.IsParentOf
+Summary
+  Determines if the item is an ancestor of another item.
+Description
+  IsParentOf determines if the item is an ancestor of the specified item. If the item specified by
+  AnItem has this item as it's parent the function will return True.
+
+  If this is not the case but DirectParent is set to False, the entire parent chain is scanned. If
+  during this iterating process this item is indeed found, the function will return True.
+
+  If either DirectParent was set to True or this item is not an ancestor of the specified item the
+  function will return False.
+Parameters
+  AnItem -        The item to check the parent chain of.
+  DirectParent -  Flag to control if only the direct parent
+                  (<LINK Items, Items>.<LINK IJvDataItems.Parent, Parent>) is checked
+                  (DirectParent=True), or if the entire parent chain is scanned
+                  (DirectParent=False).
+See Also
+  Items, IJvDataItems.Parent
+----------------------------------------------------------------------------------------------------
+@@IJvDataItem.IsDeletable
+Summary
+  Determines if the item may be removed from the list.
+Description
+  IsDeletable determines if the item is allowed to be removed from the <LINK Items, items list>. If
+  the item is allowed to be removed the function will return True, False otherwise.
+
+  IsDeletable is used in those cases where the provider generates a number of fixed items that
+  should never be deleted. In most cases IsDeletable will be context-dependant, i.e. the item can't
+  be deleted from the context-less item tree, but is deletable from a context-specific tree.
+----------------------------------------------------------------------------------------------------
+@@IJvDataItem.Items
+Summary
+  Reference to the items list owner of this item.
+Description
+  Items is a reference to the IJvDataItems owner of this item.
+
+  Every item belongs to an item list. Which item list might be dependant on which context is
+  currently active.
+
+  The Items property is also the only way to determine the parent item of this item. This can be
+  done with Items.Parent
+See Also
+  Index, IsParentOf, IJvDataItems.Parent
+----------------------------------------------------------------------------------------------------
+@@IJvDataItem.Implementer
+Summary
+  Reference to the implementing object.
+Description
+  GetImplementer returns a reference to the TObject instance implementing the IJvDataItem
+  interface. This method should be used with care, as you can never be sure which object implements
+  the interface. Callers should never assume a specific object unless it is enforced in the
+  implementation of the various objects.
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemImage
+Summary
+  Data Item support interface for adding image support to an item.
+Description
+  IJvDataItemImage is a supporting interface for IJvDataItem that adds image support to an item. For
+  this interface to be useful, some things have to be taken care of:
+  * The IJvDataItems owner of the item (or any of the IJvDataItems owners in the parent chain) must
+    support the IJvDataItemsImages interface and atleast have a valid image list assigned to it's
+    <LINK IJvDataItemsImages.Images, Images> property.
+  * The rendering code must be able to handle images. Rendering may be handled at the item itself
+    (IJvDataItemRenderer supported by this item), by the item list owner of this item of any item in
+    the parent chain (IJvDataItemsRenderer supported by an IJvDataItems implementation) or at the
+    consumer (client control). The JEDI-VCL provides generic render implementations of which some
+    do support image.
+
+  The interface provides properties to manage:
+  * The position of the image in relation to the caption
+  * Which image to use in normal cases
+  * which image to use when the item is selected/has focus.
+See Also
+  IJvDataItemsImages, IJvDataItem
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemImage.GetAlignment
+Summary
+  Retrieves the position of the image
+Description
+  GetAlignment retrieves the position of image with respect to the text. GetAlignment is the
+  Alignment property's read method.
+See Also
+  SetAlignment, Alignment
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemImage.SetAlignment
+Summary
+  Sets the position of the image
+Description
+  SetAlignment sets the position of image with respect to the text. SetAlignment is the Alignment
+  property's write method.
+Parameters
+  Value - New image position. See description for the \Alignment property to determine the end
+          result of each value.
+See Also
+  GetAlignment, Alignment
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemImage.GetImageIndex
+Summary
+  Retrieves the index into the image list of the image to render.
+Description
+  GetImageIndex retrieves the index into the image list of the image to render. GetImageIndex is the
+  ImageIndex property's read method.
+See Also
+  SetImageIndex, ImageIndex
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemImage.SetImageIndex
+Summary
+  Sets the index into the image list of the image to render.
+Description
+  SetImageIndex sets the index into the image list of the image to render. SetImageIndex is the
+  ImageIndex property's write method.
+Parameters
+  Index - New index of the image to use.
+See Also
+  SetImageIndex, ImageIndex
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemImage.GetSelectedIndex
+Summary
+  Retrieves the index into the image list of the image to render when the item is selected.
+Description
+  GetSelectedIndex retrieves the index into the image list of the image to render when the item is
+  selected or has focus. GetSelectedIndex is the SelectedIndex property's read method.
+See Also
+  SetSelectedIndex, SelectedIndex
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemImage.SetSelectedIndex
+Summary
+  Sets the index into the image list of the image to render when the item is selected.
+Description
+  SetSelectedIndex sets the index into the image list of the image to render when the item is
+  selected or has focus. SetSelectedIndex is the SelectedIndex property's write method.
+Parameters
+  Value - New index of the image to use.
+See Also
+  GetSelectedIndex, SelectedIndex
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemImage.Alignment
+Summary
+  Specifies the position of the image.
+Description
+  Alignment specifies the position of the image with respect to the text. Read Alignment to retrieve
+  the currently used alignment for the image or set Alignment to a new value.
+
+  Note that consumers/renderers are not required to use the setting of this property when they
+  render the item. Those that do usually follow these 'rules':
+  <TABLE>
+    Value             Rendering result
+    =====             ================
+    taLeftJustify     The image is placed to the left of the text, the item is aligned to the left
+                        of the control.
+    taCenter          The image is placed above the text, the item is centered horizontally in the
+                        control.
+    taRightJustify    The image is placed to the right of the text, the item is aligned to the right
+                        of the control.
+  </TABLE>
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemImage.ImageIndex
+Summary
+  Specifies the index into the image list of the image to render.
+Description
+  ImageIndex specifies the index into the image list of the image to render. Read ImageIndex to
+  retrieve the currently used image or set ImageIndex to a new index.
+
+  Setting this property to -1 will leave the item without any image.
+
+  The image specified by this property is only used when the item is not selected unless
+  SelectedIndex is not specified, in which case the image specified by ImageIndex is always used.
+See Also
+  SelectedIndex
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemImage.SelectedIndex
+Summary
+  Specifies the index into the image list of the image to render when the item is selected.
+Description
+  SelectedIndex specifies the index into the image list of the image to render when the item is
+  selected. Read SelectedIndex to retrieve the currently used image or set SelectedIndex to a new
+  index.
+
+  When this property is set to -1, the value for ImageIndex is used instead.
+See Also
+  ImageIndex
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemBasicAction
+Summary
+  Data Item support interface for responding to an item being selected/double clicked.
+Description
+  IJvDataItemBasicAction is a supporting interface for IJvDataItem that adds the capability of
+  executing a task if the item is selected or double-clicked by the control.
+
+  Some items will have a specific task linked to them, e.g. a control applet provider might have
+  an action linked to each item that will execute that control applet. In other cases a provider
+  might provide a way to link a user event to each individual item (using a separate interface)
+  which will then be called through this interface from the consumer.
+
+  The interface provides in a single method that will perform an action linked to the item.
+See Also
+  IJvDataItem
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemBasicAction.Execute
+Summary
+  Performs a task linked to the item.
+Description
+  Execute performs a task linked to the item. It's usually called by the consumer when an item is
+  either selected or double-clicked (depending on the control).
+
+  The Sender parameter is usually set to the control that initiated the task.
+
+  The return value will be False if nothing happened (i.e. the consumer may trigger an OnClick event
+  to give the user the possibility to take action) and set to True when the action was executed (in
+  this case the control will usually not trigger an OnClick event; this is solely at the consumers
+  discretion though).
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemStates
+Summary
+  Data Item support interface for keeping item states at the provider side.
+Description
+  IJvDataItemStates is a supporting interface for IJvDataItem that adds the capability of keeping
+  the Enabled, Checked and Visible states for an item at the provider side.
+
+  Each of the states can be one of "False", "True", "Indetermined" or "Not used". The consumer is
+  responsible of setting the appropiate rendering options based on these settings but is not
+  required to handle them. In addition a consumer may override the setting of the item at it's
+  discretion.
+See Also
+  IJvDataItem
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemStates.Get_Enabled
+Summary
+  Retrieves the enabled state.
+Description
+  Get_Enabled retrieves the enabled state of the item. Get_Enabled is the Enabled property's read
+  method.
+See Also
+  Set_Enabled, Enabled
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemStates.Set_Enabled
+Summary
+  Sets the enabled state.
+Description
+  Set_Enabled sets the enabled state of the item. Set_Enabled is the Enabled property's write
+  method.
+Parameters
+  Value - New state.
+See Also
+  Get_Enabled, Enabled
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemStates.Get_Checked
+Summary
+  Retrieves the checked state.
+Description
+  Get_Checked retrieves the checked state of the item. Get_Checked is the Checked property's read
+  method.
+See Also
+  Set_Checked, Checked
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemStates.Set_Checked
+Summary
+  Sets the checked state.
+Description
+  Set_Checked sets the checked state of the item. Set_Checked is the Checked property's write
+  method.
+Parameters
+  Value - New state.
+See Also
+  Get_Checked, Checked
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemStates.Get_Visible
+Summary
+  Retrieves the visible state.
+Description
+  Get_Visible retrieves the visible state of the item. Get_Visible is the Visible property's read
+  method.
+See Also
+  Set_Visible, Visible
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemStates.Set_Visible
+Summary
+  Sets the visible state.
+Description
+  Set_Visible sets the visible state of the item. Set_Visible is the Visible property's write
+  method.
+Parameters
+  Value - New state.
+See Also
+  Get_Visible, Visible
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemStates.Enabled
+Summary
+  Specifies if the item is enabled.
+Description
+  Enabled specifies if the item is enabled. Read Enabled to read the setting or set it to a new
+  value.
+
+  If Enabled is set to disFalse the item should be rendered in a disabled state. If an action is
+  linked to the item (through the IJvDataItemBasicAction interface), it should not be executed.
+
+  For any other setting of Enabled, the consumer specifies the actual setting of Enabled.
+See Also
+  IJvDataItemBasicAction
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemStates.Checked
+Summary
+  Specifies if the item is checked.
+Description
+  Checked specifies if the item is checked. Read Checked to read the setting or set it to a new
+  value.
+
+  If Checked is set to disIndetermined the item's checkbox should be rendered in a gray state.
+
+  If Checked is set to disNotUsed the consumer determines the checked state.
+----------------------------------------------------------------------------------------------------
+@@IJvDataItemStates.Visible
+Summary
+  Specifies if the item is visible.
+Description
+  Visible specifies if the item is visible. Read Visible to read the setting or set it to a new
+  value.
+
+  If Visible is set to disIndetermined or disNotUsed, the setting is considered True in most cases
+  (depends on the consumer).
+
+  The consumer service <LINK IJvDataConsumerViewList, view list extension> will consider this state
+  to determine if the item is to be added to the tree.
+See Also
+  IJvDataConsumerViewList
 
