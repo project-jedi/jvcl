@@ -3,7 +3,7 @@ unit MainForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, {$IFDEF COMPILER6_UP}Variants, {$ENDIF}Classes, Graphics, Controls, Forms,
   Dialogs, Menus, JvMenus, ComCtrls, JvToolBar, ToolWin, JvCoolBar,
   JvStatusBar, ExtCtrls, JvSplitter, StdCtrls, JvListBox, JvCtrls,
   JvControlBar, ImgList, ActnList, JvComponent, JvBaseDlg, JvBrowseFolder,
@@ -492,7 +492,7 @@ end;
 procedure TfrmMain.actNextPackageUpdate(Sender: TObject);
 begin
   actNextPackage.Enabled := (jlbList.ItemIndex > -1) and
-                            (jlbList.ItemIndex < jlbList.Count-1);
+                            (jlbList.ItemIndex < jlbList.Items.Count-1);
 end;
 
 procedure TfrmMain.LoadPackage;

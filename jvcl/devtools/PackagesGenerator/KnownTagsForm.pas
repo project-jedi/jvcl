@@ -1,9 +1,11 @@
 unit KnownTagsForm;
 
+{$I JVCL.INC}
+
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, {$IFDEF COMPILER6_UP}Variants, {$ENDIF}Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, ComCtrls;
 
 type

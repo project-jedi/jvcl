@@ -45,9 +45,6 @@ object frmMain: TfrmMain
     Align = alLeft
     BevelOuter = bvLowered
     TabOrder = 1
-    DesignSize = (
-      137
-      502)
     object jlbList: TJvListBox
       Left = 8
       Top = 8
@@ -83,9 +80,9 @@ object frmMain: TfrmMain
       Caption = 'Menus'
       EdgeBorders = []
       Flat = True
-      Menu = jmmMain
       ShowCaptions = True
       TabOrder = 0
+      Menu = jmmMain
     end
     object jtbTools: TJvToolBar
       Left = 11
@@ -198,9 +195,6 @@ object frmMain: TfrmMain
     Align = alClient
     BevelOuter = bvLowered
     TabOrder = 3
-    DesignSize = (
-      653
-      502)
     object lblDependencies: TLabel
       Left = 12
       Top = 132
@@ -428,11 +422,9 @@ object frmMain: TfrmMain
       end
       object mnuMainToolbar: TMenuItem
         Action = actMainToolbar
-        AutoCheck = True
       end
       object mnuLocationBar: TMenuItem
         Action = actLocation
-        AutoCheck = True
       end
     end
   end
@@ -441,7 +433,6 @@ object frmMain: TfrmMain
     Left = 732
     object actLocation: TAction
       Category = 'View'
-      AutoCheck = True
       Caption = '&Location bar'
       OnExecute = actLocationExecute
       OnUpdate = actLocationUpdate
@@ -511,7 +502,6 @@ object frmMain: TfrmMain
     end
     object actMainToolbar: TAction
       Category = 'View'
-      AutoCheck = True
       Caption = '&Main toolbar'
       OnExecute = actMainToolbarExecute
       OnUpdate = actMainToolbarUpdate

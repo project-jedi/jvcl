@@ -1,9 +1,11 @@
 unit TargetDialog;
 
+{$I JVCL.INC}
+
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, {$IFDEF COMPILER6_UP}Variants, {$ENDIF}Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, CheckLst;
 
 type
@@ -36,10 +38,10 @@ procedure TfrmTargets.FormShow(Sender: TObject);
 var
   i : Integer;
 begin
-  if clbBuilds.Count = 0 then
+  if clbBuilds.Items.Count = 0 then
   begin
     EnumerateTargets(Path, clbBuilds.Items);
-    for i := 0 to clbBuilds.Count - 1 do
+    for i := 0 to clbBuilds.Items.Count - 1 do
       clbBuilds.Checked[i] := True;
   end;
 end;
