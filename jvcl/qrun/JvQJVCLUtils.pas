@@ -145,10 +145,6 @@ function PaletteColor(Color: TColor): Longint;
 procedure Delay(MSecs: Longint);
 procedure CenterControl(Control: TControl);
 
-function MsgBox(const Caption, Text: string; Flags: Integer): Integer;
-function MsgDlg(const Msg: string; AType: TMsgDlgType;
-  AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
-
 procedure MergeForm(AControl: TWinControl; AForm: TForm; Align: TAlign;
   Show: Boolean);
 function GetAveCharSize(Canvas: TCanvas): TPoint;
@@ -237,6 +233,14 @@ function FindFormByClassName(FormClassName: string): TForm;
 function AppMinimized: Boolean;
 function IsForegroundTask: Boolean;
 
+(*)
+{ Works like InputQuery but displays 2 edits. If PasswordChar <> #0, the second edit's PasswordChar is set }
+function DualInputQuery(const ACaption, Prompt1, Prompt2:string;
+  var AValue1, AValue2:string; PasswordChar:char=#0):boolean;
+
+{ Works like InputQuery but set the edit's PasswordChar to PasswordChar. If PasswordChar = #0, works exactly like InputQuery }
+function InputQueryPassword(const ACaption, APrompt: string; PasswordChar:char; var Value: string): Boolean;
+(*)
 
 { returns the sum of pc.Left, pc.Width and piSpace}
 function ToRightOf(const pc: TControl; piSpace: Integer = 0): Integer;
@@ -304,6 +308,21 @@ procedure SaveGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorag
 
 function StrToIniStr(const Str: string): string;
 function IniStrToStr(const Str: string): string;
+
+
+// Ini Utilitie Functions
+// Added by RDB
+
+function StringToFontStyles(const Styles: string): TFontStyles;
+function FontStylesToString(Styles: TFontStyles): string;
+(*)
+function FontToString(Font: TFont): string;
+(*)
+function StringToFont(const Str: string) : TFont;
+function RectToStr(Rect: TRect): string;
+function StrToRect(const Str: string; const Def: TRect): TRect;
+function PointToStr(P: TPoint): string;
+function StrToPoint(const Str: string; const Def: TPoint): TPoint;
 
 {
 function IniReadString(IniFile: TObject; const Section, Ident,
@@ -2337,7 +2356,115 @@ end;
 {$ENDIF LINUX}
 
 
+(*)
+function DualInputQuery(const ACaption, Prompt1, Prompt2:string;
+  var AValue1, AValue2:string; PasswordChar:char=#0):boolean;
+var
+  AForm:TForm;
+  ALabel1, ALabel2:TLabel;
+  AEdit1, AEdit2:TEdit;
+  ASize, i:integer;
+begin
+  Result := false;
+  AForm := CreateMessageDialog(Prompt1,mtCustom,[mbOK	,mbCancel]);
+  ASize := 0;
+  if AForm <> nil then
+  try
+    AForm.Caption := ACaption;
+    ALabel1 := AForm.FindComponent('Message') as TLabel;
+    for i := 0 to AForm.ControlCount - 1 do
+      if AForm.Controls[i] is TButton then
+        TButton(AForm.Controls[i]).Anchors := [akRight, akBottom];
+    if ALabel1 <> nil then
+    begin
+      AEdit1 := TEdit.Create(AForm);
+      AEdit1.Left := ALabel1.Left;
+      AEdit1.Width := AForm.ClientWidth - AEdit1.Left * 2;
+      AEdit1.Top := ALabel1.Top + ALabel1.Height + 2;
+      AEdit1.Parent := AForm;
+      AEdit1.Anchors := [akLeft, akTop, akRight];
+      AEdit1.Text := AValue1;
+      ALabel1.Caption := Prompt1;
+      ALabel1.FocusControl := AEdit1;
+      Inc(ASize, AEdit1.Height + 2);
 
+      ALabel2 := TLabel.Create(AForm);
+      ALabel2.Left := ALabel1.Left;
+      ALabel2.Top := AEdit1.Top + AEdit1.Height + 7;
+      ALabel2.Caption := Prompt2;
+      ALabel2.Parent := AForm;
+      Inc(ASize, ALabel2.Height + 7);
+
+      AEdit2 := TEdit.Create(AForm);
+      AEdit2.Left := ALabel1.Left;
+      AEdit2.Width := AForm.ClientWidth - AEdit2.Left * 2;
+      AEdit2.Top := ALabel2.Top + ALabel2.Height + 2;
+      AEdit2.Parent := AForm;
+      AEdit2.Anchors := [akLeft, akTop, akRight];
+      AEdit2.Text := AValue1;
+      if PasswordChar <> #0 then
+        AEdit2.PasswordChar := PasswordChar;
+      ALabel2.FocusControl := AEdit2;
+
+      Inc(ASize, AEdit2.Height + 8);
+      AForm.ClientHeight := AForm.ClientHeight + ASize;
+      AForm.ClientWidth := 320;
+      AForm.ActiveControl := AEdit1;
+      Result := AForm.ShowModal = mrOK;
+      if Result then
+      begin
+        AValue1 := AEdit1.Text;
+        AValue2 := AEdit2.Text;
+      end;
+    end;
+  finally
+    AForm.Free;
+  end;
+end;
+
+function InputQueryPassword(const ACaption, APrompt: string; PasswordChar:char; var Value: string): Boolean;
+var
+  AForm:TForm;
+  ALabel:TLabel;
+  AEdit:TEdit;
+  ASize:integer;
+begin
+  Result := false;
+  AForm := CreateMessageDialog(APrompt, mtCustom, [mbOK ,mbCancel]);
+  if AForm <> nil then
+  try
+    AForm.Caption := ACaption;
+    ALabel := AForm.FindComponent('Message') as TLabel;
+    for ASize := 0 to AForm.ControlCount - 1 do
+      if AForm.Controls[ASize] is TButton then
+        TButton(AForm.Controls[ASize]).Anchors := [akRight, akBottom];
+    ASize := 0;
+    if ALabel <> nil then
+    begin
+      AEdit := TEdit.Create(AForm);
+      AEdit.Left := ALabel.Left;
+      AEdit.Width := AForm.ClientWidth - AEdit.Left * 2;
+      AEdit.Top := ALabel.Top + ALabel.Height + 2;
+      AEdit.Parent := AForm;
+      AEdit.Anchors := [akLeft, akTop, akRight];
+      AEdit.Text := Value;
+      AEdit.PasswordChar := PasswordChar;
+      ALabel.Caption := APrompt;
+      ALabel.FocusControl := AEdit;
+      Inc(ASize, AEdit.Height + 2);
+
+      AForm.ClientHeight := AForm.ClientHeight + ASize;
+      AForm.ClientWidth := 320;
+      AForm.ActiveControl := AEdit;
+      Result := AForm.ShowModal = mrOK;
+      if Result then
+        Value := AEdit.Text;
+    end;
+  finally
+    AForm.Free;
+  end;
+end;
+(*)
 procedure CenterHor(Parent: TControl; MinLeft: Integer; Controls: array of
   TControl);
 var
@@ -4772,6 +4899,156 @@ begin
   except
   end;
 end;
+
+
+const
+  Lefts = ['[', '{', '('];
+  Rights = [']', '}', ')'];
+
+{ Utilities routines }
+
+function FontStylesToString(Styles: TFontStyles): string;
+begin
+  Result := '';
+  if fsBold in Styles then
+    Result := Result + 'B';
+  if fsItalic in Styles then
+    Result := Result + 'I';
+  if fsUnderline in Styles then
+    Result := Result + 'U';
+  if fsStrikeOut in Styles then
+    Result := Result + 'S';
+end;
+
+function StringToFontStyles(const Styles: string): TFontStyles;
+begin
+  Result := [];
+  if Pos('B', UpperCase(Styles)) > 0 then
+    Include(Result, fsBold);
+  if Pos('I', UpperCase(Styles)) > 0 then
+    Include(Result, fsItalic);
+  if Pos('U', UpperCase(Styles)) > 0 then
+    Include(Result, fsUnderline);
+  if Pos('S', UpperCase(Styles)) > 0 then
+    Include(Result, fsStrikeOut);
+end;
+(*)
+function FontToString(Font: TFont): string;
+begin
+  with Font do
+    Result := Format('%s,%d,%s,%d,%s,%d', [Name, Size,
+      FontStylesToString(Style), Ord(Pitch), ColorToString(Color),Charset]);
+end;
+(*)
+
+Function StringToFont(const Str: string): TFont;
+const
+  Delims = [',', ';'];
+var
+  Pos: Integer;
+  I: Byte;
+  S: string;
+begin
+  Result := TFont.Create;
+  try
+    Pos := 1;
+    I := 0;
+    while Pos <= Length(Str) do
+    begin
+      Inc(I);
+      S := Trim(ExtractSubstr(Str, Pos, Delims));
+      case I of
+        1:
+          result.Name := S;
+        2:
+          result.Size := StrToIntDef(S, result.Size);
+        3:
+          result.Style := StringToFontStyles(S);
+        4:
+          result.Pitch := TFontPitch(StrToIntDef(S, Ord(result.Pitch)));
+        5:
+          result.Color := StringToColor(S);
+      end;
+    end;
+  finally
+  end;
+end;
+
+function RectToStr(Rect: TRect): string;
+begin
+  with Rect do
+    Result := Format('[%d,%d,%d,%d]', [Left, Top, Right, Bottom]);
+end;
+
+function StrToRect(const Str: string; const Def: TRect): TRect;
+var
+  S: string;
+  Temp: string[10];
+  I: Integer;
+begin
+  Result := Def;
+  S := Str;
+  if (S[1] in Lefts) and (S[Length(S)] in Rights) then
+  begin
+    Delete(S, 1, 1);
+    SetLength(S, Length(S) - 1);
+  end;
+  I := Pos(',', S);
+  if I > 0 then
+  begin
+    Temp := Trim(Copy(S, 1, I - 1));
+    Result.Left := StrToIntDef(Temp, Def.Left);
+    Delete(S, 1, I);
+    I := Pos(',', S);
+    if I > 0 then
+    begin
+      Temp := Trim(Copy(S, 1, I - 1));
+      Result.Top := StrToIntDef(Temp, Def.Top);
+      Delete(S, 1, I);
+      I := Pos(',', S);
+      if I > 0 then
+      begin
+        Temp := Trim(Copy(S, 1, I - 1));
+        Result.Right := StrToIntDef(Temp, Def.Right);
+        Delete(S, 1, I);
+        Temp := Trim(S);
+        Result.Bottom := StrToIntDef(Temp, Def.Bottom);
+      end;
+    end;
+  end;
+end;
+
+function PointToStr(P: TPoint): string;
+begin
+  with P do
+    Result := Format('[%d,%d]', [X, Y]);
+end;
+
+function StrToPoint(const Str: string; const Def: TPoint): TPoint;
+var
+  S: string;
+  Temp: string[10];
+  I: Integer;
+begin
+  Result := Def;
+  S := Str;
+  if (S[1] in Lefts) and (S[Length(Str)] in Rights) then
+  begin
+    Delete(S, 1, 1);
+    SetLength(S, Length(S) - 1);
+  end;
+  I := Pos(',', S);
+  if I > 0 then
+  begin
+    Temp := Trim(Copy(S, 1, I - 1));
+    Result.X := StrToIntDef(Temp, Def.X);
+    Delete(S, 1, I);
+    Temp := Trim(S);
+    Result.Y := StrToIntDef(Temp, Def.Y);
+  end;
+end;
+
+
 
 initialization
   InitScreenCursors;

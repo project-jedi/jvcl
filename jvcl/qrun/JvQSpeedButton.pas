@@ -810,7 +810,7 @@ begin
     NeedRepaint :=
       
       FHotTrack or
-      (FFlat and not FMouseInControl and Enabled and (DragMode <> dmAutomatic) and (GetCapture = 0));
+      (FFlat and not FMouseInControl and Enabled and (DragMode <> dmAutomatic) and (GetCapture = nil));
 
     FMouseInControl := True;
 

@@ -370,12 +370,11 @@ begin
   ColorShadow := FShadowColor;
   if not Enabled then
   begin
-(*)    if (FShadowSize = 0) and NewStyleControls then
+    if (FShadowSize = 0) and NewStyleControls then
     begin
       PosShadow := spRightBottom;
       SizeShadow := 1;
     end;
-(*)    
     Canvas.Font.Color := clGrayText;
     ColorShadow := clBtnHighlight;
   end;

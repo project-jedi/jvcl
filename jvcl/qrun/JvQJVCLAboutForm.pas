@@ -42,10 +42,10 @@ uses
   SysUtils, Classes, IniFiles,
   
   
-  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons,
+  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons, QWindows,
   
-  JclSysInfo, JVQCLVer,
-  JvQBaseDlg, JvQComponent;
+  JclSysInfo,
+  JVQCLVer, JvQBaseDlg, JvQComponent;
 
 type
   TJvJVCLAboutForm = class(TJvForm)
@@ -159,7 +159,7 @@ end;
 procedure TJvJVCLAboutForm.Panel1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-//  ReleaseCapture;
+  ReleaseCapture;
   
 end;
 
@@ -211,7 +211,12 @@ end;
 
 procedure TJvJVCLAboutForm.SaveOptions;
 begin
+  {$IFDEF MSWINDOWS}
   with TIniFile.Create(ExtractFileDir(Application.ExeName) + cJVCLIni) do
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  with TIniFile.Create(GetEnvironmentVariable('HOME') + cJVCLIni) do
+  {$ENDIF LINUX}
   try
     if WindowState = wsNormal then
     begin

@@ -40,7 +40,8 @@ uses
   QGraphics, QControls, QForms, QDialogs, QGrids, QMenus, QClipbrd, Types,
   QWindows,
   
-  SysUtils, Classes;
+  SysUtils, Classes,
+  JvQTypes;
 
 {$HPPEMIT '#define TDate Controls::TDate'}
 
@@ -73,11 +74,8 @@ type
     FBookMarkColor: TColor;
     FYearData: array [0..37, 0..12] of TYearData;
     FYearFile: string;
-    
-    
-    procedure DoShowHint(var HintStr: WideString; var CanShow: Boolean;
+    procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean;
       var HintInfo: THintInfo);
-    
     procedure MakeHTML(AList: TStringList; Border, Filter: Boolean);
     procedure SetHTMLBorder(const Value: Boolean);
     procedure SetGridYear(const Value: Integer);
@@ -147,7 +145,7 @@ type
 implementation
 
 uses
-  JvQConsts, JvQTypes, JvQResources, JvQYearGridEditForm;
+  JvQConsts, JvQResources, JvQYearGridEditForm;
 
 const
   TodayFontColor = clWhite;
@@ -222,11 +220,8 @@ begin
   end;
 end;
 
-
-procedure TJvYearGrid.DoShowHint(var HintStr: WideString; var CanShow: Boolean;
+procedure TJvYearGrid.DoShowHint(var HintStr: THintString; var CanShow: Boolean;
   var HintInfo: THintInfo);
-
-
 var
   ACol, ARow, X, Y: Integer;
   S, DS: string;
