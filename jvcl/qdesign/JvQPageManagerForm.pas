@@ -36,7 +36,7 @@ uses
   SysUtils, Classes,
   
   
-  QWindows, QGrids, QStdCtrls, QControls, QExtCtrls, QGraphics, Types,
+  QWindows, QForms, QGrids, QStdCtrls, QControls, QExtCtrls, QGraphics, Types,
 
   
   RTLConsts, DesignIntf, DesignEditors,
@@ -460,7 +460,7 @@ begin
   if Proxy <> nil then
   begin
     
-    TCustomForm(Designer.Root).Designer.ValidateRename(Proxy, Proxy.Name, '');
+    TCustomForm(Designer.Root).DesignerHook.ValidateRename(Proxy, Proxy.Name, '');
     
     FDeleting := True;
     try

@@ -38,7 +38,11 @@ procedure Register;
 implementation
 
 uses
-  Classes, Controls,
+  Classes,
+  
+  
+  QControls,
+  
   
   DesignEditors, DesignIntf,
   
@@ -46,11 +50,11 @@ uses
   {$IFDEF MSWINDOWS}
   JvQCreateProcess,
   {$ENDIF MSWINDOWS}
-  JvQAlarms, JvQConverter, JvQDataEmbedded,
-  JvQEnterTab, JvQMergeManager, {JvQPageManager,} JvQPatchFile, JvQStringHolder,
-  JvQTimeLimit, JvQWinHelp, JvQTranslator, JvQPrint, {JvQEasterEgg,
-  JvQMouseGesture,} JvQLogFile, JvQDataEmbeddedEditor, JvQPatcherEditor,
-  JvQProfilerForm, {JvQPageManagerForm,} JvQDsgnEditors;
+  JvQAlarms, JvQConverter, JvQDataEmbedded, JvQEnterTab, JvQMergeManager,
+  JvQPageManager, JvQPatchFile, JvQStringHolder, JvQTimeLimit, JvQWinHelp,
+  JvQTranslator, JvQPrint, JvQEasterEgg, JvQMouseGesture, JvQLogFile,
+  JvQDataEmbeddedEditor, JvQPatcherEditor, JvQProfilerForm, JvQPageManagerForm,
+  JvQDsgnEditors;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCmpReg.dcr}
@@ -61,19 +65,19 @@ uses
 
 procedure Register;
 begin
-
+  
   GroupDescendentsWith(TJvDataEmbedded, TControl);
   GroupDescendentsWith(TJvStrHolder, TControl);
-
+  
 
   RegisterComponents(RsPaletteNonVisual,[TJvAlarms, TJvConverter,
     TJvDataEmbedded,
     {$IFDEF MSWINDOWS}
     TJvCreateProcess,
     {$ENDIF MSWINDOWS}
-    TJvEnterAsTab, TJvMergeManager, TJvPatchFile, TJvProfiler,
+    TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
     TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvTranslatorStrings,
-    TJvPrint,  TJvLogFile]);
+    TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile]);
 
   {$IFDEF MSWINDOS}
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
@@ -85,12 +89,22 @@ begin
 //    'Data', TJvDataEmbeddedEditor);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile,
     'Differences', TJvPatcherEditor);
+  RegisterPropertyEditor(TypeInfo(TList), TJvPageManager,
+    'PageProxies', TJvProxyListProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvPageProxy,
+    'PageName', TJvPageNameProperty);
+  RegisterPropertyEditor(TypeInfo(TControl), TJvPageManager,
+    'PriorBtn', TJvPageBtnProperty);
+  RegisterPropertyEditor(TypeInfo(TControl), TJvPageManager,
+    'NextBtn', TJvPageBtnProperty);
   RegisterPropertyEditor(TypeInfo(TWinControl), TJvMergeManager,
     'MergeFrame', TJvComponentFormProperty);
 
+  RegisterComponentEditor(TJvPageManager, TJvPageManagerEditor);
   RegisterComponentEditor(TJvStrHolder, TJvStringsEditor);
   RegisterComponentEditor(TJvDataEmbedded,TJvDataEmbeddedComponentEditor);
 
+  RegisterNoIcon([TJvPageProxy]);
 end;
 
 end.

@@ -1,48 +1,48 @@
 inherited frmJvSLDMappingEditor: TfrmJvSLDMappingEditor
+  Left = 387
+  Top = 304
+  ActiveControl = btnOK
   Caption = 'Segmented LED Display Mapping Editor...'
-  ClientHeight = 175
+  ClientHeight = 221
   ClientWidth = 410
   Constraints.MaxHeight = 221
   Constraints.MinHeight = 221
   Constraints.MinWidth = 348
-  Menu = fmeMapper.mnuCharMapEdit
-  OldCreateOrder = True
   OnCloseQuery = FormCloseQuery
   PixelsPerInch = 96
-  TextHeight = 13
   object lblDigitClassCaption: TLabel
     Left = 120
     Top = 15
-    Width = 51
-    Height = 13
+    Width = 52
+    Height = 14
     Caption = 'Digit class:'
   end
   object lblSegmentCountCaption: TLabel
     Left = 120
     Top = 40
-    Width = 70
-    Height = 13
+    Width = 72
+    Height = 14
     Caption = '# of segments:'
   end
   object lblCharCaption: TLabel
     Left = 120
     Top = 65
-    Width = 49
-    Height = 13
+    Width = 51
+    Height = 14
     Caption = 'Character:'
   end
   object lblMapperValueCaption: TLabel
     Left = 120
     Top = 90
-    Width = 73
-    Height = 13
+    Width = 72
+    Height = 14
     Caption = 'Mapping value:'
   end
   object lblSegmentsCaption: TLabel
     Left = 120
     Top = 115
-    Width = 50
-    Height = 13
+    Width = 51
+    Height = 14
     Caption = 'Segments:'
   end
   object lblDigitClass: TLabel
@@ -52,11 +52,12 @@ inherited frmJvSLDMappingEditor: TfrmJvSLDMappingEditor
     Height = 13
     Anchors = [akLeft, akTop, akRight]
     AutoSize = False
-    Font.Charset = DEFAULT_CHARSET
     Font.Color = clNavy
-    Font.Height = -11
+    Font.Height = 11
     Font.Name = 'MS Sans Serif'
+    Font.Pitch = fpVariable
     Font.Style = []
+    Font.Weight = 40
     ParentFont = False
   end
   object lblSegmentCount: TLabel
@@ -66,11 +67,12 @@ inherited frmJvSLDMappingEditor: TfrmJvSLDMappingEditor
     Height = 13
     Anchors = [akLeft, akTop, akRight]
     AutoSize = False
-    Font.Charset = DEFAULT_CHARSET
     Font.Color = clNavy
-    Font.Height = -11
+    Font.Height = 11
     Font.Name = 'MS Sans Serif'
+    Font.Pitch = fpVariable
     Font.Style = []
+    Font.Weight = 40
     ParentFont = False
   end
   object lblChar: TLabel
@@ -80,11 +82,12 @@ inherited frmJvSLDMappingEditor: TfrmJvSLDMappingEditor
     Height = 13
     Anchors = [akLeft, akTop, akRight]
     AutoSize = False
-    Font.Charset = DEFAULT_CHARSET
     Font.Color = clNavy
-    Font.Height = -11
+    Font.Height = 11
     Font.Name = 'MS Sans Serif'
+    Font.Pitch = fpVariable
     Font.Style = []
+    Font.Weight = 40
     ParentFont = False
   end
   object lblMapperValue: TLabel
@@ -94,11 +97,12 @@ inherited frmJvSLDMappingEditor: TfrmJvSLDMappingEditor
     Height = 13
     Anchors = [akLeft, akTop, akRight]
     AutoSize = False
-    Font.Charset = DEFAULT_CHARSET
     Font.Color = clNavy
-    Font.Height = -11
+    Font.Height = 11
     Font.Name = 'MS Sans Serif'
+    Font.Pitch = fpVariable
     Font.Style = []
+    Font.Weight = 40
     ParentFont = False
   end
   object lblSegments: TLabel
@@ -108,23 +112,19 @@ inherited frmJvSLDMappingEditor: TfrmJvSLDMappingEditor
     Height = 13
     Anchors = [akLeft, akTop, akRight]
     AutoSize = False
-    Font.Charset = DEFAULT_CHARSET
     Font.Color = clNavy
-    Font.Height = -11
+    Font.Height = 11
     Font.Name = 'MS Sans Serif'
+    Font.Pitch = fpVariable
     Font.Style = []
+    Font.Weight = 40
     ParentFont = False
-  end
-  inline fmeMapper: TfmeJvSegmentedLEDDisplayMapper
-    Left = 5
-    Top = 5
   end
   object btnOK: TButton
     Left = 330
     Top = 145
     Width = 75
     Height = 25
-    Action = fmeMapper.aiFileClose
     Anchors = [akRight, akBottom]
     Caption = 'OK'
     Default = True

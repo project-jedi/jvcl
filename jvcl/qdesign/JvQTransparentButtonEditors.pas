@@ -36,7 +36,7 @@ interface
 uses
   SysUtils,
   
-  DesignIntf, DesignEditors, DesignMenus, VCLEditors,
+  DesignIntf, DesignEditors, DesignMenus, ClxEditors,
   
   
   
