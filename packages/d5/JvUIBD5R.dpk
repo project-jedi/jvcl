@@ -28,7 +28,8 @@ package JvUIBD5R;
 requires
   vcl50,
   Vclx50,
-  JvCoreD5R;
+  JvCoreD5R,
+  Vcldb50;
 
 contains
   JvUIB in '..\..\run\JvUIB.pas',
