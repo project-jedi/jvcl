@@ -10,7 +10,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, JvUIB, JvUIBLib, StdCtrls;
+  Dialogs, JvUIB, JvUIBLib, StdCtrls, JvComponent;
 
 type
   TMainForm = class(TForm)
