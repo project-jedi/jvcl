@@ -201,8 +201,14 @@ begin
   with TSaveDialog.Create(Application) do
   try
     InitialDir := LastSaveFolder;
+    {$IFDEF VCL}
     Options := [ofOverwritePrompt, ofNoChangeDir, ofNoValidate, ofPathMustExist,
       ofShareAware, ofNoReadOnlyReturn, ofNoTestFileCreate, ofEnableSizing];
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Options := [ofOverwritePrompt, ofNoChangeDir, ofPathMustExist,
+      ofEnableSizing];
+    {$ENDIF VisualCLX}
     Filter := RsSegmentedLEDDisplayMappingFilessdms;
     FilterIndex := 0;
     FileName := FLastSaveFileName;
@@ -338,8 +344,14 @@ begin
     with TOpenDialog.Create(Application) do
     try
       InitialDir := LastOpenFolder;
+      {$IFDEF VCL}
       Options := [ofNoChangeDir, ofPathMustExist, ofFileMustExist,
         ofShareAware, ofNoNetworkButton, ofNoLongNames, ofEnableSizing];
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      Options := [ofNoChangeDir, ofPathMustExist, ofFileMustExist,
+         ofEnableSizing];
+      {$ENDIF VisualCLX}
       Filter := RsSegmentedLEDDisplayMappingFilessdms;
       FilterIndex := 0;
       if Execute then
