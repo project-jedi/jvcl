@@ -31,7 +31,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvPrvwDoc, ComCtrls, StdCtrls, ExtCtrls, Menus, jpeg,
-  JvPrvwRender{, GIFImage};
+  JvPrvwRender, JvExStdCtrls, JvRichEdit{, GIFImage};
 
 type
   TfrmMain = class(TForm)
@@ -71,7 +71,7 @@ type
     tabPreview: TTabSheet;
     tabOriginal: TTabSheet;
     OpenDialog1: TOpenDialog;
-    reOriginal: TRichEdit;
+    reOriginal: TJvRichEdit;
     PrintDialog1: TPrintDialog;
     Print1: TMenuItem;
     Label6: TLabel;
@@ -124,7 +124,7 @@ type
   public
     { Public declarations }
     pd: TJvPreviewControl;
-    JvRTF: TJvPreviewRenderRichEdit;
+    JvRTF: TJvPreviewRenderJvRichEdit;
     JvTxt: TJvPreviewRenderStrings;
     JvImg: TJvPreviewRenderGraphics;
   end;
@@ -179,7 +179,7 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   OpenDialog1.Filter := OpenDialog1.Filter + '|' + GraphicFilter(TGraphic);
   JvImg := TJvPreviewRenderGraphics.Create(self);
-  JvRTF := TJvPreviewRenderRichEdit.Create(self);
+  JvRTF := TJvPreviewRenderJvRichEdit.Create(self);
   JvTxt := TJvPreviewRenderStrings.Create(self);
 
   pd := TJvPreviewControl.Create(self);

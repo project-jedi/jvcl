@@ -35,7 +35,7 @@ unit JvPrvwRender;
 interface
 uses
   Windows, SysUtils, Messages, Classes, Controls, Graphics,
-  Dialogs, ComCtrls, JvComponent, JvPrvwDoc, RichEdit, Printers;
+  Dialogs, ComCtrls, JvComponent, JvPrvwDoc, RichEdit, JvRichEdit, Printers;
 
 type
   EPrintPreviewError = Exception;
@@ -72,6 +72,23 @@ type
   published
     property PrintPreview;
     property RichEdit: TCustomRichEdit read FRichEdit write SetRichEdit;
+  end;
+
+  TJvPreviewRenderJvRichEdit = class(TJvCustomPreviewRenderer)
+  private
+    FFinished: Boolean;
+    FLastChar: Integer;
+    FRichEdit: TJvCustomRichEdit;
+    procedure SetRichEdit(const Value: TJvCustomRichEdit);
+  protected
+    procedure DoAddPage(Sender: TObject; PageIndex: Integer;
+      Canvas: TCanvas; PageRect, PrintRect: TRect; var NeedMorePages: Boolean); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);override;
+  public
+    function CreatePreview(Append: Boolean): Boolean; override;
+  published
+    property PrintPreview;
+    property RichEdit: TJvCustomRichEdit read FRichEdit write SetRichEdit;
   end;
 
   TJvPreviewRenderStrings = class(TJvCustomPreviewRenderer)
@@ -233,6 +250,8 @@ implementation
 uses
   Forms,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
+const
+  cTwipsPerInch = 1440;  
 
 
 procedure StretchDrawBitmap(Canvas: TCanvas; const ARect: TRect; Bitmap: TBitmap);
@@ -385,25 +404,26 @@ begin
     LogY := GetDeviceCaps(OutDC, LOGPIXELSY);
     if IsRectEmpty(RichEdit.PageRect) then
     begin
-      Range.rc.right := (PrintRect.Right - PrintRect.Left) * 1440 div LogX;
-      Range.rc.bottom := (PrintRect.Bottom - PrintRect.Top) * 1440 div LogY;
+      Range.rc.right := (PrintRect.Right - PrintRect.Left) * cTwipsPerInch div LogX;
+      Range.rc.bottom := (PrintRect.Bottom - PrintRect.Top) * cTwipsPerInch div LogY;
     end
     else
     begin
-      Range.rc.Left := RichEdit.PageRect.Left * 1440 div LogX;
-      Range.rc.Top := RichEdit.PageRect.Top * 1440 div LogY;
-      Range.rc.Right := RichEdit.PageRect.Right * 1440 div LogX;
-      Range.rc.Bottom := RichEdit.PageRect.Bottom * 1440 div LogY;
+      Range.rc.Left := RichEdit.PageRect.Left * cTwipsPerInch div LogX;
+      Range.rc.Top := RichEdit.PageRect.Top * cTwipsPerInch div LogY;
+      Range.rc.Right := RichEdit.PageRect.Right * cTwipsPerInch div LogX;
+      Range.rc.Bottom := RichEdit.PageRect.Bottom * cTwipsPerInch div LogY;
     end;
     Range.rcPage := Range.rc;
+
     MaxLen := RichEdit.GetTextLen;
+
     Range.chrg.cpMax := -1;
 
     // ensure the output DC is in text map mode
     OldMap := SetMapMode(Range.hdc, MM_TEXT);
     try
       SendMessage(RichEdit.Handle, EM_FORMATRANGE, 0, 0); // flush buffer
-
       Range.chrg.cpMin := FLastChar;
       FLastChar := SendMessage(RichEdit.Handle, EM_FORMATRANGE, 1, Longint(@Range));
       FFinished := (FLastChar >= MaxLen) or (FLastChar = -1);
@@ -412,7 +432,6 @@ begin
     finally
       SetMapMode(OutDC, OldMap);
     end;
-    Exit;
   end;
 end;
 
@@ -426,6 +445,101 @@ end;
 
 procedure TJvPreviewRenderRichEdit.SetRichEdit(
   const Value: TCustomRichEdit);
+begin
+  if FRichEdit <> Value then
+  begin
+    if FRichEdit <> nil then
+      FRichEdit.RemoveFreeNotification(Self);
+    FRichEdit := Value;
+    if FRichEdit <> nil then
+      FRichEdit.FreeNotification(Self);
+  end;
+end;
+
+{ TJvPreviewRenderJvRichEdit }
+
+function TJvPreviewRenderJvRichEdit.CreatePreview(Append: Boolean): Boolean;
+begin
+  if RichEdit = nil then
+    raise EPrintPreviewError.Create(RsEARichEditComponentMustBeAssignedInC);
+  Result := RichEdit.Lines.Count > 0;
+  FFinished := not Result;
+  FLastChar := 0;
+  if Result then
+    Result := inherited CreatePreview(Append);
+end;
+
+procedure TJvPreviewRenderJvRichEdit.DoAddPage(Sender: TObject;
+  PageIndex: Integer; Canvas: TCanvas; PageRect, PrintRect: TRect;
+  var NeedMorePages: Boolean);
+var
+  Range: TFormatRange;
+  OutDC: HDC;
+  ALastChar, MaxLen, LogX, LogY, OldMap: Integer;
+  TextLenEx: TGetTextLengthEx;
+begin
+  FFinished := (RichEdit = nil) or (PrintPreview = nil);
+  if not FFinished then
+  begin
+    FillChar(Range, SizeOf(TFormatRange), 0);
+    OutDC := Canvas.Handle;
+    Range.hdc := OutDC;
+    Range.hdcTarget := OutDC;
+    LogX := GetDeviceCaps(OutDC, LOGPIXELSX);
+    LogY := GetDeviceCaps(OutDC, LOGPIXELSY);
+    if IsRectEmpty(RichEdit.PageRect) then
+    begin
+      Range.rc.right := (PrintRect.Right - PrintRect.Left) * cTwipsPerInch div LogX;
+      Range.rc.bottom := (PrintRect.Bottom - PrintRect.Top) * cTwipsPerInch div LogY;
+    end
+    else
+    begin
+      Range.rc.Left := RichEdit.PageRect.Left * cTwipsPerInch div LogX;
+      Range.rc.Top := RichEdit.PageRect.Top * cTwipsPerInch div LogY;
+      Range.rc.Right := RichEdit.PageRect.Right * cTwipsPerInch div LogX;
+      Range.rc.Bottom := RichEdit.PageRect.Bottom * cTwipsPerInch div LogY;
+    end;
+    Range.rcPage := Range.rc;
+    if RichEditVersion >= 2 then
+    begin
+      with TextLenEx do
+      begin
+        Flags := GTL_DEFAULT;
+        codepage := CP_ACP;
+      end;
+      MaxLen := RichEdit.Perform(EM_GETTEXTLENGTHEX, WParam(@TextLenEx), 0);
+    end
+    else
+      MaxLen := RichEdit.GetTextLen;
+
+    Range.chrg.cpMax := -1;
+
+    // ensure the output DC is in text map mode
+    OldMap := SetMapMode(Range.hdc, MM_TEXT);
+    try
+      SendMessage(RichEdit.Handle, EM_FORMATRANGE, 0, 0); // flush buffer
+      Range.chrg.cpMin := FLastChar;
+      ALastChar := SendMessage(RichEdit.Handle, EM_FORMATRANGE, 1, Longint(@Range));
+      FFinished := (ALastChar >= MaxLen) or (ALastChar = -1) or (ALastChar <= FLastChar);
+      FLastChar := ALastChar;
+      NeedMorePages := not FFinished;
+      if FFinished then
+        SendMessage(RichEdit.Handle, EM_FORMATRANGE, 0, 0); // flush buffer
+    finally
+      SetMapMode(OutDC, OldMap);
+    end;
+  end;
+end;
+  
+procedure TJvPreviewRenderJvRichEdit.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = RichEdit) then
+    RichEdit := nil;
+end;
+
+procedure TJvPreviewRenderJvRichEdit.SetRichEdit(const Value: TJvCustomRichEdit);
 begin
   if FRichEdit <> Value then
   begin
