@@ -186,7 +186,7 @@ contains
   JvPlaylist in '..\source\JvPlaylist.pas',
   JvPrint in '..\source\JvPrint.pas',
   JvProgressBar in '..\source\JvProgressBar.pas',
-  JvDBProgressBar in '..\source\JvDBProgressBar.pas';
+  JvDBProgressBar in '..\source\JvDBProgressBar.pas',
   JvProgressDlg in '..\source\JvProgressDlg.pas',
   JvPropAutoSave in '..\source\JvPropAutoSave.pas',
   JvRadioButton in '..\source\JvRadioButton.pas',
