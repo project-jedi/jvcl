@@ -69,6 +69,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Execute;
+    procedure Hide;
     procedure ProgressStepIt;
     property Cancel: Boolean read FCancel;
   published
@@ -117,6 +118,12 @@ destructor TJvProgressComponent.Destroy;
 begin
   FForm.Free;
   inherited Destroy;
+end;
+
+procedure TJvProgressComponent.Hide;
+begin
+  FForm.Free;
+  FForm := nil;
 end;
 
 procedure TJvProgressComponent.Execute;
