@@ -1,9 +1,9 @@
-object MainForm: TMainForm
+object CreateProcessExampleMainForm: TCreateProcessExampleMainForm
   Left = 382
   Top = 134
   Width = 544
   Height = 375
-  Caption = 'TJvCreateProcess example'
+  Caption = 'TJvCreateProcess example (with notepad.exe)'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -71,7 +71,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 41
     Width = 536
-    Height = 307
+    Height = 309
     Align = alClient
     Font.Charset = EASTEUROPE_CHARSET
     Font.Color = clWindowText

@@ -1,4 +1,4 @@
-unit CreateProcessMain;
+unit CreateProcessExampleMainFormU;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   StdCtrls, ComCtrls, ExtCtrls, JvSysComp, JvComponent;
 
 type
-  TMainForm = class(TForm)
+  TCreateProcessExampleMainForm = class(TForm)
     Panel1: TPanel;
     RichEdit1: TRichEdit;
     RunBtn: TButton;
@@ -21,18 +21,15 @@ type
     procedure QuitBtnClick(Sender: TObject);
     procedure TerminateBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure JvCreateProcess1Terminate(Sender: TObject;
-      ExitCode: Cardinal);
+    procedure JvCreateProcess1Terminate(Sender: TObject; ExitCode: Cardinal);
     procedure StopBtnClick(Sender: TObject);
-  private
-    { Private declarations }
   public
     procedure AddLogMsg(const Text: String);
     procedure UpdateButtons;
   end;
 
 var
-  MainForm: TMainForm;
+  CreateProcessExampleMainForm: TCreateProcessExampleMainForm;
 
 implementation
 
@@ -42,34 +39,34 @@ resourcestring
   sProcessStarted = 'Process "%s" started...';
   sProcessTerminated = 'Process "%s" terminated, ExitCode: %.8x';
 
-procedure TMainForm.AddLogMsg(const Text: String);
+procedure TCreateProcessExampleMainForm.AddLogMsg(const Text: String);
 begin
   RichEdit1.Lines.Add(FormatDateTime('DD.MM.YYYY HH:NN:SS  ', Now) + Text);
 end;
 
-procedure TMainForm.RunBtnClick(Sender: TObject);
+procedure TCreateProcessExampleMainForm.RunBtnClick(Sender: TObject);
 begin
   JvCreateProcess1.Run;
   UpdateButtons;
   AddLogMsg(Format(sProcessStarted, [JvCreateProcess1.CommandLine]));
 end;
 
-procedure TMainForm.CloseBtnClick(Sender: TObject);
+procedure TCreateProcessExampleMainForm.CloseBtnClick(Sender: TObject);
 begin
   JvCreateProcess1.CloseApplication(False);
 end;
 
-procedure TMainForm.QuitBtnClick(Sender: TObject);
+procedure TCreateProcessExampleMainForm.QuitBtnClick(Sender: TObject);
 begin
   JvCreateProcess1.CloseApplication(True);
 end;
 
-procedure TMainForm.TerminateBtnClick(Sender: TObject);
+procedure TCreateProcessExampleMainForm.TerminateBtnClick(Sender: TObject);
 begin
   JvCreateProcess1.Terminate;
 end;
 
-procedure TMainForm.UpdateButtons;
+procedure TCreateProcessExampleMainForm.UpdateButtons;
 begin
   RunBtn.Enabled := JvCreateProcess1.State = psReady;
   CloseBtn.Enabled := JvCreateProcess1.State <> psReady;
@@ -78,18 +75,18 @@ begin
   StopBtn.Enabled := JvCreateProcess1.State <> psReady;
 end;
 
-procedure TMainForm.FormCreate(Sender: TObject);
+procedure TCreateProcessExampleMainForm.FormCreate(Sender: TObject);
 begin
   UpdateButtons;
 end;
 
-procedure TMainForm.JvCreateProcess1Terminate(Sender: TObject; ExitCode: Cardinal);
+procedure TCreateProcessExampleMainForm.JvCreateProcess1Terminate(Sender: TObject; ExitCode: Cardinal);
 begin
   UpdateButtons;
   AddLogMsg(Format(sProcessTerminated, [JvCreateProcess1.CommandLine, ExitCode]));
 end;
 
-procedure TMainForm.StopBtnClick(Sender: TObject);
+procedure TCreateProcessExampleMainForm.StopBtnClick(Sender: TObject);
 begin
   JvCreateProcess1.StopWaiting;
   UpdateButtons;

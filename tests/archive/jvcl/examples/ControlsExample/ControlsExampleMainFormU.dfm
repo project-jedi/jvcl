@@ -1,6 +1,6 @@
-object MainFrom: TMainFrom
-  Left = 482
-  Top = 270
+object ControlsExampleMainForm: TControlsExampleMainForm
+  Left = 422
+  Top = 169
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Jv controls example'
@@ -34,7 +34,6 @@ object MainFrom: TMainFrom
       item
         Width = 50
       end>
-    SimplePanel = False
   end
   object JvPageControl1: TJvPageControl
     Left = 0
@@ -45,10 +44,12 @@ object MainFrom: TMainFrom
     Align = alClient
     TabOrder = 1
     ClientBorderWidth = 0
-    DrawTabShadow = False
     HideAllTabs = True
     object TabSheet1: TTabSheet
       Caption = 'TabSheet1'
+      DesignSize = (
+        491
+        340)
       object Bevel1: TBevel
         Left = 0
         Top = 0
@@ -70,9 +71,9 @@ object MainFrom: TMainFrom
       object Label2: TLabel
         Left = 8
         Top = 40
-        Width = 305
+        Width = 306
         Height = 13
-        Caption = 'TJvListobox enables to use '#39'virtual mode'#39' by OwnerData property'
+        Caption = 'TJvListoBox enables to use '#39'virtual mode'#39' by OwnerData property'
       end
       object Label3: TLabel
         Left = 160
@@ -103,15 +104,9 @@ object MainFrom: TMainFrom
         Hint = 'JvTrackBar1'
         Anchors = [akTop, akRight, akBottom]
         Max = 500
-        Orientation = trHorizontal
         PageSize = 10
         Frequency = 10
-        Position = 0
-        SelEnd = 0
-        SelStart = 0
         TabOrder = 1
-        TickMarks = tmBottomRight
-        TickStyle = tsAuto
         OnChange = JvTrackBar1Change
         ToolTips = True
         OnToolTip = JvTrackBar1ToolTip

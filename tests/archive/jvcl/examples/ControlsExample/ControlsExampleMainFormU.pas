@@ -1,4 +1,4 @@
-unit ControlsMain;
+unit ControlsExampleMainFormU;
 
 interface
 
@@ -8,7 +8,7 @@ uses
   JvListBox;
 
 type
-  TMainFrom = class(TForm)
+  TControlsExampleMainForm = class(TForm)
     JvStatusBar1: TJvStatusBar;
     Timer1: TTimer;
     JvPageControl1: TJvPageControl;
@@ -37,68 +37,61 @@ type
     procedure FormCreate(Sender: TObject);
     procedure JvTrackBar1ToolTip(Sender: TObject; var ToolTipText: String);
     procedure JvTrackBar1Change(Sender: TObject);
-    procedure JvListBox1GetText(Sender: TWinControl; Index: Integer;
-      var Text: String);
+    procedure JvListBox1GetText(Sender: TWinControl; Index: Integer; var Text: String);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure JvImgBtn6MouseEnter(Sender: TObject);
     procedure JvImgBtn6MouseLeave(Sender: TObject);
-    procedure JvImgBtn7GetAnimateIndex(Sender: TObject;
-      CurrentAnimateFrame: Byte; var ImageIndex: Integer);
+    procedure JvImgBtn7GetAnimateIndex(Sender: TObject; CurrentAnimateFrame: Byte; var ImageIndex: Integer);
     procedure RadioGroup1Click(Sender: TObject);
     procedure RadioGroup2Click(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 var
-  MainFrom: TMainFrom;
+  ControlsExampleMainForm: TControlsExampleMainForm;
 
 implementation
 
 {$R *.DFM}
 
-procedure TMainFrom.FormCreate(Sender: TObject);
+procedure TControlsExampleMainForm.FormCreate(Sender: TObject);
 begin
   Timer1Timer(nil);
   JvTrackBar1.Position := 20;
 end;
 
-procedure TMainFrom.Timer1Timer(Sender: TObject);
+procedure TControlsExampleMainForm.Timer1Timer(Sender: TObject);
 begin
   JvStatusBar1.Panels[1].Text := TimeToStr(Now);
 end;
 
-
-procedure TMainFrom.JvTrackBar1ToolTip(Sender: TObject; var ToolTipText: String);
+procedure TControlsExampleMainForm.JvTrackBar1ToolTip(Sender: TObject; var ToolTipText: String);
 begin
   ToolTipText := Format('TJvListBox displays %d items now', [JvTrackBar1.Position]);
 end;
 
-procedure TMainFrom.JvTrackBar1Change(Sender: TObject);
+procedure TControlsExampleMainForm.JvTrackBar1Change(Sender: TObject);
 begin
   JvListBox1.Count := JvTrackBar1.Position;
 end;
 
-procedure TMainFrom.JvListBox1GetText(Sender: TWinControl; Index: Integer;
+procedure TControlsExampleMainForm.JvListBox1GetText(Sender: TWinControl; Index: Integer;
   var Text: String);
 begin
   Text := Format('Item no.: %d', [Index]);
 end;
 
-procedure TMainFrom.Button1Click(Sender: TObject);
+procedure TControlsExampleMainForm.Button1Click(Sender: TObject);
 begin
   JvPageControl1.ActivePageIndex := 1;
 end;
 
-procedure TMainFrom.Button2Click(Sender: TObject);
+procedure TControlsExampleMainForm.Button2Click(Sender: TObject);
 begin
   JvPageControl1.ActivePageIndex := 0;
 end;
 
-procedure TMainFrom.JvImgBtn6MouseEnter(Sender: TObject);
+procedure TControlsExampleMainForm.JvImgBtn6MouseEnter(Sender: TObject);
 begin
   with TJvImgBtn(Sender) do
   begin
@@ -107,7 +100,7 @@ begin
   end;
 end;
 
-procedure TMainFrom.JvImgBtn6MouseLeave(Sender: TObject);
+procedure TControlsExampleMainForm.JvImgBtn6MouseLeave(Sender: TObject);
 begin
   with TJvImgBtn(Sender) do
   begin
@@ -116,18 +109,18 @@ begin
   end;  
 end;
 
-procedure TMainFrom.JvImgBtn7GetAnimateIndex(Sender: TObject;
+procedure TControlsExampleMainForm.JvImgBtn7GetAnimateIndex(Sender: TObject;
   CurrentAnimateFrame: Byte; var ImageIndex: Integer);
 begin
   ImageIndex := CurrentAnimateFrame * 2 + 2;
 end;
 
-procedure TMainFrom.RadioGroup1Click(Sender: TObject);
+procedure TControlsExampleMainForm.RadioGroup1Click(Sender: TObject);
 begin
   JvImgBtn4.Alignment := TAlignment(RadioGroup1.ItemIndex);
 end;
 
-procedure TMainFrom.RadioGroup2Click(Sender: TObject);
+procedure TControlsExampleMainForm.RadioGroup2Click(Sender: TObject);
 begin
   JvImgBtn4.Layout := TJvImgBtnLayout(RadioGroup2.ItemIndex); 
 end;
