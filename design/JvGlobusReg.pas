@@ -55,7 +55,7 @@ uses
   JvgReportEditorForm, JvgAlignForm, JvgAlignFunction, JvgReportParamEditorForm,
   JvgBitBtn, JvgRuler, JvgReport, JvgCaption, JvgCGI, JvgReportParamsEditor,
   JvgReportParamsForm, JvgRichEditUtils, JvgCommClasses, JvgRttiUtils,
-  JvgScrollBox, JvgConstSysRequirements, JvgShade, JvgDigits,
+  JvgScrollBox, JvgShade, JvgDigits,
   JvgDrawTab, JvgEdit, JvgExceptionHandler, JvgShadowEditor,
   JvgFileIterator, JvgFileUtils, JvgFixFont, JvgShadow, {JvgGraph,}
   JvgGraphicButton, JvgSingleInstance, JvgShape,

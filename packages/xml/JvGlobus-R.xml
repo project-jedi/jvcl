@@ -72,7 +72,6 @@
     <File Name="..\..\run\JvgCheckBox.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgCheckVersionInfoForm.pas" Targets="allbutperso" Formname="JvgfCheckVersionInfo" Condition=""/>
     <File Name="..\..\run\JvgCommClasses.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgConstSysRequirements.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgCrossTable.pas" Targets="allbutperso" Formname="" Condition=""/>
     <File Name="..\..\run\JvgDBGrid.pas" Targets="allbutperso" Formname="" Condition=""/>
     <File Name="..\..\run\JvgDBNav.pas" Targets="allbutperso" Formname="" Condition=""/>
