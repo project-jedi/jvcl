@@ -303,14 +303,14 @@ function InchesToPixels(DC: HDC; Value: Single; IsHorizontal: Boolean): Integer;
 const
   LogPixels: array [Boolean] of Integer = (LOGPIXELSY, LOGPIXELSX);
 begin
-  Result := Round(Value * GetDeviceCaps(DC, LogPixels[IsHorizontal]) * 1.541 / 10);
+  Result := Round(Value * GetDeviceCaps(DC, LogPixels[IsHorizontal]));// * 1.541 / 10);
 end;
 
 function CentimetersToPixels(DC: HDC; Value: Single; IsHorizontal: Boolean): Integer;
 const
   LogPixels: array [Boolean] of Integer = (LOGPIXELSY, LOGPIXELSX);
 begin
-  Result := Round(Value * GetDeviceCaps(DC, LogPixels[IsHorizontal]) * 1.541 * 2.54 / 10);
+  Result := Round(Value * GetDeviceCaps(DC, LogPixels[IsHorizontal])/2.54);// * 1.541 / 2.54 / 10);
 end;
 
 { Checks wheter bitmap object is created and is having size }
