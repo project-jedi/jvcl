@@ -177,25 +177,19 @@ Description
 Summary
   The interval before the label starts appearing.
 Description
-  FirstInterval determines the initial delay (in milliseconds) before the label begins to move into
+  Delay determines the initial delay (in milliseconds) before the label begins to move into
   view.
 See Also
-  AutoStart, Interval
+  Interval
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelAppear.Interval
 Summary
   The interval between two moves of the label.
-  Determines the amount of time, in milliseconds, that passes before the label text is scrolled.
 Description
   Interval indicates the delay (in milliseconds) between two stages of appearing.
 
   Interval determines how frequently the scroll event occurs. Each time the specified interval passes,
   the label text scrolls.
-
-  Use Interval to specify any cardinal value as the interval between scroll events. The default value
-  is 50 (1/20 second).
-
-  A 0 value is valid, however the label text will not scroll for a value of 0.
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelAppear.Pixels
 Summary
@@ -259,32 +253,24 @@ Description
 Summary
   Determines the time the label is invisible during blinking.
 Description
-  Set BlinkingDelay to the time (in milliseconds) the label should be invisible during blinking.
+  Set Delay to the time (in milliseconds) the label should be invisible during blinking.
 See Also
   Active, Interval
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelBlink.Interval
 Summary
   Determines the time the label is visible during blinking.
-  Determines the amount of time, in milliseconds, that passes before the label text is scrolled.
 Description
-  Set BlinkingTime to the time (in milliseconds) the label should be visible during blinking.
+  Set Interval to the time (in milliseconds) the label should be visible during blinking.
 
   Interval determines how frequently the scroll event occurs. Each time the specified interval passes,
   the label text scrolls.
-
-  Use Interval to specify any cardinal value as the interval between scroll events. The default value
-  is 50 (1/20 second).
-
-  A 0 value is valid, however the label text will not scroll for a value of 0.
 See Also
   Active, Delay
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelBounce
 Summary
   Enables the label to bounce.
-Summary
-  Enables the label to bounce on the form.
 Description
   TJvLabelBounce enables a TJvBehaviorLabel to bounce on the form.
 
@@ -384,11 +370,6 @@ Summary
 Description
   Interval determines how frequently the scroll event occurs. Each time the specified interval passes,
   the label text scrolls.
-
-  Use Interval to specify any cardinal value as the interval between scroll events. The default value
-  is 50 (1/20 second).
-
-  A 0 value is valid, however the label text will not scroll for a value of 0.
 See Also
   TJvLabelBehavior.Active
 ----------------------------------------------------------------------------------------------------
@@ -434,10 +415,10 @@ Description
 Summary
   Determines the amount of time, in milliseconds, that passes between animation events.
 Description
-  SleepTime determines how frequently the animation event occurs. Each time the specified interval
+  Interval determines how frequently the animation event occurs. Each time the specified interval
   passes, the last letter of the visible text is changed in the caption.
 
-  Use SleepTime to specify any cardinal value as the interval between animation events. The default
+  Use Interval to specify any cardinal value as the interval between animation events. The default
   value is 20 (1/50 second).
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelTyping
@@ -462,16 +443,10 @@ Summary
 Description
   Interval determines how frequently the scroll event occurs. Each time the specified interval passes,
   the label text scrolls.
-
-  Use Interval to specify any cardinal value as the interval between scroll events. The default value
-  is 50 (1/20 second).
-
-  A 0 value is valid, however the label text will not scroll for a value of 0.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelTyping.MakeErrors
 Summary
-  Specifies if the beahior should make random errors.
+  Specifies if the behavior should make random errors.
 Description
   Use MakeErrors to specify whether the behavior shuld make occasional errors while typing or not.
   Setting MakeErrors to true makes the behavior more "human-like".

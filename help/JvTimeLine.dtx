@@ -1,5 +1,5 @@
 ##Package: Custom
-##Status: Needs updating. (OnItemMoved, events)
+##Status: Completed
 ##Skip: TJvTimeLineStates
 ##Skip: TJvTLScrollBtn
 ##Skip: TJvCustomTimeLine.BeginDrag
@@ -119,7 +119,6 @@ Summary
 Description
   When Flat is True, the navigator buttons appear flat and do not have borders separating them. When
   Flat is False, the buttons are clearly defined.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTimeLine.HelperYears
 Summary
@@ -230,10 +229,10 @@ Summary
 Description
   Use Month to specify the month of the date that will be the left most date visible in the timeline
   view. The timeline component ensures that the first visible date is always the first day of the month.
-See Also
-  NextMonth, PrevMonth,
 Note
   This is a protected property.
+See Also
+  NextMonth, PrevMonth,
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTimeLine.MultiSelect
 Summary
@@ -316,7 +315,7 @@ Parameters
   Sender       - The timeline view control in which an item is moved.
   Item         - The item that the user has moved.
   NewStartDate - Specifies the date where to the user has moved the item.
-  NewLevel     - Description for this parameter
+  NewLevel     - Specifies the level where to the user has moved the item.
 See Also
   DragLine, OnItemMoving
 ----------------------------------------------------------------------------------------------------
@@ -343,10 +342,10 @@ Description
   When you call LoadFromStream or LoadFromFile, the component fires an OnLoadItem event for each item
   it loads from the stream. For example, you can use this event to read data from the stream, that will
   be stored in the <LINK TJvTimeItem.Data,Data> property of an item.
-Parameters
-  Sender - The timeline view control that has read the item.
-  Item   - The item that the user wants to move.
-  Stream - Specifies the stream from which to read the custom data.
+##Parameters
+##  Sender - The timeline view control that has read the item.
+##  Item   - The item that the user wants to move.
+##  Stream - Specifies the stream from which to read the custom data.
 See Also
   OnSaveItem
 ----------------------------------------------------------------------------------------------------
@@ -380,10 +379,10 @@ Description
   When you call SaveToStream or SaveToFile, the component fires an OnSaveItem event for each item
   it saves to the stream. For example, you can use this event to write data to the stream, that is
   stored in the <LINK TJvTimeItem.Data,Data> property of an item.
-Parameters
-  Sender - The timeline view control that has written the item to the stream.
-  Item   - The item that the user wants to move.
-  Stream - Specifies the stream where to write the custom data.
+##Parameters
+##  Sender - The timeline view control that has written the item to the stream.
+##  Item   - The item that the user wants to move.
+##  Stream - Specifies the stream where to write the custom data.
 See Also
   OnLoadItem
 ----------------------------------------------------------------------------------------------------
@@ -548,8 +547,8 @@ Description
   \Read TopLevel to determine the level of the first row with date items in the scrollable region that
   is visible. Set TopLevel to scroll the timeline view so that the items with level TopLevel are on the
   first visible row with date items.
- See Also
-   FirstVisibleDate, TJvTimeItem.Level
+See Also
+  FirstVisibleDate, TJvTimeItem.Level
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTimeLine.TopOffset
 Summary
@@ -572,10 +571,10 @@ Summary
 Description
   Use Year to specify the year of the date that will be the left most date visible in the timeline view.
   The timeline component ensures that the first visible date is always the first day of the month.
-See Also
-  NextYear, PrevYear
 Note
   This is a protected property.
+See Also
+  NextYear, PrevYear
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTimeLine.YearFont
 Summary
@@ -651,6 +650,8 @@ Parameters
   Sender - The timeline view control that has written or read the item.
   Item   - The item that just prior to this event has been read or written.
   Stream - Specifies the stream where from to read or where to write the custom data.
+See Also
+  TJvCustomTimeLine.OnLoadItem, TJvCustomTimeLine.OnSaveItem
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeItem
 Summary
@@ -703,7 +704,6 @@ Description
   Use Enabled to enable or disable a timeline item. If Enabled is True, the Click method is called when
   the user selects the item with the mouse. If Enabled is False, the timeline item appears dimmed and
   the user cannot select it. However, calling the Click method works even when Enabled is False.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeItem.Hint
 Summary
@@ -824,9 +824,6 @@ Description
 Parameters
   Sender - The timeline view control in which an item is clicked.
   Item   - The item the user clicked or double-clicked.
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeItems
 Summary

@@ -51,7 +51,6 @@ Summary
 Description
   Read Enabled to determine if the validator is active or not. Change Enabled to disable/enable a validator without
   having to delete it.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.ErrorMessage
 Summary
@@ -60,9 +59,9 @@ Description
   ErrorMessage is the text that describes the reason for a validation to fail. How the message is displayed is not
   predefined You can use various methods to display the error, using the OnValidateFailed event, assigning a valid component
   to <LINK TJvValidators.ValidationSummary,ValidationSummary> or a valid component to the
-  <LINK TJvValidators.ErrorProvider,ErrorProvider> property or use any other custom method of your choice.
+  <LINK TJvValidators.ErrorIndicator,ErrorIndicator> property or use any other custom method of your choice.
 See Also
-  OnValidateFailed, TJvValidators.ErrorProvider, TJvValidators.ValidationSummary
+  OnValidateFailed, TJvValidators.ErrorIndicator, TJvValidators.ValidationSummary
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.OnValidateFailed
 Summary
@@ -70,13 +69,13 @@ Summary
 Description
   Write a handler for the OnValidateFailed event to take specific action when a validation fails. If you don't write
   any event handler, you should use one of the other means of displaying the error to the user, either using an
-  <LINK TJvValidators.ErrorProvider,ErrorProvider>, a <LINK TJvValidators.ValidationSummary,ValidationSummary>
+  <LINK TJvValidators.ErrorIndicator,ErrorIndicator>, a <LINK TJvValidators.ValidationSummary,ValidationSummary>
   or a custom method.
 Note
   TJvValidators also has an OnValidateFailed event. You can use either or both depending on your needs. The
   OnValidateFailed event of TJvValidators is triggered even if the OnValidateFailed event of a validator is assigned.
 See Also
-  TJvValidators.ErrorProvider, TJvValidators.ValidationSummary
+  TJvValidators.ErrorIndicator, TJvValidators.ValidationSummary
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.PropertyToValidate
 Summary
@@ -345,7 +344,7 @@ Description
   perform their validation according to their settings. If any of the validations fails, there are several options
   available to handle the failure. Here are the options available:
 
-    * Use an ErrorProvider. An ErrorProvider can display an error icon next to the control that failed the validation. Moving the
+    * Use an ErrorIndicator. An ErrorIndicator can display an error icon next to the control that failed the validation. Moving the
       mouse pointer over the error icon, displays the error message in a hint window.
     * Use a ValidationSummary. A ValidationSummary collects all error messages and puts them into a string list. You can
       display this list of errors any way you like. For example, you can easily display all active errors in a label on the form.
@@ -366,23 +365,14 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.ErrorIndicator
 Summary
-  Write here a summary (1 line)
+  Specifies an optional ErrorIndicator that is used by this component.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvValidators.ErrorProvider
-Summary
-  Specifies an optional ErrorProvider that is used by this component.
-Description
-  Assign an ErrorProvider to the component to have automatic inline display of error icons and error message hints.
-  When an ErrorProvider is assigned, it will automatically pick up the control whose validation failed and the error
-  message to display. Depending on the settings of the ErrorProvider, an error icon is placed next to the control and
+  Assign an ErrorIndicator to the component to have automatic inline display of error icons and error message hints.
+  When an ErrorIndicator is assigned, it will automatically pick up the control whose validation failed and the error
+  message to display. Depending on the settings of the ErrorIndicator, an error icon is placed next to the control and
   the associated error message is displayed in a hint window of the icon.
 
-  Using an ErrorProvider is optional.
+  Using an ErrorIndicator is optional.
 See Also
   ValidationSummary, OnValidateFailed
 ----------------------------------------------------------------------------------------------------
@@ -429,7 +419,7 @@ Summary
   Occurs when a validation fails.
 Description
   Write a handler for the OnValidateFailed event to take specific action when a validation fails. If you don't write
-  any event handler, you should use one of the other means of displaying the error to the user, either using an ErrorProvider,
+  any event handler, you should use one of the other means of displaying the error to the user, either using an ErrorIndicator,
   a ValidationSummary or a custom method.
 Parameters
   Sender        - The object that triggered the event.
@@ -439,7 +429,7 @@ Note
   TJvBaseValidator also has an OnValidateFailed event. You can use either or both depending on your needs. The
   OnValidateFailed event of TJvValidators is triggered even if the OnValidateFailed event of a validator is assigned.
 See Also
-  ErrorProvider, ValidationSummary
+  ErrorIndicator, ValidationSummary
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.Remove
 Summary
@@ -455,7 +445,7 @@ Summary
 Description
   Iterates over all the validators and call their protected Validate method and updates their
   <LINK TJvBaseValidator.Valid,Valid> property. If any of the validation fails,
-  the OnValidateFailed event is triggered and any associated ValidationSummary and ErrorProvider objects are notified.
+  the OnValidateFailed event is triggered and any associated ValidationSummary and ErrorIndicator objects are notified.
 Return value
   Returns false if any of the validations failed, true otherwise.
 ----------------------------------------------------------------------------------------------------
@@ -466,4 +456,4 @@ Description
   Assign a ValidationSummary component to this property to have automatic collection of error messages when Validate is called.
   The assigned component must implement the IJvValidationSummary interface or an exception is raised.
 See Also
-  ErrorProvider
+  ErrorIndicator
