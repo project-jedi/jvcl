@@ -122,17 +122,45 @@ begin
 //  Result.Kind := tkNone;
   Result.StartLine := FLineNum;
   Result.StartIndex := P - PText + 1;
-  Result.Value := '';
+//  Result.Value := '';
 
   F := P;
   IndexAdd := 0;
-  if (P[0] = '{') then
+  if P[0] = '''' then
+  begin
+    Inc(P);
+    // string
+    while True do
+    begin
+      case P[0] of
+        #0: Break;
+        '''':
+          if (P[1] = '''') then
+            Inc(P)
+          else
+            Break;
+        #10: Inc(FLineNum);
+      end;
+      Inc(P);
+    end;
+    if P[0] <> #0 then Inc(P); // include P[0] which is now P[-1]
+    Result.Kind := tkString;
+  end
+  else if (P[0] = '{') then
   begin
     // comment { ... } -> find comment end
     Inc(P);
-    while (not (P[0] in [#0, '}'])) do
+(*    while (not (P[0] in [#0, '}'])) do
     begin
       if P[0] = #10 then Inc(FLineNum);
+      Inc(P);
+    end;*)
+    while True do
+    begin
+      case P[0] of
+        #0, '}': Break;
+        #10: Inc(FLineNum);
+      end;
       Inc(P);
     end;
     Result.Kind := tkComment;
@@ -184,25 +212,6 @@ begin
       Inc(P);
     end;
     Result.Kind := tkNumber;
-  end
-  else if P[0] = '''' then
-  begin
-    Inc(P);
-    // string
-    while P[0] <> #0 do
-    begin
-      if P[0] = #10 then
-        Inc(FLineNum)
-      else
-      if (P[0] = '''') then
-        if (P[1] = '''') then
-          Inc(P)
-        else
-          Break;
-      Inc(P);
-    end;
-    if P[0] <> #0 then Inc(P); // include P[0] which is now P[-1]
-    Result.Kind := tkString;
   end
   else if P[0] in OneSymbolChars then
   begin
