@@ -31,19 +31,18 @@ unit JvGradient;
 interface
 
 uses
-  SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls,
   {$ENDIF VCL}
+  SysUtils, Classes,
   {$IFDEF VisualCLX}
-  QGraphics, QControls, Types,
+  Types, QWindows, QGraphics, QControls,
   {$ENDIF VisualCLX}
-  JvTypes, JVCLVer;
+  JvTypes, JVCLVer, JvComponent;
 
 type
-  TJvGradient = class(TGraphicControl)
+  TJvGradient = class(TJvGraphicControl)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FStyle: TJvGradStyle;
     FStartColor: TColor;
     FEndColor: TColor;
@@ -62,7 +61,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align default alClient;
     property ShowHint;
     property Visible;
