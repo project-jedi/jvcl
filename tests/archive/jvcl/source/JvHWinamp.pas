@@ -40,10 +40,10 @@ uses
   Messages;
 
 (*
-** Winamp frontend/plug-in control API documentation v1.0.
-** By Justin Frankel.
-** Copyright (C) 1997-1999, Nullsoft Inc.
-** Last updated: JAN.8.1999.
+** Winamp frontend/plug-in control API documentation v1.1.
+** By Justin Frankel. Updates by Christophe Thibault.
+** Copyright (C) 1997-2000, Nullsoft Inc.
+** Last updated: JUL.12.2000.
 **
 ** Introduction
 ** -----------------------
@@ -75,6 +75,7 @@ const
   (**************************************************************************)
 
   IPC_GETVERSION = 0;
+
   (*
   ** int version = SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_GETVERSION);
   **
@@ -82,11 +83,12 @@ const
   ** typically (but not always) use 0x1zyx for 1.zx versions. Weird, I know.
   **
   ** The basic format for sending messages to Winamp is:
-  ** int Result=SendMessage(hwnd_winamp,WM_WA_IPC,command_data,command);
+  ** int result=SendMessage(hwnd_winamp,WM_WA_IPC,command_data,command);
   ** (for the version check, command_data is 0).
   *)
 
   IPC_DELETE = 101;
+
   (*
   ** SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_DELETE);
   **
@@ -94,6 +96,7 @@ const
   *)
 
   IPC_STARTPLAY = 102;
+
   (*
   ** SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_STARTPLAY);
   **
@@ -101,24 +104,27 @@ const
   *)
 
   IPC_ISPLAYING = 104;
+
   (*
   ** int res = SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_ISPLAYING);
   **
   ** IPC_ISPLAYING returns the status of playback.
-  ** if it returns 1, it is playing. if it returns 3, it is paused,
+  ** If it returns 1, it is playing. if it returns 3, it is paused,
   ** if it returns 0, it is not playing.
   *)
 
-  IPC_GETOUTPUTTime = 105;
+  IPC_GETOUTPUTTIME = 105;
+
   (*
-  ** int res = SendMessage(hwnd_winamp,WM_WA_IPC,mode,IPC_GETOUTPUTTime);
+  ** int res = SendMessage(hwnd_winamp,WM_WA_IPC,mode,IPC_GETOUTPUTTIME);
   **
-  ** IPC_GETOUTPUTTime returns the position in milliseconds of the
-  ** current song (mode = 0), or the song Length, in seconds (mode = 1).
+  ** IPC_GETOUTPUTTIME returns the position in milliseconds of the
+  ** current song (mode = 0), or the song length, in seconds (mode = 1).
   ** Returns -1 if not playing or error.
   *)
 
   IPC_JUMPTOTIME = 106;
+
   (* (requires Winamp 1.60+)
   ** SendMessage(hwnd_winamp,WM_WA_IPC,ms,IPC_JUMPTOTIME);
   ** IPC_JUMPTOTIME sets the position in milliseconds of the
@@ -127,6 +133,7 @@ const
   *)
 
   IPC_WRITEPLAYLIST = 120;
+
   (* (requires Winamp 1.666+)
   ** SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_WRITEPLAYLIST);
   **
@@ -137,6 +144,7 @@ const
   *)
 
   IPC_SETPLAYLISTPOS = 121;
+
   (* (requires Winamp 2.0+)
   ** SendMessage(hwnd_winamp,WM_WA_IPC,position,IPC_SETPLAYLISTPOS)
   **
@@ -144,6 +152,7 @@ const
   *)
 
   IPC_SETVOLUME = 122;
+
   (* (requires Winamp 2.0+)
   ** SendMessage(hwnd_winamp,WM_WA_IPC,volume,IPC_SETVOLUME);
   **
@@ -151,42 +160,47 @@ const
   *)
 
   IPC_SETPANNING = 123;
+
   (* (requires Winamp 2.0+)
   ** SendMessage(hwnd_winamp,WM_WA_IPC,panning,IPC_SETPANNING);
   **
-  ** IPC_SETPANNING sets the panning of Winamp (from 0 (Left) to 255 (Right)).
+  ** IPC_SETPANNING sets the panning of Winamp (from 0 (left) to 255 (right)).
   *)
 
   IPC_GETLISTLENGTH = 124;
+
   (* (requires Winamp 2.0+)
-  ** int Length = SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_GETLISTLENGTH);
+  ** int length = SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_GETLISTLENGTH);
   **
-  ** IPC_GETLISTLENGTH returns the Length of the current playlist, in
+  ** IPC_GETLISTLENGTH returns the length of the current playlist, in
   ** tracks.
   *)
 
   IPC_SETSKIN = 200;
+
   (* (requires Winamp 2.04+, only usable from plug-ins (not external apps))
   ** SendMessage(hwnd_winamp,WM_WA_IPC,(WPARAM)"skinname",IPC_SETSKIN);
   **
   ** IPC_SETSKIN sets the current skin to "skinname". Note that skinname
   ** can be the name of a skin, a skin .zip file, with or without path.
-  ** if path isn't specified, the default search path is the winamp skins
+  ** If path isn't specified, the default search path is the winamp skins
   ** directory.
   *)
 
   IPC_GETSKIN = 201;
+
   (* (requires Winamp 2.04+, only usable from plug-ins (not external apps))
   ** SendMessage(hwnd_winamp,WM_WA_IPC,(WPARAM)skinname_buffer,IPC_GETSKIN);
   **
   ** IPC_GETSKIN puts the directory where skin bitmaps can be found
   ** into  skinname_buffer.
-  ** skinname_buffer must be MAX_PATH characters in Length.
+  ** skinname_buffer must be MAX_PATH characters in length.
   ** When using a .zip'd skin file, it'll return a temporary directory
   ** where the ZIP was decompressed.
   *)
 
   IPC_EXECPLUG = 202;
+
   (* (requires Winamp 2.04+, only usable from plug-ins (not external apps))
   ** SendMessage(hwnd_winamp,WM_WA_IPC,(WPARAM)"vis_file.dll",IPC_EXECPLUG);
   **
@@ -198,95 +212,205 @@ const
   *)
 
   IPC_GETPLAYLISTFILE = 211;
+
   (* (requires Winamp 2.04+, only usable from plug-ins (not external apps))
-  ** Char *name=SendMessage(hwnd_winamp,WM_WA_IPC,index,IPC_GETPLAYLISTFILE);
+  ** char *name=SendMessage(hwnd_winamp,WM_WA_IPC,index,IPC_GETPLAYLISTFILE);
   **
-  ** IPC_GETPLAYLISTFILE gets the FileName of the playlist entry [index].
-  ** returns a Pointer to it. returns NULL on error.
+  ** IPC_GETPLAYLISTFILE gets the filename of the playlist entry [index].
+  ** returns a pointer to it. returns NULL on error.
   *)
 
   IPC_GETPLAYLISTTITLE = 212;
+
   (* (requires Winamp 2.04+, only usable from plug-ins (not external apps))
-  ** Char *name=SendMessage(hwnd_winamp,WM_WA_IPC,index,IPC_GETPLAYLISTTITLE);
+  ** char *name=SendMessage(hwnd_winamp,WM_WA_IPC,index,IPC_GETPLAYLISTTITLE);
   **
   ** IPC_GETPLAYLISTTITLE gets the title of the playlist entry [index].
-  ** returns a Pointer to it. returns NULL on error.
+  ** returns a pointer to it. returns NULL on error.
   *)
 
   IPC_GETLISTPOS = 125;
+
   (* (requires Winamp 2.05+)
-  ** int Pos=SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_GETLISTPOS);
+  ** int pos=SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_GETLISTPOS);
   **
   ** IPC_GETLISTPOS returns the playlist position. A lot like IPC_WRITEPLAYLIST
   ** only faster since it doesn't have to write out the list. Heh, silly me.
   *)
 
   IPC_GETINFO = 126;
+
   (* (requires Winamp 2.05+)
   ** int inf=SendMessage(hwnd_winamp,WM_WA_IPC,mode,IPC_GETINFO);
   **
-  ** IPC_GETINFO returns info about the current playing song. The Value
-  ** it returns depends on the Value of 'mode'.
+  ** IPC_GETINFO returns info about the current playing song. The value
+  ** it returns depends on the value of 'mode'.
   ** Mode      Meaning
   ** ------------------
   ** 0         Samplerate (i.e. 44100)
-  ** 1         BitRate  (i.e. 128)
+  ** 1         Bitrate  (i.e. 128)
   ** 2         Channels (i.e. 2)
   *)
 
   IPC_GETEQDATA = 127;
+
   (* (requires Winamp 2.05+)
-  ** int data=SendMessage(hwnd_winamp,WM_WA_IPC,Pos,IPC_GETEQDATA);
+  ** int data=SendMessage(hwnd_winamp,WM_WA_IPC,pos,IPC_GETEQDATA);
   **
   ** IPC_GETEQDATA queries the status of the EQ.
-  ** The Value returned depends on what 'Pos' is set to:
+  ** The value returned depends on what 'pos' is set to:
   ** Value      Meaning
   ** ------------------
   ** 0-9        The 10 bands of EQ data. 0-63 (+20db - -20db)
-  ** 10         The preamp Value. 0-63 (+20db - -20db)
-  ** 11         Enabled. zero if disabled, nonzero if Enabled.
-  ** 12         Autoload. zero if disabled, nonzero if Enabled.
+  ** 10         The preamp value. 0-63 (+20db - -20db)
+  ** 11         Enabled. zero if disabled, nonzero if enabled.
+  ** 12         Autoload. zero if disabled, nonzero if enabled.
   *)
 
   IPC_SETEQDATA = 128;
   (* (requires Winamp 2.05+)
-  ** SendMessage(hwnd_winamp,WM_WA_IPC,Pos,IPC_GETEQDATA);
-  ** SendMessage(hwnd_winamp,WM_WA_IPC,Value,IPC_SETEQDATA);
+  ** SendMessage(hwnd_winamp,WM_WA_IPC,pos,IPC_GETEQDATA);
+  ** SendMessage(hwnd_winamp,WM_WA_IPC,value,IPC_SETEQDATA);
   **
-  ** IPC_SETEQDATA sets the Value of the last position retrieved
+  ** IPC_SETEQDATA sets the value of the last position retrieved
   ** by IPC_GETEQDATA.
+  *)
+
+  IPC_ADDBOOKMARK = 129;
+  (* (requires Winamp 2.4+)
+  ** SendMessage(hwnd_winamp,WM_WA_IPC,(WPARAM)file,IPC_ADDBOOKMARK);
+  **
+  ** IPC_ADDBOOKMARK will add the specified file to the Winamp bookmark list.
+  *)
+
+  IPC_RESTARTWINAMP = 135;
+  (* (requires Winamp 2.2+)
+  ** SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_RESTARTWINAMP);
+  **
+  ** IPC_RESTARTWINAMP will restart Winamp (isn't that obvious ? :)
+  *)
+
+  IPC_MBOPEN = 241;
+  (* (requires Winamp 2.05+)
+  ** SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_MBOPEN);
+  ** SendMessage(hwnd_winamp,WM_WA_IPC,(WPARAM)url,IPC_MBOPEN);
+  **
+  ** IPC_MBOPEN will open a new URL in the minibrowser. if url is NULL, it will open the Minibrowser window.
+  *)
+
+  IPC_INETAVAILABLE = 242;
+  (* (requires Winamp 2.05+)
+  ** val=SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_INETAVAILABLE);
+  **
+  ** IPC_INETAVAILABLE will return 1 if the Internet connection is available for Winamp.
+  *)
+
+  IPC_UPDTITLE = 243;
+  (* (requires Winamp 2.2+)
+  ** SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_UPDTITLE);
+  **
+  ** IPC_UPDTITLE will ask Winamp to update the informations about the current title.
+  *)
+
+  IPC_CHANGECURRENTFILE = 245;
+  (* (requires Winamp 2.05+)
+  ** SendMessage(hwnd_winamp,WM_WA_IPC,(WPARAM)file,IPC_CHANGECURRENTFILE);
+  **
+  ** IPC_CHANGECURRENTFILE will set the current playlist item.
+  *)
+
+  IPC_GETMBURL = 246;
+  (* (requires Winamp 2.2+)
+  ** char buffer[4096]; // Urls can be VERY long
+  ** SendMessage(hwnd_winamp,WM_WA_IPC,(WPARAM)buffer,IPC_GETMBURL);
+  **
+  ** IPC_GETMBURL will retrieve the current Minibrowser URL into buffer.
+  *)
+
+  IPC_REFRESHPLCACHE = 247;
+  (* (requires Winamp 2.2+)
+  ** SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_REFRESHPLCACHE);
+  **
+  ** IPC_REFRESHPLCACHE will flush the playlist cache buffer.
+  *)
+
+  IPC_MBBLOCK = 248;
+  (* (requires Winamp 2.4+)
+  ** SendMessage(hwnd_winamp,WM_WA_IPC,value,IPC_MBBLOCK);
+  **
+  ** IPC_MBBLOCK will block the Minibrowser from updates if value is set to 1
+  *)
+
+  IPC_MBOPENREAL = 249;
+  (* (requires Winamp 2.4+)
+  ** SendMessage(hwnd_winamp,WM_WA_IPC,(WPARAM)url,IPC_MBOPENREAL);
+  **
+  ** IPC_MBOPENREAL works the same as IPC_MBOPEN except that it will works even if
+  ** IPC_MBBLOCK has been set to 1
+  *)
+
+  IPC_GET_SHUFFLE = 250;
+  (* (requires Winamp 2.4+)
+  ** val=SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_GET_SHUFFLE);
+  **
+  ** IPC_GET_SHUFFLE returns the status of the Shuffle option (1 if set)
+  *)
+
+  IPC_GET_REPEAT = 251;
+  (* (requires Winamp 2.4+)
+  ** val=SendMessage(hwnd_winamp,WM_WA_IPC,0,IPC_GET_REPEAT);
+  **
+  ** IPC_GET_REPEAT returns the status of the Repeat option (1 if set)
+  *)
+
+  IPC_SET_SHUFFLE = 252;
+  (* (requires Winamp 2.4+)
+  ** SendMessage(hwnd_winamp,WM_WA_IPC,value,IPC_SET_SHUFFLE);
+  **
+  ** IPC_SET_SHUFFLE sets the status of the Shuffle option (1 to turn it on)
+  *)
+
+  IPC_SET_REPEAT = 253;
+  (* (requires Winamp 2.4+)
+  ** SendMessage(hwnd_winamp,WM_WA_IPC,value,IPC_SET_REPEAT);
+  **
+  ** IPC_SET_REPEAT sets the status of the Repeat option (1 to turn it on)
   *)
 
   (**************************************************************************)
 
   (*
-  ** Some API calls tend to require that you send data via WM_CopyDATA
+  ** Some API calls tend to require that you send data via WM_COPYDATA
   ** instead of WM_USER. Such as IPC_PLAYFILE:
   *)
 
   IPC_PLAYFILE = 100;
+
   (*
-  ** CopyDATASTRUCT cds;
+  ** COPYDATASTRUCT cds;
   ** cds.dwData = IPC_PLAYFILE;
   ** cds.lpData = (void * ) "file.mp3";
-  ** cds.cbData = strlen((Char * ) cds.lpData)+1; // include space for null Char
-  ** SendMessage(hwnd_winamp,WM_CopyDATA,(WPARAM)NULL,(LPARAM)&cds);
+  ** cds.cbData = strlen((Char * )cds.lpData) + 1; // include space for null char
+  ** SendMessage(hwnd_winamp, WM_COPYDATA, (WPARAM)NULL, (LPARAM)&cds);
   **
   ** This will play the file "file.mp3".
   **
   *)
 
   IPC_CHDIR = 103;
+
   (*
-  ** CopyDATASTRUCT cds;
+  ** COPYDATASTRUCT cds;
   ** cds.dwData = IPC_CHDIR;
-  ** cds.lpData = (void * ) "c:\\download";
-  ** cds.cbData = strlen((Char * ) cds.lpData)+1; // include space for null Char
-  ** SendMessage(hwnd_winamp,WM_CopyDATA,(WPARAM)NULL,(LPARAM)&cds);
+  ** cds.lpData = (void * ) "c: \\download";
+  ** cds.cbData = strlen((Char * )cds.lpData) + 1; // include space for null char
+  ** SendMessage(hwnd_winamp, WM_COPYDATA, (WPARAM)NULL, (LPARAM)&cds);
   **
-  ** This will make Winamp change to the directory C:\\download
+  ** This will make Winamp change to the Directory C: \\download
   **
   *)
+
+  (**************************************************************************)
 
   (*
   ** Finally there are some WM_COMMAND messages that you can use to send
@@ -297,7 +421,6 @@ const
   ** SendMessage(hwnd_winamp, WM_COMMAND,command_name,0);
   *)
 
-const
   WINAMP_OPTIONS_EQ = 40036; // toggles the EQ window
   WINAMP_OPTIONS_PLEDIT = 40040; // toggles the playlist window
   WINAMP_VOLUMEUP = 40058; // turns the volume up a little
@@ -305,7 +428,9 @@ const
   WINAMP_FFWD5S = 40060; // fast forwards 5 seconds
   WINAMP_REW5S = 40061; // rewinds 5 seconds
 
-const
+  // the following are the five main control buttons, with optionally shift
+  // or control pressed
+  // (for the exact functions of each, just try it out)
   WINAMP_BUTTON1 = 40044;
   WINAMP_BUTTON2 = 40045;
   WINAMP_BUTTON3 = 40046;
@@ -321,11 +446,17 @@ const
   WINAMP_BUTTON3_CTRL = 40156;
   WINAMP_BUTTON4_CTRL = 40157;
   WINAMP_BUTTON5_CTRL = 40158;
+
   WINAMP_FILE_PLAY = 40029; // pops up the load file(s) box
   WINAMP_OPTIONS_PREFS = 40012; // pops up the preferences
   WINAMP_OPTIONS_AOT = 40019; // toggles always on top
   WINAMP_HELP_ABOUT = 40041; // pops up the about box :)
 
+  (*
+  ** EOF.. Enjoy.
+  *)
+
 implementation
 
 end.
+

@@ -27,8 +27,6 @@ Known Issues:
 
 unit JvWinampApi;
 
-
-
 interface
 
 // (rom) this file definitely needs some local helper functions
@@ -42,42 +40,45 @@ type
   TWinampEqualizer = record
     Bands: array[0..9] of Integer;
     Preamp: Integer;
-    Enabled, Autoload: Boolean;
+    Enabled, AutoLoad: Boolean;
   end;
+
+  TJvPlayOption = (poRepeat, poShuffle);
+  TJvPlayOptions = set of TJvPlayOption;
 
   TJvWinampApi = class(TJvComponent)
   private
+    FWinampHandle: THandle;
     FBidon: Boolean;
-    FBidoni: Integer;
+    FBidonI: Integer;
     FBidonW: TWStatus;
     FBidonT: TTime;
-    function GetWinampPresent: Boolean;
-    function GetMajorVersion: Integer;
-    function GetMinorVersion: Integer;
-    function GetWStatus: TWStatus;
-    function GetLength: TTime;
-    function GetTime: TTime;
-    procedure SetTime(const Value: TTime);
-    function GetPos: Integer;
-    procedure SetPos(const Value: Integer);
     function GetBitRate: Integer;
     function GetChannels: Integer;
-    function GetSampleRate: Integer;
     function GetListLength: Integer;
-    function WinampHigher(Major, Minor: Integer): Boolean;
+    function GetMajorVersion: Integer;
+    function GetMinorVersion: Integer;
+    function GetPlaylistPos: Integer;
+    function GetPlayOptions: TJvPlayOptions;
+    function GetSampleRate: Integer;
+    function GetEqualizer: TWinampEqualizer;
+    function GetSongLength: TTime;
+    function GetSongPosition: TTime;
+    function GetWinampHandle: THandle;
+    function GetWinampPresent: Boolean;
+    function GetWinampStatus: TWStatus;
+    procedure SetEqualizer(const Value: TWinampEqualizer);
+    procedure SetPlaylistPos(const Value: Integer);
+    procedure SetPlayOptions(const Value: TJvPlayOptions);
+    procedure SetSongPosition(const Value: TTime);
+    function CheckWinampHigher(Major, Minor: Integer): Boolean;
     procedure SendCommand(Value: Integer);
-  published
-    property WinampPresent: Boolean read GetWinampPresent write FBidon;
-    property WinampMajorVersion: Integer read GetMajorVersion write FBidoni;
-    property WinampMinorVersion: Integer read GetMinorVersion write FBidoni;
-    property WinampStatus: TWStatus read GetWStatus write FBidonW;
-    property SongPosition: TTime read GetTime write SetTime;
-    property SongLength: TTime read GetLength write FBidonT;
-    property PlaylistPos: Integer read GetPos write SetPos;
-    property SampleRate: Integer read GetSampleRate write FBidoni;
-    property BitRate: Integer read GetBitRate write FBidoni;
-    property Channels: Integer read GetChannels write FBidoni;
-    property ListLength: Integer read GetListLength write FBidonI;
+  protected
+    { Refreshes the winamp handle }
+    procedure RefreshHandle;
+    { Raises an error when the winamp handle = 0 }
+    procedure CheckHandle;
+  public
     procedure ClearPlaylist;
     procedure SavePlaylist;
     procedure Play;
@@ -102,9 +103,23 @@ type
     procedure Pause;
     procedure StartOfList;
     procedure EndOfList;
-    procedure StopWithFadout;
-    function GetEqualizer: TWinampEqualizer;
-    procedure SetEqualizer(Value: TWinampEqualizer);
+    procedure StopWithFadeout;
+
+    property WinampHandle: THandle read GetWinampHandle;
+    property Equalizer: TWinampEqualizer read GetEqualizer write SetEqualizer;
+  published
+    property WinampPresent: Boolean read GetWinampPresent write FBidon stored False;
+    property WinampMajorVersion: Integer read GetMajorVersion write FBidonI stored False;
+    property WinampMinorVersion: Integer read GetMinorVersion write FBidonI stored False;
+    property WinampStatus: TWStatus read GetWinampStatus write FBidonW stored False;
+    property SongPosition: TTime read GetSongPosition write SetSongPosition stored False;
+    property SongLength: TTime read GetSongLength write FBidonT stored False;
+    property PlaylistPos: Integer read GetPlaylistPos write SetPlaylistPos stored False;
+    property SampleRate: Integer read GetSampleRate write FBidonI stored False;
+    property BitRate: Integer read GetBitRate write FBidonI stored False;
+    property Channels: Integer read GetChannels write FBidonI stored False;
+    property ListLength: Integer read GetListLength write FBidonI stored False;
+    property PlayOptions: TJvPlayOptions read GetPlayOptions write SetPlayOptions stored False;
   end;
 
   EWinampError = class(EJVCLException);
@@ -112,171 +127,126 @@ type
 implementation
 
 resourcestring
+  { (rb) prefix resourcestrings consistently }
   RC_WinampWindow = 'Winamp v1.x';
   RC_WinampFormat = 'You must have Winamp %d.%d or higher to execute this Api';
   RC_ErrorFinding = 'Could not find winamp window';
 
-  {**************************************************}
-
 procedure TJvWinampApi.ClearPlaylist;
-var
-  h: THandle;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
-    SendMessage(h, WM_WA_IPC, 0, IPC_DELETE)
-  else
-    raise EWinampError.Create(RC_ErrorFinding);
-end;
+  RefreshHandle;
+  CheckHandle;
 
-{**************************************************}
+  SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_DELETE)
+end;
 
 function TJvWinampApi.GetBitRate: Integer;
-var
-  h: THandle;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
-    Result := SendMessage(h, WM_WA_IPC, 1, IPC_GETINFO)
+  if WinampPresent then
+    Result := SendMessage(WinampHandle, WM_WA_IPC, 1, IPC_GETINFO)
   else
     Result := 0;
 end;
-
-{**************************************************}
 
 function TJvWinampApi.GetChannels: Integer;
-var
-  h: THandle;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
-    Result := SendMessage(h, WM_WA_IPC, 2, IPC_GETINFO)
+  if WinampPresent then
+    Result := SendMessage(WinampHandle, WM_WA_IPC, 2, IPC_GETINFO)
   else
     Result := 0;
 end;
 
-{**************************************************}
-
-function TJvWinampApi.GetLength: TTime;
+function TJvWinampApi.GetSongLength: TTime;
 var
-  h: THandle;
-  i: Integer;
-  tstamp: TTimeStamp;
+  I: Longint;
+  TimeStamp: TTimeStamp;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  tstamp.Time := 0;
-  tstamp.Date := 1;
-  if h <> 0 then
+  TimeStamp.Time := 0;
+  TimeStamp.Date := 1;
+  if WinampPresent then
   begin
-    i := SendMessage(h, WM_WA_IPC, 1, IPC_GETOUTPUTTime);
-    if i <> -1 then
-      tstamp.Time := i * 1000;
+    I := SendMessage(WinampHandle, WM_WA_IPC, 1, IPC_GETOUTPUTTIME);
+    if I <> -1 then
+      TimeStamp.Time := I * 1000;
   end;
-  Result := TimeStampToDateTime(tstamp);
+  Result := TimeStampToDateTime(TimeStamp);
 end;
-
-{**************************************************}
 
 function TJvWinampApi.GetMajorVersion: Integer;
 var
-  h: THandle;
-  i: Integer;
+  I: Longint;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
+  if WinampPresent then
   begin
-    i := SendMessage(h, WM_WA_IPC, 0, IPC_GETVERSION);
-    Result := (i and $F000) div $1000;
+    I := SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_GETVERSION);
+    Result := (I and $F000) div $1000;
   end
   else
     Result := -1;
 end;
-
-{**************************************************}
 
 function TJvWinampApi.GetMinorVersion: Integer;
 var
-  h: THandle;
-  i: Integer;
+  I: Longint;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
+  if WinampPresent then
   begin
-    i := SendMessage(h, WM_WA_IPC, 0, IPC_GETVERSION);
+    I := SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_GETVERSION);
     if WinampMajorVersion = 1 then
-      Result := ((i and $0F00) div (16 * 16 * 16)) * 10 + (i and $000F)
+      Result := ((I and $0F00) div (16 * 16 * 16)) * 10 + (I and $000F)
     else
-      Result := StrToInt(IntToHex(((i div 16) and $00FF), 2));
+      Result := StrToInt(IntToHex(((I div 16) and $00FF), 2));
   end
   else
     Result := -1;
 end;
 
-{**************************************************}
-
-function TJvWinampApi.GetPos: Integer;
-var
-  h: THandle;
+function TJvWinampApi.GetPlaylistPos: Integer;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
-    Result := SendMessage(h, WM_WA_IPC, 0, IPC_GETLISTPOS)
+  if WinampPresent then
+    Result := SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_GETLISTPOS)
   else
     Result := -1;
 end;
 
-{**************************************************}
-
 function TJvWinampApi.GetSampleRate: Integer;
-var
-  h: THandle;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
-    Result := SendMessage(h, WM_WA_IPC, 0, IPC_GETINFO)
+  if WinampPresent then
+    Result := SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_GETINFO)
   else
     Result := 0;
 end;
 
-{**************************************************}
-
-function TJvWinampApi.GetTime: TTime;
+function TJvWinampApi.GetSongPosition: TTime;
 var
-  h: THandle;
-  i: Integer;
-  tstamp: TTimeStamp;
+  I: Longint;
+  TimeStamp: TTimeStamp;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  tstamp.Time := 0;
-  tstamp.Date := 1;
-  if h <> 0 then
+  TimeStamp.Time := 0;
+  TimeStamp.Date := 1;
+  if WinampPresent then
   begin
-    i := SendMessage(h, WM_WA_IPC, 0, IPC_GETOUTPUTTime);
-    if i <> -1 then
-      tstamp.Time := i;
+    I := SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_GETOUTPUTTIME);
+    if I <> -1 then
+      TimeStamp.Time := I;
   end;
-  Result := TimeStampToDateTime(tstamp);
+  Result := TimeStampToDateTime(TimeStamp);
 end;
-
-{**************************************************}
 
 function TJvWinampApi.GetWinampPresent: Boolean;
 begin
-  Result := FindWindow(PChar(RC_WinampWindow), nil) <> 0;
+  RefreshHandle;
+  Result := FWinampHandle <> 0;
 end;
 
-{**************************************************}
-
-function TJvWinampApi.GetWStatus: TWStatus;
+function TJvWinampApi.GetWinampStatus: TWStatus;
 var
-  h: THandle;
-  i: Integer;
+  I: Longint;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
+  if WinampPresent then
   begin
-    i := SendMessage(h, WM_WA_IPC, 0, IPC_ISPLAYING);
-    case i of
+    I := SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_ISPLAYING);
+    case I of
       0:
         Result := wsStopped;
       1:
@@ -291,355 +261,289 @@ begin
     Result := wsNotAvailable;
 end;
 
-{**************************************************}
-
 procedure TJvWinampApi.Play;
-var
-  h: THandle;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
-    SendMessage(h, WM_WA_IPC, 0, IPC_STARTPLAY)
-  else
-    raise EWinampError.Create(RC_ErrorFinding);
-end;
+  RefreshHandle;
+  CheckHandle;
 
-{**************************************************}
+  SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_STARTPLAY)
+end;
 
 procedure TJvWinampApi.SavePlaylist;
-var
-  h: THandle;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
-  begin
-    if WinampHigher(1, 66) then
-      SendMessage(h, WM_WA_IPC, 0, IPC_WRITEPLAYLIST);
-  end
-  else
-    raise EWinampError.Create(RC_ErrorFinding);
+  RefreshHandle;
+  CheckHandle;
+
+  if CheckWinampHigher(1, 66) then
+    SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_WRITEPLAYLIST);
 end;
 
-{**************************************************}
-
-procedure TJvWinampApi.SetPos(const Value: Integer);
-var
-  h: THandle;
+procedure TJvWinampApi.SetPlaylistPos(const Value: Integer);
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if (h <> 0) and WinampHigher(2, 0) then
-    SendMessage(h, WM_WA_IPC, Value, IPC_SETPLAYLISTPOS);
+  if WinampPresent and CheckWinampHigher(2, 0) then
+    SendMessage(WinampHandle, WM_WA_IPC, Value, IPC_SETPLAYLISTPOS);
 end;
-
-{**************************************************}
 
 procedure TJvWinampApi.SetPanning(Value: Byte);
-var
-  h: THandle;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
-  begin
-    if WinampHigher(2, 0) then
-      SendMessage(h, WM_WA_IPC, Value, IPC_SETPANNING);
-  end
-  else
-    raise EWinampError.Create(RC_ErrorFinding);
+  RefreshHandle;
+  CheckHandle;
+
+  if CheckWinampHigher(2, 0) then
+    SendMessage(WinampHandle, WM_WA_IPC, Value, IPC_SETPANNING);
 end;
 
-{**************************************************}
-
-procedure TJvWinampApi.SetTime(const Value: TTime);
+procedure TJvWinampApi.SetSongPosition(const Value: TTime);
 var
-  h: THandle;
-  tstamp: TTimeStamp;
+  TimeStamp: TTimeStamp;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  tstamp := DateTimeToTimeStamp(Value);
-  if h <> 0 then
-    if WinampHigher(1, 60) then
-      SendMessage(h, WM_WA_IPC, tstamp.Time, IPC_JUMPTOTIME);
+  TimeStamp := DateTimeToTimeStamp(Value);
+  if WinampPresent and CheckWinampHigher(1, 60) then
+    SendMessage(WinampHandle, WM_WA_IPC, TimeStamp.Time, IPC_JUMPTOTIME);
 end;
-
-{**************************************************}
 
 procedure TJvWinampApi.SetVolume(Value: Byte);
-var
-  h: THandle;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
-  begin
-    if WinampHigher(2, 0) then
-      SendMessage(h, WM_WA_IPC, Value, IPC_SETVOLUME);
-  end
-  else
-    raise EWinampError.Create(RC_ErrorFinding);
+  RefreshHandle;
+  CheckHandle;
+
+  if CheckWinampHigher(2, 0) then
+    SendMessage(WinampHandle, WM_WA_IPC, Value, IPC_SETVOLUME);
 end;
 
-{**************************************************}
-
-function TJvWinampApi.WinampHigher(Major, Minor: Integer): Boolean;
+function TJvWinampApi.CheckWinampHigher(Major, Minor: Integer): Boolean;
 begin
-  if (WinampMajorVersion > Major) or ((Major = WinampMajorVersion) and (Minor <= WinampMinorVersion)) then
-    Result := True
-  else
-  begin
-    Result := False;
-    if not (csDesigning in ComponentState) then
-      raise EWinampError.Create(Format(RC_WinampFormat, [Major, Minor]));
-  end;
-end;
+  Result := (WinampMajorVersion > Major) or
+    ((WinampMajorVersion = Major) and (WinampMinorVersion >= Minor));
 
-{**************************************************}
+  if not Result and not (csDesigning in ComponentState) then
+    raise EWinampError.Create(Format(RC_WinampFormat, [Major, Minor]));
+end;
 
 function TJvWinampApi.GetListLength: Integer;
-var
-  h: THandle;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if (h <> 0) and (WinampHigher(2, 0)) then
-    Result := SendMessage(h, WM_WA_IPC, 0, IPC_GETLISTLENGTH)
+  if WinampPresent and CheckWinampHigher(2, 0) then
+    Result := SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_GETLISTLENGTH)
   else
     Result := 0;
 end;
-
-{**************************************************}
 
 procedure TJvWinampApi.ShowAbout;
 begin
   SendCommand(WINAMP_HELP_ABOUT);
 end;
 
-{**************************************************}
-
 procedure TJvWinampApi.ShowOptions;
 begin
   SendCommand(WINAMP_OPTIONS_PREFS);
 end;
-
-{**************************************************}
 
 procedure TJvWinampApi.OpenFiles;
 begin
   SendCommand(WINAMP_FILE_PLAY);
 end;
 
-{**************************************************}
-
 procedure TJvWinampApi.ToggleAlwaysOnTop;
 begin
   SendCommand(WINAMP_OPTIONS_AOT);
 end;
-
-{**************************************************}
 
 procedure TJvWinampApi.ToggleEqualizer;
 begin
   SendCommand(WINAMP_OPTIONS_EQ);
 end;
 
-{**************************************************}
-
 procedure TJvWinampApi.TogglePlaylist;
 begin
   SendCommand(WINAMP_OPTIONS_PLEDIT);
 end;
 
-{**************************************************}
-
 procedure TJvWinampApi.OpenFile(FileName: string);
 var
-  cds: TCopyDataStruct;
-  dat: array[0..255] of Char;
-  h: THandle;
+  CopyData: TCopyDataStruct;
+  Data: array[0..255] of Char;
 begin
-  cds.dwData := IPC_PLAYFILE;
-  StrPCopy(dat, FileName);
-  cds.lpData := @dat;
-  cds.cbData := Length(FileName);
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
-    SendMessage(h, WM_COPYDATA, 0, Longint(@cds))
-  else
-    raise EWinampError.Create(RC_ErrorFinding);
-end;
+  RefreshHandle;
+  CheckHandle;
 
-{**************************************************}
+  CopyData.dwData := IPC_PLAYFILE;
+  StrPCopy(Data, FileName);
+  CopyData.lpData := @Data;
+  CopyData.cbData := Length(FileName);
+  SendMessage(WinampHandle, WM_COPYDATA, 0, Longint(@CopyData))
+end;
 
 procedure TJvWinampApi.SetDirectory(Directory: string);
 var
-  cds: TCopyDataStruct;
-  dat: array[0..255] of Char;
-  h: THandle;
+  CopyData: TCopyDataStruct;
+  Data: array[0..255] of Char;
 begin
-  cds.dwData := IPC_CHDIR;
-  StrPCopy(dat, Directory);
-  cds.lpData := @dat;
-  cds.cbData := Length(Directory);
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
-    SendMessage(h, WM_COPYDATA, 0, Longint(@cds))
-  else
-    raise EWinampError.Create(RC_ErrorFinding);
-end;
+  RefreshHandle;
+  CheckHandle;
 
-{**************************************************}
+  CopyData.dwData := IPC_CHDIR;
+  StrPCopy(Data, Directory);
+  CopyData.lpData := @Data;
+  CopyData.cbData := Length(Directory);
+
+  SendMessage(WinampHandle, WM_COPYDATA, 0, Longint(@CopyData))
+end;
 
 procedure TJvWinampApi.VolumeDec;
 begin
   SendCommand(WINAMP_VOLUMEDOWN);
 end;
 
-{**************************************************}
-
 procedure TJvWinampApi.VolumeInc;
 begin
   SendCommand(WINAMP_VOLUMEUP);
 end;
-
-{**************************************************}
 
 procedure TJvWinampApi.FastForward;
 begin
   SendCommand(WINAMP_FFWD5S);
 end;
 
-{**************************************************}
-
 procedure TJvWinampApi.FastRewind;
 begin
   SendCommand(WINAMP_REW5S);
 end;
-
-{**************************************************}
 
 procedure TJvWinampApi.OpenLocation;
 begin
   SendCommand(WINAMP_BUTTON2_CTRL);
 end;
 
-{**************************************************}
-
 procedure TJvWinampApi.NextTrack;
 begin
   SendCommand(WINAMP_BUTTON5);
 end;
-
-{**************************************************}
 
 procedure TJvWinampApi.PreviousTrack;
 begin
   SendCommand(WINAMP_BUTTON1);
 end;
 
-{**************************************************}
-
 procedure TJvWinampApi.Pause;
 begin
   SendCommand(WINAMP_BUTTON3);
 end;
-
-{**************************************************}
 
 procedure TJvWinampApi.Stop;
 begin
   SendCommand(WINAMP_BUTTON4);
 end;
 
-{**************************************************}
-
 procedure TJvWinampApi.EndOfList;
 begin
   SendCommand(WINAMP_BUTTON5_CTRL);
 end;
-
-{**************************************************}
 
 procedure TJvWinampApi.StartOfList;
 begin
   SendCommand(WINAMP_BUTTON1_CTRL);
 end;
 
-{**************************************************}
-
-procedure TJvWinampApi.StopWithFadout;
+procedure TJvWinampApi.StopWithFadeout;
 begin
   SendCommand(WINAMP_BUTTON4_SHIFT);
 end;
 
-{**************************************************}
-
 function TJvWinampApi.GetEqualizer: TWinampEqualizer;
 var
-  h: THandle;
   I: Integer;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
+  RefreshHandle;
+  CheckHandle;
+
+  if CheckWinampHigher(2, 5) then
   begin
-    if WinampHigher(2, 5) then
-    begin
-      for I := 0 to 9 do
-        Result.Bands[I] := SendMessage(h, WM_WA_IPC, I, IPC_GETEQDATA);
-      Result.PreAmp := SendMessage(h, WM_WA_IPC, 10, IPC_GETEQDATA);
-      Result.Enabled := SendMessage(h, WM_WA_IPC, 11, IPC_GETEQDATA) <> 0;
-      Result.Autoload := SendMessage(h, WM_WA_IPC, 12, IPC_GETEQDATA) <> 0;
-    end;
-  end
-  else
-    raise EWinampError.Create(RC_ErrorFinding);
+    for I := 0 to 9 do
+      Result.Bands[I] := SendMessage(WinampHandle, WM_WA_IPC, I, IPC_GETEQDATA);
+    Result.PreAmp := SendMessage(WinampHandle, WM_WA_IPC, 10, IPC_GETEQDATA);
+    Result.Enabled := SendMessage(WinampHandle, WM_WA_IPC, 11, IPC_GETEQDATA) <> 0;
+    Result.AutoLoad := SendMessage(WinampHandle, WM_WA_IPC, 12, IPC_GETEQDATA) <> 0;
+  end;
 end;
 
-{**************************************************}
-
-procedure TJvWinampApi.SetEqualizer(Value: TWinampEqualizer);
+procedure TJvWinampApi.SetEqualizer(const Value: TWinampEqualizer);
+const
+  CBool: array[Boolean] of Integer = (0, 1);
 var
-  h: THandle;
   I: Integer;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
+  RefreshHandle;
+  CheckHandle;
+
+  if not CheckWinampHigher(2, 5) then
+    Exit;
+
+  for I := 0 to 9 do
   begin
-    if WinampHigher(2, 5) then
-    begin
-      for I := 0 to 9 do
-      begin
-        SendMessage(h, WM_WA_IPC, I, IPC_GETEQDATA);
-        SendMessage(h, WM_WA_IPC, Value.Bands[I], IPC_SETEQDATA);
-      end;
+    SendMessage(WinampHandle, WM_WA_IPC, I, IPC_GETEQDATA);
+    SendMessage(WinampHandle, WM_WA_IPC, Value.Bands[I], IPC_SETEQDATA);
+  end;
 
-      SendMessage(h, WM_WA_IPC, 10, IPC_GETEQDATA);
-      SendMessage(h, WM_WA_IPC, Value.PreAmp, IPC_SETEQDATA);
+  SendMessage(WinampHandle, WM_WA_IPC, 10, IPC_GETEQDATA);
+  SendMessage(WinampHandle, WM_WA_IPC, Value.PreAmp, IPC_SETEQDATA);
 
-      SendMessage(h, WM_WA_IPC, 11, IPC_GETEQDATA);
-      if Value.Enabled then
-        SendMessage(h, WM_WA_IPC, 1, IPC_SETEQDATA)
-      else
-        SendMessage(h, WM_WA_IPC, 0, IPC_SETEQDATA);
+  SendMessage(WinampHandle, WM_WA_IPC, 11, IPC_GETEQDATA);
+  SendMessage(WinampHandle, WM_WA_IPC, CBool[Value.Enabled], IPC_SETEQDATA);
 
-      SendMessage(h, WM_WA_IPC, 12, IPC_GETEQDATA);
-      if Value.Autoload then
-        SendMessage(h, WM_WA_IPC, 1, IPC_SETEQDATA)
-      else
-        SendMessage(h, WM_WA_IPC, 0, IPC_SETEQDATA);
-    end;
-  end
-  else
-    raise EWinampError.Create(RC_ErrorFinding);
+  SendMessage(WinampHandle, WM_WA_IPC, 12, IPC_GETEQDATA);
+  SendMessage(WinampHandle, WM_WA_IPC, CBool[Value.Enabled], IPC_SETEQDATA);
 end;
-
-{**************************************************}
 
 procedure TJvWinampApi.SendCommand(Value: Integer);
-var
-  h: THandle;
 begin
-  h := FindWindow(PChar(RC_WinampWindow), nil);
-  if h <> 0 then
-    SendMessage(h, WM_COMMAND, Value, 0)
-  else
+  RefreshHandle;
+  CheckHandle;
+
+  SendMessage(WinampHandle, WM_COMMAND, Value, 0)
+end;
+
+function TJvWinampApi.GetWinampHandle: THandle;
+begin
+  if FWinampHandle = 0 then
+  begin
+    RefreshHandle;
+    CheckHandle;
+  end;
+
+  Result := FWinampHandle;
+end;
+
+procedure TJvWinampApi.RefreshHandle;
+begin
+  FWinampHandle := FindWindow(PChar(RC_WinampWindow), nil);
+end;
+
+procedure TJvWinampApi.CheckHandle;
+begin
+  if FWinampHandle = 0 then
     raise EWinampError.Create(RC_ErrorFinding);
+end;
+
+procedure TJvWinampApi.SetPlayOptions(const Value: TJvPlayOptions);
+const
+  CBool: array[Boolean] of Integer = (0, 1);
+begin
+  CheckWinampHigher(2, 40);
+
+  SendMessage(WinampHandle, WM_WA_IPC, CBool[poShuffle in Value], IPC_SET_SHUFFLE);
+  SendMessage(WinampHandle, WM_WA_IPC, CBool[poRepeat in Value], IPC_SET_REPEAT);
+end;
+
+function TJvWinampApi.GetPlayOptions: TJvPlayOptions;
+begin
+  CheckWinampHigher(2, 40);
+
+  Result := [];
+  if SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_GET_SHUFFLE) = 1 then
+    Include(Result, poShuffle);
+  if SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_GET_REPEAT) = 1 then
+    Include(Result, poRepeat);
 end;
 
 end.
+
