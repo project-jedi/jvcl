@@ -23,15 +23,17 @@ Description:
   Example of control that implements background image support
 -----------------------------------------------------------------------------}
 // $Id$
-{$I jedi.inc}
 
 unit JvBackgroundTreeview;
+
+{$I jvcl.inc}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  Commctrl, ComCtrls, JvBackgrounds;
+  CommCtrl, ComCtrls,
+  JvBackgrounds;
 
 type
   TJvBackgroundTVButtonKind = (tvbRectangle, tvbRhombus, tvbCircle);
@@ -68,7 +70,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    { Published declarations }
     property Background: TJvControlBackground read FBackground write SetBackground;
     property ButtonKind: TJvBackgroundTVButtonKind read FButtonKind write SetButtonKind;
     property ButtonSize: Integer read FButtonSize write SetButtonSize;
