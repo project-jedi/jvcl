@@ -37,7 +37,11 @@ interface
 
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls,
-  Forms, Menus, Dialogs, StdCtrls, DB, DBCtrls, JvComboBox;
+  Forms, Menus, Dialogs, StdCtrls, DB, DBCtrls,
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  JvComboBox;
 
 type
   TJvDBCustomSearchComboBox = class;
@@ -67,6 +71,7 @@ type
   private
     FDataLink : TJvSearchComboBoxLink;
     FChanging : boolean;
+    FDataResult: string;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     procedure SetDataField(const Value: string);
@@ -80,10 +85,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function GetResult: Variant;
     procedure Refresh;
     property ItemIndex;
   published
     property DataField: string read GetDataField write SetDataField;
+    property DataResult: string read FDataResult write FDataResult;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
   end;
 
@@ -343,6 +350,13 @@ begin
       FDataLink.DataSet.FreeBookmark(Pointer(Items.Objects[I]));
     end;
   Items.Clear;
+end;
+
+function TJvDBCustomSearchComboBox.GetResult: Variant;
+begin
+  Result := Null;
+  if Assigned(FDataLink.DataSet) and (DataResult<>'') then
+    Result := FDataLink.DataSet.Lookup(DataField,Text,DataResult);
 end;
 
 

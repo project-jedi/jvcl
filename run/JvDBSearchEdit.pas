@@ -28,7 +28,6 @@ Description:
 // Free modified and corrected component TDBSearchEdit from Alexander Burlakov
 -----------------------------------------------------------------------------}
 
-
 {$I jvcl.inc}
 
 unit JvDBSearchEdit;
@@ -37,7 +36,11 @@ interface
 
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls,
-  Forms, Menus, Dialogs, StdCtrls, DB, DBCtrls, JvEdit;
+  Forms, Menus, Dialogs, StdCtrls, DB, DBCtrls,
+{$IFDEF COMPILER6_UP}
+  Variants,
+{$ENDIF COMPILER6_UP}
+  JvEdit;
 
 type
   TJvDBCustomSearchEdit = class(TJvCustomEdit)
@@ -46,27 +49,30 @@ type
     FDataLink: TFieldDataLink;
     FSearchOptions: TLocateOptions;
     FClearOnEnter: boolean;
-    procedure DataChange(Sender : Tobject);
-    function GetDataSource : TDataSource;
-    function GetDataField : string;
-    procedure SetDataSource(Value : TDataSource);
-    procedure SetDataField(const Value : string);
-    procedure SetSearchOptions(const Value :TLocateOptions);
+    FDataResult: string;
+    procedure DataChange(Sender: Tobject);
+    function GetDataSource: TDataSource;
+    function GetDataField: string;
+    procedure SetDataSource(Value: TDataSource);
+    procedure SetDataField(const Value: string);
+    procedure SetSearchOptions(const Value: TLocateOptions);
     procedure CMChanged(var Message: TMessage); message CM_CHANGED;
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure KeyPress(var Key: Char); override;
-    procedure Notification(Component : TComponent;Operation : TOperation); override;
+    procedure Notification(Component: TComponent; Operation: TOperation); override;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function GetResult: Variant;
     property SearchOptions: TLocateOptions read FSearchOptions
-             write SetSearchOptions default [loCaseInsensitive, loPartialKey];
+      write SetSearchOptions default [loCaseInsensitive, loPartialKey];
   published
     { Published declarations }
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DataResult: string read FDataResult write FDataResult;
     property DataField: string read GetDataField write SetDataField;
     property TabStop default True;
     property ClearOnEnter: boolean read FClearOnEnter write FClearOnEnter default true;
@@ -80,12 +86,12 @@ type
     property Anchors;
     property AutoSelect;
     property AutoSize;
-    {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
     property BorderStyle;
     property CharCase;
     property Color;
@@ -128,11 +134,10 @@ type
     property OnStartDrag;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange;    
+    property OnParentColorChange;
   end;
 
 implementation
-
 
 // *****************************************************************************
 // TJvDBCustomSearchEdit
@@ -146,6 +151,7 @@ begin
   FDataLink.OnDataChange := DataChange;
   FSearchOptions := [loCaseInsensitive, loPartialKey];
   FClearOnEnter := true;
+  Text := '';
 end;
 
 destructor TJvDBCustomSearchEdit.Destroy;
@@ -155,9 +161,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDBCustomSearchEdit.Notification(Component : TComponent;Operation : TOperation);
+procedure TJvDBCustomSearchEdit.Notification(Component: TComponent; Operation: TOperation);
 begin
-  inherited Notification(Component,Operation);
+  inherited Notification(Component, Operation);
   if (FDataLink <> nil) and (Component = DataSource) and (Operation = opRemove) then
     DataSource := nil;
 end;
@@ -169,17 +175,19 @@ begin
     if Screen.ActiveControl <> Self then
     begin
       if FDataLink.CanModify then
-         Text := FDataLink.Field.Text
+        Text := FDataLink.Field.Text
       else
       begin
         Text := FDataLink.Field.DisplayText;
       end;
       SelectAll;
     end;
-  end else
+  end
+  else
   begin
     if csDesigning in ComponentState then
-      Text := Name else
+      Text := Name
+    else
       Text := '';
   end;
 end;
@@ -191,17 +199,17 @@ begin
   if (not ((csDesigning in ComponentState) and
     (csLoading in ComponentState))) and
     Assigned(FDataLink.DataSet) then
-  with FDataLink do
-  begin
-    if (Screen.ActiveControl = Self) and Active then
-      if DataSet.Locate(FieldName, Text, FSearchOptions) then
-      begin
-        lText := Text;
-        Text := DataSet.FieldByName(DataField).AsString;
-        SelStart := Length(lText);
-        SelLength := Length(Text)-SelStart;
-      end;
-  end;
+    with FDataLink do
+    begin
+      if (Screen.ActiveControl = Self) and Active then
+        if DataSet.Locate(FieldName, Text, FSearchOptions) then
+        begin
+          lText := Text;
+          Text := DataSet.FieldByName(DataField).AsString;
+          SelStart := Length(lText);
+          SelLength := Length(Text) - SelStart;
+        end;
+    end;
 end;
 
 procedure TJvDBCustomSearchEdit.KeyPress(var Key: Char);
@@ -211,8 +219,8 @@ begin
   if Key = #8 then
   begin
     lLength := SelLength;
-    SelStart := SelStart-1;
-    SelLength := lLength+1;
+    SelStart := SelStart - 1;
+    SelLength := lLength + 1;
   end;
   inherited;
 end;
@@ -237,9 +245,16 @@ begin
   FDataLink.FieldName := Value;
 end;
 
-procedure TJvDBCustomSearchEdit.SetSearchOptions(const Value :TLocateOptions);
+procedure TJvDBCustomSearchEdit.SetSearchOptions(const Value: TLocateOptions);
 begin
   FSearchOptions := Value;
+end;
+
+function TJvDBCustomSearchEdit.GetResult: Variant;
+begin
+  Result := Null;
+  if Assigned(FDataLink.DataSet) and (DataResult <> '') then
+    Result := FDataLink.DataSet.Lookup(DataField, Text, DataResult);
 end;
 
 procedure TJvDBCustomSearchEdit.DoEnter;
@@ -255,10 +270,6 @@ begin
   if Assigned(FDataLink.DataSet) then
     Text := FDataLink.DataSet.FieldByName(DataField).AsString;
 end;
-
-// *****************************************************************************
-// Fin
-// *****************************************************************************
 
 end.
 
