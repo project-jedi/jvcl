@@ -44,7 +44,7 @@ uses
 
 {$IFDEF VisualCLX}
  {$IF not declared(TJvExAnimate)}
-  This unit needs at least Delphi 7 or Kylix 3.
+  {$MESSAGE Fatal 'This unit needs at least Delphi 7 or Kylix 3.'}
  {$IFEND}
 {$ENDIF VisualCLX}
 
