@@ -319,8 +319,10 @@ begin
   if InsideBtn(X, Y) then
   begin
     FStates := [bsMouseDown, bsMouseInside];
+
     RepaintBackground;
   end;
+  SetCaptureControl(Self);
   Tmp := ClientToScreen(Point(0, Height));
   DoDropDownMenu(Button, Shift, Tmp.X, Tmp.Y);
 end;
@@ -347,7 +349,9 @@ end;
 procedure TJvCustomGraphicButton.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if not Enabled or Down then
+  if GetCaptureControl = Self then
+    ReleaseCapture;
+  if not Enabled then
     Exit;
   inherited MouseUp(Button, Shift, X, Y);
   Exclude(FStates, bsMouseDown);
@@ -416,14 +420,15 @@ begin
     if FDown and not AllowAllUp then
       Exit;
     FDown := Value;
-    if FDown then
-    begin
-      Include(FStates, bsMouseDown);
+    // don't set bsMouseDown when Down is true: it is not the same
+//    if FDown then
+//    begin
+//      Include(FStates, bsMouseDown);
 
       {     Click; }{ uncomment and see what happens... }
-    end
-    else
-      Exclude(FStates, bsMouseDown);
+//    end
+//    else
+//      Exclude(FStates, bsMouseDown);
     UpdateExclusive;
   end;
 end;
@@ -516,7 +521,7 @@ begin
       if Sender.Down and Down then
       begin
         FDown := False;
-        Exclude(FStates, bsMouseDown);
+//        Exclude(FStates, bsMouseDown);
         RepaintBackground;
       end;
       FAllowAllUp := Sender.AllowAllUp;

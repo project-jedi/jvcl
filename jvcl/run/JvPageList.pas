@@ -59,11 +59,12 @@ type
     FOnAfterPaint: TJvPagePaintEvent;
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
-    function GetPageIndex: Integer;
-    procedure SetPageIndex(Value: Integer);
-    procedure SetPageList(Value: TJvCustomPageList);
   protected
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    procedure SetPageIndex(Value: Integer);virtual;
+    function GetPageIndex: Integer;virtual;
+    procedure SetPageList(Value: TJvCustomPageList);virtual;
     procedure TextChanged; override;
     procedure ShowingChanged; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -98,7 +99,7 @@ type
    TJvCustomPageList is a base class for components that implements the IPageList interface.
     It works like TPageControl but does not have any tabs
    }
-  TJvShowDesignCaption = (sdcNone, sdcTopLeft, sdcTopCenter, sdcTopRight, sdcLeftCenter, sdcCenter, sdcRightCenter, sdcBottomLeft, sdcBottomCenter, sdcBottomRight);
+  TJvShowDesignCaption = (sdcNone, sdcTopLeft, sdcTopCenter, sdcTopRight, sdcLeftCenter, sdcCenter, sdcRightCenter, sdcBottomLeft, sdcBottomCenter, sdcBottomRight, sdcRunTime);
   TJvCustomPageList = class(TJvCustomControl, IUnknown, IPageList)
   private
     FPages: TList;
@@ -109,19 +110,18 @@ type
     FShowDesignCaption: TJvShowDesignCaption;
     procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
     procedure UpdateEnabled;
-    procedure SetActivePage(Page: TJvCustomPage);
     procedure SetPropagateEnable(const Value: Boolean);
     procedure SetShowDesignCaption(const Value: TJvShowDesignCaption);
     function GetPage(Index: Integer): TJvCustomPage;
   protected
     procedure EnabledChanged; override;
     { IPageList }
-    function CanChange(AIndex: Integer): Boolean;
-    function GetActivePageIndex: Integer;
-    procedure SetActivePageIndex(AIndex: Integer);
-    function GetPageFromIndex(AIndex: Integer): TJvCustomPage;
-    function GetPageCount: Integer;
-    function GetPageCaption(AIndex: Integer): string;
+    function CanChange(AIndex: Integer): Boolean;virtual;
+    function GetActivePageIndex: Integer;virtual;
+    procedure SetActivePageIndex(AIndex: Integer);virtual;
+    function GetPageFromIndex(AIndex: Integer): TJvCustomPage;virtual;
+    function GetPageCount: Integer;virtual;
+    function GetPageCaption(AIndex: Integer): string;virtual;
     procedure Paint; override;
 
     procedure Change; dynamic;
@@ -130,8 +130,9 @@ type
     procedure ShowControl(AControl: TControl); override;
     function InternalGetPageClass: TJvCustomPageClass; virtual;
 
-    procedure InsertPage(APage: TJvCustomPage);
-    procedure RemovePage(APage: TJvCustomPage);
+    procedure SetActivePage(Page: TJvCustomPage);virtual;
+    procedure InsertPage(APage: TJvCustomPage);virtual;
+    procedure RemovePage(APage: TJvCustomPage);virtual;
     property PageList: TList read FPages;
     property PropagateEnable: Boolean read FPropagateEnable write SetPropagateEnable;
     property ShowDesignCaption: TJvShowDesignCaption read FShowDesignCaption write SetShowDesignCaption default sdcCenter;
@@ -265,10 +266,9 @@ constructor TJvCustomPage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Align := alClient;
-  ControlStyle := ControlStyle + [csAcceptsControls, csNoDesignVisible];
+  ControlStyle := ControlStyle + [csOpaque, csAcceptsControls, csNoDesignVisible];
   IncludeThemeStyle(Self, [csParentBackground]);
   Visible := False;
-  Color := clBtnFace;
   DoubleBuffered := True;
 end;
 
@@ -452,6 +452,11 @@ begin
   end;
 end;
 
+procedure TJvCustomPage.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+begin
+  Message.Result := 1;
+end;
+
 { TJvCustomPageList }
 
 function TJvCustomPageList.CanChange(AIndex: Integer): Boolean;
@@ -471,6 +476,7 @@ procedure TJvCustomPageList.CMDesignHitTest(var Message: TCMDesignHitTest);
 var
   Pt: TPoint;
 begin
+  inherited;
   Pt := SmallPointToPoint(Message.Pos);
   if Assigned(ActivePage) and PtInRect(ActivePage.BoundsRect, Pt) then
     Message.Result := 1;
@@ -562,6 +568,7 @@ end;
 
 procedure TJvCustomPageList.RemovePage(APage: TJvCustomPage);
 var
+  i:integer;
   NextPage: TJvCustomPage;
 begin
   NextPage := FindNextPage(APage, True, not (csDesigning in ComponentState));
@@ -573,8 +580,16 @@ begin
   SetActivePage(NextPage);
  // (ahuser) In some cases SetActivePage does not change FActivePage
  //          so we force FActivePage not to be "APage"
-  if FActivePage = APage then
+  if (FActivePage = APage) or (FActivePage = nil) then
+  begin
     FActivePage := nil;
+    for i := 0 to PageCount - 1 do
+      if Pages[i] <> APage then
+      begin
+        FActivePage := Pages[i];
+        Break;
+      end;
+  end;
 end;
 
 function TJvCustomPageList.GetPageFromIndex(AIndex: Integer): TJvCustomPage;

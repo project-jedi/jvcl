@@ -40,7 +40,7 @@ uses
   JvGradient, JvTypes, JvComponent;
 
 type
-  TJvGradientHeaderPanel = class(TJvWinControl)
+  TJvGradientHeaderPanel = class(TCustomControl)
   private
     FGradient: TJvGradient;
     FLabel: TLabel;
@@ -77,6 +77,7 @@ type
     function GetLabelAlignment: TAlignment;
     procedure SetLabelAlignment(const Value: TAlignment);
     procedure AdjustLabelWidth;
+
     {$IFDEF VCL}
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     {$ENDIF VCL}
@@ -84,7 +85,7 @@ type
     {$IFDEF VisualCLX}
     procedure AdjustSize; override;
     {$ENDIF VisualCLX}
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+//    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoLabelFontChange(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
@@ -168,7 +169,7 @@ uses
 constructor TJvGradientHeaderPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csOpaque];
+  ControlStyle := ControlStyle + [csOpaque, csAcceptsControls];
   Self.Width := 285;
   Self.Height := 30;
   FGradient := TJvGradient.Create(Self);
@@ -407,11 +408,13 @@ begin
   AdjustLabelWidth;
 end;
 
+(*
 function TJvGradientHeaderPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   { Reduce flickering FGradient completely fills the TJvGradientHeaderPanel }
   Result := True;
 end;
+*)
 
 end.
 

@@ -22,5 +22,7 @@
     <File Name="..\..\design\JvPageLinkEditorForm.pas" Targets="allbutclx" Formname="frmJvTreeViewLinksEditor" Condition=""/>
     <File Name="..\..\design\JvPageListTreeViewReg.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvTreeItemsEditorForm.pas" Targets="allbutclx" Formname="frmTreeViewItems" Condition=""/>
+    <File Name="..\..\design\JvPageListEditorForm.pas"  Targets="allbutclx" Formname="frmPageListEditor" Condition=""/>
+    <File Name="..\..\design\JvPageListEditors.pas"  Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>
