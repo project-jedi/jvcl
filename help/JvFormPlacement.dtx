@@ -57,12 +57,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.AppStorage
 Summary
-  Write here a summary (1 line)
+  Specifies the application storage component to use.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AppStoragePath
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.AppStoragePath
 Summary
@@ -70,8 +69,7 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AppStorage
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.EraseSections
 Summary
@@ -92,14 +90,13 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.IsActive
 Summary
-  Write here a summary (1 line)
+  Indicates whether Active is set to true and an application storage component is specified.
 Description
-  Write here a description
+  IsActive indicates whether the form storage component is active.
 Return value
-  Describe here what the function returns
+  Returns true when Active is true and AppStorage is not nil, otherwise returns false.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Active, AppStorage
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.MinMaxInfo
 Summary
@@ -442,12 +439,14 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink.Storage
 Summary
-  Write here a summary (1 line)
+  Specifies the form storage component that manages the storage.
 Description
-  Write here a description
+  Read Storage to determine the form storage component that manages the storage. The TJvIniLink
+  responds to storage events that are send by Storage, by notifying the object that owns the
+  TJvIniLink object - by triggering the OnLoad and OnSave envents.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvFormPlacement.Active, TJvFormPlacement.RestoreFormPlacement, TJvFormPlacement.SaveFormPlacement,
+  IniObject
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue
 Summary
