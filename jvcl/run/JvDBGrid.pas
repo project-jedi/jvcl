@@ -80,8 +80,6 @@ type
 
   // Consts for TJvDBGridLayoutChangeLink
   TJvDBGridLayoutChangeKind = (lcSizeChanged, lcTopLeftChanged);
-{  FooterMsgSizeChanged = 0;
-  FooterMsgTopLeftChanged = 1;}
 
   TSelectColumn = (scDataBase, scGrid);
   TTitleClickEvent = procedure(Sender: TObject; ACol: Longint;
@@ -214,7 +212,6 @@ type
     FShowCellHint: Boolean;
     FOnShowCellHint: TJvCellHintEvent;
     FCharList: TCharList;
-//    FFooterMsgPipe: TFooterMsgPipe;
 
     FControls: TJvDBGridControls;
     FCurrentControl: TWinControl;
@@ -387,7 +384,6 @@ type
     property IndicatorOffset;
     property TitleOffset: Byte read GetTitleOffset;
     property CharList: TCharList read FCharList write FCharList;
-//    property FooterMsgPipe: TFooterMsgPipe read FFooterMsgPipe write FFooterMsgPipe;
   published
     property AutoAppend: Boolean read FAutoAppend write FAutoAppend default True; // Polaris
     property SortMarker: TSortMarker read FSortMarker write SetSortMarker default smNone;
