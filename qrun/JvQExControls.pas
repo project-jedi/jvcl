@@ -204,10 +204,10 @@ type
   TJvExPubControl = class(TJvExControl)
   
   end;
-  
+
   TJvExWinControl = class(TWinControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+
+
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -217,6 +217,8 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+    procedure SetColor(Value: TColor);
+    function GetColor: TColor;
   private
     FDoubleBuffered: Boolean;
   protected
@@ -225,9 +227,11 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    property Color: TColor read GetColor write SetColor;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
-  
+//    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
+
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -343,15 +347,19 @@ type
     procedure ParentColorChanged; override;
   private
     FDoubleBuffered: Boolean;
+    procedure SetColor(Value: TColor);
+    function GetColor: TColor;
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    property Color: TColor read GetColor write SetColor;
   public
-    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
-  
+//    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
+
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -597,6 +605,11 @@ begin
     Result := nil
   else
     Result := TWidgetControlPainting.Create(Instance, Canvas, EventRegion);
+  Canvas.Brush.Color := TOpenWidgetControl(Instance).Color;
+  QPainter_setFont(Canvas.Handle, TOpenWidgetControl(Instance).Font.Handle);
+  QPainter_setPen(Canvas.Handle, TOpenWidgetControl(Instance).Font.FontPen);
+  Canvas.Font.Assign(TOpenWidgetControl(Instance).Font);
+
 end;
 
 procedure WidgetControl_PaintBackground(Instance: TWidgetControl; Canvas: TCanvas);
@@ -699,7 +712,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6}
+{$IFDEF _COMPILER6}
 
 // redirect Kylix 3 / Delphi 7 function names to Delphi 6 available function
 {$IF not declared(PatchedVCLX)}
@@ -923,6 +936,25 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+procedure TJvExWinControl.SetColor(Value: TColor);
+var
+  QC: QColorH;
+begin
+  if GetColor <> Value then
+  begin
+    QC := QColor(Value);
+    QWidget_setBackGroundColor(Handle, QC);
+    QColor_destroy(QC);
+    ColorChanged;
+  end;
+end;
+
+function TJvExWinControl.GetColor: TColor;
+begin
+  Result := QColorColor(QWidget_BackGroundColor(Handle));
+end;
+
 
 function TJvExWinControl.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
 var
@@ -1159,6 +1191,24 @@ begin
     FOnParentColorChanged(Self);
 end;
 
+procedure TJvExCustomControl.SetColor(Value: TColor);
+var
+  QC: QColorH;
+begin
+  if GetColor <> Value then
+  begin
+    QC := QColor(Value);
+    QWidget_setBackGroundColor(Handle, QC);
+    QColor_destroy(QC);
+    ColorChanged;
+  end;
+end;
+
+function TJvExCustomControl.GetColor: TColor;
+begin
+  Result := QColorColor(QWidget_BackGroundColor(Handle));
+end;
+
 function TJvExCustomControl.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
 var
   Mesg: TMessage;
@@ -1183,14 +1233,53 @@ function TJvExCustomControl.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
+
+(*)
 procedure TJvExCustomControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
   begin
     WidgetControl_PaintBackground(Self, Canvas);
-     Paint;
+    Paint;
   end;
 end;
+(*)
+
+procedure TJvExCustomControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
+var
+  Buffer: TBitmap;
+  CanvasPainter: QPainterH;
+begin
+  if DoubleBuffered then
+  begin
+    if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+    begin // returns an interface
+      Buffer := TBitmap.create;
+      Buffer.width := width;
+      Buffer.Height := height;
+      Buffer.Canvas.Start;
+      // set defaults
+      with Buffer.Canvas do
+      begin
+        Font.Assign(self.Font);
+        Brush.Color := Color;
+        QPainter_setFont(Handle, self.Font.Handle);
+        QPainter_setPen(Handle, self.Font.FontPen);
+      end;
+      CanvasPainter := Canvas.Handle;
+      Canvas.Handle := Buffer.canvas.handle;
+      DoPaintBackground(Canvas, 0);
+      Paint;
+      Canvas.Handle := CanvasPainter;
+      bitblt(Canvas.Handle, 0, 0, width, height, Buffer.canvas.handle, 0, 0, SRCCOPY);
+      Buffer.canvas.Stop;
+      buffer.free;
+    end
+  end
+  else
+    inherited Painting(Sender, EventRegion);
+end;
+
 
 function TJvExCustomControl.GetDoubleBuffered: Boolean;
 begin
@@ -1246,9 +1335,11 @@ begin
   {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
   SetCopyRectMode(Self, cmVCL);
   {$IFEND}
-  
   inherited Create(AOwner);
   FHintColor := clInfoBk;
+  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
+
+  DoubleBuffered := true;
   
 end;
 
