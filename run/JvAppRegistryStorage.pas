@@ -44,18 +44,22 @@ type
   protected
     function GetRegRoot: TJvRegKey;
     procedure SetRegRoot(Value: TJvRegKey);
+
     { Create the registry key path if it doesn't exist yet. Any key in the path that doesn't exist
       is created. }
     procedure CreateKey(Key: string);
+
     procedure EnumFolders(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
     procedure EnumValues(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
+
     function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; override;
     function PathExistsInt(const Path: string): boolean; override;
     function ValueStoredInt(const Path: string): Boolean; override;
     procedure DeleteValueInt(const Path: string); override;
     procedure DeleteSubTreeInt(const Path: string); override;
+
     function DoReadBoolean(const Path: string; Default: Boolean): Boolean; override;
     procedure DoWriteBoolean(const Path: string; Value: Boolean); override;
     function DoReadInteger(const Path: string; Default: Integer): Integer; override;
