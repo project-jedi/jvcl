@@ -21,10 +21,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvDynControlEngineIntf;
+
 {$I jvcl.inc}
 {$I crossplatform.inc}
-
-unit JvDynControlEngineIntf;
 
 interface
 

@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvCpuUsage;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvCpuUsage;
 
 interface
 

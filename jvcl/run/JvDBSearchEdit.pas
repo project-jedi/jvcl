@@ -27,9 +27,9 @@ Description:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDBSearchEdit;
+
+{$I jvcl.inc}
 
 interface
 

@@ -55,9 +55,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvChart;
+
+{$I jvcl.inc}
 
 interface
 

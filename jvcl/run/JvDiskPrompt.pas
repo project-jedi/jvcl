@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvDiskPrompt;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvDiskPrompt;
 
 interface
 

@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvDBGridExport;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvDBGridExport;
 
 interface
 

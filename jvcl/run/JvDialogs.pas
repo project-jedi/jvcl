@@ -27,10 +27,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvDialogs;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvDialogs;
 
 interface
 

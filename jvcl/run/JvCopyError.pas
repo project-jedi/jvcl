@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvCopyError;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvCopyError;
 
 interface
 

@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvDialogActns;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvDialogActns;
 
 interface
 

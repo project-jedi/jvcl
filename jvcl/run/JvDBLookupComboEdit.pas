@@ -38,9 +38,9 @@ Michael Habbe [2003-10-20]
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDBLookupComboEdit;
+
+{$I jvcl.inc}
 
 interface
 

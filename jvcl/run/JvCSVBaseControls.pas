@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvCSVBaseControls;
+
+{$I jvcl.inc}
 
 interface
 

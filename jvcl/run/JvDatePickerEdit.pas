@@ -19,46 +19,45 @@ Contributor(s): Peter Thörnqvist.
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
+Description:
+  A replacement for TDateTimePicker which is better suited for keyboard-input by
+  ultimately descending from TCustomMaskEdit.
+
+  Other notable features (especially in comparison to the native DATETIMEPICKER):
+
+  - The control is able to construct a suitable EditMask from a valid date format
+    string such as the global ShortDateFormat (the default) which should make it
+    adapt well to regional settings / individual requirements.
+
+  - It is possible to specify a NoDateText which will be displayed when no date
+    is selected. The original datetimepicker would display 1899-12-31 in such
+    cases. This feature could be further controlled by the AllowNoDate and
+    NoDateShortcut properties.
+
+Known issues / not (yet) implemented features:
+
+  - there is no real support for DateFormats containing any literal characters
+    other than the defined DateSeparator, especially spaces. it /might/ work in
+    some cases but in the majority of cases it will not.
+    TODO: simply disallow such characters or implement proper handling?
+
+  - as the embedded MS-calendar does not support dates prior to 1752-09-14,
+    neither does this control. this is not yet handled gracefully in absolutely
+    all situations though.
+
+  - the Min/MaxYear contstraints are currently commented out as they are not
+    functional in the current state. They would still require some work to make
+    up for two-digit year entries.
+
+  - the control does (currently) not allow for time entry
+  - it really is a control for date entry only.
+
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
-{ A replacement for TDateTimePicker which is better suited for keyboard-input by
- ultimately descending from TCustomMaskEdit.
-
- Other notable features (especially in comparison to the native DATETIMEPICKER):
-
- - The control is able to construct a suitable EditMask from a valid date format
-  string such as the global ShortDateFormat (the default) which should make it
-  adapt well to regional settings / individual requirements.
-
- - It is possible to specify a NoDateText which will be displayed when no date
-  is selected. The original datetimepicker would display 1899-12-31 in such
-  cases. This feature could be further controlled by the AllowNoDate and
-  NoDateShortcut properties.
-
- Known issues / not (yet) implemented features:
-
- -there is no real support for DateFormats containing any literal characters
-   other than the defined DateSeparator, especially spaces. it /might/ work in
-   some cases but in the majority of cases it will not.
-   TODO: simply disallow such characters or implement proper handling?
-
- -as the embedded MS-calendar does not support dates prior to 1752-09-14,
-   neither does this control. this is not yet handled gracefully in absolutely
-   all situations though.
-
- -the Min/MaxYear contstraints are currently commented out as they are not
-   functional in the current state. they would still require some work to make
-   up for two-digit year entries.
-
- -the control does (currently) not allow for time entry
-  - it really is a control for date entry only.
-}
-
 unit JvDatePickerEdit;
+
+{$I jvcl.inc}
 
 interface
 
@@ -75,7 +74,7 @@ type
     Length: Byte;
     Index: Byte;
   end;
-  TJvDateFigures = array[0..2] of TJvDateFigureInfo;
+  TJvDateFigures = array[ 0..2] of TJvDateFigureInfo;
 
   {A dropdown form with an embedded calendar control.}
   TJvDropCalendar = class(TJvCustomDropDownForm)

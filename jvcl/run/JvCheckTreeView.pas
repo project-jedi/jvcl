@@ -23,20 +23,16 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvCheckTreeView;
+
 {$I jvcl.inc}
 {$I vclonly.inc} // <- JvComCtrls
-
-unit JvCheckTreeView;
 
 interface
 
 uses
   Windows, Classes, ComCtrls,
-  {$IFDEF VCL}
-  JvComCtrls,
-  {$ENDIF VCL}
-  JvExComCtrls;
-
+  JvComCtrls, JvExComCtrls;
 
 type
   TJvTVCheckBoxStyle = (cbsNone, cbsNative, cbsJVCL);
@@ -403,7 +399,6 @@ begin
     DoToggled(Node);
   end;
 end;
-
 
 end.
 

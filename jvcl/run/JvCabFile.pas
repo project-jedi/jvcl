@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvCABFile;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvCABFile;
 
 interface
 

@@ -24,9 +24,9 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I jvcl.inc}
-
 unit Ras32;
+
+{$I jvcl.inc}
 
 {*******************************************************}
 {   This unit is an interface to the RAS (RASAPI32)     }

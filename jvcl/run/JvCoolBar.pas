@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvCoolBar;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvCoolBar;
 
 interface
 

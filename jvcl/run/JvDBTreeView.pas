@@ -23,24 +23,23 @@ located at http://jvcl.sourceforge.net
 component   : JvDBTreeView
 description : db-aware TreeView
 
-Known Issues:
-  Some russian comments were translated to english; these comments are marked
-  with [translated]
------------------------------------------------------------------------------}
-// $Id$
-
-{$I jvcl.inc}
-
-{ history
+History:
  (JVCL Library versions) :
   1.20:
     - first release;
   1.61:
     - support for non-bde components,
       by Yakovlev Vacheslav (jwe att belkozin dott com)
-}
+
+Known Issues:
+  Some russian comments were translated to english; these comments are marked
+  with [translated]
+-----------------------------------------------------------------------------}
+// $Id$
 
 unit JvDBTreeView;
+
+{$I jvcl.inc}
 
 interface
 

@@ -20,9 +20,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDiagramShape;
+
+{$I jvcl.inc}
 
 interface
 

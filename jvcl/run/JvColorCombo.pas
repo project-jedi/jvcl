@@ -31,10 +31,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvColorCombo;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvColorCombo;
 
 interface
 

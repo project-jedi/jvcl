@@ -50,10 +50,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvCaptionButton;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvCaptionButton;
 
 interface
 

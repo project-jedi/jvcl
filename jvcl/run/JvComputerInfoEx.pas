@@ -33,10 +33,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvComputerInfoEx;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvComputerInfoEx;
 
 {$HPPEMIT '#pragma link "wininet.lib"'}
 

@@ -27,9 +27,9 @@
 {                                                                  }
 {******************************************************************}
 
-{$I jvcl.inc}
-
 unit ModuleLoader;
+
+{$I jvcl.inc}
 
 {$WEAKPACKAGEUNIT ON}
 

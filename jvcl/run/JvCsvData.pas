@@ -142,9 +142,9 @@ Known Issues and Updates:
 // All Copyrights and Ownership donated to the Delphi Jedi Project.
 //------------------------------------------------------------------------
 
-{$I jvcl.inc}
-
 unit JvCsvData;
+
+{$I jvcl.inc}
 
 interface
 

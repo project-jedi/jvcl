@@ -26,10 +26,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvControlPanelButton;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvControlPanelButton; 
 
 interface
 

@@ -38,9 +38,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I JVCL.INC}
-
 unit JvDateTimePicker;
+
+{$I jvcl.inc}
 
 interface
 
@@ -121,7 +121,7 @@ function TJvDateTimePicker.CheckNullValue(const ANullText, AFormat: string;
   AKind: TDateTimeKind; ADateTime, ANullDate: TDateTime): Boolean;
 begin
  // Warren added NullText length check so that this feature can be disabled if not used!
-  if Length(ANullText) = 0 then
+  if ANullText = '' then
   begin
     Result := False;
   end
@@ -151,7 +151,6 @@ begin
 end;
 
 {$IFDEF COMPILER5}
-
 procedure TJvDateTimePicker.SetFormat(const Value: string);
 begin
   if FFormat <> Value then
