@@ -46,6 +46,7 @@ type
     destructor Destroy;override;
 
     procedure Translate(const FileName: string);overload;
+    procedure Translate(const Stream: TStream);overload;
     procedure Translate(const FileName: string;const Form: TForm);overload;
     procedure Translate(const Form: TForm);overload;
     function Translate(const Category, Item: string): string;overload;
@@ -72,6 +73,15 @@ procedure TJvTranslator.Translate(const FileName: string);
 begin
   try
     FXml.LoadFromFile(FileName);
+    TranslateComponent(Application,FXml.Root);
+  except
+  end;
+end;
+{*******************************************************************}
+procedure TJvTranslator.Translate(const Stream: TStream);
+begin
+  try
+    FXml.LoadFromStream(Stream);
     TranslateComponent(Application,FXml.Root);
   except
   end;
@@ -413,4 +423,5 @@ begin
   PString(FList.Objects[Index])^ := Value;
 end;
 {*******************************************************************}
+
 end.
