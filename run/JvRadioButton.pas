@@ -83,7 +83,7 @@ type
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure RecreateWnd;
-    procedure Toggle; override;
+    procedure StateChanged(State: TToggleState); override;
     {$ENDIF VisualCLX}
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
@@ -231,9 +231,11 @@ begin
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
+    FCanvas.start;
     RequiredState(FCanvas, [csHandleValid, csFontValid]);
     DrawTextW(FCanvas.Handle, PWideChar(Caption), Length(Caption), R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
+    FCanvas.stop;
     {$ENDIF VisualCLX}
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
@@ -360,15 +362,20 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-procedure TJvRadioButton.Toggle;
+procedure TJvRadioButton.StateChanged(State: TToggleState);
+begin
+  inherited StateChanged(State);
+  CheckLinkedControls;
+end;
 {$ENDIF VisualCLX}
-{$IFDEF VCL VisualCLX}
+
+{$IFDEF VCL}
 procedure TJvRadioButton.BMSetCheck(var Msg: TMessage);
-{$ENDIF}
 begin
   inherited;
   CheckLinkedControls;
 end;
+{$ENDIF VCL}
 
 procedure TJvRadioButton.EnabledChanged;
 begin
