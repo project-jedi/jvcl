@@ -41,7 +41,12 @@ implementation
 
 procedure TfrmMain.btnConnectClick(Sender: TObject);
 begin
-  AviCap.DriverIndex := 0;
+  try
+    AviCap.DriverIndex := 0;
+  except
+    on EInvalidDriverIndex do
+      ShowMessage('No device found. Verify your connection and configuration.');
+  end;
 end;
 
 procedure TfrmMain.btnStartPreviewClick(Sender: TObject);
