@@ -117,6 +117,10 @@ type
     procedure DeleteSLOItems(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;
       const First, Last: Integer; const ItemName: string);
     function CreateObject: TObject; virtual;
+    function GetSorted: Boolean;
+    procedure SetSorted (Value: Boolean);
+    function GetDuplicates: tDuplicates;
+    procedure SetDuplicates (Value: tDuplicates);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -135,6 +139,8 @@ type
     property CreateListEntries: Boolean read FCreateListEntries write FCreateListEntries
       default True;
     property ItemName: string read fItemName write fItemName ;
+    property Sorted: Boolean read GetSorted write SetSorted;
+    property Duplicates: TDuplicates read GetDuplicates write SetDuplicates;
   end;
 
 implementation
@@ -639,6 +645,26 @@ begin
     Result := Items.Count
   else
     Result := -1;
+end;
+
+function TJvCustomPropertyListStore.GetSorted: Boolean;
+begin
+  Result := fItems.Sorted;
+end;
+
+procedure TJvCustomPropertyListStore.SetSorted (Value: Boolean);
+begin
+  fItems.Sorted := Value;
+end;
+
+function TJvCustomPropertyListStore.GetDuplicates: tDuplicates;
+begin
+  Result := fItems.Duplicates;
+end;
+
+procedure TJvCustomPropertyListStore.SetDuplicates (Value: tDuplicates);
+begin
+  fItems.Duplicates := Value;
 end;
 
 procedure TJvCustomPropertyListStore.ReadSLOItem(Sender: TJvCustomAppStorage; const Path: string;
