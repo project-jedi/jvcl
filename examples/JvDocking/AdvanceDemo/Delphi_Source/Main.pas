@@ -24,13 +24,30 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Menus, ComCtrls, ToolWin, JvDockControlForm, JvDockTree,
   JvDockVCStyle, JvDockDelphiStyle, JvDockVIDStyle, JvDockVSNetStyle, JvDockVIDVCStyle, 
-  JvDockSupportClass
+  JvDockSupportClass, ActnList
   {$IFDEF USEJVCL}
-  , JvComponent, JvAppRegistryStorage, JvAppIniStorage, JvAppXmlStorage
+  , JvComponent, JvAppStorage, JvAppRegistryStorage, JvAppIniStorage, JvAppXmlStorage
   {$ENDIF}
   {$IFDEF VER150}, XPMan{$ENDIF};
 
 type
+  TRunTimeForm = class(TForm)
+  private
+    FMenuItem: TMenuItem;
+    FDockClient: TJvDockClient;
+    procedure SetMenuItem(AMenuItem: TMenuItem);
+  protected
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+    procedure lbDockClient1FormHide(Sender: TObject);
+    procedure lbDockClient1FormShow(Sender: TObject);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property MenuItem: TMenuItem read FMenuItem write SetMenuItem;
+    property DockClient: TJvDockClient read FDockClient;
+  end;
+
   TMainForm = class(TForm)
     MainMenu1: TMainMenu;
     DockForm_Menu: TMenuItem;
@@ -81,12 +98,25 @@ type
     ToolButton1: TToolButton;
     JvDockVIDVCStyle1: TJvDockVIDVCStyle;
     ToolButton2: TToolButton;
-    procedure DelphiStyleClick(Sender: TObject);
-    procedure VCStyleClick(Sender: TObject);
-    procedure VIDStyleClick(Sender: TObject);
+    ServerStyle_Menu: TMenuItem;
+    ServerDelphiStyle: TMenuItem;
+    ServerVisualCStyle: TMenuItem;
+    ServerVisualInterDevStyle: TMenuItem;
+    ServerVisualStudionetStyle: TMenuItem;
+    ActionList1: TActionList;
+    actServerStyleDelphi: TAction;
+    actServerStyleVC: TAction;
+    actServerStyleVID: TAction;
+    actServerStyleVSNet: TAction;
+    actServerStyleVIDVC: TAction;
+    VisualInterDevCStyle1: TMenuItem;
+    actNewWindowDelphiStyle: TAction;
+    actNewWindowVCStyle: TAction;
+    actNewWindowVIDStyle: TAction;
+    actNewWindowVSNetStyle: TAction;
+    actNewWindowVIDVCStyle: TAction;
+    VIDVCStyle1: TMenuItem;
     procedure FormCreate(Sender: TObject);
-    procedure bsToolWindow1Click(Sender: TObject);
-    procedure bsToolWindow2Click(Sender: TObject);
     procedure SaveToIniFileClick(Sender: TObject);
     procedure LoadFromIniFileClick(Sender: TObject);
     procedure SaveToRegClick(Sender: TObject);
@@ -96,11 +126,6 @@ type
     procedure LeftDockedClick(Sender: TObject);
     procedure RightDockedClick(Sender: TObject);
     procedure AllDockedClick(Sender: TObject);
-    procedure DefaultClick(Sender: TObject);
-    procedure DelphiDockStyleClick(Sender: TObject);
-    procedure VCDockStyleClick(Sender: TObject);
-    procedure VIDDockStyleClick(Sender: TObject);
-    procedure DockForm4Click(Sender: TObject);
     procedure PopupMenu2Popup(Sender: TObject);
     procedure ClientTopDockedClick(Sender: TObject);
     procedure ClientBottomDockedClick(Sender: TObject);
@@ -114,7 +139,9 @@ type
     procedure SaveToXmlFileClick(Sender: TObject);
     procedure LoadFromXmlFileClick(Sender: TObject);
     procedure CloseAllClick(Sender: TObject);
-    procedure ToolButton2Click(Sender: TObject);
+    procedure actServerStyleExecute(Sender: TObject);
+    procedure actServerStyleUpdate(Sender: TObject);
+    procedure NewWindowExecute(Sender: TObject);
   private
     { Private declarations }
     {$IFDEF USEJVCL}
@@ -122,105 +149,109 @@ type
     FJvAppIniFileStorage: TJvAppIniFileStorage;
     FJvAppXmlStorage: TJvAppXmlFileStorage;
     {$ENDIF}
-    FForm1Count,
-      FForm2Count,
-      FForm3Count,
-      FForm4Count,
-      FForm5Count: Integer;
-    procedure AddItemToShowDockMenu(AForm: TForm);
+    FFormCount: array[0..4] of Integer;
+    procedure AddRunTimeItemToShowDockMenu(AForm: TRunTimeForm);
     procedure ShowDockWindowMenuClick(Sender: TObject);
-    procedure ShowDockStatus(Sender: TObject);
-  public
-    { Public declarations }
-  end;
 
-const
-  BoolStr: array[Boolean] of string =
-  ('FALSE', 'TRUE');
+    {$IFDEF USEJVCL}
+    procedure LoadFromAppStorage(AppStorage: TJvCustomAppStorage);
+    procedure SaveToAppStorage(AppStorage: TJvCustomAppStorage);
+
+    procedure SaveFormsToAppStorage(AppStorage: TJvCustomAppStorage);
+    procedure LoadFormsFromAppStorage(AppStorage: TJvCustomAppStorage);
+
+    procedure FreeRunTimeForms;
+    {$ENDIF}
+
+    function GetFormCount(AStyle: TJvDockBasicStyle): Integer;
+    procedure SetFormCount(AStyle: TJvDockBasicStyle;
+      const Value: Integer);
+
+    procedure ConstructRunTimeForm(AStyle: TJvDockBasicStyle; const AName: string);
+  public
+    function ActionToStyle(AAction: TAction): TJvDockBasicStyle;
+    function IDToStyle(const ID: Integer): TJvDockBasicStyle;
+    function StyleToStr(AStyle: TJvDockBasicStyle): string;
+    function StyleToID(AStyle: TJvDockBasicStyle): Integer;
+
+    procedure UpdateCaption;
+
+    property FormCount[AStyle: TJvDockBasicStyle]: Integer read GetFormCount write SetFormCount;
+  end;
 
 var
   MainForm: TMainForm;
 
 implementation
 
-uses
-  frmDelphiStyle, frmVCStyle, frmVIDStyle, frmVSNetStyle, JvDockSupportProc;
-
 {$R *.DFM}
 
-procedure TMainForm.DelphiStyleClick(Sender: TObject);
+const
+  // Used as value of the tags of the actions, for example actServerStyleVIDVC.Tag = 4
+  cDelphiStyleID = 0;
+  cVisualCStyleID = 1;
+  cVisualInterDevStyleID = 2;
+  cVisualStudioNetStyleID = 3;
+  cVisualInterDevVisualCStyleID = 4;
+
+  cStyleStr: array[0..4] of string = (
+    'Delphi Style',
+    'Visual C++ Style',
+    'Visual InterDev Style',
+    'Visual Studio.Net Style',
+    'Visual InterDev C++ Style'
+    );
+
+//=== Local procedures =======================================================
+
+function CreateUniqueName: string;
 var
-  Form: TForm1;
+  I: Integer;
+
+  function IsUnique(const AName: string): Boolean;
+  var
+    I: Integer;
+  begin
+    Result := False;
+    for I := 0 to Screen.FormCount - 1 do
+      if CompareText(AName, Screen.Forms[I].Name) = 0 then
+        Exit;
+    Result := True;
+  end;
+
 begin
-  Form := TForm1.Create(Application);
-  Form.Caption := Form.Caption + ' _ ' + IntToStr(FForm1Count);
-  Inc(FForm1Count);
-  AddItemToShowDockMenu(Form);
-  ShowDockStatus(JvDockDelphiStyle1);
+  for I := 1 to MaxInt do
+  begin
+    Result := Format('RunTimeForm_%d', [I]);
+    if IsUnique(Result) then
+      Exit;
+  end;
 end;
 
-procedure TMainForm.VCStyleClick(Sender: TObject);
-var
-  Form: TForm2;
+//=== { TMainForm } ==========================================================
+
+function TMainForm.ActionToStyle(AAction: TAction): TJvDockBasicStyle;
 begin
-  Form := TForm2.Create(Application);
-  Form.Caption := Form.Caption + ' _ ' + IntToStr(FForm2Count);
-  Inc(FForm2Count);
-  AddItemToShowDockMenu(Form);
-  ShowDockStatus(JvDockVCStyle1);
+  Result := IDToStyle(AAction.Tag);
 end;
 
-procedure TMainForm.VIDStyleClick(Sender: TObject);
-var
-  Form: TForm3;
+procedure TMainForm.actServerStyleExecute(Sender: TObject);
 begin
-  Form := TForm3.Create(Self);
-  Form.Caption := Form.Caption + ' _ ' + IntToStr(FForm3Count);
-  Inc(FForm3Count);
-  AddItemToShowDockMenu(Form);
-  ShowDockStatus(JvDockVIDStyle1);
+  if Sender is TAction then
+  begin
+    lbDockServer1.DockStyle := ActionToStyle(TAction(Sender));
+    UpdateCaption;
+  end;
 end;
 
-procedure TMainForm.DockForm4Click(Sender: TObject);
-var
-  Form: TForm4;
+procedure TMainForm.actServerStyleUpdate(Sender: TObject);
 begin
-  Form := TForm4.Create(Self);
-  Form.Caption := Form.Caption + ' _ ' + IntToStr(FForm4Count);
-  Inc(FForm4Count);
-  AddItemToShowDockMenu(Form);
-  ShowDockStatus(JvDockVSNetStyle1);
+  if Sender is TAction then
+    TAction(Sender).Checked :=
+      lbDockServer1.DockStyle = ActionToStyle(TAction(Sender));
 end;
 
-procedure TMainForm.FormCreate(Sender: TObject);
-begin
-  TopDocked.Checked := lbDockServer1.TopDock;
-  BottomDocked.Checked := lbDockServer1.BottomDock;
-  LeftDocked.Checked := lbDockServer1.LeftDock;
-  RightDocked.Checked := lbDockServer1.RightDock;
-  AllDocked.Checked := lbDockServer1.EnableDock;
-  Memo1.WordWrap := True;
-  Caption := Caption + ' (docking is set to ' + lbDockServer1.DockStyle.ClassName + ')';
-  {$IFDEF USEJVCL}
-  FJvAppRegistryStorage := TJvAppRegistryStorage.Create(self);
-  FJvAppRegistryStorage.Path := '\Software\JVCL\Examples\JvDocking\AdvancePro';
-  FJvAppIniFileStorage := TJvAppIniFileStorage.Create(self);
-  FJvAppIniFileStorage.FileName := ExtractFilePath(Application.ExeName) + 'DockInfo.ini';
-  FJvAppXmlStorage := TJvAppXmlFileStorage.Create(self);
-  FJvAppXMLStorage.FileName := ExtractFilePath(Application.ExeName) + 'DockInfo.xml';
-  {$ENDIF}
-end;
-
-procedure TMainForm.FormDestroy(Sender: TObject);
-begin
-  {$IFDEF USEJVCL}
-  FreeAndNil(FJvAppRegistryStorage);
-  FreeAndNil(FJvAppIniFileStorage);
-  FreeAndNil(FJvAppXmlStorage);
-  {$ENDIF}
-end;
-
-procedure TMainForm.AddItemToShowDockMenu(AForm: TForm);
+procedure TMainForm.AddRunTimeItemToShowDockMenu(AForm: TRunTimeForm);
 var
   AMenuItem: TMenuItem;
 begin
@@ -228,133 +259,7 @@ begin
     ShowDockWindowMenuClick, 0, '');
   ShowWindow_Menu.Add(AMenuItem);
   AMenuItem.Tag := Integer(AForm);
-  AForm.Tag := Integer(AMenuItem);
-end;
-
-procedure TMainForm.ShowDockWindowMenuClick(Sender: TObject);
-var
-  MenuItem: TMenuItem;
-  Form: TForm;
-begin
-  MenuItem := TMenuItem(Sender);
-  Form := TForm(MenuItem.Tag);
-  if MenuItem.Checked then
-  begin
-    if GetFormVisible(Form) then
-    begin
-      HideDockForm(Form);
-      MenuItem.Checked := False;
-    end
-    else
-      ShowDockForm(Form);
-  end
-  else
-  begin
-    ShowDockForm(Form);
-    MenuItem.Checked := True;
-  end;
-end;
-
-procedure TMainForm.bsToolWindow1Click(Sender: TObject);
-begin
-  case TMenuItem(Sender).Tag of
-    1: SetTabDockHostBorderStyle(bsDialog);
-    2: SetTabDockHostBorderStyle(bsNone);
-    3: SetTabDockHostBorderStyle(bsSingle);
-    4: SetTabDockHostBorderStyle(bsSizeable);
-    5: SetTabDockHostBorderStyle(bsSizeToolWin);
-    6: SetTabDockHostBorderStyle(bsToolWindow);
-  end;
-end;
-
-procedure TMainForm.bsToolWindow2Click(Sender: TObject);
-begin
-  case TMenuItem(Sender).Tag of
-    1: SetConjoinDockHostBorderStyle(bsDialog);
-    2: SetConjoinDockHostBorderStyle(bsNone);
-    3: SetConjoinDockHostBorderStyle(bsSingle);
-    4: SetConjoinDockHostBorderStyle(bsSizeable);
-    5: SetConjoinDockHostBorderStyle(bsSizeToolWin);
-    6: SetConjoinDockHostBorderStyle(bsToolWindow);
-  end;
-end;
-
-procedure TMainForm.SaveToIniFileClick(Sender: TObject);
-begin
-  {$IFDEF USEJVCL}
-  SaveDockTreeToAppStorage(FJvAppIniFileStorage);
-  {$ELSE}
-  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
-  {$ENDIF}
-end;
-
-procedure TMainForm.LoadFromIniFileClick(Sender: TObject);
-begin
-  {$IFDEF USEJVCL}
-  LoadDockTreeFromAppStorage(FJvAppIniFileStorage);
-  {$ELSE}
-  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
-  {$ENDIF}
-end;
-
-procedure TMainForm.SaveToRegClick(Sender: TObject);
-begin
-  {$IFDEF USEJVCL}
-  SaveDockTreeToAppStorage(FJvAppRegistryStorage);
-  {$ELSE}
-  SaveDockTreeToReg(HKEY_CURRENT_USER, '\Software\DockInfo');
-  {$ENDIF}
-end;
-
-procedure TMainForm.LoadFromRegClick(Sender: TObject);
-begin
-  {$IFDEF USEJVCL}
-  LoadDockTreeFromAppStorage(FJvAppRegistryStorage);
-  {$ELSE}
-  LoadDockTreeFromReg(HKEY_CURRENT_USER, '\Software\DockInfo');
-  {$ENDIF}
-end;
-
-procedure TMainForm.SaveToXmlFileClick(Sender: TObject);
-begin
-  {$IFDEF USEJVCL}
-  SaveDockTreeToAppStorage(FJvAppXMLStorage);
-  {$ELSE}
-  ShowMessage('Not supported unless USEJVCL is defined');
-  {$ENDIF}
-end;
-
-procedure TMainForm.LoadFromXmlFileClick(Sender: TObject);
-begin
-  {$IFDEF USEJVCL}
-  LoadDockTreeFromAppStorage(FJvAppXMLStorage);
-  {$ELSE}
-  ShowMessage('Not supported unless USEJVCL is defined');
-  {$ENDIF}
-end;
-
-procedure TMainForm.TopDockedClick(Sender: TObject);
-begin
-  TopDocked.Checked := not TopDocked.Checked;
-  lbDockServer1.TopDock := TopDocked.Checked;
-end;
-
-procedure TMainForm.BottomDockedClick(Sender: TObject);
-begin
-  BottomDocked.Checked := not BottomDocked.Checked;
-  lbDockServer1.BottomDock := BottomDocked.Checked;
-end;
-
-procedure TMainForm.LeftDockedClick(Sender: TObject);
-begin
-  LeftDocked.Checked := not LeftDocked.Checked;
-  lbDockServer1.LeftDock := LeftDocked.Checked;
-end;
-
-procedure TMainForm.RightDockedClick(Sender: TObject);
-begin
-  RightDocked.Checked := not RightDocked.Checked;
-  lbDockServer1.RightDock := RightDocked.Checked;
+  AForm.MenuItem := AMenuItem;
 end;
 
 procedure TMainForm.AllDockedClick(Sender: TObject);
@@ -363,27 +268,13 @@ begin
   lbDockServer1.EnableDock := AllDocked.Checked;
 end;
 
-procedure TMainForm.DefaultClick(Sender: TObject);
+procedure TMainForm.BottomDockedClick(Sender: TObject);
 begin
-  lbDockServer1.DockStyle := nil;
+  BottomDocked.Checked := not BottomDocked.Checked;
+  lbDockServer1.BottomDock := BottomDocked.Checked;
 end;
 
-procedure TMainForm.DelphiDockStyleClick(Sender: TObject);
-begin
-  lbDockServer1.DockStyle := JvDockDelphiStyle1;
-end;
-
-procedure TMainForm.VCDockStyleClick(Sender: TObject);
-begin
-  lbDockServer1.DockStyle := JvDockVCStyle1;
-end;
-
-procedure TMainForm.VIDDockStyleClick(Sender: TObject);
-begin
-  lbDockServer1.DockStyle := JvDockVIDStyle1;
-end;
-
-procedure TMainForm.PopupMenu2Popup(Sender: TObject);
+procedure TMainForm.ClientAllDockedClick(Sender: TObject);
 var
   DockClient: TJvDockClient;
 begin
@@ -392,31 +283,8 @@ begin
     DockClient := FindDockClient(TForm(PopupMenu2.PopupComponent));
     if DockClient <> nil then
     begin
-      ClientTopDocked.Checked := DockClient.TopDock;
-      ClientBottomDocked.Checked := DockClient.BottomDock;
-      ClientLeftDocked.Checked := DockClient.LeftDock;
-      ClientRightDocked.Checked := DockClient.RightDock;
-      ClientEachOtherDocked.Checked := DockClient.EachOtherDock;
-      ClientAllDocked.Checked := DockClient.EnableDock;
-      if DockClient.DockState = JvDockState_Floating then
-        ClientDockorFloat.Caption := 'Dock'
-      else
-        ClientDockorFloat.Caption := 'Float';
-    end;
-  end;
-end;
-
-procedure TMainForm.ClientTopDockedClick(Sender: TObject);
-var
-  DockClient: TJvDockClient;
-begin
-  if PopupMenu2.PopupComponent is TForm then
-  begin
-    DockClient := FindDockClient(TForm(PopupMenu2.PopupComponent));
-    if DockClient <> nil then
-    begin
-      ClientTopDocked.Checked := not ClientTopDocked.Checked;
-      DockClient.TopDock := ClientTopDocked.Checked;
+      ClientAllDocked.Checked := not ClientAllDocked.Checked;
+      DockClient.EnableDock := ClientAllDocked.Checked;
     end;
   end;
 end;
@@ -433,6 +301,45 @@ begin
       ClientBottomDocked.Checked := not ClientBottomDocked.Checked;
       DockClient.BottomDock := ClientBottomDocked.Checked;
     end;
+  end;
+end;
+
+procedure TMainForm.ClientDockorFloatClick(Sender: TObject);
+var
+  DockClient: TJvDockClient;
+begin
+  if PopupMenu2.PopupComponent is TForm then
+  begin
+    DockClient := FindDockClient(TForm(PopupMenu2.PopupComponent));
+    if DockClient <> nil then
+      DockClient.RestoreChild;
+  end;
+end;
+
+procedure TMainForm.ClientEachOtherDockedClick(Sender: TObject);
+var
+  DockClient: TJvDockClient;
+begin
+  if PopupMenu2.PopupComponent is TForm then
+  begin
+    DockClient := FindDockClient(TForm(PopupMenu2.PopupComponent));
+    if DockClient <> nil then
+    begin
+      ClientEachOtherDocked.Checked := not ClientEachOtherDocked.Checked;
+      DockClient.EachOtherDock := ClientEachOtherDocked.Checked;
+    end;
+  end;
+end;
+
+procedure TMainForm.ClientHideClick(Sender: TObject);
+var
+  DockClient: TJvDockClient;
+begin
+  if PopupMenu2.PopupComponent is TForm then
+  begin
+    DockClient := FindDockClient(TForm(PopupMenu2.PopupComponent));
+    if DockClient <> nil then
+      DockClient.HideParentForm;
   end;
 end;
 
@@ -466,7 +373,7 @@ begin
   end;
 end;
 
-procedure TMainForm.ClientEachOtherDockedClick(Sender: TObject);
+procedure TMainForm.ClientTopDockedClick(Sender: TObject);
 var
   DockClient: TJvDockClient;
 begin
@@ -475,85 +382,472 @@ begin
     DockClient := FindDockClient(TForm(PopupMenu2.PopupComponent));
     if DockClient <> nil then
     begin
-      ClientEachOtherDocked.Checked := not ClientEachOtherDocked.Checked;
-      DockClient.EachOtherDock := ClientEachOtherDocked.Checked;
+      ClientTopDocked.Checked := not ClientTopDocked.Checked;
+      DockClient.TopDock := ClientTopDocked.Checked;
     end;
   end;
-end;
-
-procedure TMainForm.ClientAllDockedClick(Sender: TObject);
-var
-  DockClient: TJvDockClient;
-begin
-  if PopupMenu2.PopupComponent is TForm then
-  begin
-    DockClient := FindDockClient(TForm(PopupMenu2.PopupComponent));
-    if DockClient <> nil then
-    begin
-      ClientAllDocked.Checked := not ClientAllDocked.Checked;
-      DockClient.EnableDock := ClientAllDocked.Checked;
-    end;
-  end;
-end;
-
-procedure TMainForm.ClientDockorFloatClick(Sender: TObject);
-var
-  DockClient: TJvDockClient;
-begin
-  if PopupMenu2.PopupComponent is TForm then
-  begin
-    DockClient := FindDockClient(TForm(PopupMenu2.PopupComponent));
-    if DockClient <> nil then
-      DockClient.RestoreChild;
-  end;
-end;
-
-procedure TMainForm.ClientHideClick(Sender: TObject);
-var
-  DockClient: TJvDockClient;
-begin
-  if PopupMenu2.PopupComponent is TForm then
-  begin
-    DockClient := FindDockClient(TForm(PopupMenu2.PopupComponent));
-    if DockClient <> nil then
-      DockClient.HideParentForm;
-  end;
-end;
-
-procedure TMainForm.ShowDockStatus(Sender: TObject);
-begin
-  if lbDockServer1.DockStyle <> Sender then
-    ShowMessage('This form type will not be able to dock');
 end;
 
 procedure TMainForm.CloseAllClick(Sender: TObject);
 var
   aMenuItem: TMenuItem;
+  Frm: TForm;
   DockClient: TJvDockClient;
+  I: Integer;
 begin
-  while ShowWindow_Menu.Count > 0 do
+  for I := ShowWindow_Menu.Count -1 downto 0 do
   begin
-    aMenuItem := ShowWindow_Menu.Items[0];
-    DockClient := FindDockClient(TForm(aMenuItem.Tag));
+    aMenuItem := ShowWindow_Menu.Items[I];
+    Frm := TForm(aMenuItem.Tag);
+    DockClient := FindDockClient(Frm);
     if DockClient <> nil then
-      DoFloatForm(TForm(aMenuItem.Tag));
-    TForm(aMenuItem.Tag).Free;
-    ShowWindow_Menu.Delete(0);
+      DoFloatForm(Frm);
+
+    { It should also work with Frm.Free, but that gives problems, needs to be
+      fixed }
+    Frm.Release;
+
+    { A TRunTimeForm form implicitly destroys its attached MenuItem }
+    if not (Frm is TRunTimeForm) then
+      ShowWindow_Menu.Delete(I);
+
+    { Without the next call, not all helper forms will be destroyed. This needs
+      to be fixed }
+    Application.ProcessMessages;
   end;
 end;
 
-procedure TMainForm.ToolButton2Click(Sender: TObject);
-//var
-//  Form: TForm5;
+procedure TMainForm.ConstructRunTimeForm(AStyle: TJvDockBasicStyle; const AName: string);
+var
+  Frm: TRunTimeForm;
+  LStyle: Integer;
 begin
-{
-  Form := TForm5.Create(Self);
-  Form.Caption := Form.Caption + ' _ ' + IntToStr(FForm5Count);
-  Inc(FForm5Count);
-  AddItemToShowDockMenu(Form);
-  ShowDockStatus(JvDockVIDVCStyle1);
-}
+  Frm := TRunTimeForm.Create(Application);
+  Frm.Visible := True;
+  if AName = '' then
+    Frm.Name := CreateUniqueName
+  else
+    Frm.Name := AName;
+  Frm.Caption := StyleToStr(AStyle) + ' _ ' + IntToStr(FormCount[AStyle]);
+  FormCount[AStyle] := FormCount[AStyle] + 1;
+  Frm.DockClient.DockStyle := AStyle;
+
+  LStyle := StyleToID(AStyle);
+  Frm.DockClient.DirectDrag :=
+    (LStyle = cVisualCStyleID) or (LStyle = cDelphiStyleID);
+  Frm.DockClient.EachOtherDock :=
+    (LStyle = cVisualStudioNetStyleID) or
+    (LStyle = cVisualInterDevVisualCStyleID) or
+    (LStyle = cVisualInterDevStyleID);
+
+  AddRunTimeItemToShowDockMenu(Frm);
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  TopDocked.Checked := lbDockServer1.TopDock;
+  BottomDocked.Checked := lbDockServer1.BottomDock;
+  LeftDocked.Checked := lbDockServer1.LeftDock;
+  RightDocked.Checked := lbDockServer1.RightDock;
+  AllDocked.Checked := lbDockServer1.EnableDock;
+  Memo1.WordWrap := True;
+  UpdateCaption;
+  {$IFDEF USEJVCL}
+  FJvAppRegistryStorage := TJvAppRegistryStorage.Create(self);
+  FJvAppRegistryStorage.Path := '\Software\JVCL\Examples\JvDocking\AdvancePro';
+  FJvAppRegistryStorage.AutoFlush := True;
+  FJvAppRegistryStorage.AutoReload := True;
+  FJvAppIniFileStorage := TJvAppIniFileStorage.Create(self);
+  FJvAppIniFileStorage.FileName := 'DockInfo.ini';
+  FJvAppIniFileStorage.AutoFlush := True;
+  FJvAppIniFileStorage.AutoReload := True;
+  FJvAppXmlStorage := TJvAppXmlFileStorage.Create(self);
+  FJvAppXMLStorage.FileName := 'DockInfo.xml';
+  FJvAppXMLStorage.AutoFlush := True;
+  FJvAppXMLStorage.AutoReload := True;
+  {$ENDIF}
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  {$IFDEF USEJVCL}
+  { Prevent last Flush by setting Path/FileName to '' }
+  FJvAppRegistryStorage.Path := '';
+  FreeAndNil(FJvAppRegistryStorage);
+  FJvAppIniFileStorage.FileName := '';
+  FreeAndNil(FJvAppIniFileStorage);
+  FJvAppXmlStorage.FileName := '';
+  FreeAndNil(FJvAppXmlStorage);
+  {$ENDIF}
+end;
+
+{$IFDEF USEJVCL}
+procedure TMainForm.FreeRunTimeForms;
+var
+  I: Integer;
+  Frm: TForm;
+  ADockClient: TJvDockClient;
+begin
+  for I := Screen.FormCount - 1 downto 0 do
+    if Screen.Forms[I] is TRunTimeForm then
+    begin
+      Frm := Screen.Forms[I];
+      ADockClient := FindDockClient(Frm);
+      if ADockClient <> nil then
+        DoFloatForm(Frm);
+      Frm.Free;
+    end;
+end;
+{$ENDIF USEJVCL}
+
+function TMainForm.GetFormCount(AStyle: TJvDockBasicStyle): Integer;
+begin
+  Result := FFormCount[StyleToID(AStyle)];
+end;
+
+function TMainForm.IDToStyle(const ID: Integer): TJvDockBasicStyle;
+begin
+  case ID of
+    cDelphiStyleID: Result := JvDockDelphiStyle1;
+    cVisualCStyleID: Result := JvDockVCStyle1;
+    cVisualInterDevStyleID: Result := JvDockVIDStyle1;
+    cVisualStudioNetStyleID: Result := JvDockVSNetStyle1;
+    cVisualInterDevVisualCStyleID: Result := JvDockVIDVCStyle1;
+  else
+    Result := nil;
+  end;
+end;
+
+procedure TMainForm.LeftDockedClick(Sender: TObject);
+begin
+  LeftDocked.Checked := not LeftDocked.Checked;
+  lbDockServer1.LeftDock := LeftDocked.Checked;
+end;
+
+{$IFDEF USEJVCL}
+
+procedure TMainForm.LoadFormsFromAppStorage(
+  AppStorage: TJvCustomAppStorage);
+var
+  I: Integer;
+  OldPath: string;
+  Count: Integer;
+  APath: string;
+
+  FrmName: string;
+  StyleID: Integer;
+begin
+  OldPath := AppStorage.Path;
+  AppStorage.Path := AppStorage.ConcatPaths([OldPath, 'ExtraInfo']);
+  try
+    { Read and set the dock style of the dockserver component }
+    StyleID := AppStorage.ReadInteger('ServerStyle');
+    lbDockServer1.DockStyle := IDToStyle(StyleID);
+    UpdateCaption;
+
+    { Read the name and dock style of the forms and create the forms }
+    Count := AppStorage.ReadInteger('Count');
+    for I := 0 to Count - 1 do
+    begin
+      APath := Format('Item%d', [I]);
+      FrmName := AppStorage.ReadString(AppStorage.ConcatPaths([APath, 'Name']));
+      StyleID := AppStorage.ReadInteger(AppStorage.ConcatPaths([APath, 'StyleID']));
+
+      ConstructRunTimeForm(IDToStyle(StyleID), FrmName);
+    end;
+  finally
+    AppStorage.Path := OldPath;
+  end;
+end;
+
+procedure TMainForm.LoadFromAppStorage(AppStorage: TJvCustomAppStorage);
+begin
+  FreeRunTimeForms;
+
+  AppStorage.BeginUpdate;
+  try
+    LoadFormsFromAppStorage(AppStorage);
+    LoadDockTreeFromAppStorage(AppStorage);
+  finally
+    AppStorage.EndUpdate;
+  end;
+end;
+
+{$ENDIF USEJVCL}
+
+procedure TMainForm.LoadFromIniFileClick(Sender: TObject);
+begin
+  {$IFDEF USEJVCL}
+  LoadFromAppStorage(FJvAppIniFileStorage);
+  {$ELSE}
+  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+  {$ENDIF}
+end;
+
+procedure TMainForm.LoadFromRegClick(Sender: TObject);
+begin
+  {$IFDEF USEJVCL}
+  LoadFromAppStorage(FJvAppRegistryStorage);
+  {$ELSE}
+  LoadDockTreeFromReg(HKEY_CURRENT_USER, '\Software\DockInfo');
+  {$ENDIF}
+end;
+
+procedure TMainForm.LoadFromXmlFileClick(Sender: TObject);
+begin
+  {$IFDEF USEJVCL}
+  LoadFromAppStorage(FJvAppXmlStorage);
+  {$ELSE}
+  ShowMessage('Not supported unless USEJVCL is defined');
+  {$ENDIF}
+end;
+
+procedure TMainForm.NewWindowExecute(Sender: TObject);
+begin
+  if Sender is TAction then
+    ConstructRunTimeForm(ActionToStyle(TAction(Sender)), '');
+end;
+
+procedure TMainForm.PopupMenu2Popup(Sender: TObject);
+var
+  DockClient: TJvDockClient;
+begin
+  if PopupMenu2.PopupComponent is TForm then
+  begin
+    DockClient := FindDockClient(TForm(PopupMenu2.PopupComponent));
+    if DockClient <> nil then
+    begin
+      ClientTopDocked.Checked := DockClient.TopDock;
+      ClientBottomDocked.Checked := DockClient.BottomDock;
+      ClientLeftDocked.Checked := DockClient.LeftDock;
+      ClientRightDocked.Checked := DockClient.RightDock;
+      ClientEachOtherDocked.Checked := DockClient.EachOtherDock;
+      ClientAllDocked.Checked := DockClient.EnableDock;
+      if DockClient.DockState = JvDockState_Floating then
+        ClientDockorFloat.Caption := 'Dock'
+      else
+        ClientDockorFloat.Caption := 'Float';
+    end;
+  end;
+end;
+
+procedure TMainForm.RightDockedClick(Sender: TObject);
+begin
+  RightDocked.Checked := not RightDocked.Checked;
+  lbDockServer1.RightDock := RightDocked.Checked;
+end;
+
+{$IFDEF USEJVCL}
+
+procedure TMainForm.SaveFormsToAppStorage(AppStorage: TJvCustomAppStorage);
+var
+  I: Integer;
+  OldPath: string;
+  APath: string;
+  Count: Integer;
+
+  Frm: TForm;
+  FrmDockClient: TJvDockClient;
+begin
+  Count := 0;
+  OldPath := AppStorage.Path;
+  AppStorage.Path := AppStorage.ConcatPaths([OldPath, 'ExtraInfo']);
+  try
+    AppStorage.WriteInteger('ServerStyle', StyleToID(lbDockServer1.DockStyle));
+    for I := 0 to Screen.FormCount - 1 do
+      if Screen.Forms[I] is TRunTimeForm then
+      begin
+        Frm := Screen.Forms[I];
+        FrmDockClient := FindDockClient(Frm);
+        if Assigned(FrmDockClient) then
+        begin
+          APath := Format('Item%d', [Count]);
+          AppStorage.WriteString(AppStorage.ConcatPaths([APath, 'Name']), Frm.Name);
+          AppStorage.WriteInteger(AppStorage.ConcatPaths([APath, 'StyleID']),
+            StyleToID(FrmDockClient.DockStyle));
+          Inc(Count);
+        end;
+      end;
+    AppStorage.WriteInteger('Count', Count);
+  finally
+    AppStorage.Path := OldPath;
+  end;
+end;
+
+procedure TMainForm.SaveToAppStorage(AppStorage: TJvCustomAppStorage);
+begin
+  AppStorage.BeginUpdate;
+  try
+    SaveDockTreeToAppStorage(AppStorage);
+    { SaveDockTreeToAppStorage clears the storage, so we save the forms after the
+      SaveDockTreeToAppStorage call }
+    SaveFormsToAppStorage(AppStorage);
+  finally
+    AppStorage.EndUpdate;
+  end;
+end;
+
+{$ENDIF USEJVCL}
+
+procedure TMainForm.SaveToIniFileClick(Sender: TObject);
+begin
+  {$IFDEF USEJVCL}
+  SaveToAppStorage(FJvAppIniFileStorage);
+  {$ELSE}
+  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+  {$ENDIF}
+end;
+
+procedure TMainForm.SaveToRegClick(Sender: TObject);
+begin
+  {$IFDEF USEJVCL}
+  SaveToAppStorage(FJvAppRegistryStorage);
+  {$ELSE}
+  SaveDockTreeToReg(HKEY_CURRENT_USER, '\Software\DockInfo');
+  {$ENDIF}
+end;
+
+procedure TMainForm.SaveToXmlFileClick(Sender: TObject);
+begin
+  {$IFDEF USEJVCL}
+  SaveToAppStorage(FJvAppXmlStorage);
+  {$ELSE}
+  ShowMessage('Not supported unless USEJVCL is defined');
+  {$ENDIF}
+end;
+
+procedure TMainForm.SetFormCount(AStyle: TJvDockBasicStyle;
+  const Value: Integer);
+begin
+  FFormCount[StyleToID(AStyle)] := Value;
+end;
+
+procedure TMainForm.ShowDockWindowMenuClick(Sender: TObject);
+var
+  MenuItem: TMenuItem;
+  Frm: TForm;
+begin
+  MenuItem := TMenuItem(Sender);
+  Frm := TForm(MenuItem.Tag);
+  if MenuItem.Checked then
+  begin
+    if GetFormVisible(Frm) then
+    begin
+      HideDockForm(Frm);
+      MenuItem.Checked := False;
+    end
+    else
+      ShowDockForm(Frm);
+  end
+  else
+  begin
+    ShowDockForm(Frm);
+    MenuItem.Checked := True;
+  end;
+end;
+
+function TMainForm.StyleToID(AStyle: TJvDockBasicStyle): Integer;
+begin
+  if AStyle is TJvDockVSNetStyle then
+    Result := cVisualStudioNetStyleID
+  else
+  if AStyle is TJvDockVIDVCStyle then
+    Result := cVisualInterDevVisualCStyleID
+  else
+  if AStyle is TJvDockVIDStyle then
+    Result := cVisualInterDevStyleID
+  else
+  if AStyle is TJvDockVCStyle then
+    Result := cVisualCStyleID
+  else
+  if AStyle is TJvDockDelphiStyle then
+    Result := cDelphiStyleID
+  else
+    raise Exception.Create('Unknown style');
+end;
+
+function TMainForm.StyleToStr(AStyle: TJvDockBasicStyle): string;
+begin
+  Result := cStyleStr[StyleToID(AStyle)];
+end;
+
+procedure TMainForm.TopDockedClick(Sender: TObject);
+begin
+  TopDocked.Checked := not TopDocked.Checked;
+  lbDockServer1.TopDock := TopDocked.Checked;
+end;
+
+procedure TMainForm.UpdateCaption;
+begin
+  Caption := 'Main Window (docking is set to ' + lbDockServer1.DockStyle.ClassName + ')';
+end;
+
+//=== { TRunTimeForm } =======================================================
+
+constructor TRunTimeForm.Create(AOwner: TComponent);
+begin
+  CreateNew(AOwner);
+  Width := 186;
+  Height := 188;
+  BorderStyle := bsSizeToolWin;
+  DockSite := True;
+  DragKind := dkDock;
+  DragMode := dmAutomatic;
+  Font.Name := 'MS Shell Dlg 2';
+  FormStyle := fsStayOnTop;
+  Position := poDefaultPosOnly;
+  //  Visible := F;
+  with TMemo.Create(Self) do
+  begin
+    Align := alClient;
+    BorderStyle := bsNone;
+  end;
+  FDockClient := TJvDockClient.Create(Self);
+  with FDockClient do
+  begin
+    OnFormShow := lbDockClient1FormShow;
+    OnFormHide := lbDockClient1FormHide;
+    NCPopupMenu := MainForm.PopupMenu2;
+    DirectDrag := True;
+    ShowHint := True;
+    EnableCloseButton := True;
+    EachOtherDock := False;
+  end
+end;
+
+destructor TRunTimeForm.Destroy;
+begin
+  MenuItem.Free;
+  inherited Destroy;
+end;
+
+procedure TRunTimeForm.lbDockClient1FormHide(Sender: TObject);
+begin
+  if Assigned(MenuItem) then
+    MenuItem.Checked := False;
+end;
+
+procedure TRunTimeForm.lbDockClient1FormShow(Sender: TObject);
+begin
+  if Assigned(MenuItem) then
+    MenuItem.Checked := True;
+end;
+
+procedure TRunTimeForm.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent = MenuItem) and (Operation = opRemove) then
+    MenuItem := nil;
+end;
+
+procedure TRunTimeForm.SetMenuItem(AMenuItem: TMenuItem);
+begin
+  if FMenuItem <> nil then
+    RemoveFreeNotification(Self);
+  FMenuItem := AMenuItem;
+  if FMenuItem <> nil then
+    FreeNotification(Self);
 end;
 
 end.
-
