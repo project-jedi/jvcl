@@ -173,7 +173,7 @@ type
     function GetScopeTypes: TScopeTypes;
     function GetUPN: string;
   public
-    constructor Create( Selection: PDsSelection; const AttributeCount: Integer);
+    constructor Create(Selection: PDsSelection; const AttributeCount: Integer);
     // the Relative Distinquishged Name (RDN) of the object
     property Name: string read GetName;
     // the object's ADSPath. format depends on what flags you specified for the scope the object was selected from
@@ -217,8 +217,7 @@ type
 
   // Global Object Picker options
 
-  TObjectPickerOption = (
-    opAllowMultiSelect, // allow selection of multiple objects
+  TObjectPickerOption = (opAllowMultiSelect, // allow selection of multiple objects
     opSkipTargetComputerDCCheck); // skip DC check if target computer is a domain controller
   TObjectPickerOptions = set of TObjectPickerOption;
 
@@ -257,7 +256,7 @@ type
   end;
 
   // object picker exception class
-  // just to be able to distinquish between exceptions raised by the Object Picker specifically and all others
+  // just to be able to distinguish between exceptions raised by the Object Picker specifically and all others
   EObjectPickerError = class(EJVCLException);
 
 implementation
@@ -458,10 +457,8 @@ var
   I: Integer;
 begin
   if Source is TObjectPickerScopes then
-  begin
     for I := 0 to TCollection(Source).Count - 1 do
-      Add.Assign(TCollection(Source).Items[I]);
-  end
+      Add.Assign(TCollection(Source).Items[I])
   else
     inherited Assign(Source);
 end;
@@ -500,15 +497,15 @@ end;
 //OWNER   Result := FOwner;
 //OWNER end;
 
-procedure TObjectPickerScopes.SetItem(Index: Integer; Value:
-  TObjectPickerScope);
+procedure TObjectPickerScopes.SetItem(Index: Integer;
+  Value: TObjectPickerScope);
 begin
   TObjectPickerScope(inherited Items[Index]).Assign(Value);
 end;
 
 //=== TObjectPickerSelection =================================================
 
-constructor TObjectPickerSelection.Create( Selection: PDsSelection;
+constructor TObjectPickerSelection.Create(Selection: PDsSelection;
   const AttributeCount: Integer);
 begin
   inherited Create;
@@ -588,8 +585,7 @@ begin
     Result := FSelections^.cItems;
 end;
 
-function TObjectPickerSelections.GetItem(Index: Integer):
-  TObjectPickerSelection;
+function TObjectPickerSelections.GetItem(Index: Integer): TObjectPickerSelection;
 begin
   Result := nil;
   if FSelections <> nil then
@@ -721,9 +717,7 @@ begin
         FSelection.SetSelection(DataObj);
       end;
     S_FALSE:
-      begin
-        Result := False;
-      end;
+      Result := False;
   else
     Result := False;
     OleCheck(HR);

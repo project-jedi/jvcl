@@ -51,8 +51,8 @@ type
   TJvNavPaneStyleManager = class;
   TMsgStyleManagerChange = record
     Msg: Cardinal;
-    Sender:TControl;
-    StyleManager:TJvNavPaneStyleManager;
+    Sender: TControl;
+    StyleManager: TJvNavPaneStyleManager;
     Result: Longint;
   end;
 
@@ -69,7 +69,7 @@ type
     FAlignment: TAlignment;
     FParentStyleManager: Boolean;
     {$IFDEF VCL}
-    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     {$ENDIF VCL}
     procedure SetColorFrom(const Value: TColor);
     procedure SetColorTo(const Value: TColor);
@@ -80,12 +80,11 @@ type
     procedure DoStyleChange(Sender: TObject);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetWordWrap(const Value: Boolean);
-    procedure ParentStyleManagerChanged(var Msg:TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
-    procedure ParentStyleManagerChange(var Msg:TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
-    procedure CMControlChange(var Message:TMessage); message CM_CONTROLCHANGE;
+    procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
+    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
+    procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
     procedure SetParentStyleManager(const Value: Boolean);
   protected
-
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure TextChanged; override;
     procedure Paint; override;
@@ -154,7 +153,7 @@ type
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure DoStyleChange(Sender: TObject);
     procedure SetAlignment(const Value: TAlignment);
-    procedure ParentStyleManagerChanged(var Msg:TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
+    procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
     procedure SetParentStyleManager(const Value: Boolean);
   protected
     procedure Paint; override;
@@ -197,7 +196,7 @@ type
     procedure SetColorTo(const Value: TColor);
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure DoStyleChange(Sender: TObject);
-    procedure ParentStyleManagerChanged(var Msg:TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
+    procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
     procedure SetParentStyleManager(const Value: Boolean);
   protected
     procedure Paint; override;
@@ -315,15 +314,15 @@ type
     FParentStyleManager: Boolean;
     procedure SetDropDownMenu(const Value: TPopupMenu);
     {$IFDEF VCL}
-    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     {$ENDIF VCL}
     function GetDropDownMenu: TPopupMenu;
     procedure SetColors(const Value: TJvNavPanelColors);
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure DoStyleChange(Sender: TObject);
-    procedure ParentStyleManagerChanged(var Msg:TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
-    procedure ParentStyleManagerChange(var Msg:TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
-    procedure CMControlChange(var Message:TMessage); message CM_CONTROLCHANGE;
+    procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
+    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
+    procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
     procedure SetParentStyleManager(const Value: Boolean);
   protected
     procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
@@ -364,7 +363,7 @@ type
     procedure DoColorsChange(Sender: TObject);
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure DoStyleChange(Sender: TObject);
-    procedure ParentStyleManagerChanged(var Msg:TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
+    procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
     procedure SetParentStyleManager(const Value: Boolean);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -461,9 +460,9 @@ type
     procedure SetAlignment(const Value: TAlignment);
     procedure SetWordWrap(const Value: Boolean);
     {$IFDEF VCL}
-    procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
+    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     {$ENDIF VCL}
-    procedure ParentStyleManagerChanged(var Msg:TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
+    procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
     procedure SetParentStyleManager(const Value: Boolean);
   protected
     procedure Paint; override;
@@ -536,7 +535,7 @@ type
     FStyleManager: TJvNavPaneStyleManager;
     FStyleLink: TJvNavStyleLink;
     FHeader: TJvNavPanelHeader;
-    FImageIndex:TImageIndex;
+    FImageIndex: TImageIndex;
     FParentStyleManager: Boolean;
     procedure SetCaption(const Value: TCaption);
     procedure SetIconic(const Value: Boolean);
@@ -559,9 +558,9 @@ type
     function GetWordWrap: Boolean;
     procedure SetAlignment(const Value: TAlignment);
     procedure SetWordWrap(const Value: Boolean);
-    procedure ParentStyleManagerChanged(var Msg:TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
-    procedure ParentStyleManagerChange(var Msg:TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
-    procedure CMControlChange(var Message:TMessage); message CM_CONTROLCHANGE;
+    procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
+    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
+    procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
     procedure SetParentStyleManager(const Value: Boolean);
   protected
     procedure UpdatePageList;
@@ -582,7 +581,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property AutoHeader: Boolean read GetAutoHeader write SetAutoHeader;
-
   published
     property Color default clWindow;
     property ParentColor default False;
@@ -654,6 +652,7 @@ type
   TJvNavPaneToolButtonClick = procedure(Sender: TObject; Index: Integer) of object;
   TJvToolPanelHitTestInfo = (phtNowhere, phtAbove, phtBelow, phtToLeft, phtToRight, phtGrabber, phtHeader, phtClient);
   TJvToolPanelHitTestInfos = set of TJvToolPanelHitTestInfo;
+
   TJvNavPaneToolPanel = class(TJvCustomControl)
   private
     FStyleLink: TJvNavStyleLink;
@@ -696,9 +695,9 @@ type
     procedure SetDropDownMenu(const Value: TPopupMenu);
     procedure DoCloseClick(Sender: TObject);
     procedure SetShowGrabber(const Value: Boolean);
-    procedure ParentStyleManagerChanged(var Msg:TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
-    procedure ParentStyleManagerChange(var Msg:TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
-    procedure CMControlChange(var Message:TMessage); message CM_CONTROLCHANGE;
+    procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
+    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
+    procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
     procedure SetParentStyleManager(const Value: Boolean);
   protected
     procedure Paint; override;
@@ -707,8 +706,8 @@ type
     procedure FontChanged; override;
     procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     {$IFDEF VCL}
-    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
-    procedure WMNCPaint(var Message: TWMNCPaint); message WM_NCPAINT;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure WMNCPaint(var Msg: TWMNCPaint); message WM_NCPAINT;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     function WidgetFlags: Integer; override;
@@ -807,8 +806,8 @@ type
     procedure SetResizable(const Value: Boolean);
     function GetNavPage(Index: Integer): TJvNavPanelPage;
     {$IFDEF VCL}
-    procedure WMNCPaint(var Message: TWMNCPaint); message WM_NCPAINT;
-    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure WMNCPaint(var Msg: TWMNCPaint); message WM_NCPAINT;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     {$ENDIF VCL}
     procedure DoSplitterCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
     procedure DoColorsChange(Sender: TObject);
@@ -827,9 +826,9 @@ type
     procedure SetAutoHeaders(const Value: Boolean);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetWordWrap(const Value: Boolean);
-    procedure ParentStyleManagerChanged(var Msg:TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
-    procedure ParentStyleManagerChange(var Msg:TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
-    procedure CMControlChange(var Message:TMessage); message CM_CONTROLCHANGE;
+    procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
+    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
+    procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
     procedure SetParentStyleManager(const Value: Boolean);
   protected
     procedure UpdatePages; virtual;
@@ -845,7 +844,6 @@ type
     procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     function InternalGetPageClass: TJvCustomPageClass; override;
     property NavPages[Index: Integer]: TJvNavPanelPage read GetNavPage;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1024,9 +1022,9 @@ const
 
 procedure InternalStyleManagerChanged(AControl: TWinControl; AStyleManager: TJvNavPaneStyleManager);
 var
-  Msg:TMsgStyleManagerChange;
+  Msg: TMsgStyleManagerChange;
   {$IFDEF VisualCLX}
-  I:Integer;
+  I: Integer;
   {$ENDIF VisualCLX}
 begin
   Msg.Msg := CM_PARENTSTYLEMANAGERCHANGED;
@@ -1041,6 +1039,8 @@ begin
         Exit;
   {$ENDIF VisualCLX}
 end;
+
+//=== TCustomImageListEx =====================================================
 
 {$IFDEF COMPILER5}
 procedure TCustomImageListEx.Draw(Canvas: TCanvas; X, Y, Index: Integer;
@@ -1057,13 +1057,13 @@ begin
 end;
 {$ENDIF COMPILER5}
 
+//=== TObjectList ============================================================
+
 type
   TObjectList = class(TList)
   protected
     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
   end;
-
-//=== TObjectList ============================================================
 
 procedure TObjectList.Notify(Ptr: Pointer; Action: TListNotification);
 begin
@@ -1184,9 +1184,9 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvIconPanel.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+procedure TJvIconPanel.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
-  Message.Result := 1;
+  Msg.Result := 1;
 end;
 {$ENDIF VCL}
 
@@ -1224,7 +1224,7 @@ begin
   end;
 end;
 
-procedure TJvIconPanel.CMControlChange(var Message: TMessage);
+procedure TJvIconPanel.CMControlChange(var Msg: TMessage);
 begin
   InternalStyleManagerChanged(Self, StyleManager);
 end;
@@ -1401,7 +1401,7 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvCustomNavigationPane.WMNCPaint(var Message: TWMNCPaint);
+procedure TJvCustomNavigationPane.WMNCPaint(var Msg: TWMNCPaint);
 var
   AColor: TColor;
 begin
@@ -1519,14 +1519,14 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvCustomNavigationPane.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+procedure TJvCustomNavigationPane.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   if ActivePage = nil then
   begin
     Canvas.Brush.Color := Color;
     Canvas.FillRect(ClientRect);
   end;
-  Message.Result := 1;
+  Msg.Result := 1;
 end;
 {$ENDIF VCL}
 
@@ -1720,7 +1720,7 @@ begin
   end;
 end;
 
-procedure TJvCustomNavigationPane.CMControlChange(var Message: TMessage);
+procedure TJvCustomNavigationPane.CMControlChange(var Msg: TMessage);
 begin
   InternalStyleManagerChanged(Self, StyleManager);
 end;
@@ -2193,11 +2193,11 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvNavPanelButton.CMDialogChar(var Message: TCMDialogChar);
+procedure TJvNavPanelButton.CMDialogChar(var Msg: TCMDialogChar);
 begin
-  if IsAccel(Message.CharCode, Caption) then
+  if IsAccel(Msg.CharCode, Caption) then
   begin
-    Message.Result := 1;
+    Msg.Result := 1;
     Click;
   end
   else
@@ -2814,7 +2814,7 @@ begin
   end;
 end;
 
-procedure TJvNavPanelPage.CMControlChange(var Message: TMessage);
+procedure TJvNavPanelPage.CMControlChange(var Msg: TMessage);
 begin
   InternalStyleManagerChanged(Self, StyleManager);
 end;
@@ -3162,9 +3162,9 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvNavPanelHeader.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+procedure TJvNavPanelHeader.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
-  Message.Result := 1;
+  Msg.Result := 1;
 end;
 {$ENDIF VCL}
 
@@ -3218,7 +3218,7 @@ begin
   end;
 end;
 
-procedure TJvNavPanelHeader.CMControlChange(var Message: TMessage);
+procedure TJvNavPanelHeader.CMControlChange(var Msg: TMessage);
 begin
   // a control was inserted or removed
   InternalStyleManagerChanged(Self, StyleManager);
@@ -4126,12 +4126,12 @@ end;
 
 {$IFDEF VCL}
 
-procedure TJvNavPaneToolPanel.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+procedure TJvNavPaneToolPanel.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
-  Message.Result := 1;
+  Msg.Result := 1;
 end;
 
-procedure TJvNavPaneToolPanel.WMNCPaint(var Message: TWMNCPaint);
+procedure TJvNavPaneToolPanel.WMNCPaint(var Msg: TWMNCPaint);
 var
   AColor: TColor;
 begin
@@ -4153,7 +4153,7 @@ begin
   end;
 end;
 
-procedure TJvNavPaneToolPanel.CMControlChange(var Message: TMessage);
+procedure TJvNavPaneToolPanel.CMControlChange(var Msg: TMessage);
 begin
   InternalStyleManagerChanged(Self, StyleManager);
 end;
@@ -4254,7 +4254,7 @@ var
   R: TRect;
   I: Integer;
 begin
-//  inherited;
+//  inherited Paint;
   if MouseStates <> [] then
   begin
     Canvas.Pen.Color := $6B2408;
