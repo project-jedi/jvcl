@@ -115,7 +115,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils,
-  JclRegistry, JclResources, JclStrings,
+  JclRegistry, JclResources, JclStrings, JclFileUtils,
   JvConsts, JvResources;
 
 const
@@ -152,7 +152,30 @@ end;
 procedure TJvAppRegistryStorage.SetRoot(const Value: string);
 var
   S : string;
-  AppName : string;
+  HelpName : string;
+
+    Function GetVersionInfoAppName : String;
+    var VersionInfo : TJclFileVersionInfo;
+    begin
+      VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
+      try
+        Result := VersionInfo.ProductName;
+      finally
+        VersionInfo.Free;
+      end;
+    end;
+
+    Function GetVersionInfoCompanyName : String;
+    var VersionInfo : TJclFileVersionInfo;
+    begin
+      VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
+      try
+        Result := VersionInfo.CompanyName;
+      finally
+        VersionInfo.Free;
+      end;
+    end;
+
 begin
   inherited SetRoot(Value);
   if (csDesigning in ComponentState) then
@@ -170,16 +193,21 @@ begin
     else
       if StrFind( cAppNameMask, GetRoot) <> 0 then
       begin
-        AppName := ExtractFileName(ChangeFileExt(Application.ExeName, ''));
+        HelpName := GetVersionInfoAppName;
+        if HelpName = '' then
+          HelpName := ExtractFileName(ChangeFileExt(Application.ExeName, ''));
         S := GetRoot;
-        StrReplace( S, cAppNameMask, AppName, [rfIgnoreCase]);
+        StrReplace( S, cAppNameMask, HelpName, [rfIgnoreCase]);
         SetRoot(S);
       end
       else
         if StrFind( cCompanyNameMask, GetRoot) <> 0 then
         begin
+          HelpName := GetVersionInfoCompanyName;
+          if HelpName = '' then
+            HelpName := DefCompanyName;
           S := GetRoot;
-          StrReplace( S, cCompanyNameMask, DefCompanyName, [rfIgnoreCase]);
+          StrReplace( S, cCompanyNameMask, HelpName, [rfIgnoreCase]);
           SetRoot(S);
         end;
   end;
