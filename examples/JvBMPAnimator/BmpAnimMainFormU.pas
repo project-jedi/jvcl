@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvBmpAnim,
-  ExtCtrls, Menus, ComCtrls, StdCtrls, ImgList, JvComponent;
+  ExtCtrls, Menus, ComCtrls, StdCtrls, ImgList, JvComponent, JvBmpAnimator;
 
 type
   TBmpAnimMainForm = class(TForm)
