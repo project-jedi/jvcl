@@ -66,6 +66,7 @@ procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString; Flags
 { JclFileUtils emulation }
 function PathExtractFileNameNoExt(const Path: string): string;
 function PathIsAbsolute(const Path: string): Boolean;
+function DirectoryExists(const Dir: string): Boolean;
 
 
 { JclDateUtils }
@@ -296,6 +297,13 @@ begin
   end;
 end;
 
+function DirectoryExists(const Dir: string): Boolean;
+var
+  Attr: Cardinal;
+begin
+  Attr := GetFileAttributes(PChar(Dir));
+  Result := (Attr <> $FFFFFFFF) and (Attr and FILE_ATTRIBUTE_DIRECTORY <> 0);
+end;
 
 { JclDateUtils }
 
