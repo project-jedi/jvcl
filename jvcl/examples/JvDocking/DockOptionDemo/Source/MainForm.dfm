@@ -308,7 +308,7 @@ object Main_Form: TMain_Form
     ConjoinServerOption.InactiveFont.Style = [fsBold]
     ConjoinServerOption.TextAlignment = taLeftJustify
     ConjoinServerOption.ActiveTitleStartColor = 6956042
-    ConjoinServerOption.ActiveTitleEndColor = clSkyBlue
+    ConjoinServerOption.ActiveTitleEndColor = 15780518
     ConjoinServerOption.InactiveTitleStartColor = clGray
     ConjoinServerOption.InactiveTitleEndColor = clSilver
     ConjoinServerOption.TextEllipsis = True

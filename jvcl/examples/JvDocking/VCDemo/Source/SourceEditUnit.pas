@@ -18,8 +18,8 @@ unit SourceEditUnit;
 interface
 
 uses
-  Windows, Messages, SysUtils{, Variants}, Classes, Graphics, Controls, Forms,
-  Dialogs, JvHLEditor;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, JvHLEditor, JvEditorCommon;
 
 type
   TSourceEditForm = class(TForm)

@@ -64,7 +64,7 @@ object MainForm: TMainForm
         Top = 0
         Width = 76
         Height = 21
-        ImeName = #214#208#206#196' ('#188#242#204#229') - '#214#199#196#220' ABC'
+        ImeName = '中文 (简体) - 智能 ABC'
         ItemHeight = 13
         TabOrder = 0
       end
@@ -190,7 +190,7 @@ object MainForm: TMainForm
         Top = 0
         Width = 125
         Height = 21
-        ImeName = #214#208#206#196' ('#188#242#204#229') - '#214#199#196#220' ABC'
+        ImeName = '中文 (简体) - 智能 ABC'
         ItemHeight = 13
         TabOrder = 0
       end
@@ -239,7 +239,7 @@ object MainForm: TMainForm
         Width = 98
         Height = 21
         Style = csDropDownList
-        ImeName = #214#208#206#196' ('#188#242#204#229') - '#214#199#196#220' ABC'
+        ImeName = '中文 (简体) - 智能 ABC'
         ItemHeight = 13
         TabOrder = 1
         OnChange = Load_Save_WindowUI_ComboBoxChange
@@ -3471,7 +3471,7 @@ object MainForm: TMainForm
     ConjoinServerOption.InactiveFont.Style = [fsBold]
     ConjoinServerOption.TextAlignment = taLeftJustify
     ConjoinServerOption.ActiveTitleStartColor = 6956042
-    ConjoinServerOption.ActiveTitleEndColor = clSkyBlue
+    ConjoinServerOption.ActiveTitleEndColor = 15780518
     ConjoinServerOption.InactiveTitleStartColor = clGray
     ConjoinServerOption.InactiveTitleEndColor = clSilver
     ConjoinServerOption.TextEllipsis = True

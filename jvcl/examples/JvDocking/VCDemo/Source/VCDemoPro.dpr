@@ -1,4 +1,4 @@
-program VCDemoPro_D5;
+program VCDemoPro;
 
 uses
   Forms,
