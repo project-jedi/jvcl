@@ -38,7 +38,7 @@ uses
   Windows, Forms, Controls, Dialogs, StdCtrls, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QDialogs, QStdCtrls, QControls, QExtCtrls, QWindows,
+  QForms, QControls, QDialogs, QStdCtrls, QExtCtrls, QWindows,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
@@ -127,9 +127,11 @@ end;
 
 procedure TJvStrEditDlg.FormCreate(Sender: TObject);
 begin
+  {$IFDEF VCL}
   HelpContext := hcDStringListEditor;
   OpenDialog.HelpContext := hcDStringListLoad;
   SaveDialog.HelpContext := hcDStringListSave;
+  {$ENDIF VCL}
   SingleLine := RsSingleLine;
   MultipleLines := RsMultipleLines;
 end;
@@ -143,7 +145,12 @@ end;
 
 procedure TJvStrEditDlg.HelpBtnClick(Sender: TObject);
 begin
+  {$IFDEF VCL}
   Application.HelpContext(HelpContext);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Application.ContextHelp(HelpContext);
+  {$ENDIF VisualCLX}
 end;
 
 end.

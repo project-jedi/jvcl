@@ -340,7 +340,12 @@ begin
   if lvProvider.Selected <> nil then
   begin
     lvProvider.SetFocus;
+    {$IFDEF VCL}
     ListView_EditLabel(lvProvider.Handle, lvProvider.Selected.Index);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    lvProvider.Selected.EditText;
+    {$ENDIF VisualCLX}
   end;
 end;
 

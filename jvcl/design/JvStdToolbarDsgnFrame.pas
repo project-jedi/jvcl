@@ -34,12 +34,12 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, ActnList, Menus, ImgList, ToolWin, ExtCtrls,
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, ComCtrls, ActnList,
+  Menus, ImgList, ToolWin, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QComCtrls, QActnList,
-  QMenus, QImgList, QToolWin, QExtCtrls,
+  QGraphics, QControls, QForms, QDialogs, QComCtrls, QActnList, QMenus,
+  QImgList, QToolWin, QExtCtrls,
   {$ENDIF VisualCLX}
   JvBaseDsgnToolbarFrame;
 
@@ -68,4 +68,5 @@ implementation
 {$IFDEF VisualCLX}
 {$R *.xfm}
 {$ENDIF VisualCLX}
+
 end.
