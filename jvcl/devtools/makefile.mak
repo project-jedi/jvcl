@@ -93,6 +93,7 @@ bin\Bpg2Make.exe: Bpg2Make\Bpg2Make.dpr Bpg2Make\Bpg2MakeUtils.pas
 | >Bpg2Make.cfg
   $(DCCx) Bpg2Make.dpr
   -@del Bpg2Make.cfg >NUL
+  -@del Make0001.@@@ >NUL
   cd ..
 
 jtouch.exe: JTouch\jtouch.dpr
@@ -134,6 +135,7 @@ bin\pg.exe: PackagesGenerator\pg.dpr PackagesGenerator\CmdLineUtils.pas Packages
 | >pg.cfg
   $(DCCx) -DNO_JCL pg.dpr
   -@del pg.cfg >NUL
+  -@del Make0001.@@@ >NUL
   @cd ..
 
 pgEdit.exe: PackagesGenerator\pgEdit.dpr
