@@ -35,7 +35,13 @@ interface
 
 uses
   SysUtils, Classes,
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Buttons, ExtCtrls, Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QWindows, Qt, QGraphics, QControls, QForms, QButtons, QExtCtrls,
+  QDialogs,
+  {$ENDIF VisualCLX}
   JvComponent, JvSpeedButton;
 
 const
@@ -343,6 +349,9 @@ begin
       Self.FAutoHint := AutoHint;
       Self.FOtherHint := OtherHint;
       Self.FAutoColor := AutoColor;
+
+      Self.FRightClickSelect :=  RightClickSelect;
+      Self.FSelectIfPopup := SelectIfPopup;
     end
   else
     inherited Assign(Source);
