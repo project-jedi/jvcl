@@ -56,10 +56,12 @@ type
   EJVCLException = class(Exception);
   TOnLinkClick = procedure(Sender: TObject; Link: string) of object;
   TOnRegistryChangeKey = procedure(Sender: TObject; RootKey: HKEY; Path: string) of object;
+  TAngle = 0..360;
+  TJvOutputMode = (omFile, omStream);
   TLabelDirection = (sdLeftToRight, sdRightToLeft);
   TJvLabelRotateAngle = 0..360;
   TDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom);
-  TJvOutputMode = (omFile, omStream);
+
   TOnDoneFile = procedure(Sender: TObject; FileName: string; FileSize: Integer; Url: string) of object;
   TOnDoneStream = procedure(Sender: TObject; Stream: TStream; StreamSize: Integer; Url: string) of object;
   TOnProgress = procedure(Sender: TObject; Position: Integer; TotalSize: Integer; Url: string;

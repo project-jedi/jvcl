@@ -783,8 +783,7 @@ begin
   end;
 end;
 
-function TJvCustomValidateEdit.BaseToInt(BaseValue: string; Base: Cardinal):
-    Integer;
+function TJvCustomValidateEdit.BaseToInt(BaseValue: string; Base: Cardinal): Integer;
 var
   i: Cardinal;
 

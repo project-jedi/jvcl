@@ -61,7 +61,6 @@ type
     FURL: string;
     FAngle: TJvLabelRotateAngle;
     procedure SetHotTrackFont(const Value: TFont);
-    procedure SetHotLink(const Value: string);
     procedure SetAngle(const Value: TJvLabelRotateAngle);
     procedure DrawText(Flags: Word);
   protected
@@ -187,10 +186,6 @@ begin
   inherited;
   if AutoOpenURL and (URL <> '') then
     OpenObject(URL);
-end;
-
-procedure TJvLabel.SetHotLink(const Value: string);
-begin
 end;
 
 procedure TJvLabel.SetAngle(const Value: TJvLabelRotateAngle);

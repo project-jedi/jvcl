@@ -97,9 +97,9 @@ type
     FParent: TWinControl;
     FDirection: Integer;
     FTimer: TTimer;
-    FPixels: Cardinal;
+    FPixels: integer;
     procedure SetInterval(const Value: Cardinal);
-    procedure SetPixels(const Value: Cardinal);
+    procedure SetPixels(const Value: integer);
     procedure DoTimerEvent(Sender: TObject);
   protected
     procedure Start; override;
@@ -109,7 +109,7 @@ type
   published
     property Active;
     property Interval: Cardinal read FInterval write SetInterval default 20;
-    property Pixels:Cardinal read FPixels write SetPixels default 6;
+    property Pixels:integer read FPixels write SetPixels default 6;
   end;
 
   TJvLabelScroll = class(TJvLabelBehavior)
@@ -162,7 +162,8 @@ type
   TJvLabelTyping = class(TJvLabelBehavior)
   private
     FMakeErrors: boolean;
-    FInterval,FTextPos: Cardinal;
+    FInterval: Cardinal;
+    FTextPos:integer;
     FTimer:TTimer;
     FOriginalText:TCaption;
     procedure SetInterval(const Value: Cardinal);
@@ -616,7 +617,7 @@ begin
   end;
 end;
 
-procedure TJvLabelBounce.SetPixels(const Value: Cardinal);
+procedure TJvLabelBounce.SetPixels(const Value: integer);
 begin
   if FPixels <> Value then
   begin
@@ -700,7 +701,6 @@ begin
 end;
 
 procedure TJvLabelScroll.Start;
-var tmp:boolean;
 begin
   inherited;
   if FTimer = nil then

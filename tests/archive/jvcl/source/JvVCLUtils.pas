@@ -1233,7 +1233,7 @@ begin
     StrPCopy(lfFaceName, Font.Name);
     {$ENDIF}
     lfQuality := DEFAULT_QUALITY;
-    lfOutPrecision = OUT_TT_PRECIS;
+    lfOutPrecision := OUT_TT_PRECIS;
     lfClipPrecision := CLIP_DEFAULT_PRECIS;
     case Font.Pitch of
       fpVariable:

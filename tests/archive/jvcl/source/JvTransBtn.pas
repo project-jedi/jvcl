@@ -116,7 +116,6 @@ type
 
   TJvTransparentButton2 = class(TJvCustomGraphicButton)
   private
-    FIsDown: Boolean;
     FTextAlign: TJvTextAlign;
     FAutoGray: Boolean;
     FTransparent: Boolean;

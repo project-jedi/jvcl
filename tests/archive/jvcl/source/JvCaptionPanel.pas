@@ -541,7 +541,7 @@ begin
       GetObject(tf.Handle, sizeof(lf), @lf);
       lf.lfEscapement := Rotation * 10;
       lf.lfOrientation := Rotation * 10;
-      lf.lfOutPrecision = OUT_TT_PRECIS;
+      lf.lfOutPrecision := OUT_TT_PRECIS;
       tf.Handle := CreateFontIndirect(lf);
       Canvas.Font.Assign(tf);
     finally
