@@ -103,15 +103,13 @@ object FormMainConfig: TFormMainConfig
     BevelOuter = bvNone
     Color = clWindow
     TabOrder = 5
-    DesignSize = (
-      744
-      44)
     object imgProjectJEDI: TImage
       Left = 620
       Top = 5
       Width = 116
       Height = 31
       Cursor = crHandPoint
+      Hint = 'http://delphi-jedi.org'
       Anchors = [akTop, akRight]
       AutoSize = True
     end

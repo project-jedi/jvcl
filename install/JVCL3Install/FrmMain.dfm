@@ -266,7 +266,7 @@ object FormMain: TFormMain
         111C1C1C0F1C15050505050505050505151212100D1905050505}
     end
     object BtnUninstall: TBitBtn
-      Left = 120
+      Left = 142
       Top = 10
       Width = 75
       Height = 25
@@ -600,7 +600,7 @@ object FormMain: TFormMain
       Hint = 
         'Check this option if you want to build the packages instead'#13#10'of ' +
         'compiling the modified files'
-      Caption = 'Build package'
+      Caption = 'Build packages'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
@@ -749,16 +749,16 @@ object FormMain: TFormMain
     Align = alTop
     BevelOuter = bvNone
     Color = clWindow
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
-    DesignSize = (
-      723
-      44)
     object imgProjectJEDI: TImage
       Left = 599
       Top = 5
       Width = 116
       Height = 31
       Cursor = crHandPoint
+      Hint = 'http://delphi-jedi.org'
       Anchors = [akTop, akRight]
       AutoSize = True
       Picture.Data = {
@@ -950,7 +950,7 @@ object FormMain: TFormMain
     TabOrder = 8
   end
   object ImageListPackages: TImageList
-    Left = 216
+    Left = 280
     Top = 96
     Bitmap = {
       494C010103000400040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
@@ -1093,12 +1093,12 @@ object FormMain: TFormMain
       000000000000}
   end
   object ImageListTargets: TImageList
-    Left = 24
-    Top = 96
+    Left = 56
+    Top = 88
   end
   object ActionList1: TActionList
-    Left = 72
-    Top = 520
+    Left = 64
+    Top = 504
     object ActionInstall: TAction
       Caption = '&Install'
       OnExecute = BtnInstallClick
@@ -1111,8 +1111,8 @@ object FormMain: TFormMain
     end
   end
   object PopupMenuPackages: TPopupMenu
-    Left = 248
-    Top = 96
+    Left = 280
+    Top = 144
     object MenuSelectAll: TMenuItem
       Caption = 'Select &all'
       OnClick = MenuInvertSelectionClick
