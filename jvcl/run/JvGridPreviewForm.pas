@@ -24,15 +24,22 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvGridPreviewForm;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, Grids, StdCtrls, Spin, ComCtrls, Buttons, Printers, ExtDlgs,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QGraphics, QControls, QForms, QDialogs,
+  QExtCtrls, QGrids, QStdCtrls, QSpin, QComCtrls, QButtons, QPrinters, QExtDlgs,
+  {$ENDIF}
   JvGridPrinter, JvComponent;
 
 type
@@ -51,10 +58,10 @@ type
     lblpages: TLabel;
     cklive: TCheckBox;
     btnsetup: TSpeedButton;
-    PrinterSetupDialog1: TPrinterSetupDialog;
     btnfull: TSpeedButton;
-    OpenPictureDialog1: TOpenPictureDialog;
     btnpic: TSpeedButton;
+    OpenPictureDialog1: TOpenPictureDialog;
+    PrinterSetupDialog1: TPrinterSetupDialog;
     procedure btnshowClick(Sender: TObject);
     procedure MarginsClick(Sender: TObject);
     procedure btnprintClick(Sender: TObject);
@@ -97,7 +104,12 @@ implementation
 uses
   JvPaintFX, JvConsts, JvResources;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 var
   RowHeights: array of Integer;
