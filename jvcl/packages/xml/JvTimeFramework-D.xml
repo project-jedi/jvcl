@@ -6,7 +6,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-D" Targets="all" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition="USEJVCL"/>
     <Package Name="JvTimeFramework-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="dsnide50" Targets="C5,D5,D5s" Condition=""/>
