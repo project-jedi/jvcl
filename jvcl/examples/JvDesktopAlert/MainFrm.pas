@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtDlgs, ImgList, Menus, StdCtrls, ComCtrls,
   ExtCtrls, JvDesktopAlert, JvAppStorage, JvAppIniStorage, JvComponent,
-  JvFormPlacement;
+  JvFormPlacement, JvBaseDlg;
 
 type
   TfrmMain = class(TForm)
@@ -48,6 +48,8 @@ type
     Label9: TLabel;
     JvFormStorage1: TJvFormStorage;
     JvAppIniFileStorage1: TJvAppIniFileStorage;
+    JvDesktopAlert1: TJvDesktopAlert;
+    JvDesktopAlertStack1: TJvDesktopAlertStack;
     procedure btnPreviewClick(Sender: TObject);
     procedure Clickme1Click(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
@@ -90,6 +92,7 @@ end;
 procedure TfrmMain.DoAlertClose(Sender: TObject);
 begin
   Dec(FCount);
+//  if FCount < 0 then FCount := 0;
   Caption := Format('JvDesktopAlert Demo: showing %d alerts',[FCount]);
 end;
 
@@ -97,11 +100,8 @@ procedure TfrmMain.btnPreviewClick(Sender: TObject);
 var
   i,j:integer;
   DA:TJvDesktopAlert;
-  WaitTime:integer;
   FOptions:TJvDesktopAlertOptions;
-
 begin
-//  WaitTime := 3000;
   for i := 0 to udWindowCount.Position - 1 do
   begin
     DA := TJvDesktopAlert.Create(Self);
@@ -134,7 +134,7 @@ begin
     DA.Options := FOptions;
     if chkShowDropDown.Checked then
       DA.DropDownMenu := PopupMenu1;
-    for j := 0 to udButtons.Position + Random(5) do
+    for j := 0 to udButtons.Position do
     begin
       with DA.Buttons.Add do
       begin
