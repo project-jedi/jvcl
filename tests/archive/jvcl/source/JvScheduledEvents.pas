@@ -114,6 +114,7 @@ type
     FOnExecute: TScheduledEventExecute;
     FSchedule: IJclSchedule;
     FLastSnoozeInterval: TSystemTime;
+    FScheduleFire: TTimeStamp;
     FSnoozeFire: TTimeStamp;
     procedure Triggered;
   protected
@@ -752,7 +753,10 @@ end;
 
 function TJvEventCollectionItem.GetNextFire: TTimeStamp;
 begin
-  Result := Schedule.LastTriggered;
+  if IsNullTimeStamp(FSnoozeFire) or (CompareTimeStamps(FSnoozeFire, FScheduleFire) > 0) then
+    Result := FScheduleFire
+  else
+    Result := FSnoozeFire;
 end;
 
 procedure TJvEventCollectionItem.Execute;
@@ -767,7 +771,7 @@ begin
     DoExecute(IsSnoozeFire);
   finally
     if not IsSnoozeFire then
-      Schedule.NextEventFromNow(CountMissedEvents);
+      FScheduleFire := Schedule.NextEventFromNow(CountMissedEvents);
     if IsNullTimeStamp(NextFire) then
       FState := sesEnded
     else
@@ -1091,6 +1095,8 @@ begin
       NewName := '';
     inherited Create(Collection);
     FSchedule := CreateSchedule;
+    FSnoozeFire := NullStamp;
+    FScheduleFire := NullStamp;
     if NewName <> '' then
       Name := NewName + IntToStr(I);
   finally
@@ -1112,6 +1118,7 @@ procedure TJvEventCollectionItem.LoadState(const TriggerStamp: TTimeStamp; const
   DayCount: Integer; const SnoozeStamp: TTimeStamp; const ALastSnoozeInterval: TSystemTime);
 begin
   Schedule.InitToSavedState(TriggerStamp, TriggerCount, DayCount);
+  FScheduleFire := TriggerStamp;
   FSnoozeFire := SnoozeStamp;
   FLastSnoozeInterval := ALastSnoozeInterval;
   if IsNullTimeStamp(NextFire) or
@@ -1131,7 +1138,7 @@ end;
 procedure TJvEventCollectionItem.SaveState(out TriggerStamp: TTimeStamp; out TriggerCount,
   DayCount: Integer; out SnoozeStamp: TTimeStamp; out ALastSnoozeInterval: TSystemTime);
 begin
-  TriggerStamp := Schedule.LastTriggered;
+  TriggerStamp := FScheduleFire;
   TriggerCount := Schedule.TriggerCount;
   DayCount := Schedule.DayCount;
   SnoozeStamp := FSnoozeFire;
@@ -1169,7 +1176,7 @@ begin
     raise Exception.Create('Can''t restart: Event is being triggered or is executing.');
   if State = sesPaused then
   begin
-    Schedule.NextEventFromNow(CountMissedEvents);
+    FScheduleFire := Schedule.NextEventFromNow(CountMissedEvents);
     if IsNullTimeStamp(NextFire) then
       FState := sesEnded
     else
@@ -1179,7 +1186,7 @@ begin
   begin
     FState := sesNotInitialized;
     Schedule.Reset;
-    Schedule.NextEventFromNow(CountMissedEvents);
+    FScheduleFire := Schedule.NextEventFromNow(CountMissedEvents);
     if IsNullTimeStamp(NextFire) then
       FState := sesEnded
     else
