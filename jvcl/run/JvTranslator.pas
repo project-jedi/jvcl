@@ -813,7 +813,7 @@ end;
 function TJvTranslator.InSkipList(Obj: TObject): Boolean;
 begin
   if Obj = nil then
-    Result := InSkipList(nil)
+    Result := InSkipList(TObject(nil))
   else
     Result := InSkipList(Obj.ClassType);
 end;
@@ -821,7 +821,7 @@ end;
 function TJvTranslator.InSkipList(Obj: TObject; const PropName: string): Boolean;
 begin
   if Obj = nil then
-    Result := InSkipList(nil, PropName)
+    Result := InSkipList(TObject(nil), PropName)
   else
     Result := InSkipList(Obj.ClassType, PropName);
 end;
