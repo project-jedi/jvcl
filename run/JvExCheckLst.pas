@@ -122,7 +122,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -183,11 +182,6 @@ type
 
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-
 {$IFDEF VCL}
 procedure TJvExCheckListBox.Dispatch(var Msg);
 asm
@@ -244,6 +238,8 @@ end;
 
 function TJvExCheckListBox.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -254,13 +250,12 @@ end;
 
 procedure TJvExCheckListBox.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExCheckListBox.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExCheckListBox.ParentColorChanged;
@@ -322,7 +317,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCheckListBox.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -332,7 +327,7 @@ end;
 
 procedure TJvExCheckListBox.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -503,21 +498,5 @@ begin
   inherited Destroy;
 end;
   
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
-
-finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
 
 end.

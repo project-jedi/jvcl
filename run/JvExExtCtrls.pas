@@ -88,7 +88,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -174,7 +173,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -260,7 +258,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -346,7 +343,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -466,7 +462,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -598,7 +593,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -697,7 +691,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -820,7 +813,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -952,7 +944,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -1084,7 +1075,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -1216,7 +1206,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -1348,7 +1337,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -1480,7 +1468,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -1612,7 +1599,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -1711,7 +1697,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -1831,7 +1816,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -1963,7 +1947,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -2095,7 +2078,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -2227,7 +2209,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -2287,17 +2268,13 @@ type
   
   {$ENDIF COMPILER6_UP}
 
+
 // SplitterMouseDownFix fixes a bug in the VCL that causes the splitter to no
 // more work with the control in the left/top of it when the control has a size
 // of 0. This is actually a TWinControl.AlignControl bug.
 procedure SplitterMouseDownFix(Splitter: TSplitter);
 
 implementation
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 {$IFDEF VCL}
 procedure TJvExShape.Dispatch(var Msg);
@@ -2355,6 +2332,8 @@ end;
 
 function TJvExShape.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -2365,13 +2344,12 @@ end;
 
 procedure TJvExShape.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExShape.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExShape.ParentColorChanged;
@@ -2393,7 +2371,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExShape.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -2403,7 +2381,7 @@ end;
 
 procedure TJvExShape.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -2526,6 +2504,8 @@ end;
 
 function TJvExPaintBox.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -2536,13 +2516,12 @@ end;
 
 procedure TJvExPaintBox.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExPaintBox.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExPaintBox.ParentColorChanged;
@@ -2564,7 +2543,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExPaintBox.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -2574,7 +2553,7 @@ end;
 
 procedure TJvExPaintBox.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -2697,6 +2676,8 @@ end;
 
 function TJvExImage.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -2707,13 +2688,12 @@ end;
 
 procedure TJvExImage.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExImage.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExImage.ParentColorChanged;
@@ -2735,7 +2715,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExImage.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -2745,7 +2725,7 @@ end;
 
 procedure TJvExImage.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -2868,6 +2848,8 @@ end;
 
 function TJvExBevel.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -2878,13 +2860,12 @@ end;
 
 procedure TJvExBevel.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExBevel.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExBevel.ParentColorChanged;
@@ -2906,7 +2887,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExBevel.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -2916,7 +2897,7 @@ end;
 
 procedure TJvExBevel.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -3039,6 +3020,8 @@ end;
 
 function TJvExCustomPanel.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -3049,13 +3032,12 @@ end;
 
 procedure TJvExCustomPanel.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExCustomPanel.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExCustomPanel.ParentColorChanged;
@@ -3117,7 +3099,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomPanel.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -3127,7 +3109,7 @@ end;
 
 procedure TJvExCustomPanel.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -3354,6 +3336,8 @@ end;
 
 function TJvExCustomRadioGroup.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -3364,13 +3348,12 @@ end;
 
 procedure TJvExCustomRadioGroup.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExCustomRadioGroup.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExCustomRadioGroup.ParentColorChanged;
@@ -3432,7 +3415,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomRadioGroup.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -3442,7 +3425,7 @@ end;
 
 procedure TJvExCustomRadioGroup.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -3669,6 +3652,8 @@ end;
 
 function TJvExCustomControlBar.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -3679,13 +3664,12 @@ end;
 
 procedure TJvExCustomControlBar.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExCustomControlBar.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExCustomControlBar.ParentColorChanged;
@@ -3747,7 +3731,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomControlBar.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -3757,7 +3741,7 @@ end;
 
 procedure TJvExCustomControlBar.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -3984,6 +3968,8 @@ end;
 
 function TJvExControlBar.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -3994,13 +3980,12 @@ end;
 
 procedure TJvExControlBar.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExControlBar.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExControlBar.ParentColorChanged;
@@ -4062,7 +4047,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExControlBar.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -4072,7 +4057,7 @@ end;
 
 procedure TJvExControlBar.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -4299,6 +4284,8 @@ end;
 
 function TJvExPanel.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -4309,13 +4296,12 @@ end;
 
 procedure TJvExPanel.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExPanel.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExPanel.ParentColorChanged;
@@ -4377,7 +4363,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExPanel.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -4387,7 +4373,7 @@ end;
 
 procedure TJvExPanel.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -4614,6 +4600,8 @@ end;
 
 function TJvExRadioGroup.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -4624,13 +4612,12 @@ end;
 
 procedure TJvExRadioGroup.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExRadioGroup.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExRadioGroup.ParentColorChanged;
@@ -4692,7 +4679,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExRadioGroup.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -4702,7 +4689,7 @@ end;
 
 procedure TJvExRadioGroup.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -4929,6 +4916,8 @@ end;
 
 function TJvExPage.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -4939,13 +4928,12 @@ end;
 
 procedure TJvExPage.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExPage.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExPage.ParentColorChanged;
@@ -5007,7 +4995,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExPage.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -5017,7 +5005,7 @@ end;
 
 procedure TJvExPage.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -5244,6 +5232,8 @@ end;
 
 function TJvExNotebook.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -5254,13 +5244,12 @@ end;
 
 procedure TJvExNotebook.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExNotebook.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExNotebook.ParentColorChanged;
@@ -5322,7 +5311,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExNotebook.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -5332,7 +5321,7 @@ end;
 
 procedure TJvExNotebook.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -5559,6 +5548,8 @@ end;
 
 function TJvExHeader.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -5569,13 +5560,12 @@ end;
 
 procedure TJvExHeader.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExHeader.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExHeader.ParentColorChanged;
@@ -5637,7 +5627,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExHeader.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -5647,7 +5637,7 @@ end;
 
 procedure TJvExHeader.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -5875,6 +5865,8 @@ end;
 
 function TJvExBoundLabel.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -5885,13 +5877,12 @@ end;
 
 procedure TJvExBoundLabel.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExBoundLabel.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExBoundLabel.ParentColorChanged;
@@ -5913,7 +5904,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExBoundLabel.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -5923,7 +5914,7 @@ end;
 
 procedure TJvExBoundLabel.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -6046,6 +6037,8 @@ end;
 
 function TJvExCustomLabeledEdit.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -6056,13 +6049,12 @@ end;
 
 procedure TJvExCustomLabeledEdit.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExCustomLabeledEdit.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExCustomLabeledEdit.ParentColorChanged;
@@ -6124,7 +6116,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomLabeledEdit.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -6134,7 +6126,7 @@ end;
 
 procedure TJvExCustomLabeledEdit.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -6361,6 +6353,8 @@ end;
 
 function TJvExLabeledEdit.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -6371,13 +6365,12 @@ end;
 
 procedure TJvExLabeledEdit.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExLabeledEdit.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExLabeledEdit.ParentColorChanged;
@@ -6439,7 +6432,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExLabeledEdit.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -6449,7 +6442,7 @@ end;
 
 procedure TJvExLabeledEdit.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -6676,6 +6669,8 @@ end;
 
 function TJvExCustomColorBox.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -6686,13 +6681,12 @@ end;
 
 procedure TJvExCustomColorBox.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExCustomColorBox.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExCustomColorBox.ParentColorChanged;
@@ -6754,7 +6748,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomColorBox.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -6764,7 +6758,7 @@ end;
 
 procedure TJvExCustomColorBox.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -6991,6 +6985,8 @@ end;
 
 function TJvExColorBox.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -7001,13 +6997,12 @@ end;
 
 procedure TJvExColorBox.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExColorBox.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExColorBox.ParentColorChanged;
@@ -7069,7 +7064,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExColorBox.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -7079,7 +7074,7 @@ end;
 
 procedure TJvExColorBox.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -7308,6 +7303,8 @@ end;
 
 function TJvExSplitter.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -7318,13 +7315,12 @@ end;
 
 procedure TJvExSplitter.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExSplitter.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExSplitter.ParentColorChanged;
@@ -7346,7 +7342,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExSplitter.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -7356,7 +7352,7 @@ end;
 
 procedure TJvExSplitter.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then

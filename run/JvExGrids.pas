@@ -132,7 +132,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -264,7 +263,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -397,7 +395,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -529,7 +526,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -663,7 +659,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -800,7 +795,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -865,11 +859,6 @@ type
 
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-
 {$IFDEF VCL}
 procedure TJvExInplaceEdit.Dispatch(var Msg);
 asm
@@ -926,6 +915,8 @@ end;
 
 function TJvExInplaceEdit.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -936,13 +927,12 @@ end;
 
 procedure TJvExInplaceEdit.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExInplaceEdit.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExInplaceEdit.ParentColorChanged;
@@ -1004,7 +994,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExInplaceEdit.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -1014,7 +1004,7 @@ end;
 
 procedure TJvExInplaceEdit.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -1241,6 +1231,8 @@ end;
 
 function TJvExCustomGrid.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -1251,13 +1243,12 @@ end;
 
 procedure TJvExCustomGrid.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExCustomGrid.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExCustomGrid.ParentColorChanged;
@@ -1319,7 +1310,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomGrid.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -1329,7 +1320,7 @@ end;
 
 procedure TJvExCustomGrid.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -1557,6 +1548,8 @@ end;
 
 function TJvExCustomDrawGrid.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -1567,13 +1560,12 @@ end;
 
 procedure TJvExCustomDrawGrid.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExCustomDrawGrid.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExCustomDrawGrid.ParentColorChanged;
@@ -1635,7 +1627,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomDrawGrid.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -1645,7 +1637,7 @@ end;
 
 procedure TJvExCustomDrawGrid.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -1872,6 +1864,8 @@ end;
 
 function TJvExInplaceEditList.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -1882,13 +1876,12 @@ end;
 
 procedure TJvExInplaceEditList.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExInplaceEditList.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExInplaceEditList.ParentColorChanged;
@@ -1950,7 +1943,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExInplaceEditList.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -1960,7 +1953,7 @@ end;
 
 procedure TJvExInplaceEditList.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -2189,6 +2182,8 @@ end;
 
 function TJvExDrawGrid.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -2199,13 +2194,12 @@ end;
 
 procedure TJvExDrawGrid.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExDrawGrid.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExDrawGrid.ParentColorChanged;
@@ -2267,7 +2261,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExDrawGrid.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -2277,7 +2271,7 @@ end;
 
 procedure TJvExDrawGrid.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -2544,6 +2538,8 @@ end;
 
 function TJvExStringGrid.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -2554,13 +2550,12 @@ end;
 
 procedure TJvExStringGrid.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExStringGrid.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExStringGrid.ParentColorChanged;
@@ -2622,7 +2617,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExStringGrid.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -2632,7 +2627,7 @@ end;
 
 procedure TJvExStringGrid.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -2842,21 +2837,5 @@ begin
 end;
 {$ENDIF !HAS_GRID_EDITSTYLE}
 
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
-
-finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
 
 end.

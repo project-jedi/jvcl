@@ -134,7 +134,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -293,7 +292,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -380,11 +378,6 @@ type
 
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-
 { The CONSTRUCTOR_CODE macro is used to extend the constructor by the macro
   content. }
 {$UNDEF CONSTRUCTOR_CODE}
@@ -448,6 +441,8 @@ end;
 
 function TJvExCustomMaskEdit.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -458,13 +453,12 @@ end;
 
 procedure TJvExCustomMaskEdit.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExCustomMaskEdit.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExCustomMaskEdit.ParentColorChanged;
@@ -526,7 +520,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomMaskEdit.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -536,7 +530,7 @@ end;
 
 procedure TJvExCustomMaskEdit.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -849,6 +843,8 @@ end;
 
 function TJvExMaskEdit.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintColor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -859,13 +855,12 @@ end;
 
 procedure TJvExMaskEdit.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExMaskEdit.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExMaskEdit.ParentColorChanged;
@@ -927,7 +922,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExMaskEdit.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -937,7 +932,7 @@ end;
 
 procedure TJvExMaskEdit.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -1193,22 +1188,5 @@ begin
 end;
 
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
-
-finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
-
 {$UNDEF CONSTRUCTOR_CODE} // undefine at file end
-
 end.

@@ -88,7 +88,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -208,7 +207,6 @@ type
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
   {$IFDEF NeedMouseEnterLeave}
@@ -330,6 +328,8 @@ end;
 
 function TJvExSpeedButton.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintCOlor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -340,13 +340,12 @@ end;
 
 procedure TJvExSpeedButton.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExSpeedButton.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExSpeedButton.ParentColorChanged;
@@ -368,7 +367,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExSpeedButton.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -378,7 +377,7 @@ end;
 
 procedure TJvExSpeedButton.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -501,6 +500,8 @@ end;
 
 function TJvExBitBtn.HintShow(var HintInfo: THintInfo): Boolean;
 begin
+  if FHintColor <> clNone then
+    HintInfo.HintColor := FHintCOlor;
   Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
@@ -511,13 +512,12 @@ end;
 
 procedure TJvExBitBtn.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
-    FOnMouseEnter);
+  Control_MouseEnter(Self, Control, FMouseOver, FOnMouseEnter);
 end;
 
 procedure TJvExBitBtn.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
+  Control_MouseLeave(Self, Control, FMouseOver, FOnMouseLeave);
 end;
 
 procedure TJvExBitBtn.ParentColorChanged;
@@ -579,7 +579,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExBitBtn.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -589,7 +589,7 @@ end;
 
 procedure TJvExBitBtn.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
