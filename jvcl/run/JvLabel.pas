@@ -61,7 +61,7 @@ uses
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
-  TJvLabelRotateAngle = 0..360;
+  TJvLabelRotateAngle = -360..360;
   TJvTextEllipsis = (teNone, teWordEllipsis, tePathEllipsis, teEndEllipsis);
 
   TJvCustomLabel = class(TJvGraphicControl)
@@ -1180,6 +1180,8 @@ begin
   if FAngle <> Value then
   begin
     FAngle := Value;
+    if FAngle < 0 then
+      Inc(FAngle,360);
     FNeedsResize := Autosize;
     AdjustBounds;
     Invalidate;
