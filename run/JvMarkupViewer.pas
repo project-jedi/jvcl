@@ -39,28 +39,28 @@ type
   TJvMarkupViewer = class(TJvCustomControl)
   private
     { Private declarations }
-    FScrollBar: TScrollbar;
-    bm: Tbitmap;
-    FrameTop: integer;
-    FrameBottom: integer;
-    PageBottom: integer;
+    FScrollBar: TScrollBar;
+    bm: TBitmap;
+    FrameTop: Integer;
+    FrameBottom: Integer;
+    PageBottom: Integer;
     ElementStack: TJvHTMLElementStack;
     TagStack: TJvHTMLElementStack;
-    FText: Tcaption;
+    FText: TCaption;
     FBackColor: TColor;
-    FMarginLeft: integer;
-    FMarginRight: integer;
-    FMarginTop: integer;
+    FMarginLeft: Integer;
+    FMarginRight: Integer;
+    FMarginTop: Integer;
     procedure ParseHTML(s: string);
     procedure RenderHTML;
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
     procedure SetBackColor(const Value: TColor);
     procedure SetText(const Value: TCaption);
-    procedure SetMarginLeft(const Value: integer);
-    procedure SetMarginRight(const Value: integer);
-    procedure SetMarginTop(const Value: integer);
-    procedure Scrollviewer(sender: TObject);
+    procedure SetMarginLeft(const Value: Integer);
+    procedure SetMarginRight(const Value: Integer);
+    procedure SetMarginTop(const Value: Integer);
+    procedure ScrollViewer(Sender: TObject);
   protected
     { Protected declarations }
     procedure CreateWnd; override;
@@ -74,18 +74,22 @@ type
     property Align;
     property Text: TCaption read FText write SetText;
     property BackColor: TColor read FBackColor write SetBackColor;
-    property MarginLeft: integer read FMarginLeft write SetMarginLeft;
-    property MarginRight: integer read FMarginRight write SetMarginRight;
-    property MarginTop: integer read FMarginTop write SetMarginTop;
+    property MarginLeft: Integer read FMarginLeft write SetMarginLeft;
+    property MarginRight: Integer read FMarginRight write SetMarginRight;
+    property MarginTop: Integer read FMarginTop write SetMarginTop;
   end;
 
 implementation
+
+uses
+  JvThemes;
 
 { TJvMarkupViewer }
 
 constructor TJvMarkupViewer.create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
+  IncludeThemeStyle(Self, [csParentBackground]);
   Elementstack := TJvHTMLElementStack.Create;
   TagStack := TJvHTMLElementStack.Create;
   Width := 300;
@@ -165,17 +169,17 @@ begin
   bm.height := clientHeight;
 end;
 
-procedure TJvMarkupViewer.paint;
+procedure TJvMarkupViewer.Paint;
 var
   sm: integer;
   w, h: integer;
 begin
-  w := clientWidth - FScrollbar.width;
+  w := ClientWidth - FScrollbar.Width;
   h := ClientHeight;
   if bm.width <> w then bm.width := w;
   if bm.height <> h then bm.height := h;
   RenderHTML;
-  canvas.draw(0, 0, bm);
+  Canvas.Draw(0, 0, bm);
   FScrollbar.Min := 0;
   sm := PageBottom - clientheight;
   if sm > 0 then
@@ -430,9 +434,11 @@ var
 
 begin
   ieol := 0; // Not needed but removed Warning
-  R := rect(0, 0, bm.width, bm.height);
-  bm.canvas.Brush.color := BackColor;
-  bm.canvas.FillRect(R);
+  R := Rect(0, 0, bm.width, bm.height);
+  bm.Canvas.Brush.color := BackColor;
+  bm.Canvas.FillRect(R);
+  bm.TransparentColor := BackColor;
+  bm.Transparent := True;
   c := ElementStack.Count;
   if c = 0 then exit;
   HTMLClearBreaks;
@@ -514,12 +520,12 @@ begin
   PageBottom := y;
 end;
 
-procedure TJvMarkupViewer.Scrollviewer(sender: TObject);
+procedure TJvMarkupViewer.ScrollViewer(Sender: TObject);
 begin
-  FrameTop := FScrollbar.position;
-  FrameBottom := FrameTop + clientHeight - 1;
+  FrameTop := FScrollBar.Position;
+  FrameBottom := FrameTop + ClientHeight - 1;
   RenderHTML;
-  canvas.draw(0, 0, bm);
+  Canvas.Draw(0, 0, bm);
 end;
 
 procedure TJvMarkupViewer.SetBackColor(const Value: TColor);

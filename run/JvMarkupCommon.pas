@@ -34,42 +34,42 @@ uses
 type
   TJvHTMLElement = class(TObject)
   private
-    FFontSize: integer;
+    FFontSize: Integer;
     FText: string;
     FFontName: string;
     FFontStyle: TFontStyles;
     FFontColor: TColor;
-    FAscent: integer;
-    FHeight: integer;
-    FWidth: integer;
+    FAscent: Integer;
+    FHeight: Integer;
+    FWidth: Integer;
     FSolText: string;
     FEolText: string;
-    FBreakLine: boolean;
+    FBreakLine: Boolean;
     procedure SetFontName(const Value: string);
-    procedure SetFontSize(const Value: integer);
+    procedure SetFontSize(const Value: Integer);
     procedure SetFontStyle(const Value: TFontStyles);
     procedure SetText(const Value: string);
     procedure SetFontColor(const Value: TColor);
-    procedure SetAscent(const Value: integer);
-    procedure SetHeight(const Value: integer);
-    procedure SetWidth(const Value: integer);
+    procedure SetAscent(const Value: Integer);
+    procedure SetHeight(const Value: Integer);
+    procedure SetWidth(const Value: Integer);
     procedure SetEolText(const Value: string);
     procedure SetSolText(const Value: string);
-    procedure SetBreakLine(const Value: boolean);
+    procedure SetBreakLine(const Value: Boolean);
   protected
   public
-    procedure Break(ACanvas: TCanvas; available: integer);
+    procedure Break(ACanvas: TCanvas; Available: Integer);
     property Text: string read FText write SetText;
     property SolText: string read FSolText write SetSolText;
     property EolText: string read FEolText write SetEolText;
     property FontName: string read FFontName write SetFontName;
-    property FontSize: integer read FFontSize write SetFontSize;
+    property FontSize: Integer read FFontSize write SetFontSize;
     property FontStyle: TFontStyles read FFontStyle write SetFontStyle;
     property FontColor: TColor read FFontColor write SetFontColor;
-    property Height: integer read FHeight write SetHeight;
-    property Width: integer read FWidth write SetWidth;
-    property Ascent: integer read FAscent write SetAscent;
-    property BreakLine: boolean read FBreakLine write SetBreakLine;
+    property Height: Integer read FHeight write SetHeight;
+    property Width: Integer read FWidth write SetWidth;
+    property Ascent: Integer read FAscent write SetAscent;
+    property BreakLine: Boolean read FBreakLine write SetBreakLine;
   end;
 
   TJvHTMLElementStack = class(TList)
@@ -91,7 +91,7 @@ implementation
 
 { TJvHTMLElement }
 
-procedure TJvHTMLElement.Break(ACanvas: TCanvas; available: integer);
+procedure TJvHTMLElement.Break(ACanvas: TCanvas; Available: Integer);
 var
   s: string;
   i, w: integer;

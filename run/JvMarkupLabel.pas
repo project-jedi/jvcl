@@ -72,12 +72,16 @@ type
 
 implementation
 
+uses
+  JvThemes;
+
 
 { TJvMarkupLabel }
 
 constructor TJvMarkupLabel.Create(AOwner: TComponent);
 begin
   inherited;
+  IncludeThemeStyle(Self, [csParentBackground]);
   Elementstack := TJvHTMLElementStack.Create;
   TagStack := TJvHTMLElementStack.Create;
   FBackcolor := clwhite;
@@ -390,7 +394,7 @@ begin
   ieol := 0; // Not Needed but removes warning.
   R := clientrect;
   canvas.Brush.color := BackColor;
-  canvas.FillRect(R);
+  DrawThemedBackground(Self, Canvas, R);
   c := ElementStack.Count;
   if c = 0 then exit;
   HTMLClearBreaks;
