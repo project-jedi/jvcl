@@ -38,36 +38,24 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QComCtrls,
   {$ENDIF VisualCLX}
-  JVCLVer;
+  JVCLVer, JvExComCtrls;
 
 type
-  TJvProgressBar = class(TProgressBar)
+  TJvProgressBar = class(TJvExProgressBar)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     {$IFDEF VCL}
     FFillColor: TColor;
     procedure SetFillColor(const Value: TColor);
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     {$ENDIF VCL}
   protected
-    {$IFDEF VCL}
-    procedure MouseEnter(AControl: TControl); dynamic;
-    procedure MouseLeave(AControl: TControl); dynamic;
-    procedure ParentColorChanged; dynamic;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -78,8 +66,8 @@ type
     property FillColor;
     {$ENDIF VCL}
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property Color;
     property OnMouseDown;
@@ -97,20 +85,8 @@ begin
   FOver := False;
 end;
 
-{$IFDEF VCL}
-procedure TJvProgressBar.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  MouseEnter(Self);
-end;
-{$ENDIF VCL}
-
 procedure TJvProgressBar.MouseEnter(AControl: TControl);
 begin
-  {$IFDEF VisualCLX}
-  inherited MouseEnter(AControl);
-  {$ENDIF VisualCLX}
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if not FOver then
@@ -119,24 +95,11 @@ begin
     Application.HintColor := FHintColor;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(AControl);
 end;
-
-{$IFDEF VCL}
-procedure TJvProgressBar.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  MouseLeave(Self);
-end;
-{$ENDIF VCL}
 
 procedure TJvProgressBar.MouseLeave(AControl: TControl);
 begin
-  {$IFDEF VisualCLX}
-  inherited MouseLeave(AControl);
-  {$ENDIF VisualCLX}
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if FOver then
@@ -144,23 +107,12 @@ begin
     FOver := False;
     Application.HintColor := FSaved;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(AControl);
 end;
-
-{$IFDEF VCL}
-procedure TJvProgressBar.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  ParentColorChanged;
-end;
-{$ENDIF VCL}
 
 procedure TJvProgressBar.ParentColorChanged;
 begin
-  {$IFDEF VisualCLX}
   inherited ParentColorChanged;
-  {$ENDIF VisualCLX}
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;

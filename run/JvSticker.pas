@@ -56,9 +56,9 @@ type
     FStickColor: TColor;
     procedure SetStickColor(const Value: TColor);
     function CaptionDialog(S: string): string;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
   protected
+    procedure FontChanged; override;
+    procedure TextChanged; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -193,25 +193,31 @@ begin
   FStickColor := clYellow;
 end;
 
-procedure TJvSticker.CMFontChanged(var Msg: TMessage);
+procedure TJvSticker.FontChanged;
 begin
+  inherited FontChanged;
   Invalidate;
 end;
 
 procedure TJvSticker.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   // Cursor := crHandPoint;
-  inherited;
+  inherited MouseEnter(Control);
 end;
 
 procedure TJvSticker.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   Cursor := crDefault;
-  inherited;
+  inherited MouseLeave(Control);
 end;
 
-procedure TJvSticker.CMTextChanged(var Msg: TMessage);
+procedure TJvSticker.TextChanged;
 begin
+  inherited TextChanged;
   Invalidate;
 end;
 

@@ -31,7 +31,7 @@ Known Issues:
 - Can't set Position of TJvDomainUpDown at design-time. SOLVED 2003-05-30
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvUpDown;
 
@@ -40,12 +40,13 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ComCtrls, CommCtrl,
-  JVCLVer;
+  JVCLVer, JvExComCtrls;
 
 type
   TJvAlignButton = (abLeft, abRight, abNone);
   TJvUpDownFormat = (ufInt, ufHex);
-  TJvCustomUpDown = class(TCustomUpDown)
+
+  TJvCustomUpDown = class(TJvExCustomUpDown)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
@@ -75,13 +76,10 @@ type
     procedure SetAlignButton(const Value: TJvAlignButton);
     procedure SetFormat(const Value: TJvUpDownFormat);
     procedure UndoAutoResizing(Value: TWinControl);
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
   protected
-    procedure MouseEnter(AControl: TControl); dynamic;
-    procedure MouseLeave(AControl: TControl); dynamic;
-    procedure ParentColorChanged; dynamic;
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
+    procedure ParentColorChanged; override;
     procedure UpdateAssociate; virtual;
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -231,15 +229,8 @@ begin
   FFirstTime := True;
 end;
 
-procedure TJvCustomUpDown.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  MouseEnter(Self);
-end;
-
 procedure TJvCustomUpDown.MouseEnter(AControl: TControl);
 begin
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if not FOver then
@@ -247,39 +238,23 @@ begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
     FOver := True;
+    inherited MouseEnter(AControl);
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvCustomUpDown.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  MouseLeave(Self);
 end;
 
 procedure TJvCustomUpDown.MouseLeave(AControl: TControl);
 begin
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     FOver := False;
     Application.HintColor := FSaved;
+    inherited MouseLeave(AControl);
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-end;
-
-procedure TJvCustomUpDown.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  ParentColorChanged;
 end;
 
 procedure TJvCustomUpDown.ParentColorChanged;
 begin
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;

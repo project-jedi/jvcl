@@ -37,7 +37,7 @@ uses
   {$ELSE}
   QGraphics, QControls, QForms, QComCtrls, QStdActns,
   {$ENDIF VCL}
-  JVCLVer;
+  JVCLVer, JvExComCtrls;
 
 type
   {$IFDEF COMPILER6_UP}
@@ -68,7 +68,7 @@ type
   end;
   {$ENDIF COMPILER6_UP}
 
-  TJvStatusBar = class(TStatusBar)
+  TJvStatusBar = class(TJvExStatusBar)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
@@ -82,20 +82,12 @@ type
     {$IFDEF VCL}
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMSize(var Msg: TMessage); message WM_SIZE;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     {$ENDIF VCL}
   protected
-    {$IFDEF VCL}
-    procedure MouseEnter(AControl: TControl); dynamic;
-    procedure MouseLeave(AControl: TControl); dynamic;
-    procedure ParentColorChanged; dynamic;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
+    {$IFDEF VisualCLX}
     procedure Paint; override;
     procedure BoundsChanged; override;
     {$ENDIF VisualCLX}
@@ -185,20 +177,8 @@ end;
 
 {$ENDIF VisualCLX}
 
-{$IFDEF VCL}
-procedure TJvStatusBar.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  MouseEnter(Self);
-end;
-{$ENDIF VCL}
-
 procedure TJvStatusBar.MouseEnter(AControl: TControl);
 begin
-  {$IFDEF VisualCLX}
-  inherited MouseEnter(AControl);
-  {$ENDIF VisualCLX}
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if not FOver then
@@ -206,49 +186,23 @@ begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
     FOver := True;
+    inherited MouseEnter(AControl);
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
 end;
-
-{$IFDEF VCL}
-procedure TJvStatusBar.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  MouseLeave(Self);
-end;
-{$ENDIF VCL}
 
 procedure TJvStatusBar.MouseLeave(AControl: TControl);
 begin
-  {$IFDEF VisualCLX}
-  inherited MouseLeave(AControl);
-  {$ENDIF VisualCLX}
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     FOver := False;
     Application.HintColor := FSaved;
+    inherited MouseLeave(AControl);
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
 end;
-
-{$IFDEF VCL}
-procedure TJvStatusBar.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  ParentColorChanged;
-end;
-{$ENDIF VCL}
 
 procedure TJvStatusBar.ParentColorChanged;
 begin
-  {$IFDEF VisualCLX}
   inherited ParentColorChanged;
-  {$ENDIF VisualCLX}
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;

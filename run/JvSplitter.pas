@@ -32,25 +32,23 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Forms, ExtCtrls, Controls,
-  JVCLVer;
+  JVCLVer, JvExExtCtrls;
 
 type
-  TJvSplitter = class(TSplitter)
+  TJvSplitter = class(TJvExSplitter)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     {$IFDEF JVCLThemesEnabled}
     function GetParentBackground: Boolean;
     {$ENDIF JVCLThemesEnabled}
   protected
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
     {$IFDEF JVCLThemesEnabled}
     procedure SetParentBackground(Value: Boolean); virtual;
     procedure Paint; override;
@@ -61,8 +59,8 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property ShowHint;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     {$IFDEF JVCLThemesEnabled}
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
@@ -82,37 +80,34 @@ begin
   FOver := False;
 end;
 
-procedure TJvSplitter.CMParentColorChanged(var Msg: TMessage);
+procedure TJvSplitter.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
-procedure TJvSplitter.CMMouseEnter(var Msg: TMessage);
+procedure TJvSplitter.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FOver := True;
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FHintColor;
+    inherited MouseEnter(Control);
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
 end;
 
-procedure TJvSplitter.CMMouseLeave(var Msg: TMessage);
+procedure TJvSplitter.MouseLeave(Control: TControl);
 begin
   if FOver then
   begin
     Application.HintColor := FSaved;
     FOver := False;
+    inherited MouseLeave(Control);
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
 end;
 
 {$IFDEF JVCLThemesEnabled}

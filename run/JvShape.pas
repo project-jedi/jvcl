@@ -38,29 +38,20 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QExtCtrls, QForms,
   {$ENDIF VisualCLX}
-  JVCLVer;
+  JVCLVer, JvExExtCtrls;
 
 type
-  TJvShape = class(TShape)
+  TJvShape = class(TJvExShape)
   private
     FHintColor: TColor;
     FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
   protected
-    {$IFDEF VCL}
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -68,8 +59,8 @@ type
     property Anchors;
     property Constraints;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     {$IFDEF VCL}
     property OnEndDock;
     property OnStartDock;
@@ -104,48 +95,34 @@ begin
   FOver := False;
 end;
 
-{$IFDEF VisualCLX}
 procedure TJvShape.ParentColorChanged;
 begin
   inherited ParentColorChanged;
-{$ELSE}
-procedure TJvShape.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-{$ENDIF VisualCLX}
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
-{$IFDEF VisualCLX}
 procedure TJvShape.MouseEnter(AControl: TControl);
-{$ELSE}
-procedure TJvShape.CMMouseEnter(var Msg: TMessage);
-{$ENDIF VisualCLX}
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
     FOver := True;
+    inherited MouseEnter(AControl);
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
 end;
 
-{$IFDEF VisualCLX}
 procedure TJvShape.MouseLeave(AControl: TControl);
-{$ELSE}
-procedure TJvShape.CMMouseLeave(var Msg: TMessage);
-{$ENDIF VisualCLX}
 begin
   if FOver then
   begin
     Application.HintColor := FSaved;
     FOver := False;
+    inherited MouseLeave(AControl);
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
 end;
 
 end.

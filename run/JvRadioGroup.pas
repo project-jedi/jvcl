@@ -33,30 +33,25 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls,
-  JVCLVer, JvThemes;
+  JVCLVer, JvThemes, JvExExtCtrls;
 
 type
-  TJvRadioGroup = class(TRadioGroup)
+  TJvRadioGroup = class(TJvExRadioGroup)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FReadOnly: Boolean;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
     {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
     {$ENDIF JVCLThemesEnabledD56}
   protected
-    procedure MouseEnter(AControl: TControl); dynamic;
-    procedure MouseLeave(AControl: TControl); dynamic;
-    procedure ParentColorChanged; dynamic;
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
+    procedure ParentColorChanged; override;
     {$IFDEF JVCLThemesEnabledD56}
     procedure SetParentBackground(Value: Boolean);
     procedure Paint; override;
@@ -71,8 +66,8 @@ type
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
     {$ENDIF JVCLThemesEnabledD56}
     property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
@@ -139,15 +134,8 @@ begin
     Result := inherited CanModify;
 end;
 
-procedure TJvRadioGroup.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  MouseEnter(Self);
-end;
-
 procedure TJvRadioGroup.MouseEnter(AControl: TControl);
 begin
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if not FOver then
@@ -155,39 +143,25 @@ begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
     FOver := True;
+    inherited MouseEnter(AControl);
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvRadioGroup.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  MouseLeave(Self);
 end;
 
 procedure TJvRadioGroup.MouseLeave(AControl: TControl);
 begin
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if FOver then
   begin
     FOver := False;
     Application.HintColor := FSaved;
+    inherited MouseLeave(AControl);
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-end;
-
-procedure TJvRadioGroup.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  ParentColorChanged;
 end;
 
 procedure TJvRadioGroup.ParentColorChanged;
 begin
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;

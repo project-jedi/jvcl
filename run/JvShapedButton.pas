@@ -33,34 +33,30 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls,
-  JvThemes;
+  JvThemes, JvExStdCtrls;
 
 type
   TJvButtonShapes = (jvSLeftArrow, jvRightArrow, jvSRound, jvSHex, jvSOctagon, jvSPar,
     jvSDiamond, jvSTriangleUp, jvSTriangleDown, jvSTriangleLeft,
     jvSTriangleRight, jvSPentagon, JvSRevPentagon, jvSRing);
 
-  TJvShapedButton = class(TButton)
+  TJvShapedButton = class(TJvExButton)
   private
     bm: TBitmap;
     IsFocused: Boolean;
-    IsHot: boolean;
+    IsHot: Boolean;
     FCanvas: TCanvas;
     FHotColor: TColor;
-    FFlat: boolean;
+    FFlat: Boolean;
     FFlatBorderColor: TColor;
     FButtonShape: TJvButtonShapes;
-    xp, yp: integer;
-    FFlatArrow: boolean;
-    FAntiAlias: boolean;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
+    xp, yp: Integer;
+    FFlatArrow: Boolean;
+    FAntiAlias: Boolean;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure WMLButtonDblClk(var Message: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
     procedure SetHotColor(const Value: TColor);
-    procedure SetFlat(const Value: boolean);
+    procedure SetFlat(const Value: Boolean);
     procedure SetFlatBorderColor(const Value: TColor);
     procedure SetButtonShape(const Value: TJvButtonShapes);
     procedure CNDrawItemOctagon(var Msg: TWMDrawItem);
@@ -69,8 +65,8 @@ type
     procedure CNDrawItemTriangleRight(var Msg: TWMDrawItem);
     procedure CNDrawItemTriangleUp(var Msg: TWMDrawItem);
     procedure CNDrawItemPar(var Msg: TWMDrawItem);
-    procedure calcpentagon(AWidth, Aheight: integer);
-    procedure SetFlatArrow(const Value: boolean);
+    procedure calcpentagon(AWidth, Aheight: Integer);
+    procedure SetFlatArrow(const Value: Boolean);
     procedure CNDrawItemLeftArrow(var Msg: TWMDrawItem);
     procedure CNDrawItemRightArrow(var Msg: TWMDrawItem);
     procedure CNDrawItemRing(var Msg: TWMDrawItem);
@@ -81,7 +77,7 @@ type
     procedure CNDrawItemDiamond(var Msg: TWMDrawItem);
     procedure SetButton(ALeft, ATop, AWidth, AHeight: Integer);
     procedure DoAntiAlias(Bmp:TBitmap);
-    procedure SetAntiAlias(const Value: boolean);
+    procedure SetAntiAlias(const Value: Boolean);
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   protected
@@ -100,6 +96,10 @@ type
     procedure SetRegionRevPentagon(ALeft, ATop, AWidth, AHeight: Integer);
     procedure SetRegionRing(ALeft, ATop, AWidth, AHeight: Integer);
 
+    procedure MouseLeave(Control: TControl); override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure FontChanged; override;
+    procedure EnabledChanged; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure SetButtonStyle(ADefault: Boolean); override;
@@ -114,7 +114,7 @@ type
     property HotColor: TColor read FHotColor write SetHotColor;
     property Flat: Boolean read FFlat write SetFlat;
     property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor;
-    property FlatArrow: boolean read FFlatArrow write SetFlatArrow;
+    property FlatArrow: Boolean read FFlatArrow write SetFlatArrow;
     property Width default 65;
     property Height default 65;
     property ParentShowHint;
@@ -215,15 +215,15 @@ begin
   end;
 end;
 
-procedure TJvShapedButton.CMFontChanged(var Msg: TMessage);
+procedure TJvShapedButton.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   Invalidate;
 end;
 
-procedure TJvShapedButton.CMEnabledChanged(var Msg: TMessage);
+procedure TJvShapedButton.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   Invalidate;
 end;
 
@@ -246,16 +246,26 @@ begin
   Msg.Result := 1;
 end;
 
-procedure TJvShapedButton.CMMouseEnter(var Message: TMessage);
+procedure TJvShapedButton.MouseEnter(Control: TControl);
 begin
-  IsHot := true;
-  invalidate;
+  if csDesigning in ComponentState then
+    Exit;
+  if not IsHot then
+  begin
+    IsHot := True;
+    Invalidate;
+    inherited MouseEnter(Control);
+  end;
 end;
 
-procedure TJvShapedButton.CMMouseLeave(var Message: TMessage);
+procedure TJvShapedButton.MouseLeave(Control: TControl);
 begin
-  IsHot := false;
-  invalidate;
+  if IsHot then
+  begin
+    IsHot := False;
+    Invalidate;
+    inherited MouseLeave(Control);
+  end;
 end;
 
 procedure TJvShapedButton.SetHotColor(const Value: TColor);
@@ -263,7 +273,7 @@ begin
   FHotColor := Value;
 end;
 
-procedure TJvShapedButton.SetFlat(const Value: boolean);
+procedure TJvShapedButton.SetFlat(const Value: Boolean);
 begin
   FFlat := Value;
   invalidate;
@@ -285,16 +295,15 @@ begin
       Invalidate;
     end;
   end;
-
 end;
 
 procedure TJvShapedButton.SetRegionOctagon(ALeft, ATop, AWidth, AHeight: Integer);
 var
   x4, y4: Integer;
   hRegion: THandle;
-  poly: array[0..7] of Tpoint;
+  poly: array[0..7] of TPoint;
 begin
-  x4 := width div 4;
+  x4 := Width div 4;
   y4 := Aheight div 4;
   poly[0] := point(x4, 0);
   poly[1] := point(Awidth - x4, 0);
@@ -312,22 +321,22 @@ procedure TJvShapedButton.CNDrawItemOctagon(var Msg: TWMDrawItem);
 var
   OdsDown, OdsFocus, ActionFocus: Boolean;
   Rect: TRect;
-  poly: array[0..8] of Tpoint;
+  poly: array[0..8] of TPoint;
   polyBR: array[0..4] of TPoint;
   polyTL: array[0..4] of TPoint;
-  x4, y4, w, h: integer;
+  x4, y4, w, h: Integer;
 
   procedure setpoly;
   begin
     w := Rect.right - Rect.left + 1;
-    h := rect.bottom - Rect.top + 1;
+    h := Rect.bottom - Rect.top + 1;
     x4 := w div 4;
     y4 := h div 4;
     poly[0] := point(Rect.left + x4, Rect.top);
-    poly[1] := point(rect.right - x4, Rect.top);
+    poly[1] := point(Rect.right - x4, Rect.top);
     poly[2] := point(Rect.right, Rect.top + y4);
-    poly[3] := point(rect.right, Rect.bottom - y4);
-    poly[4] := point(Rect.Right - x4, rect.bottom);
+    poly[3] := point(Rect.right, Rect.bottom - y4);
+    poly[4] := point(Rect.Right - x4, Rect.bottom);
     poly[5] := point(Rect.left + x4, Rect.bottom);
     poly[6] := point(Rect.left, Rect.bottom - y4);
     poly[7] := point(Rect.left, y4);
@@ -347,17 +356,17 @@ begin
   begin
     OdsDown := itemState and ODS_SELECTED <> 0;
     OdsFocus := itemState and ODS_FOCUS <> 0;
-    ActionFocus := ItemAction = oda_Focus
+    ActionFocus := ItemAction = ODA_FOCUS
   end;
-  bm.width := width;
+  bm.Width := Width;
   bm.height := height;
   with bm.Canvas do
   begin
-    pen.width := 2;
+    pen.Width := 2;
     Brush.Color := Color;
     if not ActionFocus then
     begin
-      // fill with current color
+      // fill with current Color
       Brush.Style := bsSolid;
       FillRect(Rect);
     end;
@@ -456,12 +465,12 @@ begin
     end;
     Font := Self.Font;
     if (IsHot and (not OdsDown)) then
-      font.color := FHotColor;
+      Font.Color := FHotColor;
     if not ActionFocus then
       DrawText(bm.Canvas.Handle, PChar(Caption), -1,
         Rect, dt_SingleLine or dt_Center or dt_VCenter);
 
-    // draw the focus rect around the text
+    // draw the focus Rect around the text
     Brush.Style := bsSolid;
     Pen.Color := clBlack;
     Brush.Color := clWhite;
@@ -477,9 +486,9 @@ procedure TJvShapedButton.SetRegionTriangleDown(ALeft, ATop, AWidth, AHeight: In
 var
   x2: Integer;
   hRegion: THandle;
-  poly: array[0..2] of Tpoint;
+  poly: array[0..2] of TPoint;
 begin
-  x2 := width div 2;
+  x2 := Width div 2;
   //  y2:=Aheight div 2;
   poly[0] := point(0, 0);
   poly[1] := point(Awidth, 0);
@@ -492,9 +501,9 @@ procedure TJvShapedButton.SetRegionTriangleLeft(ALeft, ATop, AWidth, AHeight: In
 var
   y2: Integer;
   hRegion: THandle;
-  poly: array[0..2] of Tpoint;
+  poly: array[0..2] of TPoint;
 begin
-  //  x2:=width div 2;
+  //  x2:=Width div 2;
   y2 := Aheight div 2;
   poly[0] := point(0, y2);
   poly[1] := point(Awidth, 0);
@@ -507,9 +516,9 @@ procedure TJvShapedButton.SetRegionTriangleRight(ALeft, ATop, AWidth, AHeight: I
 var
   y2: Integer;
   hRegion: THandle;
-  poly: array[0..2] of Tpoint;
+  poly: array[0..2] of TPoint;
 begin
-  //  x2:=width div 2;
+  //  x2:=Width div 2;
   y2 := Aheight div 2;
   poly[0] := point(0, 0);
   poly[1] := point(Awidth, y2);
@@ -522,9 +531,9 @@ procedure TJvShapedButton.SetRegionTriangleUp(ALeft, ATop, AWidth, AHeight: Inte
 var
   x2: Integer;
   hRegion: THandle;
-  poly: array[0..2] of Tpoint;
+  poly: array[0..2] of TPoint;
 begin
-  x2 := width div 2;
+  x2 := Width div 2;
   //  y2:=Aheight div 2;
   poly[0] := point(x2, 0);
   poly[1] := point(Awidth, Aheight);
@@ -537,20 +546,20 @@ procedure TJvShapedButton.CNDrawItemTriangleRight(var Msg: TWMDrawItem);
 var
   OdsDown, OdsFocus, ActionFocus: Boolean;
   Rect: TRect;
-  poly: array[0..3] of Tpoint;
+  poly: array[0..3] of TPoint;
   polyBR: array[0..2] of TPoint;
   polyTL: array[0..1] of TPoint;
-  x2, y2, w, h: integer;
+  x2, y2, w, h: Integer;
 
   procedure setpoly;
   begin
     w := Rect.right - Rect.left + 1;
-    h := rect.bottom - Rect.top + 1;
+    h := Rect.bottom - Rect.top + 1;
     x2 := w div 2;
     y2 := h div 2;
     poly[0] := point(Rect.left, Rect.top);
-    poly[1] := point(rect.right, Rect.top + y2);
-    poly[2] := point(rect.left, Rect.bottom);
+    poly[1] := point(Rect.right, Rect.top + y2);
+    poly[2] := point(Rect.left, Rect.bottom);
     poly[3] := poly[0];
   end;
 
@@ -569,15 +578,15 @@ begin
     OdsFocus := itemState and ODS_FOCUS <> 0;
     ActionFocus := ItemAction = oda_Focus
   end;
-  bm.width := width;
+  bm.Width := Width;
   bm.height := height;
   with bm.Canvas do
   begin
-    pen.width := 2;
+    pen.Width := 2;
     Brush.Color := Color;
     if not ActionFocus then
     begin
-      // fill with current color
+      // fill with current Color
       Brush.Style := bsSolid;
       FillRect(Rect);
     end;
@@ -662,12 +671,12 @@ begin
     end;
     Font := Self.Font;
     if (IsHot and (not OdsDown)) then
-      font.color := FHotColor;
+      Font.Color := FHotColor;
     if not ActionFocus then
       DrawText(bm.Canvas.Handle, PChar(Caption), -1,
         Rect, dt_SingleLine or dt_Center or dt_VCenter);
 
-    // draw the focus rect around the text
+    // draw the focus Rect around the text
     Brush.Style := bsSolid;
     Pen.Color := clBlack;
     Brush.Color := clWhite;
@@ -683,20 +692,20 @@ procedure TJvShapedButton.CNDrawItemTriangleUp(var Msg: TWMDrawItem);
 var
   OdsDown, OdsFocus, ActionFocus: Boolean;
   Rect: TRect;
-  poly: array[0..3] of Tpoint;
+  poly: array[0..3] of TPoint;
   polyBR: array[0..2] of TPoint;
   polyTL: array[0..1] of TPoint;
-  x2, y2, w, h: integer;
+  x2, y2, w, h: Integer;
 
   procedure setpoly;
   begin
     w := Rect.right - Rect.left + 1;
-    h := rect.bottom - Rect.top + 1;
+    h := Rect.bottom - Rect.top + 1;
     x2 := w div 2;
     y2 := h div 2;
     poly[0] := point(Rect.left + x2, Rect.top);
-    poly[1] := point(rect.right, Rect.bottom);
-    poly[2] := point(rect.left, Rect.bottom);
+    poly[1] := point(Rect.right, Rect.bottom);
+    poly[2] := point(Rect.left, Rect.bottom);
     poly[3] := poly[0];
   end;
 
@@ -715,15 +724,15 @@ begin
     OdsFocus := itemState and ODS_FOCUS <> 0;
     ActionFocus := ItemAction = oda_Focus
   end;
-  bm.width := width;
+  bm.Width := Width;
   bm.height := height;
   with bm.Canvas do
   begin
-    pen.width := 2;
+    pen.Width := 2;
     Brush.Color := Color;
     if not ActionFocus then
     begin
-      // fill with current color
+      // fill with current Color
       Brush.Style := bsSolid;
       FillRect(Rect);
     end;
@@ -808,12 +817,12 @@ begin
     end;
     Font := Self.Font;
     if (IsHot and (not OdsDown)) then
-      font.color := FHotColor;
+      Font.Color := FHotColor;
     if not ActionFocus then
       DrawText(bm.Canvas.Handle, PChar(Caption), -1,
         Rect, dt_SingleLine or dt_Center or dt_VCenter);
 
-    // draw the focus rect around the text
+    // draw the focus Rect around the text
     Brush.Style := bsSolid;
     Pen.Color := clBlack;
     Brush.Color := clWhite;
@@ -829,20 +838,20 @@ procedure TJvShapedButton.CNDrawItemTriangleLeft(var Msg: TWMDrawItem);
 var
   OdsDown, OdsFocus, ActionFocus: Boolean;
   Rect: TRect;
-  poly: array[0..3] of Tpoint;
+  poly: array[0..3] of TPoint;
   polyBR: array[0..1] of TPoint;
   polyTL: array[0..2] of TPoint;
-  x2, y2, w, h: integer;
+  x2, y2, w, h: Integer;
 
   procedure setpoly;
   begin
     w := Rect.right - Rect.left + 1;
-    h := rect.bottom - Rect.top + 1;
+    h := Rect.bottom - Rect.top + 1;
     x2 := w div 2;
     y2 := h div 2;
     poly[0] := point(Rect.left, Rect.top + y2);
-    poly[1] := point(rect.right, rect.top);
-    poly[2] := point(rect.right, Rect.bottom);
+    poly[1] := point(Rect.right, Rect.top);
+    poly[2] := point(Rect.right, Rect.bottom);
     poly[3] := poly[0];
   end;
 
@@ -861,15 +870,15 @@ begin
     OdsFocus := itemState and ODS_FOCUS <> 0;
     ActionFocus := ItemAction = oda_Focus
   end;
-  bm.width := width;
+  bm.Width := Width;
   bm.height := height;
   with bm.Canvas do
   begin
-    pen.width := 2;
+    pen.Width := 2;
     Brush.Color := Color;
     if not ActionFocus then
     begin
-      // fill with current color
+      // fill with current Color
       Brush.Style := bsSolid;
       FillRect(Rect);
     end;
@@ -952,12 +961,12 @@ begin
     end;
     Font := Self.Font;
     if (IsHot and (not OdsDown)) then
-      font.color := FHotColor;
+      Font.Color := FHotColor;
     if not ActionFocus then
       DrawText(bm.Canvas.Handle, PChar(Caption), -1,
         Rect, dt_SingleLine or dt_Center or dt_VCenter);
 
-    // draw the focus rect around the text
+    // draw the focus Rect around the text
     Brush.Style := bsSolid;
     Pen.Color := clBlack;
     Brush.Color := clWhite;
@@ -973,20 +982,20 @@ procedure TJvShapedButton.CNDrawItemTriangleDown(var Msg: TWMDrawItem);
 var
   OdsDown, OdsFocus, ActionFocus: Boolean;
   Rect: TRect;
-  poly: array[0..3] of Tpoint;
+  poly: array[0..3] of TPoint;
   polyBR: array[0..1] of TPoint;
   polyTL: array[0..2] of TPoint;
-  x2, y2, w, h: integer;
+  x2, y2, w, h: Integer;
 
   procedure setpoly;
   begin
     w := Rect.right - Rect.left + 1;
-    h := rect.bottom - Rect.top + 1;
+    h := Rect.bottom - Rect.top + 1;
     x2 := w div 2;
     y2 := h div 2;
     poly[0] := point(Rect.left, Rect.top);
-    poly[1] := point(rect.right, Rect.top);
-    poly[2] := point(rect.left + x2, Rect.bottom);
+    poly[1] := point(Rect.right, Rect.top);
+    poly[2] := point(Rect.left + x2, Rect.bottom);
     poly[3] := poly[0];
   end;
 
@@ -1005,15 +1014,15 @@ begin
     OdsFocus := itemState and ODS_FOCUS <> 0;
     ActionFocus := ItemAction = oda_Focus
   end;
-  bm.width := width;
+  bm.Width := Width;
   bm.height := height;
   with bm.Canvas do
   begin
-    pen.width := 2;
+    pen.Width := 2;
     Brush.Color := Color;
     if not ActionFocus then
     begin
-      // fill with current color
+      // fill with current Color
       Brush.Style := bsSolid;
       FillRect(Rect);
     end;
@@ -1096,12 +1105,12 @@ begin
     end;
     Font := Self.Font;
     if (IsHot and (not OdsDown)) then
-      font.color := FHotColor;
+      Font.Color := FHotColor;
     if not ActionFocus then
       DrawText(bm.Canvas.Handle, PChar(Caption), -1,
         Rect, dt_SingleLine or dt_Center or dt_VCenter);
 
-    // draw the focus rect around the text
+    // draw the focus Rect around the text
     Brush.Style := bsSolid;
     Pen.Color := clBlack;
     Brush.Color := clWhite;
@@ -1117,21 +1126,21 @@ procedure TJvShapedButton.CNDrawItemPar(var Msg: TWMDrawItem);
 var
   OdsDown, OdsFocus, ActionFocus: Boolean;
   Rect: TRect;
-  poly: array[0..4] of Tpoint;
+  poly: array[0..4] of TPoint;
   polyBR: array[0..2] of TPoint;
   polyTL: array[0..2] of TPoint;
-  x4, y2, w, h: integer;
+  x4, y2, w, h: Integer;
 
   procedure setpoly;
   begin
     w := Rect.right - Rect.left + 1;
-    h := rect.bottom - Rect.top + 1;
+    h := Rect.bottom - Rect.top + 1;
     x4 := w div 4;
     y2 := h div 2;
     poly[0] := point(Rect.left + x4, Rect.top);
-    poly[1] := point(rect.right, Rect.top);
+    poly[1] := point(Rect.right, Rect.top);
     poly[2] := point(Rect.right - x4, Rect.bottom);
-    poly[3] := point(rect.left, Rect.bottom);
+    poly[3] := point(Rect.left, Rect.bottom);
     poly[4] := poly[0];
   end;
 
@@ -1150,15 +1159,15 @@ begin
     OdsFocus := itemState and ODS_FOCUS <> 0;
     ActionFocus := ItemAction = oda_Focus
   end;
-  bm.width := width;
+  bm.Width := Width;
   bm.height := height;
   with bm.Canvas do
   begin
-    pen.width := 2;
+    pen.Width := 2;
     Brush.Color := Color;
     if not ActionFocus then
     begin
-      // fill with current color
+      // fill with current Color
       Brush.Style := bsSolid;
       FillRect(Rect);
     end;
@@ -1245,12 +1254,12 @@ begin
     end;
     Font := Self.Font;
     if (IsHot and (not OdsDown)) then
-      font.color := FHotColor;
+      Font.Color := FHotColor;
     if not ActionFocus then
       DrawText(bm.Canvas.Handle, PChar(Caption), -1,
         Rect, dt_SingleLine or dt_Center or dt_VCenter);
 
-    // draw the focus rect around the text
+    // draw the focus Rect around the text
     Brush.Style := bsSolid;
     Pen.Color := clBlack;
     Brush.Color := clWhite;
@@ -1265,10 +1274,10 @@ end;
 procedure TJvShapedButton.SetRegionPar(ALeft, ATop, AWidth, AHeight: Integer);
 var
   hRegion: THandle;
-  poly: array[0..3] of Tpoint;
-  x4: integer;
+  poly: array[0..3] of TPoint;
+  x4: Integer;
 begin
-  x4 := width div 4;
+  x4 := Width div 4;
   //  y2:=Aheight div 2;
   poly[0] := point(x4, 0);
   poly[1] := point(Awidth, 0);
@@ -1282,8 +1291,8 @@ procedure TJvShapedButton.SetRegionDiamond(ALeft, ATop, AWidth,
   AHeight: Integer);
 var
   hRegion: THandle;
-  poly: array[0..3] of Tpoint;
-  x2, y2: integer;
+  poly: array[0..3] of TPoint;
+  x2, y2: Integer;
 begin
   x2 := AWidth div 2;
   y2 := AHeight div 2;
@@ -1299,10 +1308,10 @@ procedure TJvShapedButton.SetRegionHex(ALeft, ATop, AWidth,
   AHeight: Integer);
 var
   hRegion: THandle;
-  poly: array[0..5] of Tpoint;
-  x4, y2: integer;
+  poly: array[0..5] of TPoint;
+  x4, y2: Integer;
 begin
-  x4 := width div 4;
+  x4 := Width div 4;
   y2 := Aheight div 2;
   poly[0] := point(x4, 0);
   poly[1] := point(Awidth - x4, 0);
@@ -1318,13 +1327,13 @@ procedure TJvShapedButton.SetRegionLeftArrow(ALeft, ATop, AWidth,
   AHeight: Integer);
 var
   hRegion: THandle;
-  poly: array[0..5] of Tpoint;
-  x8, y2: integer;
+  poly: array[0..5] of TPoint;
+  x8, y2: Integer;
 begin
   if FFlatArrow then
-    x8 := width div 16
+    x8 := Width div 16
   else
-    x8 := width div 8;
+    x8 := Width div 8;
   y2 := Aheight div 2;
   poly[0] := point(0, 0);
   poly[1] := point(Awidth - x8, 0);
@@ -1340,8 +1349,8 @@ procedure TJvShapedButton.SetRegionPentagon(ALeft, ATop, AWidth,
   AHeight: Integer);
 var
   hRegion: THandle;
-  poly: array[0..4] of Tpoint;
-  x2: integer;
+  poly: array[0..4] of TPoint;
+  x2: Integer;
 begin
   x2 := Awidth div 2;
   calcpentagon(Awidth, aheight);
@@ -1358,8 +1367,8 @@ procedure TJvShapedButton.SetRegionRevPentagon(ALeft, ATop, AWidth,
   AHeight: Integer);
 var
   hRegion: THandle;
-  poly: array[0..4] of Tpoint;
-  x2: integer;
+  poly: array[0..4] of TPoint;
+  x2: Integer;
 begin
   x2 := Awidth div 2;
   calcpentagon(Awidth, aheight);
@@ -1377,13 +1386,13 @@ procedure TJvShapedButton.SetRegionRightArrow(ALeft, ATop, AWidth,
   AHeight: Integer);
 var
   hRegion: THandle;
-  poly: array[0..5] of Tpoint;
-  x8, y2: integer;
+  poly: array[0..5] of TPoint;
+  x8, y2: Integer;
 begin
   if FFlatArrow then
-    x8 := width div 16
+    x8 := Width div 16
   else
-    x8 := width div 8;
+    x8 := Width div 8;
   y2 := Aheight div 2;
   poly[0] := point(x8, 0);
   poly[1] := point(Awidth, 0);
@@ -1399,7 +1408,7 @@ procedure TJvShapedButton.SetRegionRing(ALeft, ATop, AWidth,
   AHeight: Integer);
 var
   rgn1, rgn2, rgn3: Hrgn;
-  x4, y4: integer;
+  x4, y4: Integer;
 begin
   x4 := AWidth div 4 ;
   y4 := AHeight div 4;
@@ -1419,9 +1428,9 @@ begin
   SetWindowRgn(Handle, hRegion, True);
 end;
 
-procedure TJvShapedButton.calcpentagon(AWidth, Aheight: integer);
+procedure TJvShapedButton.calcpentagon(AWidth, Aheight: Integer);
 var
-  x2, y2, r: integer;
+  x2, y2, r: Integer;
   a: extended;
 begin
   a := pi / 2 - (2 * pi / 5);
@@ -1433,12 +1442,12 @@ begin
   xp := round(x2 - r * sin(a));
 end;
 
-procedure TJvShapedButton.SetFlatArrow(const Value: boolean);
+procedure TJvShapedButton.SetFlatArrow(const Value: Boolean);
 begin
   if value <> FFlatArrow then
   begin
     FFlatArrow := Value;
-    setbounds(Left, top, width, height);
+    setbounds(Left, top, Width, height);
     invalidate;
   end;
 end;
@@ -1447,25 +1456,25 @@ procedure TJvShapedButton.CNDrawItemLeftArrow(var Msg: TWMDrawItem);
 var
   OdsDown, OdsFocus, ActionFocus: Boolean;
   Rect: TRect;
-  poly: array[0..6] of Tpoint;
+  poly: array[0..6] of TPoint;
   polyBR: array[0..3] of TPoint;
   polyTL: array[0..3] of TPoint;
-  x8, y2, w, h: integer;
+  x8, y2, w, h: Integer;
 
   procedure setpoly;
   begin
     w := Rect.right - Rect.left + 1;
-    h := rect.bottom - Rect.top + 1;
+    h := Rect.bottom - Rect.top + 1;
     if FFlatArrow then
       x8 := w div 16
     else
       x8 := w div 8;
     y2 := h div 2;
     poly[0] := point(Rect.left, Rect.top);
-    poly[1] := point(rect.right - x8, Rect.top);
+    poly[1] := point(Rect.right - x8, Rect.top);
     poly[2] := point(Rect.right, y2);
-    poly[3] := point(rect.right - x8, Rect.bottom);
-    poly[4] := point(0, rect.bottom);
+    poly[3] := point(Rect.right - x8, Rect.bottom);
+    poly[4] := point(0, Rect.bottom);
     poly[5] := point(x8, y2);
     poly[6] := poly[0];
   end;
@@ -1485,15 +1494,15 @@ begin
     OdsFocus := itemState and ODS_FOCUS <> 0;
     ActionFocus := ItemAction = oda_Focus
   end;
-  bm.width := width;
+  bm.Width := Width;
   bm.height := height;
   with bm.Canvas do
   begin
-    pen.width := 2;
+    pen.Width := 2;
     Brush.Color := Color;
     if not ActionFocus then
     begin
-      // fill with current color
+      // fill with current Color
       Brush.Style := bsSolid;
       FillRect(Rect);
     end;
@@ -1586,12 +1595,12 @@ begin
     end;
     Font := Self.Font;
     if (IsHot and (not OdsDown)) then
-      font.color := FHotColor;
+      Font.Color := FHotColor;
     if not ActionFocus then
       DrawText(bm.Canvas.Handle, PChar(Caption), -1,
         Rect, dt_SingleLine or dt_Center or dt_VCenter);
 
-    // draw the focus rect around the text
+    // draw the focus Rect around the text
     Brush.Style := bsSolid;
     Pen.Color := clBlack;
     Brush.Color := clWhite;
@@ -1607,26 +1616,26 @@ procedure TJvShapedButton.CNDrawItemRightArrow(var Msg: TWMDrawItem);
 var
   OdsDown, OdsFocus, ActionFocus: Boolean;
   Rect: TRect;
-  poly: array[0..6] of Tpoint;
+  poly: array[0..6] of TPoint;
   polyBR: array[0..3] of TPoint;
   polyTL: array[0..3] of TPoint;
-  x8, y2, w, h: integer;
+  x8, y2, w, h: Integer;
 
   procedure setpoly;
   begin
     w := Rect.right - Rect.left + 1;
-    h := rect.bottom - Rect.top + 1;
+    h := Rect.bottom - Rect.top + 1;
     if FFlatArrow then
       x8 := w div 16
     else
       x8 := w div 8;
     y2 := h div 2;
     poly[0] := point(Rect.left + x8, Rect.top);
-    poly[1] := point(rect.right, Rect.top);
+    poly[1] := point(Rect.right, Rect.top);
     poly[2] := point(Rect.right - x8, y2);
-    poly[3] := point(rect.right, Rect.bottom);
-    poly[4] := point(rect.left + x8, rect.bottom);
-    poly[5] := point(rect.left, y2);
+    poly[3] := point(Rect.right, Rect.bottom);
+    poly[4] := point(Rect.left + x8, Rect.bottom);
+    poly[5] := point(Rect.left, y2);
     poly[6] := poly[0];
   end;
 
@@ -1645,15 +1654,15 @@ begin
     OdsFocus := itemState and ODS_FOCUS <> 0;
     ActionFocus := ItemAction = oda_Focus
   end;
-  bm.width := width;
+  bm.Width := Width;
   bm.height := height;
   with bm.Canvas do
   begin
-    pen.width := 2;
+    pen.Width := 2;
     Brush.Color := Color;
     if not ActionFocus then
     begin
-      // fill with current color
+      // fill with current Color
       Brush.Style := bsSolid;
       FillRect(Rect);
     end;
@@ -1746,12 +1755,12 @@ begin
     end;
     Font := Self.Font;
     if (IsHot and (not OdsDown)) then
-      font.color := FHotColor;
+      Font.Color := FHotColor;
     if not ActionFocus then
       DrawText(bm.Canvas.Handle, PChar(Caption), -1,
         Rect, dt_SingleLine or dt_Center or dt_VCenter);
 
-    // draw the focus rect around the text
+    // draw the focus Rect around the text
     Brush.Style := bsSolid;
     Pen.Color := clBlack;
     Brush.Color := clWhite;
@@ -1767,12 +1776,12 @@ procedure TJvShapedButton.CNDrawItemRing(var Msg: TWMDrawItem);
 var
   OdsDown, OdsFocus, ActionFocus: Boolean;
   R, Ri: TRect;
-  x4, y4: integer;
+  x4, y4: Integer;
 begin
   if csDestroying in ComponentState then
     Exit;
   // initialize
-  x4 := (width div 4) - 1;
+  x4 := (Width div 4) - 1;
   y4 := (height div 4) - 1;
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   R := ClientRect;
@@ -1785,16 +1794,16 @@ begin
   end;
 
   bm.PixelFormat := pf24bit;
-  bm.width := width;
+  bm.Width := Width;
   bm.height := height;
 
   with bm.Canvas do
   begin
-    pen.width := 2;
+    pen.Width := 2;
     Brush.Color := Self.Color;
     if not ActionFocus then
     begin
-      // fill with current color
+      // fill with current Color
       Brush.Style := bsSolid;
       FillRect(R);
     end;
@@ -1902,7 +1911,7 @@ begin
       DrawText (bm.Canvas.Handle, PChar (Caption), -1,
         Rect, dt_SingleLine or dt_Center or dt_VCenter);
 
-    // draw the focus rect around the text
+    // draw the focus Rect around the text
     Brush.Style := bsSolid;
     Pen.Color:= clBlack;
     Brush.Color := clWhite;
@@ -1935,17 +1944,17 @@ begin
     ActionFocus := ItemAction = oda_Focus
   end;
 
-  bm.width := width;
+  bm.Width := Width;
   bm.height := height;
   bm.PixelFormat := pf24bit;
 
   with bm.Canvas do
   begin
-    pen.width := 2;
+    pen.Width := 2;
     Brush.Color := Color;
     if not ActionFocus then
     begin
-      // fill with current color
+      // fill with current Color
       Brush.Style := bsSolid;
       FillRect(Rect);
     end;
@@ -2019,7 +2028,7 @@ begin
       DrawText(bm.Canvas.Handle, PChar(Caption), -1,
         Rect, dt_SingleLine or dt_Center or dt_VCenter);
 
-    // draw the focus rect around the text
+    // draw the focus Rect around the text
     Brush.Style := bsSolid;
     Pen.Color := clBlack;
     Brush.Color := clWhite;
@@ -2035,21 +2044,21 @@ procedure TJvShapedButton.CNDrawItemPentagon(var Msg: TWMDrawItem);
 var
   OdsDown, OdsFocus, ActionFocus: Boolean;
   Rect: TRect;
-  poly: array[0..5] of Tpoint;
+  poly: array[0..5] of TPoint;
   polyBR: array[0..3] of TPoint;
   polyTL: array[0..2] of TPoint;
-  x2, y2, w, h: integer;
+  x2, y2, w, h: Integer;
 
   procedure setpoly;
   begin
     w := Rect.right - Rect.left + 1;
-    h := rect.bottom - Rect.top + 1;
+    h := Rect.bottom - Rect.top + 1;
     x2 := w div 2;
     y2 := h div 2;
     poly[0] := point(Rect.left + x2, Rect.top);
-    poly[1] := point(rect.right, Rect.top + yp);
+    poly[1] := point(Rect.right, Rect.top + yp);
     poly[2] := point(Rect.right - xp, Rect.bottom);
-    poly[3] := point(rect.left + xp, Rect.bottom);
+    poly[3] := point(Rect.left + xp, Rect.bottom);
     poly[4] := point(Rect.Left, Rect.top + yp);
     poly[5] := poly[0];
   end;
@@ -2069,16 +2078,16 @@ begin
     OdsFocus := itemState and ODS_FOCUS <> 0;
     ActionFocus := ItemAction = oda_Focus
   end;
-  bm.width := width;
+  bm.Width := Width;
   bm.height := height;
 
   with bm.Canvas do
   begin
-    pen.width := 2;
+    pen.Width := 2;
     Brush.Color := Color;
     if not ActionFocus then
     begin
-      // fill with current color
+      // fill with current Color
       Brush.Style := bsSolid;
       FillRect(Rect);
     end;
@@ -2169,12 +2178,12 @@ begin
     end;
     Font := Self.Font;
     if (IsHot and (not OdsDown)) then
-      font.color := FHotColor;
+      Font.Color := FHotColor;
     if not ActionFocus then
       DrawText(bm.Canvas.Handle, PChar(Caption), -1,
         Rect, dt_SingleLine or dt_Center or dt_VCenter);
 
-    // draw the focus rect around the text
+    // draw the focus Rect around the text
     Brush.Style := bsSolid;
     Pen.Color := clBlack;
     Brush.Color := clWhite;
@@ -2190,21 +2199,21 @@ procedure TJvShapedButton.CNDrawItemRevPentagon(var Msg: TWMDrawItem);
 var
   OdsDown, OdsFocus, ActionFocus: Boolean;
   Rect: TRect;
-  poly: array[0..5] of Tpoint;
+  poly: array[0..5] of TPoint;
   polyBR: array[0..2] of TPoint;
   polyTL: array[0..3] of TPoint;
-  x2, y2, w, h: integer;
+  x2, y2, w, h: Integer;
 
   procedure setpoly;
   begin
     w := Rect.right - Rect.left + 1;
-    h := rect.bottom - Rect.top + 1;
+    h := Rect.bottom - Rect.top + 1;
     x2 := w div 2;
     y2 := h div 2;
     poly[0] := point(Rect.left + xp, Rect.top);
-    poly[1] := point(rect.right - xp, Rect.top);
+    poly[1] := point(Rect.right - xp, Rect.top);
     poly[2] := point(Rect.right, Rect.bottom - yp);
-    poly[3] := point(rect.left + x2, Rect.bottom);
+    poly[3] := point(Rect.left + x2, Rect.bottom);
     poly[4] := point(Rect.Left, Rect.bottom - yp);
     poly[5] := poly[0];
   end;
@@ -2224,15 +2233,15 @@ begin
     OdsFocus := itemState and ODS_FOCUS <> 0;
     ActionFocus := ItemAction = oda_Focus
   end;
-  bm.width := width;
+  bm.Width := Width;
   bm.height := height;
   with bm.Canvas do
   begin
-    pen.width := 2;
+    pen.Width := 2;
     Brush.Color := Color;
     if not ActionFocus then
     begin
-      // fill with current color
+      // fill with current Color
       Brush.Style := bsSolid;
       FillRect(Rect);
     end;
@@ -2321,12 +2330,12 @@ begin
     end;
     Font := Self.Font;
     if (IsHot and (not OdsDown)) then
-      font.color := FHotColor;
+      Font.Color := FHotColor;
     if not ActionFocus then
       DrawText(bm.Canvas.Handle, PChar(Caption), -1,
         Rect, dt_SingleLine or dt_Center or dt_VCenter);
 
-    // draw the focus rect around the text
+    // draw the focus Rect around the text
     Brush.Style := bsSolid;
     Pen.Color := clBlack;
     Brush.Color := clWhite;
@@ -2342,22 +2351,22 @@ procedure TJvShapedButton.CNDrawItemHex(var Msg: TWMDrawItem);
 var
   OdsDown, OdsFocus, ActionFocus: Boolean;
   Rect: TRect;
-  poly: array[0..6] of Tpoint;
+  poly: array[0..6] of TPoint;
   polyBR: array[0..3] of TPoint;
   polyTL: array[0..3] of TPoint;
-  x4, y2, w, h: integer;
+  x4, y2, w, h: Integer;
 
   procedure setpoly;
   begin
     w := Rect.right - Rect.left + 1;
-    h := rect.bottom - Rect.top + 1;
+    h := Rect.bottom - Rect.top + 1;
     x4 := w div 4;
     y2 := h div 2;
     poly[0] := point(Rect.left + x4, Rect.top);
-    poly[1] := point(rect.right - x4, Rect.top);
+    poly[1] := point(Rect.right - x4, Rect.top);
     poly[2] := point(Rect.right, y2);
-    poly[3] := point(rect.right - x4, Rect.bottom);
-    poly[4] := point(Rect.left + x4, rect.bottom);
+    poly[3] := point(Rect.right - x4, Rect.bottom);
+    poly[4] := point(Rect.left + x4, Rect.bottom);
     poly[5] := point(Rect.left, y2);
     poly[6] := poly[0];
   end;
@@ -2377,15 +2386,15 @@ begin
     OdsFocus := itemState and ODS_FOCUS <> 0;
     ActionFocus := ItemAction = oda_Focus
   end;
-  bm.width := width;
+  bm.Width := Width;
   bm.height := height;
   with bm.Canvas do
   begin
-    pen.width := 2;
+    pen.Width := 2;
     Brush.Color := Color;
     if not ActionFocus then
     begin
-      // fill with current color
+      // fill with current Color
       Brush.Style := bsSolid;
       FillRect(Rect);
     end;
@@ -2478,12 +2487,12 @@ begin
     end;
     Font := Self.Font;
     if (IsHot and (not OdsDown)) then
-      font.color := FHotColor;
+      Font.Color := FHotColor;
     if not ActionFocus then
       DrawText(bm.Canvas.Handle, PChar(Caption), -1,
         Rect, dt_SingleLine or dt_Center or dt_VCenter);
 
-    // draw the focus rect around the text
+    // draw the focus Rect around the text
     Brush.Style := bsSolid;
     Pen.Color := clBlack;
     Brush.Color := clWhite;
@@ -2499,21 +2508,21 @@ procedure TJvShapedButton.CNDrawItemDiamond(var Msg: TWMDrawItem);
 var
   OdsDown, OdsFocus, ActionFocus: Boolean;
   Rect: TRect;
-  poly: array[0..4] of Tpoint;
+  poly: array[0..4] of TPoint;
   polyBR: array[0..2] of TPoint;
   polyTL: array[0..2] of TPoint;
-  x2, y2, w, h: integer;
+  x2, y2, w, h: Integer;
 
   procedure setpoly;
   begin
     w := Rect.right - Rect.left + 1;
-    h := rect.bottom - Rect.top + 1;
+    h := Rect.bottom - Rect.top + 1;
     x2 := w div 2;
     y2 := h div 2;
     poly[0] := point(Rect.left + x2, Rect.top);
-    poly[1] := point(rect.right, Rect.top + y2);
+    poly[1] := point(Rect.right, Rect.top + y2);
     poly[2] := point(Rect.left + x2, Rect.bottom);
-    poly[3] := point(rect.left, Rect.top + y2);
+    poly[3] := point(Rect.left, Rect.top + y2);
     poly[4] := poly[0];
   end;
 
@@ -2532,15 +2541,15 @@ begin
     OdsFocus := itemState and ODS_FOCUS <> 0;
     ActionFocus := ItemAction = oda_Focus
   end;
-  bm.width := width;
+  bm.Width := Width;
   bm.height := height;
   with bm.Canvas do
   begin
-    pen.width := 2;
+    pen.Width := 2;
     Brush.Color := Color;
     if not ActionFocus then
     begin
-      // fill with current color
+      // fill with current Color
       Brush.Style := bsSolid;
       FillRect(Rect);
     end;
@@ -2627,12 +2636,12 @@ begin
     end;
     Font := Self.Font;
     if (IsHot and (not OdsDown)) then
-      font.color := FHotColor;
+      Font.Color := FHotColor;
     if not ActionFocus then
       DrawText(bm.Canvas.Handle, PChar(Caption), -1,
-        Rect, dt_SingleLine or dt_Center or dt_VCenter);
+        Rect, DT_SINGLELINE or DT_CENTER or dt_VCenter);
 
-    // draw the focus rect around the text
+    // draw the focus Rect around the text
     Brush.Style := bsSolid;
     Pen.Color := clBlack;
     Brush.Color := clWhite;
@@ -2650,7 +2659,7 @@ begin
     JvJCLUtils.AntiAlias(Bmp);
 end;
 
-procedure TJvShapedButton.SetAntiAlias(const Value: boolean);
+procedure TJvShapedButton.SetAntiAlias(const Value: Boolean);
 begin
   if FAntiAlias <> Value then
   begin

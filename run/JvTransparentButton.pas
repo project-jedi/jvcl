@@ -180,7 +180,6 @@ type
     procedure DrawTheText(ARect: TRect; Canvas: TCanvas); virtual;
     procedure DrawTheBitmap(ARect: TRect; Canvas: TCanvas); virtual;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean);override;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

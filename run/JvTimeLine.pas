@@ -303,13 +303,7 @@ type
     procedure SelectItems(StartItem, EndItem: TJvTimeItem; AddOnly: Boolean);
     procedure RemoveFromSelection(AItem: TJvTimeItem);
     procedure ClearSelection;
-    //PRY 2002.06.04
-    {$IFDEF COMPILER6_UP}
-    procedure SetAutoSize(Value: Boolean); override;
-    {$ELSE}
-    procedure SetAutoSize(Value: Boolean);
-    {$ENDIF COMPILER6_UP}
-    // PRY END
+    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP}override;{$ENDIF}
     function ItemMoving(Item: TJvTimeItem): Boolean; virtual;
     procedure ItemMoved(Item: TJvTimeItem; var NewDate: TDateTime; var NewLevel: Integer); virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -335,8 +329,7 @@ type
     procedure UpdateItems; virtual;
     procedure UpdateItemHint(X,Y:integer);
     procedure CreateWnd; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetDragImages: TDragImageList; override;
     property Align default alTop;
     property Color default clWindow;
@@ -360,8 +353,7 @@ type
     property Flat: Boolean read FFlat write SetFlat default False;
     property Hint: string read GetHint write SetHint;
     property YearFont: TFont read FYearFont write SetYearFont;
-    property YearWidth: TJvYearWidth read FYearWidth write SetYearWidth default
-      140;
+    property YearWidth: TJvYearWidth read FYearWidth write SetYearWidth default 140;
     property TopOffset: Integer read FTopOffset write SetTopOffset default 21;
     property ShowMonthNames: Boolean read FShowMonths write SetShowMonths;
     property ShowDays: Boolean read FShowDays write SetShowDays default False;
@@ -370,31 +362,23 @@ type
     property Items: TJvTimeItems read FTimeItems write SetTimeItems;
     property ItemHeight: Integer read FItemHeight write SetItemHeight default 12;
     //    property ItemAlign:TItemAlign read FItemAlign write SetItemAlign default tiCenter;
-    property VertSupports: Boolean read FSupportLines write SetSupportLines
-      default False;
+    property VertSupports: Boolean read FSupportLines write SetSupportLines default False;
     property HorzSupports: Boolean read FHorzSupport write SetHorzSupport;
-    property Style: TJvTimeLineStyle read FStyle write SetStyle default
-      tlDefault;
+    property Style: TJvTimeLineStyle read FStyle write SetStyle default tlDefault;
     property TopLevel: Integer read FTopLevel write SetTopLevel default 0;
     property ScrollArrows: TJvScrollArrows read FScrollArrows write
       SetScrollArrows default [scrollLeft..scrollDown];
-    property OnItemClick: TJvTimeItemClickEvent read FOnItemClick write
-      FOnItemClick;
-    property OnItemDblClick: TJvTimeItemClickEvent read FOnItemDblClick write
-      FOnItemDblClick;
+    property OnItemClick: TJvTimeItemClickEvent read FOnItemClick write FOnItemClick;
+    property OnItemDblClick: TJvTimeItemClickEvent read FOnItemDblClick write FOnItemDblClick;
     property OnSize: TNotifyEvent read FOnSize write FOnSize;
     property OnHorzScroll: TScrollEvent read FOnHorzScroll write FOnHorzScroll;
     property OnVertScroll: TScrollEvent read FOnVertScroll write FOnVertScroll;
-    property OnDrawItem: TJvDrawTimeItemEvent read FOnDrawItem write
-      FOnDrawItem;
-    property OnMeasureItem: TJvMeasureTimeItemEvent read FOnMeasureItem write
-      FOnMeasureItem;
+    property OnDrawItem: TJvDrawTimeItemEvent read FOnDrawItem write FOnDrawItem;
+    property OnMeasureItem: TJvMeasureTimeItemEvent read FOnMeasureItem write FOnMeasureItem;
     property OnSaveItem: TJvStreamItemEvent read FOnSaveItem write FOnSaveItem;
     property OnLoadItem: TJvStreamItemEvent read FOnLoadItem write FOnLoadItem;
-    property OnItemMoved: TJvItemMovedEvent read FOnItemMoved write
-      FOnItemMoved;
-    property OnItemMoving: TJvItemMovingEvent read FOnItemMoving write
-      FOnItemMoving;
+    property OnItemMoved: TJvItemMovedEvent read FOnItemMoved write FOnItemMoved;
+    property OnItemMoving: TJvItemMovingEvent read FOnItemMoving write FOnItemMoving;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

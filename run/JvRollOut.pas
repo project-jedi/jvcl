@@ -157,12 +157,13 @@ type
     procedure DrawButtonFrame;
     procedure UpdateGroup;
     procedure CMExpanded(var Msg: TMessage); message CM_EXPANDED;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
-    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
-    procedure CMParentColorChanged(var Message:TMessage); message CM_PARENTCOLORCHANGED;
   protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    procedure ParentColorChanged; override;
     procedure CreateWnd; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
@@ -735,17 +736,17 @@ begin
   ReDrawControl(True);
 end;
 
-procedure TJvCustomRollOut.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomRollOut.MouseEnter(Control: TControl);
 begin
-  inherited;
+  inherited MouseEnter(Control);
   if csDesigning in ComponentState then
     Exit;
   RedrawControl(False);
 end;
 
-procedure TJvCustomRollOut.CMMouseLeave(var Msg: TMessage);
+procedure TJvCustomRollOut.MouseLeave(Control: TControl);
 begin
-  inherited;
+  inherited MouseLeave(Control);
   if csDesigning in ComponentState then
     Exit;
   if FInsideButton then
@@ -900,16 +901,14 @@ begin
     (AnsiCompareText(Str[P + 1], Char(VK)) = 0);
 end;
 
-procedure TJvCustomRollOut.CMDialogChar(var Msg: TCMDialogChar);
+function TJvCustomRollOut.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
 begin
-  with Msg do
-    if IsAccel(CharCode, FCaption) and Enabled then
-    begin
-      Click;
-      Result := 1;
-    end
-    else
-      inherited;
+  Result := IsAccel(Key, FCaption) and Enabled and (ssAlt in Shift);
+  if Result then
+    Click
+  else
+    Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
 procedure TJvCustomRollOut.DoColorsChange(Sender: TObject);
@@ -930,8 +929,9 @@ begin
     ImageOptions.Images := nil;
 end;
 
-procedure TJvCustomRollOut.CMParentColorChanged(var Message: TMessage);
+procedure TJvCustomRollOut.ParentColorChanged;
 begin
+  inherited ParentColorChanged;
   Colors.Color := Color;
 end;
 

@@ -41,6 +41,7 @@ type
     ['{61FC57FF-D4DA-4840-B871-63DE804E9921}']
     procedure VisibleChanged;
     procedure EnabledChanged;
+    procedure TextChanged;
     procedure FontChanged;
     procedure ColorChanged;
     procedure ParentFontChanged;
@@ -50,9 +51,8 @@ type
       const KeyText: WideString): Boolean;
     function HintShow(var HintInfo : THintInfo): Boolean;
     function HitTest(X, Y: Integer): Boolean;
-    procedure MouseEnter(AControl: TControl); 
+    procedure MouseEnter(AControl: TControl);
     procedure MouseLeave(AControl: TControl);
-    procedure TextChanged;
   end;
 
   IJvWinControlEvents = interface(IJvControlEvents)

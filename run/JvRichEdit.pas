@@ -47,7 +47,7 @@ interface
 uses
   Windows, ActiveX, ComObj, CommCtrl, Messages, SysUtils, Classes, Controls,
   Forms, Graphics, StdCtrls, Dialogs, RichEdit, Menus, ComCtrls, SyncObjs,
-  JVCLVer;
+  JVCLVer, JvExStdCtrls;
 
 type
   TRichEditVersion = 1..4;
@@ -505,7 +505,7 @@ type
   TRichEditFindCloseEvent = procedure(Sender: TObject; Dialog: TFindDialog) of object;
   TRichEditProgressEvent = procedure(Sender: TObject; PercentDone: Integer) of object;
 
-  TJvCustomRichEdit = class(TCustomMemo)
+  TJvCustomRichEdit = class(TJvExCustomMemo)
   private
     FHideScrollBars: Boolean;
     FSelectionBar: Boolean;
@@ -609,9 +609,7 @@ type
     procedure FindDialogClose(Sender: TObject);
     procedure SetUIActive(Active: Boolean);
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
-    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
     procedure CMDocWindowActivate(var Msg: TMessage); message CM_DOCWINDOWACTIVATE;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CMUIDeactivate(var Msg: TMessage); message CM_UIDEACTIVATE;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure EMReplaceSel(var Msg: TMessage); message EM_REPLACESEL;
@@ -622,12 +620,15 @@ type
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
     // From JvRichEdit.pas by Sébastien Buysse
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
   protected
+    procedure ParentColorChanged; override;
+    procedure ColorChanged; override;
+    procedure FontChanged; override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWindowHandle(const Params: TCreateParams); override;
     procedure CreateWnd; override;
@@ -2316,9 +2317,9 @@ begin
   Paragraph.SetAttributes(AParagraph);
 end;
 
-procedure TJvCustomRichEdit.CMColorChanged(var Msg: TMessage);
+procedure TJvCustomRichEdit.ColorChanged;
 begin
-  inherited;
+  inherited ColorChanged;
   SendMessage(Handle, EM_SETBKGNDCOLOR, 0, ColorToRGB(Color))
 end;
 
@@ -2338,15 +2339,15 @@ begin
       end;
 end;
 
-procedure TJvCustomRichEdit.CMFontChanged(var Msg: TMessage);
+procedure TJvCustomRichEdit.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   FDefAttributes.Assign(Font);
 end;
 
-procedure TJvCustomRichEdit.CMParentColorChanged(var Msg: TMessage);
+procedure TJvCustomRichEdit.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
@@ -3202,22 +3203,21 @@ begin
   Result := SendMessage(Handle, EM_EXLINEFROMCHAR, 0, CharIndex);
 end;
 
-procedure TJvCustomRichEdit.MouseEnter(var Msg: TMessage);
+procedure TJvCustomRichEdit.MouseEnter(Control: TControl);
 begin
-  FSavedHintColor := Application.HintColor;
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
+  FSavedHintColor := Application.HintColor;
   Application.HintColor := FHintColor;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(Control);
 end;
 
-procedure TJvCustomRichEdit.MouseLeave(var Msg: TMessage);
+procedure TJvCustomRichEdit.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   Application.HintColor := FSavedHintColor;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvCustomRichEdit.NeedAdvancedTypography;

@@ -85,7 +85,7 @@ type
       X, Y: Integer); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
+    procedure EnabledChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -462,9 +462,9 @@ begin
   end;
 end;
 
-procedure TJvScrollButton.CMEnabledChanged(var Msg: TMessage);
+procedure TJvScrollButton.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   if Assigned(Parent) then
     Enabled := Parent.Enabled;
   Invalidate;

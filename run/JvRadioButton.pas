@@ -34,17 +34,15 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JVCLVer, JvTypes;
+  JVCLVer, JvTypes, JvExStdCtrls;
 
 type
-  TJvRadioButton = class(TRadioButton)
+  TJvRadioButton = class(TJvExRadioButton)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
@@ -65,28 +63,12 @@ type
     procedure SetLayout(const Value: TTextLayout);
     procedure SetReadOnly(const Value: Boolean);
     procedure SetLeftText(const Value: Boolean);
-    {$IFDEF VCL}
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
-    {$ENDIF VCL}
   protected
-    {$IFDEF VCL}
-    procedure MouseEnter(AControl: TControl); dynamic;
-    procedure MouseLeave(AControl: TControl); dynamic;
-    procedure ParentColorChanged; dynamic;
-    procedure TextChanged; dynamic;
-    procedure FontChanged; dynamic;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
-    {$ENDIF VisualCLX}
     procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CalcAutoSize; virtual;
@@ -109,8 +91,8 @@ type
     property LeftText: Boolean read FLeftText write SetLeftText default False;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
@@ -165,20 +147,8 @@ begin
       cLeftText[LeftText] or cWordWrap[WordWrap];
 end;
 
-{$IFDEF VCL}
-procedure TJvRadioButton.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  MouseEnter(Self);
-end;
-{$ENDIF VCL}
-
 procedure TJvRadioButton.MouseEnter(AControl: TControl);
 begin
-  {$IFDEF VisualCLX}
-  inherited MouseEnter(AControl);
-  {$ENDIF VisualCLX}
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if not FOver then
@@ -192,24 +162,11 @@ begin
     end;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(AControl);
 end;
-
-{$IFDEF VCL}
-procedure TJvRadioButton.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  MouseLeave(Self);
-end;
-{$ENDIF VCL}
 
 procedure TJvRadioButton.MouseLeave(AControl: TControl);
 begin
-  {$IFDEF VisualCLX}
-  inherited MouseLeave(AControl);
-  {$ENDIF VisualCLX}
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if FOver then
@@ -219,57 +176,26 @@ begin
     if FHotTrack then
       Font.Assign(FFontSave);
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(AControl);
 end;
-
-{$IFDEF VCL}
-procedure TJvRadioButton.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  ParentColorChanged;
-end;
-{$ENDIF VCL}
 
 procedure TJvRadioButton.ParentColorChanged;
 begin
-  {$IFDEF VisualCLX}
   inherited ParentColorChanged;
-  {$ENDIF VisualCLX}
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
-{$IFDEF VCL}
-procedure TJvRadioButton.CMFontChanged(var Msg: TMessage);
-begin
-  inherited;
-  FontChanged;
-end;
-{$ENDIF VCL}
-
 procedure TJvRadioButton.FontChanged;
 begin
-  {$IFDEF VisualCLX}
   inherited FontChanged;
-  {$ENDIF VisualCLX}
   CalcAutoSize;
   UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
-{$IFDEF VCL}
-procedure TJvRadioButton.CMTextChanged(var Msg: TMessage);
-begin
-  inherited;
-  TextChanged;
-end;
-{$ENDIF VCL}
-
 procedure TJvRadioButton.TextChanged;
 begin
-  {$IFDEF VisualCLX}
   inherited TextChanged;
-  {$ENDIF VisualCLX}
   CalcAutoSize;
 end;
 

@@ -32,17 +32,15 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  JVCLVer;
+  JVCLVer, JvExForms;
 
 type
-  TJvScrollBox = class(TScrollBox)
+  TJvScrollBox = class(TJvExScrollBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FHotTrack: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     FOnHorizontalScroll: TNotifyEvent;
@@ -51,10 +49,10 @@ type
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
   protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
     procedure WndProc(var Msg: TMessage); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   public
@@ -63,8 +61,8 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
@@ -89,9 +87,9 @@ begin
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 end;
 
-procedure TJvScrollBox.CMParentColorChanged(var Msg: TMessage);
+procedure TJvScrollBox.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
@@ -110,24 +108,22 @@ begin
     FOnVerticalScroll(Self);
 end;
 
-procedure TJvScrollBox.CMMouseEnter(var Msg: TMessage);
+procedure TJvScrollBox.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FHintColor;
     if FHotTrack then
       Ctl3D := True;
     FOver := True;
+    inherited MouseEnter(Control);
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
 end;
 
-procedure TJvScrollBox.CMMouseLeave(var Msg: TMessage);
+procedure TJvScrollBox.MouseLeave(Control: TControl);
 begin
   if FOver then
   begin
@@ -135,9 +131,8 @@ begin
     if FHotTrack then
       Ctl3D := False;
     FOver := False;
+    inherited MouseLeave(Control);
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
 end;
 
 procedure TJvScrollBox.SetHotTrack(const Value: Boolean);
