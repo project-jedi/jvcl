@@ -29,13 +29,13 @@ unit JvNavigationPane;
 interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Graphics, Menus, ExtCtrls, ImgList,
-  JvButton, JvPageList;
+  JvButton, JvPageList, JvComponent;
 
 type
   TJvCustomNavigationPane = class;
   TJvNavIconButton = class;
 
-  TJvNavPanelHeader = class(TCustomControl)
+  TJvNavPanelHeader = class(TJvCustomControl)
   private
     FColorFrom: TColor;
     FColorTo: TColor;
@@ -49,10 +49,8 @@ type
     procedure SetImages(const Value: TCustomImageList);
     procedure DoImagesChange(Sender: TObject);
   protected
-    procedure Paint; override;
-
-    procedure CMTextchanged(var Message: TMessage); message CM_TEXTCHANGED;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure TextChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -186,7 +184,7 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
-  TJvIconPanel = class(TCustomControl)
+  TJvIconPanel = class(TJvCustomControl)
   private
     FDropButton: TJvNavIconButton;
     FColors: TJvNavPanelColors;
@@ -278,8 +276,8 @@ type
   protected
     procedure Paint; override;
     procedure Click; override;
-    procedure CMTextchanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CMFontchanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure TextChanged; override;
+    procedure FontChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -345,11 +343,11 @@ type
     property NavPanel: TJvNavPanelButton read FNavPanel;
     property IconButton: TJvNavIconButton read FIconButton;
     property IconPanel: TJvIconPanel read FIconPanel write SetIconPanel;
-    property Colors: TJvNavPanelColors read GetColors write SetColors;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property Color;
+    property Colors: TJvNavPanelColors read GetColors write SetColors;
     property Caption: TCaption read GetCaption write SetCaption;
     property Iconic: boolean read GetIconic write SetIconic default False;
     property ImageIndex: TImageIndex read GetImageIndex write SetImageIndex default -1;
@@ -366,6 +364,8 @@ type
     FColors: TJvNavPanelColors;
     FNavPanelFont: TFont;
     FResizable: boolean;
+    FButtonWidth: integer;
+    FButtonHeight: integer;
     function GetDropDownMenu: TPopupMenu;
     function GetSmallImages: TCustomImageList;
     procedure SetDropDownMenu(const Value: TPopupMenu);
@@ -385,6 +385,10 @@ type
     procedure SetNavPanelFont(const Value: TFont);
     procedure DoNavPanelFontChange(Sender:TObject);
     function IsNavPanelFontStored: Boolean;
+    procedure SetButtonHeight(const Value: integer);
+    procedure SetButtonWidth(const Value: integer);
+    procedure SetSplitterHeight(const Value: integer);
+    function GetSplitterHeight: integer;
   protected
     procedure SetActivePage(Page: TJvCustomPage); override;
     procedure InsertPage(APage: TJvCustomPage); override;
@@ -394,22 +398,24 @@ type
     procedure Loaded; override;
     function InternalGetPageClass: TJvCustomPageClass; override;
     property NavPages[Index: integer]: TJvNavPanelPage read GetNavPage;
-    procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure UpdatePositions;
   protected
     property BorderWidth default 1;
+    property ButtonHeight:integer read FButtonHeight write SetButtonHeight default 28;
+    property ButtonWidth:integer read FButtonWidth write SetButtonWidth default 22;
     property NavPanelFont: TFont read FNavPanelFont write SetNavPanelFont stored IsNavPanelFontStored;
-    property ParentColor default False;
     property Color default clWindow;
     property Colors: TJvNavPanelColors read FColors write SetColors;
     property DropDownMenu: TPopupMenu read GetDropDownMenu write SetDropDownMenu;
     property LargeImages: TCustomImageList read FLargeImages write SetLargeImages;
+    property MaximizedCount: integer read GetMaximizedCount write SetMaximizedCount;
+    property ParentColor default False;
     property Resizable: boolean read FResizable write SetResizable default True;
     property SmallImages: TCustomImageList read GetSmallImages write SetSmallImages;
-    property MaximizedCount: integer read GetMaximizedCount write SetMaximizedCount;
+    property SplitterHeight:integer read GetSplitterHeight write SetSplitterHeight default 7;
   end;
 
   TJvNavigationPane = class(TJvCustomNavigationPane)
@@ -420,6 +426,9 @@ type
     property Align;
     property Anchors;
     property BorderWidth;
+    property ButtonHeight;
+    property ButtonWidth;
+    property Caption;
     property Color;
     property Colors;
     property Constraints;
@@ -433,6 +442,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
+    property SplitterHeight;
     property Visible;
 
     property LargeImages;
@@ -446,10 +456,6 @@ implementation
 uses
   Forms, JvJVCLUtils;
 
-const
-  cButtonHeight = 28;
-  cButtonWidth = 22;
-  cSplitterHeight = 7;
 
 { TJvIconPanel }
 
@@ -457,12 +463,12 @@ constructor TJvIconPanel.Create(AOwner: TComponent);
 begin
   inherited;
   ControlStyle := ControlStyle + [csOpaque, csAcceptsControls];
-  Height := cButtonHeight;
+  Height := 28;
   FDropButton := TJvNavIconButton.Create(Self);
   FDropButton.Visible := false;
   FDropButton.ButtonType := nibDropDown;
   FDropButton.GroupIndex := 0;
-  FDropButton.Width := cButtonWidth;
+  FDropButton.Width := 22;
   FDropButton.Left := Width + 10;
   FDropButton.Align := alRight;
   FDropButton.Parent := self;
@@ -523,6 +529,8 @@ end;
 constructor TJvCustomNavigationPane.Create(AOwner: TComponent);
 begin
   inherited;
+  FButtonHeight := 28;
+  FButtonWidth := 22;
   BorderWidth := 1;
   ParentColor := False;
   Color := clWindow;
@@ -561,9 +569,9 @@ var
   ACount: integer;
 begin
   ACount := MaximizedCount;
-  if NewSize < cButtonHeight div 2 then
+  if NewSize < ButtonHeight div 2 then
     MaximizedCount := ACount - 1
-  else if NewSize > cButtonHeight + cButtonHeight div 2 then
+  else if NewSize > ButtonHeight + ButtonHeight div 2 then
     MaximizedCount := ACount + 1;
   NewSize := 0;
   Accept := False;
@@ -667,7 +675,7 @@ begin
 end;
 
 procedure TJvCustomNavigationPane.WMNCPaint(var Message: TWMNCPaint);
-var AColor:TCOlor;
+var AColor:TColor;
 begin
   AColor := Color;
   try
@@ -784,16 +792,12 @@ end;
 
 procedure TJvCustomNavigationPane.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
-  Message.Result := 1;
-end;
-
-procedure TJvCustomNavigationPane.Paint;
-begin
   if ActivePage = nil then
   begin
     Canvas.Brush.Color := Color;
     Canvas.FillRect(ClientRect);
   end;
+  Message.Result := 1;
 end;
 
 procedure TJvCustomNavigationPane.SetNavPanelFont(const Value: TFont);
@@ -823,6 +827,41 @@ procedure TJvCustomNavigationPane.RemovePage(APage: TJvCustomPage);
 begin
   inherited RemovePage(APage);
   Invalidate;
+end;
+
+procedure TJvCustomNavigationPane.SetButtonHeight(const Value: integer);
+var i:integer;
+begin
+  if FButtonHeight <> Value then
+  begin
+    FButtonHeight := Value;
+    for i := 0 to PageCount - 1 do
+      NavPages[i].NavPanel.Height := FButtonHeight;
+    FIconPanel.Height := FButtonHeight;
+  end;
+end;
+
+procedure TJvCustomNavigationPane.SetButtonWidth(const Value: integer);
+var i:integer;
+begin
+  if FButtonWidth <> Value then
+  begin
+    FButtonWidth := Value;
+    for i := 0 to PageCount - 1 do
+      NavPages[i].IconButton.Width := FButtonWidth;
+    FIconPanel.FDropButton.Width := FButtonWidth;
+  end;
+end;
+
+procedure TJvCustomNavigationPane.SetSplitterHeight(const Value: integer);
+begin
+  if FSplitter.Height <> Value then
+    FSplitter.Height := Value;
+end;
+
+function TJvCustomNavigationPane.GetSplitterHeight: integer;
+begin
+  Result := FSplitter.Height;
 end;
 
 { TJvNavIconButton }
@@ -1003,25 +1042,13 @@ begin
   inherited;
 end;
 
-procedure TJvNavPanelButton.CMFontchanged(var Message: TMessage);
-begin
-  inherited;
-  Invalidate;
-end;
-
-procedure TJvNavPanelButton.CMTextchanged(var Message: TMessage);
-begin
-  inherited;
-  Invalidate;
-end;
-
 constructor TJvNavPanelButton.Create(AOwner: TComponent);
 begin
   inherited;
   ControlStyle := ControlStyle + [csOpaque, csDisplayDragImage];
   Flat := True;
   HotTrack := True;
-  Height := cButtonHeight;
+  Height := 28;
   FColors := TJvNavPanelColors.Create;
   FColors.OnChange := DoColorsChange;
   Font := Screen.IconFont;
@@ -1038,6 +1065,12 @@ end;
 
 procedure TJvNavPanelButton.DoColorsChange(Sender: TObject);
 begin
+  Invalidate;
+end;
+
+procedure TJvNavPanelButton.FontChanged;
+begin
+  inherited;
   Invalidate;
 end;
 
@@ -1107,6 +1140,12 @@ begin
     FImages := Value;
     Invalidate;
   end;
+end;
+
+procedure TJvNavPanelButton.TextChanged;
+begin
+  inherited;
+  Invalidate;
 end;
 
 { TJvNavPanelColors }
@@ -1332,8 +1371,8 @@ procedure TJvNavPanelPage.SetIconic(const Value: boolean);
 begin
   NavPanel.Visible := not Value;
   IconButton.Visible := Value;
-  NavPanel.Height := cButtonHeight * Ord(NavPanel.Visible);
-  IconButton.Width := cButtonWidth * Ord(IconButton.Visible);
+  NavPanel.Height := TJvCustomNavigationPane(Parent).ButtonHeight * Ord(NavPanel.Visible);
+  IconButton.Width := TJvCustomNavigationPane(Parent).ButtonWidth * Ord(IconButton.Visible);
   UpdatePageList;
 end;
 
@@ -1377,7 +1416,9 @@ begin
   begin
     IconPanel := TJvCustomNavigationPane(AParent).FIconPanel;
     NavPanel.Colors := TJvCustomNavigationPane(AParent).Colors;
+    NavPanel.Height := TJvCustomNavigationPane(AParent).ButtonHeight;
     IconButton.Images := TJvCustomNavigationPane(AParent).SmallImages;
+    IconButton.Width  := TJvCustomNavigationPane(AParent).ButtonWidth;
     NavPanel.Images := TJvCustomNavigationPane(AParent).LargeImages;
     NavPanel.Font := TJvCustomNavigationPane(AParent).NavPanelFont;
   end
@@ -1407,7 +1448,7 @@ begin
   Align := alBottom;
   AutoSnap := False;
   ResizeStyle := rsUpdate;
-  Height := cSplitterHeight;
+  Height := 7;
   Cursor := crSizeNS;
 end;
 
@@ -1480,11 +1521,6 @@ end;
 
 { TJvNavPanelHeader }
 
-procedure TJvNavPanelHeader.CMTextchanged(var Message: TMessage);
-begin
-  inherited;
-  Invalidate;
-end;
 
 constructor TJvNavPanelHeader.Create(AOwner: TComponent);
 begin
@@ -1521,26 +1557,6 @@ begin
     Images := nil;
 end;
 
-procedure TJvNavPanelHeader.Paint;
-var
-  R: TRect;
-begin
-  R := ClientRect;
-  GradientFillRect(Canvas, R, ColorFrom, ColorTo, fdTopToBottom, 32);
-  if Caption <> '' then
-  begin
-    Canvas.Font := Font;
-    OffsetRect(R, 4, 0);
-    SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or
-      DT_EDITCONTROL);
-  end;
-  if (Images <> nil) and (ImageIndex >= 0) and (ImageIndex < Images.Count) then
-  begin
-    Images.Draw(Canvas,
-      ClientWidth - Images.Width - (Height - Images.Height) div 2, (Height - Images.Height) div 2, ImageIndex, True);
-  end;
-end;
 
 procedure TJvNavPanelHeader.SetColorFrom(const Value: TColor);
 begin
@@ -1585,9 +1601,32 @@ begin
   end;
 end;
 
-procedure TJvNavPanelHeader.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+procedure TJvNavPanelHeader.TextChanged;
 begin
-  Message.Result := 1;
+  inherited;
+  Invalidate;
+end;
+
+procedure TJvNavPanelHeader.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+var
+  R: TRect;
+begin
+  R := ClientRect;
+  GradientFillRect(Canvas, R, ColorFrom, ColorTo, fdTopToBottom, 32);
+  if Caption <> '' then
+  begin
+    Canvas.Font := Font;
+    OffsetRect(R, 4, 0);
+    SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
+    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or
+      DT_EDITCONTROL);
+  end;
+  if (Images <> nil) and (ImageIndex >= 0) and (ImageIndex < Images.Count) then
+  begin
+    Images.Draw(Canvas,
+      ClientWidth - Images.Width - (Height - Images.Height) div 2, (Height - Images.Height) div 2, ImageIndex, True);
+  end;
+  Message.Result := Ord(ControlCount = 0);
 end;
 
 { TJvNavPanelDivider }
