@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-01-04
+Last Modified: 2004-01-12
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,7 +34,8 @@ uses
   {$IFDEF VisualCLX}
   Qt, QGraphics, QControls, QWindows, QForms,  // order: QControls, QWindows
   {$ENDIF VisualCLX}
-  Classes, SysUtils;
+  Classes, SysUtils,
+  JvThemes;
 
 type
   IJvControlEvents = interface
@@ -53,6 +54,7 @@ type
     function HitTest(X, Y: Integer): Boolean;
     procedure MouseEnter(AControl: TControl);
     procedure MouseLeave(AControl: TControl);
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
     {$IFDEF VCL}
     procedure SetAutoSize(Value: Boolean);
     {$ENDIF VCL}
@@ -112,6 +114,8 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
+  protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
     {$IFDEF REINTRODUCE_HITTEST}
   protected
@@ -159,6 +163,13 @@ type
     procedure ShowHintChanged; dynamic;
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
+  {$IFDEF JVCLThemesEnabledD56}
+  private
+    function GetParentBackground: Boolean;
+  protected
+    procedure SetParentBackground(Value: Boolean); virtual;
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
+  {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
   private
@@ -168,14 +179,15 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
+  protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
     {$IFDEF REINTRODUCE_HITTEST}
   protected
     function HitTest(X, Y: Integer): Boolean; overload; dynamic;
     {$ENDIF REINTRODUCE_HITTEST}
-  private
-    FCanvas: TCanvas;
    {$IF not declared(PatchedVCLX)}
+  private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
@@ -184,6 +196,8 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
+  private
+    FCanvas: TCanvas;
   protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure Paint; virtual;
@@ -227,6 +241,8 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
+  protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
     {$IFDEF REINTRODUCE_HITTEST}
   protected
@@ -274,6 +290,13 @@ type
     procedure ShowHintChanged; dynamic;
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
+  {$IFDEF JVCLThemesEnabledD56}
+  private
+    function GetParentBackground: Boolean;
+  protected
+    procedure SetParentBackground(Value: Boolean); virtual;
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
+  {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
   private
@@ -283,6 +306,8 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
+  protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
     {$IFDEF REINTRODUCE_HITTEST}
   protected
@@ -298,6 +323,8 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
+  protected
+    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
   {$ENDIF VisualCLX}
   end;
   
@@ -330,6 +357,13 @@ type
     procedure ShowHintChanged; dynamic;
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
+  {$IFDEF JVCLThemesEnabledD56}
+  private
+    function GetParentBackground: Boolean;
+  protected
+    procedure SetParentBackground(Value: Boolean); virtual;
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
+  {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
   private
@@ -339,6 +373,8 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
+  protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
     {$IFDEF REINTRODUCE_HITTEST}
   protected
@@ -354,6 +390,8 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
+  protected
+    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
   {$ENDIF VisualCLX}
   end;
 
@@ -369,6 +407,10 @@ procedure DispatchMsg(Instance: TControl; var Msg);
 procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
 {$ENDIF !COMPILER6_UP}
 {$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+
+{$ENDIF VisualCLX}
 
 implementation
 
@@ -412,6 +454,7 @@ var
   IntfWinControl: IJvWinControlEvents;
   PMsg: PMessage;
   CallInherited: Boolean;
+  Canvas: TCanvas;
 begin
   CallInherited := True;
   PMsg := @Msg;
@@ -420,7 +463,7 @@ begin
   begin
     PMsg^.Result := Ord(Instance.GetInterface(IJvDenySubClassing, Temp));
     Temp := nil; // does not destroy the control because it is derived from TComponent
-   // Let the control handle CM_DENYSUBCLASSING the old way, too. 
+   // Let the control handle CM_DENYSUBCLASSING the old way, too.
   end;
 
   { GetInterface is no problem because Instance is a TComponent derived class that
@@ -458,6 +501,18 @@ begin
         CM_DIALOGCHAR:
           with TCMDialogChar(PMsg^) do
             Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
+
+        WM_ERASEBKGND:
+          begin
+            Canvas := TCanvas.Create;
+            try
+              Canvas.Handle := HDC(PMsg^.WParam);
+              PMsg^.Result := Ord(DoPaintBackground(Canvas, PMsg^.LParam));
+            finally
+              Canvas.Handle := 0;
+              Canvas.Free;
+            end;
+          end
       else
         CallInherited := True;
       end;
@@ -582,6 +637,16 @@ end;
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
+
+function TJvExControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ELSE}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VCL}
+end;
+
 {$IFDEF VisualCLX}
  {$IFDEF REINTRODUCE_HITTEST}
 function TJvExControl.HitTest(X, Y: Integer): Boolean;
@@ -694,6 +759,16 @@ end;
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
+
+function TJvExWinControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ELSE}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VCL}
+end;
+
 {$IFDEF VisualCLX}
  {$IFDEF REINTRODUCE_HITTEST}
 function TJvExWinControl.HitTest(X, Y: Integer): Boolean;
@@ -717,6 +792,27 @@ begin
     FOnMouseLeave(Self);
 end;
  {$IFEND}
+{$ENDIF VisualCLX}
+{$IFDEF VisualCLX}
+procedure TJvExWinControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  if not (csDestroying in ComponentState) then
+  begin
+    ControlState := ControlState + [csWidgetPainting];
+    try
+      TControlCanvas(Canvas).StartPaint;
+      try
+        QPainter_setClipRegion(Canvas.Handle, EventRegion);
+        DoPaintBackground(Canvas, 0);
+        Paint;
+      finally
+        TControlCanvas(Canvas).StopPaint;
+      end;
+    finally
+      ControlState := ControlState - [csWidgetPainting];
+    end;
+  end;
+end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExWinControl.CursorChanged;
@@ -749,6 +845,18 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
+
+{$IFDEF JVCLThemesEnabledD56}
+function TJvExWinControl.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvExWinControl.SetParentBackground(Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+{$ENDIF JVCLThemesEnabledD56}
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 constructor TJvExWinControl.Create(AOwner: TComponent);
@@ -762,25 +870,6 @@ destructor TJvExWinControl.Destroy;
 begin
   FCanvas.Free;
   inherited Destroy;
-end;
-
-procedure TJvExWinControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(FCanvas).StartPaint;
-      try
-        QPainter_setClipRegion(FCanvas.Handle, EventRegion);
-        Paint;
-      finally
-        TControlCanvas(FCanvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
-  end;
 end;
 
 procedure TJvExWinControl.Paint;
@@ -884,6 +973,16 @@ end;
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
+
+function TJvExGraphicControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ELSE}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VCL}
+end;
+
 {$IFDEF VisualCLX}
  {$IFDEF REINTRODUCE_HITTEST}
 function TJvExGraphicControl.HitTest(X, Y: Integer): Boolean;
@@ -996,6 +1095,16 @@ end;
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
+
+function TJvExCustomControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ELSE}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VCL}
+end;
+
 {$IFDEF VisualCLX}
  {$IFDEF REINTRODUCE_HITTEST}
 function TJvExCustomControl.HitTest(X, Y: Integer): Boolean;
@@ -1019,6 +1128,27 @@ begin
     FOnMouseLeave(Self);
 end;
  {$IFEND}
+{$ENDIF VisualCLX}
+{$IFDEF VisualCLX}
+procedure TJvExCustomControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  if not (csDestroying in ComponentState) then
+  begin
+    ControlState := ControlState + [csWidgetPainting];
+    try
+      TControlCanvas(Canvas).StartPaint;
+      try
+        QPainter_setClipRegion(Canvas.Handle, EventRegion);
+        DoPaintBackground(Canvas, 0);
+        Paint;
+      finally
+        TControlCanvas(Canvas).StopPaint;
+      end;
+    finally
+      ControlState := ControlState - [csWidgetPainting];
+    end;
+  end;
+end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExCustomControl.CursorChanged;
@@ -1051,6 +1181,18 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
+
+{$IFDEF JVCLThemesEnabledD56}
+function TJvExCustomControl.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvExCustomControl.SetParentBackground(Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+{$ENDIF JVCLThemesEnabledD56}
 procedure TJvExCustomControl.Dispatch(var Msg);
 begin
   DispatchMsg(Self, Msg);
@@ -1138,6 +1280,16 @@ end;
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
+
+function TJvExHintWindow.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ELSE}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VCL}
+end;
+
 {$IFDEF VisualCLX}
  {$IFDEF REINTRODUCE_HITTEST}
 function TJvExHintWindow.HitTest(X, Y: Integer): Boolean;
@@ -1161,6 +1313,27 @@ begin
     FOnMouseLeave(Self);
 end;
  {$IFEND}
+{$ENDIF VisualCLX}
+{$IFDEF VisualCLX}
+procedure TJvExHintWindow.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  if not (csDestroying in ComponentState) then
+  begin
+    ControlState := ControlState + [csWidgetPainting];
+    try
+      TControlCanvas(Canvas).StartPaint;
+      try
+        QPainter_setClipRegion(Canvas.Handle, EventRegion);
+        DoPaintBackground(Canvas, 0);
+        Paint;
+      finally
+        TControlCanvas(Canvas).StopPaint;
+      end;
+    finally
+      ControlState := ControlState - [csWidgetPainting];
+    end;
+  end;
+end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExHintWindow.CursorChanged;
@@ -1193,6 +1366,18 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
+
+{$IFDEF JVCLThemesEnabledD56}
+function TJvExHintWindow.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvExHintWindow.SetParentBackground(Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+{$ENDIF JVCLThemesEnabledD56}
 procedure TJvExHintWindow.Dispatch(var Msg);
 begin
   DispatchMsg(Self, Msg);

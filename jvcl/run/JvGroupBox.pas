@@ -54,11 +54,6 @@ type
     FOver: Boolean;
     FPropagateEnable: Boolean;
     procedure SetPropagateEnable(const Value: Boolean);
-  {$IFDEF JVCLThemesEnabledD56}
-    function GetParentBackground: Boolean;
-  protected
-    procedure SetParentBackground(Value: Boolean); virtual;
-  {$ENDIF JVCLThemesEnabledD56}
   protected
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
@@ -75,7 +70,7 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     {$IFDEF JVCLThemesEnabledD56}
-    property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
+    property ParentBackground default True;
     {$ENDIF JVCLThemesEnabledD56}
     property PropagateEnable: Boolean read FPropagateEnable write SetPropagateEnable default False;
     property OnMouseEnter;
@@ -208,20 +203,6 @@ begin
     end;
   end;
 end;
-
-{$IFDEF JVCLThemesEnabledD56}
-
-function TJvGroupBox.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
-end;
-
-procedure TJvGroupBox.SetParentBackground(Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
-end;
-
-{$ENDIF JVCLThemesEnabledD56}
 
 function TJvGroupBox.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;

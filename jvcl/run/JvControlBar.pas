@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2003-09-29
+Last Modified: 2004-10-11
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,8 +31,13 @@ unit JvControlBar;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics,
-  ExtCtrls, Controls, Forms, Menus,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, ExtCtrls, Controls, Forms, Menus,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QExtCtrls, QControls, QForms, QMenus,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
   JVCLVer, JvThemes, JvExControls, JvExExtCtrls;
 
 type
@@ -48,17 +53,11 @@ type
     FPopup: TPopupMenu;
     FPopupNames: TPopupNames;
     FList: TList;
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-    {$IFDEF JVCLThemesEnabledD56}
-    function GetParentBackground: Boolean;
-    {$ENDIF JVCLThemesEnabledD56}
   protected
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
-    {$IFDEF JVCLThemesEnabledD56}
-    procedure SetParentBackground(Value: Boolean); virtual;
-    {$ENDIF JVCLThemesEnabledD56}
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     {$IFDEF VCL}
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
     {$ENDIF VCL}
@@ -73,9 +72,9 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    {$IFDEF JVCLThemesEnabledD56}
-    property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
-    {$ENDIF JVCLThemesEnabledD56}
+    {$IFDEF JVCLThemesEnabled}
+    property ParentBackground;
+    {$ENDIF JVCLThemesEnabled}
     property PopupControl: Boolean read FPopupControl write FPopupControl default True;
     property PopupNames: TPopupNames read FPopupNames write FPopupNames default pnHint;
     property OnMouseEnter;
@@ -109,20 +108,6 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
-
-function TJvControlBar.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
-end;
-
-procedure TJvControlBar.SetParentBackground(Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
-end;
-
-{$ENDIF JVCLThemesEnabledD56}
-
 procedure TJvControlBar.MouseEnter(AControl: TControl);
 begin
   if csDesigning in ComponentState then
@@ -132,20 +117,18 @@ begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
     FOver := True;
+    inherited MouseEnter(AControl);
   end;
-  inherited MouseEnter(AControl);
 end;
 
 procedure TJvControlBar.MouseLeave(AControl: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     FOver := False;
     Application.HintColor := FSaved;
+    inherited MouseLeave(AControl);
   end;
-  inherited MouseLeave(AControl);
 end;
 
 procedure TJvControlBar.ParentColorChanged;
@@ -155,13 +138,15 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-procedure TJvControlBar.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvControlBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if Picture.Graphic <> nil then
-    inherited
+    Result := inherited DoPaintBackground(Canvas, Param)
   else
-    DrawThemedBackground(Self, Msg.DC, ClientRect, Parent.Brush.Handle);
-  Msg.Result := 1;
+  begin
+    DrawThemedBackground(Self, Canvas.Handle, ClientRect, Parent.Brush.Handle);
+    Result := True;
+  end;
 end;
 
 procedure TJvControlBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -178,9 +163,11 @@ var
       It.Caption := AControl.Hint
     else
       It.Caption := AControl.Name;
+    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     It.AutoCheck := True;
     {$ENDIF COMPILER6_UP}
+    {$ENDIF VCL}
     It.Tag := Index;
     It.OnClick := PopupMenuClick;
     It.Checked := AControl.Visible;
@@ -219,7 +206,9 @@ var
   St, St2: string;
   I, J: Integer;
   LLeft, LTop: Integer;
+  {$IFDEF VCL}
   LDocked: Boolean;
+  {$ENDIF VCL}
 begin
   St := Value;
   J := 0;
@@ -246,20 +235,26 @@ begin
       if I <> 0 then
       begin
         LLeft := StrToIntDef(Copy(St2, 1, I - 1), TControl(FList[J]).Left);
+        {$IFDEF VCL}
         LDocked := True;
+        {$ENDIF VCL}
         St2 := Copy(St2, I + 1, Length(St2));
         I := Pos(',', St2);
         if I <> 0 then
         begin
+          {$IFDEF VCL}
           if Pos(cUndocked, St2) <> 0 then
             LDocked := False;
+          {$ENDIF VCL}
           St2 := Copy(St2, 1, I - 1);
         end;
+        {$IFDEF VCL}
         if LDocked and (TControl(FList[J]).Parent <> Self) then
           TControl(FList[J]).ManualDock(Self)
         else
         if (not LDocked) and (TControl(FList[J]).Parent = Self) then
           TControl(FList[J]).ManualDock(nil);
+        {$ENDIF VCL}
         LTop := StrToIntDef(St2, TControl(FList[J]).Top);
 
         if ControlAtPos(Point(LLeft, TControl(FList[J]).Top), True) <> nil then
