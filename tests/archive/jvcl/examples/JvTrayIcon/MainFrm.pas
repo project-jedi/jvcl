@@ -28,6 +28,14 @@ type
     chkDropDown: TCheckBox;
     chkAutoRestore: TCheckBox;
     RestoreTimer: TTimer;
+    GroupBox2: TGroupBox;
+    Label2: TLabel;
+    edBalloonTitle: TEdit;
+    Label3: TLabel;
+    edBalloonText: TEdit;
+    btnBalloon: TButton;
+    Label4: TLabel;
+    cbBalloonType: TComboBox;
     procedure btnUpdateClick(Sender: TObject);
     procedure mnuShowHideClick(Sender: TObject);
     procedure chkRestoreClickClick(Sender: TObject);
@@ -36,6 +44,9 @@ type
     procedure chkMinDblClickClick(Sender: TObject);
     procedure RestoreTimerTimer(Sender: TObject);
     procedure chkAutoRestoreClick(Sender: TObject);
+    procedure btnBalloonClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure chkActiveClick(Sender: TObject);
   end;
 
 var
@@ -52,7 +63,7 @@ begin
   begin
     Active := false;
     Hint := edHint.Text;
-    Snap := chkSnap.Checked;
+//    Snap := chkSnap.Checked;
     if chkPopUp.Checked then
       PopUpMenu := popTrayIcon
     else
@@ -72,12 +83,13 @@ begin
       Include(Options,tvRestoreClick);
     if chkRestoreDblClick.Checked and chkRestoreDblClick.Enabled then
       Include(Options,tvRestoreDbClick);
-    if chkMinClick.Checked and chkMinClick.Enabled then
-      Include(Options,tvMinimizeClick);
-    if chkMinDblClick.Checked and chkMinDblClick.Enabled then
-      Include(Options,tvMinimizeDbClick);
+//    if chkMinClick.Checked and chkMinClick.Enabled then
+//      Include(Options,tvMinimizeClick);
+//    if chkMinDblClick.Checked and chkMinDblClick.Enabled then
+//      Include(Options,tvMinimizeDbClick);
     Visibility := Options;
     Active := chkActive.Checked;
+    btnBalloon.Enabled := Active;
   end;
 end;
 
@@ -118,6 +130,21 @@ end;
 procedure TfrmMain.chkAutoRestoreClick(Sender: TObject);
 begin
   RestoreTimer.Enabled := not chkAutoRestore.Checked;
+end;
+
+procedure TfrmMain.btnBalloonClick(Sender: TObject);
+begin
+  JvTrayIcon1.BalloonHint(edBalloonTitle.Text,edBalloonText.Text,TBalloonType(cbBalloontype.ItemIndex),5000,true);
+end;
+
+procedure TfrmMain.FormShow(Sender: TObject);
+begin
+  cbBalloonType.ItemIndex := 0;
+end;
+
+procedure TfrmMain.chkActiveClick(Sender: TObject);
+begin
+  btnBalloon.Enabled := JvTrayIcon1.Active;
 end;
 
 end.

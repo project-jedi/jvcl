@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 309
-  Top = 132
+  Left = 548
+  Top = 124
   Width = 410
   Height = 454
   BorderIcons = [biSystemMenu, biMinimize]
@@ -12,6 +12,10 @@ object frmMain: TfrmMain
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  OnShow = FormShow
+  DesignSize = (
+    402
+    427)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
@@ -22,6 +26,9 @@ object frmMain: TfrmMain
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Tray Icon Options '
     TabOrder = 0
+    DesignSize = (
+      385
+      361)
     object Label1: TLabel
       Left = 16
       Top = 56
@@ -36,6 +43,7 @@ object frmMain: TfrmMain
       Height = 17
       Caption = 'Active'
       TabOrder = 0
+      OnClick = chkActiveClick
     end
     object edHint: TEdit
       Left = 16
@@ -147,6 +155,75 @@ object frmMain: TfrmMain
       Caption = 'Menu on left click'
       TabOrder = 11
     end
+    object GroupBox2: TGroupBox
+      Left = 152
+      Top = 112
+      Width = 217
+      Height = 193
+      Caption = ' Balloon Hint: '
+      TabOrder = 13
+      object Label2: TLabel
+        Left = 8
+        Top = 24
+        Width = 24
+        Height = 13
+        Caption = 'Title:'
+      end
+      object Label3: TLabel
+        Left = 8
+        Top = 64
+        Width = 26
+        Height = 13
+        Caption = 'Text:'
+      end
+      object Label4: TLabel
+        Left = 8
+        Top = 112
+        Width = 25
+        Height = 13
+        Caption = 'Icon:'
+      end
+      object edBalloonTitle: TEdit
+        Left = 8
+        Top = 40
+        Width = 201
+        Height = 21
+        TabOrder = 0
+        Text = 'Sample Title'
+      end
+      object edBalloonText: TEdit
+        Left = 8
+        Top = 80
+        Width = 201
+        Height = 21
+        TabOrder = 1
+        Text = 'Sample Text'
+      end
+      object btnBalloon: TButton
+        Left = 128
+        Top = 160
+        Width = 75
+        Height = 25
+        Caption = 'Sho&w'
+        Enabled = False
+        TabOrder = 2
+        OnClick = btnBalloonClick
+      end
+      object cbBalloonType: TComboBox
+        Left = 8
+        Top = 128
+        Width = 201
+        Height = 21
+        Style = csDropDownList
+        ItemHeight = 13
+        TabOrder = 3
+        Items.Strings = (
+          '(none)'
+          'Error'
+          'Info'
+          'Warning')
+      end
+    end
   end
   object chkAutoRestore: TCheckBox
     Left = 18
@@ -158,7 +235,6 @@ object frmMain: TfrmMain
     OnClick = chkAutoRestoreClick
   end
   object JvTrayIcon1: TJvTrayIcon
-    Active = True
     Icon.Data = {
       0000010001002020040000000000E80200001600000028000000200000004000
       0000010004000000000000020000000000000000000000000000000000000000

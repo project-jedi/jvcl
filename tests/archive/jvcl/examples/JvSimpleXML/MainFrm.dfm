@@ -1,9 +1,9 @@
 object Form1: TForm1
-  Left = 213
+  Left = 236
   Top = 107
-  Width = 783
-  Height = 540
-  Caption = 'JVSimpleXML Demo'
+  Width = 376
+  Height = 329
+  Caption = 'JvSimpleXML Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,8 +12,8 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   DesignSize = (
-    775
-    513)
+    368
+    302)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -26,13 +26,13 @@ object Form1: TForm1
   object edXMLFile: TEdit
     Left = 12
     Top = 36
-    Width = 727
+    Width = 320
     Height = 21
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
   end
   object Button1: TButton
-    Left = 744
+    Left = 337
     Top = 36
     Width = 21
     Height = 21
@@ -44,8 +44,8 @@ object Form1: TForm1
   object JvTreeView1: TJvTreeView
     Left = 12
     Top = 66
-    Width = 751
-    Height = 433
+    Width = 344
+    Height = 222
     Anchors = [akLeft, akTop, akRight, akBottom]
     Indent = 19
     TabOrder = 2
@@ -58,7 +58,7 @@ object Form1: TForm1
     Filter = 'XML files|*.xml;*.xsl|All files|*.*'
     Height = 347
     Width = 563
-    Left = 306
-    Top = 144
+    Left = 154
+    Top = 24
   end
 end
