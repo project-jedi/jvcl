@@ -1133,7 +1133,22 @@ begin
 end;
 
 procedure TJvPopupWindow.Show(Origin: TPoint);
+var
+  ParentForm: TCustomForm;
 begin
+  ParentForm := GetParentForm(Self);
+  if ParentForm = nil then
+  begin
+    if Screen.ActiveCustomForm <> nil then
+      ParentForm := Screen.ActiveCustomForm
+    else
+      ParentForm := Application.MainForm;
+  end;
+  if ParentForm <> nil then
+  begin
+    Inc(Origin.X, ParentForm.Monitor.Left);
+    Inc(Origin.Y, ParentForm.Monitor.Top);
+  end;
   SetWindowPos(Handle, HWND_TOP, Origin.X, Origin.Y, 0, 0,
     SWP_NOACTIVATE or SWP_SHOWWINDOW or SWP_NOSIZE);
   Visible := True;
