@@ -123,8 +123,8 @@ type
     procedure SetPhysicalWidth(const Value: Cardinal);
     procedure SetOffsetBottom(const Value: Cardinal);
     procedure SetOffsetRight(const Value: Cardinal);
-    function GetScreenDC: HDC;
   protected
+    function GetScreenDC: HDC;
     procedure Change;
   public
     constructor Create;
@@ -1106,11 +1106,11 @@ begin
   APrintRect := FPrintRect;
 
   // initial top/left offset
-  AOffsetX := -Offset.X + Max((ClientWidth - ((FPageWidth + Options.HorzSpacing) * TotalCols)) div 2, FOptions.HorzSpacing);
+  AOffsetX := -Offset.X + Max((ClientWidth - ((FPageWidth + Integer(Options.HorzSpacing)) * TotalCols)) div 2, FOptions.HorzSpacing);
   if IsPageMode then
-    AOffsetY := -Offset.Y + Max((ClientHeight - ((FPageHeight + Options.VertSpacing) * VisibleRows)) div 2, FOptions.VertSpacing)
+    AOffsetY := -Offset.Y + Max((ClientHeight - ((FPageHeight + Integer(Options.VertSpacing)) * VisibleRows)) div 2, FOptions.VertSpacing)
   else
-    AOffsetY := -Offset.Y + Options.VertSpacing;
+    AOffsetY := -Offset.Y + Integer(Options.VertSpacing);
   k := 0;
   with ACanvas do
   begin
@@ -1136,8 +1136,8 @@ begin
     begin
       APrintRect := FPrintRect;
       APageRect := FPreviewRect;
-      OffsetRect(APrintRect, AOffsetX, AOffsetY + (FPageHeight + Options.VertSpacing) * i);
-      OffsetRect(APageRect, AOffsetX, AOffsetY + (FPageHeight + Options.VertSpacing) * i);
+      OffsetRect(APrintRect, AOffsetX, AOffsetY + (FPageHeight + Integer(Options.VertSpacing)) * i);
+      OffsetRect(APageRect, AOffsetX, AOffsetY + (FPageHeight + Integer(Options.VertSpacing)) * i);
       for j := 0 to TotalCols - 1 do
       begin
         // avoid drawing partial pages when previewrect < clientrect
@@ -1174,8 +1174,8 @@ begin
           if PageCount = 0 then
             Exit; // we've drawn one empty page, so let's skip the rest
         end;
-        OffsetRect(APrintRect, FPageWidth + Options.HorzSpacing, 0);
-        OffsetRect(APageRect, FPageWidth + Options.HorzSpacing, 0);
+        OffsetRect(APrintRect, FPageWidth + Integer(Options.HorzSpacing), 0);
+        OffsetRect(APageRect, FPageWidth + Integer(Options.HorzSpacing), 0);
         Inc(APageIndex);
       end;
     end;
@@ -1303,7 +1303,7 @@ procedure TJvCustomPreviewControl.WMVScroll(var Msg: TWMVScroll);
 var si: TScrollInfo;
   NewPos, AIncrement: integer;
 begin
-  AIncrement := FPageHeight + Options.VertSpacing;
+  AIncrement := FPageHeight + Integer(Options.VertSpacing);
   if not IsPageMode then
     AIncrement := AIncrement div 3;
   if AIncrement < 1 then
@@ -1455,8 +1455,8 @@ end;
 function TJvCustomPreviewControl.GetOptimalScale: Cardinal;
 var Val1, Val2: integer;
 begin
-  Val1 := (ClientHeight - Options.VertSpacing) div VisibleRows - Options.VertSpacing * 2;
-  Val2 := (ClientWidth - Options.HorzSpacing) div TotalCols - Options.HorzSpacing * 2;
+  Val1 := (ClientHeight - Integer(Options.VertSpacing)) div VisibleRows - Integer(Options.VertSpacing) * 2;
+  Val2 := (ClientWidth - Integer(Options.HorzSpacing)) div TotalCols - Integer(Options.HorzSpacing) * 2;
   Result := GetLesserScale(Val1, Val2);
 end;
 
@@ -1521,7 +1521,7 @@ var ARow, tmp: integer;
 //  si: TScrollInfo;
 begin
   ARow := Max(Min(Value, TotalRows - 1), 0);
-  tmp := (FPageHeight + Options.VertSpacing) * ARow;
+  tmp := (FPageHeight + Integer(Options.VertSpacing)) * ARow;
   ScrollBy(0, -FScrollPos.Y + tmp);
   FScrollPos.Y := tmp;
   SetScrollPos(Handle, SB_VERT, FScrollPos.Y, true);
@@ -1568,12 +1568,12 @@ begin
       case Options.ScaleMode of
         smAutoScale:
           begin
-            FTotalCols := Max(Min(PageCount, Max((ClientWidth - Options.HorzSpacing) div (FPageWidth + Options.HorzSpacing), 1)), 1);
-            FVisibleRows := Min(Max((ClientHeight - Options.VertSpacing) div (FPageHeight + Options.VertSpacing), 1), TotalRows);
+            FTotalCols := Max(Min(PageCount, Max((ClientWidth - Integer(Options.HorzSpacing)) div (FPageWidth + Integer(Options.HorzSpacing)), 1)), 1);
+            FVisibleRows := Min(Max((ClientHeight - Integer(Options.VertSpacing)) div (FPageHeight + Integer(Options.VertSpacing)), 1), TotalRows);
             if (VisibleRows > 1) and (VisibleRows * TotalCols > PageCount) then
               FVisibleRows := Min((PageCount div TotalCols) + Ord(PageCount mod TotalCols <> 0), TotalRows);
-            if (FPageWidth + Options.HorzSpacing * 2 >= ClientWidth) or
-              (FPageHeight + Options.VertSpacing * 2 >= ClientHeight) then
+            if (FPageWidth + Integer(Options.HorzSpacing) * 2 >= ClientWidth) or
+              (FPageHeight + Integer(Options.VertSpacing) * 2 >= ClientHeight) then
             begin
               FTotalCols := 1;
               FVisibleRows := 1;
@@ -1583,17 +1583,17 @@ begin
       else
         begin
           FTotalCols := Max(Min(PageCount - 1, Options.Cols), 1);
-          FVisibleRows := Max(Min(PageCount div Options.Cols + Ord(PageCount mod Options.Cols <> 0), Options.Rows), 1);
+          FVisibleRows := Max(Min(PageCount div Integer(Options.Cols) + Ord(PageCount mod Integer(Options.Cols) <> 0), Options.Rows), 1);
         end;
       end;
 
     FTotalRows := Max((PageCount div TotalCols) + Ord(PageCount mod TotalCols <> 0), 1);
 
     // TODO: this just isn't right...
-    FMaxHeight := TotalRows * (FPageHeight + Options.VertSpacing) + Options.VertSpacing;
+    FMaxHeight := TotalRows * (FPageHeight + Integer(Options.VertSpacing)) + Integer(Options.VertSpacing);
 //    if (FMaxHeight > ClientHeight) and (TotalRows > 1) then
-//      Dec(FMaxHeight,FPageHeight - Options.VertSpacing);
-    FMaxWidth := TotalCols * (FPageWidth + Options.HorzSpacing) + Options.HorzSpacing;
+//      Dec(FMaxHeight,FPageHeight - Integer(Options.VertSpacing));
+    FMaxWidth := TotalCols * (FPageWidth + Integer(Options.HorzSpacing)) + Integer(Options.HorzSpacing);
   finally
     ReleaseDC(0, DC);
   end;
@@ -1601,8 +1601,8 @@ end;
 
 function TJvCustomPreviewControl.GetTopRow: integer;
 begin
-  Result := FScrollPos.Y div (FPageHeight + Options.VertSpacing);
-  Inc(Result, Ord(FScrollPos.Y mod (FPageHeight + Options.VertSpacing) <> 0));
+  Result := FScrollPos.Y div (FPageHeight + Integer(Options.VertSpacing));
+  Inc(Result, Ord(FScrollPos.Y mod (FPageHeight + Integer(Options.VertSpacing)) <> 0));
   Result := Min(Result,TotalRows-1);
 end;
 
@@ -1683,7 +1683,7 @@ end;
 function TJvCustomPreviewControl.IsPageMode: boolean;
 begin
   Result := (Options.ScaleMode in [smFullPage, smAutoScale, smColsRows])
-    or ((Options.ScaleMode = smScale) and (FPageHeight + Options.VertSpacing * 2 <= ClientHeight));
+    or ((Options.ScaleMode = smScale) and (FPageHeight + Integer(Options.VertSpacing) * 2 <= ClientHeight));
 end;
 
 procedure TJvCustomPreviewControl.UpdateScale;
@@ -1701,7 +1701,7 @@ begin
         Options.FCols := 1;
         Options.FRows := 1;
         FTotalRows := PageCount - 1;
-        Options.FScale := GetLesserScale(0, ClientWidth - Options.HorzSpacing * 2 - GetSystemMetrics(SM_CYHSCROLL));
+        Options.FScale := GetLesserScale(0, ClientWidth - Integer(Options.HorzSpacing) * 2 - GetSystemMetrics(SM_CYHSCROLL));
       end;
     smScale:
       begin

@@ -128,9 +128,9 @@ type
   private
     FImages: TJvPreviewGraphicItems;
     procedure SetImages(const Value: TJvPreviewGraphicItems);
+  protected
     function GetPPX(ADC:HDC):integer;
     function GetPPY(ADC:HDC):integer;
-  protected
     procedure DoAddPage(Sender: TObject; PageIndex: integer;
       Canvas: TCanvas; PageRect, PrintRect: TRect; var NeedMorePages: boolean); override;
   public
