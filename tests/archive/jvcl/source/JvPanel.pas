@@ -64,6 +64,12 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
+  TJvMultiLinePanel = class(TJvPanel)
+  protected
+    procedure Paint; override;
+    procedure DrawCaption(Rect: TRect); virtual;
+  end;
+
 implementation
 
 {**************************************************}
@@ -120,4 +126,72 @@ begin
     FOnMouseLeave(Self);
 end;
 
+{ TJvMultiLinePanel }
+
+procedure TJvMultiLinePanel.DrawCaption(Rect: TRect);
+const
+  Alignments: array[TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
+var
+  ATextRect: TRect;
+  Buff: array[0..255] of Char;
+begin
+  with Self.Canvas, Rect do
+  begin
+    if Caption <> '' then
+    begin
+      Font := Self.Font;
+      StrPCopy(Buff, Caption);
+      ATextRect := Rect;
+      //calculate required rectangle size
+      DrawText(Canvas.Handle, Buff, StrLen(Buff), ATextRect, DT_VCENTER or DT_WORDBREAK or
+        DT_CALCRECT or (Alignments[Alignment]));
+      //center the rectangle
+      OffsetRect(ATextRect, (Width - ATextRect.Right) div 2, (Height - ATextRect.Bottom) div 2);
+      if not Enabled then
+        Font.Color := clGrayText;
+      //draw text
+      DrawText(Canvas.Handle, Buff, StrLen(Buff), ATextRect, DT_VCENTER or DT_WORDBREAK or (Alignments[Alignment]));
+    end;
+  end; // with
+end;
+
+procedure TJvMultiLinePanel.Paint;
+var
+  Rect: TRect;
+  TopColor, BottomColor: TColor;
+  FontHeight: Integer;
+  Flags: Longint;
+
+  procedure AdjustColors(Bevel: TPanelBevel);
+  begin
+    TopColor := clBtnHighlight;
+    if Bevel = bvLowered then TopColor := clBtnShadow;
+    BottomColor := clBtnShadow;
+    if Bevel = bvLowered then BottomColor := clBtnHighlight;
+  end;
+
+begin
+  Rect := GetClientRect;
+  if BevelOuter <> bvNone then
+  begin
+    AdjustColors(BevelOuter);
+    Frame3D(Canvas, Rect, TopColor, BottomColor, BevelWidth);
+  end;
+  Frame3D(Canvas, Rect, Color, Color, BorderWidth);
+  if BevelInner <> bvNone then
+  begin
+    AdjustColors(BevelInner);
+    Frame3D(Canvas, Rect, TopColor, BottomColor, BevelWidth);
+  end;
+
+  with Canvas do
+  begin
+    Brush.Color := Color;
+    FillRect(Rect);
+    Brush.Style := bsClear;
+    DrawCaption(Rect);
+  end;
+end;
+
 end.
+

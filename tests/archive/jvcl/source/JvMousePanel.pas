@@ -31,17 +31,16 @@ unit JvMousePanel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JvPanel;
 
 type
-  TJvMousePanel = class(TPanel)
+  TJvMousePanel = class(TJvMultilinePanel)
   private
     { Private declarations }
     FMouseEnter, FMouseLeave: TNotifyEvent;
     FMouseInControl: Boolean;
     FOldColor: TColor;
     FMouseOverColor: TColor;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure SetMouseOverColor(const Value: TColor);
@@ -55,7 +54,6 @@ type
     { Public declarations }
     constructor Create(aOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property MouseOverColor: TColor read FMouseoverColor write SetMouseOverColor;
     property OnMouseEnter: TNotifyEvent read FMouseEnter write FMouseEnter;
     property OnMouseLeave: TNotifyEvent read FMouseLeave write FMouseLeave;

@@ -31,26 +31,24 @@ unit JvSizeablePanel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JvPanel;
 
 type
-  TJvSizeablePanel = class(TPanel)
+  TJvSizeablePanel = class(TJvMultiLinePanel)
   private
     FDragging: Boolean;
     FLastPos: TPoint;
-    FAboutJVCL: TJVCLAboutInfo;
+
   protected
-    procedure Paint; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure DrawCaption(Rect: TRect); virtual;
+    procedure Paint; override;
   public
     { Public declarations }
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation
@@ -61,12 +59,12 @@ begin
   if (Button = mbLeft) and
     ((Width - x) < 10) and
     ((Height - y) < 10) then
-    begin
-      FDragging := TRue;
-      FLastPos := Point(x, y);
-      MouseCapture := true;
-      Screen.cursor := crSizeNWSE;
-    end
+  begin
+    FDragging := TRue;
+    FLastPos := Point(x, y);
+    MouseCapture := true;
+    Screen.cursor := crSizeNWSE;
+  end
   else
     inherited;
 end;
@@ -76,138 +74,53 @@ var
   r: TRect;
 begin
   if FDragging then
-    begin
-      r := BoundsRect;
-      SetBounds(r.left, r.top,
-        r.right - r.left + X - FlastPos.X,
-        r.bottom - r.top + Y - Flastpos.Y);
-      FLastPos := Point(x, y);
-    end
+  begin
+    r := BoundsRect;
+    SetBounds(r.left, r.top,
+      r.right - r.left + X - FlastPos.X,
+      r.bottom - r.top + Y - Flastpos.Y);
+    FLastPos := Point(x, y);
+  end
   else
-    begin
-      inherited;
-      if ((Width - x) < 10) and ((Height - y) < 10) then
-        Cursor := crSizeNWSE
-      else
-        Cursor := crDefault;
-
-    end;
+  begin
+    inherited;
+    if ((Width - x) < 10) and ((Height - y) < 10) then
+      Cursor := crSizeNWSE
+    else
+      Cursor := crDefault;
+  end;
 end;
 
 procedure TJvSizeablePanel.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
   if FDragging then
-    begin
-      FDragging := False;
-      MouseCapture := false;
-      Screen.Cursor := crDefault;
-    end
+  begin
+    FDragging := False;
+    MouseCapture := false;
+    Screen.Cursor := crDefault;
+  end
   else
     inherited;
 end;
 
 procedure TJvSizeablePanel.Paint;
-{var
+var
   x, y: Integer;
 begin
   inherited;
-  Canvas.Font.Name := 'Marlett';
-  Canvas.Font.Size := 10;
-  Canvas.Brush.Style := bsClear;
-  x := clientwidth - canvas.textwidth('o');
-  y := clientheight - canvas.textheight('o');
-  canvas.textout(x, y, 'o');}
-
-const
-  Alignments: array[TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
-var
-  Rect: TRect;
-  TopColor, BottomColor: TColor;
-  FontHeight: Integer;
-  Flags: Longint;
-
-  x, y: Integer;
-
-  procedure AdjustColors(Bevel: TPanelBevel);
-  begin
-    TopColor := clBtnHighlight;
-    if Bevel = bvLowered then TopColor := clBtnShadow;
-    BottomColor := clBtnShadow;
-    if Bevel = bvLowered then BottomColor := clBtnHighlight;
-  end;
-
-begin
-  Rect := GetClientRect;
-  if BevelOuter <> bvNone then
-    begin
-      AdjustColors(BevelOuter);
-      Frame3D(Canvas, Rect, TopColor, BottomColor, BevelWidth);
-    end;
-  Frame3D(Canvas, Rect, Color, Color, BorderWidth);
-  if BevelInner <> bvNone then
-    begin
-      AdjustColors(BevelInner);
-      Frame3D(Canvas, Rect, TopColor, BottomColor, BevelWidth);
-    end;
   with Canvas do
-    begin
-      Brush.Color := Color;
-      FillRect(Rect);
-      Brush.Style := bsClear;
-      {    Font := Self.Font;
-          FontHeight := TextHeight('W');
-          with Rect do
-          begin
-            Top := ((Bottom + Top) - FontHeight) div 2;
-            Bottom := Top + FontHeight;
-          end;
-          Flags := DT_EXPANDTABS or DT_VCENTER or Alignments[FAlignment];
-          Flags := DrawTextBiDiModeFlags(Flags);
-              DrawText(Handle, PChar(Caption), -1, Rect, Flags);}
-
-      DrawCaption(Rect);
-
-      Canvas.Font.Name := 'Marlett';
-      Canvas.Font.Charset := default_Charset;
-      Canvas.Font.Size := 10;
-      if fsBold in Canvas.Font.Style then Canvas.Font.Style := Canvas.Font.Style - [fsBold];
-      if fsItalic in Canvas.Font.Style then Canvas.Font.Style := Canvas.Font.Style - [fsItalic];
-      Canvas.Brush.Style := bsClear;
-      x := clientwidth - canvas.textwidth('o');
-      y := clientheight - canvas.textheight('o');
-      canvas.textout(x, y, 'o');
-    end;
+  begin
+    Font.Name := 'Marlett';
+    Font.Charset := default_Charset;
+    Font.Size := 10;
+    if fsBold in Canvas.Font.Style then Canvas.Font.Style := Canvas.Font.Style - [fsBold];
+    if fsItalic in Canvas.Font.Style then Canvas.Font.Style := Canvas.Font.Style - [fsItalic];
+    Brush.Style := bsClear;
+    x := clientwidth - canvas.textwidth('o');
+    y := clientheight - canvas.textheight('o');
+    textout(x, y, 'o');
+  end;
 end;
-
-procedure TJvSizeablePanel.DrawCaption(Rect: TRect);
-const
-  Alignments: array[TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
-var
-  ATextRect: TRect;
-  Buff: array[0..255] of Char;
-begin
-  with Self.Canvas, Rect do
-    begin
-      if Caption <> '' then
-        begin
-          Font := Self.Font;
-          StrPCopy(Buff, Caption);
-          ATextRect := Rect;
-          //calculate required rectangle size
-          DrawText(Canvas.Handle, Buff, StrLen(Buff), ATextRect, DT_VCENTER or DT_WORDBREAK or
-          DT_CALCRECT or (Alignments[Alignment]));
-          //center the rectangle
-          OffsetRect(ATextRect, (Width - ATextRect.Right) div 2, (Height - ATextRect.Bottom) div 2);
-
-            if not Enabled then
-             Font.Color := clGrayText;
-
-          //draw text
-          DrawText(Canvas.Handle, Buff, StrLen(Buff), ATextRect, DT_VCENTER or DT_WORDBREAK or (Alignments[Alignment]));
-        end;
-    end; // with
-end;
-
 end.
 
