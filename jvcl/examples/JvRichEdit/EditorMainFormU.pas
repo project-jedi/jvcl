@@ -347,16 +347,16 @@ begin
     FXpBackColorItemPainter.Paint(Item, Rect, State);
 
   // add our colored square
-  Rect.Left := Rect.Left + 2;
-  Rect.Right := Rect.Left + 18;
-  Rect.Top := Rect.Top + 4;
-  Rect.Bottom := Rect.Top + 18;
+  Rect.Left := Rect.Left + 5;
+  Rect.Right := Rect.Left + 12;
+  Rect.Top := Rect.Top + 6;
+  Rect.Bottom := Rect.Top + 13;
   with TJvPopupMenu(Sender).Canvas do
   begin
     Brush.Color := clMenuText;
     FrameRect(Rect);
     InflateRect(Rect, -1, -1);
-    Brush.Color := Item.Tag;  
+    Brush.Color := Item.Tag;
     FillRect(Rect);
   end;
 end;
@@ -644,8 +644,11 @@ begin
   FXpColorItemPainter := TJvXpMenuItemPainter.Create(ColorMenu);
   FXpBackColorItemPainter := TJvXpMenuItemPainter.Create(BackgroundMenu);
 
+  Editor.RegisterMSTextConverters;
   OpenDialog.InitialDir := ExtractFilePath(ParamStr(0));
+  OpenDialog.Filter := Editor.Filter(ckImport);
   SaveDialog.InitialDir := OpenDialog.InitialDir;
+  SaveDialog.Filter := Editor.Filter(ckExport);
   SetFileName('Untitled');
   SetupRuler;
   HandleNeeded;
