@@ -28,7 +28,7 @@ Known Issues:
 {$ELSE}
 This unit is only supported for VCL!
 {$ENDIF COMPILER6_UP}
-{$ENDIF VCL}
+{$ENDIF !VCL}
 
 {$I windowsonly.inc}
 
