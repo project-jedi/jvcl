@@ -34,9 +34,9 @@ unit JvgExceptionHandler;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, JvComponent, Graphics, Controls,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, jpeg,
-  JvTypes, JvgMailSlots, JvgSysInf;
+  JvTypes, JvComponent, JvgMailSlots, JvgSysInf;
 
 type
   TExceptionHandlerOption = (fehActiveDesignTime, fehActiveRunTime,

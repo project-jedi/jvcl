@@ -59,30 +59,27 @@ type
     procedure SetHScroll(const Value: Boolean);
     procedure RefreshH;
     procedure SetHotTrack(const Value: Boolean);
-  protected
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure SelectCancel(var Msg: TMessage); message LBN_SELCANCEL;
+    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;    procedure LBNSelCancel(var Msg: TMessage); message LBN_SELCANCEL;
+  protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WndProc(var Msg: TMessage); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
     function DeleteExactString(Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
-
     procedure SelectAll; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure UnselectAll;
     procedure InvertSelection;
     procedure CheckAll;
-    procedure UnCheckall;
+    procedure UnCheckAll;
     procedure InvertCheck;
     function GetChecked: TStringList;
     function GetUnChecked: TStringList;
@@ -285,7 +282,7 @@ begin
   Result := FItemSearchs.SearchPrefix(Items, Value, CaseSensitive);
 end;
 
-procedure TJvCheckListBox.SelectCancel(var Msg: TMessage);
+procedure TJvCheckListBox.LBNSelCancel(var Msg: TMessage);
 begin
   if Assigned(FOnSelectCancel) then
     FOnSelectCancel(Self);
@@ -339,7 +336,7 @@ begin
     Checked[I] := True;
 end;
 
-procedure TJvCheckListBox.UnCheckall;
+procedure TJvCheckListBox.UnCheckAll;
 var
   I: Integer;
 begin

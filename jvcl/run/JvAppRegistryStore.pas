@@ -69,8 +69,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
+    property RegRoot: TJvRegKey read GetRegRoot write SetRegRoot default hkCurrentUser;
     property Root;
-    property RegRoot: TJvRegKey read GetRegRoot write SetRegRoot;
     property SubStores;
   end;
 

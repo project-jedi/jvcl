@@ -61,7 +61,6 @@ Image - (optional) image to display in dialog. The image can be any size as the 
         as large images doesn't look too good (IMO)
 Transparent - set to true if Image should be rendered transparently (this value cannot be changed in OnProgress)
 
-
 Events:
 OnProgress:TJvProgressDialogEvent = procedure(Sender: TObject; var AContinue: boolean) of object;
   - called every Interval so you can update the values of the component.
@@ -79,74 +78,82 @@ NB!
  During execution of the dialog, the component properties reflects the
  *current* values in the dialog (as changed in OnProgress). After execution, the
  properties are reset to their original ("start") values.
-
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+
 unit JvProgressDialog;
 
 interface
+
 uses
-  Classes, SysUtils, Graphics, Forms, JvBaseDlg;
+  Classes, SysUtils, Graphics, Forms,
+  JvBaseDlg;
 
 type
-  TJvProgressDialogEvent = procedure(Sender: TObject; var AContinue: boolean) of object;
+  TJvProgressDialogEvent = procedure(Sender: TObject; var AContinue: Boolean) of object;
+
   TJvProgressDialog = class(TJvCommonDialogF)
   private
-    FIMin, FIMax, FIPosition, FIInterval: integer;
-    FICaption, FIText: string;
+    FIMin: Integer;
+    FIMax: Integer;
+    FIPosition: Integer;
+    FIInterval: Integer;
+    FICaption: string;
+    FIText: string;
     FIImage: TPicture;
-
-    FMin, FMax, FPosition, FInterval: integer;
-    FCaption, FText: string;
-    FShowCancel: boolean;
-    FTransparent: boolean;
+    FMin: Integer;
+    FMax: Integer;
+    FPosition: Integer;
+    FInterval: Integer;
+    FCaption: string;
+    FText: string;
+    FShowCancel: Boolean;
+    FTransparent: Boolean;
     FForm: TForm;
     FOnProgress: TJvProgressDialogEvent;
     FOnCancel: TNotifyEvent;
     FImage: TPicture;
     FOnClose: TNotifyEvent;
     FOnShow: TNotifyEvent;
-    FCancelled: boolean;
+    FCancelled: Boolean;
     procedure SetPicture(const Value: TPicture);
     procedure SetCaption(const Value: string);
-    procedure SetInterval(const Value: integer);
-    procedure SetMax(const Value: integer);
-    procedure SetMin(const Value: integer);
-    procedure SetPosition(const Value: integer);
-    procedure SetShowCancel(const Value: boolean);
+    procedure SetInterval(const Value: Integer);
+    procedure SetMax(const Value: Integer);
+    procedure SetMin(const Value: Integer);
+    procedure SetPosition(const Value: Integer);
+    procedure SetShowCancel(const Value: Boolean);
     procedure SetText(const Value: string);
   protected
     procedure InternalDoClose(Sender: TObject; var Action: TCloseAction);
     procedure InternalDoProgress(Sender: TObject; var AMin, AMax, APosition,
-      AInterval: integer; var ACaption, ALabel: string; AnImage: TPicture;
-      var AContinue: boolean);
+      AInterval: Integer; var ACaption, ALabel: string; AnImage: TPicture;
+      var AContinue: Boolean);
     procedure InternalDoCancel(Sender: TObject);
     procedure DoShow;
     procedure DoClose;
     procedure StoreValues;
     procedure RestoreValues;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     function Execute: Boolean; override;
-    function ShowModal: integer;
+    function ShowModal: Integer;
     // (p3) Show, Hide and Cancelled are used in non-modal mode)
     procedure Show;
     procedure Hide;
-    property Cancelled:boolean read FCancelled;
-
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-
+    property Cancelled: Boolean read FCancelled;
   published
     property Caption: string read FCaption write SetCaption;
     property Image: TPicture read FImage write SetPicture;
-    property Interval: integer read FInterval write SetInterval default 200;
-    property Min: integer read FMin write SetMin default 0;
-    property Max: integer read FMax write SetMax default 100;
-    property Position: integer read FPosition write SetPosition default 0;
-    property ShowCancel: boolean read FShowCancel write SetShowCancel default true;
+    property Interval: Integer read FInterval write SetInterval default 200;
+    property Min: Integer read FMin write SetMin default 0;
+    property Max: Integer read FMax write SetMax default 100;
+    property Position: Integer read FPosition write SetPosition default 0;
+    property ShowCancel: Boolean read FShowCancel write SetShowCancel default True;
     property Text: string read FText write SetText;
-    property Transparent: boolean read FTransparent write FTransparent default false;
+    property Transparent: Boolean read FTransparent write FTransparent default False;
     property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnProgress: TJvProgressDialogEvent read FOnProgress write FOnProgress;
@@ -154,40 +161,40 @@ type
   end;
 
 implementation
-uses
-  Controls, JvProgressForm;
 
-{ TJvProgressDialog }
+uses
+  Controls,
+  JvProgressForm;
 
 constructor TJvProgressDialog.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FImage := TPicture.Create;
   FMin := 0;
   FMax := 100;
   FPosition := 0;
   FInterval := 200;
-  FTransparent := false;
+  FTransparent := False;
 end;
 
 destructor TJvProgressDialog.Destroy;
 begin
-//  Hide;
+  // Hide;
   FreeAndNil(FImage);
   FreeAndNil(FIImage);
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvProgressDialog.InternalDoCancel(Sender: TObject);
 begin
   if Assigned(FOnCancel) then
-    FOnCancel(self);
-  FCancelled := true;
+    FOnCancel(Self);
+  FCancelled := True;
 end;
 
 procedure TJvProgressDialog.InternalDoProgress(Sender: TObject; var AMin, AMax,
-  APosition, AInterval: integer; var ACaption, ALabel: string;
-  AnImage: TPicture; var AContinue: boolean);
+  APosition, AInterval: Integer; var ACaption, ALabel: string;
+  AnImage: TPicture; var AContinue: Boolean);
 begin
   if Assigned(FOnProgress) then
   begin
@@ -200,7 +207,7 @@ begin
     Caption := ACaption;
     Text := ALabel;
     // this is were the user gets a chance to alter any property values
-    FOnProgress(self, AContinue);
+    FOnProgress(Self, AContinue);
     // send back new values
     if AnImage <> nil then
       AnImage.Assign(Image);
@@ -226,25 +233,27 @@ end;
 
 procedure TJvProgressDialog.DoClose;
 begin
-  if Assigned(FOnClose) then FOnClose(self);
+  if Assigned(FOnClose) then
+    FOnClose(Self);
 end;
 
 procedure TJvProgressDialog.DoShow;
 begin
-  if Assigned(FOnShow) then FOnShow(self);
+  if Assigned(FOnShow) then
+    FOnShow(Self);
 end;
 
-function TJvProgressDialog.ShowModal: integer;
+function TJvProgressDialog.ShowModal: Integer;
 begin
   Result := mrCancel;
-  FCancelled := false;
+  FCancelled := False;
   FreeAndNil(FForm);
   DoShow;
   StoreValues;
   try
     if TfrmProgress.Execute(TfrmProgress(FForm), Caption, Text, Image, Transparent, Min, Max, Position, Interval,
       ShowCancel or (csDesigning in ComponentState), InternalDoProgress, InternalDoCancel) then
-        Result := mrOK;
+      Result := mrOK;
   finally
     RestoreValues;
     DoClose;
@@ -269,7 +278,7 @@ begin
   end;
   FForm := TfrmProgress.Create(Application);
   FForm.OnClose := InternalDoClose;
-  FCancelled := false;
+  FCancelled := False;
   DoShow;
   StoreValues;
   TfrmProgress.Execute(TfrmProgress(FForm), Caption, Text, Image, Transparent, Min, Max, Position, Interval, ShowCancel,
@@ -295,7 +304,7 @@ begin
   FCaption := Value;
 end;
 
-procedure TJvProgressDialog.SetInterval(const Value: integer);
+procedure TJvProgressDialog.SetInterval(const Value: Integer);
 begin
   if FForm <> nil then
   begin
@@ -305,7 +314,7 @@ begin
   FInterval := Value;
 end;
 
-procedure TJvProgressDialog.SetMax(const Value: integer);
+procedure TJvProgressDialog.SetMax(const Value: Integer);
 begin
   if FForm <> nil then
   begin
@@ -315,7 +324,7 @@ begin
   FMax := Value;
 end;
 
-procedure TJvProgressDialog.SetMin(const Value: integer);
+procedure TJvProgressDialog.SetMin(const Value: Integer);
 begin
   if FForm <> nil then
   begin
@@ -325,7 +334,7 @@ begin
   FMin := Value;
 end;
 
-procedure TJvProgressDialog.SetPosition(const Value: integer);
+procedure TJvProgressDialog.SetPosition(const Value: Integer);
 begin
   if FForm <> nil then
   begin
@@ -335,7 +344,7 @@ begin
   FPosition := Value;
 end;
 
-procedure TJvProgressDialog.SetShowCancel(const Value: boolean);
+procedure TJvProgressDialog.SetShowCancel(const Value: Boolean);
 begin
   if FForm <> nil then
   begin

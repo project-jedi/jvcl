@@ -37,38 +37,35 @@ uses
 type
   TVersionLanguage =
    (vlArabic, vlBulgarian, vlCatalan, vlTraditionalChinese,
-     vlCzech, vlDanish, vlGerman, vlGreek, vlUSEnglish, vlCastilianSpanish,
-     vlFinnish, vlFrench, vlHebrew, vlHungarian, vlIcelandic, vlItalian,
-     vlJapanese, vlKorean, vlDutch, vlNorwegianBokmel, vlPolish,
-     vlBrazilianPortuguese, vlRhaetoRomanic, vlRomanian, vlRussian,
-     vlCroatoSerbian, vlSlovak, vlAlbanian, vlSwedish, vlThai, vlTurkish,
-     vlUrdu, vlBahasa, vlSimplifiedChinese, vlSwissGerman, vlUKEnglish,
-     vlMexicanSpanish, vlBelgianFrench, vlSwissItalian, vlBelgianDutch,
-     vlNorwegianNynorsk, vlPortuguese, vlSerboCroatian, vlCanadianFrench,
-     vlSwissFrench, vlUnknown);
+    vlCzech, vlDanish, vlGerman, vlGreek, vlUSEnglish, vlCastilianSpanish,
+    vlFinnish, vlFrench, vlHebrew, vlHungarian, vlIcelandic, vlItalian,
+    vlJapanese, vlKorean, vlDutch, vlNorwegianBokmel, vlPolish,
+    vlBrazilianPortuguese, vlRhaetoRomanic, vlRomanian, vlRussian,
+    vlCroatoSerbian, vlSlovak, vlAlbanian, vlSwedish, vlThai, vlTurkish,
+    vlUrdu, vlBahasa, vlSimplifiedChinese, vlSwissGerman, vlUKEnglish,
+    vlMexicanSpanish, vlBelgianFrench, vlSwissItalian, vlBelgianDutch,
+    vlNorwegianNynorsk, vlPortuguese, vlSerboCroatian, vlCanadianFrench,
+    vlSwissFrench, vlUnknown);
 
   TVersionCharSet =
-    (vcsASCII, vcsJapan, vcsKorea, vcsTaiwan, vcsUnicode,
-     vcsEasternEuropean, vcsCyrillic, vcsMultilingual, vcsGreek, vcsTurkish,
-     vcsHebrew, vcsArabic, vcsUnknown);
+   (vcsASCII, vcsJapan, vcsKorea, vcsTaiwan, vcsUnicode,
+    vcsEasternEuropean, vcsCyrillic, vcsMultilingual, vcsGreek, vcsTurkish,
+    vcsHebrew, vcsArabic, vcsUnknown);
 
   TLongVersion = record
     case Integer of
       0:
         (All: array [1..4] of Word);
       1:
-        (MS, LS: LongInt);
+        (MS, LS: Longint);
   end;
 
   TJvVersionInfo = class(TObject)
   private
-    FFileName: PChar;
+    FFileName: TFileName;
     FValid: Boolean;
-    FSize: DWORD;
     FBuffer: PChar;
-    FHandle: DWORD;
     procedure ReadVersionInfo;
-    function GetFileName: TFileName;
     procedure SetFileName(const Value: TFileName);
     function GetTranslation: Pointer;
     function GetFixedFileInfo: PVSFixedFileInfo;
@@ -95,7 +92,7 @@ type
     constructor Create(const AFileName: string);
     destructor Destroy; override;
     function GetVerValue(const VerName: string): string;
-    property FileName: TFileName read GetFileName write SetFileName;
+    property FileName: TFileName read FFileName write SetFileName;
     property Valid: Boolean read FValid;
     property FixedFileInfo: PVSFixedFileInfo read GetFixedFileInfo;
     property FileLongVersion: TLongVersion read GetFileLongVersion;
@@ -149,44 +146,41 @@ uses
 constructor TJvVersionInfo.Create(const AFileName: string);
 begin
   inherited Create;
-  FFileName := StrPCopy(StrAlloc(Length(AFileName) + 1), AFileName);
+  FFileName := AFileName;
+  FBuffer := nil;
   ReadVersionInfo;
 end;
 
 destructor TJvVersionInfo.Destroy;
 begin
   if FBuffer <> nil then
-    FreeMem(FBuffer, FSize);
-  StrDispose(FFileName);
+    FreeMem(FBuffer);
   inherited Destroy;
 end;
 
 procedure TJvVersionInfo.ReadVersionInfo;
+var
+  Handle: DWORD;
+  Size: DWORD;
 begin
   FValid := False;
-  FSize := GetFileVersionInfoSize(FFileName, FHandle);
-  if FSize > 0 then
+  Size := GetFileVersionInfoSize(PChar(FFileName), Handle);
+  if Size > 0 then
   try
-    GetMem(FBuffer, FSize);
-    FValid := GetFileVersionInfo(FFileName, FHandle, FSize, FBuffer);
+    GetMem(FBuffer, Size);
+    FValid := GetFileVersionInfo(PChar(FFileName), Handle, Size, FBuffer);
   except
     FValid := False;
     raise;
   end;
 end;
 
-function TJvVersionInfo.GetFileName: TFileName;
-begin
-  Result := StrPas(FFileName);
-end;
-
 procedure TJvVersionInfo.SetFileName(const Value: TFileName);
 begin
   if FBuffer <> nil then
-    FreeMem(FBuffer, FSize);
+    FreeMem(FBuffer);
   FBuffer := nil;
-  StrDispose(FFileName);
-  FFileName := StrPCopy(StrAlloc(Length(Value) + 1), Value);
+  FFileName := Value;
   ReadVersionInfo;
 end;
 
@@ -194,7 +188,6 @@ function TJvVersionInfo.GetTranslation: Pointer;
 var
   Len: UINT;
 begin
-  Result := nil;
   if Valid then
     VerQueryValue(FBuffer, '\VarFileInfo\Translation', Result, Len)
   else
@@ -205,10 +198,11 @@ function TJvVersionInfo.GetTranslationString: string;
 var
   P: Pointer;
 begin
-  Result := '';
   P := GetTranslation;
   if P <> nil then
-    Result := IntToHex(MakeLong(HiWord(Longint(P^)), LoWord(Longint(P^))), 8);
+    Result := IntToHex(MakeLong(HiWord(Longint(P^)), LoWord(Longint(P^))), 8)
+  else
+    Result := '';
 end;
 
 function TJvVersionInfo.GetVersionLanguage: TVersionLanguage;
@@ -235,7 +229,6 @@ function TJvVersionInfo.GetFixedFileInfo: PVSFixedFileInfo;
 var
   Len: UINT;
 begin
-  Result := nil;
   if Valid then
     VerQueryValue(FBuffer, '\', Pointer(Result), Len)
   else
@@ -273,7 +266,7 @@ begin
   begin
     StrPCopy(szName, '\StringFileInfo\' + GetTranslationString + '\' + VerName);
     if VerQueryValue(FBuffer, szName, Value, Len) then
-      Result := StrPas(PChar(Value));
+      Result := PChar(Value);
   end;
 end;
 
@@ -391,12 +384,12 @@ end;
 
 function AppFileName: string;
 var
-  FileName: array [0..255] of Char;
+  FileName: array [0..MAX_PATH] of Char;
 begin
   if IsLibrary then
   begin
     GetModuleFileName(HInstance, FileName, SizeOf(FileName) - 1);
-    Result := StrPas(FileName);
+    Result := FileName;
   end
   else
     Result := ParamStr(0);

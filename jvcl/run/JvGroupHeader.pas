@@ -250,8 +250,8 @@ var
 begin
   // D R A W  T E X T
   // ----------------
-  Color1 := 0;
-  Color2 := 0; // (p3) just to remove warnings...
+  Color1 := clBlack;
+  Color2 := clBlack; // (p3) just to remove warnings...
   with Canvas do
   begin
     if not Transparent then
@@ -277,7 +277,7 @@ begin
     DoDrawText(Rect, DrawStyle);
   end;
 
-  // C A L C U L A T E  P O S I T I O N ' S
+  // C A L C U L A T E  P O S I T I O N S
   // --------------------------------------
   lbHeight := Canvas.TextHeight(GetLabelText);
   lbWidth := Canvas.TextWidth(GetLabelText);
