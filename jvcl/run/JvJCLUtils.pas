@@ -89,6 +89,13 @@ const
   AllFilesMask = '*';
   {$ENDIF LINUX}
 
+  {$IFDEF VCL}
+  NullHandle = 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  NullHandle = nil;
+  {$ENDIF VisualCLX}
+
 {$IFDEF LINUX}
 type
   TFileTime = Integer;
@@ -214,6 +221,7 @@ function Sign(const AValue: Double): TValueSign; overload;
 { GetWinDir returns Windows folder name }
 function GetWinDir: TFileName;
 {$ENDIF MSWINDOWS}
+
 { GetTempDir returns Windows temporary folder name }
 function GetTempDir: string;
 { GenTempFileName returns temporary file name on
@@ -288,9 +296,7 @@ procedure SetRect(out R: TRect; Left, Top, Right, Bottom: Integer);
 {**** other routines }
 procedure SwapInt(var Int1, Int2: Integer);
 function IntPower(Base, Exponent: Integer): Integer;
-{$IFDEF VCL}
-function ChangeTopException(E: TObject): TObject;
-{$ENDIF VCL}
+function ChangeTopException(E: TObject): TObject; // Linux version writes error message to ErrOutput
 function StrToBool(const S: string): Boolean;
 
 function Var2Type(V: Variant; const VarType: Integer): Variant;
@@ -891,9 +897,9 @@ procedure ResourceNotFound(ResID: PChar);
 function RectWidth(R: TRect): Integer;
 function RectHeight(R: TRect): Integer;
 
+procedure Beep;
 {$IFDEF MSWINDOWS}
 procedure FreeUnusedOle;
-procedure Beep;
 function GetWindowsVersion: string;
 function LoadDLL(const LibName: string): THandle;
 function RegisterServer(const ModuleName: string): Boolean;
@@ -923,14 +929,14 @@ procedure HugeDec(var HugePtr: Pointer; Amount: Longint);
 function HugeOffset(HugePtr: Pointer; Amount: Longint): Pointer;
 procedure HugeMove(Base: Pointer; Dst, Src, Size: Longint);
 procedure HMemCpy(DstPtr, SrcPtr: Pointer; Amount: Longint);
-{$IFDEF VCL}
 function WindowClassName(Wnd: HWND): string;
+{$IFDEF VCL}
 procedure SwitchToWindow(Wnd: HWND; Restore: Boolean);
 procedure ActivateWindow(Wnd: HWND);
 procedure ShowWinNoAnimate(Handle: HWND; CmdShow: Integer);
 procedure KillMessage(Wnd: HWND; Msg: Cardinal);
-{ SetWindowTop put window to top without recreating window }
 {$ENDIF VCL}
+{ SetWindowTop put window to top without recreating window }
 procedure SetWindowTop(const Handle: HWND; const Top: Boolean);
 procedure CenterWindow(Wnd: HWND);
 function MakeVariant(const Values: array of Variant): Variant;
@@ -1572,15 +1578,15 @@ begin
   DosError := FindFirst(Path, faAnyFile, SearchRec);
   while DosError = 0 do
   begin
-  {$IFDEF MSWINDOWS}
-   {$WARNINGS OFF}
+    {$IFDEF MSWINDOWS}
+    {$WARNINGS OFF}
     if (AnsiCompareText(SearchRec.FindData.cFileName, FileName) = 0) or
       (AnsiCompareText(SearchRec.FindData.cAlternateFileName, FileName) = 0) then
-   {$WARNINGS ON}
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+    {$WARNINGS ON}
+    {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
     if AnsiCompareStr(SearchRec.Name, FileName) = 0 then
-  {$ENDIF LINUX}
+    {$ENDIF LINUX}
     begin
       Result := True;
       Break;
@@ -2047,7 +2053,7 @@ begin
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   FileSetReadOnly(FileName, False);
-  {$ENDIF LINUX}  
+  {$ENDIF LINUX}
   Result := DeleteFile(FileName);
 end;
 
@@ -2142,7 +2148,6 @@ begin
     Result := Base;
 end;
 
-{$IFDEF VCL}
 function ChangeTopException(E: TObject): TObject;
 type
   PRaiseFrame = ^TRaiseFrame;
@@ -2150,16 +2155,17 @@ type
     NextRaise: PRaiseFrame;
     ExceptAddr: Pointer;
     ExceptObject: TObject;
-    ExceptionRecord: PExceptionRecord;
+    //ExceptionRecord: PExceptionRecord;
   end;
 begin
   { C++ Builder 3 Warning !}
   { if linker error occured with message "unresolved external 'System::RaiseList'" try
     comment this function implementation, compile,
     then uncomment and compile again. }
-  {$IFDEF COMPILER6_UP}
-  {$WARN SYMBOL_DEPRECATED OFF}
-  {$ENDIF}
+  {$IFDEF MSWINDOWS}
+   {$IFDEF COMPILER6_UP}
+    {$WARN SYMBOL_DEPRECATED OFF}
+   {$ENDIF}
   if RaiseList <> nil then
   begin
     Result := PRaiseFrame(RaiseList)^.ExceptObject;
@@ -2167,9 +2173,15 @@ begin
   end
   else
     Result := nil;
-//    raise Exception.Create('Not in exception');
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  // XXX: changing exception in stack frame is not supported on Kylix
+  Writeln(ErrOutput, 'ChangeTopException');
+  Result := E;
+  {$ENDIF LINUX}
 end;
 
+{$IFDEF VCL}
 function TTFontSelected(const DC: HDC): Boolean;
 var
   TM: TTEXTMETRIC;
@@ -2522,29 +2534,21 @@ end;
 {$ENDIF !COMPILER6_UP}
 
 function GetComputerName: string;
-{$IFDEF MSWINDOWS}
 var
-  nSize: DWORD;
+  nSize: Cardinal;
 begin
   nSize := MAX_COMPUTERNAME_LENGTH + 1;
   SetLength(Result, nSize);
-  if Windows.GetComputerName(
-    PChar(Result), // address of name buffer
-    nSize) then // address of size of name buffer
+  {$IFDEF MSWINDOWS}
+  if Windows.GetComputerName(PChar(Result), nSize) then
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  if QWindows.GetComputerName(PChar(Result), nSize) then
+  {$ENDIF LINUX}
     SetLength(Result, nSize)
   else
     Result := '';
 end;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-begin
-  SetLength(Result, 255);
-  if gethostname(PChar(Result), Length(Result)) = -1 then
-    Result := ''
-  else
-    SetLength(Result, StrLen(PChar(Result)));
-end;
-{$ENDIF LINUX}
 
 function StrToBool(const S: string): Boolean;
 begin
@@ -3036,7 +3040,6 @@ end;
 
 
 function TextWidth(const AStr: string): Integer;
-{$IFDEF VCL}
 var
   Canvas: TCanvas;
   DC: HDC;
@@ -3046,25 +3049,16 @@ begin
   try
     Canvas.Handle := DC;
     Result := Canvas.TextWidth(AStr);
+    {$IFDEF VCL}
     Canvas.Handle := 0;
+    {$ELSE}
+    Canvas.Handle := nil;
+    {$ENDIF VCL}
   finally
     ReleaseDC(HWND_DESKTOP, DC);
     Canvas.Free;
   end;
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-var
-  Bmp: TBitmap;
-begin
-  Bmp := TBitmap.Create;
-  try
-    Result := Bmp.Canvas.TextWidth(AStr);
-  finally
-    Bmp.Free;
-  end;
-end;
-{$ENDIF VisualCLX}
 
 procedure SetChildPropOrd(Owner: TComponent; const PropName: string; Value: Longint);
 var
@@ -3610,6 +3604,7 @@ begin
 end;
 
 { Real-size icons support routines }
+{$ENDIF VCL}
 
 const
   rc3_StockIcon = 0;
@@ -3659,35 +3654,35 @@ function DupBits(Src: HBITMAP; Size: TPoint; Mono: Boolean): HBITMAP;
 var
   DC, Mem1, Mem2: HDC;
   Old1, Old2: HBITMAP;
-  Bitmap: Windows.TBitmap;
+  Bitmap: tagBITMAP;
 begin
-  Mem1 := CreateCompatibleDC(0);
-  Mem2 := CreateCompatibleDC(0);
+  Mem1 := CreateCompatibleDC(NullHandle);
+  Mem2 := CreateCompatibleDC(NullHandle);
   GetObject(Src, SizeOf(Bitmap), @Bitmap);
   if Mono then
     Result := CreateBitmap(Size.X, Size.Y, 1, 1, nil)
   else
   begin
     DC := GetDC(0);
-    if DC = 0 then
+    if DC = NullHandle then
       OutOfResources;
     try
       Result := CreateCompatibleBitmap(DC, Size.X, Size.Y);
-      if Result = 0 then
+      if Result = NullHandle then
         OutOfResources;
     finally
       ReleaseDC(0, DC);
     end;
   end;
-  if Result <> 0 then
+  if Result <> NullHandle then
   begin
     Old1 := SelectObject(Mem1, Src);
     Old2 := SelectObject(Mem2, Result);
     StretchBlt(Mem2, 0, 0, Size.X, Size.Y, Mem1, 0, 0, Bitmap.bmWidth,
-      Bitmap.bmHeight, SrcCopy);
-    if Old1 <> 0 then
+      Bitmap.bmHeight, SRCCOPY);
+    if Old1 <> NullHandle then
       SelectObject(Mem1, Old1);
-    if Old2 <> 0 then
+    if Old2 <> NullHandle then
       SelectObject(Mem2, Old2);
   end;
   DeleteDC(Mem1);
@@ -3705,7 +3700,7 @@ var
   Bits: Pointer;
   Colors: PLongArray;
   IconSize: TPoint;
-  BM: Windows.TBitmap;
+  BM: tagBITMAP;
 begin
   IconSize.X := GetSystemMetrics(SM_CXICON);
   IconSize.Y := GetSystemMetrics(SM_CYICON);
@@ -3716,12 +3711,12 @@ begin
     NumColors := GetDInColors(biBitCount);
   end;
   DC := GetDC(0);
-  if DC = 0 then
+  if DC = NullHandle then
     OutOfResources;
   try
     Bits := Pointer(Longint(@BI) + SizeOf(BI) + NumColors * SizeOf(TRGBQuad));
     Temp := CreateDIBitmap(DC, BI, CBM_INIT, Bits, PBitmapInfo(@BI)^, DIB_RGB_COLORS);
-    if Temp = 0 then
+    if Temp = NullHandle then
       OutOfResources;
     try
       GetObject(Temp, SizeOf(BM), @BM);
@@ -3743,7 +3738,7 @@ begin
     Colors^[0] := 0;
     Colors^[1] := $FFFFFF;
     Temp := CreateDIBitmap(DC, BI, CBM_INIT, Bits, PBitmapInfo(@BI)^, DIB_RGB_COLORS);
-    if Temp = 0 then
+    if Temp = NullHandle then
       OutOfResources;
     try
       AndBits := DupBits(Temp, IconSize, True);
@@ -3781,7 +3776,7 @@ begin
     IconSize.X := GetSystemMetrics(SM_CXICON);
     IconSize.Y := GetSystemMetrics(SM_CYICON);
     DC := GetDC(0);
-    if DC = 0 then
+    if DC = NullHandle then
       OutOfResources;
     try
       BitsPerPixel := GetDeviceCaps(DC, PLANES) * GetDeviceCaps(DC, BITSPIXEL);
@@ -3861,6 +3856,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure GetIconSize(Icon: HIcon; var W, H: Integer);
 var
   IconInfo: TIconInfo;
@@ -7415,16 +7411,16 @@ begin
   end;
 end;
 
-procedure Beep;
-begin
-  MessageBeep(0);
-end;
-
 procedure FreeUnusedOle;
 begin
   FreeLibrary(GetModuleHandle('OleAut32'));
 end;
 {$ENDIF MSWINDOWS}
+
+procedure Beep;
+begin
+  MessageBeep(0);
+end;
 
 {$IFDEF MSWINDOWS}
 function GetEnvVar(const VarName: string): string;
@@ -7952,7 +7948,6 @@ begin
   if PeekMessage(M, Wnd, Msg, Msg, PM_REMOVE) and (M.Message = WM_QUIT) then
     PostQuitMessage(M.WParam);
 end;
-
 {$ENDIF VCL}
 
 procedure SetWindowTop(const Handle: HWND; const Top: Boolean);
