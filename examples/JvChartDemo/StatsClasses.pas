@@ -144,7 +144,7 @@ end;
 function TStatArray.StandardDeviation:Double;
 var
  i:Integer;
- sum:Double;
+// sum:Double;
  TempArray:Array of Double;
 begin
   if (FCount <= 0) then
@@ -162,8 +162,8 @@ begin
 end;
 
 procedure    TStatArray.AddValue(aValue:Double);
-var
- i:Integer;
+//var
+// i:Integer;
 begin
  (*if FFirst then begin
     FFirst := false;
