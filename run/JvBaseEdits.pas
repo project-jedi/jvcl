@@ -99,7 +99,6 @@ type
     procedure AcceptValue(const Value: Variant); override;
     procedure Change; override;
     procedure ReformatEditText; dynamic;
-    class function DefaultImageIndex: TImageIndex; override;
     procedure DataChanged; virtual;
     function DefaultDisplayFormat: string; virtual;
     procedure KeyPress(var Key: Char); override;
@@ -128,6 +127,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    class function DefaultImageIndex: TImageIndex; override;
     procedure Clear; override;
     property AsInteger: Longint read GetAsInteger write SetAsInteger;
     property DisplayText: string read GetDisplayText;
