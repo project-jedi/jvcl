@@ -1,0 +1,67 @@
+package JvCustomD6R;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Custom Controls Runtime Package'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  JvCoreD6R,
+  DJCL60,
+  JvSystemD6R,
+  JvCtrlsD6R;
+
+contains
+  JvTrayIcon in '..\..\run\JvTrayIcon.pas',
+  JvDiagramShape in '..\..\run\JvDiagramShape.pas',
+  JvGammaPanel in '..\..\run\JvGammaPanel.pas',
+  JvChart in '..\..\run\JvChart.pas',
+  JvInspector in '..\..\run\JvInspector.pas',
+  JvInspExtraEditors in '..\..\run\JvInspExtraEditors.pas',
+  JvLinkLabel in '..\..\run\JvLinkLabel.pas',
+  JvLinkLabelDebug in '..\..\run\JvLinkLabelDebug.pas',
+  JvLinkLabelParser in '..\..\run\JvLinkLabelParser.pas',
+  JvLinkLabelRenderer in '..\..\run\JvLinkLabelRenderer.pas',
+  JvLinkLabelTextHandler in '..\..\run\JvLinkLabelTextHandler.pas',
+  JvLinkLabelTools in '..\..\run\JvLinkLabelTools.pas',
+  JvLinkLabelTree in '..\..\run\JvLinkLabelTree.pas',
+  JvLookOut in '..\..\run\JvLookOut.pas',
+  JvOutlookBar in '..\..\run\JvOutlookBar.pas',
+  JvSchedEvtStore in '..\..\run\JvSchedEvtStore.pas',
+  JvScheduledEvents in '..\..\run\JvScheduledEvents.pas',
+  JvThumbImage in '..\..\run\JvThumbImage.pas',
+  JvThumbnails in '..\..\run\JvThumbNails.pas',
+  JvThumbviews in '..\..\run\JvThumbviews.pas',
+  JvTimeLine in '..\..\run\JvTimeLine.pas',
+  JvTMTimeLine in '..\..\run\JvTMTimeLine.pas',
+  JvBalloonHint in '..\..\run\JvBalloonHint.pas',
+  JvBaseThumbnail in '..\..\run\JvBaseThumbnail.pas',
+  JvEditor in '..\..\run\JvEditor.pas',
+  JvHLEditor in '..\..\run\JvHLEditor.pas',
+  JvHLParser in '..\..\run\JvHLParser.pas',
+  JvValidateEdit in '..\..\run\JvValidateEdit.pas',
+  JvHLEditorPropertyForm in '..\..\run\JvHLEditorPropertyForm.pas' {JvHLEditorParamsForm},
+  JvUnicodeCanvas in '..\..\run\JvUnicodeCanvas.pas';
+
+end.

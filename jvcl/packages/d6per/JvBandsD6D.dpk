@@ -1,0 +1,39 @@
+package JvBandsD6D;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Band Objects'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  JvCoreD6R,
+  designide,
+  JvBandsD6R;
+
+contains
+  JvBandObjectDLLWizardForm in '..\..\design\JvBandObjectDLLWizardForm.pas' {zWizardForm},
+  JvBandObjectDLLWizard in '..\..\design\JvBandObjectDLLWizard.pas',
+  JvBandsReg in '..\..\design\JvBandsReg.pas';
+
+end.
