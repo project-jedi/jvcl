@@ -75,6 +75,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
@@ -138,6 +139,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
@@ -262,6 +264,11 @@ procedure TJvExCustomDBGrid.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCustomDBGrid.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExCustomDBGrid.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -389,6 +396,11 @@ procedure TJvExDBGrid.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExDBGrid.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExDBGrid.CMFocusChanged(var Msg: TCMFocusChanged);

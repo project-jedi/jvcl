@@ -934,7 +934,7 @@ end;
 
 function CharIsAlpha(Ch: AnsiChar): Boolean;
 begin
-  Result := Windows.IsCharAlpha(Ch);
+  Result := {Windows.} IsCharAlpha(Ch);
 end;
 
 { (ahuser) make Delphi 5 compiler happy
@@ -6025,7 +6025,7 @@ end;
 {$IFDEF LINUX}
 begin
   // ignore Visibility
-  Libc.system(PChar(Format('kfmclient exec "%s"', [FileName]));
+  Libc.system(PChar(Format('kfmclient exec "%s"', [Trim(FileName)])));
     //  Libc.system(PChar(FileName));
 end;
 {$ENDIF LINUX}

@@ -818,7 +818,10 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 implementation
 
 uses
-  ShellAPI, Math,
+  {$IFDEF MSWINDOWS}
+  ShellAPI,
+  {$ENDIF MSWINDOWS}
+  Math,
   
   QConsts,
   

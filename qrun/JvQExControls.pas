@@ -206,8 +206,8 @@ type
   end;
 
   TJvExWinControl = class(TWinControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-
-
+  
+  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -217,21 +217,21 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
-    procedure SetColor(Value: TColor);
-    function GetColor: TColor;
   private
     FDoubleBuffered: Boolean;
+    procedure SetColor(Value: TColor);
+    function GetColor: TColor;
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
-//    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
-
+  
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -327,11 +327,15 @@ type
   protected
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
+    procedure PaintRequest; override;
   
   end;
   TJvExPubGraphicControl = class(TJvExGraphicControl)
   
   end;
+  
+
+  
   
   TJvExCustomControl = class(TCustomControl,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
   
@@ -347,19 +351,17 @@ type
     procedure ParentColorChanged; override;
   private
     FDoubleBuffered: Boolean;
-    procedure SetColor(Value: TColor);
-    function GetColor: TColor;
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
-    property Color: TColor read GetColor write SetColor;
-  public
-//    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
-
+    procedure SetDoubleBuffered(Value: Boolean);
+    procedure ColorChanged; override;
+  published // asn: change to public in final
+    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
+  
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -391,7 +393,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -400,6 +402,9 @@ type
   
   end;
   
+  
+  
+
   TJvExHintWindow = class(THintWindow,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
   
   
@@ -420,6 +425,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   
@@ -493,6 +499,8 @@ procedure WidgetControl_DefaultPaint(Instance: TWidgetControl; Canvas: TCanvas);
 function TWidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
   Shift: TShiftState; const KeyText: WideString; InheritedValue: Boolean): Boolean;
 
+procedure TWidgetControl_ColorChanged(Instance: TWidgetControl);
+
 
 procedure TCustomEdit_Undo(Instance: TWinControl);
 procedure TCustomEdit_Copy(Instance: TWinControl);
@@ -541,8 +549,9 @@ begin
 end;
 
 
-
 type
+  TOpenControl = class(TControl);
+
   TOpenWidgetControl = class(TWidgetControl);
   TOpenCustomEdit = class(TCustomEdit);
   TOpenCustomMaskEdit = class(TCustomMaskEdit);
@@ -605,11 +614,11 @@ begin
     Result := nil
   else
     Result := TWidgetControlPainting.Create(Instance, Canvas, EventRegion);
+
   Canvas.Brush.Color := TOpenWidgetControl(Instance).Color;
   QPainter_setFont(Canvas.Handle, TOpenWidgetControl(Instance).Font.Handle);
   QPainter_setPen(Canvas.Handle, TOpenWidgetControl(Instance).Font.FontPen);
   Canvas.Font.Assign(TOpenWidgetControl(Instance).Font);
-
 end;
 
 procedure WidgetControl_PaintBackground(Instance: TWidgetControl; Canvas: TCanvas);
@@ -712,7 +721,41 @@ begin
   end;
 end;
 
-{$IFDEF _COMPILER6}
+procedure TWidgetControl_ColorChanged(Instance: TWidgetControl);
+var
+  TC: QColorH;
+//  bmp: TBitmap;
+begin
+  with TOpenWidgetControl(Instance) do
+  begin
+    HandleNeeded;
+    if Bitmap.Empty then
+    begin
+      Palette.Color := Color;
+      Brush.Color := Color;
+      TC := QColor(Color);
+      QWidget_setBackgroundColor(Handle, TC);
+      QColor_destroy(TC);
+    end;
+    NotifyControls(CM_PARENTCOLORCHANGED);
+    Invalidate;
+(*)
+    Bmp := TBitmap.Create;
+    try
+      Bmp.Assign(Bitmap);
+      Bitmap.Width := 0;
+      Bitmap.Height := 0;
+      ColorChanged;
+    finally
+      Bitmap.Assign(Bmp);
+      Bmp.Free;
+    end;
+(*)
+  end;
+
+end;
+
+{$IFDEF COMPILER6}
 
 // redirect Kylix 3 / Delphi 7 function names to Delphi 6 available function
 {$IF not declared(PatchedVCLX)}
@@ -900,7 +943,6 @@ begin
   
   inherited Create(AOwner);
   FHintColor := clInfoBk;
-  
 end;
 
 destructor TJvExControl.Destroy;
@@ -936,25 +978,6 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
-
-procedure TJvExWinControl.SetColor(Value: TColor);
-var
-  QC: QColorH;
-begin
-  if GetColor <> Value then
-  begin
-    QC := QColor(Value);
-    QWidget_setBackGroundColor(Handle, QC);
-    QColor_destroy(QC);
-    ColorChanged;
-  end;
-end;
-
-function TJvExWinControl.GetColor: TColor;
-begin
-  Result := QColorColor(QWidget_BackGroundColor(Handle));
-end;
-
 
 function TJvExWinControl.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
 var
@@ -994,6 +1017,20 @@ begin
   Result := FDoubleBuffered;
 end;
 
+procedure TJvExWinControl.SetColor(Value: TColor);
+begin
+  if Brush.Color <> Value then
+  begin
+    Brush.Color := Value;
+//    ColorChanged;
+  end;
+end;
+
+function TJvExWinControl.GetColor: TColor;
+begin
+  Result := Brush.Color;
+end;
+
 function TJvExWinControl.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -1005,6 +1042,11 @@ procedure TJvExWinControl.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExWinControl.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExWinControl.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1160,6 +1202,20 @@ begin
   end;
 end;
 
+procedure TJvExGraphicControl.PaintRequest;
+begin
+  Canvas.Start;
+  try
+    Canvas.Brush.Color := Color;
+    QPainter_setFont(Canvas.Handle, Font.Handle);
+    QPainter_setPen(Canvas.Handle, Font.FontPen);
+    Canvas.Font.Assign(Font);
+    inherited PaintRequest;
+  finally
+    Canvas.Stop;
+  end;
+end;
+
 
 
 
@@ -1191,24 +1247,6 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-procedure TJvExCustomControl.SetColor(Value: TColor);
-var
-  QC: QColorH;
-begin
-  if GetColor <> Value then
-  begin
-    QC := QColor(Value);
-    QWidget_setBackGroundColor(Handle, QC);
-    QColor_destroy(QC);
-    ColorChanged;
-  end;
-end;
-
-function TJvExCustomControl.GetColor: TColor;
-begin
-  Result := QColorColor(QWidget_BackGroundColor(Handle));
-end;
-
 function TJvExCustomControl.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
 var
   Mesg: TMessage;
@@ -1233,17 +1271,6 @@ function TJvExCustomControl.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-
-(*)
-procedure TJvExCustomControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
-  begin
-    WidgetControl_PaintBackground(Self, Canvas);
-    Paint;
-  end;
-end;
-(*)
 
 procedure TJvExCustomControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 var
@@ -1276,14 +1303,36 @@ begin
       buffer.free;
     end
   end
-  else
-    inherited Painting(Sender, EventRegion);
+  else if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    with Canvas do
+    begin
+      Font.Assign(self.Font);
+      Brush.Color := Color;
+      QPainter_setFont(Handle, self.Font.Handle);
+      QPainter_setPen(Handle, self.Font.FontPen);
+    end;
+    DoPaintBackground(Canvas, 0);
+    Paint;
+  end;
 end;
-
 
 function TJvExCustomControl.GetDoubleBuffered: Boolean;
 begin
   Result := FDoubleBuffered;
+end;
+
+procedure TJvExCustomControl.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := value;
+    Invalidate;
+  end;
 end;
 
 function TJvExCustomControl.NeedKey(Key: Integer; Shift: TShiftState;
@@ -1297,6 +1346,11 @@ procedure TJvExCustomControl.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCustomControl.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 
 procedure TJvExCustomControl.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1335,11 +1389,12 @@ begin
   {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
   SetCopyRectMode(Self, cmVCL);
   {$IFEND}
+  
   inherited Create(AOwner);
   FHintColor := clInfoBk;
+  
+  FDoubleBuffered := true;
   QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
-
-  DoubleBuffered := true;
   
 end;
 
@@ -1428,6 +1483,11 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExHintWindow.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
+
 procedure TJvExHintWindow.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -1479,7 +1539,6 @@ end;
 // *****************************************************************************
 
 type
-  TOpenControl = class(TControl);
   PBoolean = ^Boolean;
   PPointer = ^Pointer;
 

@@ -239,7 +239,7 @@ begin
     
     FBuffer.Canvas.Start;
     
-    BitBlt(Canvas.Handle, 0, 0, ClientWidth, ClientHeight,
+    BitBlt(Canvas.Handle, Left, Top, ClientWidth, ClientHeight,
       FBuffer.Canvas.Handle, 0, 0, SRCCOPY);
     
     FBuffer.Canvas.Stop;

@@ -489,6 +489,7 @@ begin
 
       TmpBmp := TBitmap.Create;
       TmpRect := ClientRect;
+
       TmpBmp.Height := TmpRect.Bottom - (FMarginHeight shl 1) + 1;  // TmpRect.Top = 0, ignore it
       TmpBmp.Width  := TmpRect.Right - (FMarginWidth shl 1) + 1;    // TmpRect.left = 0, ignore it
       TmpBmp.Canvas.Font.Assign(Canvas.Font);

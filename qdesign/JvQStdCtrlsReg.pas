@@ -40,14 +40,14 @@ uses
 
   DesignEditors, DesignIntf,
 
-  JvQDsgnConsts, JvQTypes,
+  JvQDsgnConsts, JvQTypes, JvQWStrUtils,
   JvQEdit, JvQProgressBar, JvQTransparentPanel,
   JvQMaskEdit, JvQBaseEdits, JvQCalc, JvQToolEdit,
   JvQBevel, JvQCheckBox, JvQSpeedButton,
   JvQGroupBox, JvQHeaderControl,
   JvQImage, JvQRadioButton, JvQRadioGroup,
   JvQLabel,
-  JvQScrollBar, JvQShape, JvQControlBar,
+  JvQScrollBar, JvQShape, JvQControlBar, JvQGrids,
   JvQTabControl, JvQBitBtn, JvQPickDate, JvQStringGrid,
   JvQPanel, JvQImageList, JvQProgressEditor, JvQDsgnEditors;
 
@@ -73,16 +73,23 @@ begin
   RegisterComponents(RsPaletteLabel, [TJvLabel]);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar]);
-  RegisterComponents(RsPaletteListComboTree, [TJvStringGrid]);
+  RegisterComponents(RsPaletteListComboTree, [TJvDrawGrid, TJvStringGrid]);
+
+  RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, cText, nil);
 //  RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'Filter', TFilterProperty);
+//  RegisterPropertyEditor(TypeInfo(TWStringList), TJvArrayButton ,Hints', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'FileName', TJvFilenameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDirectoryEdit, cText, TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomComboEdit, 'ButtonHint', TJvHintProperty);
+//  RegisterPropertyEditor(TypeInfo(TStrings), TJvxCheckListBox, 'Items', TJvCheckItemsProperty);
 //  RegisterPropertyEditor(TypeInfo(TJvImgBtnKind), TJvImgBtn, 'Kind', TJvNosortEnumProperty);
+//  RegisterPropertyEditor(TypeInfo(Boolean), TJvMainMenu, cOwnerDraw, nil);
+//  RegisterPropertyEditor(TypeInfo(Boolean), TJvPopupMenu, cOwnerDraw, nil);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedButton, 'Caption', TJvHintProperty);
-//  RegisterPropertyEditor(TypeInfo(TWStringList), '', 'Hints', TJvHintProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
+
 end;
 
 end.

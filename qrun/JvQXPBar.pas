@@ -1546,7 +1546,7 @@ begin
       Inc(ItemRect.Left, 20);
 
 
-      SetQPainterFont(Handle, Canvas.Font);
+      SetPainterFont(Handle, Canvas.Font);
       DrawTextW(Handle, PWideChar(ItemCaption), -1, ItemRect, DT_SINGLELINE or
         DT_VCENTER or DT_END_ELLIPSIS);
 
@@ -1674,7 +1674,7 @@ begin
     Dec(Rect.Right, 3);
 
 
-    SetQPainterFont(Handle, FHeaderFont);
+    SetPainterFont(Handle, FHeaderFont);
     DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
         DT_END_ELLIPSIS or DT_NOPREFIX);
 

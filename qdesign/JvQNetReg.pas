@@ -44,7 +44,7 @@ uses
   DesignEditors, DesignIntf,
 
   {$IFDEF MSWINDOWS}
-  JvQMail,  JvQMailEditor, JvQUrlGrabbers,
+  {JvQMail,  JvQMailEditor,} JvQUrlGrabbers,
   JvQUrlListGrabber, JvQUrlListGrabberEditors,
   {$ENDIF MSWINDOWS}
   JvQHtmlParser,  JvQHtmlParserEditor,
@@ -61,7 +61,7 @@ begin
   RegisterComponents(RsPaletteInterNetWork, [
     {$IFDEF MSWINDOWS}
     TJvFTPURLGrabber, TJvHTTPURLGrabber,
-    TJvLocalFileURLGrabber, TJvMail,
+    TJvLocalFileURLGrabber, {TJvMail,}
     {$ENDIF MSWINDOWS}
     TJvHTMLParser,
     TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML
