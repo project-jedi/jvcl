@@ -331,10 +331,10 @@ type
     function TextKind: TJvConversionTextKind; override;
   end;
 
-  FCE = SmallInt; // File Conversion Error
+  FCE = Smallint; // File Conversion Error
 
   { typedef long (PASCAL *PFN_RTF)(long, long); }
-  PFN_RTF = function(I1, I2: LongInt): Longint; stdcall;
+  PFN_RTF = function(I1, I2: Longint): Longint; stdcall;
   { long PASCAL InitConverter32(HANDLE hWnd, char *szModule); }
   TInitConverter32 = function(hWnd: THandle; szModule: PChar): LongBool; stdcall;
   { void PASCAL UninitConverter(void); }
@@ -344,7 +344,7 @@ type
   { void PASCAL GetWriteNames(HANDLE haszClass, HANDLE haszDescrip, HANDLE haszExt); }
   TGetWriteNames = procedure(haszClass, haszDescrip, haszExt: THandle); stdcall;
   { HGLOBAL PASCAL RegisterApp(unsigned long lFlags, void FAR *lpFuture); }
-  TRegisterApp = function(lFlags: DWORD; lpFuture: pointer): HGLOBAL; stdcall;
+  TRegisterApp = function(lFlags: DWORD; lpFuture: Pointer): HGLOBAL; stdcall;
   { FCE  PASCAL IsFormatCorrect32(HANDLE ghszFile, HANDLE ghszClass); }
   TIsFormatCorrect32 = function(ghszFile, ghszClass: THandle): FCE; stdcall;
   { FCE  PASCAL ForeignToRtf32(HANDLE ghszFile, void *pstgForeign, HANDLE ghBuff, HANDLE ghszClass, HANDLE ghszSubset, PFN_RTF lpfnOut); }
@@ -354,9 +354,9 @@ type
   TRtfToForeign32 = function(ghszFile: THandle; pstgForeign: Pointer; ghBuff, ghshClass: THandle;
     lpfnIn: PFN_RTF): FCE; stdcall;
   { long PASCAL CchFetchLpszError(long fce, char FAR *lpszError, long cb); }
-  TCchFetchLpszError = function(fce: LongInt; lpszError: PChar; cb: LongInt): LongInt stdcall;
+  TCchFetchLpszError = function(fce: Longint; lpszError: PChar; cb: Longint): Longint stdcall;
   { long PASCAL FRegisterConverter(HANDLE hkeyRoot); }
-  TFRegisterConverter = function(hkeyRoot: THandle): LongInt; stdcall;
+  TFRegisterConverter = function(hkeyRoot: THandle): Longint; stdcall;
 
   TJvMSTextConversion = class(TJvConversion)
   private
@@ -612,6 +612,9 @@ type
     procedure ColorChanged; override;
     procedure FontChanged; override;
 
+    function GetConverter(const AFileName: string; const Kind: TJvConversionKind): TJvConversion; overload;
+    function GetConverter(AStream: TStream; const Kind: TJvConversionKind): TJvConversion; overload;
+
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWindowHandle(const Params: TCreateParams); override;
     procedure CreateWnd; override;
@@ -656,8 +659,8 @@ type
     property ScrollBars default ssBoth;
     property TabStop default True;
     property SelText: string read GetSelText write SetSelText;
-    // Zoom: zoom in/out percentage (100=normal)
-    property Zoom: Integer read GetZoom write SetZoom;
+    // Zoom: zoom in/out percentage (100=normal) note: no need to set default (100) in constructor.
+    property Zoom: Integer read GetZoom write SetZoom default 100;
     property OnSaveClipboard: TRichEditSaveClipboard read FOnSaveClipboard
       write FOnSaveClipboard;
     property OnSelectionChange: TNotifyEvent read FOnSelChange write FOnSelChange;
@@ -890,16 +893,16 @@ type
   { Structure passed to GetObject and InsertObject }
 
   _ReObject = record
-    cbStruct: DWORD; { Size of structure                }
-    cp: ULONG; { Character position of object     }
-    clsid: TCLSID; { Class ID of object               }
-    poleobj: IOleObject; { OLE object interface             }
-    pstg: IStorage; { Associated storage interface     }
+    cbStruct: DWORD;          { Size of structure                }
+    cp: ULONG;                { Character position of object     }
+    clsid: TCLSID;            { Class ID of object               }
+    poleobj: IOleObject;      { OLE object interface             }
+    pstg: IStorage;           { Associated storage interface     }
     polesite: IOleClientSite; { Associated client site interface }
-    sizel: TSize; { Size of object (may be 0,0)      }
-    dvAspect: Longint; { Display aspect to use            }
-    dwFlags: DWORD; { Object status flags              }
-    dwUser: DWORD; { DWORD for user's use             }
+    sizel: TSize;             { Size of object (may be 0,0)      }
+    dvAspect: Longint;        { Display aspect to use            }
+    dwFlags: DWORD;           { Object status flags              }
+    dwUser: DWORD;            { DWORD for user's use             }
   end;
   TReObject = _ReObject;
 
@@ -990,15 +993,16 @@ type
     FTextConvIndex: Integer;
 
     function GetItem(Index: Integer): TJvConversion;
-    //    procedure SetItem(Index: Integer; const Value: TJvConversion); // (andreas) make Delphi 5 compiler happy
   public
     constructor Create; virtual;
-    function GetConverterForFile(AParentWindow: THandle; const AFileName: string; const Kind: TJvConversionKind):
-      TJvConversion;
+    { GetConverter implicitly calls Result.Init, thus caller must call Result.Done }
+    function GetConverter(AParentWindow: THandle; const AFileName: string;
+      const Kind: TJvConversionKind): TJvConversion; overload;
+    function GetConverter(AParentWindow: THandle; AStream: TStream;
+      const Kind: TJvConversionKind): TJvConversion; overload;
     function GetFilter(const AKind: TJvConversionKind): string;
     function DefaultConverter: TJvConversion;
     property Items[Index: Integer]: TJvConversion read GetItem {write SetItem}; default;
-    // (andreas) make Delphi 5 compiler happy
   end;
 
   TImageDataObject = class(TInterfacedObject, IDataObject)
@@ -1008,11 +1012,12 @@ type
   public
     constructor Create(ABitmap: TBitmap); virtual;
     { IDataObject }
-    function GetData(const formatetcIn: TFormatEtc;
-      out medium: TStgMedium): HResult; stdcall;
-    function GetDataHere(const formatetc: TFormatEtc;
-      out medium: TStgMedium): HResult; stdcall;
-    function QueryGetData(const formatetc: TFormatEtc): HResult; stdcall;
+    function GetData(const formatetcIn: TFormatEtc; out medium: TStgMedium):
+      HResult; stdcall;
+    function GetDataHere(const formatetc: TFormatEtc; out medium: TStgMedium):
+      HResult; stdcall;
+    function QueryGetData(const formatetc: TFormatEtc): HResult;
+      stdcall;
     function GetCanonicalFormatEtc(const formatetc: TFormatEtc;
       out formatetcOut: TFormatEtc): HResult; stdcall;
     function SetData(const formatetc: TFormatEtc; var medium: TStgMedium;
@@ -1022,7 +1027,8 @@ type
     function DAdvise(const formatetc: TFormatEtc; advf: Longint;
       const advSink: IAdviseSink; out dwConnection: Longint): HResult; stdcall;
     function DUnadvise(dwConnection: Longint): HResult; stdcall;
-    function EnumDAdvise(out enumAdvise: IEnumStatData): HResult; stdcall;
+    function EnumDAdvise(out enumAdvise: IEnumStatData): HResult;
+      stdcall;
   end;
 
   TJvRichEditStrings = class(TStrings)
@@ -1156,23 +1162,23 @@ type
 const
   { File Conversion Errors }
 
-  fceTrue = FCE(1); // IsFormatCorrect32: recognized the input file.
-  fceNoErr = FCE(0); // IsFormatCorrect32: Did not recognize the input file.
-  // Operation completed successfully for other APIs
-  fceOpenInFileErr = FCE(-1); // could not open input file
-  fceReadErr = FCE(-2); // error during read
-  fceOpenConvErr = FCE(-3); // error opening conversion file (obsolete)
-  fceWriteErr = FCE(-4); // error during write
-  fceInvalidFile = FCE(-5); // invalid data in conversion file
-  fceOpenExceptErr = FCE(-6); // error opening exception file (obsolete)
-  fceWriteExceptErr = FCE(-7); // error writing exception file (obsolete)
-  fceNoMemory = FCE(-8); // out of memory
-  fceInvalidDoc = FCE(-9); // invalid document (obsolete)
-  fceDiskFull = FCE(-10); // out of space on output (obsolete)
-  fceDocTooLarge = FCE(-11); // conversion document too large for target (obsolete)
-  fceOpenOutFileErr = FCE(-12); // could not open output file
-  fceUserCancel = FCE(-13); // conversion cancelled by user
-  fceWrongFileType = FCE(-14); // wrong file type for this converter
+  fceTrue           = FCE(1);    // IsFormatCorrect32: recognized the input file.
+  fceNoErr          = FCE(0);    // IsFormatCorrect32: Did not recognize the input file.
+                                 // Operation completed successfully for other APIs
+  fceOpenInFileErr  = FCE(-1);   // could not open input file
+  fceReadErr        = FCE(-2);   // error during read
+  fceOpenConvErr    = FCE(-3);   // error opening conversion file (obsolete)
+  fceWriteErr       = FCE(-4);   // error during write
+  fceInvalidFile    = FCE(-5);   // invalid data in conversion file
+  fceOpenExceptErr  = FCE(-6);   // error opening exception file (obsolete)
+  fceWriteExceptErr = FCE(-7);   // error writing exception file (obsolete)
+  fceNoMemory       = FCE(-8);   // out of memory
+  fceInvalidDoc     = FCE(-9);   // invalid document (obsolete)
+  fceDiskFull       = FCE(-10);  // out of space on output (obsolete)
+  fceDocTooLarge    = FCE(-11);  // conversion document too large for target (obsolete)
+  fceOpenOutFileErr = FCE(-12);  // could not open output file
+  fceUserCancel     = FCE(-13);  // conversion cancelled by user
+  fceWrongFileType  = FCE(-14);  // wrong file type for this converter
 
   CTwipsPerInch = 1440;
   CTwipsPerPoint = 20;
@@ -1185,12 +1191,12 @@ const
   FT_DOWN = 1;
 
   // PARAFORMAT2 wNumberingStyle options
-  PFNS_PAREN = $0000; // default, e.g., 1)
-  PFNS_PARENS = $0100; // tomListParentheses/256, e.g., (1)
-  PFNS_PERIOD = $0200; // tomListPeriod/256, e.g., 1.
-  PFNS_PLAIN = $0300; // tomListPlain/256, e.g., 1
-  PFNS_NONUMBER = $0400; // Used for continuation w/o number
-  PFNS_NEWNUMBER = $8000; // Start new number with wNumberingStart
+  PFNS_PAREN     = $0000;  // default, e.g., 1)
+  PFNS_PARENS    = $0100;  // tomListParentheses/256, e.g., (1)
+  PFNS_PERIOD    = $0200;  // tomListPeriod/256, e.g., 1.
+  PFNS_PLAIN     = $0300;  // tomListPlain/256, e.g., 1
+  PFNS_NONUMBER  = $0400;  // Used for continuation w/o number
+  PFNS_NEWNUMBER = $8000;  // Start new number with wNumberingStart
 
   // (can be combined with other PFNS_xxx)
 
@@ -1198,36 +1204,37 @@ const
   EM_GETTYPOGRAPHYOPTIONS = (WM_USER + 203);
 
   // Options for EM_SETTYPOGRAPHYOPTIONS
+
   TO_ADVANCEDTYPOGRAPHY = 1;
   TO_SIMPLELINEBREAK = 2;
   TO_DISABLECUSTOMTEXTOUT = 4;
   TO_ADVANCEDLAYOUT = 8;
 
   // Underline types. RE 1.0 displays only CFU_UNDERLINE
-  CFU_CF1UNDERLINE = $FF; // Map charformat's bit underline to CF2
-  CFU_INVERT = $FE; // For IME composition fake a selection
-  CFU_UNDERLINETHICKLONGDASH = 18; // (*) display as dash
-  CFU_UNDERLINETHICKDOTTED = 17; // (*) display as dot
-  CFU_UNDERLINETHICKDASHDOTDOT = 16; // (*) display as dash dot dot
-  CFU_UNDERLINETHICKDASHDOT = 15; // (*) display as dash dot
-  CFU_UNDERLINETHICKDASH = 14; // (*) display as dash
-  CFU_UNDERLINELONGDASH = 13; // (*) display as dash
-  CFU_UNDERLINEHEAVYWAVE = 12; // (*) display as wave
-  CFU_UNDERLINEDOUBLEWAVE = 11; // (*) display as wave
-  CFU_UNDERLINEHAIRLINE = 10; // (*) display as single
-  CFU_UNDERLINETHICK = 9;
-  CFU_UNDERLINEWAVE = 8;
-  CFU_UNDERLINEDASHDOTDOT = 7;
-  CFU_UNDERLINEDASHDOT = 6;
-  CFU_UNDERLINEDASH = 5;
-  CFU_UNDERLINEDOTTED = 4;
-  CFU_UNDERLINEDOUBLE = 3; // (*) display as single
-  CFU_UNDERLINEWORD = 2; // (*) display as single
-  CFU_UNDERLINE = 1;
-  CFU_UNDERLINENONE = 0;
+  CFU_CF1UNDERLINE             = $FF; // Map charformat's bit underline to CF2
+  CFU_INVERT                   = $FE; // For IME composition fake a selection
+  CFU_UNDERLINETHICKLONGDASH   = 18;  // (*) display as dash
+  CFU_UNDERLINETHICKDOTTED     = 17;  // (*) display as dot
+  CFU_UNDERLINETHICKDASHDOTDOT = 16;  // (*) display as dash dot dot
+  CFU_UNDERLINETHICKDASHDOT    = 15;  // (*) display as dash dot
+  CFU_UNDERLINETHICKDASH       = 14;  // (*) display as dash
+  CFU_UNDERLINELONGDASH        = 13;  // (*) display as dash
+  CFU_UNDERLINEHEAVYWAVE       = 12;  // (*) display as wave
+  CFU_UNDERLINEDOUBLEWAVE      = 11;  // (*) display as wave
+  CFU_UNDERLINEHAIRLINE        = 10;  // (*) display as single
+  CFU_UNDERLINETHICK           = 9;
+  CFU_UNDERLINEWAVE            = 8;
+  CFU_UNDERLINEDASHDOTDOT      = 7;
+  CFU_UNDERLINEDASHDOT         = 6;
+  CFU_UNDERLINEDASH            = 5;
+  CFU_UNDERLINEDOTTED          = 4;
+  CFU_UNDERLINEDOUBLE          = 3;  // (*) display as single
+  CFU_UNDERLINEWORD            = 2;  // (*) display as single
+  CFU_UNDERLINE                = 1;
+  CFU_UNDERLINENONE            = 0;
 
-  AttrFlags: array[TJvAttributeType] of Word =
-  (0, SCF_SELECTION, SCF_WORD or SCF_SELECTION);
+  AttrFlags: array [TJvAttributeType] of Word =
+    (0, SCF_SELECTION, SCF_WORD or SCF_SELECTION);
 
   CF_EMBEDDEDOBJECT = 'Embedded Object';
   CF_LINKSOURCE = 'Link Source';
@@ -1239,17 +1246,18 @@ const
   // Note: not the official names which I don't know
 
   TA_ALIGNMENT = $0F000000; // Bits 24-27
-  TA_LEADER = $F0000000; // Bits 28-31
+  TA_LEADER    = $F0000000; // Bits 28-31
   //TA_ALL       = $FF000000; // Bits 24-31
-  TA_TAB = $00FFFFFF; // Tab: bits 0-23
-  TA_TAB_LEADER = (TA_TAB or TA_LEADER);
+  TA_TAB       = $00FFFFFF; // Tab: bits 0-23
+  TA_TAB_LEADER    = (TA_TAB or TA_LEADER);
   TA_TAB_ALIGNMENT = (TA_TAB or TA_ALIGNMENT);
 
   { Flags to specify which interfaces should be returned in the structure above }
-  REO_GETOBJ_NO_INTERFACES = $00000000;
-  REO_GETOBJ_POLEOBJ = $00000001;
-  REO_GETOBJ_PSTG = $00000002;
-  REO_GETOBJ_POLESITE = $00000004;
+
+  REO_GETOBJ_NO_INTERFACES  = $00000000;
+  REO_GETOBJ_POLEOBJ        = $00000001;
+  REO_GETOBJ_PSTG           = $00000002;
+  REO_GETOBJ_POLESITE       = $00000004;
   REO_GETOBJ_ALL_INTERFACES = $00000007;
 
   { Place object at selection }
@@ -1263,43 +1271,43 @@ const
 
   { Object flags }
 
-  REO_NULL = $00000000; { No flags                         }
-  REO_READWRITEMASK = $0000003F; { Mask out RO bits                 }
-  REO_DONTNEEDPALETTE = $00000020; { Object doesn't need palette      }
-  REO_BLANK = $00000010; { Object is blank                  }
-  REO_DYNAMICSIZE = $00000008; { Object defines size always       }
-  REO_INVERTEDSELECT = $00000004; { Object drawn all inverted if sel }
-  REO_BELOWBASELINE = $00000002; { Object sits below the baseline   }
-  REO_RESIZABLE = $00000001; { Object may be resized            }
-  REO_LINK = $80000000; { Object is a link (RO)            }
-  REO_STATIC = $40000000; { Object is static (RO)            }
-  REO_SELECTED = $08000000; { Object selected (RO)             }
-  REO_OPEN = $04000000; { Object open in its server (RO)   }
-  REO_INPLACEACTIVE = $02000000; { Object in place active (RO)      }
-  REO_HILITED = $01000000; { Object is to be hilited (RO)     }
-  REO_LINKAVAILABLE = $00800000; { Link believed available (RO)     }
-  REO_GETMETAFILE = $00400000; { Object requires metafile (RO)    }
+  REO_NULL            = $00000000;  { No flags                         }
+  REO_READWRITEMASK   = $0000003F;  { Mask out RO bits                 }
+  REO_DONTNEEDPALETTE = $00000020;  { Object doesn't need palette      }
+  REO_BLANK           = $00000010;  { Object is blank                  }
+  REO_DYNAMICSIZE     = $00000008;  { Object defines size always       }
+  REO_INVERTEDSELECT  = $00000004;  { Object drawn all inverted if sel }
+  REO_BELOWBASELINE   = $00000002;  { Object sits below the baseline   }
+  REO_RESIZABLE       = $00000001;  { Object may be resized            }
+  REO_LINK            = $80000000;  { Object is a link (RO)            }
+  REO_STATIC          = $40000000;  { Object is static (RO)            }
+  REO_SELECTED        = $08000000;  { Object selected (RO)             }
+  REO_OPEN            = $04000000;  { Object open in its server (RO)   }
+  REO_INPLACEACTIVE   = $02000000;  { Object in place active (RO)      }
+  REO_HILITED         = $01000000;  { Object is to be hilited (RO)     }
+  REO_LINKAVAILABLE   = $00800000;  { Link believed available (RO)     }
+  REO_GETMETAFILE     = $00400000;  { Object requires metafile (RO)    }
 
   { Flags for IRichEditOle.GetClipboardData,   }
   { IRichEditOleCallback.GetClipboardData and  }
   { IRichEditOleCallback.QueryAcceptData       }
 
-  RECO_PASTE = $00000000; { paste from clipboard  }
-  RECO_DROP = $00000001; { drop                  }
-  RECO_COPY = $00000002; { copy to the clipboard }
-  RECO_CUT = $00000003; { cut to the clipboard  }
-  RECO_DRAG = $00000004; { drag                  }
+  RECO_PASTE = $00000000;  { paste from clipboard  }
+  RECO_DROP  = $00000001;  { drop                  }
+  RECO_COPY  = $00000002;  { copy to the clipboard }
+  RECO_CUT   = $00000003;  { cut to the clipboard  }
+  RECO_DRAG  = $00000004;  { drag                  }
 
   ReadError = $0001;
   WriteError = $0002;
   NoError = $0000;
 
-  RichLangOptions: array[TRichLangOption] of DWORD = (IMF_AUTOKEYBOARD,
+  RichLangOptions: array [TRichLangOption] of DWORD = (IMF_AUTOKEYBOARD,
     IMF_AUTOFONT, IMF_IMECANCELCOMPLETE, IMF_IMEALWAYSSENDNOTIFY);
 
-  CHex: array[0..$F] of Char =
-  ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-    'A', 'B', 'C', 'D', 'E', 'F');
+  CHex: array [0..$F] of Char =
+    ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+     'A', 'B', 'C', 'D', 'E', 'F');
 
   { Converter API names }
 
@@ -1326,6 +1334,8 @@ var
 
   Painting: Boolean = False;
 
+//=== Local procedures =======================================================
+
 function GConversionFormatList: TConversionFormatList;
 begin
   if not Assigned(GlobalConversionFormatList) then
@@ -1335,8 +1345,6 @@ begin
   end;
   Result := GlobalConversionFormatList;
 end;
-
-//=== Local procedures =======================================================
 
 function GetParentWindow(Control: TControl): THandle;
 begin
@@ -1709,7 +1717,7 @@ end;
 function FileNameToHGLOBAL(const AFileName: string): HGLOBAL;
 var
   DataPtr: Pointer;
-  Buffer: array[0..MAX_PATH] of Char;
+  Buffer: array [0..MAX_PATH] of Char;
 begin
   // DOC : Each entry point that accepts file names should expect all file name
   //       arguments from Word to be in the OEM character set (unless the character
@@ -1755,7 +1763,7 @@ end;
 
 function ExportCallback(cchBuff, nPercent: Longint): Longint; stdcall;
 begin
-  Result := GCurrentConverter.HandleExportCallBack(cchBuff, nPercent);
+  Result := GCurrentConverter.HandleExportCallback(cchBuff, nPercent);
 end;
 
 function ImportCallback(cchBuff, nPercent: Longint): Longint; stdcall;
@@ -1947,7 +1955,24 @@ begin
   Result := Items[FRTFConvIndex];
 end;
 
-function TConversionFormatList.GetConverterForFile(AParentWindow: THandle;
+function TConversionFormatList.GetConverter(
+  AParentWindow: THandle; AStream: TStream;
+  const Kind: TJvConversionKind): TJvConversion;
+begin
+  { Return either the RTF converter or the text converter }
+  Result := Items[FRTFConvIndex];
+  Result.Init(AParentWindow);
+  if Result.CanHandle(Kind) and
+    ((Kind <> ckImport) or Result.IsFormatCorrect(AStream)) then
+    { Caller must call Done }
+    Exit;
+  Result.Done;
+
+  Result := Items[FTextConvIndex];
+  Result.Init(AParentWindow);
+end;
+
+function TConversionFormatList.GetConverter(AParentWindow: THandle;
   const AFileName: string; const Kind: TJvConversionKind): TJvConversion;
 var
   Ext: string;
@@ -1958,7 +1983,7 @@ begin
 
   for I := 0 to Count - 1 do
   begin
-    Result := Items[i];
+    Result := Items[I];
     Result.Init(AParentWindow);
     if Result.CanHandle(Ext, Kind) and
       ((Kind <> ckImport) or Result.IsFormatCorrect(AFileName)) then
@@ -1975,9 +2000,9 @@ var
 begin
   Result := '';
 
-  for i := 0 to Count - 1 do
-    if Items[i].CanHandle(AKind) then
-      Result := Result + Items[i].Filter + '|';
+  for I := 0 to Count - 1 do
+    if Items[I].CanHandle(AKind) then
+      Result := Result + Items[I].Filter + '|';
 
   if Result > '' then
     System.Delete(Result, Length(Result), 1);
@@ -1987,13 +2012,6 @@ function TConversionFormatList.GetItem(Index: Integer): TJvConversion;
 begin
   Result := inherited Items[Index] as TJvConversion;
 end;
-
-{ // (andreas) make Delphi 5 compiler happy
-procedure TConversionFormatList.SetItem(Index: Integer;
-  const Value: TJvConversion);
-begin
-  inherited Items[Index] := Value;
-end;}
 
 //=== TImageDataObject =======================================================
 
@@ -2122,7 +2140,7 @@ begin
   Result := E_NOTIMPL;
 end;
 
-//=== TJvConversion ===========================================================
+//=== TJvConversion ==========================================================
 
 function TJvConversion.CanHandle(const AKind: TJvConversionKind): Boolean;
 begin
@@ -2156,7 +2174,8 @@ procedure TJvConversion.DoProgress(APercentDone: Integer);
 begin
   if APercentDone < 0 then
     APercentDone := 0
-  else if APercentDone > 100 then
+  else
+  if APercentDone > 100 then
     APercentDone := 100;
   if APercentDone <> FPercentDone then
   begin
@@ -2181,14 +2200,14 @@ begin
   Result := '';
 end;
 
-function TJvConversion.IsFormatCorrect(const AFileName: string): Boolean;
-begin
-  Result := True;
-end;
-
 procedure TJvConversion.Init(AParentWindow: THandle);
 begin
   FParentWindow := AParentWindow;
+end;
+
+function TJvConversion.IsFormatCorrect(const AFileName: string): Boolean;
+begin
+  Result := True;
 end;
 
 function TJvConversion.IsFormatCorrect(AStream: TStream): Boolean;
@@ -2230,11 +2249,9 @@ begin
   InsertFormatText(GetTextLen, S, AFont);
 end;
 
-
-
 procedure TJvCustomRichEdit.AddFormatText(const S: string;
   FontStyle: TFontStyles; const FontName: string; const FontColor: TColor;
-  FontHeight: integer);
+  FontHeight: Integer);
 begin
   InsertFormatText(GetTextLen, S, FontStyle, FontName, FontColor, FontHeight);
 end;
@@ -2321,12 +2338,6 @@ begin
   Paragraph.SetAttributes(AParagraph);
 end;
 
-procedure TJvCustomRichEdit.ColorChanged;
-begin
-  inherited ColorChanged;
-  SendMessage(Handle, EM_SETBKGNDCOLOR, 0, ColorToRGB(Color))
-end;
-
 // From JvRichEdit.pas by Sébastien Buysse
 
 procedure TJvCustomRichEdit.CMDocWindowActivate(var Msg: TMessage);
@@ -2341,12 +2352,6 @@ begin
           FFrameForm.ClearBorderSpace;
         end;
       end;
-end;
-
-procedure TJvCustomRichEdit.FontChanged;
-begin
-  inherited FontChanged;
-  FDefAttributes.Assign(Font);
 end;
 
 procedure TJvCustomRichEdit.CMUIDeactivate(var Msg: TMessage);
@@ -2425,6 +2430,12 @@ begin
     end;
 end;
 
+procedure TJvCustomRichEdit.ColorChanged;
+begin
+  inherited ColorChanged;
+  SendMessage(Handle, EM_SETBKGNDCOLOR, 0, ColorToRGB(Color))
+end;
+
 constructor TJvCustomRichEdit.Create(AOwner: TComponent);
 var
   DC: HDC;
@@ -2474,11 +2485,11 @@ end;
 
 procedure TJvCustomRichEdit.CreateParams(var Params: TCreateParams);
 const
-  HideScrollBars: array[Boolean] of DWORD = (ES_DISABLENOSCROLL, 0);
-  HideSelections: array[Boolean] of DWORD = (ES_NOHIDESEL, 0);
-  WordWraps: array[Boolean] of DWORD = (0, ES_AUTOHSCROLL);
-  SelectionBars: array[Boolean] of DWORD = (0, ES_SELECTIONBAR);
-  OLEDragDrops: array[Boolean] of DWORD = (ES_NOOLEDRAGDROP, 0);
+  HideScrollBars: array [Boolean] of DWORD = (ES_DISABLENOSCROLL, 0);
+  HideSelections: array [Boolean] of DWORD = (ES_NOHIDESEL, 0);
+  WordWraps: array [Boolean] of DWORD = (0, ES_AUTOHSCROLL);
+  SelectionBars: array [Boolean] of DWORD = (0, ES_SELECTIONBAR);
+  OLEDragDrops: array [Boolean] of DWORD = (ES_NOOLEDRAGDROP, 0);
 begin
   inherited CreateParams(Params);
   case RichEditVersion of
@@ -2646,7 +2657,7 @@ begin
   if FLinesUpdating then
     CharRange.cpMin := CharRange.cpMax;
   Perform(EM_EXSETSEL, 0, Longint(@CharRange));
-  Perform(EM_SCROLLCARET, 0, 0);
+  Perform(Messages.EM_SCROLLCARET, 0, 0);
 end;
 
 class function TJvCustomRichEdit.Filter(
@@ -2709,7 +2720,8 @@ begin
       if AdjustPos then
         AdjustFindDialogPosition(Dialog);
     end
-    else if Events then
+    else
+    if Events then
       TextNotFound(Dialog);
   end;
 end;
@@ -2754,8 +2766,14 @@ begin
   if (Result >= 0) and (stSetSelection in Options) then
   begin
     SendMessage(Handle, EM_EXSETSEL, 0, Longint(@Find.chrgText));
-    SendMessage(Handle, EM_SCROLLCARET, 0, 0);
+    SendMessage(Handle, Messages.EM_SCROLLCARET, 0, 0);
   end;
+end;
+
+procedure TJvCustomRichEdit.FontChanged;
+begin
+  inherited FontChanged;
+  FDefAttributes.Assign(Font);
 end;
 
 function TJvCustomRichEdit.GetAdvancedTypography: Boolean;
@@ -2816,12 +2834,39 @@ begin
   begin
     if RichEditVersion = 2 then
     begin
-      Res := SendMessage(Handle, Messages.EM_POSFROMCHAR, CharIndex, 0);
+      Res := SendMessage(Handle, EM_POSFROMCHAR, CharIndex, 0);
       Result.X := LoWord(Res);
       Result.Y := HiWord(Res);
     end
     else { RichEdit 1.0 and 3.0 }
-      SendMessage(Handle, Messages.EM_POSFROMCHAR, WParam(@Result), CharIndex);
+      SendMessage(Handle, EM_POSFROMCHAR, WParam(@Result), CharIndex);
+  end;
+end;
+
+function TJvCustomRichEdit.GetConverter(AStream: TStream;
+  const Kind: TJvConversionKind): TJvConversion;
+begin
+  Result := DefaultConverter;
+  if Result = nil then
+    Result := GConversionFormatList.GetConverter(
+      GetParentWindow(Self), AStream, Kind)
+  else
+    Result.Init(GetParentWindow(Self));
+end;
+
+function TJvCustomRichEdit.GetConverter(const AFileName: string;
+  const Kind: TJvConversionKind): TJvConversion;
+begin
+  { Note: First AFileName determines the converter, if not found then we pick
+          the default converter. Same behaviour as TRichEdit }
+  Result := GConversionFormatList.GetConverter(
+    GetParentWindow(Self), AFileName, Kind);
+  if Result = nil then
+  begin
+    Result := DefaultConverter;
+    if Result = nil then
+      Result := GConversionFormatList.DefaultConverter;
+    Result.Init(GetParentWindow(Self));
   end;
 end;
 
@@ -2905,7 +2950,8 @@ begin
             Result.Items.Add(FPopupVerbMenu.Items);
           end;
         end
-        else if FPopupVerbMenu.Items.Count > 0 then
+        else
+        if FPopupVerbMenu.Items.Count > 0 then
         begin
           Item := TMenuItem.Create(FPopupVerbMenu);
           Item.Caption := Format(SPropDlgCaption, [GetFullNameStr(ReObject.poleobj)]);
@@ -2934,8 +2980,8 @@ end;
 
 function TJvCustomRichEdit.GetSelectionType: TRichSelectionType;
 const
-  SelTypes: array[TRichSelection] of Integer =
-  (SEL_TEXT, SEL_OBJECT, SEL_MULTICHAR, SEL_MULTIOBJECT);
+  SelTypes: array [TRichSelection] of Integer =
+    (SEL_TEXT, SEL_OBJECT, SEL_MULTICHAR, SEL_MULTIOBJECT);
 var
   Selection: Integer;
   I: TRichSelection;
@@ -3016,14 +3062,14 @@ end;
 
 function TJvCustomRichEdit.GetZoom: Integer; // Added by J.G. Boerema
 var
-  wp, lp: Integer;
+  WP, LP: Integer;
 begin
   Result := 100;
   if (RichEditVersion >= 3) and HandleAllocated then
   begin
-    SendMessage(Handle, EM_GETZOOM, Integer(@wp), Integer(@lp));
-    if (lp > 0) then
-      Result := MulDiv(100, wp, lp);
+    SendMessage(Handle, EM_GETZOOM, Integer(@WP), Integer(@LP));
+    if (LP > 0) then
+      Result := MulDiv(100, WP, LP);
   end;
 end;
 
@@ -3090,28 +3136,8 @@ begin
   end;
 end;
 
-procedure TJvCustomRichEdit.InsertFormatText(Index: Integer; const S: string; const AFont: TFont = nil);
-var
-  ASelStart, ASelLength: Integer;
-begin
-  if S = '' then Exit;
-  ASelStart := SelStart;
-  ASelLength := SelLength;
-  try
-    if Index > -1 then
-      SelStart := Index;
-    SelLength := 0;
-    if AFont <> nil then
-      SelAttributes.Assign(AFont);
-    SelText := S;
-  finally
-    SelStart := ASelStart;
-    SelLength := ASelLength;
-  end;
-end;
-
-procedure TJvCustomRichEdit.InsertFormatText(Index: integer; const S: string; FontStyle: TFontStyles;
-  const FontName: string; const FontColor: TColor; FontHeight: integer);
+procedure TJvCustomRichEdit.InsertFormatText(Index: Integer; const S: string; FontStyle: TFontStyles;
+  const FontName: string; const FontColor: TColor; FontHeight: Integer);
 var AFont:TFont;
 begin
   if S = '' then Exit;
@@ -3132,10 +3158,30 @@ begin
   end;
 end;
 
+procedure TJvCustomRichEdit.InsertFormatText(Index: Integer; const S: string; const AFont: TFont = nil);
+var
+  ASelStart, ASelLength: Integer;
+begin
+  if S = '' then Exit;
+  ASelStart := SelStart;
+  ASelLength := SelLength;
+  try
+    if Index > -1 then
+      SelStart := Index;
+    SelLength := 0;
+    if AFont <> nil then
+      SelAttributes.Assign(AFont);
+    SelText := S;
+  finally
+    SelStart := ASelStart;
+    SelLength := ASelLength;
+  end;
+end;
+
 function TJvCustomRichEdit.InsertObjectDialog: Boolean;
 var
   Data: TOleUIInsertObject;
-  NameBuffer: array[0..255] of Char;
+  NameBuffer: array [0..255] of Char;
   OleClientSite: IOleClientSite;
   Storage: IStorage;
   OleObject: IOleObject;
@@ -3191,7 +3237,7 @@ begin
           Selection.cpMax := Selection.cpMin + 1;
           OleCheck(IRichEditOle(FRichEditOle).InsertObject(ReObject));
           SendMessage(Handle, EM_EXSETSEL, 0, Longint(@Selection));
-          SendMessage(Handle, EM_SCROLLCARET, 0, 0);
+          SendMessage(Handle, Messages.EM_SCROLLCARET, 0, 0);
           IRichEditOle(FRichEditOle).SetDvaspect(
             Longint(REO_IOB_SELECTION), ReObject.dvAspect);
           if IsNewObject then
@@ -3316,7 +3362,7 @@ const
   PasteFormatCount = 6;
 var
   Data: TOleUIPasteSpecial;
-  PasteFormats: array[0..PasteFormatCount - 1] of TOleUIPasteEntry;
+  PasteFormats: array [0..PasteFormatCount - 1] of TOleUIPasteEntry;
   Format: Integer;
   OleClientSite: IOleClientSite;
   Storage: IStorage;
@@ -3406,7 +3452,7 @@ begin
         OleCheck(IRichEditOle(FRichEditOle).ImportDataObject(
           Data.lpSrcDataObj, Format, Data.hMetaPict));
       end;
-      SendMessage(Handle, EM_SCROLLCARET, 0, 0);
+      SendMessage(Handle, Messages.EM_SCROLLCARET, 0, 0);
     end;
   finally
     DestroyMetaPict(Data.hMetaPict);
@@ -3504,7 +3550,8 @@ begin
   Result := False;
   if Assigned(OnProtectChangeEx) then
     OnProtectChangeEx(Self, Msg, StartPos, EndPos, Result)
-  else if Assigned(OnProtectChange) then
+  else
+  if Assigned(OnProtectChange) then
     OnProtectChange(Self, StartPos, EndPos, Result);
 end;
 
@@ -3526,7 +3573,7 @@ class procedure TJvCustomRichEdit.RegisterMSTextConverters;
 }
 const
   SKey = '\Software\Microsoft\Shared Tools\Text Converters\';
-  SImportExportKey: array[TJvConversionKind] of string = ('Import\', 'Export\');
+  SImportExportKey: array [TJvConversionKind] of string = ('Import\', 'Export\');
 var
   KeyNames: TStringList;
   Registry: TRegistry;
@@ -3542,7 +3589,7 @@ var
 
       GetKeyNames(KeyNames);
       for I := 0 to KeyNames.Count - 1 do
-        if OpenKey(SKey + SImportExportKey[AKind] + KeyNames[i], False) then
+        if OpenKey(SKey + SImportExportKey[AKind] + KeyNames[I], False) then
         begin
           RegisterConversionFormat(TJvMSTextConversion.Create(
             ReadString('Path'),
@@ -3622,7 +3669,8 @@ begin
         end;
       end;
     end
-    else if frReplace in Options then
+    else
+    if frReplace in Options then
     begin
       if FindEditText(TFindDialog(Sender), True, True) then
         SelText := ReplaceText;
@@ -3827,7 +3875,7 @@ begin
   end;
   SendMessage(Handle, EM_EXSETSEL, 0, Longint(@CharRange));
   if ScrollCaret then
-    SendMessage(Handle, EM_SCROLLCARET, 0, 0);
+    SendMessage(Handle, Messages.EM_SCROLLCARET, 0, 0);
 end;
 
 procedure TJvCustomRichEdit.SetSelectionBar(Value: Boolean);
@@ -4001,8 +4049,8 @@ end;
 
 procedure TJvCustomRichEdit.UpdateTextModes(Plain: Boolean);
 const
-  TextModes: array[Boolean] of DWORD = (TM_RICHTEXT, TM_PLAINTEXT);
-  UndoModes: array[Boolean] of DWORD = (TM_SINGLELEVELUNDO, TM_MULTILEVELUNDO);
+  TextModes: array [Boolean] of DWORD = (TM_RICHTEXT, TM_PLAINTEXT);
+  UndoModes: array [Boolean] of DWORD = (TM_SINGLELEVELUNDO, TM_MULTILEVELUNDO);
 begin
   if (RichEditVersion >= 2) and HandleAllocated then
   begin
@@ -4102,7 +4150,8 @@ begin
     Range.cpMax := SelStart;
     if Range.cpMax = 0 then
       Range.cpMin := 0
-    else if SendMessage(Handle, EM_FINDWORDBREAK, WB_ISDELIMITER, Range.cpMax) <> 0 then
+    else
+    if SendMessage(Handle, EM_FINDWORDBREAK, WB_ISDELIMITER, Range.cpMax) <> 0 then
       Range.cpMin := SendMessage(Handle, EM_FINDWORDBREAK, WB_MOVEWORDLEFT, Range.cpMax)
     else
       Range.cpMin := SendMessage(Handle, EM_FINDWORDBREAK, WB_LEFT, Range.cpMax);
@@ -4114,12 +4163,6 @@ begin
 end;
 
 //=== TJvMSTextConversion ====================================================
-
-function TJvMSTextConversion.CanHandle(
-  const AKind: TJvConversionKind): Boolean;
-begin
-  Result := AKind = FConverterKind;
-end;
 
 function TJvMSTextConversion.CanHandle(const AExtension: string;
   const AKind: TJvConversionKind): Boolean;
@@ -4138,6 +4181,12 @@ begin
     end;
 
   Result := False;
+end;
+
+function TJvMSTextConversion.CanHandle(
+  const AKind: TJvConversionKind): Boolean;
+begin
+  Result := AKind = FConverterKind;
 end;
 
 procedure TJvMSTextConversion.Check(Result: FCE);
@@ -4237,12 +4286,11 @@ end;
 constructor TJvMSTextConversion.Create(const AConverterFileName, AExtensions,
   ADescription: string; const AKind: TJvConversionKind);
 
-{$IFNDEF COMPILER6_UP}
-
-  procedure StrTokenize(const S: string; Delimiter: char; Strings: TStrings);
+  {$IFNDEF COMPILER6_UP}
+  procedure StrTokenize(const S: string; Delimiter: Char; Strings: TStrings);
   var
     BufStart, BufEnd: PChar;
-    Store: char;
+    Store: Char;
   begin
     BufStart := PChar(S);
     BufEnd := BufStart;
@@ -4262,16 +4310,16 @@ constructor TJvMSTextConversion.Create(const AConverterFileName, AExtensions,
     if (BufStart <> nil) and (BufStart^ <> #0) then
       Strings.Add(BufStart);
   end;
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 begin
   inherited Create;
   FExtensions := TStringList.Create;
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   FExtensions.Delimiter := ' ';
   FExtensions.DelimitedText := AExtensions;
-{$ELSE}
+  {$ELSE}
   StrTokenize(AExtensions, ' ', FExtensions);
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
   FConverterFileName := AConverterFileName;
   FDescription := ADescription;
   FConverterKind := AKind;
@@ -4312,7 +4360,7 @@ begin
     FRichEditReady.ResetEvent;
 
     LConversionError := FForeignToRtf32(FFileName, nil, FBuffer,
-      hDesc, hSubSet, ImportCallback);
+      hDesc, hSubset, ImportCallback);
 
     { This ensures that the ConvertRead picks up the last bytes before FThreadDone is set }
     FThreadReady.SetEvent;
@@ -4380,7 +4428,7 @@ end;
 function TJvMSTextConversion.Error: Boolean;
 begin
   Result := (FConversionError <> fceNoErr) and
-    (FConversionError <> fceUserCancel);
+            (FConversionError <> fceUserCancel);
 end;
 
 function TJvMSTextConversion.ErrorStr: string;
@@ -4412,8 +4460,8 @@ begin
   Result := '';
   for I := 0 to FExtensions.Count - 1 do
   begin
-    Result := Result + '*.' + FExtensions[i] + '; ';
-    LFilter := LFilter + '*.' + FExtensions[i] + ';';
+    Result := Result + '*.' + FExtensions[I] + '; ';
+    LFilter := LFilter + '*.' + FExtensions[I] + ';';
   end;
   if Result > '' then
     Delete(Result, Length(Result) - 1, 2);
@@ -4510,7 +4558,7 @@ begin
 
   LoadConverter;
   if not Assigned(FInitConverter32) or
-    not FInitConverter32(ParentWindow, PChar(AnsiUpperCaseFileName(Application.ExeName))) then
+     not FInitConverter32(ParentWindow, PChar(AnsiUpperCaseFileName(Application.ExeName))) then
 
     raise EMSTextConversionError.Create(RsECouldNotInitConverter);
 end;
@@ -4742,7 +4790,8 @@ begin
     for I := 0 to MAX_TAB_STOPS - 1 do
       Tab[I] := TParaAttributes(Source).Tab[I];
   end
-  else if Source is TJvParaAttributes then
+  else
+  if Source is TJvParaAttributes then
   begin
     TJvParaAttributes(Source).GetAttributes(Paragraph);
     SetAttributes(Paragraph);
@@ -4942,33 +4991,6 @@ begin
   Result := (Paragraph.rgxTabs[Index] and TA_TAB) div CTwipsPerPoint;
 end;
 
-function TJvParaAttributes.GetTabCount: Integer;
-var
-  Paragraph: TParaFormat2;
-begin
-  GetAttributes(Paragraph);
-  Result := Paragraph.cTabCount;
-end;
-
-function TJvParaAttributes.GetTableStyle: TParaTableStyle;
-var
-  Paragraph: TParaFormat2;
-begin
-  Result := tsNone;
-  if RichEditVersion < 2 then
-    Exit;
-  GetAttributes(Paragraph);
-  with Paragraph do
-  begin
-    if (wReserved and PFE_TABLEROW) <> 0 then
-      Result := tsTableRow
-    else if (wReserved and PFE_TABLECELLEND) <> 0 then
-      Result := tsTableCellEnd
-    else if (wReserved and PFE_TABLECELL) <> 0 then
-      Result := tsTableCell;
-  end;
-end;
-
 function TJvParaAttributes.GetTabAlignment(Index: Byte): TJvTabAlignment;
 var
   Paragraph: TParaFormat2;
@@ -4986,31 +5008,12 @@ begin
   Result := TJvTabAlignment(Temp);
 end;
 
-procedure TJvParaAttributes.SetTabAlignment(Index: Byte; Value: TJvTabAlignment);
+function TJvParaAttributes.GetTabCount: Integer;
 var
   Paragraph: TParaFormat2;
 begin
-  if RichEditVersion < 2 then
-    Exit;
-  if Index >= MAX_TAB_STOPS - 1 then
-    Exit;
-  if Value <> taOrdinary then
-    FRichEdit.NeedAdvancedTypography;
-
   GetAttributes(Paragraph);
-  with Paragraph do
-  begin
-    if cTabCount <= Index then
-    begin
-      cTabCount := Index + 1;
-      rgxTabs[Index] := 0; // is this necessary?
-    end;
-    // Replace the old alignment value with the new one but
-    // remember the tab and leader values
-    rgxTabs[Index] := Longint(rgxTabs[Index] and TA_TAB_LEADER) or (Ord(Value) shl 24);
-    dwMask := PFM_TABSTOPS;
-    SetAttributes(Paragraph);
-  end;
+  Result := Paragraph.cTabCount;
 end;
 
 function TJvParaAttributes.GetTabLeader(Index: Byte): TJvTabLeader;
@@ -5020,7 +5023,7 @@ var
 begin
   if Index >= MAX_TAB_STOPS - 1 then
   begin
-    Result := TjvTabLeader(0);
+    Result := TJvTabLeader(0);
     Exit;
   end;
   GetAttributes(Paragraph);
@@ -5031,30 +5034,24 @@ begin
   Result := TJvTabLeader(Temp);
 end;
 
-procedure TJvParaAttributes.SetTabLeader(Index: Byte; Value: TJvTabLeader);
+function TJvParaAttributes.GetTableStyle: TParaTableStyle;
 var
   Paragraph: TParaFormat2;
 begin
+  Result := tsNone;
   if RichEditVersion < 2 then
     Exit;
-  if Index >= MAX_TAB_STOPS - 1 then
-    Exit;
-  if Value <> tlNone then
-    FRichEdit.NeedAdvancedTypography;
-
   GetAttributes(Paragraph);
   with Paragraph do
   begin
-    if cTabCount <= Index then
-    begin
-      cTabCount := Index + 1;
-      rgxTabs[Index] := 0; // is this necessary?
-    end;
-    // Replace the old leader value with the new one but
-    // remember the tab and alignment values
-    rgxTabs[Index] := (rgxTabs[Index] and TA_TAB_ALIGNMENT) or (Ord(Value) shl 28);
-    dwMask := PFM_TABSTOPS;
-    SetAttributes(Paragraph);
+    if (wReserved and PFE_TABLEROW) <> 0 then
+      Result := tsTableRow
+    else
+    if (wReserved and PFE_TABLECELLEND) <> 0 then
+      Result := tsTableCellEnd
+    else
+    if (wReserved and PFE_TABLECELL) <> 0 then
+      Result := tsTableCell;
   end;
 end;
 
@@ -5090,7 +5087,8 @@ begin
     if FRichEdit.UseRightToLeftAlignment then
       if Paragraph.wAlignment = PFA_LEFT then
         Paragraph.wAlignment := PFA_RIGHT
-      else if Paragraph.wAlignment = PFA_RIGHT then
+      else
+      if Paragraph.wAlignment = PFA_RIGHT then
         Paragraph.wAlignment := PFA_LEFT;
     SendMessage(FRichEdit.Handle, EM_SETPARAFORMAT, 0, LParam(@Paragraph));
   end;
@@ -5223,7 +5221,7 @@ end;
 
 procedure TJvParaAttributes.SetNumberingStyle(Value: TJvNumberingStyle);
 const
-  CNumberingStyle: array[TJvNumberingStyle] of Word = (PFNS_PAREN, PFNS_PERIOD, PFNS_PARENS, PFNS_PLAIN);
+  CNumberingStyle: array [TJvNumberingStyle] of Word = (PFNS_PAREN, PFNS_PERIOD, PFNS_PARENS, PFNS_PLAIN);
 var
   Paragraph: TParaFormat2;
 begin
@@ -5321,6 +5319,33 @@ begin
   end;
 end;
 
+procedure TJvParaAttributes.SetTabAlignment(Index: Byte; Value: TJvTabAlignment);
+var
+  Paragraph: TParaFormat2;
+begin
+  if RichEditVersion < 2 then
+    Exit;
+  if Index >= MAX_TAB_STOPS - 1 then
+    Exit;
+  if Value <> taOrdinary then
+    FRichEdit.NeedAdvancedTypography;
+
+  GetAttributes(Paragraph);
+  with Paragraph do
+  begin
+    if cTabCount <= Index then
+    begin
+      cTabCount := Index + 1;
+      rgxTabs[Index] := 0; // is this necessary?
+    end;
+    // Replace the old alignment value with the new one but
+    // remember the tab and leader values
+    rgxTabs[Index] := Longint(rgxTabs[Index] and TA_TAB_LEADER) or (Ord(Value) shl 24);
+    dwMask := PFM_TABSTOPS;
+    SetAttributes(Paragraph);
+  end;
+end;
+
 procedure TJvParaAttributes.SetTabCount(Value: Integer);
 var
   Paragraph: TParaFormat2;
@@ -5330,6 +5355,33 @@ begin
   begin
     dwMask := PFM_TABSTOPS;
     cTabCount := Value;
+    SetAttributes(Paragraph);
+  end;
+end;
+
+procedure TJvParaAttributes.SetTabLeader(Index: Byte; Value: TJvTabLeader);
+var
+  Paragraph: TParaFormat2;
+begin
+  if RichEditVersion < 2 then
+    Exit;
+  if Index >= MAX_TAB_STOPS - 1 then
+    Exit;
+  if Value <> tlNone then
+    FRichEdit.NeedAdvancedTypography;
+
+  GetAttributes(Paragraph);
+  with Paragraph do
+  begin
+    if cTabCount <= Index then
+    begin
+      cTabCount := Index + 1;
+      rgxTabs[Index] := 0; // is this necessary?
+    end;
+    // Replace the old leader value with the new one but
+    // remember the tab and alignment values
+    rgxTabs[Index] := (rgxTabs[Index] and TA_TAB_ALIGNMENT) or (Ord(Value) shl 28);
+    dwMask := PFM_TABSTOPS;
     SetAttributes(Paragraph);
   end;
 end;
@@ -5436,7 +5488,8 @@ begin
     if smPlainRtf in Mode then
       TextType := TextType or SFF_PLAINRTF;
   end
-  else if TextType = SF_TEXT then
+  else
+  if TextType = SF_TEXT then
   begin
     if (smUnicode in Mode) and (RichEditVersion > 1) then
       TextType := TextType or SF_UNICODE;
@@ -5449,7 +5502,8 @@ begin
   begin
     if AConverter.Error then
       raise EOutOfResources.Create(AConverter.ErrorStr)
-    else if EditStream.dwError <> 0 then
+    else
+    if EditStream.dwError <> 0 then
       raise EOutOfResources.Create(sRichEditSaveFail);
   end;
 end;
@@ -5458,6 +5512,7 @@ procedure TJvRichEditStrings.DoImport(AConverter: TJvConversion);
 var
   EditStream: TEditStream;
   TextType: Longint;
+  Count: LResult;
 begin
   with EditStream do
   begin
@@ -5488,11 +5543,11 @@ begin
   end;
   if smSelection in Mode then
     TextType := TextType or SFF_SELECTION;
-  SendMessage(FRichEdit.Handle, EM_STREAMIN, TextType, Longint(@EditStream));
+  Count := SendMessage(FRichEdit.Handle, EM_STREAMIN, TextType, Longint(@EditStream));
 
   if not AConverter.UserCancel then
   begin
-    if (EditStream.dwError <> 0) and AConverter.Retry then
+    if ((EditStream.dwError <> 0) or (Count = 0)) and AConverter.ReTry then
     begin
       if (TextType and SF_RTF) = SF_RTF then
         TextType := SF_TEXT
@@ -5503,7 +5558,8 @@ begin
 
     if AConverter.Error then
       raise EOutOfResources.Create(AConverter.ErrorStr)
-    else if EditStream.dwError <> 0 then
+    else
+    if EditStream.dwError <> 0 then
       raise EOutOfResources.Create(sRichEditLoadFail);
   end;
 
@@ -5527,7 +5583,7 @@ end;
 
 function TJvRichEditStrings.Get(Index: Integer): string;
 var
-  Text: array[0..4095] of Char;
+  Text: array [0..4095] of Char;
   L: Integer;
   W: Word;
 begin
@@ -5537,7 +5593,8 @@ begin
   L := SendMessage(FRichEdit.Handle, EM_GETLINE, Index, Longint(@Text));
   if (Text[L - 2] = #13) and (Text[L - 1] = #10) then
     Dec(L, 2)
-  else if (RichEditVersion >= 2) and (Text[L - 1] = #13) then
+  else
+  if (RichEditVersion >= 2) and (Text[L - 1] = #13) then
     Dec(L);
   SetString(Result, Text, L);
 end;
@@ -5619,20 +5676,22 @@ var
   SaveFormat: TRichStreamFormat;
   Converter: TJvConversion;
 begin
-  Converter := GConversionFormatList.GetConverterForFile(
-    GetParentWindow(FRichEdit), FileName, ckImport);
-  if Converter = nil then
-    Converter := FRichEdit.DefaultConverter;
-  if Converter = nil then
-    Converter := GConversionFormatList.DefaultConverter;
-  Converter.OnProgress := ProgressCallback;
+  Converter := FRichEdit.GetConverter(FileName, ckImport);
   try
+    Converter.OnProgress := ProgressCallback;
     SaveFormat := Format;
     try
-      if Converter.TextKind in [ctkText, ctkBothPreferText] then
+      if FRichEdit.PlainText then
+        { When PlainText is set, the control does not accept RTF }
         FFormat := sfPlainText
       else
-        FFormat := sfRichText;
+        if FFormat = sfDefault then
+        case Converter.TextKind of
+          ctkText, ctkBothPreferText:
+            FFormat := sfPlainText;
+          ctkRTF, ctkBothPreferRTF:
+            FFormat := sfRichText;
+        end;
 
       if not Converter.Open(FileName, ckImport) then
         raise EOutOfResources.Create(sRichEditLoadFail);
@@ -5655,17 +5714,22 @@ begin
   FRichEdit.HandleNeeded;
   if FRichEdit.HandleAllocated then
   begin
-    Converter := FRichEdit.DefaultConverter;
-    if Converter = nil then
-      Converter := GConversionFormatList.DefaultConverter;
-    Converter.Init(GetParentWindow(FRichEdit));
+    Converter := FRichEdit.GetConverter(Stream, ckImport);
     try
+      Converter.OnProgress := ProgressCallback;
       SaveFormat := Format;
       try
-        if Converter.TextKind in [ctkText, ctkBothPreferText] then
+        if FRichEdit.PlainText then
+          { When PlainText is set, the control does not accept RTF }
           FFormat := sfPlainText
         else
-          FFormat := sfRichText;
+          if FFormat = sfDefault then
+          case Converter.TextKind of
+            ctkText, ctkBothPreferText:
+              FFormat := sfPlainText;
+            ctkRTF, ctkBothPreferRTF:
+              FFormat := sfRichText;
+          end;
 
         if not Converter.Open(Stream, ckImport) then
           raise EOutOfResources.Create(sRichEditLoadFail);
@@ -5676,6 +5740,7 @@ begin
       end;
     finally
       Converter.Done;
+      Converter.OnProgress := nil;
     end;
   end;
 end;
@@ -5713,19 +5778,22 @@ var
   SaveFormat: TRichStreamFormat;
   Converter: TJvConversion;
 begin
-  Converter := GConversionFormatList.GetConverterForFile(
-    GetParentWindow(FRichEdit), FileName, ckExport);
-  if Converter = nil then
-    Converter := FRichEdit.DefaultConverter;
-  if Converter = nil then
-    Converter := GConversionFormatList.DefaultConverter;
+  Converter := FRichEdit.GetConverter(FileName, ckExport);
   try
+    Converter.OnProgress := ProgressCallback;
     SaveFormat := Format;
     try
-      if Converter.TextKind in [ctkText, ctkBothPreferText] then
+      if FRichEdit.PlainText then
+        { When PlainText is set, the control does not accept RTF }
         FFormat := sfPlainText
       else
-        FFormat := sfRichText;
+        if FFormat = sfDefault then
+        case Converter.TextKind of
+          ctkText, ctkBothPreferText:
+            FFormat := sfPlainText;
+          ctkRTF, ctkBothPreferRTF:
+            FFormat := sfRichText;
+        end;
 
       if not Converter.Open(FileName, ckExport) then
         raise EOutOfResources.Create(sRichEditSaveFail);
@@ -5736,6 +5804,7 @@ begin
     end;
   finally
     Converter.Done;
+    Converter.OnProgress := nil;
   end;
 end;
 
@@ -5747,17 +5816,22 @@ begin
   FRichEdit.HandleNeeded;
   if FRichEdit.HandleAllocated then
   begin
-    Converter := FRichEdit.DefaultConverter;
-    if Converter = nil then
-      Converter := GConversionFormatList.DefaultConverter;
-    Converter.Init(GetParentWindow(FRichEdit));
+    Converter := FRichEdit.GetConverter(Stream, ckExport);
     try
+      Converter.OnProgress := ProgressCallback;
       SaveFormat := Format;
       try
-        if Converter.TextKind in [ctkText, ctkBothPreferText] then
+        if FRichEdit.PlainText then
+          { When PlainText is set, the control does not accept RTF }
           FFormat := sfPlainText
         else
-          FFormat := sfRichText;
+        if FFormat = sfDefault then
+          case Converter.TextKind of
+            ctkText, ctkBothPreferText:
+              FFormat := sfPlainText;
+            ctkRTF, ctkBothPreferRTF:
+              FFormat := sfRichText;
+          end;
 
         if not Converter.Open(Stream, ckExport) then
           raise EOutOfResources.Create(sRichEditSaveFail);
@@ -5768,6 +5842,7 @@ begin
       end;
     finally
       Converter.Done;
+      Converter.OnProgress := nil;
     end;
   end;
 end;
@@ -5812,7 +5887,7 @@ const
   CRTFHeaderSize = Length(CRTFHeader);
 var
   SavedPosition: Int64;
-  Buffer: array[0..CRTFHeaderSize - 1] of Char;
+  Buffer: array [0..CRTFHeaderSize - 1] of Char;
 begin
   SavedPosition := AStream.Position;
   try
@@ -5926,7 +6001,8 @@ var
 begin
   if Source is TFont then
     AssignFont(TFont(Source))
-  else if Source is TTextAttributes then
+  else
+  if Source is TTextAttributes then
   begin
     Name := TTextAttributes(Source).Name;
     Charset := TTextAttributes(Source).Charset;
@@ -5934,7 +6010,8 @@ begin
     Pitch := TTextAttributes(Source).Pitch;
     Color := TTextAttributes(Source).Color;
   end
-  else if Source is TJvTextAttributes then
+  else
+  if Source is TJvTextAttributes then
   begin
     TJvTextAttributes(Source).GetAttributes(Format);
     SetAttributes(Format);
@@ -5998,7 +6075,8 @@ begin
     TFont(Dest).Size := Size;
     TFont(Dest).Pitch := Pitch;
   end
-  else if Dest is TTextAttributes then
+  else
+  if Dest is TTextAttributes then
   begin
     TTextAttributes(Dest).Color := Color;
     TTextAttributes(Dest).Name := Name;
@@ -6243,7 +6321,8 @@ begin
   begin
     if (dwEffects and CFE_SUBSCRIPT) <> 0 then
       Result := ssSubscript
-    else if (dwEffects and CFE_SUPERSCRIPT) <> 0 then
+    else
+    if (dwEffects and CFE_SUPERSCRIPT) <> 0 then
       Result := ssSuperscript;
   end;
 end;
@@ -6678,7 +6757,7 @@ function TOleUILinkInfo.SetLinkSource(dwLink: Longint; pszDisplayName: PChar;
   fValidateSource: BOOL): HRESULT;
 var
   DisplayName: string;
-  Buffer: array[0..255] of WideChar;
+  Buffer: array [0..255] of WideChar;
 begin
   Result := E_FAIL;
   if fValidateSource then
@@ -7054,6 +7133,4 @@ initialization
 finalization
   FinalizeUnit(sUnitName);
   FinalRichEditDll;
-
 end.
-
