@@ -109,6 +109,7 @@ type
     FMovable, FWasMoved: boolean;
     FOnAfterMove: TNotifyEvent;
     FOnBeforeMove: TJvPanelMoveEvent;
+    FOnPaint: TNotifyEvent;
     {$ENDIF VCL}
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
@@ -163,6 +164,7 @@ type
     {$IFDEF VCL}
     property DockManager;
     {$ENDIF VCL}
+    property Canvas;
   published
     {$IFDEF VCL}
     property Movable:boolean read FMovable write FMovable default false;
@@ -181,6 +183,7 @@ type
     property OnAfterMove:TNotifyEvent Read FOnAfterMove write FOnAfterMove;
     {$ENDIF VCL}
     property OnParentColorChange;
+    property OnPaint:TNotifyEvent read FOnPaint write FOnPaint;
 
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Width: Integer read GetWidth write SetWidth;
@@ -440,6 +443,11 @@ procedure TJvPanel.Paint;
 var
   X, Y: integer;
 begin
+  if Assigned(FOnPaint) then
+  begin
+    FOnPaint(Self);
+    Exit;
+  end;
   Canvas.Brush.Color := Color;
   if not Transparent then
     DrawThemedBackground(Self, Canvas, ClientRect)
