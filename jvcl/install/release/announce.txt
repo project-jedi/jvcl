@@ -1,3 +1,14 @@
+To:
+borland.public.delphi.third-party
+jedi.jvcl
+jedi.general
+Delphi Magazine (info@TheDelphiMagazine.com)
+Delphi Informant (editorial@DelphiZine.com)
+Delphi 3000 (info@bluestep.com)
+UK-BUG (bug@richplum.co.uk)
+eLists Delphi (delphi@elists.org)
+
+
 Subject: 
 ANN: JVCL 3 BETA Released!
 Body:
@@ -27,7 +38,7 @@ This release is available in three flavors:
 Later on we will also provide separate downloads for those packages that can be installed in a "stand-alone" mode (JvUIB, JvWizard, JvGlobus, JvManagedThreads, JvDocking, JvXPCtrls and JvDotNetCtrls)
 To download JVCL 3, go to http://sourceforge.net/projects/jvcl and click the "Files" link at the top.
 
-The version o fthis release is JVCL3.0 BETA 1.
+The current version is JVCL 3.00 BETA 1.
 
 The JVCL Team
 
