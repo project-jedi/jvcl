@@ -56,12 +56,14 @@ type
     procedure SetWindowTo(const Value: TColor);
   public
     constructor Create;
+    procedure Assign(Source: TPersistent); override;
+
   published
-    property Frame: TColor read FFrame write SetFrame default $808080;
-    property WindowFrom: TColor read FWindowFrom write SetWindowFrom default $D8DCE0;
-    property WindowTo: TColor read FWindowTo write SetWindowTo default $A8B4B8;
-    property CaptionFrom: TColor read FCaptionFrom write SetCaptionFrom default $B0B4B0;
-    property CaptionTo: TColor read FCaptionTo write SetCaptionTo default $808480;
+    property Frame: TColor read FFrame write SetFrame default $00943000;
+    property WindowFrom: TColor read FWindowFrom write SetWindowFrom default $00FFE7CE;
+    property WindowTo: TColor read FWindowTo write SetWindowTo default $00E7A67B;
+    property CaptionFrom: TColor read FCaptionFrom write SetCaptionFrom default $00D68652;
+    property CaptionTo: TColor read FCaptionTo write SetCaptionTo default $00944110;
   end;
 
   TJvDesktopAlertPosition = (dapTopLeft, dapTopRight, dapBottomLeft, dapBottomRight, dapCustom);
@@ -256,14 +258,29 @@ end;
 
 { TJvDesktopAlertColors }
 
+procedure TJvDesktopAlertColors.Assign(Source: TPersistent);
+begin
+  if (Source is TJvDesktopAlertColors) and (Source <> Self) then
+  begin
+    FFrame := TJvDesktopAlertColors(Source).Frame;
+    FWindowFrom := TJvDesktopAlertColors(Source).WindowFrom;
+    FWindowTo := TJvDesktopAlertColors(Source).WindowTo;
+    FCaptionFrom := TJvDesktopAlertColors(Source).CaptionFrom;
+    FCaptionTo := TJvDesktopAlertColors(Source).CaptionTo;
+    Change;
+    Exit;
+  end;
+  inherited;
+end;
+
 constructor TJvDesktopAlertColors.Create;
 begin
   inherited Create;
-  FFrame := clGray;
-  FWindowFrom := $D8DCE0;
-  FWindowTo := $A8B4B8;
-  FCaptionFrom := $B0B4B0;
-  FCaptionTo := $808480;
+  FFrame := $00943000;
+  FWindowFrom := $00FFE7CE;
+  FWindowTo := $00E7A67B;
+  FCaptionFrom := $00D68652;
+  FCaptionTo := $00944110;
 end;
 
 procedure TJvDesktopAlertColors.SetCaptionFrom(const Value: TColor);
@@ -708,7 +725,7 @@ end;
 
 procedure TJvDesktopAlert.SetColors(const Value: TJvDesktopAlertColors);
 begin
-//  FColors := Value;
+  FColors.Assign(Value);
 end;
 
 procedure TJvDesktopAlert.SetDropDownMenu(const Value: TPopUpMenu);

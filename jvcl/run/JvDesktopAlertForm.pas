@@ -466,10 +466,18 @@ begin
   inherited DoShow;
   FadeTimer.Enabled := false;
   AlphaBlendValue := 0;
+  lblText.HotTrackFont.Style := [fsUnderLine];
+  lblText.HotTrackFont.Color := clNavy;
   if ClickableMessage then
-    lblText.Cursor := crHandPoint
+  begin
+    lblText.HotTrack := True;
+    lblText.Cursor := crHandPoint;
+  end
   else
+  begin
+    lblText.HotTrack := False;
     lblText.Cursor := crDefault;
+  end;
 
   if tbDropDown.DropDownMenu = nil then
     tbDropDown.Visible := false;
