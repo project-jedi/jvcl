@@ -1060,7 +1060,7 @@ procedure TJvTabControlPainter.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent is TCustomTabControl) then
+  if (Operation = opRemove) and (AComponent is TCustomTabControl) and (FClients <> nil) then
     FClients.Remove(AComponent);
 end;
 
@@ -1092,15 +1092,21 @@ constructor TJvTabDefaultPainter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FActiveFont := TFont.Create;
-  FActiveFont.Assign(Screen.IconFont);
-  FActiveFont.Style := [fsBold];
+  if Owner is TForm then
+    FActiveFont.Assign(TForm(Owner).Font)
+  else
+    FActiveFont.Assign(Screen.IconFont);
+  FActiveFont.Color := clHighlight;
   FActiveFont.OnChange := DoFontChange;
   FActiveColorFrom := clWhite;
   FActiveColorTo := clBtnFace;
   FActiveGradientDirection := fdTopToBottom;
 
   FDisabledFont := TFont.Create;
-  FDisabledFont.Assign(Screen.IconFont);
+  if Owner is TForm then
+    FDisabledFont.Assign(TForm(Owner).Font)
+  else
+    FDisabledFont.Assign(Screen.IconFont);
   FDisabledFont.Color := clGrayText;
   FDisabledFont.OnChange := DoFontChange;
   FDisabledColorFrom := clBtnFace;
@@ -1108,7 +1114,10 @@ begin
   FDisabledGradientDirection := fdTopToBottom;
 
   FInactiveFont := TFont.Create;
-  FInactiveFont.Assign(Screen.IconFont);
+  if Owner is TForm then
+    FInactiveFont.Assign(TForm(Owner).Font)
+  else
+    FInactiveFont.Assign(Screen.IconFont);
   FInactiveFont.OnChange := DoFontChange;
   FInactiveColorFrom := $D7D7D7;
   FInactiveColorTo := $ADADAD;
