@@ -39,6 +39,7 @@ type
   private
     FDayRunning: Integer;
     FTimeRunning: TTime;
+    FAllowPropertyChange: boolean;
     function GetCompany: string;
     function GetComputerName: string;
     function GetUsername: string;
@@ -67,11 +68,15 @@ type
     procedure SetProductName(const Value: string);
     procedure SetVersion(const Value: string);
     procedure SetVersionNumber(const Value: string);
+    procedure CheckCanChange;
   published
     // (p3)
     property RealComputerName: string read GetRealComputerName;
     property LoggedOnUser: string read GetLoggedOnUser;
-
+    // set AllowPropertyChange to allow changing computer values at deisgn or run-time
+    // NB! changing any of th evalues reported y this component can potentially cause severe problems with
+    // the computer!!! You have been warned!
+    property AllowPropertyChange:boolean read FAllowPropertyChange write FAllowPropertyChange default false;
     property ComputerName: string read GetComputerName write SetComputerName stored false;
     property Username: string read GetUsername write SetUsername stored false;
     property Company: string read GetCompany write SetCompany stored false;
@@ -83,8 +88,8 @@ type
     property DVDRegion: Integer read GetDVDRegion write SetDVDRegion stored false;
     property VersionNumber: string read GetVersionNumber write SetVersionNumber stored false;
     property Version: string read GetVersion write SetVersion stored false;
-    property TimeRunning: TTime read GetTime write FTimeRunning;
-    property DayRunning: Integer read GetDay write FDayRunning;
+    property TimeRunning: TTime read GetTime write FTimeRunning stored false;
+    property DayRunning: Integer read GetDay write FDayRunning stored false;
   end;
 
 implementation
@@ -243,6 +248,7 @@ end;
 
 procedure TJvComputerInfo.SetDVDRegion(const Value: Integer);
 begin
+  CheckCanChange;
   with TRegistry.Create do
   begin
     RootKey := HKEY_LOCAL_MACHINE;
@@ -284,6 +290,7 @@ end;
 
 procedure TJvComputerInfo.WriteReg(Base: HKEY; KeyName, ValueName, Value: string);
 begin
+  CheckCanChange;
   with TRegistry.Create do
   begin
     RootKey := Base;
@@ -328,6 +335,12 @@ begin
   Buf[0] := #0;
   Windows.GetComputerName(Buf, Size);
   Result := buf;
+end;
+
+procedure TJvComputerInfo.CheckCanChange;
+begin
+  if not AllowPropertyChange then
+    raise Exception.Create('Cannot change properties unless AllowPropertyChange is true!');
 end;
 
 end.
