@@ -622,12 +622,12 @@ end;
 
 procedure OpenCdDrive;
 begin
-  mciSendString(PChar(RC_OpenCDDrive), nil, 0, Application.Handle);
+  mciSendString(PChar(RC_OpenCDDrive), nil, 0, GetForegroundWindow);
 end;
 
 procedure CloseCdDrive;
 begin
-  mciSendString(PChar(RC_CloseCDDrive), nil, 0, Application.Handle);
+  mciSendString(PChar(RC_CloseCDDrive), nil, 0, GetForegroundWindow);
 end;
 
 function GetRBitmap(Value: TBitmap): TBitmap;
@@ -861,26 +861,28 @@ var
   CPLInfo: TCPLInfo;
   InfoW: TNewCPLInfoW;
   InfoA: TNewCPLInfoA;
+  hWnd:THandle;
 begin
   Result := False;
   hLib := SafeLoadLibrary(AFilename);
   if hLib = 0 then
     Exit;
+  hWnd := GetForegroundWindow;
   TmpCount := Strings.Count;
   try
     @CplCall := GetProcAddress(hLib, PChar(cCplAddress));
     if @CplCall = nil then
       Exit;
-    CplCall(GetFocus, CPL_INIT, 0, 0); // Init the *.cpl file
+    CplCall(hWnd, CPL_INIT, 0, 0); // Init the *.cpl file
     try
-      Count := CplCall(GetFocus, CPL_GETCOUNT, 0, 0);
+      Count := CplCall(hWnd, CPL_GETCOUNT, 0, 0);
       for I := 0 to Count - 1 do
       begin
         FillChar(InfoW, SizeOf(InfoW), 0);
         FillChar(InfoA, SizeOf(InfoA), 0);
         FillChar(CPLInfo, SizeOf(CPLInfo), 0);
         S := '';
-        CplCall(GetFocus, CPL_NEWINQUIRE, I, Longint(@InfoW));
+        CplCall(hWnd, CPL_NEWINQUIRE, I, Longint(@InfoW));
         if InfoW.dwSize = SizeOf(InfoW) then
         begin
           hIco := InfoW.HICON;
@@ -896,7 +898,7 @@ begin
           end
           else
           begin
-            CplCall(GetFocus, CPL_INQUIRE, I, Longint(@CPLInfo));
+            CplCall(hWnd, CPL_INQUIRE, I, Longint(@CPLInfo));
             LoadStringA(hLib, CPLInfo.idName, InfoA.szName, SizeOf(InfoA.szName));
             hIco := LoadImage(hLib, PChar(CPLInfo.idIcon), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
             S := string(InfoA.szName);
@@ -919,7 +921,7 @@ begin
       end;
       Result := TmpCount < Strings.Count;
     finally
-      CplCall(GetFocus, CPL_EXIT, 0, 0);
+      CplCall(hWnd, CPL_EXIT, 0, 0);
     end;
   finally
     FreeLibrary(hLib);
@@ -955,7 +957,7 @@ var
   Operation: string;
 begin
   Operation := 'open';
-  ShellExecute(Application.Handle, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory),
+  ShellExecute(GetForegroundWindow, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory),
     SW_SHOWNORMAL);
 end;
 
@@ -1086,17 +1088,17 @@ end;
 
 procedure MonitorOn;
 begin
-  SendMessage(GetFocus, WM_SYSCOMMAND, SC_MONITORPOWER, -1);
+  SendMessage(GetForegroundWindow, WM_SYSCOMMAND, SC_MONITORPOWER, -1);
 end;
 
 procedure MonitorOff;
 begin
-  SendMessage(GetFocus, WM_SYSCOMMAND, SC_MONITORPOWER, 2);
+  SendMessage(GetForegroundWindow, WM_SYSCOMMAND, SC_MONITORPOWER, 2);
 end;
 
 procedure LowPower;
 begin
-  SendMessage(GetFocus, WM_SYSCOMMAND, SC_MONITORPOWER, 1);
+  SendMessage(GetForegroundWindow, WM_SYSCOMMAND, SC_MONITORPOWER, 1);
 end;
 
 {$WARNINGS OFF}
