@@ -40,6 +40,7 @@ stripCmtPO.exe \
 dxgettextResstr.exe \
 pg.exe \
 pgEdit.exe \
+NoQuotes.exe \
 
 #---------------------------------------------------------------------------------------------------
 
@@ -101,7 +102,7 @@ dc.exe: DFMCleaner\dc.dpr
 pg.exe: PackagesGenerator\pg.dpr
   cd PackagesGenerator
   $(DCC) $&.dpr
-  cd..
+  cd ..
 
 # these are put last because they are most likely to fail (needs additional units from other libraries)
 MakePNG.exe: MakePNG\MakePNG.dpr
@@ -122,5 +123,9 @@ ErrLook.exe: ErrLook\src\ErrLook.dpr
 pgEdit.exe: PackagesGenerator\pgEdit.dpr
   cd PackagesGenerator
   $(DCC) $&.dpr
-  cd..
+  cd ..
   
+NoQuotes.exe: NoQuotes\NoQuotes.dpr
+  cd NoQuotes
+  $(DCC) $&.dpr
+  cd ..
