@@ -659,7 +659,8 @@ begin
         UpdateGlobalPath(GlobalPaths, CurPaths);
         Inc(Index);
       until Index > High(Paths);
-      Result := StringReplace(StringsToStr(GlobalPaths, '\', False),'\.','.',[rfReplaceAll]);
+//      Result := StringReplace(StringsToStr(GlobalPaths, '\', False),'\.','.',[rfReplaceAll]);
+      Result := StringsToStr(GlobalPaths, '\', False);
     finally
       CurPaths.Free;
       GlobalPaths.Free;

@@ -168,6 +168,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function StrippedPath:string;
     procedure SetNotification;
     property StoredValue[const Name: string]: Variant read GetStoredValue write SetStoredValue;
     property DefaultValue[const Name: string;Default:Variant]: Variant read GetDefaultStoredValue write SetDefaultStoredValue;
@@ -617,7 +618,7 @@ end;
 function TJvFormPlacement.ReadString(const Ident, Default: string): string;
 begin
   if Assigned(AppStorage) then
-    Result := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, Ident]), Default)
+    Result := AppStorage.ReadString(AppStorage.ConcatPaths([Ident]), Default)
   else
     Result := '';
 end;
@@ -625,7 +626,7 @@ end;
 procedure TJvFormPlacement.WriteString(const Ident, Value: string);
 begin
   if Assigned(AppStorage) then
-    AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, Ident]), Value);
+    AppStorage.WriteString(AppStorage.ConcatPaths([Ident]), Value);
 end;
 
 function TJvFormPlacement.ReadInteger(const Ident: string; Default: Longint): Longint;
@@ -868,7 +869,7 @@ procedure TJvFormStorage.SaveProperties;
 begin
   with TJvPropertyStorage.Create do
   try
-    Section := '';
+    Section := StrippedPath;
     OnWriteString := WriteString;
     OnEraseSection := AppStorage.DeleteSubTree;
     StoreObjectsProps(Owner, FStoredProps);
@@ -881,7 +882,7 @@ procedure TJvFormStorage.RestoreProperties;
 begin
   with TJvPropertyStorage.Create do
   try
-    Section := '';
+    Section := StrippedPath;
     OnReadString := ReadString;
     try
       LoadObjectsProps(Owner, FStoredProps);
@@ -1130,6 +1131,16 @@ begin
     StoredValue[Name] := Default
   else
     StoredValue[Name] := Value;
+end;
+
+function TJvFormStorage.StrippedPath: string;
+var i:Integer;
+begin
+  Result := AppStoragePath;
+  i := Length(Result);
+  while (i > 0) and (Result[i] = '\') do
+    Dec(i);
+  SetLength(Result,i);
 end;
 
 end.
