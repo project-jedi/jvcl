@@ -29,6 +29,10 @@ unit JvDlgsReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
+{$DEFINE USEWINDOWS}
+{$ENDIF MSWINDOWS}
+
 procedure Register;
 
 implementation
@@ -48,11 +52,11 @@ uses
   JvDialogActnResForm, JvDialogs, JvPageSetupTitled, JvPageSetup,
   JvAppletEditor,
   {$ENDIF VCL}
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvConnectNetwork, JvCopyError,
   JvDeleteError, JvRenameError, JvDiskPrompt, JvFindFiles,
   JvObjectPickerDialog, JvCommonDialogDEditor,
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   JvBaseDlg, JvFindReplace, JvDSADialogs, JvTipOfDay, JvCommonExecDlg,
   JvDesktopAlert, JvProgressComponent, JvSelectDirectory, JvImageDlg,
   JvLoginForm, JvDualList, JvProgressDialog, JvBaseDlgEditor,
@@ -79,7 +83,7 @@ begin
   RegisterComponents(RsPaletteDialog, [TJvPageSetupDialog, TJvPageSetupTitledDialog,
     TJvColorDialog, TJvAppletDialog]);
   {$ENDIF VCL}
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteDialog, [TJvConnectNetwork,
     TJvDisconnectNetwork, TJvAddPrinterDialog, TJvFindFilesDialog,
     TJvFormatDriveDialog, TJvOrganizeFavoritesDialog,
@@ -90,7 +94,7 @@ begin
     TJvObjectPickerDialog, TJvDualListDialog, TJvImageDialog, TJvLoginDialog,
     TJvProgressDialog, TJvProgressComponent, TJvDiskPrompt, TJvCopyError,
     TJvDeleteError, TJvRenameError, TJvDesktopAlert, TJvDesktopAlertStack]);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
 
   {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, cAppletName, TJvAppletNameProperty);
@@ -107,9 +111,9 @@ begin
   {$ENDIF VCL}
   RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
   {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
   {$IFDEF VCL}

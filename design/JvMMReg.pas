@@ -29,6 +29,10 @@ unit JvMMReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
+{$DEFINE USEWINDOWS}
+{$ENDIF MSWINDOWS}
+
 procedure Register;
 
 implementation
@@ -40,18 +44,24 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  {$IFDEF USEWINDOWS}
+  JvId3v1, JvId3v2, JvID3v2EditorForm, JvID3v2Base, JvWavePlayer,
+  {$ENDIF USEWINDOWS}
+  {$IFDEF VCL}
+  JvAVICaptureEditors, JvAVICapture,
+  {$ENDIF VCL}
   JvDsgnConsts,
   JvAni, JvAnimate, JvBmpAnimator, JvPicClip, JvIconList,
-  JvEasterEgg, JvGradient, JvGradientHeaderPanel, JvId3v1, JvId3v2,
+  JvEasterEgg, JvGradient, JvGradientHeaderPanel,
   JvImageRotate, JvImageTransform, JvImageSquare, JvPcx, JvStarfield,
-  JvWaitingGradient, JvWaitingProgress, JvWavePlayer, JvSpecialProgress,
+  JvWaitingGradient, JvWaitingProgress, JvSpecialProgress,
   JvColorTrackBar,
   {$IFDEF USE_JV_GIF}
   JvGIF, JvGIFCtrl,
   {$ENDIF USE_JV_GIF}
-  JvSlider, JvID3v2Base, JvAnimatedImage, JvSpecialImage, JvAVICapture,
-  JvPictureEditors, JvAnimatedEditor, JvID3v2EditorForm, JvPictureEditForm,
-  JvIconListForm, JvAVICaptureEditors;
+  JvSlider, JvAnimatedImage, JvSpecialImage,
+  JvPictureEditors, JvAnimatedEditor, JvPictureEditForm,
+  JvIconListForm;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvMMReg.dcr}
@@ -65,20 +75,23 @@ begin
   RegisterComponents(RsPaletteImageAnimator, [TJvAnimate, TJvBmpAnimator,
     TJvPicClip, TJvImageRotate, TJvImageTransform,
     TJvImageSquare, TJvStarfield, {$IFDEF USE_JV_GIF} TJvGIFAnimator, {$ENDIF}
-    TJvAnimatedImage, TJvSpecialImage, TJvAVICapture]);
+    TJvAnimatedImage, TJvSpecialImage {$IFDEF VCL}, TJvAVICapture{$ENDIF}]);
   RegisterComponents(RsPaletteBarPanel, [TJvGradientHeaderPanel, TJvGradient,
     TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress, TJvColorTrackBar]);
-  RegisterComponents(RsPaletteNonVisual, [TJvID3v1, TJvID3v2, TJvWavePlayer]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSlider]);
-
+  {$IFDEF USEWINDOWS}
+  RegisterComponents(RsPaletteNonVisual, [TJvID3v1, TJvID3v2, TJvWavePlayer]);
+  RegisterComponentEditor(TJvID3Controller, TJvID3ControllerEditor);
+  RegisterPropertyEditor(TypeInfo(TJvID3FileInfo), nil, '', TJvID3FileInfoEditor);
+  {$ENDIF USEWINDOWS}
   RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
+  {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(TJvDriverIndex), nil, '', TJvDriverIndexEditor);
   RegisterPropertyEditor(TypeInfo(TJvVirtualKey), nil, '', TJvVirtualKeyEditor);
-  RegisterPropertyEditor(TypeInfo(TJvID3FileInfo), nil, '', TJvID3FileInfoEditor);
+  {$ENDIF VCL}
 
   RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
   RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
-  RegisterComponentEditor(TJvID3Controller, TJvID3ControllerEditor);
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterPropertyEditor(TypeInfo(TPicture),TObject,'',TJvPictProperty);
   RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);

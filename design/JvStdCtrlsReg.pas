@@ -41,18 +41,22 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  {$IFDEF VCL}
+  JvRichEdit, JvStaticText,
+  {$ENDIF VCL}
+  JvCheckedMaskEdit, 
   JvDsgnConsts, JvTypes,
-  JvSpin, JvEdit, JvRichEdit, JvProgressBar, JvDateTimePicker, JvDatePickerEdit,
-  JvCheckedMaskEdit, JvMaskEdit, JvCalendar, JvBaseEdits, JvCalc, JvToolEdit,
-  JvxSlider, JvBevel, JvCheckBox, JvSpeedButton, JvTextListBox, JvSecretPanel, 
+  JvSpin, JvEdit, JvProgressBar, JvDateTimePicker, JvDatePickerEdit,
+  JvMaskEdit, JvCalendar, JvBaseEdits, JvCalc, JvToolEdit,
+  JvxSlider, JvBevel, JvCheckBox, JvSpeedButton, JvTextListBox, JvSecretPanel,
   JvxCheckListBox, JvCheckListBox, JvCombobox, JvCheckTreeView, JvComCtrls,
   JvControlBar, JvCoolBar, JvCtrls, JvGroupBox, JvHeaderControl, JvHotKey,
   JvImage, JvLabel, JvListView, JvMemo, JvMenus, JvRadioButton, JvRadioGroup,
-  JvScrollBar, JvScrollBox, JvShape, JvStaticText, JvStatusBar, JvGrids,
+  JvScrollBar, JvScrollBox, JvShape, JvStatusBar, JvGrids,
   JvStringGrid, JvSystemPopup, JvToolBar, JvUpDown, JvBitBtn,
   JvPanel, JvMonthCalendar, JvControlPanelButton, JvStartMenuButton,
   JvRecentMenuButton, JvFavoritesButton, JvImageList, JvListBox, JvBrowseFolder,
-  JvTransparentPanel, JvCheckedItemsForm, JvColorCombo, 
+  JvTransparentPanel, JvCheckedItemsForm, JvColorCombo,
   JvProgressEditor, JvDsgnEditors;
 
 {$IFDEF MSWINDOWS}
@@ -78,17 +82,24 @@ begin
     TJvCheckBox, TJvRadioButton, TJvRadioGroup, TJvUpDown, TJvDomainUpDown,
     TJvControlPanelButton, TJvStartMenuButton, TJvRecentMenuButton,
     TJvFavoritesButton, TJvSpinButton]);
-  RegisterComponents(RsPaletteEdit, [TJvEdit, TJvMemo, TJvRichEdit,
+  RegisterComponents(RsPaletteEdit, [TJvEdit, TJvMemo,
+    {$IFDEF VCL}
+    TJvRichEdit,
+    {$ENDIF VCL}
     TJvCheckedMaskEdit, TJvMaskEdit, TJvHotKey, TJvCalcEdit, TJvComboEdit,
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvDatePickerEdit,
     TJvSpinEdit, TJvIPAddress]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
   RegisterComponents(RsPaletteBarPanel, [
-    TJvPageControl, TJvTabControl, TJvTabDefaultPainter,   
+    TJvPageControl, TJvTabControl, TJvTabDefaultPainter,
     TJvProgressBar, TJvStatusBar, TJvToolBar, TJvControlBar, TJvCoolBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvSecretPanel {, TJvTransparentPanel}]);
-  RegisterComponents(RsPaletteLabel, [TJvLabel, TJvStaticText]);
+  RegisterComponents(RsPaletteLabel, [TJvLabel
+    {$IFDEF VCL}
+    , TJvStaticText
+    {$ENDIF VCL}
+    ]);
   RegisterComponents(RsPaletteListComboTree, [TJvComboBox,TJvListBox,
     TJvCheckListBox, TJvTreeView, TJvListView, TJvCheckTreeView,
     TJvColorComboBox, TJvFontComboBox, TJvTextListBox, TJvxCheckListBox,

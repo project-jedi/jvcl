@@ -29,18 +29,17 @@ unit JvCtrlsReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
+{$DEFINE USEWINDOWS}
+{$ENDIF MSWINDOWS}
+
 procedure Register;
 
 implementation
 
 uses
   Classes,
-  {$IFDEF VCL}
   Controls, ImgList, ActnList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QImgList, QActnList,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -51,9 +50,9 @@ uses
   JvCaptionButton, JvDriveCtrls, JvListComb, JvRegistryTreeView, JvPlaylist,
   JvPageScroller,
   {$ENDIF VCL}
-  {$IFDEF MSWINDOWS}
-  JvUninstallControls,
-  {$ENDIF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
+  JvUninstallControls, JvCharMap,
+  {$ENDIF USEWINDOWS}
   JvDsgnIntf,
   {$IFDEF VisualCLX}
   QTypes,
@@ -65,7 +64,7 @@ uses
   JvSpeedbarSetupForm, JvSwitch, JvSplit, JvSplitter, JvSyncSplitter,
   JvTransparentButton, JvColorForm, JvImageDrawThread, JvWinampLabel,
   JvComponentPanel, JvButtons, JvCaptionPanel, JvScrollMax, JvMovableBevel,
-  JvComboListBox, JvCharMap, JvOfficeColorButton, JvOfficeColorPanel,
+  JvComboListBox, JvOfficeColorButton, JvOfficeColorPanel,
   JvNetscapeSplitter,
   JvDsgnEditors, JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor,
   JvFooterEditor, JvSpeedbarForm, JvTransparentButtonEditors, JvRollOutEditor;
@@ -95,13 +94,14 @@ begin
     TJvComponentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel, TJvInstallLabel,
     TJvHTLabel, TJvWinampLabel]);
-    
+
   {$IFDEF VCL}
   RegisterComponents(RsPaletteListComboTree, [TJvImageComboBox, TJvImageListBox, TJvComboListBox]);
   {$ENDIF VCL}
-  {$IFDEF MSWINDOWS}
+  RegisterComponents(RsPaletteListComboTree, [TJvComboListBox]);
+  {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteListComboTree, [TJvUninstallComboBox, TJvUninstallListBox]);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   {$IFDEF VCL}
   RegisterComponents(RsPaletteListComboTree, [TJvDriveCombo, TJvDriveList,
     TJvFileListBox, TJvDirectoryListBox, TJvPlaylist, TJvRegistryTreeView]);

@@ -35,12 +35,7 @@ implementation
 
 uses
   Classes,
-  {$IFDEF VCL}
   ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QImgList,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}

@@ -42,18 +42,9 @@ procedure Register;
 implementation
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QImgList,
-  {$ENDIF VisualCLX}
+  Classes, ImgList,
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors,
-  {$IFDEF VCL}
-  VCLEditors,
-  {$ENDIF VCL}
+  DesignIntf, DesignEditors, VCLEditors,
   {$ELSE}
   Contnrs, DsgnIntf,
   {$ENDIF COMPILER6_UP}

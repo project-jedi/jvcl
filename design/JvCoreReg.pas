@@ -29,17 +29,18 @@ unit JvCoreReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
+{$DEFINE USEWINDOWS}
+{$ENDIF MSWINDOWS}
+
 procedure Register;
 
 implementation
 
 uses
   Classes,
-  {$IFDEF VCL}
   Controls, StdCtrls, ExtCtrls, Graphics, ActnList, ImgList, Dialogs,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QStdCtrls, QExtCtrls, QGraphics, QActnList, QImgList, QDialogs,
   QTypes,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
@@ -55,9 +56,9 @@ uses
   {$IFDEF VCL}
   JvBackgrounds, JvBackgroundEditors,
   {$ENDIF VCL}
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   JvAppRegistryStorage,
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   JvAppIniStorage, JvAppStorage, JvAppStorageSelectList;
 
 {$IFDEF MSWINDOWS}
@@ -83,9 +84,9 @@ begin
 
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
     TJvAppIniFileStorage, TJvAppStorageSelectList]);
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
 
   {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
@@ -111,8 +112,8 @@ begin
   RegisterPropertyEditor(TypeInfo(TDate), nil, '', TJvDateExProperty);
   RegisterPropertyEditor(TypeInfo(TTime), nil, '', TJvTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TJvDateTimeExProperty);
-  RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
   {$ENDIF VCL}
+  RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
