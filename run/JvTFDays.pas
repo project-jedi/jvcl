@@ -5917,7 +5917,7 @@ var
 {$ELSE}
    ImageList : TCustomImageList;
 {$ENDIF}
-   ImageMap : TStateImageMap;
+   ImageMap : TJvTFStateImageMap;
    CustomImageMap : TJvTFCustomImageMap;
 begin
    PicAdjust := 0;
@@ -5995,7 +5995,7 @@ var
 {$ELSE}
    ImageList : TCustomImageList;
 {$ENDIF}
-   ImageMap : TStateImageMap;
+   ImageMap : TJvTFStateImageMap;
    CustomImageMap : TJvTFCustomImageMap;
 
         ///////////////////////////////////////////////////////
@@ -12428,7 +12428,7 @@ var
 {$ELSE}
    ImageList : TCustomImageList;
 {$ENDIF}
-   ImageMap : TStateImageMap;
+   ImageMap : TJvTFStateImageMap;
    CustomImageMap : TJvTFCustomImageMap;
 
         ///////////////////////////////////////////////////////
