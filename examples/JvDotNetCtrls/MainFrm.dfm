@@ -25,7 +25,6 @@ object MainForm: TMainForm
     Height = 274
     ActivePage = TabSheet4
     Align = alClient
-    TabIndex = 0
     TabOrder = 0
     object TabSheet4: TTabSheet
       Caption = '.Net Controls'

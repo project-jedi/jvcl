@@ -20,7 +20,7 @@ object frmPlay: TfrmPlay
     Left = 0
     Top = 0
     Width = 330
-    Height = 499
+    Height = 496
     Transparent = False
     Layout = tlTop
     LinkColor = clBlue
@@ -47,7 +47,8 @@ object frmPlay: TfrmPlay
     Left = 330
     Top = 0
     Width = 9
-    Height = 499
+    Height = 496
+    Cursor = crHSplit
     Align = alRight
     Beveled = True
     ResizeStyle = rsUpdate
@@ -56,7 +57,7 @@ object frmPlay: TfrmPlay
     Left = 339
     Top = 0
     Width = 286
-    Height = 499
+    Height = 496
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 0
@@ -115,8 +116,11 @@ object frmPlay: TfrmPlay
           Left = 12
           Top = 28
           Width = 49
-          Height = 22
-          CheckChars = '0123456789'
+          Height = 21
+          CheckChars = '01234567890'
+          CriticalPoints.CheckPoints = cpNone
+          CriticalPoints.ColorAbove = clBlue
+          CriticalPoints.ColorBelow = clRed
           EditText = '0'
           PasswordChar = #0
           ReadOnly = False
@@ -129,8 +133,11 @@ object frmPlay: TfrmPlay
           Left = 12
           Top = 64
           Width = 49
-          Height = 22
-          CheckChars = '0123456789'
+          Height = 21
+          CheckChars = '01234567890'
+          CriticalPoints.CheckPoints = cpNone
+          CriticalPoints.ColorAbove = clBlue
+          CriticalPoints.ColorBelow = clRed
           EditText = '0'
           PasswordChar = #0
           ReadOnly = False
@@ -143,17 +150,23 @@ object frmPlay: TfrmPlay
           Left = 61
           Top = 28
           Width = 15
-          Height = 22
+          Height = 21
           Associate = edMarginW
+          Min = 0
+          Position = 0
           TabOrder = 2
+          Wrap = False
         end
         object updbH: TUpDown
           Left = 61
           Top = 64
           Width = 15
-          Height = 22
+          Height = 21
           Associate = edMarginH
+          Min = 0
+          Position = 0
           TabOrder = 3
+          Wrap = False
         end
       end
       object gbMousePos: TGroupBox
@@ -186,7 +199,7 @@ object frmPlay: TfrmPlay
       Left = 0
       Top = 125
       Width = 286
-      Height = 374
+      Height = 371
       Align = alClient
       Indent = 19
       TabOrder = 1
@@ -194,7 +207,7 @@ object frmPlay: TfrmPlay
   end
   object Panel2: TPanel
     Left = 0
-    Top = 499
+    Top = 496
     Width = 625
     Height = 41
     Align = alBottom

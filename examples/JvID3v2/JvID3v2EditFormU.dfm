@@ -184,7 +184,7 @@ object JvID3v2EditForm: TJvID3v2EditForm
         Top = 80
         Width = 161
         Height = 21
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 4
       end
       object memComment: TMemo
@@ -227,7 +227,7 @@ object JvID3v2EditForm: TJvID3v2EditForm
         Top = 8
         Width = 145
         Height = 21
-        ItemHeight = 13
+        ItemHeight = 0
         Sorted = True
         TabOrder = 0
       end

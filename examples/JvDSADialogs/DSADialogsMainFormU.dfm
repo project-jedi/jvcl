@@ -60,7 +60,7 @@ object DSADialogsMainForm: TDSADialogsMainForm
   end
   object stbMain: TStatusBar
     Left = 0
-    Top = 273
+    Top = 268
     Width = 644
     Height = 19
     Panels = <>

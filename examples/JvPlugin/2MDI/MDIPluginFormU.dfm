@@ -21,7 +21,7 @@ object frmMDIChild: TfrmMDIChild
     Left = 0
     Top = 0
     Width = 478
-    Height = 304
+    Height = 301
     Align = alClient
     TabOrder = 0
   end

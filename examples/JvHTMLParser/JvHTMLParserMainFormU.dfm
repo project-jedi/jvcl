@@ -18,7 +18,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
     Left = 0
     Top = 0
     Width = 526
-    Height = 397
+    Height = 392
     ActivePage = TabSheet2
     Align = alClient
     HotTrack = True
@@ -45,12 +45,13 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         BorderStyle = bsNone
         Indent = 19
         TabOrder = 0
+        LineColor = -16777216
       end
       object JvDisplayMemo1: TJvMemo
         Left = 0
         Top = 156
         Width = 518
-        Height = 179
+        Height = 174
         AutoSize = False
         MaxLines = 0
         HideCaret = False
@@ -59,17 +60,17 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         ReadOnly = False
         ScrollBars = ssBoth
         TabOrder = 1
-        Wordwrap = False
+        WordWrap = False
       end
       object JvPanel1: TJvPanel
         Left = 0
-        Top = 335
+        Top = 330
         Width = 518
         Height = 34
+        MultiLine = False
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 2
-        MultiLine = False
         object btnProcessTable: TJvImgBtn
           Left = 442
           Top = 5
@@ -95,7 +96,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         Left = 0
         Top = 0
         Width = 518
-        Height = 335
+        Height = 330
         AutoSize = False
         MaxLines = 0
         HideCaret = False
@@ -107,13 +108,13 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
       end
       object JvPanel2: TJvPanel
         Left = 0
-        Top = 335
+        Top = 330
         Width = 518
         Height = 34
+        MultiLine = False
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
-        MultiLine = False
         object btnProcessHTML2Text: TJvImgBtn
           Left = 442
           Top = 5
@@ -154,10 +155,10 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         Top = 335
         Width = 518
         Height = 34
+        MultiLine = False
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
-        MultiLine = False
         object btnProcessURL: TJvImgBtn
           Left = 442
           Top = 5
@@ -198,10 +199,10 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         Top = 335
         Width = 518
         Height = 34
+        MultiLine = False
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
-        MultiLine = False
         object btnProcessTags: TJvImgBtn
           Left = 442
           Top = 5
@@ -222,13 +223,13 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
   end
   object JvStatusBar1: TJvStatusBar
     Left = 0
-    Top = 397
+    Top = 392
     Width = 526
     Height = 19
     Panels = <>
     SimplePanel = True
   end
-  object JvHtmlParser1: TJvHtmlParser
+  object JvHtmlParser1: TJvHTMLParser
     FileName = 'sample.htm'
     Left = 40
     Top = 44

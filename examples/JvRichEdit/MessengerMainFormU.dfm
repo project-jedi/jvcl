@@ -20,7 +20,7 @@ object MessengerMainForm: TMessengerMainForm
     Left = 0
     Top = 0
     Width = 497
-    Height = 201
+    Height = 205
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
@@ -28,15 +28,16 @@ object MessengerMainForm: TMessengerMainForm
       Left = 0
       Top = 0
       Width = 497
-      Height = 172
+      Height = 176
       TabStop = False
       Align = alClient
       ReadOnly = True
       TabOrder = 0
+      Zoom = 100
     end
     object ToolBar1: TToolBar
       Left = 0
-      Top = 172
+      Top = 176
       Width = 497
       Height = 29
       Align = alBottom
@@ -144,7 +145,7 @@ object MessengerMainForm: TMessengerMainForm
   end
   object Panel2: TPanel
     Left = 0
-    Top = 201
+    Top = 205
     Width = 497
     Height = 41
     Align = alBottom

@@ -31,8 +31,8 @@ object Form2: TForm2
   object lblColor1: TJvLabel
     Left = 25
     Top = 70
-    Width = 225
-    Height = 13
+    Width = 72
+    Height = 17
     Caption = 'lblColor1'
     AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
@@ -50,6 +50,8 @@ object Form2: TForm2
       item
         ClassName = 'TJvColorProviderSettings'
         CustomColorSettings.Caption = 'Custom colors'
+        CustomColorSettings.AddColorSettings.Active = False
+        CustomColorSettings.AddColorSettings.Style = 1
         TextSettings.ShowHex = False
         TextSettings.ShowRGB = False
         StandardColorSettings.Caption = 'Standard colors'
@@ -59,8 +61,8 @@ object Form2: TForm2
   object lblColor2: TJvLabel
     Left = 25
     Top = 90
-    Width = 225
-    Height = 13
+    Width = 65
+    Height = 17
     Caption = 'lblColor2'
     AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
@@ -78,6 +80,8 @@ object Form2: TForm2
       item
         ClassName = 'TJvColorProviderSettings'
         CustomColorSettings.Caption = 'Custom colors'
+        CustomColorSettings.AddColorSettings.Active = False
+        CustomColorSettings.AddColorSettings.Style = 1
         TextSettings.ShowHex = False
         TextSettings.ShowRGB = False
         StandardColorSettings.Caption = 'Standard colors'
@@ -87,8 +91,8 @@ object Form2: TForm2
   object lblColor3: TJvLabel
     Left = 25
     Top = 110
-    Width = 225
-    Height = 13
+    Width = 61
+    Height = 17
     Caption = 'lblColor3'
     AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
@@ -106,6 +110,8 @@ object Form2: TForm2
       item
         ClassName = 'TJvColorProviderSettings'
         CustomColorSettings.Caption = 'Custom colors'
+        CustomColorSettings.AddColorSettings.Active = False
+        CustomColorSettings.AddColorSettings.Style = 1
         TextSettings.ShowHex = False
         TextSettings.ShowRGB = False
         StandardColorSettings.Caption = 'Standard colors'
@@ -115,8 +121,8 @@ object Form2: TForm2
   object lblColor4: TJvLabel
     Left = 25
     Top = 130
-    Width = 225
-    Height = 13
+    Width = 94
+    Height = 17
     Caption = 'lblColor4'
     AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
@@ -134,6 +140,8 @@ object Form2: TForm2
       item
         ClassName = 'TJvColorProviderSettings'
         CustomColorSettings.Caption = 'Custom colors'
+        CustomColorSettings.AddColorSettings.Active = False
+        CustomColorSettings.AddColorSettings.Style = 1
         TextSettings.ShowHex = False
         TextSettings.ShowRGB = False
         StandardColorSettings.Caption = 'Standard colors'
@@ -143,8 +151,8 @@ object Form2: TForm2
   object lblColor5: TJvLabel
     Left = 25
     Top = 150
-    Width = 225
-    Height = 13
+    Width = 75
+    Height = 17
     Caption = 'lblColor5'
     AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
@@ -162,6 +170,8 @@ object Form2: TForm2
       item
         ClassName = 'TJvColorProviderSettings'
         CustomColorSettings.Caption = 'Custom colors'
+        CustomColorSettings.AddColorSettings.Active = False
+        CustomColorSettings.AddColorSettings.Style = 1
         TextSettings.ShowHex = False
         TextSettings.ShowRGB = False
         StandardColorSettings.Caption = 'Standard colors'
@@ -171,8 +181,8 @@ object Form2: TForm2
   object lblColor6: TJvLabel
     Left = 25
     Top = 170
-    Width = 225
-    Height = 13
+    Width = 112
+    Height = 17
     Caption = 'lblColor6'
     AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
@@ -190,6 +200,8 @@ object Form2: TForm2
       item
         ClassName = 'TJvColorProviderSettings'
         CustomColorSettings.Caption = 'Custom colors'
+        CustomColorSettings.AddColorSettings.Active = False
+        CustomColorSettings.AddColorSettings.Style = 1
         TextSettings.ShowHex = False
         TextSettings.ShowRGB = False
         StandardColorSettings.Caption = 'Standard colors'
@@ -199,8 +211,8 @@ object Form2: TForm2
   object lblColor7: TJvLabel
     Left = 25
     Top = 190
-    Width = 225
-    Height = 13
+    Width = 75
+    Height = 17
     Caption = 'lblColor7'
     AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
@@ -218,6 +230,8 @@ object Form2: TForm2
       item
         ClassName = 'TJvColorProviderSettings'
         CustomColorSettings.Caption = 'Custom colors'
+        CustomColorSettings.AddColorSettings.Active = False
+        CustomColorSettings.AddColorSettings.Style = 1
         TextSettings.ShowHex = False
         TextSettings.ShowRGB = False
         StandardColorSettings.Caption = 'Standard colors'
@@ -227,8 +241,8 @@ object Form2: TForm2
   object lblColor8: TJvLabel
     Left = 25
     Top = 210
-    Width = 225
-    Height = 13
+    Width = 67
+    Height = 17
     Caption = 'lblColor8'
     AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
@@ -246,6 +260,8 @@ object Form2: TForm2
       item
         ClassName = 'TJvColorProviderSettings'
         CustomColorSettings.Caption = 'Custom colors'
+        CustomColorSettings.AddColorSettings.Active = False
+        CustomColorSettings.AddColorSettings.Style = 1
         TextSettings.ShowHex = False
         TextSettings.ShowRGB = False
         StandardColorSettings.Caption = 'Standard colors'
@@ -264,7 +280,6 @@ object Form2: TForm2
     MaxPixel.Font.Style = []
     Style = csOwnerDrawFixed
     ItemHeight = 16
-    ItemIndex = 0
     Provider.Provider = dpColorMapping
     Provider.Implementers = <
       item
@@ -296,12 +311,15 @@ object Form2: TForm2
           end>
       end>
     TabOrder = 0
-    Text = 'YO'#0'@'
   end
   object dpColor: TJvColorProvider
     Left = 185
     Top = 45
-    ContextList = <>
+    ContextList = <
+      item
+        Name = 'Default'
+        CstColors = ()
+      end>
   end
   object dpColorMapping: TJvColorMappingProvider
     Provider = dpColor

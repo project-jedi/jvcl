@@ -28,13 +28,15 @@ object JvID3v2MainForm: TJvID3v2MainForm
   object Splitter1: TSplitter
     Left = 185
     Top = 0
-    Height = 397
+    Width = 3
+    Height = 401
+    Cursor = crHSplit
   end
   object ListView1: TListView
     Left = 188
     Top = 0
     Width = 346
-    Height = 397
+    Height = 401
     Align = alClient
     Columns = <
       item
@@ -53,7 +55,7 @@ object JvID3v2MainForm: TJvID3v2MainForm
     Left = 0
     Top = 0
     Width = 185
-    Height = 397
+    Height = 401
     Align = alLeft
     TabOrder = 1
     object JvDriveCombo1: TJvDriveCombo
@@ -72,9 +74,9 @@ object JvID3v2MainForm: TJvID3v2MainForm
       Left = 1
       Top = 23
       Width = 183
-      Height = 373
+      Height = 377
       Align = alClient
-      Directory = 'C:\Program Files\Borland\Delphi7\Projects'
+      Directory = 'C:\'
       DriveCombo = JvDriveCombo1
       ItemHeight = 17
       ScrollBars = ssBoth

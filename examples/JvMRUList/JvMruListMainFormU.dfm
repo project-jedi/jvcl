@@ -112,7 +112,7 @@ object JvMruListMainForm: TJvMruListMainForm
     TabOrder = 5
     OnClick = btnAddClick
   end
-  object JvMruList1: TJvMruList
+  object JvMruList1: TJvMRUList
     SubKeyUnicode = 'Software\MruTest'
     OnEnumText = JvMruList1EnumText
     Active = False

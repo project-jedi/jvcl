@@ -213,7 +213,7 @@ object ControlsForm: TControlsForm
           Width = 145
           Height = 22
           DroppedDownWidth = 145
-          FontName = 'Courier (W1)'
+          FontName = 'Courier'
           Device = fdPrinter
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText

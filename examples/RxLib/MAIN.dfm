@@ -46,7 +46,7 @@ object MainForm: TMainForm
   TextHeight = 13
   object StatusPanel: TPanel
     Left = 0
-    Top = 210
+    Top = 207
     Width = 432
     Height = 20
     Align = alBottom

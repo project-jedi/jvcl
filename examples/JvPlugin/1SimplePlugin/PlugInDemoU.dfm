@@ -27,7 +27,7 @@ object Form1: TForm1
     Left = 0
     Top = 29
     Width = 3
-    Height = 233
+    Height = 230
     Cursor = crHSplit
   end
   object clbPlugins: TListBox
@@ -125,8 +125,8 @@ object Form1: TForm1
     Extension = 'dll'
     PluginKind = plgDLL
     OnBeforeLoad = uilPluginManagerBeforeLoad
-    OnAfterLoad = uilPluginManagerAfterLoad
     OnNewCommand = uilPluginManagerNewCommand
+    OnAfterLoad = uilPluginManagerAfterLoad
     Left = 44
     Top = 44
   end

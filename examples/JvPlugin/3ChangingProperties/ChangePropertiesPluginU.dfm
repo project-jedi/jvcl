@@ -18,6 +18,7 @@ object uilPlugin1: TuilPlugin1
       Caption = 'Change Caption'
       Hint = 'Change the caption of the host application'
       Name = 'Change Caption'
+      ShortCut = 0
       OnExecute = uilPlugin1Commands0Execute
     end
     item
@@ -36,6 +37,7 @@ object uilPlugin1: TuilPlugin1
       Caption = 'Enable/Disable a button'
       Hint = 'Enable or disable a button on the form'
       Name = 'Enable Disable'
+      ShortCut = 0
       OnExecute = uilPlugin1Commands1Execute
     end
     item
@@ -59,6 +61,7 @@ object uilPlugin1: TuilPlugin1
       Caption = 'Add to Listbox'
       Hint = 'Adds an item to the list box'
       Name = 'Add To Listbox'
+      ShortCut = 0
       OnExecute = uilPlugin1Commands2Execute
     end>
   Description = 

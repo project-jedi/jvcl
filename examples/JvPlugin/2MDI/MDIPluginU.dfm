@@ -19,6 +19,7 @@ object uilMDIPluginSample: TuilMDIPluginSample
       Caption = 'Maximize MDI Child'
       Hint = 'Maximize MDI Child'
       Name = 'Maximize MDI Child'
+      ShortCut = 0
       OnExecute = uilMDIPluginSampleCommands0Execute
     end>
   Description = 'Sample MDI Child Plugin'

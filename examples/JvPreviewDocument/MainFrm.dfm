@@ -17,7 +17,7 @@ object frmMain: TfrmMain
   TextHeight = 13
   object pnlBottom: TPanel
     Left = 0
-    Top = 410
+    Top = 407
     Width = 724
     Height = 65
     Align = alBottom
@@ -96,6 +96,7 @@ object frmMain: TfrmMain
       Min = 1
       Position = 1
       TabOrder = 1
+      Wrap = False
       OnClick = udColsClick
     end
     object edRows: TEdit
@@ -115,6 +116,7 @@ object frmMain: TfrmMain
       Min = 1
       Position = 1
       TabOrder = 3
+      Wrap = False
       OnClick = udRowsClick
     end
     object edShadow: TEdit
@@ -134,6 +136,7 @@ object frmMain: TfrmMain
       Min = -100
       Position = 4
       TabOrder = 5
+      Wrap = False
       OnClick = udShadowWidthClick
     end
     object edScale: TEdit
@@ -155,6 +158,7 @@ object frmMain: TfrmMain
       Position = 100
       TabOrder = 7
       Thousands = False
+      Wrap = False
       OnClick = udZoomClick
     end
     object cbPreview: TComboBox
@@ -200,10 +204,12 @@ object frmMain: TfrmMain
       Width = 15
       Height = 21
       Associate = edVert
+      Min = 0
       Max = 500
       Position = 8
       TabOrder = 11
       Thousands = False
+      Wrap = False
       OnClick = udVertSpacingClick
     end
     object edHorz: TEdit
@@ -220,10 +226,12 @@ object frmMain: TfrmMain
       Width = 15
       Height = 21
       Associate = edHorz
+      Min = 0
       Max = 500
       Position = 8
       TabOrder = 13
       Thousands = False
+      Wrap = False
       OnClick = udHorzSpacingClick
     end
   end
@@ -231,7 +239,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 724
-    Height = 410
+    Height = 407
     ActivePage = tabOriginal
     Align = alClient
     TabOrder = 1
@@ -242,7 +250,7 @@ object frmMain: TfrmMain
         Left = 0
         Top = 0
         Width = 716
-        Height = 382
+        Height = 379
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -260,7 +268,7 @@ object frmMain: TfrmMain
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 475
+    Top = 472
     Width = 724
     Height = 19
     Panels = <
@@ -273,6 +281,7 @@ object frmMain: TfrmMain
       item
         Width = 50
       end>
+    SimplePanel = False
   end
   object PrinterSetupDialog1: TPrinterSetupDialog
     Left = 152

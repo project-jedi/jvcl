@@ -13,9 +13,6 @@ object frmUnitStats: TfrmUnitStats
   Font.Style = []
   OldCreateOrder = False
   Position = poDefault
-  DesignSize = (
-    258
-    293)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

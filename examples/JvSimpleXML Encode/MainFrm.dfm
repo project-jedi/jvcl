@@ -17,7 +17,7 @@ object Form1: TForm1
   TextHeight = 13
   object pnlBottom: TPanel
     Left = 0
-    Top = 266
+    Top = 263
     Width = 437
     Height = 230
     Align = alBottom
@@ -81,7 +81,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 437
-    Height = 266
+    Height = 263
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1

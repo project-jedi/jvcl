@@ -70,20 +70,20 @@ object Form1: TForm1
     Top = 80
   end
   object Query: TJvUIBQuery
-    Transaction = Transaction
     SQL.Strings = (
       
         'SELECT proj_name, proj_desc, product FROM project  WHERE PROJ_ID' +
         ' = '#39'DGPII'#39';')
+    Transaction = Transaction
     Left = 80
     Top = 80
   end
   object UpdateQuery: TJvUIBQuery
-    Transaction = Transaction
     SQL.Strings = (
       
         'UPDATE project SET proj_desc = :description WHERE proj_id = '#39'DGP' +
         'II'#39)
+    Transaction = Transaction
     Left = 112
     Top = 80
   end

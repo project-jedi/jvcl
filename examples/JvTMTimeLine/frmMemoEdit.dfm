@@ -17,7 +17,7 @@ object MemoEditFrm: TMemoEditFrm
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 239
+    Top = 234
     Width = 297
     Height = 41
     Align = alBottom
@@ -50,7 +50,7 @@ object MemoEditFrm: TMemoEditFrm
     Left = 0
     Top = 0
     Width = 297
-    Height = 239
+    Height = 234
     Align = alClient
     PopupMenu = popMemo
     ScrollBars = ssBoth

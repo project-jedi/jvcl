@@ -37,7 +37,7 @@ uses
   Messages,  Classes,   Graphics,
   Controls,  Forms,     Dialogs,
   ExtCtrls,  StdCtrls,  Buttons,
-  Spin,      JvChart, JvComponent;
+  Spin,      JvChart, JvComponent, JvExControls;
 
 type
   TJvChartDemoForm = class(TForm)

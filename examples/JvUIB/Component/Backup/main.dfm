@@ -20,7 +20,7 @@ object MainForm: TMainForm
   TextHeight = 13
   object Log: TMemo
     Left = 0
-    Top = 64
+    Top = 61
     Width = 575
     Height = 193
     Align = alBottom
@@ -39,6 +39,7 @@ object MainForm: TMainForm
   object Backup: TJvUIBBackup
     UserName = 'SYSDBA'
     PassWord = 'masterkey'
+    LibraryName = 'gds32.dll'
     BackupFiles.Strings = (
       'd:\employee.gbk')
     Database = 'D:\EMPLOYEE.DB'

@@ -108,7 +108,7 @@ object EditorMainForm: TEditorMainForm
     Left = 0
     Top = 88
     Width = 546
-    Height = 121
+    Height = 126
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -129,7 +129,7 @@ object EditorMainForm: TEditorMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 209
+    Top = 214
     Width = 546
     Height = 19
     Panels = <
@@ -301,7 +301,8 @@ object EditorMainForm: TEditorMainForm
       Top = 7
       Width = 175
       Height = 22
-      FontName = 'System'
+      DroppedDownWidth = 175
+      FontName = 'Arial'
       Device = fdBoth
       ItemIndex = 0
       Options = [foWysiWyg]
@@ -313,7 +314,7 @@ object EditorMainForm: TEditorMainForm
       Left = 182
       Top = 6
       Width = 42
-      Height = 21
+      Height = 24
       Alignment = taRightJustify
       ButtonKind = bkStandard
       Decimal = 0

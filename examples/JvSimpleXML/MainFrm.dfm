@@ -46,8 +46,11 @@ object Form1: TForm1
     Anchors = [akLeft, akTop, akRight, akBottom]
     Indent = 19
     TabOrder = 2
+    LineColor = -16777216
   end
-  object JvSimpleXml1: TJvSimpleXml
+  object JvSimpleXml1: TJvSimpleXML
+    IndentString = '  '
+    Options = [sxoAutoIndent]
     Left = 102
     Top = 24
   end

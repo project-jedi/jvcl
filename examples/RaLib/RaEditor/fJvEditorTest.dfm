@@ -20,7 +20,7 @@ object frmEditor: TfrmEditor
     Left = 0
     Top = 33
     Width = 541
-    Height = 342
+    Height = 346
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
@@ -33,7 +33,7 @@ object frmEditor: TfrmEditor
         Left = 0
         Top = 0
         Width = 533
-        Height = 314
+        Height = 318
         Cursor = crIBeam
         Lines.Strings = (
           'unit fJvEditorTest;'
@@ -526,7 +526,6 @@ object frmEditor: TfrmEditor
         OnPaintGutter = RAEditorPaintGutter
         OnCompletionDrawItem = RAEditorCompletionDrawItem
         Align = alClient
-        Ctl3D = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -555,7 +554,7 @@ object frmEditor: TfrmEditor
         Left = 0
         Top = 0
         Width = 533
-        Height = 314
+        Height = 318
         Cursor = crIBeam
         Lines.Strings = (
           
@@ -679,7 +678,6 @@ object frmEditor: TfrmEditor
         SelBackColor = clHighlight
         OnPaintGutter = RAEditorPaintGutter
         Align = alClient
-        Ctl3D = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -709,7 +707,7 @@ object frmEditor: TfrmEditor
         Left = 0
         Top = 0
         Width = 533
-        Height = 314
+        Height = 318
         Cursor = crIBeam
         Lines.Strings = (
           'CONNECT "" USER "" PASSWORD "";'
@@ -1118,7 +1116,6 @@ object frmEditor: TfrmEditor
         SelBackColor = clHighlight
         OnPaintGutter = RAEditorPaintGutter
         Align = alClient
-        Ctl3D = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -1148,7 +1145,7 @@ object frmEditor: TfrmEditor
         Left = 0
         Top = 0
         Width = 533
-        Height = 314
+        Height = 318
         Cursor = crIBeam
         Lines.Strings = (
           '# Dialog.py -- Tkinter interface to the tk_dialog script.'
@@ -1218,7 +1215,6 @@ object frmEditor: TfrmEditor
         SelBackColor = clHighlight
         OnPaintGutter = RAEditorPaintGutter
         Align = alClient
-        Ctl3D = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -1248,7 +1244,7 @@ object frmEditor: TfrmEditor
         Left = 0
         Top = 0
         Width = 533
-        Height = 314
+        Height = 318
         Cursor = crIBeam
         Lines.Strings = (
           '/***********************************************************'
@@ -1800,7 +1796,6 @@ object frmEditor: TfrmEditor
         SelBackColor = clHighlight
         OnPaintGutter = RAEditorPaintGutter
         Align = alClient
-        Ctl3D = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -1830,7 +1825,7 @@ object frmEditor: TfrmEditor
         Left = 0
         Top = 0
         Width = 533
-        Height = 314
+        Height = 318
         Cursor = crIBeam
         Lines.Strings = (
           #39' I don'#39't find any normal VBScript on my hard drives'
@@ -2033,7 +2028,6 @@ object frmEditor: TfrmEditor
         SelBackColor = clHighlight
         OnPaintGutter = RAEditorPaintGutter
         Align = alClient
-        Ctl3D = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -2063,7 +2057,7 @@ object frmEditor: TfrmEditor
         Left = 0
         Top = 0
         Width = 533
-        Height = 314
+        Height = 318
         Cursor = crIBeam
         Lines.Strings = (
           '<html>'
@@ -2189,7 +2183,6 @@ object frmEditor: TfrmEditor
         SelBackColor = clHighlight
         OnPaintGutter = RAEditorPaintGutter
         Align = alClient
-        Ctl3D = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -2220,7 +2213,7 @@ object frmEditor: TfrmEditor
         Left = 0
         Top = 0
         Width = 533
-        Height = 314
+        Height = 318
         Cursor = crIBeam
         Lines.Strings = (
           '; for 16-bit app support'
@@ -2273,7 +2266,6 @@ object frmEditor: TfrmEditor
         SelBackColor = clHighlight
         OnPaintGutter = RAEditorPaintGutter
         Align = alClient
-        Ctl3D = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -2306,7 +2298,7 @@ object frmEditor: TfrmEditor
         Left = 0
         Top = 0
         Width = 533
-        Height = 314
+        Height = 318
         Cursor = crIBeam
         Lines.Strings = (
           '#!/usr/local/bin/perl'
@@ -2599,7 +2591,6 @@ object frmEditor: TfrmEditor
         SelBackColor = clHighlight
         OnPaintGutter = RAEditorPaintGutter
         Align = alClient
-        Ctl3D = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -2633,7 +2624,7 @@ object frmEditor: TfrmEditor
         Left = 0
         Top = 0
         Width = 533
-        Height = 314
+        Height = 318
         Cursor = crIBeam
         Lines.Strings = (
           'print  echo("Hello, World!"); // comment')
@@ -2654,7 +2645,6 @@ object frmEditor: TfrmEditor
         SelBackColor = clHighlight
         OnPaintGutter = RAEditorPaintGutter
         Align = alClient
-        Ctl3D = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -2686,7 +2676,7 @@ object frmEditor: TfrmEditor
         Left = 0
         Top = 0
         Width = 533
-        Height = 314
+        Height = 318
         Cursor = crIBeam
         Lines.Strings = (
           'JVCL Library Software License Agreement'
@@ -2835,7 +2825,6 @@ object frmEditor: TfrmEditor
         SelBackColor = clHighlight
         OnPaintGutter = RAEditorPaintGutter
         Align = alClient
-        Ctl3D = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -2865,7 +2854,7 @@ object frmEditor: TfrmEditor
         Left = 0
         Top = 0
         Width = 533
-        Height = 314
+        Height = 318
         Cursor = crIBeam
         GutterWidth = 16
         RightMarginVisible = False
@@ -2883,7 +2872,6 @@ object frmEditor: TfrmEditor
         SelBackColor = clHighlight
         OnPaintGutter = RAEditorPaintGutter
         Align = alClient
-        Ctl3D = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -2916,7 +2904,7 @@ object frmEditor: TfrmEditor
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 375
+    Top = 379
     Width = 541
     Height = 19
     Panels = <

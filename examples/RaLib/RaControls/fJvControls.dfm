@@ -187,7 +187,6 @@ object MainForm: TMainForm
         ParentColor = True
         TabOrder = 0
         object RAScrollMaxBand1: TJvScrollMaxBand
-          Cursor = 1
           Caption = 'Person'
           ExpandedHeight = 121
           ButtonFont.Charset = DEFAULT_CHARSET
@@ -243,7 +242,6 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand2: TJvScrollMaxBand
-          Cursor = 1
           Expanded = False
           Caption = 'Contact information'
           ExpandedHeight = 113
@@ -302,7 +300,6 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand3: TJvScrollMaxBand
-          Cursor = 1
           Expanded = False
           Caption = 'Net (confidential)'
           ExpandedHeight = 84
@@ -360,7 +357,6 @@ object MainForm: TMainForm
         ParentColor = True
         TabOrder = 1
         object RAScrollMaxBand4: TJvScrollMaxBand
-          Cursor = 1
           Caption = 'Person'
           ExpandedHeight = 113
           ButtonVisible = False
@@ -420,7 +416,6 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand5: TJvScrollMaxBand
-          Cursor = 1
           Caption = 'Contact information'
           ExpandedHeight = 113
           ButtonVisible = False
@@ -480,7 +475,6 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand6: TJvScrollMaxBand
-          Cursor = 1
           Caption = 'Net (confidential)'
           ExpandedHeight = 84
           ButtonVisible = False
@@ -6191,8 +6185,6 @@ object MainForm: TMainForm
       Height = 28
       Align = alClient
       OnClick = RAComponentPanel1Click
-      ButtonWidth = 28
-      ButtonHeight = 28
       ButtonCount = 15
     end
   end
@@ -6266,10 +6258,6 @@ object MainForm: TMainForm
   object RAProgressForm1: TJvProgressComponent
     Caption = 'Please wait...'
     InfoLabel = 'Long operation in progress'
-    ProgressMin = 0
-    ProgressMax = 100
-    ProgressStep = 1
-    ProgressPosition = 0
     OnShow = RAProgressForm1Show
     Left = 240
     Top = 8

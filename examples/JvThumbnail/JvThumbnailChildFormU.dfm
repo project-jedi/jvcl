@@ -17,13 +17,15 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
   object Splitter2: TSplitter
     Left = 238
     Top = 0
-    Height = 477
+    Width = 3
+    Height = 472
+    Cursor = crHSplit
   end
   object Panel6: TPanel
     Left = 0
     Top = 0
     Width = 238
-    Height = 477
+    Height = 472
     Align = alLeft
     TabOrder = 0
     OnResize = Panel6Resize
@@ -49,7 +51,7 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
       Left = 1
       Top = 164
       Width = 236
-      Height = 99
+      Height = 94
       Align = alClient
       ItemHeight = 13
       Mask = '*.ICO;*.BMP;*.EMF;*.WMF;*.JPG;*.JPEG;'
@@ -58,7 +60,7 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
     end
     object Panel8: TPanel
       Left = 1
-      Top = 263
+      Top = 258
       Width = 236
       Height = 213
       Align = alBottom
@@ -159,9 +161,14 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
         Height = 29
         Max = 255
         Min = -255
+        Orientation = trHorizontal
         PageSize = 20
         Frequency = 51
+        Position = 0
+        SelEnd = 0
+        SelStart = 0
         TabOrder = 0
+        TickMarks = tmBottomRight
         TickStyle = tsNone
       end
       object GreenBar: TTrackBar
@@ -171,9 +178,14 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
         Height = 30
         Max = 255
         Min = -255
+        Orientation = trHorizontal
         PageSize = 20
         Frequency = 51
+        Position = 0
+        SelEnd = 0
+        SelStart = 0
         TabOrder = 1
+        TickMarks = tmBottomRight
         TickStyle = tsNone
       end
       object BlueBar: TTrackBar
@@ -183,9 +195,14 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
         Height = 30
         Max = 255
         Min = -255
+        Orientation = trHorizontal
         PageSize = 20
         Frequency = 51
+        Position = 0
+        SelEnd = 0
+        SelStart = 0
         TabOrder = 2
+        TickMarks = tmBottomRight
         TickStyle = tsNone
       end
       object contrastBar: TTrackBar
@@ -195,9 +212,14 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
         Height = 30
         Max = 100
         Min = -100
+        Orientation = trHorizontal
         PageSize = 20
         Frequency = 51
+        Position = 0
+        SelEnd = 0
+        SelStart = 0
         TabOrder = 3
+        TickMarks = tmBottomRight
         TickStyle = tsNone
       end
       object Button2: TButton
@@ -216,9 +238,14 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
         Height = 30
         Max = 100
         Min = -100
+        Orientation = trHorizontal
         PageSize = 20
         Frequency = 51
+        Position = 0
+        SelEnd = 0
+        SelStart = 0
         TabOrder = 5
+        TickMarks = tmBottomRight
         TickStyle = tsNone
       end
     end
@@ -268,7 +295,7 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
     Left = 241
     Top = 0
     Width = 521
-    Height = 477
+    Height = 472
     Align = alClient
     TabOrder = 1
     object ThumbImage1: TJvThumbImage
@@ -353,7 +380,7 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
         Top = 9
         Width = 113
         Height = 65
-        Hint = 'The position of the thumbnail''s title'
+        Hint = 'The position of the thumbnail'#39's title'
         Caption = ' Title Placement '
         ItemIndex = 0
         Items.Strings = (
@@ -440,7 +467,9 @@ object JvThumbnailChildForm: TJvThumbnailChildForm
         ClientHeight = 119
         AsButton = False
         MinimizeMemory = True
+        StreamFileType = grBMP
         ShowTitle = False
+        TitlePlacement = tpUp
         AutoLoad = True
         ShadowColor = clSilver
         ShowShadow = False

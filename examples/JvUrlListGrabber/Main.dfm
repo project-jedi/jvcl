@@ -47,10 +47,12 @@ object frmMain: TfrmMain
       'It is already able to grab files though.'
       
         'The dynamic creation group allows to work with a component creat' +
-        'ed dynamically at runtime as opposed to '
+        'ed dynamically at runtime as opposed '
+      'to '
       
         'using the one available on the form at design time. This has bee' +
-        'n done to test both usages as there may be '
+        'n done to test both usages as there may '
+      'be '
       'errors that only show up by using a design created component.')
     ScrollBars = ssVertical
     TabOrder = 0

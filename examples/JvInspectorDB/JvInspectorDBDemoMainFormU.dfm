@@ -21,8 +21,8 @@ object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
     Height = 447
     Anchors = [akLeft, akTop, akBottom]
     BandWidth = 150
-    BevelInner = bvNone
     BevelKind = bkTile
+    BevelInner = bvNone
     RelativeDivider = False
     Divider = 75
     ItemHeight = 16

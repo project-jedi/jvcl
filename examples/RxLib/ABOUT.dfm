@@ -17,7 +17,7 @@ object AboutForm: TAboutForm
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object SecretPanel1: TJvSecretPanel 
+  object SecretPanel1: TJvSecretPanel
     Left = 0
     Top = 0
     Width = 267
@@ -230,6 +230,13 @@ object AboutForm: TAboutForm
       OnClick = LabelClick
       OnMouseEnter = LabelMouseEnter
       OnMouseLeave = LabelMouseEnter
+      AutoOpenURL = False
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = []
+      ImageIndex = 0
     end
     object Label3: TLabel
       Left = 13

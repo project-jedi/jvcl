@@ -17,7 +17,7 @@ object MDIChild: TMDIChild
     Left = 0
     Top = 0
     Width = 282
-    Height = 180
+    Height = 177
     Align = alClient
     Lines.Strings = (
       'This Window is loaded from chlidwin.pas/dfm.')

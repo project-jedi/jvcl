@@ -52,7 +52,7 @@ object RaInterpreterEndUserMainForm: TRaInterpreterEndUserMainForm
     Left = 0
     Top = 41
     Width = 376
-    Height = 352
+    Height = 349
     Align = alClient
     BevelInner = bvLowered
     BorderWidth = 4
@@ -62,7 +62,7 @@ object RaInterpreterEndUserMainForm: TRaInterpreterEndUserMainForm
       Left = 6
       Top = 6
       Width = 364
-      Height = 340
+      Height = 337
       Align = alClient
       BorderStyle = bsNone
       DataSource = DMRaIntrEndUsr.DataSource1
@@ -78,7 +78,7 @@ object RaInterpreterEndUserMainForm: TRaInterpreterEndUserMainForm
     Left = 376
     Top = 41
     Width = 201
-    Height = 352
+    Height = 349
     Align = alRight
     BorderWidth = 3
     Caption = 'Panel3'
@@ -87,7 +87,7 @@ object RaInterpreterEndUserMainForm: TRaInterpreterEndUserMainForm
       Left = 4
       Top = 4
       Width = 193
-      Height = 344
+      Height = 341
       Align = alClient
       Lines.Strings = (
         'This is normal Delphi'

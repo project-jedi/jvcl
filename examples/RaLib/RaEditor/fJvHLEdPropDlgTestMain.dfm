@@ -70,7 +70,6 @@ object Form1: TForm1
     TabStops = '3 5'
     SelForeColor = clHighlightText
     SelBackColor = clHighlight
-    Ctl3D = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -88,7 +87,6 @@ object Form1: TForm1
     Colors.Reserved.Style = [fsBold]
     Colors.Preproc.ForeColor = clGreen
     Colors.Statement.Style = [fsBold]
-    DelphiColors = False
   end
   object RAhtButton1: TJvHTButton
     Left = 280

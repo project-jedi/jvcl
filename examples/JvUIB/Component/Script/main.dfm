@@ -45,6 +45,8 @@ object MainForm: TMainForm
     Top = 8
     Width = 305
     Height = 16
+    Min = 0
+    Max = 100
     TabOrder = 1
   end
   object Edit: TEdit
@@ -56,7 +58,7 @@ object MainForm: TMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 96
+    Top = 93
     Width = 328
     Height = 19
     Panels = <>

@@ -17,7 +17,7 @@ object JvDebugLog: TJvDebugLog
     Left = 0
     Top = 33
     Width = 398
-    Height = 220
+    Height = 224
     Cursor = crIBeam
     GutterWidth = 0
     RightMarginColor = clSilver
@@ -31,7 +31,6 @@ object JvDebugLog: TJvDebugLog
     SelForeColor = clHighlightText
     SelBackColor = clHighlight
     Align = alClient
-    Ctl3D = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13

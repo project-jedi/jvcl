@@ -20,7 +20,7 @@ object frmJvCharEditDlg: TfrmJvCharEditDlg
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 345
+    Top = 342
     Width = 523
     Height = 41
     Align = alBottom
@@ -63,7 +63,7 @@ object frmJvCharEditDlg: TfrmJvCharEditDlg
     Left = 0
     Top = 0
     Width = 523
-    Height = 345
+    Height = 342
     Align = alClient
     Checkboxes = True
     Columns = <

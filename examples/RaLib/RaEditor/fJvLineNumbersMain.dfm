@@ -51,7 +51,7 @@ object JvLineNumbersMain: TJvLineNumbersMain
     Left = 0
     Top = 41
     Width = 550
-    Height = 307
+    Height = 304
     Cursor = crIBeam
     GutterWidth = 32
     RightMarginColor = clSilver
@@ -66,7 +66,6 @@ object JvLineNumbersMain: TJvLineNumbersMain
     SelBackColor = clHighlight
     OnPaintGutter = JvHLEditor1PaintGutter
     Align = alClient
-    Ctl3D = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13

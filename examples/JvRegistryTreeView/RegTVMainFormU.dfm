@@ -18,23 +18,25 @@ object RegTVMainForm: TRegTVMainForm
     Left = 209
     Top = 0
     Width = 5
-    Height = 410
+    Height = 405
+    Cursor = crHSplit
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 410
+    Top = 405
     Width = 731
     Height = 19
     Panels = <
       item
         Width = 50
       end>
+    SimplePanel = False
   end
   object RegistryTreeView1: TJvRegistryTreeView
     Left = 0
     Top = 0
     Width = 209
-    Height = 410
+    Height = 405
     Align = alLeft
     ShowHint = False
     ReadOnly = False
@@ -52,7 +54,7 @@ object RegTVMainForm: TRegTVMainForm
     Left = 214
     Top = 0
     Width = 517
-    Height = 410
+    Height = 405
     Align = alClient
     Columns = <
       item

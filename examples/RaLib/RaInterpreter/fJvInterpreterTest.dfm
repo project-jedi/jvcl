@@ -57,7 +57,7 @@ object Test: TTest
     Left = 0
     Top = 57
     Width = 360
-    Height = 343
+    Height = 340
     Cursor = crIBeam
     GutterWidth = 0
     RightMarginVisible = False
@@ -74,7 +74,6 @@ object Test: TTest
     SelBackColor = clHighlight
     OnKeyDown = Memo1KeyDown
     Align = alClient
-    Ctl3D = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -94,13 +93,12 @@ object Test: TTest
     Colors.Identifier.ForeColor = clBlack
     Colors.Preproc.ForeColor = clGreen
     Colors.Statement.Style = [fsBold]
-    DelphiColors = False
   end
   object Panel2: TPanel
     Left = 360
     Top = 57
     Width = 208
-    Height = 343
+    Height = 340
     Align = alRight
     BevelOuter = bvNone
     BorderWidth = 3
@@ -108,7 +106,7 @@ object Test: TTest
     TabOrder = 2
     object Notebook1: TNotebook
       Left = 3
-      Top = 240
+      Top = 237
       Width = 202
       Height = 100
       Align = alBottom
@@ -214,7 +212,7 @@ object Test: TTest
       Left = 3
       Top = 3
       Width = 202
-      Height = 237
+      Height = 234
       Align = alClient
       Lines.Strings = (
         'Memo2')
@@ -224,7 +222,7 @@ object Test: TTest
   end
   object Panel3: TPanel
     Left = 0
-    Top = 400
+    Top = 397
     Width = 568
     Height = 20
     Align = alBottom

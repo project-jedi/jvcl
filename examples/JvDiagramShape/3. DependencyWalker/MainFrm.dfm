@@ -860,9 +860,6 @@ object frmMain: TfrmMain
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 1
-      DesignSize = (
-        185
-        21)
       object SpeedButton1: TSpeedButton
         Left = 168
         Top = 2
@@ -1022,9 +1019,6 @@ object frmMain: TfrmMain
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
-      DesignSize = (
-        581
-        21)
       object SpeedButton2: TSpeedButton
         Left = 562
         Top = 2

@@ -19,7 +19,7 @@ object MainForm: TMainForm
   TextHeight = 13
   object StatusBar: TStatusBar
     Left = 0
-    Top = 236
+    Top = 233
     Width = 368
     Height = 19
     Panels = <>
