@@ -48,6 +48,9 @@ object FormMain: TFormMain
     OnCancelButtonClick = JvWizardCancelButtonClick
     OnActivePageChanged = JvWizardActivePageChanged
     OnActivePageChanging = JvWizardActivePageChanging
+    DesignSize = (
+      683
+      444)
     object LblHomepage: TLabel
       Left = 8
       Top = 424
@@ -93,8 +96,8 @@ object FormMain: TFormMain
       BorderColor = clNone
     end
     object PanelLogo: TPanel
-      Left = 565
-      Top = 2
+      Left = 567
+      Top = 0
       Width = 116
       Height = 31
       BevelOuter = bvNone
