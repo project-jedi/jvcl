@@ -1,35 +1,37 @@
 ----------------------------------------------------------------------------------------------------
-@@JvMru.pas
+@@JvMRUList.pas
 <GROUP JVCL.FileRef>
 Summary
-  Contains the TJvMru component.
+  Contains the TJvMRUList component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  Sébastien Buysse
+  Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 ----------------------------------------------------------------------------------------------------
-@@EMruException
+@@TAccelDelimiter
+<TITLE TAccelDelimiter type>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+@@TAccelDelimiter.adTab
+  Description for adTab
+@@TAccelDelimiter.adSpace
+  Description for adSpace
 ----------------------------------------------------------------------------------------------------
-@@PJvMruReturnData
-<TITLE PJvMruReturnData type>
-<COMBINE TJvMruReturnData>
+@@TClickMenuEvent
+<TITLE TClickMenuEvent type>
+<COMBINE TJvMRUManager.OnClick>
 ----------------------------------------------------------------------------------------------------
-@@TJvDataType
-<TITLE TJvDataType type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-@@TJvDataType.dtString
-  Description for dtString
-@@TJvDataType.dtBinary
-  Description for dtBinary
+@@TGetItemEvent
+<TITLE TGetItemEvent type>
+<COMBINE TJvMRUManager.OnGetItemData>
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList
-<TITLEIMG TJvMruList>
+@@TGetItemInfoEvent
+<TITLE TGetItemInfoEvent type>
+<COMBINE TJvMRUManager.OnGetItemInfo>
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager
+<TITLEIMG TJvMRUManager>
 JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
@@ -38,7 +40,7 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.Active
+@@TJvMRUManager.AccelDelimiter
 Summary
   Write here a summary (1 line)
 Description
@@ -47,326 +49,205 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.AddData
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-  Size  - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.AddPChar
+@@TJvMRUManager.Add
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Value - Description for this parameter
-Return value
-  Describe here what the function returns
+  RecentName - Description for this parameter
+  UserData   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.AddString
+@@TJvMRUManager.AutoEnable
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.AutoUpdate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.Capacity
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.Duplicates
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.IniStorage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.LoadFromIni
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Value - Description for this parameter
-Return value
-  Describe here what the function returns
+  Ini     - Description for this parameter
+  Section - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.AddUnicodePChar
+@@TJvMRUManager.LoadFromRegistry
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Value - Description for this parameter
-Return value
-  Describe here what the function returns
+  Ini     - Description for this parameter
+  Section - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.AddUnicodeString
+@@TJvMRUManager.Mode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.OnAfterUpdate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.OnBeforeUpdate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.OnChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.OnClick
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Value - Description for this parameter
-Return value
-  Describe here what the function returns
+  Sender     - Description for this parameter
+  RecentName - Description for this parameter
+  Caption    - Description for this parameter
+  UserData   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.Close
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.DataType
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.DelayedWrite
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.DeleteItem
+@@TJvMRUManager.OnGetItemData
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Index - Description for this parameter
-Return value
-  Describe here what the function returns
+  Sender   - Description for this parameter
+  Caption  - Description for this parameter
+  ShortCut - Description for this parameter
+  UserData - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.DeleteKey
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.EnumItems
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.FindData
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-  Size  - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.FindString
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.FindUnicodeString
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.GetItem
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.GetItemsCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.GetMostRecentItem
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.ItemDataAsPChar
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.ItemDataAsPointer
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.ItemDataAsPWideChar
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.ItemDataSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.ItemIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.MaxItems
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.MoveToTop
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.OnEnumData
+@@TJvMRUManager.OnGetItemInfo
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   Sender - Description for this parameter
-  Data   - Description for this parameter
-  Size   - Description for this parameter
-  Index  - Description for this parameter
+  Item   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.OnEnumText
+@@TJvMRUManager.OnReadItem
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender - Description for this parameter
-  Value  - Description for this parameter
-  Index  - Description for this parameter
+  Sender     - Description for this parameter
+  IniFile    - Description for this parameter
+  Section    - Description for this parameter
+  Index      - Description for this parameter
+  RecentName - Description for this parameter
+  UserData   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.OnEnumUnicodeText
+@@TJvMRUManager.OnWriteItem
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender - Description for this parameter
-  Value  - Description for this parameter
-  Index  - Description for this parameter
+  Sender     - Description for this parameter
+  IniFile    - Description for this parameter
+  Section    - Description for this parameter
+  Index      - Description for this parameter
+  RecentName - Description for this parameter
+  UserData   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.Open
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMruList.RootKey
+@@TJvMRUManager.RecentMenu
 Summary
   Write here a summary (1 line)
 Description
@@ -375,7 +256,18 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.SubKey
+@@TJvMRUManager.Remove
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  RecentName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.RemoveInvalid
 Summary
   Write here a summary (1 line)
 Description
@@ -384,7 +276,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.SubKeyUnicode
+@@TJvMRUManager.RemoveOnSelect
 Summary
   Write here a summary (1 line)
 Description
@@ -393,7 +285,31 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.UnicodeAvailable
+@@TJvMRUManager.SaveToIni
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ini     - Description for this parameter
+  Section - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.SaveToRegistry
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ini     - Description for this parameter
+  Section - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.SeparateSize
 Summary
   Write here a summary (1 line)
 Description
@@ -402,7 +318,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.UseUnicode
+@@TJvMRUManager.ShowAccelChar
 Summary
   Write here a summary (1 line)
 Description
@@ -411,7 +327,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMruList.WantUnicode
+@@TJvMRUManager.StartAccel
 Summary
   Write here a summary (1 line)
 Description
@@ -419,38 +335,112 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
----------------------------------------------------------------------------------------------------
-@@TJvMruReturnData
-<TITLE TJvMruReturnData type>
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.Strings
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-@@TJvMruReturnData.P
-  Description for P
-@@TJvMruReturnData.S
-  Description for S
-@@TJvMruReturnData.Ws
-  Description for Ws
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TMRUCount
-<TITLE TMRUCount type>
+@@TJvMRUManager.UpdateRecentMenu
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = 0..29 ; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TOnEnumData
-<TITLE TOnEnumData type>
-<COMBINE TJvMruList.OnEnumData>
+@@TJvRecentStrings
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TOnEnumText
-<TITLE TOnEnumText type>
-<COMBINE TJvMruList.OnEnumText>
+@@TJvRecentStrings.Add
+Summary
+  Write here a summary (1 line)
+  This is an overridden method, you don't have to describe these
+  if it does the same as the inherited method
+Description
+  Write here a description
+Parameters
+  S - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TOnEnumUnicodeText
-<TITLE TOnEnumUnicodeText type>
-<COMBINE TJvMruList.OnEnumUnicodeText>
+@@TJvRecentStrings.AddStrings
+Summary
+  Write here a summary (1 line)
+  This is an overridden method, you don't have to describe these
+  if it does the same as the inherited method
+Description
+  Write here a description
+Parameters
+  Strings - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvRecentStrings.DeleteExceed
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvRecentStrings.MaxSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvRecentStrings.Mode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvRecentStrings.Remove
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  S - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TReadItemEvent
+<TITLE TReadItemEvent type>
+<COMBINE TJvMRUManager.OnReadItem>
+----------------------------------------------------------------------------------------------------
+@@TRecentMode
+<TITLE TRecentMode type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TRecentMode.rmInsert
+  Description for rmInsert
+@@TRecentMode.rmAppend
+  Description for rmAppend
+----------------------------------------------------------------------------------------------------
+@@TWriteItemEvent
+<TITLE TWriteItemEvent type>
+<COMBINE TJvMRUManager.OnWriteItem>
