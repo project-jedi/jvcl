@@ -1035,8 +1035,13 @@ begin
         information. }
       if AutoDepend then
       begin
-        SetEnvironmentVariable('MAKEOPTIONS', '-n');
-          // get the number of packages that needs compilation
+        if not TargetConfig.DeveloperInstall and TargetConfig.DebugUnits and not DebugUnits then
+          SetEnvironmentVariable('MAKEOPTIONS', '-B -n') { make a complete make pass when the release units
+                                                           should be compiled while TargetConfig.DebugUnits are active }
+        else
+          SetEnvironmentVariable('MAKEOPTIONS', '-n');
+
+        // get the number of packages that needs compilation
         FCount := 0;
         if Make(TargetConfig, Args + ' CompilePackages', CaptureLineGetCompileCount) <> 0 then
         begin
@@ -1047,6 +1052,9 @@ begin
         FPkgCount := FCount;
       end;
       SetEnvironmentVariable('MAKEOPTIONS', nil);
+      if not TargetConfig.DeveloperInstall and TargetConfig.DebugUnits and not DebugUnits then
+        SetEnvironmentVariable('MAKEOPTIONS', '-B'); { make a complete make pass when the release units
+                                                       should be compiled while TargetConfig.DebugUnits are active }
 
       if FPkgCount > 0 then
       begin
