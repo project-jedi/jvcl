@@ -54,6 +54,7 @@ type
     StatusBar1: TStatusBar;
     ilMSN: TImageList;
     ilMSN2: TImageList;
+    ilFB: TImageList;
     procedure acConnectRemoteServerExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnCollapseAllClick(Sender: TObject);
