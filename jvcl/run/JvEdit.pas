@@ -54,8 +54,9 @@ uses
 
 {$IFDEF VisualCLX}
 const
-  clGrayText = clDark; // (ahuser) This is wrong in QGraphics.
+//  clGrayText = clDark; // (ahuser) This is wrong in QGraphics.
                        //          Since when is clGrayText = clLight = clWhite?
+  clGrayText = clDisabledText;
 {$ENDIF VisualCLX}
 
 type
@@ -95,8 +96,8 @@ type
     procedure SetHotTrack(const Value: Boolean);
     {$IFDEF VCL}
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-    {$ENDIF VCL}
     procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
+    {$ENDIF VCL}
     procedure SetEmptyValue(const Value: string);
     procedure SetGroupIndex(Value: Integer);
     function GetFlat: Boolean;
@@ -125,6 +126,9 @@ type
     procedure SetText(const Value: TCaption); virtual;
     procedure CreateHandle; override;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    function GetText: TCaption; override;
+    {$ENDIF VisualCLX}
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure DoEmptyValueEnter; virtual;
@@ -132,8 +136,9 @@ type
     {$IFDEF VisualCLX}
     procedure InitWidget; override;
     procedure Paint; override;
-    procedure TextChanged; override;
-    procedure KeyPress(var Key: Char); override;
+//    procedure TextChanged; override;
+//    procedure KeyPress(var Key: Char); override;
+    function HintShow(var HintInfo : THintInfo): Boolean; override;
     {$ENDIF VisualCLX}
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
@@ -299,15 +304,16 @@ begin
   C := TControlCanvas.Create;
   try
     C.Control := Control;
+    {$IFDEF VisualCLX}
+    C.StartPaint;
+    {$ENDIF VisualCLX}
     Result :=
-      {$IFDEF VCL}
       not GetTextExtentPoint32(C.Handle, PChar(Text), Length(Text), Size) or
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      not GetTextExtentPoint32W(C.Handle, PWideChar(Text), Length(Text), Size) or
-      {$ENDIF VisualCLX}
       { (rb) ClientWidth is too big, should be EM_GETRECT, don't know the Clx variant }
       (Control.ClientWidth > Size.cx);
+    {$IFDEF VisualCLX}
+    C.StopPaint;
+    {$ENDIF VisualCLX}
   finally
     C.Free;
   end;
@@ -336,6 +342,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomEdit.CMHintShow(var Msg: TMessage);
 begin
   if AutoHint and not TextFitsInCtrl(Self, Self.Text) then
@@ -348,6 +355,19 @@ begin
   else
     inherited;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+function TJvCustomEdit.HintShow(var HintInfo : THintInfo): Boolean;
+begin
+  if AutoHint and not TextFitsInCtrl(Self, Self.Text) then
+  begin
+    HintInfo.HintPos := Self.ClientToScreen(Point(-2, Height - 2));
+    HintInfo.HintStr := Self.Text;
+  end;
+  Result := inherited HintShow(HintInfo);
+end;
+{$ENDIF VisualCLX}
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin
@@ -571,7 +591,6 @@ begin
   {$ENDIF VCL}
 end;
 
-{$IFDEF VCL}
 
 function TJvCustomEdit.GetText: TCaption;
 var
@@ -584,14 +603,18 @@ begin
     Tmp := ProtectPassword;
     try
       ProtectPassword := False;
+      {$IFDEF VCL}
       Result := inherited Text;
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      Result := inherited GetText;
+      {$ENDIF VisualCLX}
     finally
       ProtectPassword := Tmp;
     end;
   end;
 end;
 
-{$ENDIF VCL}
 
 function TJvCustomEdit.IsEmpty: Boolean;
 begin
