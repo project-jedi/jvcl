@@ -358,7 +358,6 @@ type
     procedure Paint; override;
     procedure CalcSize;
     procedure SetAutoSize(Value: Boolean); override;
-    procedure Resize; override;
     procedure GraphicChange(Sender: TObject);
     procedure SetName(const Value: TComponentName); override;
   public
@@ -1020,7 +1019,8 @@ end;
 
 procedure TJvFullColorComponent2D.UpdateDefaultValueZ;
 begin
-  FValueZ := ColorSpace.AxisDefault[GetIndexAxisZ(AxisConfig)];
+  if ValueZAuto then
+    FValueZ := ColorSpace.AxisDefault[GetIndexAxisZ(AxisConfig)];
 end;
 
 //=== { TJvColorPanel } ======================================================
@@ -1137,8 +1137,12 @@ begin
           begin
             TempColor := SetAxisValue(TempColor, AxisX, IndexX);
             if ReverseAxisX then
+              // (outchy) don't remove, Bitmap colors are stocked as (MSB) 00RRGGBB (LSB)
+              // Delphi TColor is (MSB) 00BBGGRR (LSB)
               Line[MaxX - IndexX] := RGBToBGR(ConvertToColor(TempColor))
             else
+              // (outchy) don't remove, Bitmap colors are stocked as (MSB) 00RRGGBB (LSB)
+              // Delphi TColor is (MSB) 00BBGGRR (LSB)
               Line[IndexX - MinX] := RGBToBGR(ConvertToColor(TempColor));
           end;
         end;
@@ -1583,7 +1587,9 @@ begin
                 Magic3 := Radius + MinRadius;
           end;
 
-          Line[X] := ConvertToColor(Magic1 or (Magic2 shl 8) or (Magic3 shl 16));
+          // (outchy) don't remove, Bitmap colors are stocked as (MSB) 00RRGGBB (LSB)
+          // Delphi TColor is (MSB) 00BBGGRR (LSB)
+          Line[X] := RGBToBGR(ConvertToColor(Magic1 or (Magic2 shl 8) or (Magic3 shl 16)));
         end;
       end;
     end;
@@ -1844,13 +1850,14 @@ begin
     ColorID := GetColorSpaceID(NewFullColor);
     Change := ColorID <> GetColorSpaceID(FullColor);
 
-    FFullColor := ConvertToID(FullColor, ColorID);
-    FRedColor := ConvertToID(RedColor, ColorID);
-    FGreenColor := ConvertToID(GreenColor, ColorID);
-    FBlueColor := ConvertToID(BlueColor, ColorID);
-
     if Change then
+    begin
+      FFullColor := ConvertToID(FullColor, ColorID);
+      FRedColor := ConvertToID(RedColor, ColorID);
+      FGreenColor := ConvertToID(GreenColor, ColorID);
+      FBlueColor := ConvertToID(BlueColor, ColorID);
       ColorSpaceChange;
+    end;
   end;
 end;
 
@@ -2394,7 +2401,9 @@ begin
           PosZ := IndexZ - MinZ;
 
         TempColor := SetAxisValue(TempColor, AxisZ, IndexZ);
-        Pen.Color := ConvertToColor(TempColor);
+        // (outchy) don't remove, Bitmap colors are stocked as (MSB) 00RRGGBB (LSB)
+        // Delphi TColor is (MSB) 00BBGGRR (LSB)
+        Pen.Color := RGBToBGR(ConvertToColor(TempColor));
 
         case Orientation of
           trHorizontal:
@@ -2783,10 +2792,10 @@ constructor TJvFullColorLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FPen := TPen.Create;
-  FBrush := TBrush.Create;
-  FFont := TFont.Create;
   FPen.OnChange := GraphicChange;
+  FBrush := TBrush.Create;
   FBrush.OnChange := GraphicChange;
+  FFont := TFont.Create;
   FFont.OnChange := GraphicChange;
   FShapeType := stRectangle;
   FShapePosition := spLeft;
@@ -2796,7 +2805,6 @@ begin
   FShapeWidth := 16;
   FShapeHeight := 16;
   FLabelColor := fclDEFWindowText;
-  //AutoSize:=True;
 end;
 
 destructor TJvFullColorLabel.Destroy;
@@ -2815,13 +2823,13 @@ begin
     case ShapePosition of
       spLeft..spRight:
         begin
-          Height := Max(ShapeHeight, Canvas.TextHeight(Caption));
-          Width := ShapeWidth + Spacing + Canvas.TextWidth(FCaption);
+          Height := Max(ShapeHeight + Pen.Width, Canvas.TextHeight(Caption));
+          Width := ShapeWidth + Pen.Width + Spacing + Canvas.TextWidth(FCaption);
         end;
       spTop..spBottom:
         begin
-          Height := ShapeHeight + Spacing + Canvas.TextHeight(Caption);
-          Width := Max(ShapeWidth, Canvas.TextWidth(Caption));
+          Height := ShapeHeight + Spacing + Pen.Width + Canvas.TextHeight(Caption);
+          Width := Max(ShapeWidth + Pen.Width, Canvas.TextWidth(Caption));
         end;
     end;
     AdjustSize;
@@ -2831,16 +2839,13 @@ end;
 procedure TJvFullColorLabel.GraphicChange(Sender: TObject);
 begin
   CalcSize;
+  Invalidate;
 end;
 
 procedure TJvFullColorLabel.Paint;
 var
   ShapeLeft, ShapeTop, TextLeft, TextTop: Integer;
 begin
-  ShapeLeft := 0;
-  ShapeTop := 0;
-  TextLeft := 0;
-  TextTop := 0;
   with Canvas do
   begin
     Pen.Style := psClear;
@@ -2851,7 +2856,7 @@ begin
     Font := Self.Font;
     Pen := Self.Pen;
     Brush := Self.Brush;
-    Brush.Color := ColorSpaceManager.ConvertToID(LabelColor, csRGB);
+    Brush.Color := ColorSpaceManager.ConvertToColor(LabelColor);
     inherited Paint;
     case FShapePosition of
       spLeft:
@@ -2882,6 +2887,13 @@ begin
           TextLeft := (Width - TextWidth(FCaption)) div 2;
           TextTop := 0;
         end;
+      else
+        begin
+          ShapeLeft := 0;
+          ShapeTop := 0;
+          TextLeft := 0;
+          TextTop := 0;
+        end;
     end;
     case FShapeType of
       stRectangle..stSquare:
@@ -2895,12 +2907,6 @@ begin
     Brush.Style := bsClear;
     TextOut(TextLeft, TextTop, FCaption);
   end;
-end;
-
-procedure TJvFullColorLabel.Resize;
-begin
-  inherited Resize;
-  //CalcSize;
 end;
 
 procedure TJvFullColorLabel.SetAutoSize(Value: Boolean);
@@ -3005,7 +3011,7 @@ begin
   if FLabelColor <> Value then
   begin
     FLabelColor := Value;
-    Brush.Color := ColorSpaceManager.ConvertToID(Value, csRGB);
+    Brush.Color := ColorSpaceManager.ConvertToColor(Value);
     Invalidate;
   end;
 end;

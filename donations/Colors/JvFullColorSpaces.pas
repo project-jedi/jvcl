@@ -559,11 +559,13 @@ end;
 
 procedure TJvHookColorBox.DestroyWnd;
 begin
+  // delete the dummy handle
   WindowHandle := 0;
 end;
 
 procedure TJvHookColorBox.DestroyWindowHandle;
 begin
+  // delete the dummy handle
   WindowHandle := 0;
 end;
 
@@ -574,6 +576,7 @@ end;
 
 procedure TJvHookColorBox.CreateWnd;
 begin
+  // create a dummy handle so HandleAllocated will return True
   WindowHandle := 1;
 end;
 
