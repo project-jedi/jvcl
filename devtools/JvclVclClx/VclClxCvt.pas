@@ -82,7 +82,7 @@ type
     procedure SetOutDirectory(const Value: string);
     procedure WriteFile(Lines: TStrings; const Filename: string; AllowBeforeSave: Boolean);
 
-    procedure CheckDfmLine(var Line: string);
+    procedure CheckDfmLine(var Line: string; const Control: string);
 
     procedure CheckOption(Token: PTokenInfo);
       { Parses the compiler directives and allows the replacement of include
@@ -137,7 +137,7 @@ type
       { BeforeSave() is called before the file is stored. Here you can modify
         the file lines. Time-dependend lines are not allowed. Filename is the
         CLX filename (changed by ChangeFileName). }
-    procedure ChangeDfmLine(var Line: string); virtual;
+    procedure ChangeDfmLine(var Line: string; const Control: string); virtual;
 
     procedure Parse(Parser: TPascalParser); virtual;
 
@@ -991,12 +991,20 @@ begin
   // do nothing
 end;
 
+{
+  Calls CheckDfmLine with parameter Control=
+   * ClassName e.g. 'TListView'
+   * ClassName.Property for Collections e.g: 'TListView.Columns'
+   * ClassName.Property:item for Collection items: e.g. 'TListView.Columns:item'
+}
 procedure TVCLConverter.ParseDfmFile(const Filename: string);
 var
   Lines: TStrings;
-  i: Integer;
-  S: string;
+  i, ps: Integer;
+  S, TrimS: string;
+  Controls: TStringList;
 begin
+  Controls := TStringList.Create;
   Lines := TStringList.Create;
   try
     Lines.LoadFromFile(Filename);
@@ -1013,18 +1021,47 @@ begin
       while i < Lines.Count do
       begin
         S := Lines[i];
-        if S <> '' then
+        TrimS := Trim(S);
+        if TrimS <> '' then
         begin
-          if Trim(S) = 'DesignSize = (' then
+          if TrimS = 'DesignSize = (' then
           begin
             Lines.Delete(i);
             Lines.Delete(i);
             Lines.Delete(i);
+            Continue;
           end
           else
           begin
-            CheckDfmLine(S);
-            Lines[i] := S;
+            if AnsiStartsText('object ', TrimS) then
+            begin
+              ps := Pos(':', TrimS);
+              if ps > 0 then
+                Controls.Add(Trim(Copy(TrimS, ps + 1, MaxInt)));
+            end
+            else
+            if SameText(TrimS, 'end') and (Controls.Count > 0) then
+              Controls.Delete(Controls.Count - 1)
+            else
+            if Controls.Count > 0 then
+            begin
+              if AnsiEndsText('= <', TrimS) then
+              begin
+                // collection
+                Controls.Add(Controls[Controls.Count - 1] + '.' + Trim(Copy(TrimS, 1, Pos('=', TrimS) - 1)));
+              end
+              else
+              if SameText(TrimS, 'end>') then
+              begin
+                Controls.Delete(Controls.Count - 1);
+                Controls.Delete(Controls.Count - 1);
+              end
+              else if SameText(TrimS, 'item') then
+                Controls.Add(Controls[Controls.Count - 1] + ':item')
+              else
+                CheckDfmLine(S, Controls[Controls.Count - 1]);
+              Lines[i] := S;
+            end;
           end;
         end;
         Inc(i);
@@ -1038,10 +1075,11 @@ begin
       FStatistics.AddError(ExtractFileName(Filename) + ' is empty.');
   finally
     Lines.Free;
+    Controls.Free;
   end;
 end;
 
-procedure TVCLConverter.CheckDfmLine(var Line: string);
+procedure TVCLConverter.CheckDfmLine(var Line: string; const Control: string);
 var
   S, OrgS: string;
 begin
@@ -1050,16 +1088,16 @@ begin
   begin
     S := TrimLeft(Line);
     OrgS := S;
-    ChangeDfmLine(S);
+    ChangeDfmLine(S, Control);
     if S <> OrgS then
       Line := StringReplace(Line, OrgS, S, []);
   end;
 end;
 
-procedure TVCLConverter.ChangeDfmLine(var Line: string);
+procedure TVCLConverter.ChangeDfmLine(var Line: string; const Control: string);
 begin
   if AnsiStartsText('BorderStyle = ', Line) then
-    Line := StringReplace(Line, ' bs', ' fbs', []);
+    Line := StringReplace(Line, ' bs', ' fbs', [rfIgnoreCase]);
   if AnsiStartsText('Ctl3D = ', Line) or
      AnsiStartsText('ParentCtl3D = ', Line) then
     Line := '';
@@ -1068,6 +1106,22 @@ begin
      AnsiStartsText('DefaultMonitor = ', Line) or
      AnsiStartsText('RightClickSelect = True', Line) then
     Line := '';
+  if (Control = 'TProgressBar') and AnsiStartsText('TabOrder = ', Line) then
+    Line := '';
+  if (Control = 'TListView') then
+  begin
+    if AnsiStartsText('SmallImages = ', Line) then
+      Line := StringReplace(Line, 'SmallImages = ', 'Images = ', [rfIgnoreCase])
+    else if AnsiStartsText('OnCompare = ', Line) then
+      Line := ''
+    else if AnsiStartsText('SortType = ', Line) then
+    begin
+      if Pos('= stNone', Line) = 0 then
+        Line := 'Sorted = True'
+      else
+        Line := ''
+    end;
+  end;
 end;
 
 function TVCLConverter.IsProtectedByConditions: Boolean;

@@ -139,8 +139,11 @@ begin
           try
             InDir := EditDirectory.Text;
             CollectFiles(InDir, CheckBoxRecursiveDir.Checked, Files);
+            ProgressBar.Position := 0;
+            ProgressBar.Max := Files.Count;
             for i := 0 to Files.Count - 1 do
             begin
+              ProgressBar.Position := i;
               with JVCLConverter do
               begin
                 FName := ExtractFileName(Files[i]);
@@ -179,7 +182,10 @@ begin
         end
         else
         begin
-          JVCLConverter.ParsePasFile(EditSingleFile.Text);
+          if CompareText(ExtractFileExt(EditSingleFile.Text), '.dfm') = 0 then
+            JVCLConverter.ParseDfmFile(EditSingleFile.Text)
+          else
+            JVCLConverter.ParsePasFile(EditSingleFile.Text);
         end;
         ShowMessage('Finished.');
       finally
