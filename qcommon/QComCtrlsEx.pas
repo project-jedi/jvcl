@@ -206,7 +206,7 @@ begin
   Height := GetSystemMetrics(SM_CYVSCROLL) - 2; // is SM_CYVSCROLL wrong or is it just Qt
   Height := Height + (Height div 2);
 
-  FRepeatTimer := TTimer.Create(nil);
+  FRepeatTimer := TTimer.Create(Self);
   FRepeatTimer.Interval := 125;
   FRepeatTimer.OnTimer := RepeatTimer;
 
@@ -218,7 +218,6 @@ end;
 destructor TCustomUpDown.Destroy;
 begin
   SetArrowKeys(False); // uninstall hook
-  FRepeatTimer.Free;
   inherited Destroy;
 end;
 
