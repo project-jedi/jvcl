@@ -22,6 +22,7 @@ SRCH = ..\$(RUN);..\$(DSGN);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
 MAKE = $(ROOT)\make.exe -$(MAKEFLAGS) -f$**
 DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRCP) -n$(DCU) -r$(SRCP) -u$(SRCP) -q -w -m
 DCCH = $(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -m
+DCCHH = $(ROOT)\dcc32.exe -e..\..\$(BIN) -i..\$(SRCH) -n..\..\$(DCU) -r..\$(SRCH) -u..\$(SRCH) -q -w -m
 BRCC = $(ROOT)\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
 default: \
@@ -43,7 +44,7 @@ LineNumbers.exe \
 RAEditorTest.exe \
 RAHLEdPropDlgTest.exe \
 ColorHintsTest.exe \
-SampleProject1.exe \
+#SampleProject1.exe \
 JvInterpreterTest.exe \
 DynamicLoad.exe \
 JvInterpreterEndUser.exe \
@@ -133,12 +134,12 @@ MessengerDemo.exe: JvRichEdit\MessengerDemo.dpr
 
 Philosophers.exe: JvManagedThreads\Philosophers\Philosophers.dpr
   cd JvManagedThreads\Philosophers
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 Balls.exe: JvManagedThreads\Balls\Balls.dpr
   cd JvManagedThreads\Balls
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 JvAppInstDemo.exe: JvAppInstances\JvAppInstDemo.dpr
@@ -178,67 +179,67 @@ JvUrlListGrabberDemo.exe: JvUrlListGrabber\JvUrlListGrabberDemo.dpr
 
 RAControls.exe: RaLib\RaControls\RAControls.dpr
   cd RaLib\RaControls
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 DBMove.exe: RaLib\RaDBMove\DBMove.dpr
   cd RaLib\RaDBMove
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 DBTree.exe: RaLib\RaDBTreeView\DBTree.dpr
   cd RaLib\RaDBTreeView
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 LineNumbers.exe: RaLib\RaEditor\LineNumbers.dpr
   cd RaLib\RaEditor
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 RAEditorTest.exe: RaLib\RaEditor\RAEditorTest.dpr
   cd RaLib\RaEditor
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 RAHLEdPropDlgTest.exe: RaLib\RaEditor\RAHLEdPropDlgTest.dpr
   cd RaLib\RaEditor
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 ColorHintsTest.exe: RaLib\RaHtHints\ColorHintsTest.dpr
   cd RaLib\RaHtHints
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
-SampleProject1.exe: RaLib\RaInterpreter\samples\project1\SampleProject1.dpr
-  cd RaLib\RaInterpreter\samples\project1
-  $(DCC) $&.dpr
-  cd ..\..\..\..
+#SampleProject1.exe: RaLib\RaInterpreter\samples\project1\SampleProject1.dpr
+#  cd RaLib\RaInterpreter\samples\project1
+#  $(DCCHH) $&.dpr
+#  cd ..\..\..\..
 
 JvInterpreterTest.exe: RaLib\RaInterpreter\JvInterpreterTest.dpr
   cd RaLib\RaInterpreter
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 DynamicLoad.exe: RaLib\RaInterpreterDynamicLoad\DynamicLoad.dpr
   cd RaLib\RaInterpreterDynamicLoad
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 JvInterpreterEndUser.exe: RaLib\RaInterpreterEndUser\JvInterpreterEndUser.dpr
   cd RaLib\RaInterpreterEndUser
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 MDIapp.exe: RaLib\RaInterpreterMDI\MDIapp.dpr
   cd RaLib\RaInterpreterMDI
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 RANotepad.exe: RaLib\RaInterpreterNotepad\RANotepad.dpr
   cd RaLib\RaInterpreterNotepad
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 JvZoomProj.exe: JvZoom\JvZoomProj.dpr
@@ -388,57 +389,57 @@ ProfilerDemo.exe: JvProfiler32\ProfilerDemo.dpr
 
 PlugInDemo.exe: JvPlugin\1SimplePlugin\PlugInDemo.dpr
   cd JvPlugin\1SimplePlugin
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 SamplePluginOne.dll: JvPlugin\1SimplePlugin\SamplePluginOne.dpr
   cd JvPlugin\1SimplePlugin
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 MDIPlugin.dll: JvPlugin\2MDI\MDIPlugin.dpr
   cd JvPlugin\2MDI
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 MDISample.exe: JvPlugin\2MDI\MDISample.dpr
   cd JvPlugin\2MDI
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 ChangePropertiesPlugin.dll: JvPlugin\3ChangingProperties\ChangePropertiesPlugin.dpr
   cd JvPlugin\3ChangingProperties
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 PropertiesPlugInDemo.exe: JvPlugin\3ChangingProperties\PropertiesPlugInDemo.dpr
   cd JvPlugin\3ChangingProperties
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 ExceptionPlugin.dll: JvPlugin\4ApplicationHook\ExceptionPlugin.dpr
   cd JvPlugin\4ApplicationHook
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 ExceptionPlugInDemo.exe: JvPlugin\4ApplicationHook\ExceptionPlugInDemo.dpr
   cd JvPlugin\4ApplicationHook
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 DataPlugin.dll: JvPlugin\5DataAware\DataPlugin.dpr
   cd JvPlugin\5DataAware
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 DataPlugInDemo.exe: JvPlugin\5DataAware\DataPlugInDemo.dpr
   cd JvPlugin\5DataAware
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 JvPlgMainApp.exe: JvPlugin\6PluginPackage\PlgMainApp\JvPlgMainApp.dpr
   cd JvPlugin\6PluginPackage\PlgMainApp
-  $(DCC) $&.dpr
+  $(DCCHH) $&.dpr
   cd ..\..\..
 
 JvPlayListProj.exe: JvPlayList\JvPlayListProj.dpr
@@ -538,17 +539,17 @@ JvHtmlParserProj.exe: JvHTMLParser\JvHtmlParserProj.dpr
 
 BasicDemo.exe: JvHIDController\BasicDemo\BasicDemo.dpr
   cd JvHIDController\BasicDemo
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 CollectionDemo.exe: JvHIDController\CollectionDemo\CollectionDemo.dpr
   cd JvHIDController\CollectionDemo
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 SimpleHIDWrite.exe: JvHIDController\ReadWriteDemo\SimpleHIDWrite.dpr
   cd JvHIDController\ReadWriteDemo
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   cd ..\..
 
 RxGIFAnm.exe: JvGIFAnimator\RxGIFAnm.dpr
