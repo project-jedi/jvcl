@@ -102,7 +102,7 @@ type
     procedure Error(Sender: TObject; ErrorMsg: string);
     procedure DoneFile(Sender: TObject; FileName: string; FileSize: Integer; Url: string);
     procedure DoneStream(Sender: TObject; FStream: TStream; StreamSize: Integer; Url: string);
-    procedure Progress(Sender: TObject; Position: Integer; TotalSize: Integer; Url: string; var Continue: Boolean);
+    procedure Progress(Sender: TObject; UserData, Position, TotalSize: Integer; Url: string; var Continue: Boolean);
     procedure Status(Sender: TObject; Position: Integer; Url: string);
     function GetWorking: Boolean;
   public
@@ -221,11 +221,11 @@ begin
   Result := FThread <> nil;
 end;
 
-procedure TJvHTTPGrabber.Progress(Sender: TObject; Position,
+procedure TJvHTTPGrabber.Progress(Sender: TObject; UserData, Position,
   TotalSize: Integer; Url: string; var Continue: Boolean);
 begin
   if Assigned(FOnProgress) then
-    FOnProgress(Self, Position, TotalSize, Url, Continue);
+    FOnProgress(Self, UserData, Position, TotalSize, Url, Continue);
 end;
 
 procedure TJvHTTPGrabber.Status(Sender: TObject; Position: Integer;
@@ -506,7 +506,7 @@ procedure TJvHttpThread.Progress;
 begin
   FCriticalSection.Enter;
   if Assigned(FOnProgress) then
-    FOnProgress(Self, FBytesReaded, FTotalBytes, FUrl, FContinue);
+    FOnProgress(Self, 0, FBytesReaded, FTotalBytes, FUrl, FContinue);
   FCriticalSection.Leave;
 end;
 

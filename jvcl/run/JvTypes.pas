@@ -67,7 +67,7 @@ type
 
   TJvDoneFileEvent = procedure(Sender: TObject; FileName: string; FileSize: Integer; Url: string) of object;
   TJvDoneStreamEvent = procedure(Sender: TObject; Stream: TStream; StreamSize: Integer; Url: string) of object;
-  TJvHTTPProgressEvent = procedure(Sender: TObject; Position: Integer; TotalSize: Integer; Url: string; var Continue: Boolean) of object;
+  TJvHTTPProgressEvent = procedure(Sender: TObject; UserData, Position: Integer; TotalSize: Integer; Url: string; var Continue: Boolean) of object;
   TJvFTPProgressEvent = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
   PRGBArray = ^TRGBArray; // JvThumbImage, JvImageSplit, JvRegion
