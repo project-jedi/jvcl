@@ -1,5 +1,10 @@
 Changelog for JVCL 3.0
 ======================
+2005-01-01:
+- Added JvDatabaseActionList and JvDatabase*Action // JFudickar
+  The new actions not only work with datasource components, also it's possible to connect them to a dbgrid or other components.
+  Additional engines for connections could be defined.
+  The actionlist has one Datacomponent property which is published to all attached JvDatabase*Actions
 2004-12-13:
 - Added donation TJvDebugHandler by Robert Meek // AHUser
 2004-12-11:

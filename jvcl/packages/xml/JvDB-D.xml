@@ -9,6 +9,7 @@
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
+    <Package Name="JvDlgs-R" Targets="all" Condition=""/>
     <Package Name="JvDB-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C5,C5s,C6,C6p" Condition=""/>
     <Package Name="JvSystem-R" Targets="C5,C5s,C6,C6p" Condition=""/>
@@ -33,6 +34,7 @@
     <File Name="..\..\design\JvSelectDataSetForm.pas" Targets="allbutclx" Formname="JvSelectDataSetForm" Condition=""/>
     <File Name="..\..\design\JvCsvDataEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvCsvDataForm.pas" Targets="all" Formname="JvCsvDefStrDialog" Condition=""/>
+    <File Name="..\..\design\JvDBActnResForm.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDBMemDatasetEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvDBReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDBEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
