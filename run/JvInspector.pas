@@ -4567,7 +4567,7 @@ end;
 procedure TJvInspectorBorlandNETBasePainter.ApplyNameFont;
 begin
   inherited ApplyNameFont;
-  if Item.IsCategory then
+  if Assigned(Item) and Item.IsCategory then
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
 end;
 
