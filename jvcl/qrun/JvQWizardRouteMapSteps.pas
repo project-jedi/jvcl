@@ -217,9 +217,8 @@ var
   APage: TJvWizardCustomPage;
   S: string;
 begin
-
+  if [csCreating, csRecreating] * ControlState <> [] then exit;
   try
-
   ARect := ClientRect;
   TotalPageCount := DetectPageCount(ActivePageIndex);
 
@@ -229,15 +228,21 @@ begin
   Canvas.Brush.Style:= bsClear;
 
   S := Format(ActiveStepFormat, [ActivePageIndex, TotalPageCount]);
-  StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
+
+
+  StepHeight := DrawText(Canvas, S, Length(S), TextRect,
      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
 
   // Display Active Page Description
   Canvas.Font.Style:= [];
   OffsetRect(TextRect, 0, StepHeight);
   S := Pages[PageIndex].Caption;
-  DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
+
+
+  DrawText(Canvas, S, Length(S), TextRect,
     DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+
+
   Canvas.Font.Style:= [];
   if FShowDivider then
   begin
@@ -247,7 +252,7 @@ begin
   end;
 
   { do the previous step }
-  
+
   // YW - Ignore all disabled pages at run time
   APage := Wizard.FindNextPage(PageIndex, -1, not (csDesigning in ComponentState));
   if Assigned(APage) and (PageIndex <> - 1) then
@@ -264,12 +269,18 @@ begin
           DFCS_SCROLLLEFT or DFCS_FLAT);
     end;
     S := FPreviousStepText;
-    StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
+
+
+
+
+    StepHeight := DrawText(Canvas, S, Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
     OffsetRect(TextRect, 0, StepHeight);
     S := APage.Caption;
-    DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
+    DrawText(Canvas, S, Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+
+
   end;
 
   { do the next step }
@@ -289,17 +300,21 @@ begin
           DFCS_SCROLLRIGHT or DFCS_FLAT);
     end;
     S := FNextStepText;
-    StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
+
+
+
+
+    StepHeight := DrawText(Canvas, S, Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
     OffsetRect(TextRect, 0, StepHeight);
     S := APage.Caption;
-    DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
+    DrawText(Canvas, S, Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+
+
   end;
-  
   except
   end;
-  
 end;
 
 procedure TJvWizardRouteMapSteps.SetShowDivider(const Value: Boolean);

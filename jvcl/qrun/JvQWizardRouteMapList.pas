@@ -39,9 +39,9 @@ interface
 
 uses
   SysUtils, Classes,
-
-
-  QGraphics, QControls, QForms, Types, QWindows, QImgList,
+  
+  
+  QGraphics, QControls, QForms, Types, QWindows, QImgList, QMessages,
   
   
   JvQTypes, JvQConsts, JvQJVCLUtils,
@@ -76,10 +76,10 @@ type
     FCurvature: Integer;
     FHotTrackBorder: Integer;
     FBorderColor: TColor;
+    FTextOnly: Boolean;
     
     FHotTrackFontOptions: TJvTrackFontOptions;
     FActiveFontOptions: TJvTrackFontOptions;
-    FTextOnly: Boolean;
     
     procedure SetItemHeight(const Value: Integer);
     procedure SetHorzOffset(const Value: Integer);
@@ -95,11 +95,11 @@ type
     procedure SetRounded(const Value: Boolean);
     procedure SetItemText(const Value: TRouteMapListItemText);
     procedure SetCurvature(const Value: Integer);
+    procedure SetTextOnly(const Value: Boolean);
+    procedure SetBorderColor(Value: TColor);
     
     procedure SetActiveFontOptions(const Value: TJvTrackFontOptions);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
-    procedure SetBorderColor(Value: TColor);
-    procedure SetTextOnly(const Value: Boolean);
     
   protected
     procedure DrawPageItem(ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer); virtual;
@@ -107,9 +107,9 @@ type
     function PageAtPos(Pt: TPoint): TJvWizardCustomPage; override;
     procedure Paint; override;
     procedure Loaded; override;
-    procedure CursorChanged; override;
-    procedure FontChanged; override;
-
+    
+    procedure CursorChanged; override; 
+    procedure FontChanged; override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -291,7 +291,8 @@ begin
     if Assigned(Wizard) and (Pages[PageIndex] = Wizard.ActivePage) then
       ACanvas.Font := ActiveFont
     else
-    if PtInRect(ARect, MousePos) and Pages[PageIndex].Enabled and HotTrack then
+    if PtInRect(ARect, MousePos) and Pages[PageIndex].Enabled and HotTrack and
+       Clickable then
       ACanvas.Font := HotTrackFont
     else
     if not Pages[PageIndex].Enabled then
@@ -326,13 +327,14 @@ begin
             taLeftJustify:
               begin
                 Wizard.HeaderImages.Draw(ACanvas, ARect.Left + 4, ARect.Top + ATop, Pages[PageIndex].Header.ImageIndex,
-                  itImage, Pages[PageIndex].Enabled);
+                 itImage,  Pages[PageIndex].Enabled);
                 Inc(ARect.Left, Wizard.HeaderImages.Width + 4);
               end;
             taRightJustify:
               begin
                 Wizard.HeaderImages.Draw(ACanvas, ARect.Right - Wizard.HeaderImages.Width - 4, ARect.Top + ATop,
-                  Pages[PageIndex].Header.ImageIndex, itImage, Pages[PageIndex].Enabled);
+                  Pages[PageIndex].Header.ImageIndex,
+                   itImage,  Pages[PageIndex].Enabled);
                 Dec(ARect.Right, Wizard.HeaderImages.Width + 4);
               end;
             taCenter:
@@ -551,16 +553,22 @@ end;
 
 procedure TJvWizardRouteMapList.CursorChanged;
 begin
-  inherited;
+  
+  inherited CursorChanged;
+  
   if (Cursor <> FHotTrackCursor) and (Cursor <> FOldCursor) then
     FOldCursor := Cursor;
 end;
 
 procedure TJvWizardRouteMapList.FontChanged;
 begin
-  inherited;
+  
+  inherited FontChanged;
+  
+  
   UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   UpdateTrackFont(ActiveFont, Font, FActiveFontOptions);
+  
 end;
 
 end.

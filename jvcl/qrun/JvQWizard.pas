@@ -706,8 +706,8 @@ type
     property PageIndex: Integer read GetPageIndex write SetPageIndex stored False;
   published
     property Header: TJvWizardPageHeader read FHeader write FHeader;
-    property Subtitle: TJvWizardPageTitle read GetSubtitle write SetSubtitle stored false;
-    property Title: TJvWizardPageTitle read GetTitle write SetTitle stored false;
+    property Subtitle: TJvWizardPageTitle read GetSubtitle write SetSubtitle stored False;
+    property Title: TJvWizardPageTitle read GetTitle write SetTitle stored False;
     property Image: TJvWizardImage read FImage write FImage;
     property Panel: TJvWizardPagePanel read FPanel write FPanel;
     property EnabledButtons: TJvWizardButtonSet read FEnabledButtons write SetEnabledButtons default bkAllButtons;
@@ -804,6 +804,7 @@ type
     procedure SetButtonClick(Index: Integer; const Value: TNotifyEvent);
     procedure ImageListChange(Sender: TObject);
     procedure CreateNavigateButtons;
+    procedure DestroyNavigateButtons;
     procedure ChangeActivePage(Page: TJvWizardCustomPage);
     function GetActivePageIndex: Integer;
     procedure SetActivePageIndex(Value: Integer);
@@ -1772,8 +1773,11 @@ begin
     with ACanvas do
     begin
       Brush.Style := bsClear;
-      DrawText(ACanvas.Handle, PChar(FText), -1, ATextRect,
+      
+      
+      DrawText(ACanvas, FText, -1, ATextRect,
         DT_WORDBREAK + Alignments[FAlignment]);
+      
       { YW - Draw outline at design time. }
       if csDesigning in FWizardPageHeader.WizardPage.ComponentState then
       begin
@@ -2372,7 +2376,7 @@ begin
       Canvas.Font.Assign(Font);
       
       
-      DrawTextW(Canvas.Handle, PWideChar(Caption), -1, ARect,
+      DrawText(Canvas, Caption, -1, ARect,
         DT_SINGLELINE + DT_CENTER + DT_VCENTER);
       
     end;
@@ -2550,7 +2554,7 @@ begin
   FButtonBarHeight := ciButtonBarHeight;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
-  FAutoHideButtonBar := true;
+  FAutoHideButtonBar := True;
   CreateNavigateButtons;
   
   InputKeys := [ikAll];
@@ -2560,10 +2564,8 @@ end;
 destructor TJvWizard.Destroy;
 var
   i: Integer;
-  AKind: TJvWizardButtonKind;
 begin
-  for AKind := Low(TJvWizardButtonKind) to High(TJvWizardButtonKind) do
-    FNavigateButtons[AKind].Free;
+  DestroyNavigateButtons;
   { !!! YW - Reset wizard property value of all wizard pages FIRST,
     so that when the actual wizard page control is freed, the page won't
     call Wizard.RemovePage, otherwise it will cause AV, because at that
@@ -2588,13 +2590,20 @@ function TJvWizard.GetButtonControlClass(
   AKind: TJvWizardButtonKind): TJvWizardButtonControlClass;
 begin
   case AKind of
-    bkStart: Result := TJvWizardStartButton;
-    bkLast: Result := TJvWizardLastButton;
-    bkBack: Result := TJvWizardBackButton;
-    bkNext: Result := TJvWizardNextButton;
-    bkFinish: Result := TJvWizardFinishButton;
-    bkCancel: Result := TJvWizardCancelButton;
-    bkHelp: Result := TJvWizardHelpButton;
+    bkStart:
+      Result := TJvWizardStartButton;
+    bkLast:
+      Result := TJvWizardLastButton;
+    bkBack:
+      Result := TJvWizardBackButton;
+    bkNext:
+      Result := TJvWizardNextButton;
+    bkFinish:
+      Result := TJvWizardFinishButton;
+    bkCancel:
+      Result := TJvWizardCancelButton;
+    bkHelp:
+      Result := TJvWizardHelpButton;
   else
     Result := TJvWizardButtonControl;
   end;
@@ -2618,6 +2627,14 @@ begin
       FNavigateButtons[AKind].Control := AButton;
     end;
   end;
+end;
+
+procedure TJvWizard.DestroyNavigateButtons;
+var
+  AKind: TJvWizardButtonKind;
+begin
+  for AKind := Low(TJvWizardButtonKind) to High(TJvWizardButtonKind) do
+    FNavigateButtons[AKind].Free;
 end;
 
 function TJvWizard.FindNextPage(PageIndex: Integer; const Step: Integer = 1;
@@ -2807,7 +2824,7 @@ begin
       else
         ButtonBarHeight := ciButtonBarHeight;
     end;
-    { YW - At design time, if the Page's Enabled property set to false,
+    { YW - At design time, if the Page's Enabled property set to False,
       the following if block never gets called. }
     if Assigned(ParentForm) and Assigned(FActivePage) and
       (ParentForm.ActiveControl = FActivePage) then
@@ -2869,6 +2886,7 @@ procedure TJvWizard.Paint;
 var
   R: TRect;
 begin
+  if csCreating in ControlState then exit;
   R := ClientRect;
   if Color <> clNone then
   begin
@@ -3064,7 +3082,7 @@ begin
       LocateButton(bkCancel, -ciButtonPlacement - 2);
       LocateButton(bkFinish, -1);
     end;
-    LocateButton(bkNext, -1);
+    LocateButton(bkNext, -2);
     LocateButton(bkBack, 0);
   end
   else // Hide all buttons
@@ -3121,7 +3139,8 @@ end;
 
 procedure TJvWizard.Resize;
 begin
-  RepositionButtons;
+  if not (csCreating in ControlState) then
+    RepositionButtons;
   inherited Resize;
 end;
 

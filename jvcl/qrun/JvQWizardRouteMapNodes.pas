@@ -48,7 +48,7 @@ uses
   Classes,
   
   
-  QWindows, QGraphics, QStdCtrls, Types,
+  QWindows, QGraphics, QControls, QStdCtrls, Types,
   
   JvQWizard;
 
@@ -223,6 +223,8 @@ var
   AFont: TFont;
   IsFirstPage, IsLastPage: Boolean;
 begin
+  if [csCreating, csRecreating] * ControlState <> [] then exit;
+  try
   ARect := ClientRect;
   with Canvas do
   begin
@@ -336,13 +338,16 @@ begin
             Brush.Style := bsClear;
             Font.Assign(AFont);
 
+
             if FUsePageTitle then
-              DrawText(Canvas.Handle,
-                PChar((Pages[I] as TJvWizardCustomPage).Header.Title.Text), -1,
+              DrawText(Canvas,
+                (Pages[I] as TJvWizardCustomPage).Header.Title.Text, -1,
                 ATextRect, DT_LEFT or DT_SINGLELINE or DT_VCENTER)
             else
-              DrawTextW(Canvas.Handle, PWideChar(Pages[I].Caption), -1, ATextRect,
+              DrawText(Canvas, Pages[I].Caption, -1, ATextRect,
                 DT_LEFT or DT_SINGLELINE or DT_VCENTER);
+
+
           finally
             OffsetRect(ARect, 0, FItemHeight);
           end;
@@ -351,6 +356,8 @@ begin
     finally
       AFont.Free;
     end;
+  end;
+  except
   end;
 end;
 
