@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-09
+Last Modified: 2004-03-20
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -42,8 +42,8 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvTypes, JvDsgnConsts,
-  JvStringListToHTML, JvFormToHTML, JvFTPGrabber, JvHTMLParser, JvHTTPGrabber,
-  JvMultiHTTPGrabber, JvRGBToHTML, JvRichEditToHTML, JvStrToHTML, JvMail,
+  JvStringListToHTML, JvFormToHTML, JvHTMLParser,
+  JvRGBToHTML, JvRichEditToHTML, JvStrToHTML, JvMail,
   JvMailEditor, JvHTMLParserEditor, JvUrlListGrabber, JvUrlGrabbers,
   JvUrlListGrabberEditors;
 
@@ -56,17 +56,15 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteInterNetWork, [TJvFTPGrabber, TJvHTTPGrabber,
-    TJvMultiHTTPGrabber, TJvMail, TJvHTMLParser, TJvStrToHTML,
+  RegisterComponents(RsPaletteInterNetWork, [TJvFTPURLGrabber, TJvHTTPURLGrabber,
+    TJvLocalFileURLGrabber, TJvMail, TJvHTMLParser, TJvStrToHTML,
     TJvStringListToHTML, TJvFormToHTML, TJvRichEditToHTML, TJvRGBToHTML,
     TJvUrlListGrabber]);
 
   RegisterPropertyEditor(TypeInfo(TJvParserInfoList),
     TJvHTMLParser, 'Parser', TJvHTMLParserEditor);
-  RegisterPropertyEditor(TypeInfo(TJvUrlGrabberDefaultPropertiesList),
-    TJvUrlListGrabber, '', TJvUrlGrabberDefaultPropertiesListEditor);
-  RegisterPropertyEditor(TypeInfo(TJvUrlGrabberDefaultProperties),
-    TJvUrlGrabberDefPropEdTrick, '', TJvUrlGrabberDefaultPropertiesEditor);
+  RegisterPropertyEditor(TypeInfo(TJvUrlGrabberIndex),
+    TJvUrlListGrabber, '', TJvUrlGrabberIndexProperty);
 
   RegisterComponentEditor(TJvMail, TJvMailEditor);
 end;

@@ -234,3 +234,6 @@ TglExportCaptions=TJvExportCaptions
 TExportRecordEvent=TJvExportRecordEvent
 TExportFieldEvent=TJvExportFieldEvent
 TGetLineFontEvent=TJvGetLineFontEvent
+TJvFtpGrabber=TJvFtpUrlGrabber
+TJvHttpGrabber=TJvHttpUrlGrabber
+TJvMultiHttpGrabber=TJvUrlListGrabber
