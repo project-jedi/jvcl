@@ -2041,9 +2041,9 @@ begin
   with JvInterpreterAdapter do
   begin
     { TQRNotifyOperation }
-    AddConst(cQuickrpt, 'qrMasterDataAdvance', qrMasterDataAdvance);
-    AddConst(cQuickrpt, 'qrBandPrinted', qrBandPrinted);
-    AddConst(cQuickrpt, 'qrBandSizeChange', qrBandSizeChange);
+    AddConst(cQuickrpt, 'qrMasterDataAdvance', Ord(qrMasterDataAdvance));
+    AddConst(cQuickrpt, 'qrBandPrinted', Ord(qrBandPrinted));
+    AddConst(cQuickrpt, 'qrBandSizeChange', Ord(qrBandSizeChange));
     { TQRController }
     AddClass(cQuickrpt, TQRController, 'TQRController');
     AddGet(TQRController, 'Create', TQRController_Create, 1, [varEmpty], varEmpty);
@@ -2088,11 +2088,11 @@ begin
     AddGet(TQRFrame, 'Width', TQRFrame_Read_Width, 0, [0], varEmpty);
     AddSet(TQRFrame, 'Width', TQRFrame_Write_Width, 0, [0]);
     { TQRUnit }
-    AddConst(cQuickrpt, 'MM', MM);
-    AddConst(cQuickrpt, 'Inches', Inches);
-    AddConst(cQuickrpt, 'Pixels', Pixels);
-    AddConst(cQuickrpt, 'Characters', Characters);
-    AddConst(cQuickrpt, 'Native', Native);
+    AddConst(cQuickrpt, 'MM', Ord(MM));
+    AddConst(cQuickrpt, 'Inches', Ord(Inches));
+    AddConst(cQuickrpt, 'Pixels', Ord(Pixels));
+    AddConst(cQuickrpt, 'Characters', Ord(Characters));
+    AddConst(cQuickrpt, 'Native', Ord(Native));
     { TQRUnitBase }
     AddClass(cQuickrpt, TQRUnitBase, 'TQRUnitBase');
     AddGet(TQRUnitBase, 'Create', TQRUnitBase_Create, 0, [0], varEmpty);
@@ -2233,17 +2233,17 @@ begin
     AddGet(TQuickRepBands, 'HasSummary', TQuickRepBands_Read_HasSummary, 0, [0], varEmpty);
     AddSet(TQuickRepBands, 'HasSummary', TQuickRepBands_Write_HasSummary, 0, [0]);
     { TQRState }
-    AddConst(cQuickrpt, 'qrAvailable', qrAvailable);
-    AddConst(cQuickrpt, 'qrPrepare', qrPrepare);
-    AddConst(cQuickrpt, 'qrPreview', qrPreview);
-    AddConst(cQuickrpt, 'qrPrint', qrPrint);
-    AddConst(cQuickrpt, 'qrEdit', qrEdit);
+    AddConst(cQuickrpt, 'qrAvailable', Ord(qrAvailable));
+    AddConst(cQuickrpt, 'qrPrepare', Ord(qrPrepare));
+    AddConst(cQuickrpt, 'qrPreview', Ord(qrPreview));
+    AddConst(cQuickrpt, 'qrPrint', Ord(qrPrint));
+    AddConst(cQuickrpt, 'qrEdit', Ord(qrEdit));
     { TQuickRepPrinterSettings }
     AddClass(cQuickrpt, TQuickRepPrinterSettings, 'TQuickRepPrinterSettings');
     { TQuickReportOption }
-    AddConst(cQuickrpt, 'FirstPageHeader', FirstPageHeader);
-    AddConst(cQuickrpt, 'LastPageFooter', LastPageFooter);
-    AddConst(cQuickrpt, 'Compression', Compression);
+    AddConst(cQuickrpt, 'FirstPageHeader', Ord(FirstPageHeader));
+    AddConst(cQuickrpt, 'LastPageFooter', Ord(LastPageFooter));
+    AddConst(cQuickrpt, 'Compression', Ord(Compression));
     { TQuickRep }
     AddClass(cQuickrpt, TQuickRep, 'TQuickRep');
     AddGet(TQuickRep, 'Create', TQuickRep_Create, 1, [varEmpty], varEmpty);

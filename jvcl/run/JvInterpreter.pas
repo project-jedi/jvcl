@@ -502,10 +502,10 @@ type
     procedure AddIDSetEx(AClassType: TClass;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word; Data: Pointer); dynamic;
-    procedure AddFun(UnitName: string; Identifier: string;
+    procedure AddFunction(UnitName: string; Identifier: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word); dynamic;
-    procedure AddFunEx(UnitName: string; Identifier: string;
+    procedure AddFunctionEx(UnitName: string; Identifier: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word; Data: Pointer); dynamic;
     { function AddDGet under construction - don't use it }
@@ -535,7 +535,7 @@ type
     procedure AddRecSetEx(UnitName: string; RecordType: string; Identifier: string;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word; Data: Pointer); dynamic;
-    procedure AddConst(UnitName: string; Identifier: string; Value: Variant); dynamic;
+    procedure AddConst(UnitName: string; Identifier: string; Value: Integer); dynamic;
     procedure AddConstEx(AUnitName: string; AIdentifier: string; AValue: Variant;
       AData: Pointer); dynamic;
     procedure AddExtFun(UnitName: string; Identifier: string; DllInstance: HINST;
@@ -2816,7 +2816,7 @@ begin
         CallConvention, Data);
   for I := 0 to Source.FFunctionList.Count - 1 do
     with TJvInterpreterMethod(Source.FFunctionList[I]) do
-      AddFunEx(UnitName, Identifier, Func, ParamCount, ParamTypes, ResTyp, Data);
+      AddFunctionEx(UnitName, Identifier, Func, ParamCount, ParamTypes, ResTyp, Data);
   for I := 0 to Source.FExtUnitList.Count - 1 do
     with TJvInterpreterIdentifier(Source.FExtUnitList[I]) do
       AddExtUnitEx(Identifier, Data);
@@ -3127,14 +3127,14 @@ begin
   FIDSetList.Add(JvInterpreterMethod);
 end;
 
-procedure TJvInterpreterAdapter.AddFun(UnitName: string; Identifier: string;
+procedure TJvInterpreterAdapter.AddFunction(UnitName: string; Identifier: string;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word);
 begin
-  AddFunEx(UnitName, Identifier, GetFunc, ParamCount, ParamTypes, ResTyp, nil);
+  AddFunctionEx(UnitName, Identifier, GetFunc, ParamCount, ParamTypes, ResTyp, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddFunEx(UnitName: string; Identifier: string;
+procedure TJvInterpreterAdapter.AddFunctionEx(UnitName: string; Identifier: string;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word; Data: Pointer);
 var
@@ -3233,7 +3233,7 @@ begin
 end;
 
 procedure TJvInterpreterAdapter.AddConst(UnitName: string; Identifier: string;
-  Value: Variant);
+  Value: Integer);
 begin
   AddConstEx(UnitName, Identifier, Value, nil);
 end;

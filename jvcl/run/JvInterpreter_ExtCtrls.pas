@@ -474,12 +474,12 @@ begin
   with JvInterpreterAdapter do
   begin
     { TShapeType }
-    AddConst(cExtCtrls, 'stRectangle', stRectangle);
-    AddConst(cExtCtrls, 'stSquare', stSquare);
-    AddConst(cExtCtrls, 'stRoundRect', stRoundRect);
-    AddConst(cExtCtrls, 'stRoundSquare', stRoundSquare);
-    AddConst(cExtCtrls, 'stEllipse', stEllipse);
-    AddConst(cExtCtrls, 'stCircle', stCircle);
+    AddConst(cExtCtrls, 'stRectangle', Ord(stRectangle));
+    AddConst(cExtCtrls, 'stSquare', Ord(stSquare));
+    AddConst(cExtCtrls, 'stRoundRect', Ord(stRoundRect));
+    AddConst(cExtCtrls, 'stRoundSquare', Ord(stRoundSquare));
+    AddConst(cExtCtrls, 'stEllipse', Ord(stEllipse));
+    AddConst(cExtCtrls, 'stCircle', Ord(stCircle));
     { TShape }
     AddClass(cExtCtrls, TShape, 'TShape');
     AddGet(TShape, 'Create', TShape_Create, 1, [varEmpty], varEmpty);
@@ -510,15 +510,15 @@ begin
     AddGet(TImage, 'Transparent', TImage_Read_Transparent, 0, [0], varEmpty);
     AddSet(TImage, 'Transparent', TImage_Write_Transparent, 0, [0]);
     { TBevelStyle }
-    AddConst(cExtCtrls, 'bsLowered', bsLowered);
-    AddConst(cExtCtrls, 'bsRaised', bsRaised);
+    AddConst(cExtCtrls, 'bsLowered', Ord(bsLowered));
+    AddConst(cExtCtrls, 'bsRaised', Ord(bsRaised));
     { TBevelShape }
-    AddConst(cExtCtrls, 'bsBox', bsBox);
-    AddConst(cExtCtrls, 'bsFrame', bsFrame);
-    AddConst(cExtCtrls, 'bsTopLine', bsTopLine);
-    AddConst(cExtCtrls, 'bsBottomLine', bsBottomLine);
-    AddConst(cExtCtrls, 'bsLeftLine', bsLeftLine);
-    AddConst(cExtCtrls, 'bsRightLine', bsRightLine);
+    AddConst(cExtCtrls, 'bsBox', Ord(bsBox));
+    AddConst(cExtCtrls, 'bsFrame', Ord(bsFrame));
+    AddConst(cExtCtrls, 'bsTopLine', Ord(bsTopLine));
+    AddConst(cExtCtrls, 'bsBottomLine', Ord(bsBottomLine));
+    AddConst(cExtCtrls, 'bsLeftLine', Ord(bsLeftLine));
+    AddConst(cExtCtrls, 'bsRightLine', Ord(bsRightLine));
     { TBevel }
     AddClass(cExtCtrls, TBevel, 'TBevel');
     AddGet(TBevel, 'Create', TBevel_Create, 1, [varEmpty], varEmpty);
@@ -534,9 +534,9 @@ begin
     AddGet(TTimer, 'Interval', TTimer_Read_Interval, 0, [0], varEmpty);
     AddSet(TTimer, 'Interval', TTimer_Write_Interval, 0, [0]);
     { TPanelBevel }
-    AddConst(cExtCtrls, 'bvNone', bvNone);
-    AddConst(cExtCtrls, 'bvLowered', bvLowered);
-    AddConst(cExtCtrls, 'bvRaised', bvRaised);
+    AddConst(cExtCtrls, 'bvNone', Ord(bvNone));
+    AddConst(cExtCtrls, 'bvLowered', Ord(bvLowered));
+    AddConst(cExtCtrls, 'bvRaised', Ord(bvRaised));
     { TCustomPanel }
     AddClass(cExtCtrls, TCustomPanel, 'TCustomPanel');
     { TPanel }

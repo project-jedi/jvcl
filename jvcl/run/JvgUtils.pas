@@ -1438,7 +1438,7 @@ begin
       with Control.Parent.Controls[I] do
       begin
         CtlR := Bounds(Left, Top, Width, Height);
-        if Bool(IntersectRect(R, SelfR, CtlR)) and Visible then
+        if IntersectRect(R, SelfR, CtlR) and Visible then
         begin
           SaveIndex := SaveDC(DC);
           SetViewportOrgEx(DC, Left + X, Top + Y, nil);

@@ -1465,7 +1465,7 @@ begin
           with TGraphicControl(Control.Parent.Controls[i]) do
           begin
             CtlR := Bounds(Left, Top, Width, Height);
-            if BOOL(InterSectRect(r, SelfR, CtlR)) and Visible then
+            if IntersectRect(r, SelfR, CtlR) and Visible then
             begin
               ControlState := ControlState + [csPaintCopy];
               SaveIndex := SaveDC(DC);

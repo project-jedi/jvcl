@@ -589,9 +589,9 @@ begin
     AddGet(TGroupBox, 'Create', TGroupBox_Create, 1, [varEmpty], varEmpty);
     
     { TTextLayout }
-    AddConst(cStdCtrls, 'tlTop', tlTop);
-    AddConst(cStdCtrls, 'tlCenter', tlCenter);
-    AddConst(cStdCtrls, 'tlBottom', tlBottom);
+    AddConst(cStdCtrls, 'tlTop', Ord(tlTop));
+    AddConst(cStdCtrls, 'tlCenter', Ord(tlCenter));
+    AddConst(cStdCtrls, 'tlBottom', Ord(tlBottom));
     
     { TCustomLabel }
     AddClass(cStdCtrls, TCustomLabel, 'TCustomLabel');
@@ -601,9 +601,9 @@ begin
     AddClass(cStdCtrls, TLabel, 'TLabel');
     AddGet(TLabel, 'Create', TLabel_Create, 1, [varEmpty], varEmpty);
     { TEditCharCase }
-    AddConst(cStdCtrls, 'ecNormal', ecNormal);
-    AddConst(cStdCtrls, 'ecUpperCase', ecUpperCase);
-    AddConst(cStdCtrls, 'ecLowerCase', ecLowerCase);
+    AddConst(cStdCtrls, 'ecNormal', Ord(ecNormal));
+    AddConst(cStdCtrls, 'ecUpperCase', Ord(ecUpperCase));
+    AddConst(cStdCtrls, 'ecLowerCase', Ord(ecLowerCase));
     { TCustomEdit }
     AddClass(cStdCtrls, TCustomEdit, 'TCustomEdit');
     AddGet(TCustomEdit, 'Create', TCustomEdit_Create, 1, [varEmpty], varEmpty);
@@ -627,10 +627,10 @@ begin
     AddClass(cStdCtrls, TEdit, 'TEdit');
     AddGet(TEdit, 'Create', TEdit_Create, 1, [varEmpty], varEmpty);
     { TScrollStyle }
-    AddConst(cStdCtrls, 'ssNone', ssNone);
-    AddConst(cStdCtrls, 'ssHorizontal', ssHorizontal);
-    AddConst(cStdCtrls, 'ssVertical', ssVertical);
-    AddConst(cStdCtrls, 'ssBoth', ssBoth);
+    AddConst(cStdCtrls, 'ssNone', Ord(ssNone));
+    AddConst(cStdCtrls, 'ssHorizontal', Ord(ssHorizontal));
+    AddConst(cStdCtrls, 'ssVertical', Ord(ssVertical));
+    AddConst(cStdCtrls, 'ssBoth', Ord(ssBoth));
     { TCustomMemo }
     AddClass(cStdCtrls, TCustomMemo, 'TCustomMemo');
     AddGet(TCustomMemo, 'Create', TCustomMemo_Create, 1, [varEmpty], varEmpty);
@@ -640,17 +640,17 @@ begin
     AddClass(cStdCtrls, TMemo, 'TMemo');
     AddGet(TMemo, 'Create', TMemo_Create, 1, [varEmpty], varEmpty);
     { TComboBoxStyle }
-    AddConst(cStdCtrls, 'csDropDown', csDropDown);
-    AddConst(cStdCtrls, 'csSimple', csSimple);
-    AddConst(cStdCtrls, 'csDropDownList', csDropDownList);
-    AddConst(cStdCtrls, 'csOwnerDrawFixed', csOwnerDrawFixed);
-    AddConst(cStdCtrls, 'csOwnerDrawVariable', csOwnerDrawVariable);
+    AddConst(cStdCtrls, 'csDropDown', Ord(csDropDown));
+    AddConst(cStdCtrls, 'csSimple', Ord(csSimple));
+    AddConst(cStdCtrls, 'csDropDownList', Ord(csDropDownList));
+    AddConst(cStdCtrls, 'csOwnerDrawFixed', Ord(csOwnerDrawFixed));
+    AddConst(cStdCtrls, 'csOwnerDrawVariable', Ord(csOwnerDrawVariable));
     { TOwnerDrawState }
-    AddConst(cStdCtrls, 'odSelected', odSelected);
-    AddConst(cStdCtrls, 'odGrayed', odGrayed);
-    AddConst(cStdCtrls, 'odDisabled', odDisabled);
-    AddConst(cStdCtrls, 'odChecked', odChecked);
-    AddConst(cStdCtrls, 'odFocused', odFocused);
+    AddConst(cStdCtrls, 'odSelected', Ord(odSelected));
+    AddConst(cStdCtrls, 'odGrayed', Ord(odGrayed));
+    AddConst(cStdCtrls, 'odDisabled', Ord(odDisabled));
+    AddConst(cStdCtrls, 'odChecked', Ord(odChecked));
+    AddConst(cStdCtrls, 'odFocused', Ord(odFocused));
     { TCustomComboBox }
     AddClass(cStdCtrls, TCustomComboBox, 'TCustomComboBox');
     AddGet(TCustomComboBox, 'Create', TCustomComboBox_Create, 1, [varEmpty], varEmpty);
@@ -677,9 +677,9 @@ begin
     AddGet(TButton, 'Create', TButton_Create, 1, [varEmpty], varEmpty);
     AddGet(TButton, 'Click', TButton_Click, 0, [0], varEmpty);
     { TCheckBoxState }
-    AddConst(cStdCtrls, 'cbUnchecked', cbUnchecked);
-    AddConst(cStdCtrls, 'cbChecked', cbChecked);
-    AddConst(cStdCtrls, 'cbGrayed', cbGrayed);
+    AddConst(cStdCtrls, 'cbUnchecked', Ord(cbUnchecked));
+    AddConst(cStdCtrls, 'cbChecked', Ord(cbChecked));
+    AddConst(cStdCtrls, 'cbGrayed', Ord(cbGrayed));
     { TCustomCheckBox }
     AddClass(cStdCtrls, TCustomCheckBox, 'TCustomCheckBox');
     AddGet(TCustomCheckBox, 'Create', TCustomCheckBox_Create, 1, [varEmpty], varEmpty);
@@ -690,9 +690,9 @@ begin
     AddClass(cStdCtrls, TRadioButton, 'TRadioButton');
     AddGet(TRadioButton, 'Create', TRadioButton_Create, 1, [varEmpty], varEmpty);
     { TListBoxStyle }
-    AddConst(cStdCtrls, 'lbStandard', lbStandard);
-    AddConst(cStdCtrls, 'lbOwnerDrawFixed', lbOwnerDrawFixed);
-    AddConst(cStdCtrls, 'lbOwnerDrawVariable', lbOwnerDrawVariable);
+    AddConst(cStdCtrls, 'lbStandard', Ord(lbStandard));
+    AddConst(cStdCtrls, 'lbOwnerDrawFixed', Ord(lbOwnerDrawFixed));
+    AddConst(cStdCtrls, 'lbOwnerDrawVariable', Ord(lbOwnerDrawVariable));
     { TCustomListBox }
     AddClass(cStdCtrls, TCustomListBox, 'TCustomListBox');
     AddGet(TCustomListBox, 'Create', TCustomListBox_Create, 1, [varEmpty], varEmpty);
@@ -713,31 +713,30 @@ begin
     AddClass(cStdCtrls, TListBox, 'TListBox');
     AddGet(TListBox, 'Create', TListBox_Create, 1, [varEmpty], varEmpty);
     { TScrollCode }
-    AddConst(cStdCtrls, 'scLineUp', scLineUp);
-    AddConst(cStdCtrls, 'scLineDown', scLineDown);
-    AddConst(cStdCtrls, 'scPageUp', scPageUp);
-    AddConst(cStdCtrls, 'scPageDown', scPageDown);
-    AddConst(cStdCtrls, 'scPosition', scPosition);
-    AddConst(cStdCtrls, 'scTrack', scTrack);
-    AddConst(cStdCtrls, 'scTop', scTop);
-    AddConst(cStdCtrls, 'scBottom', scBottom);
-    AddConst(cStdCtrls, 'scEndScroll', scEndScroll);
+    AddConst(cStdCtrls, 'scLineUp', Ord(scLineUp));
+    AddConst(cStdCtrls, 'scLineDown', Ord(scLineDown));
+    AddConst(cStdCtrls, 'scPageUp', Ord(scPageUp));
+    AddConst(cStdCtrls, 'scPageDown', Ord(scPageDown));
+    AddConst(cStdCtrls, 'scPosition', Ord(scPosition));
+    AddConst(cStdCtrls, 'scTrack', Ord(scTrack));
+    AddConst(cStdCtrls, 'scTop', Ord(scTop));
+    AddConst(cStdCtrls, 'scBottom', Ord(scBottom));
+    AddConst(cStdCtrls, 'scEndScroll', Ord(scEndScroll));
     { TScrollBar }
     AddClass(cStdCtrls, TScrollBar, 'TScrollBar');
     AddGet(TScrollBar, 'Create', TScrollBar_Create, 1, [varEmpty], varEmpty);
     AddGet(TScrollBar, 'SetParams', TScrollBar_SetParams, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     
     { TStaticBorderStyle }
-    AddConst(cStdCtrls, 'sbsNone', sbsNone);
-    AddConst(cStdCtrls, 'sbsSingle', sbsSingle);
-    AddConst(cStdCtrls, 'sbsSunken', sbsSunken);
+    AddConst(cStdCtrls, 'sbsNone', Ord(sbsNone));
+    AddConst(cStdCtrls, 'sbsSingle', Ord(sbsSingle));
+    AddConst(cStdCtrls, 'sbsSunken', Ord(sbsSunken));
     { TCustomStaticText }
     AddClass(cStdCtrls, TCustomStaticText, 'TCustomStaticText');
     AddGet(TCustomStaticText, 'Create', TCustomStaticText_Create, 1, [varEmpty], varEmpty);
     { TStaticText }
     AddClass(cStdCtrls, TStaticText, 'TStaticText');
     AddGet(TStaticText, 'Create', TStaticText_Create, 1, [varEmpty], varEmpty);
-    
 
     AddHandler(cStdCtrls, 'TDrawItemEvent', TJvInterpreterStdCtrlsEvent, @TJvInterpreterStdCtrlsEvent.DrawItemEvent);
     AddHandler(cStdCtrls, 'TMeasureItemEvent', TJvInterpreterStdCtrlsEvent,

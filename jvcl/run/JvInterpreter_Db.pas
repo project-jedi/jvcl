@@ -40,8 +40,7 @@ procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapt
 implementation
 
 uses
-  Classes,
-  Db;
+  Classes, Db;
 
 { EDatabaseError }
 
@@ -2498,59 +2497,59 @@ begin
   with JvInterpreterAdapter do
   begin
     { TDataSetState }
-    AddConst(cDb, 'dsInactive', dsInactive);
-    AddConst(cDb, 'dsBrowse', dsBrowse);
-    AddConst(cDb, 'dsEdit', dsEdit);
-    AddConst(cDb, 'dsInsert', dsInsert);
-    AddConst(cDb, 'dsSetKey', dsSetKey);
-    AddConst(cDb, 'dsCalcFields', dsCalcFields);
-    AddConst(cDb, 'dsFilter', dsFilter);
-    AddConst(cDb, 'dsNewValue', dsNewValue);
-    AddConst(cDb, 'dsOldValue', dsOldValue);
-    AddConst(cDb, 'dsCurValue', dsCurValue);
+    AddConst(cDb, 'dsInactive', Ord(dsInactive));
+    AddConst(cDb, 'dsBrowse', Ord(dsBrowse));
+    AddConst(cDb, 'dsEdit', Ord(dsEdit));
+    AddConst(cDb, 'dsInsert', Ord(dsInsert));
+    AddConst(cDb, 'dsSetKey', Ord(dsSetKey));
+    AddConst(cDb, 'dsCalcFields', Ord(dsCalcFields));
+    AddConst(cDb, 'dsFilter', Ord(dsFilter));
+    AddConst(cDb, 'dsNewValue', Ord(dsNewValue));
+    AddConst(cDb, 'dsOldValue', Ord(dsOldValue));
+    AddConst(cDb, 'dsCurValue', Ord(dsCurValue));
     { TDataEvent }
-    AddConst(cDb, 'deFieldChange', deFieldChange);
-    AddConst(cDb, 'deRecordChange', deRecordChange);
-    AddConst(cDb, 'deDataSetChange', deDataSetChange);
-    AddConst(cDb, 'deDataSetScroll', deDataSetScroll);
-    AddConst(cDb, 'deLayoutChange', deLayoutChange);
-    AddConst(cDb, 'deUpdateRecord', deUpdateRecord);
-    AddConst(cDb, 'deUpdateState', deUpdateState);
-    AddConst(cDb, 'deCheckBrowseMode', deCheckBrowseMode);
-    AddConst(cDb, 'dePropertyChange', dePropertyChange);
-    AddConst(cDb, 'deFieldListChange', deFieldListChange);
-    AddConst(cDb, 'deFocusControl', deFocusControl);
+    AddConst(cDb, 'deFieldChange', Ord(deFieldChange));
+    AddConst(cDb, 'deRecordChange', Ord(deRecordChange));
+    AddConst(cDb, 'deDataSetChange', Ord(deDataSetChange));
+    AddConst(cDb, 'deDataSetScroll', Ord(deDataSetScroll));
+    AddConst(cDb, 'deLayoutChange', Ord(deLayoutChange));
+    AddConst(cDb, 'deUpdateRecord', Ord(deUpdateRecord));
+    AddConst(cDb, 'deUpdateState', Ord(deUpdateState));
+    AddConst(cDb, 'deCheckBrowseMode', Ord(deCheckBrowseMode));
+    AddConst(cDb, 'dePropertyChange', Ord(dePropertyChange));
+    AddConst(cDb, 'deFieldListChange', Ord(deFieldListChange));
+    AddConst(cDb, 'deFocusControl', Ord(deFocusControl));
     { TUpdateStatus }
-    AddConst(cDb, 'usUnmodified', usUnmodified);
-    AddConst(cDb, 'usModified', usModified);
-    AddConst(cDb, 'usInserted', usInserted);
-    AddConst(cDb, 'usDeleted', usDeleted);
+    AddConst(cDb, 'usUnmodified', Ord(usUnmodified));
+    AddConst(cDb, 'usModified', Ord(usModified));
+    AddConst(cDb, 'usInserted', Ord(usInserted));
+    AddConst(cDb, 'usDeleted', Ord(usDeleted));
     { EDatabaseError }
     AddClass(cDb, EDatabaseError, 'EDatabaseError');
     { TFieldType }
-    AddConst(cDb, 'ftUnknown', ftUnknown);
-    AddConst(cDb, 'ftString', ftString);
-    AddConst(cDb, 'ftSmallint', ftSmallint);
-    AddConst(cDb, 'ftInteger', ftInteger);
-    AddConst(cDb, 'ftWord', ftWord);
-    AddConst(cDb, 'ftBoolean', ftBoolean);
-    AddConst(cDb, 'ftFloat', ftFloat);
-    AddConst(cDb, 'ftCurrency', ftCurrency);
-    AddConst(cDb, 'ftBCD', ftBCD);
-    AddConst(cDb, 'ftDate', ftDate);
-    AddConst(cDb, 'ftTime', ftTime);
-    AddConst(cDb, 'ftDateTime', ftDateTime);
-    AddConst(cDb, 'ftBytes', ftBytes);
-    AddConst(cDb, 'ftVarBytes', ftVarBytes);
-    AddConst(cDb, 'ftAutoInc', ftAutoInc);
-    AddConst(cDb, 'ftBlob', ftBlob);
-    AddConst(cDb, 'ftMemo', ftMemo);
-    AddConst(cDb, 'ftGraphic', ftGraphic);
-    AddConst(cDb, 'ftFmtMemo', ftFmtMemo);
-    AddConst(cDb, 'ftParadoxOle', ftParadoxOle);
-    AddConst(cDb, 'ftDBaseOle', ftDBaseOle);
-    AddConst(cDb, 'ftTypedBinary', ftTypedBinary);
-    AddConst(cDb, 'ftCursor', ftCursor);
+    AddConst(cDb, 'ftUnknown', Ord(ftUnknown));
+    AddConst(cDb, 'ftString', Ord(ftString));
+    AddConst(cDb, 'ftSmallint', Ord(ftSmallint));
+    AddConst(cDb, 'ftInteger', Ord(ftInteger));
+    AddConst(cDb, 'ftWord', Ord(ftWord));
+    AddConst(cDb, 'ftBoolean', Ord(ftBoolean));
+    AddConst(cDb, 'ftFloat', Ord(ftFloat));
+    AddConst(cDb, 'ftCurrency', Ord(ftCurrency));
+    AddConst(cDb, 'ftBCD', Ord(ftBCD));
+    AddConst(cDb, 'ftDate', Ord(ftDate));
+    AddConst(cDb, 'ftTime', Ord(ftTime));
+    AddConst(cDb, 'ftDateTime', Ord(ftDateTime));
+    AddConst(cDb, 'ftBytes', Ord(ftBytes));
+    AddConst(cDb, 'ftVarBytes', Ord(ftVarBytes));
+    AddConst(cDb, 'ftAutoInc', Ord(ftAutoInc));
+    AddConst(cDb, 'ftBlob', Ord(ftBlob));
+    AddConst(cDb, 'ftMemo', Ord(ftMemo));
+    AddConst(cDb, 'ftGraphic', Ord(ftGraphic));
+    AddConst(cDb, 'ftFmtMemo', Ord(ftFmtMemo));
+    AddConst(cDb, 'ftParadoxOle', Ord(ftParadoxOle));
+    AddConst(cDb, 'ftDBaseOle', Ord(ftDBaseOle));
+    AddConst(cDb, 'ftTypedBinary', Ord(ftTypedBinary));
+    AddConst(cDb, 'ftCursor', Ord(ftCursor));
     { TFieldDef }
     AddClass(cDb, TFieldDef, 'TFieldDef');
     AddGet(TFieldDef, 'Create', TFieldDef_Create, 6, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty],
@@ -2578,10 +2577,10 @@ begin
     AddGet(TFieldDefs, 'Count', TFieldDefs_Read_Count, 0, [0], varEmpty);
     AddIGet(TFieldDefs, 'Items', TFieldDefs_Read_Items, 1, [0], varEmpty);
     { TFieldKind }
-    AddConst(cDb, 'fkData', fkData);
-    AddConst(cDb, 'fkCalculated', fkCalculated);
-    AddConst(cDb, 'fkLookup', fkLookup);
-    AddConst(cDb, 'fkInternalCalc', fkInternalCalc);
+    AddConst(cDb, 'fkData', Ord(fkData));
+    AddConst(cDb, 'fkCalculated', Ord(fkCalculated));
+    AddConst(cDb, 'fkLookup', Ord(fkLookup));
+    AddConst(cDb, 'fkInternalCalc', Ord(fkInternalCalc));
     { TField }
     AddClass(cDb, TField, 'TField');
     AddGet(TField, 'Create', TField_Create, 1, [varEmpty], varEmpty);
@@ -2796,11 +2795,11 @@ begin
     AddClass(cDb, TGraphicField, 'TGraphicField');
     AddGet(TGraphicField, 'Create', TGraphicField_Create, 1, [varEmpty], varEmpty);
     { TIndexOptions }
-    AddConst(cDb, 'ixPrimary', ixPrimary);
-    AddConst(cDb, 'ixUnique', ixUnique);
-    AddConst(cDb, 'ixDescending', ixDescending);
-    AddConst(cDb, 'ixCaseInsensitive', ixCaseInsensitive);
-    AddConst(cDb, 'ixExpression', ixExpression);
+    AddConst(cDb, 'ixPrimary', Ord(ixPrimary));
+    AddConst(cDb, 'ixUnique', Ord(ixUnique));
+    AddConst(cDb, 'ixDescending', Ord(ixDescending));
+    AddConst(cDb, 'ixCaseInsensitive', Ord(ixCaseInsensitive));
+    AddConst(cDb, 'ixExpression', Ord(ixExpression));
     { TIndexDef }
     AddClass(cDb, TIndexDef, 'TIndexDef');
     AddGet(TIndexDef, 'Create', TIndexDef_Create, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
@@ -2875,40 +2874,40 @@ begin
     AddIGet(TCheckConstraints, 'Items', TCheckConstraints_Read_Items, 1, [0], varEmpty);
     AddISet(TCheckConstraints, 'Items', TCheckConstraints_Write_Items, 1, [0]);
     { TBookmarkFlag }
-    AddConst(cDb, 'bfCurrent', bfCurrent);
-    AddConst(cDb, 'bfBOF', bfBOF);
-    AddConst(cDb, 'bfEOF', bfEOF);
-    AddConst(cDb, 'bfInserted', bfInserted);
+    AddConst(cDb, 'bfCurrent', Ord(bfCurrent));
+    AddConst(cDb, 'bfBOF', Ord(bfBOF));
+    AddConst(cDb, 'bfEOF', Ord(bfEOF));
+    AddConst(cDb, 'bfInserted', Ord(bfInserted));
     { TGetMode }
-    AddConst(cDb, 'gmCurrent', gmCurrent);
-    AddConst(cDb, 'gmNext', gmNext);
-    AddConst(cDb, 'gmPrior', gmPrior);
+    AddConst(cDb, 'gmCurrent', Ord(gmCurrent));
+    AddConst(cDb, 'gmNext', Ord(gmNext));
+    AddConst(cDb, 'gmPrior', Ord(gmPrior));
     { TGetResult }
-    AddConst(cDb, 'grOK', grOK);
-    AddConst(cDb, 'grBOF', grBOF);
-    AddConst(cDb, 'grEOF', grEOF);
-    AddConst(cDb, 'grError', grError);
+    AddConst(cDb, 'grOK', Ord(grOK));
+    AddConst(cDb, 'grBOF', Ord(grBOF));
+    AddConst(cDb, 'grEOF', Ord(grEOF));
+    AddConst(cDb, 'grError', Ord(grError));
     { TResyncMode }
-    AddConst(cDb, 'rmExact', rmExact);
-    AddConst(cDb, 'rmCenter', rmCenter);
+    AddConst(cDb, 'rmExact', Ord(rmExact));
+    AddConst(cDb, 'rmCenter', Ord(rmCenter));
     { TDataAction }
-    AddConst(cDb, 'daFail', daFail);
-    AddConst(cDb, 'daAbort', daAbort);
-    AddConst(cDb, 'daRetry', daRetry);
+    AddConst(cDb, 'daFail', Ord(daFail));
+    AddConst(cDb, 'daAbort', Ord(daAbort));
+    AddConst(cDb, 'daRetry', Ord(daRetry));
     { TUpdateKind }
-    AddConst(cDb, 'ukModify', ukModify);
-    AddConst(cDb, 'ukInsert', ukInsert);
-    AddConst(cDb, 'ukDelete', ukDelete);
+    AddConst(cDb, 'ukModify', Ord(ukModify));
+    AddConst(cDb, 'ukInsert', Ord(ukInsert));
+    AddConst(cDb, 'ukDelete', Ord(ukDelete));
     { TBlobStreamMode }
-    AddConst(cDb, 'bmRead', bmRead);
-    AddConst(cDb, 'bmWrite', bmWrite);
-    AddConst(cDb, 'bmReadWrite', bmReadWrite);
+    AddConst(cDb, 'bmRead', Ord(bmRead));
+    AddConst(cDb, 'bmWrite', Ord(bmWrite));
+    AddConst(cDb, 'bmReadWrite', Ord(bmReadWrite));
     { TLocateOption }
-    AddConst(cDb, 'loCaseInsensitive', loCaseInsensitive);
-    AddConst(cDb, 'loPartialKey', loPartialKey);
+    AddConst(cDb, 'loCaseInsensitive', Ord(loCaseInsensitive));
+    AddConst(cDb, 'loPartialKey', Ord(loPartialKey));
     { TFilterOption }
-    AddConst(cDb, 'foCaseInsensitive', foCaseInsensitive);
-    AddConst(cDb, 'foNoPartialCompare', foNoPartialCompare);
+    AddConst(cDb, 'foCaseInsensitive', Ord(foCaseInsensitive));
+    AddConst(cDb, 'foNoPartialCompare', Ord(foNoPartialCompare));
     { TDataSet }
     AddClass(cDb, TDataSet, 'TDataSet');
     AddGet(TDataSet, 'ActiveBuffer', TDataSet_ActiveBuffer, 0, [0], varEmpty);

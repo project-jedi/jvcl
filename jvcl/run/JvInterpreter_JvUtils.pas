@@ -959,157 +959,157 @@ const
 begin
   with JvInterpreterAdapter do
   begin
-    AddFun(cJvUtils, 'ReplaceAllStrings', JvInterpreter_ReplaceAllStrings, 3, [varString, varObject, varObject], varEmpty);
-    AddFun(cJvUtils, 'ReplaceStrings', JvInterpreter_ReplaceStrings, 6, [varString, varInteger, varInteger, varObject,
+    AddFunction(cJvUtils, 'ReplaceAllStrings', JvInterpreter_ReplaceAllStrings, 3, [varString, varObject, varObject], varEmpty);
+    AddFunction(cJvUtils, 'ReplaceStrings', JvInterpreter_ReplaceStrings, 6, [varString, varInteger, varInteger, varObject,
       varObject, varInteger or varByRef], varEmpty);
-    AddFun(cJvUtils, 'CountOfLines', JvInterpreter_CountOfLines, 1, [varString], varEmpty);
-    AddFun(cJvUtils, 'DeleteEmptyLines', JvInterpreter_DeleteEmptyLines, 1, [varObject], varEmpty);
-    AddFun(cJvUtils, 'SQLAddWhere', JvInterpreter_SQLAddWhere, 2, [varObject, varString], varEmpty);
-    AddFun(cJvUtils, 'ResSaveToFile', JvInterpreter_ResSaveToFile, 4, [varString, varString, varBoolean, varString],
+    AddFunction(cJvUtils, 'CountOfLines', JvInterpreter_CountOfLines, 1, [varString], varEmpty);
+    AddFunction(cJvUtils, 'DeleteEmptyLines', JvInterpreter_DeleteEmptyLines, 1, [varObject], varEmpty);
+    AddFunction(cJvUtils, 'SQLAddWhere', JvInterpreter_SQLAddWhere, 2, [varObject, varString], varEmpty);
+    AddFunction(cJvUtils, 'ResSaveToFile', JvInterpreter_ResSaveToFile, 4, [varString, varString, varBoolean, varString],
       varEmpty);
-    AddFun(cJvUtils, 'ResSaveToFileEx', JvInterpreter_ResSaveToFileEx, 5, [varEmpty, varEmpty, varEmpty, varBoolean,
+    AddFunction(cJvUtils, 'ResSaveToFileEx', JvInterpreter_ResSaveToFileEx, 5, [varEmpty, varEmpty, varEmpty, varBoolean,
       varString], varEmpty);
-    AddFun(cJvUtils, 'ResSaveToString', JvInterpreter_ResSaveToString, 4, [varEmpty, varString, varString, varString or
+    AddFunction(cJvUtils, 'ResSaveToString', JvInterpreter_ResSaveToString, 4, [varEmpty, varString, varString, varString or
       varByRef], varEmpty);
-    AddFun(cJvUtils, 'Execute', JvInterpreter_Execute, 2, [varString, varString], varEmpty);
-    AddFun(cJvUtils, 'IniReadSection', JvInterpreter_IniReadSection, 3, [varEmpty, varString, varObject], varEmpty);
-    AddFun(cJvUtils, 'LoadTextFile', JvInterpreter_LoadTextFile, 1, [varEmpty], varEmpty);
-    AddFun(cJvUtils, 'SaveTextFile', JvInterpreter_SaveTextFile, 2, [varEmpty, varString], varEmpty);
-    AddFun(cJvUtils, 'ReadFolder', JvInterpreter_ReadFolder, 3, [varEmpty, varEmpty, varObject], varEmpty);
-    AddFun(cJvUtils, 'ReadFolders', JvInterpreter_ReadFolders, 2, [varEmpty, varObject], varEmpty);
-    AddFun(cJvUtils, 'TargetFileName', JvInterpreter_TargetFileName, 1, [varEmpty], varEmpty);
-    AddFun(cJvUtils, 'ResolveLink', JvInterpreter_ResolveLink, 3, [varEmpty, varEmpty, varEmpty or varByRef],
+    AddFunction(cJvUtils, 'Execute', JvInterpreter_Execute, 2, [varString, varString], varEmpty);
+    AddFunction(cJvUtils, 'IniReadSection', JvInterpreter_IniReadSection, 3, [varEmpty, varString, varObject], varEmpty);
+    AddFunction(cJvUtils, 'LoadTextFile', JvInterpreter_LoadTextFile, 1, [varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'SaveTextFile', JvInterpreter_SaveTextFile, 2, [varEmpty, varString], varEmpty);
+    AddFunction(cJvUtils, 'ReadFolder', JvInterpreter_ReadFolder, 3, [varEmpty, varEmpty, varObject], varEmpty);
+    AddFunction(cJvUtils, 'ReadFolders', JvInterpreter_ReadFolders, 2, [varEmpty, varObject], varEmpty);
+    AddFunction(cJvUtils, 'TargetFileName', JvInterpreter_TargetFileName, 1, [varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'ResolveLink', JvInterpreter_ResolveLink, 3, [varEmpty, varEmpty, varEmpty or varByRef],
       varEmpty);
-    AddFun(cJvUtils, 'LoadIcoToImage', JvInterpreter_LoadIcoToImage, 3, [varObject, varObject, varString], varEmpty);
+    AddFunction(cJvUtils, 'LoadIcoToImage', JvInterpreter_LoadIcoToImage, 3, [varObject, varObject, varString], varEmpty);
     { (rom) disabled because the functions drag JvClxUtils.pas into JvJCLUtils.pas
-    AddFun(cJvUtils, 'RATextOut', JvInterpreter_RATextOut, 4, [varObject, varEmpty, varEmpty, varString], varEmpty);
-    AddFun(cJvUtils, 'RATextOutEx', JvInterpreter_RATextOutEx, 5, [varObject, varEmpty, varEmpty, varString,
+    AddFunction(cJvUtils, 'RATextOut', JvInterpreter_RATextOut, 4, [varObject, varEmpty, varEmpty, varString], varEmpty);
+    AddFunction(cJvUtils, 'RATextOutEx', JvInterpreter_RATextOutEx, 5, [varObject, varEmpty, varEmpty, varString,
       varBoolean], varEmpty);
-    AddFun(cJvUtils, 'RATextCalcHeight', JvInterpreter_RATextCalcHeight, 3, [varObject, varEmpty, varString],
+    AddFunction(cJvUtils, 'RATextCalcHeight', JvInterpreter_RATextCalcHeight, 3, [varObject, varEmpty, varString],
       varEmpty);
     }
-    AddFun(cJvUtils, 'Roughed', JvInterpreter_Roughed, 3, [varObject, varEmpty, varBoolean], varEmpty);
-    AddFun(cJvUtils, 'BitmapFromBitmap', JvInterpreter_BitmapFromBitmap, 4, [varObject, varInteger, varInteger,
+    AddFunction(cJvUtils, 'Roughed', JvInterpreter_Roughed, 3, [varObject, varEmpty, varBoolean], varEmpty);
+    AddFunction(cJvUtils, 'BitmapFromBitmap', JvInterpreter_BitmapFromBitmap, 4, [varObject, varInteger, varInteger,
       varInteger], varEmpty);
-    AddFun(cJvUtils, 'TextWidth', JvInterpreter_TextWidth, 1, [varString], varEmpty);
-    AddFun(cJvUtils, 'DefineCursor', JvInterpreter_DefineCursor, 1, [varEmpty], varEmpty);
-    AddFun(cJvUtils, 'FindFormByClassName', JvInterpreter_FindFormByClassName, 1, [varString], varEmpty);
-    AddFun(cJvUtils, 'FindByTag', JvInterpreter_FindByTag, 3, [varObject, varEmpty, varInteger], varEmpty);
-    AddFun(cJvUtils, 'ControlAtPos2', JvInterpreter_ControlAtPos2, 3, [varObject, varInteger, varInteger], varEmpty);
-    AddFun(cJvUtils, 'RBTag', JvInterpreter_RBTag, 1, [varObject], varEmpty);
-    AddFun(cJvUtils, 'AppMinimized', JvInterpreter_AppMinimized, 0, [0], varEmpty);
-    AddFun(cJvUtils, 'MsgDlg2', JvInterpreter_MsgDlg2, 6, [varString, varString, varEmpty, varEmpty, varInteger,
+    AddFunction(cJvUtils, 'TextWidth', JvInterpreter_TextWidth, 1, [varString], varEmpty);
+    AddFunction(cJvUtils, 'DefineCursor', JvInterpreter_DefineCursor, 1, [varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'FindFormByClassName', JvInterpreter_FindFormByClassName, 1, [varString], varEmpty);
+    AddFunction(cJvUtils, 'FindByTag', JvInterpreter_FindByTag, 3, [varObject, varEmpty, varInteger], varEmpty);
+    AddFunction(cJvUtils, 'ControlAtPos2', JvInterpreter_ControlAtPos2, 3, [varObject, varInteger, varInteger], varEmpty);
+    AddFunction(cJvUtils, 'RBTag', JvInterpreter_RBTag, 1, [varObject], varEmpty);
+    AddFunction(cJvUtils, 'AppMinimized', JvInterpreter_AppMinimized, 0, [0], varEmpty);
+    AddFunction(cJvUtils, 'MsgDlg2', JvInterpreter_MsgDlg2, 6, [varString, varString, varEmpty, varEmpty, varInteger,
       varObject], varEmpty);
-    AddFun(cJvUtils, 'MsgDlgDef', JvInterpreter_MsgDlgDef, 7, [varString, varString, varEmpty, varEmpty, varEmpty,
+    AddFunction(cJvUtils, 'MsgDlgDef', JvInterpreter_MsgDlgDef, 7, [varString, varString, varEmpty, varEmpty, varEmpty,
       varInteger, varObject], varEmpty);
-    AddFun(cJvUtils, 'Delay', JvInterpreter_Delay, 1, [varEmpty], varEmpty);
-    //AddFun(cJvUtils, 'CenterHor', JvInterpreter_CenterHor, 3, [varObject, varInteger, varEmpty], nil);
-    AddFun(cJvUtils, 'EnableControls', JvInterpreter_EnableControls, 2, [varObject, varBoolean], varEmpty);
-    AddFun(cJvUtils, 'EnableMenuItems', JvInterpreter_EnableMenuItems, 3, [varObject, varInteger, varBoolean],
+    AddFunction(cJvUtils, 'Delay', JvInterpreter_Delay, 1, [varEmpty], varEmpty);
+    //AddFunction(cJvUtils, 'CenterHor', JvInterpreter_CenterHor, 3, [varObject, varInteger, varEmpty], nil);
+    AddFunction(cJvUtils, 'EnableControls', JvInterpreter_EnableControls, 2, [varObject, varBoolean], varEmpty);
+    AddFunction(cJvUtils, 'EnableMenuItems', JvInterpreter_EnableMenuItems, 3, [varObject, varInteger, varBoolean],
       varEmpty);
-    //AddFun(cJvUtils, 'ExpandWidth', JvInterpreter_ExpandWidth, 3, [varObject, varInteger, varEmpty], nil);
-    AddFun(cJvUtils, 'PanelBorder', JvInterpreter_PanelBorder, 1, [varObject], varEmpty);
-    AddFun(cJvUtils, 'Pixels', JvInterpreter_Pixels, 2, [varObject, varInteger], varEmpty);
-    AddFun(cJvUtils, 'SetChildPropOrd', JvInterpreter_SetChildPropOrd, 3, [varObject, varString, varEmpty], varEmpty);
-    AddFun(cJvUtils, 'Error', JvInterpreter_Error, 1, [varString], varEmpty);
-    AddFun(cJvUtils, 'ItemHtDrawEx', JvInterpreter_ItemHtDrawEx, 8, [varObject, varEmpty, varEmpty, varString,
+    //AddFunction(cJvUtils, 'ExpandWidth', JvInterpreter_ExpandWidth, 3, [varObject, varInteger, varEmpty], nil);
+    AddFunction(cJvUtils, 'PanelBorder', JvInterpreter_PanelBorder, 1, [varObject], varEmpty);
+    AddFunction(cJvUtils, 'Pixels', JvInterpreter_Pixels, 2, [varObject, varInteger], varEmpty);
+    AddFunction(cJvUtils, 'SetChildPropOrd', JvInterpreter_SetChildPropOrd, 3, [varObject, varString, varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'Error', JvInterpreter_Error, 1, [varString], varEmpty);
+    AddFunction(cJvUtils, 'ItemHtDrawEx', JvInterpreter_ItemHtDrawEx, 8, [varObject, varEmpty, varEmpty, varString,
       varBoolean, varString or varByRef, varInteger or varByRef, varBoolean], varEmpty);
-    AddFun(cJvUtils, 'ItemHtDraw', JvInterpreter_ItemHtDraw, 5, [varObject, varEmpty, varEmpty, varString,
+    AddFunction(cJvUtils, 'ItemHtDraw', JvInterpreter_ItemHtDraw, 5, [varObject, varEmpty, varEmpty, varString,
       varBoolean], varEmpty);
-    AddFun(cJvUtils, 'ItemHtWidth', JvInterpreter_ItemHtWidth, 5, [varObject, varEmpty, varEmpty, varString,
+    AddFunction(cJvUtils, 'ItemHtWidth', JvInterpreter_ItemHtWidth, 5, [varObject, varEmpty, varEmpty, varString,
       varBoolean], varEmpty);
-    AddFun(cJvUtils, 'ItemHtPlain', JvInterpreter_ItemHtPlain, 1, [varString], varEmpty);
-    AddFun(cJvUtils, 'ClearList', JvInterpreter_ClearList, 1, [varObject], varEmpty);
-    AddFun(cJvUtils, 'MemStreamToClipBoard', JvInterpreter_MemStreamToClipBoard, 2, [varObject, varSmallint],
+    AddFunction(cJvUtils, 'ItemHtPlain', JvInterpreter_ItemHtPlain, 1, [varString], varEmpty);
+    AddFunction(cJvUtils, 'ClearList', JvInterpreter_ClearList, 1, [varObject], varEmpty);
+    AddFunction(cJvUtils, 'MemStreamToClipBoard', JvInterpreter_MemStreamToClipBoard, 2, [varObject, varSmallint],
       varEmpty);
-    AddFun(cJvUtils, 'ClipBoardToMemStream', JvInterpreter_ClipBoardToMemStream, 2, [varObject, varSmallint],
+    AddFunction(cJvUtils, 'ClipBoardToMemStream', JvInterpreter_ClipBoardToMemStream, 2, [varObject, varSmallint],
       varEmpty);
-    AddFun(cJvUtils, 'GetPropType', JvInterpreter_GetPropType, 2, [varObject, varString], varEmpty);
-    AddFun(cJvUtils, 'GetPropStr', JvInterpreter_GetPropStr, 2, [varObject, varString], varEmpty);
-    AddFun(cJvUtils, 'GetPropOrd', JvInterpreter_GetPropOrd, 2, [varObject, varString], varEmpty);
-    AddFun(cJvUtils, 'CompareMem', JvInterpreter_CompareMem, 3, [varPointer, varPointer, varInteger], varEmpty);
-    AddFun(cJvUtils, 'ShowMenu', JvInterpreter_ShowMenu, 2, [varObject, varEmpty], varEmpty);
-    AddFun(cJvUtils, 'PrepareIniSection', JvInterpreter_PrepareIniSection, 1, [varObject], varEmpty);
+    AddFunction(cJvUtils, 'GetPropType', JvInterpreter_GetPropType, 2, [varObject, varString], varEmpty);
+    AddFunction(cJvUtils, 'GetPropStr', JvInterpreter_GetPropStr, 2, [varObject, varString], varEmpty);
+    AddFunction(cJvUtils, 'GetPropOrd', JvInterpreter_GetPropOrd, 2, [varObject, varString], varEmpty);
+    AddFunction(cJvUtils, 'CompareMem', JvInterpreter_CompareMem, 3, [varPointer, varPointer, varInteger], varEmpty);
+    AddFunction(cJvUtils, 'ShowMenu', JvInterpreter_ShowMenu, 2, [varObject, varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'PrepareIniSection', JvInterpreter_PrepareIniSection, 1, [varObject], varEmpty);
 
-    AddFun(cJvStrUtil, 'GetWordOnPos', JvInterpreter_GetWordOnPos, 2, [varString, varInteger], varEmpty);
-    AddFun(cJvStrUtil, 'GetWordOnPosEx', JvInterpreter_GetWordOnPosEx, 4, [varString, varInteger, varInteger or
+    AddFunction(cJvStrUtil, 'GetWordOnPos', JvInterpreter_GetWordOnPos, 2, [varString, varInteger], varEmpty);
+    AddFunction(cJvStrUtil, 'GetWordOnPosEx', JvInterpreter_GetWordOnPosEx, 4, [varString, varInteger, varInteger or
       varByRef, varInteger or varByRef], varEmpty);
-    AddFun(cJvStrUtil, 'GetSubStr', JvInterpreter_SubStr, 3, [varString, varInteger, varEmpty], varEmpty);
-    AddFun(cJvStrUtil, 'SubStr', JvInterpreter_SubStr, 3, [varString, varInteger, varString], varEmpty);
-    AddFun(cJvStrUtil, 'SubStrEnd', JvInterpreter_SubStrEnd, 3, [varString, varInteger, varString], varEmpty);
-    AddFun(cJvStrUtil, 'NumberByWord', JvInterpreter_NumberByWord, 1, [varEmpty], varEmpty);
-    AddFun(cJvStrUtil, 'GetLineByPos', JvInterpreter_GetLineByPos, 2, [varString, varInteger], varEmpty);
-    AddFun(cJvStrUtil, 'GetXYByPos', JvInterpreter_GetXYByPos, 4, [varString, varInteger, varInteger or varByRef,
+    AddFunction(cJvStrUtil, 'GetSubStr', JvInterpreter_SubStr, 3, [varString, varInteger, varEmpty], varEmpty);
+    AddFunction(cJvStrUtil, 'SubStr', JvInterpreter_SubStr, 3, [varString, varInteger, varString], varEmpty);
+    AddFunction(cJvStrUtil, 'SubStrEnd', JvInterpreter_SubStrEnd, 3, [varString, varInteger, varString], varEmpty);
+    AddFunction(cJvStrUtil, 'NumberByWord', JvInterpreter_NumberByWord, 1, [varEmpty], varEmpty);
+    AddFunction(cJvStrUtil, 'GetLineByPos', JvInterpreter_GetLineByPos, 2, [varString, varInteger], varEmpty);
+    AddFunction(cJvStrUtil, 'GetXYByPos', JvInterpreter_GetXYByPos, 4, [varString, varInteger, varInteger or varByRef,
       varInteger or varByRef], varEmpty);
-    AddFun(cJvStrUtil, 'ReplaceString', JvInterpreter_ReplaceString, 3, [varString, varString, varString], varEmpty);
-    AddFun(cJvStrUtil, 'ReplaceSokr1', JvInterpreter_ReplaceString, 3, [varString, varString, varString], varEmpty);
-    AddFun(cJvStrUtil, 'ConcatSep', JvInterpreter_ConcatSep, 3, [varString, varString, varString], varEmpty);
-    AddFun(cJvStrUtil, 'ConcatLeftSep', JvInterpreter_ConcatLeftSep, 3, [varString, varString, varString], varEmpty);
-    AddFun(cJvStrUtil, 'MinimizeString', JvInterpreter_MinimizeString, 2, [varString, varInteger], varEmpty);
-    AddFun(cJvStrUtil, 'Dos2Win', JvInterpreter_Dos2Win, 1, [varString or varByRef], varEmpty);
-    AddFun(cJvStrUtil, 'Win2Dos', JvInterpreter_Win2Dos, 1, [varString or varByRef], varEmpty);
-    AddFun(cJvStrUtil, 'Dos2WinRes', JvInterpreter_Dos2WinRes, 1, [varString], varEmpty);
-    AddFun(cJvStrUtil, 'Win2DosRes', JvInterpreter_Win2DosRes, 1, [varString], varEmpty);
-    AddFun(cJvStrUtil, 'Win2Koi', JvInterpreter_Win2Koi, 1, [varString], varString);
-    AddFun(cJvStrUtil, 'Spaces', JvInterpreter_Spaces, 1, [varInteger], varEmpty);
-    AddFun(cJvStrUtil, 'AddSpaces', JvInterpreter_AddSpaces, 2, [varString, varInteger], varEmpty);
-    AddFun(cJvStrUtil, 'LastDate', JvInterpreter_LastDate, 1, [varEmpty], varEmpty);
-    AddFun(cJvStrUtil, 'CurrencyToStr', JvInterpreter_CurrencyToStr, 1, [varEmpty], varEmpty);
-    AddFun(cJvStrUtil, 'Cmp', JvInterpreter_Cmp, 2, [varString, varString], varEmpty);
-    AddFun(cJvStrUtil, 'StringCat', JvInterpreter_StringCat, 2, [varString or varByRef, varString], varEmpty);
-    AddFun(cJvStrUtil, 'HasChar', JvInterpreter_HasChar, 2, [varEmpty, varString], varEmpty);
-    AddFun(cJvStrUtil, 'HasAnyChar', JvInterpreter_HasAnyChar, 2, [varString, varString], varEmpty);
-    AddFun(cJvStrUtil, 'CountOfChar', JvInterpreter_CountOfChar, 2, [varEmpty, varString], varEmpty);
-    AddFun(cJvStrUtil, 'DefStr', JvInterpreter_DefStr, 2, [varString, varString], varEmpty);
-    AddFun(cJvUtils, 'GetWinDir', JvInterpreter_GetWinDir, 0, [0], varEmpty);
-    AddFun(cJvUtils, 'GetTempDir', JvInterpreter_GetTempDir, 0, [0], varEmpty);
-    AddFun(cJvUtils, 'GenTempFileName', JvInterpreter_GenTempFileName, 1, [varString], varEmpty);
-    AddFun(cJvUtils, 'GenTempFileNameExt', JvInterpreter_GenTempFileNameExt, 2, [varString, varString], varEmpty);
-    AddFun(cJvUtils, 'ClearDir', JvInterpreter_ClearDir, 1, [varString], varEmpty);
-    AddFun(cJvUtils, 'DeleteDir', JvInterpreter_DeleteDir, 1, [varString], varEmpty);
-    AddFun(cJvUtils, 'FileEquMask', JvInterpreter_FileEquMask, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cJvUtils, 'FileEquMasks', JvInterpreter_FileEquMasks, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cJvUtils, 'DeleteFiles', JvInterpreter_DeleteFiles, 2, [varEmpty, varString], varEmpty);
-    AddFun(cJvUtils, 'LZFileExpand', JvInterpreter_LZFileExpand, 2, [varString, varString], varEmpty);
-    AddFun(cJvUtils, 'FileGetInfo', JvInterpreter_FileGetInfo, 2, [varEmpty, varEmpty or varByRef], varEmpty);
-    AddFun(cJvUtils, 'HasSubFolder', JvInterpreter_HasSubFolder, 1, [varEmpty], varEmpty);
-    AddFun(cJvUtils, 'IsEmptyFolder', JvInterpreter_IsEmptyFolder, 1, [varEmpty], varEmpty);
-    AddFun(cJvUtils, 'AddSlash', JvInterpreter_AddSlash, 1, [varEmpty or varByRef], varEmpty);
-    AddFun(cJvUtils, 'AddSlash2', JvInterpreter_AddSlash2, 1, [varEmpty], varEmpty);
-    AddFun(cJvUtils, 'AddPath', JvInterpreter_AddPath, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cJvUtils, 'AddPaths', JvInterpreter_AddPaths, 2, [varString, varString], varEmpty);
-    AddFun(cJvUtils, 'ParentPath', JvInterpreter_ParentPath, 1, [varEmpty], varEmpty);
-    AddFun(cJvUtils, 'FindInPath', JvInterpreter_FindInPath, 2, [varString, varString], varEmpty);
+    AddFunction(cJvStrUtil, 'ReplaceString', JvInterpreter_ReplaceString, 3, [varString, varString, varString], varEmpty);
+    AddFunction(cJvStrUtil, 'ReplaceSokr1', JvInterpreter_ReplaceString, 3, [varString, varString, varString], varEmpty);
+    AddFunction(cJvStrUtil, 'ConcatSep', JvInterpreter_ConcatSep, 3, [varString, varString, varString], varEmpty);
+    AddFunction(cJvStrUtil, 'ConcatLeftSep', JvInterpreter_ConcatLeftSep, 3, [varString, varString, varString], varEmpty);
+    AddFunction(cJvStrUtil, 'MinimizeString', JvInterpreter_MinimizeString, 2, [varString, varInteger], varEmpty);
+    AddFunction(cJvStrUtil, 'Dos2Win', JvInterpreter_Dos2Win, 1, [varString or varByRef], varEmpty);
+    AddFunction(cJvStrUtil, 'Win2Dos', JvInterpreter_Win2Dos, 1, [varString or varByRef], varEmpty);
+    AddFunction(cJvStrUtil, 'Dos2WinRes', JvInterpreter_Dos2WinRes, 1, [varString], varEmpty);
+    AddFunction(cJvStrUtil, 'Win2DosRes', JvInterpreter_Win2DosRes, 1, [varString], varEmpty);
+    AddFunction(cJvStrUtil, 'Win2Koi', JvInterpreter_Win2Koi, 1, [varString], varString);
+    AddFunction(cJvStrUtil, 'Spaces', JvInterpreter_Spaces, 1, [varInteger], varEmpty);
+    AddFunction(cJvStrUtil, 'AddSpaces', JvInterpreter_AddSpaces, 2, [varString, varInteger], varEmpty);
+    AddFunction(cJvStrUtil, 'LastDate', JvInterpreter_LastDate, 1, [varEmpty], varEmpty);
+    AddFunction(cJvStrUtil, 'CurrencyToStr', JvInterpreter_CurrencyToStr, 1, [varEmpty], varEmpty);
+    AddFunction(cJvStrUtil, 'Cmp', JvInterpreter_Cmp, 2, [varString, varString], varEmpty);
+    AddFunction(cJvStrUtil, 'StringCat', JvInterpreter_StringCat, 2, [varString or varByRef, varString], varEmpty);
+    AddFunction(cJvStrUtil, 'HasChar', JvInterpreter_HasChar, 2, [varEmpty, varString], varEmpty);
+    AddFunction(cJvStrUtil, 'HasAnyChar', JvInterpreter_HasAnyChar, 2, [varString, varString], varEmpty);
+    AddFunction(cJvStrUtil, 'CountOfChar', JvInterpreter_CountOfChar, 2, [varEmpty, varString], varEmpty);
+    AddFunction(cJvStrUtil, 'DefStr', JvInterpreter_DefStr, 2, [varString, varString], varEmpty);
+    AddFunction(cJvUtils, 'GetWinDir', JvInterpreter_GetWinDir, 0, [0], varEmpty);
+    AddFunction(cJvUtils, 'GetTempDir', JvInterpreter_GetTempDir, 0, [0], varEmpty);
+    AddFunction(cJvUtils, 'GenTempFileName', JvInterpreter_GenTempFileName, 1, [varString], varEmpty);
+    AddFunction(cJvUtils, 'GenTempFileNameExt', JvInterpreter_GenTempFileNameExt, 2, [varString, varString], varEmpty);
+    AddFunction(cJvUtils, 'ClearDir', JvInterpreter_ClearDir, 1, [varString], varEmpty);
+    AddFunction(cJvUtils, 'DeleteDir', JvInterpreter_DeleteDir, 1, [varString], varEmpty);
+    AddFunction(cJvUtils, 'FileEquMask', JvInterpreter_FileEquMask, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'FileEquMasks', JvInterpreter_FileEquMasks, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'DeleteFiles', JvInterpreter_DeleteFiles, 2, [varEmpty, varString], varEmpty);
+    AddFunction(cJvUtils, 'LZFileExpand', JvInterpreter_LZFileExpand, 2, [varString, varString], varEmpty);
+    AddFunction(cJvUtils, 'FileGetInfo', JvInterpreter_FileGetInfo, 2, [varEmpty, varEmpty or varByRef], varEmpty);
+    AddFunction(cJvUtils, 'HasSubFolder', JvInterpreter_HasSubFolder, 1, [varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'IsEmptyFolder', JvInterpreter_IsEmptyFolder, 1, [varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'AddSlash', JvInterpreter_AddSlash, 1, [varEmpty or varByRef], varEmpty);
+    AddFunction(cJvUtils, 'AddSlash2', JvInterpreter_AddSlash2, 1, [varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'AddPath', JvInterpreter_AddPath, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'AddPaths', JvInterpreter_AddPaths, 2, [varString, varString], varEmpty);
+    AddFunction(cJvUtils, 'ParentPath', JvInterpreter_ParentPath, 1, [varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'FindInPath', JvInterpreter_FindInPath, 2, [varString, varString], varEmpty);
     {$IFNDEF BCB1}
-    AddFun(cJvUtils, 'BrowseForFolder', JvInterpreter_BrowseForFolder, 3, [varEmpty, varString, varString or
+    AddFunction(cJvUtils, 'BrowseForFolder', JvInterpreter_BrowseForFolder, 3, [varEmpty, varString, varString or
       varByRef], varEmpty);
     {$ENDIF BCB1}
-    AddFun(cJvUtils, 'DeleteReadOnlyFile', JvInterpreter_DeleteReadOnlyFile, 1, [varEmpty], varEmpty);
-    AddFun(cJvUtils, 'HasParam', JvInterpreter_HasParam, 1, [varString], varEmpty);
-    AddFun(cJvUtils, 'HasSwitch', JvInterpreter_HasSwitch, 1, [varString], varEmpty);
-    AddFun(cJvUtils, 'Switch', JvInterpreter_Switch, 1, [varString], varEmpty);
-    AddFun(cJvUtils, 'ExePath', JvInterpreter_ExePath, 0, [0], varEmpty);
-    AddFun(cJvUtils, 'CopyDir', JvInterpreter_CopyDir, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cJvUtils, 'TTFontSelected', JvInterpreter_TTFontSelected, 1, [varEmpty], varEmpty);
-    AddFun(cJvUtils, 'TrueInflateRect', JvInterpreter_TrueInflateRect, 2, [varEmpty, varInteger], varEmpty);
-    AddFun(cJvUtils, 'SetWindowTop', JvInterpreter_SetWindowTop, 2, [varEmpty, varBoolean], varEmpty);
-    AddFun(cJvUtils, 'KeyPressed', JvInterpreter_KeyPressed, 1, [varInteger], varEmpty);
-    AddFun(cMath, 'Max', JvInterpreter_Max, 2, [varInteger, varInteger], varEmpty);
-    AddFun(cMath, 'Min', JvInterpreter_Min, 2, [varInteger, varInteger], varEmpty);
-    AddFun(cJvUtils, 'SwapInt', JvInterpreter_SwapInt, 2, [varInteger or varByRef, varInteger or varByRef],
+    AddFunction(cJvUtils, 'DeleteReadOnlyFile', JvInterpreter_DeleteReadOnlyFile, 1, [varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'HasParam', JvInterpreter_HasParam, 1, [varString], varEmpty);
+    AddFunction(cJvUtils, 'HasSwitch', JvInterpreter_HasSwitch, 1, [varString], varEmpty);
+    AddFunction(cJvUtils, 'Switch', JvInterpreter_Switch, 1, [varString], varEmpty);
+    AddFunction(cJvUtils, 'ExePath', JvInterpreter_ExePath, 0, [0], varEmpty);
+    AddFunction(cJvUtils, 'CopyDir', JvInterpreter_CopyDir, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'TTFontSelected', JvInterpreter_TTFontSelected, 1, [varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'TrueInflateRect', JvInterpreter_TrueInflateRect, 2, [varEmpty, varInteger], varEmpty);
+    AddFunction(cJvUtils, 'SetWindowTop', JvInterpreter_SetWindowTop, 2, [varEmpty, varBoolean], varEmpty);
+    AddFunction(cJvUtils, 'KeyPressed', JvInterpreter_KeyPressed, 1, [varInteger], varEmpty);
+    AddFunction(cMath, 'Max', JvInterpreter_Max, 2, [varInteger, varInteger], varEmpty);
+    AddFunction(cMath, 'Min', JvInterpreter_Min, 2, [varInteger, varInteger], varEmpty);
+    AddFunction(cJvUtils, 'SwapInt', JvInterpreter_SwapInt, 2, [varInteger or varByRef, varInteger or varByRef],
       varEmpty);
-    AddFun(cJvUtils, 'IntPower', JvInterpreter_IntPower, 2, [varInteger, varInteger], varEmpty);
-    AddFun(cJvUtils, 'ChangeTopException', JvInterpreter_ChangeTopException, 1, [varObject], varEmpty);
-    AddFun(cJvUtils, 'MakeValidFileName', JvInterpreter_MakeValidFileName, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cJvUtils, 'AnsiStrLIComp', JvInterpreter_AnsiStrLIComp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cJvUtils, 'Var2Type', JvInterpreter_Var2Type, 2, [varEmpty, varInteger], varEmpty);
-    AddFun(cJvUtils, 'VarToInt', JvInterpreter_VarToInt, 1, [varEmpty], varEmpty);
-    AddFun(cJvUtils, 'GetParameter', JvInterpreter_GetParameter, 0, [0], varEmpty);
-    AddFun(cJvUtils, 'GetLongFileName', JvInterpreter_GetLongFileName, 1, [varString], varEmpty);
-    AddFun(cFileCtrl, 'DirectoryExists', JvInterpreter_DirectoryExists, 1, [varString], varEmpty);
-    AddFun(cFileCtrl, 'ForceDirectories', JvInterpreter_ForceDirectories, 1, [varString], varEmpty);
-    AddFun(cJvUtils, 'FileNewExt', JvInterpreter_FileNewExt, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cJvUtils, 'GetComputerID', JvInterpreter_GetComputerID, 0, [0], varEmpty);
+    AddFunction(cJvUtils, 'IntPower', JvInterpreter_IntPower, 2, [varInteger, varInteger], varEmpty);
+    AddFunction(cJvUtils, 'ChangeTopException', JvInterpreter_ChangeTopException, 1, [varObject], varEmpty);
+    AddFunction(cJvUtils, 'MakeValidFileName', JvInterpreter_MakeValidFileName, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'AnsiStrLIComp', JvInterpreter_AnsiStrLIComp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'Var2Type', JvInterpreter_Var2Type, 2, [varEmpty, varInteger], varEmpty);
+    AddFunction(cJvUtils, 'VarToInt', JvInterpreter_VarToInt, 1, [varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'GetParameter', JvInterpreter_GetParameter, 0, [0], varEmpty);
+    AddFunction(cJvUtils, 'GetLongFileName', JvInterpreter_GetLongFileName, 1, [varString], varEmpty);
+    AddFunction(cFileCtrl, 'DirectoryExists', JvInterpreter_DirectoryExists, 1, [varString], varEmpty);
+    AddFunction(cFileCtrl, 'ForceDirectories', JvInterpreter_ForceDirectories, 1, [varString], varEmpty);
+    AddFunction(cJvUtils, 'FileNewExt', JvInterpreter_FileNewExt, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'GetComputerID', JvInterpreter_GetComputerID, 0, [0], varEmpty);
   end;
 end;
 

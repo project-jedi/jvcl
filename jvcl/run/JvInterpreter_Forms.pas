@@ -1525,20 +1525,20 @@ begin
     AddSet(TApplication, 'UpdateMetricSettings', TApplication_Write_UpdateMetricSettings, 0, [0]);
     {$ENDIF VCL}
 
-    AddFun(cForms, 'Application', JvInterpreter_Application, 0, [0], varEmpty);
-    AddFun(cForms, 'Screen', JvInterpreter_Screen, 0, [0], varEmpty);
+    AddFunction(cForms, 'Application', JvInterpreter_Application, 0, [0], varEmpty);
+    AddFunction(cForms, 'Screen', JvInterpreter_Screen, 0, [0], varEmpty);
 
-    AddFun(cForms, 'GetParentForm', JvInterpreter_GetParentForm, 1, [varEmpty], varEmpty);
-    AddFun(cForms, 'ValidParentForm', JvInterpreter_ValidParentForm, 1, [varEmpty], varEmpty);
+    AddFunction(cForms, 'GetParentForm', JvInterpreter_GetParentForm, 1, [varEmpty], varEmpty);
+    AddFunction(cForms, 'ValidParentForm', JvInterpreter_ValidParentForm, 1, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddFun(cForms, 'DisableTaskWindows', JvInterpreter_DisableTaskWindows, 1, [varEmpty], varEmpty);
-    AddFun(cForms, 'EnableTaskWindows', JvInterpreter_EnableTaskWindows, 1, [varEmpty], varEmpty);
+    AddFunction(cForms, 'DisableTaskWindows', JvInterpreter_DisableTaskWindows, 1, [varEmpty], varEmpty);
+    AddFunction(cForms, 'EnableTaskWindows', JvInterpreter_EnableTaskWindows, 1, [varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddFun(cForms, 'IsAccel', JvInterpreter_IsAccel, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cForms, 'IsAccel', JvInterpreter_IsAccel, 2, [varEmpty, varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddFun(cForms, 'KeysToShiftState', JvInterpreter_KeysToShiftState, 1, [varEmpty], varEmpty);
-    AddFun(cForms, 'KeyDataToShiftState', JvInterpreter_KeyDataToShiftState, 1, [varEmpty], varEmpty);
-    AddFun(cForms, 'ForegroundTask', JvInterpreter_ForegroundTask, 0, [0], varEmpty);
+    AddFunction(cForms, 'KeysToShiftState', JvInterpreter_KeysToShiftState, 1, [varEmpty], varEmpty);
+    AddFunction(cForms, 'KeyDataToShiftState', JvInterpreter_KeyDataToShiftState, 1, [varEmpty], varEmpty);
+    AddFunction(cForms, 'ForegroundTask', JvInterpreter_ForegroundTask, 0, [0], varEmpty);
     {$ENDIF VCL}
 
     AddHandler(cForms, 'TCloseEvent', TJvInterpreterFormsEvent, @TJvInterpreterFormsEvent.CloseEvent);

@@ -668,11 +668,11 @@ const
 begin
   with JvInterpreterAdapter do
   begin
-    AddFun(cJvInterpreterFm, 'JvInterpreterRunFormModal', JvInterpreter_JvInterpreterRunFormModal, 1, [varString],
+    AddFunction(cJvInterpreterFm, 'JvInterpreterRunFormModal', JvInterpreter_JvInterpreterRunFormModal, 1, [varString],
       varEmpty);
-    AddFun(cJvInterpreterFm, 'JvInterpreterRunForm', JvInterpreter_JvInterpreterRunForm, 1, [varString], varEmpty);
-    AddFun(cJvInterpreterFm, 'JvInterpreterMakeForm', JvInterpreter_JvInterpreterMakeForm, 1, [varString], varEmpty);
-    AddFun(cJvInterpreterFm, 'JvInterpreterRunUnit', JvInterpreter_JvInterpreterRunUnit, 1, [varString], varEmpty);
+    AddFunction(cJvInterpreterFm, 'JvInterpreterRunForm', JvInterpreter_JvInterpreterRunForm, 1, [varString], varEmpty);
+    AddFunction(cJvInterpreterFm, 'JvInterpreterMakeForm', JvInterpreter_JvInterpreterMakeForm, 1, [varString], varEmpty);
+    AddFunction(cJvInterpreterFm, 'JvInterpreterRunUnit', JvInterpreter_JvInterpreterRunUnit, 1, [varString], varEmpty);
   end;
 end;
 

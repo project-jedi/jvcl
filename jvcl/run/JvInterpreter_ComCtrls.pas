@@ -2366,8 +2366,8 @@ begin
   with JvInterpreterAdapter do
   begin
     { TTabPosition }
-    AddConst(cComCtrls, 'tpTop', tpTop);
-    AddConst(cComCtrls, 'tpBottom', tpBottom);
+    AddConst(cComCtrls, 'tpTop', Ord(tpTop));
+    AddConst(cComCtrls, 'tpBottom', Ord(tpBottom));
     { TCustomTabControl }
     AddClass(cComCtrls, TCustomTabControl, 'TCustomTabControl');
     { TTabControl }
@@ -2387,12 +2387,12 @@ begin
     AddGet(TPageControl, 'PageCount', TPageControl_Read_PageCount, 0, [0], varEmpty);
     AddGet(TPageControl, 'Pages', TPageControl_Read_Pages, 1, [0], varEmpty);
     { TStatusPanelStyle }
-    AddConst(cComCtrls, 'psText', psText);
-    AddConst(cComCtrls, 'psOwnerDraw', psOwnerDraw);
+    AddConst(cComCtrls, 'psText', Ord(psText));
+    AddConst(cComCtrls, 'psOwnerDraw', Ord(psOwnerDraw));
     { TStatusPanelBevel }
-    AddConst(cComCtrls, 'pbNone', pbNone);
-    AddConst(cComCtrls, 'pbLowered', pbLowered);
-    AddConst(cComCtrls, 'pbRaised', pbRaised);
+    AddConst(cComCtrls, 'pbNone', Ord(pbNone));
+    AddConst(cComCtrls, 'pbLowered', Ord(pbLowered));
+    AddConst(cComCtrls, 'pbRaised', Ord(pbRaised));
     { TStatusPanel }
     AddClass(cComCtrls, TStatusPanel, 'TStatusPanel');
     AddGet(TStatusPanel, 'Create', TStatusPanel_Create, 1, [varEmpty], varEmpty);
@@ -2408,8 +2408,8 @@ begin
     AddGet(TStatusBar, 'Create', TStatusBar_Create, 1, [varEmpty], varEmpty);
     AddGet(TStatusBar, 'Canvas', TStatusBar_Read_Canvas, 0, [0], varEmpty);
     { THeaderSectionStyle }
-    AddConst(cComCtrls, 'hsText', hsText);
-    AddConst(cComCtrls, 'hsOwnerDraw', hsOwnerDraw);
+    AddConst(cComCtrls, 'hsText', Ord(hsText));
+    AddConst(cComCtrls, 'hsOwnerDraw', Ord(hsOwnerDraw));
     { THeaderSection }
     AddClass(cComCtrls, THeaderSection, 'THeaderSection');
     AddGet(THeaderSection, 'Create', THeaderSection_Create, 1, [varEmpty], varEmpty);
@@ -2423,29 +2423,29 @@ begin
     AddIGet(THeaderSections, 'Items', THeaderSections_Read_Items, 1, [0], varEmpty);
     AddISet(THeaderSections, 'Items', THeaderSections_Write_Items, 1, [1]);
     { TSectionTrackState }
-    AddConst(cComCtrls, 'tsTrackBegin', tsTrackBegin);
-    AddConst(cComCtrls, 'tsTrackMove', tsTrackMove);
-    AddConst(cComCtrls, 'tsTrackEnd', tsTrackEnd);
+    AddConst(cComCtrls, 'tsTrackBegin', Ord(tsTrackBegin));
+    AddConst(cComCtrls, 'tsTrackMove', Ord(tsTrackMove));
+    AddConst(cComCtrls, 'tsTrackEnd', Ord(tsTrackEnd));
     { THeaderControl }
     AddClass(cComCtrls, THeaderControl, 'THeaderControl');
     AddGet(THeaderControl, 'Create', THeaderControl_Create, 1, [varEmpty], varEmpty);
     AddGet(THeaderControl, 'Canvas', THeaderControl_Read_Canvas, 0, [0], varEmpty);
     { TNodeState }
-    AddConst(cComCtrls, 'nsCut', nsCut);
-    AddConst(cComCtrls, 'nsDropHilited', nsDropHilited);
-    AddConst(cComCtrls, 'nsFocused', nsFocused);
-    AddConst(cComCtrls, 'nsSelected', nsSelected);
-    AddConst(cComCtrls, 'nsExpanded', nsExpanded);
+    AddConst(cComCtrls, 'nsCut', Ord(nsCut));
+    AddConst(cComCtrls, 'nsDropHilited', Ord(nsDropHilited));
+    AddConst(cComCtrls, 'nsFocused', Ord(nsFocused));
+    AddConst(cComCtrls, 'nsSelected', Ord(nsSelected));
+    AddConst(cComCtrls, 'nsExpanded', Ord(nsExpanded));
     { TNodeAttachMode }
-    AddConst(cComCtrls, 'naAdd', naAdd);
-    AddConst(cComCtrls, 'naAddFirst', naAddFirst);
-    AddConst(cComCtrls, 'naAddChild', naAddChild);
-    AddConst(cComCtrls, 'naAddChildFirst', naAddChildFirst);
-    AddConst(cComCtrls, 'naInsert', naInsert);
+    AddConst(cComCtrls, 'naAdd', Ord(naAdd));
+    AddConst(cComCtrls, 'naAddFirst', Ord(naAddFirst));
+    AddConst(cComCtrls, 'naAddChild', Ord(naAddChild));
+    AddConst(cComCtrls, 'naAddChildFirst', Ord(naAddChildFirst));
+    AddConst(cComCtrls, 'naInsert', Ord(naInsert));
     { TAddMode }
-    AddConst(cComCtrls, 'taAddFirst', taAddFirst);
-    AddConst(cComCtrls, 'taAdd', taAdd);
-    AddConst(cComCtrls, 'taInsert', taInsert);
+    AddConst(cComCtrls, 'taAddFirst', Ord(taAddFirst));
+    AddConst(cComCtrls, 'taAdd', Ord(taAdd));
+    AddConst(cComCtrls, 'taInsert', Ord(taInsert));
     { TTreeNode }
     AddClass(cComCtrls, TTreeNode, 'TTreeNode');
     AddGet(TTreeNode, 'Create', TTreeNode_Create, 1, [varEmpty], varEmpty);
@@ -2537,23 +2537,23 @@ begin
     AddGet(TTreeNodes, 'Item', TTreeNodes_Read_Item, 1, [0], varEmpty);
     AddGet(TTreeNodes, 'Owner', TTreeNodes_Read_Owner, 0, [0], varEmpty);
     { THitTest }
-    AddConst(cComCtrls, 'htAbove', htAbove);
-    AddConst(cComCtrls, 'htBelow', htBelow);
-    AddConst(cComCtrls, 'htNowhere', htNowhere);
-    AddConst(cComCtrls, 'htOnItem', htOnItem);
-    AddConst(cComCtrls, 'htOnButton', htOnButton);
-    AddConst(cComCtrls, 'htOnIcon', htOnIcon);
-    AddConst(cComCtrls, 'htOnIndent', htOnIndent);
-    AddConst(cComCtrls, 'htOnLabel', htOnLabel);
-    AddConst(cComCtrls, 'htOnRight', htOnRight);
-    AddConst(cComCtrls, 'htOnStateIcon', htOnStateIcon);
-    AddConst(cComCtrls, 'htToLeft', htToLeft);
-    AddConst(cComCtrls, 'htToRight', htToRight);
+    AddConst(cComCtrls, 'htAbove', Ord(htAbove));
+    AddConst(cComCtrls, 'htBelow', Ord(htBelow));
+    AddConst(cComCtrls, 'htNowhere', Ord(htNowhere));
+    AddConst(cComCtrls, 'htOnItem', Ord(htOnItem));
+    AddConst(cComCtrls, 'htOnButton', Ord(htOnButton));
+    AddConst(cComCtrls, 'htOnIcon', Ord(htOnIcon));
+    AddConst(cComCtrls, 'htOnIndent', Ord(htOnIndent));
+    AddConst(cComCtrls, 'htOnLabel', Ord(htOnLabel));
+    AddConst(cComCtrls, 'htOnRight', Ord(htOnRight));
+    AddConst(cComCtrls, 'htOnStateIcon', Ord(htOnStateIcon));
+    AddConst(cComCtrls, 'htToLeft', Ord(htToLeft));
+    AddConst(cComCtrls, 'htToRight', Ord(htToRight));
     { TSortType }
-    AddConst(cComCtrls, 'stNone', stNone);
-    AddConst(cComCtrls, 'stData', stData);
-    AddConst(cComCtrls, 'stText', stText);
-    AddConst(cComCtrls, 'stBoth', stBoth);
+    AddConst(cComCtrls, 'stNone', Ord(stNone));
+    AddConst(cComCtrls, 'stData', Ord(stData));
+    AddConst(cComCtrls, 'stText', Ord(stText));
+    AddConst(cComCtrls, 'stBoth', Ord(stBoth));
     { TCustomTreeView }
     AddClass(cComCtrls, TCustomTreeView, 'TCustomTreeView');
     AddGet(TCustomTreeView, 'AlphaSort', TCustomTreeView_AlphaSort, 0, [0], varEmpty);
@@ -2577,16 +2577,16 @@ begin
     AddClass(cComCtrls, TTreeView, 'TTreeView');
     AddGet(TTreeView, 'Create', TTreeView_Create, 1, [varEmpty], varEmpty);
     { TTrackBarOrientation }
-    AddConst(cComCtrls, 'trHorizontal', trHorizontal);
-    AddConst(cComCtrls, 'trVertical', trVertical);
+    AddConst(cComCtrls, 'trHorizontal', Ord(trHorizontal));
+    AddConst(cComCtrls, 'trVertical', Ord(trVertical));
     { TTickMark }
-    AddConst(cComCtrls, 'tmBottomRight', tmBottomRight);
-    AddConst(cComCtrls, 'tmTopLeft', tmTopLeft);
-    AddConst(cComCtrls, 'tmBoth', tmBoth);
+    AddConst(cComCtrls, 'tmBottomRight', Ord(tmBottomRight));
+    AddConst(cComCtrls, 'tmTopLeft', Ord(tmTopLeft));
+    AddConst(cComCtrls, 'tmBoth', Ord(tmBoth));
     { TTickStyle }
-    AddConst(cComCtrls, 'tsNone', tsNone);
-    AddConst(cComCtrls, 'tsAuto', tsAuto);
-    AddConst(cComCtrls, 'tsManual', tsManual);
+    AddConst(cComCtrls, 'tsNone', Ord(tsNone));
+    AddConst(cComCtrls, 'tsAuto', Ord(tsAuto));
+    AddConst(cComCtrls, 'tsManual', Ord(tsManual));
     { TTrackBar }
     AddClass(cComCtrls, TTrackBar, 'TTrackBar');
     AddGet(TTrackBar, 'Create', TTrackBar_Create, 1, [varEmpty], varEmpty);
@@ -2597,17 +2597,17 @@ begin
     AddGet(TProgressBar, 'StepIt', TProgressBar_StepIt, 0, [0], varEmpty);
     AddGet(TProgressBar, 'StepBy', TProgressBar_StepBy, 1, [varEmpty], varEmpty);
     { TAttributeType }
-    AddConst(cComCtrls, 'atSelected', atSelected);
-    AddConst(cComCtrls, 'atDefaultText', atDefaultText);
+    AddConst(cComCtrls, 'atSelected', Ord(atSelected));
+    AddConst(cComCtrls, 'atDefaultText', Ord(atDefaultText));
     { TConsistentAttribute }
-    AddConst(cComCtrls, 'caBold', caBold);
-    AddConst(cComCtrls, 'caColor', caColor);
-    AddConst(cComCtrls, 'caFace', caFace);
-    AddConst(cComCtrls, 'caItalic', caItalic);
-    AddConst(cComCtrls, 'caSize', caSize);
-    AddConst(cComCtrls, 'caStrikeOut', caStrikeOut);
-    AddConst(cComCtrls, 'caUnderline', caUnderline);
-    AddConst(cComCtrls, 'caProtected', caProtected);
+    AddConst(cComCtrls, 'caBold', Ord(caBold));
+    AddConst(cComCtrls, 'caColor', Ord(caColor));
+    AddConst(cComCtrls, 'caFace', Ord(caFace));
+    AddConst(cComCtrls, 'caItalic', Ord(caItalic));
+    AddConst(cComCtrls, 'caSize', Ord(caSize));
+    AddConst(cComCtrls, 'caStrikeOut', Ord(caStrikeOut));
+    AddConst(cComCtrls, 'caUnderline', Ord(caUnderline));
+    AddConst(cComCtrls, 'caProtected', Ord(caProtected));
     { TTextAttributes }
     AddClass(cComCtrls, TTextAttributes, 'TTextAttributes');
     AddGet(TTextAttributes, 'Create', TTextAttributes_Create, 2, [varEmpty, varEmpty], varEmpty);
@@ -2630,8 +2630,8 @@ begin
     AddGet(TTextAttributes, 'Height', TTextAttributes_Read_Height, 0, [0], varEmpty);
     AddSet(TTextAttributes, 'Height', TTextAttributes_Write_Height, 0, [0]);
     { TNumberingStyle }
-    AddConst(cComCtrls, 'nsNone', nsNone);
-    AddConst(cComCtrls, 'nsBullet', nsBullet);
+    AddConst(cComCtrls, 'nsNone', Ord(nsNone));
+    AddConst(cComCtrls, 'nsBullet', Ord(nsBullet));
     { TParaAttributes }
     AddClass(cComCtrls, TParaAttributes, 'TParaAttributes');
     AddGet(TParaAttributes, 'Create', TParaAttributes_Create, 1, [varEmpty], varEmpty);
@@ -2651,8 +2651,8 @@ begin
     AddGet(TParaAttributes, 'TabCount', TParaAttributes_Read_TabCount, 0, [0], varEmpty);
     AddSet(TParaAttributes, 'TabCount', TParaAttributes_Write_TabCount, 0, [0]);
     { TSearchType }
-    AddConst(cComCtrls, 'stWholeWord', stWholeWord);
-    AddConst(cComCtrls, 'stMatchCase', stMatchCase);
+    AddConst(cComCtrls, 'stWholeWord', Ord(stWholeWord));
+    AddConst(cComCtrls, 'stMatchCase', Ord(stMatchCase));
     { TCustomRichEdit }
     AddClass(cComCtrls, TCustomRichEdit, 'TCustomRichEdit');
     AddGet(TCustomRichEdit, 'Clear', TCustomRichEdit_Clear, 0, [0], varEmpty);
@@ -2671,33 +2671,33 @@ begin
     AddClass(cComCtrls, TRichEdit, 'TRichEdit');
     AddGet(TRichEdit, 'Create', TRichEdit_Create, 1, [varEmpty], varEmpty);
     { TUDAlignButton }
-    AddConst(cComCtrls, 'udLeft', udLeft);
-    AddConst(cComCtrls, 'udRight', udRight);
+    AddConst(cComCtrls, 'udLeft', Ord(udLeft));
+    AddConst(cComCtrls, 'udRight', Ord(udRight));
     { TUDOrientation }
-    AddConst(cComCtrls, 'udHorizontal', udHorizontal);
-    AddConst(cComCtrls, 'udVertical', udVertical);
+    AddConst(cComCtrls, 'udHorizontal', Ord(udHorizontal));
+    AddConst(cComCtrls, 'udVertical', Ord(udVertical));
     { TUDBtnType }
-    AddConst(cComCtrls, 'btNext', btNext);
-    AddConst(cComCtrls, 'btPrev', btPrev);
+    AddConst(cComCtrls, 'btNext', Ord(btNext));
+    AddConst(cComCtrls, 'btPrev', Ord(btPrev));
     { TCustomUpDown }
     AddClass(cComCtrls, TCustomUpDown, 'TCustomUpDown');
     { TUpDown }
     AddClass(cComCtrls, TUpDown, 'TUpDown');
     AddGet(TUpDown, 'Create', TUpDown_Create, 1, [varEmpty], varEmpty);
     { THKModifier }
-    AddConst(cComCtrls, 'hkShift', hkShift);
-    AddConst(cComCtrls, 'hkCtrl', hkCtrl);
-    AddConst(cComCtrls, 'hkAlt', hkAlt);
-    AddConst(cComCtrls, 'hkExt', hkExt);
+    AddConst(cComCtrls, 'hkShift', Ord(hkShift));
+    AddConst(cComCtrls, 'hkCtrl', Ord(hkCtrl));
+    AddConst(cComCtrls, 'hkAlt', Ord(hkAlt));
+    AddConst(cComCtrls, 'hkExt', Ord(hkExt));
     { THKInvalidKey }
-    AddConst(cComCtrls, 'hcNone', hcNone);
-    AddConst(cComCtrls, 'hcShift', hcShift);
-    AddConst(cComCtrls, 'hcCtrl', hcCtrl);
-    AddConst(cComCtrls, 'hcAlt', hcAlt);
-    AddConst(cComCtrls, 'hcShiftCtrl', hcShiftCtrl);
-    AddConst(cComCtrls, 'hcShiftAlt', hcShiftAlt);
-    AddConst(cComCtrls, 'hcCtrlAlt', hcCtrlAlt);
-    AddConst(cComCtrls, 'hcShiftCtrlAlt', hcShiftCtrlAlt);
+    AddConst(cComCtrls, 'hcNone', Ord(hcNone));
+    AddConst(cComCtrls, 'hcShift', Ord(hcShift));
+    AddConst(cComCtrls, 'hcCtrl', Ord(hcCtrl));
+    AddConst(cComCtrls, 'hcAlt', Ord(hcAlt));
+    AddConst(cComCtrls, 'hcShiftCtrl', Ord(hcShiftCtrl));
+    AddConst(cComCtrls, 'hcShiftAlt', Ord(hcShiftAlt));
+    AddConst(cComCtrls, 'hcCtrlAlt', Ord(hcCtrlAlt));
+    AddConst(cComCtrls, 'hcShiftCtrlAlt', Ord(hcShiftCtrlAlt));
     { TCustomHotKey }
     AddClass(cComCtrls, TCustomHotKey, 'TCustomHotKey');
     { THotKey }
@@ -2716,10 +2716,10 @@ begin
     AddIGet(TListColumns, 'Items', TListColumns_Read_Items, 1, [0], varEmpty);
     AddISet(TListColumns, 'Items', TListColumns_Write_Items, 1, [1]);
     { TDisplayCode }
-    AddConst(cComCtrls, 'drBounds', drBounds);
-    AddConst(cComCtrls, 'drIcon', drIcon);
-    AddConst(cComCtrls, 'drLabel', drLabel);
-    AddConst(cComCtrls, 'drSelectBounds', drSelectBounds);
+    AddConst(cComCtrls, 'drBounds', Ord(drBounds));
+    AddConst(cComCtrls, 'drIcon', Ord(drIcon));
+    AddConst(cComCtrls, 'drLabel', Ord(drLabel));
+    AddConst(cComCtrls, 'drSelectBounds', Ord(drSelectBounds));
     { TListItem }
     AddClass(cComCtrls, TListItem, 'TListItem');
     AddGet(TListItem, 'Create', TListItem_Create, 1, [varEmpty], varEmpty);
@@ -2778,36 +2778,36 @@ begin
     AddISet(TListItems, 'Item', TListItems_Write_Item, 1, [1]);
     AddGet(TListItems, 'Owner', TListItems_Read_Owner, 0, [0], varEmpty);
     { TIconArrangement }
-    AddConst(cComCtrls, 'iaTop', iaTop);
-    AddConst(cComCtrls, 'iaLeft', iaLeft);
+    AddConst(cComCtrls, 'iaTop', Ord(iaTop));
+    AddConst(cComCtrls, 'iaLeft', Ord(iaLeft));
     { TListArrangement }
-    AddConst(cComCtrls, 'arAlignBottom', arAlignBottom);
-    AddConst(cComCtrls, 'arAlignLeft', arAlignLeft);
-    AddConst(cComCtrls, 'arAlignRight', arAlignRight);
-    AddConst(cComCtrls, 'arAlignTop', arAlignTop);
-    AddConst(cComCtrls, 'arDefault', arDefault);
-    AddConst(cComCtrls, 'arSnapToGrid', arSnapToGrid);
+    AddConst(cComCtrls, 'arAlignBottom', Ord(arAlignBottom));
+    AddConst(cComCtrls, 'arAlignLeft', Ord(arAlignLeft));
+    AddConst(cComCtrls, 'arAlignRight', Ord(arAlignRight));
+    AddConst(cComCtrls, 'arAlignTop', Ord(arAlignTop));
+    AddConst(cComCtrls, 'arDefault', Ord(arDefault));
+    AddConst(cComCtrls, 'arSnapToGrid', Ord(arSnapToGrid));
     { TViewStyle }
-    AddConst(cComCtrls, 'vsIcon', vsIcon);
-    AddConst(cComCtrls, 'vsSmallIcon', vsSmallIcon);
-    AddConst(cComCtrls, 'vsList', vsList);
-    AddConst(cComCtrls, 'vsReport', vsReport);
+    AddConst(cComCtrls, 'vsIcon', Ord(vsIcon));
+    AddConst(cComCtrls, 'vsSmallIcon', Ord(vsSmallIcon));
+    AddConst(cComCtrls, 'vsList', Ord(vsList));
+    AddConst(cComCtrls, 'vsReport', Ord(vsReport));
     { TItemState }
-    AddConst(cComCtrls, 'isNone', isNone);
-    AddConst(cComCtrls, 'isCut', isCut);
-    AddConst(cComCtrls, 'isDropHilited', isDropHilited);
-    AddConst(cComCtrls, 'isFocused', isFocused);
-    AddConst(cComCtrls, 'isSelected', isSelected);
+    AddConst(cComCtrls, 'isNone', Ord(isNone));
+    AddConst(cComCtrls, 'isCut', Ord(isCut));
+    AddConst(cComCtrls, 'isDropHilited', Ord(isDropHilited));
+    AddConst(cComCtrls, 'isFocused', Ord(isFocused));
+    AddConst(cComCtrls, 'isSelected', Ord(isSelected));
     { TItemChange }
-    AddConst(cComCtrls, 'ctText', ctText);
-    AddConst(cComCtrls, 'ctImage', ctImage);
-    AddConst(cComCtrls, 'ctState', ctState);
+    AddConst(cComCtrls, 'ctText', Ord(ctText));
+    AddConst(cComCtrls, 'ctImage', Ord(ctImage));
+    AddConst(cComCtrls, 'ctState', Ord(ctState));
     { TSearchDirection }
-    AddConst(cComCtrls, 'sdLeft', sdLeft);
-    AddConst(cComCtrls, 'sdRight', sdRight);
-    AddConst(cComCtrls, 'sdAbove', sdAbove);
-    AddConst(cComCtrls, 'sdBelow', sdBelow);
-    AddConst(cComCtrls, 'sdAll', sdAll);
+    AddConst(cComCtrls, 'sdLeft', Ord(sdLeft));
+    AddConst(cComCtrls, 'sdRight', Ord(sdRight));
+    AddConst(cComCtrls, 'sdAbove', Ord(sdAbove));
+    AddConst(cComCtrls, 'sdBelow', Ord(sdBelow));
+    AddConst(cComCtrls, 'sdAll', Ord(sdAll));
     { TCustomListView }
     AddClass(cComCtrls, TCustomListView, 'TCustomListView');
     AddGet(TCustomListView, 'AlphaSort', TCustomListView_AlphaSort, 0, [0], varEmpty);
@@ -2849,15 +2849,15 @@ begin
     AddClass(cComCtrls, TListView, 'TListView');
     AddGet(TListView, 'Create', TListView_Create, 1, [varEmpty], varEmpty);
     { TCommonAVI }
-    AddConst(cComCtrls, 'aviNone', aviNone);
-    AddConst(cComCtrls, 'aviFindFolder', aviFindFolder);
-    AddConst(cComCtrls, 'aviFindFile', aviFindFile);
-    AddConst(cComCtrls, 'aviFindComputer', aviFindComputer);
-    AddConst(cComCtrls, 'aviCopyFiles', aviCopyFiles);
-    AddConst(cComCtrls, 'aviCopyFile', aviCopyFile);
-    AddConst(cComCtrls, 'aviRecycleFile', aviRecycleFile);
-    AddConst(cComCtrls, 'aviEmptyRecycle', aviEmptyRecycle);
-    AddConst(cComCtrls, 'aviDeleteFile', aviDeleteFile);
+    AddConst(cComCtrls, 'aviNone', Ord(aviNone));
+    AddConst(cComCtrls, 'aviFindFolder', Ord(aviFindFolder));
+    AddConst(cComCtrls, 'aviFindFile', Ord(aviFindFile));
+    AddConst(cComCtrls, 'aviFindComputer', Ord(aviFindComputer));
+    AddConst(cComCtrls, 'aviCopyFiles', Ord(aviCopyFiles));
+    AddConst(cComCtrls, 'aviCopyFile', Ord(aviCopyFile));
+    AddConst(cComCtrls, 'aviRecycleFile', Ord(aviRecycleFile));
+    AddConst(cComCtrls, 'aviEmptyRecycle', Ord(aviEmptyRecycle));
+    AddConst(cComCtrls, 'aviDeleteFile', Ord(aviDeleteFile));
     { TAnimate }
     AddClass(cComCtrls, TAnimate, 'TAnimate');
     AddGet(TAnimate, 'Create', TAnimate_Create, 1, [varEmpty], varEmpty);

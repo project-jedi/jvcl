@@ -137,12 +137,12 @@ begin
     AddExtUnit(cTypes);
     { TPoint }
     AddRec(cTypes, cTPoint, SizeOf(TPoint), [RFD('X', 0, varInteger), RFD('Y', 4, varInteger)], nil, nil, nil);
-    AddFun(cTypes, 'Point', JvInterpreter_Point, 2, [varInteger, varInteger], varRecord);
+    AddFunction(cTypes, 'Point', JvInterpreter_Point, 2, [varInteger, varInteger], varRecord);
     { TRect }
     AddRec(cTypes, cTRect, SizeOf(TRect), [RFD('Left', 0, varInteger), RFD('Top', 4, varInteger),
       RFD('Right', 8, varInteger), RFD('Bottom', 12, varInteger)], nil, nil, nil);
-    AddFun(cTypes, 'Rect', JvInterpreter_Rect, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
-    AddFun(cTypes, 'Bounds', JvInterpreter_Bounds, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
+    AddFunction(cTypes, 'Rect', JvInterpreter_Rect, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
+    AddFunction(cTypes, 'Bounds', JvInterpreter_Bounds, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
     AddRecGet(cTypes, cTRect, 'TopLeft', TRect_Read_TopLeft, 0, [0], varRecord);
     AddRecSet(cTypes, cTRect, 'TopLeft', TRect_Write_TopLeft, 0, [0]);
     AddRecGet(cTypes, cTRect, 'BottomRight', TRect_Read_BottomRight, 0, [0], varRecord);

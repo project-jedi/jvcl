@@ -323,9 +323,10 @@ end;
 
 function Max(Val1, Val2: Integer): Integer;
 begin
-  Result := Val1;
   if Val2 > Val1 then
-    Result := Val2;
+    Result := Val2
+  else
+    Result := Val1;
 end;
 
 function IncludeFont(Options: TJvFontComboOptions; LogFont: TLogFont; FontType: Integer): Boolean;
@@ -357,6 +358,25 @@ begin
       FontCombo.Items.AddObject(string(LogFont.lfFaceName), TObject(FontType));
   end;
   Result := 1;
+end;
+
+function ItemStateToOwnerDrawState(State: Integer): TOwnerDrawState;
+begin
+  Result := [];
+  if (State and ODS_CHECKED) <> 0 then
+    Include(Result, odChecked);
+  if (State and ODS_COMBOBOXEDIT) <> 0 then
+    Include(Result, odComboBoxEdit);
+  if (State and ODS_DEFAULT) <> 0 then
+    Include(Result, odDefault);
+  if (State and ODS_DISABLED) <> 0 then
+    Include(Result, odDisabled);
+  if (State and ODS_FOCUS) <> 0 then
+    Include(Result, odFocused);
+  if (State and ODS_GRAYED) <> 0 then
+    Include(Result, odGrayed);
+  if (State and ODS_SELECTED) <> 0 then
+    Include(Result, odSelected);
 end;
 
 // === TJvColorComboBox ======================================================
@@ -504,21 +524,7 @@ var
 begin
   with Message.DrawItemStruct^ do
   begin
-    State := [];
-    if bool(itemState and ODS_CHECKED) then
-      Include(State, odChecked);
-    if bool(itemState and ODS_COMBOBOXEDIT) then
-      Include(State, odComboBoxEdit);
-    if bool(itemState and ODS_DEFAULT) then
-      Include(State, odDefault);
-    if bool(itemState and ODS_DISABLED) then
-      Include(State, odDisabled);
-    if bool(itemState and ODS_FOCUS) then
-      Include(State, odFocused);
-    if bool(itemState and ODS_GRAYED) then
-      Include(State, odGrayed);
-    if bool(itemState and ODS_SELECTED) then
-      Include(State, odSelected);
+    State := ItemStateToOwnerDrawState(itemState);
     Canvas.Handle := hDC;
     Canvas.Font := Font;
     Canvas.Brush := Brush;
@@ -943,21 +949,7 @@ var
 begin
   with Message.DrawItemStruct^ do
   begin
-    State := [];
-    if bool(itemState and ODS_CHECKED) then
-      Include(State, odChecked);
-    if bool(itemState and ODS_COMBOBOXEDIT) then
-      Include(State, odComboBoxEdit);
-    if bool(itemState and ODS_DEFAULT) then
-      Include(State, odDefault);
-    if bool(itemState and ODS_DISABLED) then
-      Include(State, odDisabled);
-    if bool(itemState and ODS_FOCUS) then
-      Include(State, odFocused);
-    if bool(itemState and ODS_GRAYED) then
-      Include(State, odGrayed);
-    if bool(itemState and ODS_SELECTED) then
-      Include(State, odSelected);
+    State := ItemStateToOwnerDrawState(itemState);
     Canvas.Handle := hDC;
     Canvas.Font := Font;
     Canvas.Brush := Brush;

@@ -393,22 +393,22 @@ begin
     Pen.Style := TPenStyle(PenStyle);
     Pen.Width := PenWidth;
     Pen.Color := BvColor;
-    if bool(SideLeft) then
+    if SideLeft <> 0 then
     begin
       MoveTo(L + PenWidth div 2, T + Height - 1);
       LineTo(L + PenWidth div 2, T);
     end;
-    if bool(SideTop) then
+    if SideTop <> 0 then
     begin
       MoveTo(L + PenWidth div 2, T + PenWidth div 2);
       LineTo(L + Width - PenWidth, T + PenWidth div 2);
     end;
-    if bool(SideRight) then
+    if SideRight <> 0 then
     begin
       MoveTo(L + Width - 1, T);
       LineTo(L + Width - 1, T + Height - 1);
     end;
-    if bool(SideBottom) then
+    if SideBottom <> 0 then
     begin
       MoveTo(L + Width - 1, T + Height - 1);
       LineTo(L, T + Height - 1);
@@ -444,7 +444,7 @@ begin
       Pen.Width := 1;
       Pen.Color := 0;
       Brush.Style := bsSolid;
-      if bool(Fixed) then
+      if Fixed <> 0 then
         Brush.Color := clBtnFace
       else
         Brush.Color := clWhite;
@@ -493,7 +493,7 @@ var
   pt: TPoint;
 begin
   inherited;
-  if not bool(Fixed) then
+  if Fixed = 0 then
     with Message do
     begin
       pt.x := Pos.x;
@@ -742,15 +742,15 @@ begin
   FFStyle := Value;
   with Canvas.Font do
   begin
-    if bool(Value and 1) then
+    if (Value and 1) <> 0 then
       Style := Style + [fsBold]
     else
       Style := Style - [fsBold];
-    if bool(Value and (1 shl 1)) then
+    if (Value and (1 shl 1)) <> 0 then
       Style := Style + [fsItalic]
     else
       Style := Style - [fsItalic];
-    if bool(Value and (1 shl 2)) then
+    if (Value and (1 shl 2)) <> 0 then
       Style := Style + [fsUnderline]
     else
       Style := Style - [fsUnderline];
