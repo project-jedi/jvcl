@@ -93,7 +93,12 @@ begin
     Sleep(10);
   end;
   FForm.Visible := False;
+  {$IFDEF VCL}
   SetWindowRgn(FForm.Handle, 0, True);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  SetWindowRgn(FForm.Handle, nil, True);
+  {$ENDIF VisualCLX}
   DeleteRegions;
 end;
 
@@ -112,7 +117,12 @@ begin
     FForm.Repaint;
     Sleep(10);
   end;
+  {$IFDEF VCL}
   SetWindowRgn(FForm.Handle, 0, True);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  SetWindowRgn(FForm.Handle, nil, True);
+  {$ENDIF VisualCLX}
   DeleteObject(Rgn);
   DeleteRegions;
 end;

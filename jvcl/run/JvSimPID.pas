@@ -36,7 +36,7 @@ uses
   Windows, Messages, Graphics, Controls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls,
+  Types, QGraphics, QControls,
   {$ENDIF VisualCLX}
   JvComponent;
 

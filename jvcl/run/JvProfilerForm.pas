@@ -33,11 +33,14 @@ interface
 
 uses
   Classes,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Windows, Dialogs, ComCtrls, StdCtrls, Controls, ExtCtrls, Forms,
+  Dialogs, ComCtrls, StdCtrls, Controls, ExtCtrls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QDialogs, QComCtrls, QStdCtrls, QControls, QExtCtrls, QForms,
+  QDialogs, QComCtrls, QStdCtrls, QControls, QExtCtrls, QForms, QWindows,
   {$ENDIF VisualCLX}
   JvComponent;
 
@@ -424,7 +427,9 @@ end;
 procedure TProfReport.lvReportColumnClick(Sender: TObject; Column: TListColumn);
 begin
   //  lvReport.Items.BeginUpdate;
+  {$IFDEF VCL}
   lvReport.CustomSort(TLVCompare(@DefSort), Column.Index);
+  {$ENDIF VCL}
   OddClick := not OddClick;
   //  lvReport.Items.EndUpdate;
 end;

@@ -32,11 +32,21 @@ unit JvScrollText;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms, QStdCtrls, QWindows,
+  {$ENDIF VisualCLX}
   JvTypes, JvImageDrawThread, JVCLVer, JvComponent;
 
 type
   TJvScrollTextDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom); // also in JvMoveableBevel, JvAppearingLabel
+  {$IFDEF VisualCLX}
+  TStaticText = TLabel;
+  {$ENDIF VisualCLX}
+
   TJvScrollText = class(TJvCustomControl)
   private
     FText: TStaticText;
@@ -106,7 +116,9 @@ uses
 constructor TJvScrollText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF VCL}
   Width := 200;
   Height := 150;
   FActive := False;
@@ -122,7 +134,9 @@ begin
   // FText.SetBounds(2, 2, Width-4, Height-4);
   FText.Width := Width;
   FText.Height := Height;
+  {$IFDEF VCL}
   FText.Borderstyle := sbsNone;
+  {$ENDIF VCL}
   FText.TabStop := False;
   FText.Enabled := FSelectable;
   FText.AutoSize := False;

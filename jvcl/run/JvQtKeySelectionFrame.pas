@@ -27,7 +27,6 @@ Known Issues: none known
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I linuxonly.inc}
 
 unit JvQtKeySelectionFrame;
 

@@ -39,6 +39,9 @@ type
 {$IFNDEF COMPILER7_UP}
   TDate = TDateTime;
 {$ENDIF COMPILER6_UP}
+{$IFDEF VisualCLX}
+  TDate = TDateTime;
+{$ENDIF VisualCLX}
   EJvUIBException = class(Exception);
 
   TJvUIBConnection = class(TInterfacedObject)

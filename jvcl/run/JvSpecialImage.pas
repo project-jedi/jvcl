@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2003-03-17
+Last Modified: 2004-02-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,7 +31,13 @@ unit JvSpecialImage;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Graphics, Controls, ExtCtrls, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QExtCtrls, QForms, QWindows,
+  {$ENDIF VisualCLX}
   JvTypes, JvExExtCtrls;
 
 type

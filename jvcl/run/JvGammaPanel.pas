@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Modifications:
   2/11/2000 Added the Align and AutoSize property (Request of Brad T.)
   2004/01/06 VisualCLX compatibilty
-  
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
@@ -41,7 +41,7 @@ uses
   ExtCtrls, StdCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, Types,
+  QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, Types, QWindows,
   {$ENDIF VisualCLX}
   JvTypes, JvComponent;
 
@@ -82,7 +82,9 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property Align;
+    {$IFDEF VCL}
     property AutoSize;
+    {$ENDIF VCL}
     property Height default 250;
     property Width default 65;
     property ForegroundColor: TColor read FForegroundColor write SetForegroundColor default clBlack;

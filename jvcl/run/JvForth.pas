@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2000-06-15
+Last Modified: 2004-01-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -368,8 +368,14 @@ begin
   Command := AFile;
   Params := #0;
   WorkDir := #0;
+  {$IFDEF VCL}
   ShellExecute(Application.Handle, 'open', PChar(Command),
     PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  ShellExecute(0, 'open', PChar(Command),
+    PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
+  {$ENDIF}
 end;
 
 procedure GlobalSetValue(var aText: string; aName, aValue: string);
@@ -1835,11 +1841,11 @@ begin
   end
   else if aMethod = 'load' then
   begin
-    table.LoadFromFile(FDSOBase + '\' + aName + '.txt');
+    table.LoadFromFile(FDSOBase + PathDelim + aName + '.txt');
   end
   else if aMethod = 'save' then
   begin
-    table.SaveToFile(FDSOBase + '\' + aName + '.txt');
+    table.SaveToFile(FDSOBase + PathDelim + aName + '.txt');
   end
   else if aMethod = 'Clear' then
   begin
@@ -1861,6 +1867,7 @@ begin
 end;
 
 procedure TJvForthScript.procSelDir;
+{$IFDEF VCL}
 var
   Dir: string;
 begin
@@ -1868,6 +1875,18 @@ begin
   if SelectDirectory(Dir, [sdAllowCreate, sdPerformCreate, sdPrompt], 0) then
     FDSOBase := dir;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+var
+  Dir: widestring;
+begin
+  Dir := FDSOBase;
+  if SelectDirectory('Select Directory', PathDelim ,Dir
+                      {$IFDEF LINUX}, true {$ENDIF LINUX})
+  then
+    FDSOBase := dir;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvForthScript.procExtVar;
 var

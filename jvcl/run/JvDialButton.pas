@@ -283,7 +283,9 @@ constructor TJvCustomDialButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csClickEvents, csCaptureMouse];
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF VCL}
   FTicks := TList.Create;
   FBorderStyle := bsNone;
   FButtonEdge := 5;
