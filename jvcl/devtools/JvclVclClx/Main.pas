@@ -53,6 +53,8 @@ type
     ListBox1: TListBox;
     RBtnAll: TRadioButton;
     EditDirectory: TJvDirectoryEdit;
+    CheckBoxRecursiveDir: TCheckBox;
+    CheckBoxUnixPathDelim: TCheckBox;
     procedure BtnExecuteClick(Sender: TObject);
     procedure BtnQuitClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -77,14 +79,34 @@ uses
 
 {$R *.dfm}
 
+procedure CollectFiles(const Dir: string; Recursive: Boolean; Files: TStrings);
+var
+  sr: TSearchRec;
+begin
+  if FindFirst(Dir + PathDelim + '*.*', faAnyFile or faDirectory, sr) = 0 then
+  try
+    repeat
+      if sr.Attr and faDirectory <> 0 then
+      begin
+        if Recursive and (sr.Name <> '.') and (sr.Name <> '..') then
+          CollectFiles(Dir + PathDelim + sr.Name, Recursive, Files);
+      end
+      else
+        Files.Add(Dir + PathDelim + sr.Name);
+    until FindNext(sr) <> 0;
+  finally
+    FindClose(sr);
+  end;
+end;
+
 procedure TFormMain.BtnExecuteClick(Sender: TObject);
 var
   Converter: TConverter;
   JVCLConverter: TJVCLConverter;
-  Sr: TSearchRec;
   dof, kof: TStrings;
-  dir: string;
-
+  Dir, FName, RelFilename, InDir, OutDir: string;
+  Files: TStringList;
+  i: Integer;
 begin
   ListBox1.Items.Clear;
   dof := TStringList.Create;
@@ -103,44 +125,56 @@ begin
         if FileExists(Dir + 'qexamples.kof') then
           kof.loadfromfile(Dir + 'qexamples.kof');
 //        JVCLConverter.OnProgress := DoProgress;
-        JVCLConverter.OutDirectory := EditOutDir.Text;
+        OutDir := EditOutDir.Text;
+        JVCLConverter.OutDirectory := OutDir;
         JVCLConverter.ReduceConditions := CheckBoxReduceConditions.Checked;
         JVCLConverter.KeepLines := CheckBoxKeepLines.Checked;
         JVCLConverter.UnixLineBreak := CheckBoxUnixLineBreaks.Checked;
         JVCLConverter.ForceOverwrite := CheckBoxForceOverwrite.Checked;
+        JVCLConverter.UnixPathDelim := CheckBoxUnixPathDelim.Checked;
         ForceDirectories(EditOutDir.Text);
         if RBtnDir.Checked then
         begin
-          if FindFirst(EditDirectory.Text + PathDelim + '*.*', faAnyFile and not faDirectory, Sr) = 0 then
-          begin
-            repeat
+          Files := TStringList.Create;
+          try
+            InDir := EditDirectory.Text;
+            CollectFiles(InDir, CheckBoxRecursiveDir.Checked, Files);
+            for i := 0 to Files.Count - 1 do
+            begin
               with JVCLConverter do
               begin
-                if (ExtractFileExt(Sr.Name) = '.pas')   then
+                FName := ExtractFileName(Files[i]);
+                RelFilename := ExtractRelativePath(InDir + PathDelim, Files[i]);
+                OutDirectory := OutDir + PathDelim + ExtractFileDir(RelFilename);
+                if CompareText(ExtractFileExt(FName), '.pas') = 0 then
                 begin
-                  Listbox1.Items.Add(Sr.name);
-                  ParsePasFile(EditDirectory.Text + PathDelim + Sr.Name);
+                  ForceDirectories(OutDirectory);
+                  Listbox1.Items.Add(RelFilename);
+                  ParsePasFile(Files[i]);
                 end
-                else if (ExtractFileExt(Sr.Name) = '.dfm') then
+                else if CompareText(ExtractFileExt(FName), '.dfm') = 0 then
                 begin
-                  if not FileExists(EditOutDir.Text + PathDelim + Sr.Name) then
+                  if not FileExists(OutDirectory + PathDelim + RelFilename) then
                   begin
-                    Listbox1.Items.Add(Sr.name);
-                    ParseDfmFile(EditDirectory.Text + PathDelim + Sr.Name);
+                    ForceDirectories(OutDirectory);
+                    Listbox1.Items.Add(RelFilename);
+                    ParseDfmFile(Files[i]);
                   end;
                 end
-                else if ExtractFileExt(Sr.Name) = '.dpr' then
+                else if CompareText(ExtractFileExt(FName), '.dpr') = 0 then
                 begin
-                  Listbox1.Items.Add(Sr.name);
-                  ParsePasFile(EditDirectory.Text + PathDelim + Sr.Name);
-                  dof.SaveToFile(EditOutDir.Text + PathDelim +
-                                 ChangeFileExt(GetQName(Sr.Name), '.dof'));
-                  kof.SaveToFile(EditOutDir.Text + PathDelim +
-                                  ChangeFileExt(GetQName(Sr.Name), '.kof'));
+                  ForceDirectories(OutDirectory);
+                  Listbox1.Items.Add(RelFilename);
+                  ParsePasFile(Files[i]);
+                  dof.SaveToFile(OutDirectory + PathDelim +
+                                 ChangeFileExt(GetQName(FName), '.dof'));
+                  kof.SaveToFile(OutDirectory + PathDelim +
+                                  ChangeFileExt(GetQName(FName), '.kof'));
                 end;
               end;
-            until FindNext(sr) <> 0;
-            FindClose(sr);
+            end;
+          finally
+            Files.Free;
           end;
         end
         else
@@ -203,11 +237,6 @@ begin
   if Dir = '' then
     Dir := ExtractFileDir(ParamStr(0));
   EditJVCLDir.Text := Dir;
-
-{  // testing:
-  RBtnSingleFile.Checked := True;
-  EditSingleFile.Text := 'z:\jedi\jvcl3\run\JvOutlookBar.pas';
-  EditOutDir.Text := 'z:\jedi\jvcl3\qrun';}
 end;
 
 function TFormMain.GetQName(const Filename: string): string;
