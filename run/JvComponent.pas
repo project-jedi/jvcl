@@ -33,14 +33,14 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFNDEF VisualCLX}
+  {$IFDEF VCL}
   StdCtrls, Controls, ExtCtrls, Forms, CheckLst,
   {$ELSE}
   QStdCtrls,  QExtCtrls, QControls, QForms, QCheckLst, Types,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF USE_DXGETTEXT}
   gnugettext,
-  {$ENDIF}
+  {$ENDIF USE_DXGETTEXT}
   JVCLVer, JvTypes;
 
 type

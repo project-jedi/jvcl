@@ -214,13 +214,18 @@ const
   Cr = #13;
   Lf = #10;
   Tab = #9;
-  
+  {$IFDEF MSWINDOWS}
+  PathDelim = '\';
+  DriveDelim = ':';
+  PathSep = ';';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  PathDelim = '/';
+  {$ENDIF LINUX}
+
 {$IFNDEF COMPILER6_UP}
 const
   sLineBreak = #13#10;
-  PathDelim = '\';
-  DriveDelim = ':';
-  PathSep    = ';';
 
 type
   { TStream seek origins }

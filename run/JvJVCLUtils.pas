@@ -3353,7 +3353,7 @@ begin
     Result := GetEnvironmentVariable('HOME') + PathDelim +
       '.' + ExtractFileName(Application.ExeName);
 {$ENDIF}
-{$IFDEF WINDOWS}
+{$IFDEF MSWINDOWS}
   Result := ExtractFileName(ChangeFileExt(Application.ExeName, '.ini'));
 {$ENDIF}
 end;

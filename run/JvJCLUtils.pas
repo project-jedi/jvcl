@@ -77,15 +77,18 @@ uses
   {$ENDIF COMPILER6_UP}
   TypInfo; //, JvClxUtils;
 
-{$IFNDEF COMPILER_6UP}
 const
-  // Delphi 1-5 do not support Linux
+  {$IFDEF MSWINDOWS}
   PathDelim = '\';
   DriveDelim = ':';
   PathSep = ';';
-{$ENDIF COMPILER6_UP}
-const
-  AllFilesMask = {$IFDEF MSWINDOWS} '*.*' {$ELSE} '*' {$ENDIF};
+  AllFilesMask = '*.*';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  PathDelim = '/';
+  AllFilesMask = '*';
+  {$ENDIF LINUX}
+
 {$IFDEF LINUX}
 type
   TFileTime = Integer;
@@ -221,12 +224,12 @@ function DeleteDir(const Dir: string): Boolean;
 { FileEquMask returns True if file, FileName,
   is compatible with given dos file mask, Mask }
 function FileEquMask(FileName, Mask: TFileName;
-  CaseSensitive: Boolean = {$IFDEF WINDOWS}False{$ELSE}True{$ENDIF}): Boolean;
+  CaseSensitive: Boolean = {$IFDEF MSWINDOWS}False{$ELSE}True{$ENDIF}): Boolean;
 { FileEquMasks returns True if file, FileName,
   is compatible with given Masks.
   Masks must be separated with SepPath (MSW: ';' / LINUX: ':') }
 function FileEquMasks(FileName, Masks: TFileName;
-  CaseSensitive: Boolean = {$IFDEF WINDOWS}False{$ELSE}True{$ENDIF}): Boolean;
+  CaseSensitive: Boolean = {$IFDEF MSWINDOWS}False{$ELSE}True{$ENDIF}): Boolean;
 function DeleteFiles(const Folder: TFileName; const Masks: string):boolean;
 
 {$IFDEF MSWINDOWS}
@@ -5997,8 +6000,7 @@ begin
 {$ENDIF}
 end;
 
-function FileEquMask(FileName, Mask: TFileName;
-  CaseSensitive: Boolean = {$IFDEF WINDOWS}False{$ELSE}True{$ENDIF}): Boolean;
+function FileEquMask(FileName, Mask: TFileName; CaseSensitive: Boolean): Boolean;
 var
   I: Integer;
   C: Char;
@@ -6048,8 +6050,7 @@ begin
     Result := True;
 end;
 
-function FileEquMasks(FileName, Masks: TFileName;
-  CaseSensitive: Boolean = {$IFDEF WINDOWS}False{$ELSE}True{$ENDIF}): Boolean;
+function FileEquMasks(FileName, Masks: TFileName; CaseSensitive: Boolean): Boolean;
 var
   I: Integer;
   Mask: string;

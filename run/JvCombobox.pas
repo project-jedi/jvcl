@@ -44,7 +44,7 @@ type
 
     Whenever an item is added to the list the provider will be deactivated and the list will be
     handled by the combo box as usual. }
-  TJvComboBoxStrings = class({$IFNDEF COMPILER6_UP}TStrings{$ELSE}TCustomComboBoxStrings{$ENDIF})
+  TJvComboBoxStrings = class({$IFDEF COMPILER6_UP} TCustomComboBoxStrings {$ELSE} TStrings {$ENDIF})
   private
     {$IFNDEF COMPILER6_UP}
     FComboBox: TJvCustomComboBox;

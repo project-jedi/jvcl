@@ -477,7 +477,7 @@ end;
 
 procedure TForm_CreateNew(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF Delphi}
+  {$IFDEF DELPHI}
   Value := O2V(TForm.CreateNew(V2O(Args.Values[0]) as TComponent));
   {$ELSE}
   Value := O2V(TForm.CreateNew(V2O(Args.Values[0]) as TComponent, 1));
@@ -534,7 +534,7 @@ end;
 
 procedure TDataModule_CreateNew(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF Delphi}
+  {$IFDEF DELPHI}
   Value := O2V(TDataModule.CreateNew(V2O(Args.Values[0]) as TComponent));
   {$ELSE}
   Value := O2V(TDataModule.CreateNew(V2O(Args.Values[0]) as TComponent, 1));
@@ -1407,7 +1407,7 @@ begin
     { TForm }
     AddClass(cForms, TForm, 'TForm');
     AddGet(TForm, 'Create', TForm_Create, 1, [varEmpty], varEmpty);
-    {$IFDEF Delphi}
+    {$IFDEF DELPHI}
     AddGet(TForm, 'CreateNew', TForm_CreateNew, 1, [varEmpty], varEmpty);
     {$ELSE}
     AddGet(TForm, 'CreateNew', TForm_CreateNew, 2, [varEmpty, varEmpty], varEmpty);
@@ -1422,7 +1422,7 @@ begin
     { TDataModule }
     AddClass(cForms, TDataModule, 'TDataModule');
     AddGet(TDataModule, 'Create', TDataModule_Create, 1, [varEmpty], varEmpty);
-    {$IFDEF Delphi}
+    {$IFDEF DELPHI}
     AddGet(TDataModule, 'CreateNew', TDataModule_CreateNew, 1, [varEmpty], varEmpty);
     {$ELSE}
     AddGet(TDataModule, 'CreateNew', TDataModule_CreateNew, 2, [varEmpty, varEmpty], varEmpty);

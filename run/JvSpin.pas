@@ -2196,7 +2196,7 @@ end;
 constructor TJvSpinEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  //{$IFDEF WIN32}
+  //{$IFDEF MSWINDOWS}
   //  FButtonKind := bkDiagonal;
   //{$ENDIF}
   Text := '0';
