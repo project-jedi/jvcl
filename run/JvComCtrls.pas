@@ -985,13 +985,18 @@ end;
 procedure TJvPageControl.DrawDefaultTab(TabIndex: Integer;
   const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
 var
-  ImageIndex, RealIndex: Integer;
+  i, ImageIndex, RealIndex: Integer;
   R: TRect;
   S: string;
 begin
-  RealIndex := TabIndex;
-  while not Pages[RealIndex].TabVisible do
-    Inc(RealIndex);
+  RealIndex := 0;
+  i := 0;
+  while i <= TabIndex+RealIndex do
+  begin
+    if not Pages[i].TabVisible then Inc(RealIndex);
+    Inc(i);
+  end;
+  RealIndex := RealIndex + TabIndex; 
   if RealIndex >= PageCount then Exit;
 
   if not Pages[RealIndex].Enabled then
@@ -1022,14 +1027,18 @@ end;
 procedure TJvPageControl.DrawShadowTab(TabIndex: Integer;
   const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
 var
-  ImageIndex, RealIndex: Integer;
+  i, ImageIndex, RealIndex: Integer;
   R: TRect;
   S: string;
 begin
-  //inherited;
-  RealIndex := TabIndex;
-  while not Pages[RealIndex].TabVisible do
-    Inc(RealIndex);
+  RealIndex := 0;
+  i := 0;
+  while i <= TabIndex+RealIndex do
+  begin
+    if not Pages[i].TabVisible then Inc(RealIndex);
+    Inc(i);
+  end;
+  RealIndex := RealIndex + TabIndex; 
   if RealIndex >= PageCount then Exit;
 
   if not Pages[RealIndex].Enabled then
@@ -1062,11 +1071,13 @@ end;
 
 procedure TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect;
   Active: Boolean);
+var DefaultDraw:boolean;
 begin
+  DefaultDraw := not Assigned(OnDrawTab) or (csDesigning in ComponentState);
   if DrawTabShadow then
-    DrawShadowTab(TabIndex, Rect, Active, Assigned(OnDrawTab))
+    DrawShadowTab(TabIndex, Rect, Active, DefaultDraw)
   else
-    DrawDefaultTab(TabIndex, Rect, Active, Assigned(OnDrawTab));
+    DrawDefaultTab(TabIndex, Rect, Active, DefaultDraw);
 end;
 
 procedure TJvPageControl.Loaded;
@@ -1992,6 +2003,7 @@ procedure TJvPageControl.SetReduceMemoryUse(const Value: Boolean);
 begin
   FReduceMemoryUse := Value;
 end;
+
 
 end.
 
