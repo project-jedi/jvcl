@@ -166,7 +166,8 @@ uses
 
   JvChangeNotify, JvEnterTab, JvFindFiles,
   JvFileInfo, JvItemsPanel, JvDsgnEditors, JvCntScr, JvCmdEdit,
-  JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBarEditor, JvSHFmt;
+  JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBarEditor, JvSHFmt,
+  JvInspector;
 
 {******************************************************************************}
 
@@ -447,7 +448,10 @@ begin
       TJvExpress,
       TJvExpressButton,
       TJvTimeLine,
-      TJvTMTimeline
+      TJvTMTimeline,
+      TJvInspector,
+      TJvInspectorBorlandPainter,
+      TJvInspectorDotNetPainter
       ]);
 
   // Jv Labels
