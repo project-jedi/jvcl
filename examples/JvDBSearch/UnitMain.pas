@@ -1,27 +1,59 @@
+{******************************************************************
+
+                       JEDI-VCL Demo
+
+ Copyright (C) 2002 Project JEDI
+
+ Original author:
+   Lionel Reynaud
+
+ Contributor(s):
+
+ You may retrieve the latest version of this file at the JEDI-JVCL
+ home page, located at http://jvcl.sourceforge.net
+
+ The contents of this file are used with permission, subject to
+ the Mozilla Public License Version 1.1 (the "License"); you may
+ not use this file except in compliance with the License. You may
+ obtain a copy of the License at
+ http://www.mozilla.org/MPL/MPL-1_1Final.html
+
+ Software distributed under the License is distributed on an
+ "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ implied. See the License for the specific language governing
+ rights and limitations under the License.
+
+******************************************************************}
+
+{$I jvcl.inc}
+
 unit UnitMain;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF}
   Dialogs, Grids, StdCtrls, JvExStdCtrls, JvEdit, JvCombobox,  ExtCtrls,
   DB, DBGrids, JvExDBGrids, JvDBGrid, DBTables, JvDBSearchEdit,
   JvDBSearchComboBox;
 
 type
   TForm1 = class(TForm)
-    tbl1: TTable;
+    Table1: TTable;
     JvDBGrid1: TJvDBGrid;
-    dts1: TDataSource;
+    DataSource1: TDataSource;
     pnl1: TPanel;
     JvDBSearchComboBox1: TJvDBSearchComboBox;
     JvDBSearchEdit1: TJvDBSearchEdit;
-    btn1: TButton;
+    btnConnect: TButton;
     lbl1: TLabel;
     lbl2: TLabel;
-    CheckBox1: TCheckBox;
-    procedure btn1Click(Sender: TObject);
-    procedure CheckBox1Click(Sender: TObject);
+    chkClearOnEnter: TCheckBox;
+    procedure btnConnectClick(Sender: TObject);
+    procedure chkClearOnEnterClick(Sender: TObject);
   private
     { Déclarations privées }
   public
@@ -35,15 +67,24 @@ implementation
 
 {$R *.dfm}
 
-procedure TForm1.btn1Click(Sender: TObject);
+procedure TForm1.btnConnectClick(Sender: TObject);
 begin
-  tbl1.Active := true;
-  btn1.Enabled := false;
+  Table1.Active := btnConnect.Tag = 0;
+  if Table1.Active then
+  begin
+    btnConnect.Tag := 1;
+    btnConnect.Caption := 'Disconnect';
+  end
+  else
+  begin
+    btnConnect.Tag := 0;
+    btnConnect.Caption := 'Connect';
+  end;
 end;
 
-procedure TForm1.CheckBox1Click(Sender: TObject);
+procedure TForm1.chkClearOnEnterClick(Sender: TObject);
 begin
-  JvDBSearchEdit1.ClearOnEnter := CheckBox1.Checked;
+  JvDBSearchEdit1.ClearOnEnter := chkClearOnEnter.Checked;
 end;
 
 end.
