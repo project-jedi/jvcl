@@ -224,6 +224,7 @@ type
 
     procedure GetBinaryValue(const Stream: TStream);
     property Data: Pointer read FData write FData;
+    function GetChildIndex(const AChild: TJvSimpleXmlElem): Integer;
   published
     property Name: string read FName write SetName;
     property Parent: TJvSimpleXmlElem read FParent write FParent;
@@ -946,7 +947,17 @@ end;
 
 function TJvSimpleXmlElem.GetBoolValue: Boolean;
 begin
-  result := StrToBool(Value);
+  result := StrToBoolDef(Value,false);
+end;
+{*************************************************}
+
+function TJvSimpleXmlElem.GetChildIndex(
+  const AChild: TJvSimpleXmlElem): Integer;
+begin
+  if (FItems=nil) then
+    result := -1
+  else
+    result := FItems.FElems.IndexOfObject(AChild);
 end;
 {*************************************************}
 
@@ -1676,7 +1687,7 @@ end;
 
 function TJvSimpleXmlProp.GetBoolValue: Boolean;
 begin
-  result := StrToBool(Value);
+  result := StrToBoolDef(Value,false);
 end;
 {*************************************************}
 
