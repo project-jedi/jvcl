@@ -105,7 +105,6 @@ type
     FHighlightFont: TFont;
     FButtonBorder: TJvButtonBorder;
     FPopUpMenu: TPopupMenu;
-    FCaption: TCaption;
     FGroupIndex: Integer;
     FSmallImages: TImageList;
     FLargeImages: TImageList;
@@ -122,7 +121,6 @@ type
     procedure SetSpacing(Value: Integer);
     procedure SetParentImageSize(Value: Boolean);
     procedure SetButtonBorder(Value: TJvButtonBorder);
-    procedure SetCaption(Value: TCaption);
     procedure SetSmallImages(Value: TImageList);
     procedure SetLargeImages(Value: TImageList);
     procedure SetImageIndex(Value: TImageIndex);
@@ -133,8 +131,10 @@ type
     procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_JVBUTTONPRESSED;
     procedure CMParentImageSizeChanged(var Msg: TMessage); message CM_IMAGESIZECHANGED;
     procedure CMLeaveButton(var Msg: TMessage); message CM_LEAVEBUTTON;
+    procedure CMTextChanged(var Msg:TMessage); message CM_TEXTCHANGED;
     function ParentVisible: Boolean;
   protected
+
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -158,12 +158,11 @@ type
     property FillColor: TColor read FFillColor write SetFillColor default clNone;
     property Offset: Integer read FOffset write SetOffset default 0;
     property ButtonBorder: TJvButtonBorder read FButtonBorder write SetButtonBorder default bbDark;
-    property Caption: TCaption read FCaption write SetCaption;
     property Centered: Boolean read FCentered write SetCentered;
     property Down: Boolean read FStayDown write SetDown default False;
     // (rom) renamed
     property HighlightFont: TFont read FHighlightFont write SetHighlightFont;
-    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property ImageSize: TJvImageSize read FImageSize write SetImageSize default isLarge;
     property ParentImageSize: Boolean read FParentImageSize write SetParentImageSize default True;
     property PopupMenu: TPopupMenu read FPopUpMenu write FPopUpMenu;
@@ -295,7 +294,6 @@ type
     FDownArrow: TJvDwnArrowBtn;
     FScrolling: Integer;
     FUpArrow: TJvUpArrowBtn;
-    FCaption: TCaption;
     FBitmap: TBitmap;
     FImageSize: TJvImageSize;
     FManager: TJvLookOut;
@@ -313,7 +311,6 @@ type
     procedure SetImageSize(Value: TJvImageSize);
     procedure SetParentImageSize(Value: Boolean);
     procedure SetBitmap(Value: TBitmap); {$IFDEF VisualCLX} reintroduce; {$ENDIF}
-    procedure SetCaption(Value: TCaption);
     procedure SetMargin(Value: Integer);
     procedure SetButton(Index: Integer; Value: TJvLookOutButton);
     function GetButton(Index: Integer): TJvLookOutButton;
@@ -321,6 +318,7 @@ type
     procedure SetAutoCenter(Value: Boolean);
     function IsVisible(Control: TControl): Boolean;
     procedure CMParentImageSizeChanged(var Msg: TMessage); message CM_IMAGESIZECHANGED;
+    procedure CMTextChanged(var Msg:TMessage); message CM_TEXTCHANGED;
     procedure TileBitmap;
   protected
     function WantKey(Key: Integer; Shift: TShiftState;
@@ -367,7 +365,7 @@ type
     property HighlightFont: TFont read FHighlightFont write SetHighlightFont;
     property ParentImageSize: Boolean read FParentImageSize write SetParentImageSize default True;
     property ShowPressed: Boolean read FShowPressed write FShowPressed default False;
-    property Caption: TCaption read FCaption write SetCaption;
+    property Caption;
     property Color;
     {$IFDEF VCL}
     property DragCursor;
@@ -604,7 +602,15 @@ type
     procedure AssignClient(AClient: TObject); override;
     function IsCheckedLinked: Boolean; override;
     procedure SetChecked(Value: Boolean); override;
+    function IsImageIndexLinked: Boolean; override;
+    procedure SetImageIndex(Value: Integer); override;
+    {$IFDEF COMPILER6_UP}
+    function IsGroupIndexLinked: Boolean; override;
+    procedure SetGroupIndex(Value: Integer); override;
+    {$ENDIF COMPILER6_UP}
   end;
+
+  TJvLookOutButtonActionLinkClass = class of TJvLookOutButtonActionLink;
 
 procedure TJvLookOutButtonActionLink.AssignClient(AClient: TObject);
 begin
@@ -623,6 +629,33 @@ begin
   if IsCheckedLinked then
     FClient.Down := Value;
 end;
+
+function TJvLookOutButtonActionLink.IsImageIndexLinked: Boolean;
+begin
+  Result := inherited IsImageIndexLinked and
+    (FClient.ImageIndex = (Action as TCustomAction).ImageIndex);
+end;
+
+procedure TJvLookOutButtonActionLink.SetImageIndex(Value: Integer);
+begin
+  if IsImageIndexLinked then
+    FClient.ImageIndex := Value;
+
+end;
+
+{$IFDEF COMPILER6_UP}
+function TJvLookOutButtonActionLink.IsGroupIndexLinked: Boolean;
+begin
+  Result := inherited IsGroupIndexLinked and
+    (FClient.GroupIndex = (Action as TCustomAction).GroupIndex);
+end;
+
+procedure TJvLookOutButtonActionLink.SetGroupIndex(Value: Integer);
+begin
+  if IsGroupIndexLinked then
+    FClient.GroupIndex := Value;
+end;
+{$ENDIF COMPILER6_UP}
 
 //=== { TJvUpArrowBtn } ======================================================
 
@@ -902,6 +935,7 @@ begin
   FHighlightFont.Assign(Font);
   Width := 60;
   Height := 60;
+  FImageIndex := -1;
   FLargeImageChangeLink := TChangeLink.Create;
   FSmallImageChangeLink := TChangeLink.Create;
   FLargeImageChangeLink.OnChange := ImageListChange;
@@ -935,7 +969,7 @@ begin
     Width, FTextRect.Bottom - FTextRect.Top);
   with FEdit do
   begin
-    Text := FCaption;
+    Text := Caption;
     BorderStyle := bsNone;
     AutoSelect := True;
     OnKeyPress := EditKeyDown;
@@ -945,7 +979,7 @@ begin
     SetFocus;
     SetCapture(FEdit.Handle);
     SelStart := 0;
-    SelLength := Length(FCaption);
+    SelLength := Length(Caption);
   end;
 end;
 
@@ -989,7 +1023,7 @@ begin
         end;
     end;
   if Modify then
-    FCaption := ACaption;
+    Caption := ACaption;
 end;
 
 procedure TJvCustomLookOutButton.EditMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
@@ -1042,7 +1076,7 @@ end;
 function TJvCustomLookOutButton.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := IsAccel(Key, FCaption) and Enabled and
+  Result := IsAccel(Key, Caption) and Enabled and
     Visible and ParentVisible and (ssAlt in Shift);
   if Result then
     Click
@@ -1115,15 +1149,6 @@ procedure TJvCustomLookOutButton.SetOffset(Value: Integer);
 begin
   if FOffset <> Value then
     FOffset := Value;
-end;
-
-procedure TJvCustomLookOutButton.SetCaption(Value: TCaption);
-begin
-  if FCaption <> Value then
-  begin
-    FCaption := Value;
-    Invalidate;
-  end;
 end;
 
 procedure TJvCustomLookOutButton.SetButtonBorder(Value: TJvButtonBorder);
@@ -1550,6 +1575,12 @@ begin
   end;
 end;
 
+procedure TJvCustomLookOutButton.CMTextChanged(var Msg: TMessage);
+begin
+  inherited;
+  Invalidate;
+end;
+
 procedure TJvCustomLookOutButton.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
 begin
   if AParent <> Parent then
@@ -1584,10 +1615,12 @@ begin
   if Sender is TCustomAction then
     with TCustomAction(Sender) do
     begin
-      if not CheckDefaults or (Self.Down = False) then
-        Self.Down := Checked;
       if not CheckDefaults or (Self.ImageIndex = -1) then
         Self.ImageIndex := ImageIndex;
+      if not CheckDefaults or (Self.GroupIndex = 0) then
+        Self.GroupIndex := GroupIndex;
+      if not CheckDefaults or not Self.Down then
+        Self.Down := Checked;
     end;
 end;
 
@@ -1628,7 +1661,7 @@ begin
   ControlStyle := [csAcceptsControls, csCaptureMouse, csSetCaption];
   Color := clBtnShadow;
   FScrolling := 0;
-  FCaption := 'Outlook';
+  Caption := 'Outlook';
   FButtons := TList.Create;
   FDown := False;
   FShowPressed := False;
@@ -1727,7 +1760,7 @@ begin
 
   with FEdit do
   begin
-    Text := FCaption;
+    Text := Caption;
     //    BorderStyle := bsNone;
     SetBounds(0, 0, Width, cHeight);
     AutoSelect := True;
@@ -1736,7 +1769,7 @@ begin
     SetFocus;
     SetCapture(FEdit.Handle);
     SelStart := 0;
-    SelLength := Length(FCaption);
+    SelLength := Length(Caption);
   end;
 end;
 
@@ -1797,13 +1830,13 @@ begin
         end;
     end;
   if Modify then
-    FCaption := ACaption;
+    Caption := ACaption;
 end;
 
 function TJvLookOutPage.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := IsAccel(Key, FCaption) and Enabled and (ssAlt in Shift);
+  Result := IsAccel(Key, Caption) and Enabled and (ssAlt in Shift);
   if Result then
     Click
   else
@@ -2147,15 +2180,6 @@ begin
   Invalidate;
 end;
 
-procedure TJvLookOutPage.SetCaption(Value: TCaption);
-begin
-  if FCaption <> Value then
-  begin
-    FCaption := Value;
-    Invalidate;
-  end;
-end;
-
 { determine if arrows should be visible }
 
 procedure TJvLookOutPage.CalcArrows;
@@ -2286,14 +2310,14 @@ begin
   R := GetClientRect;
   R.Bottom := cHeight;
   SetBkMode(DC, Windows.Transparent);
-  if FCaption <> '' then
+  if Caption <> '' then
   begin
     if not Enabled then
     begin
       { draw disabled text }
       SetTextColor(DC, ColorToRGB(clBtnHighlight));
       OffsetRect(R, 1, 1);
-      DrawText(DC, FCaption, Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      DrawText(DC, Caption, Length(Caption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
       OffsetRect(R, -1, -1);
       SetTextColor(DC, ColorToRGB(clBtnShadow));
     end
@@ -2301,7 +2325,7 @@ begin
       SetTextColor(DC, ColorToRGB(Canvas.Font.Color));
     if FShowPressed and FDown then
       OffsetRect(R, 1, 1);
-    DrawText(DC, FCaption, Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+    DrawText(DC, Caption, Length(Caption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 end;
 
@@ -2948,6 +2972,14 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
+
+
+procedure TJvLookOutPage.CMTextChanged(var Msg: TMessage);
+begin
+  inherited;
+  Invalidate;
+end;
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
