@@ -38,6 +38,7 @@ uses
 type
   TJvCommonDialogClass = class of TJvCommonDialog;
   TJvCommonDialogPClass = class of TJvCommonDialogP;
+  TJvCommonDialogFClass = class of TJvCommonDialogF;
 
   TJvCommonDialogAction = class(TCustomAction)
   private
@@ -91,7 +92,32 @@ type
     property AfterExecute: TNotifyEvent read FAfterExecute write FAfterExecute;
   end;
 
-  TJvBrowseFolderAction = class(TJvCommonDialogAction)
+  TJvCommonDialogFAction = class(TCustomAction)
+  private
+    FBeforeExecute: TNotifyEvent;
+    FAfterExecute: TNotifyEvent;
+  protected
+    FDialog: TJvCommonDialogF;
+    function GetDialogClass: TJvCommonDialogFClass; virtual;
+  public
+    constructor Create(AOwner: TComponent); override;
+    function HandlesTarget(Target: TObject): Boolean; override;
+    procedure ExecuteTarget(Target: TObject); override;
+  published
+    property Caption;
+    property Enabled;
+    property HelpContext;
+    property Hint;
+    property ImageIndex;
+    property ShortCut;
+    property SecondaryShortCuts;
+    property Visible;
+    property BeforeExecute: TNotifyEvent read FBeforeExecute write FBeforeExecute;
+    property AfterExecute: TNotifyEvent read FAfterExecute write FAfterExecute;
+  end;
+
+  // (rom) renamed to match renamed TJvBrowseForFolder
+  TJvBrowseForFolderAction = class(TJvCommonDialogAction)
   private
     function GetDialog: TJvBrowseForFolderDialog;
   protected
@@ -287,14 +313,56 @@ begin
   Result := True;
 end;
 
-//=== TJvBrowseFolderAction ==================================================
+//=== TJvCommonDialogFAction =================================================
 
-function TJvBrowseFolderAction.GetDialog: TJvBrowseForFolderDialog;
+constructor TJvCommonDialogFAction.Create(AOwner: TComponent);
+var
+  DialogClass: TJvCommonDialogFClass;
+begin
+  inherited Create(AOwner);
+  DialogClass := GetDialogClass;
+  if Assigned(DialogClass) then
+  begin
+    FDialog := DialogClass.Create(Self);
+    FDialog.Name := Copy(DialogClass.ClassName, 2, Length(DialogClass.ClassName));
+    {$IFDEF COMPILER6_UP}
+    FDialog.SetSubComponent(True);
+    {$ENDIF}
+  end;
+  DisableIfNoHandler := False;
+  Enabled := True;
+end;
+
+procedure TJvCommonDialogFAction.ExecuteTarget(Target: TObject);
+begin
+  if Assigned(FDialog) then
+  begin
+    if Assigned(FBeforeExecute) then
+      FBeforeExecute(Self);
+    FDialog.Execute;
+    if Assigned(FAfterExecute) then
+      FAfterExecute(Self);
+  end;
+end;
+
+function TJvCommonDialogFAction.GetDialogClass: TJvCommonDialogFClass;
+begin
+  Result := nil;
+end;
+
+function TJvCommonDialogFAction.HandlesTarget(Target: TObject): Boolean;
+begin
+  Result := True;
+end;
+
+//=== TJvBrowseForFolderAction ===============================================
+
+function TJvBrowseForFolderAction.GetDialog: TJvBrowseForFolderDialog;
 begin
   Result := TJvBrowseForFolderDialog(FDialog);
 end;
 
-function TJvBrowseFolderAction.GetDialogClass: TJvCommonDialogClass;
+function TJvBrowseForFolderAction.GetDialogClass: TJvCommonDialogClass;
 begin
   Result := TJvBrowseForFolderDialog;
 end;
@@ -410,9 +478,10 @@ end;
 procedure Register;
 begin
   RegisterActions('Jv Dialog',
-    [TJvBrowseFolderAction, TJvSelectDirectoryAction, TJvConnectNetworkAction, TJvFloppyFormatAction,
-     TJvOrganizeFavoritesAction, TJvControlPanelAction, TJvOpenFileAction, TJvSaveFileAction,
-     TJvPageSetupAction, TJvPageSetupTitledAction],
+    [TJvBrowseForFolderAction, TJvSelectDirectoryAction, TJvConnectNetworkAction,
+     TJvFloppyFormatAction, TJvOrganizeFavoritesAction, TJvControlPanelAction,
+     TJvOpenFileAction, TJvSaveFileAction, TJvPageSetupAction,
+     TJvPageSetupTitledAction],
     // TJvStandardActions is a datamodule with default settings for our actions
     TJvStandardActions);
 end;

@@ -50,7 +50,6 @@ type
     FFormatType: TJvFormatType;
     FCapacity: TJvDriveCapacity;
     FHandle: Integer;
-    FIsNT: Boolean;
     FOnError: TJvFormatDriveErrorEvent;
     procedure SetDrive(Value: Char);
   protected
@@ -87,7 +86,6 @@ constructor TJvFormatDrive.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDrive := 'A';
-  FIsNT := Win32Platform = VER_PLATFORM_WIN32_NT;
   if AOwner is TCustomForm then
     FHandle := TCustomForm(AOwner).Handle
   else
@@ -98,9 +96,9 @@ function TJvFormatDrive.Execute: Boolean;
 var
   iDrive, iCapacity, iFormatType, RetVal: Integer;
 begin
-  if FIsNT then
+  iDrive := Ord(FDrive) - Ord('A');
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
   begin
-    iDrive := Ord(FDrive) - Ord('A');
     iCapacity := 0; // other styles not supported
     if FFormatType = ftQuick then
       iFormatType := 1
@@ -109,7 +107,6 @@ begin
   end
   else
   begin
-    iDrive := Ord(FDrive) - Ord('A');
     case FCapacity of
       dcSize360kB:
         iCapacity := 3;
@@ -122,7 +119,7 @@ begin
   end;
 
   RetVal := SHFormatDrive(FHandle, iDrive, iCapacity, iFormatType);
-  if FIsNT then
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
     Result := RetVal = 0
   else
     Result := RetVal = 6;
@@ -136,7 +133,7 @@ var
 begin
   if Assigned(FOnError) then
   begin
-    if FIsNT then
+    if Win32Platform = VER_PLATFORM_WIN32_NT then
       Err := errOther
     else
       case ErrValue of
