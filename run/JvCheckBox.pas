@@ -38,7 +38,7 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, StdCtrls,
   {$ELSE}
-  Types, QWindows, QGraphics, QControls, QForms, QStdCtrls,
+  Types, QWindows, Qt, QGraphics, QControls, QForms, QStdCtrls,
   {$ENDIF VCL}
   JVCLVer, JvTypes, JvExStdCtrls;
 
@@ -78,12 +78,13 @@ type
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure SetAutoSize(Value: Boolean);
-      {$IFDEF VCL}{$IFDEF COMPILER6_UP} override; {$ENDIF}{$ENDIF}
+      {$IFDEF VCL}{$IFDEF COMPILER6_UP} override;{$ENDIF}{$ENDIF}
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Toggle; override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
+    procedure UpdateProperties;
     procedure AdjustSize; override;
     {$ENDIF VisualCLX}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -181,7 +182,33 @@ begin
     Style := Style or cAlign[Alignment] or cLayout[Layout] or
       cLeftText[LeftText] or cWordWrap[WordWrap];
 end;
+
+procedure TJvCheckBox.UpdateProperties;
+begin
+  RecreateWnd;
+end;
+
 {$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvCheckBox.UpdateProperties;
+begin
+ { TODO:
+  (ahuser) Missing features in CLX. If we implement it we must write a paint
+           function and do all drawing ourself.
+
+  Alignment
+  LeftText
+  Layout
+  WordWrap
+ }
+end;
+
+procedure TJvCheckBox.AdjustSize;
+begin
+  inherited AdjustSize;
+  CalcAutoSize;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvCheckBox.MouseEnter(AControl: TControl);
 begin
@@ -197,22 +224,20 @@ begin
       Font.Assign(FHotTrackFont);
     end;
     FOver := True;
+    inherited MouseEnter(AControl);
   end;
-  inherited MouseEnter(AControl);
 end;
 
 procedure TJvCheckBox.MouseLeave(AControl: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     FOver := False;
     Application.HintColor := FSaved;
     if FHotTrack then
       Font.Assign(FFontSave);
+    inherited MouseLeave(AControl);
   end;
-  inherited MouseLeave(AControl);
 end;
 
 procedure TJvCheckBox.ParentColorChanged;
@@ -322,8 +347,7 @@ begin
     FAssociated.Enabled := Checked;
 end;
 
-procedure TJvCheckBox.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvCheckBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = Associated) then
@@ -351,11 +375,7 @@ begin
     FWordWrap := Value;
     if Value then
       AutoSize := False;
-    {$IFDEF VCL}
-    RecreateWnd;
-    {$ELSE}
-    RecreateWidget;
-    {$ENDIF VCL}
+    UpdateProperties;
   end;
 end;
 
@@ -364,11 +384,7 @@ begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
-    {$IFDEF VCL}
-    RecreateWnd;
-    {$ELSE}
-    RecreateWidget;
-    {$ENDIF VCL}
+    UpdateProperties;
   end;
 end;
 
@@ -377,11 +393,7 @@ begin
   if FLayout <> Value then
   begin
     FLayout := Value;
-    {$IFDEF VCL}
-    RecreateWnd;
-    {$ELSE}
-    RecreateWidget;
-    {$ENDIF VCL}
+    UpdateProperties;
   end;
 end;
 
@@ -395,11 +407,7 @@ begin
   if FLeftText <> Value then
   begin
     FLeftText := Value;
-    {$IFDEF VCL}
-    RecreateWnd;
-    {$ELSE}
-    RecreateWidget;
-    {$ENDIF VCL}
+    UpdateProperties;
   end;
 end;
 
@@ -407,14 +415,6 @@ function TJvCheckBox.GetReadOnly: Boolean;
 begin
   Result := ClicksDisabled;
 end;
-
-{$IFDEF VisualCLX}
-procedure TJvCheckBox.AdjustSize;
-begin
-  inherited AdjustSize;
-  CalcAutoSize;
-end;
-{$ENDIF VisualCLX}
 
 end.
 
