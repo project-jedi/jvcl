@@ -35,9 +35,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms,
-  Mapi,
-  JclBase, JclMapi,
-  JvComponent;
+  Mapi, JclBase, JclMapi, JvComponent;
 
 type
   TJvMail = class;
@@ -79,7 +77,7 @@ type
     property RecipientClass: DWORD read FRecipientClass;
   end;
 
-  TJvMailLogonOption = (loLogonUI, loNewSession);
+  TJvMailLogonOption = (loLogonUI, loNewSession, loDownloadMail);
   TJvMailLogonOptions = set of TJvMailLogonOption;
   TJvMailReadOption = (roUnreadOnly, roFifo, roPeek, roHeaderOnly, roAttachments);
   TJvMailReadOptions = set of TJvMailReadOption;
@@ -320,17 +318,17 @@ begin
   GetSimpleMapi;
   FSimpleMapi.LoadClientLib;
   if not FSimpleMapi.ClientLibLoaded then
-    {$TYPEDADDRESS OFF}
+{$TYPEDADDRESS OFF}
     raise EJclMapiError.CreateResRec(@RsNoClientInstalled);
-    {$TYPEDADDRESS ON}
+{$TYPEDADDRESS ON}
 end;
 
 procedure TJvMail.CheckUserLogged;
 begin
   if not UserLogged then
-    {$TYPEDADDRESS OFF}
+{$TYPEDADDRESS OFF}
     raise EJclMapiError.CreateResRec(@RsNoUserLogged);
-    {$TYPEDADDRESS ON}
+{$TYPEDADDRESS ON}
 end;
 
 procedure TJvMail.Clear;
@@ -375,9 +373,9 @@ procedure TJvMail.CreateMapiMessage;
       for I := 0 to Attachment.Count - 1 do
       begin
         if not FileExists(Attachment[I]) then
-          {$TYPEDADDRESS OFF}
+{$TYPEDADDRESS OFF}
           raise EJclMapiError.CreateResRecFmt(@RsAttachmentNotFound, [Attachment[I]]);
-          {$TYPEDADDRESS ON}
+{$TYPEDADDRESS ON}
         FillChar(FAttachArray[I], SizeOf(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;
         FAttachArray[I].lpszFileName := PChar(Attachment[I]);
@@ -417,9 +415,9 @@ var
     for I := 0 to RecipList.Count - 1 do
     begin
       if not RecipList[I].Valid then
-        {$TYPEDADDRESS OFF}
+{$TYPEDADDRESS OFF}
         raise EJclMapiError.CreateResRecFmt(@RsRecipNotValid, [RecipList[I].GetNamePath]);
-        {$TYPEDADDRESS ON}
+{$TYPEDADDRESS ON}
       FillChar(FRecipArray[RecipIndex], SizeOf(TMapiRecipDesc), #0);
       with FRecipArray[RecipIndex], RecipList[I] do
       begin
@@ -511,7 +509,7 @@ end;
 
 function TJvMail.FindNextMail: Boolean;
 var
-  MsgID: array [0..512] of AnsiChar;
+  MsgID: array[0..512] of AnsiChar;
   Flags, Res: ULONG;
 begin
   CheckUserLogged;
@@ -598,13 +596,17 @@ begin
       Inc(Result, MAPI_LOGON_UI);
     if loNewSession in FLogonOptions then
       Inc(Result, MAPI_NEW_SESSION);
+    if loDownloadMail in FLogonOptions then
+      Inc(Result, MAPI_FORCE_DOWNLOAD);
   end;
-end;
+end;  
 
 procedure TJvMail.ReadMail;
 var
   Flags: ULONG;
   Msg: PMapiMessage;
+  SOldDateFormat: string;
+  OldDateSeparator: Char;
 begin
   CheckUserLogged;
   Clear;
@@ -628,6 +630,16 @@ begin
     FSubject := lpszSubject;
     Body.Text := lpszNoteText;
     //    FDateReceived := StrToDateTime(lpszDateReceived);
+    SOldDateFormat := ShortDateFormat;
+    OldDateSeparator := DateSeparator;
+    try
+      ShortDateFormat := 'yyyy/M/d';
+      DateSeparator := '/';
+      FReadedMail.DateReceived := StrToDateTime(lpszDateReceived);
+    finally
+      ShortDateFormat := SOldDateFormat;
+      DateSeparator := OldDateSeparator;
+    end;
     FReadedMail.ConversationID := lpszConversationID;
     DecodeAttachments(lpFiles, nFileCount);
   end;
@@ -667,7 +679,7 @@ end;
 
 function TJvMail.SaveMail(const MessageID: string): string;
 var
-  MsgID: array [0..512] of AnsiChar;
+  MsgID: array[0..512] of AnsiChar;
   Flags: ULONG;
 begin
   Result := '';
