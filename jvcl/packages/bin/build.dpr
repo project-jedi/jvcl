@@ -630,6 +630,7 @@ end;
 
 var
   i: Integer;
+  Path: string;
 begin
   JVCLRoot := ExtractFileDir(ParamStr(0)); // $(JVCL)\Packages\bin
   JVCLRoot := ExtractFileDir(JVCLRoot); // $(JVCL)\Packages
@@ -690,7 +691,13 @@ begin
     end;
 
    // setup environment and execute build.bat
-    SetEnvironmentVariable('PATH', PChar(Root + ';' + BplDir + ';' + LibDir));
+    SetLength(Path, 4096);
+    GetEnvironmentVariable('PATH', PChar(Path), Length(Path));
+    if not StartsText(Root + ';' + BplDir + ';' + LibDir + ';', Path) then
+    begin
+      Path := Root + ';' + BplDir + ';' + LibDir + ';' + Path;
+      SetEnvironmentVariable('PATH', PChar(Path));
+    end;
     SetEnvironmentVariable('BPLDIR', Pointer(BplDir));
     SetEnvironmentVariable('DCPDIR', Pointer(DcpDir));
     SetEnvironmentVariable('LIBDIR', Pointer(LibDir));
