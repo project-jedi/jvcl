@@ -42,12 +42,9 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages,
+  Messages,
   {$ENDIF VCL}
-  Graphics, Controls, Forms, StdCtrls,
-  {$IFDEF VisualCLX}
-  QTypes,
-  {$ENDIF VisualCLX}
+  Windows, Graphics, Controls, Forms, StdCtrls,
   JvLinkLabelParser, JvLinkLabelRenderer, JvLinkLabelTree,
   JvTypes, JvComponent;
 
@@ -76,8 +73,8 @@ type
     FOnDynamicTagInit: TDynamicTagInitEvent;
     FParser: IParser;
     FLayout: TTextLayout;  // Bianconi
-    {$IFDEF VCL}
     FCaption: TCaption;
+    {$IFDEF VCL}
     procedure SetText(const Value: TCaption);
     {$ENDIF VCL}
     procedure SetTransparent(const Value: Boolean);
@@ -125,12 +122,7 @@ type
     procedure DoDynamicTagInit(out Source: string; Number: Integer); virtual;
     property Parser: IParser read FParser;
     property Renderer: IRenderer read FRenderer;
-    {$IFDEF VCL}
     property Caption: TCaption read FCaption write SetText;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    property Caption: TCaption read GetText write SetText;
-    {$ENDIF VisualCLX}
     property Text: TStrings read GetStrings write SetStrings;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;                // Bianconi
@@ -515,10 +507,6 @@ begin
       TmpBmp.Canvas.Brush.Style := bsSolid;
       TmpBmp.Canvas.FillRect(Rect(0,0,TmpBmp.Width - 1,TmpBmp.Height - 1));
 
-      TmpBmp.Transparent := True;
-      TmpBmp.TransparentMode := tmFixed;
-      TmpBmp.TransparentColor := Color;
-
       // Set new start point
       // The new start point is relative to temporary canvas, Left & Top Corner
       FNodeTree.Root.StartingPoint := Point(0,0);  // Bianconi #2
@@ -557,6 +545,11 @@ begin
         end;
         // Adjust Root start point relative to control's canvas.
         FNodeTree.Root.StartingPoint := Point(TmpRect.Left, TmpRect.Top);  // Bianconi #2
+        // VisualCLX: most be done after the bitmap is drawn.  
+        TmpBmp.Transparent := True;
+        TmpBmp.TransparentMode := tmFixed;
+        TmpBmp.TransparentColor := Color;
+
         Canvas.Draw(TmpRect.Left,TmpRect.Top,TmpBmp);
       end;
     finally
@@ -592,9 +585,7 @@ begin
     {$IFDEF VisualCLX}
     inherited SetText(Value);
     {$ENDIF VisualCLX}
-    {$IFDEF VCL}
     FCaption := Value;
-    {$ENDIF VCL}
     Text.Add(Caption);
     FActiveLinkNode := nil; // We're about to free the tree containing the node it's pointing to
     FNodeTree.Free;
@@ -604,8 +595,6 @@ begin
     Invalidate;
     DoCaptionChanged;
   end;
-
-
 end;
 
 procedure TJvCustomLinkLabel.SetLinkColor(const Value: TColor);
