@@ -70,7 +70,7 @@ implementation
 
 uses
   Forms, SysUtils, Math,
-  JvDockJvDockSupportProc, JvDockGlobals;
+  JvDockSupportProc, JvDockGlobals;
 
 constructor TJvDockDelphiStyle.Create(AOwner: TComponent);
 begin
@@ -98,7 +98,7 @@ begin
   begin
     Host := nil;
 
-    if not JvGlobalDockJvGlobalDockIsLoading then
+    if not JvGlobalDockIsLoading then
       JvDockLockWindow(nil);
     try
       with DockClient do
@@ -178,7 +178,7 @@ begin
         end;
       end;
     finally
-      if not JvGlobalDockJvGlobalDockIsLoading then
+      if not JvGlobalDockIsLoading then
         JvDockUnLockWindow;
     end;
   end;
@@ -195,18 +195,18 @@ procedure TJvDockDelphiTabPageControl.CMDockClient(var Msg: TCMDockClient);
 var
   I: Integer;
   Control: TControl;
-  Count: Integer;
+  PageCount: Integer;
 begin
   if Msg.DockSource.Control is TJvDockTabHostForm then
     with TJvDockTabHostForm(Msg.DockSource.Control) do
     begin
-      Count := Self.Count;
+      PageCount := Self.PageCount;
       for I := PageControl.DockClientCount - 1 downto 0 do
       begin
         Control := PageControl.DockClients[I];
         DoFloat(PageControl, Control);
         Control.ManualDock(Self, nil, alClient);
-        Self.ActivePage.PageIndex := Count;
+        Self.ActivePage.PageIndex := PageCount;
       end;
     end
   else

@@ -33,6 +33,7 @@ object WorkSpaceForm: TWorkSpaceForm
     Font.Style = [fsBold]
     Images = WorkSpace_ImageList
     ParentFont = False
+    TabIndex = 0
     TabOrder = 0
     TabPosition = tpBottom
     OnResize = PageControl1Resize
@@ -203,7 +204,7 @@ object WorkSpaceForm: TWorkSpaceForm
     TBDockHeight = 100
     DirectDrag = True
     ShowHint = True
-    EnableCloseButton = True
+    EnableCloseBtn = True
     EachOtherDock = False
     DockStyle = MainForm.JvDockVCStyle1
     Left = 208

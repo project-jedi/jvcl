@@ -37,7 +37,7 @@ object Form1: TForm1
     NCPopupMenu = MainForm.PopupMenu2
     DirectDrag = True
     ShowHint = True
-    EnableCloseButton = True
+    EnableCloseBtn = True
     EachOtherDock = False
     DockStyle = MainForm.JvDockDelphiStyle1
     Left = 48

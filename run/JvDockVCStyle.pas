@@ -115,7 +115,7 @@ type
   TJvDockVCZone = class(TJvDockAdvZone)
   private
     FZoneSizeStyle: TJvDockZoneSizeStyle;
-    FExpandButtonDown: Boolean;
+    FExpandBtnDown: Boolean;
     procedure DoSetChildSizeStyle(ZoneSizeStyle: TJvDockZoneSizeStyle);
   public
     constructor Create(Tree: TJvDockTree); override;
@@ -125,7 +125,7 @@ type
     procedure InsertOrRemove(DockSize: Integer; Insert: Boolean; Hide: Boolean); override;
     procedure SetZoneSize(Size: Integer; Show: Boolean); override;
     property ZoneSizeStyle: TJvDockZoneSizeStyle read FZoneSizeStyle write FZoneSizeStyle;
-    property ExpandButtonDown: Boolean read FExpandButtonDown write FExpandButtonDown;
+    property ExpandBtnDown: Boolean read FExpandBtnDown write FExpandBtnDown;
   end;
 
   TJvDockVCTree = class(TJvDockAdvTree)
@@ -184,11 +184,11 @@ type
   private
     FDockOverBrush: TBrush;
     FDockOverFrameWidth: Integer;
-    FCurrentState: TDragState;
-    FPreviousState: TDragState;
-    FPreviousTarget: Pointer;
-    procedure SetPreviousState(const Value: TDragState);
-    procedure SetCurrentState(const Value: TDragState);
+    FCurrState: TDragState;
+    FOldState: TDragState;
+    FOldTarget: Pointer;
+    procedure SetOldState(const Value: TDragState);
+    procedure SetCurrState(const Value: TDragState);
   protected
     procedure GetBrush_PenSize_DrawRect(
       var ABrush: TBrush; var PenSize: Integer; var DrawRect: TRect; Erase: Boolean); override;
@@ -198,9 +198,9 @@ type
     destructor Destroy; override;
     function DragFindWindow(const Pos: TPoint): HWND; override;
     function GetDropCtl: TControl; override;
-    property CurrentState: TDragState read FCurrentState write SetCurrentState;
-    property PreviousState: TDragState read FPreviousState write SetPreviousState;
-    property PreviousTarget: Pointer read FPreviousTarget write FPreviousTarget;
+    property CurrState: TDragState read FCurrState write SetCurrState;
+    property OldState: TDragState read FOldState write SetOldState;
+    property OldTarget: Pointer read FOldTarget write FOldTarget;
     property DockOverFrameWidth: Integer read FDockOverFrameWidth write FDockOverFrameWidth;
     property DockOverBrush: TBrush read FDockOverBrush;
   end;
@@ -209,7 +209,7 @@ implementation
 
 uses
   Consts, Forms, SysUtils, Math,
-  JvDockJvDockSupportProc, JvDockGlobals;
+  JvDockSupportProc, JvDockGlobals;
 
 const
   DefaultFrameWidth = 3;
@@ -249,7 +249,7 @@ procedure TJvDockVCStyle.AssignConjoinServerOption(APanel: TJvDockCustomPanel);
 begin
   inherited AssignConjoinServerOption(APanel);
   if ConjoinServerOption is TJvDockVCConjoinServerOption then
-    APanel.JvDockManager.BorderWidth := TJvDockVCConjoinServerOption(ConjoinServerOption).BorderWidth;
+    APanel.lbDockManager.BorderWidth := TJvDockVCConjoinServerOption(ConjoinServerOption).BorderWidth;
 end;
 
 function TJvDockVCStyle.CanSetEachOtherDocked(ADockBaseControl: TJvDockBaseControl): Boolean;
@@ -311,8 +311,8 @@ procedure TJvDockVCPanel.CustomDockDrop(Source: TJvDockDragDockObject; X, Y: Int
 begin
   if Source is TJvDockVCDragDockObject then
   begin
-    TJvDockVCDragDockObject(Source).CurrentState := dsDragEnter;
-    TJvDockVCDragDockObject(Source).PreviousState := dsDragEnter;
+    TJvDockVCDragDockObject(Source).CurrState := dsDragEnter;
+    TJvDockVCDragDockObject(Source).OldState := dsDragEnter;
   end;
 
   if Source.DropOnControl <> Source.Control then
@@ -333,14 +333,14 @@ begin
   if Source is TJvDockVCDragDockObject then
   begin
     VCSource := TJvDockVCDragDockObject(Source);
-    VCSource.PreviousState := VCSource.CurrentState;
-    VCSource.CurrentState := State;
+    VCSource.OldState := VCSource.CurrState;
+    VCSource.CurrState := State;
   end;
 
   if State = dsDragMove then
   begin
     DropAlign := Source.DropAlign;
-    Source.DropOnControl := JvDockManager.GetDockEdge(Source.EraseDockRect, Source.DragPos, DropAlign, Source.Control);
+    Source.DropOnControl := lbDockManager.GetDockEdge(Source.EraseDockRect, Source.DragPos, DropAlign, Source.Control);
     Source.DropAlign := DropAlign;
 
     SysCaptionHeight := Integer(Source.Control.Floating) * JvDockGetSysCaptionHeight;
@@ -383,7 +383,7 @@ begin
   if (NewTarget = nil) or (NewTarget = Client.HostDockSite) then
   begin
     DropAlign := Source.DropAlign;
-    Source.DropOnControl := JvDockManager.GetDockEdge(
+    Source.DropOnControl := lbDockManager.GetDockEdge(
       Source.DockRect, Source.DragPos, DropAlign, Source.Control);
     Source.DropAlign := DropAlign;
   end;
@@ -482,8 +482,8 @@ var
 begin
   if Source.Control.HostDockSite is TJvDockCustomPanel then
   begin
-    BorderWidth := TJvDockCustomPanel(Source.Control.HostDockSite).JvDockManager.BorderWidth;
-    GrabberSize := TJvDockCustomPanel(Source.Control.HostDockSite).JvDockManager.GrabberSize;
+    BorderWidth := TJvDockCustomPanel(Source.Control.HostDockSite).lbDockManager.BorderWidth;
+    GrabberSize := TJvDockCustomPanel(Source.Control.HostDockSite).lbDockManager.GrabberSize;
   end
   else
   begin
@@ -594,13 +594,13 @@ begin
 
   MapWindowPoints(0, DockSite.Handle, DockRect, 2);
   SetDockHeightWidthArr(0, DockSite.Height, DockSite.Width);
-  SetDockRectangles(DockRect);
+  SetDockRectArr(DockRect);
 
-  TempOrient := DockSiteOrientationation;
+  TempOrient := DockSiteOrient;
   Zone := GetDropOnZone(TempOrient, DockRect, DropAlign);
   TempOrient := JvDockExchangeOrient(TempOrient);
   Result := GetDropOnControl(TempOrient, Zone, DockRect, DropAlign, Control);
-  DropDockSize := DockRectangles[TempOrient, True] - DockRectangles[TempOrient, False];
+  DropDockSize := DockRectArr[TempOrient, True] - DockRectArr[TempOrient, False];
 end;
 
 function TJvDockVCTree.GetDropOnZone(Orient: TDockOrientation; DockRect: TRect; var DropAlign: TAlign): TJvDockZone;
@@ -611,10 +611,10 @@ var
 
   procedure GetBeginBorderZone(BorderLimit: Integer);
   begin
-    if DockRectangles[Orient, True] = BorderLimit then
+    if DockRectArr[Orient, True] = BorderLimit then
       Scale := ScaleMaximum
     else
-      Scale := (BorderLimit - DockRectangles[Orient, False]) / (DockRectangles[Orient, True] - BorderLimit);
+      Scale := (BorderLimit - DockRectArr[Orient, False]) / (DockRectArr[Orient, True] - BorderLimit);
     if Scale >= 0 then
     begin
       if Scale >= 1 then
@@ -626,10 +626,10 @@ var
 
   procedure GetEndBorderZone(BorderLimit: Integer);
   begin
-    if (DockRectangles[Orient, True] <= BorderLimit) then
+    if (DockRectArr[Orient, True] <= BorderLimit) then
       Scale := ScaleMaximum
     else
-      Scale := (BorderLimit - DockRectangles[Orient, False]) / (DockRectangles[Orient, True] - BorderLimit);
+      Scale := (BorderLimit - DockRectArr[Orient, False]) / (DockRectArr[Orient, True] - BorderLimit);
     if Scale >= 0 then
     begin
       if Scale < 1 then
@@ -642,14 +642,14 @@ var
 begin
   Result := nil;
   TempOrient := JvDockExchangeOrient(Orient);
-  if (DockRectangles[TempOrient, False] > DockHeightWidth[TempOrient]) or
-    (DockRectangles[TempOrient, True] < 0) then
+  if (DockRectArr[TempOrient, False] > DockHeightWidth[TempOrient]) or
+    (DockRectArr[TempOrient, True] < 0) then
     Exit;
 
-  if (DockRectangles[Orient, False] + DockRectangles[Orient, True]) div 2 <= 0 then
+  if (DockRectArr[Orient, False] + DockRectArr[Orient, True]) div 2 <= 0 then
     DropAlign := DropAlignArray[Orient, False]
   else
-  if (DockRectangles[Orient, False] + DockRectangles[Orient, True]) div 2 >= DockHeightWidth[Orient] then
+  if (DockRectArr[Orient, False] + DockRectArr[Orient, True]) div 2 >= DockHeightWidth[Orient] then
     DropAlign := DropAlignArray[Orient, True]
   else
   begin
@@ -681,7 +681,7 @@ var
   begin
     BeginBorderLimit := Zone.TopLeft[Orient];
 
-    if DockRectangles[Orient, False] < BeginBorderLimit then
+    if DockRectArr[Orient, False] < BeginBorderLimit then
     begin
       Result := Zone.ChildControl;
       DropAlign := DropAlignArray[Orient, False];
@@ -693,13 +693,13 @@ var
     BeginBorderLimit := Zone.TopLeft[Orient];
     EndBorderLimit := BeginBorderLimit + Zone.HeightWidth[Orient];
 
-    if DockRectangles[Orient, False] < EndBorderLimit then
+    if DockRectArr[Orient, False] < EndBorderLimit then
     begin
       Result := Zone.ChildControl;
-      if DockRectangles[Orient, False] = BeginBorderLimit then
+      if DockRectArr[Orient, False] = BeginBorderLimit then
         Scale := ScaleMaximum
       else
-        Scale := (EndBorderLimit - DockRectangles[Orient, True]) / (DockRectangles[Orient, False] - BeginBorderLimit);
+        Scale := (EndBorderLimit - DockRectArr[Orient, True]) / (DockRectArr[Orient, False] - BeginBorderLimit);
       if Scale >= 1 then
         DropAlign := DropAlignArray[Orient, False]
       else
@@ -759,7 +759,7 @@ var
     if lbVCDockZone <> nil then
     begin
       ADockClient := FindDockClient(Control);
-      if (ADockClient <> nil) and (not ADockClient.EnableCloseButton) then
+      if (ADockClient <> nil) and (not ADockClient.EnableCloseBtn) then
         Exit;
       DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
         Top + ButtonHeight), DFC_CAPTION, DFCS_CAPTIONCLOSE or Integer(lbVCDockZone.CloseBtnDown) * DFCS_PUSHED)
@@ -783,13 +783,13 @@ var
   begin
     if lbVCDockZone <> nil then
     begin
-      InActive := not ((lbVCDockZone.ParentZone.Orientation <> DockSiteOrientationation) and
+      InActive := not ((lbVCDockZone.ParentZone.Orientation <> DockSiteOrient) and
         (lbVCDockZone.ParentZone.VisibleChildCount >= 2));
       IsMaximum := lbVCDockZone.ZoneSizeStyle in [zssMaximum];
       DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
         Top + ButtonHeight), DFC_SCROLL,
-        ArrowOrient[CurrArrow[IsMaximum, DockSiteOrientationation]] +
-        Cardinal(InActive) * (DFCS_INACTIVE) + Cardinal(lbVCDockZone.ExpandButtonDown) * DFCS_PUSHED);
+        ArrowOrient[CurrArrow[IsMaximum, DockSiteOrient]] +
+        Cardinal(InActive) * (DFCS_INACTIVE) + Cardinal(lbVCDockZone.ExpandBtnDown) * DFCS_PUSHED);
     end;
   end;
 
@@ -895,11 +895,11 @@ begin
   try
     ShiftBy := 0;
 
-    if (DockSiteOrientationation = doVertical) and
+    if (DockSiteOrient = doVertical) and
       (SizingZone.ParentZone.Orientation = doVertical) then
       ShiftBy := SizePos.x + (SplitterWidth div 2) - SizingZone.ZoneLimit
     else
-    if (DockSiteOrientationation = doHorizontal) and
+    if (DockSiteOrient = doHorizontal) and
       (SizingZone.ParentZone.Orientation = doHorizontal) then
       ShiftBy := SizePos.y + (SplitterWidth div 2) - SizingZone.ZoneLimit;
 
@@ -907,14 +907,14 @@ begin
     begin
       if (DockSite.Align in [alLeft, alTop]) then
       begin
-        ShiftScaleOrientationation := DockSiteOrientationation;
+        ShiftScaleOrient := DockSiteOrient;
         ForEachAt(SizingZone.AfterClosestVisibleZone, ShiftZone, tskForward);
         inherited SplitterMouseUp;
       end
       else
       begin
         ShiftBy := -ShiftBy;
-        ShiftScaleOrientationation := DockSiteOrientationation;
+        ShiftScaleOrient := DockSiteOrient;
         ForEachAt(SizingZone.AfterClosestVisibleZone, ShiftZone, tskForward);
         SizePos := Point(SizePos.x + ShiftBy, SizePos.Y + ShiftBy);
         inherited SplitterMouseUp;
@@ -938,7 +938,7 @@ var
 begin
   BeginUpdate;
   try
-    if not JvGlobalDockJvGlobalDockIsLoading then
+    if not JvGlobalDockIsLoading then
     begin
       R := Docksite.ClientRect;
 
@@ -946,46 +946,46 @@ begin
       begin
         if TopZone.ChildZones <> nil then
         begin
-          if (DockSite.Align = alRight) and (R.Right <> PreviousRect.Right) then
+          if (DockSite.Align = alRight) and (R.Right <> OldRect.Right) then
           begin
-            ShiftBy := -PreviousRect.Right + R.Right;
-            ShiftScaleOrientationation := doVertical;
+            ShiftBy := -OldRect.Right + R.Right;
+            ShiftScaleOrient := doVertical;
             ForEachAt(TopZone.ChildZones, ShiftZone, tskForward);
             SetNewBounds(nil);
           end;
-          if (DockSite.Align = alBottom) and (R.Bottom <> PreviousRect.Bottom) then
+          if (DockSite.Align = alBottom) and (R.Bottom <> OldRect.Bottom) then
           begin
-            ShiftBy := -PreviousRect.Bottom + R.Bottom;
-            ShiftScaleOrientationation := doHorizontal;
+            ShiftBy := -OldRect.Bottom + R.Bottom;
+            ShiftScaleOrient := doHorizontal;
             ForEachAt(TopZone.ChildZones, ShiftZone, tskForward);
             SetNewBounds(nil);
           end;
         end;
       end;
 
-      if (DockSiteOrientationation = doVertical) and (R.Bottom <> PreviousRect.Bottom) then
+      if (DockSiteOrient = doVertical) and (R.Bottom <> OldRect.Bottom) then
       begin
-        if PreviousRect.Bottom - PreviousRect.Top = 0 then
+        if OldRect.Bottom - OldRect.Top = 0 then
           ScaleBy := R.Bottom - R.Top
         else
-        if PreviousRect.Bottom - PreviousRect.Top > 0 then
-          ScaleBy := (R.Bottom - R.Top) / (PreviousRect.Bottom - PreviousRect.Top)
+        if OldRect.Bottom - OldRect.Top > 0 then
+          ScaleBy := (R.Bottom - R.Top) / (OldRect.Bottom - OldRect.Top)
         else
           ScaleBy := 1;
-        ShiftScaleOrientationation := doHorizontal;
+        ShiftScaleOrient := doHorizontal;
         if ScaleBy <> 1 then
           ForEachAt(nil, ScaleZone, tskForward);
       end;
-      if (DockSiteOrientationation = doHorizontal) and (R.Right <> PreviousRect.Right) then
+      if (DockSiteOrient = doHorizontal) and (R.Right <> OldRect.Right) then
       begin
-        if PreviousRect.Right - PreviousRect.Left = 0 then
+        if OldRect.Right - OldRect.Left = 0 then
           ScaleBy := R.Right - R.Left
         else
-        if PreviousRect.Right - PreviousRect.Left > 0 then
-          ScaleBy := (R.Right - R.Left) / (PreviousRect.Right - PreviousRect.Left)
+        if OldRect.Right - OldRect.Left > 0 then
+          ScaleBy := (R.Right - R.Left) / (OldRect.Right - OldRect.Left)
         else
           ScaleBy := 1;
-        ShiftScaleOrientationation := doVertical;
+        ShiftScaleOrient := doVertical;
         if ScaleBy <> 1 then
           ForEachAt(nil, ScaleZone, tskForward);
       end;
@@ -1021,7 +1021,7 @@ begin
       zssMinimum:
         Zone.ZoneLimit := Zone.LimitBegin + MinSize;
       zssMaximum:
-        Zone.ZoneLimit := DockSiteSizeAlternatelternate - Zone.VisibleNextSiblingCount * MinSize;
+        Zone.ZoneLimit := DockSiteSizeA - Zone.VisibleNextSiblingCount * MinSize;
     else
       inherited ScaleZone(Zone);
     end
@@ -1037,10 +1037,10 @@ begin
   OldDockSize := DropDockSize;
 
   DockRect := GetFrameRect(Control);
-  if DockSiteOrientationation = doHorizontal then
+  if DockSiteOrient = doHorizontal then
     DropDockSize := DockRect.Right - DockRect.Left
   else
-  if DockSiteOrientationation = doVertical then
+  if DockSiteOrient = doVertical then
     DropDockSize := DockRect.Bottom - DockRect.Top;
 
   inherited RemoveControl(Control);
@@ -1052,7 +1052,7 @@ procedure TJvDockVCTree.ShiftZone(Zone: TJvDockZone);
 begin
   inherited ShiftZone(Zone);
   if (Zone <> nil) and (Zone <> TopZone) and
-    (Zone.ParentZone.Orientation = ShiftScaleOrientationation) then
+    (Zone.ParentZone.Orientation = ShiftScaleOrient) then
   begin
     if Zone.LimitSize < MinSize then
       Zone.ZoneLimit := Zone.LimitBegin + MinSize;
@@ -1135,11 +1135,11 @@ begin
   if (Zone <> nil) and (HTFlag = HTEXPAND) then
   begin
     TempZone := TJvDockVCZone(Zone);
-    Active := ((TempZone.ParentZone.Orientation <> DockSiteOrientationation) and
+    Active := ((TempZone.ParentZone.Orientation <> DockSiteOrient) and
       (TempZone.ParentZone.VisibleChildCount >= 2));
     if Active then
     begin
-      TempZone.ExpandButtonDown := True;
+      TempZone.ExpandBtnDown := True;
       TempZone.MouseDown := True;
       FExpandBtnZone := TempZone;
       DockSite.Invalidate;
@@ -1159,7 +1159,7 @@ begin
     if (Zone <> nil) and (HTFlag = HTEXPAND) then
     begin
       TempZone := TJvDockVCZone(Zone);
-      TempZone.ExpandButtonDown := False;
+      TempZone.ExpandBtnDown := False;
       if TempZone.ZoneSizeStyle in [zssMaximum] then
         TJvDockVCZone(TempZone.ParentZone).DoSetChildSizeStyle(zssNormal)
       else
@@ -1182,10 +1182,10 @@ begin
   if SizingZone = nil then
   begin
     TempZone := TJvDockVCZone(Zone);
-    if ((TempZone <> nil) and (TempZone.ExpandButtonDown <> (HTFlag = HTEXPAND)) and
+    if ((TempZone <> nil) and (TempZone.ExpandBtnDown <> (HTFlag = HTEXPAND)) and
       ((FExpandBtnZone = TempZone) and FExpandBtnZone.MouseDown)) then
     begin
-      TempZone.ExpandButtonDown := (HTFlag = HTEXPAND) and FExpandBtnZone.MouseDown;
+      TempZone.ExpandBtnDown := (HTFlag = HTEXPAND) and FExpandBtnZone.MouseDown;
       DockSite.Invalidate;
     end;
   end;
@@ -1199,7 +1199,7 @@ var
   AverageSize: Integer;
 begin
   ChildCount := Parent.VisibleChildCount - Integer((Exclude <> nil) and (Exclude.ParentZone = Parent));
-  AverageSize := DockSiteSizeAlternatelternate div ChildCount;
+  AverageSize := DockSiteSizeA div ChildCount;
   Assert(AverageSize > 0);
   Zone := TJvDockVCZone(Parent.FirstVisibleChildZone);
   while Zone <> nil do
@@ -1213,7 +1213,7 @@ begin
           Zone.ZoneLimit := Zone.LimitBegin + MinSize
         else
         if Zone.ZoneSizeStyle = zssMaximum then
-          Zone.ZoneLimit := DockSiteSizeAlternatelternate - ChildCount * MinSize;
+          Zone.ZoneLimit := DockSiteSizeA - ChildCount * MinSize;
       end
       else
       if ZoneSizeStyle in [zssNormal] then
@@ -1240,7 +1240,7 @@ begin
     TestLimit := SizingZone.Top + MinSize;
     if TempPos.y <= TestLimit then
     begin
-      if DockSiteOrientationation = doVertical then
+      if DockSiteOrient = doVertical then
       begin
         if TempPos.y <= (SizingZone.VisiblePrevSiblingCount + 1) * MinSize - SplitterWidth div 2 then
           TempPos.y := (SizingZone.VisiblePrevSiblingCount + 1) * MinSize - SplitterWidth div 2;
@@ -1252,10 +1252,10 @@ begin
     TestLimit := GetSplitterLimit(SizingZone, False, True) - MinSize;
     if TempPos.y >= TestLimit then
     begin
-      if DockSiteOrientationation = doVertical then
+      if DockSiteOrient = doVertical then
       begin
-        if TempPos.y >= DockSiteSizeAlternatelternate - SizingZone.VisibleNextSiblingCount * MinSize then
-          TempPos.y := DockSiteSizeAlternatelternate - SizingZone.VisibleNextSiblingCount * MinSize;
+        if TempPos.y >= DockSiteSizeA - SizingZone.VisibleNextSiblingCount * MinSize then
+          TempPos.y := DockSiteSizeA - SizingZone.VisibleNextSiblingCount * MinSize;
       end
       else
         TempPos.y := TestLimit;
@@ -1266,7 +1266,7 @@ begin
     TestLimit := SizingZone.Left + MinSize;
     if TempPos.x <= TestLimit then
     begin
-      if DockSiteOrientationation = doHorizontal then
+      if DockSiteOrient = doHorizontal then
       begin
         if TempPos.x <= (SizingZone.VisiblePrevSiblingCount + 1) * MinSize - SplitterWidth div 2 then
           TempPos.x := (SizingZone.VisiblePrevSiblingCount + 1) * MinSize - SplitterWidth div 2;
@@ -1278,10 +1278,10 @@ begin
     TestLimit := GetSplitterLimit(SizingZone, False, True) - MinSize;
     if TempPos.x >= TestLimit then
     begin
-      if DockSiteOrientationation = doHorizontal then
+      if DockSiteOrient = doHorizontal then
       begin
-        if TempPos.x >= DockSiteSizeAlternatelternate - SizingZone.VisibleNextSiblingCount * MinSize then
-          TempPos.x := DockSiteSizeAlternatelternate - SizingZone.VisibleNextSiblingCount * MinSize;
+        if TempPos.x >= DockSiteSizeA - SizingZone.VisibleNextSiblingCount * MinSize then
+          TempPos.x := DockSiteSizeA - SizingZone.VisibleNextSiblingCount * MinSize;
       end
       else
         TempPos.x := TestLimit;
@@ -1313,22 +1313,22 @@ begin
         end;
       zssMaximum:
         begin
-          Zone.ZoneLimit := DockSiteSizeAlternatelternate - Zone.VisibleNextSiblingCount * MinSize;
+          Zone.ZoneLimit := DockSiteSizeA - Zone.VisibleNextSiblingCount * MinSize;
           Exit;
         end;
     end;
   inherited ScaleChildZone(Zone);
 
   if (Zone <> nil) and (Zone.ParentZone <> nil) and Zone.Visibled and
-    (Zone.ParentZone.Orientation = ShiftScaleOrientationation) then
+    (Zone.ParentZone.Orientation = ShiftScaleOrient) then
   begin
     if Zone.LimitSize < MinSize then
       Zone.ZoneLimit := Zone.LimitBegin + MinSize;
 
     if (Zone.BeforeClosestVisibleZone <> nil) and
-      (Zone.LimitBegin > DockSiteSizeWithOrientationation[Zone.ParentZone.Orientation] -
+      (Zone.LimitBegin > DockSiteSizeWithOrient[Zone.ParentZone.Orientation] -
         (Zone.VisibleNextSiblingCount + 1) * MinSize + SplitterWidth div 2) then
-      Zone.BeforeClosestVisibleZone.ZoneLimit := DockSiteSizeWithOrientationation[Zone.ParentZone.Orientation] -
+      Zone.BeforeClosestVisibleZone.ZoneLimit := DockSiteSizeWithOrient[Zone.ParentZone.Orientation] -
         (Zone.VisibleNextSiblingCount + 1) * MinSize + SplitterWidth div 2;
   end;
 end;
@@ -1375,7 +1375,7 @@ constructor TJvDockVCZone.Create(Tree: TJvDockTree);
 begin
   inherited Create(Tree);
   FZoneSizeStyle := zssNormal;
-  FExpandButtonDown := False;
+  FExpandBtnDown := False;
 end;
 
 destructor TJvDockVCZone.Destroy;
@@ -1416,7 +1416,7 @@ begin
 
   BorderSize := TJvDockVCTree(Tree).BorderWidth * Integer(AfterClosestVisibleZone = nil);
 
-  if ParentZone.Orientation <> TJvDockVCTree(Tree).DockSiteOrientationation then
+  if ParentZone.Orientation <> TJvDockVCTree(Tree).DockSiteOrient then
   begin
     if ((BeforeVisibleZone <> nil) and (TJvDockVCZone(BeforeVisibleZone).ZoneSizeStyle in [zssMaximum, zssMinimum])) or
       ((AfterVisibleZone <> nil) and (TJvDockVCZone(AfterVisibleZone).ZoneSizeStyle in [zssMaximum, zssMinimum])) then
@@ -1426,13 +1426,13 @@ begin
       Visibled := True;
       Exit;
     end;
-    case TJvDockVCTree(Tree).DockSiteOrientationation of
+    case TJvDockVCTree(Tree).DockSiteOrient of
       doVertical:
         TempSize := Tree.DockSite.Height;
       doHorizontal:
         TempSize := Tree.DockSite.Width;
     else
-      raise Exception.Create(RsEInvalidDockSiteOrientationValue);
+      raise Exception.Create(RsEInvalidDockSiteOrientValue);
     end;
 
     if DockSize >= TempSize - (ParentZone.VisibleChildCount) * TJvDockVCTree(Tree).MinSize then
@@ -1493,7 +1493,7 @@ begin
             ScaleBy := PrevSibling.ZoneLimit / (BeforeVisibleZone.ZoneLimit + PrevShift)
           else
             ScaleBy := 1;
-          ShiftScaleOrientationation := ParentZone.Orientation;
+          ShiftScaleOrient := ParentZone.Orientation;
           if ScaleBy <> 1 then
             ForEachAt(ParentZone.ChildZones, ScaleZone, tskForward);
         finally
@@ -1514,7 +1514,7 @@ begin
         else
           ScaleBy := 1;
         ParentLimit := TempSize;
-        ShiftScaleOrientationation := ParentZone.Orientation;
+        ShiftScaleOrient := ParentZone.Orientation;
         if ScaleBy <> 1 then
           ForEachAt(AfterVisibleZone, ScaleSiblingZone, tskForward);
       end;
@@ -1526,7 +1526,7 @@ begin
   begin
     with TJvDockVCTree(Tree) do
     begin
-      TempSize := DockHeightWidth[DockSiteOrientationation] - BorderSize;
+      TempSize := DockHeightWidth[DockSiteOrient] - BorderSize;
 
       if BeforeVisibleZone <> nil then
       begin
@@ -1548,7 +1548,7 @@ begin
           ZoneLimit := LimitBegin + DockSize - BorderSize;
 
         ShiftBy := ZoneLimit;
-        ShiftScaleOrientationation := DockSiteOrientationation;
+        ShiftScaleOrient := DockSiteOrient;
         ForEachAt(AfterVisibleZone, ShiftZone, tskForward);
         TempSize := DockSiteSize + ZoneLimit - LimitBegin;
       end;
@@ -1581,7 +1581,7 @@ begin
 
   BorderSize := TJvDockVCTree(Tree).BorderWidth * Integer(AfterClosestVisibleZone = nil);
 
-  if ParentZone.Orientation <> TJvDockVCTree(Tree).DockSiteOrientationation then
+  if ParentZone.Orientation <> TJvDockVCTree(Tree).DockSiteOrient then
   begin
     if ZoneSizeStyle in [zssMaximum, zssMinimum] then
     begin
@@ -1597,13 +1597,13 @@ begin
       Exit;
     end;
 
-    case TJvDockVCTree(Tree).DockSiteOrientationation of
+    case TJvDockVCTree(Tree).DockSiteOrient of
       doVertical:
         TempSize := Tree.DockSite.Height;
       doHorizontal:
         TempSize := Tree.DockSite.Width;
     else
-      raise Exception.Create(RsEInvalidDockSiteOrientationValue);
+      raise Exception.Create(RsEInvalidDockSiteOrientValue);
     end;
 
     if DockSize > TempSize - (ParentZone.VisibleChildCount - 1) * TJvDockVCTree(Tree).MinSize then
@@ -1652,7 +1652,7 @@ begin
             ScaleBy := PrevSibling.ZoneLimit / (BeforeVisibleZone.ZoneLimit + PrevShift)
           else
             ScaleBy := 1;
-          ShiftScaleOrientationation := ParentZone.Orientation;
+          ShiftScaleOrient := ParentZone.Orientation;
           if ScaleBy <> 1 then
             ForEachAt(ParentZone.ChildZones, ScaleZone, tskForward);
         finally
@@ -1673,7 +1673,7 @@ begin
         else
           ScaleBy := 1;
         ParentLimit := TempSize;
-        ShiftScaleOrientationation := ParentZone.Orientation;
+        ShiftScaleOrient := ParentZone.Orientation;
         if ScaleBy <> 1 then
           ForEachAt(AfterVisibleZone, ScaleSiblingZone, tskForward);
       end;
@@ -1688,7 +1688,7 @@ begin
     begin
       ZoneLimit := LimitBegin - BorderSize;
       ShiftBy := -DockSize - BorderSize;
-      ShiftScaleOrientationation := DockSiteOrientationation;
+      ShiftScaleOrient := DockSiteOrient;
 
       if BeforeClosestVisibleZone <> nil then
         DockSiteSize := DockSiteSize - DockSize - BorderSize
@@ -1723,7 +1723,7 @@ begin
   if ParentZone = nil then
     Exit;
 
-  if ParentZone.Orientation <> TJvDockVCTree(Tree).DockSiteOrientationation then
+  if ParentZone.Orientation <> TJvDockVCTree(Tree).DockSiteOrient then
   begin
     if TJvDockVCZone(ParentZone.ChildZones).ZoneSizeStyle in [zssMaximum, zssMinimum] then
     begin
@@ -1746,13 +1746,13 @@ begin
       Exit;
     end;
 
-    case TJvDockVCTree(Tree).DockSiteOrientationation of
+    case TJvDockVCTree(Tree).DockSiteOrient of
       doVertical:
         TempSize := Tree.DockSite.Height;
       doHorizontal:
         TempSize := Tree.DockSite.Width;
     else
-      raise Exception.Create(RsEInvalidDockSiteOrientationValue);
+      raise Exception.Create(RsEInvalidDockSiteOrientValue);
     end;
 
     if DockSize > TempSize - (ParentZone.VisibleChildCount - 1) * TJvDockVCTree(Tree).MinSize then
@@ -1806,7 +1806,7 @@ begin
             ScaleBy := PrevSibling.ZoneLimit / (PrevSibling.ZoneLimit + PrevShift)
           else
             ScaleBy := 1;
-          ShiftScaleOrientationation := ParentZone.Orientation;
+          ShiftScaleOrient := ParentZone.Orientation;
           if ScaleBy <> 1 then
             ForEachAt(ParentZone.ChildZones, ScaleZone, tskForward);
         finally
@@ -1827,7 +1827,7 @@ begin
         else
           ScaleBy := 1;
         ParentLimit := TempSize;
-        ShiftScaleOrientationation := ParentZone.Orientation;
+        ShiftScaleOrient := ParentZone.Orientation;
         if ScaleBy <> 1 then
           ForEachAt(NextSibling, ScaleSiblingZone, tskForward);
       end;
@@ -1843,15 +1843,15 @@ begin
       begin
         if AfterClosestVisibleZone = nil then
         begin
-          ZoneLimit := LimitBegin + DockHeightWidth[DockSiteOrientationation];
+          ZoneLimit := LimitBegin + DockHeightWidth[DockSiteOrient];
           DockSiteSize := ZoneLimit;
         end
         else
         if BeforeClosestVisibleZone = nil then
         begin
-          ZoneLimit := DockHeightWidth[DockSiteOrientationation] + BorderWidth;
+          ZoneLimit := DockHeightWidth[DockSiteOrient] + BorderWidth;
           ShiftBy := ZoneLimit;
-          ShiftScaleOrientationation := DockSiteOrientationation;
+          ShiftScaleOrient := DockSiteOrient;
           ForEachAt(AfterClosestVisibleZone, ShiftZone, tskForward);
           DockSiteSize := DockSiteSize + ZoneLimit;
         end;
@@ -1862,7 +1862,7 @@ begin
       begin
         ZoneLimit := LimitBegin;
         ShiftBy := -DockSize;
-        ShiftScaleOrientationation := DockSiteOrientationation;
+        ShiftScaleOrient := DockSiteOrient;
 
         if PrevSibling <> nil then
           DockSiteSize := DockSiteSize - DockSize - 5
@@ -1896,8 +1896,8 @@ begin
   FDockOverBrush := TBrush.Create;
   SetDefaultBrushStyle;
 
-  CurrentState := dsDragEnter;
-  PreviousState := CurrentState;
+  CurrState := dsDragEnter;
+  OldState := CurrState;
 end;
 
 destructor TJvDockVCDragDockObject.Destroy;
@@ -1931,19 +1931,19 @@ var
   end;
 
 begin
-  DockOver := ((PreviousState = dsDragEnter) and (CurrentState = dsDragMove) and (not Erase or (PreviousTarget <> nil))) or
-    ((PreviousState = dsDragMove) and (CurrentState = dsDragMove)) or
-    ((PreviousState = dsDragMove) and (CurrentState = dsDragLeave) and Erase);
+  DockOver := ((OldState = dsDragEnter) and (CurrState = dsDragMove) and (not Erase or (OldTarget <> nil))) or
+    ((OldState = dsDragMove) and (CurrState = dsDragMove)) or
+    ((OldState = dsDragMove) and (CurrState = dsDragLeave) and Erase);
 
   GetBrushAndFrameWidth;
 
-  if (PreviousState = dsDragMove) and (CurrentState = dsDragLeave) then
+  if (OldState = dsDragMove) and (CurrState = dsDragLeave) then
   begin
-    PreviousState := dsDragEnter;
-    PreviousTarget := nil;
+    OldState := dsDragEnter;
+    OldTarget := nil;
   end
   else
-    PreviousTarget := DragTarget;
+    OldTarget := DragTarget;
 
   if Erase then
     DrawRect := EraseDockRect
@@ -1956,9 +1956,9 @@ begin
   Result := DropOnControl;
 end;
 
-procedure TJvDockVCDragDockObject.SetCurrentState(const Value: TDragState);
+procedure TJvDockVCDragDockObject.SetCurrState(const Value: TDragState);
 begin
-  FCurrentState := Value;
+  FCurrState := Value;
 end;
 
 procedure TJvDockVCDragDockObject.SetDefaultBrushStyle;
@@ -1967,9 +1967,9 @@ begin
   FDockOverBrush.Style := bsSolid;
 end;
 
-procedure TJvDockVCDragDockObject.SetPreviousState(const Value: TDragState);
+procedure TJvDockVCDragDockObject.SetOldState(const Value: TDragState);
 begin
-  FPreviousState := Value;
+  FOldState := Value;
 end;
 
 //=== TJvDockVCSplitter ======================================================
@@ -1989,9 +1989,9 @@ begin
   if Result and (FOldSize > NewSize) then
   begin
     DockPanel := DockServer.DockPanel[Integer(Align) - 1];
-    Limit := DockPanel.JvDockManager.GetDockClientLimit(JvDockGetControlOrient(DockPanel),
+    Limit := DockPanel.lbDockManager.GetDockClientLimit(JvDockGetControlOrient(DockPanel),
       Align in [alLeft, alTop]);
-    MinSize := DockPanel.JvDockManager.MinSize;
+    MinSize := DockPanel.lbDockManager.MinSize;
 
     if DockPanel.Align in [alLeft, alTop] then
     begin
@@ -2014,11 +2014,11 @@ var
   DockPanel: TJvDockPanel;
 begin
   DockPanel := DockServer.DockPanel[Integer(Align) - 1];
-  DockPanel.JvDockManager.BeginResizeDockSite;
+  DockPanel.lbDockManager.BeginResizeDockSite;
   try
     inherited MouseUp(Button, Shift, X, Y);
   finally
-    DockPanel.JvDockManager.EndResizeDockSite;
+    DockPanel.lbDockManager.EndResizeDockSite;
   end;
 end;
 

@@ -48,7 +48,7 @@ object Form3: TForm3
     NCPopupMenu = MainForm.PopupMenu2
     DirectDrag = False
     ShowHint = True
-    EnableCloseButton = True
+    EnableCloseBtn = True
     DockStyle = MainForm.JvDockVIDStyle1
     Left = 64
     Top = 32
