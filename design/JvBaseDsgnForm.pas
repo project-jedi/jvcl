@@ -33,11 +33,9 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, 
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs,
-  {$ENDIF VisualCLX}
+  Graphics, Controls, Forms, Dialogs,
   JvComponent;
 
 type
@@ -89,16 +87,11 @@ uses
   Registry,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  IniFiles,
+  JvQRegistryIniFile,
   {$ENDIF LINUX}
   JvBaseDsgnFrame, JvConsts, JvDsgnConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 const
   cHeight = 'Height';
@@ -166,15 +159,13 @@ var
   I: Integer;
 begin
   {$IFDEF LINUX}
-  with TIniFile.Create(GetEnvironmentVariable('HOME') + PathDelim + SDelphiKey) do
+  with TJvRegistryIniFile.Create do
   {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   with TRegistry.Create do
   {$ENDIF MSWINDOWS}
     try
-      {$IFDEF MSWINDOWS}
       LazyWrite := False;
-      {$ENDIF MSWINDOWS}
       if OpenKey(GetRegKey, True) then
         try
           WriteInteger(cLeft, Left);
@@ -197,7 +188,7 @@ var
   I: Integer;
 begin
   {$IFDEF LINUX}
-  with TIniFile.Create(GetEnvironmentVariable('HOME') + PathDelim + SDelphiKey) do
+  with TJvRegistryIniFile.Create do
   {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   with TRegistry.Create do
