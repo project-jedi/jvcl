@@ -45,12 +45,12 @@ uses
   
   JvQMaskEdit, JvQBaseEdits, JvQCalc, JvQToolEdit,
   JvQBevel, JvQCheckBox, JvQSpeedButton,
-  JvQGroupBox, JvQHeaderControl,
+  JvQCtrls, JvQGroupBox, JvQHeaderControl,
   JvQImage, JvQRadioButton, JvQRadioGroup,
-  JvQLabel, JvQStatusBar,
+  JvQLabel, JvQStatusBar, JvQSpin, JvQCheckedMaskEdit,
   JvQGauges, JvQTimeEdit, JvQStdDsgnEditors, JvQJCLUtils,
   JvQScrollBar, JvQShape, JvQControlBar, JvQGrids,
-  JvQTabControl, JvQBitBtn, JvQPickDate, JvQStringGrid,
+  JvQBitBtn, JvQPickDate, JvQStringGrid,
   JvQPanel, JvQImageList, JvQProgressEditor, JvQDsgnEditors;
 
 {$IFDEF VCL}
@@ -68,13 +68,13 @@ const
 begin
   RegisterComponents(RsPaletteVisual, [TJvShape, TJvCalendar]);
   RegisterComponents(RsPaletteNonVisual, [TJvCalculator]);
-  RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvSpeedButton,
-    TJvCheckBox, TJvRadioButton, TJvRadioGroup]);
+  RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvImgBtn, TJvSpeedButton,
+    TJvCheckBox, TJvRadioButton, TJvRadioGroup, {TJvUpDown,} TJvSpinButton]);
   RegisterComponents(RsPaletteEdit, [TJvEdit,
-    TJvMaskEdit, TJvCalcEdit, TJvComboEdit,
-    TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvTimeSpin]);
+    TJvMaskEdit, TJvCheckedMaskEdit, TJvCalcEdit, TJvComboEdit,
+    TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvSpinEdit, TJvTimeSpin]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
-  RegisterComponents(RsPaletteBarPanel, [TJvGauge, TJvTabControl, TJvControlBar,
+  RegisterComponents(RsPaletteBarPanel, [TJvGauge, TJvControlBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel, TJvStatusBar,
     TJvTransparentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvLabel]);
@@ -86,12 +86,12 @@ begin
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, cText, nil);
 //  RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'Filter', TFilterProperty);
-//  RegisterPropertyEditor(TypeInfo(TWStringList), TJvArrayButton ,Hints', TJvHintProperty);
+//  RegisterPropertyEditor(TypeInfo(TWideStringList), TJvArrayButton ,'Hints', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'FileName', TJvFilenameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDirectoryEdit, cText, TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomComboEdit, 'ButtonHint', TJvHintProperty);
 //  RegisterPropertyEditor(TypeInfo(TStrings), TJvxCheckListBox, 'Items', TJvCheckItemsProperty);
-//  RegisterPropertyEditor(TypeInfo(TJvImgBtnKind), TJvImgBtn, 'Kind', TJvNosortEnumProperty);
+  RegisterPropertyEditor(TypeInfo(TJvImgBtnKind), TJvImgBtn, 'Kind', TJvNosortEnumProperty);
 //  RegisterPropertyEditor(TypeInfo(Boolean), TJvMainMenu, cOwnerDraw, nil);
 //  RegisterPropertyEditor(TypeInfo(Boolean), TJvPopupMenu, cOwnerDraw, nil);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedButton, 'Caption', TJvHintProperty);

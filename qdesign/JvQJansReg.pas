@@ -14,7 +14,8 @@ interface
 uses
   Classes, QControls, 
   DesignIntf, DesignEditors,
-  CLXEditors,  
+  CLXEditors, 
+  JvQDsgnConsts, 
   JvQMarkupLabel, JvQMarkupViewer, JvQSAL, JvQSALCore, JvQSALMath,
   JvQYearGrid, JvQTracker, JvQAirBrush, JvQGridFilter, JvQGridPrinter,
   JvQArrayButton, JvQForth, JvQTurtle, JvQPaintFX, JvQDrawImage,
@@ -48,17 +49,17 @@ begin
   GroupDescendentsWith(TJvSpeller, TControl); 
 
   //TODO: Register a TShortCut Property Editor on TTreeKeyMappings class in TJvJanTreeView
-  RegisterComponents('Jv Jans', [TJvMarkupLabel, TJvMarkupViewer, TJvSAL, 
+  RegisterComponents(RsPaletteJans, [TJvMarkupLabel, TJvMarkupViewer, TJvSAL, 
     TJvSALCore, TJvSALMath, TJvYearGrid, TJvAirBrush, TJvTracker,
     TJvGridFilter, TJvGridPrinter, 
     TJvPaintFX, TJvDrawImage,
     TJvArrayButton, TJvForthScript, TJvTurtle, TJvBitmapButton, TJvSpeller ]);
   // Simulator Components
-  RegisterComponents('Jv Jans SIM', [TJvSimScope, TJvSimIndicator, TJvSimPID,
+  RegisterComponents(RsPaletteJansSim, [TJvSimScope, TJvSimIndicator, TJvSimPID,
     TJvSimPIDLinker, TJvSimConnector, TJvLogic, TJvSimButton, TJvSimLight,
     TJvSimLogicBox, TJvSimReverse]);
   // CSV Components
-  RegisterComponents('Jv Jans CSV', [TJvCSVBase, TJvCSVEdit, TJvCSVComboBox,
+  RegisterComponents(RsPaletteJansCsv, [TJvCSVBase, TJvCSVEdit, TJvCSVComboBox,
     TJvCSVCheckBox, TJvCSVNavigator]);
   RegisterPropertyEditor(TypeInfo(string), TJvCSVBase, cCSVFieldName, TCSVFileNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCSVEdit, cCSVField, TCSVFieldProperty);

@@ -45,8 +45,7 @@ uses
   JvQCabFile,
   {$ENDIF USEWINDOWS}
   JvQDsgnConsts,
-  JvQVigenereCipher, JvQCaesarCipher, JvQGenetic,
-  JvQSerialMaker, JvQXorCipher;
+  JvQCipher, JvQGenetic, JvQSerialMaker;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCryptReg.dcr}

@@ -87,19 +87,19 @@ var
   dlgResult: Integer;
   WindowList: Pointer;
 begin
-//  WindowList := DisableTaskWindows(0);
+  WindowList := DisableTaskWindows(0);
   Dialog := TJvCsvDefStrDialog.Create(nil); // no owner!
 //  dlgResult := idCancel;
   try
     Dialog.SetCsvStr(OldValue);
     dlgResult := Dialog.ShowModal;
-    if dlgResult = 1 then
+    if dlgResult = idOk then
       Result := Dialog.GetCsvStr
     else
       Result := OldValue;
   finally
     Dialog.Free;
-   // EnableTaskWindows(WindowList);
+    EnableTaskWindows(WindowList);
   end;
 end;
 

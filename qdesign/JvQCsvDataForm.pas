@@ -37,9 +37,9 @@ unit JvQCsvDataForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QWindows,
-  QDialogs, QExtCtrls, QButtons, QStdCtrls, Types,  
+  SysUtils, Classes,
+  QWindows, QMessages, Types, QGraphics, QControls, QForms,
+  QDialogs, QExtCtrls, QButtons, QStdCtrls,
   JvQTypes, JvQComponent;
 
 type
@@ -98,10 +98,7 @@ implementation
 uses
   JvQCsvData, JvQCsvParse, JvQDsgnConsts;
 
-
-
 {$R *.xfm}
-
 
 procedure TJvCsvDefStrDialog.UpdateCsvStr;
 var

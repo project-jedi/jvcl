@@ -58,7 +58,7 @@ begin
   RegisterComponents(RsPaletteHMIComponents, [TJvSegmentedLEDDisplay, TJvLED,
     TJvDialButton]);
   RegisterPropertyEditor(TypeInfo(TJvSegmentedLEDDigitClassName), TPersistent, '', TJvSegmentedLEDDigitClassProperty);
-  RegisterPropertyEditor(TypeInfo(TUnlitColor), TPersistent, '', TUnlitColorProperty);
+//  RegisterPropertyEditor(TypeInfo(TUnlitColor), TPersistent, '', TUnlitColorProperty);
   RegisterComponentEditor(TJvCustomSegmentedLEDDisplay, TJvSegmentedLEDDisplayEditor);
   RegisterCustomModule(TfmeJvSegmentedLEDDisplayMapper, TCustomModule);
 end;
