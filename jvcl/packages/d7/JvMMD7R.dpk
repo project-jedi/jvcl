@@ -35,7 +35,6 @@ requires
   JvCtrlsD7R;
 
 contains
-  JvVisualId3v2 in '..\..\run\JvVisualId3v2.pas',
   JvGradient in '..\..\run\JvGradient.pas',
   JvGradientCaption in '..\..\run\JvGradientCaption.pas',
   JvId3v1 in '..\..\run\JvId3v1.pas',
@@ -50,7 +49,6 @@ contains
   JvWaitingGradient in '..\..\run\JvWaitingGradient.pas',
   JvWaitingProgress in '..\..\run\JvWaitingProgress.pas',
   JvWavePlayer in '..\..\run\JvWavePlayer.pas',
-  JvVisualId3v1 in '..\..\run\JvVisualId3v1.pas',
   JvSpecialProgress in '..\..\run\JvSpecialProgress.pas',
   JvSlider in '..\..\run\JvSlider.pas',
   JvGIF in '..\..\run\JvGIF.pas',
