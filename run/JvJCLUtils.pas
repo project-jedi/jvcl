@@ -8655,7 +8655,7 @@ begin
   Result := NullHandle;
   (*
   if Bitmap = nil then
-    EJclGraphicsError.CreateResRec(@RsNoBitmapForRegion);
+    EJclGraphicsError.CreateRes(@RsNoBitmapForRegion);
   *)
   if (Bitmap.Width = 0) or (Bitmap.Height = 0) then
     Exit;

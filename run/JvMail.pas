@@ -370,13 +370,13 @@ begin
   GetSimpleMapi;
   FSimpleMapi.LoadClientLib;
   if not FSimpleMapi.ClientLibLoaded then
-    raise EJclMapiError.CreateResRec(@RsNoClientInstalled);
+    raise EJclMapiError.CreateRes(@RsNoClientInstalled);
 end;
 
 procedure TJvMail.CheckUserLogged;
 begin
   if not UserLogged then
-    raise EJclMapiError.CreateResRec(@RsNoUserLogged);
+    raise EJclMapiError.CreateRes(@RsNoUserLogged);
 end;
 
 procedure TJvMail.Clear;
@@ -409,7 +409,7 @@ procedure TJvMail.CreateMapiMessage;
       for I := 0 to Attachment.Count - 1 do
       begin
         if not FileExists(Attachment[I]) then
-          raise EJclMapiError.CreateResRecFmt(@RsAttachmentNotFound, [Attachment[I]]);
+          raise EJclMapiError.CreateResFmt(@RsAttachmentNotFound, [Attachment[I]]);
         FillChar(FAttachArray[I], SizeOf(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;
         FAttachArray[I].lpszFileName := PExtractFileName(Attachment[I]);
@@ -449,7 +449,7 @@ var
     for I := 0 to RecipList.Count - 1 do
     begin
       if not RecipList[I].Valid then
-        raise EJclMapiError.CreateResRecFmt(@RsRecipNotValid, [RecipList[I].GetNamePath]);
+        raise EJclMapiError.CreateResFmt(@RsRecipNotValid, [RecipList[I].GetNamePath]);
       FillChar(FRecipArray[RecipIndex], SizeOf(TMapiRecipDesc), #0);
       with FRecipArray[RecipIndex], RecipList[I] do
       begin
