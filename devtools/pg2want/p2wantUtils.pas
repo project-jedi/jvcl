@@ -7,61 +7,83 @@ implementation
 uses
   Windows, SysUtils, Classes, JvSimpleXML;
 var
-  GlobalPrefixPath:string = ''; // ./jvcl/**/
+  GlobalDir: string = ''; 
 
-function PrefixPath(const S:String):string;
+function ConvertBackSlash(const S: string): string;
 begin
-  if GlobalPrefixPath <> '' then
-    Result := GlobalPrefixPath
+  Result := StringReplace(S, '\', '/', [rfReplaceAll]);
+end;
+
+function ConvertFrontSlash(const S: string): string;
+begin
+  Result := StringReplace(S, '/', '\', [rfReplaceAll]);
+end;
+
+function RemoveRelativePath(const S:string):string;
+begin
+  Result := StringReplace(ConvertBackSlash(S),'../','',[rfReplaceAll]);
+  Result := StringReplace(Result,'..','',[rfReplaceAll]);
+  Result := StringReplace(Result,'//','/',[rfReplaceAll]);
+end;
+
+function ExtractRelativePathPart(const S:string):string;
+var i:integer;
+begin
+  i := 1;
+  while (i <= Length(S)) and (S[i] in ['.','/','\']) do
+    Inc(i);
+  Result := Copy(S,1,i-1);
+  if Result = '' then
+    Result := S;
+end;
+
+function PrefixPath(const S: string): string;
+begin
+  if GlobalDir <> '' then
+    Result := GlobalDir
   else
-    Result := ExtractFilepath(S);
+    Result := ConvertBackSlash(ExtractRelativePathPart(ConvertFrontSlash(S)));
 end;
 
 procedure ShowHelp;
 begin
   writeln('p2want: converts package generator xml files to want xml files');
-  writeln('USAGE: pg2want src dest [fixed] [dir] [pathprefix]');
+  writeln('USAGE: pg2want src dest [fixed] [dir]');
   writeln('where');
   writeln('src  - the pg xml file(s) to read from. Accepts wildcards.');
   writeln('dest - the file to write to. Defaults to want.xml in the current directory.');
   writeln('If dest exists, it will be overwritten.');
   writeln('fixed - an xml fragment file with include/exclude items that should be added to each fileset.');
-  writeln('dir - the root directory of the paths in the pg xml file(s). Defaults to the same path as src.');
-  writeln('pathprefix - a path to prefix to each item. If empty, uses path from pg xml.');
-  writeln('');
+  writeln('dir - the root directory to replace relative paths with in the pg xml file(s).');
 end;
 
 function ParseItem(const ANode: TJvSimpleXMLElem; const Dest: TStrings): integer;
 var
   AFile: string;
-  function ConvertBackSlash(const S: string): string;
-  begin
-    Result := StringReplace(S, '\', '/', [rfReplaceAll]);
-  end;
-  procedure FindAdditional(const AFile:string; Dest:TStrings);
+  procedure FindAdditional(const AFile: string; Dest: TStrings);
   var
-    i,j:integer;
-    S:TStringlist;
-    tmp:string;
+    i, j: integer;
+    S: TStringlist;
+    tmp: string;
   begin
     if not FileExists(ExpandUNCFilename(AFile)) then
     begin
 //      writeln(Afile, ' not found!');
       Exit;
     end;
-    writeln('Parsing ', AFile,'...');
+    writeln('Parsing ', AFile, '...');
     S := TStringlist.Create;
     try
       S.LoadFromFile(ExpandUNCFilename(AFile));
       for i := 0 to S.Count - 1 do
       begin
-        j := Pos('{$R ',S[i]);
+        j := Pos('{$R ', S[i]);
         if j = 0 then
-          j := Pos('{$RESOURCE ',S[i]);
+          j := Pos('{$RESOURCE ', S[i]);
         if j = 0 then
-          j := Pos('{$L ',S[i]);
+          j := Pos('{$L ', S[i]);
         if j = 0 then
-          j := Pos('{$LINK ',S[i]);
+          j := Pos('{$LINK ', S[i]);
 //        if j = 0 then
 //          j := Pos('{$I ',S[i]);
 //        if j = 0 then
@@ -69,13 +91,16 @@ var
         if j > 0 then
         begin
           tmp := trim(S[i]);
-          tmp := Copy(tmp, Pos(' ', tmp) + 1,MaxInt);
-          tmp := trim(Copy(tmp, 1, Pos('}',tmp) - 1));
-          tmp := StringReplace(tmp, '*', ChangeFileExt(ExtractFileName(AFile),''),[]);
+          tmp := Copy(tmp, Pos(' ', tmp) + 1, MaxInt);
+          tmp := trim(Copy(tmp, 1, Pos('}', tmp) - 1));
+          tmp := ConvertFrontSlash(StringReplace(tmp, '*', ChangeFileExt(ExtractFileName(AFile), ''), []));
           if tmp <> '' then
-          begin
-            tmp := Format('    <include name="%s%s" />', [PrefixPath(tmp), ConvertBackSlash(ExtractFilename(tmp))]);
-            Dest.Add(tmp);
+          begin // tmp path could be in unix format
+            if ExtractFilePath(tmp) = '' then
+              tmp := ExtractFilePath(AFile) + ExtractFilename(tmp);
+            tmp := Format('    <include name="%s%s" />', [PrefixPath(tmp), RemoveRelativePath(tmp)]);
+            if Dest.IndexOf(tmp) <> Dest.Count - 1 then // check for Linux/Windows double inclusion
+              Dest.Add(tmp);
           end;
         end
       end;
@@ -88,7 +113,7 @@ begin
   AFile := ANode.Properties.Value('Name', '');
   if AFile <> '' then
   begin
-    Dest.Add(Format('    <include name="%s%s" />', [PrefixPath(AFile), ExtractFileName(AFile)]));
+    Dest.Add(Format('    <include name="%s%s" />', [PrefixPath(AFile), RemoveRelativePath(AFile)]));
     Result := 1;
     FindAdditional(AFile, Dest);
   end;
@@ -127,7 +152,7 @@ begin
       S := '';
       Dest.Add('  <fileset>');
       Dest.Add(Format('    <exclude name="%s${%s}" />', [PrefixPath(ZipName), ZipName]));
-      Dest.Add(Format('    <include name="%s%s*" />', [PrefixPath(PackName), PackName]));
+      Dest.Add(Format('    <include name="%s**/%s*" />', [PrefixPath(PackName), PackName]));
       if Fixed.Count > 0 then
         Dest.AddStrings(Fixed);
     end;
@@ -148,7 +173,7 @@ var
   APath: string;
   XML: TJvSimpleXML;
   Dst, AFiles, AFixed: TStringlist;
-  i:integer;
+  i: integer;
 begin
   Result := 0;
   APath := ExtractFilePath(Src);
@@ -184,7 +209,7 @@ end;
 procedure Run;
 var
   i: integer;
-  Src, Dest, Fixed, Dir, OldDir: string;
+  Src, Dest, Fixed: string;
 begin
   if ParamCount < 2 then
   begin
@@ -198,19 +223,15 @@ begin
   else
     Dest := ExpandUNCFilename(ParamStr(2));
   Fixed := ExpandUNCFilename(ParamStr(3));
-  Dir  := ExpandUNCFilename(ParamStr(4));
-  if Dir =  '' then
-    Dir := ExtractFilePath(Src); // assume source folder is "root"
-  GlobalPrefixPath := ParamStr(5);
-  OldDir := GetCurrentDir;
-  SetCurrentDir(Dir);
+  GlobalDir := ParamStr(4);
+//  if GlobalDir = '' then
+//    GlobalDir := ExtractFilePath(Src); // assume source folder is "root"
   if FileExists(Dest) then
     RenameFile(Dest, Dest + '.bak');
   i := ConvertToWant(Src, Dest, Fixed);
   writeln(i, ' xml file(s) parsed.');
   if FileExists(Dest + '.bak') then
     DeleteFile(Dest + '.bak');
-  SetCurrentDir(OldDir);
 end;
 
 end.
