@@ -99,18 +99,28 @@ type
     procedure Edit; override;
   end;
 
-  TJvStringsEditor = class(TDefaultEditor)
+  TJvBasePropertyEditor = class(TDefaultEditor)
   protected
     {$IFDEF COMPILER6_UP}
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
     {$ELSE}
     procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
     {$ENDIF COMPILER6_UP}
-    function GetStringsName: string; virtual;
+    function GetEditPropertyName: string; virtual; abstract;
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
+  end;
+
+  TJvStringsEditor = class(TJvBasePropertyEditor)
+  protected
+    function GetEditPropertyName: string; override;
+  end;
+
+  TJvItemsEditor = class(TJvBasePropertyEditor)
+  protected
+    function GetEditPropertyName: string; override;
   end;
 
   {$IFDEF VCL}
@@ -441,27 +451,27 @@ begin
   Result := [paDialog, paRevertable];
 end;
 
-//=== { TJvStringsProperty } =================================================
+//=== { TJvBasePropertyEditor } ==============================================
 
 {$IFDEF COMPILER6_UP}
-procedure TJvStringsEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
+procedure TJvBasePropertyEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
 var
   PropName: string;
 begin
   PropName := Prop.GetName;
-  if SameText(PropName, GetStringsName) then
+  if SameText(PropName, GetEditPropertyName) then
   begin
     Prop.Edit;
     Continue := False;
   end;
 end;
 {$ELSE}
-procedure TJvStringsEditor.EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean);
+procedure TJvBasePropertyEditor.EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean);
 var
   PropName: string;
 begin
   PropName := PropertyEditor.GetName;
-  if SameText(PropName, RsItems) then
+  if SameText(PropName, GetEditPropertyName) then
   begin
     PropertyEditor.Edit;
     Continue := False;
@@ -469,7 +479,7 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-procedure TJvStringsEditor.ExecuteVerb(Index: Integer);
+procedure TJvBasePropertyEditor.ExecuteVerb(Index: Integer);
 begin
   if Index = 0 then
     Edit
@@ -477,20 +487,15 @@ begin
     inherited ExecuteVerb(Index);
 end;
 
-function TJvStringsEditor.GetStringsName: string;
-begin
-  Result := RsItems;
-end;
-
-function TJvStringsEditor.GetVerb(Index: Integer): string;
+function TJvBasePropertyEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := Format(RsFmtEditEllipsis, [GetStringsName])
+    Result := Format(RsFmtEditEllipsis, [GetEditPropertyName])
   else
     Result := '';
 end;
 
-function TJvStringsEditor.GetVerbCount: Integer;
+function TJvBasePropertyEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
@@ -1088,6 +1093,24 @@ begin
 end;
 
 {$ENDIF COMPILER5}
+
+//=== { TJvStringsEditor } ===================================================
+
+function TJvStringsEditor.GetEditPropertyName: string;
+begin
+  { (rb) Probably should not be a resource string, because its value should be the
+         same as the property name }
+  Result := RsStrings;
+end;
+
+//=== { TJvItemsEditor } =====================================================
+
+function TJvItemsEditor.GetEditPropertyName: string;
+begin
+  { (rb) Probably should not be a resource string, because its value should be the
+         same as the property name }
+  Result := RsItems;
+end;
 
 end.
 
