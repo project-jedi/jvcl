@@ -4,7 +4,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   JvDiagramShape, Dialogs, ComCtrls, Menus, ImgList, StdCtrls, ExtCtrls,
-  ActnList, IniFiles, PersistSettings;
+  ActnList, IniFiles, PersistSettings, DepWalkConsts;
 
 type
   // (p3) interposer class for TListBox that implements IPersistSettings (for the skiplist)
@@ -85,6 +85,7 @@ type
     procedure acPrintExecute(Sender: TObject);
   private
     { Private declarations }
+    FPrintFormat:TPrintFormat;
     FFileShapes: TStringlist;
     FLeft, FTop: integer;
     sb: TScrollBox;
@@ -93,7 +94,7 @@ type
     procedure SaveSettings;
 
     procedure Clear;
-    procedure CreatePrintOut(Strings: TStrings);
+    procedure CreatePrintOut(Strings: TStrings; AFormat:TPrintFormat=pfText);
     function GetFileShape(const Filename: string): TJvBitmapShape;
     procedure ParseUnits(Files, Errors: TStrings);
     procedure ParseUnit(const Filename: string; Errors: TStrings);
@@ -120,12 +121,12 @@ var
 
 implementation
 uses
-  JCLParseUses, Clipbrd, StatsFrm, ShellAPI;
+  JCLParseUses, Clipbrd, StatsFrm, ShellAPI, PrintFrm;
 
 const
   FStartX = 50;
   FStartY = 50;
-  FOffsetX = 100;
+  FOffsetX = 75;
   FOffsetY = 50;
 
 {$R *.dfm}
@@ -163,6 +164,12 @@ end;
 function ChangeCursor(NewCursor: TCursor): IUnknown;
 begin
   Result := TChangeCursor.Create(NewCursor);
+end;
+
+function YesNo(const ACaption,AMsg:string):boolean;
+begin
+  Result := MessageBox(GetFocus,PChar(AMsg),PChar(ACaption),
+    MB_YESNO or MB_ICONQUESTION or MB_TASKMODAL) = IDYES;
 end;
 
 procedure SuspendRedraw(AControl: TWinControl; Suspend: boolean);
@@ -446,8 +453,7 @@ begin
       Errors.Add(Format('%s: %s', [AFilename, ErrMsg]));
     // add the actual file
     FS := GetFileShape(AFilename);
-    if AUses.Count > 0 then
-      Inc(FLeft, FOffsetX);
+    Inc(FLeft,FOffsetX);
     for i := 0 to AUses.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
@@ -654,7 +660,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.CreatePrintOut(Strings: TStrings);
+procedure TfrmMain.CreatePrintOut(Strings: TStrings; AFormat:TPrintFormat=pfText);
 var
   i, j, ATag: integer;
   UsedByStrings, UsesStrings: TStringlist;
@@ -677,27 +683,71 @@ begin
     else
       ATag := -1; // no need to sort: FFileShapes already sorted by name
     SortItems(ATag, AList, acInvertSort.Checked);
-
     for i := 0 to AList.Count - 1 do
     begin
       AShape := TJvBitmapShape(AList[i]);
-      UsesUnits(AShape, UsesStrings);
-      UsedByUnits(AShape, UsedByStrings);
-
-      Strings.Add(ChangeFileExt(AShape.Caption.Text, '.pas'));
-      Strings.Add('  uses:');
-      if UsesStrings.Count < 1 then
-        Strings.Add('    (none)')
-      else
+      UsesUnits(AShape, UsesStrings,'');
+      UsedByUnits(AShape, UsedByStrings,'');
+      case AFormat of
+      pfText:
+      begin
+        Strings.Add(AShape.Caption.Text);
+        Strings.Add('  uses:');
+        if UsesStrings.Count < 1 then
+          Strings.Add('    (none)')
+        else
+          for j := 0 to UsesStrings.Count - 1 do
+            Strings.Add('    ' + UsesStrings[j]);
+        Strings.Add('  used by:');
+        if UsedByStrings.Count < 1 then
+          Strings.Add('    (none)')
+        else
+          for j := 0 to UsedByStrings.Count - 1 do
+            Strings.Add('    ' + UsedByStrings[j]);
+      end;
+      pfHTML:
+      begin
+        Strings.Add(Format('<h3>%s:</h3>',[AShape.Caption.Text]));
+        if UsesStrings.Count > 0 then
+          Strings.Add('<b>uses:</b>');
+        Strings.Add('<ul>');
         for j := 0 to UsesStrings.Count - 1 do
-          Strings.Add('    ' + UsesStrings[j]);
-      Strings.Add('  used by:');
-      if UsedByStrings.Count < 1 then
-        Strings.Add('    (none)')
-      else
+          Strings.Add('<li>' + UsesStrings[j]);
+        Strings.Add('</ul>');
+        if UsedByStrings.Count > 0 then
+          Strings.Add('<b>used by:</b>');
+        Strings.Add('<ul>');
         for j := 0 to UsedByStrings.Count - 1 do
-          Strings.Add('    ' + UsedByStrings[j]);
+          Strings.Add('<li>' + UsedByStrings[j]);
+        Strings.Add('</ul>');
+      end;
+      pfXML:
+      begin
+        Strings.Add(Format('<UNIT Name="%s">',[AShape.Caption.Text]));
+          for j := 0 to UsesStrings.Count - 1 do
+            Strings.Add(Format('<USES Name="%s" />',[UsesStrings[j]]));
+          for j := 0 to UsedByStrings.Count - 1 do
+            Strings.Add(Format('<USEDBY Name="%s" />',[UsedByStrings[j]]));
+        Strings.Add('</UNIT>');
+      end;
+      end;  // case
     end;
+    // insert headers and footers:
+    case AFormat of
+      pfXML:
+      begin
+        Strings.Insert(0,'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><DependencyWalker>');
+        Strings.Add('</DependencyWalker>');
+      end;
+      pfHTML:
+      begin
+        Strings.Insert(0,'<html><head><title>Dependency Walker</title></head>');
+        Strings.Insert(1,'<body style="font-family:verdana,arial,sans serif,helvetica"><h1>Dependency Walker</h1><hr>');
+//        Strings.Insert(2,'<h2>Legend:</h2><ul type="disc"><li> denotes "uses"</ul><ul type="square"><li>denotes "used by"</ul>');
+
+        Strings.Add('</body></html>');
+      end;
+    end; //
   finally
     UsedByStrings.Free;
     UsesStrings.Free;
@@ -748,6 +798,7 @@ procedure TfrmMain.acDeleteExecute(Sender: TObject);
 var
   i: integer;
 begin
+  if not YesNo('Confirm delete','Delete selected items?') then Exit;
   with lbSkipList do
     for i := Items.Count - 1 downto 0 do
       if Selected[i] then
@@ -761,7 +812,8 @@ end;
 
 procedure TfrmMain.acClearExecute(Sender: TObject);
 begin
-  Clear;
+  if YesNo('Confirm delete','Clear diagram?') then
+    Clear;
 end;
 
 procedure TfrmMain.alMainUpdate(Action: TBasicAction;
@@ -782,6 +834,7 @@ begin
   Width := Storage.ReadInteger(ClassName, 'Width', Width);
   Height := Storage.ReadInteger(ClassName, 'Height', Height);
   acInvertSort.Checked := Storage.ReadBool(ClassName, 'InvertSort', false);
+  FPrintFormat := TPrintFormat(Storage.ReadInteger(ClassName,'Print Format',0));
 end;
 
 procedure TfrmMain.Save(Storage: TCustomIniFile);
@@ -792,8 +845,9 @@ begin
     Storage.WriteInteger(ClassName, 'Left', Left);
     Storage.WriteInteger(ClassName, 'Width', Width);
     Storage.WriteInteger(ClassName, 'Height', Height);
-    Storage.WriteBool(ClassName, 'InvertSort', acInvertSort.Checked);
   end;
+  Storage.WriteBool(ClassName, 'InvertSort', acInvertSort.Checked);
+  Storage.WriteInteger(ClassName,'Print Format',Ord(FPrintFormat));
 end;
 
 procedure TfrmMain.LoadSettings;
@@ -854,7 +908,7 @@ begin
   // (p3) Can't use TJvCustomDiagramShape.DeleteSelecetdShapes here since
   // we need to remove the item from the FFileShapes list as well:
   AShape := GetFirstSelectedShape(sb);
-  if AShape <> nil then
+  if (AShape <> nil) and YesNo('Confirm delete',Format('Remove "%s" from diagram?',[AShape.Caption.Text])) then
   begin
     i := FFileShapes.IndexOfObject(AShape);
     if i > -1 then
@@ -864,17 +918,23 @@ begin
 end;
 
 procedure TfrmMain.acPrintExecute(Sender: TObject);
-var S: TStringlist;
+const
+  cFormatExt:array[TPrintFormat] of PChar = ('.txt','.htm','.xml');
+var
+  S: TStringlist;
+  AFileName:string;
 begin
-  WaitCursor;
   S := TStringlist.Create;
   try
-    CreatePrintOut(S);
+    if not TfrmPrint.Execute(FPrintFormat) then Exit;
+    WaitCursor;
+    CreatePrintOut(S,FPrintFormat);
     if S.Count > 0 then
     begin
-      S.SaveToFile(ExtractFilePath(Application.Exename) + 'printout.txt');
-      // show in Notepad: let user decide whether to print or not after viewing
-      ShellExecute(Handle, 'open', PChar(ExtractFilePath(Application.Exename) + 'printout.txt'), nil, nil, SW_SHOWNORMAL);
+      AFilename := ExtractFilePath(Application.Exename) + 'DependencyWalker' + cFormatExt[FPrintFormat];
+      S.SaveToFile(AFilename);
+      // show in default viewer: let user decide whether to print or not after viewing
+      ShellExecute(Handle, 'open', PChar(AFilename), nil, nil, SW_SHOWNORMAL);
     end;
   finally
     S.Free;

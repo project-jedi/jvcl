@@ -1250,7 +1250,7 @@ object frmMain: TfrmMain
     end
     object acDelete: TAction
       Category = 'Skiplist'
-      Caption = 'Delete'
+      Caption = 'Delete...'
       ShortCut = 16430
       OnExecute = acDeleteExecute
     end
@@ -1273,7 +1273,7 @@ object frmMain: TfrmMain
     end
     object acDelDiagram: TAction
       Category = 'Diagrams'
-      Caption = 'Delete'
+      Caption = 'Delete...'
       OnExecute = acDelDiagramExecute
     end
     object acPrint: TAction

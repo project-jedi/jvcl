@@ -9,7 +9,7 @@ object frmUnitStats: TfrmUnitStats
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
   DesignSize = (
@@ -27,7 +27,7 @@ object frmUnitStats: TfrmUnitStats
   object Label2: TLabel
     Left = 8
     Top = 72
-    Width = 42
+    Width = 43
     Height = 13
     Caption = 'Used by:'
   end
