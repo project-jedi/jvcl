@@ -67,6 +67,8 @@ type
   end;
 
 implementation
+uses
+  ShlObj, ActiveX;
 
 resourcestring
   RC_EmptyItem = '<Empty>';
@@ -156,8 +158,8 @@ end;
 
 function SortByName(List: TStringList; Index1, Index2: Integer): Integer;
 begin
-  Result := AnsiCompareText(ExtractFileName(List[Index2]),ExtractFileName(List[Index2]));
-end;  
+  Result := AnsiCompareText(ExtractFileName(List[Index2]), ExtractFileName(List[Index2]));
+end;
 
 function SortByObject(List: TStringList; Index1, Index2: Integer): Integer;
 begin
@@ -165,21 +167,48 @@ begin
   Result := integer(List.Objects[Index2]) - integer(List.Objects[Index1]);
 end;
 
-function RemoveLnk(const S: string): string;
-var i: integer;
+const
+  IID_IShellLink: TGUID = ({ IID_IShellLinkA }
+    D1: $000214EE; D2: $0000; D3: $0000; D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
+
+type
+  TUnicodePath = array[0..MAX_PATH - 1] of WideChar;
+
+function ShellLinkResolve(const FileName: string): string;
+var
+  ShellLink: IShellLink;
+  PersistFile: IPersistFile;
+  LinkName: TUnicodePath;
+  Buffer: string;
+  Win32FindData: TWin32FindData;
+  FullPath: string;
 begin
-  Result := trim(StringReplace(S, '.lnk', '', [rfReplaceAll, rfIgnoreCase]));
-    // now strip any extras from the end (like " (2)"):
-  for i := Length(Result) downto 1 do
-    if Result[i] = ' ' then
+  Result := '';
+  if Succeeded(CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER,
+    IID_IShellLink, ShellLink)) then
+  begin
+    PersistFile := ShellLink as IPersistFile;
+    // PersistFile.Load fails if the filename is not fully qualified
+    FullPath := ExpandFileName(FileName);
+    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(FullPath), -1,
+      LinkName, MAX_PATH);
+    if Succeeded(PersistFile.Load(LinkName, STGM_READ)) then
     begin
-      SetLength(Result, i - 1);
-      Exit;
+      //      Result := ShellLink.Resolve(0, SLR_ANY_MATCH or SLR_NO_UI);
+      SetLength(Buffer, MAX_PATH);
+      ShellLink.GetPath(PChar(Buffer), MAX_PATH, Win32FindData, SLGP_RAWPATH);
+      Result := PChar(Buffer);
     end;
+  end;
+end;
+
+function GetLinkFilename(const LinkName: string): string;
+begin
+  Result := ShellLinkResolve(LinkName);
 end;
 
 procedure TJvRecentMenuBtn.InternalFileFind(const Path, FileMask: string; Strings: TStringList);
-var H: THandle; sr: TSearchRec; tmp:string;
+var H: THandle; sr: TSearchRec; tmp: string;
 begin
   Strings.BeginUpdate;
   try
@@ -188,37 +217,39 @@ begin
     try
       while H = 0 do
       begin
-        // (p3) kludge to get past the '.lnk' extension to discover folders...
-        tmp := RemoveLnk(sr.Name);
-        if (sr.FindData.cFilename[0] <> '.') and (ExtractFileExt(tmp) <> '') then
-          Strings.AddObject(tmp, TObject(sr.Time));
+        if (sr.FindData.cFilename[0] <> '.') then
+        begin
+          tmp := GetLinkFilename(Path + sr.FindData.cFilename);
+          if (tmp <> '') and (ExtractFileExt(tmp) <> '') then
+            Strings.AddObject(tmp, TObject(sr.Time));
+        end;
         H := FindNext(sr);
       end;
     finally
       FindClose(sr);
     end;
     Strings.CustomSort(SortByObject);
-    while Strings.Count > cMaxItems do // delete any older files  
-      Strings.Delete(Strings.Count-1);
+    while Strings.Count > cMaxItems do // delete any older files
+      Strings.Delete(Strings.Count - 1);
     Strings.Sort; // CustomSort(SortByName); // sort by name instead
   finally
     Strings.EndUpdate;
   end;
 end;
 
-function Min(Val1,Val2:integer):integer;
+function Min(Val1, Val2: integer): integer;
 begin
   Result := Val1;
   if Val2 < Val1 then
     Result := Val2;
-end;  
+end;
 
 procedure TJvRecentMenuBtn.DynBuild(Item: TMenuItem; Directory: string);
 var
   it: TMenuItem;
   bmp: TBitmap;
   S: TStringlist;
-  i:integer;
+  i: integer;
 begin
   DeleteItem(Item, True);
   if (Directory <> '') and (Directory[Length(Directory)] <> '\') then
@@ -226,12 +257,12 @@ begin
   S := TStringlist.Create;
   try
     InternalFileFind(Directory, '*.*', S);
-    for i := 0 to Min(S.Count-1,cMaxItems - 1) do
+    for i := 0 to Min(S.Count - 1, cMaxItems - 1) do
     begin
       it := TMenuItem.Create(Item);
-      it.Caption := S[i];
+      it.Caption := ExtractFilename(S[i]);
       it.OnClick := UrlClick;
-      it.Hint := Directory + S[i];
+      it.Hint := S[i];
       bmp := IconToBitmap2(GetAssociatedIcon(S[i], true), 16, clMenu);
       it.Bitmap.Assign(bmp);
       bmp.Free;
