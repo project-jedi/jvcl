@@ -75,6 +75,7 @@ procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin
+(*)
   RegisterComponents('Extended Standard', [TJvExLabel, TJvExPanel, TJvExBevel,
     TJvExControlBar, TJvExPubRadioGroup, TJvExEdit, TJvExButton, TJvExCheckBox,
     TJvExComboBox, TJvExGroupBox, TJvExListBox, TJvExMemo, TJvExRadioButton,
@@ -85,6 +86,7 @@ begin
   RegisterComponents('Extended Common', [TJvExTabControl, TJvExPageControl,
     TJvExPubProgressBar, TJvExPubTreeView, TJvExPubListView, TJvExHeaderControl,
     TJvExAnimate, TJvExStatusBar, TJvExToolBar]);
+(*)
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent
    {$IFDEF MSWINDOWS},
  TJvContextProvider, TJvColorProvider, TJvColorMappingProvider
@@ -121,12 +123,11 @@ begin
   RegisterPropertyEditor(TypeInfo(Currency), BaseClass, '', TJvFloatProperty);
 
   RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
-  {$IFDEF VCL}
-  RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
-  RegisterComponentEditor(TImageList, TJvImageListEditor);
+//  RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
+//  RegisterComponentEditor(TImageList, TJvImageListEditor);
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
-  RegisterActions(RsJVCLActionsCategory, [TJvSendMailAction, TJvWebAction], TJvStandardActions);
-  {$ENDIF VCL}
+  RegisterActions(RsJVCLActionsCategory,
+    [{$IFDEF MSWINDOWS}TJvSendMailAction,{$ENDIF} TJvWebAction], TJvStandardActions);
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
