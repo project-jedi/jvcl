@@ -859,8 +859,14 @@ type
 
   TJvInspectorFloatItem = class(TJvCustomInspectorItem)
   protected
+    FFormat: string;
     function GetDisplayValue: string; override;
     procedure SetDisplayValue(const Value: string); override;
+  public
+    constructor Create(const AParent: TJvCustomInspectorItem;
+      const AData: TJvCustomInspectorData); override;
+  published
+    property Format: string read FFormat write FFormat;
   end;
 
   TJvInspectorSetItem = class(TJvCustomInspectorItem)
@@ -1017,8 +1023,6 @@ type
   end;
 
   TJvInspectorDateItem = class(TJvInspectorFloatItem)
-  private
-    FFormat: string;
   protected
     function GetDisplayValue: string; override;
     procedure SetDisplayValue(const Value: string); override;
@@ -1032,7 +1036,6 @@ type
 
   TJvInspectorTimeItem = class(TJvInspectorFloatItem)
   private
-    FFormat: string;
     FShowAMPM: Boolean;
     FShowSeconds: Boolean;
   protected
@@ -6610,9 +6613,16 @@ end;
 
 //=== TJvInspectorFloatItem ==================================================
 
+constructor TJvInspectorFloatItem.Create(const AParent: TJvCustomInspectorItem;
+  const AData: TJvCustomInspectorData);
+begin
+  inherited Create(AParent, AData);
+  FFormat := '%.4f';
+end;
+
 function TJvInspectorFloatItem.GetDisplayValue: string;
 begin
-  Result := FloatToStr(Data.AsFloat);
+  Result := SysUtils.Format(FFormat, [Data.AsFloat]);
 end;
 
 procedure TJvInspectorFloatItem.SetDisplayValue(const Value: string);
