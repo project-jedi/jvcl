@@ -512,7 +512,7 @@ function XorDecode(const Key, Source: string): string;
 
 { ** Command line routines ** }
 
-function GetCmdLineArg(const Switch: string; SwitchChars: TCharSet): string;
+function GetCmdLineArg(const Switch: string; TheSwitchChars: TCharSet): string;
 
 { ** Numeric string handling routines ** }
 
@@ -5033,7 +5033,7 @@ begin
   end;
 end;
 
-function GetCmdLineArg(const Switch: string; SwitchChars: TCharSet): string;
+function GetCmdLineArg(const Switch: string; TheSwitchChars: TCharSet): string;
 var
   I: Integer;
   S: string;
@@ -5042,7 +5042,7 @@ begin
   while I <= ParamCount do
   begin
     S := ParamStr(I);
-    if (SwitchChars = []) or ((S[1] in SwitchChars) and (Length(S) > 1)) then
+    if (TheSwitchChars = []) or ((S[1] in TheSwitchChars) and (Length(S) > 1)) then
     begin
       if AnsiCompareText(Copy(S, 2, MaxInt), Switch) = 0 then
       begin
