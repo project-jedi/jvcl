@@ -3,6 +3,8 @@
   <Description>JVCL Globus Components</Description>
   <C5PFlags>-LUvcl50</C5PFlags>
   <C6PFlags/>
+  <C5Libs/>
+  <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
@@ -106,5 +108,7 @@
     <File Name="..\..\run\JvgQPrintSetupForm.pas" Targets="C5,C6,D6,D7" Formname="JvgPrintSetup" Condition=""/>
     <File Name="..\..\run\JvgQRLabel.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\run\JvgReport.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgXMLSerializer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgFixFont.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

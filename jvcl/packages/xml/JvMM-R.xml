@@ -8,7 +8,7 @@
     <Package Name="JvCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvCmp-R" Targets="D5,D5s,D6,D6p" Condition=""/>
-    <Package Name="JvStdCtrls" Targets="D5,D5s,D6,D6p" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="D5,D5s,D6,D6p" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5" Condition=""/>

@@ -3,6 +3,8 @@
   <Description>JVCL Database Components</Description>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50</C5PFlags>
   <C6PFlags>-LUdcldb -LUDesignIde</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
   <Requires>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvDB-R" Targets="all" Condition=""/>
@@ -30,5 +32,6 @@
     <File Name="..\..\design\JvCsvDataForm.pas" Targets="all" Formname="JvCsvDefStrDialog" Condition=""/>
     <File Name="..\..\design\JvDBMemDatasetEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDBReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBEditors.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
