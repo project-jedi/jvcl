@@ -1841,8 +1841,8 @@ begin
       Exit;
     if not (IsRectEmpty(ARect) and (GetMapMode(Canvas.Handle) = MM_TEXT)) then
     begin
-      StartColor := ColorToRGB(StartColor);
-      EndColor := ColorToRGB(EndColor);
+      StartColor := ColorFromColormap(StartColor);
+      EndColor := ColorFromColormap(EndColor);
       if Direction in [fdBottomToTop, fdRightToLeft] then
       begin
         // just swap the colors

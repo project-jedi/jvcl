@@ -467,6 +467,7 @@ type
     procedure Paint; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override; 
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override; 
@@ -790,6 +791,7 @@ type
     property ButtonWidth;
     property ButtonHeight;
     property CloseButton;
+    property Color;
     property Colors;
     property DropDownMenu;
     property HeaderHeight;
@@ -1934,6 +1936,7 @@ end;
 constructor TJvNavIconButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ParentColor := false;
   FStyleLink := TJvNavStyleLink.Create;
   FStyleLink.OnChange := DoStyleChange;
   FColors := TJvNavPanelColors.Create;
@@ -2184,7 +2187,7 @@ constructor TJvNavPanelButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAlignment := taLeftJustify;
-
+  ParentColor := false;
   FStyleLink := TJvNavStyleLink.Create;
   FStyleLink.OnChange := DoStyleChange;
   ControlStyle := ControlStyle + [csOpaque, csDisplayDragImage];
@@ -2247,6 +2250,11 @@ procedure TJvNavPanelButton.FontChanged;
 begin
   inherited FontChanged;
   Invalidate;
+end;
+
+procedure TJvNavPanelButton.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseMove(Shift, X, Y);
 end;
 
 procedure TJvNavPanelButton.Notification(AComponent: TComponent;
@@ -3297,6 +3305,7 @@ begin
   Height := 27;
   Width := 225;
   FParentStyleManager := True;
+  ParentColor := false;
 end;
 
 destructor TJvNavPanelHeader.Destroy;
@@ -3529,6 +3538,7 @@ end;
 constructor TJvNavPanelDivider.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ParentColor := false;
   FAlignment := taLeftJustify;
   FStyleLink := TJvNavStyleLink.Create;
   FStyleLink.OnChange := DoStyleChange;
@@ -4019,8 +4029,8 @@ begin
   FButtonHeight := 22;
   FHeaderHeight := 29;
   FEdgeRounding := 9;
-  FShowGrabber := True;  
-  Font := Application.Font; 
+  FShowGrabber := True;
+  Font := Application.Font;
   Font.Style := [fsBold];
 
   FCloseButton := TJvNavPanelToolButton.Create(Self);
@@ -4034,11 +4044,9 @@ begin
   FDropDown.ButtonType := nibDropArrow;
   FDropDown.OnDropDownMenu := DoDropDownMenu;
   FDropDown.Parent := Self;
-  Color := clWhite;
   Width := 185;
   Height := 41;
   FParentStyleManager := True;
-  Masked := false;
 end;
 
 destructor TJvCustomNavPaneToolPanel.Destroy;
@@ -4176,7 +4184,7 @@ var
   I, X, Y: Integer;
   B: TJvNavPanelToolButton;
 begin
-  // first, fill the background  
+  // first, fill the background
   Canvas.Start; 
   try
     R := ClientRect;
@@ -4290,8 +4298,8 @@ begin
         end;
       end;
     end;
-  finally  
-    Canvas.Stop; 
+  finally
+    Canvas.Stop;
   end;
 end;
 

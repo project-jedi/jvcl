@@ -370,8 +370,7 @@ type
     function GetRollWidth: Integer;
     procedure SetHeaderRounded(const Value: Boolean);
     procedure SetTopSpace(const Value: Integer);
-  protected
-    function WidgetFlags: Integer; override;
+  protected  
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override; 
     class function GetBarItemsClass: TJvXPBarItemsClass; virtual;
@@ -566,7 +565,7 @@ begin
     Result := 1;
 end;
 
-//=== TJvXPBarItemActionLink =================================================
+//=== { TJvXPBarItemActionLink } =============================================
 
 procedure TJvXPBarItemActionLink.AssignClient(AClient: TObject);
 begin
@@ -1017,7 +1016,7 @@ begin
   end;
 end;
 
-//=== TJvXPBarItems ==========================================================
+//=== { TJvXPBarItems } ======================================================
 
 constructor TJvXPBarItems.Create(WinXPBar: TJvXPCustomWinXPBar);
 begin
@@ -1123,7 +1122,7 @@ begin
     end;
 end;
 
-//=== TJvXPBarVisibleItems ===================================================
+//=== { TJvXPBarVisibleItems } ===============================================
 
 constructor TJvXPBarVisibleItems.Create(WinXPBar: TJvXPCustomWinXPBar);
 begin
@@ -1178,7 +1177,7 @@ begin
     FItems.Delete(FItems.IndexOf(Item));
 end;
 
-//=== TJvXPFadeThread ========================================================
+//=== { TJvXPFadeThread } ====================================================
 
 constructor TJvXPFadeThread.Create(WinXPBar: TJvXPCustomWinXPBar;
   RollDirection: TJvXPBarRollDirection);
@@ -1235,7 +1234,7 @@ begin
       Ord(FRollDirection = rdCollapse), 0);
 end;
 
-//=== TJvXPBarColors =========================================================
+//=== { TJvXPBarColors } =====================================================
 
 constructor TJvXPBarColors.Create;
 
@@ -1357,7 +1356,7 @@ begin
   end;
 end;
 
-//=== TJvXPCustomWinXPBar ====================================================
+//=== { TJvXPCustomWinXPBar } ================================================
 
 constructor TJvXPCustomWinXPBar.Create(AOwner: TComponent);
 const
@@ -1410,6 +1409,7 @@ begin
   FShowLinkCursor := True;
   FShowRollButton := True;
   FVisibleItems := TJvXPBarVisibleItems.Create(Self);
+  ParentColor := false; // (asn) suppresses flickering when resizing under clx
 end;
 
 destructor TJvXPCustomWinXPBar.Destroy;
@@ -2151,10 +2151,6 @@ begin
   Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
-function TJvXPCustomWinXPBar.WidgetFlags: Integer;
-begin
-  Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
-end;
 
 class function TJvXPCustomWinXPBar.GetBarItemsClass: TJvXPBarItemsClass;
 begin

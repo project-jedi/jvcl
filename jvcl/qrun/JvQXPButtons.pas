@@ -340,6 +340,7 @@ begin
   FCkGradient := TBitmap.Create; // clicked gradient
   FFcGradient := TBitmap.Create; // focused gradient
   FHlGradient := TBitmap.Create; // Highlight gradient
+  ParentColor := false;
 end;
 
 destructor TJvXPCustomButton.Destroy;
