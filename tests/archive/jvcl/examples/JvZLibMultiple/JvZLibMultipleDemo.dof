@@ -1,0 +1,5 @@
+[Directories]
+OutputDir=..\..\bin
+UnitOutputDir=..\..\dcu
+SearchPath=..\..\source;..\..\common
+
