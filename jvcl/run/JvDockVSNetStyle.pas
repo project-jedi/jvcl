@@ -3663,15 +3663,22 @@ end;
 
 procedure TJvDockVSChannel.InternalInsertControl(AWinControl: TWinControl);
 begin
-  VSPopupPanel.JvDockManager.InsertControl(AWinControl, alNone, nil);
-  AWinControl.FreeNotification(Self);
+  if Assigned(AWinControl) then
+  begin
+    if Assigned(VSPopupPanel) and VSPopupPanel.UseDockManager and (VSPopupPanel.JvDockManager <> nil) then
+      VSPopupPanel.JvDockManager.InsertControl(AWinControl, alNone, nil);
+    AWinControl.FreeNotification(Self);
+  end;
 end;
 
 procedure TJvDockVSChannel.InternalRemoveControl(AWinControl: TWinControl);
 begin
-  AWinControl.RemoveFreeNotification(Self);
-  if Assigned(VSPopupPanel) and VSPopupPanel.UseDockManager then
-    VSPopupPanel.JvDockManager.RemoveControl(AWinControl);
+  if Assigned(AWinControl) then
+  begin
+    AWinControl.RemoveFreeNotification(Self);
+    if Assigned(VSPopupPanel) and VSPopupPanel.UseDockManager and (VSPopupPanel.JvDockManager <> nil) then
+      VSPopupPanel.JvDockManager.RemoveControl(AWinControl);
+  end;
 end;
 
 initialization
