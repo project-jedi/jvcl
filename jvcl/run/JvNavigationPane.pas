@@ -1707,7 +1707,7 @@ begin
   if APage <> nil then
   begin
     TJvNavPanelPage(APage).Top := FIconPanel.Top;
-    if ActivePage = nil then
+    if (ActivePage = nil) and not (csLoading in ComponentState) then
       ActivePage := APage;
   end;
   UpdatePositions;
