@@ -25,11 +25,12 @@ Known Issues:
   Doesn't draw an underline for speed-keys (the '&' character ) if
   Placement = plLeft. Something with DrawText ?
 
-Changes 2002-03-22:
+Changes 2003-03-22:
   * Several properties have changed and been put into nested sub-properties.
     To update current usage do the following:
-     - ButtonColor: change to Colors.ButtonCOlor
-     - ButtonColTop: change to Colors.Buttontop
+     - Color: change to Colors.Color
+     - ButtonColor: change to Colors.ButtonColor
+     - ButtonColTop: change to Colors.ButtonTop
      - ButtonColBtm: change to Colors.ButtonBottom
      - ColHiText: change to Colors.HotTrackText
      - FrameColTop: change to Colors.FrameTop

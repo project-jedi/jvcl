@@ -1,5 +1,21 @@
-2003-02-28:
-- Added IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS check to registration units to conditionally register property and component editors that overrides default editors for non-JVCL components or for standard properties. The define is in JVCL.INC and it is disabled by default. To enable, remove the dot (.) in the define
+2003-03-22
+- Several properties in TJvRollout have changed and been put into nested sub-properties. 
+  To update current usage do the following:
+   * Color: change to Colors.Color
+   * ButtonColor: change to Colors.ButtonColor
+   * ButtonColTop: change to Colors.ButtonTop
+   * ButtonColBtm: change to Colors.ButtonBottom
+   * ColHiText: change to Colors.HotTrackText
+   * FrameColTop: change to Colors.FrameTop
+   * FrameColBtm: change to Colors.FrameBottom
+   * ImageExpanded: change to ImageOptions.IndexExpanded
+   * ImageCollapsed: change to ImageOptions.IndexCollapsed
+   * ImageList: change to ImageOptions.Images
+   * ImageOffset: change to ImageOptions.Offset // peter3
+
+2003-02-28
+- Added IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS check to registration units to conditionally register property and component editors that overrides default editors for non-JVCL components or for standard properties. The define is in JVCL.INC and it is disabled by default. To enable, remove the dot (.) in the define // peter3
+
 2002-12-24
 - Properly separated a TJvCustomMaskEdit out of TJvMaskEdit at last
 - Made TJvCustomCheckedMaskEdit a descendant of TJvCustomMaskEdit
