@@ -58,6 +58,13 @@ type
   TUnlitColor = type TColor;
   TSlantAngle = 0 .. 44;
   TSLDHitInfo= (shiNowhere, shiDigit, shiDigitSegment, shiClientArea);
+  TCharSet = set of Char;
+  TSegCharMapHeader = record
+    ID: array[0..11] of Char;
+    MappedChars: TCharSet;
+    Flags: Longint;
+  end;
+
 
   EJVCLSegmentedLEDException = class(EJVCLException);
 
@@ -295,7 +302,11 @@ type
     FCurDigit: TJvCustomSegmentedLEDDigit;
     FTextForDigit: string;
     FSegMapRemoves: Boolean;
+    FActiveMapping: array[Char] of Int64;
   protected
+    class function MapperFileID: string; dynamic; abstract;
+    function MaxSegments: Integer; dynamic;
+    procedure PrimReadMapping(const HdrInfo: TSegCharMapHeader; Stream: TStream); dynamic;
     function UpdateStates(var Segments: Int64; SegMask: Int64): Boolean;
     procedure HandleDecimalSeparator(var Text: PChar; var Segments: Int64); virtual;
     function CharToSegments(Ch: Char; var Segments: Int64): Boolean; virtual; abstract;
@@ -310,6 +321,11 @@ type
     property TextForDigit: string read FTextForDigit write FTextForDigit;
   public
     procedure MapText(var Text: PChar; ADigit: TJvCustomSegmentedLEDDigit);
+    procedure Clear;
+    procedure LoadFromFile(const FileName: string);
+    procedure LoadFromStream(Stream: TStream);
+    procedure SaveToFile(const FileName: string);
+    procedure SaveToStream(Stream: TStream); dynamic; 
   end;
 
   // 7-segmented digit
@@ -336,9 +352,8 @@ type
 
   // 7-segmented character mapper
   TJv7SegmentedLEDCharacterMapper = class(TJvBaseSegmentedLEDCharacterMapper)
-  private
-    FDefaultMapping: array[Char] of Word;
   protected
+    class function MapperFileID: string; override;
     function CharToSegments(Ch: Char; var Segments: Int64): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -362,6 +377,8 @@ implementation
 uses
   Controls, SysUtils,
   JclGraphUtils;
+
+{$R *.RES}
 
 var
   GDigitClassList: TThreadList;
@@ -1369,6 +1386,52 @@ end;
 
 //===TJvBaseSegmentedLEDCharacterMapper=============================================================
 
+function TJvBaseSegmentedLEDCharacterMapper.MaxSegments: Integer;
+var
+  I: Integer;
+  CT: TClass;
+begin
+  { Generic solution: find registered digit class(es) using this mapper class and determine number
+    of segments of that(those) class(es) }
+  Result := 0;
+  CT := ClassType;
+  with DigitClassList.LockList do
+  try
+    for I := 0 to Count - 1 do
+    begin
+      if TJvSegmentedLEDDigitClass(Items[I]).MapperClass.InheritsFrom(CT) then
+        if TJvSegmentedLEDDigitClass(Items[I]).SegmentCount > Result then
+          Result := TJvSegmentedLEDDigitClass(Items[I]).SegmentCount;
+    end;
+  finally
+    DigitClassList.UnlockList;
+  end;
+end;
+
+procedure TJvBaseSegmentedLEDCharacterMapper.PrimReadMapping(const HdrInfo: TSegCharMapHeader;
+  Stream: TStream);
+var
+  Chr: Char;
+  MapSize: Byte;
+  OldMapping: Int64;
+begin
+  Clear; // clear the mapping table
+  MapSize := HdrInfo.Flags and 7;
+  for Chr := #0 to #255 do
+    if Chr in HdrInfo.MappedChars then
+      Stream.ReadBuffer(FActiveMapping[Chr], MapSize);
+  if HdrInfo.Flags and 16 <> 0 then
+  begin
+    // Swap . for DecimalSeparator and , for ThousandSeparator
+    if DecimalSeparator <> '.' then
+    begin
+      OldMapping := FActiveMapping[DecimalSeparator];
+      FActiveMapping[DecimalSeparator] := FActiveMapping['.'];
+      FActiveMapping[ThousandSeparator] := OldMapping;
+    end;
+  end;
+end;
+
 function TJvBaseSegmentedLEDCharacterMapper.UpdateStates(var Segments: Int64;
   SegMask: Int64): Boolean;
 var
@@ -1531,6 +1594,77 @@ begin
   CurDigit.UpdateText(FTextForDigit);
 end;
 
+procedure TJvBaseSegmentedLEDCharacterMapper.Clear;
+begin
+  FillChar(FActiveMapping[#0], SizeOf(FActiveMapping), 0);
+end;
+
+procedure TJvBaseSegmentedLEDCharacterMapper.LoadFromFile(const FileName: string);
+var
+  FS: TFileStream;
+begin
+  FS := TFileStream.Create(FileName, fmOpenRead + fmShareDenyWrite);
+   try
+     LoadFromStream(FS);
+   finally
+     FS.Free;
+   end;
+end;
+
+procedure TJvBaseSegmentedLEDCharacterMapper.LoadFromStream(Stream: TStream);
+var
+  OrgPos: Integer;
+  Hdr: TSegCharMapHeader;
+begin
+  OrgPos := Stream.Position;
+  try
+    Stream.ReadBuffer(Hdr, SizeOf(Hdr));
+    if StrLIComp(Hdr.ID, PChar(MapperFileID), Length(MapperFileID)) = 0 then
+      PrimReadMapping(Hdr, Stream)
+    else
+      raise EJVCLSegmentedLEDException.Create('Invalid mapping file.');
+  except
+    Stream.Position := OrgPos;
+    raise;
+  end;
+end;
+
+procedure TJvBaseSegmentedLEDCharacterMapper.SaveToFile(const FileName: string);
+var
+  FS: TFileStream;
+begin
+  FS := TFileStream.Create(FileName, fmCreate);
+   try
+     SaveToStream(FS);
+   finally
+     FS.Free;
+   end;
+end;
+
+procedure TJvBaseSegmentedLEDCharacterMapper.SaveToStream(Stream: TStream);
+var
+  Hdr: TSegCharMapHeader;
+  TmpID: string;
+  MapSize: Byte;
+  Chr: Char;
+begin
+  FillChar(Hdr, SizeOf(Hdr), 0);
+  TmpID := MapperFileID;
+  Move(TmpID[1], Hdr.ID, Length(TmpID));
+  Hdr.Flags := MaxSegments;
+  MapSize := (Hdr.Flags div 8) + Ord((Hdr.Flags mod 8) <> 0);
+  Hdr.Flags := MapSize;
+  Hdr.Flags := Hdr.Flags or 16;
+  Hdr.MappedChars := [];
+  for Chr := #0 to #255 do
+    if FActiveMapping[Chr] <> 0 then
+      Include(Hdr.MappedChars, Chr);
+  Stream.WriteBuffer(Hdr, SizeOf(Hdr));
+  for Chr := #0 to #255 do
+    if FActiveMapping[Chr] <> 0 then
+      Stream.WriteBuffer(FActiveMapping[Chr], MapSize);
+end;
+
 //===TJv7SegmentedLEDDigit==========================================================================
 
 function TJv7SegmentedLEDDigit.GetUseColon: T7SegColonUsage;
@@ -1618,58 +1752,27 @@ end;
 
 //===TJv7SegmentedLEDCharacterMapper================================================================
 
+class function TJv7SegmentedLEDCharacterMapper.MapperFileID: string;
+begin
+  Result := 'SLDCM_7SEG';
+end;
+
 function TJv7SegmentedLEDCharacterMapper.CharToSegments(Ch: Char; var Segments: Int64): Boolean;
 begin
-  Result := UpdateStates(Segments, FDefaultMapping[Ch]) or (Ch = ' ');
+  Result := UpdateStates(Segments, FActiveMapping[Ch]) or (Ch = ' ');
 end;
 
 constructor TJv7SegmentedLEDCharacterMapper.Create(AOwner: TComponent);
+var
+  Stream: TStream;
 begin
   inherited Create(AOwner);
-  FDefaultMapping[' '] := 0;
-  FDefaultMapping['0'] := 63;   // A + B + C + D + E + F;
-  FDefaultMapping['1'] := 6;    // B + C;
-  FDefaultMapping['2'] := 91;   // A + B + D + E + G
-  FDefaultMapping['3'] := 79;   // A + B + C + D + G
-  FDefaultMapping['4'] := 102;  // B + C + F + G;
-  FDefaultMapping['5'] := 109;  // A + C + D + F + G;
-  FDefaultMapping['6'] := 125;  // A + C + D + E + F + G;
-  FDefaultMapping['7'] := 7;    // A + B + C;
-  FDefaultMapping['8'] := 127;  // A + B + C + D + E + F + G;
-  FDefaultMapping['9'] := 111;  // A + B + C + D + F + G;
-  FDefaultMapping['A'] := 119;  // A + B + C + E + F + G;
-  FDefaultMapping['a'] := 119;  // A + B + C + E + F + G;
-  FDefaultMapping['B'] := 124;  // C + D + E + F + G;
-  FDefaultMapping['b'] := 124;  // C + D + E + F + G;
-  FDefaultMapping['C'] := 57;   // A + D + E + F;
-  FDefaultMapping['c'] := 88;   // D + E + G;
-  FDefaultMapping['D'] := 94;   // B + C + D + E + G;
-  FDefaultMapping['d'] := 94;   // B + C + D + E + G;
-  FDefaultMapping['E'] := 121;  // A + D + E + F + G;
-  FDefaultMapping['e'] := 121;  // A + D + E + F + G;
-  FDefaultMapping['F'] := 113;  // A + E + F + G;
-  FDefaultMapping['f'] := 113;  // A + E + F + G;
-  FDefaultMapping['H'] := 118;  // B + C + E + F + G;
-  FDefaultMapping['h'] := 116;  // C + E + F + G;
-  FDefaultMapping['L'] := 56;   // D + E + F;
-  FDefaultMapping['l'] := 56;   // D + E + F;
-  FDefaultMapping['O'] := 92;   // C + D + E + G;
-  FDefaultMapping['o'] := 92;   // C + D + E + G;
-  FDefaultMapping['P'] := 115;  // A + B + E + F + G;
-  FDefaultMapping['p'] := 115;  // A + B + E + F + G;
-  FDefaultMapping['R'] := 80;   // E + G;
-  FDefaultMapping['R'] := 80;   // E + G;
-  FDefaultMapping[''''] := 32;  // F
-  FDefaultMapping['"'] := 34;   // B + F;
-  FDefaultMapping['ø'] := 99;   // A + B + F + G;
-  FDefaultMapping['°'] := 99;   // A + B + F + G;
-  FDefaultMapping['-'] := 64;   // G;
-  FDefaultMapping['U'] := 62;   // B + C + D + E + F;
-  FDefaultMapping['u'] := 28;   // C + D + E;
-  FDefaultMapping['Y'] := 106;  // B + C + D + F + G;
-  FDefaultMapping['y'] := 106;  // B + C + D + F + G;
-  FDefaultMapping[DecimalSeparator] := 256;  // CL;
-  FDefaultMapping[':'] := 768;  // CL + CH;
+  Stream := TResourceStream.Create(HInstance, 'SLDCM_7SEG_DEFAULT', RT_RCDATA);
+  try
+    LoadFromStream(Stream);
+  finally
+    FreeAndNil(Stream);
+  end;
 end;
 
 procedure ModuleUnload(Instance: Longint);
