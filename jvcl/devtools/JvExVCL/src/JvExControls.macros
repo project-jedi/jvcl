@@ -1,5 +1,12 @@
 {$DEFINE EMPTYLINE}
 
+{ TCustomControl differes from TWinControl in JV_xxx_EVENTS_END }
+
+
+// *************************************************************************
+// *************************** INTERFACE MACROS ****************************
+// *************************************************************************
+
 // ****************** Control **********************
 (*$DEFINE JV_CONTROL_EVENTS_CLASS(ClassName)
   TJvEx##ClassName = class(T##ClassName, IJvControlEvents)
@@ -47,6 +54,7 @@
 
 
 // ****************** Control **********************
+// used in all classes
 (*$DEFINE JV_CONTROL_EVENTS_DECL
   protected
   { IJvControlEvents }
@@ -65,13 +73,14 @@
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   {$IFNDEF HASAUTOSIZE}
-  {$IFNDEF COMPILER6_UP}
+   {$IFNDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); virtual;
-  {$ENDIF !COMPILER6_UP}
+   {$ENDIF !COMPILER6_UP}
   {$ENDIF !HASAUTOSIZE}
 *)
 
 // ****************** Win Control **********************
+// used in all TWinControl derived classes
 (*$DEFINE JV_WINCONTROL_EVENTS_DECL
   { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
@@ -161,8 +170,6 @@
 (*$DEFINE JV_CONTROL_EVENTS_END
   JV_CONTROL_EVENTS_END_OPEN
   {$ENDIF VisualCLX}
-  end;
-  EMPTYLINE
 *)
 
 (*$DEFINE JV_WINCONTROL_EVENTS_END
@@ -177,8 +184,6 @@
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   {$ENDIF VisualCLX}
-  end;
-  EMPTYLINE
 *)
 
 (*$DEFINE JV_CUSTOMCONTROL_EVENTS_END
@@ -186,24 +191,50 @@
   protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
   {$ENDIF VisualCLX}
-  end;
-  EMPTYLINE
 *)
 
-(*$DEFINE JV_CONTROL_EVENTS(ClassName)
+// external used macros for T(Graphic)Control/TWinControl/TCustomControl
+(*$DEFINE JV_CONTROL_EVENTS_FEATURE_BEGIN(ClassName)
   JV_CONTROL_EVENTS_BEGIN(ClassName)
   JV_CONTROL_EVENTS_END
 *)
 
-(*$DEFINE JV_WINCONTROL_EVENTS(ClassName)
+(*$DEFINE JV_WINCONTROL_EVENTS_FEATURE_BEGIN(ClassName)
   JV_WINCONTROL_EVENTS_BEGIN(ClassName)
   JV_WINCONTROL_EVENTS_END
 *)
 
-(*$DEFINE JV_CUSTOMCONTROL_EVENTS(ClassName)
+// JV_CUSTOMCONTROL_EVENTS_FEATURE_BEGIN uses WINCONTROL_EVENTS_BEGIN
+(*$DEFINE JV_CUSTOMCONTROL_EVENTS_FEATURE_BEGIN(ClassName)
   JV_WINCONTROL_EVENTS_BEGIN(ClassName)
   JV_CUSTOMCONTROL_EVENTS_END
 *)
+
+(*$DEFINE JV_CONTROL_EVENTS_FEATURE_END(ClassName)
+  end;
+  EMPTYLINE
+*)
+{$DEFINE JV_WINCONTROL_EVENTS_FEATURE_END(ClassName) JV_CONTROL_EVENTS_FEATURE_END(ClassName)}
+{$DEFINE JV_CUSTOMCONTROL_EVENTS_FEATURE_END(ClassName) JV_CONTROL_EVENTS_FEATURE_END(ClassName)}
+
+(*$DEFINE JV_CONTROL_EVENTS(ClassName)
+  JV_CONTROL_EVENTS_FEATURE_BEGIN(ClassName)
+  JV_CONTROL_EVENTS_FEATURE_END(ClassName)
+*)
+
+(*$DEFINE JV_WINCONTROL_EVENTS(ClassName)
+  JV_WINCONTROL_EVENTS_FEATURE_BEGIN(ClassName)
+  JV_WINCONTROL_EVENTS_FEATURE_END(ClassName)
+*)
+
+(*$DEFINE JV_CUSTOMCONTROL_EVENTS(ClassName)
+  JV_CUSTOMCONTROL_EVENTS_FEATURE_BEGIN(ClassName)
+  JV_CUSTOMCONTROL_EVENTS_FEATURE_END(ClassName)
+*)
+
+// *************************************************************************
+// ************************* IMPLEMENTATION MACROS *************************
+// *************************************************************************
 
 (*$DEFINE JV_CONTROL_EVENTS_IMPLX(ClassName)
 EMPTYLINE
@@ -338,7 +369,7 @@ DISPATCHCODE(ClassName)
 {$ENDIF VCL}
 *)
 
-(*$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
+(*$DEFINE JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
 JV_CONTROL_EVENTS_IMPLX(ClassName)
 {$IFDEF VisualCLX}
 procedure TJvEx##ClassName.Painting(Sender: QObjectH; EventRegion: QRegionH);
@@ -407,7 +438,7 @@ end;
 *)
 
 (*$DEFINE JV_WINCONTROL_EVENTS_IMPLX(ClassName)
-JV_CUSTOMCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
+JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 constructor TJvEx##ClassName.Create(AOwner: TComponent);
@@ -438,13 +469,13 @@ end;
 *)
 
 (*$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPLX(ClassName)
-JV_CUSTOMCONTROL_EVENTS_IMPLX_OPEN_VCL
+JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL
 {$ENDIF VCL}
   EMPTYLINE
 *)
 
 (*$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPL(ClassName)
-JV_CUSTOMCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
+JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
 DISPATCHCODE(ClassName)
 {$ENDIF VCL}
   EMPTYLINE
