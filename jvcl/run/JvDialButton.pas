@@ -242,7 +242,7 @@ type
 implementation
 
 uses
-  Consts, Math;
+  Consts, Math, JvThemes;
 
 const
   dAngleToRadian = Pi / 1800;
@@ -272,6 +272,7 @@ constructor TJvCustomDialButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csClickEvents, csCaptureMouse];
+  IncludeThemeStyle(Self, [csParentBackground]);
   FTicks := TList.Create;
   FBorderStyle := bsNone;
   FButtonEdge := 5;
@@ -698,9 +699,9 @@ end;
 procedure TJvCustomDialButton.Paint;
 begin
   Canvas.Brush.Color := Parent.Brush.Color;
-  Canvas.FillRect(ClientRect);
+  DrawThemedBackground(Self, Canvas, ClientRect);
   BitmapNeeded;
-  Canvas.CopyRect(FBitmapRect, FBitmap.Canvas, FBitmapRect);
+  Canvas.Draw(0, 0, FBitmap);
   DrawBorder;
   DrawPointer;
 end;
@@ -839,7 +840,11 @@ begin
     FBitmap := TBitmap.Create;
     FBitmapInvalid := True;
   end;
+{$IFDEF JVCLThemesEnabled}
+  if FBitmapInvalid or ThemeServices.ThemesEnabled then
+{$ELSE}
   if FBitmapInvalid then
+{$ENDIF}
   begin
     if FBitmap.Width <> FSize + 1 then
     begin
@@ -847,6 +852,11 @@ begin
       FBitmap.Height := FSize + 1;
       FBitmapRect := Bounds(0, 0, FSize + 1, FSize + 1);
     end;
+
+{$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesEnabled then
+      FBitmap.Canvas.CopyRect(FBitmapRect, Canvas, FBitmapRect);
+{$ENDIF}
 
     // Draw on bitmap.
     DrawButton;
@@ -885,6 +895,9 @@ begin
   C := FBitmap.Canvas;
   C.Brush.Color := Parent.Brush.Color;
   C.Brush.Style := bsSolid;
+{$IFDEF JVCLThemesEnabled}
+  if not ThemeServices.ThemesEnabled then
+{$ENDIF}
   C.FillRect(FBitmapRect);
   SetViewPortOrgEx(C.Handle, FSize div 2 - FRadius, FSize div 2 - FRadius,
     @OldOrg);
@@ -943,6 +956,11 @@ begin
   ARect := ClientRect;
   InflateRect(ARect, -1, -1);
   Canvas.Brush.Style := bsClear;
+{$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+    Canvas.Pen.Color := FBitmap.Canvas.Pixels[0, 0]
+  else
+{$ENDIF}
   Canvas.Pen.Color := Parent.Brush.Color;
   Canvas.Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
   Canvas.Brush.Style := bsSolid;

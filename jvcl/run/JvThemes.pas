@@ -740,14 +740,17 @@ function GetThemeStyle(Control: TControl): TThemeStyle;
 { DrawThemedBackground fills R with Canvas.Brush.Color. If the control uses
   csParentBackground and the color is that of it's parent the Rect is not filled
   because the it is done by the JvThemes/VCL7. }
-procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas; const R: TRect); overload;
+procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
+  const R: TRect; NeedParentBackground: Boolean = True); overload;
 {$IFDEF MSWINDOWS}
-procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect; Brush: HBRUSH);  overload;
+procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
+  Brush: HBRUSH; NeedParentBackground: Boolean = True);  overload;
 
 function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect; uType, uState: UINT): BOOL;
 
 { PerformEraseBackground sends a WM_ERASEBKGND message to the Control's parent. }
-procedure PerformEraseBackground(Control: TControl; DC: HDC);
+procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint); overload;
+procedure PerformEraseBackground(Control: TControl; DC: HDC); overload;
 
 procedure PaintControlBorder(Control: TControl);
 {$ENDIF MSWINDOWS}
@@ -760,7 +763,8 @@ function IsMouseOver(Control: TControl): Boolean;
 
 implementation
 
-procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas; const R: TRect);
+procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
+  const R: TRect; NeedParentBackground: Boolean = True);
 begin
 {$IFDEF JVCLThemesEnabled}
   if (not (csDesigning in Control.ComponentState)) and
@@ -768,9 +772,13 @@ begin
      ((Canvas.Brush.Color = TWinControlThemeInfo(Control.Parent).Color) or
      (ColorToRGB(Canvas.Brush.Color) = ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
      (ThemeServices.ThemesEnabled) and
-     (csParentBackground in GetThemeStyle(Control)) then
+     ((not NeedParentBackground) or
+     (csParentBackground in GetThemeStyle(Control))) then
 
-    ThemeServices.DrawParentBackground(Control.Parent.Handle, Canvas.Handle, nil, False, @R)
+    if Control is TWinControl then
+      ThemeServices.DrawParentBackground(TWinControl(Control).Handle, Canvas.Handle, nil, False, @R)
+    else
+      ThemeServices.DrawParentBackground(Control.Parent.Handle, Canvas.Handle, nil, False, @R)
   else
 {$ENDIF}
   Canvas.FillRect(R);
@@ -778,7 +786,8 @@ end;
 
 {$IFDEF MSWINDOWS}
 
-procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect; Brush: HBRUSH);
+procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
+  Brush: HBRUSH; NeedParentBackground: Boolean = True);
 {$IFDEF JVCLThemesEnabled}
 var
   LogBrush: TLogBrush;
@@ -790,9 +799,13 @@ begin
      (Control.Parent <> nil) and
      (LogBrush.lbColor = Cardinal(ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
      (ThemeServices.ThemesEnabled) and
-     (csParentBackground in GetThemeStyle(Control)) then
+     ((not NeedParentBackground) or
+     (csParentBackground in GetThemeStyle(Control))) then
 
-    ThemeServices.DrawParentBackground(Control.Parent.Handle, DC, nil, False, @R)
+    if Control is TWinControl then
+      ThemeServices.DrawParentBackground(TWinControl(Control).Handle, DC, nil, False, @R)
+    else
+      ThemeServices.DrawParentBackground(Control.Parent.Handle, DC, nil, False, @R)
   else
 {$ENDIF}
   FillRect(DC, R, Brush);
@@ -846,18 +859,30 @@ begin
   Result := DrawFrameControl(DC, Rect, uType, uState);
 end;
 
-procedure PerformEraseBackground(Control: TControl; DC: HDC);
+procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint);
 { Mike Lischke is the original author of this code. }
 var
   WindowOrg: TPoint;
 begin
   if Control.Parent <> nil then
   begin
-    GetWindowOrgEx(DC, WindowOrg);
-    SetWindowOrgEx(DC, WindowOrg.X + Control.Left, WindowOrg.Y + Control.Top, nil);
-    Control.Parent.Perform(WM_ERASEBKGND, DC, 0);
-    SetWindowOrgEx(DC, WindowOrg.X, WindowOrg.Y, nil);
+    if (Offset.X <> 0) and (Offset.Y <> 0) then
+    begin
+      GetWindowOrgEx(DC, WindowOrg);
+      SetWindowOrgEx(DC, WindowOrg.X + Offset.X, WindowOrg.Y + Offset.Y, nil);
+    end;
+    try
+      Control.Parent.Perform(WM_ERASEBKGND, DC, 0);
+    finally
+      if (Offset.X <> 0) and (Offset.Y <> 0) then
+        SetWindowOrgEx(DC, WindowOrg.X, WindowOrg.Y, nil);
+    end;
   end;
+end;
+
+procedure PerformEraseBackground(Control: TControl; DC: HDC);
+begin
+  PerformEraseBackground(Control, DC, Point(Control.Left, Control.Top));
 end;
 
 procedure PaintControlBorder(Control: TControl);
