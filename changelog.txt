@@ -3,6 +3,9 @@ Changelog for JVCL 3.0
 2003-06-22:
 - Added missing units. 
 - Copied needed images from old jvcl to new jvcl3 images folder
+- Moved obsolete or plain useless stuff to \archive
+- Moved unused, support units to \run\unused. These files could possibly go to JCL. We don't need them
+
 2003-06-21:
 - Renamed all BDE units to JvBDEXXX
 - Renamed all DB units to JvDBXXX
