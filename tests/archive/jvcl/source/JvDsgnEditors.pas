@@ -27,7 +27,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-{$I JVCL.INC}
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
@@ -42,7 +41,7 @@ unit JvDsgnEditors;
 interface
 
 uses
-  Windows, Forms,  Graphics, {$IFDEF COMPILER6_UP} ImgList, DesignIntf,  DesignEditors, DesignMenus, VCLEditors,{$ELSE} DsgnIntf, {$ENDIF}
+  Windows, Forms,  Graphics, ImgList, {$IFDEF COMPILER6_UP} DesignIntf,  DesignEditors, DesignMenus, VCLEditors,{$ELSE} DsgnIntf, {$ENDIF}
   SysUtils, Classes, Dialogs, Controls;
 
 type
@@ -135,6 +134,14 @@ type
   end;
 {$ELSE}
   TJvDefaultImageIndexProperty = class(TIntegerProperty)
+  private
+  protected
+    function ImageList: TCustomImageList; virtual;
+    function GetValue: string;overide;
+    procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect;
+      ASelected: Boolean);override;
+    procedure SetValue(const Value: string);override;
+  public
     function GetAttributes: TPropertyAttributes;override;
     procedure GetValues(Proc:TGetStrProc);override;
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
@@ -553,74 +560,52 @@ begin
 end;
 
 procedure TJvDefaultImageIndexProperty.GetValues(Proc: TGetStrProc);
-var btn:TJvLookOutButton;i:integer;
+var
+  tmp: TCustomImageList;
+  i: integer;
 begin
-  if GetComponent(0) is TJvCustomLookOutButton then
-  begin
-    btn := TJvLookOutButton(GetComponent(0));
-    if (btn.ImageSize = isLarge) and Assigned(btn.LargeImages) then
-      for i := 0 to btn.LargeImages.Count - 1 do
-        Proc(IntToStr(i))
-    else if (btn.ImageSize = isSmall) and Assigned(btn.SmallImages) then
-      for i := 0 to btn.SmallImages.Count - 1 do
-        Proc(IntToStr(i))
-  end;
+  tmp := ImageList;
+  if Assigned(tmp) then
+    for i := 0 to tmp.Count - 1 do
+      Proc(intToStr(i));
 end;
 
 procedure TJvDefaultImageIndexProperty.ListDrawValue(const Value: string;
   ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
-var btn:TJvLookOutButton;R:TRect;
+var
+  tmp: TCustomImageList;
+  R:TRect;
 begin
   inherited ListDrawValue(Value,ACanvas,ARect,ASelected);
-  if (GetComponent(0) is TJvCustomLookOutButton) then
+  tmp := ImageList;
+  if tmp <> nil then
   begin
     R := ARect;
-    btn := TJvLookOutButton(GetComponent(0));
-    if (btn.ImageSize = isLarge) and Assigned(btn.LargeImages) then
-    begin
-      ACanvas.FillRect(ARect);
-      btn.LargeImages.Draw(ACanvas,ARect.Left,ARect.Top,StrToInt(Value));
-      OffsetRect(R,btn.LargeImages.Width + 2,0);
-      DrawText(ACanvas.Handle,PChar(Value),-1,R,0);
-    end
-    else if Assigned(btn.SmallImages) then
-    begin
-      ACanvas.FillRect(ARect);
-      btn.SmallImages.Draw(ACanvas,ARect.Left,ARect.Top,StrToInt(Value));
-      OffsetRect(R,btn.SmallImages.Width + 2,1);
-      DrawText(ACanvas.Handle,PChar(Value),-1,R,0);
-    end;
-  end;
+    ACanvas.FillRect(ARect);
+    tmp.Draw(ACanvas,ARect.Left,ARect.Top,StrToInt(Value));
+    OffsetRect(R,tmp.Width + 2,0);
+    DrawText(ACanvas.Handle,PChar(Value),-1,R,0);
+ end;
 end;
 
 procedure TJvDefaultImageIndexProperty.ListMeasureHeight(const Value: string;
   ACanvas: TCanvas; var AHeight: Integer);
-var btn:TJvLookOutButton;
+var
+  tmp: TCustomImageList;
 begin
-  AHeight := ACanvas.TextHeight(Value) + 2;
-  if (GetComponent(0) is TJvCustomLookOutButton) then
-  begin
-    btn := TJvLookOutButton(GetComponent(0));
-    if (btn.ImageSize = isLarge) and Assigned(btn.LargeImages) then
-        AHeight := btn.LargeImages.Height + 2
-    else if (btn.ImageSize = isSmall) and Assigned(btn.SmallImages) then
-        AHeight := btn.SmallImages.Height + 2;
-  end;
+  tmp := ImageList;
+  if Assigned(tmp) then
+    AHeight := Max(tmp.Height + 2,ACanvas.TextHeight(Value) + 2);
 end;
 
 procedure TJvDefaultImageIndexProperty.ListMeasureWidth(const Value: string;
   ACanvas: TCanvas; var AWidth: Integer);
-var btn:TJvLookOutButton;
+var
+  tmp: TCustomImageList;
 begin
-  AWidth := ACanvas.TextWidth(Value) + 4;
-  if (GetComponent(0) is TJvCustomLookOutButton) then
-  begin
-    btn := TJvLookOutButton(GetComponent(0));
-    if (btn.ImageSize = isLarge) and Assigned(btn.LargeImages) then
-        AWidth := btn.LargeImages.Width + AWidth
-    else if (btn.ImageSize = isSmall) and Assigned(btn.SmallImages) then
-        AWidth := btn.SmallImages.Width  + AWidth;
-  end;
+  tmp := ImageList;
+  if Assigned(tmp) then
+    AWidth := tmp.Width + ACanvas.TextHeight(Value) + 4;
 end;
 
 procedure TJvDefaultImageIndexProperty.PropDrawValue(ACanvas: TCanvas;

@@ -32,7 +32,7 @@ unit JvOutEdit;
 
 interface
 uses
-  Forms, JvLookOut, JvDsgnEditors, {$IFDEF COMPILER6_UP}ImgList, DesignIntf, DesignEditors,{$ELSE}Dsgnintf,{$ENDIF}Windows, Classes, Dialogs, Graphics, SysUtils;
+  Forms, JvLookOut, JvDsgnEditors, ImgList, {$IFDEF COMPILER6_UP}DesignIntf, DesignEditors,{$ELSE}Dsgnintf,{$ENDIF}Windows, Classes, Dialogs, Graphics, SysUtils;
 
 type
   TLookOutPageEditor = class(TComponentEditor)
