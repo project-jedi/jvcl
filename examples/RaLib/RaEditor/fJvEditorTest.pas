@@ -4,8 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvEditor, JvHLParser, StdCtrls, ExtCtrls, ComCtrls, JvRegAuto, JvHLEditor
-  {$IFDEF COMPILER4_UP}, ImgList, JvComponent {$ENDIF COMPILER4_UP};
+  JvEditor, JvHLParser, StdCtrls, ExtCtrls, ComCtrls, JvHLEditor,
+  ImgList, JvComponent, JvFormPlacement;
 
 type
   TfrmEditor  = class(TForm)
@@ -24,7 +24,7 @@ type
     Panel1: TPanel;
     Label1: TLabel;
     ilCompletions: TImageList;
-    RegAuto1: TJvRegAuto;
+    RegAuto1: TJvFormStorage;
     TabSheet6: TTabSheet;
     RAHLEditor1: TJvHLEditor;
     TabSheet7: TTabSheet;
@@ -62,7 +62,7 @@ var
 
 implementation
 
-uses JvStrUtil, JvCtlConst;
+uses JvJCLUtils, JvConsts;
 
 {$R *.DFM}
 
@@ -150,14 +150,14 @@ end;
 
 procedure TfrmEditor .RegAuto1AfterLoad(Sender: TObject);
 begin
-  PageControl1.ActivePage := PageControl1.Pages[RegAuto1.ReadInteger(Name, 'PageIndex', PageControl1.ActivePage.PageIndex)];
+  PageControl1.ActivePage := PageControl1.Pages[RegAuto1.ReadInteger(Name + 'PageIndex', PageControl1.ActivePage.PageIndex)];
   PageControl1Change(nil);
 end;
 
 
 procedure TfrmEditor .RegAuto1AfterSave(Sender: TObject);
 begin
-  RegAuto1.WriteInteger(Name, 'PageIndex', PageControl1.ActivePage.PageIndex);
+  RegAuto1.WriteInteger(Name + 'PageIndex', PageControl1.ActivePage.PageIndex);
 end;
 
 procedure TfrmEditor .RAEditor3ReservedWord(Sender: TObject; Token: String;

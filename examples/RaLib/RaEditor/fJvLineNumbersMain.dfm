@@ -1,6 +1,6 @@
 object JvLineNumbersMain: TJvLineNumbersMain
-  Left = 428
-  Top = 150
+  Left = 291
+  Top = 217
   Width = 558
   Height = 375
   Caption = 'LineNumbersMain'
@@ -14,11 +14,11 @@ object JvLineNumbersMain: TJvLineNumbersMain
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object RAHLEditor1: TJvEditor
+  object JvHLEditor1: TJvEditor
     Left = 0
     Top = 41
     Width = 550
-    Height = 307
+    Height = 300
     Cursor = crIBeam
     GutterWidth = 32
     RightMarginColor = clSilver
@@ -31,7 +31,7 @@ object JvLineNumbersMain: TJvLineNumbersMain
     TabStops = '3 5'
     SelForeColor = clHighlightText
     SelBackColor = clHighlight
-    OnPaintGutter = RAHLEditor1PaintGutter
+    OnPaintGutter = JvHLEditor1PaintGutter
     Align = alClient
     Ctl3D = True
     Font.Charset = DEFAULT_CHARSET
@@ -60,7 +60,7 @@ object JvLineNumbersMain: TJvLineNumbersMain
       Height = 14
       Caption = 'GutterFont'
       Font.Charset = RUSSIAN_CHARSET
-      Font.Color = clWhite
+      Font.Color = clGray
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []

@@ -4,14 +4,15 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvHLEdPropDlg, StdCtrls, Buttons, JvButtons, JvEditor, JvHLEditor,
-  fJvHLEdPropDlgTestParams, JvRegAuto, JvComponent;
+  StdCtrls, Buttons, JvButtons, JvEditor, JvHLEditor,
+  fJvHLEdPropDlgTestParams, JvComponent, JvHLEditorPropertyForm,
+  JvFormPlacement;
 
 type
   TForm1 = class(TForm)
     RAHLEditor1: TJvHLEditor;
     RAhtButton1: TJvHTButton;
-    RegAuto1: TJvRegAuto;
+    RegAuto1: TJvFormStorage;
     JvHLEdPropDlg1: TJvHLEdPropDlg;
     procedure RAhtButton1Click(Sender: TObject);
     procedure RAHLEdPropDlg1DialogPopup(Sender: TObject; Form: TForm);

@@ -4,14 +4,13 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, JvRegAuto, JvComponent;
+  StdCtrls, ComCtrls, JvComponent;
 
 type
   TMyParams  = class(TForm)
     TabSheet2: TTabSheet;
     Memo1: TMemo;
     Edit1: TEdit;
-    RegAuto1: TJvRegAuto;
     Label1: TLabel;
   published
     PageControl1: TPageControl;
@@ -31,12 +30,10 @@ implementation
 
 procedure TMyParams .Load;
 begin
-  RegAuto1.Load;
 end;
 
 procedure TMyParams .Save;
 begin
-  RegAuto1.Save;
 end;
 
 function TMyParams .GetAppCaption: String;
