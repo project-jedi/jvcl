@@ -40,6 +40,9 @@ unit QWindows;
 interface
 
 uses
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
@@ -540,7 +543,6 @@ function BitBlt(DestCanvas: TCanvas; X, Y, Width, Height: Integer; SrcCanvas: TC
 // ((0,0) for bitmaps and TWidgetControl derived classes)
 //
 function PainterOffset(Canvas: TCanvas): TPoint;
-//procedure CopyRect(Canvas: TCanvas
 function PatBlt(Handle: QPainterH; X, Y, Width, Height: Integer;
   WinRop: Cardinal): LongBool; overload;
 function PatBlt(Canvas: TCanvas; X, Y, Width, Height: Integer;
@@ -548,17 +550,22 @@ function PatBlt(Canvas: TCanvas; X, Y, Width, Height: Integer;
 
 procedure CopyRect(DstCanvas: TCanvas; const Dest: TRect; Canvas: TCanvas;
   const Source: TRect); overload;
+procedure BrushCopy(DstCanvas: TCanvas; const Dest: TRect; Bitmap: TBitmap;
+  const Source: TRect; Color: TColor);
 
 function StretchBlt(DestDC: QPainterH; dx, dy, dw, dh: Integer;
-  SrcDC: QPainterH; sx, sy, sw, sh: Integer; WinRop: Cardinal; IgnoreMask: Boolean = true): LongBool; overload;
+  SrcDC: QPainterH; sx, sy, sw, sh: Integer; WinRop: Cardinal;
+  IgnoreMask: Boolean = True): LongBool; overload;
 function StretchBlt(DestDC: QPainterH; dx, dy, dw, dh: Integer;
-  SrcDC: QPainterH; sx, sy, sw, sh: Integer; Rop: RasterOp; IgnoreMask: Boolean = true): LongBool; overload;
+  SrcDC: QPainterH; sx, sy, sw, sh: Integer; Rop: RasterOp;
+  IgnoreMask: Boolean = True): LongBool; overload;
 function StretchBlt(DestCanvas: TCanvas; dx, dy, dw, dh: Integer;
-  SrcCanvas: TCanvas; sx, sy, sw, sh: Integer; WinRop: Cardinal; IgnoreMask: Boolean = true): LongBool; overload;
+  SrcCanvas: TCanvas; sx, sy, sw, sh: Integer; WinRop: Cardinal;
+  IgnoreMask: Boolean = True): LongBool; overload;
 
 
 function ScrollDC(Handle: QPainterH; dx, dy: Integer; var Scroll, Clip: TRect;
-                  Rgn: QRegionH; Update: PRect): LongBool;
+  Rgn: QRegionH; Update: PRect): LongBool;
 
 
 { StretchBlt() Modes }
@@ -806,8 +813,8 @@ const
 function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType,
   uState: Longword): LongBool; overload;
   { missing DrawFrameControl flags:
-      DFC_SCROLL: DFCS_SCROLLCOMBOBOX, DFCS_SCROLLSIZEGRIP, DFCS_SCROLLSIZEGRIPRIGHT
-      DFC_BUTTON: all except DFCS_PUSHBUTTON, DFCS_BUTTONRADIO, DFCS_BUTTONCHECK
+      DFC_SCROLL: DFCS_SCROLLSIZEGRIP, DFCS_SCROLLSIZEGRIPRIGHT
+      DFC_BUTTON: DFCS_BUTTONRADIOIMAGE, DFCS_BUTTONRADIOMASK, DFCS_BUTTON3STATE
       DFC_POPUPMENU: all }
 function DrawFrameControl(Canvas: TCanvas; const Rect: TRect; uType,
   uState: Longword): LongBool; overload;
@@ -1055,6 +1062,9 @@ function IsIconic(Handle: QWidgetH): LongBool;
 
 function HWND_DESKTOP: QWidgetH;
 function GetDesktopWindow: QWidgetH;
+function GetActiveWindow: HWND;
+function GetForegroundWindow: HWND;
+procedure SetActiveWindow(Handle: HWND);
 function InvalidateRect(Handle: QWidgetH; R: PRect; EraseBackground: Boolean): LongBool;
 function UpdateWindow(Handle: QWidgetH): LongBool;
 function IsChild(ParentHandle, ChildHandle: QWidgetH): LongBool;
@@ -1551,7 +1561,7 @@ implementation
 
 {$IFDEF MSWINDOWS}
 uses
-  Windows, ShellAPI, DateUtils;
+  ShellAPI, DateUtils;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 uses
@@ -2703,9 +2713,8 @@ begin
   if Canvas is TControlCanvas then
   begin
     AControl := TControlCanvas(Canvas).Control;
-    if AControl = nil
-    then
-      exit;
+    if AControl = nil then
+      Exit;
     while not aControl.InheritsFrom(TWidgetControl) do
     begin
       Result.X := aControl.Left + Result.X;
@@ -2744,32 +2753,21 @@ const
 
 procedure CopyRect(DstCanvas: TCanvas; const Dest: TRect; Canvas: TCanvas;
   const Source: TRect);
-var
-  d,s: TPoint;
 begin
-  with DstCanvas do
-  begin
-    Start;
-    try
-      Canvas.Start;
-      try
-        d := PainterOffset(DstCanvas);
-        s := PainterOffset(Canvas);
-        RequiredState(DstCanvas,[csHandleValid, csFontValid, csBrushValid]);
-        RequiredState(Canvas, [csHandleValid, csBrushValid]);
-        Qt.bitBlt(QPainter_device(Handle), Dest.Left + d.x, Dest.Top + d.y,
-          QPainter_device(Canvas.Handle), Source.Left + s.x, Source.Top +s.y,
-          Source.Right - Source.Left, Source.Bottom - Source.Top,
-          CopyModeToRasterOp[CopyMode], False);
-      finally
-        Canvas.Stop;
-      end;
-    finally
-      Stop;
-    end;
-  end;
+  StretchBlt(DstCanvas, Dest.Left, Dest.Top,
+    Dest.Right - Dest.Left, Dest.Bottom - Dest.Top,
+    Canvas, Source.Left, Source.Top,
+    Source.Right - Source.Left, Source.Bottom - Source.Top,
+    RasterOpToWinRop(CopyModeToRasterOp[DstCanvas.CopyMode]));
 end;
 
+procedure BrushCopy(DstCanvas: TCanvas; const Dest: TRect; Bitmap: TBitmap;
+  const Source: TRect; Color: TColor); 
+begin
+  {TODO : implement MaskBlt() first. }
+  // Show something even if it is wrong.
+  CopyRect(DstCanvas, Dest, Bitmap.Canvas, Source);
+end;
 
 function PatBlt(Handle: QPainterH; X, Y, Width, Height: Integer; WinRop: Cardinal): LongBool;
 begin
@@ -2785,7 +2783,8 @@ end;
 
 
 function StretchBlt(DestDC: QPainterH; dx, dy, dw, dh: Integer;
-  SrcDC: QPainterH; sx, sy, sw, sh: Integer; WinRop: Cardinal; IgnoreMask: Boolean): LongBool;
+  SrcDC: QPainterH; sx, sy, sw, sh: Integer; WinRop: Cardinal;
+  IgnoreMask: Boolean): LongBool;
 var
   Bmp1, Bmp2: QPixmapH;
   Painter : QPainterH;
@@ -2887,9 +2886,8 @@ begin
   end;
 end;
 
-
 function ScrollDC(Handle: QPainterH; dx, dy: Integer; var Scroll, Clip: TRect;
-                  Rgn: QRegionH; Update: PRect): LongBool;
+  Rgn: QRegionH; Update: PRect): LongBool;
 var
   R1, R2: TRect;
   rg1, rg2: QRegionH;
@@ -5171,6 +5169,7 @@ begin
       else
         QC := QColor(clNormalButton);
       QPainter_setBackgroundColor(Handle, QC);
+      QBrush_setColor(Brush, QC);
       QColor_destroy(QC);
       QPainter_eraseRect(Handle, @Rect);
     end;
@@ -5189,7 +5188,7 @@ begin
               QPainter_setPen(Handle, Pen);
               QPen_destroy(Pen);
               SetBkMode(Handle, TRANSPARENT);
-              case uState and $07 of
+              case uState and Mask of
                 DFCS_CAPTIONCLOSE:
                   begin
                     SetRect(R, 0, 0, 6, 6);
@@ -5472,7 +5471,7 @@ begin
                         uState and DFCS_PUSHED <> 0,
                         Brush
                         );
-                    {QStyle_drawPanel(Application.Style.Handle, Handle,
+                   {QStyle_drawPanel(Application.Style.Handle, Handle,
                         R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
                         GetColorGroup(uState),
                         uState and DFCS_PUSHED <> 0,
@@ -6170,6 +6169,23 @@ function GetDesktopWindow: QWidgetH;
 begin
   Result := HWND_DESKTOP;
 end;
+
+function GetActiveWindow: HWND;
+begin
+  Result := QApplication_activeWindow(Application.Handle);
+end;
+
+function GetForegroundWindow: HWND;
+begin
+  // is this correct ?
+  Result := QApplication_focusWidget(Application.Handle);
+end;
+
+procedure SetActiveWindow(Handle: HWND);
+begin
+  QWidget_setActiveWindow(Handle);
+end;
+
 
 // maps DT_ alignment flags to Qt (extended) alignment flags
 function Win2QtAlign(Flags: Integer): Integer;
