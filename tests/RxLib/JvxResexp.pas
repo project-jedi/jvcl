@@ -1178,15 +1178,14 @@ begin
       MenuItems := MainMenu.GetMenuItems;
       if MenuItems <> nil then
       try
-        ProjSrcMenu := MainMenu.FindMenuItem('ViewPrjSourceItem');
+        ProjSrcMenu := MainMenu.FindMenuItem('JvxViewPrjSourceItem');
         if ProjSrcMenu <> nil then
         try
           ViewMenu := ProjSrcMenu.GetParent;
           if ViewMenu <> nil then
           try
             ProjectResourcesItem := ViewMenu.InsertItem(
-              ProjSrcMenu.GetIndex, GetMenuText, 'ViewPrjResourceItem',
-              '', 0, 0, 0, [mfVisible], ProjectResourcesClick);
+              ProjSrcMenu.GetIndex, GetMenuText, 'JvxViewPrjResourceItem', '', 0, 0, 0, [mfVisible], ProjectResourcesClick);
           finally
             ViewMenu.Free;
           end;

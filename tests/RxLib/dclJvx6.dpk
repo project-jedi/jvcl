@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: dclJvxDb6.dpk, released on 2002-07-04.
+The Original Code is: DclJvx6.dpk, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
@@ -25,7 +25,7 @@ Known Issues:
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-package dclJvxDb6;
+package dclJvx6;
 
 {$R *.res}
 {$ALIGN 8}
@@ -49,18 +49,34 @@ package dclJvxDb6;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'Jvx Library Database Components'}
+{$DESCRIPTION 'Jvx Library Controls and Tools'}
 {$DESIGNONLY}
 {$IMPLICITBUILD ON}
 
 requires
-  dcldb,
-  DclJvx6,
-  JvxDB6,
+  JvxCtl6,
+  dclsmp,
+  dclstd,
   designide;
 
 contains
-  JvxSelDSFrm in 'JvxSelDSFrm.pas',
-  JvxDBReg in 'JvxDBReg.pas';
+  JvxLConst in 'JvxLConst.pas',
+  JvxHintProp in 'JvxHintProp.pas',
+  JvxCheckItm in 'JvxCheckItm.pas',
+  JvxStrLEdit in 'JvxStrLEdit.pas',
+  JvxColors in 'JvxColors.pas',
+  JvxDsgn in 'JvxDsgn.pas',
+  JvxPresrDsn in 'JvxPresrDsn.pas',
+  JvxMinMaxEd in 'JvxMinMaxEd.pas',
+  JvxSbEdit in 'JvxSbEdit.pas',
+  JvxPgMngrEd in 'JvxPgMngrEd.pas',
+  JvxTimLstEd in 'JvxTimLstEd.pas',
+  JvxIcoLEdit in 'JvxIcoLEdit.pas',
+  JvxResExp in 'JvxResExp.pas',
+  JvxPictEdit in 'JvxPictEdit.pas',
+  JvxDirFrm in 'JvxDirFrm.pas',
+  JvxGradEdit in 'JvxGradEdit.pas',
+  JvxCtlReg in 'JvxCtlReg.pas',
+  JvxTooReg in 'JvxTooReg.pas';
 
 end.

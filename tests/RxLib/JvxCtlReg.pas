@@ -438,7 +438,8 @@ const
   BaseClass: TClass = TComponent;
 {$ENDIF}
 begin
-  RegisterComponents(LoadStr(srRXControls), [TJvxComboEdit, TJvxFilenameEdit,
+//  RegisterComponents(LoadStr(srRXControls), [TJvxComboEdit, TJvxFilenameEdit,
+  RegisterComponents('JVX', [TJvxComboEdit, TJvxFilenameEdit,
     TJvxDirectoryEdit, TJvxDateEdit, TJvxCalcEdit, TJvxCurrencyEdit, TJvxTextListBox,
     TJvxCheckListBox, TJvxFontComboBox, TJvxColorComboBox, TJvxSplitter, TJvxSlider,
     TJvxLabel, {$IFDEF WIN32} TJvxRichEdit, {$ENDIF}
