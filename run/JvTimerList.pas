@@ -42,8 +42,9 @@ Known Issues:
 
 -----------------------------------------------------------------------------}
 // $Id$
-{$I windowsonly.inc}
+
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvTimerList;
 
