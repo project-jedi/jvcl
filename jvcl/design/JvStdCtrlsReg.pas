@@ -105,7 +105,7 @@ begin
   RegisterPropertyEditor(TypeInfo(Boolean), TJvMainMenu, cOwnerDraw, nil);
   RegisterPropertyEditor(TypeInfo(Boolean), TJvPopupMenu, cOwnerDraw, nil);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedButton, 'Caption', TJvHintProperty);
-  RegisterPropertyEditor(TypeInfo(TStrings), TJvCheckBox, 'LinkedControls', TJvLinkedControlsProperty);
+//  RegisterPropertyEditor(TypeInfo(TStrings), TJvCheckBox, 'LinkedControls', TJvLinkedControlsProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvRadioButton, 'LinkedControls', TJvLinkedControlsProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
 end;
