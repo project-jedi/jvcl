@@ -3,9 +3,10 @@ unit MainFrm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ImgList, ComCtrls, JvPageListTreeView, ExtCtrls, StdCtrls, ActnList,
-  JvButton, JvFooter, JvComponent, JvGroupHeader, JvCombobox, JvColorCombo;
+  JvButton, JvFooter, JvComponent, JvGroupHeader, JvCombobox, JvColorCombo,
+  Buttons, JvBitBtn;
 
 type
   TfrmMain = class(TForm)

@@ -1,16 +1,46 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvPageListTreeView.PAS, released on 2003-01-22.
+
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com] .
+Portions created by Peter Thörnqvist are Copyright (C) 2003 Peter Thörnqvist.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-04-08
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+{$I WINDOWSONLY.INC}
 unit JvPageListTreeView;
 {
 Changes:
 2002-10-22:
   Changed TJvPageIndexNode.SetPageIndex to only set the parent PageIndex if the Treeview is a
-  TJvCustomTreeView since this is the first class implementing this behaviour
+  TJvCustomSettingsTreeView since this is the first class implementing this behaviour
 }
 interface
 uses
-  Windows, Messages, Classes, Graphics, Controls,
+  Windows, SysUtils, Messages, Classes, Graphics, Controls,
   ImgList, ComCtrls, JVCLVer;
 
 type
+  EPageListError = class(Exception);
+
   IPageList = interface
     ['{6BB90183-CFB1-4431-9CFD-E9A032E0C94C}']
     function CanChange(AIndex: integer): boolean;
@@ -112,7 +142,7 @@ type
     It works like TPageControl but does not have any tabs
    }
   TJvShowDesignCaption = (sdcNone, sdcTopLeft, sdcTopCenter, sdcTopRight, sdcLeftCenter, sdcCenter, sdcRightCenter, sdcBottomLeft, sdcBottomCenter, sdcBottomRight);
-  TJvCustomPageList = class(TCustomControl, IPageList)
+  TJvCustomPageList = class(TCustomControl, IUnknown, IPageList)
   private
     FPages: TList;
     FActivePage: TJvCustomPage;
@@ -232,16 +262,18 @@ type
     implementor. When the selected tree node is changed, the associated page in the IPageList is changed too as
     determined by the TJvPageIndexNode.PageIndex property
     Properties:
-    * PageDefault is the default PageINdex to assign to new nodes
+    * PageDefault is the default PageIndex to assign to new nodes
     * PageLinks is the property used att design time to set up a Nodes PageIndex. At run-time, use
       TJvPageIndexNode(Node).PageIndex := Value;
-    * PageList is the IPageList implementor that is attached to this control.
+    * PageList is the IPageList implementor that is attached to this control. NOTE: for D5, PageList is
+      instead a TComponent: to get at the IPageList interface, use PageListIntf instead
     * CanChange calls IPageList.CanChange method and Change calls IPageList.SetActivePageIndex
     * IPageList.getPageCaption is only used by the design-time editor for the PageLinks property
     }
 
   TJvCustomPageListTreeView = class(TCustomTreeView)
   private
+    FItems:TJvPageIndexNodes;
     FPageList: IPageList;
     FPageDefault: integer;
     FLinks: TJvPageLinks;
@@ -250,6 +282,10 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
+    {$IFNDEF COMPILER6_UP}
+    FPageListComponent: TComponent;
+    procedure SetPageListComponent(const Value: TComponent);
+    {$ENDIF}
     procedure SetPageDefault(const Value: integer);
     procedure SetLinks(const Value: TJvPageLinks);
     procedure SetPageList(const Value: IPageList);
@@ -258,29 +294,32 @@ type
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-
-
+    function GetItems: TJvPageIndexNodes;
+    procedure SetItems(const Value: TJvPageIndexNodes);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure Added(Node: TTreeNode); override;
-    function CreateNode: TTreeNode; override;
-    function CreateNodes: TTreeNodes; override;
+    function CreateNode: TTreeNode; override; 
+    function CreateNodes: TTreeNodes; {$IFDEF COMPILER6_UP} override; {$ENDIF}
 
     function CanChange(Node: TTreeNode): Boolean; override;
     procedure Change(Node: TTreeNode); override;
-    procedure CMDesignHitTest(var Message: TCMDesignHitTest);
-      message CM_DESIGNHITTEST;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property PageDefault: integer read FPageDefault write SetPageDefault;
     property PageLinks: TJvPageLinks read FLinks write SetLinks;
+    {$IFDEF COMPILER6_UP}
     property PageList: IPageList read FPageList write SetPageList;
+    {$ELSE}
+    property PageListIntf: IPageList read FPageList write SetPageList;
+    property PageList: TComponent read FPageListComponent write SetPageListComponent;
+    {$ENDIF}
   protected
     property AutoExpand default true;
     property ShowButtons default false;
     property ShowLines default false;
     property ReadOnly default true;
+    property Items:TJvPageIndexNodes read GetItems write SetItems;
 
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -313,12 +352,12 @@ type
   end;
 
   { TJvCustomSettingsTreeView is a base class for treeviews that behave like the
-    treeview in the Settings Dialog in Visual Studio: When a node in the left-hand
-    treeview is selected, a new page of settings is shown on a panel to the right.
+    treeview in the Settings Dialog in Visual Studio: When a node in the treeview
+    is selected, a new page of settings is shown on a panel to the right.
 
     Specifically, the following is true:
 
-    * The normal ImageIndex/SelectedIndex is ignored for nodes, use PageNodeImages instead. You still
+    * The normal ImageIndex/SelectedIndex is ignored for nodes - use PageNodeImages instead. You still
       need to assign a TImageList to the Images property
     * When a node is expanded, it is assigned the expanded image until it is collapsed, regardless
       whether it's selected or not
@@ -332,7 +371,7 @@ type
     To get the VS look , Images should contain:
       Image 0: Closed Folder
       Image 1: Open Folder
-      Image 2: Rirght-pointing teal-colored arrow
+      Image 2: Right-pointing teal-colored arrow
 
       PageNodeImages should then be set to (the defaults):
         ClosedFolder = 0;
@@ -409,8 +448,10 @@ type
     property HotTrack;
     property Images;
     property Indent;
+    {$IFDEF COMPILER6_UP}
     property MultiSelect;
     property MultiSelectStyle;
+    {$ENDIF}
     property ParentBiDiMode;
     property ParentColor default False;
     property ParentCtl3D;
@@ -427,7 +468,9 @@ type
     property TabStop default True;
     property ToolTips;
     property Visible;
+    {$IFDEF COMPILER6_UP}
     property OnAddition;
+    {$ENDIF}
     property OnAdvancedCustomDraw;
     property OnAdvancedCustomDrawItem;
     property OnChange;
@@ -437,7 +480,9 @@ type
     property OnCollapsing;
     property OnCompare;
     property OnContextPopup;
+    {$IFDEF COMPILER6_UP}
     property OnCreateNodeClass;
+    {$ENDIF}
     property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
@@ -523,7 +568,9 @@ type
     property TabStop default True;
     property ToolTips;
     property Visible;
+    {$IFDEF COMPILER6_UP}
     property OnAddition;
+    {$ENDIF}
     property OnAdvancedCustomDraw;
     property OnAdvancedCustomDrawItem;
     property OnChange;
@@ -533,7 +580,9 @@ type
     property OnCollapsing;
     property OnCompare;
     property OnContextPopup;
+    {$IFDEF COMPILER6_UP}
     property OnCreateNodeClass;
+    {$ENDIF}
     property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
@@ -699,13 +748,6 @@ end;
 
 { TJvCustomPageListTreeView }
 
-procedure TJvCustomPageListTreeView.Added(Node: TTreeNode);
-begin
-  inherited Added(Node);
-  if (Node is TJvPageIndexNode) and (TJvPageIndexNode(Node).PageIndex = 0) then
-    TJvPageIndexNode(Node).PageIndex := FPageDefault;
-end;
-
 function TJvCustomPageListTreeView.CanChange(Node: TTreeNode): Boolean;
 begin
   Result := inherited CanChange(Node);
@@ -739,25 +781,37 @@ end;
 function TJvCustomPageListTreeView.CreateNode: TTreeNode;
 begin
   Result := TJvPageIndexNode.Create(Items);
+  TJvPageIndexNode(Result).PageIndex := PageDefault;
 end;
 
 destructor TJvCustomPageListTreeView.Destroy;
 begin
   FLinks.Free;
+  FItems.Free;
   inherited;
 end;
 
 function TJvCustomPageListTreeView.CreateNodes: TTreeNodes;
 begin
-  Result := TJvPageIndexNodes.Create(self);
+  if FItems = nil then
+    FItems := TJvPageIndexNodes.Create(self);
+  Result := FItems;
 end;
 
 procedure TJvCustomPageListTreeView.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited;
-  if (Operation = opRemove) and AComponent.IsImplementorOf(PageList) then
-    PageList := nil;
+  if (Operation = opRemove) then
+  begin
+  {$IFDEF COMPILER6_UP}
+    if AComponent.IsImplementorOf(PageList) then
+      PageList := nil;
+  {$ELSE}
+    if (AComponent = FPageListComponent) then
+      PageList := nil;
+  {$ENDIF}
+  end;
 end;
 
 procedure TJvCustomPageListTreeView.SetPageDefault(const Value: integer);
@@ -786,9 +840,13 @@ procedure TJvCustomPageListTreeView.SetPageList(
 begin
   if FPageList <> Value then
   begin
+    {$IFDEF COMPILER6_UP}
     ReferenceInterface(FPageList, opRemove);
+    {$ENDIF}
     FPageList := Value;
+    {$IFDEF COMPILER6_UP}
     ReferenceInterface(FPageList, opInsert);
+    {$ENDIF}
   end;
 end;
 
@@ -820,10 +878,41 @@ begin
     FOnMouseLeave(Self);
 end;
 
-procedure TJvCustomPageListTreeView.CMDesignHitTest(
-  var Message: TCMDesignHitTest);
+{$IFNDEF COMPILER6_UP}
+resourcestring
+  SInterfaceNotSupported = '%s does not support the %s interface';
+
+procedure TJvCustomPageListTreeView.SetPageListComponent(const Value: TComponent);
+var obj: IPageList;
 begin
-  inherited;
+  if Value <> FPageListComponent then
+  begin
+    if FPageListComponent <> nil then
+      FPageListComponent.RemoveFreeNotification(self);
+    if Value = nil then
+    begin
+      FPageListComponent := nil;
+      SetPageList(nil);
+      Exit;
+    end;
+    if not Supports(Value, IPageList, obj) then
+      raise EPageListError.CreateFmt(SInterfaceNotSupported, [Value.Name, 'IPageList']);
+    SetPageList(obj);
+    FPageListComponent := Value;
+    FPageListComponent.FreeNotification(self);
+  end;
+end;
+{$ENDIF}
+
+function TJvCustomPageListTreeView.GetItems: TJvPageIndexNodes;
+begin
+  Result := TJvPageIndexNodes(CreateNodes);
+end;
+
+procedure TJvCustomPageListTreeView.SetItems(
+  const Value: TJvPageIndexNodes);
+begin
+  inherited Items := Value;
 end;
 
 { TJvPageIndexNode }

@@ -1,6 +1,7 @@
 object Form1: TForm1
   Left = 405
   Top = 212
+  AutoSize = True
   BorderStyle = bsNone
   Caption = 'Bitmapped Form Demo'
   ClientHeight = 164
@@ -471,7 +472,6 @@ object Form1: TForm1
       3F3B3B383A3F3F3F3F3F3F3F3F3F3F3B3F3F3F3F3F3F3F3F3F3F3B3B383B3F3F
       3F3F3F3F3F3F3F3F3F3F3F3B3F3B3F3F3F3F3F3F3F3F3F3F3F3B3F3F3F3F3F3F
       3B3F3F3F3F3F3F3F3F3F3F3B3F3F3F3B3F00}
-    Proportional = True
     OnMouseDown = imgRegionMouseDown
     OnMouseMove = imgRegionMouseMove
   end

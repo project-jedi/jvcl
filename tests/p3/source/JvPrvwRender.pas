@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvPrvwRender.pas, released on yyyy-mm-dd.
+The Original Code is: JvPrvwRender.pas, released on 2003-01-01.
 
 The Initial Developer of the Original Code is Peter Thörnqvist.
 Portions created by Peter Thörnqvist are Copyright (c) 2003 by Peter Thörnqvist.
@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: yyyy-mm-dd
+Last Modified: 2003-04-08
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -27,6 +27,7 @@ Known Issues:
 
 -----------------------------------------------------------------------------}
 {$I JVCL.INC}
+{$I WINDOWSONLY.INC}
 unit JvPrvwRender;
 
 interface

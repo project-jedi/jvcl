@@ -62,14 +62,9 @@ begin
       SetWindowRgn(Handle, 0, true);
       FActive := false;
       btnActivate.Caption := '&Activate';
-      DisableAlign;
-      try
-        imgRegion.Align := alLeft;
-        pnlControls.Align := alLeft;
-        pnlSpacer.Align := alLeft;
-      finally
-        EnableAlign;
-      end;
+      imgRegion.Align := alLeft;
+      pnlControls.Align := alLeft;
+      pnlSpacer.Align := alLeft;
     end
     else if (imgRegion.Picture.Bitmap <> nil) then
     begin
@@ -165,7 +160,10 @@ end;
 
 procedure TForm1.btnCloseClick(Sender: TObject);
 begin
-  Close;
+  if FActive then
+    btnActivate.Click
+  else
+    Close;
 end;
 
 end.

@@ -1,13 +1,41 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvPageListTreeViewReg.PAS, released on 2003-01-22.
+
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com] .
+Portions created by Peter Thörnqvist are Copyright (C) 2003 Peter Thörnqvist.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-01-01
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+{$I JVCL.INC}
+{$I WINDOWSONLY.INC}
+
 unit JvPageListTreeViewReg;
 interface
 uses
   Windows, Classes, JvPageListTreeView, JvDsgnEditors,
-  DesignEditors, DesignIntf, DesignMenus, VCLEditors, ImgList,
+  {$IFDEF COMPILER6_UP}DesignEditors, DesignIntf, DesignMenus, VCLEditors,
+  {$ELSE}DsgnIntf, Menus, {$ENDIF} ImgList,
   Graphics;
 
 type
-
-  { a property editor for the ACtivePage property of TJvPageList }
+  { a property editor for the ActivePage property of TJvPageList }
   TJvActivePageProperty = class(TComponentProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
@@ -31,14 +59,31 @@ type
     function GetVerbCount: Integer; override;
     procedure ExecuteVerb(Index: Integer); override;
     procedure Edit; override;
-    procedure PrepareItem(Index: Integer; const AItem: IMenuItem);
-      override;
+
+    procedure PrepareItem(Index: Integer; const AItem: {$IFDEF COMPILER6_UP}IMenuItem{$ELSE}TMenuItem{$ENDIF});override;
   end;
 
   TJvSettingsTreeImagesProperty = class(TJvDefaultImageIndexProperty)
   protected
     function ImageList: TCustomImageList; override;
   end;
+
+  {$IFNDEF COMPILER6_UP}
+  // since D5 doesn't support interface style published properties,
+  // this editor is supplied to make it easier to select a specific interface
+  // implementor at design-time
+  TJvInterfaceProperty = class(TComponentProperty)
+  protected
+    function GetInterface:TGUID;virtual;
+  public
+    procedure GetValues(Proc: TGetStrProc); override;
+  end;
+
+  TJvPageListProperty = class(TJvInterfaceProperty)
+  protected
+    function GetInterface:TGUID;override;
+  end;
+  {$ENDIF}
 
 procedure Register;
 {$R ..\resources\JvPageListTreeViewReg.dcr}
@@ -59,9 +104,12 @@ begin
   RegisterClasses([TJvSettingsTreeView, TJvPageListTreeView, TJvPageList, TJvStandardPage]);
   RegisterComponentEditor(TJvCustomPageList, TJvCustomPageEditor);
   RegisterComponentEditor(TJvCustomPage, TJvCustomPageEditor);
+  {$IFNDEF COMPILER6_UP}
+  RegisterPropertyEditor(typeinfo(TComponent), TJvCustomPageListTreeView, 'PageList',TJvPageListProperty);
+  {$ENDIF}
   RegisterComponentEditor(TCustomTreeView, TJvTreeViewComponentEditor);
   // register for the standard TTreeView as well
-  RegisterComponentEditor(TTreeView, TJvTreeViewComponentEditor);
+//  RegisterComponentEditor(TTreeView, TJvTreeViewComponentEditor);
   RegisterPropertyEditor(typeinfo(TJvPageLinks),
     TJvCustomPageListTreeView, '', TJvPageLinksProperty);
   RegisterPropertyEditor(typeinfo(TJvCustomPage),
@@ -120,7 +168,7 @@ var P: TJvCustomPage;
   C: TJvCustomPageList;
 begin
   C := GetPageControl;
-  P := C.GetPageClass.Create(Designer.Root);
+  P := C.GetPageClass.Create(Designer.{$IFDEF COMPILER6_UP}Root{$ELSE}Form{$ENDIF});
   try
     P.Parent := C;
     P.Name := Designer.UniqueName(C.GetPageClass.ClassName);
@@ -137,8 +185,7 @@ begin
   GetPageControl.NextPage;
 end;
 
-procedure TJvCustomPageEditor.PrepareItem(Index: Integer;
-  const AItem: IMenuItem);
+procedure TJvCustomPageEditor.PrepareItem(Index: Integer; const AItem: {$IFDEF COMPILER6_UP}IMenuItem{$ELSE}TMenuItem{$ENDIF});
 begin
   inherited;
   if (Index = 3) and (GetPageControl.ActivePage = nil) then
@@ -206,6 +253,32 @@ begin
   // we don't want sorting for this property
   Result := [paMultiSelect, paValueList, paRevertable];
 end;
+
+{$IFNDEF COMPILER6_UP}
+{ TJvInterfaceProperty }
+
+function TJvInterfaceProperty.GetInterface: TGUID;
+begin
+  Result := IUnknown;
+end;
+
+procedure TJvInterfaceProperty.GetValues(Proc: TGetStrProc);
+var i:integer;obj:IUnknown;
+begin
+  for i := 0 to Designer.Form.ComponentCount - 1 do
+    if Supports(Designer.Form.Components[i],GetInterface,obj) and
+      (Designer.Form.Components[i] <> GetComponent(0)) then
+        Proc(Designer.Form.Components[i].Name);
+end;
+
+{ TJvPageListProperty }
+
+function TJvPageListProperty.GetInterface: TGUID;
+begin
+  Result := IPageList;
+end;
+
+{$ENDIF}
 
 end.
 

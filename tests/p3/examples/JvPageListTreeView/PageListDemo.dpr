@@ -2,8 +2,7 @@ program PageListDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {frmMain},
-  JvPageListTreeView in '..\..\source\JvPageListTreeView.pas';
+  MainFrm in 'MainFrm.pas' {frmMain};
 
 {$R *.res}
 

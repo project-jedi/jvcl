@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvErrProvider.pas, released on 2002-11-16.
 
-The Initial Developer of the Original Code is Peter Thörnqvist .
-Portions created by Joe Doe are Copyright (C) 2002 Peter Thörnqvist <peter3@peter3.com>. All Rights Reserved.
+The Initial Developer of the Original Code is Peter Thörnqvist <peter3@peter3.com>.
+Portions created by Joe Doe are Copyright (C) 2002 Peter Thörnqvist . All Rights Reserved.
 
 Contributor(s):
 

@@ -54,7 +54,6 @@ object frmMain: TfrmMain
       Align = alClient
       Images = ImageList1
       Indent = 19
-      StateImages = ImageList2
       TabOrder = 0
       Items.Data = {
         0A00000024000000010000000100000000000000FFFFFFFF000000000A000000
@@ -186,12 +185,9 @@ object frmMain: TfrmMain
     Width = 582
     Height = 34
     Align = alBottom
-    DesignSize = (
-      582
-      34)
     object JvFooterBtn2: TJvFooterBtn
       Left = 339
-      Top = 6
+      Top = 5
       Width = 75
       Height = 23
       Anchors = [akRight, akBottom]
@@ -209,7 +205,7 @@ object frmMain: TfrmMain
     end
     object JvFooterBtn3: TJvFooterBtn
       Left = 420
-      Top = 6
+      Top = 5
       Width = 75
       Height = 23
       Anchors = [akRight, akBottom]
@@ -227,7 +223,7 @@ object frmMain: TfrmMain
     end
     object JvFooterBtn1: TJvFooterBtn
       Left = 502
-      Top = 6
+      Top = 5
       Width = 75
       Height = 23
       Anchors = [akRight, akBottom]
@@ -265,9 +261,6 @@ object frmMain: TfrmMain
       Height = 303
       Caption = 'Environment - General'
       Color = clBtnFace
-      DesignSize = (
-        410
-        303)
       object Label1: TLabel
         Left = 248
         Top = 8
@@ -449,9 +442,6 @@ object frmMain: TfrmMain
       Height = 303
       Caption = 'Environment - Documents'
       Color = clBtnFace
-      DesignSize = (
-        410
-        303)
       object Label7: TLabel
         Left = 32
         Top = 112
@@ -777,7 +767,7 @@ object frmMain: TfrmMain
         Top = 24
         Width = 281
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 0
         Text = 'Text Editor'
       end
@@ -794,7 +784,7 @@ object frmMain: TfrmMain
         Top = 72
         Width = 281
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 2
         Text = 'Courier New'
       end
@@ -803,7 +793,7 @@ object frmMain: TfrmMain
         Top = 72
         Width = 90
         Height = 21
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 3
         Text = ' 10'
       end
