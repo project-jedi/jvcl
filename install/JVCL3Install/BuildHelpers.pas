@@ -94,7 +94,7 @@ const
   JclSourcePaths = '..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx';
   JclLibDir = '..\..\lib';
   JVCLIncludePaths = '..\..\common';
-  JVCLSourcePaths = '..\..\run;..\..\design';
+  JVCLSourcePaths = '..\..\common;..\..\run;..\..\design';
 
 
 implementation                          
