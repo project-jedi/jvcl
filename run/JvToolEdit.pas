@@ -873,7 +873,7 @@ function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
   AAlignment: TAlignment; StandardPaint: Boolean;
   var ACanvas: TControlCanvas; var Msg: TWMPaint): Boolean;
 function PaintEdit(Editor: TCustomEdit; const AText: string;
-  AAlignment: TAlignment; PopupVisible: Boolean; {ButtonWidth: Integer;}
+  AAlignment: TAlignment; PopupVisible: Boolean;
   DisabledTextColor: TColor; StandardPaint: Boolean;
   var ACanvas: TControlCanvas; var Msg: TWMPaint): Boolean;
 {$ENDIF VCL}
@@ -886,7 +886,7 @@ function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
   the class is derived from another class, it uses the ClientRect of the edit
   control. }
 function PaintEdit(Editor: TCustomEdit; const AText: WideString;
-  AAlignment: TAlignment; PopupVisible: Boolean; {ButtonWidth: Integer;}
+  AAlignment: TAlignment; PopupVisible: Boolean; 
   DisabledTextColor: TColor; StandardPaint: Boolean; Flat: Boolean;
   ACanvas: TCanvas): Boolean;
 {$ENDIF VisualCLX}
@@ -1136,7 +1136,7 @@ begin
 end;
 
 function PaintEdit(Editor: TCustomEdit; const AText: string;
-  AAlignment: TAlignment; PopupVisible: Boolean; {ButtonWidth: Integer;}
+  AAlignment: TAlignment; PopupVisible: Boolean; 
   DisabledTextColor: TColor; StandardPaint: Boolean;
   var ACanvas: TControlCanvas; var Msg: TWMPaint): Boolean;
 const
@@ -1339,7 +1339,7 @@ end;
 { PaintEdit (CLX) needs an implemented EM_GETRECT message handler. If no
   EM_GETTEXT handler exists, it uses the ClientRect of the edit control. }
 function PaintEdit(Editor: TCustomEdit; const AText: WideString;
-  AAlignment: TAlignment; PopupVisible: Boolean; {ButtonWidth: Integer;}
+  AAlignment: TAlignment; PopupVisible: Boolean; 
   DisabledTextColor: TColor; StandardPaint: Boolean; Flat: Boolean;
   ACanvas: TCanvas): Boolean;
 var
