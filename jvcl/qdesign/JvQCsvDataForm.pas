@@ -75,9 +75,10 @@ type
     procedure SpeedButtonDelClick(Sender: TObject);
     procedure ListBoxFieldsKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-  protected
+  private
     FUpdating: Boolean;
     FOriginalCsvStr: string;
+    FSeparator: Char;
     FTypeChars: array [0..6] of Char;
     FFieldTypeCh: Char;
     procedure ItemChange;
@@ -85,9 +86,11 @@ type
     procedure UpdateCsvStr;
     procedure LengthDisabled;
     procedure LengthEnabled(FieldLength: Integer);
-  public
     procedure SetCsvStr(ACsvStr: string);
     function GetCsvStr: string;
+  public
+    property Separator: Char read FSeparator write FSeparator;
+    property CsvStr: string read GetCsvStr write SetCsvStr;
   end;
 
 var
@@ -110,7 +113,7 @@ begin
     if S = '' then
       S := ListBoxFields.Items[I]
     else
-      S := S + ',' + ListBoxFields.Items[I];
+      S := S + FSeparator + ListBoxFields.Items[I];
   EditCsvStr.Text := S;
 end;
 
@@ -189,11 +192,25 @@ begin
     end;
 end;
 
+function TJvCsvDefStrDialog.GetCsvStr: string;
+begin
+  Result := EditCsvStr.Text;
+end;
+
 procedure TJvCsvDefStrDialog.SetCsvStr(ACsvStr: string);
 var
   Fields: array of string;
   I, Count: Integer;
   FieldDefStr: string;
+
+  function StripQuotes(S: string): string;
+  begin
+    if (Length(S) >= 2) and (S[1] = '"') and (S[Length(S)] = '"') then
+      Result := Copy(S, 2, Length(S) - 2)
+    else
+      Result := S;
+  end;
+
 begin
   FOriginalCsvStr := ACsvStr;
   FieldDefStr := UpperCase(StrStrip(ACsvStr));
@@ -201,7 +218,7 @@ begin
   SetLength(Fields, MAXCOLUMNS); { MAXCOLUMNS is a constant from CsvDataSource.pas }
   EditCsvStr.Text := ACsvStr;
   if Length(FieldDefStr) > 0 then
-    Count := StrSplit(FieldDefStr, ',', Chr(0), Fields, MAXCOLUMNS)
+    Count := StrSplit(FieldDefStr, FSeparator, Chr(0), Fields, MAXCOLUMNS)
   else
     Count := 0;
 
@@ -210,18 +227,13 @@ begin
     ListBoxFields.Items.Clear;
     if Count > 0 then
       for I := 0 to Count - 1 do
-        ListBoxFields.Items.Add(Fields[I]);
+        ListBoxFields.Items.Add(StripQuotes(Fields[I]));
   finally
     ListBoxFields.ItemIndex := 0;
     ItemChange;
     FUpdating := False;
   end;
   Self.ActiveControl := EditFieldName;
-end;
-
-function TJvCsvDefStrDialog.GetCsvStr: string;
-begin
-  Result := EditCsvStr.Text;
 end;
 
 procedure TJvCsvDefStrDialog.ButtonOkClick(Sender: TObject);
