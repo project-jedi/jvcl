@@ -220,9 +220,9 @@ type
     property OnGetDayState;
   end;
 
-function StringToDayStates(const S: string; Bold: boolean): TMonthDayState;
+function StringToDayStates(const S: string): TMonthDayState;
 function DayStatesToString(Days: TMonthDayState): string;
-function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: integer): boolean;
+// function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: integer): boolean;
 
 implementation
 
@@ -255,7 +255,7 @@ begin
     Result := (wMonth = 0) and (wDay = 0);
 end;
 
-function StringToDayStates(const S: string; Bold: boolean): TMonthDayState;
+function StringToDayStates(const S: string): TMonthDayState;
 var P, L, I, R: integer;
 begin
   Result := 0;
@@ -288,6 +288,7 @@ type
     dwPlatformID:DWord;
   end;
 
+{
 function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: integer): boolean;
 var hDLL, hr: THandle;
   pDllGetVersion: function(var dvi: TDLLVersionInfo): integer; stdcall;
@@ -316,9 +317,7 @@ begin
         pdwMinor := dvi.dwMinorVersion;
       end;
     end
-    else (*   If GetProcAddress failed,
-      the DLL is a version previous
-      to the one  shipped with IE 3.x. *)
+    else (*   If GetProcAddress failed, the DLL is a version previous to the one  shipped with IE 3.x. *)
     begin
       pdwMajor := 4;
       pdwMinor := 0;
@@ -328,7 +327,7 @@ begin
   end;
   Result := false;
 end;
-
+}
 
 function DayStatesToString(Days: TMonthDayState): string;
 var i: integer;
@@ -461,7 +460,7 @@ end;
 function TMonthCalStrings.IsBold(Year, Month, Day: Word): boolean;
 var aDayState: TMonthDayState;
 begin
-  aDayState := StringToDayStates(GetBoldDays(Year, Month) + ',' + GetBoldDays(0, Month), true);
+  aDayState := StringToDayStates(GetBoldDays(Year, Month) + ',' + GetBoldDays(0, Month));
   Result := (aDayState and (1 shl (Day - 1))) <> 0;
 end;
 
@@ -480,7 +479,7 @@ begin
       AddDays(Year, Month, S);
       Exit;
     end;
-    aDayState := StringToDayStates(S, true);
+    aDayState := StringToDayStates(S);
     aDayState := aDayState and not (1 shl (Day - 1));
     AddDays(Year, Month, DayStatesToString(aDayState));
   end;
@@ -745,7 +744,7 @@ end;
 
 procedure TJvCustomMonthCalendar.CheckDayState(Year, Month: word; var DayState: TMonthDayState);
 begin
-  DayState := StringToDayStates(TMonthCalStrings(FBoldDays).GetBoldDays(Year, Month), true);
+  DayState := StringToDayStates(TMonthCalStrings(FBoldDays).GetBoldDays(Year, Month));
 end;
 
 procedure TJvCustomMonthCalendar.DoGetDayState(var DayState: TNMDayState);
