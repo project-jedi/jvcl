@@ -112,7 +112,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   StdCtrls, SysUtils,
-  JvResources;
+  JvDynControlEngineIntf, JvResources;
 
 procedure TJvDynControlDataSourceEditDialog.SetDataComponent(Value: TComponent);
 begin
@@ -212,7 +212,7 @@ procedure TJvDynControlDataSourceEditDialog.ArrangePanelChangedWidth(Sender: TOb
 begin
   FForm.ClientWidth := ChangedSize;
 end;
-    
+
 procedure TJvDynControlDataSourceEditDialog.ArrangePanelChangedHeight(Sender: TObject; ChangedSize: Integer);
 begin
   if Assigned(FNavigatorPanel) then
@@ -227,6 +227,7 @@ var
   Form: TCustomForm;
   PostButton, CancelButton, CloseButton: TButtonControl;
   LeftPos: Integer;
+  DynCtrlButton: IJvDynControlButton;
 begin
   DynControlEngine:= DynControlEngineDB.DynControlEngine;
   Form := DynControlEngine.CreateForm(DialogCaption, '');
@@ -255,6 +256,11 @@ begin
     CloseButton.Left := LeftPos - CloseButton.Width - 5;
     LeftPos := CloseButton.Left;
     CloseButton.TabOrder := 0;
+    if Supports(CloseButton, IJvDynControlButton, DynCtrlButton) then
+    begin
+      DynCtrlButton.ControlSetDefault(True);
+      DynCtrlButton.ControlSetCancel(True);
+    end;
   end;
   if CancelButtonCaption <> '' then
   begin
@@ -266,6 +272,11 @@ begin
     CancelButton.Left := LeftPos - CancelButton.Width - 5;
     LeftPos := CancelButton.Left;
     CancelButton.TabOrder := 0;
+    if Supports(CancelButton, IJvDynControlButton, DynCtrlButton) then
+    begin
+      DynCtrlButton.ControlSetDefault (False);
+      DynCtrlButton.ControlSetCancel(False);
+    end;
   end;
   if PostButtonCaption <> '' then
   begin
@@ -276,6 +287,11 @@ begin
     PostButton.Anchors := [akTop, akRight];
     PostButton.Left := LeftPos - PostButton.Width - 5;
     PostButton.TabOrder := 0;
+    if Supports(PostButton, IJvDynControlButton, DynCtrlButton) then
+    begin
+      DynCtrlButton.ControlSetDefault (False);
+      DynCtrlButton.ControlSetCancel(False);
+    end;
   end;
   Result := Form;
 end;
@@ -332,6 +348,7 @@ begin
       DynControlEngineDB.CreateControlsFromDataComponentOnControl(DataComponent, ArrangePanel, FieldCreateOptions);
 //    ArrangePanel.ArrangeControls;
     ArrangePanel.ArrangeSettings.AutoArrange := True;
+    MainPanel.TabOrder := 0;
     Result := FForm.ShowModal;
   finally
     FForm.Free;

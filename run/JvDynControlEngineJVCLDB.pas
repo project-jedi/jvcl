@@ -101,6 +101,8 @@ type
     procedure ControlSetGlyph(Value: TBitmap);
     procedure ControlSetNumGlyphs(Value: Integer);
     procedure ControlSetLayout(Value: TButtonLayout);
+    procedure ControlSetDefault(Value: Boolean);
+    procedure ControlSetCancel(Value: Boolean);
 
     //IJvDynControlDatabase
     procedure ControlSetDataSource(Value: TDataSource);
@@ -735,6 +737,16 @@ end;
 procedure TJvDynControlJVCLDBButtonEdit.ControlSetLayout(Value: TButtonLayout);
 begin
   FButton.Layout := Value;
+end;
+
+procedure TJvDynControlJVCLDBButtonEdit.ControlSetDefault(Value: Boolean);
+begin
+  FButton.Default := Value;
+end;
+
+procedure TJvDynControlJVCLDBButtonEdit.ControlSetCancel(Value: Boolean);
+begin
+  FButton.Cancel := Value;
 end;
 
 procedure TJvDynControlJVCLDBButtonEdit.ControlSetDataSource(Value: TDataSource);
