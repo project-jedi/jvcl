@@ -95,6 +95,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     property ColorSpace: TJvColorSpace read GetColorSpace;
   published
     property AutoMouse: Boolean read FAutoMouse write FAutoMouse default True;
@@ -275,7 +276,6 @@ type
     FArrowPosition: TJvArrowPosition;
     FColorOrientation: TJvFullColorOrientation;
     FOrientation: TTrackBarOrientation;
-    FBarWidth: Integer;
     FFullColorDrawing: Boolean;
     FArrowWidth: Integer;
     FArrowColor: TColor;
@@ -287,7 +287,6 @@ type
     procedure SetArrowPosition(const Value: TJvArrowPosition);
     procedure SetColorOrientation(const Value: TJvFullColorOrientation);
     procedure SetOrientation(const Value: TTrackBarOrientation);
-    procedure SetBarWidth(const Value: Integer);
     procedure SetArrowWidth(const Value: Integer);
     procedure SetArrowColor(const Value: TColor);
     function IsValueXStored: Boolean;
@@ -323,7 +322,6 @@ type
     property ColorOrientation: TJvFullColorOrientation read FColorOrientation write SetColorOrientation default
       coNormal;
     property Orientation: TTrackBarOrientation read FOrientation write SetOrientation default trHorizontal;
-    property BarWidth: Integer read FBarWidth write SetBarWidth default 10;
     property ValueX: Byte read FValueX write SetValueX stored IsValueXStored;
     property ValueXAuto: Boolean read FValueXAuto write SetValueXAuto stored False;
     property ValueY: Byte read FValueY write SetValueY stored IsValueYStored;
@@ -827,6 +825,13 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvFullColorComponent.SetBounds(ALeft, ATop, AWidth,
+  AHeight: Integer);
+begin
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+  CalcSize;
+end;
+
 procedure TJvFullColorComponent.CalcSize;
 begin
   WantDrawBuffer := True;
@@ -954,7 +959,7 @@ end;
 procedure TJvFullColorComponent.SetWantDrawBuffer(Value: Boolean);
 begin
   FWantDrawBuffer := Value;
-  if Value then
+  if (Value) and (Width <> 0) and (Height <> 0) then
     Invalidate;
 end;
 
@@ -1100,134 +1105,96 @@ begin
 end;
 
 procedure TJvFullColorPanel.CalcSize;
-var
-  LWidth, LHeight: Integer;
-  IndexX, IndexY: TJvAxisIndex;
 begin
-  IndexX := GetIndexAxisX(AxisConfig);
-  IndexY := GetIndexAxisY(AxisConfig);
-
-  with ColorSpace do
-  begin
-    LWidth := AxisMax[IndexX] - AxisMin[IndexX] + 1;
-    LHeight := AxisMax[IndexY] - AxisMin[IndexY] + 1;
-  end;
-
-  FBuffer.Width := LWidth;
-  FBuffer.Height := LHeight;
-
-  SetBounds(Left, Top, 2 * FCrossSize + LWidth, 2 * FCrossSize + LHeight);
-
+  FBuffer.Width := Max(Width - 2 * FCrossSize,0);
+  FBuffer.Height := Max(Height - 2 * FCrossSize,0);
   inherited CalcSize;
 end;
 
 procedure TJvFullColorPanel.DrawBuffer;
 var
   AxisX, AxisY: TJvAxisIndex;
-  IndexX, IndexY: Byte;
-  MinX, MaxX, MinY, MaxY: Byte;
+  IndexX, IndexY: Integer;
+  MinX, MaxX, MinY, MaxY: Integer;
+  RangeX, RangeY: Integer;
   TempColor: TJvFullColor;
   Line: PJvFullColorArray;
-  PosX, PosY, I: Integer;
 begin
+  if (FBuffer.Width = 0) or (FBuffer.Height = 0) or (Width = 0) or (Height = 0) then
+    Exit;
+
   AxisX := GetIndexAxisX(AxisConfig);
   AxisY := GetIndexAxisY(AxisConfig);
 
-  if ColorSpace.ID = csDEF then
-    with FBuffer.Canvas do
-    begin
-      Brush.Color := Color;
-      FillRect(Rect(0, 0, Width, Height));
-      Pen.Color := clBlack;
-      PosX := 8;
-      PosY := 8;
-      for I := Low(ColorValues) to High(ColorValues) do
-      begin
-        Brush.Color := ColorValues[I].Value;
-        Rectangle(PosX, PosY, PosX + 16, PosY + 16);
-        Inc(PosX, 16 + 6);
-        if PosX > FBuffer.Width - 8 then
-        begin
-          PosX := 8;
-          Inc(PosY, 16 + 6);
-        end;
-      end;
-      PosX := 8;
-      Inc(PosY, 16 + 6);
-      for I := Low(SysColorValues) to High(SysColorValues) do
-      begin
-        Brush.Color := SysColorValues[I].Value;
-        Rectangle(PosX, PosY, PosX + 16, PosY + 16);
-        Inc(PosX, 16 + 6);
-        if PosX > FBuffer.Width - 8 then
-        begin
-          PosX := 8;
-          Inc(PosY, 16 + 6);
-        end;
-      end;
-    end
-  else
-    with ColorSpace do
-    begin
-      MinX := AxisMin[AxisX];
-      MaxX := AxisMax[AxisX];
-      MinY := AxisMin[AxisY];
-      MaxY := AxisMax[AxisY];
+  with ColorSpace do
+  begin
+    MinX := AxisMin[AxisX];
+    MaxX := AxisMax[AxisX];
+    RangeX := MaxX - MinX;
+    MinY := AxisMin[AxisY];
+    MaxY := AxisMax[AxisY];
+    RangeY := MaxY - MinY;
 
-      TempColor := SetAxisValue(fclRGBBlack, GetIndexAxisZ(AxisConfig), ValueZ);
-      with FBuffer do
+
+    TempColor := SetAxisValue(fclRGBBlack, GetIndexAxisZ(AxisConfig), ValueZ);
+    with FBuffer do
+    begin
+      Canvas.Brush.Color := Color;
+      Canvas.FillRect(Rect(0, 0, Width-1, Height-1));
+      for IndexY := 0 to Height-1 do
       begin
-        Canvas.Brush.Color := Color;
-        Canvas.FillRect(Rect(0, 0, Width, Height));
-        for IndexY := MinY to MaxY do
+        Line := ScanLine[IndexY];
+        if ReverseAxisY then
+          TempColor := SetAxisValue(TempColor, AxisY, MaxY - (RangeY * IndexY) div (Height - 1))
+        else
+          TempColor := SetAxisValue(TempColor, AxisY, (RangeY * IndexY) div (Height - 1) + MinY);
+        for IndexX := 0 to Width-1 do
         begin
-          if ReverseAxisY then
-            Line := ScanLine[MaxY - IndexY]
+          if ReverseAxisX then
+            TempColor := SetAxisValue(TempColor, AxisX, MaxX - (RangeX * IndexX) div (Width - 1))
           else
-            Line := ScanLine[IndexY - MinY];
-
-          TempColor := SetAxisValue(TempColor, AxisY, IndexY);
-
-          for IndexX := MinX to MaxX do
-          begin
-            TempColor := SetAxisValue(TempColor, AxisX, IndexX);
-            if ReverseAxisX then
-              // (outchy) don't remove, Bitmap colors are stocked as (MSB) 00RRGGBB (LSB)
-              // Delphi TColor is (MSB) 00BBGGRR (LSB)
-              Line[MaxX - IndexX] := RGBToBGR(ConvertToColor(TempColor))
-            else
-              // (outchy) don't remove, Bitmap colors are stocked as (MSB) 00RRGGBB (LSB)
-              // Delphi TColor is (MSB) 00BBGGRR (LSB)
-              Line[IndexX - MinX] := RGBToBGR(ConvertToColor(TempColor));
-          end;
+            TempColor := SetAxisValue(TempColor, AxisX, (RangeX * IndexX) div (Width - 1) + MinX);
+          // (outchy) don't remove, Bitmap colors are stocked as (MSB) 00RRGGBB (LSB)
+          // Delphi TColor is (MSB) 00BBGGRR (LSB)
+          Line[IndexX] := RGBToBGR(ConvertToColor(TempColor));
         end;
       end;
     end;
-
+  end;
   inherited DrawBuffer;
 end;
 
 function TJvFullColorPanel.GetCursorPosition: TPoint;
 var
   AxisX, AxisY: TJvAxisIndex;
+  MinAxis, MaxAxis: Integer;
 begin
-  with ColorSpaceManager, ColorSpace[GetColorSpaceID(FullColor)], Result do
+  if (FBuffer.Width = 0) or (FBuffer.Height = 0) or (Width = 0) or (Height = 0) then
+  begin
+    Result.X := 0;
+    Result.Y := 0;
+  end
+  else with ColorSpaceManager, ColorSpace[GetColorSpaceID(FullColor)], Result do
   begin
     AxisX := GetIndexAxisX(AxisConfig);
+    MinAxis := AxisMin[AxisX];
+    MaxAxis := AxisMax[AxisX];
     X := GetAxisValue(FullColor, AxisX);
     if ReverseAxisX then
-      X := AxisMax[AxisX] - X
+      X := MaxAxis - X
     else
-      X := X - AxisMin[AxisX];
-    X := X + CrossSize;
+      X := X - MinAxis;
+    X := ((X * (FBuffer.Width - 1)) div (MaxAxis-MinAxis)) + CrossSize;
 
     AxisY := GetIndexAxisY(AxisConfig);
+    MinAxis := AxisMin[AxisY];
+    MaxAxis := AxisMax[AxisY];
     Y := GetAxisValue(FullColor, AxisY);
     if ReverseAxisY then
-      Y := AxisMax[AxisY] - Y
+      Y := MaxAxis - Y
     else
-      Y := Y - AxisMin[AxisY];
-    Y := Y + CrossSize;
+      Y := Y - MinAxis;
+    Y := ((Y * (FBuffer.Height - 1)) div (MaxAxis-MinAxis)) + CrossSize;
   end;
 end;
 
@@ -1390,68 +1357,32 @@ procedure TJvFullColorPanel.MouseColor(Shift: TShiftState; X, Y: Integer);
 var
   MinX, MaxX, MinY, MaxY: Byte;
   AxisX, AxisY: TJvAxisIndex;
-  I, PosX, PosY: Integer;
+  PosX, PosY: Integer;
 begin
   if (ssLeft in Shift) then
   begin
-    if ColorSpace.ID = csDEF then
+    AxisX := GetIndexAxisX(AxisConfig);
+    AxisY := GetIndexAxisY(AxisConfig);
+    with ColorSpace do
     begin
-      Dec(X, CrossSize);
-      Dec(Y, CrossSize);
-      PosX := 8;
-      PosY := 8;
-      for I := Low(ColorValues) to High(ColorValues) do
-      begin
-        if (X >= PosX) and (X < PosX + 16) and (Y >= PosY) and (Y < PosY + 16) then
-          FullColor := ColorSpaceManager.ColorSpace[csDEF].ConvertFromColor(ColorValues[I].Value);
-        Inc(PosX, 16 + 6);
-        if PosX > FBuffer.Width - 8 then
-        begin
-          PosX := 8;
-          Inc(PosY, 16 + 6);
-        end;
-      end;
-      PosX := 8;
-      Inc(PosY, 16 + 6);
-      for I := Low(SysColorValues) to High(SysColorValues) do
-      begin
-        if (X >= PosX) and (X < PosX + 16) and (Y >= PosY) and (Y < PosY + 16) then
-          FullColor := ColorSpaceManager.ColorSpace[csDEF].ConvertFromColor(SysColorValues[I].Value);
-        Inc(PosX, 16 + 6);
-        if PosX > FBuffer.Width - 8 then
-        begin
-          PosX := 8;
-          Inc(PosY, 16 + 6);
-        end;
-      end;
-    end
-    else
-    begin
-      AxisX := GetIndexAxisX(AxisConfig);
-      AxisY := GetIndexAxisY(AxisConfig);
-      with ColorSpace do
-      begin
-        MinX := AxisMin[AxisX];
-        MaxX := AxisMax[AxisX];
-        MinY := AxisMin[AxisY];
-        MaxY := AxisMax[AxisY];
+      MinX := AxisMin[AxisX];
+      MaxX := AxisMax[AxisX];
+      MinY := AxisMin[AxisY];
+      MaxY := AxisMax[AxisY];
 
-        PosX := EnsureRange(X - CrossSize, 0, MaxX - MinX);
-        if ReverseAxisX then
-          PosX := MaxX - PosX
-        else
-          PosX := PosX - MinX;
+      PosX := EnsureRange(((X - CrossSize) * (MaxX - MinX)) div (FBuffer.Width - 1), 0, MaxX - MinX);
+      if ReverseAxisX then
+        PosX := MaxX - PosX
+      else
         PosX := PosX + MinX;
 
-        PosY := EnsureRange(Y - CrossSize, 0, MaxY - MinY);
-        if ReverseAxisY then
-          PosY := MaxY - PosY
-        else
-          PosY := PosY - MinY;
+      PosY := EnsureRange(((Y - CrossSize) * (MaxY - MinY)) div (FBuffer.Height - 1), 0, MaxY - MinY);
+      if ReverseAxisY then
+        PosY := MaxY - PosY
+      else
         PosY := PosY + MinY;
 
-        FullColor := SetAxisValue(SetAxisValue(FullColor, AxisX, Byte(PosX)), AxisY, Byte(PosY));
-      end;
+      FullColor := SetAxisValue(SetAxisValue(FullColor, AxisX, Byte(PosX)), AxisY, Byte(PosY));
     end;
   end;
   inherited MouseColor(Shift, X, Y);
@@ -1543,32 +1474,25 @@ begin
 end;
 
 procedure TJvFullColorCircle.CalcSize;
-var
-  RadiusIndex: TJvAxisIndex;
-  Diameter: Integer;
 begin
-  RadiusIndex := GetIndexAxisX(AxisConfig);
-  with ColorSpace do
-    Diameter := 2 * (AxisMax[RadiusIndex] - AxisMin[RadiusIndex]) + 1;
-
-  SetBounds(Left, Top, Diameter + 2 * CrossSize, Diameter + 2 * CrossSize);
-
-  FBuffer.Width := Diameter;
-  FBuffer.Height := Diameter;
-
+  FBuffer.Width := Max(Width - (2 * CrossSize),0);
+  FBuffer.Height := Max(Height - (2 * CrossSize),0);
   inherited CalcSize;
 end;
 
 procedure TJvFullColorCircle.DrawBuffer;
 var
-  X, Y, Radius, Angle, MaxRadius, MinRadius: Integer;
+  X, Y, Angle, RadiusInt, MaxRadius, MinRadius: Integer;
   AxisRadius, AxisAngle: TJvAxisIndex;
-  MaxAngle, MinAngle, Radius1, Radius2: Integer;
-  SqrYRadius1: Integer;
-  AngleUnit, AngleUnitPi, YRadius1: Extended;
+  MaxAngle, MinAngle: Integer;
+  AngleUnit, AngleUnitPi, XCenter, YCenter, XRelative, YRelative,
+  SqrXRelative, SqrYRelative, Radius: Extended;
   Magic1, Magic2, Magic3: Byte;
   Line: PJvFullColorArray;
 begin
+  if (FBuffer.Width = 0) or (FBuffer.Height = 0) then
+    Exit;
+
   AxisRadius := GetIndexAxisX(AxisConfig);
   AxisAngle := GetIndexAxisY(AxisConfig);
 
@@ -1580,8 +1504,6 @@ begin
     MinAngle := AxisMin[AxisAngle];
   end;
 
-  Radius1 := MaxRadius - MinRadius;
-  Radius2 := (Radius1 * 2) + 1;
   AngleUnit := (MaxAngle - MinAngle) / 2.0 / Pi;
   AngleUnitPi := (MaxAngle - MinAngle) / 2.0;
 
@@ -1593,18 +1515,23 @@ begin
   begin
     Canvas.Brush.Color := Color;
     Canvas.FillRect(Rect(0, 0, Width, Height));
-    for Y := 0 to Radius2 - 1 do
+    XCenter := Width / 2.0;
+    YCenter := Height / 2.0;
+    for Y := 0 to Height - 1 do
     begin
       Line := ScanLine[Y];
-      SqrYRadius1 := Sqr(Y - Radius1);
-      YRadius1 := Y - Radius1;
-      for X := 0 to Radius2 - 1 do
+      YRelative := Y - YCenter;
+      SqrYRelative := Sqr(YRelative / YCenter);
+      for X := 0 to Width - 1 do
       begin
-        Radius := Round(Sqrt(SqrYRadius1 + Sqr(X - Radius1))) + MinRadius;
+        XRelative := X - XCenter;
+        SqrXRelative := Sqr(XRelative / XCenter);
+        Radius := Sqrt(SqrYRelative + SqrXRelative);
 
-        if Radius <= MaxRadius then
+        if Radius <= 1.0 then
         begin
-          Angle := Round(ArcTan2(YRadius1, X - Radius1) * AngleUnit + AngleUnitPi) + MinAngle;
+          Angle := Round(ArcTan2(YRelative, XRelative) * AngleUnit + AngleUnitPi) + MinAngle;
+          RadiusInt := Round(Radius * (MaxRadius - MinRadius));
           case AxisAngle of
             axIndex0:
               if InvertRotation then
@@ -1625,37 +1552,32 @@ begin
           case AxisRadius of
             axIndex0:
               if InvertRadius then
-                Magic1 := MaxRadius - Radius
+                Magic1 := MaxRadius - RadiusInt
               else
-                Magic1 := Radius + MinRadius;
+                Magic1 := RadiusInt + MinRadius;
             axIndex1:
               if InvertRadius then
-                Magic2 := MaxRadius - Radius
+                Magic2 := MaxRadius - RadiusInt
               else
-                Magic2 := Radius + MinRadius;
+                Magic2 := RadiusInt + MinRadius;
             axIndex2:
               if InvertRadius then
-                Magic3 := MaxRadius - Radius
+                Magic3 := MaxRadius - RadiusInt
               else
-                Magic3 := Radius + MinRadius;
+                Magic3 := RadiusInt + MinRadius;
           end;
-
           // (outchy) don't remove, Bitmap colors are stocked as (MSB) 00RRGGBB (LSB)
           // Delphi TColor is (MSB) 00BBGGRR (LSB)
           Line[X] := RGBToBGR(ConvertToColor(Magic1 or (Magic2 shl 8) or (Magic3 shl 16)));
-        end;
+        end else if (XRelative >= 0.0) then
+          Break;         // end of a line
       end;
     end;
   end;
-
   inherited DrawBuffer;
 end;
 
 procedure TJvFullColorCircle.Paint;
-var
-  Radius1: Integer;
-  RadiusIndex: TJvAxisIndex;
-
   procedure DrawCross(AFullColor: TJvFullColor; ACrossColor: TColor);
   var
     Point: TPoint;
@@ -1667,33 +1589,27 @@ var
       Pen := CrossStyle;
       Pen.Color := ACrossColor;
 
-      MoveTo(Point.X, Point.Y + CrossSize);
-      LineTo(Point.X + CrossSize - CrossCenter, Point.Y + CrossSize);
+      MoveTo(Point.X - CrossSize, Point.Y);     // left
+      LineTo(Point.X - CrossCenter, Point.Y);
 
-      MoveTo(Point.X + CrossSize + CrossCenter, Point.Y + CrossSize);
-      LineTo(Point.X + (2 * CrossSize), Point.Y + CrossSize);
+      MoveTo(Point.X + CrossCenter, Point.Y);   // right
+      LineTo(Point.X + CrossSize, Point.Y);
 
-      MoveTo(Point.X + CrossSize, Point.Y);
-      LineTo(Point.X + CrossSize, Point.Y + CrossSize - CrossCenter);
+      MoveTo(Point.X, Point.Y - CrossSize);     // top
+      LineTo(Point.X, Point.Y - CrossCenter);
 
-      MoveTo(Point.X + CrossSize, Point.Y + CrossSize + CrossCenter);
-      LineTo(Point.X + CrossSize, Point.Y + 2 * CrossSize);
+      MoveTo(Point.X, Point.Y + CrossCenter);   // bottom
+      LineTo(Point.X, Point.Y + CrossSize);
 
       Pen.Mode := pmCopy;
       Pen.Style := psSolid;
       Pen.Width := LineWidth;
-      MoveTo(Radius1 + CrossSize, Radius1 + CrossSize);
-      LineTo(Point.X + CrossSize, Point.Y + CrossSize);
+      MoveTo((FBuffer.Width div 2) + CrossSize + 1,(FBuffer.Height div 2 ) + CrossSize + 1);
+      LineTo(Point.X, Point.Y);
     end;
   end;
-
 begin
   inherited Paint;
-
-  RadiusIndex := GetIndexAxisX(AxisConfig);
-  with ColorSpace do
-    Radius1 := AxisMax[RadiusIndex] - AxisMin[RadiusIndex];
-
   with Canvas do
   begin
     Brush.Color := Color;
@@ -1755,15 +1671,21 @@ begin
     Angle := Angle - AngleMin;
 
   FullAngle := (2 * Pi * Angle) / (AngleMax - AngleMin) - Pi;
-  Result.X := Round(Radius * Cos(FullAngle)) + Radius1;
-  Result.Y := Round(Radius * Sin(FullAngle)) + Radius1;
+  Result.X := Round(Radius * Cos(FullAngle) * FBuffer.Width / (Radius1 * 2) + (FBuffer.Width / 2.0)) + CrossSize;
+  Result.Y := Round(Radius * Sin(FullAngle) * FBuffer.Height / (Radius1 * 2) + (FBuffer.Height / 2.0)) + CrossSize;
 end;
 
 function TJvFullColorCircle.PositionToFullColor(APoint: TPoint): TJvFullColor;
 var
   RadiusIndex, AngleIndex: TJvAxisIndex;
-  Radius, RadiusMax, RadiusMin, Angle, AngleMax, AngleMin, Radius1: Integer;
+  Radius, RadiusMax, RadiusMin, Angle, AngleMax, AngleMin: Integer;
+  XPos, YPos: Extended;
 begin
+  if (FBuffer.Width = 0) or (FBuffer.Height = 0) then
+  begin
+    Result := fclRGBBlack;
+    Exit;
+  end;
   with ColorSpace do
   begin
     RadiusIndex := GetIndexAxisX(AxisConfig);
@@ -1775,10 +1697,13 @@ begin
     AngleMin := AxisMin[AngleIndex];
   end;
 
-  Radius1 := RadiusMax - RadiusMin;
+  XPos := FBuffer.Width / 2.0;
+  XPos := (APoint.X - CrossSize - XPos) / XPos;
+  YPos := FBuffer.Height / 2.0;
+  YPos := (APoint.Y - CrossSize - YPos) / YPos;
 
-  Radius := Round(Sqrt(Sqr(APoint.Y - Radius1) + Sqr(APoint.X - Radius1)));
-  Angle := Round((ArcTan2(APoint.Y - Radius1, APoint.X - Radius1) + Pi) * (AngleMax - AngleMin) / 2.0 / Pi);
+  Radius := Round(Sqrt(Sqr(XPos) + Sqr(YPos))*(RadiusMax - RadiusMin));
+  Angle := Round((ArcTan2(YPos, XPos) + Pi) * (AngleMax - AngleMin) / 2.0 / Pi);
 
   if InvertRadius then
     Radius := RadiusMax - Radius
@@ -1808,7 +1733,7 @@ var
     Point: TPoint;
   begin
     Point := FullColorToPosition(AFullColor);
-    Distance := Round(Sqrt(Sqr(X - CrossSize - Point.X) + Sqr(Y - CrossSize - Point.Y)));
+    Distance := Round(Sqrt(Sqr(X - Point.X) + Sqr(Y - Point.Y)));
     if Distance < CrossSize then
     begin
       AFullColor := LFullColor;
@@ -1820,7 +1745,7 @@ var
   end;
 
 begin
-  LFullColor := PositionToFullColor(Point(X - CrossSize, Y - CrossSize));
+  LFullColor := PositionToFullColor(Point(X, Y));
   if csShowCommon in Styles then
   begin
     if (ssLeft in Shift) or
@@ -1885,7 +1810,6 @@ procedure TJvFullColorCircle.KeyMove(KeyCode: TJvKeyCode;
   MoveCount: Integer);
 begin
   // (outchy) todo implementation but how to select a cursor ???
-
 end;
 
 procedure TJvFullColorCircle.PenChanged(Sender: TObject);
@@ -1962,10 +1886,10 @@ begin
     if (ARect.Bottom < CenterY) then
       ARect.Bottom := CenterY;
 
-    ARect.Left := ARect.Left - CrossStyle.Width;
-    ARect.Top := ARect.Top - CrossStyle.Width;
-    ARect.Right := ARect.Right + CrossStyle.Width + (2 * CrossSize);
-    ARect.Bottom := ARect.Bottom + CrossStyle.Width + (2 * CrossSize);
+    ARect.Left := ARect.Left - CrossStyle.Width - CrossSize;
+    ARect.Top := ARect.Top - CrossStyle.Width - CrossSize;
+    ARect.Right := ARect.Right + CrossStyle.Width + CrossSize;
+    ARect.Bottom := ARect.Bottom + CrossStyle.Width + CrossSize;
 
     InvalidateRect(Handle, @ARect, False);
   end;
@@ -2369,14 +2293,9 @@ begin
   FArrowWidth := 9;
   FArrowColor := clBlack;
   FFullColorDrawing := True;
-
   FValueXAuto := True;
   FValueYAuto := True;
-
-  BarWidth := 10;
-
   FLink := nil;
-
   ColorSpaceChange;
 end;
 
@@ -2388,28 +2307,17 @@ begin
 end;
 
 procedure TJvFullColorTrackBar.CalcSize;
-var
-  ColorAmp: Integer;
-  AxisZ: TJvAxisIndex;
 begin
-  AxisZ := GetIndexAxisZ(AxisConfig);
-  with ColorSpace do
-    ColorAmp := AxisMax[AxisZ] - AxisMin[AxisZ] + 1;
-
   case Orientation of
     trHorizontal:
       begin
-        Width := ColorAmp + (2 * ArrowWidth);
-        Height := BarWidth + ArrowWidth + 1;
-        FBuffer.Width := ColorAmp;
-        FBuffer.Height := BarWidth;
+        FBuffer.Width := Max(Width - (2 * ArrowWidth),0);
+        FBuffer.Height := Max(Height - ArrowWidth,0);
       end;
     trVertical:
       begin
-        Width := BarWidth + ArrowWidth + 1;
-        Height := ColorAmp + (2 * ArrowWidth);
-        FBuffer.Width := BarWidth;
-        FBuffer.Height := ColorAmp;
+        FBuffer.Width := Max(Width - ArrowWidth,0);
+        FBuffer.Height := Max(Height - (2 * ArrowWidth),0);
       end;
   end;
   inherited CalcSize;
@@ -2425,10 +2333,12 @@ end;
 procedure TJvFullColorTrackBar.DrawBuffer;
 var
   AxisX, AxisY, AxisZ: TJvAxisIndex;
-  MinZ, MaxZ, PosZ, IndexZ: Byte;
+  MinZ, MaxZ, ValueZ, IndexZ: Integer;
   TempColor: TJvFullColor;
+  GraphicRange: Integer;
 begin
-  if FCreating then
+  if   (FCreating) or (Width = 0) or (Height = 0) or (FBuffer.Width = 0)
+    or (FBuffer.Height = 0) then
     Exit;
 
   AxisX := GetIndexAxisX(AxisConfig);
@@ -2446,54 +2356,57 @@ begin
       TempColor := SetAxisValue(SetAxisValue(fclRGBBlack, AxisX, ValueX), AxisY, ValueY);
 
     with FBuffer.Canvas do
-      for IndexZ := MinZ to MaxZ do
+    begin
+      if (Orientation = trHorizontal) then
+        GraphicRange := FBuffer.Width - 1
+      else
+        GraphicRange := FBuffer.Height - 1;
+      for IndexZ := 0 to GraphicRange do
       begin
         if ColorOrientation = coInverse then
-          PosZ := MaxZ - IndexZ
+          ValueZ := MaxZ - ((IndexZ * (MaxZ - MinZ)) div GraphicRange)
         else
-          PosZ := IndexZ - MinZ;
-
-        TempColor := SetAxisValue(TempColor, AxisZ, IndexZ);
-        Pen.Color := ConvertToColor(TempColor);
-
+          ValueZ := ((IndexZ * (MaxZ - MinZ)) div GraphicRange) + MinZ;
+        Pen.Color := ConvertToColor(SetAxisValue(TempColor, AxisZ, ValueZ));
         case Orientation of
           trHorizontal:
             begin
-              MoveTo(PosZ, 0);
-              LineTo(PosZ, BarWidth);
+              MoveTo(IndexZ, 0);
+              LineTo(IndexZ, Height - ArrowWidth);
             end;
           trVertical:
             begin
-              MoveTo(0, PosZ);
-              LineTo(BarWidth, PosZ);
+              MoveTo(0, IndexZ);
+              LineTo(Width - ArrowWidth, IndexZ);
             end;
         end;
       end;
+    end;
   end;
-
   inherited DrawBuffer;
 end;
 
 function TJvFullColorTrackBar.GetCursorPosition: TJvCursorPoints;
 var
   AxisZ: TJvAxisIndex;
-  PosZ: Integer;
+  PosZ, MaxAxis, MinAxis: Integer;
+  GraphicRange: Integer;
 begin
   AxisZ := GetIndexAxisZ(AxisConfig);
 
   with ColorSpace do
   begin
+    MaxAxis := AxisMax[AxisZ];
+    MinAxis := AxisMin[AxisZ];
+    if (Orientation = trHorizontal) then
+      GraphicRange := FBuffer.Width - 1
+    else
+      GraphicRange := FBuffer.Height - 1;
     PosZ := GetAxisValue(FullColor, AxisZ);
     if ColorOrientation = coInverse then
-    begin
-      if Orientation = trHorizontal then
-        PosZ := FBuffer.Width - PosZ - 1 + AxisMin[AxisZ]
-      else
-      if Orientation = trVertical then
-        PosZ := FBuffer.Height - PosZ - 1 + AxisMin[AxisZ];
-    end
+      PosZ := ((MaxAxis - PosZ) * GraphicRange) div (MaxAxis - MinAxis)
     else
-      PosZ := PosZ - AxisMin[AxisZ];
+      PosZ := ((PosZ - MinAxis) * GraphicRange) div (MaxAxis - MinAxis);
     Inc(PosZ, ArrowWidth);
   end;
 
@@ -2659,19 +2572,21 @@ procedure TJvFullColorTrackBar.MouseColor(Shift: TShiftState; X, Y: Integer);
 var
   MinZ, MaxZ: Byte;
   AxisZ: TJvAxisIndex;
+  GraphicRange: Integer;
   Pos: Integer;
 begin
-  if not (ssLeft in Shift) then
+  if   (not (ssLeft in Shift)) or (FBuffer.Width = 0) or (FBuffer.Height = 0)
+    or (Width = 0) or (Height = 0) then
     Exit;
-
-  case Orientation of
-    trHorizontal:
-      Pos := X - ArrowWidth;
-    trVertical:
-      Pos := Y - ArrowWidth;
+  if (Orientation = trHorizontal) then
+    Pos := X - ArrowWidth
   else
-    Pos := 0;
-  end;
+    Pos := Y - ArrowWidth;
+
+  if (Orientation = trHorizontal) then
+    GraphicRange := FBuffer.Width - 1
+  else
+    GraphicRange := FBuffer.Height - 1;
 
   AxisZ := GetIndexAxisZ(AxisConfig);
   with ColorSpace do
@@ -2679,16 +2594,14 @@ begin
     MinZ := AxisMin[AxisZ];
     MaxZ := AxisMax[AxisZ];
 
-    Pos := EnsureRange(Pos, 0, MaxZ - MinZ);
+    Pos := EnsureRange((Pos * (MaxZ - MinZ)) div GraphicRange, 0, MaxZ - MinZ);
     if ColorOrientation = coInverse then
       Pos := MaxZ - Pos
     else
       Pos := Pos + MinZ;
-//    Pos := Pos + MinZ;
 
-    FullColor := SetAxisValue(FullColor, AxisZ, Byte(Pos));
+    FullColor := SetAxisValue(FullColor, AxisZ, Pos);
   end;
-
   inherited MouseColor(Shift, X, Y);
 end;
 
@@ -2724,15 +2637,6 @@ begin
   if FOrientation <> Value then
   begin
     FOrientation := Value;
-    CalcSize;
-  end;
-end;
-
-procedure TJvFullColorTrackBar.SetBarWidth(const Value: Integer);
-begin
-  if FBarWidth <> Value then
-  begin
-    FBarWidth := Value;
     CalcSize;
   end;
 end;

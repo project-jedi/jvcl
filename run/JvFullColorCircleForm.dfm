@@ -89,9 +89,6 @@ object JvFullColorCircleFrm: TJvFullColorCircleFrm
       TabOrder = 1
       OnColorChange = JvColorCircleColorChange
       OnColorSpaceChange = JvColorCircleColorSpaceChange
-      RedColor = 67108864
-      GreenColor = 67108864
-      BlueColor = 67108864
       CrossSize = 10
       CrossCenter = 3
       CrossStyle.Width = 3
