@@ -17,7 +17,6 @@ Description
   TJvCustomEdit encapsulates new behavior common to all enhanced components for editing text by
   introducing methods and properties that provide ability to:
 
-  * Automatically load and save the content of the control.
   * Align the text in the edit box.
   * Limit the maximum text size in pixels.
   * Specify a disabled color and text color.
@@ -41,6 +40,21 @@ Description
   taCenter        Center the text in the edit control.
   taRightJustify  Align text on the right side in the edit control.
   </TABLE>
+----------------------------------------------------------------------------------------------------
+@@TJvCustomEdit.AutoHint
+Summary
+  Specifies whether the control's hint is set to the current text.
+Description
+  Use AutoHint to indicate whether the text of the control is automatically displayed as the control's hint.
+
+  If AutoHint is true, the hint is changed according to the following rules:
+    * If the original hint is non-empty, it is only set if the text doesn't fit in the control. The original
+      hint is automatically restored when the text fits.
+    * If the original hint is empty, it is always set to be equivalent to the text.
+Note
+  To store a default hint value, AutoUpdate must be set to false.
+See Also
+  Hint, ShowHint, Text
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.Caret
 Summary
