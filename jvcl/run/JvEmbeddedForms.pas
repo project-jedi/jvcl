@@ -152,7 +152,7 @@ begin
   if (AOwner <> nil) and (csDesigning in AOwner.ComponentState) then
     for I := 0 to AOwner.ComponentCount - 1 do
       if AOwner.Components[I] is TJvEmbeddedFormLink then
-        raise Exception.Create(RsEFormLinkSingleInstanceOnly);
+        raise Exception.CreateRes(@RsEFormLinkSingleInstanceOnly);
   inherited Create(AOwner);
 end;
 

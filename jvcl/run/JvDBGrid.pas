@@ -3288,9 +3288,8 @@ procedure TJvDBGrid.PlaceControl(Control: TWinControl; ACol, ARow: Integer);
 var
   R: TRect;
 begin
-  if not Assigned(Control) then begin
-     raise EJVCLDbGridException.Create( RsJvDBGridControlPropertyNotAssigned);
-  end;
+  if not Assigned(Control) then
+    raise EJVCLDbGridException.CreateRes(@RsEJvDBGridControlPropertyNotAssigned);
   if not DataLink.Edit then
     Exit;
 

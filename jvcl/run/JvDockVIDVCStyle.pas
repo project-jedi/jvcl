@@ -4367,7 +4367,7 @@ begin
   if Value = tpBottom then
     inherited SetTabPosition(Value)
   else
-    raise Exception.Create(RsEDockTabPositionMustBetpBottom);
+    raise Exception.CreateRes(@RsEDockTabPositionMustBetpBottom);
 end;
 
 ///=== { TJvDockVIDVCConjoinServerOption } ===================================
