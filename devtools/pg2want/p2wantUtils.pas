@@ -48,7 +48,7 @@ end;
 procedure ShowHelp;
 begin
   writeln('p2want: converts package generator xml files to want xml files');
-  writeln('USAGE: pg2want src dest [fixed] [dir]');
+  writeln('USAGE: pg2want -is src dest [fixed] [dir]');
   writeln('where');
   writeln('src  - the pg xml file(s) to read from. Accepts wildcards.');
   writeln('dest - the file to write to. Defaults to want.xml in the current directory.');
@@ -57,7 +57,13 @@ begin
   writeln('dir - the root directory to replace relative paths with in the pg xml file(s).');
 end;
 
-function ParseItem(const ANode: TJvSimpleXMLElem; const Dest: TStrings): integer;
+procedure AddRow(Strings:TStrings; Indent:integer;const S:string);
+begin
+  if Indent < 0 then Indent := 0;
+  Strings.Add(Format('%s%s',[StringOfChar(' ', Indent),S]));
+end;
+
+function ParseItem(const ANode: TJvSimpleXMLElem; const Dest: TStrings;Indent:integer): integer;
 var
   AFile: string;
   procedure FindAdditional(const AFile: string; Dest: TStrings);
@@ -98,9 +104,9 @@ var
           begin // tmp path could be in unix format
             if ExtractFilePath(tmp) = '' then
               tmp := ExtractFilePath(AFile) + ExtractFilename(tmp);
-            tmp := Format('    <include name="%s%s" />', [PrefixPath(tmp), RemoveRelativePath(tmp)]);
+            tmp := Format('<include name="%s%s" />', [PrefixPath(tmp), RemoveRelativePath(tmp)]);
             if Dest.IndexOf(tmp) <> Dest.Count - 1 then // check for Linux/Windows double inclusion
-              Dest.Add(tmp);
+              AddRow(Dest,Indent,tmp);
           end;
         end
       end;
@@ -113,15 +119,15 @@ begin
   AFile := ANode.Properties.Value('Name', '');
   if AFile <> '' then
   begin
-    Dest.Add(Format('    <include name="%s%s" />', [PrefixPath(AFile), RemoveRelativePath(AFile)]));
+    AddRow(Dest, Indent, Format('<include name="%s%s" />', [PrefixPath(AFile), RemoveRelativePath(AFile)]));
     Result := 1;
     FindAdditional(AFile, Dest);
   end;
 end;
 
-function ParseFile(const SrcFile: string; const XML: TJvSimpleXML; const Dest, Fixed: TStrings): integer;
+function ParseFile(const SrcFile: string; const XML: TJvSimpleXML; const Dest, Fixed: TStrings; Indent:integer): integer;
 var
-  i: integer;
+  i, j: integer;
   Node: TJvSimpleXMLElem;
   S, PackName, ZipName: string;
 begin
@@ -139,30 +145,39 @@ begin
       end;
   if Node <> nil then
   begin
-    S := Format('<property name="%s" value="%s${shortversion}.zip" />', [ZipName, PackName]);
+    Inc(Indent,2);
+    S := Format('%s<property name="%s" value="%s${shortversion}.zip" />', [StringOfChar(' ',Indent),ZipName, PackName]);
     if Dest.IndexOf(S) < 0 then
-      Dest.Add(S);
-    S := Format('<delete file="${%s}" />', [ZipName]);
+      AddRow(Dest, 0, S);
+    S := Format('%s<delete file="${%s}" />', [StringOfChar(' ',Indent),ZipName]);
     if Dest.IndexOf(S) < 0 then
-      Dest.Add(S);
-    S := Format('<zip zipfile="${%s}">', [ZipName]);
+      AddRow(Dest, 0, S);
+    S := Format('%s<zip zipfile="${%s}">', [StringOfChar(' ',Indent),ZipName]);
     if Dest.IndexOf(S) < 0 then
     begin
-      Dest.Add(S);
+      AddRow(Dest, 0, S);
       S := '';
-      Dest.Add('  <fileset>');
-      Dest.Add(Format('    <exclude name="%s${%s}" />', [PrefixPath(ZipName), ZipName]));
-      Dest.Add(Format('    <include name="%s**/%s*" />', [PrefixPath(PackName), PackName]));
-      if Fixed.Count > 0 then
-        Dest.AddStrings(Fixed);
+      Inc(Indent, 2);
+      AddRow(Dest, Indent, '<fileset>');
+      Inc(Indent, 2);
+      AddRow(Dest, Indent, Format('<exclude name="%s${%s}" />', [PrefixPath(ZipName), ZipName]));
+      AddRow(Dest, Indent, Format('<include name="%s**/%s*" />', [PrefixPath(PackName), PackName]));
+      for j := 0 to Fixed.Count - 1 do
+        AddRow(Dest, Indent, Fixed[j]);
+      Dec(Indent, 2);
+      Dec(Indent, 2);
     end;
+    Inc(Indent, 4);
     for i := 0 to Node.Items.Count - 1 do
       if AnsiSameText(Node.Items[i].Name, 'File') then
-        Result := ParseItem(Node.Items[i], Dest);
+        Result := ParseItem(Node.Items[i], Dest, Indent);
+    Dec(Indent, 4);
     if S <> '' then // this relies on the fact that the src xml files are sorted and come in pairs
     begin
-      Dest.Add('  </fileset>');
-      Dest.Add('</zip>');
+      Inc(Indent, 2);
+      AddRow(Dest, Indent,'</fileset>');
+      Dec(Indent, 2);
+      AddRow(Dest, Indent,'</zip>');
     end;
   end;
 end;
@@ -173,7 +188,7 @@ var
   APath: string;
   XML: TJvSimpleXML;
   Dst, AFiles, AFixed: TStringlist;
-  i: integer;
+  i, Indent: integer;
 begin
   Result := 0;
   APath := ExtractFilePath(Src);
@@ -193,12 +208,15 @@ begin
       FindClose(F);
     end;
     AFiles.Sort;
-    Dst.Add('<project name="JVCL Separate Zips" default="separate">');
-    Dst.Add('<target name="separate">');
+    Indent := 0;
+    AddRow(Dst, Indent,'<project name="JVCL Separate Zips" default="separate">');
+    Inc(Indent, 2);
+    AddRow(Dst, Indent,'<target name="separate">');
     for i := 0 to AFiles.Count - 1 do
-      Inc(Result, ParseFile(AFiles[i], XML, Dst, AFixed));
-    Dst.Add('</target>');
-    Dst.Add('</project>');
+      Inc(Result, ParseFile(AFiles[i], XML, Dst, AFixed, Indent));
+    AddRow(Dst, Indent,'</target>');
+    Dec(Indent,2);
+    AddRow(Dst, Indent,'</project>');
     if (Result > 0) then
       Dst.SaveToFile(Dest);
   finally
@@ -225,8 +243,8 @@ begin
   else
     Dest := ExpandUNCFilename(ParamStr(2));
   Fixed := ExpandUNCFilename(ParamStr(3));
-  GlobalDir := ParamStr(4);
-//  if GlobalDir = '' then
+  if ParamCount >= 4 then
+    GlobalDir := ParamStr(4);
 //    GlobalDir := ExtractFilePath(Src); // assume source folder is "root"
   if FileExists(Dest) then
     RenameFile(Dest, Dest + '.bak');
