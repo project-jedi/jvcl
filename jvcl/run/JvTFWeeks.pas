@@ -33,18 +33,22 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvTFManager, JvTFGlance, JvTFUtils{$IFDEF USEJVCL}, JvTypes{$ENDIF};
+  {$IFDEF USEJVCL}
+  JvTypes,
+  {$ENDIF USEJVCL}
+  JvTFManager, JvTFGlance, JvTFUtils;
 
 {$HPPEMIT '#define TDate Controls::TDate'}
+
 type
   TJvTFDispOrder = (doLeftRight, doTopBottom);
 
   TJvTFWeeks = class(TJvTFCustomGlance)
   private
-    FWeekCount: integer;
+    FWeekCount: Integer;
     FDisplayDays: TTFDaysOfWeek;
     FSplitDay: TTFDayOfWeek;
-    FIgnoreSplit: boolean;
+    FIgnoreSplit: Boolean;
     FDisplayOrder: TJvTFDispOrder;
     FDWNames: TJvTFDWNames;
     FDWTitleAttr: TJvTFGlanceTitle;
@@ -52,10 +56,10 @@ type
     FOnUpdateTitle: TJvTFUpdateTitleEvent;
     function GetDisplayDate: TDate;
     procedure SetDisplayDate(Value: TDate);
-    procedure SetWeekCount(Value: integer);
+    procedure SetWeekCount(Value: Integer);
     procedure SetDisplayDays(Value: TTFDaysOfWeek);
     procedure SetSplitDay(Value: TTFDayOfWeek);
-    procedure SetIgnoreSplit(Value: boolean);
+    procedure SetIgnoreSplit(Value: Boolean);
     procedure SetDisplayOrder(Value: TJvTFDispOrder);
     procedure SetDWNames(Value: TJvTFDWNames);
     procedure SetDWTitleAttr(Value: TJvTFGlanceTitle);
@@ -63,42 +67,34 @@ type
     procedure ConfigCells; override;
     procedure SetStartOfWeek(Value: TTFDayOfWeek); override;
     procedure DWNamesChange(Sender: TObject);
-    procedure Navigate(aControl: TJvTFControl; SchedNames: TStringlist;
+    procedure Navigate(AControl: TJvTFControl; SchedNames: TStringList;
       Dates: TJvTFDateList); override;
 
     function GetSplitParentDay: TTFDayOfWeek;
     function GetCellTitleText(Cell: TJvTFGlanceCell): string; override;
 
     // draws the DW Titles
-    procedure DrawTitle(aCanvas: TCanvas); override;
+    procedure DrawTitle(ACanvas: TCanvas); override;
     procedure UpdateTitle;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDataTop: integer; override;
-    function DisplayDayCount: integer;
+    function GetDataTop: Integer; override;
+    function DisplayDayCount: Integer;
     procedure PrevWeek;
     procedure NextWeek;
   published
     property DisplayDate: TDate read GetDisplayDate write SetDisplayDate;
     property DisplayDays: TTFDaysOfWeek read FDisplayDays write SetDisplayDays
       default [dowSunday..dowSaturday];
-    property DisplayOrder: TJvTFDispOrder read FDisplayOrder
-      write SetDisplayOrder;
+    property DisplayOrder: TJvTFDispOrder read FDisplayOrder write SetDisplayOrder;
     property DWNames: TJvTFDWNames read FDWNames write SetDWNames;
-    property DWTitleAttr: TJvTFGlanceTitle read FDWTitleAttr
-      write SetDWTitleAttr;
-    property IgnoreSplit: boolean read FIgnoreSplit write SetIgnoreSplit
-      default false;
-    property SplitDay: TTFDayOfWeek read FSplitDay write SetSplitDay
-      default dowSunday;
-    property WeekCount: integer read FWeekCount write SetWeekCount default 1;
-
-    property OnDrawDWTitle: TJvTFDrawDWTitleEvent read FOnDrawDWTitle
-      write FOnDrawDWTitle;
-    property OnUpdateTitle: TJvTFUpdateTitleEvent read FOnUpdateTitle
-      write FOnUpdateTitle;
-
+    property DWTitleAttr: TJvTFGlanceTitle read FDWTitleAttr write SetDWTitleAttr;
+    property IgnoreSplit: Boolean read FIgnoreSplit write SetIgnoreSplit default False;
+    property SplitDay: TTFDayOfWeek read FSplitDay write SetSplitDay default dowSunday;
+    property WeekCount: Integer read FWeekCount write SetWeekCount default 1;
+    property OnDrawDWTitle: TJvTFDrawDWTitleEvent read FOnDrawDWTitle write FOnDrawDWTitle;
+    property OnUpdateTitle: TJvTFUpdateTitleEvent read FOnUpdateTitle  write FOnUpdateTitle;
     property StartOfWeek default dowMonday;
 //    property Navigator;
 //    property OnNavigate;
@@ -107,6 +103,7 @@ type
 {$HPPEMIT '#undef TDate'}
 
 implementation
+
 {$IFDEF USEJVCL}
 uses
   JvResources;
@@ -119,16 +116,10 @@ resourcestring
 
 procedure TJvTFWeeks.ConfigCells;
 var
-  Row,
-    Col,
-    CalcRowCount: integer;
+  Row, Col, CalcRowCount: Integer;
   CurrDate: TDateTime;
   DayToSplit: TTFDayOfWeek;
-  CanSplit: boolean;
-
-                    /////////////////////////////////////////////
-                    // SUBORDINATE ROUTINES
-                    /////////////////////////////////////////////
+  CanSplit: Boolean;
 
   procedure DisplayDateCheck;
   begin
@@ -136,30 +127,26 @@ var
       IncDays(CurrDate, 1);
   end;
 
-  procedure ConfigCell(aCell: TJvTFGlanceCell);
+  procedure ConfigCell(ACell: TJvTFGlanceCell);
   var
     TestDay: TTFDayOfWeek;
   begin
     DisplayDateCheck;
-    SetCellDate(aCell, CurrDate);
+    SetCellDate(ACell, CurrDate);
     TestDay := DateToDOW(CurrDate);
     IncDays(CurrDate, 1);
 
-    if (TestDay = DayToSplit) and
-      (SplitDay in DisplayDays) and CanSplit then
+    if (TestDay = DayToSplit) and (SplitDay in DisplayDays) and CanSplit then
     begin
-      SplitCell(aCell);
+      SplitCell(ACell);
       DisplayDateCheck;
-      SetCellDate(aCell.Subcell, CurrDate);
+      SetCellDate(ACell.Subcell, CurrDate);
       IncDays(CurrDate, 1);
     end
     else
-      CombineCell(aCell);
+      CombineCell(ACell);
   end;
 
-///////////////////////
-// MAIN ROUTINE
-///////////////////////
 begin
   if WeekCount = 1 then
   begin
@@ -194,7 +181,7 @@ begin
       for Row := 0 to RowCount - 1 do
         ConfigCell(Cells.Cells[Col, Row]);
 
-  inherited;
+  inherited ConfigCells;
 end;
 
 constructor TJvTFWeeks.Create(AOwner: TComponent);
@@ -202,7 +189,7 @@ begin
   FWeekCount := 1;
   FDisplayDays := DOW_WEEK;
   FSplitDay := dowSunday;
-  FIgnoreSplit := false;
+  FIgnoreSplit := False;
 
   inherited Create(AOwner);
 
@@ -232,39 +219,28 @@ begin
   FDWNames.Free;
   FDWTitleAttr.OnChange := nil;
   FDWTitleAttr.Free;
-
   inherited Destroy;
 end;
 
-function TJvTFWeeks.DisplayDayCount: integer;
+function TJvTFWeeks.DisplayDayCount: Integer;
 var
   DOW: TTFDayOfWeek;
 begin
   Result := 0;
   for DOW := Low(TTFDayOfWeek) to High(TTFDayOfWeek) do
-    if (DOW in DisplayDays) then
+    if DOW in DisplayDays then
       Inc(Result);
 end;
 
-procedure TJvTFWeeks.DrawTitle(aCanvas: TCanvas);
+procedure TJvTFWeeks.DrawTitle(ACanvas: TCanvas);
 var
-  I,
-    Col,
-    LineBottom: integer;
-  SplitParentDay,
-    CurrDOW: TTFDayOfWeek;
-  ARect,
-    TempRect,
-    TxtRect,
-    TextBounds: TRect;
+  I, Col, LineBottom: Integer;
+  SplitParentDay, CurrDOW: TTFDayOfWeek;
+  ARect, TempRect, TxtRect, TextBounds: TRect;
   OldPen: TPen;
   OldBrush: TBrush;
   OldFont: TFont;
   Txt: string;
-
-                     //////////////////////////////////////////
-                     // SUBORDINATE ROUTINE
-                     //////////////////////////////////////////
 
   procedure CheckCurrDOW;
   begin
@@ -272,17 +248,14 @@ var
       IncDOW(CurrDOW, 1);
   end;
 
-////////////////////
-// MAIN ROUTINE
-////////////////////
 begin
-  inherited;
+  inherited DrawTitle(ACanvas);
 
   // Don't draw the DW Titles if we're only showing one week.
   if not DWTitleAttr.Visible or (WeekCount = 1) then
     Exit;
 
-  with aCanvas do
+  with ACanvas do
   begin
     OldPen := TPen.Create;
     OldPen.Assign(Pen);
@@ -307,16 +280,16 @@ begin
     TxtRect := ARect;
     Windows.InflateRect(TxtRect, -1, -1);
 
-    with aCanvas do
+    with ACanvas do
     begin
       Brush.Color := DWTitleAttr.Color;
       FillRect(ARect);
 
       case DWTitleAttr.FrameAttr.Style of
         fs3DRaised:
-          Draw3DFrame(aCanvas, ARect, clBtnHighlight, clBtnShadow);
+          Draw3DFrame(ACanvas, ARect, clBtnHighlight, clBtnShadow);
         fs3DLowered:
-          Draw3DFrame(aCanvas, ARect, clBtnShadow, clBtnHighlight);
+          Draw3DFrame(ACanvas, ARect, clBtnShadow, clBtnHighlight);
         fsFlat:
           begin
             Pen.Color := DWTitleAttr.FrameAttr.Color;
@@ -326,7 +299,7 @@ begin
               MoveTo(ARect.Left, ARect.Top);
               LineTo(ARect.Left, ARect.Bottom);
             end;
-            PolyLine([Point(ARect.Right - 1, ARect.Top),
+            Polyline([Point(ARect.Right - 1, ARect.Top),
               Point(ARect.Right - 1, ARect.Bottom - 1),
                 Point(ARect.Left - 1, ARect.Bottom - 1)]);
           end;
@@ -347,8 +320,7 @@ begin
       CheckCurrDOW;
       Txt := DWNames.GetDWName(DOWToBorl(CurrDOW));
 
-      if (CurrDOW = SplitParentDay) and (SplitDay in DisplayDays) and
-        not IgnoreSplit then
+      if (CurrDOW = SplitParentDay) and (SplitDay in DisplayDays) and not IgnoreSplit then
       begin
         IncDOW(CurrDOW, 1);
         CheckCurrDOW;
@@ -356,19 +328,19 @@ begin
       end;
 
       Font := DWTitleAttr.TxtAttr.Font;
-      DrawAngleText(aCanvas, TxtRect, TextBounds,
+      DrawAngleText(ACanvas, TxtRect, TextBounds,
         DWTitleAttr.TxtAttr.Rotation,
         DWTitleAttr.TxtAttr.AlignH,
         DWTitleAttr.TxtAttr.AlignV, Txt);
     end;
 
     if Assigned(FOnDrawDWTitle) then
-      FOnDrawDWTitle(Self, aCanvas, ARect, CurrDOW, Txt);
+      FOnDrawDWTitle(Self, ACanvas, ARect, CurrDOW, Txt);
 
     IncDOW(CurrDOW, 1);
   end;
 
-  with aCanvas do
+  with ACanvas do
   begin
     Pen.Assign(OldPen);
     Brush.Assign(OldBrush);
@@ -399,7 +371,7 @@ begin
     Result := FormatDateTime(DateFormat, Cell.CellDate);
 end;
 
-function TJvTFWeeks.GetDataTop: integer;
+function TJvTFWeeks.GetDataTop: Integer;
 begin
   Result := inherited GetDataTop;
   if DWTitleAttr.Visible and (WeekCount > 1) then
@@ -419,10 +391,10 @@ begin
     IncDOW(Result, -1);
 end;
 
-procedure TJvTFWeeks.Navigate(aControl: TJvTFControl;
-  SchedNames: TStringlist; Dates: TJvTFDateList);
+procedure TJvTFWeeks.Navigate(AControl: TJvTFControl;
+  SchedNames: TStringList; Dates: TJvTFDateList);
 begin
-  inherited;
+  inherited Navigate(AControl, SchedNames, Dates);
   if Dates.Count > 0 then
     DisplayDate := Dates[0];
 end;
@@ -477,7 +449,7 @@ begin
   FDWTitleAttr.Assign(Value);
 end;
 
-procedure TJvTFWeeks.SetIgnoreSplit(Value: boolean);
+procedure TJvTFWeeks.SetIgnoreSplit(Value: Boolean);
 begin
   if Value <> FIgnoreSplit then
   begin
@@ -499,10 +471,10 @@ procedure TJvTFWeeks.SetStartOfWeek(Value: TTFDayOfWeek);
 begin
   if not IgnoreSplit and (Value = SplitDay) then
     IncDOW(Value, -1);
-  inherited;
+  inherited SetStartOfWeek(Value);
 end;
 
-procedure TJvTFWeeks.SetWeekCount(Value: integer);
+procedure TJvTFWeeks.SetWeekCount(Value: Integer);
 begin
   Value := Greater(Value, 1);
   if Value <> FWeekCount then

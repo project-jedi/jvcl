@@ -73,6 +73,7 @@ type
   TJvDropCalendar = class(TJvCustomDropDownForm)
   private
     FCal: TJvCustomMonthCalendar;
+    FWithBeep: Boolean;
     FOnChange: TNotifyEvent;
     FOnSelect: TNotifyEvent;
     FOnCancel: TNotifyEvent;
@@ -93,6 +94,7 @@ type
     destructor Destroy; override;
     procedure SetFocus; override;
     property SelDate: TDateTime read GetSelDate write SetSelDate;
+    property WithBeep: Boolean read FWithBeep write FWithBeep;
     property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
@@ -802,6 +804,7 @@ constructor TJvDropCalendar.CreateWithAppearance(AOwner: TComponent;
   const AAppearance: TJvMonthCalAppearance);
 begin
   inherited Create(AOwner);
+  FWithBeep := False;
   FCal := TJvMonthCalendar2.CreateWithAppearance(Self, AAppearance);
   with TJvMonthCalendar2(FCal) do
   begin
@@ -855,7 +858,8 @@ end;
 
 procedure TJvDropCalendar.CalKeyPress(Sender: TObject; var Key: Char);
 begin
-  MessageBeep(0);
+  if WithBeep then
+    MessageBeep(0);
   case Word(Key) of
     VK_RETURN:
       DoSelect;

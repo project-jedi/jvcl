@@ -55,6 +55,7 @@ type
     FCanvas: TControlCanvas;
 //    FAlignment: TAlignment;
     FFocused: Boolean;
+    FBeepOnError: Boolean;
     procedure ActiveChange(Sender: TObject);
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
@@ -98,6 +99,7 @@ type
     property Anchors;
     property AutoSelect;
     property AutoSize;
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property BiDiMode;
     property BorderStyle;
     property CharCase;
@@ -146,20 +148,6 @@ type
 
 implementation
 
-{ TJvDBLookupComboEdit }
-
-procedure TJvDBLookupComboEdit.ResetMaxLength;
-var
-  F: TField;
-begin
-  if (MaxLength > 0) and Assigned(DataSource) and Assigned(DataSource.DataSet) then
-  begin
-    F := DataSource.DataSet.FindField(DataField);
-    if Assigned(F) and (F.DataType in [ftString, ftWideString]) and (F.Size = MaxLength) then
-      MaxLength := 0;
-  end;
-end;
-
 constructor TJvDBLookupComboEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -173,6 +161,7 @@ begin
   FDataLink.OnEditingChange := EditingChange;
   FDataLink.OnUpdateData := UpdateData;
   FDataLink.OnActiveChange := ActiveChange;
+  FBeepOnError := True;
 end;
 
 destructor TJvDBLookupComboEdit.Destroy;
@@ -182,6 +171,18 @@ begin
   inherited Destroy;
   // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Free;
+end;
+
+procedure TJvDBLookupComboEdit.ResetMaxLength;
+var
+  F: TField;
+begin
+  if (MaxLength > 0) and Assigned(DataSource) and Assigned(DataSource.DataSet) then
+  begin
+    F := DataSource.DataSet.FindField(DataField);
+    if Assigned(F) and (F.DataType in [ftString, ftWideString]) and (F.Size = MaxLength) then
+      MaxLength := 0;
+  end;
 end;
 
 procedure TJvDBLookupComboEdit.Loaded;
@@ -223,7 +224,8 @@ begin
   if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
     not FDataLink.Field.IsValidChar(Key) then
   begin
-    MessageBeep(0);
+    if BeepOnError then
+      Beep;
     Key := #0;
   end;
   case Key of

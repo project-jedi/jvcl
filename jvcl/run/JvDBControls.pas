@@ -25,16 +25,14 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 
-//=== NEW IN JVCL 3.0 ==
-
-    TJvDBMaskEdit is a new control, added by Warren Postma.
+    === NEW IN JVCL 3.0 ==
+        TJvDBMaskEdit is a new control, added by Warren Postma.
 
     Major Issues:
         EditMask property enables operation as masked edit, which doesn't
         work properly in a Control Grid, yet, if you set the EditMask.
         You can use it as a generic editor control inside a control grid.
           -- Warren Postma (warrenpstma@hotmail.com) 
-
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
@@ -52,8 +50,6 @@ uses
   StdCtrls, Mask, IniFiles, DB, DBGrids, DBCtrls,
   JvAppStorage, JvSecretPanel, JvLabel, JvToolEdit, JvFormPlacement,
   JvJCLUtils, JvMaskEdit, JvBaseEdits;
-
-{ TJvDBGrid }
 
 const
   DefJvGridOptions = [dgEditing, dgTitles, dgIndicator, dgColumnResize,
@@ -206,18 +202,13 @@ type
      // after the db control does a write to the fieldlink.
      property OnAcceptNewValue: TJvDbAcceptValueEvent read FOnAcceptNewValue write FOnAcceptNewValue;
 
-
     {Common JEDI Niceties}
-    property BeepOnError : Boolean read FBeepOnError  write FBeepOnError default true; { allows us to get rid of the standard beep on error yuckiness if we want}
-
-
-
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
   end;
-  {END TJvDBMaskEdit}
- 
+
   TJvDBGrid = class(TDBGrid)
   private
-    FBeepOnError : Boolean; //WAP
+    FBeepOnError: Boolean; //WAP
     FAutoAppend: Boolean; // Polaris
     FSizingIndex: Integer; // Polaris
     FSizingOfs: Integer; // Polaris
@@ -340,6 +331,7 @@ type
     property TitleOffset: Byte read GetTitleOffset;
   published
     property AutoAppend: Boolean read FAutoAppend write FAutoAppend default True; // Polaris
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True; // WAP.
     property Options: TDBGridOptions read GetOptions write SetOptions
       default DefJvGridOptions;
     property FixedCols: Integer read GetFixedCols write SetFixedCols default 0;
@@ -374,7 +366,6 @@ type
     property OnResize;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
-    property BeepOnError:Boolean read FBeepOnError write FBeepOnError default true; // WAP.
   end;
 
   TJvDBComboEdit = class(TJvCustomComboEdit)
@@ -382,6 +373,7 @@ type
     FDataLink: TFieldDataLink;
     FCanvas: TControlCanvas;
     FFocused: Boolean;
+    FBeepOnError: Boolean;
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     function GetCanvas: TCanvas;
@@ -423,6 +415,7 @@ type
     property Align;
     property Action;
     property AutoSelect;
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property BorderStyle;
     property ButtonHint;
     property CharCase;
@@ -488,6 +481,7 @@ type
     FInReset: Boolean; // Polaris
     FDataLink: TFieldDataLink;
     FCanvas: TControlCanvas;
+    FBeepOnError: Boolean;
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     function GetCanvas: TCanvas;
@@ -538,6 +532,7 @@ type
     property Align;
     // Polaris
     property Action;
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property CalendarHints;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -986,8 +981,8 @@ begin
   if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
     not FDataLink.Field.IsValidChar(Key) then
   begin
-    if FBeepOnError then
-      MessageBeep(0);
+    if BeepOnError then
+      Beep;
     Key := #0;
   end;
   case Key of
@@ -1344,7 +1339,7 @@ var
 begin
   inherited Create(AOwner);
   inherited DefaultDrawing := False;
-  FBeepOnError := true;
+  FBeepOnError := True;
   Options := DefJvGridOptions;
   Bmp := TBitmap.Create;
   try
@@ -2095,8 +2090,8 @@ begin
           TrackButton(X, Y);
         end
         else
-          if FBeepOnError then
-              Beep;
+        if BeepOnError then
+          Beep;
         Exit;
       end;
     end;
@@ -2839,6 +2834,7 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   inherited SetReadOnly(True);
   AlwaysEnable := True;
+  FBeepOnError := True;
 end;
 
 destructor TJvDBComboEdit.Destroy;
@@ -2879,7 +2875,8 @@ begin
   if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
     not FDataLink.Field.IsValidChar(Key) then
   begin
-    Beep;
+    if BeepOnError then
+      Beep;
     Key := #0;
   end;
   case Key of
@@ -3113,6 +3110,7 @@ begin
   AlwaysEnable := True;
   inherited SetReadOnly(True);
   UpdateMask;
+  FBeepOnError := True;
 end;
 
 destructor TJvDBDateEdit.Destroy;
@@ -3156,7 +3154,8 @@ begin
   if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
     not (Key in DigitChars) and (Key <> DateSeparator) then
   begin
-    Beep;
+    if BeepOnError then
+      Beep;
     Key := #0;
   end;
   case Key of
@@ -3526,8 +3525,8 @@ end;
 function TJvDBCalcEdit.IsValidChar(Key: Char): Boolean;
 begin
   Result := inherited IsValidChar(Key);
-  if Result and (FDatalink.Field <> nil) then
-    Result := FDatalink.Field.IsValidChar(Key);
+  if Result and (FDataLink.Field <> nil) then
+    Result := FDataLink.Field.IsValidChar(Key);
 end;
 
 procedure TJvDBCalcEdit.UpdatePopup;
@@ -3535,9 +3534,9 @@ var
   Precision: Byte;
 begin
   Precision := DefCalcPrecision;
-  if (FDatalink <> nil) and (FDatalink.Field <> nil) and
-    (FDatalink.Field is TFloatField) then
-    Precision := TFloatField(FDatalink.Field).Precision;
+  if (FDataLink <> nil) and (FDataLink.Field <> nil) and
+    (FDataLink.Field is TFloatField) then
+    Precision := TFloatField(FDataLink.Field).Precision;
   if FPopup <> nil then
     SetupPopupCalculator(FPopup, Precision, BeepOnError);
 end;
@@ -3551,7 +3550,7 @@ function TJvDBCalcEdit.GetDisplayText: string;
 var
   E: Extended;
 begin
-  if (csPaintCopy in ControlState) and (FDatalink.Field <> nil) then
+  if (csPaintCopy in ControlState) and (FDataLink.Field <> nil) then
   begin
     if FDataLink.Field.IsNull then
       E := 0.0
@@ -3663,47 +3662,47 @@ end;
 
 procedure TJvDBCalcEdit.UpdateFieldParams;
 begin
-  if FDatalink.Field <> nil then
+  if FDataLink.Field <> nil then
   begin
-    if FDatalink.Field is TNumericField then
+    if FDataLink.Field is TNumericField then
     begin
-      if TNumericField(FDatalink.Field).DisplayFormat <> '' then
-        DisplayFormat := TNumericField(FDatalink.Field).DisplayFormat;
-      Alignment := TNumericField(FDatalink.Field).Alignment;
+      if TNumericField(FDataLink.Field).DisplayFormat <> '' then
+        DisplayFormat := TNumericField(FDataLink.Field).DisplayFormat;
+      Alignment := TNumericField(FDataLink.Field).Alignment;
     end;
-    if FDatalink.Field is TLargeintField then
+    if FDataLink.Field is TLargeintField then
     begin
-      MaxValue := TLargeintField(FDatalink.Field).MaxValue;
-      MinValue := TLargeintField(FDatalink.Field).MinValue;
+      MaxValue := TLargeintField(FDataLink.Field).MaxValue;
+      MinValue := TLargeintField(FDataLink.Field).MinValue;
       DecimalPlaces := 0;
       if DisplayFormat = '' then
         DisplayFormat := ',#';
     end
     else
-    if FDatalink.Field is TIntegerField then
+    if FDataLink.Field is TIntegerField then
     begin
-      MaxValue := TIntegerField(FDatalink.Field).MaxValue;
-      MinValue := TIntegerField(FDatalink.Field).MinValue;
+      MaxValue := TIntegerField(FDataLink.Field).MaxValue;
+      MinValue := TIntegerField(FDataLink.Field).MinValue;
       DecimalPlaces := 0;
       if DisplayFormat = '' then
         DisplayFormat := ',#';
     end
     else
-    if FDatalink.Field is TBCDField then
+    if FDataLink.Field is TBCDField then
     begin
-      MaxValue := TBCDField(FDatalink.Field).MaxValue;
-      MinValue := TBCDField(FDatalink.Field).MinValue;
+      MaxValue := TBCDField(FDataLink.Field).MaxValue;
+      MinValue := TBCDField(FDataLink.Field).MinValue;
     end
     else
-    if FDatalink.Field is TFloatField then
+    if FDataLink.Field is TFloatField then
     begin
-      MaxValue := TFloatField(FDatalink.Field).MaxValue;
-      MinValue := TFloatField(FDatalink.Field).MinValue;
-        //Polaris      DecimalPlaces := TFloatField(FDatalink.Field).Precision;
-      DecimalPlaces := Min(DecimalPlaces, TFloatField(FDatalink.Field).Precision);
+      MaxValue := TFloatField(FDataLink.Field).MaxValue;
+      MinValue := TFloatField(FDataLink.Field).MinValue;
+        //Polaris      DecimalPlaces := TFloatField(FDataLink.Field).Precision;
+      DecimalPlaces := Min(DecimalPlaces, TFloatField(FDataLink.Field).Precision);
     end
     else
-    if FDatalink.Field is TBooleanField then
+    if FDataLink.Field is TBooleanField then
     begin
       MinValue := 0;
       MaxValue := 1;
@@ -3960,7 +3959,7 @@ end;
 
 function TJvDBStatusLabel.GetDefaultFontColor: TColor;
 begin
-  if (FStyle = lsState) and (FDatalink <> nil) and
+  if (FStyle = lsState) and (FDataLink <> nil) and
     (GetDatasetState in [dsEdit, dsInsert]) then
     Result := FEditColor
   else
@@ -3970,10 +3969,10 @@ end;
 function TJvDBStatusLabel.GetLabelCaption: string;
 begin
   if (csDesigning in ComponentState) and ((FStyle = lsState) or
-    (FDatalink = nil) or not FDatalink.Active) then
+    (FDataLink = nil) or not FDataLink.Active) then
     Result := Format('(%s)', [Name])
   else
-  if (FDatalink = nil) or (DataSource = nil) then
+  if (FDataLink = nil) or (DataSource = nil) then
     Result := ''
   else
   begin
@@ -4009,8 +4008,8 @@ begin
         else
           Result := '';
       lsRecordSize:
-        if FDatalink.Active then
-          Result := IntToStr(FDatalink.DataSet.RecordSize)
+        if FDataLink.Active then
+          Result := IntToStr(FDataLink.DataSet.RecordSize)
         else
           Result := '';
     end;
@@ -4109,7 +4108,7 @@ procedure TJvDBStatusLabel.UpdateData;
 
   function IsSequenced: Boolean;
   begin
-    Result := FDatalink.DataSet.IsSequenced;
+    Result := FDataLink.DataSet.IsSequenced;
   end;
 
 begin
@@ -4169,7 +4168,7 @@ begin
               FOnGetRecNo(Self, FDataLink.DataSet, FRecordNo)
             else
             try
-              with FDatalink.DataSet do
+              with FDataLink.DataSet do
                 if not IsEmpty then
                   FRecordNo := RecNo;
             except

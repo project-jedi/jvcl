@@ -26,7 +26,7 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-  (rom) commnts should be ripped by the help writer
+  (rom) comments should be ripped by the help writer
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
@@ -52,8 +52,9 @@ uses
 type
   TJvDBDateTimePicker = class(TJvDateTimePicker)
   private
-    FDataLink: TFieldDataLink;
     FAboutJVCL: TJVCLAboutInfo;
+    FDataLink: TFieldDataLink;
+    FBeepOnError: Boolean;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     procedure SetDataField(Value: string);
@@ -74,9 +75,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation
@@ -104,6 +106,7 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   OnCloseUp := CalendarOnCloseUp;
   OnDropDown := CalendarOnDropDown;
+  FBeepOnError := True;
 end;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -236,7 +239,7 @@ begin
         else
           Time := Frac(NullDate);
         CheckNullValue;
-        UpdateData(self);
+        UpdateData(Self);
       end;
     VK_INSERT:
       if ssShift in Shift then
@@ -263,7 +266,8 @@ begin
   if (Key in [#32..#255]) and ((FDataLink.Field <> nil) and
     not (FDataLink.Field.IsValidChar(Key))) then
   begin
-    MessageBeep(0);
+    if BeepOnError then
+      Beep;
     Key := #0;
   end;
   case Key of

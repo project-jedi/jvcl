@@ -34,9 +34,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ActnList, Menus,
-{$IFDEF USE_DXGETTEXT}
+  {$IFDEF USE_DXGETTEXT}
   gnugettext,
-{$ENDIF}
+  {$ENDIF USE_DXGETTEXT}
   JvComponent, JvSegmentedLEDDisplay;
 
 type
@@ -96,7 +96,6 @@ type
     procedure aiEditRevertExecute(Sender: TObject);
     procedure aiEditApplyExecute(Sender: TObject);
   private
-    { Private declarations }
     FDisplay: TJvCustomSegmentedLEDDisplay;
     FMouseDownX: Integer;
     FMouseDownY: Integer;
@@ -112,7 +111,6 @@ type
     FOnClose: TNotifyEvent;
     FOnInfoUpdate: TNotifyEvent;
     FOnMappingChanged: TNotifyEvent;
-
     function CheckCharModified: Boolean;
     function CheckMapperModified: Boolean;
     function DoSaveMapping: Boolean;
@@ -126,10 +124,8 @@ type
     procedure InfoUpdate;
     procedure MappingChanged;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     function CanClose: Boolean;
-
     property DigitClass: TJvSegmentedLEDDigitClass read GetDigitClass;
     property CurChar: Char read FCurChar;
     property CopiedValue: Int64 read FCopiedValue;
@@ -174,7 +170,8 @@ begin
     Result := mr <> mrCancel;
     if mr = mrYes then
       aiEditApply.Execute
-    else if Result then
+    else
+    if Result then
       FCharModified := False;
   end
   else
@@ -192,7 +189,8 @@ begin
     Result := mr <> mrCancel;
     if mr = mrYes then
       Result := DoSaveMapping
-    else if Result then
+    else
+    if Result then
       FMapperModified := False;
   end
   else
@@ -204,22 +202,22 @@ begin
   with TSaveDialog.Create(Application) do
   try
     InitialDir := LastSaveFolder;
-    Options := [ofOverwritePrompt, ofNoChangeDir, ofNoValidate, ofPathMustExist, ofShareAware,
-      ofNoReadOnlyReturn, ofNoTestFileCreate, ofEnableSizing];
+    Options := [ofOverwritePrompt, ofNoChangeDir, ofNoValidate, ofPathMustExist,
+      ofShareAware, ofNoReadOnlyReturn, ofNoTestFileCreate, ofEnableSizing];
     Filter := RsSegmentedLEDDisplayMappingFilessdms;
     FilterIndex := 0;
     FileName := FLastSaveFileName;
     Result := Execute;
     if Result then
-      try
-        FLastSaveFolder := ExtractFilePath(FileName);
-        FLastSaveFileName := FileName;
-        Mapper.SaveToFile(FileName);
-        FMapperModified := False;
-      except
-        Result := False;
-        raise;
-      end;
+    try
+      FLastSaveFolder := ExtractFilePath(FileName);
+      FLastSaveFileName := FileName;
+      Mapper.SaveToFile(FileName);
+      FMapperModified := False;
+    except
+      Result := False;
+      raise;
+    end;
   finally
     Free;
   end;
@@ -259,33 +257,33 @@ end;
 procedure TfmeJvSegmentedLEDDisplayMapper.DisplayChanged;
 begin
   if Assigned(FOnDisplayChanged) then
-    OnDisplayChanged(Self);
+    FOnDisplayChanged(Self);
 end;
 
 procedure TfmeJvSegmentedLEDDisplayMapper.CloseEditor;
 begin
   if Assigned(FOnClose) then
-    OnClose(Self);
+    FOnClose(Self);
 end;
 
 procedure TfmeJvSegmentedLEDDisplayMapper.InfoUpdate;
 begin
   if Assigned(FOnInfoUpdate) then
-    OnInfoUpdate(Self);
+    FOnInfoUpdate(Self);
 end;
 
 procedure TfmeJvSegmentedLEDDisplayMapper.MappingChanged;
 begin
   if Assigned(FOnMappingChanged) then
-    OnMappingChanged(Self);
+    FOnMappingChanged(Self);
 end;
 
 constructor TfmeJvSegmentedLEDDisplayMapper.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-{$IFDEF USE_DXGETTEXT}
+  {$IFDEF USE_DXGETTEXT}
   TranslateComponent(Self);
-{$ENDIF}
+  {$ENDIF USE_DXGETTEXT}
   FCopiedValue := -1;
 end;
 
@@ -314,8 +312,8 @@ begin
   FMouseDownY := Y;
 end;
 
-procedure TfmeJvSegmentedLEDDisplayMapper.alCharMapEditorUpdate(
-  Action: TBasicAction; var Handled: Boolean);
+procedure TfmeJvSegmentedLEDDisplayMapper.alCharMapEditorUpdate(Action: TBasicAction;
+  var Handled: Boolean);
 begin
   if Action = aiFileClose then
   begin
@@ -334,16 +332,15 @@ begin
   end;
 end;
 
-procedure TfmeJvSegmentedLEDDisplayMapper.aiFileOpenExecute(
-  Sender: TObject);
+procedure TfmeJvSegmentedLEDDisplayMapper.aiFileOpenExecute(Sender: TObject);
 begin
   if CheckCharModified and CheckMapperModified then
   begin
     with TOpenDialog.Create(Application) do
     try
       InitialDir := LastOpenFolder;
-      Options := [ofNoChangeDir, ofPathMustExist, ofFileMustExist, ofShareAware, ofNoNetworkButton,
-        ofNoLongNames, ofEnableSizing];
+      Options := [ofNoChangeDir, ofPathMustExist, ofFileMustExist,
+        ofShareAware, ofNoNetworkButton, ofNoLongNames, ofEnableSizing];
       Filter := RsSegmentedLEDDisplayMappingFilessdms;
       FilterIndex := 0;
       if Execute then
@@ -356,18 +353,15 @@ begin
       Free;
     end;
   end;
-
 end;
 
-procedure TfmeJvSegmentedLEDDisplayMapper.aiFileSaveExecute(
-  Sender: TObject);
+procedure TfmeJvSegmentedLEDDisplayMapper.aiFileSaveExecute(Sender: TObject);
 begin
   if CheckCharModified then
     DoSaveMapping;
 end;
 
-procedure TfmeJvSegmentedLEDDisplayMapper.aiFileLoadDefaultExecute(
-  Sender: TObject);
+procedure TfmeJvSegmentedLEDDisplayMapper.aiFileLoadDefaultExecute(Sender: TObject);
 begin
   if CheckCharModified and CheckMapperModified then
   begin
@@ -376,8 +370,7 @@ begin
   end;
 end;
 
-procedure TfmeJvSegmentedLEDDisplayMapper.aiFileCloseExecute(
-  Sender: TObject);
+procedure TfmeJvSegmentedLEDDisplayMapper.aiFileCloseExecute(Sender: TObject);
 var
   ParentForm: TCustomForm;
 begin
@@ -387,28 +380,24 @@ begin
     ParentForm.Close;
 end;
 
-procedure TfmeJvSegmentedLEDDisplayMapper.aiEditCopyExecute(
-  Sender: TObject);
+procedure TfmeJvSegmentedLEDDisplayMapper.aiEditCopyExecute(Sender: TObject);
 begin
   FCopiedValue := sldEdit.Digits[0].GetSegmentStates;
 end;
 
-procedure TfmeJvSegmentedLEDDisplayMapper.aiEditPasteExecute(
-  Sender: TObject);
+procedure TfmeJvSegmentedLEDDisplayMapper.aiEditPasteExecute(Sender: TObject);
 begin
   TOpenDigit(sldEdit.Digits[0]).SetSegmentStates(FCopiedValue);
   FCharModified := True;
 end;
 
-procedure TfmeJvSegmentedLEDDisplayMapper.aiEditClearExecute(
-  Sender: TObject);
+procedure TfmeJvSegmentedLEDDisplayMapper.aiEditClearExecute(Sender: TObject);
 begin
   TOpenDigit(sldEdit.Digits[0]).SetSegmentStates(0);
   FCharModified := True;
 end;
 
-procedure TfmeJvSegmentedLEDDisplayMapper.aiEditSetAllExecute(
-  Sender: TObject);
+procedure TfmeJvSegmentedLEDDisplayMapper.aiEditSetAllExecute(Sender: TObject);
 var
   Digit: TJvCustomSegmentedLEDDigit;
 begin
@@ -417,8 +406,7 @@ begin
   FCharModified := True;
 end;
 
-procedure TfmeJvSegmentedLEDDisplayMapper.aiEditInvertExecute(
-  Sender: TObject);
+procedure TfmeJvSegmentedLEDDisplayMapper.aiEditInvertExecute(Sender: TObject);
 var
   Digit: TJvCustomSegmentedLEDDigit;
 begin
@@ -427,8 +415,7 @@ begin
   FCharModified := True;
 end;
 
-procedure TfmeJvSegmentedLEDDisplayMapper.aiEditSelectCharExecute(
-  Sender: TObject);
+procedure TfmeJvSegmentedLEDDisplayMapper.aiEditSelectCharExecute(Sender: TObject);
 var
   S: string;
   Done: Boolean;
@@ -456,16 +443,14 @@ begin
   until Done;
 end;
 
-procedure TfmeJvSegmentedLEDDisplayMapper.aiEditRevertExecute(
-  Sender: TObject);
+procedure TfmeJvSegmentedLEDDisplayMapper.aiEditRevertExecute(Sender: TObject);
 begin
   TOpenDigit(sldEdit.Digits[0]).SetSegmentStates(
     Mapper.CharMapping[FCurChar]);
   FCharModified := False;
 end;
 
-procedure TfmeJvSegmentedLEDDisplayMapper.aiEditApplyExecute(
-  Sender: TObject);
+procedure TfmeJvSegmentedLEDDisplayMapper.aiEditApplyExecute(Sender: TObject);
 begin
   Mapper.CharMapping[FCurChar] := sldEdit.Digits[0].GetSegmentStates;
   FCharModified := False;
@@ -474,3 +459,4 @@ begin
 end;
 
 end.
+
