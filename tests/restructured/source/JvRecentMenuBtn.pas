@@ -158,14 +158,12 @@ begin
           Item.Items[0].Visible := False;
         it := TMenuItem.Create(Item);
         it.Caption := ChangeFileExt(SearchRec.Name, '');
-        ;
         it.OnClick := UrlClick;
         it.Hint := Directory + SearchRec.Name;
         w := 0;
         bmp := IconToBitmap2(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w),16,clWhite);
         it.Bitmap.Assign(bmp);
         bmp.Free;
-//        it.Bitmap.TransparentMode := tmAuto;
         Item.Add(it);
       end;
     res := FindNext(SearchRec);
