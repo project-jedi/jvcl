@@ -726,9 +726,6 @@ begin
       end;
 
       // draw caption.
-      
-      SetPainterFont(Handle, Font);
-      
       SetBkMode(Handle, Transparent);
       JvXPRenderText(Self, Canvas, Caption, Font, Enabled, FShowAccelChar, Rect, Flags);
     finally
@@ -828,8 +825,8 @@ begin
     begin
       Bitmap := TBitmap.Create;
       try
-        Bitmap.LoadFromResourceName(hInstance, Copy(GetEnumName(TypeInfo(TJvXPToolType),
-          Ord(FToolType)), 3, MAXINT));
+        Bitmap.LoadFromResourceName(hInstance, PChar('XP' + Copy(GetEnumName(TypeInfo(TJvXPToolType),
+          Ord(FToolType)), 3, MAXINT)));
         if (dsClicked in DrawState) and (dsHighlight in DrawState) then
           JvXPColorizeBitmap(Bitmap, clWhite)
         else if not Enabled then

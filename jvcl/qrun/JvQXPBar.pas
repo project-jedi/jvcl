@@ -29,6 +29,8 @@ Contributor(s):dierk schmid
   //dierk 2004-4-23
   --add property RoundedItemFrame in TJvXPCustomWinXPBar (Integer>0 is the edge radius)
   --add property ItemFrameColor in TJvXPBarColors
+  //dejoy 2004-4-25
+  -- splitt ItemFrameColor to CheckedFrameColor , FocusedFrameColor  in TJvXPBarColors.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -40,17 +42,18 @@ Known Issues:
 {$I jvcl.inc}
 
 
+
 unit JvQXPBar;
 
 interface
 
 uses
   Classes, SysUtils,
-
-
+  
+  
   Types, Qt, QControls, QGraphics, QForms, QImgList, QActnList,
   QWindows, QTypes, QExtCtrls, JvQTypes,
-
+  
   JvQConsts, JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -87,6 +90,10 @@ const
   
   clHotLight = clActiveHighLight;
   
+
+  dxColor_FocusedFrameColorXP = clHotLight;
+  dxColor_CheckedFrameColorXP = clHighlight;
+
 type
   TJvXPBarItem = class;
   TJvXPBarItems = class;
@@ -115,12 +122,12 @@ type
     function IsImageIndexLinked: Boolean; override;
     function IsVisibleLinked: Boolean; override;
     function IsOnExecuteLinked: Boolean; override;
-
-
+    
+    
     procedure SetCaption(const Value: TCaption); override;
     procedure SetHint(const Value: widestring); override;
     function DoShowHint(var HintStr: widestring): Boolean; virtual;
-
+    
     procedure SetChecked(Value: Boolean); override;
     procedure SetEnabled(Value: Boolean); override;
     procedure SetImageIndex(Value: Integer); override;
@@ -152,7 +159,7 @@ type
     FOnDblClick: TNotifyEvent;
     FGroupIndex: Integer;
     FChecked: Boolean;
-
+    
     function IsCaptionStored: Boolean;
     function IsEnabledStored: Boolean;
     function IsHintStored: Boolean;
@@ -258,7 +265,8 @@ type
 
   TJvXPBarColors = class(TPersistent)
   private
-    FItemFrameColor: TColor;
+    FCheckedFrameColor: TColor;
+    FFocusedFrameColor: TColor;
     FCheckedColor: TColor;
     FFocusedColor: TColor;
     FBodyColor: TColor;
@@ -272,15 +280,17 @@ type
     procedure SetSeperatorColor(const Value: TColor);
     procedure SetCheckedColor(const Value: TColor);
     procedure SetFocusedColor(const Value: TColor);
-    procedure SetItemFrameColor(const Value: TColor);
+    procedure SetCheckedFrameColor(const Value: TColor);
+    procedure SetFocusedFrameColor(const Value: TColor);
   public
     constructor Create;
     procedure Assign(Source: TPersistent); override;
     procedure Change;
   published
-    property ItemFrameColor: TColor read FItemFrameColor write SetItemFrameColor default clHighlight;
     property CheckedColor: TColor read FCheckedColor write SetCheckedColor default dxColor_CheckedColorXP;
     property FocusedColor: TColor read FFocusedColor write SetFocusedColor default dxColor_FocusedColorXP;
+    property CheckedFrameColor: TColor read FCheckedFrameColor write SetCheckedFrameColor default dxColor_CheckedFrameColorXP;
+    property FocusedFrameColor: TColor read FFocusedFrameColor write SetFocusedFrameColor default dxColor_FocusedFrameColorXP;
     property BodyColor: TColor read FBodyColor write SetBodyColor default $00F7DFD6;
     property GradientFrom: TColor read FGradientFrom write SetGradientFrom default clWhite;
     property GradientTo: TColor read FGradientTo write SetGradientTo default $00F7D7C6;
@@ -327,7 +337,7 @@ type
     FImageChangeLink: TChangeLink;
     FRollChangeLink: TChangeLink;
     FGrouped: Boolean;
-    FHeaderHeight: integer;
+    FHeaderHeight: Integer;
     FStoredHint: string;
     FShowItemFrame: boolean;
     FRoundedItemFrame: Integer;  // DS
@@ -349,18 +359,16 @@ type
     procedure SetRollImages(const Value: TCustomImageList);
     procedure SetGrouped(const Value: Boolean);
     procedure GroupMessage;
-    procedure SetHeaderHeight(const Value: integer);
-    function GetRollHeight: integer;
-    function GetRollWidth: integer;
+    procedure SetHeaderHeight(const Value: Integer);
+    function GetRollHeight: Integer;
+    function GetRollWidth: Integer;
   protected
-
-
+    
+    
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
-
-
+    
     class function GetBarItemsClass: TJvXPBarItemsClass; virtual;
-
     function GetHitTestRect(const HitTest: TJvXPBarHitTest): TRect;
     function GetItemRect(Index: Integer): TRect; virtual;
     procedure ItemVisibilityChanged(Item: TJvXPBarItem); dynamic;
@@ -384,7 +392,7 @@ type
     property Font: TFont read FFont write SetFont stored IsFontStored;
     property Grouped: Boolean read FGrouped write SetGrouped default False;
     property HeaderFont: TFont read FHeaderFont write SetHeaderFont stored IsFontStored;
-    property HeaderHeight: integer read FHeaderHeight write SetHeaderHeight default 28;
+    property HeaderHeight: Integer read FHeaderHeight write SetHeaderHeight default 28;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default True;
     property HotTrackColor: TColor read FHotTrackColor write SetHotTrackColor default $00FF7C35;
     property Icon: TIcon read FIcon write SetIcon;
@@ -412,15 +420,12 @@ type
     procedure AdjustClientRect(var Rect: TRect); override;
     // show hints for individual items in the list
     function HintShow(var HintInfo: THintInfo): Boolean;
- override;
-
-
+       override; 
+    
     procedure DblClick; override;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     function GetHitTestAt(X, Y: Integer): TJvXPBarHitTest;
     procedure Click; override;
     property Height default 46;
@@ -475,7 +480,7 @@ type
     property Anchors;
     //property AutoSize;
     property Constraints;
-
+    
     property DragMode;
     //property Enabled;
     property ParentFont;
@@ -492,9 +497,9 @@ type
     property OnClick;
     property OnDblClick;
     property OnConstrainedResize;
-
+    
     property OnContextPopup;
-
+    
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -510,16 +515,25 @@ type
     property OnMouseUp;
     property OnStartDrag;
   end;
+
 procedure RoundedFrame(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
+
 implementation
 
 
 
+
 uses
-  QMenus, JvQResources;
+  QMenus,
+  JvQResources;
 
+
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvXPBar.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvXPBar.res}
-
+{$ENDIF LINUX}
 
 
 
@@ -535,7 +549,8 @@ begin
   Idx2 := TCollectionItem(Item2).Index;
   if Idx1 < Idx2 then
     Result := -1
-  else if Idx1 = Idx2 then
+  else
+  if Idx1 = Idx2 then
     Result := 0
   else
     Result := 1;
@@ -549,7 +564,12 @@ begin
 end;
 
 
-
+(*)
+function TJvXPBarItemActionLink.IsAutoCheckLinked: Boolean;
+begin
+  Result := (Client.AutoCheck = (Action as TCustomAction).AutoCheck);
+end;
+(*)
 
 function TJvXPBarItemActionLink.IsCaptionLinked: Boolean;
 begin
@@ -595,23 +615,25 @@ end;
 
 
 
+
+
 procedure TJvXPBarItemActionLink.SetCaption(const Value: TCaption);
 
-  begin
-    if IsCaptionLinked then
-      Client.Caption := Value;
-  end;
+begin
+  if IsCaptionLinked then
+    Client.Caption := Value;
+end;
 
-  procedure TJvXPBarItemActionLink.SetEnabled(Value: Boolean);
-  begin
-    if IsEnabledLinked then
-      Client.Enabled := Value;
-  end;
-
+procedure TJvXPBarItemActionLink.SetEnabled(Value: Boolean);
+begin
+  if IsEnabledLinked then
+    Client.Enabled := Value;
+end;
 
 procedure TJvXPBarItemActionLink.SetChecked(Value: Boolean);
 begin
-  if IsCheckedLinked then Client.Checked := Value;
+  if IsCheckedLinked then
+    Client.Checked := Value;
 end;
 
 
@@ -704,9 +726,11 @@ begin
   Result := nil;
   if Assigned(FImageList) then
     Result := FImageList
-  else if Assigned(Action) and Assigned(TAction(Action).ActionList.Images) then
+  else
+  if Assigned(Action) and Assigned(TAction(Action).ActionList.Images) then
     Result := TAction(Action).ActionList.Images
-  else if Assigned(FWinXPBar.FImageList) then
+  else
+  if Assigned(FWinXPBar.FImageList) then
     Result := FWinXPBar.FImageList;
 end;
 
@@ -715,7 +739,7 @@ begin
   if Sender is TCustomAction then
     with TCustomAction(Sender) do
     begin
-
+      
       if not CheckDefaults or (Self.Caption = '') or (Self.Caption = Self.Name) then
         Self.Caption := Caption;
       if not CheckDefaults or (Self.Checked = False) then
@@ -767,25 +791,26 @@ begin
         begin
           Brush.Color := lBar.Colors.FocusedColor;
           if lBar.RoundedItemFrame>0 then
-            RoundedFrame(ACanvas, Rect, lBar.Colors.ItemFrameColor, lBar.RoundedItemFrame)
+            RoundedFrame(ACanvas, Rect, lBar.Colors.FocusedFrameColor, lBar.RoundedItemFrame)
           else
           begin
             FillRect(Rect);
-            JvXPFrame3D(ACanvas, Rect, lBar.Colors.ItemFrameColor, lBar.Colors.ItemFrameColor);
+            JvXPFrame3D(ACanvas, Rect, lBar.Colors.FocusedFrameColor, lBar.Colors.FocusedFrameColor);
           end;
         end;
       end
-      else if dsClicked in State then
+      else
+      if dsClicked in State then
       begin
         if ShowItemFrame then
         begin
           Brush.Color := lBar.Colors.CheckedColor;
           if lBar.RoundedItemFrame>0 then
-            RoundedFrame(ACanvas, Rect, clHighlight, lBar.RoundedItemFrame)
+            RoundedFrame(ACanvas, Rect, lBar.Colors.CheckedFrameColor, lBar.RoundedItemFrame)
           else
           begin
             FillRect(Rect);
-            JvXPFrame3D(ACanvas, Rect, clHotLight, clHotLight);
+            JvXPFrame3D(ACanvas, Rect, lBar.Colors.CheckedFrameColor, lBar.Colors.CheckedFrameColor);
           end;
         end;
       end
@@ -802,8 +827,7 @@ begin
     
 
     
-    SetPainterFont(Handle, Font);
-    DrawTextW(Handle, PWideChar(ItemCaption), -1, Rect, DT_SINGLELINE or
+    DrawTextW(ACanvas, PWideChar(ItemCaption), -1, Rect, DT_SINGLELINE or
       DT_VCENTER or DT_END_ELLIPSIS);
     Stop;
     
@@ -1180,41 +1204,41 @@ begin
   try
     FWinXPBar.FRolling := True;
 
-{ calculate new roll offset }
+    { calculate new roll offset }
     if FRollDirection = rdCollapse then
       NewOffset := FWinXPBar.RollOffset - FWinXPBar.FRollStep
     else
       NewOffset := FWinXPBar.RollOffset + FWinXPBar.FRollStep;
 
-{ validate offset ranges }
+    { validate offset ranges }
     if NewOffset < 0 then
       NewOffset := 0;
     if NewOffset > FWinXPBar.FItemHeight then
       NewOffset := FWinXPBar.FItemHeight;
     FWinXPBar.RollOffset := NewOffset;
 
-{ terminate on 'out-of-range' }
+    { terminate on 'out-of-range' }
     if ((FRollDirection = rdCollapse) and (NewOffset = 0)) or
       ((FRollDirection = rdExpand) and (NewOffset = FWinXPBar.FItemHeight)) then
       Terminate;
 
-{ idle process }
+    { idle process }
     Sleep(FWinXPBar.FRollDelay);
   finally
     FWinXPBar.FRolling := False;
   end;
 
-{ redraw button state }
+  { redraw button state }
   FWinXPBar.FCollapsed := FRollDirection = rdCollapse;
   if FWinXPBar.FShowRollButton then
     FWinXPBar.InternalRedraw;
 
-{ update inspector }
+  { update inspector }
   if csDesigning in FWinXPBar.ComponentState then
-
-
+    
+    
     TCustomForm(FWinXPBar.Owner).DesignerHook.Modified
-
+    
   else
     PostMessage(FWinXPBar.Handle, WM_XPBARAFTERCOLLAPSE,
       Ord(FRollDirection = rdCollapse), 0);
@@ -1232,7 +1256,9 @@ begin
   FSeparatorColor := $00F7D7C6;
   FCheckedColor := dxColor_CheckedColorXP;
   FFocusedColor := dxColor_FocusedColorXP;
-
+  FCheckedFrameColor := dxColor_CheckedFrameColorXP;
+  FFocusedFrameColor := dxColor_FocusedFrameColorXP;
+  
 end;
 
 procedure TJvXPBarColors.Assign(Source: TPersistent);
@@ -1242,6 +1268,8 @@ begin
     begin
       Self.CheckedColor := CheckedColor;
       Self.FocusedColor := FocusedColor;
+      Self.CheckedFrameColor := CheckedFrameColor;
+      Self.FocusedFrameColor := FocusedFrameColor;
       Self.BodyColor := BodyColor;
       Self.GradientTo := GradientTo;
       Self.GradientFrom := GradientFrom;
@@ -1309,15 +1337,23 @@ begin
   end;
 end;
 
-procedure TJvXPBarColors.SetItemFrameColor(const Value: TColor);
+procedure TJvXPBarColors.SetCheckedFrameColor(const Value: TColor);
 begin
-  if FItemFrameColor <> Value then
+  if FCheckedFrameColor <> Value then
   begin
-    FItemFrameColor := Value;
+    FCheckedFrameColor := Value;
     Change;
   end;
 end;
 
+procedure TJvXPBarColors.SetFocusedFrameColor(const Value: TColor);
+begin
+  if FFocusedFrameColor <> Value then
+  begin
+    FFocusedFrameColor := Value;
+    Change;
+  end;
+end;
 
 //=== TJvXPCustomWinXPBar ====================================================
 
@@ -1370,11 +1406,11 @@ begin
   FShowLinkCursor := True;
   FShowRollButton := True;
   FVisibleItems := TJvXPBarVisibleItems.Create(Self);
-
-// asn: TODO: implement doublebuffering
-//      For now prevent background drawing, to reduce flickering
+  
+  // asn: TODO: implement doublebuffering
+  //      For now prevent background drawing, to reduce flickering
   QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
-
+  
 end;
 
 destructor TJvXPCustomWinXPBar.Destroy;
@@ -1410,7 +1446,7 @@ end;
 
 function TJvXPCustomWinXPBar.IsFontStored: Boolean;
 begin
-  Result := not ParentFont;
+  Result := not ParentFont ;
 end;
 
 procedure TJvXPCustomWinXPBar.FontChange(Sender: TObject);
@@ -1456,7 +1492,7 @@ begin
   Result.Bottom := Result.Top + FItemHeight;
 end;
 
-function TJvXPCustomWinXPBar.GetRollHeight: integer;
+function TJvXPCustomWinXPBar.GetRollHeight: Integer;
 begin
   if Assigned(FRollImages) then
     Result := FRollImages.Height
@@ -1464,7 +1500,7 @@ begin
     Result := 18;
 end;
 
-function TJvXPCustomWinXPBar.GetRollWidth: integer;
+function TJvXPCustomWinXPBar.GetRollWidth: Integer;
 begin
   if Assigned(FRollImages) then
     Result := FRollImages.Width
@@ -1509,23 +1545,20 @@ begin
   if FHitTest = htRollButton then
   begin
     Rect := GetHitTestRect(htRollButton);
-
-    QWindows.
-
-    InvalidateRect(Handle, @Rect, False);
+     QWindows.InvalidateRect(Handle, @Rect, False);
   end;
 end;
 
 procedure TJvXPCustomWinXPBar.HookMouseEnter;
 begin
-  inherited;
+  inherited HookMouseEnter;
   if (FHoverIndex <> -1) then
     DoDrawItem(FHoverIndex, [dsFocused]);
 end;
 
 procedure TJvXPCustomWinXPBar.HookMouseLeave;
 begin
-  inherited;
+  inherited HookMouseLeave;
   if (FHoverIndex <> -1) and (not FVisibleItems[FHoverIndex].Checked) then
     DoDrawItem(FHoverIndex, []);
 end;
@@ -1541,10 +1574,7 @@ begin
   if FHitTest <> OldHitTest then
   begin
     Rect := Bounds(0, 5, Width, FHeaderHeight); // header
-
-    QWindows.
-
-    InvalidateRect(Handle, @Rect, False);
+     QWindows.InvalidateRect(Handle, @Rect, False);
     if FShowLinkCursor then
     begin
       if FHitTest <> htNone then
@@ -1588,7 +1618,8 @@ begin
       if FShowLinkCursor then
         Cursor := crHandPoint;
     end
-    else if FShowLinkCursor then
+    else
+    if FShowLinkCursor then
       Cursor := crDefault;
   end;
 
@@ -1618,14 +1649,14 @@ end;
 
 procedure TJvXPCustomWinXPBar.HookResized;
 begin
-// perform actions only on 'width'-change
+  // perform actions only on 'width'-change
   if FGradientWidth <> Width then
   begin
     FGradientWidth := Width;
-
+    
   end;
 
-// resize to maximum height
+  // resize to maximum height
   ResizeToMaxHeight;
   inherited HookResized;
 end;
@@ -1777,7 +1808,7 @@ begin
     if not AllowChange then
       Exit;
 
-//dejoy add
+    //dejoy add
     
     if FVisibleItems[FHoverIndex].Checked then
       DrawState := DrawState + [dsClicked]
@@ -1791,7 +1822,7 @@ begin
     end;
     if Assigned(FVisibleItems[FHoverIndex].FOnClick) then
     begin
-  { set linked 'action' as Sender }
+      { set linked 'action' as Sender }
       if Assigned(FVisibleItems[FHoverIndex].Action) then
         FVisibleItems[FHoverIndex].FOnClick(FVisibleItems[FHoverIndex].Action)
       else
@@ -1844,32 +1875,32 @@ var
 begin
   with Canvas do
   begin
-{ get client rect }
+    { get client rect }
     Rect := GetClientRect;
 
-{ fill non-client area }
-
+    { fill non-client area }
+    
     Brush.Color := TJvXPWinControl(parent).Color;
     with Rect do
       FillRect(Bounds(Left, Top, Right - Left, 5));
-
+    
     Inc(Rect.Top, 5 + FHeaderHeight);
     Brush.Color := FColors.BodyColor; //$00F7DFD6;
     FillRect(Rect);
     Dec(Rect.Top, FHeaderHeight);
 
-{ draw header }
-
-
+    { draw header }
+    
+    
     FillGradient(Handle, Bounds(0, Rect.Top, Width, FHeaderHeight),
       32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal);
+    
 
-
-{ draw frame... }
+    { draw frame... }
     Brush.Color := clWhite;
-    FrameRect(Canvas, Rect);
+    FrameRect( Canvas,  Rect);
 
-{ ...with cutted edges }
+    { ...with cutted edges }
     OwnColor := TJvXPWinControl(Parent).Color;
     Pixels[0, Rect.Top] := OwnColor;
     Pixels[0, Rect.Top + 1] := OwnColor;
@@ -1880,20 +1911,20 @@ begin
     Pixels[Width - 1, Rect.Top + 1] := OwnColor;
     Pixels[Width - 2, Rect.Top + 1] := clWhite;
 
-{ draw Button }
-    if (FShowRollButton) and (Width >= 115) then
+    { draw Button }
+    if FShowRollButton and (Width >= 115) then
     begin
       Bitmap := TBitmap.Create;
       try
         if Assigned(FRollImages) then
         begin
-      // format:
-      // 0 - normal collapsed
-      // 1 - normal expanded
-      // 2 - hot collapsed
-      // 3 - hot expanded
-      // 4 - down collapsed
-      // 5 - down expanded
+          // format:
+          // 0 - normal collapsed
+          // 1 - normal expanded
+          // 2 - hot collapsed
+          // 3 - hot expanded
+          // 4 - down collapsed
+          // 5 - down expanded
           Index := 0; // normal
           if FHitTest = htRollButton then
           begin
@@ -1919,9 +1950,9 @@ begin
               Index := 2; // down
           end;
           if FCollapsed then
-            Bitmap.LoadFromResourceName(hInstance, 'EXPAND' + IntToStr(Index))
+            Bitmap.LoadFromResourceName(hInstance, 'XPEXPAND' + IntToStr(Index))
           else
-            Bitmap.LoadFromResourceName(hInstance, 'COLLAPSE' + IntToStr(Index));
+            Bitmap.LoadFromResourceName(hInstance, 'XPCOLLAPSE' + IntToStr(Index));
         end;
         Bitmap.Transparent := True;
         Draw(Rect.Right - 24, Rect.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
@@ -1931,11 +1962,11 @@ begin
       Dec(Rect.Right, 25);
     end;
 
-{ draw seperator line }
+    { draw seperator line }
     Pen.Color := FColors.SeparatorColor;
     JvXPDrawLine(Canvas, 1, Rect.Top + FHeaderHeight, Width - 1, Rect.Top + FHeaderHeight);
 
-{ draw icon }
+    { draw icon }
     Inc(Rect.Left, 22);
     if not FIcon.Empty then
     begin
@@ -1943,20 +1974,20 @@ begin
       Inc(Rect.Left, 16);
     end;
 
-{ draw caption }
+    { draw caption }
     SetBkMode(Handle, Transparent);
     Font.Assign(FHeaderFont);
     if FHotTrack and (dsHighlight in DrawState) and (FHitTest <> htNone) and (FHotTrackColor <> clNone) then
       Font.Color := FHotTrackColor;
     Rect.Bottom := Rect.Top + FHeaderHeight;
     Dec(Rect.Right, 3);
-
-
+    
+    
     SetPainterFont(Handle, Font);
     DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
       DT_END_ELLIPSIS or DT_NOPREFIX);
-
-{ draw visible items }
+    
+    { draw visible items }
     Brush.Color := FColors.BodyColor;
     if not FCollapsed or FRolling then
       for I := 0 to FVisibleItems.Count - 1 do
@@ -2040,7 +2071,7 @@ begin
   end;
 end;
 
-procedure TJvXPCustomWinXPBar.SetHeaderHeight(const Value: integer);
+procedure TJvXPCustomWinXPBar.SetHeaderHeight(const Value: Integer);
 begin
   if FHeaderHeight <> Value then
   begin
@@ -2052,7 +2083,7 @@ end;
 
 function TJvXPCustomWinXPBar.HintShow(var HintInfo: THintInfo): Boolean;
 begin
-// draw the item hint (if available)
+  // draw the item hint (if available)
   if FHoverIndex > -1 then
   begin
     HintInfo.CursorRect := GetItemRect(FHoverIndex);
@@ -2064,7 +2095,8 @@ begin
         HintInfo.HintStr := VisibleItems[FHoverIndex].Hint;
     end;
   end
-  else if (VisibleItems.Count > 0) and not Collapsed then
+  else
+  if (VisibleItems.Count > 0) and not Collapsed then
     HintInfo.CursorRect := GetHitTestRect(htHeader);
 
   if HintInfo.HintStr = '' then
@@ -2076,84 +2108,82 @@ end;
 
 
 
+function TJvXPBarItemActionLink.DoShowHint(var HintStr: widestring): Boolean;
 
-  function TJvXPBarItemActionLink.DoShowHint(var HintStr: widestring): Boolean;
-  
+begin
+  Result := True;
+  if Action is TCustomAction then
   begin
-    Result := True;
-    if Action is TCustomAction then
+    Result := TCustomAction(Action).DoHint(HintStr);
+    if Result and Application.HintShortCuts and (TCustomAction(Action).ShortCut <> scNone) then
+      if HintStr <> '' then
+        HintStr := Format('%s (%s)', [HintStr, ShortCutToText(TCustomAction(Action).ShortCut)]);
+  end;
+end;
+
+procedure TJvXPCustomWinXPBar.InitiateAction;
+var
+  I: Integer;
+begin
+  inherited InitiateAction;
+  // go through each item and update
+  for I := 0 to Items.Count - 1 do
+    Items[I].ActionChange(Items[I].Action, csLoading in ComponentState);
+end;
+
+
+
+
+function TJvXPCustomWinXPBar.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+var
+  I: Integer;
+begin
+  if CanFocus then
+  begin
+    if IsAccel(Key, Caption) then
     begin
-      Result := TCustomAction(Action).DoHint(HintStr);
-      if Result and Application.HintShortCuts and (TCustomAction(Action).ShortCut <> scNone) then
-        if HintStr <> '' then
-          HintStr := Format('%s (%s)', [HintStr, ShortCutToText(TCustomAction(Action).ShortCut)]);
+      Result := True;
+      FHitTest := htHeader;
+      FHoverIndex := -1;
+      Click;
+      exit;
+    end
+    else
+      for I := 0 to VisibleItems.Count - 1 do
+        if IsAccel(Key, VisibleItems[I].Caption) then
+        begin
+          Result := True;
+          FHitTest := htNone;
+          FHoverIndex := I;
+          Click;
+          Exit;
+        end;
+  end;
+  Result := inherited WantKey(Key, Shift, KeyText);
+end;
+
+
+class function TJvXPCustomWinXPBar.GetBarItemsClass: TJvXPBarItemsClass;
+begin
+  Result := TJvXPBarItems;
+end;
+
+procedure TJvXPCustomWinXPBar.DblClick;
+var
+  lItem: TJvXPBarItem;
+begin
+  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex].Enabled) then
+  begin
+    lItem := FVisibleItems[FHoverIndex];
+    if Assigned(lItem.FOnDblClick) then
+    begin
+      lItem.FOnDblClick(lItem);
     end;
   end;
 
-  procedure TJvXPCustomWinXPBar.InitiateAction;
-  var
-    i: Integer;
-  begin
-    inherited InitiateAction;
-// go through each item and update
-    for i := 0 to Items.Count - 1 do
-      Items[i].ActionChange(Items[i].Action, csLoading in ComponentState);
-  end;
-
-
-
-
-  function TJvXPCustomWinXPBar.WantKey(Key: Integer; Shift: TShiftState;
-    const KeyText: WideString): Boolean;
-  var
-    i: integer;
-  begin
-    if CanFocus then
-    begin
-      if IsAccel(Key, Caption) then
-      begin
-        Result := True;
-        FHitTest := htHeader;
-        FHoverIndex := -1;
-        Click;
-        exit;
-      end
-      else
-        for I := 0 to VisibleItems.Count - 1 do
-          if IsAccel(Key, VisibleItems[I].Caption) then
-          begin
-            Result := true;
-            FHitTest := htNone;
-            FHoverIndex := I;
-            Click;
-            Exit;
-          end;
-    end;
-    Result := inherited WantKey(Key, Shift, KeyText);
-  end;
-
-
-  class function TJvXPCustomWinXPBar.GetBarItemsClass: TJvXPBarItemsClass;
-  begin
-    Result := TJvXPBarItems;
-  end;
-
-  procedure TJvXPCustomWinXPBar.DblClick;
-  var
-    lItem: TJvXPBarItem;
-  begin
-    if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex].Enabled) then
-    begin
-      lItem := FVisibleItems[FHoverIndex];
-      if Assigned(lItem.FOnDblClick) then
-      begin
-        lItem.FOnDblClick(lItem);
-      end;
-    end;
-
-    inherited DblClick;
-  end;
-
+  inherited DblClick;
+end;
 
 procedure RoundedFrame(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
 begin
@@ -2161,9 +2191,9 @@ begin
   with Canvas, ARect do
   begin
     Pen.Color := AColor;
-    Dec(Right); Dec(Bottom);
-    Polygon([
-      Point(Left + R, Top),
+    Dec(Right);
+    Dec(Bottom);
+    Polygon([Point(Left + R, Top),
       Point(Right - R, Top),
       Point(Right, Top + R),
       Point(Right, Bottom - R),
@@ -2171,9 +2201,9 @@ begin
       Point(Left + R, Bottom),
       Point(Left, Bottom - R),
       Point(Left, Top + R),
-      Point(Left + R, Top)
-    ]);
-    Inc(Right); Inc(Bottom);
+      Point(Left + R, Top)]);
+    Inc(Right);
+    Inc(Bottom);
   end;
 end;
 

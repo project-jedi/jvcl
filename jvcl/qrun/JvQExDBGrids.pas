@@ -69,15 +69,19 @@ type
     procedure ParentColorChanged; override;
   private
     FDoubleBuffered: Boolean;
+    function GetColor: TColor;
+    procedure SetColor(Value: TColor);
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    function GetDoubleBuffered: Boolean;
     procedure ColorChanged; override;
-  public
-    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
+    property Color: TColor read GetColor write SetColor;
+  published // asn: change to public in final
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   
   private
     FHintColor: TColor;
@@ -133,15 +137,19 @@ type
     procedure ParentColorChanged; override;
   private
     FDoubleBuffered: Boolean;
+    function GetColor: TColor;
+    procedure SetColor(Value: TColor);
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    function GetDoubleBuffered: Boolean;
     procedure ColorChanged; override;
-  public
-    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
+    property Color: TColor read GetColor write SetColor;
+  published // asn: change to public in final
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   
   private
     FHintColor: TColor;
@@ -241,16 +249,7 @@ begin
 end;
 procedure TJvExCustomDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
-  begin
-    WidgetControl_PaintBackground(Self, Canvas);
-     Paint;
-  end;
-end;
-
-function TJvExCustomDBGrid.GetDoubleBuffered: Boolean;
-begin
-  Result := FDoubleBuffered;
+  WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
 function TJvExCustomDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
@@ -269,6 +268,39 @@ end;
 procedure TJvExCustomDBGrid.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
+end;
+
+function TJvExCustomDBGrid.GetColor: TColor;
+begin
+  Result := Brush.Color;
+end;
+
+procedure TJvExCustomDBGrid.SetColor(Value: TColor);
+begin
+  if Brush.Color <> Value then
+  begin
+    inherited Color := Value;
+    Brush.Color := Value;
+  end;
+end;
+
+function TJvExCustomDBGrid.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
+end;
+
+procedure TJvExCustomDBGrid.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := Value;
+    if not (csCreating in ControlState) then
+      Invalidate;
+  end;
 end;
 
 procedure TJvExCustomDBGrid.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -300,17 +332,17 @@ function TJvExCustomDBGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): B
 asm
   JMP   DefaultDoPaintBackground
 end;
+
+
 constructor TJvExCustomDBGrid.Create(AOwner: TComponent);
 begin
-  
   WindowProc := WndProc;
   {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
   SetCopyRectMode(Self, cmVCL);
   {$IFEND}
-  
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
   
+  DoubleBuffered := True;
 end;
 
 destructor TJvExCustomDBGrid.Destroy;
@@ -318,6 +350,7 @@ begin
   
   inherited Destroy;
 end;
+
 
 
 procedure TJvExDBGrid.MouseEnter(Control: TControl);
@@ -373,16 +406,7 @@ begin
 end;
 procedure TJvExDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
-  begin
-    WidgetControl_PaintBackground(Self, Canvas);
-     Paint;
-  end;
-end;
-
-function TJvExDBGrid.GetDoubleBuffered: Boolean;
-begin
-  Result := FDoubleBuffered;
+  WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
 function TJvExDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
@@ -401,6 +425,39 @@ end;
 procedure TJvExDBGrid.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
+end;
+
+function TJvExDBGrid.GetColor: TColor;
+begin
+  Result := Brush.Color;
+end;
+
+procedure TJvExDBGrid.SetColor(Value: TColor);
+begin
+  if Brush.Color <> Value then
+  begin
+    inherited Color := Value;
+    Brush.Color := Value;
+  end;
+end;
+
+function TJvExDBGrid.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
+end;
+
+procedure TJvExDBGrid.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := Value;
+    if not (csCreating in ControlState) then
+      Invalidate;
+  end;
 end;
 
 procedure TJvExDBGrid.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -432,17 +489,17 @@ function TJvExDBGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean
 asm
   JMP   DefaultDoPaintBackground
 end;
+
+
 constructor TJvExDBGrid.Create(AOwner: TComponent);
 begin
-  
   WindowProc := WndProc;
   {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
   SetCopyRectMode(Self, cmVCL);
   {$IFEND}
-  
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
   
+  DoubleBuffered := True;
 end;
 
 destructor TJvExDBGrid.Destroy;
@@ -450,5 +507,6 @@ begin
   
   inherited Destroy;
 end;
+
 
 end.

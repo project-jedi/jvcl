@@ -35,7 +35,11 @@ unit JvQZoom;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  SysUtils, Classes,
+  
+  
+  QWindows, QGraphics, QControls, QForms, QExtCtrls,
+  
   JvQComponent;
 
 type
@@ -169,7 +173,10 @@ begin
     control's device context
     Calling PaintWindow will lock the canvas and call Paint
   }
-  PaintWindow(Canvas.Handle);
+  
+  
+  
+  
 end;
 
 procedure TJvZoom.PaintZoom;

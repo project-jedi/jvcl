@@ -38,7 +38,7 @@ interface
 
 uses
   Windows, SysUtils, Classes,
-  QControls, QForms, Qt,
+  QControls, QForms, Qt, QWindows,
   Mapi, JclBase, JclMapi, JvQComponent;
 
 type

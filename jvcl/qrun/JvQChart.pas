@@ -183,7 +183,8 @@ type
     FYMax: Double; // Y Scale value at the top left hand side of chart.
     FYMin: Double; // Y Scale value at the bottom left hand side of the chart (default 0)
     FYGap: Double; // Number of values per Y scale division
-    FYGap1:Double; // Gap multiplication factor for value scaling. 
+    FYGap1:Double; // Gap multiplication factor for value scaling.
+    FMarkerValueDecimals:Integer; // Decimal places on marker-values (only applies to Marker Pens with Values)
     FYDivisions: Integer; // Number of vertical divisions in the chart. (default 10)
     FMaxYDivisions : Integer;
     FMinYDivisions : Integer;
@@ -224,6 +225,8 @@ type
         property MaxYDivisions:Integer read FMaxYDivisions write FMaxYDivisions default 20;
         property MinYDivisions:Integer read FMinYDivisions write FMinYDivisions default 5;
 
+        property MarkerValueDecimals:Integer read FMarkerValueDecimals write FMarkerValueDecimals default -1; // Decimal places on marker-values (only applies to Marker Pens with Values)
+
         property YLegendDecimalPlaces: Integer read FYLegendDecimalPlaces write FYLegendDecimalPlaces;
         property DefaultYLegends: Integer read FDefaultYLegends write FDefaultYLegends default JvDefaultYLegends;
 
@@ -258,6 +261,7 @@ type
 
     FXAxisValuesPerDivision:Integer; // Number of Values (aka samples) in each vertical dotted lines that are divisision marker.
     FXAxisLegendSkipBy: Integer; //1=print every X axis label, 2=every other, and so on. default=1
+    FXLegendHoriz     : Integer; // Horizontally oriented GraphXAxisLegend ends at this X Point.
     FXAxisDateTimeMode:Boolean; // False=use custom text labels, true=Use Date/Time Stamps as X axis labels.
     FXAxisDateTimeFormat:String; // Usually a short date-time label, hh:nn:ss is good.
     FDateTimeFormat:String; // Usually a long date-time label, ISO standard yyyy-mm-dd hh:nn:ss is fine, as is Windows locale defaults.
@@ -516,6 +520,7 @@ type
     protected
     
     { Right Side Legend showing Pen Names, and/or Data Descriptors }
+    procedure GraphXAxisLegendMarker(markerKind:TJvChartPenMarkerKind; X,Y:integer);
     procedure GraphXAxisLegend;
     procedure MyHeader(strText: string);
     procedure MyXHeader(strText: string);
@@ -561,6 +566,7 @@ type
     // marker symbols:
     procedure PlotCross(x, y: Integer);
     procedure PlotDiamond(x, y: Integer);
+    procedure PlotFilledDiamond(x,y: Integer);
     procedure PlotCircle(x, y: Integer);
     procedure PlotSquare(x, y: Integer);
 
@@ -839,6 +845,8 @@ begin
     inherited Create;
     FOwner := owner;
 
+    FMarkerValueDecimals := -1; // -1=default (automatic decimals)
+
     FYLegends := TStringList.Create;
     FMaxYDivisions := 20;
     FMinYDivisions := 5;
@@ -1066,6 +1074,7 @@ begin
   FXValueCount := 10;
 
   FXAxisLegendSkipBy := 1;
+  FXLegendHoriz       := 0;
 
   FHintColor := JvDefaultHintColor;
 end;
@@ -1832,7 +1841,7 @@ begin
    { NEW: Box around entire chart area. }
    X1 := Round(xOrigin);
    X2 := Round(Options.XStartOffset + Options.XPixelGap * vc );
-   Y1 := Options.YStartOffset;
+   Y1 := Options.YStartOffset-1;
    Y2 := Round(yOrigin); // was yTempOrigin;
 
    if (Y2>Height) then begin
@@ -1854,7 +1863,7 @@ begin
    ChartCanvas.Pen.Color := Options.AxisLineColor;
    ChartCanvas.MoveTo(Round(xOrigin), Options.YStartOffset);
    MyAxisLineTo(Round(xOrigin),
-                Round(   Options.YStartOffset
+                Round(   (Options.YStartOffset-1)
                        + Options.PrimaryYAxis.YPixelGap
                        * (Options.PrimaryYAxis.YDivisions)
                      )
@@ -1988,6 +1997,7 @@ var
         LineXPixelGap:Double;
         LastX,LastY:Integer;
         MinIndex,MaxIndex:Array of Integer;
+        decimals:Integer;
     begin
           ChartCanvas.Brush.Color := Options.PaperColor;
           ChartCanvas.Pen.Style := psSolid;
@@ -2039,8 +2049,12 @@ var
                 X := Round(xOrigin + J * LineXPixelGap);
                 Y := Round(yOrigin - ((V / PenAxisOpt.YGap1 ) * PenAxisOpt.YPixelGap));
                 SetLineColor(I);
-                if (Y < 0) then
+                if (Y < 0) then begin
+                  {$ifdef DEBUGINFO_ON}
+                   OutputDebugString(PChar('TJvChart Marker Out of Visible Range.  Marker Value='+FloatToStr(V)+', Range YMax='+FloatToStr(PenAxisOpt.YMax) ));
+                  {$endif}
                     Y := 0; // constrain Y.
+                end;
 
                 (*
                 if MinFlag or MaxFlag then // local min/max markers!
@@ -2052,7 +2066,11 @@ var
                 // Now plot the right kind of marker:
                 case Options.GetPenMarkerKind(I) of
                     pmkDiamond:
-                        PlotDiamond(X,Y);
+                      begin
+                      // fill diamond:
+                      PlotFilledDiamond(X,Y);
+                      end;
+                      
                     pmkCircle:
                         PlotCircle( X,Y);
                     pmkSquare:
@@ -2082,7 +2100,16 @@ var
                 X := Round(xOrigin + J * LineXPixelGap);
                 Y := Round(yOrigin - ((V / PenAxisOpt.YGap1 ) * PenAxisOpt.YPixelGap));
 
-                 Text := FloatToStr(V);
+                  // Format with fixed number of decimal places (avoid screen clutter)
+                 decimals := Options.GetPenAxis(I).MarkerValueDecimals;
+                 if (decimals<0){auto} then begin
+                    if (v<100.0) then
+                        decimals := 1 // handy automatic percentage mode.
+                    else
+                        decimals := 0;
+                 end;
+                 Text := FloatToStrF(V, ffFixed,16, decimals);
+
                  if Options.PenUnit.Count>=I then
                          Text := Text +Options.PenUnit[I];
                  
@@ -2105,8 +2132,8 @@ var
 
                         // nifty little bit to draw a box around min/max values.
                         if ( J = MinIndex[I] ) or (J=MaxIndex[I] ) then begin
-                            ChartCanvas.Pen.Style  := psDot;
-                            ChartCanvas.Brush.Color := Options.HintColor;
+                            ChartCanvas.Pen.Style  := psClear;//was psDot;
+                            ChartCanvas.Brush.Color := Options.PaperColor; {was HintColor}
                             MyPolygon([MyPt(X - ((tw div 2)+2),   y - (th+Options.MarkerSize+2) ),
                                        MyPt(X - ((tw div 2)+2),   y - Options.MarkerSize  ),
                                        MyPt(X + (tw div 2)+2, y - Options.MarkerSize  ),
@@ -2575,7 +2602,19 @@ begin { ------------------- PlotGraph begins... Enough local functions for ya? -
 end;
 
 
-
+procedure TJvChart.GraphXAxisLegendMarker(markerKind:TJvChartPenMarkerKind; X,Y:integer);
+begin
+        case markerKind of
+          pmkDiamond:
+              PlotFilledDiamond( X,Y);
+          pmkCircle:
+              PlotCircle(X,Y);
+          pmkSquare:
+              PlotSquare(X,Y);
+          pmkCross:
+              PlotCross(X,Y);
+        end;
+end;
 
 procedure TJvChart.GraphXAxisLegend;
 var
@@ -2585,7 +2624,7 @@ var
   nTextHeight        : Integer;
   //yTempOrigin        : Integer; // (ahuser) conflict with YTempOrigin property?
   myLabel            : string;
-  XLegendHoriz       : Integer;
+
   timestamp          : TDateTime;
   timestampStr       : String;
   XOverlap           : Integer;
@@ -2615,7 +2654,7 @@ begin
 
     XOverlap := 0;
     for I := 1 to ((Options.XValueCount div Options.XAxisValuesPerDivision))-1 do begin
-        XLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I * Options.XAxisValuesPerDivision);
+        Options.FXLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I * Options.XAxisValuesPerDivision);
 
         timestamp := FData.Timestamp[ (I * Options.XAxisValuesPerDivision)-1 ];
 
@@ -2625,20 +2664,20 @@ begin
            timestampStr := FormatDateTime( Options.FXAxisDateTimeFormat, timestamp );
 
         // Check if writing this label would collide with previous label, if not, plot it
-        if (XLegendHoriz-( ChartCanvas.TextWidth(timestampStr) div 2 ))> XOverlap then begin
-            MyCenterTextOut( XLegendHoriz,
+        if (Options.FXLegendHoriz-( ChartCanvas.TextWidth(timestampStr) div 2 ))> XOverlap then begin
+            MyCenterTextOut( Options.FXLegendHoriz,
                  {bottom:}   FXAxisPosition + Options.AxisLineWidth {top: Round(yTempOrigin - Options.PrimaryYAxis.YPixelGap)},
                              timestampStr );
 
             // draw a ticky-boo (technical term used by scientists the world over)
             // so that we can see where on the chart the X axis datetime is pointing to.
             ChartCanvas.Pen.Width := 1;
-            ChartCanvas.MoveTo( XLegendHoriz, FXAxisPosition );
-            ChartCanvas.LineTo(  XLegendHoriz, FXAxisPosition+Options.AxisLineWidth+2  );
-                                 
-            XOverlap := XLegendHoriz +   ChartCanvas.TextWidth(timestampStr);
+            ChartCanvas.MoveTo( Options.FXLegendHoriz, FXAxisPosition );
+            ChartCanvas.LineTo(  Options.FXLegendHoriz, FXAxisPosition+Options.AxisLineWidth+2  );
+
+            XOverlap := Options.FXLegendHoriz +   ChartCanvas.TextWidth(timestampStr);
         end;
-        
+
     end;
 
   end else if Options.XValueCount > 0 then // is there data to plot?
@@ -2654,21 +2693,21 @@ begin
     for k := 0 to Count - 1 do
     begin
       I := k * Options.FXAxisLegendSkipBy;
-      XLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I);
+      Options.FXLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I);
 
       // Don't exceed right margin:
       if (I<Options.XLegends.Count) then
-        if ChartCanvas.TextWidth( Options.XLegends[I] )+ XLegendHoriz > Options.XEnd then
+        if ChartCanvas.TextWidth( Options.XLegends[I] )+ Options.FXLegendHoriz > Options.XEnd then
             break;
 
       // Label X axis above or below?
       if FContainsNegative then
-        MyLeftTextOut( XLegendHoriz,
+        MyLeftTextOut( Options.FXLegendHoriz,
           Options.YEnd + 3,
           Options.XLegends[I])
       else
         if I < Options.XLegends.Count then
-        MyLeftTextOut( XLegendHoriz,
+        MyLeftTextOut( Options.FXLegendHoriz,
           {bottom:} FXAxisPosition + Options.AxisLineWidth {top: Round(yTempOrigin - Options.PrimaryYAxis.YPixelGap)},
           Options.XLegends[I])
       else
@@ -2735,14 +2774,16 @@ begin
 
          {10 % extra space for line height}
         nTextHeight := Round(CanvasMaxTextHeight(ChartCanvas) * 1.01);
-        BoxWidth := ChartCanvas.TextWidth('X')*2 -2;
+
         //BoxHeight := nTextHeight - 2;
 
-        XLegendHoriz       := Options.XStartOffset;
+        Options.FXLegendHoriz       := Options.XStartOffset;
         for I := 0 to Options.PenCount - 1 do
         begin
 
-          if Options.GetPenStyle(I) <>psClear then begin // Only draw legend on VISIBLE pens.
+          if Options.GetPenStyle(I)=psClear then
+            if Options.GetPenMarkerKind(I)=pmkNone then continue; // Skip invisible pens.
+
 
           Y := Options.YStartOffset + Options.YEnd + (nTextHeight div 2);
 
@@ -2750,12 +2791,22 @@ begin
           if (Options.XLegends.Count>0) or (Options.XAxisDateTimeMode) then
               Y := Y + nTextHeight;
 
-          DrawPenColorBox( {pen#} I,
-            {width}  ChartCanvas.TextWidth('12') - 2,
-            {height} nTextHeight - 2,
-            {X=}     XLegendHoriz,
-            {Y=}     Y+4
-                           );
+
+          if Options.GetPenStyle(I)=psClear then begin
+             // For markers, draw marker:
+              ChartCanvas.Pen.Color := Options.GetPenColor(I);
+              GraphXAxisLegendMarker(Options.GetPenMarkerKind(I), Options.FXLegendHoriz,(Y+8)-(Options.MarkerSize div 2));
+              BoxWidth := Options.MarkerSize +2;
+          end else begin
+             // For lines, draw a pen color box:
+             BoxWidth := ChartCanvas.TextWidth('X')*2 -2;
+             DrawPenColorBox( {pen#} I,
+              {width}  BoxWidth - 2,
+              {height} nTextHeight - 2,
+              {X=}     Options.FXLegendHoriz,
+              {Y=}     Y+4
+                             );
+          end;
           SetFontColor(-3);
                // Draw the Pen Legend (WAP :add unit to legend. )
           if Options.PenLegends.Count > I then
@@ -2770,14 +2821,14 @@ begin
                   myLabel := myLabel + ' ('+Options.PenUnit[I]+')';
             *)
 
-          MyLeftTextOut(  XLegendHoriz + BoxWidth + 3,
+          MyLeftTextOut(  Options.FXLegendHoriz + BoxWidth + 3,
                           Y,
                           myLabel);
 
-          Inc( XLegendHoriz, BoxWidth + Canvas.TextWidth(myLabel) + 14 );
+          Inc( Options.FXLegendHoriz, BoxWidth + Canvas.TextWidth(myLabel) + 14 );
 
           //Inc(VisiblePenCount);
-          end;
+          //end;
 
         end;
 
@@ -3037,17 +3088,50 @@ begin
   Invalidate;*)
 end;
 
+// NEW: X Axis Header has to move to make room if there is a horizontal
+// x axis legend:
 procedure TJvChart.MyXHeader(strText: string);
 var
  X,Y:Integer;
 begin
   MyAxisFont;
-  X := Options.XStartOffset + Round(Options.XEnd / 2);
-  Y := Options.YStartOffset + Options.YEnd + (2*MyTextHeight(strText) -4 ); 
-  MyCenterTextOut( X,Y, strText);
-  //MyAxisFont;
+  Y := Options.YStartOffset + Options.YEnd + (2*MyTextHeight(strText) -4 );
+ if Options.Legend = clChartLegendBelow then begin
+     { left aligned X Axis Title , right after the legend itself}
+       X := Options.FXLegendHoriz+32;
+       MyLeftTextOut( X,Y, strText );
+ end else begin
+       X := Options.XStartOffset + (Options.XEnd div 2);
+       MyCenterTextOut( X,Y, strText);
+ end;
 end;
 
+(*
+ Left,Width,TextWidth:Integer;
+begin
+  MyAxisFont;
+
+  if Options.FXLegendHoriz <  then begin
+      Options.FXLegendHoriz := Options.XStartOffset;
+      Width := Options.XEnd;
+  end else begin
+      Width := Options.XEnd-(Options.FXLegendHoriz-Options.XStartOffset);
+  end;
+
+  X := Options.FXLegendHoriz + (Width div 2);
+  if (X< Options.FXLegendHoriz) then
+      X := Options.FXLegendHoriz; // NEW: move over X axis legend if it collides.
+
+  Y := Options.YStartOffset + Options.YEnd + (2*MyTextHeight(strText) -4 );
+  TextWidth := ChartCanvas.TextWidth(strText);
+  if TextWidth>=Width then
+    MyLeftTextOut( Options.XStartOffset,Y,strText )
+  else {center it only if there is room}
+    MyCenterTextOut( X,Y, strText);
+
+  //MyAxisFont;
+end;
+*)
 procedure TJvChart.MyYHeader(strText: string);
 var
   {ht,}wd, vert, horiz: Integer; // not used (ahuser)
@@ -3556,6 +3640,17 @@ begin
       MyPt(x - Options.MarkerSize, y)]);
 end;
 
+procedure TJvChart.PlotFilledDiamond(X,Y:Integer);
+begin
+ with ChartCanvas.Brush do begin
+      Style := bsSolid;
+      Color := ChartCanvas.Pen.Color;
+      PlotDiamond(X,Y);
+      Style := bsClear;
+ end;
+end;
+
+
 // Used in line charting as a Marker kind:
 procedure TJvChart.PlotCircle(x, y: Integer);
 begin
@@ -3704,7 +3799,7 @@ procedure TJvChart.MyHeader(strText: string);
 begin
   MyHeaderFont;
   MyCenterTextOut(Options.XStartOffset + Round(Options.XEnd / 2),
-    Options.YStartOffset - (MyTextHeight(strText) + 2),
+    (Options.YStartOffset div 2)- (MyTextHeight(strText) div 2),
     strText);
   MyAxisFont;
 end;

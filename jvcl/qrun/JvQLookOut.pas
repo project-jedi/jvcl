@@ -144,7 +144,7 @@ type
     procedure EditMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
     procedure PaintFrame; virtual;
-    procedure SetParent(const AParent: TWinControl); override;
+    procedure SetParent( const  AParent: TWinControl); override;
     procedure Paint; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -162,7 +162,6 @@ type
     property Caption: TCaption read FCaption write SetCaption;
     property Centered: Boolean read FCentered write SetCentered;
     property Down: Boolean read FStayDown write SetDown default False;
-//    property DoubleBuffered;
     // (rom) renamed
     property HighlightFont: TFont read FHighlightFont write SetHighlightFont;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
@@ -175,7 +174,6 @@ type
     property Data: Pointer read FData write FData;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property OnEdited: TJvLookOutEditedEvent read FOnEdited write FOnEdited;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -311,7 +309,7 @@ type
     procedure SetHighlightFont(Value: TFont);
     procedure SetImageSize(Value: TJvImageSize);
     procedure SetPImSize(Value: Boolean);
-    procedure SetBitmap(Value: TBitmap); reintroduce;
+    procedure SetBitmap(Value: TBitmap);
     procedure SetCaption(Value: TCaption);
     procedure SetMargin(Value: Integer);
     procedure SetButton(Index: Integer; Value: TJvLookOutButton);
@@ -333,7 +331,7 @@ type
     procedure CalcArrows; virtual;
     procedure ScrollChildren(Start: Word); virtual;
     procedure AlignControls(Control: TControl; var Rect: TRect); override;
-    procedure SetParent(const AParent: TWinControl); override;
+    procedure SetParent( const  AParent: TWinControl); override;
     
     
     procedure CreateWidget; override;
@@ -885,7 +883,6 @@ begin
   FSmallImageChangeLink := TChangeLink.Create;
   FLargeImageChangeLink.OnChange := ImageListChange;
   FSmallImageChangeLink.OnChange := ImageListChange;
-//  DoubleBuffered := true;
 end;
 
 destructor TJvCustomLookOutButton.Destroy;
@@ -1196,7 +1193,7 @@ var
   Flags, H: Integer;
 begin
   R := GetClientRect;
-  RequiredState(Canvas, [csHandleValid, csBrushValid, csPenValid]);
+
   with Canvas do
   begin
     if csDesigning in ComponentState then
@@ -1247,6 +1244,7 @@ begin
       Canvas.Font := FHighlightFont
     else
       Canvas.Font := Font;
+
     //    W := FSpacing  + W;
 //    SetBkMode(Canvas.Handle, Windows.Transparent);
     R := GetClientRect;
@@ -1259,14 +1257,8 @@ begin
       Flags := DT_END_ELLIPSIS or DT_WORDBREAK or DT_CENTER or DT_VCENTER ;
     if FDown then
       OffsetRect(R, FOffset, FOffset);
-//    FTextRect := Bounds(0,0, Width - R.Left, Height);
     FTextRect := R;
-    OffsetRect(FTextRect, -R.Left, -R.Top);
-    OffsetRect(FTextRect, Left, Top);
-    SetPainterFont(Canvas.Handle, Canvas.Font);
-    RequiredState(Canvas, [csHandleValid, csBrushValid, csFontValid]);
-    H := DrawTextW(Canvas.Handle, PWideChar(Caption), -1, FTextRect, Flags or DT_CALCRECT);
-    OffsetRect(FTextRect, R.Left, R.Top);
+    H := DrawTextW(Canvas, PWideChar(Caption), -1, FTextRect, Flags or DT_CALCRECT);
     if ImageSize = isLarge then
     begin
       FTextRect.Top := R.Top;
@@ -1279,7 +1271,7 @@ begin
       FTextRect.Bottom := FTextRect.Top + Canvas.TextHeight(Caption);
       FTextRect.Right := R.Left + Canvas.TextWidth(Caption);
     end;
-    DrawTextW(Canvas.Handle, PWideChar(Caption), -1, R, Flags);
+    DrawTextW(Canvas, PWideChar(Caption), -1, R, Flags);
   end;
 end;
 
@@ -1322,10 +1314,10 @@ begin
     if (csDesigning in ComponentState) and not Visible then
     begin
       Canvas.Brush.Style := bsBDiagonal;
-
-      Canvas.FillRect(R);
-//      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
-
+      
+      
+      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
+      
       Canvas.Brush.Style := bsSolid;
     end
     else
@@ -1337,10 +1329,10 @@ begin
     else
     begin { fill it up! }
       Canvas.Brush.Color := FFillColor;
-
-
-      Canvas.FillRect(R);
-
+      
+      
+      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
+      
     end;
 
     if FDown then
@@ -1408,22 +1400,22 @@ begin
     Exit;
   if not MouseOver then
   begin
-    inherited MouseEnter(Control);
     if FFillColor = clNone then
       PaintFrame
     else
       Invalidate;
   end;
+  inherited MouseEnter(Control);
 end;
 
 procedure TJvCustomLookOutButton.MouseLeave(Control: TControl);
 begin
   if MouseOver then
   begin
-    inherited MouseLeave(Control);
     if not FStayDown then
       Invalidate;
   end;
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvCustomLookOutButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -1520,7 +1512,7 @@ begin
   end;
 end;
 
-procedure TJvCustomLookOutButton.SetParent(const AParent: TWinControl);
+procedure TJvCustomLookOutButton.SetParent( const  AParent: TWinControl);
 begin
   if AParent <> Parent then
   begin
@@ -1781,7 +1773,7 @@ begin
     FActiveButton := Value;
 end;
 
-procedure TJvLookOutPage.SetParent(const AParent: TWinControl);
+procedure TJvLookOutPage.SetParent( const  AParent: TWinControl);
 begin
   if AParent <> Parent then
   begin
@@ -2255,7 +2247,7 @@ begin
   { draw top caption }
   R := GetClientRect;
   R.Bottom := cHeight;
-//SetBkMode(DC, Windows.Transparent);
+//  SetBkMode(DC, Windows.Transparent);
   if FCaption <> '' then
   begin
     if not Enabled then
@@ -2326,7 +2318,7 @@ begin
     FPopUpMenu.Popup(Tmp.X, Tmp.Y);
     { wait 'til menu is Done }
 //    while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
-//      {nothing};
+      {nothing};
     FDown := False;
   end
   else
@@ -2691,8 +2683,8 @@ begin
   if not (Visible or (csDesigning in ComponentState)) then
     Exit;
   
-  Perform(WM_NCPAINT, 0, 0);
-
+  Perform(WM_NCPAINT, 1, 0);
+  
   Canvas.Brush.Color := Color;
   Canvas.FillRect(GetClientRect);
   { make TJvLookOuts adjust to Managers size }
@@ -2714,7 +2706,7 @@ end;
 
 procedure TJvExpress.Paint;
 begin
-
+  
   Perform(WM_NCPAINT, 0, 0);
   
   if not FBitmap.Empty then

@@ -278,11 +278,10 @@ procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
 
   procedure DoDrawText;
   begin
-    
-    
-    SetPenColor(ACanvas.handle, ACanvas.Font.Color);
+
+    RequiredState(ACanvas, [csFontValid, csHandleValid, csBrushValid]);
     DrawText(ACanvas.Handle, WideString(AText), -1, Rect, Flags);
-    
+
   end;
 
 begin
@@ -291,7 +290,7 @@ begin
     AText := AText + ' ';
   if not AShowAccelChar then
     Flags := Flags or DT_NOPREFIX;
-  
+
   with ACanvas do
   begin
     Font.Assign(AFont);

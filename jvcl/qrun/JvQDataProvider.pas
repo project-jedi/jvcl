@@ -23,13 +23,12 @@ Contributor(s):
   Remko Bonte
   Peter Thörnqvist
 
-Last Modified: 2004-02-18
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -42,6 +41,7 @@ interface
 
 
 uses
+  Classes, SysUtils, Contnrs,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -53,7 +53,6 @@ uses
   Types, QWindows, QGraphics, QImgList, QControls,
   QStdCtrls, // type TOwnerDrawState
   
-  Classes, SysUtils, Contnrs,
   JclBase,
   JvQConsts, JvQComponent, JvQDataProviderIntf;
 
@@ -2573,7 +2572,7 @@ end;
 
 function TJvBaseDataItemSubItems.GetInterface(const IID: TGUID; out Obj): Boolean;
 begin
-  Result := inherited GetInterface(IID, Obj) //or Succeeded(FItems.QueryInterface(IID, Obj));
+  Result := inherited GetInterface(IID, Obj) or Succeeded(FItems.QueryInterface(IID, Obj));
 end;
 
 //=== TJvCustomDataItemTextRenderer ==========================================

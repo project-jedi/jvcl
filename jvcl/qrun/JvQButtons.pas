@@ -147,12 +147,11 @@ type
 
     FGlyphDrawer: TJvButtonGlyph;
     FOnPaint: TPaintButtonEvent;
-    FDoubleBuffered: Boolean;
+//    FDoubleBuffered: Boolean;
 
   protected
     IsFocused: Boolean;
 
-    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
 
     procedure Paint; override;
 
@@ -163,7 +162,7 @@ type
     property Canvas ;
   published
     property Color;
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered default false;
+//    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered default false;
     property ParentColor;
     property OnPaint: TPaintButtonEvent read FOnPaint write FOnPaint;
   end;
@@ -864,6 +863,7 @@ begin
     DefaultDrawing(IsDown, IsDefault, State);
 end;
 
+(*)
 procedure TJvaColorButton.Painting(Sender: QObjectH; EventRegion: QRegionH);
 var
   Buffer: TBitmap;
@@ -890,6 +890,7 @@ begin
   else
     inherited;
 end;
+(*)
 
 
 procedure TJvaColorButton.DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
