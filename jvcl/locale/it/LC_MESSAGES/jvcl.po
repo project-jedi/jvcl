@@ -1,4 +1,4 @@
-# JVCL localization template
+﻿# JVCL localization template
 # Copyright (C) 2004 The Jedi Visual Component Library group
 # This file is distributed under the same license as the JVCL package.
 # JVCL Group <jvcl@sourceforge.net>, 2004.
@@ -8864,3 +8864,43 @@ msgstr ""
 msgid "Expression string is empty."
 msgstr "L'espressione è vuota."
 
+#. JvPageSetupTitled
+#: JvPageSetupTitled.rc
+msgid "Page Setup with Header & Footer"
+msgstr ""
+
+msgid "Paper"
+msgstr ""
+
+msgid "Si&ze"
+msgstr ""
+
+msgid "P&ortrait"
+msgstr ""
+
+msgid "L&andscape"
+msgstr ""
+
+msgid "&Left:"
+msgstr ""
+
+msgid "&Right:"
+msgstr ""
+
+msgid "&Top:"
+msgstr ""
+
+msgid "&Bottom:"
+msgstr ""
+
+msgid "Page Header:"
+msgstr ""
+
+msgid "Page Footer:"
+msgstr ""
+
+msgid "&Printer..."
+msgstr ""
+
+msgid "Margins"
+msgstr ""
