@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvApplication;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ActnList, JvTypes, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ActnList,
+  JvTypes, JvComponent;
 
 type
   TJvApplication = class(TJvComponent)
@@ -82,7 +81,6 @@ type
     procedure SetShow(Value: Boolean);
     function GetTitle: string;
     procedure SetTitle(Value: string);
-  protected
   public
     property Title: string read GetTitle write SetTitle stored False;
   published

@@ -26,167 +26,189 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{A class that functions as a base class for saving / loading arbitrary application
-data to the registry or an inifile.
-}
+{ A class that functions as a base class for saving / loading arbitrary application
+  data to the registry or an inifile. }
+
 unit JvAppInfo;
 
 interface
+
 uses
-  Windows, SysUtils, Classes;
+  Windows, Classes, SysUtils;
 
 type
   TJvAppInfo = class(TPersistent)
   private
-    FUseRegistry: boolean;
+    FUseRegistry: Boolean;
     FRegKey: DWORD;
     FSavePath: string;
     FSection: string;
     FUnAssigned: string;
     procedure CheckPath;
-    function LoadIni: boolean;
-    function LoadRegistry: boolean;
-    function SaveIni: boolean;
-    function SaveRegistry: boolean;
+    function LoadIni: Boolean;
+    function LoadRegistry: Boolean;
+    function SaveIni: Boolean;
+    function SaveRegistry: Boolean;
   public
     constructor Create;
-    procedure Assign(Source:TPersistent);override;
-    function Save:boolean;virtual;
-    function Load:boolean;virtual;
-    property SavePath:string read FSavePath write FSavePath;
-    //  If set to true, SavePath is interpreted as a registry path
-    property UseRegistry:boolean read FUseRegistry write FUseRegistry;
-    property RegRootKey:DWORD read FRegKey write FRegKey;
-    property Section:string read FSection write FSection;
-    property UnAssignedValue:string read FUnAssigned write FUnAssigned;
+    procedure Assign(Source:TPersistent); override;
+    function Save:Boolean; virtual;
+    function Load:Boolean; virtual;
+    property SavePath: string read FSavePath write FSavePath;
+    //  If set to True, SavePath is interpreted as a registry path
+    property UseRegistry: Boolean read FUseRegistry write FUseRegistry;
+    property RegRootKey: DWORD read FRegKey write FRegKey;
+    property Section: string read FSection write FSection;
+    property UnAssignedValue: string read FUnAssigned write FUnAssigned;
   end;
 
 
 implementation
+
 uses
-  Registry, IniFiles, TypInfo, jvTypes;
+  IniFiles, Registry, TypInfo,
+  JvTypes;
 
-{ TJvAppInfo }
-
-
-function TJvAppInfo.LoadRegistry:boolean;
-var i:integer; PropList:TPropList;Reg:TRegIniFile;Value:string;
+function TJvAppInfo.LoadRegistry: Boolean;
+var
+  I: Integer;
+  PropList: TPropList;
+  Reg: TRegIniFile;
+  Value: string;
 begin
-  Result := false;
+  Result := False;
   CheckPath;
   Reg := TRegIniFile.Create('');
-  i := 0;
+  I := 0;
   try
     Reg.RootKey := RegRootKey;
-    if not Reg.OpenKey(SavePath,false) then Exit;
-    if GetPropList(ClassInfo,tkProperties,@PropList) > 0 then
-      while Assigned(PropList[i]) and (i < High(PropList)) do
+    if not Reg.OpenKey(SavePath, False) then
+      Exit;
+    if GetPropList(ClassInfo, tkProperties, @PropList) > 0 then
+      while Assigned(PropList[I]) and (I < High(PropList)) do
       begin
-        Value := Reg.ReadString(Section,PropList[i].Name,FUnAssigned);
-        if (Value <> FUnAssigned) then
-          case PropList[i].PropType^.Kind of
-            tkInteger,tkEnumeration:    SetOrdProp(self,PropList[i],StrToInt(Value));
-            tkFloat:                    SetFloatProp(self,PropList[i],StrToFloat(Value));
-            tkString,tkLString:         SetStrProp(self,PropList[i],Value);
+        Value := Reg.ReadString(Section, PropList[I].Name, FUnAssigned);
+        if Value <> FUnAssigned then
+          case PropList[I].PropType^.Kind of
+            tkInteger, tkEnumeration:
+              SetOrdProp(Self, PropList[I], StrToInt(Value));
+            tkFloat:
+              SetFloatProp(Self, PropList[I], StrToFloat(Value));
+            tkString, tkLString:
+              SetStrProp(Self, PropList[I], Value);
           else
-             raise EJVCLException.CreateFmt('Invalid property: %s',[PropList[i].Name]);
+            raise EJVCLException.CreateFmt('Invalid property: %s', [PropList[I].Name]);
           end;
-        Inc(i);
+        Inc(I);
       end;
   finally
     Reg.Free;
   end;
-  Result := true;
+  Result := True;
 end;
 
-function TJvAppInfo.LoadIni:boolean;
-var i:integer; PropList:TPropList;Ini:TIniFile;Value:string;
+function TJvAppInfo.LoadIni: Boolean;
+var
+  I: Integer;
+  PropList: TPropList;
+  Ini: TIniFile;
+  Value: string;
 begin
   CheckPath;
   Ini := TIniFile.Create(SavePath);
   try
-    i := 0;
-    if GetPropList(ClassInfo,tkProperties,@PropList) > 0 then
-      while Assigned(PropList[i]) and (i < High(PropList)) do
+    I := 0;
+    if GetPropList(ClassInfo, tkProperties, @PropList) > 0 then
+      while Assigned(PropList[I]) and (I < High(PropList)) do
       begin
-        Value := Ini.ReadString(Section,PropList[i].Name,FUnAssigned);
-        if (Value <> FUnAssigned) then
-          case PropList[i].PropType^.Kind of
-            tkInteger,tkEnumeration: SetOrdProp(self,PropList[i],StrToInt(Value));
-            tkFloat:                 SetFloatProp(self,PropList[i],StrToFloat(Value));
-            tkString,tkLString:      SetStrProp(self,PropList[i],Value);
+        Value := Ini.ReadString(Section, PropList[i].Name, FUnAssigned);
+        if Value <> FUnAssigned then
+          case PropList[I].PropType^.Kind of
+            tkInteger, tkEnumeration:
+              SetOrdProp(Self, PropList[I], StrToInt(Value));
+            tkFloat:
+              SetFloatProp(Self, PropList[I], StrToFloat(Value));
+            tkString,tkLString:
+              SetStrProp(Self, PropList[I], Value);
           else
-             raise EJVCLException.CreateFmt('Invalid property: %s',[PropList[i].Name]);
+            raise EJVCLException.CreateFmt('Invalid property: %s', [PropList[I].Name]);
           end;
-        Inc(i);
+        Inc(I);
       end;
   finally
     Ini.Free;
   end;
-  Result := true;
+  Result := True;
 end;
 
-function TJvAppInfo.SaveRegistry:boolean;
-var i:integer; PropList:TPropList;Reg:TRegIniFile;Value:string;
+function TJvAppInfo.SaveRegistry: Boolean;
+var
+  I: Integer;
+  PropList: TPropList;
+  Reg: TRegIniFile;
+  Value: string;
 begin
   Reg := TRegIniFile.Create('');
   try
     Reg.RootKey := RegRootKey;
-    Reg.OpenKey(SavePath,true);
-    i := 0;
-    if GetPropList(ClassInfo,tkProperties,@PropList) > 0 then
-      while Assigned(PropList[i]) and (i < High(PropList)) and (PropList[i].Name <> '') do
+    Reg.OpenKey(SavePath, True);
+    I := 0;
+    if GetPropList(ClassInfo, tkProperties, @PropList) > 0 then
+      while Assigned(PropList[I]) and (I < High(PropList)) and (PropList[I].Name <> '') do
       begin
-        case PropList[i].PropType^.Kind of
-          tkInteger,tkEnumeration:
-            Value := IntToStr(GetOrdProp(self,PropList[i]));
+        case PropList[I].PropType^.Kind of
+          tkInteger, tkEnumeration:
+            Value := IntToStr(GetOrdProp(Self, PropList[I]));
           tkFloat:
-            Value := FloatToStr(GetFloatProp(self,PropList[i]));
-          tkString,tkLString:
-            Value := GetStrProp(self,PropList[i]);
+            Value := FloatToStr(GetFloatProp(Self, PropList[I]));
+          tkString, tkLString:
+            Value := GetStrProp(Self, PropList[I]);
         else
-          raise EJVCLException.CreateFmt('Invalid property: %s',[PropList[i].Name]);
+          raise EJVCLException.CreateFmt('Invalid property: %s', [PropList[I].Name]);
         end;
-        Reg.WriteString(Section,PropList[i].Name,Value);
-        Inc(i);
+        Reg.WriteString(Section, PropList[i].Name, Value);
+        Inc(I);
       end;
   finally
     Reg.Free;
   end;
-  Result := true;
+  Result := True;
 end;
 
-function TJvAppInfo.SaveIni:boolean;
-var i:integer; PropList:TPropList;Ini:TIniFile;Value:string;
+function TJvAppInfo.SaveIni: Boolean;
+var
+  I: Integer;
+  PropList: TPropList;
+  Ini: TIniFile;
+  Value: string;
 begin
   CheckPath;
   Ini := TIniFile.Create(SavePath);
-  i := 0;
+  I := 0;
   try
-    if GetPropList(ClassInfo,tkProperties,@PropList) > 0 then
-      while Assigned(PropList[i]) and (i < High(PropList)) and (PropList[i].Name <> '') do
+    if GetPropList(ClassInfo, tkProperties, @PropList) > 0 then
+      while Assigned(PropList[I]) and (I < High(PropList)) and (PropList[I].Name <> '') do
       begin
-        case PropList[i].PropType^.Kind of
-          tkInteger,tkEnumeration:
-            Value := IntToStr(GetOrdProp(self,PropList[i]));
+        case PropList[I].PropType^.Kind of
+          tkInteger, tkEnumeration:
+            Value := IntToStr(GetOrdProp(Self, PropList[I]));
           tkFloat:
-            Value := FloatToStr(GetFloatProp(self,PropList[i]));
-          tkString,tkLString:
-            Value := GetStrProp(self,PropList[i]);
+            Value := FloatToStr(GetFloatProp(Self, PropList[I]));
+          tkString, tkLString:
+            Value := GetStrProp(Self, PropList[I]);
           else
-             raise EJVCLException.CreateFmt('Invalid property: %s',[PropList[i].Name]);
+            raise EJVCLException.CreateFmt('Invalid property: %s', [PropList[I].Name]);
           end;
-          Ini.WriteString(Section,PropList[i].Name,Value);
-          Inc(i);
+          Ini.WriteString(Section, PropList[I].Name, Value);
+          Inc(I);
       end;
   finally
     Ini.Free;
   end;
-  Result := true;
+  Result := True;
 end;
 
-
-function TJvAppInfo.Load: boolean;
+function TJvAppInfo.Load: Boolean;
 begin
   CheckPath;
   if UseRegistry then
@@ -195,7 +217,7 @@ begin
     Result := LoadIni;
 end;
 
-function TJvAppInfo.Save: boolean;
+function TJvAppInfo.Save: Boolean;
 begin
   CheckPath;
   if UseRegistry then
@@ -221,14 +243,14 @@ procedure TJvAppInfo.Assign(Source: TPersistent);
 begin
   if Source is TJvAppInfo then
   begin
-    SavePath         := TJvAppInfo(Source).SavePath;
-    UseRegistry      := TJvAppInfo(Source).UseRegistry;
-    RegRootKey       := TJvAppInfo(Source).RegRootKey;
-    Section          := TJvAppInfo(Source).Section;
-    UnAssignedValue  := TJvAppInfo(Source).UnAssignedValue;
+    SavePath := TJvAppInfo(Source).SavePath;
+    UseRegistry := TJvAppInfo(Source).UseRegistry;
+    RegRootKey := TJvAppInfo(Source).RegRootKey;
+    Section := TJvAppInfo(Source).Section;
+    UnAssignedValue := TJvAppInfo(Source).UnAssignedValue;
     Exit;
   end;
-  inherited Assign(SOurce);
+  inherited Assign(Source);
 end;
 
 end.

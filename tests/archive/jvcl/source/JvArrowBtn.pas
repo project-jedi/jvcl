@@ -35,15 +35,18 @@ unit JvArrowBtn;
 interface
 
 uses Windows, Messages, Classes, Controls, Forms, Graphics, StdCtrls,
-  ExtCtrls, Buttons, CommCtrl, Menus, JvComponent;
+  ExtCtrls, Buttons, CommCtrl, Menus,
+  JvComponent;
 
 type
   TJvArrowButton = class(TJvGraphicControl)
   private
     FGroupIndex: Integer;
     FGlyph: Pointer;
-    FDown, FArrowClick, FPressBoth: Boolean;
-    FArrowWidth: integer;
+    FDown: Boolean;
+    FArrowClick: Boolean;
+    FPressBoth: Boolean;
+    FArrowWidth: Integer;
     FAllowAllUp: Boolean;
     FLayout: TButtonLayout;
     FSpacing: Integer;
@@ -66,18 +69,18 @@ type
     procedure SetLayout(Value: TButtonLayout);
     procedure SetSpacing(Value: Integer);
     procedure SetMargin(Value: Integer);
-    procedure SetArrowWidth(Value: integer);
+    procedure SetArrowWidth(Value: Integer);
     procedure SetFillFont(Value: TFont);
     procedure UpdateTracking;
-    procedure WMLButtonDblClk(var Message: TWMLButtonDown); message WM_LBUTTONDBLCLK;
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMButtonPressed(var Message: TMessage); message CM_BUTTONPRESSED;
-    procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CMSysColorChange(var Message: TMessage); message CM_SYSCOLORCHANGE;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK;
+    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMButtonPressed(var Msg: TMessage); message CM_BUTTONPRESSED;
+    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
+    procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   protected
     FState: TButtonState;
     function GetPalette: HPALETTE; override;
@@ -95,7 +98,7 @@ type
   published
     property Align;
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
-    property ArrowWidth: integer read FArrowWidth write SetArrowWidth default 13;
+    property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 13;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property Down: Boolean read FDown write SetDown default False;
     property DropDown: TPopUpMenu read FPopUp write FPopUp;
@@ -111,7 +114,7 @@ type
     property NumGlyphs: TNumGlyphs read GetNumGlyphs write SetNumGlyphs default 1;
     property ParentFont;
     property ParentShowHint;
-    property PressBoth: boolean read FPressBoth write FPressBoth default true;
+    property PressBoth: Boolean read FPressBoth write FPressBoth default True;
     property ShowHint;
     property Spacing: Integer read FSpacing write SetSpacing default 4;
     property Visible;
@@ -125,7 +128,8 @@ type
 
 implementation
 
-uses Consts, SysUtils;
+uses
+  Consts, SysUtils;
 
 type
   TGlyphList = class(TImageList)
@@ -141,7 +145,7 @@ type
     property Count: Integer read FCount;
   end;
 
-  TGlyphCache = class
+  TGlyphCache = class(TObject)
   private
     GlyphLists: TList;
   public
@@ -152,7 +156,7 @@ type
     function Empty: Boolean;
   end;
 
-  TButtonGlyph = class
+  TButtonGlyph = class(TObject)
   private
     FOriginal: TBitmap;
     FGlyphList: TGlyphList;
@@ -185,30 +189,33 @@ type
   end;
   { utility }
 
-procedure DrawLine(Canvas: TCanvas; X, Y, X2, Y2: integer);
+procedure DrawLine(Canvas: TCanvas; X, Y, X2, Y2: Integer);
 begin
   Canvas.MoveTo(X, Y);
   Canvas.LineTo(X2, Y2);
 end;
 
 procedure GrayedBitmap(Bmp: TBitmap);
-var i, j, W, H: integer; TCol: TColor; Col: longint;
+var
+  i, j, W, H: Integer;
+  ColT: TColor;
+  Col: Longint;
 begin
   if Bmp.Empty then
     Exit;
 
   W := Bmp.Width;
   H := Bmp.Height;
-  tCol := Bmp.Canvas.Pixels[0, 0];
+  ColT := Bmp.Canvas.Pixels[0, 0];
 
   for i := 0 to W do
     for j := 0 to H do
     begin
       Col := Bmp.Canvas.Pixels[i, j];
-      if (Col <> clWhite) and (Col <> tCol) then
+      if (Col <> clWhite) and (Col <> ColT) then
         Col := clBlack
       else
-        Col := tCol;
+        Col := ColT;
       Bmp.Canvas.Pixels[i, j] := Col;
     end;
 end;
@@ -443,8 +450,7 @@ begin
       I := bsUp;
     ORect := Rect(Ord(I) * IWidth, 0, (Ord(I) + 1) * IWidth, IHeight);
     case State of
-      bsUp, bsDown,
-        bsExclusive:
+      bsUp, bsDown, bsExclusive:
         begin
           TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
           if FOriginal.TransparentMode = tmFixed then
@@ -731,7 +737,7 @@ begin
   FSpacing := 4;
   FMargin := -1;
   FArrowWidth := 13;
-  FPressBoth := true;
+  FPressBoth := True;
   FLayout := blGlyphLeft;
   Inc(ButtonCount);
 end;
@@ -739,7 +745,7 @@ end;
 destructor TJvArrowButton.Destroy;
 begin
   TButtonGlyph(FGlyph).Free;
-  FFillFOnt.Free;
+  FFillFont.Free;
   Dec(ButtonCount);
   if ButtonCount = 0 then
   begin
@@ -751,18 +757,19 @@ end;
 
 procedure TJvArrowButton.Paint;
 const
-  DownStyles: array[Boolean] of Integer = (BDR_RAISEDINNER, BDR_SUNKENOUTER);
-  FillStyles: array[Boolean] of Integer = (BF_MIDDLE, 0);
+  DownStyles: array [Boolean] of Integer = (BDR_RAISEDINNER, BDR_SUNKENOUTER);
+  FillStyles: array [Boolean] of Integer = (BF_MIDDLE, 0);
 var
   PaintRect: TRect;
   DrawFlags: Integer;
   Offset: TPoint;
-  DivX, DivY: integer;
-  Push: boolean;
+  DivX, DivY: Integer;
+  Push: Boolean;
 begin
   if not Enabled then
     FState := bsDisabled
-  else if FState = bsDisabled then
+  else
+  if FState = bsDisabled then
   begin
     if FDown and (GroupIndex <> 0) then
       FState := bsExclusive
@@ -837,7 +844,8 @@ begin
       DrawFlags := DrawFlags or DFCS_PUSHED;
     DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
   end
-  else if FMouseInControl and Enabled or (csDesigning in ComponentState) then
+  else
+  if FMouseInControl and Enabled or (csDesigning in ComponentState) then
     DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
       FillStyles[FFlat] or BF_RECT);
   { find middle pixel }
@@ -902,14 +910,16 @@ end;
 
 procedure TJvArrowButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
-var aPoint: Tpoint; aMsg: TMsg;
+var
+  Pnt: TPoint;
+  Msg: TMsg;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if not Enabled then
     Exit;
   FArrowClick := (X >= Width - FArrowWidth) and (X <= Width) and (Y >= 0) and (Y <= Height);
 
-  if (Button = mbLeft) then
+  if Button = mbLeft then
   begin
     if not FDown then
       FState := bsDown
@@ -920,10 +930,10 @@ begin
 
   if Assigned(FPopUp) and FArrowClick then
   begin
-    aPoint := ClientToScreen(Point(0, Height));
-    FPopUp.Popup(aPoint.x, aPoint.y);
-    while PeekMessage(aMsg, HWND(0), WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
-      ;
+    Pnt := ClientToScreen(Point(0, Height));
+    FPopUp.Popup(Pnt.x, Pnt.y);
+    while PeekMessage(Msg, HWND(0), WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
+      {nothing};
     if GetCapture <> 0 then
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
   end;
@@ -942,7 +952,8 @@ end;
 
 procedure TJvArrowButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
-var DoClick: Boolean;
+var
+  DoClick: Boolean;
 begin
   inherited MouseUp(Button, Shift, X, Y);
 
@@ -962,7 +973,8 @@ begin
     if DoClick and not (FState in [bsExclusive, bsDown]) then
       Invalidate;
   end
-  else if DoClick then
+  else
+  if DoClick then
   begin
     SetDown(not FDown);
     if FDown then
@@ -1010,7 +1022,8 @@ procedure TJvArrowButton.SetNumGlyphs(Value: TNumGlyphs);
 begin
   if Value < 0 then
     Value := 1
-  else if Value > 4 then
+  else
+  if Value > 4 then
     Value := 4;
   if Value <> TButtonGlyph(FGlyph).NumGlyphs then
   begin
@@ -1040,7 +1053,6 @@ end;
 
 procedure TJvArrowButton.SetDown(Value: Boolean);
 begin
-
   if (FGroupIndex = 0) then
     Value := False;
   if Value <> FDown then
@@ -1104,7 +1116,7 @@ begin
   end;
 end;
 
-procedure TJvArrowButton.SetArrowWidth(Value: integer);
+procedure TJvArrowButton.SetArrowWidth(Value: Integer);
 begin
   if FArrowWidth <> Value then
   begin
@@ -1137,29 +1149,29 @@ begin
   end;
 end;
 
-procedure TJvArrowButton.WMLButtonDblClk(var Message: TWMLButtonDown);
+procedure TJvArrowButton.WMLButtonDblClk(var Msg: TWMLButtonDown);
 begin
   inherited;
   if FDown then
     DblClick;
 end;
 
-procedure TJvArrowButton.CMEnabledChanged(var Message: TMessage);
+procedure TJvArrowButton.CMEnabledChanged(var Msg: TMessage);
 const
-  NewState: array[Boolean] of TButtonState = (bsDisabled, bsUp);
+  NewState: array [Boolean] of TButtonState = (bsDisabled, bsUp);
 begin
   TButtonGlyph(FGlyph).CreateButtonGlyph(NewState[Enabled]);
   UpdateTracking;
   Repaint;
 end;
 
-procedure TJvArrowButton.CMButtonPressed(var Message: TMessage);
+procedure TJvArrowButton.CMButtonPressed(var Msg: TMessage);
 var
   Sender: TJvArrowButton;
 begin
-  if Message.WParam = FGroupIndex then
+  if Msg.WParam = FGroupIndex then
   begin
-    Sender := TJvArrowButton(Message.LParam);
+    Sender := TJvArrowButton(Msg.LParam);
     if Sender <> Self then
     begin
       if Sender.Down and FDown then
@@ -1173,9 +1185,9 @@ begin
   end;
 end;
 
-procedure TJvArrowButton.CMDialogChar(var Message: TCMDialogChar);
+procedure TJvArrowButton.CMDialogChar(var Msg: TCMDialogChar);
 begin
-  with Message do
+  with Msg do
     if IsAccel(CharCode, Caption) and Enabled then
     begin
       Click;
@@ -1185,17 +1197,17 @@ begin
       inherited;
 end;
 
-procedure TJvArrowButton.CMFontChanged(var Message: TMessage);
+procedure TJvArrowButton.CMFontChanged(var Msg: TMessage);
 begin
   Invalidate;
 end;
 
-procedure TJvArrowButton.CMTextChanged(var Message: TMessage);
+procedure TJvArrowButton.CMTextChanged(var Msg: TMessage);
 begin
   Invalidate;
 end;
 
-procedure TJvArrowButton.CMSysColorChange(var Message: TMessage);
+procedure TJvArrowButton.CMSysColorChange(var Msg: TMessage);
 begin
   with TButtonGlyph(FGlyph) do
   begin
@@ -1204,11 +1216,12 @@ begin
   end;
 end;
 
-procedure TJvArrowButton.CMMouseEnter(var Message: TMessage);
+procedure TJvArrowButton.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if FFlat and not FMouseInControl and Enabled then
   begin
     FMouseInControl := True;
@@ -1216,7 +1229,7 @@ begin
   end;
 end;
 
-procedure TJvArrowButton.CMMouseLeave(var Message: TMessage);
+procedure TJvArrowButton.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
   if FFlat and FMouseInControl and Enabled then

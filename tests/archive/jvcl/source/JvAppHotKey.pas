@@ -28,7 +28,7 @@ Known Issues:
 
 { A component that allows the user to register an application wide hotkey combination.
     Set the HotKey property to a *unique* combination of Ctrl,Alt,Shift and a character.
-    Set active to true to receive notifications when the hotkey is pressed. The OnHotKey
+    Set active to True to receive notifications when the hotkey is pressed. The OnHotKey
     event is called when the user presses the hotkey combination.}
 
 unit JvAppHotKey;
@@ -40,71 +40,70 @@ uses
   JvComponent;
 
 type
-  TJvHotKeyRegisterFailed = procedure (Sender:TObject; var HotKey:TShortCut) of object;
+  TJvHotKeyRegisterFailed = procedure(Sender: TObject; var HotKey: TShortCut) of object;
+
   TJvApplicationHotKey = class(TJvComponent)
   private
-    { Private declarations }
-    FActive: boolean;
+    FActive: Boolean;
     FShortCut: TShortCut;
     FOnHotKey: TNotifyEvent;
     FHandle: THandle;
-    FID: integer;
-    FHasRegistered:boolean;
+    FID: Integer;
+    FHasRegistered: Boolean;
     FOnHotKeyRegisterFailed: TJvHotKeyRegisterFailed;
-    procedure SetActive(Value: boolean);
+    procedure SetActive(Value: Boolean);
     procedure SetShortCut(Value: TShortCut);
-    function WndProc(var Msg: TMessage): boolean;
+    function WndProc(var Msg: TMessage): Boolean;
     procedure GetWndProc;
     procedure ResetWndProc;
   protected
-    { Protected declarations }
     procedure DoHotKey; virtual;
-    function DoRegisterHotKey: boolean;dynamic;
+    function DoRegisterHotKey: Boolean; dynamic;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
   published
-    { Published declarations }
-    property Active: boolean read FActive write SetActive default false;
+    property Active: Boolean read FActive write SetActive default False;
     property HotKey: TShortCut read FShortCut write SetShortCut;
     property OnHotKey: TNotifyEvent read FOnHotKey write FOnHotKey;
     property OnHotKeyRegisterFailed:TJvHotKeyRegisterFailed read FOnHotKeyRegisterFailed write FOnHotKeyRegisterFailed;
   end;
 
 implementation
+
 uses
   JvWndProcHook;
 
 { $R HotKey.dcr }
 
 var
-  HotKeyInstances:integer = 0;
+  HotKeyInstances: Integer = 0;
 
-procedure GetHotKey(AShortCut:TShortCut;var VirtKey,Modifiers:Word);
-var aShift: TShiftState;
+procedure GetHotKey(AShortCut: TShortCut; var VirtKey, Modifiers: Word);
+var
+  Shift: TShiftState;
 begin
-  ShortCutToKey(AShortCut, VirtKey, aShift);
+  ShortCutToKey(AShortCut, VirtKey, Shift);
   Modifiers := 0;
-  if ssCtrl in aShift then
+  if ssCtrl in Shift then
     Modifiers := Modifiers or MOD_CONTROL;
-  if ssShift in aShift then
+  if ssShift in Shift then
     Modifiers := Modifiers or MOD_SHIFT;
-  if ssAlt in aShift then
+  if ssAlt in Shift then
     Modifiers := Modifiers or MOD_ALT;
 end;
 
 
 procedure TJvApplicationHotKey.SetShortCut(Value: TShortCut);
-var b: Boolean;
+var
+  B: Boolean;
 begin
   if FShortCut <> Value then
   begin
-    b := FActive;
-    SetActive(false);
+    B := FActive;
+    SetActive(False);
     FShortCut := Value;
-    SetActive(b);
+    SetActive(B);
   end;
 end;
 
@@ -119,32 +118,35 @@ begin
   inherited Destroy;
 end;
 
-function TJvApplicationHotKey.DoRegisterHotKey:boolean;
-var AShortCut:TShortCut;FVirtKey,FMods:word;
+function TJvApplicationHotKey.DoRegisterHotKey: Boolean;
+var
+  AShortCut: TShortCut;
+  VirtKey, Mods: Word;
 begin
-  Result := false;
+  Result := False;
   if FHandle = 0 then
   begin
     FHandle := TWinControl(Owner).Handle;
-    GetHotKey(FShortCut,FVirtKey,FMods);
-    while not RegisterHotKey(FHandle,FID,FMods,FVirtKey) do
+    GetHotKey(FShortCut, VirtKey, Mods);
+    while not RegisterHotKey(FHandle, FID, Mods, VirtKey) do
     begin
       if Assigned(FOnHotKeyRegisterFailed) then
       begin
         AShortCut := FShortCut;
-        FOnHotKeyRegisterFailed(self,FShortCut);
+        FOnHotKeyRegisterFailed(Self, FShortCut);
         // make sure we don't get stuck in a loop here:
-        if AShortCut = FShortCut then Exit;
-        GetHotKey(FShortCut,FVirtKey,FMods);
+        if AShortCut = FShortCut then
+          Exit;
+        GetHotKey(FShortCut, VirtKey, Mods);
       end
       else
         Exit;
     end;
-    Result := true;
+    Result := True;
   end;
 end;
 
-procedure TJvApplicationHotKey.SetActive(Value: boolean);
+procedure TJvApplicationHotKey.SetActive(Value: Boolean);
 begin
   if FActive <> Value then
   begin
@@ -162,15 +164,17 @@ begin
         FID := HotKeyInstances;
         Inc(HotKeyInstances);
       end;
-      if not DoRegisterHotKey then Exit;
+      if not DoRegisterHotKey then
+        Exit;
       GetWndProc;
     end
-    else if FHasRegistered then
+    else
+    if FHasRegistered then
     begin
-      UnRegisterHotKey(FHandle,FID);
+      UnRegisterHotKey(FHandle, FID);
       ResetWndProc;
       if IsLibrary then
-        GlobalDeleteAtom (FID);
+        GlobalDeleteAtom(FID);
     end;
     FActive := Value;
   end;
@@ -179,7 +183,7 @@ end;
 procedure TJvApplicationHotKey.DoHotKey;
 begin
   if Assigned(FOnHotKey) then
-    FOnHotKey(self);
+    FOnHotKey(Self);
 end;
 
 procedure TJvApplicationHotKey.GetWndProc;
@@ -187,10 +191,10 @@ begin
   if not FHasRegistered and (Owner is TWinControl) then
   begin
     RegisterWndProcHook(TWinControl(Owner), WndProc, hoAfterMsg);
-    FHasRegistered := true;
+    FHasRegistered := True;
   end
   else
-    SetActive(false);
+    SetActive(False);
 end;
 
 procedure TJvApplicationHotKey.ResetWndProc;
@@ -198,16 +202,16 @@ begin
   if FHasRegistered and (Owner is TWinControl) then
   begin
     UnregisterWndProcHook(TWinControl(Owner), WndProc, hoAfterMsg);
-    FHasRegistered := false;
+    FHasRegistered := False;
   end;
   FHandle := 0;
 end;
 
-function TJvApplicationHotKey.WndProc(var Msg: TMessage): boolean;
+function TJvApplicationHotKey.WndProc(var Msg: TMessage): Boolean;
 begin
   if (Msg.Msg = WM_HOTKEY) and (FID = Msg.WParam) then
     DoHotKey;
-  Result := false;
+  Result := False;
 end;
 
 end.

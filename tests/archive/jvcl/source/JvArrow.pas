@@ -30,46 +30,46 @@ unit JvArrow;
 
 interface
 
-uses Messages, Windows, Classes, Controls, Graphics;
+uses
+  Messages, Windows, Classes, Controls, Graphics,
+  JvComponent;
 
 type
   TArrowType = (atDownRight, atDownLeft, atUpRight, atUpLeft,
-      atRightDown, atLeftDown, atRightUp, atLeftUp,
-      atTopLeftBottomRight, atBottomRightTopLeft,
-      atTopRightBottomLeft, atBottomLeftTopRight);
+    atRightDown, atLeftDown, atRightUp, atLeftUp,
+    atTopLeftBottomRight, atBottomRightTopLeft,
+    atTopRightBottomLeft, atBottomLeftTopRight);
 
-  TCustomArrow = class(TGraphicControl)
+  TCustomArrow = class(TJvGraphicControl)
   private
     FPen: TPen;
     FBrush: TBrush;
     FShape: TArrowType;
-    fiArrowSize: integer;
-    fiArrowWidth: integer;
+    FArrowSize: Integer;
+    FArrowWidth: Integer;
     procedure SetBrush(Value: TBrush);
     procedure SetPen(Value: TPen);
-    procedure SeTArrow(Value: TArrowType);
-    procedure DrawArrow(FromX, FromY, ToX, ToY, Size, Width: integer);
-    procedure SetArrowSize(const piValue: integer);
-    procedure SetArrowWidth(const piValue: integer);
+    procedure SetArrow(Value: TArrowType);
+    procedure DrawArrow(FromX, FromY, ToX, ToY, Size, Width: Integer);
+    procedure SetArrowSize(const piValue: Integer);
+    procedure SetArrowWidth(const piValue: Integer);
   protected
     procedure Paint; override;
-
-    property ArrowSize: integer read fiArrowSize write SetArrowSize;
-    property ArrowWidth: integer read fiArrowWidth write SetArrowWidth;
-    property Brush: TBrush read FBrush write SetBrush;
-    property Pen: TPen read FPen write SetPen;
-    property Shape: TArrowType read FShape write SeTArrow default atDownRight;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    property ArrowSize: Integer read FArrowSize write SetArrowSize default 5;
+    property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 5;
+    property Brush: TBrush read FBrush write SetBrush;
+    property Pen: TPen read FPen write SetPen;
+    property Shape: TArrowType read FShape write SetArrow default atDownRight;
+
     procedure StyleChanged(Sender: TObject);
-  published
   end;
 
   TJvArrow = class(TCustomArrow)
-    published
+  published
     property Align;
     property Anchors;
     property Brush;
@@ -106,14 +106,15 @@ constructor TCustomArrow.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csReplicatable];
-  Width        := 65;
-  Height       := 65;
-  ArrowSize    := 5;
-  ArrowWidth   := 5;
-  FPen         := TPen.Create;
+  Width := 65;
+  Height := 65;
+  ArrowSize := 5;
+  ArrowWidth := 5;
+  FPen := TPen.Create;
   FPen.OnChange := StyleChanged;
-  FBrush       := TBrush.Create;
+  FBrush := TBrush.Create;
   FBrush.OnChange := StyleChanged;
+  FShape := atDownRight;
 end;
 
 destructor TCustomArrow.Destroy;
@@ -125,14 +126,14 @@ end;
 
 procedure TCustomArrow.Paint;
 var
-  X, Y, W, H: integer;
-  lcpntArray: array [1..3] of TPoint;
-  liSign:     integer;
-  Arrow_FromX,
-  Arrow_FromY,
-  Arrow_ToX,
-  Arrow_ToY:  integer;
-  GUI_PAD:    integer;
+  X, Y, W, H: Integer;
+  ArrowPoints: array [1..3] of TPoint;
+  liSign: Integer;
+  Arrow_FromX: Integer;
+  Arrow_FromY: Integer;
+  Arrow_ToX: Integer;
+  Arrow_ToY: Integer;
+  GUI_PAD: Integer;
 begin
   if ArrowWidth > ArrowSize then
     GUI_PAD := ArrowWidth + 2
@@ -153,184 +154,172 @@ begin
       Dec(W);
       Dec(H);
     end;
-
-    if FShape in [atDownRight] then
-    begin
-      lcpntArray[1].x := X + GUI_PAD;
-      lcpntArray[1].y := Y + GUI_PAD;
-      lcpntArray[2].x := lcpntArray[1].x;
-      lcpntArray[2].y := (Y + (H - GUI_PAD));
-      lcpntArray[3].x := (X + (W - GUI_PAD));
-      lcpntArray[3].y := (Y + (H - GUI_PAD));
+    case Shape of
+      atRightDown:
+        begin
+          ArrowPoints[1].x := X + GUI_PAD;
+          ArrowPoints[1].y := Y + GUI_PAD;
+          ArrowPoints[2].x := (X + (W - GUI_PAD));
+          ArrowPoints[2].y := Y + GUI_PAD;
+          ArrowPoints[3].x := ArrowPoints[2].x;
+          ArrowPoints[3].y := (Y + (H - GUI_PAD));
+        end;
+      atDownLeft:
+        begin
+          ArrowPoints[1].x := (X + (W - GUI_PAD));
+          ArrowPoints[1].y := Y + GUI_PAD;
+          ArrowPoints[2].x := ArrowPoints[1].x;
+          ArrowPoints[2].y := (Y + (H - GUI_PAD));
+          ArrowPoints[3].x := X + GUI_PAD;
+          ArrowPoints[3].y := (Y + (H - GUI_PAD));
+        end;
+      atLeftDown:
+        begin
+          ArrowPoints[1].x := (X + (W - GUI_PAD));
+          ArrowPoints[1].y := Y + GUI_PAD;
+          ArrowPoints[2].x := X + GUI_PAD;
+          ArrowPoints[2].y := ArrowPoints[1].y;
+          ArrowPoints[3].x := ArrowPoints[2].x;
+          ArrowPoints[3].y := (Y + (H - GUI_PAD));
+        end;
+      atUpLeft:
+        begin
+          ArrowPoints[1].x := (X + (W - GUI_PAD));
+          ArrowPoints[1].y := (Y + (H - GUI_PAD));
+          ArrowPoints[2].x := ArrowPoints[1].x;
+          ArrowPoints[2].y := Y + GUI_PAD;
+          ArrowPoints[3].x := X + GUI_PAD;
+          ArrowPoints[3].y := Y + GUI_PAD;
+        end;
+      atLeftUp:
+        begin
+          ArrowPoints[1].x := (X + (W - GUI_PAD));
+          ArrowPoints[1].y := (Y + (H - GUI_PAD));
+          ArrowPoints[2].x := X + GUI_PAD;
+          ArrowPoints[2].y := ArrowPoints[1].y;
+          ArrowPoints[3].x := ArrowPoints[2].x;
+          ArrowPoints[3].y := Y + GUI_PAD;
+        end;
+      atUpRight:
+        begin
+          ArrowPoints[1].x := X + GUI_PAD;
+          ArrowPoints[1].y := (Y + (H - GUI_PAD));
+          ArrowPoints[2].x := ArrowPoints[1].x;
+          ArrowPoints[2].y := Y + GUI_PAD;
+          ArrowPoints[3].x := (X + (W - GUI_PAD));
+          ArrowPoints[3].y := Y + GUI_PAD;
+        end;
+      atRightUp:
+        begin
+          ArrowPoints[1].x := X + GUI_PAD;
+          ArrowPoints[1].y := (Y + (H - GUI_PAD));
+          ArrowPoints[2].x := (X + (W - GUI_PAD));
+          ArrowPoints[2].y := ArrowPoints[1].y;
+          ArrowPoints[3].x := ArrowPoints[2].x;
+          ArrowPoints[3].y := Y + GUI_PAD;
+        end;
+      atTopLeftBottomRight:
+        begin
+          ArrowPoints[1].x := X + GUI_PAD;
+          ArrowPoints[1].y := Y + GUI_PAD;
+          ArrowPoints[2].x := (X + (W - GUI_PAD));
+          ArrowPoints[2].y := (Y + (H - GUI_PAD));
+          ArrowPoints[3].x := ArrowPoints[2].x;
+          ArrowPoints[3].y := ArrowPoints[2].y;
+        end;
+      atBottomRightTopLeft:
+        begin
+          ArrowPoints[2].x := X + GUI_PAD;
+          ArrowPoints[2].y := Y + GUI_PAD;
+          ArrowPoints[1].x := (X + (W - GUI_PAD));
+          ArrowPoints[1].y := (Y + (H - GUI_PAD));
+          ArrowPoints[3].x := ArrowPoints[2].x;
+          ArrowPoints[3].y := ArrowPoints[2].y;
+        end;
+      atTopRightBottomLeft:
+        begin
+          ArrowPoints[1].x := (X + (W - GUI_PAD));
+          ArrowPoints[1].y := Y + GUI_PAD;
+          ArrowPoints[2].x := X + GUI_PAD;
+          ArrowPoints[2].y := (Y + (H - GUI_PAD));
+          ArrowPoints[3].x := ArrowPoints[2].x;
+          ArrowPoints[3].y := ArrowPoints[2].y;
+        end;
+      atBottomLeftTopRight:
+        begin
+          ArrowPoints[2].x := (X + (W - GUI_PAD));
+          ArrowPoints[2].y := Y + GUI_PAD;
+          ArrowPoints[1].x := X + GUI_PAD;
+          ArrowPoints[1].y := (Y + (H - GUI_PAD));
+          ArrowPoints[3].x := ArrowPoints[2].x;
+          ArrowPoints[3].y := ArrowPoints[2].y;
+        end;
+    else
+      ArrowPoints[1].x := X + GUI_PAD;
+      ArrowPoints[1].y := Y + GUI_PAD;
+      ArrowPoints[2].x := ArrowPoints[1].x;
+      ArrowPoints[2].y := (Y + (H - GUI_PAD));
+      ArrowPoints[3].x := (X + (W - GUI_PAD));
+      ArrowPoints[3].y := (Y + (H - GUI_PAD));
     end;
-
-    if FShape in [atRightDown] then
-    begin
-      lcpntArray[1].x := X + GUI_PAD;
-      lcpntArray[1].y := Y + GUI_PAD;
-      lcpntArray[2].x := (X + (W - GUI_PAD));
-      lcpntArray[2].y := Y + GUI_PAD;
-      lcpntArray[3].x := lcpntArray[2].x;
-      lcpntArray[3].y := (Y + (H - GUI_PAD));
-    end;
-
-    if FShape in [atDownLeft] then
-    begin
-      lcpntArray[1].x := (X + (W - GUI_PAD));
-      lcpntArray[1].y := Y + GUI_PAD;
-      lcpntArray[2].x := lcpntArray[1].x;
-      lcpntArray[2].y := (Y + (H - GUI_PAD));
-      lcpntArray[3].x := X + GUI_PAD;
-      lcpntArray[3].y := (Y + (H - GUI_PAD));
-    end;
-
-    if FShape in [atLeftDown] then
-    begin
-      lcpntArray[1].x := (X + (W - GUI_PAD));
-      lcpntArray[1].y := Y + GUI_PAD;
-      lcpntArray[2].x := X + GUI_PAD;
-      lcpntArray[2].y := lcpntArray[1].y;
-      lcpntArray[3].x := lcpntArray[2].x;
-      lcpntArray[3].y := (Y + (H - GUI_PAD));
-    end;
-
-    if FShape in [atUpLeft] then
-    begin
-      lcpntArray[1].x := (X + (W - GUI_PAD));
-      lcpntArray[1].y := (Y + (H - GUI_PAD));
-      lcpntArray[2].x := lcpntArray[1].x;
-      lcpntArray[2].y := Y + GUI_PAD;
-      lcpntArray[3].x := X + GUI_PAD;
-      lcpntArray[3].y := Y + GUI_PAD;
-    end;
-
-    if FShape in [atLeftUp] then
-    begin
-      lcpntArray[1].x := (X + (W - GUI_PAD));
-      lcpntArray[1].y := (Y + (H - GUI_PAD));
-      lcpntArray[2].x := X + GUI_PAD;
-      lcpntArray[2].y := lcpntArray[1].y;
-      lcpntArray[3].x := lcpntArray[2].x;
-      lcpntArray[3].y := Y + GUI_PAD;
-    end;
-
-    if FShape in [atUpRight] then
-    begin
-      lcpntArray[1].x := X + GUI_PAD;
-      lcpntArray[1].y := (Y + (H - GUI_PAD));
-      lcpntArray[2].x := lcpntArray[1].x;
-      lcpntArray[2].y := Y + GUI_PAD;
-      lcpntArray[3].x := (X + (W - GUI_PAD));
-      lcpntArray[3].y := Y + GUI_PAD;
-    end;
-
-    if FShape in [atRightUp] then
-    begin
-      lcpntArray[1].x := X + GUI_PAD;
-      lcpntArray[1].y := (Y + (H - GUI_PAD));
-      lcpntArray[2].x := (X + (W - GUI_PAD));
-      lcpntArray[2].y := lcpntArray[1].y;
-      lcpntArray[3].x := lcpntArray[2].x;
-      lcpntArray[3].y := Y + GUI_PAD;
-    end;
-
-    if FShape in [atTopLeftBottomRight] then
-    begin
-      lcpntArray[1].x := X + GUI_PAD;
-      lcpntArray[1].y := Y + GUI_PAD;
-      lcpntArray[2].x := (X + (W - GUI_PAD));
-      lcpntArray[2].y := (Y + (H - GUI_PAD));
-      lcpntArray[3].x := lcpntArray[2].x;
-      lcpntArray[3].y := lcpntArray[2].y;
-    end;
-
-    if FShape in [atBottomRightTopLeft] then
-    begin
-      lcpntArray[2].x := X + GUI_PAD;
-      lcpntArray[2].y := Y + GUI_PAD;
-      lcpntArray[1].x := (X + (W - GUI_PAD));
-      lcpntArray[1].y := (Y + (H - GUI_PAD));
-      lcpntArray[3].x := lcpntArray[2].x;
-      lcpntArray[3].y := lcpntArray[2].y;
-    end;
-
-    if FShape in [atTopRightBottomLeft] then
-    begin
-      lcpntArray[1].x := (X + (W - GUI_PAD));
-      lcpntArray[1].y := Y + GUI_PAD;
-      lcpntArray[2].x := X + GUI_PAD;
-      lcpntArray[2].y := (Y + (H - GUI_PAD));
-      lcpntArray[3].x := lcpntArray[2].x;
-      lcpntArray[3].y := lcpntArray[2].y;
-    end;
-
-    if FShape in [atBottomLeftTopRight] then
-    begin
-      lcpntArray[2].x := (X + (W - GUI_PAD));
-      lcpntArray[2].y := Y + GUI_PAD;
-      lcpntArray[1].x := X + GUI_PAD;
-      lcpntArray[1].y := (Y + (H - GUI_PAD));
-      lcpntArray[3].x := lcpntArray[2].x;
-      lcpntArray[3].y := lcpntArray[2].y;
-    end;
-
     {draw lines}
-    Canvas.PolyLine(lcpntArray);
+    Canvas.PolyLine(ArrowPoints);
 
-{------------------------ARROWS----------------------------}
+    {------------------------ARROWS----------------------------}
 
-    if FShape in [atDownLeft, atDownRight, atUpLeft, atUpRight] then
+    if Shape in [atDownLeft, atDownRight, atUpLeft, atUpRight] then
     begin
       {left or right}
-      if FShape in [atUpLeft, atDownLeft] then
+      if Shape in [atUpLeft, atDownLeft] then
         liSign := -1
       else
         liSign := +1;
-      Arrow_FromX := lcpntArray[3].x;
-      Arrow_FromY := lcpntArray[3].y;
-      Arrow_ToX   := lcpntArray[3].x + (ArrowSize * liSign);
-      Arrow_ToY   := lcpntArray[3].y;
+      Arrow_FromX := ArrowPoints[3].x;
+      Arrow_FromY := ArrowPoints[3].y;
+      Arrow_ToX   := ArrowPoints[3].x + (ArrowSize * liSign);
+      Arrow_ToY   := ArrowPoints[3].y;
     end 
-    else if FShape in [atTopLeftBottomRight, atBottomLeftTopRight] then
+    else
+    if Shape in [atTopLeftBottomRight, atBottomLeftTopRight] then
     begin
 //      Arrow_FromX := 0;
 //      Arrow_FromY := 0;
-//      Arrow_ToY := lcpntArray[3].y + ArrowSize;
-      Arrow_ToX := lcpntArray[3].x + ArrowSize;
+//      Arrow_ToY := ArrowPoints[3].y + ArrowSize;
+      Arrow_ToX := ArrowPoints[3].x + ArrowSize;
 
       {down or up}
-      if FShape in [atBottomLeftTopRight] then
-        Arrow_ToY := lcpntArray[3].y - ArrowSize
+      if Shape in [atBottomLeftTopRight] then
+        Arrow_ToY := ArrowPoints[3].y - ArrowSize
       else
-        Arrow_ToY := lcpntArray[3].y + ArrowSize;
+        Arrow_ToY := ArrowPoints[3].y + ArrowSize;
 
-      Arrow_FromX := lcpntArray[3].x;
-      Arrow_FromY := lcpntArray[3].y;
+      Arrow_FromX := ArrowPoints[3].x;
+      Arrow_FromY := ArrowPoints[3].y;
     end 
-    else if FShape in [atBottomRightTopLeft, atTopRightBottomLeft] then
+    else if Shape in [atBottomRightTopLeft, atTopRightBottomLeft] then
     begin
 //      Arrow_FromX := 0;
 //      Arrow_FromY := 0;
-      Arrow_ToX := lcpntArray[3].X - ArrowSize;
+      Arrow_ToX := ArrowPoints[3].X - ArrowSize;
       {down or up}
-      if FShape in [atBottomRightTopLeft] then
-        Arrow_ToY := lcpntArray[3].y - ArrowSize
+      if Shape in [atBottomRightTopLeft] then
+        Arrow_ToY := ArrowPoints[3].y - ArrowSize
       else
-        Arrow_ToY := lcpntArray[3].y + ArrowSize;
-      Arrow_FromX := lcpntArray[3].x;
-      Arrow_FromY := lcpntArray[3].y;
+        Arrow_ToY := ArrowPoints[3].y + ArrowSize;
+      Arrow_FromX := ArrowPoints[3].x;
+      Arrow_FromY := ArrowPoints[3].y;
     end 
     else
     begin
       {down or up}
-      if FShape in [atLeftUp, atRightUp] then
+      if Shape in [atLeftUp, atRightUp] then
         liSign := -1
       else
         liSign := +1;
-      Arrow_FromX := lcpntArray[3].x;
-      Arrow_FromY := lcpntArray[3].y;
-      Arrow_ToX   := lcpntArray[3].x;
-      Arrow_ToY   := lcpntArray[3].y + (ArrowSize * liSign);;
+      Arrow_FromX := ArrowPoints[3].x;
+      Arrow_FromY := ArrowPoints[3].y;
+      Arrow_ToX   := ArrowPoints[3].x;
+      Arrow_ToY   := ArrowPoints[3].y + (ArrowSize * liSign);
     end;
 
     DrawArrow(Arrow_FromX, Arrow_FromY, Arrow_ToX, Arrow_ToY, ArrowSize, ArrowWidth);
@@ -352,7 +341,7 @@ begin
   FPen.Assign(Value);
 end;
 
-procedure TCustomArrow.SeTArrow(Value: TArrowType);
+procedure TCustomArrow.SetArrow(Value: TArrowType);
 begin
   if FShape <> Value then
   begin
@@ -362,17 +351,13 @@ begin
 end;
 
 
-
-
-
-procedure TCustomArrow.DrawArrow(FromX, FromY, ToX, ToY, Size, Width: integer);
-
 { *** DrawArrow Procedure  ***
   Written By Scott M. Straley (straley@fast.net) -- March 15, 1995}
+procedure TCustomArrow.DrawArrow(FromX, FromY, ToX, ToY, Size, Width: Integer);
 var
   Line1, Line2, ShortLine1, ShortLine2, ArrowX,
-  ArrowY, Point1X, Point1Y, Point2X, Point2Y: integer;
-  Angle:                                      real;
+  ArrowY, Point1X, Point1Y, Point2X, Point2Y: Integer;
+  Angle: Real;
 begin
   {determining angle of X2 of line based on:
 
@@ -389,9 +374,9 @@ begin
 
   {We need this code to prevent DivByZero errors}
 
-  if (Line2 <> 0) then
+  if Line2 <> 0 then
   begin
-    Angle := arctan(Line1 / Line2);
+    Angle := ArcTan(Line1 / Line2);
   end
   else
   begin
@@ -403,17 +388,17 @@ begin
 
   {now determine where the back of the arrow is}
 
-  if (ToX > FromX) then
+  if ToX > FromX then
   begin
-    ShortLine1 := Round(Size * sin(Angle));
-    ShortLine2 := Round(Size * cos(Angle));
+    ShortLine1 := Round(Size * Sin(Angle));
+    ShortLine2 := Round(Size * Cos(Angle));
     ArrowX     := ToX - ShortLine2;
     ArrowY     := ToY - ShortLine1;
   end
   else
   begin
-    ShortLine1 := Round(Size * sin(Angle));
-    ShortLine2 := Round(Size * cos(Angle));
+    ShortLine1 := Round(Size * Sin(Angle));
+    ShortLine2 := Round(Size * Cos(Angle));
     ArrowX     := ToX + ShortLine2;
     ArrowY     := ToY + ShortLine1;
   end;
@@ -421,32 +406,32 @@ begin
   {now determine points perpendictular to the
    arrow line}
 
-  Point1X := ArrowX - Round(Width * (sin(Angle)));
-  Point1Y := ArrowY + Round(Width * (cos(Angle)));
-  Point2X := ArrowX + Round(Width * (sin(Angle)));
-  Point2Y := ArrowY - Round(Width * (cos(Angle)));
+  Point1X := ArrowX - Round(Width * (Sin(Angle)));
+  Point1Y := ArrowY + Round(Width * (Cos(Angle)));
+  Point2X := ArrowX + Round(Width * (Sin(Angle)));
+  Point2Y := ArrowY - Round(Width * (Cos(Angle)));
 
   Canvas.MoveTo(FromX, FromY);
   Canvas.LineTo(ToX, ToY);
-// 11/18/99 Michael Beck
-//need to adjust for "FromX=ToX" as the current Polygon is drawing Arrowhead  in the other direction
+  // 11/18/99 Michael Beck
+  // need to adjust for "FromX=ToX" as the current Polygon is drawing Arrowhead in the other direction
   if FromX = ToX then
     Canvas.Polygon([Point(Point2X, ToY - (Point2Y - ToY)),
       Point(Point1X, ToY - (Point2Y - ToY)), Point(ToX, ToY)])
   else
-//end of Beck's correction
+  //end of Beck's correction
     Canvas.Polygon([Point(Point2X, Point2Y), Point(Point1X, Point1Y), Point(ToX, ToY)]);
 end;
 
-procedure TCustomArrow.SetArrowSize(const piValue: integer);
+procedure TCustomArrow.SetArrowSize(const piValue: Integer);
 begin
-  fiArrowSize := piValue;
+  FArrowSize := piValue;
   Invalidate;
 end;
 
-procedure TCustomArrow.SetArrowWidth(const piValue: integer);
+procedure TCustomArrow.SetArrowWidth(const piValue: Integer);
 begin
-  fiArrowWidth := piValue;
+  FArrowWidth := piValue;
   Invalidate;
 end;
 
