@@ -426,6 +426,8 @@ type
    {$IFEND}
   {$ENDIF}
   end;
+
+{$IFDEF VCL}
   //
   // --------------------------------------
   TJvExCustomControlBar = class(TCustomControlBar, IJvWinControlEvents, IJvControlEvents)
@@ -520,8 +522,6 @@ type
    {$IFEND}
   {$ENDIF}
   end;
-
-{$IFDEF VCL}
   //
   // --------------------------------------
   TJvExPage = class(TPage, IJvWinControlEvents, IJvControlEvents)
@@ -1898,6 +1898,8 @@ begin
     inherited Dispatch(Message);
 end;
 {$ENDIF VCL}
+
+{$IFDEF VCL}
 //
 // -----------------------------------------------------------------------------
 {$IFDEF VCL}
@@ -2156,8 +2158,6 @@ begin
     inherited Dispatch(Message);
 end;
 {$ENDIF VCL}
-
-{$IFDEF VCL}
 //
 // -----------------------------------------------------------------------------
 {$IFDEF VCL}
