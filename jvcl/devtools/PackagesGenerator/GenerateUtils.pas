@@ -1060,7 +1060,13 @@ begin
     if containsSomething and
        (HasFileChanged(OutFileName, templateName, outFile, TimeStampLine)) then
     begin
-      SendMsg(SysUtils.Format(#9#9'Writing %s for %s', [ExtractFileName(OutFileName), target]));
+      tmpStr := ExtractFilePath(templateName);
+      if tmpStr[length(tmpStr)] = PathSeparator then
+        SetLength(tmpStr, length(tmpStr)-1);
+      if ExtractFileName(tmpStr) = TargetList[GetNonPersoTarget(target)].PDir then
+        SendMsg(SysUtils.Format(#9#9'Writing %s for %s (%s template used)', [ExtractFileName(OutFileName), target, target]))
+      else
+        SendMsg(SysUtils.Format(#9#9'Writing %s for %s', [ExtractFileName(OutFileName), target]));
 
       // if outfile contains line, save it.
       // else, it's because the template file was a binary file, so simply
@@ -1250,7 +1256,6 @@ begin
               begin
                 if FileExists(path+TargetToDir(persoTarget)+PathSeparator+rec.Name) then
                 begin
-                  SendMsg(SysUtils.Format(#9'%s template will be used for %s', [persoTarget, packages[j]]));
                   templateName := path+TargetToDir(persoTarget)+PathSeparator+rec.Name;
                   if IsBinaryFile(templateName) then
                     template.Clear
