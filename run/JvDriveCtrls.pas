@@ -146,6 +146,8 @@ type
     procedure ResetItemHeight;
     procedure SetImageSize(Value: TJvImageSize);
     procedure SetOffset(Value: Integer);
+    function GetDrives(Index: integer): String;
+    function GetDriveCount: integer;
   protected
     procedure Resize; override;
     procedure FontChanged; override;
@@ -164,6 +166,8 @@ type
     procedure CreateWnd; override;
     destructor Destroy; override;
     procedure Refresh;
+    property Drives[Index:integer]:String read GetDrives;
+    property DriveCount:integer read GetDriveCount;
   published
     property MultiSelect;
     property ScrollBars default ssNone;
@@ -1632,6 +1636,16 @@ begin
     if odFocused in State then
       DrawFocusRect(tmpR);
   end;
+end;
+
+function TJvDriveList.GetDrives(Index: integer): String;
+begin
+  Result := FDrives[Index];
+end;
+
+function TJvDriveList.GetDriveCount: integer;
+begin
+  Result := FDrives.Count;
 end;
 
 end.
