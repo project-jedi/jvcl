@@ -141,9 +141,4 @@ begin
   Result := 1;
 end;
 
-procedure Register;
-begin
-  RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
-end;
-
 end.

@@ -55,6 +55,8 @@ type
   IJvDataProviderNotify = interface;
   IJvDataContexts = interface;
   IJvDataContext = interface;
+  IJvDataConsumerServerNotify = interface;
+  IJvDataConsumerClientNotify = interface;
 
   IJvDataProvider = interface
   ['{62A7A17D-1E21-427E-861D-C92FBB9B09A6}']
@@ -355,13 +357,38 @@ type
     property LevelIndent: Integer read Get_LevelIndent write Set_LevelIndent;
   end;
 
+  { Consumer support interface to be used as a callback for IJvDataConsumerClientNotify
+    implementations. Used to add or remove the link, as well as be notified if a change occured
+    at the client that may result in the link being removed (at the discretion of the server
+    implementation) }
+  IJvDataConsumerServerNotify = interface
+    ['{636CF1CD-6A5A-414F-9506-EAC461202119}']
+    { Add a client notifier, to be called when this consumer changes. Will call Client.LinkAdded
+      when the link was succesful. }
+    procedure AddClient(Client: IJvDataConsumerClientNotify);
+    { Remove a client notifier. Will call Client.LinkRemoved when done. }
+    procedure RemoveClient(Client: IJvDataConsumerClientNotify);
+    { Called when the consumer belonging to the client has selected another provider. The server
+      may at this point decide to remove the link or keep it. }
+    procedure NotifyProviderChanged(Client: IJvDataConsumerClientNotify);
+    { Determine if the specified client is valid for this server. }
+    function IsValidClient(Client: IJvDataConsumerClientNotify): Boolean;
+  end;
+
   { Consumer support interface to be notified if another consumer has changed it's selected
     (current) item. Used to react to changes of another consumer. For example, if another consumer
     lists contexts related to this consumer and the context list consumer selects a different
     context, this interface's implementer can switch the context of it's own consumer. }
   IJvDataConsumerClientNotify = interface
     ['{D1AAAFDF-BEB1-44DB-B8D8-A60080CEF3C7}']
-    procedure ItemSelected(Value: IJvDataItem);
+    { Called when the server consumer has selected another item. }
+    procedure ItemSelected(Server: IJvDataConsumerServerNotify; Value: IJvDataItem);
+    { Called when the server has added this client to it's list. The provided Server interface
+      can be used to notify the server if another provider is selected for this consumer or remove
+      the link if the consumer is ending. }
+    procedure LinkAdded(Server: IJvDataConsumerServerNotify);
+    { Called when the server has disconnected this client. }
+    procedure LinkRemoved(Server: IJvDataConsumerServerNotify);
   end;
 
   { Provider context list interface. Note that there is always an implicit (nameless) context

@@ -37,6 +37,14 @@ uses
 
 type
   { Context provider related interfaces. }
+  IJvDataContextProvider = interface
+    ['{78EB1037-11A5-4871-8115-4AE1AC60B59C}']
+    function Get_ClientProvider: IJvDataProvider;
+    procedure Set_ClientProvider(Value: IJvDataProvider);
+
+    property ClientProvider: IJvDataProvider read Get_ClientProvider write Set_ClientProvider;
+  end;
+
   IJvDataContextSearch = interface
     ['{C8513B84-FAA0-4794-A4A9-B2899797F52B}']
     function Find(Context: IJvDataContext; const Recursive: Boolean = False): IJvDataItem;
@@ -53,7 +61,9 @@ type
     function GetContext: IJvDataContext;
   end;
 
-  TJvContextProvider = class(TJvCustomDataProvider)
+  TJvContextProvider = class(TJvCustomDataProvider, IJvDataContextProvider)
+    function IJvDataContextProvider.Get_ClientProvider = GetProviderIntf;
+    procedure IJvDataContextProvider.Set_ClientProvider = SetProviderIntf;
   private
     function GetProviderIntf: IJvDataProvider;
     procedure SetProviderIntf(Value: IJvDataProvider);
@@ -61,7 +71,8 @@ type
     procedure SetProviderComp(Value: TComponent);
   protected
     class function ItemsClass: TJvDataItemsClass; override;
-  public    
+    function ConsumerClasses: TClassArray; override;
+  public
     property ProviderComp: TComponent read GetProviderComp write SetProviderComp;
     property ProviderIntf: IJvDataProvider read GetProviderIntf write SetProviderIntf;
   published
@@ -70,6 +81,12 @@ type
     {$ELSE}
     property Provider: TComponent read GetProviderComp write SetProviderComp;
     {$ENDIF COMPILER6_UP}
+  end;
+
+  TJvContextProviderServerNotify = class(TJvDataConsumerServerNotify)
+  protected
+    procedure ItemSelected(Value: IJvDataItem); override;
+    function IsValidClient(Client: IJvDataConsumerClientNotify): Boolean; override;
   end;
 
 implementation
@@ -564,4 +581,46 @@ begin
   Result := TContextRootItems;
 end;
 
+function TJvContextProvider.ConsumerClasses: TClassArray;
+begin
+  Result := inherited ConsumerClasses;
+  AddToArray(Result, TJvContextProviderServerNotify);
+end;
+
+//===TJvContextProviderServerNotify=================================================================
+
+procedure TJvContextProviderServerNotify.ItemSelected(Value: IJvDataItem);
+var
+  CtxItem: IJvDataContextItem;
+  Ctx: IJvDataContext;
+  I: Integer;
+  ConCtx: IJvDataConsumerContext;
+begin
+  // First we allow the default behavior to take place
+  inherited ItemSelected(Value);
+  // Now we find out which context is selected and update the linked client consumers accordingly.
+  if Supports(Value, IJvDataContextItem, CtxItem) then
+    Ctx := CtxItem.GetContext
+  else
+    Ctx := nil;
+  for I := 0 to Clients.Count - 1 do
+    if Supports(Clients[I], IJvDataConsumerContext, ConCtx) then
+      ConCtx.SetContext(Ctx);
+end;
+
+function TJvContextProviderServerNotify.IsValidClient(Client: IJvDataConsumerClientNotify): Boolean;
+var
+  ClientProv: IJvDataProvider;
+  ConsumerProv: IJvDataConsumerProvider;
+begin
+  { Only allow client consumers who's Provider points to the ClientProvider of the context
+    provider this consumer is linked to. }
+  ClientProv := (ConsumerImpl.ProviderIntf as IJvDataContextProvider).ClientProvider;
+  Result := Supports(Client, IJvDataConsumerProvider, ConsumerProv) and
+    (ConsumerProv.GetProvider = ClientProv);
+end;
+
+initialization
+  RegisterClasses([TJvContextProviderServerNotify]);
+  
 end.
