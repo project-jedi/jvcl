@@ -32,7 +32,7 @@ uses
   Windows, Messages, Forms, SysUtils, StdCtrls, Controls, ExtCtrls, JvPanel,
   JvSyncSplitter, JvHtmlParser, Classes, JvComCtrls, JvButton,
   ComCtrls, JvComponent, JvStatusBar, JvMemo, JvCtrls, JvExComCtrls,
-  JvExStdCtrls, JvExExtCtrls, JvSplitter, Dialogs;
+  JvExStdCtrls, JvExExtCtrls, JvSplitter, Dialogs, JclSysInfo;
 
 type
   TJvHTMLParserMainForm = class(TForm)
@@ -68,6 +68,7 @@ type
     procedure btnProcessURLClick(Sender: TObject);
     procedure btnProcessTagsClick(Sender: TObject);
     procedure btnOpenClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     CurNode: TTreeNode;
     FText: string;
@@ -75,6 +76,7 @@ type
   public
     function ReplaceSpecials(Str: string): string;
     procedure ShowStatus(t: TTime);
+    procedure DoKeyFoundEx(Sender: TObject; Key, Results, OriginalLine: string; TagInfo:TTagInfo; Attributes:TStrings);
   end;
 
 var
@@ -169,7 +171,8 @@ begin
   begin
     ClearConditions;
     AddCondition('URL', '<', '>');
-    OnKeyFound := self.TagsKeyFound;
+    OnKeyFound := nil;
+    OnKeyFoundEx := DoKeyFoundEx;
   end;
   JvDisplayMemo4.Lines.BeginUpdate;
   try
@@ -250,6 +253,24 @@ begin
       if (Components[I] <> btnOpen) and (Components[I] is TButton) then
         TButton(Components[I]).Click;
   end;
+end;
+
+procedure TJvHTMLParserMainForm.FormCreate(Sender: TObject);
+begin
+  JvHtmlParser1.OnKeyFoundEx := DoKeyFoundEx;
+end;
+
+procedure TJvHTMLParserMainForm.DoKeyFoundEx(Sender: TObject; Key, Results,
+  OriginalLine: string; TagInfo: TTagInfo; Attributes: TStrings);
+begin
+  Self.Tag := Self.Tag + 1;
+  JvDisplayMemo4.Lines.Add('<' + Results + '>');
+  if Attributes.Count > 0 then
+  begin
+    JvDisplayMemo4.Lines.Add('Attributes:');
+    JvDisplayMemo4.Lines.AddStrings(Attributes);
+  end;
+
 end;
 
 end.

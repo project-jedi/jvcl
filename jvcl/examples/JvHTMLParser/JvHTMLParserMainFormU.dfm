@@ -16,13 +16,14 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
   OldCreateOrder = False
   Position = poDesktopCenter
   Scaled = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object JvPageControl1: TJvPageControl
     Left = 0
     Top = 0
     Width = 526
-    Height = 392
+    Height = 395
     ActivePage = TabSheet1
     Align = alClient
     HotTrack = True
@@ -57,7 +58,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         Left = 0
         Top = 156
         Width = 518
-        Height = 174
+        Height = 177
         AutoSize = False
         ClipboardCommands = []
         MaxLines = 0
@@ -71,7 +72,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
       end
       object JvPanel1: TJvPanel
         Left = 0
-        Top = 330
+        Top = 333
         Width = 518
         Height = 34
         MultiLine = False
@@ -233,7 +234,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
   end
   object JvStatusBar1: TJvStatusBar
     Left = 0
-    Top = 392
+    Top = 395
     Width = 526
     Height = 19
     Panels = <>
@@ -250,7 +251,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
     OnClick = btnOpenClick
   end
   object JvHtmlParser1: TJvHTMLParser
-    FileName = 'sample.htm'
+    FileName = 'data\sample.htm'
     Left = 40
     Top = 44
   end
