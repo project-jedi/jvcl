@@ -31,33 +31,22 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  ActnList, ImgList, ComCtrls, StdCtrls, ToolWin, Menus,
+  Windows, Messages,
   {$ENDIF VCL}
+  Graphics, Controls, Forms, Dialogs, ActnList, ImgList,
+  ComCtrls, StdCtrls, ToolWin, Menus,
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, Types, QTypes,
-  QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus,
+  QExtCtrls, QTypes,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors,
-  {$IFDEF VCL}
-  DesignWindows,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  ClxDesignWindows,
-  {$ENDIF VisualCLX}
+  DesignIntf, DesignEditors, DesignWindows,
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}
   JvPageList;
 
 type
-  {$IFDEF VisualCLX}
-  TfrmPageListEditor = class(TClxDesignWindow)
-  {$ENDIF VisualCLX}
-  {$IFDEF VCL}
   TfrmPageListEditor = class(TDesignWindow)
-  {$ENDIF VCL}
     ToolBar1: TToolBar;
     btnAdd: TToolButton;
     btnDelete: TToolButton;
@@ -100,9 +89,6 @@ type
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override;
-    {$IFDEF VisualCLX}
-    function UniqueName(Component: TComponent): string; override;
-    {$ENDIF VisualCLX}
     {$ELSE}
     procedure ComponentDeleted(Component: IPersistent); override;
     function UniqueName(Component: TComponent): string; override;
@@ -118,12 +104,7 @@ implementation
 uses
   JvDsgnConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 procedure ShowPageListEditor(Designer: IDesigner; APageList: TJvCustomPageList);
 var
@@ -265,13 +246,6 @@ begin
     UpdateList(lbPages.ItemIndex);
 end;
 
-{$IFDEF VisualCLX}
-function TfrmPageListEditor.UniqueName(Component: TComponent): string;
-begin
-  Result := Designer.UniqueName(Component.ClassName);
-end;
-{$ENDIF VisualCLX
-}
 {$ELSE}
 
 function TfrmPageListEditor.UniqueName(Component: TComponent): string;
