@@ -1,15 +1,14 @@
-{$DEFINE DEBUG}
 {-------------------------------------------------------------------------------
  QWindows.pas
 
- Copyright (c) 2003, Andre Snepvangers (asn@xs4all.nl),
-                     Andreas Hausladen (Andreas.Hausladen@gmx.de)
+ Copyright (c) 2003,2004, Andre Snepvangers (asn@xs4all.nl),
+                          Andreas Hausladen (Andreas.Hausladen@gmx.de)
  All rights reserved.
 
  Version 0.7
-  Description: Qt based wrappers for common MS Windows API's
-  Purpose: Reduce coding effort for porting VCL based components to VisualCLX
-           compatible components
+ Description: Qt based wrappers for common MS Windows API's
+ Purpose: Reduce coding effort for porting VCL based components to VisualCLX
+          compatible components
 
  Permission is hereby granted, free of charge, to any person obtaining a copy of
  this software and associated documentation files(the "Software"), to deal in
@@ -293,11 +292,11 @@ const
   COLOR_GRADIENTINACTIVECAPTION = 28; // clDisabledHighlight (asn: ??)
 
   COLOR_ENDCOLORS = COLOR_GRADIENTINACTIVECAPTION;
-(*)
+(*
   COLOR_MENUHILIGHT = 29;
   COLOR_MENUBAR = 30;
   COLOR_ENDCOLORS = COLOR_MENUBAR;
-(*)
+*)
 
   COLOR_DESKTOP = COLOR_BACKGROUND;
   COLOR_3DFACE = COLOR_BTNFACE;
@@ -315,20 +314,19 @@ const
   clColor0 = clMask;
   clColor1 = clDontMask;
 
-
-
   // Windows symbolic colors to mapping VisualCLX symbolic colors
   Win2TColor: array [0..COLOR_ENDCOLORS] of TColor = (
-  clNormalButton, clNormalBackground, clActiveHighlightedText,     // 0
-  clDisabledHighlightedText, clNormalMid, clNormalBase,            // 3
-  clNormalHighlight, clNormalButtonText, clNormalText,             // 6
-  clNormalHighlightedText, clActiveHighlight, clDisabledHighlight, // 9
-  clNormalMid, clNormalHighlight,  clNormalHighlightedText,        // 12
-  clNormalButton, clNormalDark, clDisabledText,                    // 15
-  clNormalButtonText, clDisabledHighlightedText, clActiveLight,    // 18
-  clNormalMid, clNormalMidLight, clNormalText,                     // 21
-  clInfoBk, clBlack ,clNormalHighlight,                         // 24
-  clActiveHighLight, clDisabledHighlight);                         // 27
+    clNormalButton, clNormalBackground, clActiveHighlightedText,     // 0
+    clDisabledHighlightedText, clNormalMid, clNormalBase,            // 3
+    clNormalHighlight, clNormalButtonText, clNormalText,             // 6
+    clNormalHighlightedText, clActiveHighlight, clDisabledHighlight, // 9
+    clNormalMid, clNormalHighlight,  clNormalHighlightedText,        // 12
+    clNormalButton, clNormalDark, clDisabledText,                    // 15
+    clNormalButtonText, clDisabledHighlightedText, clActiveLight,    // 18
+    clNormalMid, clNormalMidLight, clNormalText,                     // 21
+    clInfoBk, clBlack ,clNormalHighlight,                            // 24
+    clActiveHighLight, clDisabledHighlight                           // 27
+  );
 
 function SetRect(var R: TRect; Left, Top, Right, Bottom: Integer): LongBool;
 function IsRectEmpty(R: TRect): LongBool;
@@ -343,7 +341,7 @@ type
     rgbGreen: Byte;
     rgbRed: Byte;
     rgbReserved: Byte;
-  end;  
+  end;
 
   TRGBTriple = TRGBQuad; // Qt does not support 24 bit pixmaps
 
@@ -1188,7 +1186,7 @@ function IsCharAlphaNumeric(Ch: Char): LongBool;
 //  it is easier to find non-working PostMessage/SendMessage calls when the
 //  compiler give you an error at these positions.
 function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Longint;
-{ Limitation: Handle must be a TWidgetControl derived class handle }
+ { Limitation: Handle must be a TWidgetControl derived class handle }
 function PostMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
  { SendMsg synchronizes with the main thread }
 function SendMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer;
@@ -1211,7 +1209,7 @@ const
   {$IFDEF LINUX}
   HINSTANCE_ERROR = 0;
   HINSTANCE_OK    = HINSTANCE_ERROR + 1;
-  {$ENDIF}
+  {$ENDIF LINUX}
 
 function ShellExecute(Handle: QWidgetH; Operation, FileName, Parameters,
   Directory: PChar; ShowCmd: Integer): THandle; overload;
@@ -1253,6 +1251,7 @@ procedure OutputDebugString(lpOutputString: PChar);
 
 function GetCurrentProcess: THandle;
 
+// virtual memory handling
 const
   PAGE_NOACCESS = 0;
   PAGE_READONLY = PROT_READ;
@@ -1283,11 +1282,10 @@ function GetAsyncKeyState(vKey: Integer): Word;
 const
   MAX_COMPUTERNAME_LENGTH = 15;
 
-{$IFDEF DEBUG}
-
 type
   PSecurityAttributes = Pointer;
 
+// events are limited to the process   
 function CreateEvent(EventAttributes: PSecurityAttributes;
   ManualReset, InitialState: LongBool; Name: PChar): THandle;
 function OpenEvent(DesiredAccess: Longword; InheritHandle: LongBool;
@@ -1324,10 +1322,9 @@ const
 
 // all Handles are TObject derived classes
 function CloseHandle(hObject: THandle): LongBool;
-{$ENDIF DEBUG}
 
 
-
+// memory management
 function GlobalAllocPtr(Flags: Integer; Bytes: Longint): Pointer;
 function GlobalReAllocPtr(P: Pointer; Bytes: Longint; Flags: Integer): Pointer;
 function GlobalFreePtr(P: Pointer): THandle;
@@ -1372,9 +1369,7 @@ function QColorEx(Color: TColor): IQColorGuard;
 {$IFDEF LINUX}
 var
   Shell: string = 'kfmclient exec'; // KDE. Gnome equivalent ?
-
-var
-  IpcDirectory: string = '/tmp/kylix/ipc';
+  IpcDirectory: string = '/tmp/kylix/ipc'; // for named semaphores/mutex
 {$ENDIF LINUX}
 
 implementation
@@ -3608,9 +3603,10 @@ function GetDoubleClickTime: Cardinal;
 begin
 {$IFDEF MSWINDOWS}
   Result := Windows.GetDoubleClickTime;
-{$ELSE}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
   Result := QApplication_doubleClickInterval;
-{$ENDIF}
+{$ENDIF LINUX}
 end;
 
 function SetDoubleClickTime(Interval: Cardinal): LongBool;
@@ -3621,7 +3617,7 @@ begin
     if not Windows.SetDoubleClickTime(Interval) then
       Result := False
     else
-    {$ENDIF}
+    {$ENDIF MSWINDOWS}
     Result := True;
   except
     Result := False;
@@ -5704,12 +5700,10 @@ function IsCharAlpha(Ch: Char): LongBool;
 begin
   {$IFDEF MSWINDOWS}
   Result := Windows.IsCharAlpha(Ch);
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-// (ahuser) What about other languages than English ?
-//  Result := Ch in ['A'..'Z', 'a'..'z'];
   Result := IsAlpha(cardinal(ch)) <> 0 ;
-  {$ENDIF}
+  {$ENDIF LINUX}
 end;
 
 function IsCharAlphaNumeric(Ch: Char): LongBool;
@@ -5983,7 +5977,6 @@ asm
 @@Exit:
 end;
 
-
 function GetKeyState(nVirtKey: Integer): Word;
 begin
   Result := GetAsyncKeyState(nVirtKey);
@@ -6013,6 +6006,7 @@ begin
   end;
 end;
 
+// Handle-Values and IPC
 type
   THandleObjectList = class;
 
@@ -6051,9 +6045,10 @@ type
 
   TSemaphoreWaitObject = class(TWaitObject)
   private
-    FHandle: TSemaphore;
+    FOwnSem: Boolean;
+    FSemId: Integer;
   public
-    constructor Create(Count: Integer; const AName: string);
+    constructor Create(InitialCount, Max: Integer; const AName: string; Open: Boolean);
     destructor Destroy; override;
     function WaitFor(Timeout: Longword): Cardinal; override;
     function ReleaseSemaphore(ReleaseCount: Integer; PreviousCount: PInteger): Boolean;
@@ -6085,12 +6080,13 @@ type
     property Stopped: Boolean read FStopped write FStopped;
   end;
 
-  TMutexWaitObject = class(TWaitObject)
+  TMutexWaitObject = class(TSemaphoreWaitObject)
   private
-    FOwnSem: Boolean;
-    FSemId: Integer;
+    FOwnerThreadId: Cardinal;
+    FThreadLocks: Integer;
+    FCritSect: TRTLCriticalSection;
   public
-    constructor Create(InitialOwner: Boolean; const AName: string);
+    constructor Create(const AName: string; Open: Boolean);
     destructor Destroy; override;
     function WaitFor(Timeout: Longword): Cardinal; override;
     function ReleaseMutex: Boolean;
@@ -6188,61 +6184,134 @@ end;
 
 { TSemaphoreWaitObject }
 
-constructor TSemaphoreWaitObject.Create(Count: Integer; const AName: string);
+function semtimedop(semid: Integer; sops: PSemaphoreBuffer;
+   nsops: size_t; timeout: PTimeSpec): Integer; cdecl;
+   external libcmodulename name 'semtimedop';
+
+function GetIPCKey(const AName: string; What: Integer): Integer;
+var
+  Filename: string;
+begin
+  if AName = '' then
+    Result := IPC_PRIVATE
+  else
+  begin
+    Filename := IpcDirectory + PathDelim + AName;
+    ForceDirectories(IpcDirectory);
+    if not FileExists(Filename) then
+      FileClose(FileCreate(Filename));
+    Result := ftok(PChar(Filename), What);
+  end;
+end;
+
+type
+  TSemUnion = record
+    case Integer of
+      0: (val: Integer);
+      1: (buf: PSemaphoreIdDescriptor);
+      2: (ary: PWord);
+      3: (__buf: PSemaphoreInfo);
+  end;
+
+constructor TSemaphoreWaitObject.Create(InitialCount, Max: Integer; const AName: string;
+  Open: Boolean);
+const
+  AccessMode = S_IREAD or S_IWRITE or S_IRGRP or S_IWGRP;
+var
+  Arg: TSemUnion;
+  IPCKey: Integer;
 begin
   inherited Create(AName);
-  sem_init(FHandle,
-           False, // private process semaphore
-                  // LinuxThreads currently do not support shared semaphores
-           Count);
+  IPCKey := GetIPCKey(Name, 1);
+  if not Open then
+    FSemId := semget(IPCKey, 1, IPC_CREAT or IPC_EXCL or AccessMode)
+  else
+    FSemId := -1; // open
+
+  if FSemId = -1 then
+  begin
+    // open sempahore
+    FOwnSem := False;
+    FSemId := semget(IPCKey, 0, SEM_UNDO);
+    if FSemId = -1 then
+      RaiseLastOSError;
+  end
+  else
+  begin
+    FOwnSem := True;
+    Arg.val := Max - InitialCount;
+    if semctl(FSemId, 0, SETVAL, Arg) = -1 then
+      RaiseLastOSError;
+  end;
 end;
 
 destructor TSemaphoreWaitObject.Destroy;
 begin
-  sem_destroy(FHandle);
+  if FOwnSem then
+  begin
+    semctl(FSemId, 0, IPC_RMID);
+    if Name <> '' then
+      DeleteFile(IpcDirectory + PathDelim + Name); // only if allowed
+  end;
   inherited Destroy;
 end;
 
 function TSemaphoreWaitObject.WaitFor(Timeout: Longword): Cardinal;
 var
-  t1, t2: Int64;
+  Buf: TSemaphoreBuffer;
+  RetValue: Integer;
+  timespec: TTimeSpec;
 begin
-  Result := WAIT_OBJECT_0;
+  Buf.sem_num := 0;
+  Buf.sem_op := -1;
+  Buf.sem_flg := SEM_UNDO;
   if Timeout = INFINITE then
-    sem_wait(FHandle) // lock semaphore
+    RetValue := semop(FSemId, @Buf, 1)
+  else if Timeout = 0 then
+  begin
+    Buf.sem_flg := Buf.sem_flg or IPC_NOWAIT;
+    RetValue := semop(FSemId, @Buf, 1);
+  end
   else
   begin
-    { POSIX semaphores do not support a timeout value. Here we use a
-      loop that tests for the lock. }
-    t1 := GetTickCount;
-    while sem_trywait(FHandle) <> 0 do
-    begin
-      t2 := GetTickCount;
-      if t2 < t1 then
-        Inc(t2, $100000000);
-      if t2 - t1 >= Timeout then
-      begin
-        Result := WAIT_TIMEOUT;
-        Break;
-      end;
-      Sleep(10);
-    end;
+    timespec.tv_sec := Timeout div 1000;
+    timespec.tv_nsec := (Timeout mod 1000) * 1000;
+    RetValue := semtimedop(FSemId, @Buf, 1, @timespec); // Timeout=0 -> INFINTE
   end;
+
+  if RetValue = -1 then
+  begin
+    if errno = EAGAIN then
+      Result := WAIT_TIMEOUT
+    else
+      Result := WAIT_FAILED;
+  end
+  else
+    Result := WAIT_OBJECT_0;
 end;
 
 function TSemaphoreWaitObject.ReleaseSemaphore(ReleaseCount: Integer; PreviousCount: PInteger): Boolean;
+var
+  Buf: TSemaphoreBuffer;
+  Arg: TSemUnion;
 begin
   Result := False;
-  if PreviousCount <> nil then
-    sem_getvalue(FHandle, PreviousCount^);
-  while ReleaseCount > 0 do
+  if ReleaseCount >= 0 then
   begin
-    if sem_post(FHandle) <> 0 then
-      Exit;
-  end;
-  Result := True;
+    if PreviousCount <> nil then
+    begin
+      Result := semctl(FSemId, 0, GETVAL, @Arg) = 0;
+      PreviousCount^ := Arg.val;
+    end;
+    if ReleaseCount > 0 then
+    begin
+      Buf.sem_num := 0;
+      Buf.sem_op := ReleaseCount;
+      Buf.sem_flg := SEM_UNDO;
+      Result := semop(FSemId, @Buf, 1) = 0;
+    end;
+  end
 end;
-
 
 { TEventTimeoutThread }
 
@@ -6357,118 +6426,71 @@ begin
   Result := True;
 end;
 
-function semtimedop(semid: Integer; sops: PSemaphoreBuffer;
-   nsops: size_t; timeout: PTimeSpec): Integer; cdecl;
-   external libcmodulename name 'semtimedop';
-
-function GetIPCKey(const AName: string; What: Integer): Integer;
-var
-  Filename: string;
-begin
-  if AName = '' then
-    Filename := GetModuleName(0)
-  else
-  begin
-    Filename := IpcDirectory + PathDelim + AName;
-    ForceDirectories(IpcDirectory);
-    if not FileExists(Filename) then
-      FileClose(FileCreate(Filename));
-  end;
-  Result := ftok(PChar(Filename), What);
-end;
-
 { TMutexWaitObject }
 
-constructor TMutexWaitObject.Create(InitialOwner: Boolean; const AName: string);
-const
-  AccessMode = S_IREAD or S_IWRITE or S_IRGRP or S_IWGRP;
-type
-  TSemUnion = record
-    case Integer of
-      0: (val: Integer);
-      1: (buf: PSemaphoreIdDescriptor);
-      2: (ary: PWord);
-      3: (__buf: PSemaphoreInfo);
-  end;
-var
-  Arg: TSemUnion;
-  IPCKey: Integer;
+constructor TMutexWaitObject.Create(const AName: string; Open: Boolean);
 begin
-  inherited Create(AName);
-  IPCKey := GetIPCKey(AName, 1);
-  FSemId := semget(IPCKey, 1, IPC_CREAT or IPC_EXCL or AccessMode);
-  if FSemId = -1 then
-  begin
-    // creation failed
-    FOwnSem := False;
-    FSemId := semget(IPCKey, 0, SEM_UNDO);
-    if FSemId = -1 then
-      RaiseLastOSError;
-  end
-  else
-  begin
-    FOwnSem := True;
-    Arg.val := 1;
-    if semctl(FSemId, 0, SETVAL, Arg) = -1 then
-      RaiseLastOSError;
-  end;
-  if InitialOwner then
-    WaitFor(INFINITE);
+  inherited Create(0, 1, AName, Open);
+  FOwnerThreadId := 0;
+  FThreadLocks := 0;
+  InitializeCriticalSection(FCritSect);
 end;
 
 destructor TMutexWaitObject.Destroy;
 begin
-  if FOwnSem then
-  begin
-    semctl(FSemId, 0, IPC_RMID);
-    if Name <> '' then
-      DeleteFile(IpcDirectory + PathDelim + Name); // only if allowed
-  end;
+  if FOwnerThreadId <> 0 then
+    ReleaseSemaphore(1, nil);
+  DeleteCriticalSection(FCritSect);
   inherited Destroy;
 end;
 
 function TMutexWaitObject.WaitFor(Timeout: Longword): Cardinal;
 var
-  Buf: TSemaphoreBuffer;
-  v: Integer;
-  timespec: TTimeSpec;
+  CurThreadId: Cardinal;
 begin
-  Buf.sem_num := 0;
-  Buf.sem_op := -1;
-  Buf.sem_flg := SEM_UNDO;
-  if Timeout = INFINITE then
-    v := semop(FSemId, @Buf, 1)
-  else if Timeout = 0 then
+  CurThreadId := GetCurrentThreadID;
+  if CurThreadId = FOwnerThreadId then
   begin
-    Buf.sem_flg := Buf.sem_flg or IPC_NOWAIT;
-    v := semop(FSemId, @Buf, 1);
-  end
-  else
-  begin
-    timespec.tv_sec := Timeout div 1000;
-    timespec.tv_nsec := (Timeout mod 1000) * 1000;
-    v := semtimedop(FSemId, @Buf, 1, @timespec); // Timeout=0 -> INFINTE
-  end;
-
-  if v = -1 then
-  begin
-    if errno = EAGAIN then
-      Result := WAIT_TIMEOUT
-    else
-      Result := WAIT_FAILED;
-  end
-  else
+    InterlockedIncrement(FThreadLocks);
     Result := WAIT_OBJECT_0;
+  end
+  else
+  begin
+    Result := inherited WaitFor(Timeout);
+    if Result = WAIT_OBJECT_0 then
+    begin
+      EnterCriticalSection(FCritSect);
+      try
+        FOwnerThreadId := CurThreadId;
+        InterlockedIncrement(FThreadLocks);
+      finally
+        LeaveCriticalSection(FCritSect);
+      end;
+    end;
+  end;
 end;
 
 function TMutexWaitObject.ReleaseMutex: Boolean;
-var
-  Buf: TSemaphoreBuffer;
 begin
-  Buf.sem_num := 0;
-  Buf.sem_op := 1;
-  Buf.sem_flg := SEM_UNDO;
-  Result := semop(FSemId, @Buf, 1) = 0;
+  if GetCurrentThreadId = FOwnerThreadId then
+  begin
+    EnterCriticalSection(FCritSect);
+    try
+      InterlockedDecrement(FThreadLocks);
+      if FThreadLocks <= 0 then
+      begin
+        Result := ReleaseSemaphore(1, nil);
+        FOwnerThreadId := 0;
+        FThreadLocks := 0;
+      end
+      else
+        Result := True;
+    finally
+      LeaveCriticalSection(FCritSect);
+    end;
+  end
+  else
+    Result := False;
 end;
 
 // ======= IPC API functions =======
@@ -6558,13 +6580,22 @@ begin
       if THandleObject(Result) is TMutexWaitObject then
         THandleObject(Result).AddRef
       else
-        Result := 0;
+        Result := 0; // no mutex
     end
     else
-      Result := THandle(TMutexWaitObject.Create(InitialOwner, Name));
+    begin
+      try
+        Result := THandle(TMutexWaitObject.Create(Name, False));
+      except
+        Result := 0;
+      end;
+    end;
   finally
     WaitObjectList.Leave;
   end;
+
+  if (Result <> 0) and InitialOwner then
+    WaitForSingleObject(Result, INFINITE);
 end;
 
 function OpenMutex(DesiredAccess: Longword; InheritHandle: Boolean;
@@ -6573,10 +6604,16 @@ begin
   WaitObjectList.Enter;
   try
     Result := THandle(WaitObjectList.Find(Name));
-    if (Result <> 0) and (THandleObject(Result) is TMutexWaitObject) then
+    if (Result <> 0) and (THandleObject(Result).ClassType = TMutexWaitObject) then
       THandleObject(Result).AddRef
     else
-      Result := 0;
+    begin
+      try
+        Result := THandle(TMutexWaitObject.Create(Name, True));
+      except
+        Result := 0;
+      end;
+    end;
   finally
     WaitObjectList.Leave;
   end;
@@ -6587,7 +6624,7 @@ begin
   WaitObjectList.Enter;
   try
     try
-      Result := (Mutex <> 0) and (THandleObject(Mutex) is TMutexWaitObject);
+      Result := (Mutex <> 0) and (THandleObject(Mutex).ClassType = TMutexWaitObject);
       if Result then
         TMutexWaitObject(Mutex).ReleaseMutex;
     except
@@ -6606,13 +6643,25 @@ begin
     Result := THandle(WaitObjectList.Find(Name));
     if Result <> 0 then
     begin
-      if THandleObject(Result) is TSemaphoreWaitObject then
+      if THandleObject(Result).ClassType = TSemaphoreWaitObject then
         THandleObject(Result).AddRef
       else
-        Result := 0;
+        Result := 0; // no semaphore
     end
     else
-      Result := THandle(TSemaphoreWaitObject.Create(InitialCount, Name));
+    begin
+      if (InitialCount < 0) or (MaximumCount <= 0) or (InitialCount > MaximumCount) then
+        Result := 0 // invalid
+      else
+      begin
+        try
+          Result := THandle(TSemaphoreWaitObject.Create(InitialCount, MaximumCount,
+                                                        Name, False));
+        except
+          Result := 0;
+        end;
+      end;
+    end;
   finally
     WaitObjectList.Leave;
   end;
@@ -6624,10 +6673,16 @@ begin
   WaitObjectList.Enter;
   try
     Result := THandle(WaitObjectList.Find(Name));
-    if (Result <> 0) and (THandleObject(Result) is TSemaphoreWaitObject) then
+    if (Result <> 0) and (THandleObject(Result).ClassType = TSemaphoreWaitObject) then
       THandleObject(Result).AddRef
     else
-      Result := 0;
+    begin
+      try
+        Result := THandle(TSemaphoreWaitObject.Create(0, 0, Name, True));
+      except
+        Result := 0;
+      end;
+    end;
   finally
     WaitObjectList.Leave;
   end;
@@ -6639,7 +6694,7 @@ begin
   WaitObjectList.Enter;
   try
     try
-      Result := (Semaphore <> 0) and (THandleObject(Semaphore) is TSemaphoreWaitObject);
+      Result := (Semaphore <> 0) and (THandleObject(Semaphore).ClassType = TSemaphoreWaitObject);
       if Result then
         TSemaphoreWaitObject(Semaphore).ReleaseSemaphore(ReleaseCount, PreviousCount);
     except
@@ -6650,6 +6705,7 @@ begin
   end;
 end;
 
+// common handle functions
 function WaitForSingleObject(Handle: THandle; Milliseconds: Cardinal): Cardinal;
 begin
   Result := WAIT_FAILED;
@@ -7582,9 +7638,7 @@ end;
 initialization
   {$IFDEF LINUX}
   InitGetTickCount;
-  {$IFDEF DEBUG}
   WaitObjectList := THandleObjectList.Create;
-  {$ENDIF DEBUG}
   {$ENDIF LINUX}
   GlobalCaret := TEmulatedCaret.Create;
   InitializeCriticalSection(SockObjectListCritSect);
@@ -7598,9 +7652,7 @@ finalization
   FreePainterInfos;
   DeleteCriticalSection(SockObjectListCritSect);
   {$IFDEF LINUX}
-  {$IFDEF DEBUG}
   WaitObjectList.Free;
-  {$ENDIF DEBUG}
   {$ENDIF LINUX}
 
 end.
