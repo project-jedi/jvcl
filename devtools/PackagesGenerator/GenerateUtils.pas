@@ -127,7 +127,7 @@ type
     procedure SetItems(index: integer; const Value: TDefine);
   public
     constructor Create(incfile : TStringList); overload;
-    function IsDefined(const Condition, Target : string): Boolean;
+    function IsDefined(const Condition, Target : string; DefineLimit : Integer = -1): Boolean;
 
     property Items[index : integer] : TDefine read GetItems write SetItems; default;
   end;
@@ -141,6 +141,7 @@ var
   TargetList        : TTargetList;
   AliasList         : TAliasList;
   DefinesList       : TDefinesList;
+  IsBinaryCache     : TStringList;
 
 function PackagesLocation : string;
 begin
@@ -848,7 +849,8 @@ begin
         Inc(i);
         repeatSectionUsed := True;
         repeatLines := '';
-        while(Trim(template[i]) <> '<%%% END REQUIRES %%%>') do
+        while (i < template.count) and
+              (Trim(template[i]) <> '<%%% END REQUIRES %%%>') do
         begin
           repeatLines := repeatLines + template[i] + #13#10;
           Inc(i);
@@ -881,7 +883,8 @@ begin
         Inc(i);
         repeatSectionUsed := True;
         repeatLines := '';
-        while(Trim(template[i]) <> '<%%% END FILES %%%>') do
+        while (i < template.count) and
+              (Trim(template[i]) <> '<%%% END FILES %%%>') do
         begin
           repeatLines := repeatLines + template[i] + #13#10;
           Inc(i);
@@ -915,7 +918,8 @@ begin
         Inc(i);
         repeatSectionUsed := True;
         repeatLines := '';
-        while(Trim(template[i]) <> '<%%% END FORMS %%%>') do
+        while (i < template.count) and
+              (Trim(template[i]) <> '<%%% END FORMS %%%>') do
         begin
           repeatLines := repeatLines + template[i] + #13#10;
           Inc(i);
@@ -950,7 +954,8 @@ begin
       begin
         Inc(i);
         repeatLines := '';
-        while(Trim(template[i]) <> '<%%% END LIBS %%%>') do
+        while (i < template.count) and
+              (Trim(template[i]) <> '<%%% END LIBS %%%>') do
         begin
           repeatLines := repeatLines + template[i] + #13#10;
           Inc(i);
@@ -1093,6 +1098,14 @@ var
   BinaryCount : Integer;
 begin
   Result := False;
+  // If the cache contains information on that file, get the result
+  // from it and skip the real test
+  if IsBinaryCache.IndexOf(FileName) > -1 then
+  begin
+    Result := Boolean(IsBinaryCache.Objects[IsBinaryCache.IndexOf(FileName)]);
+    Exit;
+  end;
+
   // Read the first characters of the file and if enough of them
   // are not text characters, then consider the file to be binary
   if FileExists(FileName) then
@@ -1110,6 +1123,9 @@ begin
       F.Free;
     end;
   end;
+
+  // save the result in the cache
+  IsBinaryCache.AddObject(FileName, TObject(Result));
 end;
 
 function Generate(packages : TStrings;
@@ -1146,6 +1162,9 @@ begin
     Result := False;
     Exit;
   end;
+
+  // Empty the binary file cache
+  IsBinaryCache.Clear;
 
   FreeAndNil(DefinesList);
   if incFileName = '' then
@@ -1533,15 +1552,18 @@ begin
   Result := TDefine(inherited Items[index]);
 end;
 
-function TDefinesList.IsDefined(const Condition, Target : string): Boolean;
+function TDefinesList.IsDefined(const Condition, Target : string; DefineLimit : Integer = -1): Boolean;
 var
   I : Integer;
   Define : TDefine;
 begin
+  if DefineLimit = -1 then
+    DefineLimit := Count;
+
   Result := False;
   Define := nil;
   I := 0;
-  while not Result and (I < Count) do
+  while (I < Count) and (I < DefineLimit) and not Result do
   begin
     Define := Items[I];
     Result := SameText(Define.Name, Condition);
@@ -1556,14 +1578,15 @@ begin
     Result := TargetList[GetNonPersoTarget(Target)].Defines.IndexOf(Condition) > -1;
 
   // If the condition is defined, then all the IfDefs in which
-  // it is enclosed must also be defined
+  // it is enclosed must also be defined but only before the
+  // current define
   if Result and Assigned(Define) then
     for I := 0 to Define.IfDefs.Count - 1 do
     begin
       if Boolean(Define.IfDefs.Objects[I]) then
-        Result := Result and IsDefined(Define.IfDefs[I], Target)
+        Result := Result and IsDefined(Define.IfDefs[I], Target, IndexOf(Define))
       else
-        Result := Result and not IsDefined(Define.IfDefs[I], Target);
+        Result := Result and not IsDefined(Define.IfDefs[I], Target, IndexOf(Define));
     end
 end;
 
@@ -1575,6 +1598,8 @@ end;
 initialization
   StartupDir := GetCurrentDir;
 
+  IsBinaryCache := TStringList.Create;
+
 // ensure the lists are not assigned
   TargetList := nil;
   AliasList := nil;
@@ -1584,5 +1609,6 @@ finalization
   TargetList.Free;
   AliasList.Free;
   DefinesList.Free;
+  IsBinaryCache.Free;
 
 end.
