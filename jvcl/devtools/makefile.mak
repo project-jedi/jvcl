@@ -44,6 +44,7 @@ NoQuotes.exe \
 SetPoHeader.exe \
 pg.exe \
 pgEdit.exe \
+LastModifyRepl.exe \
 ErrLook.exe \
 MakePNG.exe \
 Res2BMP.exe \
@@ -131,7 +132,7 @@ bin\pg.exe: PackagesGenerator\pg.dpr PackagesGenerator\CmdLineUtils.pas Packages
 -u"$(SRCP)"
 -u"$(ROOT)\Lib\Obj"
 | >pg.cfg
-  $(DCCx) pg.dpr
+  $(DCCx) -DNO_JCL pg.dpr
   -@del pg.cfg >NUL
   @cd ..
 
@@ -182,6 +183,13 @@ Res2Bmp.exe: Res2Bmp\Res2Bmp.dpr
 
 pg2want.exe: pg2want\pg2want.dpr
   cd pg2want
+  @echo.
+  @echo.
+  $(DCC) $&.dpr
+  cd ..
+
+LastModifyRepl.exe: LastModifyRepl\LastModifyRepl.dpr LastModifyRepl\LastModifyReplUtil.pas
+  cd LastModifyRepl
   @echo.
   @echo.
   $(DCC) $&.dpr
