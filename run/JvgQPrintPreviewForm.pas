@@ -33,24 +33,22 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, QuickRpt, QRCtrls, QRPrntr, ComCtrls, ToolWin,
+  Dialogs, ExtCtrls,
+  QuickRpt, QRCtrls, QRPrntr,
+  ComCtrls, ToolWin,
   ImgList, ShellAPI, StdCtrls,
-  JvgQRLabel, JvgBevel, JvgLabel, JvComponent, JvExControls;
+  JvgQRLabel, 
+  JvComponent, JvExControls;
 
 type
   TJvgfPrintPreview = class(TJvForm)
     Panel2: TPanel;
     ToolBar1: TToolBar;
     tbPrior: TToolButton;
-    glBevel1: TJvgBevel;
     tbNext: TToolButton;
     tbFirst: TToolButton;
-    ImageList3: TImageList;
-    glBevel2: TJvgBevel;
     ImageList4: TImageList;
-    QRPreview1: TQRPreview;
     Panel1: TPanel;
-    glLabel1: TLabel;
     Shape1: TShape;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
@@ -70,6 +68,7 @@ type
     OpenDialog: TOpenDialog;
     SaveDialog: TSaveDialog;
     PB: TProgressBar;
+    QRPreview1: TQRPreview;
     procedure FormCreate(Sender: TObject);
     procedure qrPreview(Sender: TObject);
     procedure tbPriorClick(Sender: TObject);
