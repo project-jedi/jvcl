@@ -602,6 +602,18 @@ begin
     EditText := FormatFloat(EditFormat, CheckValue(FValue, False));
 end;
 
+{$IFNDEF COMPILER6_UP}
+function Sign(AValue: Double): Integer;
+begin
+  if ((PInt64(@AValue)^ and $7FFFFFFFFFFFFFFF) = $0000000000000000) then
+    Result := 0
+  else if ((PInt64(@AValue)^ and $8000000000000000) = $8000000000000000) then
+    Result := -1
+  else
+    Result := 1;
+end;
+{$ENDIF}
+
 function TJvCustomNumEdit.CheckValue(NewValue: Extended;
   RaiseOnError: Boolean): Extended;
 var
