@@ -178,7 +178,7 @@ type
     property Visible;
     property WantReturns;
     property WantTabs;
-    property Wordwrap;
+    property WordWrap;
     property OnChange;
     property OnClick;
     property OnContextPopup;
