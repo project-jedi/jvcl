@@ -54,6 +54,7 @@ resourcestring
   RsNextPage = 'Next Page';
   RsPreviousPage = 'Previous Page';
   RsJVCLActionsCategory = 'JVCL';
+  RsJVCLDBActionsCategory = 'JVCL-DB';
   RsPropertyEditors = '\Property Editors';
   RsJvEditorString = 'Click to edit...';
   RsSystemColors = 'System colors';
@@ -168,7 +169,7 @@ resourcestring
 //=== JvCsvDataEditor.pas ====================================================
 resourcestring
   RsJvCsvDataSetSelectCSVFileToOpen = 'JvCsvDataSet - Select CSV File to Open';
-  RsCsvFilter = '*.csv';
+  RsCsvFilter = 'CSV files (*.csv)|*.csv';
 
 //=== JvCsvDataForm.pas ======================================================
 resourcestring
@@ -207,7 +208,6 @@ resourcestring
    RsLoadFromFileEllipsis = 'Load From File...';
    RsClearEmbeddedData = 'Clear data';
    RsViewEmbeddedDataAsText = 'View As Text...';
-   
 
 //=== JvDataProviderDesignerForm.pas =========================================
 resourcestring
@@ -287,6 +287,10 @@ resourcestring
 //=== JvFormPropertiesForm.pas ===============================================
 resourcestring
   RsStorageDesigner = 'Form Storage Designer...';
+
+//=== JvFullColorListForm.pas ================================================
+resourcestring
+  RsUnnamedColorFmt = '%s : Unnamed color $%.8x';
 
 //=== JvgComponentListEditorForm.pas =========================================
 
