@@ -211,6 +211,12 @@ Merged TJvSearchFile,TJvSearchFiles, TJvFileTreeScan into TJvSearchFiles
 Moved JvSearchFile to \archive
 Removed TJvFileTreeScan, TjclFileMaskComparator out of JvSysComp.pas
 
+Merging of TJvTipOFDay:
+-----------------------
+Merged TJvTipWin, TJvTipsOfDay into TJvTipOfDay
+New unit JvTipOfDayProp
+Moved TjvTipWin, TJvTipsDlg, TJvTipProperty, TJvTipsOfDay, TJvFormTips to \archive
+
 Others:
 -------
 * Moved JvLineEdit (w. TJvLineEdit and TJvLineCombo) to \archive:
