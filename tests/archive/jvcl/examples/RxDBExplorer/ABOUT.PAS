@@ -90,7 +90,7 @@ end;
 
 initialization
 {$IFDEF WIN32}
-  with TJvVersionInfo .Create(Application.ExeName) do
+  with TJvVersionInfo.Create(Application.ExeName) do
   try
     if Valid then
       SDbxVersion := Format('%d.%d', [FileLongVersion.All[2],
