@@ -282,7 +282,7 @@ type
     property Align;
     property AllowAllup;
     property Anchors;
-//    property Caption;
+    property Caption:TCaption read GetText write SetText;
     property Constraints;
     property Down;
 //    property DragCursor;
@@ -1361,6 +1361,7 @@ begin
   if Caption <> '' then
   begin
     Canvas.Font := Font;
+    RequiredState(Canvas, [csHandleValid, csFontValid]);
     SetBkMode(Canvas.Handle, QWindows.TRANSPARENT);
     DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R,
       DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX );
