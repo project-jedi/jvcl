@@ -58,15 +58,13 @@ type
 
     function ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions; Rect: PRect;
       const Text: String; lpDx: Pointer): Boolean; overload;
-    // (rom) WARNING! This is disabled!
-    {$IFDEF COMPILER_6UP}
+    {$IFDEF COMPILER6_UP}
     function ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions;
       Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean; overload;
     {$ENDIF}
 
     {$IFDEF VCL}
-    // (rom) WARNING! This is disabled!
-    {$IFDEF COMPILER_6UP}
+    {$IFDEF COMPILER6_UP}
     function TextExtent(const Text: WideString): TSize; overload;
     function TextWidth(const Text: WideString): Integer; overload;
     function TextHeight(const Text: WideString): Integer; overload;
@@ -138,8 +136,7 @@ begin
   Result := TextExtent(Text).cy;
 end;
 
-// (rom) WARNING! This is disabled!
-{$IFDEF COMPILER_6UP}
+{$IFDEF COMPILER6_UP}
 
 function TJvUnicodeCanvas.TextExtent(const Text: WideString): TSize;
 begin
@@ -173,9 +170,10 @@ begin
   Result := ExtTextOutW(X, Y, Options, Rect, Text, lpDx);
 end;
 
-{$ENDIF COMPILER_6UP}
+{$ENDIF COMPILER6_UP}
 
 {$ENDIF VCL}
+
 
 {$IFDEF VisualCLX}
 
