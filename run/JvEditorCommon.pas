@@ -1298,11 +1298,6 @@ begin
 end;
 
 procedure TJvUndoBuffer.Undo;
-var
-  UndoClass: TClass;
-  Compound: Integer;
-  IsOnlyCaret: Boolean;
-  Selection: TJvSelectionRec;
 
    function IsIntf(AInstance: TObject; IID: TGUID): Boolean; overload;
    begin
@@ -1314,11 +1309,18 @@ var
      Result := (AClass <> nil) and (AClass.GetInterfaceEntry(IID) <> nil);
    end;
 
+var
+  UndoClass: TClass;
+  Compound: Integer;
+  IsOnlyCaret: Boolean;
+  Selection: TJvSelectionRec;
+  WasModified: Boolean;
 begin
   if InUndo then
     Exit;
 
   Selection := FJvEditor.FSelection;
+  WasModified := FJvEditor.Modified;
 
   IsOnlyCaret := True;
   InUndo := True;
@@ -1374,7 +1376,9 @@ begin
       FJvEditor.UpdateEditorView;
       if FJvEditor.FUpdateLock = 0 then
         if not IsOnlyCaret then
-          FJvEditor.Changed;
+          FJvEditor.Changed
+        else if WasModified then
+          FJvEditor.StatusChanged;
     end;
   finally
     InUndo := False;
