@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is David Polberger <dpol att swipnet 
 Portions created by David Polberger are Copyright (C) 2002 David Polberger.
 All Rights Reserved.
 
-Contributor(s): ______________________________________.
+Contributor(s): Cetkovsky
 
 Current Version: 2.00
 
@@ -166,13 +166,29 @@ type
   private
     FState: TLinkState;
     FNumber: Integer;
+    //Cetkovsky -->
+    FParam: string;
+    //<-- Cetkovsky
   protected
     function GetColor: TColor; override;
+
+    //Cetkovsky -->
+    function GetParam : string; virtual;
+    procedure SetParam(Value : string); virtual;
+    //<-- Cetkovsky
   public
-    constructor Create;
+    //Cetkovsky -->
+    constructor Create(const AParam : string);
+    //<-- Cetkovsky
+    //constructor Create;
     class procedure ResetCount;
     property State: TLinkState read FState write FState;
     property Number: Integer read FNumber;
+
+    //Cetkovsky -->
+    property Param : string read GetParam write SetParam;
+    //<-- Cetkovsky
+
   end;
 
   TDynamicNode = class(TAreaNode)
@@ -211,7 +227,10 @@ type
     FWordInfoArray: TWordInfoArray;
     FFirstWordWidthRetrieved: Boolean;
   protected
-    function ConvertEntities(Text: string): string;
+    //Cetkovsky -->
+    class function ConvertEntities(Text: string): string;
+    //<-- Cetkovsky
+//    function ConvertEntities(Text: string): string;
   public
     constructor Create(const Text: string);
     procedure AddRect(const Rect: TRect);
@@ -535,7 +554,10 @@ begin
   FWordInfoArray := nil;
 end;
 
-function TStringNode.ConvertEntities(Text: string): string;
+//Cetkovsky -->
+class function TStringNode.ConvertEntities(Text: string): string;
+//<-- Cetkovsky
+//function TStringNode.ConvertEntities(Text: string): string;
 type
   TEntity = record
     Entity: PChar;
@@ -919,11 +941,17 @@ end;
 
 //=== { TLinkNode } ==========================================================
 
-constructor TLinkNode.Create;
+//Cetkovsky -->
+constructor TLinkNode.Create(const AParam : string);
+//<-- Cetkovsky
+//constructor TLinkNode.Create;
 begin
   inherited Create;
   FNumber := LinkNodeCount;
   Inc(LinkNodeCount);
+  //Cetkovsky -->
+  FParam := AParam;
+  //<-- Cetkovsky
 end;
 
 function TLinkNode.GetColor: TColor;
@@ -944,6 +972,18 @@ class procedure TLinkNode.ResetCount;
 begin
   LinkNodeCount := 0;
 end;
+
+//Cetkovsky -->
+function TLinkNode.GetParam : string;
+begin
+  Result := FParam;
+end;
+
+procedure TLinkNode.SetParam(Value : string);
+begin
+  FParam := Value;
+end;
+//<-- Cetkovsky
 
 //=== { TRootNode } ==========================================================
 
