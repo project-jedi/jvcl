@@ -2237,7 +2237,7 @@ begin
     if not IsRectEmpty(R) then
       with ClientToScreen(Point(R.Left, R.Bottom + 1)) do
         frm.SetBounds(X, Y, frm.Width, frm.Height);
-    frm.JvMyDBGrid := TJvDBGrid(Self);
+    frm.Grid := TJvDBGrid(Self);
     frm.DataSource := DataLink.DataSource;
     frm.SelectColumn := FSelectColumn;
     frm.ShowModal;
