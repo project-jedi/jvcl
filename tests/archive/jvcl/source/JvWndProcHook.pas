@@ -17,12 +17,17 @@ All Rights Reserved.
 Contributor(s):
 Remko Bonte <remkobonte@myrealbox.com>
 
-Last Modified: 2002-11-01
+Last Modified: 2003-27-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  * (rb) object naming could be improved, for example
+      TJvWndProcHook             -> TJvHookController
+      TJvWndProcHook.FHookInfos  -> TJvHookController.Items
+      TJvHookInfos               -> TJvHookItem, TJvHookInfo, TJvHook
+      TJvHookInfo                -> TJvHookData
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -306,14 +311,9 @@ begin
   begin
     I := IndexOf(TControl(AComponent));
     if I >= 0 then
-      { Be carefull because the TJvHookInfos component might be in it's
+      { Be careful because the TJvHookInfos object might be in it's
         WindowProc procedure, for example when hooking a form and handling
-        a CM_RELEASE message.
-
-        Note that we don't remove the TJvHookInfos component from the
-        FHookInfos list, because that way a UnRegisterWndProc call will fail
-        for AComponent. And yes it's possible - in the CM_RELEASE case - that
-        we can get UnRegisterWndProc calls.
+        a CM_RELEASE message. The TJvHookInfos object can't be destroyed then.
 
         General rule must be that only TJvHookInfos can destroy itself, and
         remove it from the TJvWndProcHook.FHookInfos list.
@@ -328,8 +328,10 @@ var
   HookInfos: TJvHookInfos;
 begin
   Result := False;
-  if not Assigned(AControl) or not Assigned(Hook) then
+  if not Assigned(AControl) or (csDestroying in AControl.ComponentState)
+    or not Assigned(Hook) then
     Exit;
+
   if FHookInfos = nil then
     FHookInfos := TList.Create;
 
@@ -447,14 +449,15 @@ begin
 
     Problem is that the control might be destroyed when we are in the
     TJvHookInfos.WindowProc. This can occur for example with the CM_RELEASE
-    message for a TCustomForm. In this case we have to be extra carefull to not
-    call destroyed components via HookInfo.Hook(Msg) etc.
+    message for a TCustomForm. In this case we have to be extra careful to not
+    call destroyed components via HookInfo.Hook(Msg) etc. Also in that case
+    we can't free the TJvHookInfos yet, thus we use ReleaseObj.
   }
 
   FControlDestroyed := True;
   FOldWndProc := nil;
 
-  { Remove this 'hook info' from the list of Controller }
+  { Remove this TJvHookInfos object from the HookInfo list of Controller }
   Controller := nil;
   ReleaseObj(Self);
 end;
@@ -523,13 +526,8 @@ var
   HookInfo: PJvHookInfo;
   Order: TJvHookOrder;
 begin
-  // not quite sure about this: since the destructor is only ever called in the
-  // finalization part of this unit, maybe the control has already disappeared?
-
-  // Notification should take care of that.. (?) (Remko)
-
-  { Remove this 'hook info' from the list of Controller, Controller might
-    already be set to nil }
+  { Remove this TJvHookInfos object from the list of Controller,
+    Controller might already be set to nil (in ControlDestroyed) }
   Controller := nil;
 
   UnHookControl;
@@ -829,12 +827,18 @@ begin
     if FControl <> nil then
       FControl.RemoveFreeNotification(Self);
 
-    FControl := Value;
+    if Assigned(Value) and (csDestroying in Value.ComponentState) then
+      { (rb) this should not happen in calls made by Jv components }
+      FControl := nil
+    else
+    begin
+      FControl := Value;
 
-    if FControl <> nil then
-      FControl.FreeNotification(Self);
+      if FControl <> nil then
+        FControl.FreeNotification(Self);
 
-    Active := SavedActive;
+      Active := SavedActive;
+    end;
   end;
 end;
 
@@ -941,7 +945,11 @@ initialization
 
 finalization
   FreeAndNil(GJvWndProcHook);
-  FreeAndNil(GReleaser);
+  { Don't call FreeAndNil for GReleaser, it's (hypothetically) possible that
+    objects need access to the GReleaser var (via call to ReleaseObj) during
+    GReleaser.Destroy }
+  GReleaser.Free;
+  GReleaser := nil;
 
 end.
 
