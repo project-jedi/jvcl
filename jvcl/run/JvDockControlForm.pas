@@ -443,6 +443,7 @@ type
 
     FOnGetClientAlignSize: TJvDockGetClientAlignSizeEvent;
     FOnFinishSetDockPanelSize: TJvDockFinishSetDockPanelSizeEvent;
+    FAutoFocusDockedForm: boolean;
 
     procedure CreateDockPanelAndSplitter;
 
@@ -502,6 +503,7 @@ type
     property TopSplitterStyle: TJvDockSplitterStyle read FTopSplitterStyle write SetTopSplitterStyle;
     property RightSplitterStyle: TJvDockSplitterStyle read FRightSplitterStyle write SetRightSplitterStyle;
     property BottomSplitterStyle: TJvDockSplitterStyle read FBottomSplitterStyle write SetBottomSplitterStyle;
+    property AutoFocusDockedForm:boolean read FAutoFocusDockedForm write FAutoFocusDockedForm default True;
 
     property OnGetClientAlignSize: TJvDockGetClientAlignSizeEvent
       read FOnGetClientAlignSize write FOnGetClientAlignSize;
@@ -2489,6 +2491,7 @@ end;
 constructor TJvDockServer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FAutoFocusDockedForm := True;
   CreateSplitterStyle;
 end;
 
@@ -2735,7 +2738,7 @@ begin
   if Msg.Active = WA_INACTIVE then
     for I := alTop to alRight do
       DockPanelWithAlign[I].JvDockManager.ActiveControl := nil
-  else
+  else if AutoFocusDockedForm then
   begin
     Control := GetActiveControl(ParentForm);
     for I := alTop to alRight do
