@@ -46,7 +46,7 @@ uses
   {$ENDIF JV_MIDAS}
   JvMemoryDataset, JvDBDatePickerEdit, JvDBDateTimePicker, JvDBLookupTreeView,
   JvDBProgressBar, JvDBRichEdit, JvDBSpinEdit, JvDBTreeView, JvDBLookup,
-  JvCsvData, JvDBCombobox, JvDBControls, JvDBGrid, JvDBUltimGrid, JvDBRadioPanel,
+  JvCsvData, JvDBCombobox, JvDBControls, JvDBGrid, JvDBUltimGrid, JvDBGridFooter, JvDBRadioPanel,
   JvDBGridExport, JvDBLookupComboEdit, JvDBHTLabel, JvDBSearchEdit,
   JvDBSearchComboBox, JvAppDBStorage, JvDBFindEdit, JvDBImage, JvDBEditors,
   JvDBMemDatasetEditor, JvDBGridExportEditors, JvDBGridProp, JvCsvDataEditor;
@@ -72,6 +72,7 @@ const
   cEditControls = 'EditControls';
   cSortedField = 'SortedField';
   cSortMarker = 'SortMarker';
+  cPanels = 'Panels';
 begin
   RegisterComponents(RsPaletteDBNonVisual, [TJvMemoryData,
     TJvCSVDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF},
@@ -81,7 +82,7 @@ begin
     TJvDBDateTimePicker, TJvDBProgressBar, TJvDBRichEdit, TJvDBSpinEdit,
     TJvDBLookupList, TJvDBLookupCombo, TJvDBLookupEdit, TJvDBRadioPanel,
     TJvDBCombobox, TJvDBTreeView, TJvDBLookupTreeViewCombo, TJvDBLookupTreeView,
-    TJvDBGrid, TJvDBUltimGrid, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit,
+    TJvDBGrid, TJvDBUltimGrid, TJvDBGridFooter, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit,
     TJvDBMaskEdit, TJvDBStatusLabel, TJvDBLookupComboEdit, TJvDBHTLabel,
     TJvDBSearchEdit, TJvDBSearchComboBox, TJvDBFindEdit, TJvDBImage]);
   RegisterComponents(RsPalettePersistence, [TJvAppDBStorage]);
@@ -111,6 +112,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvDBGridControls), TJvDBGrid, cEditControls, TJvDBGridControlsEditor);
   RegisterPropertyEditor(TypeInfo(string), TJvDBUltimGrid, cSortedField, nil);
   RegisterPropertyEditor(TypeInfo(TSortMarker), TJvDBUltimGrid, cSortMarker, nil);
+  RegisterPropertyEditor(TypeInfo(TStatusPanels), TJvDBGridFooter, cPanels, nil);
 
   RegisterComponentEditor(TJvMemoryData, TJvMemDataSetEditor);
 end;
