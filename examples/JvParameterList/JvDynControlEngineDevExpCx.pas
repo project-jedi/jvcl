@@ -40,11 +40,13 @@ type
   private
     FLookAndFeel: TcxLookAndFeel;
     FStyleController: TcxEditStyleController;
+  protected
+    procedure SetLookAndFeel (Value : TcxLookAndFeel);
   public
     constructor Create; virtual;
     destructor Destroy; override;
   published
-    property LookAndFeel: TcxLookAndFeel read FLookAndFeel write FLookAndFeel;
+    property LookAndFeel: TcxLookAndFeel read FLookAndFeel write SetLookAndFeel;
     property StyleController: TcxEditStyleController read FStyleController write FStyleController;
   end;
 
@@ -553,14 +555,17 @@ constructor TCxDynControlWrapper.Create;
 begin
   inherited Create;
   FLookAndFeel     := TcxLookAndFeel.Create(nil);
-  FStyleController := TcxEditStyleController.Create(nil);
 end;
 
 destructor TCxDynControlWrapper.Destroy;
 begin
   FreeAndNil(FLookAndFeel);
-  FreeAndNil(FStyleController);
   inherited Destroy;
+end;
+
+procedure TCxDynControlWrapper.SetLookAndFeel (Value : TcxLookAndFeel);
+begin
+  fLookAndFeel.Assign (Value);
 end;
 
 //=== TJvDynControlCxMaskEdit ================================================
