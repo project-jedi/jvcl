@@ -139,7 +139,7 @@ object JvFullColorFrm: TJvFullColorFrm
       Top = 40
       Width = 65
       Height = 22
-      MaxValue = 255
+      MaxValue = 255.000000000000000000
       TabOrder = 1
       OnChange = SpinEditChange
     end
@@ -149,7 +149,7 @@ object JvFullColorFrm: TJvFullColorFrm
       Top = 96
       Width = 65
       Height = 22
-      MaxValue = 255
+      MaxValue = 255.000000000000000000
       TabOrder = 3
       OnChange = SpinEditChange
     end
@@ -159,7 +159,7 @@ object JvFullColorFrm: TJvFullColorFrm
       Top = 152
       Width = 65
       Height = 22
-      MaxValue = 255
+      MaxValue = 255.000000000000000000
       TabOrder = 5
       OnChange = SpinEditChange
     end
@@ -184,6 +184,8 @@ object JvFullColorFrm: TJvFullColorFrm
     ColCount = 8
     SquareSize = 30
     OnChange = JvFullColorGroupChange
+    ParentShowHint = False
+    ShowHint = True
   end
   object PanelGraphic: TPanel
     Left = 416
