@@ -87,7 +87,8 @@ Known Issues:
 
 interface
 
-uses Windows,
+uses
+  Windows,
   Messages,
   DB,
   SysUtils,
@@ -112,7 +113,9 @@ type
   PInteger = ^integer;
   PDouble = ^Double;
   PBoolean = ^boolean;
-
+  {$IFNDEF COMPILER6_UP}
+  PWordBool = ^WordBool;
+  {$ENDIF}
   EJvCsvDataSetError = class(EDatabaseError);
     // Subclass DB.EDatabaseError so we can work nicely with existing Delphi apps.
 
@@ -536,7 +539,11 @@ function JvCsvWildcardMatch(data, pattern: string): boolean;
 implementation
 
 uses
-  Forms, Controls, Dialogs, JvCsvParse;
+  Forms, Controls, JvCsvParse
+  {$IFNDEF COMPILER6_UP}
+  , JvJVCLUtils, JvJCLUtils
+  {$ENDIF}
+  ;
 
 var
   CallCount: integer;
@@ -615,7 +622,7 @@ end;
 
 procedure TJvCsvCustomInMemoryDataSet.SetAllUserTags(tagValue: integer);
 var
-  row: PCsvRow;
+//  row: PCsvRow;
   t: integer;
 begin
   FData.SetUserTag(FData.Count - 1, tagValue);
@@ -627,7 +634,7 @@ end;
 
 procedure TJvCsvCustomInMemoryDataSet.SetAllUserData(data: Pointer);
 var
-  row: PCsvRow;
+//  row: PCsvRow;
   t: integer;
 begin
   FData.SetUserData(FData.Count - 1, data); // Optimization. Ensures we only call SetLength ONCE!
@@ -666,23 +673,16 @@ var
   datalength, patternlength, dataposition, patternposition: integer;
   firstBoolCondition: integer;
 begin
-  datalength := Length(data);
+  Result := true;
   patternlength := Length(pattern);
+  if patternlength = 0 then
+    Exit;
   // no data?
+  datalength := Length(data);
   if (datalength = 0) then
   begin
-    if (pattern = '%') or (pattern = '') then
-    begin
-      Result := true;
-      Exit;
-    end;
-    Result := false;
+    Result := (pattern = '%') or (pattern = '');
     Exit; // definitely no match.
-  end;
-  // no pattern?
-  if (patternlength = 0) then
-  begin
-    Result := true; //everything matches a non-pattern.
   end;
   // replace all '%%' -> '%' (don't put duplicate wildcards in)
   t := 1;
@@ -763,7 +763,7 @@ begin
           Exit; // found a resync, and rest of strings match
         data := Copy(data, t + 1, datalength);
         datalength := Length(data);
-        dataposition := 0;
+//        dataposition := 0;
         if (datalength = 0) then
         begin
           Result := false;
@@ -1047,21 +1047,16 @@ var
   LimitReached: boolean;
   RowPtr: PCsvRow;
 begin
+  Result := defaultResult;
   if (FRecordPos < 0) then
-  begin
-    Result := defaultResult;
     Exit;
-  end;
   LimitReached := false; // hit BOF or EOF?
   while not LimitReached do
   begin
     { no skippage required }
     RowPtr := PCsvRow(FData.GetRowPtr(FRecordPos));
     if (not RowPtr^.filtered) then
-    begin
-      Result := defaultResult;
       Exit;
-    end;
     { skippage ensues }
     if (ForwardBackwardMode) then
     begin // ForwardSkip mode
@@ -1999,7 +1994,8 @@ end;
 procedure TJvCsvCustomInMemoryDataSet.InternalHandleException;
 begin
   // standard implementation for this method:
-  Application.HandleException(Self);
+  if Application <> nil then
+    Application.HandleException(Self);
 end;
 
 procedure TJvCsvCustomInMemoryDataSet.InternalDelete;
@@ -2076,7 +2072,7 @@ procedure TJvCsvCustomInMemoryDataSet.InternalAddRecord(Buffer: Pointer; Append:
 var
   RecPos: integer;
   pAddRec: PCsvRow;
-  keyIndex: integer;
+//  keyIndex: integer;
 begin
 
   if FInsertBlocked then
@@ -2179,7 +2175,7 @@ end;
 
 procedure TJvCsvCustomInMemoryDataSet.InternalOpen;
 var
-  Strings: TStringlist;
+//  Strings: TStringlist;
   TempBuf: array[0..MAXCOLUMNS] of char;
 begin
   if FCursorOpen then InternalClose; // close first!
@@ -2187,7 +2183,7 @@ begin
   FFileDirty := false;
   if (Length(FTableName) = 0) and FLoadsFromFile then
     JvCsvDatabaseError('noTableName', 'LoadFromFile=True, so a TableName is required');
-  Strings := nil;
+//  Strings := nil;
 
   InternalInitFieldDefs; // initialize FieldDef objects
 
@@ -2422,6 +2418,7 @@ function TJvCsvCustomInMemoryDataSet.InternalCompare(SortColumns: array of PCsvC
 var
   t: integer;
 begin
+  Result := 0;
   // null check, raise exception
   if (not Assigned(Left)) or (not Assigned(Right)) then
   begin
@@ -3272,11 +3269,11 @@ var
   MaxValue: array[1..6] of integer;
   ch: char;
   t, u, len, Index: integer;
-  Done: boolean;
+//  Done: boolean;
 begin
   Result := 0.0; // default result.
   len := Length(AsciiDateStr);
-  Done := false;
+//  Done := false;
 
  // validate ranges:
   MinValue[1] := 1990;
@@ -3316,7 +3313,7 @@ begin
     begin
       if (Index > len) then
       begin
-        Done := true; // reached end!
+//        Done := true; // reached end!
         break;
       end;
       ch := AsciiDateStr[Index];
@@ -3330,7 +3327,7 @@ begin
 
       if (Index > len) then
       begin
-        Done := true; // reached end!
+//        Done := true; // reached end!
         break;
       end;
     end;
@@ -3460,7 +3457,7 @@ begin
   if FileExists(RemoveFile) then
     DeleteFile(RemoveFile);
 
-  CopyFile(PChar(FileName), PChar(BackupFilename), false);
+  Windows.CopyFile(PChar(FileName), PChar(BackupFilename), false);
   Result := true;
 end;
 
