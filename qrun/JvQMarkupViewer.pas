@@ -59,12 +59,12 @@ type
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
     procedure SetBackColor(const Value: TColor);
-    procedure SetText(const Value: TCaption);
     procedure SetMarginLeft(const Value: Integer);
     procedure SetMarginRight(const Value: Integer);
     procedure SetMarginTop(const Value: Integer);
     procedure ScrollViewer(Sender: TObject);
   protected  
+    procedure SetText(const Value: TCaption); override;
     procedure CreateWidget; override; 
   public
     constructor Create(AOwner: TComponent); override;

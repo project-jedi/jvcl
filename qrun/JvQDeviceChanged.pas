@@ -35,7 +35,7 @@ unit JvQDeviceChanged;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, DBT,
+  Windows, Messages, SysUtils, Classes, QDBT,
   JvQComponent;
 
 type
