@@ -57,10 +57,21 @@ const
 
 { Standard Windows colors that are not defined in Delphi 5}
   {$IFNDEF COMPILER6_UP}
+
+  COLOR_MENUHILIGHT = 29;
+  {$EXTERNALSYM COLOR_MENUHILIGHT}
+  COLOR_MENUBAR = 30;
+  {$EXTERNALSYM COLOR_MENUBAR}
+
   clMoneyGreen = TColor($C0DCC0);
   clSkyBlue = TColor($F0CAA6);
   clCream = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
+  clGradientActiveCaption = TColor(COLOR_GRADIENTACTIVECAPTION or $80000000);
+  clGradientInactiveCaption = TColor(COLOR_GRADIENTINACTIVECAPTION or $80000000);
+  clHotLight = TColor(COLOR_HOTLIGHT or $80000000);
+  clMenuHighlight = TColor(COLOR_MENUHILIGHT or $80000000);
+  clMenuBar = TColor(COLOR_MENUBAR or $80000000);
   {$ENDIF}
 
 type
