@@ -86,6 +86,7 @@ type
     FIsLoaded:boolean;
     {$IFDEF JVCLThemesEnabled}
     FThemedPassword: Boolean;
+    FThemedFont: TFont;
     {$ENDIF JVCLThemesEnabled}
     function GetPasswordChar: Char;
     function IsPasswordCharStored: Boolean;
@@ -105,6 +106,7 @@ type
     {$IFDEF JVCLThemesEnabled}
     procedure SetThemedPassword(const Value: Boolean);
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
+    function GetThemedFontHandle: HFONT;
     {$ENDIF JVCLThemesEnabled}
   protected
     procedure DoClipboardCut; override;
@@ -127,6 +129,7 @@ type
     function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); virtual;
     procedure CreateHandle; override;
+    procedure DestroyWnd; override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     function GetText: TCaption; override;
@@ -348,6 +351,9 @@ destructor TJvCustomEdit.Destroy;
 begin
   FMaxPixel.Free;
   FCaret.Free;
+  {$IFDEF JVCLThemesEnabled}
+  FThemedFont.Free;
+  {$ENDIF JVCLThemesEnabled}
   {$IFDEF VisualCLX}
   QPixmap_destroy(FNullPixmap);
   {$ENDIF VisualCLX}
@@ -456,6 +462,21 @@ begin
       end
   else
     inherited DefaultHandler(Msg);
+end;
+
+procedure TJvCustomEdit.DestroyWnd;
+var
+  Tmp: Boolean;
+begin
+  Tmp := ProtectPassword;
+  try
+    // TWinControl.DestroyWnd sends WM_GETTEXTLENGTH & WM_GETTEXT messages,
+    // thus we have to temporarely set ProtectPassword to False.
+    ProtectPassword := False;
+    inherited DestroyWnd;
+  finally
+    ProtectPassword := Tmp;
+  end;
 end;
 
 {$ENDIF VCL}
@@ -632,6 +653,16 @@ begin
     Result := '';
 end;
 
+{$IFDEF JVCLThemesEnabled}
+function TJvCustomEdit.GetThemedFontHandle: HFONT;
+var
+  AFont: TLogFont;
+begin
+  GetObject(GetStockObject(DEFAULT_GUI_FONT), SizeOf(AFont), @AFont);
+  AFont.lfHeight := Self.Font.Height;
+  Result := CreateFontIndirect(AFont);
+end;
+{$ENDIF JVCLThemesEnabled}
 
 function TJvCustomEdit.IsEmpty: Boolean;
 begin
@@ -902,6 +933,8 @@ begin
   if FThemedPassword <> Value then
   begin
     FThemedPassword := Value;
+    if not FThemedPassword then
+      FreeAndNil(FThemedFont);
     PasswordChar := #0;
     RecreateWnd;
   end;
@@ -952,9 +985,14 @@ end;
 procedure TJvCustomEdit.WMSetFont(var Msg: TWMSetFont);
 begin
   if ThemedPassword then
+  begin
     // Retrieves MS Shell Dlg.
     // Other way is to use Screen.IconFont
-    Msg.Font := GetStockObject(DEFAULT_GUI_FONT);
+    if FThemedFont = nil then
+      FThemedFont := TFont.Create;
+    FThemedFont.Handle := GetThemedFontHandle;
+    Msg.Font := FThemedFont.Handle;
+  end;
   inherited;
 end;
 {$ENDIF JVCLThemesEnabled}
