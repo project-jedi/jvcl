@@ -202,7 +202,7 @@ type
 implementation
 
 uses
-  Registry;
+  Math, Registry;
 
 const
   cUninstallPath = 'Software\Microsoft\Windows\CurrentVersion\Uninstall';
@@ -236,6 +236,15 @@ var
   Dm: TJvUCBDisplayMode;
   UI: TUninstallInfo;
 
+  function BufToStr(Buffer: array of byte; BufSize: Integer): string;
+  var
+    I: Integer;
+  begin
+    Result := '';
+    for I := 0 to Min(sizeof(Buffer),BufSize) - 1 do
+      Result := Result + ' ' + IntToHex(Buffer[I], 2);
+  end;
+
   function ExpandEnvVar(const S: string): string;
   begin
     SetLength(Result, ExpandEnvironmentStrings(PChar(S), nil, 0));
@@ -246,8 +255,8 @@ var
   var
     I: Integer;
     BufTmp: string;
-    Buf: PChar;
-    BufSize: Integer;
+    BufSize:Cardinal;
+    Buffer: array [0..4095] of Byte;
     DValue: Cardinal;
   begin
     Reg.OpenKeyReadOnly(Section);
@@ -266,21 +275,14 @@ var
           end;
         rdBinary:
           begin
-            Buf := nil;
             BufSize := Reg.GetDataSize(Items[I]);
             if BufSize > 0 then
-            begin
               try
-              UniqueString(BufTmp);
-              SetLength(BufTmp, BufSize * 2);
-              ReAllocMem(Buf, BufSize);
-              Reg.ReadBinaryData(Items[I], Buf, BufSize);
-              BinToHex(PChar(BufTmp), Buf, BufSize);
-              FreeMem(Buf);
+                Reg.ReadBinaryData(Items[I], Buffer, sizeof(Buffer));
+                BufTmp := BufToStr(Buffer,Reg.GetDataSize(Items[I]));
               except
                 BufTmp := '';
               end;
-            end;
           end;
       end;
       if BufTmp <> '' then
