@@ -808,7 +808,11 @@ begin
     try
       JvDynControlData.ControlValue := Value;
     except
+      {$IFDEF COMPILER6_UP}
       on e:EVariantTypeCastError do
+      {$ELSE}
+      on e:EVariantError do
+      {$ENDIF COMPILER6_UP}
     end;
 end;
 
