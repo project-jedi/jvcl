@@ -36,7 +36,8 @@ unit JvAppHotKey;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,Menus, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,Menus,
+  JvComponent;
 
 type
   TJvApplicationHotKey = class(TJvComponent)
@@ -157,6 +158,7 @@ begin
     SetWindowLong(FHandle,GWL_WNDPROC,longint(FDefProc));
     {$IFDEF COMPILER6_UP}Classes.{$ENDIF}FreeObjectInstance(FWndProc);
     FHandle := 0;
+    GlobalDeleteAtom (FID);
   end
 end;
 
