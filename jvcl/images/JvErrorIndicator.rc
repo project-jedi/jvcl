@@ -1,2 +1,3 @@
-JVERRORINDICATORICON ICON "JvResErrorIndicator.ico"
+; needs X prefix or the MAINICON stops working
+XJVERRORINDICATORICON ICON "JvResErrorIndicator.ico"
 JVERRORINDICATOR BITMAP "JvResErrorIndicator.bmp"
