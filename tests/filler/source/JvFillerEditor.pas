@@ -52,7 +52,7 @@ type
     procedure DeleteItem(Index: Integer);
     procedure DeleteSubItems(Index: Integer);
     procedure AddSubItem(Index: Integer; Item: IFillerItem);
-    procedure InsertItems(Index: Integer; Items: IFillerItems);
+    procedure InsertItems(var Index: Integer; Items: IFillerItems);
     procedure SetFiller(Value: IFiller);
   public
     { Public declarations }
@@ -84,6 +84,19 @@ begin
   finally
     Free;
   end;
+end;
+
+function GetItemIndexAt(LV: TListView; X, Y: Integer): Integer;
+var
+  Info: TLVHitTestInfo;
+begin
+  if LV.HandleAllocated then
+  begin
+    Info.pt := Point(X, Y);
+    Result := ListView_HitTest(LV.Handle, Info);
+  end
+  else
+    Result := -1;
 end;
 
 function AddByDesigner(Designer: IFillerItemsDesigner): IFillerItem;
@@ -157,7 +170,10 @@ begin
     begin
       Item := (Filler as IFillerIDSearch).FindByID(Info.ID, True);
       if (Item <> nil) and Supports(Item, IFillerItems, Items) then
-        InsertItems(Index + 1, Items);
+      begin
+        Inc(Index);
+        InsertItems(Index, Items);
+      end;
     end;
   end;
   UpdateLV;
@@ -183,8 +199,10 @@ end;
 procedure TfrmFillerEditor.DeleteItem(Index: Integer);
 begin
   DeleteSubItems(Index);
+  FViewItems[Index].ID := '';
   if Index < High(FViewItems) then
     Move(FViewItems[Index + 1], FViewItems[Index], (Length(FViewItems) - Index) * SizeOf(FViewItems[0]));
+  FillChar(FViewItems[High(FViewItems)], SizeOf(FViewItems[0]), 0);
   SetLength(FViewItems, High(FViewItems));
 end;
 
@@ -198,10 +216,14 @@ begin
     Lvl := (FViewItems[Index].Flags and $00FFFFFF) + 1;
     Idx := Index + 1;
     while (Idx < Length(FViewItems)) and ((FViewItems[Idx].Flags and $00FFFFFF) >= Lvl) do
+    begin
+      FViewItems[Idx].ID := '';
       Inc(Idx);
+    end;
     // Idx points to next item that is not a child
     if Idx < Length(FViewItems) then
       Move(FViewItems[Idx], FViewItems[Index + 1], (Length(FViewItems) - Idx) * SizeOf(FViewItems[0]));
+    FillChar(FViewItems[Length(FViewItems) - Pred(Idx - Index)], Pred(Idx - Index) * SizeOf(FViewItems[0]), 0);
     SetLength(FViewItems, Length(FViewItems) - (Idx - Index - 1));
     FViewItems[Index].Flags := FViewItems[Index].Flags and not vifExpanded;
   end;
@@ -227,7 +249,10 @@ begin
     Inc(Idx);
   SetLength(FViewItems, Length(FViewItems) + 1);
   if Idx < High(FViewItems) then
+  begin
     Move(FViewItems[Idx], FViewItems[Idx + 1], (High(FViewItems) - Idx) * SizeOf(FViewItems[0]));
+    FillChar(FViewItems[Idx], SizeOf(FViewItems[0]), 0);
+  end;
   with FViewItems[Idx] do
   begin
     ID := Item.GetID;
@@ -246,7 +271,7 @@ begin
       Flags := Flags or vifHasChildren or vifCanHaveChildren or vifExpanded;
 end;
 
-procedure TfrmFillerEditor.InsertItems(Index: Integer; Items: IFillerItems);
+procedure TfrmFillerEditor.InsertItems(var Index: Integer; Items: IFillerItems);
 var
   I: Integer;
   J: Integer;
@@ -255,7 +280,10 @@ begin
   J := Length(FViewItems);
   SetLength(FViewItems, Length(FViewItems) + Items.Count);
   if Index < J then
+  begin
     Move(FViewItems[Index], FViewItems[Index + Items.Count], (J - Index) * SizeOf(FViewItems[0]));
+    FillChar(FViewItems[Index], Items.Count * SizeOf(FViewItems[0]), 0);
+  end;
   J := 0;
   if Index > 0 then
   begin
@@ -272,8 +300,9 @@ begin
         if SubItems.Count > 0 then
         begin
           Flags := J + vifHasChildren + vifCanHaveChildren + vifExpanded;
-          InsertItems(Index + 1, SubItems);
-          Inc(Index, SubItems.Count);
+          Inc(Index);
+          InsertItems(Index, SubItems);
+          Dec(Index);
         end
         else
           Flags := J + vifCanHaveChildren
@@ -393,19 +422,19 @@ end;
 procedure TfrmFillerEditor.lvFillerMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  Item: TListItem;
+  Item: Integer;
   ViewInfo: TFillerEditItem;
   TmpRect: TRect;
 begin
-{  Item := lvFiller.GetItemAt(X, Y);
-  if Item <> nil then
+  Item := GetItemIndexAt(lvFiller, X, Y);
+  if Item <> -1 then
   begin
-    ViewInfo := FViewItems[Item.Index];
-    TmpRect := Item.DisplayRect(drBounds);
-    TmpRect.Right := TmpRect.Left + Succ((TmpRect.Bottom - TmpRect.Top) + 2 * Succ(Item.Indent));
+    ViewInfo := FViewItems[Item];
+    ListView_GetItemRect(lvFiller.Handle, Item, TmpRect, LVIR_BOUNDS);
+    TmpRect.Right := TmpRect.Left + (Succ((TmpRect.Bottom - TmpRect.Top) + 2) * Succ(ViewInfo.Flags and $00FFFFFF));
     if (X < TmpRect.Right) and (X > TmpRect.Right - ((TmpRect.Bottom - TmpRect.Top) + 2)) then
-      ToggleItem(Item.Index);
-  end;}
+      ToggleItem(Item);
+  end;
 end;
 
 procedure TfrmFillerEditor.aiAddItemExecute(Sender: TObject);
@@ -426,6 +455,7 @@ begin
   end
   else
     Items := Filler as IFillerItems;
+  Item := nil;
   if Items <> nil then
   begin
     if Supports(Items, IFillerItemsDesigner, Dsgn) then
@@ -442,10 +472,7 @@ begin
     begin
       if Supports(Item, IFillerItemText, Txt) then
         Txt.Caption := 'Test';
-      // Item added, expand the original item if it wasn't or add the new item otherwise
-      {if (lvFiller.Selected <> nil) and (FViewItems[lvFiller.Selected.Index].Flags and vifExpanded = 0) then
-        ToggleItem(lvFiller.Selected.Index)
-      else }if lvFiller.Selected <> nil then
+      if lvFiller.Selected <> nil then
         AddSubItem(lvFiller.Selected.Index, Item)
       else
         AddSubItem(-1, Item);
