@@ -527,7 +527,7 @@ type
   POleVariantArray = ^TOleVariantArray;
 begin
   if (Index < 0) or (Index >= AttributeCount) then
-    raise EObjectPickerError.CreateFmt(RsAttributeIndexOutOfBounds, [Index]);
+    raise EObjectPickerError.CreateResFmt(@RsEAttributeIndexOutOfBounds, [Index]);
   Result := POleVariantArray(FSelection^.pvarFetchedAttributes)^[Index];
 end;
 
@@ -595,7 +595,7 @@ begin
   if FSelections <> nil then
   begin
     if (Index < 0) or (Index >= Count) then
-      raise EObjectPickerError.CreateFmt(RsSelectionIndexOutOfBounds, [Index]);
+      raise EObjectPickerError.CreateResFmt(@RsESelectionIndexOutOfBounds, [Index]);
     Result := FItems[Index];
   end;
 end;

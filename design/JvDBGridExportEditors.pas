@@ -75,7 +75,7 @@ begin
   if WordGridFormatIdentToInt(Value, N) then
     SetOrdValue(N)
   else
-    raise Exception.Create(RsEInvalidPropertyValue);
+    raise Exception.CreateRes(@RsEInvalidPropertyValue);
 end;
 
 end.

@@ -298,7 +298,7 @@ begin
   begin
     Comp := Designer.GetComponent(Value);
     if not (Comp is GetTypeData(GetPropType)^.ClassType) and not IntfSupported(Comp) then
-      raise EPropertyError.CreateFmt(RsEFmtInterfaceNotSupported, [Comp.Name, GetInterfaceName]);
+      raise EPropertyError.CreateResFmt(@RsEFmtInterfaceNotSupported, [Comp.Name, GetInterfaceName]);
   end;
   SetOrdValue(Longint(Comp));
 end;

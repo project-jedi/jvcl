@@ -588,7 +588,6 @@ begin
     SetLength(FalseBoolStrs, 1);
     FalseBoolStrs[0] := DefaultFalseBoolStr;
   end;
-
 end;
 
 function TryStrToFloat(const S: string; out Value: Extended): Boolean;

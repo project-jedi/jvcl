@@ -32,11 +32,12 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Forms, Controls, ExtCtrls, Graphics, Messages, Menus,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QForms, QControls, QExtCtrls, QGraphics, QMenus,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent, JvExControls;
+
 type
   TNumThumbStates = 1..2;
   TSliderOrientation = (soHorizontal, soVertical);
@@ -907,7 +908,7 @@ procedure TJvCustomSlider.SetIncrement(Value: Longint);
 begin
   if not (csReading in ComponentState) and ((Value > MaxValue - MinValue) or
     (Value < 1)) then
-    raise EJVCLException.CreateFmt(SOutOfRange, [1, MaxValue - MinValue]);
+    raise EJVCLException.CreateResFmt(@SOutOfRange, [1, MaxValue - MinValue]);
   if (Value > 0) and (FIncrement <> Value) then
   begin
     FIncrement := Value;

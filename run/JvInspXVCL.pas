@@ -177,7 +177,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           JvxNode.AsInteger := Shortint(Value)
         end;
       otUByte:
@@ -185,7 +185,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           JvxNode.AsInteger := Byte(Value)
         end;
       otSWord:
@@ -193,7 +193,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           JvxNode.AsInteger := Smallint(Value)
         end;
       otUWord:
@@ -201,7 +201,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           JvxNode.AsInteger := Word(Value)
         end;
       otSLong:
@@ -209,7 +209,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           JvxNode.AsInteger := Integer(Value)
         end;
       otULong:
@@ -217,7 +217,7 @@ begin
           MinValue := Longword(GetTypeData(TypeInfo).MinValue);
           MaxValue := Longword(GetTypeData(TypeInfo).MaxValue);
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           JvxNode.AsInteger := Integer(Value)
         end;
     end;

@@ -735,7 +735,7 @@ begin
       raise;
     end
   else
-    raise EJvSpeedbarError.Create(RsESBItemNotCreate);
+    raise EJvSpeedbarError.CreateRes(@RsESBItemNotCreate);
 end;
 
 procedure TJvSpeedbarEditor.RemoveButtonClick(Sender: TObject);

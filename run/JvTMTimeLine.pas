@@ -1251,7 +1251,7 @@ begin
   ClearImages;
   ClearObjects;
   if not ReadMagic(Stream) then
-    raise EStreamError.Create(SInvalidImage);
+    raise EStreamError.CreateRes(@SInvalidImage);
   FDateImages.Text := ReadStr(Stream);
   for I := 0 to FDateImages.Count - 1 do
     FDateImages.Objects[I] := TObject(ReadInt(Stream));

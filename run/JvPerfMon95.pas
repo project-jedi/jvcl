@@ -455,7 +455,7 @@ end;
 function TJvPerfStat95.GetCategories(Index: Integer): TJvPerfStatCategory;
 begin
   if (Index < 0) or (Index > GetCategoryCount - 1) then
-    raise EJvPerfStatException.CreateFmt(SListIndexError, [Index]);
+    raise EJvPerfStatException.CreateResFmt(@SListIndexError, [Index]);
   Result := FCategories[Index];
   with Result do
   begin

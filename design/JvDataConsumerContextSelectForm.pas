@@ -98,10 +98,10 @@ begin
         Result := SelectForm.ShowModal = mrOk;
       end
       else
-        raise EJVCLException.Create(RsEConsumerDoesNotSupportContextSelect);
+        raise EJVCLException.CreateRes(@RsEConsumerDoesNotSupportContextSelect);
     end
     else
-      raise EJVCLException.Create(RsEIJvDataConsumerProviderIsNotSupported);
+      raise EJVCLException.CreateRes(@RsEIJvDataConsumerProviderIsNotSupported);
   finally
     SelectForm.Free;
   end;

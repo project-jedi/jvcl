@@ -667,7 +667,7 @@ begin
   begin
     I := FParent.SearchSection(NewCaption);
     if (I <> Index) and (I >= 0) then
-      raise EJvSpeedbarError.Create(SDuplicateString);
+      raise EJvSpeedbarError.CreateRes(@SDuplicateString);
   end;
 end;
 

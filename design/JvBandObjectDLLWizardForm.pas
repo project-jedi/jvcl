@@ -64,7 +64,7 @@ begin
     if not IsValidIdent(Text) then
     begin
       SetFocus;
-      raise EJVCLException.Create(RsEBandNameHasToBeAValidIdentifier);
+      raise EJVCLException.CreateRes(@RsEBandNameHasToBeAValidIdentifier);
     end;
   end;
   with EditBandDesc do
@@ -73,7 +73,7 @@ begin
     if Text = '' then
     begin
       SetFocus;
-      raise EJVCLException.Create(RsEPleaseEnterBandDescription);
+      raise EJVCLException.CreateRes(@RsEPleaseEnterBandDescription);
     end;
   end;
   ModalResult := mrOk;

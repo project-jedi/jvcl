@@ -359,7 +359,7 @@ begin
     doHorizontal:
       Result := AControl.Height;
   else
-    raise Exception.Create(RsDockCannotGetValueWithNoOrient);
+    raise Exception.CreateRes(@RsEDockCannotGetValueWithNoOrient);
   end;
 end;
 

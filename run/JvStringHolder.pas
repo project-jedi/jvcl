@@ -300,7 +300,7 @@ procedure TJvMacro.SetDisplayName(const Value: string);
 begin
   if (Value <> '') and (AnsiCompareText(Value, FName) <> 0) and
     (Collection is TJvMacros) and (TJvMacros(Collection).IndexOf(Value) >= 0) then
-    raise EJVCLException.Create(SDuplicateString);
+    raise EJVCLException.CreateRes(@SDuplicateString);
   FName := Value;
   inherited SetDisplayName(Value);
 end;
@@ -412,7 +412,7 @@ function TJvMacros.MacroByName(const Value: string): TJvMacro;
 begin
   Result := FindMacro(Value);
   if Result = nil then
-    raise EJVCLException.Create(SInvalidPropertyValue);
+    raise EJVCLException.CreateRes(@SInvalidPropertyValue);
 end;
 
 function TJvMacros.FindMacro(const Value: string): TJvMacro;

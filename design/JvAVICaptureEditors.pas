@@ -133,7 +133,7 @@ begin
   if (NewIndex >= -1) and (NewIndex < FDrivers.Count) then
     SetOrdValue(NewIndex)
   else
-    raise ERangeError.CreateFmt(RsEdIsNotWithinTheValidRangeOfdd,
+    raise ERangeError.CreateResFmt(@RsEdIsNotWithinTheValidRangeOfdd,
       [NewIndex, -1, FDrivers.Count - 1]);
 end;
 

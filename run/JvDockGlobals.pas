@@ -77,15 +77,15 @@ resourcestring
   RsDockNodeExistedError = 'Node already exist';
   RsDockComProcError = 'The function address is nil';
 
-  RsDockControlCannotIsNil = 'Control can not be nil';
-  RsDockCannotGetValueWithNoOrient = 'Cannot get data of control that has no dock orientation';
-  RsDockCannotSetValueWithNoOrient = 'Cannot set data of control that has no dock orientation';
+  RsEDockControlCannotIsNil = 'Control can not be nil';
+  RsEDockCannotGetValueWithNoOrient = 'Cannot get data of control that has no dock orientation';
+  RsEDockCannotSetValueWithNoOrient = 'Cannot set data of control that has no dock orientation';
 
-  RsDockCannotChangeDockStyleProperty = 'Changing DockStyle at runtime is not supported';
-  RsDockCannotLayAnother = 'Only one %s allowed on each form. Cannot add another %s';
+  RsEDockCannotChangeDockStyleProperty = 'Changing DockStyle at runtime is not supported';
+  RsEDockCannotLayAnother = 'Only one %s allowed on each form. Cannot add another %s';
 
-  RsDockCannotSetTabPosition = 'Cannot set TabPosition property to tpLeft or tpRight';
-  RsDockTabPositionMustBetpBottom = 'TabPosition property must be tpBottom';
+  RsEDockCannotSetTabPosition = 'Cannot set TabPosition property to tpLeft or tpRight';
+  RsEDockTabPositionMustBetpBottom = 'TabPosition property must be tpBottom';
 
   RsDockLikeDelphiStyle = 'Similar to Delphi''s %s';
   RsDockLikeVCStyle = 'Similar to Visual C++''s %s';

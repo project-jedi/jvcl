@@ -1359,7 +1359,7 @@ begin
   if FStyle <> Value then
   begin
     if (Value <> tsTabs) and (TabPosition <> tpTop) then
-      raise EInvalidOperation.Create(SInvalidTabStyle);
+      raise EInvalidOperation.CreateRes(@SInvalidTabStyle);
     FStyle := Value;
     RecreateWnd;
   end;
@@ -1370,7 +1370,7 @@ begin
   if FTabSize.Y <> Value then
   begin
     if Value < 0 then
-      raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [Self.Classname]);
+      raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [Self.Classname]);
     FTabSize.Y := Value;
     UpdateTabSize;
   end;
@@ -1386,7 +1386,7 @@ begin
   if FTabPosition <> Value then
   begin
     if (Value <> tpTop) and (Style <> tsTabs) then
-      raise EInvalidOperation.Create(SInvalidTabPosition);
+      raise EInvalidOperation.CreateRes(@SInvalidTabPosition);
     FTabPosition := Value;
     if not MultiLine and ((Value = tpLeft) or (Value = tpRight)) then
       InternalSetMultiLine(True);
@@ -1411,7 +1411,7 @@ begin
   if FTabSize.X <> Value then
   begin
     if Value < 0 then
-      raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [Self.Classname]);
+      raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [Self.Classname]);
     OldValue := FTabSize.X;
     FTabSize.X := Value;
     if (OldValue = 0) or (Value = 0) then

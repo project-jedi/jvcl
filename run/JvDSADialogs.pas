@@ -599,7 +599,7 @@ begin
     end;
   end
   else
-    raise EJVCLException.Create(SCannotOpenClipboard);
+    raise EJVCLException.CreateRes(@SCannotOpenClipboard);
 end;
 {$ENDIF VCL}
 

@@ -621,7 +621,7 @@ procedure TJvMTCountingSection.SetInitAndMax(Init,Max: Integer);
 begin
   CheckInactiveProperty;
   if (Max < 1) or (Init < 0) or (Init > Max) then
-    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [ClassName]);
+    raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [ClassName]);
   
   FInitCount := Init;
   FMaxCount := Max;
@@ -774,7 +774,7 @@ begin
   if FQueue <> nil then
     raise EThread.CreateRes(@RsECannotChangePropertyBuffer);
   if Value < 1 then
-    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [ClassName]);
+    raise EInvalidOperation.CreateREsFmt(@SPropertyOutOfRange, [ClassName]);
   FMaxBufferSize := Value;
 end;
 
@@ -783,7 +783,6 @@ begin
   HookQueue;
   FQueue.Push(AObject);
 end;
-
 
 //=== TJvMTMonitorSection ====================================================
 

@@ -10418,7 +10418,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           PShortint(Address)^ := Value;
         end;
       otUByte:
@@ -10426,7 +10426,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           PByte(Address)^ := Value;
         end;
       otSWord:
@@ -10434,7 +10434,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           PSmallint(Address)^ := Value;
         end;
       otUWord:
@@ -10442,7 +10442,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           PWord(Address)^ := Value;
         end;
       otSLong:
@@ -10450,7 +10450,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           PLongint(Address)^ := Value;
         end;
       otULong:
@@ -10458,7 +10458,7 @@ begin
           MinValue := Longword(GetTypeData(TypeInfo).MinValue);
           MaxValue := Longword(GetTypeData(TypeInfo).MaxValue);
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           PLongword(Address)^ := Value;
         end;
     end;
@@ -11108,7 +11108,7 @@ begin
   begin
     if (Value < GetTypeData(TypeInfo).MinInt64Value) or
       (Value > GetTypeData(TypeInfo).MaxInt64Value) then
-      raise ERangeError.CreateFmt(SOutOfRange, [GetTypeData(TypeInfo).MinValue,
+      raise ERangeError.CreateResFmt(@SOutOfRange, [GetTypeData(TypeInfo).MinValue,
         GetTypeData(TypeInfo).MaxValue]);
     DoSetAsInt64(Value);
   end
@@ -11148,7 +11148,7 @@ begin
       MaxValue := Longword(GetTypeData(TypeInfo).MaxValue);
     end;
     if (Value < MinValue) or (Value > MaxValue) then
-      raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+      raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
     case GetTypeData(TypeInfo).OrdType of
       otSByte:
         DoSetAsOrdinal(Shortint(Value));

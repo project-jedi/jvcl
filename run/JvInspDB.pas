@@ -349,7 +349,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           DataLink.Edit;
           Field.AsInteger := Shortint(Value)
         end;
@@ -358,7 +358,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           DataLink.Edit;
           Field.AsInteger := Byte(Value)
         end;
@@ -367,7 +367,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           DataLink.Edit;
           Field.AsInteger := Smallint(Value)
         end;
@@ -376,7 +376,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           DataLink.Edit;
           Field.AsInteger := Word(Value)
         end;
@@ -385,7 +385,7 @@ begin
           MinValue := GetTypeData(TypeInfo).MinValue;
           MaxValue := GetTypeData(TypeInfo).MaxValue;
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           DataLink.Edit;
           Field.AsInteger := Integer(Value)
         end;
@@ -394,7 +394,7 @@ begin
           MinValue := Longword(GetTypeData(TypeInfo).MinValue);
           MaxValue := Longword(GetTypeData(TypeInfo).MaxValue);
           if (Value < MinValue) or (Value > MaxValue) then
-            raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
+            raise ERangeError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue]);
           DataLink.Edit;
           Field.AsInteger := Integer(Value)
         end;

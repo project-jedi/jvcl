@@ -1078,9 +1078,9 @@ const
 
 resourcestring
   // (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
-  RsPropertyNotExists = 'Property "%s" does not exist';
-  RsInvalidPropertyType = 'Property "%s" has invalid type';
-  RsPivotLessThanZero = 'JvJCLUtils.MakeYear4Digit: Pivot < 0';
+  RsEPropertyNotExists = 'Property "%s" does not exist';
+  RsEInvalidPropertyType = 'Property "%s" has invalid type';
+  RsEPivotLessThanZero = 'JvJCLUtils.MakeYear4Digit: Pivot < 0';
 
 {$IFDEF NO_JCL}
 
@@ -3504,10 +3504,10 @@ var
 begin
   PropInf := GetPropInfo(Obj.ClassInfo, PropName);
   if PropInf = nil then
-    raise Exception.CreateFmt(RsPropertyNotExists, [PropName]);
+    raise Exception.CreateResFmt(@RsEPropertyNotExists, [PropName]);
   if not (PropInf^.PropType^.Kind in
     [tkString, tkLString, tkWString]) then
-    raise Exception.CreateFmt(RsInvalidPropertyType, [PropName]);
+    raise Exception.CreateResFmt(@RsEInvalidPropertyType, [PropName]);
   Result := GetStrProp(Obj, PropInf);
 end;
 
@@ -3517,10 +3517,10 @@ var
 begin
   PropInf := GetPropInfo(Obj.ClassInfo, PropName);
   if PropInf = nil then
-    raise Exception.CreateFmt(RsPropertyNotExists, [PropName]);
+    raise Exception.CreateResFmt(@RsEPropertyNotExists, [PropName]);
   if not (PropInf^.PropType^.Kind in
     [tkInteger, tkChar, tkWChar, tkEnumeration, tkClass]) then
-    raise Exception.CreateFmt(RsInvalidPropertyType, [PropName]);
+    raise Exception.CreateResFmt(@RsEInvalidPropertyType, [PropName]);
   Result := GetOrdProp(Obj, PropInf);
 end;
 
@@ -3530,9 +3530,9 @@ var
 begin
   PropInf := GetPropInfo(Obj.ClassInfo, PropName);
   if PropInf = nil then
-    raise Exception.CreateFmt(RsPropertyNotExists, [PropName]);
+    raise Exception.CreateResFmt(@RsEPropertyNotExists, [PropName]);
   if not (PropInf^.PropType^.Kind = tkMethod) then
-    raise Exception.CreateFmt(RsInvalidPropertyType, [PropName]);
+    raise Exception.CreateResFmt(@RsEInvalidPropertyType, [PropName]);
   Result := GetMethodProp(Obj, PropInf);
 end;
 
@@ -3793,7 +3793,7 @@ end;
 
 procedure OutOfResources;
 begin
-  raise EOutOfResources.Create(SOutOfResources);
+  raise EOutOfResources.CreateRes(@SOutOfResources);
 end;
 
 function DupBits(Src: HBITMAP; Size: TPoint; Mono: Boolean): HBITMAP;
@@ -4765,7 +4765,7 @@ end;
 function StrToDateFmt(const DateFormat, S: string): TDateTime;
 begin
   if not InternalStrToDate(DateFormat, S, Result) then
-    raise EConvertError.CreateFmt(SInvalidDate, [S]);
+    raise EConvertError.CreateResFmt(@SInvalidDate, [S]);
 end;
 
 function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
@@ -7151,7 +7151,7 @@ var
   Century: Integer;
 begin
   if Pivot < 0 then
-    raise Exception.Create(RsPivotLessThanZero);
+    raise Exception.CreateRes(@RsEPivotLessThanZero);
 
   { map 100 to zero }
   if Year = 100 then
@@ -7576,7 +7576,7 @@ begin
     S := IntToStr(LongRec(ResID).Lo)
   else
     S := StrPas(ResID);
-  raise EResNotFound.CreateFmt(SResNotFound, [S]);
+  raise EResNotFound.CreateResFmt(@SResNotFound, [S]);
 end;
 
 function RectWidth(R: TRect): Integer;
