@@ -336,7 +336,7 @@ type
   end;
 
   TBlobData = packed record
-    Size: Integer;
+    Size: Cardinal;
     Buffer: Pointer;
   end;
   TBlobDataArray = array[Word] of TBlobData;
@@ -624,7 +624,7 @@ type
     procedure BlobReadString(var BlobHandle: IscBlobHandle; var Str: String); overload;
     procedure BlobReadVariant(var BlobHandle: IscBlobHandle; var Value: Variant);
     // you must free memory allocated by this method !!
-    procedure BlobReadBuffer(var BlobHandle: IscBlobHandle; var Size: Integer; var Buffer: Pointer);
+    procedure BlobReadBuffer(var BlobHandle: IscBlobHandle; var Size: Cardinal; var Buffer: Pointer);
     function  BlobCreate(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle; var BlobHandle: IscBlobHandle; BPB: string = ''): TISCQuad;
     procedure BlobWriteSegment(var BlobHandle: IscBlobHandle; BufferLength: Word; Buffer: PChar);
     procedure BlobWriteString(var BlobHandle: IscBlobHandle; var Str: String);
@@ -1804,12 +1804,12 @@ type
     end;
   end;
 
-  procedure TUIBLibrary.BlobReadBuffer(var BlobHandle: IscBlobHandle; var Size: Integer; var Buffer: Pointer);
+  procedure TUIBLibrary.BlobReadBuffer(var BlobHandle: IscBlobHandle; var Size: Cardinal; var Buffer: Pointer);
   var
     BlobInfos: array[0..2] of TBlobInfo;
     CurrentLength: Word;
     TMP: Pointer;
-    Len: Integer;
+    Len: Cardinal;
   begin
     Lock;
     try
