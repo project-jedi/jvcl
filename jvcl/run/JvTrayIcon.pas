@@ -17,22 +17,26 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Feng Mingyu(Winston Feng), [winstonf@tom.com]
-Hans-Eric Grönlund
+Vlad S
 
-Last Modified: 2004-02-24
+Last Modified: 2003-09-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{
 History:
+  2/29/2004 12:02PM
+     VladS separate click and dblclick
   2003-09-28 by Winston Feng
     Add WM_SESSIONEND message handler, TaskbarRestart message handler to:
       Clean the trayicon when session ends.
       Restore the trayicon when session restart.
     Remove the old unsuccessful DoCheckCrash method.
-
-Known Issues:
------------------------------------------------------------------------------}
+}
 
 {$I jvcl.inc}
 
@@ -43,9 +47,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
   Menus, ShellApi,
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   DateUtils,
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
   JvConsts, JvTypes, JvComponent;
 
 type
@@ -58,12 +62,12 @@ type
     uFlags: UINT;
     uCallbackMessage: UINT;
     hIcon: HICON;
-    szTip: array [0..127] of AnsiChar;
+    szTip: array[0..127] of AnsiChar;
     dwState: DWORD;
     dwStateMask: DWORD;
-    szInfo: array [0..255] of AnsiChar;
+    szInfo: array[0..255] of AnsiChar;
     uTimeOut: DWORD;
-    szInfoTitle: array [0..63] of AnsiChar;
+    szInfoTitle: array[0..63] of AnsiChar;
     dwInfoFlags: DWORD;
   end;
 
@@ -88,6 +92,24 @@ type
     FPopupMenu: TPopupMenu;
     FOnClick: TMouseEvent;
     FOnDblClick: TMouseEvent;
+
+    { Vlad S}
+    {
+    distinguish single-click and a double-click
+    Create a timer which is started on the first click, set the timeout value to
+    something a bit longer than the double-click, then connect the timeout() signal
+    to a slot of your own. When a double click event is received you simply stop
+    the timer. If the custom slot is visited you know that a single click was
+    done.
+    }
+    FDblClicked: boolean;
+    FDblClickTimer: TTimer;
+    FClickedButton: TMouseButton;
+    FClickedShift: TShiftState;
+    FClickedX: Integer;
+    FClickedY: Integer;
+    { Vlad S end.}
+
     FOnMouseMove: TMouseMoveEvent;
     FOnMouseDown: TMouseEvent;
     FOnMouseUp: TMouseEvent;
@@ -112,7 +134,7 @@ type
     FOldHint: string;
     FSnap: Boolean;
     FHooked: Boolean;
-    function GetSystemMinimumBalloonDelay: Integer;
+    function GetSystemMinimumBalloonDelay: integer;
     procedure OnAnimateTimer(Sender: TObject);
     procedure OnBalloonCloserTimer(Sender: TObject);
     procedure IconChanged(Sender: TObject);
@@ -133,13 +155,14 @@ type
     procedure DoMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure DoMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure DoDoubleClick(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure OnDblClickTimer(Sender: TObject); { Vlad S}
     function ApplicationHook(var Msg: TMessage): Boolean;
-    function NotifyIcon(dwMessage: DWORD): Boolean;
+    function NotifyIcon(dwMessage: DWORD): boolean;
     procedure SetCurrentIcon(Value: TIcon); //HEG: New
     procedure IconPropertyChanged; //HEG: New
     procedure ActivePropertyChanged; //HEG: New
     procedure Loaded; override; //HEG: New
-    
+
     property ApplicationVisible: Boolean read FApplicationVisible write SetApplicationVisible default True;
     property VisibleInTaskList: Boolean read FTask write SetTask default True;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -151,10 +174,10 @@ type
     procedure HideApplication;
     procedure ShowApplication;
     procedure BalloonHint(Title, Value: string; BalloonType:
-      TBalloonType = btNone; Delay: Integer = 5000; CancelPrevious: Boolean = False);
+      TBalloonType = btNone; Delay: Integer = 5000; CancelPrevious: boolean = false);
     function AcceptBalloons: Boolean;
   published
-    { HEG: Done: (rb) Active should be set in Loaded; Icon isn't set when Active is now
+    { (rb) Active should be set in Loaded; Icon isn't set when Active is now
       set to True etc. }
     property Active: Boolean read FActive write SetActive default False;
     property Animated: Boolean read FAnimated write SetAnimated default False;
@@ -217,6 +240,7 @@ const
   NIN_BALLOONUSERCLICK = WM_USER + 5;
 
 {$IFNDEF COMPILER6_UP}
+
 function SecondsBetween(const Now: TDateTime; const FTime: TDateTime): Integer;
 begin
   Result := Trunc(86400 * (FTime - Now));
@@ -240,9 +264,13 @@ begin
   FActive := False;
   FTask := True;
 
-  FBalloonCloser := TTimer.Create(Self);
-  FBalloonCloser.Enabled := False;
+  FBalloonCloser := TTimer.Create(self);
+  FBalloonCloser.Enabled := false;
   FBalloonCloser.OnTimer := OnBalloonCloserTimer;
+
+  FDblClickTimer := TTimer.Create(self);  { Vlad S}
+  FDblClickTimer.Enabled := false;
+  FDblClickTimer.OnTimer := OnDblClickTimer; { Vlad S}
 
   if not (csDesigning in ComponentState) then
   begin
@@ -262,9 +290,10 @@ begin
   if not (csDestroying in Application.ComponentState) then
     SetTask(False);
 
+  FDblClickTimer.Free; { Vlad S}
   FTimer.Free;
   SetActive(False);
-  FBalloonCloser.Enabled := False;
+  FBalloonCloser.Enabled := false;
   FBalloonCloser.Free;
   FIcon.Free;
   FCurrentIcon.Free;
@@ -341,7 +370,7 @@ begin
                 DoMouseUp(mbLeft, ShState, Pt.X, Pt.Y);
               WM_MBUTTONUP:
                 DoMouseUp(mbMiddle, ShState, Pt.X, Pt.Y);
-              WM_RBUTTONUP, NIN_KEYSELECT: // Mimics previous versions of shell32.dll
+              WM_RBUTTONUP, NIN_KEYSELECT: //Mimics previous versions of shell32.dll
                 DoMouseUp(mbRight, ShState, Pt.X, Pt.Y);
               WM_LBUTTONDBLCLK:
                 DoDoubleClick(mbLeft, ShState, Pt.X, Pt.Y);
@@ -353,7 +382,7 @@ begin
                 begin
                   try
                     if Assigned(FOnBalloonHide) then
-                      FOnBalloonHide(Self);
+                      FOnBalloonHide(self);
                   except
                   end;
                   Result := Ord(True);
@@ -369,7 +398,7 @@ begin
                 begin
                   try
                     if Assigned(FOnBalloonClick) then
-                      FOnBalloonClick(Self);
+                      FOnBalloonClick(self);
                   except
                   end;
                   Result := Ord(True);
@@ -379,7 +408,7 @@ begin
             end;
           end;
         // Add by Winston Feng 2003-9-28
-        // Handle the QueryEndSession and TaskbarCreated message, so tray icon
+        // Handle the QueryEndSession and TaskbarCreated message, so trayicon
         // will be deleted and restored correctly.
         WM_QUERYENDSESSION:
           Result := 1;
@@ -397,10 +426,10 @@ begin
             end;
           end;
       else
-        if (Msg = FTaskbarRestartMsg) and (FActive) then
-          SetActive(True);
-        Result := DefWindowProc(FHandle, Msg, wParam, lParam);
-      end;
+          if (Msg = FTaskbarRestartMsg) and (FActive) then
+            SetActive(True);
+          Result := DefWindowProc(FHandle, Msg, wParam, lParam);
+    end; // with
   except
     Application.HandleException(Self);
   end;
@@ -455,7 +484,6 @@ begin
       SetCurrentIcon(Application.Icon);
   end;
 end;
-
 procedure TJvTrayIcon.SetIcon(Icon: TIcon);
 begin
   FIcon.Assign(Icon);
@@ -559,7 +587,7 @@ begin
   end;
 end;
 
-function TJvTrayIcon.GetSystemMinimumBalloonDelay: Integer;
+function TJvTrayIcon.GetSystemMinimumBalloonDelay: integer;
 begin
   // from Microsoft's documentation, a balloon is shown for at
   // least 10 seconds, but it is a system settings which must
@@ -570,19 +598,19 @@ end;
 procedure TjvTrayIcon.OnBalloonCloserTimer(Sender: TObject);
 begin
   // we stop the timer
-  FBalloonCloser.Enabled := False;
+  FBalloonCloser.Enabled := false;
   // then we call BalloonHint with title and info set to
   // empty strings which surprisingly will cancel any existing
   // balloon for the icon. This is clearly not documented by
-  // Microsoft and may not work in later releases of Windows
+  // microsoft and may not work in later releases of Windows
   // it has been tested on XP Home French
   BalloonHint('', '');
 end;
 
 procedure TJvTrayIcon.BalloonHint(Title, Value: string;
-  BalloonType: TBalloonType; Delay: Integer; CancelPrevious: Boolean);
+  BalloonType: TBalloonType; Delay: Integer; CancelPrevious: boolean);
+//http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/Shell/reference/functions/shell_notifyicon.asp
 begin
-  // http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/Shell/reference/functions/shell_notifyicon.asp
   if AcceptBalloons then
   begin
     FTime := Now;
@@ -621,13 +649,13 @@ begin
     if (Delay < GetSystemMinimumBalloonDelay) and (Title <> '') and (Value <> '') then
     begin
       // then we enable the ballon closer timer which will cancel
-      // the balloon when the delay has elapsed
+      // the balloon when the delay is elapsed
       FBalloonCloser.Interval := Delay;
-      FBalloonCloser.Enabled := True;
+      FBalloonCloser.Enabled := true;
     end;
 
     if Assigned(FOnBalloonShow) then
-      FOnBalloonShow(Self);
+      FOnBalloonShow(self);
   end;
 end;
 
@@ -665,6 +693,7 @@ end;
 procedure TJvTrayIcon.DoMouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
+  FDblClicked := false;
   if Assigned(FOnMouseDown) then
     FOnMouseDown(Self, Button, Shift, X, Y);
   if (Button = mbLeft) and (FDropDownMenu <> nil) then
@@ -678,15 +707,15 @@ end;
 procedure TJvTrayIcon.DoMouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  HasPopup: Boolean;
+    hasPopup: boolean;
 begin
-  HasPopup := False;
+  hasPopup := false;
   if (Button = mbRight) and (FPopupMenu <> nil) then
   begin
     SetForegroundWindow(FHandle);
     FPopupMenu.Popup(X, Y);
     PostMessage(FHandle, WM_NULL, 0, 0);
-    HasPopup := True;
+    hasPopup := true;
   end
   else
   if Button = mbLeft then
@@ -703,8 +732,26 @@ begin
 
   if Assigned(FOnMouseUp) then
     FOnMouseUp(Self, Button, Shift, X, Y);
-  if Assigned(FOnClick) and not HasPopup then
-    FOnClick(Self, Button, Shift, X, Y);
+  if (not hasPopup) and Assigned(FOnClick) and not FDblClicked then
+  begin
+    { Vlad S}
+    //FOnClick(Self, Button, Shift, X, Y);
+    FClickedButton := Button;
+    FClickedShift := Shift;
+    FClickedX  := X;
+    FClickedY := Y;
+    FDblClickTimer.Interval := GetDoubleClickTime() + 10;
+    FDblClickTimer.Enabled := true;
+  end;
+end;
+
+procedure TJvTrayIcon.OnDblClickTimer(Sender: TObject); { Vlad S}
+begin
+    FDblClickTimer.Enabled := false;
+    // Double-clicking the right mouse button actually generates four messages:
+    // WM_RBUTTONDOWN, WM_RBUTTONUP, WM_RBUTTONDBLCLK, and WM_RBUTTONUP again
+    if (not FDblClicked) then
+        FOnClick(Self, FClickedButton, FClickedShift, FClickedX, FClickedY);
 end;
 
 procedure TJvTrayIcon.DoDoubleClick(Button: TMouseButton;
@@ -712,6 +759,9 @@ procedure TJvTrayIcon.DoDoubleClick(Button: TMouseButton;
 var
   I: Integer;
 begin
+  FDblClicked := true; { Vlad S}
+  FDblClickTimer.Enabled := false; { Vlad S}
+
   if Assigned(FOnDblClick) then
     FOnDblClick(Self, Button, Shift, X, Y)
   else
@@ -767,7 +817,9 @@ procedure TJvTrayIcon.Hook;
 begin
   if FHooked or (csDesigning in ComponentState) then
     Exit;
+
   FHooked := True;
+
   Application.HookMainWindow(ApplicationHook);
 end;
 
@@ -775,11 +827,13 @@ procedure TJvTrayIcon.UnHook;
 begin
   if not FHooked then
     Exit;
+
   FHooked := False;
+
   Application.UnHookMainWindow(ApplicationHook);
 end;
 
-function TJvTrayIcon.NotifyIcon(dwMessage: DWORD): Boolean;
+function TJvTrayIcon.NotifyIcon(dwMessage: DWORD): boolean;
 begin
   Result := Shell_NotifyIcon(dwMessage, @FIconData);
 
@@ -855,6 +909,5 @@ begin
       Icons := nil;
   end;
 end;
-
 end.
 
