@@ -63,14 +63,6 @@ EMPTYLINE
 
 // *************************************************************************
 // *************************** INTERFACE MACROS ****************************
-{
-    procedure CMHitTest(var Message: TCMHitTest); message CM_HITTEST;
-    procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
-    procedure CMFloat(var Message: TCMFloat); message CM_FLOAT;
-    procedure CMMouseWheel(var Message: TCMMouseWheel); message CM_MOUSEWHEEL;
-    procedure WMContextMenu(var Message: TWMContextMenu); message WM_CONTEXTMENU;
-
-}
 // *************************************************************************
 
 (*$DEFINE JV_DECL_CONTROL
@@ -78,7 +70,6 @@ EMPTYLINE
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
-    FInputKeys: TInputKeys;
     FOnParentColorChanged: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -86,7 +77,7 @@ EMPTYLINE
     procedure WndProc(var Message: TMessage); override;
     procedure ColorChanged; dynamic;
     procedure EnabledChanged; dynamic;
-    procedure FocusChanged(Control: TWinControl); dynamic;
+    procedure FocusChanged; dynamic;
     procedure FontChanged; dynamic;
     function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
@@ -98,7 +89,7 @@ EMPTYLINE
     procedure TextChanged; dynamic;
     procedure VisibleChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; dynamic; // CM_DIALOGCHAR
+      const KeyText: WideString): Boolean; dynamic;
     procedure SetAutoSize(Value: Boolean);
     property InputKeys: TInputKeys read FInputKeys write FInputKeys;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -130,8 +121,6 @@ EMPTYLINE
   JV_CONTROL_END(ClassName)
 *)
 
-//
-//
 (*$DEFINE JV_DECL_WINCONTROL
   { WinControl }
   private
@@ -143,7 +132,7 @@ EMPTYLINE
     procedure DoSetFocus(Wnd: HWND); dynamic;
     procedure GotFocus; dynamic;
     procedure LostFocus; dynamic;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; dynamic;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
     property InputKeys: TInputKeys read FInputKeys write FInputKeys;
@@ -173,22 +162,18 @@ EMPTYLINE
   JV_WINCUSTOMCONTROL_END(ClassName)
 *)
 
-
 (*$DEFINE JV_WINCONTROL(ClassName)
   JV_WINCONTROL_BEGIN(ClassName)
   JV_WINCONTROL_END(ClassName)
 *)
 
-
 (*$DEFINE JV_DECL_EDITCONTROL
   { EditControl }
   private
     FClipboardCommands: TJvClipboardCommands;
-  protected
-    procedure SetClipboardCommands(const Value: TJvClipboardCommands); dynamic;
   published
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
-      write SetClipboardCommands default [caCopy..caUndo];
+      write FClipboardCommands default [caCopy..caUndo];
 *)
 
 (*$DEFINE JV_EDITCONTROL_BEGIN(ClassName)
@@ -255,7 +240,6 @@ EMPTYLINE
 
 (*$DEFINE JV_IMPL_CONTROL(ClassName)
 { Control }
-
 procedure TJvEx##ClassName.WndProc(var Message: TMessage)
 begin
   with Message as TJvMessage do
@@ -263,7 +247,6 @@ begin
     case of Msg of
     CM_COLORCHANGED       : ColorChanged;
     CM_ENABLEDCHANGED     : EnabledChanged;
-    CM_FOCUSCHANGED       : FocusChanged;
     CM_FONTCHANGED        : FontChanged;
     CM_CURSORCHANGED      : CursorChanged;
     CM_TEXTCHANGED        : TextChanged ;
@@ -271,26 +254,29 @@ begin
     CM_MOUSELEAVE         : MouseLeave(Self);
     CM_PARENTCOLORCHANGED : ParentColorChanged;
     CM_PARENTFONTCHANGED  : ParentFontChanged;
+    CM_HITTEST            : if HitTest(XPos, YPos) then
+                              Result := HT_CLIENT;
     CM_HINTSHOW:
     begin
       HintInfo.HintColor := GetHintColor(Parent);
       Handled := HintShow(HintInfo);
     end;
     if not Handled then
-      inherited WinProc(Message);
+      inherited WndProc(Message);
   end;
 end;
+ EMPTYLINE
+*)
 
-procedure TJvEx##ClassName.MouseEnter(Control: TControl);
+(*$DEFINE JV_IMPL_CONTROL_COMMON(ClassName)
+procedure TJvEx##ClassName.ColorChanged;
 begin
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  { notification }
 end;
 
-procedure TJvEx##ClassName.MouseLeave(Control: TControl);
+procedure TJvEx##ClassName.EnabledChanged;
 begin
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  { notification }
 end;
 
 procedure TJvEx##ClassName.FocusChanged;
@@ -314,13 +300,75 @@ begin
   Result := Mesg.Handled;
 end;
 
+function TJvEx##ClassName.HitTest(X, Y: Integer): Boolean;
+var
+  Mesg: TJvMessage;
+begin
+  with Mesg do
+  begin
+    msg := CM_HITTEST;
+    XPos := X;
+    YPos := Y;
+    Result := 0;
+    inherited WndProc(@Mesg);
+  end;
+  Result := Message.Result = HT_CLIENT;
+end;
+
+procedure TJvEx##ClassName.MouseEnter(Control: TControl);
+begin
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvEx##ClassName.MouseLeave(Control: TControl);
+begin
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+
 procedure TJvEx##ClassName.ParentColorChanged;
 begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+procedure TJvEx##ClassName.ParentFontChanged;
+begin
+  { notification }
+end;
+
+procedure TJvEx##ClassName.ParentShowHintChanged;
+begin
+  { notification }
+end;
+
+procedure TJvEx##ClassName.TextChanged;
+begin
+  { notification }
+end;
+
+procedure TJvEx##ClassName.VisibleChanged;
+begin
+  { notification }
+end;
+
+function TJvEx##ClassName.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+var
+  Mesg: TJvMessage;
+begin
+  with Mesg do
+  begin
+    Msg := WM_DIALOGCHAR;
+    Shift := ShiftStateToKeyData(Shift);
+    Handled := 0;
+    inherited WndProc(@Mesg);
+  end;
+  Result := Mesg.Handled;
+end;
   EMPTYLINE
-*) // MACRO END JV_IMPL_CONTROL
+*) // MACRO END JV_IMPL_CONTROL_COMMON
 
 (*$DEFINE JV_IMPL_CONTROL_CREATE(ClassName)
 { Control Create }
@@ -341,12 +389,6 @@ end;
 
 (*$DEFINE JV_CONTROL_IMPL(ClassName)
 JV_IMPL_CONTROL_CREATE(ClassName)
-
-procedure TJvEx##ClassName.ColorChanged;
-begin
-  { notification }
-end;
-
 JV_IMPL_CONTROL(ClassName)
 JV_IMPL_CONTROL_COMMON(ClassName)
 *)
@@ -361,7 +403,6 @@ begin
     case of Msg of
     CM_COLORCHANGED       : ColorChanged;
     CM_ENABLEDCHANGED     : EnabledChanged;
-    CM_FOCUSCHANGED       : FocusChanged;
     CM_FONTCHANGED        : FontChanged;
     CM_CURSORCHANGED      : CursorChanged;
     CM_TEXTCHANGED        : TextChanged ;
@@ -371,19 +412,27 @@ begin
     CM_PARENTFONTCHANGED  : ParentFontChanged;
     CM_BOUNDSCHANGED      : BoundsChanged;
     CM_CURSORCHANGED      : CursorChanged;
-    CM_GOTFOCUS           : GotFocus;
-    CM_LOSTFOCUS          : LostFocus;
+    CM_FOCUSCHANGED       : FocusChanged;
     CM_SHOWHINTCHANGED    : ShowHintChanged;
     CM_SHOWINGCHANGED     : ShowingChanged;
     CM_DIALOGCHAR         : Handled := WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode));
+    CM_HITTEST            : if HitTest(XPos, YPos) then
+                              Result := HT_CLIENT;
+
+    CM_GOTFOCUS,
+    WM_SETFOCUS           : GotFocus;
+
+    CM_LOSTFOCUS,
+    WM_KILLFOCUS          : LostFocus;
+
     WM_GETDLGCODE         : if not (ikNative in FInputKeys) then
                               Result := InputKeysToDlgCodes(FInputKeys);
 
     CM_HINTSHOW:
-      begin
-        HintInfo.HintColor := GetHintColor(Self);
-        Handled := HintShow(HintInfo);
-      end;
+    begin
+      HintInfo.HintColor := GetHintColor(Parent);
+      Handled := HintShow(HintInfo);
+    end;
 
     WM_ERASEBKGND :
       begin
@@ -391,7 +440,7 @@ begin
         with ACanvas do
         begin
           Control := Self;
-          Handled := EraseBackGround(Canvas, LParam);
+          Handled := DoEraseBackGround(Canvas, LParam);
           Destroy;
         end;
       end;
@@ -401,42 +450,9 @@ begin
       inherited WndProc(Message);
   end;  // with Message
 end;
+*)
 
-function TJvEx##ClassName.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
-var
-  Mesg: TJvMessage;
-begin
-  with Mesg do
-  begin
-    Msg := WM_DIALOGCHAR;
-    Shift := ShiftStateToKeyData(Shift);
-    Handled := 0;
-    inherited WndProc(@Mesg);
-  end;
-  Result := Mesg.Handled;
-end;
-
-function TJvEx##ClassName.HintShow(var HintInfo: THintInfo): Boolean;
-begin
-  Result := False;
-end;
-
-function TJvEx##ClassName.HitTest(X, Y: Integer): Boolean;
-var
-  Mesg: TJvMessage;
-begin
-  with Mesg do
-  begin
-    msg := CM_HITTEST;
-    XPos := X;
-    YPos := Y;
-    Result := 0;
-    inherited WndProc(@Mesg);
-  end;
-  Result := Message.Result = HT_CLIENT;
-end;
-
+(*$DEFINE JV_IMPL_WINCONTROL_COMMON(ClassName)
 procedure TJvEx##ClassName.GotFocus;
 begin
   { notification }
@@ -449,22 +465,17 @@ begin
   DoKillFocus(Mouse.Capture)
 end;
 
-procedure TJvExCustomControl.DoSetFocus(FocusedWnd: HWND);
+procedure TJvEx##ClassName.DoSetFocus(FocusedWnd: HWND);
 begin
 end;
 
-procedure TJvExCustomControl.DoKillFocus(FocusedWnd: HWND);
+procedure TJvEx##ClassName.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
-function TJvEx##ClassName.EraseBackground(Canvas: TCanvas; LParam: Integer): Boolean;
+function TJvEx##ClassName.DoEraseBackground(Canvas: TCanvas; LParam: Integer): Boolean;
 begin
   Result := false;
-end;
-
-procedure TJvEx##ClassName.ColorChanged;
-begin
-  { notification }
 end;
 
 procedure TJvEx##ClassName.BoundsChanged;
@@ -486,14 +497,33 @@ procedure TJvEx##ClassName.ShowHintChanged;
 begin
   { notification }
 end;
-
   EMPTYLINE
 *) // MACRO END WINCONTROL
+
+(*$DEFINE JV_IMPL_WINCONTROL_CREATE(ClassName)
+{ Control Create }
+constructor TJvEx##ClassName.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHintColor := clDefault;
+  FInputKeys := [ikNative];
+  CREATE_CUSTOMCODE
+end;
+
+destructor TJvEx##ClassName.Destroy;
+begin
+  DESTROY_CUSTOMCODE
+  inherited Destroy;
+end;
+ EMPTYLINE
+*)
+
 
 (*$DEFINE JV_WINCONTROL_IMPL(ClassName)
    JV_IMPL_WINCONTROL_CREATE(ClassName)
    JV_IMPL_WINCONTROL(ClassName)
-   JV_IMPL_CONTROL(ClassName)
+   JV_IMPL_WINCONTROL_COMMON(ClassName)
+   JV_IMPL_CONTROL_COMMON(ClassName)
 *)
 
 (*$DEFINE JV_IMPL_EDITCONTROL(ClassName)
@@ -515,15 +545,22 @@ begin
       CM_PARENTFONTCHANGED  : ParentFontChanged;
       CM_BOUNDSCHANGED      : BoundsChanged;
       CM_CURSORCHANGED      : CursorChanged;
-      CM_GOTFOCUS           : GotFocus;
-      CM_LOSTFOCUS          : LostFocus;
       CM_SHOWHINTCHANGED    : ShowHintChanged;
       CM_SHOWINGCHANGED     : ShowingChanged;
       CM_MOUSEENTER         : MouseEnter(Self);
       CM_MOUSELEAVE         : MouseLeave(Self);
-      CM_HITTEST:           : if HitTest(Xpos, YPos) then
+
+      CM_GOTFOCUS,
+      WM_SETFOCUS           : GotFocus;
+
+      CM_LOSTFOCUS,
+      WM_KILLFOCUS          : LostFocus;
+
+      CM_HITTEST:           : if HitTest(XPos, YPos) then
                                 Result := HT_CLIENT;
+
       CM_DIALOGCHAR         : Handled := WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode));
+
       WM_GETDLGCODE         : if not (ikNative in FInputKeys) then
                                 Result := InputKeysToDlgCodes(FInputKeys);
 
@@ -546,30 +583,25 @@ begin
           with ACanvas do
           begin
             Control := Self;
-            Handled := EraseBackGround(Canvas, LParam);
+            Handled := DoEraseBackGround(Canvas, LParam);
             Destroy;
           end;
         end;
-
 
     end;  // case
     if not Handled then
       inherited WndProc(Message);
   end;  // with Message
 end;
-
-procedure TJvEx##ClassName.SetClipboardCommands(const Value: TJvClipboardCommands);
-begin
-  FClipboardCommands := Value;
-end;
+  EMPTYLINE
 *) // end of JV_IMPL_EDITCONTROL
 
 
 (*$DEFINE JV_EDITCONTROL_IMPL(ClassName)
    JV_IMPL_WINCONTROL_CREATE(ClassName)
    JV_IMPL_EDITCONTROL(ClassName)
-   JV_IMPL_WINCONTROL(ClassName)
-   JV_IMPL_CONTROL(ClassName)
+   JV_IMPL_WINCONTROL_COMMON(ClassName)
+   JV_IMPL_CONTROL_COMMON(ClassName)
 *)
 
 (*$DEFINE JV_IMPL_CUSTOMFORM(ClassName)
@@ -587,10 +619,11 @@ end;
 // ************************************************
 
 (*$DEFINE JV_CUSTOMFORM_IMPL(ClassName)
-   JV_IMPL_WINCONTROL_CREATE(ClassName)
-   JV_IMPL_CUSTOMFORM(ClassName)
-   JV_IMPL_WINCONTROL(ClassName)
-   JV_IMPL_CONTROL(ClassName)
+JV_IMPL_WINCONTROL_CREATE(ClassName)
+JV_IMPL_CUSTOMFORM(ClassName)
+JV_IMPL_WINCONTROL(ClassName)
+JV_IMPL_WINCONTROL_COMMON(ClassName)
+JV_IMPL_CONTROL_COMMON(ClassName)
 *)
 
 
