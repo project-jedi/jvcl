@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, JvColorCombo, StdCtrls, JvCombobox, JvExStdCtrls;
+  Dialogs, JvColorCombo, StdCtrls, JvCombobox, JvExStdCtrls, ExtCtrls;
 
 type
   TJvColorComboDemoMainForm = class(TForm)
@@ -41,17 +41,25 @@ type
     Label2: TLabel;
     edNameTemplate: TEdit;
     chkAllowCustom: TCheckBox;
-    btnCustColors: TButton;
+    btnViewCustom: TButton;
     Label3: TLabel;
     cbDisplayStyle: TComboBox;
+    btnSaveCustom: TButton;
+    btnLoadCustom: TButton;
+    Label4: TLabel;
+    btnClearCustom: TButton;
+    Bevel1: TBevel;
     procedure FormCreate(Sender: TObject);
     procedure btnColorNamesClick(Sender: TObject);
     procedure JvColorComboBox1NewColor(Sender: TObject; Color: TColor;
       var DisplayName: string; var AllowAdd: Boolean);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure btnCustColorsClick(Sender: TObject);
+    procedure btnViewCustomClick(Sender: TObject);
     procedure cbDisplayStyleChange(Sender: TObject);
     procedure JvColorComboBox1Change(Sender: TObject);
+    procedure btnSaveCustomClick(Sender: TObject);
+    procedure btnLoadCustomClick(Sender: TObject);
+    procedure btnClearCustomClick(Sender: TObject);
   private
     procedure LoadSettings;
     procedure SaveSettings;
@@ -164,7 +172,7 @@ begin
   SaveSettings;
 end;
 
-procedure TJvColorComboDemoMainForm.btnCustColorsClick(Sender: TObject);
+procedure TJvColorComboDemoMainForm.btnViewCustomClick(Sender: TObject);
 var AList: TList; i: integer;
 begin
   AList := TList.Create;
@@ -189,7 +197,7 @@ begin
   case cbDisplayStyle.ItemIndex of
     1:
       Include(O, coText);
-    2:
+    2:                               
       Include(O, coHex);
     3:
       Include(O, coRGB);
@@ -201,6 +209,54 @@ procedure TJvColorComboDemoMainForm.JvColorComboBox1Change(
   Sender: TObject);
 begin
   Caption := Format('Color: %s',[ColorToString(JvColorComboBox1.ColorValue)]);
+end;
+
+procedure TJvColorComboDemoMainForm.btnSaveCustomClick(Sender: TObject);
+var
+  AList: TList; i: integer;
+  S:TStringlist;
+begin
+  AList := TList.Create;
+  S := TStringlist.Create;
+  try
+    // the returned TList contains a list of TColor items
+    JvColorComboBox1.GetCustomColors(AList);
+    for i := 0 to AList.Count - 1 do
+      S.Add(IntToStr(integer(AList[i])));
+    S.SaveToFile(ChangeFileExt(Application.ExeName,'.col'));
+  finally
+    AList.Free;
+  end;
+end;
+
+procedure TJvColorComboDemoMainForm.btnLoadCustomClick(Sender: TObject);
+var
+  i: integer;
+  S:TStringlist;
+begin
+  if FileExists(ChangeFileExt(Application.ExeName,'.col')) then
+  begin
+    // remove custom colors
+    JvColorComboBox1.Options := JvColorComboBox1.Options - [coCustomColors];
+    JvColorComboBox1.GetColors;
+    JvColorComboBox1.Options := JvColorComboBox1.Options + [coCustomColors];
+    S := TStringlist.Create;
+    try
+      S.LoadFromFile(ChangeFileExt(Application.ExeName,'.col'));
+      for i := 0 to S.Count - 1 do
+        JvColorComboBox1.AddColor(StrToIntDef(S[i],0),'');
+    finally
+      S.Free;
+    end;
+  end;
+end;
+
+procedure TJvColorComboDemoMainForm.btnClearCustomClick(Sender: TObject);
+begin
+  // remove custom colors
+  JvColorComboBox1.Options := JvColorComboBox1.Options - [coCustomColors];
+  JvColorComboBox1.GetColors;
+  JvColorComboBox1.Options := JvColorComboBox1.Options + [coCustomColors];
 end;
 
 end.

@@ -38,6 +38,22 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
     Height = 13
     Caption = 'Display:'
   end
+  object Label4: TLabel
+    Left = 16
+    Top = 368
+    Width = 73
+    Height = 13
+    Anchors = [akLeft, akBottom]
+    Caption = 'Custom Colors:'
+  end
+  object Bevel1: TBevel
+    Left = 96
+    Top = 376
+    Width = 361
+    Height = 17
+    Anchors = [akLeft, akRight, akBottom]
+    Shape = bsTopLine
+  end
   object JvColorComboBox1: TJvColorComboBox
     Left = 16
     Top = 24
@@ -110,7 +126,7 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
     Left = 16
     Top = 96
     Width = 433
-    Height = 321
+    Height = 257
     Anchors = [akLeft, akTop, akRight, akBottom]
     ScrollBars = ssVertical
     TabOrder = 1
@@ -133,8 +149,8 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
     Text = 'Custom Color %d'
   end
   object chkAllowCustom: TCheckBox
-    Left = 176
-    Top = 64
+    Left = 173
+    Top = 66
     Width = 113
     Height = 17
     Caption = 'Display Color Dialog'
@@ -143,14 +159,15 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
     TabOrder = 4
     OnClick = cbDisplayStyleChange
   end
-  object btnCustColors: TButton
-    Left = 360
-    Top = 64
-    Width = 89
+  object btnViewCustom: TButton
+    Left = 184
+    Top = 392
+    Width = 75
     Height = 25
-    Caption = 'Custom Colors'
+    Anchors = [akLeft, akBottom]
+    Caption = 'View'
     TabOrder = 5
-    OnClick = btnCustColorsClick
+    OnClick = btnViewCustomClick
   end
   object cbDisplayStyle: TComboBox
     Left = 304
@@ -166,5 +183,35 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
       'Text'
       'Hex'
       'RGB')
+  end
+  object btnSaveCustom: TButton
+    Left = 24
+    Top = 392
+    Width = 75
+    Height = 25
+    Anchors = [akLeft, akBottom]
+    Caption = 'Save'
+    TabOrder = 7
+    OnClick = btnSaveCustomClick
+  end
+  object btnLoadCustom: TButton
+    Left = 104
+    Top = 392
+    Width = 75
+    Height = 25
+    Anchors = [akLeft, akBottom]
+    Caption = 'Load'
+    TabOrder = 8
+    OnClick = btnLoadCustomClick
+  end
+  object btnClearCustom: TButton
+    Left = 264
+    Top = 392
+    Width = 75
+    Height = 25
+    Anchors = [akLeft, akBottom]
+    Caption = 'Clear'
+    TabOrder = 9
+    OnClick = btnClearCustomClick
   end
 end
