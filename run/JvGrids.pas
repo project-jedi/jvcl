@@ -92,6 +92,7 @@ type
     FOnGetPicklist: TPicklistEvent;
     FOnGetEditStyle: TEditStyleEvent;
     FDrawButtons: boolean;
+    FBeepOnError: Boolean;
     function GetStorage: TJvFormPlacement;
     procedure SetStorage(Value: TJvFormPlacement);
     procedure IniSave(Sender: TObject);
@@ -162,6 +163,7 @@ type
     procedure Save;
     property InplaceEditor;
   published
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property DefaultRowHeight default 18;
     property DrawButtons: boolean read FDrawButtons write SetDrawButtons;
     property Options default [goFixedVertLine, goFixedHorzLine, goVertLine,
@@ -717,6 +719,7 @@ begin
   FCellDown.Y := -1;
   FColor := clInfoBk;
   FOver := False;
+  FBeepOnError := True;
 end;
 
 destructor TJvDrawGrid.Destroy;
@@ -1070,6 +1073,7 @@ begin
           TrackButton(X, Y);
         end
         else
+        if BeepOnError then
           Beep;
         Exit;
       end;

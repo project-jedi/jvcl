@@ -440,9 +440,8 @@ type
     property OnScroll: TScrollEvent read FOnScroll write FOnScroll;
   end;
 
-  TAdjustPersistentBlockMode = (
-    amInsert, amDelete, amDeleteLine, amLineConcat, amLineBreak
-  );
+  TAdjustPersistentBlockMode =
+    (amInsert, amDelete, amDeleteLine, amLineConcat, amLineBreak);
 
   TJvCustomEditor = class(TJvCustomControl, IFixedPopupIntf)
   private
@@ -533,6 +532,7 @@ type
     FReadOnly: Boolean;
     FModified: Boolean;
     FRecording: Boolean;
+    FBeepOnError: Boolean;
 
     { Events }
     FOnGetLineAttr: TOnGetLineAttr;
@@ -782,6 +782,7 @@ type
     property UseFixedPopup:boolean read FUseFixedPopup write FUseFixedPopup;
 
   public { published in descendants }
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Lines: Tstrings read GetLines write SetLines;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
@@ -835,6 +836,7 @@ type
 
   TJvEditor = class(TJvCustomEditor)
   published
+    property BeepOnError;
     property BorderStyle;
     property Lines;
     property ScrollBars;
@@ -1225,11 +1227,6 @@ type
 
 var
   BlockTypeFormat: Integer;
-
-procedure Err;
-begin
-  MessageBeep(0);
-end;
 
 function KeyPressed(VK: Integer): Boolean;
 begin
@@ -1768,8 +1765,6 @@ end;
 
 //=== TJvCustomEditor ========================================================
 
-{ TJvCustomEditor }
-
 constructor TJvCustomEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1803,6 +1798,7 @@ begin
   FCursorBeyondEOF := False;
   FBlockOverwrite := True;
   FPersistentBlocks := False;
+  FBeepOnError := True;
 
   FScrollBars := ssBoth;
   scbHorz := TJvControlScrollBar95.Create;
@@ -4547,7 +4543,8 @@ var
   X, Y, EndX, EndY: Integer;
 begin
   if (FCaretY > FLines.Count - 1) and (FLines.Count > 0) then
-    Err;
+    if BeepOnError then
+      Beep;
   H := Clipboard.GetAsHandle(CF_TEXT);
   Len := GlobalSize(H);
   if Len = 0 then
@@ -5113,7 +5110,8 @@ begin
     if (SelBegY < 0) or (SelBegY > FLines.Count - 1) or (SelEndY < 0) or
       (SelEndY > FLines.Count - 1) then
     begin
-      Err;
+      if BeepOnError then
+        Beep;
       Exit;
     end;
 

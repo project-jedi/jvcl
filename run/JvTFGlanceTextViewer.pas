@@ -279,8 +279,9 @@ begin
   FEditor.Visible := False;
   FEditor.Parent := Self;
   //FEditor.Parent := Viewer.GlanceControl;
-  If FEditor.Parent = nil Then
-    Beep;
+  // (rom) deactivated seems of no use
+  // If FEditor.Parent = nil then
+  //   Beep;
 end;
 
 procedure TJvTFGVTextControl.DrawDDButton(aCanvas: TCanvas);

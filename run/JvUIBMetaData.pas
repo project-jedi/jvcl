@@ -1418,7 +1418,7 @@ begin
             constr := FName;
             FForTable := FindTableIndex(Trim(QForeign.Fields.AsString[3]));
             if 'TABLE1' = Trim(QForeign.Fields.AsString[3]) then
-              beep;
+              Beep;
             SetLength(FFields, 1);
             FFields[0] := Tables[i].FindFieldIndex(Trim(QForeign.Fields.AsString[5]));
             include(Tables[i].Fields[FFields[0]].FInfos, fForeign);

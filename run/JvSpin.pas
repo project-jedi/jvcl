@@ -188,7 +188,7 @@ type
     FUpDown: TCustomUpDown;
     //Polaris
     FThousands: Boolean; // New
-
+    FBeepOnError: Boolean;
     //Polaris
     function StoreCheckMaxValue: Boolean;
     function StoreCheckMinValue: Boolean;
@@ -262,6 +262,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure UpClick(Sender: TObject); virtual;
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property ButtonWidth: Integer read GetButtonWidth;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1526,6 +1527,7 @@ begin
   FButtonKind := bkDiagonal;
   FArrowKeys := True;
   RecreateButton;
+  FBeepOnError := True;
 end;
 
 procedure TJvCustomSpinEdit.CreateParams(var Params: TCreateParams);
@@ -1590,7 +1592,10 @@ var
   OldText: string;
 begin
   if ReadOnly then
-    MessageBeep(0)
+  begin
+    if BeepOnError then
+      Beep;
+  end
   else
   begin
     FChanging := True;
@@ -1781,7 +1786,8 @@ begin
   if not IsValidChar(Key) then
   begin
     Key := #0;
-    MessageBeep(0)
+    if BeepOnError then
+      Beep;
   end;
   //Polaris
   if (Key = '.') and (not Thousands or (ThousandSeparator <> '.')) then
@@ -2093,7 +2099,10 @@ var
   OldText: string;
 begin
   if ReadOnly then
-    MessageBeep(0)
+  begin
+    if BeepOnError then
+      Beep;
+  end
   else
   begin
     FChanging := True;
