@@ -110,6 +110,8 @@ type
     procedure Click; override;
   published
     property Align;
+    property Anchors;
+    property Constraints;
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 13;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
