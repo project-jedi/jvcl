@@ -44,12 +44,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QDialogs,
-  {$ENDIF VisualCLX}
   JvTypes, JvJCLUtils, JvWStrUtils;
 
 const
