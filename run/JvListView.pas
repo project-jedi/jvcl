@@ -10,15 +10,13 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvListView.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sibastien Buysse [sbuysse@buypin.com]
-Portions created by Sibastien Buysse are Copyright (C) 2001 Sibastien Buysse.
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
+Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s):
-Michael Beck [mbeck@bigfoot.com].
-Salvatore Meschini
+Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2004-01-05
+Last Modified: 2000-02-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -26,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I jvcl.inc}
+{$I JVCL.INC}
 
 unit JvListView;
 
@@ -34,11 +32,13 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
-  CommCtrl, Menus, Clipbrd,
+  CommCtrl, Menus, ImgList, JVCLVer, ClipBrd,
   JvTypes, JvExComCtrls;
 
 type
   EJvListViewError = EJVCLException;
+  //  TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
+  TJvOnProgress = procedure(Sender: TObject; Progression, Total: Integer) of object;
 
   TJvListItem = class(TListItem)
   private
@@ -47,9 +47,10 @@ type
   protected
     procedure SetPopupMenu(const Value: TPopupMenu);
   public
-    constructor CreateEnh(AOwner: TListItems; const Popup:TPopupMenu);
+    constructor CreateEnh(AOwner: TListItems; const Popup: TPopupMenu);
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
   end;
+{$EXTERNALSYM TJvListItem}
 
   TJvListView = class(TJvExListView)
   private
@@ -60,11 +61,16 @@ type
     FOver: Boolean;
     FSortOnClick: Boolean;
     FLast: Integer;
-    FOnSaveProgress: TJvProgressEvent;
-    FOnLoadProgress: TJvProgressEvent;
+    FOnSaveProgress: TJvOnProgress;
+    FOnLoadProgress: TJvOnProgress;
     FOnAutoSort: TJvListViewColumnSortEvent;
+    FSortMethod: TJvSortMethod;
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
+    FImageChangeLink: TChangeLink;
+    FHeaderImages: TCustomImageList;
+    procedure SetHeaderImages(const Value: TCustomImageList);
+    procedure UpdateHeaderImages(HeaderHandle: integer);
   protected
     function CreateListItem: TListItem; override;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
@@ -74,54 +80,67 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetColumnsOrder: string;
+
     procedure SetColumnsOrder(const Order: string);
     procedure SetItemPopup(Node: TListItem; Value: TPopupMenu);
     function GetItemPopup(Node: TListItem): TPopupMenu;
+    procedure CreateWnd; override;
+    procedure DoHeaderImagesChange(Sender: TObject);
+    procedure Loaded; override;
+    procedure WMNCCalcSize(var Message: TWMNCCalcSize);
+      message WM_NCCALCSIZE;
   public
-    procedure ColClick(Column: TListColumn); override;
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure ColClick(Column: TListColumn); override;
     procedure SaveToFile(FileName: string; ForceOldStyle: Boolean = False);
     procedure LoadFromFile(FileName: string);
     procedure SaveToStream(Stream: TStream; ForceOldStyle: Boolean = False);
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToCSV(FileName: string; Separator: Char = ';');
     procedure LoadFromCSV(FileName: string; Separator: Char = ';');
-    {$IFNDEF COMPILER6_UP}
+    procedure SetSmallImages(const Value: TCustomImageList);
+
+{$IFNDEF COMPILER6_UP}
     procedure SelectAll;
     procedure DeleteSelected;
-    {$ENDIF COMPILER6_UP}
+{$ENDIF}
     procedure UnselectAll;
     procedure InvertSelection;
     property ItemPopup[Item: TListItem]: TPopupMenu read GetItemPopup write SetItemPopup;
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+      AHeight: Integer); override;
   published
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HeaderImages: TCustomImageList read FHeaderImages write SetHeaderImages;
+    property SortMethod: TJvSortMethod read FSortMethod write FSortMethod default smAutomatic;
+    property SortOnClick: Boolean read FSortOnClick write FSortOnClick default True;
+    property SmallImages write SetSmallImages;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property SortOnClick: Boolean read FSortOnClick write FSortOnClick default True;
     property AutoClipboardCopy: Boolean read FAutoClipboardCopy write FAutoClipboardCopy default True;
-    property OnLoadProgress: TJvProgressEvent read FOnLoadProgress write FOnLoadProgress;
-    property OnSaveProgress: TJvProgressEvent read FOnSaveProgress write FOnSaveProgress;
+    property OnLoadProgress: TJvOnProgress read FOnLoadProgress write FOnLoadProgress;
+    property OnSaveProgress: TJvOnProgress read FOnSaveProgress write FOnSaveProgress;
     property OnAutoSort: TJvListViewColumnSortEvent read FOnAutoSort write FOnAutoSort;
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
   end;
 
 implementation
-
 uses
-  JvConsts, JvResources;
+  Math, JvConsts, JvResources;
 //=== TJvListItem ============================================================
 
 const
   // (rom) increased from 100
   cColumnsHandled = 1024;
 
-constructor TJvListItem.CreateEnh(AOwner: TListItems; const PopUp:TPopupmenu);
+constructor TJvListItem.CreateEnh(AOwner: TListItems; const PopUp: TPopupmenu);
 begin
   inherited Create(AOwner);
   FBold := False;
@@ -141,9 +160,11 @@ begin
   FHintColor := clInfoBk;
   FOver := False;
   FSortOnClick := True;
+  FSortMethod := smAutomatic;
   FLast := -1;
   FAutoClipboardCopy := True;
-  // ControlStyle := ControlStyle + [csAcceptsControls];
+  FImageChangeLink := TChangeLink.Create;
+  FImageChangeLink.OnChange := DoHeaderImagesChange;
 end;
 
 procedure TJvListView.WMNotify(var Msg: TWMNotify);
@@ -159,12 +180,12 @@ begin
     case NMHDR^.code of
       NM_CLICK, NM_RCLICK:
         begin
-          Node := GetItemAt(X, Y);
+          Node := GetItemAt(x, y);
           if Assigned(Node) then
             Selected := Node;
-         // (Salvatore) JvListview does it for us! We don't need the following lines anymore    
-         // if (Selected <> nil) and (NMHDR^.code = NM_RCLICK) then
-         //   TJvListItem(Selected).PopupMenu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+          // (Salvatore) JvListview does it for us! We don't need the following lines anymore
+          // if (Selected <> nil) and (NMHDR^.code = NM_RCLICK) then
+          //   TJvListItem(Selected).PopupMenu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
         end;
     end;
   end;
@@ -173,6 +194,7 @@ end;
 procedure TJvListView.WMHScroll(var Msg: TWMHScroll);
 begin
   inherited;
+  UpdateHeaderImages(ListView_GetHeader(Handle));
   if Assigned(FOnHorizontalScroll) then
     FOnHorizontalScroll(Self);
 end;
@@ -180,6 +202,7 @@ end;
 procedure TJvListView.WMVScroll(var Msg: TWMVScroll);
 begin
   inherited;
+  UpdateHeaderImages(ListView_GetHeader(Handle));
   if Assigned(FOnVerticalScroll) then
     FOnVerticalScroll(Self);
 end;
@@ -226,7 +249,7 @@ var
     S1, S2: string;
     I: Integer;
     SortKind: TJvSortMethod;
-  
+
     function IsBigger(First, Second: string; SortType: TJvSortMethod): Boolean;
     var
       I, J: Real;
@@ -268,7 +291,7 @@ var
           end;
           Inc(I);
         end;
-      
+
         Result := J;
       end;
 
@@ -276,8 +299,7 @@ var
       Result := False;
       if Trim(First) = '' then
         Result := False
-      else
-      if Trim(Second) = '' then
+      else if Trim(Second) = '' then
         Result := True
       else
       begin
@@ -350,18 +372,17 @@ var
         end;
       end;
     end;
-  
+
   begin
     Parm := TParamSort(Pointer(ParamSort)^);
     i1 := TListItem(Item1);
     i2 := TListItem(Item2);
     I := Parm.Index;
-  
-    // (Salvatore) 
-    if Assigned(TJvListView(Parm.Sender).FOnAutoSort) then
-      TJvListView(Parm.Sender).FOnAutoSort(Parm.Sender, Parm.Index,SortKind)
-    else
-      SortKind := smAutomatic;
+
+    // (Salvatore)
+    SortKind := TJvListView(Parm.Sender).SortMethod;
+    if Assigned(TJvListView(Parm.Sender).OnAutoSort) then
+      TJvListView(Parm.Sender).OnAutoSort(Parm.Sender, Parm.Index, SortKind);
 
     case I of
       {sort by caption}
@@ -369,11 +390,10 @@ var
         begin
           S1 := i1.Caption;
           S2 := i2.Caption;
-  
+
           if IsBigger(S1, S2, SortKind) then
             Result := 1
-          else
-          if IsBigger(S2, S1, SortKind) then
+          else if IsBigger(S2, S1, SortKind) then
             Result := -1
           else
             Result := 0;
@@ -388,8 +408,7 @@ var
           else
             Result := -1;
         end
-        else
-        if I > i2.SubItems.Count then
+        else if I > i2.SubItems.Count then
           Result := 1
         else
         begin
@@ -397,8 +416,7 @@ var
           S2 := i2.SubItems[I - 1];
           if IsBigger(S1, S2, SortKind) then
             Result := 1
-          else
-          if IsBigger(S2, S1, SortKind) then
+          else if IsBigger(S2, S1, SortKind) then
             Result := -1
           else
             Result := 0;
@@ -406,7 +424,7 @@ var
       end;
     end;
   end;
-  
+
   function CustomCompare2(Item1, Item2, ParamSort: Integer): Integer; stdcall;
   begin
     Result := -CustomCompare1(Item1, Item2, ParamSort);
@@ -462,18 +480,18 @@ end;
 
 procedure TJvListView.LoadFromStream(Stream: TStream);
 var
-  Buf: array [0..100] of Char;
+  Buf: array[0..100] of Char;
   Start: Integer;
 
   procedure LoadOldStyle(Stream: TStream);
   var
-    I, J, k: Integer;
-    Buf: array [0..100] of Byte;
+    i, j, k: Integer;
+    Buf: array[0..100] of Byte;
     st: string;
     ch1, checks: Boolean;
     t: TListItem;
   begin
-    I := Stream.Position;
+    i := Stream.Position;
     t := nil;
     st := '';
     Items.Clear;
@@ -481,22 +499,22 @@ var
       FOnLoadProgress(Self, 0, Stream.Size - Start);
     checks := False;
     ch1 := CheckBoxes;
-    while I < Stream.Size do
+    while i < Stream.Size do
     begin
-      J := Stream.Read(Buf, 100);
+      j := Stream.Read(Buf, 100);
       if Assigned(FOnLoadProgress) then
-        FOnLoadProgress(Self, J, Stream.Size - Start);
-      I := I + J;
+        FOnLoadProgress(Self, j, Stream.Size - Start);
+      i := i + j;
       k := 0;
-      while k < J do
+      while k < j do
       begin
-        while (k < J) and (Buf[k] <> 0) and (Buf[k] <> 1) do
+        while (k < j) and (Buf[k] <> 0) and (Buf[k] <> 1) do
         begin
           st := st + Char(Buf[k]);
           Inc(k);
         end;
 
-        if k < J then
+        if k < j then
         begin
           if t <> nil then
             t.SubItems.Add(st)
@@ -524,11 +542,11 @@ var
     LV_HASCHECKBOXES = $80;
     // hs-    LV_CHECKED = $8000;
   var
-    Count, I, J: Word;
+    Count, i, j: Word;
     Options: Byte;
     st: string;
     t: TListItem;
-    Buf: array [0..2048] of Char;
+    Buf: array[0..2048] of Char;
   begin
     try
       Self.Items.BeginUpdate;
@@ -549,10 +567,10 @@ var
 
         //Read all columns
         t := Self.Items.Add;
-        for I := 1 to Count do
+        for i := 1 to Count do
         begin
           // hs-
-          if I = 1 then
+          if (i = 1) then
           begin
             Stream.Read(Options, SizeOf(Options));
             if CheckBoxes then
@@ -561,21 +579,21 @@ var
           // -hs
 
           (* hs-
-                    Stream.Read(J, SizeOf(I));
+                    Stream.Read(j, SizeOf(i));
           -hs *)
-          Stream.Read(J, SizeOf(J));
+          Stream.Read(j, SizeOf(j));
 
           //Read the string
           FillChar(Buf, SizeOf(Buf), #0);
-          Stream.Read(Buf, J);
+          Stream.Read(Buf, j);
           st := Buf;
 
-          if I = 1 then
+          if (i = 1) then
           begin
             t.Caption := st;
             (* hs-
                         if CheckBoxes then
-                          t.Checked := (I and LV_CHECKED) = LV_CHECKED;
+                          t.Checked := (i and LV_CHECKED) = LV_CHECKED;
             -hs *)
           end
           else
@@ -590,7 +608,7 @@ begin
   Start := Stream.Position;
   Stream.Read(Buf, 10);
   Buf[10] := #0;
-  if Buf <> 'LISTVIEW01' then
+  if (Buf <> 'LISTVIEW01') then
   begin
     Stream.Position := Start;
     LoadOldStyle(Stream);
@@ -615,10 +633,10 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
 
   procedure SaveOldStyle(Stream: TStream);
   var
-    I, J, k: Integer;
+    i, j, k: Integer;
     b, c, d, e: Byte;
     st: string;
-    Buf: array [0..1000] of Byte;
+    Buf: array[0..1000] of Byte;
   begin
     b := 0;
     c := 1;
@@ -626,36 +644,36 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
     E := Ord('F'); //not checked
     if Assigned(FOnSaveProgress) then
       FOnSaveProgress(Self, 0, Self.Items.Count);
-    for I := 0 to Self.Items.Count - 1 do
+    for i := 0 to Self.Items.Count - 1 do
     begin
       if Assigned(FOnSaveProgress) then
-        FOnSaveProgress(Self, I + 1, Self.Items.Count);
-      st := Self.Items[I].Caption;
+        FOnSaveProgress(Self, i + 1, Self.Items.Count);
+      st := Self.Items[i].Caption;
       for k := 1 to Length(st) do
         Buf[k - 1] := Byte(st[k]);
       k := Length(st);
       //write checked,not
-      if Self.Items[I].Checked then
+      if Self.Items[i].Checked then
         Stream.Write(d, 1)
       else
         Stream.Write(e, 1);
       Stream.Write(Buf, k);
-      if Self.Items[I].SubItems.Count = 0 then
+      if Self.Items[i].SubItems.Count = 0 then
         Stream.Write(c, 1)
       else
       begin
         Stream.Write(b, 1);
-        for J := 0 to Self.Items[I].subitems.Count - 2 do
+        for j := 0 to Self.Items[i].subitems.Count - 2 do
         begin
-          st := Self.Items[I].subitems[J];
+          st := Self.Items[i].subitems[j];
           for k := 1 to Length(st) do
             Buf[k - 1] := Byte(st[k]);
           k := Length(st);
           Stream.Write(Buf, k);
           Stream.Write(b, 1);
         end;
-        J := Self.Items[I].subitems.Count - 1;
-        st := Self.Items[I].subitems[J];
+        j := Self.Items[i].subitems.Count - 1;
+        st := Self.Items[i].subitems[j];
         for k := 1 to Length(st) do
           Buf[k - 1] := Byte(st[k]);
         k := Length(st);
@@ -670,22 +688,22 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
     LV_HASCHECKBOXES = $80;
     // hs-    LV_CHECKED = $8000;
   var
-    Buf: array [0..100] of Char;
-    // hs-    I, J: Word;
-    I: Integer;
-    J: Word;
+    Buf: array[0..100] of Char;
+    // hs-    i, j: Word;
+    i: Integer;
+    j: Word;
     // hs    Options : Byte;
     Options, IsChecked: Byte;
 
     procedure WriteString(Txt: string);
     var
-      I: Word;
-      Buf: array [1..2056] of Char;
+      i: Word;
+      Buf: array[1..2056] of Char;
     begin
-      I := Length(Txt);
+      i := Length(Txt);
       Move(Text[1], Buf, I);
-      Stream.Write(I, SizeOf(I));
-      Stream.Write(Buf, I);
+      Stream.Write(i, SizeOf(i));
+      Stream.Write(Buf, i);
     end;
 
   begin
@@ -696,18 +714,18 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
     else
       Options := 0;
     Stream.Write(Options, SizeOf(Options));
-    for I := 0 to Items.Count - 1 do
-      with Items[I] do
+    for i := 0 to Items.Count - 1 do
+      with Items[i] do
       begin
-        J := SubItems.Count + 1;
-        Stream.Write(J, SizeOf(J));
+        j := SubItems.Count + 1;
+        Stream.Write(j, SizeOf(j));
         // hs-
         IsChecked := Options or (Byte(Ord(Checked)));
         Stream.Write(IsChecked, SizeOf(IsChecked));
         // -hs
         WriteString(Caption);
-        for J := 0 to SubItems.Count - 1 do
-          WriteString(SubItems[J]);
+        for j := 0 to SubItems.Count - 1 do
+          WriteString(SubItems[j]);
       end;
   end;
 
@@ -727,7 +745,7 @@ var
   Size, Current: Integer;
   t: TListItem;
   f: file of Byte;
-  I, J, k, l: Integer;
+  i, j, k, l: Integer;
 begin
   Items.Clear;
 
@@ -749,43 +767,42 @@ begin
       FOnLoadProgress(Self, Current, Size);
     t := Items.Add;
 
-    J := 0;
+    j := 0;
     k := 1;
-    for I := 1 to Length(st) do
-      if st[I] = '"' then
-        J := (J + 1) mod 2
-      else
-      if st[I] = Separator then
-        if J = 0 then
+    for i := 1 to Length(st) do
+      if st[i] = '"' then
+        j := (j + 1) mod 2
+      else if st[i] = Separator then
+        if j = 0 then
           Inc(k);
     if k <> 1 then
     begin
-      I := Pos(Separator, st);
-      J := Pos('"', st);
+      i := Pos(Separator, st);
+      j := Pos('"', st);
       l := 0;
 
-      while I <> 0 do
+      while i <> 0 do
       begin
-        if (J = 0) or (J > I) then
+        if (j = 0) or (j > i) then
         begin
-          st2 := Copy(st, 1, I - 1);
-          st := Copy(st, I + 1, Length(st));
+          st2 := Copy(st, 1, i - 1);
+          st := Copy(st, i + 1, Length(st));
         end
         else
         begin
-          st := Copy(st, J + 1, Length(st));
-          J := Pos('"', st);
-          if J = 0 then
+          st := Copy(st, j + 1, Length(st));
+          j := Pos('"', st);
+          if j = 0 then
           begin
             st2 := st;
             st := '';
           end
           else
           begin
-            st2 := Copy(st, 1, J - 1);
-            st := Copy(st, J + 1, Length(st));
-            J := Pos(Separator, st);
-            st := Copy(st, J + 1, Length(st));
+            st2 := Copy(st, 1, j - 1);
+            st := Copy(st, j + 1, Length(st));
+            j := Pos(Separator, st);
+            st := Copy(st, j + 1, Length(st));
           end;
         end;
         if l = 0 then
@@ -797,8 +814,8 @@ begin
           t.Subitems.Add(st2);
         Dec(k);
 
-        I := Pos(Separator, st);
-        J := Pos('"', st);
+        i := Pos(Separator, st);
+        j := Pos('"', st);
       end;
 
       if k = 1 then
@@ -823,25 +840,25 @@ procedure TJvListView.SaveToCSV(FileName: string; Separator: Char);
 var
   st: string;
   fich: textfile;
-  I, J: Integer;
+  i, j: Integer;
 begin
   AssignFile(fich, FileName);
   Rewrite(fich);
   if Assigned(FOnLoadProgress) then
     FOnLoadProgress(Self, 0, Items.Count);
-  for I := 0 to Items.Count - 1 do
+  for i := 0 to Items.Count - 1 do
   begin
     if Assigned(FOnLoadProgress) then
-      FOnLoadProgress(Self, I + 1, Items.Count);
-    st := Items[I].Caption;
+      FOnLoadProgress(Self, i + 1, Items.Count);
+    st := Items[i].Caption;
     if Pos(Separator, st) <> 0 then
       st := '"' + st + '"';
-    for J := 0 to Items[I].Subitems.Count - 1 do
+    for j := 0 to Items[i].Subitems.Count - 1 do
     begin
-      if Pos(Separator, Items[I].Subitems[J]) = 0 then
-        st := st + Separator + Items[I].Subitems[J]
+      if Pos(Separator, Items[i].Subitems[j]) = 0 then
+        st := st + Separator + Items[i].Subitems[j]
       else
-        st := st + Separator + '"' + Items[I].Subitems[J] + '"';
+        st := st + Separator + '"' + Items[i].Subitems[j] + '"';
     end;
     Writeln(fich, st);
   end;
@@ -850,55 +867,56 @@ end;
 
 procedure TJvListView.InvertSelection;
 var
-  I: Integer;
+  i: Integer;
 begin
   Items.BeginUpdate;
-  for I := 0 to Items.Count - 1 do
-    Items[I].Selected := not Items[I].Selected;
+  for i := 0 to Items.Count - 1 do
+    Items[i].Selected := not Items[i].Selected;
   Items.EndUpdate;
 end;
 
 {$IFNDEF COMPILER6_UP}
+
 procedure TJvListView.SelectAll;
 var
-  I: Integer;
+  i: Integer;
 begin
   Items.BeginUpdate;
-  for I := 0 to Items.Count - 1 do
-    Items[I].Selected := True;
+  for i := 0 to Items.Count - 1 do
+    Items[i].Selected := True;
   Items.EndUpdate;
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF}
 
 procedure TJvListView.UnselectAll;
 var
-  I: Integer;
+  i: Integer;
 begin
   Items.BeginUpdate;
-  for I := 0 to Items.Count - 1 do
-    Items[I].Selected := False;
+  for i := 0 to Items.Count - 1 do
+    Items[i].Selected := False;
   Items.EndUpdate;
 end;
 
 procedure TJvListView.KeyUp(var Key: Word; Shift: TShiftState);
 var
   st: string;
-  I, J: Integer;
+  i, j: Integer;
 begin
   inherited KeyUp(Key, Shift);
   if AutoClipboardCopy then
     if (Key in [Ord('c'), Ord('C')]) and (ssCtrl in Shift) then
     begin
-      for I := 0 to Columns.Count - 1 do
-        st := st + Columns[I].Caption + #9;
+      for i := 0 to Columns.Count - 1 do
+        st := st + Columns[i].Caption + #9;
       if st <> '' then
         st := st + sLineBreak;
-      for I := 0 to Items.Count - 1 do
-        if (SelCount = 0) or (Items[I].Selected) then
+      for i := 0 to Items.Count - 1 do
+        if (SelCount = 0) or (Items[i].Selected) then
         begin
-          st := st + Items[I].Caption;
-          for J := 0 to Items[I].SubItems.Count - 1 do
-            st := st + #9 + Items[I].SubItems[J];
+          st := st + Items[i].Caption;
+          for j := 0 to Items[i].SubItems.Count - 1 do
+            st := st + #9 + Items[i].SubItems[j];
           st := st + sLineBreak;
         end;
       Clipboard.SetTextBuf(PChar(st));
@@ -906,70 +924,71 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
+
 procedure TJvListView.DeleteSelected;
 var
-  I: Integer;
+  i: Integer;
 begin
   Items.BeginUpdate;
   if SelCount = 1 then
   begin
-    I := Selected.Index - 1;
+    i := Selected.Index - 1;
     Selected.Delete;
-    if I = -1 then
-      I := 0;
+    if i = -1 then
+      i := 0;
     if Items.Count > 0 then
-      Selected := Items[I];
+      Selected := Items[i];
   end
   else
   begin
-    for I := Items.Count - 1 downto 0 do
-      if Items[I].Selected then
-        Items[I].Delete;
+    for i := Items.Count - 1 downto 0 do
+      if Items[i].Selected then
+        Items[i].Delete;
   end;
   Items.EndUpdate;
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF}
 
 function TJvListView.GetColumnsOrder: string;
 var
-  Res: array [0..cColumnsHandled-1] of Integer;
-  I: Integer;
+  Res: array[0..cColumnsHandled - 1] of Integer;
+  i: Integer;
 begin
   ListView_GetColumnOrderArray(Columns.Owner.Handle, Columns.Count, @Res[0]);
   Result := '';
   if Columns.Count > cColumnsHandled then
     raise EJvListViewError.Create(RsETooManyColumns);
-  for I := 0 to Columns.Count - 1 do
+  for i := 0 to Columns.Count - 1 do
   begin
     if Result <> '' then
       Result := Result + ',';
-    Result := Result + IntToStr(Res[I]) + '=' + IntToStr(Columns[I].Width);
+    Result := Result + IntToStr(Res[i]) + '=' + IntToStr(Columns[i].Width);
   end;
 end;
 
 procedure TJvListView.SetColumnsOrder(const Order: string);
 var
-  Res: array [0..cColumnsHandled-1] of Integer;
-  I, J: Integer;
+  Res: array[0..cColumnsHandled - 1] of Integer;
+  i, j: Integer;
   st: string;
 begin
   FillChar(Res, SizeOf(Res), #0);
   with TStringList.Create do
   try
     CommaText := Order;
-    I := 0;
+    i := 0;
     while Count > 0 do
     begin
       st := Strings[0];
-      J := Pos('=', st);
-      if (J <> 0) and (I < Columns.Count) then
+      j := Pos('=', st);
+      if (j <> 0) and (i < Columns.Count) then
       begin
-        Columns[I].Width := StrToIntDef(Copy(st, J + 1, Length(st)), Columns[I].Width);
-        st := Copy(st, 1, J - 1);
+        Columns[i].Width := StrToIntDef(Copy(st, j + 1, Length(st)), Columns[i].Width);
+        st := Copy(st, 1, j - 1);
       end;
-      Res[I] := StrToIntDef(st, 0);
+      Res[i] := StrToIntDef(st, 0);
       Delete(0);
-      Inc(I);
+      Inc(i);
     end;
     ListView_SetColumnOrderArray(Columns.Owner.Handle, Columns.Count, @Res[0]);
   finally
@@ -977,19 +996,110 @@ begin
   end;
 end;
 
-procedure TJvListView.Notification(AComponent: TComponent;
-  Operation: TOperation);
-var i:integer;
+procedure TJvListView.SetHeaderImages(const Value: TCustomImageList);
 begin
-  inherited;
-  if Operation = opRemove then
+  if FHeaderImages <> Value then
   begin
-    for i := 0 to Items.Count - 1 do
-      if TJvListItem(Items[i]).PopupMenu = AComponent then
-        TJvListItem(Items[i]).PopupMenu := nil;
+    if FHeaderImages <> nil then
+      FHeaderImages.UnRegisterChanges(FImageChangeLink);
+    FHeaderImages := Value;
+    if Assigned(FHeaderImages) then
+    begin
+      FHeaderImages.RegisterChanges(FImageChangeLink);
+      FHeaderImages.FreeNotification(Self);
+    end;
+    UpdateHeaderImages(ListView_GetHeader(Handle));
   end;
 end;
 
-end.
+procedure TJvListView.Notification(AComponent: TComponent;
+  Operation: TOperation);
+var
+  i: integer;
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
+  begin
+    if (AComponent = HeaderImages) then
+      HeaderImages := nil
+    else
+      for i := 0 to Items.Count - 1 do
+        if TJvListItem(Items[i]).PopupMenu = AComponent then
+          TJvListItem(Items[i]).PopupMenu := nil;
+  end;
+end;
 
+procedure TJvListView.CreateWnd;
+begin
+  inherited;
+  UpdateHeaderImages(ListView_GetHeader(Handle));
+end;
+
+destructor TJvListView.Destroy;
+begin
+  FImageChangeLink.Free;
+  inherited;
+end;
+
+procedure TJvListView.UpdateHeaderImages(HeaderHandle: integer);
+var
+  WP: TWindowPlacement;
+begin
+
+  if (HeaderHandle <> 0) and (ViewStyle = vsReport) and ShowColumnHeaders then
+  begin
+
+//    WP.length := sizeof(WP);
+//    GetWindowPlacement(HeaderHandle, @WP);
+    if (HeaderImages <> nil) then
+    begin
+      Header_SetImageList(HeaderHandle, HeaderImages.Handle);
+//      WP.rcNormalPosition.Bottom := WP.rcNormalPosition.Top + HeaderImages.Height + 3;
+    end
+    else if ComponentState * [csLoading, csDestroying] = [] then
+    begin
+      Header_SetImageList(HeaderHandle, 0);
+//      WP.rcNormalPosition.Bottom := WP.rcNormalPosition.Top + 17;
+    end;
+    // the problem with resizing the header is that there doesn't seem to be an easy way of telling the listview about it...
+//    SetWindowPlacement(HeaderHandle, @WP);
+    UpdateColumns;
+    InvalidateRect(HeaderHandle, nil, True)
+  end;
+end;
+
+procedure TJvListView.DoHeaderImagesChange(Sender: TObject);
+begin
+  UpdateHeaderImages(ListView_GetHeader(Handle));
+end;
+
+procedure TJvListView.SetSmallImages(const Value: TCustomImageList);
+begin
+  inherited SmallImages := Value;
+  UpdateHeaderImages(ListView_GetHeader(Handle));
+end;
+
+procedure TJvListView.Loaded;
+begin
+  inherited;
+  UpdateHeaderImages(ListView_GetHeader(Handle));
+end;
+
+procedure TJvListView.WMNCCalcSize(var Message: TWMNCCalcSize);
+var R:TRect;
+begin
+  inherited;
+//  if Message.CalcValidRects and Assigned(HeaderImages) and (ViewStyle = vsReport) and ShowColumnHeaders then
+//    with Message.CalcSize_Params^.rgrc[0] do
+//      Top := Top + HeaderImages.Height + 3;
+end;
+
+procedure TJvListView.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  inherited;
+  if HandleAllocated then
+    UpdateHeaderImages(ListView_GetHeader(Handle));
+end;
+
+end.
 
