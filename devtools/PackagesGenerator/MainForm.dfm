@@ -123,11 +123,11 @@ object frmMain: TfrmMain
         ParentShowHint = False
         ShowHint = True
       end
-      object ToolButton4: TToolButton
+      object tbtSep: TToolButton
         Left = 69
         Top = 0
         Width = 8
-        Caption = 'ToolButton4'
+        Caption = 'tbtSep'
         ImageIndex = 3
         Style = tbsSeparator
       end
@@ -145,7 +145,7 @@ object frmMain: TfrmMain
         ParentShowHint = False
         ShowHint = True
       end
-      object ToolButton1: TToolButton
+      object tbtAddFiles: TToolButton
         Left = 123
         Top = 0
         Action = actAddFiles
@@ -189,6 +189,7 @@ object frmMain: TfrmMain
         NumGlyphs = 1
         TabOrder = 0
         Text = '..\..\packages'
+        OnChange = jdePackagesLocationChange
       end
     end
     object pnlParameters: TPanel
@@ -405,7 +406,7 @@ object frmMain: TfrmMain
         FixedCols = 0
         RowCount = 2
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor]
-        PopupMenu = jpmGridPopup
+        PopupMenu = jpmFilesPopup
         TabOrder = 0
         OnGetEditText = jsgFilesGetEditText
         Alignment = taLeftJustify
@@ -429,7 +430,7 @@ object frmMain: TfrmMain
         FixedCols = 0
         RowCount = 2
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor]
-        PopupMenu = jpmGridPopup
+        PopupMenu = jpmDepPopup
         TabOrder = 1
         OnGetEditText = jsgFilesGetEditText
         OnSetEditText = jsgDependenciesSetEditText
@@ -486,7 +487,7 @@ object frmMain: TfrmMain
       object N3: TMenuItem
         Caption = '-'
       end
-      object Exit1: TMenuItem
+      object mnuExit: TMenuItem
         Action = actExit
       end
     end
@@ -507,7 +508,7 @@ object frmMain: TfrmMain
       object mnuLocationBar: TMenuItem
         Action = actLocation
       end
-      object Parameters1: TMenuItem
+      object mnuParameters: TMenuItem
         Action = actParameters
         AutoCheck = True
       end
@@ -613,6 +614,22 @@ object frmMain: TfrmMain
       Caption = '&Parameters'
       OnExecute = actParametersExecute
       OnUpdate = actParametersUpdate
+    end
+    object actUp: TAction
+      Category = 'Grid Popups'
+      Caption = '&Up'
+      Hint = 'Move up|Move the selected line up in the grid'
+      ImageIndex = 0
+      OnExecute = actUpExecute
+      OnUpdate = actUpUpdate
+    end
+    object actDown: TAction
+      Category = 'Grid Popups'
+      Caption = '&Down'
+      Hint = 'Move down|Move the selected line down in the grid'
+      ImageIndex = 1
+      OnExecute = actDownExecute
+      OnUpdate = actDownUpdate
     end
   end
   object imlActive: TImageList
@@ -1448,25 +1465,26 @@ object frmMain: TfrmMain
     Filter = 'Pascal files (*.pas)|*.pas|All files (*.*)|*.*'
     InitialDir = '..\..\run'
     Options = [ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing]
-    Left = 704
-    Top = 144
+    Left = 760
+    Top = 172
   end
-  object jpmGridPopup: TJvPopupMenu
-    ImageMargin.Left = 0
-    ImageMargin.Top = 0
-    ImageMargin.Right = 0
-    ImageMargin.Bottom = 0
+  object jpmDepPopup: TJvPopupMenu
+    Images = imlActive
+    DisabledImages = imlDisabled
+    ImageMargin.Left = 1
+    ImageMargin.Top = 1
+    ImageMargin.Right = 1
+    ImageMargin.Bottom = 1
     ImageSize.Height = 0
     ImageSize.Width = 0
+    Style = msOffice
     Left = 676
     Top = 144
-    object mnuUp: TMenuItem
-      Caption = '&Up'
-      OnClick = mnuUpClick
+    object mnuUpD: TMenuItem
+      Action = actUp
     end
-    object mnuDown: TMenuItem
-      Caption = '&Down'
-      OnClick = mnuDownClick
+    object mnuDownD: TMenuItem
+      Action = actDown
     end
   end
   object jfsStore: TJvFormStorage
@@ -1480,8 +1498,8 @@ object frmMain: TfrmMain
       'cmbPrefix.Text'
       'cmbFormat.Text')
     StoredValues = <>
-    Left = 648
-    Top = 116
+    Left = 704
+    Top = 172
   end
   object jaiIniStore: TJvAppINIFileStore
     StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
@@ -1489,7 +1507,29 @@ object frmMain: TfrmMain
     Buffered = False
     FileName = 'pgEdit.ini'
     SubStores = <>
-    Left = 648
+    Left = 732
+    Top = 172
+  end
+  object jpmFilesPopup: TJvPopupMenu
+    Images = imlActive
+    DisabledImages = imlDisabled
+    ImageMargin.Left = 1
+    ImageMargin.Top = 1
+    ImageMargin.Right = 1
+    ImageMargin.Bottom = 1
+    ImageSize.Height = 0
+    ImageSize.Width = 0
+    Style = msOffice
+    Left = 704
     Top = 144
+    object mnuUpF: TMenuItem
+      Action = actUp
+    end
+    object mnuDownF: TMenuItem
+      Action = actDown
+    end
+    object mnuAddFilesP: TMenuItem
+      Action = actAddFiles
+    end
   end
 end
