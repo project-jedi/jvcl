@@ -29,10 +29,12 @@ function GetRelativePath(const Origin, Destination : string) : string;
 // is undefined (most likely an exception will be triggered)
 function PathNoInsideRelative(const Path : string) : string;
 
+{$IFDEF COMPILER5}
 // Sets the date and time of the indicated file
 // This function with this signature doesn't exists in D5 so
 // we had to declare it here
 function FileSetDate(const FileName: string; Age: Integer): Integer;
+{$ENDIF COMPILER5}
 
 implementation
 
@@ -174,8 +176,8 @@ begin
   end;
 end;
 
+{$IFDEF COMPILER5}
 function FileSetDate(const FileName: string; Age: Integer): Integer;
-{$IFDEF MSWINDOWS}
 var
   f: THandle;
 begin
@@ -188,18 +190,7 @@ begin
     FileClose(f);
   end;
 end;
-{$ENDIF}
-{$IFDEF LINUX}
-var
-  ut: TUTimeBuffer;
-begin
-  Result := 0;
-  ut.actime := Age;
-  ut.modtime := Age;
-  if utime(PChar(FileName), @ut) = -1 then
-    Result := GetLastError;
-end;
-{$ENDIF}
+{$ENDIF COMPILER5}
 
 
 end.

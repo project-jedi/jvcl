@@ -8,7 +8,7 @@ procedure Help;
 implementation
 
 uses
-  Classes, SysUtils, GenerateUtils,
+  Windows, Classes, SysUtils, GenerateUtils,
   {$IFDEF NO_JCL}
   UtilsJcl,
   {$ELSE}
