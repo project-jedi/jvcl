@@ -7,7 +7,8 @@ uses
   Dialogs, ToolWin, ComCtrls, JvToolBar, Menus, JvMenus, ExtCtrls,
   StdCtrls, JvListBox, JvCtrls, JvCoolBar, JvSplitter, JvStatusBar,
   JvComCtrls, JvControlBar, ImgList, ActnList, FileWrapper, AppEvnts,
-  JvComponent, JvMRUList, JvFormPlacement, JvAppStore, JvAppRegistryStore;
+  JvComponent, JvMRUList, JvFormPlacement, JvAppStore, JvAppRegistryStore,
+  JvMRUManager;
 
 type
   TfrmMain = class(TForm)
@@ -164,20 +165,28 @@ procedure TfrmMain.updateItem;
 var
   curItem : TFileItem;
 begin
-  curItem := FFileWrapper.Items[jlbItems.ItemIndex];
+  if jlbItems.ItemIndex < 0 then
+    jlbItems.ItemIndex := 0;
+  if jlbItems.ItemIndex >= FFileWrapper.Items.Count then
+    jlbItems.ItemIndex := FFileWrapper.Items.Count-1 ;
 
-  // raw text first
-  memRaw.Text := curItem.GetRawText;
+  if jlbItems.ItemIndex >= 0 then
+  begin
+    curItem := FFileWrapper.Items[jlbItems.ItemIndex];
 
-  // then the elements
-  memSummary.Text := curItem.Summary;
-  memAuthor.Text := curItem.Author;
-  memDescription.Text := curItem.Description;
-  memParameters.Text := curItem.Parameters;
-  memReturnValue.Text := curItem.ReturnValue;
-  memSeeAlso.Text := curItem.SeeAlsoAsString;
-  memJVCLInfo.Text := curItem.JVCLInfo;
-  memPreText.Text := curItem.PreText;
+    // raw text first
+    memRaw.Text := curItem.GetRawText;
+
+    // then the elements
+    memSummary.Text := curItem.Summary;
+    memAuthor.Text := curItem.Author;
+    memDescription.Text := curItem.Description;
+    memParameters.Text := curItem.Parameters;
+    memReturnValue.Text := curItem.ReturnValue;
+    memSeeAlso.Text := curItem.SeeAlsoAsString;
+    memJVCLInfo.Text := curItem.JVCLInfo;
+    memPreText.Text := curItem.PreText;
+  end;
 end;
 
 procedure TfrmMain.memSummaryChange(Sender: TObject);
@@ -336,6 +345,10 @@ begin
   mruStartIndex := parentItem.IndexOf(sepBeforeMRU)+1;
   mruEndIndex := parentItem.IndexOf(sepAfterMRU);
 
+  if mruEndIndex = mruStartIndex then
+    parentItem.Items[mruEndIndex].Visible := False
+  else
+    parentItem.Items[mruEndIndex].Visible := True;
   // start by removing all items
   for i := 0 to mruEndIndex-mruStartIndex-1 do
   begin

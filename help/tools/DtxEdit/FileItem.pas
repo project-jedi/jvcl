@@ -55,12 +55,12 @@ var
 
   function NeedBreak(str : string) : Boolean;
   begin
-    Result := (Length(curLine) > 0) and
-              (((trim(curLine)[1] = '<') and (curLine[Length(curLine)] = '>')) or
-               (curLine[Length(curLine)] = '.') or
-               (curLine[Length(curLine)] = ':') or
-               (Length(curLine) < 40) or
-               (trim(curLine) = #13#10) );
+    Result := (Length(trim(str)) > 0) and
+              (((trim(str)[1] = '<') and (str[Length(str)] = '>')) or
+               (str[Length(str)] = '.') or
+               (str[Length(str)] = ':') or
+               (Length(str) < 40) or
+               (trim(str) = #13#10) );
   end;
   
 begin
@@ -112,7 +112,7 @@ begin
             curValue^ := curValue^ + ' ' + curLine + #13#10;
         end
         else
-          curValue^ := curValue^ + ' ' + curLine;
+          curValue^ := curValue^ + ' ' + trim(curLine);
       end;
     end;
 
@@ -134,9 +134,9 @@ end;
 function TFileItem.GetRawText: string;
   function FormattedOutput(str : string) : string;
   begin
-    StrReplace(str, #13#10, #13#10'  ', [rfReplaceAll]);
 //    str := TrimRight(str);
-    Result := '  ' + WrapText(str, #13#10'  ', [' ', #9, '-'], 100) + #13#10;
+    Result := '  ' + WrapText(str, #13#10, [' ', #9, '-'], 100) + #13#10;
+    StrReplace(str, #13#10, #13#10'  ', [rfReplaceAll]);
   end;
 begin
   Result := '----------------------------------------------------------------------------------------------------'#13#10;

@@ -427,6 +427,7 @@ object frmMain: TfrmMain
       end
       object sepBeforeMRU: TMenuItem
         Caption = '-'
+        Enabled = False
       end
       object sepAfterMRU: TMenuItem
         Caption = '-'
@@ -454,6 +455,7 @@ object frmMain: TfrmMain
       object Fileinfo1: TMenuItem
         Action = actFileInfo
         AutoCheck = True
+        Enabled = False
       end
     end
   end
@@ -491,6 +493,7 @@ object frmMain: TfrmMain
       Caption = '&Next item'
       Hint = 'Next item|Goes down by one item in the list'
       ImageIndex = 0
+      ShortCut = 16424
       OnExecute = actNextItemExecute
       OnUpdate = actNextItemUpdate
     end
@@ -499,6 +502,7 @@ object frmMain: TfrmMain
       Caption = '&Previous item'
       Hint = 'Previous item|Goes up by one item in the list'
       ImageIndex = 1
+      ShortCut = 16422
       OnExecute = actPrevItemExecute
       OnUpdate = actPrevItemUpdate
     end
@@ -840,7 +844,7 @@ object frmMain: TfrmMain
     Top = 56
   end
   object jvmRecentFiles: TJvMRUList
-    SubKeyUnicode = 'Software\JVCL\DtxEditor'
+    SubKeyUnicode = 'Software\JVCL\DtxEditor\Files'
     Active = False
     Left = 756
     Top = 56
@@ -848,7 +852,7 @@ object frmMain: TfrmMain
   object JvAppRegistryStore: TJvAppRegistryStore
     StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StoreOptions.BooleanStringFalseValues = 'FALSE, NO, N'
-    Root = 'Software\JVCL\DtxEditor2'
+    Root = 'Software\JVCL\DtxEditor'
     SubStores = <>
     Left = 670
     Top = 85
