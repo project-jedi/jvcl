@@ -59,9 +59,6 @@ type
 
 implementation
 
-
-
 {$R *.xfm}
-
 
 end.

@@ -41,8 +41,7 @@ unit JvQBaseEdits;
 interface
 
 uses
-  QWindows, QMessages, Classes, QControls, QImgList, 
-  QTypes, 
+  QWindows, QMessages, Classes, QControls, QImgList,
   JvQToolEdit;
 
 type

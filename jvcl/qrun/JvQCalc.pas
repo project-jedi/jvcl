@@ -145,8 +145,8 @@ type
   private
     FKind: TCalcBtnKind;
     FFontChanging: Boolean;
-  protected  
-    procedure ParentFontChanged; override; 
+  protected
+    procedure ParentFontChanged; override;
   public
     constructor CreateKind(AOwner: TComponent; AKind: TCalcBtnKind);
     property Kind: TCalcBtnKind read FKind;
@@ -268,7 +268,7 @@ procedure SetDefaultFont(AFont: TFont; Layout: TCalcPanelLayout);
 begin  
   with AFont do
   begin
-    Color := clWindowText;
+    Color := clText;
     Name := 'Helvetica';
     Height := 11;
   end; 
@@ -369,10 +369,7 @@ begin
     Tag := -1;
 end;
 
-
 procedure TJvCalcButton.ParentFontChanged;
-
-
 
   function BtnColor(Kind: TCalcBtnKind): TColor;
   begin
@@ -505,8 +502,8 @@ var
   Items: array [0..1] of TMenuItem;
 begin
   inherited CreateNew(AOwner, 0); // for BCB
-  BorderIcons := [biSystemMenu];  
-  BorderStyle := fbsDialog;
+  BorderIcons := [biSystemMenu];
+  BorderStyle := fbsDialog;  
   Scaled := False; 
   Caption := RsCalculatorCaption;
   ClientHeight := 159;

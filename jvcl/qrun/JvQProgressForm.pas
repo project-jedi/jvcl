@@ -40,7 +40,7 @@ interface
 uses
   SysUtils, Classes,
   QWindows, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QComCtrls, QActnList,
-  JvQComponent;
+  JvQComponent, JvQConsts;
 
 type
   TJvPrivateProgressUpdate = procedure(Sender: TObject;
@@ -84,13 +84,10 @@ implementation
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}  
-  QConsts; 
-
-
+  {$ENDIF UNITVERSIONING}
+  QConsts;
 
 {$R *.xfm}
-
 
 class function TfrmProgress.Execute(Frm: TfrmProgress; const ACaption, ALabel: string;
   AImage: TPicture; ATransparent: Boolean; AMin, AMax, APosition, AInterval: Integer;

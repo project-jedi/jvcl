@@ -83,10 +83,7 @@ implementation
 uses
   JvQConsts, JvQDsgnConsts;
   
-
-
 {$R *.xfm}
-
 
 function DoAddDsgnColor(AColorType: TColorType; AProvider: IJvDataProvider;
   out NewColor: TColor): Boolean;

@@ -61,7 +61,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvQResources, JvQExForms;
+  JvQConsts, JvQResources, JvQExForms;
 
 constructor TJvImageDialog.Create(AOwner: TComponent);
 begin
@@ -84,8 +84,8 @@ begin
   if (Picture.Height <> 0) and (Picture.Width <> 0) then
   begin
     Form := TJvForm.CreateNew(Self);
-    try  
-      Form.BorderStyle := fbsDialog; 
+    try
+      Form.BorderStyle := fbsDialog;
       Form.BorderIcons := [biSystemMenu];
       Form.Position := poScreenCenter;
       Image1 := TImage.Create(Form);

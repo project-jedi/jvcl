@@ -213,9 +213,9 @@ type
     procedure SetHideSel(Value: Boolean);
     function GetPlainItems(Index: Integer): string;
     procedure SetDropWidth(ADropWidth: Integer);
-  protected  
-    function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean; override;
-    procedure CreateWidget; override; 
+  protected
+    procedure CreateWnd; override;  
+    function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean; override; 
   public
     constructor Create(AOwner: TComponent); override;
     property PlainItems[Index: Integer]: string read GetPlainItems; 
@@ -936,14 +936,11 @@ begin
   Result := ItemHTPlain(Items[Index]);
 end;
 
-
-
-procedure TJvCustomHTComboBox.CreateWidget;
+procedure TJvCustomHTComboBox.CreateWnd;
 var
   Tmp: Integer;
 begin
-  inherited CreateWidget;
-
+  inherited CreateWnd;
   if DropWidth = 0 then
     DropWidth := Width
   else

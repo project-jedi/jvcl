@@ -53,10 +53,7 @@ type
 
 implementation
 
-
-
 {$R *.xfm}
-
 
 uses
   JclStrings,

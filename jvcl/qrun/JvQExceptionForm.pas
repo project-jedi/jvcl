@@ -35,10 +35,10 @@ unit JvQExceptionForm;
 interface
 
 uses
-  QWindows,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  QWindows, 
   SysUtils, Classes, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls,
   JvQLabel, JvQComponent, JvQExControls;
 
@@ -67,6 +67,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure DetailsBtnClick(Sender: TObject);
     procedure ErrorInfo(var LogicalAddress: Pointer; var ModuleName: string);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     FDetails: Boolean;
     FDetailsHeight: Integer;
@@ -86,13 +87,13 @@ procedure JvErrorIntercept;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QConsts, 
   JvQJCLUtils, JvQConsts, JvQResources;
 
-
-
 {$R *.xfm}
-
 
 var
   JvErrorDialog: TJvErrorDialog = nil;
@@ -162,7 +163,7 @@ begin
   ModuleName := StrPas(ModName);
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 procedure TJvErrorDialog.ErrorInfo(var LogicalAddress: Pointer; var ModuleName: string);
 var
   Temp, ModName: array [0..MAX_PATH] of Char;
@@ -172,7 +173,7 @@ begin
   StrLCopy(ModName, AnsiStrRScan(Temp, PathDelim) + 1, SizeOf(ModName) - 1);
   ModuleName := StrPas(ModName);
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure TJvErrorDialog.ShowError;
 var
@@ -277,6 +278,29 @@ procedure TJvErrorDialog.DetailsBtnClick(Sender: TObject);
 begin
   SetShowDetails(not FDetails);
 end;
+
+procedure TJvErrorDialog.FormKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+
+begin
+
+end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

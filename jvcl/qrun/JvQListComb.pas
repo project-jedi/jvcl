@@ -43,9 +43,10 @@ unit JvQListComb;
 
 interface
 
-uses 
+uses
+  QWindows, QMessages,
   SysUtils, Classes, QGraphics, QControls, QExtCtrls, QStdCtrls, QImgList, 
-  Qt, QWindows,   
+  Qt,  
   JvQComponent, JvQExControls, JvQExStdCtrls;
 
 type
@@ -324,7 +325,7 @@ end;
 function GetItemHeight(Font: TFont): Integer;
 var
   DC: HDC;
-  SaveFont: HFont;
+  SaveFont: QWindows.HFont;
   Metrics: TTextMetric;
 begin
   DC := GetDC(0);
@@ -666,7 +667,7 @@ begin
 
     if not Items[Index].Glyph.Empty then
     begin
-      Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
+      Offset := ((R.Bottom - R.Top) - GetImageHeight(Index)) div 2;
 
       Canvas.Draw(R.Left + 2, R.Top + Offset, Items[Index].Glyph);
 
@@ -1142,7 +1143,7 @@ begin
 
     if not Items[Index].Glyph.Empty then
     begin
-      Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
+      Offset := ((R.Bottom - R.Top) - GetImageHeight(Index)) div 2;
 
       Draw(R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Items[Index].Glyph);
 
@@ -1160,7 +1161,7 @@ begin
     begin
       Tmp := Items[Index].ImageIndex;
 
-      Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;  
+      Offset := ((R.Bottom - R.Top) - GetImageHeight(Index)) div 2;  
       FImageList.Draw(Canvas, R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Tmp); 
       if FButtonFrame then
       begin

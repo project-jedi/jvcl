@@ -101,8 +101,8 @@ begin
   inherited CreateNew(AOwner, Dummy);
   FButtonSize := cButtonWidth;
   FSelectedColor := clBlack;
-  BorderIcons := [];  
-  BorderStyle := fbsDialog; 
+  BorderIcons := [];
+  BorderStyle := fbsDialog;
   // (rom) this is not a standard Windows font
 //  Font.Name := 'MS Shell Dlg 2';
   FormStyle := fsStayOnTop;

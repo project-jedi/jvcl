@@ -117,10 +117,7 @@ uses
   TypInfo,
   JvQErrorIndicator, JvQDsgnConsts;
 
-
-
 {$R *.xfm}
-
 
 procedure ShowEditor(Designer: IDesigner; AValidator: TJvValidators);
 var

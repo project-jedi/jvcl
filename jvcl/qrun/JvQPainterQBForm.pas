@@ -96,10 +96,7 @@ uses
   {$ENDIF UNITVERSIONING}
   JvQConsts, JvQResources, JvQTypes;
 
-
-
 {$R *.xfm}
-
 
 type
   TColorProc = function(OutLoop, InLoop: Integer): Integer;

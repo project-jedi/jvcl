@@ -43,7 +43,7 @@ interface
 
 uses
   SysUtils, Classes,  
-  Qt, QTypes, 
+  Qt, 
   QWindows, QMessages,
   QControls, QGraphics, QForms, QExtCtrls, QButtons, QMenus, QImgList, QActnList,
   JvQExControls, JvQComponent, JvQConsts, JvQTypes, JvQJCLUtils, JvQJVCLUtils,

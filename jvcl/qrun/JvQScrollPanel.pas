@@ -196,7 +196,7 @@ const
 {
 procedure TileBitmap(Dest: TControl; Source: TBitmap);
 var
-  X, Y, W, H: LongInt;
+  X, Y, W, H: Longint;
   DR,SR: TRect;
   Tmp: TBitmap;
   Canvas: TControlCanvas;

@@ -1203,8 +1203,8 @@ var
   Control: TWinControl;
 begin
   inherited CreateNew(AOwner, 0); // BCB compatible
-  Caption := RsDateDlgCaption;  
-  BorderStyle := fbsToolWindow; 
+  Caption := RsDateDlgCaption;
+  BorderStyle := fbsToolWindow;
   Color := clBtnFace;
   BorderIcons := [biSystemMenu];
   ClientHeight := 158; // Polaris

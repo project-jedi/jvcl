@@ -86,10 +86,7 @@ uses
   QConsts,  
   JvQBoxProcs;
 
-
-
 {$R *.xfm}
-
 
 
 

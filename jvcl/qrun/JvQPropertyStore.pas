@@ -148,9 +148,8 @@ uses
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}  
-  QConsts, 
-  SysUtils, TypInfo;
+  {$ENDIF HAS_UNIT_RTLCONSTS}
+  QConsts, SysUtils, TypInfo;
 
 const
   cLastSaveTime = 'Last Save Time';

@@ -927,9 +927,9 @@ begin
       OffsetRect(R, 1, 1);  
     SetPenColor(Canvas.Handle, Font.Color);
     if Placement = plLeft then
-      DrawText(Canvas.Handle, PWideChar(Caption), -1, R, DT_VCENTER, 270)
+      DrawText(Canvas.Handle, Caption, -1, R, DT_VCENTER, 270)
     else
-      DrawText(Canvas.Handle, PWideChar(Caption), -1, R, DT_VCENTER, 0) 
+      DrawText(Canvas.Handle, Caption, -1, R, DT_VCENTER, 0) 
   end;
   if ShowFocus and Focused then
   begin

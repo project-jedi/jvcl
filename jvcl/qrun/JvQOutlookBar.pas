@@ -46,7 +46,7 @@ interface
 uses
   SysUtils, Classes, QActnList,
   QWindows, QMessages, QButtons, QControls, QGraphics, QImgList, QForms, QStdCtrls, QExtCtrls, 
-  JvQThemes, JvQComponent, JvQExButtons;
+  JvQJCLUtils, JvQThemes, JvQComponent, JvQExButtons;
 
 const
   CM_CAPTION_EDITING = CM_BASE + 756;
@@ -1378,12 +1378,12 @@ begin
     if not Pages[Index].Enabled then
     begin
       OffsetRect(R, 1, 1);
-      Canvas.Font.Color := clWhite;  
-      DrawText(Canvas, Pages[Index].Caption, -1, R, Flags or DT_END_ELLIPSIS); 
+      Canvas.Font.Color := clWhite;
+      DrawText(Canvas, Pages[Index].Caption, -1, R, Flags or DT_END_ELLIPSIS);
       OffsetRect(R, -1, -1);
       Canvas.Font.Color := clGrayText;
-    end;  
-    DrawText(Canvas, Pages[Index].Caption, -1, R, Flags or DT_END_ELLIPSIS); 
+    end;
+    DrawText(Canvas, Pages[Index].Caption, -1, R, Flags or DT_END_ELLIPSIS);
   finally
     Canvas.Font.Color := SavedColor;
   end;

@@ -62,10 +62,7 @@ uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
 
-
-
 {$R *.xfm}
-
 
 procedure TYearGridEditForm.BtnLoadClick(Sender: TObject);
 begin

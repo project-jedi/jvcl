@@ -510,7 +510,7 @@ uses
   {$ENDIF HAS_UNIT_RTLCONSTS}
   QControls,
   JclStrings,
-  JvQJVCLUtils, JvQConsts, JvQResources;
+  JvQJVCLUtils, JvQJCLUtils, JvQConsts, JvQResources;
 
 const
   aisPrvEvt = 'aisPrvEvt';
@@ -2931,9 +2931,9 @@ begin
     R := CurrentRect; 
     CurrentCanvas.Start; 
     OldBkMode := SetBkMode(CurrentCanvas.Handle, TRANSPARENT);
-    try  
+    try
       DrawText(CurrentCanvas, S, Length(S), R, DT_SINGLELINE or DT_END_ELLIPSIS or
-        DT_VCENTER or DT_NOPREFIX); 
+        DT_VCENTER or DT_NOPREFIX);
     finally
       SetBkMode(CurrentCanvas.Handle, OldBkMode); 
       CurrentCanvas.Stop; 

@@ -66,10 +66,7 @@ uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
 
-
-
 {$R *.xfm}
-
 
 procedure TPainterEffectsForm.Bar(AMax, AMin, APos: Integer);
 begin

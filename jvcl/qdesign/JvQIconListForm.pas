@@ -111,15 +111,12 @@ procedure EditIconList(IconList: TJvIconList);
 implementation
 
 uses
-  SysUtils,  
-  QClipbrd, QConsts, 
+  SysUtils,
+  QClipbrd, QConsts,
   Math,
   JvQJVCLUtils, JvQJCLUtils, JvQDsgnConsts, JvQAni;
 
-
-
 {$R *.xfm}
-
 
 const
   sSlot = 'Slot%d';

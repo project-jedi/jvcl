@@ -951,6 +951,7 @@ procedure TJvTurtle.TextRotate(X, Y, Angle: Integer; AText: string;
 begin
   if AText = '' then
     Exit; 
+  // TODO: replace with DrawText(Canvas, .. , Angle)
   TextOutAngle(Canvas, Angle, X, Y, AText);  
 end;
 

@@ -92,10 +92,7 @@ procedure DesignProvider(AProvider: IJvDataProvider;
 
 implementation
 
-
-
 {$R *.xfm}
-
 
 uses
   CommCtrl,

@@ -64,11 +64,6 @@ type
   {$NODEFINE TBevelKind}
   function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
 
-const
-  clBtnHighlight = clNormalLight;
-  clBtnShadow = clNormalDark;
-
-
 
 type
   TJvComponent = class(TComponent)
@@ -126,14 +121,6 @@ const
   cDomainName = 'jvcl';
 {$ENDIF USE_DXGETTEXT}
 
-
-function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
-begin
-  result :=  QWindows.ColorToRGB(Color, Instance);
-end;
-
-
-
 //=== { TJvForm } ============================================================
 
 {$IFDEF USE_DXGETTEXT}
@@ -156,6 +143,11 @@ end;
 
 
 
+
+function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
+begin
+  result :=  QWindows.ColorToRGB(Color, Instance);
+end;
 
 procedure TJvPopupListBox.CreateWidget;
 begin

@@ -79,8 +79,8 @@ implementation
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}  
-  QForms, QConsts, 
+  {$ENDIF UNITVERSIONING}
+  QForms, QConsts,
   JvQJVCLUtils;
 
 //=== { TJvTimerThread } =====================================================

@@ -155,8 +155,8 @@ begin
   inherited CreateNew(AOwner, 0);
   { Form definitions }
   {Left := 354;
-  Top := 338;}  
-  BorderStyle := fbsDialog; 
+  Top := 338;}
+  BorderStyle := fbsDialog;
   Caption := RsItemEditor;
   ClientHeight := 92;
   ClientWidth := 330;

@@ -137,8 +137,8 @@ begin
     with FForm do
     begin
       ClientWidth := 307;
-      ClientHeight := 98;  
-      BorderStyle := fbsDialog; 
+      ClientHeight := 98;
+      BorderStyle := fbsDialog;
       Position := poMainFormCenter;
       FormStyle := fsStayOnTop;
       Scaled := False;

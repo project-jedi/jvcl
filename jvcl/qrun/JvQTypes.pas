@@ -40,8 +40,7 @@ interface
 uses
   SysUtils, Classes,
   QWindows, QMessages, QControls, QForms, QGraphics, 
-  Qt, Types,
-  JclWideStrings, 
+  Qt, JclWideStrings, 
   JvQConsts, JvQResources;
 
 const
@@ -94,7 +93,7 @@ type
   TJvFTPProgressEvent = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
   // from JvComponent.pas
-  TJvClipboardCommand = (caCopy, caCut, caPaste, caUndo, caClear);
+  TJvClipboardCommand = (caCopy, caCut, caPaste, caUndo);
   TJvClipboardCommands = set of TJvClipboardCommand;
 
   // used in JvSpeedButton, JvArrowButton, JvButton
@@ -386,6 +385,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 //=== { TJvPersistent } ======================================================
 
 
@@ -397,6 +401,22 @@ begin
   Name := 'SubComponent';
 end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

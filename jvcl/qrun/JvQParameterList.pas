@@ -38,7 +38,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JvQTypes, JvQDynControlEngine, JvQDynControlEngineIntf, JvQDSADialogs,
+  JvQConsts, JvQTypes, JvQDynControlEngine, JvQDynControlEngineIntf, JvQDSADialogs,
   JvQComponent, JvQPanel, JvQPropertyStore, JvQAppStorage, JvQAppStorageSelectList;
 
 type
@@ -1249,8 +1249,8 @@ begin
 
   with TForm(ParameterDialog) do
   begin
-    BorderIcons := [];  
-    BorderStyle := fbsDialog; 
+    BorderIcons := []; 
+    BorderStyle := fbsDialog;
     FormStyle := fsNormal;
     Position := poScreenCenter;
     OnShow := DialogShow;

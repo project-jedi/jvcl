@@ -483,8 +483,8 @@ begin
       Y := (Height - Images.Height) div 2;
     end;
     if Y < MarginTop then
-      Y := MarginTop;  
-    Images.Draw(Canvas, X, Y, ImageIndex, itImage, Enabled); 
+      Y := MarginTop;
+    Images.Draw(Canvas, X, Y, ImageIndex,itImage, Enabled);
   end;
 end;
 
