@@ -35,8 +35,6 @@ uses
   ExtCtrls, ComCtrls, StdCtrls, Consts, CommCtrl,
   {$IFDEF USEJVCL}
   JvComponent, JvAppStorage,
-  {$ELSE}
-  IniFiles, Registry,
   {$ENDIF USEJVCL}
   JvDockTree, JvDockSupportClass, JvDockSupportControl;
 
@@ -878,6 +876,7 @@ uses
   {$IFDEF USEJVCL}
   JvAppRegistryStorage, JvAppIniStorage, JvTypes,
   {$ENDIF}
+  IniFiles, Registry,
   JvDockSupportProc, JvDockGlobals, JvDockInfo, JvDockVSNetStyle;
 
 const
@@ -1554,7 +1553,7 @@ begin
   ReshowAllVisibleWindow;
 end;
 
-procedure SaveDockTreeToReg(RootKey: DWORD; RegPatch: string);
+procedure SaveDockTreeToReg(ARootKey: DWORD; RegPatch: string);
 var
   JvDockInfoTree: TJvDockInfoTree;
   I: Integer;
@@ -1575,7 +1574,7 @@ begin
 
     JvDockInfoTree.DockInfoReg := TRegistry.Create;
     try
-      JvDockInfoTree.DockInfoReg.RootKey := RootKey;
+      JvDockInfoTree.DockInfoReg.RootKey := ARootKey;
       JvDockInfoTree.WriteInfoToReg(RegPatch);
     finally
       JvDockInfoTree.DockInfoReg.Free;
@@ -1585,7 +1584,7 @@ begin
   end;
 end;
 
-procedure LoadDockTreeFromReg(RootKey: DWORD; RegPatch: string);
+procedure LoadDockTreeFromReg(ARootKey: DWORD; RegPatch: string);
 var
   JvDockInfoTree: TJvDockInfoTree;
   Form: TForm;
@@ -1605,7 +1604,7 @@ begin
     JvDockInfoTree.DockInfoReg := TRegistry.Create;
     try
       JvGlobalDockIsLoading := True;
-      JvDockInfoTree.DockInfoReg.RootKey := RootKey;
+      JvDockInfoTree.DockInfoReg.RootKey := ARootKey;
       JvDockInfoTree.ReadInfoFromReg(RegPatch);
     finally
       JvDockInfoTree.DockInfoReg.Free;
