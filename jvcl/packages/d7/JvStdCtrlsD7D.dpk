@@ -29,8 +29,8 @@ package JvStdCtrlsD7D;
 requires
   JvStdCtrlsD7R,
   designide,
-  JvCoreD7D,
-  dclstd;
+  dclstd,
+  JvCoreD7D;
 
 contains
   JvStdCtrlsReg in '..\..\design\JvStdCtrlsReg.pas',

@@ -50,8 +50,8 @@ contains
   JvBaseDsgnFrame in '..\..\design\JvBaseDsgnFrame.pas' {fmeJvBaseDesign: TFrame},
   JvDataConsumerItemSelectForm in '..\..\design\JvDataConsumerItemSelectForm.pas' {frmJvDataConsumerItemSelect},
   JvProviderTreeListFrame in '..\..\design\JvProviderTreeListFrame.pas' {fmeJvProviderTreeList: TFrame},
-  JvProviderToolbarFrame in '..\..\design\JvProviderToolbarFrame.pas',
-  JvStdToolbarDsgnFrame in '..\..\design\JvStdToolbarDsgnFrame.pas',
+  JvProviderToolbarFrame in '..\..\design\JvProviderToolbarFrame.pas' {fmeJvProviderToolbar: TFrame},
+  JvStdToolbarDsgnFrame in '..\..\design\JvStdToolbarDsgnFrame.pas' {fmeJvStdToolbarDesign: TFrame},
   JvBaseDsgnToolbarFrame in '..\..\design\JvBaseDsgnToolbarFrame.pas' {fmeJvBaseToolbarDesign: TFrame},
   JvDataContextManagerForm in '..\..\design\JvDataContextManagerForm.pas' {frmJvDataContextManager},
   JvDataConsumerContextSelectForm in '..\..\design\JvDataConsumerContextSelectForm.pas' {frmDataConsumerContextSelect: TFrame};

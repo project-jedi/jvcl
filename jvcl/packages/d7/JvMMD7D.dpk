@@ -29,7 +29,11 @@ package JvMMD7D;
 requires
   JvMMD7R,
   designide,
-  JvCmpD7R;
+  JvCmpD7R,
+  vcl,
+  rtl,
+  JvCoreD7R,
+  DJCL70;
 
 contains
   JvMMReg in '..\..\design\JvMMReg.pas',
@@ -41,6 +45,7 @@ contains
   JvID3v2DefineForm in '..\..\design\JvID3v2DefineForm.pas' {JvID3DefineDlg},
   JvIconListForm in '..\..\design\JvIconListForm.pas' {IconListDialog},
   JvVirtualKeyEditorForm in '..\..\design\JvVirtualKeyEditorForm.pas' {frmJvVirtualKeyEditor},
-  JvAVICaptureEditors in '..\..\design\JvAVICaptureEditors.pas';
+  JvAVICaptureEditors in '..\..\design\JvAVICaptureEditors.pas',
+  JvPictureEditors in '..\..\design\JvPictureEditors.pas';
 
 end.
