@@ -32,12 +32,7 @@ unit JvXPCore;
 interface
 
 uses
-  {$IFDEF USEJVCL}
-  Windows, Messages, Classes, Controls, Graphics, Forms,
-  JvComponent;
-  {$ELSE}
   Windows, Messages, Classes, Controls, Graphics, Forms;
-  {$ENDIF USEJVCL}
 
 const
   { color constants.
@@ -124,7 +119,7 @@ type
 
   { baseclass for non-focusable component descendants. }
   {$IFDEF USEJVCL}
-  TJvXPCustomComponent = class(TJvComponent)
+  TJvXPCustomComponent = class(TComponent)
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -148,11 +143,7 @@ type
 
   { baseclass for focusable control descendants. }
 
-  {$IFDEF USEJVCL}
-  TJvXPCustomControl = class(TJvCustomControl)
-  {$ELSE}
   TJvXPCustomControl = class(TCustomControl)
-  {$ENDIF USEJVCL}
   private
     FClicking: Boolean;
     FDrawState: TJvXPDrawState;
