@@ -30,7 +30,7 @@ Known Issues:
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, Buttons, StdCtrls;
 
 type
@@ -128,10 +128,12 @@ begin
         LabelFieldLen.Enabled := false;
 end;
 
+type
+  TStringArray = array of string;
 
 procedure TJvCsvDefStrDialog.ItemChange;
 var
-  SubFields:Array of String;
+  SubFields:TStringArray;
   t,Count:Integer;
   selectedText:String;
   FieldLength:Integer;
