@@ -249,10 +249,11 @@ procedure UnInitJvShellHooks;
 
 implementation
 
-{$IFNDEF COMPILER6_UP}
 uses
-  Forms;
-{$ENDIF}
+  {$IFNDEF COMPILER6_UP}
+  Forms,
+  {$ENDIF}
+  JvJVCLUtils;
 
 const
   cUser32 = 'user32.dll';
@@ -339,22 +340,14 @@ begin
     if FActive and (FWndHandle <> 0) then
     begin
       DeregisterShellHookWindow(FWndHandle);
-      {$IFDEF COMPILER6_UP}
-      Classes.DeallocateHWnd(FWndHandle);
-      {$ELSE}
-      DeallocateHWnd(FWndHandle);
-      {$ENDIF}
+      DeallocateHWndEx(FWndHandle);
     end;
     FWndHandle := 0;
     if Value then
     begin
       if not InitJvShellHooks then
         Exit; // raise ?
-      {$IFDEF COMPILER6_UP}
-      FWndHandle := Classes.AllocateHWnd(ShellHookMethod);
-      {$ELSE}
-      FWndHandle := AllocateHWnd(ShellHookMethod);
-      {$ENDIF}
+      FWndHandle := AllocateHWndEx(ShellHookMethod);
       if FWndHandle <> 0 then
         FHookMsg := RegisterWindowMessage('SHELLHOOK'); // do not localize
       if not RegisterShellHookWindow(FWndHandle) then

@@ -182,7 +182,7 @@ type
 implementation
 
 uses
-  JvThemes;
+  JvThemes, JvJVCLUtils;
 
 {$R ..\Resources\JvgCheckBox.res}
 
@@ -583,7 +583,7 @@ begin
   if (P <> FNewWndProc) then
   begin
     FPrevWndProc := P;
-    FNewWndProc := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(FocusControlWndHookProc);
+    FNewWndProc := JvMakeObjectInstance(FocusControlWndHookProc);
     SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FNewWndProc));
   end;
 end;
@@ -597,6 +597,8 @@ begin
     FNewWndProc) then
   begin
     SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FPrevWndProc));
+    // (rom) JvFreeObjectInstance call added
+    JvFreeObjectInstance(FNewWndProc);
     FNewWndProc := nil;
   end;
 end;

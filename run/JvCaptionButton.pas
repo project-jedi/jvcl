@@ -60,7 +60,9 @@ interface
 
 uses
   Windows, Messages, Classes, Graphics, Controls, Forms,
-  {$IFDEF COMPILER6_UP}Types,{$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  Types,
+  {$ENDIF COMPILER6_UP}
   ActnList, ImgList,
   JvComponent, JvWndProcHook;
 

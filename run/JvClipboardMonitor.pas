@@ -61,7 +61,8 @@ function LoadClipboardFromStream(Stream: TStream): Word;
 implementation
 
 uses
-  Forms, Clipbrd;
+  Forms, Clipbrd,
+  JvJVCLUtils;
 
 procedure SaveClipboardToStream(Format: Word; Stream: TStream);
 var
@@ -128,11 +129,7 @@ end;
 constructor TJvClipboardMonitor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF COMPILER6_UP}
-  FWindowHandle := Classes.AllocateHWnd(WndProc);
-  {$ELSE}
-  FWindowHandle := AllocateHWnd(WndProc);
-  {$ENDIF COMPILER6_UP}
+  FWindowHandle := AllocateHWndEx(WndProc);
   Enabled := True;
 end;
 
@@ -140,11 +137,7 @@ destructor TJvClipboardMonitor.Destroy;
 begin
   FOnChange := nil;
   Enabled := False;
-  {$IFDEF COMPILER6_UP}
-  Classes.DeallocateHWnd(FWindowHandle);
-  {$ELSE}
-  DeallocateHWnd(FWindowHandle);
-  {$ENDIF COMPILER6_UP}
+  DeallocateHWndEx(FWindowHandle);
   inherited Destroy;
 end;
 

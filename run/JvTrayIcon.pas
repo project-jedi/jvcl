@@ -174,7 +174,7 @@ type
 implementation
 
 uses
-  JvJCLUtils;
+  JvJCLUtils, JvJVCLUtils;
 
 const
   WM_CALLBACKMESSAGE = WM_USER + 1;
@@ -222,11 +222,7 @@ begin
   FIcon.OnChange := IconChanged;
   FApplicationVisible := True;
   FSnap := False;
-  {$IFDEF COMPILER6_UP}
-  FHandle := Classes.AllocateHWnd(WndProc);
-  {$ELSE}
-  FHandle := AllocateHWnd(WndProc);
-  {$ENDIF}
+  FHandle := AllocateHWndEx(WndProc);
 
   FVisibility := [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide];
   FAnimated := False;
@@ -262,11 +258,7 @@ begin
   FBalloonCloser.Enabled := false;
   FBalloonCloser.Free;
   FIcon.Free;
-  {$IFDEF COMPILER6_UP}
-  Classes.DeallocateHWnd(FHandle);
-  {$ELSE}
-  DeallocateHWnd(FHandle);
-  {$ENDIF}
+  DeallocateHWndEx(FHandle);
 
   if not (csDesigning in ComponentState) then
     if FDllHandle <> 0 then

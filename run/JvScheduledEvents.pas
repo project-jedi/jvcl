@@ -206,7 +206,7 @@ implementation
 uses
   Contnrs, Forms, TypInfo,
   JclDateTime, JclRTTI,
-  JvTypes, JvResources;
+  JvJVCLUtils, JvResources, JvTypes;
 
 { registry constants }
 
@@ -435,13 +435,7 @@ begin
     if AutoSave then
       SaveEventStates;
     if FWnd <> 0 then
-    begin
-      {$IFDEF COMPILER6_UP}
-      Classes.DeallocateHWnd(FWnd);
-      {$ELSE}
-      DeallocateHWnd(FWnd);
-      {$ENDIF COMPILER6_UP}
-    end;
+      DeallocateHWndEx(FWnd);
   end;
   FEvents.Free;
   inherited Destroy;
@@ -484,11 +478,7 @@ procedure TJvCustomScheduledEvents.Loaded;
 begin
   if not (csDesigning in ComponentState) then
   begin
-    {$IFDEF COMPILER6_UP}
-    FWnd := Classes.AllocateHWnd(WndProc);
-    {$ELSE}
-    FWnd := AllocateHWnd(WndProc);
-    {$ENDIF COMPILER6_UP}
+    FWnd := AllocateHWndEx(WndProc);
     if AutoSave then
       LoadEventStates;
     InitEvents;

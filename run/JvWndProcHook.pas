@@ -91,7 +91,8 @@ procedure ReleaseObj(AObject: TObject);
 implementation
 
 uses
-  Forms;
+  Forms,
+  JvJVCLUtils;
 
 type
   PPJvHookInfo = ^PJvHookInfo;
@@ -607,11 +608,7 @@ begin
   begin
     TMethod(FOldWndProc).Data := nil;
     TMethod(FOldWndProc).Code := Pointer(GetWindowLong(FHandle, GWL_WNDPROC));
-    {$IFDEF COMPILER6_UP}
-    SetWindowLong(FHandle, GWL_WNDPROC, Integer(Classes.MakeObjectInstance(WindowProc)));
-    {$ELSE}
-    SetWindowLong(FHandle, GWL_WNDPROC, Integer(MakeObjectInstance(WindowProc)));
-    {$ENDIF}
+    SetWindowLong(FHandle, GWL_WNDPROC, Integer(JvMakeObjectInstance(WindowProc)));
     FHooked := True;
   end;
 end;
@@ -658,11 +655,7 @@ begin
     Ptr := Pointer(GetWindowLong(FHandle, GWL_WNDPROC));
     SetWindowLong(FHandle, GWL_WNDPROC, Integer(TMethod(FOldWndProc).Code));
     FHooked := False;
-    {$IFDEF COMPILER6_UP}
-    Classes.FreeObjectInstance(Ptr);
-    {$ELSE}
-    FreeObjectInstance(Ptr);
-    {$ENDIF}
+    JvFreeObjectInstance(Ptr);
   end;
 end;
 
@@ -955,11 +948,7 @@ begin
 
   FReleasing.Free;
   if FHandle <> 0 then
-    {$IFDEF COMPILER6_UP}
-    Classes.DeallocateHWnd(FHandle);
-  {$ELSE}
-    DeallocateHWnd(FHandle);
-  {$ENDIF}
+    DeallocateHWndEx(FHandle);
 
   inherited Destroy;
 end;
@@ -967,11 +956,7 @@ end;
 function TJvReleaser.GetHandle: HWND;
 begin
   if FHandle = 0 then
-    {$IFDEF COMPILER6_UP}
-    FHandle := Classes.AllocateHWnd(WndProc);
-  {$ELSE}
-    FHandle := AllocateHWnd(WndProc);
-  {$ENDIF}
+    FHandle := AllocateHWndEx(WndProc);
   Result := FHandle;
 end;
 

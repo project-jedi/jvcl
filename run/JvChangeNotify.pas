@@ -131,10 +131,8 @@ function ActionsToString(Actions: TJvChangeActions): string;
 implementation
 
 uses
-  {$IFNDEF COMPILER6_UP}
-  JvJCLUtils, // DirectoryExists
-  {$ENDIF COMPILER6_UP}
-  JvConsts, JvResources, JvTypes;
+  JvJCLUtils, JvConsts, JvResources, JvTypes;
+  // JvJCLUtils for DirectoryExists
 
 function ActionsToString(Actions: TJvChangeActions): string;
 const

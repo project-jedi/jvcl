@@ -18,7 +18,7 @@ uses
   Graphics, StdCtrls, ComCtrls, ImgList,
   {$IFNDEF COMPILER6_UP}
   JvConsts,  // for clSkyBlue
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   ExtCtrls;
 
 const

@@ -100,90 +100,13 @@ type
     property OnRejected: TNotifyEvent read FOnRejected write FOnRejected;
   end;
 
-
-function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): HWND;
-// AllocateHWndEx works like Classes.AllocateHWnd but does not use any virtual memory pages
-procedure DeallocateHWndEx(Wnd: HWND);
-// DeallocateHWndEx works like Classes.DeallocateHWnd but does not use any virtual memory pages
-
 implementation
+
+uses
+  JvJVCLUtils;
 
 const
   sAppInstancesWindowClassName = 'JvAppInstances_WindowClass'; // do not localize
-
-//=== AllocateHWndEx =========================================================
-
-const
-  cUtilWindowExClass: TWndClass = (
-    style: 0;
-    lpfnWndProc: nil;
-    cbClsExtra: 0;
-    cbWndExtra: SizeOf(TMethod);
-    hInstance: 0;
-    hIcon: 0;
-    hCursor: 0;
-    hbrBackground: 0;
-    lpszMenuName: nil;
-    lpszClassName: 'TPUtilWindowEx');
-
-function StdWndProc(Window: HWND; Message, WParam: WPARAM;
-  LParam: LPARAM): LRESULT; stdcall;
-var
-  Msg: TMessage;
-  WndProc: TWndMethod;
-begin
-  TMethod(WndProc).Code := Pointer(GetWindowLong(Window, 0));
-  TMethod(WndProc).Data := Pointer(GetWindowLong(Window, 4));
-  if Assigned(WndProc) then
-  begin
-    Msg.Msg := Message;
-    Msg.WParam := WParam;
-    Msg.LParam := LParam;
-    Msg.Result := 0;
-    WndProc(Msg);
-    Result := Msg.Result;
-  end
-  else
-    Result := DefWindowProc(Window, Message, WParam, LParam);
-end;
-
-function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): HWND;
-var
-  TempClass: TWndClass;
-  UtilWindowExClass: TWndClass;
-  ClassRegistered: Boolean;
-begin
-  UtilWindowExClass := cUtilWindowExClass;
-  UtilWindowExClass.hInstance := HInstance;
-  UtilWindowExClass.lpfnWndProc := @DefWindowProc;
-  if AClassName <> '' then
-    UtilWindowExClass.lpszClassName := PChar(AClassName);
-
-  ClassRegistered := GetClassInfo(HInstance, UtilWindowExClass.lpszClassName,
-     TempClass);
-  if not ClassRegistered or (TempClass.lpfnWndProc <> @DefWindowProc) then
-  begin
-    if ClassRegistered then
-      Windows.UnregisterClass(UtilWindowExClass.lpszClassName, HInstance);
-    Windows.RegisterClass(UtilWindowExClass);
-  end;
-  Result := CreateWindowEx(WS_EX_TOOLWINDOW, UtilWindowExClass.lpszClassName,
-    '', WS_POPUP, 0, 0, 0, 0, 0, 0, HInstance, nil);
-
-  if Assigned(Method) then
-  begin
-    SetWindowLong(Result, 0, Longint(TMethod(Method).Code));
-    SetWindowLong(Result, SizeOf(TMethod(Method).Code), Longint(TMethod(Method).Data));
-    SetWindowLong(Result, GWL_WNDPROC, Longint(@StdWndProc));
-  end;
-end;
-
-procedure DeallocateHWndEx(Wnd: HWND);
-begin
-  DestroyWindow(Wnd);
-end;
-
-//=== TJvAppInstances ========================================================
 
 var
   FirstJvAppInstance: Boolean;

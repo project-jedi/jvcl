@@ -223,7 +223,7 @@ implementation
 
 uses
   Windows, SysUtils, Consts,
-  JvResources;
+  JvJVCLUtils, JvResources;
 
 { TJvClipboard }
 
@@ -314,7 +314,7 @@ begin
       // then we create one, passing MainWndProc rather than
       // WndProc as MainWndProc will call WndProc but in a
       // try except statement ensuring good exception handling
-      FClipboardWindow := Classes.AllocateHWnd(MainWndProc);
+      FClipboardWindow := AllocateHWndEx(MainWndProc);
     end;
 
     // we must now close the clipboard as it was opened
@@ -498,7 +498,7 @@ begin
     FFromDestroyHandle := true;
 
     // we can now safely destroy the window
-    Classes.DeallocateHWnd(FClipboardWindow);
+    DeallocateHWndEx(FClipboardWindow);
 
     // and we no longer have a window
     FClipboardWindow := 0;

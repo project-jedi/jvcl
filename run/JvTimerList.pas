@@ -155,7 +155,7 @@ implementation
 
 uses
   Consts, Forms, SysUtils, Math,
-  JvJVCLUtils, JvTypes, JvResources;
+  JvJVCLUtils, JvResources, JvTypes;
 
 const
   MinInterval = 100; { 0.1 sec }
@@ -365,11 +365,7 @@ begin
     begin
       if Value then
       begin
-        {$IFDEF COMPILER6_UP}
-        FWndHandle := Classes.AllocateHWnd(TimerWndProc);
-        {$ELSE}
-        FWndHandle := AllocateHWnd(TimerWndProc);
-        {$ENDIF}
+        FWndHandle := AllocateHWndEx(TimerWndProc);
         StartTicks := GetTickCount;
         Events.UpdateEvents(StartTicks);
         Events.CalculateInterval(StartTicks);
@@ -379,11 +375,7 @@ begin
       else
       begin
         KillTimer(FWndHandle, 1);
-        {$IFDEF COMPILER6_UP}
-        Classes.DeallocateHWnd(FWndHandle);
-        {$ELSE}
-        DeallocateHWnd(FWndHandle);
-        {$ENDIF}
+        DeallocateHWndEx(FWndHandle);
         FWndHandle := INVALID_HANDLE_VALUE;
         if Assigned(FOnFinish) then
           FOnFinish(Self);

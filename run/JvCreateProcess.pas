@@ -220,7 +220,7 @@ implementation
 uses
   Math,
   JclSysUtils,
-  JvJCLUtils, JvConsts, JvResources;
+  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources;
 
 const
   CM_READ = WM_USER + 1;
@@ -943,11 +943,7 @@ begin
   FreeAndNil(FEnvironment);
   FreeAndNil(FStartupInfo);
   if FHandle <> 0 then
-    {$IFDEF COMPILER6_UP}
-    Classes.DeallocateHWnd(FHandle);
-    {$ELSE}
-    DeallocateHWnd(FHandle);
-    {$ENDIF}
+    DeallocateHWndEx(FHandle);
   inherited Destroy;
   FConsoleOutput.Free;
 end;
@@ -1023,11 +1019,7 @@ end;
 function TJvCreateProcess.GetHandle: THandle;
 begin
   if FHandle = 0 then
-    {$IFDEF COMPILER6_UP}
-    FHandle := Classes.AllocateHWnd(WndProc);
-    {$ELSE}
-    FHandle := AllocateHWnd(WndProc);
-    {$ENDIF}
+    FHandle := AllocateHWndEx(WndProc);
   Result := FHandle;
 end;
 
