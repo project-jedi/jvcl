@@ -473,6 +473,9 @@ procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcWidth: Boolean; MouseX, MouseY: Integer; var MouseOnLink: Boolean;
   var LinkName: string);
+const
+  DefaultLeft = 0; // (ahuser) was 2
+
 var
   vText, vM, TagPrp, Prp, tempLink: string;
   vCount: Integer;
@@ -480,16 +483,17 @@ var
   Selected: Boolean;
   Alignment: TAlignment;
   Trans, IsLink: Boolean;
+  CurLeft: Integer;
 
-  function ExtractPropertyValue(Tag, PropName: string):string;
+  function ExtractPropertyValue(const Tag: string; PropName: string): string;
   begin
     Result := '';
     PropName := UpperCase(PropName);
     if Pos(PropName, UpperCase(Tag)) > 0 then
     begin
-      Result := Copy(Tag, Pos(PropName, UpperCase(Tag))+Length(PropName), Length(Tag));
-      Result := Copy(Result, Pos('"', Result)+1, Length(Result));
-      Result := Copy(Result, 1, Pos('"', Result)-1);
+      Result := Copy(Tag, Pos(PropName, UpperCase(Tag)) + Length(PropName), Length(Tag));
+      Result := Copy(Result, Pos('"', Result) + 1, Length(Result));
+      Result := Copy(Result, 1, Pos('"', Result) - 1);
     end;
   end;
 
@@ -502,31 +506,34 @@ var
         Canvas.Font.Style := Canvas.Font.Style - [Style];
   end;
 
-  function CalcPos(str:string):Integer;
+  function CalcPos(const str: string):Integer;
   begin
     case Alignment of
       taRightJustify:
-        Result := rect.Right - ItemHTWidth(Canvas, Rect, State, str);
+        Result := Rect.Right - ItemHTWidth(Canvas, Rect, State, str);
       taCenter:
-        Result := (Rect.Right - ItemHTWidth(Canvas, Rect, State, str)) div 2;
+        Result := (Rect.Right - Rect.Left - ItemHTWidth(Canvas, Rect, State, str)) div 2;
     else
-      Result := 2;
+      Result := DefaultLeft;
     end;
     if Result <= 0 then
-      Result := 2;
+      Result := DefaultLeft;
   end;
 
   procedure Draw(const M: string);
   var
     Width, Height: Integer;
+    R: TRect;
   begin
+    R := Rect;
+    Inc(R.Left, CurLeft);
     if Assigned(Canvas) then
     begin
       Width  := Canvas.TextWidth(M);
       Height := CanvasMaxTextHeight(Canvas);
       if IsLink and not MouseOnLink then
-        if (MouseY in [Rect.Top..Rect.Top+Height]) and
-           (MouseX in [Rect.Left..Rect.Left+Width]) then
+        if (MouseY in [R.Top..R.Top + Height]) and
+           (MouseX in [R.Left..R.Left + Width]) then
         begin
           MouseOnLink := True;
           Canvas.Font.Color := clRed; // hover link
@@ -540,11 +547,11 @@ var
         {$ENDIF VCL}
         {$IFDEF VisualCLX}
         if not trans then
-          Canvas.FillRect(Rect);  // for opaque ( transparent = false )
+          Canvas.FillRect(R);  // for opaque ( transparent = false )
         {$ENDIF}
-        Canvas.TextOut(Rect.Left, Rect.Top, M);
+        Canvas.TextOut(R.Left, R.Top, M);
       end;
-      Rect.Left := Rect.Left + Width;
+      CurLeft := CurLeft + Width;
     end;
   end;
 
@@ -554,8 +561,8 @@ var
     begin
       if vCount < vStr.Count-1 then
       begin
-        Width := Max(Width, Rect.Left);
-        Rect.Left := 2;
+        Width := Max(Width, CurLeft);
+        CurLeft := DefaultLeft;
         Rect.Top := Rect.Top + CanvasMaxTextHeight(Canvas);
       end;
     end;
@@ -595,7 +602,7 @@ begin
     IsLink := False;
     MouseOnLink := False;
     vText := Text;
-    vStr  := TstringList.Create;
+    vStr  := TStringList.Create;
     vStr.Text := PrepareText(vText);
     Trans := True;
     LinkName := '';
@@ -603,19 +610,19 @@ begin
 
     Selected := (odSelected in State) or (odDisabled in State);
 
-    Width := 2;
-    Rect.Left := 2;
+    Width := DefaultLeft;
+    CurLeft := DefaultLeft;
 
     vM := '';
-    for vCount := 0 to vStr.Count-1 do
+    for vCount := 0 to vStr.Count - 1 do
     begin
       vText := vStr[vCount];
-      Rect.Left := CalcPos(vText);
+      CurLeft := CalcPos(vText);
       while Length(vText) > 0 do
       begin
         vM := BeforeTag(vText, True);
-        vM := stringReplace(vM, '&lt;', '<', [rfReplaceAll, rfIgnoreCase]); // <--+ this must be here
-        vM := stringReplace(vM, '&gt;', '>', [rfReplaceAll, rfIgnoreCase]); // <--/
+        vM := StringReplace(vM, '&lt;', '<', [rfReplaceAll, rfIgnoreCase]); // <--+ this must be here
+        vM := StringReplace(vM, '&gt;', '>', [rfReplaceAll, rfIgnoreCase]); // <--/
         if (GetChar(vText, 1) = '<') then
         begin
           Draw(vM);
@@ -655,13 +662,13 @@ begin
                     if Pos('CENTER', TagPrp) > 0 then
                       Alignment := taCenter
                     else
-                    if Pos('Right',  TagPrp) > 0 then
+                    if Pos('RIGHT',  TagPrp) > 0 then
                       Alignment := taRightJustify
                     else
                       Alignment := taLeftJustify;
-                    Rect.Left := 2;
+                    CurLeft := DefaultLeft;
                     if not CalcWidth then
-                      Rect.Left := CalcPos(vText);
+                      CurLeft := CalcPos(vText);
                   end
                   else
                   begin   // A HREF
@@ -682,7 +689,7 @@ begin
                   if GetChar(vText, 3, True) = 'N' then //IND="%d"
                   begin
                     TagPrp := Copy(vText, 2, Pos('>', vText)-2);
-                    Rect.Left := StrToInt(ExtractPropertyValue(TagPrp, 'IND')); // ex IND="10"
+                    CurLeft := StrToInt(ExtractPropertyValue(TagPrp, 'IND')); // ex IND="10"
                   end
                   else
                     Style(fsItalic, True); // ITALIC
@@ -742,7 +749,7 @@ begin
     FreeAndNil(vStr);
     FreeAndNil(OldFont);
   end;
-  Width := Max(Width, Rect.Left);
+  Width := Max(Width, CurLeft - DefaultLeft);
 end;
 // Kaczkowski - end
 
