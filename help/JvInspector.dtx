@@ -28,14 +28,14 @@ Description
 Summary
   Inspector data exception class.
 Description
-  Exception class for exceptions occuring in the TJvCustomInspectorData class or one of it's
+  Exception class for exceptions occuring in the TJvCustomInspectorData class or one of its
   descendants.
 ----------------------------------------------------------------------------------------------------
 @@EJvInspectorItem
 Summary
   Inspector item exception class.
 Description
-  Exception class for exceptions occuring in the TJvCustomInspectorItem class or one of it's
+  Exception class for exceptions occuring in the TJvCustomInspectorItem class or one of its
   descendants.
 ----------------------------------------------------------------------------------------------------
 @@EJvInspectorReg
@@ -43,7 +43,7 @@ Summary
   Inspector registration exception class.
 Description
   Exception class for exception occuring in the TJvInspectorRegister class or in the
-  TJvCustomInspectorRegItem class or one of it's descendants.
+  TJvCustomInspectorRegItem class or one of its descendants.
 ----------------------------------------------------------------------------------------------------
 @@TInspectorClassFlag
 <TITLE TInspectorClassFlag type>
@@ -69,13 +69,13 @@ Description
 @@TInspectorComponentFlag.icfShowOwnerNames
   Indicates if owner names should be displayed.
 @@TInspectorComponentFlag.icfNoShowFirstOwnerName
-  Indicates wether the name of the first owner in the list should be suppressed.
+  Indicates whether the name of the first owner in the list should be suppressed.
 @@TInspectorComponentFlag.icfSortComponents
-  Indicates wether components are sorted alphabetically withing their owner.
+  Indicates whether components are sorted alphabetically withing their owner.
 @@TInspectorComponentFlag.icfSortOwners
-  Indicates wether owners are sorted alphabetically.
+  Indicates whether owners are sorted alphabetically.
 @@TInspectorComponentFlag.icfKeepFirstOwnerAsFirst
-  Indicates wether the first owner in the list should stay the first after sorting.
+  Indicates whether the first owner in the list should stay the first after sorting.
 ----------------------------------------------------------------------------------------------------
 @@TInspectorComponentFlags
 <TITLE TInspectorComponentFlags type>
@@ -146,7 +146,7 @@ Description
 @@TInspectorItemFlag.iifReadonly
   Indicates whether or not the item is read-only.
 @@TInspectorItemFlag.iifHidden
-  Indicates wether the item is hidden. Hidden means that the item itself is never shown, but it's
+  Indicates whether the item is hidden. Hidden means that the item itself is never shown, but its
   sub items can be, depending on the iifExpanded and iifVisible flags.
 @@TInspectorItemFlag.iifExpanded
   Indicates the expanded state of the item. The item's Expanded property maps directly onto this
@@ -158,7 +158,7 @@ Description
 @@TInspectorItemFlag.iifAutoUpdate
   Any change to the edit control is immediately applied to the underlaying data object.
 @@TInspectorItemFlag.iifMultiLine
-  Indicates wether or not the item is a multiline edit.
+  Indicates whether or not the item is a multiline edit.
 @@TInspectorItemFlag.iifValueList
   Indicates wheter or not the item uses a value list to edit the item (ie. uses a combobox to edit
   the value).
@@ -279,13 +279,13 @@ Description
 @@TInspectorTMethodFlag.imfShowInstanceNames
   Indicates if instance names should be displayed.
 @@TInspectorTMethodFlag.imfNoShowFirstInstanceName
-  Indicates wether the name of the first instance in the list should be suppressed.
+  Indicates whether the name of the first instance in the list should be suppressed.
 @@TInspectorTMethodFlag.imfSortMethods
-  Indicates wether event handlerss are sorted alphabetically within their owner.
+  Indicates whether event handlerss are sorted alphabetically within their owner.
 @@TInspectorTMethodFlag.imfSortInstances
-  Indicates wether instances are sorted alphabetically.
+  Indicates whether instances are sorted alphabetically.
 @@TInspectorTMethodFlag.imfKeepFirstInstanceAsFirst
-  Indicates wether the first instance in the list should stay the first after sorting.
+  Indicates whether the first instance in the list should stay the first after sorting.
 ----------------------------------------------------------------------------------------------------
 @@TInspectorTMethodFlags
 <TITLE TInspectorTMethodFlags type>
@@ -336,7 +336,7 @@ Parameters
 Summary
   Internal band resizing flag.
 Description
-  BandSizing indicates wether the control is resizing band on mouse movements.
+  BandSizing indicates whether the control is resizing band on mouse movements.
   The flag is used internally to keep track of band resizing.
 See Also
   BandSizingBand
@@ -465,7 +465,7 @@ Summary
   Divider position.
 Description
   Divider is the X-position of the divider between the name and
-  the value part. Read Divider to determine it's current
+  the value part. Read Divider to determine its current
   location or set it to a new position.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.DividerAbs
@@ -667,7 +667,7 @@ Description
   settings will be update, which in turn will lead to a repaint.
 
   InvalidateItem is called whenever an item has changed a visible property (e.g.
-  it's value, name or height).
+  its value, name or height).
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.InvalidateList
 Summary
@@ -686,7 +686,7 @@ Summary
   Standard item height.
 Description
   ItemHeight is the standard items height. Although each item
-  can have it's own height, this property determines the default
+  can have its own height, this property determines the default
   height for all non-resized items. In addition, this value
   could be used to determine the resize increments of an item.
 
@@ -853,7 +853,7 @@ See Also
 Summary
   Counter of paints issued.
 Description
-  PaintGeneration holds the number of times the inspector has rendered it's
+  PaintGeneration holds the number of times the inspector has rendered its
   image. It's primary goal is to keep track which items have been painted during
   the last iteration. For that purpose, each item has a LastPaintGeneration
   property. If the two values are equal, the item has been displayed during the
@@ -863,7 +863,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.ReadOnly
 Summary
-  Indicates wether the inspector is in read-only mode.
+  Indicates whether the inspector is in read-only mode.
 Description
   ReadOnly indicates the read-only state of the inspector. When ReadOnly is
   True, the inspector is locked and items can not be edited. When ReadOnly is
@@ -1071,7 +1071,7 @@ Summary
 Description
   VisibleIndex returns the index (row number) at which the item is displayed. If
   the item is not displayed at all (ie. the parent is not expanded or visible or
-  the item is hidden or not visible) the function will return -1. Otherwise it's
+  the item is hidden or not visible) the function will return -1. Otherwise its
   a 0-based index into the VisibleItems property.
 Parameters
   AItem - Description for this parameter
@@ -1117,7 +1117,7 @@ Description
   The base class provides properties and method to access the
   data in various forms (much like a TField).
 
-  In addition, each data class can have it's own item
+  In addition, each data class can have its own item
   registration database. This will provide a way to register
   different types based on the metadata the data instance can
   provide.
@@ -1253,7 +1253,7 @@ Summary
 Description
   InitEdits will iterate over all inspector items and call their
   <LINK TJvCustomInspectorItem.InitEdit, InitEdit> method, but only if the item is the currently
-  selected item of it's inspector.
+  selected item of its inspector.
 See Also
   DoneEdits
 ----------------------------------------------------------------------------------------------------
@@ -1264,7 +1264,7 @@ Description
   Invalidate tells the item that something in the data instance has changed
   since it was last displayed/edited. Call Invalidate whenever something in the
   data instance is changed (this is done automatically when the data is changed
-  through one of it's access properties but you might need to call it when the
+  through one of its access properties but you might need to call it when the
   data has changed through other means).
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorData.InvalidateData
@@ -1327,7 +1327,7 @@ Summary
   ItemRegister returns the item registration database.
 Description
   ItemRegister returns the item registration database. Each data class can have
-  it's own database but is not required to. The function will return the first
+  its own database but is not required to. The function will return the first
   registration database it finds within the data class hierarchie.
 
   The root database is located in TJvCustomInspectorData and usually contains
@@ -1354,9 +1354,9 @@ Summary
   The name of the data object
 Description
   Name holds the name of the data object. Depending on the
-  actual class implementation, it's value is preset to the data
+  actual class implementation, its value is preset to the data
   it holds. The value of Name is used to display the item's
-  name. Read Name to determine it's current value or set Name
+  name. Read Name to determine its current value or set Name
   to a new name.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorData.New
@@ -1400,25 +1400,25 @@ Summary
 Description
   Write an OnValueChanged event handler to react to changes in the value. Changes done through an
   inspector control are always detected and reported. For some data layers (like the
-  TJvInspectorDBData data layer) you will also recieve notifications for changes done outside an
+  TJvInspectorDBData data layer) you will also receive notifications for changes done outside an
   inspector control.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorData.RefreshEdits
 Summary
   Cancels and reactivates all attached inspector items.
 Description
-  RefreshEdits will iterate over all inspector items and if the item is in edit mode will call it's
+  RefreshEdits will iterate over all inspector items and if the item is in edit mode will call its
   <LINK TJvCustomInspectorItem.DoneEdit, DoneEdit> method, cancelling the edit, and
   <LINK TJvCustomInspectorItem.InitEdit, InitEdit> method, to set the item back in edit mode.
   
   This will effectively refresh all items to any changes in the value, regardless where the change
-  occured and wether ot not an item is being edited.
+  occured and whether ot not an item is being edited.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorData.RegisterInstance
 Summary
   Registers data instance globally to the application.
 Description
-  RegisterInstance registers the specified data instance in a application global list of known data
+  RegisterInstance registers the specified data instance in an application global list of known data
   instances. This assures that multiple references to the same data are only created once. Instead
   of duplicating the data instance, a new inspector item is created.
   
@@ -1666,7 +1666,7 @@ Parameters
 Summary
   References the data layer instance.
 Description
-  Data is a reference to the data layer instance providing the item with it's
+  Data is a reference to the data layer instance providing the item with its
   values.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.DataSort
@@ -1708,7 +1708,7 @@ Parameters
 Summary
   Sorted index in the dsiplay parent.
 Description
-  DisplayIndex indicates the index after sorting this item is at in it's
+  DisplayIndex indicates the index after sorting this item is at in its
   display parent. Read DisplayIndex to determine the position at which the item
   is displayed or set it to a new index.
 Note:
@@ -1722,7 +1722,7 @@ Summary
   Holds the name that is displayed.
 Description
   DisplayName holds the name that is displayed. Depending on the state of the
-  QualifiedNames property of it's parent, this name could include the name of
+  QualifiedNames property of its parent, this name could include the name of
   the parent.
 
   DisplayName is initialized to the Data.Name property. If no data instance is
@@ -1965,7 +1965,7 @@ Description
 
   Descendants that override this should call inherited and only process special
   keys if Sender is set to Inspector (so that the inspector had a change to
-  process it's own keys first).
+  process its own keys first).
 Parameters
   Sender - Originator of the call. This is either the edit control or the
             inspector.
@@ -2029,7 +2029,7 @@ Description
   creation.
 
   The edit controls WindowProc is changed to allow for drop down lists. Because
-  the original WindowProc must be called, it's value is saved into this
+  the original WindowProc must be called, its value is saved into this
   property.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Edit_WndProc
@@ -2077,7 +2077,7 @@ Description
   GetDisplayParent retrieves the visual parent of the item. Most of the time
   this will be equal to the Parent property.
 
-  If the parent item, however, has it's Hidden property set to True,
+  If the parent item, however, has its Hidden property set to True,
   GetDisplayParent will go up the parent hierarchie until it reaches the root,
   or an item is found who's Hidden property is set to False.
 
@@ -2211,7 +2211,7 @@ Summary
 Description
   InvalidateItem notifies the inspector that the item has changed appearance.
 
-  In it's current implementation this means the
+  In its current implementation this means the
   <LINK TJvCustomInspector.InvalidateItem, Inspector.InvalidateItem> method will
   be called.
 ----------------------------------------------------------------------------------------------------
@@ -2222,7 +2222,7 @@ Description
   InvalidateList notifies the inspector that the list of visible items has
   changed.
 
-  In it's current implementation this means the
+  In its current implementation this means the
   <LINK TJvCustomInspector.InvalidateList, Inspector.InvalidateList> method will
   be called.
 ----------------------------------------------------------------------------------------------------
@@ -2244,7 +2244,7 @@ Summary
 Description
   InvalidateSort is called whenever the sort order might have changed. If the
   inspector's LockCount is 0, the Sort method will be called, followed by an
-  InvalidateList. If the inspector's LockCount > 0, it's NotifySort will
+  InvalidateList. If the inspector's LockCount > 0, its NotifySort will
   be called.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.IsCompoundColumn
@@ -2439,7 +2439,7 @@ Description
 Summary
   Indicates if the edit button is pressed.
 Description
-  Pressed is used to by the edit button to track it's pressed state. The
+  Pressed is used to by the edit button to track its pressed state. The
   property is controlled through the mouse handling methods.
 See Also
   Tracking
@@ -2594,7 +2594,7 @@ See Also
 Summary
   Moves the item to another position.
 Description
-  UpdateDisplayOrder moves the item to another place in it's visibility order.
+  UpdateDisplayOrder moves the item to another place in its visibility order.
   All items between the old and new index will be moved accordingly.
 
   UpdateDisplayOrder is called whenever the DisplayIndex property of the item
@@ -2627,7 +2627,7 @@ Summary
   Indicates if item is visible.
 Description
   Visible indicates if the item is visible. When an item is visible, neither the
-  item nor it's child items are visible in the inspector.
+  item nor its child items are visible in the inspector.
 
   Read Visible to determine if the item is visible or set Visible to a new state.
 Notes:
@@ -2833,7 +2833,7 @@ Description
   being added.
 Parameters
   SectionName - Name of the section the key is in.
-  ItemName -    Name of the key to be added on entry. Change this parameter to it's display name.
+  ItemName -    Name of the key to be added on entry. Change this parameter to its display name.
   ATypeInfo -   Initially set to the type info of the string type. Change this parameter to whatever
                 the key represents.
   Allow -       Initially set to True. Set it to False to prevent this key from being added.
@@ -2848,7 +2848,7 @@ Description
   Write a handler for this event to change the display name of the section or to prevent this
   section from being added.
 Parameters
-  SectionName - Name of the section to be parsed on entry. Change this parameter to it's display
+  SectionName - Name of the section to be parsed on entry. Change this parameter to its display
                 name.
   Parse -       Initially set to True. Set it to False to prevent this section from being added.
 ----------------------------------------------------------------------------------------------------
@@ -2882,9 +2882,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorBooleanItem.ShowAsCheckbox
 Summary
-  Indicates wether the item is shown and edited using a check box.
+  Indicates whether the item is shown and edited using a check box.
 Description
-  ShowAsCheckbox indicates wether the item is shown and edited using a check
+  ShowAsCheckbox indicates whether the item is shown and edited using a check
   box. If ShowAsCheckbox is True, the value is displayed and edited using a
   check box, otherwise the standard displaying and editing for enumeration types
   is used (ie. a drop down list).
@@ -2961,9 +2961,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorClassItem.CreateMemberItems
 Summary
-  Flag to control wether or not class properties are created as child item.
+  Flag to control whether or not class properties are created as child item.
 Description
-  CreateMemberItems control wether or not the class properties are created as
+  CreateMemberItems control whether or not the class properties are created as
   child items. If CreateMemberItems is True, properties for the class are
   created as child items, otherwise the child items are not created.
 
@@ -3004,9 +3004,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorClassItem.ShowClassName
 Summary
-  Flag to control wether or not the class name is shown as a value.
+  Flag to control whether or not the class name is shown as a value.
 Description
-  ShowClassName controls wether the class name is shown as a value or the
+  ShowClassName controls whether the class name is shown as a value or the
   instance value is shown. If ShowClassName is True, the class' name is shown
   in parenthesis as the item's value.
 
@@ -3109,10 +3109,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorComponentItem.KeepFirstOwnerAsFirst
 Summary
-  Indicates wether the components of the first owner should appear before other
+  Indicates whether the components of the first owner should appear before other
   owner components.
 Description
-  KeepFirstOwnerAsFirst indicates wether the components of the first owner
+  KeepFirstOwnerAsFirst indicates whether the components of the first owner
   should appear before the components of the other owners, regardless of any
   sorting option.
 See Also
@@ -3120,7 +3120,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorComponentItem.NoShowFirstOwnerName
 Summary
-  Indicates wether the first owner's name is to be shown in the drop down list.
+  Indicates whether the first owner's name is to be shown in the drop down list.
 Description
   NoShowFirstOwnerName indicates whether the first owner's name is to be
   prefixed in the drop down list of assignable components.
@@ -3162,7 +3162,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorComponentItem.ShowOwnerNames
 Summary
-  Indicates wether the owner names are to be shown in the drop down list.
+  Indicates whether the owner names are to be shown in the drop down list.
 Description
   ShowOwnerNames indicates whether the owner names are to be prefixed in the
   drop down list of assignable components.
@@ -3177,9 +3177,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorComponentItem.SortComponents
 Summary
-  Indicates wether components are sorted alphabetically.
+  Indicates whether components are sorted alphabetically.
 Description
-  SortComponents indicates wether or not the components of each owner are sorted
+  SortComponents indicates whether or not the components of each owner are sorted
   alphabetically.
 
   Sorting owners can be controlled separately through the SortOwners property.
@@ -3188,9 +3188,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorComponentItem.SortOwners
 Summary
-  Indicates wether owners are grouped alphabetically.
+  Indicates whether owners are grouped alphabetically.
 Description
-  SortOwners indicates wether or not the owner list is sorted alphabetically
+  SortOwners indicates whether or not the owner list is sorted alphabetically
   before searching for components.
 
   Sorting components can be controlled separately through the SortComponents
@@ -3204,7 +3204,7 @@ Summary
   Holds column information for a compound item.
 Description
   The TJvInspectorCompoundColumn class is used by the TJvInspectorCompoundItem class to represent a
-  column. The class provides properties to get/set the item associated with the column, it's width
+  column. The class provides properties to get/set the item associated with the column, its width
   as it is displayed and the width it is set to.
 
   Do not create instances of TJvInspectorCompoundColumn, use TJvInspectorCompoundItem.AddColumn to
@@ -3215,7 +3215,7 @@ Summary
   Instantiates a new column.
 Description
   Create instantiates a new column. The parameters will initialize the column to use the given item,
-  initializing it's Width to 0.
+  initializing its Width to 0.
 Parameters
   AParent - Compound item the column belongs too.
   AItem -   The item that is to be associated with the column. The item must be a child of Parent,
@@ -3269,7 +3269,7 @@ Description
 Summary
   Compound row inspector item.
 Description
-  TJvInspectorCompoundItem is an inspector item that allows some of it's child
+  TJvInspectorCompoundItem is an inspector item that allows some of its child
   items to be shown as sub columns of itself.
 See Also
   TJvCustomInspectorItem.IsCompoundColumn
@@ -3380,7 +3380,7 @@ See Also
 Summary
   Compound row inspector item.
 Description
-  TJvInspectorCustomCompoundItem is an inspector item that allows some of it's child
+  TJvInspectorCustomCompoundItem is an inspector item that allows some of its child
   items to be shown as sub columns of itself. It's primarly intended as a base class
   for multicolumn items. 
   
@@ -3556,7 +3556,7 @@ Description
   space will be equally divided over the columns.
 Parameters
   SetColumn - Column which has to be set to the width that is specified. This
-                column is guarenteed to be set to that width, unless it's
+                column is guarenteed to be set to that width, unless its
                 width is 0, which means it will be set to whatever width
                 remains after the main loop.
 ----------------------------------------------------------------------------------------------------
@@ -3566,7 +3566,7 @@ Summary
 Description
   SelectedColumn indicates which column currently has the input focus. Read
   SelectedColumn to determine which column has focus or set it to a column that
-  is to recieve input focus.
+  is to receive input focus.
 See Also
   SelectedColumnIndex
 ----------------------------------------------------------------------------------------------------
@@ -3576,7 +3576,7 @@ Summary
 Description
   SelectedColumnIndex indicates which column currently has the input focus. Read
   SelectedColumnIndex to determine which column has focus or set it to a column
-  that is to recieve input focus.
+  that is to receive input focus.
 See Also
   SelectedColumn
 ----------------------------------------------------------------------------------------------------
@@ -3618,22 +3618,22 @@ Description
 Summary
   Base configuration data layer.
 Description
-  TJvInspectorCustomConfData is the base inspector data layer that obtains it's
+  TJvInspectorCustomConfData is the base inspector data layer that obtains its
   data from configuration files/settings databases. The class implements all
   access properties, but the type info will be used to check the legality of the
   access (ie. a float can't be accessed as Int64). <B>Note:</B> you can change
   the type info pointer of the data layer instance. This can be useful to provide
   alternative enumeration constants (including names with spaces) by using the
-  JclRTTI unit and it's JclGenerateEnumType function.
+  JclRTTI unit and its JclGenerateEnumType function.
 
   The data layer provides in the common properties and methods to access
   configuration files/settings databases.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorCustomConfData.ExistingValue
 Summary
-  Indicates wether the specified section and key exist.
+  Indicates whether the specified section and key exist.
 Description
-  ExistingValue determines wether or not the section/key pair is an actual value
+  ExistingValue determines whether or not the section/key pair is an actual value
   within the configuration file/settings database.
 
   Descendants must override this method to provide a meaningfull result. The
@@ -3753,15 +3753,15 @@ See Also
 Summary
   database data layer.
 Description
-  TJvInspectorDBData is the inspector data layer that obtains it's data from a
+  TJvInspectorDBData is the inspector data layer that obtains its data from a
   TDataSource/TField. The class implements all access properties, but the type
   info will be used to check the legality of the access (ie. a float can't be
   accessed as Int64). <B>Note:</B> you can change the type info pointer of the
   data layer instance. This can be useful to provide alternative enumeration
-  constants (including names with spaces) by using the JclRTTI unit and it's
+  constants (including names with spaces) by using the JclRTTI unit and its
   JclGenerateEnumType function.
 
-  The data layer provides it's own item registration database as well as a
+  The data layer provides its own item registration database as well as a
   FieldType to RTTI mapping database. The FieldType mapping database is
   pre-filled with items to convert TFieldType values to a proper RTTI pointer.
   These items do not provide an inspector item class, which is left to the
@@ -3848,7 +3848,7 @@ Note
   Although FieldTypeMapping holds an instance of TJvInspectorRegister, it is not
   possible to check a parents database, since that mechanisme will always use a
   data layers ItemRegister function. If you do declare a descendant data layer
-  with it's own mapping, you should create a TJvInspectorRegister instance for
+  with its own mapping, you should create a TJvInspectorRegister instance for
   the TJvCustomInspectorData data layer. Inside the FieldTypeMapping method you
   can then call the ancestor's FieldTypeMapping if the derived database results
   in a mismatch.
@@ -3923,7 +3923,7 @@ Description
 Summary
   Event based data layer.
 Description
-  TJvInspectorEventData is the inspector data layer that obtains it's data
+  TJvInspectorEventData is the inspector data layer that obtains its data
   through event handlers. Use this data layer if there is no data layer
   available to access a specific data source. Note that it's often more
   efficient to write a new data layer for specific data sources, as you can more
@@ -4250,13 +4250,13 @@ Description
 Summary
   INI file data layer.
 Description
-  TJvInspectorINIFileData is the inspector data layer that obtains it's
+  TJvInspectorINIFileData is the inspector data layer that obtains its
   data from a TCustomIniFile descendant. As the class is derived from
   TJvInspectorCustomConfData, all access properties are implemented, but the type
   info will be used to check the legality of the access (ie. a float can't be
   accessed as Int64). <B>Note:</B> you can change the type info pointer of the
   data layer instance. This can be useful to provide alternative enumeration
-  constants (including names with spaces) by using the JclRTTI unit and it's
+  constants (including names with spaces) by using the JclRTTI unit and its
   JclGenerateEnumType function.
 
   The data layer implements ExistingValue, ReadValue and WriteValue and provides
@@ -4371,7 +4371,7 @@ Summary
   The sizing increments to use when resizing an item.
 Description
   SizingFactor indicates the increments used when resizing an item. An item's height will be a
-  multiple of this value added to it's minimum height. SizingFactor can be any value or one of the
+  multiple of this value added to its minimum height. SizingFactor can be any value or one of the
   following constants:
   <TABLE>
   Constant          Meaning
@@ -4391,7 +4391,7 @@ Summary
 Description
   TJvInspectorPainter is the base painter class for the data inspector. It
   provides methods and properties to aid in painting the various items in a
-  specific style. Each style should be in it's own descendant.
+  specific style. Each style should be in its own descendant.
 
   The base package provides two paint styles: Borland and Visual Studio/.NET.
 ----------------------------------------------------------------------------------------------------
@@ -4451,7 +4451,7 @@ Summary
   Calculates rectangles for the edit control and button of an item.
 Description
   CalcEditBasedRects calculates the rectangles needed to render the edit control
-  and it's optional button of an item.
+  and its optional button of an item.
 
   The base implementation does nothing. Descendants should override this method
   to calculate the needed rectangles.
@@ -4590,7 +4590,7 @@ Summary
   Returns the height of the name font.
 Description
   GetNameHeight will apply the name font and determine the TextHeight of 'Wy'.
-  This result will be returned and the canvas is restored to it's original
+  This result will be returned and the canvas is restored to its original
   state.
 Parameters
   AItem - Description for this parameter
@@ -4602,7 +4602,7 @@ Summary
   Returns the height of the value font.
 Description
   GetValueHeight will apply the value font and determine the TextHeight of 'Wy'.
-  This result will be returned and the canvas is restored to it's original
+  This result will be returned and the canvas is restored to its original
   state.
 Parameters
   AItem - Description for this parameter
@@ -4903,15 +4903,15 @@ Description
 Summary
   Property data layer.
 Description
-  TJvInspectorPropData is the inspector data layer that obtains it's data from
+  TJvInspectorPropData is the inspector data layer that obtains its data from
   a published property of an instance. The class implements all access
   properties, but the type info will be used to check the legality of the access
   (ie. a float can't be accessed as Int64). <B>Note:</B> you can change the type
   info pointer of the data layer instance. This can be useful to provide
   alternative enumeration constants (including names with spaces) by using the
-  JclRTTI unit and it's JclGenerateEnumType function.
+  JclRTTI unit and its JclGenerateEnumType function.
 
-  The data layer provides it's own item registration database.
+  The data layer provides its own item registration database.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPropData.Instance
 Summary
@@ -5073,7 +5073,7 @@ Description
   TJvInspectorRegister is the item registration database. It provides a list of
   registration items which can searched for a match based on a data instance.
 
-  Each data layer can have it's own registration database (but is not required
+  Each data layer can have its own registration database (but is not required
   to). Whenever a data instance gets created the following steps will occur:
 
   * Calls the inspectors' AfterDataCreate event
@@ -5082,7 +5082,7 @@ Description
     found.
   * The registration database is searched for a match. The search is started
     with the last added item. If either no match or no perfect match has been
-    found, the search is continued in the registration database of one of it's
+    found, the search is continued in the registration database of one of its
     parent classes, until no parent registration database is found or until a
     perfect match is located. In the end the best match result is returned.
   * The inspectors' BeforeItemCreate event is called
@@ -5162,7 +5162,7 @@ Summary
   Finds a match for the given data instance
 Description
   FindMatch tries to find a match for the given data instance. It will start in
-  it's own database from the last added item back to the first added item. If no
+  its own database from the last added item back to the first added item. If no
   perfect match is found, it will try to locate a registration database in one
   of the parent data classes and will delagate the search to that database if
   found. The result will be either <B>nil</B> if no match was found or the
@@ -5243,9 +5243,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorSetItem.EditString
 Summary
-  Controls wether the string value can be edited.
+  Controls whether the string value can be edited.
 Description
-  EditString determines if the item can be edited by typing it's value as a
+  EditString determines if the item can be edited by typing its value as a
   string. When set to True, the string value can be edited directly, otherwise
   the string value can not be edited.
 
@@ -5271,8 +5271,8 @@ See Also
 Summary
   Data layer for specific set item.
 Description
-  TJvInspectorSetMemberData is the data layer that obtains it's data from a
-  single bit of the set value of it's parent item. It's used internally by the
+  TJvInspectorSetMemberData is the data layer that obtains its data from a
+  single bit of the set value of its parent item. It's used internally by the
   set item (TJvInspectorSetItem) when the CreateMemberItems property is True.
 
   Only the AsOrdinal access property is implemented, while the TypeInfo property
@@ -5352,7 +5352,7 @@ Description
     matches by mask:              add 1
     exact match:                  add 2
   </table>
-  The percentage will be either 0 or 100, indicating wether or not to continue
+  The percentage will be either 0 or 100, indicating whether or not to continue
   the search.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTFieldTypeRegItem.Create
@@ -5544,8 +5544,8 @@ Description
   DeleteInstance removes an event instance from the list of instances. Deleting an instance will
   result in deleting all handlers added to this instance.
   
-  There are three overloaded versions of this method. You can delete an instance based on it's
-  position in the list, by providing a TObject instance or by specifying it's name.
+  There are three overloaded versions of this method. You can delete an instance based on its
+  position in the list, by providing a TObject instance or by specifying its name.
 Parameters
   Index -         0-based index in the list of added instances of the instance to delete.
   Instance -      TObject instance to delete. If the specified instance does not exist, an exception
@@ -5700,9 +5700,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.KeepFirstInstanceAsFirst
 Summary
-  Indicates wether the handlers of the first instance should appear before other instance handlers.
+  Indicates whether the handlers of the first instance should appear before other instance handlers.
 Description
-  KeepFirstInstanceAsFirst indicates wether the handlerss of the first instance should appear before
+  KeepFirstInstanceAsFirst indicates whether the handlerss of the first instance should appear before
   the handlers of the other instances, regardless of any sorting option.
   
   KeepFirstInstanceAsFirst maps to the imfKeepFirstInstanceAsFirst flag in the ItemTMethodFlags
@@ -5754,7 +5754,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.NoShowFirstInstanceName
 Summary
-  Indicates wether the first instance's name is to be shown in the drop down list.
+  Indicates whether the first instance's name is to be shown in the drop down list.
 Description
   NoShowFirstInstanceName indicates whether the first instance's name is to be prefixed in the drop
   down list of assignable handlers.
@@ -5770,7 +5770,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.ShowInstanceNames
 Summary
-  Indicates wether the instance names are to be shown in the drop down list.
+  Indicates whether the instance names are to be shown in the drop down list.
 Description
   ShowInstanceNames indicates whether the instance names are to be prefixed in the drop down list of
   assignable handlers.
@@ -5784,9 +5784,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.SortInstances
 Summary
-  Indicates wether instances are grouped alphabetically.
+  Indicates whether instances are grouped alphabetically.
 Description
-  SortInstances indicates wether or not the instance list is sorted alphabetically before adding
+  SortInstances indicates whether or not the instance list is sorted alphabetically before adding
   handlers.
 
   Sorting handlers can be controlled separately through the SortMethods property. In addition, if
@@ -5799,9 +5799,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.SortMethods
 Summary
-  Indicates wether event handlers are sorted alphabetically.
+  Indicates whether event handlers are sorted alphabetically.
 Description
-  SortMethods indicates wether or not the event handlers of each instance are sorted alphabetically.
+  SortMethods indicates whether or not the event handlers of each instance are sorted alphabetically.
 
   Sorting instances can be controlled separately through the SortInstances property.
 
@@ -5907,12 +5907,12 @@ Description
 Summary
   Variable data layer.
 Description
-  TJvInspectorVarData is the inspector data layer that obtains it's data from
+  TJvInspectorVarData is the inspector data layer that obtains its data from
   a simple variable or some value on the heap. The class implements all access
   properties, but the type info will be used to check the legality of the access
   (ie. a float can't be accessed as Int64).
 
-  The data layer provides it's own item registration database.
+  The data layer provides its own item registration database.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorVarData.Address
 Summary

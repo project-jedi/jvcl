@@ -183,9 +183,9 @@ See Also
 @@TJvID3Encoding
 <TITLE TJvID3Encoding type>
 Summary
-  Represents different kind of string encodings in a ID3 frame.
+  Represents different kind of string encodings in an ID3 frame.
 Description
-  Use the TJvID3Encoding type to represent a string encoding in a ID3 frame.
+  Use the TJvID3Encoding type to represent a string encoding in an ID3 frame.
 
   TJvID3Encodings is a set of TJvID3Encoding values.
 @@TJvID3Encoding.ienISO_8859_1
@@ -227,7 +227,7 @@ Description
   Use the TJvID3ForceVersion type to represent a specific enforcement of an ID3 version for an ID3
   tag.
 @@TJvID3ForceVersion.ifvDontCare
-  Does not enforce an specific version for the ID3 tag.
+  Does not enforce a specific version for the ID3 tag.
 @@TJvID3ForceVersion.ifv2_2
   Enforces a 2.2 version for the ID3 tag.
 @@TJvID3ForceVersion.ifv2_3
@@ -267,7 +267,7 @@ Description
   <b>Encryption is not implemented by TJvID3Controller.</b>
 @@TJvID3FrameHeaderFlag.fhfContainsGroupInformation
   Indicates that this frame belongs in a group with other frames. If set, the <LINK TJvID3Frame.GroupID,
-  GroupID> property of the frame is valid; every frame with the same group identifier belongs to the
+  GroupID> property of the frame is valid: every frame with the same group identifier belongs to the
   same group.
 @@TJvID3FrameHeaderFlag.fhfUnsynchronisationApplied
   Indicates that unsynchronisation was applied to this frame.
@@ -329,7 +329,10 @@ Description
   set of frames a group identifier must be registered in the tag with this frame.
   Introduced in v2.3.
 @@TJvID3FrameID.fiInvolvedPeople
-  [IPLS] 'Involved people list' Since there might be a lot of people contributing to an audio file in various ways, such as musicians and technicians, the 'Text information frames' are often insufficient to list everyone involved in a project. The 'Involved people list' is a frame containing the names of those involved, and how they were involved.
+  [IPLS] 'Involved people list' Since there might be a lot of people contributing to an audio file in
+  various ways, such as musicians and technicians, the 'Text information frames' are often insufficient
+  to list everyone involved in a project. The 'Involved people list' is a frame containing the names of
+  those involved, and how they were involved.
   Deprecated as of v2.4, replaced by fiInvolvedPeople2 and fiMusicianCreditList.
 @@TJvID3FrameID.fiLinkedInfo
   [LINK]
@@ -357,7 +360,7 @@ Description
   audio stream he picked up;
   Introduced in v2.3.
 @@TJvID3FrameID.fiBufferSize
-  [RBUF] 'Recommended buffer size' Sometimes the server from which a audio file is streamed is aware
+  [RBUF] 'Recommended buffer size' Sometimes the server from which an audio file is streamed is aware
   of transmission or coding problems resulting in interruptions in the audio stream. In these cases,
   the size of the buffer can be recommended by the server using this frame.
 @@TJvID3FrameID.fiVolumeAdj2
@@ -380,7 +383,7 @@ Description
   Introduced in v2.4.
 @@TJvID3FrameID.fiSyncedLyrics
   [SYLT] 'Synchronised lyrics/text' This is another way of incorporating the words, said or sung
-  lyrics, in the audio file as text, this time, however, in sync with the audio. It might also be used
+  lyrics, in the audio file as text; however, this time in sync with the audio. It might also be used
   to describing events e.g. occurring on a stage or on the screen in sync with the audio.
 @@TJvID3FrameID.fiSyncedTempo
   [SYTC] 'Synchronised tempo codes'
@@ -485,7 +488,7 @@ Description
   Deprecated as of v2.4, replaced by
 @@TJvID3FrameID.fiFileOwner
   [TOWN] The 'File owner/licensee' frame contains the name of the owner or licensee of the file
-  and it's contents.
+  and its contents.
   Introduced in v2.3.
 @@TJvID3FrameID.fiLeadArtist
   [TPE1] The 'Lead artist(s)/Lead performer(s)/Soloist(s)/Performing group' frame is used for the
@@ -516,7 +519,7 @@ Description
   of the audio-file on its original recording. This may be extended with a "/" character and a numeric
   string containing the total numer of tracks/elements on the original recording. E.g. "4/9".
 @@TJvID3FrameID.fiRecordingDates
-  [TRDA] The 'Recording dates' frame is a intended to be used as complement to the fiYear, fiDate
+  [TRDA] The 'Recording dates' frame is intended to be used as complement to the fiYear, fiDate
   and fiTime frames. E.g. "4th-7th June, 12th June" in combination with the fiYear frame.
   Deprecated as of v2.4, replaced by
 @@TJvID3FrameID.fiNetRadioStation
@@ -1033,9 +1036,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvID3StringPair
 Summary
-  Contains an ANSI and an unicode string.
+  Contains an ANSI and a unicode string.
 Description
-  The TJvID3StringPair type is used to store an ANSI and an unicode string together.
+  The TJvID3StringPair type is used to store an ANSI and a unicode string together.
 @@TJvID3StringPair.SA
   The ANSI string.
 @@TJvID3StringPair.SW

@@ -74,17 +74,17 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Ipl.Job
 Summary
-  Specifies the job of an person.
+  Specifies the job of a person.
 Description
-  Use Job to specify the job of an person.
+  Use Job to specify the job of a person.
 See Also
   ItemIndex, Person
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Ipl.Person
 Summary
-  Specifies the name of an person.
+  Specifies the name of a person.
 Description
-  Use Person to specify the name of an person.
+  Use Person to specify the name of a person.
 See Also
   ItemIndex, Job
 ----------------------------------------------------------------------------------------------------
@@ -137,9 +137,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Persistent
 Summary
-  Ancestor for objects that are mainted by an TJvID3Controller object.
+  Ancestor for objects that are mainted by a TJvID3Controller object.
 Description
-  TJvID3Persistent is the base class for objects that are mainted by an TJvID3Controller object.
+  TJvID3Persistent is the base class for objects that are mainted by a TJvID3Controller object.
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures
 Summary
@@ -638,7 +638,7 @@ Description
   The TJvID3Text object contains the data of text information frames in an ID3 v2 tag.
   
   The following table lists the relation between Winamp's description of frames and properties of
-  an TJvID3Text object: 
+  a TJvID3Text object: 
   <TABLE>
   Winamp              Property
   ------              --------
@@ -656,7 +656,7 @@ Description
   
   <AUTOLINK OFF>
   <CODE>
-  with TJvID3ContentFrame.FindOrCreate(JvID3v21, fiCommment) do
+  with TJvID3ContentFrame.FindOrCreate(JvID3v21, fiComment) do
   begin
     Description := 'My comment';
     Language := 'eng';
@@ -909,10 +909,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.FileOwner
 Summary
-  Specifies the owner or licensee of the file and it's contents.
+  Specifies the owner or licensee of the file and its contents.
 Description
   Property FileOwner represents the value of the 'File owner/licensee' frame. It contains the name
-  of the owner or licensee of the file and it's contents.
+  of the owner or licensee of the file and its contents.
   
   <TABLE>
   --------------         -----------------------
@@ -1573,9 +1573,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDText.Add
 Summary
-  Adds an user defined text information frame to the ID3 v2 tag.
+  Adds a user defined text information frame to the ID3 v2 tag.
 Description
-  Call Add to add an user defined text information frame to the ID3 v2 tag.
+  Call Add to add a user defined text information frame to the ID3 v2 tag.
 Parameters
   ADescription - Description for the information text.
   AValue       - The information text.
@@ -1638,9 +1638,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDUrl.Add
 Summary
-  Adds an user defined URL link frame to the ID3 v2 tag.
+  Adds a user defined URL link frame to the ID3 v2 tag.
 Description
-  Call Add to add an user defined URL link frame to the ID3 v2 tag.
+  Call Add to add a user defined URL link frame to the ID3 v2 tag.
 Parameters
   ADescription - Description for the \URL.
   AURL         - The URL.
@@ -1681,7 +1681,7 @@ Summary
 Description
   Use URL to specify a string for the URL field in the user defined URL link frame.
 
-  An URLs may be relative, e.g. "picture.png", "../doc.txt".
+  A URL may be relative, e.g. "picture.png", "../doc.txt".
 See Also
   Description
 ----------------------------------------------------------------------------------------------------
@@ -1805,7 +1805,7 @@ Description
 Summary
   Specifies the URL of the artists official webpage.
 Description
-  Property Artist represents the value of the 'Official artist/performer webpage' frame. It is an URL
+  Property Artist represents the value of the 'Official artist/performer webpage' frame. It is a URL
   pointing at the artists official webpage. 
    
   <TABLE>
@@ -1820,7 +1820,7 @@ Description
 Summary
   Specifies the URL of a file specific webpage.
 Description
-  Property AudioFile represents the value of the 'Official audio file webpage' frame. It is an URL
+  Property AudioFile represents the value of the 'Official audio file webpage' frame. It is a URL
   pointing at a file specific webpage.
    
   <TABLE>
@@ -1850,7 +1850,7 @@ Description
 Summary
   Specifies the URL of a webpage with commercial information about the audio.
 Description
-  Property CommercialInfo represents the value of the 'Commercial information' frame. It is an URL
+  Property CommercialInfo represents the value of the 'Commercial information' frame. It is a URL
   pointing at a webpage with information such as where the album can be bought. 
   
   <TABLE>
@@ -1865,7 +1865,7 @@ Description
 Summary
   Specifies the URL of a webpage where the terms of use and ownership of the file is described.
 Description
-  Property Copyright represents the value of the 'Copyright/Legal information' frame. It is an URL
+  Property Copyright represents the value of the 'Copyright/Legal information' frame. It is a URL
   pointing at a webpage where the terms of use and ownership of the file is described.
    
   <TABLE>
