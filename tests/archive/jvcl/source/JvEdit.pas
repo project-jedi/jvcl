@@ -20,7 +20,7 @@ Merging done 2002-06-05 by Peter Thornqvist [peter3@peter3.com]
 
   MERGE NOTES:
     * TjvCustomEdit has been removed from JvComponent and put here instead.
-    * The HotTrack property only works if BorderStyle := bsSingle and BevekKind := bvNone
+    * The HotTrack property only works if BorderStyle := bsSingle and BevelKind := bvNone
     * Added ClipboardCommands
 
 Contributor(s):
@@ -97,7 +97,6 @@ type
       message CM_ENABLEDCHANGED;
     function GetReadOnly: boolean;
     procedure SetReadOnly(const Value: boolean);
-    procedure SetClipBoardCommands(const Value: TJvClipboardCommands);
     procedure SetGroupIndex(const Value: Integer);
     procedure UpdateEdit;
     procedure LocalKeyDown(Sender: TObject; var Key: Word;
@@ -116,7 +115,7 @@ type
     property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Caret: TJvCaret read FCaret write SetCaret;
-    property ClipBoardCommands: TJvClipboardCommands read FClipBoardCommands write SetClipBoardCommands default [caCopy..caUndo];
+    property ClipBoardCommands: TJvClipboardCommands read FClipBoardCommands write FClipBoardCommands default [caCopy..caUndo];
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow;
 
@@ -541,18 +540,14 @@ procedure TJvCustomEdit.SetReadOnly(const Value: boolean);
 begin
   inherited ReadOnly := Value;
   if Value then
-    FClipBoardCommands := [caCopy];
-end;
-
-procedure TJvCustomEdit.SetClipBoardCommands(
-  const Value: TJvClipboardCommands);
-begin
-  if FClipBoardCommands <> Value then
   begin
-    FClipBoardCommands := Value;
-    ReadOnly := FClipBoardCommands <= [caCopy];
+    if caCopy in ClipBoardCommands then
+      FClipBoardCommands := [caCopy]
+    else
+      FClipBoardCommands := [];
   end;
 end;
+
 
 procedure TJvCustomEdit.SetGroupIndex(const Value: Integer);
 begin
