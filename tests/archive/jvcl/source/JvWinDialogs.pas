@@ -173,8 +173,9 @@ type
     FAppletFunc: TCplApplet;
     FAppletInfo: array of TJvCplInfo;
     function GetAppletInfo(Index: Integer): TJvCplInfo;
-  protected
-    procedure Loaded; override;
+    procedure SetAppletName(const AAppletName: string);
+    procedure Unload;
+    procedure Load;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -182,7 +183,7 @@ type
     property Count: Integer read FCount;
     property AppletInfo[Index: Integer]: TJvCplInfo read GetAppletInfo;
   published
-    property AppletName: string read FAppletName write FAppletName;
+    property AppletName: string read FAppletName write SetAppletName;
     property AppletIndex: Integer read FAppletIndex write FAppletIndex default 0;
   end;
 
@@ -596,45 +597,57 @@ const
 type
   PCPLInfo = ^TCPLInfo;
   TCplInfo = packed record
-     idIcon: Integer;
-     idName: Integer;
-     idInfo: Integer;
-     lData: Longint;
+    idIcon: Integer;
+    idName: Integer;
+    idInfo: Integer;
+    lData: Longint;
   end;
 
 constructor TJvAppletDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FAppletName := '';
+  FAppletIndex := 0;
   FModule := HINSTANCE_ERROR;
   FCount := 0;
-  FAppletIndex := 0;
+  FAppletFunc := nil;
+  SetLength(FAppletInfo, 0);
 end;
 
 destructor TJvAppletDialog.Destroy;
+begin
+  Unload;
+  inherited Destroy;
+end;
+
+procedure TJvAppletDialog.Unload;
 var
   I: Integer;
 begin
+  if (FModule > HINSTANCE_ERROR) and Assigned(FAppletFunc) then
+  begin
+    FAppletFunc(Application.Handle, CPL_EXIT, AppletIndex, AppletInfo[AppletIndex].lData);
+    FreeLibrary(FModule);
+  end;
   for I := 0 to Count-1 do
   begin
     FAppletInfo[I].Icon.Free;
     FAppletInfo[I].Name := '';
     FAppletInfo[I].Info := '';
   end;
-  if FModule > HINSTANCE_ERROR then
-  begin
-    FAppletFunc(Application.Handle, CPL_EXIT, 0, 0);
-    FreeLibrary(FModule);
-  end;
-  inherited Destroy;
+  FModule := HINSTANCE_ERROR;
+  FCount := 0;
+  FAppletFunc := nil;
+  SetLength(FAppletInfo, 0);
 end;
 
-procedure TJvAppletDialog.Loaded;
+procedure TJvAppletDialog.Load;
 var
   I: Integer;
   AplInfo: TCplInfo;
   Buffer: array [0..1023] of Char;
 begin
-  inherited Loaded;
+  Unload;
   if AppletName <> '' then
   begin
     FModule := LoadLibrary(PChar(AppletName));
@@ -645,7 +658,6 @@ begin
     begin
       FCount := FAppletFunc(Application.Handle, CPL_GETCOUNT, 0, 0);
       SetLength(FAppletInfo, FCount);
-      FCount := FAppletFunc(Application.Handle, CPL_GETCOUNT, 0, 0);
       for I := 0 to Count-1 do
       begin
         FAppletFunc(Application.Handle, CPL_INQUIRE, I, Longint(@AplInfo));
@@ -666,6 +678,8 @@ begin
       FModule := HINSTANCE_ERROR;
     end;
   end;
+  if AppletIndex >= Count then
+    AppletIndex := 0;
 end;
 
 function TJvAppletDialog.GetAppletInfo(Index: Integer): TJvCplInfo;
@@ -673,6 +687,13 @@ begin
   FillChar(Result, SizeOf(Result), #0);
   if (Index >= 0) and (Index < Count) then
     Result := FAppletInfo[Index];
+end;
+
+procedure TJvAppletDialog.SetAppletName(const AAppletName: string);
+begin
+  Unload;
+  FAppletName := AAppletName;
+  Load;
 end;
 
 function TJvAppletDialog.Execute: Boolean;
