@@ -2,13 +2,11 @@ unit MainFrm;
 {$I JVCL.inc}
 interface
 
-uses
+uses       
   Windows, Messages, SysUtils,
   {$IFDEF COMPILER6_UP}   Variants,  {$ENDIF COMPILER6_UP}
   Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvListBox, JvCtrls, JvComponent, JvBaseDlg, JvSHFileOp,
-  JvButton, JvToolEdit, Mask, JvCheckBox, JvGroupBox, JvLabel, JvMemo,
-  ExtCtrls, JvBevel;
+  Dialogs, StdCtrls, JvComponent, JvBaseDlg, JvSHFileOp, ExtCtrls;
 
 type
   TfrmMain = class(TForm)
@@ -37,6 +35,11 @@ type
     memMessages: TMemo;
     Label1: TLabel;
     edTitle: TEdit;
+    chkNoSecAttrs: TCheckBox;
+    chkNoRecurse: TCheckBox;
+    chkNoConElem: TCheckBox;
+    chkNoParse: TCheckBox;
+    chkWantNukes: TCheckBox;
     procedure JvSHFileOperation1FileMapping(Sender: TObject;
       const OldFileName, NewFilename: String);
     procedure btnCopyClick(Sender: TObject);
@@ -93,6 +96,16 @@ begin
     Include(AOptions,fofWantMappingHandle);
   if chkNoErrors.Checked then
     Include(AOptions,fofNoErrorUI);
+  if chkNoSecAttrs.Checked then
+    Include(AOptions,fofNoCopySecurityAttributes);
+  if chkNoRecurse.Checked then
+    Include(AOptions,fofNoRecursion);
+  if chkNoConElem.Checked then
+    Include(AOptions,fofNoConnectedElements);
+  if chkNoParse.Checked then
+    Include(AOptions,fofNoRecurseParse);
+  if chkWantNukes.Checked then
+    Include(AOptions,fofWantNukeWarning);
   JvSHFileOperation1.Options := AOptions;
   if not JvSHFileOperation1.Execute then
     memMessages.Lines.Add(SysErrorMessage(GetLastError))
