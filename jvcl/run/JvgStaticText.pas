@@ -158,6 +158,9 @@ begin
     Exit;
   LocalAlignment := Alignment;
   SetBkMode(Canvas.Handle, Ord(Self.Transparent));
+
+  Canvas.Font.Assign(Font);
+
   if FActive then
     SetTextColor(Canvas.Handle, ColorToRGB(ActiveColor))
   else
