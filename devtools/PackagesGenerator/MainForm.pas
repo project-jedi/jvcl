@@ -102,6 +102,7 @@ type
     mnuDeletePackage: TMenuItem;
     cmbModel: TComboBox;
     btnEditModel: TButton;
+    btnCLXDescription: TButton;
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
@@ -153,6 +154,7 @@ type
     procedure actOptionsUpdate(Sender: TObject);
     procedure btnEditModelClick(Sender: TObject);
     procedure cmbModelClick(Sender: TObject);
+    procedure btnCLXDescriptionClick(Sender: TObject);
   private
     { Private declarations }
     Changed : Boolean; // true if current file has changed
@@ -163,6 +165,8 @@ type
     FOrgValueFiles: string; // original value of current column (files list)
     FValidOrgDep: Boolean; // True if FOrgValueDep is officially set
     FValidOrgFiles: Boolean; // True if FOrgValueFiles is officially set
+
+    FClxDescription: string; // The CLX description of the active package 
 
     procedure LoadPackagesList;
     procedure LoadPackage;
@@ -452,6 +456,8 @@ begin
 
       // add description, PFLAGS and libs
       rootNode.Items.Add('Description', ledDescription.Text);
+      if FClxDescription <> '' then
+        rootNode.Items.Add('ClxDescription', FClxDescription);
       rootNode.Items.Add('C5PFlags', ledC5PFlags.Text);
       rootNode.Items.Add('C6PFlags', ledC6PFlags.Text);
       rootNode.Items.Add('C5Libs', frmAdvancedBCB.edtBCB5.Text);
@@ -558,6 +564,8 @@ begin
       ledC6PFlags.Text    := rootNode.Items.ItemNamed['C6PFlags'].Value;
       frmAdvancedBCB.edtBCB5.Text := rootNode.Items.ItemNamed['C5Libs'].Value;
       frmAdvancedBCB.edtBCB6.Text := rootNode.Items.ItemNamed['C6Libs'].Value;
+      if Assigned(rootNode.Items.ItemNamed['ClxDescription']) then
+        FClxDescription := rootNode.Items.ItemNamed['ClxDescription'].Value;
 
       // read required packages
       requiredNode := rootNode.Items.ItemNamed['Requires'];
@@ -631,7 +639,7 @@ begin
         end;
 
         frmGenMessages.Show;
-        Generate(jlbList.Items, targets, AddMessage, jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg, frmTargets.chkGenDof.Checked);
+        Generate(jlbList.Items, targets, AddMessage, jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg);
       finally
         targets.Free;
       end;
@@ -943,6 +951,19 @@ begin
     Application.MessageBox(PChar(ErrMsg), 'Error loading configuration', MB_ICONERROR)
   else
     LoadPackagesList;
+end;
+
+procedure TfrmMain.btnCLXDescriptionClick(Sender: TObject);
+begin
+  if (FClxDescription = '') and (cmbModel.Items[cmbModel.ItemIndex] = 'JVCL') then
+  begin
+    FClxDescription := ledDescription.Text;
+    StrReplace(FClxDescription, 'JVCL ', 'JVCLX ', [rfReplaceAll]);
+  end;
+  if InputQuery('CLX Description',
+                'Please indicate the CLX Description',
+                FClxDescription) then
+    Changed := True;
 end;
 
 end.
