@@ -13,6 +13,10 @@
 ##Skip: TExtensibleInterfacedPersistent._AddRef
 ##Skip: TExtensibleInterfacedPersistent._Release
 ##SKip: TExtensibleInterfacedPersistent.NewInstance
+##Skip: TJvBaseDataItem.AfterConstruction
+##Skip: TJvBaseDataItem._AddRef
+##Skip: TJvBaseDataItem._Release
+##Skip: TJvBaseDataItems.BeforeDestruction
 ----------------------------------------------------------------------------------------------------
 @@JvDataProvider.pas
 Summary
@@ -471,7 +475,7 @@ Description
   written from and to the filer. However, there is no such property as Extensions.
   
   DefineProperties assigns the ReadImplementers and WriteImplementers methods as the reader and
-  writer methods for the Implementers property.
+  writer methods for the Extensions property.
 
   ## The rest of this text is copied from D7 help for TComponent.DefineProperties
   DefineProperties is virtual; descendant classes can override it. When overriding DefineProperties,
@@ -565,7 +569,7 @@ Summary
   Reads in a collection of extensions from a stream.
 Description
   ReadImplementers reads in a collection of extensions from a stream. It expects to find a
-  collection at the current location If there's not a collection at the current location in the
+  collection at the current location. If there's not a collection at the current location in the
   stream, an exception will be raised.
   
   For each item of the collection in the stream, the ReadImplementer method is called to read in
@@ -662,64 +666,60 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContext
 Summary
-  Write here a summary (1 line)
+  Base implementation for the \IJvDataContext interface.
 Description
-  Write here a description
+  The TJvBaseDataContext class is the base implementer for the IJvDataContext interface. The class
+  itself only provides an implementation for the IJvDataContext methods with an exception of the
+  <LINK IJvDataContext.Name, Name> method.
+  
+  The class provides in an implementation for the <LINK IJvDataContextManager.SetName, SetName>
+  method of the IJvDataContextManager class, but that interface is not supported directly. The
+  implementation of this method will check if the new name is unique in the context list and raise
+  an exception if that's not the case. If the name is unique it will call the (abstract) DoSetName
+  method to actually set the new name.
+  
+  You should never instantiate an TJvBaseDataContext object to provide an implementation for the
+  IJvDataContext interface. Instead you should a derivative that implements the Name method, such as
+  the TJvDataContext class.
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContext.Contexts
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContext.Contexts>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContext.ContextsImpl
 Summary
-  Write here a summary (1 line)
+  Reference to the context list implementation object.
 Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
+  ContextsImpl is a reference to the context list implementation object this context belongs to.
+  This will normally be a TJvBaseDataContexts descendant for JVCL provided context implementations,
+  but it can be any object that implements the IJvDataContexts interface.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IJvDataContexts, TJvBaseDataContexts
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContext.DoSetName
 Summary
-  Write here a summary (1 line)
+  Change the name of the context.
 Description
-  This is a protected member, you don't have to describe these
+  DoSetName is responsible for setting the name of the context. The method does not check if the
+  specified name is unique, nor will it trigger any notification callbacks.
+  
+  DoSetName is called by the implementation of SetName, which will check uniqueness of the name
+  first and trigger the change notification callback afterwards.
+  
+  Descendants should override this method if the descendant implements the Name method as well. By
+  providing this implementation, even if the context does not implement the IJvDataContextManager
+  interface, allows for descendants of that class to simply add the IJvDataContextManager interface
+  to the list of interfaces, without worrying if it can actually reach the field that stores the
+  name.
 Parameters
-  Value - Description for this parameter
+  Value - New name of the context.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SetName
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContext.GetImplementer
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContext.GetImplementer>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContext.IsDeletable
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContext.IsDeletable>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContext.IsStreamable
 Summary
@@ -733,327 +733,235 @@ See Also
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContext.Name
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContext.Name>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContext.SetName
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContextManager.SetName>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts
 Summary
-  Write here a summary (1 line)
+  Base implementation for the \IJvDataContexts interface.
 Description
-  Write here a description
+  The TJvBaseDataContexts class is the base implementation of the IJvDataContexts interface. The
+  class itself provides in some basic implementation for the Ancestor, GetContextByName and Provider
+  methods and declares the other methods if IJvDataContexts as abstract methods.
+  
+  In addition the class provides 4 additional abstract methods that can be used to manage the list.
+  These methods are not the same as those of the IJvDataContextsManager interface, but should be
+  used by an implementer of that interface.
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts.Ancestor
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContexts.Ancestor>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts.DoAddContext
 Summary
-  Write here a summary (1 line)
+  Adds a context to a list.
 Description
-  This is a protected member, you don't have to describe these
+  DoAddContext adds a context to the list. It is called by the implementer of
+  IJvDataContextsManager.Add and IJvDataContextsManager.New.
+  
+  DoAddContext should:
+  * check if the context is already added (and do nothing if it is).
+  * check if the specified context has a unique name (if it hasn't, an exception should be raised).
+  * notify the clients a context is about to be added.
+  * add the context to the list.
+  * notify the clients the context has been added to the list.
+  
+  Each descendant of TJvBaseDataContexts that implements a list should implement this method as
+  well.
 Parameters
-  Context - Description for this parameter
+  Context - Context to add to the list.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DoClearContexts, DoDeleteContext, DoRemoveContext, IJvDataContextsManager.Add,
+  IJvDataContextsManager.New
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts.DoClearContexts
 Summary
-  Write here a summary (1 line)
+  Clears the context list.
 Description
-  This is a protected member, you don't have to describe these
+  DoClearContexts clears the list of contexts. It is called by the implementer of
+  IJvDataContextsManager.Clear.
+  
+  DoClearContexts should only delete <LINK IJvDataContext.IsDeletable, deletable contexts>, which
+  implies that after a call to DoClearContexts the list isn't neccessarily empty. For each context
+  that is removed, the client needs to be notified (both before the deletion as well as after).
+  
+  The best way to implement this is to iterate the list from the last to the first context and call
+  DoDeleteContext for each of them.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DoAddContexts, DoDeleteContext, DoRemoveContext, IJvDataContextsManager.Clear
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts.DoDeleteContext
 Summary
-  Write here a summary (1 line)
+  Deletes the specified context.
 Description
-  This is a protected member, you don't have to describe these
+  DoDeleteContext deletes the context at the specified index. It might be called by the implementer
+  of IJvDataContextsManager.Delete or by DoRemoveContext, depending on the implementation of the
+  specified methods. In addition it can be called by DoClearContexts to delete all contexts.
+  
+  DoDeleteContext should:
+  * check if the context is <LINK IJvDataContext.IsDeletable, deletable> (and do nothing if it
+    isn't).
+  * notify clients the context is about to be deleted.
+  * delete the context from the list.
+  * notify clients the context has been deleted.
+  
+  Note that you can implement DoDeleteContext by retrieving the context and call DoRemoveContext.
 Parameters
-  Index - Description for this parameter
+  Index - Index of the context to delete.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DoAddContexts, DoClearContext, DoRemoveContext, IJvDataContextsManager.Delete
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts.DoRemoveContext
 Summary
-  Write here a summary (1 line)
+  Removes the specified context.
 Description
-  This is a protected member, you don't have to describe these
+  DoRemoveContext removes the specified context from the list. It might be called by the implementer
+  of IJvDataContextsManager.Delete or by DoDeleteContext, depending on the implementation of the
+  specified methods.
+  
+  DoRemoveContext should:
+  * check if the specified context belongs to the list (and do nothing if it isn't).
+  * check if the context is <LINK IJvDataContext.IsDeletable, deletable> (and do nothing if it
+    isn't).
+  * notify clients the context is about to be deleted.
+  * delete the context from the list.
+  * notify clients the context has been deleted.
+  
+  Note that you can implement DoRemoveContext by determining the index in the list of the specified
+  context and call DoDeleteContext.
 Parameters
-  Context - Description for this parameter
+  Context - Context to remove from the list.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DoAddContexts, DoClearContext, DoDeleteContext, IJvDataContextsManager.Delete
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts.DsgnContext
 Summary
-  Write here a summary (1 line)
+  Deprecated; will be removed in the next version.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Deprecated; will be removed in the next version.
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts.GetContext
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Index - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContexts.GetContext>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts.GetContextByName
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Name - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContexts.GetContextByName>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts.GetCount
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContexts.GetCount>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts.IndexOf
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Ctx - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContexts.IndexOf>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContexts.Provider
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContexts.Provider>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContextsManager
 Summary
-  Write here a summary (1 line)
+  Base implementation for the \IJvDataContextsManager interface.
 Description
-  Write here a description
+  The TJvBaseDataContextsManager class is the base implementation of the IJvDataContextsManager
+  interface. The class itself provides in the basic implementation for all of the interface's
+  methods, except for <LINK IJvDataContextsManager.New, New>, which is declared abstract, to be
+  overriden by descendants in order to create a new context and add it to the list.
+  
+  In addition the class provides 2 additional methods that give access to the list (both as an
+  interface reference and once as a TJvBaseDataContexts implementation class).
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContextsManager.Add
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Context - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContextsManager.Add>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContextsManager.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContextsManager.Clear>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContextsManager.Contexts
 Summary
-  Write here a summary (1 line)
+  Provides access to the context list.
 Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
+  Contexts provides access to the <LINK IJvDataContexts, context list> (as an reference to the
+  interface) managed by this object.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ContextsImpl, IJvDataContexts
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContextsManager.ContextsImpl
 Summary
-  Write here a summary (1 line)
+  Provides access to the context list implementation object.
 Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
+  ContextsImpl provides access to the <LINK IJvDataContexts, context list> implementation object
+  managed by this object.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Contexts, IJvDataContexts
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContextsManager.Delete
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Context - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContextsManager.Delete>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContextsManager.New
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContextsManager.New>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem
 Summary
-  Write here a summary (1 line)
+  Base implementation for the \IJvDataItem interface.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvBaseDataItem.AfterConstruction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  The TJvBaseDataItem class is the base implementation of the IJvDataItem interface. The class itself
+  provides in the basic implementation for all of the interface's methods. In addition it declares
+  the two methods for IJvDataContextSensitive interface, although the interface is not supported
+  directly.
+
+  The class also overrides the reference counting mechanism (_AddRef and _Release) to only perform
+  the reference counting if the owning list is a dynamic list (a list who's items are created when
+  needed but are not stored in a list directly; this is often the case with lists referring to
+  external data, or data stored in other forms).
+  
+  The class also defines a dummy property for the filing system, so it is able to store the optional
+  sub items of an item.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IJvDataContexSensitive, IJvDataItems  
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.ContextDestroying
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Context - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItem.ContextDestroying>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.DefineProperties
 Summary
-  Write here a summary (1 line)
+  ## Summary copied from D7 help for TPersistent.DefineProperties
+  Provides an interface for a method that reads and writes otherwise unpublished data.
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-  This is a protected member, you don't have to describe these
+  ## Adapted from D7 help for TComponent.DefineProperties
+  TJvBaseDataItem overrides the DefineProperties method defined in TPersistent to define the fake 
+  SubItems property. This is defined so that the optionally supported list of sub items can be read
+  and written from and to the filer. However, there is no such property as SubItems.
+  
+  DefineProperties assigns the ReadSubItems and WriteSubItems methods as the reader and writer
+  methods for the SubItems property.
+
+  ## The rest of this text is copied from D7 help for TComponent.DefineProperties
+  DefineProperties is virtual; descendant classes can override it. When overriding DefineProperties,
+  be aware that the Ancestor property of Filer might be set, and that this property can determine
+  whether or not it is appropriate to write properties.
+
+  DefineProperties is called automatically as part of the component streaming system; do not call it
+  directly.
 Parameters
-  Filer - Description for this parameter
+  Filer - Filer object to read or write the data from or to.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ReadSubItems, WriteSubItems
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.GetID
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItem.GetID>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.GetImplementer
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItem.GetImplementer>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.GetIndex
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItem.GetIndex>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.GetItems
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItem.GetItems>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.ID
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItem.ID>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.Implementer
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItem.Implementer>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.InitID
 Summary
@@ -1065,69 +973,43 @@ See Also
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.IsDeletable
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItem.IsDeletable>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.IsEqualToAncestor
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContexSensitive.IsEqualToAncestor>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.IsParentOf
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  AnItem       - Description for this parameter
-  DirectParent - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItem.IsParentOf>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.Items
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItem.Items>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.ReadSubItems
 Summary
-  Write here a summary (1 line)
+  Reads in a collection of sub items from a stream.
 Description
-  This is a protected member, you don't have to describe these
+  ReadSubItems reads in a collection of sub items from a stream. It expects to find a
+  collection at the current location. If there's not a collection at the current location in the
+  stream, an exception will be raised.
+  
+  Only one item is expected to be in the collection. That item is expected to start with ClassName
+  property, containing the class name of the implementation object for IJvDataItems to use. If the
+  extension list contains an object implementing the IJvDataItems interface, but is of the wrong
+  class, it will be deleted. If no IJvDataItems implementation is present, it will be added. If the
+  correct class already was present, it will be used as is (i.e. the list is <B>not</B> cleared
+  before reading commences).
+  
+  The remainder of the collection item is expected to be properties of the IJvDataItems implementer
+  class.
+  
+  ReadSubItems is called by the filing system when the SubItems property is encountered.
 Parameters
-  Reader - Description for this parameter
+  Reader - Filer object to read the collection of extensions from.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  WriteSubItems
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.RevertToAncestor
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataContexSensitive.RevertToAncestor>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.SetID
 Summary
@@ -1142,38 +1024,20 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.WriteSubItems
 Summary
-  Write here a summary (1 line)
+  Writes the list of sub items as a collection to a stream.
 Description
-  This is a protected member, you don't have to describe these
+  WriteSubItems writes the list of sub items as a collection to a stream, if such a list exists (i.e.
+  if the IJvDataItems interface is supported by this class). It writes the collection start marker and
+  one item. This item starts with the ClassName property containing the class name of the object
+  implementing the IJvDataItems interface. The remainder of the item will consist of the properties
+  of IJvDataItems implementation object. The writing is concluded by writing the list end marker.
+
+  WriteImplementers is called by the filing system when the SubItems property should be stored.
+  This is only the case if the IJvDataItems interface is supported.
 Parameters
-  Writer - Description for this parameter
+  Writer - Filer object to write the extension to.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvBaseDataItem._AddRef
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvBaseDataItem._Release
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ReadSubItems
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemClass
 <TITLE TJvBaseDataItemClass type>
@@ -1185,300 +1049,204 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemImageImpl
 Summary
-  Write here a summary (1 line)
+  Base implementation for the \IJvDataItemImage interface.
 Description
-  Write here a description
+  The TJvBaseDataItemImageImpl class is the base implementation of the IJvDataItemImage interface.
+  The class itself provides no implementation for interface's methods but rather declares them
+  as abstract virtual methods.
+  
+  As a descendant of TJvDataItemAggregatedObject it also provides acces to the item object this
+  extension belongs to (both as interface as well as the implementing object).
+  
+  You should not instantiate an object of this class but rather one of it's descendants that
+  override the methods for IJvDataItemImage.
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemImageImpl.GetAlignment
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItemImage.GetAlignment>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemImageImpl.GetImageIndex
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItemImage.GetImageIndex>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemImageImpl.GetSelectedIndex
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItemImage.GetSelectedIndex>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemImageImpl.SetAlignment
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItemImage.SetAlignment>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemImageImpl.SetImageIndex
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItemImage.SetImageIndex>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemImageImpl.SetSelectedIndex
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItemImage.SetSelectedIndex>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemRenderer
 Summary
-  Write here a summary (1 line)
+  Base implementation for the \IJvDataItemRenderer interface.
 Description
-  Write here a description
+  The TJvBaseDataItemRenderer class is the base implementation of the IJvDataItemRenderer interface.
+  The class itself provides no implementation for interface's methods but rather declares them
+  as abstract virtual methods.
+  
+  As a descendant of TJvDataItemAggregatedObject it also provides acces to the item object this
+  extension belongs to (both as interface as well as the implementing object).
+  
+  You should not instantiate an object of this class but rather one of it's descendants that
+  override the methods for IJvDataItemRenderer.
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemRenderer.Draw
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  ACanvas - Description for this parameter
-  ARect   - Description for this parameter
-  State   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItemRenderer.Draw>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItemRenderer.Measure
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  ACanvas - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItemRenderer.Measure>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems
 Summary
-  Write here a summary (1 line)
+  Base implementation for the \IJvDataItems interface.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvBaseDataItems.BeforeDestruction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  The TJvBaseDataItems class is the base implementation of the IJvDataItems and IJvDataIDSearch
+  interfaces. The class itself provides in the basic implementation for all of the interface's
+  methods, except for GetCount and GetItem. In addition it provides protected methods to be called
+  by an IJvDataItemsManagement implementer to allow list manipulations (adding, deleting and
+  emptying).
+
+  The class also defines a dummy property for the filing system, so it is able to store the list of
+  items.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IJvDataItems, IJvDataIDSearch, IJvDataItemsManagement
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.ContextDestroying
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  Context - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItems.ContextDestroying>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.DefineProperties
 Summary
-  Write here a summary (1 line)
+  ## Summary copied from D7 help for TPersistent.DefineProperties
+  Provides an interface for a method that reads and writes otherwise unpublished data.
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-  This is a protected member, you don't have to describe these
+  ## Adapted from D7 help for TComponent.DefineProperties
+  TJvBaseDataItems overrides the DefineProperties method defined in TPersistent to define the fake 
+  Items property. This is defined so that the list of  items can be read and written from and to the
+  filer. However, there is no such property as Items.
+  
+  DefineProperties assigns the ReadItems and WriteItems methods as the reader and writer methods for
+  the Items property.
+
+  ## The rest of this text is copied from D7 help for TComponent.DefineProperties
+  DefineProperties is virtual; descendant classes can override it. When overriding DefineProperties,
+  be aware that the Ancestor property of Filer might be set, and that this property can determine
+  whether or not it is appropriate to write properties.
+
+  DefineProperties is called automatically as part of the component streaming system; do not call it
+  directly.
 Parameters
-  Filer - Description for this parameter
+  Filer - Filer object to read or write the data from or to.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ReadItems, WriteItems
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.FindByID
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  ID        - Description for this parameter
-  Recursive - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataIDSearch.Find>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.GetCount
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItems.GetCount>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.GetImplementer
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItems.GetImplementer>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.GetItem
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  I - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItems.GetItem>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.GetItemByID
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  ID - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItems.GetItemByID>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.GetItemByIndexPath
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  IndexPath - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItems.GetItemByIndexPath>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.GetParent
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItems.GetParent>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.GetProvider
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItems.GetProvider>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.InternalAdd
 Summary
-  Write here a summary (1 line)
+  Responsible for adding an item to the list.
 Description
-  This is a protected member, you don't have to describe these
+  InternalAdd is responsible for adding an item to the list. The method is declared abstract to
+  allow descendants to determine how to store the item.
+  
+  InternalAdd is called by the ItemAdd method when the item can be added. It doesn't have to notify
+  consumers of the pending addition, nor of the completion afterwards. ItemAdd will perform those
+  tasks. It is allowed to take additional steps before or after adding if so required (e.g. context
+  specific lists may need to copy the list from the ancestor context first, before a change can be
+  made).
+  
+  InternalAdd should never be called from any other method than ItemAdd.
 Parameters
-  Item - Description for this parameter
+  Item - Item to add to the list.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  InternalDelete, InternalMove, ItemAdd
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.InternalDelete
 Summary
-  Write here a summary (1 line)
+  Responsible for deleting an item from the list.
 Description
-  This is a protected member, you don't have to describe these
+  InternalDelete is responsible for removing an item from the list. The method is declared abstract
+  to allow descendants to determine how to store (and thus delete) the item.
+  
+  InternalDelete is called by the ItemDelete method when the item can be deleted. It doesn't have to
+  notify consumers of the pending deletion, nor of the completion afterwards. ItemDelete will
+  perform those tasks. It is allowed to take additional steps before or after deleting if so
+  required (e.g. context specific lists may need to copy the list from the ancestor context first,
+  before a change can be made).
+  
+  InternalDelete should never be called from any other method than ItemDelete.
 Parameters
-  Index - Description for this parameter
+  Index - 0-based index of the item to remove.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  InternalAdd, InternalMove, ItemDelete
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.InternalMove
 Summary
-  Write here a summary (1 line)
+  Responsible for moving an item in the list.
 Description
-  This is a protected member, you don't have to describe these
+  InternalMove is responsible for moving an item in the list. The method is declared abstract to
+  allow descendants to determine how to store (and thus move) the item.
+  
+  InternalMove is called by the ItemMove method when the item can be moved. It doesn't have to
+  notify consumers of the pending move, nor of the completion afterwards. ItemMove will perform
+  those tasks. It is allowed to take additional steps before or after moving if so required (e.g.
+  context specific lists may need to copy the list from the ancestor context first, before a change
+  can be made).
+  
+  InternalMove should never be called from any other method than ItemMove.
 Parameters
-  OldIndex - Description for this parameter
-  NewIndex - Description for this parameter
+  OldIndex - 0-based index of the item to move.
+  NewIndex - 0-based index the item should be moved to. The item at that location and all following
+             items will move up one position.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  InternalAdd, InternalDelete, ItemMove
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.IsDynamic
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<ALIAS IJvDataItems.IsDynamic>
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.IsStreamableItem
 Summary
-  Write here a summary (1 line)
+  Determines if an item should be stored.
 Description
-  This is a protected member, you don't have to describe these
+  IsStreamableItem determines if an item should be stored by the filing system (to the form file).
+  
+  The default implementation allows an item to be stored if it's implementation class is known by
+  the filing system (i.e. RegisterClass has been called for that class) and inherits from
+  TJvBaseDataItem. Descendants can override this method to further expand the conditions (e.g. only
+  items that are <LINK IJvDataItem.IsDeletable, deletable>). In either case, the item storage
+  mechanism will only allow known classes descending from TJvBaseDataItem to be read back in, so
+  there's no point in removing either of those conditions in the descendants.
+  
+  If an item should be written to the filing object IsStreamableItem should return True. Otherwise
+  False should be returned.
 Parameters
-  Item - Description for this parameter
-Return value
-  Describe here what the function returns
+  Item - Reference to the data item about to be stored.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ReadItems
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItems.ItemAdd
 Summary
