@@ -6,9 +6,8 @@
   <Requires>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="CJCL60" Targets="C6,C6p" Condition=""/>
-    <Package Name="DJCL50" Targets="D5,D5s" Condition=""/>
-    <Package Name="DJCL60" Targets="D6,D6p" Condition=""/>
-    <Package Name="DJCL70" Targets="D7,D7p" Condition=""/>
+    <Package Name="DJCL50" Targets="D5, D5s" Condition=""/>
+    <Package Name="DJclVcl" Targets="D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vclx" Targets="D6,D6p,D7,D7p,C6,C6p,K2,K3" Condition=""/>
     <Package Name="vcl" Targets="D7,D7p,C6,C6p,K2,K3" Condition=""/>
     <Package Name="rtl" Targets="D7,D7p,C6,C6p,K2,K3" Condition=""/>
