@@ -1,3 +1,4 @@
+## Locked by: Remko Bonte
 ----------------------------------------------------------------------------------------------------
 @@JvCalc.pas
 <GROUP JVCL.FileRef>
@@ -10,7 +11,7 @@ Author
 @@CreateCalculatorForm
 <TITLE CreateCalculatorForm function>
 Summary
-  Write here a summary (1 line)
+  Creates a calculator dialog.
 Description
   Write here a description
 Parameters
@@ -23,7 +24,7 @@ See Also
 @@CreatePopupCalculator
 <TITLE CreatePopupCalculator function>
 Summary
-  Write here a summary (1 line)
+  Create a calculator dialog to be used as a popup (RX lib as a specialized Edit with a popup calculator).
 Description
   Write here a description
 Parameters
@@ -36,7 +37,7 @@ See Also
 @@SetupPopupCalculator
 <TITLE SetupPopupCalculator procedure>
 Summary
-  Write here a summary (1 line)
+  Once a popup calculator is created, this procedure allows to set some properties (precision and beep on error).
 Description
   Write here a description
 Parameters
@@ -52,7 +53,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Internal use.
 @@TJvCalcState.csFirst
   Description for csFirst
 @@TJvCalcState.csValid
@@ -68,13 +69,20 @@ JVCLInfo
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Rx Calculator is a floating point calculator designed to do simple operations. It is an invisible
+  component, or one that pops-up upon operation.
+
+  Use the Execute method to popup the Calculator. If any errors occur on calculators, use the 
+  BeepsOnError to control beeping on errors If you prefer the classical white calculator, set the 
+  Ctl3D to false.
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.BeepOnError
 Summary
-  Write here a summary (1 line)
+  Determines whether a beep is sounded when an invalid character is entered. 
 Description
-  Write here a description
+  If True, calculator beeps on entry errors
+  If BeepOnError is True, MessageBeep is called when an invalid character is entered or when a character
+  is entered and the field is full.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -83,7 +91,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Returns the value currently displayed as a double
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -92,20 +100,18 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  As in the VCL (if set to false, you will get a flat style calculator).
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.Execute
 Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
+  Execute the calculator.
 Description
-  Write here a description
+  Execute the calculator. 
 Return value
-  Describe here what the function returns
+  Returns True if user click on OK button, else False.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -114,7 +120,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Help context if you want to add the calculator in your application help file
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -123,52 +129,70 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  To read the last value of the calculator memory.
+  
+  Run-time and read-only.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.OnCalcKey
 Summary
-  Write here a summary (1 line)
+  Occurs when a key is pressed.
 Description
-  Write here a description
+  Fired when a key is pressed (special key are not "seen" by this event. i.e. F1, ALT-xx ...).
+  OnCalcKey event is activated when the user presses any key.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.OnChange
 Summary
-  Write here a summary (1 line)
+  Occurs each time the final value of the calculator changes.
 Description
-  Write here a description
+  Fired each time the final value of the calculator changes.
+  OnChange event is triggered when any value of the calculator is changed.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.OnDisplayChange
 Summary
-  Write here a summary (1 line)
+  The TRxCalculator component makes a simple Calculator dialog box available for your plus a few extras
+  like memory, square root, percent, invert, and sign change.
 Description
-  Write here a description
+  Fired each time the display changes.
+  Display the Calculator dialog box by calling the Execute method. The calculation result is stored
+  in the Value property.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.Precision
 Summary
-  Write here a summary (1 line)
+  Determines the precision used in formatting the value in the Calculator display.
 Description
-  Write here a description
+  Number of digit after the decimal point.
+
+Use Precision set the number of digits beyond the decimal point the value should be formatted to before rounding begins.
+The default value of Precision is 15 decimal places.
+NOTE. Precision must be greater than or equal to 2. Trying to set Precision to a value less than 2 changes the value of Precision to 2.
+
+Use Precision set the number of digits beyond the decimal point the value should be formatted to before rounding begins.
+
+The default value of Precision is 15 decimal places.
+
+NOTE. Precision must be greater than or equal to 2. Trying to set Precision to a value less than 2 changes the value of Precision to 2.
+
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.Title
 Summary
-  Write here a summary (1 line)
+  Determines the text that appears in the calculator dialog box's title bar.
 Description
-  Write here a description
+  Calculator title
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -177,7 +201,10 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  To Set/Get the calculator value
+  
+  The Value property is used to retreive calculation results from the Calculator dialog box and to set
+  current value in the calculator's display.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

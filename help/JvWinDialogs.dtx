@@ -1,3 +1,4 @@
+## Locked by: Remko Bonte
 ----------------------------------------------------------------------------------------------------
 @@JvWinDialogs.pas
 <GROUP JVCL.FileRef>
@@ -147,7 +148,7 @@ Description
   The "Add Hardware Wizard" enables you to add new hardware or troubleshoot any hardware-related problems.
   
   To manually open the "Add Hardware Wizard", click Start, click Control Panel, and then click 
-  "Printers and Other Hardware". Under "See Also", click "Add Hardware".
+  "\Printers and Other Hardware". Under "See Also", click "Add Hardware".
   
   You can preview this dialog at design-time, by right-clicking the component and clicking 'Preview...'.
 ----------------------------------------------------------------------------------------------------
@@ -177,6 +178,8 @@ Description
 @@TJvAppletDialog.AppletIndex
 Summary
 Description
+  Sent to the CPlApplet function of a Control Panel application to retrieve the number of dialog boxes supported by the application. 
+  The CPlApplet function returns the number of dialog boxes that the Control Panel application supports. 
 See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvAppletDialog.AppletInfo
@@ -187,6 +190,27 @@ See Also
 @@TJvAppletDialog.AppletName
 Summary
 Description
+
+control.exe desktop Launches the Display Properties window. 
+control.exe color Launches the Display Properties window with the Appearance tab preselected. 
+control.exe date/time Launches the Date and Time Properties window. 
+control.exe international Launches the Regional and Language Options window. 
+control.exe mouse Launches the Mouse Properties window. 
+control.exe keyboard Launches the Keyboard Properties window. 
+control.exe printers Displays the Printers and Faxes folder. 
+control.exe fonts Displays the Fonts folder. 
+
+For Windows 2000 and later systems:
+
+control.exe folders Launches the Folder Options window. 
+control.exe netware Launches the Novell NetWare window (if installed). 
+control.exe telephony Launches the Phone and Modem Options window. 
+control.exe admintools Displays the Administrative Tools folder. 
+control.exe schedtasks Displays the Scheduled Tasks folder. 
+control.exe netconnections Displays the Network Connections folder. 
+control.exe infrared Launches the Infrared Monitor window (if installed). 
+control.exe userpasswords Launches the User Accounts window. 
+
 See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvAppletDialog.Count
@@ -222,9 +246,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeIconDialog.Execute
 Summary
-  Shows the Run dialog
+  Shows a dialog box that allows a user to select an icon from a module.
 Description
-  Call Execute to show the Run Dialog.
+  Call Execute to show a dialog box that allows a user to select an icon from a module.
 See Also
   FileName, IconIndex
 ----------------------------------------------------------------------------------------------------
@@ -232,16 +256,21 @@ See Also
 Summary
   Specifies the fully-qualified path of the default dynamic-link library (DLL) that contains the icons.
 Description
-  A string that contains the fully-qualified path of the default dynamic-link library (DLL) that contains
-  the icons. If the user chooses a different DLL, this buffer contains that DLL's path when the function
-  returns. This buffer should be at least MAX_PATH characters in length, or the returned path may be
-  truncated. You should verify that the path is valid before using it.
+  Use FileName to specify a fully-qualified path of the default dynamic-link library (DLL) that contains
+  the icons. If the user chooses a different DLL, FileName contains that DLL's path when the function
+  returns.
 See Also
   Execute, IconIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeIconDialog.IconIndex
 Summary
+  Indicates the index of the icon that was selected.
 Description
+  The IconIndex property returns the index of the icon that was selected.
+
+  To make an icon selected by default in the dialog’s box, assign a value to IconIndex in the Object
+  Inspector or in program code. Programmatic changes to IconIndex have no effect while the dialog is
+  active. 
 See Also
   Execute, FileName
 ----------------------------------------------------------------------------------------------------
@@ -276,11 +305,17 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCplInfo
 Summary
+  Contains resource information and an application-defined value for a dialog box supported by a Control Panel application. The CPlApplet function of the Control Panel application returns this information to the Control Panel in response to a CPL_INQUIRE message. 
 Description
+  If the icon or display strings of the dialog box can change based on the state of the computer, you can specify the CPL_DYNAMIC_RES value for the idIcon, idName, or idInfo members rather than specifying a valid resource identifier. This causes the Control Panel to send the CPL_NEWINQUIRE message each time it needs the icon and display strings. Using this technique is significantly slower, however, because the Control Panel will need to load your application each time it sends the CPL_NEWINQUIRE message. 
 @@TJvCplInfo.Icon
+  Resource identifier of the icon that represents the dialog box. 
 @@TJvCplInfo.Name
+  Resource identifier of the string containing the short name for the dialog box. This name is intended to be displayed below the icon. 
 @@TJvCplInfo.Info
+  Resource identifier of the string containing the description for the dialog box that is intended to be displayed when the application icon is selected. 
 @@TJvCplInfo.lData
+  Pointer to data defined by the application. When the Control Panel sends the CPL_DBLCLK and CPL_STOP messages, it passes this value back to your application. 
 ----------------------------------------------------------------------------------------------------
 @@TJvDiskFullDialog
 <TITLEIMG TJvDiskFullDialog>
@@ -307,7 +342,9 @@ Description
 @@TJvDriveCapacity
 <TITLE TJvDriveCapacity type>
 Summary
+  Represents kinds of drive capacities.
 Description
+  The TJvDriveCapacity type represents kinds of drive capacities.
 @@TJvDriveCapacity.dcDefault
   Default drive capacity.
 @@TJvDriveCapacity.dcSize360kB
@@ -330,14 +367,12 @@ Description
   Displays the Shut Down Windows dialog box. This is the same as clicking the Start menu and selecting Shut Down.
   
   You can preview this dialog at design-time, by right-clicking the component and clicking 'Preview...'.  
-  <ShutdownWindows Method>
-  <RestartDialog>
 ----------------------------------------------------------------------------------------------------
 @@TJvExitWindowsDialog.Execute
 Summary
-  Shows the Run dialog
+  Shows a dialog box that prompts the user to restart windows. 
 Description
-  Call Execute to show the Run Dialog.
+  Call Execute to show a dialog box that prompts the user to restart windows. 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormatDriveDialog
 <TITLEIMG TJvFormatDriveDialog>
@@ -438,7 +473,9 @@ Description
 @@TJvFormatDriveKind
 <TITLE TJvFormatDriveKind type>
 Summary
+  Represents different kinds of drive format types.
 Description
+  The TJvFormatDriveKind type represents different kinds of drive format types.
 @@TJvFormatDriveKind.ftQuick
   Performs a quick format.
 @@TJvFormatDriveKind.ftStandard
@@ -452,71 +489,97 @@ JVCLInfo
   GROUP=JVCL.Dialogs.Common
   FLAG=Component
 Summary
-  Displays the unregistered Multipurpose Internet Mail Extensions (MIME) content type dialog box.
+  Displays the unregistered MIME content type dialog box.
 Description
-  Use TJvExitWindowsDialog to show a dialog box that prompts the user to restart windows. Do this by 
-  calling the Execute method. When the user clicks the button, 
-  the function calls ExitWindowsEx to attempt to restart Windows.
+  TJvMIMEAssociationDialog is a wrapper for the MIMEAssociationDialog windows API. It can display the
+  unregistered Multipurpose Internet Mail Extensions (MIME) content type dialog box, do this by 
+  calling the Execute method. This dialog box allows
+  the user to select an application to associate with a previously unknown MIME content type.
   
-  Displays the Shut Down Windows dialog box. This is the same as clicking the Start menu and selecting Shut Down.
+  You have to specify a name of file - by using property Filename - that contains data of ContentType's
+  content type. The function will return a value in ReturnValue that indicates whether the MIME content
+  type is associated with the extension, and if so AssociatedApp indicates the path of the application
+  selected by the user.
   
   You can preview this dialog at design-time, by right-clicking the component and clicking 'Preview...'.  
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationDialog.AssociatedApp
 Summary
+  Indicates the path of the application selected by the user.
 Description
-  Address of a buffer that receives the path of the application specified by the user. 
+  After calling Execute, property AssociatedApp contains the path and filename to the associated
+  application if the user didn't cancel the dialog.
 See Also
+  Execute
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationDialog.ContentType
 Summary
+  Specifies the unregistered content type for which an application is sought.
 Description
-  Address of a null-terminated string that contains the unregistered content type. 
+  Specifies the unregistered content type for which an application is sought.
 See Also
+  Execute, Filename
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationDialog.Execute
 Summary
   Displays the standard Shell format dialog. 
 Description
   Call Execute to display the standard Shell format dialog.
+Return Value
+  Returns True if the MIME content type is associated with the extension. Otherwise returns False.
 See Also
+  ContentType, FileName
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationDialog.Filename
 Summary
+  Specifies the name of a file containing data of ContentType's content type.
 Description
-  Address of a null-terminated string that contains the name of the target file. This file must conform to the content type described by the pcszMIMEContentType parameter. 
+  Use Filename to specify the name of a file. The file must conform to the content type described 
+  by property ContentType. 
+Note
+  Filename <i>must</i> contain an extension.
 See Also
+  ContentType, Execute
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationDialog.Options
 Summary
+  Specifies options for the dialog.
 Description
-Bit flag value that specifies if an association is to be registered. The bit flag is the value MIMEASSOCDLG_FL_REGISTER_ASSOC (0x0001). If this bit is set, the selected application is registered as the handler for the given MIME type. If this bit is clear, no association is registered.
-
-An application is registered only if this flag is set and the user indicates that a persistent association is to be made. 
-
-Registration is impossible if the string at pcszFile does not contain an extension. 
-See Also
+  Use the Options property to customize the appearance and functionality of the dialog. By default,
+  all options are off.
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationDialog.ReturnValue
 Summary
   Indicates the value returned by the function called by Execute.
 Description
-  The TJvURLAssociationDialog component is a wrapper for the URLAssociationDialog windows API. 
+  The TJvMIMEAssociationDialog component is a wrapper for the MIMEAssociationDialog windows API. 
   When you call Execute, this windows API is executed, and the return value of that function is stored 
   in ReturnValue.
 
   Possible return values are:
-  * S_OK: If the application is registered with the \URL protocol.
-  * S_FALSE: If nothing is registered. For example, when the user elects to perform a one-time execution via 
-    the selected application.
+  * S_OK: If the MIME content type is associated with the extension. The extension is associated as
+    the default extension for the content type.
+  * S_FALSE: If nothing is registered. Otherwise the function returns one of the following errors:
+  * E_ABORT -- The user cancelled the operation.
+  * E_FLAGS -- The options specified by Options is invalid.
+  * E_OUTOFMEMORY -- Not enough memory to complete the operation.
+  * E_POINTER -- One of the values of the properties is invalid.    
 See Also
   Execute
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationOption
 <TITLE TJvMIMEAssociationOption type>
 Summary
+  TJvMIMEAssociationOption and TJvMIMEAssociationOptions specify options for a 
+  TJvMIMEAssociationDialog component.
 Description
+  TJvMIMEAssociationOptions is a set of TJvMIMEAssociationOption values.
 @@TJvMIMEAssociationOption.maRegisterAssoc
+  The application selected is to be registered as the handler for files of the given MIME type.
+  When maRegisterAssoc is excluded from <LINK TJvMIMEAssociationDialog.Options,Options>, no association
+  is to be registered. An application is only registered if this flag is set, and the user indicates 
+  that a persistent association is to be made. Registration is only possible if 
+  <LINK TJvMIMEAssociationDialog.Filename,Filename> contains an extension.
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationOptions
 <TITLE TJvMIMEAssociationOptions type>
@@ -773,8 +836,9 @@ See Also
 @@TJvSoftwareUpdateAdState
 <TITLE TJvSoftwareUpdateAdState type>
 Summary
-  The advertised state
+  Represents kinds of advertised states.
 Description
+  The TJvSoftwareUpdateAdState type represents kinds of advertised states.
 @@TJvSoftwareUpdateAdState.asNone
 @@TJvSoftwareUpdateAdState.asAvailable
   Update-available dialog box has not been presented to the user.
@@ -795,12 +859,8 @@ Description
   standard message box that can be used to notify a user that an application has been updated, do this 
   by calling the Execute method.
   
-Provides a standard message box for the alerting the user that a software
-//    update is available or installed. No UI will be displayed if there is no
-//    update available or if the available update version is less than or equal
-//    to the Advertised update version.
-  
-  The SoftwareUpdateMessageBox function is intended to be used in the case where Shell shortcut hooks do not work. One example is an application that was not installed on the start menu. If that application needs to do it's own software update check it should use this function. 
+  No dialog box will be displayed if there is no update available or if the available update version
+  is less than or equal to the Advertised update version.
   
   You can preview this dialog at design-time, by right-clicking the component and clicking 'Preview...'.  
 ----------------------------------------------------------------------------------------------------
@@ -808,18 +868,19 @@ Provides a standard message box for the alerting the user that a software
 Summary
   Contains information about a software update. 
 Description
-Address of a SOFTDISTINFO structure in which to store the update information. The cbSize member must be initialized to the sizeof(SOFTDISTINFO).
+  Use DistInfo to store the update information.
 See Also
+  DistributionUnit
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateDialog.DistributionUnit
 Summary
+  Specifies the identifier for the code distribution unit.
 Description
-String value containing the identifier for the code distribution unit. For Microsoft® ActiveX® controls, szDistUnit is typically a globally unique identifier (GUID). 
-
-Unique identifier string for a code distribution unit. For
-//                               ActiveX controls and Active Setup installed components, this
-//                               is typically a GUID string.
+  Use DistributionUnit to specify the identifier for the code distribution unit. 
+  For ActiveX controls and Active Setup installed components, DistributionUnit is typically a globally 
+  unique identifier (GUID). 
 See Also
+  DistInfo
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateDialog.Execute
 Summary
@@ -836,32 +897,17 @@ Description
   in ReturnValue.
 
   Possible return values are:
-  * IDNO: The user clicked the "Don't Update" button on the dialog box. 
-  
-  IDNO     - The user chose cancel. If *pbRemind is FALSE, the caller should save the
-//               update version from the SOFTDISTINFO and pass it in as the Advertised
-//               version in future calls.
-
+  * IDNO: The user clicked the "Don't Update" button on the dialog box. The caller should save the
+    update version from the SOFTDISTINFO and pass it in as the Advertised
+    version in future calls.
   * IDYES: The user clicked the "Update Now" or "About Update" button. The application should navigate
-    to the HTML page referred to by the <LINK TJvSoftwareUpdateInfo.HREF,HREF> property of DistInfo.  
-    
-    
-//    IDYES    - The user has selected Update Now/About Update. The caller should navigate to
-//               the SOFTDISTINFO's pszHREF to initiate the install or learn about it.
-//               The caller should save the update version from the SOFTDISTINFO and pass
-//               it in as the Advertised version in future calls.
-
-  * IDIGNORE: There is no pending software update.  
-  
-  IDIGNORE - There is no pending software update. Note: There is
-//               no Ignore button in the standard UI. This occurs if the available
-//               version is less than the installed version or is not present or if the
-//               Advertised version is greater than or equal to the update version.
-
+    to the HTML page referred to by the <LINK TJvSoftwareUpdateInfo.HREF,HREF> property of DistInfo to
+    initiate the install or learn about it. The caller should save the update version from DistInfo
+    and pass it in as the Advertised version in future calls.
+  * IDIGNORE: There is no pending software update. This occurs if the available version is less than 
+    the installed version or is not present or if the Advertised version is greater than or equal to 
+    the update version.
   * IDABORT: An error occurred.
-  
-  IDABORT  - An error occured. Call GetSoftwareUpdateInfo() for a more specific HRESULT.
-//               Note: There is no Abort button in the standard UI.  
 See Also
   Execute
 ----------------------------------------------------------------------------------------------------
@@ -876,29 +922,40 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateInfo
 Summary
+  Contains information about a software update. 
 Description
+  Use TJvSoftwareUpdateInfo to store update information.
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateInfo.AdState
 Summary
-  The advertised state. It can take one of the following values: 
+  Specifies the advertised state.
 Description
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateInfo.AdvertisedVersionLS
 Summary
-  Contains the least-significant unsigned long integer value of the advertised version number. 
+  Specifies the least-significant unsigned long integer value of the advertised version number. 
 Description
+  Use AdvertisedVersionLS to specify the least-significant unsigned long integer value of the advertised
+  version number. 
+
+  The least-significant unsigned long integer of the version number contains the custom version and build numbers.
 See Also
+  AdvertisedVersionMS
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateInfo.AdvertisedVersionMS
 Summary
-  Contains the most-significant unsigned long integer value of the advertised version number. 
+  Specifies the most-significant unsigned long integer value of the advertised version number. 
 Description
+  Use AdvertisedVersionMS to specify the most-significant unsigned long integer value of the advertised
+  version number. 
+
+  The most-significant unsigned long integer of a version number contains the major and minor version numbers. 
 See Also
+  AdvertisedVersionLS
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateInfo.Description
 Summary
-  String containing the contents of the ABSTRACT flag from the associated .cdf file.
+  Specifies the contents of the ABSTRACT flag from the associated .cdf file.
 Description
 See Also
 ----------------------------------------------------------------------------------------------------
@@ -909,7 +966,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateInfo.HREF
 Summary
-  String containing the URL of the Web page to advertise or install the update.
+  Specifies the URL of the Web page to advertise or install the update.
 Description
 See Also
 ----------------------------------------------------------------------------------------------------
@@ -917,13 +974,23 @@ See Also
 Summary
   Contains the least-significant unsigned long integer value of the installed version number. 
 Description
+  Use InstalledVersionLS to specify the least-significant unsigned long integer value of the installed
+  version number. 
+
+  The least-significant unsigned long integer of the version number contains the custom version and build numbers.
 See Also
+  InstalledVersionMS
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateInfo.InstalledVersionMS
 Summary
-  Contains the most-significant unsigned long integer value of the installed version number. 
+  Specifies the most-significant unsigned long integer value of the installed version number. 
 Description
+  Use InstalledVersionMS to specify the most-significant unsigned long integer value of the installed
+  version number. 
+
+  The most-significant unsigned long integer of a version number contains the major and minor version numbers. 
 See Also
+  InstalledVersionLS
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateInfo.SoftDistInfo
 Summary
@@ -932,21 +999,31 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateInfo.Title
 Summary
-  String containing the contents of the TITLE flag from the associated .cdf file.
+  Specifies the contents of the TITLE flag from the associated .cdf file.
 Description
 See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateInfo.UpdateVersionLS
 Summary
-  Contains the least-significant unsigned long integer value of the update version number. 
+  Specifies the least-significant unsigned long integer value of the update version number. 
 Description
+  Use UpdateVersionLS to specify the least-significant unsigned long integer value of the update
+  version number. 
+
+  The least-significant unsigned long integer of the version number contains the custom version and build numbers.
 See Also
+  UpdateVersionMS
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateInfo.UpdateVersionMS
 Summary
-  Contains the most-significant unsigned long integer value of the update version number. 
+  Specifies the most-significant unsigned long integer value of the update version number. 
 Description
+  Use UpdateVersionMS to specify the most-significant unsigned long integer value of the update
+  version number. 
+
+  The most-significant unsigned long integer of a version number contains the major and minor version numbers. 
 See Also
+  UpdateVersionLS
 ----------------------------------------------------------------------------------------------------
 @@TJvURLAssociationDialog
 <TITLEIMG TJvURLAssociationDialog>

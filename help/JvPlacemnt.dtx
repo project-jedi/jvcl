@@ -1,3 +1,4 @@
+## Locked by: Remko Bonte
 ----------------------------------------------------------------------------------------------------
 @@JvPlacemnt.pas
 <GROUP JVCL.FileRef>
@@ -13,15 +14,43 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Enables storing and retrieving the placement of a form.
 Description
-  Write here a description
+  To use the component, specify which properties you want to save in the Options property, and set
+  the IniFileName and IniSection property to the filename of your applications initialization file.
+  Set the UseRegistry property to True to use Windows system registry instead of an ini-file.
+
+  You can then set property Active to True to allow automatically save and restore the specified 
+  properties, or call the RestoreFormPlacement and SaveFormPlacement methods to retrieve or save
+  the form. The MinMaxInfo property provides an easy way to limit a form's minimum and maximum
+  tracking size.
+
+  Using class TJvFormPlacement
+
+  Set Active property to True to enable save and restore parent form's size and position.
+  When IniFileName is set to the empty string the default name for the INI-file (or Registry Key) will
+  be used.
+  If UseRegistry is True, TJvFormPlacement uses standard TRegIniFile class. So
+  the IniFileName passed to a TJvFormPlacement component becomes a subkey under the system registry's
+  root key (HKEY_CURRENT_USER by default).
+
+  You can handle the OnSavePlacement ans OnRestorePlacement events to save and restore additional
+  information to the initialization file or Windows Registry.
+
+  The TJvFormPlacement and TJvFormStorage components provides a quick method for saving size and position 
+  of its parent form.
+
+  This component also allows control of a parent form with style bsSizeable to have the Minumum and
+  Maximum sizes controlled by the developer.
+See Also
+  TJvFormStorage
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.Active
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This property will activate the processing required to save and restore the form's positions.
+  If active = False, the component has no effect
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -30,7 +59,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Deletes all sections in INI file (or registry) whose name is IniSection property
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -46,18 +75,28 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.IniFile
 Summary
-  Write here a summary (1 line)
+  Internal Tinifile object if any
 Description
-  Write here a description
+  This property specifies the INI file to use. When this is specified, the form's metric information will be stored inside the INI file, and inside the section.
+
+  When IniFileName is set to the empty string the default name for the INI-file (or Registry Key) will be used.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.IniFileName
 Summary
-  Write here a summary (1 line)
+  The IniFileName property is used to tell a saver component the name of the initialization (ini) file
+  it is to write to and read from.
 Description
-  Write here a description
+  INI file name (or registry main key)
+  If empty, the component uses the application exe name.
+
+  If UseRegistry property is set to True (32-bit version only), then this property specifies Windows
+  system registry key name.
+
+  If you do not specify a value of this property, then default name returned by GetDefaultIniName 
+  (or GetDefaultIniRegKey for registry) will be used.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -66,7 +105,9 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This is an IniFileObject. It encapsulates the information so that instead of the information being
+  stored inside the INI file, it is stored inside the registry instead.
+  Returns the internal TInifile or TRegIniFile depending on UseRegistry property value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -75,7 +116,11 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  The IniSection is the section of the IniFile which the information will be stored in. If you specify
+  blank, the information about your form's metrics will not be saved.
+  INI section.
+  
+  If empty the component uses the form class name
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -84,34 +129,42 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This property allows control of a parent form with style bsSizeable to have the minimum and maximum
+  sizes controlled by the developer.
+  
+  min and max info
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.OnRestorePlacement
 Summary
-  Write here a summary (1 line)
+  When the screen is restored, this event is triggered.
+  Fired once the component has read form placement from INI file or registry.
 Description
-  Write here a description
+  You can supply an event handler to read other INI dependent  values that are not managed by the 
+  component (using ReadInteger and ReadString methods)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.OnSavePlacement
 Summary
-  Write here a summary (1 line)
+  When the screen is being saved, this event is triggered.
+  Fired once the component has saved form placement to INI file or registry.
 Description
-  Write here a description
+  You can supply an event handler to write other INI dependent  values that are not managed by the
+  component (using WriteInteger and WriteString methods)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.Options
 Summary
-  Write here a summary (1 line)
+  What to store/retrieve (state, position, active control)
 Description
-  Write here a description
+  The Options property tells the TJvFormPlacement component which parts of the parent form it should
+  read and write to the specified IniFileName.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -120,7 +173,8 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  If True, the user will not be able to resize the form
+  This property prevents the form from being resized. Setting this to true prevents the form from being resized.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -129,7 +183,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Allows to read an integer value from the INI used by the component.
 Parameters
   Ident   - Description for this parameter
   Default - Description for this parameter
@@ -143,7 +197,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Allows to read a string value from the INI used by the component.
 Parameters
   Ident   - Description for this parameter
   Default - Description for this parameter
@@ -157,7 +211,9 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This is used internally. It encapsulates the contents of the Ini file to the registry (something
+  like mapping A to B).
+  Returns the internal TRegIniFile if any
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -166,25 +222,29 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Allows to set the registry root (only if UseRegistry is true).
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.RestoreFormPlacement
 Summary
-  Write here a summary (1 line)
+  Restores form placement in reading the INI file or registry 
 Description
-  Write here a description
+  The RestoreFormPlacement method loads all the properties specified in the related Options property
+  from the initialization file or registry key specified in IniFileName independently of Active property
+  value.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.SaveFormPlacement
 Summary
-  Write here a summary (1 line)
+  Forces the component to save current form placement
 Description
-  Write here a description
+  The SaveFormPlacement method saves all the properties specified in the related Options property
+  from the initialization file or registry key specified in IniFileName independently of Active
+  property value.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -193,7 +253,14 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This property is enabled under Delphi 2.0 It maps the INI file to the registry instead.
+  If True, information are stored/retreieves from the registry (else from a standard INI file stored
+  in Windows directory by default).
+Note
+  if you application stores a lot of user preferences in INI, do not use the Registry!
+  If a user wants to use another computer, he/she will loose all settings... A standard INI is not
+  as "modern" and "futurist" as the registry, but an application INI file can be easely copied using
+  common handlings ...
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -202,7 +269,8 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  The version number blocks the internal restore function when the version read from the INI
+  (or Registry) is less than the one set in the component.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -211,25 +279,23 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Allows to write an integer value into the component INI file or registry
 Parameters
   Ident - Description for this parameter
   Value - Description for this parameter
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  WriteString
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.WriteString
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Allows to write a string value into the component INI file or registry
 Parameters
   Ident - Description for this parameter
   Value - Description for this parameter
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  WriteInteger
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage
 <TITLEIMG TJvFormStorage>
@@ -237,15 +303,46 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  The TJvFormStorage component is a direct descendent of TJvFormPlacement.
 Description
-  Write here a description
+  In 32-bit version, when UseRegistry is True, TJvFormStorage uses standard TRegIniFile class. So
+  the IniFileName passed to a TJvFormStorage component becomes a subkey under the system registry's
+  root key (HKEY_CURRENT_USER by default).
+  
+  TJvFormStorage will work with any component or control you might have. Even 3rd party controls or
+  controls you have designed yourself.
+  
+  Using class TJvFormStorage
+  
+  At design-time use component editor to add published properties of any other components to list of 
+  stored properties of TJvFormStorage component.
+  To save and restore the position of TRxSplitter component add to stored properties the Width or 
+  Height (according to Align property) of one of splitted controls (ControlFirst or ControlSecond).
+
+  To save and restore active page of tabbed controls (TNotebook, TTabbedNotebook or TPageControl) store 
+  ActivePage or PageIndex property.
+
+  You can save and restore text of edit controls by adding to stored properties the Text property for 
+  TEdit or Lines property for TMemo.
+
+  Use TJvFormStorage to save and restore state of windowed controls such as TCheckBox, TRadioGroup etc.
+  Link the TJvFormStorage (or TJvFormPlacement) component to IniStorage property of some another components 
+  to save and load information specific for these components (TRxCheckListBox, TRxDrawGrid, TSpeedbar, 
+  TMRUManager, TRxDBGrid) with no additional code.
+
+  TJvFormStorage component allows you to read and write virtually any component published property to
+  an INI file or the system Registry with virtually no code.
+
+  It additionally will save any published properties to an INI file or the registry to be restored
+  when the form is created.
+See Also
+  TJvFormPlacement
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage.SetNotification
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Internal use. do not call directly.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -254,40 +351,57 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  List of stored (and retrieved) properties.
+  You do not have to modify this property but to use the specialized design time property editor.
+  StoredProps contains the forms controls you have selected or chosen to have their properties stored into a file.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage.StoredValue
 Summary
-  Write here a summary (1 line)
+  References the stored values in the list by their name.
 Description
-  Write here a description
+  Use the StoredValue property to get or set the value represented by a stored value object with a
+  particular name.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvStoredValues.Items, TJvStoredValues.Values
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage.StoredValues
 Summary
-  Write here a summary (1 line)
+  References the stored value objects in the list by their name.
 Description
-  Write here a description
+  Access StoredValues at runtime to view and set stored value names and values dynamically 
+  (at design time use the collection editor for the StoredValues property to set stored value 
+  information). StoredValues is a zero-based array of TJvStoredValue objects. Index specifies the 
+  array element to access.
+  
+  The following code assumes that the storage component has 3 stored value objects, and sets and
+  stores their values.
+  <CODE>
+  JvFormStorage1.StoredValues[0].Value := 'Germany';
+  JvFormStorage1.StoredValues[1].Value := 'Berlin';
+  JvFormStorage1.StoredValues[2].Value := 420000;
+  JvFormStorage1.StoredValues.SaveValues;
+  </CODE>
+Note
+  An easier way to set and retrieve values of stored value objects when the name of each stored value
+  object is known is to call StoredValue. StoredValue cannot, however, be used to change a stored 
+  value’s name.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  StoredValue, TJvStoredValues
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Internal object centralizing INI actions (save / restore)
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink.IniObject
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  INI object (TInifile or TRegIniFile)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -296,25 +410,23 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Fired when a load from INI occurs
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnSave
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink.OnSave
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Fired when save to INI occurs
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnLoad
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink.RootSection
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Root section for all linked INI
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -323,110 +435,95 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Storage object
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue
 Summary
-  Write here a summary (1 line)
+  Represents a stored value.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvStoredValue.Assign
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Source - Description for this parameter
+  Use the properties of a TJvStoredValue object to get or set the value of a stored value. Storage
+  components create TJvStoredValue objects to represent a data value stored in a INI file or in the 
+  registry.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvFormStorage, TJvStoredValues
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.Clear
 Summary
-  Write here a summary (1 line)
+  Sets the Value of the stored value to NULL.
 Description
-  Write here a description
+  Use Clear to assign a NULL value to a stored value.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Value
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.KeyString
 Summary
-  Write here a summary (1 line)
+  Specifies a key to be used for encoding and decoding the stored value.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use KeyString to specify a key that will be used for encoding and decoding the stored value.
+  
+  If you specify an empty string for KeyString, the stored value is <i>not</i> encoded.
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.Name
 Summary
-  Write here a summary (1 line)
+  Specifies the name of the stored value. 
 Description
-  Write here a description
+  Use Name to identify a particular stored value within a TJvStoredValues object. Name specifies
+  a string that identifies the name of the data value into which to store the value. 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Value
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.OnRestore
 Summary
-  Write here a summary (1 line)
+  Occurs after the stored value is restored.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnSave, Restore
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.OnSave
 Summary
-  Write here a summary (1 line)
+  Occurs before the stored value is saved.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnRestore, Restore
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.Restore
 Summary
-  Write here a summary (1 line)
+  Restores the stored value.
 Description
-  Write here a description
+  Call Restore to set property Value to the data value read from the INI file or registry at a location 
+  specified by the Name property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnRestore, Save
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.Save
 Summary
-  Write here a summary (1 line)
+  Saves the stored value.
 Description
-  Write here a description
+  Call Save to write the value of property Value to the INI file or registry at a location 
+  specified by the Name property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnSave, Restore
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.StoredValues
 Summary
-  Write here a summary (1 line)
+  Specifies the TJvStoredValues instance to which the TJvStoredValue belongs.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Each TJvStoredValue belongs to the TJvStoredValues which creates it. The StoredValues property points
+  to the collection object to which the item belongs.
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.Value
 Summary
-  Write here a summary (1 line)
+  Represents the value of the stored value as a Variant.
 Description
-  Write here a description
+  Use Value in generic code that manipulates the values of stored values without needing to know 
+  the type the stored value represent.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Clear
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValueEvent
 <TITLE TJvStoredValueEvent type>
@@ -436,178 +533,220 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues
 Summary
-  Write here a summary (1 line)
+  Manages a list of stored values.
 Description
-  Write here a description
+  The TJvFormStorage storage component uses the TJvStoredValues object to represent it's stored values.
+
+  Use the properties and methods of TJvStoredValues to:
+
+  * Access a specific stored value object.
+  * Add or delete stored values from the list.
+  * Get or set the values of individual stored values.
+  * Iterate through all stored values.
+  * Copy a set of stored values to another stored values list.
+See Also
+  TJvStoredValue, TJvFormStorage
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.IndexOf
 Summary
-  Write here a summary (1 line)
+  Finds the index number of a stored value in the Items array from its name.
 Description
-  Write here a description
+  Use the IndexOf method to locate the position of a stored value in the Items property array. 
+  IndexOf returns a value from zero (the first position) to Count - 1. 
 Parameters
-  Name - Description for this parameter
+  Name - Specifies the name of the stored value as the Name parameter.
 Return value
-  Describe here what the function returns
+  Returns the position of the stored value specified by Name in the Items property array.
+  If Items contains no stored value with the specified Name, the return value is -1.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Items, TJvStoredValue.Name
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.Items
 Summary
-  Write here a summary (1 line)
+  Lists the individual stored value objects of a TJvStoredValues object.
 Description
-  Write here a description
+  Use Items to iterate through all the stored values. Index identifies the index in the range 0
+  to Count - 1. Items can reference a particular stored value by its index, but the Values property
+  is preferred, because it does not depend on the order of the stored values.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IndexOf, StoredValue, Values
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.RestoreValues
 Summary
-  Write here a summary (1 line)
+  Restores the values represented by the stored value objects in the list.
 Description
-  Write here a description
+  Call RestoreValues to restore the values of all stored value objects in the Items list. 
+  Alternatively call the <LINK TJvStoredValue.Restore,Restore> method of a specific stored value object 
+  to restore that stored value.
+  
+  Restoring a value of a stored value object means that the <LINK TJvStoredValue.Value,Value> property
+  of the stored value object is read from the INI file or registry at a location specified by
+  it's <LINK TJvStoredValue.Name,Name> property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvStoredValue.OnRestore, TJvStoredValue.Restore, SaveValues
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.SaveValues
 Summary
-  Write here a summary (1 line)
+  Saves the values represented by the stored value objects in the list.
 Description
-  Write here a description
+  Call SaveValues to save the values of all stored value objects in the Items list. 
+  Alternatively call the <LINK TJvStoredValue.Save,Save> method of a specific stored value object 
+  to save only that stored value.
+  
+  Saving a value of a stored value object means that the <LINK TJvStoredValue.Value,Value> property
+  of the stored value object is written to the INI file or registry at a location specified by
+  it's <LINK TJvStoredValue.Name,Name> property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvStoredValue.OnSave, TJvStoredValue.Save, RestoreValues
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.Storage
 Summary
-  Write here a summary (1 line)
+  Identifies the storage component that uses the stored values collection to represent all of its stored values.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Check the value of the Storage property to determine the storage component that is associated with
+  the TJvStoredValues object.
+  
+  Use the properties of the storage component to obtain additional information. 
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.StoredValue
 Summary
-  Write here a summary (1 line)
+  References the stored values in the list by their name.
 Description
-  Write here a description
+  Use the StoredValue property to get or set the value represented by a stored value object with a
+  particular name.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Items, Values
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.Values
 Summary
-  Write here a summary (1 line)
+  References the stored value objects in the list by their name.
 Description
-  Write here a description
+  Use the Values property to get or set the properties of a stored value object with a particular
+  name.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Items, StoredValue
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo
 Summary
-  Write here a summary (1 line)
+  Contains information about a window's maximized size and position and its minimum and maximum
+  tracking size. 
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvWinMinMaxInfo.Assign
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Source - Description for this parameter
+  TJvWinMinMaxInfo is a wrapper for the windows MINMAXINFO structure.
+
+  Internal object storing form min and max size, position.
+  
+  This class contains the metrics of the form. It is used by FormPlacement's options to store 
+  information about the form.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvFormPlacement, TJvFormStorage
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.DefaultMinMaxInfo
 Summary
-  Write here a summary (1 line)
+  Indicates whether to use the system-defined default values.
 Description
-  Write here a description
+  A TJvFormPlacement component reads DefaultMinMaxInfo to check whether to override the system-defined
+  default values for the window's maximized size and position and its minimum and maximum
+  tracking size. 
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Returns True if all properties of the TWinMinMaxInfo are set to 0.
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxPosLeft
 Summary
-  Write here a summary (1 line)
+  Specifies the position of the left side of the maximized window.
 Description
-  Write here a description
+  Use the MaxPosLeft property to specify the position of the left side of a form if it is maximized.
+Note
+  MaxPosLeft does <not> override the system-defined default value, if you set it to 0.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaxPosTop, MaxSizeHeight, MaxSizeWidth
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxPosTop
 Summary
-  Write here a summary (1 line)
+  Specifies the position of the top of the maximized window.
 Description
-  Write here a description
+  Use the MaxPosTop property to specify the position of the top of a form if it is maximized.
+Note
+  MaxPosTop does <not> override the system-defined default value, if you set it to 0.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaxPosLeft, MaxSizeHeight, MaxSizeWidth
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxSizeHeight
 Summary
-  Write here a summary (1 line)
+  Specifies the maximized height of the form.
 Description
-  Write here a description
+  Use the MaxSizeHeight property to specify the height for a form if it is maximized.
+Note
+  MaxSizeHeight does <not> override the system-defined default value, if you set it to 0.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaxPosLeft, MaxPosTop, MaxSizeWidth
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxSizeWidth
 Summary
-  Write here a summary (1 line)
+  Specifies the maximized width.
 Description
-  Write here a description
+  Use the MaxSizeWidth property to specify a maximized width for a form.
+Note
+  MaxSizeWidth does <not> override the system-defined default value, if you set it to 0.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaxPosLeft, MaxPosTop, MaxSizeHeight
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxTrackHeight
 Summary
-  Write here a summary (1 line)
+  Specifies the minimum tracking height of the form at run-time.
 Description
-  Write here a description
+  The system maintains a minimum and maximum tracking size for a form that has a sizing border. 
+  The maximum tracking height is the largest window height you can produce by dragging the sizing border.
+
+  A form's minimum and maximum tracking sizes are set to system-defined default values when the 
+  system creates the window. Use the MaxTrackHeight property to override one of these default values.
+Note
+  MaxTrackHeight does <not> override the system-defined default value, if you set it to 0.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaxTrackWidth, MinTrackHeight, MinTrackWidth
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxTrackWidth
 Summary
-  Write here a summary (1 line)
+  Specifies the maximum tracking width of the form at run-time.
 Description
-  Write here a description
+  The system maintains a minimum and maximum tracking size for a form that has a sizing border. 
+  The maximum tracking width is the largest window width you can produce by dragging the sizing border.
+
+  A form's minimum and maximum tracking sizes are set to system-defined default values when the 
+  system creates the window. Use the MaxTrackWidth property to override one of these default values.
+Note
+  MaxTrackWidth does <not> override the system-defined default value, if you set it to 0.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaxTrackHeight, MinTrackHeight, MinTrackWidth
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MinTrackHeight
 Summary
-  Write here a summary (1 line)
+  Specifies the minimum tracking height of the form at run-time.
 Description
-  Write here a description
+  The system maintains a minimum and maximum tracking size for a form that has a sizing border. 
+  The minimum tracking height is the smallest window height you can produce by dragging the form's
+  sizing border. 
+
+  A form's minimum and maximum tracking sizes are set to system-defined default values when the 
+  system creates the window. Use the MinTrackHeight property to override one of these default values.
+Note
+  MinTrackHeight does <not> override the system-defined default value, if you set it to 0.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaxTrackHeight, MaxTrackWidth, MinTrackWidth
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MinTrackWidth
 Summary
-  Write here a summary (1 line)
+  Specifies the minimum tracking width of the form at run-time.
 Description
-  Write here a description
+  The system maintains a minimum and maximum tracking size for a form that has a sizing border. 
+  The minimum tracking width is the smallest window width you can produce by dragging the form's
+  sizing border. 
+
+  A form's minimum and maximum tracking sizes are set to system-defined default values when the 
+  system creates the window. Use the MinTrackWidth property to override one of these default values.
+Note
+  MinTrackWidth does <not> override the system-defined default value, if you set it to 0.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaxTrackHeight, MaxTrackWidth, MinTrackHeight
 ----------------------------------------------------------------------------------------------------
 @@TPlacementOperation
 <TITLE TPlacementOperation type>
@@ -623,15 +762,15 @@ Description
 @@TPlacementOption
 <TITLE TPlacementOption type>
 Summary
-  Write here a summary (1 line)
+  Defines the possible values for the Options property of the TJvFormPlacement or TJvFormStorage components.
 Description
   Write here a description
 @@TPlacementOption.fpState
-  Description for fpState
+  state of form (normal, minimize, maximize);
 @@TPlacementOption.fpPosition
-  Description for fpPosition
+  Top, Left, Height and Width of form;
 @@TPlacementOption.fpActiveControl
-  Description for fpActiveControl
+  current Active Control on the form (value of the ActiveControl property).
 ----------------------------------------------------------------------------------------------------
 @@TPlacementOptions
 <TITLE TPlacementOptions type>
@@ -640,18 +779,18 @@ Description
 @@TPlacementRegRoot
 <TITLE TPlacementRegRoot type>
 Summary
-  Write here a summary (1 line)
+  Indicates a root key.
 Description
-  Write here a description
+  Use the TPlacementRegRoot type to specify a specific root key.
 @@TPlacementRegRoot.prCurrentUser
-  Description for prCurrentUser
+  The HKEY_CURRENT_USER key.
 @@TPlacementRegRoot.prLocalMachine
-  Description for prLocalMachine
+  The HKEY_LOCAL_MACHINE key.
 @@TPlacementRegRoot.prCurrentConfig
-  Description for prCurrentConfig
+  The HKEY_CURRENT_CONFIG key.
 @@TPlacementRegRoot.prClassesRoot
-  Description for prClassesRoot
+  The HKEY_CLASSES_ROOT key.
 @@TPlacementRegRoot.prUsers
-  Description for prUsers
+  The HKEY_USERS key.
 @@TPlacementRegRoot.prDynData
-  Description for prDynData
+  The HKEY_DYN_DATA key.

@@ -1,3 +1,4 @@
+## Locked by: Remko BonteS
 ----------------------------------------------------------------------------------------------------
 @@JvTimerLst.pas
 <GROUP JVCL.FileRef>
@@ -9,21 +10,23 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TAllTimersEvent
 <TITLE TAllTimersEvent type>
-Parameters
-  Sender - Description for this parameter
-  Handle - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerEvent
 Summary
-  Write here a summary (1 line)
+  This component intend for storage of the event of TRxTimerList events queue.
 Description
-  Write here a description
+  This class allows to store all information about an event.
+  The List property of a TRxTimerList points out instances of this class.
+  
+  TRxTimerEvent have the same properties as TTimer: Enabled, Interval, OnTimer.
+  Additional event may be "single" - stand inactive after one execute of OnTimer (it's action depend 
+  on Cycled property value).
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerEvent.AsSeconds
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Allows to set the timer intervel in seconds (else, default unit is millisecond)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -32,7 +35,14 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Set it to True to create a running timer. Else, the timer will be a kind of alarm (one shot).
+  
+  Set the Active property to True to define what event to occur whenever a specified period of time
+  passes. You use the Interval property to control the amount of time between timer events 
+  (in milliseconds). You can not use RepeatCount property anyhow. Set the Active property to False to 
+  define what event to occur only one time and after it Enabled property has been False value.
+  You can use RepeatCount to define number of occured times. You can use ExecCount property for 
+  definition of the times occured events after execute TRxTimerList.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -41,7 +51,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Allows to dis/enable any timer at any time
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -50,20 +60,9 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTimerEvent.GetParentComponent
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  Returns the number of time the timers has been fired.
+  Property stored number of occured times after execute Activate method of TRxTimerList. When Active
+  property of TRxTimerList set in False then value of ExecCount is equal to zero.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -72,20 +71,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTimerEvent.HasParent
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  The Handle property provides access to the event by unique identificator.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -94,7 +80,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Timer interval in milliseconds
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -103,7 +89,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Supply an handler here to write specific code in answer to the event.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -111,8 +97,10 @@ See Also
 @@TJvTimerEvent.RepeatCount
 Summary
   Write here a summary (1 line)
+  stored number of times what need occur event whenever a specified period of time passes after execute
+  Activate method of TRxTimerList. After it property Enabled has been False value.
 Description
-  Write here a description
+  If not cycled, how much time the timer will be repeated
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -121,7 +109,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Main timer list component (Owner)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -134,59 +122,87 @@ JVCLInfo
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  The TRxTimerList component provides all the functions of the standard TTimer component, plus the 
+  additional benefit of using only one Windows timer for up to 32767 timing events. The practical
+  maximum number of timing events depends on how long it takes your application to service each
+  timer notification.
+
+  Windows (system) timers are a scarce system resource, especially if 16-bit application.
+  Using more system timers than necessary can impact performance. If a (system) timer is not available
+  when a program needs one, it can either terminate gracefully or it can terminate in a manner that
+  leaves Windows in an unstable state. You can reduce the chances of running out of timers by using a
+  TRxTimerList rather than multiple timers.
+
+  TRxTimerList uses the concept of a timer events to perform the same function as the TTimer's OnTimer
+  event. After adding a TRxTimerList component to your form, use component editor to create events at
+  design-time, or call Add method at run-time to create timer events dinamically. Events can repeat
+  until they are canceled or they can be fired only once and then automatically removed (accordingly
+  Cycled property value).
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.Activate
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Equivalent to Active=True
+  Activate and Deactivate methods controls whether the timer's responds to timer events.
+  Call Activate to set the Active property for the timer list to True.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Active, Deactivate
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.Active
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  De/Acticates the list of timers.
+  The Active property controls whether the timer's should respond to timer events.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Activate, Deactivate
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.Add
 Summary
-  Write here a summary (1 line)
+  You can use this method to add new event.
 Description
-  Write here a description
+  Adds an event (a timer-like) to the list.
+
+  To get more control over the added timer, see AddItem method.
+Note
+  Handles, here, are just number given by the component to each timer kind of primary key). Handles are
+  not Handles supplied by the operating system (as HWnd, HInstance, ...). This works the same way but at
+  a component level. Why recreating a "handle" concept here?
+  I (the help writer) think that this is because each timer can be moved in the list, so a simple Index
+  pointing an item was not applicable in this component. Such an Index would be able to point out a
+  different Timer at any time.
 Parameters
-  AOnTimer  - Description for this parameter
-  AInterval - Description for this parameter
-  ACycled   - Description for this parameter
+  AOnTimer  - a TNotifyEvent procedure that will be executed on this timer will hit its time.
+  AInterval - the interval value between two hits for the added timer.
+  ACycled   - indicates whether the timer will loop endless or if it will be fired just once.
 Return value
-  Describe here what the function returns
+  Returns the Handle of the added timer .
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AddItem
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.AddItem
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This method allows to add a timer to the list holding by the component.
+  If you prefer a simpler way, use method Add.
+  
+  Here, you'll need to create a TRxTimerEvent instance with all its properties. Then, you will pass 
+  this instance to the function.
 Parameters
   Item - Description for this parameter
 Return value
-  Describe here what the function returns
+  Returns the Handle of the added timer.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Add
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.Clear
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Clears the list of all timers (TRXTimerEvent components are freed)
+  This method removes all events from the list.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -195,25 +211,27 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  How much timers are defined in the list.
+  Count returns the total number of timer events. The number returned by Count includes both enabled and disabled timers.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.Deactivate
 Summary
-  Write here a summary (1 line)
+  Activate and Deactivate methods controls whether the timer's responds to timer events.
 Description
-  Write here a description
+  Equivalent to Active := False
+  Call Deactivate to set the Active property for the timer list to False.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Activate, Active
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.Delete
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Deletes the timer whose handle is AHandle
+  Method removes event specified by Handle from the list.
 Parameters
   AHandle - Description for this parameter
 See Also
@@ -224,60 +242,76 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Returns the number of timers being enabled
+  EnabledCount returns the number of enabled timer events (which Enabled property is True).
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.Events
 Summary
-  Write here a summary (1 line)
+  List included pointers to events defined by class TRxTimerEvent. 
 Description
-  Write here a description
+  List included pointers to events defined by class TRxTimerEvent. 
+  
+  Property intend for internal use. 
+  In components work time events order in this list may be changed. You can use for access to events
+  data method ItemByHandle and for dynamic add a new events method Add.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.ItemByHandle
 Summary
-  Write here a summary (1 line)
+  Returns a TRxTimerEvent component.
+  This returns the handle to the event by ordinal number.
 Description
-  Write here a description
+  Returns the TRxTimerEvent component corresponding to AHandle in the list.
+  This converts a "handle to the event" to the actual event.
 Parameters
   AHandle - Description for this parameter
 Return value
-  Describe here what the function returns
+  Returns the TRxTimerEvent component corresponding to AHandle in the list.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ItemIndexByHandle
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.ItemIndexByHandle
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Returns the index in the list of aHandle.
 Parameters
   AHandle - Description for this parameter
 Return value
-  Describe here what the function returns
+  Returns the index in the list of aHandle.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.OnFinish
 Summary
-  Write here a summary (1 line)
+  Fired when Active is set to false.
+  This is triggered when an event has been completed.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Active
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.OnTimers
+<COMBINEWITH TAllTimersEvent>
 Summary
-  Write here a summary (1 line)
+  The OnTimers defines an event handler that is called for each timer events.
 Description
-  Write here a description
+  If you don't want to create a specific event handle for each timer in the list, you must, at least,
+  supply a handler for present event. In all cases, it is fired each time a timer interval is reached. 
+  As the event is sending you the handle of the timer, you can write a big timer event handler.
+
+  Type of the event fired by the main component each time any of its sub timer is fired.
+  You can programm just one handler to this event instead of supplying a specific handler for each timer.
+  (you can do both, of course...).
+Parameters
+  Sender - Description for this parameter
+  Handle - Handle of the timer
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
