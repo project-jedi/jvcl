@@ -1,3 +1,8 @@
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
+
 unit JvQGnugettext;
 (**************************************************************)
 (*                                                            *)
@@ -64,19 +69,15 @@ interface
   // Delphi 5
   {$DEFINE DELPHI5OROLDER}
   {$DEFINE DELPHI6OROLDER}
-  {$DEFINE DELPHI7OROLDER}
-  {$ifdef WIN32}
-  {$DEFINE MSWINDOWS}
-  {$endif}
+  {$DEFINE DELPHI7OROLDER} 
+  {$DEFINE MSWINDOWS} 
 {$endif}
 {$ifdef VER135}
   // C++ Builder 5
   {$DEFINE DELPHI5OROLDER}
   {$DEFINE DELPHI6OROLDER}
-  {$DEFINE DELPHI7OROLDER}
-  {$ifdef WIN32}
-  {$DEFINE MSWINDOWS}
-  {$endif}
+  {$DEFINE DELPHI7OROLDER} 
+  {$DEFINE MSWINDOWS} 
 {$endif}
 {$ifdef VER140}
   // Delphi 6
@@ -93,7 +94,7 @@ interface
 
 uses
 {$ifdef DELPHI5OROLDER}
-  JvGnugettextD5,
+  JvQGnugettextD5,
 {$endif}
 {$ifdef MSWINDOWS}
   Windows,
@@ -159,13 +160,13 @@ procedure RetranslateComponent(AnObject: TComponent; const TextDomain: string = 
 procedure AddDomainForResourceString(const domain: string);
 procedure RemoveDomainForResourceString(const domain: string);
 
-{$ifndef CLR}
+
   // Unicode-enabled way to get resourcestrings, automatically translated
   // Use like this: ws := LoadResStringW(@NameOfResourceString);
 function LoadResString(ResStringRec: PResStringRec): WideString;
 function LoadResStringA(ResStringRec: PResStringRec): AnsiString;
 function LoadResStringW(ResStringRec: PResStringRec): WideString;
-{$endif}
+
 
   // This returns an empty string if not translated or translator name is not specified.
 function GetTranslatorNameAndEmail: WideString; 
@@ -191,7 +192,7 @@ type
   EGGIOError = class(EGnuGettext); 
   EGGAnsi2WideConvError = class(EGnuGettext); 
 
-{$ifndef CLR}
+
   // This function will turn resourcestring hooks on or off, eventually with BPL file support.
   // Please do not activate BPL file support when the package is in design mode.
 const
@@ -199,7 +200,7 @@ const
 
 procedure HookIntoResourceStrings(Enabled: Boolean = True;
   SupportPackages: Boolean = False);
-{$endif}
+
 
 
 
@@ -280,10 +281,8 @@ type
 
   TGnuGettextInstance = class
   private
-    fOnDebugLine: TOnDebugLine;
-    {$ifndef CLR}
-    CreatorThread: Cardinal;  // Only this thread can use LoadResString
-    {$endif}
+    fOnDebugLine: TOnDebugLine; 
+    CreatorThread: Cardinal;  // Only this thread can use LoadResString 
   public
     Enabled: Boolean;      // Set this to False to disable translations
     DesignTimeCodePage: Integer;
@@ -333,11 +332,9 @@ type
     procedure bindtextdomain(const szDomain, szDirectory: string);
     procedure bindtextdomainToFile(const szDomain, Filename: string);
     // Also works with files embedded in exe file
-
-    {$ifndef CLR}
+ 
     // Windows API functions
-    function LoadResString(ResStringRec: PResStringRec): WideString;
-    {$endif}
+    function LoadResString(ResStringRec: PResStringRec): WideString; 
 
     // Output all log info to this file. This may only be called once.
     procedure DebugLogToFile(const Filename: string; append: Boolean = False);
@@ -381,11 +378,9 @@ type
     function TP_CreateRetranslator: TExecutable;  // Must be freed by caller!
     procedure DebugWriteln(Line: AnsiString);
     function Getdomain(const domain, DefaultDomainDirectory, CurLang: string): TDomain;
-      // Translates a single property of an object
-    {$ifndef CLR}
+      // Translates a single property of an object 
     procedure TranslateProperty(AnObject: TObject; PropInfo: PPropInfo;
-      TodoList: TStrings; const TextDomain: string);
-    {$endif}
+      TodoList: TStrings; const TextDomain: string); 
   end;
 
 var
@@ -402,10 +397,7 @@ implementation
 // because it makes this unit independent of the SyncObjs unit
 (**************************************************************************)
 
-{$ifdef CLR}
-uses
-  System.Globalization, System.Diagnostics, System.Windows.Forms;
-{$endif}
+
 
 type
   TTP_RetranslatorItem = class
@@ -468,8 +460,7 @@ type
   PStrInfoArr = ^TStrInfoArr;
 
   TCharArray5 = array[0..4] of ansichar;
-
-  {$ifndef CLR}
+ 
   THook = class // Replaces a runtime library procedure with a custom procedure
   public
     constructor Create(OldProcedure, NewProcedure: Pointer; FollowJump: Boolean = False);
@@ -484,8 +475,7 @@ type
     Original: TCharArray5;
     PatchPosition: PChar;
     procedure Shutdown; // Same as destroy, except that object is not destroyed
-  end;
-  {$endif}
+  end; 
 
 var
   // System information
@@ -495,13 +485,11 @@ var
   FileLocator: TFileLocator;
 
   ResourceStringDomainListCS: TMultiReadExclusiveWriteSynchronizer;
-  ResourceStringDomainList: TStringList;
-  {$ifndef CLR}
+  ResourceStringDomainList: TStringList; 
   // Hooks into runtime library functions
   HookLoadResString: THook;
   HookLoadStr: THook;
-  HookFmtLoadStr: THook;
-  {$endif}
+  HookFmtLoadStr: THook; 
 
 function Utf8EncodeChar(wc: WideChar): AnsiString;
 var
@@ -719,44 +707,7 @@ begin
   Result := EndsWith(Path, Filename, {$ifdef MSWINDOWS}True{$else}False{$endif});
 end;
 
-{$ifdef CLR}
-function TrimCopy(const S: string; Index, Count: Integer): string; overload;
-var
-  Len, StartIndex, EndIndex: Integer;
-begin
-  Result := '';
 
-  Len := Length(S);
-  if Index <= 0 then
-    Index := 1;
-  if Count > Len then
-    Count := Len;
-
-  if (Count > 0) and (Len > 0) then
-  begin
-    StartIndex := Index;
-    while (StartIndex <= Len) and (S[StartIndex] <= #32) do
-      Inc(StartIndex);
-    Dec(Count, StartIndex - Index);
-
-    EndIndex := StartIndex + Count - 1;
-    if EndIndex > Len then
-    begin
-      Dec(Count, EndIndex - Len);
-      EndIndex := Len;
-    end;
-
-    while (EndIndex > 0) and (S[EndIndex] <= #32) do
-    begin
-      Dec(EndIndex);
-      Dec(Count);
-    end;
-
-    if EndIndex >= StartIndex then
-      Result := Copy(S, StartIndex, Count);
-  end;
-end;
-{$endif}
 
 function TrimCopy(const S: AnsiString; Index, Count: Integer): AnsiString; overload;
 var
@@ -790,12 +741,8 @@ begin
       Dec(Count);
     end;
 
-    if EndIndex >= StartIndex then
-      {$ifdef CLR}
-      Result := Copy(S, StartIndex, Count);
-      {$else}
-      SetString(Result, PChar(Pointer(S)) + StartIndex - 1, Count);
-      {$endif CLR}
+    if EndIndex >= StartIndex then 
+      SetString(Result, PChar(Pointer(S)) + StartIndex - 1, Count); 
   end;
 end;
 
@@ -823,12 +770,8 @@ begin
 end;
 
 function IsWriteProp(Info: PPropInfo): Boolean;
-begin
-  {$ifndef CLR}
-  Result := Assigned(Info) and (Info^.SetProc <> nil);
-  {$else}
-  Result := Assigned(Info) and CanWrite(Info);
-  {$endif}
+begin 
+  Result := Assigned(Info) and (Info^.SetProc <> nil); 
 end;
 
 { not used }
@@ -1266,17 +1209,7 @@ begin
 end; 
 {$endif}
 
-{$ifdef CLR}
-function GetOSLanguage: string;
-var
-  p: Integer;
-begin
-  Result := CultureInfo.get_CurrentCulture.ToString;
-  p := Pos('-', Result);
-  if p <> 0 then
-    Result[p] := '_';
-end;
-{$endif}
+
 
 {$ifdef LINUX}
 function GetOSLanguage: AnsiString;
@@ -1285,7 +1218,7 @@ begin
 end;
 {$endif}
 
-{$ifndef CLR}
+
 function LoadResStringA(ResStringRec: PResStringRec): string;
 begin
   if DefaultInstance <> nil then
@@ -1293,7 +1226,7 @@ begin
   else
     Result := PChar(ResStringRec.Identifier);
 end;
-{$endif}
+
 
 function GetTranslatorNameAndEmail: WideString;
 begin
@@ -1305,7 +1238,7 @@ begin
   DefaultInstance.UseLanguage(LanguageCode);
 end;
 
-{$ifndef CLR}
+
 type
   PStrData = ^TStrData;
   TStrData = record
@@ -1378,7 +1311,7 @@ function LoadResStringW(ResStringRec: PResStringRec): WideString;
 begin
   Result := DefaultInstance.LoadResString(ResStringRec);
 end;
-{$endif}
+
 
 
 function GetCurrentLanguage: string; 
@@ -1463,10 +1396,7 @@ begin
     {$ifdef MSWINDOWS}
     MessageBox(0, PChar(Format(ErrorMsg, [curlang, Filename])),
       'Localization problem', MB_OK);
-    {$endif}
-    {$ifdef CLR}
-    MessageBox.show(Format(ErrorMsg, [curlang, Filename]));
-    {$endif}
+    {$endif} 
     {$ifdef LINUX}
     WriteLn(stderr, Format(ErrorMsg, [curlang, Filename]));
     {$endif}
@@ -1483,27 +1413,14 @@ begin
   PropertyName := PropertyName + ': ';
   PropLen := Length(PropertyName) + 1;
   sl := TStringList.Create;
-  try
-    {$ifdef CLR}
-    s := gettext('');
-    if Pos(sLineBreak, s) = 0 then
-      sl.LineBreak := #10
-    else
-      sl.LineBreak := sLineBreak;
-    sl.Text := s;
-    {$else}
-    sl.Text := Utf8Encode(gettext(''));
-    {$endif}
+  try 
+    sl.Text := Utf8Encode(gettext('')); 
     for i := 0 to sl.Count - 1 do
     begin
       s := sl.Strings[i];
       if StartsWith(s, PropertyName, True) then
-      begin
-        {$ifdef CLR}
-        Result := TrimCopy(s, PropLen, MaxInt);
-        {$else}
-        Result := Utf8Decode(TrimCopy(s, PropLen, MaxInt));
-        {$endif}
+      begin 
+        Result := Utf8Decode(TrimCopy(s, PropLen, MaxInt)); 
         {$ifdef DXGETTEXTDEBUG}
         DebugLogger('GetTranslationProperty(' + PropertyName + ') returns ''' + Result + '''.');
         {$endif}
@@ -1764,11 +1681,9 @@ end;
 
 constructor TGnuGettextInstance.Create;
 begin
-  inherited Create;
-  {$ifndef CLR}
+  inherited Create; 
   CreatorThread := GetCurrentThreadId;
-  { TODO : Do something about Thread handling if resourcestrings are enabled }
-  {$endif}
+  { TODO : Do something about Thread handling if resourcestrings are enabled } 
   {$ifdef MSWINDOWS}
   DesignTimeCodePage := CP_ACP;
   {$endif}
@@ -2063,10 +1978,7 @@ begin
       {$ifdef MSWINDOWS}
       MessageBox(0,
         'This application tried to switch the language, but in an incorrect way. The programmer needs to replace a call to TranslateComponent with a call to RetranslateComponent(). The programmer should see the changelog of gnugettext.pas for more information.', 'Error', MB_OK);
-      {$endif}
-      {$ifdef CLR}
-      MessageBox.show('This application tried to switch the language, but in an incorrect way. The programmer needs to replace a call to TranslateComponent with a call to RetranslateComponent(). The programmer should see the changelog of gnugettext.pas for more information.');
-      {$endif}
+      {$endif} 
       {$ifdef LINUX}
       WriteLn(stderr,
         'This application tried to switch the language, but in an incorrect way. The programmer needs to replace a call to TranslateComponent with a call to RetranslateComponent(). The programmer should see the changelog of gnugettext.pas for more information.'); 
@@ -2087,7 +1999,7 @@ begin
   {$endif}
 end; 
 
-{$ifndef CLR}
+
 procedure TGnuGettextInstance.TranslateProperty(AnObject: TObject;
   PropInfo: PPropInfo; TodoList: TStrings; const TextDomain: AnsiString); 
 var
@@ -2170,11 +2082,11 @@ begin
         'Reason: ' + e.Message);
   end;
 end;
-{$endif}
+
 
 procedure TGnuGettextInstance.TranslateProperties(AnObject: TObject;
   TextDomain: string = '');
-{$ifndef CLR}
+
 var
   TodoList: TStringList; // List of Name/TObject's that is to be processed
   DoneList: TStringList;
@@ -2187,9 +2099,8 @@ var
   cm, currentcm: TClassMode;
   ObjectPropertyIgnoreList: TStringList;
   objid, Name: AnsiString;
-{$endif}
-begin
-  {$ifndef CLR}
+
+begin 
   {$ifdef DXGETTEXTDEBUG}
   DebugWriteln('----------------------------------------------------------------------');
   DebugWriteln('TranslateProperties() was called for an object of class ' +
@@ -2347,8 +2258,7 @@ begin
   TP_Retranslator := nil;
   {$ifdef DXGETTEXTDEBUG}
   DebugWriteln('----------------------------------------------------------------------');
-  {$endif}
-  {$endif}
+  {$endif} 
 end;
 
 procedure TGnuGettextInstance.UseLanguage(LanguageCode: string);
@@ -2477,7 +2387,7 @@ begin
   {$endif}
   org := singular + #0 + plural; 
   trans := dgettext(szDomain, org); 
-  if org = trans then
+  if org = trans then 
   begin
     {$ifdef DXGETTEXTDEBUG}
     DebugWriteln('Translation was equal to english version. English plural forms assumed.'); 
@@ -2509,7 +2419,7 @@ begin
       Exit; 
     end; 
     Delete(trans, 1, p); 
-    Dec(idx);
+    Dec(idx); 
   end; 
 end; 
 
@@ -2605,7 +2515,7 @@ begin
     if DebugLogOutputPaused then
       Exit; 
 
-    if Assigned(fOnDebugLine) then
+    if Assigned(fOnDebugLine) then 
     begin
       Discard := True; 
       fOnDebugLine(Self, Line, Discard); 
@@ -2652,7 +2562,7 @@ begin
   end;
 end;
 
-{$ifndef CLR}
+
 function TGnuGettextInstance.LoadResString(ResStringRec: PResStringRec): WideString;
 {$ifdef MSWINDOWS}
 var
@@ -2730,7 +2640,7 @@ begin
   else
     Result := ResourceStringGettext(Result);
 end;
-{$endif}
+
 
 procedure TGnuGettextInstance.RetranslateComponent(AnObject: TComponent;
   const TextDomain: string);
@@ -2797,7 +2707,7 @@ begin
       Exit; 
     end; 
   end; 
-  cm := TClassMode.Create;
+  cm := TClassMode.Create; 
   cm.HClass := IgnClass; 
   TP_ClassHandling.Add(cm); 
   {$ifdef DXGETTEXTDEBUG}
@@ -2829,7 +2739,7 @@ begin
     if IgnClass.InheritsFrom(cm.HClass) then 
     begin
       // This is the place to insert this class
-      cm := TClassMode.Create;
+      cm := TClassMode.Create; 
       cm.HClass := IgnClass; 
       cm.PropertiesToIgnore.Add(PropertyName); 
       TP_ClassHandling.Insert(i, cm); 
@@ -3181,7 +3091,7 @@ begin
   Item.obj := obj; 
   Item.Propname := Propname; 
   Item.OldValue := OldValue; 
-  List.Add(Item);
+  List.Add(Item); 
 end; 
 
 { TGnuGettextComponentMarker }
@@ -3192,7 +3102,7 @@ begin
   inherited Destroy;
 end; 
 
-{$ifndef CLR}
+
 { THook }
 
 constructor THook.Create(OldProcedure, NewProcedure: Pointer; FollowJump: Boolean = False);
@@ -3213,7 +3123,7 @@ end;
 destructor THook.Destroy; 
 begin
   Shutdown; 
-  inherited Destroy;
+  inherited Destroy; 
 end; 
 
 procedure THook.Disable; 
@@ -3304,7 +3214,7 @@ begin
     HookFmtLoadStr.Enable;
   end;
 end;
-{$endif}
+
 
 { TMoFile }
 
@@ -3326,12 +3236,8 @@ begin
     if Size = 0 then
       Size := moFile.Size;
     SetLength(moMemory, Size);
-    moFile.Seek(Offset, soFromBeginning);
-    {$ifdef CLR}
-    mofile.ReadBuffer(moMemory, Size);
-    {$else}
-    mofile.ReadBuffer(moMemory[0], Size);
-    {$endif}
+    moFile.Seek(Offset, soFromBeginning); 
+    mofile.ReadBuffer(moMemory[0], Size); 
   finally
     moFile.Free;
   end;
@@ -3385,10 +3291,7 @@ end;
 
 
 function TMoFile.gettext(const msgid: AnsiString; var Found: Boolean): AnsiString;
-var
-  {$ifdef CLR}
-  j: Cardinal;
-  {$endif}
+var 
   i, Step: Cardinal;
   Offset, Pos: Cardinal;
   CompareResult: Integer;
@@ -3431,14 +3334,8 @@ begin
       // Found the msgid
       Pos := T + 8 * (i - 1);
       Offset := CardinalInMem(Pos + 4);
-      Size := CardinalInMem(Pos);
-      {$ifdef CLR}
-      SetLength(Result, Size);
-      for j := 0 to Size - 1 do
-        Result[j + 1] := AnsiChar(moMemory[Offset + j]);
-      {$else}
-      SetString(Result, PChar(@moMemory[0]) + Offset, Size);
-      {$endif}
+      Size := CardinalInMem(Pos); 
+      SetString(Result, PChar(@moMemory[0]) + Offset, Size); 
       Found := True;
       Break;
     end;
@@ -3473,17 +3370,13 @@ const
 {$endif}
 
 initialization
-  {$ifdef DXGETTEXTDEBUG}
-  {$ifdef CLR}
-  MessageBox.show(DebuggingText);
-  {$else}
+  {$ifdef DXGETTEXTDEBUG} 
    {$ifdef MSWINDOWS}
   MessageBox(0, PChar(DebuggingText), 'Information', MB_OK);
    {$endif}
    {$ifdef LINUX}
   WriteLn(stderr, DebuggingText);
-   {$endif}
-  {$endif}
+   {$endif} 
   {$endif}
   if IsLibrary then
   begin
@@ -3497,10 +3390,7 @@ initialization
     // This line has not been tested on Linux, yet, but should work.
     SetLength(ExecutableFilename, GetModuleFileName(0, PChar(ExecutableFilename),
       Length(ExecutableFilename)));
-    {$endif}
-    {$ifdef CLR}
-    ExecutableFilename := System.Diagnostics.Process.GetCurrentProcess.MainModule.FileName;
-    {$endif}
+    {$endif} 
   end
   else
     ExecutableFilename := ParamStr(0);
@@ -3513,24 +3403,20 @@ initialization
   {$ifdef MSWINDOWS}
   Win32PlatformIsUnicode := (Win32Platform = VER_PLATFORM_WIN32_NT);
   {$endif}
-
-  {$ifndef CLR}
+ 
   // replace Borlands LoadResString with gettext enabled version:
   HookLoadResString := THook.Create(@System.LoadResString, @LoadResStringA);
   HookLoadStr := THook.Create(@SysUtils.LoadStr, @SysUtilsLoadStr);
   HookFmtLoadStr := THook.Create(@SysUtils.FmtLoadStr, @SysUtilsFmtLoadStr);
-  HookIntoResourceStrings(AutoCreateHooks, False);
-  {$endif}
+  HookIntoResourceStrings(AutoCreateHooks, False); 
 
 finalization
   FreeAndNil(DefaultInstance);
   FreeAndNil(ResourceStringDomainListCS);
-  FreeAndNil(ResourceStringDomainList);
-  {$ifndef CLR}
+  FreeAndNil(ResourceStringDomainList); 
   FreeAndNil(HookFmtLoadStr);
   FreeAndNil(HookLoadStr);
-  FreeAndNil(HookLoadResString);
-  {$endif} 
+  FreeAndNil(HookLoadResString);  
   FreeAndNil(FileLocator);
 
 end.

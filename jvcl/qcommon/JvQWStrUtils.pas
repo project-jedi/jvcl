@@ -1,3 +1,8 @@
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
+
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -38,15 +43,6 @@ const
   BOM_MSB_FIRST = WideChar($FFFE);
 
 type
-  TSearchFlag = (
-    sfCaseSensitive,    // match letter case
-    sfIgnoreNonSpacing, // ignore non-spacing characters in search
-    sfSpaceCompress,    // handle several consecutive white spaces as one white space
-                        // (this applies to the pattern as well as the search text)
-    sfWholeWordOnly     // match only text at end/start and/or surrounded by white spaces
-  );
-  TSearchFlags = set of TSearchFlag;
-
   TWideFileOptionsType =
    (
     foAnsiFile,  // loads/writes an ANSI file
@@ -198,8 +194,8 @@ type
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
   end;
 
-  TWideStringList = class(TWStringList);
-  TWideStrings = class(TWStrings);
+  TWideStringList = TWStringList;
+  TWideStrings = TWStrings;
 
 
 // WideChar functions
@@ -230,12 +226,7 @@ function StrLCatW(Dest, Source: PWideChar; MaxLen: Integer): PWideChar;
 function WidePos(const SubStr, S: WideString): Integer;
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
-{$IFNDEF COMPILER6_UP}
-function WideCompareText(const S1, S2: WideString): Integer;
-function WideCompareStr(const S1, S2: WideString): Integer;
-function WideUpperCase(const S: WideString): WideString;
-function WideLowerCase(const S: WideString): WideString;
-{$ENDIF !COMPILER6_UP}
+
 function TrimW(const S: WideString): WideString;
 function TrimLeftW(const S: WideString): WideString;
 function TrimRightW(const S: WideString): WideString;
@@ -245,28 +236,11 @@ function TrimRightLengthW(const S: WideString): Integer;
 
 implementation
 
-uses
-  {$IFNDEF COMPILER6_UP}
-  Windows,
-  Consts,
-  {$ELSE}
-  RTLConsts,
-  {$ENDIF !COMPILER6_UP}
+uses 
+  RTLConsts, 
   Math;
 
-{$IFDEF COMPILER5}
-// (ahuser) Delphi 5 does not know Sign and I will not depend on JCL in this
-//          unit.
-function Sign(A: Integer): Integer;
-begin
-  if A < 0 then
-    Result := -1
-  else if A > 0 then
-    Result := 1
-  else
-    Result := 0;
-end;
-{$ENDIF COMPILER6_UP}
+
 
 procedure SwapWordByteOrder(P: PChar; Len: Cardinal);
 var
@@ -637,7 +611,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6_UP}
+
 
 function TrimW(const S: WideString): WideString;
 begin
@@ -654,82 +628,7 @@ begin
   Result := TrimRight(S);
 end;
 
-{$ELSE}
 
-// missing function in Delphi 5
-
-function WideCompareText(const S1, S2: WideString): Integer;
-begin
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-    Result := AnsiCompareText(string(S1), string(S2))
-  else
-    Result := CompareStringW(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-      PWideChar(S1), Length(S1), PWideChar(S2), Length(S2)) - 2;
-end;
-
-function WideCompareStr(const S1, S2: WideString): Integer;
-begin
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-    Result := AnsiCompareStr(string(S1), string(S2))
-  else
-    Result := CompareStringW(LOCALE_USER_DEFAULT, 0,
-      PWideChar(S1), Length(S1), PWideChar(S2), Length(S2)) - 2;
-end;
-
-function WideUpperCase(const S: WideString): WideString;
-begin
-  Result := S;
-  if Result <> '' then
-    CharUpperBuffW(Pointer(Result), Length(Result));
-end;
-
-function WideLowerCase(const S: WideString): WideString;
-begin
-  Result := S;
-  if Result <> '' then
-    CharLowerBuffW(Pointer(Result), Length(Result));
-end;
-
-function TrimW(const S: WideString): WideString;
-var
-  I, L: Integer;
-begin
-  L := Length(S);
-  I := 1;
-  while (I <= L) and (S[I] <= ' ') do
-    Inc(I);
-  if I > L then
-    Result := ''
-  else
-  begin
-    while S[L] <= ' ' do
-      Dec(L);
-    Result := Copy(S, I, L - I + 1);
-  end;
-end;
-
-function TrimLeftW(const S: WideString): WideString;
-var
-  I, L: Integer;
-begin
-  L := Length(S);
-  I := 1;
-  while (I <= L) and (S[I] <= ' ') do
-    Inc(I);
-  Result := Copy(S, I, Maxint);
-end;
-
-function TrimRightW(const S: WideString): WideString;
-var
-  I: Integer;
-begin
-  I := Length(S);
-  while (I > 0) and (S[I] <= ' ') do
-    Dec(I);
-  Result := Copy(S, 1, I);
-end;
-
-{$ENDIF COMPILER6_UP}
 
 function TrimLeftLengthW(const S: WideString): Integer;
 var
@@ -826,14 +725,10 @@ begin
   begin
     BeginUpdate;
     try
-      Clear;
-      {$IFDEF COMPILER7_UP}
-      FNameValueSeparator := CharToWideChar(TStrings(Source).NameValueSeparator);
-      {$ENDIF COMPILER7_UP}
-      {$IFDEF COMPILER6_UP}
+      Clear; 
+      FNameValueSeparator := CharToWideChar(TStrings(Source).NameValueSeparator);  
       FQuoteChar := CharToWideChar(TStrings(Source).QuoteChar);
-      FDelimiter := CharToWideChar(TStrings(Source).Delimiter);
-      {$ENDIF COMPILER6_UP}
+      FDelimiter := CharToWideChar(TStrings(Source).Delimiter); 
       AddStrings(TStrings(Source));
     finally
       EndUpdate;
@@ -851,14 +746,10 @@ begin
   begin
     TStrings(Dest).BeginUpdate;
     try
-      TStrings(Dest).Clear;
-      {$IFDEF COMPILER7_UP}
-      TStrings(Dest).NameValueSeparator := WideCharToChar(NameValueSeparator);
-      {$ENDIF COMPILER7_UP}
-      {$IFDEF COMPILER6_UP}
+      TStrings(Dest).Clear; 
+      TStrings(Dest).NameValueSeparator := WideCharToChar(NameValueSeparator);  
       TStrings(Dest).QuoteChar := WideCharToChar(QuoteChar);
-      TStrings(Dest).Delimiter := WideCharToChar(Delimiter);
-      {$ENDIF COMPILER6_UP}
+      TStrings(Dest).Delimiter := WideCharToChar(Delimiter); 
       for I := 0 to Count - 1 do
         TStrings(Dest).AddObject(GetP(I)^, Objects[I]);
     finally

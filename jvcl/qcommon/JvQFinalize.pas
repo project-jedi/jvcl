@@ -1,3 +1,8 @@
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
+
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -14,8 +19,6 @@ The Initial Developers of the Original Code is: Andreas Hausladen
 Copyright (c) 2004 Andreas Hausladen
 All Rights Reserved.
 
-Last Modified: 2004-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -25,6 +28,7 @@ finalization section.
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -58,6 +62,15 @@ function AddFinalizeObject(const UnitName: string; Instance: TObject): TObject;
 function AddFinalizeObjectNil(const UnitName: string; var Reference: TObject): TObject;
 
 /// <summary>
+/// AddFinalizeFreeAndNil adds an TObject derived class to the finalize section.
+/// The reference is set to nil before the object is destroyed on finalization.
+/// </summary>
+/// <limitation>
+/// Only global variables are allowed to be specified.
+/// </limitation>
+function AddFinalizeFreeAndNil(const UnitName: string; var Reference: TObject): TObject;
+
+/// <summary>
 /// AddFinalizeMemory adds an memory allocation to the finalize section.
 /// The memory is released on finalization.
 /// </summary>
@@ -75,7 +88,9 @@ function AddFinalizeMemoryNil(const UnitName: string; var Ptr: Pointer): Pointer
 
 /// <summary>
 /// FinalizeUnit finalizes all items from the unit UnitName. The UnitName is
-/// case sensitive.
+/// case sensitive. If you add any finalization item you must call this function
+/// to free the items. Otherwise the items will be destroyed when the package
+/// that contains the JvFinalize unit is unloaded.
 /// </summary>
 procedure FinalizeUnit(const UnitName: string);
 
@@ -85,7 +100,6 @@ type
   TFinalizeItem = class(TObject)
   public
     Next: TFinalizeItem;
-
     constructor Create(const AUnitName: string);
   end;
 
@@ -94,7 +108,6 @@ type
     UnitName: string;
     Items: TFinalizeItem;
     Next: TFinalizeUnitItem;
-
     constructor Create(AUnitName: string; ANext: TFinalizeUnitItem);
     destructor Destroy; override;
   end;
@@ -102,7 +115,7 @@ type
 var
   FinalizeUnitList: TFinalizeUnitItem = nil;
 
-{ TFinalizeItem }
+//=== TFinalizeItem ==========================================================
 
 constructor TFinalizeItem.Create(const AUnitName: string);
 var
@@ -126,7 +139,7 @@ begin
 end;
 
 
-{ TFinalizeUnitItem }
+//=== TFinalizeUnitItem ======================================================
 
 constructor TFinalizeUnitItem.Create(AUnitName: string; ANext: TFinalizeUnitItem);
 begin
@@ -148,20 +161,26 @@ begin
   inherited Destroy;
 end;
 
+/// <summary>
+/// FinalizeUnits destroys all remaining finalization items.
+/// </summary>
 procedure FinalizeUnits;
 var
   P: TFinalizeUnitItem;
 begin
-  try
-    while FinalizeUnitList <> nil do
-    begin
-      P := FinalizeUnitList;
-      FinalizeUnitList := P.Next;
-      P.Free;
+ // Normally FinalizeUnitList should be nil because the units should call
+ // FinalizeUnit() in their finalization section.
+  while FinalizeUnitList <> nil do
+    try
+      while FinalizeUnitList <> nil do
+      begin
+        P := FinalizeUnitList;
+        FinalizeUnitList := P.Next;
+        P.Free;
+      end;
+    except
+      // ignore, we are in the finalization section
     end;
-  except
-    FinalizeUnits; // finalize others
-  end;
 end;
 
 procedure FinalizeUnit(const UnitName: string);
@@ -188,9 +207,12 @@ begin
   end;
 end;
 
+//============================================================================
 
-// -----------------------------------------------------------------------------
 type
+  PObject = ^TObject;
+  PPointer = ^Pointer;
+
   TFinalizeProcItem = class(TFinalizeItem)
   private
     FFinalizeProc: TFinalizeProc;
@@ -209,7 +231,15 @@ type
 
   TFinalizeObjectNilItem = class(TFinalizeItem)
   private
-    FReference: ^TObject;
+    FReference: PObject;
+  public
+    constructor Create(const AUnitName: string; var AReference: TObject);
+    destructor Destroy; override;
+  end;
+
+  TFinalizeFreeAndNilItem = class(TFinalizeItem)
+  private
+    FReference: PObject;
   public
     constructor Create(const AUnitName: string; var AReference: TObject);
     destructor Destroy; override;
@@ -225,13 +255,13 @@ type
 
   TFinalizeMemoryNilItem = class(TFinalizeItem)
   private
-    FPtr: ^Pointer;
+    FPtr: PPointer;
   public
     constructor Create(const AUnitName: string; var APtr: Pointer);
     destructor Destroy; override;
   end;
 
-{ TFinalizeProcItem }
+//=== TFinalizeProcItem ======================================================
 
 constructor TFinalizeProcItem.Create(const AUnitName: string;
   AFinalizeProc: TFinalizeProc);
@@ -242,12 +272,12 @@ end;
 
 destructor TFinalizeProcItem.Destroy;
 begin
-  FFinalizeProc();
+  FFinalizeProc;
   inherited Destroy;
 end;
 
 
-{ TFinalizeObjectItem }
+//=== TFinalizeObjectItem ====================================================
 
 constructor TFinalizeObjectItem.Create(const AUnitName: string;
   AInstance: TObject);
@@ -263,7 +293,7 @@ begin
 end;
 
 
-{ TFinalizeObjectNilItem }
+//=== TFinalizeObjectNilItem =================================================
 
 constructor TFinalizeObjectNilItem.Create(const AUnitName: string;
   var AReference: TObject);
@@ -280,7 +310,27 @@ begin
 end;
 
 
-{ TFinalizeMemoryItem }
+//=== TFinalizeFreeAndNilItem ================================================
+
+constructor TFinalizeFreeAndNilItem.Create(const AUnitName: string;
+  var AReference: TObject);
+begin
+  inherited Create(AUnitName);
+  FReference := @AReference;
+end;
+
+destructor TFinalizeFreeAndNilItem.Destroy;
+var
+  Obj: TObject;
+begin
+  Obj := FReference^;
+  FReference^ := nil;
+  Obj.Free;
+  inherited Destroy;
+end;
+
+
+//=== TFinalizeMemoryItem ====================================================
 
 constructor TFinalizeMemoryItem.Create(const AUnitName: string; APtr: Pointer);
 begin
@@ -296,7 +346,7 @@ begin
 end;
 
 
-{ TFinalizeMemoryNilItem }
+//=== TFinalizeMemoryNilItem =================================================
 
 constructor TFinalizeMemoryNilItem.Create(const AUnitName: string;
   var APtr: Pointer);
@@ -315,8 +365,7 @@ begin
   inherited Destroy;
 end;
 
-
-// -----------------------------------------------------------------------------
+//============================================================================
 
 procedure AddFinalizeProc(const UnitName: string; FinalizeProc: TFinalizeProc);
 begin
@@ -335,6 +384,12 @@ begin
   Result := Reference;
 end;
 
+function AddFinalizeFreeAndNil(const UnitName: string; var Reference: TObject): TObject;
+begin
+  TFinalizeFreeAndNilItem.Create(UnitName, Reference);
+  Result := Reference;
+end;
+
 function AddFinalizeMemory(const UnitName: string; Ptr: Pointer): Pointer;
 begin
   TFinalizeMemoryItem.Create(UnitName, Ptr);
@@ -347,12 +402,10 @@ begin
   Result := Ptr;
 end;
 
-{$IFDEF MSWINDOWS}
 initialization
 
 finalization
   FinalizeUnits;
-{$ENDIF MSWINDOWS}
 
 end.
 

@@ -1,3 +1,8 @@
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
+
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -29,14 +34,16 @@ unit JvQConsts;
 interface
 
 uses
-  SysUtils,
-  QControls, QGraphics;
+  SysUtils,  
+  QControls, QGraphics; 
+
 
 const
   clMoneyGreen = TColor($C0DCC0);
   clSkyBlue = TColor($F0CAA6);
   clCream = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
+
 
 const
   { JvEditor }
@@ -66,46 +73,8 @@ const
   // (rom) now in JvJCLUtils.pas
 
   { RALib 1.55 }
-  {$IFDEF MSWINDOWS}
-  {$IFDEF DELPHI2}
-  SDelphiKey = 'Software\Borland\Delphi\2.0';
-  {$ENDIF DELPHI2}
-  {$IFDEF BCB1}
-  SDelphiKey = 'Software\Borland\C++Builder\1.0';
-  {$ENDIF BCB1}
-  {$IFDEF DELPHI3}
-  SDelphiKey = 'Software\Borland\Delphi\3.0';
-  {$ENDIF DELPHI3}
-  {$IFDEF BCB3}
-  SDelphiKey = 'Software\Borland\C++Builder\3.0';
-  {$ENDIF BCB3}
-  {$IFDEF DELPHI4}
-  SDelphiKey = 'Software\Borland\Delphi\4.0';
-  {$ENDIF DELPHI4}
-  {$IFDEF BCB4}
-  SDelphiKey = 'Software\Borland\C++Builder\4.0';
-  {$ENDIF BCB4}
-  {$IFDEF DELPHI5}
-  SDelphiKey = 'Software\Borland\Delphi\5.0';
-  {$ENDIF DELPHI5}
-  {$IFDEF BCB5}
-  SDelphiKey = 'Software\Borland\C++Builder\5.0';
-  {$ENDIF BCB5}
-  {$IFDEF DELPHI6}
-  SDelphiKey = 'Software\Borland\Delphi\6.0';
-  {$ENDIF DELPHI6}
-  {$IFDEF BCB6}
-  SDelphiKey = 'Software\Borland\C++Builder\6.0';
-  {$ENDIF BCB6}
-  {$IFDEF DELPHI7}
-  SDelphiKey = 'Software\Borland\Delphi\7.0';
-  {$ENDIF DELPHI7}
-  {$IFDEF BCB7} // will it ever be released? No.
-  SDelphiKey = 'Software\Borland\C++Builder\7.0';
-  {$ENDIF BCB7}
-  {$IFDEF DELPHI8}
-  SDelphiKey = 'Software\Borland\Delphi\8.0';
-  {$ENDIF DELPHI8}
+  {$IFDEF MSWINDOWS}           
+  SDelphiKey = 'Software\Borland\Delphi\7.0';   
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   SDelphiKey = '.borland/.Jvcl3';
@@ -138,39 +107,10 @@ const
   { TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
   PaletteMask = $02000000;
 
-  // (rom) unused
-  {$IFDEF COMPILER7_UP}
-  DEFAULT_SYSCOLOR_MASK = $000000FF;
-  {$ELSE}
-  DEFAULT_SYSCOLOR_MASK = $80000000;
-  {$ENDIF COMPILER7_UP}
-
-  {$IFNDEF COMPILER6_UP}
-  { Standard Windows colors that are not defined in Delphi 5}
-  COLOR_MENUHILIGHT = 29;
-  {$EXTERNALSYM COLOR_MENUHILIGHT}
-  COLOR_MENUBAR = 30;
-  {$EXTERNALSYM COLOR_MENUBAR}
-
-  clMoneyGreen = TColor($C0DCC0);
-  clSkyBlue = TColor($F0CAA6);
-  clCream = TColor($F0FBFF);
-  clMedGray = TColor($A4A0A0);
-  clGradientActiveCaption = TColor(COLOR_GRADIENTACTIVECAPTION or $80000000);
-  clGradientInactiveCaption = TColor(COLOR_GRADIENTINACTIVECAPTION or $80000000);
-  clHotLight = TColor(COLOR_HOTLIGHT or $80000000);
-  clMenuHighlight = TColor(COLOR_MENUHILIGHT or $80000000);
-  clMenuBar = TColor(COLOR_MENUBAR or $80000000);
-  {$ENDIF COMPILER6_UP}
-
-  {$IFNDEF COMPILER6_UP}
-  {$IFDEF MSWINDOWS}
-  sLineBreak = #13#10;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  sLineBreak = #10;
-  {$ENDIF LINUX}
-  {$ENDIF COMPILER6_UP}
+  // (rom) unused 
+  DEFAULT_SYSCOLOR_MASK = $000000FF; 
+ 
+ 
   sLineBreakLen = Length(sLineBreak);
 
   CrLf = #13#10;
@@ -237,6 +177,9 @@ const
 const
   JediAgent = 'JEDI-VCL';
   DefaultOutputFileName = 'output.txt';
+
+const
+  SC_DRAGMOVE = $F012;
 
 implementation
 
