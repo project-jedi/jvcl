@@ -33,7 +33,8 @@ Description:
 
 Known Issues:
 * Changing Behavior at design-time does not update the BehaviorOptions property unless
-  you collapse / expand the Options property in the OI manually. No known solution yet.
+  you collapse / expand the Options property in the OI manually. No known solution yet. SOLVED
+
 
 -----------------------------------------------------------------------------}
 
@@ -49,7 +50,10 @@ type
   TJvLabelBehaviorName = string;
   TJvLabelScrollDirection = (sdLeftToRight, sdRightToLeft);
   TJvAppearDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom);
-
+  // TJvLabelBehavior is the base class for label behaviors
+  // To create a new behavior, derive a new class from this base class,
+  // add appropriate published properties, override the Start, Stop and possibly the OwnerResize methods.
+  // Register the new behavior by calling RegisterLabelBehaviorOptions
   TJvLabelBehavior = class(TPersistent)
   private
     FLabel: TJvCustomBehaviorLabel;
@@ -57,19 +61,37 @@ type
     FTmpActive, FActive: boolean;
     procedure SetActive(const Value: boolean);
   protected
+    // Call Suspend to store the current state of the Active property and
+    // set Active to false. If the behavior was already inactive, Suspend does nothing
     procedure Suspend;
+    // Call Resume to set the Active property to the state it was in before calling Suspend.
+    // Resume sets Active to true if it was true when Suspend was called.
+    // If Active was false before calling Suspend, Resume does nothing
     procedure Resume;
+    // OwnerResize is called when the OwnerLabel is resized. Override this
+    // method to do special processing when the OwnerLabel changes it's size or position.
+    // OwnerResize does nothing in this class
     procedure OwnerResize; virtual;
+    // Start is automatically called when Active is set to true
+    // Override this method to take special action when the behavior is "started".
+    // Start does nothing in this class
     procedure Start; virtual;
+    // Stop is automatically called when Active is set to true
+    // Override this method to take special action when the behavior is "stopped".
+    // Stop does nothing in this class
     procedure Stop; virtual;
+    // The label that the behavior is acting upon
     property OwnerLabel: TJvCustomBehaviorLabel read FLabel;
   public
     constructor Create(ALabel: TJvCustomBehaviorLabel); virtual;
     destructor Destroy; override;
   published
+    // Set Active to true to enable the behavior and set it to false to disable it.
+    // Active calls Start and Stop as appropriate
     property Active: boolean read FActive write SetActive default false;
   end;
 
+  // TJvLabelBlink implements a blinking behavior
   TJvLabelBlink = class(TJvLabelBehavior)
   private
     FDelay: Cardinal;
@@ -87,10 +109,14 @@ type
     constructor Create(ALabel: TJvCustomBehaviorLabel); override;
   published
     property Active;
+    // Delay specifies the initial delay before the blinking starts. Delay is specified in milliseconds.
     property Delay: Cardinal read FDelay write SetDelay default 100;
+    // Interval specifies the number f milliseconds that elapses between "blinks"
     property Interval: Cardinal read FInterval write SetInterval default 400;
   end;
 
+  // TJvLabelBounce implements a bouncing label
+  // NOTE that to use this behavior, the labels Align property should be set to alNone
   TJvLabelBounce = class(TJvLabelBehavior)
   private
     FOriginalRect: TRect;
@@ -109,10 +135,16 @@ type
     constructor Create(ALabel: TJvCustomBehaviorLabel); override;
   published
     property Active;
+    // Interval specifies the number of milliseconds that elapses between "bounces"
+    // Lower values will make the label move faster
     property Interval: Cardinal read FInterval write SetInterval default 20;
+    // Pixels specifes the number of pixels the label is moved at each bounce.
+    // Lower values will make the label move slower and smoother. Compensate by decreasing the value of Interval
     property Pixels: integer read FPixels write SetPixels default 6;
   end;
 
+  // TJvLabelScroll implements a scrolling behavior, a behavior where the text is scrolled horizontally
+  // This is sometimes also referred to as a "marquee"
   TJvLabelScroll = class(TJvLabelBehavior)
   private
     FInterval: Cardinal;
@@ -131,11 +163,21 @@ type
     constructor Create(ALabel: TJvCustomBehaviorLabel); override;
   published
     property Active;
+    // Set Padding to true to simulate the Caption being scrolled "around the Edge" of the
+    // label. This propert yis implemented such that the text is right-padded with spaces
     property Padding: boolean read FPad write FPad default false;
+    // Interval specifies the number of milliseconds that elapses between each scroll
+    // A lower Interval increases the speed of the scroll
     property Interval: Cardinal read FInterval write SetInterval default 50;
+    // Direction specifies the direction of the scroll. Possible values are
+    // sdLeftToRight - the text is scrolled from left to right
+    // sdRightToLeft - the text is scrolled from right to left
     property Direction: TJvLabelScrollDirection read FDirection write SetDirection default sdLeftToRight;
   end;
 
+  // TJvLabelAppear implements a behavior where the label appears
+  // from one edge, moves across the form and stops at the other edge
+  // NOTE that to use this behavior, the labels Align property should be set to alNone
   TJvLabelAppear = class(TJvLabelBehavior)
   private
     FParent: TWinControl;
@@ -156,13 +198,23 @@ type
     constructor Create(ALabel: TJvCustomBehaviorLabel); override;
   published
     property Active;
+    // Delay sets the initial delay before the label starts moving
     property Delay: Cardinal read FDelay write SetDelay default 100;
+    // Interval sets the number of milliseconds that elapses between each move of the label
     property Interval: Cardinal read FInterval write SetInterval default 20;
+    // Pixels sets number of piels the label moves at each interval
     property Pixels: Integer read FPixels write FPixels default 3;
+    // AppearFrom sets the edge from which the label appears. It also specifies the direction the label moves in
+    // Possible values for AppearFrom are:
+    // drFromLeft - label appears from the parents left edge and moves to the right edge where it stops
+    // drFromRight - label appears from the parents right edge and moves to the left edge where it stops
+    // drFromTop   - label appears from the parents top edge and moves to the bottom edge where it stops
+    // drFromBottom - label appears from the parents bottom edge and moves to the top edge where it stops
     property AppearFrom: TJvAppearDirection read FAppearFrom write FAppearFrom default drFromRight;
 
   end;
-
+  // TJvLabelTyping implements a behavior where the label's original Caption is typed
+  // into the label character by character
   TJvLabelTyping = class(TJvLabelBehavior)
   private
     FMakeErrors: boolean;
@@ -180,10 +232,16 @@ type
     constructor Create(ALabel: TJvCustomBehaviorLabel); override;
   published
     property Active;
+    // MakeErrors specifies whether the typing sometimes contains errors. Errors are
+    // removed after a short delay and the correct characters are "typed" instead.
     property MakeErrors: boolean read FMakeErrors write SetMakeErrors default True;
+    // Interval sets the speed of the typing in milliseconds
     property Interval: Cardinal read FInterval write SetInterval default 100;
   end;
-
+  // TJvLabelSpecial implements a behavior where each character of the Caption is
+  // started at #32 (space) and automatically incremented up to it's final value.
+  // When the final value is reached, the next character of the original Caption is
+  // added and incremented. This proceeds until the entire original Caption is shown in the label.
   TJvLabelSpecial = class(TJvLabelBehavior)
   private
     FInterval: Cardinal;
@@ -199,6 +257,7 @@ type
     constructor Create(ALabel: TJvCustomBehaviorLabel); override;
   published
     property Active;
+    // Interval sets the number of milliseconds that elapses between increments
     property Interval: Cardinal read FInterval write SetInterval default 20;
   end;
 
