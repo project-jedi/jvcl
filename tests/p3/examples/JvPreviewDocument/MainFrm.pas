@@ -494,22 +494,22 @@ end;
 
 procedure TfrmMain.First1Click(Sender: TObject);
 begin
-  pd.TopPage := 0;
+  pd.First;
 end;
 
 procedure TfrmMain.Previous1Click(Sender: TObject);
 begin
-  pd.TopPage := pd.TopPage - pd.TotalCols;
+  pd.Prior;
 end;
 
 procedure TfrmMain.Next1Click(Sender: TObject);
 begin
-  pd.TopPage := pd.TopPage + pd.TotalCols;
+  pd.Next;
 end;
 
 procedure TfrmMain.Last1Click(Sender: TObject);
 begin
-  pd.TopPage := pd.PageCount - 1;
+  pd.Last;
 end;
 
 procedure TfrmMain.About1Click(Sender: TObject);
