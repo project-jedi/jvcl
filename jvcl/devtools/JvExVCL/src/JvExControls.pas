@@ -111,7 +111,13 @@ type
     {$ENDIF VCL}
   end;
 
-  IJvWinControlEvents = interface(IJvControlEvents)
+  IJvWinControlEvents = interface(
+    {$IFDEF BCB}
+    IPerformControl
+    {$ELSE}
+    IJvControlEvents
+    {$ENDIF BCB}
+    )
     ['{B5F7FB62-78F0-481D-AFF4-7A24ED6776A0}']
     procedure DoBoundsChanged;
     procedure CursorChanged;
