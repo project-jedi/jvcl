@@ -28,7 +28,7 @@ unit JvParameterListMainForm;
 
 interface
 
-{.$DEFINE INCLUDE_DEVEXP_CX}
+{$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
@@ -121,6 +121,7 @@ type
     JvPanel2: TJvPanel;
     Button16: TButton;
     Button15: TButton;
+    Button17: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -144,16 +145,31 @@ type
     procedure Button15Click(Sender: TObject);
     procedure AssignWidthHeightCheckBoxClick(Sender: TObject);
     procedure Button16Click(Sender: TObject);
+    procedure Button17Click(Sender: TObject);
   private
     { Private-Deklarationen }
+    Form : TCustomForm;
+    RCSFilePanel,
+    RevisionPanel,
+    DatePanel,
+    ExtraPanel,
+    PathPanel,
+    LabelControl,
+    RCSFileEdit,
+    RevisionEdit,
+    DateEdit,
+    ExtraEdit,
+    PathEdit : TWinControl;
     procedure ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
     function DefaultStorage : TJvCustomAppStorage;
+    procedure TreeViewOnChange(Sender: TObject; Node: TTreeNode);
   public
     { Public-Deklarationen }
     procedure ShowTest1(const aDynControlEngine: tJvDynControlEngine);
     procedure ShowTest2(const aDynControlEngine: tJvDynControlEngine);
     procedure ShowTest3(const aDynControlEngine: tJvDynControlEngine);
     procedure ShowTestCrypt(const aDynControlEngine: tJvDynControlEngine);
+    procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine);
   end;
 
 var
@@ -172,7 +188,7 @@ uses JvDynControlEngineVCL,
   , JvDynControlEngineDevExpCx
   , cxLookAndFeels
   {$ENDIF}
-  ;
+  , JvDynControlEngineIntf, JclUnitVersioning;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -1082,6 +1098,156 @@ begin
   finally
     ParameterList.Free;
   end;
+end;
+
+procedure TForm1.ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine);
+var
+  DynEngine : TJvDynControlEngine;
+  MainPanel,
+  ButtonPanel : TWinControl;
+  LeftBox,
+  RightBox : TWinControl;
+  Button : TButton;
+  TreeView : TWinControl;
+  IJvReadOnly: IJvDynControlReadOnly;
+  IJvTreeView: IJvDynControlTreeView;
+  i: Integer;
+  Node: TTreeNode;
+  Nodes: TTreeNodes;
+begin
+  if Assigned(aDynControlEngine) then
+    DynEngine := aDynControlEngine
+  else
+    DynEngine := DefaultDynControlEngine;
+  Form := DynEngine.CreateForm ('Unit Versioning Sample', '');
+  try
+    if Form is TForm then
+      TForm(Form).Position := poDesktopCenter;
+    Form.Width := 600;
+    Form.Height := 500;
+    ButtonPanel := DynEngine.CreatePanelControl(Form, Form, 'ButtonPanel', '', alBottom);
+    MainPanel := DynEngine.CreatePanelControl(Form, Form, 'MainPanel', '', alClient);
+    if MainPanel is TPanel then
+      TPanel(MainPanel).borderWidth := 3;
+    Button:= DynEngine.CreateButton(Form, ButtonPanel,'CloseBtn', 'Close', '', nil, True, True);
+    Button.Left := Round((Form.Width-Button.Width)/2);
+    Button.Top := Round((ButtonPanel.Height-Button.Height)/2);
+    RightBox := DynEngine.CreateGroupBoxControl(Form, MainPanel, 'RightBox', 'Details');
+    RightBox.Align := alRight;
+    RightBox.Width := 300;
+    LeftBox := DynEngine.CreateGroupBoxControl(Form, MainPanel, 'LeftBox', 'Unit Versions');
+    LeftBox.Align := alClient;
+    TreeView := DynEngine.CreateTreeViewControl(Form, LeftBox, 'TreeView');
+    TreeView.Align := alClient;
+    RCSFilePanel := DynEngine.CreatePanelControl(Form, RightBox, 'RCSFilePanel', '', alTop);
+    RCSFilePanel.Align := alTop;
+    RCSFileEdit := DynEngine.CreateEditControl(Form, RCSFilePanel, 'RCSFileEdit');
+    if Supports(RCSFileEdit, IJvDynControlReadOnly, IJvReadOnly) then
+      IJvReadOnly.ControlSetReadOnly(True);
+    LabelControl := DynEngine.CreateLabelControlPanel(Form, RCSFilePanel,'RCSFileLabel', 'RCS File', RCSFileEdit, False, 80);
+    RCSFilePanel.Height := RCSFileEdit.Height;
+    RevisionPanel := DynEngine.CreatePanelControl(Form, RightBox, 'RevisionPanel', '', alTop);
+    RevisionPanel.Align := alTop;
+    RevisionEdit := DynEngine.CreateEditControl(Form, RevisionPanel, 'RevisionEdit');
+    LabelControl := DynEngine.CreateLabelControlPanel(Form, RevisionPanel,'RevisionLabel', 'Revision', RevisionEdit, False, 80);
+    if Supports(RevisionEdit, IJvDynControlReadOnly, IJvReadOnly) then
+      IJvReadOnly.ControlSetReadOnly(True);
+    RevisionPanel.Height := RevisionEdit.Height;
+    DatePanel := DynEngine.CreatePanelControl(Form, RightBox, 'DatePanel', '', alTop);
+    DatePanel.Align := alTop;
+    DateEdit := DynEngine.CreateEditControl(Form, DatePanel, 'DateEdit');
+    LabelControl := DynEngine.CreateLabelControlPanel(Form, DatePanel,'DateLabel', 'Date', DateEdit, False, 80);
+    if Supports(DateEdit, IJvDynControlReadOnly, IJvReadOnly) then
+      IJvReadOnly.ControlSetReadOnly(True);
+    DatePanel.Height := DateEdit.Height;
+    PathPanel := DynEngine.CreatePanelControl(Form, RightBox, 'PathPanel', '', alTop);
+    PathPanel.Align := alTop;
+    PathEdit := DynEngine.CreateEditControl(Form, PathPanel, 'PathEdit');
+    LabelControl := DynEngine.CreateLabelControlPanel(Form, PathPanel,'PathLabel', 'Path', PathEdit, False, 80);
+    if Supports(PathEdit, IJvDynControlReadOnly, IJvReadOnly) then
+      IJvReadOnly.ControlSetReadOnly(True);
+    PathPanel.Height := PathEdit.Height;
+    ExtraPanel := DynEngine.CreatePanelControl(Form, RightBox, 'ExtraPanel', '', alTop);
+    ExtraPanel.Align := alTop;
+    ExtraEdit := DynEngine.CreateMemoControl(Form, ExtraPanel, 'ExtraEdit');
+    if Supports(ExtraEdit, IJvDynControlReadOnly, IJvReadOnly) then
+      IJvReadOnly.ControlSetReadOnly(True);
+    LabelControl := DynEngine.CreateLabelControlPanel(Form, ExtraPanel,'ExtraLabel', 'Extra', ExtraEdit, True, 80);
+    LabelControl.Width := 80 + PathEdit.Width;
+    ExtraPanel.Height := LabelControl.Height;
+    if Supports(TreeView, IJvDynControlTreeView, IJvTreeView) then
+    begin
+      Nodes := IJvTreeView.ControlGetItems;
+      IJvTreeView.ControlSetOnChange(TreeViewOnChange);
+      with GetUnitVersioning do
+        for i := 0 to count-1 do
+          node := Nodes.AddChildObject(nil, Items[i].RCSfile+' - '+Items[i].Revision, Items[i]);
+      IJvTreeView.ControlSetSortType (stText);
+    end;
+    TreeViewOnChange(nil, nil);
+    Form.ShowModal;
+  finally
+    Form.Free;
+  end;
+end;
+
+procedure TForm1.TreeViewOnChange(Sender: TObject; Node: TTreeNode);
+var
+  IJvData : IJvDynControlData;
+begin
+  if Assigned(Node) and Assigned(Node.Data) and
+    (TObject(Node.Data) is TUnitVersion) then
+  begin
+    if Supports(RCSFileEdit, IJvDynControlData, IJvData) then
+    begin
+      IJvData.ControlValue := TUnitVersion(Node.Data).RCSFile;
+      RCSFilePanel.Visible := True;
+    end
+    else
+      RCSFilePanel.Visible := False;
+    if Supports(RevisionEdit, IJvDynControlData, IJvData) then
+    begin
+      IJvData.ControlValue := TUnitVersion(Node.Data).Revision;
+      RevisionPanel.Visible := True;
+    end
+    else
+      RevisionPanel.Visible := False;
+    if Supports(DateEdit, IJvDynControlData, IJvData) then
+    begin
+      IJvData.ControlValue := TUnitVersion(Node.Data).Date;
+      DatePanel.Visible := True;
+    end
+    else
+      DatePanel.Visible := False;
+    if Supports(ExtraEdit, IJvDynControlData, IJvData) and
+      (TUnitVersion(Node.Data).Extra <> '') then
+    begin
+      IJvData.ControlValue := TUnitVersion(Node.Data).Extra;
+      ExtraPanel.Visible := True;
+    end
+    else
+      ExtraPanel.Visible := False;
+    if Supports(PathEdit, IJvDynControlData, IJvData) then
+    begin
+      IJvData.ControlValue := TUnitVersion(Node.Data).LogPath;
+      PathPanel.Visible := True;
+    end
+    else
+      PathPanel.Visible := False;
+  end
+  else
+  begin
+    RCSFilePanel.Visible := False;
+    RevisionPanel.Visible := False;
+    DatePanel.Visible := False;
+    ExtraPanel.Visible := False;
+    PathPanel.Visible := False;
+  end;
+end;
+
+procedure TForm1.Button17Click(Sender: TObject);
+begin
+  ShowUnitVersioning(nil);
 end;
 
 end.
