@@ -66,13 +66,21 @@ type
 
 {$IFDEF VisualCLX}
   HWND = QWindows.HWND;
+  TClxWindowProc = procedure(var Msg: TMessage) of object;
 {$ENDIF VisualCLX}
 
 const
   dcWantMessage = dcWantAllKeys;
 
 type
-  IJvControlEvents = interface
+  {$IFDEF VCL}
+  IPerformControl = interface
+    ['{B11AA73D-D7C2-43E5-BED8-8F82DE6152AB}']
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+  end;
+  {$ENDIF VCL}
+
+  IJvControlEvents = interface(IPerformControl)
     ['{61FC57FF-D4DA-4840-B871-63DE804E9921}']
     procedure VisibleChanged;
     procedure EnabledChanged;
@@ -94,7 +102,7 @@ type
     {$ENDIF VCL}
   end;
 
-  IJvWinControlEvents = interface
+  IJvWinControlEvents = interface(IPerformControl)
     ['{B5F7FB62-78F0-481D-AFF4-7A24ED6776A0}']
     procedure DoBoundsChanged;
     procedure CursorChanged;
@@ -108,11 +116,11 @@ type
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
   end;
 
-  IJvCustomControlEvents = interface
+  IJvCustomControlEvents = interface(IPerformControl)
     ['{7804BD3A-D7A5-4314-9259-6DE08A0DC38A}']
   end;
 
-  IJvEditControlEvents = interface
+  IJvEditControlEvents = interface(IPerformControl)
     ['{C1AE5EF8-F6C4-4BD4-879E-17946FD0FBAB}']
     procedure DoClipboardPaste;
     procedure DoClipboardCopy;
@@ -177,6 +185,8 @@ function InheritMsg(Instance: TControl; Msg: Integer): Integer; overload;
 procedure InheritMessage(Instance: TControl; var Msg: TMessage); overload;
 procedure DispatchMsg(Instance: TControl; var Msg);
 
+// jump targets:
+
 procedure Control_ControlsListChanging(Instance: TControl; Control: TControl;
   Inserting: Boolean);
 procedure Control_ControlsListChanged(Instance: TControl; Control: TControl;
@@ -186,12 +196,9 @@ procedure Control_ControlsListChanged(Instance: TControl; Control: TControl;
 procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
 {$ENDIF COMPILER5}
 
-// jump targets:
+{$ENDIF VCL}
 
 function JvExDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
-
-
-{$ENDIF VCL}
 
 {$IFDEF VisualCLX}
 function WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;

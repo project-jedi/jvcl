@@ -52,7 +52,11 @@
 *)
 
 (*$DEFINE JV_CONTROL_EVENTS_DECL_VISUALCLX
+  public
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   protected
+    WindowProc: TClxWindowProc;
+    procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -159,19 +163,19 @@
 
 
 (*$DEFINE JV_EVENTS_CLASS(ClassName)
-  TJvEx##ClassName = class(T##ClassName, IJvControlEvents)
+  TJvEx##ClassName = class(T##ClassName, IJvControlEvents, IPerformControl)
 *)
 (*$DEFINE JV_EVENTS_CLASS1(ClassName, Intf1)
-  TJvEx##ClassName = class(T##ClassName, Intf1, IJvControlEvents)
+  TJvEx##ClassName = class(T##ClassName, Intf1, IJvControlEvents, IPerformControl)
 *)
 (*$DEFINE JV_EVENTS_CLASS2(ClassName, Intf2, Intf1)
-  TJvEx##ClassName = class(T##ClassName, Intf2, Intf1, IJvControlEvents)
+  TJvEx##ClassName = class(T##ClassName, Intf2, Intf1, IJvControlEvents, IPerformControl)
 *)
 (*$DEFINE JV_EVENTS_CLASS3(ClassName, Intf3, Intf2, Intf1)
-  TJvEx##ClassName = class(T##ClassName, Intf3, Intf2, Intf1, IJvControlEvents)
+  TJvEx##ClassName = class(T##ClassName, Intf3, Intf2, Intf1, IJvControlEvents, IPerformControl)
 *)
 (*$DEFINE JV_EVENTS_CLASS4(ClassName, Intf4, Intf3, Intf2, Intf1)
-  TJvEx##ClassName = class(T##ClassName, Intf4, Intf3, Intf2, Intf1, IJvControlEvents)
+  TJvEx##ClassName = class(T##ClassName, Intf4, Intf3, Intf2, Intf1, IJvControlEvents, IPerformControl)
 *)
 
 // ****************** Class Declarations (combinations) **********************
@@ -464,6 +468,26 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
+
+function TJvEx##ClassName.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvEx##ClassName.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
 *) // MACRO END CONTROL_VISUALCLX
 
 
@@ -581,6 +605,12 @@ end;
 (*$DEFINE JV_DIFF_EVENTS_IMPL_CONTROL(ClassName)
 constructor TJvEx##ClassName.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   CONSTRUCTOR_CODE
@@ -600,6 +630,10 @@ JV_DIFF_EVENTS_IMPL_CONTROL(ClassName)
 {$IFDEF VisualCLX}
 constructor TJvEx##ClassName.Create(AOwner: TComponent);
 begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -627,6 +661,12 @@ JV_DIFF_EVENTS_IMPL_CONTROL(ClassName)
 (*$DEFINE JV_DIFF_EVENTS_IMPL_CUSTOMFORM(ClassName)
 constructor TJvEx##ClassName.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited CreateNew(AOwner, Dummy);
   FHintColor := clInfoBk;
   CONSTRUCTOR_CODE
