@@ -97,6 +97,8 @@ type
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure LblVersionsClick(Sender: TObject);
     procedure LblPackagesClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     { Private-Deklarationen }
     FXPThemeSupportFirstClick: Boolean;
@@ -231,11 +233,6 @@ begin
       begin
         ListItem := ListViewPackages.Items.Add;
         ListItem.Data := Packages[i];
-        if SelTarget.IsJVCLInstalled then
-          Packages[i].Install := Packages[i].IsInstalled
-        else
-          Packages[i].Install := False;
-          
         ListItem.Checked := Packages[i].Install;
         ListItem.Caption := Packages[i].DisplayName;
         ListItem.SubItems.Add(Packages[i].Description);
@@ -648,6 +645,16 @@ end;
 procedure TFormMain.LblPackagesClick(Sender: TObject);
 begin
   ListViewPackages.SetFocus;
+end;
+
+procedure TFormMain.Button1Click(Sender: TObject);
+begin
+  SelTarget.RegistryInstall;
+end;
+
+procedure TFormMain.Button2Click(Sender: TObject);
+begin
+  SelTarget.RegistryUnInstall;
 end;
 
 end.
