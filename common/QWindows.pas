@@ -298,18 +298,13 @@ function CopyRect(var Dst: TRect; const Src: TRect): LongBool;
 
 type
   TRGBQuad = packed record
-    rgbReserved: Byte;
     rgbBlue: Byte;
     rgbGreen: Byte;
     rgbRed: Byte;
-  end;
+    rgbReserved: Byte;
+  end;  
 
-  TRGBTriple = packed record
-    rgbtReserved: Byte;
-    rgbtBlue: Byte;
-    rgbtGreen: Byte;
-    rgbtRed: Byte;
-  end;
+  TRGBTriple = TRGBQuad; // Qt does not support 24 bit pixmaps
 
 const
   DEFAULT_PITCH = 0;
