@@ -440,7 +440,7 @@ type
     procedure SetParent(AParent: TWinControl); override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    procedure SetParent(const ParentA: TWidgetControl); override;
+    procedure SetParent(const AParent: TWidgetControl); override;
     {$ENDIF VisualCLX}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -841,18 +841,6 @@ type
     {$ENDIF VCL}
     function FindNextEnabledPage(PageIndex: Integer; const Step: Integer = 1;
       CheckDisable: Boolean = True): TJvWizardCustomPage;  // Nonn
-    function GetBackButtonClick: TNotifyEvent;
-    function GetCancelButtonClick: TNotifyEvent;
-    function GetFinishButtonClick: TNotifyEvent;
-    function GetLastButtonClick: TNotifyEvent;
-    function GetNextButtonClick: TNotifyEvent;
-    function GetStartButtonClick: TNotifyEvent;
-    procedure SetBackButtonClick(const Value: TNotifyEvent);
-    procedure SetCancelButtonClick(const Value: TNotifyEvent);
-    procedure SetFinishButtonClick(const Value: TNotifyEvent);
-    procedure SetLastButtonClick(const Value: TNotifyEvent);
-    procedure SetNextButtonClick(const Value: TNotifyEvent);
-    procedure SetStartButtonClick(const Value: TNotifyEvent);
   protected
     procedure Loaded; override;
     procedure AdjustClientRect(var Rect: TRect); override;
@@ -868,7 +856,7 @@ type
     property ButtonBarHeight: Integer
       read FButtonBarHeight write SetButtonBarHeight;
   public
-    constructor Create(AComponent: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SelectPriorPage;
     procedure SelectNextPage;
@@ -920,18 +908,19 @@ type
       read FOnSelectNextPage write FOnSelectNextPage;
     property OnSelectPriorPage: TJvWizardSelectPageEvent
       read FOnSelectPriorPage write FOnSelectPriorPage;
-    property OnStartButtonClick: TNotifyEvent // index bkStart
-      read GetStartButtonClick write SetStartButtonClick;
-    property OnLastButtonClick: TNotifyEvent // index bkLast
-      read GetLastButtonClick write SetLastButtonClick;
-    property OnBackButtonClick: TNotifyEvent // index bkBack
-      read GetBackButtonClick write SetBackButtonClick;
-    property OnNextButtonClick: TNotifyEvent // index bkNext
-      read GetNextButtonClick write SetNextButtonClick;
-    property OnFinishButtonClick: TNotifyEvent // index bkFinish
-      read GetFinishButtonClick write SetFinishButtonClick;
-    property OnCancelButtonClick: TNotifyEvent // index bkCancel
-      read GetCancelButtonClick write SetCancelButtonClick;
+    property OnStartButtonClick: TNotifyEvent index bkStart
+      read GetButtonClick write SetButtonClick;
+    property OnLastButtonClick: TNotifyEvent index bkLast
+      read GetButtonClick write SetButtonClick;
+    property OnBackButtonClick: TNotifyEvent index bkBack
+      read GetButtonClick write SetButtonClick;
+    property OnNextButtonClick: TNotifyEvent index bkNext
+      read GetButtonClick write SetButtonClick;
+    property OnFinishButtonClick: TNotifyEvent index bkFinish
+      read GetButtonClick write SetButtonClick;
+    property OnCancelButtonClick: TNotifyEvent index bkCancel
+      read GetButtonClick write SetButtonClick;
+
     property Color;
     property Font;
     property Enabled;
@@ -974,46 +963,65 @@ resourcestring
 {$ENDIF USEJVCL}
 
 type
+  // (ahuser) introduces for refactoring  the WizardButtons
+  TJvWizardBaseButton = class(TJvWizardButtonControl)
+  protected
+    procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); virtual; abstract;
+    procedure SelectPage; virtual;
+  public
+    procedure Click; override;
+  end;
+
   { YW - First Button }
-  TJvWizardStartButton = class(TJvWizardButtonControl)
+  TJvWizardStartButton = class(TJvWizardBaseButton)
+  protected
+    procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
+    procedure SelectPage; override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure Click; override;
   end;
 
   { YW - Last Button }
-  TJvWizardLastButton = class(TJvWizardButtonControl)
+  TJvWizardLastButton = class(TJvWizardBaseButton)
+  protected
+    procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
+    procedure SelectPage; override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure Click; override;
   end;
 
   { YW - Back Button }
-  TJvWizardBackButton = class(TJvWizardButtonControl)
+  TJvWizardBackButton = class(TJvWizardBaseButton)
+  protected
+    procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
+    procedure SelectPage; override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure Click; override;
   end;
 
   { YW - Next Button }
-  TJvWizardNextButton = class(TJvWizardButtonControl)
+  TJvWizardNextButton = class(TJvWizardBaseButton)
+  protected
+    procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
+    procedure SelectPage; override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure Click; override;
   end;
 
   { YW - Finish Button }
-  TJvWizardFinishButton = class(TJvWizardButtonControl)
+  TJvWizardFinishButton = class(TJvWizardBaseButton)
+  protected
+    procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure Click; override;
   end;
 
   { YW - Cancel Button }
-  TJvWizardCancelButton = class(TJvWizardButtonControl)
+  TJvWizardCancelButton = class(TJvWizardBaseButton)
+  protected
+    procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure Click; override;
   end;
 
   { YW - Help Button }
@@ -1027,7 +1035,7 @@ type
 
 constructor TJvWizardButtonControl.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   if csDesigning in ComponentState then
   begin
     {$IFDEF COMPILER6_UP}
@@ -1047,9 +1055,7 @@ procedure TJvWizardButtonControl.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
   inherited;
   if Enabled then
-  begin
     Msg.Result := 1;
-  end;
 end;
 {$ENDIF VCL}
 
@@ -1062,16 +1068,42 @@ procedure TJvWizardButtonControl.CMVisibleChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FWizard) then
-  begin
     FWizard.RepositionButtons;
+end;
+
+{ TJvWizardBaseButton }
+
+procedure TJvWizardBaseButton.Click;
+var
+  Stop: Boolean;
+  Page: TJvWizardCustomPage;
+begin
+  if Assigned(FWizard) then
+  begin
+    if not (csDesigning in ComponentState) then
+    begin
+      Stop := False;
+      Page := FWizard.FActivePage;
+      if Assigned(Page) then
+        ButtonClick(Page, Stop);
+      if Stop then
+        Exit;
+      inherited Click;
+    end;
+    SelectPage;
   end;
+end;
+
+procedure TJvWizardBaseButton.SelectPage;
+begin
+  // default action: nothing
 end;
 
 { TJvWizardStartButton }
 
 constructor TJvWizardStartButton.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Caption := RsFirstButtonCaption;
   Visible := False;
   Anchors := [akLeft, akBottom];
@@ -1079,33 +1111,22 @@ begin
   Alignment := alLeft;
 end;
 
-procedure TJvWizardStartButton.Click;
-var
-  Stop: Boolean;
-  Page: TJvWizardCustomPage;
+procedure TJvWizardStartButton.ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean);
 begin
-  if Assigned(FWizard) then
-  begin
-    if not (csDesigning in ComponentState) then
-    begin
-      Stop := False;
-      Page := FWizard.FActivePage;
-      if Assigned(Page) and Assigned(Page.FOnStartButtonClick) then
-      begin
-        Page.FOnStartButtonClick(Page, Stop);
-      end;
-      if Stop then Exit;
-      inherited;
-    end;
-    FWizard.SelectFirstPage;
-  end;
+  if Assigned(Page.FOnStartButtonClick) then
+    Page.FOnStartButtonClick(Page, Stop);
+end;
+
+procedure TJvWizardStartButton.SelectPage;
+begin
+  FWizard.SelectFirstPage;
 end;
 
 { TJvWizardLastButton }
 
 constructor TJvWizardLastButton.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Caption := RsLastButtonCaption;
   Visible := False;
   Anchors := [akLeft, akBottom];
@@ -1113,33 +1134,22 @@ begin
   Alignment := alLeft;
 end;
 
-procedure TJvWizardLastButton.Click;
-var
-  Stop: Boolean;
-  Page: TJvWizardCustomPage;
+procedure TJvWizardLastButton.ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean);
 begin
-  if Assigned(FWizard) then
-  begin
-    if not (csDesigning in ComponentState) then
-    begin
-      Stop := False;
-      Page := FWizard.FActivePage;
-      if Assigned(Page) and Assigned(Page.FOnLastButtonClick) then
-      begin
-        Page.FOnLastButtonClick(Page, Stop);
-      end;
-      if Stop then Exit;
-      inherited;
-    end;
-    FWizard.SelectLastPage;
-  end;
+  if Assigned(Page.FOnLastButtonClick) then
+    Page.FOnLastButtonClick(Page, Stop);
+end;
+
+procedure TJvWizardLastButton.SelectPage;
+begin
+  FWizard.SelectLastPage;
 end;
 
 { TJvWizardBackButton }
 
 constructor TJvWizardBackButton.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Caption := RsBackButtonCaption;
   Enabled := False;
   Visible := True;
@@ -1147,33 +1157,22 @@ begin
   Alignment := alRight;
 end;
 
-procedure TJvWizardBackButton.Click;
-var
-  Stop: Boolean;
-  Page: TJvWizardCustomPage;
+procedure TJvWizardBackButton.ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean);
 begin
-  if Assigned(FWizard) then
-  begin
-    if not (csDesigning in ComponentState) then
-    begin
-      Stop := False;
-      Page := FWizard.FActivePage;
-      if Assigned(Page) and Assigned(Page.FOnBackButtonClick) then
-      begin
-        Page.FOnBackButtonClick(Page, Stop);
-      end;
-      if Stop then Exit;
-      inherited;
-    end;
-    FWizard.SelectPriorPage;
-  end;
+  if Assigned(Page.FOnBackButtonClick) then
+    Page.FOnBackButtonClick(Page, Stop);
+end;
+
+procedure TJvWizardBackButton.SelectPage;
+begin
+  FWizard.SelectPriorPage;
 end;
 
 { TJvWizardNextButton }
 
 constructor TJvWizardNextButton.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Caption := RsNextButtonCaption;
   Enabled := False;
   Visible := True;
@@ -1181,62 +1180,39 @@ begin
   Alignment := alRight;
 end;
 
-procedure TJvWizardNextButton.Click;
-var
-  Stop: Boolean;
-  Page: TJvWizardCustomPage;
+procedure TJvWizardNextButton.ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean);
 begin
-  if Assigned(FWizard) then
-  begin
-    if not (csDesigning in ComponentState) then
-    begin
-      Stop := False;
-      Page := FWizard.FActivePage;
-      if Assigned(Page) and Assigned(Page.FOnNextButtonClick) then
-      begin
-        Page.FOnNextButtonClick(Page, Stop);
-      end;
-      if Stop then Exit;
-      inherited;
-    end;
-    FWizard.SelectNextPage;
-  end;
+  if Assigned(Page.FOnNextButtonClick) then
+    Page.FOnNextButtonClick(Page, Stop);
+end;
+
+procedure TJvWizardNextButton.SelectPage;
+begin
+  FWizard.SelectNextPage;
 end;
 
 { TJvWizardFinishButton }
 
 constructor TJvWizardFinishButton.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Caption := RsFinishButtonCaption;
   Visible := False;
   Width := ciButtonWidth;
   Alignment := alRight;
 end;
 
-procedure TJvWizardFinishButton.Click;
-var
-  Stop: Boolean;
-  Page: TJvWizardCustomPage;
+procedure TJvWizardFinishButton.ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean);
 begin
-  if not (csDesigning in ComponentState) and Assigned(FWizard) then
-  begin
-    Stop := False;
-    Page := FWizard.FActivePage;
-    if Assigned(Page) and Assigned(Page.FOnFinishButtonClick) then
-    begin
-      Page.FOnFinishButtonClick(Page, Stop);
-    end;
-    if Stop then Exit;
-    inherited;
-  end;
+  if Assigned(Page.FOnFinishButtonClick) then
+    Page.FOnFinishButtonClick(Page, Stop);
 end;
 
 { TJvWizardCancelButton }
 
 constructor TJvWizardCancelButton.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Caption := SCancelButton;
   Visible := True;
   Cancel := True;
@@ -1245,29 +1221,17 @@ begin
   ModalResult := mrCancel;
 end;
 
-procedure TJvWizardCancelButton.Click;
-var
-  Stop: Boolean;
-  Page: TJvWizardCustomPage;
+procedure TJvWizardCancelButton.ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean);
 begin
-  if not (csDesigning in ComponentState) and Assigned(FWizard) then
-  begin
-    Stop := False;
-    Page := FWizard.FActivePage;
-    if Assigned(Page) and Assigned(Page.FOnCancelButtonClick) then
-    begin
-      Page.FOnCancelButtonClick(Page, Stop);
-    end;
-    if Stop then Exit;
-    inherited;
-  end;
+  if Assigned(Page.FOnCancelButtonClick) then
+    Page.FOnCancelButtonClick(Page, Stop);
 end;
 
 { TJvWizardHelpButton }
 
 constructor TJvWizardHelpButton.Create(AOwner: TComponent); // Added by Theodore
 begin
-  inherited;
+  inherited Create(AOwner);
   Caption := SHelpButton;
   Visible := False;
   Anchors := [akLeft, akBottom];
@@ -1343,25 +1307,19 @@ end;
 procedure TJvWizardNavigateButton.SetGlyph(const Value: TBitmap);
 begin
   if Assigned(FControl) then
-  begin
     FControl.Glyph := Value;
-  end;
 end;
 
 procedure TJvWizardNavigateButton.SetNumGlyphs(const Value: Integer);
 begin
   if Assigned(FControl) then
-  begin
     FControl.NumGlyphs := Value;
-  end;
 end;
 
 procedure TJvWizardNavigateButton.SetLayout(const Value: TButtonLayout);
 begin
   if Assigned(FControl) then
-  begin
     FControl.Layout := Value;
-  end;
 end;
 
 function TJvWizardNavigateButton.GetModalResult: TModalResult;
@@ -1375,9 +1333,7 @@ end;
 procedure TJvWizardNavigateButton.SetModalResult(const Value: TModalResult);
 begin
   if Assigned(FControl) then
-  begin
     FControl.ModalResult := Value;
-  end;
 end;
 
 function TJvWizardNavigateButton.GetButtonWidth: Integer;
@@ -1394,9 +1350,7 @@ begin
   begin
     FControl.Width := Value;
     if Assigned(FControl.FWizard) then
-    begin
       FControl.FWizard.RepositionButtons;
-    end;
   end;
 end;
 
@@ -1404,13 +1358,11 @@ end;
 
 constructor TJvWizardRouteMapControl.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   { !!! YW - Add csNoDesignVisible in order to make it visible and invisible
     at design Time. }
   if csDesigning in ComponentState then
-  begin
     ControlStyle := ControlStyle + [csNoDesignVisible];
-  end;
   FAlign := alLeft;
   inherited Align := alLeft;
   TabStop := False;
@@ -1425,11 +1377,9 @@ end;
 destructor TJvWizardRouteMapControl.Destroy;
 begin
   if Assigned(Wizard) then
-  begin
     Wizard.FRouteMap := nil;
-  end;
   FPages.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvWizardRouteMapControl.DoAddPage(const APage: TJvWizardCustomPage);
@@ -1437,9 +1387,7 @@ begin
   if Assigned(FWizard) then
   begin
     if Assigned(APage) and (FPages.IndexOf(APage) < 0) then
-    begin
       FPages.Add(APage);
-    end;
     WizardPageAdded(APage);
   end;
 end;
@@ -1454,9 +1402,7 @@ begin
     begin
       i := FPages.Remove(APage);
       if FPageIndex = i then
-      begin
         FPageIndex := -1;
-      end;
     end;
     WizardPageDeleted(APage);
   end;
@@ -1467,9 +1413,7 @@ begin
   if Assigned(FWizard) then
   begin
     if Assigned(APage) then
-    begin
       FPageIndex := FPages.IndexOf(APage);
-    end;
     WizardPageActivated(APage);
   end;
 end;
@@ -1477,9 +1421,7 @@ end;
 procedure TJvWizardRouteMapControl.DoUpdatePage(const APage: TJvWizardCustomPage);
 begin
   if Assigned(FWizard) then
-  begin
     WizardPageUpdated(APage);
-  end;
 end;
 
 procedure TJvWizardRouteMapControl.DoMovePage(
@@ -1491,9 +1433,7 @@ begin
     begin
       FPages.Move(OldIndex, APage.PageIndex);
       if OldIndex = FPageIndex then
-      begin
         FPageIndex := APage.PageIndex;
-      end;
     end;
     WizardPageMoved(APage, OldIndex);
   end;
@@ -1527,16 +1467,17 @@ begin
   begin
     FPageIndex := Value;
     if Assigned(FWizard) and (Pages[FPageIndex].Wizard = FWizard) then
-    begin
       FWizard.SetActivePage(Pages[FPageIndex]);
-    end;
   end;
 end;
 
 {$IFDEF VCL}
 procedure TJvWizardRouteMapControl.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
-  Msg.Result := 1;
+  if PageAtPos(Point(Msg.XPos, Msg.YPos)) <> nil then
+    Msg.Result := 1
+  else
+    inherited;
 end;
 {$ENDIF VCL}
 
@@ -1561,11 +1502,11 @@ begin
       PageIndex := APage.PageIndex;
     end;
   end;
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
 end;
 
 {$IFDEF VisualCLX}
-procedure TJvWizardRouteMapControl.SetParent(const ParentA: TWidgetControl);
+procedure TJvWizardRouteMapControl.SetParent(const AParent: TWidgetControl);
 var
   i: Integer;
   AParent: TWidgetControl;
@@ -1581,13 +1522,9 @@ begin
   if Assigned(AParent) then
   begin
     if not ((AParent is TJvWizard) or (AParent is TJvWizardCustomPage)) then
-    begin
       raise EJvWizardError.Create(RsEInvalidParentControl);
-    end;
     if AParent is TJvWizardCustomPage then
-    begin
       AParent := TJvWizardCustomPage(AParent).Wizard;
-    end;
   end;
   inherited SetParent(AParent);
   if Assigned(AParent) then
@@ -1596,9 +1533,8 @@ begin
     FWizard.FRouteMap := Self;
     FPages.Clear;
     for i := 0 to FWizard.PageCount - 1 do
-    begin
       FPages.Add(FWizard.FPages[i]);
-    end;
+
     if Assigned(FWizard.FActivePage) then
       FPageIndex := FWizard.FActivePage.PageIndex
     else
@@ -1646,9 +1582,7 @@ function TJvWizardRouteMapControl.CanDisplay(const APage: TJvWizardCustomPage): 
 begin
   Result := Assigned(APage) and ((csDesigning in ComponentState) or APage.Enabled);
   if not (csDesigning in ComponentState) and Assigned(FOnDisplaying) then
-  begin
     FOnDisplaying(Self, APage, Result);
-  end;
 end;
 
 { TJvWizardImage }
@@ -1663,23 +1597,19 @@ end;
 destructor TJvWizardImage.Destroy;
 begin
   FPicture.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvWizardImage.DoChange;
 begin
   if Assigned(FOnChange) then
-  begin
     FOnChange(Self);
-  end;
 end;
 
 procedure TJvWizardImage.PaintTo(const ACanvas: TCanvas; ARect: TRect);
 begin
   if Assigned(FPicture.Graphic) then
-  begin
     JvWizardDrawImage(ACanvas, FPicture.Graphic, ARect, FAlignment, FLayout);
-  end;
 end;
 
 procedure TJvWizardImage.SetAlignment(Value: TJvWizardImageAlignment);
@@ -1775,7 +1705,7 @@ end;
 
 constructor TJvWizardPageTitle.Create;
 begin
-  inherited;
+  inherited Create;
   FAnchorPlacement := 4;
   FIndent := 0;
   FAnchors := [akLeft, akTop];
@@ -1787,15 +1717,13 @@ end;
 destructor TJvWizardPageTitle.Destroy;
 begin
   FFont.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvWizardPageTitle.DoChange;
 begin
   if Assigned(FWizardPageHeader) then
-  begin
     FWizardPageHeader.DoChange;
-  end;
 end;
 
 procedure TJvWizardPageTitle.SetWizardPageHeader(Value: TJvWizardPageHeader);
@@ -1820,35 +1748,23 @@ begin
   ATextSize := ACanvas.TextExtent(FText);
   Result := Bounds(ARect.Left, ARect.Top, ATextSize.cx, ATextSize.cy);
   if akLeft in FAnchors then
-  begin
     OffsetRect(Result, FAnchorPlacement, 0);
-  end;
   if akTop in FAnchors then
-  begin
     OffsetRect(Result, 0, FAnchorPlacement);
-  end;
   if akRight in FAnchors then
-  begin
     Result.Right := ARect.Right - FAnchorPlacement;
-  end;
   if akBottom in FAnchors then
-  begin
     Result.Bottom := ARect.Bottom - FAnchorPlacement;
-  end;
   InflateRect(Result, -FIndent, 0);
   if Result.Bottom > ARect.Bottom then
-  begin
     Result.Bottom := ARect.Bottom;
-  end;
   if Result.Right > ARect.Right then
-  begin
     Result.Right := ARect.Right;
-  end;
 end;
 
 procedure TJvWizardPageTitle.PaintTo(ACanvas: TCanvas; var ARect: TRect);
 const
-  Alignments: array[TAlignment] of Integer = (DT_LEFT, DT_CENTER, DT_RIGHT);
+  Alignments: array[TAlignment] of Integer = (DT_LEFT, DT_RIGHT, DT_CENTER);
 var
   ATextRect: TRect;
 begin
@@ -1983,7 +1899,7 @@ end;
 
 constructor TJvWizardPageHeader.Create;
 begin
-  inherited;
+  inherited Create;
   Color := clWindow;
   FHeight := 70;
   FParentFont := True;
@@ -2007,7 +1923,7 @@ destructor TJvWizardPageHeader.Destroy;
 begin
   FTitle.Free;
   FSubtitle.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvWizardPageHeader.Initialize;
@@ -2156,18 +2072,16 @@ end;
 
 procedure TJvWizardPageHeader.VisibleChanged;
 begin
-  inherited; // !!!
+  inherited VisibleChanged; // !!!
   if Assigned(WizardPage) then
-  begin
     WizardPage.Realign;
-  end;
 end;
 
 { TJvWizardWaterMark }
 
 constructor TJvWizardWaterMark.Create;
 begin
-  inherited;
+  inherited Create;
   FAlign := alLeft;
   Color := clActiveCaption;
   FWidth := 164;
@@ -2179,7 +2093,7 @@ end;
 destructor TJvWizardWaterMark.Destroy;
 begin
   FImage.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvWizardWaterMark.SetBorderWidth(Value: Integer);
@@ -2249,18 +2163,16 @@ end;
 
 procedure TJvWizardWaterMark.VisibleChanged;
 begin
-  inherited; // !!!
+  inherited VisibleChanged; // !!!
   if Assigned(WizardPage) then
-  begin
     WizardPage.Realign;
-  end;
 end;
 
 { TJvWizardPagePanel }
 
 constructor TJvWizardPagePanel.Create;
 begin
-  inherited;
+  inherited Create;
   FBorderWidth := 7;
   Color := clBtnFace;
   Visible := False;
@@ -2298,7 +2210,7 @@ end;
 
 constructor TJvWizardCustomPage.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Align := alClient;
   ControlStyle := ControlStyle + [csAcceptsControls, csNoDesignVisible];
   Visible := False;
@@ -2322,33 +2234,27 @@ end;
 destructor TJvWizardCustomPage.Destroy;
 begin
   if Assigned(FWizard) then
-  begin
     FWizard.RemovePage(Self);
-  end;
   FPanel.Free;
   FImage.Free;
   FHeader.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {$IFDEF VCL}
 procedure TJvWizardCustomPage.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
+  inherited CreateParams(Params);
   with Params.WindowClass do
-  begin
     Style := Style and not (CS_HREDRAW or CS_VREDRAW);
-  end;
 end;
 {$ENDIF VCL}
 
 procedure TJvWizardCustomPage.AdjustClientRect(var Rect: TRect);
 begin
-  inherited;
+  inherited AdjustClientRect(Rect);
   if FHeader.Visible then
-  begin
     Rect.Top := Rect.Top + FHeader.Height;
-  end;
 end;
 
 procedure TJvWizardCustomPage.EnableButton(AButton: TJvWizardButtonKind; AEnabled: boolean); // Arioch
@@ -2379,9 +2285,7 @@ begin
   if Assigned(FWizard) then
   begin
     if Assigned(FWizard.FRouteMap) then
-    begin
       FWizard.FRouteMap.DoUpdatePage(Self);
-    end;
     if not ((csDesigning in ComponentState) or Enabled) and
       (FWizard.ActivePage = Self) then
     begin
@@ -2406,9 +2310,7 @@ procedure TJvWizardCustomPage.CMTextChanged(var Msg: TMessage);
 begin
   Invalidate;
   if Assigned(FWizard) and Assigned(FWizard.FRouteMap) then
-  begin
     FWizard.FRouteMap.DoUpdatePage(Self);
-  end;
 end;
 
 {$IFDEF VisualCLX}
@@ -2427,14 +2329,10 @@ begin
   if FWizard <> AWizard then
   begin
     if Assigned(FWizard) then
-    begin
       FWizard.RemovePage(Self);
-    end;
     Parent := AWizard;
     if Assigned(AWizard) then
-    begin
       AWizard.InsertPage(Self);
-    end;
   end;
 end;
 
@@ -2448,11 +2346,9 @@ end;
 
 procedure TJvWizardCustomPage.ReadState(Reader: TReader);
 begin
-  inherited;
+  inherited ReadState(Reader);
   if Reader.Parent is TJvWizard then
-  begin
     Wizard := TJvWizard(Reader.Parent);
-  end;
 end;
 
 procedure TJvWizardCustomPage.SetPageIndex(const Value: Integer);
@@ -2464,9 +2360,7 @@ begin
     OldIndex := PageIndex;
     FWizard.FPages.Move(OldIndex, Value);
     if Assigned(FWizard.FRouteMap) then
-    begin
       FWizard.FRouteMap.DoMovePage(Self, OldIndex);
-    end;
   end;
 end;
 
@@ -2530,9 +2424,7 @@ procedure TJvWizardCustomPage.Done;
 begin
   Refresh; // !!! YW - Force the page to repaint itself immediately.
   if Assigned(FOnPage) and Enabled and not (csDesigning in ComponentState) then
-  begin
     FOnPage(Self);
-  end;
 end;
 
 procedure TJvWizardCustomPage.Enter(const FromPage: TJvWizardCustomPage);
@@ -2564,9 +2456,7 @@ begin
   begin
     FEnabledButtons := Value;
     if Assigned(FWizard) and (FWizard.FActivePage = Self) then
-    begin
       FWizard.UpdateButtonsStatus;
-    end;
   end;
 end;
 
@@ -2612,7 +2502,7 @@ end;
 
 constructor TJvWizardWelcomePage.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FWaterMark := TJvWizardWaterMark.Create;
   FWaterMark.WizardPage := Self;
   FHeader.FTitle.FText := RsWelcome;
@@ -2623,12 +2513,12 @@ end;
 destructor TJvWizardWelcomePage.Destroy;
 begin
   FWaterMark.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvWizardWelcomePage.AdjustClientRect(var Rect: TRect);
 begin
-  inherited; // !!! YW - must call
+  inherited AdjustClientRect(Rect); // !!! YW - must call
   if FWaterMark.Visible then
   begin
     if FWaterMark.Align = alLeft then
@@ -2656,7 +2546,7 @@ end;
 destructor TJvWizardPageList.Destroy;
 begin
   FWizard := nil;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvWizardPageList.Notify(Ptr: Pointer; Action: TListNotification);
@@ -2675,9 +2565,9 @@ end;
 
 { TJvWizard }
 
-constructor TJvWizard.Create(AComponent: TComponent);
+constructor TJvWizard.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   { YW - In order to accept TJvWizardRouteMap control, we need to add
     csAcceptsControls ControlStyle }
   ControlStyle := ControlStyle + [csAcceptsControls];
@@ -2700,31 +2590,25 @@ var
   AKind: TJvWizardButtonKind;
 begin
   for AKind := Low(TJvWizardButtonKind) to High(TJvWizardButtonKind) do
-  begin
     FNavigateButtons[AKind].Free;
-  end;
   { !!! YW - Reset wizard property value of all wizard pages FIRST,
     so that when the actual wizard page control is freed, the page won't
     call Wizard.RemovePage, otherwise it will cause AV, because at that
     time FPages has already been destroyed. }
   for i := 0 to FPages.Count - 1 do
-  begin
     TJvWizardCustomPage(FPages[i]).FWizard := nil;
-  end;
   FImageChangeLink.Free;
   FPages.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvWizard.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   RepositionButtons;
   { YW - When the wizard shows up, by default we display the first page. }
   if FPages.Count > 0 then
-  begin
     SelectFirstPage;
-  end;
 end;
 
 function TJvWizard.GetButtonControlClass(
@@ -2938,9 +2822,7 @@ begin
 
     FActivePage := Page;
     if Assigned(FRouteMap) then
-    begin
       FRouteMap.DoActivatePage(FActivePage);
-    end;
     if Assigned(FActivePage) and (FActivePage.FVisibleButtons = []) then
       ButtonBarHeight := 0
     else
@@ -2960,9 +2842,7 @@ procedure TJvWizard.InsertPage(Page: TJvWizardCustomPage);
 begin
   FPages.Add(Page);
   if Assigned(FRouteMap) then
-  begin
     FRouteMap.DoAddPage(Page);
-  end;
 end;
 
 procedure TJvWizard.RemovePage(Page: TJvWizardCustomPage);
@@ -2971,13 +2851,9 @@ var
 begin
   NextPage := FindNextPage(Page.PageIndex, 1, not (csDesigning in ComponentState));
   if NextPage = Page then
-  begin
     NextPage := nil;
-  end;
   if Assigned(FRouteMap) then
-  begin
     FRouteMap.DoDeletePage(Page);
-  end;
   FPages.Remove(Page);
   SetActivePage(NextPage);
   { !!! YW - We must not call Page.Free, becaure page is the child
@@ -3046,9 +2922,7 @@ end;
 procedure TJvWizard.SetShowRouteMap(Value: Boolean);
 begin
   if Assigned(FRouteMap) then
-  begin
     FRouteMap.Visible := Value;
-  end;
 end;
 
 procedure TJvWizard.SetButtonBarHeight(Value: Integer);
@@ -3068,9 +2942,7 @@ end;
 procedure TJvWizard.SetHeaderImages(Value: TCustomImageList);
 begin
   if Assigned(FHeaderImages) then
-  begin
     FHeaderImages.UnRegisterChanges(FImageChangeLink);
-  end;
   FHeaderImages := Value;
   if Assigned(FHeaderImages) then
   begin
@@ -3078,9 +2950,7 @@ begin
     FHeaderImages.FreeNotification(Self);
   end;
   if Assigned(FActivePage) then
-  begin
     FActivePage.Invalidate;
-  end;
 end;
 
 function TJvWizard.GetButtonClick(const Index: TJvWizardButtonKind): TNotifyEvent;
@@ -3095,9 +2965,7 @@ procedure TJvWizard.SetButtonClick(const Index: TJvWizardButtonKind;
   const Value: TNotifyEvent);
 begin
   if Assigned(FNavigateButtons[Index].Control) then
-  begin
     FNavigateButtons[Index].Control.OnClick := Value;
-  end;
 end;
 
 function TJvWizard.GetPageCount: Integer;
@@ -3112,9 +2980,7 @@ var
 begin
   Pt := SmallPointToPoint(Msg.Pos);
   if Assigned(FActivePage) and PtInRect(FActivePage.BoundsRect, Pt) then
-  begin
     Msg.Result := 1;
-  end;
 end;
 {$ENDIF VCL}
 
@@ -3125,11 +2991,9 @@ begin
      this procedure to adjust their bounds. All navigation buttons would not
      call it because they do not have align set, so they can display at
      the bottom of the wizard. }
-  inherited;
+  inherited AdjustClientRect(Rect);
   if FButtonBarHeight > ciButtonHeight then
-  begin
     Rect.Bottom := Rect.Bottom - FButtonBarHeight;
-  end;
 end;
 
 {$IFDEF VCL}
@@ -3152,9 +3016,7 @@ begin
     { YW - By default, the Back button should be disabled for the first
        page at run time }
     if not (csDesigning in ComponentState) and IsFirstPage(FActivePage) then
-    begin
       Exclude(FActivePage.FEnabledButtons, bkBack);
-    end;
     AEnabledButtonSet := FActivePage.FEnabledButtons;
     AVisibleButtonSet := FActivePage.FVisibleButtons;
     if csDesigning in ComponentState then
@@ -3244,9 +3106,7 @@ begin
     for AButtonKind := Low(TJvWizardButtonKind) to High(TJvWizardButtonKind) do
     begin
       with FNavigateButtons[AButtonKind] do
-      begin
         FControl.SetBounds(0, 0, FControl.Width, 0); // YW - Must keep the width
-      end;
     end;
   end;
 end;
@@ -3258,9 +3118,7 @@ var
 begin
   { YW - Force the wizard to load its pages in page order. }
   for i := 0 to FPages.Count - 1 do
-  begin
     Proc(TComponent(FPages[i]));
-  end;
   { YW - Load other controls, otherwise, those controls won't show up in
      the wizard. }
   for i := 0 to ControlCount - 1 do
@@ -3270,27 +3128,21 @@ begin
        load them again, otherwise it will cause 'duplicate component nam'
        error. }
     if not (Control is TJvWizardCustomPage) and (Control.Owner = Root) then
-    begin
       Proc(Control);
-    end;
   end;
 end;
 
 procedure TJvWizard.Notification(AComponent: TComponent; Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FHeaderImages) then
-  begin
     SetHeaderImages(nil);
-  end;
 end;
 
 procedure TJvWizard.ImageListChange;
 begin
   if HandleAllocated and (Sender = FHeaderImages) and Assigned(FActivePage) then
-  begin
     FActivePage.Invalidate;
-  end;
 end;
 
 procedure TJvWizard.ShowControl(AControl: TControl);
@@ -3304,7 +3156,7 @@ end;
 procedure TJvWizard.Resize;
 begin
   RepositionButtons;
-  inherited;
+  inherited Resize;
 end;
 
 function TJvWizard.IsForward(const FromPage, ToPage: TJvWizardCustomPage): Boolean;
@@ -3316,7 +3168,7 @@ begin
     (FromPage.PageIndex < ToPage.PageIndex));
 end;
 
-function TJvWizard.GetBackButtonClick: TNotifyEvent;
+{function TJvWizard.GetBackButtonClick: TNotifyEvent;
 begin
   Result := GetButtonClick(bkBack);
 end;
@@ -3374,7 +3226,7 @@ end;
 procedure TJvWizard.SetStartButtonClick(const Value: TNotifyEvent);
 begin
   SetButtonClick(bkStart, Value);
-end;
+end;}
 
 end.
 
