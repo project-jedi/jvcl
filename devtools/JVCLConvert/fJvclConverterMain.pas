@@ -36,31 +36,10 @@ unit fJvclConverterMain;
 interface
 
 uses
-  SysUtils,
-  WinTypes,
-  WinProcs,
-  Messages,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  StdCtrls,
-  ComCtrls,
-  ExtCtrls,
-  Grids,
-  ValEdit,
-  JvComCtrls,
-  Menus,
-  ActnList,
-  StdActns,
-  ImgList,
+  SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
+  ComCtrls, ExtCtrls, Grids, ValEdit, JvComCtrls, Menus, ActnList, StdActns, ImgList,
   ToolWin,
-  JvComponent,
-  JvSearchFiles,
-  JvBaseDlg,
-  JvBrowseFolder,
-  JVCLConvertUtils, JvMenus;
+  JvComponent, JvSearchFiles, JvBaseDlg, JvBrowseFolder, JVCLConvertUtils;
 
 type
   { TValueListEditor (imposer class that allows "=" in strings) }
@@ -79,7 +58,7 @@ type
     tbsFiles: TTabSheet;
     tbsStrings: TTabSheet;
     vleUnits: TValueListEditor;
-    MainMenu1: TJvMainMenu;
+    MainMenu1: TMainMenu;
     File1: TMenuItem;
     Conversion1: TMenuItem;
     Help1: TMenuItem;
@@ -173,7 +152,7 @@ type
     procedure AddFiles(const FileName: string);
     function StringReplace(const FullFileName: string; WholeWord, Backup, Simulate: boolean; var ReplaceTime:
       TLargeInteger): integer;
-    function FileNameReplace(var FileItem: TListItem):string;
+    function FileNameReplace(var FileItem: TListItem): string;
     procedure LoadSettings;
     procedure SaveSettings;
     procedure SortListColumn(LV: TListView; Column: TListColumn);
@@ -274,7 +253,7 @@ var
 
 begin
   Result := 0;
-
+  if not FileExists(FullFilename) then Exit;
   //if this is DFM file, convert it to text
   if UpperCase(ExtractFileExt(FullFileName)) = '.DFM' then
   begin
@@ -333,7 +312,7 @@ begin
   end;
 end;
 
-function TfrmMain.FileNameReplace(var FileItem: TListItem):string;
+function TfrmMain.FileNameReplace(var FileItem: TListItem): string;
 var
   FilePath: string;
   FileName, NewFileName: string;
@@ -353,7 +332,8 @@ begin
     if FAppOptions.WholeWords and (UpperCase(NewFileName) = FromStr) then
       NewFileName := FilePath + ToStr + FileExtension
     else if not FAppOptions.WholeWords then
-      NewFileName := SysUtils.StringReplace(NewFileName, vleUnits.Cells[0, i], vleUnits.Cells[1, i], [rfReplaceAll, rfIgnoreCase]);
+      NewFileName := SysUtils.StringReplace(NewFileName, vleUnits.Cells[0, i], vleUnits.Cells[1, i], [rfReplaceAll,
+        rfIgnoreCase]);
   end;
 
   if (NewFileName <> '') and not FAppOptions.Simulate then
@@ -437,7 +417,7 @@ begin
       Item.Update;
 
       ReplaceCount := StringReplace(Item.Caption, FAppOptions.WholeWords, FAppOptions.Backup,
-        FAppOptions.Simulate,  ReplaceTime);
+        FAppOptions.Simulate, ReplaceTime);
       Inc(TotalTime, ReplaceTime);
       Item.SubItems[0] := IntToStr(ReplaceCount);
       Item.SubItems[1] := 'Done';

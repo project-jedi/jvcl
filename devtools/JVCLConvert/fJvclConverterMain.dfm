@@ -24,6 +24,7 @@ object frmMain: TfrmMain
     Height = 295
     ActivePage = tbsFiles
     Align = alClient
+    TabIndex = 0
     TabOrder = 0
     object tbsFiles: TTabSheet
       BorderWidth = 2
@@ -207,18 +208,13 @@ object frmMain: TfrmMain
     Left = 264
     Top = 88
   end
-  object MainMenu1: TJvMainMenu
+  object MainMenu1: TMainMenu
     Images = StandardImages
-    ImageMargin.Left = 0
-    ImageMargin.Top = 0
-    ImageMargin.Right = 0
-    ImageMargin.Bottom = 0
-    ImageSize.Height = 0
-    ImageSize.Width = 0
     Left = 160
     Top = 88
     object File1: TMenuItem
-      Action = FileExit
+      Caption = '&File'
+      ImageIndex = 10
       object IterateSubdirectories1: TMenuItem
         Action = IterateSubdirectories
       end
@@ -2586,6 +2582,7 @@ object frmMain: TfrmMain
       000000000000}
   end
   object JvSearchFiles1: TJvSearchFiles
+    ErrorResponse = erIgnore
     FileParams.SearchTypes = [stFileMask]
     OnFindFile = JvSearchFiles1FindFile
     Left = 48
@@ -2671,6 +2668,7 @@ object frmMain: TfrmMain
       000000000000}
   end
   object JvBrowseFolder1: TJvBrowseForFolderDialog
+    Options = [odOnlyDirectory, odFileSystemDirectoryOnly, odStatusAvailable]
     Position = fpFormCenter
     RootDirectory = fdMyComputer
     Title = 'Select folder:'
