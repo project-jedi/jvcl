@@ -84,7 +84,7 @@ end;
 procedure TJvDirectoryListDialog.CheckButtons;
 begin
   ModifyBtn.Enabled := (DirectoryList.Items.Count > 0) and
-    (DirectoryList.ItemIndex >= 0);
+    (DirectoryList.Selected <> nil);
   RemoveBtn.Enabled := ModifyBtn.Enabled;
   DirectoryList.AlphaSort;
 end;
@@ -112,25 +112,21 @@ var
   I: Integer;
   S: string;
 begin
-  I := DirectoryList.ItemIndex;
-  if I >= 0 then
-  begin
-    S := DirectoryList.Items[I].Caption;
-    if BrowseDirectory(S, '', 0) then
-      DirectoryList.Items[I].Caption := S;
-  end;
+  if DirectoryList.Selected = nil then Exit;
+  I := DirectoryList.Selected.Index;
+  S := DirectoryList.Items[I].Caption;
+  if BrowseDirectory(S, '', 0) then
+    DirectoryList.Items[I].Caption := S;
 end;
 
 procedure TJvDirectoryListDialog.RemoveBtnClick(Sender: TObject);
 var
   I: Integer;
 begin
-  I := DirectoryList.ItemIndex;
-  if I >= 0 then
-  begin
-    DirectoryList.Items.Delete(I);
-    CheckButtons;
-  end;
+  if DirectoryList.Selected = nil then Exit;
+  I := DirectoryList.Selected.Index;
+  DirectoryList.Items.Delete(I);
+  CheckButtons;
 end;
 
 procedure TJvDirectoryListDialog.DirectoryListClick(Sender: TObject);
