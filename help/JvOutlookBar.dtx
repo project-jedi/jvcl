@@ -1,10 +1,10 @@
 ##Package: Custom
 ##Status: Completed,Checked (peter3)
 ##Skip: TJvCustomOutlookBar.BtmButton
-##Skip: TJvOutlookBarPage.DownButton
 ##Skip: TJvCustomOutlookBar.TopButton
-##Skip: TJvOutlookBarPage.DownIndex
 ##Skip: TJvOutlookBarButton.Tag
+##Skip: TJvOutlookBarPage.DownButton
+##Skip: TJvOutlookBarPage.DownIndex
 ----------------------------------------------------------------------------------------------------
 @@JvOutlookBar.pas
 Summary
@@ -294,13 +294,24 @@ Description
   TJvOutlookBar is derived from TJvCustomOutlookBar and publishes its properties but does not
   introduce any new functionality.
 ----------------------------------------------------------------------------------------------------
-@@TJvOutlookBarButton  
+@@TJvOutlookBarButton
 Summary
   A button on an outlook page.
 Description
   The buttons on the pages of a TJvOutlookBar are of type TJvOutlookBarButton. To add a button to a page
   at design time, double-click the outlook bar to open the OutlookBar Editor. To add a button at runtime,
   call the Add method of the Buttons property of the page where the page should be added.
+----------------------------------------------------------------------------------------------------
+@@TJvOutlookBarButton.Assign
+Summary
+  Copies the contents of another button.
+Description
+  Call Assign to copy the content of another button to this button. If Source is not a TJvOutlookBarButton or descendant,
+  inherited Assign is called.
+Parameters
+  Source - The object to copy from.
+See Also
+  AssignTo
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarButton.AutoToggle
 Summary
@@ -313,17 +324,6 @@ Note
   everytime the user clicks the button.
 See Also
   Down, TJvCustomOutlookBar.OnButtonClick
-----------------------------------------------------------------------------------------------------
-@@TJvOutlookBarButton.Assign
-Summary
-  Copies the contents of another button.
-Description
-  Call Assign to copy the content of another button to this button. If Source is not a TJvOutlookBarButton or descendant,
-  inherited Assign is called.
-Parameters
-  Source - The object to copy from.
-See Also
-  AssignTo
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarButton.Caption
 Summary
@@ -344,14 +344,6 @@ Description
   To automatically change the state of the Down property when the user clicks it, set AutoToggle to true.
 See Also
   AutoToggle, DownFont, Font
-----------------------------------------------------------------------------------------------------
-@@TJvOutlookBarPage.DownFont
-Summary
-  Specifies the font to use when the button's Dowen poroperty is true.
-Description
-  Use the properties of DownFont to specify the visual appearance of the buttonäs text when the Down property is true.
-See Also
-  AutoToggle, Down, Font
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarButton.EditCaption
 Summary
@@ -435,6 +427,29 @@ Description
 See Also
   Add, Delete, Count
 ----------------------------------------------------------------------------------------------------
+@@TJvOutlookBarCustomDrawEvent
+<TITLE TJvOutlookBarCustomDrawEvent type>
+<COMBINE TJvCustomOutlookBar.OnCustomDraw>
+----------------------------------------------------------------------------------------------------
+@@TJvOutlookBarCustomDrawStage
+<TITLE TJvOutlookBarCustomDrawStage type>
+Summary
+  Enumeration for the various drawing stages in a TJvCustomOutlookBar.
+Description
+  TJvOutlookBarCustomDrawStage is used in the OnCustomDraw event of a TJvCustomOutlookBar
+  or descendant to indicate what part of the control is currently being drawn.
+@@TJvOutlookBarCustomDrawStage.odsBackground
+  The background is drawn. This stage only occurs if there are no pages
+  (pages cover the client area, so the background is only visible when there are no pages).
+@@TJvOutlookBarCustomDrawStage.odsPageButton
+  A page button is drawn.
+@@TJvOutlookBarCustomDrawStage.odsPage
+  A page's client area is drawn.
+@@TJvOutlookBarCustomDrawStage.odsButton
+  A buttons interior is drawn.
+@@TJvOutlookBarCustomDrawStage.odsButtonFrame
+  A buttons frame is drawn.
+----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage
 Summary
   Represents a page on an outlook bar control.
@@ -478,6 +493,14 @@ Description
 See Also
   ParentColor, Font, ParentFont
 ----------------------------------------------------------------------------------------------------
+@@TJvOutlookBarPage.DownFont
+Summary
+  Specifies the font to use when the button's Dowen poroperty is true.
+Description
+  Use the properties of DownFont to specify the visual appearance of the buttonäs text when the Down property is true.
+See Also
+  AutoToggle, Down, Font
+----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.EditCaption
 Summary
   Activates runtime editing of the page button's text.
@@ -508,13 +531,6 @@ Description
   and any other aspects of the font.
 See Also
   Color, ParentFont, ParentColor
-----------------------------------------------------------------------------------------------------
-@@TJvOutlookBarPage.Picture
-Summary
-  Specifies a background image for the page
-Description
-  Use Picture to specify an image to use as a background for the page. If an image is assigned, it
-  is automatically tiled to fill the entire ClientRect of the page.
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.ImageIndex
 Summary
@@ -562,6 +578,13 @@ Description
   When the value of a control's Font property changes, ParentFont becomes false automatically.
 See Also
   Font, ParentColor, Color
+----------------------------------------------------------------------------------------------------
+@@TJvOutlookBarPage.Picture
+Summary
+  Specifies a background image for the page
+Description
+  Use Picture to specify an image to use as a background for the page. If an image is assigned, it
+  is automatically tiled to fill the entire ClientRect of the page.
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.TopButtonIndex
 Summary
@@ -645,26 +668,3 @@ See Also
 @@TOutlookBarPageChanging
 <TITLE TOutlookBarPageChanging type>
 <COMBINE TJvCustomOutlookBar.OnPageChanging>
-----------------------------------------------------------------------------------------------------
-@@TJvOutlookBarCustomDrawEvent
-<TITLE TJvOutlookBarCustomDrawEvent type>
-<COMBINE TJvCustomOutlookBar.OnCustomDraw>
-----------------------------------------------------------------------------------------------------
-@@TJvOutlookBarCustomDrawStage
-<TITLE TJvOutlookBarCustomDrawStage type>
-Summary
-  Enumeration for the various drawing stages in a TJvCustomOutlookBar.
-Description
-  TJvOutlookBarCustomDrawStage is used in the OnCustomDraw event of a TJvCustomOutlookBar
-  or descendant to indicate what part of the control is currently being drawn.
-@@TJvOutlookBarCustomDrawStage.odsBackground
-  The background is drawn. This stage only occurs if there are no pages
-  (pages cover the client area, so the background is only visible when there are no pages).
-@@TJvOutlookBarCustomDrawStage.odsPageButton
-  A page button is drawn.
-@@TJvOutlookBarCustomDrawStage.odsPage
-  A page's client area is drawn.
-@@TJvOutlookBarCustomDrawStage.odsButton
-  A buttons interior is drawn.
-@@TJvOutlookBarCustomDrawStage.odsButtonFrame
-  A buttons frame is drawn.

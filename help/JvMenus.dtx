@@ -1,6 +1,5 @@
 ##Package: StdCtrls
-##Status: Completed (II)
-##Skip: TDrawMarginEvent
+##Status: Incomplete
 ----------------------------------------------------------------------------------------------------
 @@JvMenus.pas
 Summary
@@ -80,6 +79,10 @@ See Also
   TJvCustomMenuItemPainter.PreparePaint, TItemImageEvent
 ----------------------------------------------------------------------------------------------------
 @@TJvBtnMenuItemPainter
+<TITLEIMG TJvBtnMenuItemPainter>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   This painter draws an item as a raised or lowered button
 Description
@@ -204,19 +207,6 @@ Description
 See Also
   TJvMainMenu.ImageMargin, TJvPopupMenu.ImageMargin
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomMenuItemPainter.LeftMargin
-Summary
-  This is the size of the margin to be drawn on the left side of the menu
-Description
-  Most derived painters will publish this property, thus allowing you to specify that you
-  want a colored margin to be drawn on the side of your menu items.
-  By default, this is a gradient from clBlue to clBlack but you can provide an event handler
-  for OnDrawLeftMargin and do your own rendering in it.
-  Note: If the system displays text from right to left, the margin is drawn on the right
-  side of the menu.
-See Also
-  OnDrawLeftMargin
-----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.Images
 Summary
   Returns the Images property of the associated menu
@@ -262,6 +252,19 @@ Description
 See Also
   BiDiMode
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomMenuItemPainter.LeftMargin
+Summary
+  This is the size of the margin to be drawn on the left side of the menu
+Description
+  Most derived painters will publish this property, thus allowing you to specify that you
+  want a colored margin to be drawn on the side of your menu items.
+  By default, this is a gradient from clBlue to clBlack but you can provide an event handler
+  for OnDrawLeftMargin and do your own rendering in it.
+  Note: If the system displays text from right to left, the margin is drawn on the right
+  side of the menu.
+See Also
+  OnDrawLeftMargin
+----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.Measure
 Summary
   Calculates the desired width and height for the given menu item
@@ -273,6 +276,15 @@ Parameters
   Height - On return, must contain the height of the item
 See Also
   Paint
+----------------------------------------------------------------------------------------------------
+@@TJvCustomMenuItemPainter.Menu
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.OnDrawLeftMargin
 Summary
@@ -332,6 +344,10 @@ Description
 See Also
   TJvMainMenu.TextVAlignment, TJvPopupMenu.TextVAlignment
 ----------------------------------------------------------------------------------------------------
+@@TJvDrawLeftMarginEvent
+<TITLE TJvDrawLeftMarginEvent type>
+<COMBINE TJvCustomMenuItemPainter.OnDrawLeftMargin>
+----------------------------------------------------------------------------------------------------
 @@TJvImageMargin
 Summary
   The margins around an image, as a TPersistent descendent
@@ -389,6 +405,17 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
+@@TJvMainMenu.ActiveItemPainter
+Summary
+  The item painter being used by the menu
+Description
+  This property indicates which painter component is currently used to paint the menu.
+  This is the value of ItemPainter if Style is msItemPainter and is the internal painter
+  for any other style.
+
+See Also
+  ItemPainter, Style, TJvCustomMenuItemPainter
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.Canvas
 Summary
@@ -469,17 +496,6 @@ Description
   Simply set non zero values to the Width and Height properties.
 See Also
   Images
-----------------------------------------------------------------------------------------------------
-@@TJvMainMenu.ActiveItemPainter
-Summary
-  The item painter being used by the menu
-Description
-  This property indicates which painter component is currently used to paint the menu.
-  This is the value of ItemPainter if Style is msItemPainter and is the internal painter
-  for any other style.
-
-See Also
-  ItemPainter, Style, TJvCustomMenuItemPainter
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.ItemPainter
 Summary
@@ -705,6 +721,10 @@ borders
   The item is drawn using the painter indicated in the ItemPainter property
 ----------------------------------------------------------------------------------------------------
 @@TJvOfficeMenuItemPainter
+<TITLEIMG TJvOfficeMenuItemPainter>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   The painter for the msOffice style
 
@@ -712,6 +732,10 @@ Description
   The painter for the msOffice style
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawMenuItemPainter
+<TITLEIMG TJvOwnerDrawMenuItemPainter>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   This is the painter for the msOwnerDraw style
 Description
@@ -731,18 +755,10 @@ Description
   It provides more control over the aspect of its items by offering more properties
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
-@@TJvPopupMenu.Assign@TJvMainMenu
-Summary
-  Copies most properties from the given TJvMainMenu into the current object
-Description
-  This method doesn't copy the items, but rather all rendering related values. This is done
-  to allow an easy work for TJvToolbar when setting its MainMenu property
-Parameters
-  JvMainMenu - The TJvMainMenu object to copy the values from
-See Also
-  TJvMainMenu, TJvToolbar, TJvToolbar.MainMenu
+@@TJvPopupMenu.ActiveItemPainter
+<COMBINE TJvMainMenu.ActiveItemPainter>
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.Canvas
 <COMBINE TJvMainMenu.Canvas>
@@ -767,9 +783,6 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.ImageSize
 <COMBINE TJvMainMenu.ImageSize>
-----------------------------------------------------------------------------------------------------
-@@TJvPopupMenu.ActiveItemPainter
-<COMBINE TJvMainMenu.ActiveItemPainter>
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.ItemPainter
 <COMBINE TJvMainMenu.ItemPainter>
@@ -808,6 +821,10 @@ See Also
 <COMBINE TJvMainMenu.TextVAlignment>
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardMenuItemPainter
+<TITLEIMG TJvStandardMenuItemPainter>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   This painter draws the items without any special effects, apart from drawing the image
 
@@ -830,6 +847,10 @@ Description
   The text is aligned on the bottom of the menu item
 ----------------------------------------------------------------------------------------------------
 @@TJvXPMenuItemPainter
+<TITLEIMG TJvXPMenuItemPainter>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   This painter draws the menu items so that they look like the XP menus without requiring to run
   under XP.
@@ -935,3 +956,13 @@ Description
 @@TOnJvMenuChange
 <TITLE TOnJvMenuChange type>
 <COMBINE TJvMenuChangeLink.OnChange>
+----------------------------------------------------------------------------------------------------
+@@UseFlatMenubars
+<TITLE UseFlatMenubars function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references

@@ -96,15 +96,12 @@ See Also
 <TITLE TJvCPSFlags type>
 <COMBINE TJvCPSFlag>
 ----------------------------------------------------------------------------------------------------
+@@TJvCPSRawReadEvent
+<TITLE TJvCPSRawReadEvent type>
+<COMBINE TJvCreateProcess.OnRawRead>
+----------------------------------------------------------------------------------------------------
 @@TJvCPSReadEvent
 <TITLE TJvCPSReadEvent type>
-Summary
-  The type for event handlers which respond to data received from the console process.
-Description
-  Use TJvCPSReadEvent to respond to data received from the console process.
-Parameters
-  Sender - The object that triggered this event.
-  S      - The data received from the console process.
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSShowWindow
 <TITLE TJvCPSShowWindow type>
@@ -546,6 +543,9 @@ Description
   It may be necessairy to respond to OnRawRead events, when the console process updates the current
   line only and doesn't output a line feed char; for instance to indicate the progress of a process.
   In this case no OnRead event will be fired.
+Parameters
+  Sender - The object that triggered this event.
+  S      - The data received from the console process.
 Note
   coRedirect must be included in ConsoleOptions, otherwise no OnRawRead event will be fired.
 See Also
@@ -562,6 +562,10 @@ Description
   If the console process updates the current line only and doesn't output a line feed char, no OnRead event
   will be fired. In this case respond to OnRawRead events, which will be fired whenever the console process
   outputs some data.
+Parameters
+  Sender - The object that triggered this event.
+  S      - The data received from the console process.
+  StartsOnNewLine - Description for this parameter
 Note
   coRedirect must be included in ConsoleOptions, otherwise no OnRead event will be fired.
 See Also

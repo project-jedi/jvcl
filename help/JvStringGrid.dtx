@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Completed (III)
+##Status: Incomplete
 ##Skip: TGMActivateCell
 ----------------------------------------------------------------------------------------------------
 @@JvStringGrid.pas
@@ -356,6 +356,7 @@ Parameters
   FileName  - Name of a CSV file from which to read the \string grid.
   Separator - Character used in the CSV file to seperate cell strings.
   QuoteChar - Specifies the quote char.
+  StripQuotes - Description for this parameter
 See Also
   LoadFromFile, LoadFromStream, OnLoadProgress, SaveToCSV
 ----------------------------------------------------------------------------------------------------
@@ -386,6 +387,30 @@ Parameters
   Stream - Specifies the stream from which to read the \string grid.
 See Also
   LoadFromCSV, LoadFromFile, OnLoadProgress, SaveToStream
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.MoveColumn
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FromIndex - Description for this parameter
+  ToIndex   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.MoveRow
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FromIndex - Description for this parameter
+  ToIndex   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnCaptionClick
 Summary
@@ -663,6 +688,17 @@ Parameters
   Fixed     - Indicates whether to include the fixed rows in the sort.
   SortType  - Specifies the comparison function.
   BlankTop  - Indicates whether to move blank cells before the sort.
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.SortGridByCols
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ColOrder - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TProgress
 <TITLE TProgress type>

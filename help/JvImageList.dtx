@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Completed (I)
+##Status: Incomplete
 ##Skip: TJvImageList.DrawIndirect
 ##Skip: TJvImageList.FHandle
 ##Skip: TJvImageList.Merge
@@ -26,6 +26,12 @@ Parameters
   AllocBy     - If the list is to small the internal number of images will be increased by this value
 See Also
   TJvImageList.PixelFormat
+----------------------------------------------------------------------------------------------------
+@@EJvImageListError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 ----------------------------------------------------------------------------------------------------
 @@LoadImageListFromBitmap@TCustomImageList@TBitmap@TBitmap
 <TITLE LoadImageListFromBitmap function>
@@ -57,28 +63,30 @@ Summary
 Description
   This image list allows to use a picture and resource bitmaps as the image list content.
 ----------------------------------------------------------------------------------------------------
-@@TJvImageList.AddItem@TBitmap@TColor
-<TITLE AddItem function>
+@@TJvImageList.AddItem@string@TColor
 Summary
   Adds a new item to the ItemList.
 Description
   AddItem adds a bitmap or resource to the ItemList with ATransparentColor as transparent
   color. If the image list mode is not imItemList the image list is cleared and the mode is
   set to imItemList.
+Parameters
+  ABitmap           - Description for this parameter
+  AResourceName     - Description for this parameter
+  ATransparentColor - Description for this parameter
 See Also
   Mode
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.AddItem@TBitmap@TColor
-<COMBINE AddItem@TBitmap@TColor>
+<COMBINE TJvImageList.AddItem@string@TColor>
 ----------------------------------------------------------------------------------------------------
-@@TJvImageList.DeleteItem
+@@TJvImageList.BeginUpdate
 Summary
-  Removes an item from the ItemList
+  Block all OnChange events.
 Description
-  DeleteItem deletes the ItemList item that is identified by AIndex. When the ImageList is not
-  in imItenList mode the method raises an RJvImageListError.
+  Call BeginUpdate in combination with EndUpdate to prevent OnChange events while changing the data.
 See Also
-  AddItem@TBitmap@TColor
+  EndUpdate
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.ClearItems
 Summary
@@ -89,20 +97,14 @@ Description
 See Also
   DeleteItem
 ----------------------------------------------------------------------------------------------------
-@@TJvImageList.GetItemInfoStr
+@@TJvImageList.DeleteItem
 Summary
-  Returns the info string for an item
+  Removes an item from the ItemList
 Description
-  GetItemInfoStr returns the info string of the ItemList item that is identified by AIndex. When
-  the ImageList is not in imItenList mode the method raises an RJvImageListError.
-----------------------------------------------------------------------------------------------------
-@@TJvImageList.BeginUpdate
-Summary
-  Block all OnChange events.
-Description
-  Call BeginUpdate in combination with EndUpdate to prevent OnChange events while changing the data.
+  DeleteItem deletes the ItemList item that is identified by AIndex. When the ImageList is not
+  in imItenList mode the method raises an RJvImageListError.
 See Also
-  EndUpdate
+  AddItem@TBitmap@TColor
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.EndUpdate
 Summary
@@ -123,6 +125,22 @@ Description
 See Also
   Mode,Picture,ResourceIds
 ----------------------------------------------------------------------------------------------------
+@@TJvImageList.GetItemInfoStr
+Summary
+  Returns the info string for an item
+Description
+  GetItemInfoStr returns the info string of the ItemList item that is identified by AIndex. When
+  the ImageList is not in imItenList mode the method raises an RJvImageListError.
+----------------------------------------------------------------------------------------------------
+@@TJvImageList.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvImageList.LoadFromFile
 Summary
   Loads the image list from a bitmap file.
@@ -130,7 +148,7 @@ Description
   Loads the image list from a bitmap file. The bitmap is spitted into ImageList.Width *
   ImageList.Height sized slices.
 Parameters
-  Filename - File to load
+  FileName - File to load
 See Also
   SaveToFile,LoadFromStream
 ----------------------------------------------------------------------------------------------------
@@ -195,7 +213,7 @@ Summary
 Description
   Call SaveToFile to save the image list to the bitmap file FileName.
 Parameters
-  Filename - File name of the bitmap file
+  FileName - File name of the bitmap file
 See Also
   LoadFromFile,SaveToStream
 ----------------------------------------------------------------------------------------------------
@@ -230,6 +248,101 @@ Description
 See Also
   TransparentColor
 ----------------------------------------------------------------------------------------------------
+@@TJvImageListItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvImageListItem.Bitmap
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvImageListItem.Kind
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvImageListItem.ResourceName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvImageListItem.TransparentColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvImageListItem.UpdateImageList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvImageListItemKind
+<TITLE TJvImageListItemKind type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvImageListItemKind.ikResourceBitmap
+  Description for ikResourceBitmap
+@@TJvImageListItemKind.ikMappedResourceBitmap
+  Description for ikMappedResourceBitmap
+@@TJvImageListItemKind.ikInlineBitmap
+  Description for ikInlineBitmap
+----------------------------------------------------------------------------------------------------
+@@TJvImageListItems
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvImageListItems.Add
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvImageListItems.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AIndex - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvImageListMode
 <TITLE TJvImageListMode type>
 Summary
@@ -244,6 +357,8 @@ See Also
   The FileName and Picture property are used.
 @@TJvImageListMode.imResourceIds
   The ResourceIds property is used.
+@@TJvImageListMode.imItemList
+    Description for imItemList
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListTransparentMode
 <TITLE TJvImageListTransparentMode type>

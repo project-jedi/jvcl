@@ -1,5 +1,5 @@
 ##Package: Custom
-##Status: Completed,Checked (peter3)
+##Status: Incomplete (peter3)
 ##Skip: TJvCustomItemViewerOptions.Owner
 ##Skip: TJvViewerAdvancedDrawEvent
 ##Skip: TJvViewerAdvancedItemDrawEvent
@@ -475,6 +475,15 @@ Description
 
   ItemSize.cx stores the width of an item and ItemSize.cy stores the height.
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.OnDeletion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.OnDrawItem
 Summary
   Called whenever an item needs to be drawn.
@@ -490,6 +499,15 @@ Parameters
   TextRect - The bounding rect of the text area for the item.
 See Also
   DrawItem
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.OnInsertion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.OnItemChanged
 Summary
@@ -517,6 +535,20 @@ Parameters
   Allow  - Set to false to disallow the change. Default value is true.
 See Also
   OnItemChanged
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.OnItemHint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender   - Description for this parameter
+  Index    - Description for this parameter
+  HintInfo - Description for this parameter
+  Handled  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.OnOptionsChanged
 Summary
@@ -549,6 +581,29 @@ Description
   OnOptionsChanged event.
 See Also
   OnOptionsChanged
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.ScrollBy
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DeltaX - Description for this parameter
+  DeltaY - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.ScrollIntoView
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.SelectAll
 Summary
@@ -913,6 +968,15 @@ Summary
 Description
   Deleting returns True if the item is in the process of being deleted. Use Deleting to prevent infinite recursion in event handlers.
 ----------------------------------------------------------------------------------------------------
+@@TJvViewerItem.Hint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvViewerItem.ReduceMemoryUsage
 Summary
   Tries to minimize memory usage.
@@ -951,3 +1015,7 @@ Description
 @@TJvViewerItemDrawEvent
 <TITLE TJvViewerItemDrawEvent type>
 <COMBINE TJvCustomItemViewer.OnDrawItem>
+----------------------------------------------------------------------------------------------------
+@@TJvViewerItemHintEvent
+<TITLE TJvViewerItemHintEvent type>
+<COMBINE TJvCustomItemViewer.OnItemHint>
