@@ -404,11 +404,13 @@ type
   // style in the TJvMenuStyle enumeration
   TJvCustomMenuItemPainter = class (TComponent)
   private
+    FCanvas:TCanvas;
     procedure SetLeftMargin(const Value: Cardinal);
     procedure SetImageBackgroundColor(const Value: TColor);
     function GetMenu: TMenu;
     procedure SetMenu(const Value: TMenu);
     function GetCanvas: TCanvas;
+    procedure SetCanvas(const Value: TCanvas);
   protected
     // property fields
     FImageBackgroundColor : TColor;
@@ -537,7 +539,7 @@ type
 
     // properties read or calculated from the properties of the
     // menu to which the painter is linked
-    property Canvas          : TCanvas              read GetCanvas;
+    property Canvas          : TCanvas              read GetCanvas write SetCanvas;
     property CheckMarkHeight : Integer              read GetCheckMarkHeight;
     property CheckMarkWidth  : Integer              read GetCheckMarkWidth;
     property ComponentState  : TComponentState      read GetComponentState;
@@ -1009,6 +1011,7 @@ procedure TJvMainMenu.DefaultDrawItem(Item: TMenuItem; Rect: TRect;
 begin
   if Canvas.Handle <> 0 then
   begin
+    GetActiveItemPainter.Canvas := Canvas;
     GetActiveItemPainter.Paint(Item, Rect, State);
   end;
 end;
@@ -1018,6 +1021,7 @@ procedure TJvMainMenu.DrawItem(Item: TMenuItem; Rect: TRect;
 begin
   if Canvas.Handle <> 0 then
   begin
+    GetActiveItemPainter.Canvas := Canvas;
     GetActiveItemPainter.Paint(Item, Rect, State);
   end;
 end;
@@ -1129,7 +1133,7 @@ begin
         SetDefaultMenuFont(Canvas.Font);
         if Item.Default then
           Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-
+        GetActiveItemPainter.Canvas := Canvas;
         GetActiveItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
         MeasureItem(Item, Integer(itemWidth), Integer(itemHeight));
       finally
@@ -1311,7 +1315,7 @@ end;
 
 function TJvMainMenu.GetActiveItemPainter: TJvCustomMenuItemPainter;
 begin
-  if Style = msItemPainter then
+  if (Style = msItemPainter) and (ItemPainter <> nil) then
     Result := ItemPainter
   else
     Result := FStyleItemPainter;
@@ -1556,6 +1560,7 @@ procedure TJvPopupMenu.DefaultDrawItem(Item: TMenuItem; Rect: TRect;
 begin
   if Canvas.Handle <> 0 then
   begin
+    GetActiveItemPainter.Canvas := Canvas;
     GetActiveItemPainter.Paint(Item, Rect, State);
   end;
 end;
@@ -1565,6 +1570,7 @@ procedure TJvPopupMenu.DrawItem(Item: TMenuItem; Rect: TRect;
 begin
   if Canvas.Handle <> 0 then
   begin
+    GetActiveItemPainter.Canvas := Canvas;
     GetActiveItemPainter.Paint(Item, Rect, State);
   end;
 end;
@@ -1650,7 +1656,7 @@ begin
         SetDefaultMenuFont(Canvas.Font);
         if Item.Default then
           Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-
+        GetActiveItemPainter.Canvas := Canvas;
         GetActiveItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
         MeasureItem(Item, Integer(itemWidth), Integer(itemHeight));
       finally
@@ -2519,10 +2525,12 @@ end;
 
 function TJvCustomMenuItemPainter.GetCanvas: TCanvas;
 begin
-  if Assigned(FMainMenu) then
-    Result := FMainMenu.Canvas
-  else
-    Result := FPopupMenu.Canvas; 
+  Result := FCanvas;
+end;
+
+procedure TJvCustomMenuItemPainter.SetCanvas(const Value: TCanvas);
+begin
+  FCanvas := Value;
 end;
 
 { TJvBtnMenuItemPainter }
