@@ -834,8 +834,8 @@ begin
         Image.SetBounds(HorzMargin - 2, VertMargin - 2, APicture.Width + 4, APicture.Height + 4);
       end;
       MessageLabel := DynControlEngine.CreateLabelControl(Result, Panel, 'Message', Msg, nil);
- //      if Supports(MessageLabel, IJvDynControlLabel, DynControlLabel) then
- //        DynControlLabel.ControlSetWordWrap(True);
+      if Supports(MessageLabel, IJvDynControlLabel, DynControlLabel) then
+        DynControlLabel.ControlSetWordWrap(True);
       with MessageLabel do
       begin
         BoundsRect := TextRect;
