@@ -168,6 +168,8 @@ type
       const Posn: Integer): Boolean;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
     procedure Assign(Source: TPersistent); override;
     property AsInteger: Integer read GetAsInteger write SetAsInteger;
     property AsCurrency: Currency read GetAsCurrency write SetAsCurrency;
@@ -281,6 +283,12 @@ begin
   FStandardFontColor := Font.Color;
   FOldFontChange := Font.OnChange;
   Font.OnChange := FontChange;
+end;
+
+destructor TJvCustomValidateEdit.Destroy;
+begin
+  FreeAndNil(FCriticalPoints);
+  inherited;
 end;
 
 procedure TJvCustomValidateEdit.Assign(Source: TPersistent);
@@ -1030,6 +1038,7 @@ begin
     MinValue := lcSource.MinValue;
   end;
 end;
+
 
 end.
 
