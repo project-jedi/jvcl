@@ -49,7 +49,7 @@ constructor TJvReversedLabel.Create(AOwner: TComponent);
 var
   ALogFont: TLogFont;
 begin
-  inherited;
+  inherited Create(AOwner);
   FFont := TFont.Create;
   ALogFont.lfHeight := Font.Height;
   ALogFont.lfWidth := 0;
