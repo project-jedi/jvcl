@@ -2,9 +2,9 @@
 set LANGUAGE=%1
 if %LANGUAGE%!==! goto help
 
-: test the existence of dxgettext
-dxgettext -q -b .\ 1> tmp1.txt 2> tmp2.txt
-if errorlevel 1 goto nodxgettext
+: test the existence of msgmerge
+msgmerge --help 1> tmp1.txt 2> tmp2.txt
+if errorlevel 1 goto nomsgmerge
 
 : test the existence of SetPoHeader
 if not exist ..\devtools\bin\SetPoHeader.exe goto noSetPoHeader
@@ -31,9 +31,9 @@ echo SetPoHeader was not found
 echo Please compile it before running this script. It is available in the devtools directory
 goto end
 
-:nodxgettext
-echo DxGettext was not found.
-echo This script requires dxgettext from http://dxgettext.sf.net
+:nomsgmerge
+echo msgmerge was not found.
+echo This script requires msgmerge from http://dxgettext.sf.net
 goto end
 
 :help
