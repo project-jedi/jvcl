@@ -700,6 +700,7 @@ type
   { Utility routines }
 
 procedure SetDefaultMenuFont(AFont: TFont);
+function UseFlatMenubars: boolean;
 
 implementation
 
@@ -738,6 +739,20 @@ function IsItemPopup(Item: TMenuItem): Boolean;
 begin
   Result := (Item.Parent = nil) or (Item.Parent.Parent <> nil) or
     not (Item.Parent.Owner is TMainMenu);
+end;
+
+function IsWinXP_UP: Boolean;
+begin
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and
+    ((Win32MajorVersion > 5) or
+    (Win32MajorVersion = 5) and (Win32MinorVersion >= 1));
+end;
+
+function UseFlatMenubars: boolean;
+const SPI_GETFLATMENU = $1022;
+var b: BOOL;
+begin
+  Result:= IsWinXP_UP and SystemParametersInfo(SPI_GETFLATMENU, 0, @b, 0) and b;
 end;
 
 procedure MenuWndMessage(Menu: TMenu; var AMsg: TMessage; var Handled: Boolean);
@@ -2829,6 +2844,7 @@ begin
 end;
 
 procedure TJvXPMenuItemPainter.DrawItemBackground(ARect: TRect);
+const COLOR_MENUBAR = 30;
 begin
   with Canvas do
   begin
@@ -2846,15 +2862,22 @@ begin
       begin
         Brush.Assign(SelectionFrameBrush);
         Pen.Assign(SelectionFramePen);
+        Rectangle(ARect);
       end
       else
-      begin
-        Brush.Color := clBtnFace;
-        Brush.Style := bsSolid;
-        Pen.Style := psClear;
-      end;
-      Rectangle(ARect);
-
+        if UseFlatMenubars then
+        begin
+          Brush.Color := GetSysColor(COLOR_MENUBAR);
+          Brush.Style := bsSolid;
+          FillRect(ARect);
+        end
+        else
+        begin
+          Brush.Color := clBtnFace;
+          Brush.Style := bsSolid;
+          Pen.Style := psClear;
+          Rectangle(ARect);
+        end;
     end;
   end;
 end;
