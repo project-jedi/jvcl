@@ -296,9 +296,9 @@ begin
     Result.Canvas.Draw(0, 0, Icon);
     Result.TransparentColor := TransparentColor;
     tmp.Assign(Result);
-    Result.Width := Size;
-    Result.Height := Size;
-    Result.Canvas.StretchDraw(Rect(0, 0, Size, Size), tmp);
+//    Result.Width := Size;
+//    Result.Height := Size;
+    Result.Canvas.StretchDraw(Rect(0, 0, Result.Width, Result.Height), tmp);
     Result.Transparent := True;
   finally
     Icon.Free;
