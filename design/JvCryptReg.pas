@@ -38,21 +38,27 @@ uses
   {$IFNDEF BCB}
   JvZlibMultiple,
   {$ENDIF BCB}
+  {$IFDEF MSWINDOWS}
+  JvCabFile,
+  {$ENDIF MSWINDOWS}
   JvDsgnConsts,
-  JvVigenereCipher, JvCabFile, JvCaesarCipher, JvGenetic,
+  JvVigenereCipher, JvCaesarCipher, JvGenetic,
   JvSerialMaker, JvXorCipher;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 {$R ..\Resources\JvCryptReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvCryptReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF VisualCLX}
 
 procedure Register;
 begin
   RegisterComponents(RsPaletteEncryptCompress, [TJvVigenereCipher,
-    TJvXORCipher, TJvCaesarCipher, TJvGenetic, TJvCABFile,
+    TJvXORCipher, TJvCaesarCipher, TJvGenetic,
+    {$IFDEF MSWINDOWS}
+    TJvCABFile,
+    {$ENDIF MSWINDOWS}
     {$IFNDEF BCB}
     TJvZlibMultiple,
     {$ENDIF BCB}

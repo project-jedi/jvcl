@@ -41,14 +41,15 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   {$IFDEF MSWINDOWS}
-  JvHTMLParser, JvMail,  JvMailEditor, JvHTMLParserEditor,
+  JvMail, JvMailEditor,
   JvUrlListGrabber, JvUrlGrabbers, JvUrlListGrabberEditors,
   {$ENDIF MSWINDOWS}
+  JvHtmlParser, JvHtmlParserEditor,
   {$IFDEF VCL}
   JvRichEditToHTML,
   {$ENDIF VCL}
   JvTypes, JvDsgnConsts,
-  JvStringListToHTML, JvFormToHTML, JvRGBToHTML,  JvStrToHTML;
+  JvStringListToHtml, JvFormToHtml, JvRgbToHtml, JvStrToHtml;
 
 {$IFDEF VCL}
 {$R ..\Resources\JvNetReg.dcr}
@@ -62,8 +63,9 @@ begin
   RegisterComponents(RsPaletteInterNetWork, [
     {$IFDEF MSWINDOWS}
     TJvFTPURLGrabber, TJvHTTPURLGrabber,
-    TJvLocalFileURLGrabber, TJvMail, TJvHTMLParser,
+    TJvLocalFileURLGrabber, TJvMail,
     {$ENDIF MSWINDOWS}
+    TJvHTMLParser,
     TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML
     {$IFDEF VCL}
     ,TJvRichEditToHTML

@@ -31,12 +31,22 @@ unit JvXPPropertyEditors;
 interface
 
 uses
+  Classes, SysUtils,
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, VCLEditors,
+  DesignIntf, DesignEditors,
+  {$IFDEF VCL}
+  VCLEditors,
+  {$ENDIF VCL}
   {$ELSE}
   Contnrs, DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  Classes, Windows, TypInfo, SysUtils, Forms, ImgList, ActnList, Graphics;
+  {$IFDEF VCL}
+  Windows, Forms, ImgList, ActnList, Graphics,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms, QImgList, QActnList, QGraphics, Types,
+  {$ENDIF VisualCLX}
+  TypInfo;
 
 type
   {$IFDEF COMPILER6_UP}
