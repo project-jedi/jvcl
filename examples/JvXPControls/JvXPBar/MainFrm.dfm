@@ -19,7 +19,6 @@ object frmMain: TfrmMain
     Top = 0
     Width = 4
     Height = 343
-    Cursor = crHSplit
     ResizeStyle = rsUpdate
   end
   object cntWinXPBar: TJvXPContainer
@@ -62,6 +61,17 @@ object frmMain: TfrmMain
           Height = 103
           Align = alClient
           Caption = 'Connect'
+          Colors.SeperatorColor = clBlack
+          Items = <
+            item
+              Action = acConnectRemoteServer
+            end
+            item
+              Action = acConnectLocalServer
+            end
+            item
+              Action = acConnectAdministrator
+            end>
           Icon.Data = {
             0000010001002020000001000800A80800001600000028000000200000004000
             0000010008000000000080040000000000000000000000000000000000000000
@@ -133,16 +143,6 @@ object frmMain: TfrmMain
             03FFFFE001FFFFC000FFFFC0007FFF00003FFE00003FFC00007FF80000FFF000
             01FFF00000FFF80000FFF80001FFFC0003FFFC0001FFFC0000FFFE00007FFE00
             003FFE00001FFF00000FFF00000FFF00001FFF80003FFFFC007FFFFFE0FF}
-          Items = <
-            item
-              Action = acConnectRemoteServer
-            end
-            item
-              Action = acConnectLocalServer
-            end
-            item
-              Action = acConnectAdministrator
-            end>
         end
       end
       object dxContainer1: TJvXPContainer
@@ -161,6 +161,20 @@ object frmMain: TfrmMain
           Height = 123
           Align = alClient
           Caption = 'Settings'
+          Colors.SeperatorColor = clBlack
+          Items = <
+            item
+              Action = acSettingsDatabase
+            end
+            item
+              Action = acSettingsUsers
+            end
+            item
+              Action = acSettingsStatistics
+            end
+            item
+              Action = acSettingsDownloads
+            end>
           Icon.Data = {
             0000010001002020000001000800A80800001600000028000000200000004000
             0000010008000000000080040000000000000000000000000000000000000000
@@ -232,19 +246,6 @@ object frmMain: TfrmMain
             0003800000018000000180000000C0000000E001F000F007F000C00FF000000F
             E000001F800100000001800000018000000180000001C0000003C0000007E000
             000FFC00009FFC0000FFFC0000FFFC0100FFFE0303FFFFC38FFFFFFFFFFF}
-          Items = <
-            item
-              Action = acSettingsDatabase
-            end
-            item
-              Action = acSettingsUsers
-            end
-            item
-              Action = acSettingsStatistics
-            end
-            item
-              Action = acSettingsDownloads
-            end>
         end
       end
       object dxContainer2: TJvXPContainer
@@ -263,6 +264,14 @@ object frmMain: TfrmMain
           Height = 83
           Align = alClient
           Caption = 'Synchronize'
+          Colors.SeperatorColor = clBlack
+          Items = <
+            item
+              Action = acSynchronizeUnknown
+            end
+            item
+              Action = acSynchronizeWeb
+            end>
           Icon.Data = {
             0000010001002020000000000000A80800001600000028000000200000004000
             0000010008000000000000040000000000000000000000010000000100000000
@@ -334,13 +343,6 @@ object frmMain: TfrmMain
             0000F0000000E0000000E0000000C0000000C000000080000000800000000000
             0000000000000000000080000000F8000000F8000000F8000000F8000000F800
             0000F8000001C000000FE007E00FF00FE01FF81C001FFC3E003FFE7F00FF}
-          Items = <
-            item
-              Action = acSynchronizeUnknown
-            end
-            item
-              Action = acSynchronizeWeb
-            end>
         end
       end
     end

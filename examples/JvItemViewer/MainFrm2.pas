@@ -30,14 +30,15 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, jpeg, ImgList, JvItemViewer;
+  Dialogs, StdCtrls, jpeg, ImgList, JvImagesViewer, JvCustomItemViewer, JvImageListViewer,
+  JvExForms;
 
 type
   TForm1 = class(TForm)
-    JvImageFilesViewer1: TJvImageFilesViewer;
     JvImageListViewer1: TJvImageListViewer;
     ImageList1: TImageList;
     Button1: TButton;
+    JvImagesViewer1: TJvImagesViewer;
     procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
@@ -54,7 +55,7 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  JvImageFilesViewer1.LoadImages;
+  JvImagesViewer1.LoadImages;
 end;
 
 end.

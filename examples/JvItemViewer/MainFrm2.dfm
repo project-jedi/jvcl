@@ -13,27 +13,6 @@ object Form1: TForm1
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object JvImageFilesViewer1: TJvImageFilesViewer
-    Left = 16
-    Top = 16
-    Width = 385
-    Height = 449
-    HorzScrollBar.Tracking = True
-    VertScrollBar.Tracking = True
-    Directory = 'F:\Documents and Settings\pt\Mina dokument\Mina bilder\Jpg'
-    FileMask = '*.jpg;*.jpeg;*.bmp;*.ico;*.emf;*.wmf'
-    Options.AutoCenter = True
-    Options.BrushPattern.EvenColor = clOlive
-    Options.BrushPattern.OddColor = clMoneyGreen
-    Options.HotTrack = False
-    Options.MultiSelect = False
-    Options.FrameColor = clNone
-    Options.ImagePadding = 20
-    SelectedIndex = -1
-    Anchors = [akLeft, akTop, akBottom]
-    TabOrder = 0
-    TabStop = True
-  end
   object JvImageListViewer1: TJvImageListViewer
     Left = 408
     Top = 16
@@ -46,11 +25,15 @@ object Form1: TForm1
     VertScrollBar.Visible = False
     Images = ImageList1
     Options.AutoCenter = True
+    Options.BrushPattern.OddColor = 33023
     Options.DrawingStyle = dsNormal
+    Options.SelectedStyle = dsNormal
+    Options.FrameWidth = 0
     Options.Height = 48
     Options.ScrollBar = tvHorizontal
+    Options.ShowCaptions = False
     Options.Width = 48
-    SelectedIndex = -1
+    SelectedIndex = 1
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 1
     TabStop = True
@@ -62,8 +45,31 @@ object Form1: TForm1
     Height = 25
     Anchors = [akLeft, akBottom]
     Caption = 'Load'
-    TabOrder = 2
+    TabOrder = 0
     OnClick = Button1Click
+  end
+  object JvImagesViewer1: TJvImagesViewer
+    Left = 8
+    Top = 16
+    Width = 393
+    Height = 449
+    HorzScrollBar.Range = 372
+    HorzScrollBar.Tracking = True
+    HorzScrollBar.Visible = False
+    VertScrollBar.Range = 11562
+    VertScrollBar.Tracking = True
+    Directory = 
+      'F:\Documents and Settings\pt\Mina dokument\Mina bilder\Bitmaps\L' +
+      'arge'
+    FileMask = '*.jpg;*.jpeg;*.bmp;*.ico;*.emf;*.wmf'
+    Options.AutoCenter = False
+    Options.HotTrack = False
+    Options.ImagePadding = 20
+    Options.MultiSelect = False
+    SelectedIndex = -1
+    Anchors = [akLeft, akTop, akBottom]
+    TabOrder = 2
+    TabStop = True
   end
   object ImageList1: TImageList
     BlendColor = clHighlight

@@ -34,16 +34,15 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Mask, ExtCtrls, ImgList, ComCtrls, Menus,
   JvToolEdit,
-//  jpeg, JvPCX,
-//  JvGIF,
+  jpeg, JvPCX, JvGIF,
     // if you have units that supports other image formats, add them here *before* including JvItemViewer
-  GraphicEx, // http://www.delphi-gems.com/Graphics.php#GraphicEx
+//  GraphicEx, // http://www.delphi-gems.com/Graphics.php#GraphicEx
   JvCustomItemViewer,
   JvImagesViewer,
   JvImageListViewer,
   JvOwnerDrawViewer,
   JvComponent,
-  JvInspector;
+  JvInspector, JvExMask;
 
 type
   // loads .ani and .cur files
