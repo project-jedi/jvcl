@@ -90,6 +90,7 @@ type
     FOnButtonDraw: TJvImgBtnDrawEvent;
     FOnGetAnimateIndex: TJvImgBtnAnimIndexEvent;
     FImageVisible: Boolean;
+    FFlat: boolean;
     procedure ImageListChange(Sender: TObject);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetAnimate(const Value: Boolean);
@@ -103,6 +104,7 @@ type
     procedure SetOwnerDraw(const Value: Boolean);
     procedure SetMargin(const Value: Integer);
     procedure SetSpacing(const Value: Integer);
+    procedure SetFlat(const Value: boolean);
     {$IFDEF VCL}
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure CNMeasureItem(var Msg: TWMMeasureItem); message CN_MEASUREITEM;
@@ -151,6 +153,7 @@ type
     property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
     property ImageVisible: Boolean read FImageVisible write SetImageVisible default True;
     property Kind: TJvImgBtnKind read FKind write SetKind default bkCustom;
+    property Flat:boolean read FFlat write SetFlat default false;
     property Layout: TJvImgBtnLayout read FLayout write SetLayout default blImageLeft;
     property Margin: Integer read FMargin write SetMargin default -1;
     property OwnerDraw: Boolean read FOwnerDraw write SetOwnerDraw default False;
@@ -178,6 +181,8 @@ type
     property AnimateInterval;
     property Color;
     property DropDownMenu;
+    property DropArrow;
+    property Flat;
     property HotTrack;
     property HotTrackFont;
     property HotTrackFontOptions;
@@ -198,17 +203,19 @@ type
     {$IFDEF VCL}
     property OnButtonDraw;
     {$ENDIF VCL}
+    property OnDropDownMenu;
     property OnGetAnimateIndex;
   end;
 
 implementation
 
 uses
+  ExtCtrls, 
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Consts, SysUtils, Forms, ActnList,
-  JvJCLUtils, JvThemes;
+  JvJCLUtils, JvJVCLUtils, JvThemes;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCtrls.res}
@@ -252,6 +259,7 @@ end;
 constructor TJvCustomImageButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FFlat := false;
   FCanvas := TCanvas.Create;
   FAlignment := taCenter;
   FAnimateInterval := 200;
@@ -414,8 +422,10 @@ begin
     inherited MouseEnter(Control);
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
-      Repaint;
+      Repaint
+    else
     {$ENDIF JVCLThemesEnabled}
+    if Flat then Invalidate;
   end;
 end;
 
@@ -429,8 +439,10 @@ begin
     inherited MouseLeave(Control);
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
-      Repaint;
+      Repaint
+    else
     {$ENDIF JVCLThemesEnabled}
+    if Flat then Invalidate;
   end;
 end;
 
@@ -553,33 +565,51 @@ begin
   begin
     R := ClientRect;
 
-    Flags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
-    if IsDown then
-      Flags := Flags or DFCS_PUSHED;
-    if not IsEnabled then
-      Flags := Flags or DFCS_INACTIVE;
-
-    if FIsFocused or IsDefault then
+    if Flat then
     begin
-      FCanvas.Pen.Color := clWindowFrame;
-      FCanvas.Pen.Width := 1;
-      FCanvas.Brush.Style := bsClear;
-      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-      InflateRect(R, -1, -1);
-    end;
-
-    if IsDown then
-    begin
-      FCanvas.Pen.Color := clBtnShadow;
-      FCanvas.Pen.Width := 1;
-      FCanvas.Brush.Color := clBtnFace;
-      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-      InflateRect(R, -1, -1);
+      FCanvas.Brush.Color := Color;
+      FCanvas.FillRect(R); // (p3) TWinControls don't support Transparent anyway 
+      if FMouseInControl or FIsFocused then
+      begin
+        if IsDown then
+          Frame3D(FCanvas, R, clBtnShadow, clBtnHighlight, 1)
+        else
+          Frame3D(FCanvas, R, clBtnHighlight, clBtnShadow, 1);
+      end;
     end
     else
-      DrawFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
-    FCanvas.Brush.Color := Color;
-    FCanvas.FillRect(R);
+    begin
+      Flags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
+      if IsDown then
+        Flags := Flags or DFCS_PUSHED;
+      if not IsEnabled then
+        Flags := Flags or DFCS_INACTIVE;
+
+      if FIsFocused or IsDefault then
+      begin
+        if not IsEnabled then
+          FCanvas.Pen.Color := clInactiveCaption
+        else
+          FCanvas.Pen.Color := clWindowFrame;
+        FCanvas.Pen.Width := 1;
+        FCanvas.Brush.Style := bsClear;
+        FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+        InflateRect(R, -1, -1);
+      end;
+
+      if IsDown then
+      begin
+        FCanvas.Pen.Color := clBtnShadow;
+        FCanvas.Pen.Width := 1;
+        FCanvas.Brush.Color := clBtnFace;
+        FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+        InflateRect(R, -1, -1);
+      end
+      else
+        DrawFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
+      FCanvas.Brush.Color := Color;
+      FCanvas.FillRect(R);
+    end;
 
     // Return content rect
     RectContent := ClientRect;
@@ -643,7 +673,7 @@ end;
 
 procedure TJvCustomImageButton.DrawItem(const DrawItemStruct: TDrawItemStruct);
 var
-  R, RectContent, RectText, RectImage: TRect;
+  R, RectContent, RectText, RectImage, RectArrow: TRect;
 begin
   DrawButtonFrame(DrawItemStruct, RectContent);
 
@@ -661,9 +691,17 @@ begin
   end;
 
   CalcButtonParts(R, RectText, RectImage);
+  if DropArrow and Assigned(DropDownMenu) then
+  begin
+    RectArrow := Rect(Width - 16, Height div 2, Width - 9, Height div 2 + 7);
+    if (DrawItemStruct.itemState and ODS_SELECTED <> 0) then
+      OffsetRect(RectArrow, 1, 1);
+    DrawDropArrow(FCanvas, RectArrow);
+    if (DrawItemStruct.itemState and ODS_SELECTED <> 0) then
+      OffsetRect(RectContent, 1, -1)
+  end;
   DrawButtonText(RectText, Enabled);
   DrawButtonImage(RectImage);
-
   DrawButtonFocusRect(RectContent);
 end;
 
@@ -918,6 +956,15 @@ begin
   end;
 end;
 
+procedure TJvCustomImageButton.SetFlat(const Value: boolean);
+begin
+  if FFlat <> Value then
+  begin
+    FFlat := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TJvCustomImageButton.ShowNextFrame;
 begin
   Inc(FCurrentAnimateFrame);
@@ -990,6 +1037,8 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
+
+
 
 initialization
   {$IFDEF UNITVERSIONING}
