@@ -45,13 +45,19 @@ type
     procedure Execute; override;
   end;
 
+resourcestring
+  SCannotExecuteAtDesign = 'Unable to call Execute at design-time!';
+    
 implementation
 
 {**************************************************}
 
 procedure TJvFatalAppExit.Execute;
 begin
-  FatalAppExit(0, PChar(FText));
+  if (csDesigning in ComponentState) then
+    ShowMessage(SCannotExecuteAtDesign)
+  else
+    FatalAppExit(0, PChar(FText));
 end;
 
 end.
