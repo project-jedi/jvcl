@@ -200,7 +200,8 @@ type
     procedure SetImages(const Value: TCustomImageList);
     procedure SetNumGlyphs(const Value: TNumGlyphs);
     procedure UpdateBtnBounds;
-    procedure UpdateEdit; // RDB
+    { (rb) renamed from UpdateEdit }
+    procedure UpdateGroup; // RDB
 
     {$IFDEF VCL}
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
@@ -287,6 +288,7 @@ type
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow; // RDB
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText; // RDB
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
+    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex stored IsImageIndexStored default -1;
     property ImageKind: TJvImageKind read FImageKind write SetImageKind default ikCustom;
     property Images: TCustomImageList read FImages write SetImages;
@@ -1927,7 +1929,7 @@ procedure TJvCustomComboEdit.DoClipboardPaste;
 begin
   if FDirectInput and not ReadOnly then
     inherited DoClipboardPaste;
-  UpdateEdit;
+  UpdateGroup;
 end;
 
 procedure TJvCustomComboEdit.DoEnter;
@@ -1956,6 +1958,7 @@ function TJvCustomComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): 
 begin
   Result := True;
   if csDestroying in ComponentState then
+    { (rb) Implementation diffs; some return True other False }
     Exit;
   if Enabled then
     Result := inherited DoPaintBackground(Canvas, Param)
@@ -2113,6 +2116,8 @@ procedure TJvCustomComboEdit.KeyDown(var Key: Word; Shift: TShiftState);
 var
   Form: TCustomForm;
 begin
+  UpdateGroup;
+
   //Polaris
   Form := GetParentForm(Self);
   if (ssCtrl in Shift) then
@@ -2194,7 +2199,7 @@ end;
 procedure TJvCustomComboEdit.LocalKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  UpdateEdit;
+  UpdateGroup;
   if Assigned(FOnKeyDown) then
     FOnKeyDown(Sender, Key, Shift);
 end;
@@ -2615,7 +2620,7 @@ end;
 procedure TJvCustomComboEdit.SetGroupIndex(const Value: Integer);
 begin
   FGroupIndex := Value;
-  UpdateEdit;
+  UpdateGroup;
 end;
 
 procedure TJvCustomComboEdit.SetImageIndex(const Value: TImageIndex);
@@ -2766,17 +2771,19 @@ begin
   SetEditRect;
 end;
 
-procedure TJvCustomComboEdit.UpdateEdit;
+procedure TJvCustomComboEdit.UpdateGroup;
 var
   I: Integer;
 begin
-  if Owner <> nil then
+  if (FGroupIndex <> -1) and (Owner <> nil) then
     for I := 0 to Owner.ComponentCount - 1 do
       if Owner.Components[I] is TJvCustomComboEdit then
-        if ((Owner.Components[I].Name <> Self.Name) and
-          ((Owner.Components[I] as TJvCustomComboEdit).FGroupIndex <> -1) and
-          ((Owner.Components[I] as TJvCustomComboEdit).FGroupIndex = Self.FGroupIndex)) then
-          (Owner.Components[I] as TJvCustomComboEdit).Caption := '';
+        with TJvCustomComboEdit(Owner.Components[I]) do
+          if (Name <> Self.Name) and
+            //(FGroupIndex <> -1) and
+             (FGroupIndex = Self.FGroupIndex) then
+            //Caption := '';
+            Clear;
 end;
 
 procedure TJvCustomComboEdit.UpdatePopupVisible;
@@ -2843,6 +2850,8 @@ procedure TJvCustomComboEdit.WMPaint(var Msg: TWMPaint);
 var
   Canvas: TControlCanvas;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if Enabled then
     inherited
   else

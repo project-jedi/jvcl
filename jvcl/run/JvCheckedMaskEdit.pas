@@ -76,7 +76,7 @@ type
     procedure UpdateControls; dynamic;
 
     {$IFDEF VCL}
-    procedure CreateParams(var AParams: TCreateParams); override;
+    //procedure CreateParams(var AParams: TCreateParams); override;
     procedure CreateWnd; override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
@@ -190,12 +190,12 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvCustomCheckedMaskEdit.CreateParams(var AParams: TCreateParams);
-begin
-  inherited CreateParams(AParams);
-  {ensure the child controls do not overlap}
-  AParams.Style := AParams.Style or WS_CLIPCHILDREN;
-end;
+//procedure TJvCustomCheckedMaskEdit.CreateParams(var AParams: TCreateParams);
+//begin
+//  inherited CreateParams(AParams);
+//  {ensure the child controls do not overlap}
+//  AParams.Style := AParams.Style or WS_CLIPCHILDREN;
+//end;
 
 procedure TJvCustomCheckedMaskEdit.CreateWnd;
 begin

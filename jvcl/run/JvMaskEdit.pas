@@ -52,7 +52,7 @@ type
     FCaret: TJvCaret;
     FEntering: Boolean;
     FLeaving: Boolean;
-    FGroupIndex: Integer;
+    //FGroupIndex: Integer;
     FProtectPassword: Boolean;
     FLastNotifiedText: String;
     FOnSetFocus: TJvFocusChangeEvent;
@@ -63,27 +63,27 @@ type
     function GetPasswordChar: Char;
     function GetText: TCaption;
     procedure SetText(const Value: TCaption);
-    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    //procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     {$ENDIF VCL}
   protected
-    procedure UpdateEdit;
+    //procedure UpdateEdit;
     procedure CaretChanged(Sender: TObject); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    //function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); virtual;
     procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual;
-    procedure DoClipboardPaste; override;
+    //procedure DoClipboardPaste; override;
     {$IFDEF VisualCLX}
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
     {$ENDIF VisualCLX}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    //procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure SetCaret(const Value: TJvCaret);
-    procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
-    procedure SetGroupIndex(const Value: Integer);
+    //procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
+    //procedure SetGroupIndex(const Value: Integer);
     procedure NotifyIfChanged;
     procedure Change; override;
   public
@@ -104,7 +104,7 @@ type
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property Caret: TJvCaret read FCaret write SetCaret;
-    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
+    //property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
 
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
@@ -184,7 +184,7 @@ begin
   FHotTrack := False;
   FCaret := TJvCaret.Create(Self);
   FCaret.OnChanged := CaretChanged;
-  FGroupIndex := -1;
+  //FGroupIndex := -1;
   FEntering := False;
   FLeaving := False;
 end;
@@ -261,109 +261,109 @@ begin
   FCaret.Assign(Value);
 end;
 
-procedure TJvCustomMaskEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
-begin
-  if ClipboardCommands <> Value then
-  begin
-    inherited SetClipboardCommands(Value);
-    ReadOnly := ClipboardCommands <= [caCopy];
-  end;
-end;
+//procedure TJvCustomMaskEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
+//begin
+//  if ClipboardCommands <> Value then
+//  begin
+//    inherited SetClipboardCommands(Value);
+//    ReadOnly := ClipboardCommands <= [caCopy];
+//  end;
+//end;
 
-procedure TJvCustomMaskEdit.SetGroupIndex(const Value: Integer);
-begin
-  FGroupIndex := Value;
-  UpdateEdit;
-end;
+//procedure TJvCustomMaskEdit.SetGroupIndex(const Value: Integer);
+//begin
+//  FGroupIndex := Value;
+//  UpdateEdit;
+//end;
 
-procedure TJvCustomMaskEdit.UpdateEdit;
-var
-  I: Integer;
-begin
-  if Assigned(Owner) then
-    for I := 0 to Owner.ComponentCount - 1 do
-      if (Owner.Components[i] is TJvCustomMaskEdit) then
-        with TJvCustomMaskEdit(Owner.Components[i]) do
-          if (Name <> Self.Name) and (GroupIndex <> -1) and
-            (GroupIndex = Self.GroupIndex) then
-            Clear;
-end;
+//procedure TJvCustomMaskEdit.UpdateEdit;
+//var
+//  I: Integer;
+//begin
+//  if Assigned(Owner) then
+//    for I := 0 to Owner.ComponentCount - 1 do
+//      if (Owner.Components[i] is TJvCustomMaskEdit) then
+//        with TJvCustomMaskEdit(Owner.Components[i]) do
+//          if (Name <> Self.Name) and (GroupIndex <> -1) and
+//            (GroupIndex = Self.GroupIndex) then
+//            Clear;
+//end;
 
-procedure TJvCustomMaskEdit.DoClipboardPaste;
-begin
-  inherited DoClipboardPaste;
-  UpdateEdit;
-end;
+//procedure TJvCustomMaskEdit.DoClipboardPaste;
+//begin
+//  inherited DoClipboardPaste;
+//  UpdateEdit;
+//end;
 
 {$IFDEF VCL}
 
-procedure TJvCustomMaskEdit.WMPaint(var Msg: TWMPaint);
-const
-  AlignmentValues: array [False..True, TAlignment] of TAlignment =
-    ((taLeftJustify, taRightJustify, taCenter),
-     (taRightJustify, taLeftJustify, taCenter));
-var
-  Canvas: TControlCanvas;
-  Style: Integer;
-  AAlignment: TAlignment;
-  //R: TRect;
-  //ButtonWidth: Integer;
-begin
-  if csDestroying in ComponentState then
-    Exit;
-  if Enabled then
-    inherited
-  else
-  begin
-    { (rb) Alignment switching is already in PaintEdit ?? }
-    { (rb) implementation VCL <> VisualCLX }
-    Style := GetWindowLong(Handle, GWL_STYLE);
-    if (Style and ES_RIGHT) <> 0 then
-      AAlignment := AlignmentValues[UseRightToLeftAlignment, taRightJustify]
-    else
-    if (Style and ES_CENTER) <> 0 then
-      AAlignment := taCenter
-    else
-      AAlignment := AlignmentValues[UseRightToLeftAlignment, taLeftJustify];
-
-    {SendMessage(Handle, EM_GETRECT, 0, Integer(@R));
-    if BiDiMode = bdRightToLeft then
-      ButtonWidth := R.Left - 1
-    else
-      ButtonWidth := ClientWidth - R.Right - 2;
-    if ButtonWidth < 0 then ButtonWidth := 0;}
-
-    Canvas := nil;
-    if not PaintEdit(Self, Text, AAlignment, False, {ButtonWidth,}
-       DisabledTextColor, Focused, Canvas, Msg) then
-      inherited;
-    Canvas.Free;
-  end;
-end;
+//procedure TJvCustomMaskEdit.WMPaint(var Msg: TWMPaint);
+//const
+//  AlignmentValues: array [False..True, TAlignment] of TAlignment =
+//    ((taLeftJustify, taRightJustify, taCenter),
+//     (taRightJustify, taLeftJustify, taCenter));
+//var
+//  Canvas: TControlCanvas;
+//  Style: Integer;
+//  AAlignment: TAlignment;
+//  //R: TRect;
+//  //ButtonWidth: Integer;
+//begin
+//  if csDestroying in ComponentState then
+//    Exit;
+//  if Enabled then
+//    inherited
+//  else
+//  begin
+//    { (rb) Alignment switching is already in PaintEdit ?? }
+//    { (rb) implementation VCL <> VisualCLX }
+//    Style := GetWindowLong(Handle, GWL_STYLE);
+//    if (Style and ES_RIGHT) <> 0 then
+//      AAlignment := AlignmentValues[UseRightToLeftAlignment, taRightJustify]
+//    else
+//    if (Style and ES_CENTER) <> 0 then
+//      AAlignment := taCenter
+//    else
+//      AAlignment := AlignmentValues[UseRightToLeftAlignment, taLeftJustify];
+//
+//    {SendMessage(Handle, EM_GETRECT, 0, Integer(@R));
+//    if BiDiMode = bdRightToLeft then
+//      ButtonWidth := R.Left - 1
+//    else
+//      ButtonWidth := ClientWidth - R.Right - 2;
+//    if ButtonWidth < 0 then ButtonWidth := 0;}
+//
+//    Canvas := nil;
+//    if not PaintEdit(Self, Text, AAlignment, False, {ButtonWidth,}
+//       DisabledTextColor, Focused, Canvas, Msg) then
+//      inherited;
+//    Canvas.Free;
+//  end;
+//end;
 
 {$ENDIF VCL}
 
-function TJvCustomMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  Result := False;
-  if csDestroying in ComponentState then
-    Exit;
-  if Enabled then
-    Result := inherited DoPaintBackground(Canvas, Param)
-  else
-  begin
-    Canvas.Brush.Color := DisabledColor;
-    Canvas.Brush.Style := bsSolid;
-    Canvas.FillRect(ClientRect);
-    Result := True;
-  end;
-end;
+//function TJvCustomMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+//begin
+//  Result := False;
+//  if csDestroying in ComponentState then
+//    Exit;
+//  if Enabled then
+//    Result := inherited DoPaintBackground(Canvas, Param)
+//  else
+//  begin
+//    Canvas.Brush.Color := DisabledColor;
+//    Canvas.Brush.Style := bsSolid;
+//    Canvas.FillRect(ClientRect);
+//    Result := True;
+//  end;
+//end;
 
-procedure TJvCustomMaskEdit.KeyDown(var Key: Word; Shift: TShiftState);
-begin
-  UpdateEdit;
-  inherited KeyDown(Key, Shift);
-end;
+//procedure TJvCustomMaskEdit.KeyDown(var Key: Word; Shift: TShiftState);
+//begin
+//  UpdateEdit;
+//  inherited KeyDown(Key, Shift);
+//end;
 
 {$IFDEF VCL}
 function TJvCustomMaskEdit.GetPasswordChar: Char;
