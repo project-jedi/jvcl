@@ -34,14 +34,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
-  Graphics, Controls,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, Qt, QGraphics, QControls, QForms,
+  QWindows, Qt, QForms,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
-  JvTypes;
+  Classes, Controls, Graphics;
 
 type
   { A caret can be specified either by giving a bitmap that defines its shape
@@ -97,7 +93,7 @@ type
 implementation
 
 uses
-  JvJCLUtils, JvResources;
+  JvJCLUtils, JvResources, JvTypes;
 
 constructor TJvCaret.Create(Owner: TWinControl);
 begin

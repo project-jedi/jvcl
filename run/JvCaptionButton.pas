@@ -63,7 +63,7 @@ uses
   Types,
   {$ENDIF COMPILER6_UP}
   ActnList, ImgList,
-  JvComponent, JvWndProcHook;
+  JvComponent;
 
 {$IFNDEF COMPILER6_UP}
 const
@@ -72,14 +72,14 @@ const
 {$ENDIF COMPILER6_UP}
 
 type
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   TWMNCPaint = packed record
     Msg: Cardinal;
     RGN: HRGN;
     Unused: Longint;
     Result: Longint;
   end;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER5}
 
   TJvStandardButton = (tsbNone, tsbClose, tsbHelp, tsbMax, tsbMin, tsbRestore,
     tsbMinimizeToTray); // a la e-Mule
@@ -316,7 +316,7 @@ uses
   {$ENDIF COMPILER7_UP}
   JvJVCLUtils,
   {$ENDIF JVCLThemesEnabled}
-  JvDsgnIntf, JvTypes, JvJCLUtils, JvResources;
+  JvDsgnIntf, JvTypes, JvJCLUtils, JvResources, JvWndProcHook;
 
 const
   sUnitName = 'JvCaptionButton';

@@ -34,14 +34,14 @@ unit JvBmpAnimator;
 interface
 
 uses
-  SysUtils,  Classes,
+  Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, CommCtrl,
-  ExtCtrls, ImgList,
+  Windows, Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QGraphics, QControls,  QExtCtrls, QImgList,
+  QWindows,
   {$ENDIF VisualCLX}
+  Graphics, Controls, ExtCtrls, ImgList,
   JvComponent;
 
 type

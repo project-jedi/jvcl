@@ -30,13 +30,13 @@ unit JvColorTrackbar;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Controls, Graphics, Forms,
+    {$IFDEF VCL}
+  Windows, Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QControls, QGraphics, QForms, QWindows,
+  Types, QWindows,
   {$ENDIF VisualCLX}
+  Classes, Controls, Graphics, Forms,
   JvComponent;
 
 type

@@ -35,15 +35,16 @@ unit JvComboListBox;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows, Messages, Controls, Graphics, StdCtrls, ExtCtrls, Menus,
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   JvListBox,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, JvQExStdCtrls,
   {$ENDIF VisualCLX}
-  JvTypes;
+  Classes, Controls, Graphics, Menus;
 
 type
   // (p3) these types should *not* be moved to JvTypes (they are only used here)!
@@ -186,7 +187,7 @@ type
 implementation
 
 uses
-  Math;
+  Math, StdCtrls;
 
 constructor TJvComboListBox.Create(AOwner: TComponent);
 begin

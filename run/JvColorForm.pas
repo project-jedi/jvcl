@@ -33,14 +33,16 @@ unit JvColorForm;
 interface
 
 uses
-  SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Buttons, ExtCtrls, Dialogs,
+  Windows, Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, Qt, QGraphics, QControls, QForms, QButtons, QExtCtrls, QDialogs,
-  QWindows,
+  Types, Qt, QWindows,
   {$ENDIF VisualCLX}
+  Classes, Graphics, Controls, Forms, Buttons, Dialogs,
+  {$IFDEF COMPILER5}
+  JvConsts, // missing color constants
+  {$ENDIF COMPILER5}
   JvColorBox;
 
 const
@@ -97,7 +99,8 @@ type
 implementation
 
 uses
-  JvColorButton, JvConsts;
+  ExtCtrls, 
+  JvColorButton;
 
 constructor TJvColorForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin

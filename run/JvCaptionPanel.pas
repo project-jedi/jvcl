@@ -43,14 +43,14 @@ interface
 {$ENDIF VisualCLX}
 
 uses
-  SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs, ExtCtrls,
+  Windows, Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, Qt, QWindows, QGraphics, QControls, QForms, QDialogs, QExtCtrls,
+  Types, Qt, QWindows,
   {$ENDIF VisualCLX}
-  JvComponent, JvThemes, JvExControls;
+  Classes, Graphics, Controls, Forms,
+  JvComponent, JvExControls;
 
 type
   TJvCapBtnStyle = (capClose, capMax, capMin, capRestore, capHelp);
@@ -194,7 +194,7 @@ type
 implementation
 
 uses
-  JvConsts;
+  SysUtils, ExtCtrls;
 
 //=== { TJvCapBtn } ==========================================================
 

@@ -34,9 +34,11 @@ unit JvCheckBox;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows, Messages, Graphics, Controls, Forms, StdCtrls,
-  JvJCLUtils, JvTypes, JvExStdCtrls, JvLinkedControls;
+  {$IFDEF VCL}
+  Windows, Messages,
+  {$ENDIF VCL}
+  Classes, Graphics, Controls, StdCtrls,
+  JvTypes, JvExStdCtrls, JvLinkedControls;
 
 type
   TJvCheckBox = class(TJvExCheckBox)
@@ -118,7 +120,8 @@ type
 implementation
 
 uses
-  JvJVCLUtils;
+  SysUtils,
+  JvJCLUtils, JvJVCLUtils;
 
 constructor TJvCheckBox.Create(AOwner: TComponent);
 begin

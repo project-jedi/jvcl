@@ -32,16 +32,13 @@ unit JvCharMap;
 
 interface
 uses
-  SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
-  Graphics, Controls, Forms, Grids,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QGrids, Types, QWindows,
+  Qt, Types, QWindows,
   {$ENDIF VisualCLX}
+  Classes, Graphics, Controls, Grids,
   JvComponent, JvExControls, JvExGrids;
 
 type
@@ -383,7 +380,7 @@ type
 implementation
 
 uses
-  Math;
+  SysUtils, Math, Forms;
 
 const
   cShadowAlpha = 100;

@@ -32,14 +32,15 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvColorCombo;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Dialogs,
-  Graphics, StdCtrls, Printers,
+  Windows, Messages,
+  Classes, Controls, Dialogs, Graphics,
   JvComboBox;
 
 type
@@ -293,15 +294,15 @@ type
 implementation
 
 uses
-  Math,
-  JvConsts, JvResources, JvTypes;
+  SysUtils, Math, StdCtrls, Printers,
+  JvResources, JvTypes;
 
-{$IFDEF MSWINDOWS}
+{.$IFDEF MSWINDOWS}
 {$R ..\Resources\JvColorCombo.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-{$R ../Resources/JvColorCombo.res}
-{$ENDIF LINUX}
+{.$ENDIF MSWINDOWS}
+{.$IFDEF LINUX}
+{.$R ../Resources/JvColorCombo.res}
+{.$ENDIF LINUX}
 
 function LoadInternalBitmap(ResName: string): TBitmap;
 begin

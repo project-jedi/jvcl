@@ -30,7 +30,7 @@ unit JvCheckTreeView;
 interface
 
 uses
-  Windows, Classes, SysUtils, ComCtrls, CommCtrl,
+  Windows, Classes, ComCtrls,
   JvComCtrls;
 
 type
