@@ -125,6 +125,7 @@ type
     procedure CalChange(Sender: TObject);
     procedure CalDestroy(Sender: TObject);
     procedure CalSelect(Sender: TObject);
+    procedure CalCloseQuery(Sender: TObject; var CanClose: Boolean);
     function IsEmptyMaskText(const AText: string): Boolean; //TODO: make IsEmptyMaskText protected
     function AttemptTextToDate(const AText: string; var ADate: TDateTime;
       const AForce: Boolean = False; const ARaise: Boolean = False): Boolean;
@@ -332,6 +333,17 @@ begin
   NotifyIfChanged;
 end;
 
+procedure TJvCustomDatePickerEdit.CalCloseQuery(Sender: TObject; var CanClose: Boolean);
+var
+  P: TPoint;
+begin
+  {If we would let the calendar close itself while clicking the button, the
+   ButtonClick method would simply reopen it again as it would find the
+   calendar closed.}
+  GetCursorPos(P);
+  CanClose := not PtInRect(FButtonHolder.BoundsRect, ScreenToClient(P));
+end;
+
 procedure TJvCustomDatePickerEdit.Clear;
 begin
   Checked := False;
@@ -369,6 +381,7 @@ begin
       OnChange := Self.CalChange;
       OnSelect := Self.CalSelect;
       OnDestroy := Self.CalDestroy;
+      OnCloseQuery := Self.CalCloseQuery;
       Show;
       SetFocus;
     end;
@@ -935,7 +948,10 @@ var
 begin
   GetCursorPos(P);
   if PtInRect(BoundsRect, P) then Exit;
-  Self.DoKillFocus(ANextControl.Handle);
+  if Assigned(ANextControl) then
+    Self.DoKillFocus(ANextControl.Handle)
+  else
+    Self.DoKillFocus(0);
 end;
 
 procedure TJvDropCalendar.SetFocus;
