@@ -324,13 +324,13 @@ type
     property BevelOuter;
     property BevelWidth;
     property CollapseButton;
+    property RelativeDivider; // Must be defined before Divider
     property Divider;
     property ExpandButton;
     property Font;
     property ItemHeight;
     property Painter;
     property Readonly;
-    property RelativeDivider;
     property UseBands;
     property WantTabs;
     property AfterDataCreate;
@@ -2600,11 +2600,11 @@ begin
     if RelativeDivider then
     begin
       if UseBands then
-        DividerAbs := (Value * 100) div BandWidth
+        DividerAbs := (Value * BandWidth) div 100
       else if HandleAllocated then
-        DividerAbs := (Value * 100) div ClientWidth
+        DividerAbs := (Value * ClientWidth) div 100
       else
-        DividerAbs := (Value * 100) div Width;
+        DividerAbs := (Value * Width) div 100;
     end
     else
       DividerAbs := Value;
