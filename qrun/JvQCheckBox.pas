@@ -39,9 +39,8 @@ unit JvQCheckBox;
 interface
 
 uses
-  SysUtils, Classes,
-  QWindows, QMessages, Types, QGraphics, QControls, QForms, QStdCtrls,
-  JvQJCLUtils, JvQTypes, JvQExStdCtrls, JvQLinkedControls;
+  QWindows, QMessages, Classes, Types, QGraphics, QControls, QStdCtrls,
+  JvQTypes, JvQExStdCtrls, JvQLinkedControls;
 
 type
   TJvCheckBox = class(TJvExCheckBox)
@@ -56,15 +55,14 @@ type
     FAlignment: TAlignment;
     FLayout: TTextLayout;
     FLeftText: Boolean;
+    FReadOnly:Boolean;
     FLinkedControls: TJvLinkedControls;
     function GetCanvas: TCanvas;
-    function GetReadOnly: Boolean;
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure SetWordWrap(const Value: Boolean);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetLayout(const Value: TTextLayout);
-    procedure SetReadOnly(const Value: Boolean);
     procedure SetLeftText(const Value: Boolean);
     function GetLinkedControls: TJvLinkedControls;
     procedure SetLinkedControls(const Value: TJvLinkedControls);
@@ -84,7 +82,9 @@ type
     procedure LinkedControlsChange(Sender: TObject);
     procedure CheckLinkedControls; virtual;
     procedure DefineProperties(Filer: TFiler); override;  
-    procedure StateChanged(State: TToggleState); override; 
+    procedure StateChanged(State: TToggleState); override;
+  public 
+    procedure Toggle; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -102,7 +102,7 @@ type
     property Layout: TTextLayout read FLayout write SetLayout default tlCenter;
     // show text to the left of the checkbox
     property LeftText: Boolean read FLeftText write SetLeftText default False;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -112,7 +112,8 @@ type
 implementation
 
 uses
-  JvQJVCLUtils;
+  SysUtils,
+  JvQJCLUtils, JvQJVCLUtils;
 
 constructor TJvCheckBox.Create(AOwner: TComponent);
 begin
@@ -128,6 +129,7 @@ begin
   FAlignment := taLeftJustify;
   FLeftText := False;
   FLayout := tlCenter;
+  FReadOnly := False;
   FLinkedControls := TJvLinkedControls.Create(Self);
   FLinkedControls.OnChange := LinkedControlsChange;
 end;
@@ -315,11 +317,6 @@ begin
   end;
 end;
 
-procedure TJvCheckBox.SetReadOnly(const Value: Boolean);
-begin
-  ClicksDisabled := Value;
-end;
-
 procedure TJvCheckBox.SetLeftText(const Value: Boolean);
 begin
   if FLeftText <> Value then
@@ -327,11 +324,6 @@ begin
     FLeftText := Value;
     UpdateProperties;
   end;
-end;
-
-function TJvCheckBox.GetReadOnly: Boolean;
-begin
-  Result := ClicksDisabled;
 end;
 
 function TJvCheckBox.GetLinkedControls: TJvLinkedControls;
@@ -384,8 +376,11 @@ end;
 
 procedure TJvCheckBox.StateChanged(State: TToggleState);
 begin
-  inherited StateChanged(State);
-  CheckLinkedControls;
+  if not ReadOnly then
+  begin
+    inherited StateChanged(State);
+    CheckLinkedControls;
+  end;
 end;
 
 
@@ -401,6 +396,15 @@ begin
   inherited Notification(AComponent, Operation);
   if Assigned(FLinkedControls) and not (csDestroying in ComponentState) then
     LinkedControls.Notification(AComponent, Operation);
+end;
+
+procedure TJvCheckBox.Toggle;
+begin
+  if not ReadOnly then
+  begin
+    inherited;
+    CheckLinkedControls;
+  end;
 end;
 
 end.

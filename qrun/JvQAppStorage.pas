@@ -676,6 +676,7 @@ type
 
     procedure SetFileName(const Value: TFileName);
     procedure SetLocation(const Value: TFileLocation);
+    function DefaultExtension : string; virtual;
 
     function DoGetFileName: TFileName; virtual;
     function GetFullFileName: TFileName;
@@ -683,7 +684,6 @@ type
     property AsString: string read GetAsString write SetAsString;
     property FileName: TFileName read FFileName write SetFileName;
     property Location: TFileLocation read FLocation write SetLocation default flExeFile;
-
 
     property OnGetFileName: TJvAppStorageGetFileNameEvent
       read FOnGetFileName write FOnGetFileName;
@@ -2526,9 +2526,9 @@ end;
 
 procedure TJvCustomAppMemoryFileStorage.SetFileName(const Value: TFileName);
 begin
-  if FFileName <> Value then
+  if FFileName <> PathAddExtension(Value, DefaultExtension) then
   begin
-    FFileName := Value;
+    FFileName := PathAddExtension(Value, DefaultExtension);
     if FLoadedFinished and not IsUpdating then
       Reload;
   end;
@@ -2544,6 +2544,10 @@ begin
   end;
 end;
 
+function TJvCustomAppMemoryFileStorage.DefaultExtension : string;
+begin
+  Result := '';
+end;
 
 procedure TJvCustomAppStorage.Loaded;
 begin

@@ -40,8 +40,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, 
-  ShellAPI, SyncObjs, Contnrs,
-  JclStrings,
+  ShellAPI, SyncObjs,
   JvQComponent, JvQTypes;
 
 const
@@ -231,7 +230,7 @@ implementation
 
 uses
   Math,
-  JclSysUtils,
+  JclStrings,
   JvQJCLUtils, JvQJVCLUtils, JvQConsts, JvQResources;
 
 const
@@ -467,7 +466,7 @@ begin
   SafeCloseHandle(LHandles.Write);
 end;
 
-//=== TJvProcessEntry ========================================================
+//=== { TJvProcessEntry } ====================================================
 
 constructor TJvProcessEntry.Create(AProcessID: DWORD;
   const AFileName: TFileName; const AProcessName: string);
@@ -557,7 +556,7 @@ begin
   Result := InternalTerminateProcess(FProcessID);
 end;
 
-//=== TJvCPSStartupInfo ======================================================
+//=== { TJvCPSStartupInfo } ==================================================
 
 constructor TJvCPSStartupInfo.Create;
 begin
@@ -627,7 +626,7 @@ begin
   end;
 end;
 
-//=== TJvWaitForProcessThread ================================================
+//=== { TJvWaitForProcessThread } ============================================
 
 constructor TJvWaitForProcessThread.Create(ProcessHandle: DWORD);
 begin
@@ -667,7 +666,7 @@ begin
   SetEvent(FCloseEvent);
 end;
 
-//=== TJvReadThread ==========================================================
+//=== { TJvReadThread } ======================================================
 
 constructor TJvReadThread.Create(AReadHandle, ADestHandle: THandle);
 begin
@@ -811,7 +810,7 @@ begin
     FTerminateAfterLoopEntered := True;
 end;
 
-//=== TJvConsoleThread =======================================================
+//=== { TJvConsoleThread } ===================================================
 
 constructor TJvConsoleThread.Create(ProcessHandle: DWORD;
   AWriteHandle: THandle);
@@ -972,7 +971,7 @@ begin
   end;
 end;
 
-//=== TJvCreateProcess =======================================================
+//=== { TJvCreateProcess } ===================================================
 
 constructor TJvCreateProcess.Create(AOwner: TComponent);
 begin
@@ -1286,8 +1285,8 @@ begin
   for F := Low(TJvCPSFlag) to High(TJvCPSFlag) do
     if F in FCreationFlags then
       Inc(Flags, CreationFlagsValues[F]);
-  AppName := PCharOrNil(Trim(FApplicationName));
-  CurrDir := PCharOrNil(Trim(FCurrentDirectory));
+  AppName := Pointer(Trim(FApplicationName));
+  CurrDir := Pointer(Trim(FCurrentDirectory));
   if Environment.Count = 0 then
     EnvironmentData := nil
   else

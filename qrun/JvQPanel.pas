@@ -38,9 +38,9 @@ unit JvQPanel;
 
 interface
 
-uses  
-  Types, QWindows, QGraphics, QControls, QForms, QExtCtrls, 
-  SysUtils, Classes,
+uses
+  QWindows, QMessages,
+  SysUtils, Classes, Types, QGraphics, QControls, QForms, QExtCtrls,
   JvQThemes, JvQComponent, JvQExControls;
 
 type

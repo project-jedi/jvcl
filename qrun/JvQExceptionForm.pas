@@ -35,12 +35,11 @@ unit JvQExceptionForm;
 interface
 
 uses
-  SysUtils, Classes,
   {$IFDEF MSWINDOWS}
-  Windows, ComObj,
+  Windows,
   {$ENDIF MSWINDOWS}  
-  QWindows, 
-  Types, QGraphics, QControls, QForms, QDialogs, QStdCtrls,  QExtCtrls,
+  Types, QWindows, 
+  SysUtils, Classes, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls,
   JvQLabel, JvQComponent, JvQExControls;
 
 type
@@ -88,10 +87,13 @@ procedure JvErrorIntercept;
 implementation
 
 uses
-  QConsts,
-  JvQJVCLUtils, JvQJCLUtils, JvQConsts, JvQResources, JvQTypes;
+  QConsts, 
+  JvQJCLUtils, JvQConsts, JvQResources;
+
+
 
 {$R *.xfm}
+
 
 var
   JvErrorDialog: TJvErrorDialog = nil;
@@ -123,8 +125,8 @@ begin
     begin
       if NewStyleControls then
         Application.ShowException(E)
-      else  
-        MessageDlg(Application.Title, E.Message + '.', mtError, [mbOk], 0); 
+      else
+        MessageDlg(E.Message + '.', mtError, [mbOk], 0);
     end;
   except
     { ignore any exceptions }

@@ -42,8 +42,7 @@ unit JvQSecretPanel;
 interface
 
 uses
-  Classes,  
-  QWindows, QMessages, QControls, Types, QGraphics, QExtCtrls, QForms,
+  QWindows, QMessages, Classes, Types, QGraphics, QControls, QExtCtrls, QForms,
   JvQTimer, JvQComponent, JvQTypes;
 
 type
@@ -122,8 +121,7 @@ type
     property ScrollDirection: TScrollDirection read FDirection write SetDirection
       default sdVertical;
     property TextStyle: TPanelBevel read FTextStyle write SetTextStyle default bvNone;
-    property Anchors;
-
+    property Anchors; 
     property Constraints;
     property Align;
     property BevelInner;
@@ -162,15 +160,15 @@ type
 
 implementation
 
-uses
-  SysUtils, QConsts, Math, QActnList, CommCtrl,
-  JvQConsts, JvQThemes, JvQJCLUtils, JvQJVCLUtils;
+uses 
+  QConsts, SysUtils, Math, QActnList,
+  JvQJCLUtils, JvQJVCLUtils, JvQThemes, JvQConsts;
 
 const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
 //  WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK); make Delphi 5 compiler happy // andreas
 
-//=== TJvSecretPanel =========================================================
+//=== { TJvSecretPanel } =====================================================
 
 constructor TJvSecretPanel.Create(AOwner: TComponent);
 begin
@@ -388,8 +386,8 @@ begin
     begin
       I := SaveDC(Handle);
       try
- //       with FTxtRect do
- //         MoveWindowOrg(Handle, -Left, -Top);
+        with FTxtRect do
+          MoveWindowOrg(Handle, -Left, -Top);
         Brush.Color := Self.Color;
         PaintClient(FMemoryImage.Canvas, FPaintRect);
       finally
@@ -458,7 +456,7 @@ begin
     try
       BitBlt(Canvas.Handle, FTxtRect.Left, FTxtRect.Top, FMemoryImage.Width,
         FMemoryImage.Height, FMemoryImage.Canvas.Handle, 0, 0, SRCCOPY);
-      //ValidateRect(Handle, @FTxtRect);
+      ValidateRect(Handle, @FTxtRect);
     finally
       Canvas.Unlock;
     end;
@@ -646,8 +644,8 @@ begin
       FMemoryImage := nil;
       StopPlay;
       if (csDesigning in ComponentState) and
-        not (csDestroying in ComponentState) then
-        ValidParentForm(Self).DesignerHook.Modified;
+          not (csDestroying in ComponentState) then  
+        ValidParentForm(Self).DesignerHook.Modified; 
     end;
     if not (csDestroying in ComponentState) then
       for I := 0 to Pred(ControlCount) do

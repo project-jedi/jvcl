@@ -42,8 +42,8 @@ interface
 
 uses
   SysUtils, Classes, 
-  QComCtrls, QControls, QExtCtrls, Types, QGraphics, QForms, 
-  QComboEdits, QWindows, JvQExComboEdits, QComCtrlsEx, 
+  QComCtrls, QControls, QExtCtrls, QGraphics, QForms, 
+  QComboEdits, Types, QWindows, JvQExComboEdits, QComCtrlsEx, 
   JvQEdit, JvQExMask, JvQMaskEdit, JvQComponent;
 
 type
@@ -548,7 +548,7 @@ begin
 end;
 
 
-//=== TJvCustomSpinEdit ======================================================
+//=== { TJvCustomSpinEdit } ==================================================
 
 procedure TJvCustomSpinEdit.Change;
 var
@@ -1321,7 +1321,7 @@ begin
   end;
 end;
 
-//=== TJvSpinButton ==========================================================
+//=== { TJvSpinButton } ======================================================
 
 procedure TJvSpinButton.BottomClick;
 begin
@@ -1605,7 +1605,7 @@ begin
   end;
 end;
 
-//=== TJvSpinEdit ============================================================
+//=== { TJvSpinEdit } ========================================================
 
 // (rom) quite unusual not to have it in the Custom base class
 
@@ -1676,7 +1676,7 @@ begin
   end;
 end;
 
-//=== TJvUpDown ==============================================================
+//=== { TJvUpDown } ==========================================================
 
 constructor TJvUpDown.Create(AOwner: TComponent);
 begin
@@ -1725,7 +1725,7 @@ begin
 end;
 
 
-//=== TSpinButtonBitmaps =====================================================
+//=== { TSpinButtonBitmaps } =================================================
 
 procedure TSpinButtonBitmaps.AddClient;
 begin
@@ -1977,8 +1977,8 @@ begin
       AUpArrow.Height);
     Source := Bounds(0, 0, AUpArrow.Width, AUpArrow.Height);
 
-    if Enabled then  
-      BrushCopy(ACanvas, Dest, AUpArrow, Source, AUpArrow.TransparentColor) 
+    if Enabled then
+      BrushCopy(ACanvas, Dest, AUpArrow, Source, AUpArrow.TransparentColor)
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
@@ -2043,7 +2043,6 @@ begin
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
-      DisabledBitmap.SaveToFile('disabledUp.bmp');
       try
         Draw(X, Y, DisabledBitmap);
       finally
@@ -2066,7 +2065,6 @@ begin
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(ADownArrow, clBlack);
-      DisabledBitmap.SaveToFile('disabledDown.bmp');
       try
         Draw(X, Y, DisabledBitmap);
       finally
@@ -2089,7 +2087,7 @@ begin
   FResetOnDraw := True;
 end;
 
-//=== TSpinButtonBitmapsManager ==============================================
+//=== { TSpinButtonBitmapsManager } ==========================================
 
 procedure TSpinButtonBitmapsManager.AddClient;
 begin

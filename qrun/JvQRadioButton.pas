@@ -37,9 +37,9 @@ unit JvQRadioButton;
 
 interface
 
-uses  
-  QGraphics, QControls, QForms, QStdCtrls, Types, QWindows, 
-  SysUtils, Classes,
+uses
+  QWindows, QMessages,
+  SysUtils, Classes, Types, QGraphics, QControls, QForms, QStdCtrls,
   JvQTypes, JvQExStdCtrls, JvQLinkedControls;
 
 type

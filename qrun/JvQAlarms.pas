@@ -36,8 +36,8 @@ unit JvQAlarms;
 
 interface
 
-uses  
-  QExtCtrls, 
+uses
+  QExtCtrls,
   SysUtils, Classes,
   JvQTypes, JvQComponent;
 

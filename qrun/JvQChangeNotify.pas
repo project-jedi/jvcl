@@ -50,9 +50,7 @@ unit JvQChangeNotify;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows,  
-  QGraphics, QControls, QForms, QDialogs, 
+  Windows, Classes,
   JvQComponent;
 
 type
@@ -149,7 +147,8 @@ function ActionsToString(Actions: TJvChangeActions): string;
 implementation
 
 uses
-  JvQJCLUtils, JvQConsts, JvQResources, JvQTypes;
+  SysUtils, 
+  JvQJCLUtils, JvQResources, JvQTypes;
   // JvJCLUtils for DirectoryExists
 
 function ActionsToString(Actions: TJvChangeActions): string;

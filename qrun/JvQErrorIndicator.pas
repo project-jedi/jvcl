@@ -44,9 +44,9 @@ unit JvQErrorIndicator;
 
 interface
 
-uses
-  SysUtils, Classes,  
-  QImgList, QControls, QGraphics, Types, 
+uses  
+  Types, 
+  Classes, QGraphics, QControls, QImgList,
   JvQComponent;
 
 type
@@ -206,6 +206,7 @@ type
 implementation
 
 uses 
+  SysUtils, 
   JvQTypes, JvQResources;
 
 {$IFDEF MSWINDOWS}

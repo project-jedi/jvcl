@@ -42,17 +42,17 @@ interface
 
 
 uses
-  Classes, SysUtils, Contnrs,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Libc,
-  {$ENDIF LINUX}  
-  Types, QWindows, QGraphics, QImgList, QControls,
+  {$ENDIF LINUX} 
+  Types, QWindows,
   QStdCtrls, // type TOwnerDrawState 
+  Classes, Contnrs, QGraphics, QControls, QImgList,
   JclBase,
-  JvQConsts, JvQComponent, JvQDataProviderIntf;
+  JvQComponent, JvQDataProviderIntf;
 
 type
   // Forwards
@@ -1187,12 +1187,11 @@ implementation
 uses
   {$IFDEF MSWINDOWS}
   ActiveX,
-  {$ENDIF MSWINDOWS}  
-  QConsts, 
-  TypInfo, 
+  {$ENDIF MSWINDOWS}
+  SysUtils, QConsts, TypInfo, 
   RTLConsts, 
   JclStrings,
-  JvQTypes, JvQResources;
+  JvQTypes, JvQConsts, JvQResources;
 
 const
   vifHasChildren = Integer($80000000);

@@ -35,8 +35,8 @@ unit JvQStringGrid;
 interface
 
 uses
-  SysUtils, Classes,
-  QWindows, QMessages, Types, QGraphics, QControls, QForms, QGrids,
+  QWindows, QMessages, SysUtils, Classes, Types, QGraphics, QControls, QForms, QGrids, 
+  QStdCtrls, 
   JvQTypes, JvQJCLUtils, JvQExGrids;
 
 const
@@ -73,7 +73,8 @@ type
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
     FFixedFont: TFont;
-    procedure SetAlignment(const Value: TAlignment); 
+    procedure SetAlignment(const Value: TAlignment);
+    procedure GMActivateCell(var Msg: TGMActivateCell); message GM_ACTIVATECELL; 
     procedure SetFixedFont(const Value: TFont);
     procedure DoFixedFontChange(Sender: TObject);
   protected
@@ -87,9 +88,9 @@ type
       Rect: TRect; State: TGridDrawState); virtual;
     procedure DrawCell(AColumn, ARow: Longint;
       Rect: TRect; State: TGridDrawState); override;
-    procedure CaptionClick(AColumn, ARow: Longint); dynamic;
-    procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
-    procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL; 
+    procedure CaptionClick(AColumn, ARow: Longint); dynamic;  
+    procedure ModifyScrollBar(ScrollBar: TScrollBarKind; ScrollCode: TScrollCode;
+      Pos: Cardinal; UseRightToLeft: Boolean); override;
     function SelectCell(ACol, ARow: Longint): Boolean; override; 
     procedure DoLoadProgress(Position, Count: integer);
     procedure DoSaveProgress(Position, Count: integer);
@@ -615,26 +616,27 @@ begin
   DoLoadProgress(Stream.Size, Stream.Size);
 end;
 
-procedure TJvStringGrid.WMHScroll(var Msg: TWMHScroll);
+
+
+procedure TJvStringGrid.ModifyScrollBar(ScrollBar: TScrollBarKind; ScrollCode: TScrollCode;
+  Pos: Cardinal; UseRightToLeft: Boolean);
 begin
-  inherited;
-  if Assigned(FOnHorizontalScroll) then
-    FOnHorizontalScroll(Self);
+  case ScrollBar of
+    sbHorizontal:
+      if Assigned(FOnHorizontalScroll) then
+        FOnHorizontalScroll(Self);
+    sbVertical:
+      if Assigned(FOnVerticalScroll) then
+        FOnVerticalScroll(Self);
+  end;
 end;
 
-procedure TJvStringGrid.WMVScroll(var Msg: TWMVScroll);
-begin
-  inherited;
-  if Assigned(FOnVerticalScroll) then
-    FOnVerticalScroll(Self);
-end;
 
 procedure TJvStringGrid.SaveToFile(FileName: string);
 var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName, fmCreate or fmShareDenyWrite);
-  // (rom) secured
   try
     SaveToStream(Stream);
   finally
@@ -786,7 +788,13 @@ begin
 end;
 
 
-
+procedure TJvStringGrid.GMActivateCell(var Msg: TGMActivateCell);
+begin
+  Col := Msg.Column;
+  Row := Msg.Row;
+  EditorMode := True;
+  InplaceEditor.SelectAll;
+end;
 
 procedure TJvStringGrid.InvalidateCell(AColumn, ARow: Integer);
 begin

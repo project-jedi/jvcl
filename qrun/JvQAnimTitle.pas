@@ -35,8 +35,7 @@ unit JvQAnimTitle;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QExtCtrls, QForms, 
+  Classes, QControls, QExtCtrls, QForms,
   JvQComponent;
 
 type

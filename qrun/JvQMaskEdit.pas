@@ -41,8 +41,8 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes,  
-  Types, QGraphics, QControls, QMask, QForms, QWindows, QTypes, 
+  SysUtils, Classes, QGraphics, QControls, QMask, QForms, 
+  QWindows, QTypes, 
   JvQComponent, JvQTypes, JvQCaret, JvQToolEdit, JvQExMask;
 
 type
@@ -52,29 +52,22 @@ type
     FCaret: TJvCaret;
     FEntering: Boolean;
     FLeaving: Boolean;
-    //FGroupIndex: Integer;
     FProtectPassword: Boolean;
-    FLastNotifiedText: String;
+    FLastNotifiedText: string;
     FOnSetFocus: TJvFocusChangeEvent;
     FOnKillFocus: TJvFocusChangeEvent;
     procedure SetHotTrack(Value: Boolean); 
   protected
-    //procedure UpdateEdit;
     procedure CaretChanged(Sender: TObject); dynamic;
-    //function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); virtual;
-    procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual;
-    //procedure DoClipboardPaste; override; 
+    procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual; 
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override; 
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    //procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure SetCaret(const Value: TJvCaret);
-    //procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
-    //procedure SetGroupIndex(const Value: Integer);
     procedure NotifyIfChanged;
     procedure Change; override;
   public 
@@ -89,7 +82,7 @@ type
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property Caret: TJvCaret read FCaret write SetCaret;
-    //property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
+    property ShowButton default False;
 
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
@@ -127,6 +120,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
+    property ShowButton;
     property TabOrder;
     property TabStop;
     property Text;
@@ -151,22 +145,93 @@ type
 
 implementation
 
+procedure TJvCustomMaskEdit.CaretChanged(Sender: TObject);
+begin
+  FCaret.CreateCaret;
+end;
+
+procedure TJvCustomMaskEdit.Change;
+begin
+  FLastNotifiedText := Text;
+  inherited Change;
+end;
+
 constructor TJvCustomMaskEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHotTrack := False;
   FCaret := TJvCaret.Create(Self);
   FCaret.OnChanged := CaretChanged;
-  //FGroupIndex := -1;
   FEntering := False;
   FLeaving := False;
+
+  ControlState := ControlState + [csCreating];
+  try
+    ShowButton := False; { force update }
+  finally
+    ControlState := ControlState - [csCreating];
+  end;
 end;
+
+
 
 destructor TJvCustomMaskEdit.Destroy;
 begin
   FCaret.OnChanged := nil;
   FreeAndNil(FCaret);
   inherited Destroy;
+end;
+
+procedure TJvCustomMaskEdit.DoKillFocus(FocusedWnd: HWND);
+begin
+  FLeaving := True;
+  try
+    FCaret.DestroyCaret;
+    inherited DoKillFocus(FocusedWnd);
+    DoKillFocusEvent(FindControl(FocusedWnd));
+  finally
+    FLeaving := False;
+  end;
+end;
+
+procedure TJvCustomMaskEdit.DoKillFocusEvent(const ANextControl: TWinControl);
+begin
+  NotifyIfChanged;
+  if Assigned(FOnKillFocus) then
+    FOnKillFocus(Self, ANextControl);
+end;
+
+procedure TJvCustomMaskEdit.DoSetFocus(FocusedWnd: HWND);
+begin
+  FEntering := True;
+  try
+    inherited DoSetFocus(FocusedWnd);
+    FCaret.CreateCaret;
+    DoSetFocusEvent(FindControl(FocusedWnd));
+  finally
+    FEntering := False;
+  end;
+end;
+
+procedure TJvCustomMaskEdit.DoSetFocusEvent(const APreviousControl: TWinControl);
+begin
+  if Assigned(FOnSetFocus) then
+    FOnSetFocus(Self, APreviousControl);
+end;
+
+
+
+function TJvCustomMaskEdit.GetText: TCaption;
+var
+  Tmp: Boolean;
+begin
+  Tmp := ProtectPassword;
+  try
+    ProtectPassword := False;  
+    Result := inherited GetText; 
+  finally
+    ProtectPassword := Tmp;
+  end;
 end;
 
 procedure TJvCustomMaskEdit.MouseEnter(Control: TControl);
@@ -191,6 +256,22 @@ begin
   end;
 end;
 
+procedure TJvCustomMaskEdit.NotifyIfChanged;
+begin
+  if FLastNotifiedText <> Text then
+  begin
+    { (ahuser) same code as in Change()
+    FLastNotifiedText := Text;
+    inherited Change;}
+    Change;
+  end;
+end;
+
+procedure TJvCustomMaskEdit.SetCaret(const Value: TJvCaret);
+begin
+  FCaret.Assign(Value);
+end;
+
 procedure TJvCustomMaskEdit.SetHotTrack(Value: Boolean);
 begin
   FHotTrack := Value;
@@ -204,88 +285,6 @@ begin
   end;
 end;
 
-procedure TJvCustomMaskEdit.CaretChanged(Sender: TObject);
-begin
-  FCaret.CreateCaret;
-end;
-
-procedure TJvCustomMaskEdit.SetCaret(const Value: TJvCaret);
-begin
-  FCaret.Assign(Value);
-end;
-
-//procedure TJvCustomMaskEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
-//begin
-//  if ClipboardCommands <> Value then
-//  begin
-//    inherited SetClipboardCommands(Value);
-//    ReadOnly := ClipboardCommands <= [caCopy];
-//  end;
-//end;
-
-//procedure TJvCustomMaskEdit.SetGroupIndex(const Value: Integer);
-//begin
-//  FGroupIndex := Value;
-//  UpdateEdit;
-//end;
-
-//procedure TJvCustomMaskEdit.UpdateEdit;
-//var
-//  I: Integer;
-//begin
-//  if Assigned(Owner) then
-//    for I := 0 to Owner.ComponentCount - 1 do
-//      if (Owner.Components[i] is TJvCustomMaskEdit) then
-//        with TJvCustomMaskEdit(Owner.Components[i]) do
-//          if (Name <> Self.Name) and (GroupIndex <> -1) and
-//            (GroupIndex = Self.GroupIndex) then
-//            Clear;
-//end;
-
-//procedure TJvCustomMaskEdit.DoClipboardPaste;
-//begin
-//  inherited DoClipboardPaste;
-//  UpdateEdit;
-//end;
-
-
-
-//function TJvCustomMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-//begin
-//  Result := False;
-//  if csDestroying in ComponentState then
-//    Exit;
-//  if Enabled then
-//    Result := inherited DoPaintBackground(Canvas, Param)
-//  else
-//  begin
-//    Canvas.Brush.Color := DisabledColor;
-//    Canvas.Brush.Style := bsSolid;
-//    Canvas.FillRect(ClientRect);
-//    Result := True;
-//  end;
-//end;
-
-//procedure TJvCustomMaskEdit.KeyDown(var Key: Word; Shift: TShiftState);
-//begin
-//  UpdateEdit;
-//  inherited KeyDown(Key, Shift);
-//end;
-
-
-
-function TJvCustomMaskEdit.GetText: TCaption;
-var
-  Tmp: Boolean;
-begin
-  Tmp := ProtectPassword;
-  try
-    ProtectPassword := False;  
-    Result := inherited GetText; 
-  finally
-    ProtectPassword := Tmp;
-  end;
-end;
 
 
 procedure TJvCustomMaskEdit.SetText(const Value: TCaption);
@@ -293,61 +292,4 @@ begin
   inherited SetText(Value); 
 end;
 
-
-
-procedure TJvCustomMaskEdit.DoKillFocus(FocusedWnd: HWND);
-begin
-  FLeaving := True;
-  try
-    FCaret.DestroyCaret;
-    inherited DoKillFocus(FocusedWnd);
-    DoKillFocusEvent(FindControl(FocusedWnd));
-  finally
-    FLeaving := False;
-  end;
-end;
-
-procedure TJvCustomMaskEdit.DoSetFocus(FocusedWnd: HWND);
-begin
-  FEntering := True;
-  try
-    inherited DoSetFocus(FocusedWnd);
-    FCaret.CreateCaret;
-    DoSetFocusEvent(FindControl(FocusedWnd));
-  finally
-    FEntering := False;
-  end;
-end;
-
-procedure TJvCustomMaskEdit.DoKillFocusEvent(const ANextControl: TWinControl);
-begin
-  NotifyIfChanged;
-  if Assigned(FOnKillFocus) then
-    FOnKillFocus(Self, ANextControl);
-end;
-
-procedure TJvCustomMaskEdit.DoSetFocusEvent(const APreviousControl: TWinControl);
-begin
-  if Assigned(FOnSetFocus) then
-    FOnSetFocus(Self, APreviousControl);
-end;
-
-procedure TJvCustomMaskEdit.Change;
-begin
-  FLastNotifiedText := Text;
-  inherited Change;
-end;
-
-procedure TJvCustomMaskEdit.NotifyIfChanged;
-begin
-  if FLastNotifiedText <> Text then
-  begin
-    { (ahuser) same code as in Change()
-    FLastNotifiedText := Text;
-    inherited Change;}
-    Change;
-  end;
-end;
-
 end.
-

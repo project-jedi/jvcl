@@ -42,9 +42,10 @@ unit JvQAni;
 interface
 
 uses
-  SysUtils, Classes, 
-  RTLConsts,   
-  QGraphics, QControls, QExtCtrls, QDialogs, Types, QTypes, QWindows, 
+  Classes, 
+  RTLConsts,  
+  QGraphics, QControls, QExtCtrls, QDialogs, 
+  Types, QTypes, QWindows, 
   JvQTypes;
 
 type
@@ -134,9 +135,9 @@ function LoadJvAniDialog: TJvAni;
 
 implementation
 
-uses  
-  QConsts, 
-  Math,
+uses
+  SysUtils,
+  QConsts, Math,
   JvQJVCLUtils, JvQJCLUtils, JvQIconList, JvQConsts, JvQResources;
 
 //=== { TJvAnimatedCursorImage helper } ======================================

@@ -313,6 +313,17 @@ type
     procedure ControlSetNewEntriesAllowed(Value: Boolean);
   end;
 
+  TJvDynControlVCLGroupBox = class (TGroupBox, IUnknown, IJvDynControl)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+  end;
+
   TJvDynControlVCLPanel = class (TPanel, IUnknown, IJvDynControl, IJvDynControlPanel)
   public
     procedure ControlSetDefaultProperties;
@@ -1312,6 +1323,36 @@ begin
   Style := Styles[Value];
 end;
 
+//=== { TJvDynControlVCLGroupBox } ==============================================
+
+procedure TJvDynControlVCLGroupBox.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlVCLGroupBox.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlVCLGroupBox.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlVCLGroupBox.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlVCLGroupBox.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlVCLGroupBox.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;
+
 //=== { TJvDynControlVCLPanel } ==============================================
 
 procedure TJvDynControlVCLPanel.ControlSetDefaultProperties;
@@ -1553,6 +1594,7 @@ begin
   RegisterControl(jctLabel, TJvDynControlVCLLabel); 
   RegisterControl(jctButton, TJvDynControlVCLButton);
   RegisterControl(jctScrollBox, TJvDynControlVCLScrollBox);
+  RegisterControl(jctGroupBox, TJvDynControlVCLGroupBox);
   RegisterControl(jctPanel, TJvDynControlVCLPanel);
   RegisterControl(jctImage, TJvDynControlVCLImage);
   RegisterControl(jctCheckBox, TJvDynControlVCLCheckBox);

@@ -170,7 +170,7 @@ procedure PreProcessXML(aList: TStrings);
 
 implementation
 
-uses 
+uses
   JvQConsts;
 
 procedure PreProcessXML(aList: TStrings);

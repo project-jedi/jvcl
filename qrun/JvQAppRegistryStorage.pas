@@ -38,7 +38,7 @@ unit JvQAppRegistryStorage;
 interface
 
 uses
-  Classes, Windows,
+  Windows, Classes,
   JvQAppStorage, JvQTypes;
 
 type
@@ -86,7 +86,7 @@ implementation
 
 uses
   SysUtils,
-  JclRegistry, JclResources, JclStrings,
+  JclRegistry, JclResources,
   JvQConsts, JvQResources;
 
 const

@@ -38,8 +38,7 @@ unit JvQContentScroller;
 interface
 
 uses
-  SysUtils, Classes,
-  QWindows, QMessages, Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls, 
+  SysUtils, Classes, QExtCtrls, 
   QTypes, 
   JvQComponent;
 
@@ -138,10 +137,11 @@ type
 
 implementation
 
-{$IFDEF MSWINDOWS}
 uses
-  MMSystem;
-{$ENDIF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
+  MMSystem,
+  {$ENDIF MSWINDOWS}
+  QGraphics, QControls;
 
 constructor TJvContentScroller.Create(AOwner: TComponent);
 begin

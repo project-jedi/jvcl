@@ -30,8 +30,7 @@ unit JvQAppStorageSelectList;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QForms, 
+  Classes, QControls, QForms,
   JvQComponent, JvQTypes, JvQAppStorage, JvQDynControlEngine,
   JvQDynControlEngineIntf;
 
@@ -96,6 +95,7 @@ type
 implementation
 
 uses
+  SysUtils,
   JvQConsts, JvQResources;
 
 constructor TJvAppStorageSelectList.Create(AOwner: TComponent);

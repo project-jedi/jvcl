@@ -38,10 +38,9 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}  
-  QWindows, Qt, QGraphics, QControls, QForms, 
-  SysUtils, Classes,
-  JvQTypes;
+  {$ENDIF MSWINDOWS} 
+  QWindows, Qt, QForms, 
+  Classes, QControls, QGraphics;
 
 type
   { A caret can be specified either by giving a bitmap that defines its shape
@@ -97,7 +96,7 @@ type
 implementation
 
 uses
-  JvQJCLUtils, JvQResources;
+  JvQJCLUtils, JvQResources, JvQTypes;
 
 constructor TJvCaret.Create(Owner: TWinControl);
 begin

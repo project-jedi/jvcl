@@ -34,10 +34,9 @@ unit JvQCSVBaseControls;
 
 interface
 
-uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, QButtons,
+uses  
   Types, 
+  Classes, QControls, QStdCtrls, QButtons,
   JvQComponent;
 
 type
@@ -160,6 +159,7 @@ type
 implementation
 
 uses
+  SysUtils, QForms, QDialogs,
   JvQThemes, JvQResources;
 
 {$IFDEF MSWINDOWS}

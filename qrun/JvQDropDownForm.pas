@@ -41,8 +41,9 @@ unit JvQDropDownForm;
 interface
 
 uses
-  Classes,  
-  Qt, QControls, QStdCtrls, QForms, Types, QWindows, 
+  QWindows,  
+  Qt, Types, 
+  Classes, QControls, QStdCtrls, QForms,
   JvQTypes, JvQExForms;
 
 type
@@ -81,9 +82,6 @@ uses
   SysUtils,
   JvQConsts, JvQResources;
 
-const  
-  NilHandle = nil; 
-
 function IsChildWindow(const AChild, AParent: HWND): Boolean;
 var
   LParent: HWND;
@@ -95,9 +93,9 @@ begin
     Result := False // (ahuser) a parent is no child of itself
   else
   begin
-    while (LParent <> AParent) and (LParent <> NilHandle) do
+    while (LParent <> AParent) and (LParent <> NullHandle) do
       LParent := GetParent(LParent);
-    Result := (LParent = AParent) and (LParent <> NilHandle);
+    Result := (LParent = AParent) and (LParent <> NullHandle);
   end;
 end;
 

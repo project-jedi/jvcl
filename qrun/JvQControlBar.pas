@@ -35,9 +35,8 @@ unit JvQControlBar;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QExtCtrls, QControls, QForms, QMenus, QWindows, 
-  JvQThemes, JvQExControls, JvQExExtCtrls;
+  QWindows, Classes, QGraphics, QControls, QMenus,
+  JvQExControls, JvQExExtCtrls;
 
 type
   TPopupNames = (pnHint, pnName);
@@ -67,6 +66,10 @@ type
   end;
 
 implementation
+
+uses
+  SysUtils,
+  JvQThemes;
 
 const
   cFalse = 'false';

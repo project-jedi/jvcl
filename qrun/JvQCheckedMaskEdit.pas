@@ -15,7 +15,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvCheckedMaskEdit, released on 2002-10-04.
 
-The Initial Developer of the Original Code is Oliver Giesen [giesen@lucatec.com]
+The Initial Developer of the Original Code is Oliver Giesen [giesen att lucatec dott com]
 Portions created by Oliver Giesen are Copyright (C) 2002 Lucatec GmbH.
 All Rights Reserved.
 
@@ -40,41 +40,38 @@ unit JvQCheckedMaskEdit;
 interface
 
 uses
-  QWindows, QMessages, QForms, SysUtils, Classes, QControls, Types, QGraphics, QStdCtrls, 
-  QComboEdits, JvQExComboEdits, QComCtrlsEx, 
-  QMask, JvQMaskEdit;
+  QWindows, QMessages, Classes, QControls, QStdCtrls,
+  JvQMaskEdit;
 
-type  
-  TJvCustomCheckedMaskEdit = class(TJvExCustomComboMaskEdit) 
+type
+  TJvCustomCheckedMaskEdit = class(TJvCustomMaskEdit)
   private
     FCheck: TCheckBox;
+    { (rb) JvBaseEdits.pas name: FFormatting }
     FInternalChange: Boolean;
     FOnCheckClick: TNotifyEvent; 
     FOnEnabledChanged: TNotifyEvent; 
     procedure CheckClick(Sender: TObject);
-    function GetShowCheckBox: Boolean; 
+    function GetShowCheckBox: Boolean;
   protected
     procedure DoCheckClick; dynamic; 
     procedure EnabledChanged; override;
 
     function GetChecked: Boolean; virtual;
     procedure SetChecked(const AValue: Boolean); virtual;
-    procedure SetShowCheckBox(const AValue: Boolean); virtual;
+    procedure SetShowCheckbox(const AValue: Boolean); virtual;
 
-    procedure GetInternalMargins(var ALeft, ARight: Integer); virtual;
-    procedure UpdateControls; dynamic;
+    procedure GetInternalMargins(var ALeft, ARight: Integer); override;
   
-    procedure CreateWidget; override;
     procedure ColorChanged; override; 
     procedure Change; override;
-    procedure Resize; override;
-    procedure Loaded; override;
     procedure BeginInternalChange;
     procedure EndInternalChange;
     function InternalChanging: Boolean;
   protected
+    property AutoSize default False;
     property Checked: Boolean read GetChecked write SetChecked;
-    property ShowCheckBox: Boolean read GetShowCheckBox write SetShowCheckBox default False;
+    property ShowCheckBox: Boolean read GetShowCheckBox write SetShowCheckbox default False;
     property OnCheckClick: TNotifyEvent read FOnCheckClick write FOnCheckClick; 
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged; 
   public
@@ -84,22 +81,37 @@ type
 
   TJvCheckedMaskEdit = class(TJvCustomCheckedMaskEdit)
   published
+    property Action;
+    property Align;
     property Anchors;
     property AutoSelect;
-    property AutoSize default False;
+    property AutoSize;
     property BorderStyle;
+    property ButtonFlat;
+    property ButtonHint;
+    property ButtonWidth;
     property CharCase;
     property Checked;
     property ClipboardCommands;
+    property ClickKey;
     property Color;
     property Constraints;
-    property Cursor; 
+    property DisabledColor;
+    property DisabledTextColor;
+    property GroupIndex; 
+    property DirectInput;
     property DragMode;
     property EditMask;
     property Enabled;
     property Font;
+    property Glyph;
+    property HideSelection;
     property HintColor;
+    property ImageIndex;
+    property ImageKind;
+    property Images;
     property MaxLength;
+    property NumGlyphs;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -109,10 +121,13 @@ type
     property ShowCheckBox;
     property Text;
     property TabOrder;
+    {property TabStop;} { (rb) Why disabled?}
     property Visible;
+    property OnButtonClick;
     property OnChange;
     property OnClick;
     property OnCheckClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -135,138 +150,10 @@ type
 implementation
 
 uses
-  JvQTypes, JvQResources;
+  SysUtils, QForms,
+  JvQTypes, JvQResources, JvQThemes;
 
-constructor TJvCustomCheckedMaskEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FCheck := nil;
-  FInternalChange := False;
-
-  AutoSize := False;
-  Height := 21;
-  TabStop := True;
-end;
-
-destructor TJvCustomCheckedMaskEdit.Destroy;
-begin
-  if ShowCheckBox then
-    FCheck.OnClick := nil;
-  inherited Destroy;
-end;
-
-
-
-
-procedure TJvCustomCheckedMaskEdit.CreateWidget;
-begin
-  inherited CreateWidget;
-  UpdateControls;
-end;
-
-procedure TJvCustomCheckedMaskEdit.ColorChanged;
-begin
-  inherited;
-  if assigned(FCheck) then
-    FCheck.Color := Color;
-end;
-
-
-function TJvCustomCheckedMaskEdit.GetChecked: Boolean;
-begin
-  if ShowCheckBox then
-    Result := FCheck.Checked
-  else
-    Result := False; // should this really be the default?
-end;
-
-procedure TJvCustomCheckedMaskEdit.SetChecked(const AValue: Boolean);
-begin
-  if ShowCheckBox and (FCheck.Checked <> AValue) then
-  begin
-    FCheck.Checked := AValue;
-    Change;
-  end;
-  {TODO : Maybe Checked should be accessible even without the checkbox.
-          The value could be cached in a state field and applied when the
-          checkbox is instantiated.}
-end;
-
-function TJvCustomCheckedMaskEdit.GetShowCheckBox: Boolean;
-begin
-  Result := Assigned(FCheck);
-end;
-
-procedure TJvCustomCheckedMaskEdit.SetShowCheckBox(const AValue: Boolean);
-begin
-  {The checkbox will only get instantiated when ShowCheckBox is set to True;
-   setting it to false frees the checkbox.}
-  if ShowCheckBox <> AValue then
-  begin
-    if AValue then
-    begin
-      FCheck := TCheckBox.Create(Self);
-      with FCheck do
-      begin  
-        Parent := Self.ClientArea;
-        Align := alLeft; 
-        Width := 15;
-        Anchors := [akLeft, akTop, akBottom];
-        Alignment := taLeftJustify;
-        TabStop := False;
-        OnClick := CheckClick;
-        Visible := True;
-      end;
-    end
-    else
-      FreeAndNil(FCheck);
-  end;
-  UpdateControls;
-end;
-
-procedure TJvCustomCheckedMaskEdit.UpdateControls;
-var
-  LLeft, LRight: Integer; 
-  Loc: TRect; 
-begin
-  {UpdateControls gets called whenever the layout of child controls changes.
-   It uses GetInternalMargins to determine the left and right margins of the
-   actual text area.}
-  LLeft := 0;
-  LRight := 0;
-  GetInternalMargins(LLeft, LRight);  
-  SetRect(Loc, LLeft, 0, ClientWidth - LRight, ClientHeight);
-  SetEditorRect(@Loc); 
-end;
-
-procedure TJvCustomCheckedMaskEdit.GetInternalMargins( var ALeft, ARight: Integer);
-begin
-  {This gets called by UpodateControls and should be overridden by descendants
-   that add additional child controls.}
-  if ShowCheckBox then
-    ALeft := FCheck.Left + FCheck.Width;
-end;
-
-procedure TJvCustomCheckedMaskEdit.Change;
-begin
-  {Overridden to suppress change handling during internal operations. If
-   descendants override Change again it is their responsibility to repeat the
-   check for InternalChanging.}
-  if not InternalChanging then
-    inherited Change;
-end;
-
-procedure TJvCustomCheckedMaskEdit.Loaded;
-begin
-  inherited Loaded;
-  UpdateControls;
-end;
-
-procedure TJvCustomCheckedMaskEdit.Resize;
-begin
-  inherited Resize;
-  UpdateControls;
-end;
+//=== { TJvCustomCheckedMaskEdit } ===========================================
 
 {Begin/EndInternalChange and InternalChanging implement a simple locking
  mechanism to prevent change processing and display updates during internal
@@ -281,17 +168,13 @@ begin
   FInternalChange := True;
 end;
 
-procedure TJvCustomCheckedMaskEdit.EndInternalChange;
+procedure TJvCustomCheckedMaskEdit.Change;
 begin
-  { TODO : if this assertion ever fails, it's time to switch to a counted locking scheme }
-  if not FInternalChange then
-    raise EJVCLException.CreateRes(@RsEEndUnsupportedNestedCall);
-  FInternalChange := False;
-end;
-
-function TJvCustomCheckedMaskEdit.InternalChanging: Boolean;
-begin
-  Result := FInternalChange;
+  {Overridden to suppress change handling during internal operations. If
+   descendants override Change again it is their responsibility to repeat the
+   check for InternalChanging.}
+  if not InternalChanging then
+    inherited Change;
 end;
 
 procedure TJvCustomCheckedMaskEdit.CheckClick(Sender: TObject);
@@ -299,6 +182,34 @@ begin
   // call SetChecked to allow descendants to validate the new value:
   Checked := FCheck.Checked;
   DoCheckClick;
+end;
+
+
+procedure TJvCustomCheckedMaskEdit.ColorChanged;
+begin
+  inherited;
+  if Assigned(FCheck) then
+    FCheck.Color := Color;
+end;
+
+
+constructor TJvCustomCheckedMaskEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FCheck := nil;
+  FInternalChange := False;
+
+  AutoSize := False;
+  Height := 21;
+  { (rb) ?? }
+  TabStop := True;
+end;
+
+destructor TJvCustomCheckedMaskEdit.Destroy;
+begin
+  if ShowCheckBox then
+    FCheck.OnClick := nil;
+  inherited Destroy;
 end;
 
 procedure TJvCustomCheckedMaskEdit.DoCheckClick;
@@ -315,8 +226,100 @@ begin
   if ShowCheckBox then
     FCheck.Enabled := Self.Enabled;
   inherited EnabledChanged; 
-  if assigned(FOnEnabledChanged) then
+  if Assigned(FOnEnabledChanged) then
      FOnEnabledChanged(self); 
 end;
+
+procedure TJvCustomCheckedMaskEdit.EndInternalChange;
+begin
+  { TODO : if this assertion ever fails, it's time to switch to a counted locking scheme }
+  if not FInternalChange then
+    raise EJVCLException.CreateRes(@RsEEndUnsupportedNestedCall);
+  FInternalChange := False;
+end;
+
+function TJvCustomCheckedMaskEdit.GetChecked: Boolean;
+begin
+  if ShowCheckBox then
+    Result := FCheck.Checked
+  else
+    Result := False; // should this really be the default?
+end;
+
+procedure TJvCustomCheckedMaskEdit.GetInternalMargins( var ALeft, ARight: Integer);
+begin
+  {This gets called by UpdateMargins and should be overridden by descendants
+   that add additional child controls.}
+
+  inherited GetInternalMargins(ALeft, ARight);
+
+  if ShowCheckBox then
+  begin
+    ALeft := FCheck.Left + FCheck.Width; 
+  end;
+end;
+
+function TJvCustomCheckedMaskEdit.GetShowCheckBox: Boolean;
+begin
+  Result := Assigned(FCheck);
+end;
+
+function TJvCustomCheckedMaskEdit.InternalChanging: Boolean;
+begin
+  Result := FInternalChange;
+end;
+
+procedure TJvCustomCheckedMaskEdit.SetChecked(const AValue: Boolean);
+begin
+  if ShowCheckBox and (FCheck.Checked <> AValue) then
+  begin
+    FCheck.Checked := AValue;
+    Change;
+  end;
+  {TODO : Maybe Checked should be accessible even without the checkbox.
+          The value could be cached in a state field and applied when the
+          checkbox is instantiated.}
+end;
+
+procedure TJvCustomCheckedMaskEdit.SetShowCheckbox(const AValue: Boolean);
+begin
+  {The checkbox will only get instantiated when ShowCheckBox is set to True;
+   setting it to false frees the checkbox.}
+  if ShowCheckBox <> AValue then
+  begin
+    if AValue then
+    begin
+      FCheck := TCheckBox.Create(Self);
+      with FCheck do
+      begin  
+        Parent := Self.ClientArea;
+        Height := self.ClientArea.Height;
+        if BorderStyle = bsSingle then
+        begin
+          Top := 2
+        end
+        else
+          Top := 0;
+        Left := 3;
+        Width := 15;
+        Color := Self.Color;
+        Anchors := [akLeft, akTop, akBottom];
+        Alignment := taLeftJustify;
+        TabStop := False;
+        OnClick := CheckClick;
+        Visible := True;
+        Enabled := Self.Enabled;
+      end;
+    end
+    else
+      FreeAndNil(FCheck);
+
+    UpdateControls;
+    UpdateMargins;
+    Repaint;
+  end;
+end;
+
+
 
 end.

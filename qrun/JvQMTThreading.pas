@@ -37,12 +37,12 @@ interface
 uses
   SysUtils, Classes, SyncObjs, Contnrs,
   {$IFDEF MSWINDOWS}
-  Windows,
+  Windows, Messages,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Libc, QWindows,
-  {$ENDIF LINUX}
-  JvQMTConsts, JvQMTSync, JvQFinalize;
+  {$ENDIF LINUX} 
+  JvQMTConsts, JvQMTSync;
 
 type
   TMTManager = class;
@@ -81,7 +81,7 @@ type
     function GetStatus: TMTThreadStatus;
     procedure Log(const Msg: string);
     procedure OnIntThreadExecute(Sender: TObject);
-    procedure OnIntThreadTerminate(Sender: TObject);
+    procedure OnIntThreadTerminate(Sender: TObject); 
     procedure SetName(const Value: string);
   protected
     procedure DecRef;
@@ -136,7 +136,7 @@ implementation
 
 
 uses
-  JvQResources;
+  JvQResources, JvQFinalize;
 
 
 
@@ -152,7 +152,7 @@ end;
 
 
 
-//=== TMTInternalThread ======================================================
+//=== { TMTInternalThread } ==================================================
 
 procedure TMTInternalThread.Execute;
 begin
@@ -172,15 +172,13 @@ begin
   ThreadNameInfo.FThreadID := $FFFFFFFF;
   ThreadNameInfo.FFlags := 0;
   try
-  {$IFDEF MSWINDOWS}
     RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord),
       @ThreadNameInfo);
-  {$ENDIF MSWINDOWS}    
   except
   end; 
 end;
 
-//=== TMTThread ==============================================================
+//=== { TMTThread } ==========================================================
 
 constructor TMTThread.Create(Manager: TMTManager; Ticket: Integer);
 begin
@@ -279,7 +277,7 @@ begin
     on E: Exception do
       Log('OnExecute Exception: "' + E.Message+'"'); // do not localize
   end;
-
+  
   // make sure terminate flag is set
   FIntThread.Terminate;
 
@@ -290,13 +288,17 @@ begin
   except
     on E: Exception do
       Log('OnTerminate Exception: "' + E.Message+'"'); // do not localize
-  end;
+  end; 
 end;
+
+
 
 procedure TMTThread.OnIntThreadTerminate(Sender: TObject);
 begin
   FStatusChange.Acquire;
   try
+    if FFinished then
+      Exit;
     FFinished := True;
   finally
     FStatusChange.Release;
@@ -402,20 +404,20 @@ begin
       while Status <> tsFinished do
       begin
         CheckSynchronize;
-        Sleep(0);
+        Sleep(1);
       end;
     end
     else
     begin
       while Status <> tsFinished do
-        Sleep(0);
+        Sleep(1);
     end;
   finally
     Release;
   end;
 end;
 
-//=== TMTManager =============================================================
+//=== { TMTManager } =========================================================
 
 constructor TMTManager.Create;
 begin
@@ -489,7 +491,7 @@ begin
   Result := 0;
   FThreadsChange.Acquire;
   try
-    for I := 0 to FThreads.Count-1 do
+    for I := 0 to FThreads.Count - 1 do
       if TMTThread(FThreads[I]).Status <> tsFinished then
       begin
         if (RaiseID <> 0) and
@@ -611,7 +613,7 @@ begin
     while ActiveThreads do
     begin
       CheckSynchronize;
-      Sleep(0);
+      Sleep(1);
     end;
   end
   else
@@ -627,7 +629,7 @@ begin
        -1:
          raise EMTThreadError.CreateRes(@RsECurThreadIsPartOfManager);
       end;
-      Sleep(0);
+      Sleep(1);
     end;
   end;
 end;

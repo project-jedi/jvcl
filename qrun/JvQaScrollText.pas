@@ -37,11 +37,12 @@ unit JvQaScrollText;
 interface
 
 uses
-  SysUtils, Classes,
+  Classes,
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}  
-  Types, QWindows, QControls, QExtCtrls, QForms, QGraphics, 
+  {$ENDIF MSWINDOWS}
+  QControls, QExtCtrls, QGraphics, 
+  Types, QWindows, 
   JvQComponent;
 
 type
@@ -93,6 +94,7 @@ type
 implementation
 
 uses
+  SysUtils, QForms,
   JvQJCLUtils, JvQDsgnIntf, JvQThemes;
 
 const

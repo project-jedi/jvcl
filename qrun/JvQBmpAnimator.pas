@@ -39,14 +39,15 @@ unit JvQBmpAnimator;
 interface
 
 uses
-  SysUtils,  Classes,  
-  QWindows, QGraphics, QControls,  QExtCtrls, QImgList, 
+  Classes,  
+  QWindows, 
+  QGraphics, QControls, QExtCtrls, QImgList,
   JvQComponent;
 
 type
   TJvAnimateDirection = (tdForward, tdBack, tdFwdBack, tdBackFwd);
 
-  TJvCustomBmpAnimator = class(TJvGraphicControl)
+  TJvCustomBmpAnimator = class(TJvWinControl)
   private
     FImageList: TCustomImageList;
     FTimer: TTimer;

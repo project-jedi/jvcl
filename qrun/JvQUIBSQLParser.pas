@@ -255,7 +255,7 @@ type
   public
     RootNode: TSQLNode;
     function yyparse: Integer;
-    destructor destroy; override;
+    destructor Destroy; override;
     constructor Create(Lexer: TLexer); override;
   end;
 

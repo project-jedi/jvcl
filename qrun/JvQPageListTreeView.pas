@@ -168,6 +168,8 @@ type
   TJvCustomSettingsTreeView = class(TJvCustomPageListTreeView)
   private
     FNodeImages: TJvSettingsTreeImages;
+    FOnGetImageIndex: TTVExpandedEvent;
+    FOnGetSelectedIndex: TTVExpandedEvent;
     procedure SetImageSelection(const Value: TJvSettingsTreeImages);
   protected
     FLastSelected: TTreeNode;
@@ -400,7 +402,7 @@ begin
   end;
 end;
 
-//=== TJvCustomPageListTreeView ==============================================
+//=== { TJvCustomPageListTreeView } ==========================================
 
 constructor TJvCustomPageListTreeView.Create(AOwner: TComponent);
 begin
@@ -509,7 +511,7 @@ begin
   inherited Items := Value;
 end;
 
-//=== TJvPageIndexNode =======================================================
+//=== { TJvPageIndexNode } ===================================================
 
 procedure TJvPageIndexNode.Assign(Source: TPersistent);
 begin
@@ -529,7 +531,7 @@ begin
   end;
 end;
 
-//=== TJvPageIndexNodes ======================================================
+//=== { TJvPageIndexNodes } ==================================================
 
 procedure TJvPageIndexNodes.DefineProperties(Filer: TFiler);
 begin
@@ -592,7 +594,7 @@ begin
 end;
 
 
-//=== TJvSettingsTreeImages ==================================================
+//=== { TJvSettingsTreeImages } ==============================================
 
 constructor TJvSettingsTreeImages.Create;
 begin
@@ -603,7 +605,7 @@ begin
   FImageIndex := -1;
 end;
 
-//=== TJvCustomSettingsTreeView ==============================================
+//=== { TJvCustomSettingsTreeView } ==========================================
 
 constructor TJvCustomSettingsTreeView.Create(AOwner: TComponent);
 begin

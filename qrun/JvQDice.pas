@@ -37,12 +37,10 @@ unit JvQDice;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}  
-  QGraphics, QControls, QForms, QMenus, Types, QWindows, 
-  JvQTimer, JvQComponent, JvQThemes, JvQExControls;
+  QWindows,  
+  Types, 
+  Classes, QGraphics, QControls,
+  JvQTimer, JvQComponent, JvQExControls;
 
 type
   TJvDiceValue = 1..6;
@@ -125,8 +123,9 @@ type
 
 implementation
 
-uses  
-  QImgList; 
+uses
+  SysUtils, QImgList,
+  JvQThemes;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDice.Res}

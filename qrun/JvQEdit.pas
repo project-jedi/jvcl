@@ -50,10 +50,10 @@ unit JvQEdit;
 interface
 
 uses
-  SysUtils, Classes,  
-  Qt, QTypes, QGraphics, QControls, QStdCtrls, QDialogs, QForms, QMenus, Types,
-  QWindows, 
-  JvQCaret, JvQMaxPixel, JvQTypes, JvQToolEdit, JvQExStdCtrls;
+  QWindows, QMessages, 
+  Qt, QTypes, 
+  Classes, Types, QGraphics, QControls, QMenus,
+  JvQCaret, JvQMaxPixel, JvQTypes, JvQExStdCtrls;
 
 
 const
@@ -220,8 +220,9 @@ type
 
 implementation
 
-uses 
-  Math;
+uses
+  SysUtils, Math, 
+  JvQToolEdit;
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin

@@ -41,7 +41,7 @@ uses
   Windows,   // for OutputDebugString
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
-  JvQMTSync, JvQMTConsts, JvQMTThreading, JvQFinalize;
+  JvQMTSync, JvQMTConsts, JvQMTThreading;
 
 type
   TMTBoundedQueue = class(TObjectQueue)
@@ -57,7 +57,7 @@ type
     function Pop: TObject;
     procedure Push(AObject: TObject);
   end;
-  
+
   TMTAsyncBuffer = class(TObject)
   private
     FBuffer: TMTBoundedQueue;
@@ -111,11 +111,12 @@ implementation
 
 
 uses
-  JvQResources;
-
+  JvQResources, JvQFinalize;
 
 const
   sUnitName = 'JvMTData';
+
+
 
 
 
@@ -126,8 +127,8 @@ function DataThreadsMan: TMTManager;
 begin
   if not Assigned(GlobalDataThreadsMan) then
   begin
-    GlobalDataThreadsMan := TMTManager.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalDataThreadsMan));
+    GlobalDataThreadsMan := TMTManager.Create; 
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalDataThreadsMan)); 
   end;
   Result := GlobalDataThreadsMan;
 end;
@@ -370,7 +371,7 @@ finalization
       'Memory leak detected: free MTData objects before application shutdown'); // do not localize
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
-
-  FinalizeUnit(sUnitName);
+ 
+  FinalizeUnit(sUnitName); 
 
 end.

@@ -35,8 +35,8 @@ unit JvQAppAnimatedIcon;
 interface
 
 uses
-  SysUtils, Classes,
-  QControls, QForms, QExtCtrls, 
+  Classes,
+  QControls, QExtCtrls, 
   Types, QGraphics, QImgList, 
   JvQComponent;
 
@@ -62,6 +62,9 @@ type
   end;
 
 implementation
+
+uses
+  QForms;
 
 constructor TJvAppAnimatedIcon.Create(AOwner: TComponent);
 begin

@@ -121,7 +121,7 @@ type
     procedure ArrangeChildren;
     procedure SetupArrows;
   protected
-    procedure Visiblechanged; override;
+    procedure VisibleChanged; override;
     procedure EnabledChanged; override;
     procedure SetParent( const  AParent: TWinControl); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;

@@ -37,7 +37,7 @@ type
 
   TGaugeKind = (gkText, gkHorizontalBar, gkVerticalBar, gkPie, gkNeedle);
 
-  TJvGauge = class(TJvGraphicControl)
+  TJvGauge = class(TJvWinControl)
   private
     FMinValue: Longint;
     FMaxValue: Longint;

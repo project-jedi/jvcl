@@ -37,7 +37,6 @@ unit JvQAddPrinter;
 interface
 
 uses
-  Windows, ActiveX, ShlObj, ShellAPI, SysUtils, Classes,
   JvQBaseDlg;
 
 type
@@ -47,6 +46,9 @@ type
   end;
 
 implementation
+
+uses
+  Windows, ActiveX, ShlObj, ShellAPI, SysUtils, Classes;
 
 // (rom) move to JCL
 
@@ -139,7 +141,7 @@ begin
     end;
 end;
 
-//=== TJvAddPrinterDialog ====================================================
+//=== { TJvAddPrinterDialog } ================================================
 
 function TJvAddPrinterDialog.Execute: Boolean;
 var

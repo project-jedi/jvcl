@@ -36,10 +36,8 @@ unit JvQAppInst;
 interface
 
 uses
-  Windows, Messages, SysUtils,  
-  QForms, 
-  Classes,
-  { Classes must be after Forms for Delphi 5 compatibility. }
+  Windows, Messages, QForms,
+  Classes, { Classes must be after Forms for Delphi 5 compatibility. }
   JclAppInst;
 
 type
@@ -110,6 +108,7 @@ type
 implementation
 
 uses
+  SysUtils,
   JvQJVCLUtils;
 
 const

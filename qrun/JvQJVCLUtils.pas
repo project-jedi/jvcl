@@ -546,6 +546,10 @@ function IsPositiveResult(Value: TModalResult): Boolean;
 function IsNegativeResult(Value: TModalResult): Boolean;
 function IsAbortResult(const Value: TModalResult): Boolean;
 function StripAllFromResult(const Value: TModalResult): TModalResult;
+// returns either BrightColor or DarkColor depending on the luminance of AColor
+// This function gives the same result (AFAIK) as the function used in Windows to
+// calculate the desktop icon text color based on the desktop background color
+function SelectColorByLuminance(AColor, DarkColor, BrightColor:TColor):TColor;
 
 implementation
 
@@ -1840,9 +1844,9 @@ begin
     if (StartColor = clNone) and (EndColor = clNone) then
       Exit;
     if not (IsRectEmpty(ARect) and (GetMapMode(Canvas.Handle) = MM_TEXT)) then
-    begin
+    begin  
       StartColor := ColorFromColormap(StartColor);
-      EndColor := ColorFromColormap(EndColor);
+      EndColor := ColorFromColormap(EndColor); 
       if Direction in [fdBottomToTop, fdRightToLeft] then
       begin
         // just swap the colors
@@ -2246,7 +2250,7 @@ begin
   TCustomControlAccessProtected(Control).Canvas.Draw(Rect.Left, Rect.Top, Bmp);
 end;
 
-{ TJvDesktopCanvas }
+//=== { TJvDesktopCanvas } ===================================================
 
 destructor TJvDesktopCanvas.Destroy;
 begin
@@ -4305,7 +4309,7 @@ begin
   end;
 end;
 
-//=== TJvGradientOptions ============================================================
+//=== { TJvGradientOptions } =================================================
 
 constructor TJvGradientOptions.Create;
 begin
@@ -5020,7 +5024,7 @@ begin
   end;
 end;
 
-//=== TJvPoint ===============================================================
+//=== { TJvPoint } ===========================================================
 
 procedure TJvPoint.Assign(Source: TPersistent);
 begin
@@ -5052,7 +5056,7 @@ begin
   DoChange;
 end;
 
-//=== TJvRect ================================================================
+//=== { TJvRect } ============================================================
 
 constructor TJvRect.Create;
 begin
@@ -5161,6 +5165,16 @@ end;
 procedure TJvRect.SetWidth(Value: Integer);
 begin
   FBottomRight.X := FTopLeft.X + Value;
+end;
+
+function SelectColorByLuminance(AColor, DarkColor, BrightColor:TColor):TColor;
+var ACol:Longint;
+begin
+  ACol := ColorToRGB(AColor) and $00FFFFFF;
+  if ((2.99 * GetRValue(ACol) + 5.87 * GetGValue(ACol) + 1.14 * GetBValue(ACol)) > $400) then
+    Result := DarkColor
+  else
+    Result := BrightColor;
 end;
 
 initialization

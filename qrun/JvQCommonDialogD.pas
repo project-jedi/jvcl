@@ -36,8 +36,9 @@ unit JvQCommonDialogD;
 interface
 
 uses
-  Windows, QSetUpApi, SysUtils, Classes,  
-  Qt, QControls, 
+  Windows, Classes, 
+  Qt, 
+  QControls,
   JvQTypes, JvQComponent;
 
 type
@@ -59,6 +60,7 @@ function JvDiskStylesToDWORD(const Style: TJvDiskStyles): DWORD;
 implementation
 
 uses
+  QSetUpApi,
   JvQResources;
 
 const
