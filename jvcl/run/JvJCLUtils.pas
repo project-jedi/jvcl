@@ -6660,9 +6660,8 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 begin
-  // ignore Visibility
-  Libc.system(PChar(Format('kfmclient exec "%s"', [FileName]));
-    //  Libc.system(PChar(FileName));
+  // ignores Visibility
+  Libc.system(PChar(Format('kfmclient exec "%s"', [FileName])));
 end;
 {$ENDIF LINUX}
 
