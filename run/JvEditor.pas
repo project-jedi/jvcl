@@ -5024,8 +5024,11 @@ end;
 
 function TJvCustomEditor.GetSelStart: Integer;
 begin
-  Result := PosFromCaret(FCaretX, FCaretY);
-end;
+  if FSelection.Selected then
+    Result := PosFromCaret(FSelection.SelBegX, FSelection.SelBegY)
+  else
+    Result := PosFromCaret(FCaretX, FCaretY);
+end
 
 procedure TJvCustomEditor.SetSelStart(ASelStart: Integer);
 begin
