@@ -41,7 +41,7 @@ type
   private
     FRemoteServer: TCustomRemoteServer;
     FPrepared: Boolean;
-    FUsername: string;
+    FUserName: string;
     FInLogin: Boolean;
     FOnCheckUser: TJvLoginEvent;
     FSaveAfterConnect: TNotifyEvent;
@@ -90,8 +90,8 @@ uses
   JvJVCLUtils;
 
 resourcestring
-  cKeyLoginSection = 'Remote Login';
-  cKeyLastLoginUserName = 'Last User';
+  SKeyLoginSection = 'Remote Login';
+  SKeyLastLoginUserName = 'Last User';
 
 type
   TJvServer = class(TCustomRemoteServer);
@@ -205,21 +205,21 @@ begin
     with CreateLoginForm(False) do
     try
       OnOkClick := Self.OkButtonClick;
-      FUsername := ReadUserName(FUsername);
+      FUserName := ReadUserName(FUserName);
       if FRemoteServer is TDispatchConnection then
       begin
         OnGetUser := TDispatchConnection(FRemoteServer).OnGetUsername;
         if Assigned(OnGetUser) then
-          OnGetUser(FRemoteServer, FUsername);
+          OnGetUser(FRemoteServer, FUserName);
       end;
-      UserNameEdit.Text := FUsername;
+      UserNameEdit.Text := FUserName;
       if ShowModal = mrOk then
       begin
-        FUsername := UserNameEdit.Text;
-        WriteUserName(FUsername);
+        FUserName := UserNameEdit.Text;
+        WriteUserName(FUserName);
         if not FInLogin then
         begin
-          SetLoggedUser(FUsername);
+          SetLoggedUser(FUserName);
           DoUpdateCaption;
           DoAfterLogin;
         end;
@@ -252,7 +252,7 @@ begin
     else
       Ini := TIniFile.Create(IniFileName);
     try
-      IniWriteString(Ini, cKeyLoginSection, cKeyLastLoginUserName, UserName);
+      IniWriteString(Ini, SKeyLoginSection, SKeyLastLoginUserName, UserName);
     finally
       Ini.Free;
     end;
@@ -273,7 +273,7 @@ begin
     else
       Ini := TIniFile.Create(IniFileName);
     try
-      Result := IniReadString(Ini, cKeyLoginSection, cKeyLastLoginUserName,
+      Result := IniReadString(Ini, SKeyLoginSection, SKeyLastLoginUserName,
         UserName);
     finally
       Ini.Free;
@@ -309,21 +309,21 @@ begin
   if not Assigned(FRemoteServer) then
     Exit;
   PrepareRemoteServer;
-  FUsername := UserName;
+  FUserName := UserName;
   try
     FInLogin := True;
     try
       TJvServer(FRemoteServer).Connected := True;
       Result := TJvServer(FRemoteServer).Connected;
-      UserName := FUsername;
-      FUsername := '';
+      UserName := FUserName;
+      FUserName := '';
     finally
       FInLogin := False;
     end;
   except
     Application.HandleException(Self);
     Result := False;
-    FUsername := '';
+    FUserName := '';
     AbortConnection;
   end;
   if Result and Assigned(FSaveAfterConnect) then

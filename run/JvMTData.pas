@@ -111,7 +111,7 @@ resourcestring
   sMethodOnlyForMainThread = '%s method can only be used by the main VCL thread.';
 
 var
-  DataThreadsMan: TMTManager;
+  DataThreadsMan: TMTManager = nil;
 
 //=== TMTBoundedQueue ========================================================
 
@@ -216,13 +216,10 @@ begin
   begin
     // wait until the data has been read (can be outside OnCanRead event)
     FVCLReady.Wait;
-
     // perform blocking read or write from the buffer
     PerformDataXChg;
-
     // set data is ready flag
     FDataReady.Signal;
-
     // Perform OnCanRead event in VCL thread context
     Thread.Synchronize(DoDataEvent);
   end;
@@ -261,13 +258,10 @@ begin
 
   // Check if data ready
   FDataReady.Wait;
-
   // get data
   Result := FData;
-
   // make sure it we dont own it anymore
   FData := nil;
-
   // signal worker to continue
   FVCLReady.Signal;
 end;
@@ -342,7 +336,6 @@ begin
   FVCLReady.Signal;
 end;
 
-
 initialization
   DataThreadsMan := TMTManager.Create;
 
@@ -355,6 +348,6 @@ finalization
       'Memory leak detected: free MTData objects before application shutdown'); // do not localize
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
-
   DataThreadsMan.Free;
+
 end.

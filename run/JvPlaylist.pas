@@ -38,14 +38,15 @@ type
   TJvPlaylist = class(TJvListBox)
   private
     FShowNumbers: Boolean;
-    FItems: TStrings;
+    FItems: TStringList;
     FShowExtension: Boolean;
     FRefresh: Boolean;
-    FShowDrive: boolean;
+    FShowDrive: Boolean;
+    function GetItems: TStrings;
     procedure SetShowNumbers(const Value: Boolean);
     procedure SetItems(const Value: TStrings);
     procedure SetShowExtension(const Value: Boolean);
-    procedure SetShowDrive(const Value: boolean);
+    procedure SetShowDrive(const Value: Boolean);
   protected
     procedure LBDeleteString(var Msg: TMessage); message LB_DELETESTRING;
     procedure Changed; override;
@@ -55,7 +56,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure AddItem(Item: string; AObject: TObject); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure AddItem(Item: string; AObject: TObject);
+      {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure AddItems(Value: TStrings);
     function GetItem(Index: Integer): string;
     procedure DeleteDeadFiles;
@@ -70,23 +72,25 @@ type
     procedure SavePlaylist(FileName: string);
     procedure LoadPlaylist(FileName: string);
   published
-    property ShowDrive:boolean read FShowDrive write SetShowDrive default true;
+    property ShowDrive: Boolean read FShowDrive write SetShowDrive default True;
     property ShowNumbers: Boolean read FShowNumbers write SetShowNumbers default False;
     property ShowExtension: Boolean read FShowExtension write SetShowExtension default False;
-    property Items: TStrings read FItems write SetItems;
+    property Items: TStrings read GetItems write SetItems;
   end;
 
 implementation
 
+// (rom) better simplify by eliminating FItems altogether
+
 constructor TJvPlaylist.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FShowDrive := true;
+  FShowDrive := True;
   FShowNumbers := False;
   FShowExtension := False;
   FRefresh := False;
   FItems := TStringList.Create;
-  TStringList(FItems).OnChange := ItemsChanged;
+  FItems.OnChange := ItemsChanged;
 end;
 
 destructor TJvPlaylist.Destroy;
@@ -96,18 +100,19 @@ begin
 end;
 
 function TJvPlayList.GetPath(Value: string; Position: Integer): string;
-var i:integer;
+var
+  I: Integer;
 begin
   Result := Value;
-  if not FShowDrive then
+  if not ShowDrive then
   begin
-    i := Pos(':',Result);
-    if i > 0 then
-      Result := Copy(Result,i+1,MaxInt)
+    I := Pos(':', Result);
+    if I > 0 then
+      Result := Copy(Result, I + 1, Length(Result));
   end;
-  if not FShowExtension then
+  if not ShowExtension then
     Result := ChangeFileExt(Result, '');
-  if FShowNumbers then
+  if ShowNumbers then
     Result := IntToStr(Position + 1) + '. ' + Result;
 end;
 
@@ -137,16 +142,16 @@ end;
 
 procedure TJvPlaylist.SortBySongName;
 var
-  a, b, c: Integer;
+  A, B, C: Integer;
 begin
   FRefresh := True;
-  for a := 0 to Items.Count - 1 do
+  for A := 0 to Items.Count - 1 do
   begin
-    c := a;
-    for b := a to Items.Count - 1 do
-      if ExtractFileName(Items[b]) < ExtractFileName(Items[c]) then
-        c := b;
-    Items.Exchange(a, c);
+    C := A;
+    for B := A to Items.Count - 1 do
+      if ExtractFileName(Items[b]) < ExtractFileName(Items[C]) then
+        C := B;
+    Items.Exchange(A, C);
   end;
   FRefresh := False;
   Refresh;
@@ -154,12 +159,12 @@ end;
 
 procedure TJvPlaylist.SortByPath;
 begin
-  TStringList(FItems).Sort;
+  FItems.Sort;
 end;
 
 procedure TJvPlaylist.SortByPathInverted;
 begin
-  TStringList(FItems).Sort;
+  FItems.Sort;
   ReverseOrder;
 end;
 
@@ -232,6 +237,7 @@ var
   I: Integer;
 begin
   FRefresh := True;
+  inherited Items.BeginUpdate;
   if Items.Count <> inherited Items.Count then
   begin
     inherited Items.Clear;
@@ -241,6 +247,7 @@ begin
   else
     for I := 0 to Items.Count - 1 do
       inherited Items[I] := GetPath(Items[I], I);
+  inherited Items.EndUpdate;
   FRefresh := False;
 end;
 
@@ -251,6 +258,11 @@ begin
     FShowNumbers := Value;
     Refresh;
   end;
+end;
+
+function TJvPlaylist.GetItems: TStrings;
+begin
+  Result := FItems;
 end;
 
 procedure TJvPlaylist.SetItems(const Value: TStrings);
@@ -278,9 +290,9 @@ begin
   inherited;
   if not FRefresh then
   begin
-    TStringList(FItems).OnChange := nil;
-    Items.Delete(LongInt(Msg.WParam));
-    TStringList(FItems).OnChange := ItemsChanged;
+    FItems.OnChange := nil;
+    Items.Delete(Longint(Msg.WParam));
+    FItems.OnChange := ItemsChanged;
   end;
 end;
 
@@ -302,7 +314,7 @@ begin
     end;
     Exit;
   end;
-  TStringList(FItems).OnChange := nil;
+  FItems.OnChange := nil;
   FRefresh := True;
   if (Items.Count > 0) and (SelCount > 0) and not Selected[Items.Count - 1] then
   begin
@@ -318,7 +330,7 @@ begin
     end;
   end;
   FRefresh := False;
-  TStringList(FItems).OnChange := ItemsChanged;
+  FItems.OnChange := ItemsChanged;
   Refresh;
 end;
 
@@ -335,7 +347,7 @@ begin
     end;
     Exit;
   end;
-  TStringList(FItems).OnChange := nil;
+  FItems.OnChange := nil;
   FRefresh := True;
   if (Items.Count > 0) and (SelCount > 0) and not Selected[0] then
   begin
@@ -351,11 +363,11 @@ begin
     end;
   end;
   FRefresh := False;
-  TStringList(FItems).OnChange := ItemsChanged;
+  FItems.OnChange := ItemsChanged;
   Refresh;
 end;
 
-procedure TJvPlaylist.SetShowDrive(const Value: boolean);
+procedure TJvPlaylist.SetShowDrive(const Value: Boolean);
 begin
   if FShowDrive <> Value then
   begin

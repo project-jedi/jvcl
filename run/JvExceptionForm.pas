@@ -36,7 +36,7 @@ uses
   JvLabel, JvComponent;
 
 type
-  TErrorEvent = procedure(Error: Exception; var Msg: string) of object;
+  TJvErrorEvent = procedure(Error: Exception; var Msg: string) of object;
 
   TJvErrorDialog = class(TJvForm)
     BasicPanel: TPanel;
@@ -62,11 +62,11 @@ type
     procedure ErrorInfo(var LogicalAddress: Pointer; var ModuleName: string);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
-    Details: Boolean;
-    DetailsHeight: Integer;
-    ExceptObj: Exception;
+    FDetails: Boolean;
+    FDetailsHeight: Integer;
+    FExceptObj: Exception;
     FPrevOnException: TExceptionEvent;
-    FOnErrorMsg: TErrorEvent;
+    FOnErrorMsg: TJvErrorEvent;
     FHelpFile: string;
     procedure GetErrorMsg(var Msg: string);
     procedure ShowError;
@@ -74,23 +74,15 @@ type
     procedure WMHelp(var Msg: TWMHelp); message WM_HELP;
   public
     procedure ShowException(Sender: TObject; E: Exception);
-    property OnErrorMsg: TErrorEvent read FOnErrorMsg write FOnErrorMsg;
+    property OnErrorMsg: TJvErrorEvent read FOnErrorMsg write FOnErrorMsg;
   end;
-
-const
-  ErrorDlgHelpCtx: THelpContext = 0;
-
-var
-  JvErrorDialog: TJvErrorDialog;
 
 procedure JvErrorIntercept;
 
 implementation
 
 uses
-  Windows,
-  ComObj,
-  Consts,
+  Windows, ComObj, Consts,
   JvTypes, JvConsts, JvJVCLUtils, JvJCLUtils;
 
 {$R *.dfm}
@@ -99,10 +91,12 @@ resourcestring
   SCodeError = '%s.' + sLineBreak + 'Error Code: %.8x (%1:d).';
   SModuleError = 'Exception in module %s.' + sLineBreak + '%s';
 
+var
+  JvErrorDialog: TJvErrorDialog = nil;
+
 procedure JvErrorIntercept;
 begin
-  if JvErrorDialog <> nil then
-    JvErrorDialog.Free;
+  JvErrorDialog.Free;
   JvErrorDialog := TJvErrorDialog.Create(Application);
 end;
 
@@ -114,13 +108,13 @@ begin
     if Assigned(FPrevOnException) then
       FPrevOnException(Sender, E)
     else
-    if (ExceptObj = nil) and not Application.Terminated then
+    if (FExceptObj = nil) and not Application.Terminated then
     begin
-      ExceptObj := E;
+      FExceptObj := E;
       try
         ShowModal;
       finally
-        ExceptObj := nil;
+        FExceptObj := nil;
       end;
     end
     else
@@ -135,6 +129,8 @@ begin
   end;
   Application.RestoreTopMosts;
 end;
+
+// (rom) i see no reason for assembler here
 
 function ConvertAddr(Address: Pointer): Pointer; assembler;
 asm
@@ -157,8 +153,9 @@ begin
     LogicalAddress := ConvertAddr(LogicalAddress);
   end
   else
-    Integer(LogicalAddress) := Integer(LogicalAddress) - Integer(Info.AllocationBase);
-  StrLCopy(ModName, AnsiStrRScan(Temp, '\') + 1, SizeOf(ModName) - 1);
+    // (rom) changed to Cardinal
+    Cardinal(LogicalAddress) := Cardinal(LogicalAddress) - Cardinal(Info.AllocationBase);
+  StrLCopy(ModName, AnsiStrRScan(Temp, PathDelim) + 1, SizeOf(ModName) - 1);
   ModuleName := StrPas(ModName);
 end;
 
@@ -172,32 +169,32 @@ begin
   ErrorInfo(P, ModuleName);
   AddrLabel.Enabled := (P <> nil);
   ErrorAddress.Text := Format('%p', [ExceptAddr]);
-  ErrorType.Text := ExceptObj.ClassName;
+  ErrorType.Text := FExceptObj.ClassName;
   TypeLabel.Enabled := ErrorType.Text <> '';
-  S := Trim(ExceptObj.Message);
+  S := Trim(FExceptObj.Message);
   if Pos(CrLf, S) = 0 then
-    S := ReplaceStr(S, #10, CrLf);
-  if ExceptObj is EInOutError then
-    S := Format(SCodeError, [S, EInOutError(ExceptObj).ErrorCode])
+    S := ReplaceStr(S, Lf, CrLf);
+  if FExceptObj is EInOutError then
+    S := Format(SCodeError, [S, EInOutError(FExceptObj).ErrorCode])
   else
-  if ExceptObj is EOleException then
+  if FExceptObj is EOleException then
   begin
-    with EOleException(ExceptObj) do
+    with EOleException(FExceptObj) do
       if (Source <> '') and (AnsiCompareText(S, Trim(Source)) <> 0) then
         S := S + CrLf + Trim(Source);
-    S := Format(SCodeError, [S, EOleException(ExceptObj).ErrorCode])
+    S := Format(SCodeError, [S, EOleException(FExceptObj).ErrorCode])
   end
   else
-  if ExceptObj is EOleSysError then
-    S := Format(SCodeError, [S, EOleSysError(ExceptObj).ErrorCode])
+  if FExceptObj is EOleSysError then
+    S := Format(SCodeError, [S, EOleSysError(FExceptObj).ErrorCode])
   else
-  if ExceptObj is EExternalException then
+  if FExceptObj is EExternalException then
     S := Format(SCodeError, [S,
-      EExternalException(ExceptObj).ExceptionRecord^.ExceptionCode])
+      EExternalException(FExceptObj).ExceptionRecord^.ExceptionCode])
   else
-  if ExceptObj is {$IFDEF COMPILER6_UP} EOSError {$ELSE} EWin32Error {$ENDIF} then
+  if FExceptObj is {$IFDEF COMPILER6_UP} EOSError {$ELSE} EWin32Error {$ENDIF} then
     S := Format(SCodeError,
-     [S, {$IFDEF COMPILER6_UP} EOSError {$ELSE} EWin32Error {$ENDIF} (ExceptObj).ErrorCode])
+     [S, {$IFDEF COMPILER6_UP} EOSError {$ELSE} EWin32Error {$ENDIF} (FExceptObj).ErrorCode])
   else
     S := S + '.';
   MessageText.Text := Format(SModuleError, [ModuleName, S]);
@@ -209,7 +206,7 @@ begin
   try
     if Value then
     begin
-      DetailsPanel.Height := DetailsHeight;
+      DetailsPanel.Height := FDetailsHeight;
       ClientHeight := DetailsPanel.Height + BasicPanel.Height;
       DetailsBtn.Caption := '<< &' + SDetails;
       ShowError;
@@ -221,7 +218,7 @@ begin
       DetailsBtn.Caption := '&' + SDetails + ' >>';
     end;
     DetailsPanel.Enabled := Value;
-    Details := Value;
+    FDetails := Value;
   finally
     EnableAlign;
   end;
@@ -236,7 +233,7 @@ begin
     System.Delete(Msg, I, MaxInt);
   if Assigned(FOnErrorMsg) then
   try
-    FOnErrorMsg(ExceptObj, Msg);
+    FOnErrorMsg(FExceptObj, Msg);
   except
   end;
 end;
@@ -258,7 +255,7 @@ end;
 procedure TJvErrorDialog.FormCreate(Sender: TObject);
 begin
   BorderIcons := [biSystemMenu, biHelp];
-  DetailsHeight := DetailsPanel.Height;
+  FDetailsHeight := DetailsPanel.Height;
   Icon.Handle := LoadIcon(0, IDI_HAND);
   IconImage.Picture.Icon := Icon;
   { Load string resources }
@@ -279,21 +276,21 @@ var
   S: string;
   ExStyle: Longint;
 begin
-  if ExceptObj.HelpContext <> 0 then
-    HelpContext := ExceptObj.HelpContext
+  if FExceptObj.HelpContext <> 0 then
+    HelpContext := FExceptObj.HelpContext
   else
-    HelpContext := ErrorDlgHelpCtx;
-  if ExceptObj is EOleException then
-    FHelpFile := EOleException(ExceptObj).HelpFile
+    HelpContext := THelpContext(0);
+  if FExceptObj is EOleException then
+    FHelpFile := EOleException(FExceptObj).HelpFile
   else
     FHelpFile := '';
   ExStyle := GetWindowLong(Handle, GWL_EXSTYLE);
-  if (HelpContext <> 0) then
+  if HelpContext <> 0 then
     ExStyle := ExStyle or WS_EX_CONTEXTHELP
   else
     ExStyle := ExStyle and not WS_EX_CONTEXTHELP;
   SetWindowLong(Handle, GWL_EXSTYLE, ExStyle);
-  S := Trim(ExceptObj.Message) + '.';
+  S := Trim(FExceptObj.Message) + '.';
   GetErrorMsg(S);
   ErrorText.Caption := S;
   SetShowDetails(False);
@@ -302,7 +299,7 @@ end;
 
 procedure TJvErrorDialog.DetailsBtnClick(Sender: TObject);
 begin
-  SetShowDetails(not Details);
+  SetShowDetails(not FDetails);
 end;
 
 procedure TJvErrorDialog.FormKeyUp(Sender: TObject; var Key: Word;
@@ -324,9 +321,6 @@ begin
     Perform(WM_HELP, 0, Longint(@Info));
   end;
 end;
-
-initialization
-  JvErrorDialog := nil;
 
 end.
 

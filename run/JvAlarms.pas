@@ -63,13 +63,13 @@ type
 
   TJvAlarmItems = class(TOwnedCollection)
   private
-    function GetItems(Index: Integer): TJVAlarmItem;
-    procedure SetItems(Index: Integer; const Value: TJVAlarmItem);
+    function GetItems(Index: Integer): TJvAlarmItem;
+    procedure SetItems(Index: Integer; const Value: TJvAlarmItem);
   public
     constructor Create(AOwner: TPersistent);
     function Add: TJvAlarmItem;
     procedure Assign(Source: TPersistent); override;
-    property Items[Index: Integer]: TJVAlarmItem read GetItems write SetItems; default;
+    property Items[Index: Integer]: TJvAlarmItem read GetItems write SetItems; default;
   end;
 
   TJvAlarms = class(TJvComponent)
@@ -91,8 +91,7 @@ type
     destructor Destroy; override;
     procedure Add(const AName: string; const ATime: TDateTime; const AKind: TJvTriggerKind = tkOneShot);
     procedure Delete(const Idx: Cardinal);
-
-    //    property Alarms[Idx: Cardinal]: TJvAlarm read GetAlarm;
+    // property Alarms[Idx: Cardinal]: TJvAlarm read GetAlarm;
     property Running: Boolean read FRunning;
   published
     property Alarms: TJvAlarmItems read FAlarms write SetAlarms;
@@ -125,11 +124,12 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvAlarms.Add(const AName: string; const ATime: TDateTime; const AKind: TJvTriggerKind);
+procedure TJvAlarms.Add(const AName: string; const ATime: TDateTime;
+  const AKind: TJvTriggerKind);
 begin
   // hs (Oneshot-) timed out ? then we ignore this alarm !
   // works only by calling this funtion directly !
-  if (aTime >= Now) or (AKind <> tkOneShot) then
+  if (ATime >= Now) or (AKind <> tkOneShot) then
   begin
     with FAlarms.Add do
     begin
@@ -150,7 +150,8 @@ begin
   FTimer.Enabled := Running;
 end;
 
-procedure TJvAlarms.DoAlarm(const Alarm: TJvAlarmItem; const TriggerTime: TDateTime);
+procedure TJvAlarms.DoAlarm(const Alarm: TJvAlarmItem;
+  const TriggerTime: TDateTime);
 begin
   if Assigned(FOnAlarm) then
     FOnAlarm(Self, Alarm, TriggerTime);
@@ -164,8 +165,8 @@ var
   Year, Month, Day: Word;
   Alarm: TJvAlarmItem;
   // hs reentry flag added
-  // may be necessary if a userfunction in DoAlarm does not
-  // return (ex.: modal dialogbox ) before the same alarm is activated next time.
+  // may be necessary if a user function in DoAlarm does not
+  // return (ex.: modal dialog box) before the same alarm is activated next time.
   // it's just a workaround - may be done better :-)
 begin
   if not FBusy then
@@ -190,7 +191,8 @@ begin
               DoAlarm(Alarm, Current);
               Stamp := DateTimeToTimeStamp(Alarm.Time);
               case Alarm.Kind of
-                tkOneShot: ;
+                tkOneShot:
+                  ;
                 //hs Delete(i) removed - later on was a reference to 'Alarm.Kind'
                 //  which failed caused by an invalid Alarm
                 tkEachSecond:
@@ -206,10 +208,8 @@ begin
                 tkEachYear:
                   begin
                     DecodeDate(Current, Year, Month, Day);
-                    if IsLeapYear(Year) then
-                      Inc(Stamp.Date, 366)
-                    else
-                      Inc(Stamp.Date, 365);
+                    // (rom) a showoff with boolean expressions :-)
+                    Inc(Stamp.Date, 365 + Ord(IsLeapYear(Year)));
                   end;
               end;
               if Stamp.Time > 24 * 60 * 60 * 1000 then
@@ -270,12 +270,12 @@ begin
     inherited Assign(Source);
 end;
 
-function TJvAlarmItems.GetItems(Index: Integer): TJVAlarmItem;
+function TJvAlarmItems.GetItems(Index: Integer): TJvAlarmItem;
 begin
-  Result := TJVAlarmItem(inherited Items[Index]);
+  Result := TJvAlarmItem(inherited Items[Index]);
 end;
 
-procedure TJvAlarmItems.SetItems(Index: Integer; const Value: TJVAlarmItem);
+procedure TJvAlarmItems.SetItems(Index: Integer; const Value: TJvAlarmItem);
 begin
   inherited Items[Index] := Value;
 end;

@@ -36,15 +36,13 @@ uses
 
 type
   TJvFormToHtml = class(TJvComponent)
-  private
-    FTs: TStringList;
-  published
-    procedure FormToHtml(Form: TForm; Path: string);
+  public
+    procedure FormToHtml(const Form: TCustomForm; Path: string);
   end;
 
 implementation
 
-function FontToCss(Font: TFont): string;
+function FontToCss(const Font: TFont): string;
 begin
   Result := Format(';font-Size:%d;color:#%d;font-weight:', [Font.Size, Font.Color]);
   if fsBold in Font.Style then
@@ -54,14 +52,15 @@ begin
   Result := Result + 'font-family:' + Font.Name;
 end;
 
-procedure TJvFormToHtml.FormToHtml(Form: TForm; Path: string);
+procedure TJvFormToHtml.FormToHtml(const Form: TCustomForm; Path: string);
 var
   I, J: Integer;
   C: TComponent;
   St: string;
+  HTML: TStringList;
 begin
-  FTs := TStringList.Create;
-  FTs.Add('<HTML><BODY>');
+  HTML := TStringList.Create;
+  HTML.Add('<HTML><BODY>');
   for I := 0 to Form.ComponentCount - 1 do
   begin
     C := Form.Components[I];
@@ -124,7 +123,7 @@ begin
       St := St + ' TABORDER=' + IntToStr((C as TCheckBox).TabOrder);
       St := St + ' NAME=' + (C as TCheckBox).Name;
       St := St + ' TYPE="CHECKBOX">';
-      FTs.Add(St);
+      HTML.Add(St);
       St := Format('<LABEL style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d', [(C as TCheckBox).Left + 13, (C
           as TCheckBox).Top, (C as TCheckBox).Height, (C as TCheckBox).Width]);
       St := St + FontToCss((C as TCheckBox).Font) + '"';
@@ -146,7 +145,7 @@ begin
       St := St + ' NAME=' + (C as TRadioButton).Parent.Name;
       St := St + ' TABORDER=' + IntToStr((C as TRadioButton).TabOrder);
       St := St + ' TYPE="RADIO">';
-      FTs.Add(St);
+      HTML.Add(St);
       St := Format('<LABEL style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
         [(C as TRadioButton).Left + 13, (C as TRadioButton).Top, (C as TRadioButton).Height, (C as
           TRadioButton).Width]);
@@ -166,32 +165,32 @@ begin
       St := St + ' NAME=' + (C as TEdit).Name;
       if (C as TEdit).ReadOnly then
         St := St + ' ReadOnly';
-      if (C as Tedit).MaxLength <> 0 then
-        St := St + ' MAXLENGTH=' + IntToStr((C as Tedit).maxlength);
+      if (C as TEdit).MaxLength <> 0 then
+        St := St + ' MAXLENGTH=' + IntToStr((C as TEdit).MaxLength);
       if not (C as TEdit).Enabled then
         St := St + ' DISABLED';
       St := St + ' Value=' + (C as TEdit).Text;
       St := St + '>';
     end
     else
-    if C is TCombobox then
+    if C is TComboBox then
     begin
       St := Format('<SELECT style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
-        [(C as TCombobox).Left, (C as TCombobox).Top, (C as TCombobox).Height, (C as TCombobox).Width]);
-      St := St + FontToCss((C as TCombobox).Font) + '"';
-      St := St + ' TITLE="' + (C as TCombobox).Hint + '"';
-      St := St + ' TABORDER=' + IntToStr((C as TCombobox).TabOrder);
-      St := St + ' NAME=' + (C as TCombobox).Name;
-      if not (C as TCombobox).Enabled then
+        [(C as TComboBox).Left, (C as TComboBox).Top, (C as TComboBox).Height, (C as TComboBox).Width]);
+      St := St + FontToCss((C as TComboBox).Font) + '"';
+      St := St + ' TITLE="' + (C as TComboBox).Hint + '"';
+      St := St + ' TABORDER=' + IntToStr((C as TComboBox).TabOrder);
+      St := St + ' NAME=' + (C as TComboBox).Name;
+      if not (C as TComboBox).Enabled then
         St := St + ' DISABLED';
       St := St + '>';
-      FTs.Add(St);
-      for J := 0 to (C as TCombobox).Items.Count - 1 do
+      HTML.Add(St);
+      for J := 0 to (C as TComboBox).Items.Count - 1 do
       begin
-        if (C as TCombobox).ItemIndex = J then
-          FTs.Add('<OPTION SELECTED>' + (C as TCombobox).Items[J])
+        if (C as TComboBox).ItemIndex = J then
+          HTML.Add('<OPTION SELECTED>' + (C as TComboBox).Items[J])
         else
-          FTs.Add('<OPTION>' + (C as TCombobox).Items[J]);
+          HTML.Add('<OPTION>' + (C as TComboBox).Items[J]);
       end;
       St := '</SELECT>';
     end
@@ -207,23 +206,23 @@ begin
       if not (C as TListBox).Enabled then
         St := St + ' DISABLED';
       St := St + '>';
-      FTs.Add(St);
+      HTML.Add(St);
       for J := 0 to (C as TListBox).Items.Count - 1 do
       begin
         if (C as TListBox).ItemIndex = J then
-          FTs.Add('<OPTION SELECTED>' + (C as TListBox).Items[J])
+          HTML.Add('<OPTION SELECTED>' + (C as TListBox).Items[J])
         else
-          FTs.Add('<OPTION>' + (C as TListBox).Items[J]);
+          HTML.Add('<OPTION>' + (C as TListBox).Items[J]);
       end;
       St := '</SELECT>';
     end;
 
     if St <> '' then
-      FTs.Add(St);
+      HTML.Add(St);
   end;
-  FTs.Add('</BODY></HTML>');
-  FTs.SaveToFile(Path);
-  FTs.Free;
+  HTML.Add('</BODY></HTML>');
+  HTML.SaveToFile(Path);
+  HTML.Free;
 end;
 
 end.

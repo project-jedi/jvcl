@@ -23,6 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvMovableBevel;
@@ -30,13 +31,12 @@ unit JvMovableBevel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Forms,
-  ExtCtrls;
+  Windows, Messages, SysUtils, Classes, Controls, Forms, ExtCtrls;
 
 type
-  TJvBevelScrollTextDirection = (tdNone, tdUp2Down, tdDown2Up, tdLeft2Right, tdRight2Left,
-    tdTopLeft2BottomRight, tdTopRight2BottomLeft, tdBottomLeft2TopRight,
-    tdBottomRight2TopLeft);
+  TJvBevelScrollTextDirection = (tdNone, tdUpToDown, tdDownToUp, tdLeftToRight,
+    tdRightToLeft, tdTopLeftToBottomRight, tdTopRightToBottomLeft,
+    tdBottomLeftToTopRight, tdBottomRightToTopLeft);
 
   TJvMovableBevel = class(TBevel)
   private
@@ -102,40 +102,40 @@ end;
 procedure TJvMovableBevel.DoSize(Shift: TShiftState; DeltaX, DeltaY: Integer);
 begin
   case FDirection of
-    tdUp2Down:
+    tdUpToDown:
       begin
         Height := Height + DeltaY;
         Top := Top - DeltaY;
       end;
-    tdDown2Up:
+    tdDownToUp:
         Height := FStartY - DeltaY;
-    tdLeft2Right:
+    tdLeftToRight:
       begin
         Width := Width + DeltaX;
         Left := Left - DeltaX;
       end;
-    tdRight2Left:
+    tdRightToLeft:
         Width := FStartX - DeltaX;
-    tdTopLeft2BottomRight:
+    tdTopLeftToBottomRight:
       begin
         Top := Top - DeltaY;
         Left := Left - DeltaX;
         Height := Height + DeltaY;
         Width := Width + DeltaX;
       end;
-    tdTopRight2BottomLeft:
+    tdTopRightToBottomLeft:
       begin
         Height := Height + DeltaY;
         Width := FStartX - DeltaX;
         Top := Top - DeltaY;
       end;
-    tdBottomLeft2TopRight:
+    tdBottomLeftToTopRight:
       begin
         Left := Left - DeltaX;
         Height := FStartY - DeltaY;
         Width := Width + DeltaX;
       end;
-    tdBottomRight2TopLeft:
+    tdBottomRightToTopLeft:
       begin
         Height := FStartY - DeltaY;
         Width := FStartX - DeltaX;
@@ -150,18 +150,18 @@ begin
     if (X > 0) and (X <= FBorderSize) then
     begin
       Screen.Cursor := crSizeNWSE;
-      FDirection := tdTopLeft2BottomRight;
+      FDirection := tdTopLeftToBottomRight;
     end
     else
     if (X >= Width - FBorderSize) and (X < Width) then
     begin
       Screen.Cursor := crSizeNESW;
-      FDirection := tdTopRight2BottomLeft;
+      FDirection := tdTopRightToBottomLeft;
     end
     else
     begin
       Screen.Cursor := crSizeNS;
-      FDirection := tdUp2Down;
+      FDirection := tdUpToDown;
     end;
   end
   else
@@ -170,31 +170,31 @@ begin
     if (X > 0) and (X <= FBorderSize) then
     begin
       Screen.Cursor := crSizeNESW;
-      FDirection := tdBottomLeft2TopRight;
+      FDirection := tdBottomLeftToTopRight;
     end
     else
     if (X >= Width - FBorderSize) and (X < Width) then
     begin
       Screen.Cursor := crSizeNWSE;
-      FDirection := tdBottomRight2TopLeft;
+      FDirection := tdBottomRightToTopLeft;
     end
     else
     begin
       Screen.Cursor := crSizeNS;
-      FDirection := tdDown2Up;
+      FDirection := tdDownToUp;
     end;
   end
   else
   if (X >= 1) and (X <= FBorderSize) then
   begin
     Screen.Cursor := crSizeWE;
-    FDirection := tdLeft2Right;
+    FDirection := tdLeftToRight;
   end
   else
   if (X >= Width - FBorderSize) and (X < Width) then
   begin
     Screen.Cursor := crSizeWE;
-    FDirection := tdRight2Left;
+    FDirection := tdRightToLeft;
   end
   else
   begin
@@ -204,9 +204,9 @@ begin
 end;
 
 procedure TJvMovableBevel.MouseMove(Shift: TShiftState; X, Y: Integer);
-const
-  SC_DragMove = $F012;
-  WM_MOVE = $0003;
+//const
+//  SC_DRAGMOVE = $F012;
+//  WM_MOVE = $0003;
 begin
   if FMoving then
     DoMove(Shift, X - FStartX, Y - FStartY)
@@ -257,18 +257,18 @@ end;
 //    If X in[0..FBorderSize] then
 //    begin
 //      Screen.Cursor:= crsizenwse;
-//      FDirection := tdTopLeft2BottomRight;
+//      FDirection := tdTopLeftToBottomRight;
 //    end
 //    else
 //      if X in[Width-FBorderSize..Width] then
 //      begin
 //        Screen.Cursor := crsizenesw;
-//        FDirection := tdTopRight2BottomLeft;
+//        FDirection := tdTopRightToBottomLeft;
 //      end
 //      else
 //      begin
 //        Screen.Cursor := crsizens;
-//        FDirection := tdUp2Down;
+//        FDirection := tdUpToDown;
 //      end;
 //  end
 //  else
@@ -277,31 +277,31 @@ end;
 //      If X in[0..FBorderSize] then
 //      begin
 //        Screen.Cursor:= crsizenesw;
-//        FDirection := tdBottomLeft2TopRight;
+//        FDirection := tdBottomLeftToTopRight;
 //      end
 //      else
 //        if X in[Width-FBorderSize..Width] then
 //        begin
 //          Screen.Cursor := crsizenwse;
-//          FDirection := tdBottomRight2TopLeft;
+//          FDirection := tdBottomRightToTopLeft;
 //        end
 //        else
 //        begin
 //          Screen.Cursor := crsizens;
-//          FDirection := tdDown2Up;
+//          FDirection := tdDownToUp;
 //        end;
 //  end
 //  else
 //    if (X in [1..FBorderSize]) then
 //    begin
 //      Screen.Cursor := crsizeWE;
-//      FDirection := tdLeft2Right;
+//      FDirection := tdLeftToRight;
 //    end
 //    else
 //      if  (X in [Width-FBorderSize..Width]) then
 //      begin
 //        Screen.Cursor := crsizeWE;
-//        FDirection := tdRight2Left;
+//        FDirection := tdRightToLeft;
 //      end
 //      else
 //      begin

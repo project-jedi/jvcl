@@ -34,7 +34,7 @@ Known Issues:
   12/23/2001       First Create, introduce TKSide, TKSides, TJvWizardFrameStyle,
                      beAllSides, TKDeleteItemEvent
                    function KDrawSides, KDrawBevel, KDrawFrame
-  12/25/2001       introduct TKMessageLevel
+  12/25/2001       introduced TKMessageLevel
   01/04/2001       Add function KDrawBorderSides
 ******************************************************************************}
 
@@ -44,45 +44,48 @@ interface
 
 {$I JVCL.INC}
 
-uses Classes, Controls, Graphics,{$IFDEF COMPILER6_UP}Types,{$ENDIF} Windows;
-
-type
-  TJvWizardFrameStyle = (fsWindows, fsNone, fsFlat, fsGroove, fsBump, fsLowered,
-                  fsRaised);
-  TJvWizardImageAlignment = (iaLeft, iaRight, iaCenter, iaStretch);
-  TJvWizardImageLeftRight = iaLeft .. iaRight;
-  TJvWizardImageLayout = (ilTop, ilBottom, ilCenter, ilStretch, ilTile);
+uses
+  Windows,
+  {$IFDEF COMPILER6_UP}
+  Types,
+  {$ENDIF COMPILER6_UP}
+  Classes, Controls, Graphics, SysUtils;
 
 const
   beAllEdges = [beLeft, beTop, beRight, beBottom];
 
-function JvWizardDrawEdges(ACanvas: TCanvas; ABounds: TRect; ULColor, LRColor: TColor;
-                    AEdges: TBevelEdges): TRect;
+type
+  TJvWizardFrameStyle =
+    (fsWindows, fsNone, fsFlat, fsGroove, fsBump, fsLowered, fsRaised);
+  TJvWizardImageAlignment = (iaLeft, iaRight, iaCenter, iaStretch);
+  TJvWizardImageLeftRight = iaLeft..iaRight;
+  TJvWizardImageLayout = (ilTop, ilBottom, ilCenter, ilStretch, ilTile);
+  EJvWizardError = class(Exception);
+
+function JvWizardDrawEdges(ACanvas: TCanvas; ABounds: TRect;
+  ULColor, LRColor: TColor; AEdges: TBevelEdges): TRect;
 
 function JvWizardDrawBorderEdges(ACanvas: TCanvas; ABounds: TRect;
-                          AStyle: TJvWizardFrameStyle; AEdges: TBevelEdges): TRect;
+  AStyle: TJvWizardFrameStyle; AEdges: TBevelEdges): TRect;
 
 procedure JvWizardDrawImage(ACanvas: TCanvas; AGraphic: TGraphic; ARect: TRect;
   Align: TJvWizardImageAlignment; ALayout: TJvWizardImageLayout);
 
 implementation
-uses
-  SysUtils;
-  
+
 const
-
   { Frame Style Color constant arrays }
+  KULFrameColor: array [TJvWizardFrameStyle] of TColor = (clNone, clWindow,
+    clWindowFrame, clBtnShadow, clBtnHighlight, clBtnShadow, clBlack);
 
-  KULFrameColor: array[TJvWizardFrameStyle] of TColor = (clNone, clWindow,
-     clWindowFrame, clBtnShadow, clBtnHighlight, clBtnShadow, clBlack);
-
-
-  KLRFrameColor: array[TJvWizardFrameStyle] of TColor = (clNone, clBtnFace,
+  KLRFrameColor: array [TJvWizardFrameStyle] of TColor = (clNone, clBtnFace,
     clWindowFrame, clBtnHighlight, clBtnShadow, clBtnHighlight, clBtnFace);
 
+resourcestring
+  STilingError = 'Tiling only works on images with dimensions > 0';
 
 {-----------------------------------------------------------------------------
-  Procedure: KDrawSides
+  Procedure: JvWizardDrawEdges
   Author:    yuwei
   Date:      December 23, 2001
   Time:      17:22:42
@@ -111,8 +114,8 @@ const
   12/23/2001       First Release
 -----------------------------------------------------------------------------}
 
-function JvWizardDrawEdges(ACanvas: TCanvas; ABounds: TRect; ULColor, LRColor: TColor;
-                    AEdges: TBevelEdges): TRect;
+function JvWizardDrawEdges(ACanvas: TCanvas; ABounds: TRect;
+  ULColor, LRColor: TColor; AEdges: TBevelEdges): TRect;
 begin
   with ACanvas, ABounds do
   begin
@@ -150,10 +153,10 @@ begin
   if beBottom in AEdges then
     Dec(ABounds.Bottom);
   Result := ABounds;
-end; {JvWizardDrawEdges}
+end;
 
 function JvWizardDrawBorderEdges(ACanvas: TCanvas; ABounds: TRect;
-                          AStyle: TJvWizardFrameStyle; AEdges: TBevelEdges): TRect;
+  AStyle: TJvWizardFrameStyle; AEdges: TBevelEdges): TRect;
 var
   ULColor, LRColor: TColor;
   R: TRect;
@@ -192,8 +195,8 @@ var
   Bmp: Graphics.TBitmap;
 begin
 
-  if not Assigned(AGraphic) or (AGraphic.Width = 0) or  (AGraphic.Height = 0) then
-    raise Exception.Create('Tiling only works on images with dimensions > 0.');
+  if not Assigned(AGraphic) or (AGraphic.Width = 0) or (AGraphic.Height = 0) then
+    raise EJvWizardError.Create(STilingError);
   // Create a temporary bitmap to draw into. This is both to speed things up a bit
   // and also to clip the image to the ARect param (using Draw doesn't clip the image,
   // but it does support auto-detecting transparency)
@@ -209,13 +212,13 @@ begin
       AHeight := ARect.Top;
       while AHeight <= ARect.Bottom do
       begin
-        Bmp.Canvas.Draw(AWidth,AHeight,AGraphic);
+        Bmp.Canvas.Draw(AWidth, AHeight, AGraphic);
         Inc(AHeight, AGraphic.Height);
       end;
       Inc(AWidth, AGraphic.Width);
     end;
     BitBlt(ACanvas.Handle, ARect.Left, ARect.Top, Bmp.Width, Bmp.Height,
-      Bmp.Canvas.Handle, 0,0,SRCCOPY);
+      Bmp.Canvas.Handle, 0, 0, SRCCOPY);
   finally
     Bmp.Free;
   end;
@@ -229,7 +232,7 @@ var
 begin
   if Assigned(AGraphic) then
   begin
-    if (ALayout = ilTile) then
+    if ALayout = ilTile then
     begin
       JvWizardDrawTiled(ACanvas, AGraphic, ARect);
       Exit;
@@ -239,24 +242,24 @@ begin
     AHeight := ARect.Bottom - ARect.Top;
     if (Align in [iaCenter, iaRight]) and (AWidth > AGraphic.Width) then
     begin
-      Offset.x := AWidth - AGraphic.Width;
+      Offset.X := AWidth - AGraphic.Width;
       if Align = iaCenter then
       begin
-        Offset.x := Offset.x div 2;
-        ARect.Right := ARect.Right - Offset.x;
+        Offset.X := Offset.X div 2;
+        ARect.Right := ARect.Right - Offset.X;
       end;
     end;
     if (ALayout in [ilCenter, ilBottom]) and (AHeight > AGraphic.Height) then
     begin
-      Offset.y := AHeight - AGraphic.Height;
+      Offset.Y := AHeight - AGraphic.Height;
       if ALayout = ilCenter then
       begin
-        Offset.y := Offset.y div 2;
-        ARect.Bottom := ARect.Bottom - Offset.y;
+        Offset.Y := Offset.Y div 2;
+        ARect.Bottom := ARect.Bottom - Offset.Y;
       end;
     end;
-    ARect.Left := ARect.Left + Offset.x;
-    ARect.Top := ARect.Top + Offset.y;
+    ARect.Left := ARect.Left + Offset.X;
+    ARect.Top := ARect.Top + Offset.Y;
     if (Align = iaStretch) or (ALayout = ilStretch) then
       ACanvas.StretchDraw(ARect, AGraphic)
     else
@@ -265,3 +268,4 @@ begin
 end;
 
 end.
+

@@ -42,7 +42,7 @@ uses
 
 type
   TPluginMessageEvent = procedure(Sender: TObject; APluginMessage: Longint; AMessageText: string) of object;
-  TPluginInitializeEvent = procedure(Sender: TObject; var AllowLoad: boolean) of object;
+  TPluginInitializeEvent = procedure(Sender: TObject; var AllowLoad: Boolean) of object;
   TJvPluginCommand = class;
   TJvPluginCommands = class;
 
@@ -56,7 +56,7 @@ type
     FCommands: TJvPluginCommands;
     FHostApplication: TApplication;
     FManager: TComponent;
-    FInstanceCount: integer;
+    FInstanceCount: Integer;
     FOnPluginMessage: TPluginMessageEvent;
     FOnInitialize: TPluginInitializeEvent;
     FOnConfigure: TNotifyEvent;
@@ -66,13 +66,13 @@ type
   protected
     procedure SetCommands(NewValue: TJvPluginCommands); virtual;
     procedure TriggerPluginMessageEvent(APluginMessage: Longint; AMessageText: string); virtual;
-    procedure TriggerInitializeEvent(var AllowLoad: boolean); virtual;
+    procedure TriggerInitializeEvent(var AllowLoad: Boolean); virtual;
     procedure TriggerConfigureEvent; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Configure; virtual; stdcall;
-    function Initialize(Manager: TComponent; HostApplication: TApplication; FileName: string): boolean; virtual;
+    function Initialize(Manager: TComponent; HostApplication: TApplication; FileName: string): Boolean; virtual;
       stdcall;
     procedure SendPluginMessage(APluginMessage: Longint; AMessageText: string);
     property HostApplication: TApplication read FHostApplication;
@@ -83,7 +83,7 @@ type
     property Commands: TJvPluginCommands read FCommands write SetCommands;
     property Description: string read FDescription write FDescription;
     property Copyright: string read FCopyright write FCopyright;
-    property InstanceCount: integer read FInstanceCount write FInstanceCount default 1;
+    property InstanceCount: Integer read FInstanceCount write FInstanceCount default 1;
     property PluginID: string read FPluginID write FPluginID;
 //    property Version: string read GetVersion write SetVersion;
     property PluginVersion: string read FPluginVersion write FPluginVersion;
@@ -125,10 +125,11 @@ type
   public
     constructor Create(APlugIn: TJvPlugIn);
   end;
-resourcestring
-  SFmtResNotFound = 'Resource Not Found: %s';
 
 implementation
+
+resourcestring
+  SFmtResNotFound = 'Resource Not Found: %s';
 
 //=== TJvPlugin ==============================================================
 
@@ -178,12 +179,12 @@ procedure TJvPlugin.SetVersion(newValue: string);
 begin
 end;}
 
-// Here the plugin should verify if it CAN be loaded (e.g. Mainapplication implements correct interface,
+// Here the plugin should verify if it CAN be loaded (e.g. Main application implements correct interface,
 //      Dongle is there....)
 
-function TJvPlugIn.Initialize(Manager: TComponent; HostApplication: TApplication; FileName: string): boolean;
+function TJvPlugIn.Initialize(Manager: TComponent; HostApplication: TApplication; FileName: string): Boolean;
 begin
-  Result := true;
+  Result := True;
   FHostApplication := HostApplication;
   FFileName := FileName;
   FManager := Manager;
@@ -201,7 +202,7 @@ begin
     FOnPluginMessage(Self, APluginMessage, AMessageText);
 end;
 
-procedure TJvPlugIn.TriggerInitializeEvent(var AllowLoad: boolean);
+procedure TJvPlugIn.TriggerInitializeEvent(var AllowLoad: Boolean);
 begin
   if Assigned(FOnInitialize) then
     FOnInitialize(Self, AllowLoad);
@@ -213,7 +214,7 @@ begin
     FOnConfigure(Self);
 end;
 
-procedure TJvPlugIn.SendPluginMessage(APluginMessage: integer; AMessageText: string);
+procedure TJvPlugIn.SendPluginMessage(APluginMessage: Integer; AMessageText: string);
 begin
   TriggerPluginMessageEvent(APluginMessage, AMessageText);
 end;
@@ -260,10 +261,10 @@ end;
 
 procedure TJvPluginCommands.SetItemName(AItem: TCollectionItem);
 var
-  I: integer;
-  J: integer;
+  I: Integer;
+  J: Integer;
 
-  function NameUsed: boolean;
+  function NameUsed: Boolean;
   var
     AName: string;
   begin

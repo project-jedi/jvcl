@@ -31,8 +31,8 @@ unit JvControlBar;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Extctrls, Controls, Forms,
-  Menus,
+  Windows, Messages, SysUtils, Classes, Graphics,
+  ExtCtrls, Controls, Forms, Menus,
   JVCLVer, JvThemes;
 
 type
@@ -50,20 +50,20 @@ type
     FPopup: TPopupMenu;
     FPopupNames: TPopupNames;
     FList: TList;
-{$IFDEF JVCLThemesEnabledD56}
-    function GetParentBackground: Boolean;
-  protected
-    procedure SetParentBackground(Value: Boolean); virtual;
-{$ENDIF}
-  protected
-    procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    {$IFDEF JVCLThemesEnabledD56}
+    function GetParentBackground: Boolean;
+    {$ENDIF JVCLThemesEnabledD56}
+  protected
+    {$IFDEF JVCLThemesEnabledD56}
+    procedure SetParentBackground(Value: Boolean); virtual;
+    {$ENDIF JVCLThemesEnabledD56}
+    procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure PopupMenuClick(Sender: TObject);
     procedure Loaded; override;
   public
@@ -79,26 +79,17 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-{$IFDEF JVCLThemesEnabledD56}
+    {$IFDEF JVCLThemesEnabledD56}
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
-{$ENDIF}
+    {$ENDIF JVCLThemesEnabledD56}
   end;
 
 implementation
 
-{$IFDEF JVCLThemesEnabledD56}
-
-function TJvControlBar.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
-end;
-
-procedure TJvControlBar.SetParentBackground(Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
-end;
-
-{$ENDIF}
+const
+  cFalse = 'false';
+  cTrue = 'true';
+  cUndocked = 'undocked';
 
 constructor TJvControlBar.Create(AOwner: TComponent);
 begin
@@ -115,10 +106,23 @@ end;
 destructor TJvControlBar.Destroy;
 begin
   FList.Free;
-  if FPopup <> nil then
-    FPopup.Free;
+  FPopup.Free;
   inherited Destroy;
 end;
+
+{$IFDEF JVCLThemesEnabledD56}
+
+function TJvControlBar.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvControlBar.SetParentBackground(Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+
+{$ENDIF JVCLThemesEnabledD56}
 
 procedure TJvControlBar.CMParentColorChanged(var Msg: TMessage);
 begin
@@ -183,7 +187,7 @@ var
       It.Caption := AControl.Name;
     {$IFDEF COMPILER6_UP}
     It.AutoCheck := True;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     It.Tag := Index;
     It.OnClick := PopupMenuClick;
     It.Checked := AControl.Visible;
@@ -211,7 +215,7 @@ begin
   begin
     {$IFNDEF COMPILER6_UP}
     Checked := not Checked;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     if (Tag >= 0) and (Tag < FList.Count) then
       TControl(FList[Tag]).Visible := Checked;
   end;
@@ -243,7 +247,7 @@ begin
     I := Pos(',', St2);
     if I <> 0 then
     begin
-      TControl(FList[J]).Visible := Pos('true', St2) = 1;
+      TControl(FList[J]).Visible := Pos(cTrue, St2) = 1;
       St2 := Copy(St2, I + 1, Length(St2));
       I := Pos(',', St2);
       if I <> 0 then
@@ -254,14 +258,14 @@ begin
         I := Pos(',', St2);
         if I <> 0 then
         begin
-          if Pos('undocked', St2) <> 0 then
+          if Pos(cUndocked, St2) <> 0 then
             LDocked := False;
           St2 := Copy(St2, 1, I - 1);
         end;
         if LDocked and (TControl(FList[J]).Parent <> Self) then
           TControl(FList[J]).ManualDock(Self)
         else
-          if (not LDocked) and (TControl(FList[J]).Parent = Self) then
+        if (not LDocked) and (TControl(FList[J]).Parent = Self) then
           TControl(FList[J]).ManualDock(nil);
         LTop := StrToIntDef(St2, TControl(FList[J]).Top);
 
@@ -289,12 +293,12 @@ begin
   for I := 0 to FList.Count - 1 do
   begin
     if TControl(FList[I]).Visible then
-      Result := Result + 'true,'
+      Result := Result + cTrue + ','
     else
-      Result := Result + 'false,';
+      Result := Result + cFalse + ',';
     Result := Result + IntToStr(TControl(FList[I]).Left) + ',' + IntToStr(TControl(Flist[I]).Top);
     if TControl(FList[I]).Parent <> Self then
-      Result := Result + ',undocked';
+      Result := Result + ',' + cUndocked;
     Result := Result + ';';
   end;
 end;
@@ -308,8 +312,7 @@ begin
     FList.Add(Controls[I]);
 end;
 
-procedure TJvControlBar.DoAddDockClient(Client: TControl;
-  const ARect: TRect);
+procedure TJvControlBar.DoAddDockClient(Client: TControl; const ARect: TRect);
 begin
   inherited DoAddDockClient(Client, ARect);
   if FList.IndexOf(Client) = -1 then

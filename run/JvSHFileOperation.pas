@@ -109,15 +109,14 @@ uses
   JvConsts, JvTypes;
 
 resourcestring
-  sNoFilesSpecifiedToTJvSHFileOperatio = 'No files specified to TJvSHFileOperation Execute function';
-
+  SNoFilesSpecifiedToTJvSHFileOperatio = 'No files specified to TJvSHFileOperation Execute function';
 
 type
   // helper object for file mappings
   PShHandleToMappings = ^TShHandleToMappings;
   TShHandleToMappings = packed record
-    aCount: UINT;
-    pNameMappings: PShNameMapping;
+    Count: UINT;
+    PNameMappings: PShNameMapping;
   end;
 
 constructor TJvSHFileOperation.Create(AOwner: TComponent);
@@ -158,7 +157,7 @@ var
   S, D: string;
 begin
   if Length(FSourceFiles.Text) = 0 then
-    EJVCLException.Create(sNoFilesSpecifiedToTJvSHFileOperatio);
+    EJVCLException.Create(SNoFilesSpecifiedToTJvSHFileOperatio);
 
   FillChar(SFOS, SizeOf(TShFileOpStruct), #0);
 
@@ -192,8 +191,8 @@ begin
   PNameMapping := Pointer(SFOS.hNameMappings);
   if PNameMapping <> nil then
   begin
-    PNameCount := PShHandleToMappings(PNameMapping)^.aCount;
-    PNameMapping := PShHandleToMappings(PNameMapping)^.pNameMappings;
+    PNameCount := PShHandleToMappings(PNameMapping)^.Count;
+    PNameMapping := PShHandleToMappings(PNameMapping)^.PNameMappings;
     while PNameCount > 0 do
     begin
       if (PNameMapping.cchOldPath > 0) and (PNameMapping.cchNewPath > 0) then
