@@ -11,7 +11,8 @@ unit FiltDlg;
 interface
 
 uses Messages, WinTypes, WinProcs, SysUtils, Classes, Graphics, Forms,
-  Controls, StdCtrls, Buttons, ExtCtrls, JvPlacemnt, JvMRUList;
+  Controls, StdCtrls, Buttons, ExtCtrls, JvMRUList,
+  JvMRUManager, JvComponent, JvFormPlacement;
 
 type
   TFilterDialog = class(TForm)
@@ -37,7 +38,8 @@ function ShowFilterDialog(var Filter: string; X, Y: Integer): Boolean;
 
 implementation
 
-uses {$IFDEF WIN32} BDE, {$ELSE} DbiTypes, {$ENDIF} JvAppUtils;
+uses
+  BDE, JvJVCLUtils;
 
 {$R *.DFM}
 

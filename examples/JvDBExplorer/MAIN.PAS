@@ -12,9 +12,10 @@ unit Main;
 interface
 
 uses Windows, SysUtils, Classes, Graphics, Forms, Controls, Menus,
-  StdCtrls, Dialogs, Buttons, Messages, ExtCtrls, JvDBPrgrss, JvPlacemnt,
-  DB, DBTables, DBCtrls, JvSpeedbar, JvDBCtrl, JvDBSecur, JvAppEvent,
-  JvMRUList, ComCtrls, JvxCtrls, JvComponent;
+  StdCtrls, Dialogs, Buttons, Messages, ExtCtrls, DB, DBTables,
+  DBCtrls, JvSpeedbar, JvMRUList, ComCtrls, 
+  JvComponent, JvMRUManager,
+  JvFormPlacement, JvBDEProgress, JvLabel, JvDBControls, JvAppEvent;
 
 type
   TDBExplorerMainForm = class(TForm)
@@ -182,8 +183,8 @@ implementation
 
 {$R *.DFM}
 
-uses DBInpReq, DBCbRest, SQLMon, Bde, JvVCLUtils, ChildWin2, OpenDlg, 
-  JvAppUtils, JvDBUtils, IniFiles, JvxLoginDlg, RenDlg, About, Options, OptDlg,
+uses DBInpReq, DBCbRest, SQLMon, Bde, JvJVCLUtils, JvBDELoginDialog,
+  ChildWin2, OpenDlg, JvDBUtils, IniFiles, RenDlg, About, Options, OptDlg,
   JvBdeUtils, BdeProp, UserHelp, JvHints, ShellAPI;
 
 const
@@ -455,12 +456,12 @@ end;
 
 procedure TDBExplorerMainForm.FormPlacementSavePlacement(Sender: TObject);
 begin
-  SaveOptions(FormPlacement.IniFile);
+//  SaveOptions(FormPlacement.IniFile);
 end;
 
 procedure TDBExplorerMainForm.FormPlacementRestorePlacement(Sender: TObject);
 begin
-  LoadOptions(FormPlacement.IniFile);
+//  LoadOptions(FormPlacement.IniFile);
   ApplyOptions;
 end;
 

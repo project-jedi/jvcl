@@ -12,7 +12,8 @@ unit ViewBlob;
 interface
 
 uses WinTypes, WinProcs, Classes, Graphics, Forms, Controls, Buttons, Dialogs,
-  StdCtrls, ExtCtrls, JvPlacemnt, DBCtrls, DB, DBTables, Menus, HexDump;
+  StdCtrls, ExtCtrls, DBCtrls, DB, DBTables, Menus, HexDump,
+  JvComponent, JvFormPlacement;
 
 type
   TBlobViewDlg = class(TForm)
@@ -47,7 +48,7 @@ implementation
 
 uses
   Messages, SysUtils, DBConsts, Math,
-  JvVCLUtils;
+  JvJVCLUtils;
 
 const
   SBlobSize = 'Blob size: %s byte(s)';
@@ -59,7 +60,7 @@ begin
   try
     FField := DataSet.FieldByName(FieldName);
     if not (FField is TBlobField) then
-      raise EDatabaseError.CreateFmt(ResStr(SFieldTypeMismatch), [FieldName]);
+      raise EDatabaseError.CreateFmt(SFieldTypeMismatch, [FieldName]);
     Caption := Format('Field: %s', [FieldName]);
     FHexDump := CreateHexDump(HexPanel);
     FHexDump.RelativeAddress := True;

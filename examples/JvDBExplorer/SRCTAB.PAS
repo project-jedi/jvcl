@@ -13,15 +13,17 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, ExtCtrls, Grids, StdCtrls, Mask, JvToolEdit, JvPlacemnt, DB,
-  JvDBLists, DBTables, JvDBCtrl, JvMemtable, DBGrids, JvCurrEdit, JvValidateEdit;
+  Forms, Dialogs, ExtCtrls, Grids, StdCtrls, Mask, JvToolEdit, DB,
+  DBTables, DBGrids, JvValidateEdit,
+  JvBDEMemTable, JvComponent, JvFormPlacement, 
+  JvEdit, JvBDELists, JvDBControls;
 
 type
   TSrcTableDlg = class(TForm)
     Expanded: TBevel;
     FormStorage: TJvFormStorage ;
     TableFields: TJvTableItems ;
-    MappingsTab: TJvMemoryTable ;
+    MappingsTab: TJvBDEMemoryTable;
     MappingsTabSRC_NAME: TStringField;
     MappingsTabDST_NAME: TStringField;
     dsMappings: TDataSource;
@@ -70,7 +72,7 @@ function GetImportParams(const DstTable: TTable; var TabName: string;
 
 implementation
 
-uses JvVCLUtils;
+uses JvJVCLUtils;
 
 {$R *.DFM}
 

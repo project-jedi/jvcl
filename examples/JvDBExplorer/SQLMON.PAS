@@ -12,8 +12,8 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, ExtCtrls, JvSplit, JvxCtrls, JvPlacemnt, DB,
-  JvDBPrgrss, ComCtrls, Grids, Jvgrids, Menus, JvComponent;
+  Forms, Dialogs, StdCtrls, ExtCtrls, JvSplit, DB,
+  ComCtrls, Grids, Menus, JvComponent, JvFormPlacement, JvGrids;
 
 type
   TTraceSQL = class(TForm)
@@ -58,7 +58,7 @@ procedure BufSetSize(Value: Integer);
 implementation
 
 uses
-  Options, JvStrUtils, Math;
+  Options, JvJCLUtils, Math;
 
 {$R *.DFM}
 

@@ -12,8 +12,8 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, JvPlacemnt, StdCtrls, JvxCtrls, Grids, Jvgrids, Mask,
-  JvToolEdit;
+  Forms, Dialogs, StdCtrls, Grids, Mask, JvComponent, JvFormPlacement,
+  JvGrids, JvToolEdit;
 
 type
   TCustomizeHelpDlg = class(TForm)
@@ -59,7 +59,7 @@ procedure CustomizeHelp(UserHelpList: TStrings);
 
 implementation
 
-uses JvVCLUtils;
+uses JvJVCLUtils;
 
 {$R *.DFM}
 

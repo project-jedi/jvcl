@@ -14,8 +14,8 @@ unit EditPict;
 interface
 
 uses WinTypes, WinProcs, Classes, Graphics, Forms, Controls, Buttons, Dialogs,
-  StdCtrls, ExtCtrls, JvPlacemnt, DBCtrls, DB, Menus
-  {$IFDEF COMPILER3_UP}, ExtDlgs, ComCtrls {$ENDIF};
+  StdCtrls, ExtCtrls, DBCtrls, DB, Menus,
+  ExtDlgs, ComCtrls, JvComponent, JvFormPlacement;
 
 type
   TPictEditDlg = class(TForm)
@@ -23,11 +23,9 @@ type
     CancelBtn: TBitBtn;
     LoadBtn: TBitBtn;
     Bevel: TBevel;
-    FormPlacement: TjvFormPlacement;
     SaveBtn: TBitBtn;
     DataSource: TDataSource;
     DBNavigator: TDBNavigator;
-    DBImage: TDBImage;
     StretchBox: TCheckBox;
     PopupMenu: TPopupMenu;
     Cut1: TMenuItem;
@@ -35,6 +33,7 @@ type
     Paste1: TMenuItem;
     Clear1: TMenuItem;
     N1: TMenuItem;
+    DBImage: TDBImage;
     procedure FileOpen(Sender: TObject);
     procedure ImageKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);

@@ -39,7 +39,7 @@ procedure LoadOptions(IniFile: TIniFile);
 
 implementation
 
-uses Consts, JvVCLUtils, JvDBUtils, JvBdeUtils, DBCbRest;
+uses Consts, JvJVCLUtils, JvBDEUtils, DBCbRest;
 
 const
   siOptions = 'Options';
