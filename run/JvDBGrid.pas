@@ -352,10 +352,6 @@ uses
 
 {$R ..\Resources\JvDBGrid.res}
 
-resourcestring
-  RES_JvDBGridSelectTitle = 'Select columns';
-  RES_JvDBGridSelectOK = '&OK';
-  RES_JvDBGridSelectWarning = 'At least one column must be visible!';
 
 type
   TBookmarks = class(TBookmarkList);
@@ -1050,7 +1046,7 @@ var
 
 begin
   Background := Color;
-  if (FCurrentDrawRow >= FixedRows)  and Odd(FCurrentDrawRow) and
+  if (FCurrentDrawRow >= FixedRows)  and Odd(FCurrentDrawRow + FixedRows) and
      (FAlternateRowColor <> clNone) and (FAlternateRowColor <> Color) and
      IsAfterFixedCols then
     Background := AlternateRowColor
@@ -2832,9 +2828,9 @@ end;
 constructor TJvSelectDialogColumnStrings.Create;
 begin
   inherited Create;
-  Caption := RES_JvDBGridSelectTitle;
-  OK := RES_JvDBGridSelectOK;
-  NoSelectionWarning := RES_JvDBGridSelectWarning;
+  Caption := RsJvDBGridSelectTitle;
+  OK := RsJvDBGridSelectOK;
+  NoSelectionWarning := RsJvDBGridSelectWarning;
 end;
 
 initialization

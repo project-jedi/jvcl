@@ -70,7 +70,7 @@ resourcestring
 
   RsDockJvDockTreeCloseBtnHint = 'Close';
   RsDockVCDockTreeExpandBtnHint = 'Expand';
-  RsDockVSNETDockTreeAutoHideBtnHint = 'AutoHide';
+  RsDockVSNETDockTreeAutoHideBtnHint = 'Auto Hide';
   RsDockJvDockTreeVSplitterHint = 'Vertical Splitter';
   RsDockJvDockTreeHSplitterHint = 'Horizontal Splitter';
 
@@ -78,12 +78,12 @@ resourcestring
   RsDockNodeExistedError = 'Node already exist';
   RsDockComProcError = 'The function address is nil';
 
-  RsDockControlCannotIsNil = 'Parameter Control can not be nil';
+  RsDockControlCannotIsNil = 'Control can not be nil';
   RsDockCannotGetValueWithNoOrient = 'Cannot get data of control that has no dock orient';
   RsDockCannotSetValueWithNoOrient = 'Cannot set data of control that has no dock orient';
 
   RsDockCannotChangeDockStyleProperty = 'Changing DockStyle at runtime is not supported';
-  RsDockCannotLayAnother = 'ONly one %s allowed on each form.Cannot add another %s';
+  RsDockCannotLayAnother = 'Only one %s allowed on each form.Cannot add another %s';
 
   RsDockCannotSetTabPosition = 'Can not set TabPosition property to tpLeft or tpRight';
   RsDockTabPositionMustBetpBottom = 'TabPosition property must be tpBottom';
@@ -96,7 +96,7 @@ resourcestring
 
   RsDockCannotFindWindow = 'Cannot find window';
 
-  RsEInvalidDockSiteOrientationValue = 'invalid DockSiteOrientation value doNoOrient';
+  RsEInvalidDockSiteOrientationValue = 'Invalid DockSiteOrientation value doNoOrient';
 
 const
   RsDockBaseDockTreeVersion = $00040000;
