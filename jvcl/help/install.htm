@@ -81,7 +81,7 @@ file containing a version known to build.<br>
 it is the recommended way of installing the JVCL. If using it is not an
 option or it doesn't work for you, please see the section below on
 manual installation.<br>
- </p>
+</p>
 <div class="InfoField">
 <p align="left"><br>
 Even if you use the installer, you must first remove
@@ -170,7 +170,7 @@ C++Builder. </p>
   <li>
     <p align="left"><b>Standard/Personal Edition</b> - checked if you
 have Delphi 5 Standard or any of the Personal Editions installed. These
-editions have less functionality and some features in JVCL has to be
+editions have less functionality and some features in JVCL have to be
 disabled to make it work with these editions. </p>
   </li>
   <li>
@@ -218,8 +218,8 @@ included in the full JVCL install). </p>
   <li dir="ltr">
     <p align="left" dir="ltr"><b>DelphiPersonalEdition </b>- enable
 this define if you are using Delphi 5 Standard or one of the Delphi/BCB
-Personal Editions. The Standard and Personal Editions doesn't support
-all components included in JVCL (mostly database realted) and enabling
+Personal Editions. The Standard and Personal Editions do not support
+all components included in JVCL (mostly database related) and enabling
 this define will remove these components from the JVCL palettes. </p>
   </li>
   <li dir="ltr">
@@ -331,10 +331,11 @@ bpg file you load into the IDE.</p>
 <p>&nbsp; <br>
 </p>
 <div class="InfoField"> <br>
- When closing a package, Delphi will prompt you
-to save the changes to the package. You <b>MUST </b>answer "No" to this question
-since Delphi removes some conditional defines needed the next time you recompile
-  the package. <br>
+When closing a package, Delphi will prompt you
+to save the changes to the package. You <b>MUST </b>answer "No" to
+this question
+since Delphi removes some conditional defines needed the next time you
+recompile the package. <br>
 </div>
 <br>
 <h2>Adding JVCL paths to Delphi</h2>
@@ -353,24 +354,28 @@ select <b>Tools-Environment
 Options-Library</b> and add the paths to <b><i> JVCL\run</i></b> and <i><b>
 JVCL\common</b></i> to the Library path.</p>
 <p>&nbsp;</p>
-<p>Adding the pre-compiled DCU paths means that Delphi won't have to recompile
+<p>Adding the pre-compiled DCU paths means that Delphi won't have to
+recompile
 the DCU's unless you recompile the packages, so compiling your
 application should be faster. To add the DCU folder location, select <b>Tools-Environment
-Options-Library</b> and add <i><b> JVCL\lib\XX</b></i> (where XX is your version
-of Delphi or BCB, i.e for Delphi 6, it's "d6", for BCB 5 it's &quot;c5&quot; etc) and
-<i><b>
-JVCL\common</b></i> (for the INC
+Options-Library</b> and add <i><b> JVCL\lib\XX</b></i> (where XX is
+your version
+of Delphi or BCB, i.e for Delphi 6, it's "d6", for BCB 5 it's "c5" etc)
+and
+<i><b>JVCL\common</b></i> (for the INC
 files) to the Library path.&nbsp;</p>
 <p>&nbsp;</p>
 <div class="InfoField">
 <b><br>
 </b> When adding the DCU output folder to the Library path, you
-must also copy all dfm files from the \run folder to the DCU&nbsp; folder or
+must also copy all dfm files from the \run folder to the DCU&nbsp;
+folder or
 Delphi won't be able to find them.&nbsp;<br>
 </div>
 <p>&nbsp;</p>
 <p>If you still want to be able to open the
-JVCL source files in the IDE, add <i><b> JVCL\run</b></i> (and maybe even <b><i>JVCL\design</i></b>)
+JVCL source files in the IDE, add <i><b> JVCL\run</b></i> (and maybe
+even <b><i>JVCL\design</i></b>)
 to the Browsing Path list.</p>
 <p>&nbsp; <br>
 </p>
@@ -559,7 +564,7 @@ being the bpg file you load into the IDE.<br>
 <br>
 </p>
 <div class="InfoField"><br>
-  When closing a package, C++&nbsp;Builder will
+When closing a package, C++&nbsp;Builder will
 prompt you to save the changes to the package. You MUST answer "No" to
 this question since saving will most likely render the packages
 unusable
@@ -617,28 +622,6 @@ tab. But for a reason beyond our understanding, these paths are ignored
 by the compiler and linker. They are only used when looking for
 packages, not resource or include files.<br>
 </p>
-Unfortunately, the concept of Environment variables overrides doesn't
-exists under C++ Builder 5. You will then have to create two
-environment
-variables, called INCLUDEPATH and RESPATH, and set them to the same
-value as mentionned
-before. Under Windows 2000 and XP, this is done
-by opening the 'System properties' applet from the 'Control panel'. You
-can either simultaneously press the Windows key and the Pause key or go
-through <span style="font-weight: bold;">Start - Parameters -
-Control&nbsp;panel - System&nbsp;properties</span>. Once in the applet,
-choose the 'Advanced' tab and click on the 'Environment variables'
-button at the bottom. Depending on wether or not you want the changes
-to
-apply to yourself or all users, create the INCLUDEPATH variable for in
-of the
-two list and click the related 'New' button. Enter INCLUDEPATH as the
-name and use the value mentionned earlier. Click Ok once and repeat the
-previous steps to
-create the RESPATH environment variable. Click
-on Ok buttons until the 'System properties' applet is closed.
-C++&nbsp;Builder 5 will only take these changes into account once
-restarted.
 <p>Finally,
 and whatever version of C++ Builder you are using, ensure you have
 closed all open projects. Select the <span style="font-weight: bold;">Directories/Conditionals</span>
@@ -654,16 +637,27 @@ and this path to the Library paths:<br>
   </li>
 </ul>
 <br>
-Any new project you create will work directly. However, if you want to
-share a project, then you have to ask your users to define
-the INCLUDEPATH and RESPATH Environment variable overrides and set them
-to the correct
-values.
-They should then be able to use your project. When you receive a
-project using the JVCL, ensure that the Include Paths in its Project
-Options contains $(INCLUDEPATH) and the Library paths contain
-$(RESPATH). You should then be able to compile and
-link the project.<br>
+Unfortunately, the concept of Environment variables overrides doesn't
+exists under C++ Builder 5. And it seems that using environment
+variables is not possible either. The solution is then to directly add
+the directories mentionned before to the default project options. To do
+that, ensure you have
+closed all open projects. Select the <span style="font-weight: bold;">Directories/Conditionals</span>
+tab in <span style="font-weight: bold;">Project-Options</span> and add
+this path to the Include paths:<br>
+<ul>
+  <li>;JVCL\common;JVCL\run;jcl\source\common;jcl\source\vcl;jcl\source\visclx;jcl\source\windows</li>
+</ul>
+and this path to the Library paths:<br>
+<ul>
+  <li>;JVCL\run;JVCL\resources</li>
+</ul>
+Do not forget to add the complete path to where you installed the
+JVCL and JCL. For instance, if you put the JVCL in c:\prog\lib\, then
+'JVCL\common' becomes 'c:\prog\lib\JVCL\common'.<br>
+You should now be able to compile and
+link projects using the JVCL. If someone sends you a project, you will
+have to repeat this to match your configuration.<br>
 <br>
 <p>In both cases, if you want to be able to open the JVCL source files
 in the IDE by
