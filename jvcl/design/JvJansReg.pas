@@ -1,5 +1,5 @@
 // No licence info because this should be merged with other Registration Unit
-{$I JEDI.INC}
+{$I JVCL.INC}
 unit JvJansReg;
 
 interface

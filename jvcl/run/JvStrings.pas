@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
   Should be merged with JCL
 -----------------------------------------------------------------------------}
-{$I JEDI.INC}
+{$I JVCL.INC}
 {$I WINDOWSONLY.INC}
 unit JvStrings;
 

@@ -23,7 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I JEDI.INC}
+{$I JVCL.INC}
 {$A+,B-,D-,L-,M-,O+,Q-,R-,S-,X+,Y-}
 {  TJvSimScope Properties:
      Active           Starts/Stops scope
