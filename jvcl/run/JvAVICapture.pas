@@ -391,6 +391,8 @@ type
     // sets and gets the filename for capture
     procedure SetFileName(nFileName: TFileName);
     function GetFileName: TFileName;
+    // delivers FDrivers as TStrings for property
+    function GetDrivers: TStrings;
     // sets the file size to allocate before capture. This might speed up capture as
     // the file won't need to be grown
     procedure SetFileSizeAlloc(nFileSizeAlloc: Cardinal);
@@ -503,7 +505,7 @@ type
     property DriverCaps: TJvDriverCaps read FDriverCaps;
     property DriverName: string read GetDriverName;
     property DriverVersion: string read GetDriverVersion;
-    property Drivers: TStringList read FDrivers;
+    property Drivers: TStrings read GetDrivers;
     property Handle: HWND read FHWnd;
     property Palette: TJvPalette read FPalette;
     property SingleFrameCapturing: Boolean read FSingleFrameCapturing write SetSingleFrameCapturing;
@@ -1155,6 +1157,11 @@ begin
   Result := FFileName;
 end;
 
+function TJvAVICapture.GetDrivers: TStrings;
+begin
+  Result := FDrivers;
+end;
+
 procedure TJvAVICapture.SetFileSizeAlloc(nFileSizeAlloc: Cardinal);
 begin
   if FHWnd <> 0 then
@@ -1388,7 +1395,7 @@ begin
   // no more than 10 drivers in the system (cf Win32 API)
   for I := 0 to 9 do
     if capGetDriverDescription(I, DeviceName, SizeOf(DeviceName), DeviceVersion, SizeOf(DeviceVersion)) then
-      FDrivers.Add(DeviceName);
+      Drivers.Add(DeviceName);
 end;
 
 function TJvAVICapture.Connect(Driver: TJvDriverIndex): Boolean;

@@ -57,13 +57,14 @@ type
     FSelectable: Boolean;
     FScrollDirection: TJvScrollTextDirection;
     FScrollSaved: Integer;
-    FStrings: TStringList;
+    FItems: TStringList;
     FDeja: Cardinal;
     FScroll: TJvImageDrawThread;
     FFont: TFont;
     FStartY: Integer;
     FDown: Boolean;
-    procedure SetItems(const Value: TStringList);
+    function GetItems: TStrings;
+    procedure SetItems(const Value: TStrings);
     procedure OnScroll(Sender: TObject);
     procedure SetActive(const Value: Boolean);
     procedure SetDelay(const Value: Cardinal);
@@ -87,7 +88,7 @@ type
     destructor Destroy; override;
   published
     property Alignment: TAlignment read GetAlignment write SetAlignment;
-    property Items: TStringList read FStrings write SetItems;
+    property Items: TStrings read GetItems write SetItems;
     property Active: Boolean read FActive write SetActive default False;
     property Delay: Cardinal read FDelay write SetDelay default 50;
     property ScrollPixels: Integer read FPixel write SetPixel default 1;
@@ -126,7 +127,7 @@ begin
   FCurrPos := 0;
   FSelectable := True;
   FScrollDirection := drFromBottom;
-  FStrings := TStringList.Create;
+  FItems := TStringList.Create;
 
   FText := TStaticText.Create(Self);
   FText.Parent := Self;
@@ -165,7 +166,7 @@ begin
   // FScroll.WaitFor;
   FreeAndNil(FScroll);
   Application.HintPause := FDeja;
-  FStrings.Free;
+  FItems.Free;
   FText.Free;
   FFont.OnChange := nil;
   FFont.Free;
@@ -346,7 +347,7 @@ end;
 
 procedure TJvScrollText.SetActive(const Value: Boolean);
 begin
-  SetItems(FStrings);
+  SetItems(FItems);
   FActive := Value;
   if Value then
     FScroll.Resume
@@ -410,9 +411,14 @@ begin
   Reset;
 end;
 
-procedure TJvScrollText.SetItems(const Value: TStringList);
+function TJvScrollText.GetItems: TStrings;
 begin
-  FStrings.Text := Value.Text;
+  Result := FItems;
+end;
+
+procedure TJvScrollText.SetItems(const Value: TStrings);
+begin
+  FItems.Text := Value.Text;
   FText.Caption := Value.text;
   CalculateText(Self);
 end;

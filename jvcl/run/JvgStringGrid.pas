@@ -64,12 +64,13 @@ type
   TJvgStringGrid = class(TStringGrid)
   private
     FCaptionTextAlignment: TAlignment;
-    FCaptFont: TFont;
+    FCaptionFont: TFont;
     FBitmap, bmp: TBitmap;
     FImage: TImage;
     FCaptions: TStringList;
     FHottrackThrought: Boolean;
-    AHottrackCol, AHottrackRow: longint;
+    AHottrackCol: Longint;
+    AHottrackRow: Longint;
     Memo: TMemo;
     MemoCell: TGridCoord;
     Gradient: TJvgGradient;
@@ -82,11 +83,12 @@ type
     MemoUpdateTimer: TTimer;
     FAboutJVCL: TJVCLAboutInfo;
     procedure SetCaptionTextAlignment(Value: TAlignment);
-    procedure SetCaptFont(Value: TFont);
+    procedure SetCaptionFont(Value: TFont);
     function GetBitmap: TBitmap;
     procedure SetBitmap(Value: TBitmap);
     procedure SetImage(Value: TImage);
-    procedure SetCaptions(Value: TStringList);
+    function GetCaptions: TStrings;
+    procedure SetCaptions(Value: TStrings);
     procedure SetVertCaptions(Value: Boolean);
     procedure OnMemoChange(Sender: TObject);
     procedure OnMemoExit(Sender: TObject);
@@ -136,23 +138,19 @@ type
     procedure GetNextCell(var X, Y: Longint);
     procedure ClearSelection;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
-      False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property CaptionTextAlignment: TAlignment read FCaptionTextAlignment write
       SetCaptionTextAlignment default taCenter;
     property TextAlignment: TAlignment read FTextAlignment write
       SetTextAlignment default taLeftJustify;
-    property CaptionFont: TFont read FCaptFont write SetCaptFont;
-    property Captions: TStringList read FCaptions write SetCaptions;
+    property CaptionFont: TFont read FCaptionFont write SetCaptionFont;
+    property Captions: TStrings read GetCaptions write SetCaptions;
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
     property Image: TImage read FImage write SetImage;
-    property ExtOptions: TglStringGridExtOptions read FExtOptions write
-      SetExtOptions;
-    property EditorColor: TColor read FEditorColor write FEditorColor default
-      $00FEE392;
+    property ExtOptions: TglStringGridExtOptions read FExtOptions write SetExtOptions;
+    property EditorColor: TColor read FEditorColor write FEditorColor default $00FEE392;
     property EditorFont: TFont read FEditorFont write FEditorFont;
-    property OnGetCellStyle: TglOnGetCellStyleEvent read FOnGetCellStyle write
-      FOnGetCellStyle;
+    property OnGetCellStyle: TglOnGetCellStyleEvent read FOnGetCellStyle write FOnGetCellStyle;
     property OnGetCellGradientParams: TglOnGetCellGradientParamsEvent read
       FOnGetCellGradientParams write FOnGetCellGradientParams;
   end;
@@ -166,7 +164,7 @@ constructor TJvgStringGrid.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner); //FHottrackThrought := True;
 
-  FCaptFont := TFont.Create;
+  FCaptionFont := TFont.Create;
   FEditorFont := TFont.Create;
   MemoUpdateTimer := TTimer.Create(nil);
   MemoUpdateTimer.Enabled := False;
@@ -196,7 +194,7 @@ end;
 
 destructor TJvgStringGrid.Destroy;
 begin
-  FCaptFont.Free;
+  FCaptionFont.Free;
   FCaptions.Free;
   FEditorFont.Free;
   MemoUpdateTimer.Free;
@@ -284,7 +282,7 @@ begin
 
     if isFixedCell then
     begin
-      Canvas.Font.Assign(FCaptFont);
+      Canvas.Font.Assign(FCaptionFont);
       CellTextAlignment := CaptionTextAlignment;
       Style.BevelOuter := bvRaised;
       Style.BackgrColor := clBtnFace;
@@ -383,9 +381,9 @@ begin
   Repaint;
 end;
 
-procedure TJvgStringGrid.SetCaptFont(Value: TFont);
+procedure TJvgStringGrid.SetCaptionFont(Value: TFont);
 begin
-  FCaptFont.Assign(Value);
+  FCaptionFont.Assign(Value);
   Repaint;
 end;
 
@@ -427,7 +425,12 @@ begin
   Invalidate;
 end;
 
-procedure TJvgStringGrid.SetCaptions(Value: TStringList);
+function TJvgStringGrid.GetCaptions: TStrings;
+begin
+  Result := FCaptions;
+end;
+
+procedure TJvgStringGrid.SetCaptions(Value: TStrings);
 begin
   FCaptions.Assign(Value);
   VertCaptions := fsgVertCaptions in FExtOptions;
@@ -736,11 +739,11 @@ begin
   else
     Exclude(FExtOptions, fsgVertCaptions);
   try
-    for I := 0 to FCaptions.Count - 1 do
+    for I := 0 to Captions.Count - 1 do
       if fsgVertCaptions in FExtOptions then
-        Cells[0, I] := FCaptions[I]
+        Cells[0, I] := Captions[I]
       else
-        Cells[I, 0] := FCaptions[I];
+        Cells[I, 0] := Captions[I];
   except
   end;
 end;

@@ -41,6 +41,7 @@ type
     FVersionInfo: TStringList;
     FWebBrowser: TWebBrowser;
     FVersionDataURL: string;
+    function GetVersionInfoProperty: TStrings;
   protected
     function GetVersion: string;
     function GetDate: string;
@@ -49,7 +50,7 @@ type
     procedure OnLoadVersionInfo(Sender: TObject; const PDisp: IDispatch;
       var URL: OleVariant);
   public
-    property VersionInfo: TStringList read FVersionInfo;
+    property VersionInfo: TStrings read GetVersionInfoProperty;
     function GetVersionInfo(WinControl: TWinControl): Boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -84,6 +85,11 @@ destructor TJvgHTTPVersionInfo.Destroy;
 begin
   FVersionInfo.Free;
   inherited Destroy;
+end;
+
+function TJvgHTTPVersionInfo.GetVersionInfoProperty: TStrings;
+begin
+  Result := FVersionInfo;
 end;
 
 function TJvgHTTPVersionInfo.GetComments: string;

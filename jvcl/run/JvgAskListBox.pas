@@ -95,7 +95,8 @@ type
     procedure SetShowText(Value: Boolean);
     procedure SetTransparentColor(Value: TColor);
     procedure SetSelectedItem(Value: Word);
-    procedure SetButtons(Value: TStringList);
+    function GetButtons: TStrings;
+    procedure SetButtons(Value: TStrings);
     procedure SetButtonWidth(Value: Word);
     procedure SetOptions(Value: TglAskLBOptions);
     procedure DrawWallpaper(R: TRect);
@@ -170,7 +171,7 @@ type
     property TransparentColor: TColor read FTransparentColor write SetTransparentColor;
     property OnButtonClicked: TNotifyEvent read FOnButtonClicked write FOnButtonClicked;
     property SelectedItem: Word read FSelectedItem write SetSelectedItem default 0;
-    property Buttons: TStringList read FButtons write SetButtons;
+    property Buttons: TStrings read GetButtons write SetButtons;
     property ButtonWidth: Word read FButtonWidth write SetButtonWidth default 30;
     property Options: TglAskLBOptions read FOptions write SetOptions;
   end;
@@ -328,7 +329,7 @@ var
     if StrListNum = -1 then
       StrPCopy(szStr, Items[Index])
     else
-      StrPCopy(szStr, FButtons[StrListNum - 1]);
+      StrPCopy(szStr, Buttons[StrListNum - 1]);
 
     Len := StrLen(szStr);
 
@@ -463,7 +464,7 @@ begin
   BtnRect.Right := BtnRect.Left + FButtonWidth;
 
   Canvas.Brush.Color := ItemStyle.BtnColor;
-  for I := 1 to FButtons.Count do // draw buttons
+  for I := 1 to Buttons.Count do // draw buttons
   begin
     if PtInRectExclusive(BtnRect,MouseClickPoint) then
     begin
@@ -821,7 +822,12 @@ begin
   SendMessage(Handle, LB_SETCURSEL, Value, Longint(0));
 end;
 
-procedure TJvgAskListBox.SetButtons(Value: TStringList);
+function TJvgAskListBox.GetButtons: TStrings;
+begin
+  Result := FButtons;
+end;
+
+procedure TJvgAskListBox.SetButtons(Value: TStrings);
 begin
   if (Value <> nil) and (Value.Count <> 0) then
   begin
@@ -902,7 +908,7 @@ begin
 
   SendMessage(Handle, LB_GETITEMRECT, Items.Count - 1, LPARAM(@R));
   FSegment1Width := Word((R.Right - R.Left) - (FButtonWidth + 1) *
-    (FButtons.Count) - 1);
+    (Buttons.Count) - 1);
 
   Items.BeginUpdate;
   for I := 0 to Items.Count - 1 do
