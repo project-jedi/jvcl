@@ -121,7 +121,7 @@ end;
 procedure TJvDirectorySpy.Refresh;
 begin
   //Refresh the thread
-  if not (csDesigning in ComponentState) then
+  if not (csDesigning in ComponentState) and Active then
   begin
     FThread.FreeOnTerminate := True;
     FThread.Terminate;
