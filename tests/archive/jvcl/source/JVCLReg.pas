@@ -333,7 +333,8 @@ begin
       TJvScrollingWindow,
       TJvIpAddress,
       TJvSHFileOperation,
-      TJvTrayIcon
+      TJvTrayIcon,
+    TJvHidDeviceController
       ]);
 
   // Jv System
@@ -363,7 +364,6 @@ begin
       TJvClipboardViewer,
       TJvSystemPopup,
 
-    TJvHidDeviceController
       ]);
 
 {$IFNDEF D6PersonalEdition}
