@@ -94,7 +94,8 @@ implementation
 constructor TJvEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Parent := TWinControl(AOwner);
+  // (p3) bad hack! - fixed Change procedure (see below) 
+//  Parent := TWinControl(AOwner);
   FColor := clInfoBk;
   FAutoctl3d := False;
   FOver := False;
@@ -136,10 +137,13 @@ var
   st: string;
 begin
   inherited;
+  // (p3) must check this because Font may not be created here
+  if not HasParent then Exit;
   st := Text;
   FMaxPixel.Test(st, Font);
   if st <> Text then
     Text := st;
+  SelStart := Length(Text);
   FAutoSave.SaveValue(Text);
 end;
 
