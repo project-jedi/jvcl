@@ -104,6 +104,11 @@ resourcestring
   EUIB_EXCEPTIONNOTFOUND   = 'Exception name %s, not found.';
   EUIB_EXPTIONREGISTERED   = 'Exception: %d allready registered';
   EUIB_NOAUTOSTOP          = 'Transaction must be closed explicitly.';
+  EUIB_NOGENERATOR         = 'Generator %s not found.';
+  EUIB_NOFIELD             = 'Field not found.';
+  EUIB_TABLESTRNOTFOUND    = 'Table "%s" not found.';
+  EUIB_DOMAINSTRNOTFOUND   = 'Domain %s not found.';
+  EUIB_PROCSTRNOTFOUND     = 'Procedure %s not found.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Can''t connect to server.';
@@ -137,6 +142,11 @@ resourcestring
   EUIB_EXCEPTIONNOTFOUND   = 'L''exception %s, n''existe pas.';
   EUIB_EXPTIONREGISTERED   = 'L''exception %d a dйjа йtй enregistrйe.';
   EUIB_NOAUTOSTOP          = 'La transaction doit кtre fermйe explicitement.';
+  EUIB_NOGENERATOR         = 'Generator %s not found.';
+  EUIB_NOFIELD             = 'Field not found.';
+  EUIB_TABLESTRNOTFOUND    = 'Table "%s" not found.';
+  EUIB_DOMAINSTRNOTFOUND   = 'Domain %s not found.';
+  EUIB_PROCSTRNOTFOUND     = 'Procedure %s not found.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Impossible de se connecter au serveur.';
@@ -170,6 +180,11 @@ resourcestring
   EUIB_EXCEPTIONNOTFOUND   = 'Exception name %s, not found.';
   EUIB_EXPTIONREGISTERED   = 'Exception: %d already registered';
   EUIB_NOAUTOSTOP          = 'Transaction must be closed explicitly.';
+  EUIB_NOGENERATOR         = 'Generator %s not found.';
+  EUIB_NOFIELD             = 'Field not found.';
+  EUIB_TABLESTRNOTFOUND    = 'Table "%s" not found.';
+  EUIB_DOMAINSTRNOTFOUND   = 'Domain %s not found.';
+  EUIB_PROCSTRNOTFOUND     = 'Procedure %s not found.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Nelze pшipojit server.';
@@ -203,6 +218,11 @@ resourcestring
   EUIB_EXCEPTIONNOTFOUND   = 'Ausnahme "%s" nicht gefunden.';
   EUIB_EXPTIONREGISTERED   = 'Ausnahme %d bereits registriert.';
   EUIB_NOAUTOSTOP          = 'Die Transaktion muss explizit beendet werden.';
+  EUIB_NOGENERATOR         = 'Generator %s nicht gefunden.';
+  EUIB_NOFIELD             = 'Feld nicht gefunden.';
+  EUIB_TABLESTRNOTFOUND    = 'Tabelle "%s" nicht gefunden.';
+  EUIB_DOMAINSTRNOTFOUND   = 'Domдne %s nicht gefunden.';
+  EUIB_PROCSTRNOTFOUND     = 'Prozedur %s nicht gefunden.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Verbindung zum Server kann nicht aufgebaut werden.';
@@ -236,6 +256,11 @@ resourcestring
   EUIB_EXCEPTIONNOTFOUND   = 'Исключение %s не найдено.';
   EUIB_EXPTIONREGISTERED   = 'Исключение: %d уже зарегистрировано';
   EUIB_NOAUTOSTOP          = 'Transaction must be closed explicitly.';
+  EUIB_NOGENERATOR         = 'Generator %s not found.';
+  EUIB_NOFIELD             = 'Field not found.';
+  EUIB_TABLESTRNOTFOUND    = 'Table "%s" not found.';
+  EUIB_DOMAINSTRNOTFOUND   = 'Domain %s not found.';
+  EUIB_PROCSTRNOTFOUND     = 'Procedure %s not found.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Не могу установить соединение с сервером.';
@@ -269,6 +294,11 @@ resourcestring
   EUIB_EXCEPTIONNOTFOUND   = 'Excepcion con nombre %s, no fue encontrada.';
   EUIB_EXPTIONREGISTERED   = 'Excepcion: %d ya esta registrada.';
   EUIB_NOAUTOSTOP          = 'La transaccisn debe ser cerrada explmcitamente.';
+  EUIB_NOGENERATOR         = 'Generator %s not found.';
+  EUIB_NOFIELD             = 'Field not found.';
+  EUIB_TABLESTRNOTFOUND    = 'Table "%s" not found.';
+  EUIB_DOMAINSTRNOTFOUND   = 'Domain %s not found.';
+  EUIB_PROCSTRNOTFOUND     = 'Procedure %s not found.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Imposible conectar con el servidor.';
