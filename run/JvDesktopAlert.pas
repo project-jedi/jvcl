@@ -217,7 +217,7 @@ type
     property AlertStyle: TJvAlertStyle read FAlertStyle write SetAlertStyle default asFade;
     property AutoFocus: Boolean read FAutoFocus write FAutoFocus default False;
     property AutoFree: Boolean read FAutoFree write FAutoFree default False;
-    property BidiMode:TBidiMode read GetBiDiMode write SetBiDiMode;
+    property BidiMode:TBidiMode read GetBiDiMode write SetBiDiMode default bdLeftToRight;
     property HeaderText: string read GetHeaderText write SetHeaderText;
     property MessageText: string read GetMessageText write SetMessageText;
 
