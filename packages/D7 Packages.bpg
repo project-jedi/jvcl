@@ -16,7 +16,9 @@ PROJECTS = TestApp.exe JvCoreD7R.bpl JvCoreD7D.bpl JvSystemD7R.bpl \
   JvMMD7D.bpl JvNetD7R.bpl JvNetD7D.bpl JvAppFrmD7R.bpl JvAppFrmD7D.bpl \
   JvDBD7R.bpl JvDBD7D.bpl JvBDED7R.bpl JvBDED7D.bpl JvInterpreterD7R.bpl \
   JvInterpreterD7D.bpl JvBandsD7R.bpl JvBandsD7D.bpl JvPluginD7R.bpl \
-  JvPluginD7D.bpl JvJansD7R.bpl JvJansD7D.bpl JvGlobusD7R.bpl JvGlobusD7D.bpl
+  JvPluginD7D.bpl JvJansD7R.bpl JvJansD7D.bpl JvGlobusD7R.bpl JvGlobusD7D.bpl \
+  JvPrintPreviewD7R.bpl JvPrintPreviewD7D.bpl JvPageCompsD7R.bpl \
+  JvPageCompsD7D.bpl JvValidatorsD7R.bpl JvValidatorsD7D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -130,6 +132,24 @@ JvGlobusD7D.bpl: d7\JvGlobusD7D.dpk
   $(DCC)
 
 JvGlobusD7R.bpl: d7\JvGlobusD7R.dpk
+  $(DCC)
+
+JvPrintPreviewD7D.bpl: d7\JvPrintPreviewD7D.dpk
+  $(DCC)
+
+JvPageCompsD7R.bpl: d7\JvPageCompsD7R.dpk
+  $(DCC)
+
+JvPageCompsD7D.bpl: d7\JvPageCompsD7D.dpk
+  $(DCC)
+
+JvPrintPreviewD7R.bpl: d7\JvPrintPreviewD7R.dpk
+  $(DCC)
+
+JvValidatorsD7D.bpl: d7\JvValidatorsD7D.dpk
+  $(DCC)
+
+JvValidatorsD7R.bpl: d7\JvValidatorsD7R.dpk
   $(DCC)
 
 

@@ -14,10 +14,10 @@ uses
   JvDdeCmd,  JvDeviceChanged,  JvDirectories, JvDragDrop,  JvHidControllerClass,  JvJoystick,  JvKeyboardStates,
   {JvMemoryInfos,  }JvMRUList,  JvMRUManager, JvNTEventLog,  JvRas32,
   JvScreenSaver,  JvShellHook,  JvSHFileOperation, JvSoundControl,  JvSystemColors,
-  JvThread,  JvThreadTimer,  JvTimerList, JvChangeNotify,  JvSimpleXml,
+  JvThread,  JvThreadTimer,  JvTimerList, JvChangeNotify,  JvSimpleXml, JvXMLDatabase,
   JvWndProcHook, JvFormPlacement, JvTimer, JvSearchFiles, JvPerfMon95,
   JvChangeNotifyEditor, JvTimerListForm, JvMinMaxForm, JvFormPropertiesForm,
-  JvPerfStatEditor, 
+  JvPerfStatEditor,
   JvDsgnEditors;
 
 {$R ..\resources\JvSystemReg.dcr}
@@ -30,7 +30,7 @@ begin
     TJvJoystick, TJvKeyboardStates, {TJvMemoryInfos, }TJvMruList, TJvMRUManager,
     TJvNTEventLog, TJvRas32, TJvScreenSaver, TJvShellHook, TJvSHFileOperation,
     TJvSoundControl, TJvSystemColors, TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList,
-    TJvChangeNotify, TJvSimpleXML, TJvWindowHook, TJvFormStorage,TJvSearchFiles, TJvPerfStat95]);
+    TJvChangeNotify, TJvSimpleXML, TJvXMLDatabase, TJvWindowHook, TJvFormStorage,TJvSearchFiles, TJvPerfStat95]);
 
   RegisterPropertyEditor(TypeInfo(TList), TJvTimerList, 'Events', TJvTimersItemListProperty);
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,

@@ -1,0 +1,41 @@
+package JvPageCompsD7D;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Page Style Components Design Package for Delphi 6'}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  designide,
+  JvPageCompsD7R,
+  dclstd,
+  JvCoreD7D;
+
+contains
+  JvTreeItemsEditor in '..\..\design\JvTreeItemsEditor.pas' {frmTreeViewItems},
+  JvPageListTreeViewReg in '..\..\design\JvPageListTreeViewReg.pas',
+  JvPageLinkEditor in '..\..\design\JvPageLinkEditor.pas' {frmJvTreeViewLinksEditor};
+
+end.
