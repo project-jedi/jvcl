@@ -33,6 +33,8 @@
     <File Name="..\..\run\JvObjectPickerDialog.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPageSetup.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPageSetupTitled.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvParameterList.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvParameterListParameter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvProgressComponent.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvProgressDialog.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvProgressForm.pas" Targets="all" Formname="frmProgress" Condition=""/>
