@@ -15,7 +15,7 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
+Last Modified: 2004-03-08
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -47,7 +47,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvComponent;
+  JvComponent, ExtCtrls;
 
 type
   TJvCheckItemEditor = class(TJvForm)
@@ -68,16 +68,17 @@ type
     cbUncheckedItem: TMenuItem;
     N2: TMenuItem;
     EnabledItem: TMenuItem;
+    CheckList: TCheckListBox;
+    PanelButtons: TPanel;
+    EditBtn: TButton;
+    NewBtn: TButton;
+    DeleteBtn: TButton;
+    AddListBtn: TButton;
+    ClearBtn: TButton;
+    UpBtn: TButton;
+    DownBtn: TButton;
     OkBtn: TButton;
     CancelBtn: TButton;
-    DownBtn: TButton;
-    UpBtn: TButton;
-    ClearBtn: TButton;
-    AddListBtn: TButton;
-    DeleteBtn: TButton;
-    NewBtn: TButton;
-    EditBtn: TButton;
-    CheckList: TCheckListBox;
     procedure EditBtnClick(Sender: TObject);
     procedure NewBtnClick(Sender: TObject);
     procedure DeleteBtnClick(Sender: TObject);
@@ -96,6 +97,7 @@ type
     procedure CheckListDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure CheckListDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
+    procedure FormCreate(Sender: TObject);
   private
     procedure CheckButtons;
   end;
@@ -168,11 +170,7 @@ end;
 
 constructor TJvCheckItemEditor.Create(AOwner: TComponent);
 begin
-  {$IFDEF BCB}
   inherited CreateNew(AOwner, 0);
-  {$ELSE}
-  inherited CreateNew(AOwner);
-  {$ENDIF BCB}
   { Form definitions }
   {Left := 354;
   Top := 338;}
@@ -487,6 +485,11 @@ begin
   if (State = dsDragEnter) and (CheckList.SelCount > 1) then
     CheckList.DragCursor := crMultiDrag;
   {$ENDIF VCL}
+end;
+
+procedure TJvCheckItemsEditor.FormCreate(Sender: TObject);
+begin
+  CheckList.Anchors := [akLeft, akTop, akRight, akBottom];
 end;
 
 end.
