@@ -121,7 +121,7 @@ type
     function Execute: Boolean; override;
     procedure TerminateApplication;
     procedure Lock;
-    property LoggedUser: string read GetLoggedUser;
+    property LoggedUser: string read GetLoggedUser write SetLoggedUser;
   published
     property Caption: string read FCaption write FCaption;
   end;
@@ -312,6 +312,7 @@ var
 begin
   LoginName := '';
   DoBeforeLogin;
+  LoginName := LoggedUser;
   Result := DoLogin(LoginName);
   if Result then
   begin
