@@ -236,21 +236,29 @@ type
 
   TMsg = packed record
     hwnd: QWidgetH;
-    message: cardinal;
+    message: Cardinal;
     wParam: Longint;
     lParam: Longint;
-    time: cardinal;
+    time: Cardinal;
     pt: TPoint;
   end;
 
   TWMScroll = packed record
-    Msg: Integer;
+    Msg: Cardinal;
     Pos: Integer;
     ScrollCode: Integer;
+    Result: Integer;
+  end;
+
+  TWMTimer = packed record
+    Msg: Cardinal;
+    TimerID: Longint;
+    TimerProc: Pointer;
+    Result: Longint;
   end;
 
   TCMActivate = packed record
-    Msg: Integer;
+    Msg: Cardinal;
     WParam: Integer;
     LParam: Longint;
     Result: Integer;
@@ -1276,6 +1284,9 @@ type
 
 procedure InstallApplicationHook(Hook: TApplicationHook); // not threadsafe
 procedure UninstallApplicationHook(Hook: TApplicationHook); // not threadsafe
+procedure IgnoreNextEvents(Handle: QObjectH; const Events: array of QEventType);
+ // equivalent to "while PeekMessage(h, evstart, evend, PM_REMOVE"
+procedure IgnoreMouseEvents(Handle: QObjectH);
 
 
 function SetTimer(Wnd: QWidgetH; IDEvent, Elapse: Cardinal;
@@ -7947,6 +7958,71 @@ begin
     Dispose(Item);
   end;
   FreeAndNil(AppHookList);
+end;
+
+type
+  TEventIgnorer = class(TObject)
+  public
+    Events: array of QEventType;
+    Handle: QObjectH;
+    function IgnoreEvents(Sender: QObjectH; Event: QEventH): Boolean;
+  end;
+
+function TEventIgnorer.IgnoreEvents(Sender: QObjectH; Event: QEventH): Boolean;
+var
+  t: QEventType;
+  i: Integer;
+begin
+  if (Handle = nil) or (Sender = Handle) then
+  begin
+    Result := True;
+    t := QEvent_type(Event);
+    for i := 0 to High(Events) do
+      if Events[i] = t then
+      begin
+        case t of
+          QEventType_Wheel:
+            QWheelEvent_ignore(QWheelEventH(Event));
+        end;
+        Exit;
+      end;
+  end;
+  Result := False;
+end;
+
+procedure IgnoreNextEvents(Handle: QObjectH; const Events: array of QEventType);
+var
+  Ignorer: TEventIgnorer;
+  i: Integer;
+begin
+  Ignorer := TEventIgnorer.Create;
+  try
+    SetLength(Ignorer.Events, Length(Events));
+    for i := 0 to High(Events) do
+      Ignorer.Events[i] := Events[i];
+    Ignorer.Handle := Handle;
+    InstallApplicationHook(Ignorer.IgnoreEvents);
+    try
+      QApplication_processEvents(Application.Handle);
+    finally
+      UninstallApplicationHook(Ignorer.IgnoreEvents);
+    end;
+  finally
+    Ignorer.Free;
+  end;
+end;
+
+procedure IgnoreMouseEvents(Handle: QObjectH);
+begin
+  IgnoreNextEvents(Handle, [
+    QEventType_MouseButtonPress,
+    QEventType_MouseButtonRelease,
+    QEventType_MouseButtonDblClick,
+    QEventType_MouseMove,
+    QEventType_Enter,
+    QEventType_Leave,
+    QEventType_Wheel
+  ]);
 end;
 
 { ---- Timer ---- }
