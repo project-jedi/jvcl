@@ -31,7 +31,13 @@ unit JvWaitingProgress;
 interface
 
 uses
-  Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Messages, Graphics, Controls, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms,
+  {$ENDIF VisualCLX}
   JvSpecialProgress, JvImageDrawThread, JvComponent;
 
 type

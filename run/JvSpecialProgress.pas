@@ -33,8 +33,13 @@ unit JvSpecialProgress;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  ExtCtrls, // for Frame3D
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, ExtCtrls, // for Frame3D
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QExtCtrls, QWindows, Types,
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -134,13 +139,15 @@ type
     property OnDblClick;
     property OnDragOver;
     property OnDragDrop;
+    {$IFDEF VCL}
     property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
-    property OnStartDock;
     property OnStartDrag;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -386,7 +393,12 @@ begin
   if BorderStyle = bsNone then
   begin
     FBuffer.Canvas.Brush.Color := Color;
+    {$IFDEF VCL}
     FBuffer.Canvas.FrameRect(Rect);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FrameRect(FBuffer.Canvas, Rect);
+    {$ENDIF VisualCLX}
   end
   else
   begin
@@ -459,7 +471,12 @@ begin
   if Y < 0 then
     Y := 0;
 
+  {$IFDEF VCL}
   SetBkMode(FBuffer.Canvas.Handle, Windows.TRANSPARENT);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  SetBkMode(FBuffer.Canvas.Handle, TRANSPARENT);
+  {$ENDIF VisualCLX}
   //    FBuffer.Canvas.Brush.Color := clNone;
   //    FBuffer.Canvas.Brush.Style := bsClear;
   FBuffer.Canvas.TextOut(X, Y, S);

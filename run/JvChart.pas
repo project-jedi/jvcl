@@ -261,11 +261,14 @@ type
     nMouseValue: Integer;
     nMousePen: Integer;
     nOldYValueCount: Integer;
+    FYFont: TFont; // Delphi Font object wrapper.
+    {$IFDEF VCL}
     // Y Axis Vertical Font
     FYFontHandle: HFont; // Y AXIS VERTICAL TEXT: Vertical Font Handle (remember to DeleteObject)
     FYLogFont: TLogFont; // Y AXIS VERTICAL TEXT: Logical Font Options Record
-    FYFont: TFont; // Delphi Font object wrapper.
     procedure MakeVerticalFont; // Call GDI calls to get the Y Axis Vertical Font handle
+    procedure MyGraphVertFont; // vertical font handle
+    {$ENDIF VCL}
     { Right Side Legend showing Pen Names, and/or Data Descriptors }
     procedure MyShowLegend;
     procedure MyHeader(strText: string);
@@ -273,9 +276,6 @@ type
     procedure MyYHeader(strText: string); // NEW
     procedure MyHeaderFont;
     procedure MyAxisFont;
-    {$IFDEF VCL}
-    procedure MyGraphVertFont; // vertical font handle
-    {$ENDIF VCL}
     procedure MySmallGraphFont;
     function MyTextHeight(strText: string): Longint;
     { TEXTOUT stuff }
@@ -304,7 +304,7 @@ type
     procedure SetFontColor(Pen: Integer);
     procedure CountGraphAverage;
     procedure DrawPenColorBox(nColor, W, H, X, Y: Integer);
-    { function GetDefaultColorString(nIndex: Integer): string;} // (rom) not used 
+    { function GetDefaultColorString(nIndex: Integer): string;} // (rom) not used
     procedure MyPiePercentage(X1, Y1, W: Longint; nPercentage: Double);
     procedure MyDisplayAsPie(nPen: Integer);
     procedure MyDisplayAsDeltaAverage;
@@ -354,9 +354,9 @@ type
     property Font;
     property Align;
     property Anchors;
-    property AutoSize;
     property Constraints;
     {$IFDEF VCL}
+    property AutoSize;
     property DragCursor;
     property DragKind;
     {$ENDIF VCL}
@@ -768,10 +768,10 @@ begin
    {Add code for destroying my own data...here}
 
   FBitmap.Free;
-
+  {$IFDEF VCL}
   if Ord(FYFontHandle) <> 0 then
     DeleteObject(FYFontHandle); // vertical font object
-
+  {$ENDIF VCL}
   FreeAndNil(FYFont);
 
   FreeAndNil(FPicture);
@@ -2351,6 +2351,7 @@ end;
 { or check for metafile output!                                             }
 {***************************************************************************}
 
+{$IFDEF VCL}
 procedure TJvChart.MakeVerticalFont;
 begin
   if Ord(FYFontHandle) <> 0 then
@@ -2391,8 +2392,8 @@ begin
   FYFont.Assign(Font);
   FYFont.Color := Options.AxisFont.Color;
   FYFont.Handle := FYFontHandle;
-
 end;
+{$ENDIF}
 
 procedure TJvChart.MyHeader(strText: string);
 {var

@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2004-02-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,7 +31,13 @@ unit JvWaitingGradient;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Graphics, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QWindows,
+  {$ENDIF}
   JvImageDrawThread, JvComponent;
 
 type

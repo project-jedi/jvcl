@@ -34,15 +34,13 @@ unit JvColorForm;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   {$IFDEF VCL}
-  Graphics, Controls, Forms, Buttons, ExtCtrls, Dialogs,
+  Windows, Messages, Graphics, Controls, Forms, Buttons, ExtCtrls, Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, Qt, QGraphics, QControls, QForms, QButtons, QExtCtrls, QDialogs,
+  QWindows,
   {$ENDIF VisualCLX}
   JvColorBox;
 

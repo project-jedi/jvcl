@@ -40,7 +40,7 @@ uses
   Windows, Messages, Graphics, Controls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QGraphics, QControls, QForms, Types,
+  QGraphics, QControls, QForms, Types, QWindows,
   {$ENDIF VisualCLX}
   JvWizard;
 
