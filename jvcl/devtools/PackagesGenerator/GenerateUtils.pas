@@ -133,7 +133,7 @@ begin
   Result := PathExtractFileNameNoExt(FileName);
 end;
 
-procedure ApplyTemplateAndSave(path, target, package, extension : string; template : TStrings; xml : TJvSimpleXml);
+procedure ApplyTemplateAndSave(path, target, package, extension : string; template : TStrings; xml : TJvSimpleXml; templateDate, xmlDate : TDateTime);
 var
   OutFileName : string;
   packSuffix : string;
@@ -141,6 +141,8 @@ var
   reqPackName : string;
   incFileName : string;
   formName : string;
+  formType : string;
+  formNameAndType : string;
   rootNode : TJvSimpleXmlElemClassic;
   requiredNode : TJvSimpleXmlElem;
   packageNode : TJvSimpleXmlElem;
@@ -204,7 +206,7 @@ begin
           // 'std'
           if IsNotInPerso(packageNode, target) or
              IsOnlyInPerso(packageNode, target) then
-            ApplyTemplateAndSave(path, GetPersoTarget(target), package, extension, template, xml); 
+            ApplyTemplateAndSave(path, GetPersoTarget(target), package, extension, template, xml, templateDate, xmlDate);
         end;
         // if the last character in the output file is
         // a comma, then remove it. This possible comma will
@@ -234,9 +236,20 @@ begin
             incFileName := fileNode.Properties.ItemNamed['Name'].Value;
             StrReplace(tmpStr, '%FILENAME%', incFileName, [rfReplaceAll]);
             StrReplace(tmpStr, '%UNITNAME%', GetUnitName(incFileName), [rfReplaceAll]);
-            StrReplace(tmpStr, '%FORMNAME%',
-                        fileNode.Properties.ItemNamed['FormName'].Value,
-                        [rfReplaceAll]);
+            formNameAndType := fileNode.Properties.ItemNamed['FormName'].Value;
+            if Pos(':', formNameAndType) = 0 then
+            begin
+              formName := formNameAndType;
+              formType := '';
+            end
+            else
+            begin
+              formName := Copy(formNameAndType, 1, Pos(':', formNameAndType)-1);
+              formType := Copy(formNameAndType, Pos(':', formNameAndType)+2, Length(formNameAndType));
+            end;
+            StrReplace(tmpStr, '%FORMNAME%', formName, [rfReplaceAll]);
+            StrReplace(tmpStr, '%FORMTYPE%', formType, [rfReplaceAll]);
+            StrReplace(tmpStr, '%FORMNAMEANDTYPE%', formNameAndType, [rfReplaceAll]);
             outFile.Text := outFile.Text +
                             EnsureCondition(tmpStr, fileNode, target);
           end;
@@ -247,7 +260,7 @@ begin
           // 'std'
           if IsNotInPerso(fileNode, target) or
              IsOnlyInPerso(fileNode, target) then
-            ApplyTemplateAndSave(path, GetPersoTarget(target), package, extension, template, xml); 
+            ApplyTemplateAndSave(path, GetPersoTarget(target), package, extension, template, xml, templateDate, xmlDate); 
         end;
         // if the last character in the output file is
         // a comma, then remove it. This possible comma will
@@ -311,7 +324,12 @@ begin
       Inc(i);
     end;
 
-    // Save to the file
+    // Save the file, only if the template or the xml are newer
+    // than the output file. If that output file doesn't exist,
+    // create it too
+    if not FileExists(OutFileName) or
+      (FileDateToDateTime(FileAge(OutFileName)) < templateDate) or
+      (FileDateToDateTime(FileAge(OutFileName)) < xmlDate) then
     outFile.SaveToFile(OutFileName);
   finally
     outFile.Free;
@@ -323,6 +341,7 @@ var
   rec : TSearchRec;
   i : Integer;
   j : Integer;
+  xmlFileName : string;
   xml : TJvSimpleXml;
   template : TStringList;
 begin
@@ -339,7 +358,8 @@ begin
           // apply the template for all packages
           for j := 0 to packages.Count -1 do
           begin
-            template.LoadFromFile(path+targets[i]+'\'+rec.Name);
+            xmlFileName := path+targets[i]+'\'+rec.Name;
+            template.LoadFromFile(xmlFileName);
             xml := TJvSimpleXml.Create(nil);
             try
               xml.LoadFromFile(path+'xml\'+packages[j]+'.xml');
@@ -348,7 +368,9 @@ begin
                                    packages[j],
                                    ExtractFileExt(rec.Name),
                                    template,
-                                   xml); 
+                                   xml,
+                                   FileDateToDateTime(rec.Time),
+                                   FileDateToDateTime(FileAge(xmlFileName))); 
             finally
               xml.Free;
             end;
