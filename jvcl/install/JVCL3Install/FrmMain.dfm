@@ -93,7 +93,7 @@ object FormMain: TFormMain
   end
   object Label1: TLabel
     Left = 8
-    Top = 328
+    Top = 336
     Width = 21
     Height = 13
     Caption = '&JCL:'
@@ -167,9 +167,9 @@ object FormMain: TFormMain
       Shape = bsTopLine
     end
     object BtnQuit: TBitBtn
-      Left = 641
+      Left = 640
       Top = 10
-      Width = 75
+      Width = 76
       Height = 25
       Caption = '&Quit'
       TabOrder = 2
@@ -221,7 +221,7 @@ object FormMain: TFormMain
     object BtnInstall: TBitBtn
       Left = 8
       Top = 10
-      Width = 75
+      Width = 81
       Height = 25
       Action = ActionInstall
       Caption = '&Install'
@@ -273,7 +273,7 @@ object FormMain: TFormMain
     object BtnUninstall: TBitBtn
       Left = 142
       Top = 10
-      Width = 75
+      Width = 83
       Height = 25
       Action = ActionUninstall
       Caption = '&Uninstall'
@@ -348,9 +348,15 @@ object FormMain: TFormMain
         Width = 328
       end>
     ColumnClick = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
     GridLines = True
     ReadOnly = True
     RowSelect = True
+    ParentFont = False
     ParentShowHint = False
     PopupMenu = PopupMenuPackages
     ShowHint = True
@@ -381,9 +387,15 @@ object FormMain: TFormMain
         Width = 30
       end>
     ColumnClick = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
     HideSelection = False
     ReadOnly = True
     RowSelect = True
+    ParentFont = False
     SmallImages = ImageListTargets
     TabOrder = 1
     ViewStyle = vsReport
@@ -395,7 +407,7 @@ object FormMain: TFormMain
     Top = 381
     Width = 209
     Height = 150
-    Caption = ' jvcl.inc - Options (global to all IDEs) '
+    Caption = ' jvcl.inc (global to all IDEs) '
     TabOrder = 2
     object BtnAdvancedOptions: TBitBtn
       Left = 104
@@ -436,7 +448,7 @@ object FormMain: TFormMain
     object CheckBoxOptTheming: TCheckBox
       Left = 8
       Top = 24
-      Width = 169
+      Width = 193
       Height = 17
       Hint = 
         'Activate this if you have Mike Lischke'#39's Theme Manager'#13#10'(http://' +
@@ -453,7 +465,7 @@ object FormMain: TFormMain
     object CheckBoxOptRegGlobalDsgnEditor: TCheckBox
       Left = 8
       Top = 48
-      Width = 169
+      Width = 196
       Height = 17
       Hint = 
         'Enable this if you want to register property and component'#13#10'edit' +
@@ -467,7 +479,7 @@ object FormMain: TFormMain
     object CheckBoxOptDxgettext: TCheckBox
       Left = 8
       Top = 72
-      Width = 169
+      Width = 193
       Height = 17
       Hint = 
         'Enable this if you want to use the dxgettext'#13#10'(http://dxgettext.' +
@@ -481,7 +493,7 @@ object FormMain: TFormMain
     object CheckBoxOptJvGIF: TCheckBox
       Left = 8
       Top = 96
-      Width = 169
+      Width = 193
       Height = 17
       Hint = 
         'This enables GIF image support. Deactivate this if you '#13#10'are usi' +
@@ -494,12 +506,11 @@ object FormMain: TFormMain
     end
   end
   object CheckBoxShowRuntimePackages: TCheckBox
-    Left = 579
+    Left = 555
     Top = 45
-    Width = 137
+    Width = 159
     Height = 17
     Hint = 'Check this option if you want to see the runtime'#13#10'packages.'
-    Alignment = taLeftJustify
     Caption = 'Show runtime packages'
     ParentShowHint = False
     ShowHint = True
@@ -587,7 +598,7 @@ object FormMain: TFormMain
     object CheckBoxClearJVCLPalette: TCheckBox
       Left = 8
       Top = 68
-      Width = 185
+      Width = 204
       Height = 17
       Hint = 
         'Remove all JVCL components from the component palettes in'#13#10'order' +
@@ -601,7 +612,7 @@ object FormMain: TFormMain
     object CheckBoxBuild: TCheckBox
       Left = 8
       Top = 8
-      Width = 185
+      Width = 204
       Height = 17
       Hint = 
         'Check this option if you want to build the packages instead'#13#10'of ' +
@@ -615,7 +626,7 @@ object FormMain: TFormMain
     object CheckBoxDeveloperInstall: TCheckBox
       Left = 8
       Top = 48
-      Width = 185
+      Width = 205
       Height = 17
       Hint = 
         'Activate this option if you are a JVCL developer.'#13#10'This adds the' +
@@ -629,7 +640,7 @@ object FormMain: TFormMain
     object CheckBoxInstallJcl: TCheckBox
       Left = 8
       Top = 28
-      Width = 185
+      Width = 205
       Height = 17
       Hint = 'Install the JCL packages that are needed by the JVCL 3.'
       Caption = 'Install JCL'
@@ -647,21 +658,21 @@ object FormMain: TFormMain
     object CheckBoxCompileOnly: TCheckBox
       Left = 8
       Top = 88
-      Width = 185
+      Width = 205
       Height = 17
       Hint = 
         'Activate this option if you do not want the installer to'#13#10'change' +
         ' the IDE'#39's settings but compile the packages.'
-      Caption = 'Compile only (no registry changes)'
+      Caption = 'Compile only (no IDE registration)'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 4
       OnClick = CheckBoxClearJVCLPaletteClick
     end
     object EditHppFilesDir: TEdit
-      Left = 72
+      Left = 80
       Top = 106
-      Width = 113
+      Width = 105
       Height = 21
       Hint = 'Choose the directory where the .hpp files should go.'
       Color = clBtnFace
@@ -691,7 +702,7 @@ object FormMain: TFormMain
     object CheckBoxHppFilesDir: TCheckBox
       Left = 8
       Top = 108
-      Width = 63
+      Width = 71
       Height = 17
       Hint = 
         'Activate this if you want the .hpp files to be moved'#13#10'to the sel' +
@@ -719,7 +730,7 @@ object FormMain: TFormMain
   end
   object BtnBrowseJCLDir: TButton
     Left = 192
-    Top = 323
+    Top = 331
     Width = 22
     Height = 22
     Hint = 'Browse...'
@@ -730,9 +741,9 @@ object FormMain: TFormMain
     OnClick = BtnHppFilesBrowseClick
   end
   object EditJCLDir: TEdit
-    Left = 32
-    Top = 324
-    Width = 160
+    Left = 38
+    Top = 332
+    Width = 154
     Height = 21
     Hint = 'Choose the JCL root directory.'
     Color = clBtnFace
@@ -937,14 +948,13 @@ object FormMain: TFormMain
     end
   end
   object CheckBoxCombineRuntimeDesigntime: TCheckBox
-    Left = 404
+    Left = 352
     Top = 45
-    Width = 159
+    Width = 193
     Height = 17
     Hint = 
       'Check this option if you want the runtime package to be automati' +
       'cally'#13#10'unchecked if you uncheck the design time package.'
-    Alignment = taLeftJustify
     Caption = 'Combine Runtime/Designtime'
     Checked = True
     ParentShowHint = False
