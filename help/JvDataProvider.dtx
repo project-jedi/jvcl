@@ -467,8 +467,8 @@ Summary
 Description
   ## Adapted from D7 help for TComponent.DefineProperties
   TExtensibleInterfacedPersistent overrides the DefineProperties method defined in TPersistent to
-  define the fake Implementers property. This is defined so that the extension list can be read and
-  written from and to the filer. However, there is no such property as Implementers.
+  define the fake Extensions property. This is defined so that the extension list can be read and
+  written from and to the filer. However, there is no such property as Extensions.
   
   DefineProperties assigns the ReadImplementers and WriteImplementers methods as the reader and
   writer methods for the Implementers property.
@@ -546,25 +546,37 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.ReadImplementer
 Summary
-  Write here a summary (1 line)
+  Reads in an extension from a stream.
 Description
-  This is a protected member, you don't have to describe these
+  ReadImplementer reads in an extension from a stream. It expects the first property to be the
+  fake ClassName property, to determine which extension class it should instantiate. If the first
+  property is not named ClassName or the class name it refers to is not a valid extension class, an
+  exception will be raised instead.
+  
+  ReadImplementer is called by ReadImplementers for each item in the collection in the stream. It
+  should read the preceding list start marker and the succeeding list end marker.
 Parameters
-  Reader - Description for this parameter
+  Reader - Filer object to read the extension from.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ReadImplementers, WriteImplementer
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.ReadImplementers
 Summary
-  Write here a summary (1 line)
+  Reads in a collection of extensions from a stream.
 Description
-  This is a protected member, you don't have to describe these
+  ReadImplementers reads in a collection of extensions from a stream. It expects to find a
+  collection at the current location If there's not a collection at the current location in the
+  stream, an exception will be raised.
+  
+  For each item of the collection in the stream, the ReadImplementer method is called to read in
+  that extension.
+  
+  ReadImplementers is called by the filing system when the Extension property is encountered. It's
+  responsible for reading the collection marker and the list end markers.
 Parameters
-  Reader - Description for this parameter
+  Reader - Filer object to read the collection of extensions from.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ReadImplementer, WriteImplementers
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.RefCount
 Summary
@@ -580,55 +592,73 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.RemoveIntfImpl
 Summary
-  Write here a summary (1 line)
+  Removes an extension to the object.
 Description
-  This is a protected member, you don't have to describe these
+  RemoveIntfImpl removes the specified extension object from the extension list. If the specified
+  extension is not in the extension list nothing will happen, otherwise the extension is removed
+  from the list and the extension is destroyed.
 Parameters
-  Obj - Description for this parameter
+  Obj - Extension object to remove.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AddIntfImpl, ClearIntfImpl, TAggregatedPersistentEx
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.ResumeRefCount
 Summary
-  Write here a summary (1 line)
+  Decrements RefCount without destroying the object if it reaches 0.
 Description
-  This is a protected member, you don't have to describe these
+  ResumeRefCount decrements RefCount without destroying the object if it reaches 0. Together with
+  SuspendRefCount you can temporarily disable reference counting if a certain process may result in
+  a reference to the object being made and released, resulting in an undesired destruction of the
+  object.
+  
+  The decreasing is thread-safe.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SuspendRefCount
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.SuspendRefCount
 Summary
-  Write here a summary (1 line)
+  Increments RefCount.
 Description
-  This is a protected member, you don't have to describe these
+  SuspendRefCount increments RefCount and is more-or-less an alias for _AddRef, except that
+  descendants might not do anything in _AddRef whereas SuspendRefCount is guaranteed to increase
+  RefCount (thread-safe).
+  
+  Together with ResumeRefCount you can temporarily disable reference counting if a certain process
+  may result in a reference to the object being made and released, resulting in an undesired
+  destruction of the object.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ReleaseRefCount
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.WriteImplementer
 Summary
-  Write here a summary (1 line)
+  Writes an extension to a stream.
 Description
-  This is a protected member, you don't have to describe these
+  WriteImplementer writes an extension to a stream. It writes out a list start marker, followed
+  by the fake ClassName property, containing the name of the extension's class. Next it will write
+  the extension itself and concludes it by writing the list end marker.
+  
+  WriteImplementer is called by WriteImplementers for each item in the extension list.
 Parameters
-  Writer   - Description for this parameter
-  Instance - Description for this parameter
+  Writer   - Filer object to write the extension to.
+  Instance - Extension to write to the stream.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ReadImplementer, WriteImplementers
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.WriteImplementers
 Summary
-  Write here a summary (1 line)
+  Writes the list of extensions as a collection to a stream.
 Description
-  This is a protected member, you don't have to describe these
+  WriteImplementers writes the list of extensions as a collection to a stream. It writes the
+  collection start marker and for each extension in the list that can be streamed out (checked
+  through the IsStreamableExtension method) WriteImplementer is called. The writing is concluded
+  by writing the list end marker.
+
+  WriteImplementers is called by the filing system when the Extension property should be stored.
+  This is only the case if there are extensions to store.
 Parameters
-  Writer - Description for this parameter
+  Writer - Filer object to write the extension to.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ReadImplementers, WriteImplementer
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContext
 Summary
