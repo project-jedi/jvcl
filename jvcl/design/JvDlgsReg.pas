@@ -65,7 +65,7 @@ uses
   {$ENDIF USEWINDOWS}
 
   JvBaseDlg, JvFindReplace, JvDSADialogs, JvTipOfDay, JvCommonExecDlg,
-  JvDesktopAlert, JvProgressComponent, JvSelectDirectory, JvImageDlg,
+  JvDesktopAlert, JvDesktopAlertEditors, JvProgressComponent, JvSelectDirectory, JvImageDlg,
   JvLoginForm, JvDualList, JvProgressDialog, JvBaseDlgEditor,
   JvTipOfDayEditor;
 
@@ -109,6 +109,7 @@ begin
   {$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteDialog, [TJvDesktopAlert, TJvDesktopAlertStack,
     TJvDualListDialog]);
+  RegisterPropertyEditor(TypeInfo(TJvCustomDesktopAlertStyleHandler), TJvDesktopAlert, '', TJvCustomDesktopAlertStyleHandlerEditor);
   {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, cAppletName, TJvAppletNameProperty);
   RegisterPropertyEditor(TypeInfo(Integer), TJvAppletDialog, cAppletIndex, TJvAppletIndexProperty);
