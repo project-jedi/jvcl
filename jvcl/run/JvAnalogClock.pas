@@ -33,8 +33,14 @@ unit JvAnalogClock;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, JvTypes, JvJCLUtils, JvComponent, JvThemes;
+{$IFDEF COMPLIB_VCL}
+  Windows, Graphics, Controls, ExtCtrls,
+{$ENDIF}
+{$IFDEF COMPLIB_CLX}
+  QGraphics, QControls, QExtCtrls,
+{$ENDIF}
+  SysUtils, Classes,
+  JvTypes, JvJCLUtils, JvComponent, JvThemes;
 
 type
   TJvNotifyTime = procedure(Sender: TObject; Hour, Min, Sec: Integer) of object;
@@ -267,8 +273,6 @@ type
   end;
 
 implementation
-
-{.$R *.res}
 
 // TJvAlarmInfo implementation
 // Bianconi

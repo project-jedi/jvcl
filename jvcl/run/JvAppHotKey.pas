@@ -36,7 +36,7 @@ unit JvAppHotKey;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Menus,
+  Windows, Messages, SysUtils, Classes, Controls, Forms, Menus,
   JvComponent;
 
 type

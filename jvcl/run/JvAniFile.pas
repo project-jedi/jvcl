@@ -15,7 +15,7 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software          
 All Rights Reserved.
 
-Last Modified: 2002-07-04
+Last Modified: 2003-10-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -30,11 +30,16 @@ unit JvAniFile;
 interface
 
 uses
-  SysUtils, Windows,
+  SysUtils, Classes,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF}
-  Classes, Graphics,
+  {$IFDEF COMPLIB_VCL}
+  Windows, Graphics,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  QGraphics, Types,
+  {$ENDIF}
   JvTypes;
 
 type

@@ -262,7 +262,7 @@ function DrawShadowText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect;
 
 implementation
 uses
-  JvThemes, JvJVCLUtils, Math;
+  JvThemes, JvJCLUtils, JvJVCLUtils, Math;
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);

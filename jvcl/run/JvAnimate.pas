@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2003-10-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,7 +31,13 @@ unit JvAnimate;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
+{$IFDEF COMPLIB_VCL}
+  Messages, Graphics, Controls, Forms, ComCtrls,
+{$ENDIF}
+{$IFDEF COMPLIB_CLX}
+  QGraphics, QControls, QForms, QComCtrls,
+{$ENDIF}
+  SysUtils, Classes,
   JVCLVer;
 
 type

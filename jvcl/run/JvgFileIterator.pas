@@ -39,7 +39,6 @@ uses
   Windows, Classes, SysUtils;
 
 type
-
   PSearchData = ^TSearchData;
   TSearchData = record
     sr: TSearchRec;
@@ -84,7 +83,7 @@ type
 
 implementation
 uses
-  JvJVCLUtils;
+  JvJCLUtils;
 
 { TJvgFileIterator }
 

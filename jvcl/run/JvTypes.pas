@@ -39,7 +39,7 @@ interface
 
 uses
 {$IFDEF COMPLIB_VCL}
-  Windows, Messages, Controls, Forms, Graphics, 
+  Windows, Messages, Controls, Forms, Graphics,
 {$ENDIF}
 {$IFDEF COMPLIB_CLX}
   Qt, QTypes, Types, QControls, QForms, QGraphics,
@@ -55,81 +55,11 @@ const
   DEFAULT_SYSCOLOR_MASK = $80000000;
   {$ENDIF}
 
-{$IFDEF COMPLIB_CLX}
-// constants for Canvas.TextRect
-  AlignLeft = 1 { $1 };
-  AlignRight = 2 { $2 };
-  AlignHCenter = 4 { $4 };
-  AlignTop = 8 { $8 };
-  AlignBottom = 16 { $10 };
-  AlignVCenter = 32 { $20 };
-  AlignCenter = 36 { $24 };
-  SingleLine = 64 { $40 };
-  DontClip = 128 { $80 };
-  ExpandTabs = 256 { $100 };
-  ShowPrefix = 512 { $200 };
-  WordBreak = 1024 { $400 };
-  ModifyString = 2048 { $800 };
-  DontPrint = 4096 { $1000 };
-  ClipPath = 8192 { $2000 };
-  ClipName = 16382 { $4000 );
-  CalcRect =  32764 { $8000 } ;
-  pf24bit = pf32bit;
-
-const
-  { DrawTextEx() Format Flags }
-  {$EXTERNALSYM DT_TOP}
-  DT_TOP = 0;          // default
-  {$EXTERNALSYM DT_LEFT}
-  DT_LEFT = 0;         // default
-  {$EXTERNALSYM DT_CENTER}
-  DT_CENTER = 1;
-  {$EXTERNALSYM DT_RIGHT}
-  DT_RIGHT = 2;
-  {$EXTERNALSYM DT_VCENTER}
-  DT_VCENTER = 4;
-  {$EXTERNALSYM DT_BOTTOM}
-  DT_BOTTOM = 8;
-  {$EXTERNALSYM DT_WORDBREAK}
-  DT_WORDBREAK = $10;
-  {$EXTERNALSYM DT_SINGLELINE}
-  DT_SINGLELINE = $20;
-  {$EXTERNALSYM DT_EXPANDTABS}
-  DT_EXPANDTABS = $40;
-//  {$EXTERNALSYM DT_TABSTOP}
-//  DT_TABSTOP = $80;
-  {$EXTERNALSYM DT_NOCLIP}
-  DT_NOCLIP = $100;
-//  {$EXTERNALSYM DT_EXTERNALLEADING}
-//  DT_EXTERNALLEADING = $200;
-  {$EXTERNALSYM DT_CALCRECT}
-  DT_CALCRECT = $400;
-  {$EXTERNALSYM DT_NOPREFIX}
-  DT_NOPREFIX = $800;
-//  {$EXTERNALSYM DT_INTERNAL}
-//  DT_INTERNAL = $1000;
-//  {$EXTERNALSYM DT_HIDEPREFIX}
-//  DT_HIDEPREFIX = $00100000;
-//  {$EXTERNALSYM DT_PREFIXONLY}
-//  DT_PREFIXONLY = $00200000;
-
-//  {$EXTERNALSYM DT_EDITCONTROL}
-//  DT_EDITCONTROL = $2000;
-  {$EXTERNALSYM DT_PATH_ELLIPSIS}
-  DT_PATH_ELLIPSIS = $4000;
-  {$EXTERNALSYM DT_END_ELLIPSIS}
-  DT_END_ELLIPSIS = $8000;
-  DT_ELLIPSIS = DT_END_ELLIPSIS;
-  {$EXTERNALSYM DT_MODIFYSTRING}
-  DT_MODIFYSTRING = $10000;
-//  {$EXTERNALSYM DT_RTLREADING}
-//  DT_RTLREADING = $20000;
-//  {$EXTERNALSYM DT_WORD_ELLIPSIS}
-//  DT_WORD_ELLIPSIS = $40000;
-{$ENDIF COMPLIB_CLX}
-
-
 type
+{$IFNDEF COMPILER6_UP}
+  EOSError = class(EWin32Error);
+{$ENDIF}
+
   TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers, hkPerformanceData,
     hkCurrentConfig, hkDynData);
   TJvRegKeys = set of TJvRegKey;
@@ -149,7 +79,7 @@ type
   TJvFTPProgressEvent = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
 {$IFDEF COMPLIB_CLX}
-  HWnd = QWidgetH;
+//  HWnd = QWidgetH;
   HCursor = QCursorH;
   TControlClass = class of TControl;
   TMinMaxInfo = packed record
@@ -162,7 +92,7 @@ type
   TWindowPlacement = packed record
     length: Cardinal;
     flags: Integer;
-    showCmd: TWindowState;
+    showCmd: Integer; // SW_Xxx
     ptMinPosition: TPoint;
     ptMaxPosition: TPoint;
     rcNormalPosition: TRect;
@@ -170,17 +100,19 @@ type
   PWindowPlacement = ^TWindowPlacement;
   TTime = TDateTime;
   TDate = TDateTime;
-
   TRGBQuad = packed record
-    rgbtReserved: Byte;
+    rgbReserved: Byte;
+    rgbBlue: Byte;
+    rgbGreen: Byte;
+    rgbRed: Byte;
+  end;
+  TRGBTriple = packed record
     rgbtBlue: Byte;
     rgbtGreen: Byte;
     rgbtRed: Byte;
   end;
-
-  TRGBTriple = TRGBQuad;
 //  TRGBArray = array[0..MaxPixelCount - 1] of TRGBQuad;
-{$ENDIF}
+{$ENDIF COMPLIB_CLX}
 
   PRGBArray = ^TRGBArray; // JvThumbImage, JvImageSplit, JvRegion
   TRGBArray = array [0..MaxPixelCount - 1] of TRGBTriple;
@@ -239,7 +171,7 @@ const
   Tab = #9;
   
 {$IFNDEF COMPILER6_UP}
-  SLineBreak = #13#10;
+  sLineBreak = #13#10;
   PathDelim = '\';
   DriveDelim = ':';
   PathSep    = ';';
@@ -420,10 +352,11 @@ const
 
 implementation
 
-{$IFDEF COMPLIB_CLX}
 uses
-  QWinCursors;
+{$IFDEF COMPLIB_CLX}
+  QWinCursors,
 {$ENDIF}
+  JvConsts; // includes cursor resources
 
 initialization
   Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');

@@ -30,20 +30,26 @@ unit JvAnimatedImage;
 interface
 
 uses
-  Windows,
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
-  JvTimer;
+  {$IFDEF COMPLIB_VCL}
+  Windows, Messages, Graphics, Controls, Forms,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  Qt, Types, QGraphics, QControls, QForms,
+  {$ENDIF}
+  SysUtils, Classes,
+  JvTimer, JvComponent;
 
 type
-  TJvImageControl = class(TGraphicControl)
+  TJvImageControl = class(TJvGraphicControl)
   private
     FDrawing: Boolean;
     FPaintBuffered: Boolean;
     FLock: TRTLCriticalSection;
-    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
   protected
     FGraphic: TGraphic;
     function DoPaletteChange: Boolean;
+    procedure Paint; override;
+    procedure BufferedPaint; virtual;
     procedure DoPaintImage; virtual; abstract;
     procedure DoPaintControl;
     procedure PaintDesignRect;
@@ -102,7 +108,7 @@ type
     function GetPalette: HPALETTE; override;
     procedure AdjustSize; override;
     procedure Loaded; override;
-    procedure Paint; override;
+    procedure BufferedPaint; override;
     procedure DoPaintImage; override;
     procedure FrameChanged; dynamic;
     procedure Start; dynamic;
@@ -255,43 +261,40 @@ begin
   end;
 end;
 
-procedure TJvImageControl.WMPaint(var Msg: TWMPaint);
+procedure TJvImageControl.Paint;
 var
-  DC, MemDC: HDC;
-  MemBitmap, OldBitmap: HBITMAP;
+  Bmp: TBitmap;
+{$IFDEF COMPLIB_VCL}
+  DC: HDC;
+{$ENDIF}
+{$IFDEF COMPLIB_CLX}
+  DC: QPainterH;
+{$ENDIF}
 begin
-  if FPaintBuffered then
-    inherited
-  else
-  if Msg.DC <> 0 then
-  begin
-    Canvas.Lock;
+  Bmp := TBitmap.Create;
+  try
+    Bmp.Width := ClientWidth;
+    Bmp.Height := ClientHeight;
+    DC := Canvas.Handle;
     try
-      DC := Msg.DC;
-      MemDC := GetDC(0);
-      MemBitmap := CreateCompatibleBitmap(MemDC, ClientWidth, ClientHeight);
-      ReleaseDC(0, MemDC);
-      MemDC := CreateCompatibleDC(0);
-      OldBitmap := SelectObject(MemDC, MemBitmap);
+      Canvas.Handle := Bmp.Canvas.Handle;
+      FPaintBuffered := True;
       try
-        FPaintBuffered := True;
-        try
-          Msg.DC := MemDC;
-          WMPaint(Msg);
-          Msg.DC := 0;
-        finally
-          FPaintBuffered := False;
-        end;
-        BitBlt(DC, 0, 0, ClientWidth, ClientHeight, MemDC, 0, 0, SRCCOPY);
+        BufferedPaint;
       finally
-        SelectObject(MemDC, OldBitmap);
-        DeleteDC(MemDC);
-        DeleteObject(MemBitmap);
+        FPaintBuffered := False;
       end;
     finally
-      Canvas.Unlock;
+      Canvas.Handle := DC;
+      Canvas.Draw(0, 0, Bmp);
     end;
+  finally
+    Bmp.Free;
   end;
+end;
+
+procedure TJvImageControl.BufferedPaint;
+begin
 end;
 
 procedure TJvImageControl.PaintDesignRect;
@@ -670,7 +673,7 @@ begin
   end;
 end;
 
-procedure TJvAnimatedImage.Paint;
+procedure TJvAnimatedImage.BufferedPaint;
 begin
   PaintImage;
   if (not Opaque) or FGlyph.Empty then
