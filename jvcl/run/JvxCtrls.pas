@@ -2910,7 +2910,15 @@ begin
     if (Angle10 > 900) and (Angle10 < 2700) then
       TextY := TextY + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)));
   end;
-  Canvas.TextOut(TextX, TextY, Text);
+  if not Enabled then
+  begin
+    Canvas.Font.Color := clBtnHighlight;
+    Canvas.TextOut(TextX+1, TextY+1, Text);
+    Canvas.Font.Color := clBtnShadow;
+    Canvas.TextOut(TextX, TextY, Text);
+  end
+  else
+    Canvas.TextOut(TextX, TextY, Text);
 end;
 
 procedure TJvCustomLabel.Paint;
