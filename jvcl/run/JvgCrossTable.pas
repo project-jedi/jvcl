@@ -96,7 +96,7 @@ Known Issues:
 //
 //    procedure Print; - без слов.
 //    procedure PreviewTo( Canvas: TCanvas; PageWidth, PageHeight: integer );  - вывод таблицы на произвольный холст(Canvas) с указанием
-                                                                               размеров условной таблицы в точках.
+//                                                                               размеров условной таблицы в точках.
 { [Translation]
 
   Component allows printing so-called Cross-Tables, splitting large tables
