@@ -56,6 +56,8 @@ function OpenAtAnchor(const FileName, Anchor: string): Boolean;
 procedure FindFiles(const Dir, Mask: string; SubDirs: Boolean; List: TStrings;
   const FileExtensions: array of string);
 
+function FindFilename(const Paths: string; const Filename: string): string;
+
 {$IFDEF COMPILER5}
 type
   IInterface = IUnknown;
@@ -64,6 +66,9 @@ function Supports(const Intf: IInterface; const IID: TGUID): Boolean; overload;
 {$ENDIF COMPILER5}
 
 implementation
+
+uses
+  DelphiData;
 
 function WordWrapString(const S: string; Width: Integer = 75): string;
 var
@@ -172,6 +177,43 @@ begin
     else
       Result := Result + PathDelim + Dir;
   end;
+end;
+
+function FindFilename(const Paths: string; const Filename: string): string;
+var
+  List: TStrings;
+  i: Integer;
+begin
+  if Filename <> '' then
+  begin
+    List := TStringList.Create;
+    try
+      ConvertPathList(Paths, List);
+      for i := 0 to List.Count - 1 do
+      begin
+        Result := List[i];
+        if (Result <> '') and (Result[1] = '"') then
+        begin
+          Delete(Result, 1, 1);
+          Delete(Result, Length(Result), 1);
+        end;
+        if Result <> '' then
+        begin
+          if Result[Length(Result)] <> PathDelim then
+            Result := Result + PathDelim;
+          if Filename[1] = PathDelim then
+            Result := Result + Copy(Filename, 2, MaxInt)
+          else
+            Result := Result + Filename;
+          if FileExists(Result) then
+            Exit; // found
+        end;
+      end;
+    finally
+      List.Free;
+    end;
+  end;
+  Result := Filename;
 end;
 
 function StartsWith(const Text, StartText: string; CaseInsensitive: Boolean = False): Boolean;
