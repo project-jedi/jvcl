@@ -998,9 +998,10 @@ begin
     Canvas.Font.Color := FDisabledTextColor;
 
   Canvas.FillRect(Rect);
+  Inc(Rect.Left, 2);
   ItemHTDraw(Canvas, Rect, State, Items[Index]);
   {$IFDEF VCL}
-  SendMessage(Self.Handle, CB_SETITEMHEIGHT, Index, ItemHTHeight(Canvas, Items[Index])); // Kaczkowski
+//  SendMessage(Self.Handle, CB_SETITEMHEIGHT, Index, ItemHTHeight(Canvas, Items[Index])); // Kaczkowski
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Result := True;
