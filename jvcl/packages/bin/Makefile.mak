@@ -219,7 +219,10 @@ MOs:
 	cd ..\packages\bin
 
 ################################################################################
-Installer: MOs
+Installer: MOs Installer_nomo
+
+################################################################################
+Installer_nomo:
 	@echo [Compiling: Installer]
 	$(MAKE) $(QUIET) "-DCFG=..\..\install\JVCLInstall\JVCLInstall.cfg" configfile
 	@cd ..\..\install\JVCLInstall
