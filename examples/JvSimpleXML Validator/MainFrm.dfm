@@ -16,9 +16,6 @@ object Form1: TForm1
   OldCreateOrder = False
   Position = poDesktopCenter
   Scaled = False
-  DesignSize = (
-    456
-    323)
   PixelsPerInch = 96
   TextHeight = 13
   object reXML: TRichEdit
@@ -71,9 +68,6 @@ object Form1: TForm1
     BevelOuter = bvLowered
     Color = clWindow
     TabOrder = 0
-    DesignSize = (
-      456
-      65)
     object Label1: TLabel
       Left = 18
       Top = 22

@@ -18,9 +18,6 @@ object frmDiningPhilosophers: TfrmDiningPhilosophers
   Scaled = False
   OnCreate = FormCreate
   OnShow = FormShow
-  DesignSize = (
-    508
-    416)
   PixelsPerInch = 96
   TextHeight = 13
   object PhilLabel1: TLabel

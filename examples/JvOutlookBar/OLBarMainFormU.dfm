@@ -18,9 +18,6 @@ object OLBarMainForm: TOLBarMainForm
   Position = poDesktopCenter
   Scaled = False
   OnCreate = FormCreate
-  DesignSize = (
-    213
-    273)
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter

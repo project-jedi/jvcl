@@ -18,9 +18,6 @@ object Form1: TForm1
   Scaled = False
   OnCreate = FormCreate
   OnResize = FormResize
-  DesignSize = (
-    562
-    366)
   PixelsPerInch = 96
   TextHeight = 13
   object JvMarkupLabel1: TJvMarkupLabel

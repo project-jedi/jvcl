@@ -17,9 +17,6 @@ object frmMain: TfrmMain
   Position = poDesktopCenter
   Scaled = False
   OnCreate = FormCreate
-  DesignSize = (
-    456
-    191)
   PixelsPerInch = 96
   TextHeight = 13
   object cntHeader: TJvXPContainer

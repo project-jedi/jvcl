@@ -252,9 +252,6 @@ object TimelineMainForm: TTimelineMainForm
     OnSaveItem = TimeLine1SaveItem
     OnLoadItem = TimeLine1LoadItem
     OnItemMoved = TimeLine1ItemMoved
-    DesignSize = (
-      708
-      221)
   end
   object Panel2: TPanel
     Left = 0

@@ -18,9 +18,6 @@ object RunDll32MainForm: TRunDll32MainForm
   Position = poDesktopCenter
   Scaled = False
   OnCreate = FormCreate
-  DesignSize = (
-    422
-    219)
   PixelsPerInch = 96
   TextHeight = 14
   object Label1: TLabel

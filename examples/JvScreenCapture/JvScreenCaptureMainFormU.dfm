@@ -34,9 +34,6 @@ object JvScreenCaptureMainForm: TJvScreenCaptureMainForm
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      320
-      40)
     object Button1: TBitBtn
       Left = 4
       Top = 8

@@ -113,9 +113,6 @@ object Profiler32MainForm: TProfiler32MainForm
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      455
-      41)
     object Label1: TLabel
       Left = 10
       Top = 10

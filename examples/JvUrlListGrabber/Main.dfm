@@ -16,9 +16,6 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   Position = poDesktopCenter
   Scaled = False
-  DesignSize = (
-    535
-    359)
   PixelsPerInch = 96
   TextHeight = 13
   object lblExpl: TLabel

@@ -27,7 +27,6 @@ object PhotoOpMain: TPhotoOpMain
     Height = 439
     ActivePage = TabSheet1
     Align = alClient
-    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Day View'
@@ -139,9 +138,6 @@ object PhotoOpMain: TPhotoOpMain
         Color = clWhite
         TabOrder = 0
         OnDblClick = JvTFDays1DblClick
-        DesignSize = (
-          440
-          407)
       end
     end
     object TabSheet2: TTabSheet

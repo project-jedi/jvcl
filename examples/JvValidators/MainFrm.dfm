@@ -17,9 +17,6 @@ object frmMain: TfrmMain
   Position = poDesktopCenter
   Scaled = False
   OnCreate = FormCreate
-  DesignSize = (
-    591
-    240)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

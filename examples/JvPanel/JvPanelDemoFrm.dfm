@@ -27,9 +27,6 @@ object Form1: TForm1
     Constraints.MinHeight = 160
     Constraints.MinWidth = 495
     TabOrder = 0
-    DesignSize = (
-      495
-      289)
     object Label1: TLabel
       Left = 14
       Top = 232
