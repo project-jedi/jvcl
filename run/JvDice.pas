@@ -34,12 +34,12 @@ interface
 
 uses
   Windows, SysUtils, Classes, Graphics, Messages, Controls, Forms, Menus,
-  JvTimer, JvComponent, JvThemes;
+  JvTimer, JvComponent, JvThemes, JvExControls;
 
 type
   TJvDiceValue = 1..6;
 
-  TJvDice = class(TJvCustomControl)
+  TJvDice = class(TJvCustomControl{, IJvDenySubClassing})
   private
     FActive: Boolean;
     FBitmap: array [TJvDiceValue] of TBitmap;
@@ -55,7 +55,6 @@ type
     FOnStop: TNotifyEvent;
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
     procedure SetInterval(Value: Cardinal);
     procedure SetRotate(Value: Boolean);
     procedure SetShowFocus(Value: Boolean);
@@ -211,11 +210,6 @@ end;
 procedure TJvDice.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   Msg.Result := 1; // Paint clears the background
-end;
-
-procedure TJvDice.CMDenySubClassing(var Msg: TMessage); 
-begin
-  Msg.Result := 0;
 end;
 
 procedure TJvDice.AdjustSize;

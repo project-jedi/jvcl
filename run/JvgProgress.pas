@@ -33,10 +33,10 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, Graphics, SysUtils, ExtCtrls, ImgList,
-  JvgTypes, JvgCommClasses, JvgUtils, JvComponent, JvThemes;
+  JvgTypes, JvgCommClasses, JvgUtils, JvComponent, JvThemes, JvExControls;
 
 type
-  TJvgProgress = class(TJvGraphicControl)
+  TJvgProgress = class(TJvGraphicControl, IJvDenySubClassing)
   private
     FBevelInner: TPanelBevel;
     FBevelOuter: TPanelBevel;
@@ -65,9 +65,8 @@ type
     procedure SetInterspace(Value: Integer);
     procedure SetOptions(Value: TglProgressOptions);
     procedure OnSmthChanged(Sender: TObject);
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
-    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   protected
+    procedure TextChanged; override;
     procedure Loaded; override;
     procedure Paint; override;
   public
@@ -187,14 +186,9 @@ begin
       FImage.Canvas.Handle );}
 end;
 
-procedure TJvgProgress.CMTextChanged(var Msg: TMessage);
+procedure TJvgProgress.TextChanged;
 begin
   Repaint;
-end;
-
-procedure TJvgProgress.CMDenySubClassing(var Msg: TMessage);
-begin
-  Msg.Result := 1;
 end;
 
 procedure TJvgProgress.Paint;

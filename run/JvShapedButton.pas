@@ -33,14 +33,14 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls,
-  JvThemes, JvExStdCtrls;
+  JvThemes, JvExControls, JvExStdCtrls;
 
 type
   TJvButtonShapes = (jvSLeftArrow, jvRightArrow, jvSRound, jvSHex, jvSOctagon, jvSPar,
     jvSDiamond, jvSTriangleUp, jvSTriangleDown, jvSTriangleLeft,
     jvSTriangleRight, jvSPentagon, JvSRevPentagon, jvSRing);
 
-  TJvShapedButton = class(TJvExButton)
+  TJvShapedButton = class(TJvExButton, IJvDenySubClassing)
   private
     bm: TBitmap;
     IsFocused: Boolean;
@@ -79,7 +79,6 @@ type
     procedure DoAntiAlias(Bmp:TBitmap);
     procedure SetAntiAlias(const Value: Boolean);
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   protected
     procedure SetRegionOctagon(ALeft, ATop, AWidth, AHeight: Integer);
     procedure SetRegionTriangleDown(ALeft, ATop, AWidth, AHeight: Integer);
@@ -239,11 +238,6 @@ begin
     IsFocused := ADefault;
     Invalidate;
   end;
-end;
-
-procedure TJvShapedButton.CMDenySubClassing(var Msg: TMessage);
-begin
-  Msg.Result := 1;
 end;
 
 procedure TJvShapedButton.MouseEnter(Control: TControl);

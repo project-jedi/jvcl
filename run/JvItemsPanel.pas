@@ -40,13 +40,13 @@ uses
   {$IFDEF VisualCLX}
   Types, QWindows, QTypes, QGraphics, QControls, QExtCtrls,
   {$ENDIF VisualCLX}
-  JvComponent, JvThemes;
+  JvComponent, JvThemes, JvExControls;
 
 type
   TJvPanelItemClickEvent = procedure(Sender: TObject; ItemIndex: Integer) of object;
   TJvPanelOrientation = (poHorizontal, poVertical);
 
-  TJvItemsPanel = class(TJvCustomPanel)
+  TJvItemsPanel = class(TJvCustomPanel, IJvDenySubClassing)
   private
     FItems: TStrings;
     FItemHeight: Integer;
@@ -88,7 +88,6 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -438,11 +437,6 @@ begin
     Exit;
   inherited MouseLeave(Control);
   PaintUp;
-end;
-
-procedure TJvItemsPanel.CMDenySubClassing(var Msg: TCMDenySubClassing);
-begin
-  Msg.Result := 1;
 end;
 
 procedure TJvItemsPanel.SetHotTrack(const Value: Boolean);

@@ -33,11 +33,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
   ExtCtrls, Controls, Forms, Menus,
-  JVCLVer, JvThemes, JvExExtCtrls;
+  JVCLVer, JvThemes, JvExControls, JvExExtCtrls;
 
 type
   TPopupNames = (pnHint, pnName);
-  TJvControlBar = class(TJvExControlBar)
+  TJvControlBar = class(TJvExControlBar, IJvDenySubClassing)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
@@ -48,7 +48,6 @@ type
     FPopup: TPopupMenu;
     FPopupNames: TPopupNames;
     FList: TList;
-    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
@@ -154,11 +153,6 @@ begin
   inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
-end;
-
-procedure TJvControlBar.CMDenySubClassing(var Msg: TMessage);
-begin
-  Msg.Result := 1;
 end;
 
 procedure TJvControlBar.WMEraseBkgnd(var Msg: TWMEraseBkgnd);

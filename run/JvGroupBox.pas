@@ -41,10 +41,10 @@ uses
   {$IFDEF VisualCLX}
   Types, Qt, QWindows, QGraphics, QControls, QForms, QStdCtrls,
   {$ENDIF VisualCLX}
-  JVCLVer, JvThemes, JvExStdCtrls;
+  JVCLVer, JvThemes, JvExControls, JvExStdCtrls;
 
 type
-  TJvGroupBox = class(TJvExGroupBox)
+  TJvGroupBox = class(TJvExGroupBox, IJvDenySubClassing)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FOnHotKey: TNotifyEvent;
@@ -54,7 +54,6 @@ type
     FOver: Boolean;
     FPropagateEnable: Boolean;
     procedure SetPropagateEnable(const Value: Boolean);
-    procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
   {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
   protected
@@ -271,11 +270,6 @@ begin
   inherited ParentColorChanged;
   if Assigned(FOnParentColorChange) then
     FOnParentColorChange(Self);
-end;
-
-procedure TJvGroupBox.CMDenySubClassing(var Msg: TCMDenySubClassing);
-begin
-  Msg.Result := 1;
 end;
 
 procedure TJvGroupBox.DoHotKey;

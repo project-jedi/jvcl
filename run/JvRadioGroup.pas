@@ -33,10 +33,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls,
-  JVCLVer, JvThemes, JvExExtCtrls;
+  JVCLVer, JvThemes, JvExControls, JvExExtCtrls;
 
 type
-  TJvRadioGroup = class(TJvExRadioGroup)
+  TJvRadioGroup = class(TJvExRadioGroup, IJvDenySubClassing)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
@@ -44,7 +44,6 @@ type
     FOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
     FReadOnly: Boolean;
-    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
     {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
     {$ENDIF JVCLThemesEnabledD56}
@@ -164,11 +163,6 @@ begin
   inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
-end;
-
-procedure TJvRadioGroup.CMDenySubClassing(var Msg: TMessage);
-begin
-  Msg.Result := 1;
 end;
 
 end.

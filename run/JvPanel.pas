@@ -42,7 +42,7 @@ uses
   Types, QWindows, QGraphics, QControls, QForms, QExtCtrls,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
-  JVCLVer, JvThemes, JvComponent;
+  JVCLVer, JvThemes, JvComponent, JvExControls;
 
 type
   TJvPanelResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;
@@ -85,7 +85,7 @@ type
     property AutoArrange: Boolean read FAutoArrange write SetAutoArrange default False;
   end;
 
-  TJvPanel = class(TJvCustomPanel)
+  TJvPanel = class(TJvCustomPanel, IJvDenySubClassing)
   private
     FHintColor: TColor;
     FSaved: TColor;
@@ -139,8 +139,6 @@ type
     {$ELSE}
     procedure BoundsChanged; override;
     {$ENDIF VCL}
-    procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
-
     procedure Loaded; override;
     procedure Resize; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
@@ -627,11 +625,6 @@ begin
     inherited;
 end;
 {$ENDIF VCL}
-
-procedure TJvPanel.CMDenySubClassing(var Msg: TCMDenySubClassing);
-begin
-  Msg.Result := 1; 
-end;
 
 procedure TJvPanel.SetMultiLine(const Value: Boolean);
 begin

@@ -40,7 +40,7 @@ interface
 {$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
 
 {$IFDEF VisualCLX}
-  {$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
+ {$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
 {$ENDIF VisualCLX}
 
 uses
@@ -54,7 +54,7 @@ uses
   {$IFDEF VisualCLX}
   Types, Qt, QWindows, QGraphics, QControls, QForms, QDialogs, QExtCtrls,
   {$ENDIF VisualCLX}
-  JvComponent, JvThemes;
+  JvComponent, JvThemes, JvExControls;
 
 type
   TJvCapBtnStyle = (capClose, capMax, capMin, capRestore, capHelp);
@@ -90,7 +90,7 @@ type
     property Visible default False;
   end;
 
-  TJvCaptionPanel = class(TJvCustomPanel)
+  TJvCaptionPanel = class(TJvCustomPanel, IJvDenySubClassing)
   private
     FButtonArray: array[TJvCapBtnStyle] of TJvCapBtn;
     FButtonClick: TJvCapBtnEvent;
@@ -129,7 +129,6 @@ type
     {$ENDIF VCL}
     procedure SetOutlookLook(const Value: Boolean);
     procedure DoCaptionFontChange(Semder:TObject);
-    procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
   protected
     procedure Paint; override;
     {$IFDEF VisualCLX}
@@ -867,11 +866,6 @@ begin
     MouseUp(mbLeft, [], Msg.XCursor, Msg.YCursor);
 end;
 {$ENDIF VCL}
-
-procedure TJvCaptionPanel.CMDenySubClassing(var Msg: TCMDenySubClassing);
-begin
-  Msg.Result := 1;
-end;
 
 procedure TJvCaptionPanel.SetOutlookLook(const Value: Boolean);
 begin
