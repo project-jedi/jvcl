@@ -56,8 +56,13 @@ type
     FNullText: string;
     FNullDate: TDateTime;
     FDropDownDate: TDate;
+{$IFNDEF COMPILER6_UP}
+    FFormat: string;
+    procedure SetFormat(const Value: string);
+{$ENDIF}
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure SetNullDate(const Value: TDateTime);
+    procedure SetNullText(const Value: string);
   protected
     function WithinDelta(Val1, Val2: TDateTime): Boolean; virtual;
     // returns True if NullDate matches Date or Frac(NullDate) matches Frac(Time) depending on Kind
@@ -67,12 +72,15 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
+{$IFNDEF COMPILER6_UP}
+    property Format: string read FFormat write SetFormat;
+{$ENDIF}
     // The initial date to display when the drop-down calendar is shown and NullDate = Date/Time
     property DropDownDate: TDate read FDropDownDate write FDropDownDate;
     // The Date/Time (depending on the Kind property) that represents an empty "null" value, default is 1899-12-31
     property NullDate: TDateTime read FNullDate write SetNullDate;
     // The text to display when NullDate = Date/Time
-    property NullText: string read FNullText write FNullText;
+    property NullText: string read FNullText write SetNullText;
     property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -106,14 +114,11 @@ begin
    end else
        Result := ((Kind = dtkDate) and (Trunc(DateTime) = Trunc(NullDate)) or
     ((Kind = dtkTime) and WithinDelta(DateTime, NullDate)));
-   
+
   if Result then
     SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(FNullText)))
-  {$IFDEF COMPILER6_UP}
-  // (p3) the Format property doesn't exist in D5: what to do?
   else
     SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(Format)));
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvDateTimePicker.SetNullDate(const Value: TDateTime);
@@ -121,6 +126,27 @@ begin
   FNullDate := Trunc(Value);
   CheckNullValue;
 end;
+
+procedure TJvDateTimePicker.SetNullText(const Value: string);
+begin
+  if FNullText <> Value then
+  begin
+    FNullText:= Value;
+    CheckNullValue;
+  end;
+end;
+
+{$IFNDEF COMPILER6_UP}
+procedure TJvDateTimePicker.SetFormat(const Value: string);
+begin
+  if FFormat <> Value then
+  begin
+    FFormat:= Value;
+    CheckNullValue;
+  end;
+end;
+{$ENDIF}
+
 
 function TJvDateTimePicker.MsgSetDateTime(Value: TSystemTime): Boolean;
 begin
