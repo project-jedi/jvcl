@@ -756,11 +756,17 @@ begin
     begin
       for j := 0 to requiredNode.Items.Count -1 do
         if IsIncluded(requiredNode.Items[j], target) then
+        begin
           containsSomething := True;
+          Break;
+        end;
 
       for j := 0 to containsNode.Items.Count -1 do
         if IsIncluded(containsNode.Items[j], target) then
+        begin
           containsSomething := True;
+          Break;
+        end;
     end;
 
     // Save the file, only if the template or the xml are newer
@@ -779,12 +785,23 @@ begin
       if outFile.count > 0 then
         outFile.SaveToFile(OutFileName)
       else
+      begin
         CopyFile(PChar(templateName), PChar(OutFileName), False);
+        FileSetDate(OutFileName, DateTimeToFileDate(Now)); // adjust file time
+      end;
     end;
   finally
     bcblibsList.Free;
     outFile.Free;
   end;
+end;
+
+function IsBinaryFile(const Filename: string): Boolean;
+var
+  Ext: string;
+begin
+  Ext := AnsiLowerCase(ExtractFileExt(Filename));
+  Result := Ext = '.res';
 end;
 
 procedure Generate(packages : TStrings;
@@ -860,7 +877,11 @@ begin
           for j := 0 to packages.Count-1 do
           begin
             templateName := path+TargetToDir(target)+PathSeparator+rec.Name;
-            template.LoadFromFile(templateName);
+            if IsBinaryFile(templateName) then
+              template.Clear
+            else
+              template.LoadFromFile(templateName);
+
             xml := TJvSimpleXml.Create(nil);
             try
               xml.Options := [sxoAutoCreate];
@@ -889,7 +910,10 @@ begin
                 begin
                   SendMsg(#9+persoTarget+ ' template will be used for ' + packages[j]);
                   templateName := path+TargetToDir(persoTarget)+PathSeparator+rec.Name;
-                  template.LoadFromFile(templateName);
+                  if IsBinaryFile(templateName) then
+                    template.Clear
+                  else
+                    template.LoadFromFile(templateName);
                 end;
 
                 ApplyTemplateAndSave(
