@@ -51,7 +51,7 @@ type
     Label3: TLabel;
     GroupBox4: TGroupBox;
     ComboEdit1: TJvComboEdit ;
-    rxCalculator1: TJvxCalculator ;
+    rxCalculator1: TJvCalculator ;
     Image6: TImage;
     Label4: TLabel;
     FormStorage1: TJvFormStorage ;

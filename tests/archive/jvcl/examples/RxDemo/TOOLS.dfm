@@ -544,7 +544,7 @@ object ToolsForm: TToolsForm
           Top = 24
           Width = 28
           Height = 28
-          Hint = 'TJvxCalculator '
+          Hint = 'TJvCalculator '
           AutoSize = True
           ParentShowHint = False
           Picture.Data = {
@@ -576,7 +576,7 @@ object ToolsForm: TToolsForm
           Width = 165
           Height = 37
           AutoSize = False
-          Caption = 'You can use RxCalculator to do simple calculations.'
+          Caption = 'You can use JvCalculator to do simple calculations.'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
@@ -1189,7 +1189,7 @@ object ToolsForm: TToolsForm
     Left = 384
     Top = 4
   end
-  object rxCalculator1: TJvxCalculator
+  object rxCalculator1: TJvCalculator
     Left = 412
     Top = 4
   end
