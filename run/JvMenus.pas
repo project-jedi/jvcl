@@ -171,7 +171,6 @@ type
     FImageMargin    : TJvImageMargin;
     FImages         : TImageList;
     FImageSize      : TJvMenuImageSize;
-    FMinTextOffset  : Cardinal;
     FShowCheckMarks : Boolean;
     FStyle          : TJvMenuStyle;
     FTextMargin     : Integer;
@@ -251,7 +250,6 @@ type
     property ImageMargin    : TJvImageMargin           read FImageMargin        write FImageMargin;
     property ImageSize      : TJvMenuImageSize             read FImageSize          write FImageSize;
     property ItemPainter    : TJvCustomMenuItemPainter read FJvMenuItemPainter;
-    property MinTextOffset  : Cardinal                 read FMinTextOffset      write FMinTextOffset     default 0;
     property OwnerDraw stored False;
     property ShowCheckMarks : Boolean                  read FShowCheckMarks     write FShowCheckMarks    default False;
     property Style          : TJvMenuStyle             read FStyle              write SetStyle           default msStandard;
@@ -280,7 +278,6 @@ type
     FImages         : TImageList;
     FImageSize      : TJvMenuImageSize;
     FLeftMargin     : Cardinal;
-    FMinTextOffset  : Cardinal;
     FShowCheckMarks : Boolean;
     FStyle          : TJvMenuStyle;
     FTextMargin     : Integer;
@@ -355,7 +352,6 @@ type
     property ImageSize      : TJvMenuImageSize             read FImageSize          write FImageSize;
     property ItemPainter    : TJvCustomMenuItemPainter read FJvMenuItemPainter;
     property LeftMargin     : Cardinal                 read FLeftMargin         write FLeftMargin        default 0;
-    property MinTextOffset  : Cardinal                 read FMinTextOffset      write FMinTextOffset     default 0;
     property OwnerDraw stored False;
     property ShowCheckMarks : Boolean                  read FShowCheckMarks     write FShowCheckMarks    default False;
     property Style          : TJvMenuStyle             read FStyle              write SetStyle           default msStandard;
@@ -1626,7 +1622,6 @@ begin
   ImageMargin.Assign(JvMainMenu.ImageMargin);
   Images            := JvMainMenu.Images;
   ImageSize.Assign(JvMainMenu.ImageSize);
-  MinTextOffset     := JvMainMenu.MinTextOffset;
   ParentBiDiMode    := JvMainMenu.ParentBiDiMode;
   ShowCheckMarks    := JvMainMenu.ShowCheckMarks;
   Style             := JvMainMenu.Style;
