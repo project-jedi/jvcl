@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2002-10-04
+Last Modified: 2002-12-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -45,55 +45,28 @@ uses
   StdCtrls,
   Messages,
   Mask,
-  JvTypes, 
+  JvMaskEdit,
+  JvTypes,
   JVCLVer;
 
 
 type
-  TJvCustomCheckedMaskEdit = class(TCustomMaskEdit)
+  TJvCustomCheckedMaskEdit = class(TJvCustomMaskEdit)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FCheck: TCheckBox;
-    FEntering: Boolean;
-    FHintColor: TColor;
-    FHotTrack: Boolean;
     FInternalChange: Boolean;
-    FLeaving: Boolean;
-    FMouseOver: Boolean;
-    FSavedHintColor: TColor;
 
     FOnCheckClick: TNotifyEvent;
-    FOnCtl3DChanged: TNotiFyEvent;
-    FOnEnabledChanged: TNotifyEvent;
-    FOnGetFocus: TJvFocusChangeEvent;
-    FOnLoseFocus: TJvFocusChangeEvent;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
-    FOnParentColorChanged: TNotifyEvent;
 
     procedure CheckClick(Sender: TObject);
 
     function GetShowCheckbox: Boolean;
-    procedure SetHotTrack(const AValue: Boolean);
 
-    procedure CMCtl3DChanged(var AMessage: TMessage); message CM_CTL3DCHANGED;
-    procedure CMEnabledChanged(var AMessage: TMessage);
-      message CM_ENABLEDCHANGED;
-    procedure CMMouseEnter(var AMessage: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var AMessage: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var AMessage: TMessage);
-      message CM_PARENTCOLORCHANGED;
-    procedure WMKillFocus(var AMessage: TMessage); message WM_KILLFOCUS;
-    procedure WMSetFocus(var AMessage: TMessage); message WM_SETFOCUS;
   protected
     procedure DoCheckClick; dynamic;
-    procedure DoCtl3DChanged; virtual;
-    procedure DoEnabledChanged; virtual;
-    procedure DoMouseEnter; dynamic;
-    procedure DoMouseLeave; dynamic;
-    procedure DoParentColorChanged; dynamic;
-    procedure GetFocus(const APreviousControl: TWinControl);dynamic;
-    procedure LoseFocus(const AFocusControl: TWinControl); virtual;
+    procedure DoCtl3DChanged; override;
+    procedure DoEnabledChanged; override;
+    procedure DoKillFocus(const ANextControl: TWinControl); override;
 
     function GetChecked: Boolean; virtual;
     procedure SetChecked(const AValue: Boolean); virtual;
@@ -112,35 +85,15 @@ type
     procedure EndInternalChange;
     function InternalChanging: Boolean;
 
-    function Entering: Boolean;
-    function Leaving: Boolean;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
   protected
-    property HintColor: TColor read FHintColor write FHintColor;
-    property HotTrack: Boolean read FHotTrack write SetHotTrack;
-
     property Checked: Boolean read GetChecked write SetChecked;
-    property ShowCheckbox: Boolean read GetShowCheckbox write SetShowCheckbox;
+    property ShowCheckbox: Boolean read GetShowCheckbox write SetShowCheckbox default False;
 
     property OnCheckClick: TNotifyEvent read FOnCheckClick write FOnCheckClick;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged
-      write FOnCtl3DChanged;
-    property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged
-      write FOnEnabledChanged;
-    property OnGetFocus: TJvFocusChangeEvent read FOnGetFocus write FOnGetFocus;
-    property OnLoseFocus: TJvFocusChangeEvent read FOnLoseFocus
-      write FOnLoseFocus;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnParentColorChanged: TNotifyEvent read FOnParentColorChanged
-      write FOnParentColorChanged;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL
-      stored False;
   end;
 
   TJvCheckedMaskEdit = class(TJvCustomCheckedMaskEdit)
@@ -149,29 +102,36 @@ type
     property AutoSelect;
     property AutoSize default False;
     property BorderStyle;
+    property Caret;
     property CharCase;
     property Checked;
+    property ClipboardCommands;
     property Color;
     property Constraints;
     property Cursor;
     property Ctl3D;
+    property DisabledColor;
+    property DisabledTextColor;
     property DragCursor;
     property DragKind;
     property DragMode;
     property EditMask;
     property Enabled;
     property Font;
-    property HintColor default clInfoBk;
-    property HotTrack default False;
+    property GroupIndex;
+    property HintColor;
+    property HotTrack;
     property MaxLength;
     property ParentColor;
+    property ParentCtl3d;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
     property PopupMenu;
+    property ProtectPassword;
     property ReadOnly;
     property ShowHint;
-    property ShowCheckbox default False;
+    property ShowCheckbox;
     property Text;
     property TabOrder;
     property Visible;
@@ -187,17 +147,17 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnGetFocus;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-    property OnLoseFocus;
+    property OnKillFocus;
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
-    property OnParentColorChanged;
+    property OnParentColorChange;
+    property OnSetFocus;
     property OnStartDrag;
   end;
 
@@ -215,12 +175,6 @@ begin
   inherited;
   FCheck := NIL;
   FInternalChange := False;
-  FEntering := False;
-  FLeaving := False;
-
-  FHotTrack := False;
-  FHintColor := clInfoBk;
-  FMouseOver := False;
 
   AutoSize := False;
   Height := 21;
@@ -353,13 +307,14 @@ end;
 
 procedure TJvCustomCheckedMaskEdit.BeginInternalChange;
 begin
+  Assert(not FInternalChange, 'Unsupported nested calls to Begin/EndInternalChange!');
   FInternalChange := True;
 end;
 
 procedure TJvCustomCheckedMaskEdit.EndInternalChange;
 begin
   { TODO : if this assertion ever fails, it's time to switch to a counted locking scheme }
-  Assert( FInternalChange, 'Unsupported nested calls to Begin/EndInternalChange!');
+  Assert(FInternalChange, 'Unsupported nested calls to Begin/EndInternalChange!');
   FInternalChange := False;
 end;
 
@@ -381,7 +336,7 @@ begin
     OnCheckClick(Self);
 end;
 
-procedure TJvCustomCheckedMaskEdit.CMCtl3DChanged(var AMessage: TMessage);
+procedure TJvCustomCheckedMaskEdit.DoCtl3DChanged;
 begin
   inherited;
 
@@ -396,141 +351,22 @@ begin
       FCheck.Left := 1;
   end;
 
-  DoCtl3DChanged;
-
   UpdateControls;
-end;
-
-procedure TJvCustomCheckedMaskEdit.DoCtl3DChanged;
-begin
-  if(Assigned(OnCtl3DChanged)) then
-    OnCtl3DChanged(Self);
-end;
-
-procedure TJvCustomCheckedMaskEdit.SetHotTrack(const AValue: Boolean);
-begin
-  FHotTrack := AValue;
-  if(AValue) then
-    Ctl3d := False;
-end;
-
-procedure TJvCustomCheckedMaskEdit.CMEnabledChanged(
-  var AMessage: TMessage);
-begin
-  inherited;
-
-  {propagate to child controls:}
-  if( ShowCheckbox) then
-    FCheck.Enabled := Self.Enabled;
-
-  DoEnabledChanged;
 end;
 
 procedure TJvCustomCheckedMaskEdit.DoEnabledChanged;
 begin
-  if(Assigned(OnEnabledChanged)) then
-    OnEnabledChanged(Self);
-end;
+  {propagate to child controls:}
+  if( ShowCheckbox) then
+    FCheck.Enabled := Self.Enabled;
 
-procedure TJvCustomCheckedMaskEdit.CMMouseEnter(var AMessage: TMessage);
-begin
   inherited;
-  if(not FMouseOver) then
-  begin
-    FSavedHintColor := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then Exit;
-    Application.HintColor := FHintColor;
-    if(HotTrack) then
-      Ctl3d := True;
-    FMouseOver := True;
-  end;
-  DoMouseEnter;
 end;
 
-procedure TJvCustomCheckedMaskEdit.DoMouseEnter;
+procedure TJvCustomCheckedMaskEdit.DoKillFocus(const ANextControl: TWinControl);
 begin
-  if(Assigned(OnMouseEnter)) then
-    OnMouseEnter(Self);
-end;
-
-procedure TJvCustomCheckedMaskEdit.CMMouseLeave(var AMessage: TMessage);
-begin
-  if(FMouseOver) then
-  begin
-    Application.HintColor := FSavedHintColor;
-    if(HotTrack) then
-      Ctl3d := False;
-    FMouseOver := False;
-  end;
-  inherited;
-  DoMouseLeave;
-end;
-
-procedure TJvCustomCheckedMaskEdit.DoMouseLeave;
-begin
-  if(Assigned(OnMouseLeave)) then
-    OnMouseLeave(Self);
-end;
-
-procedure TJvCustomCheckedMaskEdit.CMParentColorChanged(var AMessage: TMessage);
-begin
-  inherited;
-  DoParentColorChanged;
-end;
-
-procedure TJvCustomCheckedMaskEdit.DoParentColorChanged;
-begin
-  if(Assigned(OnParentColorChanged)) then
-    OnParentColorChanged(Self);
-end;
-
-procedure TJvCustomCheckedMaskEdit.WMKillFocus(var AMessage: TMessage);
-begin
-  FLeaving := True;
-  try
+  if(ANextControl <> FCheck) then
     inherited;
-    LoseFocus(FindControl(AMessage.WParam));
-  finally
-    FLeaving := False;
-  end;
-end;
-
-function TJvCustomCheckedMaskEdit.Leaving: Boolean;
-begin
-  result := FLeaving;
-end;
-
-procedure TJvCustomCheckedMaskEdit.LoseFocus(const AFocusControl: TWinControl);
-begin
-  if(AFocusControl <> FCheck) then
-  begin
-    if(Assigned(OnLoseFocus)) then
-      OnLoseFocus(Self, AFocusControl);
-  end;
-end;
-
-procedure TJvCustomCheckedMaskEdit.WMSetFocus(var AMessage: TMessage);
-begin
-  FEntering := True;
-  try
-    inherited;
-    GetFocus(FindControl(AMessage.WParam));
-  finally
-    FEntering := False;
-  end;
-end;
-
-function TJvCustomCheckedMaskEdit.Entering: Boolean;
-begin
-  result := FEntering;
-end;
-
-procedure TJvCustomCheckedMaskEdit.GetFocus(
-  const APreviousControl: TWinControl);
-begin
-  if(Assigned(OnGetFocus)) then
-    OnGetFocus(Self, APreviousControl)
 end;
 
 end.
