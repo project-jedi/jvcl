@@ -3007,13 +3007,13 @@ begin
     else
       Value := NullDate;
   end;
-  D := Date;
+  D := self.Date;
   TestDateBetween(Value); // Polaris
   if Value = NullDate then
     Text := ''
   else
     Text := FormatDateTime(FDateFormat, Value);
-  Modified := D <> Date;
+  Modified := D <> self.Date;
 end;
 
 procedure TJvCustomDateEdit.SetDateAutoBetween(Value: Boolean);
