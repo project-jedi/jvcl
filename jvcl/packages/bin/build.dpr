@@ -23,14 +23,50 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 program build;
 
 {$APPTYPE CONSOLE}
 
+{ build.exe setups the environment for a Delphi compiler }
+
 uses
   Windows, ShlObj;
+
+type
+  TOption = record
+   Name: string;
+   Env: string;
+   Default: string;
+ end;
+
+{$IFDEF JCL}
+const
+  LibraryName = 'JCL';
+  LibraryRootDirRelativeToBuild = 2; // means: '..\..'
+  pgEditFile = 'install\build\pgEdit.xml'; // relative to the Library-Path
+  ExtraOptions: array[0..0] of TOption = (
+    (Name: ''; Env: ''; Default: '')
+  );
+  PackageGroupName = 'JclPackages*0';
+{$ENDIF JCL}
+{$IFDEF JVCL}
+const
+  LibraryName = 'JVCL';
+  LibraryRootDirRelativeToBuild = 2; // means: '..\..'
+  pgEditFile = 'devtools\bin\pgEdit.xml'; // relative to the Library-Path
+  ExtraOptions: array[0..0] of TOption = (
+    (Name: 'jcl-path'; Env: 'JCLROOT'; Default: '..\..\..\jcl')
+  );
+  PackageGroupName = '* Packages';
+{$ENDIF JVCL}
+
+{$IFNDEF JCL}
+ {$IFNDEF JVCL}
+  {$IFDEF MSWINDOWS}
+   {$Message Fatal 'Neither JCL nor JVCL is defined'}
+  {$ENDIF MSWINDOWS}
+ {$ENDIF ~JVCL}
+{$ENDIF ~JCL}
 
 type
   TTarget = record
@@ -53,24 +89,58 @@ const // keep in sync with JVCL Installer's DelphiData.pas
     (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId: 64431; Supported: True)
   );
 
+type
+  TEdition = class(TObject)
+  private
+    FMainName: string;      // d7
+    FName: string;          // d7p        ( with/-out personal "p" )
+
+    FRootDir: string;
+    FBplDir: string;
+    FDcpDir: string;
+    FLibDir: string;
+    FIsPersonal: Boolean;
+    FIsCLX: Boolean;
+
+    function GetBDSProjectsDir: string;
+    procedure ReadRegistryData;
+  public
+    Typ: (Delphi, BCB, BDS);
+    VersionStr: string;     // '9' for BDS 3.0
+    Version: Integer;       // 9 for BDS 3.0
+    IDEVersionStr: string;  // '3' for BDS 3.0
+    IDEVersion: Integer;    // 3 for BDS 3.0
+    PkgDir: string;         // d7 / d7per
+  public
+    constructor Create(const AEditionName, PerDirName: string);
+
+    property RootDir: string read FRootDir;
+    property BDSProjectsDir: string read GetBDSProjectsDir;
+    property BplDir: string read FBplDir;
+    property DcpDir: string read FDcpDir;
+    property LibDir: string read FLibDir;
+
+    property MainName: string read FMainName;
+    property Name: string read FName;
+    property IsPersonal: Boolean read FIsPersonal;
+    property IsCLX: Boolean read FIsCLX;
+  end;
+
 var
-  Edition: string;
-  BDSProjectsDir: string;
-  RootDir: string;
-  JVCLRootDir: string;
-  UnitOutDir: string;
+  LibraryRootDir: string;
   DxgettextDir: string = '';
   ExtraUnitDirs: string = '';
   MakeOptions: string = '';
   Verbose: Boolean = False;
   Force: Boolean = False; // force even if the target is not installed
-
   DccOpt: string = '-Q -M';
-  LibDir, DcpDir, BplDir: string;
+  UserLibDir, UserDcpDir, UserBplDir: string;
 
-  Editions: array of string = nil;
   Targets: array of TTarget = nil;
+  Editions: array of TEdition = nil;
 
+{ Helper functions because no SysUtils unit is used. }
+{******************************************************************************}
 function ExtractFileDir(const S: string): string;
 var
   ps: Integer;
@@ -80,7 +150,7 @@ begin
     Dec(ps);
   Result := Copy(S, 1, ps - 1);
 end;
-
+{******************************************************************************}
 function ExcludeTrailingPathDelimiter(const S: string): string;
 begin
   if (S <> '') and (S[Length(S)] = '\') then
@@ -88,26 +158,26 @@ begin
   else
     Result := S;
 end;
-
+{******************************************************************************}
 function StrLen(P: PChar): Integer;
 begin
   Result := 0;
   while P[Result] <> #0 do
     Inc(Result);
 end;
-
+{******************************************************************************}
 function StrToInt(const S: string): Integer;
 var
   Error: Integer;
 begin
   Val(S, Result, Error);
 end;
-
+{******************************************************************************}
 function IntToStr(Value: Integer): string;
 begin
   Str(Value, Result);
 end;
-
+{******************************************************************************}
 function SameText(const S1, S2: string): Boolean;
 var
   i, len: Integer;
@@ -122,7 +192,7 @@ begin
     Result := True;
   end;
 end;
-
+{******************************************************************************}
 function StartsText(const SubStr, S: string): Boolean;
 var
   i, len: Integer;
@@ -137,7 +207,7 @@ begin
     Result := True;
   end;
 end;
-
+{******************************************************************************}
 function FileExists(const Filename: string): Boolean;
 var
   attr: Cardinal;
@@ -145,7 +215,7 @@ begin
   attr := GetFileAttributes(PChar(Filename));
   Result := (attr <> $FFFFFFFF) and (attr and FILE_ATTRIBUTE_DIRECTORY = 0);
 end;
-
+{******************************************************************************}
 function Execute(const Cmd: string): Integer;
 var
   ProcessInfo: TProcessInformation;
@@ -164,19 +234,21 @@ begin
   else
     Result := -1;
 end;
-
+{******************************************************************************}
 function GetWindowsDir: string;
 begin
   SetLength(Result, MAX_PATH);
   SetLength(Result, GetWindowsDirectory(PChar(Result), Length(Result)));
 end;
-
+{******************************************************************************}
 function GetSystemDir: string;
 begin
   SetLength(Result, MAX_PATH);
   SetLength(Result, GetSystemDirectory(PChar(Result), Length(Result)));
 end;
+{******************************************************************************}
 
+{ a very small XML parser }
 type
   IAttr = interface
     function Name: string;
@@ -194,7 +266,6 @@ type
     FPosition: Integer;
   public
     constructor Create(const Filename: string);
-
     function NextTag: ITag;
   end;
 
@@ -216,6 +287,8 @@ type
     function Value: string;
   end;
 
+{******************************************************************************}
+{ TXmlFile }
 
 constructor TXmlFile.Create(const Filename: string);
 var
@@ -230,7 +303,7 @@ begin
   CloseFile(f);
   FPosition := 0;
 end;
-
+{******************************************************************************}
 function TXmlFile.NextTag: ITag;
 var
   F, P: PChar;
@@ -286,7 +359,7 @@ begin
   end;
   FPosition := P - PChar(FText);
 end;
-
+{******************************************************************************}
 { TTag }
 
 constructor TTag.Create(const AText: string);
@@ -294,7 +367,7 @@ begin
   inherited Create;
   FText := AText;
 end;
-
+{******************************************************************************}
 function TTag.Name: string;
 var
   ps: Integer;
@@ -305,7 +378,7 @@ begin
   else
     Result := Copy(FText, 1, ps - 1);
 end;
-
+{******************************************************************************}
 function TTag.Attrs(const Name: string): IAttr;
 var
   ps: Integer;
@@ -350,7 +423,7 @@ begin
   end;
   Result := TAttr.Create('');
 end;
-
+{******************************************************************************}
 { TAttr }
 
 constructor TAttr.Create(const AText: string);
@@ -358,7 +431,7 @@ begin
   inherited Create;
   FText := AText;
 end;
-
+{******************************************************************************}
 function TAttr.Name: string;
 var
   ps: Integer;
@@ -369,7 +442,7 @@ begin
   else
     Result := Copy(FText, 1, ps - 1);
 end;
-
+{******************************************************************************}
 function TAttr.Value: string;
 var
   ps: Integer;
@@ -387,19 +460,31 @@ begin
     end;
   end;
 end;
-
-
+{******************************************************************************}
+function AsterixMacro(const S, AsterixRepl: string): string;
+var
+  I: Integer;
+begin
+  Result := S;
+  I := Pos('*', Result);
+  if I > 0 then
+  begin
+    Delete(Result, I, 1);
+    Insert(AsterixRepl, Result, I);
+  end;
+end;
+{******************************************************************************}
 procedure LoadTargetNames;
 var
   xml: TXmlFile;
   tg: ITag;
 begin
-  xml := TXmlFile.Create(JVCLRootDir + '\devtools\bin\pgEdit.xml');
+  xml := TXmlFile.Create(LibraryRootDir + '\' + pgEditFile);
   try
     tg := xml.NextTag;
     while tg <> nil do
     begin
-      if SameText(tg.Name, 'model') and SameText(tg.Attrs('name').Value, 'JVCL') then
+      if SameText(tg.Name, 'model') and SameText(tg.Attrs('name').Value, LibraryName) then
       begin
         tg := xml.NextTag;
         while not SameText(tg.Name, 'targets') do
@@ -408,8 +493,8 @@ begin
         begin
           if SameText(tg.Name, 'target') then
           begin
-            if FileExists(JVCLRootDir + '\packages\' + tg.Attrs('name').Value + ' Packages.bpg') or
-               FileExists(JVCLRootDir + '\packages\' + tg.Attrs('name').Value + ' Packages.bdsgroup') then
+            if FileExists(LibraryRootDir + '\packages\' + AsterixMacro(PackageGroupName, tg.Attrs('name').Value) + '.bpg') or
+               FileExists(LibraryRootDir + '\packages\' + AsterixMacro(PackageGroupName, tg.Attrs('name').Value) + '.bdsgroup') then
             begin
               SetLength(Targets, Length(Targets) + 1); // we do not have 10tnds iterations so this is acceptable
               with Targets[High(Targets)] do
@@ -422,8 +507,7 @@ begin
           end;
           tg := xml.NextTag;
         end;
-
-        Break; // we do only want the JVCL part
+        Break; // we only want the "LibraryName" part
       end;
       tg := xml.NextTag;
     end;
@@ -431,107 +515,177 @@ begin
     xml.Free;
   end;
 end;
+{******************************************************************************}
+{ TEdition }
 
-function IndexOfEdition(const ed: string): Integer;
-begin
-  for Result := 0 to High(Targets) do
-    if SameText(Targets[Result].Name, ed) or SameText(Targets[Result].PerName, ed) then
-      Exit;
-  Result := -1;
-end;
-
-type
-  TEdition = record
-    Typ: (Delphi, BCB, BDS);
-    VersionStr: string;     // '9' for BDS 3.0
-    Version: Integer;       // 9 for BDS 3.0
-    IDEVersionStr: string;  // '3' for BDS 3.0
-    IDEVersion: Integer;    // 3 for BDS 3.0
-    MainEdition: string;    // d7
-    ActualEdition: string;  // d7p
-    PkgDir: string;         // d7 / d7per
-    Personal: Boolean;
-    CLX: Boolean;
-  end;
-
-function GetEdition(const Edition: string): TEdition;
+constructor TEdition.Create(const AEditionName, PerDirName: string);
 var
   Index: Integer;
 begin
-  if UpCase(Edition[1]) = 'D' then
-    Result.Typ := Delphi
+  if UpCase(AEditionName[1]) = 'D' then
+    Typ := Delphi
   else
-    Result.Typ := BCB;
+    Typ := BCB;
 
-  Result.VersionStr := Edition[2];
-  if (Length(Edition) > 2) and (Edition[3] in ['0'..'9']) then
+  VersionStr := AEditionName[2];
+  if (Length(AEditionName) > 2) and (AEditionName[3] in ['0'..'9']) then
   begin
-    Result.VersionStr := Result.VersionStr + Edition[3];
+    VersionStr := VersionStr + AEditionName[3];
     Index := 4;
   end
   else
     Index := 3;
 
-  Result.Version := StrToInt(Result.VersionStr);
-  Result.IDEVersionStr := Result.VersionStr;
-  Result.IDEVersion := Result.Version;
+  Version := StrToInt(VersionStr);
+  IDEVersionStr := VersionStr;
+  IDEVersion := Version;
 
-  if Result.Version > 7 then
+  if Version > 7 then
   begin
-    Result.Typ := BDS;
-    Result.IDEVersion := Result.Version - 6; // D 8 = BDS 2
-    Result.IDEVersionStr := IntToStr(Result.IDEVersion);
+    Typ := BDS;
+    IDEVersion := Version - 6; // D 8 = BDS 2
+    IDEVersionStr := IntToStr(IDEVersion);
   end;
 
-  Result.MainEdition := Copy(Edition, 1, Index - 1);
-  Result.ActualEdition := Edition;
-  Result.PkgDir := Edition;
-  Result.CLX := SameText('clx', Copy(Edition, Index, 3));
-  Result.Personal := False;
-  if Length(Edition) > Index then
+  FMainName := Copy(AEditionName, 1, Index - 1);
+  FName := AEditionName;
+  PkgDir := AEditionName;
+
+  FIsCLX := SameText('clx', Copy(AEditionName, Index, 3));
+  FIsPersonal := False;
+  if Length(AEditionName) > Index then
   begin
-    if (UpCase(Edition[Index]) = 'P') or (UpCase(Edition[Index]) = 'S') then
+    if (UpCase(AEditionName[Index]) = 'P') or (UpCase(AEditionName[Index]) = 'S') then
     begin
-      Result.Personal := True;
-      if Result.Version = 5 then
-        Result.PkgDir := Copy(Edition, 1, Index - 1) + 'std'
-      else
-        Result.PkgDir := Copy(Edition, 1, Index - 1) + 'per'
+      FIsPersonal := True;
+      PkgDir := PerDirName
     end;
   end;
-end;
 
-function GetRootDirOf(const Edition: string): string;
+  ReadRegistryData;
+end;
+{******************************************************************************}
+procedure TEdition.ReadRegistryData;
 var
   KeyName: string;
-  reg: HKEY;
-  len: Longint;
+  Reg: HKEY;
   RegTyp: LongWord;
-  ed: TEdition;
-begin
-  ed := GetEdition(Edition);
-  Result := '';
+  ProjectsDir: string;
 
-  case ed.Typ of
-    Delphi:
-      KeyName := 'Software\Borland\Delphi\' + ed.IDEVersionStr + '.0';
-    BCB:
-      KeyName := 'Software\Borland\C++Builder\' + ed.IDEVersionStr + '.0';
-    BDS:
-      KeyName := 'Software\Borland\BDS\' + ed.IDEVersionStr + '.0';
+  function ReadStr(const Name: string): string;
+  var
+    Len: Longint;
+  begin
+    Len := MAX_PATH;
+    SetLength(Result, MAX_PATH);
+    RegQueryValueEx(Reg, PChar(Name), nil, @RegTyp, PByte(Result), @Len);
+    SetLength(Result, StrLen(PChar(Result)));
   end;
 
-  if RegOpenKeyEx(HKEY_LOCAL_MACHINE, PChar(KeyName), 0, KEY_QUERY_VALUE or KEY_READ, reg) <> ERROR_SUCCESS then
-    Exit;
-  SetLength(Result, MAX_PATH);
-  len := MAX_PATH;
-  RegQueryValueEx(reg, 'RootDir', nil, @RegTyp, PByte(Result), @len);
-  SetLength(Result, StrLen(PChar(Result)));
-  RegCloseKey(reg);
-  Result := ExcludeTrailingPathDelimiter(Result);
-end;
+  function ResolveMacros(const Dir: string): string;
+  begin
+    if StartsText('$(DELPHI)', Dir) then
+      Result := FRootDir + Copy(Dir, 10, MaxInt)
+    else if StartsText('$(BCB)', Dir) then
+      Result := FRootDir + Copy(Dir, 7, MaxInt)
+    else if StartsText('$(BDS)', Dir) then
+      Result := FRootDir + Copy(Dir, 7, MaxInt)
+    else if StartsText('$(BDSPROJECTSDIR)', Dir) then
+      Result := GetBDSProjectsDir + Copy(Dir, 18, MaxInt)
+    else
+      Result := Dir;
+  end;
 
-procedure FindDxgettext(const Version: string);
+begin
+  case Typ of
+    Delphi:
+      KeyName := 'Software\Borland\Delphi\' + IDEVersionStr + '.0';
+    BCB:
+      KeyName := 'Software\Borland\C++Builder\' + IDEVersionStr + '.0';
+    BDS:
+      KeyName := 'Software\Borland\BDS\' + IDEVersionStr + '.0';
+  end;
+
+  if RegOpenKeyEx(HKEY_LOCAL_MACHINE, PChar(KeyName), 0, KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS then
+  begin
+    FRootDir := ExcludeTrailingPathDelimiter(ReadStr('RootDir'));
+    RegCloseKey(Reg);
+  end;
+
+  if Typ = BDS then
+    ProjectsDir := GetBDSProjectsDir
+  else
+    ProjectsDir := FRootDir + '\Projects';
+
+  FDcpDir := FRootDir + '\Projects\Bpl';
+  FBplDir := FRootDir + '\Projects\Bpl';
+  if Typ = BCB then
+    FLibDir := FRootDir + '\Projects\Lib'
+  else
+    FLibDir := FRootDir + '\Projects\Bpl';
+
+  if RegOpenKeyEx(HKEY_CURRENT_USER, PChar(KeyName + '\Library'), 0, KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS then
+  begin
+    FDcpDir := ResolveMacros(ExcludeTrailingPathDelimiter(ReadStr('Package DCP Output')));
+    FBplDir := ResolveMacros(ExcludeTrailingPathDelimiter(ReadStr('Package DPL Output')));
+    RegCloseKey(Reg);
+  end;
+end;
+{******************************************************************************}
+function TEdition.GetBDSProjectsDir: string;
+var
+  h: HMODULE;
+  LocaleName: array[0..4] of Char;
+  Filename: string;
+  PersDir: string;
+begin
+  if (Typ = BDS) and (IDEVersion >= Low(BDSVersions)) and (IDEVersion <= High(BDSVersions)) then
+  begin
+    Result := 'Borland Studio Projects'; // do not localize
+
+    FillChar(LocaleName, SizeOf(LocaleName[0]), 0);
+    GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, SizeOf(LocaleName));
+    if LocaleName[0] <> #0 then
+    begin
+      Filename := RootDir + '\Bin\coreide' + BDSVersions[IDEVersion].CIV + '.';
+      if FileExists(Filename + LocaleName) then
+        Filename := Filename + LocaleName
+      else
+      begin
+        LocaleName[2] := #0;
+        if FileExists(Filename + LocaleName) then
+          Filename := Filename + LocaleName
+        else
+          Filename := '';
+      end;
+
+      if Filename <> '' then
+      begin
+        h := LoadLibraryEx(PChar(Filename), 0,
+          LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
+        if h <> 0 then
+        begin
+          SetLength(Result, 1024);
+          SetLength(Result, LoadString(h, BDSVersions[IDEVersion].ProjectDirResId, PChar(Result), Length(Result) - 1));
+          FreeLibrary(h);
+        end;
+      end;
+    end;
+
+    SetLength(PersDir, MAX_PATH);
+    if SHGetSpecialFolderPath(0, PChar(PersDir), CSIDL_PERSONAL, False) then
+    begin
+      SetLength(PersDir, StrLen(PChar(PersDir)));
+      Result := ExcludeTrailingPathDelimiter(PersDir) + '\' + Result;
+    end
+    else
+      Result := '';
+  end
+  else
+    Result := '';
+end;
+{******************************************************************************}
+procedure FindDxgettext(Version: Integer);
 var
   reg: HKEY;
   len: Longint;
@@ -560,86 +714,40 @@ begin
     end;
     S := ExtractFileDir(S);
     DxgettextDir := S;
-    if Version = '5' then
+    if Version = 5 then
       S := S + '\delphi5';
     ExtraUnitDirs := ExtraUnitDirs + ';' + S;
   end;
 end;
-
-function ReadBDSProjectsDir(const ed: TEdition): string;
-var
-  h: HMODULE;
-  LocaleName: array[0..4] of Char;
-  Filename: string;
-  PersDir: string;
+{******************************************************************************}
+function TargetIndexOfEdition(const ed: string): Integer;
 begin
-  if (ed.Typ = BDS) and (ed.IDEVersion >= Low(BDSVersions)) and (ed.IDEVersion <= High(BDSVersions)) then
-  begin
-    Result := 'Borland Studio Projects'; // do not localize
-
-    FillChar(LocaleName, SizeOf(LocaleName[0]), 0);
-    GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, SizeOf(LocaleName));
-    if LocaleName[0] <> #0 then
-    begin
-      Filename := RootDir + '\Bin\coreide' + BDSVersions[ed.IDEVersion].CIV + '.';
-      if FileExists(Filename + LocaleName) then
-        Filename := Filename + LocaleName
-      else
-      begin
-        LocaleName[2] := #0;
-        if FileExists(Filename + LocaleName) then
-          Filename := Filename + LocaleName
-        else
-          Filename := '';
-      end;
-
-      if Filename <> '' then
-      begin
-        h := LoadLibraryEx(PChar(Filename), 0,
-          LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
-        if h <> 0 then
-        begin
-          SetLength(Result, 1024);
-          SetLength(Result, LoadString(h, BDSVersions[ed.IDEVersion].ProjectDirResId, PChar(Result), Length(Result) - 1));
-          FreeLibrary(h);
-        end;
-      end;
-    end;
-
-    SetLength(PersDir, MAX_PATH);
-    if SHGetSpecialFolderPath(0, PChar(PersDir), CSIDL_PERSONAL, False) then
-    begin
-      SetLength(PersDir, StrLen(PChar(PersDir)));
-      Result := ExcludeTrailingPathDelimiter(PersDir) + '\' + Result;
-    end
-    else
-      Result := '';
-  end
-  else
-    Result := '';
+  for Result := 0 to High(Targets) do
+    if SameText(Targets[Result].Name, ed) or SameText(Targets[Result].PerName, ed) then
+      Exit;
+  Result := -1;
 end;
-
+{******************************************************************************}
 procedure AddEdition(const ed: string);
 var
-  i: Integer;
+  I: Integer;
 begin
   if ed = '' then
     Exit;
-  {$IFDEF MSWINDOWS}
-  if SameText(ed, 'k3') then
+  if SameText(ed, 'k3') then // build.exe is for Windows only (maybe CrossKylix)
     Exit;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  if not SameText(ed, 'k3') then
-    Exit;
-  {$ENDIF LINUX}
-  for i := 0 to High(Editions) do
-    if SameText(Editions[i], ed) then
+  for I := 0 to High(Editions) do
+    if SameText(Editions[i].Name, ed) then
       Exit;
-  SetLength(Editions, Length(Editions) + 1);
-  Editions[High(Editions)] := ed;
-end;
 
+  I := TargetIndexOfEdition(ed);
+  if I >= 0 then
+  begin
+    SetLength(Editions, Length(Editions) + 1);
+    Editions[High(Editions)] := TEdition.Create(ed, Targets[I].PerDir);
+  end;
+end;
+{******************************************************************************}
 procedure AddAllEditions(AddPersonal: Boolean);
 var
   i: Integer;
@@ -652,45 +760,64 @@ begin
       AddEdition(Targets[i].PerName);
   end;
 end;
-
-function GetNewestEditionName: string;
+{******************************************************************************}
+function GetNewestEdition: TEdition;
 var
-  i: Integer;
-  RetEd: TEdition;
+  I: Integer;
   ed: TEdition;
-  LRootDir: string;
 begin
-  Result := 'd5';
-  for i := High(Targets) downto 0 do
+  Result := TEdition.Create('d5', '');
+  for I := High(Targets) downto 0 do
   begin
-    RetEd := GetEdition(Result);
-    ed := GetEdition(Targets[i].Name);
-    if ed.Version >= RetEd.Version then
-    begin
-      if (RetEd.Version < ed.Version) or
-         { prefere Delphi version instead of C++Builder version: }
-         ((RetEd.Typ = BCB) and (ed.Typ <> BCB)) then
+    ed := TEdition.Create(Targets[I].Name, Targets[I].PerDir);
+    try
+      if ed.Version >= Result.Version then
       begin
-        if ed.CLX then
-          Continue; // this is not a valid version
+        if (Result.Version < ed.Version) or
+           { prefere Delphi version instead of C++Builder version: }
+           ((Result.Typ = BCB) and (ed.Typ <> BCB)) then
+        begin
+          if ed.IsCLX then
+            Continue; // this is not a valid version
 
-        LRootDir := GetRootDirOf(ed.ActualEdition);
-        if (LRootDir <> '') and FileExists(LRootDir + '\bin\dcc32.exe') then
-          Result := Targets[i].Name;
+          if (ed.RootDir <> '') and FileExists(ed.RootDir + '\bin\dcc32.exe') then
+          begin
+            Result.Free;
+            Result := ed;
+            ed := nil;
+          end
+        end;
       end;
+    finally
+      ed.Free;
     end;
   end;
 end;
-
+{******************************************************************************}
+function GetNewestEditionName: string;
+var
+  ed: TEdition;
+begin
+  ed := GetNewestEdition;
+  try
+    if ed <> nil then
+      Result := ed.Name
+    else
+      Result := '';
+  finally
+    ed.Free;
+  end;
+end;
+{******************************************************************************}
 procedure AddNewestEdition;
 begin
   Editions := nil;
   AddEdition(GetNewestEditionName);
 end;
-
+{******************************************************************************}
 procedure Help;
 var
-  i: Integer;
+  I: Integer;
 begin
   AddAllEditions(True);
   WriteLn('build.exe setups the environment for the given targets and executes the');
@@ -700,10 +827,10 @@ begin
   WriteLn('  TARGETS:');
 
   Write('    ');
-  for i := 0 to High(Editions) - 1 do
-    Write(Editions[i], ', ');
+  for I := 0 to High(Editions) - 1 do
+    Write(Editions[I].Name, ', ');
   if Length(Editions) > 0 then
-    WriteLn(Editions[High(Editions)]);
+    WriteLn(Editions[High(Editions)].Name);
   //WriteLn('    c5, c6, c6p, d5, d5s, d6, d6p, d7, d7p, d7clx, d9');
 
   WriteLn;
@@ -717,7 +844,9 @@ begin
   WriteLn('                      Set this to an empty string if you want the hpp files to');
   WriteLn('                      be left in the same directory as their source pas file.');
 
-  WriteLn('    --jcl-path=X    sets the JCLROOT environment variable to X.');
+  for I := 0 to High(ExtraOptions) do
+    if ExtraOptions[I].Name <> '' then
+      WriteLn('    --', ExtraOptions[I].Name, '=X    sets the ', ExtraOptions[I].Env, ' environment variable to X.');
 
   WriteLn('    --targets=X     sets the TARGETS environment variable to X. Only these .bpl');
   WriteLn('                    files will be compiled.');
@@ -729,10 +858,10 @@ begin
   WriteLn('    --verbose       Show all commands that are executed.');
   WriteLn;
 end;
-
+{******************************************************************************}
 procedure ProcessArgs;
 var
-  i, Count: Integer;
+  i, j, Count: Integer;
   S: string;
   HppPathSet: Boolean;
 begin
@@ -758,21 +887,16 @@ begin
         Delete(S, 1, 10);
         DccOpt := S;
       end
-      else if StartsText('--jcl-path=', S) then
-      begin
-        Delete(S, 1, 11);
-        SetEnvironmentVariable('JCLROOT', Pointer(S));
-      end
       else if StartsText('--bpl-path=', S) then
       begin
         Delete(S, 1, 11);
-        BplDir := S;
-        DcpDir := S;
+        UserBplDir := S;
+        UserDcpDir := S;
       end
       else if StartsText('--lib-path=', S) then
       begin
         Delete(S, 1, 11);
-        LibDir := S;
+        UserLibDir := S;
       end
       else if StartsText('--hpp-path=', S) then
       begin
@@ -796,6 +920,17 @@ begin
       else if SameText('--verbose', S) then
       begin
         Verbose := True;
+      end
+      else
+      begin
+        for j := 0 to High(ExtraOptions) do
+        begin
+          if (ExtraOptions[I].Name <> '') and StartsText('--' + ExtraOptions[j].Name + '=', S) then
+          begin
+            Delete(S, 1, 2 + Length(ExtraOptions[j].Name) + 1);
+            SetEnvironmentVariable(PChar(ExtraOptions[j].Env), Pointer(S));
+          end;
+        end
       end;
     end
     else
@@ -810,7 +945,7 @@ begin
         WriteLn('Using ', GetNewestEditionName, ' for build process.');
         WriteLn;
       end
-      else if IndexOfEdition(S) = -1 then
+      else if TargetIndexOfEdition(S) = -1 then
       begin
         WriteLn('Unknown edition: ', S);
         Halt(1);
@@ -823,7 +958,7 @@ begin
   if not HppPathSet then
     SetEnvironmentVariable('HPPDIR', '$(ROOT)\Include\Vcl');
 end;
-
+{******************************************************************************}
 procedure ClearEnvironment;
 { ClearEnvironment deletes almost all environment variables }
 var
@@ -867,24 +1002,34 @@ begin
     end;
   end;
 end;
+{******************************************************************************}
+function GetLibraryRootDir: string;
+var
+  I: Integer;
+begin
+  Result := ExtractFileDir(ParamStr(0));
+  for I := 1 to LibraryRootDirRelativeToBuild do
+    Result := ExtractFileDir(Result);
+end;
+{******************************************************************************}
 
 var
-  i: Integer;
-  Path: string;
-  ed: TEdition;
+  I: Integer;
+  UnitOutDir, Path: string;
+  Edition: TEdition;
 begin
+  LibraryRootDir := GetLibraryRootDir;
   ClearEnvironment; // remove almost all environment variables for "make.exe long command line"
 
-  JVCLRootDir := ExtractFileDir(ParamStr(0)); // $(JVCL)\Packages\bin
-  JVCLRootDir := ExtractFileDir(JVCLRootDir); // $(JVCL)\Packages
-  JVCLRootDir := ExtractFileDir(JVCLRootDir); // $(JVCL)
+  // set ExtraOptions default values
+  for I := 0 to High(ExtraOptions) do
+    if ExtraOptions[I].Name <> '' then
+      SetEnvironmentVariable(PChar(ExtraOptions[I].Env), Pointer(ExtraOptions[I].Default));
+  SetEnvironmentVariable(PChar(LibraryName + 'ROOT'), PChar(LibraryRootDir));
 
-  SetEnvironmentVariable('JCLROOT', '..\..\..\jcl'); // meight be changed by command line option
-  SetEnvironmentVariable('JVCLROOT', PChar(JVCLRootDir));
-
-  BplDir := '';
-  DcpDir := '';
-  LibDir := '';
+  UserBplDir := '';
+  UserDcpDir := '';
+  UserLibDir := '';
 
   LoadTargetNames;
   ProcessArgs;
@@ -902,19 +1047,18 @@ begin
   else
     SetEnvironmentVariable('QUIET', nil);
 
-  for i := 0 to High(Editions) do
+  for I := 0 to High(Editions) do
   begin
     ExtraUnitDirs := '';
 
-    Edition := Editions[i];
+    Edition := Editions[I];
     if Length(Editions) > 1 then
-      WriteLn('################################ ' + Edition + ' #########################################');
+      WriteLn('################################ ' + Edition.Name + ' #########################################');
 
     // test for valid root directory/valid IDE installation
-    RootDir := GetRootDirOf(Edition);
     if not Force then
     begin
-      if RootDir = '' then
+      if Edition.RootDir = '' then
       begin
         WriteLn('Delphi/BCB version not installed.');
         Continue;
@@ -922,69 +1066,57 @@ begin
     end
     else
     begin
-      if RootDir = '' then
-        RootDir := GetRootDirOf(GetNewestEditionName);
-      if RootDir = '' then
+      if Edition.RootDir = '' then
+        Edition := GetNewestEdition;
+      if Edition.RootDir = '' then
       begin
         WriteLn('No Delphi/BCB version installed.');
         Continue;
       end;
     end;
 
-    ed := GetEdition(Edition);
+    UnitOutDir := LibraryRootDir + '\lib\' + Edition.MainName;
+    if UserDcpDir = '' then
+      UserDcpDir := Edition.DcpDir;
+    if UserBplDir = '' then
+      UserBplDir := Edition.BplDir;
+    if UserLibDir = '' then
+      UserLibDir := Edition.LibDir;
 
-    UnitOutDir := JVCLRootDir + '\lib\' + ed.MainEdition;
-    if DcpDir = '' then
-    begin
-      if ed.Typ = BDS then
-      begin
-        BDSProjectsDir := ReadBDSProjectsDir(ed);
-        BplDir := BDSProjectsDir + '\Bpl';
-        DcpDir := BDSProjectsDir + '\Bpl';
-        LibDir := BDSProjectsDir + '\Bpl';
-      end
-      else
-      begin
-        BplDir := RootDir + '\Projects\Bpl';
-        DcpDir := RootDir + '\Projects\Bpl';
-        LibDir := RootDir + '\Projects\Lib';
-      end;
-    end;
-
-    FindDxgettext(ed.VersionStr);
+    FindDxgettext(Edition.Version);
 
     // setup environment and execute make.exe
     Path := GetWindowsDir + ';' + GetSystemDir + ';' + GetWindowsDir + '\Command';
-    if LibDir <> BplDir then
-      Path := RootDir + ';' + BplDir + ';' + LibDir + ';' + Path
+    if UserLibDir <> UserBplDir then
+      Path := Edition.RootDir + '\bin;' + UserBplDir + ';' + UserLibDir + ';' + Path
     else
-      Path := RootDir + ';' + BplDir + ';' + Path;
+      Path := Edition.RootDir + '\bin;' + UserBplDir + ';' + Path;
     SetEnvironmentVariable('PATH', Pointer(Path));
 
-    SetEnvironmentVariable('BPLDIR', Pointer(BplDir));
-    SetEnvironmentVariable('DCPDIR', Pointer(DcpDir));
-    SetEnvironmentVariable('LIBDIR', Pointer(LibDir));
-    SetEnvironmentVariable('BPILIBDIR', Pointer(LibDir));
+    SetEnvironmentVariable('BPLDIR', Pointer(UserBplDir));
+    SetEnvironmentVariable('DCPDIR', Pointer(UserDcpDir));
+    SetEnvironmentVariable('LIBDIR', Pointer(UserLibDir));
+    SetEnvironmentVariable('BPILIBDIR', Pointer(UserLibDir));
     SetEnvironmentVariable('PERSONALEDITION_OPTION', nil);
-    SetEnvironmentVariable('ROOT', PChar(RootDir));
-    SetEnvironmentVariable('VERSION', PChar(ed.VersionStr));
+    SetEnvironmentVariable('ROOT', PChar(Edition.RootDir));
+    SetEnvironmentVariable('VERSION', PChar(Edition.VersionStr));
     SetEnvironmentVariable('UNITOUTDIR', PChar(UnitOutDir));
     SetEnvironmentVariable('DCCOPT', Pointer(DccOpt));
-    SetEnvironmentVariable('DCC', PChar('"' + RootDir + '\bin\dcc32.exe" ' + DccOpt));
+    SetEnvironmentVariable('DCC', PChar('"' + Edition.RootDir + '\bin\dcc32.exe" ' + DccOpt));
 
-    if ed.Personal then
+    if Edition.IsPersonal then
     begin
       SetEnvironmentVariable('PERSONALEDITION_OPTION', '-DDelphiPersonalEdition');
-      SetEnvironmentVariable('PKGDIR', PChar(ed.PkgDir));
-      SetEnvironmentVariable('EDITION', PChar(ed.MainEdition));
+      SetEnvironmentVariable('PKGDIR', PChar(Edition.PkgDir));
+      SetEnvironmentVariable('EDITION', PChar(Edition.MainName));
       if Verbose then
-        Execute('"' + RootDir + '\bin\make.exe" -l+ -f makefile.mak pg.exe')
+        Execute('"' + Edition.RootDir + '\bin\make.exe" -f makefile.mak pg.exe')
       else
-        Execute('"' + RootDir + '\bin\make.exe" -l+ -s -f makefile.mak pg.exe');
+        Execute('"' + Edition.RootDir + '\bin\make.exe" -s -f makefile.mak pg.exe');
     end;
 
-    SetEnvironmentVariable('EDITION', PChar(ed.ActualEdition));
-    SetEnvironmentVariable('PKGDIR', PChar(ed.PkgDir));
+    SetEnvironmentVariable('EDITION', PChar(Edition.Name));
+    SetEnvironmentVariable('PKGDIR', PChar(Edition.PkgDir));
 
     if (ExtraUnitDirs <> '') and (ExtraUnitDirs[1] = ';') then
       Delete(ExtraUnitDirs, 1, 1);
@@ -992,15 +1124,14 @@ begin
     SetEnvironmentVariable('DXGETTEXTDIR', Pointer(DxgettextDir));
 
 
-    ExitCode := Execute('"' + RootDir + '\bin\make.exe" -l+ ' + MakeOptions);
+    ExitCode := Execute('"' + Edition.RootDir + '\bin\make.exe" ' + MakeOptions);
     if ExitCode <> 0 then
     begin
       if ExitCode < 0 then
-        WriteLn('Failed: ', '"' + RootDir + '\bin\make.exe" -l+ ' + MakeOptions);
+        WriteLn('Failed: ', '"' + Edition.RootDir + '\bin\make.exe" ' + MakeOptions);
       WriteLn('Press ENTER to continue');
       ReadLn;
     end;
-
   end;
 end.
 
