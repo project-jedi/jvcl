@@ -348,7 +348,8 @@ begin
                 ALeft := ((ARect.Right - ARect.Left) - Wizard.HeaderImages.Width) div 2;
                 Inc(ARect.Top, 4);
                 Wizard.HeaderImages.Draw(ACanvas, ARect.Left + ALeft, ARect.Top + 8,
-                  Pages[PageIndex].Header.ImageIndex, Pages[PageIndex].Enabled);
+                  Pages[PageIndex].Header.ImageIndex,
+                  {$IFDEF VisualCLX} itImage, {$ENDIF} Pages[PageIndex].Enabled);
                 Inc(ARect.Top, Wizard.HeaderImages.Height);
   //              if ItemText = itSubtitle then
   //                Inc(ARect.Top, 16);
@@ -458,6 +459,7 @@ begin
   Invalidate;
 end;
 
+{$IFDEF VCL}
 procedure TJvWizardRouteMapList.CMCursorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -469,6 +471,7 @@ begin
   inherited;
   FontChanged;
 end;
+{$ENDIF VCL}
 
 procedure TJvWizardRouteMapList.SetAlignment(const Value: TAlignment);
 begin

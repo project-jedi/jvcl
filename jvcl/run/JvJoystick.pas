@@ -31,7 +31,10 @@ unit JvJoystick;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, MMSystem,
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  SysUtils, Classes, MMSystem,
   {$IFDEF VCL}
   Forms,
   {$ENDIF VCL}

@@ -36,9 +36,6 @@ uses
   {$IFDEF VCL}
   CommCtrl,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types,
-  {$ENDIF VisualCLX}
   JvComponent, JvButton;
 
 type

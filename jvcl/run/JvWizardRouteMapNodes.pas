@@ -339,8 +339,15 @@ begin
                 PChar((Pages[I] as TJvWizardCustomPage).Header.Title.Text), -1,
                 ATextRect, DT_LEFT or DT_SINGLELINE or DT_VCENTER)
             else
+              {$IFDEF VCL}
               DrawText(Canvas.Handle, PChar(Pages[I].Caption), -1, ATextRect,
                 DT_LEFT or DT_SINGLELINE or DT_VCENTER);
+              {$ENDIF VCL}
+              {$IFDEF VisualCLX}
+              DrawText(Canvas, Pages[I].Caption, -1, ATextRect,
+                DT_LEFT or DT_SINGLELINE or DT_VCENTER);
+              {$ENDIF VisualCLX}
+
           finally
             OffsetRect(ARect, 0, FItemHeight);
           end;

@@ -33,7 +33,7 @@ uses
   SysUtils, Classes,
   Controls, Forms, ExtCtrls,
   {$IFDEF VisualCLX}
-  Types, QImgList,
+  Types, QGraphics, QImgList,
   {$ENDIF VisualCLX}
   JvComponent;
 

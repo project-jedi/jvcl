@@ -36,7 +36,7 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, Dialogs, ExtCtrls,
   {$IFDEF VisualCLX}
-  Types, QTypes,
+  QTypes,
   {$ENDIF VisualCLX}
   JvComponent;
 

@@ -32,18 +32,22 @@ unit JvYearGrid;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, ShellAPI, Messages, Graphics, Controls, Forms,
+  {$IFDEF MSWINDOWS}
+  ShellAPI,
+  {$ENDIF MSWINDOWS}
+  Windows, Messages, Graphics, Controls, Forms,
   Dialogs, Grids, Menus, Clipbrd,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QGrids, QMenus, QClipbrd, Types,
-  QWindows,
-  {$ENDIF VisualCLX}
   {$IFDEF USEJVCL}
   JvTypes,
   {$ENDIF USEJVCL}
   SysUtils, StdCtrls, Classes;
+
+{$IFDEF VCL}
+{$IFDEF COMPILER6_UP}
+{$DEFINE USECUSTOMGRID}
+{$ENDIF COMPILER6_UP}
+{$ENDIF}
+
 
 type
 {$IFNDEF USEJVCL}
@@ -61,6 +65,8 @@ type
 {$HPPEMIT '#endif'}
 
 {$ENDIF USEJVCL}
+
+
 
   TYearData = record
     DisplayText : string;
@@ -80,11 +86,13 @@ type
   TOnYearChanged = procedure(Sender: TObject; AYear: Integer) of object;
   TOnSelectDate = procedure(Sender: TObject; ADate: TDate; InfoText: string; InfoColor: TColor) of object;
   TOnInfoChanging = procedure(Sender: TObject; var InfoText: string; var CanChange: Boolean) of object;
-  {$IFDEF COMPILER6_UP}
+
+
+  {$IFDEF USECUSTOMGRID}
   TJvYearGrid = class(TCustomDrawGrid)
   {$ELSE}
   TJvYearGrid = class(TDrawGrid)
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF USECUSTOMGRID}
   private
     FGridPop: TPopupMenu;
     FCurrentYear: Word;
@@ -98,10 +106,10 @@ type
     FOnInfoChanging: TOnInfoChanging;
     FBookMarkColor: TColor;
     FAutoSize: Boolean;
-    
+
     DaysInMonth: array [1..12] of Integer;
     StartDays: array [1..12] of Integer;
-    
+
     FYearData: array [0..37, 0..12] of TYearData;
     FYearFile: string;
 
@@ -109,9 +117,9 @@ type
 
     FSavedScrollBars: TScrollStyle;
 
-    {$IFNDEF COMPILER6_UP}
+    {$IFNDEF USECUSTOMGRID}
     procedure MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF USECUSTOMGRID}
 
     procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean;
       var HintInfo: THintInfo);
@@ -159,10 +167,10 @@ type
     {$IFDEF USEJVCL}
     FCellMargins: TJvRect;
     {$ENDIF USEJVCL}
-    {$IFNDEF COMPILER6_UP}
+    {$IFNDEF USECUSTOMGRID}
     FOnSelectCell: TSelectCellEvent;
     FOnDrawCell: TDrawCellEvent;
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF USECUSTOMGRID}
     FDaysAlignment: TAlignment;
     FDayNamesAlignment: TAlignment;
     FMonthNamesAlignment: TAlignment;
@@ -197,7 +205,7 @@ type
     procedure DrawCell(ACol, ARow: Integer; Rect: TRect; State: TGridDrawState); override;
     function SelectCell(ACol, ARow: Integer): Boolean; override;
     procedure DblClick; override;
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP}override;{$ENDIF COMPILER6_UP}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF USECUSTOMGRID}override;{$ENDIF USECUSTOMGRID}
     procedure UpdateAllSizes;
     procedure AdjustBounds;
     procedure Loaded; override;
@@ -267,13 +275,13 @@ type
     property DaysAlignment      : TAlignment read FDaysAlignment       write SetDaysAlignment       default taLeftJustify;
     property YearAlignment      : TAlignment read FYearAlignment       write SetYearAlignment       default taLeftJustify;
 
-    {$IFDEF COMPILER6_UP}
+    {$IFDEF USECUSTOMGRID}
     property OnSelectCell;
     property OnDrawCell;
     {$ELSE}
     property OnSelectCell: TSelectCellEvent read FOnSelectCell write FOnSelectCell;
     property OnDrawCell  : TDrawCellEvent   read FOnDrawCell   write FOnDrawCell;
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF USECUSTOMGRID}
 
     property OnYearChanged : TOnYearChanged   read FOnYearChanged  write SetYearChanged;
     property OnSelectDate  : TOnSelectDate    read FOnSelectDate   write SetSelectDate;
@@ -1479,7 +1487,7 @@ begin
   Result := Year = FCurrentYear;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFNDEF USECUSTOMGRID}
 procedure TJvYearGrid.MouseToCell(X, Y: Integer; var ACol, ARow: Integer);
 var
   Coord: TGridCoord;
@@ -1488,7 +1496,7 @@ begin
   ACol := Coord.X;
   ARow := Coord.Y;
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF USECUSTOMGRID}
 
 procedure TJvYearGrid.ReadGridYear(Reader: TReader);
 begin

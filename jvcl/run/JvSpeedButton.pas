@@ -41,7 +41,7 @@ uses
   CommCtrl,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, Qt, QTypes,
+  Qt, QTypes,
   {$ENDIF VisualCLX}
   Windows, Messages,
   Controls, Graphics, Forms, ExtCtrls, Buttons, Menus, ImgList, ActnList,

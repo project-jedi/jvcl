@@ -32,13 +32,14 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Controls, Forms,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QControls, QForms,
+  Qt,
   {$ENDIF VCL}
-  Windows, Messages, Ras32, // Messages must be after QControls
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  Ras32, // Messages must be after QControls
   JvComponent, JvTypes;
 
 type

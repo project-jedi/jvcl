@@ -32,12 +32,12 @@ unit JvPerfMon95;
 interface
 
 uses
-  Windows, SysUtils, Registry, Classes, Contnrs,
+  SysUtils, Registry, Classes, Contnrs,
   {$IFDEF VCL}
-  Forms,
+  Windows, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QForms,
+  Windows, QForms,
   {$ENDIF VisualCLX}
   JclBase, JvComponent;
 

@@ -60,7 +60,10 @@ xx) why keep UnicodeAvailable in every component? I wish Delphi could map
 *)
 
 uses
-  Windows, SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  SysUtils, Classes,
   JvComponent, JvTypes, JvFinalize;
 
 type
