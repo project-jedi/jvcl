@@ -8,8 +8,10 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="ThemeManager6" Targets="D6,D6p,C6,C6p" Condition="JVCLThemesEnabled"/>
-    <Package Name="ThemeManager5" Targets="D5,D5s,C5,C5s" Condition="JVCLThemesEnabled"/>
+    <Package Name="ThemeManagerD6" Targets="D6,D6p" Condition="JVCLThemesEnabled"/>
+    <Package Name="ThemeManagerC6" Targets="C6,C6p" Condition="JVCLThemesEnabled"/>
+    <Package Name="ThemeManagerD5" Targets="D5,D5s" Condition="JVCLThemesEnabled"/>
+    <Package Name="ThemeManagerC5" Targets="C5,C5s" Condition="JVCLThemesEnabled"/>
     <Package Name="Jv3rd-R" Targets="all" Condition="USE_DXGETTEXT"/>
     <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
     <Package Name="CJcl" Targets="C6,C6p" Condition=""/>

@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2005-02-01:
+- ThemeManager packages have changed their names and JvCore has been updated. 
+  Use latest versions from Mike's website.
 2005-01-30:
 - Added TJvProgramVersionCheck // JFudickar
   This component gives you the possiblity to check for newer program versions of your application on different locations.
