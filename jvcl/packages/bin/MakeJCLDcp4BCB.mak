@@ -59,7 +59,7 @@ pg.exe: Templates
 
 Templates:
 	@echo [Copying: Templates]
-	if NOT EXIST "$(PACKAGEDIR)\template.dpk"  copy /D /Y jcldcpdpk$(VERSION).tpl "$(PACKAGEDIR)\template.dpk"
+	if NOT EXIST "$(PACKAGEDIR)\template.dpk"  copy /Y jcldcpdpk$(VERSION).tpl "$(PACKAGEDIR)\template.dpk"
 	# create template.cfg
 	@echo -I"..\..\source;..\..\source\common" > "$(PACKAGEDIR)\template.cfg"
 	@echo -U"..\..\source\common;..\..\source\windows" >> "$(PACKAGEDIR)\template.cfg"

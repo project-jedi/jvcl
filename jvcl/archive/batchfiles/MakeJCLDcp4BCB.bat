@@ -71,7 +71,7 @@ cd ..\..\packages
 
 : copy the required files into the JCL packages dir
 echo Copying template...
-copy /D /Y .\jcldcpdpk%VERSION%.tpl "%JCLDIR%\packages\c%VERSION%\template.dpk"
+copy /Y .\jcldcpdpk%VERSION%.tpl "%JCLDIR%\packages\c%VERSION%\template.dpk"
 echo.
 
 : generate the packages from the xml files
