@@ -61,7 +61,7 @@ const
   {$EXTERNALSYM DBT_DEVTYP_VOLUME}
   DBT_DEVTYP_VOLUME = $00000002; { logical volume }
   {$EXTERNALSYM DBTF_MEDIA}
-  DBTF_MEDIA = $0001; { media commings and goings }
+  DBTF_MEDIA = $0001; { media comings and goings }
 
   // new params for SystemParametersInfo not defined in Windows
   SPI_GETDESKWALLPAPER = $0073;
@@ -203,7 +203,7 @@ type
     Msg: Cardinal;
     Event: UINT;
     dwData: Pointer;
-    Result: LongInt;
+    Result: Longint;
   end;
 
   // TJvReadOnlyInfo doesn't have any writeable properties
@@ -812,8 +812,8 @@ type
     property Flags: TJvAccessTimeOutFlags read GetFlags write SetFlags stored False;
   end;
 
-  TJvFilterKeyFlags = set of (fkfAvailable, fkfClickOn, fkfFilterKeysOn, fkfHotKeyActive,
-    fkfHotkeySound, fkfConfirmHotKey, fkfIndicator);
+  TJvFilterKeyFlags = set of (fkfAvailable, fkfClickOn, fkfFilterKeysOn, fkfHotkeyActive,
+    fkfHotkeySound, fkfConfirmHotkey, fkfIndicator);
 
   TJvFilterKeys = class(TJvWriteableInfo)
     // writeable: all (using NativeType recommended)
@@ -1063,8 +1063,8 @@ type
     property WindowsEffectDLL: string read GetWindowsEffectDLL write SetWindowsEffectDLL stored False;
   end;
 
-  TJvStickyKeysFlags = set of (skfStickyKeysOn, skfAvailable, skfHotkeyActive, skfConfirmHotKey,
-    skfHotKeySound, skfIndicator, skfAudibleFeedback, skfTriState, skfTwoKeysOff,
+  TJvStickyKeysFlags = set of (skfStickyKeysOn, skfAvailable, skfHotkeyActive, skfConfirmHotkey,
+    skfHotkeySound, skfIndicator, skfAudibleFeedback, skfTriState, skfTwoKeysOff,
     skfLeftAltLatched, skfLeftCtrlLatched, skfLeftShiftLatched,
     skfRightAltLatched, skfRightCtrlLatched, skfRightShiftLatched,
     skfLeftWinLatched, skfRightWinLatched,
@@ -1273,7 +1273,7 @@ type
   TJvIconModifiers = set of TJvIconModifier;
 
   TJvFileInfo = class(TJvWriteableInfo)
-  // writeable: Filename, Modifier
+  // writeable: FileName, Modifier
   private
     FLargeImages: TImageList;
     FSmallImages: TImageList;
@@ -1302,7 +1302,7 @@ type
     property SmallImages: TImageList read FSmallImages;
     property IconHandle: THandle read GetIconHandle stored False;
     property Attributes: Integer read GetAttributes stored False;
-    function GetFileInfo(const Filename: string; Attributes: Cardinal; out Info: ShFileInfo; Flags: Cardinal): Cardinal;
+    function GetFileInfo(const FileName: string; Attributes: Cardinal; out Info: ShFileInfo; Flags: Cardinal): Cardinal;
   published
     constructor Create;
     destructor Destroy; override;
@@ -2391,13 +2391,13 @@ var
   LanInfo: PWkstaInfo100;
 begin
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE, 'System\CurrentControlSet\Services\Vxd\VNETSUP', 'Workgroup', '');
-  if (Result = '') and IsWinNt then
+  if (Result = '') and IsWinNT then
   begin
     LanInfo := nil;
     if (NetWkstaGetInfo(nil, 100, @LanInfo) = 0) and (LanInfo <> nil) then
     begin
       Result := LanInfo^.wki100_langroup;
-      NetAPIBufferFree(LanInfo);
+      NetApiBufferFree(LanInfo);
     end;
   end;
 end;
@@ -2797,7 +2797,7 @@ begin
   if Flags and DOCKINFO_USER_SUPPLIED = DOCKINFO_USER_SUPPLIED then
     Include(Result, diUserSupplied);
   if Flags and DOCKINFO_USER_DOCKED = DOCKINFO_USER_DOCKED then
-    Include(Result, diUSerDocked);
+    Include(Result, diUserDocked);
   if Flags and DOCKINFO_USER_UNDOCKED = DOCKINFO_USER_UNDOCKED then
     Include(Result, diUserUndocked);
 end;
@@ -2819,7 +2819,7 @@ var
   GetCurrentHwProfile: GetCurrentHwProfileFunc;
   LibHandle: THandle;
 begin
-  FillChar(Result, sizeof(Result), 0);
+  FillChar(Result, SizeOf(Result), 0);
   // GetCurrentHwProfile is not available on all Win95's
   LibHandle := LoadLibrary('advapi32.dll');
   if LibHandle <> 0 then
@@ -3195,7 +3195,7 @@ end;
 
 function TJvMetricsInfo.GetDoubleClickTime: Integer;
 begin
-  REsult := Windows.GetDoubleClickTime;
+  Result := Windows.GetDoubleClickTime;
 end;
 
 function TJvMetricsInfo.GetMetrics(const Index: Integer): Integer;
@@ -3304,7 +3304,7 @@ begin
   Flags := NativeType.dwFlags;
   Result := [];
   if Flags and ATF_ONOFFFEEDBACK = ATF_ONOFFFEEDBACK then
-    Include(Result, atfOnOffFeedBack);
+    Include(Result, atfOnOffFeedback);
   if Flags and ATF_TIMEOUTON = ATF_TIMEOUTON then
     Include(Result, atfTimeOutOn);
 end;
@@ -3388,7 +3388,7 @@ begin
   if Flags and FKF_CLICKON = FKF_CLICKON then
     Include(Result, fkfClickOn);
   if Flags and FKF_FILTERKEYSON = FKF_FILTERKEYSON then
-    Include(Result, fkfFilterKeyson);
+    Include(Result, fkfFilterKeysOn);
   if Flags and FKF_HOTKEYACTIVE = FKF_HOTKEYACTIVE then
     Include(Result, fkfHotkeyActive);
   if Flags and FKF_HOTKEYSOUND = FKF_HOTKEYSOUND then
@@ -3458,11 +3458,11 @@ begin
     Flags := Flags or FKF_CLICKON;
   if fkfFilterKeysOn in Value then
     Flags := Flags or FKF_FILTERKEYSON;
-  if fkfHotKeyActive in Value then
+  if fkfHotkeyActive in Value then
     Flags := Flags or FKF_HOTKEYACTIVE;
   if fkfHotkeySound in Value then
     Flags := Flags or FKF_HOTKEYSOUND;
-  if fkfConfirmHotKey in Value then
+  if fkfConfirmHotkey in Value then
     Flags := Flags or FKF_CONFIRMHOTKEY;
   if fkfIndicator in Value then
     Flags := Flags or FKF_INDICATOR;
@@ -3529,7 +3529,7 @@ begin
   if Flags and HCF_HIGHCONTRASTON = HCF_HIGHCONTRASTON then
     Include(Result, hcfHighContrastOn);
   if Flags and HCF_HOTKEYACTIVE = HCF_HOTKEYACTIVE then
-    Include(Result, hcfHotKeyActive);
+    Include(Result, hcfHotkeyActive);
   if Flags and HCF_HOTKEYAVAILABLE = HCF_HOTKEYAVAILABLE then
     Include(Result, hcfHotkeyAvailable);
   if Flags and HCF_HOTKEYSOUND = HCF_HOTKEYSOUND then
@@ -3555,7 +3555,7 @@ begin
   Native := NativeType;
   if not AnsiSameText(Native.lpszDefaultScheme, Value) then
   begin
-    Native.lpszDefaultScheme := Pchar(Value);
+    Native.lpszDefaultScheme := PChar(Value);
     NativeType := Native;
   end;
 end;
@@ -3665,7 +3665,7 @@ end;
 
 procedure TJvIconMetrics.SetNativeType(Value: ICONMETRICS);
 begin
-  if not IsDesigning and not Readonly then
+  if not IsDesigning and not ReadOnly then
   begin
     Value.cbSize := SizeOf(Value);
     SystemParametersInfo(SPI_SETICONMETRICS, SizeOf(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
@@ -4733,8 +4733,8 @@ end;}
 
 function TJvSystemParametersInfo.GetAccessTimeOut: TJvAccessTimeOut;
 begin
-  if FAccessTimeout = nil then
-    FAccessTimeout := TJvAccessTimeOut.Create;
+  if FAccessTimeOut = nil then
+    FAccessTimeOut := TJvAccessTimeOut.Create;
   Result := FAccessTimeOut;
 end;
 
@@ -5330,8 +5330,7 @@ end;
 
 procedure TJvFileInfo.SetFileName(Value: TFileName);
 begin
-  if FFilename <> Value then
-    FFileName := Value;
+  FFileName := Value;
   GetIconHandle;
 end;
 
@@ -5459,7 +5458,7 @@ var
   sfi: TSHFileInfo;
 begin
   // first try the easy way:
-  ShGetFileInfo(PChar(FileName), 0, sfi, sizeof(sfi), SHGFI_ICON or SHGFI_ICONLOCATION);
+  SHGetFileInfo(PChar(FileName), 0, sfi, SizeOf(sfi), SHGFI_ICON or SHGFI_ICONLOCATION);
   Result := sfi.szDisplayName;
   if Result <> '' then
   begin
@@ -5548,11 +5547,11 @@ begin
   FIcon.Handle := sfi.hIcon;
 end;
 
-function TJvFileInfo.GetFileInfo(const Filename: string; Attributes: Cardinal; out Info: ShFileInfo; Flags: Cardinal):
+function TJvFileInfo.GetFileInfo(const FileName: string; Attributes: Cardinal; out Info: ShFileInfo; Flags: Cardinal):
   Cardinal;
 begin
-  FillChar(Info, sizeof(Info), 0);
-  Result := SHGetFileInfo(PChar(Filename), Attributes, Info, SizeOf(Info), Flags);
+  FillChar(Info, SizeOf(Info), 0);
+  Result := SHGetFileInfo(PChar(FileName), Attributes, Info, SizeOf(Info), Flags);
 end;
 
 //=== { TJvComputerInfoEx } ==================================================

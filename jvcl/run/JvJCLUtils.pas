@@ -35,7 +35,7 @@ Known Issues:
 unit JvJCLUtils;
 
 interface
-// (p3) note: this unit should only contain JCL compatible routines ( no Forms etc)
+// (p3) note: this unit should only contain JCL compatible routines (no Forms etc)
 // and no JVCL units!
 // (ahuser) Unfortunately the QGraphics unit imports the QForms unit. Because
 //          the JCL has the same problem with CLX it should not make any difference.
@@ -126,7 +126,7 @@ function SubStrW(const S: WideString; const Index: Integer; const Separator: Wid
 function SubStrEnd(const S: string; const Index: Integer; const Separator: string): string;
 { SubWord returns next Word from string, P, and offsets Pointer to the end of Word, P2 }
 function SubWord(P: PChar; var P2: PChar): string;
-//  function CurrencyByWord(Value : Currency) : string;
+//  function CurrencyByWord(Value: Currency): string;
 { GetLineByPos returns the Line number, there
   the symbol Pos is pointed. Lines separated with #13 symbol }
 function GetLineByPos(const S: string; const Pos: Integer): Integer;
@@ -167,8 +167,8 @@ function AddSpacesW(const S: WideString; const N: Integer): WideString;
 { function LastDateRUS for russian users only }
 { returns date relative to current date: 'два дня назад' }
 function LastDateRUS(const Dat: TDateTime): string;
-{ CurrencyToStr format currency, Cur, using ffCurrency float format}
-function CurrencyToStr(const Cur: currency): string;
+{ CurrencyToStr format Currency, Cur, using ffCurrency float format}
+function CurrencyToStr(const Cur: Currency): string;
 { Cmp compares two strings and returns True if they are equal. Case-insensitive.}
 function Cmp(const S1, S2: string): Boolean;
 { StringCat add S2 string to S1 and returns this string }
@@ -429,8 +429,8 @@ function CF_ICON: Word;
 procedure AssignClipboardIcon(Icon: TIcon);
 
 { Real-size icons support routines (32-bit only) }
-procedure GetIconSize(Icon: HIcon; var W, H: Integer);
-function CreateRealSizeIcon(Icon: TIcon): HIcon;
+procedure GetIconSize(Icon: HICON; var W, H: Integer);
+function CreateRealSizeIcon(Icon: TIcon): HICON;
 procedure DrawRealSizeIcon(Canvas: TCanvas; Icon: TIcon; X, Y: Integer);
 {end JvIconClipboardUtils }
 {$ENDIF VCL}
@@ -714,7 +714,7 @@ procedure RaiseLastWin32(const Text: string); overload;
   version number. Typically, this includes the major and minor version placed
   together in one 32-bit Integer. It generally does not include the release
   or build numbers. It returns 0 if it failed. }
-function GetFileVersion(const AFilename: string): Cardinal;
+function GetFileVersion(const AFileName: string): Cardinal;
 {$EXTERNALSYM GetFileVersion}
 
 //Get version of Shell.dll
@@ -765,7 +765,7 @@ function SendKey(const AppName: string; Key: Char): Boolean;
 procedure AssociateExtension(const IconPath, ProgramName, Path, Extension: string);
 
 function GetRecentDocs: TStringList;
-procedure AddToRecentDocs(const Filename: string);
+procedure AddToRecentDocs(const FileName: string);
 
 // returns a list of all windows currently visible, the Objects property is filled with their window handle
 procedure GetVisibleWindows(List: TStrings);
@@ -805,7 +805,7 @@ function StrIsDateTime(const Ps: string): Boolean;
 
 function PreformatDateString(Ps: string): string;
 
-function BooleanToInteger(const Pb: Boolean): Integer;
+function BooleanToInteger(const B: Boolean): Integer;
 function StringToBoolean(const Ps: string): Boolean;
 
 function SafeStrToDateTime(const Ps: string): TDateTime;
@@ -839,7 +839,7 @@ function OSCheck(RetVal: Boolean): Boolean;
 { Shortens a fully qualified Path name so that it can be drawn with a specified length limit.
   Same as FileCtrl.MinimizeName in functionality (but not implementation). Included here to
   not be forced to use FileCtrl unnecessarily }
-function MinimizeFileName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
+function MinimizeFileName(const FileName: string; Canvas: TCanvas; MaxLen: Integer): string;
 function MinimizeText(const Text: string; Canvas: TCanvas; MaxWidth: Integer): string;
 { MinimizeString trunactes long string, S, and appends
   '...' symbols, if Length of S is more than MaxLen }
@@ -860,7 +860,7 @@ function MinimizeString(const S: string; const MaxLen: Integer): string;
 }
 type
   // the signature of procedures in DLL's that can be called using rundll32.exe
-  TRunDLL32Proc = procedure(Handle: HWND; hInstance: HMODULE; CmdLine: PChar; CmdShow: Integer); stdcall;
+  TRunDLL32Proc = procedure(Handle: HWND; HInstance: HMODULE; CmdLine: PChar; CmdShow: Integer); stdcall;
 
 function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion: Boolean; CmdShow: Integer =
   SW_SHOWDEFAULT): Boolean;
@@ -877,7 +877,7 @@ function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion
    (a dialog is displayed if do something wrong)
  * RunDll32Internal is slightly faster but RunDLL32 is safer
 }
-procedure RunDll32Internal(Wnd: HWnd; const DLLName, FuncName, CmdLine: string; CmdShow: Integer = SW_SHOWDEFAULT);
+procedure RunDll32Internal(Wnd: HWND; const DLLName, FuncName, CmdLine: string; CmdShow: Integer = SW_SHOWDEFAULT);
 { GetDLLVersion loads DLLName, gets a pointer to the DLLVersion function and calls it, returning the major and minor version values
 from the function. Returns False if the DLL couldn't be loaded or if GetDLLVersion couldn't be found. }
 function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: Integer): Boolean;
@@ -1179,7 +1179,7 @@ begin
     {$IFDEF COMPILER6_UP}
     varShortInt, varWord, varLongWord, {varInt64,}
     {$ENDIF COMPILER6_UP}
-    varSmallInt, varInteger];
+    varSmallint, varInteger];
 end;
 
 function GetLineByPos(const S: string; const Pos: Integer): Integer;
@@ -1516,69 +1516,69 @@ function SubStr(const S: string; const Index: Integer; const Separator: string):
 { Returns a substring. Substrings are divided by Sep character [translated] }
 var
   I: Integer;
-  pB, pE: PChar;
+  PB, PE: PChar;
 begin
   Result := '';
   if ((Index < 0) or ((Index = 0) and (Length(S) > 0) and (S[1] = Separator))) or
     (Length(S) = 0) then
     Exit;
-  pB := PChar(S);
+  PB := PChar(S);
   for I := 1 to Index do
   begin
-    pB := StrPos(pB, PChar(Separator));
-    if pB = nil then
+    PB := StrPos(PB, PChar(Separator));
+    if PB = nil then
       Exit;
-    pB := pB + Length(Separator);
-    if pB[0] = #0 then
+    PB := PB + Length(Separator);
+    if PB[0] = #0 then
       Exit;
   end;
-  pE := StrPos(pB + 1, PChar(Separator));
-  if pE = nil then
-    pE := PChar(S) + Length(S);
-  if not (AnsiStrLIComp(pB, PChar(Separator), Length(Separator)) = 0) then
-    SetString(Result, pB, pE - pB);
+  PE := StrPos(PB + 1, PChar(Separator));
+  if PE = nil then
+    PE := PChar(S) + Length(S);
+  if not (AnsiStrLIComp(PB, PChar(Separator), Length(Separator)) = 0) then
+    SetString(Result, PB, PE - PB);
 end;
 
 function SubStrW(const S: WideString; const Index: Integer; const Separator: WideString): WideString;
 { Returns a substring. Substrings are divided by Sep character [translated] }
 var
   I: Integer;
-  pB, pE: PWideChar;
+  PB, PE: PWideChar;
 begin
   Result := '';
   if ((Index < 0) or ((Index = 0) and (Length(S) > 0) and (S[1] = Separator))) or
     (Length(S) = 0) then
     Exit;
-  pB := PWideChar(S);
+  PB := PWideChar(S);
   for I := 1 to Index do
   begin
-    pB := StrPosW(pB, PWideChar(Separator));
-    if pB = nil then
+    PB := StrPosW(PB, PWideChar(Separator));
+    if PB = nil then
       Exit;
-    pB := pB + Length(Separator);
-    if pB[0] = #0 then
+    PB := PB + Length(Separator);
+    if PB[0] = #0 then
       Exit;
   end;
-  pE := StrPosW(pB + 1, PWideChar(Separator));
-  if pE = nil then
-    pE := PWideChar(S) + Length(S);
-  if not (StrLICompW2(pB, PWideChar(Separator), Length(Separator)) = 0) then
-    SetString(Result, pB, pE - pB);
+  PE := StrPosW(PB + 1, PWideChar(Separator));
+  if PE = nil then
+    PE := PWideChar(S) + Length(S);
+  if not (StrLICompW2(PB, PWideChar(Separator), Length(Separator)) = 0) then
+    SetString(Result, PB, PE - PB);
 end;
 
 function SubStrEnd(const S: string; const Index: Integer; const Separator: string): string;
 { The same as SubStr, but substrings are numbered from the end [translated]}
 var
   MaxIndex: Integer;
-  pB: PChar;
+  PB: PChar;
 begin
   { Not optimal implementation [translated] }
   MaxIndex := 0;
-  pB := StrPos(PChar(S), PChar(Separator));
-  while pB <> nil do
+  PB := StrPos(PChar(S), PChar(Separator));
+  while PB <> nil do
   begin
     Inc(MaxIndex);
-    pB := StrPos(pB + Length(Separator), PChar(Separator));
+    PB := StrPos(PB + Length(Separator), PChar(Separator));
   end;
   Result := SubStr(S, MaxIndex - Index, Separator);
 end;
@@ -1769,11 +1769,11 @@ end;
 function LZFileExpand(const FileSource, FileDest: string): Boolean;
 type
   TLZCopy = function(Source, Dest: Integer): Longint; stdcall;
-  TLZOpenFile = function(Filename: PChar; var ReOpenBuff: TOFStruct; Style: Word): Integer; stdcall;
+  TLZOpenFile = function(FileName: PChar; var ReOpenBuff: TOFStruct; Style: Word): Integer; stdcall;
   TLZClose = procedure(hFile: Integer); stdcall;
 var
   Source, Dest: Integer;
-  OSSource, OSDest: TOFSTRUCT;
+  OSSource, OSDest: TOFStruct;
   Res: Integer;
   Ins: Integer;
   LZCopy: TLZCopy;
@@ -1786,8 +1786,8 @@ begin
     LZCopy := GetProcAddress(Ins, 'LZCopy');
     LZOpenFile := GetProcAddress(Ins, 'LZOpenFileA');
     LZClose := GetProcAddress(Ins, 'LZClose');
-    OSSource.cBytes := SizeOf(TOFSTRUCT);
-    OSDest.cBytes := SizeOf(TOFSTRUCT);
+    OSSource.cBytes := SizeOf(TOFStruct);
+    OSDest.cBytes := SizeOf(TOFStruct);
     Source := LZOpenFile(
       PChar(FileSource), // address of name of file to be opened
       OSSource, // address of open file structure
@@ -1945,12 +1945,11 @@ begin
     Result := S;
 end;
 
-{ (rb) maybe construct a english variant? }
-
+{ (rb) maybe construct an english variant? }
 
 function LastDateRUS(const Dat: TDateTime): string;
 const
-  D2D: array [0..9] of byte =
+  D2D: array [0..9] of Byte =
     (3, 1, 2, 2, 2, 3, 3, 3, 3, 3);
   Day: array [1..3] of PChar =
     ('день', 'дня', 'дней'); // Day, Days, Days
@@ -2085,7 +2084,7 @@ begin
 end;
 {$ENDIF LINUX}
 
-function CurrencyToStr(const Cur: currency): string;
+function CurrencyToStr(const Cur: Currency): string;
 begin
   Result := CurrToStrF(Cur, ffCurrency, CurrencyDecimals)
 end;
@@ -2528,7 +2527,7 @@ begin
   I := 1;
   while (I <= L) and (S[I] <= ' ') do
     Inc(I);
-  Result := Copy(S, I, Maxint);
+  Result := Copy(S, I, MaxInt);
 end;
 {$ENDIF COMPILER6_UP}
 
@@ -3136,7 +3135,7 @@ end;
 function ResSaveToFile(const Typ, Name: string; const Compressed: Boolean;
   const FileName: string): Boolean;
 begin
-  Result := ResSaveToFileEx(hInstance, PChar(Typ), PChar(Name), Compressed, FileName);
+  Result := ResSaveToFileEx(HInstance, PChar(Typ), PChar(Name), Compressed, FileName);
 end;
 
 function ResSaveToString(Instance: HINST; const Typ, Name: string;
@@ -3635,7 +3634,7 @@ end;
 
 function CreateBitmapFromIcon(Icon: TIcon; BackColor: TColor): TBitmap;
 var
-  Ico: HIcon;
+  Ico: HICON;
   W, H: Integer;
 begin
   Ico := CreateRealSizeIcon(Icon);
@@ -3768,10 +3767,10 @@ end;
 type
   TIconAccessProtected = class(TIcon);
 
-function Bmp2Icon(bmp: TBitmap): TIcon;
+function Bmp2Icon(Bmp: TBitmap): TIcon;
 begin
   Result := TIcon.Create;
-  Result.Assign(bmp);
+  Result.Assign(Bmp);
 end;
 
 function Icon2Bmp(Ico: TIcon): TBitmap;
@@ -3782,37 +3781,35 @@ end;
 
 procedure CopyIconToClipboard(Icon: TIcon; BackColor: TColor);
 var
-  bmp: TBitmap;
+  Bmp: TBitmap;
 begin
-  bmp := Icon2Bmp(Icon);
+  Bmp := Icon2Bmp(Icon);
   Clipboard.Assign(Bmp);
 end;
 
 function CreateIconFromClipboard: TIcon;
 var
-  bmp: TBitmap;
+  Bmp: TBitmap;
 begin
   Result := nil;
   if not Clipboard.Provides('image/delphi.bitmap') then
     Exit;
-  bmp := TBitmap.create;
+  Bmp := TBitmap.Create;
   try
-    bmp.Assign(Clipboard);
-    Result := Bmp2Icon(bmp);
+    Bmp.Assign(Clipboard);
+    Result := Bmp2Icon(Bmp);
   except
-    bmp.Free;
+    Bmp.Free;
   end;
 end;
 
 {$ENDIF VisualCLX}
 
-
-
 { Real-size icons support routines }
 const
-  rc3_StockIcon = 0;
-  rc3_Icon = 1;
-  rc3_Cursor = 2;
+  RC3_STOCKICON = 0;
+  RC3_ICON = 1;
+  RC3_CURSOR = 2;
 
 type
   PCursorOrIcon = ^TCursorOrIcon;
@@ -4063,7 +4060,7 @@ end;
 
 {$IFDEF VCL}
 
-procedure GetIconSize(Icon: HIcon; var W, H: Integer);
+procedure GetIconSize(Icon: HICON; var W, H: Integer);
 var
   IconInfo: TIconInfo;
   BM: Windows.TBitmap;
@@ -4103,7 +4100,7 @@ begin
   end;
 end;
 
-function CreateRealSizeIcon(Icon: TIcon): HIcon;
+function CreateRealSizeIcon(Icon: TIcon): HICON;
 var
   Mem: TMemoryStream;
   CI: TCursorOrIcon;
@@ -4129,7 +4126,7 @@ end;
 
 procedure DrawRealSizeIcon(Canvas: TCanvas; Icon: TIcon; X, Y: Integer);
 var
-  Ico: HIcon;
+  Ico: HICON;
   W, H: Integer;
 begin
   Ico := CreateRealSizeIcon(Icon);
@@ -5446,12 +5443,12 @@ begin
     Result := S;
 end;
 
-function Dec2Hex(N: LongInt; A: Byte): string;
+function Dec2Hex(N: Longint; A: Byte): string;
 begin
   Result := IntToHex(N, A);
 end;
 
-function D2H(N: LongInt; A: Byte): string;
+function D2H(N: Longint; A: Byte): string;
 begin
   Result := IntToHex(N, A);
 end;
@@ -6325,14 +6322,14 @@ end;
 
 function ValidFileName(const FileName: string): Boolean;
 
-  function HasAny(const Str, Substr: string): Boolean;
+  function HasAny(const Str, SubStr: string): Boolean;
   var
     I: Integer;
   begin
     Result := False;
-    for I := 1 to Length(Substr) do
+    for I := 1 to Length(SubStr) do
     begin
-      if Pos(Substr[I], Str) > 0 then
+      if Pos(SubStr[I], Str) > 0 then
       begin
         Result := True;
         Break;
@@ -6886,35 +6883,35 @@ end;
 
 procedure SendShift(H: HWND; Down: Boolean);
 var
-  vKey, ScanCode: Word;
-  lParam: Cardinal;
+  VKey, ScanCode: Word;
+  LParam: Cardinal;
 begin
-  vKey := VK_SHIFT;
-  ScanCode := MapVirtualKey(vKey, 0);
-  lParam := Longint(ScanCode) shl 16 or 1;
+  VKey := VK_SHIFT;
+  ScanCode := MapVirtualKey(VKey, 0);
+  LParam := Longint(ScanCode) shl 16 or 1;
   if not Down then
-    lParam := lParam or $C0000000;
-  SendMessage(H, WM_KEYDOWN, vKey, lParam);
+    LParam := LParam or $C0000000;
+  SendMessage(H, WM_KEYDOWN, VKey, LParam);
 end;
 
 procedure SendCtrl(H: HWND; Down: Boolean);
 var
-  vKey, ScanCode: Word;
-  lParam: Cardinal;
+  VKey, ScanCode: Word;
+  LParam: Cardinal;
 begin
-  vKey := VK_CONTROL;
-  ScanCode := MapVirtualKey(vKey, 0);
-  lParam := Longint(ScanCode) shl 16 or 1;
+  VKey := VK_CONTROL;
+  ScanCode := MapVirtualKey(VKey, 0);
+  LParam := Longint(ScanCode) shl 16 or 1;
   if not Down then
-    lParam := lParam or $C0000000;
-  SendMessage(H, WM_KEYDOWN, vKey, lParam);
+    LParam := LParam or $C0000000;
+  SendMessage(H, WM_KEYDOWN, VKey, LParam);
 end;
 
 function SendKey(const AppName: string; Key: Char): Boolean;
 var
-  vKey, ScanCode: Word;
+  VKey, ScanCode: Word;
   ConvKey: Longint;
-  lParam: Cardinal;
+  LParam: Cardinal;
   Shift, Ctrl: Boolean;
   H: Windows.HWND;
 begin
@@ -6925,16 +6922,16 @@ begin
     Shift := (ConvKey and $00020000) <> 0;
     Ctrl := (ConvKey and $00040000) <> 0;
     ScanCode := ConvKey and $000000FF or $FF00;
-    vKey := Ord(Key);
-    lParam := Longint(ScanCode) shl 16 or 1;
+    VKey := Ord(Key);
+    LParam := Longint(ScanCode) shl 16 or 1;
     if Shift then
       SendShift(H, True);
     if Ctrl then
       SendCtrl(H, True);
-    SendMessage(H, WM_KEYDOWN, vKey, lParam);
-    SendMessage(H, WM_CHAR, vKey, lParam);
-    lParam := lParam or $C0000000;
-    SendMessage(H, WM_KEYUP, vKey, lParam);
+    SendMessage(H, WM_KEYDOWN, VKey, LParam);
+    SendMessage(H, WM_CHAR, VKey, LParam);
+    LParam := LParam or $C0000000;
+    SendMessage(H, WM_KEYUP, VKey, LParam);
     if Shift then
       SendShift(H, False);
     if Ctrl then
@@ -6980,7 +6977,7 @@ begin
   with TRegistry.Create do
   begin
     RootKey := HKEY_CLASSES_ROOT;
-    OpenKey('.' + extension, True);
+    OpenKey('.' + Extension, True);
     WriteString('', ProgramName);
     Free;
   end;
@@ -6996,7 +6993,7 @@ function GetRecentDocs: TStringList;
 {$IFDEF VCL}
 var
   Path: string;
-  t: TSearchRec;
+  T: TSearchRec;
   Res: Integer;
 {$ENDIF VCL}
 begin
@@ -7004,28 +7001,28 @@ begin
   {$IFDEF VCL}
   Path := IncludeTrailingPathDelimiter(GetRecentFolder);
   //search for all files
-  Res := FindFirst(Path + '*.*', faAnyFile, t);
+  Res := FindFirst(Path + '*.*', faAnyFile, T);
   try
     while Res = 0 do
     begin
-      if (t.Name <> '.') and (t.Name <> '..') then
+      if (T.Name <> '.') and (T.Name <> '..') then
         Result.Add(Path + T.Name);
-      Res := FindNext(t);
+      Res := FindNext(T);
     end;
   finally
-    FindClose(t);
+    FindClose(T);
   end;
   {$ENDIF VCL}
 end;
 
 { (rb) Duplicate of JvWinDialogs.AddToRecentDocs }
 
-procedure AddToRecentDocs(const Filename: string);
+procedure AddToRecentDocs(const FileName: string);
 begin
-  SHAddToRecentDocs(SHARD_PATH, PChar(Filename));
+  SHAddToRecentDocs(SHARD_PATH, PChar(FileName));
 end;
 
-function EnumWindowsProc(Handle: THandle; lParam: TStrings): Boolean; stdcall;
+function EnumWindowsProc(Handle: THandle; LParam: TStrings): Boolean; stdcall;
 var
   St: array [0..256] of Char;
   St2: string;
@@ -7035,7 +7032,7 @@ begin
     GetWindowText(Handle, St, SizeOf(St));
     St2 := St;
     if St2 <> '' then
-      with TStrings(lParam) do
+      with TStrings(LParam) do
         AddObject(St2, TObject(Handle));
   end;
   Result := True;
@@ -7060,9 +7057,9 @@ begin
   Result := Pos(AnsiUpperCase(psSub), AnsiUpperCase(psMain));
 end;
 
-function StrRestOf(const Ps: string; const n: Integer): string;
+function StrRestOf(const Ps: string; const N: Integer): string;
 begin
-  Result := Copy(Ps, n, {(Length(Ps) - n + 1)} MaxInt);
+  Result := Copy(Ps, N, {(Length(Ps) - N + 1)} MaxInt);
 end;
 
 {!!!!!!!! use these because the JCL one is badly broken }
@@ -7127,15 +7124,15 @@ end;
 
 function StrToCurrDef(const Str: string; Def: Currency): Currency;
 var
-  lStr: string;
+  LStr: string;
   I: Integer;
 begin
-  lStr := '';
+  LStr := '';
   for I := 1 to Length(Str) do
     if Str[I] in ['0'..'9','-','+', DecimalSeparator] then
-      lStr := LStr + Str[I];
+      LStr := LStr + Str[I];
   try
-    if not TextToFloat(PChar(lStr), Result, fvCurrency) then
+    if not TextToFloat(PChar(LStr), Result, fvCurrency) then
       Result := Def;
   except
     Result := Def;
@@ -7144,24 +7141,24 @@ end;
 
 function StrToFloatDef(const Str: string; Def: Extended): Extended;
 var
-  lStr: string;
+  LStr: string;
   I: Integer;
 begin
   for I := 1 to Length(Str) do
     if Str[I] in ['0'..'9','-','+', DecimalSeparator] then
-      lStr := LStr + Str[I];
+      LStr := LStr + Str[I];
   Result := Def;
-  if lStr <> '' then
+  if LStr <> '' then
   try
     { the string '-' fails StrToFloat, but it can be interpreted as 0  }
-    if lStr[Length(lStr)] = '-' then
-      lStr := lStr + '0';
+    if LStr[Length(LStr)] = '-' then
+      LStr := LStr + '0';
 
     { a string that ends in a '.' such as '12.' fails StrToFloat,
      but as far as I am concerned, it may as well be interpreted as 12.0 }
-    if lStr[Length(lStr)] = DecimalSeparator then
-      lStr := lStr + '0';
-    if not TextToFloat(PChar(lStr), Result, fvExtended) then
+    if LStr[Length(LStr)] = DecimalSeparator then
+      LStr := LStr + '0';
+    if not TextToFloat(PChar(LStr), Result, fvExtended) then
       Result := Def;
   except
     Result := Def;
@@ -7251,16 +7248,16 @@ end;
 
 function StrIsFloatMoney(const Ps: string): Boolean;
 var
-  liLoop, liDots: Integer;
+  I, liDots: Integer;
   Ch: Char;
 begin
   Result := True;
   liDots := 0;
 
-  for liLoop := 1 to Length(Ps) do
+  for I := 1 to Length(Ps) do
   begin
     { allow digits, space, Currency symbol and one decimal dot }
-    Ch := Ps[liLoop];
+    Ch := Ps[I];
 
     if Ch = DecimalSeparator then
     begin
@@ -7285,7 +7282,7 @@ const
   MIN_DATE_TIME_LEN = 6; {2Jan02 }
   MAX_DATE_TIME_LEN = 30; { 30 chars or so in '12 December 1999 12:23:23:00' }
 var
-  liLoop: Integer;
+  I: Integer;
   Ch: Char;
   liColons, liSlashes, liSpaces, liDigits, liAlpha: Integer;
   lbDisqualify: Boolean;
@@ -7309,9 +7306,9 @@ begin
   liDigits := 0;
   liAlpha := 0;
 
-  for liLoop := 1 to Length(Ps) do
+  for I := 1 to Length(Ps) do
   begin
-    Ch := Ps[liLoop];
+    Ch := Ps[I];
 
     if Ch = ':' then
       Inc(liColons)
@@ -7353,19 +7350,19 @@ end;
 
 function PreformatDateString(Ps: string): string;
 var
-  liLoop: Integer;
+  I: Integer;
 begin
   { turn any month names to numbers }
 
   { use the StrReplace in stringfunctions -
   the one in JclStrings is badly broken and brings down the app }
 
-  for liLoop := Low(LongMonthNames) to High(LongMonthNames) do
-    Ps := LStrReplace(Ps, LongMonthNames[liLoop], IntToStr(liLoop), False);
+  for I := Low(LongMonthNames) to High(LongMonthNames) do
+    Ps := LStrReplace(Ps, LongMonthNames[I], IntToStr(I), False);
 
   { now that 'January' is gone, catch 'Jan' }
-  for liLoop := Low(ShortMonthNames) to High(ShortMonthNames) do
-    Ps := LStrReplace(Ps, ShortMonthNames[liLoop], IntToStr(liLoop), False);
+  for I := Low(ShortMonthNames) to High(ShortMonthNames) do
+    Ps := LStrReplace(Ps, ShortMonthNames[I], IntToStr(I), False);
 
   { remove redundant spaces }
   Ps := LStrReplace(Ps, AnsiSpace + AnsiSpace, AnsiSpace, False);
@@ -7373,14 +7370,9 @@ begin
   Result := Ps;
 end;
 
-function BooleanToInteger(const Pb: Boolean): Integer;
+function BooleanToInteger(const B: Boolean): Integer;
 begin
-  // (p3) this works as well:
-  // Result := Ord(Pb);
-  if Pb then
-    Result := 1
-  else
-    Result := 0;
+  Result := Ord(B);
 end;
 
 { from my ConvertFunctions unit }
@@ -7389,12 +7381,12 @@ function StringToBoolean(const Ps: string): Boolean;
 const
   TRUE_STRINGS: array [1..5] of string = ('True', 't', 'y', 'yes', '1');
 var
-  liLoop: Integer;
+  I: Integer;
 begin
   Result := False;
 
-  for liLoop := Low(TRUE_STRINGS) to High(TRUE_STRINGS) do
-    if AnsiSameText(Ps, TRUE_STRINGS[liLoop]) then
+  for I := Low(TRUE_STRINGS) to High(TRUE_STRINGS) do
+    if AnsiSameText(Ps, TRUE_STRINGS[I]) then
     begin
       Result := True;
       Break;
@@ -7493,20 +7485,20 @@ begin
   Result := RetVal;
 end;
 
-function MinimizeFileName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
+function MinimizeFileName(const FileName: string; Canvas: TCanvas; MaxLen: Integer): string;
 var
-  b: string;
+  B: string;
   R: TRect;
 begin
-  b := Filename;
-  UniqueString(b);
+  B := FileName;
+  UniqueString(B);
   R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
-  if DrawText(Canvas, PChar(b), Length(b), R,
+  if DrawText(Canvas, PChar(B), Length(B), R,
        DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or
        DT_NOPREFIX) > 0 then
-    Result := string(PChar(b))
+    Result := string(PChar(B))
   else
-    Result := Filename;
+    Result := FileName;
 end;
 
 function MinimizeText(const Text: string; Canvas: TCanvas;
@@ -7528,7 +7520,7 @@ end;
 function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion: Boolean; CmdShow: Integer =
   SW_SHOWDEFAULT): Boolean;
 var
-  SI: TStartUpInfo;
+  SI: TStartupInfo;
   PI: TProcessInformation;
   S: string;
 begin
@@ -7546,7 +7538,7 @@ begin
   end;
 end;
 
-procedure RunDll32Internal(Wnd: HWnd; const DLLName, FuncName, CmdLine: string; CmdShow: Integer = SW_SHOWDEFAULT);
+procedure RunDll32Internal(Wnd: HWND; const DLLName, FuncName, CmdLine: string; CmdShow: Integer = SW_SHOWDEFAULT);
 var
   H: THandle;
   ErrMode: Cardinal;
@@ -7575,7 +7567,7 @@ type
     dwMajorVersion: DWORD;
     dwMinorVersion: DWORD;
     dwBuildNumber: DWORD;
-    dwPlatformID: DWORD;
+    dwPlatformId: DWORD;
   end;
 
 function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: Integer): Boolean;
@@ -7662,7 +7654,7 @@ function GetWindowsVersion: string;
 const
   sWindowsVersion = 'Windows %s %d.%.2d.%.3d %s';
 var
-  Ver: TOsVersionInfo;
+  Ver: TOSVersionInfo;
   Platfrm: string[4];
 begin
   Ver.dwOSVersionInfoSize := SizeOf(Ver);
@@ -8056,7 +8048,7 @@ begin
   end;
 end;
 
-function WindowsEnum(Handle: HWND; Param: Longint): Bool; export; stdcall;
+function WindowsEnum(Handle: HWND; Param: Longint): BOOL; export; stdcall;
 begin
   if WindowClassName(Handle) = 'TAppBuilder' then
   begin
@@ -8132,7 +8124,7 @@ begin
     hwndOwner := Handle;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    hwndOwner := QWidget_WinID(handle);
+    hwndOwner := QWidget_WinID(Handle);
     {$ENDIF VisualCLX}
     pidlRoot := nil;
     pszDisplayName := FN;
@@ -8510,26 +8502,41 @@ const
   ROP_DSon    = $001100A6;   // NOTSRCERASE
   {$EXTERNALSYM ROP_DSon}
 
-function RasterOpToWinRop(Rop: RasterOp): cardinal;
+function RasterOpToWinRop(Rop: RasterOp): Cardinal;
 begin
   case Rop of
-    RasterOp_ClearROP   : Result := BLACKNESS;
-    RasterOp_NotROP     : Result := DSTINVERT;
-    RasterOp_NotOrRop   : Result := MERGEPAINT;
-    RasterOp_NotCopyROP : Result := NOTSRCCOPY;
-    RasterOp_NorROP     : Result := NOTSRCERASE;
-    RasterOp_AndROP     : Result := SRCAND;
-    RasterOp_CopyROP    : Result := SRCCOPY;
-    RasterOp_AndNotROP  : Result := SRCERASE;
-    RasterOp_XorROP     : Result := SRCINVERT;
-    RasterOp_OrROP      : Result := SRCPAINT;
-    RasterOp_SetROP     : Result := WHITENESS;
-    RasterOp_NotAndROP  : Result := ROP_DSna;
-    RasterOp_NopROP     : Result := ROP_D;
-    RasterOp_OrNotROP   : Result := ROP_SDno;
-    RasterOp_NandROP    : Result := ROP_DSan;
+    RasterOp_ClearROP:
+      Result := BLACKNESS;
+    RasterOp_NotROP:
+      Result := DSTINVERT;
+    RasterOp_NotOrROP:
+      Result := MERGEPAINT;
+    RasterOp_NotCopyROP:
+      Result := NOTSRCCOPY;
+    RasterOp_NorROP:
+      Result := NOTSRCERASE;
+    RasterOp_AndROP:
+      Result := SRCAND;
+    RasterOp_CopyROP:
+      Result := SRCCOPY;
+    RasterOp_AndNotROP:
+      Result := SRCERASE;
+    RasterOp_XorROP:
+      Result := SRCINVERT;
+    RasterOp_OrROP:
+      Result := SRCPAINT;
+    RasterOp_SetROP:
+      Result := WHITENESS;
+    RasterOp_NotAndROP:
+      Result := ROP_DSna;
+    RasterOp_NopROP:
+      Result := ROP_D;
+    RasterOp_OrNotROP:
+      Result := ROP_SDno;
+    RasterOp_NandROP:
+      Result := ROP_DSan;
   else
-    Result := 0;   // to satisfy compiler
+    Result := 0;
   end;
 end;
 
