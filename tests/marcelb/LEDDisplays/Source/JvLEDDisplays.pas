@@ -164,7 +164,7 @@ type
     property DigitWidth: Integer read FDigitWidth write SetDigitWidth;
     property Kind: TJvSegmentLEDKind read FKind write SetKind;
     property Margin: Integer read FMargin write SetMargin;
-    property SegmentWidth: Integer read FSegmentWidth write FSegmentWidth;
+    property SegmentWidth: Integer read FSegmentWidth write SetSegmentWidth;
     property SlantAngle: Integer read FSlantAngle write SetSlantAngle;
     property Spacing: Integer read FSpacing write SetSpacing;
     property Text: string read FText write SetText;
@@ -237,6 +237,8 @@ type
     property UseDP: Boolean read FUseDP write SetUseDP;
   end;
 
+function CharacterToSegmentString(Ch: Char; SegmentKind: TJvSegmentLEDKind): string;
+
 const
   { New colors }
   clOrange = $0000A0FF;
@@ -254,14 +256,22 @@ const
     ' =|0=ABCDEF|1=BC|2=ABDEG|3=ABCDG|4=BCFG|5=ACDFG|6=ACDEFG|7=ABC|8=ABCDEFG|9=ABCDFG|' +
     'A=ABCEFG|a=ABCEFG|B=CDEFG|b=CDEFG|C=ADEF|c=DEG|D=BCDEG|d=BCDEG|E=ADEFG|e=ADEFG|' +
     'F=AEFG|f=AEFG|H=BCEFG|h=CEFG|L=DEF|l=DEF|O=CDEG|o=CDEG|P=ABEFG|p=ABEFG|R=EG|r=EG|' +
-    '''=F|"=BF|'#248'=ABFG|-=G|U=BCDEF|u=CDE|y=BCDFG';
+    '''=F|"=BF|'#248'=ABFG|°=ABFG|-=G|U=BCDEF|u=CDE|y=BCDFG';
+
+  MapChToSeg14: string =
+    ' =|0=ABCDEF|1=BC|2=ABDEG|3=ABCDG|4=BCFG|5=ACDFG|6=ACDEFG|7=ABC|8=ABCDEFG|9=ABCDFG|' +
+    #0'=ABCDEFKN|'#4'=FGJM|''=J|"=BJ|'#248'=ABFG|°=ABFG|-=G|+=GJM|(=KL|)=HN|*=GHJKLN|/=KN|\=HL|' +
+    'A=ABCEFG|B=ABCDG2JM|C=ADEF|D=ABCDJM|E=ADEFG1|F=AEFG1|G=ACDEFG2|H=BCEFG|I=ADJM|J=ABCDE|' +
+    'K=EFG1KL|L=EFD|M=BCEFHK|N=BCEFHL|O=ABCDEF|P=ABEFG|Q=ABCDEFL|R=ABEFGL|S=ACDG2H|T=AJM|' +
+    'U=BCDEF|V=EFKN|W=BCEFLN|X=HKLN|Y=HKM|Z=ADKN|,=N';
 
   MapChToSeg16: string =
     ' =|0=ABCDEF|1=BC|2=ABDEG|3=ABCDG|4=BCFG|5=ACDFG|6=ACDEFG|7=ABC|8=ABCDEFG|9=ABCDFG|' +
-    #0'=ABCDEFKN|'#4'=FGJM|''=J|"=BJ|'#248'=A2BJG2|-=G|+=GJM|(=KL|)=HN|*=GHJKLN|/=KN|\=HL|' +
+    #0'=ABCDEFKN|'#4'=FGJM|''=J|"=BJ|'#248'=A2BJG2|°=A2BJG2|-=G|+=GJM|(=KL|)=HN|*=GHJKLN|/=KN|\=HL|' +
     'A=ABCEFG|B=ABCDG2JM|C=ADEF|D=ABCDJM|E=ADEFG1|F=AEFG1|G=ACDEFG2|H=BCEFG|I=ADJM|J=ABCDE|' +
-    'K=EFG1KL|L=EFD|M=BCEFHK|N=BCEFHL|O=ABCDEF|P=ABEFG|Q=ABCDEFL|R=ABEFGL|S=ACDFG|T=AJM|' +
-    'U=BCDEF|V=EFKN|W=BCEFLN|X=HKLN|Y=HKM|Z=ADKN|[=A2D2JM|]=A1D1JM|{=A2D2G1JM|}=A1D1G2JM';
+    'K=EFG1KL|L=EFD|M=BCEFHK|N=BCEFHL|O=ABCDEF|P=ABEFG|Q=ABCDEFL|R=ABEFGL|S=ACDG2H|T=AJM|' +
+    'U=BCDEF|V=EFKN|W=BCEFLN|X=HKLN|Y=HKM|Z=ADKN|[=A2D2JM|]=A1D1JM|{=A2D2G1JM|}=A1D1G2JM|' +
+    '%=A1CD2FG1G2JKMN|,=N|:=G2D2|.=D2|&=ADEG1HKL';
 
   SegNames14: array[0..13] of string = (
     'A',  'B',  'C',  'D',  'E',  'F', 'G1',
@@ -275,7 +285,7 @@ const
 
 resourcestring
   s_E_ld_InvalidString = 'Invalid string.';
-  s_E_ld_IllegalChar = 'Invalid character ''%s''.';
+  s_E_ld_IllegalChar = 'Invalid character ''%s'' (#%d).';
   s_E_ld_IllegalSegment = 'Invalid segment ''%s''.';
 
 function TextIndex(const Str: string; const Strings: array of string; const PartialAllowed: Boolean = False): Integer;
@@ -292,11 +302,23 @@ var
 begin
   IStart := Pos(Ch + '=', SegData);
   if IStart = 0 then
-    raise EJvLEDDisplay.CreateFmt(s_E_ld_IllegalChar, [Ch]);
+    raise EJvLEDDisplay.CreateFmt(s_E_ld_IllegalChar, [Ch, Ord(Ch)]);
   IEnd := IStart + 2;
   While (IEnd <= Length(SegData)) and (SegData[IEnd] <> '|') do
     Inc(IEnd);
   Result := Copy(SegData, IStart + 2, IEnd - IStart - 2);
+end;
+
+function CharacterToSegmentString(Ch: Char; SegmentKind: TJvSegmentLEDKind): string;
+begin
+  case SegmentKind of
+    slk7Segments:
+      Result := CharToSegString(Ch, MapChToSeg7);
+    slk14Segments:
+      Result := CharToSegString(Ch, MapChToSeg14);
+    else
+      Result := CharToSegString(Ch, MapChToSeg16);
+  end;
 end;
 
 function TJvCustomSegmentLEDDisplay.GetDigit(I: Integer): TJvSegmentLEDDigit;
@@ -542,7 +564,8 @@ var
         case Kind of
           slk7Segments:
             Result := Result + CharToSegString(Chr(ChVal), MapChToSeg7);
-          slk14Segments,
+          slk14Segments:
+            Result := Result + CharToSegString(Chr(ChVal), MapChToSeg14);
           slk16Segments:
             Result := Result + CharToSegString(Chr(ChVal), MapChToSeg16);
         end;
@@ -554,7 +577,8 @@ var
         case Kind of
           slk7Segments:
             Result := Result + CharToSegString(S[IPos], MapChToSeg7);
-          slk14Segments,
+          slk14Segments:
+            Result := Result + CharToSegString(S[IPos], MapChToSeg14);
           slk16Segments:
             Result := Result + CharToSegString(S[IPos], MapChToSeg16);
         end;
@@ -579,7 +603,8 @@ begin
       case Kind of
         slk7Segments:
           Result[Idx] := CharToSegString(S[IPos], MapChToSeg7);
-        slk14Segments,
+          slk14Segments:
+            Result[Idx] := CharToSegString(S[IPos], MapChToSeg14);
         slk16Segments:
           Result[Idx] := CharToSegString(S[IPos], MapChToSeg16);
         else
@@ -752,6 +777,12 @@ begin
   end;
 end;
 
+function AngleAdjustPoint(X, Y, Angle: Integer): TPoint;
+begin
+  Result.X := X + Trunc(ArcTan(Angle * Pi / 180.0) * Y);
+  Result.Y := Y;
+end;
+
 procedure TJvSegmentLEDDigit.CalcPolygons;
 var
   SegT: Integer;
@@ -786,6 +817,7 @@ var
   BottomRightY: Integer;
 
   VertOffset: Integer;
+  SlantAngle: Integer;
 
   procedure SetPolygon(SegNum: Integer; Points: array of TPoint);
   begin
@@ -794,15 +826,16 @@ var
   end;
 
 begin
+  SlantAngle := Display.SlantAngle;
   with Display do
   begin
     SegT := SegmentWidth;
     Spc := Spacing;
     DigM := Margin;
     DigX := Index * DigitWidth;
-    DigW := DigitWidth - 2 * DigM - SegT - 2;
+    DigW := DigitWidth - 2 * DigM - (Ord(UseDP) * SegT) - 2;
     DigH := DigitHeight - 2 * DigM - (SegT div 2);
-    SlantDiff := Trunc(Abs(ArcTan(SlantAngle / 180.0 * Pi) * DigH));
+    SlantDiff := Trunc(Abs(ArcTan(SlantAngle * Pi / 180.0) * DigH));
     Dec(DigW, SlantDiff);
   end;
   HalfSegT := SegT div 2;
@@ -815,14 +848,14 @@ begin
   TopRightX := TopLeftX + DigW;
   TopRightY := TopLeftY;
 
-  CenterLeftX := DigX + DigM + SlantDiff div 2;
+  CenterLeftX := TopLeftX; //DigX + DigM + SlantDiff div 2;
   CenterLeftY := DigM + (DigH div 2);
   CenterCenterX := CenterLeftX + (DigW div 2);
   CenterCenterY := CenterLeftY;
   CenterRightX := CenterLeftX + DigW;
   CenterRightY := CenterLeftY;
 
-  BottomLeftX := DigX + DigM;
+  BottomLeftX := TopLeftX; //DigX + DigM;
   BottomLeftY := DigM + DigH;
   BottomCenterX := BottomLeftX + (DigW div 2);
   BottomCenterY := BottomLeftY;
@@ -840,138 +873,139 @@ begin
   // Calculate and remember the polygons.
   SetLength(FPolygons, 19);
   SetPolygon(0, [ // A
-    Point(TopLeftX + HalfSpc, TopLeftY),
-    Point(TopRightX - HalfSpc, TopRightY),
-    Point(TopRightX - HalfSpc - SegT, TopRightY + SegT),
-    Point(TopLeftX + HalfSpc + SegT, TopLeftY + SegT)
+    AngleAdjustPoint(TopLeftX + HalfSpc, TopLeftY, -SlantAngle),
+    AngleAdjustPoint(TopRightX - HalfSpc, TopRightY, -SlantAngle),
+    AngleAdjustPoint(TopRightX - HalfSpc - SegT, TopRightY + SegT, -SlantAngle),
+    AngleAdjustPoint(TopLeftX + HalfSpc + SegT, TopLeftY + SegT, -SlantAngle)
   ]);
   SetPolygon(1, [ // A1
-    Point(TopLeftX + HalfSpc, TopLeftY),
-    Point(TopCenterX - HalfSpc, TopCenterY),
-    Point(TopCenterX - HalfSpc - SegT, TopCenterY + SegT),
-    Point(TopLeftX + HalfSpc + SegT, TopLeftY + SegT)
+    AngleAdjustPoint(TopLeftX + HalfSpc, TopLeftY, -SlantAngle),
+    AngleAdjustPoint(TopCenterX - HalfSpc, TopCenterY, -SlantAngle),
+    AngleAdjustPoint(TopCenterX - HalfSpc - SegT, TopCenterY + SegT, -SlantAngle),
+    AngleAdjustPoint(TopLeftX + HalfSpc + SegT, TopLeftY + SegT, -SlantAngle)
   ]);
   SetPolygon(2, [ // A2
-    Point(TopCenterX + HalfSpc, TopCenterY),
-    Point(TopRightX - HalfSpc, TopRightY),
-    Point(TopRightX - HalfSpc - SegT, TopRightY + SegT),
-    Point(TopCenterX + HalfSpc + SegT, TopCenterY + SegT)
+    AngleAdjustPoint(TopCenterX + HalfSpc, TopCenterY, -SlantAngle),
+    AngleAdjustPoint(TopRightX - HalfSpc, TopRightY, -SlantAngle),
+    AngleAdjustPoint(TopRightX - HalfSpc - SegT, TopRightY + SegT, -SlantAngle),
+    AngleAdjustPoint(TopCenterX + HalfSpc + SegT, TopCenterY + SegT, -SlantAngle)
   ]);
   SetPolygon(3, [ // B
-    Point(TopRightX, TopRightY + HalfSpc),
-    Point(CenterRightX, CenterRightY - HalfSpc),
-    Point(CenterRightX - SegT, CenterRightY - HalfSpc - SegT),
-    Point(TopRightX - SegT, TopRightY + HalfSpc + SegT)
+    AngleAdjustPoint(TopRightX, TopRightY + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterRightX, CenterRightY - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterRightX - SegT, CenterRightY - HalfSpc - SegT, -SlantAngle),
+    AngleAdjustPoint(TopRightX - SegT, TopRightY + HalfSpc + SegT, -SlantAngle)
   ]);
   SetPolygon(4, [ // C
-    Point(CenterRightX, CenterRightY + HalfSpc),
-    Point(BottomRightX, BottomRightY - HalfSpc),
-    Point(BottomRightX - SegT, BottomRightY - HalfSpc - SegT),
-    Point(CenterRightX - SegT, CenterRightY + HalfSpc + SegT)
+    AngleAdjustPoint(CenterRightX, CenterRightY + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(BottomRightX, BottomRightY - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(BottomRightX - SegT, BottomRightY - HalfSpc - SegT, -SlantAngle),
+    AngleAdjustPoint(CenterRightX - SegT, CenterRightY + HalfSpc + SegT, -SlantAngle)
   ]);
   SetPolygon(5, [ // D
-    Point(BottomLeftX + HalfSpc, BottomLeftY),
-    Point(BottomRightX - HalfSpc, BottomRightY),
-    Point(BottomRightX - HalfSpc - SegT, BottomRightY - SegT),
-    Point(BottomLeftX + HalfSpc + SegT, BottomLeftY - SegT)
+    AngleAdjustPoint(BottomLeftX + HalfSpc, BottomLeftY, -SlantAngle),
+    AngleAdjustPoint(BottomRightX - HalfSpc, BottomRightY, -SlantAngle),
+    AngleAdjustPoint(BottomRightX - HalfSpc - SegT, BottomRightY - SegT, -SlantAngle),
+    AngleAdjustPoint(BottomLeftX + HalfSpc + SegT, BottomLeftY - SegT, -SlantAngle)
   ]);
   SetPolygon(6, [ // D1
-    Point(BottomLeftX + HalfSpc, BottomLeftY),
-    Point(BottomCenterX - HalfSpc, BottomCenterY),
-    Point(BottomCenterX - HalfSpc - SegT, BottomCenterY - SegT),
-    Point(BottomLeftX + HalfSpc + SegT, BottomLeftY - SegT)
+    AngleAdjustPoint(BottomLeftX + HalfSpc, BottomLeftY, -SlantAngle),
+    AngleAdjustPoint(BottomCenterX - HalfSpc, BottomCenterY, -SlantAngle),
+    AngleAdjustPoint(BottomCenterX - HalfSpc - SegT, BottomCenterY - SegT, -SlantAngle),
+    AngleAdjustPoint(BottomLeftX + HalfSpc + SegT, BottomLeftY - SegT, -SlantAngle)
   ]);
   SetPolygon(7, [ // D2
-    Point(BottomCenterX + HalfSpc, BottomCenterY),
-    Point(BottomRightX - HalfSpc, BottomRightY),
-    Point(BottomRightX - HalfSpc - SegT, BottomRightY - SegT),
-    Point(BottomCenterX + HalfSpc + SegT, BottomCenterY - SegT)
-  ]);
-  SetPolygon(9, [ // F
-    Point(TopLeftX, TopLeftY + HalfSpc),
-    Point(CenterLeftX, CenterLeftY - HalfSpc),
-    Point(CenterLeftX + SegT, CenterLeftY - HalfSpc - SegT),
-    Point(TopLeftX + SegT, TopLeftY + HalfSpc + SegT)
+    AngleAdjustPoint(BottomCenterX + HalfSpc, BottomCenterY, -SlantAngle),
+    AngleAdjustPoint(BottomRightX - HalfSpc, BottomRightY, -SlantAngle),
+    AngleAdjustPoint(BottomRightX - HalfSpc - SegT, BottomRightY - SegT, -SlantAngle),
+    AngleAdjustPoint(BottomCenterX + HalfSpc + SegT, BottomCenterY - SegT, -SlantAngle)
   ]);
   SetPolygon(8, [ // E
-    Point(CenterLeftX, CenterLeftY + HalfSpc),
-    Point(BottomLeftX, BottomLeftY - HalfSpc),
-    Point(BottomLeftX + SegT, BottomLeftY - HalfSpc - SegT),
-    Point(CenterLeftX + SegT, CenterLeftY + HalfSpc + SegT)
+    AngleAdjustPoint(CenterLeftX, CenterLeftY + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(BottomLeftX, BottomLeftY - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(BottomLeftX + SegT, BottomLeftY - HalfSpc - SegT, -SlantAngle),
+    AngleAdjustPoint(CenterLeftX + SegT, CenterLeftY + HalfSpc + SegT, -SlantAngle)
+  ]);
+  SetPolygon(9, [ // F
+    AngleAdjustPoint(TopLeftX, TopLeftY + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterLeftX, CenterLeftY - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterLeftX + SegT, CenterLeftY - HalfSpc - SegT, -SlantAngle),
+    AngleAdjustPoint(TopLeftX + SegT, TopLeftY + HalfSpc + SegT, -SlantAngle)
   ]);
   SetPolygon(10, [ // G
-    Point(CenterLeftX + HalfSpc, CenterLeftY),
-    Point(CenterLeftX + HalfSpc + HalfSegT, CenterLeftY - HalfSegT),
-    Point(CenterRightX - HalfSpc - HalfSegT, CenterRightY - HalfSegT),
-    Point(CenterRightX - HalfSpc, CenterRightY),
-    Point(CenterRightX - HalfSpc - HalfSegT, CenterRightY + HalfSegT),
-    Point(CenterLeftX + HalfSpc + HalfSegT, CenterLeftY + HalfSegT)
+    AngleAdjustPoint(CenterLeftX + HalfSpc, CenterLeftY, -SlantAngle),
+    AngleAdjustPoint(CenterLeftX + HalfSpc + HalfSegT, CenterLeftY - HalfSegT, -SlantAngle),
+    AngleAdjustPoint(CenterRightX - HalfSpc - HalfSegT, CenterRightY - HalfSegT, -SlantAngle),
+    AngleAdjustPoint(CenterRightX - HalfSpc, CenterRightY, -SlantAngle),
+    AngleAdjustPoint(CenterRightX - HalfSpc - HalfSegT, CenterRightY + HalfSegT, -SlantAngle),
+    AngleAdjustPoint(CenterLeftX + HalfSpc + HalfSegT, CenterLeftY + HalfSegT, -SlantAngle)
   ]);
   SetPolygon(11, [ // G1
-    Point(CenterLeftX + HalfSpc, CenterLeftY),
-    Point(CenterLeftX + HalfSpc + HalfSegT, CenterLeftY - HalfSegT),
-    Point(CenterCenterX - HalfSpc - HalfSegT, CenterCenterY - HalfSegT),
-    Point(CenterCenterX - HalfSpc, CenterCenterY),
-    Point(CenterCenterX - HalfSpc - HalfSegT, CenterCenterY + HalfSegT),
-    Point(CenterLeftX + HalfSpc + HalfSegT, CenterLeftY + HalfSegT)
+    AngleAdjustPoint(CenterLeftX + HalfSpc, CenterLeftY, -SlantAngle),
+    AngleAdjustPoint(CenterLeftX + HalfSpc + HalfSegT, CenterLeftY - HalfSegT, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX - HalfSpc - HalfSegT, CenterCenterY - HalfSegT, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX - HalfSpc, CenterCenterY, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX - HalfSpc - HalfSegT, CenterCenterY + HalfSegT, -SlantAngle),
+    AngleAdjustPoint(CenterLeftX + HalfSpc + HalfSegT, CenterLeftY + HalfSegT, -SlantAngle)
   ]);
   SetPolygon(12, [ // G2
-    Point(CenterCenterX + HalfSpc, CenterCenterY),
-    Point(CenterCenterX + HalfSpc + HalfSegT, CenterCenterY - HalfSegT),
-    Point(CenterRightX - HalfSpc - HalfSegT, CenterRightY - HalfSegT),
-    Point(CenterRightX - HalfSpc, CenterRightY),
-    Point(CenterRightX - HalfSpc - HalfSegT, CenterRightY + HalfSegT),
-    Point(CenterCenterX + HalfSpc + HalfSegT, CenterCenterY + HalfSegT)
+    AngleAdjustPoint(CenterCenterX + HalfSpc, CenterCenterY, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX + HalfSpc + HalfSegT, CenterCenterY - HalfSegT, -SlantAngle),
+    AngleAdjustPoint(CenterRightX - HalfSpc - HalfSegT, CenterRightY - HalfSegT, -SlantAngle),
+    AngleAdjustPoint(CenterRightX - HalfSpc, CenterRightY, -SlantAngle),
+    AngleAdjustPoint(CenterRightX - HalfSpc - HalfSegT, CenterRightY + HalfSegT, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX + HalfSpc + HalfSegT, CenterCenterY + HalfSegT, -SlantAngle)
   ]);
   SetPolygon(13, [ // H
-    Point(TopLeftX + SegT + HalfSpc, TopLeftY + SegT + HalfSpc),
-    Point(TopLeftX + SegT + HalfSpc + HalfSegT, TopLeftY + SegT + HalfSpc),
-    Point(CenterCenterX - HalfSegT - HalfSpc, CenterCenterY - SegT - HalfSpc),
-    Point(CenterCenterX - HalfSegT - HalfSpc, CenterCenterY - HalfSegT - HalfSpc),
-    Point(CenterCenterX - SegT - HalfSpc, CenterCenterY - HalfSegT - HalfSpc),
-    Point(TopLeftX + SegT + HalfSpc, TopLeftY + SegT + HalfSpc + HalfSegT)
+    AngleAdjustPoint(TopLeftX + SegT + HalfSpc, TopLeftY + SegT + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(TopLeftX + SegT + HalfSpc + HalfSegT, TopLeftY + SegT + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX - HalfSegT - HalfSpc, CenterCenterY - SegT - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX - HalfSegT - HalfSpc, CenterCenterY - HalfSegT - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX - SegT - HalfSpc, CenterCenterY - HalfSegT - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(TopLeftX + SegT + HalfSpc, TopLeftY + SegT + HalfSpc + HalfSegT, -SlantAngle)
   ]);
   SetPolygon(14, [ // J
-    Point(TopCenterX, TopCenterY + VertOffset),
-    Point(TopCenterX + HalfSegT, TopCenterY + VertOffset + HalfSegT),
-    Point(CenterCenterX + HalfSegT, CenterCenterY - HalfSpc - HalfSegT),
-    Point(CenterCenterX, CenterCenterY - HalfSpc),
-    Point(CenterCenterX - HalfSegT, CenterCenterY - HalfSpc - HalfSegT),
-    Point(TopCenterX - HalfSegT, TopCenterY + VertOffset + HalfSegT)
+    AngleAdjustPoint(TopCenterX, TopCenterY + VertOffset, -SlantAngle),
+    AngleAdjustPoint(TopCenterX + HalfSegT, TopCenterY + VertOffset + HalfSegT, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX + HalfSegT, CenterCenterY - HalfSpc - HalfSegT, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX, CenterCenterY - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX - HalfSegT, CenterCenterY - HalfSpc - HalfSegT, -SlantAngle),
+    AngleAdjustPoint(TopCenterX - HalfSegT, TopCenterY + VertOffset + HalfSegT, -SlantAngle)
   ]);
   SetPolygon(15, [ // K
-    Point(TopRightX - SegT - HalfSpc, TopRightY + SegT + HalfSpc),
-    Point(TopRightX - SegT - HalfSpc - HalfSegT, TopRightY + SegT + HalfSpc),
-    Point(CenterCenterX + HalfSegT + HalfSpc, CenterCenterY - SegT - HalfSpc),
-    Point(CenterCenterX + HalfSegT + HalfSpc, CenterCenterY - HalfSegT - HalfSpc),
-    Point(CenterCenterX + SegT + HalfSpc, CenterCenterY - HalfSegT - HalfSpc),
-    Point(TopRightX - SegT - HalfSpc, TopRightY + SegT + HalfSpc + HalfSegT)
+    AngleAdjustPoint(TopRightX - SegT - HalfSpc, TopRightY + SegT + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(TopRightX - SegT - HalfSpc - HalfSegT, TopRightY + SegT + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX + HalfSegT + HalfSpc, CenterCenterY - SegT - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX + HalfSegT + HalfSpc, CenterCenterY - HalfSegT - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX + SegT + HalfSpc, CenterCenterY - HalfSegT - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(TopRightX - SegT - HalfSpc, TopRightY + SegT + HalfSpc + HalfSegT, -SlantAngle)
   ]);
-  SetPolygon(16, [ // K
-    Point(BottomRightX - SegT - HalfSpc, BottomRightY - SegT - HalfSpc),
-    Point(BottomRightX - SegT - HalfSpc - HalfSegT, BottomRightY - SegT - HalfSpc),
-    Point(CenterCenterX + HalfSegT + HalfSpc, CenterCenterY + SegT + HalfSpc),
-    Point(CenterCenterX + HalfSegT + HalfSpc, CenterCenterY + HalfSegT + HalfSpc),
-    Point(CenterCenterX + SegT + HalfSpc, CenterCenterY + HalfSegT + HalfSpc),
-    Point(BottomRightX - SegT - HalfSpc, BottomRightY - SegT - HalfSpc - HalfSegT)
+  SetPolygon(16, [ // L
+    AngleAdjustPoint(BottomRightX - SegT - HalfSpc, BottomRightY - SegT - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(BottomRightX - SegT - HalfSpc - HalfSegT, BottomRightY - SegT - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX + HalfSegT + HalfSpc, CenterCenterY + SegT + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX + HalfSegT + HalfSpc, CenterCenterY + HalfSegT + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX + SegT + HalfSpc, CenterCenterY + HalfSegT + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(BottomRightX - SegT - HalfSpc, BottomRightY - SegT - HalfSpc - HalfSegT, -SlantAngle)
   ]);
   SetPolygon(17, [ // M
-    Point(CenterCenterX, CenterCenterY + HalfSpc),
-    Point(CenterCenterX + HalfSegT, CenterCenterY + HalfSpc + HalfSegT),
-    Point(BottomCenterX + HalfSegT, BottomCenterY - VertOffset - HalfSegT),
-    Point(BottomCenterX, BottomCenterY - VertOffset),
-    Point(BottomCenterX - HalfSegT, BottomCenterY - VertOffset - HalfSegT),
-    Point(CenterCenterX - HalfSegT, CenterCenterY + HalfSpc + HalfSegT)
+    AngleAdjustPoint(CenterCenterX, CenterCenterY + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX + HalfSegT, CenterCenterY + HalfSpc + HalfSegT, -SlantAngle),
+    AngleAdjustPoint(BottomCenterX + HalfSegT, BottomCenterY - VertOffset - HalfSegT, -SlantAngle),
+    AngleAdjustPoint(BottomCenterX, BottomCenterY - VertOffset, -SlantAngle),
+    AngleAdjustPoint(BottomCenterX - HalfSegT, BottomCenterY - VertOffset - HalfSegT, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX - HalfSegT, CenterCenterY + HalfSpc + HalfSegT, -SlantAngle)
   ]);
   SetPolygon(18, [ // N
-    Point(BottomLeftX + SegT + HalfSpc, BottomLeftY - SegT - HalfSpc),
-    Point(BottomLeftX + SegT + HalfSpc + HalfSegT, BottomLeftY - SegT - HalfSpc),
-    Point(CenterCenterX - HalfSegT - HalfSpc, CenterCenterY + SegT + HalfSpc),
-    Point(CenterCenterX - HalfSegT - HalfSpc, CenterCenterY + HalfSegT + HalfSpc),
-    Point(CenterCenterX - SegT - HalfSpc, CenterCenterY + HalfSegT + HalfSpc),
-    Point(BottomLeftX + SegT + HalfSpc, BottomLeftY - SegT - HalfSpc - HalfSegT)
+    AngleAdjustPoint(BottomLeftX + SegT + HalfSpc, BottomLeftY - SegT - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(BottomLeftX + SegT + HalfSpc + HalfSegT, BottomLeftY - SegT - HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX - HalfSegT - HalfSpc, CenterCenterY + SegT + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX - HalfSegT - HalfSpc, CenterCenterY + HalfSegT + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(CenterCenterX - SegT - HalfSpc, CenterCenterY + HalfSegT + HalfSpc, -SlantAngle),
+    AngleAdjustPoint(BottomLeftX + SegT + HalfSpc, BottomLeftY - SegT - HalfSpc - HalfSegT, -SlantAngle)
   ]);
-  FDPRect := Rect(BottomRightX + Spc, BottomRightY - SegT, BottomRightX + Spc + SegT + HalfSegT + 1, BottomRightY + HalfSegT + 1);
+  FDPRect.TopLeft := AngleAdjustPoint(BottomRightX + Spc, BottomRightY - SegT, -SlantAngle);
+  FDPRect.BottomRight := AngleAdjustPoint(BottomRightX + Spc + SegT + HalfSegT + 1, BottomRightY + HalfSegT + 1, -SlantAngle);
 end;
 
 procedure TJvSegmentLEDDigit.Invalidate;
@@ -1052,10 +1086,14 @@ end;
 
 procedure TJvSegmentLEDDigit.SetChar(const Ch: Char);
 begin
-  if Display.Kind = slk7Segments then
-    Segments := CharToSegString(Ch, MapChToSeg7)
-  else
-    Segments := CharToSegString(Ch, MapChToSeg16);
+  case Display.Kind of
+    slk7Segments:
+      Segments := CharToSegString(Ch, MapChToSeg7);
+    slk14Segments:
+      Segments := CharToSegString(Ch, MapChToSeg14);
+    else
+      Segments := CharToSegString(Ch, MapChToSeg16);
+  end;
 end;
 
 end.

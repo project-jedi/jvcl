@@ -5,42 +5,35 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvComponent, JvLEDDisplays, ExtCtrls, ComCtrls, JvComCtrls, StdCtrls,
-  JvInspector;
+  ExampleJVSegmentedLEDDisplay7SegMain,
+  ExampleJVSegmentedLEDDisplay14SegMain,
+  ExampleJVSegmentedLEDDisplay16SegMain;
 
 type
   TfrmExampleSegmentedLEDDisplayMain = class(TForm)
     sldScroller: TJvSegmentLEDDisplay;
-    tmrLEDScroller: TTimer;
+    tmrUpdater: TTimer;
     pcMain: TJvPageControl;
     ts7Seg: TTabSheet;
-    sldCarOdometer1: TJvSegmentLEDDisplay;
-    sldCarOdoMeter2: TJvSegmentLEDDisplay;
-    pnlCarOdometerRight: TPanel;
-    pnlCarOdometerLeftBottom: TPanel;
-    lblCarOdometerTopKM: TLabel;
-    lblCarOdometerBottomKM: TLabel;
-    pnlCarOdometerExplain: TPanel;
-    lblCarOdometerExplain: TLabel;
-    sld7SegTester: TJvSegmentLEDDisplay;
-    insp7SegTester: TJvInspector;
-    idnpMain: TJvInspectorDotNETPainter;
-    procedure tmrLEDScrollerTimer(Sender: TObject);
+    fme7SegExamples1: Tfme7SegExamples;
+    ts14Seg: TTabSheet;
+    fme14SegExamples1: Tfme14SegExamples;
+    ts16Segs: TTabSheet;
+    fme16SegExamples1: Tfme16SegExamples;
+    procedure tmrUpdaterTimer(Sender: TObject);
   private
     { Private declarations }
+    ScrollCnt: Integer;
   protected
     procedure Loaded; override;
   public
     { Public declarations }
-    procedure Init7SegInspector;
   end;
 
 var
   frmExampleSegmentedLEDDisplayMain: TfrmExampleSegmentedLEDDisplayMain;
 
 implementation
-
-uses
-  JvInspExtraEditors;
 
 {$R *.DFM}
 
@@ -54,45 +47,21 @@ var
 procedure TfrmExampleSegmentedLEDDisplayMain.Loaded;
 begin
   inherited Loaded;
-  TJvInspectorColorItem.RegisterAsDefaultItem;
-  Init7SegInspector;
+  pcMain.ActivePageIndex := 0;
 end;
 
-procedure TfrmExampleSegmentedLEDDisplayMain.Init7SegInspector;
-var
-  Cat: TJvInspectorCustomCategoryItem;
-  Instances: TJvInspectorItemInstances;
-  I: Integer;
-  Cat1: TJvInspectorCustomCategoryItem;
-begin
-  insp7SegTester.Root.SortKind := iskNone;
-  Cat := TJvInspectorCustomCategoryItem.Create(insp7SegTester.Root, nil);
-  Cat.DisplayName := 'Fixed settings';
-  Instances := TJvInspectorPropData.NewByNames(Cat, sld7SegTester, ['DigitCount', 'DigitHeight', 'DigitWidth']);
-  for I := High(Instances) downto 0 do
-    Instances[I].ReadOnly := True;
-//  Cat.Expanded := True;
-  Cat := TJvInspectorCustomCategoryItem.Create(insp7SegTester.Root, nil);
-  Cat.DisplayName := 'Appearance';
-  Cat1 := TJvInspectorCustomCategoryItem.Create(Cat, nil);
-  Cat1.DisplayName := 'Colors';
-  TJvInspectorPropData.New(Cat1, sld7SegTester, 'Color').DisplayName := 'Background';
-  TJvInspectorPropData.New(Cat1, sld7SegTester, 'ColorOn').DisplayName := 'Segment lit';
-  TJvInspectorPropData.New(Cat1, sld7SegTester, 'ColorOff').DisplayName := 'Segment unlit';
-  Cat1.Expanded;
-  TJvInspectorPropData.New(Cat, sld7SegTester, 'SegmentWidth').DisplayName := 'Segment width';
-  TJvInspectorPropData.New(Cat, sld7SegTester, 'Spacing').DisplayName := 'Space between segments';
-  TJvInspectorPropData.New(Cat, sld7SegTester, 'SlantAngle').DisplayName := 'Slanting angle';
-  TJvInspectorPropData.New(Cat, sld7SegTester, 'Margin');
-  Cat.Expanded := True;
-  TJvInspectorPropData.New(insp7SegTester.Root, sld7SegTester, 'Text');
-end;
-
-procedure TfrmExampleSegmentedLEDDisplayMain.tmrLEDScrollerTimer(
+procedure TfrmExampleSegmentedLEDDisplayMain.tmrUpdaterTimer(
   Sender: TObject);
 begin
-  sldScroller.Text := Copy(ScrollText, 1, 16);
-  ScrollText := Copy(ScrollText, 2, Length(ScrollText) - 1) + ScrollText[1];
+  fme7SegExamples1.TimerEvent;
+  fme14SegExamples1.TimerEvent;
+  fme16SegExamples1.TimerEvent;
+  Inc(ScrollCnt);
+  if not Odd(ScrollCnt) then
+  begin
+    sldScroller.Text := Copy(ScrollText, 1, 16);
+    ScrollText := Copy(ScrollText, 2, Length(ScrollText) - 1) + ScrollText[1];
+  end;
 end;
 
 end.
