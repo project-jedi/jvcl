@@ -31,7 +31,7 @@ unit JvXPButtons;
 interface
 
 uses
-  Windows, Classes, Graphics, Controls, Forms, ActnList, ImgList,
+  Windows, Messages, Classes, Graphics, Controls, Forms, ActnList, ImgList, Menus,
   JvXPCore, JvXPCoreUtils, TypInfo;
 
 type
@@ -159,9 +159,9 @@ type
     property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
-    {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
     property OnContextPopup;
-    {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -179,18 +179,37 @@ type
   end;
 
   TJvXPToolType =
-    (ttArrowLeft, ttArrowRight, ttClose, ttMaximize, ttMinimize, ttPopup, ttRestore);
+    (ttArrowLeft, ttArrowRight, ttClose, ttMaximize, ttMinimize, ttPopup, ttRestore, ttImage);
+
 
   TJvXPCustomToolButton = class(TJvXPCustomStyleControl)
   private
     FToolType: TJvXPToolType;
+    FDropDownMenu: TPopupMenu;
+    FChangeLink: TChangeLink;
+    FImages: TCustomImageList;
+    FImageIndex: TImageIndex;
+    procedure SetImages(const Value: TCustomImageList);
+    procedure SetImageIndex(const Value: TImageIndex);
+    procedure SetDropDownMenu(const Value: TPopupMenu);
+    procedure DoImagesChange(Sender: TObject);
   protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X: Integer; Y: Integer); override;
     procedure SetToolType(Value: TJvXPToolType); virtual;
     procedure Paint; override;
     procedure HookResized; override;
+
     property ToolType: TJvXPToolType read FToolType write SetToolType default ttClose;
+    property DropDownMenu: TPopupMenu read FDropDownMenu write SetDropDownMenu;
+    property Images: TCustomImageList read FImages write SetImages;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
+
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
   end;
 
   TJvXPToolButton = class(TJvXPCustomToolButton)
@@ -219,6 +238,10 @@ type
     property DragCursor;
     property DragKind;
     property DragMode;
+    property DropDownMenu;
+    property Images;
+    property ImageIndex;
+
     //property Enabled;
     property Font;
     property ParentFont;
@@ -237,9 +260,9 @@ type
     property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
-    {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
     property OnContextPopup;
-    {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -516,7 +539,7 @@ begin
 
   // background.
   JvXPCreateGradientRect(Width - (2 + Offset), Height - (2 + Offset),
-    dxColor_Btn_Enb_BgFrom_WXP,  dxColor_Btn_Enb_BgTo_WXP, ColSteps, gsTop, Dithering,
+    dxColor_Btn_Enb_BgFrom_WXP, dxColor_Btn_Enb_BgTo_WXP, ColSteps, gsTop, Dithering,
     FBgGradient);
 
   // clicked.
@@ -686,13 +709,24 @@ begin
   ControlStyle := ControlStyle - [csDoubleClicks];
   Color := clBlack;
   FToolType := ttClose;
+  FChangeLink := TChangeLink.Create;
+  FChangeLink.OnChange := DoImagesChange;
   HookResized;
+end;
+
+destructor TJvXPCustomToolButton.Destroy;
+begin
+  FChangeLink.Free;
+  inherited;
 end;
 
 procedure TJvXPCustomToolButton.HookResized;
 begin
-  Height := 15;
-  Width := 15;
+  if ToolType <> ttImage then
+  begin
+    Height := 15;
+    Width := 15;
+  end;
 end;
 
 procedure TJvXPCustomToolButton.SetToolType(Value: TJvXPToolType);
@@ -727,7 +761,8 @@ begin
     begin
       if Theme = WindowsXP then
         JvXPFrame3d(Self.Canvas, Rect, clWhite, clBlack, dsClicked in DrawState)
-      else begin
+      else
+      begin
         Pen.Color := dxColor_BorderLineOXP;
         Rectangle(Rect);
         InflateRect(Rect, -1, -1);
@@ -739,25 +774,104 @@ begin
       end;
     end;
     Shifted := (Theme = WindowsXP) and (dsClicked in DrawState);
-    Bitmap := TBitmap.Create;
-    try
-      Bitmap.Handle := LoadBitmap(hInstance, PChar(Copy(GetEnumName(TypeInfo(TJvXPToolType),
-        Ord(FToolType)), 3, MAXINT)));
-      if (dsClicked in DrawState) and (dsHighlight in DrawState) then
-        JvXPColorizeBitmap(Bitmap, clWhite)
-      else
-      if not Enabled then
-        JvXPColorizeBitmap(Bitmap, clGray)
-      else
-      if Color <> clBlack then
-        JvXPColorizeBitmap(Bitmap, Color);
-      Bitmap.Transparent := True;
-      Draw((Width - Bitmap.Width) div 2 + Integer(Shifted),
-        (Height - Bitmap.Height) div 2 + Integer(Shifted), Bitmap);
-    finally
-      Bitmap.Free;
+    if ToolType = ttImage then
+    begin
+      if (Images = nil) or (ImageIndex < 0) or (ImageIndex >= Images.Count) then Exit;
+      Images.Draw(Canvas, (Width - Images.Width) div 2 + Integer(Shifted), (Height - Images.Height) div 2 +
+        Integer(Shifted), ImageIndex, dsTransparent, itImage, Enabled);
+    end
+    else
+    begin
+      Bitmap := TBitmap.Create;
+      try
+        Bitmap.Handle := LoadBitmap(hInstance, PChar(Copy(GetEnumName(TypeInfo(TJvXPToolType),
+          Ord(FToolType)), 3, MAXINT)));
+        if (dsClicked in DrawState) and (dsHighlight in DrawState) then
+          JvXPColorizeBitmap(Bitmap, clWhite)
+        else if not Enabled then
+          JvXPColorizeBitmap(Bitmap, clGray)
+        else if Color <> clBlack then
+          JvXPColorizeBitmap(Bitmap, Color);
+        Bitmap.Transparent := True;
+        Draw((Width - Bitmap.Width) div 2 + Integer(Shifted),
+          (Height - Bitmap.Height) div 2 + Integer(Shifted), Bitmap);
+      finally
+        Bitmap.Free;
+      end;
     end;
   end;
+end;
+
+procedure TJvXPCustomToolButton.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
+  begin
+    if AComponent = DropDownMenu then
+      DropDownMenu := nil
+    else if AComponent = Images then
+      Images := nil;
+  end;
+end;
+
+procedure TJvXPCustomToolButton.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  P: TPoint;
+  Msg: TMsg;
+begin
+  inherited;
+  if Assigned(DropDownMenu) then
+  begin
+    P := ClientToScreen(Point(0, Height));
+    DropDownMenu.Popup(P.X, P.Y);
+    while PeekMessage(Msg, HWND_DESKTOP, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
+      {nothing};
+    if GetCapture <> 0 then
+      SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
+  end;
+end;
+
+procedure TJvXPCustomToolButton.SetImages(const Value: TCustomImageList);
+begin
+  if FImages <> Value then
+  begin
+    if FImages <> nil then
+      FImages.UnRegisterChanges(FChangeLink);
+    FImages := Value;
+    if FImages <> nil then
+    begin
+      FImages.FreeNotification(Self);
+      FImages.RegisterChanges(FChangeLink);
+    end;
+    LockedInvalidate;
+  end;
+end;
+
+procedure TJvXPCustomToolButton.SetImageIndex(const Value: TImageIndex);
+begin
+  if FImageIndex <> Value then
+  begin
+    FImageIndex := Value;
+    LockedInvalidate;
+  end;
+end;
+
+procedure TJvXPCustomToolButton.SetDropDownMenu(const Value: TPopupMenu);
+begin
+  if FDropDownMenu <> Value then
+  begin
+    FDropDownMenu := Value;
+    if FDropDownMenu <> nil then
+      FDropDownMenu.FreeNotification(Self);
+    LockedInvalidate;
+  end;
+end;
+
+procedure TJvXPCustomToolButton.DoImagesChange(Sender: TObject);
+begin
+  LockedInvalidate;
 end;
 
 end.
