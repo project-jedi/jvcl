@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit FrmInstall;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit FrmInstall;
 
 interface
 

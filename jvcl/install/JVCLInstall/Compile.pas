@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit Compile;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit Compile;
 
 interface
 
@@ -113,7 +113,7 @@ type
     function CopyFormDataFiles(ProjectGroup: TProjectGroup): Boolean;
     function PrepareJCL(TargetConfig: ITargetConfig; Force: Boolean): Boolean;
 
-    function IsCondition(const Condition: string): Boolean;
+    function IsCondition(const Condition: string; TargetConfig: ITargetConfig): Boolean;
   public
     constructor Create(AData: TJVCLData);
     destructor Destroy; override;
@@ -178,8 +178,8 @@ const
   RsGeneratePackages = '[Generating: Packages]'; // do not localize
 
 const
-  CommonDependencyFiles: array[0..3] of string = (
-    'jvcl.inc', 'jedi.inc', 'linuxonly.inc', 'windowsonly.inc'
+  CommonDependencyFiles: array[0..5] of string = (
+    'jvcl.inc', 'jvclbase.inc', 'jvcl%t.inc', 'jedi.inc', 'linuxonly.inc', 'windowsonly.inc'
   );
 
 { TJVCLCompiler }
@@ -386,7 +386,7 @@ begin
     ExpandTargetsNoPerso(TargetList);
     EnumeratePackages(PackagesPath, List);
     if not Generate(List, TargetList, WriteMsg, Data.JVCLDir + '\' + sPackageGeneratorFile,
-                    Group, ErrMsg, PackagesPath, '', '', Data.JVCLConfig.Filename) then
+                    Group, ErrMsg, PackagesPath, '', '', Data.JVCLDir + '\common\jvcl%t.inc') then
     begin
       CaptureLine(ErrMsg, FAborted);
       AbortReason := Format(RsErrorGeneratingPackages, [TargetList.CommaText]);
@@ -431,12 +431,12 @@ begin
        end;
     end;
 
-   // let the compiler rebuild the dcp files
+    // let the compiler rebuild the dcp files
     DeleteFile(Format('%s\CJcl%s.dcp', [BplDir, S]));
     DeleteFile(Format('%s\CJclVcl%s.dcp', [BplDir, S]));
     DeleteFile(Format('%s\CJclVClx%s.dcp', [BplDir, S]));
 
-   // sometimes the files are in the wrong directory
+    // sometimes the files are in the wrong directory
     DeleteFile(Format('%s\CJcl%s.dcp', [DcpDir, S]));
     DeleteFile(Format('%s\CJclVcl%s.dcp', [DcpDir, S]));
     DeleteFile(Format('%s\CJclVClx%s.dcp', [DcpDir, S]));
@@ -459,12 +459,12 @@ begin
       end;
       DoPackageProgress(nil, RsCompilingJCL, 1, 3);
 
-     // generate packages
+      // generate packages
       Result := GeneratePackages('JCL', 'c' + IntToStr(TargetConfig.Target.Version),
         TargetConfig.JCLDir + '\packages');
       DoPackageProgress(nil, RsCompilingJCL, 2, 3);
 
-     // compile dcp files
+      // compile dcp files
       if Make(TargetConfig, Args + FQuiet, CaptureLine,
         Data.JVCLPackagesDir + '\bin') <> 0 then
       begin
@@ -472,7 +472,7 @@ begin
         Exit;
       end;
     finally
-     // clean
+      // clean
       Make(TargetConfig, Args + FQuiet + ' Clean', CaptureLineClean,
         Data.JVCLPackagesDir + '\bin');
     end;
@@ -542,7 +542,7 @@ begin
   end;
 
   AbortReason := '';
- // read target configs that should be compiled
+  // read target configs that should be compiled
   Count := 0;
   Frameworks := 0;
   SetLength(TargetConfigs, Data.Targets.Count);
@@ -560,7 +560,7 @@ begin
   end;
   SetLength(TargetConfigs, Count);
 
- // compile all targets
+  // compile all targets
   Index := 0;
   for i := 0 to Count - 1 do
   begin
@@ -614,17 +614,20 @@ begin
     end;
   end;
 
- // VCL
+  // VCL
   if Result and (pkVCL in TargetConfig.InstallMode) and not DoClx then
   begin
-   // debug units
-    if (not TargetConfig.Target.IsBCB) and TargetConfig.DebugUnits then
-      Result := CompileProjectGroup(
-        TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], True,
-          ForceJclDcp);
+    if not TargetConfig.DeveloperInstall then
+    begin
+      // debug units
+      if (not TargetConfig.Target.IsBCB) and TargetConfig.DebugUnits then
+        Result := CompileProjectGroup(
+          TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], True,
+            ForceJclDcp);
+    end;
 
     if Result then
-     // compile
+      // compile
       Result := CompileProjectGroup(
         TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], False,
           ForceJclDcp);
@@ -635,7 +638,7 @@ begin
       CaptureLine('[Finished JVCL for VCL installation]', Aborted); // do not localize
   end;
 
- // Clx
+  // CLX
   if Result and (pkClx in TargetConfig.InstallMode) and DoClx then
   begin
     if not FileExists(TargetConfig.BplDir + '\clxdesigner.dcp') then
@@ -646,14 +649,17 @@ begin
         Data.JVCLPackagesDir + '\bin', CaptureLine, nil, False);
     end;
 
-   // debug units
-    if (not TargetConfig.Target.IsBCB) and TargetConfig.DebugUnits then
-      Result := CompileProjectGroup(
-        TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], True,
-          ForceJclDcp);
+    if not TargetConfig.DeveloperInstall then
+    begin
+      // debug units
+      if (not TargetConfig.Target.IsBCB) and TargetConfig.DebugUnits then
+        Result := CompileProjectGroup(
+          TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], True,
+            ForceJclDcp);
+    end;
 
     if Result then
-     // compile
+      // compile
       Result := CompileProjectGroup(
         TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], False,
           ForceJclDcp);
@@ -672,21 +678,21 @@ function TJVCLCompiler.GenerateResources(TargetConfig: ITargetConfig): Boolean;
 begin
   Result := False;
 
- // get number of resources to compile
+  // get number of resources to compile
   FCount := 0;
   if Make(TargetConfig, '-f makefile.mak -n', CaptureLineGetCompileCount, TargetConfig.JVCLDir + '\images') <> 0 then
   begin
     AbortReason := RsErrorCompilingResources;
     Exit;
   end;
- // update FResCount with the number of resources that MAKE will compile
+  // update FResCount with the number of resources that MAKE will compile
   FResCount := FCount;
 
   FResIndex := 0;
   if FCount > 0 then
   begin
     DoResourceProgress('', 0, FResCount);
-   // generate .res and .dcr files
+    // generate .res and .dcr files
     if Make(TargetConfig, '-f makefile.mak', CaptureLineResourceCompilation, TargetConfig.JVCLDir + '\images') <> 0 then
     begin
       AbortReason := RsErrorCompilingResources;
@@ -837,7 +843,14 @@ begin
     if TargetConfig.GenerateMapFiles then
       DccOpt := DccOpt + ' -GD';
 
+    if (not TargetConfig.DebugUnits) or (not TargetConfig.DeveloperInstall) then
+    begin
+      DccOpt := DccOpt + ' -DJVCL_NO_DEBUGINFO';
+      CreateDir(TargetConfig.UnitOutDir + '\debug');
+    end;
+
     Path := GetWindowsDir + ';' + GetSystemDir + ';' + GetWindowsDir + '\Command';
+    Path := Path + ';' + TargetConfig.Target.BplDir; // add original BPL directory for "common" BPLs
     if TargetConfig.DcpDir <> TargetConfig.BplDir then
       Path := TargetConfig.Target.RootDir + ';' + TargetConfig.BplDir + ';' + TargetConfig.DcpDir + ';' + Path
     else
@@ -861,6 +874,9 @@ begin
       SetEnvironmentVariable('UNITOUTDIR', Pointer(TargetConfig.UnitOutDir + '\debug'))
     else
       SetEnvironmentVariable('UNITOUTDIR', Pointer(TargetConfig.UnitOutDir));
+    SetEnvironmentVariable('MAINBPLDIR', Pointer(TargetConfig.Target.BplDir));
+    SetEnvironmentVariable('MAINDCPDIR', Pointer(TargetConfig.Target.DcpDir));
+    SetEnvironmentVariable('MAINLIBDIR', Pointer(TargetConfig.Target.DcpDir)); // for BCB
     SetEnvironmentVariable('BPLDIR', Pointer(TargetConfig.BplDir));
     SetEnvironmentVariable('DCPDIR', Pointer(TargetConfig.DcpDir));
     SetEnvironmentVariable('LIBDIR', Pointer(TargetConfig.DcpDir));  // for BCB
@@ -876,12 +892,12 @@ begin
     SetEnvironmentVariable('EXTRAINCLUDEDIRS', nil);
     SetEnvironmentVariable('EXTRARESDIRS', nil);
 
-   // *****************************************************************
+    // *****************************************************************
 
 {**}DoProjectProgress(RsGeneratingPackages, GetProjectIndex, ProjectMax);
     if ProjectGroup.Target.IsPersonal then
     begin
-     // generate template.cfg for the "master" PkgDir
+      // generate template.cfg for the "master" PkgDir
       SetEnvironmentVariable('EDITION', PChar(Copy(Edition, 1, 2)));
       SetEnvironmentVariable('PKGDIR', PChar(Copy(PkgDir, 1, 2)));
       SetEnvironmentVariable('PKGDIR_MASTEREDITION', PChar(Copy(PkgDir, 1, 2)));
@@ -902,12 +918,12 @@ begin
       Exit;
     end;
 
-   // *****************************************************************
+    // *****************************************************************
 
 {**}DoProjectProgress(RsGeneratingPackages, GetProjectIndex, ProjectMax);
     if ProjectGroup.Target.IsPersonal then
     begin
-     // generate the packages and .cfg files for the "master" PkgDir
+      // generate the packages and .cfg files for the "master" PkgDir
       if not GeneratePackages('JVCL', Copy(Edition, 1, 2),
                               TargetConfig.JVCLPackagesDir) then
         Exit; // AbortReason is set in GeneratePackages
@@ -917,15 +933,15 @@ begin
     if not GeneratePackages('JVCL', Edition, TargetConfig.JVCLPackagesDir) then
       Exit; // AbortReason is set in GeneratePackages
 
-   // *****************************************************************
+    // *****************************************************************
 
-   if ProjectGroup.Target.IsBCB and Data.CompileJclDcp then
-   begin
+    if ProjectGroup.Target.IsBCB and Data.CompileJclDcp then
+    begin
 {**}  DoProjectProgress(RsCompilingJCL, GetProjectIndex, ProjectMax);
       if not PrepareJCL(TargetConfig, ForceJclDcp) then
         Exit; // AbortReason was set in PrepareJCL
-   end
-   else
+    end
+    else
 {**}  GetProjectIndex; // increase progress
 
    // *****************************************************************
@@ -988,7 +1004,7 @@ begin
         CaptureLine(RsPackagesAreUpToDate, FAborted);
     end;
 
-   // *****************************************************************
+    // *****************************************************************
 
     if (FPkgCount > 0) and
        ((not ProjectGroup.TargetConfig.DeveloperInstall) or
@@ -1012,6 +1028,21 @@ begin
 
   { Delete the generated "xx Package.mak" file. }
   DeleteFile(ChangeFileExt(ProjectGroup.Filename, '.mak'));
+end;
+
+function ReplaceTargetMacros(S: string; TargetConfig: ITargetConfig): string;
+var
+  ps: Integer;
+begin
+  ps := Pos('%t', S);
+  if ps > 0 then
+  begin
+    Delete(S, ps, 2);
+    Insert(Format('%s%d', [LowerCase(TargetTypes[TargetConfig.Target.IsBCB]), TargetConfig.Target.Version]),
+      S, ps);
+  end
+  else
+    Result := S;
 end;
 
 /// <summary>
@@ -1073,7 +1104,7 @@ begin
       Dependencies := '';
       for depI := 0 to High(CommonDependencyFiles) do
         Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
-          ExtractFileName(CommonDependencyFiles[depI]);
+          ExtractFileName(ReplaceTargetMacros(CommonDependencyFiles[depI], ProjectGroup.TargetConfig));
 
       Lines.Add('CommonDependencies = ' + Dependencies);
       Lines.Add('');
@@ -1252,14 +1283,14 @@ function TJVCLCompiler.IsFileUsed(ProjectGroup: TProjectGroup;
   ContainedFile: TContainedFile): Boolean;
 begin
   Result := ContainedFile.IsUsedByTarget(ProjectGroup.TargetConfig.TargetSymbol) and
-            IsCondition(ContainedFile.Condition);
+            IsCondition(ContainedFile.Condition, ProjectGroup.TargetConfig);
 end;
 
 function TJVCLCompiler.IsPackageUsed(ProjectGroup: TProjectGroup;
   RequiredPackage: TRequiredPackage): Boolean;
 begin
   Result := RequiredPackage.IsRequiredByTarget(ProjectGroup.TargetConfig.TargetSymbol) and
-            IsCondition(RequiredPackage.Condition);
+            IsCondition(RequiredPackage.Condition, ProjectGroup.TargetConfig);
 end;
 
 type
@@ -1267,23 +1298,23 @@ type
     the list the ident is returned as True. }
   TListConditionParser = class(TConditionParser)
   private
-    FData: TJVCLData;
+    FTargetConfig: ITargetConfig;
   protected
     procedure MissingRightParenthesis; override;
     function GetIdentValue(const Ident: String): Boolean; override;
   public
-    constructor Create(AData: TJVCLData);
+    constructor Create(ATargetConfig: ITargetConfig);
   end;
 
 
-function TJVCLCompiler.IsCondition(const Condition: string): Boolean;
+function TJVCLCompiler.IsCondition(const Condition: string; TargetConfig: ITargetConfig): Boolean;
 var
   Parser: TListConditionParser;
 begin
   Result := True;
   if Condition <> '' then
   begin
-    Parser := TListConditionParser.Create(Data);
+    Parser := TListConditionParser.Create(TargetConfig);
     try
       Result := Parser.Parse(Condition);
     finally
@@ -1294,15 +1325,15 @@ end;
 
 { TListConditionParser }
 
-constructor TListConditionParser.Create(AData: TJVCLData);
+constructor TListConditionParser.Create(ATargetConfig: ITargetConfig);
 begin
   inherited Create;
-  FData := AData;
+  FTargetConfig := ATargetConfig;
 end;
 
 function TListConditionParser.GetIdentValue(const Ident: String): Boolean;
 begin
-  Result := FData.JVCLConfig.Enabled[Ident];
+  Result := FTargetConfig.JVCLConfig.Enabled[Ident];
 end;
 
 procedure TListConditionParser.MissingRightParenthesis;

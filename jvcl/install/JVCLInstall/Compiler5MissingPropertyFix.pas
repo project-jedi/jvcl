@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit Compiler5MissingPropertyFix;
+
+{$I jvcl.inc}
 
 interface
 

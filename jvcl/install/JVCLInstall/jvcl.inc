@@ -29,19 +29,6 @@ Known Issues:
 
 {$DEFINE NO_JCL}
 
-// Automatic defines for entry level Delphi's:
-{$IFDEF D5Standard}
- {$DEFINE DelphiPersonalEdition}
-{$ENDIF}
-
-{$IFDEF D6PersonalEdition}
- {$DEFINE DelphiPersonalEdition}
-{$ENDIF}
-
-{$IFDEF D7PersonalEdition}
- {$DEFINE DelphiPersonalEdition}
-{$ENDIF}
-
 // Reduces warnings on D7:
 {$IFDEF COMPILER7_UP}
  {$WARN UNSAFE_TYPE OFF}

@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit FrmConfigPage;
+
+{$I jvcl.inc}
 
 interface
 
@@ -44,26 +44,27 @@ type
     CheckBoxRegisterGlobalDesignEditors: TCheckBox;
     CheckBoxDxgettextSupport: TCheckBox;
     CheckBoxRegisterJvGif: TCheckBox;
-    LblDxgettextHomepage: TLabel;
     CheckBoxUseJVCL: TCheckBox;
     GroupBoxInstallOptions: TGroupBox;
     CheckBoxDeveloperInstall: TCheckBox;
     CheckBoxCleanPalettes: TCheckBox;
-    LblOptionsFor: TLabel;
-    ComboBoxTargetIDE: TComboBox;
     ImageListTargets: TImageList;
     CheckBoxBuild: TCheckBox;
-    CheckBoxCompileOnly: TCheckBox;
+    CheckBoxIDERegister: TCheckBox;
     FrameDirEditBrowseBPL: TFrameDirEditBrowse;
     FrameDirEditBrowseDCP: TFrameDirEditBrowse;
     FrameDirEditBrowseHPP: TFrameDirEditBrowse;
-    BtnEditJvclInc: TButton;
     LblBCBGuide: TLabel;
     CheckBoxCompileJclDcp: TCheckBox;
     CheckBoxVerbose: TCheckBox;
     CheckBoxGenerateMapFiles: TCheckBox;
     CheckBoxUnitVersioning: TCheckBox;
     CheckBoxIgnoreMakeErrors: TCheckBox;
+    ComboBoxTargetIDE: TComboBox;
+    BtnEditJvclInc: TButton;
+    PanelBk: TPanel;
+    LblOptionsFor: TLabel;
+    CheckBoxDebugUnits: TCheckBox;
     procedure CheckBoxDeveloperInstallClick(Sender: TObject);
     procedure CheckBoxXPThemingClick(Sender: TObject);
     procedure ComboBoxTargetIDEChange(Sender: TObject);
@@ -83,6 +84,8 @@ type
     procedure BplDirChanged(Sender: TObject; UserData: TObject; var Dir: string);
     procedure DcpDirChanged(Sender: TObject; UserData: TObject; var Dir: string);
     procedure HppDirChanged(Sender: TObject; UserData: TObject; var Dir: string);
+    procedure SetJVCLConfig(const Id: string; CheckBox: TCheckBox);
+    procedure GetJVCLConfig(const Id: string; CheckBox: TCheckBox);
   protected
     property Installer: TInstaller read FInstaller;
 
@@ -94,7 +97,7 @@ type
 implementation
 
 uses
-  InstallerConsts, Core, MainConfig, Main, Utils, Math;
+  InstallerConsts, Core, MainConfig, Main, Utils, Math, JVCLConfiguration;
 
 {$R *.dfm}
 
@@ -196,23 +199,13 @@ begin
       end;
     end;
     ComboBoxTargetIDEChange(ComboBoxTargetIDE);
-    
-   // jvcl.inc
-    LblDxgettextHomepage.Left := CheckBoxDxgettextSupport.Left + 16;
-    LblDxgettextHomepage.Top := CheckBoxDxgettextSupport.Top;
-    LblDxgettextHomepage.OnClick := Installer.DoHomepageClick;
-    LblDxgettextHomepage.Caption := CheckBoxDxgettextSupport.Caption;
 
-    //CheckBoxDxgettextSupport.Visible := Installer.Data.IsDxgettextInstalled;
-    LblDxgettextHomepage.Visible := not CheckBoxDxgettextSupport.Visible;
-
-   // common options
     if not CommonCompiledJcl then
       Installer.Data.CompileJclDcp := True;
     CheckBoxCompileJclDcp.Checked := Installer.Data.CompileJclDcp;
     CheckBoxCompileJclDcp.Enabled := CommonCompiledJcl;
     CheckBoxCompileJclDcp.Visible := HasBCB;
-    
+
     CheckBoxVerbose.Checked := Installer.Data.Verbose;
     CheckBoxIgnoreMakeErrors.Checked := Installer.Data.IgnoreMakeErrors;
 
@@ -231,19 +224,21 @@ begin
   if TCheckBox(Sender).State = cbGrayed then
     TCheckBox(Sender).State := cbChecked;
 
-  CheckBoxDeveloperInstall.Enabled := CheckBoxCompileOnly.Checked;
-  CheckBoxCleanPalettes.Enabled := CheckBoxCompileOnly.Checked;
+  CheckBoxDebugUnits.Enabled := not CheckBoxDeveloperInstall.Checked;
+  CheckBoxCleanPalettes.Enabled := CheckBoxIDERegister.Checked;
 
   if ComboBoxTargetIDE.ItemIndex <= 0 then
   begin
     if Sender = CheckBoxDeveloperInstall then
       Installer.Data.DeveloperInstall := Integer(CheckBoxDeveloperInstall.Checked)
+    else if Sender = CheckBoxDebugUnits then
+      Installer.Data.DebugUnits := Integer(CheckBoxDebugUnits.Checked)
     else if Sender = CheckBoxCleanPalettes then
       Installer.Data.CleanPalettes := Integer(CheckBoxCleanPalettes.Checked)
     else if Sender = CheckBoxBuild then
       Installer.Data.Build := Integer(CheckBoxBuild.Checked)
-    else if Sender = CheckBoxCompileOnly then
-      Installer.Data.CompileOnly := Integer(not CheckBoxCompileOnly.Checked)
+    else if Sender = CheckBoxIDERegister then
+      Installer.Data.CompileOnly := Integer(not CheckBoxIDERegister.Checked)
     else if Sender = CheckBoxGenerateMapFiles then
       Installer.Data.GenerateMapFiles := Integer(CheckBoxGenerateMapFiles.Checked)
     ;
@@ -253,16 +248,19 @@ begin
     TargetConfig := SelTargetConfig;
     if Sender = CheckBoxDeveloperInstall then
       TargetConfig.DeveloperInstall := CheckBoxDeveloperInstall.Checked
+    else if Sender = CheckBoxDebugUnits then
+      TargetConfig.DebugUnits := CheckBoxDebugUnits.Checked
     else if Sender = CheckBoxCleanPalettes then
       TargetConfig.CleanPalettes := CheckBoxCleanPalettes.Checked
     else if Sender = CheckBoxBuild then
       TargetConfig.Build := CheckBoxBuild.Checked
-    else if Sender = CheckBoxCompileOnly then
-      TargetConfig.CompileOnly := not CheckBoxCompileOnly.Checked
+    else if Sender = CheckBoxIDERegister then
+      TargetConfig.CompileOnly := not CheckBoxIDERegister.Checked
     else if Sender = CheckBoxGenerateMapFiles then
       TargetConfig.GenerateMapFiles := CheckBoxGenerateMapFiles.Checked
     ;
   end;
+
   PackageInstaller.UpdatePages;
 end;
 
@@ -279,17 +277,67 @@ begin
   ;
 end;
 
+procedure TFrameConfigPage.GetJVCLConfig(const Id: string; CheckBox: TCheckBox);
+var
+  i, e, Count: Integer;
+begin
+  CheckBox.AllowGrayed := False;
+
+  if SelTargetConfig = nil then
+  begin
+    // for all
+    e := 0;
+    Count := 0;
+    for i := 0 to Installer.SelTargetCount - 1 do
+      if Installer.SelTargets[i].InstallJVCL then
+      begin
+        Inc(Count);
+        if Installer.SelTargets[i].JVCLConfig.Enabled[Id] then
+          Inc(e);
+      end;
+
+    if e = 0 then
+      CheckBox.Checked := False
+    else if e = Count then
+      CheckBox.Checked := True
+    else
+    begin
+      CheckBox.AllowGrayed := True;
+      CheckBox.State := cbGrayed;
+    end;
+  end
+  else
+    CheckBox.Checked := SelTargetConfig.JVCLConfig.Enabled[Id];
+end;
+
+procedure TFrameConfigPage.SetJVCLConfig(const Id: string; CheckBox: TCheckBox);
+var
+  i: Integer;
+begin
+  if SelTargetConfig = nil then
+  begin
+    // for all
+    for i := 0 to Installer.SelTargetCount - 1 do
+    begin
+      if Installer.SelTargets[i].InstallJVCL and (CheckBox.State <> cbGrayed) then
+      begin
+        Installer.SelTargets[i].JVCLConfig.Enabled[Id] := CheckBox.Checked;
+        CheckBox.AllowGrayed := False;
+      end;
+    end;
+  end
+  else
+    SelTargetConfig.JVCLConfig.Enabled[Id] := CheckBox.Checked;
+end;
+
 procedure TFrameConfigPage.UpdateJvclIncSettings;
 begin
-  with Installer.Data do
-  begin
-    CheckBoxXPTheming.Checked := JVCLConfig.Enabled['JVCLThemesEnabled'];
-    CheckBoxRegisterGlobalDesignEditors.Checked := JVCLConfig.Enabled['JVCL_REGISTER_GLOBAL_DESIGNEDITORS'];
-    CheckBoxDxgettextSupport.Checked := JVCLConfig.Enabled['USE_DXGETTEXT'];
-    CheckBoxRegisterJvGif.Checked := JVCLConfig.Enabled['USE_JV_GIF'];
-    CheckBoxUseJVCL.Checked := JVCLConfig.Enabled['USEJVCL'];
-    CheckBoxUnitVersioning.Checked := JVCLConfig.Enabled['UNITVERSIONING'];
-  end;
+  GetJVCLConfig('JVCLThemesEnabled', CheckBoxXPTheming);
+  GetJVCLConfig('JVCL_REGISTER_GLOBAL_DESIGNEDITORS', CheckBoxRegisterGlobalDesignEditors);
+  GetJVCLConfig('USE_DXGETTEXT', CheckBoxDxgettextSupport);
+  GetJVCLConfig('USE_JV_GIF', CheckBoxRegisterJvGif);
+  GetJVCLConfig('USEJVCL', CheckBoxUseJVCL);
+  GetJVCLConfig('UNITVERSIONING', CheckBoxUnitVersioning);
 end;
 
 procedure TFrameConfigPage.CheckBoxXPThemingClick(Sender: TObject);
@@ -323,14 +371,16 @@ begin
     end;
   end;
 
-  with Installer.Data do
-  begin
-    JVCLConfig.Enabled['JVCLThemesEnabled'] := CheckBoxXPTheming.Checked;
-    JVCLConfig.Enabled['JVCL_REGISTER_GLOBAL_DESIGNEDITORS'] := CheckBoxRegisterGlobalDesignEditors.Checked;
-    JVCLConfig.Enabled['USE_DXGETTEXT'] := CheckBoxDxgettextSupport.Checked;
-    JVCLConfig.Enabled['USE_JV_GIF'] := CheckBoxRegisterJvGif.Checked;
-    JVCLConfig.Enabled['USEJVCL'] := CheckBoxUseJVCL.Checked;
-    JVCLConfig.Enabled['UNITVERSIONING'] := CheckBoxUnitVersioning.Checked;
+  try
+    SetJVCLConfig('JVCLThemesEnabled', CheckBoxXPTheming);
+    SetJVCLConfig('JVCL_REGISTER_GLOBAL_DESIGNEDITORS', CheckBoxRegisterGlobalDesignEditors);
+    SetJVCLConfig('USE_DXGETTEXT', CheckBoxDxgettextSupport);
+    SetJVCLConfig('USE_JV_GIF', CheckBoxRegisterJvGif);
+    SetJVCLConfig('USEJVCL', CheckBoxUseJVCL);
+    SetJVCLConfig('UNITVERSIONING', CheckBoxUnitVersioning);
+  except
+    on E: Exception do
+      MessageDlg(RsJVCLConfigurationError, mtError, [mbOk], 0);
   end;
 end;
 
@@ -345,25 +395,35 @@ begin
 
     if ItemIndex <= 0 then
     begin
+      // for all
       CheckBoxDeveloperInstall.State := TCheckBoxState(Installer.Data.DeveloperInstall);
       CheckBoxCleanPalettes.State := TCheckBoxState(Installer.Data.CleanPalettes);
       CheckBoxBuild.State := TCheckBoxState(Installer.Data.Build);
       case TCheckBoxState(Installer.Data.CompileOnly) of
-        cbUnchecked: CheckBoxCompileOnly.State := cbChecked; // invert
-        cbChecked:  CheckBoxCompileOnly.State := cbUnchecked; // invert
+        cbUnchecked:
+          CheckBoxIDERegister.State := cbChecked; // invert
+        cbChecked:
+          CheckBoxIDERegister.State := cbUnchecked; // invert
       else
-        CheckBoxCompileOnly.State := cbGrayed;
+        CheckBoxIDERegister.State := cbGrayed;
       end;
+      BtnEditJvclInc.Visible := False;
       CheckBoxGenerateMapFiles.State := TCheckBoxState(Installer.Data.GenerateMapFiles);
+
+      CheckBoxDebugUnits.State := TCheckBoxState(Installer.Data.DebugUnits);
     end
     else
     begin
+      // for selected
       TargetConfig := SelTargetConfig;
+      BtnEditJvclInc.Caption := Format(RsEditJvclInc, [LowerCase(TargetTypes[TargetConfig.Target.IsBCB]), TargetConfig.Target.Version]);
+      BtnEditJvclInc.Visible := True;
 
       CheckBoxDeveloperInstall.Checked := TargetConfig.DeveloperInstall;
+      CheckBoxDebugUnits.Checked := TargetConfig.DebugUnits;
       CheckBoxCleanPalettes.Checked := TargetConfig.CleanPalettes;
       CheckBoxBuild.Checked := TargetConfig.Build;
-      CheckBoxCompileOnly.Checked := not TargetConfig.CompileOnly;
+      CheckBoxIDERegister.Checked := not TargetConfig.CompileOnly;
       CheckBoxGenerateMapFiles.Checked := TargetConfig.GenerateMapFiles;
 
       FrameDirEditBrowseBPL.EditDirectory.Text := TargetConfig.BplDir;
@@ -372,10 +432,14 @@ begin
         FrameDirEditBrowseHPP.EditDirectory.Text := TargetConfig.HppDir;
     end;
 
+    CheckBoxCleanPalettes.Enabled := CheckBoxIDERegister.Checked;
+    CheckBoxDebugUnits.Enabled := not CheckBoxDeveloperInstall.Checked;
     FrameDirEditBrowseBPL.Visible := ItemIndex > 0;
     FrameDirEditBrowseDCP.Visible := ItemIndex > 0;
     FrameDirEditBrowseHPP.Visible := (ItemIndex > 0) and SelTargetConfig.Target.IsBCB;
     LblBCBGuide.Visible := FrameDirEditBrowseHPP.Visible;
+
+    UpdateJvclIncSettings;
   finally
     Dec(FInitializing);
   end;
@@ -411,18 +475,18 @@ end;
 
 procedure TFrameConfigPage.BtnEditJvclIncClick(Sender: TObject);
 begin
+  Assert(SelTargetConfig <> nil);
+
   if FormJvclIncConfig.imgProjectJEDI.Picture.Graphic = nil then
     FormJvclIncConfig.imgProjectJEDI.Picture.Assign(FormMain.ImageLogo.Picture);
 
-  FormJvclIncConfig.Config.Assign(Installer.Data.JVCLConfig);
-
-  FormJvclIncConfig.UpdateCheckStates;
-  if FormJvclIncConfig.ShowModal = mrOk then
+  FormJvclIncConfig.Config.Assign(SelTargetConfig.JVCLConfig);
+  if FormJvclIncConfig.Execute(SelTargetConfig.Target.Name + ' ' + SelTargetConfig.Target.VersionStr) then
   begin
     if FormJvclIncConfig.Config.Modified then
     begin
-      Installer.Data.JVCLConfig.Assign(FormJvclIncConfig.Config);
-      Installer.Data.JVCLConfig.Modified := True;
+      SelTargetConfig.JVCLConfig.Assign(FormJvclIncConfig.Config);
+      SelTargetConfig.JVCLConfig.Modified := True;
     end;
   end;
   UpdateJvclIncSettings;

@@ -24,14 +24,14 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit Intf;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  SysUtils, Classes, Contnrs, DelphiData;
+  SysUtils, Classes, Contnrs, DelphiData, JVCLConfiguration;
 
 type
   TPackageGroupKind = (pkVcl, pkClx);
@@ -60,6 +60,8 @@ type
     function GetDeveloperInstall: Boolean;
     function GetGenerateMapFiles: Boolean;
 
+    function GetJVCLConfig: TJVCLConfig;
+
     function GetTarget: TCompileTarget;
     function GetJVCLPackagesXmlDir: string;
     function GetJVCLDir: string;
@@ -80,6 +82,8 @@ type
     property CompileOnly: Boolean read GetCompileOnly;
     property DeveloperInstall: Boolean read GetDeveloperInstall;
     property GenerateMapFiles: Boolean read GetGenerateMapFiles;
+
+    property JVCLConfig: TJVCLConfig read GetJVCLConfig;
 
     property UnitOutDir: string read GetUnitOutDir;
     property JCLDir: string read GetJCLDir;

@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit Utils;
+
 {$I jvcl.inc}
 
-unit Utils;
-                                               
 interface
 
 uses

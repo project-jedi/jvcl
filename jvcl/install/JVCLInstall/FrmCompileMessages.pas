@@ -281,10 +281,12 @@ end;
 procedure TFormCompileMessages.FormCreate(Sender: TObject);
 begin
   FList := TObjectList.Create;
+  FPaths := TStringList.Create;
 end;
 
 procedure TFormCompileMessages.FormDestroy(Sender: TObject);
 begin
+  FPaths.Free;
   FList.Free;
 end;
 

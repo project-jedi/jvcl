@@ -25,23 +25,6 @@ object FormJvclIncConfig: TFormJvclIncConfig
     Width = 462
     Height = 141
   end
-  object Label1: TLabel
-    Left = 280
-    Top = 200
-    Width = 457
-    Height = 49
-    AutoSize = False
-    Caption = 
-      'jvcl.inc changes are global to all installed Delphi/BCB versions' +
-      '.'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clRed
-    Font.Height = -13
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
-    ParentFont = False
-    WordWrap = True
-  end
   object CheckListBox: TCheckListBox
     Left = 0
     Top = 48
@@ -58,7 +41,7 @@ object FormJvclIncConfig: TFormJvclIncConfig
     Left = 280
     Top = 49
     Width = 457
-    Height = 137
+    Height = 136
     BorderStyle = bsNone
     TabOrder = 1
     object LblComment: TLabel
@@ -78,6 +61,9 @@ object FormJvclIncConfig: TFormJvclIncConfig
     BevelOuter = bvNone
     Color = clWindow
     TabOrder = 2
+    DesignSize = (
+      744
+      44)
     object PaintBoxWhite: TPaintBox
       Left = 0
       Top = 0

@@ -2,11 +2,11 @@ object FrameUninstall: TFrameUninstall
   Left = 0
   Top = 0
   Width = 518
-  Height = 335
+  Height = 348
   TabOrder = 0
   object LblTarget: TLabel
     Left = 8
-    Top = 112
+    Top = 120
     Width = 55
     Height = 13
     Caption = 'LblTarget'
@@ -19,7 +19,7 @@ object FrameUninstall: TFrameUninstall
   end
   object LblFilename: TLabel
     Left = 8
-    Top = 160
+    Top = 168
     Width = 68
     Height = 13
     Caption = 'LblFilename'
@@ -32,14 +32,14 @@ object FrameUninstall: TFrameUninstall
   end
   object ProgressBar: TProgressBar
     Left = 8
-    Top = 128
+    Top = 136
     Width = 505
     Height = 17
     TabOrder = 0
   end
   object ProgressBarDelete: TProgressBar
-    Left = 5
-    Top = 176
+    Left = 8
+    Top = 184
     Width = 505
     Height = 17
     TabOrder = 1

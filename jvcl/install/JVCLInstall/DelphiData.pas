@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit DelphiData;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit DelphiData;
 
 interface
 
@@ -88,6 +88,7 @@ type
     FKnownIDEPackages: TDelphiPackageList;
     FHKLMRegistryKey: string;
     FRegistryKey: string;
+    FDebugDcuPaths: TStrings;
 
     procedure LoadFromRegistry;
     function ReadBDSProjectsDir: string;
@@ -142,6 +143,7 @@ type
     property BPLOutputDir: string read FBPLOutputDir; // with macros
     property PackageSearchPaths: TStrings read FPackageSearchPaths; // with macros
     property SearchPaths: TStrings read FSearchPaths; // with macros
+    property DebugDcuPaths: TStrings read FDebugDcuPaths; // with macros
 
     property BDSProjectsDir: string read FBDSProjectsDir;
     property BplDir: string read GetBplDir; // macros are expanded
@@ -344,6 +346,7 @@ begin
   FBrowsingPaths := TStringList.Create;
   FPackageSearchPaths := TStringList.Create;
   FSearchPaths := TStringList.Create;
+  FDebugDcuPaths := TStringList.Create;
 
   FDisabledPackages := TDelphiPackageList.Create;
   FKnownIDEPackages := TDelphiPackageList.Create;
@@ -357,6 +360,7 @@ begin
   FBrowsingPaths.Free;
   FPackageSearchPaths.Free;
   FSearchPaths.Free;
+  FDebugDcuPaths.Free;
 
   FDisabledPackages.Free;
   FKnownIDEPackages.Free;
@@ -570,6 +574,10 @@ begin
       ConvertPathList(Reg.ReadString('Package Search Path'), FPackageSearchPaths); // do not localize
       ConvertPathList(Reg.ReadString('Search Path'), FSearchPaths); // do not localize
     end;
+    if Reg.OpenKeyReadOnly(RegistryKey + '\Debugging') then // do not localize
+    begin
+      ConvertPathList(Reg.ReadString('Debug DCUs Path'), FDebugDcuPaths); // do not localize
+    end;
   finally
     Reg.Free;
   end;
@@ -619,7 +627,7 @@ begin
   Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_CURRENT_USER;
-    if Reg.OpenKey(RegistryKey + '\' + SubKey, True) then
+    if Reg.OpenKey(RegistryKey + '\' + SubKey, False) then
     begin
       List := TStringList.Create;
       try
@@ -666,14 +674,21 @@ end;
 procedure TCompileTarget.SavePaths;
 var
   Reg: TRegistry;
+  S: string;
 begin
   Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_CURRENT_USER;
-    if Reg.OpenKey(RegistryKey + '\Library', True) then // do not localize
+    if Reg.OpenKey(RegistryKey + '\Library', False) then // do not localize
     begin
       Reg.WriteString('Browsing Path', ConvertPathList(FBrowsingPaths)); // do not localize
       Reg.WriteString('Search Path', ConvertPathList(FSearchPaths)); // do not localize
+    end;
+    if Reg.OpenKey(RegistryKey + '\Debugging', False) then // do not localize
+    begin
+      S := ConvertPathList(FDebugDcuPaths);
+      if S <> Reg.ReadString('Debug DCUs Path') then
+        Reg.WriteString('Debug DCUs Path', ConvertPathList(FDebugDcuPaths)); // do not localize
     end;
   finally
     Reg.Free;
