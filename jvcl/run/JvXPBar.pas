@@ -804,6 +804,7 @@ begin
   if Sender is TCustomAction then
     with TCustomAction(Sender) do
     begin
+      Update;
       {$IFDEF VCL}
       {$IFDEF COMPILER6_UP}
       if not CheckDefaults or (Self.AutoCheck = False) then
@@ -1478,7 +1479,7 @@ const
 begin
   inherited Create(AOwner);
   FStoredHint := '|'; // no one in their right mind uses a pipe as the only character in a hint...
-  ControlStyle := ControlStyle - [csDoubleClicks] + [csAcceptsControls];
+  ControlStyle := ControlStyle - [csDoubleClicks] + [csAcceptsControls, csActionClient];
   ExControlStyle := [csRedrawCaptionChanged];
   ExControlStyle := ExControlStyle + MouseEvents;
   Height := 46;
