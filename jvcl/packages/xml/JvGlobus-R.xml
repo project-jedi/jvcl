@@ -57,8 +57,8 @@
     <File Name="..\..\run\JvgTreeView.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgTypes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgUtils.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgVertDBGrid.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgWebDocumentIterator.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgVertDBGrid.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgWebDocumentIterator.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\run\JvgWizardHeader.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\Jvg3DColors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgAlignForm.pas" Targets="all" Formname="AlignForm" Condition=""/>
@@ -70,18 +70,18 @@
     <File Name="..\..\run\JvgCaption.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgCGI.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgCheckBox.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgCheckVersionInfoForm.pas" Targets="C5,C6,D6,D7" Formname="JvgfCheckVersionInfo" Condition=""/>
+    <File Name="..\..\run\JvgCheckVersionInfoForm.pas" Targets="C5,C6,D5,D6,D7" Formname="JvgfCheckVersionInfo" Condition=""/>
     <File Name="..\..\run\JvgCommClasses.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgConstSysRequirements.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgCrossTable.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgDBGrid.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgDBNav.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgCrossTable.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgDBGrid.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgDBNav.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\run\JvgDigits.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgDrawTab.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgEdit.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgExceptionHandler.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgExport.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgExportComponents.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgExport.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgExportComponents.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\run\JvgFileIterator.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgFileUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgFlyingText.pas" Targets="all" Formname="" Condition=""/>
@@ -91,7 +91,7 @@
     <File Name="..\..\run\JvgHelpPanel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgHint.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgHoleShape.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgHTTPVersionInfo.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgHTTPVersionInfo.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\run\JvgImage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgInspectorGrid.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgJump.pas" Targets="all" Formname="" Condition=""/>
@@ -104,9 +104,9 @@
     <File Name="..\..\run\JvgProcess.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgProcessUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgProgress.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgQPrintPreviewForm.pas" Targets="C5,C6,D6,D7" Formname="JvgfPrintPreview" Condition=""/>
-    <File Name="..\..\run\JvgQPrintSetupForm.pas" Targets="C5,C6,D6,D7" Formname="JvgPrintSetup" Condition=""/>
-    <File Name="..\..\run\JvgQRLabel.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgQPrintPreviewForm.pas" Targets="C5,C6,D5,D6,D7" Formname="JvgfPrintPreview" Condition=""/>
+    <File Name="..\..\run\JvgQPrintSetupForm.pas" Targets="C5,C6,D5,D6,D7" Formname="JvgPrintSetup" Condition=""/>
+    <File Name="..\..\run\JvgQRLabel.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\run\JvgReport.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgXMLSerializer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgFixFont.pas" Targets="all" Formname="" Condition=""/>
