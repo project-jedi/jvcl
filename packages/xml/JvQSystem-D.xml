@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvQSystem" Design="-1">
   <Description>JVCLX System Components</Description>
+  <C5PFlags/>
+  <C6PFlags/>
+  <C5Libs/>
+  <C6Libs/>
   <Requires>
-    <Package Name="JvQCore-D" Targets="D7,K3" Condition=""/>
-    <Package Name="JvQCore-R" Targets="D7,K3" Condition=""/>
-    <Package Name="rtl" Targets="D7,K3" Condition=""/>
-    <Package Name="visualclx" Targets="D7,K3" Condition=""/>
-    <Package Name="designide" Targets="D7,K3" Condition=""/>
+    <Package Name="JvQSystem-R" Targets="allclx" Condition=""/>
+    <Package Name="JvQCore-D" Targets="allclx" Condition=""/>
+    <Package Name="JvQCore-R" Targets="allclx" Condition=""/>
+    <Package Name="rtl" Targets="allclx" Condition=""/>
+    <Package Name="visualclx" Targets="allclx" Condition=""/>
+    <Package Name="designide" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\qdesign\JvQMinMaxForm.pas" Targets="D7,K3" Formname="MinMaxInfoEditDialog" Condition=""/>
-    <File Name="..\..\qdesign\JvQSystemReg.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQTimerListEditor.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQChangeNotifyEditor.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQFormPropertiesForm.pas" Targets="D7,K3" Formname="JvFormPropsDlg" Condition=""/>
+    <File Name="..\..\qdesign\JvQMinMaxForm.pas" Targets="allclx" Formname="MinMaxInfoEditDialog" Condition=""/>
+    <File Name="..\..\qdesign\JvQSystemReg.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQTimerListEditor.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQChangeNotifyEditor.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQFormPropertiesForm.pas" Targets="allclx" Formname="JvFormPropsDlg" Condition=""/>
   </Contains>
 </Package>
