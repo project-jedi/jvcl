@@ -1,0 +1,4 @@
+<%
+  Request("UPDATE users.xml SET UserName = '$name', UserLogin = '$login', UserPassword = '$password' WHERE (UserId = $id)");
+  Redirect("user.xhs?id=$id");
+%>

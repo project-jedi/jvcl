@@ -1,0 +1,5 @@
+<%
+  Request("UPDATE boxes.xml SET BoxStatus = 1 WHERE (BoxId = $id)");
+  Request("UPDATE loans.xml SET LoanReturn = NOW() WHERE (LoanId = $loan)");
+  Redirect("box_return.xhs");
+%>

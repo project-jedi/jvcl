@@ -1,0 +1,4 @@
+<%
+  Request("UPDATE clients.xml SET ClientEmail = '$email', ClientName = '$name' WHERE (ClientId = $id)");
+  Redirect("client.xhs?id=$id");
+%>
