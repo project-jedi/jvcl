@@ -37,8 +37,8 @@ uses
   ExtCtrls, Grids, StdCtrls, Spin, ComCtrls, Buttons, Printers, ExtDlgs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QGraphics, QControls, QForms, QDialogs,
-  QExtCtrls, QGrids, QStdCtrls, QSpin, QComCtrls, QButtons, QPrinters, QExtDlgs,
+  QWindows, QGraphics, QControls, QForms, QDialogs, Types,
+  QExtCtrls, QGrids, QStdCtrls, QComCtrls, QButtons, QPrinters, QExtDlgs,
   {$ENDIF VisualCLX}
   JvGridPrinter, JvComponent;
 
@@ -154,13 +154,25 @@ begin
   end;
   if Margins.ItemIndex > 5 then
   begin
+    {$IFDEF VCL}
     Margin.MinValue := 6;
     Margin.MaxValue := 72;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Margin.Min := 6;
+    Margin.Max := 72;
+    {$ENDIF VisualCLX}
   end
   else
   begin
+    {$IFDEF VCL}
     Margin.MinValue := 0;
     Margin.MaxValue := 400;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Margin.Min := 0;
+    Margin.Max := 400;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -224,8 +236,14 @@ begin
   Header.Text := GridPrinter.PrintOptions.PageTitle;
   Margin.Value := GridPrinter.PrintOptions.MarginTop;
   Margins.ItemIndex := 0;
+  {$IFDEF VCL}
   PreviewPage.MaxValue := PageCount;
   lblpages.Caption := Format(RsOfd, [PreviewPage.MaxValue]);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  PreviewPage.Max := PageCount;
+  lblpages.Caption := Format(RsOfd, [PreviewPage.Max]);
+  {$ENDIF VisualCLX}
   GridPrinter.PrintOptions.PreviewPage := 1;
   PreviewPage.Value := 1;
   ckBorders.Checked := (GridPrinter.PrintOptions.BorderStyle = bsSingle);
@@ -246,10 +264,18 @@ end;
 
 procedure TJvGridPreviewForm.PreviewPageChange(Sender: TObject);
 begin
+  {$IFDEF VCL}
   if PreviewPage.Value < PreviewPage.MinValue then
     PreviewPage.Value := PreviewPage.MinValue;
   if PreviewPage.Value > PreviewPage.MaxValue then
     PreviewPage.Value := PreviewPage.MaxValue;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if PreviewPage.Value < PreviewPage.Min then
+    PreviewPage.Value := PreviewPage.Min;
+  if PreviewPage.Value > PreviewPage.Max then
+    PreviewPage.Value := PreviewPage.Max;
+  {$ENDIF VisualCLX}
   GridPrinter.PrintOptions.PreviewPage := PreviewPage.Value;
   if cklive.Checked then
     btnshow.Click;
