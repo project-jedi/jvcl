@@ -10,19 +10,20 @@ type
 // YOU MUST CALL THIS PROCEDURE BEFORE ANY OTHER IN THIS FILE
 // AND EVERYTIME YOU CHANGE THE MODEL NAME
 // (except Generate as it will call it automatically)
-procedure LoadConfig(XmlFileName : string; ModelName : string);
+function LoadConfig(XmlFileName : string; ModelName : string; var ErrMsg : string) : Boolean;
 
-procedure Generate(packages : TStrings;
+function Generate(packages : TStrings;
                    targets : TStrings;
                    callback : TGenerateCallback;
                    XmlFileName : string;
                    ModelName : string;
+                   var ErrMsg : string;
                    makeDof : Boolean = False;
                    path : string = '';
                    prefix : string = '';
                    format : string = '';
                    incFileName : string = ''
-                  );
+                  ) : Boolean;
 
 procedure EnumerateTargets(targets : TStrings);
 
@@ -108,7 +109,7 @@ type
   TDefinesList = class (TStringList)
   public
     constructor Create(incfile : TStringList); overload;
-    function IsDefined(const Condition, Target: string): Boolean;
+    function IsDefined(const Condition: string): Boolean;
   end;
 
 var
@@ -126,7 +127,13 @@ begin
   Result := GPackagesLocation;
 end;
 
-procedure LoadConfig(XmlFileName : string; ModelName : string);
+procedure SendMsg(Msg : string);
+begin
+  if Assigned(GCallBack) then
+    GCallBack(Msg);
+end;
+
+function LoadConfig(XmlFileName : string; ModelName : string; var ErrMsg : string) : Boolean;
 var
   xml : TJvSimpleXml;
   Node : TJvSimpleXmlElem;
@@ -138,50 +145,52 @@ begin
   FreeAndNil(AliasList);
   // read the xml config file
   xml := TJvSimpleXml.Create(nil);
+  Result := true;
   try
-    xml.LoadFromFile(XmlFileName);
-    Node := xml.root.Items.itemNamed['models'].items[0];
-    for i := 0 to xml.root.Items.itemNamed['models'].items.count - 1 do
-      if xml.root.Items.itemNamed['models'].items[i].Properties.ItemNamed['Name'].value = ModelName then
-        Node := xml.root.Items.itemNamed['models'].items[i];
-
-    TargetList := TTargetList.Create(Node.Items.ItemNamed['targets']);
-    AliasList  := TAliasList.Create(Node.Items.ItemNamed['aliases']);
-    
-    GIncFileName      := Node.Properties.ItemNamed['IncFile'].Value;
-    GPackagesLocation := Node.Properties.ItemNamed['packages'].Value;
-    GFormat           := Node.Properties.ItemNamed['format'].Value;
-    GPrefix           := Node.Properties.ItemNamed['prefix'].Value;
-
-    // create the 'all' alias
-    all := '';
-    for i := 0 to TargetList.Count-1 do
-    begin
-      Target := TargetList.Items[i];
-      all := all + Target.Name + ',';
-      if Target.PName <> '' then
-        all := all + Target.PName + ',';
-    end;
-    all := Copy(all, 1, length(all)-1);
-
-    Node := TJvSimpleXmlElemClassic.Create(nil);
     try
-      Node.Properties.Add('name', 'all');
-      Node.Properties.Add('value', all);
-      AliasList.Add(TAlias.Create(Node));
+      xml.LoadFromFile(XmlFileName);
+      Node := xml.root.Items.itemNamed['models'].items[0];
+      for i := 0 to xml.root.Items.itemNamed['models'].items.count - 1 do
+        if xml.root.Items.itemNamed['models'].items[i].Properties.ItemNamed['Name'].value = ModelName then
+          Node := xml.root.Items.itemNamed['models'].items[i];
+
+      TargetList := TTargetList.Create(Node.Items.ItemNamed['targets']);
+      AliasList  := TAliasList.Create(Node.Items.ItemNamed['aliases']);
+
+      GIncFileName      := Node.Properties.ItemNamed['IncFile'].Value;
+      GPackagesLocation := Node.Properties.ItemNamed['packages'].Value;
+      GFormat           := Node.Properties.ItemNamed['format'].Value;
+      GPrefix           := Node.Properties.ItemNamed['prefix'].Value;
+
+      // create the 'all' alias
+      all := '';
+      for i := 0 to TargetList.Count-1 do
+      begin
+        Target := TargetList.Items[i];
+        all := all + Target.Name + ',';
+        if Target.PName <> '' then
+          all := all + Target.PName + ',';
+      end;
+      all := Copy(all, 1, length(all)-1);
+
+      Node := TJvSimpleXmlElemClassic.Create(nil);
+      try
+        Node.Properties.Add('name', 'all');
+        Node.Properties.Add('value', all);
+        AliasList.Add(TAlias.Create(Node));
+      finally
+        Node.Free;
+      end;
     finally
-      Node.Free;
+      xml.Free;
     end;
-  finally
-    xml.Free;
+  except
+    on E: Exception do
+    begin
+      Result := False;
+      ErrMsg := E.Message;
+    end;
   end;
-
-end;
-
-procedure SendMsg(Msg : string);
-begin
-  if Assigned(GCallBack) then
-    GCallBack(Msg);
 end;
 
 function GetPersoTarget(Target : string) : string;
@@ -355,7 +364,7 @@ begin
     // is emptied, thus enforcing the absence of the condition
     else if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'C')) then
     begin
-      if DefinesList.IsDefined(Condition, target) then
+      if DefinesList.IsDefined(Condition) then
         Result := line
       else
         Result := '';
@@ -394,7 +403,7 @@ begin
       if ParensPos <> 0 then
       begin
         Condition := Copy(CurPFlag, ParensPos+1, Length(CurPFlag) - ParensPos -1);
-        if not DefinesList.IsDefined(Condition, Target)  then
+        if not DefinesList.IsDefined(Condition)  then
           PFlagsList[I] := ''
         else
           PFlagsList[I] := Copy(CurPFlag, 1, ParensPos-1);
@@ -960,17 +969,18 @@ begin
   Result := Ext = '.res';
 end;
 
-procedure Generate(packages : TStrings;
+function Generate(packages : TStrings;
                    targets : TStrings;
                    callback : TGenerateCallback;
                    XmlFileName : string;
                    ModelName : string;
+                   var ErrMsg : string;
                    makeDof : Boolean = False;
                    path : string = '';
                    prefix : string = '';
                    format : string = '';
                    incfileName : string = ''
-                  );
+                  ) : Boolean;
 var
   rec : TSearchRec;
   i : Integer;
@@ -987,7 +997,12 @@ var
   incfile : TStringList;
 begin
   mostRecentFileDate := 0;
-  LoadConfig(XmlFileName, ModelName);
+  Result := True;
+  if not LoadConfig(XmlFileName, ModelName, ErrMsg) then
+  begin
+    Result := False;
+    Exit;
+  end;
 
   FreeAndNil(DefinesList);
   if incFileName = '' then
@@ -1307,10 +1322,8 @@ var
   i: Integer;
   curLine: string;
   Line: string;
-  NoThemes: Boolean;
 begin
   inherited Create;
-  NoThemes := False;
 
   if Assigned(incfile) then
     for i := 0 to incfile.Count - 1 do
@@ -1319,30 +1332,14 @@ begin
       if Copy(curLine, 1, 8) = '{$DEFINE' then
       begin
         Line := Copy(curLine, 10, Length(curLine) - 10);
-        if (Line = 'JVCLThemesEnabled') and (NoThemes) then
-          Continue;
         Add(Line);
-      end;
-      if Copy(curLine, 1, 9) = '{.$DEFINE' then
-      begin
-        Line := Copy(curLine, 11, Length(curLine) - 11);
-        if Line = 'JVCLThemesEnabled' then
-          NoThemes := True;
       end;
     end;
 end;
 
-function TDefinesList.IsDefined(const Condition, Target: string): Boolean;
+function TDefinesList.IsDefined(const Condition): Boolean;
 begin
-  if (Copy(Target, 1, 2) = 'd7') and (CompareText(Condition, 'JVCLThemesEnabled') = 0) then
-    Result := True
-  else
-  begin
-    Result := False;
-    if CompareText(Condition, 'DelphiPersonalEdition') = 0 then
-      Result := (Target[Length(Target)] in ['p', 's']);
-    Result := Result or (IndexOf(Condition) >= 0);
-  end;
+  Result := (IndexOf(Condition) >= 0);
 end;
 
 initialization
