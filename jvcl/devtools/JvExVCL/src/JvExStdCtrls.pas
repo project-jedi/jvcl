@@ -36,6 +36,9 @@ uses
   {$IFDEF VCL}
   Windows, Messages,
   {$ENDIF VCL}
+  {$IFDEF COMPILER6_UP}
+  Types,
+  {$ENDIF COMPILER6_UP}
   Graphics, Controls, Forms, StdCtrls,
   {$IFDEF VisualCLX}
   Qt, QWindows,
