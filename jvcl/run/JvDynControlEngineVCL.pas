@@ -517,12 +517,13 @@ procedure TJvDynControlVCLMaskEdit.ControlSetPasswordChar(Value: Char);
 begin
   {$IFDEF VCL}
   PasswordChar := Value;
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   if Value = #0 then
     EchoMode := emNormal
   else
     EchoMode := emPassword;
-  {$ENDIF VCL}
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvDynControlVCLMaskEdit.ControlSetEditMask(Value: string);
@@ -612,12 +613,13 @@ procedure TJvDynControlVCLButtonEdit.ControlSetPasswordChar(Value: Char);
 begin
   {$IFDEF VCL}
   FEditControl.PasswordChar := Value;
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   if Value = #0 then
     TOpenMaskEdit(FEditControl).EchoMode := emNormal
   else
     TOpenMaskEdit(FEditControl).EchoMode := emPassword;
-  {$ENDIF VCL}
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvDynControlVCLButtonEdit.ControlSetEditMask(Value: string);
@@ -859,21 +861,23 @@ var
   {$IFDEF VCL}
   Opt: TSelectDirOpts;
   Dir: string;
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Dir: WideString;
-  {$ENDIF LINUX}
+  {$ENDIF VisualCLX}
 begin
   Dir := ControlGetValue;
   {$IFDEF VCL}
   if SelectDirectory(Dir, Opt, HelpContext) then
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
    {$IFDEF MSWINDOWS}
   if SelectDirectory('', '', Dir) then
    {$ENDIF MSWINDOWS}
    {$IFDEF LINUX}
   if SelectDirectory('', '/', Dir, False) then
    {$ENDIF LINUX}
-  {$ENDIF VCL}
+  {$ENDIF VisualCLX}
     ControlSetValue(Dir);
 end;
 
