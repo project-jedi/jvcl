@@ -3,7 +3,7 @@ Changelog for JVCL 3.0
 2004-08-09
 - JvWStrUtils.pas moved to JCL as JclWideStrings.pas // (rom)
 2004-08-06
-- The JvUrlGrabbers now have a Port property and more events that can be triggered. /// obones
+- The JvUrlGrabbers now have a Port property and more events that can be triggered. // obones
 2004-07-27
 - run/JvZlibMultiple.pas: Added support for selective extraction and listing archive contents without 
   writing any files to disk. Parameters added to OnDecompressingFile and OnDecompressedFile events. // WPOstma 
@@ -24,7 +24,7 @@ Changelog for JVCL 3.0
 - Fixed: JvCtrls.TJvCustomImageButton has ignored Alignment. // ahuser
 2004-07-21
 - TJvDesktopAlert now has styles, use the StyleOptions property to define the parameters // obones
-- TJvDesktopAlert can now use the Grow From Center grow // obones
+- TJvDesktopAlert can now use the Grow From Center style // obones
 - Introduced TJvDesktopAlert.StyleOptions.StartSteps and EndSteps to control the number of
   steps in the start and end animations // obones
 - TJvDesktopAlert.FadeInTime is replaced by TJvDesktopAlert.StyleOptions.StartInterval // obones
