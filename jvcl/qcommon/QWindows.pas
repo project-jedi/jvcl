@@ -1139,6 +1139,7 @@ function CenterRect(InnerRect, OuterRect: TRect): TRect;
 function PtInRect(const R: TRect; pt: TPoint): LongBool; overload;
 function PtInRect(const R: TRect; X, Y: integer): LongBool; overload;
 function IntersectRect(var R: TRect; const R1, R2: TRect): LongBool;
+function PointInEllipse(pt: TPoint; BoundingRect: TRect): boolean;
 
 { brushes }
 function CreateSolidBrush(Color: TColor): QBrushH;
@@ -4426,6 +4427,24 @@ begin
   Result := PtInRect(R, pt.X, Pt.Y);
 end;
 
+function PointInEllipse(pt: TPoint; BoundingRect: TRect): boolean;
+var
+  p, q, r, s: integer;
+begin
+  with BoundingRect do
+  begin
+    p := 2 * pt.X - (Left + Right);
+    p := p * p;
+    q := 2 * pt.Y - (Top + Bottom);
+    q := q * q;
+    r := Right - Left;
+    r := r * r;
+    s := Bottom -Top;
+    s := s * s;
+    Result := p * s + q * r <=  s * r ;
+ end;
+end;
+
 procedure TextOutAngle(Handle: QPainterH; Angle, Left, Top: Integer; Text: WideString);
 { deprecated use DrawText instead }
 begin
@@ -5654,6 +5673,7 @@ begin
   end;
 end;
 
+
 function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
   Flags: Cardinal): LongBool;
 var
@@ -5743,7 +5763,7 @@ begin
     QPainter_save(Handle);
     try
       ColorDark := ColorToRGB(clDark);
-      ColorLight := ColorToRGB(clLight);
+      ColorLight := ColorToRGB(clBtnHighlight);
       if Flags and BF_FLAT <> 0 then
         ColorLight := clSilver;
       if Flags and BF_MONO <> 0 then
@@ -5752,10 +5772,16 @@ begin
         ColorLight := clWhite;
       end;
       try
+        if Edge and (BDR_SUNKENOUTER or BDR_RAISEDOUTER) <> 0 then
+          DoDrawEdge(True, Rect); // outer
         InflateRect(ClientRect, -1, -1); // remove outer rect
-        DoDrawEdge(True, Rect); // outer
-        DoDrawEdge(False, ClientRect); // inner
-        InflateRect(ClientRect, -1, -1); // remove inner rect
+        if Flags and BF_MONO = 0 then
+          ColorDark := ColorToRGB(clMid);
+        if Edge and (BDR_SUNKENINNER or BDR_RAISEDINNER) <> 0 then
+        begin
+          DoDrawEdge(False, ClientRect); // inner
+          InflateRect(ClientRect, -1, -1); // remove inner rect
+        end;
       finally
 
       end;
@@ -6602,7 +6628,7 @@ end;
 
 procedure OutputDebugString(OutputString: AnsiString);
 begin
-  WriteLn(ErrOutput, OutputString);
+  WriteLn(ErrOutput, Format('%s %s (%d)', [OutputString, Application.ExeName, GetCurrentThreadID]));
 end;
 
 procedure OutputDebugString(lpOutputString: PAnsiChar);
@@ -7126,8 +7152,10 @@ begin
   Buf.sem_op := -1;
   Buf.sem_flg := SEM_UNDO;
   if Timeout = INFINITE then
-    RetValue := semop(FSemId, @Buf, 1)
-  else if Timeout = 0 then
+//    RetValue := semop(FSemId, @Buf, 1)
+    Timeout := 2000000;
+//  else
+  if Timeout = 0 then
   begin
     Buf.sem_flg := Buf.sem_flg or IPC_NOWAIT;
     RetValue := semop(FSemId, @Buf, 1);
@@ -8728,7 +8756,7 @@ begin
             Mesg.WParam := WMTimer;
             Mesg.LParam := Integer(@TimerProc);
             Mesg.Result := 0;
-            Owner.Dispatch(Mesg);
+            WinTimer.Owner.Dispatch(Mesg);
           end;
           Result := True;
         end;
@@ -8781,6 +8809,7 @@ finalization
   GlobalCaret.Free;
   OutputDebugString('Unloaded QWindows.pas');
 end.
+
 
 
 
