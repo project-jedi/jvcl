@@ -5,26 +5,14 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, JvPageListPCDemo, JvPageListTreeView, StdCtrls,
-  ExtCtrls, ImgList, FileCtrl, JvDriveCtrls, JvComCtrls, JvRas32, JvFTPGrabber;
+  ExtCtrls, ImgList, FileCtrl, JvDriveCtrls, JvComCtrls;
 
 type
   TForm1 = class(TForm)
     JvPageListTreeView1: TJvPageListTreeView;
-    JvPageListPageControl1: TJvPageListPageControl;
-    TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
-    TabSheet3: TTabSheet;
-    TabSheet4: TTabSheet;
-    TabSheet5: TTabSheet;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
     Panel1: TPanel;
     CheckBox1: TCheckBox;
     ImageList1: TImageList;
-    JvFileListBox1: TJvFileListBox;
     procedure CheckBox1Click(Sender: TObject);
     procedure JvPageListTreeView1DragOver(Sender, Source: TObject; X,
       Y: Integer; State: TDragState; var Accept: Boolean);
@@ -48,7 +36,7 @@ implementation
 
 procedure TForm1.CheckBox1Click(Sender: TObject);
 begin
-  JvPageListPageControl1.HideAllTabs := CheckBox1.Checked;
+//  JvPageListPageControl1.HideAllTabs := CheckBox1.Checked;
 end;
 
 procedure TForm1.JvPageListTreeView1DragOver(Sender, Source: TObject; X,

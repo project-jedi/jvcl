@@ -2,7 +2,9 @@ program JvPLPCDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {Form1};
+  MainFrm in 'MainFrm.pas' {Form1},
+  JvPageListPCDemo in '..\..\source\JvPageListPCDemo.pas',
+  JvPageListTreeView in '..\..\source\JvPageListTreeView.pas';
 
 {$R *.res}
 

@@ -36,7 +36,7 @@ var
 
 implementation
 uses
-  TypInfo, JvFmtEdEditors;
+  TypInfo, JvCharStrEditor;
 
 {$R *.DFM}
 

@@ -2,7 +2,8 @@ program JvErrProviderDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {frmErrProviderDemo};
+  MainFrm in 'MainFrm.pas' {frmErrProviderDemo},
+  JvErrProvider in '..\..\source\JvErrProvider.pas';
 
 {$R *.res}
 
