@@ -43,6 +43,28 @@ CHANGES
 =======
 Please read the Changelog.txt file in \source to find out what has changed since the previous release
 
+FUTURE PLANS / NOT FINISHED:
+============================
+
+- This release contains a number of duplicate components, since the merging of new libraries into JVCL isn't complete. Please report any suggestions and findings in the Issue Tracker to speed up this process. 
+- If you have existing code using JVCL 1.31 or earlier, you might have to rename and remove units and components. Use the restructure_changelog.txt as a guide to where things are located currently. If anything is missing from restructure_changleog.txt, please let us know by posting in the Issue Tracker
+
+- Since it is hard to tell up front what will stay and what will disappear, here's a couple of hints on how you should use the components to minimize the risk of having to redo it in the future:
+
+  * If a component/unit doesn't have a TJv/Jv prefix (i.e it has a TJvx/Jvx or TJva/Jva or similar) it is an indication that it came from a new library and that it somehow duplicates something already in JVCL (even if it's only the name). Try finding the JVCL equivalent and compare: if there is a similar component, you can be pretty sure that the current JVCL name will be used even if the properties, events and methods of the duplicate component *might* be added to the JVCL component
+
+  * If we merge these components, the TJvx/TJva component will be placed in the Archive, so you will have the option to switch to the new JVCL component, or  use the TJvx/TJva version from Archive
+
+  * Your safest bet is to stay away from any "suspect" components in production code and use the "old" version instead
+
+- There is an ongoing effort to remove duplicates from JVCL that are already in JCL (mostly functions, but some classes are also involved). If you find anything that you think should be moved from JVCL to JCL, please report in the Issue tracker.
+
+- Libraries scheduled to be merged with JVCL: Jans' components and the RALib package
+
+- The support for Delphi 5 is sketchy: specifically, none of the examples has been tested nor has the components been extensively tested under D5. Please report any issues in the Issue Tracker
+
+- The support for Delphi6 Personal is also not complete: specifically, there might be units included in the current alpha that doesn't apply to D6 Personal. Please report any findings in the Issue Tracker
+
 CONTRIBUTORS:
 ==============
 
