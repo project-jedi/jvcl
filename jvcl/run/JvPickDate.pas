@@ -187,10 +187,10 @@ begin
       Name := 'MS Sans Serif';
       Size := 8;
       {$ENDIF VCL}
-      {$IFDEF VISUALCLX}
+      {$IFDEF VisualCLX}
       Name := 'Helvetica';
       Height := 11;
-      {$ENDIF VISUALCLX}
+      {$ENDIF VisualCLX}
       Style := [];
     end;
 end;
