@@ -469,7 +469,6 @@ var
   R: TRect;
   P: TPoint;
   Msg: TMsg;
-  OldAlign: TPopupAlignment;
 begin
   inherited;
   if (ItemIndex > -1) then
