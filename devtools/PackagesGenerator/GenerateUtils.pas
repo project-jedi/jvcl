@@ -163,7 +163,7 @@ begin
   Typ := Copy(Name, Length(Name), 1);
   Name := Copy(Name, Length(Prefix)+1, Pos('-', Name)-Length(Prefix)-1);
 
-  if (StrLower(Env) = 'd') and (Ver < '6') then
+  if ((StrLower(Env) = 'd') or (StrLower(Env) = 'c')) and (Ver < '6') then
     Result := FormatNoLibSuffix
   else
     Result := FormatGeneral;
@@ -356,7 +356,7 @@ begin
     for i := 0 to targets.Count - 1 do
     begin
       if SameText(targets[i], 'all') then
-        StrToStrings('c5,c6,d5,d5s,d6,d6p,d7,d7p,k2,k3', ',', expandedTargets)
+        StrToStrings('c5,c6,c6p,d5,d5s,d6,d6p,d7,d7p,k2,k3', ',', expandedTargets)
       else if SameText(targets[i], 'windows') then
       begin
         expandedTargets.Add('c5');
@@ -411,6 +411,7 @@ begin
     StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
                  ',', targets);
     ExpandTargets(targets);
+    targets.CaseSensitive := False;
     Result := (targets.IndexOf(ShortTarget(target)) > -1);
   finally
     targets.Free;
@@ -479,12 +480,10 @@ begin
     // Process the file, only if the template or the xml are newer
     // than the output file. If that output file doesn't exist,
     // create it too
-    if not FileExists(OutFileName) or
-      (FileDateToDateTime(FileAge(OutFileName)) < templateDate) or
-      (FileDateToDateTime(FileAge(OutFileName)) < xmlDate) then
+//    if not FileExists(OutFileName) or
+//      (FileDateToDateTime(FileAge(OutFileName)) < templateDate) or
+//      (FileDateToDateTime(FileAge(OutFileName)) < xmlDate) then
     begin
-      SendMsg(#9#9'Applying to ' + package);
-
       // get the nodes
       requiredNode := rootNode.Items.ItemNamed['requires'];
       containsNode := rootNode.Items.ItemNamed['contains'];
@@ -559,7 +558,7 @@ begin
                               EnsureCondition(tmpStr, fileNode, target);
             end;
 
-            // if this include file is not in the associated 'perso'
+            // if this included file is not in the associated 'perso'
             // target or only in the 'perso' target then return the
             // 'perso' target name. 'perso' either means 'per' or
             // 'std'
@@ -601,6 +600,14 @@ begin
                 outFile.Text := outFile.Text + tmpStr;
               end;
             end;
+
+            // if this included file is not in the associated 'perso'
+            // target or only in the 'perso' target then return the
+            // 'perso' target name. 'perso' either means 'per' or
+            // 'std'
+            if IsNotInPerso(fileNode, target) or
+               IsOnlyInPerso(fileNode, target) then
+              Result := GetPersoTarget(target);
           end;
         end
         else if Trim(curLine) = '<%%% START LIBS %%%>' then
@@ -673,8 +680,14 @@ begin
             containsSomething := True;
       end;
 
-      if containsSomething then
+      if containsSomething and
+         (not FileExists(OutFileName) or
+          (FileDateToDateTime(FileAge(OutFileName)) < templateDate) or
+          (FileDateToDateTime(FileAge(OutFileName)) < xmlDate)) then
+      begin
+        SendMsg(#9#9'Saving ' + ExtractFileName(OutFileName) + ' for ' + target);
         outFile.SaveToFile(OutFileName);
+      end;
     end;
   finally
     bcblibsList.Free;
@@ -691,6 +704,7 @@ var
   xml : TJvSimpleXml;
   xmlName : string;
   template : TStringList;
+  templateTime : TDateTime;
   persoTarget : string;
   target : string;
 begin
@@ -738,13 +752,14 @@ begin
               // named the same as the current one in the perso
               // directory then use it instead
               if (persoTarget <> '') and
-                 DirectoryExists(persoTarget) then
+                 DirectoryExists(path+persoTarget) then
               begin
-                SendMsg(#9'Regenerating for '+persoTarget);
+                templateTime := FileDateToDateTime(rec.Time);
                 if FileExists(path+persoTarget+PathSeparator+rec.Name) then
                 begin
-                  SendMsg(#9+persoTarget+ ' template used instead');
+                  SendMsg(#9+persoTarget+ ' template will be used for ' + packages[j]);
                   template.LoadFromFile(path+persoTarget+PathSeparator+rec.Name);
+                  templateTime := FileDateToDateTime(FileAge(path+persoTarget+PathSeparator+rec.Name));
                 end;
 
                 ApplyTemplateAndSave(
@@ -756,7 +771,7 @@ begin
                    Format,
                    template,
                    xml,
-                   FileDateToDateTime(rec.Time),
+                   templateTime,
                    FileDateToDateTime(FileAge(xmlName)),
                    xmlName);
               end;
