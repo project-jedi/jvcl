@@ -35,8 +35,8 @@ uses
   Graphics, Forms, ImgList, ActnList, ExtCtrls, Grids,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QMenus, QButtons, QControls,
-  QGraphics, QForms, QImgList, QActnList, QExtCtrls, QGrids,
+  QMenus, QButtons, QControls, QWindows, QGraphics, Types,
+  QForms, QImgList, QActnList, QExtCtrls, QGrids, QTypes,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts,
@@ -47,6 +47,12 @@ uses
 const
   DefButtonWidth = 24;
   DefButtonHeight = 23;
+  {$IFDEF VCL}
+  NullHandle = 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  NullHandle = nil;
+  {$ENDIF VisualCLX}
 
 type
   TJvSpeedItem = class;
@@ -72,7 +78,12 @@ type
     FOrientation: TBarOrientation;
     FAlign: TAlign;
     FButtonSize: TPoint;
+    {$IFDEF VCL}
     FButtonStyle: Buttons.TButtonStyle;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FButtonStyle: JvQThemes.TButtonStyle;
+    {$ENDIF VisualCLX}
     FGridSize: TPoint;
     FOffset: TPoint;
     FEditWin: HWnd;
@@ -158,7 +169,12 @@ type
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     function AppendSection(Value: TJvSpeedBarSection): Integer; virtual;
     procedure AlignItemsToGrid;
+    {$IFDEF VCL}
     procedure ChangeScale(M, D: Integer); override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure ChangeScale(M, D, MH, DH: Integer); override;
+    {$ENDIF VisualCLX}
     procedure Loaded; override;
     procedure Paint; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -233,6 +249,7 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
+    property Locked;
     {$ENDIF VCL}
     property Constraints;
     property BevelInner;
@@ -243,7 +260,6 @@ type
     property Color;
     property DragMode;
     property Enabled;
-    property Locked;
     property ParentColor;
     property ParentShowHint default False;
     property PopupMenu;
@@ -766,11 +782,18 @@ begin
   begin
     P := ClientToScreen(Point(FItem.SpeedBar.BtnWidth {div 2},
       FItem.SpeedBar.BtnHeight {div 2}));
+    {$IFDEF VCL}
     X := P.X;
     Y := P.Y;
+    {$ENDIF VCL}
     if FBtn = nil then
     begin
+      {$IFDEF VCL}
       SetCursorPos(X, Y);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      Mouse.CursorPos := P;
+      {$ENDIF VisualCLX}
       FBtn := TJvBtnControl.Create(Self);
       FBtn.AssignSpeedItem(FItem);
     end;
@@ -831,25 +854,13 @@ begin
       begin
         if not FItem.SpeedBar.AcceptDropItem(FItem, P.X, P.Y) then
         begin
-          {$IFDEF VCL}
           SendMessage(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_CHANGED,
             Longint(FItem.SpeedBar));
-          {$ENDIF VCL}
-          {$IFDEF VisualCLX}
-          SendMsg(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_CHANGED,
-            Longint(FItem.SpeedBar));
-          {$ENDIF VisualCLX}
         end
         else
         begin
-          {$IFDEF VCL}
           SendMessage(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_BTNSELECT,
             Longint(FItem));
-          {$ENDIF VCL}
-          {$IFDEF VisualCLX}
-          SendMsg(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_BTNSELECT,
-            Longint(FItem));
-          {$ENDIF VisualCLX}
           Invalidate;
         end;
       end
@@ -857,14 +868,8 @@ begin
       begin
         SendToBack;
         FItem.Visible := False;
-        {$IFDEF VCL}
         SendMessage(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_CHANGED,
           Longint(FItem.SpeedBar));
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        SendMsg(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_CHANGED,
-          Longint(FItem.SpeedBar));
-        {$ENDIF VisualCLX}
       end;
     end;
   end
@@ -884,7 +889,14 @@ begin
   begin
     TJvxButtonGlyph(ButtonGlyph).DrawEx(Canvas, ARect, Offset, Caption, Layout,
       Margin, Spacing, DrawMark, FItem.SpeedBar.Images, FItem.FImageIndex,
-      AState, DrawTextBiDiModeFlags(Alignments[Alignment]));
+      AState,
+      {$IFDEF VCL}
+      DrawTextBiDiModeFlags(Alignments[Alignment])
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      Alignments[Alignment]
+      {$ENDIF VisualCLX}
+      );
   end
   else
     inherited PaintImage(Canvas, ARect, Offset, AState, DrawMark);
@@ -1493,7 +1505,7 @@ begin
   FOffset.Y := FOffset.X;
   Height := 2 * FOffset.Y + DefaultButtonSize.Y;
   FRowCount := 1;
-  FEditWin := 0;
+  FEditWin := NullHandle;
   FOptions := [sbAllowDrag, sbGrayedBtns];
   ControlStyle := ControlStyle - [csSetCaption, csReplicatable];
   IncludeThemeStyle(Self, [csNeedsBorderPaint, csParentBackground]);
@@ -1521,10 +1533,10 @@ begin
   FWallpaper.OnChange := nil;
   FWallpaper.Free;
   FWallpaper := nil;
-  if FEditWin <> 0 then
+  if FEditWin <> NullHandle then
   begin
     SendMessage(FEditWin, CM_SPEEDBARCHANGED, SBR_DESTROYED, Longint(Self));
-    FEditWin := 0;
+    FEditWin := NullHandle;
   end;
   ClearSections;
   FSections.Free;
@@ -1675,6 +1687,19 @@ begin
 end;
 
 procedure TJvSpeedBar.SetFontDefault;
+{$IFDEF LINUX}
+begin
+  ParentFont := False;
+  with Font do
+  begin
+    Name := 'Helvetica';
+    Height := 11;
+    Style := [];
+    Color := clBtnText;
+  end;
+end;
+{$ENDIF LINUX}
+{$IFDEF MSWINDOWS}
 var
   NCMetrics: TNonClientMetrics;
 begin
@@ -1696,6 +1721,7 @@ begin
     end;
   end;
 end;
+{$ENDIF MSWINDOWS }
 
 procedure TJvSpeedBar.VisibleChanged;
 begin
@@ -1867,7 +1893,7 @@ begin
       Transparent := (sbTransparentBtns in Options);
       GrayedInactive := (sbGrayedBtns in Options);
     end;
-    SetEditing(FEditWin <> 0);
+    SetEditing(FEditWin <> NullHandle);
   end;
 end;
 
@@ -2002,19 +2028,19 @@ end;
 
 procedure TJvSpeedBar.SetItemEditing(Item: TJvSpeedItem; Data: Longint);
 begin
-  Item.SetEditing(FEditWin <> 0);
+  Item.SetEditing(FEditWin <> NullHandle);
 end;
 
 function TJvSpeedBar.GetEditing: Boolean;
 begin
-  Result := (FEditWin <> 0);
+  Result := (FEditWin <> NullHandle);
 end;
 
 procedure TJvSpeedBar.SetEditing(Win: HWnd);
 begin
   FEditWin := Win;
   ForEachItem(SetItemEditing, 0);
-  if (FEditWin = 0) and not (csDesigning in ComponentState) then
+  if (FEditWin = NullHandle) and not (csDesigning in ComponentState) then
     AfterCustomize;
 end;
 
@@ -2119,7 +2145,7 @@ begin
       FLocked := False;
       Invalidate;
     end;
-    if FEditWin <> 0 then
+    if FEditWin <> NullHandle then
       SendMessage(FEditWin, CM_SPEEDBARCHANGED, SBR_BTNSIZECHANGED, Longint(Self));
   end;
 end;
@@ -2187,8 +2213,12 @@ begin
     FAlign := inherited Align;
   end;
 end;
-
+{$IFDEF VisualCLX}
+procedure TJvSpeedBar.ChangeScale(M, D, MH, DH: Integer);
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvSpeedBar.ChangeScale(M, D: Integer);
+{$ENDIF VCL}
 var
   Flags: TSbScaleFlags;
 begin
@@ -2198,16 +2228,24 @@ begin
       Flags := ScaleFlags
     else
       Flags := [sfOffsetX, sfOffsetY, sfBtnSizeX, sfBtnSizeY];
+    {$IFDEF VCL}
     if (sfBtnSizeX in Flags) and not (csFixedWidth in ControlStyle) then
       FButtonSize.X := MulDiv(FButtonSize.X, M, D);
-    if (sfBtnSizeY in Flags) and not (csFixedHeight in ControlStyle) then
-      FButtonSize.Y := MulDiv(FButtonSize.Y, M, D);
     if sfOffsetX in Flags then
       FOffset.X := MulDiv(FOffset.X, M, D);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    if (sfBtnSizeX in Flags) and not (csFixedWidth in ControlStyle) then
+      FButtonSize.X := MulDiv(FButtonSize.X, MH, DH);
+    if sfOffsetX in Flags then
+      FOffset.X := MulDiv(FOffset.X, MH, DH);
+    {$ENDIF VisualCLX}
+    if (sfBtnSizeY in Flags) and not (csFixedHeight in ControlStyle) then
+      FButtonSize.Y := MulDiv(FButtonSize.Y, M, D);
     if sfOffsetY in Flags then
       FOffset.Y := MulDiv(FOffset.Y, M, D);
     UpdateGridSize;
-    inherited ChangeScale(M, D);
+    inherited ChangeScale(M, D{$IFDEF VisualCLX}, MH, DH{$ENDIF});
     ApplyButtonSize;
     AlignItemsToGrid;
     FScaleFlags := [];
@@ -2389,7 +2427,7 @@ end;
 procedure TJvSpeedBar.ApplyButtonSize;
 begin
   ForEachItem(ApplyItemSize, 0);
-  if FEditWin <> 0 then { update SpeedBar editor }
+  if FEditWin <> NullHandle then { update SpeedBar editor }
     SendMessage(FEditWin, CM_SPEEDBARCHANGED, SBR_BTNSIZECHANGED, Longint(Self));
 end;
 
@@ -2707,7 +2745,7 @@ end;
 function TJvSpeedBar.CheckResize(Shift: TShiftState; X, Y: Integer): Boolean;
 begin
   Result := False;
-  if (FEditWin <> 0) and (sbAllowResize in Options) and not FDrag then
+  if (FEditWin <> NullHandle) and (sbAllowResize in Options) and not FDrag then
   begin
     if (Align in [alTop, alBottom]) and (X > 0) and (X <= ClientWidth) then
     begin
@@ -3026,6 +3064,7 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF VCL}
 procedure TJvBtnControl.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -3037,6 +3076,7 @@ begin
       ExStyle := WS_EX_TOOLWINDOW;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvBtnControl.AssignSpeedItem(Item: TJvSpeedItem);
 begin
@@ -3054,7 +3094,9 @@ begin
   else
     Images := nil;
   Font := Item.Font;
+  {$IFDEF VCL}
   BiDiMode := Item.FButton.BiDiMode;
+  {$ENDIF VCL}
   SetBounds(0, 0, Item.SpeedBar.BtnWidth, Item.SpeedBar.BtnHeight);
 end;
 
@@ -3118,7 +3160,13 @@ procedure TJvBtnControl.Paint;
 begin
   FImage.DrawEx(Canvas, 0, 0, Margin, Spacing, Layout, Font, Images,
     ImageIndex,
-    DrawTextBiDiModeFlags(Alignments[Alignment]));
+    {$IFDEF VCL}
+    DrawTextBiDiModeFlags(Alignments[Alignment])
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Alignments[Alignment]
+    {$ENDIF VisualCLX}
+    );
 end;
 
 procedure TJvBtnControl.Activate(Rect: TRect);
@@ -3156,7 +3204,7 @@ begin
   Result := nil;
   Handle := WindowFromPoint(Pos);
   Window := nil;
-  while (Handle <> 0) and (Window = nil) do
+  while (Handle <> NullHandle) and (Window = nil) do
   begin
     Window := FindControl(Handle);
     if Window = nil then
@@ -3202,7 +3250,13 @@ begin
     end;
     Image.DrawEx(Grid.Canvas, R.Left + 1, R.Top + 1, Item.Margin,
       Item.Spacing, Item.Layout, AFont, ImageList, Item.ImageIndex,
-      Item.FButton.DrawTextBiDiModeFlags(Alignments[Image.Alignment]));
+      {$IFDEF VCL}
+      Item.FButton.DrawTextBiDiModeFlags(Alignments[Image.Alignment])
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      Alignments[Image.Alignment]
+      {$ENDIF VisualCLX}
+      );
     Inc(R.Left, Image.ButtonSize.X + 3);
     DrawCellText(Grid, 0, 0, Item.Caption, R, taLeftJustify, vaCenterJustify, ARightToLeft);
   end;

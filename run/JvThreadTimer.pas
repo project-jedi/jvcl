@@ -88,11 +88,13 @@ type
 
 implementation
 
+{$IFDEF VCL}
 uses
   {$IFNDEF COMPILER6_UP}
   Forms,
   {$ENDIF COMPILER6_UP}
   Messages;
+{$ENDIF VCL}
 
 type
   TJvTimerThread = class(TThread)

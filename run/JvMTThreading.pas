@@ -35,7 +35,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  Libc,
+  Libc, QWindows,
   {$ENDIF LINUX}
   JvMTConsts, JvMTSync, JvFinalize;
 

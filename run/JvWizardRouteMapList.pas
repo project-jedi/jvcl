@@ -336,9 +336,15 @@ begin
         end;
         if not Pages[PageIndex].Enabled then
         begin
+          {$IFDEF VCL}
           // (p3) TImageList changes the canvas colors when drawing disabled images, so we reset them explicitly
           Windows.SetBkColor(ACanvas.Handle, BkColor);
           Windows.SetTextColor(ACanvas.Handle, ColorToRGB(clGrayText));
+          {$ENDIF VCL}
+          {$IFDEF VisualCLX}
+          QWindows.SetBkColor(ACanvas.Handle, BkColor);
+          QWindows.SetTextColor(ACanvas.Handle, ColorToRGB(clGrayText));
+          {$ENDIF VisualCLX}
         end;
       end;
       case Alignment of

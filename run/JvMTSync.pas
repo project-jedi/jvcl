@@ -35,7 +35,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  Libc,
+  Libc, QWindows,
   {$ENDIF LINUX}
   JvMTConsts;
 
@@ -318,12 +318,22 @@ end;
 
 procedure TMTSimpleEvent.ResetEvent;
 begin
+  {$IFDEF WINDOWS}
   Windows.ResetEvent(FHandle);
+  {$ENDIF WINDOWS}
+  {$IFDEF LINUX}
+  QWindows.ResetEvent(FHandle);
+  {$ENDIF LINUX}
 end;
 
 procedure TMTSimpleEvent.SetEvent;
 begin
+  {$IFDEF WINDOWS}
   Windows.SetEvent(FHandle);
+  {$ENDIF WINDOWS}
+  {$IFDEF LINUX}
+  QWindows.SetEvent(FHandle);
+  {$ENDIF LINUX}
 end;
 
 end.

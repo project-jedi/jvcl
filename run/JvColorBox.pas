@@ -57,7 +57,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QForms, QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, QButtons,
-  QMenus,
+  QMenus, Types,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent;
