@@ -635,7 +635,7 @@ begin
   JVCLRoot := ExtractFileDir(JVCLRoot); // $(JVCL)\Packages
   JVCLRoot := ExtractFileDir(JVCLRoot); // $(JVCL)
 
-  SetEnvironmentVariable('JCLROOT', '..\..\..\jcl'); // could be changed by command line option
+  SetEnvironmentVariable('JCLROOT', '..\..\..\jcl'); // meight be changed by command line option
 
   BplDir := '';
   DcpDir := '';
@@ -650,7 +650,12 @@ begin
     Halt(1);
   end;
   if not Verbose then
+  begin
     MakeOptions := ' -s' + MakeOptions;
+    SetEnvironmentVariable('QUIET', '-s');
+  end
+  else
+    SetEnvironmentVariable('QUIET', nil);
 
   for i := 0 to High(Editions) do
   begin

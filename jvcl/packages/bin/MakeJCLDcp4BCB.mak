@@ -26,7 +26,8 @@ DEVTOOLS = $(JVCLDIR)\devtools
 DEVTOOLS_BACK = ..\packages\bin
 PACKAGEDIR = $(JCLROOT)\packages\c$(VERSION)
 
-MAKE = "$(ROOT)\bin\make.exe" -$(MAKEFLAGS)
+MAKE = "$(ROOT)\bin\make.exe" -l+
+#-$(MAKEFLAGS)
 DCC = "$(ROOT)\bin\dcc32.exe" -Q -M
 
 #-------------------------------------------------------------------------------
@@ -44,13 +45,13 @@ CleanJcl: \
 Bpg2Make.exe:
 	@echo [Compiling: Bpg2Make.exe]
 	cd $(DEVTOOLS)
-	$(MAKE) -f makefile.mak -s Bpg2Make.exe
+	$(MAKE) $(QUIET) -f makefile.mak -s Bpg2Make.exe
 	cd $(DEVTOOLS_BACK)
 
 pg.exe: Templates
 	@echo [Compiling: pg.exe]
 	cd $(DEVTOOLS)
-	$(MAKE) -f makefile.mak -s pg.exe
+	$(MAKE) $(QUIET) -f makefile.mak -s pg.exe
 	cd $(DEVTOOLS_BACK)
 	#
 	@echo [Generating: Delphi Packages]

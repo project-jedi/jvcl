@@ -59,6 +59,7 @@ type
     BtnEditJvclInc: TButton;
     LblBCBGuide: TLabel;
     CheckBoxCompileJclDcp: TCheckBox;
+    CheckBoxVerbose: TCheckBox;
     procedure CheckBoxDeveloperInstallClick(Sender: TObject);
     procedure CheckBoxXPThemingClick(Sender: TObject);
     procedure ComboBoxTargetIDEChange(Sender: TObject);
@@ -185,6 +186,7 @@ begin
 
    // common options 
     CheckBoxCompileJclDcp.Checked := Installer.Data.CompileJclDcp;
+    CheckBoxVerbose.Checked := Installer.Data.Verbose;
 
     UpdateJvclIncSettings;
   finally
@@ -236,7 +238,11 @@ procedure TFrameConfigPage.CheckBoxCompileJclDcpClick(Sender: TObject);
 begin
   if FInitializing > 0 then
     Exit;
-  Installer.Data.CompileJclDcp := CheckBoxCompileJclDcp.Checked;
+  if Sender = CheckBoxCompileJclDcp then
+    Installer.Data.CompileJclDcp := CheckBoxCompileJclDcp.Checked
+  else if Sender = CheckBoxVerbose then
+    Installer.Data.Verbose := CheckBoxVerbose.Checked
+  ;
 end;
 
 procedure TFrameConfigPage.UpdateJvclIncSettings;

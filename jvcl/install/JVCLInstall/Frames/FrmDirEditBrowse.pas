@@ -50,6 +50,7 @@ type
     FOnChange: TDirEditChangeEvent;
     FUserData: TObject;
     FAllowEmpty: Boolean;
+    FEmpty: Boolean;
     procedure DoCustomize(Sender: TObject; Handle: HWND);
     procedure DoCommand(Sender: TObject; var Msg: TWMCommand; var Handled: Boolean);
     function BrowseDirectory(var AFolderName: string): Boolean;
@@ -103,6 +104,7 @@ end;
 
 function TFrameDirEditBrowse.BrowseDirectory(var AFolderName: string): Boolean;
 begin
+  FEmpty := False;
   with TBrowseFolderDialog.Create(Application) do
   try
     DialogText := RsSelectJCLDir;
@@ -110,7 +112,13 @@ begin
     OnCustomize := DoCustomize;
     OnCommand := DoCommand;
     Result := Execute;
-    if Result then AFolderName := FolderName;
+    if Result then
+      AFolderName := FolderName;
+    if FEmpty and AllowEmpty then
+    begin
+      AFolderName := '';
+      Result := True;
+    end;
   finally
     Free;
   end;
@@ -150,6 +158,7 @@ begin
      (Msg.NotifyCode = BN_CLICKED) and AllowEmpty then
   begin
     EditDirectory.Text := '';
+    FEmpty := True;
     Handled := True;
     PostMessage(TBrowseFolderDialog(Sender).Handle, WM_CLOSE, 0, 0);
   end;

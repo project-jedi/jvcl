@@ -211,6 +211,7 @@ type
     FJVCLDir: string;
     FDeleteFilesOnUninstall: Boolean;
     FCompileJclDcp: Boolean;
+    FVerbose: Boolean;
 
     function GetTargetConfig(Index: Integer): TTargetConfig;
     function GetJVCLDir: string;
@@ -249,8 +250,9 @@ type
     property Build: Integer read GetBuild write SetBuild;
     property CompileOnly: Integer read GetCompileOnly write SetCompileOnly;
 
-    property DeleteFilesOnUninstall: Boolean read FDeleteFilesOnUninstall write FDeleteFilesOnUninstall;
-    property CompileJclDcp: Boolean read FCompileJclDcp write FCompileJclDcp;
+    property DeleteFilesOnUninstall: Boolean read FDeleteFilesOnUninstall write FDeleteFilesOnUninstall default True;
+    property CompileJclDcp: Boolean read FCompileJclDcp write FCompileJclDcp default True;
+    property Verbose: Boolean read FVerbose write FVerbose default False;
 
     property TargetConfig[Index: Integer]: TTargetConfig read GetTargetConfig;
     property Targets: TCompileTargetList read FTargets;
@@ -304,7 +306,10 @@ var
   ErrMsg: string;
 begin
   inherited Create;
-  FCompileJclDcp := True; 
+  FDeleteFilesOnUninstall := True;
+  FCompileJclDcp := True;
+  FVerbose := False;
+
   FJVCLConfig := TJVCLConfig.Create;
   FJVCLConfig.LoadFromFile(JvclIncFilename);
 
@@ -443,8 +448,6 @@ var
   i: Integer;
   S: string;
 begin
-  FDeleteFilesOnUninstall := True;
-
  // dxgettext detection
   S := ReadRegString(HKEY_CLASSES_ROOT, PChar(sDxgettextRegKey), '');
   FIsDxgettextInstalled := S <> '';
@@ -916,7 +919,8 @@ begin
   Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini'));
   try
     Ini.WriteString(Target.DisplayName, 'JCLDir', JCLDir); // do not localize
-    Ini.WriteString(Target.DisplayName, 'HPPDir', HppDir); // do not localize
+    if Target.IsBCB then
+      Ini.WriteString(Target.DisplayName, 'HPPDir', HppDir); // do not localize
     Ini.WriteString(Target.DisplayName, 'BPLDir', BplDir); // do not localize
     Ini.WriteString(Target.DisplayName, 'DCPDir', DcpDir); // do not localize
     Ini.WriteBool(Target.DisplayName, 'DeveloperInstall', DeveloperInstall); // do not localize
