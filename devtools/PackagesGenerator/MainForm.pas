@@ -81,7 +81,7 @@ type
     jfsStore: TJvFormStorage;
     jaiIniStore: TJvAppINIFileStore;
     mnuHelp: TMenuItem;
-    Knownreplacementtags1: TMenuItem;
+    mnuKnown: TMenuItem;
     mnuAbout: TMenuItem;
     N2: TMenuItem;
     mnuAddFiles: TMenuItem;
@@ -102,6 +102,9 @@ type
     mnuUpF: TMenuItem;
     mnuDownF: TMenuItem;
     mnuAddFilesP: TMenuItem;
+    actDelete: TAction;
+    jpmList: TJvPopupMenu;
+    Deletepackage1: TMenuItem;
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
@@ -150,6 +153,9 @@ type
     procedure actUpUpdate(Sender: TObject);
     procedure actDownUpdate(Sender: TObject);
     procedure jdePackagesLocationChange(Sender: TObject);
+    procedure jlbListKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure actDeleteExecute(Sender: TObject);
   private
     { Private declarations }
     Changed : Boolean; // true if current file has changed
@@ -323,6 +329,7 @@ begin
           row[2] := FormName + ': ' + FormType;
       end;
     end;
+    odlAddFiles.InitialDir := '..\'+Dir;
     Changed := True;
   end;
 end;
@@ -494,9 +501,12 @@ var
   packageNode : TJvSimpleXmlElem;
   filesNode : TJvSimpleXmlElem;
   fileNode : TJvSimpleXmlElem;
+  savedChanged : Boolean;
 begin
+  savedChanged := Changed;
   ClearAll;
-  
+  Changed := savedChanged;
+
   if jlbList.ItemIndex < 0 then
     Exit;
 
@@ -702,7 +712,8 @@ end;
 procedure TfrmMain.jlbListMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  IsOkToChange;
+  if Button = mbLeft then
+    IsOkToChange;
 end;
 
 procedure TfrmMain.sptDepAndFilesMoved(Sender: TObject);
@@ -839,6 +850,40 @@ begin
   jsgDependencies.RowCount := 2;
   jsgFiles.Rows[1].Text := '';
   jsgFiles.RowCount := 2;
+end;
+
+procedure TfrmMain.jlbListKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  case Key of
+    VK_DELETE:
+      actDelete.Execute;
+  end;
+end;
+
+procedure TfrmMain.actDeleteExecute(Sender: TObject);
+var
+  path : string;
+begin
+  if (jlbList.ItemIndex > -1) and
+     (Application.MessageBox(PChar(
+        'You are about to delete '+jlbList.Items[jlbList.ItemIndex]+#13#10+
+        'Are you sure you want to do that ?'),
+        'Deleting a package',
+        MB_ICONQUESTION or MB_YESNO) = MRYES) then
+  begin
+    if PathIsAbsolute(jdePackagesLocation.Text) then
+      path := jdePackagesLocation.Text
+    else
+      path := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir)+jdePackagesLocation.Text);
+
+    path := StrEnsureSuffix('\', path) + 'xml\' + jlbList.Items[jlbList.ItemIndex]+'.xml';
+    if not DeleteFile(path) then
+      Application.MessageBox(PChar('Unable to delete ' + path),
+                             'Error',
+                             MB_ICONERROR);
+    LoadPackagesList;
+  end;
 end;
 
 end.
