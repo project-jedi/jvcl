@@ -337,7 +337,9 @@ type
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     function GetSelectedCount: Integer;
     function GetSelectedItem(Index: Integer): TTreeNode;
+    {$IFNDEF COMPILER6_UP}
     procedure SetMultiSelect(const Value: Boolean);
+    {$ENDIF}
     procedure SetScrollDirection(const Value: Integer);
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
@@ -1528,6 +1530,7 @@ begin
   TJvTreeNode(Node).Checked := Value;
 end;
 
+{$IFNDEF COMPILER6_UP}
 procedure TJvTreeView.SetMultiSelect(const Value: Boolean);
 begin
   if FMultiSelect <> Value then
@@ -1537,6 +1540,7 @@ begin
     ClearSelection;
   end;
 end;
+{$ENDIF}
 
 procedure TJvTreeView.SetNodePopup(Node: TTreeNode; Value: TPopupMenu);
 begin
