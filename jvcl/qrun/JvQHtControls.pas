@@ -121,7 +121,7 @@ uses
 type
   THyperLinkClick = procedure (Sender: TObject; LinkName: string) of object;
   
-  TJvCustomHTListBox = class(TCustomListBox) // asn: VisualCLX TJvEx is defective 
+  TJvCustomHTListBox = class(TJvExCustomListBox)
   private
     FHyperLinkClick: THyperLinkClick;
     FHideSel: Boolean;
@@ -276,8 +276,7 @@ type
 
   TJvCustomHTLabel = class(TJvExCustomLabel)
   private
-    FHyperLinkClick: THyperLinkClick; 
-    FCanvas: TCanvas; 
+    FHyperLinkClick: THyperLinkClick;
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -288,22 +287,19 @@ type
     procedure Paint; override;
     procedure Loaded; override; 
     procedure TextChanged; override;  // handles autosize
-    property Canvas; 
     property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
-  public 
+  public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override; 
+    destructor Destroy; override;
   end;
 
-  TJvHTLabel = class(TJvCustomHTLabel) 
-  public
-    property Canvas; 
+  TJvHTLabel = class(TJvCustomHTLabel)
   published
     property Align;
     // property Alignment;  // Kaczkowski
     property AutoSize;
     property Caption;
-    property Color; 
+    property Color;
     property DragMode;
     property Enabled;
     property FocusControl;
@@ -918,11 +914,16 @@ function TJvCustomHTComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState): Boolean;
 
 begin
-  if odSelected in State then
+  if DroppedDown then
   begin
-    Canvas.Brush.Color := FSelectedColor;
-    Canvas.Font.Color  := FSelectedTextColor;
-  end;
+    if (odSelected in State) then
+    begin
+      Canvas.Brush.Color := FSelectedColor;
+      Canvas.Font.Color  := FSelectedTextColor;
+    end;
+  end
+  else
+    State := State - [odSelected];    
   if not Enabled then
     Canvas.Font.Color := FDisabledTextColor;
 
@@ -978,14 +979,11 @@ end;
 constructor TJvCustomHTLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
 end;
 
 destructor TJvCustomHTLabel.Destroy;
 begin
   inherited Destroy;
-  FCanvas.Free; // the destructor may handle invalidate events
 end;
 
 procedure TJvCustomHTLabel.TextChanged;
@@ -1036,7 +1034,7 @@ begin
   if not (csReading in ComponentState) and AutoSize then
   begin 
     AdjustSize; 
-    Rect := ClientRect;  
+    Rect := ClientRect;
     Canvas.Font.Assign(Font);
     Rect.Bottom := ItemHTHeight(Canvas, Caption);
     MaxWidth := ItemHTWidth(Canvas, Bounds(0, 0, 0, 0), [], Caption) + 2; 

@@ -4034,7 +4034,7 @@ begin
   FDropDown.ButtonType := nibDropArrow;
   FDropDown.OnDropDownMenu := DoDropDownMenu;
   FDropDown.Parent := Self;
-
+  Color := clWhite;
   Width := 185;
   Height := 41;
   FParentStyleManager := True;
