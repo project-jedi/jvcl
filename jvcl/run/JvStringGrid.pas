@@ -490,7 +490,7 @@ var
       else
         Result := stClassic;
     end;
-  begin
+  begin            
     case DetectType(First, Second) of
       stNumeric:
         Result := StrToFloat(First) < StrToFloat(Second);
@@ -541,26 +541,26 @@ var
             end;
           stNumeric:
             begin
-              TmpF := StrToFloat(St);
-              while StrToFloat(Cells[Column, I]) < TmpF do
+              TmpF := StrToFloatDef(St, 0);
+              while StrToFloatDef(Cells[Column, I], 0) < TmpF do
                 Inc(I);
-              while StrToFloat(Cells[Column, J]) > TmpF do
+              while StrToFloatDef(Cells[Column, J], 0) > TmpF do
                 Dec(J);
             end;
           stDate:
             begin
-              TmpD := StrToDateTime(St);
-              while StrToDateTime(Cells[Column, I]) < TmpD do
+              TmpD := StrToDateTimeDef(St,0);
+              while StrToDateTimeDef(Cells[Column, I], 0) < TmpD do
                 Inc(I);
-              while StrToDateTime(Cells[Column, J]) > TmpD do
+              while StrToDateTimeDef(Cells[Column, J], 0) > TmpD do
                 Dec(J);
             end;
           stCurrency:
             begin
-              TmpC := StrToCurr(St);
-              while StrToCurr(Cells[Column, I]) < TmpC do
+              TmpC := StrToCurrDef(St, 0);
+              while StrToCurrDef(Cells[Column, I], 0) < TmpC do
                 Inc(I);
-              while StrToCurr(Cells[Column, J]) > TmpC do
+              while StrToCurrDef(Cells[Column, J], 0) > TmpC do
                 Dec(J);
             end;
           stAutomatic:
@@ -589,10 +589,7 @@ var
   var
     I, J: Integer;
   begin
-    if Fixed then
-      I := 0
-    else
-      I := FixedRows;
+    I := FixedRows;
     J := RowCount - 1;
     while I < J do
     begin
@@ -606,10 +603,7 @@ var
   var
     I, J: Integer;
   begin
-    if Fixed then
-      I := 0
-    else
-      I := FixedRows;
+    I := FixedRows;
     Result := I;
     J := RowCount - 1;
     while I <= J do
@@ -628,10 +622,7 @@ var
     I, J: Integer;
     DoSort: Boolean;
   begin
-    if Fixed then
-      I := 0
-    else
-      I := FixedRows;
+    I := FixedRows;
     DoSort := False;
     // avoid empty columns
     for J := I to RowCount - 1 do
@@ -658,10 +649,7 @@ begin
   // make sure you don't do anything in these events
   if (Column >= 0) and (Column < ColCount) and (SortType <> stNone) then
   begin
-    if Fixed then
-      LStart := 0
-    else
-      LStart := FixedRows;
+    LStart := FixedRows;
     LEnd := RowCount - 1;
     if BlankTop then
       LStart := MoveBlankTop;
@@ -1429,4 +1417,6 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
+
 
