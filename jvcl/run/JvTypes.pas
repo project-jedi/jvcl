@@ -26,9 +26,6 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-  (rom) all types from a single file should be put back in their file
-  (p3) disagree, putting them here makes it more obvious when equivalent
-       types are declared in different units (f ex progress event types)
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -44,7 +41,8 @@ uses
   {$IFDEF VisualCLX}
   Qt, QTypes, Types, QControls, QForms, QGraphics,
   {$ENDIF VisualCLX}
-  SysUtils, Classes;
+  SysUtils, Classes,
+  JvConsts, JvResources;
 
 const
   MaxPixelCount = 32767;
@@ -182,13 +180,11 @@ type
     TakeText: Integer;
   end;
 
-{$IFNDEF COMPILER6_UP}
-type
+  {$IFNDEF COMPILER6_UP}
   { TStream seek origins }
   TSeekOrigin = (soBeginning, soCurrent, soEnd);
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 
-type
   TJvGradStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
   //  TOnDelete = procedure(Sender: TObject; Path: string) of object;
   TJvParentEvent = procedure(Sender: TObject; ParentWindow: THandle) of object;
@@ -220,6 +216,7 @@ type
 
   //  TCoordChanged = procedure(Sender: TObject; Coord: string) of object;
   TJvNotifyParamsEvent = procedure(Sender: TObject; Params: Pointer) of object;
+
   {$IFDEF VCL}
   TJvFileInfoRec = record
     Attributes: DWORD;
@@ -231,6 +228,7 @@ type
     SysIconIndex: Integer;
   end;
   {$ENDIF VCL}
+
   TJvAnimation = (anLeftRight, anRightLeft, anRightAndLeft, anLeftVumeter, anRightVumeter);
   TJvAnimations = set of TJvAnimation;
   TJvDropEvent = procedure(Sender: TObject; Pos: TPoint; Value: TStringList) of object;
@@ -276,17 +274,13 @@ type
   TJvFocusChangeEvent = procedure(const ASender: TObject;
     const AFocusControl: TWinControl) of object;
 
-// JvJCLUtils
-type
+  // JvJCLUtils
   TTickCount = Cardinal;
 
-{**** string handling routines}
-
-type
+  {**** string handling routines}
   TSetOfChar = TSysCharSet;
   TCharSet = TSysCharSet;
 
-type
   TDateOrder = (doMDY, doDMY, doYMD);
   TDayOfWeekName = (Sun, Mon, Tue, Wed, Thu, Fri, Sat);
   TDaysOfWeek = set of TDayOfWeekName;
@@ -294,7 +288,6 @@ type
 const
   DefaultDateOrder = doDMY;
 
-const
   CenturyOffset: Byte = 60;
   NullDate: TDateTime = 0; {-693594}
 
@@ -320,10 +313,73 @@ type
 const
   DefaultTrackFontOptions = [hoFollowFont, hoPreserveColor, hoPreserveStyle];
 
-// from JvListView.pas
 type
+  // from JvListView.pas
   TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
   TJvListViewColumnSortEvent = procedure(Sender: TObject; Column: Integer; var AMethod:TJvSortMethod) of object;
+
+  // from JvColorProvider.pas
+  TColorType = (ctStandard, ctSystem, ctCustom);
+
+  TDefColorItem = record
+    Value: TColor;
+    Constant: string;
+    Description: string;
+  end;
+
+const
+  ColCount = 20;
+  SysColCount = 25;
+  ColorValues: array [0 .. ColCount - 1] of TDefColorItem = (
+    (Value: clBlack;      Constant: 'clBlack';      Description: RsClBlack),
+    (Value: clMaroon;     Constant: 'clMaroon';     Description: RsClMaroon),
+    (Value: clGreen;      Constant: 'clGreen';      Description: RsClGreen),
+    (Value: clOlive;      Constant: 'clOlive';      Description: RsClOlive),
+    (Value: clNavy;       Constant: 'clNavy';       Description: RsClNavy),
+    (Value: clPurple;     Constant: 'clPurple';     Description: RsClPurple),
+    (Value: clTeal;       Constant: 'clTeal';       Description: RsClTeal),
+    (Value: clGray;       Constant: 'clGray';       Description: RsClGray),
+    (Value: clSilver;     Constant: 'clSilver';     Description: RsClSilver),
+    (Value: clRed;        Constant: 'clRed';        Description: RsClRed),
+    (Value: clLime;       Constant: 'clLime';       Description: RsClLime),
+    (Value: clYellow;     Constant: 'clYellow';     Description: RsClYellow),
+    (Value: clBlue;       Constant: 'clBlue';       Description: RsClBlue),
+    (Value: clFuchsia;    Constant: 'clFuchsia';    Description: RsClFuchsia),
+    (Value: clAqua;       Constant: 'clAqua';       Description: RsClAqua),
+    (Value: clWhite;      Constant: 'clWhite';      Description: RsClWhite),
+    (Value: clMoneyGreen; Constant: 'clMoneyGreen'; Description: RsClMoneyGreen),
+    (Value: clSkyBlue;    Constant: 'clSkyBlue';    Description: RsClSkyBlue),
+    (Value: clCream;      Constant: 'clCream';      Description: RsClCream),
+    (Value: clMedGray;    Constant: 'clMedGray';    Description: RsClMedGray)   
+  );
+
+  SysColorValues: array [0 .. SysColCount - 1] of TDefColorItem = (
+    (Value: clScrollBar;           Constant: 'clScrollBar';           Description: RsClScrollBar),
+    (Value: clBackground;          Constant: 'clBackground';          Description: RsClBackground),
+    (Value: clActiveCaption;       Constant: 'clActiveCaption';       Description: RsClActiveCaption),
+    (Value: clInactiveCaption;     Constant: 'clInactiveCaption';     Description: RsClInactiveCaption),
+    (Value: clMenu;                Constant: 'clMenu';                Description: RsClMenu),
+    (Value: clWindow;              Constant: 'clWindow';              Description: RsClWindow),
+    (Value: clWindowFrame;         Constant: 'clWindowFrame';         Description: RsClWindowFrame),
+    (Value: clMenuText;            Constant: 'clMenuText';            Description: RsClMenuText),
+    (Value: clWindowText;          Constant: 'clWindowText';          Description: RsClWindowText),
+    (Value: clCaptionText;         Constant: 'clCaptionText';         Description: RsClCaptionText),
+    (Value: clActiveBorder;        Constant: 'clActiveBorder';        Description: RsClActiveBorder),
+    (Value: clInactiveBorder;      Constant: 'clInactiveBorder';      Description: RsClInactiveBorder),
+    (Value: clAppWorkSpace;        Constant: 'clAppWorkSpace';        Description: RsClAppWorkSpace),
+    (Value: clHighlight;           Constant: 'clHighlight';           Description: RsClHighlight),
+    (Value: clHighlightText;       Constant: 'clHighlightText';       Description: RsClHighlightText),
+    (Value: clBtnFace;             Constant: 'clBtnFace';             Description: RsClBtnFace),
+    (Value: clBtnShadow;           Constant: 'clBtnShadow';           Description: RsClBtnShadow),
+    (Value: clGrayText;            Constant: 'clGrayText';            Description: RsClGrayText),
+    (Value: clBtnText;             Constant: 'clBtnText';             Description: RsClBtnText),
+    (Value: clInactiveCaptionText; Constant: 'clInactiveCaptionText'; Description: RsClInactiveCaptionText),
+    (Value: clBtnHighlight;        Constant: 'clBtnHighlight';        Description: RsClBtnHighlight),
+    (Value: cl3DDkShadow;          Constant: 'cl3DDkShadow';          Description: RsCl3DDkShadow),
+    (Value: cl3DLight;             Constant: 'cl3DLight';             Description: RsCl3DLight),
+    (Value: clInfoText;            Constant: 'clInfoText';            Description: RsClInfoText),
+    (Value: clInfoBk;              Constant: 'clInfoBk';              Description: RsClInfoBk)             
+  );
 
 implementation
 

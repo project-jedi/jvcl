@@ -57,7 +57,7 @@ resourcestring
   {
   SWEDISH:
   RsUndoItem = '&Ångra';
-  RsCutItem  = '&Klipp ut';
+  RsCutItem = '&Klipp ut';
   RsCopyItem = 'K&opiera';
   RsPasteItem = 'Kl&istra in';
   RsDeleteItem = '&Ta bort';
@@ -65,7 +65,7 @@ resourcestring
 
   GERMAN:
   RsUndoItem = '&Rückgängig';
-  RsCutItem  = '&Ausschneiden';
+  RsCutItem = '&Ausschneiden';
   RsCopyItem = '&Kopieren';
   RsPasteItem = 'E&infügen';
   RsDeleteItem = '&Löschen';
@@ -1205,7 +1205,7 @@ resourcestring
 
 //=== JvParameterListParameter.pas ====================================================
 resourcestring
-//  RsErrParameterMustBeEntered      = 'Parameter %s must be entered!';
+//  RsErrParameterMustBeEntered = 'Parameter %s must be entered!';
   RsErrParameterIsNotAValidNumber = 'Parameter %s: %s is not a valid number value!';
   RsErrParameterMustBeBetween = 'Parameter %s: %s must be between %s and %s!';
   RsErrParameterFileDoesNotExist = 'Parameter %s: The file "%s" does not exist!';
@@ -1622,6 +1622,55 @@ resourcestring
   RsDivisionByZeroNotAllowedInIn = 'division by zero not allowed in in-';
   RsStackOverflow = 'stack overflow';
   RsStackUnderflow = 'stack underflow';
+
+//=== JvTypes.pas ============================================================
+resourcestring
+  RsClBlack = 'Black';
+  RsClMaroon = 'Maroon';
+  RsClGreen = 'Green';
+  RsClOlive = 'Olive green';
+  RsClNavy = 'Navy blue';
+  RsClPurple = 'Purple';
+  RsClTeal = 'Teal';
+  RsClGray = 'Gray';
+  RsClSilver = 'Silver';
+  RsClRed = 'Red';
+  RsClLime = 'Lime';
+  RsClYellow = 'Yellow';
+  RsClBlue = 'Blue';
+  RsClFuchsia = 'Fuchsia';
+  RsClAqua = 'Aqua';
+  RsClWhite = 'White';
+  RsClMoneyGreen = 'Money green';
+  RsClSkyBlue = 'Sky blue';
+  RsClCream = 'Cream';
+  RsClMedGray = 'Medium gray';
+
+  RsClScrollBar = 'Scrollbar';
+  RsClBackground = 'Desktop background';
+  RsClActiveCaption = 'Active window title bar';
+  RsClInactiveCaption = 'Inactive window title bar';
+  RsClMenu = 'Menu background';
+  RsClWindow = 'Window background';
+  RsClWindowFrame = 'Window frame';
+  RsClMenuText = 'Menu text';
+  RsClWindowText = 'Window text';
+  RsClCaptionText = 'Active window title bar text';
+  RsClActiveBorder = 'Active window border';
+  RsClInactiveBorder = 'Inactive window border';
+  RsClAppWorkSpace = 'Application workspace';
+  RsClHighlight = 'Selection background';
+  RsClHighlightText = 'Selection text';
+  RsClBtnFace = 'Button face';
+  RsClBtnShadow = 'Button shadow';
+  RsClGrayText = 'Dimmed text';
+  RsClBtnText = 'Button text';
+  RsClInactiveCaptionText = 'Inactive window title bar text';
+  RsClBtnHighlight = 'Button highlight';
+  RsCl3DDkShadow = 'Dark shadow 3D elements';
+  RsCl3DLight = 'Highlight 3D elements';
+  RsClInfoText = 'Tooltip text';
+  RsClInfoBk = 'Tooltip background';
 
 //=== JvUrlListGrabber.pas ===================================================
 resourcestring

@@ -34,7 +34,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Buttons, StdCtrls,
-  JvColorProvider, JvDataProvider, JvDataProviderIntf;
+  JvColorProvider, JvDataProvider, JvDataProviderIntf, JvTypes;
 
 type
   TfrmAddColor = class(TForm)

@@ -42,16 +42,11 @@ type
   TJvColorProviderNameMapping = class;
   IJvColorProvider = interface;
 
-  TColorType = (ctStandard, ctSystem, ctCustom);
-  TDefColorItem = record
-    Value: TColor;
-    Constant: string;
-    English: string;
-  end;
   TColorItem = record
     Value: TColor;
     Names: TDynStringArray;
   end;
+
   TColorItems = array of TColorItem;
   TJvColorProviderMapping = type Integer;
   TJvColorProviderAddItemLocation = (ailUseHeader, ailTop, ailBottom);
@@ -598,60 +593,6 @@ end;
 
 var
   MasterColorConsumer: IJvDataConsumer;
-
-const
-  ColCount = 20;
-  SysColCount = 25;
-  ColorValues: array [0 .. ColCount - 1] of TDefColorItem = (
-    (Value: clBlack;                Constant: 'clBlack';                English: 'Black'),
-    (Value: clMaroon;               Constant: 'clMaroon';               English: 'Maroon'),
-    (Value: clGreen;                Constant: 'clGreen';                English: 'Green'),
-    (Value: clOlive;                Constant: 'clOlive';                English: 'Olive green'),
-    (Value: clNavy;                 Constant: 'clNavy';                 English: 'Navy blue'),
-    (Value: clPurple;               Constant: 'clPurple';               English: 'Purple'),
-    (Value: clTeal;                 Constant: 'clTeal';                 English: 'Teal'),
-    (Value: clGray;                 Constant: 'clGray';                 English: 'Gray'),
-    (Value: clSilver;               Constant: 'clSilver';               English: 'Silver'),
-    (Value: clRed;                  Constant: 'clRed';                  English: 'Red'),
-    (Value: clLime;                 Constant: 'clLime';                 English: 'Lime'),
-    (Value: clYellow;               Constant: 'clYellow';               English: 'Yellow'),
-    (Value: clBlue;                 Constant: 'clBlue';                 English: 'Blue'),
-    (Value: clFuchsia;              Constant: 'clFuchsia';              English: 'Fuchsia'),
-    (Value: clAqua;                 Constant: 'clAqua';                 English: 'Aqua'),
-    (Value: clWhite;                Constant: 'clWhite';                English: 'White'),
-    (Value: clMoneyGreen;           Constant: 'clMoneyGreen';           English: 'Money green'),
-    (Value: clSkyBlue;              Constant: 'clSkyBlue';              English: 'Sky blue'),
-    (Value: clCream;                Constant: 'clCream';                English: 'Cream'),
-    (Value: clMedGray;              Constant: 'clMedGray';              English: 'Medium gray')
-  );
-
-  SysColorValues: array [0 .. SysColCount - 1] of TDefColorItem = (
-    (Value: clScrollBar;            Constant: 'clScrollBar';            English: 'Scrollbar'),
-    (Value: clBackground;           Constant: 'clBackground';           English: 'Desktop background'),
-    (Value: clActiveCaption;        Constant: 'clActiveCaption';        English: 'Active window title bar'),
-    (Value: clInactiveCaption;      Constant: 'clInactiveCaption';      English: 'Inactive window title bar'),
-    (Value: clMenu;                 Constant: 'clMenu';                 English: 'Menu background'),
-    (Value: clWindow;               Constant: 'clWindow';               English: 'Window background'),
-    (Value: clWindowFrame;          Constant: 'clWindowFrame';          English: 'Window frame'),
-    (Value: clMenuText;             Constant: 'clMenuText';             English: 'Menu text'),
-    (Value: clWindowText;           Constant: 'clWindowText';           English: 'Window text'),
-    (Value: clCaptionText;          Constant: 'clCaptionText';          English: 'Active window title bar text'),
-    (Value: clActiveBorder;         Constant: 'clActiveBorder';         English: 'Active window border'),
-    (Value: clInactiveBorder;       Constant: 'clInactiveBorder';       English: 'Inactive window border'),
-    (Value: clAppWorkSpace;         Constant: 'clAppWorkSpace';         English: 'Application workspace'),
-    (Value: clHighlight;            Constant: 'clHighlight';            English: 'Selection background'),
-    (Value: clHighlightText;        Constant: 'clHighlightText';        English: 'Selection text'),
-    (Value: clBtnFace;              Constant: 'clBtnFace';              English: 'Button face'),
-    (Value: clBtnShadow;            Constant: 'clBtnShadow';            English: 'Button shadow'),
-    (Value: clGrayText;             Constant: 'clGrayText';             English: 'Dimmed text'),
-    (Value: clBtnText;              Constant: 'clBtnText';              English: 'Button text'),
-    (Value: clInactiveCaptionText;  Constant: 'clInactiveCaptionText';  English: 'Inactive window title bar text'),
-    (Value: clBtnHighlight;         Constant: 'clBtnHighlight';         English: 'Button highlight'),
-    (Value: cl3DDkShadow;           Constant: 'cl3DDkShadow';           English: 'Dark shadow three-dimensional elements'),
-    (Value: cl3DLight;              Constant: 'cl3DLight';              English: 'Highlight three-dimensional elements'),
-    (Value: clInfoText;             Constant: 'clInfoText';             English: 'Tooltip text'),
-    (Value: clInfoBk;               Constant: 'clInfoBk';               English: 'Tooltip background')
-  );
 
 type
   TJvColorItems = class(TJvBaseDataItems)
@@ -2384,7 +2325,7 @@ begin
     LstIdx := AddColor(List, Definitions[I].Value, ColorType, 0);
     ColIdx := List[LstIdx];
     FColorList[ColIdx].Names[0] := Definitions[I].Constant;
-    FColorList[ColIdx].Names[1] := Definitions[I].English;
+    FColorList[ColIdx].Names[1] := Definitions[I].Description;
   end;
 end;
 
