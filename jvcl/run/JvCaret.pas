@@ -214,12 +214,7 @@ begin
     not (csDesigning in FCaretOwner.ComponentState) and
     not IsDefaultCaret then
   begin
-    {$IFDEF VCL}
     if Windows.DestroyCaret then
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    if QWindows.DestroyCaret then
-    {$ENDIF VisualCLX}
       FCaretCreated := False;
   end;
 end;

@@ -186,7 +186,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvJVCLUtils, JvThemes;
+  JvJCLUtils, JvJVCLUtils, JvThemes;
 
 //=== { TJvCustomStaticText } ================================================
 
@@ -292,9 +292,6 @@ begin
       DrawThemedBackground(Self, hDC, R, B);
       {$ENDIF VCL}
       if BorderStyle <> sbsNone then
-        {$IFDEF VisualCLX}
-        QWindows.
-        {$ENDIF VisualCLX}
         DrawEdge(hDC, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT or cBorders[BorderStyle]);
       DrawStyle := GetTextDisplayInfo(hDC, R);
       case Layout of
@@ -314,7 +311,7 @@ begin
           OffsetRect(R, (Width - R.Right) div 2, 0);
       end;
       SetBkMode(hDC, Windows.TRANSPARENT);
-      DrawText(hDC, PChar(Caption), Length(Caption), R, DrawStyle);
+      DrawText(hDC, Caption, Length(Caption), R, DrawStyle);
 //      DrawText(hDC, Caption, Length(Caption), R, DrawStyle);
     end;
   finally
@@ -476,12 +473,7 @@ const
 begin
   Result := DT_EXPANDTABS or cAlignment[UseRightToLeftAlignment, Alignment] or
     cLayout[Layout] or cDrawAccel[ShowAccelChar] or cWordWrap[WordWrap];
-  {$IFDEF VCL}
-  DrawText(ADC, PChar(Caption), Length(Caption), ARect, Result or DT_CALCRECT);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  DrawText(ADC, PWideChar(Caption), Length(Caption), ARect, Result or DT_CALCRECT);
-  {$ENDIF VisualCLX}
+  DrawText(ADC, Caption, Length(Caption), ARect, Result or DT_CALCRECT);
 end;
 
 procedure TJvCustomStaticText.Resize;

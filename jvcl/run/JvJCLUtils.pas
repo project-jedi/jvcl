@@ -2674,12 +2674,7 @@ var
 begin
   nSize := MAX_COMPUTERNAME_LENGTH + 1;
   SetLength(Result, nSize);
-  {$IFDEF MSWINDOWS}
   if Windows.GetComputerName(PChar(Result), nSize) then
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  if QWindows.GetComputerName(PChar(Result), nSize) then
-  {$ENDIF UNIX}
     SetLength(Result, nSize)
   else
     Result := '';
