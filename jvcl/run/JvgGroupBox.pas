@@ -61,7 +61,7 @@ type
     FGlyphExpanded: TBitmap;
 
     ChildFocusedControl: TWinControl;
-    Image: TBitmap;
+//    FImage: TBitmap;
     FullHeight: Integer;
     CaptionRect: TRect;
     ptScroll: TPoint;
@@ -229,8 +229,9 @@ begin
   FCaptionShift.Free;
   FColors.Free;
   FIllumination.Free;
-  if Assigned(Image) then
-    Image.Free;
+//  FImage.Free;
+  FGlyphExpanded.Free;
+  FGlyphCollapsed.Free;
   inherited Destroy;
 end;
 
@@ -536,10 +537,10 @@ begin
   begin
     //...prepare image
 
-    if Image=nil then Image := TBitmap.Create;
-    Image.Height := Height;
-    Image.Width := Width;
-    GetWindowImage( Self, true{fDrawSelf}, true{fDrawChildWindows}, Image.Canvas.Handle );
+    if FImage=nil then FImage := TBitmap.Create;
+    FImage.Height := Height;
+    FImage.Width := Width;
+    GetWindowImage( Self, true{fDrawSelf}, true{fDrawChildWindows}, FImage.Canvas.Handle );
 
     DC := GetDC(0);
     CR := ClientRect; dec(CR.Bottom,CaptionRect.Bottom);
