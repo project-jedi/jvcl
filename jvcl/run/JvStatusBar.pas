@@ -53,6 +53,7 @@ type
     procedure Changed(AllItems: Boolean);
   public
     constructor Create(Collection: TCollection); override;
+    destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Control: TControl read FControl write SetControl;
@@ -73,8 +74,6 @@ type
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
-//    FOnMouseEnter: TNotifyEvent;
-//    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FAutoHintShown: Boolean;
     FHiddenControls: array of TControl;
@@ -129,7 +128,6 @@ begin
   with Params do
     WindowClass.Style := WindowClass.Style and not CS_HREDRAW;
 end;
-
 
 procedure TJvStatusBar.DoBoundsChanged;
 begin
@@ -317,6 +315,12 @@ begin
   inherited Create(Collection);
   FMarginLeft := 3;
   FMarginTop := 3;
+end;
+
+destructor TJvStatusPanel.Destroy;
+begin
+  Control := nil;
+  inherited Destroy;
 end;
 
 procedure TJvStatusPanel.Changed(AllItems: Boolean);
