@@ -616,7 +616,7 @@ begin
   Result := inherited DoCanResize(NewSize);
   if Result and (FOldSize > NewSize) then
   begin
-    DockPanel := DockServer.DockPanel[Integer(Align) - 1];
+    DockPanel := DockServer.DockPanelWithAlign[Align];
     Limit := DockPanel.JvDockManager.GetDockClientLimit(JvDockGetControlOrient(DockPanel),
       Align in [alLeft, alTop]);
     MinSize := DockPanel.JvDockManager.MinSize;
@@ -641,7 +641,7 @@ procedure TJvDockVCSplitter.MouseUp(Button: TMouseButton;
 var
   DockPanel: TJvDockPanel;
 begin
-  DockPanel := DockServer.DockPanel[Integer(Align) - 1];
+  DockPanel := DockServer.DockPanelWithAlign[Align];
   DockPanel.JvDockManager.BeginResizeDockSite;
   try
     inherited MouseUp(Button, Shift, X, Y);

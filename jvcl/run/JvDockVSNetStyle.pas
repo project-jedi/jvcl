@@ -550,7 +550,7 @@ begin
   for I := 0 to JvGlobalDockManager.DockServersList.Count - 1 do
   begin
     DockServer := FindDockServer(JvGlobalDockManager.DockServersList[I]);
-    if (DockServer <> nil) and (DockServer.DockPanel[0] is TJvDockVSNETPanel) then
+    if (DockServer <> nil) and (DockServer.TopDockPanel is TJvDockVSNETPanel) then
       for J := alTop to alRight do
       begin
         Channel := TJvDockVSNETPanel(DockServer.DockPanelWithAlign[J]).VSChannel;
