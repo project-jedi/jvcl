@@ -187,6 +187,8 @@ type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
+    function GetReadOnly: Boolean; reintroduce;
+    procedure SetReadOnly(Value: Boolean); reintroduce;
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure SetFocused(Value: Boolean);
@@ -200,8 +202,6 @@ type
     procedure DoClipboardPaste; override;
     procedure Change; override;
     function EditCanModify: Boolean; override;
-    function GetReadOnly: Boolean; override;
-    procedure SetReadOnly(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure Loaded; override;
@@ -299,6 +299,8 @@ type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
+    function GetReadOnly: Boolean; reintroduce;
+    procedure SetReadOnly(Value: Boolean); reintroduce;
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure UpdateData(Sender: TObject);
@@ -311,8 +313,6 @@ type
     procedure DoClipboardPaste; override;
     procedure AcceptValue(const Value: Variant); override;
     procedure ApplyDate(Value: TDateTime); override;
-    function GetReadOnly: Boolean; override;
-    procedure SetReadOnly(Value: Boolean); override;
     procedure Change; override;
     function EditCanModify: Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -434,6 +434,8 @@ type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
+    function GetReadOnly: Boolean; reintroduce;
+    procedure SetReadOnly(Value: Boolean); reintroduce;
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure SetDefaultParams(Value: Boolean);
@@ -445,8 +447,6 @@ type
     procedure DoClipboardPaste; override;
     procedure AcceptValue(const Value: Variant); override;
     function GetDisplayText: string; override;
-    function GetReadOnly: Boolean; override;
-    procedure SetReadOnly(Value: Boolean); override;
     procedure Change; override;
 
     procedure DataChanged; override; //Polaris
