@@ -174,19 +174,18 @@ begin
           if SendCmdLine then
             AppInstances.SendCmdLineParams(sAppInstancesWindowClassName, Handle);
 
-         // terminate this process (Form.OnCreate is not executed yet)
+          // terminate this process (Form.OnCreate is not executed yet)
 
-          {$IFDEF VCL}
           { DoneApplication destroys all formulars in the Forms unit's
             finalization section. At that moment the OnDestroy events are fired.
-            To prevent this we set the Application variable to nil. Because
-            KillInstance uses halt() to terminate this does not raise any access
-            violation. }
-          Application := nil;
-          {$ENDIF VCL}
-          {$IFDEF VisualCLX}
-          FreeAndNil(TPrivateComponent(Application).FComponents);
-          {$ENDIF VisualCLX}
+            To prevent this we set the OnDestroy event of the Owner to nil. }
+          if Owner <> nil then
+          begin
+            if Owner is TForm then
+              TForm(Owner).OnDestroy := nil
+            else if Owner is TDataModule then
+              TDataModule(Owner).OnDestroy := nil;
+          end;
           AppInstances.KillInstance;
         end;
       end;
