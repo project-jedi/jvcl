@@ -450,10 +450,9 @@ class function TJvInspectorDBData.FieldTypeMapping: TJvInspectorRegister;
 begin
   if GlobalMapReg = nil then
   begin
-    RegisterDBTypes; // register
-
     GlobalMapReg := TJvInspectorRegister.Create(TJvCustomInspectorData);
     AddFinalizeObjectNil(sUnitName, TObject(GlobalMapReg));
+    RegisterDBTypes; // register
   end;
   Result := GlobalMapReg;
 end;
