@@ -1,4 +1,4 @@
-|- Bars=Bars=JVCL provides a number of components and controls that work like either tool/menu bars, statusbars or sidebars (a.k.a. Outlook bars).
+|- Bars=Bars=JVCL provides a number of components and controls that work like either tool/menu bars, statusbars, sidebars (a.k.a. Outlook bars), progress bars and sliders.
 |   |- MenusAndTools=Menu and tool bars=JVCL provides a number of components and controls that work like tools and/or menubars.
 |   |- SideBars=Sidebars=JVCL provides a number of components that work like the Outlook bar.
 |   |- SlideAndProgress=Sliders and progressbars=JVCL provides a number of components and controls that work like sliders and scrollbars.
@@ -66,7 +66,7 @@
 |- ListsAndTrees=Lists and treeviews=JVCL provides a number of controls that enhance the lists and treeview controls found in the Borland VCL.
 |   |- Lists=Lists=JVCL provides a number of controls that are enhanced listboxes or listviews.
 |   |- Trees=Treeviews=JVCL provides a number of controls that are enhanced treeviews.
-|- Miscel=Miscellaneous=JVCL provides a number of components and controls that we have not been able to categorize (yet).
+|- Miscel=Miscellaneous=This group contains components and controls that we were unable to categorize (yet).
 |- Multimedia=Multimedia=JVCL provides a number of components and controls that deal with multimedia (audio and video, but also player controlling).
 |   |- Audio=Audio=JVCL provides a number of components and controls that deal with audio.
 |   |- Video=Video=JVCL provides a number of components and controls that deal with video.
