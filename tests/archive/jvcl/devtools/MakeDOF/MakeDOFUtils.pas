@@ -44,6 +44,7 @@ begin
   try
     S.LoadFromFile(TemplateFile);
     F.FileParams.FileMask := ExtractFileName(FileMask);
+    F.FileParams.SearchTypes := [stFileMask];
     F.RootDirectory := ExpandUNCFileName(ExtractFilePath(FileMask));
     
     F.Options := F.Options - [soStripDirs];
