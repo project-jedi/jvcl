@@ -36,7 +36,7 @@ uses
   Windows, Messages, Graphics, Controls, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QGraphics, QControls, QExtCtrls,
+  QWindows, QGraphics, QControls, QExtCtrls, Types,
   {$ENDIF VisualCLX}
   JvComponent, JvTypes;
 
@@ -107,6 +107,8 @@ type
     property DragCursor;
     property DragKind;
     property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
     {$ENDIF VCL}
     property Caption;
     property Color;
@@ -130,10 +132,6 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    {$IFDEF VCL}
-    property OnEndDock;
-    property OnStartDock;
-    {$ENDIF VCL}
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
@@ -211,10 +209,15 @@ constructor TJvGroupHeader.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
+  {$IFDEF JVCLThemesEnabled}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF JVCLThemesEnabled}
   {$IFDEF VCL}
   Font.Name := 'Tahoma';
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Font.Name := 'Helvetica';
+  {$ENDIF VisualCLX}
   Width := 200;
   Height := 17;
 
