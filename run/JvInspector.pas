@@ -122,6 +122,7 @@ type
     Pos: Integer;
     ScrollCode: Integer;
   end;
+
   TCMActivate = packed record
     Msg: Integer;
     WParam: Integer;
@@ -212,7 +213,7 @@ type
   TJvCustomInspector = class(TJvCustomControl)
   {$ELSE}
   TJvCustomInspector = class(TCustomPanel)
-  {$ENDIF}
+  {$ENDIF VCL} 
   private
     FAfterDataCreate: TInspectorDataEvent;
     FAfterItemCreate: TInspectorItemEvent;
@@ -261,16 +262,14 @@ type
     FOnKeyUp: TKeyEvent;
     FOnMouseDown: TOnJvInspectorMouseDown;
     FInspectObject: TObject;
-
     procedure SetInspectObject(const Value: TObject);
-
     //    FOnMouseDown: TInspectorMouseDownEvent;
     {$IFDEF VisualCLX}
     // ClientWidth and ClientHeight replaces the inherited properties by
     // methods that adjusts the client width and height by AdjustClientRect
     function ClientWidth: Integer;
     function ClientHeight: Integer;
-    {$ENDIF}
+    {$ENDIF VisualCLX}
   protected
     function CalcImageHeight: Integer; virtual;
     function CalcItemIndex(X, Y: Integer; var Rect: TRect): Integer; virtual;
@@ -424,11 +423,9 @@ type
     function FocusedItem: TJvCustomInspectorItem; virtual;
     function VisibleIndex(const AItem: TJvCustomInspectorItem): Integer; virtual;
     procedure RefreshValues;
-
     (* some easier to use methods added by WAP *)
     procedure AddComponent(const AComponent: TComponent; DisplayName: string; Expanded: Boolean);
     procedure Clear;
-
   published
     { Standard TCustomControl events - these are really events fired by
       the TEdit control used when editing in a cell! -WAP}
@@ -438,7 +435,6 @@ type
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
     property OnMouseDown: TOnJvInspectorMouseDown read FOnMouseDown write FOnMouseDown;
-
   end;
 
   TJvInspector = class(TJvCustomInspector)
@@ -640,7 +636,6 @@ type
     property MinHeight: TItemRowSizing read GetMinHeight write SetMinHeight;
     property Sizable: Boolean read GetSizable write SetSizable;
     property SizingFactor: TItemRowSizing read GetSizingFactor write SetSizingFactor;
-  published
   end;
 
   TJvCustomInspectorItem = class(TPersistent)
@@ -648,7 +643,6 @@ type
     FData: TJvCustomInspectorData;
     FDisplayIndex: Integer;
     FDisplayName: string;
-
     FDroppedDown: Boolean;
     FEditCtrl: TCustomEdit;
     FEditWndPrc: TWndMethod;
@@ -664,10 +658,11 @@ type
     FParent: TJvCustomInspectorItem;
     FLastPaintGen: Integer;
     FPressed: Boolean;
-    FRects: array[TInspectorPaintRect] of TRect;
+    FRects: array [TInspectorPaintRect] of TRect;
     FRowSizing: TJvInspectorItemSizing;
     FSortKind: TInspectorItemSortKind;
     FTracking: Boolean;
+    FUserData: Pointer;
   protected
     function GetName: string; virtual; // NEW: Warren added.
     procedure AlphaSort;
@@ -716,9 +711,7 @@ type
     function GetData: TJvCustomInspectorData; virtual;
     function GetDisplayIndex: Integer; virtual;
     function GetDisplayName: string; virtual; // NOTE THIS USES DISPLAY NAME PROPERTIES TO BUILD ITS RESULT
-
     function GetFullName: string; // NOTE THIS USES THE INTERNAL NAME properties to build its result.
-
     function GetDisplayParent: TJvCustomInspectorItem; virtual;
     function GetDisplayValue: string; virtual;
     function GetDroppedDown: Boolean; virtual;
@@ -799,10 +792,7 @@ type
     property OnGetValueList: TInspectorItemGetValueListEvent read FOnGetValueList write FOnGetValueList;
     property Pressed: Boolean read FPressed write FPressed;
     property Tracking: Boolean read FTracking write FTracking;
-
   public
-    UserData: Pointer; // new: End user data pointer. WAP
-
     constructor Create(const AParent: TJvCustomInspectorItem; const AData: TJvCustomInspectorData); virtual;
     destructor Destroy; override;
     function Add(const Item: TJvCustomInspectorItem): Integer;
@@ -823,19 +813,15 @@ type
     procedure Insert(const Index: Integer; const Item: TJvCustomInspectorItem);
     procedure ScrollInView;
     procedure Sort;
+    function GetEditorText: string;
     property AutoUpdate: Boolean read GetAutoUpdate write SetAutoUpdate;
     property Count: Integer read GetCount;
     property Data: TJvCustomInspectorData read GetData;
     property DisplayIndex: Integer read GetDisplayIndex write SetDisplayIndex;
-    property Name: string read GetName; // WAP.Aug2003
-
     property DisplayName: string read GetDisplayName write SetDisplayName;
     property FullName: string read GetFullName;
     property DisplayValue: string read GetDisplayValue write SetDisplayValue;
     property Editing: Boolean read GetEditing;
-
-    function GetEditorText: string;
-
     property Expanded: Boolean read GetExpanded write SetExpanded;
     property Flags: TInspectorItemFlags read GetFlags write SetFlags;
     property Hidden: Boolean read GetHidden write SetHidden;
@@ -845,12 +831,14 @@ type
     property Items[const I: Integer]: TJvCustomInspectorItem read GetItems; default;
     property Level: Integer read GetLevel;
     property Multiline: Boolean read GetMultiline write SetMultiline;
+    property Name: string read GetName; // WAP.Aug2003
     property Parent: TJvCustomInspectorItem read GetParent;
     property QualifiedNames: Boolean read GetQualifiedNames write SetQualifiedNames;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property Rects[const RectKind: TInspectorPaintRect]: TRect read GetRects write SetRects;
     property RowSizing: TJvInspectorItemSizing read GetRowSizing write SetRowSizing;
     property SortKind: TInspectorItemSortKind read GetSortKind write SetSortKind;
+    property UserData: Pointer read FUserData write FUserData; // new: End user data pointer. WAP
     property Visible: Boolean read GetVisible write SetVisible;
     property OnCompare: TInspectorItemSortCompare read FOnCompare write SetOnCompare;
     property OnValueChanged: TNotifyEvent read FOnValueChanged write FOnValueChanged;
@@ -885,7 +873,6 @@ type
     constructor Create(const AParent: TJvInspectorCustomCompoundItem; const AItem: TJvCustomInspectorItem);
     destructor Destroy; override;
     procedure BeforeDestruction; override;
-
     property Item: TJvCustomInspectorItem read GetItem write SetItem;
     property Width: Integer read GetWidth write SetWidthExternal;
     property WidthSet: Integer read GetWidthSet;
@@ -1061,10 +1048,8 @@ type
   public
     constructor Create(const AParent: TJvCustomInspectorItem;
       const AData: TJvCustomInspectorData); override;
-    property CreateMemberItems: Boolean read GetCreateMemberItems
-      write SetCreateMemberItems;
-    property ItemClassFlags: TInspectorClassFlags read GetItemClassFlags
-      write SetItemClassFlags;
+    property CreateMemberItems: Boolean read GetCreateMemberItems write SetCreateMemberItems;
+    property ItemClassFlags: TInspectorClassFlags read GetItemClassFlags write SetItemClassFlags;
     property OnGetValueList;
     property ShowClassName: Boolean read GetShowClassName write SetShowClassName;
   end;
@@ -1148,8 +1133,7 @@ type
     procedure DoneEdit(const CancelEdits: Boolean = False); override;
     procedure DrawValue(const ACanvas: TCanvas); override;
     procedure InitEdit; override;
-    property ShowAsCheckbox: Boolean read GetShowAsCheckBox
-      write SetShowAsCheckBox;
+    property ShowAsCheckbox: Boolean read GetShowAsCheckBox write SetShowAsCheckBox;
   end;
 
   TJvInspectorDateItem = class(TJvInspectorFloatItem)
@@ -1407,7 +1391,6 @@ type
       AAddress: Pointer): TJvCustomInspectorItem; reintroduce; overload;
     // REMOVED BECAUSE OF A BCB INCOMPATIBILITY:
     //    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AVar): TJvCustomInspectorItem; overload;
-
     procedure SetAsSet(const Buf); override;
     property Address: Pointer read GetAddress write SetAddress;
   end;
@@ -1549,7 +1532,7 @@ type
     function GetAsMethod: TMethod; override;
     function GetAsOrdinal: Int64; override;
     function ForceString: string;
-      // NEW: Display something from an INI section that isn't the type it's supposed to be without exceptions and component failures.
+    // NEW: Display something from an INI section that isn't the type it's supposed to be without exceptions and component failures.
     function GetAsString: string; override;
     function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; override;
     procedure SetAsFloat(const Value: Extended); override;
@@ -1562,7 +1545,6 @@ type
     procedure WriteValue(Value: string); virtual; abstract;
   public
     function ReadValue: string; virtual; abstract; // made public to help fix a bug. WAP.
-
     procedure GetAsSet(var Buf); override;
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
@@ -1678,7 +1660,6 @@ type
     FObjectClass: TClass;
     FName: string;
     FTypeInfo: PTypeInfo;
-  protected
   public
     constructor Create(const AItemClass: TJvInspectorItemClass; const AObjectClass: TClass;
       const AName: string; const ATypeInfo: PTypeInfo);
@@ -1705,7 +1686,8 @@ uses
   {$IFDEF VisualCLX}
   QDialogs, QForms, QButtons,
   {$ENDIF VisualCLX}
-  JclRTTI, JclLogic, JvJCLUtils, JvThemes;
+  JclRTTI, JclLogic,
+  JvJCLUtils, JvThemes;
 
 type
   PMethod = ^TMethod;
@@ -1718,7 +1700,7 @@ var
   FVarItemReg: TJvInspectorRegister;
   FPropItemReg: TJvInspectorRegister;
 
-  //=== TJvPopupListBox ========================================================
+//=== TJvPopupListBox ========================================================
 
 {$IFDEF VCL}
 type
@@ -1758,10 +1740,10 @@ procedure TJvPopupListBox.KeyPress(var Key: Char);
 var
   TickCount: Integer;
 begin
-  case Key of
-    #8, #27:
+  case Word(Key) of
+    VK_BACK, VK_ESCAPE:
       FSearchText := '';
-    #32..#255:
+    32..255:
       begin
         TickCount := GetTickCount;
         if TickCount - FSearchTickCount > 4000 then
@@ -3466,7 +3448,7 @@ end;
 procedure TJvCustomInspector.WMSetFocus(var Msg: TWMSetFocus);
 {$ELSE}
 procedure TJvCustomInspector.DoEnter;
-{$ENDIF}
+{$ENDIF VCL}
 begin
   inherited;
   if Selected <> nil then
@@ -4744,9 +4726,9 @@ var
   TempList: TList;
   I: Integer;
   Item: TJvCustomInspectorItem;
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   J: Integer;
-{$ENDIF}
+  {$ENDIF COMPILER6_UP}
 begin
   TempList := TList.Create;
   try
@@ -4761,13 +4743,13 @@ begin
       else
       begin
         Item.BuildDisplayableList(TempList);
-{$IFNDEF COMPILER6_UP}
+        {$IFDEF COMPILER6_UP}
+        ItemList.Assign(TempList, laOr);
+        {$ELSE}
         for J := 0 to TempList.Count - 1 do
           if ItemList.IndexOf(TempList[J]) = -1 then
             ItemList.Add(TempList[J]);
-{$ELSE}
-        ItemList.Assign(TempList, laOr);
-{$ENDIF}
+        {$ENDIF COMPILER6_UP}
         TempList.Clear;
       end;
       Inc(I);
