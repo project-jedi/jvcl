@@ -12,7 +12,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Grids, JvxCtrls, Jvgrids;
+  ExtCtrls, StdCtrls, Grids, JvGrids;
 
 const
   NumPaletteEntries = 256;
@@ -49,7 +49,7 @@ function SelectColor(Palette: HPALETTE; AColor: TColor): TColor;
 
 implementation
 
-uses JvVCLUtils, JvMaxMin;
+uses JvJVCLUtils, Math;
 
 {$R *.DFM}
 

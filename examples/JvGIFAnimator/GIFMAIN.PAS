@@ -14,9 +14,10 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, ExtCtrls, JvPlacemnt, JvSpeedbar, Grids, JvxCtrls,
-  ComCtrls {$IFDEF COMPILER3_UP}, ExtDlgs {$IFNDEF CBUILDER}, Jpeg {$ENDIF} {$ENDIF},
-  JvGIF, JvLabel, Mask, JvToolEdit {$IFDEF COMPILER4_UP}, ImgList, JvComponent {$ENDIF};
+  Forms, Dialogs, StdCtrls, ExtCtrls, JvSpeedbar, Grids,
+  ComCtrls, ExtDlgs {$IFNDEF CBUILDER}, Jpeg {$ENDIF},
+  JvGIF, JvLabel, Mask, JvToolEdit, ImgList,
+  JvComponent, JvFormPlacement;
 
 type
   TAnimatorForm = class(TForm)
@@ -194,8 +195,8 @@ var
 
 implementation
 
-uses Clipbrd, JvVCLUtils, JvAppUtils, JvMaxMin, JvProps, JvGraph, JvHints,
-  GIFPrvw, GIFPal, About;
+uses Clipbrd, JvJVCLUtils, JvHints,
+  GIFPrvw, GIFPal, About, Math;
 
 {$R *.DFM}
 
@@ -324,7 +325,7 @@ var
 begin
   with ImageScroll do begin
     Min := 0;
-    Max := JvMaxMin.Max(0, FImage.Count - 1);
+    Max := Math.Max(0, FImage.Count - 1);
     Enable := (Max > Min) and not FImage.Empty;
     if not Enable then ActiveControl := Pages;
     Enabled := Enable;
@@ -468,10 +469,10 @@ begin
     Filter := GraphicFilter(TJvGIFImage );
   end;
   { Add dialogs to storage }
-  with Storage.StoredProps do begin
-    AddObject(CreateStoredItem(FOpenDlg.Name, 'InitialDir'), FOpenDlg);
-    AddObject(CreateStoredItem(FSaveDlg.Name, 'InitialDir'), FSaveDlg);
-  end;
+//!!!  with Storage.StoredProps do begin
+//!!!    AddObject(CreateStoredItem(FOpenDlg.Name, 'InitialDir'), FOpenDlg);
+//!!!    AddObject(CreateStoredItem(FSaveDlg.Name, 'InitialDir'), FSaveDlg);
+//!!!  end;
   Application.OnActivate := FormActivate;
   FImage.OnProgress := GraphicProgress;
   FImage.OnChange := ImageChanged;

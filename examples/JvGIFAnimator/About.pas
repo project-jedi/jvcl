@@ -14,9 +14,9 @@ procedure VerAboutBox;
 
 implementation
 
-uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  SysUtils, Messages, Consts, Forms, Dialogs, ExtCtrls, StdCtrls, Buttons,
-  JvVCLUtils, JvVerInf, JvConst, JvDateUtil;
+uses
+  Windows, SysUtils, Messages, Consts, Forms, Dialogs, ExtCtrls, StdCtrls, Buttons,
+  JvJVCLUtils, JvVersionInfo, JvConsts, JvJCLUtils;
 
 {$IFDEF COMPILER3_UP}
 resourcestring
@@ -278,8 +278,8 @@ begin
     Top := 6;
     Width := 61;
     Height := 25;
-    Caption := ResStr(SOkButton);
-    Cursor := crHand;
+    Caption := SOkButton;
+    Cursor := crHandPoint;
     Default := False;
     Cancel := True;
     ModalResult := mrOk;
@@ -328,7 +328,7 @@ end;
 
 function TAboutDialog.GetWindowsVersion: string;
 begin
-  Result := JvVCLUtils.GetWindowsVersion;
+  Result := JvJVCLUtils.GetWindowsVersion;
 end;
 
 procedure TAboutDialog.SetAppData(const AppTitle: string; AIcon: TIcon);

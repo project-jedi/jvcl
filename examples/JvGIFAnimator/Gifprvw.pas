@@ -12,8 +12,8 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, ExtCtrls, StdCtrls, JvSpeedbar, JvGIF, JvGIFCtrl, JvPlacemnt,
-  JvxSlider, JvxAnimate, JvComponent;
+  Forms, Dialogs, ExtCtrls, StdCtrls, JvSpeedbar, JvGIF, JvGIFCtrl,
+  JvxSlider, JvComponent, JvAnimatedImage;
 
 type
   TPreviewForm = class(TForm)
@@ -56,7 +56,7 @@ procedure PreviewGIF(AImage: TJvGIFImage );
 
 implementation
 
-uses ShellAPI, JvMaxMin;
+uses ShellAPI, Math;
 
 {$R *.DFM}
 
