@@ -33,7 +33,7 @@ uses
   Controls, Forms, StdCtrls, Graphics, Buttons,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QGraphics, QButtons, 
+  QControls, QForms, QStdCtrls, QGraphics, QButtons,
   {$ENDIF VisualCLX}
   JvDynControlEngineIntf;
 
@@ -52,6 +52,7 @@ type
   TJvDynControlEngine = class(TPersistent)
   private
     FRegisteredControlTypes: array [TJvDynControlType] of TControlClass;
+    FRegisterControlsExecuted: Boolean;
     FAfterCreateControl: TJvAfterCreateControl;
     function GetPropName(Instance: TPersistent; Index: Integer): string;
     function GetPropCount(Instance: TPersistent): Integer;
@@ -59,6 +60,8 @@ type
     procedure SetPropertyValue(const APersistent: TPersistent; const APropertyName: string; const AValue: Variant);
     function GetPropertyValue(const APersistent: TPersistent; const APropertyName: string): Variant;
     procedure AfterCreateControl(AControl: TControl); virtual;
+    procedure NeedRegisterControls;
+    procedure RegisterControls; virtual;
   public
     constructor Create; virtual;
     function CreateControl(AControlType: TJvDynControlType; AOwner: TComponent;
@@ -66,59 +69,59 @@ type
     function CreateControlClass(AControlClass: TControlClass; AOwner: TComponent;
       AParentControl: TWinControl; AControlName: string): TControl; virtual;
     function CreateLabelControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string; ACaption: string; AFocusControl: TWinControl): TControl; virtual;
+      const AControlName, ACaption: string; AFocusControl: TWinControl): TControl; virtual;
     function CreateStaticTextControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string; ACaption: string): TWinControl; virtual;
+      const AControlName, ACaption: string): TWinControl; virtual;
     function CreatePanelControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string; ACaption: string; AAlign: TAlign): TWinControl; virtual;
+      const AControlName, ACaption: string; AAlign: TAlign): TWinControl; virtual;
     function CreateScrollBoxControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string): TWinControl; virtual;
+      const AControlName: string): TWinControl; virtual;
     function CreateEditControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string): TWinControl; virtual;
+      const AControlName: string): TWinControl; virtual;
     function CreateCheckboxControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string; ACaption: string): TWinControl; virtual;
+      const AControlName, ACaption: string): TWinControl; virtual;
     function CreateComboBoxControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string; AItems: TStrings): TWinControl; virtual;
+      const AControlName: string; AItems: TStrings): TWinControl; virtual;
     function CreateGroupBoxControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string; ACaption: string): TWinControl; virtual;
+      const AControlName, ACaption: string): TWinControl; virtual;
     function CreateImageControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string): TWinControl; virtual;
+      const AControlName: string): TWinControl; virtual;
     function CreateRadioGroupControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string; ACaption: string; AItems: TStrings;
+      const AControlName, ACaption: string; AItems: TStrings;
       AItemIndex: Integer = 0): TWinControl; virtual;
     // function CreatePageControlControl(AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TWinControl; virtual;
     function CreateMemoControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string): TWinControl; virtual;
+      const AControlName: string): TWinControl; virtual;
     function CreateListBoxControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string; AItems: TStrings): TWinControl; virtual;
+      const AControlName: string; AItems: TStrings): TWinControl; virtual;
     function CreateDateTimeControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string): TWinControl; virtual;
+      const AControlName: string): TWinControl; virtual;
     function CreateDateControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string): TWinControl; virtual;
+      const AControlName: string): TWinControl; virtual;
     function CreateTimeControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string): TWinControl; virtual;
+      const AControlName: string): TWinControl; virtual;
     function CreateCalculateControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string): TWinControl; virtual;
+      const AControlName: string): TWinControl; virtual;
     function CreateSpinControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string): TWinControl; virtual;
+      const AControlName: string): TWinControl; virtual;
     function CreateDirectoryControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string): TWinControl; virtual;
+      const AControlName: string): TWinControl; virtual;
     function CreateFileNameControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string): TWinControl; virtual;
+      const AControlName: string): TWinControl; virtual;
     function CreateButton(AOwner: TComponent; AParentControl: TWinControl;
-      AButtonName: string; ACaption: string; AHint: string;
+      const AButtonName, ACaption, AHint: string;
       AOnClick: TNotifyEvent; ADefault: Boolean = False;
       ACancel: Boolean = False): TButton; virtual;
     function CreateButtonEditControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string; AOnButtonClick: TNotifyEvent): TWinControl; virtual;
-    function CreateForm(ACaption: string; AHint: string): TCustomForm; virtual;
+      const AControlName: string; AOnButtonClick: TNotifyEvent): TWinControl; virtual;
+    function CreateForm(const ACaption, AHint: string): TCustomForm; virtual;
 
     function IsControlTypeRegistered(const ADynControlType: TJvDynControlType): Boolean;
 
     procedure RegisterControl(const ADynControlType: TJvDynControlType;
       AControlClass: TControlClass); virtual;
 
-    procedure SetControlCaption(AControl: IJvDynControl; Value: string);
+    procedure SetControlCaption(AControl: IJvDynControl; const Value: string);
     procedure SetControlTabOrder(AControl: IJvDynControl; Value: Integer);
 
     procedure SetControlOnEnter(AControl: IJvDynControl; Value: TNotifyEvent);
@@ -162,7 +165,7 @@ begin
   Result := AClass.GetInterfaceEntry(Intf) <> nil;
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 function IntfCast(Instance: TObject; const Intf: TGUID): IUnknown;
 begin
@@ -177,6 +180,7 @@ end;
 
 function TJvDynControlEngine.IsControlTypeRegistered(const ADynControlType: TJvDynControlType): Boolean;
 begin
+  NeedRegisterControls;
   Result := Assigned(FRegisteredControlTypes[ADynControlType]);
 end;
 
@@ -185,6 +189,7 @@ procedure TJvDynControlEngine.RegisterControl(const ADynControlType: TJvDynContr
 var
   Valid: Boolean;
 begin
+  NeedRegisterControls;
   FRegisteredControlTypes[ADynControlType] := nil;
   Valid := Supports(AControlClass, IJvDynControl);
   case ADynControlType of
@@ -342,6 +347,7 @@ end;
 function TJvDynControlEngine.CreateControl(AControlType: TJvDynControlType;
   AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
 begin
+  NeedRegisterControls;
   if Assigned(FRegisteredControlTypes[AControlType]) then
     Result := CreateControlClass(FRegisteredControlTypes[AControlType], AOwner,
       AParentControl, AControlName)
@@ -367,8 +373,7 @@ begin
   Result := TControl(AControlClass.Create(AOwner));
   if not Supports(Result, IJvDynControl, DynCtrl) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with DynCtrl do
-    ControlSetDefaultProperties;
+  DynCtrl.ControlSetDefaultProperties;
   if Assigned(AParentControl) then
     Result.Parent := AParentControl;
   if AControlName <> '' then
@@ -376,7 +381,7 @@ begin
 end;
 
 function TJvDynControlEngine.CreateLabelControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string; ACaption: string;
+  AParentControl: TWinControl; const AControlName, ACaption: string;
   AFocusControl: TWinControl): TControl;
 var
   DynCtrl: IJvDynControl;
@@ -385,48 +390,44 @@ begin
   Result := CreateControl(jctLabel, AOwner, AParentControl, AControlName);
   if not Supports(Result, IJvDynControl, DynCtrl) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with DynCtrl do
-    ControlSetCaption(ACaption);
+  DynCtrl.ControlSetCaption(ACaption);
   if not Supports(Result, IJvDynControlLabel, DynCtrlLabel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with DynCtrlLabel do
-    ControlSetFocusControl(AFocusControl);
+  DynCtrlLabel.ControlSetFocusControl(AFocusControl);
 end;
 
 function TJvDynControlEngine.CreateStaticTextControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string; ACaption: string): TWinControl;
+  AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
 var
   DynCtrl: IJvDynControl;
 begin
   Result := TWinControl(CreateControl(jctStaticText, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with DynCtrl do
-    ControlSetCaption(ACaption);
+  DynCtrl.ControlSetCaption(ACaption);
 end;
 
 function TJvDynControlEngine.CreatePanelControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string;
-  ACaption: string; AAlign: TAlign): TWinControl;
+  AParentControl: TWinControl; const AControlName, ACaption: string;
+  AAlign: TAlign): TWinControl;
 var
   DynCtrl: IJvDynControl;
 begin
   Result := TWinControl(CreateControl(jctPanel, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with DynCtrl do
-    ControlSetCaption(ACaption);
+  DynCtrl.ControlSetCaption(ACaption);
   Result.Align := AAlign;
 end;
 
 function TJvDynControlEngine.CreateScrollBoxControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string): TWinControl;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
 begin
   Result := TWinControl(CreateControl(jctScrollBox, AOwner, AParentControl, AControlName));
 end;
 
 function TJvDynControlEngine.CreateEditControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string): TWinControl;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
 var
   DynCtrlEdit: IJvDynControlEdit;
 begin
@@ -436,19 +437,18 @@ begin
 end;
 
 function TJvDynControlEngine.CreateCheckboxControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string; ACaption: string): TWinControl;
+  AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
 var
   DynCtrl: IJvDynControl;
 begin
   Result := TWinControl(CreateControl(jctCheckBox, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with DynCtrl do
-    ControlSetCaption(ACaption);
+  DynCtrl.ControlSetCaption(ACaption);
 end;
 
 function TJvDynControlEngine.CreateComboBoxControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string; AItems: TStrings): TWinControl;
+  AParentControl: TWinControl; const AControlName: string; AItems: TStrings): TWinControl;
 var
   DynCtrlItems: IJvDynControlItems;
 begin
@@ -459,26 +459,25 @@ begin
 end;
 
 function TJvDynControlEngine.CreateGroupBoxControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string; ACaption: string): TWinControl;
+  AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
 var
   DynCtrl: IJvDynControl;
 begin
   Result := TWinControl(CreateControl(jctGroupBox, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with DynCtrl do
-    ControlSetCaption(ACaption);
+  DynCtrl.ControlSetCaption(ACaption);
 end;
 
 function TJvDynControlEngine.CreateImageControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string): TWinControl;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
 begin
   Result := TWinControl(CreateControl(jctImage, AOwner, AParentControl, AControlName));
 end;
 
 function TJvDynControlEngine.CreateRadioGroupControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string;
-  ACaption: string; AItems: TStrings; AItemIndex: Integer = 0): TWinControl;
+  AParentControl: TWinControl; const AControlName, ACaption: string;
+  AItems: TStrings; AItemIndex: Integer = 0): TWinControl;
 var
   DynCtrl: IJvDynControl;
   DynCtrlItems: IJvDynControlItems;
@@ -487,16 +486,13 @@ begin
   Result := TWinControl(CreateControl(jctRadioGroup, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with DynCtrl do
-    ControlSetCaption(ACaption);
+  DynCtrl.ControlSetCaption(ACaption);
   if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with DynCtrlItems do
-    ControlSetItems(AItems);
+  DynCtrlItems.ControlSetItems(AItems);
   if not Supports(Result, IJvDynControlData, DynCtrlData) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with DynCtrlData do
-    ControlValue := AItemIndex;
+  DynCtrlData.ControlValue := AItemIndex;
 end;
 
 //function TJvDynControlEngine.CreatePageControlControl(AOwner : TComponent; AParentControl : TWinControl; AControlName : string) : TWinControl;
@@ -505,69 +501,67 @@ end;
 //end;
 
 function TJvDynControlEngine.CreateMemoControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string): TWinControl;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
 begin
   Result := TWinControl(CreateControl(jctMemo, AOwner, AParentControl, AControlName));
 end;
 
 function TJvDynControlEngine.CreateListBoxControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string; AItems: TStrings): TWinControl;
+  AParentControl: TWinControl; const AControlName: string; AItems: TStrings): TWinControl;
 var
   DynCtrlItems: IJvDynControlItems;
 begin
   Result := TWinControl(CreateControl(jctListBox, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  with DynCtrlItems do
-    ControlSetItems(AItems);
+  DynCtrlItems.ControlSetItems(AItems);
 end;
 
 function TJvDynControlEngine.CreateDateTimeControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string): TWinControl;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
 begin
   Result := TWinControl(CreateControl(jctDateTimeEdit, AOwner, AParentControl, AControlName));
 end;
 
 function TJvDynControlEngine.CreateDateControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string): TWinControl;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
 begin
   Result := TWinControl(CreateControl(jctDateEdit, AOwner, AParentControl, AControlName));
 end;
 
 function TJvDynControlEngine.CreateTimeControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string): TWinControl;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
 begin
   Result := TWinControl(CreateControl(jctTimeEdit, AOwner, AParentControl, AControlName));
 end;
 
 function TJvDynControlEngine.CreateCalculateControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string): TWinControl;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
 begin
   Result := TWinControl(CreateControl(jctCalculateEdit, AOwner, AParentControl, AControlName));
 end;
 
 function TJvDynControlEngine.CreateSpinControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string): TWinControl;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
 begin
   Result := TWinControl(CreateControl(jctSpinEdit, AOwner, AParentControl, AControlName));
 end;
 
 function TJvDynControlEngine.CreateDirectoryControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string): TWinControl;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
 begin
   Result := TWinControl(CreateControl(jctDirectoryEdit, AOwner, AParentControl, AControlName));
 end;
 
 function TJvDynControlEngine.CreateFileNameControl(AOwner: TComponent;
-  AParentControl: TWinControl; AControlName: string): TWinControl;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
 begin
   Result := TWinControl(CreateControl(jctFileNameEdit, AOwner, AParentControl, AControlName));
 end;
 
 function TJvDynControlEngine.CreateButton(AOwner: TComponent;
-  AParentControl: TWinControl; AButtonName: string; ACaption: string;
-  AHint: string; AOnClick: TNotifyEvent; ADefault: Boolean = False;
-  ACancel: Boolean = False): TButton;
+  AParentControl: TWinControl; const AButtonName, ACaption, AHint: string;
+  AOnClick: TNotifyEvent; ADefault: Boolean = False; ACancel: Boolean = False): TButton;
 begin
   Result := TButton(CreateControl(jctButton, AOwner, AParentControl, AButtonName));
   Result.Hint := AHint;
@@ -578,7 +572,7 @@ begin
 end;
 
 function TJvDynControlEngine.CreateButtonEditControl(AOwner: TComponent; AParentControl: TWinControl;
-      AControlName: string; AOnButtonClick: TNotifyEvent): TWinControl;
+  const AControlName: string; AOnButtonClick: TNotifyEvent): TWinControl;
 var
   DynCtrlButtonEdit: IJvDynControlButtonEdit;
 begin
@@ -588,14 +582,14 @@ begin
   DynCtrlButtonEdit.ControlSetOnButtonClick(AOnButtonClick);
 end;
 
-function TJvDynControlEngine.CreateForm(ACaption: string; AHint: string): TCustomForm;
+function TJvDynControlEngine.CreateForm(const ACaption, AHint: string): TCustomForm;
 begin
   Result := TCustomForm(CreateControl(jctForm, Application, nil, ''));
   Result.Caption := ACaption;
   Result.Hint := AHint;
 end;
 
-procedure TJvDynControlEngine.SetControlCaption(AControl: IJvDynControl; Value: string);
+procedure TJvDynControlEngine.SetControlCaption(AControl: IJvDynControl; const Value: string);
 begin
 end;
 
@@ -624,6 +618,20 @@ end;
 function DefaultDynControlEngine: TJvDynControlEngine;
 begin
   Result := GlobalDefaultDynControlEngine;
+end;
+
+procedure TJvDynControlEngine.NeedRegisterControls;
+begin
+  if not FRegisterControlsExecuted then
+  begin
+    FRegisterControlsExecuted := True;
+    RegisterControls;
+  end;
+end;
+
+procedure TJvDynControlEngine.RegisterControls;
+begin
+  // no registration
 end;
 
 end.
