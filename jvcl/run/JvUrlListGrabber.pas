@@ -809,7 +809,7 @@ var
 begin
   if Status = gsStopped then
   begin
-    // if the given URL contains Port, Username and Password informations, we set the
+    // if the given URL contains Port, UserName and Password informations, we set the
     // different properties of the grabber automatically
     ProtocolMarker := GetSupportedProtocolMarker;
     ParseUrl(Value, ProtocolMarker, TmpHostName, TmpFileName, TmpUserName, TmpPassword, TmpPort);
@@ -943,10 +943,10 @@ begin
     UserName := Copy(Host, 1, Pos('@', Host) - 1);
     Host := Copy(Host, Pos('@', Host) + 1, Length(Host));
     // now, figure out if there is a password
-    if Pos(':', Username) <> 0 then
+    if Pos(':', UserName) <> 0 then
     begin
-      UserName := Copy(Username, 1, Pos(':', Username) - 1);
-      Password := Copy(Username, Pos(':', Username) + 1, Length(Username));
+      UserName := Copy(UserName, 1, Pos(':', UserName) - 1);
+      Password := Copy(UserName, Pos(':', UserName) + 1, Length(UserName));
     end;
   end;
 

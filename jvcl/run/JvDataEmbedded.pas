@@ -220,7 +220,7 @@ end;
 procedure TJvDataEmbedded.DataLoadFromFile(const FileName: TFileName);
 begin
   DoLoading;
-  FStream.LoadFromFile(Filename);
+  FStream.LoadFromFile(FileName);
   DoLoaded;
 end;
 

@@ -1674,7 +1674,7 @@ begin
       ArrangePanel.ArrangeSettings.AutoSize := asBoth;
   end;
   if (Width > 0) and (ArrangePanel.ArrangeSettings.AutoSize = asHeight) then
-    ArrangePanel.Width := Scrollbox.Width-RightPanel.Width;
+    ArrangePanel.Width := ScrollBox.Width-RightPanel.Width;
   if MaxWidth > 0 then
     ArrangePanel.ArrangeSettings.MaxWidth := MaxWidth-RightPanel.Width-2;
   try

@@ -333,7 +333,7 @@ function GetLongFileName(const FileName: string): string;
 function DirectoryExists(const Name: string): Boolean;
 procedure ForceDirectories(Dir: string);
 {# from unit FileCtrl}
-function SameFileName(const Fn1, Fn2: string): Boolean;
+function SameFileName(const FN1, FN2: string): Boolean;
 {$ENDIF COMPILER5}
 function FileNewExt(const FileName, NewExt: TFileName): TFileName;
 function GetComputerID: string;
@@ -1780,9 +1780,9 @@ begin
   CreateDir(Dir);
 end;
 
-function SameFileName(const Fn1, Fn2: string): Boolean;
+function SameFileName(const FN1, FN2: string): Boolean;
 begin
-  Result := CompareText(Fn1, Fn2) <> 0;
+  Result := CompareText(FN1, FN2) <> 0;
 end;
 {$ENDIF COMPILER5}
 
@@ -7716,8 +7716,8 @@ begin
   try
     DllUnRegServ := GetProcAddress(Handle, 'DllUnregisterServer');
     DllCanUnloadNow := GetProcAddress(Handle, 'DllCanUnloadNow');
-    Result := Assigned(DllCanUnloadNow) and (DllCanUnloadNow() = S_OK)
-      and Assigned(DllUnRegServ) and (DllUnRegServ() = S_OK);
+    Result := Assigned(DllCanUnloadNow) and (DllCanUnloadNow() = S_OK) and
+      Assigned(DllUnRegServ) and (DllUnRegServ() = S_OK);
   finally
     FreeLibrary(Handle);
   end;
@@ -8588,7 +8588,7 @@ end;
 
 procedure ScreenShot(Bmp: TBitmap; Left, Top, Width, Height: Integer; Window: QWidgetH); {overload;}
 begin
-  if not assigned(Bmp.Handle) then
+  if not Assigned(Bmp.Handle) then
     Bmp.Handle := QPixmap_create;
   QPixmap_grabWindow(Bmp.Handle, QWidget_winID(Window), Left, Top, Width, Height);
 end;

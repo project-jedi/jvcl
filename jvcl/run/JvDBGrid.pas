@@ -507,7 +507,7 @@ type
   private
     FDataList: TJvDBLookupList; //  TDBLookupListBox
     FUseDataList: Boolean;
-    FLookupSource: TDatasource;
+    FLookupSource: TDataSource;
   protected
     procedure CloseUp(Accept: Boolean); override;
     procedure DoEditButtonClick; override;
@@ -540,7 +540,7 @@ begin
       ListValue := DataList.KeyValue
     else
     if PickList.ItemIndex <> -1 then
-      ListValue := PickList.Items[Picklist.ItemIndex];
+      ListValue := PickList.Items[PickList.ItemIndex];
     SetWindowPos(ActiveList.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
     ListVisible := False;
@@ -1526,11 +1526,11 @@ const
   cDirection: array [Boolean] of TSortMarker = (smDown, smUp);
 var
   IndexDefs: TIndexDefs;
-  lIndexName: string;
+  LIndexName: string;
   Descending: Boolean;
   IndexFound: Boolean;
 
-  function GetIndexOf(aFieldName: string; var aIndexName: string; var Descending: Boolean): Boolean;
+  function GetIndexOf(AFieldName: string; var AIndexName: string; var Descending: Boolean): Boolean;
   var
     I: Integer;
     IsDescending: Boolean;
@@ -1539,9 +1539,9 @@ var
     Result := False;
     for I := 0 to IndexDefs.Count - 1 do
     begin
-      if Pos(aFieldName, IndexDefs[I].Fields) >= 1 then
+      if Pos(AFieldName, IndexDefs[I].Fields) >= 1 then
       begin
-        aIndexName := IndexDefs[I].Name; // best match so far
+        AIndexName := IndexDefs[I].Name; // best match so far
         IsDescending := (ixDescending in IndexDefs[I].Options);
         Result := True;
         if Descending <> IsDescending then
@@ -1567,13 +1567,13 @@ begin
   if Assigned(IndexDefs) then
   begin
     Descending := SortMarker = smUp;
-    if GetIndexOf(AField.FieldName, lIndexName, Descending) then
+    if GetIndexOf(AField.FieldName, LIndexName, Descending) then
     begin
       IndexFound := True;
       SortedField := AField.FieldName;
       SortMarker := cDirection[Descending];
       try
-        SetStrProp(DataSource.DataSet, cIndexName, lIndexName);
+        SetStrProp(DataSource.DataSet, cIndexName, LIndexName);
       except
       end;
     end;
@@ -3274,7 +3274,7 @@ begin
     begin
       AtCursorPosition := False;
       HintStr := Columns[ACol].FieldName;
-      ATimeOut := max(ATimeOut, Length(HintStr) * C_TIMEOUT);
+      ATimeOut := Max(ATimeOut, Length(HintStr) * C_TIMEOUT);
       if Assigned(FOnShowTitleHint) and DataLink.Active then
         FOnShowTitleHint(Self, Columns[ACol].Field, HintStr, ATimeOut);
       HideTimeOut := ATimeOut;

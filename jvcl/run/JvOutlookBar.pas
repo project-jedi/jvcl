@@ -857,7 +857,8 @@ end;
 
 procedure TJvOutlookBarButton.Click;
 begin
-  if Assigned(FOnCLick) then FOnClick(Self);
+  if Assigned(FOnClick) then
+    FOnClick(Self);
 end;
 
 function TJvOutlookBarButton.GetAction: TBasicAction;
@@ -2099,15 +2100,15 @@ begin
     olbsLarge:
       if LargeImages <> nil then
       begin
-        Result.Top := Result.Bottom - abs(Pages[PageIndex].Font.Height) - 2;
+        Result.Top := Result.Bottom - Abs(Pages[PageIndex].Font.Height) - 2;
         OffsetRect(Result, 0, -4);
       end;
     olbsSmall:
       if SmallImages <> nil then
       begin
         Result.Left := SmallImages.Width + 10;
-        Result.Top := Result.Top + (GetButtonHeight(PageIndex) - abs(Pages[PageIndex].Font.Height)) div 2;
-        Result.Bottom := Result.Top + abs(Pages[PageIndex].Font.Height) + 2;
+        Result.Top := Result.Top + (GetButtonHeight(PageIndex) - Abs(Pages[PageIndex].Font.Height)) div 2;
+        Result.Bottom := Result.Top + Abs(Pages[PageIndex].Font.Height) + 2;
         Result.Right := Result.Left + Canvas.TextWidth(Pages[PageIndex].Buttons[ButtonIndex].Caption) + 4;
         OffsetRect(Result, 0, -(H - (Result.Bottom - Result.Top)) div 4);
       end;
@@ -2493,12 +2494,12 @@ begin
     case Pages[PageIndex].ButtonSize of
       olbsLarge:
         if LargeImages <> nil then
-          Result := Max(Result, LargeImages.Height + abs(Pages[PageIndex].Font.Height) + cLargeOffset)
+          Result := Max(Result, LargeImages.Height + Abs(Pages[PageIndex].Font.Height) + cLargeOffset)
         else
           Result := Abs(Pages[PageIndex].Font.Height) + cLargeOffset;
       olbsSmall:
         if SmallImages <> nil then
-          Result := Max(SmallImages.Height, abs(Pages[PageIndex].Font.Height)) + cSmallOffset
+          Result := Max(SmallImages.Height, Abs(Pages[PageIndex].Font.Height)) + cSmallOffset
         else
           Result := Abs(Pages[PageIndex].Font.Height) + cSmallOffset;
     end;

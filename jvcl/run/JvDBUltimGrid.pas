@@ -128,11 +128,11 @@ const
   JvGridSort_DOWN = False;
 
 type
-  TSortField = Record
-    Name: String;
+  TSortField = record
+    Name: string;
     Order: Boolean;
-  End;
-  TSortFields = Array Of TSortField;
+  end;
+  TSortFields = array of TSortField;
 
   TJvDBUltimGrid = class;
   TIndexNotFoundEvent = procedure(Sender: TJvDBUltimGrid; FieldsToSort: TSortFields;
@@ -176,7 +176,7 @@ type
       const CaseSensitive, WholeFieldOnly, Focus: Boolean): Boolean;
   published
     property SortedField stored False; // Property of JvDBGrid not used in JvDBUltimGrid
-    property SortMarker stored False;  // Property of JvDBGrid hidden in JvDBUltimGrid
+    property SortMarker stored False; // Property of JvDBGrid hidden in JvDBUltimGrid
 
     { SortWith:
       swIndex    : for BDE tables (assignment of OnIndexNotFound is recommended)
@@ -227,18 +227,16 @@ var
 begin
   Result := False;
   if Assigned(FSortedFields) then
-  begin
-  for SF := 0 to Length(FSortedFields) - 1 do
-    if AnsiSameText(AFieldName, FSortedFields[SF].Name) then
-    begin
-      if FSortedFields[SF].Order = JvGridSort_UP then
-        inherited ChangeSortMarker(smUp)
-      else
-        inherited ChangeSortMarker(smDown);
-      Result := True;
-      Break;
-    end;
-  end;
+    for SF := 0 to Length(FSortedFields) - 1 do
+      if AnsiSameText(AFieldName, FSortedFields[SF].Name) then
+      begin
+        if FSortedFields[SF].Order = JvGridSort_UP then
+          inherited ChangeSortMarker(smUp)
+        else
+          inherited ChangeSortMarker(smDown);
+        Result := True;
+        Break;
+      end;
 end;
 
 procedure TJvDBUltimGrid.Sort(FieldsToSort: TSortFields);
@@ -257,8 +255,7 @@ var
   end;
 
 var
-  SortString,
-  DescString: string;
+  SortString, DescString: string;
   MaxFTS: Integer;
 
   procedure SearchIndex;
@@ -325,11 +322,11 @@ begin
 
     // Checking of index properties
     if (SortWith = swIndex) and
-    not (IsPublishedProp(DSet, cIndexDefs) and IsPublishedProp(DSet, cIndexName)) then
+      not (IsPublishedProp(DSet, cIndexDefs) and IsPublishedProp(DSet, cIndexName)) then
       raise EJVCLDbGridException.CreateRes(@RsEJvDBGridIndexPropertyMissing)
     else
     if (SortWith = swFields) and
-    not IsPublishedProp(DSet, cIndexFieldNames) then
+      not IsPublishedProp(DSet, cIndexFieldNames) then
       raise EJVCLDbGridException.CreateRes(@RsEJvDBGridIndexPropertyMissing);
 
     // Sorting
@@ -402,7 +399,7 @@ begin
             end
             else
               UpdateProp(cIndexFieldNames, SortString);
-          end;  
+          end;
         end;
       end;
     finally
@@ -415,8 +412,7 @@ end;
 procedure TJvDBUltimGrid.DoTitleClick(ACol: Longint; AField: TField);
 var
   Keys: TKeyboardState;
-  Found,
-  ShiftOrCtrlKeyPressed: Boolean;
+  Found, ShiftOrCtrlKeyPressed: Boolean;
   SortArraySize: Integer;
   FieldsToSort: TSortFields;
   I: Integer;
@@ -429,7 +425,7 @@ begin
       SortArraySize := 1;
       if Assigned(FSortedFields) then
       begin
-        ShiftOrCtrlKeyPressed := GetKeyBoardState(Keys);
+        ShiftOrCtrlKeyPressed := GetKeyboardState(Keys);
         if ShiftOrCtrlKeyPressed then
           ShiftOrCtrlKeyPressed :=
             (((Keys[VK_SHIFT] and $80) <> 0) or ((Keys[VK_CONTROL] and $80) <> 0));
@@ -478,7 +474,7 @@ end;
 
 procedure TJvDBUltimGrid.RestoreGridPosition;
 begin
-  if Assigned(OnRestoreGridPosition) then
+  if Assigned(FOnRestoreGridPosition) then
   begin
     // This example for ADO datasets positions the dataset cursor exactly
     // where it was before it moves (put this code into your event):
@@ -494,7 +490,7 @@ begin
     // try {MyADODataSet->Resync(TResyncMode() << rmExact);} catch (...) {}
     //
     DataLink.ActiveRecord := FSavedRowPos;
-    OnRestoreGridPosition(Self, Pointer(FSavedBookmark), FSavedRowPos);
+    FOnRestoreGridPosition(Self, Pointer(FSavedBookmark), FSavedRowPos);
   end
   else
   if DataLink.DataSet.BookmarkValid(Pointer(FSavedBookmark)) then
@@ -505,8 +501,7 @@ function TJvDBUltimGrid.PrivateSearch(var ResultCol: Integer; var ResultField: T
   const CaseSensitive, WholeFieldOnly, Next: Boolean): Boolean;
 var
   DSet: TDataSet;
-  Start,
-  ColNo, I: Integer;
+  Start, ColNo, I: Integer;
   Found: Boolean;
   FieldText: string;
 begin
@@ -546,7 +541,6 @@ begin
                   FieldText := AsString;
                 if FieldText <> '' then
                 begin
-
                   // Search inside the field content
                   if CaseSensitive then
                   begin
@@ -573,7 +567,6 @@ begin
                     Result := True;
                     Exit;
                   end;
-
                 end;
               end;
           end;

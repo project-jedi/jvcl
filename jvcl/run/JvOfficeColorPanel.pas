@@ -1008,38 +1008,29 @@ begin
     AdjustColorButtons;
 end;
 
-// This type is used to the PopupMenu property that is protected in
-// TControl. This works because it automatically accesses the correct
-// field in TControl
 type
-  TExposedControl = class(TControl)
-  public
-    property PopupMenu;
-  end;
+  TControlAccessProtected = class(TControl);
 
-procedure TJvCustomOfficeColorPanel.RedirectToColorButtonClick(
-  Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvCustomOfficeColorPanel.RedirectToColorButtonClick(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-   aParent: TWinControl;
+   LParent: TWinControl;
 begin
-  if assigned(OnMouseUp) then
+  if Assigned(OnMouseUp) then
     OnMouseUp(Sender, Button, Shift, X, Y);
 
   // If any of the possible parents has a popup menu, we let it
   // run, and do not select the button (hence the exit), unless
   // the properties tell us to select anyway
-  aParent := self;
-  while assigned(aParent) do
-    if assigned(TExposedControl(aParent).PopupMenu)then
+  LParent := Self;
+  while Assigned(LParent) do
+    if Assigned(TControlAccessProtected(LParent).PopupMenu) then
     begin
       if not Properties.SelectIfPopup then
         Exit;
     end
     else
-    begin
-      aParent := aParent.Parent;
-    end;
+      LParent := LParent.Parent;
 
   // if the user asked not to right click select, we stop here
   if not Properties.RightClickSelect then
@@ -1065,7 +1056,6 @@ begin
     Invalidate;
   end;
 end;
-
 
 end.
 

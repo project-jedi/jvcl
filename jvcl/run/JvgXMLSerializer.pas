@@ -113,9 +113,7 @@ type
     FBeforeParsing: TBeforeParsingEvent;
     FWrapCollections: Boolean;
     FIgnoreUnknownTags: Boolean;
-
-    procedure Check(Expr: Boolean; const Message: string; E: TJvgXMLSerializerException);
-
+    procedure Check(Expr: Boolean; const Msg: string; E: TJvgXMLSerializerException);
     procedure WriteOutStream(const Value: string);
   protected
     procedure SerializeInternal(Component: TObject; Level: integer = 1);
@@ -303,7 +301,7 @@ begin
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
-  GetMem(PropList, NumProps * sizeof(pointer));
+  GetMem(PropList, NumProps * SizeOf(Pointer));
   try
     //{ Получаем список свойств }
     { Getting list of properties  [translated] }
@@ -416,7 +414,7 @@ begin
       end;
     end;
   finally
-    FreeMem(PropList, NumProps * sizeof(pointer));
+    FreeMem(PropList, NumProps * SizeOf(Pointer));
   end;
 end;
 
@@ -679,7 +677,7 @@ begin
       end;
     end;
   finally
-    FreeMem(PropList);//, NumProps * SizeOf(pointer));
+    FreeMem(PropList);//, NumProps * SizeOf(Pointer));
   end;
 end;
 
@@ -886,7 +884,7 @@ begin
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
-  GetMem(PropList, NumProps * sizeof(pointer));
+  GetMem(PropList, NumProps * SizeOf(Pointer));
   try
     //{ Получаем список свойств }
     { Getting list of properties  [translated] }
@@ -943,8 +941,7 @@ begin
               //{ Для дочерних свойств-классов - рекурсивный вызов }
               { Specific(individual) handling of some specific classes [translated] }
               if PropObject is TPersistent then
-                GenerateDTDInternal(PropObject, DTDList, Stream,
-                  PropName);
+                GenerateDTDInternal(PropObject, DTDList, Stream, PropName);
             end;
           end;
       end;
@@ -966,15 +963,15 @@ begin
     { Adding content model for the element(item)  [translated] }
     addElement(ComponentTagName, TagContent);
   finally
-    FreeMem(PropList, NumProps * sizeof(pointer));
+    FreeMem(PropList, NumProps * SizeOf(Pointer));
   end;
 end;
 
-procedure TJvgXMLSerializer.Check(Expr: Boolean; const Message: string;
+procedure TJvgXMLSerializer.Check(Expr: Boolean; const Msg: string;
   E: TJvgXMLSerializerException);
 begin
   if not Expr then
-    raise E.Create('XMLSerializerException'#13#10#13#10 + Message);
+    raise E.Create('XMLSerializerException'#13#10#13#10 + Msg);
 end;
 
 end.

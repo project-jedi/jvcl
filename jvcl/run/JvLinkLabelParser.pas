@@ -291,20 +291,25 @@ var
       'P',
       'DYNAMIC');
     DontCare = 0;
+  var
+    S: string;
   begin
     UnknownTag := False;
     // Bianconi
     for Result := Low(TTag) to High(TTag) do
-      if (AnsiUpperCase(Tag) = TagStrings[Result]) or
+    begin
+      S := TagStrings[Result];
+      if (AnsiUpperCase(Tag) = S) or
 //        (Copy(AnsiUpperCase(Tag), 1, Length(TagStrings[Result])) = 'COLOR=')
         //Cetkovsky -->
         //We allow <url> style tag without "="
-        ((pos('=', TagStrings[Result]) > 0) and ((Copy(AnsiUpperCase(Tag), 1, Length(TagStrings[Result]) - 1) = Copy(TagStrings[Result], 1, Length(TagStrings[Result]) - 1))))
+        ((Pos('=', S) > 0) and
+         ((Copy(AnsiUpperCase(Tag), 1, Length(S) - 1) = Copy(S, 1, Length(S) - 1)))) then
         //<-- Cetkovsky
-        then
         Exit;
+    end;
     //End of Bianconi
-    Result := TTag(DontCare); // To get rid of a compiler warning
+    Result := TTag(DontCare);
     UnknownTag := True;
   end;
 
