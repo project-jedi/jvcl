@@ -82,7 +82,7 @@ implementation
 JV_EDITCONTROL_EVENTS_IMPL_BEGIN(CustomMaskEdit)
 procedure TJvExCustomMaskEdit.DoBeepOnError;
 begin
-  if BeepOnError then
+  if FBeepOnError then
     SysUtils.Beep;
 end;
 
@@ -96,7 +96,7 @@ JV_EDITCONTROL_EVENTS_IMPL_END(CustomMaskEdit)
 JV_EDITCONTROL_EVENTS_IMPL_BEGIN(MaskEdit)
 procedure TJvExMaskEdit.DoBeepOnError;
 begin
-  if BeepOnError then
+  if FBeepOnError then
     SysUtils.Beep;
 end;
 

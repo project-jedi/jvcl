@@ -2762,13 +2762,15 @@ begin
     Windows.ReleaseDC(0, DC);
   end;
 end;
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
+
 procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
 var
   Canvas: TJvDeskTopCanvas;
-  I: integer;
+  I: Integer;
 begin
   Canvas := TJvDeskTopCanvas.Create;
   with Canvas do
@@ -2807,7 +2809,8 @@ begin
       Free;
     end;
 end;
-{$ENDIF VISUALCLX}
+
+{$ENDIF VisualCLX}
 
 
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint):
@@ -2875,6 +2878,7 @@ function PaletteEntries(Palette: HPALETTE): Integer;
 begin
   GetObject(Palette, SizeOf(Integer), @Result);
 end;
+
 {$ENDIF VCL}
 
 procedure Delay(MSecs: Longint);
@@ -2994,9 +2998,7 @@ begin
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER);
   end;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VCL}
 { Shade rectangle }
 
 procedure ShadeRect(DC: HDC; const Rect: TRect);
@@ -3021,6 +3023,7 @@ begin
     DeleteObject(Bitmap);
   end;
 end;
+
 {$ENDIF VCL}
 
 function ScreenWorkArea: TRect;

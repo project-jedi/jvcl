@@ -126,9 +126,7 @@ function TJvDateTimePicker.CheckNullValue(const ANullText, AFormat: string;
 begin
  // Warren added NullText length check so that this feature can be disabled if not used!
   if ANullText = '' then
-  begin
-    Result := False;
-  end
+    Result := False
   else
     Result := ((AKind = dtkDate) and (Trunc(ADateTime) = Trunc(ANullDate)) or
       ((AKind = dtkTime) and WithinDelta(ADateTime, ANullDate)));

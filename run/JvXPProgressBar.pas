@@ -84,7 +84,7 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
-    {$ENDIF COMPILEr6_UP}
+    {$ENDIF COMPILER6_UP}
     property OnStartDock;
     property OnStartDrag;
   end;
@@ -98,7 +98,7 @@ uses
   Controls, Forms, ComCtrls,
   JvJVCLUtils, JvJCLUtils;
 
-{ TJvXPProgressBar }
+//=== { TJvXPProgressBar } ===================================================
 
 constructor TJvCustomXPProgressBar.Create(AOwner: TComponent);
 begin
@@ -139,18 +139,23 @@ begin
 end;
 
 type
-  TWinControlAccess = class(TWinControl);
+  TWinControlAccessProtected = class(TWinControl);
 
 procedure TJvCustomXPProgressBar.DrawBar(ACanvas: TCanvas; BarSize: Integer);
+const
+  cColor1 = $BEBEBE;
+  cColor2 = $686868;
+  cColor3 = $EFEFEF;
 var
-  X, Y: integer;
+  X, Y: Integer;
   R: TRect;
   Bmp: TBitmap;
   AColor: TColor;
 begin
   if Parent <> nil then
-    AColor := TWinControlAccess(Parent).Color
-  else if GetParentForm(Self) <> nil then
+    AColor := TWinControlAccessProtected(Parent).Color
+  else
+  if GetParentForm(Self) <> nil then
     AColor := GetParentForm(Self).Color
   else
     AColor := clBtnFace;
@@ -168,55 +173,55 @@ begin
     // draw the frame
     // left side
     X := 0;
-    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, $BEBEBE);
-    DrawLine(Bmp.Canvas, X, 2, X, Height - 2, $686868);
+    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, cColor1);
+    DrawLine(Bmp.Canvas, X, 2, X, Height - 2, cColor2);
 
     // right side
     X := Width - 1;
-    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, $BEBEBE);
-    DrawLine(Bmp.Canvas, X, 2, X, Height - 2, $686868);
+    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, cColor1);
+    DrawLine(Bmp.Canvas, X, 2, X, Height - 2, cColor2);
 
     // left side
     X := 0;
-    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, $BEBEBE);
-    DrawLine(Bmp.Canvas, X, 2, X, Height - 2, $686868);
+    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, cColor1);
+    DrawLine(Bmp.Canvas, X, 2, X, Height - 2, cColor2);
     // right side
     X := Width - 1;
-    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, $BEBEBE);
-    DrawLine(Bmp.Canvas, X, 2, X, Height - 2, $686868);
+    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, cColor1);
+    DrawLine(Bmp.Canvas, X, 2, X, Height - 2, cColor2);
 
     // left side
     X := 1;
-    DrawLine(Bmp.Canvas, X, 0, X, Height, $BEBEBE);
-    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, $686868);
-    DrawLine(Bmp.Canvas, X, 2, X, Height - 2, $BEBEBE);
+    DrawLine(Bmp.Canvas, X, 0, X, Height, cColor1);
+    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, cColor2);
+    DrawLine(Bmp.Canvas, X, 2, X, Height - 2, cColor1);
     // right side
     X := Width - 2;
-    DrawLine(Bmp.Canvas, X, 0, X, Height, $BEBEBE);
-    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, $686868);
-    DrawLine(Bmp.Canvas, X, 2, X, Height - 2, $BEBEBE);
+    DrawLine(Bmp.Canvas, X, 0, X, Height, cColor1);
+    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, cColor2);
+    DrawLine(Bmp.Canvas, X, 2, X, Height - 2, cColor1);
 
     // left side
     X := 2;
-    DrawLine(Bmp.Canvas, X, 0, X, Height, $686868);
-    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, $BEBEBE);
-    DrawLine(Bmp.Canvas, X, 3, X, Height - 1, $EFEFEF);
+    DrawLine(Bmp.Canvas, X, 0, X, Height, cColor2);
+    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, cColor1);
+    DrawLine(Bmp.Canvas, X, 3, X, Height - 1, cColor3);
     // right side
     X := Width - 3;
-    DrawLine(Bmp.Canvas, X, 0, X, Height, $686868);
-    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, $BEBEBE);
-    DrawLine(Bmp.Canvas, X, 3, X, Height - 1, $EFEFEF);
+    DrawLine(Bmp.Canvas, X, 0, X, Height, cColor2);
+    DrawLine(Bmp.Canvas, X, 1, X, Height - 1, cColor1);
+    DrawLine(Bmp.Canvas, X, 3, X, Height - 1, cColor3);
 
     // top side
     Y := 0;
-    DrawLine(Bmp.Canvas, 3, Y, Width - 3, Y, $686868);
-    DrawLine(Bmp.Canvas, 3, Y + 1, Width - 3, Y + 1, $BEBEBE);
-    DrawLine(Bmp.Canvas, 3, Y + 2, Width - 3, Y + 2, $EFEFEF);
+    DrawLine(Bmp.Canvas, 3, Y, Width - 3, Y, cColor2);
+    DrawLine(Bmp.Canvas, 3, Y + 1, Width - 3, Y + 1, cColor1);
+    DrawLine(Bmp.Canvas, 3, Y + 2, Width - 3, Y + 2, cColor3);
 
     // bottom side
     Y := Height - 1;
-    DrawLine(Bmp.Canvas, 3, Y, Width - 2, Y, $686868);
-    DrawLine(Bmp.Canvas, 3, Y - 1, Width - 3, Y - 1, $EFEFEF);
+    DrawLine(Bmp.Canvas, 3, Y, Width - 2, Y, cColor2);
+    DrawLine(Bmp.Canvas, 3, Y - 1, Width - 3, Y - 1, cColor3);
 
     // draw the blocks
     if Orientation = pbHorizontal then

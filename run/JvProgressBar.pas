@@ -90,12 +90,12 @@ type
 
   TJvProgressBar = class(TJvExProgressBar)
   private
-    {$IFDEF VCL}
+  {$IFDEF VCL}
     FFillColor: TColor;
     procedure SetFillColor(const Value: TColor);
   protected
     procedure CreateWnd; override;
-    {$ENDIF VCL}
+  {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -128,7 +128,7 @@ type
 
   TJvCustomGradientProgressBar = class(TJvBaseGradientProgressBar)
   protected
-    procedure DrawBar(ACanvas: TCanvas; BarSize: integer); override;
+    procedure DrawBar(ACanvas: TCanvas; BarSize: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -468,11 +468,11 @@ begin
   BlockSize := 6;
 end;
 
-procedure TJvCustomGradientProgressBar.DrawBar(ACanvas: TCanvas; BarSize: integer);
+procedure TJvCustomGradientProgressBar.DrawBar(ACanvas: TCanvas; BarSize: Integer);
 var
   R: TRect;
-  ABlockSize:double;
-  i:integer;
+  LBlockSize: Double;
+  I: Integer;
 begin
   R := ClientRect;
   ACanvas.Brush.Color := Color;
@@ -497,40 +497,40 @@ begin
   begin
     ACanvas.Pen.Color := Color;
     if Position > 0 then
-      ABlockSize := (GetMaxBarSize * BlockSize - 4) / 100
+      LBlockSize := (GetMaxBarSize * BlockSize - 4.0) / 100.0
     else
-      ABlockSize := 0;
-    i := 0;
+      LBlockSize := 0;
+    I := 0;
     if Orientation = pbHorizontal then
     begin
       R := ClientRect;
       InflateRect(R, -2, -2);
-      R.Right := R.Left + round(ABlockSize);
+      R.Right := R.Left + Round(LBlockSize);
       while R.Left <= BarSize do
       begin
         ACanvas.MoveTo(R.Left, R.Top);
         ACanvas.LineTo(R.Left, R.Bottom);
-        Inc(i);
+        Inc(I);
         R := ClientRect;
         InflateRect(R, -2, -2);
-        R.Right := R.Left + round(ABlockSize);
-        OffsetRect(R, round(i * ABlockSize), 0);
+        R.Right := R.Left + Round(LBlockSize);
+        OffsetRect(R, Round(I * LBlockSize), 0);
       end;
     end
     else
     begin
       R := ClientRect;
       InflateRect(R, -2, -2);
-      R.Top := R.Bottom - round(ABlockSize);
+      R.Top := R.Bottom - Round(LBlockSize);
       while R.Bottom >= GetMaxBarSize - BarSize do
       begin
         ACanvas.MoveTo(R.Left, R.Bottom);
         ACanvas.LineTo(R.Right, R.Bottom);
-        Inc(i);
+        Inc(I);
         R := ClientRect;
         InflateRect(R, -2, -2);
-        R.Top := R.Bottom - round(ABlockSize);
-        OffsetRect(R, 0, -round(i * ABlockSize));
+        R.Top := R.Bottom - Round(LBlockSize);
+        OffsetRect(R, 0, -Round(I * LBlockSize));
       end;
     end;
   end;
