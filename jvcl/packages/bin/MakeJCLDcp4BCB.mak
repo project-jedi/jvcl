@@ -77,10 +77,10 @@ Compile:
 Clean:
 	@echo [Cleaning...]
 	@cd $(PACKAGEDIR)
-	#-del /q C*.dcp >NUL
-	#-del /q C*.bpl >NUL
-	-del /q *.lsp >NUL
-	-del /q *.dpk >NUL
+	-del /q template.* >NUL
+	-del /q C*.dcp >NUL
+	-del /q C*.bpl >NUL
+	-del /q C*.mak >NUL
+	-del /q C*.dpk >NUL
 	-del /q *.dcu >NUL
-	-del /q *.cfg >NUL
-	-del /q *.log >NUL
+	-del /q C*.cfg >NUL
