@@ -578,7 +578,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Consts, SysUtils, Math, Forms, ExtCtrls, 
+  {$IFDEF JVCLThemesEnabled}
+  JvThemes,
+  {$ENDIF JVCLThemesEnabled}
+  Consts, SysUtils, Math, Forms, ExtCtrls,
   JvDockSupportProc, JvDockGlobals;
 
 type
@@ -2370,6 +2373,10 @@ procedure TJvDockVIDVCTree.DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone; L
 var
   AZone: TJvDockAdvZone;
   ADockClient: TJvDockClient;
+  {$IFDEF JVCLThemesEnabled}
+  Details: TThemedElementDetails;
+  CurrentThemeType: TThemedWindow;
+  {$ENDIF JVCLThemesEnabled}
 begin
   AZone := TJvDockAdvZone(Zone);
   if AZone <> nil then
@@ -2377,8 +2384,28 @@ begin
     ADockClient := FindDockClient(Zone.ChildControl);
     if (ADockClient <> nil) and not ADockClient.EnableCloseButton then
       Exit;
-    DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
-      Top + ButtonHeight), DFC_CAPTION, DFCS_CAPTIONCLOSE or Integer(AZone.CloseBtnDown) * DFCS_PUSHED)
+    {$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesAvailable and ThemeServices.ThemesEnabled then
+    begin
+      if GrabberSize < 14 then
+      begin
+        CurrentThemeType := twSmallCloseButtonNormal;
+        if AZone.CloseBtnDown then
+          CurrentThemeType := twSmallCloseButtonPushed;
+      end
+      else
+      begin
+        CurrentThemeType := twCloseButtonNormal;
+        if AZone.CloseBtnDown then
+          CurrentThemeType := twCloseButtonPushed;
+      end;
+      Details := ThemeServices.GetElementDetails(CurrentThemeType);
+      ThemeServices.DrawElement(Canvas.Handle, Details, Rect(Left, Top, Left + ButtonWidth, Top + ButtonHeight));
+    end
+    else
+      {$ENDIF JVCLThemesEnabled}
+      DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
+        Top + ButtonHeight), DFC_CAPTION, DFCS_CAPTIONCLOSE or Integer(AZone.CloseBtnDown) * DFCS_PUSHED)
   end;
 end;
 
@@ -3808,6 +3835,7 @@ begin
 end;
 
 {$IFNDEF USEJVCL}
+
 function TJvDockVIDVCStyle.GetControlName: string;
 begin
   Result := Format(RsDockLikeVIDStyle, [inherited GetControlName]);
