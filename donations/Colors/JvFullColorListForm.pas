@@ -252,6 +252,10 @@ procedure TJvFullColorListFrm.ListBoxColorsDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
   AFullColor: TJvFullColor;
+  AText: string;
+  ColorIndex: Integer;
+  AColor: TColor;
+  AColorSpace: TJvColorSpace;
 begin
   with TListBox(Control), Canvas do
   begin
@@ -266,13 +270,31 @@ begin
 
     AFullColor := TJvFullColor(Items.Objects[Index]);
 
-    with ColorSpaceManager, ColorSpace[GetColorSpaceID(AFullColor)] do
-      TextOut(Rect.Left + Rect.Bottom - Rect.Top + 2, Rect.Top + 2,
-        Format('%s : %s = $%.2x; %s = $%.2x; %s = $%.2x',
-         [Name,
-          AxisName[axIndex0], GetAxisValue(AFullColor, axIndex0),
-          AxisName[axIndex1], GetAxisValue(AFullColor, axIndex1),
-          AxisName[axIndex2], GetAxisValue(AFullColor, axIndex2)]));
+    with ColorSpaceManager do
+    begin
+      AColorSpace := ColorSpace[GetColorSpaceID(AFullColor)];
+
+      if AColorSpace.ID = csDEF then
+        with TJvDEFColorSpace(AColorSpace) do
+      begin
+        AColor := ConvertToColor(AFullColor);
+        AText := Format('%s : Unamed color $%.8x',[Name,AFullColor]);
+        for ColorIndex := 0 to ColorCount-1 do
+          if AColor = ColorValue[ColorIndex] then
+        begin
+          AText := Format('%s : %s (%s)',[Name,ColorName[ColorIndex],ColorPrettyName[ColorIndex]]);
+          Break;
+        end;
+      end
+      else with AColorSpace do
+        AText := Format('%s : %s = $%.2x; %s = $%.2x; %s = $%.2x',
+                        [Name,
+                         AxisName[axIndex0], GetAxisValue(AFullColor, axIndex0),
+                         AxisName[axIndex1], GetAxisValue(AFullColor, axIndex1),
+                         AxisName[axIndex2], GetAxisValue(AFullColor, axIndex2)]);
+
+      TextOut(Rect.Left + Rect.Bottom - Rect.Top + 2, Rect.Top + 2, AText);
+    end;
 
     Brush.Color := ColorSpaceManager.ConvertToColor(AFullColor);
     Pen.Color := clBlack;

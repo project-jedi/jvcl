@@ -3436,10 +3436,7 @@ begin
   XPos := ((XOffset - (XInc * (ColCount - 1))) div 2) + 1;
 
   YOffset := Height - (FSquareSize * RowCount) - 2;
-  //if RowCount = 1 then
-  //  YInc := 0
-  //else
-    YInc := YOffset div RowCount;//(RowCount + 1);
+  YInc := YOffset div RowCount;
   YPos := ((YOffset - (YInc * (RowCount - 1))) div 2) + 1;
 end;
 
@@ -3503,6 +3500,7 @@ var
   Sum, XPos, YPos, XInc, YInc, Index: Integer;
   ColorIndex: Integer;
   AFullColor: TJvFullColor;
+  AColor: TColor;
   AColorID: TJvFullColorSpaceID;
   AColorSpace: TJvColorSpace;
 begin
@@ -3564,14 +3562,30 @@ begin
     AColorID := GetColorSpaceID(AFullColor);
     AColorSpace := ColorSpace[AColorID];
 
+    if AColorSpace.ID = csDEF then
+      with TJvDEFColorSpace(AColorSpace) do
+    begin
+      AColor := ConvertToColor(AFullColor);
+      for Index := 0 to ColorCount-1 do
+        if AColor = ColorValue[Index] then
+      begin
+        AHintInfo.HintStr := Format('FullColor : %.8x'+sLineBreak+
+                                    'ColorSpace : %s (%d)'+sLineBreak+
+                                    'Name : %s'+sLineBreak+
+                                    'Pretty name : %s',[AFullColor, AColorSpace.Name,
+                                    AColorID,ColorName[Index],ColorPrettyName[Index]]);
+        Break;
+      end;
+    end
+    else
+      AHintInfo.HintStr := Format('FullColor : %.8x, ColorSpace : %s (%d)'+sLineBreak+
+                                  'Axis %s = %d'+sLineBreak+
+                                  'Axis %s = %d'+sLineBreak+
+                                  'Axis %s = %d',[AFullColor,AColorSpace.Name,AColorID,
+                                  AColorSpace.AxisName[axIndex0],GetAxisValue(AFullColor,axIndex0),
+                                  AColorSpace.AxisName[axIndex1],GetAxisValue(AFullColor,axIndex1),
+                                  AColorSpace.AxisName[axIndex2],GetAxisValue(AFullColor,axIndex2)]);
 
-    AHintInfo.HintStr := Format('FullColor : %.8x, ColorSpace : %s (%d)'+sLineBreak+
-                                'Axis %s = %d'+sLineBreak+
-                                'Axis %s = %d'+sLineBreak+
-                                'Axis %s = %d',[AFullColor,AColorSpace.Name,AColorID,
-                                AColorSpace.AxisName[axIndex0],GetAxisValue(AFullColor,axIndex0),
-                                AColorSpace.AxisName[axIndex1],GetAxisValue(AFullColor,axIndex1),
-                                AColorSpace.AxisName[axIndex2],GetAxisValue(AFullColor,axIndex2)]);
     if Assigned(FOnFormatHint) then
       FOnFormatHint(Self,AFullColor,AHintInfo.HintStr);
   end
