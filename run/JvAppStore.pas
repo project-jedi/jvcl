@@ -78,6 +78,7 @@ type
     FBooleanStringTrueValues: string;
     FBooleanStringFalseValues: string;
     FEnumAsStr: Boolean;
+    FIntAsStr: Boolean;
     FSetAsStr: Boolean;
     FDateTimeAsString: Boolean;
     FFloatAsString: Boolean;
@@ -88,6 +89,7 @@ type
     procedure SetBooleanStringTrueValues(Value: string); virtual;
     procedure SetBooleanStringFalseValues(Value: string); virtual;
     procedure SetEnumAsStr(Value: Boolean); virtual;
+    procedure SetIntAsStr(Value: Boolean); virtual;
     procedure SetSetAsStr(Value: Boolean); virtual;
     procedure SetDateTimeAsStr(Value: Boolean); virtual;
     procedure SetFloatAsStr(Value: Boolean); virtual;
@@ -107,6 +109,7 @@ type
       write SetBooleanStringFalseValues;
     property BooleanAsString: Boolean read FBooleanAsString write SetBooleanAsString default True;
     property EnumerationAsString: Boolean read FEnumAsStr write SetEnumAsStr default True;
+    property TypedIntegerAsString: Boolean read FIntAsStr write SetIntAsStr default True;
     property SetAsString: Boolean read FSetAsStr write SetSetAsStr default False;
     property DateTimeAsString: Boolean read FDateTimeAsString write SetDateTimeAsStr default True;
     property FloatAsString: Boolean read FFloatAsString write SetFloatAsStr default False;
@@ -437,6 +440,7 @@ begin
   BooleanStringFalseValues := 'FALSE, NO, N';
   BooleanAsString := True;
   EnumerationAsString := True;
+  TypedIntegerAsString := True;
   SetAsString := False;
   DateTimeAsString := True;
   DefaultIfReadConvertError := False;
@@ -506,6 +510,11 @@ end;
 procedure TJvAppStoreOptions.SetEnumAsStr(Value: Boolean);
 begin
   FEnumAsStr := Value;
+end;
+
+procedure TJvAppStoreOptions.SetIntAsStr(Value: Boolean);
+begin
+  FIntAsStr := Value;
 end;
 
 procedure TJvAppStoreOptions.SetSetAsStr(Value: Boolean);
@@ -947,29 +956,52 @@ procedure TJvCustomAppStore.ReadEnumeration(const Path: string; const TypeInfo: 
   const Default; out Value);
 var
   OrdValue: Integer;
+  Conv: TIdentToInt;
+  S: string;
+  TmpDefReadError: Boolean;
 begin
   OrdValue := 0;
   CopyEnumValue(Default, OrdValue, GetTypeData(TypeInfo).OrdType);
-  if (TypeInfo = System.TypeInfo(Boolean)) or
-      (GetTypeData(GetTypeData(TypeInfo).BaseType^).MinValue < 0) then
+  if (TypeInfo = System.TypeInfo(Boolean)) or ((TypeInfo.Kind = tkEnumeration) and
+      (GetTypeData(GetTypeData(TypeInfo).BaseType^).MinValue < 0)) then
     OrdValue := Ord(ReadBoolean(Path, OrdValue <> 0))
   else
   begin
-    if TypeInfo.Kind <> tkEnumeration then
-      raise EJVCLException.Create('Not an enumeration type.');
     if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExists then
     begin
       CopyEnumValue(Default, Value, GetTypeData(TypeInfo).OrdType);
       Exit;
     end;
     try
-      // Usage of an invalid identifier to signal the value does not exist
-      OrdValue := GetEnumValue(TypeInfo, ReadString(Path, ' #!@not known@!# '));
-      if OrdValue = -1 then
+      if TypeInfo.Kind = tkInteger then
       begin
-        // Invalid string or not string found; try as Integer instead
-        OrdValue := ReadInteger(Path, OrdValue);
+        { Could be stored as a normal int or as an identifier. Try identifier first as that will
+          not raise an exception }
+        Conv := FindIdentToInt(TypeInfo);
+        if @Conv <> nil then
+        begin
+          TmpDefReadError := StoreOptions.DefaultIfReadConvertError;
+          StoreOptions.DefaultIfReadConvertError := True;
+          try
+            S := ReadString(Path, '');
+          finally
+            StoreOptions.DefaultIfReadConvertError := TmpDefReadError;
+          end;
+          if (S = '') or not (Conv(S, OrdValue)) then
+            OrdValue := ReadInteger(Path, OrdValue);
+        end
+        else
+          OrdValue := ReadInteger(Path, OrdValue);
       end
+      else if TypeInfo.Kind = tkEnumeration then
+      begin
+        // Usage of an invalid identifier to signal the value does not exist
+        OrdValue := GetEnumValue(TypeInfo, ReadString(Path, ' #!@not known@!# '));
+        if OrdValue = -1 then
+          OrdValue := ReadInteger(Path, OrdValue);
+      end
+      else
+        raise EJVCLException.Create('Invalid type.');
     except
       on E: EConvertError do
         if StoreOptions.DefaultIfReadConvertError then
@@ -983,19 +1015,40 @@ end;
 
 procedure TJvCustomAppStore.WriteEnumeration(const Path: string; const TypeInfo: PTypeInfo;
   const Value);
+var
+  Conv: TIntToIdent;
+  S: string;
 begin
   if TypeInfo = System.TypeInfo(Boolean) then
     WriteBoolean(Path, Boolean(Value))
   else
-  if GetTypeData(GetTypeData(TypeInfo).BaseType^).MinValue < 0 then
+  if (TypeInfo.Kind = tkEnumeration) and
+      (GetTypeData(GetTypeData(TypeInfo).BaseType^).MinValue < 0) then
     WriteBoolean(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType) <> 0)
   else
+  if TypeInfo.Kind = tkInteger then
+  begin
+    if StoreOptions.TypedIntegerAsString then
+    begin
+      Conv := FindIntToIdent(TypeInfo);
+      if (@Conv <> nil) and Conv(OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType), S) then
+        WriteString(Path, S)
+      else
+        WriteInteger(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType));
+    end
+    else
+      WriteInteger(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType));
+  end
+  else
+  if TypeInfo.Kind = tkEnumeration then
   begin
     if StoreOptions.EnumerationAsString then
       WriteString(Path, GetEnumName(TypeInfo, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType)))
     else
       WriteInteger(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType));
-  end;
+  end
+  else
+    raise EJVCLException.Create('Invalid type.');
 end;
 
 procedure TJvCustomAppStore.ReadSet(const Path: string; const ATypeInfo: PTypeInfo; const Default;
@@ -1154,11 +1207,16 @@ begin
         end;
       tkChar,
       tkInteger:
-        WriteInteger(PropPath, GetOrdProp(PersObj, PropName));
+        begin
+          TmpValue := GetOrdProp(PersObj, PropName);
+          ReadEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
+          SetOrdProp(PersObj, PropName, TmpValue);
+        end;
       tkInt64:
-        WriteString(PropPath, IntToStr(GetInt64Prop(PersObj, PropName)));
+        SetInt64Prop(PersObj, PropName, StrToInt64(ReadString(PropPath,
+          IntToStr(GetInt64Prop(PersObj, PropName)))));
       tkFloat:
-        WriteFloat(PropPath, GetFloatProp(PersObj, PropName));
+        SetFloatProp(PersObj, PropName, ReadFloat(PropPath, GetFloatProp(PersObj, PropName)));
       tkClass:
         begin
           if (TPersistent(GetOrdProp(PersObj, PropName)) is TStrings) then
@@ -1207,7 +1265,15 @@ begin
           end;
         tkChar,
         tkInteger:
-          WriteInteger(PropPath, GetOrdProp(PersObj, PropName));
+          begin
+            if StoreOptions.TypedIntegerAsString then
+            begin
+              TmpValue := GetOrdProp(PersObj, PropName);
+              WriteEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue);
+            end
+            else
+              WriteInteger(PropPath, GetOrdProp(PersObj, PropName));
+          end;
         tkInt64:
           WriteString(PropPath, IntToStr(GetInt64Prop(PersObj, PropName)));
         tkFloat:
