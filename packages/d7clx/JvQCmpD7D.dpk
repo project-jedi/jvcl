@@ -1,0 +1,44 @@
+package JvQCmpD7D;
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCLX Non-Visual Components'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  JvQCoreD7D,
+  JvQCmpD7R,
+  JvQStdCtrlsD7R,
+  DesignIde,
+  visualclx,
+  rtl,
+  JvQCoreD7R,
+  DJcl;
+
+contains
+  JvQPatcherEditor in '..\..\qdesign\JvQPatcherEditor.pas',
+  JvQCmpReg in '..\..\qdesign\JvQCmpReg.pas',
+  JvQPatchForm in '..\..\qrun\JvQPatchForm.pas' {FoPatch},
+  JvQDataEmbeddedEditor in '..\..\qdesign\JvQDataEmbeddedEditor.pas';
+
+end.

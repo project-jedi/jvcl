@@ -1,0 +1,43 @@
+package JvQAppFrmD7R;
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCLX Application and Form Components Runtime Package'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+{$DEFINE VisualCLX}
+
+requires
+  JvQCoreD7R,
+  JvQSystemD7R,
+  JvQStdCtrlsD7R;
+
+contains
+  JvQAnimTitle in '..\..\qrun\JvQAnimTitle.pas',
+  JvQAppAnimatedIcon in '..\..\qrun\JvQAppAnimatedIcon.pas',
+  JvQAppEvent in '..\..\qrun\JvQAppEvent.pas',
+  JvQFormAnimatedIcon in '..\..\qrun\JvQFormAnimatedIcon.pas',
+  JvQFormAnimation in '..\..\qrun\JvQFormAnimation.pas',
+  JvQFormAutoSize in '..\..\qrun\JvQFormAutoSize.pas',
+  JvQFormWallpaper in '..\..\qrun\JvQFormWallpaper.pas';
+
+end.
