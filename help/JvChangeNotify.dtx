@@ -1,7 +1,7 @@
 ##Package: System
 ##Status: Completed,Checked (peter3)
-##Skip: TJvNotifyError
 ##Skip: TJvNotifyArray
+##Skip: TJvNotifyError
 ----------------------------------------------------------------------------------------------------
 @@JvChangeNotify.pas
 Summary
@@ -215,7 +215,19 @@ Description
   CheckInterval is 100 milliseconds. To change CheckInterval, Active must be false.
 See Also
   TJvChangeNotify.Active, TJvChangeNotify.Notifications
+----------------------------------------------------------------------------------------------------
+@@TJvChangeNotify.FreeOnTerminate
+Summary
+  Determines how the internal thread is controlled.
+Description
+  Set FreeOnTerminate to True if you want the component to automatically release the listening thread
+  when you set Active to false. If you set FreeOnTerminate to False, the component will suspend the
+  thread and wait for it to terminate before freeing it.
 
+  To be able to set Active to False in the OnChangeNotify, you must set FreeOnTerminate to True. If
+  you fail to do so, the program will most likely hang.
+See Also
+  TJvChangeNotify.OnChangeNotify
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeNotify.Notifications
 Summary
@@ -278,18 +290,3 @@ Parameters
 @@TJvThreadNotifyEvent
 <TITLE TJvThreadNotifyEvent type>
 <COMBINE TJvChangeThread.OnChangeNotify>
-
-----------------------------------------------------------------------------------------------------
-@@TJvChangeNotify.FreeOnTerminate
-Summary
-  Determines how the internal thread is controlled.
-Description
-  Set FreeOnTerminate to True if you want the component to automatically release the listening thread
-  when you set Active to false. If you set FreeOnTerminate to False, the component will suspend the
-  thread and wait for it to terminate before freeing it.
-
-  To be able to set Active to False in the OnChangeNotify, you must set FreeOnTerminate to True. If
-  you fail to do so, the program will most likely hang.
-See Also
-  TJvChangeNotify.OnChangeNotify
-

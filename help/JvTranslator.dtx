@@ -180,26 +180,33 @@ Description
   this method to find a match:
   <AUTOLINK OFF>
   <CODE>
+    \<Translation\>
+      ...
+      \<Variables\>
+        \<Item\>XXXXX\</Item\>
+      \</Variables\>
+      ...
+    \</Translation\>
+  </CODE>
   This would return the string "XXX". Alternatively, the \XML could look like this: 
   <CODE>
-   
-  <Translation\>
+    \<Translation\>
       ...
       \<Variables\>
         \<Item Value="YYYY" /\>
       \</Variables\>
       ...
-    \</Translation\> 
+    \</Translation\>
   </CODE>
   <AUTOLINK ON>
   This would return the string "YYY". if more than one node has the same name, the first one found is
   the one used.
 Parameters
   Category - The name of the Category of the translation to use. The value of this parameter is
-  checked            against the names of the direct sub nodes of the root node in the \XML.
+             checked against the names of the direct sub nodes of the root node in the \XML.
   Item     - The name of the Item of the translation to use. The value of this parameter is checked
-  agains            the names of the subnodes.
-Return value
+             against the names of the subnodes.
+Return Value
   \Returns the value of the Item node or, if not found, the value of a property of Item named "Value"
   \or an empty string if the node was not found.
 
@@ -342,7 +349,7 @@ Description
   want to translate by using the Add method. Note that the strings you add must be declared as global
   variables somewhere in your project.
   
-  <B>Example</b>
+  <B>\Example</B>
   <AUTOLINK OFF>
   <CODE>
   var AString:string = 'This is a string';

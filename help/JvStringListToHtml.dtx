@@ -27,9 +27,22 @@ Description
   the \HTML inserted into the string list.
   
   The structure of the generated \HTML looks like this:
-  <AUTOLINK OFF>
-  <CODE>
-  <AUTOLINK ON>
+<AUTOLINK OFF>
+<CODE>
+  \<HTML\>
+    \<HEAD\>
+      \<TITLE\>HTMLTitle\</TITLE\>
+    \</HEAD\>
+    \<BODY\>
+     Strings[0] + \HTMLLineBreak
+     Strings[1] + \HTMLLineBreak
+     Strings[2] + \HTMLLineBreak
+     ...
+     Strings[n] + \HTMLLineBreak
+    \</BODY\>
+  \</HTML\>
+</CODE>
+<AUTOLINK ON>
   If IncludeHeader is false, only the Strings[] + HTMLLineBreak lines are included in the result.
 
 ----------------------------------------------------------------------------------------------------

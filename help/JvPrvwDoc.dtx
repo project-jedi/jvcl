@@ -25,27 +25,13 @@ Description
   IJvPrinter interface.
 
 ----------------------------------------------------------------------------------------------------
-@@IJvPrinter.SetTitle
+@@IJvPrinter.Abort
 Summary
-  Sets the document title on the print job.
+  Aborts the print job.
 Description
-  Called to set a new document title.
-Parameters
-  Value - The new title.
+  Called when the print job should be aborted.
 See Also
-  IJvPrinter.GetTitle
-
-----------------------------------------------------------------------------------------------------
-@@IJvPrinter.GetTitle
-Summary
-  Returns the document title of the print job
-Description
-  Called to get the current document title.
-Return value
-  Returns the current document title.
-See Also
-  IJvPrinter.SetTitle
-
+  IJvPrinter.BeginDoc, IJvPrinter.EndDoc, IJvPrinter.NewPage
 ----------------------------------------------------------------------------------------------------
 @@IJvPrinter.BeginDoc
 Summary
@@ -54,7 +40,6 @@ Description
   Called when the print job should be started.
 See Also
   IJvPrinter.EndDoc, IJvPrinter.NewPage, IJvPrinter.Abort
-
 ----------------------------------------------------------------------------------------------------
 @@IJvPrinter.EndDoc
 Summary
@@ -63,25 +48,6 @@ Description
   Called when the print job is finished.
 See Also
   IJvPrinter.BeginDoc, IJvPrinter.NewPage
-
-----------------------------------------------------------------------------------------------------
-@@IJvPrinter.NewPage
-Summary
-  Starts a new page in a started print job.
-Description
-  Called when the caller needs a new page.
-See Also
-  IJvPrinter.BeginDoc, IJvPrinter.EndDoc, IJvPrinter.Abort
-
-----------------------------------------------------------------------------------------------------
-@@IJvPrinter.Abort
-Summary
-  Aborts the print job.
-Description
-  Called when the print job should be aborted.
-See Also
-  IJvPrinter.BeginDoc, IJvPrinter.EndDoc, IJvPrinter.NewPage
-
 ----------------------------------------------------------------------------------------------------
 @@IJvPrinter.GetAborted
 Summary
@@ -92,7 +58,6 @@ Return value
   Returns true if the print job has been aborted.
 See Also
   IJvPrinter.Abort
-
 ----------------------------------------------------------------------------------------------------
 @@IJvPrinter.GetCanvas
 Summary
@@ -103,18 +68,6 @@ Return value
   Returns the TCanvas that the drawing is performed on.
 See Also
   IJvPrinter.GetPageWidth, IJvPrinter.GetPageHeight
-
-----------------------------------------------------------------------------------------------------
-@@IJvPrinter.GetPageWidth
-Summary
-  Should return the width of the available print area.
-Description
-  Called when the caller needs to know the size of the print page.
-Return value
-  Returns the page width in logical coordinates.
-See Also
-  IJvPrinter.GetCanvas, IJvPrinter.GetPageHeight
-
 ----------------------------------------------------------------------------------------------------
 @@IJvPrinter.GetPageHeight
 Summary
@@ -125,7 +78,16 @@ Return value
   Returns the page height in logical coordinates.
 See Also
   IJvPrinter.GetCanvas, IJvPrinter.GetPageWidth
-
+----------------------------------------------------------------------------------------------------
+@@IJvPrinter.GetPageWidth
+Summary
+  Should return the width of the available print area.
+Description
+  Called when the caller needs to know the size of the print page.
+Return value
+  Returns the page width in logical coordinates.
+See Also
+  IJvPrinter.GetCanvas, IJvPrinter.GetPageHeight
 ----------------------------------------------------------------------------------------------------
 @@IJvPrinter.GetPrinting
 Summary
@@ -136,7 +98,34 @@ Return value
   Returns true if printing is in progress.
 See Also
   IJvPrinter.BeginDoc, IJvPrinter.Abort
-
+----------------------------------------------------------------------------------------------------
+@@IJvPrinter.GetTitle
+Summary
+  Returns the document title of the print job
+Description
+  Called to get the current document title.
+Return value
+  Returns the current document title.
+See Also
+  IJvPrinter.SetTitle
+----------------------------------------------------------------------------------------------------
+@@IJvPrinter.NewPage
+Summary
+  Starts a new page in a started print job.
+Description
+  Called when the caller needs a new page.
+See Also
+  IJvPrinter.BeginDoc, IJvPrinter.EndDoc, IJvPrinter.Abort
+----------------------------------------------------------------------------------------------------
+@@IJvPrinter.SetTitle
+Summary
+  Sets the document title on the print job.
+Description
+  Called to set a new document title.
+Parameters
+  Value - The new title.
+See Also
+  IJvPrinter.GetTitle
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPreviewControl
 Summary
@@ -481,7 +470,15 @@ Description
   Use SelectedPage to determine the currently selected page. Change SelectedPage to select another
   page.
   When a page is selected, the page is highlighted with a blue frame.
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.Selection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPreviewControl.TopRow
 Summary
@@ -1017,6 +1014,48 @@ Use the <LINK TJvPreviewPageOptions.Scale, Scale> property to determine the size
 @@TJvPreviewScaleMode.smColsRows
 Display as many pages as specified by <LINK TJvPreviewPageOptions.Cols, Cols> and <LINK TJvPreviewPageOptions.Rows, Rows> and change <LINK TJvPreviewPageOptions.Scale, Scale> as necessary.
 
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewSelection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewSelection.Color
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewSelection.OnChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewSelection.Visible
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewSelection.Width
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollHintEvent
 <TITLE TJvScrollHintEvent type>

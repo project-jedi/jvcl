@@ -163,7 +163,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AOwnerID    - The owner identifier to search for.
-Return value
+Return Value
   Returns a TJvID3AudioEncryptionFrame frame, if there is such a frame in the tag controlled by the
   tag controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -182,7 +182,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AOwnerID    - The owner identifier to search for.
-Return value
+Return Value
   Returns a TJvID3AudioEncryptionFrame frame with the specified owner identifier, that was found in
   the ID3 tag, or - when no such frame was found - a newly created frame.
   If a new frame is created, its OwnerID property will be set to the value specified by the AOwnerID
@@ -297,7 +297,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
+Return Value
   Returns a TJvID3BinaryFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -315,7 +315,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
+Return Value
   Returns a TJvID3BinaryFrame frame with the specified frame identifier, that was found in the ID3
   tag, or - when no such frame was found - a newly created frame.
 See Also
@@ -334,7 +334,7 @@ Description
 Parameters
   P    - The buffer where to the binary data of the frame will be copied.
   Size - The number of bytes P points to. This may be smaller than property DataSize.
-Return value
+Return Value
   Returns true on success, false on failure.
 See Also
   TJvID3BinaryFrame.SaveToFile, TJvID3BinaryFrame.SaveToStream, TJvID3BinaryFrame.SetData
@@ -361,7 +361,7 @@ Description
     MIMEType := 'image/bmp';
     Description := 'Waves';
   end;
-  JvID3v21.Commit; 
+  JvID3v21.Commit;
   </CODE>
   <AUTOLINK ON>
 Parameters
@@ -397,7 +397,7 @@ Description
       MS.Free;
     end;
     JvID3v21.Commit;
-   end; 
+   end;
   </CODE>
   <AUTOLINK ON>
 Parameters
@@ -430,7 +430,7 @@ Description
 
       Frame.SaveToFile(TmpFileName);
     end;
-  end; 
+  end;
   </CODE>
   <AUTOLINK ON>
 Parameters
@@ -469,11 +469,15 @@ Description
         MS.Free;
       end;
     end;
-  end; 
+  end;
   </CODE>
   <AUTOLINK ON>
+  \Note that you can rewrite this example as
   <AUTOLINK OFF>
   <CODE>
+    { If Find results nil then the picture is cleared }
+    Image1.Picture.Assign(TJvID3BinaryFrame.Find(JvID3v21, fiPicture));
+  </CODE>
   <AUTOLINK ON>
 Parameters
   Stream - Specifies the name of the stream to which the binary field’s value is saved.
@@ -489,7 +493,7 @@ Description
 Parameters
   P    - Holds the new data for the binary field.
   Size - The number of bytes P points to.
-Return value
+Return Value
   Returns true on success, false on failure.
 See Also
   TJvID3BinaryFrame.GetData, TJvID3BinaryFrame.LoadFromFile, TJvID3BinaryFrame.LoadFromStream
@@ -541,7 +545,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
+Return Value
   Returns a TJvID3ContentFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -559,7 +563,7 @@ Description
 Parameters
   AController - The tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
+Return Value
   Returns a TJvID3ContentFrame frame with the specified frame identifier, that was found in the ID3
   tag, or - when no such frame was found - a newly created frame.
 See Also
@@ -632,33 +636,34 @@ Description
 
   Alternatively, you can use the FindOrCreate methods of frames to a specific frame component:
 
- 
   <AUTOLINK OFF>
   <CODE>
   var
     Frame: TJvID3Frame;
-  begin   { JvID3v21 is the tag controller }
+  begin
+    { JvID3v21 is the tag controller }
     JvID3v21.Open;
     Frame := JvID3v21.Frames.FrameByID(fiAlbum);
     if not Assigned(Frame) then
       Frame := JvID3v21.AddFrame(fiAlbum);
     if Frame is TJvID3TextFrame then
       TJvID3TextFrame(Frame).Text := 'The white album';
-  end; 
+  end;
   </CODE>
 
-  Or: 
-  <CODE>
+  Or:
 
-  begin   { JvID3v21 is the tag controller }
+  <CODE>
+  begin
+    { JvID3v21 is the tag controller }
     JvID3v21.Open;
     TJvID3TextFrame.FindOrCreate(fiAlbum).Text := 'The White Album';
-  end; 
+  end;
   </CODE>
   <AUTOLINK ON>
 Parameters
   AFrameID - Specifies the frame identifier to add.
-Return value
+Return Value
   Returns the added frame.
 See Also
   TJvID3Controller.CanAddFrame, TJvID3Frames.FrameByID
@@ -684,7 +689,7 @@ Description
   be one fiAlbum frame in a tag.
 Parameters
   AFrameID - The frame identifier of the frame.
-Return value
+Return Value
   Returns true if a frame with a frame identifier as specified by AFrameID can be added to the tag.
   Returns false otherwise.
 See Also
@@ -746,7 +751,7 @@ Description
 Parameters
   DoOverwrite - Specifies whether to overwrite the values of existing frames by the values of the
                  ID3 v1 tag.
-Return value
+Return Value
   Returns true on success, false on failure.
 See Also
   <LINK CopyFromID3v1Ctrl>, <LINK CopyToID3v1>, <LINK CopyToID3v1Ctrl>
@@ -783,7 +788,7 @@ Description
 Parameters
   DoOverwrite - Specifies whether to overwrite the values of existing frames by the values of the
                  ID3 v1 tag.
-Return value
+Return Value
   Returns true on success, false on failure.
 See Also
   <LINK CopyFromID3v1>, <LINK CopyFromID3v1Ctrl>, <LINK CopyToID3v1Ctrl>
@@ -897,7 +902,7 @@ Parameters
   AFrameID - The frame identifier to search for.
   Frame    - Returns the first frame in the tag with AFrameID as frame identifier, or nil if no
         such frame was found.
-Return value
+Return Value
   Returns true when a frame was found, or false otherwise.
 See Also
   <LINK FindNextFrame>
@@ -927,14 +932,14 @@ Description
 
     if Frame is TJvID3PictureFrame then
       Result := TJvID3PictureFrame(Frame);
-  end; 
+  end;
   </CODE>
   <AUTOLINK ON>
 Parameters
   AFrameID - The frame identifier to search for.
   From     - Specifies the frame after which to search for the frame identifier. FindNextFrame sets
               From to the next frame found or nil if no such frame was found.
-Return value
+Return Value
   Returns true when a frame was found, or false otherwise.
 See Also
   <LINK FindFirstFrame>
@@ -972,7 +977,7 @@ Description
   parameter AFrameID, in the tag controlled by the tag controller.
 Parameters
   AFrameID - Specifies the frame identifier to search for.
-Return value
+Return Value
   Returns the number of frames with a specific frame identifier.
 See Also
   TJvID3Controller.HasFrame, TJvID3Frame.FrameID
@@ -986,7 +991,7 @@ Description
   identifier as specified by parameter AFrameID.
 Parameters
   AFrameID - Specifies the frame identifier to search for.
-Return value
+Return Value
   Returns true if the tag controlled by the tag controller contains a frame with AFrameID as frame
   identifier, otherwise returns false.
 See Also
@@ -1342,7 +1347,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
+Return Value
   Returns a TJvID3DoubleListFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -1360,7 +1365,7 @@ Description
 Parameters
   AController - The tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
+Return Value
   Returns a TJvID3DoubleListFrame frame with the specified frame identifier, that was found in the
   ID3 tag, or - when no such frame was found - a newly created frame.
 See Also
@@ -1730,7 +1735,7 @@ Description
 Parameters
   AController - The tag controller that holds an ID3 v2 tag where to add the frame.
   AFrameID    - The frame identifier of the frame.
-Return value
+Return Value
   Returns true if a frame with a frame identifier as specified by AFrameID can be added to the tag.
   Returns false otherwise.
 See Also
@@ -1747,8 +1752,9 @@ Description
   When HandleError is set to heAutoCorrect, then CheckFrame will auto correct invalid frames.
 Parameters
   HandleError - Specifies how to handle errors.
-Return value
+Return Value
   The return value of CheckFrame depends on the value of HandleError:
+
   <TABLE>
   HandleError           Return value
   -----------           ------------
@@ -1870,7 +1876,7 @@ Description
     { TJvID3TextFrame does <i>not</i> support fiComment, thus this will
       generate an error }
     TextFrame.FrameID := fiComment;
-  end; 
+  end;
   </CODE>
   <AUTOLINK ON>
 See Also
@@ -1903,7 +1909,7 @@ Description
     { TJvID3TextFrame does <i>not</i> support fiComment (COMM), thus this will
       generate an error }
     TextFrame.FrameName := 'COMM';
-  end; 
+  end;
   </CODE>
   <AUTOLINK ON>
 See Also
@@ -2006,7 +2012,6 @@ Description
   be one fiAlbum frame in a tag. Therefore use FindOrCreate to add frames to the tag, which checks
   whether there already exists such frame in the tag. For example:
 
- 
   <AUTOLINK OFF>
   <CODE>
   var
@@ -2019,7 +2024,7 @@ Description
     PictureFrame := TJvPictureFrame.FindOrCreate(MyTagController, ptBand);
     PictureFrame.MIMEType := 'image/jpeg';
     PictureFrame.LoadFromFile('somepicture.jpg');
-  end; 
+  end;
   </CODE>
   <AUTOLINK ON>
 Parameters
@@ -2053,7 +2058,7 @@ Description
   of all frames are valid, and whether all frames in the tag are unique.
 Parameters
   HandleError - Specifies how to handle errors.
-Return value
+Return Value
   The return value of CheckFrame depends on the value of HandleError:
   <TABLE>
   HandleError           Return value
@@ -2088,7 +2093,7 @@ Description
   frames in the tag are unique.
 Parameters
   Frame - The frame to check.
-Return value
+Return Value
   Returns true if no duplicate frame of the specific frame was found in the tag; returns false
   otherwise.
 See Also
@@ -2128,7 +2133,7 @@ Note
 Parameters
   FrameID   - The frame identifier of the frame for which to search.
   FrameName - The frame name of the frame for which to search.
-Return value
+Return Value
   If FindFrame finds a frame with a matching name,
   it returns the TJvID3Frame component for the specified frame. Otherwise it returns nil.
 See Also
@@ -2150,7 +2155,7 @@ Description
   TJvID3FrameID type.
 Parameters
   FrameID   - The frame identifier of the frame for which to search.
-Return value
+Return Value
   FrameByID returns the TJvID3Frame component for the specified
   frame. If the frame can not be found, an exception is raised.
 See Also
@@ -2170,7 +2175,7 @@ Note
   frame is not found, FrameByName raises an exception, while FindFrame returns nil.
 Parameters
   FrameName - The frame name of an existing frame.
-Return value
+Return Value
   FrameByName returns the TJvID3Frame component for the specified
   frame. If the frame can not be found, an exception is raised.
 See Also
@@ -2194,7 +2199,7 @@ Summary
   Returns all frame identifiers in the tag.
 Description
   Use GetFrameIDs to retrieve all <LINK TJvID3Frame.FrameID,frame identifiers> in the tag.
-Return value
+Return Value
   Returns all frame identifiers in the tag as a set of TJvID3FrameID values.
 See Also
   TJvID3Frames.GetFrameNames
@@ -2224,7 +2229,7 @@ Description
   not in the Frames array, IndexOf returns -1.
 Parameters
   Frame - The frame for which to search.
-Return value
+Return Value
   Returns the index of the frame object in the Frames array. Returns -1, if the frame is not in the
   Frames array.
 See Also
@@ -2315,7 +2320,7 @@ Description
 Parameters
   AController         - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AContentDescription - The content descriptor to search for.
-Return value
+Return Value
   Returns a TJvID3GeneralObjFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -2338,7 +2343,7 @@ Description
 Parameters
   AController         - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AContentDescription - The content descriptor to search for.
-Return value
+Return Value
   Returns a TJvID3GeneralObjFrame frame with the specified owner identifier, that was found in the
   ID3 tag, or - when no such frame was found - a newly created frame.
   If a new frame is created, its ContentDescription property will be set to the value specified by the
@@ -2494,10 +2499,10 @@ Description
   </TABLE>
   Use the Value property to specify the numerical value of the frame, for example:
   <AUTOLINK OFF>
-  
+
   <CODE>
  { Sets the value of the BMP frame to 120 }
-  TJvID3NumberFrame.FindOrCreate(MyTagController, fiBPM).Value := 120; 
+  TJvID3NumberFrame.FindOrCreate(MyTagController, fiBPM).Value := 120;
   </CODE>
   <AUTOLINK ON>
 See Also
@@ -2515,7 +2520,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
+Return Value
   Returns a TJvID3NumberFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -2534,7 +2539,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
+Return Value
   Returns a TJvID3NumberFrame frame with the specified owner identifier, that was found in the ID3
   tag, or - when no such frame was found - a newly created frame.
 See Also
@@ -2580,7 +2585,7 @@ Description
   setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
-Return value
+Return Value
   Returns a TJvID3OwnershipFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -2597,7 +2602,7 @@ Description
   TJvID3Controller.Open,Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
-Return value
+Return Value
   Returns a TJvID3OwnershipFrame frame with the specified owner identifier, that was found in the ID3
   tag, or - when no such frame was found - a newly created frame.
 See Also
@@ -2659,9 +2664,7 @@ Description
 
   The following example adds a frame with a picture selected by the user to the tag:
   <AUTOLINK OFF>
-  
   <CODE>
-
   with TOpenPictureDialog.Create(Application) do
   try
     if not Execute then
@@ -2678,7 +2681,7 @@ Description
     end;
   finally
     Free;
-  end; 
+  end;
   </CODE>
   <AUTOLINK ON>
 
@@ -2709,7 +2712,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AType       - Specifies the picture type to search for.
-Return value
+Return Value
   Returns a TJvID3PictureFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -2727,9 +2730,9 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AType       - Specifies the picture type to search for.
-Return value
-  Returns a TJvID3PictureFrame frame with the specified picture type, that was found in the ID3 tag,
-  or - when no such frame was found - a newly created frame.
+Return Value
+  Returns a TJvID3PictureFrame frame with the specified picture type, that was found in the ID3
+  tag, or - when no such frame was found - a newly created frame.
   If a new frame is created, its PictureType property will be set to the value specified by the AType
   parameter.
 See Also
@@ -2806,7 +2809,7 @@ Description
   setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
-Return value
+Return Value
   Returns a TJvID3PlayCounterFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -2823,9 +2826,9 @@ Description
   TJvID3Controller.Open,Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
-Return value
-  Returns a TJvID3PlayCounterFrame frame, that was found in the ID3 tag, or - when no such frame was
-  found - a newly created frame.
+Return Value
+  Returns a TJvID3PlayCounterFrame frame, that was found in the ID3 tag, or - when no such frame
+  was found - a newly created frame.
 See Also
   TJvID3PlayCounterFrame.Find
 
@@ -2883,7 +2886,7 @@ Description
 Parameters
   AController   - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AEmailAddress - The email address to search for.
-Return value
+Return Value
   Returns a TJvID3PopularimeterFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -2905,7 +2908,7 @@ Description
 Parameters
   AController   - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AEmailAddress - The email address to search for.
-Return value
+Return Value
   Returns a TJvID3PopularimeterFrame frame with the specified owner identifier, that was found in the
   ID3 tag, or - when no such frame was found - a newly created frame.
   If a new frame is created, its EMailAddress property will be set to the value specified by the
@@ -2971,7 +2974,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
+Return Value
   Returns a TJvID3SimpleListFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -2989,7 +2992,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
+Return Value
   Returns a TJvID3SimpleListFrame frame with the specified frame identifier, that was found in the
   ID3 tag, or - when no such frame was found - a newly created frame.
   If a new frame is created, its FrameID property will be set to the value specified by the AFrameID
@@ -3071,7 +3074,7 @@ Description
   setting <LINK TJvID3Controller.Active,Active> to true or calling <LINK TJvID3Controller.Open,Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
-Return value
+Return Value
   Returns a TJvID3TermsOfUseFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -3088,7 +3091,7 @@ Description
   TJvID3Controller.Open,Open>.
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
-Return value
+Return Value
   Returns a TJvID3TermsOfUseFrame frame, that was found
   in the ID3 tag, or - when no such frame was found - a newly created frame.
 See Also
@@ -3131,14 +3134,13 @@ Description
 
   Use the Text or TextW property to specify the value of the frame, for example:
   <AUTOLINK OFF>
-  
   <CODE>
  { Sets the value of the Album frame  }
   with TJvID3TextFrame.FindOrCreate(MyTagController, fiAlbum) do
   begin
     Encoding := ienUTF_16;
     TextW := 'The White Album';
-  end; 
+  end;
   </CODE>
   <AUTOLINK ON>
 
@@ -3240,7 +3242,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
+Return Value
   Returns a TJvID3TextFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -3259,9 +3261,9 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
-  Returns a TJvID3TextFrame frame with the specified frame identifier, that was found in the ID3 tag,
-  or - when no such frame was found - a newly created frame.
+Return Value
+  Returns a TJvID3TextFrame frame with the specified frame identifier, that was found in the ID3
+  tag, or - when no such frame was found - a newly created frame.
 See Also
   TJvID3TextFrame.Find
 
@@ -3290,10 +3292,9 @@ Description
 
   Use the Value property to specify the timestamp value of the frame, for example:
   <AUTOLINK OFF>
-  
   <CODE>
  { Sets the encoding time frame to the current time }
-  TJvID3TextFrame.FindOrCreate(MyTagController, fiEncodingTime).Value := Now; 
+  TJvID3TextFrame.FindOrCreate(MyTagController, fiEncodingTime).Value := Now;
   </CODE>
   <AUTOLINK ON>
 
@@ -3331,7 +3332,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
+Return Value
   Returns a TJvID3TimestampFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -3350,7 +3351,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
+Return Value
   Returns a TJvID3TimestampFrame frame with the specified frame identifier, that was found in the ID3
   tag, or - when no such frame was found - a newly created frame.
 See Also
@@ -3381,6 +3382,9 @@ Description
   Use the URL property to specify the \URL link of the frame, for example:
   <AUTOLINK OFF>
   <CODE>
+  { Sets the official artist web page frame }
+  TJvID3TextFrame.FindOrCreate(MyTagController, fiWWWArtist).Value := 'http://www.paulvandyk.de';
+  </CODE>
   <AUTOLINK ON>
 
   There may only be one text information frame of its kind in a tag.
@@ -3422,7 +3426,7 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
+Return Value
   Returns a TJvID3URLFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -3440,9 +3444,9 @@ Description
 Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   AFrameID    - The frame identifier to search for.
-Return value
-  Returns a TJvID3URLFrame frame with the specified frame identifier, that was found in the ID3 tag,
-  or - when no such frame was found - a newly created frame.
+Return Value
+  Returns a TJvID3URLFrame frame with the specified frame identifier, that was found in the ID3
+  tag, or - when no such frame was found - a newly created frame.
 See Also
   TJvID3URLFrame.Find
 
@@ -3500,7 +3504,7 @@ Parameters
   Index       - Specifies the index of the user defined \URL link frame. Specifying 0 for Index
   searches                for the first user defined \URL link frame in the tag, specifying 1 for the
   second, etc.
-Return value
+Return Value
   Returns a TJvID3URLUserFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -3520,7 +3524,7 @@ Parameters
   Index       - Specifies the index of the user defined \URL link frame. Specifying 0 for Index
   searches                for the first user defined \URL link frame in the tag, specifying 1 for the
   second, etc.
-Return value
+Return Value
   Returns a TJvID3URLUserFrame frame with the specified owner identifier, that was found in the ID3
   tag, or - when no such frame was found - a newly created frame.
 See Also
@@ -3577,7 +3581,7 @@ Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   Index       - Specifies the index of the user defined text frame. Specifying 0 for Index searches
                for the first user defined text frame in the tag, specifying 1 for the second, etc.
-Return value
+Return Value
   Returns a TJvID3UserFrame frame, if there is such a frame in the tag controlled by the tag
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
@@ -3597,9 +3601,9 @@ Parameters
   AController - Specifies the tag controller that holds an ID3 v2 tag where in to search.
   Index       - Specifies the index of the user defined text frame. Specifying 0 for Index searches
                for the first user text link frame in the tag, specifying 1 for the second, etc.
-Return value
-  Returns a TJvID3UserFrame frame with the specified owner identifier, that was found in the ID3 tag,
-  or - when no such frame was found - a newly created frame.
+Return Value
+  Returns a TJvID3UserFrame frame with the specified owner identifier, that was found in the ID3
+  tag, or - when no such frame was found - a newly created frame.
 See Also
   TJvID3UserFrame.Find
 

@@ -891,7 +891,15 @@ Description
   the form):
   <AUTOLINK OFF>
   <CODE>
- 
+  ...
+  var
+    InteriorPage:TJvWizardInteriorPage;
+  begin
+    InteriorPage := TJvWizardInteriorPage.Create(self); // self references the form here
+    InteriorPage.Wizard := JvWizard1; // add the page to the wizard
+    InteriorPage.PageIndex := 1; // move the page so it is the second page in the wizard
+  end;
+  </CODE>
   <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
@@ -1277,7 +1285,15 @@ Description
   TJvWizard on the form):
   <AUTOLINK OFF>
   <CODE>
- 
+  ...
+  var
+    WelcomePage:TJvWizardWelcomePage;
+  begin
+    WelcomePage := TJvWizardWelcomePage.Create(self); // self references the form here
+    WelcomePage.Wizard := JvWizard1; // add the page to the wizard
+    WelcomePage.PageIndex := 0; // move the page so it is the first page in the wizard
+  end;
+  </CODE>
   <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
