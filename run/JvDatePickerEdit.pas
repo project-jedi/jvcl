@@ -181,6 +181,7 @@ type
     property Dropped;
   published
     property AllowNoDate;
+    property AlwaysReturnEditDate;
     property Anchors;
     property AutoSelect;
     property AutoSize default False;
@@ -902,8 +903,13 @@ end;
 procedure TJvCustomDatePickerEdit.CreateWnd;
 begin
   inherited;
-  SetDateFormat(ShortDateFormat);
-  EditMask := FMask;
+  BeginInternalChange;
+  try
+    SetDateFormat(ShortDateFormat);
+    EditMask := FMask;
+  finally
+    EndInternalChange;
+  end;
 end;
 
 end.
