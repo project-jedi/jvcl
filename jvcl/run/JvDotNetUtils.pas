@@ -52,14 +52,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: DrawDotNetControl
-  Author:    mh
-  Date:      25-Jun-2002
-  Arguments: Control: TJvNetControl; AColor: TColor; InControl: Boolean
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure DrawDotNetControl(Control: TWinControl; AColor: TColor; InControl: Boolean);
 var
   DC: HDC;
