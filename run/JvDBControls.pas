@@ -59,9 +59,9 @@ const
   DefJvGridOptions = [dgEditing, dgTitles, dgIndicator, dgColumnResize,
     dgColLines, dgRowLines, dgConfirmDelete, dgCancelOnExit];
 
-  {$IFDEF CBUILDER}
+  {$IFDEF BCB}
   {$NODEFINE DefJvGridOptions}
-  {$ENDIF}
+  {$ENDIF BCB}
 
 type
   { NEW VALIDATION EVENT }

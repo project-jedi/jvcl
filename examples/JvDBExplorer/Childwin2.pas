@@ -16,7 +16,7 @@
 
 {.$DEFINE USE_QR2}  { use QuickReport 2.x }
 {$IFDEF COMPILER3_UP}
-  {$IFNDEF CBUILDER}
+  {$IFNDEF BCB}
     {$DEFINE USE_QR2}
   {$ENDIF}
 {$ENDIF}

@@ -76,11 +76,11 @@ begin
     {$ENDIF}
     TJvSpinButton,
     TJvSwitch, TJvDice]);
-  {$IFDEF CBUILDER}
+  {$IFDEF BCB}
     RegisterComponents(ResStr(srSamplesPalette), [TScroller]);
   {$ELSE}
   RegisterComponents(ResStr(srSamplesPalette), [TScroller]);
-  {$ENDIF}
+  {$ENDIF BCB}
 
   RegisterNonActiveX([TJvCustomComboEdit, TJvCustomDateEdit, TJvCustomNumEdit,
     TJvFileDirEdit, TJvxCustomListBox, TJvRichEdit], axrComponentOnly);

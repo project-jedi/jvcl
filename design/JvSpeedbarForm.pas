@@ -863,11 +863,11 @@ end;
 
 procedure TJvSpeedbarEditor.ButtonsListDblClick(Sender: TObject);
 const
-  {$IFDEF CBUILDER}
+  {$IFDEF BCB}
   cSender: string[7] = '*Sender';
   {$ELSE}
   cSender: string[6] = 'Sender';
-  {$ENDIF CBUILDER}
+  {$ENDIF BCB}
   cObject: string[7] = 'TObject';
   cClick = 'Click';
   cOnClick = 'OnClick';

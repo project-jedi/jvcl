@@ -37,7 +37,7 @@ implementation
 uses
   JvInterpreter_System, JvInterpreter_SysUtils, JvInterpreter_Classes, JvInterpreter_Graphics,
   JvInterpreter_Controls, JvInterpreter_Dialogs,
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   JvInterpreter_Windows,
   JvInterpreter_StdCtrls, JvInterpreter_ComCtrls, JvInterpreter_ExtCtrls, JvInterpreter_Forms,
   JvInterpreter_Menus, JvInterpreter_Grids,
@@ -47,10 +47,10 @@ uses
   {$ENDIF}
   JvInterpreter_JvEditor,
   JvInterpreterFm,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   JvInterpreter_Types,
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   JvInterpreter;
 
 initialization
@@ -59,7 +59,7 @@ initialization
   JvInterpreter_Classes.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 //  JvInterpreter_JvRegAuto.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   JvInterpreter_Windows.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_Graphics.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_Controls.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
@@ -84,7 +84,7 @@ initialization
   JvInterpreter_JvEditor.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
   JvInterpreterFm.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
 
 end.
 

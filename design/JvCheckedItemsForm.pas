@@ -146,11 +146,11 @@ end;
 
 constructor TJvCheckItemEditor.Create(AOwner: TComponent);
 begin
-  {$IFDEF CBUILDER}
+  {$IFDEF BCB}
   inherited CreateNew(AOwner, 0);
   {$ELSE}
   inherited CreateNew(AOwner);
-  {$ENDIF CBUILDER}
+  {$ENDIF BCB}
   { Form definitions }
   {Left := 354;
   Top := 338;}

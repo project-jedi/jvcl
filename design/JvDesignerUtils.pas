@@ -33,12 +33,12 @@ unit JvDesignerUtils;
 interface
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Graphics,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Types, QGraphics,
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   SysUtils, Classes,
   {$IFDEF COMPILER6_UP}
   DesignIntf,

@@ -33,12 +33,12 @@ unit JvaScrollText;
 interface
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Controls, ExtCtrls, Forms, Graphics,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Types, QControls, QExtCtrls, QForms, QGraphics,
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent, JvClxUtils;
 

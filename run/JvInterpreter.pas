@@ -166,9 +166,9 @@ Upcoming JVCL 3.00
 
 {.$DEFINE JvInterpreter_DEBUG}
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 {$DEFINE JvInterpreter_OLEAUTO}
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 unit JvInterpreter;
 
@@ -1208,11 +1208,11 @@ type
     Code: Pointer;
   end;
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 type
   DWORD = Longint;
   PBool = PBoolean;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 
 {$IFDEF JvInterpreter_DEBUG}
 var
@@ -1515,15 +1515,15 @@ end;
 
 function Cmp(const S1, S2: string): Boolean;
 begin
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   // Direct call to CompareString is faster when ANSICompareText.
   Result := (Length(S1) = Length(S2)) and
     (CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE, PChar(S1),
     -1, PChar(S2), -1) = 2);
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
   Result := ANSICompareText(S1, S2) = 0;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 end;
 
 {************* Some code from RAStream unit **************}

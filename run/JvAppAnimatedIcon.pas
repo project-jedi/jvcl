@@ -31,12 +31,12 @@ unit JvAppAnimatedIcon;
 interface
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ExtCtrls,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Types, QGraphics, QControls, QForms, QExtCtrls, QImgList,
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent;
 
@@ -82,18 +82,18 @@ begin
 end;
 
 procedure TJvAppAnimatedIcon.Animate(Sender: TObject);
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 var
   TmpBmp: TBitmap;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 begin
   if (FIcons <> nil) and (FIcons.Count <> 0) then
   begin
     FNumber := (FNumber + 1) mod FIcons.Count;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     FIcons.GetIcon(FNumber, Application.Icon);
-    {$ENDIF COMPLIB_VCL}
-    {$IFDEF COMPLIB_CLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     TmpBmp := TBitmap.Create;
     try
       FIcons.GetBitmap(FNumber, TmpBmp);
@@ -101,7 +101,7 @@ begin
     finally
       TmpBmp.Free;
     end;
-    {$ENDIF COMPLIB_CLX}
+    {$ENDIF VisualCLX}
   end;
 end;
 

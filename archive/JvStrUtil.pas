@@ -53,10 +53,10 @@ const
 type
   TSetOfChar = set of Char;
 {$ENDIF DELPHI}
-{$IFDEF CBUILDER}
+{$IFDEF BCB}
 type
   TSetOfChar = string;
-{$ENDIF CBUILDER}
+{$ENDIF BCB}
 
 function FindNotBlankCharPos(const S: string): Integer;
 function AnsiChangeCase(const S: string): string;
@@ -345,9 +345,9 @@ begin
   {$IFDEF DELPHI}
   Result := Ch in SetOfChar;
   {$ENDIF DELPHI}
-  {$IFDEF CBUILDER}
+  {$IFDEF BCB}
   Result := Pos(Ch, SetOfChar) > 0;
-  {$ENDIF CBUILDER}
+  {$ENDIF BCB}
 end;
 
 function AddSlash2(const Dir: TFileName): string;

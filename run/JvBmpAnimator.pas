@@ -35,7 +35,7 @@ interface
 
 uses
   SysUtils,  Classes,
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, CommCtrl,
   ExtCtrls, ImgList,
   {$ELSE}
@@ -80,7 +80,7 @@ type
   protected
     procedure Paint; override;
     {$IFDEF COMPILER6_UP}
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPLIB_VCL} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
     {$ENDIF}
     procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
@@ -405,7 +405,7 @@ begin
     with Canvas do
     begin
       Brush.Color := clBlack;
-      {$IFDEF COMPLIB_CLX}
+      {$IFDEF VisualCLX}
       Rectangle(GetClientRect);
       {$ELSE}
       FrameRect(GetClientRect);

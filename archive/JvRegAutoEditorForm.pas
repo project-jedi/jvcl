@@ -618,9 +618,9 @@ begin
     {$IFDEF DELPHI}
     RegPath := 'Software\Borland\Delphi\JVCL\JvRegAutoEditorForm';
     {$ENDIF DELPHI}
-    {$IFDEF CBUILDER}
+    {$IFDEF BCB}
     RegPath := 'Software\Borland\C++Builder\JVCL\JvRegAutoEditorForm';
-    {$ENDIF CBUILDER}
+    {$ENDIF BCB}
     AutoMode := True;
     SaveWindowPlace := True;
     Props.Add('Tree.Width');

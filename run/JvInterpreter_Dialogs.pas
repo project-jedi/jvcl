@@ -41,19 +41,19 @@ implementation
 
 uses
   Classes,
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Graphics, Controls, Dialogs,
   JvInterpreter_Windows;
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Variants, Qt, QGraphics, QControls, QDialogs,
   JvInterpreter_Types;
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 type
   TCommonDialog = TQtDialog;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 
 { TCommonDialog }
 
@@ -64,7 +64,7 @@ begin
   Value := Integer(TCommonDialog(Args.Obj).Handle);
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { property Read Ctl3D: Boolean }
 
@@ -80,7 +80,7 @@ begin
   TCommonDialog(Args.Obj).Ctl3D := Value;
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { property Read HelpContext: THelpContext }
 
@@ -112,7 +112,7 @@ begin
   Value := TOpenDialog(Args.Obj).Execute;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { property Read FileEditStyle: TFileEditStyle }
 
@@ -128,7 +128,7 @@ begin
   TOpenDialog(Args.Obj).FileEditStyle := Value;
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { property Read Files: TStrings }
 
@@ -225,24 +225,24 @@ end;
 
 procedure TOpenDialog_Read_Options(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Value := S2V(Integer(TOpenDialog(Args.Obj).Options));
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Value := S2V(Word(TOpenDialog(Args.Obj).Options));
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
 { property Write Options(Value: TOpenOptions) }
 
 procedure TOpenDialog_Write_Options(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   TOpenDialog(Args.Obj).Options := TOpenOptions(V2S(Value));
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   TOpenDialog(Args.Obj).Options := TOpenOptions(Word(V2S(Value)));
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
 { property Read Title: string }
@@ -319,7 +319,7 @@ begin
   TColorDialog(Args.Obj).CustomColors := V2O(Value) as TStrings;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { property Read Options: TColorDialogOptions }
 
@@ -335,7 +335,7 @@ begin
   TColorDialog(Args.Obj).Options := TColorDialogOptions(Byte(V2S(Value)));
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { TFontDialog }
 
@@ -367,7 +367,7 @@ begin
   TFontDialog(Args.Obj).Font := V2O(Value) as TFont;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { property Read Device: TFontDialogDevice }
 
@@ -425,9 +425,9 @@ begin
   TFontDialog(Args.Obj).Options := TFontDialogOptions(Word(V2S(Value)));
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { TPrinterSetupDialog }
 
@@ -587,7 +587,7 @@ begin
   TPrintDialog(Args.Obj).ToPage := Value;
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { TFindDialog }
 
@@ -600,12 +600,12 @@ end;
 
 { procedure CloseDialog; }
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TFindDialog_CloseDialog(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TFindDialog(Args.Obj).CloseDialog;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { function Execute: Boolean; }
 
@@ -614,7 +614,7 @@ begin
   Value := TFindDialog(Args.Obj).Execute;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { property Read Left: Integer }
 
@@ -630,7 +630,7 @@ begin
   TFindDialog(Args.Obj).Left := Value;
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { property Read Position: TPoint }
 
@@ -646,7 +646,7 @@ begin
   TFindDialog(Args.Obj).Position := Var2Point(Value);
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { property Read Top: Integer }
 
@@ -662,7 +662,7 @@ begin
   TFindDialog(Args.Obj).Top := Value;
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { property Read FindText: string }
 
@@ -717,60 +717,60 @@ end;
 
 { function CreateMessageDialog(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons): TForm; }
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure JvInterpreter_CreateMessageDialog(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(CreateMessageDialog(Args.Values[0], Args.Values[1], TMsgDlgButtons(Word(V2S(Args.Values[2])))));
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { function MessageDlg(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer; }
 
 procedure JvInterpreter_MessageDlg(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Value := MessageDlg(Args.Values[0], Args.Values[1], TMsgDlgButtons(Word(V2S(Args.Values[2]))), Args.Values[3]);
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Value := MessageDlg(VarToStr(Args.Values[0]), VarToStr(Args.Values[1]), TMsgDlgType(Byte(V2S(Args.Values[2]))),
     TMsgDlgButtons(Byte(V2S(Args.Values[3]))), Args.Values[4]);
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
 { function MessageDlgPos(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer; }
 
 procedure JvInterpreter_MessageDlgPos(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Value := MessageDlgPos(Args.Values[0], Args.Values[1], TMsgDlgButtons(Word(V2S(Args.Values[2]))), Args.Values[3],
     Args.Values[4], Args.Values[5]);
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Value := MessageDlgPos(Args.Values[0], Args.Values[1], TMsgDlgButtons(Byte(V2S(Args.Values[2]))), Args.Values[3],
     Args.Values[4], Args.Values[5]);
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
 { function MessageDlgPosHelp(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer; const HelpFileName: string): Integer; }
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure JvInterpreter_MessageDlgPosHelp(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := MessageDlgPosHelp(Args.Values[0], Args.Values[1], TMsgDlgButtons(Word(V2S(Args.Values[2]))), Args.Values[3],
     Args.Values[4], Args.Values[5], Args.Values[6]);
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { procedure ShowMessage(const Msg: string); }
 
 procedure JvInterpreter_ShowMessage(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   ShowMessage(Args.Values[0]);
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   ShowMessage(VarToStr(Args.Values[0]));
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
 { procedure ShowMessageFmt(const Msg: string; Params: array of const); }
@@ -827,28 +827,28 @@ begin
     { TCommonDialog }
     AddClass(cDialogs, TCommonDialog, 'TCommonDialog');
     AddGet(TCommonDialog, 'Handle', TCommonDialog_Read_Handle, 0, [0], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TCommonDialog, 'Ctl3D', TCommonDialog_Read_Ctl3D, 0, [0], varEmpty);
     AddSet(TCommonDialog, 'Ctl3D', TCommonDialog_Write_Ctl3D, 0, [0]);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TCommonDialog, 'HelpContext', TCommonDialog_Read_HelpContext, 0, [0], varEmpty);
     AddSet(TCommonDialog, 'HelpContext', TCommonDialog_Write_HelpContext, 0, [0]);
     { TOpenOption }
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddConst(cDialogs, 'ofReadOnly', Integer(ofReadOnly));
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddConst(cDialogs, 'ofOverwritePrompt', Integer(ofOverwritePrompt));
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddConst(cDialogs, 'ofHideReadOnly', Integer(ofHideReadOnly));
     AddConst(cDialogs, 'ofNoChangeDir', Integer(ofNoChangeDir));
     AddConst(cDialogs, 'ofShowHelp', Integer(ofShowHelp));
     AddConst(cDialogs, 'ofNoValidate', Integer(ofNoValidate));
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddConst(cDialogs, 'ofAllowMultiSelect', Integer(ofAllowMultiSelect));
     AddConst(cDialogs, 'ofExtensionDifferent', Integer(ofExtensionDifferent));
     AddConst(cDialogs, 'ofPathMustExist', Integer(ofPathMustExist));
     AddConst(cDialogs, 'ofFileMustExist', Integer(ofFileMustExist));
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddConst(cDialogs, 'ofCreatePrompt', Integer(ofCreatePrompt));
     AddConst(cDialogs, 'ofShareAware', Integer(ofShareAware));
     AddConst(cDialogs, 'ofNoReadOnlyReturn', Integer(ofNoReadOnlyReturn));
@@ -860,15 +860,15 @@ begin
     { TFileEditStyle }
     AddConst(cDialogs, 'fsEdit', Integer(fsEdit));
     AddConst(cDialogs, 'fsComboBox', Integer(fsComboBox));
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     { TOpenDialog }
     AddClass(cDialogs, TOpenDialog, 'TOpenDialog');
     AddGet(TOpenDialog, 'Create', TOpenDialog_Create, 1, [varEmpty], varEmpty);
     AddGet(TOpenDialog, 'Execute', TOpenDialog_Execute, 0, [0], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TOpenDialog, 'FileEditStyle', TOpenDialog_Read_FileEditStyle, 0, [0], varEmpty);
     AddSet(TOpenDialog, 'FileEditStyle', TOpenDialog_Write_FileEditStyle, 0, [0]);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TOpenDialog, 'Files', TOpenDialog_Read_Files, 0, [0], varEmpty);
     AddGet(TOpenDialog, 'HistoryList', TOpenDialog_Read_HistoryList, 0, [0], varEmpty);
     AddSet(TOpenDialog, 'HistoryList', TOpenDialog_Write_HistoryList, 0, [0]);
@@ -890,14 +890,14 @@ begin
     AddClass(cDialogs, TSaveDialog, 'TSaveDialog');
     AddGet(TSaveDialog, 'Create', TSaveDialog_Create, 1, [varEmpty], varEmpty);
     AddGet(TSaveDialog, 'Execute', TSaveDialog_Execute, 0, [0], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     { TColorDialogOption }
     AddConst(cDialogs, 'cdFullOpen', Integer(cdFullOpen));
     AddConst(cDialogs, 'cdPreventFullOpen', Integer(cdPreventFullOpen));
     AddConst(cDialogs, 'cdShowHelp', Integer(cdShowHelp));
     AddConst(cDialogs, 'cdSolidColor', Integer(cdSolidColor));
     AddConst(cDialogs, 'cdAnyColor', Integer(cdAnyColor));
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     { TColorDialog }
     AddClass(cDialogs, TColorDialog, 'TColorDialog');
     AddGet(TColorDialog, 'Create', TColorDialog_Create, 1, [varEmpty], varEmpty);
@@ -906,11 +906,11 @@ begin
     AddSet(TColorDialog, 'Color', TColorDialog_Write_Color, 0, [0]);
     AddGet(TColorDialog, 'CustomColors', TColorDialog_Read_CustomColors, 0, [0], varEmpty);
     AddSet(TColorDialog, 'CustomColors', TColorDialog_Write_CustomColors, 0, [0]);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TColorDialog, 'Options', TColorDialog_Read_Options, 0, [0], varEmpty);
     AddSet(TColorDialog, 'Options', TColorDialog_Write_Options, 0, [0]);
-    {$ENDIF COMPLIB_VCL}
-    {$IFDEF COMPLIB_VCL}
+    {$ENDIF VCL}
+    {$IFDEF VCL}
     { TFontDialogOption }
     AddConst(cDialogs, 'fdAnsiOnly', Integer(fdAnsiOnly));
     AddConst(cDialogs, 'fdTrueTypeOnly', Integer(fdTrueTypeOnly));
@@ -932,14 +932,14 @@ begin
     AddConst(cDialogs, 'fdScreen', Integer(fdScreen));
     AddConst(cDialogs, 'fdPrinter', Integer(fdPrinter));
     AddConst(cDialogs, 'fdBoth', Integer(fdBoth));
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     { TFontDialog }
     AddClass(cDialogs, TFontDialog, 'TFontDialog');
     AddGet(TFontDialog, 'Create', TFontDialog_Create, 1, [varEmpty], varEmpty);
     AddGet(TFontDialog, 'Execute', TFontDialog_Execute, 0, [0], varEmpty);
     AddGet(TFontDialog, 'Font', TFontDialog_Read_Font, 0, [0], varEmpty);
     AddSet(TFontDialog, 'Font', TFontDialog_Write_Font, 0, [0]);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TFontDialog, 'Device', TFontDialog_Read_Device, 0, [0], varEmpty);
     AddSet(TFontDialog, 'Device', TFontDialog_Write_Device, 0, [0]);
     AddGet(TFontDialog, 'MinFontSize', TFontDialog_Read_MinFontSize, 0, [0], varEmpty);
@@ -948,8 +948,8 @@ begin
     AddSet(TFontDialog, 'MaxFontSize', TFontDialog_Write_MaxFontSize, 0, [0]);
     AddGet(TFontDialog, 'Options', TFontDialog_Read_Options, 0, [0], varEmpty);
     AddSet(TFontDialog, 'Options', TFontDialog_Write_Options, 0, [0]);
-    {$ENDIF COMPLIB_VCL}
-    {$IFDEF COMPLIB_VCL}
+    {$ENDIF VCL}
+    {$IFDEF VCL}
     { TPrinterSetupDialog }
     AddClass(cDialogs, TPrinterSetupDialog, 'TPrinterSetupDialog');
     AddGet(TPrinterSetupDialog, 'Create', TPrinterSetupDialog_Create, 1, [varEmpty], varEmpty);
@@ -987,7 +987,7 @@ begin
     AddSet(TPrintDialog, 'PrintRange', TPrintDialog_Write_PrintRange, 0, [0]);
     AddGet(TPrintDialog, 'ToPage', TPrintDialog_Read_ToPage, 0, [0], varEmpty);
     AddSet(TPrintDialog, 'ToPage', TPrintDialog_Write_ToPage, 0, [0]);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     { TFindOption }
     AddConst(cDialogs, 'frDown', Integer(frDown));
     AddConst(cDialogs, 'frFindNext', Integer(frFindNext));
@@ -1005,20 +1005,20 @@ begin
     { TFindDialog }
     AddClass(cDialogs, TFindDialog, 'TFindDialog');
     AddGet(TFindDialog, 'Create', TFindDialog_Create, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TFindDialog, 'CloseDialog', TFindDialog_CloseDialog, 0, [0], varEmpty);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TFindDialog, 'Execute', TFindDialog_Execute, 0, [0], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TFindDialog, 'Left', TFindDialog_Read_Left, 0, [0], varEmpty);
     AddSet(TFindDialog, 'Left', TFindDialog_Write_Left, 0, [0]);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TFindDialog, 'Position', TFindDialog_Read_Position, 0, [0], varEmpty);
     AddSet(TFindDialog, 'Position', TFindDialog_Write_Position, 0, [0]);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TFindDialog, 'Top', TFindDialog_Read_Top, 0, [0], varEmpty);
     AddSet(TFindDialog, 'Top', TFindDialog_Write_Top, 0, [0]);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TFindDialog, 'FindText', TFindDialog_Read_FindText, 0, [0], varEmpty);
     AddSet(TFindDialog, 'FindText', TFindDialog_Write_FindText, 0, [0]);
     AddGet(TFindDialog, 'Options', TFindDialog_Read_Options, 0, [0], varEmpty);
@@ -1042,12 +1042,12 @@ begin
     AddConst(cDialogs, 'mbAbort', Integer(mbAbort));
     AddConst(cDialogs, 'mbRetry', Integer(mbRetry));
     AddConst(cDialogs, 'mbIgnore', Integer(mbIgnore));
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddConst(cDialogs, 'mbAll', Integer(mbAll));
     AddConst(cDialogs, 'mbNoToAll', Integer(mbNoToAll));
     AddConst(cDialogs, 'mbYesToAll', Integer(mbYesToAll));
     AddConst(cDialogs, 'mbHelp', Integer(mbHelp));
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddConst(cDialogs, 'mrNone', Integer(mrNone));
     AddConst(cDialogs, 'mrOk', Integer(mrOk));
     AddConst(cDialogs, 'mrCancel', Integer(mrCancel));
@@ -1059,17 +1059,17 @@ begin
     AddConst(cDialogs, 'mrAll', Integer(mrAll));
     AddConst(cDialogs, 'mrNoToAll', Integer(mrNoToAll));
     AddConst(cDialogs, 'mrYesToAll', Integer(mrYesToAll));
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddFun(cDialogs, 'CreateMessageDialog', JvInterpreter_CreateMessageDialog, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddFun(cDialogs, 'MessageDlg', JvInterpreter_MessageDlg, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
     AddFun(cDialogs, 'MessageDlgPos', JvInterpreter_MessageDlgPos, 6, [varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty, varEmpty], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddFun(cDialogs, 'MessageDlgPosHelp', JvInterpreter_MessageDlgPosHelp, 7, [varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty, varEmpty, varEmpty], varEmpty);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddFun(cDialogs, 'ShowMessage', JvInterpreter_ShowMessage, 1, [varEmpty], varEmpty);
     AddFun(cDialogs, 'ShowMessageFmt', JvInterpreter_ShowMessageFmt, 2, [varEmpty, varEmpty], varEmpty);
     AddFun(cDialogs, 'ShowMessagePos', JvInterpreter_ShowMessagePos, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
@@ -1077,7 +1077,7 @@ begin
     AddFun(cDialogs, 'InputQuery', JvInterpreter_InputQuery, 3, [varEmpty, varEmpty, varByRef], varEmpty);
   end;
   RegisterClasses([TOpenDialog, TSaveDialog, TFontDialog, TColorDialog,
-    {$IFDEF COMPLIB_VCL} TPrintDialog, TPrinterSetupDialog, {$ENDIF COMPLIB_VCL}
+    {$IFDEF VCL} TPrintDialog, TPrinterSetupDialog, {$ENDIF VCL}
     TFindDialog, TReplaceDialog]);
 end;
 

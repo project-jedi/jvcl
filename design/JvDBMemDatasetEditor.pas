@@ -66,11 +66,11 @@ uses
 
 procedure TJvAbstractMemDataSetEditor.BorrowStructure;
 const
-  {$IFDEF CBUILDER}
+  {$IFDEF BCB}
   cCaptionFmt = '%s->%s';
   {$ELSE}
    cCaptionFmt = '%s.%s';
-  {$ENDIF CBUILDER}
+  {$ENDIF BCB}
 var
   DataSet: TDataSet;
   I: Integer;

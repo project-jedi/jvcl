@@ -31,10 +31,10 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   {$ENDIF}
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs,
   {$ENDIF}
   JvSAL, JvConsts, JvTypes, Math{$IFDEF DELPHI6_UP}, Variants{$ENDIF};

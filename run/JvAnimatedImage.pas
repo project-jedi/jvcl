@@ -30,12 +30,12 @@ unit JvAnimatedImage;
 interface
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Qt, Types, QGraphics, QControls, QForms,
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvTimer, JvComponent;
 
@@ -267,12 +267,12 @@ end;
 procedure TJvImageControl.Paint;
 var
   Bmp: TBitmap;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   DC: HDC;
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   DC: QPainterH;
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 begin
   Bmp := TBitmap.Create;
   try

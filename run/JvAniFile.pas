@@ -34,12 +34,12 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Graphics, Forms, Dialogs,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QGraphics, QForms, QDialogs, Types,
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   JvTypes;
 
 type

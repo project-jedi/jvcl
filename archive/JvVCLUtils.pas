@@ -90,7 +90,7 @@ function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
 function MsgBox(const Caption, Text: string; Flags: Integer): Integer;
 function MsgDlg(const Msg: string; AType: TMsgDlgType;
   AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
-{$IFDEF CBUILDER}
+{$IFDEF BCB}
 function FindPrevInstance(const MainFormClass: ShortString;
   const ATitle: string): HWND;
 function ActivatePrevInstance(const MainFormClass: ShortString;
@@ -98,7 +98,7 @@ function ActivatePrevInstance(const MainFormClass: ShortString;
 {$ELSE}
 function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
-{$ENDIF CBUILDER}
+{$ENDIF BCB}
 function IsForegroundTask: Boolean;
 procedure MergeForm(AControl: TWinControl; AForm: TForm; Align: TAlign;
   Show: Boolean);
@@ -1558,12 +1558,12 @@ begin
   end;
 end;
 
-{$IFDEF CBUILDER}
+{$IFDEF BCB}
 function FindPrevInstance(const MainFormClass: ShortString;
   const ATitle: string): HWND;
 {$ELSE}
 function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
-{$ENDIF CBUILDER}
+{$ENDIF BCB}
 var
   BufClass, BufTitle: PChar;
 begin
@@ -1597,12 +1597,12 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF CBUILDER}
+{$IFDEF BCB}
 function ActivatePrevInstance(const MainFormClass: ShortString;
   const ATitle: string): Boolean;
 {$ELSE}
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
-{$ENDIF CBUILDER}
+{$ENDIF BCB}
 var
   PrevWnd, PopupWnd, ParentWnd: HWND;
   {$IFDEF WIN32}

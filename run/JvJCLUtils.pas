@@ -64,10 +64,10 @@ uses
   Libc, Xlib,
   {$ENDIF}
   SysUtils, Messages, Classes,
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Graphics, Clipbrd,
   {$ENDIF}
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
   Qt, QGraphics, QClipbrd,
   {$ENDIF}
   {$IFDEF COMPILER6_UP}
@@ -396,7 +396,7 @@ function PointL(const X, Y: Longint): TPointL;
 // (rom) from JvBandUtils to make it obsolete
 function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 { begin JvIconClipboardUtils }
 
 { Icon clipboard routines }
@@ -412,7 +412,7 @@ function CreateRealSizeIcon(Icon: TIcon): HIcon;
 procedure DrawRealSizeIcon(Canvas: TCanvas; Icon: TIcon; X, Y: Integer);
 
 {end JvIconClipboardUtils }
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { begin JvRLE }
 
@@ -927,16 +927,16 @@ function PixelsToDialogUnitsY(PixUnits: Word): Word;
 
 function GetUniqueFileNameInDir(const Path, FileNameMask: string): string;
 
-{$IFDEF COMPLIB_VCL}
-{$IFDEF CBUILDER}
+{$IFDEF VCL}
+{$IFDEF BCB}
 function FindPrevInstance(const MainFormClass: ShortString;
   const ATitle: string): HWND;
 function ActivatePrevInstance(const MainFormClass: ShortString;
   const ATitle: string): Boolean;
- {$ELSE}
+{$ELSE}
 function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
- {$ENDIF CBUILDER}
+{$ENDIF BCB}
 function IsForegroundTask: Boolean;
 { BrowseForFolder displays Browse For Folder dialog }
 function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: string): Boolean;
@@ -2091,7 +2091,7 @@ type
     ExceptionRecord: PExceptionRecord;
   end;
 begin
-  { CBuilder 3 Warning !}
+  { C++ Builder 3 Warning !}
   { if linker error occured with message "unresolved external 'System::RaiseList'" try
     comment this function implementation, compile,
     then uncomment and compile again. }
@@ -2952,7 +2952,7 @@ end;
 
 
 function TextWidth(const AStr: string): Integer;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 var
   Canvas: TCanvas;
   DC: HDC;
@@ -2970,7 +2970,7 @@ begin
   end;
 end;
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 var
   Bmp: TBitmap;
 begin
@@ -3194,7 +3194,7 @@ begin
 end;
 
 procedure MemStreamToClipBoard(MemStream: TMemoryStream; const Format: Word);
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 var
   Data: THandle;
   DataPtr: Pointer;
@@ -3220,7 +3220,7 @@ begin
   end;
 end;
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 var
   Position: Integer;
 begin
@@ -3235,7 +3235,7 @@ end;
 {$ENDIF}
 
 procedure ClipBoardToMemStream(MemStream: TMemoryStream; const Format: Word);
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 var
   Data: THandle;
   DataPtr: Pointer;
@@ -3259,7 +3259,7 @@ begin
   end;
 end;
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 begin
   if Clipboard.Provides(SysUtils.Format('Stream#%d', [Format])) then
   begin
@@ -3383,7 +3383,7 @@ begin
     Result := AFalse;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 { begin JvIconClipboardUtils}
 { Icon clipboard routines }
 
@@ -3858,7 +3858,7 @@ begin
   end;
 end;
 { end JvIconClipboardUtils }
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 
 { begin JvRLE }
@@ -7729,14 +7729,12 @@ begin
   end;
 end;
 
-{$IFDEF CBUILDER}
-
+{$IFDEF BCB}
 function FindPrevInstance(const MainFormClass: ShortString;
   const ATitle: string): HWND;
 {$ELSE}
-
 function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
-{$ENDIF CBUILDER}
+{$ENDIF BCB}
 var
   BufClass, BufTitle: PChar;
 begin
@@ -7768,14 +7766,12 @@ begin
     Result := True;
 end;
 
-{$IFDEF CBUILDER}
-
+{$IFDEF BCB}
 function ActivatePrevInstance(const MainFormClass: ShortString;
   const ATitle: string): Boolean;
 {$ELSE}
-
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
-{$ENDIF CBUILDER}
+{$ENDIF BCB}
 var
   PrevWnd, PopupWnd, ParentWnd: HWND;
   IsDelphi: Longint;

@@ -44,9 +44,9 @@ uses
   JvConsts, JvDsgnConsts,
   JvBaseDlg, JvFindReplace, JvDSADialogs, JvTipOfDay, JvWinDialogs,
   JvAddPrinter, JvCommonDialogD, JvCommonExecDlg,
-  {$IFNDEF CBUILDER5}  // removed because CBUILDER5 cannot compile/link JvDialogActns
+  {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
   JvDialogActns,
-  {$ENDIF CBUILDER5}
+  {$ENDIF BCB5}
   JvActnResForm, JvDialogs, JvProgressComponent, JvPageSetupTitled, JvPageSetup,
   JvConnectNetwork, JvSelectDirectory, JvCopyError, JvDeleteError,
   JvRenameError, JvDiskPrompt, JvFindFiles, JvImageDlg, JvLoginForm, JvDualList,
@@ -86,14 +86,14 @@ begin
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
-  {$IFNDEF CBUILDER5}  // removed because CBUILDER5 cannot compile/link JvDialogActns
+  {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
   RegisterActions(SJVCLActionsCategory, [TJvBrowseForFolderAction,
     TJvSelectDirectoryAction, TJvConnectNetworkAction, TJvFloppyFormatAction,
     TJvOrganizeFavoritesAction, TJvControlPanelAction, TJvOpenFileAction,
     TJvSaveFileAction, TJvPageSetupAction, TJvPageSetupTitledAction],
     // TJvStandardActions is a datamodule with default settings for our actions
     TJvStandardActions);
-  {$ENDIF CBUILDER5}
+  {$ENDIF BCB5}
 end;
 
 end.

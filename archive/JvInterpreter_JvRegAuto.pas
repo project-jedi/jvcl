@@ -65,7 +65,7 @@ begin
   TJvRegAuto(Args.Obj).Load;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { function ReadRootString(const Section, Ident, Default: string): string; }
 
@@ -95,7 +95,7 @@ begin
   TJvRegAuto(Args.Obj).WriteRootInteger(Args.Values[0], Args.Values[1], Args.Values[2]);
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { function ReadString(const Section, Ident, Default: string): string; }
 
@@ -255,12 +255,12 @@ begin
     AddGet(TJvRegAuto, 'Create', TRegAuto_Create, 1, [varEmpty], varEmpty);
     AddGet(TJvRegAuto, 'Save', TRegAuto_Save, 0, [0], varEmpty);
     AddGet(TJvRegAuto, 'Load', TRegAuto_Load, 0, [0], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TJvRegAuto, 'ReadRootString', TRegAuto_ReadRootString, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TJvRegAuto, 'ReadRootInteger', TRegAuto_ReadRootInteger, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TJvRegAuto, 'WriteRootString', TRegAuto_WriteRootString, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TJvRegAuto, 'WriteRootInteger', TRegAuto_WriteRootInteger, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TJvRegAuto, 'ReadString', TRegAuto_ReadString, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TJvRegAuto, 'WriteString', TRegAuto_WriteString, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TJvRegAuto, 'ReadInteger', TRegAuto_ReadInteger, 3, [varEmpty, varEmpty, varEmpty], varEmpty);

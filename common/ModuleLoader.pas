@@ -60,7 +60,7 @@ function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; 
 
 {$ENDIF MSWINDOWS}
 
-{$IFDEF UNIX}
+{$IFDEF LINUX}
 
 uses
   Types, Libc;
@@ -81,7 +81,7 @@ function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: 
 function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 
-{$ENDIF UNIX}
+{$ENDIF LINUX}
 
 // (p3)
 // Simple DLL loading class. The idea is to use it to dynamically load
@@ -235,7 +235,7 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-{$IFDEF UNIX}
+{$IFDEF LINUX}
 
 // load the .so file FileName
 // the rules for FileName are those of dlopen()
@@ -337,15 +337,15 @@ begin
     Move(Buffer, Sym^, Size);
 end;
 
-{$ENDIF UNIX}
+{$ENDIF LINUX}
 
 // support routines for the TModuleLoader class
 
 function InternalLoadLibraryEx(const lpLibFilename: PChar; hFile: HFILE; dwFlags: DWORD): TModuleHandle;
 begin
-  {$IFDEF UNIX}
+  {$IFDEF LINUX}
   Result := dlopen(lpLibFilename, dwFlags);
-  {$ENDIF UNIX}
+  {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   Result := LoadLibraryEx(lpLibFilename, hFile, dwFlags);
   {$ENDIF MSWINDOWS}
@@ -354,9 +354,9 @@ end;
 function InternalGetProcAddress(hModule: TModuleHandle;
   lpProcName: PChar): Pointer;
 begin
-  {$IFDEF UNIX}
+  {$IFDEF LINUX}
   Result := dlsym(hModule, lpProcName);
-  {$ENDIF UNIX}
+  {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   Result := GetProcAddress(hModule, lpProcName);
   {$ENDIF MSWINDOWS}
@@ -364,9 +364,9 @@ end;
 
 function InternalFreeLibrary(hModule: TModuleHandle): BOOL;
 begin
-  {$IFDEF UNIX}
+  {$IFDEF LINUX}
   Result := dlclose(hModule) = 0;
-  {$ENDIF UNIX}
+  {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   Result := FreeLibrary(hModule);
   {$ENDIF MSWINDOWS}

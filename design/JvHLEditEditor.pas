@@ -34,9 +34,9 @@ uses
   Windows, Classes, SysUtils, Controls,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   VCLEditors,
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}

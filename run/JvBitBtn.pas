@@ -32,7 +32,7 @@ interface
 
 uses
   SysUtils, Classes,
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Buttons, Menus,
 {$ELSE}
   QGraphics, QControls, QForms, QButtons, QMenus,
@@ -60,13 +60,13 @@ type
     procedure SetHotFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
@@ -122,7 +122,7 @@ begin
   if FDropDown <> nil then
   begin
     FDropDown.Popup(GetClientOrigin.x, GetClientOrigin.y + Height);
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     Perform(CM_MOUSELEAVE, 0, 0);
 {$ELSE}
     MouseLeave(Self);
@@ -130,7 +130,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvBitBtn.CMParentColorChanged(var Msg: TMessage);
 {$ELSE}
 procedure TJvBitBtn.ParentColorChanged;
@@ -146,7 +146,7 @@ begin
   FGlyph.Assign(Value);
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvBitBtn.CMMouseEnter(var Msg: TMessage);
 {$ELSE}
 procedure TJvBitBtn.MouseEnter(AControl: TControl);
@@ -175,7 +175,7 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvBitBtn.CMMouseLeave(var Msg: TMessage);
 {$ELSE}
 procedure TJvBitBtn.MouseLeave(AControl: TControl);
@@ -211,10 +211,10 @@ begin
   end;
 end;
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvBitBtn.FontChanged;
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvBitBtn.CMFontChanged(var Message: TMessage);
 {$ENDIF}
 begin

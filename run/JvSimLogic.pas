@@ -30,10 +30,10 @@ unit JvSimLogic;
 interface
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs, Extctrls,
   {$ENDIF}
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, QExtCtrls, Types,
   {$ENDIF}
   SysUtils, Classes,

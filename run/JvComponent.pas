@@ -33,7 +33,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFNDEF COMPLIB_CLX}
+  {$IFNDEF VisualCLX}
   StdCtrls, Controls, ExtCtrls, Forms, CheckLst,
   {$ELSE}
   QStdCtrls,  QExtCtrls, QControls, QForms, QCheckLst, Types,

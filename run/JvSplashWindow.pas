@@ -71,11 +71,11 @@ const
 
 function CreateSplashWindow: TJvSplashWindow;
 begin
-  {$IFDEF CBUILDER}
+  {$IFDEF BCB}
   Result := TJvSplashWindow.CreateNew(Application, 0);
   {$ELSE}
   Result := TJvSplashWindow.CreateNew(Application);
-  {$ENDIF}
+  {$ENDIF BCB}
   with Result do
   begin
     BorderIcons := [];

@@ -37,12 +37,12 @@ interface
 
 uses
   SysUtils, Classes, Menus,
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Messages, Controls, Forms, Graphics, Buttons, CommCtrl,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Types, QControls, QForms, QGraphics, QButtons, QImgList,
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   JvClxUtils, JvComponent;
 
 type

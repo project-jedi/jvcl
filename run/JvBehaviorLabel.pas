@@ -42,10 +42,10 @@ unit JvBehaviorLabel;
 
 interface
 uses
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Windows, Messages, Controls, Graphics, StdCtrls, ExtCtrls, Forms,
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   QControls, QGraphics, QStdCtrls, QExtCtrls, QForms,
 {$ENDIF}
   SysUtils, Classes, JVCLVer;
@@ -293,7 +293,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FBehavior: TJvLabelBehaviorName;
     FOptions: TJvLabelBehavior;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     FOnCtl3DChanged: TNotifyEvent;
     {$ENDIF}
     FOnMouseLeave: TNotifyEvent;
@@ -305,14 +305,14 @@ type
     procedure UpdateDesigner;
     procedure SetBehavior(const Value: TJvLabelBehaviorName);
     procedure SetOptions(const Value: TJvLabelBehavior);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     {$ENDIF}
   protected
-    {$IFDEF COMPLIB_CLX}
+    {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
@@ -329,7 +329,7 @@ type
     property BehaviorOptions: TJvLabelBehavior read GetOptions write SetOptions;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
 {$ENDIF}
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -341,7 +341,7 @@ type
 
   TJvBehaviorLabel = class(TJvCustomBehaviorLabel)
   published
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     property BiDiMode;
     property DragCursor;
     property OnEndDock;
@@ -519,7 +519,7 @@ end;
 
 { TJvCustomBehaviorLabel }
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomBehaviorLabel.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
@@ -529,7 +529,7 @@ end;
 
 procedure TJvCustomBehaviorLabel.CMParentColorChanged(var Msg: TMessage);
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvCustomBehaviorLabel.ParentColorChanged;
 {$ENDIF}
 begin
@@ -573,10 +573,10 @@ begin
   Result := FOptions;
 end;
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvCustomBehaviorLabel.MouseEnter(AControl: TControl);
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomBehaviorLabel.MouseEnter(var Msg: TMessage);
 {$ENDIF}
 begin
@@ -585,10 +585,10 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvCustomBehaviorLabel.MouseLeave(AControl: TControl);
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomBehaviorLabel.MouseLeave(var Msg: TMessage);
 {$ENDIF}
 begin

@@ -47,11 +47,11 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, StdCtrls, Forms, Menus,
   JvCaret, JvToolEdit,
   {$ENDIF}
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
   QGraphics, QControls, QStdCtrls, QDialogs, QForms,
   {$ENDIF}
   JvComponent, JvMaxPixel, JVCLVer;
@@ -70,7 +70,7 @@ type
     FClipboardCommands: TJvClipboardCommands;
     FOldCommands: TJvClipboardCommands;
     FGroupIndex: Integer;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     FAlignment: TAlignment;
     FCaret: TJvCaret;
     FHotTrack: Boolean;
@@ -114,12 +114,12 @@ type
     procedure Change; override;
     procedure KeyDown(var Key:Word;Shift:TSHiftState);override;
     procedure MaxPixelChanged(Sender: TObject);
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     procedure SetSelLength(Value: Integer); override;
     procedure SetSelStart(Value: Integer); override;
     function GetPopupMenu: TPopupMenu; override;
   {$ENDIF}
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
     procedure EnabledChanged; override;
     procedure ParentColorChanged; override;
     procedure MouseEnter(AControl: TControl); override;
@@ -129,13 +129,13 @@ type
     function IsEmpty: Boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     procedure DefaultHandler(var Msg); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Loaded; override;
   {$ENDIF}
   protected
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Caret: TJvCaret read FCaret write SetCaret;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
@@ -162,7 +162,7 @@ type
 
   TJvEdit = class(TJvCustomEdit)
   published
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
@@ -188,7 +188,7 @@ type
     property ProtectPassword;
     property UseFixedPopup; // asn: clx not implemented yet
   {$ENDIF}
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
     property EchoMode;
     property InputKeys;
   {$ENDIF}
@@ -251,7 +251,7 @@ type
 implementation
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   JvFixedEditPopup,
   {$ENDIF}
   Math;
@@ -264,7 +264,7 @@ begin
   FAlignment := taLeftJustify;
   ControlStyle := ControlStyle + [csAcceptsControls];
   ClipboardCommands := [caCopy..caUndo];
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
   FHotTrack := False;
@@ -282,13 +282,13 @@ end;
 destructor TJvCustomEdit.Destroy;
 begin
   FMaxPixel.Free;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   FCaret.Free;
   {$ENDIF}
   inherited Destroy;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.Loaded;
 begin
   inherited Loaded;
@@ -313,7 +313,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.CreateParams(var Params: TCreateParams);
 const
   Styles: array [TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
@@ -326,10 +326,10 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvCustomEdit.MouseEnter(AControl: TControl);
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.CMMouseEnter(var Msg: TMessage);
 var
   I, J: Integer;
@@ -342,7 +342,7 @@ begin
   begin
     FSaved := Application.HintColor;
     Application.HintColor := FColor;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     if FHotTrack then
     begin
       I := SelStart;
@@ -359,15 +359,15 @@ begin
 end;
 
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.CMMouseLeave(var Msg: TMessage);
 var I, J: Integer;
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvCustomEdit.MouseLeave(AControl: TControl);
 {$ENDIF}
 begin
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
   inherited;
   {$ENDIF}
   // for D7...
@@ -376,7 +376,7 @@ begin
   if FOver then
   begin
     Application.HintColor := FSaved;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     if FHotTrack then
     begin
       I := SelStart;
@@ -392,7 +392,7 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
@@ -401,10 +401,10 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.CMParentColorChanged(var Msg: TMessage);
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvCustomEdit.ParentColorChanged;
 {$ENDIF}
 begin
@@ -413,7 +413,7 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.SetHotTrack(const Value: Boolean);
 begin
   FHotTrack := Value;
@@ -426,7 +426,7 @@ begin
   Result := (Length(Text) = 0);
 end;
 
-{$IFDEF COMPLIB_VCL}  // asn: clx version version has alignment prpoerty
+{$IFDEF VCL}  // asn: clx version version has alignment prpoerty
 procedure TJvCustomEdit.SetAlignment(Value: TAlignment);
 begin
   if FAlignment <> Value then
@@ -450,7 +450,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.SetDisabledColor(const Value: TColor);
 begin
   if FDisabledColor <> Value then
@@ -548,10 +548,10 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.CMEnabledchanged(var Message: TMessage);
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvCustomEdit.Enabledchanged;
 {$ENDIF}
 begin
@@ -559,10 +559,10 @@ begin
   Invalidate;
 end;
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvCustomEdit.CopyToClipboard;
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.WMCopy(var Msg: TWMCopy);
 {$ENDIF}
 begin
@@ -570,10 +570,10 @@ begin
     inherited;
 end;
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvCustomEdit.CutToClipboard;
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.WMCut(var Msg: TWMCut);
 {$ENDIF}
 begin
@@ -581,10 +581,10 @@ begin
     inherited;
 end;
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvCustomEdit.PasteFromClipboard;
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.WMPaste(var Msg: TWMPaste);
 {$ENDIF}
 begin
@@ -593,10 +593,10 @@ begin
   UpdateEdit;
 end;
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvCustomEdit.Undo;
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.WMUndo(var Msg: TWMUndo);
 {$ENDIF}
 begin
@@ -604,7 +604,7 @@ begin
     inherited;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 function TJvCustomEdit.GetReadOnly: Boolean;
 begin
   Result := inherited ReadOnly;
@@ -652,7 +652,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.SetText(const Value: string);
 begin
   inherited Text := Value;
@@ -715,7 +715,7 @@ begin
   inherited;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvCustomEdit.SetSelLength(Value: Integer);
 begin
   if csReading in ComponentState then

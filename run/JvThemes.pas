@@ -36,10 +36,10 @@ uses
   Contnrs,
  {$IFDEF COMPILER7_UP}Themes,{$ELSE}ThemeSrv,{$ENDIF}
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Controls, StdCtrls, Graphics, Buttons,
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   QControls, QForms, QGraphics, QButtons,
 {$ENDIF}
   SysUtils, Classes;
@@ -753,7 +753,7 @@ procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; NeedsParentBackground: Boolean = True); overload;
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; Color: TColor; NeedsParentBackground: Boolean = True); overload;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
   Brush: HBRUSH; NeedsParentBackground: Boolean = True);  overload;
 
@@ -765,9 +765,9 @@ function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect;
 procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint;
   R: PRect = nil); overload;
 procedure PerformEraseBackground(Control: TControl; DC: HDC; R: PRect = nil); overload;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 type
   TButtonStyle = (bsAutoDetect, bsWin31, bsNew);
 {$ENDIF}
@@ -831,7 +831,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint; R: PRect = nil);
 var
@@ -1007,7 +1007,7 @@ begin
     Result := DrawFrameControl(DC, Rect, uType, uState);
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: TRect;
   BevelWidth: Integer; Style: TButtonStyle; IsRounded, IsDown,
@@ -1041,10 +1041,10 @@ begin
   end
   else
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Result := DrawButtonFace(Canvas, Client, BevelWidth, Style, IsRounded, IsDown, IsFocused);
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   Result := DrawButtonFace(Canvas, Client, BevelWidth, IsDown, IsFocused);
 {$ENDIF}
 end;

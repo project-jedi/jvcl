@@ -32,10 +32,10 @@ uses
 {$IFDEF MSWINDOWS}
   Windows,
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Graphics, Controls, ImgList, CommCtrl,
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   QGraphics, QControls, QImgList,
 {$ENDIF}
   SysUtils, Classes; 
@@ -53,7 +53,7 @@ type
     FTransparentColor: TColor;
     FPicture: TPicture;
     FFileName: TFileName;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     FPixelFormat: TPixelFormat;
   {$ENDIF}
     FResourceIds: TStrings;
@@ -63,7 +63,7 @@ type
     procedure SetPicture(Value: TPicture);
     procedure SetTransparentMode(Value: TJvImageListTransparentMode);
     procedure SetTransparentColor(Value: TColor);
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     procedure SetPixelFormat(const Value: TPixelFormat);
     procedure SetInternalHandle(Value: THandle);
   {$ENDIF}
@@ -76,17 +76,17 @@ type
     procedure DoLoadFromFile;
   protected
     procedure DefineProperties(Filer: TFiler); override;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     procedure Initialize; override;
   {$ENDIF}
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
     procedure Initialize(const AWidth, AHeight: Integer); override;
   {$ENDIF}
     procedure Change; override;
     procedure DataChanged(Sender: TObject); virtual;
     procedure UpdateImageList;
 
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     procedure HandleNeeded; virtual;
     procedure CreateImageList; virtual;
     property FHandle: THandle write SetInternalHandle;
@@ -97,7 +97,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
 
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     procedure DrawIndirect(ImageListDrawParams: TImageListDrawParams);
       // DrawIndirect fills the .cbSize and .himl field.
     function Merge(Index1: Integer; ImageList: TImageList; Index2: Integer;
@@ -110,7 +110,7 @@ type
     procedure LoadFromFile(const Filename: string);
     procedure LoadFromStream(Stream: TStream); virtual;
   published
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     property PixelFormat: TPixelFormat read FPixelFormat write SetPixelFormat default pfDevice;
       // PixelFormat is the color resolution of the image list. pf1bit and
       // pfCustom are not supported.
@@ -152,7 +152,7 @@ type
   end;
 
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 function CreateImageListHandle(Width, Height: Integer; PixelFormat: TPixelFormat;
   Masked: Boolean; AllocBy: Integer): THandle;
 {$ENDIF}  
@@ -164,11 +164,11 @@ function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitma
 
 implementation
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 uses
   Consts, ActiveX;
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 uses
   QConsts;
 {$ENDIF}
@@ -179,7 +179,7 @@ const
 {$ENDIF}
 
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 {------------------------------------------------------------------------------}
 { Here we inject a jump to our HandleNeededHook into the static
   TCustomImageList.HandleNeeded method. }
@@ -313,7 +313,7 @@ begin
   Result := ImageList_Create(Width, Height, Flags, AllocBy,
     AllocBy);
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitmap;
   MaskColor: TColor = clFuchsia; AutoMaskColor: Boolean = False): Integer; overload;
@@ -339,7 +339,7 @@ begin
   Bmp := TBitmap.Create;
   try
     Bmp.PixelFormat := Bitmap.PixelFormat;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     TempImageList.Handle := CreateImageListHandle(Width, Height,
       Bitmap.PixelFormat, ImgList.Masked, Result);
   {$ENDIF}
@@ -354,14 +354,14 @@ begin
       Bmp.Width := 0; // clear bitmap
       Bmp.Width := Width;
       Bmp.Height := Height;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
       BitBlt(Bmp.Canvas.Handle, 0, 0, Width, Height,
         Bitmap.Canvas.Handle, i * Width, 0, SRCCOPY);
     {$ELSE}
       Bmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
                           Bitmap.Canvas,
                           Rect(i * Width, 0, (i + 1) * Width, Height));
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
 
       TempImageList.AddMasked(Bmp, MaskColor);
     end;
@@ -397,7 +397,7 @@ begin
     Bmp.PixelFormat := Bitmap.PixelFormat;
     MaskBmp.PixelFormat := MaskBitmap.PixelFormat;
 
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     TempImageList.Handle := CreateImageListHandle(Width, Height,
       Bitmap.PixelFormat, ImgList.Masked, Result);
   {$ENDIF}
@@ -408,26 +408,26 @@ begin
       Bmp.Width := 0; // clear bitmap
       Bmp.Width := Width;
       Bmp.Height := Height;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
       BitBlt(Bmp.Canvas.Handle, 0, 0, Width, Height,
         Bitmap.Canvas.Handle, i * Width, 0, SRCCOPY);
     {$ELSE}
       Bmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
                           Bitmap.Canvas,
                           Rect(i * Width, 0, (i + 1) * Width, Height));
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
 
       MaskBmp.Width := 0; // clear bitmap
       MaskBmp.Width := Width;
       MaskBmp.Height := Height;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
       BitBlt(MaskBmp.Canvas.Handle, 0, 0, Width, Height,
         MaskBitmap.Canvas.Handle, i * Width, 0, SRCCOPY);
     {$ELSE}
       MaskBmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
                               MaskBitmap.Canvas,
                               Rect(i * Width, 0, (i + 1) * Width, Height));
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
 
       TempImageList.Add(Bmp, MaskBmp);
     end;
@@ -445,7 +445,7 @@ begin
   inherited;
   FModified := False;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   if not (csDesigning in ComponentState) and not HandleNeededHookInstalled then
     InstallHandleNeededHook;
 {$ENDIF}
@@ -455,7 +455,7 @@ begin
   FMode := imPicture;
   FTransparentMode := tmColor;
   FTransparentColor := clFuchsia;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   FPixelFormat := pfDevice;
 {$ENDIF}
 
@@ -494,7 +494,7 @@ begin
       // Do not assign Filename here.
       TransparentMode := ImageList.TransparentMode;
       TransparentColor := ImageList.TransparentColor;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
       PixelFormat := ImageList.FPixelFormat;
     {$ENDIF}
     end;
@@ -690,7 +690,7 @@ end;
 
 (*
 procedure TJvImageList.DefineProperties(Filer: TFiler);
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 var
   bShare: Boolean;
   hHandle: THandle;
@@ -705,7 +705,7 @@ begin
        (not FPicture.Graphic.Empty) and
        (FMode <> imClassic) then
     begin
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
       bShare := ShareImages;
       hHandle := Handle;
       try
@@ -717,7 +717,7 @@ begin
         ShareImages := bShare;
       end;
     {$ENDIF}
-    {$IFDEF COMPLIB_CLX}
+    {$IFDEF VisualCLX}
       Clear;
       try
         inherited DefineProperties(Filer);
@@ -755,7 +755,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvImageList.SetPixelFormat(const Value: TPixelFormat);
 var ImgList: TJvImageList;
 begin
@@ -783,7 +783,7 @@ begin
       FPixelFormat := Value;
   end;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 procedure TJvImageList.SetResourceIds(Value: TStrings);
 begin
@@ -809,7 +809,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvImageList.SetInternalHandle(Value: THandle);
 begin
   if not HandleAllocated or (Handle <> Value) then
@@ -857,7 +857,7 @@ begin
     Result.Handle := h;
   end;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 
 procedure TJvImageList.LoadFromFile(const Filename: string);
@@ -882,7 +882,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvImageList.LoadFromStream(Stream: TStream);
 var Adapter: IStream;
 begin
@@ -913,8 +913,8 @@ begin
   end;
   ImageList_Write(Handle, Adapter);
 end;
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 procedure TJvImageList.LoadFromStream(Stream: TStream);
 begin
   ReadData(Stream);
@@ -924,9 +924,9 @@ procedure TJvImageList.SaveToStream(Stream: TStream);
 begin
   WriteData(Stream);
 end;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 initialization
   HandleNeededHookInstalled := False;
 

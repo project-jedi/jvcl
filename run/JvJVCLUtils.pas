@@ -42,19 +42,19 @@ uses
   {$ENDIF LINUX}
   SysUtils, Classes,
   JvClxUtils,
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus, Dialogs,
   ComCtrls, ImgList, Grids,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Qt, QTypes, Types, QForms, QGraphics, QControls, QStdCtrls, QExtCtrls, QMenus,
   QDialogs, QComCtrls, QImgList, QGrids, QWinCursors,
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   IniFiles,
   JclBase, JclSysUtils, JclStrings, JvJCLUtils,
   JvAppStore, JvTypes;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 // Transform an icon to a bitmap
 function IconToBitmap(Ico: HICON): TBitmap;
 // Transform an icon to a bitmap using an image list
@@ -62,7 +62,7 @@ function IconToBitmap2(Ico: HICON; Size: Integer = 32;
   TransparentColor: TColor = clNone): TBitmap;
 function IconToBitmap3(Ico: HICON; Size: Integer = 32;
   TransparentColor: TColor = clNone): TBitmap;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 // bitmap manipulation functions
 // NOTE: returned bitmap must be freed by caller!
@@ -92,12 +92,12 @@ type
 procedure SetWallpaper(const Path: string); overload;
 procedure SetWallpaper(const Path: string; Style: TJvWallpaperStyle); overload;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 // screen capture functions
 function CaptureScreen(IncludeTaskBar: Boolean = True): TBitmap; overload;
 function CaptureScreen(Rec: TRect): TBitmap; overload;
 function CaptureScreen(WndHandle: Longword): TBitmap; overload;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 {$ENDIF MSWINDOWS}
 //Convert RGB Values to HSV
@@ -105,7 +105,7 @@ procedure RGBToHSV(r, g, b: Integer; var h, s, v: Integer);
 
 { from JvVCLUtils }
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 { Windows resources (bitmaps and icons) VCL-oriented routines }
 procedure DrawBitmapTransparent(Dest: TCanvas; DstX, DstY: Integer;
   Bitmap: TBitmap; TransparentColor: TColor);
@@ -130,16 +130,16 @@ procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap; Cols, Rows,
 procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
   X, Y, Index: Integer; HighLightColor, GrayColor: TColor; DrawHighlight:
     Boolean);
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 function MakeIcon(ResID: PChar): TIcon;
 function MakeIconID(ResID: Word): TIcon;
 function MakeModuleIcon(Module: THandle; ResID: PChar): TIcon;
 function CreateBitmapFromIcon(Icon: TIcon; BackColor: TColor): TBitmap;
 function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { Execute executes other program and waiting for it
   terminating, then return its Exit Code }
@@ -149,7 +149,7 @@ function Execute(const CommandLine, WorkingDirectory: string): Integer;
 // format: <Filename> [,@n] or [,,m] or [,@n,m]
 // where @n = zero-based index of the applet to start (if there is more than one
 // m is the zero-based index of the tab to display
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure LaunchCpl(FileName: string);
 
 {
@@ -178,7 +178,7 @@ function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings;
 }
 function GetControlPanelApplet(const AFileName: string; Strings: TStrings;
   Images: TCustomImageList = nil): Boolean;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 {$IFDEF MSWINDOWS}
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint):
@@ -266,7 +266,7 @@ function ScreenCursor(ACursor: TCursor): IInterface;
 // loads the more modern looking drag cursors from OLE32.DLL
 function LoadOLEDragCursors: Boolean;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
 
 { Windows API level routines }
@@ -278,7 +278,7 @@ procedure DrawTransparentBitmap(DC: HDC; Bitmap: HBITMAP;
   DstX, DstY: Integer; TransparentColor: TColorRef);
 function PaletteEntries(Palette: HPALETTE): Integer;
 procedure ShadeRect(DC: HDC; const Rect: TRect);
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 function ScreenWorkArea: TRect;
 
 { Grid drawing }
@@ -305,7 +305,7 @@ procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
 procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
   Bmp: TGraphic; Rect: TRect);
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 type
   TJvScreenCanvas = class(TCanvas)
   private
@@ -317,7 +317,7 @@ type
     procedure SetOrigin(X, Y: Integer);
     procedure FreeHandle;
   end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
   { end from JvVCLUtils }
 
@@ -340,7 +340,7 @@ function FindFormByClass(FormClass: TFormClass): TForm;
 function FindFormByClassName(FormClassName: string): TForm;
 { AppMinimized returns True, if Application is minimized }
 function AppMinimized: Boolean;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 { MessageBox is Application.MessageBox with string (not PChar) parameters.
   if Caption parameter = '', it replaced with Application.Title }
 function MessageBox(const Msg: string; Caption: string;
@@ -356,7 +356,7 @@ function MsgDlgDef(const Msg, ACaption: string; DlgType: TMsgDlgType;
   into two image lists ALarge and ASmall}
 procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList; const NameRes:
   string);
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { returns the sum of pc.Left, pc.Width and piSpace}
 function ToRightOf(const pc: TControl; piSpace: Integer = 0): Integer;
@@ -443,11 +443,11 @@ procedure IniReadSections(IniFile: TObject; Strings: TStrings);
 procedure IniEraseSection(IniFile: TObject; const Section: string);
 procedure IniDeleteKey(IniFile: TObject; const Section, Ident: string);
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure AppBroadcast(Msg, wParam: Longint; lParam: Longint);
 
 procedure AppTaskbarIcons(AppOnly: Boolean);
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { Internal using utilities }
 
@@ -479,7 +479,7 @@ type
     mmTripel, mmGrayscale);
 
 function GetBitmapPixelFormat(Bitmap: TBitmap): TPixelFormat;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 function GetPaletteBitmapFormat(Bitmap: TBitmap): TPixelFormat;
 procedure SetBitmapPixelFormat(Bitmap: TBitmap; PixelFormat: TPixelFormat;
   Method: TMappingMethod);
@@ -500,7 +500,7 @@ function ZoomImage(ImageW, ImageH, MaxW, MaxH: Integer; Stretch: Boolean):
 
 var
   DefaultMappingMethod: TMappingMethod = mmHistogram;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 type
   TJvGradientOptions = class(TPersistent)
@@ -626,11 +626,11 @@ function JvListViewSaveState(ListView: TListView): TJvLVItemStateData;
 function JvListViewRestoreState(ListView: TListView; Data: TJvLVItemStateData;
   MakeVisible: Boolean = True; FocusFirst: Boolean = False): Boolean;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 function JvListViewGetOrderedColumnIndex(Column: TListColumn): Integer;
 
 procedure JvListViewSetSystemImageList(ListView: TListView);
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 //------------------------------------------------------------------------------
 // MessageBox
@@ -698,7 +698,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 function IconToBitmap(Ico: HICON): TBitmap;
 var
@@ -765,7 +765,7 @@ begin
     Tmp.Free;
   end;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 function GetMax(i, j, K: Integer): Integer;
 begin
@@ -814,7 +814,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 function CaptureScreen(Rec: TRect): TBitmap;
 const
@@ -881,7 +881,7 @@ begin
   else
     Result := nil;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 procedure SetWallpaper(const Path: string);
 begin
@@ -1129,7 +1129,7 @@ begin
 end;
 {$ENDIF LINUX}
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 procedure LaunchCpl(FileName: string);
 begin
@@ -1295,7 +1295,7 @@ begin
   SysUtils.FindClose(F);
   Result := Strings.Count > 0;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { imported from VCLFunctions }
 
@@ -1325,7 +1325,7 @@ begin
   Result := [];
   if HasFlag(State, LVIS_ACTIVATING) then
     Include(Result, isActivating);
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   if HasFlag(State, LVIS_CUT) then
     Include(Result, isCut);
   if HasFlag(State, LVIS_DROPHILITED) then
@@ -1381,7 +1381,7 @@ end;
 
 { Bitmaps }
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 function MakeModuleBitmap(Module: THandle; ResID: PChar): TBitmap;
 begin
@@ -1887,7 +1887,7 @@ begin
     Canvas.Brush.Color := SaveColor;
   end;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { Brush Pattern }
 
@@ -1925,22 +1925,22 @@ end;
 function MakeModuleIcon(Module: THandle; ResID: PChar): TIcon;
 begin
   Result := TIcon.Create;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Result.Handle := LoadIcon(Module, ResID);
   if Result.Handle = 0 then
   begin
     Result.Free;
     Result := nil;
   end;
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
   try
     Result.LoadFromResourceName(HInstance, ResID);
   except
     Result.Free;
     Result := nil;
   end;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 end;
 
 { Create TBitmap object from TIcon }
@@ -1970,7 +1970,7 @@ begin
 end;
 
 function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 var
   Bmp: TBitmap;
 {$ENDIF}
@@ -1979,16 +1979,16 @@ begin
   try
     if TransparentColor = clDefault then
       TransparentColor := Bitmap.TransparentColor;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     AllocBy := 1;
 {$ENDIF}
     AddMasked(Bitmap, TransparentColor);
     Result := TIcon.Create;
     try
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
       GetIcon(0, Result);
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
       Bmp := TBitmap.Create;
       try
         GetBitmap(0, Bmp);
@@ -2075,7 +2075,7 @@ begin
   Result := ColorToRGB(Color) or PaletteMask;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
 var
@@ -2114,7 +2114,7 @@ begin
   end;
   Result := CreateFontIndirect(LogFont);
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 function PaletteEntries(Palette: HPALETTE): Integer;
 begin
@@ -2186,7 +2186,7 @@ begin
   TJvHack(AForm).DestroyHandle;
   with AForm do
   begin
-    BorderStyle := {$IFDEF COMPLIB_VCL}bsNone{$ELSE}fbsNone{$ENDIF};
+    BorderStyle := {$IFDEF VCL}bsNone{$ELSE}fbsNone{$ENDIF};
     BorderIcons := [];
     Parent := AControl;
   end;
@@ -2271,7 +2271,7 @@ end;
 { Standard Windows MessageBox function }
 
 function MsgBox(const Caption, Text: string; Flags: Integer): Integer;
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 var
   mbs: TMessageButtons;
   def: TMessageButton;
@@ -2279,10 +2279,10 @@ var
   DefFlags: Integer;
 {$ENDIF}
 begin
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Result := Application.MessageBox(PChar(Text), PChar(Caption), Flags);
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   mbs := [];
   DefFlags := Flags and $00000F00;
   case Flags and $0000000F of
@@ -2374,23 +2374,23 @@ var
     { Difference between start and end RGB values }
   ColorBand: TRect; { Color band rectangular coordinates }
   i, Delta: Integer;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Brush: HBRUSH;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 begin
   if IsRectEmpty(ARect) then
     Exit;
   if Colors < 2 then
   begin
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     Brush := CreateSolidBrush(ColorToRGB(StartColor));
     FillRect(Canvas.Handle, ARect, Brush);
     DeleteObject(Brush);
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
     Canvas.Brush.Color := StartColor;
     Canvas.FillRect(ARect);
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
     Exit;
   end;
   StartColor := ColorToRGB(StartColor);
@@ -2458,21 +2458,21 @@ begin
           end;
       end;
       { Calculate the color band's color }
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
       Brush := CreateSolidBrush(RGB(
         StartRGB[0] + MulDiv(i, RGBDelta[0], Colors - 1),
         StartRGB[1] + MulDiv(i, RGBDelta[1], Colors - 1),
         StartRGB[2] + MulDiv(i, RGBDelta[2], Colors - 1)));
       FillRect(Canvas.Handle, ColorBand, Brush);
       DeleteObject(Brush);
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
       Canvas.Brush.Color := RGB(
         StartRGB[0] + MulDiv(i, RGBDelta[0], Colors - 1),
         StartRGB[1] + MulDiv(i, RGBDelta[1], Colors - 1),
         StartRGB[2] + MulDiv(i, RGBDelta[2], Colors - 1));
       Canvas.FillRect(ColorBand);
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
     end;
   end;
   if Direction in [fdTopToBottom, fdBottomToTop] then
@@ -2495,7 +2495,7 @@ begin
           ColorBand.Right := ColorBand.Left + Delta;
         end;
     end;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     case Direction of
       fdTopToBottom, fdLeftToRight:
         Brush := CreateSolidBrush(EndColor);
@@ -2504,8 +2504,8 @@ begin
     end;
     FillRect(Canvas.Handle, ColorBand, Brush);
     DeleteObject(Brush);
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
     case Direction of
       fdTopToBottom, fdLeftToRight:
         Canvas.Brush.Color := EndColor;
@@ -2513,7 +2513,7 @@ begin
       Canvas.Brush.Color := StartColor;
     end;
     Canvas.FillRect(ColorBand);
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
   end;
 end;
 
@@ -2526,11 +2526,11 @@ begin
     Buffer[i] := Chr(i + Ord('A'));
   for i := 0 to 25 do
     Buffer[i + 26] := Chr(i + Ord('a'));
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   Result.X := Canvas.TextWidth(Buffer);
   Result.Y := Canvas.TextHeight(Buffer);
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   GetTextExtentPoint(Canvas.Handle, Buffer, 52, TSize(Result));
 {$ENDIF}
   Result.X := Result.X div 52;
@@ -2610,7 +2610,7 @@ var
   Handle: HCURSOR;
 begin
   Handle := LoadCursor(Instance, ResID);
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   if Handle = 0 then
     Handle := LoadAniCursor(Instance, ResID);
 {$ENDIF}
@@ -2620,7 +2620,7 @@ begin
     Result := GetNextFreeCursorIndex(crJVCLFirst, False);
     Screen.Cursors[Result] := Handle;
   except
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     DestroyCursor(Handle);
 {$ENDIF}
     raise;
@@ -2716,7 +2716,7 @@ const
     DT_RIGHT or DT_EXPANDTABS or DT_NOPREFIX,
     DT_CENTER or DT_EXPANDTABS or DT_NOPREFIX);
   WrapFlags: array[Boolean] of Integer = (0, DT_WORDBREAK);
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   RTL: array[Boolean] of Integer = (0, DT_RTLREADING);
 var
   b, r: TRect;
@@ -2773,13 +2773,13 @@ begin
     end;
   end;
 end;
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 begin
   ACanvas.TextRect(ARect, ARect.Left + DX, ARect.Top + DY,
     Text, AlignFlags[Alignment] or WrapFlags[WordWrap]);
 end;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 
 procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
   const s: string; const ARect: TRect; Align: TAlignment;
@@ -2857,7 +2857,7 @@ begin
   TJvHack(Control).Canvas.Draw(Rect.Left, Rect.Top, Bmp);
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 destructor TJvScreenCanvas.Destroy;
 begin
@@ -2888,7 +2888,7 @@ var
 begin
   SetWindowOrgEx(Handle, -X, -Y, @FOrigin);
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 // (rom) moved to file end to minimize W- switch impact at end of function
 
@@ -2973,15 +2973,15 @@ end;
 
 function AppMinimized: Boolean;
 begin
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Result := IsIconic(Application.Handle);
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   Result := QWidget_isMinimized(Application.AppWidget);
 {$ENDIF}
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 function MessageBox(const Msg: string; Caption: string; const Flags: Integer):
   Integer;
@@ -3103,7 +3103,7 @@ begin
   end;
   Ico.Free;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 procedure CenterHor(Parent: TControl; MinLeft: Integer; Controls: array of
   TControl);
@@ -3209,10 +3209,10 @@ function TargetFileName(const FileName: TFileName): TFileName;
 begin
   Result := FileName;
   if CompareText(ExtractFileExt(FileName), '.lnk') = 0 then
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     if ResolveLink(Application.Handle, FileName, Result) <> 0 then
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
       if ResolveLink(QWidget_winId(Application.AppWidget), FileName, Result) <> 0
         then
 {$ENDIF}
@@ -3325,18 +3325,18 @@ begin
       break;
     end;
   if Num <> -1 then
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     KillTimer(Application.Handle, Num)
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
     KillTimer(QWidget_winId(Application.AppWidget), Num)
 {$ENDIF}
   else
     Num := ProcList.Add(TJvProcItem.Create(Proc));
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   SetTimer(Application.Handle, Num, Pause, @TmrProc);
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   SetTimer(QWidget_winId(Application.AppWidget), Num, Pause, @TmrProc);
 {$ENDIF}
 end;
@@ -3766,7 +3766,7 @@ begin
   begin
     if (Form = Application.MainForm) and AppMinimized then
       ShowCmd := SW_SHOWMINIMIZED;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     if (FormStyle = fsMDIChild) and (WindowState = wsMinimized) then
       Flags := Flags or WPF_SETMINPOSITION;
 {$ENDIF}
@@ -3835,10 +3835,10 @@ begin
         StorePath + '\' + siPixels, Screen.PixelsPerInch));
       if DataFound then
       begin
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
         if not (BorderStyle in [bsSizeable, bsSizeToolWin]) then
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
           if not (BorderStyle in [fbsSizeable, fbsSizeToolWin]) then
 {$ENDIF}
             rcNormalPosition := Rect(rcNormalPosition.Left,
@@ -3877,7 +3877,7 @@ begin
         SW_MAXIMIZE:
           WinState := wsMaximized;
       end;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
       if (WinState = wsMinimized) and ((Form = Application.MainForm)
         or (Application.MainForm = nil)) then
       begin
@@ -3946,7 +3946,7 @@ begin
     LoadState, LoadPosition);
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 procedure AppBroadcast(Msg, wParam: Longint; lParam: Longint);
 var
@@ -3969,7 +3969,7 @@ begin
   if AppOnly then
     SwitchToWindow(Application.Handle, False);
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 { end JvAppUtils }
 { begin JvGraph }
 // (rom) moved here to make JvMaxMin obsolete
@@ -4003,7 +4003,7 @@ begin
   case PixelFormat of
     pf1bit:
       Result := 2;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     pf4bit:
       Result := 16;
 {$ENDIF}
@@ -4014,7 +4014,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 function ScreenPixelFormat: TPixelFormat;
 var
@@ -4043,7 +4043,7 @@ function ScreenColorCount: Integer;
 begin
   Result := PixelFormatToColors(ScreenPixelFormat);
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { Quantizing }
 { Quantizing procedures based on free C source code written by
@@ -5013,7 +5013,7 @@ begin
 end;
 *)
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 { DIB utility routines }
 
 function GetPaletteBitmapFormat(Bitmap: TBitmap): TPixelFormat;
@@ -5037,7 +5037,7 @@ begin
     end;
   end;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 function GetBitmapPixelFormat(Bitmap: TBitmap): TPixelFormat;
 begin
@@ -5053,7 +5053,7 @@ begin
   Result := Result div 8;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 procedure InitializeBitmapInfoHeader(Bitmap: HBITMAP; var BI: TBitmapInfoHeader;
   PixelFormat: TPixelFormat);
@@ -5395,7 +5395,7 @@ begin
     RestoreDC(Canvas.Handle, SaveIndex);
   end;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 //=== TJvGradientOptions ============================================================
 
@@ -5502,18 +5502,18 @@ type
   TDialogFunc = function(var DialogData): Integer; stdcall;
 var
   ActiveWindow: HWND;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   WindowList: Pointer;
 {$ENDIF}
 begin
   ActiveWindow := GetActiveWindow;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   WindowList := DisableTaskWindows(0);
 {$ENDIF}
   try
     Result := TDialogFunc(DialogFunc)(DialogData) = 0;
   finally
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     EnableTaskWindows(WindowList);
 {$ENDIF}
     SetActiveWindow(ActiveWindow);
@@ -5559,12 +5559,12 @@ begin
   try
     if (Application.MainForm <> nil) and
       Application.MainForm.HandleAllocated then
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
       Wnd := Application.MainForm.Handle
     else
       Wnd := Application.Handle;
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
     Wnd := QWidget_winId(Application.MainForm.Handle)
   else
     Wnd := QWidget_winId(Application.AppWidget);
@@ -5636,7 +5636,7 @@ end;
 procedure MoveFileEx(const FileName, DestName: TFileName;
   ShellDialog: Boolean);
 begin
-  if {$IFDEF COMPLIB_VCL}NewStyleControls and {$ENDIF}ShellDialog then
+  if {$IFDEF VCL}NewStyleControls and {$ENDIF}ShellDialog then
     CopyMoveFileShell(FileName, DestName, False, False, True)
   else
     MoveFile(FileName, DestName);
@@ -5658,7 +5658,7 @@ var
   FSize, BytesCopied, TotalCopied: Longint;
   Attr: Integer;
 begin
-  if {$IFDEF COMPLIB_VCL}NewStyleControls and {$ENDIF}ShellDialog then
+  if {$IFDEF VCL}NewStyleControls and {$ENDIF}ShellDialog then
   begin
     CopyMoveFileShell(FileName, DestName, not OverwriteReadOnly,
       False, False);
@@ -5718,7 +5718,7 @@ begin
       SetProgressValue(ProgressControl, 0);
   end;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { end JvFileUtil }
 
@@ -5743,11 +5743,11 @@ begin
   with AToolBar do
   begin
     TotalWidth := BorderWidth;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     for i := ButtonCount - 1 downto 0 do
       Buttons[i].Free;
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
     for i := ControlCount - 1 downto 0 do
       if Controls[i] is TToolButton then
         Controls[i].Free;
@@ -5762,10 +5762,10 @@ begin
       Button.AutoSize := True;
       Button.Caption := Items[i].Caption;
       Button.Grouped := True;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
       Button.MenuItem := Items[i];
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
       if Items[i].Action <> nil then
         Button.Action := Items[i].Action
       else
@@ -5865,7 +5865,7 @@ procedure JvListViewSortClick(Column: TListColumn; AscendingSortImage: Integer;
   DescendingSortImage: Integer);
 var
   ListView: TListView;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   i: Integer;
 {$ENDIF}
 begin
@@ -5873,7 +5873,7 @@ begin
   ListView.Columns.BeginUpdate;
   try
     with ListView.Columns do
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
       for i := 0 to Count - 1 do
         Items[i].ImageIndex := -1;
 {$ENDIF}
@@ -5881,7 +5881,7 @@ begin
       ListView.Tag := ListView.Tag xor $100
     else
       ListView.Tag := Column.Index;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     if ListView.Tag and $100 = 0 then
       Column.ImageIndex := AscendingSortImage
     else
@@ -5938,7 +5938,7 @@ end;
 procedure JvListViewSelectAll(ListView: TListView; Deselect: Boolean);
 var
   i: Integer;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   h: THandle;
   Data: Integer;
 {$ENDIF}
@@ -5951,7 +5951,7 @@ begin
       SaveOnSelectItem := OnSelectItem;
       WaitCursor;
       try
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
         h := Handle;
         OnSelectItem := nil;
         if Deselect then
@@ -5961,7 +5961,7 @@ begin
         for i := 0 to Items.Count - 1 do
           ListView_SetItemState(h, i, Data, LVIS_SELECTED);
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
         for i := 0 to Items.Count - 1 do
           Items[i].Selected := not Deselect;
 {$ENDIF}
@@ -6022,16 +6022,16 @@ begin
         TempItem.Selected := True;
       end;
     if MakeVisible and (TempItem <> nil) then
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
       TempItem.MakeVisible(True);
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
     TempItem.MakeVisible;
 {$ENDIF}
   end;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 function JvListViewGetOrderedColumnIndex(Column: TListColumn): Integer;
 var
@@ -6066,7 +6066,7 @@ begin
     SHGFI_SYSICONINDEX or SHGFI_LARGEICON);
   SendMessage(ListView.Handle, LVM_SETIMAGELIST, LVSIL_NORMAL, ImageListHandle);
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 //==============================================================================
 // MessageBox
@@ -6106,7 +6106,7 @@ end;
 
 function GetDefaultCheckBoxSize: TSize;
 begin
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   with TBitmap.Create do
   try
     Handle := LoadBitmap(0, PChar(OBM_CHECKBOXES));

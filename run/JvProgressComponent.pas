@@ -89,11 +89,11 @@ type
     //ExceptionRecord: PExceptionRecord;
   end;
 begin
-  { CBuilder 3 Warning !}
+  { C++ Builder 3 Warning !}
   { if linker error occured with message "unresolved external 'System::RaiseList'" try
     comment this function implementation, compile,
     then uncomment and compile again. }
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   {$IFDEF COMPILER6_UP}
   {$WARN SYMBOL_DEPRECATED OFF}
   {$ENDIF}
@@ -104,7 +104,7 @@ begin
   end
   else
     Result := nil;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 {$IFDEF LINUX}
   // XXX: changing exception in stack frame is not supported on Kylix
   Writeln('ChangeTopException');
@@ -122,13 +122,13 @@ type
 
 procedure TJvProgressComponent.Execute;
 begin
-{$IFDEF CBUILDER}
+{$IFDEF BCB}
   if not Assigned(FForm) then
     FForm := TJvProgressForm.CreateNew(Self, 1);
 {$ELSE}
   if not Assigned(FForm) then
     FForm := TJvProgressForm.CreateNew(Self);
-{$ENDIF}
+{$ENDIF BCB}
   try
     FForm.Caption := Caption;
     with FForm do
