@@ -88,7 +88,7 @@ File72=..\..\jvcl\source\JvWndProcHook.pas
 Count=0
 
 [Description Files]
-Count=86
+Count=87
 File0=generated includes\JVCL.FuncRef.dtx
 File1=generic\JVCL.Acknowledge.dtx
 File2=generic\JVCL.FileRef.dtx
@@ -175,6 +175,7 @@ File82=JvToolBar.dtx
 File83=JvTrayIcon.dtx
 File84=JvWndProcHook.dtx
 File85=tutorials\JVCL.Tutorials.Plugins.dtx
+File86=tutorials\JVCL.Tutorials.ScheduledEvents.dtx
 
 [Description Include Directories]
 Count=2
