@@ -2754,16 +2754,17 @@ begin
     PaintCaret(False);
     if Vert then
     begin {Vertical Scroll}
-      { it is optimized [translated] }
+      { optimized scrolling }
       OldFTopRow := FTopRow;
       FTopRow := ScrollPos;
       {$IFDEF VCL}
       if Abs((OldFTopRow - ScrollPos) * FCellRect.Height) < FEditorClient.Height then
       begin
         R := FEditorClient.ClientRect;
-        R.Bottom := R.Top + CellRect.Height * (FVisibleRowCount + 1); {??}
+        R.Bottom := R.Top + CellRect.Height * FVisibleRowCount;
         R.Left := 0; // update gutter
         RClip := R;
+        Inc(RClip.Bottom, CellRect.Height);
         ScrollDC(
           FEditorClient.Canvas.Handle, // handle of device context
           0, // horizontal scroll units
@@ -2773,6 +2774,7 @@ begin
           0, // handle of scrolling region
           @RUpdate // address of structure for update rectangle
           );
+        Inc(RUpdate.Bottom, FCellRect.Height);
         InvalidateRect(Handle, @RUpdate, False);
       end
       else
@@ -2782,15 +2784,16 @@ begin
     end
     else {Horizontal Scroll}
     begin
-      { it is not optimized [translated] }
+      { optimized scrolling }
       OldFLeftCol := FLeftCol;
       FLeftCol := ScrollPos;
       {$IFDEF VCL}
       if Abs((OldFLeftCol - ScrollPos) * FCellRect.Width) < FEditorClient.Width then
       begin
         R := FEditorClient.ClientRect;
-        R.Right := R.Left + CellRect.Width * (FVisibleColCount + 1); {??}
+        R.Right := R.Left + CellRect.Width * FVisibleColCount;
         RClip := R;
+        Inc(RClip.Right, CellRect.Width);
         ScrollDC(
           FEditorClient.Canvas.Handle, // handle of device context
           (OldFLeftCol - ScrollPos) * FCellRect.Width, // horizontal scroll units
