@@ -19,15 +19,7 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
------------------------------------------------------------------------------}
-// $Id$
-
-{$I jvcl.inc}
-{$I windowsonly.inc}
-
-unit JvPrvwDoc;
-{ TODO :
+TODO :
     * Adjust zoom when Cols or Rows change - DONE
     * Adjust Cols and/or Rows when Zoom changes - DONE
     * Center pages in view - DONE
@@ -43,26 +35,33 @@ unit JvPrvwDoc;
     * Draw "fake" text when page is small (like Word does)?
     * Handle Home, End, PgUp, PgDn (w. Ctrl?)
 
-  KNOWN ISSUES:
+KNOWN ISSUES:
     * smScale doesn't work in all cases
     * centering doesn't always work
     * scrolling down and then changing properties (like Cols or Scale) doesn't always reposition the
       view and the scrollbars correctly
     * sometimes displays more pages (rows) than requested
 
-  Scrolling rules:
+Scrolling rules:
     * if showing 1 page (page >= clientrect), show horz scrollbar, set scroll size ~ 1 line
     * if showing more than one col/row, hide horz scroll and scale pages to fit
       (i.e if Cols = 3, Rows = 2 -> scale to show 3x2 pages)
       and scroll Rows pages on each click (i.e if Rows = 4 -> scroll 4 pages)
     * if scaling would make pages too small, show as many pages as possible
-}
+-----------------------------------------------------------------------------}
+// $Id$
+
+{$I jvcl.inc}
+{$I windowsonly.inc}
+
+unit JvPrvwDoc;
 
 interface
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls,
-  Forms, Dialogs, JvComponent, JvExControls;
-
+  Forms, Dialogs,
+  JvComponent, JvExControls;
 
 type
   TJvPreviewScaleMode = (
@@ -105,7 +104,8 @@ type
     FPageWidth: Cardinal;
     FLogPixelsX: Cardinal;
     FOnChange: TNotifyEvent;
-    FScreenDC, FReferenceHandle: Longword;
+    FScreenDC: Longword;
+    FReferenceHandle: Longword;
     FPhysicalHeight: Cardinal;
     FPhysicalWidth: Cardinal;
     procedure SetLogPixelsY(const Value: Cardinal);
@@ -200,7 +200,6 @@ type
     destructor Destroy; override;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnScaleModeChange: TNotifyEvent read FOnScaleModeChange write FOnScaleModeChange;
-
   published
     property Color: TColor read FColor write SetColor default clWhite;
     property Cols: Cardinal read GetCols write SetCols default 1;
@@ -428,12 +427,12 @@ end;
 type
   TDeactiveHintThread = class(TThread)
   private
-    FHintWindow:ThintWindow;
-    FDelay:Integer;
+    FHintWindow: ThintWindow;
+    FDelay: Integer;
   protected
     procedure Execute; override;
   public
-    constructor Create(Delay:Integer; HintWindow: THintWindow);
+    constructor Create(Delay: Integer; HintWindow: THintWindow);
   end;
 
 // use our own InRange since D5 doesn't have it
@@ -828,12 +827,12 @@ begin
   FLogPixelsY := 300;
   FPhysicalWidth := 2480;
   FPhysicalHeight := 3507;
-  FPageWidth      := 2400;
-  FPageHeight     := 3281;
+  FPageWidth := 2400;
+  FPageHeight := 3281;
 
-  FOffsetLeft   := 40;
-  FOffsetTop    := 40;
-  FOffsetRight  := 40;
+  FOffsetLeft := 40;
+  FOffsetTop := 40;
+  FOffsetRight := 40;
   FOffsetBottom := 40;
   Change;
 end;
@@ -885,7 +884,8 @@ begin
 
   si.nMax := FMaxWidth - ClientWidth;
   si.nPage := 0;
-  ShowScrollbar(Handle, SB_HORZ, not HideScrollBars and (ScrollBars in [ssHorizontal, ssBoth]) {(FPageWidth > ClientWidth)});
+  ShowScrollbar(Handle, SB_HORZ, not HideScrollBars and (ScrollBars in [ssHorizontal, ssBoth])
+    {(FPageWidth > ClientWidth)});
   SetScrollInfo(Handle, SB_HORZ, si, True);
   // update scroll pos if it has changed
   GetScrollInfo(Handle, SB_HORZ, si);
@@ -1085,9 +1085,11 @@ begin
   APrintRect := FPrintRect;
 
   // initial top/left offset
-  AOffsetX := -Offset.X + Max((ClientWidth - ((FPageWidth + Integer(Options.HorzSpacing)) * TotalCols)) div 2, FOptions.HorzSpacing);
+  AOffsetX := -Offset.X + Max((ClientWidth - ((FPageWidth + Integer(Options.HorzSpacing)) * TotalCols)) div 2,
+    FOptions.HorzSpacing);
   if IsPageMode then
-    AOffsetY := -Offset.Y + Max((ClientHeight - ((FPageHeight + Integer(Options.VertSpacing)) * VisibleRows)) div 2, FOptions.VertSpacing)
+    AOffsetY := -Offset.Y + Max((ClientHeight - ((FPageHeight + Integer(Options.VertSpacing)) * VisibleRows)) div 2,
+      FOptions.VertSpacing)
   else
     AOffsetY := -Offset.Y + Integer(Options.VertSpacing);
   k := 0;
@@ -1314,11 +1316,11 @@ begin
           Exit;
       end;
     SB_ENDSCROLL:
-    begin
-      TDeactiveHintThread.Create(500,HintWindow);
-      HintWindow := nil;
-      Exit;
-    end;
+      begin
+        TDeactiveHintThread.Create(500, HintWindow);
+        HintWindow := nil;
+        Exit;
+      end;
   end;
   NewPos := EnsureRange(NewPos, si.nMin, si.nMax);
   if Assigned(FOnVertScroll) then
@@ -1356,7 +1358,8 @@ begin
     EndPage := PageCount - 1;
   if Copies < 1 then
     Copies := 1;
-  if (StartPage < 0) or (EndPage < 0) then Exit;
+  if (StartPage < 0) or (EndPage < 0) then
+    Exit;
   if Collate then // Range * Copies
   begin
     if StartPage > EndPage then
@@ -1552,7 +1555,8 @@ begin
       Dec(Bottom, FOffsetBottom);
     end;
 
-    if (Options.ScaleMode in [smFullPage, smPageWidth]) or (FPageWidth >= ClientWidth) or (FPageHeight >= ClientHeight) and not
+    if (Options.ScaleMode in [smFullPage, smPageWidth]) or (FPageWidth >= ClientWidth) or (FPageHeight >= ClientHeight)
+      and not
       (Options.ScaleMode in [smScale, smAutoScale]) then
     begin
       FTotalCols := 1;
@@ -1562,8 +1566,10 @@ begin
       case Options.ScaleMode of
         smAutoScale:
           begin
-            FTotalCols := Max(Min(PageCount, Max((ClientWidth - Integer(Options.HorzSpacing)) div (FPageWidth + Integer(Options.HorzSpacing)), 1)), 1);
-            FVisibleRows := Min(Max((ClientHeight - Integer(Options.VertSpacing)) div (FPageHeight + Integer(Options.VertSpacing)), 1), TotalRows);
+            FTotalCols := Max(Min(PageCount, Max((ClientWidth - Integer(Options.HorzSpacing)) div (FPageWidth +
+              Integer(Options.HorzSpacing)), 1)), 1);
+            FVisibleRows := Min(Max((ClientHeight - Integer(Options.VertSpacing)) div (FPageHeight +
+              Integer(Options.VertSpacing)), 1), TotalRows);
             if (VisibleRows > 1) and (VisibleRows * TotalCols > PageCount) then
               FVisibleRows := Min((PageCount div TotalCols) + Ord(PageCount mod TotalCols <> 0), TotalRows);
             if (FPageWidth + Integer(Options.HorzSpacing) * 2 >= ClientWidth) or
@@ -1577,7 +1583,8 @@ begin
       else
         begin
           FTotalCols := Max(Min(PageCount - 1, Options.Cols), 1);
-          FVisibleRows := Max(Min(PageCount div Integer(Options.Cols) + Ord(PageCount mod Integer(Options.Cols) <> 0), Options.Rows), 1);
+          FVisibleRows := Max(Min(PageCount div Integer(Options.Cols) + Ord(PageCount mod Integer(Options.Cols) <> 0),
+            Options.Rows), 1);
         end;
       end;
 
@@ -1597,7 +1604,7 @@ function TJvCustomPreviewControl.GetTopRow: Integer;
 begin
   Result := FScrollPos.Y div (FPageHeight + Integer(Options.VertSpacing));
   Inc(Result, Ord(FScrollPos.Y mod (FPageHeight + Integer(Options.VertSpacing)) <> 0));
-  Result := Min(Result,TotalRows-1);
+  Result := Min(Result, TotalRows - 1);
 end;
 
 procedure TJvCustomPreviewControl.First;
@@ -1696,7 +1703,8 @@ begin
         Options.FCols := 1;
         Options.FRows := 1;
         FTotalRows := PageCount - 1;
-        Options.FScale := GetLesserScale(0, ClientWidth - Integer(Options.HorzSpacing) * 2 - GetSystemMetrics(SM_CYHSCROLL));
+        Options.FScale := GetLesserScale(0, ClientWidth - Integer(Options.HorzSpacing) * 2 -
+          GetSystemMetrics(SM_CYHSCROLL));
       end;
     smScale:
       begin
@@ -1741,7 +1749,7 @@ begin
       pt := ScreenToClient(pt);
       pt.X := ClientWidth - HW.Canvas.TextWidth(S) - 12;
       pt := ClientToScreen(pt);
-      OffsetRect(rc,pt.x,pt.y - 4);
+      OffsetRect(rc, pt.x, pt.y - 4);
       HW.ActivateHint(rc, s);
       HW.Invalidate;
       HW.Update;
@@ -1752,7 +1760,8 @@ end;
 procedure TJvCustomPreviewControl.DrawShadow(ACanvas: TCanvas;
   APageRect: TRect);
 var
-  tmpRect: TRect; tmpColor: TColor;
+  tmpRect: TRect;
+  tmpColor: TColor;
 begin
   tmpColor := ACanvas.Brush.Color;
   try
@@ -1811,7 +1820,7 @@ begin
   FHintWindow := HintWindow;
   FDelay := Delay;
   if FDelay = 0 then
-    FDelay := Application.HintHidePause; 
+    FDelay := Application.HintHidePause;
   Resume;
 end;
 
@@ -1821,7 +1830,7 @@ begin
   if FHintWindow <> nil then
   begin
     FHintWindow.Visible := False;
-    FHintWindow.ActivateHint(Rect(0,0,0,0),'');
+    FHintWindow.ActivateHint(Rect(0, 0, 0, 0), '');
     FHintWindow := nil;
   end;
   Terminate;

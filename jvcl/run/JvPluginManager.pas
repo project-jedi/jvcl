@@ -191,7 +191,7 @@ uses
 
 const
   C_REGISTER_PLUGIN = 'RegisterPlugin';
-  C_Extensions: array[plgDLL..plgCustom] of PChar = ('dll', 'bpl','xxx');
+  C_Extensions: array [plgDLL..plgCustom] of PChar = ('dll', 'bpl','xxx');
 
 constructor TJvPluginManager.Create(AOwner: TComponent);
 begin

@@ -44,6 +44,8 @@ object frmProgress: TfrmProgress
     Width = 284
     Height = 16
     Anchors = [akLeft, akTop, akRight]
+    Min = 0
+    Max = 100
     TabOrder = 0
   end
   object btnCancel: TButton
