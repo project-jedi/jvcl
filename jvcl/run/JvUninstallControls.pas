@@ -237,7 +237,7 @@ var
           tmp := ExpandEnvVar(Reg.ReadString('', Items[i], ''));
         rdInteger:
           begin
-            bufSize := sizeof(DValue);
+            bufSize := SizeOf(DValue);
             RegQueryValueEx(Reg.CurrentKey, PChar(Items[i]), nil, nil, PByte(@DValue), @bufSize);
             tmp := IntToStr(DValue);
           end;

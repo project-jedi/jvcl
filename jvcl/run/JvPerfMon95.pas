@@ -308,7 +308,7 @@ begin
     if OpenKeyReadOnly(StartStopKeys[Start]) then
     begin
       Size := GetDataSize(FKey);
-      if Size = Sizeof(Dummy) then
+      if Size = SizeOf(Dummy) then
       begin
         ReadBinaryData(FKey, Dummy, Size);
         Result := True;

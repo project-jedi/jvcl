@@ -324,7 +324,7 @@ begin
   if FMasked then
     ChangeBitmapColor(FResBitmap, FMaskedColor, FMaskedToColor);
 
-  {  GetObject( FResBitmap.Handle, sizeof(Windows.TBitmap), @BmpInfo );
+  {  GetObject( FResBitmap.Handle, SizeOf(Windows.TBitmap), @BmpInfo );
     if BmpInfo.bmBitsPixel >= 8 then
     with FResBitmap,BmpInfo do begin
       for i := 1 to bmWidth*bmHeight*(bmBitsPixel div 8)-1 do

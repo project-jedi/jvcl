@@ -11,7 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvDockHashTable.pas, released on 2003-12-31.
 
 The Initial Developer of the Original Code is luxiaoban.
-Portions created by luxiaoban are Copyright (C) 2002,2003 luxiaoban.
+Portions created by luxiaoban are Copyright (C) 2002, 2003 luxiaoban.
 All Rights Reserved.
 
 Contributor(s):
@@ -82,7 +82,8 @@ type
 implementation
 
 uses
-  JvDockGlobals, SysUtils;
+  SysUtils,
+  JvDockGlobals;
 
 //=== TJvDockControlHashTable ================================================
 

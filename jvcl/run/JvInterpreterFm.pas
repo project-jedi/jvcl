@@ -241,7 +241,7 @@ procedure TJvInterpreterForm.FixupMethods;
     TypeInf := Com.ClassInfo;
     TypeData := GetTypeData(TypeInf);
     NumProps := TypeData^.PropCount;
-    GetMem(PropList, NumProps * sizeof(pointer));
+    GetMem(PropList, NumProps * SizeOf(Pointer));
     try
       GetPropInfos(TypeInf, PropList);
       for I := 0 to NumProps - 1 do
@@ -260,7 +260,7 @@ procedure TJvInterpreterForm.FixupMethods;
           end;
         end;
     finally
-      FreeMem(PropList, NumProps * sizeof(pointer));
+      FreeMem(PropList, NumProps * SizeOf(Pointer));
     end;
   end;
 

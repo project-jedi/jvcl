@@ -632,7 +632,7 @@ end;
 
 {procedure TJvIPAddress.ClearEditControls;
 begin
-  FillChar(FEditControls, Sizeof(FEditControls), #0);
+  FillChar(FEditControls, SizeOf(FEditControls), #0);
   FEditControlCount := 0;
 end;}
 
@@ -768,9 +768,9 @@ procedure TJvIPAddress.WMSetFont(var Msg: TWMSetFont);
 var
   LF: TLogFont;
 begin
-  FillChar(LF, Sizeof(TLogFont), #0);
+  FillChar(LF, SizeOf(TLogFont), #0);
   try
-    OSCheck(GetObject(Font.Handle, Sizeof(LF), @LF) > 0);
+    OSCheck(GetObject(Font.Handle, SizeOf(LF), @LF) > 0);
     DestroyLocalFont;
     LocalFont := CreateFontIndirect(LF);
     Msg.Font := LocalFont;
@@ -1139,7 +1139,7 @@ begin
         FOnToolTip(Self, ToolTipTextLocal);
         FToolTipText := ToolTipTextLocal;
         lpszText := PWideChar(FToolTipText);
-        FillChar(szText, Sizeof(szText), #0);
+        FillChar(szText, SizeOf(szText), #0);
         Result := 1;
       end
     else

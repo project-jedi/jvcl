@@ -34,7 +34,7 @@ uses
   Windows, Controls, IniFiles, Registry, Classes, SysUtils, Forms, Messages,
   {$IFDEF USEJVCL}
   JvAppStorage,
-  {$ENDIF}
+  {$ENDIF USEJVCL}
   JvDockControlForm, JvDockSupportClass, JvDockSupportProc;
 
 type
@@ -107,7 +107,7 @@ type
   {$ELSE}
   TJvDockInfoStyle =
     (isNone, isReadFileInfo, isWriteFileInfo, isReadRegInfo, isWriteRegInfo);
-  {$ENDIF}
+  {$ENDIF USEJVCL}
 
   TJvDockInfoTree = class(TJvDockBaseTree)
   private
@@ -118,7 +118,7 @@ type
     FDockInfoIni: TIniFile;
     FDockInfoReg: TRegistry;
     FRegName: string;
-    {$ENDIF}
+    {$ENDIF USEJVCL}
     FJvDockInfoStyle: TJvDockInfoStyle;
     FDataStream: TMemoryStream;
     function FindDockForm(FormName: string): TCustomForm;
@@ -130,7 +130,7 @@ type
     {$ELSE}
     procedure CreateZoneAndAddInfoFromIni; virtual;
     procedure CreateZoneAndAddInfoFromReg; virtual;
-    {$ENDIF}
+    {$ENDIF USEJVCL}
     procedure SetDockControlInfo(ATreeZone: TJvDockInfoZone); virtual;
   public
     constructor Create(TreeZone: TJvDockTreeZoneClass); override;
@@ -149,7 +149,7 @@ type
     procedure WriteInfoToReg(RegName: string);
     property DockInfoIni: TIniFile read FDockInfoIni write FDockInfoIni;
     property DockInfoReg: TRegistry read FDockInfoReg write FDockInfoReg;
-    {$ENDIF}
+    {$ENDIF USEJVCL}
   end;
 
 implementation
@@ -376,7 +376,8 @@ begin
   inherited Create(TreeZone);
   {$IFNDEF USEJVCL}
   FDockInfoIni := nil;
-  {$ENDIF}
+  FDockInfoReg := nil;
+  {$ENDIF USEJVCL}
   FJvDockInfoStyle := isNone;
   FDataStream := TMemoryStream.Create;
 end;
@@ -454,15 +455,13 @@ begin
     begin
       DockFormStyle := dsDockPanel;
       if Control is TJvDockVSPopupPanel then
-      begin
         with TJvDockVSPopupPanel(Control) do
           for I := 0 to DockClientCount - 1 do
           begin
             CurrTreeZone := TreeZone;
             CreateZoneAndAddInfoFromApp(TWinControl(DockClients[I]));
             CurrTreeZone := TreeZone.GetParentZone;
-          end;
-      end
+          end
       else
         with TJvDockPanel(Control) do
           for I := 0 to DockClientCount - 1 do
@@ -476,10 +475,12 @@ begin
 end;
 
 {$IFDEF USEJVCL}
+
 procedure TJvDockInfoTree.CreateZoneAndAddInfoFromAppStorage;
 var
   FormList: TStringList;
   cp, cp1: PChar;
+  S: string;
   I: Integer;
 
   procedure CreateZoneAndAddInfo(Index: Integer);
@@ -537,12 +538,12 @@ var
   end;
 
 begin
-
   FormList := TStringList.Create;
   try
     if FAppStorage.ValueStored(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', 'FormNames'])) then
     begin
-      cp := PChar(FAppStorage.ReadString(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', 'FormNames'])));
+      S := FAppStorage.ReadString(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', 'FormNames']));
+      cp := PChar(S);
       cp1 := StrPos(cp, ';');
       while cp1 <> nil do
       begin
@@ -564,7 +565,6 @@ end;
 
 {$ELSE}
 
-
 procedure TJvDockInfoTree.CreateZoneAndAddInfoFromIni;
 var
   I: Integer;
@@ -575,11 +575,11 @@ var
   var
     I: Integer;
   begin
-    SetLength(TempDockInfoZoneArray, Sizeof(TJvDockInfoZone) * Sections.Count);
+    SetLength(TempDockInfoZoneArray, SizeOf(TJvDockInfoZone) * Sections.Count);
     for I := 0 to Sections.Count - 1 do
     begin
       TempDockInfoZoneArray[I] := TJvDockInfoZone.Create(nil);
-      with TempDockInfoZoneArray[I], FDockInfoIni do
+      with TempDockInfoZoneArray[I], DockInfoIni do
       begin
         DockFormName := Sections[I];
         ParentName := ReadString(DockFormName, 'ParentName', 'ERROR');
@@ -662,7 +662,7 @@ var
 begin
   Sections := TStringList.Create;
   try
-    FDockInfoIni.ReadSections(Sections);
+    DockInfoIni.ReadSections(Sections);
     CreateTempDockInfoZoneArray;
     FJvDockInfoStyle := isReadFileInfo;
 
@@ -681,18 +681,19 @@ var
   FormList: TStringList;
   cp, cp1: PChar;
   I: Integer;
+  S: string;
 
   procedure CreateZoneAndAddInfo(Index: Integer);
   var
     I: Integer;
     TreeZone: TJvDockInfoZone;
   begin
-    FDockInfoReg.OpenKey(FRegName, False);
-    if FDockInfoReg.KeyExists(FormList[Index]) then
+    DockInfoReg.OpenKey(FRegName, False);
+    if DockInfoReg.KeyExists(FormList[Index]) then
     begin
-      FDockInfoReg.OpenKey(FRegName + '\' + FormList[Index], False);
+      DockInfoReg.OpenKey(FRegName + '\' + FormList[Index], False);
       TreeZone := TJvDockInfoZone(AddChildZone(CurrTreeZone, nil));
-      with TreeZone, FDockInfoReg do
+      with TreeZone, DockInfoReg do
       begin
         DockFormName := FormList[Index];
         ParentName := ReadString('ParentName');
@@ -721,8 +722,8 @@ var
       end;
       for I := Index - 1 downto 0 do
       begin
-        FDockInfoReg.OpenKey(FRegName + '\' + FormList[I], False);
-        if FDockInfoReg.ReadString('ParentName') = FormList[Index] then
+        DockInfoReg.OpenKey(FRegName + '\' + FormList[I], False);
+        if DockInfoReg.ReadString('ParentName') = FormList[Index] then
         begin
           CurrTreeZone := TreeZone;
           CreateZoneAndAddInfo(I);
@@ -735,9 +736,10 @@ var
 begin
   FormList := TStringList.Create;
   try
-    if FDockInfoReg.OpenKey(FRegName, False) then
+    if DockInfoReg.OpenKey(FRegName, False) then
     begin
-      cp := PChar(FDockInfoReg.ReadString('FormNames'));
+      S := DockInfoReg.ReadString('FormNames');
+      cp := PChar(S);
       cp1 := StrPos(cp, '\');
       while cp1 <> nil do
       begin
@@ -749,20 +751,22 @@ begin
       FJvDockInfoStyle := isReadFileInfo;
       for I := FormList.Count - 1 downto 0 do
       begin
-        FDockInfoReg.OpenKey(FRegName + '\' + FormList[I], False);
-        if FDockInfoReg.ReadString('ParentName') = '' then
+        DockInfoReg.OpenKey(FRegName + '\' + FormList[I], False);
+        if DockInfoReg.ReadString('ParentName') = '' then
           CreateZoneAndAddInfo(I);
       end;
       FJvDockInfoStyle := isNone;
     end;
   finally
-    FDockInfoReg.CloseKey;
+    DockInfoReg.CloseKey;
     FormList.Free;
   end;
 end;
-{$ENDIF}
+
+{$ENDIF USEJVCL}
 
 {$IFDEF USEJVCL}
+
 procedure TJvDockInfoTree.ReadInfoFromAppStorage;
 begin
   CreateZoneAndAddInfoFromAppStorage;
@@ -838,6 +842,7 @@ begin
 end;
 
 {$ELSE}
+
 procedure TJvDockInfoTree.ReadInfoFromIni;
 begin
   CreateZoneAndAddInfoFromIni;
@@ -884,7 +889,7 @@ begin
   if FJvDockInfoStyle = isWriteFileInfo then
   begin
     if TreeZone <> TopTreeZone then
-      with TJvDockInfoZone(TreeZone), FDockInfoIni do
+      with TJvDockInfoZone(TreeZone), DockInfoIni do
       begin
         WriteString(DockFormName, 'ParentName', ParentName);
         WriteInteger(DockFormName, 'DockLeft', DockRect.Left);
@@ -917,7 +922,7 @@ begin
   if FJvDockInfoStyle = isWriteRegInfo then
   begin
     if TreeZone <> TopTreeZone then
-      with TJvDockInfoZone(TreeZone), FDockInfoReg do
+      with TJvDockInfoZone(TreeZone), DockInfoReg do
       begin
         OpenKey(FRegName, True);
         WriteString('FormNames', ReadString('FormNames') + DockFormName + '\');
@@ -952,7 +957,8 @@ begin
   end;
   inherited ScanTreeZone(TreeZone);
 end;
-{$ENDIF}
+
+{$ENDIF USEJVCL}
 
 function TJvDockInfoTree.FindDockForm(FormName: string): TCustomForm;
 begin
@@ -1055,6 +1061,7 @@ begin
 end;
 
 {$IFDEF USEJVCL}
+
 procedure TJvDockInfoTree.WriteInfoToAppStorage;
 begin
   AppStorage.DeleteSubTree(AppStoragePath);
@@ -1067,6 +1074,7 @@ begin
 end;
 
 {$ELSE}
+
 procedure TJvDockInfoTree.WriteInfoToIni;
 var
   Sections: TStringList;
@@ -1074,10 +1082,10 @@ var
 begin
   Sections := TStringList.Create;
   try
-    FDockInfoIni.ReadSections(Sections);
+    DockInfoIni.ReadSections(Sections);
 
     for I := 0 to Sections.Count - 1 do
-      FDockInfoIni.EraseSection(Sections[I]);
+      DockInfoIni.EraseSection(Sections[I]);
   finally
     Sections.Free;
   end;
@@ -1090,21 +1098,22 @@ end;
 procedure TJvDockInfoTree.WriteInfoToReg(RegName: string);
 begin
   try
-    if FDockInfoReg.OpenKey(RegName, False) then
-      FDockInfoReg.DeleteKey(RegName);
+    if DockInfoReg.OpenKey(RegName, False) then
+      DockInfoReg.DeleteKey(RegName);
 
-    FDockInfoReg.CreateKey(RegName);
-    FDockInfoReg.CloseKey;
+    DockInfoReg.CreateKey(RegName);
+    DockInfoReg.CloseKey;
     FRegName := RegName;
 
     FJvDockInfoStyle := isWriteRegInfo;
     MiddleScanTree(TopTreeZone);
     FJvDockInfoStyle := isNone;
   finally
-    FDockInfoReg.CloseKey;
+    DockInfoReg.CloseKey;
   end;
 end;
-{$ENDIF}
+
+{$ENDIF USEJVCL}
 
 end.
 

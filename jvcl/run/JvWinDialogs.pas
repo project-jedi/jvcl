@@ -1645,12 +1645,12 @@ begin
   if Assigned(URLAssociationDialogA) then
   begin
     dwFlags := 0;
-    FillChar(buf[0], sizeof(buf), 0);
+    FillChar(buf[0], SizeOf(buf), 0);
     if uaDefaultName in Options then
       dwFlags := dwFlags or URLASSOCDLG_FL_USE_DEFAULT_NAME;
     if uaRegisterAssoc in Options then
       dwFlags := dwFlags or URLASSOCDLG_FL_REGISTER_ASSOC;
-    FReturnValue := URLAssociationDialogA(GetParentHandle, dwFlags, PChar(FileName), PChar(URL), buf, sizeof(buf));
+    FReturnValue := URLAssociationDialogA(GetParentHandle, dwFlags, PChar(FileName), PChar(URL), buf, SizeOf(buf));
     Result := ReturnValue = S_OK;
     FAssociatedApp := string(buf);
   end;
@@ -1684,14 +1684,14 @@ begin
   FReturnValue := S_FALSE;
   if @MIMEAssociationDialogA <> nil then
   begin
-    FillChar(buf[0], sizeof(buf), 0);
+    FillChar(buf[0], SizeOf(buf), 0);
     FAssociatedApp := '';
     if maRegisterAssoc in Options then
       dwFlags := MIMEASSOCDLG_FL_REGISTER_ASSOC
     else
       dwFlags := 0;
     FReturnValue := MIMEAssociationDialogA(GetParentHandle, dwFlags, PChar(FileName), PChar(ContentType), buf,
-      sizeof(buf));
+      SizeOf(buf));
     Result := ReturnValue = 0;
     FAssociatedApp := string(buf);
   end;
@@ -1754,7 +1754,7 @@ const
     SOFTDIST_FLAG_USAGE_AUTOINSTALL, SOFTDIST_FLAG_DELETE_SUBSCRIPTION);
 begin
   FillChar(Result, sizeof(Result), 0);
-  Result.cbSize := sizeof(Result);
+  Result.cbSize := SizeOf(Result);
   with Result do
   begin
     dwAdState := cAdState[AdState];

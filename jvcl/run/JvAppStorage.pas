@@ -807,13 +807,13 @@ var
 begin
   Result := '';
   Data := GetTypeData(Instance.ClassInfo);
-  GetMem(PropList, Data^.PropCount * Sizeof(PPropInfo));
+  GetMem(PropList, Data^.PropCount * SizeOf(PPropInfo));
   try
     GetPropInfos(Instance.ClassInfo, PropList);
     PropInfo := PropList^[Index];
     Result := PropInfo^.Name;
   finally
-    FreeMem(PropList, Data^.PropCount * Sizeof(PPropInfo));
+    FreeMem(PropList, Data^.PropCount * SizeOf(PPropInfo));
   end;
 end;
 

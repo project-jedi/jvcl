@@ -195,7 +195,7 @@ begin
   FTabStyle.OnFontChanged := FontsChanged;
   FTabSelectedStyle.OnFontChanged := FontsChanged;
   FWallpaper.OnChanged := SmthChanged;
-  FillMemory(@aTabColors, sizeof(aTabColors), $FF);
+  FillMemory(@aTabColors, SizeOf(aTabColors), $FF);
 end;
 
 destructor TJvgPageControl.Destroy;

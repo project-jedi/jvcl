@@ -375,7 +375,7 @@ procedure TJvMail.CreateMapiMessage;
           {$TYPEDADDRESS OFF}
           raise EJclMapiError.CreateResRecFmt(@RsAttachmentNotFound, [FAttachment[I]]);
           {$TYPEDADDRESS ON}
-        FillChar(FAttachArray[I], Sizeof(TMapiFileDesc), #0);
+        FillChar(FAttachArray[I], SizeOf(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;
         FAttachArray[I].lpszFileName := PChar(FAttachment[I]);
         FAttachArray[I].lpszPathName := PChar(FAttachment[I]);
@@ -390,7 +390,7 @@ begin
     CreateRecips;
     MakeAttachments;
     FBodyText := FBody.Text;
-    FillChar(FMapiMessage, Sizeof(FMapiMessage), #0);
+    FillChar(FMapiMessage, SizeOf(FMapiMessage), #0);
     FMapiMessage.lpszSubject := PChar(FSubject);
     FMapiMessage.lpszNoteText := PChar(FBodyText);
     FMapiMessage.lpRecips := PMapiRecipDesc(FRecipArray);
@@ -417,7 +417,7 @@ var
         {$TYPEDADDRESS OFF}
         raise EJclMapiError.CreateResRecFmt(@RsRecipNotValid, [RecipList[I].GetNamePath]);
         {$TYPEDADDRESS ON}
-      FillChar(FRecipArray[RecipIndex], Sizeof(TMapiRecipDesc), #0);
+      FillChar(FRecipArray[RecipIndex], SizeOf(TMapiRecipDesc), #0);
       with FRecipArray[RecipIndex], RecipList[I] do
       begin
         ulRecipClass := RecipList.RecipientClass;
@@ -539,7 +539,7 @@ begin
   FAttachArray := nil;
   FRecipArray := nil;
   FBodyText := '';
-  FillChar(FMapiMessage, Sizeof(FMapiMessage), #0);
+  FillChar(FMapiMessage, SizeOf(FMapiMessage), #0);
 end;
 
 procedure TJvMail.FreeSimpleMapi;

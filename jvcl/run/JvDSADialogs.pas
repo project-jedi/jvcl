@@ -390,7 +390,7 @@ var
   NonClientMetrics: TNonClientMetrics;
 begin
   inherited CreateNew(AOwner, Dummy);
-  NonClientMetrics.cbSize := sizeof(NonClientMetrics);
+  NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
     Font.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont);
   FTimer := TTimer.Create(Self);
@@ -1087,12 +1087,12 @@ end;
 
 function TDSARegStorage.ReadFloat(const DSAInfo: TDSARegItem; const Key: string): extended;
 begin
-  RegReadBinary(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Result, SizeOf(extended));
+  RegReadBinary(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Result, SizeOf(Extended));
 end;
 
 function TDSARegStorage.ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string; const Default: extended): extended;
 begin
-  if RegReadBinaryDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Result, SizeOf(extended), 0) = 0 then
+  if RegReadBinaryDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Result, SizeOf(Extended), 0) = 0 then
     Result := Default;
 end;
 
@@ -1138,7 +1138,7 @@ var
 begin
   CreateKey(DSAInfo);
   Temp := Value;
-  RegWriteBinary(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Temp, SizeOf(extended));
+  RegWriteBinary(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Temp, SizeOf(Extended));
 end;
 
 procedure TDSARegStorage.WriteInt64(const DSAInfo: TDSARegItem; const Key: string; const Value: int64);

@@ -249,7 +249,6 @@ end;
 procedure TPictureEditDialog.SaveClick(Sender: TObject);
 begin
   if (Pic.Graphic <> nil) and not Pic.Graphic.Empty then
-  begin
     with SaveDialog do
     begin
       DefaultExt := GraphicExtension(TGraphicClass(Pic.Graphic.ClassType));
@@ -264,7 +263,6 @@ begin
         end;
       end;
     end;
-  end;
 end;
 
 procedure TPictureEditDialog.DecreaseBMPColors;
@@ -440,7 +438,6 @@ procedure TPictureEditDialog.PathsMRUChange(Sender: TObject);
 begin
   PathsBtn.Enabled := PathsMRU.Strings.Count > 0;
 end;
-
 
 procedure TPictureEditDialog.PathsBtnClick(Sender: TObject);
 var P:TPoint;

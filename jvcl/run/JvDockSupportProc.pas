@@ -22,40 +22,43 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-}
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvDockSupportProc;
 
 interface
 
-uses Classes, Windows, Sysutils, Graphics, Forms, Controls, Messages;
+uses
+  Classes, Windows, SysUtils, Graphics, Forms, Controls, Messages;
 
-type TJvDockListScanKind = (lskForward, lskBackward);
-
+type
+  TJvDockListScanKind = (lskForward, lskBackward);
 
 function JvDockStreamDataToString(Stream: TStream): string;
 procedure JvDockStringToStreamData(Stream: TStream; Data: string);
 
 function JvDockFindDockFormWithName(FormName: string;
-              FromDockManager: Boolean = False;
-              FromList: Boolean = True;
-              ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
+  FromDockManager: Boolean = False;
+  FromList: Boolean = True;
+  ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
 function JvDockFindDockServerFormWithName(FormName: string;
-              FromDockManager: Boolean = False;
-              FromList: Boolean = True;
-              ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
+  FromDockManager: Boolean = False;
+  FromList: Boolean = True;
+  ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
 function JvDockFindDockClientFormWithName(FormName: string;
-              FromDockManager: Boolean = False;
-              FromList: Boolean = True;
-              ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
+  FromDockManager: Boolean = False;
+  FromList: Boolean = True;
+  ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
 function JvDockFindDockServerFromDockManager(FormName: string;
-              FromList: Boolean = True;
-              ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
+  FromList: Boolean = True;
+  ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
 function JvDockFindDockClientFromDockManager(FormName: string;
-              FromList: Boolean = True;
-              ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
+  FromList: Boolean = True;
+  ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
 function JvDockFindDockFormFromScreen(FormName: string;
-              ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
+  ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
 
 function JvDockGetMinOffset(TBDockSize, ControlSize: Integer; Scale: Real): Integer;
 
@@ -65,181 +68,155 @@ function JvDockGetSysCaptionHeight: Integer;
 
 function JvDockGetSysBorderWidth: Integer;
 function JvDockGetSysCaptionHeightAndBorderWidth: Integer;
-
-
 function JvDockGetActiveTitleBeginColor: TColor;
-
 function JvDockGetActiveTitleEndColor: TColor;
-
 function JvDockGetInactiveTitleBeginColor: TColor;
-
 function JvDockGetInactiveTitleEndColor: TColor;
-
 function JvDockGetTitleFontColor(Active: Boolean): TColor;
-
 function JvDockGetActiveTitleFontColor: TColor;
-
 function JvDockGetInactiveTitleFontColor: TColor;
-
 function JvDockGetTitleFont: TFont;
 
 procedure JvDockLockWindow(Control: TWinControl);
-
 procedure JvDockUnLockWindow;
 
-
 function JvDockCreateNCMessage(Control: TControl; Msg: Cardinal; HTFlag: Integer; Pos: TPoint): TWMNCHitMessage;
-
 function JvDockExchangeOrient(Orient: TDockOrientation): TDockOrientation;
-
 function JvDockGetControlOrient(AControl: TControl): TDockOrientation;
-
 function JvDockGetControlSize(AControl: TControl): Integer;
-
 
 implementation
 
-uses Math, JvDockControlForm, JvDockGlobals;
+uses
+  Math,
+  JvDockControlForm, JvDockGlobals;
 
 var
-  JvDockTitleFont: TFont;
+  JvDockTitleFont: TFont = nil;
 
 function JvDockStreamDataToString(Stream: TStream): string;
-var ch: Char;
+var
+  Ch: Char;
 begin
   Result := '';
   Stream.Position := 0;
   while Stream.Position < Stream.Size do
   begin
-    Stream.Read(ch, Sizeof(ch));
-    Result := Result + IntToHex(Ord(ch), 2);
+    Stream.Read(Ch, SizeOf(Ch));
+    Result := Result + IntToHex(Ord(Ch), 2);
   end;
 end;
 
 procedure JvDockStringToStreamData(Stream: TStream; Data: string);
-var i: Integer;
-  ch: Char;
+var
+  I: Integer;
+  Ch: Char;
 begin
-  i := 1;
-  while i < Length(Data) do
+  I := 1;
+  while I < Length(Data) do
   begin
-    ch := Char(StrToInt('$' + Copy(Data, i, 2)));
-    Stream.Write(ch, Sizeof(ch));
-    Inc(i, 2);
+    Ch := Char(StrToInt('$' + Copy(Data, I, 2)));
+    Stream.Write(Ch, SizeOf(Ch));
+    Inc(I, 2);
   end;
 end;
 
-function JvDockFindDockFormWithName(FormName: string;
-              FromDockManager: Boolean;
-              FromList: Boolean;
-              ScanKind: TJvDockListScanKind): TCustomForm;
+function JvDockFindDockFormWithName(FormName: string; FromDockManager: Boolean;
+  FromList: Boolean; ScanKind: TJvDockListScanKind): TCustomForm;
 begin
   Result := JvDockFindDockClientFormWithName(FormName, FromDockManager, FromList, ScanKind);
   if Result = nil then
     Result := JvDockFindDockServerFormWithName(FormName, FromDockManager, FromList, ScanKind);
 end;
 
-function JvDockFindDockServerFormWithName(FormName: string;
-  FromDockManager: Boolean;
-  FromList: Boolean;
-  ScanKind: TJvDockListScanKind): TCustomForm;
+function JvDockFindDockServerFormWithName(FormName: string; FromDockManager: Boolean;
+  FromList: Boolean; ScanKind: TJvDockListScanKind): TCustomForm;
 begin
   if FromDockManager then
     Result := JvDockFindDockServerFromDockManager(FormName, FromList, ScanKind)
-  else Result := JvDockFindDockFormFromScreen(FormName, ScanKind);
+  else
+    Result := JvDockFindDockFormFromScreen(FormName, ScanKind);
 end;
 
-function JvDockFindDockClientFormWithName(FormName: string;
-  FromDockManager: Boolean;
-  FromList: Boolean;
-  ScanKind: TJvDockListScanKind): TCustomForm;
+function JvDockFindDockClientFormWithName(FormName: string; FromDockManager: Boolean;
+  FromList: Boolean; ScanKind: TJvDockListScanKind): TCustomForm;
 begin
   if FromDockManager then
     Result := JvDockFindDockClientFromDockManager(FormName, FromList, ScanKind)
-  else Result := JvDockFindDockFormFromScreen(FormName, ScanKind);
+  else
+    Result := JvDockFindDockFormFromScreen(FormName, ScanKind);
 end;
 
-function JvDockFindDockServerFromDockManager(FormName: string;
-              FromList: Boolean;
-              ScanKind: TJvDockListScanKind): TCustomForm;
-var i: Integer;
+function JvDockFindDockServerFromDockManager(FormName: string; FromList: Boolean;
+  ScanKind: TJvDockListScanKind): TCustomForm;
+var
+  I: Integer;
 begin
+  Result := nil;
   case ScanKind of
     lskForward:
-    begin
-      for i := 0 to JvGlobalDockManager.DockServersList.Count - 1 do
-        if FormName = TCustomForm(JvGlobalDockManager.DockServersList[i]).Name then
+      for I := 0 to JvGlobalDockManager.DockServersList.Count - 1 do
+        if FormName = TCustomForm(JvGlobalDockManager.DockServersList[I]).Name then
         begin
-          Result := TCustomForm(JvGlobalDockManager.DockServersList[i]);
-          Exit;
+          Result := TCustomForm(JvGlobalDockManager.DockServersList[I]);
+          Break;
         end;
-    end;
     lskBackward:
-    begin
-      for i := JvGlobalDockManager.DockServersList.Count - 1 downto 0 do
-        if FormName = TCustomForm(JvGlobalDockManager.DockServersList[i]).Name then
-        begin
-          Result := TCustomForm(JvGlobalDockManager.DockServersList[i]);
-          Exit;
-        end;
-    end;
+       for I := JvGlobalDockManager.DockServersList.Count - 1 downto 0 do
+         if FormName = TCustomForm(JvGlobalDockManager.DockServersList[I]).Name then
+         begin
+           Result := TCustomForm(JvGlobalDockManager.DockServersList[I]);
+           Break;
+         end;
   end;
-  Result := nil;
 end;
 
-function JvDockFindDockClientFromDockManager(FormName: string;
-              FromList: Boolean;
-              ScanKind: TJvDockListScanKind): TCustomForm;
-var i: Integer;
+function JvDockFindDockClientFromDockManager(FormName: string; FromList: Boolean;
+  ScanKind: TJvDockListScanKind): TCustomForm;
+var
+  I: Integer;
 begin
+  Result := nil;
   case ScanKind of
     lskForward:
-    begin
-      for i := 0 to JvGlobalDockManager.DockClientsList.Count - 1 do
-        if FormName = TCustomForm(JvGlobalDockManager.DockClientsList[i]).Name then
+      for I := 0 to JvGlobalDockManager.DockClientsList.Count - 1 do
+        if FormName = TCustomForm(JvGlobalDockManager.DockClientsList[I]).Name then
         begin
-          Result := TCustomForm(JvGlobalDockManager.DockClientsList[i]);
-          Exit;
+          Result := TCustomForm(JvGlobalDockManager.DockClientsList[I]);
+          Break;
         end;
-    end;
     lskBackward:
-    begin
-      for i := JvGlobalDockManager.DockClientsList.Count - 1 downto 0 do
-        if FormName = TCustomForm(JvGlobalDockManager.DockClientsList[i]).Name then
+      for I := JvGlobalDockManager.DockClientsList.Count - 1 downto 0 do
+        if FormName = TCustomForm(JvGlobalDockManager.DockClientsList[I]).Name then
         begin
-          Result := TCustomForm(JvGlobalDockManager.DockClientsList[i]);
-          Exit;
+          Result := TCustomForm(JvGlobalDockManager.DockClientsList[I]);
+          Break;
         end;
-    end;
   end;
-  Result := nil;
 end;
 
 function JvDockFindDockFormFromScreen(FormName: string;
-              ScanKind: TJvDockListScanKind): TCustomForm;
-var i: Integer;
+  ScanKind: TJvDockListScanKind): TCustomForm;
+var
+  I: Integer;
 begin
+  Result := nil;
   case ScanKind of
     lskForward:
-    begin
-      for i := 0 to Screen.CustomFormCount - 1 do
-        if FormName = Screen.CustomForms[i].Name then
+      for I := 0 to Screen.CustomFormCount - 1 do
+        if FormName = Screen.CustomForms[I].Name then
         begin
-          Result := Screen.CustomForms[i];
-          Exit;
+          Result := Screen.CustomForms[I];
+          Break;
         end;
-    end;
     lskBackward:
-    begin
-      for i := Screen.CustomFormCount - 1 downto 0 do
-        if FormName = Screen.CustomForms[i].Name then
+      for I := Screen.CustomFormCount - 1 downto 0 do
+        if FormName = Screen.CustomForms[I].Name then
         begin
-          Result := Screen.CustomForms[i];
-          Exit;
+          Result := Screen.CustomForms[I];
+          Break;
         end;
-    end;
   end;
-  Result := nil;
 end;
 
 function JvDockGetMinOffset(TBDockSize, ControlSize: Integer; Scale: Real): Integer;
@@ -251,7 +228,7 @@ end;
 
 function JvDockGetNoNClientMetrics: TNONCLIENTMETRICS;
 begin
-  Result.cbSize := Sizeof(TNONCLIENTMETRICS);
+  Result.cbSize := SizeOf(TNONCLIENTMETRICS);
   SystemParametersInfo(SPI_GETNONCLIENTMETRICS, Result.cbSize,
     @Result, 0);
 end;
@@ -267,7 +244,8 @@ begin
 end;
 
 function JvDockGetSysCaptionHeightAndBorderWidth: Integer;
-var NoNCM: TNONCLIENTMETRICS;
+var
+  NoNCM: TNONCLIENTMETRICS;
 begin
   NoNCM := JvDockGetNoNClientMetrics;
   Result := NoNCM.iBorderWidth + NoNCM.iCaptionHeight;
@@ -297,7 +275,8 @@ function JvDockGetTitleFontColor(Active: Boolean): TColor;
 begin
   if Active then
     Result := JvDockGetActiveTitleFontColor
-  else Result := JvDockGetInactiveTitleFontColor;
+  else
+    Result := JvDockGetInactiveTitleFontColor;
 end;
 
 function JvDockGetActiveTitleFontColor: TColor;
@@ -310,21 +289,25 @@ begin
   Result := GetSysColor(COLOR_INACTIVECAPTIONTEXT);
 end;
 
-
 function JvDockGetTitleFont: TFont;
-var NoNCM: TNONCLIENTMETRICS;
+var
+  NoNCM: TNONCLIENTMETRICS;
 begin
+  if JvDockTitleFont = nil then
+    JvDockTitleFont := TFont.Create;
   Result := JvDockTitleFont;
   NoNCM := JvDockGetNoNClientMetrics;
   Result.Handle := CreateFontIndirect(NoNCM.lfCaptionFont);
 end;
 
 procedure JvDockLockWindow(Control: TWinControl);
-var Handle: HWND;
+var
+  Handle: HWND;
 begin
   if Control = nil then
     Handle := GetDesktopWindow
-  else Handle := Control.Handle;
+  else
+    Handle := Control.Handle;
   LockWindowUpdate(Handle);
 end;
 
@@ -333,9 +316,9 @@ begin
   LockWindowUpdate(0);
 end;
 
-function JvDockCreateNCMessage(Control: TControl; Msg: Cardinal; HTFlag: Integer; Pos: TPoint): TWMNCHitMessage;
+function JvDockCreateNCMessage(Control: TControl; Msg: Cardinal; HTFlag: Integer;
+  Pos: TPoint): TWMNCHitMessage;
 begin
-  
   Result.Msg := Msg;
   Result.HitTest := HTFlag;
   Pos := Control.ClientToScreen(Pos);
@@ -346,8 +329,10 @@ end;
 function JvDockExchangeOrient(Orient: TDockOrientation): TDockOrientation;
 begin
   case Orient of
-    doHorizontal: Result := doVertical;
-    doVertical: Result := doHorizontal;
+    doHorizontal:
+      Result := doVertical;
+    doVertical:
+      Result := doHorizontal;
   else
     Result := doNoOrient;
   end;
@@ -358,24 +343,28 @@ begin
   Assert(AControl <> nil);
   Result := doNoOrient;
   case AControl.Align of
-    alClient, alNone: Result := doNoOrient;
-    alLeft, alRight:  Result := doVertical;
-    alTop, alBottom:  Result := doHorizontal;
+    alClient, alNone:
+      Result := doNoOrient;
+    alLeft, alRight:
+      Result := doVertical;
+    alTop, alBottom:
+      Result := doHorizontal;
   end;
 end;
 
 function JvDockGetControlSize(AControl: TControl): Integer;
 begin
   case JvDockGetControlOrient(AControl) of
-    doVertical: Result := AControl.Width;
-    doHorizontal: Result := AControl.Height;
+    doVertical:
+      Result := AControl.Width;
+    doHorizontal:
+      Result := AControl.Height;
   else
     raise Exception.Create(RsDockCannotGetValueWithNoOrient);
   end;
 end;
 
 initialization
-  JvDockTitleFont := TFont.Create;
 
 finalization
   JvDockTitleFont.Free;

@@ -363,7 +363,7 @@ var
   I, J: Integer;
   C: TComponent;
   List: TJvPropInfoList;
-  StrList: TStrings;
+  StrList: TStringList;
   CompName, PropName: string;
 begin
   ClearLists;
@@ -378,7 +378,7 @@ begin
       try
         StrList := TStringList.Create;
         try
-          TStringList(StrList).Sorted := True;
+          StrList.Sorted := True;
           for J := 0 to List.Count - 1 do
             StrList.Add(List.Items[J]^.Name);
           ComponentsList.Items.AddObject(C.Name, StrList);
@@ -417,8 +417,7 @@ var
 begin
   AddButton.Enabled := (ComponentsList.ItemIndex >= 0) and
     (PropertiesList.ItemIndex >= 0);
-  Enable := (StoredList.Items.Count > 0) and
-    (StoredList.ItemIndex >= 0);
+  Enable := (StoredList.Items.Count > 0) and (StoredList.ItemIndex >= 0);
   DeleteButton.Enabled := Enable;
   ClearButton.Enabled := Enable;
   UpBtn.Enabled := Enable and (StoredList.ItemIndex > 0);

@@ -66,7 +66,7 @@ type
     procedure PreviewBtnClick(Sender: TObject);
     procedure OkBtnClick(Sender: TObject);
   private
-    FormCaption: string;
+    FFormCaption: string;
     FBmpImage: TBitmap;
     procedure ZoomImage;
     function GetFileName: string;
@@ -173,10 +173,10 @@ begin
   ZoomImage;
   FileExt := AnsiLowerCase(FileName);
   if FileExt <> '' then
-    Caption := FormCaption + ' - ' + MinimizeName(FileExt, PathLabel.Canvas,
+    Caption := FFormCaption + ' - ' + MinimizeName(FileExt, PathLabel.Canvas,
       PathLabel.Width)
   else
-    Caption := FormCaption;
+    Caption := FFormCaption;
   PreviewBtn.Enabled := ValidPicture(Image.Picture);
 end;
 
@@ -188,7 +188,7 @@ end;
 
 procedure TImageForm.FormCreate(Sender: TObject);
 begin
-  FormCaption := Caption;
+  FFormCaption := Caption;
   Image.Align := alNone;
   FBmpImage := TBitmap.Create;
   FBmpImage.Assign(FilePics.GraphicCell[5]);

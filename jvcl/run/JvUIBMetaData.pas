@@ -1762,7 +1762,7 @@ begin
   begin
     WriteString(Stream, FName);
     for i := 0 to i - 1 do
-      Stream.Write(FFields[i], sizeof(FFields[i]));
+      Stream.Write(FFields[i], SizeOf(FFields[i]));
   end;
 end;
 
@@ -1926,7 +1926,7 @@ begin
   Stream.Read(i, SizeOf(i));
   SetLength(FForFields, i);
   for i := 0 to i - 1 do
-    Stream.Read(FForFields[i], sizeof(FForFields[i]));
+    Stream.Read(FForFields[i], SizeOf(FForFields[i]));
 end;
 
 procedure TMetaForeign.SaveToDDLNode(Stream: TStringStream);
@@ -1979,7 +1979,7 @@ begin
   i := ForFieldsCount;
   Stream.Write(i, SizeOf(i));
   for i := 0 to i - 1 do
-    Stream.Write(FForFields[i], sizeof(FForFields[i]));
+    Stream.Write(FForFields[i], SizeOf(FForFields[i]));
 end;
 
 class function TMetaForeign.NodeType: TMetaNodeType;
