@@ -4,8 +4,8 @@ object JvFormPropsDlg: TJvFormPropsDlg
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Form Storage Designer'
-  ClientHeight = 333
-  ClientWidth = 352
+  ClientHeight = 409
+  ClientWidth = 434
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -38,6 +38,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     0007800000078000000780000007800000078000000780000007800000078000
     000780000007C000000F8120021F8130061FFFF80FFFFFFC1FFFFFFFFFFF}
   OldCreateOrder = True
+  Position = poScreenCenter
   Scaled = False
   OnDestroy = FormDestroy
   PixelsPerInch = 96
@@ -45,8 +46,9 @@ object JvFormPropsDlg: TJvFormPropsDlg
   object Bevel1: TBevel
     Left = 4
     Top = 54
-    Width = 344
-    Height = 243
+    Width = 425
+    Height = 317
+    Anchors = [akLeft, akTop, akRight, akBottom]
     Shape = bsFrame
   end
   object Label30: TLabel
@@ -64,7 +66,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     IsControl = True
   end
   object Label31: TLabel
-    Left = 224
+    Left = 265
     Top = 61
     Width = 70
     Height = 13
@@ -79,7 +81,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object Label2: TLabel
     Left = 16
-    Top = 177
+    Top = 189
     Width = 111
     Height = 13
     Caption = '&Stored Properties   '
@@ -91,10 +93,11 @@ object JvFormPropsDlg: TJvFormPropsDlg
     ParentFont = False
   end
   object UpBtn: TSpeedButton
-    Left = 272
-    Top = 194
+    Left = 353
+    Top = 238
     Width = 25
     Height = 25
+    Anchors = [akRight, akBottom]
     Glyph.Data = {
       DE000000424DDE0000000000000076000000280000000D0000000D0000000100
       0400000000006800000000000000000000001000000000000000000000000000
@@ -107,10 +110,11 @@ object JvFormPropsDlg: TJvFormPropsDlg
     OnClick = UpBtnClick
   end
   object DownBtn: TSpeedButton
-    Left = 305
-    Top = 194
+    Left = 386
+    Top = 238
     Width = 25
     Height = 25
+    Anchors = [akRight, akBottom]
     Glyph.Data = {
       DE000000424DDE0000000000000076000000280000000D0000000D0000000100
       0400000000006800000000000000000000001000000000000000000000000000
@@ -125,8 +129,9 @@ object JvFormPropsDlg: TJvFormPropsDlg
   object FormBox: TGroupBox
     Left = 4
     Top = 2
-    Width = 344
+    Width = 425
     Height = 44
+    Anchors = [akLeft, akTop, akRight]
     Caption = ' Form Properties '
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -138,7 +143,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     object ActiveCtrlBox: TCheckBox
       Left = 12
       Top = 16
-      Width = 94
+      Width = 129
       Height = 17
       Caption = ' Acti&ve Control'
       Font.Charset = DEFAULT_CHARSET
@@ -151,9 +156,9 @@ object JvFormPropsDlg: TJvFormPropsDlg
       OnClick = ListClick
     end
     object PositionBox: TCheckBox
-      Left = 124
+      Left = 144
       Top = 16
-      Width = 94
+      Width = 137
       Height = 17
       Caption = ' &Form Position'
       Checked = True
@@ -168,9 +173,9 @@ object JvFormPropsDlg: TJvFormPropsDlg
       OnClick = ListClick
     end
     object StateBox: TCheckBox
-      Left = 236
+      Left = 284
       Top = 16
-      Width = 94
+      Width = 136
       Height = 17
       Caption = ' &Window State'
       Checked = True
@@ -186,8 +191,8 @@ object JvFormPropsDlg: TJvFormPropsDlg
     end
   end
   object AddButton: TButton
-    Left = 137
-    Top = 110
+    Left = 179
+    Top = 111
     Width = 77
     Height = 25
     Caption = '&Add'
@@ -195,58 +200,62 @@ object JvFormPropsDlg: TJvFormPropsDlg
     OnClick = AddButtonClick
   end
   object DeleteButton: TButton
-    Left = 263
-    Top = 226
+    Left = 344
+    Top = 300
     Width = 77
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = '&Delete'
     TabOrder = 5
     OnClick = DeleteButtonClick
   end
   object ClearButton: TButton
-    Left = 263
-    Top = 256
+    Left = 344
+    Top = 330
     Width = 77
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'Cl&ear'
     TabOrder = 6
     OnClick = ClearButtonClick
   end
   object OkBtn: TButton
-    Left = 176
-    Top = 304
+    Left = 257
+    Top = 378
     Width = 77
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'OK'
     Default = True
     ModalResult = 1
     TabOrder = 7
   end
   object CancelBtn: TButton
-    Left = 264
-    Top = 304
+    Left = 345
+    Top = 378
     Width = 77
     Height = 25
+    Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 8
   end
   object ComponentsList: TListBox
-    Left = 16
-    Top = 80
-    Width = 105
-    Height = 89
+    Left = 15
+    Top = 79
+    Width = 150
+    Height = 96
     ItemHeight = 13
     Sorted = True
     TabOrder = 1
     OnClick = ListClick
   end
   object PropertiesList: TListBox
-    Left = 224
-    Top = 80
-    Width = 113
-    Height = 89
+    Left = 265
+    Top = 79
+    Width = 150
+    Height = 96
     ItemHeight = 13
     Sorted = True
     TabOrder = 3
@@ -254,9 +263,10 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object StoredList: TListBox
     Left = 16
-    Top = 192
-    Width = 241
-    Height = 97
+    Top = 210
+    Width = 322
+    Height = 153
+    Anchors = [akLeft, akTop, akRight, akBottom]
     ItemHeight = 13
     TabOrder = 4
     OnClick = StoredListClick
