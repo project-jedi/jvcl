@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-08-18
+- TJvAnimatedImage: Opaque renamed to Transparent and logic reversed // peter3
 2004-08-09
 - JvWStrUtils.pas moved to JCL as JclWideStrings.pas // (rom)
 - JvParameterList improvements // jfudickar
