@@ -12,9 +12,6 @@ inherited frmDataConsumerContextSelect: TfrmDataConsumerContextSelect
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      600
-      35)
     object btnOk: TButton
       Left = 440
       Top = 5
@@ -39,12 +36,8 @@ inherited frmDataConsumerContextSelect: TfrmDataConsumerContextSelect
     end
   end
   inline fmeTreeList: TfmeJvProviderTreeList
-    Left = 0
-    Top = 0
     Width = 600
     Height = 235
-    Align = alClient
-    AutoScroll = False
     TabOrder = 1
     inherited lvProvider: TListView
       Width = 600

@@ -45,7 +45,7 @@ uses
   JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor,
   JvContextProvider, JvAppRegistryStore, JvAppIniStore, JvColorProvider,
   JvColorProviderEditors, JvDataProviderEditors, JvDataProvider,
-  JvDataProviderImpl, JvAppStore;
+  JvDataProviderIntf, JvAppStore;
 
 {$R ..\resources\JvCoreReg.dcr}
 

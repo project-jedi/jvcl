@@ -39,7 +39,7 @@ uses
   {$ELSE}
   DsgnIntf, Menus,
   {$ENDIF COMPILER6_UP}
-  JvDataProvider, JvDataProviderImpl;
+  JvDataProvider, JvDataProviderIntf;
 
 type
   {$IFDEF COMPILER6_UP}

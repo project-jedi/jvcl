@@ -69,7 +69,7 @@ implementation
 
 uses
   SysUtils, TypInfo,
-  JvDataProvider, JvColorProviderDesignerForm, JvDsgnConsts;
+  JvDataProviderIntf, JvColorProviderDesignerForm, JvDsgnConsts;
 
 //=== TJvColorProviderMappingProperty ========================================
 

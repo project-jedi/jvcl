@@ -34,7 +34,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls,
-  JvDataProvider, JvDataProviderImpl;
+  JvDataProvider, JvDataProviderIntf;
 
 type
   TGetVirtualRootEvent = procedure(Sender: TObject; var AVirtualRoot: IJvDataItem) of object;
@@ -155,6 +155,7 @@ begin
   if Value <> Slave then
   begin
     ProviderChanging;
+    Changing(ccrProviderSelect);
     if Slave <> nil then
       Slave.OnChanged := OldOnChanged;
     FSlave := Value;
@@ -176,7 +177,7 @@ begin
     if NeedExtensionFixups then
       FixupExtensions;
     ViewChanged(nil);
-    Changed(ccrProviderSelected);
+    Changed(ccrProviderSelect);
   end;
 end;
 
@@ -192,7 +193,7 @@ end;
 procedure TMasterConsumer.SlaveChanged(Sender: TJvDataConsumer;
   Reason: TJvDataConsumerChangeReason);
 begin
-  if Reason = ccrViewChanged then
+  if Reason = ccrViewChange then
     ViewChanged(nil);
   Changed(Reason);
 end;
@@ -273,7 +274,7 @@ begin
       FVirtualRoot := nil
     else
       GenerateVirtualRoot;
-    ConsumerChanged(Provider, ccrViewChanged);
+    ConsumerChanged(Provider, ccrViewChange);
   end;
 end;
 
@@ -317,9 +318,9 @@ begin
     Exit;
   if UseVirtualRoot and not UsingVirtualRoot then
     GenerateVirtualRoot;
-  if Reason in [ccrProviderSelected, ccrViewChanged] then
+  if Reason in [ccrProviderSelect, ccrViewChange] then
     UpdateViewList;
-  if (lvProvider.Items.Count > 0) and (Reason = ccrViewChanged) then
+  if (lvProvider.Items.Count > 0) and (Reason = ccrViewChange) then
     with lvProvider do
       UpdateItems(TopItem.Index, TopItem.Index + VisibleRowCount);
   lvProvider.Invalidate;

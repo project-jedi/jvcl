@@ -39,7 +39,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvDataProvider, JvProviderTreeListFrame, JvDsgnTypes;
+  JvDataProviderIntf, JvProviderTreeListFrame, JvDsgnTypes;
 
 type
   TDsgFmeBeforeNewItem = procedure(Sender: TObject; Kind: Integer; var Allow: Boolean) of object;

@@ -55,7 +55,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Controls, Forms,
-  JvItemsSearchs, JVCLVer, JvDataProvider, JvDataProviderImpl;
+  JvItemsSearchs, JVCLVer, JvDataProvider, JvDataProviderIntf;
 
 type
   TJvListboxFillMode = (bfmTile, bfmStretch);
@@ -206,10 +206,12 @@ type
     procedure EndRedraw;
 
     procedure SetConsumerService(Value: TJvDataConsumer);
+    procedure ConsumerServiceChanging(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
     procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
     procedure ConsumerSubServiceCreated(Sender: TJvDataConsumer;
       SubSvc: TJvDataConsumerAggregatedObject);
     function IsProviderSelected: Boolean;
+    function IsProviderToggle: Boolean;
     procedure DeselectProvider;
     procedure UpdateItemCount;
     property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
@@ -503,8 +505,11 @@ end;
 procedure TJvListBoxStrings.SetUpdateState(Updating: Boolean);
 begin
   FUpdating := Updating;
-  SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(not Updating), 0);
-  if not Updating then ListBox.Refresh;
+  if ListBox.HandleAllocated then
+  begin
+    SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(not Updating), 0);
+    if not Updating then ListBox.Refresh;
+  end;
 end;
 
 procedure TJvListBoxStrings.SetWndDestroying(Destroying: Boolean);
@@ -651,10 +656,14 @@ var
   S: string;
   Obj: TObject;
 begin
-  SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(False), 0);
+  if ListBox.HandleAllocated then
+    SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(False), 0);
   try
     FInternalList.Clear;
-    Cnt := SendMessage(ListBox.Handle, LB_GETCOUNT, 0, 0);
+    if ListBox.HandleAllocated then
+      Cnt := SendMessage(ListBox.Handle, LB_GETCOUNT, 0, 0)
+    else
+      Cnt := 0;
     while Cnt > 0 do
     begin
       Len := SendMessage(ListBox.Handle, LB_GETTEXT, 0, Longint(@Text));
@@ -666,7 +675,7 @@ begin
     end;
   finally
     UseInternal := True;
-    if not Updating then
+    if not Updating and ListBox.HandleAllocated then
       SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(True), 0);
   end;
 end;
@@ -853,6 +862,7 @@ begin
     is active and the list box windows has no strings at all. }
   FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RenderDisabledAsGrayed,
     DPA_ConsumerDisplaysList]);
+  FConsumerSvc.OnChanging := ConsumerServiceChanging;
   FConsumerSvc.OnChanged := ConsumerServiceChanged;
   FConsumerSvc.AfterCreateSubSvc := ConsumerSubServiceCreated;
   FConsumerStrings := TJvConsumerStrings.Create(FConsumerSvc);
@@ -1287,30 +1297,40 @@ procedure TJvCustomListBox.SetConsumerService(Value: TJvDataConsumer);
 begin
 end;
 
+procedure TJvCustomListBox.ConsumerServiceChanging(Sender: TJvDataConsumer;
+  Reason: TJvDataConsumerChangeReason);
+begin
+  { If we're changing providers, make sure a list box is created; this will post the saved list back
+    now instead of after a provider is assigned (which will then be deselected again as the string
+    list is changed). }
+  if (Reason = ccrProviderSelect) and not (csDestroying in ComponentState) then
+    HandleNeeded;
+end;
+
 procedure TJvCustomListBox.ConsumerServiceChanged(Sender: TJvDataConsumer;
   Reason: TJvDataConsumerChangeReason);
 begin
-  if (Reason = ccrProviderSelected) and not IsProviderSelected and not FProviderToggle then
+  if (Reason = ccrProviderSelect) and not IsProviderSelected and not FProviderToggle then
   begin
-    TJvListBoxStrings(Items).MakeListInternal;
-    FProviderIsActive := True;
     FProviderToggle := True;
+    FProviderIsActive := True;
+    TJvListBoxStrings(Items).MakeListInternal;
     RecreateWnd;
   end
   else
-  if (Reason = ccrProviderSelected) and IsProviderSelected and not FProviderToggle then
+  if (Reason = ccrProviderSelect) and IsProviderSelected and not FProviderToggle then
   begin
-    TJvListBoxStrings(Items).ActivateInternal; // apply internal string list to list box
     FProviderIsActive := False;
     FProviderToggle := True;
+    TJvListBoxStrings(Items).ActivateInternal; // apply internal string list to list box
     RecreateWnd;
   end;
-  if not FProviderToggle or (Reason = ccrProviderSelected) then
+  if not FProviderToggle or (Reason = ccrProviderSelect) then
   begin
     UpdateItemCount;
     Refresh;
   end;
-  if FProviderToggle and (Reason = ccrProviderSelected) then
+  if FProviderToggle and (Reason = ccrProviderSelect) then
     FProviderToggle := False;
 end;
 
@@ -1330,6 +1350,11 @@ end;
 function TJvCustomListBox.IsProviderSelected: Boolean;
 begin
   Result := FProviderIsActive;
+end;
+
+function TJvCustomListBox.IsProviderToggle: Boolean;
+begin
+  Result := FProviderToggle;
 end;
 
 procedure TJvCustomListBox.DeselectProvider;

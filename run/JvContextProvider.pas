@@ -33,7 +33,7 @@ interface
 
 uses
   Classes,
-  JvDataProvider, JvDataProviderImpl;
+  JvDataProvider, JvDataProviderIntf;
 
 type
   { Context provider related interfaces. }
