@@ -29,7 +29,7 @@ Known Issues:
 WARNINGHEADER
 
 {$IFDEF VCL}
-Sorry this file is for VisualCLX only
+Sorry this file is for VCLX only
 {$ENDIF VCL}
 
 unit JvExComboEdits;
