@@ -117,7 +117,6 @@ contains
   JvFormAlarms in '..\source\JvFormAlarms.pas',
   JvFormAnimatedIcon in '..\source\JvFormAnimatedIcon.pas',
   JvFormAnimation in '..\source\JvFormAnimation.pas',
-  JvFormCalculator in '..\source\JvFormCalculator.pas',
   JvFormImage in '..\source\JvFormImage.pas',
   JvFormLogin in '..\source\JvFormLogin.pas',
   JvFormParser in '..\source\JvFormParser.pas',

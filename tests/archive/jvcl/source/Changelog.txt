@@ -1,5 +1,7 @@
 2002-07-20
-- moved JvCalculator, JvCalculatorBox, JvButtonBox, JvCustomBox, JvDirectoryBox, JvFilenameBox,JvImageBox to \archive
+- moved JvFormDirectory to \archive (part of removed Installer)
+- moved JvFormCalculator to \archive
+- moved JvCalculator, JvCalculatorBox, JvButtonBox, JvCustomBox, JvDirectoryBox, JvFilenameBox, JvImageBox to \archive
 - moved JvShell to \archive - JvxTrayIcon duplicates JvTrayIcon
 - moved JvShDlg to \archive - utility functions not used
 - moved JvCombos to \archive - duplicates TJvFontComboBox and TJvColorComboBox
