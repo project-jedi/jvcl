@@ -456,7 +456,7 @@ begin
   FCurLine := TrimRight(Line);
   if StartsWith(Line, 'Compiling package: ') then
     FAction := 'Compiling ' + ChangeFileExt(Copy(Line, 20, MaxInt), '')
-  else if StartsWith(Line, '** ') then
+  else if StartsWith(Line, '** ') and not StartsWith(Line, '** error') then
     FAction := Copy(Line, 4, MaxInt);
   Synchronize(UpdateCurLine);
 end;
