@@ -685,7 +685,7 @@ uses
   Variants,
   {$ENDIF COMPILER6_UP}
   JvDynControlEngineTools,
-  cxTextEdit, cxControls, JvJCLUtils;
+  cxTextEdit, cxControls;
 
 var
   IntDynControlEngineDevExpCx: TJvDynControlEngineDevExpCx = nil;
@@ -1315,7 +1315,7 @@ end;
 procedure TJvDynControlCxDateTimeEdit.ControlSetDefaultProperties;
 begin
   Properties.ShowTime  := true;
-  Properties.SaveTime  := true;
+  Properties.SaveTime  := false;
   Properties.InputKind := ikStandard;
 end;
 
@@ -2699,13 +2699,13 @@ end;
 
 function TJvDynControlEngineDevExpCx.CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
 var
-  C: TControl;
+  Control: TControl;
 begin
-  C := inherited CreateControlClass(AControlClass, AOwner, AParentControl, AControlName);
-  if Supports(C, IJvDynControlDevExpCx) then
-    with C as IJvDynControlDevExpCx do
+  Control := inherited CreateControlClass(AControlClass, AOwner, AParentControl, AControlName);
+  if Supports(Control, IJvDynControlDevExpCx) then
+    with Control as IJvDynControlDevExpCx do
       ControlSetCxProperties(cxProperties);
-  Result := C;
+  Result := Control;
 end;
 
 //=== DynControlEngineDevExpCx ==============================================
