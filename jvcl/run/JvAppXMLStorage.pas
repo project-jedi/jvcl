@@ -176,7 +176,7 @@ begin
   inherited Create(AOwner);
   FXml := TJvSimpleXml.Create(nil);
   RootNodeName := 'Configuration';
-  WhiteSpaceReplacement := '_';
+  WhiteSpaceReplacement := '';  // to keep the original behaviour
 end;
 
 destructor TJvCustomAppXMLStorage.Destroy;
