@@ -681,11 +681,6 @@ Filename=
 [Generic Sources]
 Count=0
 
-
-; *********************************************************************
-; Filter settings are stored below this line
-; *********************************************************************
-
 [{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Elements]
 Count=39
 ElementID_0=-39
@@ -1748,13 +1743,14 @@ Showing_6=1
 Showing_7=1
 Showing_8=1
 Showing_9=0
-Showing_10=1
+Showing_10=0
 Showing_11=1
 
 [{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Basic]
 OutputFile=output\WinHELP\JVCL.rtf
 HLPFilename=
 CreatePrintableDocumentation=0
+HelpCompiler=C:\Program Files\Borland\Delphi6\help\tools\hcrtf.exe
 
 [{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Help Project]
 HelpProjectFileAutomatic=1
@@ -1796,7 +1792,7 @@ WindowPositionBodySource=420,45,563,366
 EmitBorlandAKey=1
 
 [{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Elements]
-Count=74
+Count=73
 ElementID_0=-74
 ElementID_1=-73
 ElementID_2=-72
@@ -1855,21 +1851,21 @@ ElementID_54=-20
 ElementID_55=-19
 ElementID_56=-18
 ElementID_57=-17
-ElementID_58=-16
-ElementID_59=-15
-ElementID_60=-14
-ElementID_61=-13
-ElementID_62=-12
-ElementID_63=-11
-ElementID_64=-10
-ElementID_65=-9
-ElementID_66=-8
-ElementID_67=-7
-ElementID_68=-6
-ElementID_69=-5
-ElementID_70=-4
-ElementID_71=-3
-ElementID_72=-2
+ElementID_58=-15
+ElementID_59=-14
+ElementID_60=-13
+ElementID_61=-12
+ElementID_62=-11
+ElementID_63=-10
+ElementID_64=-9
+ElementID_65=-8
+ElementID_66=-7
+ElementID_67=-6
+ElementID_68=-5
+ElementID_69=-4
+ElementID_70=-3
+ElementID_71=-2
+ElementID_72=-1
 ElementID_73=-1
 StandardVariablePitchFontname=Verdana,Arial,Helvetica,sans-serif
 StandardFixedPitchFontname=Courier New,Courier,monospace
@@ -3499,7 +3495,7 @@ Showing_6=1
 Showing_7=1
 Showing_8=1
 Showing_9=0
-Showing_10=1
+Showing_10=0
 Showing_11=1
 
 [{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\General]
@@ -3524,6 +3520,7 @@ SupportEnhancedDecompilation=1
 CompileFullTextSearchInformation=1
 CreateBinaryIndex=1
 CreateBinaryTOC=1
+HelpCompiler=C:\Program Files\HTML Help Workshop\hhc.exe
 
 [{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
 UseCSS=1
