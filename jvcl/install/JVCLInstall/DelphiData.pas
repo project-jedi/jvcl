@@ -499,6 +499,7 @@ function TCompileTarget.IsPersonal: Boolean;
 begin
   Result := (CompareText(Edition, 'PER') = 0) or // do not localize
             (CompareText(Edition, 'PERS') = 0) or // do not localize
+            (CompareText(Edition, 'Personal') = 0) or // do not localize
             (CompareText(Edition, 'STD') = 0); // do not localize
 end;
 
