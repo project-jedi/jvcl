@@ -415,7 +415,11 @@ function JvUrlGrabberClassList: TJvUrlGrabberClassList;
 implementation
 
 uses
-  JvConsts, JvResources, JvFinalize;
+  JvConsts, JvResources, JvFinalize,
+  // JvUrlGrabbers MUST be included here so that the grabbers
+  // it contains are registered before any JvUrlListGrabber
+  // component reads its properties.
+  JvUrlGrabbers;
 
 const
   sUnitName = 'JvUrlListGrabber';
@@ -886,6 +890,7 @@ type
     procedure SetUrlType(const Value: string);
   public
     destructor Destroy; override;
+    constructor Create(Collection: TCollection); override;
   published
     property UrlType: string read FUrlType write SetUrlType;
     property Value: TJvCustomUrlGrabberDefaultProperties read FValue write SetValue;
@@ -914,6 +919,11 @@ begin
   end;
 end;
 
+constructor TDFMPropertiesCollectionItem.Create(Collection: TCollection);
+begin
+  inherited Create(Collection);
+end;
+
 destructor TDFMPropertiesCollectionItem.Destroy;
 begin
   if FOwnValue then
@@ -927,7 +937,8 @@ procedure TDFMPropertiesCollectionItem.SetValue(
 begin
   FValue := Value;
   FOwnValue := False;
-  FUrlType := FValue.GetSupportedURLName;
+  if Assigned(FValue) then
+    FUrlType := FValue.GetSupportedURLName;
 end;
 
 procedure TDFMPropertiesCollectionItem.SetUrlType(const Value: string);
