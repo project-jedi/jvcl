@@ -32,9 +32,54 @@ interface
 
 uses
   Windows, Dialogs, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvMaxPixel, JvItemsSearchs, JVCLVer;
+  JvDataProvider, JvDataProviderImpl, JvMaxPixel, JvItemsSearchs, JVCLVer;
 
 type
+  TJvCustomComboBox = class;
+
+  { This class will be used for the Items property of the combo box.
+
+    If a provider is active at the combo box, this list will keep the strings stored in an internal
+    list.
+
+    Whenever an item is added to the list the provider will be deactivated and the list will be
+    handled by the combo box as usual. }
+  TJvComboBoxStrings = class({$IFNDEF COMPILER6_UP}TStrings{$ELSE}TCustomComboBoxStrings{$ENDIF})
+  private
+    {$IFNDEF COMPILER6_UP}
+    FComboBox: TJvCustomComboBox;
+    {$ENDIF COMPILER6_UP}
+    FInternalList: TStrings;
+    FUseInternal: Boolean;
+    FUpdating: Boolean;
+    FDestroyCnt: Integer;
+  protected
+    function Get(Index: Integer): string; override;
+    function GetCount: Integer; override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure PutObject(Index: Integer; AObject: TObject); override;
+    procedure SetUpdateState(Updating: Boolean); override;
+    procedure SetWndDestroying(Destroying: Boolean);
+    function GetComboBox: TJvCustomComboBox;
+    procedure SetComboBox(Value: TJvCustomComboBox);
+    property ComboBox: TJvCustomComboBox read GetComboBox write SetComboBox;
+    property InternalList: TStrings read FInternalList;
+    property UseInternal: Boolean read FUseInternal write FUseInternal;
+    property Updating: Boolean read FUpdating;
+    property DestroyCount: Integer read FDestroyCnt;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Add(const S: string): Integer; override;
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    function IndexOf(const S: string): Integer; override;
+    procedure Insert(Index: Integer; const S: string); override;
+    procedure MakeListInternal; virtual;
+    procedure ActivateInternal; virtual;
+  end;
+  TJvComboBoxStringsClass = class of TJvComboBoxStrings;
+
   TJvCustomComboBox = class(TCustomComboBox)
   private
     FKey: Word;
@@ -42,6 +87,7 @@ type
     {$IFNDEF COMPILER6_UP}
     FLastTime: Cardinal;      // SPM - Ported backward from Delphi 7
     FFilter: string;          // SPM - ditto
+    FIsDropping: Boolean;
     {$ENDIF}
     FSearching: Boolean;
     FOnMouseEnter: TNotifyEvent;
@@ -55,11 +101,17 @@ type
     FItemSearchs: TJvItemsSearchs;
     FAboutJVCL: TJVCLAboutInfo;
     FReadOnly: Boolean; // ain
+    FConsumerSvc: TJvDataConsumer;
+    FProviderWasActive: Boolean;
     procedure MaxPixelChanged(Sender: TObject);
     procedure SetReadOnly(const Value: Boolean); // ain
+    procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
   protected
     procedure Change; override;
     procedure CreateWnd; override; // ain
+    {$IFDEF COMPILER6_UP}
+    function GetItemsClass: TCustomComboBoxStringsClass; override;
+    {$ENDIF COMPILER6_UP}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     {$IFNDEF COMPILER6_UP}
     procedure KeyPress(var Key: Char); override;  // SPM - Ported backward from D7
@@ -70,12 +122,31 @@ type
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN; // ain
     procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK; // ain
+    procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
+    procedure MeasureItem(Index: Integer; var Height: Integer); override;
     {$IFNDEF COMPILER6_UP}
     function SelectItem(const AnItem: string): Boolean;  // SPM - Ported from D7
+    {$ELSE}
+    function GetItemCount: Integer; override;
     {$ENDIF}
+    procedure SetConsumerService(Value: TJvDataConsumer);
+    procedure ConsumerServiceChanged(Sender: TObject);
+    procedure ConsumerSubServiceCreated(Sender: TJvDataConsumer;
+      SubSvc: TJvDataConsumerAggregatedObject);
+    function IsProviderSelected: Boolean;
+    procedure DeselectProvider;
+    procedure UpdateItemCount;
+    function HandleFindString(StartIndex: Integer; Value: string; ExactMatch: Boolean): Integer;
+    function GetItemText(Index: Integer): string;
+    property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
+    {$IFNDEF COMPILER6_UP}
+    property IsDropping: Boolean read FIsDropping write FIsDropping;
+    {$ENDIF COMPILER6_UP}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure DestroyWnd; override;
     procedure WndProc(var Msg: TMessage); override; // ain
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
@@ -140,6 +211,7 @@ type
     property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
+    property Provider;
     property PopupMenu;
     property ReadOnly; // ain
     property ShowHint;
@@ -182,9 +254,267 @@ type
 
 implementation
 
+uses
+  Consts, {$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}TypInfo,
+  JvConsts;
+
+//===TJvComboBoxStrings=============================================================================
+
+function TJvComboBoxStrings.Get(Index: Integer): string;
+var
+  Text: array[0..4095] of Char;
+  Len: Integer;
+begin
+  if UseInternal then
+    Result := FInternalList[Index]
+  else
+  begin
+    Len := SendMessage(ComboBox.Handle, CB_GETLBTEXT, Index, Longint(@Text));
+    if Len = CB_ERR then //Len := 0;
+      Error(SListIndexError, Index);
+    SetString(Result, Text, Len);
+  end;
+end;
+
+function TJvComboBoxStrings.GetCount: Integer;
+begin
+  if (DestroyCount > 0) and UseInternal then
+    Result := 0
+  else
+  begin
+    if UseInternal then
+    begin
+      {$IFNDEF COMPILER6_UP}
+      if not ComboBox.IsDropping then
+      {$ENDIF COMPILER6_UP}
+        Result := FInternalList.Count
+      {$IFNDEF COMPILER6_UP}
+      else
+        Result := SendMessage(ComboBox.Handle, CB_GETCOUNT, 0, 0)
+      {$ENDIF COMPILER6_UP}
+    end
+    else
+      Result := SendMessage(ComboBox.Handle, CB_GETCOUNT, 0, 0);
+  end;
+end;
+
+function TJvComboBoxStrings.GetObject(Index: Integer): TObject;
+begin
+  if UseInternal then
+    Result := FInternalList.Objects[Index]
+  else
+  begin
+    Result := TObject(SendMessage(ComboBox.Handle, CB_GETITEMDATA, Index, 0));
+    if Longint(Result) = CB_ERR then
+      Error(SListIndexError, Index);
+  end;
+end;
+
+procedure TJvComboBoxStrings.PutObject(Index: Integer; AObject: TObject);
+begin
+  if UseInternal then
+    FInternalList.Objects[Index] := AObject
+  else
+    SendMessage(ComboBox.Handle, CB_SETITEMDATA, Index, Longint(AObject));
+end;
+
+procedure TJvComboBoxStrings.SetUpdateState(Updating: Boolean);
+begin
+  FUpdating := Updating;
+  SendMessage(ComboBox.Handle, WM_SETREDRAW, Ord(not Updating), 0);
+  if not Updating then ComboBox.Refresh;
+end;
+
+procedure TJvComboBoxStrings.SetWndDestroying(Destroying: Boolean);
+begin
+  if Destroying then
+    Inc(FDestroyCnt)
+  else
+  if FDestroyCnt > 0 then
+    Dec(FDestroyCnt);
+end;
+
+function TJvComboBoxStrings.GetComboBox: TJvCustomComboBox;
+begin
+  {$IFDEF COMPILER6_UP}
+  Result := TJvCustomComboBox(inherited ComboBox);
+  {$ELSE}
+  Result := FComboBox;
+  {$ENDIF COMPILER6_UP}
+end;
+
+procedure TJvComboBoxStrings.SetComboBox(Value: TJvCustomComboBox);
+begin
+  {$IFDEF COMPILER6_UP}
+  inherited ComboBox := Value;
+  {$ELSE}
+  FComboBox := Value;
+  {$ENDIF COMPILER6_UP}
+end;
+
+constructor TJvComboBoxStrings.Create;
+begin
+  inherited Create;
+  FInternalList := TStringList.Create;
+end;
+
+destructor TJvComboBoxStrings.Destroy;
+begin
+  FreeAndNil(FInternalList);
+  inherited Destroy;
+end;
+
+function TJvComboBoxStrings.Add(const S: string): Integer;
+begin
+  if (csLoading in ComboBox.ComponentState) and UseInternal then
+    Result := FInternalList.Add(S)
+  else
+  begin
+    ComboBox.DeselectProvider;
+    Result := SendMessage(ComboBox.Handle, CB_ADDSTRING, 0, Longint(PChar(S)));
+    if Result < 0 then
+      raise EOutOfResources.Create(SInsertLineError);
+  end;
+end;
+
+procedure TJvComboBoxStrings.Clear;
+var
+  S: string;
+begin
+  if (csLoading in ComboBox.ComponentState) and UseInternal then
+    FInternalList.Clear
+  else
+  begin
+    S := ComboBox.Text;
+    ComboBox.DeselectProvider;
+    SendMessage(ComboBox.Handle, CB_RESETCONTENT, 0, 0);
+    ComboBox.Text := S;
+    ComboBox.Update;
+  end;
+end;
+
+procedure TJvComboBoxStrings.Delete(Index: Integer);
+begin
+  if (csLoading in ComboBox.ComponentState) and UseInternal then
+    FInternalList.Delete(Index)
+  else
+  begin
+    ComboBox.DeselectProvider;
+    SendMessage(ComboBox.Handle, CB_DELETESTRING, Index, 0);
+  end;
+end;
+
+function TJvComboBoxStrings.IndexOf(const S: string): Integer;
+begin
+  if UseInternal then
+    Result := FInternalList.IndexOf(S)
+  else
+    Result := SendMessage(ComboBox.Handle, CB_FINDSTRINGEXACT, -1, LongInt(PChar(S)));
+end;
+
+procedure TJvComboBoxStrings.Insert(Index: Integer; const S: string);
+begin
+  if (csLoading in ComboBox.ComponentState) and UseInternal then
+    FInternalList.Insert(Index, S)
+  else
+  begin
+    ComboBox.DeselectProvider;
+    if SendMessage(ComboBox.Handle, CB_INSERTSTRING, Index, Longint(PChar(S))) < 0 then
+      raise EOutOfResources.Create(SInsertLineError);
+  end;
+end;
+
+{ Copies the strings at the combo box to the FInternalList. To minimize the memory usage when a
+  large list is used, each item copied is immediately removed from the combo box list. }
+procedure TJvComboBoxStrings.MakeListInternal;
+var
+  Cnt: Integer;
+  Text: array[0..4095] of Char;
+  Len: Integer;
+  S: string;
+  Obj: TObject;
+begin
+  SendMessage(ComboBox.Handle, WM_SETREDRAW, Ord(False), 0);
+  try
+    FInternalList.Clear;
+    Cnt := SendMessage(ComboBox.Handle, CB_GETCOUNT, 0, 0);
+    while Cnt > 0 do
+    begin
+      Len := SendMessage(ComboBox.Handle, CB_GETLBTEXT, 0, Longint(@Text));
+      SetString(S, Text, Len);
+      Obj := TObject(SendMessage(ComboBox.Handle, CB_GETITEMDATA, 0, 0));
+      SendMessage(ComboBox.Handle, CB_DELETESTRING, 0, 0);
+      FInternalList.AddObject(S, Obj);
+      Dec(Cnt);
+    end;
+  finally
+    UseInternal := True;
+    if not Updating then
+      SendMessage(ComboBox.Handle, WM_SETREDRAW, Ord(True), 0);
+  end;
+end;
+
+procedure TJvComboBoxStrings.ActivateInternal;
+var
+  S: string;
+  Obj: TObject;
+  Index: Integer;
+begin
+  SendMessage(ComboBox.Handle, WM_SETREDRAW, Ord(False), 0);
+  try
+    FInternalList.BeginUpdate;
+    try
+      SendMessage(ComboBox.Handle, CB_RESETCONTENT, 0, 0);
+      while FInternalList.Count > 0 do
+      begin
+        S := FInternalList[0];
+        Obj := FInternalList.Objects[0];
+        Index := SendMessage(ComboBox.Handle, CB_ADDSTRING, 0, Longint(PChar(S)));
+        if Index < 0 then
+          raise EOutOfResources.Create(SInsertLineError);
+        SendMessage(ComboBox.Handle, CB_SETITEMDATA, Index, Longint(Obj));
+        FInternalList.Delete(0);
+      end;
+    finally
+      FInternalList.EndUpdate;
+    end;
+  finally
+    if not Updating then
+      SendMessage(ComboBox.Handle, WM_SETREDRAW, Ord(True), 0);
+    UseInternal := False;
+  end;
+end;
+
+//===TJvCustomComboBox==============================================================================
+
+type
+  PStrings = ^TStrings;
+
 constructor TJvCustomComboBox.Create(AOwner: TComponent);
+{.$IFNDEF COMPILER7_UP}
+var
+  PI: PPropInfo;
+  PStringsAddr: PStrings;
+{.$ENDIF COMPILER7_UP}
 begin
   inherited Create(AOwner);
+  FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RenderDisabledAsGrayed,
+    DPA_ConsumerDisplaysList]);
+  FConsumerSvc.OnChanged := ConsumerServiceChanged;
+  FConsumerSvc.AfterCreateSubSvc := ConsumerSubServiceCreated;
+  {.$IFNDEF COMPILER7_UP}
+  { The following hack assumes that TJvComboBox.Items reads directly from the private FItems field
+    of TCustomComboBox and that TJvComboBox.Items is actually published.
+
+    What we do here is remove the original string list used and place our own version in it's place.
+    This would give us the benefit of keeping the list of strings (and objects) even if a provider
+    is active and the combo box windows has no strings at all. }
+  PI := GetPropInfo(TJvComboBox, 'Items');
+  PStringsAddr := Pointer(Integer(PI.GetProc) and $00FFFFFF + Integer(Self));
+  Items.Free;                                 // remove original item list (TComboBoxStrings instance)
+  PStringsAddr^ := TJvComboBoxStrings.Create; // create our own implementation and put it in place.
+  TJvComboBoxStrings(Items).ComboBox := Self; // link it to the combo box.
+  {.$ENDIF COMPILER7_UP}
   FHintColor := clInfoBk;
   FAutoComplete := True;
   {$IFNDEF COMPILER6_UP}
@@ -203,7 +533,8 @@ destructor TJvCustomComboBox.Destroy;
 begin
   FMaxPixel.Free;
   FItemSearchs.Free;
-  inherited;
+  FreeAndNil(FConsumerSvc);
+  inherited Destroy;
 end;
 
 procedure TJvCustomComboBox.Change;
@@ -231,8 +562,8 @@ begin
       try
         ItemIndex := Res;
         Start := Length(St);
-        Finish := Length(Items[Res]) - Start;
-        Text := Items[Res];
+        Finish := Length(GetItemText(Res)) - Start;
+        Text := GetItemText(Res);
         SelStart := Start;
         SelLength := Finish;
       except
@@ -254,16 +585,92 @@ begin
   Result := FItemSearchs.SearchPrefix(Items, Value, CaseSensitive);
 end;
 
+{$IFDEF COMPILER6_UP}
+function TJvCustomComboBox.GetItemsClass: TCustomComboBoxStringsClass;
+begin
+  Result := TJvComboBoxStrings;
+end;
+{$ENDIF COMPILER6_UP}
+
 procedure TJvCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
   FKey := Key;
 end;
 
+procedure TJvCustomComboBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
+var
+  InvokeOrgRender: Boolean;
+  VL: IJvDataConsumerViewList;
+  Item: IJvDataItem;
+  ItemsRenderer: IJvDataItemsRenderer;
+  ItemRenderer: IJvDataItemRenderer;
+  ItemText: IJvDataItemText;
+  DrawState: TProviderDrawStates;
+begin
+  TControlCanvas(Canvas).UpdateTextFlags;
+  if Assigned(OnDrawItem) then
+    OnDrawItem(Self, Index, Rect, State)
+  else
+  begin
+    InvokeOrgRender := False;
+    DrawState := DP_OwnerDrawStateToProviderDrawState(State);
+    if not Enabled then
+      DrawState := DrawState + [pdsDisabled, pdsGrayed];
+    if IsProviderSelected then
+    begin
+      Provider.Enter;
+      try
+        if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+        begin
+          Item := VL.Item(Index);
+          if Item <> nil then
+          begin
+            Inc(Rect.Left, VL.ItemLevel(Index) * 16);
+            Canvas.Font := Font;
+            if odSelected in State then
+            begin
+              Canvas.Brush.Color := clHighlight;
+              Canvas.Font.Color  := clHighlightText;
+            end
+            else
+              Canvas.Brush.Color := Color;
+            Canvas.FillRect(Rect);
+            if Supports(Item, IJvDataItemRenderer, ItemRenderer) then
+              ItemRenderer.Draw(Canvas, Rect, DrawState)
+            else if DP_FindItemsRenderer(Item, ItemsRenderer) then
+              ItemsRenderer.DrawItem(Canvas, Rect, Item, DrawState)
+            else if Supports(Item, IJvDataItemText, ItemText) then
+              Canvas.TextRect(Rect, Rect.Left, Rect.Top, ItemText.Caption)
+            else
+              Canvas.TextRect(Rect, Rect.Left, Rect.Top, SDataItemRenderHasNoText);
+          end
+          else
+            InvokeOrgRender := True;
+        end
+        else
+          InvokeOrgRender := True;
+      finally
+        Provider.Leave;
+      end;
+    end
+    else
+      InvokeOrgRender := True;
+    if InvokeOrgRender then
+    begin
+      Canvas.FillRect(Rect);
+      if (Index >= 0) and (Index <= Items.Count) then
+        Canvas.TextOut(Rect.Left + 2, Rect.Top, GetItemText(Index));
+    end;
+  end;
+end;
+
+procedure TJvCustomComboBox.MeasureItem(Index: Integer; var Height: Integer);
+begin
+end;
+
 {$IFNDEF COMPILER6_UP}
-
 // SPM - Ported backward from Delphi 7 and modified:
-
 procedure TJvCustomComboBox.KeyPress(var Key: Char);
 
   function HasSelectedText(var StartPos, EndPos: DWORD): Boolean;
@@ -357,7 +764,6 @@ begin
 end;
 
 // SPM - Ported backward from Delphi 7 and modified:
-
 function TJvCustomComboBox.SelectItem(const AnItem: String): Boolean;
 var
   Idx: Integer;
@@ -378,7 +784,7 @@ begin
   SendMessage(Handle, CB_SETCURSEL, Idx, 0);
   if (Style in [csDropDown, csSimple]) then
   begin
-    Text := AnItem + Copy(Items[Idx], Length(AnItem) + 1, MaxInt);
+    Text := AnItem + Copy(GetItemText(Idx), Length(AnItem) + 1, MaxInt);
     SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam(Length(AnItem), Length(Text)));
   end
   else
@@ -393,7 +799,159 @@ begin
   end;
 end;
 
+{$ELSE}
+
+function TJvCustomComboBox.GetItemCount: Integer;
+var
+  VL: IJvDataConsumerViewList;
+begin
+  if IsProviderSelected then
+  begin
+    if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+      Result := VL.Count
+    else
+      Result := 0;
+  end
+  else
+    Result := inherited GetItemCount;
+end;
 {$ENDIF COMPILER6_UP}
+
+procedure TJvCustomComboBox.SetConsumerService(Value: TJvDataConsumer);
+begin
+end;
+
+procedure TJvCustomComboBox.ConsumerServiceChanged(Sender: TObject);
+begin
+  if IsProviderSelected and not FProviderWasActive then
+  begin
+    TJvComboBoxStrings(Items).MakeListInternal;
+    RecreateWnd;
+  end
+  else
+  if not IsProviderSelected and FProviderWasActive then
+  begin
+    TJvComboBoxStrings(Items).ActivateInternal; // apply internal string list to combo box
+    RecreateWnd;
+  end;
+  FProviderWasActive := IsProviderSelected;
+  UpdateItemCount;
+  Refresh;
+end;
+
+procedure TJvCustomComboBox.ConsumerSubServiceCreated(Sender: TJvDataConsumer;
+  SubSvc: TJvDataConsumerAggregatedObject);
+var
+  VL: IJvDataConsumerViewList;
+begin
+  if Supports(SubSvc, IJvDataConsumerViewList, VL) then
+  begin
+    VL.ExpandOnNewItem := True;
+    VL.RebuildView;
+  end;
+end;
+
+function TJvCustomComboBox.IsProviderSelected: Boolean;
+begin
+  Result := (Provider <> nil) and (Provider.ProviderIntf <> nil);
+end;
+
+procedure TJvCustomComboBox.DeselectProvider;
+begin
+  Provider.Provider := nil;
+end;
+
+procedure TJvCustomComboBox.UpdateItemCount;
+var
+  VL: IJvDataConsumerViewList;
+  Cnt: Integer;
+begin
+  if IsProviderSelected and Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+  begin
+    Cnt := VL.Count - SendMessage(Handle, CB_GETCOUNT, 0, 0);
+    while Cnt > 0 do
+    begin
+      SendMessage(Handle, CB_ADDSTRING, 0, Integer(PChar(EmptyStr)));
+      Dec(Cnt);
+    end;
+    while Cnt < 0 do
+    begin
+      SendMessage(Handle, CB_DELETESTRING, 0, 0);
+      Inc(Cnt);
+    end;
+  end;
+end;
+
+function TJvCustomComboBox.HandleFindString(StartIndex: Integer; Value: string;
+  ExactMatch: Boolean): Integer;
+var
+  VL: IJvDataConsumerViewList;
+  HasLooped: Boolean;
+  Item: IJvDataItem;
+  ItemText: IJvDataItemText;
+begin
+  if IsProviderSelected and Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+  begin
+    HasLooped := False;;
+    Result := StartIndex + 1;
+    while True do
+    begin
+      Item := VL.Item(Result);
+      if Supports(Item, IJvDataItemText, ItemText) then
+      begin
+        if ExactMatch then
+        begin
+          if AnsiSameText(Value, ItemText.Caption) then
+            Break;
+        end
+        else
+          if AnsiStrLIComp(PChar(Value), PChar(ItemText.Caption), Length(Value)) = 0 then
+            Break;
+      end;
+      Inc(Result);
+      if Result >= VL.Count then
+      begin
+        Result := 0;
+        HasLooped := True;
+      end;
+      if (Result > StartIndex) and HasLooped then
+      begin
+        Result := -1;
+        Exit;
+      end;
+    end;
+  end
+  else
+    Result := -1;
+end;
+
+function TJvCustomComboBox.GetItemText(Index: Integer): string;
+var
+  VL: IJvDataConsumerViewList;
+  Item: IJvDataItem;
+  ItemText: IJvDataItemText;
+begin
+  if IsProviderSelected then
+  begin
+    if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+    begin
+      if (Index >= 0) and (Index < VL.Count) then
+      begin
+        Item := VL.Item(Index);
+        if Supports(Item, IJvDataItemText, ItemText) then
+          Result := ItemText.Caption
+        else
+          Result := SDataItemRenderHasNoText;
+      end
+      else
+        TJvComboBoxStrings(Items).Error(SListIndexError, Index);
+    end
+    else
+      TJvComboBoxStrings(Items).Error(SListIndexError, Index);
+  end
+  else
+    Result := Items[Index];
+end;
 
 procedure TJvCustomComboBox.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -461,12 +1019,76 @@ begin
   end;
 end;
 
+procedure TJvCustomComboBox.CNCommand(var Message: TWMCommand);
+var
+  VL: IJvDataConsumerViewList;
+  Item: IJvDataItem;
+  ItemText: IJvDataItemText;
+begin
+  {$IFNDEF COMPILER6_UP}
+  if Message.NotifyCode = CBN_DROPDOWN then
+    FIsDropping := True;
+  try
+  {$ENDIF COMPILER6_UP}
+    if (Message.NotifyCode = CBN_SELCHANGE) and IsProviderSelected then
+    begin
+      if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+      begin
+        Item := VL.Item(ItemIndex);
+        if Supports(Item, IJvDataItemText, ItemText) then
+          Text := ItemText.Caption
+        else
+          Text := '';
+      end
+      else
+        Text := '';
+      Click;
+      {$IFNDEF COMPILER6_UP}
+      Change;
+      {$ELSE}
+      Select;
+      {$ENDIF COMPILER6_UP}
+    end
+    else
+      inherited;
+  {$IFNDEF COMPILER6_UP}
+  finally
+    if Message.NotifyCode = CBN_DROPDOWN then
+      FIsDropping := False;
+  end;
+  {$ENDIF COMPILER6_UP}
+end;
+
 procedure TJvCustomComboBox.SetReadOnly(const Value: Boolean);
 begin
   if FReadOnly <> Value then
   begin
     FReadOnly := Value;
     SendMessage(EditHandle, EM_SETREADONLY, Ord(Value), 0);
+  end;
+end;
+
+procedure TJvCustomComboBox.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  if IsProviderSelected then
+    Params.Style := Params.Style and not (CBS_SORT or CBS_HASSTRINGS) or CBS_OWNERDRAWVARIABLE;
+end;
+
+procedure TJvCustomComboBox.CreateWnd;
+begin
+  inherited CreateWnd;
+  SendMessage(EditHandle, EM_SETREADONLY, Ord(ReadOnly), 0);
+  UpdateItemCount;
+end;
+
+procedure TJvCustomComboBox.DestroyWnd;
+begin
+  TJvComboBoxStrings(Items).SetWndDestroying(IsProviderSelected or not FProviderWasActive);
+  try
+    inherited DestroyWnd;
+  finally
+    TJvComboBoxStrings(Items).SetWndDestroying(False);
   end;
 end;
 
@@ -528,6 +1150,32 @@ begin
         end;
     end;
   end;
+  if IsProviderSelected then
+    case Msg.Msg of
+      CB_FINDSTRING:
+        begin
+          Msg.Result := HandleFindString(Msg.wParam, PChar(Msg.lParam), False);
+          if Msg.Result < 0 then
+            Msg.Result := CB_ERR;
+          Exit;
+        end;
+      CB_SELECTSTRING:
+        begin
+          Msg.Result := HandleFindString(Msg.wParam, PChar(Msg.lParam), False);
+          if Msg.Result < 0 then
+            Msg.Result := CB_ERR
+          else
+            Perform(CB_SETCURSEL, Msg.Result, 0);
+          Exit;
+        end;
+      CB_FINDSTRINGEXACT:
+        begin
+          Msg.Result := HandleFindString(Msg.wParam, PChar(Msg.lParam), True);
+          if Msg.Result < 0 then
+            Msg.Result := CB_ERR;
+          Exit;
+        end;
+    end;
   inherited WndProc(Msg);
 end;
 
@@ -543,12 +1191,6 @@ procedure TJvCustomComboBox.WMLButtonDblClk(var Msg: TWMLButtonDown);
 begin
   if not ReadOnly then
     inherited;
-end;
-
-procedure TJvCustomComboBox.CreateWnd;
-begin
-  inherited CreateWnd;
-  SendMessage(EditHandle, EM_SETREADONLY, Ord(ReadOnly), 0);
 end;
 
 end.
