@@ -132,14 +132,13 @@ type
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean);
   end;
-{$ELSE}
+{$ENDIF}
+
+{$IFDEF COMPILER5}
   TJvDefaultImageIndexProperty = class(TIntegerProperty)
-  private
   protected
     function ImageList: TCustomImageList; virtual;
-    function GetValue: string;overide;
-    procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect;
-      ASelected: Boolean);override;
+    function GetValue: string;override;
     procedure SetValue(const Value: string);override;
   public
     function GetAttributes: TPropertyAttributes;override;
@@ -552,11 +551,34 @@ begin
   else
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
-{$ELSE}
-// d5 assumed
+{$ENDIF}
+
+{$IFDEF COMPILER5}
+function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
+begin
+  Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), 'ImageList'));
+end;
+
 function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paValueList,paSortList,paMultiselect];
+end;
+
+function TJvDefaultImageIndexProperty.GetValue: string;
+begin
+  Result := intToStr(GetOrdValue);
+end;
+
+procedure TJvDefaultImageIndexProperty.SetValue(const Value: string);
+var
+  XValue: integer;
+begin
+  try
+    XValue := strToInt(Value);
+    SetOrdValue(XValue);
+  except
+    inherited SetValue(Value);
+  end;
 end;
 
 procedure TJvDefaultImageIndexProperty.GetValues(Proc: TGetStrProc);

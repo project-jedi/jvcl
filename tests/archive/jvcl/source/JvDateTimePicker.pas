@@ -96,6 +96,7 @@ function TryStrToDateTime(const S:String;out Value:TDateTime):boolean;
 begin
   try
     Value := StrToDateTime(S);
+    Result := true;
   except
     Result := false;
   end;

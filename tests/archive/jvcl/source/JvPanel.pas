@@ -159,8 +159,8 @@ procedure TJvMultiLinePanel.Paint;
 var
   Rect: TRect;
   TopColor, BottomColor: TColor;
-  FontHeight: Integer;
-  Flags: Longint;
+//  FontHeight: Integer;
+//  Flags: Longint;
 
   procedure AdjustColors(Bevel: TPanelBevel);
   begin
