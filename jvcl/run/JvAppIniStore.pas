@@ -45,6 +45,7 @@ type
   public
     function ValueStored(const Path: string): Boolean; override;
     procedure DeleteValue(const Path: string); override;
+    procedure DeleteSubTree(const Path: string); override;
     function ReadInteger(const Path: string; Default: Integer = 0): Integer; override;
     procedure WriteInteger(const Path: string; Value: Integer); override;
     function ReadFloat(const Path: string; Default: Extended = 0): Extended; override;
@@ -73,6 +74,10 @@ type
     function GetFileName: TFileName;
     procedure SetFileName(Value: TFileName);
     function AppWindowMsg(var Msg: TMessage): Boolean;
+    procedure EnumFolders(const Path: string; const Strings: TStrings;
+      const ReportListAsValue: Boolean = True); override;
+    procedure EnumValues(const Path: string; const Strings: TStrings;
+      const ReportListAsValue: Boolean = True); override;
     function ValueExists(const Section, Key: string): Boolean; override;
     function ReadValue(const Section, Key: string): string; override;
     procedure WriteValue(const Section, Key, Value: string); override;
@@ -85,6 +90,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Flush;
+    function IsFolder(Path: string; ListIsValue: Boolean = True): Boolean; override;
   published
     property Buffered: Boolean read FBuffered write SetBuffered;
     property FileName: TFileName read GetFileName write SetFileName;
@@ -234,6 +240,13 @@ var
 begin
   SplitKeyPath(Path, Section, Key);
   RemoveValue(Section, Key);
+end;
+
+procedure TJvAppINIStore.DeleteSubTree(const Path: string);
+var
+  TopSection: string;
+begin
+  TopSection := GetAbsPath(Path);
 end;
 
 function TJvAppINIStore.ReadInteger(const Path: string; Default: Integer = 0): Integer;
@@ -406,6 +419,49 @@ begin
   Result := False;
 end;
 
+procedure TJvAppINIFileStore.EnumFolders(const Path: string; const Strings: TStrings;
+  const ReportListAsValue: Boolean);
+var
+  RefPath: string;
+  I: Integer;
+begin
+  RefPath := GetAbsPath(Path);
+  IniFile.ReadSections(Strings);
+  I := Strings.Count - 1;
+  while (I >= 0) do
+  begin
+    if (RefPath <> '') and ((Copy(Strings[I], 1, Length(RefPath) + 1) <> RefPath + '\') or
+        (Pos('\', Copy(Strings[I], 2 + Length(RefPath), Length(Strings[I]) - Length(RefPath))) > 0))  then
+      Strings.Delete(I)
+    else
+    if ReportListAsValue and ValueExists(Strings[I], 'Count') then
+      Strings.Delete(I)
+    else if RefPath <> '' then
+      Strings[I] := Copy(Strings[I], 1 + Length(RefPath), Length(Strings[I]) - Length(RefPath));
+    Dec(I);
+  end;
+end;
+
+procedure TJvAppINIFileStore.EnumValues(const Path: string; const Strings: TStrings;
+  const ReportListAsValue: Boolean);
+var
+  PathIsList: Boolean;
+  RefPath: string;
+  I: Integer;
+begin
+  PathIsList := ReportListAsValue and ListStored(Path);
+  RefPath := GetAbsPath(Path);
+  IniFile.ReadSectionValues(RefPath, Strings);
+  for I := Strings.Count - 1 downto 0 do
+  begin
+    Strings[I] := Copy(Strings[I], 1, Pos('=', Strings[I]) - 1);
+    if PathIsList and (AnsiSameText('Count', Strings[I]) or NameIsListItem(Strings[I])) then
+      Strings.Delete(I);
+  end;
+  if PathIsList then
+    Strings.Add('');
+end;
+
 function TJvAppINIFileStore.ValueExists(const Section, Key: string): Boolean;
 begin
   if IniFile <> nil then
@@ -471,6 +527,32 @@ begin
   begin
     IniFile.UpdateFile;
     FHasWritten := False;
+  end;
+end;
+
+function TJvAppINIFileStore.IsFolder(Path: string; ListIsValue: Boolean): Boolean;
+var
+  RefPath: string;
+  ValueNames: TStrings;
+  I: Integer;
+begin
+  RefPath := GetAbsPath(Path);
+  Result := IniFile.SectionExists(RefPath);
+  if Result and ListIsValue and IniFile.ValueExists(RefPath, 'Count') then
+  begin
+    Result := False;
+    ValueNames := TStringList.Create;
+    try
+      EnumValues(Path, ValueNames, True);
+      I := ValueNames.Count - 1;
+      while Result and (I >= 0) do
+      begin
+        Result := not AnsiSameText(ValueNames[I], 'Count') and not NameIsListItem(ValueNames[I]);
+        Dec(I);
+      end;
+    finally
+      ValueNames.Free;
+    end;
   end;
 end;
 

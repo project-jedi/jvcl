@@ -40,17 +40,21 @@ type
   private
     FRegHKEY: HKEY;
   protected
-    function GetApplicationRoot: string;
-    procedure SetApplicationRoot(Value: string);
     function GetRegRoot: TJvRegKey;
     procedure SetRegRoot(Value: TJvRegKey);
     { Create the registry key path if it doesn't exist yet. Any key in the path that doesn't exist
       is created. }
     procedure CreateKey(Key: string);
+    procedure EnumFolders(const Path: string; const Strings: TStrings;
+      const ReportListAsValue: Boolean = True); override;
+    procedure EnumValues(const Path: string; const Strings: TStrings;
+      const ReportListAsValue: Boolean = True); override;
   public
     constructor Create(AOwner: TComponent); override;
+    function IsFolder(Path: string; ListIsValue: Boolean = True): Boolean; override;
     function ValueStored(const Path: string): Boolean; override;
     procedure DeleteValue(const Path: string); override;
+    procedure DeleteSubTree(const Path: string); override;
     function ReadInteger(const Path: string; Default: Integer = 0): Integer; override;
     procedure WriteInteger(const Path: string; Value: Integer); override;
     function ReadFloat(const Path: string; Default: Extended = 0): Extended; override;
@@ -60,12 +64,8 @@ type
     function ReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
     procedure WriteBinary(const Path: string; const Buf; BufSize: Integer); override;
   published
-    { Application specific root. Determines in which of the main registry keys (Local Machine,
-      Current User, etc) the data will be stored. Optionally a sub key may be added to this key
-      (eg. 'HKEY_LOCAL_MACHINE\Software\Project JEDI'). The sub key is internally stored in the
-      AppRoot property.}
-    property ApplicationRoot: string read GetApplicationRoot write SetApplicationRoot;
-    property RegRoot: TJvRegKey read GetRegRoot write SetRegRoot stored False;
+    property Root;
+    property RegRoot: TJvRegKey read GetRegRoot write SetRegRoot;
   end;
 
 implementation
@@ -86,41 +86,6 @@ const
   );
 
 //===TJvAppRegistryStore============================================================================
-
-function TJvAppRegistryStore.GetApplicationRoot: string;
-begin
-  Result := HKEY_Names[FRegHKEY, 0];
-  if GetAppRoot <> '' then
-    Result := Result + '\' + GetAppRoot;
-end;
-
-procedure TJvAppRegistryStore.SetApplicationRoot(Value: string);
-var
-  SL: TStrings;
-  I: DWORD;
-begin
-  SL := TStringList.Create;
-  try
-    StrToStrings(Value, '\', SL, False);
-    if SL.Count > 0 then
-    begin
-      I := HKEY_DYN_DATA;
-      while (I >= HKEY_CLASSES_ROOT) and not AnsiSameText(HKEY_Names[I, 0], SL[0]) and
-          not AnsiSameText(HKEY_Names[I, 1], SL[0]) do
-        Dec(I);
-      if I >= HKEY_CLASSES_ROOT then
-      begin
-        FRegHKEY := I;
-        SL.Delete(0);
-      end;
-      SetAppRoot(StringsToStr(SL, '\', False));
-    end
-    else
-      SetAppRoot('');
-  finally
-    SL.Free;
-  end;
-end;
 
 function TJvAppRegistryStore.GetRegRoot: TJvRegKey;
 begin
@@ -143,6 +108,105 @@ begin
       RegCloseKey(ResKey)
     else
       raise Exception.CreateFmt('Unable to create key ''%s''', [Key]);
+  end;
+end;
+
+procedure TJvAppRegistryStore.EnumFolders(const Path: string; const Strings: TStrings;
+  const ReportListAsValue: Boolean);
+var
+  Key: string;
+  TmpHKEY: HKEY;
+  I: Integer;
+  SubKeyName: array[0..255] of Char;
+  EnumRes: Longint;
+begin
+  Key := GetAbsPath(Path);
+  if RegKeyExists(FRegHKEY, Key) then
+  begin
+    if RegOpenKey(FRegHKEY, PChar(Key), TmpHKEY) = ERROR_SUCCESS then
+    try
+      I := 0;
+      repeat
+        EnumRes := RegEnumKey(TmpHKEY, I, SubKeyName, 255);
+        if (EnumRes = ERROR_SUCCESS) and (not ReportListAsValue or
+            not ListStored(Path + '\' + SubKeyName)) then
+          Strings.Add(SubKeyName);
+        Inc(I);
+      until EnumRes <> ERROR_SUCCESS;
+      if EnumRes <> ERROR_NO_MORE_ITEMS then
+        raise EJclRegistryError.Create('Error enumerating registry.');
+    finally
+      RegCloseKey(TmpHKEY);
+    end;
+  end;
+end;
+
+procedure TJvAppRegistryStore.EnumValues(const Path: string; const Strings: TStrings;
+  const ReportListAsValue: Boolean);
+var
+  PathIsList: Boolean;
+  Key: string;
+  TmpHKEY: HKEY;
+  I: Integer;
+  Name: array[0..511] of Char;
+  NameLen: Cardinal;
+  EnumRes: Longint;
+begin
+  PathIsList := ReportListAsValue and ListStored(Path);
+  if PathIsList then
+    Strings.Add('');
+  Key := GetAbsPath(Path);
+  if RegKeyExists(FRegHKEY, Key) then
+  begin
+    if RegOpenKey(FRegHKEY, PChar(Key), TmpHKEY) = ERROR_SUCCESS then
+    try
+      I := 0;
+      repeat
+        NameLen := 511;
+        EnumRes := RegEnumValue(TmpHKEY, I, Name, NameLen, nil, nil, nil, nil);
+        if (EnumRes = ERROR_SUCCESS) and (not PathIsList or (not AnsiSameText('Count', Name) and
+            not NameIsListItem(Name))) then
+          Strings.Add(Name);
+        Inc(I);
+      until EnumRes <> ERROR_SUCCESS;
+      if EnumRes <> ERROR_NO_MORE_ITEMS then
+        raise EJclRegistryError.Create('Error enumerating registry.');
+    finally
+      RegCloseKey(TmpHKEY);
+    end;
+  end;
+end;
+
+function TJvAppRegistryStore.IsFolder(Path: string; ListIsValue: Boolean): Boolean;
+var
+  RefPath: string;
+  PathHKEY: HKEY;
+  I: Integer;
+  Name: array[0..511] of Char;
+  NameLen: Cardinal;
+  EnumRes: Longint;
+begin
+  Result := False;
+  RefPath := GetAbsPath(Path);
+  if RegOpenKey(FRegHKEY, PChar(RefPath), PathHKEY) = ERROR_SUCCESS then
+  try
+    Result := True;
+    if ListIsValue and (RegQueryValueEx(PathHKey, 'Count', nil, nil, nil, nil) = ERROR_SUCCESS) then
+    begin
+      Result := False;
+      I := 0;
+      repeat
+        NameLen := 511;
+        EnumRes := RegEnumValue(PathHKEY, I, Name, NameLen, nil, nil, nil, nil);
+        Result := (EnumRes = ERROR_SUCCESS) and not AnsiSameText('Count', Name) and
+          not NameIsListItem(Name);
+        Inc(I);
+      until (EnumRes <> ERROR_SUCCESS) or Result;
+      if EnumRes <> ERROR_NO_MORE_ITEMS then
+        raise EJclRegistryError.Create('Error enumerating registry.');
+    end;
+  finally
+    RegCloseKey(PathHKEY);
   end;
 end;
 
@@ -174,6 +238,14 @@ var
 begin
   SplitKeyPath(Path, SubKey, ValueName);
   RegDeleteEntry(FRegHKEY, SubKey, ValueName);
+end;
+
+procedure TJvAppRegistryStore.DeleteSubTree(const Path: string);
+var
+  KeyRoot: string;
+begin
+  KeyRoot := GetAbsPath(Path);
+  RegDeleteKeyTree(FRegHKEY, KeyRoot);
 end;
 
 function TJvAppRegistryStore.ReadInteger(const Path: string; Default: Integer = 0): Integer;
