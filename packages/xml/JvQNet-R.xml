@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvQNet" Design="0">
+  <Description>JVCLX Network Components Runtime Package</Description>
   <Requires>
     <Package Name="JvQCore-R" Targets="allclx" Condition=""/>
     <Package Name="JvQStdCtrls-R" Targets="allclx" Condition=""/>
