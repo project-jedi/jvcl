@@ -32,12 +32,12 @@ interface
 
 uses
   SysUtils, Classes, IniFiles,
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Forms, ComCtrls, Menus, Dialogs,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QForms, QComCtrls, QMenus, QDialogs,
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   JvSimpleXml, JvComponent;
 
 type
@@ -155,18 +155,18 @@ type
 
 function InternalGetWideStrProp(Instance: TObject; const PropName: string): WideString; overload;
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Result := GetWideStrProp(Instance, PropName);
-{$ELSE}
+  {$ELSE}
   Result := GetStrProp(Instance, PropName);
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 end;
 
 function InternalGetPropList(AObject: TObject; out PropList: PPropList): Integer;
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Result := GetPropList(AObject, PropList);
-{$ELSE}
+  {$ELSE}
   Result := GetTypeData(AObject.ClassInfo)^.PropCount;
   if Result > 0 then
   begin
@@ -174,7 +174,7 @@ begin
     GetPropInfos(AObject.ClassInfo, PropList);
   end;
   Result := GetPropList(AObject.ClassInfo, tkProperties, PropList);
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 end;
 
 //=== TJvTranslator ==========================================================

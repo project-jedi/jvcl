@@ -144,16 +144,16 @@ unit JvCsvData;
 interface
 
 uses
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows,
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   QWindows,
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
   SysUtils, Classes,
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
   DB;
 
 const
@@ -175,9 +175,9 @@ type
   PInteger = ^Integer;
   PDouble = ^Double;
   PBoolean = ^Boolean;
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   PWordBool = ^WordBool;
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
   EJvCsvDataSetError = class(EDatabaseError);
     // Subclass DB.EDatabaseError so we can work nicely with existing Delphi apps.
 
@@ -657,9 +657,9 @@ implementation
 
 uses
   Forms, Controls,
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   JvJVCLUtils,
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
   JvJCLUtils, JvCsvParse, JvConsts, JvResources;
 
 var
@@ -677,9 +677,9 @@ const
 procedure JvCsvDatabaseError(const TableName, Msg: string);
 begin
   // (rom) no OutputDebugString in production code
-{$IFDEF DEBUGINFO_ON}
+  {$IFDEF DEBUGINFO_ON}
   OutputDebugString(PChar('JvCsvDatabaseError in ' + TableName + ': ' + Msg));
-{$ENDIF DEBUGINFO_ON}
+  {$ENDIF DEBUGINFO_ON}
   raise EJvCsvDataSetError.CreateFmt(RsECsvErrFormat, [TableName, Msg]);
 end;
 
@@ -724,17 +724,15 @@ var
   t, Count: Integer;
 begin
   Count := StrSplit(pattern, boolOp, {Chr(0)=No Quoting} Chr(0), subPattern, 20);
-  if (Count > 0) then
+  if Count > 0 then
   begin
     for t := 0 to Count - 1 do
     begin
       Result := JvCsvWildcardMatch(data, subPattern[t]);
-          // If ANY OR True return True;
-          // if ANY AND False return False;
+      // If ANY OR True return True;
+      // if ANY AND False return False;
       if (boolOp = '|') = Result then
-      begin
         Exit;
-      end;
     end;
   end
   else
@@ -808,7 +806,7 @@ begin
     Exit;
   // no data?
   datalength := Length(data);
-  if (datalength = 0) then
+  if datalength = 0 then
   begin
     Result := (pattern = '%') or (pattern = '');
     Exit; // definitely no match.
@@ -827,25 +825,25 @@ begin
   end;
   // find any | and split into two or more strings, and run ORs on them
   firstBoolCondition := Pos('&', pattern);
-  if (firstBoolCondition > 0) then
+  if firstBoolCondition > 0 then
   begin
     Result := _WildcardsMatchBoolOp(data, pattern, '&');
     Exit;
   end;
   firstBoolCondition := Pos('|', pattern);
-  if (firstBoolCondition > 0) then
+  if firstBoolCondition > 0 then
   begin
     Result := _WildcardsMatchBoolOp(data, pattern, '|');
     Exit;
   end;
 
   firstwildcard := Pos('%', pattern); // wildcards?
-  if (firstwildcard = 0) then
+  if firstwildcard = 0 then
     firstwildcard := Pos('?', pattern); // other wildcard.
 
-  if (firstwildcard <= 0) then
+  if firstwildcard <= 0 then
   begin // no wildcard case.
-    if (data = pattern) then
+    if data = pattern then
       Result := True
     else
       Result := False;
@@ -869,14 +867,15 @@ begin
   while ((dataposition <= datalength) and (patternposition <= patternlength)) do
   begin
     // WILDCARD HANDLER
-    if (pattern[patternposition] = '?') then
+    if pattern[patternposition] = '?' then
     begin // match any one character or nothing.
       Inc(patternposition);
       Inc(dataposition);
     end
-    else if (pattern[patternposition] = '%') then
+    else
+    if pattern[patternposition] = '%' then
     begin
-      if (patternposition = patternlength) then
+      if patternposition = patternlength then
       begin // last byte!
         Result := True;
         Exit;
@@ -888,12 +887,12 @@ begin
         Result := JvCsvWildcardMatch(Copy(data, t, Length(data)),
           Copy(pattern, patternposition + 1, patternlength)
           );
-        if (Result) then
+        if Result then
           Exit; // found a resync, and rest of strings match
         data := Copy(data, t + 1, datalength);
         datalength := Length(data);
 //        dataposition := 0;
-        if (datalength = 0) then
+        if datalength = 0 then
         begin
           Result := False;
           Exit;
@@ -906,7 +905,7 @@ begin
     end
     else
     begin // NORMAL CHARACTER
-      if (data[dataposition] <> pattern[patternposition]) then
+      if data[dataposition] <> pattern[patternposition] then
       begin
         Result := False; // failed.
         Exit;
@@ -914,13 +913,9 @@ begin
       Inc(dataposition);
       Inc(patternposition);
     end;
-  end; {while}
-  if ((dataposition <= datalength)
-    and (patternposition <= patternlength)
-    ) then
-  begin
-    Result := False; // there is pattern left over, or data left over.
   end;
+  if (dataposition <= datalength) and (patternposition <= patternlength) then
+    Result := False; // there is pattern left over, or data left over.
 end;
 
 // NEW: TJvCustomCsvDataSet.SetFilter
@@ -947,7 +942,8 @@ begin
 //  m := GetBookmark;
   fieldRec := FCsvColumns.FindByName(FieldName);
 //  stillVisible := 0;
-  if not Assigned(fieldRec) then Exit;
+  if not Assigned(fieldRec) then
+    Exit;
   FieldIndex := fieldRec^.FPhysical;
   valueLen := Length(pattern); // if valuelen is zero then we are searching for blank or nulls
   pattern := UpperCase(pattern); // make value case insensitive.
@@ -956,12 +952,12 @@ begin
   for t := 0 to FData.Count - 1 do
   begin
     pRow := PCsvRow(FData[t]);
-    if (not pRow^.filtered) then
+    if not pRow^.filtered then
     begin
       fieldValue := FData.GetARowItem(t, FieldIndex);
       if (Length(fieldValue) > 0) and (fieldValue[1] = '"') then
         fieldValue := _Dequote(fieldValue); // remove quotes.
-      if (valueLen = 0) then
+      if valueLen = 0 then
       begin
         if fieldValue <> '' then // if not empty, hide row.
           pRow^.filtered := True;
@@ -1077,8 +1073,8 @@ begin
   FTempBuffer := nil;
 
   try
-    if FCursorOpen then InternalClose;
-
+    if FCursorOpen then
+      InternalClose;
   except
   end;
   if Assigned(FCsvColumns) then
@@ -1139,7 +1135,7 @@ end;
 
 procedure TJvCustomCsvDataSet.SetCsvFieldDef(const Value: string);
 begin
-  if (FCsvFieldDef <> Value) then
+  if FCsvFieldDef <> Value then
   begin
     CheckInActive;
     FCsvFieldDef := Value;
@@ -1196,11 +1192,12 @@ begin
   CsvRowSetColumnMarker(RowPtr, {column} 0, {marker value} 0);
 
   ColCount := FCsvColumns.Count;
-  if ColCount <= 0 then ColCount := 10;
+  if ColCount <= 0 then
+    ColCount := 10;
 
   for t := 1 to ColCount do
   begin // create an empty line of just commas
-    if (t < ColCount) then
+    if t < ColCount then
       RowPtr^.Text[t - 1] := FSeparator
     else
       RowPtr^.Text[t - 1] := Chr(0);
@@ -1235,19 +1232,24 @@ var
 begin
   Result := False;
   Count := StrSplit(KeyFields, ';', Chr(0), KeyFieldArray, 20);
-  if not ((VarType(KeyValues) and varArray) > 0) then Exit;
+  if not ((VarType(KeyValues) and varArray) > 0) then
+    Exit;
   lo := VarArrayLowBound(KeyValues, 1);
   hi := VarArrayHighBound(KeyValues, 1);
   VarCount := (hi - lo) + 1;
-  if (VarCount <> Count) then Exit;
-  if (Count = 0) then Exit;
-  if Length(KeyFieldArray[0]) = 0 then Exit;
+  if VarCount <> Count then
+    Exit;
+  if Count = 0 then
+    Exit;
+  if Length(KeyFieldArray[0]) = 0 then
+    Exit;
   for t := 0 to 20 do
   begin
-    if (t < Count) then
+    if t < Count then
     begin
       FieldLookup[t] := FieldByName(KeyFieldArray[t]);
-      if not Assigned(FieldLookup[t]) then Exit;
+      if not Assigned(FieldLookup[t]) then
+        Exit;
       FieldIndex[t] := FieldLookup[t].Index;
     end
     else
@@ -1259,7 +1261,7 @@ begin
 
    // Now search
   First;
-  while not eof do
+  while not Eof do
   begin
     MatchCount := 0;
     for t := 0 to Count - 1 do
@@ -1267,7 +1269,8 @@ begin
       Value := FieldLookup[t].Value;
       if Value = KeyValues[t + lo] then
         Inc(MatchCount)
-      else if (Options <> []) then
+      else
+      if Options <> [] then
       begin
         if VarIsStr(Value) then
         begin
@@ -1308,20 +1311,20 @@ var
   RowPtr: PCsvRow;
 begin
   Result := defaultResult;
-  if (FRecordPos < 0) then
+  if FRecordPos < 0 then
     Exit;
   LimitReached := False; // hit BOF or EOF?
   while not LimitReached do
   begin
     { no skippage required }
     RowPtr := PCsvRow(FData.GetRowPtr(FRecordPos));
-    if (not RowPtr^.filtered) then
+    if not RowPtr^.filtered then
       Exit;
     { skippage ensues }
-    if (ForwardBackwardMode) then
+    if ForwardBackwardMode then
     begin // ForwardSkip mode
       Inc(FRecordPos);
-      if (FRecordPos >= FData.Count) then
+      if FRecordPos >= FData.Count then
       begin
         FRecordPos := ON_EOF_CRACK;
         Result := grEOF;
@@ -1331,7 +1334,7 @@ begin
     else
     begin // BackwardSkip mode
       Dec(FRecordPos);
-      if (FRecordPos < 0) then
+      if FRecordPos < 0 then
       begin // hit BOF_CRACK
         FRecordPos := ON_BOF_CRACK;
         Result := grBOF;
@@ -1360,7 +1363,8 @@ begin
         //Trace(' GetRecord( Buffer, gmPrior, DoCheck)');
         if FRecordPos = ON_BOF_CRACK then
           Result := grBOF
-        else if FRecordPos = ON_EOF_CRACK then
+        else
+        if FRecordPos = ON_EOF_CRACK then
         begin
           FRecordPos := FData.Count - 1;
 
@@ -1370,7 +1374,8 @@ begin
           else
             Result := grOK;
         end
-        else if FRecordPos > 0 then
+        else
+        if FRecordPos > 0 then
         begin
           Dec(FRecordPos);
 
@@ -1389,7 +1394,7 @@ begin
       begin
 
          //Trace(' GetRecord( Buffer, gmCurrent, DoCheck)');
-        if (FRecordPos < 0) then // BOF Crack or EOF Crack?
+        if FRecordPos < 0 then // BOF Crack or EOF Crack?
           Result := grError
         else
           Result := grOK;
@@ -1408,7 +1413,7 @@ begin
         begin
           Inc(FRecordPos);
 
-          if (FRecordPos >= FData.Count) then
+          if FRecordPos >= FData.Count then
           begin
             FRecordPos := ON_EOF_CRACK;
             Result := grEOF
@@ -1492,16 +1497,20 @@ begin
     if ch = Chr(13) then
       // slighlty unstandard csv behavior, hopefully transparently interoperable with other apps that read CSVs
       s := s + '\r'
-    else if ch = Chr(10) then // replace linefeed with \n. slighlty unstandard csv behavior.
+    else
+    if ch = Chr(10) then // replace linefeed with \n. slighlty unstandard csv behavior.
       s := s + '\n'
-    else if (localEnquoteBackslash) and (ch = '\') then
+    else
+    if localEnquoteBackslash and (ch = '\') then
     begin // it would be ambiguous not to escape this in this case!
       s := s + '\\';
       FEnquoteBackslash := True; // XXX This is a lurking bug. Some day we'll get bit by it.
     end
-    else if ch = '"' then // always escape quotes by doubling them, since this is standard CSV behaviour
+    else
+    if ch = '"' then // always escape quotes by doubling them, since this is standard CSV behaviour
       s := s + '""'
-    else if Ord(ch) >= 32 then // strip any other low-ascii-unprintables
+    else
+    if Ord(ch) >= 32 then // strip any other low-ascii-unprintables
       s := s + ch;
   end; {for}
   s := s + '"'; // end quote.
@@ -1532,7 +1541,7 @@ begin
  // Dynamic CSV Column Ordering: If we didn't start by
  // assigning column orders when we opened the table,
  // we've now GOT to assume a physical ordering:
-  if (Length(FHeaderRow) = 0) then
+  if Length(FHeaderRow) = 0 then
   begin
     FHeaderRow := GetColumnsAsString;
     ProcessCsvHeaderRow; // process FHeaderRow
@@ -1544,9 +1553,9 @@ begin
     if (Field.Offset < 0) or (Field.Offset + Field.DataSize > MaxCalcDataOffset) then
     begin
       // (rom) no OutputDebugString in production code
-{$IFDEF DEBUGINFO_ON}
+      {$IFDEF DEBUGINFO_ON}
       OutputDebugString('JvCsvData.SetFieldData: Invalid field.Offset in Calculated or Lookup field.');
-{$ENDIF DEBUGINFO_ON}
+      {$ENDIF DEBUGINFO_ON}
       Exit;
     end;
     Inc(pDestination, SizeOf(TJvCsvRow) + Field.Offset);
@@ -1582,9 +1591,10 @@ begin
           else
             for cp := 1 to Field.Size - 1 do
             begin
-              if PChar(Buffer)[cp] = Chr(0) then Break;
+              if PChar(Buffer)[cp] = Chr(0) then
+                Break;
             end;
-          if (cp > Field.Size - 1) then
+          if cp > Field.Size - 1 then
             cp := Field.Size - 1;
           NewVal := Copy(PChar(Buffer), 1, cp + 1);
             //----------------------------------------------------------------------------------------------------
@@ -1592,14 +1602,12 @@ begin
             // then we MUST encode the whole string as a string literal in quotes with the embeddded quotes
             // and backslashes preceded by a backslash character.
             //----------------------------------------------------------------------------------------------------
-          if (Pos(Separator, NewVal) > 0)
-            or (Pos(Chr(13), NewVal) > 0)
-            or (Pos(Chr(10), NewVal) > 0)
-            or (Pos('"', NewVal) > 0)
-            or ((Pos('\', NewVal) > 0) and (FEnquoteBackslash)) then
-          begin
+          if (Pos(Separator, NewVal) > 0) or
+            (Pos(Chr(13), NewVal) > 0) or
+            (Pos(Chr(10), NewVal) > 0) or
+            (Pos('"', NewVal) > 0) or
+            ((Pos('\', NewVal) > 0) and (FEnquoteBackslash)) then
             NewVal := _Enquote(NewVal); // puts whole string in quotes, escapes embedded commas and quote characters!
-          end;
         end;
       ftInteger:
         begin
@@ -1741,7 +1749,8 @@ procedure TJvCustomCsvDataSet.Refresh;
 var
   m: TBookmark;
 begin
-  if State <> dsBrowse then Exit;
+  if State <> dsBrowse then
+    Exit;
   DisableControls;
   try
     m := GetBookmark; // This appears a bit silly but it works very well.
@@ -1775,14 +1784,14 @@ begin
  // Dynamic CSV Column Ordering: If we didn't start by
  // assigning column orders when we opened the table,
  // we've now GOT to assume a physical ordering:
-  if (Length(FHeaderRow) = 0) then
+  if Length(FHeaderRow) = 0 then
   begin
     FHeaderRow := GetColumnsAsString;
     ProcessCsvHeaderRow; // process FHeaderRow
   end;
 
   pSource := GetActiveRecordBuffer;
-  if (pSource = nil) then
+  if pSource = nil then
   begin
     //JvCsvDatabaseError('CsvDataSet.GetFieldData: Unable to get active record buffer');
     Exit;
@@ -1798,9 +1807,9 @@ begin
     if (Field.Offset < 0) or (Field.Offset + Field.DataSize > MaxCalcDataOffset) then
     begin
       // (rom) no OutputDebugString in production code
-{$IFDEF DEBUGINFO_ON}
+      {$IFDEF DEBUGINFO_ON}
       OutputDebugString('JvCsvData.GetFieldData: Invalid field.Offset in Calculated or Lookup field.');
-{$ENDIF DEBUGINFO_ON}
+      {$ENDIF DEBUGINFO_ON}
       Exit;
     end;
     Inc(pSource, SizeOf(TJvCsvRow) + Field.Offset);
@@ -1843,19 +1852,19 @@ begin
   begin
     // SIMPLE WORKAROUND: MAKES FIELDS NON FUNCTIONAL BUT DOES NOT CRASH SYSTEM.
     // (rom) no OutputDebugString in production code
-{$IFDEF DEBUGINFO_ON}
+    {$IFDEF DEBUGINFO_ON}
     OutputDebugString('JvCsvData.GetFieldData: Invalid field.Offset in Data field.');
-{$ENDIF DEBUGINFO_ON}
+    {$ENDIF DEBUGINFO_ON}
     Exit;
   end;
 
   TempString := GetCsvRowItem(RowPtr, PhysicalLocation);
 
   // Strip quotes first!
-  if (Field.DataType = ftString) then
+  if Field.DataType = ftString then
   begin
     l := Length(TempString);
-    if (l >= 2) then
+    if l >= 2 then
       if (TempString[1] = '"') and (TempString[l] = '"') then
       begin // quoted string!
         TempString := _Dequote(TempString);
@@ -1871,7 +1880,7 @@ begin
     UserString := TempString;
     FOnGetFieldData(Self, FData.GetUserTag(RowPtr^.Index), FData.GetUserData(RowPtr^.Index), Field.FieldName,
       UserString);
-    if (UserString <> TempString) then
+    if UserString <> TempString then
     begin
             // Write changed value back to row:
       SetCsvRowItem(RowPtr, PhysicalLocation, UserString);
@@ -1889,12 +1898,12 @@ begin
     // NULL:  There are no "Real" NULLS in an ASCII flat file, however for anything
   // other than a string field, we will return "NULL" to indicate there is an
   // empty string in the field.
-  if (Field.DataType <> ftString) then
+  if Field.DataType <> ftString then
     if Length(TempString) = 0 then
       Exit; // NULL field.
 
   { If buffer is nil, then we are being asked to do a null check only.}
-  if (Buffer = nil) then
+  if Buffer = nil then
   begin
     if Length(TempString) = 0 then
       Result := False
@@ -1956,9 +1965,9 @@ begin
               if (ts.Time = 0) and (ts.Date = 0) then
               begin
                 // (rom) no OutputDebugString in production code
-{$IFDEF DEBUGINFO_ON}
+                {$IFDEF DEBUGINFO_ON}
                 OutputDebugString('DateTimeToTimeStamp internal failure.');
-{$ENDIF DEBUGINFO_ON}
+                {$ENDIF DEBUGINFO_ON}
                 Exit;
               end;
                 // XXX Delphi Weirdness Ahead.  Read docs before you try to
@@ -2026,7 +2035,8 @@ begin
   Result := Bookmark_Eql;
   if v1 < v2 then
     Result := Bookmark_Less
-  else if v1 > v2 then
+  else
+  if v1 > v2 then
     Result := Bookmark_Gtr;
 end;
 
@@ -2116,9 +2126,10 @@ begin
 
        // Look for Colon or Semicolon:
       pos1 := Pos(':', CsvFieldOption);
-      if (pos1 <= 0) then pos1 := Pos(';', CsvFieldOption);
+      if pos1 <= 0 then
+        pos1 := Pos(';', CsvFieldOption);
 
-      if (pos1 <= 0) then
+      if pos1 <= 0 then
       begin
         CsvFieldName := CsvFieldOption;
         CsvFieldOption := '$';
@@ -2241,7 +2252,7 @@ begin
       JvCsvDatabaseError(FTableName, RsEInvalidCsvKeyDef);
     for t := 0 to FCsvKeyCount - 1 do
     begin
-      if (CsvKeys[t] = '') then
+      if CsvKeys[t] = '' then
         JvCsvDatabaseError(FTableName, RsEInternalErrorParsingCsvKeyDef);
       pCsvFieldDef := FCsvColumns.FindByName(CsvKeys[t]);
       if not Assigned(pCsvFieldDef) then
@@ -2277,9 +2288,10 @@ begin
   if FFileDirty and FSavesChanges and (Length(FTableName) > 0) then
   begin
     // Make backup first, if enabled (>2)
-    if (FAutoBackupCount > 0) then
+    if FAutoBackupCount > 0 then
     begin
-      if (FAutoBackupCount < 10) then FAutoBackupCount := 10; // can't be between 1 and 9, must be at least 10.
+      if FAutoBackupCount < 10 then
+        FAutoBackupCount := 10; // can't be between 1 and 9, must be at least 10.
       JvCsvBackupPreviousFiles(GetFileName, FAutoBackupCount);
     end;
     // Now write new file.
@@ -2304,7 +2316,8 @@ begin
   end;
   Flush;
   BindFields(False);
-  if DefaultFields then DestroyFields;
+  if DefaultFields then
+    DestroyFields;
   FData.Clear;
   FCursorOpen := False;
   FRecordPos := ON_BOF_CRACK;
@@ -2320,10 +2333,8 @@ end;
 procedure TJvCustomCsvDataSet.InternalDelete;
 begin
   if (FRecordPos >= 0) and (FRecordPos < FData.Count) then
-  begin
-      // FreeMem performed inside DeleteRow!
+    // FreeMem performed inside DeleteRow!
     FData.DeleteRow(FRecordPos);
-  end;
 
   if FRecordPos >= FData.Count then
     FRecordPos := FData.Count - 1;
@@ -2366,7 +2377,7 @@ begin
       //    OutputDebugString('FindByCsvKey debug');
   end;
   recno := InternalFindByKey(@physical_row);
-  if (recno < 0) then
+  if recno < 0 then
     Exit;
 
   FRecordPos := recno;
@@ -2406,10 +2417,10 @@ begin
     FRecordPos := FData.Count;
 
   pAddRec := AllocMem(SizeOf(TJvCsvRow));
-  if (Buffer <> nil) then
+  if Buffer <> nil then
     Move(PCsvRow(Buffer)^, pAddRec^, SizeOf(TJvCsvRow));
 
-  if (StrLen(pAddRec.Text) = 0) then
+  if StrLen(pAddRec.Text) = 0 then
     StringToCsvRow(FEmptyRowStr, Separator, pAddRec, False, False); // initialize row.
 
   pAddRec.fdirty := True;
@@ -2483,8 +2494,10 @@ end;
 function TJvCustomCsvDataSet.InternalLoadFileStrings: Boolean;
 begin
   Result := False;
-  if not FileExists(FTableName) then Exit;
-  if not FLoadsFromFile then Exit;
+  if not FileExists(FTableName) then
+    Exit;
+  if not FLoadsFromFile then
+    Exit;
   if Assigned(FCsvFileAsStrings) then
   begin
     if FCsvFileAsStrings.Count > 0 then
@@ -2540,7 +2553,8 @@ var
 //  Strings: TStringlist;
   TempBuf: array[0..MAXCOLUMNS] of char;
 begin
-  if FCursorOpen then InternalClose; // close first!
+  if FCursorOpen then
+    InternalClose; // close first!
 
   FFileDirty := False;
   if (Length(FTableName) = 0) and FLoadsFromFile then
@@ -2554,7 +2568,7 @@ begin
     CreateFields;
   BindFields(True); // bind FieldDefs to actual data
 
-  if (FCsvColumns.Count > 1) then
+  if FCsvColumns.Count > 1 then
   begin
      // Create a null terminated string which is just a bunch of commas:
     FillChar(TempBuf, FCsvColumns.Count - 1, Separator);
@@ -2580,13 +2594,13 @@ begin
 
   if InternalLoadFileStrings then
   begin // may load the strings if they weren't loaded already!
-    if (FHasHeaderRow) then
+    if FHasHeaderRow then
     begin
       if not ExtendedHeaderInfo then
         FHeaderRow := FCsvFileAsStrings[0]
       else
         FCsvFileAsStrings.Delete(0);
-      if (Length(FHeaderRow) > 0) then
+      if Length(FHeaderRow) > 0 then
         ProcessCsvHeaderRow;
       if FAppendedFieldCount > 0 then
       begin
@@ -2640,7 +2654,8 @@ begin
     Move(PCsvRow(ActiveBuffer)^, FData.GetRowPtr(RecPos)^, SizeOf(TJvCsvRow));
     FData.GetRowPtr(RecPos)^.fdirty := True;
   end
-  else if State = dsInsert then
+  else
+  if State = dsInsert then
   begin
     if FInsertBlocked then
     begin
@@ -2669,7 +2684,7 @@ end;
 
 function TJvCustomCsvDataSet.GetRecordCount: Integer;
 begin
-  if (FData.Count > 0) then
+  if FData.Count > 0 then
     Result := FData.Count
   else
     Result := 0;
@@ -2706,7 +2721,8 @@ begin
   if (Value >= 0) and (Value <= FData.Count - 1) then
   begin
     FRecordPos := Value; {-1 XXXXXX }
-    if (RecordCount > 0) then Resync([]);
+    if RecordCount > 0 then
+      Resync([]);
   end;
 end;
 
@@ -2761,7 +2777,7 @@ begin
       strLeft  :=GetCsvRowItem( Left, Column^.FPhysical );
   end;*)
 
-  if (FCsvCaseInsensitiveComparison) then
+  if FCsvCaseInsensitiveComparison then
   begin
     strLeft := UpperCase(strLeft);
     strRight := UpperCase(strRight);
@@ -2775,9 +2791,10 @@ begin
         numLeft := StrToFloatUSDef(strLeft, -99999.9);
         numRight := StrToFloatUSDef(strRight, -99999.9);
         diff := numLeft - numRight;
-        if (diff < -0.02) then
+        if diff < -0.02 then
           Result := -1
-        else if (diff > 0.02) then
+        else
+        if diff > 0.02 then
           Result := 1
         else
           Result := 0; // For our purposes, .02 difference or less is a match.
@@ -2801,16 +2818,14 @@ begin
   Result := 0;
   // null check, raise exception
   if (not Assigned(Left)) or (not Assigned(Right)) then
-  begin
     JvCsvDatabaseError(FTableName, RsEInternalCompare);
-  end;
   // now check each field:
   for t := 0 to SortColumnCount - 1 do
   begin
     if not Assigned(SortColumns[t]) then
       JvCsvDatabaseError(FTableName, RsEInternalCompare); // raise exception
     Result := InternalFieldCompare(SortColumns[t], Left, Right);
-    if (Result <> 0) then
+    if Result <> 0 then
     begin
            // XXX REPEAT result := InternalFieldCompare( SortColumns[t],Left,Right);
       Exit; // found greater or less than condition
@@ -2847,7 +2862,7 @@ begin
   // Now check if the fields exist, and find the pointers to the fields
   for t := 0 to SortColumnCount - 1 do
   begin
-    if (SortFieldNames[t] = '') then
+    if SortFieldNames[t] = '' then
       JvCsvDatabaseError(FTableName, RsESortFailedFieldNames);
     SortColumns[t] := FCsvColumns.FindByName(SortFieldNames[t]);
     if not Assigned(SortColumns[t]) then
@@ -2868,7 +2883,7 @@ begin
         );
       if not Ascending then
         comparison := comparison * -1; // flip sign of comparison
-      if (comparison > 0) then
+      if comparison > 0 then
       begin { bubble sort by swaps }
         swap := Index[t];
         Index[t] := Index[u];
@@ -2971,9 +2986,10 @@ end;
 
 procedure TJvCsvRows.SetUserTag(Index, Value: Integer);
 begin
-  if (Index < 0) or (Index >= Count) then Exit;
+  if (Index < 0) or (Index >= Count) then
+    Exit;
 
-  if (Index >= FUserLength) then
+  if Index >= FUserLength then
   begin
     FUserLength := Index + 1;
     SetLength(FUserTag, FUserLength);
@@ -2992,8 +3008,9 @@ end;
 
 procedure TJvCsvRows.SetUserData(Index: Integer; Value: Pointer);
 begin
-  if (Index < 0) or (Index >= Count) then Exit;
-  if (Index >= FUserLength) then
+  if (Index < 0) or (Index >= Count) then
+    Exit;
+  if Index >= FUserLength then
   begin
     FUserLength := Index + 1;
     SetLength(FUserTag, FUserLength);
@@ -3046,7 +3063,8 @@ begin
   if (RowIndex >= 0) and (RowIndex < Count) then
   begin
     p := Self[RowIndex];
-    if p <> nil then FreeMem(p);
+    if p <> nil then
+      FreeMem(p);
   end;
   Delete(RowIndex);
 end;
@@ -3179,7 +3197,7 @@ function TJvCustomCsvDataSet.GetAsString(const Row, Column: Integer): string; //
 var
   GetIndex: Integer;
 begin
-  if (Row < 0) then {lastrow}
+  if Row < 0 then {lastrow}
     GetIndex := FData.Count - 1
   else
     GetIndex := Row; { actual index specified }
@@ -3192,7 +3210,7 @@ function TJvCustomCsvDataSet.GetRowAsString(const Index: Integer): string;
 var
   GetIndex: Integer;
 begin
-  if (Index < 0) then {lastrow}
+  if Index < 0 then {lastrow}
     GetIndex := FData.Count - 1
   else
     GetIndex := Index; { actual index specified }
@@ -3250,12 +3268,12 @@ begin
          // Get a string in the format COLUMNAME:Options
     CsvFieldName := StrEatWhiteSpace(GetCsvRowItem(@CsvFieldRec, ColNum));
 
-    if (Length(CsvFieldName) = 0) then
+    if Length(CsvFieldName) = 0 then
       JvCsvDatabaseError(FTableName, RsEErrorProcessingFirstLine);
 
     ptrCsvColumn := FCsvColumns.FindByName(CsvFieldName);
 
-    if (ptrCsvColumn = nil) then
+    if ptrCsvColumn = nil then
     begin // raise database exception:
       JvCsvDatabaseError(FTableName, Format(RsEFieldInFileButNotInDefinition, [CsvFieldName]));
       Exit;
@@ -3305,10 +3323,10 @@ begin
         FHeaderRow := FHeaderRow + Separator + CsvFieldName;
         Inc(FAppendedFieldCount);
           // (rom) no OutputDebugString in production code
-{$IFDEF DEBUGINFO_ON}
+        {$IFDEF DEBUGINFO_ON}
         OutputDebugString(PChar('JvCsvData: Field ' + CsvFieldName + ' not found in file ' + Self.FTableName +
           ', inserted new (blank) column during loading.'));
-{$ENDIF DEBUGINFO_ON}
+        {$ENDIF DEBUGINFO_ON}
       end;
     end;
   end;
@@ -3318,9 +3336,9 @@ procedure TJvCustomCsvDataSet.ProcessCsvDataRow(const datarow: string; Index: In
 var
   pNewRow: PCsvRow;
 begin
-  if (Length(datarow) = 0) then
+  if Length(datarow) = 0 then
     Exit;
-  if (Length(datarow) >= (MAXLINELENGTH - 1)) then
+  if Length(datarow) >= (MAXLINELENGTH - 1) then
   begin
     raise EJvCsvDataSetError.Create(Format(RsECsvStringTooLong, [Copy(datarow, 1, 40)]));
   end;
@@ -3359,7 +3377,7 @@ begin
   Count := (ToRow - FromRow) + 1;
   while (Count > 0) do
   begin
-    if (FromRow < FData.Count) then
+    if FromRow < FData.Count then
       FData.DeleteRow(FromRow) // Everything moves down one every time we do this.
     else
       Break;
@@ -3467,22 +3485,22 @@ begin
         if quoteFlag and (charsInColumn > 1) then
         begin
           // (rom) no OutputDebugString in production code
-{$IFDEF DEBUGINFO_ON}
+          {$IFDEF DEBUGINFO_ON}
           OutputDebugString('CsvDataSource.pas: StringToCsvRow - unescaped quote character in middle of string!');
-{$ENDIF DEBUGINFO_ON}
+          {$ENDIF DEBUGINFO_ON}
         end;
 
       end
       else
       begin
         // (rom) no OutputDebugString in production code
-{$IFDEF DEBUGINFO_ON}
+        {$IFDEF DEBUGINFO_ON}
         OutputDebugString('CsvDataSource.pas: StringToCsvRow - quote character found where no escape sequences are permitted!');
-{$ENDIF DEBUGINFO_ON}
+        {$ENDIF DEBUGINFO_ON}
       end;
     end;
 
-    if ((RowString[t] = Separator) and (not quoteFlag)) then
+    if (RowString[t] = Separator) and (not quoteFlag) then
     begin
       Inc(Col);
        // implicitly set Length (low 15 bits) and clear dirty bit (high bit):
@@ -3499,9 +3517,9 @@ begin
   if quoteFlag then
   begin
     // (rom) no OutputDebugString in production code
-{$IFDEF DEBUGINFO_ON}
+    {$IFDEF DEBUGINFO_ON}
     OutputDebugString('CsvDataSource.pas: StringToCsvRow - Missing end quote character!');
-{$ENDIF DEBUGINFO_ON}
+    {$ENDIF DEBUGINFO_ON}
   end;
  // Terminate the column-marker list with a special end-marker:
 {RowItem.wordfield[col]   := Word(Length(RowString)+1)AND$7FFF; // length of string
@@ -3519,7 +3537,7 @@ var
 begin
   TempStr := GetCsvRowItem(Source, FieldIndex);
    // length limiting feature:
-  if (FieldSize > 0) then
+  if FieldSize > 0 then
     if Length(TempStr) > FieldSize then
       TempStr := Copy(TempStr, 1, FieldSize);
   SetCsvRowItem(Dest, FieldIndex, TempStr);
@@ -3538,13 +3556,13 @@ begin
   if (ColumnIndex < 0) or (ColumnIndex > MAXCOLUMNS) then
     Exit;
   Copy1 := CsvRowGetColumnMarker(pItem, ColumnIndex);
-  if (Copy1 = COLUMN_ENDMARKER) then
+  if Copy1 = COLUMN_ENDMARKER then
     Exit;
 
-  if (Copy1 > MAXLINELENGTH) then
+  if Copy1 > MAXLINELENGTH then
     Exit;
  // copy initial part of the csv row:
-  if (Copy1 > 0) then
+  if Copy1 > 0 then
   begin
     StrLCopy(TempBuf, pItem.Text, Copy1);
     StrLCat(TempBuf, PChar(newValue), MAXLINELENGTH);
@@ -3553,12 +3571,13 @@ begin
     StrLCopy(TempBuf, PChar(newValue), MAXLINELENGTH);
 
   Copy2 := CsvRowGetColumnMarker(pItem, ColumnIndex + 1);
-  if (Copy2 <> COLUMN_ENDMARKER) then
+  if Copy2 <> COLUMN_ENDMARKER then
   begin
    // difference in length:
     Dec(Copy2); // subtract one.
-    if (Copy2 < 0) then Exit;
-    if (Length(newValue) = Copy2 - Copy1) then
+    if Copy2 < 0 then
+      Exit;
+    if Length(newValue) = Copy2 - Copy1 then
       Dif := 0
     else
       Dif := Length(newValue) - (Copy2 - Copy1);
@@ -3570,14 +3589,14 @@ begin
 
  // Now that we've copied a new item of a different length into the place of the old one
  // we have to update the positions of the columns after ColumnIndex:
-  if (Dif <> 0) then
+  if Dif <> 0 then
     for t := ColumnIndex + 1 to MAXCOLUMNS do
     begin
       Old := CsvRowGetColumnMarker(pItem, t);
-      if (Old = COLUMN_ENDMARKER) then Exit;
+      if Old = COLUMN_ENDMARKER then
+        Exit;
       CsvRowSetColumnMarker(pItem, t, Old + Dif);
     end;
-
 end;
 
 // Copy an item out of a csv row buffer:
@@ -3595,12 +3614,12 @@ begin
 
   Copy1 := CsvRowGetColumnMarker(pItem, ColumnIndex);
   Copy2 := CsvRowGetColumnMarker(pItem, ColumnIndex + 1);
-  if (Copy1 = COLUMN_ENDMARKER) then
+  if Copy1 = COLUMN_ENDMARKER then
   begin
     Result := '';
     Exit;
   end;
-  if (Copy2 = COLUMN_ENDMARKER) then // copy the rest of the line
+  if Copy2 = COLUMN_ENDMARKER then // copy the rest of the line
     Copy2 := MAXLINELENGTH - Copy1 // All the characters left in the buffer
   else
     Dec(Copy2);
@@ -3621,25 +3640,32 @@ end;
 
 procedure CsvRowSetDirtyBit(row: PCsvRow; ColumnIndex: Integer);
 begin
-  if row = nil then Exit;
-  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then Exit;
+  if row = nil then
+    Exit;
+  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then
+    Exit;
   row^.fdirty := True; // triggers search for 'dirty bit' in columns
   row^.wordfield[ColumnIndex] := (row^.wordfield[ColumnIndex] or $8000);
 end;
 
 procedure CsvRowClearDirtyBit(row: PCsvRow; ColumnIndex: Integer);
 begin
-  if row = nil then Exit;
-  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then Exit;
+  if row = nil then
+    Exit;
+  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then
+    Exit;
   row^.wordfield[ColumnIndex] := (row^.wordfield[ColumnIndex] and $7FFF);
 end;
 
 function CsvRowGetDirtyBit(row: PCsvRow; ColumnIndex: Integer): Boolean;
 begin
   Result := False;
-  if row = nil then Exit;
-  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then Exit;
-  if row^.wordfield[ColumnIndex] = COLUMN_ENDMARKER then Exit;
+  if row = nil then
+    Exit;
+  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then
+    Exit;
+  if row^.wordfield[ColumnIndex] = COLUMN_ENDMARKER then
+    Exit;
   Result := (row^.wordfield[ColumnIndex] and $8000) <> 0;
 end;
 
@@ -3647,9 +3673,12 @@ procedure CsvRowSetColumnMarker(row: PCsvRow; ColumnIndex: Integer; ColumnMarker
 var
   Old: Word;
 begin
-  if row = nil then Exit;
-  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then Exit;
-  if (ColumnMarker < 0) then Exit;
+  if row = nil then
+    Exit;
+  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then
+    Exit;
+  if ColumnMarker < 0 then
+    Exit;
 
   if ColumnMarker = COLUMN_ENDMARKER then
     row^.wordfield[ColumnIndex] := COLUMN_ENDMARKER
@@ -3659,8 +3688,8 @@ begin
     if Old = COLUMN_ENDMARKER then
       row^.wordfield[ColumnIndex] := ColumnMarker and $7FFF // auto-clear Dirty bit
     else
-      row^.wordfield[ColumnIndex] := (Old and $8000) // Keep Old Dirty Bit
-        or (Word(ColumnMarker) and $7FFF); // new value.
+      row^.wordfield[ColumnIndex] := (Old and $8000) or // Keep Old Dirty Bit
+        (Word(ColumnMarker) and $7FFF); // new value.
   end;
 end;
 
@@ -3669,8 +3698,10 @@ var
   w: Word;
 begin
   Result := -1;
-  if row = nil then Exit;
-  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then Exit;
+  if row = nil then
+    Exit;
+  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then
+    Exit;
   w := row^.wordfield[ColumnIndex];
   if w = COLUMN_ENDMARKER then
     Result := COLUMN_ENDMARKER
@@ -3703,7 +3734,8 @@ var
 begin
   Result := 0.0;
   SecondsSince1970 := StrToIntDef('$' + HexStr, 0) + TimeZoneCorrection;
-  if (SecondsSince1970 <= 0.0) then Exit;
+  if SecondsSince1970 <= 0.0 then
+    Exit;
   Base := EncodeDate(1970, 1, 1);
   Base := Base + (SecondsSince1970 / 86400.0);
 { DateTimeAsStr := FormatDateTime('yyyy/mm/dd hh:nn:ss',Base);}
@@ -3734,7 +3766,7 @@ begin
       Break; // as long as we at least got the date, we can continue.
     for u := 1 to AsciiTime_ExpectLengths[t] do
     begin
-      if (Index > len) then
+      if Index > len then
       begin
         Break;
       end;
@@ -3742,30 +3774,28 @@ begin
       if not (ch in DigitSymbols) then
       begin
         // (rom) no OutputDebugString in production code
-{$IFDEF DEBUGINFO_ON}
+        {$IFDEF DEBUGINFO_ON}
         OutputDebugString(PChar('JvCsvData:illegal character in datetime string: ' + ch));
-{$ENDIF DEBUGINFO_ON}
+        {$ENDIF DEBUGINFO_ON}
         Exit; // failed:invalid character.
       end;
       Values[t] := (Values[t] * 10) + (Ord(ch) - Ord('0'));
       Inc(Index);
 
-      if (Index > len) then
-      begin
+      if Index > len then
         Break;
-      end;
     end;
 
    // if we haven't reached the end of the string, then
    // check for a valid separator character:
-    if (Index < len) then
-      if (AsciiDateStr[Index] <> Separators[t])
-        and (AsciiDateStr[Index] <> Separators2[t]) then
+    if Index < len then
+      if (AsciiDateStr[Index] <> Separators[t]) and
+        (AsciiDateStr[Index] <> Separators2[t]) then
       begin
             // (rom) no OutputDebugString in production code
-{$IFDEF DEBUGINFO_ON}
+        {$IFDEF DEBUGINFO_ON}
         OutputDebugString('TimeTAsciiToDateTime:illegal separator char');
-{$ENDIF DEBUGINFO_ON}
+        {$ENDIF DEBUGINFO_ON}
         Exit;
       end;
 
@@ -3773,9 +3803,9 @@ begin
     if (Values[t] < AsciiTime_MinValue[t]) or (Values[t] > AsciiTime_MaxValue[t]) then
     begin
       // (rom) no OutputDebugString in production code
-{$IFDEF DEBUGINFO_ON}
+      {$IFDEF DEBUGINFO_ON}
       OutputDebugString('TimeTAsciiToDateTime:range error');
-{$ENDIF DEBUGINFO_ON}
+      {$ENDIF DEBUGINFO_ON}
       Exit; // a value is out of range.
     end;
     Inc(Index);

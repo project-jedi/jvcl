@@ -62,12 +62,12 @@ type
     procedure SetFieldName(const Value: string); virtual;
     property DataLink: TFieldDataLink read FDataLink;
   public
-    class function New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource; const AFieldName: string):
-      TJvCustomInspectorItem; overload;
-    class function New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource): TJvInspectorItemInstances;
-      overload;
-    class function New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource; const AFieldNames: array of
-      string): TJvInspectorItemInstances; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource;
+      const AFieldName: string): TJvCustomInspectorItem; overload;
+    class function New(const AParent: TJvCustomInspectorItem;
+      const ADataSource: TDataSource): TJvInspectorItemInstances; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource;
+      const AFieldNames: array of string): TJvInspectorItemInstances; overload;
     destructor Destroy; override;
     class function FieldTypeMapping: TJvInspectorRegister;
     procedure GetAsSet(var Buf); override;
