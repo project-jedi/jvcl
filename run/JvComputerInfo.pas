@@ -54,7 +54,10 @@ unit JvComputerInfo;
 interface
 
 uses
-  Windows, SysUtils, Classes, Registry, MMSystem, Controls,
+  Windows, SysUtils, Classes, Registry, MMSystem,
+  {$IFDEF VCL}
+  Controls,
+  {$ENDIF VCL}
   JvComponent, JvTypes;
 
 type
