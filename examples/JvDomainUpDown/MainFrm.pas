@@ -1,4 +1,4 @@
-unit Unit1;
+unit MainFrm;
 
 interface
 
@@ -9,9 +9,6 @@ uses
 
 type
   TForm1 = class(TForm)
-    JvPanel1: TJvPanel;
-    JvTreeView1: TJvTreeView;
-    JvPageListTreeView1: TJvPageListTreeView;
     Edit1: TEdit;
     JvDomainUpDown1: TJvDomainUpDown;
     Label1: TLabel;
