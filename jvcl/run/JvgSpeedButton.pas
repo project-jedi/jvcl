@@ -101,6 +101,9 @@ type
     procedure SetFont(const Value: TFont);
     function GetActiveColor: TColor;
     function GetColor: TColor;
+    procedure SetStyle(Value: TJvgSpeedButtonStyle);
+    procedure SetStyleActive(Value: TJvgSpeedButtonStyle);
+    procedure SetStylePushed(Value: TJvgSpeedButtonStyle);
     procedure ButtonChanged(Sender: TObject);
   protected
     procedure MouseEnter(Control: TControl); override;
@@ -112,9 +115,9 @@ type
   published
     property ActiveColor: TColor read GetActiveColor write SetActiveColor stored False;
     property Color: TColor read GetColor write SetColor stored False;
-    property Style: TJvgSpeedButtonStyle read FStyle write FStyle;
-    property StyleActive: TJvgSpeedButtonStyle read FStyleActive write FStyleActive;
-    property StylePushed: TJvgSpeedButtonStyle read FStylePushed write FStylePushed;
+    property Style: TJvgSpeedButtonStyle read FStyle write SetStyle;
+    property StyleActive: TJvgSpeedButtonStyle read FStyleActive write SetStyleActive;
+    property StylePushed: TJvgSpeedButtonStyle read FStylePushed write SetStylePushed;
     property Font: TFont read GetFont write SetFont;
   end;
 
@@ -497,6 +500,21 @@ procedure TJvgExtSpeedButton.SetFont(const Value: TFont);
 begin
   inherited Font.Assign(Font);
   Style.Font.Assign(Font);
+end;
+
+procedure TJvgExtSpeedButton.SetStyle(Value: TJvgSpeedButtonStyle);
+begin
+  FStyle.Assign(Value);
+end;
+
+procedure TJvgExtSpeedButton.SetStyleActive(Value: TJvgSpeedButtonStyle);
+begin
+  FStyleActive.Assign(Value);
+end;
+
+procedure TJvgExtSpeedButton.SetStylePushed(Value: TJvgSpeedButtonStyle);
+begin
+  FStylePushed.Assign(Value);
 end;
 
 {$IFDEF UNITVERSIONING}
