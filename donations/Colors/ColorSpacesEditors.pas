@@ -48,7 +48,7 @@ type
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
     procedure Edit; override;
-    procedure EditSpace(AColorID: TJvColorID);
+    procedure EditSpace(AColorID: TJvColorSpaceID);
     procedure SetColor(AFullColor: TJvFullColor);
     // ICustomPropertyDrawing
     procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
@@ -226,17 +226,17 @@ end;
 
 procedure TJvFullColorProperty.Edit;
 begin
-  EditSpace(ColorSpaceManager.GetColorID(GetOrdValue));
+  EditSpace(ColorSpaceManager.GetColorSpaceID(GetOrdValue));
 end;
 
-procedure TJvFullColorProperty.EditSpace(AColorID: TJvColorID);
+procedure TJvFullColorProperty.EditSpace(AColorID: TJvColorSpaceID);
 var
   AColor: TJvFullColor;
 begin
   with ColorSpaceManager, TJvFullColorDialog.Create(nil) do
     try
       AColor := GetOrdValue;
-      if GetColorID(AColor) <> AColorID then
+      if GetColorSpaceID(AColor) <> AColorID then
         AColor := ConvertToID(AColor, AColorID);
 
       FullColor := AColor;
@@ -269,35 +269,35 @@ end;
 
 procedure TJvFullColorProperty.GetProperties(Proc: TGetPropProc);
 var
-  Index: Integer;
-  AColorSpace: TJvColorSpace;
+  I: Integer;
+  CS: TJvColorSpace;
 begin
   with ColorSpaceManager do
-    for Index := 0 to ColorSpaceCount - 1 do
+    for I := 0 to Count - 1 do
     begin
-      AColorSpace := ColorSpaceIndex[Index];
-      if AColorSpace.ID <> csDEF then
-        Proc(TJvFullColorSpace.Create(Self, AColorSpace, IsColorProperty));
+      CS := ColorSpaceByIndex[I];
+      if CS.ID <> csDEF then
+        Proc(TJvFullColorSpace.Create(Self, CS, IsColorProperty));
     end;
   Proc(TJvPredefinedColorSpace.Create(Self, IsColorProperty));
 end;
 
 function TJvFullColorProperty.GetValue: string;
 var
-  AValue: TJvFullColor;
-  AColorID: TJvColorID;
+  Value: TJvFullColor;
+  ColorID: TJvColorSpaceID;
   ColorStr: string;
 begin
-  AValue := GetOrdValue;
+  Value := GetOrdValue;
 
   with ColorSpaceManager do
   begin
-    AColorID := GetColorID(AValue);
+    ColorID := GetColorSpaceID(Value);
 
-    if IsColorProperty and not (AColorID in [csRGB, csDEF]) then
+    if IsColorProperty and not (ColorID in [csRGB, csDEF]) then
       ColorStr := SInvalidFormat
     else
-      ColorStr := ColorSpace[GetColorID(AValue)].ShortName;
+      ColorStr := ColorSpace[GetColorSpaceID(Value)].ShortName;
   end;
 
   Result := Format('%s [%s]', [GetPropType^.Name, ColorStr]);
@@ -305,11 +305,11 @@ end;
 
 procedure TJvFullColorProperty.GetValues(Proc: TGetStrProc);
 var
-  Index: Integer;
+  I: Integer;
 begin
   with ColorSpaceManager do
-    for Index := 0 to ColorSpaceCount - 1 do
-      Proc(ColorSpaceIndex[Index].ShortName);
+    for I := 0 to Count - 1 do
+      Proc(ColorSpaceByIndex[I].ShortName);
 end;
 
 procedure TJvFullColorProperty.PropDrawName(ACanvas: TCanvas;
@@ -329,7 +329,7 @@ begin
     Rectangle(ARect);
 
     OldBrushColor := Brush.Color;
-    Brush.Color := TColor(ColorSpaceManager.ConvertToID(GetOrdValue, csRGB));
+    Brush.Color := ColorSpaceManager.ConvertToColor(TJvFullColor(GetOrdValue));
     OldPenColor := Pen.Color;
     Pen.Color := clBlack;
 
@@ -344,33 +344,31 @@ begin
 end;
 
 procedure TJvFullColorProperty.SetColor(AFullColor: TJvFullColor);
-var
-  AColorID: TJvColorID;
 begin
   with ColorSpaceManager do
   begin
-    AColorID := GetColorID(AFullColor);
-    if (not (AColorID in [csRGB, csDEF])) and IsColorProperty then
-      AFullColor := ConvertToID(AFullColor, csRGB);
+    if IsColorProperty then
+      SetOrdValue(Ord(ConvertToColor(AFullColor)))
+    else
+      SetOrdValue(Ord(AFullColor));
   end;
-  SetOrdValue(AFullColor);
 end;
 
 procedure TJvFullColorProperty.SetValue(const Value: string);
 var
-  Index: Integer;
+  I: Integer;
   LColor: TJvFullColor;
   LColorSpace: TJvColorSpace;
 begin
   LColor := GetOrdValue;
   with ColorSpaceManager do
-    for Index := 0 to ColorSpaceCount - 1 do
+    for I := 0 to Count - 1 do
     begin
-      LColorSpace := ColorSpaceIndex[Index];
+      LColorSpace := ColorSpaceByIndex[I];
       if LColorSpace.ShortName = Value then
       begin
         LColor := ColorSpaceManager.ConvertToID(LColor, LColorSpace.ID);
-        SetOrdValue(LColor);
+        SetOrdValue(Ord(LColor));
         Break;
       end;
     end;
@@ -405,10 +403,10 @@ end;
 
 procedure TJvFullColorSpace.GetProperties(Proc: TGetPropProc);
 var
-  Index: TJvAxisIndex;
+  I: TJvAxisIndex;
 begin
-  for Index := Low(TJvAxisIndex) to High(TJvAxisIndex) do
-    Proc(TJvFullColorAxis.Create(Parent, ColorSpace, Index, IsColorProperty));
+  for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
+    Proc(TJvFullColorAxis.Create(Parent, ColorSpace, I, IsColorProperty));
 end;
 
 function TJvFullColorSpace.GetValue: string;
@@ -454,11 +452,12 @@ end;
 procedure TJvFullColorAxis.ListDrawValue(const Value: string;
   ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
 var
-  LColor: Cardinal;
+  FullColor: TJvFullColor;
+  LColor: TColor;
 begin
-  LColor := ColorSpaceManager.ConvertToID(GetOrdValue, ColorSpace.ID);
-  LColor := SetAxisValue(LColor, AxisIndex, HexToInt(Value));
-  LColor := ColorSpace.ConvertToRGB(LColor);
+  FullColor := ColorSpaceManager.ConvertToID(GetOrdValue, ColorSpace.ID);
+  FullColor := SetAxisValue(FullColor, AxisIndex, HexToInt(Value));
+  LColor := ColorSpace.ConvertToColor(FullColor);
   ColorPropertyListDrawValue(LColor, Value, ACanvas, ARect, ASelected);
 end;
 
@@ -477,19 +476,18 @@ end;
 procedure TJvFullColorAxis.SetValue(const Value: string);
 var
   AxisValue: Byte;
-  LColor: Cardinal;
-  LColorID: TJvColorID;
+  LColor: TJvFullColor;
+  LColorID: TJvColorSpaceID;
 begin
   AxisValue := HexToInt(Value);
-  LColor := GetOrdValue;
-  LColorID := ColorSpaceManager.GetColorID(LColor);
+  LColor := TJvFullColor(GetOrdValue);
+  LColorID := ColorSpaceManager.GetColorSpaceID(LColor);
   LColor := ColorSpaceManager.ConvertToID(LColor, ColorSpace.ID);
   LColor := SetAxisValue(LColor, AxisIndex, AxisValue);
   if not IsColorProperty then
-    LColor := ColorSpaceManager.ConvertToID(LColor, LColorID)
+    SetOrdValue(Ord(ColorSpaceManager.ConvertToID(LColor, LColorID)))
   else
-    LColor := ColorSpaceManager.ConvertToID(LColor, csRGB);
-  SetOrdValue(LColor);
+    SetOrdValue(Ord(ColorSpaceManager.ConvertToColor(LColor)));
 end;
 
 //=== { TJvPredefinedColorSpace } ============================================
@@ -538,7 +536,7 @@ end;
 
 function TJvPredefinedIndentColorSpace.GetName: string;
 begin
-  Result := GetEnumName(TypeInfo(TJvPredefinedFamily), Integer(PredefinedFamily));
+  Result := GetEnumName(TypeInfo(TJvPredefinedFamily), Ord(PredefinedFamily));
   Result := Copy(Result, 3, Length(Result) - 2);
 end;
 
@@ -549,7 +547,7 @@ var
 begin
   TempValue := GetOrdValue;
   if (((TempValue and $FF000000) <> 0) xor (PredefinedFamily = pfConstant)) and
-    ColorToIdent(GetOrdValue, TempResult) then
+    ColorToIdent(TempValue, TempResult) then
     Result := TempResult
   else
     Result := '';
@@ -557,9 +555,11 @@ end;
 
 procedure TJvPredefinedIndentColorSpace.GetValues(Proc: TGetStrProc);
 var
-  Index: Integer;
+  I: Integer;
   Start, Stop: Integer;
+  CS: TJvDEFColorSpace;
 begin
+  CS := TJvDEFColorSpace(ColorSpaceManager.ColorSpace[csDEF]);
   if PredefinedFamily = pfConstant then
   begin
     Start := 0;
@@ -568,11 +568,10 @@ begin
   else
   begin
     Start := StandardColorsCount + ExtendedColorsCount;
-    Stop := ColorSpaceManager.PredefinedColorCount - 1;
+    Stop := CS.NumberOfColors - 1;
   end;
-  with ColorSpaceManager do
-    for Index := Start to Stop do
-      Proc(PredefinedColorIndex[Index]);
+    for I := Start to Stop do
+      Proc(CS.ColorName(I));
 end;
 
 procedure TJvPredefinedIndentColorSpace.ListDrawValue(const Value: string;
@@ -596,14 +595,15 @@ end;
 procedure TJvPredefinedIndentColorSpace.SetValue(const Value: string);
 var
   TempValue, NewValue: Integer;
-  AColorID: TJvColorID;
+  ColorID: TJvColorSpaceID;
 begin
-  if IdentToColor(Value, NewValue) and (((NewValue and $FF000000) <> 0) xor (PredefinedFamily = pfConstant)) then
+  if IdentToColor(Value, NewValue) and
+   (((NewValue and $FF000000) <> 0) xor (PredefinedFamily = pfConstant)) then
   begin
     TempValue := GetOrdValue;
-    AColorID := ColorSpaceManager.GetColorID(TempValue);
+    ColorID := ColorSpaceManager.GetColorSpaceID(TempValue);
     if not IsColorProperty then
-      NewValue := ColorSpaceManager.ConvertToID(NewValue, AColorID);
+      NewValue := ColorSpaceManager.ConvertToID(NewValue, ColorID);
     SetOrdValue(NewValue);
   end;
 end;
@@ -652,8 +652,8 @@ begin
   RequireClass(Proc, TJvColorSpace);
 
   with ColorSpaceManager do
-    for I := 0 to ColorSpaceCount - 1 do
-      RequireClass(Proc, ColorSpaceIndex[I].ClassType);
+    for I := 0 to Count - 1 do
+      RequireClass(Proc, ColorSpaceByIndex[I].ClassType);
 end;
 
 //=== { TJvFullColorDialogSelection } ========================================

@@ -328,20 +328,20 @@ begin
       FSpinEditBlueAxes[I].MaxValue := FAxisMax[I];
       FSpinEditBlueAxes[I].MinValue := -FAxisMax[I];
 
-      LColor := ConvertFromRGB(TJvFullColor(clRed));
+      LColor := ConvertFromColor(clRed);
       FRedAxis[I] := GetAxisValue(LColor, I);
 
-      LColor := ConvertFromRGB(TJvFullColor(clLime));
+      LColor := ConvertFromColor(clLime);
       FGreenAxis[I] := GetAxisValue(LColor, I);
 
-      LColor := ConvertFromRGB(TJvFullColor(clBlue));
+      LColor := ConvertFromColor(clBlue);
       FBlueAxis[I] := GetAxisValue(LColor, I);
 
-      LColor := ConvertFromRGB(TJvFullColor(clDkGray));
+      LColor := ConvertFromColor(clDkGray);
       FComAxis[I] := GetAxisValue(LColor, I);
     end;
 
-    JvColorCircle.ConvertColorToColorID(ID shl 24);
+    JvColorCircle.ConvertToID(ID shl 24);
 
     FUpdating := False;
   end;
@@ -354,7 +354,7 @@ procedure TJvColorCircleForm.UpdateDeltaValue;
 var
   I: TJvAxisIndex;
   ComAxis: array [TJvAxisIndex] of Integer;
-  LColorID: TJvColorID;
+  LColorID: TJvColorSpaceID;
 
   function CheckRange(Value: Integer; AMin: Byte; AMax: Byte): Byte;
   begin
@@ -383,10 +383,10 @@ begin
 
   LColorID := JvColorSpaceCombo.ColorSpaceID;
 
+  JvColorCircle.FullColor := LColorID shl 24;
   JvColorCircle.RedColor := LColorID shl 24;
   JvColorCircle.GreenColor := LColorID shl 24;
   JvColorCircle.BlueColor := LColorID shl 24;
-  JvColorCircle.FullColor := LColorID shl 24;
   for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
   begin
     JvColorCircle.RedColor := JvColorCircle.RedColor or
@@ -497,6 +497,7 @@ end;
 
 procedure TJvColorCircleForm.CheckBoxSettingsClick(Sender: TObject);
 var
+  Idx: TJvAxisIndex;
   AxisDelta: TJvAxisDelta;
   SaturationMethod: TJvSaturationMethod;
 begin
@@ -512,37 +513,38 @@ begin
     else
       SaturationMethod := smRange;
 
+    Idx := AxisIndexFromTag(Tag);
     case Tag and $30 of
       $00:
         begin
           AxisDelta := RedDelta;
-          AxisDelta[AxisIndexFromTag(Tag)].SaturationMethod := SaturationMethod;
+          AxisDelta[Idx].SaturationMethod := SaturationMethod;
           RedDelta := AxisDelta;
         end;
       $10:
         begin
           AxisDelta := GreenDelta;
-          AxisDelta[AxisIndexFromTag(Tag)].SaturationMethod := SaturationMethod;
+          AxisDelta[Idx].SaturationMethod := SaturationMethod;
           GreenDelta := AxisDelta;
         end;
       $20:
         begin
           AxisDelta := BlueDelta;
-          AxisDelta[AxisIndexFromTag(Tag)].SaturationMethod := SaturationMethod;
+          AxisDelta[Idx].SaturationMethod := SaturationMethod;
           BlueDelta := AxisDelta;
         end;
       $30:
         begin
           AxisDelta := RedDelta;
-          AxisDelta[AxisIndexFromTag(Tag)].SaturationMethod := SaturationMethod;
+          AxisDelta[Idx].SaturationMethod := SaturationMethod;
           RedDelta := AxisDelta;
 
           AxisDelta := GreenDelta;
-          AxisDelta[AxisIndexFromTag(Tag)].SaturationMethod := SaturationMethod;
+          AxisDelta[Idx].SaturationMethod := SaturationMethod;
           GreenDelta := AxisDelta;
 
           AxisDelta := BlueDelta;
-          AxisDelta[AxisIndexFromTag(Tag)].SaturationMethod := SaturationMethod;
+          AxisDelta[Idx].SaturationMethod := SaturationMethod;
           BlueDelta := AxisDelta;
         end;
     end;
@@ -559,21 +561,23 @@ var
 
   procedure UpdateCheckBox(ACheckBox: TCheckBox);
   var
+    Idx: TJvAxisIndex;
     SaturationMethod: TJvSaturationMethod;
   begin
     SaturationMethod := smRange;
 
+    Idx := AxisIndexFromTag(ACheckBox.Tag);
     case ACheckBox.Tag and $30 of
       $00:
-        SaturationMethod := RedDelta[AxisIndexFromTag(ACheckBox.Tag)].SaturationMethod;
+        SaturationMethod := RedDelta[Idx].SaturationMethod;
       $10:
-        SaturationMethod := GreenDelta[AxisIndexFromTag(ACheckBox.Tag)].SaturationMethod;
+        SaturationMethod := GreenDelta[Idx].SaturationMethod;
       $20:
-        SaturationMethod := BlueDelta[AxisIndexFromTag(ACheckBox.Tag)].SaturationMethod;
+        SaturationMethod := BlueDelta[Idx].SaturationMethod;
       $30:
-        if (RedDelta[AxisIndexFromTag(ACheckBox.Tag)].SaturationMethod = smLoop) and
-          (GreenDelta[AxisIndexFromTag(ACheckBox.Tag)].SaturationMethod = smLoop) and
-          (BlueDelta[AxisIndexFromTag(ACheckBox.Tag)].SaturationMethod = smLoop) then
+        if (RedDelta[Idx].SaturationMethod = smLoop) and
+          (GreenDelta[Idx].SaturationMethod = smLoop) and
+          (BlueDelta[Idx].SaturationMethod = smLoop) then
           SaturationMethod := smLoop
         else
           SaturationMethod := smRange;
@@ -798,6 +802,7 @@ end;
 
 procedure TJvColorCircleForm.SpinEditSettingsValueChange(Sender: TObject);
 var
+  Idx: TJvAxisIndex;
   AxisDelta: TJvAxisDelta;
 begin
   if FUpdating then
@@ -806,34 +811,37 @@ begin
   FUpdating := True;
 
   with Sender as TSpinEdit do
+  begin
+    Idx := AxisIndexFromTag(Tag);
     case Tag and $30 of
       $00:
         begin
           AxisDelta := RedDelta;
-          AxisDelta[AxisIndexFromTag(Tag)].Value := Value;
+          AxisDelta[Idx].Value := Value;
           RedDelta := AxisDelta;
         end;
       $10:
         begin
           AxisDelta := GreenDelta;
-          AxisDelta[AxisIndexFromTag(Tag)].Value := Value;
+          AxisDelta[Idx].Value := Value;
           GreenDelta := AxisDelta;
         end;
       $20:
         begin
           AxisDelta := BlueDelta;
-          AxisDelta[AxisIndexFromTag(Tag)].Value := Value;
+          AxisDelta[Idx].Value := Value;
           BlueDelta := AxisDelta;
         end;
       $30:
         begin
           AxisDelta := RedDelta;
-          AxisDelta[AxisIndexFromTag(Tag)].Value := Value;
+          AxisDelta[Idx].Value := Value;
           RedDelta := AxisDelta;
           GreenDelta := AxisDelta;
           BlueDelta := AxisDelta;
         end;
     end;
+  end;
 
   FUpdating := False;
 

@@ -200,9 +200,9 @@ object JvFullColorForm: TJvFullColorForm
     object JvColorPanel: TJvColorPanel
       Left = 8
       Top = 40
-      Width = 261
-      Height = 261
-      FullColor = 16777376
+      Width = 276
+      Height = 276
+      FullColor = 83886079
       AxisConfig = acXZY
       TabOrder = 1
       OnColorChange = JvColorPanelColorChange
@@ -214,9 +214,9 @@ object JvFullColorForm: TJvFullColorForm
     object JvFullColorTrackBar: TJvFullColorTrackBar
       Left = 8
       Top = 320
-      Width = 261
+      Width = 276
       Height = 21
-      FullColor = 16777376
+      FullColor = 83886079
       AxisConfig = acXZY
       TabOrder = 2
       ArrowWidth = 10
@@ -273,7 +273,7 @@ object JvFullColorForm: TJvFullColorForm
     Top = 32
     Width = 153
     Height = 21
-    ColorSpaceID = 0
+    ColorSpaceID = 9
     ItemHeight = 13
     TabOrder = 0
     OnChange = ComboBoxColorSpaceChange

@@ -85,7 +85,7 @@ type
     FOnCloseQuery: TCloseQueryEvent;
     FOnShow: TNotifyEvent;
     FHelpContext: THelpContext;
-    FOldColorSpace: TJvColorID;
+    FOldColorSpace: TJvColorSpaceID;
     function GetFullColor: TJvFullColor;
     procedure SetFullColor(const Value: TJvFullColor);
     procedure SetHelpContext(const Value: THelpContext);
@@ -96,7 +96,7 @@ type
     procedure FormApply(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    property OldColorSpace: TJvColorID read FOldColorSpace;
+    property OldColorSpace: TJvColorSpaceID read FOldColorSpace;
   public
     constructor Create(AOwner: TComponent); override;
     function Execute: Boolean;
@@ -214,6 +214,7 @@ constructor TJvFullColorDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOptions := JvDefaultFullColorDialogOptions;
+  FFullColor := fclRGBWhite;
 end;
 
 function TJvFullColorDialog.Execute: Boolean;
@@ -224,7 +225,7 @@ begin
   if (Form <> nil) or (FullColorFormClass = nil) then
     Exit;
 
-  FOldColorSpace := ColorSpaceManager.GetColorID(FullColor);
+  FOldColorSpace := ColorSpaceManager.GetColorSpaceID(FullColor);
 
   FForm := FullColorFormClass.Create(Application, FullColor, Options);
   with Form do
@@ -284,17 +285,8 @@ begin
 end;
 
 function TJvFullColorDialog.GetColor: TColor;
-var
-  ColorID: TJvColorID;
 begin
-  with ColorSpaceManager do
-  begin
-    ColorID := GetColorID(FullColor);
-    if ColorID in [csRGB, csDEF] then
-      Result := FullColor
-    else
-      Result := ConvertToID(FullColor, csRGB);
-  end;
+  Result := ColorSpaceManager.ConvertToColor(FullColor);
 end;
 
 function TJvFullColorDialog.GetFullColor: TJvFullColor;

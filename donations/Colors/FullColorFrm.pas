@@ -119,7 +119,7 @@ end;
 
 procedure TJvFullColorForm.FormCreate(Sender: TObject);
 begin
-  LabelDrawOld.Color := ColorSpaceManager.ConvertToID(FullColor, csRGB);
+  LabelDrawOld.Color := ColorSpaceManager.ConvertToColor(FullColor);
   SetFullColor(FullColor);
   SetOptions(Options);
 end;
@@ -207,20 +207,12 @@ begin
 end;
 
 procedure TJvFullColorForm.ComboBoxPredefinedChange(Sender: TObject);
-var
-  LColorID: TJvColorID;
 begin
   if FUpdating then
     Exit;
   FUpdating := True;
   with Sender as TColorBox, ColorSpaceManager do
-  begin
-    LColorID := GetColorID(FullColor);
-    if LColorID in [csRGB, csDEF] then
-      FullColor := Colors[ItemIndex]
-    else
-      FullColor := ConvertToID(Colors[ItemIndex], LColorID);
-  end;
+    FullColor := ColorSpace[csDEF].ConvertFromColor(Colors[ItemIndex]);
   FUpdating := False;
   UpdateColorSpace;
 end;
@@ -233,10 +225,11 @@ end;
 procedure TJvFullColorForm.UpdateColorValue;
 var
   I: TJvAxisIndex;
+  C: TColor;
   NewIndex: Integer;
   ValueAxes: array [TJvAxisIndex] of Byte;
   Index: Integer;
-  LColorID: TJvColorID;
+  LColorID: TJvColorSpaceID;
 begin
   if FUpdating then
     Exit;
@@ -244,14 +237,14 @@ begin
 
   FUpdating := True;
 
-  LabelDrawNew.Color := ColorSpaceManager.ConvertToID(FullColor, csRGB);
+  LabelDrawNew.Color := ColorSpaceManager.ConvertToColor(FullColor);
   LabelDrawNew.Update;
 
-  LColorID := ColorSpaceManager.GetColorID(FullColor);
+  LColorID := ColorSpaceManager.GetColorSpaceID(FullColor);
 
   if LColorID = csDEF then
   begin
-    JvColorPanel.FullColor := TJvFullColor(clWindowText);
+    JvColorPanel.FullColor := fclDEFWindowText;
     JvFullColorTrackBar.Visible := False;
     JvColorAxisConfigCombo.Enabled := False;
     for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
@@ -284,11 +277,14 @@ begin
   with ColorBox, Items, ColorSpaceManager do
   begin
     for Index := 0 to Count - 1 do
-      if ConvertToID(Colors[Index], LColorID) = FullColor then
+    begin
+      C := ColorSpaceManager.ColorSpace[csDEF].ConvertFromColor(Colors[Index]);
+      if ConvertToID(C, LColorID) = FullColor then
       begin
         NewIndex := Index;
         Break;
       end;
+    end;
     ItemIndex := NewIndex;
   end;
 
@@ -345,7 +341,7 @@ end;
 procedure TJvFullColorForm.SetOptions(const Value: TJvFullColorDialogOptions);
 var
   LVisible: Boolean;
-  LColorRGB: Cardinal;
+  LColor: TColor;
 begin
   inherited SetOptions(Value);
 
@@ -389,16 +385,16 @@ begin
 
   UpdateColorSpace;
 
-  with ColorSpaceManager do
-    LColorRGB := ConvertToID(FullColor, csRGB);
+  LColor := ColorSpaceManager.ConvertToColor(FullColor);
 
-  LabelDrawNew.Color := LColorRGB;
-  LabelDrawOld.Color := LColorRGB;
+  LabelDrawNew.Color := LColor;
+  LabelDrawOld.Color := LColor;
 end;
 
 procedure TJvFullColorForm.LabelDrawOldClick(Sender: TObject);
 begin
-  FullColor := LabelDrawOld.Color;
+  FullColor := ColorSpaceManager.ConvertToID(LabelDrawOld.Color,
+    ColorSpaceManager.GetColorSpaceID(FullColor));
 end;
 
 procedure TJvFullColorForm.FormKeyDown(Sender: TObject; var Key: Word;

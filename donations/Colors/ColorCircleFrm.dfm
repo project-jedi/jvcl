@@ -83,16 +83,16 @@ object JvColorCircleForm: TJvColorCircleForm
     object JvColorCircle: TJvColorCircle
       Left = 96
       Top = 80
-      Width = 501
-      Height = 501
-      FullColor = 16808352
+      Width = 531
+      Height = 531
+      FullColor = 83886079
       AxisConfig = acYZX
       TabOrder = 1
       OnColorChange = JvColorCircleColorChange
       OnColorSpaceChange = JvColorCircleColorSpaceChange
-      RedColor = 32536576
-      GreenColor = 32536656
-      BlueColor = 32536736
+      RedColor = 67108864
+      GreenColor = 67108864
+      BlueColor = 67108864
       Styles = [crShowLines, crShowRed, crShowGreen, crShowBlue]
       CrossSize = 10
       CrossCenter = 3
@@ -110,8 +110,8 @@ object JvColorCircleForm: TJvColorCircleForm
       Left = 40
       Top = 72
       Width = 21
-      Height = 261
-      FullColor = 16808352
+      Height = 276
+      FullColor = 83886079
       AxisConfig = acYZX
       TabOrder = 2
       ArrowWidth = 10
@@ -122,8 +122,8 @@ object JvColorCircleForm: TJvColorCircleForm
       Left = 72
       Top = 352
       Width = 21
-      Height = 261
-      FullColor = 32536736
+      Height = 276
+      FullColor = 67108864
       AxisConfig = acYZX
       TabOrder = 5
       ArrowColor = clBlue
@@ -135,8 +135,8 @@ object JvColorCircleForm: TJvColorCircleForm
       Left = 40
       Top = 352
       Width = 21
-      Height = 261
-      FullColor = 32536656
+      Height = 276
+      FullColor = 67108864
       AxisConfig = acYZX
       TabOrder = 4
       ArrowColor = clLime
@@ -148,8 +148,8 @@ object JvColorCircleForm: TJvColorCircleForm
       Left = 8
       Top = 352
       Width = 21
-      Height = 261
-      FullColor = 32536576
+      Height = 276
+      FullColor = 67108864
       AxisConfig = acYZX
       TabOrder = 3
       ArrowColor = clRed
@@ -163,7 +163,6 @@ object JvColorCircleForm: TJvColorCircleForm
       Width = 257
       Height = 21
       Selected = acYZX
-      ColorID = 1
       ItemHeight = 13
       TabOrder = 0
       OnChange = JvColorAxisConfigComboChange
@@ -589,7 +588,6 @@ object JvColorCircleForm: TJvColorCircleForm
     Width = 153
     Height = 21
     AllowVariable = False
-    ColorSpaceID = 1
     ItemHeight = 13
     TabOrder = 0
     OnChange = JvColorSpaceComboChange

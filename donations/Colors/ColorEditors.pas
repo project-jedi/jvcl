@@ -212,30 +212,30 @@ end;
 
 function TJvColorIDEditor.GetValue: string;
 begin
-  Result := ColorSpaceManager.ColorSpace[TJvColorID(GetOrdValue)].ShortName;
+  Result := ColorSpaceManager.ColorSpace[TJvColorSpaceID(GetOrdValue)].ShortName;
 end;
 
 procedure TJvColorIDEditor.GetValues(Proc: TGetStrProc);
 var
-  Index: Integer;
+  I: Integer;
 begin
   with ColorSpaceManager do
-    for Index := 0 to ColorSpaceCount - 1 do
-      Proc(ColorSpaceIndex[Index].ShortName);
+    for I := 0 to Count - 1 do
+      Proc(ColorSpaceByIndex[I].ShortName);
 end;
 
 procedure TJvColorIDEditor.SetValue(const Value: string);
 var
-  Index: Integer;
-  LColorSpace: TJvColorSpace;
+  I: Integer;
+  CS: TJvColorSpace;
 begin
   with ColorSpaceManager do
-    for Index := 0 to ColorSpaceCount - 1 do
+    for I := 0 to Count - 1 do
     begin
-      LColorSpace := ColorSpaceIndex[Index];
-      if LColorSpace.ShortName = Value then
+      CS := ColorSpaceByIndex[I];
+      if CS.ShortName = Value then
       begin
-        SetOrdValue(Ord(LColorSpace.ID));
+        SetOrdValue(Ord(CS.ID));
         Exit;
       end;
     end;
@@ -245,7 +245,7 @@ procedure Register;
 begin
   RegisterPropertyEditor(TypeInfo(TJvColorOrientation), nil, '', TJvColorOrientationEditor);
   RegisterPropertyEditor(TypeInfo(TJvArrowPosition), nil, '', TJvArrowPositionEditor);
-  RegisterPropertyEditor(TypeInfo(TJvColorID), nil, '', TJvColorIDEditor);
+  RegisterPropertyEditor(TypeInfo(TJvColorSpaceID), nil, '', TJvColorIDEditor);
 end;
 
 {$IFDEF UNITVERSIONING}

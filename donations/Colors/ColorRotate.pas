@@ -46,14 +46,14 @@ type
   TJvAxisDelta = array [TJvAxisIndex] of TJvRotateValue;
 
   TJvColorDelta = record
-    ColorID: TJvColorID;
+    ColorID: TJvColorSpaceID;
     AxisRed: TJvAxisDelta;
     AxisGreen: TJvAxisDelta;
     AxisBlue: TJvAxisDelta;
   end;
 
 function ChangeColorDeltaSpace(ColorDelta: TJvColorDelta;
-  NewID: TJvColorID): TJvColorDelta;
+  NewID: TJvColorSpaceID): TJvColorDelta;
 function RotateColor(AColor: TJvFullColor;
   AColorDelta: TJvColorDelta): TJvFullColor;
 procedure RotateBitmap(SourceBitmap, DestBitmap: TBitmap;
@@ -68,7 +68,7 @@ uses
   Math;
 
 function ChangeColorDeltaSpace(ColorDelta: TJvColorDelta;
-  NewID: TJvColorID): TJvColorDelta;
+  NewID: TJvColorSpaceID): TJvColorDelta;
 var
   I: TJvAxisIndex;
   SourceColorSpace, DestColorSpace: TJvColorSpace;
@@ -78,11 +78,11 @@ var
     I: TJvAxisIndex;
     SourceColor, DestColor: TJvFullColor;
   begin
-    SourceColor := SourceColorSpace.ConvertFromRGB(TJvFullColor(AColor));
-    DestColor := DestColorSpace.ConvertFromRGB(TJvFullColor(AColor));
+    SourceColor := SourceColorSpace.ConvertFromColor(AColor);
+    DestColor := DestColorSpace.ConvertFromColor(AColor);
     SourceColor := RotateColor(SourceColor, ColorDelta);
-    SourceColor := SourceColorSpace.ConvertToRGB(SourceColor);
-    SourceColor := DestColorSpace.ConvertFromRGB(SourceColor);
+    SourceColor := SourceColorSpace.ConvertToColor(SourceColor);
+    SourceColor := DestColorSpace.ConvertFromColor(SourceColor);
     for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
     begin
       Result[I].Value := Integer(SourceColor and $000000FF) - Integer(DestColor and $000000FF);
@@ -115,19 +115,20 @@ var
   MinAxis: array [TJvAxisIndex] of Byte;
   MaxAxis: array [TJvAxisIndex] of Byte;
   ValueAxis: array [TJvAxisIndex] of Integer;
-  ValueRed, ValueGreen, ValueBlue: Integer;
+  ValueRed, ValueGreen, ValueBlue: TJvFullColor;
+  ColorRed, ColorGreen, ColorBlue: TJvFullColor;
   SourceColorSpace, DeltaColorSpace: TJvColorSpace;
-  LColorID: TJvColorID;
+  LColorID: TJvColorSpaceID;
+  LColor: TColor;
 
-  function DoRotate(AValue: Cardinal; AAxisDelta: TJvAxisDelta): Cardinal;
+  function DoRotate(AValue: TJvFullColor; AAxisDelta: TJvAxisDelta): TColor;
   var
     I: TJvAxisIndex;
     Range: Integer;
   begin
     for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
     begin
-      ValueAxis[I] := Integer(AValue and $000000FF) + AAxisDelta[I].Value;
-      AValue := AValue shr 8;
+      ValueAxis[I] := Integer(GetAxisValue(AValue, I)) + AAxisDelta[I].Value;
       if AAxisDelta[I].SaturationMethod = smRange then
       begin
         if ValueAxis[I] > MaxAxis[I] then
@@ -151,10 +152,9 @@ var
 begin
   with ColorSpaceManager do
   begin
-    LColorID := GetColorID(AColor);
+    LColorID := GetColorSpaceID(AColor);
     SourceColorSpace := ColorSpace[LColorID];
-    if LColorID <> csRGB then
-      AColor := SourceColorSpace.ConvertToRGB(AColor);
+    LColor := SourceColorSpace.ConvertToColor(AColor);
 
     DeltaColorSpace := ColorSpace[AColorDelta.ColorID];
 
@@ -165,32 +165,29 @@ begin
         MinAxis[I] := AxisMin[I];
         MaxAxis[I] := AxisMax[I];
       end;
-      ValueRed := ConvertFromRGB((AColor and $000000FF) or (MinAxis[axIndex1] shl 8) or (MinAxis[axIndex2] shl 16));
-      ValueGreen := ConvertFromRGB((MinAxis[axIndex0]) or (AColor and $0000FF00) or (MinAxis[axIndex2] shl 16));
-      ValueBlue := ConvertFromRGB((MinAxis[axIndex0]) or (MinAxis[axIndex1] shl 8) or (AColor and $00FF0000));
+      ValueRed := ConvertFromColor((LColor and $000000FF) or (MinAxis[axIndex1] shl 8) or (MinAxis[axIndex2] shl 16));
+      ValueGreen := ConvertFromColor((MinAxis[axIndex0]) or (LColor and $0000FF00) or (MinAxis[axIndex2] shl 16));
+      ValueBlue := ConvertFromColor((MinAxis[axIndex0]) or (MinAxis[axIndex1] shl 8) or (LColor and $00FF0000));
 
-      ValueRed := ConvertToRGB(DoRotate(ValueRed, AColorDelta.AxisRed));
-      ValueGreen := ConvertToRGB(DoRotate(ValueGreen, AColorDelta.AxisGreen));
-      ValueBlue := ConvertToRGB(DoRotate(ValueBlue, AColorDelta.AxisBlue));
+      ColorRed := DoRotate(ValueRed, AColorDelta.AxisRed);
+      ColorGreen := DoRotate(ValueGreen, AColorDelta.AxisGreen);
+      ColorBlue := DoRotate(ValueBlue, AColorDelta.AxisBlue);
 
       for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
       begin
-        ValueAxis[I] := (ValueRed and $000000FF) + (ValueGreen and $000000FF) + (ValueBlue and $000000FF);
+        ValueAxis[I] := (ColorRed and $000000FF) + (ColorGreen and $000000FF) + (ColorBlue and $000000FF);
         // (rom) the test was wrong in the original implementation
         if ValueAxis[I] > 255 then
           ValueAxis[I] := 255;
-        ValueRed := ValueRed shr 8;
-        ValueGreen := ValueGreen shr 8;
-        ValueBlue := ValueBlue shr 8;
+        ColorRed := ColorRed shr 8;
+        ColorGreen := ColorGreen shr 8;
+        ColorBlue := ColorBlue shr 8;
       end;
 
-      AColor := ValueAxis[axIndex0] or (ValueAxis[axIndex1] shl 8) or (ValueAxis[axIndex2] shl 16);
+      LColor := ValueAxis[axIndex0] or (ValueAxis[axIndex1] shl 8) or (ValueAxis[axIndex2] shl 16);
     end;
 
-    if LColorID <> csRGB then
-      Result := SourceColorSpace.ConvertFromRGB(AColor)
-    else
-      Result := AColor;
+    Result := SourceColorSpace.ConvertFromColor(LColor);
   end;
 end;
 
