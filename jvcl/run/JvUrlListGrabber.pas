@@ -70,6 +70,10 @@ type
     FDefaultGrabberIndex: TJvUrlGrabberIndex;
     FDefaultGrabbersProperties : TJvUrlGrabberDefaultPropertiesList;
 
+    // sets the URLs property, assigning the given strings
+    // to the internal FURLs field 
+    procedure SetUrls(const Value: TStrings);
+
     // sets the Default Grabber value, ensuring that it doesn't go
     // below -1 or above the number of registered grabber classes
     // if you try to set the value above the last index in the
@@ -108,7 +112,7 @@ type
     property CleanupThreshold : Cardinal read FCleanupThreshold write FCleanupThreshold default 10;
 
     // The Urls to grab
-    property URLs : TStrings read FURLs;
+    property URLs : TStrings read FURLs write SetUrls;
 
     // The default properties for each family of grabber
     property DefaultGrabbersProperties : TJvUrlGrabberDefaultPropertiesList read FDefaultGrabbersProperties;
@@ -187,6 +191,11 @@ begin
     FDefaultGrabberIndex := -1
   else
     FDefaultGrabberIndex := Value;
+end;
+
+procedure TJvUrlListGrabber.SetUrls(const Value: TStrings);
+begin
+  FURLs.Assign(Value);
 end;
 
 procedure TJvUrlListGrabber.StartAll;

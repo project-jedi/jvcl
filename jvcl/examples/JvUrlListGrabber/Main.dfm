@@ -39,21 +39,21 @@ object frmMain: TfrmMain
       'This is the demo for TJvUrlListGrabber.'
       
         'This component takes a list of strings through its Urls property' +
-        ', each representing a URL to grab. At '
-      'present it only supports HTTP and FTP URLs'
+        ', each representing a URL to grab. At present '
+      'it only supports HTTP and FTP URLs.'
       
         'This component is intended to replace TJvHttpGrabber, TJvFtpGrab' +
         'ber and TJvMultiHttpGrabber. '
       
-        'However, it is still in the early stages of development and may ' +
-        'lack some methods and/or properties. '
-      'It works well in runtime though.'
+        'As it is still in the early stages of development and may lack s' +
+        'ome methods and/or properties. '
+      'It is already able to grab files though.'
       
         'The dynamic creation group allows to work with a component creat' +
-        'ed dynamically at runtime as opposed '
+        'ed dynamically at runtime as opposed to '
       
-        'to using the one available on the form at design time. This has ' +
-        'been done to test both usages as there are '
+        'using the one available on the form at design time. This has bee' +
+        'n done to test both usages as there may be '
       'errors that only show up by using a design created component.')
     ScrollBars = ssVertical
     TabOrder = 0
