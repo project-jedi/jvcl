@@ -3642,12 +3642,25 @@ begin
   end;
 end;
 
+{ GetCsvHeader:
+
+  XXX Normally you don't need to call this function, if you
+      have already opened the file, then use the HeaderRow
+      property instead!
+
+  This routine loads just the first line of a CSV file
+  from the disk. This way you can peek at a CSV file, get
+  the first line, parse it or do something else with it, before
+  you decide if you want this component to open the rest
+  of the file.
+}
 function TJvCustomCsvDataSet.GetCsvHeader: string;
 var
   F: Text;
   FirstLine: string;
 begin
-  if (not FLoadsFromFile) or (not FHasHeaderRow) or not (FileExists(FTableName)) then
+  if (not FLoadsFromFile) or (not FHasHeaderRow)
+     or (not FileExists(FTableName)) then
   begin
     Result := '';
     Exit;
