@@ -1922,7 +1922,12 @@ begin
   // prepare the painting
   PreparePaint(Item, ItemRect, State, false);
 
-  // if user supplied an event handler, we call it and don't draw anything
+  // the code below has been removed because if the user wants to use
+  // the OnDrawItem event, he must use a style of msOwnerDraw and the
+  // OwnerDrawn painter will make the calls.
+  // This also allows the user using the component to call this method
+  // from an owner drawn menu without getting an infinite recursion 
+{  // if user supplied an event handler, we call it and don't draw anything
   if Assigned(FOnDrawItem) then
   begin
     if Assigned(FMainMenu) then
@@ -1930,7 +1935,7 @@ begin
     else
       FOnDrawItem(FPopupMenu, Item, ItemRect, State);
     exit;
-  end;
+  end;}
 
   // calculate areas for the different parts of the item to be drawn
   if IsPopup then
