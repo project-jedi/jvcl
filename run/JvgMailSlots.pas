@@ -92,9 +92,9 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  sTJvgMailSlotServerErrorCreatingChan = 'TJvgMailSlotServer: Error creating channel!';
-  sTJvgMailSlotServerErrorGatheringInf = 'TJvgMailSlotServer: Error gathering information!';
-  sTJvgMailSlotServerErrorReadingMessa = 'TJvgMailSlotServer: Error reading message!';
+  RsETJvgMailSlotServerErrorCreatingChan = 'TJvgMailSlotServer: Error creating channel!';
+  RsETJvgMailSlotServerErrorGatheringInf = 'TJvgMailSlotServer: Error gathering information!';
+  RsETJvgMailSlotServerErrorReadingMessa = 'TJvgMailSlotServer: Error reading message!';
 {$ENDIF USEJVCL}
 
 constructor TJvgMailSlotServer.Create(AOwner: TComponent);
@@ -134,7 +134,7 @@ begin
   //FHandle:=CreateMailSlot('\\.\mailslot\MailSlot',0,MAILSLOT_WAIT_FOREVER,nil);
 
   if FHandle = INVALID_HANDLE_VALUE then
-    raise Exception.Create(sTJvgMailSlotServerErrorCreatingChan);
+    raise Exception.Create(RsETJvgMailSlotServerErrorCreatingChan);
   FTimer.Enabled := True;
 end;
 
@@ -159,7 +159,7 @@ begin
   // определение наличия сообщения в канале
   { Determining if there's message in channel [translated] }
   if not GetMailSlotInfo(FHandle, nil, MsgNext, @MsgNumber, nil) then
-    raise Exception.Create(sTJvgMailSlotServerErrorGatheringInf);
+    raise Exception.Create(RsETJvgMailSlotServerErrorGatheringInf);
   if MsgNext <> MAILSLOT_NO_MESSAGE then
   begin
     Beep;
@@ -168,8 +168,7 @@ begin
     if ReadFile(FHandle, Buffer, SizeOf(Buffer), Read, nil) then
       MessageText := Buffer
     else
-      raise
-        Exception.Create(sTJvgMailSlotServerErrorReadingMessa);
+      raise Exception.Create(RsETJvgMailSlotServerErrorReadingMessa);
   end;
 
   if (MessageText <> '') and Assigned(FOnNewMessage) then

@@ -2516,16 +2516,6 @@ begin
   Ss.Text := S;
 end;
 
-procedure RATextOut(Canvas: TCanvas; const R, RClip: TRect; const S: string);
-begin
-  RATextOutEx(Canvas, R, RClip, S, False);
-end;
-
-function RATextCalcHeight(Canvas: TCanvas; const R: TRect; const S: string): Integer;
-begin
-  Result := RATextOutEx(Canvas, R, R, S, True);
-end;
-
 function RATextOutEx(Canvas: TCanvas; const R, RClip: TRect; const S: string; const CalcHeight: Boolean): Integer;
 var
   Ss: TStrings;
@@ -2550,6 +2540,16 @@ begin
   finally
     Ss.Free;
   end;
+end;
+
+procedure RATextOut(Canvas: TCanvas; const R, RClip: TRect; const S: string);
+begin
+  RATextOutEx(Canvas, R, RClip, S, False);
+end;
+
+function RATextCalcHeight(Canvas: TCanvas; const R: TRect; const S: string): Integer;
+begin
+  Result := RATextOutEx(Canvas, R, R, S, True);
 end;
 
 procedure Cinema(Canvas: TCanvas; rS, rD: TRect);

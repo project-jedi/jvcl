@@ -23,15 +23,17 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
+
 unit JvForth;
 
 interface
 
 uses
   Windows, ShellAPI, Messages, SysUtils, Classes, Forms, Dialogs, Math,
-  JvConsts, FileCtrl, JvXMLTree, JvStrings{$IFDEF DELPHI6_UP}, Variants{$ENDIF};
+  FileCtrl, JvXMLTree, JvStrings{$IFDEF DELPHI6_UP}, Variants{$ENDIF};
 
 const
   StackMax = 1000;
@@ -480,7 +482,7 @@ begin
         end;
       end;
     except
-      raise EJvjanScriptError.Create(Format(sInvalidNumbers, [s]));
+      raise EJvjanScriptError.CreateFmt(RsEInvalidNumbers, [s]);
     end;
   end;
 end;
@@ -588,7 +590,7 @@ var
     begin // get string
       p := posstr('"', s, 2);
       if p = 0 then
-        raise EJvjanScriptError.Create(Format(sUnterminatedStringNears, [s]));
+        raise EJvjanScriptError.CreateFmt(RsEUnterminatedStringNears, [s]);
       token := copy(s, 2, p - 2);
       delete(s, 1, p);
       result := true;
@@ -638,7 +640,7 @@ begin
           result := IndexOfDate(list, Avalue) > -1;
         end;
     else
-      raise EJvjanScriptError.Create(sUnrecognizedDataTypeInSetOperation);
+      raise EJvjanScriptError.Create(RsEUnrecognizedDataTypeInSetOperation);
     end;
   finally
     list.free;
@@ -654,7 +656,7 @@ begin
   if vsp < StackMax then
     inc(vsp)
   else
-    raise EJvjanScriptError.Create(sStackOverflow);
+    raise EJvjanScriptError.Create(RsEStackOverflow);
 end;
 
 (*
@@ -701,7 +703,7 @@ end;
 function TJvForthScript.vpop: variant;
 begin
   if vsp = 0 then
-    raise EJvjanScriptError.Create(sStackUnderflow)
+    raise EJvjanScriptError.Create(RsEStackUnderflow)
   else
   begin
     dec(vsp);
@@ -781,7 +783,7 @@ var
     begin // get string
       p := posstr('"', s, 2);
       if p = 0 then
-        raise EJvjanScriptError.Create(Format(sUnterminatedStringNears, [s]));
+        raise EJvjanScriptError.CreateFmt(RsEUnterminatedStringNears, [s]);
       token := copy(s, 1, p);
       delete(s, 1, p);
       result := true;
@@ -790,7 +792,7 @@ var
     begin // get block
       p := posstr(']', s, 2);
       if p = 0 then
-        raise EJvjanScriptError.Create(Format(sUnterminatedBlockNear, [s]));
+        raise EJvjanScriptError.CreateFmt(RsEUnterminatedBlockNear, [s]);
       token := copy(s, 1, p);
       delete(s, 1, p);
       result := true;
@@ -827,16 +829,16 @@ begin
   FIncludes.Clear; // clear the includes list
   repeat
     if gettickCount > timeOutTicks then
-      raise EJvjanScriptError.Create(Format(sParserTimedOutAfterdSecondsYouMayHa, [FScriptTimeout]));
+      raise EJvjanScriptError.CreateFmt(RsEParserTimedOutAfterdSecondsYouMayHa, [FScriptTimeout]);
     p := posstr('$$', s);
     if p > 0 then
     begin
       p2 := posstr(';', s, p);
       if p2 = 0 then
-        raise EJvjanScriptError.Create(Format(sUnterminatedIncludeNears, [copy(s, p, length(s))]));
+        raise EJvjanScriptError.CreateFmt(RsEUnterminatedIncludeNears, [copy(s, p, length(s))]);
       incfile := copy(s, p + 2, p2 - p - 2) + '.jan';
       if posstr(' ', incfile, 1) > 0 then
-        raise EJvjanScriptError.Create(Format(sIllegalSpaceCharacterInTheIncludeFi, [incfile]));
+        raise EJvjanScriptError.CreateFmt(RsEIllegalSpaceCharacterInTheIncludeFi, [incfile]);
       i := FIncludes.IndexOf(incfile);
       if i <> -1 then
       begin
@@ -844,11 +846,11 @@ begin
       end
       else
       begin
-        errStr := Format(sCanNotFindIncludeFiles, [incfile]);
+        errStr := Format(RsECanNotFindIncludeFiles, [incfile]);
         handled := false;
         incScript := '';
         if not assigned(oninclude) then
-          raise EJvjanScriptError.Create(Format(sOnIncludeHandlerNotAssignedCanNotHa, [copy(s, p, length(s))]));
+          raise EJvjanScriptError.CreateFmt(RsEOnIncludeHandlerNotAssignedCanNotHa, [copy(s, p, length(s))]);
         oninclude(self, incfile, incScript, handled, errStr);
         if not handled then
           raise EJvjanScriptError.Create(errStr);
@@ -866,7 +868,7 @@ begin
     begin
       p2 := posstr('}', s, p);
       if p2 = 0 then
-        raise EJvjanScriptError.Create(Format(sMissingCommentTerminatorNears, [s]));
+        raise EJvjanScriptError.CreateFmt(RsEMissingCommentTerminatorNears, [s]);
       delete(s, p, p2 - p + 1);
     end;
   until p = 0;
@@ -1010,7 +1012,7 @@ begin
     begin
       p := pos('.', token);
       if (p = 0) or (p < 3) or (p = length(token)) then
-        raise EJvjanScriptError.Create(Format(sMissingXmlMethodSpecifierNears, [s]));
+        raise EJvjanScriptError.CreateFmt(RsEMissingXmlMethodSpecifierNears, [s]);
       atomsymbol := copy(token, 2, p - 2);
       atomvalue := copy(token, p + 1, length(token));
       pushatom(dfoXML);
@@ -1020,7 +1022,7 @@ begin
     begin
       p := pos('.', token);
       if (p = 0) or (p < 3) or (p = length(token)) then
-        raise EJvjanScriptError.Create(Format(sMissingDataSourceMethodSpecifierNea, [s]));
+        raise EJvjanScriptError.CreateFmt(RsEMissingDataSourceMethodSpecifierNea, [s]);
       atomsymbol := copy(token, 2, p - 2);
       atomvalue := copy(token, p + 1, length(token));
       pushatom(dfoDSO);
@@ -1030,7 +1032,7 @@ begin
     begin
       p := pos('.', token);
       if (p = 0) or (p < 3) or (p = length(token)) then
-        raise EJvjanScriptError.Create(Format(sMissingSystemMethodSpecifierNears, [s]));
+        raise EJvjanScriptError.CreateFmt(RsEMissingSystemMethodSpecifierNears, [s]);
       atomsymbol := copy(token, 2, p - 2);
       atomvalue := copy(token, p + 1, length(token));
       pushatom(dfoSystem);
@@ -1040,7 +1042,7 @@ begin
     begin
       p := pos('.', token);
       if (p = 0) or (p < 3) or (p = length(token)) then
-        raise EJvjanScriptError.Create(Format(sMissingExternalVariableMethodSpecif, [s]));
+        raise EJvjanScriptError.CreateFmt(RsEMissingExternalVariableMethodSpecif, [s]);
       atomsymbol := copy(token, 2, p - 2);
       atomvalue := copy(token, p + 1, length(token));
       pushatom(dfoExtVar);
@@ -1050,7 +1052,7 @@ begin
     begin
       p := pos('.', token);
       if (p = 0) or (p < 3) or (p = length(token)) then
-        raise EJvjanScriptError.Create(Format(sMissingInternalVariableMethodSpecif, [s]));
+        raise EJvjanScriptError.CreateFmt(RsEMissingInternalVariableMethodSpecif, [s]);
       atomsymbol := copy(token, 2, p - 2);
       atomvalue := copy(token, p + 1, length(token));
       pushatom(dfoIntVar);
@@ -1086,7 +1088,7 @@ begin
             atomsymbol := token;
             p := FSubsList.IndexOf(atomsymbol);
             if p = -1 then
-              raise EJvjanScriptError.Create(Format(sUndefinedWordsNears, [atomsymbol, s]));
+              raise EJvjanScriptError.CreateFmt(RsEUndefinedWordsNears, [atomsymbol, s]);
             p := integer(FsubsList.objects[p]);
             atomvalue := p;
             pushatom(dfoCall);
@@ -1199,7 +1201,7 @@ begin
   while pc < c do
   begin
     if gettickCount > timeOutTicks then
-      raise EJvjanScriptError.Create(Format(sScriptTimedOutAfterdSeconds, [FScriptTimeout]));
+      raise EJvjanScriptError.CreateFmt(RsEScriptTimedOutAfterdSeconds, [FScriptTimeout]);
     atom := TAtom(atoms[pc]);
     inc(pc);
     CurrentValue := atom.value;
@@ -1304,7 +1306,7 @@ begin
   value := vpop;
   vpush(value);
   handled := false;
-  err := Format(sCanNotAssignVariables, [CurrentSymbol]);
+  err := Format(RsECanNotAssignVariables, [CurrentSymbol]);
   if assigned(onSetVariable) then
   begin
     onSetVariable(self, CurrentSymbol, value, handled, Err);
@@ -1555,7 +1557,7 @@ var
   err: string;
 begin
   handled := false;
-  err := Format(sVariablesNotDefined, [CurrentSymbol]);
+  err := Format(RsEVariablesNotDefined, [CurrentSymbol]);
   if assigned(onGetVariable) then
     onGetVariable(self, CurrentSymbol, value, handled, Err);
   if not handled then
@@ -1634,7 +1636,7 @@ end;
 function TJvForthScript.rpop: integer;
 begin
   if rsp <= 0 then
-    raise EJvjanScriptError.Create(sReturnStackUnderflow)
+    raise EJvjanScriptError.Create(RsEReturnStackUnderflow)
   else
   begin
     dec(rsp);
@@ -1648,7 +1650,7 @@ begin
   if rsp < StackMax then
     inc(rsp)
   else
-    raise EJvjanScriptError.Create(sReturnStackOverflow);
+    raise EJvjanScriptError.Create(RsEReturnStackOverflow);
 end;
 
 procedure TJvForthScript.SetScriptTimeOut(const Value: integer);
@@ -1698,7 +1700,7 @@ begin
     exit;
   end
   else
-    raise EJvjanScriptError.Create(Format(sProceduresNotDefined, [CurrentSymbol]));
+    raise EJvjanScriptError.CreateFmt(RsEProceduresNotDefined, [CurrentSymbol]);
 end;
 
 procedure TJvForthScript.procVarGet;
@@ -1709,7 +1711,7 @@ begin
   if v <> null then
     vpush(v)
   else
-    raise EJvjanScriptError.Create(Format(sVariablesNotDefined_, [CurrentSymbol]));
+    raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
 
 procedure TJvForthScript.procVarSet;
@@ -1736,7 +1738,7 @@ var
 begin
   prompt := vpop;
   handled := false;
-  err := Format(sSystemsNotDefined, [CurrentSymbol]);
+  err := Format(RsESystemsNotDefined, [CurrentSymbol]);
   if assigned(onGetSystem) then
     onGetSystem(self, CurrentSymbol, prompt, value, handled, Err);
   if not handled then
@@ -1754,7 +1756,7 @@ begin
   value := vpop;
   vpush(value);
   handled := false;
-  err := Format(sCanNotAssignSystems, [CurrentSymbol]);
+  err := Format(RsECanNotAssignSystems, [CurrentSymbol]);
   if assigned(onSetSystem) then
   begin
     onSetSystem(self, CurrentSymbol, value, handled, Err);
@@ -1870,7 +1872,7 @@ begin
   else if aMethod = 'get' then
     procVariable
   else
-    raise EJvjanScriptError.Create(Format(sUnrecognizeExternalVariableMethodss, [aname, amethod]));
+    raise EJvjanScriptError.CreateFmt(RsEUnrecognizeExternalVariableMethodss, [aname, amethod]);
 end;
 
 procedure TJvForthScript.procIntVar;
@@ -1906,7 +1908,7 @@ begin
   else if aMethod = 'save' then
     procVarSave
   else
-    raise EJvjanScriptError.Create(Format(sUnrecognizeInternalVariableMethodss, [aname, amethod]));
+    raise EJvjanScriptError.CreateFmt(RsEUnrecognizeInternalVariableMethodss, [aname, amethod]);
 end;
 
 procedure TJvForthScript.procSystem;
@@ -1920,7 +1922,7 @@ begin
   else if aMethod = 'get' then
     procSysGet
   else
-    raise EJvjanScriptError.Create(Format(sUnrecognizeSystemMethodss, [aname, amethod]));
+    raise EJvjanScriptError.CreateFmt(RsEUnrecognizeSystemMethodss, [aname, amethod]);
 end;
 
 procedure TJvForthScript.procVarDec;
@@ -1931,7 +1933,7 @@ begin
   if vo <> nil then
     vo.value := vo.value - 1
   else
-    raise EJvjanScriptError.Create(Format(sVariablesNotDefined_, [CurrentSymbol]));
+    raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
 
 procedure TJvForthScript.procVarInc;
@@ -1942,7 +1944,7 @@ begin
   if vo <> nil then
     vo.value := vo.value + 1
   else
-    raise EJvjanScriptError.Create(Format(sVariablesNotDefined_, [CurrentSymbol]));
+    raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
 
 procedure TJvForthScript.procVarAdd;
@@ -1953,7 +1955,7 @@ begin
   if vo <> nil then
     vo.value := vo.value + vpop
   else
-    raise EJvjanScriptError.Create(Format(sVariablesNotDefined_, [CurrentSymbol]));
+    raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
 
 procedure TJvForthScript.procVarDiv;
@@ -1964,7 +1966,7 @@ begin
   if vo <> nil then
     vo.value := vo.value / vpop
   else
-    raise EJvjanScriptError.Create(Format(sVariablesNotDefined_, [CurrentSymbol]));
+    raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
 
 procedure TJvForthScript.procVarMul;
@@ -1975,7 +1977,7 @@ begin
   if vo <> nil then
     vo.value := vo.value * vpop
   else
-    raise EJvjanScriptError.Create(Format(sVariablesNotDefined_, [CurrentSymbol]));
+    raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
 
 procedure TJvForthScript.procVarSub;
@@ -1986,7 +1988,7 @@ begin
   if vo <> nil then
     vo.value := vo.value - vpop
   else
-    raise EJvjanScriptError.Create(Format(sVariablesNotDefined_, [CurrentSymbol]));
+    raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
 
 procedure TJvForthScript.procVarNeg;
@@ -1997,7 +1999,7 @@ begin
   if vo <> nil then
     vo.value := 0 - vo.value
   else
-    raise EJvjanScriptError.Create(Format(sVariablesNotDefined_, [CurrentSymbol]));
+    raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
 
 procedure TJvForthScript.procPower;
@@ -2076,7 +2078,7 @@ begin
     vo.value := s;
   end
   else
-    raise EJvjanScriptError.Create(Format(sVariablesNotDefined_, [CurrentSymbol]));
+    raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
 
 procedure TJvForthScript.procVarSave;
@@ -2094,7 +2096,7 @@ begin
     savestring(fn, s);
   end
   else
-    raise EJvjanScriptError.Create(Format(sVariablesNotDefined_, [CurrentSymbol]));
+    raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
 
 procedure TJvForthScript.procXML;
@@ -2174,7 +2176,7 @@ begin
     aPath := vpop;
     aPath := stringreplace(aPath, '%', appldir, []);
     if not fileexists(aPath) then
-      raise EJvjanScriptError.Create(Format(sFilesDoesNotExist, [apath]));
+      raise EJvjanScriptError.CreateFmt(RsEFilesDoesNotExist, [apath]);
     xmldso.LoadFromFile(apath);
   end
   else if aMethod = 'save' then
@@ -2184,7 +2186,7 @@ begin
     try
       xmldso.SaveToFile(apath);
     except
-      raise EJvjanScriptError.Create(Format(sCanNotSaveToFiles, [apath]));
+      raise EJvjanScriptError.CreateFmt(RsECanNotSaveToFiles, [apath]);
     end
   end
   else if aMethod = 'astext' then
@@ -2240,11 +2242,11 @@ begin
   else if aMethod = 'selectget' then
   begin
     if FXMLSelect.Count = 0 then
-      raise EJvjanScriptError.Create(sXMLSelectionIsEmpty);
+      raise EJvjanScriptError.Create(RsEXMLSelectionIsEmpty);
     if FXMLSelectRecord = -1 then
-      raise EJvjanScriptError.Create(sNoXMLSelectionSelected);
+      raise EJvjanScriptError.Create(RsENoXMLSelectionSelected);
     if FXMLSelectRecord >= FXMLSelect.count then
-      raise EJvjanScriptError.Create(sXMLSelectionOutOfRange);
+      raise EJvjanScriptError.Create(RsEXMLSelectionOutOfRange);
     n := TJvXMLNode(FXMLSelect[FXMLSelectRecord]);
     aValue := n.value;
     vpush(aValue);
@@ -2252,18 +2254,18 @@ begin
   else if aMethod = '@selectget' then
   begin
     if FXMLSelect.Count = 0 then
-      raise EJvjanScriptError.Create(sXMLSelectionIsEmpty);
+      raise EJvjanScriptError.Create(RsEXMLSelectionIsEmpty);
     if FXMLSelectRecord = -1 then
-      raise EJvjanScriptError.Create(sNoXMLSelectionSelected);
+      raise EJvjanScriptError.Create(RsENoXMLSelectionSelected);
     if FXMLSelectRecord >= FXMLSelect.count then
-      raise EJvjanScriptError.Create(sXMLSelectionOutOfRange);
+      raise EJvjanScriptError.Create(RsEXMLSelectionOutOfRange);
     n := TJvXMLNode(FXMLSelect[FXMLSelectRecord]);
     atname := vpop;
     aValue := n.GetAttributeValue(atname);
     vpush(aValue);
   end
   else
-    raise EJvjanScriptError.Create(Format(sInvalidXmlMethodSpecifiers, [aMethod]));
+    raise EJvjanScriptError.CreateFmt(RsEInvalidXmlMethodSpecifiers, [aMethod]);
 end;
 
 procedure TJvForthScript.procVarDecTestZero;
@@ -2279,7 +2281,7 @@ begin
     vpush(v = 0);
   end
   else
-    raise EJvjanScriptError.Create(Format(sVariablesNotDefined_, [CurrentSymbol]));
+    raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
 
 procedure TJvForthScript.procVarIncIndex;
@@ -2295,10 +2297,10 @@ begin
     s := vo.value;
     pb := lastposchar('[', s);
     if pb = 0 then
-      raise EJvjanScriptError.CreateFmt(sIncrementIndexExpectedIns, [s]);
+      raise EJvjanScriptError.CreateFmt(RsEIncrementIndexExpectedIns, [s]);
     pe := lastposchar(']', s);
     if pe = 0 then
-      raise EJvjanScriptError.CreateFmt(sIncrementIndexExpectedIns_, [s]);
+      raise EJvjanScriptError.CreateFmt(RsEIncrementIndexExpectedIns_, [s]);
     sidx := copy(s, pb + 1, pe - pb - 1);
     try
       index := strtoint(sidx);
@@ -2307,11 +2309,11 @@ begin
       vo.value := s;
       vpush(s);
     except
-      raise EJvjanScriptError.CreateFmt(sIncrementIndexExpectedIntegerBetwee, [s]);
+      raise EJvjanScriptError.CreateFmt(RsEIncrementIndexExpectedIntegerBetwee, [s]);
     end;
   end
   else
-    raise EJvjanScriptError.Create(Format(sVariablesNotDefined_, [CurrentSymbol]));
+    raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
 
 procedure TJvForthScript.proccrlf;
@@ -2518,7 +2520,7 @@ begin
   if not strkey then
   begin
     if index >= count then
-      raise EJvjanScriptError.CreateFmt(sDSOIndexOutOfRanged, [index])
+      raise EJvjanScriptError.CreateFmt(RsEDSOIndexOutOfRanged, [index])
     else
       result := InternalGetValue(index, aField);
   end
@@ -2526,7 +2528,7 @@ begin
   begin
     index := indexofName(key);
     if index = -1 then
-      raise EJvjanScriptError.CreateFmt(sDSOUnknownKeys, [key]);
+      raise EJvjanScriptError.CreateFmt(RsEDSOUnknownKeys, [key]);
     result := InternalGetValue(index, aField);
   end
 end;
@@ -2573,7 +2575,7 @@ begin
   if not strkey then
   begin
     if index >= count then
-      raise EJvjanScriptError.CreateFmt(sDSOIndexOutOfRanged, [index])
+      raise EJvjanScriptError.CreateFmt(RsEDSOIndexOutOfRanged, [index])
     else
       InternalSetValue(index, aField, aValue);
   end

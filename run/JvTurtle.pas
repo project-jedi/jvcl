@@ -1307,7 +1307,7 @@ var
 begin
   if GetNum(Num) then
   begin
-    Result := sStackOverflow;
+    Result := RsStackOverflow;
     if Push(FIP) then
       if not Push(Num) then
         Result := '';
@@ -1332,7 +1332,7 @@ begin
     Result := '';
   end
   else
-    Result := sStackUnderflow;
+    Result := RsStackUnderflow;
 end;
 
 function TJvTurtle.txFlood: string;
@@ -1740,7 +1740,7 @@ begin
       Result := '';
     end
     else
-      Result := sStackOverflow;
+      Result := RsStackOverflow;
   end
   else
     Result := Format(sSymbolsIsNotDefined, [Sym]);
@@ -1769,7 +1769,7 @@ begin
     Result := '';
   end
   else
-    Result := sStackUnderflow;
+    Result := RsStackUnderflow;
 end;
 
 function TJvTurtle.tx_Angle: string;

@@ -326,7 +326,7 @@ begin
     begin // default= {
       p := pos(fEndOfComment, s); // default= }
       if p = 0 then
-        raise exception.CreateFmt(sUnterminatedCommentNears, [s]);
+        raise EJVCLException.CreateFmt(sUnterminatedCommentNears, [s]);
       delete(s, 1, p + length(fEndOfComment) - 1);
       s := trim(s);
     end
@@ -335,7 +335,7 @@ begin
       delete(s, 1, length(fStringDelim));
       p := pos(fStringDelim, s);
       if p = 0 then
-        raise exception.CreateFmt(sUnterminatedStringNears, [s]);
+        raise EJVCLException.CreateFmt(RsEUnterminatedStringNears, [s]);
       token := copy(s, 1, p - 1);
       delete(s, 1, p + length(fStringDelim) - 1);
       s := trim(s);
@@ -430,7 +430,7 @@ function TJvSAL.Pop: variant;
 begin
   dec(sp);
   if sp < 0 then
-    raise exception.create(sStackUnderflow);
+    raise EJVCLException.Create(RsEStackUnderflow);
   result := stack[sp];
 end;
 
@@ -439,7 +439,7 @@ begin
   stack[sp] := aValue;
   inc(sp);
   if sp > stacklimit then
-    raise exception.create(sStackOverflow);
+    raise EJVCLException.Create(RsEStackOverflow);
 end;
 
 procedure TJvSAL.Setscript(const Value: string);
@@ -506,7 +506,7 @@ function TJvSAL.rPop: integer;
 begin
   dec(rsp);
   if rsp < 0 then
-    raise exception.create(sReturnStackUnderflow);
+    raise EJVCLException.Create(RsEReturnStackUnderflow);
   result := rstack[rsp];
 end;
 
@@ -515,7 +515,7 @@ begin
   rstack[rsp] := aValue;
   inc(rsp);
   if rsp > stacklimit then
-    raise exception.create(sReturnStackOverflow);
+    raise EJVCLException.Create(RsEReturnStackOverflow);
 end;
 
 // end of subroutine, marked with end-proc
