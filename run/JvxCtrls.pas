@@ -1954,7 +1954,7 @@ begin
   Result := GCheckBitmap;
 end;
 
-procedure DestroyLocals; far;
+procedure DestroyLocals;
 begin
   if GCheckBitmap <> nil then
   begin

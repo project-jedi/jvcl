@@ -892,7 +892,7 @@ begin
   end;
 end;
 
-procedure DestroyLocals; far;
+procedure DestroyLocals; 
 begin
   if AppList <> nil then
   begin

@@ -1666,10 +1666,10 @@ end;
 {$ENDIF JvInterpreter_OLEAUTO}
 
 type
-  TFunc = procedure; far;
-  TiFunc = function: Integer; far;
-  TfFunc = function: Boolean; far;
-  TwFunc = function: Word; far;
+  TFunc = procedure;
+  TiFunc = function: Integer;
+  TfFunc = function: Boolean;
+  TwFunc = function: Word;
 
 function CallDllIns(Ins: HINST; FuncName: string; Args: TJvInterpreterArgs;
   ParamDesc: TTypeArray; ResTyp: Word): Variant;

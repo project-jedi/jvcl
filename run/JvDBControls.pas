@@ -902,7 +902,7 @@ begin
   Result := GridBitmaps[BmpType];
 end;
 
-procedure DestroyLocals; far;
+procedure DestroyLocals; 
 var
   I: TGridPicture;
 begin
