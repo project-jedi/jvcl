@@ -163,7 +163,8 @@ uses
   {$IFDEF COMPILER6_UP}
   StrUtils,
   {$ENDIF COMPILER6_UP}
-  CmdLineUtils;
+  CmdLineUtils,
+  JvConsts;
 
 {$IFDEF COMPILER5}
 function AnsiStartsText(const SubStr, Text: string): Boolean;
