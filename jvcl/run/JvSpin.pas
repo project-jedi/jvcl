@@ -1077,7 +1077,7 @@ begin
   end;
   Result := (Key in ValidChars) or (Key < #32);
   if not FEditorEnabled and Result and ((Key >= #32) or
-    (Key = Char(VK_BACK)) or (Key = Char(VK_DELETE))) then
+    (Key = BackSpace) or (Key = Del)) then
     Result := False;
 end;
 
@@ -1130,7 +1130,7 @@ begin
   if Key <> #0 then
   begin
     inherited KeyPress(Key);
-    if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) then
+    if (Key = Cr) or (Key = Esc) then
     begin
       { must catch and remove this, since is actually multi-line }
       {$IFDEF VCL}
@@ -1139,7 +1139,7 @@ begin
       {$IFDEF VisualCLX}
       TCustomFormAccessProtected(GetParentForm(Self)).WantKey(Integer(Key), [], Key);
       {$ENDIF VisualCLX}
-      if Key = Char(VK_RETURN) then
+      if Key = Cr then
         Key := #0;
     end;
   end;

@@ -1505,7 +1505,7 @@ end;
 
 procedure TJvJanTreeView.KeyPress(var Key: Char);
 begin
-  if Key = Char(VK_RETURN) then
+  if Key = Cr then
     Recalculate;
   if Assigned(OnKeyPress) then
     OnKeyPress(Self, Key);
