@@ -36,46 +36,108 @@ uses
 
 type
   TJvStringListToHtml = class(TJvComponent)
+  private
+    FStrings, FHTML: TStrings;
+    FHTMLTitle: string;
+    FHTMLLineBreak: string;
+    function GetHTML: TStrings;
+    procedure SetStrings(const Value: TStrings);
+    procedure DoStringsChange(Sender: TObject);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure ConvertToHtml(Source: TStrings; const Filename: string);
+    procedure ConvertToHTMLStrings(Source,Destination: TStrings);
   published
-    procedure ConvertToHtml(Value: TStringList; Path: string);
-    function ConvertToHtmlStringList(Value: TStringList): TStringList;
+    property HTML: TStrings read GetHTML;
+    property Strings: TStrings read FStrings write SetStrings;
+    property HTMLLineBreak:string read FHTMLLineBreak write FHTMLLineBreak;
+    property HTMLTitle:string read FHTMLTitle write FHTMLTitle;
+    property IncludeHeader:boolean read FIncludeHeader write FIncludeHeader default true;
   end;
 
 implementation
 
-resourcestring
-  RC_Html1 = '<HTML>';
-  RC_Html2 = '<TITLE>TStringList converted with JEDI-VCL Component</TITLE>';
-  RC_Html3 = '<BODY>';
-  RC_Html4 = '<BR>';
-  RC_Html5 = '</BODY>';
-  RC_Html6 = '</HTML>';
-
-procedure TJvstringListToHtml.ConvertToHtml(Value: TStringList; Path: string);
+procedure ConvertStringsToHTML(Source,Destination:TStrings;const HTMLTitle, HTMLLineBreak:string;IncludeHeader:boolean);
 var
-  List: TStringList;
+  I: integer;
 begin
-  // (rom) classic memory leak fixed
-  List := ConvertToHtmlStringList(Value);
+  if (Result = nil) or (Value = nil) then Exit;
+  Result.BeginUpdate;
+  Value.BeginUpdate;
   try
-    List.SaveToFile(Path);
+    if IncludeHeader then
+    begin
+      Result.Add('<HTML><HEAD>');
+      Result.Add('<TITLE>' + HTMLTitle + '</TITLE></HEAD>');
+      Result.Add('<BODY>');
+    end;
+    for I := 0 to Value.Count - 1 do
+      Result.Add(Value[I] + HTMLLineBreak);
+    if IncludeHeader then
+    begin
+      Result.Add('</BODY>');
+      Result.Add('</HTML>');
+    end;
   finally
-    List.Free;
+    Value.EndUpdate;
+    Result.EndUpdate;
   end;
 end;
 
-function TJvstringListToHtml.ConvertToHtmlStringList(Value: TStringList): TStringList;
+procedure TJvStringListToHtml.ConvertToHtml(Source: TStrings; const Filename: string);
 var
-  I: Integer;
+  Dest: TStringlist;
 begin
-  Result := TStringList.Create;
-  Result.Add(RC_Html1);
-  Result.Add(RC_Html2);
-  Result.Add(RC_Html3);
-  for I := 0 to Value.Count - 1 do
-    Result.Add(RC_Html4 + Value[I]);
-  Result.Add(RC_Html5);
-  Result.Add(RC_Html6);
+  if Source = nil then Exit;
+  Dest := TStringlist.Create;
+  try
+    ConvertStringsToHTML(Source, Dest, HTMLTitile, HTMLLineBreak, true);
+    Dest.SaveToFile(Filename);
+  finally
+    Dest.Free;
+  end;
+end;
+
+procedure TJvStringListToHtml.ConvertToHTMLStrings(Source,Destination: TStrings);
+begin
+  ConvertStringsToHTML(Source,Destination,HTMLTitle, HTMLLineBreak, IncludeHeader);
+end;
+
+constructor TJvStringListToHtml.Create(AOwner: TComponent);
+begin
+  inherited;
+  FStrings := TStringlist.Create;
+  TStringlist(FStrings).OnChange := DoStringsChange;
+  FHTMLLineBreak := '<BR>';
+  FHTMLTitle := 'Converted by TJvStringListToHtml';
+end;
+
+destructor TJvStringListToHtml.Destroy;
+begin
+  FreeAndNil(FStrings);
+  FreeAndNil(FHTML);
+  inherited;
+end;
+
+procedure TJvStringListToHtml.DoStringsChange(Sender: TObject);
+begin
+  FreeAndNil(FHTML);
+end;
+
+function TJvStringListToHtml.GetHTML: TStrings;
+begin
+  if FHTML = nil then
+  begin
+    FHTML := TStringlist.Create;
+    ConvertToHtmlStrings(Strings,FHTML);
+  end;
+  Result := FHTML;
+end;
+
+procedure TJvStringListToHtml.SetStrings(const Value: TStrings);
+begin
+  FStrings.Assign(Value);
 end;
 
 end.
