@@ -1,7 +1,7 @@
 program JvTranslatorProj;
 
 uses
-  Forms,
+  QForms,
   JvTranslatorMainFormU in 'JvTranslatorMainFormU.pas' {JvTranslatorMainForm};
 
 {$R *.res}
