@@ -6,7 +6,7 @@ procedure Run;
 
 implementation
 uses
-  Windows, Classes, SysUtils;
+  Windows, Classes, SysUtils, JclStrings;
 
 {$IFNDEF MSWINDOWS}
  {$IFNDEF LINUX}
@@ -38,7 +38,7 @@ const
     'SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)' + sLineBreak +}
     '#---------------------------------------------------------------------------------------------------' + sLineBreak +
     'MAKE = $(ROOT)\make.exe -$(MAKEFLAGS) -f$**' + sLineBreak +
-    'DCC  = $(ROOT)\dcc32.exe -Q -W -H -M -$O+' + sLineBreak +
+    'DCC  = $(ROOT)\dcc32.exe -Q -W -H -M -$O+ $**' + sLineBreak +
 //    'DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRCP) -n$(DCU) -r$(SRCP) -u$(SRCP) -q -w -m' + sLineBreak +
     'BRCC = $(ROOT)\brcc32.exe $**' + sLineBreak +
     '#---------------------------------------------------------------------------------------------------' + sLineBreak;
@@ -75,6 +75,7 @@ var
   i, ps: Integer;
   List, MkLines, Targets: TStringlist;
   S, SourceFile, Dir: string;
+  Commands, ProjectCommands : string;
 begin
   Result := False;
   if not FileExists(Filename) then
@@ -97,7 +98,17 @@ begin
       S := List[i];
       ps := Pos('bpl: ', S);
       if ps <> 0 then
+      begin
         Targets.Add(Trim(Copy(S, 1, ps + 2)) + '=' + Trim(Copy(S, ps + 5, MaxInt)));
+        Commands := '';
+        Inc(i);
+        while (i < List.Count) and (List[i] <> '') do
+        begin
+          Commands := Commands + List[i] + #13#10;
+          Inc(i);
+        end;
+      end;
+
       if StrLIComp('PROJECTS =', PChar(S), 10) = 0 then
       begin
         s := Trim(S);
@@ -126,7 +137,11 @@ begin
       SourceFile := ExtractFileName(SourceFile);
       if Dir <> '' then
         MkLines.Add(#9'@cd ' + Dir);
-      MkLines.Add(#9'$(DCC) $&' + ExtractFileExt(SourceFile));
+      ProjectCommands := Commands;
+      StrReplace(ProjectCommands, '$**', SourceFile, [rfReplaceAll]);
+      StrReplace(ProjectCommands, '$*', Copy(SourceFile, 1, Length(SourceFile) - Length(ExtractFileExt(SourceFile))), [rfReplaceAll]);
+      MkLines.Add(ProjectCommands);
+      //MkLines.Add(#9'$(DCC) $&' + ExtractFileExt(SourceFile));
       if Dir <> '' then
         MkLines.Add(#9'@cd ' + GetReturnPath(Dir));
       MkLines.Add('');
