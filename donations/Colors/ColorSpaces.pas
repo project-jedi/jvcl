@@ -47,10 +47,13 @@ const
   csYIQ = TJvColorSpaceID(6 shl 2);
   csYCC = TJvColorSpaceID(7 shl 2);
   csXYZ = TJvColorSpaceID(8 shl 2);
-  csDEF = TJvColorSpaceID(9 shl 2);
+  csLAB = TJvColorSpaceID(9 shl 2);
+  csDEF = TJvColorSpaceID(10 shl 2);
 
   csMIN = csRGB;
   csMAX = csDEF;
+
+  csID_MASK = $FC;
 
   RGB_MIN = 0;
   RGB_MAX = 255;
@@ -68,6 +71,8 @@ const
   YCC_MAX = 255;
   XYZ_MIN = 0;
   XYZ_MAX = 255;
+  LAB_MIN = 0;
+  LAB_MAX = 100;
   DEF_MIN = 0;
   DEF_MAX = 255;
 
@@ -208,6 +213,19 @@ type
     function ConvertFromColor(AColor: TColor): TJvFullColor; override;
     function ConvertToColor(AColor: TJvFullColor): TColor; override;
   end;
+
+  TJvLABColorSpace = class(TJvColorSpace)
+  protected
+    function GetAxisName(Index: TJvAxisIndex): string; override;
+    function GetAxisMin(Index: TJvAxisIndex): Byte; override;
+    function GetAxisMax(Index: TJvAxisIndex): Byte; override;
+    function GetName: string; override;
+    function GetShortName: string; override;
+    function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
+  public
+    function ConvertFromColor(AColor: TColor): TJvFullColor; override;
+    function ConvertToColor(AColor: TJvFullColor): TColor; override;
+  end;
   
   TJvDEFColorSpace = class(TJvColorSpace)
   private
@@ -254,10 +272,10 @@ function ColorSpaceManager: TJvColorSpaceManager;
 function GetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex): Byte;
 function SetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex; NewValue: Byte): TJvFullColor;
 
-//function RGBToColor(const Color: TJvFullColor): TColor;
+function RGBToBGR (Value:Cardinal):Cardinal;
 
 procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Integer);
-function JoinColorParts(Part1, Part2, Part3: Cardinal): TJvFullColor;
+function JoinColorParts(const Part1, Part2, Part3: Integer): TJvFullColor;
 
 implementation
 
@@ -328,6 +346,12 @@ resourcestring
   RsXYZ_FullName  = 'CIE XYZ';
   RsXYZ_ShortName = 'XYZ';
 
+  RsLAB_L         = 'L';
+  RsLAB_A         = 'A';
+  RsLAB_B         = 'B';
+  RsLAB_FullName  = 'CIE LAB';
+  RsLAB_ShortName = 'LAB';
+
   RsDEF_FullName  = 'Delphi predefined colors';
   RsDEF_ShortName = 'DEF';
 
@@ -350,9 +374,9 @@ function SetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex;
 begin
   case AAxis of
     axIndex0:
-      AColor := (AColor and $FFFFFF00) or (NewValue shl 0);
+      AColor := (AColor and $FFFFFF00) or  NewValue;
     axIndex1:
-      AColor := (AColor and $FFFF00FF) or (NewValue shl 8);
+      AColor := (AColor and $FFFF00FF) or (NewValue shl  8);
     axIndex2:
       AColor := (AColor and $FF00FFFF) or (NewValue shl 16);
   end;
@@ -363,9 +387,9 @@ function GetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex): Byte;
 begin
   case AAxis of
     axIndex0:
-      Result := (AColor and $000000FF) shr 0;
+      Result := (AColor and $000000FF);
     axIndex1:
-      Result := (AColor and $0000FF00) shr 8;
+      Result := (AColor and $0000FF00) shr  8;
     axIndex2:
       Result := (AColor and $00FF0000) shr 16;
   else
@@ -373,24 +397,21 @@ begin
   end;
 end;
 
-{
-function RGBToColor(const Color: TJvFullColor): TColor;
+function RGBToBGR (Value:Cardinal):Cardinal;
 begin
-  Result :=
-    ((Color and $000000FF) shl 16) or
-    ((Color and $0000FF00)) or
-    ((Color and $00FF0000) shr 16);
+  Result:=    ((Value and $00FF0000) shr 16)
+           or  (Value and $0000FF00)
+           or ((Value and $000000FF) shl 16);
 end;
-}
 
 procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Integer);
 begin
-  Part1 := AColor and $000000FF;
-  Part2 := (AColor shr 8) and $000000FF;
+  Part1 :=  AColor         and $000000FF;
+  Part2 := (AColor shr  8) and $000000FF;
   Part3 := (AColor shr 16) and $000000FF;
 end;
 
-function JoinColorParts(Part1, Part2, Part3: Cardinal): TJvFullColor;
+function JoinColorParts(const Part1, Part2, Part3: Integer): TJvFullColor;
 begin
   Result :=     (Part1 and $000000FF)
             or ((Part2 and $000000FF) shl  8)
@@ -730,12 +751,12 @@ end;
 
 function TJvCMYColorSpace.GetName: string;
 begin
-  Result := RsHLS_FullName;
+  Result := RsCMY_FullName;
 end;
 
 function TJvCMYColorSpace.GetShortName: string;
 begin
-  Result := RsHLS_ShortName;
+  Result := RsCMY_ShortName;
 end;
 
 //=== { TJvYUVColorSpace } ===================================================
@@ -1230,6 +1251,117 @@ begin
   Result := RsXYZ_ShortName;
 end;
 
+//=== { TJvLABColorSpace } ===================================================
+
+function TJvLABColorSpace.ConvertFromColor(AColor: TColor): TJvFullColor;
+var
+  X, Y, Z: Extended;
+  L, A, B: Integer;
+  Red, Green, Blue: Integer;
+  function f (Value:Extended):Extended;
+  begin
+    if (Value>0.008856)
+      then Result := Power(Value,1.0/3.0)
+      else Result := (7.7787*Value) + (16.0/116.0);
+  end;
+begin
+  SplitColorParts(AColor,Red,Green,Blue);
+
+  X := ( 0.618*Red + 0.177*Green + 0.205*Blue)/XYZ_MAX;
+  Y := ( 0.299*Red + 0.587*Green + 0.114*Blue)/XYZ_MAX;
+  Z := (             0.056*Green + 0.944*Blue)/XYZ_MAX;
+
+  X := EnsureRange(X,0.0,1.0);
+  Y := EnsureRange(Y,0.0,1.0);
+  Z := EnsureRange(Z,0.0,1.0);
+
+  if (Y>0.008856)
+    then L := Round(116*Power(Y,1.0/3.0) - 16)
+    else L := Round(903.3*Y);
+  A:=Round(500*(f(X)-f(Y)));
+  B:=Round(200*(f(Y)-f(Z)));
+
+  L := EnsureRange(L, LAB_MIN, LAB_MAX);
+  A := EnsureRange(A, LAB_MIN, LAB_MAX);
+  B := EnsureRange(B, LAB_MIN, LAB_MAX);
+
+  Result := inherited ConvertFromColor(JoinColorParts(L, A, B));
+end;
+
+function TJvLABColorSpace.ConvertToColor(AColor: TJvFullColor): TColor;
+var
+  Red, Green, Blue: Integer;
+  X, Y, Z: Extended;
+  L, A, B: Integer;
+  function f (Value:Extended):Extended;
+  begin
+    if (Value>0.207)
+      then Result := Power(Value,3.0)
+      else Result := ((116*Value)-16)/903.3;
+  end;
+begin
+  SplitColorParts(AColor,L,A,B);
+
+  if (L>8)
+    then Y := XYZ_MAX*Power((L+16)/116,3)
+    else Y := XYZ_MAX*L/903.3;
+  X := XYZ_MAX*f((A/500)+((L+16)/116));
+  Z := XYZ_MAX*f(((L+16)/116)-(B/200));
+
+  X := EnsureRange(X,XYZ_MIN,XYZ_MAX);
+  Y := EnsureRange(Y,XYZ_MIN,XYZ_MAX);
+  Z := EnsureRange(Z,XYZ_MIN,XYZ_MAX);
+
+  Red   := Round( 1.876*X - 0.533*Y - 0.343*Z);
+  Green := Round(-0.967*X + 1.998*Y - 0.031*Z);
+  Blue  := Round( 0.057*X - 0.118*Y + 1.061*Z);
+
+  Red := EnsureRange(Red , RGB_MIN, RGB_MAX);
+  Green := EnsureRange(Green, RGB_MIN, RGB_MAX);
+  Blue := EnsureRange(Blue, RGB_MIN, RGB_MAX);
+
+  Result := inherited ConvertToColor(JoinColorParts(Red, Green, Blue));
+end;
+
+function TJvLABColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
+begin
+  Result := 50;
+end;
+
+function TJvLABColorSpace.GetAxisMax(Index: TJvAxisIndex): Byte;
+begin
+  Result := LAB_MAX;
+end;
+
+function TJvLABColorSpace.GetAxisMin(Index: TJvAxisIndex): Byte;
+begin
+  Result := LAB_MIN;
+end;
+
+function TJvLABColorSpace.GetAxisName(Index: TJvAxisIndex): string;
+begin
+  case Index of
+    axIndex0:
+      Result := RsLAB_L;
+    axIndex1:
+      Result := RsLAB_A;
+    axIndex2:
+      Result := RsLAB_B;
+  else
+    Result := inherited GetAxisName(Index);
+  end;
+end;
+
+function TJvLABColorSpace.GetName: string;
+begin
+  Result := RsLAB_FullName;
+end;
+
+function TJvLABColorSpace.GetShortName: string;
+begin
+  Result := RsLAB_ShortName;
+end;
+
 //=== { TJvDEFColorSpace } ===================================================
 
 constructor TJvDEFColorSpace.Create(ColorID: TJvColorSpaceID);
@@ -1383,7 +1515,7 @@ function TJvColorSpaceManager.GetColorSpaceID(AColor: TJvFullColor): TJvColorSpa
 var
   I: Integer;
 begin
-  Result := TJvColorSpaceID(AColor shr 24) and $FC;
+  Result := TJvColorSpaceID(AColor shr 24) and csID_MASK;
   for I := 0 to Count - 1 do
     if ColorSpaceByIndex[I].ID = Result then
       Exit;
@@ -1452,6 +1584,7 @@ initialization
   ColorSpaceManager.RegisterColorSpace(TJvYIQColorSpace.Create(csYIQ));
   ColorSpaceManager.RegisterColorSpace(TJvYCCColorSpace.Create(csYCC));
   ColorSpaceManager.RegisterColorSpace(TJvXYZColorSpace.Create(csXYZ));
+  ColorSpaceManager.RegisterColorSpace(TJvLABColorSpace.Create(csLAB));
   ColorSpaceManager.RegisterColorSpace(TJvDEFColorSpace.Create(csDEF));
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);

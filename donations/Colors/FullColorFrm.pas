@@ -273,7 +273,7 @@ begin
   JvColorSpaceCombo.ColorSpaceID := LColorID;
 
   NewIndex := -1;
-  {DefColorSpace:=ColorSpaceManager.ColorSpace[csDef];
+  DefColorSpace:=ColorSpaceManager.ColorSpace[csDef];
   with ColorBox, Items, ColorSpaceManager do
   begin
     for J := 0 to Items.Count - 1 do
@@ -286,7 +286,7 @@ begin
       end;
     end;
     ItemIndex := NewIndex;
-  end;}
+  end;
 
   FUpdating := False;
 end;

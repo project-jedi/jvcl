@@ -203,7 +203,6 @@ object JvFullColorForm: TJvFullColorForm
       Width = 276
       Height = 276
       FullColor = 83886079
-      AxisConfig = acXZY
       TabOrder = 1
       OnColorChange = JvColorPanelColorChange
       CrossSize = 10
@@ -217,7 +216,6 @@ object JvFullColorForm: TJvFullColorForm
       Width = 276
       Height = 21
       FullColor = 83886079
-      AxisConfig = acXZY
       TabOrder = 2
       ArrowWidth = 10
     end

@@ -87,6 +87,7 @@ type
     procedure ColorSpaceChange; virtual;
     procedure CalcSize; virtual;
     procedure KeyMove(KeyCode: TKeyCode; MoveCount: Integer); virtual;
+    procedure InvalidateCursor; virtual; abstract;
     property WantDrawBuffer: Boolean read FWantDrawBuffer write SetWantDrawBuffer;
   public
     constructor Create(AOwner: TComponent); override;
@@ -154,6 +155,8 @@ type
     procedure CalcSize; override;
     procedure AxisConfigChange; override;
     procedure KeyMove(KeyCode: TKeyCode; MoveCount: Integer); override;
+    procedure InvalidateCursor; override;
+    function GetCursorPosition:TPoint;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -260,6 +263,8 @@ type
     property OnColorSpaceChange: TNotifyEvent read FOnColorSpaceChange write FOnColorSpaceChange;
   end;
 
+  TJvCursorPoints = array [0..2] of TPoint;
+
   TJvFullColorTrackBar = class(TJvColorComponent)
   private
     FArrowPosition: TJvArrowPosition;
@@ -297,7 +302,9 @@ type
     procedure ColorSpaceChange; override;
     procedure AxisConfigChange; override;
     procedure KeyMove(KeyCode: TKeyCode; MoveCount: Integer); override;
+    procedure InvalidateCursor; override;
     procedure Paint; override;
+    function GetCursorPosition:TJvCursorPoints;
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -647,7 +654,7 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  Math, TypInfo, GraphUtil;
+  Math, TypInfo, GraphUtil, Types;
 
 resourcestring
   RsEDuplicateTrackBar = 'TrackBar already used by component "%s"';
@@ -788,24 +795,18 @@ procedure TJvColorComponent.SetFullColor(const Value: TJvFullColor);
 var
   OldColorID: TJvColorSpaceID;
   OldColor: TJvFullColor;
-  AxisX, AxisY: TJvAxisIndex;
 begin
-  OldColor:=FFullColor;
-  OldColorID := ColorSpaceManager.GetColorSpaceID(OldColor);
-  FFullColor := Value;
-  if OldColorID <> ColorSpaceManager.GetColorSpaceID(FFullColor)
-    then ColorSpaceChange
-    else
-    begin
-      AxisX := GetIndexAxisX(AxisConfig);
-      AxisY := GetIndexAxisY(AxisConfig);
-      if   (GetAxisValue(OldColor,AxisX)<>(GetAxisValue(FullColor,AxisX)))
-        or (GetAxisValue(OldColor,AxisY)<>(GetAxisValue(FullColor,AxisY)))
-        then Repaint;
-    end;
+  if (Value<>FullColor) then
+  begin
+    OldColor:=FFullColor;
+    OldColorID := ColorSpaceManager.GetColorSpaceID(OldColor);
+    FFullColor := Value;
+    if OldColorID <> ColorSpaceManager.GetColorSpaceID(FFullColor)
+      then ColorSpaceChange;
 
-  if Assigned(FOnColorChange) then
-    FOnColorChange(Self);
+    if Assigned(FOnColorChange) then
+      FOnColorChange(Self);
+  end;
 end;
 
 procedure TJvColorComponent.MouseColor(Shift: TShiftState; X, Y: Integer);
@@ -899,7 +900,7 @@ end;
 
 procedure TJvColorComponent.KeyMove(KeyCode: TKeyCode; MoveCount: Integer);
 begin
-  Update;
+  Invalidate;
 end;
 
 procedure TJvColorComponent.KeyDown(var Key: Word; Shift: TShiftState);
@@ -1111,11 +1112,10 @@ begin
           for IndexX := MinX to MaxX do
           begin
             TempColor := SetAxisValue(TempColor, AxisX, IndexX);
-            // RGBToColor?
             if ReverseAxisX then
-              Line[MaxX - IndexX] := ConvertToColor(TempColor)
+              Line[MaxX - IndexX] := RGBToBGR(ConvertToColor(TempColor))
             else
-              Line[IndexX - MinX] := ConvertToColor(TempColor);
+              Line[IndexX - MinX] := RGBToBGR(ConvertToColor(TempColor));
           end;
         end;
       end;
@@ -1124,10 +1124,45 @@ begin
   inherited DrawBuffer;
 end;
 
-procedure TJvColorPanel.Paint;
+function TJvColorPanel.GetCursorPosition:TPoint;
 var
-  PosX, PosY: Integer;
   AxisX, AxisY: TJvAxisIndex;
+begin
+  with ColorSpaceManager, ColorSpace[GetColorSpaceID(FullColor)], Result do
+  begin
+    AxisX := GetIndexAxisX(AxisConfig);
+    X := GetAxisValue(FullColor, AxisX);
+    if ReverseAxisX then
+      X := AxisMax[AxisX] - X
+    else
+      X := X - AxisMin[AxisX];
+    X := X + CrossSize;
+
+    AxisY := GetIndexAxisY(AxisConfig);
+    Y := GetAxisValue(FullColor, AxisY);
+    if ReverseAxisY then
+      Y := AxisMax[AxisY] - Y
+    else
+      Y := Y - AxisMin[AxisY];
+    Y := Y + CrossSize;
+  end;
+end;
+
+procedure TJvColorPanel.InvalidateCursor;
+var
+  ARect:TRect;
+begin
+  with GetCursorPosition do
+  begin
+    ARect.Left:=X-1-CrossSize-CrossStyle.Width;
+    ARect.Right:=X+1+CrossSize+CrossStyle.Width;
+    ARect.Top:=Y-1-CrossSize-CrossStyle.Width;
+    ARect.Bottom:=Y+1+CrossSize+CrossStyle.Width;
+  end;
+  InvalidateRect(Handle,@ARect,False);
+end;
+
+procedure TJvColorPanel.Paint;
 begin
   inherited Paint;
 
@@ -1138,33 +1173,17 @@ begin
     Draw(CrossSize, CrossSize, FBuffer);
     Pen := CrossStyle;
 
-    AxisX := GetIndexAxisX(AxisConfig);
-    AxisY := GetIndexAxisY(AxisConfig);
-    with ColorSpace do
+    with GetCursorPosition do
     begin
-      PosX := GetAxisValue(FullColor, AxisX);
-      if ReverseAxisX then
-        PosX := AxisMax[AxisX] - PosX
-      else
-        PosX := PosX - AxisMin[AxisX];
-      PosX := PosX + CrossSize;
+      MoveTo(X - CrossSize,   Y);
+      LineTo(X - CrossCenter, Y);
+      MoveTo(X + CrossCenter, Y);
+      LineTo(X + CrossSize,   Y);
 
-      PosY := GetAxisValue(FullColor, AxisY);
-      if ReverseAxisY then
-        PosY := AxisMax[AxisY] - PosY
-      else
-        PosY := PosY - AxisMin[AxisY];
-      PosY := PosY + CrossSize;
-
-      MoveTo(PosX - CrossSize, PosY);
-      LineTo(PosX - CrossCenter, PosY);
-      MoveTo(PosX + CrossCenter, PosY);
-      LineTo(PosX + CrossSize, PosY);
-
-      MoveTo(PosX, PosY - CrossSize);
-      LineTo(PosX, PosY - CrossCenter);
-      MoveTo(PosX, PosY + CrossCenter);
-      LineTo(PosX, PosY + CrossSize);
+      MoveTo(X, Y - CrossSize);
+      LineTo(X, Y - CrossCenter);
+      MoveTo(X, Y + CrossCenter);
+      LineTo(X, Y + CrossSize);
     end;
   end;
   DrawFocus;
@@ -1172,7 +1191,7 @@ end;
 
 procedure TJvColorPanel.PenChange(Sender: TObject);
 begin
-  Update;
+  Invalidate;
 end;
 
 procedure TJvColorPanel.SetCrossCenter(Value: Integer);
@@ -1258,29 +1277,28 @@ end;
 
 procedure TJvColorPanel.SetFullColor(const Value: TJvFullColor);
 var
-  AxisX, AxisY: TJvAxisIndex;
-  OldColor: TJvFullColor;
+  AxisX, AxisY : TJvAxisIndex;
 begin
   if (Value<>FullColor) then
   begin
-    OldColor := FullColor;
-    inherited SetFullColor(Value);
-
     if Assigned(FColorTrackBar) and (not FColorChanging) then
     begin
       FColorChanging := True;
       FColorTrackBar.FullColor := Value;
       FColorChanging := False;
     end;
-
-    AxisX := GetIndexAxisX(AxisConfig);
-    AxisY := GetIndexAxisY(AxisConfig);
-
-    if (GetAxisValue(OldColor, AxisX) <> GetAxisValue(FullColor, AxisX)) or
-       (GetAxisValue(OldColor, AxisY) <> GetAxisValue(FullColor, AxisY)) then
-      Update;
-    if (ColorSpaceManager.GetColorSpaceID(OldColor) <> ColorSpaceManager.GetColorSpaceID(FullColor)) then
-      CalcSize;
+    begin
+      AxisX := GetIndexAxisX(AxisConfig);
+      AxisY := GetIndexAxisY(AxisConfig);
+      if   (GetAxisValue(Value,AxisX)<>(GetAxisValue(FullColor,AxisX)))
+        or (GetAxisValue(Value,AxisY)<>(GetAxisValue(FullColor,AxisY))) then
+      begin
+        InvalidateCursor;
+        inherited SetFullColor(Value);
+        InvalidateCursor;
+      end
+      else inherited SetFullColor(Value);
+    end;
   end;
 end;
 
@@ -1711,7 +1729,7 @@ var
     begin
       AFullColor := LFullColor;
       Result := True;
-      Update;
+      Invalidate;
     end
     else
       Result := False;
@@ -1826,7 +1844,7 @@ begin
 
   if (GetAxisValue(OldColor, AxisX) <> GetAxisValue(FullColor, AxisX)) or
     (GetAxisValue(OldColor, AxisY) <> GetAxisValue(FullColor, AxisY)) then
-    Update;
+    Invalidate;
   if (ColorSpaceManager.GetColorSpaceID(OldColor) <> ColorSpaceManager.GetColorSpaceID(FullColor)) then
     CalcSize;
 end;
@@ -1853,7 +1871,7 @@ begin
 
   if (GetAxisValue(OldColor, AxisX) <> GetAxisValue(BlueColor, AxisX)) or
     (GetAxisValue(OldColor, AxisY) <> GetAxisValue(BlueColor, AxisY)) then
-    Update;
+    Invalidate;
 
   if Assigned(FOnBlueColorChange) then
     FOnBlueColorChange(Self);
@@ -1881,7 +1899,7 @@ begin
 
   if (GetAxisValue(OldColor, AxisX) <> GetAxisValue(GreenColor, AxisX)) or
     (GetAxisValue(OldColor, AxisY) <> GetAxisValue(GreenColor, AxisY)) then
-    Update;
+    Invalidate;
 
   if Assigned(FOnGreenColorChange) then
     FOnGreenColorChange(Self);
@@ -1909,7 +1927,7 @@ begin
 
   if (GetAxisValue(OldColor, AxisX) <> GetAxisValue(RedColor, AxisX)) or
     (GetAxisValue(OldColor, AxisY) <> GetAxisValue(RedColor, AxisY)) then
-    Update;
+    Invalidate;
 
   if Assigned(FOnRedColorChange) then
     FOnRedColorChange(Self);
@@ -2330,14 +2348,11 @@ begin
   inherited DrawBuffer;
 end;
 
-procedure TJvFullColorTrackBar.Paint;
+function TJvFullColorTrackBar.GetCursorPosition:TJvCursorPoints;
 var
   AxisZ: TJvAxisIndex;
   PosZ: Integer;
-  Points: array [0..2] of TPoint;
 begin
-  inherited Paint;
-
   AxisZ := GetIndexAxisZ(AxisConfig);
 
   with ColorSpace do
@@ -2354,61 +2369,103 @@ begin
     Inc(PosZ, ArrowWidth);
   end;
 
+  case Orientation of
+    trHorizontal:
+      begin
+        Result[0].X := PosZ - ArrowWidth;
+        Result[1].X := PosZ;
+        Result[2].X := PosZ + ArrowWidth;
+        case ArrowPosition of
+          apNormal:
+            begin
+              Result[0].Y := 0;
+              Result[1].Y := ArrowWidth;
+              Result[2].Y := 0;
+            end;
+          apOpposite:
+            begin
+              Result[0].Y := Height - 1;
+              Result[1].Y := Height - 1 - ArrowWidth;
+              Result[2].Y := Height - 1;
+            end;
+        end;
+      end;
+    trVertical:
+      begin
+        Result[0].Y := PosZ - ArrowWidth;
+        Result[1].Y := PosZ;
+        Result[2].Y := PosZ + ArrowWidth;
+        case ArrowPosition of
+          apNormal:
+            begin
+              Result[0].X := 0;
+              Result[1].X := ArrowWidth;
+              Result[2].X := 0;
+            end;
+          apOpposite:
+            begin
+              Result[0].X := Width - 1;
+              Result[1].X := Width - 1 - ArrowWidth;
+              Result[2].X := Width - 1;
+            end;
+        end;
+      end;
+  end;
+end;
+
+procedure TJvFullColorTrackBar.InvalidateCursor;
+var
+  ARect:TRect;
+  CursorPoints:TJvCursorPoints;
+begin
+  CursorPoints:=GetCursorPosition;
+  ARect.Left:=  Min(CursorPoints[0].X,Min(CursorPoints[1].X,CursorPoints[2].X));
+  ARect.Top:=   Min(CursorPoints[0].Y,Min(CursorPoints[1].Y,CursorPoints[2].Y));
+  ARect.Right:= Max(CursorPoints[0].X,Max(CursorPoints[1].X,CursorPoints[2].X))+1;
+  ARect.Bottom:=Max(CursorPoints[0].Y,Max(CursorPoints[1].Y,CursorPoints[2].Y))+1;
+  InvalidateRect(Handle,@ARect,False);
+end;
+
+procedure TJvFullColorTrackBar.Paint;
+var
+  CursorPoints:TJvCursorPoints;
+begin
+  inherited Paint;
+
   with Canvas do
   begin
     case Orientation of
       trHorizontal:
-        begin
-          Points[0].X := PosZ - ArrowWidth;
-          Points[1].X := PosZ;
-          Points[2].X := PosZ + ArrowWidth;
-          case ArrowPosition of
-            apNormal:
-              begin
-                Points[0].Y := 0;
-                Points[1].Y := ArrowWidth;
-                Points[2].Y := 0;
-                DrawFrame(ArrowWidth, ArrowWidth+1);
-                Draw(ArrowWidth, ArrowWidth+1, FBuffer);
-              end;
-            apOpposite:
-              begin
-                Points[0].Y := Height - 1;
-                Points[1].Y := Height - 1 - ArrowWidth;
-                Points[2].Y := Height - 1;
-                DrawFrame(ArrowWidth, 0);
-                Draw(ArrowWidth, 0, FBuffer);
-              end;
-          end;
+        case ArrowPosition of
+          apNormal:
+            begin
+              DrawFrame(ArrowWidth, ArrowWidth+1);
+              Draw(ArrowWidth, ArrowWidth+1, FBuffer);
+            end;
+          apOpposite:
+            begin
+              DrawFrame(ArrowWidth, 0);
+              Draw(ArrowWidth, 0, FBuffer);
+            end;
         end;
       trVertical:
-        begin
-          Points[0].Y := PosZ - ArrowWidth;
-          Points[1].Y := PosZ;
-          Points[2].Y := PosZ + ArrowWidth;
-          case ArrowPosition of
-            apNormal:
-              begin
-                Points[0].X := 0;
-                Points[1].X := ArrowWidth;
-                Points[2].X := 0;
-                DrawFrame(ArrowWidth+1, ArrowWidth);
-                Draw(ArrowWidth+1, ArrowWidth, FBuffer);
-              end;
-            apOpposite:
-              begin
-                Points[0].X := Width - 1;
-                Points[1].X := Width - 1 - ArrowWidth;
-                Points[2].X := Width - 1;
-                DrawFrame(0, ArrowWidth);
-                Draw(0, ArrowWidth, FBuffer);
-              end;
-          end;
+        case ArrowPosition of
+          apNormal:
+            begin
+              DrawFrame(ArrowWidth+1, ArrowWidth);
+              Draw(ArrowWidth+1, ArrowWidth, FBuffer);
+            end;
+          apOpposite:
+            begin
+              DrawFrame(0, ArrowWidth);
+              Draw(0, ArrowWidth, FBuffer);
+            end;
         end;
     end;
     Brush.Color := ArrowColor;
     Pen.Color := ArrowColor;
-    Polygon(Points);
+    CursorPoints:=GetCursorPosition;
+    Polygon(CursorPoints);
   end;
   DrawFocus;
 end;
@@ -2512,7 +2569,7 @@ begin
   if FArrowColor <> Value then
   begin
     FArrowColor := Value;
-    Update;
+    Invalidate;
   end;
 end;
 
@@ -2564,26 +2621,32 @@ end;
 procedure TJvFullColorTrackBar.SetFullColor(const Value: TJvFullColor);
 var
   AxisZ: TJvAxisIndex;
-  OldColor: TJvFullColor;
+  OldValueX, OldValueY : Byte;
 begin
-  OldColor := FullColor;
-  inherited SetFullColor(Value);
-
-  if ValueXAuto then
-    UpdateDefaultValueX;
-  if ValueYAuto then
-    UpdateDefaultValueY;
-
-  if FullColorDrawing then
+  if (Value<>FullColor) then
   begin
-    if FullColor <> OldColor then
+    OldValueX:=ValueX;
+    OldValueY:=ValueY;
+    if ValueXAuto then
+      UpdateDefaultValueX;
+    if ValueYAuto then
+      UpdateDefaultValueY;
+    if FullColorDrawing and ((OldValueX<>ValueX) or (OldValueY<>ValueY)) then
+    begin
       WantDrawBuffer := True;
-  end
-  else
-  begin
-    AxisZ := GetIndexAxisZ(AxisConfig);
-    if GetAxisValue(OldColor, AxisZ) <> GetAxisValue(FullColor, AxisZ) then
-      Update;
+      inherited SetFullColor(Value);
+    end
+    else
+    begin
+      AxisZ := GetIndexAxisZ(AxisConfig);
+      if GetAxisValue(Value, AxisZ) <> GetAxisValue(FullColor, AxisZ) then
+      begin
+        InvalidateCursor;
+        inherited SetFullColor(Value);
+        InvalidateCursor;
+      end
+      else inherited SetFullColor(Value);
+    end;
   end;
 end;
 
@@ -2633,12 +2696,16 @@ end;
 
 procedure TJvFullColorTrackBar.UpdateDefaultValueX;
 begin
-  FValueX := ColorSpace.AxisDefault[GetIndexAxisX(AxisConfig)];
+  if FullColorDrawing
+    then FValueX := GetAxisValue(FullColor, GetIndexAxisX(AxisConfig))
+    else FValueX := ColorSpace.AxisDefault[GetIndexAxisX(AxisConfig)];
 end;
 
 procedure TJvFullColorTrackBar.UpdateDefaultValueY;
 begin
-  FValueY := ColorSpace.AxisDefault[GetIndexAxisY(AxisConfig)];
+  if FullColorDrawing
+    then FValueY := GetAxisValue(FullColor, GetIndexAxisY(AxisConfig))
+    else FValueY := ColorSpace.AxisDefault[GetIndexAxisY(AxisConfig)];
 end;
 
 //=== { TJvColorLabel } ======================================================
