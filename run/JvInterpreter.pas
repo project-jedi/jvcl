@@ -168,6 +168,7 @@ Upcoming JVCL 3.00
       (Fix suggested by ivan_ra@mail.ru)
 
    - bug fixed: exceptions, raised in Assign nil to Method property  - dejoy-2004-3-13
+   - fixed  Character '"' error in SkipToEnd from dejoy 2004-5-25;
 }
 
 {$I jvcl.inc}
@@ -6155,6 +6156,9 @@ begin
     if TTyp = ttEmpty then
       ErrorExpected('''' + kwEND + '''')
     else
+    if TTyp = ttDoubleQuote then
+      NextToken
+    else
       SkipStatement;
     if TTyp = ttEnd then
     begin
@@ -6198,7 +6202,7 @@ begin
       ttEmpty:
         ErrorExpected('''' + kwEND + '''');
       ttIdentifier..ttBoolean, ttLB, ttRB, ttCol, ttPoint, ttLS, ttRS,
-        ttNot..ttEquLess, ttTrue, ttFalse:
+        ttNot..ttEquLess, ttDoubleQuote, ttTrue, ttFalse:
         NextToken;
       ttSemicolon, ttEnd, ttElse, ttUntil, ttFinally, ttExcept, ttDo, ttOf:
         Break;
