@@ -51,10 +51,10 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
     FOnEnabledChanged: TNotifyEvent;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     {$IFDEF VCL}
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnSetFocus: TJvFocusChangeEvent;
     FOnKillFocus: TJvFocusChangeEvent;
@@ -109,11 +109,11 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     {$IFDEF VCL}
     procedure DoCtl3DChanged; virtual;
+    procedure MouseEnter(Control: TControl); dynamic;
+    procedure MouseLeave(Control: TControl); dynamic;
+    procedure EnabledChanged; virtual;
+    procedure ParentColorChanged; dynamic;
     {$ENDIF}
-    procedure DoEnabledChanged; virtual;
-    procedure DoMouseEnter; dynamic;
-    procedure DoMouseLeave; dynamic;
-    procedure DoParentColorChanged; dynamic;
     {$IFDEF VCL}
     procedure DoKillFocus(const ANextControl: TWinControl); virtual;
     procedure DoSetFocus(const APreviousControl: TWinControl); virtual;
@@ -158,10 +158,14 @@ type
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
 
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
+    {$IFDEF VCL}
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    {$IFDEF VCL}
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
+    {$ENDIF}
+    {$IFDEF VisualCLX}
+    property OnMouseEnter;
+    property OnMouseLeave;
     {$ENDIF}
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write
       FOnParentColorChanged;
@@ -267,15 +271,13 @@ end;
 
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.CMParentColorChanged(var Msg: TMessage);
-{$ELSE}
-procedure TJvCustomMaskEdit.ParentColorChanged;
-{$ENDIF}
 begin
   inherited;
-  DoParentColorChanged;
+  ParentColorChanged;
 end;
+{$ENDIF}
 
-procedure TJvCustomMaskEdit.DoParentColorChanged;
+procedure TJvCustomMaskEdit.ParentColorChanged;
 begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
@@ -307,34 +309,33 @@ end;
 
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.CMEnabledChanged(var Msg: TMessage);
-{$ELSE}
-procedure TJvCustomMaskEdit.EnabledChanged;
-{$ENDIF}
 begin
   inherited;
-  Invalidate;
-  DoEnabledChanged;
+  EnabledChanged;
 end;
+{$ENDIF}
 
-procedure TJvCustomMaskEdit.DoEnabledChanged;
+procedure TJvCustomMaskEdit.EnabledChanged;
 begin
+  Invalidate;
   if Assigned(FOnEnabledChanged) then
     FOnEnabledChanged(Self);
 end;
 
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.CMMouseEnter(var Msg: TMessage);
-{$ELSE}
-procedure TJvCustomMaskEdit.MouseEnter(Control: TControl);
-{$ENDIF}
 begin
   inherited;
+  if not (csDesigning in ComponentState) then
+    MouseEnter(Self);
+end;
+{$ENDIF}
+
+procedure TJvCustomMaskEdit.MouseEnter(Control: TControl);
+begin
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FHintColor;
     if HotTrack then
       {$IFDEF VCL}
@@ -344,20 +345,20 @@ begin
       {$ENDIF}
     FOver := True;
   end;
-  DoMouseEnter;
-end;
-
-procedure TJvCustomMaskEdit.DoMouseEnter;
-begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.CMMouseLeave(var Msg: TMessage);
-{$ELSE}
-procedure TJvCustomMaskEdit.MouseLeave(Control: TControl);
+begin
+  inherited;
+  if not (csDesigning in ComponentState) then
+    MouseLeave(Self);
+end;
 {$ENDIF}
+
+procedure TJvCustomMaskEdit.MouseLeave(Control: TControl);
 begin
   if FOver then
   begin
@@ -370,12 +371,7 @@ begin
       {$ENDIF}
     FOver := False;
   end;
-  inherited;
-  DoMouseLeave;
-end;
 
-procedure TJvCustomMaskEdit.DoMouseLeave;
-begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;

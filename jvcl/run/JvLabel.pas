@@ -74,8 +74,6 @@ type
     FDragging: Boolean;
     FLeftMargin: Integer;
     FRightMargin: Integer;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FAboutJVCL: TJVCLAboutInfo;
     FImageIndex: TImageIndex;
     FImages: TCustomImageList;
@@ -115,8 +113,6 @@ type
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMVisibleChanged(var Msg: TMessage); message CM_VISIBLECHANGED;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
@@ -147,8 +143,8 @@ type
     procedure Click; override;
     procedure Paint; override;
     procedure Loaded; override;
-    procedure MouseEnter; dynamic;
-    procedure MouseLeave; dynamic;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     function GetImageWidth:integer;virtual;
     function GetImageHeight:integer;virtual;
     procedure SetConsumerService(Value: TJvDataConsumer);
@@ -181,8 +177,6 @@ type
     property URL: string read FURL write FURL;
     property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
@@ -767,18 +761,6 @@ begin
   UpdateTracking;
 end;
 
-procedure TJvCustomLabel.MouseEnter;
-begin
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvCustomLabel.MouseLeave;
-begin
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-end;
-
 procedure TJvCustomLabel.UpdateTracking;
 var
   P: TPoint;
@@ -790,9 +772,9 @@ begin
     IsForegroundTask;
   if FMouseInControl <> OldValue then
     if FMouseInControl then
-      MouseEnter
+      MouseEnter(Self)
     else
-      MouseLeave;
+      MouseLeave(Self);
 end;
 
 procedure TJvCustomLabel.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -860,12 +842,8 @@ begin
     UpdateTracking;
 end;
 
-procedure TJvCustomLabel.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomLabel.MouseEnter(Control: TControl);
 begin
-  inherited;
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
   if not FMouseInControl and Enabled and IsForegroundTask then
   begin
     FHintSaved := Application.HintColor;
@@ -876,23 +854,19 @@ begin
       Font.Assign(FHotTrackFont);
     end;
     FMouseInControl := True;
-    MouseEnter;
+    inherited;
   end;
 end;
 
-procedure TJvCustomLabel.CMMouseLeave(var Msg: TMessage);
+procedure TJvCustomLabel.MouseLeave(Control: TControl);
 begin
-  inherited;
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
   if FMouseInControl and Enabled and not FDragging then
   begin
     Application.HintColor := FHintSaved;
     if HotTrack then
       Font.Assign(FFontSave);
     FMouseInControl := False;
-    MouseLeave;
+    inherited;
   end;
 end;
 
