@@ -25,7 +25,7 @@ const
     '#--------------------------------------------------------------------------------------------------#' + sLineBreak +
     '' + sLineBreak +
     '!ifndef ROOT' + sLineBreak +
-    'ROOT = $(MAKEDIR)' + sLineBreak +
+    'ROOT = $(MAKEDIR)\..' + sLineBreak +
     '!endif' + sLineBreak +
     '#---------------------------------------------------------------------------------------------------' + sLineBreak +
 {    'SRC = ..\Run' + sLineBreak +
