@@ -525,19 +525,22 @@ begin
 end;
 
 procedure TCustomComboEdit.ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer);
+var
+  R: TRect;
 begin
  // Do not use QWidget_setGeomentry because we only need the values but not the
  // widget at this position.
+  R := BoundsRect;
   FLeft := ALeft;
   FTop := ATop;
   FWidth := AWidth;
   FHeight := AHeight;
 
- // set the border panel's bounds rect to the requested rect  
+ // set the border panel's bounds rect to the requested rect
   if Parent <> nil then
   begin
     FBorder.SetBounds(Left, Top, Width, Height);
-   // update because the above could be invalid 
+   // update because the above could be invalid
     FLeft := FBorder.Left;
     FTop := FBorder.Top;
     FWidth := FBorder.Width;
@@ -545,6 +548,9 @@ begin
   end;
 
   AdjustClientArea;
+  if (R.Left <> FLeft) or (R.Top <> FTop) or
+     (R.Right - R.Left <> FWidth) or (R.Bottom - R.Top <> FHeight) then
+    BoundsChanged;
 end;
 
 procedure TCustomComboEdit.SetParent(const Value: TWidgetControl);
@@ -834,9 +840,12 @@ begin
 end;
 
 procedure TCustomComboMaskEdit.ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer);
+var
+  R: TRect;
 begin
  // Do not use QWidget_setGeomentry because we only need the values but not the
  // widget at this position.
+  R := BoundsRect;
   FLeft := ALeft;
   FTop := ATop;
   FWidth := AWidth;
@@ -854,6 +863,9 @@ begin
   end;
 
   AdjustClientArea;
+  if (R.Left <> FLeft) or (R.Top <> FTop) or
+     (R.Right - R.Left <> FWidth) or (R.Bottom - R.Top <> FHeight) then
+    BoundsChanged;
 end;
 
 procedure TCustomComboMaskEdit.SetParent(const Value: TWidgetControl);
