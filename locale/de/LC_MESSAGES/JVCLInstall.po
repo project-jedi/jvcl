@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
 "POT-Creation-Date: 2004-05-01 02:26\n"
-"PO-Revision-Date: 2004-05-01 02:34+0100\n"
+"PO-Revision-Date: 2004-05-01 02:52+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -333,9 +333,9 @@ msgid "Choose IDE targets"
 msgstr "IDEs wählen"
 
 #  Programmer's name for it: RsConfigPageSubTitle
-#. Programmer's name for it: RsConfigPageSubTitle
+#  Programmer's name for it: RsConfigPageSubTitle
 msgid "Choose the compilation options and global options for all targets"
-msgstr "Wählen Sie die Kompilierungsoptionen und globale Einstellungen für alle IDEs aus."
+msgstr "Wählen Sie die Kompilierungsoptionen und globale Einstellungen für alle IDEs aus"
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes..Caption
@@ -934,17 +934,17 @@ msgid ""
 "it from Delphi/C++ Builder"
 msgstr ""
 "JVCL deinstallieren|Deinstallieren und Entfernen der\n"
-"JVCL Packages aus Delphi/C++Builder."
+"JVCL Packages aus Delphi/C++Builder"
 
 #  Programmer's name for it: RsUninstallFromTarget
-#. Programmer's name for it: RsUninstallFromTarget
+#  Programmer's name for it: RsUninstallFromTarget
 msgid "Uninstall from"
 msgstr "Deinstallieren von"
 
 #  PgUninstall.pas
 #  Programmer's name for it: RsUninstallPageTitle
-#. PgUninstall.pas
-#. Programmer's name for it: RsUninstallPageTitle
+#  PgUninstall.pas
+#  Programmer's name for it: RsUninstallPageTitle
 msgid "Uninstalling JVCL 3"
 msgstr "JVCL 3 wird deinstalliert"
 
@@ -980,7 +980,7 @@ msgstr "dxgettext &Unterstützung"
 #  FrameConfigPage..GroupBoxJvclInc..CheckBoxDxgettextSupport..Caption
 #  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage..Caption
 msgid "dxgettext &support (not required)"
-msgstr "dxgettext &Unterstützung (nicht erforderlich)"
+msgstr "dxgettext &Unterstützung"
 
 #  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage....Cursor
 #  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage....Cursor
