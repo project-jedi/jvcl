@@ -246,8 +246,8 @@ var
   sysTime : TSystemTime;
   fileTime : TFileTime;
 begin
-  GetSystemTime(sysTime);
-  SystemTimeToFileTime(sysTime, fileTime);
+  Windows.GetSystemTime(sysTime);
+  Windows.SystemTimeToFileTime(sysTime, fileTime);
   Result := FileTimeToDateTime(fileTime);
 end;
 
@@ -269,12 +269,13 @@ var
   I : Integer;
   j : Integer;
   tmpStr : string;
+  bcblibs : string;
+  bcblibsList : TStringList;
 begin
   packSuffix := targetToSuffix(target);
   outFile := TStringList.Create;
+  bcblibsList := TStringList.Create;
   Result := '';
-
-  SendMsg(#9#9'Applying to ' + package);
 
   try
     // read the xml file
@@ -287,153 +288,183 @@ begin
     OutFileName := path + target + '\' +
                    rootNode.Properties.ItemNamed['Name'].Value +
                    PackSuffix + NameSuffix + Extension;
-    // get the nodes
-    requiredNode := rootNode.Items.ItemNamed['requires'];
-    containsNode := rootNode.Items.ItemNamed['contains'];
 
-    // read the lines of the templates and do some replacements
-    i := 0;
-    while i < template.Count do
-    begin
-      curLine := template[i];
-      if Trim(curLine) = '<%%% START REQUIRES %%%>' then
-      begin
-        Inc(i);
-        repeatLines := '';
-        while(Trim(template[i]) <> '<%%% END REQUIRES %%%>') do
-        begin
-          repeatLines := repeatLines + template[i] + #13#10;
-          Inc(i);
-        end;
-        for j := 0 to requiredNode.Items.Count -1 do
-        begin
-          packageNode := requiredNode.Items[j];
-          // if this required package is to be included for this target
-          if IsIncluded(packageNode, target) then
-          begin
-            tmpStr := repeatLines;
-            reqPackName := BuildPackageName(packageNode, target);
-            StrReplace(tmpStr, '%NAME%', reqPackName, [rfReplaceAll]);
-            outFile.Text := outFile.Text +
-                            EnsureCondition(tmpStr, packageNode, target);
-          end;
-
-          // if this required package is not in the associated 'perso'
-          // target or only in the 'perso' target then return the
-          // 'perso' target name. 'perso' either means 'per' or
-          // 'std'
-          if IsNotInPerso(packageNode, target) or
-             IsOnlyInPerso(packageNode, target) then
-            Result := GetPersoTarget(target);
-        end;
-        // if the last character in the output file is
-        // a comma, then remove it. This possible comma will
-        // be followed by a carriage return so we look
-        // at the third character starting from the end
-        tmpStr := outFile.Text;
-        if tmpStr[Length(tmpStr)-2] = ',' then
-          outFile.Text := Copy(tmpStr, 1, Length(tmpStr) - 3) + #13#10;
-      end
-      else if Trim(curLine) = '<%%% START FILES %%%>' then
-      begin
-        Inc(i);
-        repeatLines := '';
-        while(Trim(template[i]) <> '<%%% END FILES %%%>') do
-        begin
-          repeatLines := repeatLines + template[i] + #13#10;
-          Inc(i);
-        end;
-
-        for j := 0 to containsNode.Items.Count -1 do
-        begin
-          fileNode := containsNode.Items[j];
-          // if this included file is to be included for this target
-          if IsIncluded(fileNode, target) then
-          begin
-            tmpStr := repeatLines;
-            incFileName := fileNode.Properties.ItemNamed['Name'].Value;
-            ApplyFormName(fileNode, tmpStr);
-            outFile.Text := outFile.Text +
-                            EnsureCondition(tmpStr, fileNode, target);
-          end;
-
-          // if this include file is not in the associated 'perso'
-          // target or only in the 'perso' target then return the
-          // 'perso' target name. 'perso' either means 'per' or
-          // 'std'
-          if IsNotInPerso(fileNode, target) or
-             IsOnlyInPerso(fileNode, target) then
-            Result := GetPersoTarget(target);
-        end;
-        // if the last character in the output file is
-        // a comma, then remove it. This possible comma will
-        // be followed by a carriage return so we look
-        // at the third character starting from the end
-        tmpStr := outFile.Text;
-        if tmpStr[Length(tmpStr)-2] = ',' then
-          outFile.Text := Copy(tmpStr, 1, Length(tmpStr) - 3) + #13#10;
-      end
-      else if Trim(curLine) = '<%%% START FORMS %%%>' then
-      begin
-        Inc(i);
-        repeatLines := '';
-        while(Trim(template[i]) <> '<%%% END FORMS %%%>') do
-        begin
-          repeatLines := repeatLines + template[i] + #13#10;
-          Inc(i);
-        end;
-
-        for j := 0 to containsNode.Items.Count -1 do
-        begin
-          fileNode := containsNode.Items[j];
-          // if this included file is to be included for this target
-          // and there is a form associated to the file
-          if IsIncluded(fileNode, target) and
-            (fileNode.Properties.ItemNamed['FormName'].Value <> '') then
-          begin
-            tmpStr := repeatLines;
-            ApplyFormName(fileNode, tmpStr);
-            outFile.Text := outFile.Text +
-                            EnsureCondition(tmpStr, fileNode, target);
-          end;
-        end;
-      end
-      else
-      begin
-        StrReplace(curLine, '%NAME%',
-                   rootNode.Properties.ItemNamed['Name'].Value+
-                   PackSuffix + NameSuffix,
-                   [rfReplaceAll]);
-        StrReplace(curLine, '%DESCRIPTION%',
-                   rootNode.Items.ItemNamed['Description'].Value,
-                   [rfReplaceAll]);
-        StrReplace(curLine, '%C5PFLAGS%',
-                   rootNode.Items.ItemNamed['C5PFlags'].Value,
-                   [rfReplaceAll]);
-        StrReplace(curLine, '%C6PFLAGS%',
-                   rootNode.Items.ItemNamed['C6PFlags'].Value,
-                   [rfReplaceAll]);
-        StrReplace(curLine, '%TYPE%',
-                   Iff(rootNode.Properties.ItemNamed['Design'].BoolValue,
-                      'DESIGN', 'RUN'),
-                   [rfReplaceAll]);
-        StrReplace(curLine, '%DATETIME%',
-                    FormatDateTime('dd-mm-yyyy  hh:nn:ss UTC', NowUTC),
-                    [rfReplaceAll]);
-        StrReplace(curLine, '%type%', StrLower(NameSuffix), [rfReplaceAll]);
-        outFile.Add(curLine);
-      end;
-      Inc(i);
-    end;
-
-    // Save the file, only if the template or the xml are newer
+    // Process the file, only if the template or the xml are newer
     // than the output file. If that output file doesn't exist,
     // create it too
     if not FileExists(OutFileName) or
       (FileDateToDateTime(FileAge(OutFileName)) < templateDate) or
       (FileDateToDateTime(FileAge(OutFileName)) < xmlDate) then
-    outFile.SaveToFile(OutFileName);
+    begin
+      SendMsg(#9#9'Applying to ' + package);
+
+      // get the nodes
+      requiredNode := rootNode.Items.ItemNamed['requires'];
+      containsNode := rootNode.Items.ItemNamed['contains'];
+
+      // read the lines of the templates and do some replacements
+      i := 0;
+      while i < template.Count do
+      begin
+        curLine := template[i];
+        if Trim(curLine) = '<%%% START REQUIRES %%%>' then
+        begin
+          Inc(i);
+          repeatLines := '';
+          while(Trim(template[i]) <> '<%%% END REQUIRES %%%>') do
+          begin
+            repeatLines := repeatLines + template[i] + #13#10;
+            Inc(i);
+          end;
+          for j := 0 to requiredNode.Items.Count -1 do
+          begin
+            packageNode := requiredNode.Items[j];
+            // if this required package is to be included for this target
+            if IsIncluded(packageNode, target) then
+            begin
+              tmpStr := repeatLines;
+              reqPackName := BuildPackageName(packageNode, target);
+              StrReplace(tmpStr, '%NAME%', reqPackName, [rfReplaceAll]);
+              outFile.Text := outFile.Text +
+                              EnsureCondition(tmpStr, packageNode, target);
+            end;
+
+            // if this required package is not in the associated 'perso'
+            // target or only in the 'perso' target then return the
+            // 'perso' target name. 'perso' either means 'per' or
+            // 'std'
+            if IsNotInPerso(packageNode, target) or
+               IsOnlyInPerso(packageNode, target) then
+              Result := GetPersoTarget(target);
+          end;
+          // if the last character in the output file is
+          // a comma, then remove it. This possible comma will
+          // be followed by a carriage return so we look
+          // at the third character starting from the end
+          tmpStr := outFile.Text;
+          if tmpStr[Length(tmpStr)-2] = ',' then
+            outFile.Text := Copy(tmpStr, 1, Length(tmpStr) - 3) + #13#10;
+        end
+        else if Trim(curLine) = '<%%% START FILES %%%>' then
+        begin
+          Inc(i);
+          repeatLines := '';
+          while(Trim(template[i]) <> '<%%% END FILES %%%>') do
+          begin
+            repeatLines := repeatLines + template[i] + #13#10;
+            Inc(i);
+          end;
+
+          for j := 0 to containsNode.Items.Count -1 do
+          begin
+            fileNode := containsNode.Items[j];
+            // if this included file is to be included for this target
+            if IsIncluded(fileNode, target) then
+            begin
+              tmpStr := repeatLines;
+              incFileName := fileNode.Properties.ItemNamed['Name'].Value;
+              ApplyFormName(fileNode, tmpStr);
+              outFile.Text := outFile.Text +
+                              EnsureCondition(tmpStr, fileNode, target);
+            end;
+
+            // if this include file is not in the associated 'perso'
+            // target or only in the 'perso' target then return the
+            // 'perso' target name. 'perso' either means 'per' or
+            // 'std'
+            if IsNotInPerso(fileNode, target) or
+               IsOnlyInPerso(fileNode, target) then
+              Result := GetPersoTarget(target);
+          end;
+          // if the last character in the output file is
+          // a comma, then remove it. This possible comma will
+          // be followed by a carriage return so we look
+          // at the third character starting from the end
+          tmpStr := outFile.Text;
+          if tmpStr[Length(tmpStr)-2] = ',' then
+            outFile.Text := Copy(tmpStr, 1, Length(tmpStr) - 3) + #13#10;
+        end
+        else if Trim(curLine) = '<%%% START FORMS %%%>' then
+        begin
+          Inc(i);
+          repeatLines := '';
+          while(Trim(template[i]) <> '<%%% END FORMS %%%>') do
+          begin
+            repeatLines := repeatLines + template[i] + #13#10;
+            Inc(i);
+          end;
+
+          for j := 0 to containsNode.Items.Count -1 do
+          begin
+            fileNode := containsNode.Items[j];
+            // if this included file is to be included for this target
+            // and there is a form associated to the file
+            if IsIncluded(fileNode, target) and
+              (fileNode.Properties.ItemNamed['FormName'].Value <> '') then
+            begin
+              tmpStr := repeatLines;
+              ApplyFormName(fileNode, tmpStr);
+              outFile.Text := outFile.Text +
+                              EnsureCondition(tmpStr, fileNode, target);
+            end;
+          end;
+        end
+        else if Trim(curLine) = '<%%% START LIBS %%%>' then
+        begin
+          Inc(i);
+          repeatLines := '';
+          while(Trim(template[i]) <> '<%%% END LIBS %%%>') do
+          begin
+            repeatLines := repeatLines + template[i] + #13#10;
+            Inc(i);
+          end;
+
+          // read libs as a string of comma separated value
+          bcblibs :=  rootNode.Items.ItemNamed[packSuffix+'Libs'].Value;
+          if bcblibs <> '' then
+          begin
+            StrToStrings(bcblibs, ',', bcblibsList);
+            for j := 0 to bcbLibsList.Count - 1 do
+            begin
+              tmpStr := repeatLines;
+              StrReplace(tmpStr, '%FILENAME%', bcblibsList[j], [rfReplaceAll]);
+              StrReplace(tmpStr, '%UNITNAME%', GetUnitName(bcblibsList[j]), [rfReplaceAll]);
+              outFile.Text := outFile.Text + tmpStr;
+            end;
+          end;
+        end
+        else
+        begin
+          StrReplace(curLine, '%NAME%',
+                     rootNode.Properties.ItemNamed['Name'].Value+
+                     PackSuffix + NameSuffix,
+                     [rfReplaceAll]);
+          StrReplace(curLine, '%DESCRIPTION%',
+                     rootNode.Items.ItemNamed['Description'].Value,
+                     [rfReplaceAll]);
+          StrReplace(curLine, '%C5PFLAGS%',
+                     rootNode.Items.ItemNamed['C5PFlags'].Value,
+                     [rfReplaceAll]);
+          StrReplace(curLine, '%C6PFLAGS%',
+                     rootNode.Items.ItemNamed['C6PFlags'].Value,
+                     [rfReplaceAll]);
+          StrReplace(curLine, '%TYPE%',
+                     Iff(rootNode.Properties.ItemNamed['Design'].BoolValue,
+                        'DESIGN', 'RUN'),
+                     [rfReplaceAll]);
+          StrReplace(curLine, '%DATETIME%',
+                      FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC',
+                      [rfReplaceAll]);
+          StrReplace(curLine, '%type%', StrLower(NameSuffix), [rfReplaceAll]);
+          outFile.Add(curLine);
+        end;
+        Inc(i);
+      end;
+
+      outFile.SaveToFile(OutFileName)
+    end;
   finally
+    bcblibsList.Free;
     outFile.Free;
   end;
 end;
@@ -469,6 +500,7 @@ begin
             template.LoadFromFile(templateFileName);
             xml := TJvSimpleXml.Create(nil);
             try
+              xml.Options := [sxoAutoCreate];
               xml.LoadFromFile(path+'xml\'+packages[j]+'.xml');
               persoTarget := ApplyTemplateAndSave(
                                    path,

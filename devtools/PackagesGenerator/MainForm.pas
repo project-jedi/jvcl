@@ -87,6 +87,7 @@ type
     mnuAddFiles: TMenuItem;
     N3: TMenuItem;
     Exit1: TMenuItem;
+    btnAdvancedBCB: TButton;
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
@@ -128,6 +129,8 @@ type
     procedure mnuAboutClick(Sender: TObject);
     procedure jsgFilesGetEditText(Sender: TObject; ACol, ARow: Integer;
       var Value: String);
+    procedure btnAdvancedBCBClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     Changed : Boolean; // true if current file has changed
@@ -152,7 +155,7 @@ implementation
 
 uses
   FileUtils, JvSimpleXml, JclFileUtils, JclStrings, TargetDialog,
-  GenerateUtils, KnownTagsForm, FormTypeDialog, ShellApi;
+  GenerateUtils, KnownTagsForm, FormTypeDialog, ShellApi, AdvancedBCBForm;
 {$R *.dfm}
 
 procedure TfrmMain.actExitExecute(Sender: TObject);
@@ -206,9 +209,6 @@ begin
     ColWidths[2] := 170;
     ColWidths[3] := 70;
   end;
-
-  // Load the list of packages
-  LoadPackagesList;
 end;
 
 procedure TfrmMain.jsgDependenciesGetCellAlignment(Sender: TJvStringGrid;
@@ -407,10 +407,12 @@ begin
       rootNode.Properties.Add('Name', ledName.Text);
       rootNode.Properties.Add('Design', rbtDesign.Checked);
 
-      // add description, and PFLAGS
+      // add description, PFLAGS and libs
       rootNode.Items.Add('Description', ledDescription.Text);
       rootNode.Items.Add('C5PFlags', ledC5PFlags.Text);
       rootNode.Items.Add('C6PFlags', ledC6PFlags.Text);
+      rootNode.Items.Add('C5Libs', frmAdvancedBCB.edtBCB5.Text);
+      rootNode.Items.Add('C6Libs', frmAdvancedBCB.edtBCB6.Text);
 
       // add required packages
       requiredNode := rootNode.Items.Add('Requires');
@@ -499,10 +501,12 @@ begin
       rbtDesign.Checked := rootNode.Properties.ItemNamed['Design'].BoolValue;
       rbtRuntime.Checked := not rbtDesign.Checked;
 
-      // read description, and PFLAGS
+      // read description, PFLAGS, and libs
       ledDescription.Text := rootNode.Items.ItemNamed['Description'].Value;
       ledC5PFlags.Text    := rootNode.Items.ItemNamed['C5PFlags'].Value;
       ledC6PFlags.Text    := rootNode.Items.ItemNamed['C6PFlags'].Value;
+      frmAdvancedBCB.edtBCB5.Text := rootNode.Items.ItemNamed['C5Libs'].Value;
+      frmAdvancedBCB.edtBCB6.Text := rootNode.Items.ItemNamed['C6Libs'].Value;
 
       // read required packages
       requiredNode := rootNode.Items.ItemNamed['Requires'];
@@ -746,6 +750,17 @@ begin
     FOrgValueFiles := Value;
     FValidOrgFiles := True;
   end;
+end;
+
+procedure TfrmMain.btnAdvancedBCBClick(Sender: TObject);
+begin
+  frmAdvancedBCB.ShowModal;
+end;
+
+procedure TfrmMain.FormShow(Sender: TObject);
+begin
+  // Load the list of packages
+  LoadPackagesList;
 end;
 
 end.
