@@ -48,7 +48,7 @@ interface
 uses
   QWindows, QMessages, 
   Qt, 
-  SysUtils, Classes, QControls, QGraphics, QForms, QActnList,
+  SysUtils, Classes, QControls, QGraphics, QForms, QActnList, QStyle,
   JvQTypes, JvQComponent;
 
 const
@@ -62,8 +62,6 @@ type
   { short names }
   TUIEffect = ( General, AnimateMenu, FadeMenu, AnimateCombo, AnimateTooltip, FadeTooltip );
   TUIEffects = set of TUIEffect;
-
-
 
 
 type
@@ -91,13 +89,15 @@ type
     FOnException: TExceptionEvent;
     FOnIdle: TIdleEvent;
     FOnHelp: THelpEvent;
-    FOnHint: TNotifyEvent;  
-    FOnEvent : TEventEvent; 
+    FOnHint: TNotifyEvent; 
+    FOnEvent : TEventEvent;
+    FSavedHintFont: TFont;
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
-    FOnShowHint: TShowHintEvent; 
+    FOnShowHint: TShowHintEvent;
     FOnActiveControlChange: TNotifyEvent;
     FOnActiveFormChange: TNotifyEvent;
+    FSavedStyle: TApplicationStyle;
     procedure UpdateAppProps;
     function GetCanvas: TCanvas;
     function GetHintColor: TColor;
@@ -119,22 +119,26 @@ type
     function GetMouseDragImmediate: Boolean;
     function GetMouseDragThreshold: Integer;
     procedure SetMouseDragImmediate(Value: Boolean);
-    procedure SetMouseDragThreshold(Value: Integer);  
+    procedure SetMouseDragThreshold(Value: Integer);
     function GetEffects: TUIEffects;
     function GetHintFont: TFont;
+    function GetStyle: TApplicationStyle;
     procedure SetEffects(Value: TUIEffects);
-    procedure SetHintFont(Value: TFont); 
+    procedure SetHintFont(Value: TFont);
+    procedure SetStyle(Value: TApplicationStyle);
   protected
-    procedure Loaded; override; 
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas; { for painting the icon }
     procedure CancelDispatch;
-  published
+  published 
+    property HintFont: TFont read GetHintFont write SetHintFont;
+    property Effects: TUIEffects read GetEffects write SetEffects;
+    property Style: TApplicationStyle read GetStyle write SetStyle;  
     property Chained: Boolean read FChained write FChained default True;
-    property HintColor: TColor read GetHintColor write SetHintColor default DefHintColor; 
-    property HintFont: TFont read GetHintFont write SetHintFont; 
+    property HintColor: TColor read GetHintColor write SetHintColor default DefHintColor;
     property HintPause: Integer read GetHintPause write SetHintPause default DefHintPause;
     property ShowHint: Boolean read GetShowHint write SetShowHint default True;
     property UpdateFormatSettings: Boolean read GetUpdateFormatSettings
@@ -146,8 +150,7 @@ type
     property ShowMainForm: Boolean read GetShowMainForm write SetShowMainForm
       default True;
     property HintShortCuts: Boolean read GetHintShortCuts write SetHintShortCuts
-      default True; 
-    property Effects: TUIEffects read GetEffects write SetEffects;  
+      default True;
     property MouseDragImmediate: Boolean read GetMouseDragImmediate
       write SetMouseDragImmediate default True;
     property MouseDragThreshold: Integer read GetMouseDragThreshold
@@ -187,8 +190,8 @@ type
     FOnException: TExceptionEvent;
     FOnIdle: TIdleEvent;
     FOnHelp: THelpEvent;
-    FOnHint: TNotifyEvent;  
-    FOnEvent: TEventEvent; 
+    FOnHint: TNotifyEvent;
+    FOnEvent: TEventEvent;
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
     FOnShowHint: TShowHintEvent;
@@ -207,12 +210,12 @@ type
     procedure DoIdle(Sender: TObject; var Done: Boolean);
     procedure DoHint(Sender: TObject);
     procedure DoMinimize(Sender: TObject);
-    procedure DoRestore(Sender: TObject);  
+    procedure DoRestore(Sender: TObject);
     function DoHelp(HelpType: THelpType; HelpContext: THelpContext;
       const HelpKeyword: string; const HelpFile: string;
       var Handled: Boolean): Boolean;
     procedure DoShortCut(Key: Integer; Shift: TShiftState; var Handled: Boolean);
-    procedure DoEvent(Sender: QObjectH; Event: QEventH; var Handled: Boolean); 
+    procedure DoEvent(Sender: QObjectH; Event: QEventH; var Handled: Boolean);
     procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean;
       var HintInfo: THintInfo);
     procedure DoActiveControlChange(Sender: TObject);
@@ -245,11 +248,11 @@ begin
   begin
     Application.OnActivate := nil;
     Application.OnDeactivate := nil;
-    Application.OnException := nil; 
-    Application.OnEvent := nil; 
+    Application.OnException := nil;
+    Application.OnEvent := nil;
     Application.OnIdle := nil;
     Application.OnHelp := nil;
-    Application.OnHint := nil; 
+    Application.OnHint := nil;
     Application.OnMinimize := nil;
     Application.OnRestore := nil;
     Application.OnShowHint := nil;
@@ -626,12 +629,18 @@ begin
   FHintShortCuts := True;
   FMouseDragImmediate := True;
   FMouseDragThreshold := 5;
-  FUpdateFormatSettings := True; 
+  FUpdateFormatSettings := True;
+  FSavedHintFont := TFont.Create;
+  FSavedHintFont.assign(Screen.HintFont);
+  FSavedStyle := Application.Style;
   AppList.AddEvents(Self);
 end;
 
 destructor TJvAppEvents.Destroy;
-begin 
+begin  
+  Screen.HintFont.assign(FSavedHintFont);
+  Application.Style := FSavedStyle; 
+
   if (Self <> nil) and (AppList <> nil) then
     AppList.RemoveEvents(Self);
   inherited Destroy;
@@ -779,6 +788,17 @@ procedure TJvAppEvents.SetHintFont(Value: TFont);
 begin
   Screen.HintFont := Value;
 end;
+
+function TJvAppEvents.GetStyle: TApplicationStyle;
+begin
+  Result := Application.Style;
+end;
+
+procedure TJvAppEvents.SetStyle(Value: TApplicationStyle);
+begin
+  Application.Style := Value;
+end;
+
 
 
 
