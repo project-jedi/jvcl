@@ -165,7 +165,7 @@ CompilePackages:
 	@echo IF NOT $(JCLROOT)!==! SET ADDFLAGS=-U$(JCLROOT)\dcu>>tmp.bat
 	@echo SET BPLDIR=$(BPLDIR)>>tmp.bat
 	@echo SET BPILIBDIR=$(LIBDIR)>>tmp.bat
-	@echo SET PATH=$(ROOT)\bin;$(LIBDIR);(BPLDIR);%PATH%>>tmp.bat
+	@echo SET PATH=$(ROOT)\bin;$(LIBDIR);$(BPLDIR);%PATH%>>tmp.bat
 	@echo SET LIBDIR=$(LIBDIR)>>tmp.bat
 	@echo SET HPPDIR=$(HPPDIR)>>tmp.bat
 	@echo SET DCCOPT=$(DCCOPT)>>tmp.bat
