@@ -1833,14 +1833,12 @@ begin
   begin
     if IsAccel(Message.CharCode, Caption) then
     begin
+      Collapsed := not Collapsed;
       Message.Result := 1;
-      FHitTest := htHeader;
-      FHoverIndex := -1;
-      Click;
     end
-    else
+    else if not Collapsed then
       for I := 0 to VisibleItems.Count - 1 do
-        if IsAccel(Message.CharCode, VisibleItems[I].Caption) then
+        if IsAccel(Message.CharCode, VisibleItems[I].Caption) and VisibleItems[I].Enabled then
         begin
           Message.Result := 1;
           FHitTest := htNone;
