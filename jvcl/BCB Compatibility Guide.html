@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>BCB Compatibility Guide</title>
-  <link rel="STYLESHEET" type="text/css" href="default.css">
+  <link href="default.css" type="text/css" rel="STYLESHEET">
 </head>
 <body>
 <h2>BCB Compatibility Guide</h2>
@@ -122,9 +122,8 @@ before the closing quote, add the recommended flag (preceded by a
 space)
 as indicated in the table below:<br>
 </p>
-<table
- style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;"
- border="1" cellspacing="1" cellpadding="1">
+<table cellpadding="1" cellspacing="1" border="1"
+ style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;">
   <tbody>
     <tr>
       <td
@@ -191,9 +190,8 @@ supported by BCB.<br>
 This is because a bpi file is missing from the requires node of the
 package your are trying to build. The table below indicates the name of
 the bpi files you need to add for different missing obj files<br>
-<table
- style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;"
- border="1" cellspacing="1" cellpadding="1">
+<table cellpadding="1" cellspacing="1" border="1"
+ style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;">
   <tbody>
     <tr>
       <td
@@ -211,6 +209,18 @@ bpi file<br>
       <td style="vertical-align: top;">vclx.bpi<br>
       </td>
     </tr>
+    <tr>
+      <td style="vertical-align: top;">SYSTEM.OBJ<br>
+      </td>
+      <td style="vertical-align: top;">rtl.bpi<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">CONTROLS.OBJ<br>
+      </td>
+      <td style="vertical-align: top;">vcl.bpi<br>
+      </td>
+    </tr>
   </tbody>
 </table>
 <br>
@@ -221,9 +231,8 @@ Note that for BCB5, vcl.bpi and rtl.bpi are merged into vcl50.bpi<br>
 directory to both CJCL60.bpi and CJCL60.bpl MUST be in the PATH
 environment variable. If you don't have these files, you need to
 compile
-the JCL first, with the BCB6 specific package. This package was not in
-the version 2 release, you may obtain it from us or the JCL team upon
-request on the newsgroup mentionned earlier in this document.<br>
+the JCL first, with the BCB6 specific packages. Remember that you must
+use JCL version 1.9 or newer in order to compile the JVCL 3.<br>
 <br>
 </p>
 <h5>[Linker Fatal Error] Fatal: Access violation. Link Terminated.</h5>
@@ -231,9 +240,7 @@ request on the newsgroup mentionned earlier in this document.<br>
 been all removed from the JVCL following the discovery of a useless
 WEAKPACKAGEUNIT directive in the file JclResources.pas from the
 JCL.&nbsp; Their team has been informed and the file has been updated
-but is not in the release version 2. If you install the JVCL without
-updating the JCL, you will encounter heaps of these errors and there is
-nothing to do about it but change the previously mentioned file.<br>
+in version 1.9 and newer.<br>
 Before discovering this error, we found that changing the order of the
 bpi files in the FILELIST node sometimes solved this crash. It is not
 clear what is the best order, but you may want to try shuffling around
@@ -246,6 +253,10 @@ answer from them.</p>
 <p>Please not that sometimes, the linker decides to crash on its own,
 giving you two linker errors. If this happens, close BCB and reopen it.
 <br>
+</p>
+<p>Finally, it seems that Update 4 for BCB6 corrected most errors in
+the linker and as a result we won't support any BCB installation that
+doesn't use Update 4.<br>
 </p>
 <p><br>
 </p>
