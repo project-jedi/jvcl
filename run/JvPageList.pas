@@ -21,8 +21,8 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 
-$Id$
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}

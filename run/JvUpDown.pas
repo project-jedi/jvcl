@@ -16,9 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Sebastien Buysse [sbuysse@buypin.com].
-Peter Thörnqvist [peter3@peter3.com] - TJvDomainUpDown
-
-Last Modified: 2003-05-30
+Peter Thörnqvist [peter3 at sourceforge dot net] - TJvDomainUpDown
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -30,6 +28,7 @@ Description:
 Known Issues:
 - Can't set Position of TJvDomainUpDown at design-time. SOLVED 2003-05-30
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

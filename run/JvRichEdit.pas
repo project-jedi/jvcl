@@ -24,13 +24,12 @@ Contributor(s):
   Remko Bonte [remkobonte@myrealbox.com] (insert image procedures, MS Text converters)
   Jacob Boerema [jgboerema@hotmail.com] (indentation style, zoom, tab styles)
 
-Last Modified: 2003-11-4
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

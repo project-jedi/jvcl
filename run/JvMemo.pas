@@ -15,7 +15,7 @@ Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 This unit is a merging of the original TJvMemo, JvDisplayMemo, JvCaretMemo,JvMemoEx.
-Merging done 2002-06-11 by Peter Thornqvist [peter3@peter3.com]
+Merging done 2002-06-11 by Peter Thornqvist [peter3 at sourceforge dot net]
 
 Contributor(s):
   Michael Beck [mbeck@bigfoot.com]
@@ -32,13 +32,12 @@ Contributor(s):
       setting MaxLines to 0.
     * Added ClipboardCommands
 
-Last Modified: 2002-06-10
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

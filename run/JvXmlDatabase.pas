@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-10-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -26,6 +24,8 @@ Known Issues:
   -Where conditions *MUST* be enclosed between parenthesis as ... WHERE (Col = 5) AND (Col2 < Col3) ...
   -Update statements are limited to simple operations like ... SET Col1 = Col1 + 1, Col2 = 4 ...
 -----------------------------------------------------------------------------}
+// $Id$
+
 {$I jvcl.inc}
 
 unit JvXMLDatabase;

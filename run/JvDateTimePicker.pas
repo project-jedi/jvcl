@@ -17,12 +17,10 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com]
 
-Peter Thörnqvist [peter3@peter3.com]:
+Peter Thörnqvist [peter3 at sourceforge dot net]:
 * Added NullDate, NullText and DropDownDate properties
   * Bug: When TDateTImePicker is used for TIMES, it is impossible to turn
      off the NullDate feature. It should be optional! -W.Postma.
-
-Last Modified: 2002-06-11
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,6 +32,7 @@ Known Issues:
       DateAndTime := JvDateTimePicker1.NullDate;
 
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

@@ -255,7 +255,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
     Left = 0
     Top = 26
     Width = 632
-    Height = 558
+    Height = 565
     HorzScrollBar.Smooth = True
     HorzScrollBar.Style = ssFlat
     HorzScrollBar.Tracking = True
@@ -270,13 +270,14 @@ object JvgfPrintPreview: TJvgfPrintPreview
   end
   object SB: TStatusBar
     Left = 0
-    Top = 584
+    Top = 591
     Width = 632
     Height = 19
     Panels = <
       item
         Width = 100
       end>
+    SimplePanel = False
   end
   object PB: TProgressBar
     Left = 0
@@ -284,6 +285,8 @@ object JvgfPrintPreview: TJvgfPrintPreview
     Width = 616
     Height = 17
     Anchors = [akLeft, akRight, akBottom]
+    Min = 0
+    Max = 100
     TabOrder = 3
     Visible = False
   end

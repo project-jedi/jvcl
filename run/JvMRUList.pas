@@ -18,13 +18,12 @@ Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Arioch [the_Arioch@nm.ru]
 
-Last Modified: 2002-07-11
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}

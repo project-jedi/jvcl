@@ -16,16 +16,15 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
-Peter Thornqvist[peter3@peter3.com]
+Peter Thornqvist[peter3 at sourceforge dot net]
   Moved here from JvProgressBar to support D& Personal
-
-Last Modified: 2002-07-13
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

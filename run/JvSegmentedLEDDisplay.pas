@@ -18,8 +18,6 @@ All Rights Reserved.
 Contributor(s):
   Jay Dubal
 
-Last Modified: 2003-08-27
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -28,6 +26,7 @@ Known Issues:
     can help out there.
   * String literals need to be converted into resourcestrings
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

@@ -17,10 +17,8 @@ All Rights Reserved.
 
 Contributor(s):
   Polaris Software
-  Peter Thornqvist [peter3@peter3.com]
+  Peter Thornqvist [peter3 at sourceforge dot net]
   Andreas Hausladen (XP theming, JvFinalize)
-
-Last Modified: 2004-03-08
 
 Changes:
 2003-10-19:
@@ -31,6 +29,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

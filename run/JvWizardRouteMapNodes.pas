@@ -18,8 +18,6 @@ Contributor(s):
 Peter Thörnqvist - converted to JVCL naming conventions on 2003-07-11
 S Steed. - added AllowClickableNodes property
 
-Last Modified: 2002-02-12
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -34,6 +32,7 @@ History:
   Initial create
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

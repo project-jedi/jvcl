@@ -20,7 +20,7 @@ object QuickPreviewForm: TQuickPreviewForm
     Left = 0
     Top = 0
     Width = 304
-    Height = 295
+    Height = 298
     Align = alClient
     TabOrder = 0
     object PreviewImage: TImage
@@ -33,7 +33,7 @@ object QuickPreviewForm: TQuickPreviewForm
   end
   object Panel1: TPanel
     Left = 0
-    Top = 295
+    Top = 298
     Width = 304
     Height = 22
     Align = alBottom

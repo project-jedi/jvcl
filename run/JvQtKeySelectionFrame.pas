@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s): André Snepvangers [asn@xs4all.nl]: JvQtKeySelectionFrame
 
-Last Modified: 2004-02-05
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -25,6 +23,7 @@ Description: This unit defines a frame that you can use to select a key code.
 
 Known Issues: none known
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

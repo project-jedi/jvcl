@@ -15,7 +15,7 @@ Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 This unit is a merging of the original TJvListBox, JvListBox2, TJvExListBox.
-Merging done 2002-06-15 by Peter Thornqvist [peter3@peter3.com]
+Merging done 2002-06-15 by Peter Thornqvist [peter3 at sourceforge dot net]
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
@@ -29,8 +29,6 @@ MERGE NOTES:
     Maybe TJvListBox should be moved here instead (or this code into JvCtrls)?
   * TJvPlaylist now inherits from JvListBox
 
-Last Modified: 2004-02-17
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 Known Issues:
@@ -43,8 +41,8 @@ Notes (2003-05-21) // Remko Bonte
 * Did some rewrite of background-drawing. Most of it seems to work, but a lot
   of flickering, best avoid it or set ScrollBars to ssNone.
 * Updated drag image to use with MultiLine.
-
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}

@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-07-12
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -41,6 +39,7 @@ Removed the 180 degree rotation and replaced by the mirror(mtBoth) call.
  and image of 2300x3500x24bit without any problems on Win2K.
  I must test it on Win98 before release.
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

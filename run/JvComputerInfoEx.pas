@@ -10,13 +10,11 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvComputerInfoEx.PAS, released on 2004-03-07.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
 Portions created by Peter Thörnqvist are Copyright (C) 2004 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2004-03-07
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -33,6 +31,8 @@ Known Issues:
   * ResetSystemIcons only tested on W2k
 
 -----------------------------------------------------------------------------}
+// $Id$
+
 {$I jvcl.inc}
 unit JvComputerInfoEx;
 

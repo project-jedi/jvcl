@@ -19,13 +19,12 @@ Michael Beck [mbeck@bigfoot.com].
 Robert Marquardt copied implementation of TJvCheckBox
 Peter Thörnqvist- added LinkedControls property
 
-Last Modified: 2004-01-26
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

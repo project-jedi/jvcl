@@ -17,18 +17,12 @@ All Rights Reserved.
 Contributor(s):
 Hans-Eric Grönlund (stack logic)
 
-Last Modified: 2004-03-24
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-* When stacking several alert forms on top of each other, they don't always move
-  down in the list as they should when another alert form is closed. This is controlled
-  by the code in RegisterStackedForm and UnregisterStackedForm.
-  
-$Id$
 -----------------------------------------------------------------------------}
+// $Id$
 unit JvDesktopAlert;
 
 interface
@@ -221,20 +215,18 @@ type
 
   TJvDesktopAlertStack = class(TJvComponent)
   private
-    FItems: TList; //HEG
+    FItems: TList; 
     FPosition: TJvDesktopAlertPosition;
     function GetCount: integer;
-    function GetItems(Index: integer): TJvFormDesktopAlert; //HEG
+    function GetItems(Index: integer): TJvFormDesktopAlert; 
     procedure SetPosition(const Value: TJvDesktopAlertPosition);
   protected
-    //HEG: procedure Sort;
-    //HEG: procedure Optimize;
-    procedure UpdatePositions; //HEG
+    procedure UpdatePositions; 
   public
     procedure Add(AForm: TForm);
     procedure Remove(AForm: TForm);
 
-    property Items[Index: integer]: TJvFormDesktopAlert read GetItems; //HEG
+    property Items[Index: integer]: TJvFormDesktopAlert read GetItems;
     property Count: integer read GetCount;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -667,7 +659,7 @@ begin
   end;
   if Assigned(FOnClose) then
     FOnClose(Self);
-  GetStacker.Remove(FDesktopForm); //HEG
+  GetStacker.Remove(FDesktopForm); 
 end;
 
 procedure TJvDesktopAlert.InternalOnMove(Sender: TObject);
@@ -824,7 +816,7 @@ end;
 
 procedure TJvDesktopAlertStack.Add(AForm: TForm);
 begin
-  FItems.Add(AForm); //HEG
+  FItems.Add(AForm); 
   UpdatePositions;
 end;
 
@@ -843,7 +835,7 @@ end;
 
 function TJvDesktopAlertStack.GetCount: integer;
 begin
-  Result := FItems.Count; //HEG
+  Result := FItems.Count; 
 end;
 
 function TJvDesktopAlertStack.GetItems(Index: integer): TJvFormDesktopAlert;
@@ -859,7 +851,6 @@ var
 begin
   if (AForm <> nil) and (AForm is TJvFormDesktopAlert) then
   begin
-    //HEG:
     // The basic trick here is to push piling forms down in the list, while keeping the
     // static ones (i.e. a form that has the mouse pointer over it) in place.
     Index := FItems.IndexOf(AForm);

@@ -10,20 +10,18 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvCaptionButton.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 
 This unit is a merging of the original TJvCaptionButton, TJvaCaptionButton.
-Merging done 2003-06-12 by Remko Bonte [remkobonte@myrealbox.com]
+Merging done 2003-06-12 by Remko Bonte [remkobonte at myrealbox dot com]
 
 All Rights Reserved.
 
 Contributor(s):
-  Andrei Prygounkov <a.prygounkov@gmx.de>, author of TJvaCaptionButton.
-  Remko Bonte [remkobonte@myrealbox.com], theme support, actions
-  Olivier Sannier [obones@meloo.com], caption hints.
-
-Last Modified: 2003-06-15
+  Andrei Prygounkov <a dot prygounkov at gmx dot de>, author of TJvaCaptionButton.
+  Remko Bonte [remkobonte at myrealbox dot com], theme support, actions
+  Olivier Sannier [obones at meloo dot com], caption hints.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -51,6 +49,7 @@ Known Issues:
 
 
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}

@@ -10,14 +10,12 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvColorBtn.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
   dejoy(dejoy@ynl.gov.cn)
-
-Last Modified: 2004-02-26
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -29,6 +27,7 @@ Known Issues:
     If the OtherCaption is set to an empty string, the default '&Other..' magically appears.
     Solution: Set OtherCaption to ' ' instead
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

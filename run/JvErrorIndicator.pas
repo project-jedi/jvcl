@@ -10,12 +10,10 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvErrorIndicator.pas, released on 2002-11-16.
 
-The Initial Developer of the Original Code is Peter Thörnqvist <peter3@peter3.com>.
+The Initial Developer of the Original Code is Peter Thörnqvist <peter3 at sourceforge dot net>.
 Portions created by Joe Doe are Copyright (C) 2002 Peter Thörnqvist . All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2003-09-25
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -33,6 +31,7 @@ on a form has an error associated with it."
 To set the error, use the Error property: an empty error string, removes the error image
 
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

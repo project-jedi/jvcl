@@ -19,8 +19,6 @@ Ralf Steinhaeusser [ralfiii@gmx.net].
 Gustavo Bianconi
 Steefan Lesage - converted to use new OTA
 
-Last Modified: 2003-07-14
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -30,6 +28,7 @@ Todo : Why the "stdcall" definitions ? (routines Configure, Initialize...)
        Why the TriggerConfigureEvent (and similar) procedures ? necessary ?
        What for the GlobalNameSpace.BeginWrite ?
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

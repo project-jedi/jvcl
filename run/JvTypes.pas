@@ -20,13 +20,12 @@ Peter Thornqvist
 Oliver Giesen
 Gustavo Bianconi
 
-Last Modified: 2003-10-10
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

@@ -17,13 +17,11 @@ All Rights Reserved.
 
 Contributor(s):
 Peter Below [100113.1101@compuserve.com] - alternate TJvPageControl.OwnerDraw routine
-Peter Thörnqvist [peter3@peter3.com] added TJvIPAddress.AddressValues and TJvPageControl.ReduceMemoryUse
+Peter Thörnqvist [peter3 at sourceforge dot net] added TJvIPAddress.AddressValues and TJvPageControl.ReduceMemoryUse
 Alfi [alioscia_alessi@onde.net] alternate TJvPageControl.OwnerDraw routine
 Rudy Velthuis - ShowRange in TJvTrackBar
 Andreas Hausladen - TJvIPAddress designtime bug, components changed to JvExVCL
 Kai Gossens - TJvIPAddress: changing Color, drawing bug on XP (fat frame on edits removed)
-
-Last Modified: 2004-03-07
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -36,6 +34,7 @@ Known Issues:
     Can't focus next internal edit by TAB key.
     Changing the color only changes the color of the child edits, not the control background
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}

@@ -14,14 +14,13 @@ The Initial Developer of the Original Code is  Marcel van Brakel [brakelm@chello
 Portions created by Marcel van Brakel are Copyright (C) 2002 Marcel van Brakel.
 All Rights Reserved.
 
-Last Modified: 2002-06-24
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
    TODO OWNER
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}

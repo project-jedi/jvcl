@@ -20,8 +20,6 @@ Michael Beck [mbeck@bigfoot.com].
 Peter Thörnqvist
 Ivo Bauer
 
-Last Modified: 2003-07-25
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -36,6 +34,7 @@ History:
     * Rewritten almost everything.
 
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
