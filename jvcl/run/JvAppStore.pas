@@ -354,7 +354,10 @@ implementation
 uses
   SysUtils,
   JclStrings, JclRTTI,
-  JvTypes;
+  JvPropertyStore, JvTypes;
+
+type
+  TJvOpenPropertyStore = class(TJvCustomPropertyStore);
 
 procedure UpdateGlobalPath(GlobalPaths, NewPaths: TStrings);
 var
@@ -1191,6 +1194,7 @@ var
   KeyName: string;
   PropPath: string;
   TmpValue: Integer;
+  SubObj: TObject;
 begin
   if not Assigned(PersObj) then
     Exit;
@@ -1232,10 +1236,17 @@ begin
         SetFloatProp(PersObj, PropName, ReadFloat(PropPath, GetFloatProp(PersObj, PropName)));
       tkClass:
         begin
-          if (TPersistent(GetOrdProp(PersObj, PropName)) is TStrings) then
+          SubObj := GetObjectProp(PersObj, PropName);
+          if SubObj is TStrings then
             ReadStringList(PropPath, TStrings(GetOrdProp(PersObj, PropName)), ClearFirst)
-          else if (TPersistent(GetOrdProp(PersObj, PropName)) is TPersistent) and Recursive then
-            ReadPersistent(PropPath, TPersistent(GetOrdProp(PersObj, PropName)), ClearFirst);
+          else
+          if (SubObj is TPersistent) and Recursive then
+          begin
+            if SubObj is TJvCustomPropertyStore then
+              TJvCustomPropertyStore(SubObj).LoadProperties
+            else
+              ReadPersistent(PropPath, TPersistent(SubObj), True, ClearFirst, PropNameTranslator);
+          end;
         end;
     end;
   end;
@@ -1250,6 +1261,7 @@ var
   KeyName: string;
   PropPath: string;
   TmpValue: Integer;
+  SubObj: TObject;
 begin
   if not Assigned(PersObj) then
     Exit;
@@ -1293,11 +1305,18 @@ begin
           WriteFloat(PropPath, GetFloatProp(PersObj, PropName));
         tkClass:
         begin
-          if (TPersistent(GetOrdProp(PersObj, PropName)) is TStrings) then
+          SubObj := GetObjectProp(PersObj, PropName);
+          if SubObj is TStrings then
             WriteStringList(PropPath, TStrings(GetOrdProp(PersObj, PropName)))
-          else if (TPersistent(GetOrdProp(PersObj, PropName)) is TPersistent) and Recursive then
-            WritePersistent(PropPath, TPersistent(GetOrdProp(PersObj, PropName)), True,
-              IgnoreProperties, PropNameTranslator);
+          else
+          if (SubObj is TPersistent) and Recursive then
+          begin
+            if SubObj is TJvCustomPropertyStore then
+              TJvCustomPropertyStore(SubObj).StoreProperties
+            else
+              WritePersistent(PropPath, TPersistent(SubObj), True, IgnoreProperties,
+                PropNameTranslator);
+          end;
         end;
       end;
   end;
