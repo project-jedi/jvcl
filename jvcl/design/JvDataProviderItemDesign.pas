@@ -59,7 +59,7 @@ uses
   Windows, ImgList,
   {$IFDEF VisualCLX}
   {$IFDEF MSWINDOWS}
-  Windows,
+  //Windows,
   {$ENDIF MSWINDOWS}
   {$ENDIF VisualCLX}
   JvDsgnConsts;
