@@ -370,9 +370,11 @@ begin
     else
     begin
       FormCompile.Done;
-      FormCompileMessages.Clear;
+      //FormCompileMessages.Clear;
       Application.ProcessMessages;
       LblTarget.Caption := RsComplete;
+      if FormCompileMessages.Count > 0 then
+        FormCompileMessages.Show;
     end;
   finally
     FormCompile.Free;
