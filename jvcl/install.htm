@@ -25,12 +25,13 @@ YYYY-MM-DD</p>
 </ul>
 <p>&nbsp;</p>
 <h2>Uninstalling previous versions of JVCL</h2>
-<p>If you have a previous version of the JVCL installed, you must remove it completely along with the JCL before
+<p>If you have a previous version of the JVCL installed, you must
+remove it completely along with the JCL before
 installing this version. To remove a previous installation, proceed as
 follows:</p>
 <ol>
   <li>Start the IDE, open the packages page by selecting <b>Component
-- Install   Packages</b></li>
+- Install Packages</b></li>
   <li>Select each of the JCL / JVCL packages in the list and click the <b>Remove</b>
 button</li>
   <li>Open <b>Tools - Environment Options - Library</b> and remove all
@@ -43,11 +44,11 @@ you have installed</li>
 (default is $(DELPHI)\Projects\Bpl for Delphi, $(BCB)\Projects\Bpl for
 C++ Builder). Delete all of the files related to JVCL and JCL</li>
   <li>Delete or rename the top folder where JCL and JVCL is installed</li>
-  <li>Start regedit (click <b>Start - Run</b>, type &quot;regedit.exe&quot; and hit <b>
-  Enter</b>). Open the key <font size="2" face="Courier New">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font> 
-  and delete all name/value items in the list related to JVCL. (&lt;compiler&gt; is 
-  either &quot;Delphi&quot; or &quot;C++Builder&quot;, &lt;version&gt; is the IDE version you have 
-  installed)</li>
+  <li>Start regedit (click <b>Start - Run</b>, type "regedit.exe" and
+hit <b> Enter</b>). Open the key <font size="2" face="Courier New">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font>
+and delete all name/value items in the list related to JVCL.
+(&lt;compiler&gt; is either "Delphi" or "C++Builder", &lt;version&gt;
+is the IDE version you have installed)</li>
 </ol>
 <br>
 <h2>Getting required packages</h2>
@@ -57,10 +58,12 @@ newer versions might have been released since this document was
 published. Instructions on where to download JCL can be found on this
 page: <a href="http://sourceforge.net/projects/jcl">
 http://sourceforge.net/projects/jcl</a>.</p>
-<p align="left">As of today (30th of September 2003), the JCL package must be updated
+<p align="left">As of today (30th of September 2003), the JCL package
+must be updated
 with numerous bug fixes. For your convenience, these bug fixes are
 included in the distribution file but please note that as soon as the
-JCL group does a new release, we recommend you use it instead as it will
+JCL group does a new release, we recommend you use it instead as it
+will
 include our fixes plus many others.<br>
 <br>
 </p>
@@ -69,24 +72,30 @@ include our fixes plus many others.<br>
 </h2>
 <p>Start by unpacking the JVCL and JCL zip files into a folder of your
 own choice. Make sure your zip extractor is set to maintain folder
-structure or all files will be put into the same folder (<b>not</b> what
-you want!). We recommend but do not require that the JCL and JVCL folders should be created as siblings, i.e the
-folder structure  looks like this:</p>
+structure or all files will be put into the same folder (<b>not</b>
+what
+you want!). We recommend but do not require that the JCL and JVCL
+folders should be created as siblings, i.e the
+folder structure looks like this:</p>
 <p><font face="Courier New" size="2">JEDI<br>
 &nbsp; JCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JCL subfolders&gt;<br>
 &nbsp; JVCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JVCL subfolders&gt;<br>
 </font></p>
-<p dir="ltr">Before you can install the JVCL you must first compile the JCL 
-packages. How to do this is documented in the JCL download. If the JCL 
-works as expected, open the JVCL package group file (bpg) for your version of
-Delphi that is located in the jvcl\packages folder. Select <b>Project -
-Build All Projects</b> from the Delphi menu. Go get a cup of coffee (this
+<p dir="ltr">Before you can install the JVCL you must first compile the
+JCL packages. How to do this is documented in the JCL download. If the
+JCL works as expected, open the JVCL package group file (bpg) for your
+version of
+Delphi that is located in the jvcl\packages folder. Select <b>Project
+-
+Build All Projects</b> from the Delphi menu. Go get a cup of coffee
+(this
 takes a while). After Delphi has compiled all the packages, open the <b>Project
 Manager</b> (Ctrl+Alt+F11) and right-click each of the packages ending
 with D?D (where ? is the version number, "5" for Delphi 5, "6" for
-Delphi 6 etc) and select "<b>Install</b>" from the pop-up menu. Although
+Delphi 6 etc) and select "<b>Install</b>" from the pop-up menu.
+Although
 you can skip installing some of the packages, we still recommend that
 you install all of them the first time. You can later remove some of
 them on a project by project basis or permanently if you never use the
@@ -99,7 +108,8 @@ bpg file you load into the IDE.</p>
 <p>&nbsp; <br>
 </p>
 <div class="InfoField"> When closing a package, Delphi will prompt you
-to save the changes to the package. You can answer "No" to this question
+to save the changes to the package. You can answer "No" to this
+question
 since saving only updates the dof file and that is not necessary. <br>
 </div>
 <br>
@@ -112,8 +122,10 @@ benefits.&nbsp;</p>
 <p>&nbsp;</p>
 <p>Adding the source paths means you can easily make changes to the
 source and see it at run-time but be aware that if you build with
-run-time packages, you need to recompile the packages to see the changes
-in the application. To add the source folder locations to Delphi, select <b>Tools-Environment
+run-time packages, you need to recompile the packages to see the
+changes
+in the application. To add the source folder locations to Delphi,
+select <b>Tools-Environment
 Options-Library</b> and add the paths to JVCL\run and
 JVCL\common to the Library path.</p>
 <p>&nbsp;</p>
@@ -135,11 +147,11 @@ Install</b> section above with the following additions:</p>
 <ul>
   <li>In Delphi 5, uninstall all affected JVCL packages before
 rebuilding. Delphi 5 has a problem updating already installed packages,
-especially when     the package have dependencies. Delphi 6 and Delphi 7
-handles this better but     you are recommended to remove them anyway
-since it minimizes the probability     of errors. To uninstall, select <b>Component
+especially when the package have dependencies. Delphi 6 and Delphi 7
+handles this better but you are recommended to remove them anyway
+since it minimizes the probability of errors. To uninstall, select <b>Component
 - Install Package</b>, select the JVCL packages in the list and click
-the <b>Remove</b> button. Click <b>OK</b> to close the     dialog (if
+the <b>Remove</b> button. Click <b>OK</b> to close the dialog (if
 you click Cancel the packages will not be removed).</li>
 </ul>
 <br>
@@ -148,7 +160,8 @@ you click Cancel the packages will not be removed).</li>
 </h2>
 <p>Start by unpacking the JVCL and JCL zip files into a folder of your
 own choice. Make sure your zip extractor is set to maintain folder
-structure or all files will be put into the same folder (<b>not</b> what
+structure or all files will be put into the same folder (<b>not</b>
+what
 you want!). </p>
 <p>The JVCL for C++ Builder doesn't assume that the JCL is installed in
 the same base folder as JVCL, but we do recommend that the JCL and JVCL
@@ -177,9 +190,11 @@ right-click in the <span style="font-weight: bold;">Project Manager</span>
 and select 'Build' for each package in turn. <br>
 A second alternative is to use the provided MakeBCB* batch files. Open
 a command line window, change to the directory where the batch files
-are and launch the one appropriate for your version of C++ Builder. The
-help message should help you find out what are the values to give as
-compulsory parameters.<br>
+are and launch the one appropriate for your version of C++ Builder. By
+default, it considers that C++ Builder is installed in c:\program
+files\cbuilderx, where x is the version number (5 or 6). If it is not
+located ther, you must indicate the path to it as the first argument to
+the batch file.<br>
 </p>
 <p>After all packages are compiled, open the <b>Project Manager</b>
 (Ctrl+Alt+F11) and right-click each of the packages ending with C?D
@@ -206,7 +221,8 @@ trouble compiling and installing the JVCL. However, some users do not
 want to put the JVCL and JCL together and this triggers some problems.
 It is possible to have the JCL and the JVCL in seperate locations but
 you'll have to follow these steps for everything to work:</p>
-<p> Ensure that C++&nbsp;Builder is closed, and add the dcu subdirectory
+<p> Ensure that C++&nbsp;Builder is closed, and add the dcu
+subdirectory
 of JCL to the PATH environment variable. For instance, if you chose
 c:\mypath as the root for the JCL, you must add 'c:\mypath\jcl\dcu' to
 the PATH environment variable. Under Windows 2000 and XP, this is done
@@ -215,21 +231,21 @@ can either simultaneously press the Windows key and the Pause key or go
 through <span style="font-weight: bold;">Start - Parameters -
 Control&nbsp;panel - System&nbsp;properties</span>. Once in the applet,
 choose the 'Advanced' tab and click on the 'Environment variables'
-button at the bottom. Depending on wether or not you want the changes to
+button at the bottom. Depending on wether or not you want the changes
+to
 apply to yourself or all users, choose the PATH variable for one of the
-two list and click the related 'Modify' button. Add ';c:\mypath\jcl\dcu'
-(without the quotes) at the end of the already existing value, and click
+two list and click the related 'Modify' button. Add
+';c:\mypath\jcl\dcu'
+(without the quotes) at the end of the already existing value, and
+click
 on Ok buttons until the 'System properties' applet is closed. This
-modification is required because C++&nbsp;Builder parses this value when
+modification is required because C++&nbsp;Builder parses this value
+when
 it searches for pascal units and there are no direct way in the
 IDE to specify additional units paths (contrary to Delphi). You may
 also use overrides in the environment options, but this has not been
 tested. If it works this way, please let us know.<br>
 </p>
-<p> Start C++&nbsp;Builder, go to <b>Tools - Environment Options -
-Library - Library Path</b> and add the paths to JCL\source, JCL\dcu,
-JVCL\run, JVCL\design, JVCL\common and JVCL\resources to the list of
-library paths.</p>
 <p>You should now be able to compile and install the JCL and the JVCL
 by following the same directives as in a standard installation<br>
 </p>
@@ -237,40 +253,106 @@ by following the same directives as in a standard installation<br>
 </p>
 <div class="InfoField"> When closing a package, C++&nbsp;Builder will
 prompt you to save the changes to the package. You MUST answer "No" to
-this question since saving will most likely render the packages unusable
+this question since saving will most likely render the packages
+unusable
 for the next time you want to compile the JVCL.<br>
 </div>
 <br>
 <h2>Adding JVCL paths to C++&nbsp;Builder<br>
 </h2>
 <p>To make your applications find the JVCL header files when you
-compile, you need to add the  JVCL paths to C++&nbsp;Builder's
-environment paths. <br>
+compile, two options are available to you:<br>
 </p>
-<p>All you need to do is to start C++&nbsp;Builder and select <b>Tools-Environment
-Options-Library</b> and add the paths to JCL\source, JVCL\run,
-JVCL\common and JVCL\resources to the Library path.</p>
+<p><br>
+1) You are willing to add files in the installation directory of C++
+Builder. This is the easiest solution but forces you to repeat this
+step every time you update the JVCL. Here are the steps:<br>
+</p>
+<ul>
+  <li>Copy all .hpp files to $(BCB)\Include&nbsp; (those files are in
+JCL\source subdirectories, in JVCL\run and JVCL\common)<br>
+  </li>
+  <li>Copy all .obj files to $(BCB)\Lib&nbsp;&nbsp; (those files are in
+JCL\Lib\c? and in JVCL\dcu)<br>
+  </li>
+  <li>Copy all .res files to $(BCB)\Lib&nbsp;&nbsp;&nbsp; (those files
+are in JCL\source subdirectories and in JVCL\resources)<br>
+  </li>
+</ul>
+<p><br>
+2) You don't want to copy all the hpp and obj files in your
+installation directory. Then you need to add the JVCL paths to
+C++&nbsp;Builder's
+environment paths but this has an big drawback: You won't be able to
+share your project with people who installed the JVCL in another
+directory. <br>
+</p>
+<p>All you need to do is start C++&nbsp;Builder and select <span
+ style="font-weight: bold;">File-Close All</span>. Then select the <span
+ style="font-weight: bold;">Library</span> tab in <b>Tools-Environment
+Options</b><span style="font-weight: bold;"> </span>and add those
+paths
+to the Library paths:<br>
+</p>
+<ul>
+  <li>JCL\lib\c6<br>
+  </li>
+  <li>JVCL\common<br>
+  </li>
+  <li>JVCL\dcu</li>
+  <li>JVCL\resources</li>
+  <li>JVCL\run<br>
+  </li>
+</ul>
+<p></p>
+<p>Finally,
+select the <span style="font-weight: bold;">Directories/Conditionals</span>
+tab in <span style="font-weight: bold;">Project-Options</span> and add
+those paths to the Include paths:<br>
+</p>
+<ul>
+  <li>JCL\source\common</li>
+  <li>JCL\source\vcl</li>
+  <li>JCL\source\visclx</li>
+  <li>JCL\source\windows</li>
+  <li>JVCL\run</li>
+  <li>JVCL\common</li>
+</ul>
+<p></p>
 <p>You will then be able to use the JVCL components. If you do some
 modifications to the JVCL source code to add functionality and/or fix
 bugs, remember to recompile the package in which the modified files are
 included or you won't see the effect of your changes.<br>
-</p>
-<p>If you want to be able to open the JVCL source files in the IDE by
-using the navigation shorctuts, add JVCL\run (and maybe even
-JVCL\design) to the Browsing Path list.</p>
 <br>
-<h2><big><font size="2"><big>Reinstalling and </big></font></big>
-updating<font size="2"> <big>for C++&nbsp;Builder</big><br>
+</p>
+<p>In both cases, if you want to be able to open the JVCL source files
+in the IDE by
+using the navigation shorctuts, add thos paths to the Browsing Path
+list in the Library tab of Tools-Environment Options:<br>
+</p>
+<ul>
+  <li>JCL\source</li>
+  <li>JVCL\run</li>
+  <li>JVCL\common</li>
+</ul>
+<p></p>
+<br>
+<h2><big><font size="2"><big>Reinstalling </big></font></big><span
+ style="font-weight: bold;">
+and </span><font size="2"><big>updating for
+C++&nbsp;Builder</big><br>
 </font></h2>
 <p>To reinstall or update a package, use the same approach as in the <b>Manual
 Install</b> section above with the following additions:</p>
 <ul>
   <li>You should always remove the JVCL packages before rebuilding
 them. To uninstall, select <b>Component - Install Package</b>, select
-the JVCL packages in the list and click the <b>Remove</b> button. Click <b>OK</b>
-to close the     dialog (if you click Cancel the packages will not be
+the JVCL packages in the list and click the <b>Remove</b> button.
+Click <b>OK</b>
+to close the dialog (if you click Cancel the packages will not be
 removed).</li>
 </ul>
+<br>
 <br>
 </body>
 </html>
