@@ -37,9 +37,7 @@ interface
 uses
   Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ComCtrls,
   ExtCtrls,
-  {$IFNDEF COMPILER6_UP}
   JvConsts,  // for clSkyBlue
-  {$ENDIF COMPILER6_UP}
   JvExControls, JvExForms;
 
 const
@@ -341,7 +339,7 @@ implementation
 
 uses
   SysUtils, Math,
-  JvConsts, JvJCLUtils, JvJVCLUtils, JvThemes, JvFinalize;
+  JvJCLUtils, JvJVCLUtils, JvThemes, JvFinalize;
 
 const
   sUnitName = 'JvCustomItemViewer';
