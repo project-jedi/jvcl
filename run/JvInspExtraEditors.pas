@@ -462,7 +462,7 @@ begin
         Brush.Color := bc;
       end;
     end;
-    TextOut(ARect.Left + (ARect.Bottom - ARect.Top) + 1, BoxRect.Top, ColorName);
+    TextRect(Rects[iprValue], ARect.Left + (ARect.Bottom - ARect.Top) + 1, BoxRect.Top, ColorName);
   end;
 end;
 
