@@ -1836,7 +1836,7 @@ begin
     SetLength(FInspectors, Length(FInspectors) + 1);
     FInspectors[High(FInspectors)] := Inspector;
     if Length(FInspectors) = 1 then
-      RegisterWndProcHook(Application.Handle, ApplicationDeactivate, hoBeforeMsg);
+      Application.HookMainWindow(ApplicationDeactivate);
   end;
 end;
 
@@ -1851,7 +1851,7 @@ begin
       Move(FInspectors[I + 1], FInspectors[I], (High(FInspectors) - I) * SizeOf(TJvCustomInspector));
     SetLength(FInspectors, High(FInspectors));
     if Length(FInspectors) = 0 then
-      UnRegisterWndProcHook(Application.Handle, ApplicationDeactivate, hoBeforeMsg);
+      Application.UnhookMainWindow(ApplicationDeactivate);
   end;
 end;
 
