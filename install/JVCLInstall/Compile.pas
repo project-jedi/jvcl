@@ -37,10 +37,11 @@ uses
 
 type
   TProgressKind = (
-    tkTarget,           // progress of all targets
-    tkProject,          // |- progress of the parts of one target compilation
-    tkResource,         //    |- progress of the resource compilation
-    tkPackage           //    |- progress of the package compilation
+    pkTarget,           // progress of all targets
+    pkProject,          // |- progress of the parts of one target compilation
+    pkResource,         //    |- progress of the resource compilation
+    pkPackage,          //    |- progress of the package compilation
+    pkOther             //    |- progress for copy/delete and other things
   );
 
   TTargetProgressEvent = procedure(Sender: TObject; Current: TTargetConfig;
@@ -102,6 +103,8 @@ type
     function CompileProjectGroup(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
     procedure CreateProjectGroupMakefile(ProjectGroup: TProjectGroup; AutoDepend: Boolean);
     function GenerateResources(TargetConfig: ITargetConfig): Boolean;
+    function DeleteFormDataFiles(ProjectGroup: TProjectGroup): Boolean;
+    function CopyFormDataFiles(ProjectGroup: TProjectGroup): Boolean;
 
     function IsCondition(const Condition: string): Boolean;
   public
@@ -130,7 +133,7 @@ type
   end;
 
 const
-  ProjectMax = 5;
+  ProjectMax = 6;
 
 var
   Compiler: TJVCLCompiler = nil;
@@ -144,18 +147,20 @@ uses
   CmdLineUtils, JvConsts, Utils;
 
 resourcestring
+  RsCompilingJCL = 'Compiling JCL dcp files...';
+  RsErrorCompilingJclDcpFiles = 'Error while compiling .dcp files for JCL.';
   RsGeneratingTemplates = 'Generating templates...';
   RsGeneratingPackages = 'Generating packages...';
   RsGeneratingResources = 'Generating resources...';
   RsCompilingPackages = 'Compiling packages...';
+  RsCopyingFiles = 'Copying files...';
+  RsCopyingFile = 'Copying %s';
   RsFinished = 'Finished.';
-  RsCompilingJCL = 'Compiling JCL dcp files...';
 
   RsAbortedByUser = 'Aborted by User';
   RsErrorLoadingPackageGeneratorConfigFile = 'Error loading devtools\bin\pgEdit.xml';
   RsErrorGeneratingPackages = 'Error while generating packages for %s';
   RsErrorGeneratingTemplates = 'Error while generating templates.';
-  RsErrorCompilingJclDcpFiles = 'Error while compiling .dcp files for JCL.';
   RsErrorCompilingResources = 'Error while compiling resources.';
   RsErrorGeneratingTemplatesForDir = 'Error generating templates for the %s directory.';
   RsErrorCompilingPackages = 'An error occured while compiling the packages.'; // this must not be the doubt of the installer
@@ -190,21 +195,21 @@ procedure TJVCLCompiler.DoTargetProgress(Current: TTargetConfig; Position,
 begin
   if Assigned(FOnTargetProgress) then
     FOnTargetProgress(Self, Current, Position, Max);
-  DoProgress(Current.Target.DisplayName, Position, Max, tkTarget);
+  DoProgress(Current.Target.DisplayName, Position, Max, pkTarget);
 end;
 
 procedure TJVCLCompiler.DoProjectProgress(const Text: string; Position, Max: Integer);
 begin
   if Assigned(FOnProjectProgress) then
     FOnProjectProgress(Self, Text, Position, Max);
-  DoProgress(Text, Position, Max, tkProject);
+  DoProgress(Text, Position, Max, pkProject);
 end;
 
 procedure TJVCLCompiler.DoResourceProgress(const Text: string; Position, Max: Integer);
 begin
   if Assigned(FOnResourceProgress) then
     FOnResourceProgress(Self, Text, Position, Max);
-  DoProgress(Text, Position, Max, tkResource);
+  DoProgress(Text, Position, Max, pkResource);
 end;
 
 procedure TJVCLCompiler.DoPackageProgress(Current: TPackageTarget;
@@ -212,7 +217,7 @@ procedure TJVCLCompiler.DoPackageProgress(Current: TPackageTarget;
 begin
   if Assigned(FOnPackageProgress) then
     FOnPackageProgress(Self, Current, Text, Position, Max);
-  DoProgress(Text, Position, Max, tkPackage);
+  DoProgress(Text, Position, Max, pkPackage);
 end;
 
 procedure TJVCLCompiler.DoProgress(const Text: string; Position, Max: Integer;
@@ -635,6 +640,72 @@ begin
 end;
 
 /// <summary>
+/// DeleteFormDataFiles deletes the .dfm, .xfm files from the lib-path.
+/// </summary>
+function TJVCLCompiler.DeleteFormDataFiles(ProjectGroup: TProjectGroup): Boolean;
+var
+  Files: TStrings;
+  i: Integer;
+  Dir: string;
+begin
+  Result := True;
+  Files := TStringList.Create;
+  try
+    Dir := ProjectGroup.TargetConfig.UnitOutDir;
+    FindFiles(Dir, '*.*', False, Files, ['.dfm', '.xfm']);
+    for i := 0 to Files.Count - 1 do
+      DeleteFile(Files[i]);
+  finally
+    Files.Free;
+  end;
+end;
+
+/// <summary>
+/// CopyFormDataFiles copies the .dfm, .xfm files to the lib-path.
+/// This function is only called for non developer installations.
+/// </summary>
+function TJVCLCompiler.CopyFormDataFiles(ProjectGroup: TProjectGroup): Boolean;
+var
+  Files: TStrings;
+  i: Integer;
+  Dir, DestDir, DestFile: string;
+begin
+  Result := True;
+  Files := TStringList.Create;
+  try
+{**}DoProgress('', 0, 100, pkOther);
+
+    DestDir := ProjectGroup.TargetConfig.UnitOutDir;
+
+    if ProjectGroup.IsVCLX then
+    begin
+      Dir := ProjectGroup.TargetConfig.JVCLDir + PathDelim + 'qrun';
+      FindFiles(Dir, '*.xfm', False, Files, ['.xfm']);
+    end
+    else
+    begin
+      Dir := ProjectGroup.TargetConfig.JVCLDir + PathDelim + 'run';
+      FindFiles(Dir, '*.dfm', False, Files, ['.dfm']);
+    end;
+    
+    for i := 0 to Files.Count - 1 do
+    begin
+      DestFile := DestDir + PathDelim + ExtractFileName(Files[i]);
+      if FileAge(Files[i]) > FileAge(DestFile) then
+      begin
+{**}    DoProgress(ExtractFileName(Files[i]), i, Files.Count, pkOther);
+        CaptureLine(Format(RsCopyingFile, [ExtractFileName(Files[i])]), FAborted);
+
+        CopyFile(PChar(Files[i]), PChar(DestFile), False);
+      end;
+    end;
+{**}  DoProgress('', 0, Files.Count, pkOther);
+  finally
+    Files.Free;
+  end;
+end;
+
+/// <summary>
 /// CompileProjectGroup starts the make file for the templates, starts the
 /// packages generator, calls the GenerateResource method and compiles all
 /// selected packages of the project group.
@@ -721,6 +792,7 @@ begin
     SetEnvironmentVariable('EXTRAINCLUDEDIRS', nil);
     SetEnvironmentVariable('EXTRARESDIRS', nil);
 
+   // *****************************************************************
 
 {**}DoProjectProgress(RsGeneratingPackages, GetProjectIndex, ProjectMax);
     if ProjectGroup.Target.IsPersonal then
@@ -746,6 +818,8 @@ begin
       Exit;
     end;
 
+   // *****************************************************************
+
 {**}DoProjectProgress(RsGeneratingPackages, GetProjectIndex, ProjectMax);
     if ProjectGroup.Target.IsPersonal then
     begin
@@ -759,9 +833,13 @@ begin
     if not GeneratePackages('JVCL', Edition, TargetConfig.JVCLPackagesDir) then
       Exit; // AbortReason is set in GeneratePackages
 
+   // *****************************************************************
+
 {**}DoProjectProgress(RsGeneratingResources, GetProjectIndex, ProjectMax);
     if not GenerateResources(TargetConfig) then
       Exit; // AbortReason is set in GenerateResources
+
+   // *****************************************************************
 
 {**}DoProjectProgress(RsCompilingPackages, GetProjectIndex, ProjectMax);
     FPkgIndex := 0;
@@ -779,7 +857,7 @@ begin
       if AutoDepend then
       begin
         SetEnvironmentVariable('MAKEOPTIONS', '-n');
-          // get number of packages that will be compiled
+          // get the number of packages that needs compilation
         FCount := 0;
         if Make(TargetConfig, Args + ' CompilePackages', CaptureLineGetCompileCount) <> 0 then
         begin
@@ -805,6 +883,14 @@ begin
       else
         CaptureLine(RsPackagesAreUpToDate, FAborted);
     end;
+
+   // *****************************************************************
+
+{**}DoProjectProgress(RsCopyingFiles, GetProjectIndex, ProjectMax);
+    if ProjectGroup.TargetConfig.DeveloperInstall then
+      DeleteFormDataFiles(ProjectGroup) // remove files for Developer installation
+    else
+      CopyFormDataFiles(ProjectGroup);
   finally
 {**}DoProjectProgress(RsFinished, ProjectMax, ProjectMax);
     FCurrentProjectGroup := nil;
@@ -1002,3 +1088,4 @@ begin
 end;
 
 end.
+

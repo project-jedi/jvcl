@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, StdCtrls, CheckLst, ImgList, ExtCtrls, Menus, ActnList, 
+  Dialogs, ComCtrls, StdCtrls, CheckLst, ImgList, ExtCtrls, Menus, ActnList,
   ShellAPI, CommCtrl,
   JVCL3Install, JVCLData, PackageUtils, HtHint;
 
@@ -104,7 +104,7 @@ type
 implementation
 
 uses
-  InstallerConsts, Core, Intf;
+  InstallerConsts, Core, Intf, Utils;
 
 {$R *.dfm}
 

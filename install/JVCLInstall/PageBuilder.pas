@@ -125,6 +125,8 @@ begin
   Page.Title.Text := Title;
   Page.Subtitle.Text := SubTitle;
   Page.Caption := Title;
+  Page.Header.Title.Indent := 5;
+  Page.Header.Subtitle.Indent := 5;
 
   Page.Header.Visible := (Title <> '') or (SubTitle <> '');
   Result := nil;

@@ -43,46 +43,7 @@ type
       AData: Pointer): TRect; override;
   end;
 
-function WordWrapString(const S: string; Width: Integer = 75): string;
-
 implementation
-
-function WordWrapString(const S: string; Width: Integer = 75): string;
-var
-  i, cnt, Len, LastWordStart, BreakStrLen: Integer;
-begin
-  Result := S;
-  BreakStrLen := Length(sLineBreak);
-  if (Width <= 0) or (S = '') then
-    Exit;
-
-  Len := Length(Result);
-  i := 1;
-  while i <= Len do
-  begin
-    cnt := 0;
-    LastWordStart := 0;
-    while (i <= Len) and ((LastWordStart = 0) or (cnt <= Width)) do
-    begin
-      if Result[i] = ' ' then
-        LastWordStart := i;
-      Inc(cnt);
-      Inc(i);
-    end;
-    if i <= Len then
-    begin
-      if LastWordStart > 0 then
-      begin
-        Delete(Result, LastWordStart, 1);
-        Dec(Len, 1);
-        i := LastWordStart;
-      end;
-      Insert(sLineBreak, Result, i);
-      Inc(Len, BreakStrLen);
-      Inc(i, BreakStrLen);
-    end;
-  end;
-end;
 
 function SubStr(const S: string; const Index: Integer; const Separator: string): string;
 { Returns a substring. Substrings are divided by Sep character [translated] }

@@ -99,7 +99,7 @@ procedure TFrameInstall.EvProgress(Sender: TObject; const Text: string;
   Position, Max: Integer; Kind: TProgressKind);
 begin
   case Kind of
-    tkTarget:
+    pkTarget:
       begin
         FPositionTarget := Position;
 
@@ -109,7 +109,7 @@ begin
         ProgressBarTarget.Position := {FPositionProject +} (FPositionTarget * ProjectMax);
       end;
 
-    tkProject:
+    pkProject:
       begin
         FPositionProject := Position;
         ProgressBarTarget.Position := FPositionProject + (FPositionTarget * ProjectMax);
@@ -117,13 +117,20 @@ begin
         ProgressBarCompile.Position := 0;
       end;
 
-    tkResource,
-    tkPackage:
+    pkResource,
+    pkPackage:
       begin
         if Text <> '' then
           LblInfo.Caption := Format(RsCompiling, [Text])
         else
           LblInfo.Caption := '';
+        ProgressBarCompile.Max := Max;
+        ProgressBarCompile.Position := Position;
+      end;
+
+    pkOther:
+      begin
+        LblInfo.Caption := Text;
         ProgressBarCompile.Max := Max;
         ProgressBarCompile.Position := Position;
       end;
@@ -289,7 +296,7 @@ begin
 
   if Success then
   begin
-    // register packages to the IDEs
+    // register packages
     with Installer do
       for i := 0 to SelTargetCount - 1 do
         if SelTargets[i].InstallJVCL and (not SelTargets[i].CompileOnly) then
@@ -317,6 +324,8 @@ begin
     LblTarget.Caption := RsComplete;
 
   FFinished := True;
+  if Success then
+    Installer.PackageInstaller.ForcedFinish; // this is the last page so we want the installer to show the finished state
 end;
 
 procedure TFrameInstall.BtnDetailsClick(Sender: TObject);

@@ -49,10 +49,11 @@ type
   TFormMain = class(TJvForm)
     JvWizard: TJvWizard;
     ImageList: TImageList;
-    PanelLogo: TPanel;
-    ImageLogo: TImage;
     JvWizardRouteMapList: TJvWizardRouteMapList;
     LblHomepage: TLabel;
+    ImageListCheckMark: TImageList;
+    PanelLogo: TPanel;
+    ImageLogo: TImage;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure JvWizardActivePageChanging(Sender: TObject;
@@ -66,6 +67,9 @@ type
       const Page: TJvWizardCustomPage; var AllowDisplay: Boolean);
     procedure LblHomepageClick(Sender: TObject);
     procedure FormPaint(Sender: TObject);
+    procedure JvWizardRouteMapListDrawItem(Sender: TObject;
+      ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer;
+      var DefaultDraw: Boolean);
   private
     FAppStartFailed: Boolean;
     FFinished: Boolean;
@@ -76,6 +80,7 @@ type
     procedure DoUpdateNavigation(Sender: TObject);
     procedure DoPageShow(Sender: TObject);
     procedure DoTranslate(Sender: TObject);
+    procedure DoFinished(Sender: TObject);
 
     procedure RecreatePage(var Msg: TMessage); message WM_USER + 1;
   public
@@ -89,6 +94,7 @@ var
 implementation
 
 uses
+  Math,
   InstallerConsts, PageBuilder, JvConsts, JvResources, Utils;
 
 (* // Main.pas  - see InstallerConsts.pas
@@ -205,6 +211,12 @@ begin
   {$ENDIF USE_DXGETTEXT}
 end;
 
+procedure TFormMain.DoFinished(Sender: TObject);
+begin
+  Finished := True;
+  JvWizardRouteMapList.Invalidate;
+end;
+
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   Application.HintHidePause := MaxInt;
@@ -223,6 +235,7 @@ begin
   PackageInstaller.OnPageRecreate := DoPageRecreate;
   PackageInstaller.OnUpdateNavigation := DoUpdateNavigation;
   PackageInstaller.OnTranslate := DoTranslate;
+  PackageInstaller.OnFinished := DoFinished;
 
   Caption := PackageInstaller.Installer.InstallerName;
   Application.Title := Caption;
@@ -315,9 +328,17 @@ begin
 end;
 
 procedure TFormMain.JvWizardActivePageChanged(Sender: TObject);
+
+  procedure AdjustButton(Btn: TJvWizardNavigateButton);
+  begin
+    Btn.Width := Max(Btn.Width, Canvas.TextWidth(Btn.Caption) + 16);
+  end;
+
 var
   Buttons: TJvWizardButtonSet;
 begin
+  Finished := False; // as long as the user navigates the installation is not finished 
+
   PanelLogo.BringToFront;
   if PackageInstaller.Page <> nil then
   begin
@@ -329,6 +350,15 @@ begin
       JvWizard.ActivePage.EnabledButtons := Buttons;
     end;
   end;
+
+ // adjust buttons if necessary
+  AdjustButton(JvWizard.ButtonStart);
+  AdjustButton(JvWizard.ButtonLast);
+  AdjustButton(JvWizard.ButtonBack);
+  AdjustButton(JvWizard.ButtonNext);
+  AdjustButton(JvWizard.ButtonFinish);
+  AdjustButton(JvWizard.ButtonCancel);
+  AdjustButton(JvWizard.ButtonHelp);
 end;
 
 procedure TFormMain.ImageLogoClick(Sender: TObject);
@@ -373,6 +403,22 @@ begin
       Page := nil;
       JvWizard.SelectNextPage;
     end;
+  end;
+end;
+
+procedure TFormMain.JvWizardRouteMapListDrawItem(Sender: TObject;
+  ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer;
+  var DefaultDraw: Boolean);
+begin
+  DefaultDraw := True;
+  if (PageIndex < JvWizard.ActivePageIndex) or
+     ((PageIndex = JvWizard.ActivePageIndex) and Finished) then
+  begin
+    ACanvas.Font.Color := clSilver;
+    ImageListCheckMark.Draw(ACanvas,
+      ARect.Left - 5,
+      ARect.Top + (ACanvas.TextHeight('Ag') - ImageListCheckMark.Height) div 2 + 4,
+      0);
   end;
 end;
 

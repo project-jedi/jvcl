@@ -33,6 +33,8 @@ interface
 uses
   Windows, ShellAPI, SysUtils, Classes, JvConsts;
 
+function WordWrapString(const S: string; Width: Integer = 75): string;
+  
 function CompareFileAge(const Filename1Fmt: string; const Args1: array of const;
   const Filename2Fmt: string; const Args2: array of const): Integer;
 function GetReturnPath(const Dir: string): string;
@@ -62,6 +64,43 @@ function Supports(const Intf: IInterface; const IID: TGUID): Boolean; overload;
 {$ENDIF COMPILER5}
 
 implementation
+
+function WordWrapString(const S: string; Width: Integer = 75): string;
+var
+  i, cnt, Len, LastWordStart, BreakStrLen: Integer;
+begin
+  Result := S;
+  BreakStrLen := Length(sLineBreak);
+  if (Width <= 0) or (S = '') then
+    Exit;
+
+  Len := Length(Result);
+  i := 1;
+  while i <= Len do
+  begin
+    cnt := 0;
+    LastWordStart := 0;
+    while (i <= Len) and ((LastWordStart = 0) or (cnt <= Width)) do
+    begin
+      if Result[i] = ' ' then
+        LastWordStart := i;
+      Inc(cnt);
+      Inc(i);
+    end;
+    if i <= Len then
+    begin
+      if LastWordStart > 0 then
+      begin
+        Delete(Result, LastWordStart, 1);
+        Dec(Len, 1);
+        i := LastWordStart;
+      end;
+      Insert(sLineBreak, Result, i);
+      Inc(Len, BreakStrLen);
+      Inc(i, BreakStrLen);
+    end;
+  end;
+end;
 
 function CompareFileAge(const Filename1Fmt: string; const Args1: array of const;
   const Filename2Fmt: string; const Args2: array of const): Integer;

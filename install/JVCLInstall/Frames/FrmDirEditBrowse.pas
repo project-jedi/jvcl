@@ -46,6 +46,7 @@ type
     EditDirectory: TEdit;
     BtnJCLDirBrowse: TButton;
     procedure BtnJCLDirBrowseClick(Sender: TObject);
+    procedure EditDirectoryEnter(Sender: TObject);
   private
     FOnChange: TDirEditChangeEvent;
     FUserData: TObject;
@@ -56,7 +57,7 @@ type
     function BrowseDirectory(var AFolderName: string): Boolean;
   public
     class function Build(const Caption, Dir: string; OnChange: TDirEditChangeEvent;
-      UserData: TObject; Client: TWinControl): TFrameDirEditBrowse;
+      UserData: TObject; Client: TWinControl; const AButtonHint: string): TFrameDirEditBrowse;
   published
     property OnChange: TDirEditChangeEvent read FOnChange write FOnChange;
     property AllowEmpty: Boolean read FAllowEmpty write FAllowEmpty;
@@ -76,7 +77,7 @@ const
 
 class function TFrameDirEditBrowse.Build(const Caption, Dir: string;
   OnChange: TDirEditChangeEvent; UserData: TObject;
-  Client: TWinControl): TFrameDirEditBrowse;
+  Client: TWinControl; const AButtonHint: string): TFrameDirEditBrowse;
 begin
   Result := TFrameDirEditBrowse.Create(Client);
   PackageInstaller.Translate(Result);
@@ -87,19 +88,27 @@ begin
   Result.Parent := Client;
   Result.Height := 50;
   Result.EditDirectory.Text := Dir;
+  Result.BtnJCLDirBrowse.Hint := AButtonHint;
 end;
 
 procedure TFrameDirEditBrowse.BtnJCLDirBrowseClick(Sender: TObject);
 var
   Dir: string;
 begin
-  Dir := EditDirectory.Text;
-  if BrowseDirectory(Dir) then
-  begin
-    if Assigned(FOnChange) then
-      FOnChange(Self, FUserData, Dir);
-    if (Dir <> '') or AllowEmpty then
-      EditDirectory.Text := Dir;
+  if BtnJCLDirBrowse.Tag <> 0 then
+    Exit; // no multiple execution
+  BtnJCLDirBrowse.Tag := 1;
+  try
+    Dir := EditDirectory.Text;
+    if BrowseDirectory(Dir) then
+    begin
+      if Assigned(FOnChange) then
+        FOnChange(Self, FUserData, Dir);
+      if (Dir <> '') or AllowEmpty then
+        EditDirectory.Text := Dir;
+    end;
+  finally
+    BtnJCLDirBrowse.Tag := 0;
   end;
 end;
 
@@ -127,7 +136,7 @@ end;
 
 procedure TFrameDirEditBrowse.DoCustomize(Sender: TObject; Handle: HWND);
 const
-  SBtn = 'BUTTON';
+  SBtn = 'BUTTON'; // do not localize
 var
   BtnHandle, HelpBtn, BtnFont: THandle;
   BtnSize: TRect;
@@ -163,6 +172,11 @@ begin
     Handled := True;
     PostMessage(TBrowseFolderDialog(Sender).Handle, WM_CLOSE, 0, 0);
   end;
+end;
+
+procedure TFrameDirEditBrowse.EditDirectoryEnter(Sender: TObject);
+begin
+  BtnJCLDirBrowse.Click;
 end;
 
 end.
