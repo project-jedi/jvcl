@@ -27,34 +27,34 @@ object JvFullColorForm: TJvFullColorForm
     Caption = '&Current Color Space :'
   end
   object LabelDrawOld: TLabel
-    Left = 288
+    Left = 240
     Top = 32
-    Width = 57
-    Height = 33
+    Width = 81
+    Height = 41
     AutoSize = False
     Color = clBlack
     ParentColor = False
     OnClick = LabelDrawOldClick
   end
   object LabelDrawNew: TLabel
-    Left = 344
+    Left = 320
     Top = 32
-    Width = 57
-    Height = 33
+    Width = 81
+    Height = 41
     AutoSize = False
     Color = clWhite
     ParentColor = False
   end
   object LabelOld: TLabel
-    Left = 304
-    Top = 8
+    Left = 240
+    Top = 10
     Width = 19
     Height = 13
     Caption = 'Old:'
   end
   object LabelNew: TLabel
-    Left = 360
-    Top = 8
+    Left = 320
+    Top = 10
     Width = 25
     Height = 13
     Caption = 'New:'
@@ -269,7 +269,7 @@ object JvFullColorForm: TJvFullColorForm
   object JvColorSpaceCombo: TJvColorSpaceCombo
     Left = 8
     Top = 32
-    Width = 153
+    Width = 209
     Height = 21
     ColorSpaceID = 28
     ItemHeight = 13

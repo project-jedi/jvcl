@@ -42,6 +42,7 @@ contains
   ColorSpacesEditors in 'ColorSpacesEditors.pas',
   ColorCtrls in 'ColorCtrls.pas',
   FullColorFrm in 'FullColorFrm.pas' {FullColorForm},
-  ColorCircleFrm in 'ColorCircleFrm.pas' {ColorCircleForm};
+  ColorCircleFrm in 'ColorCircleFrm.pas' {ColorCircleForm},
+  JvFullColorListFrm in 'JvFullColorListFrm.pas' {JvFullColorListForm};
 
 end.

@@ -263,7 +263,7 @@ type
     property OnColorSpaceChange: TNotifyEvent read FOnColorSpaceChange write FOnColorSpaceChange;
   end;
 
-  TJvCursorPoints = array[0..2] of TPoint;
+  TJvCursorPoints = array [0..2] of TPoint;
 
   TJvFullColorTrackBar = class(TJvColorComponent)
   private
@@ -307,7 +307,6 @@ type
     function GetCursorPosition: TJvCursorPoints;
   public
     constructor Create(AOwner: TComponent); override;
-
     function Linked: Boolean;
     function LinkerName: TComponentName;
     procedure SetLink(AComponent: TComponent);
@@ -526,7 +525,7 @@ type
     property OnStartDrag;
   end;
 
-  TJvFullColorArray = array[0..MaxListSize - 1] of TJvFullColor;
+  TJvFullColorArray = array [0..MaxListSize - 1] of TJvFullColor;
   PJvFullColorArray = ^TJvFullColorArray;
 
   TJvFullColorListOperation = (foAllChanged, foDeleted, foAdded, foChanged);
@@ -558,7 +557,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-
     function Add(AColor: TJvFullColor): Integer;
     procedure Assign(Source: TPersistent); override;
     procedure Clear;
@@ -570,7 +568,6 @@ type
     procedure DeleteRedundant;
     procedure BeginUpdate;
     procedure EndUpdate;
-
     property AllocBy: Integer read FAllocBy write SetAllocBy;
     property Items[Index: Integer]: TJvFullColor read GetItem write SetItem; default;
     property List: PJvFullColorArray read FList;
@@ -630,6 +627,12 @@ type
     property Brush: TBrush read FBrush write SetBrush;
     property Align;
     property Anchors;
+    property BevelInner;
+    property BevelOuter;
+    property BevelEdges;
+    property BevelKind default bkTile;
+    property BevelWidth;
+    property BorderWidth;
     property Color;
     property Constraints;
     property Hint;
@@ -3349,6 +3352,7 @@ begin
   FSquareSize := 6;
   FSelectedIndex := -1;
   FMouseIndex := -1;
+  BevelKind := bkTile;
 end;
 
 destructor TJvFullColorGroup.Destroy;
@@ -3562,8 +3566,9 @@ var
   end;
 
 begin
+  inherited Paint;
   CalcRects(XOffset, YOffset, XInc, YInc);
-  BevelRect(Rect(0, 0, Width - 1, Height - 1), FEdge, bsClear, Color);
+  //BevelRect(Rect(0, 0, Width - 1, Height - 1), FEdge, bsClear, Color);
 
   Y := YOffset;
   X := XOffset;

@@ -705,7 +705,7 @@ end;
 
 procedure TJvFullColorListEditor.FormApply(Sender: TObject);
 begin
-  SetOrdValue(Ord((Sender as TJvFullColorListForm).ColorList));
+  SetOrdValue(Integer((Sender as TJvFullColorListForm).ColorList));
 end;
 
 function TJvFullColorListEditor.GetAttributes: TPropertyAttributes;
