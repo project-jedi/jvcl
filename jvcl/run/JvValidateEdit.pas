@@ -138,8 +138,6 @@ type
     procedure EnforceMinValue;
     {$IFDEF VCL}
     // procedure CMChanged(var Message: TMessage); message CM_CHANGED;
-    procedure SetText(const NewValue: TCaption);
-    function GetText: TCaption;
     {$ENDIF VCL}
   protected
     function IsValidChar(const S: string; Key: Char; Posn: Integer): boolean; virtual;
@@ -148,9 +146,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoClipboardPaste; override;
-    {$IFDEF VisualCLX}
     procedure SetText(const NewValue: TCaption); override;
-    {$ENDIF VisualCLX}
     property CheckChars: string read FCheckChars write SetCheckChars;
     property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces;
     property DisplayFormat: TJvValidateEditDisplayFormat read FDisplayFormat
@@ -163,7 +159,6 @@ type
     property OnCustomValidate: TJvCustomTextValidateEvent
       read FOnCustomValidate write FOnCustomValidate;
     property OnValueChanged: TNotifyEvent read FOnValueChanged write FOnValueChanged;
-    property Text: TCaption read GetText write SetText;
     property Value: Variant read GetValue write SetValue;
     property ZeroEmpty: Boolean read FZeroEmpty write SetZeroEmpty;
     property DisplayPrefix: string read FDisplayPrefix write SetDisplayPrefix;
@@ -808,12 +803,7 @@ begin
   try
     S := FDisplayPrefix + NewValue + FDisplaySuffix;
     if S <> inherited Text then
-      {$IFDEF VCL}
-      inherited Text := S;
-      {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    inherited SetText(S);
-    {$ENDIF VisualCLX}
+      inherited SetText(S);
   finally
     FSelfChange := False;
   end;
@@ -961,13 +951,6 @@ begin
     OnChange(Self);}
   inherited Change;
 end;
-
-{$IFDEF VCL}
-function TJvCustomValidateEdit.GetText: TCaption;
-begin
-  Result := inherited Text;
-end;
-{$ENDIF VCL}
 
 procedure TJvCustomValidateEdit.SetText(const NewValue: TCaption);
 begin
