@@ -11,6 +11,14 @@ Author
 <TITLE TDateEvent type>
 <COMBINE TJvMultiHttpGrabber.OnDateRetrieved>
 ----------------------------------------------------------------------------------------------------
+@@TJvDoneFileEvent
+<TITLE TJvDoneFileEvent type>
+<COMBINE TJvMultiHttpGrabber.OnDoneFile>
+----------------------------------------------------------------------------------------------------
+@@TJvDoneStreamEvent
+<TITLE TJvDoneStreamEvent type>
+<COMBINE TJvMultiHttpGrabber.OnDoneStream>
+----------------------------------------------------------------------------------------------------
 @@TJvMultiDateHttpThread
 Summary
   Write here a summary (1 line)
@@ -328,16 +336,8 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TOnDoneFile
-<TITLE TOnDoneFile type>
-<COMBINE TJvMultiHttpGrabber.OnDoneFile>
-----------------------------------------------------------------------------------------------------
-@@TOnDoneStream
-<TITLE TOnDoneStream type>
-<COMBINE TJvMultiHttpGrabber.OnDoneStream>
-----------------------------------------------------------------------------------------------------
-@@TOnProgress
-<TITLE TOnProgress type>
+@@TJvProgressEvent
+<TITLE TJvProgressEvent type>
 <COMBINE TJvMultiHttpGrabber.OnProgress>
 ----------------------------------------------------------------------------------------------------
 @@TUrlEvent
