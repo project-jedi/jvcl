@@ -34,7 +34,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, StdCtrls, CheckLst, ImgList, ExtCtrls, Menus, ActnList,
   ShellAPI, CommCtrl,
-  JVCL3Install, JVCLData, PackageUtils, HtHint;
+  JVCL3Install, JVCLData, PackageInformation, PackageUtils, HtHint;
 
 type
   TFramePackageSelection = class(TFrame)
