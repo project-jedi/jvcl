@@ -38,6 +38,14 @@ type
   TMTThread = class;
 
   TMTEvent = procedure (Thread: TMTThread) of object;
+
+{$IFDEF COMPILER5}
+  TThread = class(Classes.TThread)
+  public
+    procedure Synchronize(Method: TThreadMethod);
+  end;
+{$ENDIF}
+
   TMTInternalThread = class (TThread)
   private
     FName: string;
@@ -49,7 +57,7 @@ type
     property Name: string read FName write FName;
     property OnExecute: TNotifyEvent read FOnExecute write FOnExecute;
   end;
-  
+
   TMTThread = class (TObject)
   private
     FFinished: Boolean;
@@ -129,18 +137,89 @@ begin
 end;
 
 
-{$IFDEF DELPHI5}
-{$MESSAGE Error 'Delphi 5 is not fully supported (yet).'}
-procedure CheckSynchronize;
-begin
-  { BUG: Delphi 5 Synchronize() recursion problem...
+{$IFDEF COMPILER5}
 
-    Need to make the Delphi 5 synchronize scheme work the same as
-    Delphi 6+. Because calling Application.ProcessMessages() is a bad idea.
-  }
-  if (CurrentMTThread = nil) then
-    Application.ProcessMessages;
+type
+  PSyncRequest = ^TSyncRequest;
+  TSyncRequest = record
+    Method: TThreadMethod;
+    ExceptionObject: TObject;
+    Signal: THandle;
+  end;
+
+var
+  SyncRequestAvailable: Boolean;
+  ThreadSyncLock: TRTLCriticalSection;
+  SyncRequestList: TList;
+
+function CheckSynchronize: Boolean;
+var SyncRequest: PSyncRequest;
+begin
+  Result := False;
+ // Only the main thread is allowed to synchronize thread methods.
+  if GetCurrentThreadID <> MainThreadID then
+    Exit;
+
+  if (SyncRequestAvailable) and (SyncRequestList <> nil) then
+  begin
+   // Do not block while another thread is adding a new synchronization request.
+    EnterCriticalSection(ThreadSyncLock);
+    try
+      while SyncRequestList.Count > 0 do
+      begin
+        SyncRequest := SyncRequestList[0];
+        SyncRequestList.Delete(0);
+        try
+          SyncRequest.Method;
+        except
+          SyncRequest^.ExceptionObject := ExceptObject;
+        end;
+       // inform TThread.Synchronize
+        SetEvent(SyncRequest.Signal);
+        SyncRequestAvailable := False;
+        Result := True;
+      end;
+    finally
+      LeaveCriticalSection(ThreadSyncLock);
+    end;
+  end;
 end;
+
+procedure TThread.Synchronize(Method: TThreadMethod);
+var
+  SyncRequest: TSyncRequest;
+begin
+  if GetCurrentThreadID = MainThreadID then
+    Method
+  else
+  begin
+    SyncRequest.Signal := CreateEvent(nil, True, False, nil);
+    try
+      EnterCriticalSection(ThreadSyncLock);
+      try
+        if SyncRequestList = nil then
+          SyncRequestList := TList.Create;
+
+        SyncRequest.ExceptionObject := nil;
+        SyncRequest.Method := Method;
+         // The function returns only when the item is deleted from the List.
+        SyncRequestList.Add(@SyncRequest);
+
+        SyncRequestAvailable := True;
+      finally
+        LeaveCriticalSection(ThreadSyncLock);
+      end;
+     // Wait for CheckSynchronize. 
+      WaitForSingleObject(SyncRequest.Signal, INFINITE);
+    finally
+      CloseHandle(SyncRequest.Signal);
+    end;
+   // An exception occured. Re-raise it in the calling thread's context.
+    if Assigned(SyncRequest.ExceptionObject) then
+      raise SyncRequest.ExceptionObject;
+  end;
+end;
+
 {$ENDIF}
 
 { TMTInternalThread }
@@ -574,5 +653,21 @@ begin
         Sleep(0);
   end;
 end;
+
+{$IFDEF COMPILER5}
+initialization
+  InitializeCriticalSection(ThreadSyncLock);
+  SyncRequestList := nil;
+
+finalization
+  DeleteCriticalSection(ThreadSyncLock);
+ // if the list is not empty there are still waiting threads 
+  if SyncRequestList <> nil then
+  begin
+    CheckSynchronize;
+    SyncRequestList.Free;
+  end;
+
+{$ENDIF}
 
 end.
