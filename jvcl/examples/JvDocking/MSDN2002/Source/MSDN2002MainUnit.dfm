@@ -2046,12 +2046,12 @@ object MSDN2002: TMSDN2002
   object JvDockVSNetStyle1: TJvDockVSNetStyle
     ConjoinServerOption.GrabbersSize = 18
     ConjoinServerOption.SplitterWidth = 4
-    ConjoinServerOption.ActiveFont.Charset = GB2312_CHARSET
+    ConjoinServerOption.ActiveFont.Charset = DEFAULT_CHARSET
     ConjoinServerOption.ActiveFont.Color = clWhite
     ConjoinServerOption.ActiveFont.Height = -11
     ConjoinServerOption.ActiveFont.Name = 'Tahoma'
     ConjoinServerOption.ActiveFont.Style = []
-    ConjoinServerOption.InactiveFont.Charset = GB2312_CHARSET
+    ConjoinServerOption.InactiveFont.Charset = DEFAULT_CHARSET
     ConjoinServerOption.InactiveFont.Color = clBlack
     ConjoinServerOption.InactiveFont.Height = -11
     ConjoinServerOption.InactiveFont.Name = 'Tahoma'
