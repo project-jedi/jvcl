@@ -161,7 +161,7 @@ type
   private
     { Private declarations }
 
-    FItemHintImageList: TImageList;
+    FItemHintImageList: TCustomImageList;
     FArrows: array[TJvScrollArrow] of TJvTLScrollBtn;
     FList: TList;
     FBmp: TBitmap;
@@ -193,7 +193,7 @@ type
     FTimeItems: TJvTimeItems;
     FItemHeight: integer;
     FTopLevel: integer;
-    FImages: TImageList;
+    FImages: TCustomImageList;
     FYearFont: TFont;
     FSelectedItem: TJvTimeItem;
     FYearList: TList;
@@ -223,7 +223,7 @@ type
     procedure SetYearWidth(Value: TJvYearWidth);
     procedure SetFirstDate(Value: TDate);
     procedure SetTimeItems(Value: TJvTimeItems);
-    procedure SetImages(Value: TImageList);
+    procedure SetImages(Value: TCustomImageList);
     procedure SetShowMonths(Value: boolean);
     procedure SetShowDays(Value: boolean);
     procedure SetSelectedItem(Value: TJvTimeItem);
@@ -325,7 +325,7 @@ type
     property ShowMonthNames: boolean read FShowMonths write SetShowMonths;
     property ShowDays: boolean read FShowDays write SetShowDays default false;
     property FirstVisibleDate: TDate read FFirstDate write SetFirstDate;
-    property Images: TImageList read FImages write SetImages;
+    property Images: TCustomImageList read FImages write SetImages;
     property Items: TJvTimeItems read FTimeItems write SetTimeItems;
     property ItemHeight: integer read FItemHeight write SetItemHeight default 12;
     //    property ItemAlign:TItemAlign read FItemAlign write SetItemAlign default tiCenter;
@@ -1193,7 +1193,7 @@ begin
   FTimeItems.Assign(Value);
 end;
 
-procedure TJvCustomTimeLine.SetImages(Value: TImageList);
+procedure TJvCustomTimeLine.SetImages(Value: TCustomImageList);
 begin
   if FImages <> Value then
   begin
