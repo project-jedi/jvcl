@@ -14,9 +14,11 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.c
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s):
+  Michael Beck [mbeck@bigfoot.com],
+  Michail Michaylov [m.mihajlov@is-bg.net].
 
-Last Modified: 2000-02-28
+Last Modified: 2003-06-11
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,8 +33,7 @@ unit JvHttpGrabber;
 interface
 
 uses
-  Windows, SysUtils, Classes, WinInet,
-  JvTypes, JvComponent;
+  Windows, SysUtils, Classes, WinInet,SyncObjs,JvTypes, JvComponent;
 
 type
   TJvHttpThread = class(TThread)
@@ -54,6 +55,7 @@ type
     FErrorText: string;
     FOnStatus: TOnFtpProgress;
     FContinue: Boolean;
+    FCriticalSection: TCriticalSection;
     function GetLastErrorMsg: string;
   protected
     procedure Error;
@@ -66,6 +68,7 @@ type
       OnDoneFile: TOnDoneFile; OnDoneStream: TOnDoneStream;
       OnProgress: TOnProgress; Agent: string;
       OnStatus: TOnFtpProgress);
+    destructor Destroy; override;
   end;
 
   TJvHttpGrabber = class(TJvComponent)
@@ -158,6 +161,8 @@ begin
   begin
     FThread.FreeOnTerminate := True;
     FThread.Terminate;
+    FThread.WaitFor;
+    FThread.Free;
   end;
   inherited Destroy;
 end;
@@ -166,7 +171,7 @@ procedure TJvHttpGrabber.Abort;
 begin
   if FThread <> nil then
   begin
-    FThread.Terminate;
+    FThread.Suspend;
     FThread.FOnError := nil;
     FThread.FOnDoneFile := nil;
     FThread.FOnDoneStream := nil;
@@ -207,6 +212,7 @@ begin
       OutPutMode, Error, DoneFile, DoneStream, Progress, Agent, Status);
     FThread.OnTerminate := ThreadFinished;
     FThread.Resume;
+    FThread.WaitFor;
   end;
 end;
 
@@ -294,10 +300,17 @@ begin
   FAgent := Agent;
   FOnStatus := OnStatus;
   FContinue := True;
+  FCriticalSection := TCriticalSection.Create;
+end;
+
+destructor TJvHttpThread.Destroy;
+begin
+  FCriticalSection.Destroy;
 end;
 
 procedure TJvHttpThread.Ended;
 begin
+  FCriticalSection.Enter;
   FStream.Position := 0;
   if FOutputMode = omStream then
   begin
@@ -310,12 +323,15 @@ begin
     if Assigned(FOnDoneFile) then
       FOnDoneFile(Self, FFileName, FStream.Size, FUrl);
   end;
+  FCriticalSection.Leave;
 end;
 
 procedure TJvHttpThread.Error;
 begin
+  FCriticalSection.Enter;
   if Assigned(FOnError) then
     FOnError(Self, FErrorText);
+  FCriticalSection.Leave;
 end;
 
 function TJvHttpThread.GetLastErrorMsg: string;
@@ -377,7 +393,7 @@ begin
       if hSession = nil then
       begin
         FErrorText := GetLastErrorMsg;
-        Synchronize(Error);
+        Error;
         Exit;
       end;
 
@@ -400,12 +416,12 @@ begin
         InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
         FErrorText := Buffer;
         FreeMem(Buffer);
-        Synchronize(Error);
+        Error;
         Exit;
       end;
 
+      FCriticalSection.Enter;
       InternetSetStatusCallback(hHostConnection, PFNInternetStatusCallback(@DownloadCallBack));
-
       //Request the file
       // (rom) any difference here?
       {$IFDEF D5}
@@ -415,14 +431,16 @@ begin
       hDownload := HttpOpenRequest(hHostConnection, 'GET', PChar(FileName), 'HTTP/1.0', PChar(FReferer),
         nil, INTERNET_FLAG_RELOAD, 0);
       {$ENDIF}
+      FCriticalSection.Leave;
 
       if hDownload = nil then
       begin
         FErrorText := GetLastErrorMsg;
-        Synchronize(Error);
+        Error;
         Exit;
       end;
 
+      FCriticalSection.Enter;
       //Send the request
       HttpSendRequest(hDownload, nil, 0, nil, 0);
 
@@ -450,14 +468,27 @@ begin
             Inc(TotalBytes, BytesRead);
             FBytesReaded := TotalBytes;
             FStream.Write(Buf, BytesRead);
-            Synchronize(Progress);
+            Progress;
           end;
         end;
         if FContinue then
-          Synchronize(Ended);
+          Ended;
+        FCriticalSection.Leave;
       end
       else
-        Synchronize(Error);
+      begin
+        FCriticalSection.Enter;
+        while InternetReadFile(hDownload, @Buf, SizeOf(Buf), BytesRead) do
+        begin
+          if BytesRead = 0 then Break;
+          Inc(TotalBytes,BytesRead);
+          FStream.Write(Buf, BytesRead);
+          Progress;
+        end;
+        if FContinue then
+          Ended;
+        FCriticalSection.Leave;
+      end;
     except
     end;
   finally
@@ -478,9 +509,12 @@ end;
 
 procedure TJvHttpThread.Progress;
 begin
+  FCriticalSection.Enter;
   if Assigned(FOnProgress) then
     FOnProgress(Self, FBytesReaded, FTotalBytes, FUrl, FContinue);
+  FCriticalSection.Leave;
 end;
 
 end.
+
 
