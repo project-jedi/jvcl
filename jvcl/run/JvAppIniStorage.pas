@@ -189,10 +189,15 @@ end;
 // Replaces all CRLF through "\n"
 function TJvCustomAppIniStorage.ReplaceCRLFToSlashN(const Value: string): string;
 begin
-  Result := StringReplace(Value, '\', '\\', [rfReplaceAll]);
-  Result := StringReplace(Result , #13#10, '\n', [rfReplaceAll]);
-  Result := StringReplace(Result , #10, '\n', [rfReplaceAll]);
-  Result := StringReplace(Result , #13, '\n', [rfReplaceAll]);
+  if (Pos(#13, Value) > 0) or (Pos(#10, Value) > 0) then
+  begin
+    Result := StringReplace(Value, '\', '\\', [rfReplaceAll]);
+    Result := StringReplace(Result , #13#10, '\n', [rfReplaceAll]);
+    Result := StringReplace(Result , #10, '\n', [rfReplaceAll]);
+    Result := StringReplace(Result , #13, '\n', [rfReplaceAll]);
+  end
+  else
+    Result := Value;
 end;
 
 // Replaces all "\n" through CRLF
