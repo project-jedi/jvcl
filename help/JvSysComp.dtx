@@ -16,6 +16,16 @@ Description
   For example, if TJvCreateProcess is waiting for a process to end, calling <LINK TJvCreateProcess.Run,
   Run> raises an EJvProcessError error.
 ----------------------------------------------------------------------------------------------------
+@@TJvConsoleOption
+<TITLE TJvConsoleOption type>
+<AUTOLINK OFF>
+<COMBINE TJvCreateProcess.ConsoleOptions>
+----------------------------------------------------------------------------------------------------
+@@TJvConsoleOptions
+<TITLE TJvConsoleOptions type>
+<AUTOLINK OFF>
+<COMBINE TJvCreateProcess.ConsoleOptions>
+----------------------------------------------------------------------------------------------------
 @@TJvCPSFlag
 Summary
   \Controls the creation of a process by a TJvCreateProcess component.
@@ -70,6 +80,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSFlags
 <COMBINEWITH TJvCPSFlag>
+----------------------------------------------------------------------------------------------------
+@@TJvCPSReadEvent
+<TITLE TJvCPSReadEvent type>
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSShowWindow
 Summary
@@ -156,7 +169,7 @@ Summary
   this process.
 Description
   Windows NT/2000/XP: Desktop specifies either the name of the desktop, or the name of both the desktop 
-  and window station for this process. A backslash in the string indicates that the string includes 
+  and window station for this process. A backslash in the \string indicates that the \string includes 
   both the desktop and window station names. If Desktop is empty, then the new process inherits the 
   desktop and window station of its parent process. 
 See Also
@@ -223,7 +236,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSStartupInfo.Title
 Summary
-  Specifies a text string that is displayed in the title bar if a new console window is created.
+  Specifies a text \string that is displayed in the title bar if a new console window is created.
 Description
   For console processes, this is the title displayed in the title bar if a new console window is created.
   If Title is empty, the name of the executable file is used as the window title instead. Property Title
@@ -280,16 +293,22 @@ Description
   
   First use the properties of TJvCreateProcess to specify how and which process must be created:
   
-  * Set ApplicationName to a string to specify the module to execute. 
-  * Set CommandLine to a string to specify the command line to execute.
+  * Set ApplicationName to a \string to specify the module to execute. 
+  * Set CommandLine to a \string to specify the command line to execute.
   * Use WaitForTerminate to specify whether TJvCreateProcess must wait for the process to end. If
     you set WaitForTerminate to True, specify an OnTerminate event handler to execute code after 
-    the process finishes executing. 
+    the process finishes executing.
+    
+  TJvCreateProcess enables you to redirect the standard input and output of console processes it
+  creates. Do this by including coRedirect in ConsoleOptions. After a console process is succesfully
+  created, the component will wait for the process to end whether you set WaitForTerminate
+  to True or not.
 
   You might also set the following properties:
   
   * Use StartupInfo to specify the window station, desktop, and appearance of the main window for 
-    the new process.
+    the new process. Use this property for example to hide a console which standard input and output
+    has been redirected.
   * Set CurrentDirectory to a drive and directory to specify another drive and directory for the 
     new process than the current application.
   * Use Environment to specify another environment than the current application.
@@ -300,8 +319,15 @@ Description
   succesfully creating the new process, you can call CloseApplication or Terminate to stop the
   application. 
   
-  If WaitForTerminate is set to True, the component waits for the process to end and then triggers
-  an OnTerminate event. You can stop waiting for the process to end by calling StopWaiting.
+  If WaitForTerminate is set to True, or coRedirect is included in ConsoleOptions, the component
+  waits for the process to end and then triggers an OnTerminate event. 
+  
+  If you have included coRedirect in ConsoleOptions, and thus the standard input and output of the
+  console process is redirected, then you can call Write or WriteLn to write to the input of the
+  console. Furthermore OnRawRead and OnRead events will be fired if the console outputs some data.
+  
+  You can stop waiting for the process to end by calling StopWaiting, although this is not recommended
+  if the component has redirected the standard input and output of the console process.
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.Create
 Summary
@@ -333,19 +359,19 @@ See Also
 Summary
   Determines the module to execute.
 Description
-  Set ApplicationName to a string to specify the module to execute. 
+  Set ApplicationName to a \string to specify the module to execute. 
 
-  The string can specify the full path and file name of the module to execute or it can specify a 
+  The \string can specify the full path and file name of the module to execute or it can specify a 
   partial name. In the case of a partial name, TJvCreateProcess uses the current drive and current 
   directory to complete the specification. TJvCreateProcess will not use the search path. If the file 
   name does not contain an extension, .exe is assumed. Therefore, if the file name extension is 
   .com, this parameter must include the .com extension. 
 
-  The string specified by ApplicationName can be empty. In that case, the module name must be the 
-  first white space-delimited token in the string specified by CommandLine. If you are using a long 
+  The \string specified by ApplicationName can be empty. In that case, the module name must be the 
+  first white space-delimited token in the \string specified by CommandLine. If you are using a long 
   file name that contains a space, use quoted strings to indicate where the file name ends and the 
-  arguments begin; otherwise, the file name is ambiguous. For example, consider the string 
-  "c:\\program files\\sub dir\\program name". This string can be interpreted in a number of ways. 
+  arguments begin; otherwise, the file name is ambiguous. For example, consider the \string 
+  "c:\\program files\\sub dir\\program name". This \string can be interpreted in a number of ways. 
   The system tries to interpret the possibilities in the following order: 
 
   * <B>c:\\program.exe</B> files\\sub dir\\program name
@@ -381,7 +407,7 @@ Description
   immediately after processing the request. If SendQuit is False then the application can prompt the 
   user for confirmation, and close only if the user confirms the choice.
 
-  Note that you cannot call CloseApplication if State is psReady.
+  Calling CloseApplication when State is psReady, will raise an error.
 Parameters
   SendQuit - Indicates whether to close immediately.
 See Also
@@ -398,9 +424,9 @@ Description
 Summary
   Determines the command line to execute. 
 Description
-  Set CommandLine to a string to specify the command line to execute.
+  Set CommandLine to a \string to specify the command line to execute.
   
-  If the string is empty then TJvCreateProcess uses the string specified by ApplicationName as the 
+  If the \string is empty then TJvCreateProcess uses the \string specified by ApplicationName as the 
   command line. 
 
   If both ApplicationName and CommandLine are not empty, then ApplicationName specifies the module 
@@ -423,6 +449,50 @@ Description
 See Also
   ApplicationName, Run
 ----------------------------------------------------------------------------------------------------
+@@TJvCreateProcess.ConsoleOptions
+<AUTOLINK OFF>
+Summary
+  Specifies behavioral properties of the search component concerning console creation.
+Description
+<AUTOLINK ON>
+  When the TJvCreateProcess creates a console process, it can redirect the standard input and output 
+  of that process. The component will then generate OnRawRead and OnRead events, that enables you to
+  respond to the output of the console; Furthermore, you can send data directly to the consoles input
+  by calling Write or WriteLn.
+  
+  Use ConsoleOptions to specify whether to redirect the standard input and output of newly created 
+  console processes, and whether to log the console output. ConsoleOptions is a set drawn from the
+  following values: 
+  <TABLE>
+  Value                Meaning
+  -----                -------
+  coOwnerData          If this flag is set, the component doesn't fill the ConsoleOutput list with
+                        the output generated by a console process it has created. Applies only if 
+                        the coRedirect flag is on.
+  coRedirect           Redirects the standard input and output of console processes.
+  </TABLE>
+<AUTOLINK OFF>
+See Also
+  ConsoleOutput, OnRawRead, OnRead
+----------------------------------------------------------------------------------------------------
+@@TJvCreateProcess.ConsoleOutput
+Summary
+  Returns a list of the found directory names.
+Description
+  ConsoleOutput is a \string list that contains the output of console processes created with the 
+  TJvCreateProcess component, which standard input and output is redirected.
+  
+  The console output is pre-processed by TJvCreateProcess: It has the same format as it appears in a
+  DOS box. To determine the raw output of a console process, you must respond to OnRawRead events.
+  
+  coOwnerData must <i>not</i> be included in Options, but coRedirect must be included, otherwise
+  ConsoleOutput stays empty. 
+   
+  Use properties and methods for \string lists to traverse this list of directories and read individual
+  items.
+See Also
+  ConsoleOptions, OnRawRead, OnRead
+----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.CreationFlags
 Summary
   \Controls the creation of the process.
@@ -434,7 +504,7 @@ Summary
   Determines the current drive and directory for the new process.
 Description
   Set CurrentDirectory to a drive and directory to specify the current drive and directory for the 
-  new process. The string must be a full path that includes a drive letter. If no value is specified, 
+  new process. The \string must be a full path that includes a drive letter. If no value is specified, 
   the new process will have the same current drive and directory as the calling process. 
 See Also
   Run
@@ -443,7 +513,7 @@ See Also
 Summary
   Lists the environment block for the new process.
 Description
-  Use Environment to access the environment block for the new process. Each string must be in the form: 
+  Use Environment to access the environment block for the new process. Each \string must be in the form: 
   
   name=value 
 
@@ -455,6 +525,40 @@ Description
   Note that it isn't allowed to add empty strings to Environment.
 See Also
   Run
+----------------------------------------------------------------------------------------------------
+@@TJvCreateProcess.OnRawRead
+<COMBINEWITH TJvCPSReadEvent>
+Summary
+  Occurs when a console process created with TJvCreateProcess outputs some data.
+Description
+  \Write an OnRawRead event handler to respond when a console process outputs some data. The data isn't
+  pre-processed thus it may contain back space (#8), tab (#9), line feed (#10) or cariage return (#13)
+  chars.
+  
+  It may be necessairy to respond to OnRawRead events, when the console process updates the current
+  line only and doesn't output a line feed char; for instance to indicate the progress of a process.
+  In this case no OnRead event will be fired.
+Note
+  coRedirect must be included in ConsoleOptions, otherwise no OnRawRead event will be fired.
+See Also
+  ConsoleOptions, ConsoleOutput, OnRead
+----------------------------------------------------------------------------------------------------
+@@TJvCreateProcess.OnRead
+<COMBINEWITH TJvCPSReadEvent>
+Summary
+  Occurs when a console process created with TJvCreateProcess outputs a line feed (#10) char.
+Description
+  \Write an OnRead event handler to respond when a console process outputs a new line. The data is
+  pre-processed thus it won't contain back space (#8), tab (#9), line feed (#10) or cariage return (#13)
+  chars.
+  
+  If the console process updates the current line only and doesn't output a line feed char, no OnRead event
+  will be fired. In this case respond to OnRawRead events, which will be fired whenever the console process
+  outputs some data.
+Note
+  coRedirect must be included in ConsoleOptions, otherwise no OnRead event will be fired.
+See Also
+  ConsoleOptions, ConsoleOutput, OnRawRead
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.OnTerminate
 <COMBINEWITH TJvCPSTerminateEvent>
@@ -549,7 +653,10 @@ Description
   
   If the process ends, no OnTerminate event will be fired.
 
-  Note that you cannot call StopWaiting if State is psReady.
+  Calling StopWaiting when State is psReady, has no effect.
+Note
+  It is not recommended to call StopWaiting if TJvCreateProcess has redirected the standard input and
+  output of a console process.
 See Also
   Terminate, WaitForTerminate
 ----------------------------------------------------------------------------------------------------
@@ -560,7 +667,10 @@ Description
   Call Terminate to terminate a process created with TJvCreateProcess. It will unconditionally cause 
   the created process to exit. Use it only in extreme circumstances, otherwise use CloseApplication.
 
-  Note that you cannot call Terminate if State is psReady.
+  Calling Terminate when State is psReady, will raise an error.
+Note
+  A case when calling Terminate is reasonable is when the component has redirected the standard input
+  and output of a console process, and that process blocks.
 See Also
   CloseApplication, StopWaiting
 ----------------------------------------------------------------------------------------------------
@@ -590,8 +700,37 @@ Description
   Otherwise set WaitForTerminate to False.
 
   Note that you cannot change WaitForTerminate if State is psWaiting.
+Note
+  If coRedirect is included in ConsoleOptions, the value of WaitForTerminate is ignored. The component
+  will then always wait for the process to terminate.
 See Also
   OnTerminate, Run, State, StopWaiting, Terminate
+----------------------------------------------------------------------------------------------------
+@@TJvCreateProcess.Write
+Summary
+  Writes to the input of a console process. 
+Description
+  Call \Write to write to the input of a console process, created with TJvCreateProcess.
+Note
+  coRedirect must be included in ConsoleOptions otherwise \Write will have no effect.
+Parameters
+  S - \Data to be written to the input of a console process.
+See Also
+  ConsoleOptions, WriteLn
+----------------------------------------------------------------------------------------------------
+@@TJvCreateProcess.WriteLn
+Summary
+  Writes to the input of a console process and adds an end-of-line marker
+Description
+  Call WriteLn to write to the input of a console process, created with TJvCreateProcess. The
+  component will append an end-of-line marker (carriage return/line feed) to the data.
+  If parameter S is an empty \string, Writeln an end-of-line marker to the input of a console process.
+Note
+  coRedirect must be included in ConsoleOptions otherwise WriteLn will have no effect.
+Parameters
+  S - \Data to be written to the input of a console process.
+See Also
+  ConsoleOptions, Write
 ----------------------------------------------------------------------------------------------------
 @@TJvProcessEntry
 Summary
@@ -655,13 +794,13 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvProcessEntry.PriorityText
 Summary
-  Converts a priority into a string that describes the priority.
+  Converts a priority into a \string that describes the priority.
 Description
   Call PriorityText to obtain a text description of the priority associated with a process. For
   Example, use this function when the application needs to display a description of a priority to the
   user. 
 Parameters
-  Priority - The priority that needs to be converted to a string.
+  Priority - The priority that needs to be converted to a \string.
 See Also
   Priority
 ----------------------------------------------------------------------------------------------------
