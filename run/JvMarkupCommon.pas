@@ -33,7 +33,13 @@ unit JvMarkupCommon;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Graphics;
+  {$IFDEF VCL}
+  Windows, Controls, Graphics,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QControls, QGraphics,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes;
   
 type
   TJvHTMLElement = class(TObject)
