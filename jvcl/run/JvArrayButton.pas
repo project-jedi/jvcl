@@ -244,9 +244,7 @@ var
     begin
       R := DrawThemedButtonFace(Self, Canvas, R, 0, bsAutoDetect, False, False, False,
         PtInRect(R, ScreenToClient(Mouse.CursorPos)));
-      {$IFDEF VCL}
       SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-      {$ENDIF VCL}
     end
     else
     {$ENDIF JVCLThemesEnabled}

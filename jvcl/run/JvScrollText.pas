@@ -473,9 +473,12 @@ end;
 
 procedure TJvScrollText.DoBoundsChanged;
 begin
-  FText.Width := Width;
-  if FText.Height < Height then
-    FText.Height := Height;
+  if FText <> nil then
+  begin
+    FText.Width := Width;
+    if FText.Height < Height then
+      FText.Height := Height;
+  end;    
   inherited DoBoundsChanged;
 end;
 

@@ -539,7 +539,7 @@ begin
   {$IFDEF VisualCLX}
   if BorderStyle = bsSingle then
   begin
-    DrawShadePanel(Canvas, R, false, 2, nil);
+    DrawShadePanel(Canvas, R, false, 1, nil);
     InflateRect(R, -2, -2);
   end;
   {$ENDIF VisualCLX}
