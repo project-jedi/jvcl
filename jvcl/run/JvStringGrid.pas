@@ -61,6 +61,8 @@ type
   TGetCellAlignmentEvent = procedure(Sender: TJvStringGrid; AColumn, ARow: Integer;
     State: TGridDrawState; var CellAlignment: TAlignment) of object;
   TCaptionClickEvent = procedure(Sender: TJvStringGrid; AColumn, ARow: Integer) of object;
+  TEditShowEvent = procedure(Sender: TJvStringGrid; ACol, ARow: Longint;
+    var AllowEdit: Boolean) of object;
   TJvSortType = (stNone, stAutomatic, stClassic, stCaseSensitive, stNumeric, stDate, stCurrency);
   TProgress = procedure(Sender: TObject; Progression, Total: Integer) of object;
 
@@ -80,6 +82,7 @@ type
     FOnSaveProgress: TProgress;
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
+    FOnShowEditor: TEditShowEvent;
 
     {$IFDEF COMPILER6_UP}
     FCustomInplaceEditStyle: TEditStyle; // NEW 
@@ -104,6 +107,7 @@ type
     {$ENDIF COMPILER6_UP}
   protected
     function CreateEditor: TInplaceEdit; override;
+    function CanEditShow: Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -146,62 +150,78 @@ type
     procedure InvalidateRow(ARow: Integer);
     procedure MoveColumn(FromIndex, ToIndex: Integer);
     procedure MoveRow(FromIndex, ToIndex: Longint);
-
-    procedure ClearSelection; // Clears selection rectangle!
-
     property InplaceEditor;
+
     // Calculates and sets the width of a specific column or all columns if Index < 0
     // based on the text in the affected Cells.
     // MinWidth is the minimum width of the column(s). If MinWidth is < 0,
     // DefaultColWidth is used instead
     procedure AutoSizeCol(Index, MinWidth: Integer);
+
     // Inserts a new row at the specified Index and moves all existing rows >= Index down one step
     // Returns the inserted row as an empty TStrings
     function InsertRow(Index: Integer): TStrings;
+
     // Inserts a new column at the specified Index and moves all existing columns >= Index to the right
     // Returns the inserted column as an empty TStrings
     function InsertCol(Index: Integer): TStrings;
+
     // Removes the row at Index and moves all rows > Index up one step
     procedure RemoveRow(Index: Integer);
+
     // Removes the column at Index and moves all cols > Index to the left
     procedure RemoveCol(Index: Integer);
+
     // Hides the row at Index by setting it's height = -1
     // Calling this method repeatedly does nothing (the row retains it's Index even if it's hidden)
     procedure HideRow(Index: Integer);
+
     // Shows the row at Index by setting it's height to AHeight
     // if AHeight <= 0, DefaultRowHeight is used instead
     procedure ShowRow(Index, AHeight: Integer);
+
     // Hides the column at Index by setting it's ColWidth = -1
     // Calling this method repeatedly does nothing (the column retains it's Index even if it's hidden)
     procedure HideCol(Index: Integer);
+
     // Returns True if the Cell at ACol/ARow is hidden, i.e if it's RowHeight or ColWidth < 0
     function IsHidden(ACol, ARow: Integer): Boolean;
+
     // Shows the column at Index by setting it's width to AWidth
     // If AWidth <= 0, DefaultColWidth is used instead
     procedure ShowCol(Index, AWidth: Integer);
+
     // HideCell hides a cell by hiding the row and column that it belongs to.
     // This means that both a row and a column is hidden
     procedure HideCell(ACol, ARow: Integer);
+
     // ShowCell shows a previously hidden cell by showing it's corresponding row and column and
     // using AWidth/AHeight to set it's size. If AWidth < 0, DefaultColWidth is used instead.
     // If AHeight < 0, DefaultRowHeight is used instead. If one dimension of the Cell wasn't
     // hidden, nothing happens to that dimension (i.e if ColWidth < 0 but RowHeight := 24, only ColWidth is
     // changed to AWidth
     procedure ShowCell(ACol, ARow, AWidth, AHeight: Integer);
-    // Removes the content in the Cells but does not remove any rows or columns
-    procedure Clear;
 
     // Hides all rows and columns
     procedure HideAll;
+
     // Shows all hidden rows and columns, setting their width/height to AWidth/AHeight as necessary
     // If AWidth < 0, DefaultColWidth is used. If AHeight < 0, DefaultRowHeight is used
     procedure ShowAll(AWidth, AHeight: Integer);
 
+    // Removes the content in the Cells but does not remove any rows or columns
+    procedure Clear;
+
+    // Clears selection rectangle!
+    procedure ClearSelection;
+
     procedure SortGrid(Column: Integer; Ascending: Boolean = True; Fixed: Boolean = False;
       SortType: TJvSortType = stClassic; BlankTop: Boolean = True);
-    // Sort grid using the column inidices in ColOrder. For example if ColOrder contains
+
+    // Sort grid using the column indices in ColOrder. For example if ColOrder contains
     // [1, 3, 0, 2], column 3 is used when the items in column 1 are identical
     procedure SortGridByCols(ColOrder: array of Integer; Fixed: Boolean = False);
+
     procedure SaveToFile(FileName: string);
     procedure LoadFromFile(FileName: string);
     procedure LoadFromCSV(FileName: string; Separator: Char = ';'; QuoteChar: Char = '"'; StripQuotes: Boolean = True);
@@ -224,6 +244,7 @@ type
     property OnSaveProgress: TProgress read FOnSaveProgress write FOnSaveProgress;
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
+    property OnShowEditor: TEditShowEvent read FOnShowEditor write FOnShowEditor;
 
     {$IFDEF COMPILER6_UP}
     property OnGetEditStyle: TJvOnGetEditStyleEvent read FOnGetEditStyle write FOnGetEditStyle; // NEW -WP (D6 UP)
@@ -445,6 +466,17 @@ begin
   FreeAndNil(FPickListStrings); //NEW-WP
   {$ENDIF COMPILER6_UP}
   inherited Destroy;
+end;
+
+function TJvStringGrid.CanEditShow: Boolean;
+begin
+  Result := inherited CanEditShow;
+  if Result and Assigned(FOnShowEditor) then
+  begin
+    FOnShowEditor(Self, Col, Row, Result);
+    if not Result then
+      EditorMode := False;
+  end;
 end;
 
 procedure TJvStringGrid.SortGrid(Column: Integer;
