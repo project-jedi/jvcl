@@ -906,12 +906,7 @@ const
 var
   R: TRect;
 begin
-  {$IFDEF VCL}
-  if Canvas.Handle <> 0 then
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Canvas.Handle <> nil then
-  {$ENDIF VisualCLX}
+  if Canvas.Handle <> NullHandle then
   begin
     if csDesigning in ComponentState then
       DrawDesignFrame(Canvas, ClientRect);
@@ -924,7 +919,7 @@ begin
         R.Top := 1;
       R.Right := Width - R.Left;
       R.Bottom := Height - 1;
-      {$IFDEF VisualCLX} QWindows.{$ENDIF}DrawEdge(Canvas.Handle, R, EDGE_ETCHED, Ex[FExpanded]);
+      Windows.DrawEdge(Canvas.Handle, R, EDGE_ETCHED, Ex[FExpanded]);
       if ButtonVisible then
       begin
         Canvas.Brush.Color := Color;
