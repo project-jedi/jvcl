@@ -182,6 +182,7 @@ const
 resourcestring
   cJediPuginWizard = 'JEDI Plugin Wizard';
 
+(* make Delphi 5 compiler happy // andreas
 function GetFormEditorFromModule(
   IModule: IOTAModule): IOTAFormEditor;
 var
@@ -198,6 +199,7 @@ begin
       Break;
   end;
 end;
+*)
 
 //=== TJvPluginWizard ========================================================
 
