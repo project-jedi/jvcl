@@ -38,7 +38,7 @@ begin
     TJvCSVDataSet {$IFDEF JV_MIDAS},TJvDBRemoteLogin{$ENDIF}
     ]);
   RegisterComponents(SPaletteDBVisual,[
-    TJvDBDatePickerEdit, TJvDBProgressBar, TJvDBRichEdit, TJvDBSpinEdit,
+    TJvDBDatePickerEdit, TJvDBDateTimePicker, TJvDBProgressBar, TJvDBRichEdit, TJvDBSpinEdit,
     TJvDBLookupList, TJvDBLookupCombo, TJvDBLookupEdit, TJvDBRadioPanel,
     TJvDBCombobox, TJvDBTreeView, TJvDBLookupTreeViewCombo, TJvDBLookupTreeView,
     TJvDBGrid, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit, TJvDBStatusLabel
