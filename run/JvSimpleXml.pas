@@ -446,6 +446,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFNDEF COMPILER6_UP}
+  JvJCLUtils, // for StrToFloatDef
+  {$ENDIF COMPILER6_UP}
   JvConsts, JvResources;
 
 const
