@@ -85,7 +85,7 @@ type
     WindowMinimizeItem: TMenuItem;
     Help1: TMenuItem;
     HelpAboutItem: TMenuItem;
-    JvSpeedbar: TJvSpeedBar ;
+    JvSpeedbar: TJvSpeedBar;
     SpeedItem1: TjvSpeedItem;
     CloseButton: TjvSpeedItem;
     SpeedItem3: TjvSpeedItem;
@@ -173,9 +173,9 @@ type
       const Msg: string);
     procedure ClearTraceItemClick(Sender: TObject);
     procedure PasswordItemClick(Sender: TObject);
-    procedure SpeedBarApplyAlign(Sender: TObject; Align: TAlign;
+    procedure JvSpeedbarApplyAlign(Sender: TObject; Align: TAlign;
       var Apply: Boolean);
-    procedure SpeedBarResize(Sender: TObject);
+    procedure JvSpeedbarResize(Sender: TObject);
     procedure BdePropsItemClick(Sender: TObject);
     procedure FlatButtonsItemClick(Sender: TObject);
     procedure ClosedDatabasesClick(Sender: TObject; const RecentName,
@@ -186,7 +186,7 @@ type
       Caption: string; UserData: Longint);
     procedure UserHelpItemClick(Sender: TObject);
     procedure DBRecordNoDblClick(Sender: TObject);
-    procedure SpeedBarPosChanged(Sender: TObject);
+    procedure JvSpeedbarPosChanged(Sender: TObject);
     procedure DBRecordNoGetRecordCount(Sender: TObject; DataSet: TDataSet;
       var Value: Longint);
     procedure PrintDataClick(Sender: TObject);
@@ -737,13 +737,13 @@ begin
   else Session.GetPassword;
 end;
 
-procedure TDBExplorerMainForm.SpeedBarApplyAlign(Sender: TObject;
+procedure TDBExplorerMainForm.JvSpeedbarApplyAlign(Sender: TObject;
   Align: TAlign; var Apply: Boolean);
 begin
   Apply := Align in [alTop, alBottom];
 end;
 
-procedure TDBExplorerMainForm.SpeedBarResize(Sender: TObject);
+procedure TDBExplorerMainForm.JvSpeedbarResize(Sender: TObject);
 begin
   DBNavigator.Left := JvSpeedbar.Width - DBNavigator.Width - 8;
 end;
@@ -799,7 +799,7 @@ begin
   end;
 end;
 
-procedure TDBExplorerMainForm.SpeedBarPosChanged(Sender: TObject);
+procedure TDBExplorerMainForm.JvSpeedbarPosChanged(Sender: TObject);
 begin
   if NewStyleControls then
     with JvSpeedbar do begin

@@ -1,38 +1,44 @@
 object JvDBDateTimePickerMainForm: TJvDBDateTimePickerMainForm
   Left = 285
   Top = 137
-  Width = 582
+  Width = 531
   Height = 409
-  Caption = 'Jedi Date Time Picker Demo'
+  Caption = 'JVCL Date Time Picker Demo'
   Color = clBtnFace
+  Constraints.MinHeight = 300
+  Constraints.MinWidth = 450
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
-    Left = 48
+    Left = 16
     Top = 27
     Width = 112
     Height = 26
     Caption = 'A JvDBDateTimePicker'#13#10'with kind dtkDate:'
   end
   object Label2: TLabel
-    Left = 240
+    Left = 208
     Top = 28
     Width = 112
     Height = 26
     Caption = 'A JvDBDateTimePicker'#13#10'with kind dtkTime:'
   end
   object DBGrid1: TDBGrid
-    Left = 42
+    Left = 10
     Top = 142
     Width = 503
     Height = 227
+    Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DataSource1
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
@@ -42,7 +48,7 @@ object JvDBDateTimePickerMainForm: TJvDBDateTimePickerMainForm
     TitleFont.Style = []
   end
   object DBNavigator1: TDBNavigator
-    Left = 42
+    Left = 10
     Top = 98
     Width = 240
     Height = 25
@@ -50,7 +56,7 @@ object JvDBDateTimePickerMainForm: TJvDBDateTimePickerMainForm
     TabOrder = 1
   end
   object JvDBDateTimePicker1: TJvDBDateTimePicker
-    Left = 42
+    Left = 10
     Top = 60
     Width = 186
     Height = 21
@@ -68,7 +74,7 @@ object JvDBDateTimePickerMainForm: TJvDBDateTimePickerMainForm
     DataSource = DataSource1
   end
   object JvDBDateTimePicker2: TJvDBDateTimePicker
-    Left = 234
+    Left = 202
     Top = 60
     Width = 186
     Height = 21
@@ -87,13 +93,13 @@ object JvDBDateTimePickerMainForm: TJvDBDateTimePickerMainForm
   end
   object DataSource1: TDataSource
     DataSet = Table1
-    Left = 426
-    Top = 18
+    Left = 416
+    Top = 24
   end
   object Table1: TTable
     DatabaseName = 'DBDEMOS'
     TableName = 'events.db'
-    Left = 458
-    Top = 22
+    Left = 472
+    Top = 24
   end
 end
