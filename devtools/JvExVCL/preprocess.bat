@@ -1,8 +1,26 @@
-echo off
-cd src
-dpp.exe .\build.pas -I..\..\..\common
+@echo off
 
-SET OUTDIR=..
+SET OUTDIR=..\..\..\run
+SET QOUTDIR=..\..\..\qrun
+
+
+cd src
+
+
+SET FILE=.\build
+if NOT "-%1" == "-" SET FILE=%1
+echo Preprocessing template: %FILE%.pas
+dpp.exe .\%FILE%.pas -I..\..\..\common >NUL
+
+if "%FILE%" == ".\build" GOTO ALL
+
+
+if "%FILE%" == "JvExComboEdits" SET OUTDIR=%QOUTDIR%
+move %FILE%.i.pas %OUTDIR%\%FILE%.pas
+
+
+goto LEAVE
+:ALL
 
 move JvExButtons.i.pas %OUTDIR%\JvExButtons.pas
 move JvExCheckLst.i.pas %OUTDIR%\JvExCheckLst.pas
@@ -15,17 +33,11 @@ move JvExForms.i.pas %OUTDIR%\JvExForms.pas
 move JvExGrids.i.pas %OUTDIR%\JvExGrids.pas
 move JvExMask.i.pas %OUTDIR%\JvExMask.pas
 move JvExStdCtrls.i.pas %OUTDIR%\JvExStdCtrls.pas
-move JvExComboEdits.i.pas %OUTDIR%\JvExComboEdits.pas
+move JvExComboEdits.i.pas %QOUTDIR%\JvExComboEdits.pas
 
 cd ..
 
-jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExButtons.pas
-jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExCheckLst.pas
-jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExComCtrls.pas
-jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExControls.pas
-jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExDBGrids.pas
-jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExExtCtrls.pas
-jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExForms.pas
-jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExGrids.pas
-jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExMask.pas
-jpp -c -dVCL -uVisualCLX -x..\..\run\ JvExStdCtrls.pas
+:LEAVE
+SET FILE=
+SET OUTDIR=
+SET QOUTDIR=
