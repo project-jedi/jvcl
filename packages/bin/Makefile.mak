@@ -237,6 +237,5 @@ Installer: MOs
 	@echo -DNO_JCL>>JVCLInstall.cfg
 	#
 	#
-	$(DCC) $(DXGETTEXT) -DNO_JCL JVCLInstall.dpr
-	start ..\..\bin\JVCLInstall.exe
-
+	$(DCC) -B $(DXGETTEXT) -DNO_JCL JVCLInstall.dpr
+	start ..\..\bin\JVCLInstall.exe $(INSTALLOPTIONS)
