@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2005-03-10:
+- Renamed TJvSimpleXMLElem.Pointer property to NameSpace. This describes what it actually is // peter3
+- Added TJvSimpleXMLElem.FullName function: returns NameSpace:Name or just Name depending on whether NameSpace is defined or not // peter3
 2005-03-01:
 - TJvRichEdit: Renamed TJvCustomRichEdit.InsertBitmap to TJvCustomRichEdit.InsertGraphic; allows now to insert TGraphic objects, not just TBitmap objects. //remkobonte
 2005-02-01:
