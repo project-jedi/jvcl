@@ -156,6 +156,7 @@ type
     FColorBoxSettings: TJvColorProviderColorBoxSettings;
     FTextSettings: TJvColorProviderTextSettings;
   protected
+    function KeepOnProviderChange: Boolean; override;
     function Get_ColorBoxSettings: TJvColorProviderColorBoxSettings;
     function Get_TextSettings: TJvColorProviderTextSettings;
     procedure Set_ColorBoxSettings(Value: TJvColorProviderColorBoxSettings);
@@ -603,6 +604,31 @@ end;
 {$ENDIF TestContexts}
 
 //===TJvColorProviderSettings=======================================================================
+
+function TJvColorProviderSettings.KeepOnProviderChange: Boolean;
+var
+  Classes: TClassArray;
+  I: Integer;
+begin
+  SetLength(Classes, 0);
+  if ConsumerImpl.ProviderIntf <> nil then
+  begin
+    Classes := ConsumerImpl.ProviderIntf.ConsumerClasses;
+    I := High(Classes);
+    while I >= Low(Classes) do
+    begin
+      if Classes[I].InheritsFrom(Self.ClassType) then
+      begin
+        Result := True;
+        Exit;
+      end;
+      Dec(I);
+    end;
+    Result := False;
+  end
+  else
+    Result := False;
+end;
 
 function TJvColorProviderSettings.Get_ColorBoxSettings: TJvColorProviderColorBoxSettings;
 begin
