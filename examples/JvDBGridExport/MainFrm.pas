@@ -60,6 +60,8 @@ begin
   AExporter := AExportClass.Create(self);
   try
     AExporter.Grid := DBGrid1;
+    if AExporter is TJvDBGridCSVExport then
+      TJvDBGridCSVExport(AExporter).ExportSeparator := esComma; // this to be compatible with JvCsvData
     AExporter.Filename := Filename;
     AExporter.OnProgress := DoExportProgress;
     JvProgressDialog1.Caption := AExporter.Caption;

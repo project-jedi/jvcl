@@ -5,8 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, DBCtrls, DB, StdCtrls, JvExStdCtrls,
-  JvEdit, JvHTControls, JvDBHTLabel, JvExForms, JvCsvData, JvComponent,
-  JvDragDrop, JvFormPlacement;
+  JvHTControls, JvCsvData, JvDBHTLabel;
 
 type
   TForm1 = class(TForm)
@@ -16,10 +15,8 @@ type
     memFormat: TMemo;
     Button1: TButton;
     JvCsvDataSet1: TJvCsvDataSet;
-    Edit1: TJvEdit;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure DataSource1DataChange(Sender: TObject; Field: TField);
   private
     { Private declarations }
   public
@@ -45,12 +42,6 @@ begin
   else
     JvCsvDataSet1.Open;
   memFormat.Lines.Text := JvDBHTLabel1.Mask;
-  Edit1.AutoHint := true;
-end;
-
-procedure TForm1.DataSource1DataChange(Sender: TObject; Field: TField);
-begin
-  Edit1.Text := JvCsvDataSet1.FieldByName('Filename').AsString;
 end;
 
 end.

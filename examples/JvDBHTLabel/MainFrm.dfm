@@ -18,7 +18,7 @@ object Form1: TForm1
   TextHeight = 13
   object JvDBHTLabel1: TJvDBHTLabel
     Left = 8
-    Top = 6
+    Top = 14
     Width = 115
     Height = 27
     DataSource = DataSource1
@@ -57,36 +57,38 @@ object Form1: TForm1
     TabOrder = 2
     OnClick = Button1Click
   end
-  object Edit1: TJvEdit
-    Left = 8
-    Top = 40
-    Width = 441
-    Height = 21
-    Hint = 'Standard hint'
-    PasswordChar = #0
-    GroupIndex = -1
-    MaxPixel.Length = 200
-    MaxPixel.UseControlFont = False
-    MaxPixel.Font.Charset = DEFAULT_CHARSET
-    MaxPixel.Font.Color = clWindowText
-    MaxPixel.Font.Height = -9
-    MaxPixel.Font.Name = 'MS Shell Dlg 2'
-    MaxPixel.Font.Style = []
-    Modified = False
-    Anchors = [akLeft, akTop, akRight]
-    TabOrder = 3
-  end
   object DataSource1: TDataSource
+    AutoEdit = False
     DataSet = JvCsvDataSet1
-    OnDataChange = DataSource1DataChange
     Left = 400
     Top = 16
   end
   object JvCsvDataSet1: TJvCsvDataSet
+    FieldDefs = <
+      item
+        Name = 'FILENAME'
+        DataType = ftString
+        Size = 255
+      end
+      item
+        Name = 'SIZE'
+        DataType = ftInteger
+      end
+      item
+        Name = 'ATTRIBUTES'
+        DataType = ftString
+        Size = 64
+      end
+      item
+        Name = 'TYPE'
+        DataType = ftString
+        Size = 255
+      end>
     FileName = 'TestData.csv'
     ReadOnly = True
     Changed = False
-    CsvFieldDef = 'Filename:$255,Size:%,Attributes:$64,Type:$255'
+    CsvFieldDef = 'FILENAME:$255,SIZE:%,ATTRIBUTES:$64,TYPE:$255'
+    CsvKeyDef = 'Filename'
     CsvUniqueKeys = False
     CaseInsensitive = True
     SavesChanges = False
