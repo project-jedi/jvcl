@@ -77,6 +77,8 @@ type
     FGroupIndex: Integer;
     FOnKeyDown: TKeyEvent;
     FProtectPassword: boolean;
+    FStreamedSelLength: Integer;
+    FStreamedSelStart: Integer;
     procedure SetCaret(const Value: TJvCaret);
     procedure CaretChanged(sender: TObject); dynamic;
     procedure WMSetFocus(var msg: TMessage); message WM_SETFOCUS;
@@ -110,6 +112,8 @@ type
   protected
     procedure Change; override;
     procedure MaxPixelChanged(Sender: TObject);
+    procedure SetSelLength(Value: Integer); override;
+    procedure SetSelStart(Value: Integer); override;
   public
     procedure DefaultHandler(var Msg);override;
     function IsEmpty: Boolean;
@@ -166,7 +170,7 @@ type
     property MaxPixel;
     property Modified;
     property SelStart;
-    property SelText;
+    //property SelText;
     property SelLength;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -250,6 +254,8 @@ begin
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
   FGroupIndex := -1;
+  FStreamedSelLength := 0;
+  FStreamedSelStart := 0;
   inherited OnKeyDown := LocalKeyDown;
 end;
 
@@ -272,6 +278,8 @@ begin
     if Assigned(FOnRestored) then
       FOnRestored(Self);
   end;
+  SelStart := FStreamedSelStart;
+  SelLength := FStreamedSelLength;
 end;
 
 destructor TJvCustomEdit.Destroy;
@@ -660,6 +668,22 @@ begin
     Result := Char(Sendmessage(Handle, EM_GETPASSWORDCHAR, 0, 0))
   else
     Result := inherited PasswordChar;
+end;
+
+procedure TJvCustomEdit.SetSelLength(Value: Integer);
+begin
+  if csReading in ComponentState then
+    FStreamedSelLength := Value
+  else
+    inherited;
+end;
+
+procedure TJvCustomEdit.SetSelStart(Value: Integer);
+begin
+  if csReading in ComponentState then
+    FStreamedSelStart := Value
+  else
+    inherited;
 end;
 
 end.
