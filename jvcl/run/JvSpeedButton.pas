@@ -50,7 +50,8 @@ uses
   QControls, QGraphics, QForms, QExtCtrls, QButtons, QMenus, QImgList,
   QActnList,
   {$ENDIF VisualCLX}
-  JvComponent, JvConsts, JvTypes, JvJCLUtils, JvJVCLUtils;
+  JvComponent, JvConsts, JvTypes, JvJCLUtils, JvJVCLUtils,
+  JvThemes;
 
 type
   TJvNumGlyphs = 1..5;
@@ -58,7 +59,7 @@ type
   TJvButtonState = (rbsUp, rbsDisabled, rbsDown, rbsExclusive, rbsInactive);
 
   {$IFDEF VisualCLX}
-  TButtonStyle = (bsAutoDetect, bsWin31, bsNew);
+  TButtonStyle = JvThemes.TButtonStyle;
   {$ENDIF VisualCLX}
 
   TJvCustomSpeedButton = class(TJvGraphicControl)
@@ -500,7 +501,7 @@ function DrawButtonFrame(Canvas: TCanvas; const Client: TRect;
 implementation
 
 uses
-  Math, JvThemes;
+  Math;
 
 type
   TJvGlyphList = class;

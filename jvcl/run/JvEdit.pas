@@ -48,13 +48,12 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, StdCtrls, Forms, Menus,
-  JvToolEdit,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, QTypes, QGraphics, QControls, QStdCtrls, QDialogs, QForms, QMenus, Types,
   QWindows,
   {$ENDIF VisualCLX}
-  JvCaret, JvMaxPixel, JvTypes, JvComponent,
+  JvCaret, JvMaxPixel, JvTypes, JvComponent, JvToolEdit,
   JvExControls, JvExStdCtrls;
 
 {$IFDEF VisualCLX}
@@ -251,165 +250,6 @@ uses
   JvFixedEditPopup,
   {$ENDIF VCL}
   Math;
-
-{$IFDEF VisualCLX}
-
-// (ahuser) move this code to JvToolEdit.pas when JvToolEdit.pas is converted to
-//          VisualCLX.
-
-type
-  TOpenWinControl = class(TWinControl);
-  TOpenCustomEdit = class(TCustomEdit);
-
-procedure DrawSelectedText(Canvas: TCanvas; const R: TRect; X, Y: Integer;
-  const Text: WideString; SelStart, SelLength: Integer;
-  HighlightColor, HighlightTextColor: TColor);
-var
-  //Bmp: TBitmap;
-  w, h, Width: Integer;
-  S: WideString;
-  SelectionRect: TRect;
-  Brush: TBrushRecall;
-  PenMode: TPenMode;
-  FontColor: TColor;
-begin
-  w := R.Right - R.Left;
-  h := R.Bottom - R.Top;
-  if (w <= 0) or (h <= 0) then
-    Exit;
-
-  S := Copy(Text, 1, SelStart);
-  if S <> '' then
-  begin
-    Canvas.TextRect(R, X, Y, S);
-    Inc(X, Canvas.TextWidth(S));
-  end;
-
-  S := Copy(Text, SelStart + 1, SelLength);
-  if S <> '' then
-  begin
-    Width := Canvas.TextWidth(S);
-    Brush := TBrushRecall.Create(Canvas.Brush);
-    PenMode := Canvas.Pen.Mode;
-    try
-      SelectionRect := Rect(Max(X, R.Left), R.Top,
-                            Min(X + Width, R.Right), R.Bottom);
-      Canvas.Pen.Mode := pmCopy;
-      Canvas.Brush.Color := HighlightColor;
-      Canvas.FillRect(SelectionRect);
-      FontColor := Canvas.Font.Color;
-      Canvas.Font.Color := HighlightTextColor;
-      Canvas.TextRect(R, X, Y, S);
-      Canvas.Font.Color := FontColor;
-    finally
-      Canvas.Pen.Mode := PenMode;
-      Brush.Free;
-    end;
-    Inc(X, Width);
-  end;
-
-  S := Copy(Text, SelStart + SelLength + 1, MaxInt);
-  if S <> '' then
-    Canvas.TextRect(R, X, Y, S);
-end;
-
-{ PaintEdit (CLX) needs an implemented EM_GETRECT message handler. If no
-  EM_GETTEXT handler exists, it uses the ClientRect of the edit control. }
-function PaintEdit(Editor: TCustomEdit; const AText: string;
-  AAlignment: TAlignment; PopupVisible: Boolean; {ButtonWidth: Integer;}
-  DisabledTextColor: TColor; StandardPaint: Boolean; Flat: Boolean;
-  ACanvas: TCanvas): Boolean;
-var
-  LTextWidth, X: Integer;
-  EditRect: TRect;
-  S: string;
-  ed: TOpenCustomEdit;
-  SavedFont: TFontRecall;
-  SavedBrush: TBrushRecall;
-  Offset: Integer;
-  R: TRect;
-begin
-  Result := True;
-  if csDestroying in Editor.ComponentState then
-    Exit;
-  ed := TOpenCustomEdit(Editor);
-  if StandardPaint and not (csPaintCopy in ed.ControlState) then
-  begin
-    Result := False;
-    { return false if we need to use standard paint handler }
-    Exit;
-  end;
-  SavedFont := TFontRecall.Create(ACanvas.Font);
-  SavedBrush := TBrushRecall.Create(ACanvas.Brush);
-  try
-    ACanvas.Font := ed.Font;
-
-{   // paint Border
-    R := ed.ClientRect;
-    Offset := 0;
-    if (ed.BorderStyle = bsSingle) then
-      QGraphics.DrawEdge(ACanvas, R, esLowered, esLowered, ebRect)
-    else
-    begin
-      if Flat then
-        QGraphics.DrawEdge(ACanvas, R, esNone, esLowered, ebRect);
-      Offset := 2;
-    end;}
-
-    with ACanvas do
-    begin
-      EditRect := Rect(0, 0, 0, 0);
-      SendMsg(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
-      if IsRectEmpty(EditRect) then
-      begin
-        EditRect := ed.ClientRect;
-        if ed.BorderStyle = bsSingle then
-          InflateRect(EditRect, -2, -2);
-      end
-      else
-        InflateRect(EditRect, -Offset, -Offset);
-      if Flat and (ed.BorderStyle = bsSingle) then
-      begin
-        Brush.Color := clWindowFrame;
-        FrameRect(ACanvas, ed.ClientRect);
-      end;
-      S := AText;
-      LTextWidth := TextWidth(S);
-      if PopupVisible then
-        X := EditRect.Left
-      else
-      begin
-        case AAlignment of
-          taLeftJustify:
-            X := EditRect.Left;
-          taRightJustify:
-            X := EditRect.Right - LTextWidth;
-        else
-          X := (EditRect.Right + EditRect.Left - LTextWidth) div 2;
-        end;
-      end;
-      if not ed.Enabled then
-      begin
-        if Supports(ed, IJvControlEvents) then
-          (ed as IJvControlEvents).DoPaintBackground(ACanvas, 0);
-        ACanvas.Brush.Style := bsClear;
-        ACanvas.Font.Color := DisabledTextColor;
-        ACanvas.TextRect(EditRect, X, EditRect.Top + 1, S);
-      end
-      else
-      begin
-        Brush.Color := ed.Color;
-        DrawSelectedText(ACanvas, EditRect, X, EditRect.Top + 1, S,
-          ed.SelStart, ed.SelLength,
-          clHighlight, clHighlightText);
-      end;
-    end;
-  finally
-    SavedFont.Free;
-    SavedBrush.Free;
-  end;
-end;
-{$ENDIF VisualCLX}
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin
