@@ -14,9 +14,9 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s): Oliver Giesen [ogware@gmx.net]           
 
-Last Modified: 2002-06-05
+Last Modified: 2002-12-09
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -115,6 +115,10 @@ type
     FOnSelect: TJvMonthCalSelEvent;
     FOnSelChange: TJvMonthCalSelEvent;
     FOnGetState: TJvMonthCalStateEvent;
+    FOnKillFocus,
+    FOnSetFocus: TJvFocusChangeEvent;
+    FLeaving: Boolean;
+    FEntering: Boolean;
     procedure DoBoldDays;
     procedure SetColors(Value: TJvMonthCalColors);
     procedure SetBoldDays(Value: TStrings);
@@ -154,6 +158,9 @@ type
     procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
     procedure WMGetDlgCode(var Message: TMessage);message WM_GETDLGCODE;
     procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
+    procedure WMKillFocus(var AMessage: TMessage); message WM_KILLFOCUS;
+    procedure WMSetFocus(var AMessage: TMessage); message WM_SETFOCUS;
+
   protected
     { Protected declarations }
 
@@ -168,6 +175,9 @@ type
     procedure DoDateSelect(StartDate, EndDate: TDateTime); virtual;
     procedure DoDateSelChange(StartDate, EndDate: TDateTime); virtual;
     procedure DoGetDayState(var DayState: TNMDayState); virtual;
+    procedure DoKillFocus(const ANextControl: TWinControl); virtual;
+    procedure DoSetFocus(const APreviousControl: TWinControl); virtual;
+
     property MinSize: TRect read GetMinSize;
     property Bold[Year, Month, Day: word]: boolean read IsBold write SetBold;
 
@@ -191,6 +201,8 @@ type
     property OnSelect: TJvMonthCalSelEvent read FOnSelect write FOnSelect;
     property OnSelChange: TJvMonthCalSelEvent read FOnSelChange write FOnSelChange;
     property OnGetDayState: TJvMonthCalStateEvent read FOnGetState write FOnGetState;
+    property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
+    property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -200,6 +212,9 @@ type
     function LastVisibleDate(Partial: boolean): TDateTime;
     function VisibleMonths: integer;
     procedure SetDayStates(MonthCount: integer; DayStates: array of TMonthDayState);
+
+    property Entering: Boolean read FEntering;
+    property Leaving: Boolean read FLeaving;
   end;
 
   TJvMonthCalendar2 = class(TJvCustomMonthCalendar)
@@ -255,7 +270,9 @@ type
     property ShowToday;
     property WeekNumbers;
     property Today;
+    property OnKillFocus;
     property OnSelect;
+    property OnSetFocus;
     property OnSelChange;
     property OnGetDayState;
   end;
@@ -620,6 +637,8 @@ begin
   FMonthDelta := 1;
   FToday := Now;
   FBorderStyle := bsNone;
+  FEntering:= False;
+  FLeaving:= False;
   inherited Color := clWindow;
   ParentColor := False;
   TabStop := True;
@@ -1174,6 +1193,43 @@ end;
 function TJvCustomMonthCalendar.GetFirstDayOfWeek: TJvMonthCalWeekDay;
 begin
   result := FAppearance.FirstDayOfWeek;
+end;
+
+procedure TJvCustomMonthCalendar.DoKillFocus(
+  const ANextControl: TWinControl);
+begin
+  if Assigned(OnKillFocus) then
+    OnKillFocus(Self, ANextControl);
+end;
+
+procedure TJvCustomMonthCalendar.DoSetFocus(
+  const APreviousControl: TWinControl);
+begin
+  if Assigned(OnSetFocus) then
+    OnSetFocus(Self, APreviousControl);
+end;
+
+procedure TJvCustomMonthCalendar.WMKillFocus(var AMessage: TMessage);
+begin
+  FLeaving:= True;
+  try
+    inherited;
+    DoKillFocus(FindControl(AMessage.WParam));
+  finally
+    FLeaving:= False;
+  end;
+end;
+
+procedure TJvCustomMonthCalendar.WMSetFocus(var AMessage: TMessage);
+begin
+  FEntering:= True;
+  try
+    inherited;
+    DoSetFocus(FindControl(AMessage.WParam));
+  finally
+    FEntering:= False;
+  end;
+
 end;
 
 { TJvMonthCalAppearance }
