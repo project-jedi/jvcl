@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -33,12 +33,12 @@ unit JvIpBox;
 {    1/11/2000  Corrected an exception on design time   }
 {*******************************************************}
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,  Mask, Dialogs,  JvTypes ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Mask, Dialogs, JvTypes, JVCLVer;
 
 type
   TJvIpBox = class(TCustomMaskEdit)
@@ -65,7 +65,7 @@ type
     function SaveToInt: Cardinal;
     procedure LoadFromInt(Value: Cardinal);
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Anchors;
     property AutoSelect;
     property AutoSize;
@@ -132,15 +132,15 @@ type
   TIpBytes = record
     case Byte of
       0:
-        (IpAsInt: Cardinal);
+      (IpAsInt: Cardinal);
       1:
-        (Part1: Byte;
-         Part2: Byte;
-         Part3: Byte;
-         Part4: Byte);
+      (Part1: Byte;
+        Part2: Byte;
+        Part3: Byte;
+        Part4: Byte);
   end;
 
-{***********************************************}
+  {***********************************************}
 
 constructor TJvIpBox.Create(AOwner: TComponent);
 begin

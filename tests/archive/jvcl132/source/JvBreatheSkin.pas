@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,14 +28,14 @@ Known Issues:
 
 unit JvBreatheSkin;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Registry, inifiles, jpeg, Menus,
-  JvSlider, JvLabel, JvPcx, JvImage, JvScrollingLabel, JvTypes ,JVCLVer;
+  JvSlider, JvLabel, JvPcx, JvImage, JvScrollingLabel, JvTypes, JVCLVer;
 
 type
   TJvBreatheLabel = class(TPersistent)
@@ -408,7 +408,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property SkinFile: TFileName read FSkin write SetSkin;
     property Options: TJvBreatheOption read FBOptions write FBOptions;
     property Labels: TJvBreatheLabels read FLabels write FLabels;
@@ -516,14 +516,14 @@ resourcestring
   RC_DefNothing = '-';
   RC_DefStatus = 'Status';
 
-///////////////////////////////////////////////////////////
-// TJvBreatheSkin
-///////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////
+  // TJvBreatheSkin
+  ///////////////////////////////////////////////////////////
 
 procedure TJvBreatheSkin.LoadDefault;
 var
   res: TResourceStream;
-  buf: array [0..255] of Char;
+  buf: array[0..255] of Char;
   st: string;
 
   procedure LoadFromRes(bmp: TBitmap; Value: string);
@@ -557,7 +557,7 @@ var
   end;
 
 begin
-   //Load About text
+  //Load About text
   res := TResourceStream.Create(hInstance, 'infot', RT_RCDATA);
   FTAbout.LoadFromStream(res);
   res.Free;
@@ -573,15 +573,16 @@ begin
   LoadFromResPcx(FOver, 'over');
   LoadFromResPcx(FMask, 'mask');
 
-   //assign back picture
+  //assign back picture
   FImg.Picture.Assign(FBack);
   Width := FImg.Width;
   Height := FImg.Height;
 
-   //load default skin
+  //load default skin
   GetTempPath(255, buf);
   st := buf;
-  if st[Length(st)] <> '\' then st := st + '\';
+  if st[Length(st)] <> '\' then
+    st := st + '\';
 
   res := TResourceStream.Create(hInstance, 'main', RT_RCDATA);
   res.SaveToFile(st + '1.ini');
@@ -599,7 +600,7 @@ begin
   FBOptions.OnChange := OptionsChanged;
   FTAbout := TStringList.Create;
 
-   //enable painting ;)
+  //enable painting ;)
 
   Parent := TWinControl(AOwner);
 
@@ -616,7 +617,7 @@ begin
   FButtons.Move.OnMouseMove := MoveFormMove;
   FButtons.Move.OnMouseDown := MoveFormDown;
 
-   //Sliders
+  //Sliders
   FVolume := TJvBreatheVolume.Create(Self);
   FVolume.FSlider.Left := 0;
   FVolume.FSlider.Top := 0;
@@ -632,7 +633,7 @@ begin
   FPosition.FSlider.Height := 0;
   FPosition.FSlider.Parent := Self;
 
-   //Images
+  //Images
   FBack := TBitmap.Create;
   FDeact := TBitmap.Create;
   FInfo := TBitmap.Create;
@@ -643,7 +644,7 @@ begin
   FVolRuler := TBitmap.Create;
   FVolThumb := TBitmap.Create;
 
-   //Labels
+  //Labels
   FLabels.Status.Caption := RC_DefStatus;
   FLabels.CurrentTime.Caption := RC_DefTotalTime;
   FLabels.Layer.Caption := RC_DefNothing;
@@ -654,7 +655,7 @@ begin
   FLabels.TotalTime.Caption := RC_DefTotalTime;
   FLabels.TotalInfo.Caption := RC_DefTotalInfo;
 
-   //Load default design
+  //Load default design
   InitAllBtn;
   LoadDefault;
 end;
@@ -666,14 +667,14 @@ var
   h: THandle;
 begin
   try
-     //Reset the region of the window if not destroying
+    //Reset the region of the window if not destroying
     if not (csDestroying in GetParentForm(TControl(Self)).ComponentState) then
     begin
-        //Enable Caption
+      //Enable Caption
       h := GetParentForm(TControl(Self)).Handle;
       SetWindowLong(h, GWL_STYLE, GetWindowLong(h, GWL_STYLE) or WS_CAPTION);
 
-        //Use form region
+      //Use form region
       SetWindowRgn(h, 0, True);
     end;
   except
@@ -755,7 +756,7 @@ begin
   FSkin := Value;
   if FSkin <> '' then
   begin
-      //Load images
+    //Load images
     path := ExtractFilePath(Value);
     if FileExists(path + RC_BmpBack) then
       FBack.LoadFromFile(path + RC_BmpBack)
@@ -795,7 +796,7 @@ begin
     else
       LoadFromRes(FVolThumb, 'volthumb');
 
-      //Assign background
+    //Assign background
     FImg.Picture.Bitmap.Assign(FBack);
 
     if FileExists(path + RC_InfoFile) then
@@ -803,14 +804,14 @@ begin
     else
       FTAbout.Clear;
 
-      //if AutoSize
+    //if AutoSize
     if FBOptions.AutoSize then
     begin
       Self.Width := FImg.Width;
       Self.Height := FImg.Height;
     end;
 
-      //Load ini file
+    //Load ini file
     LoadSkin(FSkin);
   end
   else
@@ -1031,16 +1032,17 @@ begin
         Inc(x);
       endx := x;
 
-          // do we have some pixels?
+      // do we have some pixels?
       if startx < bmp.Width then
       begin
         if rgn1 = 0 then
-                 // Create a region to start with
+          // Create a region to start with
           rgn1 := CreateRectRgn(startx + 1, y, endx, y + 1)
         else
         begin
           rgn2 := CreateRectRgn(startx + 1, y, endx, y + 1);
-          if rgn2 <> 0 then CombineRgn(rgn1, rgn1, rgn2, RGN_OR);
+          if rgn2 <> 0 then
+            CombineRgn(rgn1, rgn1, rgn2, RGN_OR);
           DeleteObject(rgn2);
         end;
       end;
@@ -1067,24 +1069,24 @@ begin
     Left := -3;
     Top := -3;
 
-      //Remove Caption
+    //Remove Caption
     h := GetParentForm(TControl(Self)).Handle;
     SetWindowLong(h, GWL_STYLE, GetWindowLong(h, GWL_STYLE) and not WS_CAPTION);
     GetParentForm(Self).ClientWidth := Width;
     GetParentForm(Self).ClientHeight := Height;
     GetParentForm(Self).Invalidate;
 
-      //Use region
+    //Use region
     SetWindowRgn(h, RegionFromBitmap(FMask), True);
   end
   else
   begin
-      //Enable Caption
+    //Enable Caption
     h := GetParentForm(TControl(Self)).Handle;
     SetWindowLong(h, GWL_STYLE, GetWindowLong(h, GWL_STYLE) or WS_CAPTION);
     GetParentForm(Self).Invalidate;
 
-      //Use form region
+    //Use form region
     SetWindowRgn(h, 0, True);
   end;
 end;

@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvCreatedWith;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  ExtCtrls ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JVCLVer;
 
 type
   // (rom) TJvIm type simplified
@@ -46,7 +46,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property ImageNumber: TJvIm read FIm write SetIm default 1;
   end;
 
@@ -73,7 +73,7 @@ var
 begin
   // (rom) simplified!
   FIm := Value;
-  s := 'D'+IntToStr(FIm);
+  s := 'D' + IntToStr(FIm);
   Picture.Bitmap.Handle := LoadBitmap(HInstance, PChar(s));
 end;
 

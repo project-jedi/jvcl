@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvPatchFile;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,    JvTypes  ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, JvTypes, JvComponent;
 
 type
   TJvPatchFile = class(TJvComponent)
@@ -130,14 +130,14 @@ var
   i: Integer;
   ind, tmp: longint;
   c: Byte;
-  b: array [0..65000] of Byte;
+  b: array[0..65000] of Byte;
   t, tend: TFileStream;
   t2: TMemoryStream;
 begin
   FPos := -1;
   FPass := Password;
 
-   //patch it !:)
+  //patch it !:)
   Result := False;
   if (FDiff.Count = 0) or (FStart = '') or not FileExists(FStart) then
     Exit;
@@ -167,10 +167,9 @@ begin
         c := Decrypt(c);
         t2.Write(c, 1);
       end
-      else
-      if Length(FDiff[i]) = 1 then
+      else if Length(FDiff[i]) = 1 then
       begin
-            //File is greater
+        //File is greater
         t.Position := t2.Position;
         while t.Position < t.Size do
         begin
@@ -181,10 +180,9 @@ begin
         c := Decrypt(c);
         t2.Write(c, 1);
       end
-      else
-      if (Pos('%', FDiff[i]) = 4) then
+      else if (Pos('%', FDiff[i]) = 4) then
       begin
-            //File is smaller
+        //File is smaller
         ind := StrToInt(Copy(FDiff[i], Pos('%', FDiff[i]) + 1, Length(FDiff[i])));
         while t.Position < ind do
         begin

@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvHttpGrabber;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, WinInet,  JvTypes ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, WinInet, JvTypes, JvComponent;
 
 type
   TJvHttpThread = class(TThread)
@@ -216,7 +216,7 @@ end;
 
 procedure TJvHttpGrabber.Execute;
 begin
-   //Download it
+  //Download it
   if FThread = nil then
   begin
     FThread := TJvHttpThread.Create(Url, Referer, Username, FileName, Password,
@@ -352,7 +352,7 @@ end;
 
 function TJvHttpThread.GetLastErrorMsg: string;
 var
-  msg: array [0..1000] of Char;
+  msg: array[0..1000] of Char;
 begin
   FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil, GetLastError, 0, msg, 1000, nil);
   Result := msg;
@@ -377,7 +377,7 @@ var
   buffer: Pointer;
   dwBufLen, dwIndex, ReadedBytes, TotalBytes: DWORD;
   HasSize: Boolean;
-  Buf: array [0..1024] of Byte;
+  Buf: array[0..1024] of Byte;
 
   procedure ParseUrl(Value: string);
   begin

@@ -19,8 +19,8 @@ Contributor(s): ______________________________________.
 Last Modified: 2002-01-06;
 Current Version: 2.00
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
   Please see the accompanying documentation.
@@ -31,7 +31,7 @@ Description:
   screen.
 
   Note: Documentation for this unit can be found in Doc\Source.txt and
-        Doc\Readme.txt!  
+        Doc\Readme.txt!
 -----------------------------------------------------------------------------}
 
 unit JvLinkLabelRenderer;
@@ -117,7 +117,7 @@ begin
   Node.Color := TranslateColor(Color);
 
   for I := 0 to Node.Children.Count - 1 do
-  begin                                          
+  begin
     ChildNode := Node.Children[I];
     NewColor := TranslateColor(Color);
     NewStyles := Styles;
@@ -213,9 +213,9 @@ end;
 function TDefaultRenderer.TranslateColor(const Color: TColor): TColor;
 begin
   case Color of
-    clNormalLink:  Result := FLinkColor;
+    clNormalLink: Result := FLinkColor;
     clClickedLink: Result := FLinkColorClicked;
-    clHotLink:     Result := FLinkColorHot;
+    clHotLink: Result := FLinkColorHot;
   else
     Result := Color;
   end;

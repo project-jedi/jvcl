@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,13 +28,13 @@ Known Issues:
 
 unit JvDirectorySpy;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Menus,
-  JvTypes ,JvComponent;
+  JvTypes, JvComponent;
 
 type
   TJvDirectoryThread = class(TThread)
@@ -120,7 +120,7 @@ end;
 
 procedure TJvDirectorySpy.Refresh;
 begin
-   //Refresh the thread
+  //Refresh the thread
   if not (csDesigning in ComponentState) then
   begin
     FThread.FreeOnTerminate := True;
@@ -245,7 +245,7 @@ end;
 
 function TJvDirectoryThread.GetLastErrorMsg: string;
 var
-  msg: array [0..1000] of Char;
+  msg: array[0..1000] of Char;
 begin
   FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil, GetLastError, 0, msg, 1000, nil);
   Result := msg;

@@ -18,41 +18,37 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvMLButton;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  StdCtrls ,JVCLVer;
-
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
 
 type
   TJvMultilineButton = class(TButton)
   private
     FMultiline: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
-    function GetCaption: String;
-    procedure SetCaption(const Value: String);
+    function GetCaption: string;
+    procedure SetCaption(const Value: string);
     procedure SetMultiline(const Value: Boolean);
   public
-    Procedure CreateParams( Var params: TCreateParams ); override;
-    Constructor Create( aOwner: TComponent ); override;
+    procedure CreateParams(var params: TCreateParams); override;
+    constructor Create(aOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Multiline: Boolean read FMultiline write SetMultiline default True;
-    property Caption: String read GetCaption write SetCaption;
+    property Caption: string read GetCaption write SetCaption;
   end;
-
 
 implementation
 
@@ -67,32 +63,31 @@ end;
 procedure TJvMultilineButton.CreateParams(var params: TCreateParams);
 begin
   inherited;
-  If FMultiline Then
+  if FMultiline then
     params.Style := params.Style or BS_MULTILINE;
 end;
 
-
-
-function TJvMultilineButton.GetCaption: String;
+function TJvMultilineButton.GetCaption: string;
 begin
-  Result := Stringreplace( inherited Caption, #13, '|', [rfReplaceAll] );
+  Result := Stringreplace(inherited Caption, #13, '|', [rfReplaceAll]);
 end;
 
-
-procedure TJvMultilineButton.SetCaption(const Value: String);
+procedure TJvMultilineButton.SetCaption(const Value: string);
 begin
-  If value <> Caption Then Begin
-    inherited Caption := Stringreplace( value, '|', #13, [rfReplaceAll] );
+  if value <> Caption then
+  begin
+    inherited Caption := Stringreplace(value, '|', #13, [rfReplaceAll]);
     Invalidate;
-  End;
+  end;
 end;
 
 procedure TJvMultilineButton.SetMultiline(const Value: Boolean);
 begin
-  If FMultiline <> Value Then Begin
+  if FMultiline <> Value then
+  begin
     FMultiline := Value;
     RecreateWnd;
-  End;
+  end;
 end;
 
 end.

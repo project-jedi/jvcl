@@ -18,8 +18,8 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -31,7 +31,7 @@ unit JvButtonPageControl;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  ComCtrls ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ComCtrls, JVCLVer;
 
 type
   TJvButtonPageControl = class(TPageControl)
@@ -40,22 +40,21 @@ type
     { Private declarations }
   protected
     { Protected declarations }
-    Procedure CreateParams( Var params : TCreateParams ); override;
+    procedure CreateParams(var params: TCreateParams); override;
   public
     { Public declarations }
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
-
 
 implementation
 
 uses CommCtrl;
 
-Procedure TJvButtonPageControl.CreateParams( Var params : TCreateParams );
-Begin
-  inherited CreateParams( params );
+procedure TJvButtonPageControl.CreateParams(var params: TCreateParams);
+begin
+  inherited CreateParams(params);
   params.Style := params.Style or TCS_BUTTONS;
-End;
+end;
 
 end.

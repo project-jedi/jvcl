@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvFormAnimation;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, JvComponent;
 
 type
   TJvFormAnimation = class(TJvComponent)
@@ -75,7 +75,7 @@ end;
 procedure TJvFormAnimation.DisappearEllipse;
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   i := 0;
@@ -111,7 +111,7 @@ end;
 procedure TJvFormAnimation.DisappearRectangle;
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   i := 0;
@@ -148,7 +148,7 @@ procedure TJvFormAnimation.DisappearRoundedRectangle(EllipseX,
   EllipseY: Integer);
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   i := 0;
@@ -184,7 +184,7 @@ end;
 procedure TJvFormAnimation.DisappearHorizontally;
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   l := 0;
@@ -219,7 +219,7 @@ end;
 procedure TJvFormAnimation.DisappearVertically;
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   i := 0;
@@ -254,7 +254,7 @@ end;
 procedure TJvFormAnimation.DisappearTelevision;
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   i := 0;
@@ -269,8 +269,7 @@ begin
         i := FForm.Width;
       hs[k] := CreateRectRgn(i, j, FForm.Width - i, FForm.Height - j);
     end
-    else
-    if i + 6 < (FForm.Width div 2) then
+    else if i + 6 < (FForm.Width div 2) then
     begin
       i := i + 8;
       hs[k] := CreateRectRgn(i, j, FForm.Width - i, FForm.Height - j);
@@ -295,7 +294,7 @@ end;
 procedure TJvFormAnimation.DisappearToBottom;
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   i := 0;
@@ -328,7 +327,7 @@ end;
 procedure TJvFormAnimation.DisappearToTop;
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   i := 0;
@@ -361,7 +360,7 @@ end;
 procedure TJvFormAnimation.AppearEllipse;
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   i := 0;
@@ -399,7 +398,7 @@ end;
 procedure TJvFormAnimation.AppearRectangle;
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   i := 0;
@@ -438,7 +437,7 @@ procedure TJvFormAnimation.AppearRoundedRectangle(EllipseX,
   EllipseY: Integer);
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   i := 0;
@@ -476,7 +475,7 @@ end;
 procedure TJvFormAnimation.AppearHorizontally;
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   l := 0;
@@ -513,7 +512,7 @@ end;
 procedure TJvFormAnimation.AppearVertically;
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   i := 0;
@@ -550,7 +549,7 @@ end;
 procedure TJvFormAnimation.AppearTelevision;
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   i := 0;
@@ -565,8 +564,7 @@ begin
         i := FForm.Width;
       hs[k] := CreateRectRgn(i, j, FForm.Width - i, FForm.Height - j);
     end
-    else
-      if i + 6 < (FForm.Width div 2) then
+    else if i + 6 < (FForm.Width div 2) then
     begin
       i := i + 8;
       hs[k] := CreateRectRgn(i, j, FForm.Width - i, FForm.Height - j);
@@ -593,7 +591,7 @@ end;
 procedure TJvFormAnimation.AppearToBottom;
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   i := 0;
@@ -628,7 +626,7 @@ end;
 procedure TJvFormAnimation.AppearToTop;
 var
   i, j, k, l: Integer;
-  hs: array [0..600] of HRGN;
+  hs: array[0..600] of HRGN;
 begin
   j := 0;
   i := 0;

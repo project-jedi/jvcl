@@ -18,9 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
-
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
@@ -28,13 +27,13 @@ Known Issues:
 
 unit JvVisualId3v1;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  Dialogs, StdCtrls,  JvTypes, JvId3v1 ,JVCLVer;
+  Dialogs, StdCtrls, JvTypes, JvId3v1, JVCLVer;
 
 type
   TJvId3v1Tag = class(TPersistent)
@@ -102,7 +101,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property Color;
     property EditColor: TColor read GetEditColor write SetEditColor;
@@ -139,7 +138,7 @@ end;
 
 constructor TJvVisualId3v1.Create(AOwner: TComponent);
 const
-  CaptionLabels: array [1..6] of string = ('Artist', 'SongName', 'Album', 'Year', 'Comment', 'Genre');
+  CaptionLabels: array[1..6] of string = ('Artist', 'SongName', 'Album', 'Year', 'Comment', 'Genre');
 var
   i: Byte;
   st: string;
@@ -280,7 +279,7 @@ begin
   if FLabel2.Height > LabelHeight then
     LabelHeight := FLabel2.Height;
   if FLabel3.Height > LabelHeight then
-     LabelHeight := FLabel3.Height;
+    LabelHeight := FLabel3.Height;
   if FLabel4.Height > LabelHeight then
     LabelHeight := FLabel4.Height;
   if FLabel5.Height > LabelHeight then
@@ -471,8 +470,8 @@ end;
 
 procedure TJvVisualId3v1.WMSize(var Msg: TWMSize);
 const
-  LeftLabels: array [1..6] of Integer = (10, 10, 10, 10, 10, 10);
-  TopLabels: array [1..6] of Integer = (10, 35, 60, 85, 110, 135);
+  LeftLabels: array[1..6] of Integer = (10, 10, 10, 10, 10, 10);
+  TopLabels: array[1..6] of Integer = (10, 35, 60, 85, 110, 135);
 begin
   if Width - FEdit1.Left - 4 < 0 then
   begin

@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvCabFile;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,   SetupApi,  JvTypes ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, SetupApi, JvTypes, JvComponent;
 
 type
   TCabInfo = record
@@ -91,7 +91,7 @@ implementation
 resourcestring
   RC_SetupApiDll = 'Unable to find setupapi.dll';
 
-{**************************************************}
+  {**************************************************}
 
 constructor TJvCabFile.Create(AOwner: TComponent);
 begin
@@ -126,7 +126,7 @@ end;
 
 procedure TJvCabFile.SetFiles(const Value: TStringList);
 begin
-   //do nothing !!!!
+  //do nothing !!!!
 end;
 
 {**************************************************}
@@ -151,8 +151,7 @@ begin
     cab := PFileInCabinetInfo(Param1);
     Sender.FFiles.Add(StrPas(cab^.NameInCabinet));
   end
-  else
-    if Notification = SPFILENOTIFY_CABINETINFO then //give cabinet info
+  else if Notification = SPFILENOTIFY_CABINETINFO then //give cabinet info
   begin
     if Assigned(Sender.FOnCabInfo) and (Param1 <> 0) then
     begin
@@ -189,8 +188,7 @@ begin
   //this callback is only for listing files in a cabinet ...
   if Notification = SPFILENOTIFY_CABINETINFO then
     Result := 0
-  else
-  if Notification = SPFILENOTIFY_FILEINCABINET then //found a file in the cabinet
+  else if Notification = SPFILENOTIFY_FILEINCABINET then //found a file in the cabinet
   begin
     try
       Result := FILEOP_DOIT;
@@ -226,8 +224,7 @@ begin
       Result := FILEOP_SKIP;
     end;
   end
-  else
-  if Notification = SPFILENOTIFY_FILEEXTRACTED then
+  else if Notification = SPFILENOTIFY_FILEEXTRACTED then
   begin
     continue := True;
     if Param1 <> 0 then
@@ -240,8 +237,7 @@ begin
     else
       Result := ERROR_BAD_COMMAND;
   end
-  else
-  if Notification = SPFILENOTIFY_NEEDNEWCABINET then
+  else if Notification = SPFILENOTIFY_NEEDNEWCABINET then
   begin
     if Param1 <> 0 then
     begin

@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,13 +28,13 @@ Known Issues:
 
 unit JvEdit;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Dialogs, Forms,
-  JvPropAutoSave, JvMaxPixel,JVCLVer;
+  JvPropAutoSave, JvMaxPixel, JVCLVer;
 
 type
   TJvEdit = class(TEdit)
@@ -68,7 +68,7 @@ type
     procedure Loaded; override;
   published
     function IsEmpty: Boolean;
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Align;

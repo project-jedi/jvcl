@@ -18,21 +18,20 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvGroupBox;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  StdCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
 
 type
   TJvGroupBox = class(TGroupBox)
@@ -41,36 +40,35 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     { Private declarations }
 
-    Procedure CMDialogChar( Var msg: TCMDialogChar );
+    procedure CMDialogChar(var msg: TCMDialogChar);
       message CM_DIALOGCHAR;
   protected
     { Protected declarations }
-    Procedure DoHotkey; dynamic;
+    procedure DoHotkey; dynamic;
   public
     { Public declarations }
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
 
     property OnHotkey: TNotifyEvent read FOnHotkey write FOnHotkey;
   end;
 
 implementation
 
-
 { TJvGroupBox }
 
 procedure TJvGroupBox.CMDialogChar(var msg: TCMDialogChar);
 begin
   inherited;
-  If msg.result <> 0 Then
+  if msg.result <> 0 then
     DoHotkey;
 end;
 
 procedure TJvGroupBox.DoHotkey;
 begin
-  If Assigned( FOnHotkey ) Then FOnHotkey( self );
+  if Assigned(FOnHotkey) then
+    FOnHotkey(self);
 end;
-
 
 end.

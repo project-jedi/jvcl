@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,14 +28,14 @@ Known Issues:
 
 unit JvBrowseFolder;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   ShellApi, Shlobj, Activex,
-  JvBaseDlg, JvFunctions ;
+  JvBaseDlg, JvFunctions;
 
 type
   TFromDirectory = (fdRootFolder, fdRecycleBin, fdControlPanel, fdDesktop,
@@ -75,7 +75,7 @@ type
     property Directory: string read FDirectory write FDummy;
     property DisplayName: string read FDisplayName write FDisplayName;
     property Options: TOptionsDir read FOptions write FOptions default
-    [odStatusAvailable, odNewDialogStyle];
+      [odStatusAvailable, odNewDialogStyle];
     property Position: TJvFolderPos read FPosition write FPosition default fpDefault;
     property RootDirectory: TFromDirectory read FFromDirectory write FFromDirectory;
     property Title: string read FTitle write FTitle;
@@ -95,7 +95,7 @@ const
   BIF_VALIDATE = $0020;
   BIF_NEWDIALOGSTYLE = $0040;
 
-{**************************************************}
+  {**************************************************}
 
 constructor TJvBrowseFolder.Create(AOwner: TComponent);
 begin
@@ -117,7 +117,7 @@ begin
     case uMsg of
       BFFM_INITIALIZED:
         begin
-           //Change the position of the dialog
+          //Change the position of the dialog
           FDialogHandle := Wnd;
           if GetClientRect(Wnd, r) then
           begin
@@ -160,14 +160,14 @@ begin
             SetWindowPos(Wnd, 0, r.Left, r.Top, 0, 0, SWP_NOACTIVATE or SWP_NOSIZE or SWP_NOZORDER);
           end;
 
-           //Change directory (if possible)
+          //Change directory (if possible)
           if FDirectory <> '' then
           begin
             st := FDirectory;
             SendMessage(FDialogHandle, BFFM_SETSELECTION, Integer(True), Integer(st));
           end;
 
-           //Call init event
+          //Call init event
           if Assigned(FOnInit) then
             FOnInit(TObject(lpData) as TJvBrowseFolder);
         end;
@@ -210,13 +210,13 @@ end;
 
 function TJvBrowseFolder.Execute: Boolean;
 const
-  CSIDLLocations: array [TFromDirectory] of Cardinal =
-    (0, CSIDL_BITBUCKET, CSIDL_CONTROLS, CSIDL_DESKTOP,
-     CSIDL_DESKTOPDIRECTORY, CSIDL_DRIVES, CSIDL_FONTS, CSIDL_NETHOOD, CSIDL_NETWORK, CSIDL_PERSONAL,
-     CSIDL_PRINTERS, CSIDL_PROGRAMS, CSIDL_RECENT, CSIDL_SENDTO, CSIDL_STARTMENU, CSIDL_STARTUP, CSIDL_TEMPLATES);
+  CSIDLLocations: array[TFromDirectory] of Cardinal =
+  (0, CSIDL_BITBUCKET, CSIDL_CONTROLS, CSIDL_DESKTOP,
+    CSIDL_DESKTOPDIRECTORY, CSIDL_DRIVES, CSIDL_FONTS, CSIDL_NETHOOD, CSIDL_NETWORK, CSIDL_PERSONAL,
+    CSIDL_PRINTERS, CSIDL_PROGRAMS, CSIDL_RECENT, CSIDL_SENDTO, CSIDL_STARTMENU, CSIDL_STARTUP, CSIDL_TEMPLATES);
 var
-  path: array [0..MAX_PATH] of Char;
-  dspName: array [0..MAX_PATH] of Char;
+  path: array[0..MAX_PATH] of Char;
+  dspName: array[0..MAX_PATH] of Char;
   BrowseInfo: TBrowseInfo;
   pidl: PItemIDList;
   ShellVersion: Integer;

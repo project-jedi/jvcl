@@ -16,8 +16,8 @@ All Rights Reserved.
 
 Last Modified: 2002-02-23
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -37,10 +37,10 @@ type
     FHeader, FFooter: string;
     FHelpHeader, FHelpFooter: Integer;
     procedure SetEditText(aEditId: Integer; aText: string);
-    function  GetEditText(aEditId: Integer): string;
+    function GetEditText(aEditId: Integer): string;
     procedure WMHelp(var aMessage: TWMHelp); message WM_HELP;
   protected
-    procedure DoShow;  override;
+    procedure DoShow; override;
     procedure DoClose; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -51,7 +51,7 @@ type
     property HelpContextFooter: Integer read FHelpFooter write FHelpFooter default 0;
   end;
 
-///////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
 implementation
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -68,9 +68,10 @@ const
   DLGHEADERLABEL = 32;
   DLGFOOTERLABEL = 33;
 
-{ TJvPageSetupTitledDialog }
+  { TJvPageSetupTitledDialog }
 
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
+
 constructor TJvPageSetupTitledDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -78,13 +79,15 @@ begin
 end;
 
 //-----------------------------------------------------------------------------
+
 procedure TJvPageSetupTitledDialog.SetEditText(aEditId: Integer; aText: string);
 begin
   SetDlgItemText(Handle, aEditId, PChar(aText));
 end;
 
 //-----------------------------------------------------------------------------
-function  TJvPageSetupTitledDialog.GetEditText(aEditId: Integer): string;
+
+function TJvPageSetupTitledDialog.GetEditText(aEditId: Integer): string;
 var
   eLen: Integer;
 begin
@@ -94,6 +97,7 @@ begin
 end;
 
 //-----------------------------------------------------------------------------
+
 procedure TJvPageSetupTitledDialog.DoShow;
 begin
   SetEditText(DLGHEADER, FHeader);
@@ -102,6 +106,7 @@ begin
 end;
 
 //-----------------------------------------------------------------------------
+
 procedure TJvPageSetupTitledDialog.DoClose;
 begin
   FHeader := GetEditText(DLGHEADER);
@@ -110,10 +115,11 @@ begin
 end;
 
 //-----------------------------------------------------------------------------
+
 procedure TJvPageSetupTitledDialog.WMHelp(var aMessage: TWMHelp);
 
-  // show popup help
-  //---------------------------------------------------------------------------
+// show popup help
+//---------------------------------------------------------------------------
   procedure ShowHelp(aContextID: Integer);
   var
     ePt: TSmallPoint;
@@ -128,12 +134,15 @@ begin
     DLGHEADER, DLGHEADERLABEL:
       if FHelpHeader <> 0 then
         ShowHelp(FHelpHeader)
-      else inherited;
+      else
+        inherited;
     DLGFOOTER, DLGFOOTERLABEL:
       if FHelpFooter <> 0 then
         ShowHelp(FHelpFooter)
-      else inherited;
-    else inherited;
+      else
+        inherited;
+  else
+    inherited;
   end;
 end;
 

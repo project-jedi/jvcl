@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,13 +28,13 @@ Known Issues:
 
 unit JvProgressDlg;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvFormProgress, JvBaseDlg, JvTypes ,JvComponent;
+  JvFormProgress, JvBaseDlg, JvTypes, JvComponent;
 
 type
   TJvProgressDlg = class(TJvComponent)
@@ -74,7 +74,7 @@ resourcestring
   RC_EstimatedTime = 'Estimated time left : ';
   RC_Days = ' day(s) ';
 
-{**************************************************}
+  {**************************************************}
 
 procedure TJvProgressDlg.Close;
 begin
@@ -183,7 +183,8 @@ begin
           st := st + FormatDateTime('hh:nn:ss', OldDate)
         else
           st := st + IntToStr(days) + RC_Days + FormatDateTime('hh:nn:ss', OldDate);
-        if FText <> '' then st := st + ')';
+        if FText <> '' then
+          st := st + ')';
         ApplyText(st)
       end;
     end;

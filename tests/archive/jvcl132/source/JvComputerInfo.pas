@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvComputerInfo;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,  Registry, MMSystem,   JvTypes ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Registry, MMSystem, JvTypes, JvComponent;
 
 type
   TJvComputerInfo = class(TJvComponent)
@@ -90,7 +90,7 @@ resourcestring
   RC_VnetKey = 'System\CurrentControlSet\Services\Vxd\VNETSUP';
   RC_CurrentKey = 'Software\Microsoft\Windows\CurrentVersion';
 
-{**************************************************}
+  {**************************************************}
 
 function TJvComputerInfo.GetComment: string;
 begin

@@ -18,21 +18,20 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvMultilineListbox;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, JVCLVer;
 
 type
   TJvMultilineListbox = class(TCustomListbox)
@@ -49,13 +48,13 @@ type
 
     { Handle messages that insert or delete strings from the listbox to
       manage the horizontal scrollbar if FMutliline is false. }
-    Procedure LBAddString( Var msg: TMessage ); message LB_ADDSTRING;
-    Procedure LBInsertString( Var msg: TMessage ); message LB_INSERTSTRING;
-    Procedure LBDeleteString( Var msg: TMessage ); message LB_DELETESTRING;
+    procedure LBAddString(var msg: TMessage); message LB_ADDSTRING;
+    procedure LBInsertString(var msg: TMessage); message LB_INSERTSTRING;
+    procedure LBDeleteString(var msg: TMessage); message LB_DELETESTRING;
 
     { Override CN_DRAWITEM handling to be able to switch off focus rect. }
     procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
-    procedure CMFontChanged( Var Message : TMessage ); message CM_FONTCHANGED;
+    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
 
     procedure SetAlignment(const Value: TAlignment);
     procedure SetMultiline(const Value: Boolean);
@@ -75,12 +74,12 @@ type
       read FMaxWidth write SetMaxWidth;
   public
     { Public declarations }
-    function MeasureString( Const S: String; widthAvail: Integer ): Integer;
+    function MeasureString(const S: string; widthAvail: Integer): Integer;
     procedure DefaultDrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState); virtual;
-    Constructor Create( aOwner: TComponent ); override;
+    constructor Create(aOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Alignment: TAlignment
       read FAlignment write SetAlignment default taLeftJustify;
     property Multiline: Boolean
@@ -152,12 +151,13 @@ implementation
 
 { TJvMultilineListbox }
 
-Const
-  Alignflags : Array [TAlignment] Of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER );
+const
+  Alignflags: array[TAlignment] of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER);
 
-{ This routine is copied mostly from TCustomListbox.CNDRawItem.
-  The setting of colors is modified.
-  Drawing of the focus rectangle is delegated to DrawItem.}
+  { This routine is copied mostly from TCustomListbox.CNDRawItem.
+    The setting of colors is modified.
+    Drawing of the focus rectangle is delegated to DrawItem.}
+
 procedure TJvMultilineListbox.CMFontChanged(var Message: TMessage);
 begin
   inherited;
@@ -170,24 +170,29 @@ procedure TJvMultilineListBox.CNDrawItem(var Message: TWMDrawItem);
 var
   State: TOwnerDrawState;
 begin
-  with Message.DrawItemStruct^ do begin
+  with Message.DrawItemStruct^ do
+  begin
     State := TOwnerDrawState(LongRec(itemState).Lo);
     Canvas.Handle := hDC;
     Canvas.Font := Font;
     Canvas.Brush := Brush;
-    if (Integer(itemID) >= 0) Then Begin
-      if (odSelected in State) then begin
+    if (Integer(itemID) >= 0) then
+    begin
+      if (odSelected in State) then
+      begin
         Canvas.Brush.Color := FSelectedColor;
-        Canvas.Font.Color :=  FSelectedTextColor;
+        Canvas.Font.Color := FSelectedTextColor;
       end;
-      If (([odDisabled, odGrayed] * State) <> []) or (not Enabled) Then
+      if (([odDisabled, odGrayed] * State) <> []) or (not Enabled) then
         Canvas.Font.Color := FDisabledTextColor;
     end;
     if Integer(itemID) >= 0 then
       DrawItem(itemID, rcItem, State)
-    else begin
+    else
+    begin
       Canvas.FillRect(rcItem);
-      if odFocused in State then DrawFocusRect(hDC, rcItem);
+      if odFocused in State then
+        DrawFocusRect(hDC, rcItem);
     end;
     Canvas.Handle := 0;
   end;
@@ -208,17 +213,19 @@ begin
 end;
 
 { This procedure is a slightly modified version of TCustomListbox.DrawItem! }
+
 procedure TJvMultilineListbox.DefaultDrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 var
   Flags: Longint;
 begin
   Canvas.FillRect(Rect);
-  if Index < Items.Count then  begin
-    If FMultiline Then
+  if Index < Items.Count then
+  begin
+    if FMultiline then
       Flags := DrawTextBiDiModeFlags(DT_WORDBREAK or DT_NOPREFIX or
-                                     AlignFlags[ FAlignment ] )
-    Else
+        AlignFlags[FAlignment])
+    else
       Flags := DrawTextBiDiModeFlags(DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
     if not UseRightToLeftAlignment then
       Inc(Rect.Left, 2)
@@ -232,27 +239,28 @@ end;
 procedure TJvMultilineListbox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 begin
-  If Assigned( OnDrawItem ) Then
+  if Assigned(OnDrawItem) then
     inherited
-  Else Begin
+  else
+  begin
     { Call the drawing code. This is isolated in its own public routine
       so a onDrawItem handler can use it, too. }
-    DefaultDrawItem( index, rect, state );
+    DefaultDrawItem(index, rect, state);
     if FShowFocusRect and (odFocused in State) then
       Canvas.DrawFocusRect(rect);
-  End;
+  end;
 end;
-
 
 procedure TJvMultilineListbox.LBAddString(var msg: TMessage);
 var
   w: Integer;
 begin
-  If not FMultiline Then Begin
-    w:= MeasureString( PChar( msg.lparam ), 0 );
-    If w > FMaxWidth Then
-      SetMaxWidth( w );
-  End;
+  if not FMultiline then
+  begin
+    w := MeasureString(PChar(msg.lparam), 0);
+    if w > FMaxWidth then
+      SetMaxWidth(w);
+  end;
   inherited;
 end;
 
@@ -260,14 +268,16 @@ procedure TJvMultilineListbox.LBDeleteString(var msg: TMessage);
 var
   w: Integer;
 begin
-  If not FMultiline Then Begin
-    w:= MeasureString( Items[ msg.wparam ], 0 );
-    If w = FMaxWidth Then Begin
+  if not FMultiline then
+  begin
+    w := MeasureString(Items[msg.wparam], 0);
+    if w = FMaxWidth then
+    begin
       inherited;
       RemeasureAll;
       Exit;
-    End;
-  End;
+    end;
+  end;
   inherited;
 end;
 
@@ -275,47 +285,48 @@ procedure TJvMultilineListbox.LBInsertString(var msg: TMessage);
 var
   w: Integer;
 begin
-  If not FMultiline Then Begin
-    w:= MeasureString( PChar( msg.lparam ), 0 );
-    If w > FMaxWidth Then
-      SetMaxWidth( w );
-  End;
+  if not FMultiline then
+  begin
+    w := MeasureString(PChar(msg.lparam), 0);
+    if w > FMaxWidth then
+      SetMaxWidth(w);
+  end;
   inherited;
 end;
 
 procedure TJvMultilineListbox.MeasureItem(Index: Integer;
   var Height: Integer);
 begin
-  If Assigned( OnMeasureItem ) or (not Multiline) or
-     (Index < 0) or (Index >= items.count)
-  Then
+  if Assigned(OnMeasureItem) or (not Multiline) or
+    (Index < 0) or (Index >= items.count) then
     inherited
-  Else
-    Height := MeasureString( Items[index], ClientWidth );
+  else
+    Height := MeasureString(Items[index], ClientWidth);
 end;
 
-function TJvMultilineListbox.MeasureString(const S: String;
+function TJvMultilineListbox.MeasureString(const S: string;
   widthAvail: Integer): Integer;
 var
   Flags: Longint;
   r: TRect;
 begin
-  Canvas.Font:= Font;
-  Result := Canvas.TextWidth( S );
-    { Note: doing the TextWidth unconditionally makes sure the font is properly
-      selected into the device context. }
-  If widthAvail > 0 Then Begin
+  Canvas.Font := Font;
+  Result := Canvas.TextWidth(S);
+  { Note: doing the TextWidth unconditionally makes sure the font is properly
+    selected into the device context. }
+  if widthAvail > 0 then
+  begin
     Flags := DrawTextBiDiModeFlags(
-                DT_WORDBREAK or DT_NOPREFIX or DT_CALCRECT
-                or AlignFlags[ FAlignment ] );
-    r:= Rect( 0, 0, widthAvail-2, 1 );
-    DrawText( canvas.handle, Pchar(S), Length(S), r, flags );
+      DT_WORDBREAK or DT_NOPREFIX or DT_CALCRECT
+      or AlignFlags[FAlignment]);
+    r := Rect(0, 0, widthAvail - 2, 1);
+    DrawText(canvas.handle, Pchar(S), Length(S), r, flags);
     Result := r.Bottom;
-    If Result > 255 Then
+    if Result > 255 then
       Result := 255;
     { Note: item height in a listbox is limited to 255 pixels since Windows
       stores the height in a single byte.}
-  End;
+  end;
 end;
 
 procedure TJvMultilineListbox.RemeasureAll;
@@ -323,23 +334,23 @@ var
   i: Integer;
   max, cx, w: Integer;
 begin
-  max:= 0;
-  w:= 0;
-  If FMultiline Then
+  max := 0;
+  w := 0;
+  if FMultiline then
     cx := ClientWidth
-  Else
+  else
     cx := 0;
 
-  for i:= 0 to items.count-1 do begin
-    w:= MeasureString( Items[ i ], cx );
+  for i := 0 to items.count - 1 do
+  begin
+    w := MeasureString(Items[i], cx);
     if FMultiline then
-      Perform( LB_SETITEMHEIGHT, i, w )
-    Else
-      If w > max Then
-        max := w;
+      Perform(LB_SETITEMHEIGHT, i, w)
+    else if w > max then
+      max := w;
   end;
 
-  If not FMultiline Then
+  if not FMultiline then
     MaxWidth := w;
 end;
 
@@ -348,67 +359,76 @@ end;
 
 procedure TJvMultilineListbox.SetAlignment(const Value: TAlignment);
 begin
-  If FMultiline and (FAlignment <> Value) Then Begin
+  if FMultiline and (FAlignment <> Value) then
+  begin
     FAlignment := Value;
     Invalidate;
-  End;
+  end;
 end;
 
 procedure TJvMultilineListbox.SetDisabledTextColor(const Value: TColor);
 begin
-  If FDisabledTextColor <> Value Then Begin
+  if FDisabledTextColor <> Value then
+  begin
     FDisabledTextColor := Value;
     Invalidate;
-  End;
+  end;
 end;
 
 procedure TJvMultilineListbox.SetMaxWidth(const Value: Integer);
 begin
-  If not FMultiline and (FMaxWidth <> Value) Then Begin
+  if not FMultiline and (FMaxWidth <> Value) then
+  begin
     FMaxWidth := Value;
-    Perform( LB_SETHORIZONTALEXTENT, value, 0 );
-  End;
+    Perform(LB_SETHORIZONTALEXTENT, value, 0);
+  end;
 end;
 
 procedure TJvMultilineListbox.SetMultiline(const Value: Boolean);
 begin
-  If FMultiline <> Value Then Begin
+  if FMultiline <> Value then
+  begin
     FMultiline := value;
-    If value Then Begin
+    if value then
+    begin
       Style := lbOwnerDrawVariable;
       FMaxWidth := 0;
-      Perform( LB_SETHORIZONTALEXTENT, 0, 0 );
-    End
-    Else Begin
+      Perform(LB_SETHORIZONTALEXTENT, 0, 0);
+    end
+    else
+    begin
       Style := lbOwnerDrawFixed;
       RemeasureAll;
-    End;
-  End;
+    end;
+  end;
 end;
 
 procedure TJvMultilineListbox.SetSelectedColor(const Value: TColor);
 begin
-  If FSelectedColor <> Value Then Begin
+  if FSelectedColor <> Value then
+  begin
     FSelectedColor := Value;
     Invalidate;
-  End;
+  end;
 end;
 
 procedure TJvMultilineListbox.SetSelectedTextColor(const Value: TColor);
 begin
-  If FSelectedTextColor <> Value Then Begin
+  if FSelectedTextColor <> Value then
+  begin
     FSelectedTextColor := Value;
     Invalidate;
-  End;
+  end;
 end;
 
 procedure TJvMultilineListbox.SetShowFocusRect(const Value: Boolean);
 begin
-  If FShowFocusRect <> Value Then Begin
+  if FShowFocusRect <> Value then
+  begin
     FShowFocusRect := Value;
-    If Focused Then
+    if Focused then
       Invalidate;
-  End;
+  end;
 end;
 
 end.

@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvBouncingLabel;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
@@ -62,7 +62,7 @@ implementation
 resourcestring
   RC_MustBeWinControl = 'Owner must be of type TWinControl';
 
-{**************************************************}
+  {**************************************************}
 
 procedure TJvBouncingLabel.Bounce(Sender: TObject);
 begin
@@ -70,7 +70,7 @@ begin
     FSpeed := Random(8);
   case FDirection of
     0:
-      begin  //numpad1
+      begin //numpad1
         if (Left - FSpeed <= 0) or (Top + Height + FSpeed >= FForm.ClientHeight) then
         begin
           FDirection := Random(4);

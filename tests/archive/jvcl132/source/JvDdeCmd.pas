@@ -20,8 +20,8 @@ Contributor(s): ______________________________________.
 Last Modified: Jun 8, 2000
 Current Version: 0.50
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -30,7 +30,7 @@ unit JvDdeCmd;
 
 interface
 
-{$I JCL.INC}
+{$I JEDI.INC}
 
 uses
   DdeMan, Windows, Messages, SysUtils, Classes, JclBase, Forms, JvComponent;

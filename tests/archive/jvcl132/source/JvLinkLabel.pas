@@ -19,8 +19,8 @@ Contributor(s): ______________________________________.
 Last Modified: 2002-01-06;
 Current Version: 2.00
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
   Please see the accompanying documentation.
@@ -30,7 +30,7 @@ Description:
   respectively.
 
   Note: Documentation for this unit can be found in Doc\Source.txt and
-        Doc\Readme.txt!  
+        Doc\Readme.txt!
 -----------------------------------------------------------------------------}
 
 unit JvLinkLabel;
@@ -112,7 +112,7 @@ type
     property OnCaptionChanged: TNotifyEvent read FOnCaptionChanged write FOnCaptionChanged;
     property OnLinkClick: TLinkClickEvent read FOnLinkClick write FOnLinkClick;
 
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Caption: TCaption read FCaption write SetCaption;
     property Text: TStringList read FText write SetText;
     property Transparent: Boolean read GetTransparent write SetTransparent;
@@ -183,7 +183,7 @@ uses
 const
   crNewLinkHand = 1;
 
-{ TJvLinkLabel }
+  { TJvLinkLabel }
 
 procedure TJvCustomLinkLabel.ActivateLinkNodeAtPos(const P: TPoint; State: TLinkState);
 var
@@ -398,7 +398,8 @@ begin
     Cursor := crNewLinkHand;
     if FHotLinks and not IsActiveLinkNodeClicked then
       ActivateLinkNodeAtPos(Point(X, Y), lsHot);
-  end else
+  end
+  else
   begin
     Cursor := FOriginalCursor;
     if FHotLinks and not IsActiveLinkNodeClicked then

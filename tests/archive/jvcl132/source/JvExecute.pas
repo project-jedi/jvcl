@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvExecute;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, ShellApi, Forms,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, ShellApi, Forms, JvComponent;
 
 // (rom) should be JCL based
 
@@ -62,8 +62,8 @@ end;
 
 procedure TJvExecute.ExecuteAndWait(FileName: string; Visibility: Integer);
 var
-  zAppName: array [0..512] of Char;
-  zCurDir: array [0..255] of Char;
+  zAppName: array[0..512] of Char;
+  zCurDir: array[0..255] of Char;
   WorkDir: string;
   StartupInfo: TStartupInfo;
   ProcessInfo: TProcessInformation;

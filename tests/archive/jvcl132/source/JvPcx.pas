@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvPcx;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
@@ -83,7 +83,7 @@ resourcestring
   RC_PcxExtension = 'pcx';
   RC_PcxFilterName = 'PCX Image';
 
-{**************************************************}
+  {**************************************************}
 
 procedure TJvPcx.Assign(Source: TPersistent);
 var
@@ -91,8 +91,7 @@ var
 begin
   if Source = nil then
     FreeAndNil(FBitmap)
-  else
-  if (Source is TJvPcx) and (Source <> Self) then
+  else if (Source is TJvPcx) and (Source <> Self) then
   begin
     FreeAndNil(FBitmap);
     FBitmap := TBitmap.Create;
@@ -102,8 +101,7 @@ begin
     ts.Position := 0;
     LoadFromStream(ts);
   end
-  else
-  if Source is TBitmap then
+  else if Source is TBitmap then
   begin
     FreeAndNil(FBitmap);
     FBitmap := TBitmap.Create;
@@ -119,8 +117,7 @@ procedure TJvPcx.AssignTo(Dest: TPersistent);
 begin
   if Dest is TJvPcx then
     Dest.Assign(Self)
-  else
-  if Dest is TGraphic then
+  else if Dest is TGraphic then
   begin
     if Empty then
       Dest.Assign(nil)
@@ -302,9 +299,9 @@ var
   BytesPerLine: Integer;
   Bpp, Planes: Integer;
   Decompressed: TStream;
-  Buf: array [0..128] of Byte;
+  Buf: array[0..128] of Byte;
   ibuf2: PRGBArray;
-  ibuf: array [0..MaxPixelCount - 1] of Byte;
+  ibuf: array[0..MaxPixelCount - 1] of Byte;
   ibuftmp: PByteArray;
   rpal: TMaxLogPalette;
 begin
@@ -385,7 +382,7 @@ begin
 
       if (Bpp = 1) and (Planes = 1) then
       begin
-            //monochrome okay
+        //monochrome okay
         for i := 0 to FBitmap.Height - 1 do
         begin
           ibuftmp := FBitmap.ScanLine[i];
@@ -393,11 +390,10 @@ begin
           CopyMemory(ibuftmp, @ibuf, BytesPerLine);
         end;
       end
-      else
-      if (Bpp = 1) and (Planes = 4) then
+      else if (Bpp = 1) and (Planes = 4) then
       begin
-            //16 colors
-            //palette
+        //16 colors
+        //palette
         Stream.Position := 16;
         if Stream.Read(ibuf, 48) <> 48 then
           raise EPcxError.Create(RC_PcxPaletteProblem)
@@ -418,7 +414,7 @@ begin
           PaletteModified := True;
         end;
 
-            //Reading data
+        //Reading data
         for i := 0 to FBitmap.Height - 1 do
         begin
           Decompressed.Read(ibuf, BytesPerLine);
@@ -458,10 +454,9 @@ begin
                 ibuftmp^[k div 2] := ibuftmp^[k div 2] + $80;
         end;
       end
-      else
-      if (Bpp = 8) and (Planes = 1) then
+      else if (Bpp = 8) and (Planes = 1) then
       begin
-            //256 Colors. Okay
+        //256 Colors. Okay
         Stream.Position := Stream.Size - (256 * 3 + 1);
         Stream.Read(ibuf, 1000);
         if ibuf[0] = 12 then
@@ -489,10 +484,9 @@ begin
           CopyMemory(ibuftmp, @ibuf, BytesPerLine);
         end;
       end
-      else
-      if (Bpp = 8) and (Planes = 3) then
+      else if (Bpp = 8) and (Planes = 3) then
       begin
-            //24 bit. Okey
+        //24 bit. Okey
         for i := 0 to FBitmap.Height - 1 do
         begin
           ibuf2 := Fbitmap.ScanLine[i];
@@ -547,9 +541,9 @@ var
   st: TStream;
   b: Byte;
   ibuf2: PRGBArray;
-  ibuf: array [0..MaxPixelCount - 1] of Byte;
+  ibuf: array[0..MaxPixelCount - 1] of Byte;
   ibuftmp: PByteArray;
-  wpal: array [0..255] of PALETTEENTRY;
+  wpal: array[0..255] of PALETTEENTRY;
 begin
   if FBitmap = nil then
     Exit;
@@ -557,10 +551,10 @@ begin
     and (FBitmap.PixelFormat <> pf24Bit) then
     FBItmap.PixelFormat := pf24bit;
 
-   //St is the temporary Stream to put the data
+  //St is the temporary Stream to put the data
   st := TMemoryStream.Create;
 
-   //Creating header first
+  //Creating header first
   FillChar(ibuf, 128, 0);
   ibuf[0] := $A;
   ibuf[1] := 5;
@@ -591,7 +585,7 @@ begin
         ibuf[67] := Hi(BytesPerLine);
         Stream.Write(ibuf, 128);
 
-                    //Write data
+        //Write data
         for i := 0 to FBitmap.Height - 1 do
         begin
           ibuftmp := FBitmap.ScanLine[i];
@@ -611,7 +605,7 @@ begin
         ibuf[66] := Lo(i);
         ibuf[67] := Hi(i);
 
-                    //Write palette
+        //Write palette
         if FBitmap.Palette <> 0 then
         begin
           GetPaletteEntries(FBitmap.Palette, 0, 16, wpal);
@@ -624,13 +618,13 @@ begin
         end;
         Stream.Write(ibuf, 128);
 
-                    //Write data
+        //Write data
         for i := 0 to FBitmap.Height - 1 do
         begin
           ibuftmp := FBitmap.Scanline[i];
           FillChar(ibuf, BytesPerLine, #0);
 
-                       //Red
+          //Red
           l := 0;
           for j := 0 to FBitmap.Width - 1 do
             if (j mod 2) = 0 then
@@ -644,7 +638,7 @@ begin
                 ibuf[l + j div 8] := ibuf[l + j div 8] + (1 shl (7 - (j mod 8)));
             end;
 
-                       //Green
+          //Green
           l := BytesPerLine div 4;
           for j := 0 to FBitmap.Width - 1 do
             if (j mod 2) = 0 then
@@ -658,7 +652,7 @@ begin
                 ibuf[l + j div 8] := ibuf[l + j div 8] + (1 shl (7 - (j mod 8)));
             end;
 
-                       //Blue
+          //Blue
           l := BytesPerLine div 2;
           for j := 0 to FBitmap.Width - 1 do
             if (j mod 2) = 0 then
@@ -672,7 +666,7 @@ begin
                 ibuf[l + j div 8] := ibuf[l + j div 8] + (1 shl (7 - (j mod 8)));
             end;
 
-                       //Intensity
+          //Intensity
           l := (BytesPerLine div 4) * 3;
           for j := 0 to FBitmap.Width - 1 do
             if (j mod 2) = 0 then
@@ -698,7 +692,7 @@ begin
         ibuf[67] := Hi(BytesPerLine);
         Stream.Write(ibuf, 128);
 
-                    //Write Data
+        //Write Data
         for i := 0 to FBitmap.Height - 1 do
         begin
           ibuftmp := Fbitmap.ScanLine[i];
@@ -716,7 +710,7 @@ begin
         ibuf[67] := hi(i);
         Stream.Write(ibuf, 128);
 
-                    //Write data
+        //Write data
         for i := 0 to FBitmap.Height - 1 do
         begin
           ibuf2 := FBitmap.ScanLine[i];
@@ -737,18 +731,18 @@ begin
       end;
   end;
 
-   //RLE Compress temporary Stream
+  //RLE Compress temporary Stream
   st.Position := 0;
   with TJvRle.Create(nil) do
   begin
     st := Compress(st);
     Free;
   end;
-   //Copy temporary Stream to final Stream
+  //Copy temporary Stream to final Stream
   st.Position := 0;
   Stream.CopyFrom(st, st.Size);
 
-   //Write palette if mode 256 color.
+  //Write palette if mode 256 color.
   if (FBitmap.PixelFormat = pf8bit) and (FBitmap.Palette <> 0) then
   begin
     GetPaletteEntries(FBitmap.Palette, 0, 256, wpal);
@@ -805,4 +799,3 @@ finalization
   TPicture.UnRegisterGraphicClass(TJvPcx);
 
 end.
-

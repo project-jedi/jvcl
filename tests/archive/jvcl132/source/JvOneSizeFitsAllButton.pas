@@ -18,51 +18,48 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvOneSizeFitsAllButton;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  StdCtrls, JVCLVer;
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
 
 const
   CM_FORCESIZE = WM_USER + 777;
 
 type
-  TCmForceSize = Record
+  TCmForceSize = record
     msg: cardinal;
     sender: TWinControl;
     newsize: TSmallPoint;
     result: Longint;
-  End;
+  end;
 
   TJvOneSizeFitsAllButton = class(TButton)
   private
     FAboutJVCL: TJVCLAboutInfo;
     { Private declarations }
-    Procedure CMForceSize( Var msg: TCMForceSize ); message CM_FORCESIZE;
+    procedure CMForceSize(var msg: TCMForceSize); message CM_FORCESIZE;
   protected
     { Protected declarations }
   public
     { Public declarations }
-    Procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation
-
 
 { TJvOneSizeFitsAllButton }
 
@@ -71,10 +68,8 @@ begin
   with msg do
     if sender <> self then
       with newsize do
-        inherited SetBounds( left, top, x, y );
+        inherited SetBounds(left, top, x, y);
 end;
-
-
 
 procedure TJvOneSizeFitsAllButton.SetBounds(ALeft, ATop, AWidth,
   AHeight: Integer);
@@ -84,15 +79,16 @@ var
   r: TRect;
 begin
   inherited;
-  form := GetParentForm( self );
-  If Assigned( form ) Then Begin
-    r:= Rect( aLeft, aTop, aWidth, aHeight );
-    msg.msg := CM_FORCESIZE ;
+  form := GetParentForm(self);
+  if Assigned(form) then
+  begin
+    r := Rect(aLeft, aTop, aWidth, aHeight);
+    msg.msg := CM_FORCESIZE;
     msg.sender := Self;
     msg.newsize.x := AWidth;
     msg.newsize.y := AHeight;
-    form.Broadcast( msg );
-  End;
+    form.Broadcast(msg);
+  end;
 end;
 
 end.

@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -57,7 +57,7 @@ implementation
 
 procedure TFormDir.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-   canclose:=Self.tag=1;
+  canclose := Self.tag = 1;
 end;
 
 end.

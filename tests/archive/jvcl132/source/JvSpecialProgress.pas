@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvSpecialProgress;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,  StdCtrls ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, JVCLVer;
 
 type
   TJvSpecialProgress = class(TGraphicControl)
@@ -77,7 +77,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Maximum: Integer read FMaximum write SetMaximum default 100;
     property Minimum: Integer read FMinimum write SetMinimum default 0;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
@@ -165,7 +165,7 @@ var
   FRed, FGreen, FBlue: Real;
   FStart, FEnd: TColor;
 begin
-   //Paint the background
+  //Paint the background
   if not (FTransparent) then
   begin
     Canvas.Brush.Color := FColor;
@@ -219,7 +219,7 @@ begin
       end
       else
       begin
-            //Draw a gradient
+        //Draw a gradient
         if FSolid then
         begin
           Red := (GetRValue(FEnd) - GetRValue(FStart)) / taille;
@@ -271,7 +271,7 @@ begin
 
   taille := savetaille;
 
-   //Draw text ?
+  //Draw text ?
   if FTextVisible then
   begin
     if FMaximum = FMinimum then
@@ -284,7 +284,8 @@ begin
     if FLeft < 0 then
       FLeft := 0;
     FTop := (Height - Canvas.TextHeight(st)) div 2;
-    if FTop < 0 then FTop := 0;
+    if FTop < 0 then
+      FTop := 0;
     Canvas.Brush.Color := clNone;
     Canvas.Brush.Style := bsClear;
     Canvas.TextOut(FLeft, FTop, st);
@@ -372,8 +373,7 @@ begin
     FPosition := Value;
     if FPosition > FMaximum then
       FPosition := FMaximum
-    else
-      if FPosition < FMinimum then
+    else if FPosition < FMinimum then
       FPosition := FMinimum;
     Invalidate;
   end;
@@ -429,8 +429,7 @@ procedure TJvSpecialProgress.StepIt;
 begin
   if FPosition + FStep > FMaximum then
     Position := FMaximum
-  else
-  if FPosition + FStep < FMinimum then
+  else if FPosition + FStep < FMinimum then
     Position := FMinimum
   else
     Position := FPosition + FStep;

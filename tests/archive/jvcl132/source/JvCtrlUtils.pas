@@ -21,8 +21,8 @@ Contributor(s): ______________________________________.
 Last Modified: May 10, 2000
 Current Version: 0.50
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -31,7 +31,7 @@ unit JvCtrlUtils;
 
 interface
 
-{$I JCL.INC}
+{$I JEDI.INC}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
@@ -85,13 +85,6 @@ procedure JvListViewSetSystemImageList(ListView: TListView);
 
 function JvMessageBox(const Text, Caption: string; Flags: DWORD): Integer; overload;
 function JvMessageBox(const Text: string; Flags: DWORD): Integer; overload;
-
-//------------------------------------------------------------------------------
-// Fixes
-//------------------------------------------------------------------------------
-
-// put to TCoolBar.OnResize event code
-procedure JvD4FixCoolBarResizePaint(CoolBar: TObject);
 
 implementation
 
@@ -399,26 +392,5 @@ begin
   with Application do
     Result := MessageBox(PChar(Text), PChar(Title), Flags);
 end;
-
-//==============================================================================
-// Fixes
-//==============================================================================
-
-procedure JvD4FixCoolBarResizePaint(CoolBar: TObject);
-{$IFDEF DELPHI4}
-var
-  R: TRect;
-begin
-  with CoolBar as TCoolBar do
-  begin
-    R := ClientRect;
-    R.Left := R.Right - 8;
-    InvalidateRect(Handle, @R, True);
-  end;
-end;
-{$ELSE}
-begin
-end;
-{$ENDIF}
 
 end.

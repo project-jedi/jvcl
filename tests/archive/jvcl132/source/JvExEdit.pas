@@ -18,21 +18,20 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvExEdit;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  StdCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
 
 type
   TJvExEdit = class(Tedit)
@@ -41,18 +40,18 @@ type
     FDisabledTextColor: TColor;
     FAboutJVCL: TJVCLAboutInfo;
     { Private declarations }
-    Procedure WMPaint( Var msg: TWMPaint ); message WM_PAINT;
-    Procedure WMEraseBkGnd( var msg: TWMEraseBkGnd ); message WM_ERASEBKGND;
+    procedure WMPaint(var msg: TWMPaint); message WM_PAINT;
+    procedure WMEraseBkGnd(var msg: TWMEraseBkGnd); message WM_ERASEBKGND;
     procedure SetDisabledColor(const Value: TColor); virtual;
     procedure SetDisabledTextColor(const Value: TColor); virtual;
   protected
     { Protected declarations }
   public
     { Public declarations }
-    Constructor Create( aOwner: TComponent ); override;
+    constructor Create(aOwner: TComponent); override;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property DisabledTextColor: TColor
       read FDisabledTextColor
       write SetDisabledTextColor
@@ -65,7 +64,6 @@ type
 
 implementation
 
-
 { TJvExEdit }
 
 constructor TJvExEdit.Create(aOwner: TComponent);
@@ -75,48 +73,50 @@ begin
   FDisabledTextColor := clGrayText;
 end;
 
-
 procedure TJvExEdit.SetDisabledColor(const Value: TColor);
 begin
-  If FDisabledColor <> Value Then Begin
+  if FDisabledColor <> Value then
+  begin
     FDisabledColor := Value;
-    If not Enabled Then
+    if not Enabled then
       Invalidate;
-  End;
+  end;
 end;
 
 procedure TJvExEdit.SetDisabledTextColor(const Value: TColor);
 begin
-  If FDisabledTextColor <> Value Then Begin
+  if FDisabledTextColor <> Value then
+  begin
     FDisabledTextColor := Value;
-    If not Enabled Then
+    if not Enabled then
       Invalidate;
-  End;
+  end;
 end;
 
 procedure TJvExEdit.WMEraseBkGnd(var msg: TWMEraseBkGnd);
 var
   canvas: TCanvas;
 begin
-  If Enabled Then
+  if Enabled then
     inherited
-  Else Begin
-    canvas:= TCanvas.Create;
+  else
+  begin
+    canvas := TCanvas.Create;
     try
       canvas.Handle := msg.DC;
-      SaveDC( msg.DC );
+      SaveDC(msg.DC);
       try
         canvas.Brush.Color := FDisabledColor;
         canvas.Brush.Style := bsSolid;
-        canvas.Fillrect( clientrect );
+        canvas.Fillrect(clientrect);
         msg.result := 1;
       finally
-        RestoreDC( msg.DC, -1 );
+        RestoreDC(msg.DC, -1);
       end;
     finally
       canvas.free
     end;
-  End; { Else }
+  end; { Else }
 end;
 
 procedure TJvExEdit.WMPaint(var msg: TWMPaint);
@@ -125,40 +125,43 @@ var
   ps: TPaintStruct;
   callEndPaint: Boolean;
 begin
-  If Enabled Then
+  if Enabled then
     inherited
-  Else Begin
+  else
+  begin
     callEndPaint := False;
-    canvas:= TCanvas.Create;
+    canvas := TCanvas.Create;
     try
-      If msg.DC <> 0 Then Begin
+      if msg.DC <> 0 then
+      begin
         canvas.Handle := msg.DC;
         ps.fErase := true;
-      End
-      Else Begin
-        BeginPaint( handle, ps );
-        callEndPaint:= true;
+      end
+      else
+      begin
+        BeginPaint(handle, ps);
+        callEndPaint := true;
         canvas.handle := ps.hdc;
-      End;
+      end;
 
-      If ps.fErase Then
-        Perform( WM_ERASEBKGND, canvas.handle, 0 );
+      if ps.fErase then
+        Perform(WM_ERASEBKGND, canvas.handle, 0);
 
-      SaveDC( canvas.handle );
+      SaveDC(canvas.handle);
       try
         canvas.Brush.Style := bsClear;
         canvas.Font := Font;
         canvas.Font.Color := FDisabledTextColor;
-        canvas.TextOut( 1, 1, Text );
+        canvas.TextOut(1, 1, Text);
       finally
-        RestoreDC( canvas.handle, -1 );
+        RestoreDC(canvas.handle, -1);
       end;
     finally
-      If callEndPaint Then
-        EndPaint( handle, ps );
+      if callEndPaint then
+        EndPaint(handle, ps);
       canvas.free
     end;
-  End; { Else }
+  end; { Else }
 end;
 
 end.

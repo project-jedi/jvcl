@@ -18,52 +18,51 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvFixedCheckListBox;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  StdCtrls, CheckLst ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, CheckLst, JVCLVer;
 
 type
   TJvFixedCheckListBox = class(TCheckListBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
     { Private declarations }
-    procedure WMHScroll( var msg: TWMHScroll ); message WM_HSCROLL;
+    procedure WMHScroll(var msg: TWMHScroll); message WM_HSCROLL;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
-
 implementation
-
 
 { TJvFixedCheckListBox }
 
 procedure TJvFixedCheckListBox.WMHScroll(var msg: TWMHScroll);
-Var
+var
   scrollpos: Integer;
   r: TRect;
 begin
   inherited;
-  If msg.ScrollCode <> SB_ENDSCROLL Then Begin
-    scrollpos := GetScrollPos( handle, SB_HORZ );
-    If scrollpos < 20 Then Begin
-      r:= ClientRect;
-      r.Right := r.left+20;
-      InvalidateRect( handle, @r, false );
-    End;  
-  End;
+  if msg.ScrollCode <> SB_ENDSCROLL then
+  begin
+    scrollpos := GetScrollPos(handle, SB_HORZ);
+    if scrollpos < 20 then
+    begin
+      r := ClientRect;
+      r.Right := r.left + 20;
+      InvalidateRect(handle, @r, false);
+    end;
+  end;
 end;
 
 end.

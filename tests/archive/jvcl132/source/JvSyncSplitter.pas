@@ -18,23 +18,20 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvSyncSplitter;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  ExtCtrls, JVCLVer;
-
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JVCLVer;
 
 type
   TJvSyncSplitter = class(TSplitter)
@@ -44,55 +41,53 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     procedure SetPartner(const Value: TJvSyncSplitter);
   protected
-    Procedure Notification( AComponent: TComponent; Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     property ForcedSize: Boolean read FForcedSize write FForcedSize;
   public
-    Procedure WndProc(var Message: TMessage); override;
+    procedure WndProc(var Message: TMessage); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Partner: TJvSyncSplitter read FPartner write SetPartner;
 
   end;
 
-
 implementation
 
-
 { TJvSyncSplitter }
-ResourceString
+resourcestring
   eInvalidPartner = 'TJvSyncSplitter.SetPartner: cannot set Partner to Self!';
-
 
 procedure TJvSyncSplitter.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  If (Operation = opRemove) and (aComponent = FPartner) Then
-    FPartner := Nil;
+  if (Operation = opRemove) and (aComponent = FPartner) then
+    FPartner := nil;
   inherited;
 end;
 
 procedure TJvSyncSplitter.SetPartner(const Value: TJvSyncSplitter);
 begin
-  If Value <> Self Then
+  if Value <> Self then
     FPartner := Value
-  Else
-    raise Exception.Create( eInvalidPartner );
+  else
+    raise Exception.Create(eInvalidPartner);
 end;
 
 procedure TJvSyncSplitter.WndProc(var Message: TMessage);
 begin
-  If Assigned( FPartner ) and not FForcedSize Then
-    Case Message.Msg Of
-      WM_MOUSEFIRST..WM_MOUSELAST: Begin
+  if Assigned(FPartner) and not FForcedSize then
+    case Message.Msg of
+      WM_MOUSEFIRST..WM_MOUSELAST:
+        begin
           FPartner.FForcedSize := true;
           try
-            FPartner.perform( Message.msg, Message.wparam, Message.lparam );
+            FPartner.perform(Message.msg, Message.wparam, Message.lparam);
           finally
             FPartner.FForcedSize := false;
           end;
-        End;
-    End;
+        end;
+    end;
   inherited;
 end;
 

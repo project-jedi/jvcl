@@ -18,55 +18,52 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvExTabcontrol;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  ComCtrls ,JVCLVer;
-
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ComCtrls, JVCLVer;
 
 type
   TJvExTabcontrol = class(TTabcontrol)
   private
     FAboutJVCL: TJVCLAboutInfo;
     { Private declarations }
-    Procedure CMDialogKey( var msg: TWMKey ); message CM_DIALOGKEY;
+    procedure CMDialogKey(var msg: TWMKey); message CM_DIALOGKEY;
 
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation
 
 procedure TJvExTabControl.CMDialogKey(var msg: TWMKey);
 begin
-  If (msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) and
-     IsChild( handle, Windows.getFocus )
-  Then Begin
-    If GetKeyState( VK_SHIFT ) < 0 Then Begin
-      If TabIndex = 0 Then
-        TabIndex := Tabs.Count-1
-      Else
+  if (msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) and
+    IsChild(handle, Windows.getFocus) then
+  begin
+    if GetKeyState(VK_SHIFT) < 0 then
+    begin
+      if TabIndex = 0 then
+        TabIndex := Tabs.Count - 1
+      else
         TabIndex := TabIndex - 1;
-    End
-    Else
-      TabIndex := (TabIndex+1) Mod Tabs.Count;
+    end
+    else
+      TabIndex := (TabIndex + 1) mod Tabs.Count;
     msg.result := 1;
-  End
-  Else
+  end
+  else
     inherited;
 end;
-
 
 end.

@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -51,17 +51,12 @@ uses
 
   //Standard
   JvListbox2, JvEdit, JvCombobox, JvCheckBox, JvRadioButton, JvButton,
-  JvLabel, JvScrollBar, JvGroupBox2, JvRadioGroup, JvPanel, JvMemo,
+  JvLabel, JvScrollBar, JvGroupBox2, JvRadioGroup, JvPanel, JvMemo,JvMemoEx,
 
   //Edits
   JvCustomBox, JvFileNameBox, JvDirectoryBox, JvImageBox, JvButtonBox,
   JvIpBox, JvFloatEdit, JvCalculatorBox, JvFontBox,
-
-  //Install
-  JvGradient, JvInstaller, JvWelcome, JvAgreement, JvConfirmCancel,
-  JvReadme, JvSelectDir, JvSelectGroup, JvInstallType, JvCompoInstall,
-  JvInstallProgress, JvUsernameSerial, JvFinishInstall, JvGeneralForm,
-  JvInstallConfirm, JvUnInstaller,
+  JvTypedEdit,
 
   //Controls
   JvPlaylist, JvButtonShaped, JvFavoritesButton, JvClock, JvStartMenuBtn,
@@ -88,7 +83,7 @@ uses
   JvFormWallpaper, JvAnimTitle, JvPerforated, JvFlashForm,
   JvTransparentForm, JvTrayIcon, JvTransForm, JvFormAnimatedIcon,
   JvAppAnimatedIcon, JvFormPlace, JvNotitle, JvFormAnimation,
-  JvAutoSizeCompo, JvFlashApplication, JvFormButton, JvMagnet,
+  JvAutoSizeCompo, JvFlashApplication, JvFormButton, JvMagnet, JvGradient,
 
   //Convert
   JvStringListToHtml, JvRgbToHtml, JvStrToHtml, JvRichEditToHtml,
@@ -117,18 +112,18 @@ uses
   JvRegion, JvCaesarCipher, JvVigenereCipher, JvXorCipher, JvGenetic,
 
   //Dialogs
-  JvCommonDialogD, JvBaseDlg, JvFormatDrive, JvFindFiles, JvBrowseFolder,
-  JvSelectDirectory, JvInputBox, JvOpenAs, JvAddPrinter, JvConnectNetwork,
-  JvDisconnectNetwork, JvPasswordForm, JvMessageBox, JvMessageBeep,
+  JvCommonDialogD, JvBaseDlg, JvFindFiles,
+
+  JvSelectDirectory, JvInputBox,
+   JvPasswordForm, JvMessageBox, JvMessageBeep,
   JvFatalAppExit, JvExchListboxes, JvLoginDlg, JvSerialDlg, JvNagScreen,
   JvTipsOfDay, JvImageDlg, JvCalculator, JvProgressDlg, JvDiskPrompt,
-  JvCopyError, JvDeleteError, JvRenameError, JvShellAbout,
+  JvCopyError, JvDeleteError, JvRenameError,  JvPageSetupTitled,   JvPageSetup,
 
-  //Dialogs 2
-  JvShutdownDlg, JvRestartDlg, JvChooseIconDlg, JvRunDlg,
-  JvFindComputerDlg, JvObjectPropertiesDlg, JvOutOfMemoryDlg,
-  JvOutOfSpaceDlg, JvOpenDialog2, JvSaveDialog2, JvPageSetupTitled,
-  JvPageSetup,{ JvDialogTestBrowser,}
+
+   //WinDialogs
+     JvBrowseFolder, 
+
 
   //Win32
   JvStatusBar2, JvTabControl, JvPageControl2, JvRichEdit, JvTrackBar2,
@@ -138,6 +133,12 @@ uses
 
   //Image types
   JvPcx, JvAni,
+
+  //Shapes
+  JvArrow,
+
+  //Composites
+  JvDateTimeNullPicker, JvYesNoPicker,
 
   //Peter Below Goodies
   JvAlignedEdit, JvAlignListbox, JvBMPListBox, JvButtonDrawGrid, JvButtonPageControl,
@@ -160,7 +161,7 @@ uses
   //Editors
   JvDataEmbeddedEditor, JvFormWallpaperEditor, JvPatcherEditor,
   JvHtmlParserEditor, JvAlarmsEditor, { JvRegisterEditor,} JvBaseDlgEditor,
-  JvBaseDlgEditorP, JvCommonDialogDEditor,
+ { JvBaseDlgEditorP, }JvCommonDialogDEditor,
 
   Dialogs, ExptIntf, ToolIntf, ExtDlgs, StdCtrls, Buttons,
 {$IFDEF DELPHI5}DsgnIntf, {$ENDIF}{$IFDEF DELPHI6_UP}DesignEditors, DesignIntf, {$ENDIF}
@@ -176,10 +177,10 @@ begin
 
 
 
-  //Registering Standard components - 12
+  //Registering Standard components - 14
   RegisterComponents('Jv Standard', [TJvLabel, TJvEdit, TJvMemo, TJvButton, TJvCheckBox,
     TJvRadioButton, TJvListbox2, TJvCombobox, TJvScrollBar, TJvGroupBox2, TJvRadioGroup,
-      TJvPanel]);
+      TJvPanel, TJvMemoEx, TJvSingleLineMemo]);
 
   //Registering Additional components - 13
   RegisterComponents('Jv Additional', [TJvBitBtn, TJvSpeedButton, TJvMaskEdit,
@@ -202,7 +203,7 @@ begin
   RegisterComponents('Jv Forms', [TJvFormWallpaper, TJvAnimtitle, TJvPerforated,
     TJvFlashForm, TJvTransparentForm, TJvTrayIcon, TJvTransForm, TJvFormAnimatedIcon,
       TJvAppAnimatedIcon, TJvFormPlace, TJvNoTitle, TJvFormAnimation, TJvAutoSizeCompo,
-      TJvFlashApplication, TJvFormButton, TJvFormMagnet]);
+      TJvFlashApplication, TJvFormButton, TJvFormMagnet,TJvGradient]);
 
   //Registering Utils components - 23
   RegisterComponents('Jv Utils', [TJvChrono, TJvComplex, TJvCplLauncher,
@@ -223,19 +224,18 @@ begin
   RegisterComponents('Jv Utils 3', [TJvRegion, TJvCaesarCipher, TJvVigenereCipher,
     TJvXorCipher, TJvGenetic]);
 
-  //Registering Dialogs components - 26
-  RegisterComponents('Jv Dialogs', [TJvFormatDrive, TJvFindFiles, TJvBrowseFolder,
-    TJvShellAbout, TJvSelectDirectory, TJvInputBox, TJvOpenAs, TJvAddPrinter,
-      TJvConnectNetwork, TJvDisconnectNetwork, TJvPasswordForm, TJvMessageBox,
+  //Registering Dialogs components - 20
+  RegisterComponents('Jv Dialogs', [TJvFindFiles,
+TJvInputBox,  TJvPasswordForm, TJvMessageBox,
       TJvMessageBeep, TJvFatalAppExit, TJvExchListboxes, TJvLoginDlg,
       TJvSerialDlg, TJvNagScreen, TJvTipsOfDay, TJvImageDlg, TJvCalculator,
-      TJvProgressDlg, TJvDiskPrompt, TJvCopyError, TJvDeleteError, TJvRenameError]);
-
-  //Registering Dialogs components - 12
-  RegisterComponents('Jv Dialogs 2', [TJvShutdownDlg, TJvRestartDlg, TJvChooseIconDlg,
-    TJvRunDlg, TJvFindComputerDlg, TJvObjectPropertiesDlg, TJvOutOfMemoryDlg,
-      TJvOutOfSpaceDlg, TJvOpenDialog2, TJvSaveDialog2, TJvPageSetupDialog,
+      TJvProgressDlg, TJvDiskPrompt, TJvCopyError, TJvDeleteError, TJvRenameError, TJvPageSetupDialog,
       TJvPageSetupTitledDialog]);
+
+//Register WinDialogs components  -  2
+
+  RegisterComponents('Jv WinDialogs', [TJvBrowseFolder, TJvSelectDirectory ]);
+
 
   //Registering Controls components - 19
   RegisterComponents('Jv Controls', [TJvPlaylist, TJvButtonShaped, TJvFavoritesButton,
@@ -254,16 +254,11 @@ begin
   RegisterComponents('Jv Net', [TJvHtmlParser, TJvSurfTo, TJvImageSurfTo, TJvImageMailTo,
     TJvHttpGrabber, TJvMultiHttpGrabber, TJvFtpGrabber]);
 
-  //Register Edits Components - 8
+  //Register Edits Components - 12
   RegisterComponents('Jv Edits', [TJvFileNameBox, TJvDirectoryBox, TJvImageBox,
-    TJvButtonBox, TJvIpBox, TJvFloatEdit, TJvCalculatorBox, TJvFontBox]);
+    TJvButtonBox, TJvIpBox, TJvFloatEdit, TJvCalculatorBox, TJvFontBox,
+    TJvCurrencyEdit,TJvFloatEdit2,TJvIntegerEdit,TJvYearEdit]);
 
-
-  //Register Install Components - 15
-  RegisterComponents('Jv Install', [TJvGradient, TJvInstaller, TJvWelcome, TJvAgreement,
-    TJvConfirmCancel, TJvReadme, TJvSelectDir, TJvSelectGroup, TJvInstallType, TJvCompoInstall,
-      TJvInstallConfirm, TJvInstallProgress, TJvUsernameSerial, TJvFinishInstall,
-      TJvGeneralForm, TJvUnInstaller]);
 
   //Register Convert Components - 5
   RegisterComponents('Jv Convert', [TJvStringListToHtml, TJvRichEditToHtml,
@@ -272,6 +267,13 @@ begin
   //Register MP3 Components - 6
   RegisterComponents('Jv MP3', [TJvId3v1, TJvVisualId3v1, TJvId3v2, TJvBreatheSkin,
     TJvWinampApi, TJvVisualId3v2]);
+
+// Register Shapes Components - 1
+  RegisterComponents('Jv Shapes', [TJvArrow]);
+
+//Composites - 2
+RegisterComponents('Jv Composites', [TJvYesNoPicker, TJvDateTimeNullPicker]);
+
 
 
    //Register Peter Below Components - 34
@@ -284,9 +286,9 @@ begin
       TJvTransparentPanel, TJvCaretEdit, TJvCaretMemo]);
 
 
-  //Petr Vones Components
+  //Petr Vones Components  - 15
 
-  RegisterComponents('JEDI-VCL', [{$IFDEF DELPHI5_UP}TJvIpAddress, {$ENDIF}
+  RegisterComponents('JEDI-VCL', [TJvIpAddress,
     TJvPageControl, TJvStatusBar, TJvTrackBar, TJvTreeView]);
   RegisterComponents('JEDI-VCL', [TJvListBox, TJvImgBtn]);
   RegisterPropertyEditor(TypeInfo(TJvImgBtnKind), TJvImgBtn, 'Kind', TJvNosortEnumProperty);
@@ -297,7 +299,7 @@ begin
   RegisterComponentEditor(TJvMail, TJvMailEditor);
   RegisterComponents('JEDI-VCL', [TJvPerfStat95]);
   RegisterPropertyEditor(TypeInfo(string), TJvPerfStatItem, 'PerfStatKey', TJvPerfStatProperty);
-  RegisterComponents('JEDI-VCL', [TJvProcessList, TJvCreateProcess, TJvFileTreeScan]);
+  RegisterComponents('JEDI-VCL', [{TJvProcessList,} TJvCreateProcess, TJvFileTreeScan]);
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess, '', TJvExeNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess, 'CurrentDirectory', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvFileTreeScan, 'RootDirectory', TJvDirectoryProperty);
@@ -318,7 +320,7 @@ begin
 
   //Register component editors - 3
   RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
-  RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditorP);
+//  RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditorP);
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
 //  RegisterComponentEditor(TCommonDialog, TJvBrowseDialogEditor);
 

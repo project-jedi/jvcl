@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,13 @@ Known Issues:
 
 unit JvRegistryViewer;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ComCtrls, ExtCtrls, Registry, Menus, JvTypes ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ComCtrls, ExtCtrls, Registry, Menus,
+  JvTypes, JVCLVer;
 
 type
   TJvRegistryViewer = class(TWinControl)
@@ -69,7 +70,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property TreeViewWidth: Integer read GetTreeView1Width write SetTreeView1Width;
     property TreeViewCursor: TCursor read GetTreeView1Cursor write SetTreeView1Cursor;
     property TreeViewHint: string read GetTreeView1Hint write SetTreeView1Hint;
@@ -100,7 +101,7 @@ resourcestring
   RC_Integer = 'Integer';
   RC_Binary = 'Binary';
 
-{***************************************************}
+  {***************************************************}
 
 constructor TJvRegistryViewer.Create(AOwner: TComponent);
 var
@@ -281,7 +282,7 @@ begin
   FRegistry.OpenKey('\', False);
   tl := FTreeView1.Items.AddChildFirst(nil, RC_HKey3);
   if FRegistry.HasSubKeys then
-     tl.HasChildren := True;
+    tl.HasChildren := True;
 
   FRegistry.RootKey := HKEY_USERS;
   FRegistry.OpenKey('\', False);
@@ -332,20 +333,15 @@ begin
 
   if r.Text = RC_HKey2 then
     rootk := HKEY_CURRENT_USER
-  else
-  if r.Text = RC_HKey1 then
+  else if r.Text = RC_HKey1 then
     rootk := HKEY_CLASSES_ROOT
-  else
-  if r.Text = RC_HKey3 then
+  else if r.Text = RC_HKey3 then
     rootk := HKEY_LOCAL_MACHINE
-  else
-  if r.Text = RC_HKey4 then
+  else if r.Text = RC_HKey4 then
     rootk := HKEY_USERS
-  else
-  if r.Text = RC_HKey5 then
+  else if r.Text = RC_HKey5 then
     rootk := HKEY_PERFORMANCE_DATA
-  else
-  if r.Text = RC_HKey7 then
+  else if r.Text = RC_HKey7 then
     rootk := HKEY_DYN_DATA
   else
     rootk := HKEY_CURRENT_CONFIG;
@@ -394,7 +390,7 @@ var
   tl: TListItem;
   ts: TStringList;
   i, j, k: Integer;
-  p: array [0..255] of Byte;
+  p: array[0..255] of Byte;
 begin
   FListView1.Items.Clear;
 
@@ -410,20 +406,15 @@ begin
   end;
   if r.Text = RC_HKey2 then
     rootk := HKEY_CURRENT_USER
-  else
-  if r.Text = RC_HKey1 then
+  else if r.Text = RC_HKey1 then
     rootk := HKEY_CLASSES_ROOT
-  else
-  if r.Text = RC_HKey3 then
+  else if r.Text = RC_HKey3 then
     rootk := HKEY_LOCAL_MACHINE
-  else
-  if r.Text = RC_HKey4 then
+  else if r.Text = RC_HKey4 then
     rootk := HKEY_USERS
-  else
-  if r.Text = RC_HKey5 then
+  else if r.Text = RC_HKey5 then
     rootk := HKEY_PERFORMANCE_DATA
-  else
-  if r.Text = RC_HKey7 then
+  else if r.Text = RC_HKey7 then
     rootk := HKEY_DYN_DATA
   else
     rootk := HKEY_CURRENT_CONFIG;

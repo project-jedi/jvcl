@@ -18,8 +18,8 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -31,8 +31,7 @@ unit JvAlignListbox;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  StdCtrls ,JVCLVer;
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
 
 type
   TJvAlignListbox = class(TCustomListbox)
@@ -47,10 +46,10 @@ type
       State: TOwnerDrawState); override;
   public
     { Public declarations }
-    Constructor Create( aOwner: TComponent ); override;
+    constructor Create(aOwner: TComponent); override;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Alignment: TAlignment read fAlignment write SetAlignment
       default taLeftJustify;
     { publish all properties of TCustomlistbox with exception of Style }
@@ -108,11 +107,7 @@ type
     property OnStartDrag;
   end;
 
-
-
 implementation
-
-
 
 { TJvAlignListbox }
 
@@ -125,32 +120,35 @@ end;
 procedure TJvAlignListbox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 const
-  alignflags: Array [TAlignment] of DWORD =
-              ( DT_LEFT, DT_RIGHT, DT_CENTER );
+  alignflags: array[TAlignment] of DWORD =
+  (DT_LEFT, DT_RIGHT, DT_CENTER);
 var
-//  flags: DWORD;
-  S: String;
+  //  flags: DWORD;
+  S: string;
 begin
-  If Assigned( OnDrawItem ) Then
+  if Assigned(OnDrawItem) then
     inherited
-  Else Begin
-    Canvas.FillRect( Rect );
-    If index >= 0 Then Begin
-      S:= Items[index];
-      If Length(S) > 0 Then
-        DrawText( Canvas.handle, PChar(S), Length(S), Rect,
-                  DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or
-                  alignflags[ FAlignment ] );
-    End;
-  End;
+  else
+  begin
+    Canvas.FillRect(Rect);
+    if index >= 0 then
+    begin
+      S := Items[index];
+      if Length(S) > 0 then
+        DrawText(Canvas.handle, PChar(S), Length(S), Rect,
+          DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or
+          alignflags[FAlignment]);
+    end;
+  end;
 end;
 
 procedure TJvAlignListbox.SetAlignment(const Value: TAlignment);
 begin
-  If fAlignment <> Value Then Begin
+  if fAlignment <> Value then
+  begin
     fAlignment := Value;
     Invalidate;
-  End;
+  end;
 end;
 
 end.

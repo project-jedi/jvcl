@@ -20,8 +20,8 @@ Contributor(s): ______________________________________.
 Last Modified: Jun 26, 2000
 Current Version: 0.50
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------
@@ -31,12 +31,13 @@ TJvTreeView:
 TJvIpAddress:
   Can't focus next control by TAB key on D4.
 }
+{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+{$I JEDI.INC}
 
 unit JvComCtrls;
 
 interface
 
-{$I JCL.INC}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,

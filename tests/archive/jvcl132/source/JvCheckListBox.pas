@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -30,11 +30,11 @@ unit JvCheckListBox;
 
 interface
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, checklst, Controls, Forms,
-  JvItemsSearchs,JVCLVer;
+  JvItemsSearchs, JVCLVer;
 
 type
   TJvCheckListBox = class(TCheckListbox)
@@ -91,7 +91,7 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HotTrack: Boolean read FEffect write SetEffect default False;
     property HorScrollbar: Boolean read FScroll write SetHScroll default True;
     property HintColor: TColor read FColor write FColor default clInfoBk;
@@ -114,7 +114,7 @@ type
     StringSize: Integer;
   end;
 
-{**************************************************}
+  {**************************************************}
 
 constructor TJvCheckListBox.Create(AOwner: TComponent);
 begin
@@ -433,7 +433,7 @@ procedure TJvCheckListBox.LoadFromStream(Stream: TStream);
 var
   CheckLst: TCheckListRecord;
   st: string;
-  buf: array [0..1024] of Char;
+  buf: array[0..1024] of Char;
 begin
   Items.Clear;
   while Stream.Position + SizeOf(TCheckListRecord) <= Stream.Size do
@@ -465,7 +465,7 @@ end;
 procedure TJvCheckListBox.SaveToStream(Stream: TStream);
 var
   CheckLst: TCheckListRecord;
-  buf: array [1..1024] of Char;
+  buf: array[1..1024] of Char;
   i, j: Integer;
 begin
   for i := 0 to Items.Count - 1 do
@@ -491,8 +491,7 @@ begin
       if Selected[i] then
         Items.Delete(i);
   end
-  else
-  if ItemIndex <> -1 then
+  else if ItemIndex <> -1 then
   begin
     i := ItemIndex;
     Items.Delete(i);

@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvGradientCaption;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,  StdCtrls, JvGradient, JvTypes ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, JvGradient, JvTypes, JVCLVer;
 
 type
   TJvGradientCaption = class(TWinControl)
@@ -76,7 +76,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property GradientCursor: TCursor read GetJvGradient1Cursor write SetJvGradient1Cursor;
     property GradientHint: string read GetJvGradient1Hint write SetJvGradient1Hint;
     property GradientStarTColor: TColor read GetJvGradient1StarTColor write SetJvGradient1StarTColor default clBlack;
@@ -100,7 +100,7 @@ implementation
 resourcestring
   RC_YourTextHere = 'Put your text here ...';
 
-{***************************************************}
+  {***************************************************}
 
 constructor TJvGradientCaption.Create(AOwner: TComponent);
 begin

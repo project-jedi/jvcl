@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvJoystick;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, MMSystem, Forms,  JvTypes ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, MMSystem, Forms, JvTypes, JvComponent;
 
 // (rom) in the time of USB this unit may have to support more than 2 joysticks
 
@@ -162,9 +162,9 @@ resourcestring
   RC_JoystickUnplugged = 'The specified joystick is not connected to the system.';
   RC_JoystickErrorParam = 'The specified joystick device identifier is invalid.';
 
-///////////////////////////////////////////////////////////
-// TJvJoystick
-///////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////
+  // TJvJoystick
+  ///////////////////////////////////////////////////////////
 
 constructor TJvJoystick.Create(AOwner: TComponent);
 begin
@@ -307,14 +307,11 @@ var
       y := msg.LParamHi;
       if (msg.WParam and JOY_BUTTON1CHG) = JOY_BUTTON1CHG then
         i := 1
-      else
-      if (msg.WParam and JOY_BUTTON2CHG) = JOY_BUTTON2CHG then
+      else if (msg.WParam and JOY_BUTTON2CHG) = JOY_BUTTON2CHG then
         i := 2
-      else
-      if (msg.WParam and JOY_BUTTON3CHG) = JOY_BUTTON3CHG then
+      else if (msg.WParam and JOY_BUTTON3CHG) = JOY_BUTTON3CHG then
         i := 3
-      else
-      if (msg.WParam and JOY_BUTTON4CHG) = JOY_BUTTON4CHG then
+      else if (msg.WParam and JOY_BUTTON4CHG) = JOY_BUTTON4CHG then
         i := 4
       else
         i := 0;

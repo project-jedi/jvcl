@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvButtonPersistent;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
@@ -93,8 +93,7 @@ begin
       TJvButton(Sender).HotTrackFont.Assign(FFont);
     end;
   end
-  else
-  if Sender is TSpeedButton then
+  else if Sender is TSpeedButton then
   begin
     TSpeedButton(Sender).Enabled := Enabled;
     TSpeedButton(Sender).Visible := Visible;

@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -60,15 +60,15 @@ implementation
 
 procedure TFormLogi.BUBitBtn1Click(Sender: TObject);
 begin
-   Tag := 1;
-   Close;
+  Tag := 1;
+  Close;
 end;
 
 {**************************************************}
 
 procedure TFormLogi.BUBitBtn2Click(Sender: TObject);
 begin
-   Close;
+  Close;
 end;
 
 end.

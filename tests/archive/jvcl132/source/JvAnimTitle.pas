@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvAnimTitle;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms, JvComponent;
 
 type
   TJvAnimTitle = class(TJvComponent)
@@ -97,8 +97,7 @@ begin
       else
         FTitle := FTitle + FInitialTitle[Length(FTitle) + 1];
     end
-    else
-    if Length(FTitle) = 0 then
+    else if Length(FTitle) = 0 then
       FSens := True
     else
       FTitle := Copy(FTitle, 0, Length(FTitle) - 1);

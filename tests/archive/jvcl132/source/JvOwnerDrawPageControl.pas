@@ -18,31 +18,28 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvOwnerDrawPageControl;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  ComCtrls, JVCLVer;
-
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ComCtrls, JVCLVer;
 
 type
   TJvOwnerDrawPageControl = class(TPageControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
     { Private declarations }
-    Procedure WMLButtonDown( Var msg: TWMLButtonDown ); message WM_LBUTTONDOWN;
-    Procedure CMDialogKey( Var msg: TWMKey ); message CM_DIALOGKEY;
+    procedure WMLButtonDown(var msg: TWMLButtonDown); message WM_LBUTTONDOWN;
+    procedure CMDialogKey(var msg: TWMKey); message CM_DIALOGKEY;
     procedure SetOwnerdraw(const Value: Boolean);
     function GetOwnerdraw: Boolean;
   protected
@@ -50,18 +47,17 @@ type
     procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
   public
     { Public declarations }
-    Constructor Create( aOwner: TCOmponent ); override;
+    constructor Create(aOwner: TCOmponent); override;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
 
     property Ownerdraw: Boolean read GetOwnerdraw write SetOwnerdraw default True;
   end;
 
 implementation
 
-Uses CommCtrl;
-
+uses CommCtrl;
 
 { TJvOwnerDrawPageControl }
 
@@ -70,22 +66,24 @@ var
   thistab, tab: TTabSheet;
   forward: Boolean;
 begin
-  If (msg.CharCode = Ord(#9)) and (GetKeyState( VK_CONTROL ) < 0) Then
-  Begin
+  if (msg.CharCode = Ord(#9)) and (GetKeyState(VK_CONTROL) < 0) then
+  begin
     thistab := ActivePage;
-    forward := GetKeyState( VK_SHIFT ) >= 0;
+    forward := GetKeyState(VK_SHIFT) >= 0;
     tab := thistab;
-    Repeat
-      tab := FindNextPage( tab, forward, true );
-    Until tab.Enabled or (tab = thistab);
-    If tab <> thistab Then Begin
-      If CanChange Then Begin
+    repeat
+      tab := FindNextPage(tab, forward, true);
+    until tab.Enabled or (tab = thistab);
+    if tab <> thistab then
+    begin
+      if CanChange then
+      begin
         ActivePage := tab;
         Change;
-      End;
+      end;
       Exit;
-    End;
-  End;
+    end;
+  end;
   inherited;
 end;
 
@@ -100,36 +98,38 @@ procedure TJvOwnerDrawPageControl.DrawTab(TabIndex: Integer; const Rect: TRect;
 var
   imageindex: Integer;
   r: TRect;
-  S: String;
+  S: string;
 begin
-  If not Pages[TabIndex].Enabled Then
+  if not Pages[TabIndex].Enabled then
     Canvas.Font.Color := clGrayText;
-  If Active Then
-    Canvas.Font.Style := [fsBold];  
-  If Assigned( OnDrawTab ) Then
+  if Active then
+    Canvas.Font.Style := [fsBold];
+  if Assigned(OnDrawTab) then
     inherited
-  Else Begin
-    r:= Rect;
-    Canvas.Fillrect( r );
-    imageindex := GetImageIndex( tabindex );
-    If (imageindex >=0) and Assigned( Images ) Then Begin
-      SaveDC( canvas.handle );
-      images.Draw( Canvas, Rect.Left+4, Rect.Top+2,
-                   imageindex,
-                   Pages[TabIndex].enabled );
+  else
+  begin
+    r := Rect;
+    Canvas.Fillrect(r);
+    imageindex := GetImageIndex(tabindex);
+    if (imageindex >= 0) and Assigned(Images) then
+    begin
+      SaveDC(canvas.handle);
+      images.Draw(Canvas, Rect.Left + 4, Rect.Top + 2,
+        imageindex,
+        Pages[TabIndex].enabled);
       // images.draw fouls the canvas colors if it draws
       // the image disabled, thus the SaveDC/RestoreDC
-      RestoreDC( canvas.handle, -1 );
+      RestoreDC(canvas.handle, -1);
       R.Left := R.Left + images.Width + 4;
-    End;
-    S:= Pages[ TabIndex ].Caption;
-    InflateRect( r, -2, -2 );
-    DrawText( Canvas.handle,
-              PChar(S),
-              Length(S),
-              r,
-              DT_SINGLELINE or DT_LEFT or DT_TOP );
-  End;
+    end;
+    S := Pages[TabIndex].Caption;
+    InflateRect(r, -2, -2);
+    DrawText(Canvas.handle,
+      PChar(S),
+      Length(S),
+      r,
+      DT_SINGLELINE or DT_LEFT or DT_TOP);
+  end;
 end;
 
 function TJvOwnerDrawPageControl.GetOwnerdraw: Boolean;
@@ -147,20 +147,21 @@ var
   hi: TTCHitTestInfo;
   tabindex: Integer;
 begin
-  If csDesigning In ComponentState Then Begin
+  if csDesigning in ComponentState then
+  begin
     inherited;
     Exit;
-  End;
+  end;
   hi.pt.x := msg.XPos;
   hi.pt.y := msg.YPos;
   hi.flags := 0;
-  tabindex := Perform( TCM_HITTEST, 0, longint(@hi));
-  If (tabindex >= 0) and ((hi.flags and TCHT_ONITEM) <> 0)
-  Then
-    If not Pages[ tabindex ].Enabled Then Begin
+  tabindex := Perform(TCM_HITTEST, 0, longint(@hi));
+  if (tabindex >= 0) and ((hi.flags and TCHT_ONITEM) <> 0) then
+    if not Pages[tabindex].Enabled then
+    begin
       msg.result := 0;
       Exit;
-    End;
+    end;
   inherited;
 end;
 

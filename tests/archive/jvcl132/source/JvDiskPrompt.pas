@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,14 +28,14 @@ Known Issues:
 
 unit JvDiskPrompt;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   SetupApi,
-  JvCommonDialogD, JvBaseDlg, JvTypes ;
+  JvCommonDialogD, JvBaseDlg, JvTypes;
 
 type
   TJvDiskPrompt = class(TJvCommonDialogD)
@@ -84,7 +84,7 @@ function TJvDiskPrompt.Execute: TDiskRes;
 var
   Sty: DWORD;
   Required: DWORD;
-  res: array [0..255] of Char;
+  res: array[0..255] of Char;
 begin
   Result := dsError;
   Sty := 0;
@@ -110,7 +110,7 @@ begin
   if @FSetupPromptForDisk <> nil then
   begin
     case FSetupPromptForDisk(FHandle, PChar(FTitle), PChar(FDiskName),
-           PChar(FPathToSource), PChar(FFileSought), PChar(FTagFile), Sty, res, SizeOf(res), Required) of
+      PChar(FPathToSource), PChar(FFileSought), PChar(FTagFile), Sty, res, SizeOf(res), Required) of
       DPROMPT_SUCCESS:
         begin
           FPath := StrPas(res);

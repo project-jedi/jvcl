@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvId3v1;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,  JvTypes ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, JvTypes, JvComponent;
 
 type
   TGenre = (grBlues, grClassicRock, grCountry, grDance, grDisco, grFunk, grGrunge,
@@ -62,12 +62,12 @@ type
     grNone);
 
   TId3v1Tag = packed record
-    Identifier: array [0..2] of Char;
-    SongName: array [1..30] of Char;
-    Artist: array [1..30] of Char;
-    Album: array [1..30] of Char;
-    Year: array [0..3] of Char;
-    Comment: array [1..30] of Char;
+    Identifier: array[0..2] of Char;
+    SongName: array[1..30] of Char;
+    Artist: array[1..30] of Char;
+    Album: array[1..30] of Char;
+    Year: array[0..3] of Char;
+    Comment: array[1..30] of Char;
     Genre: TGenre;
   end;
 
@@ -279,7 +279,7 @@ end;
 procedure TJvId3v1.RemoveTag(FileName: string);
 var
   fich: TFileStream;
-  tag: array [0..2] of Char;
+  tag: array[0..2] of Char;
 begin
   fich := TFileStream.Create(FileName, fmOpenReadWrite or fmShareDenyWrite);
   fich.Position := fich.Size - 128;
@@ -304,7 +304,7 @@ end;
 function TJvId3v1.TagPresent(FileName: string): Boolean;
 var
   fich: TFileStream;
-  tag: array [0..2] of Char;
+  tag: array[0..2] of Char;
 begin
   try
     fich := TFileStream.Create(FileName, fmOpenReadWrite or fmShareDenyWrite);
@@ -330,7 +330,7 @@ begin
     begin
       fich := TFileStream.Create(FileName, fmOpenReadWrite or fmShareExclusive);
 
-       //Remove old tag ?
+      //Remove old tag ?
       if fich.Size > 128 then
       begin
         fich.Position := fich.Size - 128;
@@ -339,7 +339,7 @@ begin
           fich.Position := fich.Size - 128;
       end;
 
-       //Set new tag
+      //Set new tag
       tag.Identifier := 'TAG';
       CopyMemory(@tag.SongName, @SongName[1], 30);
       CopyMemory(@tag.Artist, @Artist[1], 30);
@@ -348,7 +348,7 @@ begin
       CopyMemory(@tag.Comment, @Comment[1], 30);
       tag.Genre := Genre;
 
-       //Write it
+      //Write it
       fich.Write(tag, SizeOf(tag));
 
       fich.Free;

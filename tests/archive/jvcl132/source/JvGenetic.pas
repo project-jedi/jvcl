@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvGenetic;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics,  JvTypes ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, JvTypes, JvComponent;
 
 type
   TOnTest = function(Sender: TObject; Index: Integer; Member: PByte): Byte of object;
@@ -82,7 +82,7 @@ type
 resourcestring
   RC_NoTest = 'TJvGenetic : OnTestMember must be Assigned !';
 
-{***************************************************}
+  {***************************************************}
 
 constructor TJvGenetic.Create(AOwner: TComponent);
 begin
@@ -238,18 +238,18 @@ var
   i: Integer;
   Father, Mother: Integer;
   FGenerat: TStringList;
-   Member: TGeneticMember;
+  Member: TGeneticMember;
 begin
   if (FNumbers > 0) and (FSize > 0) then
   begin
     Inc(FGeneration);
 
-      //Compute the sum of Points
+    //Compute the sum of Points
     tot := 0;
     for i := 0 to FNumbers - 1 do
       Inc(tot, TGeneticMember(FMembers.Objects[i]).Points);
 
-      //Create new Generation
+    //Create new Generation
     FGenerat := TStringList.Create;
     for i := 0 to FNumbers do
     begin
@@ -271,9 +271,10 @@ begin
         Inc(b, TGeneticMember(FMembers.Objects[Mother]).Points);
       end;
 
-         //Copy, Crossover and mutate
+      //Copy, Crossover and mutate
       Member := TGeneticMember.Create;
-      Member.Data := Generate(TGeneticMember(FMembers.Objects[Mother]).Data, TGeneticMember(FMembers.Objects[Father]).Data,
+      Member.Data := Generate(TGeneticMember(FMembers.Objects[Mother]).Data,
+        TGeneticMember(FMembers.Objects[Father]).Data,
         FSize);
 
       if Assigned(FOnTest) then
@@ -281,7 +282,7 @@ begin
       else
         raise Exception.Create(RC_NoTest);
 
-         //Add new element to FGenerat
+      //Add new element to FGenerat
       FGenerat.AddObject('', TObject(Member));
     end;
     KillThemAll(FMembers);

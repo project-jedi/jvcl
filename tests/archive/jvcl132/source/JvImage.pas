@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -93,7 +93,7 @@ type
     destructor Destroy; override;
     procedure Loaded; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property Pictures: TJvPictures read FPictures write FPictures;
     property Picture: TPicture read FPicture write SetPicture;
@@ -359,4 +359,3 @@ begin
 end;
 
 end.
-

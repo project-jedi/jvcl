@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,14 +28,14 @@ Known Issues:
 
 unit JvRegion;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 // (rom) the JCL has a function for this job
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics,   JvTypes ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, JvTypes, JvComponent;
 
 type
   TJvRegion = class(TJvComponent)
@@ -80,11 +80,11 @@ begin
         Inc(x);
       endx := x;
 
-          // do we have some pixels?
+      // do we have some pixels?
       if startx < bmp.Width then
       begin
         if rgn1 = 0 then
-                 // Create a region to start with
+          // Create a region to start with
           rgn1 := CreateRectRgn(startx + 1, y, endx, y + 1)
         else
         begin

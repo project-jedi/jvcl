@@ -18,48 +18,45 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvObserverLabel;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  StdCtrls, JvObserverMessages, JVCLVer;
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JvObserverMessages, JVCLVer;
 
 type
   TJvObserverLabel = class(TLabel)
   private
     FAboutJVCL: TJVCLAboutInfo;
     { Private declarations }
-    Procedure UMObservibleChanged( Var msg: TUMObservibleChanged );
+    procedure UMObservibleChanged(var msg: TUMObservibleChanged);
       message UM_OBSERVIBLE_CHANGED;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation
-
 
 { TJvObserverLabel }
 
 procedure TJvObserverLabel.UMObservibleChanged(var msg: TUMObservibleChanged);
 const
-  checkstrings : Array [Boolean] of String = ('unchecked', 'checked' );  
+  checkstrings: array[Boolean] of string = ('unchecked', 'checked');
 begin
-  If msg.sender Is TCheckbox Then
-    With TCheckbox(msg.sender) Do
+  if msg.sender is TCheckbox then
+    with TCheckbox(msg.sender) do
       Self.Caption := Format('Checkbox %s is %s',
-                              [Name, Checkstrings[Checked]]);
+        [Name, Checkstrings[Checked]]);
 end;
 
 end.

@@ -18,39 +18,36 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvKeyScrollBox;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs ,JVCLVer;
-
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JVCLVer;
 
 type
   TJvKeyScrollBox = class(TScrollBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
     { Private declarations }
-    Procedure WMGetDlgCode( Var msg: TWMGetDlgCode );
+    procedure WMGetDlgCode(var msg: TWMGetDlgCode);
       message WM_GETDLGCODE;
   protected
     { Protected declarations }
-    Procedure WndProc( Var Msg: TMessage ); override; 
+    procedure WndProc(var Msg: TMessage); override;
   public
     { Public declarations }
-    Procedure KeyDown( var Key: Word; Shift: TShiftState ); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyup;
@@ -64,29 +61,29 @@ implementation
 procedure TJvKeyScrollBox.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited;
-  If Key <> 0 Then
-    Case Key of
-      VK_UP  : Perform( WM_VSCROLL, SB_LINEUP, 0 );
-      VK_DOWN: Perform( WM_VSCROLL, SB_LINEDOWN, 0 );
-      VK_LEFT: Perform( WM_HSCROLL, SB_LINELEFT, 0 );
-      VK_RIGHT:Perform( WM_HSCROLL, SB_LINERIGHT, 0 );
-      VK_NEXT :If ssShift In Shift Then
-                 Perform( WM_HSCROLL, SB_PAGERIGHT, 0 )
-               Else
-                 Perform( WM_VSCROLL, SB_PAGEDOWN, 0 );
-      VK_PRIOR:If ssShift In Shift Then
-                 Perform( WM_HSCROLL, SB_PAGELEFT, 0 )
-               Else
-                 Perform( WM_VSCROLL, SB_PAGEUP, 0 );
-      VK_HOME :If ssCtrl In Shift Then
-                 Perform( WM_VSCROLL, SB_TOP, 0 )
-               Else
-                 Perform( WM_HSCROLL, SB_LEFT, 0 );
-      VK_END  :If ssCtrl In Shift Then
-                 Perform( WM_VSCROLL, SB_BOTTOM, 0 )
-               Else
-                 Perform( WM_HSCROLL, SB_RIGHT, 0 );
-   End; 
+  if Key <> 0 then
+    case Key of
+      VK_UP: Perform(WM_VSCROLL, SB_LINEUP, 0);
+      VK_DOWN: Perform(WM_VSCROLL, SB_LINEDOWN, 0);
+      VK_LEFT: Perform(WM_HSCROLL, SB_LINELEFT, 0);
+      VK_RIGHT: Perform(WM_HSCROLL, SB_LINERIGHT, 0);
+      VK_NEXT: if ssShift in Shift then
+          Perform(WM_HSCROLL, SB_PAGERIGHT, 0)
+        else
+          Perform(WM_VSCROLL, SB_PAGEDOWN, 0);
+      VK_PRIOR: if ssShift in Shift then
+          Perform(WM_HSCROLL, SB_PAGELEFT, 0)
+        else
+          Perform(WM_VSCROLL, SB_PAGEUP, 0);
+      VK_HOME: if ssCtrl in Shift then
+          Perform(WM_VSCROLL, SB_TOP, 0)
+        else
+          Perform(WM_HSCROLL, SB_LEFT, 0);
+      VK_END: if ssCtrl in Shift then
+          Perform(WM_VSCROLL, SB_BOTTOM, 0)
+        else
+          Perform(WM_HSCROLL, SB_RIGHT, 0);
+    end;
 end;
 
 procedure TJvKeyScrollBox.WMGetDlgCode(var msg: TWMGetDlgCode);
@@ -96,8 +93,9 @@ end;
 
 procedure TJvKeyScrollBox.WndProc(var Msg: TMessage);
 begin
-  If Msg.Msg = WM_LBUTTONDOWN Then
-    If not Focused Then SetFocus;
+  if Msg.Msg = WM_LBUTTONDOWN then
+    if not Focused then
+      SetFocus;
   inherited;
 end;
 

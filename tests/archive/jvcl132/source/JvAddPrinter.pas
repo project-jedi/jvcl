@@ -15,11 +15,12 @@ Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
+                Serhiy Perevoznyk [serge_perevoznyk@hotmail.com]
 
-Last Modified: 2000-02-28
+Last Modified: 2002-05-23
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -37,7 +38,7 @@ uses
   JvBaseDlg;
 
 type
-  TJvAddPrinter = class(TJvCommonDialogP)
+  TJvAddPrinterDialog = class(TJvCommonDialogP)
   published
     procedure Execute; override;
   end;
@@ -147,7 +148,7 @@ end;
 
 {**************************************************}
 
-procedure TJvAddPrinter.Execute;
+procedure TJvAddPrinterDialog.Execute;
 var
   AddPrinterItemIDList: PItemIDList;
   Allocator: IMalloc;

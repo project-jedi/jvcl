@@ -18,23 +18,20 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvReorderListBox;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,   StdCtrls, JVCLVer;
-
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
 
 type
   TJvReorderListBox = class(TListBox)
@@ -52,135 +49,137 @@ type
     procedure DefaultStartDrag(var DragObject: TDragObject); virtual;
     procedure DefaultDragDrop(Source: TObject; X, Y: Integer); virtual;
 
-    Procedure CreateDragImage( const S: String );
+    procedure CreateDragImage(const S: string);
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
-    Function GetDragImages: TDragImagelist; override;
+    function GetDragImages: TDragImagelist; override;
     property DragIndex: Integer read FDragIndex;
     property DragImages: TDragImageList read GetDragImages;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation
 
-
-procedure TJvReorderListBox.CreateDragImage(const S: String);
+procedure TJvReorderListBox.CreateDragImage(const S: string);
 var
   size: TSize;
   bmp: TBitmap;
 begin
-  If not Assigned( FDragImage ) Then
-    FDragImage:= TDragImagelist.Create( self )
-  Else
+  if not Assigned(FDragImage) then
+    FDragImage := TDragImagelist.Create(self)
+  else
     FDragImage.Clear;
   Canvas.Font := Font;
-  size := Canvas.TextExtent( S );
+  size := Canvas.TextExtent(S);
   FDragImage.Width := size.cx;
-  FDragImage.Height:= size.cy;
-  bmp:= TBitmap.Create;
+  FDragImage.Height := size.cy;
+  bmp := TBitmap.Create;
   try
     bmp.Width := size.cx;
-    bmp.Height:= size.cy;
+    bmp.Height := size.cy;
     bmp.Canvas.Font := Font;
     bmp.Canvas.Font.Color := clBlack;
     bmp.Canvas.Brush.Color := clWhite;
     bmp.Canvas.Brush.Style := bsSolid;
-    bmp.Canvas.TextOut( 0, 0, S );
-    FDragImage.AddMasked( bmp, clWhite );
+    bmp.Canvas.TextOut(0, 0, S);
+    FDragImage.AddMasked(bmp, clWhite);
   finally
     bmp.free
   end;
-  ControlStyle := ControlStyle + [ csDisplayDragImage ];
+  ControlStyle := ControlStyle + [csDisplayDragImage];
 end;
 
 procedure TJvReorderListBox.DefaultDragDrop(Source: TObject; X,
   Y: Integer);
 var
   dropindex, ti: Integer;
-  S: String;
+  S: string;
   obj: TObject;
 begin
-  If Source = Self Then Begin
-    S:= Items[ FDragIndex ];
-    obj:= Items.Objects[ FDragIndex ];
-    dropIndex := ItemAtPos( Point( X, Y ), true );
-    ti:= TopIndex;
-    If dropIndex > FDragIndex Then
-      Dec( dropIndex );
-    Items.Delete( FDragIndex );
-    If dropIndex < 0 Then
-      items.AddObject( S, obj )
-    Else
-      items.InsertObject( dropIndex, S, obj );
-    TopIndex := ti;  
-  End;
+  if Source = Self then
+  begin
+    S := Items[FDragIndex];
+    obj := Items.Objects[FDragIndex];
+    dropIndex := ItemAtPos(Point(X, Y), true);
+    ti := TopIndex;
+    if dropIndex > FDragIndex then
+      Dec(dropIndex);
+    Items.Delete(FDragIndex);
+    if dropIndex < 0 then
+      items.AddObject(S, obj)
+    else
+      items.InsertObject(dropIndex, S, obj);
+    TopIndex := ti;
+  end;
 end;
 
 procedure TJvReorderListBox.DefaultDragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   Accept := Source = Self;
-  If Accept Then Begin
+  if Accept then
+  begin
     // Handle autoscroll in the "hot zone" 5 pixels from top or bottom of
     // client area
-    If (Y < 5) or ((ClientHeight - Y) <= 5) Then Begin
+    if (Y < 5) or ((ClientHeight - Y) <= 5) then
+    begin
       FDragImage.HideDragImage;
       try
-        If Y < 5 Then Begin
-          Perform( WM_VSCROLL, SB_LINEUP, 0 );
-          Perform( WM_VSCROLL, SB_ENDSCROLL, 0 );
-        End
-        Else If (ClientHeight - Y) <= 5 Then Begin
-          Perform( WM_VSCROLL, SB_LINEDOWN, 0 );
-          Perform( WM_VSCROLL, SB_ENDSCROLL, 0 );
-        End
+        if Y < 5 then
+        begin
+          Perform(WM_VSCROLL, SB_LINEUP, 0);
+          Perform(WM_VSCROLL, SB_ENDSCROLL, 0);
+        end
+        else if (ClientHeight - Y) <= 5 then
+        begin
+          Perform(WM_VSCROLL, SB_LINEDOWN, 0);
+          Perform(WM_VSCROLL, SB_ENDSCROLL, 0);
+        end
       finally
         FDragImage.ShowDragImage;
       end;
-    End;  
-  End;
+    end;
+  end;
 end;
 
 procedure TJvReorderListBox.DefaultStartDrag(var DragObject: TDragObject);
 begin
   FDragIndex := ItemIndex;
-  If FDragIndex >= 0 Then
-    CreateDragImage( Items[ FDragIndex ] )
-  Else
+  if FDragIndex >= 0 then
+    CreateDragImage(Items[FDragIndex])
+  else
     CancelDrag;
 end;
 
 procedure TJvReorderListBox.DoStartDrag(var DragObject: TDragObject);
 begin
-  If Assigned( OnStartDrag ) Then
+  if Assigned(OnStartDrag) then
     inherited
-  Else
-    DefaultStartDrag( DragObject );
+  else
+    DefaultStartDrag(DragObject);
 end;
 
 procedure TJvReorderListBox.DragDrop(Source: TObject; X, Y: Integer);
 begin
-  If Assigned( OnDragDrop ) Then
+  if Assigned(OnDragDrop) then
     inherited
-  Else
-    DefaultDragDrop( Source, X, Y );
+  else
+    DefaultDragDrop(Source, X, Y);
 end;
 
 procedure TJvReorderListBox.DragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
-  If Assigned( OnDragOver ) Then
+  if Assigned(OnDragOver) then
     inherited
-  Else
-    DefaultDragOver( Source, X, Y, State, Accept );
+  else
+    DefaultDragOver(Source, X, Y, State, Accept);
 end;
-
 
 function TJvReorderListBox.GetDragImages: TDragImagelist;
 begin
   Result := FDragImage;
 end;
-
 
 end.

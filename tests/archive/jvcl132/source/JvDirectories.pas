@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,19 +28,19 @@ Known Issues:
 
 unit JvDirectories;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Registry,  JvTypes,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Registry, JvTypes, JvComponent;
 
 type
   TJvDirectories = class(TJvComponent)
   private
     FBidon: string;
-    buf: array [0..250] of Char;
-     function GetCurrent: string;
+    buf: array[0..250] of Char;
+    function GetCurrent: string;
     function GetWindowsDirectory: string;
     function GetSystemDirectory: string;
     function GetTempPath: string;
@@ -78,11 +78,11 @@ resourcestring
   RC_ShellFolders = 'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders\';
 
 var
-  DirectoryList: array [0..14] of string = ('AppData', 'Cache', 'Cookies', 'Desktop',
+  DirectoryList: array[0..14] of string = ('AppData', 'Cache', 'Cookies', 'Desktop',
     'Favorites', 'Fonts', 'History', 'NetHood', 'Personal', 'Programs', 'Recent',
     'SendTo', 'Start Menu', 'Statup', 'Templates');
 
-{******************************************************}
+  {******************************************************}
 
 function TJvDirectories.GetCurrent: string;
 begin

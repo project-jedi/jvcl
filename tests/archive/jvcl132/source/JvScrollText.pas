@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvScrollText;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,  JvTypes ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, JvTypes, JVCLVer;
 
 type
   TJvScrollThread = class(TThread)
@@ -87,7 +87,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property TextAlignment: TAlignment read GetAlignment write Setalignment;
     property Items: TStringList read FStrings write SetItems;
     property Active: Boolean read FActive write SetActive default False;
@@ -109,9 +109,9 @@ implementation
 resourcestring
   RC_TestText = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-///////////////////////////////////////////////////////////
-// TJvScrollThread
-///////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////
+  // TJvScrollThread
+  ///////////////////////////////////////////////////////////
 
 procedure TJvScrollThread.Draw;
 begin
@@ -224,7 +224,7 @@ var
 begin
   if FDown then
   begin
-      //if NewY>0, going up, NewY<0, going down
+    //if NewY>0, going up, NewY<0, going down
     p.x := x;
     p.y := y;
     p := FMemo.ClientToScreen(p);
@@ -239,8 +239,7 @@ begin
 
       if FCurrPos < -FMemo.Height then
         FCurrPos := Height
-      else
-      if FCurrPos > Height then
+      else if FCurrPos > Height then
         FCurrPos := -FMemo.Height;
 
       FMemo.Top := FCurrPos;
@@ -253,8 +252,7 @@ begin
 
       if FCurrPos < -FMemo.Width then
         FCurrPos := Width
-      else
-      if FCurrPos > Width then
+      else if FCurrPos > Width then
         FCurrPos := -FMemo.Width;
 
       FMemo.Left := FCurrPos;
@@ -291,7 +289,7 @@ procedure TJvScrollText.OnScroll(Sender: TObject);
 var
   t: Integer;
 begin
-   //tag=1 pause
+  //tag=1 pause
   if FTimerTag = 1 then
   begin
     if FScrollSaved <= 0 then
@@ -306,8 +304,7 @@ begin
       Dec(FScrollSaved);
     end;
   end
-  else
-  if FTimerTag = 2 then
+  else if FTimerTag = 2 then
   begin
     if FScrollSaved >= FPixel then
     begin
@@ -323,8 +320,8 @@ begin
   else
     t := FPixel;
 
-   //tag=2 unpause
-   //FDirection
+  //tag=2 unpause
+  //FDirection
 
   case ScrollDirection of
     drFromTop:
@@ -391,8 +388,7 @@ procedure TJvScrollText.SetDelay(const Value: Cardinal);
 begin
   if Value > FDeja then
     Application.HintPause := FDeja
-  else
-  if Value > 10 then
+  else if Value > 10 then
     Application.HintPause := Value - 10
   else
     Application.HintPause := Abs(Value - 1);
@@ -417,7 +413,7 @@ var
   i, j: Integer;
   ts: TStringList;
 begin
-   //calculate the Size of the memo (vertically)
+  //calculate the Size of the memo (vertically)
   with TCanvas.Create do
   begin
     Handle := GetDC(HWND_DESKTOP);

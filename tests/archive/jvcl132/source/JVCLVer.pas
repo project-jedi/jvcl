@@ -2,9 +2,8 @@ unit JVCLVer;
 
 interface
 
-
 const
-  JVCL_VERSIONSTRING = 'Version 1.20';
+  JVCL_VERSIONSTRING = '1.30';
 
 type
   TJVCLAboutInfo = (JVCLAbout);

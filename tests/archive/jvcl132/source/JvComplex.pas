@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvComplex;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, JvComponent;
 
 type
   TJvComplex = class(TJvComponent)
@@ -56,7 +56,7 @@ implementation
 function TJvComplex.Add(co: array of TJvComplex): TJvComplex;
 var
   // (rom) AAhhrrgghh !!!
-  CoTyped: array [0..$FFF0 div SizeOf(TJvComplex)] of TJvComplex absolute co;
+  CoTyped: array[0..$FFF0 div SizeOf(TJvComplex)] of TJvComplex absolute co;
   i: Integer;
   res: TJvComplex;
 begin
@@ -77,7 +77,7 @@ end;
 function TJvComplex.Mult(co: array of TJvComplex): TJvComplex;
 var
   // (rom) AAhhrrgghh !!!
-  CoTyped: array [0..$FFF0 div SizeOf(TJvComplex)] of TJvComplex absolute co;
+  CoTyped: array[0..$FFF0 div SizeOf(TJvComplex)] of TJvComplex absolute co;
   i: Integer;
   res: TJvComplex;
 begin

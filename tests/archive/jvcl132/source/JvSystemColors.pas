@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvSystemColors;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,   JvTypes ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvTypes, JvComponent;
 
 type
   TJvSystemColors = class(TJvComponent)
@@ -74,7 +74,7 @@ type
 implementation
 
 const
-  ColorArray: array [0..25] of Integer = (COLOR_3DHILIGHT, COLOR_3DLIGHT, //0
+  ColorArray: array[0..25] of Integer = (COLOR_3DHILIGHT, COLOR_3DLIGHT, //0
     COLOR_3DSHADOW, COLOR_3DDKSHADOW, COLOR_3DFACE, COLOR_ACTIVEBORDER, //2
     COLOR_ACTIVECAPTION, COLOR_APPWORKSPACE, COLOR_BACKGROUND, //6
     COLOR_BTNFACE, COLOR_BTNTEXT, COLOR_CAPTIONTEXT, COLOR_GRAYTEXT, //9
@@ -83,7 +83,7 @@ const
     COLOR_INFOTEXT, COLOR_MENU, COLOR_MENUTEXT, COLOR_SCROLLBAR, //19
     COLOR_WINDOW, COLOR_WINDOWFRAME, COLOR_WINDOWTEXT); //23
 
-{**************************************************}
+  {**************************************************}
 
 procedure TJvSystemColors.SetColor(Index: Integer; Value: TColor);
 var

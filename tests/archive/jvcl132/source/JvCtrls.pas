@@ -20,15 +20,15 @@ Contributor(s): ______________________________________.
 Last Modified: Jun 18, 2000
 Current Version: 0.50
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 
 unit JvCtrls;
 
-{$I JCL.INC}
+{$I JEDI.INC}
 
 interface
 

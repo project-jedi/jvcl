@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvVigenereCipher;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics,  JvTypes ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, JvTypes, JvComponent;
 
 type
   TJvVigenereCipher = class(TJvComponent)
@@ -69,8 +69,7 @@ begin
   i := Ord(ch) + k;
   if i < 0 then
     i := i + 256
-  else
-  if i > 255 then
+  else if i > 255 then
     i := i - 256;
   Result := Char(i);
 end;
@@ -147,7 +146,7 @@ end;
 
 function TJvVigenereCipher.DecodeStream(Value: TStream): TStream;
 var
-  buffer: array [0..1024] of Byte;
+  buffer: array[0..1024] of Byte;
   i, j, count: Integer;
 begin
   Result := TMemoryStream.Create;
@@ -171,7 +170,7 @@ end;
 
 function TJvVigenereCipher.EncodeStream(Value: TStream): TStream;
 var
-  buffer: array [0..1024] of Byte;
+  buffer: array[0..1024] of Byte;
   i, j, count: Integer;
 begin
   Result := TMemoryStream.Create;

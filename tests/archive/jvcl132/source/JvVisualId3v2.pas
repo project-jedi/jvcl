@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,13 +28,13 @@ Known Issues:
 
 unit JvVisualId3v2;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, extctrls,
-  Dialogs, JPEG, ShellApi, comctrls, stdctrls, Menus, extdlgs,  JvId3v2 ,JVCLVer;
+  Dialogs, JPEG, ShellApi, comctrls, stdctrls, Menus, extdlgs, JvId3v2, JVCLVer;
 
 type
   TJvPInformation = class(TPersistent)
@@ -435,7 +435,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property FileName: TFileName read GetFileName write SetFileName;
     property Datas: TJvPId3v2Editor read FDatas write FDatas;
     property TreeView: TJvPId3v2TreeView read FTreeEdit write FTreeEdit;
@@ -839,7 +839,7 @@ procedure TJvVisualId3v2.CreatePages;
     FPrice := CreateLabel2(52, '-');
     FDatePur := CreateLabel2(76, '-');
 
-     //Popularimeter, play counter
+    //Popularimeter, play counter
     CreateLabel1(121, 'Counter');
     CreateLabel1(145, 'Rating');
     CreateLabel1(169, 'User Email');
@@ -1247,7 +1247,8 @@ begin
   else
   begin
     i := FPhotosTypes.IndexOf(FPhotoTypes.Items[FPhotoTypes.ItemIndex]);
-    if FPhotoTypes.Tag = i then Exit;
+    if FPhotoTypes.Tag = i then
+      Exit;
     FPhotoTypes.Tag := i;
     case i of
       0: SetIt(FId3v2.Images.Pictures.Artist, FId3v2.Images.Infos.Artist);
@@ -1497,10 +1498,10 @@ var
   end;
 
 begin
-   //Update
+  //Update
   FId3v2.FileName := Value;
 
-   //General page
+  //General page
   FFileName.Caption := ExtractFileName(Value);
   FTagSize.Caption := IntToStr(FId3v2.TagSize) + ' Byte(s)';
   FTagVersion.Caption := Format('%2.2F', [FId3v2.Version]);
@@ -1509,7 +1510,7 @@ begin
   SetBoolean(FExtended, FId3v2.ExtendedHeader);
   SetBoolean(FPresent, FId3v2.TagPresent);
 
-   //Photos
+  //Photos
   FPhotoTypes.Items.Clear;
   FPhotoTypes.OnChange(nil);
   FPhotosTypes.Clear;
@@ -1544,7 +1545,7 @@ begin
     FPhotoTypes.OnChange(nil);
   end;
 
-   //Urls
+  //Urls
   SetUrl(FCommercial, FId3v2.Web.CommercialInfo);
   SetUrl(FCopyright, FId3v2.Web.LegalInfo);
   SetUrl(FAudioFile, FId3v2.Web.OfficialAudio);
@@ -1562,7 +1563,7 @@ begin
   if FUserD.items.Count > 0 then
     FUserD.ItemIndex := 0;
 
-   //Involved
+  //Involved
   FInvolved.Items.Clear;
   for i := 0 to FId3v2.InvolvedPeople.ItemCount - 1 do
   begin
@@ -1575,7 +1576,7 @@ begin
   FPrice.Caption := FId3v2.Owner.Price;
   FDatePur.Caption := DateToStr(FId3v2.Owner.DatePurchased);
 
-   //Text part1
+  //Text part1
   FCreation.Caption := FId3v2.Texts.Date;
   FTitle.Caption := FId3v2.Texts.Album;
   FSubTitle.Caption := FId3v2.Texts.SubTitle;
@@ -1595,7 +1596,7 @@ begin
   if FLyricists.Items.Count > 0 then
     FLyricists.ItemIndex := 0;
 
-   //Text part 2
+  //Text part 2
   FContent.Caption := FId3v2.Texts.Content;
   FAlbum.Caption := FId3v2.Texts.Album;
   FPart.Caption := FId3v2.Texts.PartOf;
@@ -1607,7 +1608,7 @@ begin
   FRecordedAt.Caption := FId3v2.Texts.RecordingDate;
   FMediaType.Caption := MediaTypeToStr(FId3v2.Texts.MediaType);
 
-   //Text part 3
+  //Text part 3
   FBPM.Caption := IntToStr(FId3v2.Texts.BPM);
   FCopyrightTxt.Caption := FId3v2.Texts.Copyright;
   FPublisher.Caption := FId3v2.Texts.Publisher;
@@ -1619,12 +1620,14 @@ begin
   FDelay.Caption := IntToStr(FId3v2.Texts.PlaylistDelay) + ' millisecond(s)';
   FInitialKey.Caption := FId3v2.Texts.InitialKey;
 
-   //Text part 4
+  //Text part 4
   FOAlbum.Caption := FId3v2.Texts.OriginalTitle;
   FOArtists.Text := FId3v2.Texts.OriginalArtist.Text;
-  if FOArtists.Items.Count > 0 then FOArtists.ItemIndex := 0;
+  if FOArtists.Items.Count > 0 then
+    FOArtists.ItemIndex := 0;
   FOLyricists.Text := FId3v2.Texts.OriginalLyricists.Text;
-  if FOLyricists.Items.Count > 0 then FOLyricists.ItemIndex := 0;
+  if FOLyricists.Items.Count > 0 then
+    FOLyricists.ItemIndex := 0;
   FOYear.Caption := FId3v2.Texts.OriginalReleaseYear;
   FFileOwner.Caption := FId3v2.Texts.FileOwner;
   FFileType.Caption := FileTypeToStr(FId3v2.Texts.FileType);
@@ -1637,9 +1640,10 @@ begin
     FId3v2.UserDefinedText.ItemIndex := i;
     FUserTexts.Items.Add(FId3v2.UserDefinedText.Value + ' (' + FId3v2.UserDefinedText.Description + ')');
   end;
-  if FUserTexts.Items.Count > 0 then FUserTexts.ItemIndex := 0;
+  if FUserTexts.Items.Count > 0 then
+    FUserTexts.ItemIndex := 0;
 
-   //Popularimeter
+  //Popularimeter
   FCounter.Caption := IntToStr(FId3v2.Popularimeter.Counter);
   FRating.Caption := IntToStr(FId3v2.Popularimeter.Rating div 255) + '%';
   FUserMail.Caption := FId3v2.Popularimeter.UserEmail;

@@ -20,12 +20,15 @@ Contributor(s): ______________________________________.
 Last Modified: Jun 21, 2000
 Current Version: 0.50
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------
 Doesn't work with Paegasus Mail because it has no MAPI support at all.      }
+
+{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+{$I JEDI.INC}
 
 unit JvMail;
 

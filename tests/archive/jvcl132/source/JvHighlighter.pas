@@ -18,22 +18,20 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvHighlighter;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs ,JVCLVer;
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JVCLVer;
 
 type
   TJvHighlighter = class(TGraphicControl)
@@ -44,68 +42,70 @@ type
     FAboutJVCL: TJVCLAboutInfo;
   protected
     { Protected declarations }
-    Procedure SetFocusControl( value: TWinControl );
-    Procedure SetExtraBorder( value: Integer );
+    procedure SetFocusControl(value: TWinControl);
+    procedure SetExtraBorder(value: Integer);
   public
     { Public declarations }
-    Procedure Paint; override;
-    Constructor Create( aOwner: TComponent ); override;
+    procedure Paint; override;
+    constructor Create(aOwner: TComponent); override;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property Color;
     property ExtraBorder: Integer read FExtraBorder write SetExtraBorder
       default 4;
   end;
 
-
 implementation
 
-
 {+-------------------------
- | Methods of TJvHighlighter 
+ | Methods of TJvHighlighter
  +------------------------}
-Procedure TJvHighlighter.SetFocusControl( value: TWinControl );
-  Begin
-    If value = FFocusControl Then Exit;
-    Hide;
-    If value <> Nil Then Begin
-      FFocusControl := value;
-      Parent := value.Parent;
-      SetBounds( value.Left - FExtraBorder,
-                 value.Top - FExtraBorder,
-                 value.Width + 2*FExtraBorder,
-                 value.Height + 2*FExtraBorder );
-      Show;
-    End { If }
-    Else
-      Parent := Nil;
-  End; { TJvHighlighter.SetFocusControl }
-  
-Procedure TJvHighlighter.SetExtraBorder( value: Integer );
-  Begin
-    If value <> FExtraBorder Then Begin
-      FExtraBorder := value;
-      Invalidate;
-    End; { If }
-  End; { TJvHighlighter.SetExtraBorder }
-  
-Procedure TJvHighlighter.Paint;
-  Begin
-    Canvas.Brush.Color := Color;
-    Canvas.Brush.Style := bsSolid;
-    Canvas.FillRect( ClientRect );
-  End; { TJvHighlighter.Paint }
-  
-Constructor TJvHighlighter.Create( aOwner: TComponent ); 
-  Begin
-    inherited Create( aOwner );
-    ControlStyle := ControlStyle + [csOpaque];
-    FExtraBorder := 4;
-    Width := 30;
-    Height := 30;
-    Color := clBlue;
-  End; { TJvHighlighter.Create }
-  
+
+procedure TJvHighlighter.SetFocusControl(value: TWinControl);
+begin
+  if value = FFocusControl then
+    Exit;
+  Hide;
+  if value <> nil then
+  begin
+    FFocusControl := value;
+    Parent := value.Parent;
+    SetBounds(value.Left - FExtraBorder,
+      value.Top - FExtraBorder,
+      value.Width + 2 * FExtraBorder,
+      value.Height + 2 * FExtraBorder);
+    Show;
+  end { If }
+  else
+    Parent := nil;
+end; { TJvHighlighter.SetFocusControl }
+
+procedure TJvHighlighter.SetExtraBorder(value: Integer);
+begin
+  if value <> FExtraBorder then
+  begin
+    FExtraBorder := value;
+    Invalidate;
+  end; { If }
+end; { TJvHighlighter.SetExtraBorder }
+
+procedure TJvHighlighter.Paint;
+begin
+  Canvas.Brush.Color := Color;
+  Canvas.Brush.Style := bsSolid;
+  Canvas.FillRect(ClientRect);
+end; { TJvHighlighter.Paint }
+
+constructor TJvHighlighter.Create(aOwner: TComponent);
+begin
+  inherited Create(aOwner);
+  ControlStyle := ControlStyle + [csOpaque];
+  FExtraBorder := 4;
+  Width := 30;
+  Height := 30;
+  Color := clBlue;
+end; { TJvHighlighter.Create }
+
 end.

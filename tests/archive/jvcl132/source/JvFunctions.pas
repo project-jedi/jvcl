@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -77,7 +77,7 @@ resourcestring
 var
   ShellVersion: Integer;
 
-{*****************************************************}
+  {*****************************************************}
 
 function IconToBitmap(ico: HIcon): TBitmap;
 var
@@ -180,8 +180,7 @@ begin
   begin
     if r = Max then
       h := (60 * (g - b)) div Delta
-    else
-    if g = Max then
+    else if g = Max then
       h := 120 + (60 * (b - r)) div Delta
     else
       h := 240 + (60 * (r - g)) div Delta;

@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvImageBox;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
@@ -164,8 +164,7 @@ begin
     if Assigned(FOnOpened) then
       FOnOpened(Self, Edit.Text);
   end
-  else
-  if Assigned(FOnOpenCanceled) then
+  else if Assigned(FOnOpenCanceled) then
     FOnOpenCanceled(Self);
 end;
 

@@ -18,21 +18,20 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvSpacer;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  ExtCtrls ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JVCLVer;
 
 type
   TJvSpacer = class(TCustomPanel)
@@ -45,11 +44,11 @@ type
     { Protected declarations }
   public
     { Public declarations }
-    Constructor Create( aOwner: TComponent ); override;
+    constructor Create(aOwner: TComponent); override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Spacing: Integer read FSpacing write SetSpacing default 4;
 
     property Align;
@@ -74,7 +73,6 @@ type
 
 implementation
 
-
 { TJvSpacer }
 
 constructor TJvSpacer.Create(aOwner: TComponent);
@@ -89,20 +87,20 @@ end;
 
 procedure TJvSpacer.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  If Align In [alTop, alBottom] Then
+  if Align in [alTop, alBottom] then
     AHeight := FSpacing
-  Else
-    If Align In [alLeft, alRight] Then
-      aWidth := FSpacing;
-  inherited Setbounds( aLeft, Atop, aWidth, AHeight );
+  else if Align in [alLeft, alRight] then
+    aWidth := FSpacing;
+  inherited Setbounds(aLeft, Atop, aWidth, AHeight);
 end;
 
 procedure TJvSpacer.SetSpacing(const Value: Integer);
 begin
-  If FSpacing <> Value Then Begin
+  if FSpacing <> Value then
+  begin
     FSpacing := Value;
-    SetBounds( Left, Top, Width, Height );
-  End;
+    SetBounds(Left, Top, Width, Height);
+  end;
 end;
 
 end.

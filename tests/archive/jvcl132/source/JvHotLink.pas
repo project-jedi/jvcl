@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvHotLink;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,  JvFunctions, JvLabel;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, JvFunctions, JvLabel;
 
 type
   TJvHotLink = class(TJvLabel)
@@ -51,7 +51,7 @@ implementation
 resourcestring
   RC_UrlSite = 'http://delphi-jedi.org';
 
-{**************************************************}
+  {**************************************************}
 
 constructor TJvHotLink.Create(AOwner: TComponent);
 begin

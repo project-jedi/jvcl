@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvProcessList.PAS, released Dec 26, 1999.
+The Original Code is: JvSysComp.PAS, released Dec 26, 1999.
 
 The Initial Developer of the Original Code is Petr Vones (petr.v@mujmail.cz)
 Portions created by Petr Vones are Copyright (C) 1999 Petr Vones.
@@ -20,8 +20,8 @@ Contributor(s): Marcel van Brakel <brakelm@bart.nl>.
 Last Modified: Jun 20, 2000
 Current Version: 0.50
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -30,7 +30,7 @@ unit JvSysComp;
 
 interface
 
-{$I JCL.INC}
+{$I JEDI.INC}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
@@ -64,21 +64,6 @@ type
     property SmallIconIndex: Integer index SHGFI_SMALLICON read GetSystemIconIndex;
   end;
 
-  TJvProcessList = class(TJvComponent)
-  private
-    FEntries: TObjectList;
-    function GetEntries(Index: Integer): TJvProcessEntry;
-    function GetCount: Integer;
-  protected
-    procedure CheckIndex(Index: Integer);
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function FindProcessID(ProcessID: DWORD; RefreshBefore: Boolean = False): TJvProcessEntry;
-    procedure Refresh;
-    property Count: Integer read GetCount;
-    property Entries[Index: Integer]: TJvProcessEntry read GetEntries; default;
-  end;
 
   TJvCPSState = (psReady, psRunning, psWaiting);
   TJvCPSFlag = (cfDefaultErrorMode, cfNewConsole, cfNewProcGroup, cfSeparateWdm,
@@ -559,118 +544,6 @@ end;
 function TJvProcessEntry.Terminate: Boolean;
 begin
   Result := InternalTerminateProcess(FProcessID);
-end;
-
-{ TJvProcessList }
-
-procedure TJvProcessList.CheckIndex(Index: Integer);
-begin
-  if (Index < 0) or (Index >= Count) then
-    raise EJvProcessError.CreateResRec(@RsListIndex);
-end;
-
-constructor TJvProcessList.Create(AOwner: TComponent);
-begin
-  inherited;
-  FEntries := TObjectList.Create(True);
-end;
-
-destructor TJvProcessList.Destroy;
-begin
-  FreeAndNil(FEntries);
-  inherited;
-end;
-
-function TJvProcessList.FindProcessID(ProcessID: DWORD; RefreshBefore: Boolean): TJvProcessEntry;
-var
-  I: Integer;
-  Found: Boolean;
-begin
-  Result := nil;
-  if RefreshBefore then
-    Refresh;
-  Found := False;
-  for I := 0 to Count - 1 do
-    if Entries[I].ProcessID = ProcessID then
-    begin
-      Result := Entries[I];
-      Found := True;
-      Break;
-    end;
-  if not Found then
-    raise EJvProcessError.CreateResRecFmt(@RsPIDNotFound, [ProcessID]);
-end;
-
-function TJvProcessList.GetCount: Integer;
-begin
-  Result := FEntries.Count;
-end;
-
-function TJvProcessList.GetEntries(Index: Integer): TJvProcessEntry;
-begin
-  CheckIndex(Index);
-  Result := TJvProcessEntry(FEntries[Index]);
-end;
-
-procedure TJvProcessList.Refresh;
-
-  procedure BuildListTH;
-  var
-    SnapProcHandle: THandle;
-    ProcEntry: TProcessEntry32;
-    NextProc: Boolean;
-  begin
-    SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    if SnapProcHandle <> THandle(-1) then
-    begin
-      ProcEntry.dwSize := Sizeof(ProcEntry);
-      NextProc := Process32First(SnapProcHandle, ProcEntry);
-      while NextProc do
-        with ProcEntry do
-        begin
-          FEntries.Add(TJvProcessEntry.Create(th32ProcessID, szExeFile,
-            AnsiLowerCase(ExtractFileName(ProcEntry.szExeFile))));
-          NextProc := Process32Next(SnapProcHandle, ProcEntry);
-        end;
-      CloseHandle(SnapProcHandle);
-    end
-    else
-      RaiseLastWin32Error;
-  end;
-
-  procedure BuildListPS;
-  var
-    PIDs: array[0..MaxProcessCount] of DWORD;
-    Handle: THandle;
-    Needed: DWORD;
-    I: Integer;
-    ModuleName, ModuleFileName: array[0..MAX_PATH] of Char;
-  begin
-    Win32Check(EnumProcesses(@PIDs, Sizeof(PIDs), Needed));
-    for I := 0 to (Needed div Sizeof(DWORD)) - 1 do
-      if PIDs[I] <> 0 then
-      begin
-        Handle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, PIDs[I]);
-        if Handle <> 0 then
-        begin
-          if GetModuleBaseName(Handle, 0, ModuleName, Sizeof(ModuleName)) > 0 then
-          begin
-            if GetModuleFileNameEx(Handle, 0, ModuleFileName, Sizeof(ModuleFileName)) = 0 then
-              ModuleFileName := '';
-            Windows.CharLower(ModuleName);
-            FEntries.Add(TJvProcessEntry.Create(PIDs[I], ModuleFileName, ModuleName));
-          end;
-          CloseHandle(Handle);
-        end;
-      end;
-  end;
-
-begin
-  FEntries.Clear;
-  if GetWindowsVersion in [wvWinNT31, wvWinNT35, wvWinNT4] then
-    BuildListPS
-  else
-    BuildListTH;
 end;
 
 { TJvCPSStartupInfo }

@@ -18,23 +18,20 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvExLabel;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls ,JVCLVer;
-
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
 
 type
   TJvExLabel = class(TLabel)
@@ -43,9 +40,8 @@ type
     { Private declarations }
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
-
 
 implementation
 
@@ -54,13 +50,13 @@ var
   form: TCustomForm;
 begin
   inherited;
-  If message.result = 1 Then Begin
-    form:= GetParentForm( self );
-    If assigned(form) and assigned( form.Activecontrol ) and
-       not (form.ActiveControl.tabstop)
-    Then
-      PostMessage( form.handle, WM_NEXTDLGCTL, 0, 0 );
-  End;
+  if message.result = 1 then
+  begin
+    form := GetParentForm(self);
+    if assigned(form) and assigned(form.Activecontrol) and
+      not (form.ActiveControl.tabstop) then
+      PostMessage(form.handle, WM_NEXTDLGCTL, 0, 0);
+  end;
 end;
 
 end.

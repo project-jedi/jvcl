@@ -18,21 +18,20 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvAlignedEdit;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  StdCtrls ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
 
 type
   TJvAlignedEdit = class(TEdit)
@@ -41,39 +40,39 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     procedure SetAlignment(const Value: TAlignment);
     procedure WMGetDlgCode(var Message: TWMGetDlgCode); message WM_GETDLGCODE;
-    procedure WMChar( Var Message: TMessage ); Message WM_CHAR;
+    procedure WMChar(var Message: TMessage); message WM_CHAR;
   protected
     { Protected declarations }
-    Procedure CreateParams( Var params: TCreateParams ); override;
+    procedure CreateParams(var params: TCreateParams); override;
   public
     { Public declarations }
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Alignment: TAlignment read fAlignment write SetAlignment
       default taLeftJustify;
   end;
 
 implementation
 
-
 { TJvAlignedEdit }
 
 procedure TJvAlignedEdit.CreateParams(var params: TCreateParams);
 const
-  Styles : Array [TAlignment] of DWORD =
-           (ES_LEFT, ES_RIGHT, ES_CENTER );
+  Styles: array[TAlignment] of DWORD =
+  (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited;
-  params.style := params.style or Styles[ Falignment ] or
-                  ES_MULTILINE * DWORD(Ord( FAlignment <> taLeftJustify));
+  params.style := params.style or Styles[Falignment] or
+    ES_MULTILINE * DWORD(Ord(FAlignment <> taLeftJustify));
 end;
 
 procedure TJvAlignedEdit.SetAlignment(const Value: TAlignment);
 begin
-  If fAlignment <> Value Then Begin
+  if fAlignment <> Value then
+  begin
     fAlignment := Value;
     RecreateWnd;
-  End;
+  end;
 end;
 
 procedure TJvAlignedEdit.WMGetDlgCode(var Message: TWMGetDlgCode);
@@ -86,12 +85,13 @@ procedure TJvAlignedEdit.WMChar(var Message: TMessage);
 var
   f: TForm;
 begin
-  If Message.wparam = 13 Then Begin
-    f:= TForm(GetParentForm( self ));
-    If Assigned(f) Then
-      f.Perform( CM_DIALOGKEY, VK_RETURN, message.lparam );
-  End
-  Else
+  if Message.wparam = 13 then
+  begin
+    f := TForm(GetParentForm(self));
+    if Assigned(f) then
+      f.Perform(CM_DIALOGKEY, VK_RETURN, message.lparam);
+  end
+  else
     inherited;
 end;
 

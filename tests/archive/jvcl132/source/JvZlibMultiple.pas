@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,13 +28,13 @@ Known Issues:
 
 unit JvZlibMultiple;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Dialogs,
-  FileCtrl, ZLib,JvComponent;
+  FileCtrl, ZLib, JvComponent;
 
 type
   TFileEvent = procedure(Sender: TObject; FileName: string) of object;
@@ -100,8 +100,7 @@ function TJvZlibMultiple.CompressDirectory(Directory: string;
       begin
         if (SearchRec.Attr and faDirectory = 0) then
           AddFile(SearchRec.Name, SDirectory, Directory + SDirectory + SearchRec.Name, Result)
-        else
-          if Recursive then
+        else if Recursive then
           SearchDirectory(SDirectory + SearchRec.Name + '\');
       end;
       Res := FindNext(SearchRec);
@@ -125,14 +124,14 @@ var
   Stream: TStream;
   FStream: TFileStream;
   ZStream: TCompressionStream;
-  buf: array [0..1024] of Byte;
+  buf: array[0..1024] of Byte;
   count: Integer;
 
   procedure WriteFileRecord(Directory, FileName: string; FileSize: Integer;
     CompressedSize: Integer);
   var
     b: Byte;
-    tab: array [1..256] of Char;
+    tab: array[1..256] of Char;
   begin
     for b := 1 to Length(Directory) do
       tab[b] := Directory[b];
@@ -242,10 +241,10 @@ var
   ZStream: TDecompressionStream;
   CStream: TMemoryStream;
   b: Byte;
-  tab: array [1..256] of Char;
+  tab: array[1..256] of Char;
   st: string;
   count, fsize, i: Integer;
-  buf: array [0..1024] of Byte;
+  buf: array[0..1024] of Byte;
 begin
   if (Length(Directory) > 0) and (Directory[Length(Directory)] <> '\') then
     Directory := Directory + '\';

@@ -21,8 +21,8 @@ Contributor(s): Debbie Gregory <Debbie.Gregory@cmsis.com>
 Last Modified: May 14, 2000
 Current Version: 0.50
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -390,7 +390,7 @@ var
 begin
   TOpenFileName(DialogData).hInstance := FindClassHInstance(Self.ClassType);
   FActiveSettingDone := False;
-  if IsWin2K then
+{  if IsWin2K then
   begin
     if ActiveStyle = asReport then
       InstallW2kFix;
@@ -400,7 +400,7 @@ begin
     DialogData2000.FlagsEx := PlacesBar[FShowPlacesBar];
     Result := inherited TaskModalDialog(DialogFunc, DialogData2000);
   end
-  else
+  else}
     Result := inherited TaskModalDialog(DialogFunc, DialogData);
 end;
 

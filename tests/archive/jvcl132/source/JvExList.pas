@@ -18,26 +18,23 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvExList;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  StdCtrls ,JVCLVer;
-
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
 
 type
-  TScrollNotification = Procedure (sender: TObject; Const Msg: TWMScroll; Var dontScroll: Boolean ) of Object;
+  TScrollNotification = procedure(sender: TObject; const Msg: TWMScroll; var dontScroll: Boolean) of object;
 
   TJvExListbox = class(TCustomListbox)
   private
@@ -46,12 +43,12 @@ type
     FAboutJVCL: TJVCLAboutInfo;
   protected
     { Protected declarations }
-    Procedure WMVScroll( Var msg: TWMScroll ); message WM_VSCROLL;
-    Procedure WMHScroll( Var msg: TWMScroll ); message WM_HSCROLL;
+    procedure WMVScroll(var msg: TWMScroll); message WM_VSCROLL;
+    procedure WMHScroll(var msg: TWMScroll); message WM_HSCROLL;
   public
     { Public declarations }
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
 
     property Align;
     property BorderStyle;
@@ -101,33 +98,34 @@ type
 
   end;
 
-
 implementation
 
-Procedure TJvExListbox.WMVScroll( Var msg: TWMScroll );
-  Var
-    dontScroll: Boolean;
-  Begin
-    If Assigned(FOnVScroll) Then Begin
-      dontScroll := False;
-      FOnVScroll( self, msg, dontScroll );
-      If dontScroll Then
-        Exit;
-    End;
-    inherited;
-  End;
+procedure TJvExListbox.WMVScroll(var msg: TWMScroll);
+var
+  dontScroll: Boolean;
+begin
+  if Assigned(FOnVScroll) then
+  begin
+    dontScroll := False;
+    FOnVScroll(self, msg, dontScroll);
+    if dontScroll then
+      Exit;
+  end;
+  inherited;
+end;
 
-Procedure TJvExListbox.WMHScroll( Var msg: TWMScroll );
-  Var
-    dontScroll: Boolean;
-  Begin
-    If Assigned(FOnHScroll) Then Begin
-      dontScroll := False;
-      FOnHScroll( self, msg, dontScroll );
-      If dontScroll Then
-        Exit;
-    End;
-    inherited;
-  End;
+procedure TJvExListbox.WMHScroll(var msg: TWMScroll);
+var
+  dontScroll: Boolean;
+begin
+  if Assigned(FOnHScroll) then
+  begin
+    dontScroll := False;
+    FOnHScroll(self, msg, dontScroll);
+    if dontScroll then
+      Exit;
+  end;
+  inherited;
+end;
 
 end.

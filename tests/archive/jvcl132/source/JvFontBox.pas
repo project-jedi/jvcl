@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvFontBox;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
@@ -131,50 +131,35 @@ begin
   Value := UpperCase(Value);
   if Value = 'BLACK' then
     Result := clBlack
-  else
-  if Value = 'MAROON' then
+  else if Value = 'MAROON' then
     Result := clMaroon
-  else
-  if Value = 'GREEN' then
+  else if Value = 'GREEN' then
     Result := clGreen
-  else
-  if Value = 'OLIVE' then
+  else if Value = 'OLIVE' then
     Result := clOlive
-  else
-  if Value = 'NAVY' then
+  else if Value = 'NAVY' then
     Result := clNavy
-  else
-  if Value = 'PURPLE' then
+  else if Value = 'PURPLE' then
     Result := clPurple
-  else
-  if Value = 'TEAL' then
+  else if Value = 'TEAL' then
     Result := clTeal
-  else
-  if Value = 'GRAY' then
+  else if Value = 'GRAY' then
     Result := clGray
-  else
-  if Value = 'SILVER' then
+  else if Value = 'SILVER' then
     Result := clSilver
-  else
-  if Value = 'RED' then
+  else if Value = 'RED' then
     Result := clRed
-  else
-  if Value = 'LIME' then
+  else if Value = 'LIME' then
     Result := clLime
-  else
-  if Value = 'YELLOW' then
+  else if Value = 'YELLOW' then
     Result := clYellow
-  else
-  if Value = 'BLUE' then
+  else if Value = 'BLUE' then
     Result := clBlue
-  else
-  if Value = 'FUCHSIA' then
+  else if Value = 'FUCHSIA' then
     Result := clFuchsia
-  else
-  if Value = 'AQUA' then
+  else if Value = 'AQUA' then
     Result := clAqua
-  else
-  if Value = 'WHITE' then
+  else if Value = 'WHITE' then
     Result := clWhite
   else
     Result := clBlack;
@@ -263,8 +248,7 @@ begin
       Free;
       Exit;
     end
-    else
-    if Count < 3 then
+    else if Count < 3 then
     begin
       Free;
       raise Exception.Create('');
@@ -277,14 +261,11 @@ begin
       Strings[i] := UpperCase(Strings[i]);
       if Strings[i] = 'BOLD' then
         Result.Style := Result.Style + [fsBold]
-      else
-        if Strings[i] = 'ITALIC' then
+      else if Strings[i] = 'ITALIC' then
         Result.Style := Result.Style + [fsItalic]
-      else
-        if Strings[i] = 'UNDERLINE' then
+      else if Strings[i] = 'UNDERLINE' then
         Result.Style := Result.Style + [fsUnderline]
-      else
-        if Strings[i] = 'STRIKEOUT' then
+      else if Strings[i] = 'STRIKEOUT' then
         Result.Style := Result.Style + [fsStrikeOut]
     end;
     Free;

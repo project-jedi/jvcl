@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvAni;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
@@ -48,7 +48,7 @@ type
     dwJIFRate: Longint;
     dwFlags: Longint;
   end;
-  {$EXTERNALSYM TAniHeader}
+{$EXTERNALSYM TAniHeader}
 
   TJvAni = class(TGraphic)
   private
@@ -101,7 +101,7 @@ resourcestring
   RC_AniExtension = 'ani';
   RC_AniFilterName = 'ANI Image';
 
-{**************************************************}
+  {**************************************************}
 
 constructor TJvAni.Create;
 begin
@@ -163,8 +163,7 @@ var
 begin
   if Source = nil then
     Clear
-  else
-  if Source is TJvAni then
+  else if Source is TJvAni then
   begin
     Stream := TMemoryStream.Create;
     TJvAni(Source).SaveToStream(Stream);
@@ -240,7 +239,7 @@ const
   an_rate = $65746172;
   an_fram = $00617266;
   an_icon = $6E6F6369;
-  an_seq  = $20716573;
+  an_seq = $20716573;
 var
   dw, dw2: Integer;
 

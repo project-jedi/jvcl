@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -96,7 +96,7 @@ end;
 procedure TfoPatch.BUButton1Click(Sender: TObject);
 var
   f, g: file of Byte;
-  buf1, buf2: array [0..1024] of Byte;
+  buf1, buf2: array[0..1024] of Byte;
   i, l: Integer;
   res1, res2: Integer;
   icount, lastcount: Integer;
@@ -140,7 +140,7 @@ begin
   Application.ProcessMessages;
   if res1 > res2 then
   begin
-      //f>g original>patched
+    //f>g original>patched
     for i := 0 to res2 - 1 do
     begin
       Inc(icount);
@@ -151,15 +151,14 @@ begin
       end;
     end;
 
-      //telling it's the end ...
+    //telling it's the end ...
     Res.Add('end%' + IntToStr(icount));
   end
-  else
-  if res2 > res1 then
+  else if res2 > res1 then
   begin
-      //g>f patched>original
+    //g>f patched>original
 
-      //comparing last bytes
+    //comparing last bytes
     for i := 0 to res1 - 1 do
     begin
       Inc(icount);
@@ -170,11 +169,11 @@ begin
       end;
     end;
 
-      //adding the rest
+    //adding the rest
     for i := res1 to res2 - 1 do
       Res.Add(Char(Crypt(buf2[i])));
 
-      //adding the rest of the file
+    //adding the rest of the file
     while not eof(g) do
     begin
       BlockRead(g, buf2, 1024, res2);
@@ -188,4 +187,3 @@ begin
 end;
 
 end.
-

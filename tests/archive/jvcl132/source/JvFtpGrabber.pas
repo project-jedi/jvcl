@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvFtpGrabber;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  WinInet,  JvTypes ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, WinInet, JvTypes, JvComponent;
 
 type
   TJvDownloadMode = (hmBinary, hmAscii);
@@ -196,7 +196,7 @@ end;
 
 procedure TJvFtpGrabber.Execute;
 begin
-   //Download it
+  //Download it
   if FThread = nil then
   begin
     FThread := TJvFtpThread.Create(Url, Username, FileName, Password, OutPutMode, Error, DoneFile, DoneStream,
@@ -319,7 +319,7 @@ end;
 
 function TJvFtpThread.GetLastErrorMsg: string;
 var
-  msg: array [0..1000] of Char;
+  msg: array[0..1000] of Char;
 begin
   FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil, GetLastError, 0, msg, 1000, nil);
   Result := msg;
@@ -342,7 +342,7 @@ var
   HostName, FileName: string;
   username, password: PChar;
   ReadedBytes, TotalBytes: DWORD;
-  Buf: array [0..1024] of Byte;
+  Buf: array[0..1024] of Byte;
 
   buffer: Pointer;
   dwBufLen, dwIndex: DWORD;
@@ -366,7 +366,7 @@ begin
   FErrorText := '';
   ParseUrl(FUrl);
 
-   //Connect to the web
+  //Connect to the web
   hSession := InternetOpen(PChar(FAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
   if hSession = nil then
   begin
@@ -375,7 +375,7 @@ begin
     Exit;
   end;
 
-   //Connect to the hostname
+  //Connect to the hostname
   if FUserName = '' then
     username := nil
   else
@@ -401,7 +401,7 @@ begin
 
   InternetSetStatusCallback(hHostConnection, @FtpDownloadCallBack);
 
-   //Request the file
+  //Request the file
   if FMode = hmBinary then
     hDownload := FtpOpenFile(hHostConnection, PChar(FileName), GENERIC_READ, FTP_TRANSFER_TYPE_BINARY or
       INTERNET_FLAG_DONT_CACHE, 0)
@@ -434,10 +434,10 @@ begin
   end;
   Synchronize(Ended);
 
-   //Free all stuff's
+  //Free all stuff's
   Stream.Free;
 
-   //Release all handles
+  //Release all handles
   if not (InternetCloseHandle(hDownload)) then
   begin
     FErrorText := GetLastErrorMsg;

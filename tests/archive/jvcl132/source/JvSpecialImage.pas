@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvSpecialImage;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms,  JvTypes ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms, JvTypes, JVCLVer;
 
 type
   TJvSpecialImage = class(TImage)
@@ -56,7 +56,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Brightness: TBright read FBright write SetBright default 100;
     property Inverted: Boolean read FInverted write SetInverted default False;
     property Flipped: Boolean read FFlipped write SetFlipped default False;
@@ -80,7 +80,7 @@ var
 begin
   FWorking := True;
 
-   //Côpy original bitmap
+  //Côpy original bitmap
   dest := TBitmap.Create;
   dest.Width := FOriginal.Width;
   dest.Height := FOriginal.Height;
@@ -89,7 +89,7 @@ begin
 
   if not dest.Empty then
   begin
-      //Set brightness
+    //Set brightness
     Val := (FBright - 100) * 255 div 100;
     if Val > 0 then
     begin
@@ -114,8 +114,7 @@ begin
           end;
       end;
     end
-    else
-      if Val < 0 then
+    else if Val < 0 then
     begin
       for i := 0 to dest.Height - 1 do
       begin
@@ -139,7 +138,7 @@ begin
       end;
     end;
 
-      //Set Flipped
+    //Set Flipped
     if FFlipped then
     begin
       for i := 0 to (dest.Height - 1) div 2 do
@@ -155,7 +154,7 @@ begin
       end;
     end;
 
-      //Set inverted
+    //Set inverted
     if FInverted then
     begin
       for i := 0 to dest.Height - 1 do
@@ -171,7 +170,7 @@ begin
       end;
     end;
 
-      //Set mirrored
+    //Set mirrored
     if FMirrored then
     begin
       for i := 0 to dest.Height - 1 do

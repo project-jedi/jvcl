@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -32,12 +32,12 @@ unit JvMagnet;
  TJvFormMagnet
 }
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvComponent;
 
 type
   TJvFormMagnet = class(TJvComponent)
@@ -257,21 +257,16 @@ begin
       if ((FormRect.Left - ScreenRect.Left) in [2..FArea]) or
         (Abs(FormRect.Left - ScreenRect.Left) = 1) then
         DockOnLeft
-      else
-      if Abs(FormRect.Left - ScreenRect.Left) in [2..FArea] then
+      else if Abs(FormRect.Left - ScreenRect.Left) in [2..FArea] then
         UndockOnLeftOutside
-      else
-      if (ScreenRect.Right - FormRect.Right) in [2..FArea] then
+      else if (ScreenRect.Right - FormRect.Right) in [2..FArea] then
         UndockOnRightInside
-      else
-      if Abs(ScreenRect.Right - FormRect.Right) in [1..FArea] then
+      else if Abs(ScreenRect.Right - FormRect.Right) in [1..FArea] then
         DockOnRight;
     end
-    else
-    if Abs(FormRect.Left - ScreenRect.Left) < Integer(FArea) then
+    else if Abs(FormRect.Left - ScreenRect.Left) < Integer(FArea) then
       DockOnLeft
-    else
-    if Abs(ScreenRect.Right - FormRect.Right) < Integer(FArea) then
+    else if Abs(ScreenRect.Right - FormRect.Right) < Integer(FArea) then
       DockOnRight;
 
   //Magnet/UnMagnet Lleft, Magnet/UnMagnet Right
@@ -281,21 +276,16 @@ begin
       if ((ScreenRect.Right - FormRect.Right) in [2..FArea]) or
         (Abs(ScreenRect.Right - FormRect.Right) = 1) then
         DockOnRight
-      else
-      if Abs(ScreenRect.Right - FormRect.Right) in [2..FArea] then
+      else if Abs(ScreenRect.Right - FormRect.Right) in [2..FArea] then
         UndockOnRightOutside
-      else
-      if (ScreenRect.Left - FormRect.Left) in [2..FArea] then
+      else if (ScreenRect.Left - FormRect.Left) in [2..FArea] then
         DockOnLeft
-      else
-      if Abs(ScreenRect.Left - FormRect.Left) in [1..FArea] then
+      else if Abs(ScreenRect.Left - FormRect.Left) in [1..FArea] then
         UndockOnLeftInside;
     end
-    else
-    if Abs(ScreenRect.Right - FormRect.Right) < Integer(FArea) then
+    else if Abs(ScreenRect.Right - FormRect.Right) < Integer(FArea) then
       DockOnRight
-    else
-    if Abs(ScreenRect.Left - FormRect.Left) < Integer(FArea) then
+    else if Abs(ScreenRect.Left - FormRect.Left) < Integer(FArea) then
       DockOnLeft;
 
   //Magnet/UnMagnet Bottom, Magnet/UnMagnet Top
@@ -305,21 +295,16 @@ begin
       if ((FormRect.Top - ScreenRect.Top) in [2..FArea]) or
         (Abs(FormRect.Top - ScreenRect.Top) = 1) then
         DockOnTop
-      else
-      if Abs(FormRect.Top - ScreenRect.Top) in [2..FArea] then
+      else if Abs(FormRect.Top - ScreenRect.Top) in [2..FArea] then
         UndockOnTopOutside
-      else
-      if (ScreenRect.Bottom - FormRect.Bottom) in [2..FArea] then
+      else if (ScreenRect.Bottom - FormRect.Bottom) in [2..FArea] then
         UndockOnBottomInside
-      else
-      if Abs(ScreenRect.Bottom - FormRect.Bottom) in [1..FArea] then
+      else if Abs(ScreenRect.Bottom - FormRect.Bottom) in [1..FArea] then
         DockOnBottom;
     end
-    else
-    if Abs(FormRect.Top - ScreenRect.Top) < Integer(FArea) then
+    else if Abs(FormRect.Top - ScreenRect.Top) < Integer(FArea) then
       DockOnTop
-    else
-    if Abs(ScreenRect.Bottom - FormRect.Bottom) < Integer(FArea) then
+    else if Abs(ScreenRect.Bottom - FormRect.Bottom) < Integer(FArea) then
       DockOnBottom;
 
   //Magnet/UnMagnet Bottom, Magnet/UnMagnet Top
@@ -328,21 +313,16 @@ begin
     begin
       if (FormRect.Top - ScreenRect.Top) in [2..FArea] then
         UndockOnTopInside
-      else
-      if Abs(FormRect.Top - ScreenRect.Top) < Integer(FArea) then
+      else if Abs(FormRect.Top - ScreenRect.Top) < Integer(FArea) then
         DockOnTop
-      else
-      if (ScreenRect.Bottom - FormRect.Bottom) in [2..FArea] then
+      else if (ScreenRect.Bottom - FormRect.Bottom) in [2..FArea] then
         DockOnBottom
-      else
-      if Abs(ScreenRect.Bottom - FormRect.Bottom) in [1..FArea] then
+      else if Abs(ScreenRect.Bottom - FormRect.Bottom) in [1..FArea] then
         UndockOnBottomOutside;
     end
-    else
-    if Abs(FormRect.Top - ScreenRect.Top) < Integer(FArea) then
+    else if Abs(FormRect.Top - ScreenRect.Top) < Integer(FArea) then
       DockOnTop
-    else
-    if Abs(ScreenRect.Bottom - FormRect.Bottom) < Integer(FArea) then
+    else if Abs(ScreenRect.Bottom - FormRect.Bottom) < Integer(FArea) then
       UndockOnBottomOutside;
 end;
 
@@ -506,27 +486,22 @@ begin
   FormWidth := FormRect.Right - FormRect.Left;
   FormHeight := FormRect.Bottom - FormRect.Top;
 
-   //Magnet/UnMagnet Bottom, Magnet/UnMagnet Top
+  //Magnet/UnMagnet Bottom, Magnet/UnMagnet Top
   if MovingToTop and InWidth then
     if OkayForTop then
     begin
       if (FormRect.Top - MainRect.Bottom) in [2..FArea] then
         DockOnBottom
-      else
-      if -(FormRect.Top - MainRect.Bottom) in [2..FArea] then
+      else if - (FormRect.Top - MainRect.Bottom) in [2..FArea] then
         UndockOnBottomInside
-      else
-      if (FormRect.Bottom - MainRect.Top) in [2..FArea] then
+      else if (FormRect.Bottom - MainRect.Top) in [2..FArea] then
         DockOnTop
-      else
-      if -(FormRect.Bottom - MainRect.Top) in [2..FArea] then
+      else if - (FormRect.Bottom - MainRect.Top) in [2..FArea] then
         UndockOnTopOutside;
     end
-    else
-    if Abs(FormRect.Top - MainRect.Bottom) < Integer(FArea) then
+    else if Abs(FormRect.Top - MainRect.Bottom) < Integer(FArea) then
       DockOnBottom
-    else
-    if Abs(FormRect.Bottom - MainRect.Top) < Integer(FArea) then
+    else if Abs(FormRect.Bottom - MainRect.Top) < Integer(FArea) then
       DockOnTop;
 
   if MovingToBottom and InWidth then
@@ -534,21 +509,16 @@ begin
     begin
       if (FormRect.Top - MainRect.Bottom) in [2..FArea] then
         UndockOnBottomOutside
-      else
-      if -(FormRect.Top - MainRect.Bottom) in [2..FArea] then
+      else if - (FormRect.Top - MainRect.Bottom) in [2..FArea] then
         DockOnBottom
-      else
-      if (FormRect.Bottom - MainRect.Top) in [1..FArea] then
+      else if (FormRect.Bottom - MainRect.Top) in [1..FArea] then
         DockOnTop
-      else
-      if Abs(FormRect.Bottom - MainRect.Top) in [2..FArea] then
+      else if Abs(FormRect.Bottom - MainRect.Top) in [2..FArea] then
         UndockOnTopInside;
     end
-    else
-    if Abs(FormRect.Top - MainRect.Bottom) < Integer(FArea) then
+    else if Abs(FormRect.Top - MainRect.Bottom) < Integer(FArea) then
       DockOnBottom
-    else
-    if (FormRect.Bottom - MainRect.Top) < Integer(FArea) then
+    else if (FormRect.Bottom - MainRect.Top) < Integer(FArea) then
       DockOnTop;
 
   if MovingToLeft and InHeight then
@@ -556,21 +526,16 @@ begin
     begin
       if (FormRect.Left - MainRect.Right) in [2..FArea] then
         DockOnRight
-      else
-      if Abs(FormRect.Left - MainRect.Right) in [2..FArea] then
+      else if Abs(FormRect.Left - MainRect.Right) in [2..FArea] then
         UndockOnRightInside
-      else
-      if (FormRect.Right - MainRect.Left) in [2..FArea] then
+      else if (FormRect.Right - MainRect.Left) in [2..FArea] then
         DockOnLeft
-      else
-      if Abs(FormRect.Right - MainRect.Left) in [2..FArea] then
+      else if Abs(FormRect.Right - MainRect.Left) in [2..FArea] then
         UndockOnLeftOutside;
     end
-    else
-    if Abs(FormRect.Left - MainRect.Right) < Integer(FArea) then
+    else if Abs(FormRect.Left - MainRect.Right) < Integer(FArea) then
       DockOnRight
-    else
-    if Abs(FormRect.Right - MainRect.Left) < Integer(FArea) then
+    else if Abs(FormRect.Right - MainRect.Left) < Integer(FArea) then
       DockOnLeft;
 
   if MovingToRight and InHeight then
@@ -578,21 +543,16 @@ begin
     begin
       if (MainRect.Left - FormRect.Right) in [2..FArea] then
         DockOnLeft
-      else
-      if Abs(MainRect.Left - FormRect.Right) in [2..FArea] then
+      else if Abs(MainRect.Left - FormRect.Right) in [2..FArea] then
         UndockOnLeftInside
-      else
-      if (MainRect.Right - FormRect.Left) in [2..FArea] then
+      else if (MainRect.Right - FormRect.Left) in [2..FArea] then
         DockOnRight
-      else
-      if Abs(MainRect.Right - FormRect.Left) in [2..FArea] then
+      else if Abs(MainRect.Right - FormRect.Left) in [2..FArea] then
         UndockOnRightOutside;
     end
-    else
-    if Abs(MainRect.Left - FormRect.Right) < Integer(FArea) then
+    else if Abs(MainRect.Left - FormRect.Right) < Integer(FArea) then
       DockOnLeft
-    else
-    if Abs(MainRect.Right - FormRect.Left) < Integer(FArea) then
+    else if Abs(MainRect.Right - FormRect.Left) < Integer(FArea) then
       DockOnRight
 end;
 
@@ -616,18 +576,18 @@ begin
             r3.Right := r3.Left + FForm.Width;
             r3.Bottom := r3.Top + FForm.Height;
 
-                  //Move to an extremity of the desktop ?
+            //Move to an extremity of the desktop ?
             if FScreen then
             begin
               SystemParametersInfo(SPI_GETWORKAREA, 0, @r2, 0);
               MagnetScreen(r3, r, r2);
             end;
 
-                  //Move another form too ?
+            //Move another form too ?
             if FGlue then
               GlueForms(r);
 
-                  //Magnet to main form ?
+            //Magnet to main form ?
             if FFormMagnet and (Application.MainForm <> nil) then
             begin
               r2.Left := Application.MainForm.Left;

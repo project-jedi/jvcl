@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvCaesarCipher;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics,   JvTypes ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, JvTypes, JvComponent;
 
 type
   TJvCaesarCipher = class(TJvComponent)
@@ -66,8 +66,7 @@ begin
   j := Ch + n;
   if j < 0 then
     j := 256 - j
-  else
-    if j > 256 then
+  else if j > 256 then
     j := j - 256;
   Result := j;
 end;
@@ -107,7 +106,7 @@ var
   i: Integer;
 begin
   // (rom) fixed loop to start at 0 instead of 1
-  for i := 0 to It.Count-1 do
+  for i := 0 to It.Count - 1 do
     It[i] := Crypt(It[i], -Fn);
 end;
 
@@ -118,7 +117,7 @@ var
   i: Integer;
 begin
   // (rom) fixed loop to start at 0 instead of 1
-  for i := 0 to It.Count-1 do
+  for i := 0 to It.Count - 1 do
     It[i] := Crypt(It[i], Fn);
 end;
 
@@ -126,7 +125,7 @@ end;
 
 function TJvCaesarCipher.DecodeStream(Value: TStream): TStream;
 var
-  buffer: array [0..1024] of Byte;
+  buffer: array[0..1024] of Byte;
   i, count: Integer;
 begin
   Result := TMemoryStream.Create;
@@ -143,7 +142,7 @@ end;
 
 function TJvCaesarCipher.EncodeStream(Value: TStream): TStream;
 var
-  buffer: array [0..1024] of Byte;
+  buffer: array[0..1024] of Byte;
   i, count: Integer;
 begin
   Result := TMemoryStream.Create;

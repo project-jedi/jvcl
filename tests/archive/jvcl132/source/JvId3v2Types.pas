@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -57,7 +57,7 @@ ignored:
  TJvId3v2
 }
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
@@ -66,7 +66,7 @@ uses
 
 type
   TId3v2Header = packed record
-    Identifier: array [0..2] of Char;
+    Identifier: array[0..2] of Char;
     Version: Word;
     Flags: Byte;
     Size: Cardinal;
@@ -74,7 +74,7 @@ type
 {$EXTERNALSYM TId3v2Header}
 
   TId3v2Frame = packed record
-    Id: array [0..3] of Char;
+    Id: array[0..3] of Char;
     Size: Integer;
     Flags: Word;
   end;

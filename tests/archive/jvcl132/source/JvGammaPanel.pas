@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -34,12 +34,12 @@ unit JvGammaPanel;
 {               (Request of Brad T.)                    }
 {*******************************************************}
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  ExtCtrls, StdCtrls,  JvTypes ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, StdCtrls, JvTypes, JVCLVer;
 
 type
   TJvGammaPanel = class(TWinControl)
@@ -74,7 +74,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property AutoSize;
     property OnChangeColor: TOnChangeColor read FOnChangeCol write FOnChangeCol;
@@ -100,7 +100,7 @@ resourcestring
   RC_DefaultG = 'G : ---';
   RC_DefaultR = 'R : ---';
 
-{*******************************************************}
+  {*******************************************************}
 
 procedure TJvGammaPanel.ChangeColor(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
@@ -113,8 +113,7 @@ begin
     if Assigned(FOnChangeCol) then
       FOnChangeCol(Self, FCol1, FCol2);
   end
-  else
-  if Button = mbRight then
+  else if Button = mbRight then
   begin
     FCol2 := LastCol;
     FColor2.Canvas.Brush.Color := FCol2;
@@ -347,7 +346,7 @@ procedure TJvGammaPanel.Exchange(Sender: TObject);
 var
   t: TColor;
 begin
-   //exchange colors
+  //exchange colors
   t := FCol1;
   FCol1 := FCol2;
   FCol2 := t;

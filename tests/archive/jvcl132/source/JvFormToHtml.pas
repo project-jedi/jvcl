@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvFormToHtml;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  StdCtrls ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JvComponent;
 
 type
   TJvFormToHtml = class(TJvComponent)
@@ -81,8 +81,7 @@ begin
       st := st + '>';
       st := st + (c as TLabel).Caption + '</LABEL>';
     end
-    else
-    if c is TButton then
+    else if c is TButton then
     begin
       st := Format('<BUTTON style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
         [(c as TButton).Left, (c as TButton).Top, (c as TButton).Height, (c as TButton).Width]);
@@ -95,8 +94,7 @@ begin
       st := st + '>';
       st := st + (c as TButton).Caption + '</BUTTON>';
     end
-    else
-    if c is TMemo then
+    else if c is TMemo then
     begin
       st := Format('<TEXTAREA style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
         [(c as TMemo).Left, (c as TMemo).Top, (c as TMemo).Height, (c as TMemo).Width]);
@@ -115,8 +113,7 @@ begin
       st := st + '>';
       st := st + (c as TMemo).Text + '</TEXTAREA>';
     end
-    else
-    if c is TCheckBox then
+    else if c is TCheckBox then
     begin
       st := Format('<INPUT style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
         [(c as TCheckBox).Left, (c as TCheckBox).Top, (c as TCheckBox).Height, 10]);
@@ -131,14 +128,13 @@ begin
       st := st + ' TYPE="CHECKBOX">';
       FTs.Add(st);
       st := Format('<LABEL style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d', [(c as TCheckBox).Left + 13, (c
-        as TCheckBox).Top, (c as TCheckBox).Height, (c as TCheckBox).Width]);
+          as TCheckBox).Top, (c as TCheckBox).Height, (c as TCheckBox).Width]);
       st := st + FontToCss((c as TCheckBox).Font) + '"';
       st := st + ' TITLE="' + (c as TCheckBox).Hint + '"';
       st := st + '>';
       st := st + (c as TCheckBox).Caption + '</LABEL>';
     end
-    else
-    if c is TRadioButton then
+    else if c is TRadioButton then
     begin
       st := Format('<INPUT style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
         [(c as TRadioButton).Left, (c as TRadioButton).Top, (c as TRadioButton).Height, 10]);
@@ -153,14 +149,14 @@ begin
       st := st + ' TYPE="RADIO">';
       FTs.Add(st);
       st := Format('<LABEL style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
-        [(c as TRadioButton).Left + 13, (c as TRadioButton).Top, (c as TRadioButton).Height, (c as TRadioButton).Width]);
+        [(c as TRadioButton).Left + 13, (c as TRadioButton).Top, (c as TRadioButton).Height, (c as
+          TRadioButton).Width]);
       st := st + FontToCss((c as TRadioButton).Font) + '"';
       st := st + ' TITLE="' + (c as TRadioButton).Hint + '"';
       st := st + '>';
       st := st + (c as TRadioButton).Caption + '</LABEL>';
     end
-    else
-    if c is TEdit then
+    else if c is TEdit then
     begin
       st := Format('<INPUT TYPE="TEXT" style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
         [(c as TEdit).Left, (c as TEdit).Top, (c as TEdit).Height, (c as TEdit).Width]);
@@ -177,8 +173,7 @@ begin
       st := st + ' Value=' + (c as TEdit).Text;
       st := st + '>';
     end
-    else
-    if c is TCombobox then
+    else if c is TCombobox then
     begin
       st := Format('<SELECT style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
         [(c as TCombobox).Left, (c as TCombobox).Top, (c as TCombobox).Height, (c as TCombobox).Width]);
@@ -199,8 +194,7 @@ begin
       end;
       st := '</SELECT>';
     end
-    else
-    if c is TListBox then
+    else if c is TListBox then
     begin
       st := Format('<SELECT style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
         [(c as TListBox).Left, (c as TListBox).Top, (c as TListBox).Height, (c as TListBox).Width]);
@@ -222,7 +216,8 @@ begin
       st := '</SELECT>';
     end;
 
-    if st <> '' then FTs.Add(st);
+    if st <> '' then
+      FTs.Add(st);
   end;
   FTs.Add('</BODY></HTML>');
   FTs.SaveToFile(Path);

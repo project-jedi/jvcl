@@ -19,8 +19,8 @@ Contributor(s): ______________________________________.
 Last Modified: 2002-01-06;
 Current Version: 2.00
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
   Please see the accompanying documentation.
@@ -29,7 +29,7 @@ Description:
   as supporting classes.
 
   Note: Documentation for this unit can be found in Doc\Source.txt and
-        Doc\Readme.txt!  
+        Doc\Readme.txt!
 -----------------------------------------------------------------------------}
 
 unit JvLinkLabelTree;
@@ -58,8 +58,8 @@ type
 
   TNodeClass = class of TNode;
   TNodeType = (ntNode, ntParentNode, ntAreaNode, ntStyleNode, ntLinkNode,
-               ntDynamicNode, ntRootNode, ntStringNode, ntActionNode,
-               ntUnknownNode);
+    ntDynamicNode, ntRootNode, ntStringNode, ntActionNode,
+    ntUnknownNode);
   TParentNode = class;
   TNode = class(TObject)
   private
@@ -390,9 +390,9 @@ function TParentNode.GetFirstNodeOfClass(NodeClass: TNodeClass): TNode;
       begin
         Result := CurrentRoot.FChildren[I];
         Break;
-      end else
-        if CurrentRoot.Children[I] is TParentNode then
-          Result := RecurseTree(TParentNode(CurrentRoot.Children[I]));
+      end
+      else if CurrentRoot.Children[I] is TParentNode then
+        Result := RecurseTree(TParentNode(CurrentRoot.Children[I]));
     end;
   end;
 
@@ -690,8 +690,8 @@ var
   NodeClass: TClass;
 const
   NodeClasses: array[TNodeType] of TClass =
-    (TNode, TParentNode, TAreaNode, TStyleNode, TLinkNode, TDynamicNode,
-     TRootNode, TStringNode, TActionNode, TUnknownNode);
+  (TNode, TParentNode, TAreaNode, TStyleNode, TLinkNode, TDynamicNode,
+    TRootNode, TStringNode, TActionNode, TUnknownNode);
 begin
   { We get the dynamic type using TObject.ClassType, which returns a pointer to
     the class' virtual memory table, instead of testing using the "is" reserved
@@ -723,9 +723,8 @@ procedure TTopLevelNodeEnumerator.BuildList;
         children (after all, we're a top level enumerator!). }
       if CurrentRoot.Children[I] is FNodeClass then
         FList.Add(CurrentRoot.FChildren[I])
-      else
-        if CurrentRoot.Children[I] is TParentNode then
-          RecurseTree(TParentNode(CurrentRoot.Children[I]));
+      else if CurrentRoot.Children[I] is TParentNode then
+        RecurseTree(TParentNode(CurrentRoot.Children[I]));
     end;
   end;
 
@@ -758,7 +757,8 @@ begin
   begin
     Result := FList[FIndex];
     Inc(FIndex);
-  end else
+  end
+  else
     raise ENodeError.Create('No more nodes to return');
 end;
 
@@ -793,7 +793,8 @@ begin
   begin
     Result := FList[FIndex]^;
     Inc(FIndex);
-  end else
+  end
+  else
     raise ENodeError.Create('No more records to return');
 end;
 
@@ -887,7 +888,8 @@ begin
         Result := True;
         Break;
       end;
-  end else
+  end
+  else
     Result := inherited IsPointInNodeClass(P, NodeClass);
 end;
 

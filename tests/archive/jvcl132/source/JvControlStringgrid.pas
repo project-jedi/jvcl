@@ -18,53 +18,48 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvControlStringgrid;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  Grids ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Grids, JVCLVer;
 
 type
   TJvControlStringGrid = class(TStringGrid)
   private
     FAboutJVCL: TJVCLAboutInfo;
     { Private declarations }
-    Procedure WMCommand( var msg: TWMCommand ); message WM_COMMAND;
+    procedure WMCommand(var msg: TWMCommand); message WM_COMMAND;
   protected
     { Protected declarations }
   public
     { Public declarations }
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
-
 implementation
-
-
 
 { TJvControlStringGrid }
 
 procedure TJvControlStringGrid.WMCommand(var msg: TWMCommand);
 begin
-  If EditorMode and ( msg.Ctl = InplaceEditor.Handle ) Then
+  if EditorMode and (msg.Ctl = InplaceEditor.Handle) then
     inherited
-  Else
-    If msg.Ctl <> 0 Then
-      msg.result :=
-        SendMessage( msg.ctl, CN_COMMAND,
-                     TMessage(msg).wparam,
-                     TMessage(msg).lparam );
+  else if msg.Ctl <> 0 then
+    msg.result :=
+      SendMessage(msg.ctl, CN_COMMAND,
+      TMessage(msg).wparam,
+      TMessage(msg).lparam);
 end;
 
 end.

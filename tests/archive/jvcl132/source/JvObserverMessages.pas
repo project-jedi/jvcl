@@ -18,14 +18,13 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
-
 
 unit JvObserverMessages;
 interface
@@ -33,7 +32,7 @@ uses Messages, Windows;
 const
   UM_OBSERVIBLE_CHANGED = WM_USER + 2000;
 type
-  TUMObservibleChanged = Record
+  TUMObservibleChanged = record
     msg: Cardinal;
     unused: WPARAM;
     sender: TObject;

@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -219,11 +219,11 @@ type
   TRASConn = record
     dwSize: DWORD;
     rasConn: HRASConn;
-    szEntryName: array [0..RAS_MaxEntryName] of Char;
-    szDeviceType: array [0..RAS_MaxDeviceType] of Char;
-    szDeviceName: array [0..RAS_MaxDeviceName] of Char;
+    szEntryName: array[0..RAS_MaxEntryName] of Char;
+    szDeviceType: array[0..RAS_MaxDeviceType] of Char;
+    szDeviceName: array[0..RAS_MaxDeviceName] of Char;
 {$IFDEF NT_EXTNS}
-    szPhonebook: array [0..MAX_PATH - 1] of Char;
+    szPhonebook: array[0..MAX_PATH - 1] of Char;
     dwSubEntry: Longint;
 {$ENDIF}
   end;
@@ -233,8 +233,8 @@ type
     dwSize: LongInt;
     rasConnstate: Word;
     dwError: LongInt;
-    szDeviceType: array [0..RAS_MaxDeviceType] of Char;
-    szDeviceName: array [0..RAS_MaxDeviceName] of Char;
+    szDeviceType: array[0..RAS_MaxDeviceType] of Char;
+    szDeviceName: array[0..RAS_MaxDeviceName] of Char;
   end;
 
   PRASDIALEXTENSIONS = ^TRASDIALEXTENSIONS;
@@ -248,18 +248,18 @@ type
   PRASDialParams = ^TRASDialParams;
   TRASDialParams = record
     dwSize: DWORD;
-    szEntryName: array [0..RAS_MaxEntryName] of Char;
-    szPhoneNumber: array [0..RAS_MaxPhoneNumber] of Char;
-    szCallbackNumber: array [0..RAS_MaxCallbackNumber] of Char;
-    szUserName: array [0..UNLEN] of Char;
-    szPassword: array [0..PWLEN] of Char;
-    szDomain: array [0..DNLEN] of Char;
+    szEntryName: array[0..RAS_MaxEntryName] of Char;
+    szPhoneNumber: array[0..RAS_MaxPhoneNumber] of Char;
+    szCallbackNumber: array[0..RAS_MaxCallbackNumber] of Char;
+    szUserName: array[0..UNLEN] of Char;
+    szPassword: array[0..PWLEN] of Char;
+    szDomain: array[0..DNLEN] of Char;
   end;
 
   PRASEntryName = ^TRASEntryName;
   TRASEntryName = record
     dwSize: LongInt;
-    szEntryName: array [0..RAS_MaxEntryName] of Char;
+    szEntryName: array[0..RAS_MaxEntryName] of Char;
   end;
 
   TRasDial = function(

@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvAlarms;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
@@ -81,7 +81,7 @@ implementation
 resourcestring
   RC_Alarm = 'Unable to get alarm number %d. Index out of bounds';
 
-{*****************************************************}
+  {*****************************************************}
 
 constructor TJvAlarms.Create(AOwner: TComponent);
 begin
@@ -110,10 +110,10 @@ end;
 
 procedure TJvAlarms.Add(const Name: string; const Time: TDateTime; const Kind: TJvTriggerKind);
 begin
-  SetLength(FAlarms, Count+1);
-  FAlarms[Count-1].Name := Name;
-  FAlarms[Count-1].Time := Time;
-  FAlarms[Count-1].Kind := Kind;
+  SetLength(FAlarms, Count + 1);
+  FAlarms[Count - 1].Name := Name;
+  FAlarms[Count - 1].Time := Time;
+  FAlarms[Count - 1].Kind := Kind;
   FRunning := Active;
   FTimer.Enabled := Running;
 end;
@@ -124,8 +124,8 @@ procedure TJvAlarms.Delete(const Idx: Cardinal);
 begin
   if Idx < Count then
   begin
-    Move(FAlarms[Idx+1], FAlarms[Idx], (Count-Idx-1)*SizeOf(TJvAlarm));
-    SetLength(FAlarms, Count-1);
+    Move(FAlarms[Idx + 1], FAlarms[Idx], (Count - Idx - 1) * SizeOf(TJvAlarm));
+    SetLength(FAlarms, Count - 1);
     FRunning := (Count > 0);
     FTimer.Enabled := Running;
   end;
@@ -178,38 +178,38 @@ begin
   if (Stamp.Time - FLast.Time) >= 1000 then
   begin
     FLast := Stamp;
-    for I := Count-1 downto 0 do
+    for I := Count - 1 downto 0 do
     begin
       Alarm := Alarms[I];
       if Current >= Alarm.Time then
         DoAlarm(Alarm, Current);
       Stamp := DateTimeToTimeStamp(Alarm.Time);
       case Alarm.Kind of
-      tkOneShot:
-        Delete(I);
-      tkEachSecond:
-        Inc(Stamp.Time, 1000);
-      tkEachMinute:
-        Inc(Stamp.Time, 60*1000);
-      tkEachHour:
-        Inc(Stamp.Time, 60*60*1000);
-      tkEachDay:
-        Inc(Stamp.Date);
-      tkEachMonth:
-        Stamp := DateTimeToTimeStamp(IncMonth(Alarm.Time, 1));
-      tkEachYear:
-        begin
-          DecodeDate(Current, Year, Month, Day);
-          if IsLeapYear(Year) then
-            Inc(Stamp.Date, 366)
-          else
-            Inc(Stamp.Date, 365);
-        end;
+        tkOneShot:
+          Delete(I);
+        tkEachSecond:
+          Inc(Stamp.Time, 1000);
+        tkEachMinute:
+          Inc(Stamp.Time, 60 * 1000);
+        tkEachHour:
+          Inc(Stamp.Time, 60 * 60 * 1000);
+        tkEachDay:
+          Inc(Stamp.Date);
+        tkEachMonth:
+          Stamp := DateTimeToTimeStamp(IncMonth(Alarm.Time, 1));
+        tkEachYear:
+          begin
+            DecodeDate(Current, Year, Month, Day);
+            if IsLeapYear(Year) then
+              Inc(Stamp.Date, 366)
+            else
+              Inc(Stamp.Date, 365);
+          end;
       end;
-      if Stamp.Time > 24*60*60*1000 then
+      if Stamp.Time > 24 * 60 * 60 * 1000 then
       begin
         Inc(Stamp.Date);
-        Dec(Stamp.Time, 24*60*60*1000);
+        Dec(Stamp.Time, 24 * 60 * 60 * 1000);
       end;
       if Alarm.Kind <> tkOneShot then
         FAlarms[I].Time := TimeStampToDateTime(Stamp);

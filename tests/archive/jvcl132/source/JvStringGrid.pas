@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -30,10 +30,10 @@ unit JvStringGrid;
 
 interface
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids, JvTypes,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids, JvTypes, JVCLVer;
 
 type
   TJvSortType = (stAutomatic, stClassic, stCaseSensitive, stNumeric, stDate, stCurrency);
@@ -73,7 +73,7 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
 
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -336,8 +336,7 @@ begin
     for i := 1 to Length(st) do
       if st[i] = '"' then
         j := (j + 1) mod 2
-      else
-      if st[i] = Separator then
+      else if st[i] = Separator then
         if j = 0 then
           Inc(l);
     if ColCount < l then
@@ -387,7 +386,7 @@ end;
 procedure TJvStringGrid.LoadFromStream(Stream: TStream);
 var
   col, row, i, count: Integer;
-  buf: array [0..1024] of Byte;
+  buf: array[0..1024] of Byte;
   st: string;
 begin
   col := 0;
@@ -526,7 +525,7 @@ end;
 procedure TJvStringGrid.SaveToStream(Stream: TStream);
 var
   i, j, k: Integer;
-  st: array [0..1000] of Char;
+  st: array[0..1000] of Char;
   stt: string;
   a, b: Byte;
 begin

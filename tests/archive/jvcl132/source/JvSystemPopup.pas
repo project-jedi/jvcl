@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,13 +28,13 @@ Known Issues:
 
 unit JvSystemPopup;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Menus,
-  JvTypes ,JvComponent;
+  JvTypes, JvComponent;
 
 type
   TJvSystemPopup = class(TJvComponent)
@@ -120,8 +120,7 @@ var
     for j := 0 to Value.Count - 1 do
       if Value[j].Command = Cardinal(Mesg.WParam) then
         Value[j].Click
-      else
-        if Value[j].Count > 0 then
+      else if Value[j].Count > 0 then
         ProcessSubs(Value[j]);
   end;
 
@@ -133,8 +132,7 @@ begin
         for i := 0 to FPopup.Items.Count - 1 do
           if FPopup.Items[i].Command = Cardinal(WParam) then
             FPopup.Items[i].Click
-          else
-            if FPopup.Items[i].Count > 0 then
+          else if FPopup.Items[i].Count > 0 then
             ProcessSubs(FPopup.ITems[i]);
 
     Result := CallWindowProc(FOldWndProc, FForm.Handle, Msg, WParam, LParam);
@@ -281,7 +279,7 @@ var
 begin
   if FPos <> Value then
   begin
-      //Update window function
+    //Update window function
     if not (csDesigning in ComponentState) then
     begin
       if (FForm <> nil) and (FOldWndProc <> nil) then
@@ -307,7 +305,7 @@ begin
       end;
     end;
 
-      //Reset popup
+    //Reset popup
     case FPos of
       ppForm:
         GetSystemMenu(FForm.Handle, True);

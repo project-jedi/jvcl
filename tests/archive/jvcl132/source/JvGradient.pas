@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvGradient;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  JvTypes ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvTypes, JVCLVer;
 
 type
   TJvGradient = class(TGraphicControl)
@@ -56,7 +56,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property ShowHint;
     property Visible;
@@ -101,7 +101,7 @@ var
   bt: TBitmap;
   i: Integer;
   j, k: Real;
-  Deltas: array [0..2] of Real; //R,G,B
+  Deltas: array[0..2] of Real; //R,G,B
   r: TRect;
   FStart, FEnd: TColor;
 begin
@@ -230,8 +230,10 @@ begin
           bt.Canvas.Brush.Color := FStart;
           bt.Canvas.Brush.Style := bsSolid;
           bt.Canvas.FillRect(Rect(0, 0, Width, Height));
-          if FSteps > (Width div 2) then FSteps := Trunc(Width / 2);
-          if FSteps > (Height div 2) then FSteps := Trunc(Height / 2);
+          if FSteps > (Width div 2) then
+            FSteps := Trunc(Width / 2);
+          if FSteps > (Height div 2) then
+            FSteps := Trunc(Height / 2);
           Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FSteps;
           Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FSteps;
           Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FSteps;

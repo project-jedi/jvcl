@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvMultiHttpGrabber;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, WinInet,  JvTypes ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, WinInet, JvTypes, JvComponent;
 
 type
   TUrlEvent = procedure(Sender: TObject; UserData: Integer;
@@ -174,9 +174,9 @@ type
     UserData: Integer;
   end;
 
-///////////////////////////////////////////////////////////
-// TJvMultiHttpGrabber
-///////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////
+  // TJvMultiHttpGrabber
+  ///////////////////////////////////////////////////////////
 
 constructor TJvMultiHttpGrabber.Create(AOwner: TComponent);
 begin
@@ -282,7 +282,7 @@ end;
 
 procedure TJvMultiHttpGrabber.RaiseError(Value: Pointer);
 var
-  Msg: array [0..256] of Char;
+  Msg: array[0..256] of Char;
 begin
   if Assigned(FOnError) then
     with (PRequestInfos(Value))^ do
@@ -298,7 +298,7 @@ end;
 procedure TJvMultiHttpGrabber.RaiseWebError(Infos: Pointer);
 var
   dwIndex, dwBufLen: DWORD;
-  buf: array [0..1024] of Char;
+  buf: array[0..1024] of Char;
 begin
   if Assigned(FOnError) then
   begin
@@ -456,7 +456,7 @@ end;
 procedure TJvMultiHttpThread.Execute;
 var
   Infos: PRequestInfos;
-  buffer: array [0..512] of Byte;
+  buffer: array[0..512] of Byte;
   ReadedBytes: DWORD;
   dLength, dReserved, dSize: DWORD;
 begin

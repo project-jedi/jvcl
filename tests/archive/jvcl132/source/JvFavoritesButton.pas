@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvFavoritesButton;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
@@ -66,7 +66,7 @@ implementation
 resourcestring
   RC_EmptyItem = '<Empty>';
 
-{*******************************************************}
+  {*******************************************************}
 
 constructor TJvFavoritesButton.Create(AOwner: TComponent);
 var
@@ -187,8 +187,7 @@ begin
         end;
         it.Add(it2);
       end
-      else
-        if UpperCase(ExtractFileExt(SearchRec.Name)) = '.URL' then
+      else if UpperCase(ExtractFileExt(SearchRec.Name)) = '.URL' then
       begin
         if first then
           Item.Items[0].Visible := False;

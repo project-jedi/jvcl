@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,13 +28,13 @@ Known Issues:
 
 unit JvFormButton;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
-  JvTypes,JvComponent;
+  JvTypes, JvComponent;
 
 type
   TSystemGlyph = (sgNone, sgBtnCorners, sgBtSize, sgCheck, sgCheckBoxes, sgClose,
@@ -127,7 +127,7 @@ const
     (SystemGlyph: sgOldRgArrow; SystemValue: OBM_OLD_RGARROW),
     (SystemGlyph: sgOldUpArrow; SystemValue: OBM_OLD_UPARROW));
 
-{****************************************************}
+  {****************************************************}
 
 constructor TJvFormButton.Create(AOwner: TComponent);
 var
@@ -198,12 +198,10 @@ begin
                   PaintIt(FButtonDown);
                 Result := Jv_PUSHED;
               end
-              else
-                if not (FDOwn) then
+              else if not (FDOwn) then
                 PaintIt(False);
             end
-            else
-              if not FDown then
+            else if not FDown then
               PaintIt(False);
           end;
         WM_NCLBUTTONDOWN, WM_NCLBUTTONDBLCLK:
@@ -414,4 +412,3 @@ begin
 end;
 
 end.
-

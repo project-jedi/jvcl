@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvZoom;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,  StdCtrls, ExtCtrls ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, JVCLVer;
 
 type
   TJvZoom = class(TWinControl)
@@ -55,7 +55,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Active: Boolean read FActive write SetActive default True;
     property ZoomLevel: Integer read FZoom write FZoom default 100;
     property Delay: Cardinal read FDelay write SetDelay default 100;
@@ -85,11 +85,11 @@ begin
   FZoom := 100;
   FActive := True;
 
-   //Create canvas to write to the control
+  //Create canvas to write to the control
   FZCanvas := TControlCanvas.Create;
   FZCanvas.Control := Self;
 
-   //Create the canvas to retrieve informations
+  //Create the canvas to retrieve informations
   FCanvas := TCanvas.Create;
   FCanvas.Handle := GetDC(HWND_DESKTOP);
 
@@ -97,7 +97,7 @@ begin
   FTimer.OnTimer := PaintMe;
   FTimer.Interval := 100;
 
-   //Assign the Parent, or it's impossible to draw on it
+  //Assign the Parent, or it's impossible to draw on it
   Parent := TWinControl(AOwner);
 
   FTimer.Enabled := True;
@@ -122,11 +122,11 @@ var
   t: TRect;
 begin
   GetCursorPos(p);
-   //Only draw if on a different position
+  //Only draw if on a different position
   if (p.x <> FLastPoint.x) or (p.y <> FLastPoint.y) then
   begin
-      //if it's the first time, get the DC of the control to be able
-      //to draw on it.
+    //if it's the first time, get the DC of the control to be able
+    //to draw on it.
     if FTimer.Tag = 0 then
     begin
       try
@@ -137,27 +137,25 @@ begin
       FTimer.Tag := 1;
     end;
 
-      //Analyse the point
+    //Analyse the point
     FLastPoint := p;
-      //Create the area to Copy
+    //Create the area to Copy
     x := (Width div 2) * FZoom div 100;
     y := (Height div 2) * FZoom div 100;
     if p.x < x then
       p.x := x
-    else
-      if p.x + x > Screen.Width then
+    else if p.x + x > Screen.Width then
       p.x := Screen.Width - x;
     if p.y < y then
       p.y := y
-    else
-      if p.y + y > Screen.Height then
+    else if p.y + y > Screen.Height then
       p.y := Screen.Height - y;
     t.Left := p.x - x;
     t.Top := p.y - y;
     t.Right := p.x + x;
     t.Bottom := p.y + y;
 
-      //Draw the area around the mouse
+    //Draw the area around the mouse
     FZCanvas.CopyRect(Rect(0, 0, Width, Height), FCanvas, t);
   end;
 end;
@@ -182,10 +180,9 @@ end;
 
 procedure TJvZoom.WMSize(var Msg: TWMSize);
 begin
-   //On resize, refresh it
+  //On resize, refresh it
   inherited;
   PaintMe(Self);
 end;
 
 end.
-

@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvWaitingGradient;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, JVCLVer;
 
 type
   TJvWaitingThread = class(TThread)
@@ -76,7 +76,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Color;
     property GradientWidth: Integer read FWidth write SetWidth;
     property StartColor: TColor read FStart write SetStartColor default clBtnFace;
@@ -129,7 +129,7 @@ procedure TJvWaitingGradient.CreateBitmap;
 var
   i: Integer;
   j: Real;
-  Deltas: array [0..2] of Real; //R,G,B
+  Deltas: array[0..2] of Real; //R,G,B
   r: TRect;
   FSteps: Integer;
 begin
@@ -235,7 +235,7 @@ procedure TJvWaitingGradient.Paint;
 begin
   if Canvas <> nil then
   begin
-      //paint
+    //paint
     Canvas.Brush.Style := bsSolid;
     Canvas.Brush.Color := Color;
     Canvas.FillRect(Rect(0, 0, FLeft, Height));

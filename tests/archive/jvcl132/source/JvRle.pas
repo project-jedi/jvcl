@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvRle;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics ,JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, JvComponent;
 
 type
   TJvRle = class(TJvComponent)
@@ -50,8 +50,8 @@ implementation
 function TJvRle.Compress(Stream: TStream): TStream;
 var
   count, count2, count3, i: Integer;
-  buf: array [0..1024] of Byte;
-  buf2: array [0..60000] of Byte;
+  buf: array[0..1024] of Byte;
+  buf2: array[0..60000] of Byte;
   b: Byte;
 begin
   Result := TMemoryStream.Create;
@@ -108,8 +108,8 @@ end;
 function TJvRle.Decompress(Stream: TStream): TStream;
 var
   count, count2, count3, i: Integer;
-  buf: array [0..1024] of Byte;
-  buf2: array [0..60000] of Byte;
+  buf: array[0..1024] of Byte;
+  buf2: array[0..60000] of Byte;
   b: Byte;
 begin
   Result := TMemoryStream.Create;

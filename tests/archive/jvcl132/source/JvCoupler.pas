@@ -18,14 +18,13 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
-
 
 unit JvCoupler;
 
@@ -47,15 +46,15 @@ type
     { Private declarations }
   protected
     { Protected declarations }
-    procedure MessageHook( Var msg: TMessage );
+    procedure MessageHook(var msg: TMessage);
     procedure AlignLabel;
 
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
   public
     { Public declarations }
-    Constructor Create( aOWner: TComponent ); override;
-    DeStructor Destroy; override;
+    constructor Create(aOWner: TComponent); override;
+    destructor Destroy; override;
   published
     { Published declarations }
     property DisplayLabel: TCustomLabel read FLabel write SetLabel;
@@ -63,19 +62,16 @@ type
     property Spacing: Integer read FSpacing write FSpacing default 2;
   end;
 
-
-
 implementation
-
 
 { TJvCoupler }
 
 procedure TJvCoupler.AlignLabel;
 begin
-  If Assigned( FLabel ) Then
-    With FLabel Do
-      SetBounds( FControl.Left, FControl.Top - Height - FSpacing,
-                 Width, Height );
+  if Assigned(FLabel) then
+    with FLabel do
+      SetBounds(FControl.Left, FControl.Top - Height - FSpacing,
+        Width, Height);
 end;
 
 constructor TJvCoupler.Create(aOWner: TComponent);
@@ -86,66 +82,69 @@ end;
 
 destructor TJvCoupler.Destroy;
 begin
-  FocusControl := Nil;
+  FocusControl := nil;
   inherited;
 end;
 
-
 procedure TJvCoupler.MessageHook(var msg: TMessage);
 begin
-  FOldWndProc( msg );
-  If msg.Msg = WM_MOVE Then
+  FOldWndProc(msg);
+  if msg.Msg = WM_MOVE then
     AlignLabel
-  Else
-    If msg.Msg = WM_DESTROY Then
-      FocusControl := Nil;
+  else if msg.Msg = WM_DESTROY then
+    FocusControl := nil;
 end;
 
 procedure TJvCoupler.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  If Operation = opRemove Then
-    If FLabel = AComponent Then
-      DisplayLabel := Nil
-    Else
-      If FControl = AComponent Then
-        FocusControl := Nil;
+  if Operation = opRemove then
+    if FLabel = AComponent then
+      DisplayLabel := nil
+    else if FControl = AComponent then
+      FocusControl := nil;
   inherited;
 end;
 
 procedure TJvCoupler.SetControl(const Value: TWinControl);
 begin
-  If Fcontrol <> Value Then Begin
-    If Assigned( FControl ) Then Begin
+  if Fcontrol <> Value then
+  begin
+    if Assigned(FControl) then
+    begin
       FControl.WindowProc := FOldWndProc;
-      If Assigned( FLabel ) Then
-        TLabel(FLabel).FocusControl := Nil;
-    End; { If }
+      if Assigned(FLabel) then
+        TLabel(FLabel).FocusControl := nil;
+    end; { If }
 
     FControl := Value;
-    If Assigned( FControl ) Then Begin
+    if Assigned(FControl) then
+    begin
       FOldWndProc := FControl.WindowProc;
       FControl.WindowProc := MessageHook;
-      If Assigned( FLabel ) Then Begin
+      if Assigned(FLabel) then
+      begin
         TLabel(FLabel).FocusControl := FControl;
         AlignLabel;
-      End; { If }
-    End; { If }
-  End; { If }
+      end; { If }
+    end; { If }
+  end; { If }
 end; { TJvCoupler.SetControl }
 
 procedure TJvCoupler.SetLabel(const Value: TCustomLabel);
 begin
-  If FLabel <> value Then Begin
-    If Assigned( FLabel ) Then
-      TLabel(FLabel).FocusControl := Nil;
+  if FLabel <> value then
+  begin
+    if Assigned(FLabel) then
+      TLabel(FLabel).FocusControl := nil;
     FLabel := Value;
-    If Assigned( FLabel ) Then Begin
+    if Assigned(FLabel) then
+    begin
       TLabel(FLabel).FocusControl := FControl;
-      If Assigned( FControl ) Then
+      if Assigned(FControl) then
         AlignLabel;
-    End; { If }
-  End; { If }
+    end; { If }
+  end; { If }
 end; { TJvCoupler.SetLabel }
 
 end.

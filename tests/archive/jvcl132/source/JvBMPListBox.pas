@@ -18,8 +18,8 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -31,19 +31,19 @@ unit JvBMPListBox;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  StdCtrls ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
 
 type
-  TBackgroundFillmode = (bfm_Tile, bfm_Stretch );
+  TBackgroundFillmode = (bfm_Tile, bfm_Stretch);
   TJvBMPListBox = class(TCustomListBox)
   private
     FBackground: TBitmap;
-    FFillmode  : TBackgroundFillmode;
+    FFillmode: TBackgroundFillmode;
     FAboutJVCL: TJVCLAboutInfo;
     { Private declarations }
-    Procedure WMEraseBkGnd( Var msg: TWMEraseBkGnd ); message WM_ERASEBKGND;
-    Procedure WMVScroll( Var msg: TWMVScroll ); message WM_VSCROLL;
-    Procedure WMHScroll( Var msg: TWMHScroll ); message WM_HSCROLL;
+    procedure WMEraseBkGnd(var msg: TWMEraseBkGnd); message WM_ERASEBKGND;
+    procedure WMVScroll(var msg: TWMVScroll); message WM_VSCROLL;
+    procedure WMHScroll(var msg: TWMHScroll); message WM_HSCROLL;
 
     procedure SetBackground(const Value: TBitmap);
 
@@ -53,15 +53,14 @@ type
       State: TOwnerDrawState); override;
   public
     { Public declarations }
-    Constructor Create( aOwner: TComponent ); override;
-    Destructor Destroy; override;
+    constructor Create(aOwner: TComponent); override;
+    destructor Destroy; override;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Background: TBitmap read FBackground write SetBackground;
-    property BackgroundFillmode  : TBackgroundFillmode
+    property BackgroundFillmode: TBackgroundFillmode
       read FFillmode write FFillmode default bfm_Tile;
-
 
     property Align;
     property Anchors;
@@ -113,7 +112,6 @@ type
     property OnStartDrag;
   end;
 
-
 implementation
 
 { TJvBMPListBox }
@@ -142,17 +140,17 @@ begin
 
   // The listbox does not erase the background for the item before
   // sending the WM_DRAWITEM message! We have to do that here manually.
-  SaveDC( Canvas.handle );
-  IntersectClipRect( canvas.handle, rect.left, rect.top, rect.right, rect.bottom );
-  perform( WM_ERASEBKGND, canvas.handle, 0 );
-  RestoreDC( Canvas.Handle, -1 );
+  SaveDC(Canvas.handle);
+  IntersectClipRect(canvas.handle, rect.left, rect.top, rect.right, rect.bottom);
+  perform(WM_ERASEBKGND, canvas.handle, 0);
+  RestoreDC(Canvas.Handle, -1);
 
-  If (Index >= 0) and (Index < Items.Count) Then
-    Canvas.TextOut( Rect.left+2, Rect.top, Items[Index]);
+  if (Index >= 0) and (Index < Items.Count) then
+    Canvas.TextOut(Rect.left + 2, Rect.top, Items[Index]);
 
   // invert the item if selected
-  If odSelected In State Then
-    InvertRect( Canvas.Handle, Rect );
+  if odSelected in State then
+    InvertRect(Canvas.Handle, Rect);
   // no need to draw focus rect, CNDrawItem does that for us
 end;
 
@@ -168,39 +166,43 @@ var
   cv: TCanvas;
   clipComplexity: Integer;
 begin
-  If FBackground.Empty Then
+  if FBackground.Empty then
     inherited
-  Else Begin
+  else
+  begin
     msg.result := 1;
     clientrect := Self.Clientrect;
-    clipComplexity:= GetClipBox( msg.dc, clipbox );
-    If clipComplexity = NULLREGION Then
+    clipComplexity := GetClipBox(msg.dc, clipbox);
+    if clipComplexity = NULLREGION then
       Exit; // nothing to paint
-    If ClipComplexity = ERROR Then
+    if ClipComplexity = ERROR then
       clipbox := clientRect;
 
-    cv:= TCanvas.Create;
+    cv := TCanvas.Create;
     try
       cv.Handle := msg.DC;
-      If FFillmode = bfm_Stretch Then
-        cv.StretchDraw( clientRect, FBackground )
-      Else Begin
-            imagerect := FBackground.canvas.Cliprect;
-        while imagerect.top < clientrect.bottom do begin
-          while imagerect.left < clientrect.right do begin
-            If IntersectRect( temp, clipbox, imagerect ) Then
-              cv.Draw( imagerect.left, imagerect.top, FBackground );
-            OffsetRect( imagerect, imagerect.right - imagerect.left, 0 );
+      if FFillmode = bfm_Stretch then
+        cv.StretchDraw(clientRect, FBackground)
+      else
+      begin
+        imagerect := FBackground.canvas.Cliprect;
+        while imagerect.top < clientrect.bottom do
+        begin
+          while imagerect.left < clientrect.right do
+          begin
+            if IntersectRect(temp, clipbox, imagerect) then
+              cv.Draw(imagerect.left, imagerect.top, FBackground);
+            OffsetRect(imagerect, imagerect.right - imagerect.left, 0);
           end; { While }
-          OffsetRect( imagerect, -imagerect.left,
-                      imagerect.bottom - imagerect.top );
+          OffsetRect(imagerect, -imagerect.left,
+            imagerect.bottom - imagerect.top);
         end; { while }
-      End; { else }
+      end; { else }
     finally
       cv.Handle := 0;
       cv.free;
     end; { finally }
-  End; { else }
+  end; { else }
 end;
 
 procedure TJvBMPListBox.WMHScroll(var msg: TWMHScroll);

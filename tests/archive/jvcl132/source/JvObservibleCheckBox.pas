@@ -18,22 +18,20 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvObservibleCheckBox;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  StdCtrls, JvObserverMessages, JVCLVer;
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JvObserverMessages, JVCLVer;
 
 type
   TJvObservibleCheckBox = class(TCheckBox)
@@ -43,14 +41,14 @@ type
     FAboutJVCL: TJVCLAboutInfo;
   protected
     { Protected declarations }
-    Procedure Notification( AComponent: TComponent; Operation: TOperation); override;
-    Procedure NotifyObserver;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure NotifyObserver;
   public
     { Public declarations }
-    Procedure Click;override;
+    procedure Click; override;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
 
     property Observer: TControl read FObserver write Fobserver;
   end;
@@ -69,14 +67,14 @@ procedure TJvObservibleCheckBox.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited;
-  If (Acomponent = FObserver) and (Operation = opRemove) Then
-    FObserver := Nil;
+  if (Acomponent = FObserver) and (Operation = opRemove) then
+    FObserver := nil;
 end;
 
 procedure TJvObservibleCheckBox.NotifyObserver;
 begin
-  If Assigned( Observer ) Then
-    Observer.Perform( UM_OBSERVIBLE_CHANGED, 0, Integer(self));
+  if Assigned(Observer) then
+    Observer.Perform(UM_OBSERVIBLE_CHANGED, 0, Integer(self));
 end;
 
 end.

@@ -18,21 +18,20 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvUpDown;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  ComCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ComCtrls, JVCLVer;
 
 type
   TJvUpDown = class(TUpDown)
@@ -43,28 +42,25 @@ type
     function CanChange: Boolean; override;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
-
 
 implementation
 uses StdCtrls;
-
 
 { TJvUpDown }
 
 function TJvUpDown.CanChange: Boolean;
 begin
   Result := inherited CanChange;
-  If result Then
-    If Assigned( Associate )
-       and (Associate Is TCustomEdit)
-       and Assigned( Associate.Parent )
-    Then
-      PostMessage( Associate.Parent.Handle,
-                   WM_COMMAND,
-                   MakeWParam( 0, EN_CHANGE ),
-                   Associate.handle );
+  if result then
+    if Assigned(Associate)
+      and (Associate is TCustomEdit)
+      and Assigned(Associate.Parent) then
+      PostMessage(Associate.Parent.Handle,
+        WM_COMMAND,
+        MakeWParam(0, EN_CHANGE),
+        Associate.handle);
 end;
 
 end.

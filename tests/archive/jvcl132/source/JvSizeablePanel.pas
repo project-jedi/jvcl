@@ -18,23 +18,20 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvSizeablePanel;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  ExtCtrls ,JVCLVer;
-
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JVCLVer;
 
 type
   TJvSizeablePanel = class(TPanel)
@@ -43,35 +40,34 @@ type
     FLastPos: TPoint;
     FAboutJVCL: TJVCLAboutInfo;
   protected
-    Procedure Paint; override;
-    Procedure MouseDown( Button: TMouseButton; Shift: TShiftState;
-                         X, Y: Integer ); override;
-    Procedure MouseMove( Shift: TShiftState; X, Y: Integer ); override;
-    Procedure MouseUp( Button: TMouseButton; Shift: TShiftState;
-                       X, Y: Integer ); override;
+    procedure Paint; override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
   public
     { Public declarations }
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation
 
-
 procedure TJvSizeablePanel.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
-  If (Button = mbLeft) and
-     ((Width - x ) < 10) and
-     ((Height - y ) < 10)
-  Then Begin
+  if (Button = mbLeft) and
+    ((Width - x) < 10) and
+    ((Height - y) < 10) then
+  begin
     FDragging := TRue;
-    FLastPos := Point( x, y );
+    FLastPos := Point(x, y);
     MouseCapture := true;
     Screen.cursor := crSizeNWSE;
-  End
-  Else
+  end
+  else
     inherited;
 end;
 
@@ -79,32 +75,35 @@ procedure TJvSizeablePanel.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   r: TRect;
 begin
-  If FDragging Then Begin
-    r:= BoundsRect;
-    SetBounds( r.left, r.top,
-               r.right - r.left + X - FlastPos.X,
-               r.bottom - r.top + Y - Flastpos.Y );
-    FLastPos := Point( x, y );
-  End
-  Else Begin
+  if FDragging then
+  begin
+    r := BoundsRect;
+    SetBounds(r.left, r.top,
+      r.right - r.left + X - FlastPos.X,
+      r.bottom - r.top + Y - Flastpos.Y);
+    FLastPos := Point(x, y);
+  end
+  else
+  begin
     inherited;
-    If ((Width - x ) < 10) and ((Height - y ) < 10) Then
+    if ((Width - x) < 10) and ((Height - y) < 10) then
       Cursor := crSizeNWSE
-    Else
-      Cursor := crDefault;  
+    else
+      Cursor := crDefault;
 
-  End;
+  end;
 end;
 
 procedure TJvSizeablePanel.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
-  If FDragging Then Begin
+  if FDragging then
+  begin
     FDragging := False;
     MouseCapture := false;
     Screen.Cursor := crDefault;
-  End
-  Else
+  end
+  else
     inherited;
 end;
 
@@ -116,9 +115,9 @@ begin
   Canvas.Font.Name := 'Marlett';
   Canvas.Font.Size := 10;
   Canvas.Brush.Style := bsClear;
-  x:= clientwidth - canvas.textwidth('o');
-  y:= clientheight - canvas.textheight('o');
-  canvas.textout( x, y, 'o' );
+  x := clientwidth - canvas.textwidth('o');
+  y := clientheight - canvas.textheight('o');
+  canvas.textout(x, y, 'o');
 end;
 
 end.

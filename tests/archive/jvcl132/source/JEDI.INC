@@ -27,7 +27,7 @@
 { source files instead of this file (which is pulled in automatically).        }
 {                                                                              }
 { Maintainer: Marcel van Brakel                                                }
-{ Last modified: Februari 21, 2001                                             }
+{ Last modified: May  25, 2002                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -68,12 +68,14 @@
   DELPHI4      Defined when compiling with Delphi 4
   DELPHI5      Defined when compiling with Delphi 5
   DELPHI6      Defined when compiling with Delphi 6
+  DELPHI7      Defined when compiling with Delphi 7  
   DELPHI1_UP   Defined when compiling with Delphi 1 or higher
   DELPHI2_UP   Defined when compiling with Delphi 2 or higher
   DELPHI3_UP   Defined when compiling with Delphi 3 or higher
   DELPHI4_UP   Defined when compiling with Delphi 4 or higher
   DELPHI5_UP   Defined when compiling with Delphi 5 or higher
   DELPHI6_UP   Defined when compiling with Delphi 6 or higher
+  DELPHI7_UP   Defined when compiling with Delphi 7 or higher
 
 - C++ Builder Versions
 
@@ -111,6 +113,7 @@
   COMPILER4    Defined when compiling with Delphi 4 or C++ Builder 4
   COMPILER5    Defined when compiling with Delphi 5 or C++ Builder 5
   COMPILER6    Defined when compiling with Delphi 6 or C++ Builder 6
+  COMPILER7    Defined when compiling with Delphi 7 or C++ Builder 7  
   COMPILER1_UP Defined when compiling with Delphi 1 or higher
   COMPILER2_UP Defined when compiling with Delphi 2 or C++ Builder 1 or higher
   COMPILER3_UP Defined when compiling with Delphi 3 or higher
@@ -118,7 +121,8 @@
   COMPILER4_UP Defined when compiling with Delphi 4 or C++ Builder 4 or higher
   COMPILER5_UP Defined when compiling with Delphi 5 or C++ Builder 5 or higher
   COMPILER6_UP Defined when compiling with Delphi 6 or C++ Builder 6 or higher
-
+  COMPILER7_UP Defined when compiling with Delphi 7 or C++ Builder 7 or higher
+  
 - Feature Directives
 
   The features directives are used to test if the compiler supports specific
@@ -198,6 +202,17 @@
 // VERXXX to COMPILERX, DELPHIX and BCBX mappings
 //------------------------------------------------------------------------------
 
+{$IFDEF VER150}
+  {$DEFINE COMPILER7}
+  {$IFDEF BCB}
+    {$DEFINE BCB7}
+    {$DEFINE BCB}
+  {$ELSE}
+    {$DEFINE DELPHI7}
+    {$DEFINE DELPHI}
+  {$ENDIF}
+{$ENDIF}
+
 {$IFDEF VER140}
   {$DEFINE COMPILER6}
   {$IFDEF BCB}
@@ -264,6 +279,16 @@
 //------------------------------------------------------------------------------
 // DELPHIX_UP from DELPHIX mappings
 //------------------------------------------------------------------------------
+
+{$IFDEF DELPHI7}
+  {$DEFINE DELPHI7_UP}
+  {$DEFINE DELPHI6_UP}
+  {$DEFINE DELPHI5_UP}
+  {$DEFINE DELPHI4_UP}
+  {$DEFINE DELPHI3_UP}
+  {$DEFINE DELPHI2_UP}
+  {$DEFINE DELPHI1_UP}
+{$ENDIF}
 
 {$IFDEF DELPHI6}
   {$DEFINE DELPHI6_UP}
@@ -341,6 +366,17 @@
 //------------------------------------------------------------------------------
 // COMPILERX_UP from COMPILERX mappings
 //------------------------------------------------------------------------------
+
+{$IFDEF COMPILER7}
+  {$DEFINE COMPILER7_UP}
+  {$DEFINE COMPILER6_UP}
+  {$DEFINE COMPILER5_UP}
+  {$DEFINE COMPILER4_UP}
+  {$DEFINE COMPILER35_UP}
+  {$DEFINE COMPILER3_UP}
+  {$DEFINE COMPILER2_UP}
+  {$DEFINE COMPILER1_UP}
+{$ENDIF}
 
 {$IFDEF COMPILER6}
   {$DEFINE COMPILER6_UP}

@@ -18,28 +18,26 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvScrollEvStringGrid;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  Grids ,JVCLVer;
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Grids, JVCLVer;
 
 type
-  TBeforeScrollEvent = Procedure( Sender: TWinControl; scrollcode: Integer;
-                                  Var allowScroll: Boolean ) of Object;
-  TAfterScrollEvent  = Procedure( Sender: TwinControl; scrollcode: Integer )
-                         of Object;
+  TBeforeScrollEvent = procedure(Sender: TWinControl; scrollcode: Integer;
+    var allowScroll: Boolean) of object;
+  TAfterScrollEvent = procedure(Sender: TwinControl; scrollcode: Integer)
+    of object;
 
   TJvScrollEvStringGrid = class(TStringgrid)
   private
@@ -49,74 +47,74 @@ type
     FBeforeHScroll: TBeforeScrollEvent;
     FAboutJVCL: TJVCLAboutInfo;
 
-    Procedure WMVScroll( Var msg: TWMVScroll ); message WM_VSCROLL;
-    Procedure WMHScroll( Var msg: TWMHScroll ); message WM_HSCROLL;
+    procedure WMVScroll(var msg: TWMVScroll); message WM_VSCROLL;
+    procedure WMHScroll(var msg: TWMHScroll); message WM_HSCROLL;
   protected
-    Function DoBeforeScroll( msg: Cardinal; scrollcode: Integer): Boolean; virtual;
-    Procedure DoAfterScroll( msg: Cardinal; scrollcode: Integer ); virtual;
+    function DoBeforeScroll(msg: Cardinal; scrollcode: Integer): Boolean; virtual;
+    procedure DoAfterScroll(msg: Cardinal; scrollcode: Integer); virtual;
   public
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
-    Property OnBeforeHScroll: TBeforeScrollEvent
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property OnBeforeHScroll: TBeforeScrollEvent
       read FBeforeHScroll write FBeforeHScroll;
-    Property OnBeforeVScroll: TBeforeScrollEvent
+    property OnBeforeVScroll: TBeforeScrollEvent
       read FBeforeVScroll write FBeforeVScroll;
-    Property OnAfterHScroll: TAfterScrollEvent
+    property OnAfterHScroll: TAfterScrollEvent
       read FAfterHScroll write FAfterHScroll;
-    Property OnAfterVScroll: TAfterScrollEvent
+    property OnAfterVScroll: TAfterScrollEvent
       read FAfterVScroll write FAfterVScroll;
   end;
 
-
 implementation
-
 
 { TJvScrollEvStringGrid }
 
 procedure TJvScrollEvStringGrid.DoAfterScroll(msg: Cardinal;
   scrollcode: Integer);
-Var
+var
   proc: TAfterScrollEvent;
 begin
-  If msg = WM_VSCROLL Then
+  if msg = WM_VSCROLL then
     proc := FAfterVScroll
-  Else
+  else
     proc := FAfterHScroll;
-  If Assigned( proc ) Then
-    proc( self, scrollcode );
+  if Assigned(proc) then
+    proc(self, scrollcode);
 end;
 
 function TJvScrollEvStringGrid.DoBeforeScroll(msg: Cardinal;
   scrollcode: Integer): Boolean;
-Var
+var
   proc: TBeforeScrollEvent;
 begin
-  If msg = WM_VSCROLL Then
+  if msg = WM_VSCROLL then
     proc := FBeforeVScroll
-  Else
+  else
     proc := FBeforeHScroll;
   Result := True;
-  If Assigned( proc ) Then
-    proc( self, scrollcode, result );
+  if Assigned(proc) then
+    proc(self, scrollcode, result);
 end;
 
 procedure TJvScrollEvStringGrid.WMHScroll(var msg: TWMHScroll);
 begin
-  If DoBeforeScroll( msg.Msg, msg.ScrollCode ) Then Begin
+  if DoBeforeScroll(msg.Msg, msg.ScrollCode) then
+  begin
     inherited;
-    DoAfterScroll( msg.Msg, msg.ScrollCode );
-  End
-  Else
+    DoAfterScroll(msg.Msg, msg.ScrollCode);
+  end
+  else
     msg.result := 0;
 end;
 
 procedure TJvScrollEvStringGrid.WMVScroll(var msg: TWMVScroll);
 begin
-  If DoBeforeScroll( msg.Msg, msg.ScrollCode ) Then Begin
+  if DoBeforeScroll(msg.Msg, msg.ScrollCode) then
+  begin
     inherited;
-    DoAfterScroll( msg.Msg, msg.ScrollCode );
-  End
-  Else
+    DoAfterScroll(msg.Msg, msg.ScrollCode);
+  end
+  else
     msg.result := 0;
 end;
 

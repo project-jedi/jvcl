@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,13 +28,13 @@ Known Issues:
 
 unit JvFileNameBox;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Dialogs,
-  JvTypes, JvCustomBox, JvOpenDialog2;
+  JvTypes, JvCustomBox, JvWinDialogs;
 
 type
   TJvFileNameDlgOptions = class(TPersistent)
@@ -77,7 +77,7 @@ type
 
   TJvFileNameBox = class(TJvCustomBox)
   private
-    FChoose: TJvOpenDialog2;
+    FChoose: TJvOpenDialog2000;
     FOnOpened: TOnOpened;
     FOnOpenCanceled: TOnOpenCanceled;
     FDlgOptions: TJvFileNameDlgOptions;
@@ -109,7 +109,7 @@ constructor TJvFileNameBox.Create(AOwner: TComponent);
 begin
   inherited;
   Button.Glyph.LoadFromResourceName(HInstance, 'FILE');
-  FChoose := TJvOpenDialog2.Create(Self);
+  FChoose := TJvOpenDialog2000.Create(Self);
   FDlgOptions := TJvFileNameDlgOptions.Create;
   FDlgOptions.OnChanged := DlgOptionsChanged;
 end;
@@ -127,8 +127,7 @@ begin
     if Assigned(FOnOpened) then
       FOnOpened(Self, Edit.Text);
   end
-  else
-    if Assigned(FOnOpenCanceled) then
+  else if Assigned(FOnOpenCanceled) then
     FOnOpenCanceled(Self);
 end;
 
@@ -145,7 +144,7 @@ end;
 
 procedure TJvFileNameBox.DlgOptionsChanged(Sender: TObject);
 begin
-  FChoose.OptionsEx.PlacesBar := FDlgOptions.PlacesBar;
+//  FChoose.OptionsEx.PlacesBar := FDlgOptions.PlacesBar;
   FChoose.Title := FDlgOptions.Title;
   FChoose.Filter := FDlgOptions.Filter;
   FChoose.InitialDir := FDlgOptions.InitialDir;

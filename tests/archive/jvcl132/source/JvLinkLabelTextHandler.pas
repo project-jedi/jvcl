@@ -19,8 +19,8 @@ Contributor(s): ______________________________________.
 Last Modified: 2002-01-06;
 Current Version: 2.00
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
   Please see the accompanying documentation.
@@ -45,7 +45,7 @@ Description:
   would be a technical shortcoming.
 
   Note: Documentation for this unit can be found in Doc\Source.txt and
-        Doc\Readme.txt!  
+        Doc\Readme.txt!
 -----------------------------------------------------------------------------}
 
 unit JvLinkLabelTextHandler;
@@ -112,7 +112,8 @@ type
       Node: TAreaNode);
   end;
 
-  TParentTextElement = class end;
+  TParentTextElement = class
+  end;
   TStringElement = class(TParentTextElement)
   private
     FNode: TStringNode;
@@ -207,7 +208,7 @@ type
     procedure Reset;
   end;
 
-{ TTextElementList }
+  { TTextElementList }
 
 procedure TTextElementList.AddLineBreak;
 begin
@@ -367,11 +368,11 @@ var
 
         // Update record
         if J = FList.Count - 1 then
-        with SpaceInfo do
-        begin
-          LastWordEndsWithSpace := TStringTools.EndsWith(WordElement);
-          SpaceWidth := FCanvas.TextWidth(Space);
-        end;
+          with SpaceInfo do
+          begin
+            LastWordEndsWithSpace := TStringTools.EndsWith(WordElement);
+            SpaceWidth := FCanvas.TextWidth(Space);
+          end;
 
         // We're only ínterested in the first word; let's break if there are more
         if PrivateEnum.HasNext then
@@ -407,7 +408,7 @@ var
   procedure NotifyObservers;
   var
     Index: Integer;
-  begin 
+  begin
     { Notify observers that we are processing the node they are interested in.
       Note that more than one observer may be interested in monitoring the same
       node; TDynamicNode is a good example. }
@@ -440,74 +441,75 @@ begin
       end;
     end
     else if FList[I] is TStringElement then
-    with FCanvas do
-    begin
-      Element := TStringElement(FList[I]);
-      NotifyObservers;
-
-      Font.Style := Element.Style;
-      Font.Color := Element.Color;
-
-      Enum := TWordEnumerator.Create(Element.Node.Text);
-      Buffer := '';
-      Width := 0;
-      Element.Node.ClearRects;
-
-      while (Enum.HasNext) do
+      with FCanvas do
       begin
-        NextWord := Enum.PopNext;
+        Element := TStringElement(FList[I]);
+        NotifyObservers;
 
-        { We cache information about each individual word to speed rendering;
-          this way, we don't have to recalculate this information every time
-          this routine is called (basically every time the tree needs to be
-          repainted). We also do this as we otherwise wouldn't get correct
-          output when rendering nodes individually (for example, we frequently
-          rerender TLinkNodes with a different color). We only break after every
-          complete word, and one node might not contain complete words. GetWidth
-          makes use of information from other nodes succeeding the current one
-          if necessary; this explains why it's important to only store
-          information gathered when rendering the complete tree, that is, the
-          first time we render anything at all. }
-        if Element.Node.IsWordInfoInArray(Enum.Count - 1) then
+        Font.Style := Element.Style;
+        Font.Color := Element.Color;
+
+        Enum := TWordEnumerator.Create(Element.Node.Text);
+        Buffer := '';
+        Width := 0;
+        Element.Node.ClearRects;
+
+        while (Enum.HasNext) do
         begin
-          NextWordWidth := Element.Node.GetWordInfo(Enum.Count - 1).Width;
-          SpaceInfo := Element.Node.GetWordInfo(Enum.Count - 1).SpaceInfo;
-        end else
-        begin
-          NextWordWidth := GetWidth(SpaceInfo);
-          Element.Node.AddWordInfo(SpaceInfo, NextWordWidth);
-        end;
+          NextWord := Enum.PopNext;
 
-        Inc(Width, NextWordWidth);
+          { We cache information about each individual word to speed rendering;
+            this way, we don't have to recalculate this information every time
+            this routine is called (basically every time the tree needs to be
+            repainted). We also do this as we otherwise wouldn't get correct
+            output when rendering nodes individually (for example, we frequently
+            rerender TLinkNodes with a different color). We only break after every
+            complete word, and one node might not contain complete words. GetWidth
+            makes use of information from other nodes succeeding the current one
+            if necessary; this explains why it's important to only store
+            information gathered when rendering the complete tree, that is, the
+            first time we render anything at all. }
+          if Element.Node.IsWordInfoInArray(Enum.Count - 1) then
+          begin
+            NextWordWidth := Element.Node.GetWordInfo(Enum.Count - 1).Width;
+            SpaceInfo := Element.Node.GetWordInfo(Enum.Count - 1).SpaceInfo;
+          end
+          else
+          begin
+            NextWordWidth := GetWidth(SpaceInfo);
+            Element.Node.AddWordInfo(SpaceInfo, NextWordWidth);
+          end;
 
-        if (FPosX + GetWidthWithoutLastSpace >= FRect.Right) and
-          not (NextWord = Space) and // Never wrap because of lone space elements
+          Inc(Width, NextWordWidth);
+
+          if (FPosX + GetWidthWithoutLastSpace >= FRect.Right) and
+            not (NextWord = Space) and // Never wrap because of lone space elements
           not IsFirstWordOfSource and // Don't wrap if we have yet to output anything
           not IsInWord then // We can't wrap if we're in the middle of rendering a word
-        begin // Word wrap
-          { Output contents of buffer, empty it and start on a new line, thus
-            resetting FPosX and incrementing FPosY. }
-          TextOut(FPosX, FPosY, TrimRight(Buffer));
-          Element.Node.AddRect(GetCurrentRect);
-          Buffer := '';
-          FPosX := FRect.Left;
-          Width := NextWordWidth;
-          Inc(FPosY, FLineHeight);
-        end else
-          if (Element.Node.FirstWordWidthRetrieved) and (Enum.HasNext) and
-             (Enum.Count = 1) then
-             Inc(Width, TextWidth(NextWord));
+          begin // Word wrap
+            { Output contents of buffer, empty it and start on a new line, thus
+              resetting FPosX and incrementing FPosY. }
+            TextOut(FPosX, FPosY, TrimRight(Buffer));
+            Element.Node.AddRect(GetCurrentRect);
+            Buffer := '';
+            FPosX := FRect.Left;
+            Width := NextWordWidth;
+            Inc(FPosY, FLineHeight);
+          end
+          else if (Element.Node.FirstWordWidthRetrieved) and (Enum.HasNext) and
+            (Enum.Count = 1) then
+            Inc(Width, TextWidth(NextWord));
 
-        Buffer := Buffer + NextWord;
-      end;
+          Buffer := Buffer + NextWord;
+        end;
 
-      TextOut(FPosX, FPosY, Buffer);
-      Element.Node.AddRect(GetCurrentRect);
-      Inc(FPosX, TextWidth(Buffer));
-    end
-  else
-    raise ETextHandlerError.Create('TTextHandler.EmptyBuffer: ' +
-      'Unsupported TParentTextElement descendant encountered');
+        TextOut(FPosX, FPosY, Buffer);
+        Element.Node.AddRect(GetCurrentRect);
+        Inc(FPosX, TextWidth(Buffer));
+      end
+    else
+      raise ETextHandlerError.Create('TTextHandler.EmptyBuffer: ' +
+        'Unsupported TParentTextElement descendant encountered');
 
   FList.Clear;
 end;

@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvAngleLabel;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
@@ -67,7 +67,7 @@ end;
 
 procedure TJvAngleLabel.DrawText(Flags: Word);
 var
-  Text: array [0..4096] of Char;
+  Text: array[0..4096] of Char;
   LogFont, NewLogFont: TLogFont;
   NewFont, OldFont: HFont;
   MRect: TRect;
@@ -120,7 +120,7 @@ end;
 
 procedure TJvAngleLabel.Paint;
 const
-  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
 var
   MRect: TRect;
 begin

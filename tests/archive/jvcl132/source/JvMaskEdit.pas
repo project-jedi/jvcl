@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -30,10 +30,10 @@ unit JvMaskEdit;
 
 interface
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Mask, Forms,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Mask, Forms, JVCLVer;
 
 type
   TJvMaskEdit = class(TMaskEdit)
@@ -56,7 +56,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HotTrack: Boolean read FEffect write SetCtl3d default False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
 

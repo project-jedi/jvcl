@@ -18,22 +18,20 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvPopupMemo;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  StdCtrls ,JVCLVer;
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
 
 type
   TJvPopupMemo = class(TMemo)
@@ -45,70 +43,70 @@ type
     FCanvas: TControlCanvas;
     FAboutJVCL: TJVCLAboutInfo;
 
-    Procedure CMTextChanged(Var msg: TMessage); message CM_TEXTCHANGED;
+    procedure CMTextChanged(var msg: TMessage); message CM_TEXTCHANGED;
     procedure SetFocusedHeight(const Value: Integer);
     procedure SetMaximumHeight(const Value: Integer);
     procedure UpdateHeight;
-    procedure ChangeScrollbar( value: TScrollStyle );
+    procedure ChangeScrollbar(value: TScrollStyle);
   protected
     { Protected declarations }
-    Procedure DoEnter; override;
-    Procedure DoExit; override;
-    Procedure Change; override;
-    Procedure AdjustHeight;
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure Change; override;
+    procedure AdjustHeight;
     property Canvas: TControlCanvas read FCanvas;
   public
     { Public declarations }
-    Constructor Create( aOwner: TComponent ); override;
-    Destructor Destroy; override;
+    constructor Create(aOwner: TComponent); override;
+    destructor Destroy; override;
     property FocusedHeight: Integer read FFocusedHeight write SetFocusedHeight;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property MaximumHeight: Integer read FMaximumHeight write SetMaximumHeight;
   end;
 
-
 implementation
-
 
 { TJvPopupMemo }
 
 procedure TJvPopupMemo.AdjustHeight;
 const
-  alignflags: Array [TAlignment] of DWORD =
-    (DT_LEFT, DT_CENTER, DT_RIGHT);
+  alignflags: array[TAlignment] of DWORD =
+  (DT_LEFT, DT_CENTER, DT_RIGHT);
 var
   oldrect, newrect: TRect;
   newheight: Integer;
-  S: String;
+  S: string;
 begin
-  If not HandleAllocated Then Exit;
+  if not HandleAllocated then
+    Exit;
 
-  Perform( EM_GETRECT, 0, lparam(@oldrect));
-  S:= Text;
+  Perform(EM_GETRECT, 0, lparam(@oldrect));
+  S := Text;
 
   { HACK ALERT! DrawText discards a trailing linebreak for measurement, so if
     the user hits return in the control and the new line would require a
     larger memo we do not get the correct value back. To fix that we add a
     blank just for the measurement if the last character is a linefeed. }
-  If (Length(S) > 0) and (S[Length(S)] = #10) Then
-    S:= S+' ';
-  Canvas.Font:= Font;
-  newrect:= oldrect;
-  DrawText( Canvas.Handle, Pchar(S), Length(S), newrect,
-            DT_CALCRECT or DT_EDITCONTROL or DT_WORDBREAK or DT_NOPREFIX or
-            DT_EXPANDTABS or
-            alignflags[ Alignment ] );
-  If oldrect.bottom <> newrect.bottom Then Begin
-    newHeight := Height - (oldrect.bottom-oldrect.top) +
-                 (newrect.bottom - newrect.top );
-    If newHeight > MaximumHeight Then
-      ChangeScrollbar( ssVertical )
-    Else
-      ChangeScrollbar( ssNone );
+  if (Length(S) > 0) and (S[Length(S)] = #10) then
+    S := S + ' ';
+  Canvas.Font := Font;
+  newrect := oldrect;
+  DrawText(Canvas.Handle, Pchar(S), Length(S), newrect,
+    DT_CALCRECT or DT_EDITCONTROL or DT_WORDBREAK or DT_NOPREFIX or
+    DT_EXPANDTABS or
+    alignflags[Alignment]);
+  if oldrect.bottom <> newrect.bottom then
+  begin
+    newHeight := Height - (oldrect.bottom - oldrect.top) +
+      (newrect.bottom - newrect.top);
+    if newHeight > MaximumHeight then
+      ChangeScrollbar(ssVertical)
+    else
+      ChangeScrollbar(ssNone);
     FocusedHeight := newHeight;
-  End;
+  end;
 end;
 
 procedure TJvPopupMemo.Change;
@@ -119,16 +117,17 @@ end;
 
 procedure TJvPopupMemo.ChangeScrollbar(value: TScrollStyle);
 var
-  oldpos : Integer;
+  oldpos: Integer;
 begin
-  If Scrollbars <> value Then Begin
+  if Scrollbars <> value then
+  begin
     { Changing the scrollbar recreates the window and looses the caret
       position! }
     oldpos := SelStart;
     Scrollbars := value;
     SelStart := oldpos;
-    Perform( EM_SCROLLCARET, 0, 0 );
-  End;
+    Perform(EM_SCROLLCARET, 0, 0);
+  end;
 end;
 
 procedure TJvPopupMemo.CMTextChanged(var msg: TMessage);
@@ -141,8 +140,8 @@ constructor TJvPopupMemo.Create(aOwner: TComponent);
 begin
   inherited;
   FFocusedHeight := Height;
-  FMaximumHeight := 5*Height;
-  FCanvas:= TControlCanvas.Create;
+  FMaximumHeight := 5 * Height;
+  FCanvas := TControlCanvas.Create;
   FCanvas.Control := Self;
 end;
 
@@ -168,37 +167,41 @@ end;
 
 procedure TJvPopupMemo.SetFocusedHeight(const Value: Integer);
 begin
-  If FFocusedHeight <> Value Then Begin
-    If Value > MaximumHeight Then
+  if FFocusedHeight <> Value then
+  begin
+    if Value > MaximumHeight then
       FFocusedHeight := MaximumHeight
-    Else
+    else
       FFocusedHeight := value;
-    If Focused Then
+    if Focused then
       UpdateHeight;
-  End;
+  end;
 end;
 
 procedure TJvPopupMemo.SetMaximumHeight(const Value: Integer);
 begin
-  If FMaximumHeight <> Value Then Begin
+  if FMaximumHeight <> Value then
+  begin
     FMaximumHeight := Value;
-    If Value < FocusedHeight Then
+    if Value < FocusedHeight then
       FocusedHeight := Value;
-  End;
+  end;
 end;
 
 procedure TJvPopupMemo.UpdateHeight;
 var
   line: Integer;
 begin
-  If HandleAllocated and Focused Then Begin
+  if HandleAllocated and Focused then
+  begin
     Height := FocusedHeight;
-    If Scrollbars = ssNone Then Begin
-      line := Perform( EM_GETFIRSTVISIBLELINE, 0, 0 );
-      If line > 0 Then
-        Perform( EM_LINESCROLL, 0, -line );
-    End;
-  End;
+    if Scrollbars = ssNone then
+    begin
+      line := Perform(EM_GETFIRSTVISIBLELINE, 0, 0);
+      if line > 0 then
+        Perform(EM_LINESCROLL, 0, -line);
+    end;
+  end;
 end;
 
 end.

@@ -18,22 +18,20 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvMousePanel;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  ExtCtrls ,JVCLVer;
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JVCLVer;
 
 type
   TJvMousePanel = class(TPanel)
@@ -55,9 +53,9 @@ type
     property MouseInControl: Boolean read FMouseInControl;
   public
     { Public declarations }
-    Constructor Create( aOwner: TComponent ); override;
+    constructor Create(aOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property MouseOverColor: TColor read FMouseoverColor write SetMouseOverColor;
     property OnMouseEnter: TNotifyEvent read FMouseEnter write FMouseEnter;
     property OnMouseLeave: TNotifyEvent read FMouseLeave write FMouseLeave;
@@ -67,29 +65,30 @@ implementation
 
 uses JvMouseTimerU;
 
-
 { TJvMousePanel }
 
 procedure TJvMousePanel.CMMouseEnter(var Message: TMessage);
 begin
   inherited;
-  If not MouseInControl Then Begin
+  if not MouseInControl then
+  begin
     FOldColor := Color;
     FMouseInControl := true;
-    Color := MouseOverColor;  // invalidates control
-    Mousetimer.Attach( self );
-  End;
+    Color := MouseOverColor; // invalidates control
+    Mousetimer.Attach(self);
+  end;
   DoMouseEnter;
 end;
 
 procedure TJvMousePanel.CMMouseLeave(var Message: TMessage);
 begin
   inherited;
-  If MouseInControl Then Begin
+  if MouseInControl then
+  begin
     FMouseInControl := false;
-    Color := FOldColor;   // invalidates control
-    Mousetimer.Detach( self );
-  End;
+    Color := FOldColor; // invalidates control
+    Mousetimer.Detach(self);
+  end;
   DoMouseLeave;
 end;
 
@@ -102,23 +101,24 @@ end;
 
 procedure TJvMousePanel.DoMouseEnter;
 begin
-  If Assigned( FMouseEnter ) Then
-    FMouseEnter( self );
+  if Assigned(FMouseEnter) then
+    FMouseEnter(self);
 end;
 
 procedure TJvMousePanel.DoMouseLeave;
 begin
-  If Assigned( FMouseLeave ) Then
-    FMouseLeave( self );
+  if Assigned(FMouseLeave) then
+    FMouseLeave(self);
 end;
 
 procedure TJvMousePanel.SetMouseOverColor(const Value: TColor);
 begin
-  If FMouseoverColor <> Value Then Begin
+  if FMouseoverColor <> Value then
+  begin
     FMouseoverColor := Value;
-    If MouseInControl Then
+    if MouseInControl then
       Color := value;
-  End;
+  end;
 end;
 
 end.

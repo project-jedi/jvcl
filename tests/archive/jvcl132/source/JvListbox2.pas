@@ -18,9 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
-
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
@@ -28,13 +27,13 @@ Known Issues:
 
 unit JvListbox2;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Controls, Forms,
-  JvItemsSearchs,JVCLVer;
+  JvItemsSearchs, JVCLVer;
 
 type
   TListboxChange = procedure(Sender: TObject; Item: string) of object;
@@ -92,7 +91,7 @@ type
     procedure DeleteSelected;
     procedure DeleteAllButSelected;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HorScrollbar: Boolean read FScroll write SetHScroll default True;
     property HotTrack: Boolean read FEffect write SetEffect default False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
@@ -405,8 +404,7 @@ begin
       if Selected[i] then
         Items.Delete(i);
   end
-  else
-  if ItemIndex <> -1 then
+  else if ItemIndex <> -1 then
   begin
     i := ItemIndex;
     Items.Delete(i);

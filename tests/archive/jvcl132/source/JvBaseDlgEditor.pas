@@ -15,11 +15,12 @@ Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
+                Serhiy Perevoznyk [serge_perevoznyk@hotmail.com]
 
-Last Modified: 2000-02-28
+Last Modified: 2003-05-23
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -51,11 +52,19 @@ implementation
 
 procedure TJvBaseDlgEditor.ExecuteVerb(Index: Integer);
 begin
+ try
   with Component as TJvCommonDialog do
     case Index of
       0:
         Execute;
     end;
+  except
+  with Component as TJvCommonDialogP do
+    case Index of
+      0:
+        Execute;
+    end;
+  end;
 end;
 
 {*************************************************}

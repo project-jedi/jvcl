@@ -18,40 +18,38 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 unit JvDisplayMemo;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  StdCtrls ,JVCLVer;
-
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
 
 type
   TJvDisplayMemo = class(TCustomMemo)
   private
     FAboutJVCL: TJVCLAboutInfo;
     { Private declarations }
-    Procedure WMSetFocus( Var msg: TWMSetFocus ); message WM_SETFOCUS;
-    Procedure WMKillFocus( Var msg: TWMKillFocus); message WM_KILLFOCUS;
+    procedure WMSetFocus(var msg: TWMSetFocus); message WM_SETFOCUS;
+    procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
 
   protected
     { Protected declarations }
     procedure WndProc(var Message: TMessage); override;
   public
     { Public declarations }
-    Constructor Create( aOwner: TComponent ); override;
+    constructor Create(aOwner: TComponent); override;
   published
     { Publish most of the stuff TMemo publishes, rest commented out }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property Alignment;
     property Anchors;
@@ -106,9 +104,7 @@ type
 
   end;
 
-
 implementation
-
 
 { TJvDisplayMemo }
 
@@ -121,48 +117,50 @@ end;
 
 procedure TJvDisplayMemo.WMKillFocus(var msg: TWMKillFocus);
 begin
-  ShowCaret( handle );
+  ShowCaret(handle);
   inherited;
 end;
 
 procedure TJvDisplayMemo.WMSetFocus(var msg: TWMSetFocus);
 begin
   inherited;
-  HideCaret( handle );
+  HideCaret(handle);
 end;
 
 procedure TJvDisplayMemo.WndProc(var Message: TMessage);
-  procedure Scroll( msg, scrollcode: Integer );
+  procedure Scroll(msg, scrollcode: Integer);
   begin
-    Perform( msg, scrollcode, 0 );
-    Perform( msg, SB_ENDSCROLL, 0 );
+    Perform(msg, scrollcode, 0);
+    Perform(msg, SB_ENDSCROLL, 0);
   end;
 begin
-  If not (csDesigning In ComponentState) Then
-    Case Message.Msg Of
+  if not (csDesigning in ComponentState) then
+    case Message.Msg of
       WM_LBUTTONDOWN, WM_LBUTTONUP, WM_MOUSEMOVE, WM_LBUTTONDBLCLK,
-      WM_CHAR, WM_KEYUP: Begin
+        WM_CHAR, WM_KEYUP:
+        begin
           Message.Result := 0;
-          If Message.Msg = WM_LBUTTONDOWN Then
-            If not Focused Then
+          if Message.Msg = WM_LBUTTONDOWN then
+            if not Focused then
               SetFocus;
           Exit;
-        End;
-      WM_KEYDOWN: Begin
-          Case Message.WParam Of
-            VK_DOWN : Scroll( WM_VSCROLL, SB_LINEDOWN );
-            VK_UP   : Scroll( WM_VSCROLL, SB_LINEUP );
-            VK_LEFT : Scroll( WM_HSCROLL, SB_LINELEFT );
-            VK_RIGHT: Scroll( WM_HSCROLL, SB_LINERIGHT );
-            VK_NEXT : Scroll( WM_VSCROLL, SB_PAGEDOWN );
-            VK_PRIOR: Scroll( WM_VSCROLL, SB_PAGEUP );
-            VK_HOME : Scroll( WM_VSCROLL, SB_TOP );
-            VK_END  : Scroll( WM_VSCROLL, SB_BOTTOM );
-          End;
+        end;
+      WM_KEYDOWN:
+        begin
+          case Message.WParam of
+            VK_DOWN: Scroll(WM_VSCROLL, SB_LINEDOWN);
+            VK_UP: Scroll(WM_VSCROLL, SB_LINEUP);
+            VK_LEFT: Scroll(WM_HSCROLL, SB_LINELEFT);
+            VK_RIGHT: Scroll(WM_HSCROLL, SB_LINERIGHT);
+            VK_NEXT: Scroll(WM_VSCROLL, SB_PAGEDOWN);
+            VK_PRIOR: Scroll(WM_VSCROLL, SB_PAGEUP);
+            VK_HOME: Scroll(WM_VSCROLL, SB_TOP);
+            VK_END: Scroll(WM_VSCROLL, SB_BOTTOM);
+          end;
           Message.Result := 0;
           Exit;
-        End;
-    End;
+        end;
+    end;
   inherited;
 end;
 

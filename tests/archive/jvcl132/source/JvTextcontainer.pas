@@ -18,81 +18,79 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 
-
 {+------------------------------------------------------------
  | Unit Textcontainer
  |
- | Version: 1.0  Created: 12.03.99 
+ | Version: 1.0  Created: 12.03.99
  |               Last Modified: 12.03.99
  | Author : P. Below
  | Project: Common components
  | Description:
- |   Implements a simple component to import textfiles into 
+ |   Implements a simple component to import textfiles into
  |   a project at design-time.
  +------------------------------------------------------------}
-Unit JvTextcontainer;
+unit JvTextcontainer;
 
-Interface
+interface
 
-Uses
-  SysUtils, Classes ,JvComponent;
+uses
+  SysUtils, Classes, JvComponent;
 
-Type
-  TJvTextContainer = Class(TJvComponent)
-  Private
+type
+  TJvTextContainer = class(TJvComponent)
+  private
     { Private declarations }
     FLines: TStrings;
 
-    Procedure SetLines( aList: TStrings );
-    Function GetText: String;
+    procedure SetLines(aList: TStrings);
+    function GetText: string;
 
-  Public
+  public
     { Public declarations }
-    Constructor Create( aOwner: TComponent ); override;
-    Destructor Destroy; override;
+    constructor Create(aOwner: TComponent); override;
+    destructor Destroy; override;
 
-    Property Text: String read GetText;
-  Published
+    property Text: string read GetText;
+  published
     { Published declarations }
-    Property Lines: TStrings read FLines write SetLines;
+    property Lines: TStrings read FLines write SetLines;
 
-  End;
+  end;
 
-
-Implementation
-
+implementation
 
 {+---------------------------
- | Methods of TJvTextContainer 
+ | Methods of TJvTextContainer
  +--------------------------}
-Procedure TJvTextContainer.SetLines( aList: TStrings );
-  Begin
-    FLines.Assign( aList );
-  End; { TJvTextContainer.SetLines }
 
-Function TJvTextContainer.GetText: String;
-  Begin
-    Result := FLines.Text;
-  End; { TJvTextContainer.GetText }
+procedure TJvTextContainer.SetLines(aList: TStrings);
+begin
+  FLines.Assign(aList);
+end; { TJvTextContainer.SetLines }
 
-Constructor TJvTextContainer.Create( aOwner: TComponent ); 
-  Begin
-    inherited Create( aOwner );
-    FLines := TStringlist.create;
-  End; { TJvTextContainer.Create }
+function TJvTextContainer.GetText: string;
+begin
+  Result := FLines.Text;
+end; { TJvTextContainer.GetText }
 
-Destructor TJvTextContainer.Destroy; 
-  Begin
-    FLines.Free;
-    inherited Destroy;
-  End; { TJvTextContainer.Destroy }
+constructor TJvTextContainer.Create(aOwner: TComponent);
+begin
+  inherited Create(aOwner);
+  FLines := TStringlist.create;
+end; { TJvTextContainer.Create }
 
-End.
+destructor TJvTextContainer.Destroy;
+begin
+  FLines.Free;
+  inherited Destroy;
+end; { TJvTextContainer.Destroy }
+
+end.

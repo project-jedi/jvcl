@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,13 +28,13 @@ Known Issues:
 
 unit JvCopyError;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  SetupApi,    JvCommonDialogD, JvBaseDlg, JvTypes ;
+  SetupApi, JvCommonDialogD, JvBaseDlg, JvTypes;
 
 type
   TJvCopyError = class(TJvCommonDialogD)
@@ -86,7 +86,7 @@ function TJvCopyError.Execute: TDiskRes;
 var
   Sty: DWORD;
   Required: DWORD;
-  res: array [0..255] of Char;
+  res: array[0..255] of Char;
 begin
   // (rom) simplified/fixed
   Result := dsError;
@@ -113,8 +113,8 @@ begin
   if @FSetupCopyError <> nil then
   begin
     case FSetupCopyError(Fhandle, PChar(Ftitle), PChar(FDiskName),
-           PChar(FPathToSource), PChar(FSource), PCHar(FTarget),
-           FError, Sty, res, SizeOf(res), @Required) of
+      PChar(FPathToSource), PChar(FSource), PCHar(FTarget),
+      FError, Sty, res, SizeOf(res), @Required) of
       DPROMPT_SUCCESS:
         begin
           FPath := StrPas(res);

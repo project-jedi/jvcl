@@ -18,8 +18,8 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
 Last Modified: 2000-02-28
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvSlider;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  ExtCtrls ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JVCLVer;
 
 type
   TJvSlider = class(TCustomControl)
@@ -74,7 +74,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property ImageRuler: TBitmap read FRuler write SetFRuler;
     property ImageThumb: TBitmap read FThumb write SetThumb;
     property Align;
@@ -123,7 +123,7 @@ begin
   Canvas.StretchDraw(T, FRuler);
   if FHor then
   begin
-      //horizontal
+    //horizontal
     T.Left := Round(FDifference * FPosition);
     if Height - FThumb1.Height < 0 then
       T.Top := 0
@@ -135,7 +135,7 @@ begin
   end
   else
   begin
-      //vertical
+    //vertical
     if Width - FThumb1.Width < 0 then
       T.Left := 0
     else
@@ -180,7 +180,7 @@ end;
 
 procedure TJvSlider.Calculate;
 begin
-   //calculate the difference between pixel
+  //calculate the difference between pixel
   if FHor then
     FDifference := (Width - FThumb1.Width) / FMaximum
   else
@@ -253,7 +253,8 @@ begin
         begin
           FChanging := True;
           i := Round(i / FDifference);
-          if i > FMaximum then i := FMaximum;
+          if i > FMaximum then
+            i := FMaximum;
           FPosition := i;
           if Assigned(FOnChanged) then
             FOnChanged(Self);

@@ -18,14 +18,13 @@ Contributor(s): ______________________________________.
 
 Last Modified: 2000-mm-dd
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
-
 
 unit JvFixedTrackbar;
 
@@ -37,7 +36,7 @@ uses
 
 // *** Important to include this constant showing your version #
 const
-  TJvComponent_VERSION      = '5.01';
+  TJvComponent_VERSION = '5.01';
 
 type
   TJvFixedTrackbar = class(TTrackbar)
@@ -56,26 +55,25 @@ type
     property AboutMe: string read GetAboutMe write SetAboutMe stored False;
   end;
 
-
 implementation
 
 { TJvFixedTrackbar }
 
 procedure TJvFixedTrackbar.CNHScroll(var Message: TWMHScroll);
 begin
-  If Message.ScrollCode <> SB_ENDSCROLL Then
+  if Message.ScrollCode <> SB_ENDSCROLL then
     inherited;
 end;
 
 procedure TJvFixedTrackbar.CNVScroll(var Message: TWMVScroll);
 begin
-  If Message.ScrollCode <> SB_ENDSCROLL Then
+  if Message.ScrollCode <> SB_ENDSCROLL then
     inherited;
 end;
 
 function TJvFixedTrackbar.GetAboutMe: string;
 begin
-  Result := 'Version: '+TJvComponent_VERSION;
+  Result := 'Version: ' + TJvComponent_VERSION;
 end;
 
 procedure TJvFixedTrackbar.SetAboutMe(const Value: string);

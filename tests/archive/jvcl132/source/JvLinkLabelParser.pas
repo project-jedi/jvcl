@@ -19,8 +19,8 @@ Contributor(s): ______________________________________.
 Last Modified: 2002-01-06;
 Current Version: 2.00
 
-You may retrieve the latest version of this file at the Project JEDI home page,
-located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
   Please see the accompanying documentation.
@@ -101,7 +101,7 @@ type
     function IsEndReached: Boolean;
   end;
 
-{ TDefaultParser }
+  { TDefaultParser }
 
 procedure TDefaultParser.AddSourceTreeToDynamicNode(
   const Node: TDynamicNode; const Source: string);
@@ -130,7 +130,7 @@ end;
 function TDefaultParser.GetNodeFromTag(const Tag: string): TNode;
 type
   TTag = (ttBold, ttItalic, ttUnderline, ttLink, ttLineBreak, ttParagraphBreak,
-          ttDynamic);
+    ttDynamic);
 var
   CurrentTag: TTag;
   UnknownTag: Boolean;
@@ -138,7 +138,7 @@ var
   function GetTagFromString: TTag;
   const
     TagStrings: array[TTag] of string = ('B', 'I', 'U', 'LINK', 'BR', 'P',
-                                         'DYNAMIC');
+      'DYNAMIC');
     DontCare = 0;
   begin
     UnknownTag := False;
@@ -161,13 +161,13 @@ begin
 
   if not UnknownTag then
     case CurrentTag of
-      ttBold:           Result := TStyleNode.Create(fsBold);
-      ttItalic:         Result := TStyleNode.Create(fsItalic);
-      ttUnderline:      Result := TStyleNode.Create(fsUnderline);
-      ttLink:           Result := TLinkNode.Create;
-      ttLineBreak:      Result := TActionNode.Create(atLineBreak);
+      ttBold: Result := TStyleNode.Create(fsBold);
+      ttItalic: Result := TStyleNode.Create(fsItalic);
+      ttUnderline: Result := TStyleNode.Create(fsUnderline);
+      ttLink: Result := TLinkNode.Create;
+      ttLineBreak: Result := TActionNode.Create(atLineBreak);
       ttParagraphBreak: Result := TActionNode.Create(atParagraphBreak);
-      ttDynamic:        Result := TDynamicNode.Create;
+      ttDynamic: Result := TDynamicNode.Create;
     else
       Result := TUnknownNode.Create(Tag);
     end
@@ -280,8 +280,8 @@ end;
 { TElementEnumerator }
 
 const
-  OpenTag:   Char = '<';
-  CloseTag:  Char = '>';
+  OpenTag: Char = '<';
+  CloseTag: Char = '>';
   EndMarker: Char = '/';
 
 constructor TElementEnumerator.Create(const Text: string);
@@ -327,8 +327,8 @@ function TElementEnumerator.GetNextElement(
 
   begin
     StartPos := FPosInText;
-    EndPos   := FPosInText;
-    Padding  := 0;
+    EndPos := FPosInText;
+    Padding := 0;
 
     case Kind of
       ekBeginTag:
