@@ -283,6 +283,9 @@ type
 
   TArrayOfPCsvColumn = array of PCsvColumn;
 
+  { TJvCustomCsvDataSetFilterFunction: Defines callback function to be passed to CustomFilter routine }
+  TJvCustomCsvDataSetFilterFunction = function(recno:Integer):Boolean of Object;
+
   // Easily Customizeable Dataset descendant our CSV handler and
   // any other variants we create:
   TJvCustomCsvDataSet = class(TDataSet)
@@ -376,6 +379,7 @@ type
     function GetRowTag: Integer;
     procedure SetRowTag(tagValue: Integer);
 
+
     // protected TDataSet base METHODS:
     procedure SetTableName(const Value: string); virtual;
     function FieldDefsStored: Boolean; virtual;
@@ -397,6 +401,7 @@ type
     function GetRecordSize: Word; override;
     procedure SetFieldData(Field: TField; Buffer: Pointer); override;
     procedure ClearCalcFields(Buffer: PChar); override;
+
 
     // Bookmark methods:
     procedure GetBookmarkData(Buffer: PChar; data: Pointer); override;
@@ -451,6 +456,10 @@ type
     function BookmarkValid(Bookmark: TBookmark): Boolean;override;
     function GetFieldData(Field: TField; Buffer: Pointer): Boolean; override;
 
+                // Autoincrement feature: Get next available auto-incremented value for numbered/indexed autoincrementing fields.
+    function GetAutoincrement(fieldName:String):Integer;
+
+
     // SELECT * FROM TABLE WHERE <fieldname> LIKE <pattern>:
     procedure SetFilter(FieldName, pattern: string); // Make Rows Visible Only if they match filterString
 
@@ -458,6 +467,8 @@ type
 
     procedure _ClearFilter; // Clear Previous Filtering. DOES NOT REFRESH SCREEN.
 
+
+    procedure CustomFilter( FilterCallback : TJvCustomCsvDataSetFilterFunction  ); {NEW:APRIL 2004-WP}
 
     // ----------- THIS IS A DUMMY FUNCTION, DON'T USE IT!:
     function Locate(const KeyFields: string; const KeyValues: Variant;
@@ -967,6 +978,26 @@ end;
 // XXX hide rows that the user sets HideRow := True in the event handler.
 // XXX
 
+{ New: Custom Filtering }
+procedure TJvCustomCsvDataSet.CustomFilter( FilterCallback : TJvCustomCsvDataSetFilterFunction  );
+var
+  t: Integer;
+  pRow: PCsvRow;
+begin
+  Assert(Assigned(FilterCallback));
+  // Now check if field value matches given pattern for this row.
+  for t := 0 to FData.Count - 1 do
+  begin
+      pRow := PCsvRow(FData[t]);
+      Assert(Assigned(pRow));
+      // if custom function returns False, hide the row.
+      pRow^.filtered  := not FilterCallback(t);
+  end;
+  FIsFiltered := True;
+  if Active then
+    First;
+end;
+
 procedure TJvCustomCsvDataSet.SetFilter(FieldName, pattern: string);
   // Make Rows Visible Only if they match filterString
 var
@@ -1288,7 +1319,7 @@ begin
   end;
 
   if PhysicalLocation < 0 then
-  begin 
+  begin
     JvCsvDatabaseError(FTableName, Format(RsEPhysicalLocationOfCSVField, [Field.FieldName]));
     Exit;
   end;
@@ -1335,6 +1366,49 @@ begin
   except
     Result := Unassigned; // No value.
   end;
+end;
+
+// Auto-increment
+function TJvCustomCsvDataSet.GetAutoincrement(fieldName:String):Integer;
+var
+ recindex:Integer;
+ FieldLookup: TField;
+ CsvColumnData : PCsvColumn;
+ max,value:integer;
+ RowPtr: PCsvRow;
+begin
+  result := -1; // failed.
+  FieldLookup := FieldByName(fieldName);
+  if FieldLookup.DataType <> ftInteger then
+      exit; // failed. Can only auto increment on integer fields!
+
+  if not Assigned(FieldLookup) then
+      exit; //failed.
+
+  CsvColumnData := FCsvColumns.FindByFieldNo(FieldLookup.FieldNo);
+  max := -1;
+  for recindex := 0 to Self.FData.Count-1 do begin
+   try
+      // skip filtered rows:
+       RowPtr := FData[recindex];
+       Assert(Assigned(RowPtr)); // FData should never contain nils!
+       if (RowPtr^.filtered) then
+            continue; // skip filtered row!
+
+
+      value := GetFieldValueAsVariant(CsvColumnData,FieldLookup,recindex);
+      if value>max then
+          max := value; // keep maximum.
+   except
+      on E:EVariantError do begin
+          exit; // failed.
+      end;
+   end;
+  end;
+  if (max<0) then
+      result := 0 // autoincrement starts at zero
+  else
+      result := max+1; // count upwards.
 end;
 
 
@@ -1967,9 +2041,9 @@ begin
       Exit;
     end;
     //AutoCalcFields?
-    {$IFDEF DEBUGINFO_ON}
-    OutputDebugString(PChar('GetFieldData ' + Field.FieldName + ' Buffer=' + IntToHex(Integer(Buffer), 8)));
-    {$ENDIF DEBUGINFO_ON}
+    //{$IFDEF DEBUGINFO_ON}
+    //OutputDebugString(PChar('GetFieldData ' + Field.FieldName + ' Buffer=' + IntToHex(Integer(Buffer), 8)));
+    //{$ENDIF DEBUGINFO_ON}
 
     Inc(pSource, SizeOf(TJvCsvRow) + Field.Offset);
     if Buffer = nil then
@@ -2181,6 +2255,8 @@ begin
   // All is Well.
   Result := True;
 end;
+
+
 
 // Our bookmark data is a pointer to a PCsvData
 
@@ -2811,15 +2887,21 @@ begin
     Exit;
   end;
 
-  { Unique Key Enforcement }
+  { Unique Key Enforcement : WARNING This doesn't exactly work correctly right now! - WP APRIL 2004.}
   if FCsvUniqueKeys then
   begin
     keyIndex := InternalFindByKey(PCsvRow(ActiveBuffer));
     // If posting an update, keyIndex better be <0 or else equal to FRecordPos!
     // Otherwise, if adding, keyIndex better be <0.
+
     if keyIndex >= 0 then
-      if (State = dsInsert) or ((State = dsEdit) and (keyIndex <> FRecordPos)) then
+      if ((State = dsInsert) and {XXX NEW}(FRecordPos< RecordCount) )
+        or ((State = dsEdit) and (keyIndex <> FRecordPos)) then
       begin
+        {$IFDEF DEBUGINFO_ON}
+       OutputDebugString(PChar('JvCsvDataSet Uniqueness: keyIndex='+IntToStr(keyIndex)+' '+GetRowAsString(keyIndex) ));
+       OutputDebugString(PChar('JvCsvDataSet Uniqueness: recordPos='+IntToStr(FRecordPos)+' '+GetRowAsString(FRecordPos) ));
+        {$ENDIF}
         raise EJvCsvKeyError.CreateFmt(RsEKeyNotUnique, [FTableName]);
         Exit; // never get here, since normally JvCsvDatabaseError raises an exception.
       end;
