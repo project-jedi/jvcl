@@ -131,6 +131,7 @@ const
   ttCase = 103; { Case }
   ttProgram = 104; { Program }
   ttIn = 105; { In }
+  ttRecord = 106; { Record }
 
   { priority 8 - highest }
   ttNot = 21; { not }
@@ -223,6 +224,7 @@ const
   kwCASE = 'case';
   kwPROGRAM = 'program';
   kwIN = 'in';
+  kwRECORD = 'record';
 
 implementation
 
@@ -276,7 +278,7 @@ const
    {30}  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
    {40}  -1, -1,  9, -1, 13, -1, -1, -1, 31, -1,
    {50}  42,  4, -1, -1, -1, 36, -1, 26, -1, 20,
-   {60}  -1, 21, -1, -1, -1, -1, -1, -1, 24, -1,
+   {60}  -1, 21, -1, -1, -1, 47, -1, -1, 24, -1,
    {70}  38, -1, 45, 16, 14,  0, -1, -1, 25, -1,
    {80}  46, -1, 10, 22,  7, -1, 34, -1, -1, -1,
    {90}  39, 27,  6, -1, 33, -1, -1,  1, -1, -1,
@@ -289,7 +291,7 @@ const
    {160} -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
    {170} -1, -1, -1, -1, -1, -1, -1);
 
-  WordList: array [0..46] of TTokenTag = (
+  WordList: array [0..47] of TTokenTag = (
     (Token: kwTRUE; TTyp: ttTrue),
     (Token: kwFALSE; TTyp: ttFalse),
     (Token: kwOR; TTyp: ttOr),
@@ -336,7 +338,8 @@ const
     (Token: kwOF; TTyp: ttOf),
     (Token: kwCASE; TTyp: ttCase),
     (Token: kwPROGRAM; TTyp: ttProgram),
-    (Token: kwIN; TTyp: ttIn));
+    (Token: kwIN; TTyp: ttIn),
+    (Token: kwRECORD; TTyp: ttRecord));
 
 { convert string into token number using hash tables }
 
