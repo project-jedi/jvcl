@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
-  Buttons, Dialogs, FileCtrl,
+  Buttons, Dialogs,
   JvDynControlEngine, JvDynControlEngineIntf;
 
 type
@@ -39,6 +39,7 @@ type
   protected
     procedure AfterCreateControl(aControl: TControl); override;
   public
+    procedure RegisterControls; override;
   published
   end;
 
@@ -74,28 +75,37 @@ begin
   Result := IntDynControlEngineVCLRed;
 end;
 
+procedure TJvDynControlEngineVclRed.RegisterControls;
+begin
+  RegisterControl(jctLabel, TJvDynControlVCLLabel);
+  {$IFDEF VCL}
+  RegisterControl(jctStaticText, TJvDynControlVCLStaticText);
+  {$ENDIF VCL}
+  RegisterControl(jctButton, TJvDynControlVCLButton);
+  RegisterControl(jctScrollBox, TJvDynControlVCLScrollBox);
+  RegisterControl(jctPanel, TJvDynControlVCLPanel);
+  RegisterControl(jctImage, TJvDynControlVCLImage);
+  RegisterControl(jctCheckBox, TJvDynControlVCLCheckBox);
+  RegisterControl(jctComboBox, TJvDynControlVCLComboBox);
+  RegisterControl(jctListBox, TJvDynControlVCLListBox);
+  RegisterControl(jctCheckListBox, TJvDynControlVCLCheckListBox);
+  RegisterControl(jctRadioGroup, TJvDynControlVCLRadioGroup);
+  {$IFDEF VCL}
+  RegisterControl(jctDateTimeEdit, TJvDynControlVCLDateTimeEdit);
+  RegisterControl(jctTimeEdit, TJvDynControlVCLTimeEdit);
+  RegisterControl(jctDateEdit, TJvDynControlVCLDateEdit);
+  {$ENDIF VCL}
+  RegisterControl(jctEdit, TJvDynControlVCLMaskEdit);
+//  RegisterControl(jctCalculateEdit, TJvDynControlVCLMaskEdit);
+//  RegisterControl(jctSpinEdit, TJvDynControlVCLMaskEdit);
+  RegisterControl(jctDirectoryEdit, TJvDynControlVCLDirectoryEdit);
+  RegisterControl(jctFileNameEdit, TJvDynControlVCLFileNameEdit);
+  RegisterControl(jctMemo, TJvDynControlVCLMemo);
+  RegisterControl(jctButtonEdit, TJvDynControlVCLButtonEdit);
+end;
+
 initialization
-  IntDynControlEngineVCLRed := TJvDynControlEngineVCLRed.Create;
-  IntDynControlEngineVCLRed.RegisterControl(jctLabel, TJvDynControlVCLLabel);
-  IntDynControlEngineVCLRed.RegisterControl(jctStaticText, TJvDynControlVCLStaticText);
-  IntDynControlEngineVCLRed.RegisterControl(jctButton, TJvDynControlVCLButton);
-  IntDynControlEngineVCLRed.RegisterControl(jctScrollBox, TJvDynControlVCLScrollBox);
-  IntDynControlEngineVCLRed.RegisterControl(jctPanel, TJvDynControlVCLPanel);
-  IntDynControlEngineVCLRed.RegisterControl(jctImage, TJvDynControlVCLImage);
-  IntDynControlEngineVCLRed.RegisterControl(jctCheckBox, TJvDynControlVCLCheckBox);
-  IntDynControlEngineVCLRed.RegisterControl(jctComboBox, TJvDynControlVCLComboBox);
-  IntDynControlEngineVCLRed.RegisterControl(jctListBox, TJvDynControlVCLListBox);
-  IntDynControlEngineVCLRed.RegisterControl(jctRadioGroup, TJvDynControlVCLRadioGroup);
-  IntDynControlEngineVCLRed.RegisterControl(jctDateTimeEdit, TJvDynControlVCLDateTimeEdit);
-  IntDynControlEngineVCLRed.RegisterControl(jctTimeEdit, TJvDynControlVCLTimeEdit);
-  IntDynControlEngineVCLRed.RegisterControl(jctDateEdit, TJvDynControlVCLDateEdit);
-  IntDynControlEngineVCLRed.RegisterControl(jctEdit, TJvDynControlVCLMaskEdit);
-//  IntDynControlEngineVCLRed.RegisterControl(jctCalculateEdit, TJvDynControlVCLMaskEdit);
-//  IntDynControlEngineVCLRed.RegisterControl(jctSpinEdit, TJvDynControlVCLMaskEdit);
-  IntDynControlEngineVCLRed.RegisterControl(jctDirectoryEdit, TJvDynControlVCLDirectoryEdit);
-  IntDynControlEngineVCLRed.RegisterControl(jctFileNameEdit, TJvDynControlVCLFileNameEdit);
-  IntDynControlEngineVCLRed.RegisterControl(jctMemo, TJvDynControlVCLMemo);
-  IntDynControlEngineVCLRed.RegisterControl(jctButtonEdit, TJvDynControlVCLButtonEdit);
+  IntDynControlEngineVCLRed := TJvDynControlEngineVclRed.Create;
   SetDefaultDynControlEngine(IntDynControlEngineVCLRed);
 
 finalization

@@ -28,7 +28,7 @@ unit JvParameterListMainForm;
 
 interface
 
-{.$DEFINE INCLUDE_DEVEXP_CX}
+{$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
@@ -112,6 +112,13 @@ type
     GroupBox6: TGroupBox;
     StaticText5: TStaticText;
     Button14: TButton;
+    GroupBox7: TGroupBox;
+    Button15: TButton;
+    DefaultParameterWidthEdit: TMaskEdit;
+    Label6: TLabel;
+    Label7: TLabel;
+    DefaultParameterLabelWidthEdit: TMaskEdit;
+    AssignWidthHeightCheckBox: TCheckBox;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -132,6 +139,8 @@ type
     procedure JvAppRegistryStorageDecryptPropertyValue(var Value: String);
     procedure JvAppRegistryStorageEncryptPropertyValue(var Value: String);
     procedure Button14Click(Sender: TObject);
+    procedure Button15Click(Sender: TObject);
+    procedure AssignWidthHeightCheckBoxClick(Sender: TObject);
   private
     { Private-Deklarationen }
     procedure ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
@@ -219,7 +228,7 @@ begin
       SearchName := 'TimeTest';
       Caption    := 'TimeTest';
       Format     := 'HH:mm:ss';
-///      Width      := 100;
+//      Width      := 100;
       AsDate     := Now;
     end;
     ParameterList.AddParameter(Parameter);
@@ -238,8 +247,10 @@ begin
       SearchName := 'DateTimeTest';
       Caption    := 'DateTimeTest';
       AsDate     := Now;
+      Width      := 365;
+      RightSpace := 100;
 //      Width      := 200;
-      Height     := 50;
+//      Height     := 50;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvEditParameter.Create(ParameterList);
@@ -299,17 +310,19 @@ begin
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvFileNameParameter.Create(ParameterList);
-    with Parameter do
+    with TJvFileNameParameter(Parameter) do
     begin
       SearchName := 'FileNameTest';
       Caption    := 'FileNameTest';
+      labelArrangeMode := lamAbove;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvDirectoryParameter.Create(ParameterList);
-    with Parameter do
+    with TJvDirectoryParameter(Parameter) do
     begin
       SearchName := 'DirectoryTest';
       Caption    := 'DirectoryTest';
+      labelArrangeMode := lamAbove;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvMemoParameter.Create(ParameterList);
@@ -317,7 +330,7 @@ begin
     begin
       SearchName := 'MemoTest';
       Caption    := 'MemoTest';
-      Height     := 60;
+      //Height     := 60;
       Scrollbars := ssBoth;
     end;
     ParameterList.AddParameter(Parameter);
@@ -383,11 +396,18 @@ begin
     else
       ParameterList.ArrangeSettings.AutoSize := asNone;
 
+    ParameterList.DefaultParameterWidth  := 180;
+    ParameterList.DefaultParameterLabelWidth := 80;
     ParameterList.MaxHeight := StrToInt(MaxHeightEdit.Text);
     ParameterList.MaxWidth  := StrToInt(MaxWidthEdit.Text);
-    ParameterList.Height    := StrToInt(HeightEdit.Text);
-    ParameterList.Width     := StrToInt(WidthEdit.Text);
+    if AssignWidthHeightCheckBox.Checked then
+    begin
+      ParameterList.Height    := StrToInt(HeightEdit.Text);
+      ParameterList.Width     := StrToInt(WidthEdit.Text);
+    end;
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
+    ParameterList.DefaultParameterWidth  := StrToInt(DefaultParameterWidthEdit.Text);
+    ParameterList.DefaultParameterLabelWidth  := StrToInt(DefaultParameterLabelWidthEdit.Text);
     ParameterList.AppStorage  := DefaultStorage;
     ParameterList.AppStoragePath      := 'Dialog 1';
     if LoadFromCheckBox.Checked then
@@ -482,8 +502,13 @@ begin
     ParameterList.OkButtonDisableReasons.AddReason('CheckBox', true);
     ParameterList.MaxHeight := StrToInt(MaxHeightEdit.Text);
     ParameterList.MaxWidth  := StrToInt(MaxWidthEdit.Text);
-    ParameterList.Height    := StrToInt(HeightEdit.Text);
-    ParameterList.Width     := StrToInt(WidthEdit.Text);
+    if AssignWidthHeightCheckBox.Checked then
+    begin
+      ParameterList.Height    := StrToInt(HeightEdit.Text);
+      ParameterList.Width     := StrToInt(WidthEdit.Text);
+    end;
+    ParameterList.DefaultParameterWidth  := StrToInt(DefaultParameterWidthEdit.Text);
+    ParameterList.DefaultParameterLabelWidth  := StrToInt(DefaultParameterLabelWidthEdit.Text);
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
     ParameterList.AppStorage  := DefaultStorage;
     ParameterList.AppStoragePath      := 'Dialog 2';
@@ -596,11 +621,11 @@ begin
       DisableReasons.AddReasonIsEmpty('Edit1');
     end;
     ParameterList.AddParameter(Parameter);
-    ParameterList.ArrangeSettings.AutoSize := asHeight;
+    ParameterList.ArrangeSettings.AutoSize := asBoth;
  //  ParameterList.MaxHeight := StrToInt(MaxHeightEdit.Text);
  //  ParameterList.MaxWidth  := StrToInt(MaxWidthEdit.Text);
  //  ParameterList.Height    := StrToInt(HeightEdit.Text);
-    ParameterList.Width    := 240;
+    ParameterList.MaxWidth    := 300;
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
     ParameterList.AppStorage := DefaultStorage;
     ParameterList.AppStoragePath     := 'Dialog 3';
@@ -689,6 +714,7 @@ begin
   {$ENDIF}
   VCLRadioButtonClick(nil);
   DevExpCxLookAndFeelRadioGroupClick(nil);
+  AssignWidthHeightCheckBoxClick(nil);
 end;
 
 procedure TForm1.BitBtn1Click(Sender: TObject);
@@ -851,6 +877,168 @@ end;
 procedure TForm1.Button14Click(Sender: TObject);
 begin
   ShowTestCrypt(nil);
+end;
+
+procedure TForm1.Button15Click(Sender: TObject);
+VAR
+  ParameterList     : TJvParameterList;
+  Gparameter,
+    Parameter       : TJvBaseParameter;
+BEGIN
+  ParameterList := TJvParameterList.Create(Self);
+  TRY
+    ParameterList.AppStoragePath := 'Analyze Table';
+    ParameterList.AppStorage := DefaultStorage;
+    ParameterList.MaxWidth := 400;
+    ParameterList.ArrangeSettings.AutoSize := asBoth;
+    Parameter := TJvRadioGroupParameter.Create(ParameterList);
+    WITH TJvRadioGroupParameter(Parameter) DO
+    BEGIN
+      SearchName := 'AnalyzeType';
+      Caption := '&Analyze Type';
+      ItemList.Add('COMPUTE STATISTICS');
+      ItemList.Add('ESTIMATE STATISTICS');
+      ItemList.Add('DELETE STATISTICS');
+      ItemIndex := 0;
+      Width := 160;
+      Height := 80;
+      VariantAsItemIndex := True;
+    END;                                {*** WITH BaseParameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Gparameter := TJvGroupBoxParameter.Create(ParameterList);
+    WITH TJvGroupBoxParameter(Gparameter) DO
+    BEGIN
+      SearchName := 'AnalyzeAddType';
+      Caption := 'Additional &Parameter';
+      Width := 160;
+      Height := 30;
+      ArrangeSettings.AutoSize := asHeight;
+      //BorderLeft := 5;
+    END;                              {*** WITH BaseParameter DO ***}
+    ParameterList.AddParameter(Gparameter);
+    Parameter := TJvCheckBoxParameter.Create(ParameterList);
+    WITH TJvCheckBoxParameter(Parameter) DO
+    BEGIN
+      ParentParameterName := 'AnalyzeAddType';
+      Width := 150;
+      AsBoolean := True;
+      SearchName := 'AnalyzeAddTypeTable';
+      Caption := 'TABLE';
+    END;                          {*** WITH BaseParameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvCheckBoxParameter.Create(ParameterList);
+    WITH TJvCheckBoxParameter(Parameter) DO
+    BEGIN
+      ParentParameterName := 'AnalyzeAddType';
+      Width := 150;
+      AsBoolean := True;
+      SearchName := 'AnalyzeAddTypeALLCOLUMNS';
+      Caption := 'ALL COLUMNS';
+    END;                          {*** WITH BaseParameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvCheckBoxParameter.Create(ParameterList);
+    WITH TJvCheckBoxParameter(Parameter) DO
+    BEGIN
+      ParentParameterName := 'AnalyzeAddType';
+      Width := 150;
+      AsBoolean := True;
+      SearchName := 'AnalyzeAddTypeALLINDEXEDCOLUMNS';
+      Caption := 'ALL INDEXED COLUMNS';
+    END;                          {*** WITH BaseParameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvCheckBoxParameter.Create(ParameterList);
+    WITH TJvCheckBoxParameter(Parameter) DO
+    BEGIN
+      ParentParameterName := 'AnalyzeAddType';
+      Width := 150;
+      AsBoolean := True;
+      SearchName := 'AnalyzeAddTypeAllIndexes';
+      Caption := 'ALL INDEXES';
+    END;                          {*** WITH BaseParameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvIntegerEditParameter.Create(ParameterList));
+    WITH TJvIntegerEditParameter(Parameter) DO
+    BEGIN
+      EnableReasons.AddReason('AnalyzeType', 1);
+      SearchName := 'EstimatePercent';
+      Caption := '&Estimate Percent';
+      IF AsInteger > 100 THEN
+        AsInteger := 100;
+      MInValue := 0;
+      MaxValue := 100;
+      LabelArrangeMode := lamBefore;
+      Width := 280;
+      EditWidth := 40;
+    END;                                  {*** WITH BaseParameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvCheckBoxParameter.Create(ParameterList);
+    WITH Parameter DO
+    BEGIN
+      SearchName := 'UseDBMSStats';
+      Caption := '&Use DBMS_STATS';
+      Width := 160;
+    END;                                  {*** WITH BaseParameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvCheckBoxParameter.Create(ParameterList);
+    WITH TJvCheckBoxParameter(Parameter) DO
+    BEGIN
+      Width := 160;
+      AsBoolean := False;
+      SearchName := 'ExecuteAsJob';
+      Caption := 'Execute as DBMS-Job';
+    END;                                {*** WITH BaseParameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvGroupBoxParameter.Create(ParameterList));
+    WITH TJvGroupBoxParameter(Parameter) DO
+    BEGIN
+      Caption := 'DBMS_JOB Parameter';
+      SearchName := 'DBMS_JOB_Parameter';
+      Width := 325;
+      Height := 105;
+      //BorderLeft := 5;
+      DisableReasons.AddReason('ExecuteAsJob', False);
+//      ArrangeSettings.AutoSize := asHeight;
+    END;                                  {*** WITH BaseParameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(tJvDateTimeParameter.Create(ParameterList));
+    WITH tJvDateTimeParameter(Parameter) DO
+    BEGIN
+      ParentParameterName := 'DBMS_JOB_Parameter';
+      LabelArrangeMode := lamBefore;
+      Caption := 'First &Date';
+      SearchName := 'Date';
+      asDate := Now;
+      StoreValueToAppStorage := False;
+      Width := 220;
+      LabelWidth := 50;
+      DisableReasons.AddReason('ExecuteAsJob', False);
+    END; {*** WITH tJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(tJvEditParameter.Create(ParameterList));
+    WITH tJvEditParameter(Parameter) DO
+    BEGIN
+      ParentParameterName := 'DBMS_JOB_Parameter';
+      Caption := '&Interval';
+      SearchName := 'Interval';
+      AsString := '';
+      Width := 310;
+      LabelWidth := 50;
+      DisableReasons.AddReason('ExecuteAsJob', False);
+    END; {*** WITH tJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    ParameterList.Messages.Caption := 'Select Type of Analyze';
+    ParameterList.LoadData;
+    ParameterList.ShowParameterDialog;
+    ParameterList.StoreData;
+  FINALLY
+    ParameterList.Free;
+  END;
+end;
+
+procedure TForm1.AssignWidthHeightCheckBoxClick(Sender: TObject);
+begin
+  WidthEdit.Enabled := AssignWidthHeightCheckBox.Checked;
+  HeightEdit.Enabled := AssignWidthHeightCheckBox.Checked;
 end;
 
 end.

@@ -596,6 +596,7 @@ implementation
 
 uses
   SysUtils, ExtDlgs,
+  JvBrowseFolder,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
@@ -936,6 +937,7 @@ end;
 procedure TJvDynControlCxFileNameEdit.DefaultOnButtonClick(Sender: TObject; AButtonIndex: integer);
 begin
   if not Properties.ReadOnly then
+  begin
     case FDialogKind of
       jdkOpen:
         with TOpenDialog.Create(Self) do
@@ -998,6 +1000,9 @@ begin
             Free;
           end;
     end;
+    if CanFocus then
+      SetFocus;
+  end;
 end;
 
 procedure TJvDynControlCxFileNameEdit.ControlSetDefaultProperties;
@@ -1098,9 +1103,21 @@ var
 begin
   if not Properties.ReadOnly then
   begin
-    Dir := FInitialDir;
-    if SelectDirectory(Dir, FDialogOptions, HelpContext) then
+    Dir := ControlGetValue;
+    if Dir = '' then
+    begin
+      if fInitialDir <> '' then
+        Dir := FInitialDir
+      else
+        Dir := '\';
+    end;
+    if not DirectoryExists(Dir) then
+      Dir := '\';
+    if BrowseForFolder('', True, Dir, HelpContext) then
+//    if SelectDirectory(Dir, FDialogOptions, HelpContext) then
       ControlSetValue(Dir);
+    if CanFocus then
+      SetFocus;
   end;
 end;
 
