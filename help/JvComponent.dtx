@@ -1,5 +1,5 @@
 ##Package: Core
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvComponent.pas
 Summary
@@ -14,13 +14,13 @@ Summary
   Specifies clipboard commands.
 Description
 @@TJvClipBoardCommand.caCopy
-  Copy command; This command copies the current selection to the clipboard in CF_TEXT format. 
+  \Copy command; This command copies the current selection to the clipboard in CF_TEXT format. 
 @@TJvClipBoardCommand.caCut
   Cut command; This command deletes (cut) the current selection, if any, in the edit control and 
   copies the deleted text to the clipboard in CF_TEXT format. 
 @@TJvClipBoardCommand.caPaste
   Paste command; This command copies the current content of the clipboard to the edit control at the 
-  current caret position. Data is inserted only if the clipboard contains data in CF_TEXT format. 
+  current caret position. \Data is inserted only if the clipboard contains data in CF_TEXT format. 
 @@TJvClipBoardCommand.caUndo
   Undo command. This command reverses the effect of the last operation on an edit control. The 
   previously deleted text is restored or the previously added text is deleted.

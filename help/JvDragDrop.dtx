@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvDragDrop.pas
 Summary
@@ -23,13 +23,14 @@ Description
   * Drop a TJvDragDrop component on a form.
   * Set DropTarget to the control that should accept dropped files.
   * Set property AcceptDrag to True; this means that now the control accepts dropped files.
-  * Write an OnDrop event handler, that will respond when the user drops files on the form.
+  * Write an OnDrop event handler, that will respond when the user drops files on the
+     <LINK TJvDragDrop.DropTarget,drop target>.
   * At run-time, set TargetStrings to a TStrings descendant, that should automatically receive
     the list of dropped files.
 ----------------------------------------------------------------------------------------------------
 @@TJvDragDrop.AcceptDrag
 Summary
-  Indicates whether the form accepts dropped files.
+  Indicates whether the drop target accepts dropped files.
 Description
   Set AcceptDrag to True to accept dropped files or set it to False to discontinue accepting dropped files.
 See Also
@@ -49,7 +50,7 @@ See Also
 Summary
   Lists the names of the files the user dropped the last time on the drop target.
 Description
-  Read Files to retrieve the names of the files the user dropped the last time on the form.
+  Read Files to retrieve the names of the files the user dropped the last time on the drop target.
 See Also
   DropTarget, OnDrop
 ----------------------------------------------------------------------------------------------------

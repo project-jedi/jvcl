@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Needs review; Completed by Rafael Cotta on 20030511
+##Status: Completed by Rafael Cotta on 20030511
 ----------------------------------------------------------------------------------------------------
 @@JvContentScroller.pas
 Summary
@@ -12,7 +12,7 @@ Author
 @@TJvContentScroller
 <TITLEIMG TJvContentScroller>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.GridsAndContent.ScrollBoxes
   FLAG=Component
 
 Summary
@@ -94,7 +94,7 @@ Summary
   Event called before each scrolling step.
 
 Description
-  Write an OnAfterScroll event handler if you want to receive a notification before the execution of
+  Write an OnBeforeScroll event handler if you want to receive a notification before the execution of
   each scrolling step.
 
 See Also
@@ -115,7 +115,7 @@ Description
   The higher is the value of ScrollAmount, the faster is the scrolling.
 
 See Also
- ScrollIntervall, ScrollDirection
+  ScrollIntervall, ScrollDirection
 
 ----------------------------------------------------------------------------------------------------
 @@TJvContentScroller.ScrollContent
@@ -192,6 +192,7 @@ Description
 @@TMediaFilename
 <TITLE TMediaFilename type>
 Summary
-  String type used to indicate the name of a wave sound file to be played while scrolling.
+  Represents the name of a wave sound file to be played while scrolling.
 Description
+  Use TMediaFilename to represent strings that are used for wave sound file names.
 

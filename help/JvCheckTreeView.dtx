@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Completed but needs review (Peter Thörnqvist)
+##Status: Completed (Peter Thörnqvist)
 ----------------------------------------------------------------------------------------------------
 @@JvCheckTreeView.pas
 Summary
@@ -57,7 +57,7 @@ See Also
 Summary
   Occurs just before a node is going to be toggled on or off.
 Description
-  \Write an OnChanging event handler to selectively prevent the user to toggle specific nodes.
+  \Write an OnToggling event handler to selectively prevent the user to toggle specific nodes.
 
   The OnToggling event is called when a node is about to be toggled on or off. Set AllowChange to False, to 
   prevent the node to be toggled. The Node parameter specifies the node that is about to be toggled.
@@ -154,10 +154,10 @@ Description
 @@TJvTVCascadeOption
 <TITLE TJvTVCascadeOption type>
 Summary
-  TJvTVCascadeOption is an enumeration used to determine how checks are propagated when toggling a 
-  checkbox node on or off.
+  Enumerates different methods how checks are propagated when toggling a checkbox node on or off.
 Description
-  TJvTVCascadeOption
+  The TJvTVCascadeOption type is an enumeration used to determine how checks are
+  propagated when toggling a checkbox node on or off.
 @@TJvTVCascadeOption.poOnCheck
   Propagate to child nodes only when the node is toggled to the on state.
 @@TJvTVCascadeOption.poOnUnCheck
@@ -170,9 +170,9 @@ Description
 @@TJvTVCheckBoxStyle
 <TITLE TJvTVCheckBoxStyle type>
 Summary
-  TJvTVCheckBoxStyle is the type for the TJvTreeViewCheckBoxOptions.Style property.
+  Enumerates checkbox styles.
 Description
-  TJvTVCheckBoxStyle can have any of the following values:
+  TJvTVCheckBoxStyle is the type for the TJvTreeViewCheckBoxOptions.Style property.
 @@TJvTVCheckBoxStyle.cbsNone
   No checkboxes or radio buttons are displayed. Works like a normal treeview.
 @@TJvTVCheckBoxStyle.cbsNative

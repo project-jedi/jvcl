@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvColorCombo.pas
 Summary
@@ -169,8 +169,6 @@ Summary
 Description
   Use HiliteText to specify the color of the text characters (as opposed to the background color) of
   the focused line. The focused text is painted using highlight colors, to make it stand out.
-
-  If Color is set to a dithered color, the text appears in the closest non-dithered value.
 See Also
   HiliteColor
 ----------------------------------------------------------------------------------------------------
@@ -225,7 +223,6 @@ Parameters
                 to display the color as specified in the combo box's list.
   DisplayName - Set DisplayName to specify a new display name for the to be displayed item. Leave
                 DisplayName unchanged to display the name as specified in the combo box's list.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.OnInsertColor
 Summary
@@ -358,8 +355,6 @@ Summary
 Description
   Use HiliteText to specify the color of the text characters (as opposed to the background color) of
   the focused line. The focused text is painted using highlight colors, to make it stand out.
-
-  If Color is set to a dithered color, the text appears in the closest non-dithered value.
 See Also
   HiliteColor
 ----------------------------------------------------------------------------------------------------
@@ -375,6 +370,17 @@ Description
   * Display each font name in the combo box using the specific font.
 See Also
   TJvFontComboOptions
+----------------------------------------------------------------------------------------------------
+@@TJvFontComboBox.Sorted
+Summary
+  Determines whether the list portion of the combo box is alphabetized.
+Description
+  Set Sorted to true to sort the font names in the list alphabetically.
+
+  When Sorted is changed from false to true, the original order of the items is lost. Setting
+  Sorted back to false does not restore the original order.
+See Also
+  FontName
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.UseImages
 Summary

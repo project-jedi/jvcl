@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Completed but needs review (p3)
+##Status: Completed - Review (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvDriveCtrls.pas
 Summary
@@ -14,12 +14,14 @@ JVCLInfo
   GROUP=JVCL.ListsAndTrees.Lists
   FLAG=Component
 Summary
-  represents a list box control that is aware of the directory structure of the current drive.
+  Represents a list box control that is aware of the directory structure of the current drive.
 Description
   Use TJvDirectoryListBox when you need to display a list of folders to the user. TJvDirectoryListBox
   implements the generic behavior introduced in TJvCustomListBox. TJvDirectoryListBox publishes many
   of the properties inherited from TJvCustomListBox and introduces new behavior to let the user
   change directories or drives.
+See Also 
+  TJvDriveCombo, TJvDriveList, TJvFileListBox
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -30,7 +32,6 @@ Summary
 Description
   Use AutoExpand to specify if the user must double-click a folder in the list to show or hide
   subfolders.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.CaseSensitive
 Summary
@@ -116,16 +117,14 @@ See Also
 Summary
   Occurs when the current directory is changed.
 Description
-  Write a handler for the OnChange event to take specific action when the currently selected
+  Write a handler for the \OnChange event to take specific action when the currently selected
   item changes.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.OpenCurrent
 Summary
   Opens the selected directory.
 Description
   OpenCurrent opens the directory selected in the directory list box, as if the user had double-clicked the directory.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.PreserveCase
 Summary
@@ -140,7 +139,6 @@ Summary
   Updates the directory listing.
 Description
   Call Update to refresh the directory listing.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCombo
 <TITLEIMG TJvDriveCombo>
@@ -153,6 +151,8 @@ Description
   Use TJvDriveCombo to display a list of available drives on the system. TJvDriveCombo derives from
   TJvCustomComboBox, exposes many of it's properties and adds functionality to also display local
   as well as networked drives along with an icon representing the drive type.
+See Also 
+  TJvDirectoryListBox, TJvDriveList, TJvFileListBox
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCombo.DisplayName
 Summary
@@ -178,7 +178,6 @@ Summary
 Description
   Use DriveTypes to limit the displayed drive types in the list. Note that although you might include all
   possible drive types, only available drives will be shown.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCombo.ImageSize
 Summary
@@ -187,7 +186,6 @@ Description
   Use ImageSize to specify the size of the images displayed alongside each drive. When ImageSize is isSmall,
   the drive icon is displayed to the left of the drive's display name, when ImageSize is isLarge, the
   drive icon is displayed centered above the drive's display name
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCombo.Items
 Summary
@@ -195,7 +193,6 @@ Summary
 Description
   Read Items to access the list of items that appears in the combo box. Although you can add new strings
   by using Items.Add etc, the effect is temporary: no drives will be affected.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCombo.Offset
 Summary
@@ -203,7 +200,6 @@ Summary
 Description
   Use Offset to change the way an item is drawn in the list. Offset determines how many pixels at
   the left edge is skipped before the items are drawn.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCombo.Refresh
 Summary
@@ -212,7 +208,6 @@ Description
   Call Refresh to update the display in the list. When you call Refresh, the combobox clears the list, scans
   the system for drives and fills the Items array again, finally resetting the selected item to be the
   previously selected item.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveList
 <TITLEIMG TJvDriveList>
@@ -225,6 +220,8 @@ Description
   Use TJvDriveList to display a list of available drives on the system. TJvDriveList derives from
   TJvCustomListBox, exposes many of it's properties and adds functionality to also display local
   as well as networked drives along with an icon representing the drive type.
+See Also 
+  TJvDirectoryListBox, TJvDriveCombo, TJvFileListBox
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveList.Drive
 Summary
@@ -241,14 +238,12 @@ Summary
 Description
   Use DriveTypes to limit the displayed drive types in the list. Note that although you might include all
   possible drive types, only available drives will be shown.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveList.ImageAlign
 Summary
   Specifies where the drive icon is drawn in relation to the drive text.
 Description
   Use ImageAlign to adjust the display of drive text and icons in the list.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveList.ImageSize
 Summary
@@ -257,7 +252,6 @@ Description
   Use ImageSize to specify the size of the images displayed alongside each drive. When ImageSize is isSmall,
   the drive icon is displayed to the left of the drive's display name, when ImageSize is isLarge, the
   drive icon is displayed centered above the drive's display name
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveList.Items
 Summary
@@ -265,7 +259,6 @@ Summary
 Description
   Read Items to access the list of items that appears in the combo box. Although you can add new strings
   by using Items.Add etc, the effect is temporary: no drives will be affected.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveList.Offset
 Summary
@@ -273,15 +266,13 @@ Summary
 Description
   Use Offset to change the way an item is drawn in the list. Offset determines how many pixels at
   the left edge is skipped before the items are drawn.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveList.OnChange
 Summary
   Occurs when the selection in the listbox changes.
 Description
-  Write a handler for the OnChange event to take specific action when the selected item in the listbox changes.
-See Also
-----------------------------------------------------------------------------------------------------
+  Write a handler for the \OnChange event to take specific action when the selected item in the listbox changes.
+---------------------------------------------------------------------------------------------------
 @@TJvDriveList.Refresh
 Summary
   Updates the list of drives.
@@ -289,7 +280,6 @@ Description
   Call Refresh to update the display in the list. When you call Refresh, the combobox clears the list, scans
   the system for drives and fills the Items array again, finally resetting the selected item to be the
   previously selected item.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveType
 <TITLE TJvDriveType type>
@@ -324,6 +314,8 @@ Summary
 Description
   Add TJvFileListBox to a form to allow users to select a file. Use TJvFileListBox along
   with TJvDriveCombo and TJvDirectoryListBox to add full file selection capabilities to a form.
+See Also 
+  TJvDirectoryListBox, TJvDriveCombo, TJvDriveList
 ----------------------------------------------------------------------------------------------------
 @@TJvFileListBox.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -345,7 +337,6 @@ Summary
 Description
   Set FileName to initialize the file list box to a particular file. Read FileName
   to obtain the name of the file the user selected.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvFileListBox.ForceFileExtensions
 Summary
@@ -354,7 +345,6 @@ Description
   Use ForceFileExtensions to specify how file extensions are displayed. If ForceFileExtensions is true,
   file extensions are always displayed. If ForceFileExtensions is false, file extensions are displayed
   according to the user's settings in Windows Explorer.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvImageAlign
 <TITLE TJvImageAlign type>
