@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Mask, JvToolEdit;
+  StdCtrls, Mask, JvToolEdit, JvExMask;
 
 type
   TfrmMessageDlgEditorSelectIcon = class(TForm)

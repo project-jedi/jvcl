@@ -29,7 +29,7 @@ unit MainForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, JvMenus, ImgList, ExtCtrls, ToolWin, ComCtrls, JvToolBar,
   StdCtrls, JvExComCtrls;
 
@@ -111,4 +111,6 @@ begin
   ShowMessage('Nice try !');
 end;
 
+initialization
+  RegisterClass(TToolButton);
 end.

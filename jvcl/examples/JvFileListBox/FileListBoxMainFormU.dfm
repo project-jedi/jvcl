@@ -1,6 +1,6 @@
 object FileListBoxMainForm: TFileListBoxMainForm
-  Left = 282
-  Top = 64
+  Left = 280
+  Top = 132
   Width = 604
   Height = 484
   Caption = 'various file components'

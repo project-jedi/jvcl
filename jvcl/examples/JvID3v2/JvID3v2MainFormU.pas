@@ -61,7 +61,7 @@ var
 implementation
 
 uses
-  JvID3v2EditFormU;
+  JvJCLUtils, JvID3v2EditFormU;
 
 {$R *.dfm}
 

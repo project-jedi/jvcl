@@ -28,7 +28,6 @@ object Form1: TForm1
     Options.BrushPattern.OddColor = 33023
     Options.DrawingStyle = dsNormal
     Options.SelectedStyle = dsNormal
-    Options.FrameWidth = 0
     Options.Height = 48
     Options.ScrollBar = tvHorizontal
     Options.ShowCaptions = False

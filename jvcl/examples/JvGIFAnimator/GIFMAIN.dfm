@@ -536,11 +536,10 @@ object AnimatorForm: TAnimatorForm
         Width = 69
         Height = 21
         ButtonFlat = False
+        ButtonWidth = 17
         Color = clBlack
         DirectInput = False
-        GlyphKind = gkEllipsis
-        ButtonWidth = 17
-        NumGlyphs = 1
+        ImageKind = ikEllipsis
         TabOrder = 0
         OnButtonClick = BackColorButtonClick
       end
@@ -788,11 +787,10 @@ object AnimatorForm: TAnimatorForm
         Width = 52
         Height = 21
         ButtonFlat = False
+        ButtonWidth = 17
         Color = clBlack
         DirectInput = False
-        GlyphKind = gkEllipsis
-        ButtonWidth = 17
-        NumGlyphs = 1
+        ImageKind = ikEllipsis
         TabOrder = 8
         OnButtonClick = TransColorButtonClick
       end

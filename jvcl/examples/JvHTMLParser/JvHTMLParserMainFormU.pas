@@ -32,7 +32,7 @@ uses
   Windows, Messages, Forms, SysUtils, StdCtrls, Controls, ExtCtrls, JvPanel,
   JvSyncSplitter, JvHtmlParser, Classes, JvComCtrls, JvButton,
   ComCtrls, JvComponent, JvStatusBar, JvMemo, JvCtrls, JvExComCtrls,
-  JvExStdCtrls, JvExExtCtrls, JvSplitter;
+  JvExStdCtrls, JvExExtCtrls, JvSplitter, Dialogs;
 
 type
   TJvHTMLParserMainForm = class(TForm)
@@ -57,7 +57,9 @@ type
     btnProcessURL: TJvImgBtn;
     JvPanel4: TJvPanel;
     btnProcessTags: TJvImgBtn;
-    procedure Button1Click(Sender: TObject);
+    btnOpen: TButton;
+    OpenDialog1: TOpenDialog;
+    procedure btnProcessTableClick(Sender: TObject);
     procedure TableKeyFound(Sender: TObject; Key, Results, OriginalLine: string);
     procedure HTML2TextKeyFound(Sender: TObject; Key, Results, OriginalLine: string);
     procedure URLDetectKeyFound(Sender: TObject; Key, Results, OriginalLine: string);
@@ -65,6 +67,7 @@ type
     procedure btnProcessHTML2TextClick(Sender: TObject);
     procedure btnProcessURLClick(Sender: TObject);
     procedure btnProcessTagsClick(Sender: TObject);
+    procedure btnOpenClick(Sender: TObject);
   private
     CurNode: TTreeNode;
     FText: string;
@@ -79,11 +82,12 @@ var
 
 implementation
 
-uses JclStrings, Dialogs;
+uses
+  JclStrings;
 
 {$R *.dfm}
 
-procedure TJvHTMLParserMainForm.Button1Click(Sender: TObject);
+procedure TJvHTMLParserMainForm.btnProcessTableClick(Sender: TObject);
 begin
   Screen.Cursor := crHourGlass;
   Self.Tag := 0;
@@ -94,7 +98,7 @@ begin
     AddCondition('TD', '<TD>', '</TD>');
     AddCondition('TH', '<TH>', '</TH>');
     AddCondition('TR', '<TR>', '</TR>');
-    OnKeyFound := self.TableKeyFound;
+    OnKeyFound := TableKeyFound;
   end;
   try
     JvTreeView1.Items.BeginUpdate;
@@ -120,8 +124,8 @@ begin
     AddCondition('Text', '>', '<');
     OnKeyFound := self.HTML2TextKeyFound;
   end;
+  JvDisplayMemo2.Lines.BeginUpdate;
   try
-    JvDisplayMemo2.Lines.BeginUpdate;
     JvHtmlParser1.AnalyseFile;
     ShowStatus(Now() - FStartTime);
     JvDisplayMemo2.Text := ReplaceSpecials(FText);
@@ -144,8 +148,8 @@ begin
     AddCondition('URL', 'href="http://', '">');
     OnKeyFound := self.URLDetectKeyFound;
   end;
+  JvDisplayMemo3.Lines.BeginUpdate;
   try
-    JvDisplayMemo3.Lines.BeginUpdate;
     JvDisplayMemo2.Clear;
     JvHtmlParser1.AnalyseFile;
     ShowStatus(Now() - FStartTime);
@@ -166,8 +170,8 @@ begin
     AddCondition('URL', '<', '>');
     OnKeyFound := self.TagsKeyFound;
   end;
+  JvDisplayMemo4.Lines.BeginUpdate;
   try
-    JvDisplayMemo4.Lines.BeginUpdate;
     JvDisplayMemo4.Clear;
     JvHtmlParser1.AnalyseFile;
     ShowStatus(Now() - FStartTime);
@@ -232,6 +236,18 @@ begin
   StrReplace(Result, '&quot;', '"', [rfReplaceAll, rfIgnoreCase]);
   StrReplace(Result, '&copy;', #169, [rfReplaceAll, rfIgnoreCase]);
   // add more here...
+end;
+
+procedure TJvHTMLParserMainForm.btnOpenClick(Sender: TObject);
+var i:integer;
+begin
+  if OpenDialog1.Execute then
+  begin
+    JvHtmlParser1.Filename := OpenDialog1.Filename;
+    for i := 0 to ComponentCount - 1 do
+      if (Components[i] <> btnOpen) and (Components[i] is TButton) then
+        TButton(Components[i]).Click;
+  end;
 end;
 
 end.

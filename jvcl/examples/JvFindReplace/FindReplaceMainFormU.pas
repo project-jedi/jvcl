@@ -72,8 +72,71 @@ var
   FindReplaceMainForm: TFindReplaceMainForm;
 
 implementation
+uses
+  JvJVCLUtils;
 
 {$R *.DFM}
+function DualInputQuery(const ACaption, Prompt1, Prompt2:string; var AValue1, AValue2:string):boolean;
+var
+  AForm:TForm;
+  ALabel1, ALabel2:TLabel;
+  AEdit1, AEdit2:TEdit;
+  ASize, i:integer;
+begin
+  Result := false;
+  AForm := CreateMessageDialog(Prompt1,mtCustom,[mbOK	,mbCancel]);
+  ASize := 0;
+  if AForm <> nil then
+  try
+    AForm.Caption := ACaption;
+    ALabel1 := AForm.FindComponent('Message') as TLabel;
+    for i := 0 to AForm.ControlCount - 1 do
+      if AForm.Controls[i] is TButton then
+        TButton(AForm.Controls[i]).Anchors := [akRight, akBottom];
+    if ALabel1 <> nil then
+    begin
+      AEdit1 := TEdit.Create(AForm);
+      AEdit1.Left := ALabel1.Left;
+      AEdit1.Width := AForm.ClientWidth - AEdit1.Left * 2;
+      AEdit1.Top := ALabel1.Top + ALabel1.Height + 2;
+      AEdit1.Parent := AForm;
+      AEdit1.Anchors := [akLeft, akTop, akRight];
+      AEdit1.Text := AValue1;
+      ALabel1.Caption := Prompt1;
+      ALabel1.FocusControl := AEdit1;
+      Inc(ASize, AEdit1.Height + 2);
+
+      ALabel2 := TLabel.Create(AForm);
+      ALabel2.Left := ALabel1.Left;
+      ALabel2.Top := AEdit1.Top + AEdit1.Height + 7;
+      ALabel2.Caption := Prompt2;
+      ALabel2.Parent := AForm;
+      Inc(ASize, ALabel2.Height + 7);
+
+      AEdit2 := TEdit.Create(AForm);
+      AEdit2.Left := ALabel1.Left;
+      AEdit2.Width := AForm.ClientWidth - AEdit2.Left * 2;
+      AEdit2.Top := ALabel2.Top + ALabel2.Height + 2;
+      AEdit2.Parent := AForm;
+      AEdit2.Anchors := [akLeft, akTop, akRight];
+      AEdit2.Text := AValue1;
+      ALabel2.FocusControl := AEdit2;
+
+      Inc(ASize, AEdit2.Height + 8);
+      AForm.ClientHeight := AForm.ClientHeight + ASize;
+      AForm.ClientWidth := 320;
+      AForm.ActiveControl := AEdit1;
+      Result := AForm.ShowModal = mrOK;
+      if Result then
+      begin
+        AValue1 := AEdit1.Text;
+        AValue2 := AEdit2.Text;
+      end;
+    end;
+  finally
+    AForm.Free;
+  end;
+end;
 
 procedure TFindReplaceMainForm.Find1Click(Sender: TObject);
 begin
@@ -132,8 +195,7 @@ var S,R:string;
 begin
    S := FindReplace1.FindText;
    R := FindReplace1.ReplaceText;
-   if InputQuery('Find','Find text:',S) then
-     if InputQuery('Replace','Replace with:',R) then
+   if DualInputQuery('Find and Replace','Find:','Replace:',S, R) and (S <> '') then
      begin
        FindReplace1.ShowDialogs := False;
        FindReplace1.FindText := S;

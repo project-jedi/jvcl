@@ -20,7 +20,7 @@ object FindReplaceMainForm: TFindReplaceMainForm
     Left = 0
     Top = 81
     Width = 465
-    Height = 238
+    Height = 236
     Align = alClient
     Lines.Strings = (
       'LICENSE AGREEMENT'

@@ -33,117 +33,83 @@ object frmErrIndicatorDemo: TfrmErrIndicatorDemo
     Lines.Strings = (
       
         'TJvErrorIndicator is patterned on the similarily named ErrorProv' +
-        'ider'
-      'component available in Visual Studio .Net'
+        'ider component available in Visual Studio .Net'
       ''
-      'The component presents a simple mechanism for indicating to the '
-      'end '
-      'user that a control on a form has an error associated with it. '
+      
+        'The component presents a simple mechanism for indicating to the ' +
+        'end user that a control on a form has an error associated with i' +
+        't.'
       ''
       
         'If an error description string is specified for the control, an ' +
-        'image '
-      'appears next to the control. The image flashes in the manner '
-      'specified '
-      
-        'by BlinkStyle at the rate specified by BlinkRate. When the mouse' +
-        ' '
-      'hovers over the image, a ToolTip appears showing the error '
-      'description '
-      'string.'
+        'image appears next to the control. The image flashes in the mann' +
+        'er specified by BlinkStyle at the rate specified by BlinkRate. W' +
+        'hen the mouse hovers over the image, a ToolTip appears showing t' +
+        'he error description string.'
       ''
       
         'Note that this demo displays error images for almost every contr' +
-        'ol '
-      'but '
-      
-        'in a real program, you would typically display errors for one or' +
-        ' two '
-      'controls at a time.'
+        'ol but in a real program, you would typically display errors for' +
+        ' one or two controls at a time.'
       ''
       
         'The error descriptions that are displayed are controlled using t' +
-        'he '
-      'Error[AControl] property. '
+        'he Error[AControl] property.'
       ''
       'KNOWN PROBLEMS:'
       ''
-      '1. When a form has AutoScroll set to true and an error image is '
-      'displayed outside the right edge, the whole form "moves" up and '
-      'down '
-      'while it'#39's blinking.'
-      ''
-      'You can see this behaviour for the groupbox in the demo: if you '
-      'set the '
-      'forms AutoScroll property to true and the ImageAlignment to '
       
-        'eiaXXXRight and click ShowErrors, the forms horizontal scrollbar' +
-        's '
-      'will '
-      
-        'show and hide along with the error image, making the controls ju' +
-        'mp '
-      'up '
-      'and down on the form. '
+        '1. When a form has AutoScroll set to true and an error image is ' +
+        'displayed outside the right edge, the whole form "moves" up and ' +
+        'down while it'#39's blinking.'
       ''
-      'This behaviour becomes even worse if you Align the control to '
-      'either '
       
-        'alTop or alBottom. Then the image moves further and further down' +
-        ' '
-      'to '
-      'the bottom left for each timer tick.'
+        'You can see this behaviour for the groupbox in the demo: if you ' +
+        'set the forms AutoScroll property to true and the ImageAlignment' +
+        ' to eiaXXXRight and click ShowErrors, the forms horizontal scrol' +
+        'lbars will show and hide along with the error image, making the ' +
+        'controls jump up and down on the form.'
       ''
-      'No known solution yet, but leaving room outside the edge where '
-      'the '
-      'image will be displayed avoids the problem.'
+      
+        'This behaviour becomes even worse if you Align the control to ei' +
+        'ther alTop or alBottom. Then the image moves further and further' +
+        ' down to the bottom left for each timer tick.'
+      ''
+      
+        'No known solution yet, but leaving room outside the edge where t' +
+        'he image will be displayed avoids the problem.'
       ''
       
         '2. Displaying error images while resizing the form or control wi' +
-        'll not '
-      
-        'move the error image along with the control smoothly: it is move' +
-        'd '
-      'when '
-      'the internal BlinkThread triggers the update event and the '
-      'movement '
-      'can become jerky.'
+        'll not move the error image along with the control smoothly: it ' +
+        'is moved when the internal BlinkThread triggers the update event' +
+        ' and the movement can become jerky.'
       ''
-      'Solution could be to subclass the WndProc of each control and '
-      'react to '
       
-        'the WM_SIZE message but I think it'#39's overkill: the current solut' +
-        'ion '
-      'should work well in most cases.'
+        'Solution could be to subclass the WndProc of each control and re' +
+        'act to the WM_SIZE message but I think it'#39's overkill: the curren' +
+        't solution should work well in most cases.'
       ''
-      'NOTE: '
+      'NOTE:'
       
         'If you set BlinkRate to zero, the error images will not move at ' +
-        'all '
-      'since'
-      'this suspends the BlinkThread completely. It is better to set '
-      'BlinkStyle '
-      
-        'to ebsNeverBlink and leave BlinkRate at it'#39's default if you don'#39 +
-        't '
-      'want '
-      
-        'any blinking (setting BlinkRate to 0 sets BlinkStyle to ebsNever' +
-        'Blink '
-      'but '
-      'also stops the thread).'
+        'all since this suspends the BlinkThread completely. It is better' +
+        ' to set BlinkStyle to ebsNeverBlink and leave BlinkRate at it'#39's ' +
+        'default if you don'#39't want any blinking (setting BlinkRate to 0 s' +
+        'ets BlinkStyle to ebsNeverBlink but also stops the thread).'
       ''
-      'There are also two interfaces included: the IErrorIndicator and '
-      'IErrorIndicatorClient. IErrorIndicator is implemented by '
-      'TJvErrorProvider '
-      'and you can largely ignore it.'
+      
+        'There are also two interfaces included: the IErrorIndicator and ' +
+        'IErrorIndicatorClient. IErrorIndicator is implemented by TJvErro' +
+        'rProvider and you can largely ignore it.'
       ''
-      'IErrorIndicatorClient should be used to implement error message '
-      'handling from a control directly. See the demo source for an '
-      'example '
-      'on how to implement it.')
+      
+        'IErrorIndicatorClient should be used to implement error message ' +
+        'handling from a control directly. See the demo source for an exa' +
+        'mple on how to implement it.')
     ScrollBars = ssVertical
     TabOrder = 4
+    WordWrap = False
   end
   object btnShowErrors: TButton
     Left = 15

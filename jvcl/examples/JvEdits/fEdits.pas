@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Mask, JvEdit, JvToolEdit, JvBaseEdits;
+  StdCtrls, Mask, JvEdit, JvToolEdit, JvBaseEdits, JvExMask;
 
 type
   TForm1 = class(TForm)
