@@ -57,7 +57,7 @@ begin
   WriteLn('Released under MPL license.');
   WriteLn('');
   ExePath := ExtractFilePath(ParamStr(0));
-  InPath := UpPath(ExePath, 3) + 'jvcl\images\';
+  InPath := UpPath(ExePath, 2) + 'JVCL3\images\';
   OutPath := UpPath(ExePath, 1) + 'images\comp\';
 end;
 

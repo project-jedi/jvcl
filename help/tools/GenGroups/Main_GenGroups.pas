@@ -1177,7 +1177,7 @@ var
 begin
   FList := TStringList.Create;
   try
-    FileSL.LoadFromFile(HelpPath + 'JVCL.dox');
+    FileSL.LoadFromFile(HelpPath + 'JVCL3.dox');
     Res := FileSL.IndexOf('[Description Files]');
     if Res = -1 then
     begin
