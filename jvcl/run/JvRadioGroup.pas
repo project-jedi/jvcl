@@ -44,15 +44,11 @@ type
     FOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
     FReadOnly: Boolean;
-    {$IFDEF JVCLThemesEnabledD56}
-    function GetParentBackground: Boolean;
-    {$ENDIF JVCLThemesEnabledD56}
   protected
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
     {$IFDEF JVCLThemesEnabledD56}
-    procedure SetParentBackground(Value: Boolean);
     procedure Paint; override;
     {$ENDIF JVCLThemesEnabledD56}
     function CanModify: Boolean; override;
@@ -62,7 +58,7 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     {$IFDEF JVCLThemesEnabledD56}
-    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
+    property ParentBackground default True;
     {$ENDIF JVCLThemesEnabledD56}
     property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property OnMouseEnter;
@@ -87,16 +83,6 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
-
-function TJvRadioGroup.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
-end;
-
-procedure TJvRadioGroup.SetParentBackground(Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
-end;
 
 procedure TJvRadioGroup.Paint;
 var

@@ -245,9 +245,9 @@ type
     property OnExpand;
     property OnCollapse;
 
-{$IFDEF JVCLThemesEnabled}
-    property ParentBackground;
-{$ENDIF}
+    {$IFDEF JVCLThemesEnabled}
+    property ParentBackground default True;
+    {$ENDIF JVCLThemesEnabled}
   end;
 
 implementation
@@ -313,8 +313,7 @@ begin
   end;
 end;
 
-procedure TJvRollOutImageOptions.SetIndexCollapsed(
-  const Value: TImageIndex);
+procedure TJvRollOutImageOptions.SetIndexCollapsed(const Value: TImageIndex);
 begin
   if FIndexCollapsed <> Value then
   begin
@@ -323,8 +322,7 @@ begin
   end;
 end;
 
-procedure TJvRollOutImageOptions.SetIndexExpanded(
-  const Value: TImageIndex);
+procedure TJvRollOutImageOptions.SetIndexExpanded(const Value: TImageIndex);
 begin
   if FIndexExpanded <> Value then
   begin
@@ -346,7 +344,8 @@ end;
 
 procedure TJvRollOutColors.Change;
 begin
-  if Assigned(FOnChange) then FOnChange(self);
+  if Assigned(FOnChange) then
+    FOnChange(self);
 end;
 
 constructor TJvRollOutColors.Create;

@@ -159,7 +159,7 @@ type
     property OnResize;
     property OnStartDrag;
     {$IFDEF JVCLThemesEnabled}
-    property ParentBackground;
+    property ParentBackground default True;
     {$ENDIF JVCLThemesEnabled}
   end;
 

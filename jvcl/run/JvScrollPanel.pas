@@ -36,7 +36,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   ToolWin, ExtCtrls,
-  JvComponent, JVCLVer;
+  JvComponent, JVCLVer, JvExForms;
 
 type
   TJvCustomScrollPanel = class;
@@ -97,7 +97,7 @@ type
     property Height default 16;
   end;
 
-  TJvCustomScrollPanel = class(TToolWindow)
+  TJvCustomScrollPanel = class(TJvExToolWindow)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FScrollDirection: TJvScrollDirection;
@@ -118,9 +118,9 @@ type
     procedure UpdateVisible;
     procedure ArrangeChildren;
     procedure SetupArrows;
-    procedure CMVisiblechanged(var Msg: TMessage); message CM_VISIBLECHANGED;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
   protected
+    procedure Visiblechanged; override;
+    procedure EnabledChanged; override;
     procedure SetParent(AParent: TWinControl); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property Align default alTop;
@@ -682,9 +682,9 @@ begin
   end;
 end;
 
-procedure TJvCustomScrollPanel.CMEnabledChanged(var Msg: TMessage);
+procedure TJvCustomScrollPanel.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   FUpLeft.Enabled := Enabled;
   FDownRight.Enabled := Enabled;
   if AutoHide then
@@ -693,9 +693,9 @@ begin
     Invalidate;
 end;
 
-procedure TJvCustomScrollPanel.CMVisibleChanged(var Msg: TMessage);
+procedure TJvCustomScrollPanel.VisibleChanged;
 begin
-  inherited;
+  inherited VisibleChanged;
   FUpLeft.Visible := Visible;
   FDownRight.Visible := Visible;
 end;

@@ -77,13 +77,6 @@ type
   TJvCustomPanel = class(TJvExCustomPanel)
   private
     FAboutJVCL: TJVCLAboutInfo;
-  {$IFDEF JVCLThemesEnabledD56}
-  private
-    function GetParentBackground: Boolean;
-  protected
-    procedure SetParentBackground(Value: Boolean); virtual;
-    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -91,14 +84,6 @@ type
   TJvCustomControl = class(TJvExCustomControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    {$IFDEF JVCLThemesEnabledD56}
-    function GetParentBackground: Boolean;
-    {$ENDIF JVCLThemesEnabledD56}
-  protected
-    {$IFDEF JVCLThemesEnabledD56}
-    procedure SetParentBackground(Value: Boolean); virtual;
-    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-    {$ENDIF JVCLThemesEnabledD56}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -106,14 +91,6 @@ type
   TJvWinControl = class(TJvExWinControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    {$IFDEF JVCLThemesEnabledD56}
-    function GetParentBackground: Boolean;
-    {$ENDIF JVCLThemesEnabledD56}
-  protected
-    {$IFDEF JVCLThemesEnabledD56}
-    procedure SetParentBackground(Value: Boolean); virtual;
-    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-    {$ENDIF JVCLThemesEnabledD56}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -121,13 +98,6 @@ type
   TJvForm = class(TJvExForm)
   private
     FAboutJVCL: TJVCLAboutInfo;
-  {$IFDEF JVCLThemesEnabledD56}
-  private
-    function GetParentBackground: Boolean; virtual;
-  protected
-    procedure SetParentBackground(Value: Boolean); virtual;
-    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
   {$IFDEF USE_DXGETTEXT}
   public
     constructor Create(AOwner: TComponent); override;
@@ -138,72 +108,7 @@ type
 
 implementation
 
-uses
-  JvThemes;
-
-//=== TJvCustomPanel =========================================================
-
-{$IFDEF JVCLThemesEnabledD56}
-
-function TJvCustomPanel.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
-end;
-
-procedure TJvCustomPanel.SetParentBackground(Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
-end;
-
-{$ENDIF JVCLThemesEnabledD56}
-
-//=== TJvCustomControl =======================================================
-
-{$IFDEF JVCLThemesEnabledD56}
-
-function TJvCustomControl.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
-end;
-
-procedure TJvCustomControl.SetParentBackground(Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
-end;
-
-{$ENDIF JVCLThemesEnabledD56}
-
-//=== TJvWinControl ==========================================================
-
-{$IFDEF JVCLThemesEnabledD56}
-
-function TJvWinControl.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
-end;
-
-procedure TJvWinControl.SetParentBackground(Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
-end;
-
-{$ENDIF JVCLThemesEnabledD56}
-
 //=== TJvForm ================================================================
-
-{$IFDEF JVCLThemesEnabledD56}
-
-function TJvForm.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
-end;
-
-procedure TJvForm.SetParentBackground(Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
-end;
-
-{$ENDIF JVCLThemesEnabledD56}
 
 {$IFDEF USE_DXGETTEXT}
 constructor TJvForm.Create(AOwner: TComponent);

@@ -230,12 +230,10 @@ type
     function GetScrollBarVisible: Boolean;
     procedure SetScrollBarVisible(const Value: Boolean);
     procedure SetOneExpanded(const Value: Boolean);
-  {$IFDEF JVCLThemesEnabled}
-    function GetParentBackground: Boolean;
   protected
+    {$IFDEF JVCLThemesEnabled}
     procedure SetParentBackground(Value: Boolean); override;
-  {$ENDIF}
-  protected
+    {$ENDIF JVCLThemesEnabled}
     procedure Loaded; override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function GetChildParent: TComponent; override;
@@ -306,9 +304,9 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-  {$IFDEF JVCLThemesEnabled}
-    property ParentBackground read GetParentBackground write SetParentBackground default True;
-  {$ENDIF}
+    {$IFDEF JVCLThemesEnabled}
+    property ParentBackground default True;
+    {$ENDIF JVCLThemesEnabled}
   end;
 
   EJvScrollMaxError = class(Exception);
@@ -1096,10 +1094,10 @@ begin
     Visible := True;
     DesignInteractive := True;
   end;
-{$IFDEF JVCLThemesEnabled}
- // FPnlEdit and FScrollBar must be created
+  {$IFDEF JVCLThemesEnabled}
+  // (ahuser) FPnlEdit and FScrollBar must be created
   ParentBackground := True;
-{$ENDIF}  
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 destructor TJvScrollMax.Destroy;
@@ -1109,18 +1107,13 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
-function TJvScrollMax.GetParentBackground: Boolean;
-begin
-  Result := inherited ParentBackground;
-end;
-
 procedure TJvScrollMax.SetParentBackground(Value: Boolean);
 begin
   inherited SetParentBackground(Value);
   FPnlEdit.ParentBackground := Value;
   FScrollBar.ParentBackground := Value;
 end;
-{$ENDIF}
+{$ENDIF JVCLThemesEnabled}
 
 procedure TJvScrollMax.CreateParams(var Params: TCreateParams);
 begin
