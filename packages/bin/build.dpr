@@ -1093,6 +1093,8 @@ begin
       Path := Edition.RootDir + '\bin;' + UserBplDir + ';' + Path;
     SetEnvironmentVariable('PATH', Pointer(Path));
 
+    SetEnvironmentVariable('MAINBPLDIR', Pointer(Edition.BplDir));
+    SetEnvironmentVariable('MAINDCPDIR', Pointer(Edition.DcpDir));
     SetEnvironmentVariable('BPLDIR', Pointer(UserBplDir));
     SetEnvironmentVariable('DCPDIR', Pointer(UserDcpDir));
     SetEnvironmentVariable('LIBDIR', Pointer(UserLibDir));
