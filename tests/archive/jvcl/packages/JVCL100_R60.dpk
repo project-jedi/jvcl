@@ -314,6 +314,7 @@ contains
   JvSimpleXml in '..\Source\JvSimpleXml.pas',
   JvHotkeyEx in '..\Source\JvHotkeyEx.pas',
   JvObjSel in '..\source\JvObjSel.pas',
-  JvObjPickerComp in '..\source\JvObjPickerComp.pas';
+  JvObjPickerComp in '..\source\JvObjPickerComp.pas',
+  JvImageDrawThread in '..\source\JvImageDrawThread.pas';
 
 end.
