@@ -23,7 +23,7 @@
  rights and limitations under the License.
 
 ******************************************************************}
-
+{$I jvcl.inc}
 unit main;
 
 // This sample demonstrate the use of a cursor
@@ -35,7 +35,7 @@ unit main;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, {$IFDEF COMPILER6_UP}Variants, {$ENDIF} Classes, Graphics, Controls, Forms,
   Dialogs, JvUIB, JvUIBLib, StdCtrls, JvComponent;
 
 type

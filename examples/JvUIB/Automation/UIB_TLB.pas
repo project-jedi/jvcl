@@ -23,12 +23,15 @@ unit UIB_TLB;
 // DepndLst: 
 //   (1) v2.0 stdole, (C:\WINDOWS\System32\stdole2.tlb)
 // ************************************************************************ //
+{$I jvcl.inc}
 {$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
+{$IFDEF COMPILER7_UP}
 {$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF}
 {$WRITEABLECONST ON}
 interface
 
-uses Windows, ActiveX, Classes, Graphics, StdVCL, Variants;
+uses Windows, ActiveX, Classes, Graphics, StdVCL{$IFDEF COMPILER6_UP}, Variants{$ENDIF};
   
 
 // *********************************************************************//

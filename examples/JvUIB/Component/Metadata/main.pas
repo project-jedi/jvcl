@@ -23,13 +23,13 @@
  rights and limitations under the License.
 
 ******************************************************************}
-
+{$I jvcl.inc}
 unit main;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, {$IFDEF COMPILER6_UP}Variants, {$ENDIF} Classes, Graphics, Controls, Forms,
   Dialogs, JvUIB, JVUIBMetaData, StdCtrls, ComCtrls, Menus, ExtCtrls,
   JvComponent;
 
