@@ -255,7 +255,7 @@ resourcestring
 
 //=== JvChart.pas ============================================================
 resourcestring
-  RsNoData = 'No data.';
+  RsNoData = 'No data. (Data.ValueCount=0)';
   RsGraphHeader = 'Graph Header';
   RsCurrentHeaders = 'Current Header: %s';
   RsXAxisHeaders = 'X Axis Header: %s';
