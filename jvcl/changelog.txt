@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-03-26
+- New build system for the JVCL 3. See jvcl3\packages\bin // ahuser
 2004-03-23
 - Added JvDesktopAlert component + demo // peter3
 - Added TJvComputerInfoEx to JvSystem and also removed TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories since they are incorporated in JvComputerInfoEx // peter3
