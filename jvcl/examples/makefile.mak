@@ -73,7 +73,6 @@ OLBarDemo.exe \
 JvObjPickerDemo.exe \
 EventViewer.exe \
 JvMruListDemo.exe \
-MonthCalendarDemo.exe \
 MailExample.exe \
 JvLogFileDemo.exe \
 ListCombDemo.exe \
@@ -82,7 +81,6 @@ Install2LabelDemo.exe \
 InspectorDBExample.exe \
 InspectorSimpleExample.exe \
 InspExample.exe \
-ImageWindowDemo.exe \
 JvID3v2Demo.exe \
 JvID3v1Demo.exe \
 JvHtmlParserProj.exe \
@@ -106,23 +104,10 @@ QueryStream.exe \
 Restore.exe \
 QuickScript.exe \
 BlobStream.exe \
-api1.exe \
-api2.exe \
-api3.exe \
-api4.exe \
-api5.exe \
-api6.exe \
-api7.exe \
-api8.exe \
-api10.exe \
-StartBackup.exe \
-StartRestore.exe \
 DataPump.exe \
 cursor.exe \
 BlobSample.exe \
 Backup.exe \
-Server.exe \
-Client.exe \
 UIB.dll \
 PlugInDemo.exe \
 SamplePluginOne.dll \
@@ -138,6 +123,22 @@ plgTest.bpl \
 JvPlgMainApp.exe \
  
 # -- These doesn't compile at the moment --
+# (rom) JvUIB Client/Server samples temporarily deactivated
+#Server.exe \
+#Client.exe \
+# (rom) JvUIB API samples temporarily deactivated
+#api1.exe \
+#api2.exe \
+#api3.exe \
+#api4.exe \
+#api5.exe \
+#api6.exe \
+#api7.exe \
+#api8.exe \
+#api10.exe \
+#StartBackup.exe \
+#StartRestore.exe \
+#
 #Rxdemo.exe \
 #RxGIFAnm.exe \
 #RAControls.exe \
@@ -505,11 +506,6 @@ JvMruListDemo.exe: JvMRUList\JvMruListDemo.dpr
   $(DCC) $&.dpr
   cd ..
 
-MonthCalendarDemo.exe: JvMonthCalendar\MonthCalendarDemo.dpr
-  cd JvMonthCalendar
-  $(DCC) $&.dpr
-  cd ..
-
 MailExample.exe: JvMail\MailExample.dpr
   cd JvMail
   $(DCC) $&.dpr
@@ -547,11 +543,6 @@ InspectorSimpleExample.exe: JvInspector\InspectorSimpleExample.dpr
 
 InspExample.exe: JvInspector\InspExample.dpr
   cd JvInspector
-  $(DCC) $&.dpr
-  cd ..
-
-ImageWindowDemo.exe: JvImageWindow\ImageWindowDemo.dpr
-  cd JvImageWindow
   $(DCC) $&.dpr
   cd ..
 
@@ -751,13 +742,13 @@ Backup.exe: JvUIB\Component\Backup\Backup.dpr
   cd ..\..\..
 
 Server.exe: JvUIB\ClientServer\Server\Server.dpr
-  cd JvUIB\ClientServer
-  $(DCCH) $&.dpr
+  cd JvUIB\ClientServer\Server
+  $(DCCHH) $&.dpr
   cd ..\..
 
 Client.exe: JvUIB\ClientServer\Client\Client.dpr
-  cd JvUIB\ClientServer
-  $(DCCH) $&.dpr
+  cd JvUIB\ClientServer\Client
+  $(DCCHH) $&.dpr
   cd ..\..
 
 UIB.dll: JvUIB\Automation\UIB.dpr
