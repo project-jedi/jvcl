@@ -641,7 +641,7 @@ var
   I : Integer;
   ds : TDatasource;
   Field : TField;
-  LabelControl : TControl;
+//  LabelControl : TControl;
   Control : TWinControl;
   Column : TColumn;
 begin
