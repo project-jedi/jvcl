@@ -1238,7 +1238,7 @@ begin
   {$IFDEF VisualCLX}
   with Msg do
     for I := 0 to AControl.ControlCount - 1 do
-      if QMessages.Perform(AControl.Controls[I], Msg, Integer(Sender), Integer(StyleManager)) <> 0 then
+      if QWindows.Perform(AControl.Controls[I], Msg, Integer(Sender), Integer(StyleManager)) <> 0 then
         Exit;
   {$ENDIF VisualCLX}
 end;
@@ -1404,7 +1404,7 @@ begin
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VisualCLX}
   end;
 end;
@@ -1955,7 +1955,7 @@ begin
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VisualCLX}
   end;
 end;
@@ -2403,7 +2403,7 @@ begin
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VisualCLX}
   end;
 end;
@@ -2672,7 +2672,7 @@ begin
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VisualCLX}
   end;
 end;
@@ -3316,7 +3316,7 @@ begin
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VisualCLX}
   end;
 end;
@@ -3552,7 +3552,7 @@ begin
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VisualCLX}
   end;
 end;
@@ -3873,7 +3873,7 @@ begin
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VisualCLX}
   end;
 end;
@@ -4057,7 +4057,7 @@ begin
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VisualCLX}
   end;
 end;
@@ -4877,7 +4877,7 @@ begin
       Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
       {$ENDIF VisualCLX}
   end;
 end;
