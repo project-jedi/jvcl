@@ -51,7 +51,6 @@ type
     Column: TColumn;
     Field: TField;
   end;
-  TRecordColumns = array of TRecordColumn;
 
 { avoid Office TLB imports }
 const
@@ -77,7 +76,7 @@ type
   private
     FGrid: TDBGrid;
     FColumnCount: Integer;
-    FRecordColumns: TRecordColumns;
+    FRecordColumns: array of TRecordColumn;
     FCaption: string;
     FFilename: TFilename;
     FOnProgress: TJvExportProgressEvent;
@@ -95,7 +94,6 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     function ExportGrid: Boolean;
   published
     // (p3) these should be published: all exporters must support them
@@ -258,12 +256,6 @@ constructor TJvCustomDBGridExport.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FSilent := True;
-end;
-
-destructor TJvCustomDBGridExport.Destroy;
-begin
-  SetLength(FRecordColumns, 0);
-  inherited Destroy;
 end;
 
 function TJvCustomDBGridExport.DoProgress(Min, Max, Position: Cardinal;

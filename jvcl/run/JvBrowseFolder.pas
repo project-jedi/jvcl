@@ -875,6 +875,12 @@ begin
   FObjectInstance := JvMakeObjectInstance(MainWndProc);
 end;
 
+destructor TJvBrowseForFolderDialog.Destroy;
+begin
+  JvFreeObjectInstance(FObjectInstance);
+  inherited Destroy;
+end;
+
 procedure TJvBrowseForFolderDialog.DefaultHandler(var Msg);
 begin
   if FDialogWindow <> 0 then
@@ -882,13 +888,6 @@ begin
       Result := CallWindowProc(FDefWndProc, FDialogWindow, Msg, WParam, LParam)
   else
     inherited DefaultHandler(Msg);
-end;
-
-destructor TJvBrowseForFolderDialog.Destroy;
-begin
-  if FObjectInstance <> nil then
-    JvFreeObjectInstance(FObjectInstance);
-  inherited Destroy;
 end;
 
 function TJvBrowseForFolderDialog.DoGetEnumFlags(const AFolder: string;

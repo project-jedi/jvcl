@@ -25,8 +25,6 @@ Known Issues:
 
 {$I jvcl.inc}
 
-{ Description. }
-
 unit JvColorTrackbar;
 
 interface
@@ -49,22 +47,22 @@ type
   TJvColorTrackBarIndicators = set of TJvColorTrackBarIndicator;
   TJvColorTrackBar = class(TJvGraphicControl)
   private
-    //FShowValue: boolean;
-    FPosition, FMin, FMax: integer;
-    FButtonDown: boolean;
+    //FShowValue: Boolean;
+    FPosition, FMin, FMax: Integer;
+    FButtonDown: Boolean;
     FOnPosChanged: TNotifyEvent;
-    BmpImage: TBitmap;
+    FBmpImage: TBitmap;
     FColorFrom: TColor;
     FColorTo: TColor;
     FArrowColor: TColor;
     FOnMaxChange: TNotifyEvent;
     FOnMinChange: TNotifyEvent;
     FBorderStyle: TControlBorderStyle;
-    FReadOnly: boolean;
+    FReadOnly: Boolean;
     FIndicators: TJvColorTrackBarIndicators;
-    procedure SetPosition(const Value: integer);
-    procedure SetMax(const Value: integer);
-    procedure SetMin(const Value: integer);
+    procedure SetPosition(const Value: Integer);
+    procedure SetMax(const Value: Integer);
+    procedure SetMin(const Value: Integer);
     procedure SetColorFrom(const Value: TColor);
     procedure SetColorTo(const Value: TColor);
     procedure SetArrowColor(const Value: TColor);
@@ -80,11 +78,11 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Resize; override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
-    function XToPos(X: integer): integer;
-    function PosToX(APos: integer): integer;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    function XToPos(X: Integer): Integer;
+    function PosToX(APos: Integer): Integer;
   published
     property Indicators:TJvColorTrackBarIndicators read FIndicators write SetIndicators default [tbiArrow, tbiLine];
     property ArrowColor: TColor read FArrowColor write SetArrowColor default clBlack;
@@ -93,10 +91,10 @@ type
 
     property ColorFrom: TColor read FColorFrom write SetColorFrom default clBlack;
     property ColorTo: TColor read FColorTo write SetColorTo default clBlue;
-    property Min: integer read FMin write SetMin default 0;
-    property Max: integer read FMax write SetMax default 100;
-    property Position: integer read FPosition write SetPosition default 0;
-    property ReadOnly:boolean read FReadOnly write FReadOnly default False;
+    property Min: Integer read FMin write SetMin default 0;
+    property Max: Integer read FMax write SetMax default 100;
+    property Position: Integer read FPosition write SetPosition default 0;
+    property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property OnPosChange: TNotifyEvent read FOnPosChanged write FOnPosChanged;
     property OnMinChange: TNotifyEvent read FOnMinChange write FOnMinChange;
     property OnMaxChange: TNotifyEvent read FOnMaxChange write FOnMaxChange;
@@ -139,6 +137,7 @@ type
   end;
 
 implementation
+
 uses
   JvJVCLUtils;
 
@@ -146,33 +145,11 @@ const
   TopOffset = 8;
   WidthOffset = 4;
 
-procedure TJvColorTrackBar.UpdateGradient;
-var
-  R: TRect;
-begin
-  if Parent = nil then Exit;
-  BmpImage.PixelFormat := pf24bit;
-  BmpImage.Width := Width - WidthOffset;
-  BmpImage.Height := Height - TopOffset;
-  R := Rect(0, 0, BmpImage.Width, BmpImage.Height);
-
-  {$IFDEF VisualCLX}
-  BmpImage.Canvas.Start;
-  {$ENDIF VisualCLX}
-  GradientFillRect(BmpImage.Canvas, R, ColorFrom, ColorTo, fdLeftToRight, 255);
-  if BorderStyle = bsSingle then
-    DrawEdge(BmpImage.Canvas.Handle, R, EDGE_SUNKEN, BF_TOP or BF_RIGHT or BF_BOTTOM or BF_LEFT);
-  {$IFDEF VisualCLX}
-  BmpImage.Canvas.Stop;
-  {$ENDIF VisualCLX}
-
-end;
-
 constructor TJvColorTrackBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csOpaque];
-  BmpImage := TBitmap.Create;
+  FBmpImage := TBitmap.Create;
   FMin := 0;
   FMax := 100;
   FPosition := 0;
@@ -188,13 +165,35 @@ end;
 
 destructor TJvColorTrackBar.Destroy;
 begin
-  BmpImage.Free;
-  inherited;
+  FBmpImage.Free;
+  inherited Destroy;
+end;
+
+procedure TJvColorTrackBar.UpdateGradient;
+var
+  R: TRect;
+begin
+  if Parent = nil then
+    Exit;
+  FBmpImage.PixelFormat := pf24bit;
+  FBmpImage.Width := Width - WidthOffset;
+  FBmpImage.Height := Height - TopOffset;
+  R := Rect(0, 0, FBmpImage.Width, FBmpImage.Height);
+
+  {$IFDEF VisualCLX}
+  FBmpImage.Canvas.Start;
+  {$ENDIF VisualCLX}
+  GradientFillRect(FBmpImage.Canvas, R, ColorFrom, ColorTo, fdLeftToRight, 255);
+  if BorderStyle = bsSingle then
+    DrawEdge(FBmpImage.Canvas.Handle, R, EDGE_SUNKEN, BF_TOP or BF_RIGHT or BF_BOTTOM or BF_LEFT);
+  {$IFDEF VisualCLX}
+  FBmpImage.Canvas.Stop;
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvColorTrackBar.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if (Button = mbLeft) then
+  if Button = mbLeft then
   begin
     FButtonDown := not ReadOnly;
     Position := XToPos(X);
@@ -203,7 +202,7 @@ end;
 
 procedure TJvColorTrackBar.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  if (FButtonDown) then
+  if FButtonDown then
     Position := XToPos(X);
 end;
 
@@ -212,29 +211,30 @@ procedure TJvColorTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
 begin
   if (Button = mbLeft) and FButtonDown then
     Position := XToPos(X);
-  FButtonDown := false;
+  FButtonDown := False;
 end;
 
 procedure TJvColorTrackBar.Paint;
 var
-  X: integer;
+  X: Integer;
   R: TRect;
   P: array of TPoint;
 begin
-  if Parent = nil then Exit;
-  if (Height - TopOffset <> BmpImage.Height) or (Width <> BmpImage.Width - WidthOffset) then
+  if Parent = nil then
+    Exit;
+  if (Height - TopOffset <> FBmpImage.Height) or (Width <> FBmpImage.Width - WidthOffset) then
     UpdateGradient;
   Canvas.Pen.Color := Color;
   Canvas.Brush.Color := Color;
   {$IFDEF VisualCLX}
-//  Canvas.Draw(WidthOffset div 2, TopOffset, BmpImage);
-  BmpImage.Canvas.Start;
+//  Canvas.Draw(WidthOffset div 2, TopOffset, FBmpImage);
+  FBmpImage.Canvas.Start;
   {$ENDIF VisualCLX}
 //  {$IFDEF VCL}
-  BitBlt(Canvas.Handle, WidthOffset div 2, TopOffset, Width, Height, BmpImage.Canvas.Handle, 0, 0, SrcCopy);
+  BitBlt(Canvas.Handle, WidthOffset div 2, TopOffset, Width, Height, FBmpImage.Canvas.Handle, 0, 0, SrcCopy);
 //  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  BmpImage.Canvas.Stop;
+  FBmpImage.Canvas.Stop;
   {$ENDIF VisualCLX}
   R := Rect(0, 0, Width, TopOffset);
   Canvas.FillRect(R);
@@ -263,11 +263,11 @@ end;
 
 procedure TJvColorTrackBar.Resize;
 begin
-  inherited;
+  inherited Resize;
   UpdateGradient;
 end;
 
-procedure TJvColorTrackBar.SetMax(const Value: integer);
+procedure TJvColorTrackBar.SetMax(const Value: Integer);
 begin
   if Value > Min then
   begin
@@ -279,7 +279,7 @@ begin
   end;
 end;
 
-procedure TJvColorTrackBar.SetMin(const Value: integer);
+procedure TJvColorTrackBar.SetMin(const Value: Integer);
 begin
   if Value < Max then
   begin
@@ -291,7 +291,7 @@ begin
   end;
 end;
 
-procedure TJvColorTrackBar.SetPosition(const Value: integer);
+procedure TJvColorTrackBar.SetPosition(const Value: Integer);
 begin
   if (Value >= Min) and (Value <= Max) and (Value <> FPosition) then
   begin
@@ -327,7 +327,7 @@ begin
   end;
 end;
 
-function TJvColorTrackBar.XToPos(X: integer): integer;
+function TJvColorTrackBar.XToPos(X: Integer): Integer;
 begin
   if (Max - Min > 0) and (Width - WidthOffset > 0) then
     Result := X * (Max - Min) div (Width - WidthOffset) + Min
@@ -337,14 +337,16 @@ begin
   if Result > Max then Result := Max;
 end;
 
-function TJvColorTrackBar.PosToX(APos: integer): integer;
+function TJvColorTrackBar.PosToX(APos: Integer): Integer;
 begin
   if (Max - Min > 0) and (Width > 0) then
     Result := Width * (APos - Min) div (Max - Min)
   else
     Result := WidthOffset;
-  if Result < WidthOffset * 2 then Result := WidthOffset * 2;
-  if Result > Width - WidthOffset * 2 then Result := Width - WidthOffset * 2;
+  if Result < WidthOffset * 2 then
+    Result := WidthOffset * 2;
+  if Result > Width - WidthOffset * 2 then
+    Result := Width - WidthOffset * 2;
 end;
 
 procedure TJvColorTrackBar.SetArrowColor(const Value: TColor);

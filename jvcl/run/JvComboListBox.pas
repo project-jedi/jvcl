@@ -172,6 +172,7 @@ type
   end;
 
 implementation
+
 uses
   Math;
 

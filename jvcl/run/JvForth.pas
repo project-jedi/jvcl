@@ -211,101 +211,101 @@ type
     // expresssion procedures
 
     // constants
-    procedure proccrlf;
+    procedure ProcCrLf;
     // date and time
-    procedure procnow;
-    procedure procdatestr;
-    procedure proctimestr;
+    procedure ProcNow;
+    procedure ProcDateStr;
+    procedure ProcTimeStr;
     // shell
-    procedure procshellexecute;
+    procedure ProcShellExecute;
     // xml variables
-    procedure procXML;
+    procedure ProcXML;
     // data source variables
-    procedure procDSO;
-    procedure procSelDir;
-    procedure procDSOBase;
+    procedure ProcDSO;
+    procedure ProcSelDir;
+    procedure ProcDSOBase;
     // external variables
-    procedure procExtVar; // general dispatcher
-    procedure procassign;
-    procedure procVariable;
+    procedure ProcExtVar; // general dispatcher
+    procedure ProcAssign;
+    procedure ProcVariable;
 
     // internal variables
-    procedure procIntVar; // general dispatcher
-    procedure procVarGet;
-    procedure procVarSet;
-    procedure procVarInc;
-    procedure procVarIncIndex;
-    procedure procVarDec;
-    procedure procVarDecTestZero;
-    procedure procVarAdd;
-    procedure procVarSub;
-    procedure procVarMul;
-    procedure procVarDiv;
-    procedure procVarNeg;
-    procedure procVarLoad;
-    procedure procVarSave;
+    procedure ProcIntVar; // general dispatcher
+    procedure ProcVarGet;
+    procedure ProcVarSet;
+    procedure ProcVarInc;
+    procedure ProcVarIncIndex;
+    procedure ProcVarDec;
+    procedure ProcVarDecTestZero;
+    procedure ProcVarAdd;
+    procedure ProcVarSub;
+    procedure ProcVarMul;
+    procedure ProcVarDiv;
+    procedure ProcVarNeg;
+    procedure ProcVarLoad;
+    procedure ProcVarSave;
     // system io
-    procedure procSystem; // general dispatcher
-    procedure procSysGet;
-    procedure procSysSet;
+    procedure ProcSystem; // general dispatcher
+    procedure ProcSysGet;
+    procedure ProcSysSet;
     // flow expressions
-    procedure procIf;
-    procedure procElse;
-    procedure procEndif;
-    procedure procUntil;
-    procedure procRepeat;
+    procedure ProcIf;
+    procedure ProcElse;
+    procedure ProcEndif;
+    procedure ProcUntil;
+    procedure ProcRepeat;
     // end flow expressions
 
     // sub expressions
-    procedure procSub;
-    procedure procEndsub;
-    procedure procCall;
+    procedure ProcSub;
+    procedure ProcEndsub;
+    procedure ProcCall;
     // conversion expressions
-    procedure procCStr;
-    procedure procNop;
-    procedure procDup;
-    procedure procDrop;
-    procedure procSwap;
-    procedure procInteger;
-    procedure procFloat;
-    procedure procSet;
-    procedure procString;
-    procedure procBoolean;
-    procedure procDate;
-    procedure procEq;
-    procedure procNe;
-    procedure procGt;
-    procedure procLt;
-    procedure procGe;
-    procedure procLe;
-    procedure procLike;
-    procedure procUnlike;
-    procedure procNot;
-    procedure procAnd;
-    procedure procXor;
-    procedure procOr;
-    procedure procIn;
-    procedure procAdd;
-    procedure procSubtract;
-    procedure procMultiply;
-    procedure procDivide;
-    procedure procPower;
-    procedure procAbs;
+    procedure ProcCStr;
+    procedure ProcNop;
+    procedure ProcDup;
+    procedure ProcDrop;
+    procedure ProcSwap;
+    procedure ProcInteger;
+    procedure ProcFloat;
+    procedure ProcSet;
+    procedure ProcString;
+    procedure ProcBoolean;
+    procedure ProcDate;
+    procedure ProcEq;
+    procedure ProcNe;
+    procedure ProcGt;
+    procedure ProcLt;
+    procedure ProcGe;
+    procedure ProcLe;
+    procedure ProcLike;
+    procedure ProcUnlike;
+    procedure ProcNot;
+    procedure ProcAnd;
+    procedure ProcXor;
+    procedure ProcOr;
+    procedure ProcIn;
+    procedure ProcAdd;
+    procedure ProcSubtract;
+    procedure ProcMultiply;
+    procedure ProcDivide;
+    procedure ProcPower;
+    procedure ProcAbs;
     // some gonio functions
-    procedure procpi;
-    procedure procSin;
-    procedure procCos;
-    procedure procTan;
-    procedure procarcsin;
-    procedure procarccos;
-    procedure procarctan;
-    procedure procarctan2;
+    procedure Procpi;
+    procedure ProcSin;
+    procedure ProcCos;
+    procedure ProcTan;
+    procedure Procarcsin;
+    procedure Procarccos;
+    procedure Procarctan;
+    procedure Procarctan2;
 
-    procedure procNegate;
-    procedure procSqr;
-    procedure procSqrt;
-    procedure procLeft;
-    procedure procRight;
+    procedure ProcNegate;
+    procedure ProcSqr;
+    procedure ProcSqrt;
+    procedure ProcLeft;
+    procedure ProcRight;
     function vpop: Variant;
     procedure vpush(AValue: Variant);
 //    function opop: TToken;
@@ -1178,21 +1178,21 @@ end;
 procedure TJvForthScript.doToken(aToken: TToken);
 begin
   case aToken of
-    dfonow: procnow;
-    dfodatestr: procdatestr;
-    dfotimestr: proctimestr;
-    dfoshellexecute: procshellexecute;
-    dfocrlf: proccrlf;
+    dfonow: ProcNow;
+    dfodatestr: ProcDateStr;
+    dfotimestr: ProcTimeStr;
+    dfoshellexecute: ProcShellExecute;
+    dfocrlf: ProcCrLf;
     dfoCStr: procCStr;
-    dfoXML: procXML;
+    dfoXML: ProcXML;
     dfoDSO: procDSO;
-    dfoSeldir: procSelDir;
-    dfoDSOBase: procDSOBase;
-    dfoIntVar: procIntVar;
-    dfoExtVar: procExtVar;
+    dfoSeldir: ProcSelDir;
+    dfoDSOBase: ProcDSOBase;
+    dfoIntVar: ProcIntVar;
+    dfoExtVar: ProcExtVar;
     dfoSystem: procSystem;
-    //    dfoVarGet:procVarGet;
-    //    dfoVarset:procVarSet;
+    //    dfoVarGet:ProcVarGet;
+    //    dfoVarset:ProcVarSet;
     //    dfoSysGet:procSysGet;
     //    dfoSysSet:procSysSet;
     dfoSub: procSub;
@@ -1207,8 +1207,8 @@ begin
     dfoRepeat: procRepeat;
     dfoUntil: procUntil;
     dfonop: procNop;
-    //    dfoassign: procassign;
-    //    dfovariable: procVariable;
+    //    dfoassign: ProcAssign;
+    //    dfovariable: ProcVariable;
     dfointeger: procInteger;
     dfofloat: procFloat;
     dfoset: procSet;
@@ -1375,7 +1375,7 @@ begin
   vpush(vpop and Value);
 end;
 
-procedure TJvForthScript.procassign;
+procedure TJvForthScript.ProcAssign;
 var
   Value: Variant;
   Handled: Boolean;
@@ -1629,7 +1629,7 @@ begin
   vpush(Pos(LowerCase(Value), LowerCase(vartostr(vpop))) = 0);
 end;
 
-procedure TJvForthScript.procVariable;
+procedure TJvForthScript.ProcVariable;
 var
   Value: Variant;
   Handled: Boolean;
@@ -1783,7 +1783,7 @@ begin
     raise EJvJanScriptError.CreateFmt(RsEProceduresNotDefined, [FCurrentSymbol]);
 end;
 
-procedure TJvForthScript.procVarGet;
+procedure TJvForthScript.ProcVarGet;
 var
   v: Variant;
 begin
@@ -1794,7 +1794,7 @@ begin
     raise EJvJanScriptError.CreateFmt(RsEVariablesNotDefined_, [FCurrentSymbol]);
 end;
 
-procedure TJvForthScript.procVarSet;
+procedure TJvForthScript.ProcVarSet;
 var
   v: Variant;
 begin
@@ -1923,7 +1923,7 @@ begin
   end;
 end;
 
-procedure TJvForthScript.procDSOBase;
+procedure TJvForthScript.ProcDSOBase;
 var
   s: string;
 begin
@@ -1931,7 +1931,7 @@ begin
   FDSOBase := s;
 end;
 
-procedure TJvForthScript.procSelDir;
+procedure TJvForthScript.ProcSelDir;
 {$IFDEF VCL}
 var
   Dir: string;
@@ -1951,65 +1951,65 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-procedure TJvForthScript.procExtVar;
+procedure TJvForthScript.ProcExtVar;
 var
   AName, aMethod: string;
 begin
   AName := FCurrentSymbol;
   aMethod := FCurrentValue;
   if aMethod = 'set' then
-    procAssign
+    ProcAssign
   else
   if aMethod = 'get' then
-    procVariable
+    ProcVariable
   else
     raise EJvJanScriptError.CreateFmt(RsEUnrecognizeExternalVariableMethodss, [AName, amethod]);
 end;
 
-procedure TJvForthScript.procIntVar;
+procedure TJvForthScript.ProcIntVar;
 var
   AName, aMethod: string;
 begin
   AName := FCurrentSymbol;
   aMethod := FCurrentValue;
   if aMethod = 'set' then
-    procVarSet
+    ProcVarSet
   else
   if aMethod = 'get' then
-    procVarGet
+    ProcVarGet
   else
   if aMethod = '1+' then
-    procVarInc
+    ProcVarInc
   else
   if aMethod = '[1+]' then
-    procVarIncIndex
+    ProcVarIncIndex
   else
   if aMethod = '1-' then
-    procVarDec
+    ProcVarDec
   else
   if aMethod = '1-?0' then
-    procVarDecTestZero
+    ProcVarDecTestZero
   else
   if aMethod = '+' then
-    procVarAdd
+    ProcVarAdd
   else
   if aMethod = '-' then
-    procVarSub
+    ProcVarSub
   else
   if aMethod = '*' then
-    procVarMul
+    ProcVarMul
   else
   if aMethod = '/' then
-    procVarDiv
+    ProcVarDiv
   else
   if aMethod = '--' then
-    procVarNeg
+    ProcVarNeg
   else
   if aMethod = 'load' then
-    procVarLoad
+    ProcVarLoad
   else
   if aMethod = 'save' then
-    procVarSave
+    ProcVarSave
   else
     raise EJvJanScriptError.CreateFmt(RsEUnrecognizeInternalVariableMethodss, [AName, amethod]);
 end;
@@ -2029,7 +2029,7 @@ begin
     raise EJvJanScriptError.CreateFmt(RsEUnrecognizeSystemMethodss, [AName, amethod]);
 end;
 
-procedure TJvForthScript.procVarDec;
+procedure TJvForthScript.ProcVarDec;
 var
   vo: TVariantObject;
 begin
@@ -2040,7 +2040,7 @@ begin
     raise EJvJanScriptError.CreateFmt(RsEVariablesNotDefined_, [FCurrentSymbol]);
 end;
 
-procedure TJvForthScript.procVarInc;
+procedure TJvForthScript.ProcVarInc;
 var
   vo: TVariantObject;
 begin
@@ -2051,7 +2051,7 @@ begin
     raise EJvJanScriptError.CreateFmt(RsEVariablesNotDefined_, [FCurrentSymbol]);
 end;
 
-procedure TJvForthScript.procVarAdd;
+procedure TJvForthScript.ProcVarAdd;
 var
   vo: TVariantObject;
 begin
@@ -2062,7 +2062,7 @@ begin
     raise EJvJanScriptError.CreateFmt(RsEVariablesNotDefined_, [FCurrentSymbol]);
 end;
 
-procedure TJvForthScript.procVarDiv;
+procedure TJvForthScript.ProcVarDiv;
 var
   vo: TVariantObject;
 begin
@@ -2073,7 +2073,7 @@ begin
     raise EJvJanScriptError.CreateFmt(RsEVariablesNotDefined_, [FCurrentSymbol]);
 end;
 
-procedure TJvForthScript.procVarMul;
+procedure TJvForthScript.ProcVarMul;
 var
   vo: TVariantObject;
 begin
@@ -2084,7 +2084,7 @@ begin
     raise EJvJanScriptError.CreateFmt(RsEVariablesNotDefined_, [FCurrentSymbol]);
 end;
 
-procedure TJvForthScript.procVarSub;
+procedure TJvForthScript.ProcVarSub;
 var
   vo: TVariantObject;
 begin
@@ -2095,7 +2095,7 @@ begin
     raise EJvJanScriptError.CreateFmt(RsEVariablesNotDefined_, [FCurrentSymbol]);
 end;
 
-procedure TJvForthScript.procVarNeg;
+procedure TJvForthScript.ProcVarNeg;
 var
   vo: TVariantObject;
 begin
@@ -2167,7 +2167,7 @@ begin
   vpush(arctan2(vpop, Value));
 end;
 
-procedure TJvForthScript.procVarLoad;
+procedure TJvForthScript.ProcVarLoad;
 var
   vo: TVariantObject;
   ap, fn, s: string;
@@ -2185,7 +2185,7 @@ begin
     raise EJvJanScriptError.CreateFmt(RsEVariablesNotDefined_, [FCurrentSymbol]);
 end;
 
-procedure TJvForthScript.procVarSave;
+procedure TJvForthScript.ProcVarSave;
 var
   vo: TVariantObject;
   ap, fn, s: string;
@@ -2203,7 +2203,7 @@ begin
     raise EJvJanScriptError.CreateFmt(RsEVariablesNotDefined_, [FCurrentSymbol]);
 end;
 
-procedure TJvForthScript.procXML;
+procedure TJvForthScript.ProcXML;
 var
   AName, aMethod: string;
   xmldso: TJvXMLTree;
@@ -2387,7 +2387,7 @@ begin
     raise EJvJanScriptError.CreateFmt(RsEInvalidXmlMethodSpecifiers, [aMethod]);
 end;
 
-procedure TJvForthScript.procVarDecTestZero;
+procedure TJvForthScript.ProcVarDecTestZero;
 var
   v: Variant;
   vo: TVariantObject;
@@ -2403,7 +2403,7 @@ begin
     raise EJvJanScriptError.CreateFmt(RsEVariablesNotDefined_, [FCurrentSymbol]);
 end;
 
-procedure TJvForthScript.procVarIncIndex;
+procedure TJvForthScript.ProcVarIncIndex;
 var
   vo: TVariantObject;
   s, sidx: string;
@@ -2435,12 +2435,12 @@ begin
     raise EJvJanScriptError.CreateFmt(RsEVariablesNotDefined_, [FCurrentSymbol]);
 end;
 
-procedure TJvForthScript.proccrlf;
+procedure TJvForthScript.ProcCrLf;
 begin
   vpush(sLineBreak);
 end;
 
-procedure TJvForthScript.procshellexecute;
+procedure TJvForthScript.ProcShellExecute;
 var
   afile: string;
   appldir: string;
@@ -2451,7 +2451,7 @@ begin
   launch(afile);
 end;
 
-procedure TJvForthScript.procdatestr;
+procedure TJvForthScript.ProcDateStr;
 var
   s: string;
 begin
@@ -2459,7 +2459,7 @@ begin
   vpush(s);
 end;
 
-procedure TJvForthScript.proctimestr;
+procedure TJvForthScript.ProcTimeStr;
 var
   s: string;
 begin
@@ -2467,7 +2467,7 @@ begin
   vpush(s);
 end;
 
-procedure TJvForthScript.procnow;
+procedure TJvForthScript.ProcNow;
 begin
   vpush(now);
 end;

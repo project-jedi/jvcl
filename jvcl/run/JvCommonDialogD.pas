@@ -38,8 +38,6 @@ type
   private
     FTitle: string;
     FOwnerWindow: HWND;
-  protected
-    SetupApiDllHandle: HMODULE;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -54,6 +52,7 @@ function JvDiskStylesToDWORD(const Style: TJvDiskStyles): DWORD;
 implementation
 
 uses
+  SetupApi,
   JvResources;
 
 const
@@ -100,15 +99,14 @@ begin
     FOwnerWindow := (AOwner as TWinControl).Handle
   else
     FOwnerWindow := HWND_DESKTOP;
-  SetupApiDllHandle := LoadLibrary('SETUPAPI.DLL');
-  if SetupApiDllHandle = 0 then
+  LoadSetupApi;
+  if not IsSetupApiLoaded then
     raise EJVCLException.Create(RsEErrorSetupDll);
 end;
 
 destructor TJvCommonDialogD.Destroy;
 begin
-  if SetupApiDllHandle <> 0 then
-    FreeLibrary(SetupApiDllHandle);
+  UnloadSetupApi;
   inherited Destroy;
 end;
 

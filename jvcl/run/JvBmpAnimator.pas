@@ -159,17 +159,17 @@ begin
   FGoingUp := True;
 end;
 
-procedure TJvCustomBmpAnimator.DoChange(Sender: TObject);
-begin
-  Invalidate;
-end;
-
 destructor TJvCustomBmpAnimator.Destroy;
 begin
   FImageChangeLink.Free;
   FTimer.Enabled := False;
   FTimer.Free;
   inherited Destroy;
+end;
+
+procedure TJvCustomBmpAnimator.DoChange(Sender: TObject);
+begin
+  Invalidate;
 end;
 
 procedure TJvCustomBmpAnimator.TimerEvent(Sender: TObject);

@@ -6439,11 +6439,12 @@ end;
 
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 begin
-  {$IFDEF COMPILER6_UP}
-  Classes.FreeObjectInstance(ObjectInstance);
-  {$ELSE}
-  FreeObjectInstance(ObjectInstance);
-  {$ENDIF COMPILER6_UP}
+  if ObjectInstance <> nil then
+    {$IFDEF COMPILER6_UP}
+    Classes.FreeObjectInstance(ObjectInstance);
+    {$ELSE}
+    FreeObjectInstance(ObjectInstance);
+    {$ENDIF COMPILER6_UP}
 end;
 
 {$ENDIF MSWINDOWS}

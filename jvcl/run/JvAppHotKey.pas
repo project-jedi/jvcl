@@ -61,7 +61,6 @@ type
     procedure DoHotKey; virtual;
     function DoRegisterHotKey: Boolean; dynamic;
   public
-    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property Active: Boolean read FActive write SetActive default False;
@@ -95,11 +94,6 @@ end;
 
 
 //=== TJvApplicationHotKey ===================================================
-
-constructor TJvApplicationHotKey.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-end;
 
 destructor TJvApplicationHotKey.Destroy;
 begin

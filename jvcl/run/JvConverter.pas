@@ -60,7 +60,6 @@ type
     function GetMask: string; virtual;
   public
     constructor Create;
-    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure ResetDefault; virtual;
     property DateMask: string read GetDateMask;
@@ -153,11 +152,6 @@ constructor TJvDateTimeFormat.Create;
 begin
   inherited Create;
   ResetDefault;
-end;
-
-destructor TJvDateTimeFormat.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvDateTimeFormat.ResetDefault;
