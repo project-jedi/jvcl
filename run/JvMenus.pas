@@ -2043,14 +2043,14 @@ begin
 
   case TextVAlignment of
     vaMiddle:
-      Inc(ARect.Top, ((ARect.Bottom - ARect.Top + 1) - Canvas.TextHeight(DelChars(Text, '&'))) div 2);
+      Inc(ARect.Top, ((ARect.Bottom - ARect.Top + 1) - Canvas.TextHeight(StripHotkey(Text))) div 2);
     vaBottom:
-      ARect.Top := ARect.Bottom - Canvas.TextHeight(DelChars(Text, '&'));
+      ARect.Top := ARect.Bottom - Canvas.TextHeight(StripHotkey(Text));
   end;
 
   // if a top level menu item then draw text centered horizontally
   if not IsPopup then
-    ARect.Left := ARect.Left + ((ARect.Right - ARect.Left) - Canvas.TextWidth(DelChars(Text, '&'))) div 2;
+    ARect.Left := ARect.Left + ((ARect.Right - ARect.Left) - Canvas.TextWidth(StripHotkey(Text))) div 2;
 
   if mdDisabled in FState then
   begin
@@ -2058,12 +2058,12 @@ begin
     begin
       Canvas.Font.Color := clBtnHighlight;
       OffsetRect(ARect, 1, 1);
-      Windows.DrawText(Canvas.Handle, @Text[1], Length(Text), ARect, Flags);
+      Windows.DrawText(Canvas.Handle, PChar(Text), Length(Text), ARect, Flags);
       OffsetRect(ARect, -1, -1);
     end;
     Canvas.Font.Color := GrayColor;
   end;
-  Windows.DrawText(Canvas.Handle, @Text[1], Length(Text), ARect, Flags)
+  Windows.DrawText(Canvas.Handle, PChar(Text), Length(Text), ARect, Flags)
 end;
 
 procedure TJvCustomMenuItemPainter.PreparePaint(Item: TMenuItem;
@@ -2198,11 +2198,9 @@ begin
       // then, draw the correct image, according to the state
       // of the item
       if (mdDisabled in State) then
-        DrawDisabledImage(ImageRect.Left,
-          ImageRect.Top)
+        DrawDisabledImage(ImageRect.Left, ImageRect.Top)
       else
-        DrawEnabledImage(ImageRect.Left,
-          ImageRect.Top)
+        DrawEnabledImage(ImageRect.Left, ImageRect.Top)
     end
       // else, we may have a valid glyph, but we won't use it if
       // the item is a separator
@@ -2269,24 +2267,22 @@ begin
     else
     begin
       // find the largest text element
-      MaxWidth := Canvas.TextWidth(DelChars(Item.Caption, '&') + ShortcutSpacing{Tab + Tab});
+      MaxWidth := Canvas.TextWidth(StripHotkey(Item.Caption) + ShortcutSpacing{Tab + Tab});
       if (Item.Parent <> nil) and (Item.ShortCut <> scNone) then
       begin
         for I := 0 to Item.Parent.Count - 1 do
-          MaxWidth := Max(Canvas.TextWidth(DelChars(Item.Parent.Items[I].Caption,
-            '&') + ShortcutSpacing { Tab + Tab}), MaxWidth);
+          MaxWidth := Max(Canvas.TextWidth(StripHotkey(Item.Parent.Items[I].Caption) +
+            ShortcutSpacing { Tab + Tab}), MaxWidth);
       end;
 
       // draw the text
       Canvas.Brush.Style := bsClear;
-      DrawText(TextRect, Item.Caption, DT_EXPANDTABS or
-        DT_LEFT or DT_SINGLELINE);
+      DrawText(TextRect, Item.Caption, DT_EXPANDTABS or DT_LEFT or DT_SINGLELINE);
       if (Item.ShortCut <> scNone) and (Item.Count = 0) and IsPopup then
       begin
         // draw the shortcut
         DrawText(Rect(TextRect.Left + MaxWidth, TextRect.Top, TextRect.Right, TextRect.Bottom),
-          ShortCutToText(Item.ShortCut), DT_EXPANDTABS or DT_LEFT or
-          DT_SINGLELINE);
+          ShortCutToText(Item.ShortCut), DT_EXPANDTABS or DT_LEFT or DT_SINGLELINE);
       end;
     end;
   end
@@ -2353,7 +2349,7 @@ begin
     // Text Shortcut SubMenuArrow.
     // with the two last ones being not compulsory
 
-    MaxWidth := Canvas.TextWidth(DelChars(Item.Caption, '&'));
+    MaxWidth := Canvas.TextWidth(StripHotkey(Item.Caption));
 
     ShortcutWidth := 0;
     OneItemHasChildren := False;
@@ -2374,7 +2370,7 @@ begin
 
       for I := 0 to Item.Parent.Count - 1 do
       begin
-        tmpWidth := Canvas.TextWidth(DelChars(Item.Parent.Items[I].Caption, '&'));
+        tmpWidth := Canvas.TextWidth(StripHotkey(Item.Parent.Items[I].Caption));
         if tmpWidth > MaxWidth then
           MaxWidth := tmpWidth;
 
@@ -2405,7 +2401,7 @@ begin
       Inc(Result, Canvas.TextWidth('  '));
   end
   else
-    Result := Canvas.TextWidth(DelChars(Item.Caption, '&'));
+    Result := Canvas.TextWidth(StripHotkey(Item.Caption));
 end;
 
 procedure TJvCustomMenuItemPainter.Measure(Item: TMenuItem;
@@ -3031,8 +3027,7 @@ begin
   FItem := Item;
 
   // draw the contour of the window
-  if IsPopup and
-    not (csDesigning in ComponentState) then
+  if IsPopup and not (csDesigning in ComponentState) then
   begin
     CanvasWindow := WindowFromDC(Canvas.Handle);
 
