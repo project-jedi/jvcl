@@ -1560,6 +1560,7 @@ type
     function HasValue: Boolean; virtual; abstract;
     function IsAssigned: Boolean; virtual; abstract;
     function IsInitialized: Boolean; virtual; abstract;
+    function IsReadOnlyProperty: Boolean; virtual; abstract;
     class function ItemRegister: TJvInspectorRegister; virtual;
     class function New: TJvCustomInspectorData;
     function NewItem(const AParent: TJvCustomInspectorItem): TJvCustomInspectorItem; virtual;
@@ -1669,6 +1670,7 @@ type
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
     function IsInitialized: Boolean; override;
+    function IsReadOnlyProperty: Boolean; override;
     class function ItemRegister: TJvInspectorRegister; override;
     class function TypeInfoMapRegister: TJvInspectorRegister;
     class procedure AddTypeMapping(Target, Source: PTypeInfo; ObjectClass: TClass = nil;
@@ -10936,6 +10938,8 @@ end;
 procedure TJvInspectorPropData.SetAsFloat(const Value: Extended);
 begin
   CheckWriteAccess;
+  if IsReadOnlyProperty then
+    Abort;
   if Prop.PropType^.Kind = tkFloat then
     SetFloatProp(Instance, Prop, Value)
   else
@@ -10947,6 +10951,8 @@ end;
 procedure TJvInspectorPropData.SetAsInt64(const Value: Int64);
 begin
   CheckWriteAccess;
+  if IsReadOnlyProperty then
+    Abort;
   if Prop.PropType^.Kind = tkInt64 then
     SetInt64Prop(Instance, Prop, Value)
   else
@@ -10958,6 +10964,8 @@ end;
 procedure TJvInspectorPropData.SetAsMethod(const Value: TMethod);
 begin
   CheckWriteAccess;
+  if IsReadOnlyProperty then
+    Abort;
   if Prop.PropType^.Kind = tkMethod then
     SetMethodProp(Instance, Prop, Value)
   else
@@ -10969,6 +10977,8 @@ end;
 procedure TJvInspectorPropData.SetAsOrdinal(const Value: Int64);
 begin
   CheckWriteAccess;
+  if IsReadOnlyProperty then
+    Abort;
   if Prop.PropType^.Kind in [tkInteger, tkChar, tkEnumeration, tkSet,
     tkWChar, tkClass] then
   begin
@@ -10986,6 +10996,8 @@ end;
 procedure TJvInspectorPropData.SetAsString(const Value: string);
 begin
   CheckWriteAccess;
+  if IsReadOnlyProperty then
+    Abort;
   if Prop.PropType^.Kind in [tkString, tkLString, tkWString] then
     SetStrProp(Instance, Prop, Value)
   else
@@ -11047,6 +11059,11 @@ end;
 function TJvInspectorPropData.IsInitialized: Boolean;
 begin
   Result := (Instance <> nil) and (Prop <> nil);
+end;
+
+function TJvInspectorPropData.IsReadOnlyProperty: Boolean;
+begin
+  Result := IsInitialized and (Prop^.SetProc = nil);
 end;
 
 class function TJvInspectorPropData.ItemRegister: TJvInspectorRegister;
