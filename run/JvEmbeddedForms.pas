@@ -47,6 +47,7 @@ type
     FLinkedForm: TForm;
     FAlwaysVisible: Boolean;
     FPaintProcedure: TJvEmbeddedPaintProcedure;
+    FOnFormDestroy: TNotifyEvent;
     procedure DrawFormImage;
     procedure SetLinkedForm;
     procedure UpdateLinkedForm;
@@ -57,6 +58,7 @@ type
     procedure InitLinkedForm; virtual;
     procedure ClearLinkedForm; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure FormDestroy; virtual;
   public
     procedure DockLinkedForm; virtual;
     procedure UndockLinkedForm(ABorderStyle: TFormBorderStyle; APosition: TPosition); virtual;
@@ -65,6 +67,7 @@ type
   published
     property AlwaysVisible: Boolean read FAlwaysVisible write FAlwaysVisible;
     property FormLink: TJvEmbeddedFormLink read FLink write SetFormLink;
+    property OnFormDestroy: TNotifyEvent read FOnFormDestroy write FOnFormDestroy;
     property Align;
     property Anchors;
     property Color;
@@ -193,8 +196,7 @@ end;
 
 procedure TJvEmbeddedFormPanel.UpdateLinkedForm;
 
-  // (rom) a really bad name. Owner in name, but uses Parent.
-  function IsOwnerFormActive: Boolean;
+  function IsParentFormActive: Boolean;
   var
     FParent: TWinControl;
   begin
@@ -205,7 +207,7 @@ procedure TJvEmbeddedFormPanel.UpdateLinkedForm;
   end;
 
 begin
-  if (FLinkedForm.Parent <> Self) and (FLinkedForm.Parent <> nil) and IsOwnerFormActive then
+  if (FLinkedForm.Parent <> Self) and (FLinkedForm.Parent <> nil) and IsParentFormActive then
     SetLinkedForm
   else
   if AlwaysVisible then
@@ -277,10 +279,24 @@ begin
   if Operation = opRemove then
   begin
     if AComponent = FLinkedForm then
-      FLinkedForm := nil;
+      FLinkedForm := nil
+    else
     if AComponent = FormLink then
+    begin
       FormLink := nil;
+      try
+        FormDestroy;
+      except
+        Application.HandleException(Self);
+      end;
+    end;
   end;
+end;
+
+procedure TJvEmbeddedFormPanel.FormDestroy;
+begin
+  if Assigned(FOnFormDestroy) then
+    FOnFormDestroy(Self);
 end;
 
 procedure TJvEmbeddedFormPanel.DockLinkedForm;
