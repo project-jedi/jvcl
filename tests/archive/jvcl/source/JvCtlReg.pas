@@ -36,12 +36,6 @@ procedure Register;
 
 implementation
 
-{.$IFDEF WIN32}
-{.$R *.Res}
-{.$ELSE}
-{.$R *.D16}
-{.$ENDIF}
-
 uses{$IFDEF WIN32}Windows, {$ELSE}WinTypes, {$ENDIF}Classes, SysUtils,
 {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
@@ -56,7 +50,7 @@ uses{$IFDEF WIN32}Windows, {$ELSE}WinTypes, {$ENDIF}Classes, SysUtils,
 {$ENDIF DCS}
 {$IFDEF WIN32}JvRichEd, {$ENDIF}Menus, FiltEdit, StdCtrls, Buttons,
   JvLConst, JvxCtrls, JvGrids, JvCurrEdit, JvToolEdit, JvHintProp, JvDateUtil,
-  JvPickDate, JvSplit, JvxSlider, JvxClock, JvxAnimate, JvCombos, JvSpin, Consts,
+  JvPickDate, JvSplit, JvxSlider, JvxClock, JvxAnimate, JvSpin, Consts,
   JvDice, JvSwitch, JvCheckItm, JvVCLUtils, JvColors, JvAniFile, JvGraph,
 {$IFDEF USE_Jv_GIF}JvGIF, JvGIFCtrl, {$ENDIF}JvHints, JvExcptDlg, JvCConst,
   JvFileUtil, JvDsgn;
@@ -523,9 +517,13 @@ const
   BaseClass: TClass = TComponent;
 {$ENDIF}
 begin
-  RegisterComponents({LoadStr(srRXControls)}'JvX Controls', [TJvComboEdit, TJvFilenameEdit,
-    TJvDirectoryEdit, TJvDateEdit, TJvCalcEdit, TJvxCurrencyEdit, TJvTextListBox,
-      TJvxCheckListBox, TJvxFontComboBox, TJvxColorComboBox, TJvxSplitter, TJvxSlider,
+  RegisterComponents('Jv Composites',
+    [TJvComboEdit, TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvCalcEdit]);
+
+  RegisterComponents('Jv Convert', [TJvxCurrencyEdit]);
+
+  RegisterComponents('Jv Controls', [TJvTextListBox,
+    TJvxCheckListBox, TJvxSplitter, TJvxSlider,
       TJvxLabel, {$IFDEF WIN32}TJvxRichEdit, {$ENDIF}
     TJvxClock, TJvAnimatedImage, TJvxDrawGrid, TJvxSpeedButton,
 {$IFDEF USE_Jv_GIF}TJvGIFAnimator, {$ENDIF}TJvSpinButton, TJvxSpinEdit,
@@ -566,7 +564,6 @@ begin
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
 {$IFDEF COMPILER3_UP}
-  RegisterPropertyEditor(TypeInfo(Boolean), TJvxFontComboBox, 'TrueTypeOnly', nil);
   RegisterPropertyEditor(TypeInfo(TCursor), TJvxSplitter, 'Cursor', nil);
 {$ELSE}
   RegisterPropertyEditor(TypeInfo(TDateTime), TPersistent, '', TJvDateProperty);
