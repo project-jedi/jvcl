@@ -34,18 +34,20 @@ unit JvPrvwDoc;
     * Center pages in view - DONE
     * Only show horizontal scroll when page is too large (1 page), otherwise size Cols to fit - DONE
     + Draw to offscreen bitmap - DONE
-    * User configurable margins (could use DeviceInfo.OffsetLeft etc but needs to be available in inch/mm as well)
+    * Handle wheel scroll (scroll: up-down / shift+scroll: left-right) - DONE
+    * Implement TopRow, First, Next, Prior, Last - DONE
+    * Page Number Hints when thumb scrolling - DONE
+    * User configurable margins (could use DeviceInfo.OffsetLeft etc but needs to
+      be available in inch/mm as well) - DONE
+
     * Handle getting/setting SelectedPage (click on page -> select it)
     * Draw "fake" text when page is small (like Word does)?
-    * Handle wheel scroll (scroll: up-down / shift+scroll: left-right)
     * Handle Home, End, PgUp, PgDn (w. Ctrl?)
-    * Implement TopRow, First, Next, Prior, Last - DONE
-    * Page Number Hints when thumb scrolling
 
   KNOWN ISSUES:
     * smScale doesn't work in all cases
     * centering doesn't always work
-    * scrolling down and then changing properties (like Cols or SCale) doesn't always reposition the
+    * scrolling down and then changing properties (like Cols or Scale) doesn't always reposition the
       view and the scrollbars correctly
     * sometimes displays more pages (rows) than requested
 
@@ -62,8 +64,6 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls,
   Forms, Dialogs, JvComponent;
 
-const
-  WM_PREVIEWADDPAGE = WM_USER + 1001;
 
 type
   TJvPreviewScaleMode = (
@@ -256,7 +256,6 @@ type
     procedure SetSelectedPage(const Value: integer);
     procedure SetTopRow(Value: integer);
     procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
-    //    procedure WMPreviewAddPage(var Message: TMessage); message WM_PREVIEWADDPAGE;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
@@ -895,8 +894,6 @@ begin
     // keep adding pages until user says stop
   until not DoAddPage(Result, FPages.Add(Result));
   Change;
-  // post a message to ourself in case the user added the page in the OnAddPage event
-//  PostMessage(Handle, WM_PREVIEWADDPAGE, integer(Result), FPages.Add(Result));
 end;
 
 procedure TJvCustomPreviewControl.CalcScrollRange;
@@ -1241,16 +1238,6 @@ procedure TJvCustomPreviewControl.SetOptions(
 begin
   FOptions.Assign(Value);
 end;
-
-{
-procedure TJvCustomPreviewControl.WMPreviewAddPage(var Message: TMessage);
-begin
-  with Message do
-    DoAddPage(TMetaFile(wParam), lParam);
-  CalcScrollRange;
-  Invalidate;
-end;
-}
 
 procedure TJvCustomPreviewControl.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin

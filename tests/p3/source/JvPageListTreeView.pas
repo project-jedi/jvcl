@@ -7,7 +7,7 @@ Changes:
 }
 interface
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Windows, Messages, Classes, Graphics, Controls,
   ImgList, ComCtrls, JVCLVer;
 
 type

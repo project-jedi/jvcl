@@ -20,13 +20,15 @@ object frmTreeViewItems: TfrmTreeViewItems
   object Splitter1: TSplitter
     Left = 129
     Top = 0
-    Height = 159
+    Width = 3
+    Height = 164
+    Cursor = crHSplit
   end
   object Panel1: TPanel
     Left = 0
-    Top = 159
+    Top = 164
     Width = 443
-    Height = 45
+    Height = 40
     Align = alBottom
     BevelOuter = bvNone
     BorderWidth = 1
@@ -34,7 +36,7 @@ object frmTreeViewItems: TfrmTreeViewItems
     TabOrder = 0
     DesignSize = (
       443
-      45)
+      40)
     object Bevel1: TBevel
       Left = 1
       Top = 1
@@ -45,7 +47,7 @@ object frmTreeViewItems: TfrmTreeViewItems
     end
     object btnCancel: TButton
       Left = 359
-      Top = 12
+      Top = 10
       Width = 75
       Height = 25
       Anchors = [akRight, akBottom]
@@ -56,7 +58,7 @@ object frmTreeViewItems: TfrmTreeViewItems
     end
     object btnOK: TButton
       Left = 279
-      Top = 12
+      Top = 10
       Width = 75
       Height = 25
       Anchors = [akRight, akBottom]
@@ -70,7 +72,7 @@ object frmTreeViewItems: TfrmTreeViewItems
     Left = 0
     Top = 0
     Width = 129
-    Height = 159
+    Height = 164
     Align = alLeft
     DragMode = dmAutomatic
     HideSelection = False
@@ -87,17 +89,17 @@ object frmTreeViewItems: TfrmTreeViewItems
     Left = 132
     Top = 0
     Width = 311
-    Height = 159
+    Height = 164
     Align = alClient
     BevelOuter = bvNone
     Caption = ' '
     TabOrder = 2
     DesignSize = (
       311
-      159)
+      164)
     object btnNew: TButton
       Left = 16
-      Top = 58
+      Top = 63
       Width = 80
       Height = 25
       Action = acNewItem
@@ -106,7 +108,7 @@ object frmTreeViewItems: TfrmTreeViewItems
     end
     object btnNewSub: TButton
       Left = 16
-      Top = 90
+      Top = 95
       Width = 80
       Height = 25
       Action = acNewSubItem
@@ -115,7 +117,7 @@ object frmTreeViewItems: TfrmTreeViewItems
     end
     object btnDelete: TButton
       Left = 16
-      Top = 122
+      Top = 127
       Width = 80
       Height = 25
       Action = acDelete
@@ -126,13 +128,13 @@ object frmTreeViewItems: TfrmTreeViewItems
       Left = 112
       Top = 0
       Width = 195
-      Height = 155
+      Height = 160
       Anchors = [akLeft, akTop, akRight, akBottom]
       Caption = ' Properties: '
       TabOrder = 3
       DesignSize = (
         195
-        155)
+        160)
       object Label1: TLabel
         Left = 16
         Top = 24
@@ -208,7 +210,7 @@ object frmTreeViewItems: TfrmTreeViewItems
   object acItems: TActionList
     OnUpdate = acItemsUpdate
     Left = 72
-    Top = 72
+    Top = 24
     object acNewItem: TAction
       Category = 'TreeView'
       Caption = '&New Item'
@@ -253,6 +255,18 @@ object frmTreeViewItems: TfrmTreeViewItems
       ShortCut = 16424
       OnExecute = acNodeMoveDownExecute
     end
+    object acLoadFromFile: TAction
+      Category = 'TreeView'
+      Caption = 'Load...'
+      ShortCut = 16463
+      OnExecute = acLoadFromFileExecute
+    end
+    object acSaveToFile: TAction
+      Category = 'TreeView'
+      Caption = 'Save...'
+      ShortCut = 16467
+      OnExecute = acSaveToFileExecute
+    end
   end
   object PopupMenu1: TPopupMenu
     Left = 40
@@ -272,9 +286,19 @@ object frmTreeViewItems: TfrmTreeViewItems
     object N1: TMenuItem
       Caption = '-'
     end
-    object Save1: TMenuItem
+    object LoadFromFile1: TMenuItem
+      Action = acLoadFromFile
     end
-    object Load1: TMenuItem
+    object SaveToFile1: TMenuItem
+      Action = acSaveToFile
     end
+  end
+  object SaveDialog1: TSaveDialog
+    Left = 74
+    Top = 56
+  end
+  object OpenDialog1: TOpenDialog
+    Left = 42
+    Top = 56
   end
 end

@@ -58,48 +58,50 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, JVCLVer, JvTypes;
 
 type
-  TJvCharType=(efAny, efAlpha, efInteger, efAlphaNum, efHex, efFloat, efScientific, efCurrency, efValidChars, efInvalidChars, efCustom);
+  TJvCharType = (efAny, efAlpha, efInteger, efAlphaNum, efHex, efFloat, efScientific, efCurrency, efValidChars,
+    efInvalidChars, efCustom);
   TJvCharacters = string;
-  TJvCustomTextValidateEvent = procedure (Sender:TObject;Key:Char;const AText:string;var IsValid:boolean) of object;
+  TJvCustomTextValidateEvent = procedure(Sender: TObject; Key: Char; const AText: string; var IsValid: boolean) of
+    object;
 
   TJvCustomValidateEdit = class(TCustomEdit)
   private
     { Private declarations }
-    FCharType:TJvCharType;
+    FCharType: TJvCharType;
     FCharacters: TJvCharacters;
     FOnCustomValidate: TJvCustomTextValidateEvent;
     FAboutJVCL: TJVCLAboutInfo;
     FOnSetFocus: TJvFocusChangeEvent;
     FOnKillFocus: TJvFocusChangeEvent;
-    procedure SetCharType(Value:TJvCharType);
-    procedure WMPaste(var Message:Tmessage); message WM_PASTE;
-    procedure SetText(Value:TCaption);
-    function GetText:TCaption;
-    procedure WMSetFocus(var Msg:TWMSetFocus); message WM_SETFOCUS;
-    procedure WMKillFocus(var Msg:TWmKillFocus); message WM_KILLFOCUS;
+    procedure SetCharType(Value: TJvCharType);
+    procedure WMPaste(var Message: Tmessage); message WM_PASTE;
+    procedure SetText(Value: TCaption);
+    function GetText: TCaption;
+    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
+    procedure WMKillFocus(var Msg: TWmKillFocus); message WM_KILLFOCUS;
   protected
     { Protected declarations }
-    function RemoveCurrency(const S:string):string;
-    function InsertCurrency(const S:string):string;
-    procedure DoKillFocus(Msg:TWmKillFocus);dynamic;
-    procedure DoSetFocus(Msg:TWmSetFocus);dynamic;
-    function IsValidChar(const S:String;Key:Char):boolean;virtual;
-    procedure KeyPress(var Key:Char);override;
-    function DoValidate(const Key:Char;const AText:string):boolean;dynamic;
-    property CharType:TJvCharType read FCharType write SetCharType default efAny;
+    function RemoveCurrency(const S: string): string;
+    function InsertCurrency(const S: string): string;
+    procedure DoKillFocus(Msg: TWmKillFocus); dynamic;
+    procedure DoSetFocus(Msg: TWmSetFocus); dynamic;
+    function IsValidChar(const S: string; Key: Char): boolean; virtual;
+    procedure KeyPress(var Key: Char); override;
+    function DoValidate(const Key: Char; const AText: string): boolean; dynamic;
+    property CharType: TJvCharType read FCharType write SetCharType default efAny;
     // Characters is used with the efValidChars and efInvalidChars types only!
-    property Characters:TJvCharacters read FCharacters write FCharacters;
-    property Text:TCaption read GetText write SetText;
-    property OnCustomValidate:TJvCustomTextValidateEvent read FOnCustomValidate write FOnCustomValidate;
-    property OnSetFocus:TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
-    property OnKillFocus:TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
+    property Characters: TJvCharacters read FCharacters write FCharacters;
+    property Text: TCaption read GetText write SetText;
+    property OnCustomValidate: TJvCustomTextValidateEvent read FOnCustomValidate write FOnCustomValidate;
+    property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
+    property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
   public
     { Public declarations }
-    constructor Create(AOwner:TComponent);override;
+    constructor Create(AOwner: TComponent); override;
     procedure MakeValid;
   published
     { Published declarations }
-    property AboutJVCL:TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored false;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvValidateEdit = class(TJvCustomValidateEdit)
@@ -163,7 +165,6 @@ type
 
 // procedure Register;
 
-
 implementation
 
 {
@@ -173,7 +174,7 @@ begin
 end;
 }
 
-constructor TJvCustomValidateEdit.Create(AOwner:TComponent);
+constructor TJvCustomValidateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCharType := efAny;
@@ -182,30 +183,31 @@ end;
 procedure TJvCustomValidateEdit.DoKillFocus(Msg: TWmKillFocus);
 begin
   if Assigned(FOnKillFocus) then
-    FOnKillFocus(self, FindControl(Msg.FocusedWnd));
+    FOnKillFocus(Self, FindControl(Msg.FocusedWnd));
 end;
 
 procedure TJvCustomValidateEdit.DoSetFocus(Msg: TWmSetFocus);
 begin
   if Assigned(FOnSetFocus) then
-    FOnSetFocus(self, FindControl(Msg.FocusedWnd));
+    FOnSetFocus(Self, FindControl(Msg.FocusedWnd));
 end;
 
 function TJvCustomValidateEdit.DoValidate(const Key: Char;
   const AText: string): boolean;
 begin
-  Result := true;
+  Result := True;
   if Assigned(FOnCustomValidate) then
-    FOnCustomValidate(self, Key,AText,Result);
+    FOnCustomValidate(Self, Key, AText, Result);
 end;
 
-function TJvCustomValidateEdit.GetText:TCaption;
+function TJvCustomValidateEdit.GetText: TCaption;
 begin
   Result := inherited Text;
 end;
 
-function DeleteChars(const S:string;Ch:TSysCharSet):String;
-var i:integer;
+function DeleteChars(const S: string; Ch: TSysCharSet): string;
+var
+  i: integer;
 begin
   Result := '';
   for i := 1 to Length(S) do
@@ -213,68 +215,69 @@ begin
       Result := Result + S[i];
 end;
 
-function TJvCustomValidateEdit.InsertCurrency(const S:string):string;
+function TJvCustomValidateEdit.InsertCurrency(const S: string): string;
 begin
-  if S = '' then Exit;
+  if S = '' then
+    Exit;
   Result := RemoveCurrency(S);
-  if (Pos('-',Result) > 0) or (Pos('(',Result) > 0) then
+  if (Pos('-', Result) > 0) or (Pos('(', Result) > 0) then
   begin
-    Result := DeleteChars(Result,[' ','-','+','(',')']);
+    Result := DeleteChars(Result, [' ', '-', '+', '(', ')']);
     case NegCurrFormat of
-       0: // ($1)
-         Result := Format('(%s%s)',[CurrencyString,S]);
-       1: // -$1
-         Result := Format('-%s%s',[CurrencyString,S]);
-       2: // $-1
-         Result := Format('%s-%s',[CurrencyString,Result]);
-       3: // $1-
-         Result := Format('%s%s-',[CurrencyString,Result]);
-       4: // (1$)
-         Result := Format('(%s%s)',[Result,CurrencyString]);
-       5: // -1$
-         Result := Format('-%s%s',[Result,CurrencyString]);
-       6: // 1-$
-         Result := Format('%s-%s',[Result,CurrencyString]);
-       7: // 1$-
-         Result := Format('%s%s-',[Result,CurrencyString]);
-       8: // -1 $
-         Result := Format('-%s %s',[Result,CurrencyString]);
-       9: // -$ 1
-         Result := Format('-%s %s',[CurrencyString,Result]);
+      0: // ($1)
+        Result := Format('(%s%s)', [CurrencyString, S]);
+      1: // -$1
+        Result := Format('-%s%s', [CurrencyString, S]);
+      2: // $-1
+        Result := Format('%s-%s', [CurrencyString, Result]);
+      3: // $1-
+        Result := Format('%s%s-', [CurrencyString, Result]);
+      4: // (1$)
+        Result := Format('(%s%s)', [Result, CurrencyString]);
+      5: // -1$
+        Result := Format('-%s%s', [Result, CurrencyString]);
+      6: // 1-$
+        Result := Format('%s-%s', [Result, CurrencyString]);
+      7: // 1$-
+        Result := Format('%s%s-', [Result, CurrencyString]);
+      8: // -1 $
+        Result := Format('-%s %s', [Result, CurrencyString]);
+      9: // -$ 1
+        Result := Format('-%s %s', [CurrencyString, Result]);
       10: // 1 $-
-         Result := Format('%s %s-',[Result,CurrencyString]);
+        Result := Format('%s %s-', [Result, CurrencyString]);
       11: // $ 1-
-         Result := Format('%s %s-',[CurrencyString,Result]);
+        Result := Format('%s %s-', [CurrencyString, Result]);
       12: // $ -1
-         Result := Format('%s -%s',[CurrencyString,Result]);
+        Result := Format('%s -%s', [CurrencyString, Result]);
       13: // 1- $
-         Result := Format('%s- %s',[Result,CurrencyString]);
+        Result := Format('%s- %s', [Result, CurrencyString]);
       14: // ($ 1)
-         Result := Format('(%s %s)',[CurrencyString,Result]);
+        Result := Format('(%s %s)', [CurrencyString, Result]);
       15: // (1 $)
-         Result := Format('(%s %s)',[Result,CurrencyString]);
+        Result := Format('(%s %s)', [Result, CurrencyString]);
     end
   end
   else
   begin
-    Result := DeleteChars(Result,[' ','+','(',')']);
+    Result := DeleteChars(Result, [' ', '+', '(', ')']);
     case CurrencyFormat of
       0: // $1
-        Result := Format('%s%s',[CurrencyString,Result]);
+        Result := Format('%s%s', [CurrencyString, Result]);
       1: // 1$
-        Result := Format('%s%s',[Result,CurrencyString]);
+        Result := Format('%s%s', [Result, CurrencyString]);
       2: // $ 1
-        Result := Format('%s %s',[CurrencyString,Result]);
+        Result := Format('%s %s', [CurrencyString, Result]);
       3: // 1 $
-        Result := Format('%s %s',[Result,CurrencyString]);
+        Result := Format('%s %s', [Result, CurrencyString]);
     end;
   end;
 end;
 
-function TJvCustomValidateEdit.IsValidChar(const S:string;Key:Char):boolean;
+function TJvCustomValidateEdit.IsValidChar(const S: string; Key: Char): boolean;
 const
-  IntCodes = [#8,'0'..'9'];
-  HexCodes = IntCodes + ['A'..'F','a'..'f'];
+  IntCodes = [#8, '0'..'9'];
+  HexCodes = IntCodes + ['A'..'F', 'a'..'f'];
 //var
 //  FTmpKey:string;FKeyInfo:word;
 begin
@@ -282,38 +285,41 @@ begin
 //  FTmpKey := Key;
 //  GetStringTypeEx(LOCALE_USER_DEFAULT,CT_CTYPE1,PChar(FTmpKey),1,FKeyInfo);
   case FCharType of
-    efAny:          Result := True;
-    efAlpha:        Result := IsCharAlpha(Key);
-    efInteger:      Result := (Key in IntCodes) or ((Key = '+') and (Pos('+',S) = 0)) or ((Key = '-') and (Pos('-',S) = 0));
-    efAlphaNum:     Result := IsCharAlphaNumeric(Key);
-    efHex:          Result := (Key in HexCodes);
+    efAny: Result := True;
+    efAlpha: Result := IsCharAlpha(Key);
+    efInteger: Result := (Key in IntCodes) or ((Key = '+') and (Pos('+', S) = 0)) or ((Key = '-') and (Pos('-', S) =
+        0));
+    efAlphaNum: Result := IsCharAlphaNumeric(Key);
+    efHex: Result := (Key in HexCodes);
     efFloat, efCurrency: Result := (Key in IntCodes)
-                         or ((Key = DecimalSeparator) and (Pos(DecimalSeparator,S) = 0))
-                         or ((Key = '+') and (Pos('+',S) = 0)) or ((Key = '-') and (Pos('-',S) = 0));
-    efScientific:   Result := (Key in IntCodes)
-                      or ((Key = DecimalSeparator) and (Pos(DecimalSeparator,S) = 0))
-                      or ((Key in ['E','e']) and (Pos('e',LowerCase(S)) = 0))
-                      or ((Key = '+') and (Pos('+',S) = 0)) or ((Key = '-') and (Pos('-',S) = 0));
-    efValidChars:   Result := Pos(Key,Characters) > 0;
-    efInvalidChars: Result := Pos(Key,Characters) = 0;
+      or ((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0))
+        or ((Key = '+') and (Pos('+', S) = 0)) or ((Key = '-') and (Pos('-', S) = 0));
+    efScientific: Result := (Key in IntCodes)
+      or ((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0))
+        or ((Key in ['E', 'e']) and (Pos('e', LowerCase(S)) = 0))
+        or ((Key = '+') and (Pos('+', S) = 0)) or ((Key = '-') and (Pos('-', S) = 0));
+    efValidChars: Result := Pos(Key, Characters) > 0;
+    efInvalidChars: Result := Pos(Key, Characters) = 0;
   else // efCustom
-    Result := DoValidate(Key,S);
+    Result := DoValidate(Key, S);
   end;
 end;
 
-procedure TJvCustomValidateEdit.KeyPress(var Key:Char);
+procedure TJvCustomValidateEdit.KeyPress(var Key: Char);
 begin
-  if not IsValidChar(Text,Key) then
+  if not IsValidChar(Text, Key) then
     Key := #0;
   inherited;
 end;
 
 procedure TJvCustomValidateEdit.MakeValid;
-var S:string;i:integer;
+var
+  S: string;
+  i: integer;
 begin
   S := '';
   for i := 1 to Length(Text) do
-    if IsValidChar(Copy(Text,1,i-1),Text[i]) then
+    if IsValidChar(Copy(Text, 1, i - 1), Text[i]) then
       S := S + Text[i];
   if not Focused and (CharType = efCurrency) then
     inherited Text := InsertCurrency(S)
@@ -321,12 +327,12 @@ begin
     inherited Text := S;
 end;
 
-function TJvCustomValidateEdit.RemoveCurrency(const S:string):string;
+function TJvCustomValidateEdit.RemoveCurrency(const S: string): string;
 begin
-  Result := StringReplace(DeleteChars(S,[' ','(',')']),CurrencyString,'',[rfReplaceAll,rfIgnoreCase]);
+  Result := StringReplace(DeleteChars(S, [' ', '(', ')']), CurrencyString, '', [rfReplaceAll, rfIgnoreCase]);
 end;
 
-procedure TJvCustomValidateEdit.SetCharType(Value:TJvCharType);
+procedure TJvCustomValidateEdit.SetCharType(Value: TJvCharType);
 begin
   if FCharType <> Value then
   begin
@@ -335,7 +341,7 @@ begin
   end;
 end;
 
-procedure TJvCustomValidateEdit.SetText(Value:TCaption);
+procedure TJvCustomValidateEdit.SetText(Value: TCaption);
 begin
   inherited Text := Value;
   MakeValid;
@@ -349,7 +355,7 @@ begin
     inherited Text := InsertCurrency(Text);
 end;
 
-procedure TJvCustomValidateEdit.WMPaste(var Message:Tmessage);
+procedure TJvCustomValidateEdit.WMPaste(var Message: Tmessage);
 begin
   inherited;
   MakeValid;
@@ -364,3 +370,4 @@ begin
 end;
 
 end.
+

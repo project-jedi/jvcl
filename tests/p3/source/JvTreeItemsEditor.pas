@@ -8,7 +8,7 @@ Changes:
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ActnList, ComCtrls, Menus, StdActns,
   DesignEditors, DesignIntf;
 
@@ -51,8 +51,6 @@ type
     cbState: TComboBox;
     edNodeText: TEdit;
     PopupMenu1: TPopupMenu;
-    Save1: TMenuItem;
-    Load1: TMenuItem;
     acNodeMoveLeft: TAction;
     acNodeMoveRight: TAction;
     acNodeMoveUp: TAction;
@@ -62,6 +60,12 @@ type
     N1: TMenuItem;
     Moveleft1: TMenuItem;
     Moveright1: TMenuItem;
+    acLoadFromFile: TAction;
+    acSaveToFile: TAction;
+    LoadFromFile1: TMenuItem;
+    SaveToFile1: TMenuItem;
+    SaveDialog1: TSaveDialog;
+    OpenDialog1: TOpenDialog;
     procedure edNodeTextChange(Sender: TObject);
     procedure acNewItemExecute(Sender: TObject);
     procedure acNewSubItemExecute(Sender: TObject);
@@ -83,6 +87,8 @@ type
     procedure tvItemsDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
     procedure tvItemsDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure acLoadFromFileExecute(Sender: TObject);
+    procedure acSaveToFileExecute(Sender: TObject);
   private
     { Private declarations }
     FDragNode:TTreeNode;
@@ -465,6 +471,18 @@ begin
     FDragNode.MoveTo(N,naAddChildFirst);
   FDragNode := nil;
   tvItems.FullExpand;
+end;
+
+procedure TfrmTreeViewItems.acLoadFromFileExecute(Sender: TObject);
+begin
+  if OpenDialog1.Execute then
+    tvItems.LoadFromFile(OpenDialog1.Filename);
+end;
+
+procedure TfrmTreeViewItems.acSaveToFileExecute(Sender: TObject);
+begin
+  if SaveDialog1.Execute then
+    tvItems.SaveToFile(SaveDialog1.Filename);
 end;
 
 end.

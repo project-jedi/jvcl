@@ -22,6 +22,9 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+* setting Stretch to false for graphic items, renders them at the wrong scale
+* the TStrings previewer has a *very* simple word-wrap feature - use the RTF variant if possible
+
 -----------------------------------------------------------------------------}
 {$I JVCL.INC}
 unit JvPrvwRender;
@@ -33,7 +36,7 @@ uses
 
 type
   EPrintPreviewError = Exception;
-  TJvCustomPreviewer = class(TJvComponent)
+  TJvCustomPreviewRenderer = class(TJvComponent)
   private
     FPrintPreview: TJvCustomPreviewControl;
     FOldAddPage: TJvDrawPageEvent;
@@ -50,7 +53,7 @@ type
     function CreatePreview(Append: boolean): boolean; virtual;
   end;
 
-  TJvRichEditPreviewer = class(TJvCustomPreviewer)
+  TJvPreviewRenderRichEdit = class(TJvCustomPreviewRenderer)
   private
     FFinished: boolean;
     FLastChar: integer;
@@ -68,7 +71,7 @@ type
     property RichEdit: TCustomRichEdit read FRichEdit write SetRichEdit;
   end;
 
-  TJvStringsPreviewer = class(TJvCustomPreviewer)
+  TJvPreviewRenderStrings = class(TJvCustomPreviewRenderer)
   private
     FFinished: boolean;
     FCurrentRow: integer;
@@ -100,7 +103,7 @@ type
   public
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
-    function DestRect(RefRect: TRect): TRect;
+    function DestRect(RefRect: TRect;DestDC:HDC): TRect;
     procedure UpdateGraphic;
   published
     property Picture: TPicture read FPicture write SetPicture;
@@ -120,10 +123,12 @@ type
     property Items[Index: integer]: TJvPreviewGraphicItem read GetItems write SetItems; default;
   end;
 
-  TJvGraphicPreviewer = class(TJvCustomPreviewer)
+  TJvPreviewRenderGraphics = class(TJvCustomPreviewRenderer)
   private
     FImages: TJvPreviewGraphicItems;
     procedure SetImages(const Value: TJvPreviewGraphicItems);
+    function GetPPX(ADC:HDC):integer;
+    function GetPPY(ADC:HDC):integer;
   protected
     procedure DoAddPage(Sender: TObject; PageIndex: integer;
       Canvas: TCanvas; PageRect, PrintRect: TRect; var NeedMorePages: boolean); override;
@@ -137,13 +142,12 @@ type
   end;
 
   // preview a TControl descendant
-  TJvControlPreviewer = class(TJvCustomPreviewer)
+  TJvPreviewRenderControl = class(TJvCustomPreviewRenderer)
   private
     FControl: TControl;
     FProportional: boolean;
     FCenter: boolean;
     FStretch: boolean;
-    FTransparent: boolean;
     procedure SetControl(const Value: TControl);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
@@ -162,7 +166,6 @@ type
     property Center: boolean read FCenter write FCenter default true;
     property Proportional: boolean read FProportional write FProportional default true;
     property Stretch: boolean read FStretch write FStretch default true;
-    property Transparent:boolean read FTransparent write FTransparent;
   end;
 
   TJvNewPageEvent = procedure(Sender:TObject;PageIndex:integer) of object;
@@ -283,9 +286,9 @@ begin
   OffsetRect(Result, DstRect.Left, DstRect.Top);
 end;
 
-{ TJvCustomPreviewer }
+{ TJvCustomPreviewRenderer }
 
-function TJvCustomPreviewer.CreatePreview(Append: boolean): boolean;
+function TJvCustomPreviewRenderer.CreatePreview(Append: boolean): boolean;
 begin
   Result := false;
   if PrintPreview = nil then
@@ -301,7 +304,7 @@ begin
   end;
 end;
 
-procedure TJvCustomPreviewer.InternalDoAddPage(Sender: TObject;
+procedure TJvCustomPreviewRenderer.InternalDoAddPage(Sender: TObject;
   PageIndex: integer; Canvas: TCanvas; PageRect, PrintRect: TRect;
   var NeedMorePages: boolean);
 begin
@@ -310,7 +313,7 @@ begin
     FOldAddPage(Sender, PageIndex, Canvas, PageRect, PrintRect, NeedMOrePages);
 end;
 
-procedure TJvCustomPreviewer.Notification(AComponent: TComponent;
+procedure TJvCustomPreviewRenderer.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited;
@@ -318,7 +321,7 @@ begin
     PrintPreview := nil;
 end;
 
-procedure TJvCustomPreviewer.SetPrintPreview(
+procedure TJvCustomPreviewRenderer.SetPrintPreview(
   const Value: TJvCustomPreviewControl);
 begin
   if FPrintPreview <> value then
@@ -331,9 +334,9 @@ begin
   end;
 end;
 
-{ TJvRichEditPreviewer }
+{ TJvPreviewRenderRichEdit }
 
-function TJvRichEditPreviewer.CreatePreview(Append: boolean): boolean;
+function TJvPreviewRenderRichEdit.CreatePreview(Append: boolean): boolean;
 begin
   if RichEdit = nil then
     raise
@@ -345,7 +348,7 @@ begin
     Result := inherited CreatePreview(Append);
 end;
 
-procedure TJvRichEditPreviewer.DoAddPage(Sender: TObject;
+procedure TJvPreviewRenderRichEdit.DoAddPage(Sender: TObject;
   PageIndex: integer; Canvas: TCanvas; PageRect, PrintRect: TRect;
   var NeedMorePages: boolean);
 var
@@ -395,7 +398,7 @@ begin
   end;
 end;
 
-procedure TJvRichEditPreviewer.Notification(AComponent: TComponent;
+procedure TJvPreviewRenderRichEdit.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited;
@@ -403,7 +406,7 @@ begin
     RichEdit := nil;
 end;
 
-procedure TJvRichEditPreviewer.SetRichEdit(
+procedure TJvPreviewRenderRichEdit.SetRichEdit(
   const Value: TCustomRichEdit);
 begin
   if FRichEdit <> Value then
@@ -416,17 +419,16 @@ begin
   end;
 end;
 
-{ TJvStringsPreviewer }
+{ TJvPreviewRenderStrings }
 
-constructor TJvStringsPreviewer.Create(AOwner: TComponent);
+constructor TJvPreviewRenderStrings.Create(AOwner: TComponent);
 begin
   inherited;
   FStrings := TStringlist.Create;
   FFont := TFont.Create;
-
 end;
 
-function TJvStringsPreviewer.CreatePreview(Append: boolean): boolean;
+function TJvPreviewRenderStrings.CreatePreview(Append: boolean): boolean;
 begin
   Result := Strings.Count > 0;
   FFinished := not Result;
@@ -435,14 +437,14 @@ begin
     Result := inherited CreatePreview(Append);
 end;
 
-destructor TJvStringsPreviewer.Destroy;
+destructor TJvPreviewRenderStrings.Destroy;
 begin
   FStrings.Free;
   FFont.Free;
   inherited;
 end;
 
-procedure TJvStringsPreviewer.DoAddPage(Sender: TObject;
+procedure TJvPreviewRenderStrings.DoAddPage(Sender: TObject;
   PageIndex: integer; Canvas: TCanvas; PageRect, PrintRect: TRect;
   var NeedMorePages: boolean);
 var i, IncValue: integer;
@@ -483,26 +485,26 @@ begin
   FFinished := true;
 end;
 
-procedure TJvStringsPreviewer.SetFont(const Value: TFont);
+procedure TJvPreviewRenderStrings.SetFont(const Value: TFont);
 begin
   FFont.Assign(Value);
 end;
 
-procedure TJvStringsPreviewer.SetStrings(const Value: TStrings);
+procedure TJvPreviewRenderStrings.SetStrings(const Value: TStrings);
 begin
   FStrings.Assign(Value);
 end;
 
-{ TJvControlPreviewer }
+{ TJvPreviewRenderControl }
 
-function TJvControlPreviewer.CreatePreview(Append: boolean): boolean;
+function TJvPreviewRenderControl.CreatePreview(Append: boolean): boolean;
 begin
   Result := Control <> nil;
   if Result then
     Result := inherited CreatePreview(Append);
 end;
 
-procedure TJvControlPreviewer.DoAddPage(Sender: TObject;
+procedure TJvPreviewRenderControl.DoAddPage(Sender: TObject;
   PageIndex: Integer; Canvas: TCanvas; PageRect, PrintRect: TRect;
   var NeedMorePages: Boolean);
 var Bitmap: TBitmap;
@@ -525,7 +527,6 @@ begin
     Bitmap.HandleType := bmDIB;
     Bitmap.Canvas.FillRect(Bitmap.Canvas.ClipRect);
     DrawControl(Bitmap.Canvas, Bitmap.Width, Bitmap.Height);
-    Bitmap.Transparent := Transparent;
     if (Bitmap.Width > 0) and (Bitmap.Height > 0) then
     begin
       ARect := CalcDestRect(Bitmap.Width, Bitmap.Height, PrintRect, Stretch, Proportional, Center);
@@ -536,7 +537,7 @@ begin
   end;
 end;
 
-procedure TJvControlPreviewer.Notification(AComponent: TComponent;
+procedure TJvPreviewRenderControl.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited;
@@ -544,7 +545,7 @@ begin
     Control := nil;
 end;
 
-procedure TJvControlPreviewer.SetControl(const Value: TControl);
+procedure TJvPreviewRenderControl.SetControl(const Value: TControl);
 begin
   if FControl <> Value then
   begin
@@ -556,7 +557,7 @@ begin
   end;
 end;
 
-procedure TJvControlPreviewer.DrawControl(ACanvas: TCanvas; AWidth, AHeight: integer);
+procedure TJvPreviewRenderControl.DrawControl(ACanvas: TCanvas; AWidth, AHeight: integer);
 var SaveIndex: integer;
   ADC: HDC;
 begin
@@ -569,14 +570,14 @@ begin
     begin
       SaveIndex := SaveDC(ADC);
       try
-//        Control.ControlState := Control.ControlState + [csPaintCopy];
+        Control.ControlState := Control.ControlState + [csPaintCopy];
         MoveWindowOrg(ADC, 0, 0);
         IntersectClipRect(ADC, 0, 0, Control.Width, Control.Height);
         Control.Perform(WM_ERASEBKGND, ADC, 0);
         Control.Perform(WM_PAINT, ADC, 0);
       finally
         RestoreDC(ADC, SaveIndex);
-//        Control.ControlState := Control.ControlState - [csPaintCopy];
+        Control.ControlState := Control.ControlState - [csPaintCopy];
       end;
     end
   finally
@@ -584,7 +585,7 @@ begin
   end;
 end;
 
-constructor TJvControlPreviewer.Create(AOwner: TComponent);
+constructor TJvPreviewRenderControl.Create(AOwner: TComponent);
 begin
   inherited;
   FStretch := true;
@@ -627,10 +628,11 @@ begin
   FStretch := true;
 end;
 
-function TJvPreviewGraphicItem.DestRect(RefRect: TRect): TRect;
+function TJvPreviewGraphicItem.DestRect(RefRect: TRect;DestDC:HDC): TRect;
+var Points:TPoint;
 begin
   UpdateGraphic;
-  Result := CalcDestRect(Picture.Width, Picture.Height, RefRect, Stretch, Proportional, Center);
+  Result := CalcDestRect(Picture.Width,Picture.Height, RefRect, Stretch, Proportional, Center);
 end;
 
 destructor TJvPreviewGraphicItem.Destroy;
@@ -655,28 +657,28 @@ begin
   end;
 end;
 
-{ TJvGraphicPreviewer }
+{ TJvPreviewRenderGraphics }
 
-constructor TJvGraphicPreviewer.Create(AOwner: TComponent);
+constructor TJvPreviewRenderGraphics.Create(AOwner: TComponent);
 begin
   inherited;
   FImages := TJvPreviewGraphicItems.Create(self);
 end;
 
-function TJvGraphicPreviewer.CreatePreview(Append: boolean): boolean;
+function TJvPreviewRenderGraphics.CreatePreview(Append: boolean): boolean;
 begin
   Result := FImages.Count > 0;
   if Result then
     Result := inherited CreatePreview(Append);
 end;
 
-destructor TJvGraphicPreviewer.Destroy;
+destructor TJvPreviewRenderGraphics.Destroy;
 begin
   FImages.Free;
   inherited;
 end;
 
-procedure TJvGraphicPreviewer.DoAddPage(Sender: TObject;
+procedure TJvPreviewRenderGraphics.DoAddPage(Sender: TObject;
   PageIndex: integer; Canvas: TCanvas; PageRect, PrintRect: TRect;
   var NeedMorePages: boolean);
 var img: TImageList;
@@ -695,12 +697,22 @@ begin
           img.Free;
         end;
       end;
-      Canvas.StretchDraw(DestRect(PrintRect), Picture.Graphic);
+      Canvas.StretchDraw(DestRect(PrintRect,Canvas.Handle), Picture.Graphic);
     end;
   NeedMorePages := PageIndex < Images.Count - 1;
 end;
 
-procedure TJvGraphicPreviewer.SetImages(const Value: TJvPreviewGraphicItems);
+function TJvPreviewRenderGraphics.GetPPX(ADC: HDC): integer;
+begin
+  Result := GetDeviceCaps(ADC,LOGPIXELSX);
+end;
+
+function TJvPreviewRenderGraphics.GetPPY(ADC: HDC): integer;
+begin
+  Result := GetDeviceCaps(ADC,LOGPIXELSY);
+end;
+
+procedure TJvPreviewRenderGraphics.SetImages(const Value: TJvPreviewGraphicItems);
 begin
   FImages.Assign(Value);
 end;
