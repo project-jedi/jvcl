@@ -47,7 +47,7 @@ const
 function SameText(const S1, S2: string): Boolean;
 {$ENDIF COMPILER5}
 
-procedure StrToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = True);
+procedure StrToStrings(S: string; const Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = True);
 function StringsToStr(const List: TStrings; const Sep: AnsiString; const AllowEmptyString: Boolean = True): AnsiString;
 function StrEnsureSuffix(const Suffix, Text: AnsiString): AnsiString;
 function StrRepeat(const S: AnsiString; Count: Integer): AnsiString;
@@ -88,7 +88,7 @@ end;
 
 { JclStrings emulation }
 
-procedure StrToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = True);
+procedure StrToStrings(S: string; const Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = True);
 var
   I, L: Integer;
   Left: AnsiString;

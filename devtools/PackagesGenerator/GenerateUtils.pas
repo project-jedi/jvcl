@@ -1,4 +1,5 @@
 {$I jvcl.inc}
+
 unit GenerateUtils;
 
 interface
@@ -157,10 +158,13 @@ type
 
   TClxReplacementList = class (TObjectList)
   private
+    IgnoredFiles: TStringList;
+
     function GetItems(index: integer): TClxReplacement;
     procedure SetItems(index: integer; const Value: TClxReplacement);
   public
     constructor Create(Node : TJvSimpleXmlElem); overload;
+    destructor Destroy; override;
 
     function DoReplacement(const Filename: string): string;
 
@@ -168,20 +172,20 @@ type
   end;
 
 var
-  GCallBack         : TGenerateCallBack;
-  GPackagesLocation : string;
-  GIncFileName      : string;
-  GPrefix           : string;
-  GNoLibSuffixPrefix: string;
-  GClxPrefix        : string;
-  GFormat           : string;
-  GNoLibSuffixFormat: string;
-  GClxFormat        : string;
-  TargetList        : TTargetList;
-  AliasList         : TAliasList;
-  DefinesList       : TDefinesList;
-  ClxReplacementList: TClxReplacementList;
-  IsBinaryCache     : TStringList;
+  GCallBack          : TGenerateCallBack;
+  GPackagesLocation  : string;
+  GIncFileName       : string;
+  GPrefix            : string;
+  GNoLibSuffixPrefix : string;
+  GClxPrefix         : string;
+  GFormat            : string;
+  GNoLibSuffixFormat : string;
+  GClxFormat         : string;
+  TargetList         : TTargetList;
+  AliasList          : TAliasList;
+  DefinesList        : TDefinesList;
+  ClxReplacementList : TClxReplacementList;
+  IsBinaryCache      : TStringList;
 
 function PackagesLocation : string;
 begin
@@ -502,7 +506,7 @@ begin
 
       TargetList := TTargetList.Create(Node.Items.ItemNamed['targets']);
       AliasList  := TAliasList.Create(Node.Items.ItemNamed['aliases']);
-      ClxReplacementList := TClxReplacementList.Create(Node.Items.ItemNamed['ClxReplacements']);
+      ClxReplacementList  := TClxReplacementList.Create(Node.Items.ItemNamed['ClxReplacements']);
 
       GIncFileName      := Node.Properties.ItemNamed['IncFile'].Value;
       GPackagesLocation := Node.Properties.ItemNamed['packages'].Value;
@@ -757,7 +761,7 @@ procedure EnsureCondition(lines: TStrings; Node : TJvSimpleXmlElem;
 var
   Condition : string;
 begin
-  Condition := Node.Properties.ItemNamed['Condition'].Value;
+  Condition := Node.Properties.Value('Condition');
   // if there is a condition
   if (Condition <> '') then
   begin
@@ -1142,9 +1146,9 @@ end;
 function GetDescription(rootNode: TJvSimpleXmlElem; const target: string): string;
 begin
   if TargetList[GetNonPersoTarget(target)].IsCLX then
-    Result := rootNode.Items.ItemNamed['ClxDescription'].Value
+    Result := rootNode.Items.Value('ClxDescription') // meight not exist
   else
-    Result := rootNode.Items.ItemNamed['Description'].Value;
+    Result := rootNode.Items.Value('Description');
 end;
 
 function ApplyTemplateAndSave(const path, target, package, extension
@@ -1513,15 +1517,15 @@ const
 var
   F : TFileStream;
   Buffer : array[0..BufferSize] of Char;
-  I : Integer;
+  I, Index : Integer;
   BinaryCount : Integer;
 begin
   Result := False;
   // If the cache contains information on that file, get the result
   // from it and skip the real test
-  if IsBinaryCache.IndexOf(FileName) > -1 then
+  if IsBinaryCache.Find(FileName, Index) then
   begin
-    Result := Boolean(IsBinaryCache.Objects[IsBinaryCache.IndexOf(FileName)]);
+    Result := Boolean(IsBinaryCache.Objects[Index]);
     Exit;
   end;
 
@@ -1569,29 +1573,29 @@ var
   persoTarget : string;
   target : string;
   incfile : TStringList;
-  XmlFileCache: TObjectList;
+  XmlFileCache: TStringList;
+
 
   function GetXmlFile(const xmlName: string): TJvSimpleXML;
   var
     i: Integer;
   begin
-    for i := 0 to XmlFileCache.Count - 1 do
+    if XmlFileCache.Find(xmlName, i) then
+      Result := TJvSimpleXML(XmlFileCache.Objects[i])
+    else
     begin
-      Result := TJvSimpleXML(XmlFileCache[i]);
-      if Result.FileName = xmlName then
-        Exit;
-    end;
-    Result := TJvSimpleXML.Create(nil);
-    XmlFileCache.Add(Result);
+      Result := TJvSimpleXML.Create(nil);
+      XmlFileCache.AddObject(xmlName, Result);
 
-    Result.Options := [];
-    Result.Filename := xmlName; // load file
+      Result.Options := [];
+      Result.Filename := xmlName; // load file
+    end;
   end;
 
 begin
   Result := True;
-  
-  if packages.count = 0 then
+
+  if packages.Count = 0 then
   begin
     ErrMsg := '[Error] No package to generate, no xml file found';
     Result := False;
@@ -1637,8 +1641,9 @@ begin
   if format <> '' then
     GFormat := Format;
 
-  XmlFileCache := TObjectList.Create;
+  XmlFileCache := TStringList.Create;
   try
+    XmlFileCache.Sorted := True;
     // for all targets
     for i := 0 to targets.Count - 1 do
     begin
@@ -1725,6 +1730,8 @@ begin
       FindClose(rec);
     end;
   finally
+    for i := 0 to XmlFileCache.Count - 1 do
+      XmlFileCache.Objects[i].Free;
     XmlFileCache.Free;
   end;
 {  if makeDof then
@@ -2064,11 +2071,25 @@ var
   i : integer;
 begin
   inherited Create(True);
+  IgnoredFiles := TStringList.Create;
+  IgnoredFiles.Sorted := True;
+  IgnoredFiles.Duplicates := dupIgnore;
+
   if Assigned(Node) then
     for i := 0 to Node.Items.Count - 1 do
     begin
-      Add(TClxReplacement.Create(Node.Items[i]));
+      if Node.Items[i].Name = 'replacement' then
+        Add(TClxReplacement.Create(Node.Items[i]))
+      else if Node.Items[i].Name = 'ignoredFile' then
+        IgnoredFiles.Add(ExtractFileName(Node.Items[i].Properties.Value('filename')));
     end;
+end;
+
+destructor TClxReplacementList.Destroy;
+begin
+  IgnoredFiles.Free;
+
+  inherited Destroy;
 end;
 
 function TClxReplacementList.DoReplacement(
@@ -2077,9 +2098,12 @@ var
   i : Integer;
 begin
   Result := Filename;
-  for i := 0 to Count -1 do
+
+  // Only do the replacement if the file is not to be ignored
+  if not IgnoredFiles.Find(ExtractFileName(Filename), i) then
   begin
-    Result := Items[i].DoReplacement(Result);
+    for i := 0 to Count -1 do
+      Result := Items[i].DoReplacement(Result);
   end;
 end;
 
@@ -2099,6 +2123,8 @@ initialization
   StartupDir := GetCurrentDir;
 
   IsBinaryCache := TStringList.Create;
+  IsBinaryCache.Sorted := True;
+  IsBinaryCache.Duplicates := dupIgnore;
 
 // ensure the lists are not assigned
   TargetList := nil;
