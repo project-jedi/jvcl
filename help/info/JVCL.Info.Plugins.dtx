@@ -1,0 +1,160 @@
+@@$JVCL.Info.Plugins
+<GROUP $JVCL.Info>
+<TITLE Writing plugins and plugin enabled applications>
+  In order to allow developers to extend applications a mechanism is needed to be able to
+  communicate between the main application and the extensions. These extensions are commonly
+  refered to as plugins as this is a pretty accurate description of what it does: an end user
+  places an extension's DLL (or a runtime package) in the applications folder and the extension
+  will be available in the main application.
+
+  A good example of an application that has plugin capabilities is WinAMP. Any developer can write
+  an extension for WinAMP. WinAMP supports various types of plugins: User Interface plugins, input
+  plugins, output plugins, sound processing plugins and more. All an end user needs to do is make
+  sure the plugin is an the appropiate folder and WinAMP will load it.
+
+  Extensions commonly provide some additional functionality which will have to be made available in
+  the main application (referred to as the host application). This is usually done by adding an
+  option to a menu or a button to a toolbar. Some extensions will not provide user selectable
+  functionality, but rather provide some form of processing. These plugins will therefor not provide
+  additional menu items or buttons, but will be linked into a some kind of processing chain.
+
+  The plugin capabilities provided by the JEDI-VCL will service both types of extensions. Each
+  plugin may support either commands, message processing or both. A plugin is not limited to a
+  single command or a single message.
+
+  Click <LINK $JVCL.Info.Plugins.PluginWriting, here> for more information regarding writing
+  plugins. Click <LINK $JVCL.Info.Plugins.HostWriting, here> for more information regarding plugin
+  enabling applications.
+----------------------------------------------------------------------------------------------------
+@@$JVCL.Info.Plugins.PluginWriting
+<GROUP $JVCL.Info.Plugins>
+<TITLE Writing plugins>
+  Writing plugins requires some knowledge about the host application. More precisely, you need to
+  know if an application allows commands to be added to it's menu and/or toolbar if and which
+  messages it can send and if it allows plugins to be configured and how it wants to do this.
+
+  Plugins can also be written to provide additional MDI children, additional forms, data modules
+  and probably a lot more. It all more or less depends on what the host application supports.
+
+  In any case, it's vital to study the host applications documentation to be able to write plugins
+  the host application can actually cope with.
+  
+  This chapter explains some of the basics behind writing plugins and provides a tutorial for
+  writing a simple plugin.
+----------------------------------------------------------------------------------------------------
+@@JVCL.Info.Plugins.PluginWriting.Basics
+<GROUP $JVCL.Info.Plugins.PluginWriting>
+<TITLE Writing plugins: the basics>
+  To create plugin for an application you generally use the provided JEDI Plugin Wizard, which can
+  be accessed by going to File|New... in Delphi. Head over to the Projects tab, select the JEDI
+  Plugin Wizard icon and press OK.
+  
+  A dialog is shown where you can enter the plugin's name and type of plugin.
+  
+  The name denotes the name of the project (prefixed with <B>Plg</B> as well as the name of the
+  unit (prefixed with <B>Plugin</B>) and the TJvPlugin instance (prefixed with <B>Tplg</B>) that
+  will be created.
+  
+  The plugin type determines if a new DLL project or a new Package project will be created for the
+  plugin.
+  
+  After pressing OK, a new project will be created, containing a unit with the TJvPlugin instance.
+  
+  To complete the plugin you can follow these tasks:
+    * Specify the plugin ID. This ID must be unique in the host application, so it is wise to use
+      a name that includes your company or your own name. Alternatively, you could assign a GUID
+      (<B>G</B>lobal <B>U</B>nique <B>ID</B>enditifier), but that would make the ID useless in the
+      host application user interface as means of identifying which plugins are loaded. Internally,
+      the host application doesn't care what this property contains, as long as it's unique.
+    * Optionally specify the author, copyright, description and version of your plugin.
+    * Optionally add one or more commands to the Commands collection of the TJvPlugin instance,
+      providing a caption and an OnExecute handler and optionally a hint, custom data and/or a
+      bitmap for each command.
+    * Optionally assign a handler to the OnInitialize event.
+    * Optionally assign a handler to the OnConfigure event.
+    * Optionally assign a handler to the OnPluginMessage event
+  All tasks (except the first) are optional, but a useful plugin requires either an OnPluginMessage
+  handler or a least one command to be assigned. You should check the host applications (technical)
+  documentation to find out what the host application expects from the plugin.
+----------------------------------------------------------------------------------------------------
+@@$JVCL.Info.Plugins.PluginWriting.Tutorials
+<GROUP $JVCL.Info.Plugins.PluginWriting>
+<TITLE Writing plugins: tutorials>
+  This chapter contains a number of tutorials. Most tutorials just expand on the basic tutorial.
+----------------------------------------------------------------------------------------------------
+@@JVCL.Info.Plugins.PluginWriting.Tut01
+<GROUP $JVCL.Info.Plugins.PluginWriting.Tutorials>
+<TITLE Writing plugins: Tutorial 1: Basic tutorial>
+  This tutoral will create a simple plugin with one command in it (a simple 'Hello world!') example.
+  
+  We start this tutorial by creating a new plugin project. Go to File|New..., select the
+  <B>Projects</B> tab, select then <B>JEDI Plugin Wizard</B> and press OK. In the dialog that
+  appears, type in the name of the plugin, in this case we'll take enter "Tutorial1". In the box
+  below we'll select <B>Package-Plugin</B> as the plugin type (this is the default).
+  
+  Pressing OK will create a new project <B>PlgTutorial1.dpk</B> and a unit called
+  <B>PluginTutorial1.pas</B>. The unit contains a data module named <B>Tutorial1</B>. When you
+  select that module, the object inspector will show some additional properties and events.
+  
+  First thing to do is to specify the ID of the plugin for easy identification by the host
+  application. Set PluginID property to <B>JEDI.Tutorial1</B>. By including the <B>JEDI.</B> part,
+  we make sure that this tutorial is unique in the host application, even if another company has
+  written a plugin with the same name.
+  
+  To make the plugin selection interface in the host application more usefull, we can now assign
+  proper values to the following properties:
+  <TABLE>
+    Property            Value
+    ========            =====
+    Author              Your name, your companies name or both e.g. <B>John Doe</B>
+    Copyright           The copyright notice for your plugin, e.g. <B>Copyright © 2003 Project JEDI</B>
+    Description         A short description of the plugin, e.g. <B>My first plugin</B>
+    PluginVersion       The version of your plugin, e.g. <B>1.0</B> or <B>1.0 RC1</B>.
+  </TABLE>
+  
+  Our tutorial plugin will provide one command that will just show a message box with the text 
+  'Hello world!' (programmers are so creative when they write tutorials and examples ;) ).
+  
+  To create the command will doubleclick on the Commands property to show a familiar editor. Press
+  <B>Insert</B> to create a new command. The object inspector will now show the properties and
+  events for our command. To keep the tutorial simple, we'll set the <B>Name</B> property to
+  'Command1' and the <B>Caption</B> property to 'Test1'.
+  
+  Next, doubleclick on the <B>OnExecute</B> event to generate a new event. In this event we'll
+  show our most important message. The code will look like this:
+    
+<CODE>
+<B>procedure</B> TTutorial1.Tutorial1Commands0Execute(Sender: TObject);
+<B>begin</B>
+  ShowMessage('Hello world!');
+<B>end;</B>
+</CODE>
+
+  Compile the package. A message will popup saying that the JVCL runtime package should be added to
+  the requires node. If the host application specifies it uses the JVCL runtime package, you should
+  add it, otherwise you can ignore the message and the warning that follows.
+  
+  At this point your first plugin is ready. Make sure the plugin .bpl file is placed in the same
+  folder as your test host, and run the test host. A suitable test host can be build by following
+  the host application tutorial.
+## !!! TODO: link to the host application tutorial.
+  If all is well, you should now see a new menu item in your test host and when you click on it,
+  you'll see our message.
+----------------------------------------------------------------------------------------------------
+@@$JVCL.Info.Plugins.HostWriting
+<GROUP $JVCL.Info.Plugins>
+<TITLE Writing host applications>
+  Writing plugin enabled applications, or hosts, requires some thinking ahead. You should determine
+  upfront which types of plugins you want to support.
+
+  Are plugins allowed to add commands to your menu or toolbar? If so, how should they specify the
+  location? How is the host to determine if the command is actually enabled?
+
+  Should plugins be able to receive generic messages (notifications)? If so, what types of
+  notifications should there be and is there any additional data required?
+
+  Can plugins provide MDI children, forms or data modules? Can they provide other functionality? Is
+  there a configuration possibility and how to implement it?
+
+  It's best to fully define the possibilities of your plugins before you even start coding or
+  changing your application, or you'll soon be lost.
