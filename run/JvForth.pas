@@ -33,14 +33,9 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
-  Windows, ShellAPI,
+  ShellAPI,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
-  Messages, Forms, Dialogs, FileCtrl,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows, QForms, QDialogs, QFileCtrls,
-  {$ENDIF VisualCLX}
+  Windows, Messages, Forms, Dialogs, FileCtrl,
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -668,7 +663,7 @@ begin
   FXMLList := TJvJanXMLList.Create;
   FXMLSelect := TList.Create;
   FDSOBase := ExtractFilePath(paramstr(0));
-  if FDSOBase[Length(FDSOBase)] = '\' then
+  if FDSOBase[Length(FDSOBase)] = PathDelim then
     Delete(FDSOBase, Length(FDSOBase), 1);
   FVSP := 0;
   // osp := 0;
