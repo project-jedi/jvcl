@@ -119,6 +119,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 {$IFDEF USE_DXGETTEXT}
 const
   cDomainName = 'jvcl';
@@ -220,9 +225,29 @@ begin
   inherited KeyPress(Key);
 end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
   {$IFDEF USE_DXGETTEXT}
   AddDomainForResourceString(cDomainName);
   {$ENDIF USE_DXGETTEXT}
+
+
+{$IFDEF UNITVERSIONING}
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
