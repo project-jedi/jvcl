@@ -59,7 +59,8 @@ uses
   {$IFDEF USEWINDOWS}
   JvAppRegistryStorage,
   {$ENDIF USEWINDOWS}
-  JvAppIniStorage, JvAppStorage, JvAppStorageSelectList;
+  JvAppIniStorage, JvAppStorage, JvAppStorageSelectList,
+  JvAutoComplete;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCoreReg.dcr}
@@ -74,6 +75,7 @@ const
 begin
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvComponent, TControl);
+  GroupDescendentsWith(TJvLookupAutoComplete, TControl);
   {$ENDIF COMPILER7_UP}
 
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent,
@@ -87,6 +89,9 @@ begin
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
   {$ENDIF USEWINDOWS}
+
+  RegisterComponents(RsPaletteNonVisual, [TJvLookupAutoComplete]);
+
 
   {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
