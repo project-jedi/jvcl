@@ -476,10 +476,6 @@ uses
   {$ENDIF USE_3RDPARTY_SMEXPORT}
   JvResources, JvParameterList, JvParameterListParameter;
 
-const
-  StoDateFormatLong = 'TO_DATE(''%s'', ''DD.MM.YYYY HH24:MI:SS'')';
-  SToDateFormatShort = 'TO_DATE(''%s'', ''DD.MM.YYYY'')';
-
 var
   IntRegisteredActionEngineList: TJvDatabaseActionEngineList;
 
@@ -1588,6 +1584,12 @@ end;
 
 procedure TJvDatabaseSMExportOptions.SMEWizardDlgGetCellParams(Sender: TObject; Field: TField;
   var Text: string; AFont: TFont; var Alignment: TAlignment; var Background: TColor; var CellType: TCellType);
+const
+  SToDateFormatLong = 'TO_DATE(''%s'', ''DD.MM.YYYY HH24:MI:SS'')';
+  SToDateFormatShort = 'TO_DATE(''%s'', ''DD.MM.YYYY'')';
+  SFormatLong = 'dd.mm.yyyy hh:nn:ss';
+  SFormatShort = 'dd.mm.yyyy';
+  SNull = 'NULL';
 var
   DT: TDateTime;
 begin
@@ -1596,7 +1598,7 @@ begin
     begin
       if Field.IsNull or (Field.AsString = '') then
       begin
-        Text := 'NULL';
+        Text := SNull;
         CellType := ctBlank;
       end
       else
@@ -1607,12 +1609,12 @@ begin
       begin
         DT := Field.AsDateTime;
         if DT <= 0 then
-          Text := 'NULL'
+          Text := SNull
         else
         if DT = Trunc(DT) then
-        Text := Format(SToDateFormatShort, [FormatDateTime('dd.mm.yyyy', DT)])
+          Text := Format(SToDateFormatShort, [FormatDateTime(SFormatShort, DT)])
       else
-        Text := Format(StoDateFormatLong, [FormatDateTime('dd.mm.yyyy hh:nn:ss', DT)]);
+        Text := Format(StoDateFormatLong, [FormatDateTime(SFormatLong, DT)]);
         CellType := ctBlank;
       end
       else
@@ -1622,7 +1624,7 @@ begin
     else
     if Text = '' then
     begin
-      Text := 'NULL';
+      Text := SNull;
       CellType := ctBlank;
     end
     else
@@ -1633,12 +1635,12 @@ begin
     begin
       DT := StrToDate(Text);
       if DT <= 0 then
-        Text := 'NULL'
+        Text := SNull
       else
       if DT = Trunc(DT) then
-        Text := Format(SToDateFormatShort, [FormatDateTime('dd.mm.yyyy', DT)])
+        Text := Format(SToDateFormatShort, [FormatDateTime(SFormatShort, DT)])
       else
-        Text := Format(StoDateFormatLong, [FormatDateTime('dd.mm.yyyy hh:nn:ss', DT)]);
+        Text := Format(StoDateFormatLong, [FormatDateTime(SFormatLong, DT)]);
       CellType := ctBlank;
     end
     else
