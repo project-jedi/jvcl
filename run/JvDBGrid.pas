@@ -1871,10 +1871,18 @@ begin
       if FTitleButtons and (AField <> nil) then
       begin
         BackColor := Canvas.Brush.Color;
+        //-----------------------------------------
+        // FBC -fix Sortmarker
+        // Not so elegant, but it works.
+        //----------------------------------------- 
         if AnsiSameText(AField.FieldName, SortedField) then
+        begin
           ASortMarker := self.Sortmarker;
-        DoGetBtnParams(AField, Canvas.Font, BackColor, ASortMarker, Down);
-        self.Sortmarker := ASortMarker;
+          DoGetBtnParams(AField, Canvas.Font, BackColor, ASortMarker, Down);
+          self.Sortmarker := ASortMarker;
+        end
+        else  
+          DoGetBtnParams(AField, Canvas.Font, BackColor, ASortMarker, Down);
         Canvas.Brush.Color := BackColor;
       end;
       if Down then
