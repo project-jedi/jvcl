@@ -34,7 +34,6 @@ uses
   JvComponent;
 
 type
-  // (rom) added Jv
   TJvLogRecord = class(TObject)
   public
     Time: string;

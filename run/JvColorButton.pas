@@ -21,14 +21,15 @@ Last Modified: 2002-05-26
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A color selection button that mimicks the one on the 'Display Properties' page in Win95/NT4
+
 Known Issues:
     If the OtherCaption is set to an empty string, the default '&Other..' magically appears.
     Solution: Set OtherCaption to ' ' instead
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{A color selection button that mimicks the one on the 'Display Properties' page in Win95/NT4 }
 
 unit JvColorButton;
 
@@ -91,6 +92,7 @@ type
   end;
 
 implementation
+
 uses
   JvColorForm;
 
@@ -107,7 +109,7 @@ begin
   FEdgeWidth := 4;
   Width := 42;
   Height := 21;
-  FColorForm := TJvClrFrm.CreateNew(self);
+  FColorForm := TJvClrFrm.CreateNew(Self);
   TJvClrFrm(FColorForm).SetButton(Self);
   FOtherCaption := SOtherCaption;
   FColorForm.Visible := False;
@@ -116,11 +118,7 @@ end;
 destructor TJvColorButton.Destroy;
 begin
   FCustomColors.Free;
-  if FColorForm <> nil then
-  begin
-    FColorForm.Free;
-    FColorForm := nil;
-  end;
+  FreeAndNil(FColorForm);
   inherited Destroy;
 end;
 
@@ -148,10 +146,7 @@ begin
       FColorForm.Hide;
     //    ColorSquare21.Color := Self.Color;
   end;
-  if ArrowWidth <> 0 then
-    FIsDown := True
-  else
-    FIsDown := False;
+  FIsDown := ArrowWidth <> 0;
   Repaint;
 end;
 
@@ -243,7 +238,7 @@ begin
   begin
     FColor := Value;
     if Assigned(FOnChange) then
-      FOnChange(self);
+      FOnChange(Self);
     Repaint;
   end;
 end;
