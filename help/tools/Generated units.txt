@@ -213,7 +213,6 @@ JvMaxPixel
 JvMemo
 JvMemoryDataset
 JvMemoryInfos
-JvMenus
 JvMergeManager
 JvMonthCalendar
 JvMouseGesture

@@ -16,6 +16,7 @@ JvFormPlacement
 JvGif
 JvInspector
 JvListBox
+JvMenus
 JvPlugin
 JvPluginManager
 JvRadioControl

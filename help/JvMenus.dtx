@@ -3,22 +3,23 @@
 ----------------------------------------------------------------------------------------------------
 @@JvMenus.pas
 Summary
-  Contains the TJvMenus component.
+  Contains the TJvMainMenu, TJvPopupMenu the related painter components.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
+  Olivier Sannier
 ----------------------------------------------------------------------------------------------------
 @@SetDefaultMenuFont
 <TITLE SetDefaultMenuFont procedure>
 Summary
-  Write here a summary (1 line)
+  Assigns the default menu font to the given font
 Description
-  Write here a description
+  This method reads the system parameters to retrieve the current
+  font used to draw menu items.
+  You shouldn't have to call this function directly, it is called
+  by default before calling any event handler
 Parameters
-  AFont - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AFont - The font to which the system font will be assigned
 ----------------------------------------------------------------------------------------------------
 @@TDrawMarginEvent
 <TITLE TDrawMarginEvent type>
@@ -27,27 +28,35 @@ See Also
 @@TDrawMenuItemEvent
 <TITLE TDrawMenuItemEvent type>
 Summary
-  Write here a summary (1 line)
+  This event is triggered when a menu item has to be painted by the owner
 Description
-  Write here a description
+  Access the Canvas property of the Sender to draw the given Item in 
+  the give Rect and respecting the given State.
+  Please note that this event will only be triggered if the Style of
+  the Sender is msOwnerDraw
+  
   This type is used by (for reference):
     TJvMainMenu.OnDrawItem
     TJvPopupMenu.OnDrawItem
 Parameters
-  Sender - Description for this parameter
-  Item   - Description for this parameter
-  Rect   - Description for this parameter
-  State  - Description for this parameter
+  Sender - The Menu to which the Item belongs
+  Item   - The Item that needs to be drawn
+  Rect   - The area in the Canvas from the menu where the item is to be painted
+  State  - The current state of the menu
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvMainMenu.OnDrawItem, TJvPopupMenu.OnDrawItem, TJvOwnerDrawMenuItemPainter
 ----------------------------------------------------------------------------------------------------
 @@TItemImageEvent
 <TITLE TItemImageEvent type>
 Summary
-  Write here a summary (1 line)
+  This event is triggered whenever a painter needs to know the image index
+  for a menu item about to being paint.
 Description
-  Write here a description
+  This event will be triggered if the Images property is set.
+  If you supply a handler, then you can change the image index you set
+  during design time.
+  If you don't, the image index set during design time will be used
+  
   This type is used by (for reference):
     TJvMainMenu.OnGetDisabledImageIndex
     TJvMainMenu.OnGetHotImageIndex
@@ -56,82 +65,90 @@ Description
     TJvPopupMenu.OnGetHotImageIndex
     TJvPopupMenu.OnGetImageIndex
 Parameters
-  Sender     - Description for this parameter
-  Item       - Description for this parameter
-  State      - Description for this parameter
-  ImageIndex - Description for this parameter
+  Sender     - The menu to which the item belongs
+  Item       - The item to be modified
+  State      - The state of the item
+  ImageIndex - The image index, you can modify this value
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvMainMenu.ImageIndex, TJvPopupMenu.ImageIndex
 ----------------------------------------------------------------------------------------------------
 @@TItemParamsEvent
 <TITLE TItemParamsEvent type>
 Summary
-  Write here a summary (1 line)
+  This event is triggered just before painting but before the GetxxImageIndex events
+  so that you can change more specific values of the item about to be drawn
 Description
-  Write here a description
+  If you don't supply a handler for this event, no change will be done to 
+  the menu item and the Item Painter will follow its default behaviour
+  
   This type is used by (for reference):
     TJvMainMenu.OnGetItemParams
     TJvPopupMenu.OnGetItemParams
 Parameters
-  Sender    - Description for this parameter
-  Item      - Description for this parameter
-  State     - Description for this parameter
-  AFont     - Description for this parameter
-  Color     - Description for this parameter
-  Graphic   - Description for this parameter
-  NumGlyphs - Description for this parameter
+  Sender    - The menu to which the item belongs
+  Item      - The item to be modified
+  State     - The state of the item
+  AFont     - The current font for the item. Use Assign to change it
+  Color     - The current color of the item
+  Graphic   - The current graphic for the item. Usually nil.
+  NumGlyphs - The number of glyphs in the Graphic object
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomMenuItemPainter.PreparePaint, TItemImageEvent
 ----------------------------------------------------------------------------------------------------
 @@TJvBtnMenuItemPainter
 Summary
-  Write here a summary (1 line)
+  This painter draws an item as a raised or lowered button
 Description
-  Write here a description
+  Set the Style property of TJvMainMenu or TJvPopupMenu to msBtnRaised or msBtnLowered
+  to use this painter.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter
 Summary
-  Write here a summary (1 line)
+  This painter is the ancestor of all menu item painters
 Description
-  Write here a description
+  Starting with JVCL3, the concept of menu item painters has been introduced.
+  Each JvMainMenu or JvPopupMenu is assigned an item painter according to the
+  Style property. When a menu item is about to be painted, the painter is called
+  and does the painting job.
+  Do not instanciate a TJvCustomMenuItemPainter but use one of its descendents.
+  However, unles you are using the msOwnerDraw style and want to base your drawings
+  on one the available painters, you shouldn't have to instanciate one of the 
+  descendants of TJvCustomMenuItemPainter.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.Canvas
 Summary
-  Write here a summary (1 line)
+  The canvas in which the menu items will be painted
 Description
-  Write here a description
+  Returns the canvas from the TJvMainMenu or TJvPopupMenu to which this painter
+  is assigned
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Paint
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.CheckMarkHeight
 Summary
-  Write here a summary (1 line)
+  The height of a check mark
 Description
-  Write here a description
+  Returns the system size for a check mark if ShowCheckMarks is true.
+  Returns 0 otherwize.
+  Some descendants may change the values returned by this method
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CheckMarkWidth
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.CheckMarkWidth
 Summary
-  Write here a summary (1 line)
+  The width of a check mark
 Description
-  Write here a description
+  Returns the system size for a check mark if ShowCheckMarks is true.
+  Returns 0 otherwize.
+  Some descendants may change the values returned by this method
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CheckMarkHeight
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.ComponentState
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.DisabledImages
 Summary
@@ -476,15 +493,6 @@ See Also
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.ItemPainter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMainMenu.MinTextOffset
 Summary
   Write here a summary (1 line)
 Description
