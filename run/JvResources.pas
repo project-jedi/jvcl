@@ -1136,6 +1136,36 @@ resourcestring
   RsNoItemSelected = 'No item selected!';
   RsErrorInPresets = 'Error in Presets';
 
+//=== JvParameterList.pas ====================================================
+resourcestring
+  RsErrParameterMustBeEntered = 'Parameter "%s" must be entered!';
+
+  RsHistorySelectPath = 'History';
+
+  RsDialogCaption = '';
+  RsOkButton      = '&Ok';
+  RsCancelButton  = '&Cancel';
+  RsHistoryLoadButton = '&Load';
+  RsHistorySaveButton = '&Save';
+  RsHistoryClearButton = 'Cl&ear';
+  RsHistoryLoadCaption = 'Load Parameter Settings';
+  RsHistorySaveCaption = 'Save Parameter Settings';
+  RsHistoryClearCaption = 'Manage Parameter Settings';
+
+  RsENoParametersDefined      = 'TJvParameterList.ShowParameterDialog: No Parameters defined';
+  RsEAddObjectWrongObjectType = 'TJvParameterList.AddObject: Wrong object type';
+  RsEAddObjectSearchNameNotDefined = 'TJvParameterList.AddObject: SearchName not defined';
+  RsEAddObjectDuplicateSearchNamesNotAllowed = 'TJvParameterList.AddObject: Duplicate SearchNames ("%s") not allowed';
+
+//=== JvParameterListParameter.pas ====================================================
+resourcestring
+//  RsErrParameterMustBeEntered      = 'Parameter %s must be entered!';
+  RsErrParameterIsNotAValidNumber  = 'Parameter %s: %s is not a valid number value!';
+  RsErrParameterMustBeBetween      = 'Parameter %s: %s must be between %s and %s!';
+  RsErrParameterFileDoesNotExist   = 'Parameter %s: The file "%s" does not exist!';
+  RsErrParameterFileExistOverwrite = 'Parameter %s: The file "%s" exists! Overwrite?';
+  RsErrParameterDirectoryNotExist  = 'Parameter %s: The directory "%s" does not exist!';
+
 //=== JvPatchForm.pas ========================================================
 resourcestring
   RsJvPatcherEditorComparingFilesd = 'Jv - Patcher Editor: Comparing files %d%%';
