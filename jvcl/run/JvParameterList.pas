@@ -271,10 +271,10 @@ type
     ScrollBox: TScrollBox;
     RightPanel: TJvPanel;
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
-    procedure SetPath(Value: string);
-    function GetPath: string;
-    function GeTJvAppStorage: TJvCustomAppStorage;
-    procedure SeTJvAppStorage(Value: TJvCustomAppStorage);
+    procedure SetAppStoragePath(Value: string);
+    function GetAppStoragePath: string;
+    function GetJvAppStorage: TJvCustomAppStorage;
+    procedure SetJvAppStorage(Value: TJvCustomAppStorage);
 
     procedure SetDynControlEngine(Value: TJvDynControlEngine);
 
@@ -362,8 +362,8 @@ type
   published
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Messages: TJvParameterListMessages read FMessages;
-    {Path for the Parameter-Storage using AppStorage}
-    property Path: string read GetPath write SetPath;
+    {AppStoragePath for the Parameter-Storage using AppStorage}
+    property AppStoragePath: string read GetAppStoragePath write SetAppStoragePath;
     {Width of the dialog. When width = 0, then the width will be calculated }
     property Width: Integer read FWidth write FWidth;
     {Height of the dialog. When height = 0, then the Height will be calculated }
@@ -376,7 +376,7 @@ type
     property CancelButtonVisible: Boolean read FCancelButtonVisible write FCancelButtonVisible;
     property HistoryEnabled: Boolean read FHistoryEnabled write FHistoryEnabled;
     property LastHistoryName: string read FLastHistoryName write FLastHistoryName;
-    property AppStorage: TJvCustomAppStorage read GeTJvAppStorage write SeTJvAppStorage;
+    property AppStorage: TJvCustomAppStorage read GetJvAppStorage write SetJvAppStorage;
   end;
 
   TJvParameterListSelectList = class(TJvAppStorageSelectList)
@@ -386,8 +386,8 @@ type
     function GetDynControlEngine: TJvDynControlEngine; override;
     function GetParameterList: TJvParameterList; virtual;
     procedure SetParameterList(Value: TJvParameterList); virtual;
-    function GeTJvAppStorage: TJvCustomAppStorage; override;
-    procedure SeTJvAppStorage(Value: TJvCustomAppStorage); override;
+    function GetJvAppStorage: TJvCustomAppStorage; override;
+    procedure SetJvAppStorage(Value: TJvCustomAppStorage); override;
   public
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RestoreParameterList(ACaption: string = '');
@@ -1031,27 +1031,27 @@ begin
   CancelButtonVisible := TJvParameterList(Source).CancelButtonVisible;
   FIntParameterList.Assign(TJvParameterList(Source).FIntParameterList);
   HistoryEnabled := TJvParameterList(Source).HistoryEnabled;
-  Path := TJvParameterList(Source).Path;
+  AppStoragePath := TJvParameterList(Source).AppStoragePath;
 end;
 
-procedure TJvParameterList.SetPath(Value: string);
+procedure TJvParameterList.SetAppStoragePath(Value: string);
 begin
   FParameterListPropertyStore.AppStoragePath := Value;
   if Assigned(AppStorage) then
     FParameterListSelectList.SelectPath := AppStorage.ConcatPaths([Value, RsHistorySelectPath])
 end;
 
-function TJvParameterList.GetPath: string;
+function TJvParameterList.GetAppStoragePath: string;
 begin
   Result := FParameterListPropertyStore.AppStoragePath;
 end;
 
-function TJvParameterList.GeTJvAppStorage: TJvCustomAppStorage;
+function TJvParameterList.GetJvAppStorage: TJvCustomAppStorage;
 begin
   Result := FParameterListPropertyStore.AppStorage;
 end;
 
-procedure TJvParameterList.SeTJvAppStorage(Value: TJvCustomAppStorage);
+procedure TJvParameterList.SetJvAppStorage(Value: TJvCustomAppStorage);
 begin
   FParameterListPropertyStore.AppStorage := Value;
   if Assigned(Value) then
@@ -1083,13 +1083,13 @@ end;
 
 procedure TJvParameterList.StoreData;
 begin
-  if Path <> '' then
+  if AppStoragePath <> '' then
     FParameterListPropertyStore.StoreData;
 end;
 
 procedure TJvParameterList.LoadData;
 begin
-  if Path <> '' then
+  if AppStoragePath <> '' then
     FParameterListPropertyStore.LoadData;
 end;
 
@@ -1221,7 +1221,7 @@ begin
   OkButton.Anchors := [akTop, akRight];
   CancelButton.Anchors := [akTop, akRight];
 
-  if HistoryEnabled and (Path <> '') then
+  if HistoryEnabled and (AppStoragePath <> '') then
   begin
     HistoryPanel := DynControlEngine.CreatePanelControl(Self, BottomPanel, 'HistoryPanel', '', alLeft);
     if not Supports(HistoryPanel, IJvDynControlPanel, ITmpPanel) then
@@ -1687,9 +1687,9 @@ begin
           if ReloadValueFromAppStorage then
             if Parameters[I] is TJvListParameter then
               with TJvListParameter(Parameters[I]) do
-                ItemIndex := AppStorage.ReadInteger(AppStorage.ConcatPaths([Path, SearchName]), ItemIndex)
+                ItemIndex := AppStorage.ReadInteger(AppStorage.ConcatPaths([AppStoragePath, SearchName]), ItemIndex)
             else
-              AsString := AppStorage.ReadString(AppStorage.ConcatPaths([Path, SearchName]), AsString);
+              AsString := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, SearchName]), AsString);
 end;
 
 procedure TJvParameterListPropertyStore.StoreData;
@@ -1703,9 +1703,9 @@ begin
           if ReloadValueFromAppStorage then
             if Parameters[I] is TJvListParameter then
               with TJvListParameter(Parameters[I]) do
-                AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, SearchName]), ItemIndex)
+                AppStorage.WriteInteger(AppStorage.ConcatPaths([AppStoragePath, SearchName]), ItemIndex)
             else
-              AppStorage.WriteString(AppStorage.ConcatPaths([Path, SearchName]), AsString);
+              AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, SearchName]), AsString);
 end;
 
 //=== TJvParameterListPropertyStore ==========================================
@@ -1725,7 +1725,7 @@ begin
   FParameterList := Value;
 end;
 
-function TJvParameterListSelectList.GeTJvAppStorage: TJvCustomAppStorage;
+function TJvParameterListSelectList.GetJvAppStorage: TJvCustomAppStorage;
 begin
   if Assigned(FParameterList) then
     Result := FParameterList.AppStorage
@@ -1733,7 +1733,7 @@ begin
     Result := nil;
 end;
 
-procedure TJvParameterListSelectList.SeTJvAppStorage(Value: TJvCustomAppStorage);
+procedure TJvParameterListSelectList.SetJvAppStorage(Value: TJvCustomAppStorage);
 begin
   if Assigned(FParameterList) then
     FParameterList.AppStorage := Value;
@@ -1752,16 +1752,16 @@ var
 begin
   if not Assigned(ParameterList) then
     Exit;
-  SavePath := ParameterList.Path;
+  SavePath := ParameterList.AppStoragePath;
   try
-    ParameterList.Path := GetSelectListPath(sloLoad, ACaption);
-    if ParameterList.Path <> '' then
+    ParameterList.AppStoragePath := GetSelectListPath(sloLoad, ACaption);
+    if ParameterList.AppStoragePath <> '' then
     begin
       ParameterList.LoadData;
       ParameterList.SetDataToWinControls;
     end;
   finally
-    ParameterList.Path := SavePath;
+    ParameterList.AppStoragePath := SavePath;
   end;
 end;
 
@@ -1771,16 +1771,16 @@ var
 begin
   if not Assigned(ParameterList) then
     Exit;
-  SavePath := ParameterList.Path;
+  SavePath := ParameterList.AppStoragePath;
   try
-    ParameterList.Path := GetSelectListPath(sloStore, ACaption);
-    if ParameterList.Path <> '' then
+    ParameterList.AppStoragePath := GetSelectListPath(sloStore, ACaption);
+    if ParameterList.AppStoragePath <> '' then
     begin
       ParameterList.GetDataFromWinControls;
       ParameterList.StoreData;
     end;
   finally
-    ParameterList.Path := SavePath;
+    ParameterList.AppStoragePath := SavePath;
   end;
 end;
 

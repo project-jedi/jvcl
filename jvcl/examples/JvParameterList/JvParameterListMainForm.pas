@@ -364,7 +364,7 @@ begin
     ParameterList.Width     := StrToInt(WidthEdit.Text);
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
     ParameterList.AppStorage  := DefaultStorage;
-    ParameterList.Path      := 'Dialog 1';
+    ParameterList.AppStoragePath      := 'Dialog 1';
     if LoadFromCheckBox.Checked then
       ParameterList.LoadData;
     if ParameterList.ShowParameterDialog then
@@ -461,7 +461,7 @@ begin
     ParameterList.Width     := StrToInt(WidthEdit.Text);
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
     ParameterList.AppStorage  := DefaultStorage;
-    ParameterList.Path      := 'Dialog 2';
+    ParameterList.AppStoragePath      := 'Dialog 2';
     if LoadFromCheckBox.Checked then
       ParameterList.LoadData;
     if ParameterList.ShowParameterDialog then
@@ -578,7 +578,7 @@ begin
     ParameterList.Width    := 240;
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
     ParameterList.AppStorage := DefaultStorage;
-    ParameterList.Path     := 'Dialog 3';
+    ParameterList.AppStoragePath     := 'Dialog 3';
     if LoadFromCheckBox.Checked then
       ParameterList.LoadData;
     if ParameterList.ShowParameterDialog then

@@ -1980,7 +1980,6 @@ object Form1: TForm1
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     FileName = 'JvParameterListDemo.xml'
-    AsString = '<?xml version="1.0" encoding="iso-8859-1"?>'#13#10'<Configuration/>'#13#10
     RootNodeName = 'Configuration'
     Left = 275
     Top = 10
