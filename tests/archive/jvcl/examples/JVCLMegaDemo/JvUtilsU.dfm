@@ -1,9 +1,17 @@
 object JvUtilsFrm: TJvUtilsFrm
-  Left = 0
-  Top = 0
-  Width = 639
-  Height = 452
-  TabOrder = 0
+  Left = 283
+  Top = 87
+  Width = 654
+  Height = 485
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
   object Memo1: TMemo
     Left = 304
     Top = 16
@@ -27,7 +35,7 @@ object JvUtilsFrm: TJvUtilsFrm
     Top = 187
     Width = 280
     Height = 25
-    Caption = 'turn the monitor off'
+    Caption = 'turn the monitor off (click to get it back)'
     TabOrder = 2
     OnClick = Button2Click
   end

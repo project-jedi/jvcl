@@ -1,10 +1,18 @@
 object frEmpty: TfrEmpty
-  Left = 0
-  Top = 0
+  Left = 643
+  Top = 250
   Width = 320
   Height = 240
   HelpContext = 99
-  TabOrder = 0
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
   object Label1: TLabel
     Left = 48
     Top = 104

@@ -1,8 +1,7 @@
 program RegEditDemo;
 
 uses
-  Forms,
-  Main in 'Main.pas' {Form1}
+  Forms, RegTVMainFormU
 // , StrStore in '..\..\..\Add\Utils\StrStore.pas'
 ;
 
@@ -10,6 +9,6 @@ uses
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TRegTVMainForm, RegTVMainForm);
   Application.Run;
 end.

@@ -36,10 +36,6 @@ type
     procedure chkMinDblClickClick(Sender: TObject);
     procedure RestoreTimerTimer(Sender: TObject);
     procedure chkAutoRestoreClick(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 var

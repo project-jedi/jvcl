@@ -1,13 +1,12 @@
 program ControlsExample;
 
 uses
-  Forms,
-  ControlsMain in 'ControlsMain.pas' {MainFrom};
+  Forms, ControlsExampleMainFormU;
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TMainFrom, MainFrom);
+  Application.CreateForm(TControlsExampleMainForm, ControlsExampleMainForm);
   Application.Run;
 end.

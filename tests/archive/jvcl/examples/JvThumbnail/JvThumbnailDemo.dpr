@@ -1,14 +1,12 @@
 program JvThumbnailDemo;
 
 uses
-  Forms,
-  main in 'main.pas' {Form1},
-  sample2 in 'sample2.pas' {Form2};
+  Forms, JvThumbnailMainFormU, JvThumbnailChildFormU;
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvThumbnailMainForm, JvThumbnailMainForm);
   Application.Run;
 end.

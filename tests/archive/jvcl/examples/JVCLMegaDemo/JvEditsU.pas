@@ -8,8 +8,7 @@ uses
   ExtCtrls, JvComponent, JvCaptionPanel, JvComCtrls, JvMaskEdit, JvSpin;
 
 type
-  TJvEdits = class(TFrame)
-    JvCaptionPanel1: TJvCaptionPanel;
+  TJvEdits = class(TForm)
     Label1: TLabel;
     Label2: TLabel;
     Label4: TLabel;
@@ -18,15 +17,6 @@ type
     Label7: TLabel;
     Label9: TLabel;
     Label10: TLabel;
-    JvFileNameBox1: TJvFilenameEdit;
-    JvButtonBox1: TJvComboEdit;
-    JvFloatEdit1: TJvFloatEdit;
-    JvCalculatorBox1: TJvCalcEdit;
-    JvCurrencyEdit1: TJvCurrencyEdit;
-    JvFloatEdit21: TJvFloatEdit2;
-    JvIntegerEdit1: TJvIntegerEdit;
-    JvYearEdit1: TJvYearEdit;
-    JvDirectoryEdit1: TJvDirectoryEdit;
     Label3: TLabel;
     Label11: TLabel;
     Label12: TLabel;
@@ -40,17 +30,22 @@ type
     Label23: TLabel;
     Label25: TLabel;
     Label28: TLabel;
-    JvDateEdit1: TJvDateEdit;
-    JvSpinEdit1: TJvSpinEdit;
-    JvIpAddress1: TJvIpAddress;
     Label19: TLabel;
     Label20: TLabel;
     Label21: TLabel;
+    JvFileNameBox1: TJvFilenameEdit;
+    JvButtonBox1: TJvComboEdit;
+    JvFloatEdit1: TJvFloatEdit;
+    JvCalculatorBox1: TJvCalcEdit;
+    JvCurrencyEdit1: TJvCurrencyEdit;
+    JvFloatEdit21: TJvFloatEdit2;
+    JvIntegerEdit1: TJvIntegerEdit;
+    JvYearEdit1: TJvYearEdit;
+    JvDirectoryEdit1: TJvDirectoryEdit;
+    JvDateEdit1: TJvDateEdit;
+    JvSpinEdit1: TJvSpinEdit;
+    JvIpAddress1: TJvIpAddress;
     procedure JvButtonBox1ButtonClick(Sender: TObject);
-  private
-    { Private-Deklarationen }
-  public
-    { Public-Deklarationen }
   end;
 
 implementation

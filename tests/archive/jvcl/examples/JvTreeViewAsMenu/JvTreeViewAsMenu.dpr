@@ -1,13 +1,12 @@
 program JvTreeViewAsMenu;
 
 uses
-  Forms,
-  fTreeViewMenu in 'fTreeViewMenu.pas' {Form1};
+  Forms, JvTreeViewAsMenuMainFormU;  
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvTreeViewAsMenuMainForm, JvTreeViewAsMenuMainForm);
   Application.Run;
 end.

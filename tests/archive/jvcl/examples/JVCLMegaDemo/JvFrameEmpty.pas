@@ -35,12 +35,8 @@ uses
   StdCtrls;
 
 type
-  TfrEmpty = class(TFrame)
+  TfrEmpty = class(TForm)
     Label1: TLabel;
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 implementation

@@ -1,14 +1,22 @@
 object JvControls: TJvControls
-  Left = 0
-  Top = 0
+  Left = 332
+  Top = 29
   Width = 660
   Height = 461
   HelpContext = 8
-  TabOrder = 0
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
   object JvWaitingGradient1: TJvWaitingGradient
     Left = 0
-    Top = 437
-    Width = 660
+    Top = 412
+    Width = 652
     Height = 24
     Hint = 'Nothing to say'
     Align = alBottom
@@ -20,8 +28,8 @@ object JvControls: TJvControls
   end
   object Label3: TLabel
     Left = 0
-    Top = 424
-    Width = 660
+    Top = 399
+    Width = 652
     Height = 13
     Align = alBottom
     Caption = '  Here you can see something waiting  ...  a JvWaitingGradient:'
@@ -33,23 +41,10 @@ object JvControls: TJvControls
     Height = 13
     Caption = 'Here you can see a JvZoom in action'
   end
-  object Label5: TLabel
-    Left = 477
-    Top = 292
-    Width = 55
-    Height = 13
-    Caption = 'Zoom level:'
-  end
-  object JvShape1: TJvShape
-    Left = 367
-    Top = 191
-    Width = 234
-    Height = 197
-  end
   object JvGradientCaption1: TJvGradientCaption
     Left = 0
     Top = 0
-    Width = 660
+    Width = 652
     Height = 25
     GradientEndColor = clBlue
     GradientSteps = 30
@@ -63,25 +58,7 @@ object JvControls: TJvControls
     LabelAlignment = taLeftJustify
     Align = alTop
     DoubleBuffered = False
-  end
-  object SpinEdit1: TSpinEdit
-    Left = 472
-    Top = 400
-    Width = 73
-    Height = 22
-    Increment = 10
-    MaxValue = 0
-    MinValue = 0
-    TabOrder = 1
-    Value = 50
-    OnChange = SpinEdit1Change
-  end
-  object JvZoom1: TJvZoom
-    Left = 368
-    Top = 192
-    Width = 232
-    Height = 195
-    ZoomLevel = 50
+    TabOrder = 0
   end
   object JvImageListBox1: TJvImageListBox
     Left = 40
@@ -91,19 +68,24 @@ object JvControls: TJvControls
     Color = clScrollBar
     Items = <
       item
-        Text = 'With an JvImageListBox'
+        Text = 'in an JvImageListBox'
         ImageIndex = 0
         Indent = 0
       end
       item
-        Text = 'you can images'
+        Text = 'you can show images'
         ImageIndex = 1
+        Indent = 0
+      end
+      item
+        Text = '- also at design time'
+        ImageIndex = 0
         Indent = 0
       end>
     ButtonStyle = fsLighter
     ImageList = ImageList1
     ItemHeight = 20
-    TabOrder = 3
+    TabOrder = 1
   end
   object JvMultilineListbox1: TJvMultilineListBox
     Left = 40
@@ -116,15 +98,15 @@ object JvControls: TJvControls
       'Allows you to show more than one line per list item. '
       'This is the third item here. '
       'Select the second!')
-    TabOrder = 4
+    TabOrder = 2
   end
   object JvTimeLine1: TJvTimeLine
     Left = 0
     Top = 25
-    Width = 660
+    Width = 652
     Height = 152
     Color = clWhite
-    TabOrder = 5
+    TabOrder = 3
     YearFont.Charset = DEFAULT_CHARSET
     YearFont.Color = clWindowText
     YearFont.Height = -16
@@ -136,13 +118,14 @@ object JvControls: TJvControls
     Items = <
       item
         Left = 182
-        Top = 105
+        Top = 117
         Caption = 'Birthday from Mr.X!!!'
         Color = clMenuText
         Date = 37865.000000000000000000
         Hint = 'Very importend I guess'
         ImageIndex = 1
         ImageOffset = 50
+        Level = 1
         Selected = True
       end
       item
@@ -174,6 +157,9 @@ object JvControls: TJvControls
         Level = 3
       end>
     HorzSupports = True
+    DesignSize = (
+      648
+      148)
   end
   object ImageList1: TImageList
     Left = 312

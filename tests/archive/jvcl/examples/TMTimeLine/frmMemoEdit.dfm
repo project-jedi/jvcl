@@ -17,12 +17,15 @@ object MemoEditFrm: TMemoEditFrm
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 237
+    Top = 239
     Width = 297
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    DesignSize = (
+      297
+      41)
     object btnOK: TButton
       Left = 129
       Top = 8
@@ -50,7 +53,7 @@ object MemoEditFrm: TMemoEditFrm
     Left = 0
     Top = 0
     Width = 297
-    Height = 237
+    Height = 239
     Align = alClient
     PopupMenu = popMemo
     ScrollBars = ssBoth

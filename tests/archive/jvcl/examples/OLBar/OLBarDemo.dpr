@@ -1,13 +1,12 @@
 program OLBarDemo;
 
 uses
-  Forms,
-  Main in 'Main.pas' {Form1};
+  Forms, OLBarMainFormU;  
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TOLBarMainForm, OLBarMainForm);
   Application.Run;
 end.

@@ -1,9 +1,18 @@
 object JvButtons: TJvButtons
-  Left = 0
-  Top = 0
+  Left = 190
+  Top = 51
   Width = 546
   Height = 345
-  TabOrder = 0
+  Caption = 'various buttons'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
   object JvTransparentButton21: TJvTransparentButton2
     Left = 32
     Top = 153

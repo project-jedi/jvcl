@@ -1,13 +1,12 @@
 program JvSystemPopupProj;
 
 uses
-  Forms,
-  fSystemPopup in 'fSystemPopup.pas' {Form1};
+  Forms, JvSystemPopupMainFormU;  
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvSystemPopupMainForm, JvSystemPopupMainForm);
   Application.Run;
 end.

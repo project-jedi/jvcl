@@ -27,12 +27,8 @@ type
     procedure Copy1Click(Sender: TObject);
     procedure Paste1Click(Sender: TObject);
     procedure Selectall1Click(Sender: TObject);
-    procedure reLinesKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-  private
-    { Private declarations }
+    procedure reLinesKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   public
-    { Public declarations }
     class function Edit(Lines: TStrings;ADate:TDateTime;Icon:TIcon = nil): boolean;
   end;
 

@@ -16,6 +16,9 @@ object frmDSAExamplesCustomDlg1: TfrmDSAExamplesCustomDlg1
   Font.Style = []
   OldCreateOrder = False
   OnResize = FormResize
+  DesignSize = (
+    170
+    132)
   PixelsPerInch = 96
   TextHeight = 13
   object lblMessage: TLabel

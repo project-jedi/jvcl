@@ -193,6 +193,9 @@ uses
   // Actions
   JvActions,
 
+  // (rom) added
+  JvShellHook,
+
   // palette names
   JvxDConst;
 
@@ -305,7 +308,7 @@ begin
 
      TJvDragDrop, TJvAppDdeCmd, TJvPerfStat95, TJvCreateProcess,
      TJvChangeNotify, TJvFileInfo, TJvComputerInfo, TJvDirectories,
-     TJvSystemColors, TJvClipboardViewer, TJvSystemPopup, TJvNTEventLog]);
+     TJvSystemColors, TJvClipboardViewer, TJvSystemPopup, TJvNTEventLog, TJvShellHook]);
 
   {$IFNDEF DelphiPersonalEdition}
   // Jv Data Controls

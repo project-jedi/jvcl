@@ -1,13 +1,12 @@
 program WndProcHookDemo;
 
 uses
-  Forms,
-  MainFrm in 'MainFrm.pas' {Form1};
+  Forms, JvWndProcHookDemoMainFormU;  
 
 {$R *.res}
 
 begin
+  Application.CreateForm(TJvWndProcHookDemoMainForm, JvWndProcHookDemoMainForm);
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
   Application.Run;
 end.

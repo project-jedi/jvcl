@@ -214,7 +214,7 @@ type
 type
   TJvShellHookEvent = procedure(Sender: TObject; var Msg: TMessage) of object;
 
-  TJvShellHookComponent = class(TJvComponent)
+  TJvShellHook = class(TJvComponent)
   private
     FWndHandle: HWND;
     FHookMsg: Cardinal;
@@ -247,15 +247,12 @@ function InitJvShellHooks: Boolean;
 // unload DLL and clear function pointers
 procedure UnInitJvShellHooks;
 
-// TODO: to be moved
-procedure Register;
-
 implementation
+
+{$IFNDEF COMPILER6_UP}
 uses
-  {$IFNDEF COMPILER6_UP}
-  Forms,
-  {$ENDIF}
-  JvJVCLConst;
+  Forms;
+{$ENDIF}
 
 const
   cUser32 = 'user32.dll';
@@ -318,19 +315,19 @@ begin
   FLibHandle := 0;
 end;
 
-destructor TJvShellHookComponent.Destroy;
+destructor TJvShellHook.Destroy;
 begin
   Active := False;
   inherited Destroy;
 end;
 
-procedure TJvShellHookComponent.DoShellMessage(var Msg: TMessage);
+procedure TJvShellHook.DoShellMessage(var Msg: TMessage);
 begin
   if Assigned(FOnShellMessage) then
     FOnShellMessage(Self, Msg);
 end;
 
-procedure TJvShellHookComponent.SetActive(Value: Boolean);
+procedure TJvShellHook.SetActive(Value: Boolean);
 begin
   if FActive <> Value then
   begin
@@ -367,19 +364,12 @@ begin
   end;
 end;
 
-procedure TJvShellHookComponent.ShellHookMethod(var Msg: TMessage);
+procedure TJvShellHook.ShellHookMethod(var Msg: TMessage);
 begin
   if Msg.Msg = FHookMsg then
     DoShellMessage(Msg)
   else
     inherited;
-end;
-
-// TODO: to be moved
-
-procedure Register;
-begin
-  RegisterComponents(cJvSystemPalette, [TJvShellHookComponent]);
 end;
 
 initialization

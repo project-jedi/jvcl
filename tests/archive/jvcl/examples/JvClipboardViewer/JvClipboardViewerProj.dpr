@@ -1,13 +1,12 @@
 program JvClipboardViewerProj;
 
 uses
-  Forms,
-  fClipboard in 'fClipboard.pas' {Form1};
+  Forms, JvClipboardViewerMainFormU;  
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvClipboardViewerMainForm, JvClipboardViewerMainForm);
   Application.Run;
 end.

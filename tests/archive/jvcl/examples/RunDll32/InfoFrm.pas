@@ -1,4 +1,5 @@
 {$I JVCL.INC}
+
 unit InfoFrm;
 
 interface
@@ -13,9 +14,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     procedure LoadFile(const Filename: string);
-    { Private declarations }
   public
-    { Public declarations }
     class procedure View(const Filename, Title: string);
   end;
 
@@ -23,7 +22,6 @@ implementation
 
 {$R *.dfm}
 
-{ TForm3 }
 
 procedure TfrmInfo.LoadFile(const Filename: string);
 var S: TStringlist; i: integer;

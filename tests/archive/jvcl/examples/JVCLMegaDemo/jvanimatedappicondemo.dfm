@@ -3,7 +3,7 @@ object frAnimatedApplicationicon: TfrAnimatedApplicationicon
   Top = 110
   Width = 402
   Height = 284
-  Caption = 'Animated Applicationicon'
+  Caption = 'Application animated Icon'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,17 +11,18 @@ object frAnimatedApplicationicon: TfrAnimatedApplicationicon
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object JvAppAnimatedIcon1: TJvAppAnimatedIcon
     Icons = ImageList1
     Active = False
-    Left = 32
-    Top = 40
+    Left = 144
+    Top = 144
   end
   object ImageList1: TImageList
-    Left = 80
-    Top = 48
+    Left = 136
+    Top = 56
     Bitmap = {
       494C01010A000E00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001001000000000000020

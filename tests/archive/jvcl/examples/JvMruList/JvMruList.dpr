@@ -1,13 +1,12 @@
 program JvMruList;
 
 uses
-  Forms,
-  fMru in 'fMru.pas' {Form1};
+  Forms, JvMruListMainFormU;
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvMruListMainForm, JvMruListMainForm);
   Application.Run;
 end.

@@ -1,13 +1,12 @@
 program FileDirDemo;
 
 uses
-  Forms,
-  Unit1 in 'Unit1.pas' {Form1};
+  Forms, FileListBoxMainFormU;
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TFileListBoxMainForm, FileListBoxMainForm);
   Application.Run;
 end.

@@ -1,7 +1,7 @@
 object frTrayicon: TfrTrayicon
   Left = 192
   Top = 110
-  Width = 232
+  Width = 279
   Height = 195
   Caption = 'Tray-Icon'
   Color = clBtnFace
@@ -15,11 +15,11 @@ object frTrayicon: TfrTrayicon
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
-    Left = 48
+    Left = 24
     Top = 32
-    Width = 119
+    Width = 226
     Height = 13
-    Caption = 'Look at the Contextmenu'
+    Caption = 'Look at the Contextmenu (right click) of the form'
   end
   object JvTrayIcon1: TJvTrayIcon
     Icon.Data = {
@@ -57,11 +57,11 @@ object frTrayicon: TfrTrayicon
     Left = 120
     Top = 72
     object ShowTray1: TMenuItem
-      Caption = 'Show Tray'
+      Caption = 'Show icon in Tray'
       OnClick = ShowTray1Click
     end
     object ShowForm1: TMenuItem
-      Caption = 'Hide Tray'
+      Caption = 'Hide icon in Tray'
       OnClick = ShowForm1Click
     end
     object Close1: TMenuItem

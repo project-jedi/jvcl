@@ -13,7 +13,7 @@ object Form1: TForm1
   OldCreateOrder = False
   DesignSize = (
     314
-    376)
+    381)
   PixelsPerInch = 96
   TextHeight = 13
   object ListBox1: TListBox

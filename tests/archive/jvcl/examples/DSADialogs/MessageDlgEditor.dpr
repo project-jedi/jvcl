@@ -1,7 +1,7 @@
 program MessageDlgEditor;
 
 uses
-  Forms,
+  Forms, DSADialogsMainFormU, 
   MessageDlgEditorMain in 'MessageDlgEditorMain.pas' {frmMessageDlgEditor},
   MessageDlgEditorSelectIcon in 'MessageDlgEditorSelectIcon.pas' {frmMessageDlgEditorSelectIcon};
 
@@ -10,6 +10,6 @@ uses
 begin
   Application.Initialize;
   Application.Title := '(DSA)MessageDlg(Ex) editor';
-  Application.CreateForm(TfrmMessageDlgEditor, frmMessageDlgEditor);
+  Application.CreateForm(TDSADialogsMainForm, DSADialogsMainForm);
   Application.Run;
 end.

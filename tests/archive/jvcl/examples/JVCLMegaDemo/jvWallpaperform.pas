@@ -9,12 +9,7 @@ uses
 type
   TfrWallpaper = class(TForm)
     JvFormWallpaper1: TJvFormWallpaper;
-  private
-    { Private-Deklarationen }
-  public
-    { Public-Deklarationen }
   end;
-
 
 implementation
 

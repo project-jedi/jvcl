@@ -4,7 +4,7 @@ object frmDSAExamplesProgressDlg: TfrmDSAExamplesProgressDlg
   AutoScroll = False
   BorderIcons = [biSystemMenu]
   Caption = 'Queue test form.'
-  ClientHeight = 160
+  ClientHeight = 162
   ClientWidth = 245
   Color = clBtnFace
   Constraints.MaxHeight = 187
@@ -19,6 +19,9 @@ object frmDSAExamplesProgressDlg: TfrmDSAExamplesProgressDlg
   Position = poOwnerFormCenter
   OnCloseQuery = FormCloseQuery
   OnResize = FormResize
+  DesignSize = (
+    245
+    162)
   PixelsPerInch = 96
   TextHeight = 13
   object lblItemCount: TLabel
@@ -31,8 +34,8 @@ object frmDSAExamplesProgressDlg: TfrmDSAExamplesProgressDlg
   object lblNote: TLabel
     Left = 20
     Top = 30
-    Width = 210
-    Height = 66
+    Width = 205
+    Height = 65
     Anchors = [akLeft, akTop, akRight]
     Caption = 
       'Note: You can only end this test by selecting the Cancel or No o' +
@@ -81,8 +84,6 @@ object frmDSAExamplesProgressDlg: TfrmDSAExamplesProgressDlg
     Width = 210
     Height = 16
     Anchors = [akLeft, akTop, akRight]
-    Min = 0
-    Max = 100
     Smooth = True
     TabOrder = 3
   end

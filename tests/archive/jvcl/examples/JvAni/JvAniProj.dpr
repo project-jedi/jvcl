@@ -1,13 +1,12 @@
 program JvAniProj;
 
 uses
-  Forms,
-  fAni in 'fAni.pas' {Form1};
+  Forms, JvAniMainFormU;
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvAniMainForm, JvAniMainForm);
   Application.Run;
 end.

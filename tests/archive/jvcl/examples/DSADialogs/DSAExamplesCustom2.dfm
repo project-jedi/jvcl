@@ -1,6 +1,6 @@
 object frmDSAExamplesCustomDlg2: TfrmDSAExamplesCustomDlg2
-  Left = 417
-  Top = 378
+  Left = 442
+  Top = 422
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
   Caption = 'Custom dialog 2'

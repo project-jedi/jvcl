@@ -24,7 +24,7 @@ var
 implementation
 
 uses
-  ActiveX, ObjSel, ComObj;
+  ActiveX, JvObjSel, ComObj;
 
 {$R *.dfm}
 

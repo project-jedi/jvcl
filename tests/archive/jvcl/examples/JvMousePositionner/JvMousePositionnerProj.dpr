@@ -1,13 +1,12 @@
 program JvMousePositionnerProj;
 
 uses
-  Forms,
-  fMouse in 'fMouse.pas' {Form1};
+  Forms, JvMousePositionnerMainFormU;
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvMousePositionnerMainForm, JvMousePositionnerMainForm);
   Application.Run;
 end.

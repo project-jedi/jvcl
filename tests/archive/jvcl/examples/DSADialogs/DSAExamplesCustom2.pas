@@ -21,8 +21,6 @@ type
       const DSAInfo: TDSARegItem; const Storage: TDSAStorage);
     procedure UpdateBtnState(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-  private
-    { Private declarations }
   public
     { Public declarations }
     procedure SelectRBByIndex(Value: Integer);

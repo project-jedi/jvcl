@@ -1,13 +1,12 @@
 program SystemPopupTest;
 
 uses
-  Forms,
-  SystemPopupTestDlg in 'SystemPopupTestDlg.pas' {Form1};
+  Forms, JvSystemPopup2MainFormU;  
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvSystemPopup2MainForm, JvSystemPopup2MainForm);
   Application.Run;
 end.

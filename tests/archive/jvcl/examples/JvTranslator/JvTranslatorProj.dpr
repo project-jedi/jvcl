@@ -1,13 +1,12 @@
 program JvTranslatorProj;
 
 uses
-  Forms,
-  fTrans in 'fTrans.pas' {Form1};
+  Forms, JvTranslatorMainFormU;
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvTranslatorMainForm, JvTranslatorMainForm);
   Application.Run;
 end.

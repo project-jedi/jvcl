@@ -8,7 +8,7 @@ uses
   JvColorBox, JvColorBtn, JvArrow, JvLabel, JvxCtrls, JvDialogs;
 
 type
-  TJvChoosersFrm = class(TFrame)
+  TJvChoosersFrm = class(TForm)
     JvLabel1: TJvLabel;
     JvLabel2: TJvLabel;
     JvColorSquare1: TJvColorSquare;
@@ -25,14 +25,9 @@ type
     JvColorBox1: TJvColorBox;
     Label2: TLabel;
     Label1: TLabel;
-    procedure JvGammaPanel1ChangeColor(Sender: TObject; Foreground,
-      Background: TColor);
+    procedure JvGammaPanel1ChangeColor(Sender: TObject; Foreground, Background: TColor);
     procedure JvFontCombobox1Change(Sender: TObject);
     procedure Label1Click(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 implementation

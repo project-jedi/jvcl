@@ -1,13 +1,12 @@
 program ColorHintsTest;
 
 uses
-  Forms,
-  Unit1 in 'Unit1.pas' {Form1};
+  Forms, RaHtHintsMainFormU;  
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TRaHtHintsMainForm, RaHtHintsMainForm);
   Application.Run;
 end.

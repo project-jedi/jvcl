@@ -1,13 +1,12 @@
 program JvLogFileDemo;
 
 uses
-  Forms,
-  MainFrm in 'MainFrm.pas' {frmMain};
+  Forms, JvLogFileMainFormU;  
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TJvLogFileMainForm, JvLogFileMainForm);
   Application.Run;
 end.

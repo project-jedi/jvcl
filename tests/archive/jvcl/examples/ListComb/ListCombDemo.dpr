@@ -1,13 +1,12 @@
 program ListCombDemo;
 
 uses
-  Forms,
-  MainFrm in 'MainFrm.pas' {Form1};
+  Forms, ListCombMainFormU;
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TListCombMainForm, ListCombMainForm);
   Application.Run;
 end.

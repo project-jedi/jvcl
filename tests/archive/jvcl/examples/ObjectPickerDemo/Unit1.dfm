@@ -16,7 +16,7 @@ object Form1: TForm1
   TextHeight = 13
   object Memo1: TMemo
     Left = 0
-    Top = 44
+    Top = 47
     Width = 697
     Height = 463
     Align = alBottom

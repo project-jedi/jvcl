@@ -22,7 +22,7 @@
  Software distributed under the License is distributed on an      
  "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or   
  implied. See the License for the specific language governing     
- rights and limitations under the License.                        
+ rights and limitations under the License.
 
 ******************************************************************}
 
@@ -35,11 +35,12 @@ uses
   StdCtrls, JvLabel, JvHotLink, JvScrollText, jpeg, ExtCtrls, JvImage;
 
 type
-  Tfrm_hello = class(TFrame)
+  Tfrm_hello = class(TForm)
     frmh_st: TJvScrollText;
-    frmh_link: TJvHotLink;
+    JvHotLink0: TJvHotLink;
     JvImage1: TJvImage;
     JvHotLink1: TJvHotLink;
+    JvHotLink2: TJvHotLink;
   private
     { Private-Deklarationen }
   public

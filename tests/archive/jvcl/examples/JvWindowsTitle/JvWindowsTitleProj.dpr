@@ -1,13 +1,12 @@
 program JvWindowsTitleProj;
 
 uses
-  Forms,
-  fWinTitle in 'fWinTitle.pas' {Form1};
+  Forms, JvWindowsTitleMainFomU;
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvWindowsTitleMainForm, JvWindowsTitleMainForm);
   Application.Run;
 end.

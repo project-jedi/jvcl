@@ -1,14 +1,13 @@
 program SimpleTLTest1;
 
 uses
-  Forms,
-  Main in 'Main.pas' {frmMain},
+  Forms, TMTimeLineMainFormU,  
   frmMemoEdit in 'frmMemoEdit.pas' {MemoEditFrm};
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TTMTimeLineMainForm, TMTimeLineMainForm);
   Application.Run;
 end.

@@ -1,13 +1,12 @@
 program JvBrowserFolder;
 
 uses
-  Forms,
-  fBrowser in 'fBrowser.pas' {Form1};
+  Forms, JvBrowseFolderMainFormU;
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvBrowseFolderMainForm, JvBrowseFolderMainForm);
   Application.Run;
 end.

@@ -1,13 +1,12 @@
 program Install2LabelDemo;
 
 uses
-  Forms,
-  Unit1 in 'Unit1.pas' {Form1};
+  Forms, InstallLabelMainFormU;
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TInstallLabelMainForm, InstallLabelMainForm);
   Application.Run;
 end.

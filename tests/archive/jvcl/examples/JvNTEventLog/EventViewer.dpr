@@ -1,14 +1,13 @@
 program EventViewer;
 
 uses
-  Forms,
-  uFrmMain in 'uFrmMain.pas' {FrmMain};
+  Forms, JvNTEventLogMainFormU;
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TFrmMain, FrmMain);
+  Application.CreateForm(TJvNTEventLogMainForm, JvNTEventLogMainForm);
   Application.Run;
 end.
 

@@ -13,10 +13,6 @@ type
     cxSuppress: TCheckBox;
     btnOK: TButton;
     procedure FormResize(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 procedure DoCustomDSA1;

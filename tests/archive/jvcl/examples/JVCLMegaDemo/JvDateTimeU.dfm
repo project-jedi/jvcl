@@ -1,9 +1,18 @@
 object JvDateTimeFrm: TJvDateTimeFrm
-  Left = 0
-  Top = 0
+  Left = 358
+  Top = 107
   Width = 559
   Height = 481
-  TabOrder = 0
+  Caption = 'various date time components'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
   object Label2: TLabel
     Left = 8
     Top = 16
@@ -132,7 +141,7 @@ object JvDateTimeFrm: TJvDateTimeFrm
     Top = 24
     Width = 191
     Height = 154
-    Date = 37421.017227280090000000
+    Date = 37421.493829884260000000
     TabOrder = 1
   end
   object JvMonthCalendar21: TJvMonthCalendar2

@@ -207,6 +207,12 @@ object Form1: TForm1
     Left = 216
     Top = 132
   end
+  object FormatDialog: TJvFormatDrive
+    FormatType = ftStandard
+    Capacity = dcDefault
+    Left = 220
+    Top = 188
+  end
   object ComputerNameDialog: TJvComputerNameDialog
     Left = 220
     Top = 248
@@ -225,11 +231,5 @@ object Form1: TForm1
   object AddHardwareDialog: TJvAddHardwareDialog
     Left = 224
     Top = 312
-  end
-  object FormatDialog: TJvFormatDriveDialog
-    FormatType = ftQuick
-    Capacity = dcDefault
-    Left = 224
-    Top = 192
   end
 end

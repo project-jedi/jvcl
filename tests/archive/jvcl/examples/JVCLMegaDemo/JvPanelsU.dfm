@@ -1,9 +1,17 @@
 object JvPanelsFrm: TJvPanelsFrm
-  Left = 0
-  Top = 0
-  Width = 623
-  Height = 456
-  TabOrder = 0
+  Left = 311
+  Top = 63
+  Width = 639
+  Height = 484
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
   object JvLookOut1: TJvLookOut
     Left = 464
     Top = 40
@@ -37,6 +45,7 @@ object JvPanelsFrm: TJvPanelsFrm
     CaptionFont.Height = -13
     CaptionFont.Name = 'Arial'
     CaptionFont.Style = [fsBold]
+    OutlookLook = False
     TabOrder = 1
     object JvExpress1: TJvExpress
       Left = 319
@@ -89,6 +98,7 @@ object JvPanelsFrm: TJvPanelsFrm
       Width = 373
       Height = 193
       AutoGrow = False
+      AutoSize = False
       Items.Strings = (
         'JvItemsPanel'
         'Second item'
@@ -119,8 +129,6 @@ object JvPanelsFrm: TJvPanelsFrm
     object JvClock1: TJvClock
       Left = 24
       Top = 48
-      Width = 100
-      Height = 50
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -131,8 +139,6 @@ object JvPanelsFrm: TJvPanelsFrm
       Left = 168
       Top = 32
       SpiderClock = True
-      CenterSize = 5
-      CenterCol = clBlack
       TabOrder = 1
     end
   end
@@ -147,6 +153,7 @@ object JvPanelsFrm: TJvPanelsFrm
           item
             Caption = 'MyButton'
             ImageIndex = 2
+            Tag = 0
           end>
         Caption = 'JvOutlookBar'
         Color = clBtnShadow
@@ -164,10 +171,12 @@ object JvPanelsFrm: TJvPanelsFrm
           item
             Caption = 'MyButton2'
             ImageIndex = 0
+            Tag = 0
           end
           item
             Caption = 'MyButton3'
             ImageIndex = 1
+            Tag = 0
           end>
         Caption = 'Another panel'
         Color = clBtnShadow

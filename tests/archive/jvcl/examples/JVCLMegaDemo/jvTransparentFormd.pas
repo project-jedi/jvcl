@@ -14,12 +14,7 @@ type
     procedure FormActivate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
-  private
-    { Private-Deklarationen }
-  public
-    { Public-Deklarationen }
-  end;
-
+   end;
 
 implementation
 
@@ -39,6 +34,5 @@ procedure TfrTransparentForm.Button1Click(Sender: TObject);
 begin
   Close;
 end;
-
 
 end.

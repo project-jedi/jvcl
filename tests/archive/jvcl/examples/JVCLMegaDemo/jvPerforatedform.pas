@@ -9,10 +9,6 @@ uses
 type
   TfrPerforatedForm = class(TForm)
     JvPerforated1: TJvPerforated;
-  private
-    { Private-Deklarationen }
-  public
-    { Public-Deklarationen }
   end;
 
 

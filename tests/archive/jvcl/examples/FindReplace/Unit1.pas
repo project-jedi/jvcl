@@ -43,8 +43,6 @@ type
     { Private declarations }
     FOptions:TFindOptions;
     FCount:integer;
-  public
-    { Public declarations }
   end;
 
 var

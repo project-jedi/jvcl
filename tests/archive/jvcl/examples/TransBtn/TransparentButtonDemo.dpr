@@ -1,13 +1,12 @@
 program TransparentButtonDemo;
 
 uses
-  Forms,
-  UTest in 'UTest.pas' {Form1};
+  Forms, TransBtnFormMainU;
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TTransBtnFormMain, TransBtnFormMain);
   Application.Run;
 end.

@@ -37,7 +37,7 @@ uses
   StdCtrls, JvLabel, JvHotLink;
 
 type
-  TJvLabelsFrm = class(TFrame)
+  TJvLabelsFrm = class(TForm)
     JvHotLink1: TJvHotLink;
     JvBlinkingLabel1: TJvBlinkingLabel;
     JvScrollingLabel1: TJvScrollingLabel;
@@ -52,10 +52,6 @@ type
     procedure JvBouncingLabel1Click(Sender: TObject);
     procedure JvAppearingLabel1Click(Sender: TObject);
     procedure JvAppearingLabel1Appeared(Sender: TObject);
-  private
-    { Private-Deklarationen }
-  public
-    { Public-Deklarationen }
   end;
 
 implementation

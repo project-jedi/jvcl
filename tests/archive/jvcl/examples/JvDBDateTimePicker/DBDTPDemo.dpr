@@ -1,13 +1,12 @@
 program DBDTPDemo;
 
 uses
-  Forms,
-  UDBdtpDemo in 'UDBdtpDemo.pas' {Form1};
+  Forms, JvDBDateTimePickerMainFormU; 
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvDBDateTimePickerMainForm, JvDBDateTimePickerMainForm);
   Application.Run;
 end.

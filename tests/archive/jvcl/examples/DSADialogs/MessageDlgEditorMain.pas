@@ -5,8 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, ExtCtrls, StdCtrls, CheckLst,
-  JclBase,
-  JvDSADialogs;
+  JclBase, JvDSADialogs;
 
 type
   TfrmMessageDlgEditor = class(TForm)

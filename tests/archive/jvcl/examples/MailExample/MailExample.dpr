@@ -1,13 +1,12 @@
 program MailExample;
 
 uses
-  Forms,
-  MailMain in 'MailMain.pas' {MainForm};
+  Forms, MailExampleMainFormU;
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TMailExampleMainForm, MailExampleMainForm);
   Application.Run;
 end.

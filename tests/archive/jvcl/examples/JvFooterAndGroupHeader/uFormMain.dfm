@@ -45,13 +45,16 @@ object Form1: TForm1
   end
   object JvFooter1: TJvFooter
     Left = 0
-    Top = 158
+    Top = 160
     Width = 494
     Height = 37
     Align = alBottom
+    DesignSize = (
+      494
+      37)
     object JvFooterBtn1: TJvFooterBtn
       Left = 5
-      Top = 9
+      Top = 7
       Width = 74
       Height = 23
       Anchors = [akLeft, akBottom]
@@ -68,7 +71,7 @@ object Form1: TForm1
     end
     object JvFooterBtn2: TJvFooterBtn
       Left = 334
-      Top = 9
+      Top = 7
       Width = 74
       Height = 23
       Anchors = [akRight, akBottom]
@@ -85,7 +88,7 @@ object Form1: TForm1
     end
     object JvFooterBtn3: TJvFooterBtn
       Left = 415
-      Top = 9
+      Top = 7
       Width = 74
       Height = 23
       Anchors = [akRight, akBottom]
@@ -103,13 +106,16 @@ object Form1: TForm1
   end
   object JvFooter2: TJvFooter
     Left = 0
-    Top = 121
+    Top = 123
     Width = 494
     Height = 37
     Align = alBottom
+    DesignSize = (
+      494
+      37)
     object JvFooterBtn4: TJvFooterBtn
       Left = 260
-      Top = 9
+      Top = 7
       Width = 74
       Height = 23
       Anchors = [akRight, akBottom]
@@ -125,7 +131,7 @@ object Form1: TForm1
     end
     object JvFooterBtn5: TJvFooterBtn
       Left = 334
-      Top = 9
+      Top = 7
       Width = 74
       Height = 23
       Anchors = [akRight, akBottom]
@@ -142,7 +148,7 @@ object Form1: TForm1
     end
     object JvFooterBtn6: TJvFooterBtn
       Left = 415
-      Top = 9
+      Top = 7
       Width = 74
       Height = 23
       Anchors = [akRight, akBottom]
@@ -159,13 +165,16 @@ object Form1: TForm1
   end
   object JvFooter3: TJvFooter
     Left = 0
-    Top = 84
+    Top = 86
     Width = 494
     Height = 37
     Align = alBottom
+    DesignSize = (
+      494
+      37)
     object JvFooterBtn7: TJvFooterBtn
       Left = 210
-      Top = 9
+      Top = 7
       Width = 74
       Height = 23
       Anchors = [akBottom]

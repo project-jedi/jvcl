@@ -49,10 +49,6 @@ type
     procedure btnRefreshClick(Sender: TObject);
     procedure Panel2Resize(Sender: TObject);
     procedure EditChange(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 implementation

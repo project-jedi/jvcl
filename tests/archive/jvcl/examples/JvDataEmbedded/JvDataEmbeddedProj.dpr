@@ -1,13 +1,12 @@
 program JvDataEmbeddedProj;
 
 uses
-  Forms,
-  fEmbedded in 'fEmbedded.pas' {Form1};
-
+  Forms, JvDataEmbeddedMainFormU;
+  
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvDataEmbeddedMainForm, JvDataEmbeddedMainForm);
   Application.Run;
 end.

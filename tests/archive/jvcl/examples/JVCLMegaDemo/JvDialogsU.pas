@@ -36,10 +36,11 @@ uses
   JvLoginDlg, JvNagScreen, JvImageDlg, JvWinDialogs, 
   JvProgressDlg, JvCommonDialogD, JvDiskPrompt, JvCopyError,
   JvDeleteError, JvPageSetup, JvPageSetupTitled, JvObjPickerComp,
-  JvCalc, JvTipOfDay, JvSerialDlg, ExtCtrls, JvCaptionPanel;
+  JvCalc, JvTipOfDay, JvSerialDlg, ExtCtrls, JvCaptionPanel, JvFindFiles,
+  jpeg;
 
 type
-  TJvDialogs = class(TFrame)
+  TJvDialogs = class(TForm)
     JvPasswordForm1: TJvPasswordForm;
     JvExchListboxes1: TJvExchListboxes;
     JvLoginDlg1: TJvLoginDlg;
@@ -53,7 +54,7 @@ type
     JvPageSetupTitledDialog1: TJvPageSetupTitledDialog;
     JvObjectPickerDialog1: TJvObjectPickerDialog;
     JvSerialDlg1: TJvSerialDlg;
-    JvCaptionPanel1: TJvCaptionPanel;
+    JvFindFilesDialog1: TJvFindFilesDialog;
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
@@ -85,6 +86,7 @@ type
     procedure Button13Click(Sender: TObject);
     procedure Button14Click(Sender: TObject);
     procedure Button17Click(Sender: TObject);
+    procedure Button15Click(Sender: TObject);
   end;
 
 implementation
@@ -192,6 +194,11 @@ end;
 procedure TJvDialogs.Button17Click(Sender: TObject);
 begin
   JvObjectPickerDialog1.Execute;
+end;
+
+procedure TJvDialogs.Button15Click(Sender: TObject);
+begin
+ JvFindFilesDialog1.execute;
 end;
 
 end.

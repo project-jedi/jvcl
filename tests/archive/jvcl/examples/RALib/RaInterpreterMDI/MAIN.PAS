@@ -34,7 +34,7 @@ implementation
 
 {$R *.DFM}
 
-uses ChildWin, About;
+uses ChildWin, aboutRaInterpreter;
 
 procedure TMainForm  .FileNew1Execute(Sender: TObject);
 begin
@@ -43,7 +43,7 @@ end;
 
 procedure TMainForm  .HelpAbout1Execute(Sender: TObject);
 begin
-  JvInterpreterRunFormModal(ExtractFilePath(paramstr(0))+'about.pas');
+  JvInterpreterRunFormModal(ExtractFilePath(paramstr(0))+'aboutRAInterpreter.pas');
 end;
 
 procedure TMainForm  .FileExit1Execute(Sender: TObject);

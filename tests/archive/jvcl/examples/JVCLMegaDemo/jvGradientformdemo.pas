@@ -9,10 +9,6 @@ uses
 type
   Tfrgradient = class(TForm)
     JvGradient1: TJvGradient;
-  private
-    { Private-Deklarationen }
-  public
-    { Public-Deklarationen }
   end;
 
 

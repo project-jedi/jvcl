@@ -1,9 +1,9 @@
 object frmMessageDlgEditor: TfrmMessageDlgEditor
-  Left = 406
-  Top = 185
+  Left = 292
+  Top = 85
   Width = 518
-  Height = 540
-  Caption = 'MessageDlg editor'
+  Height = 559
+  Caption = 'DSA MessageDlg editor'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,17 +17,16 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
   TextHeight = 13
   object lblSource: TLabel
     Left = 15
-    Top = 370
+    Top = 418
     Width = 37
     Height = 13
     Caption = 'Source:'
   end
   object btnClose: TButton
     Left = 430
-    Top = 485
+    Top = 504
     Width = 75
     Height = 25
-    Anchors = [akRight, akBottom]
     Caption = 'Close'
     TabOrder = 0
     OnClick = btnCloseClick
@@ -155,26 +154,26 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
     Left = 5
     Top = 125
     Width = 500
-    Height = 116
+    Height = 164
     Caption = ' Buttons '
     TabOrder = 2
     object lblDefaultButton: TLabel
       Left = 10
-      Top = 90
+      Top = 138
       Width = 37
       Height = 13
       Caption = 'Default:'
     end
     object lblCancelButton: TLabel
       Left = 175
-      Top = 90
+      Top = 138
       Width = 36
       Height = 13
       Caption = 'Cancel:'
     end
     object lblHelpButton: TLabel
       Left = 340
-      Top = 90
+      Top = 138
       Width = 25
       Height = 13
       Caption = 'Help:'
@@ -203,7 +202,7 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
       Left = 10
       Top = 36
       Width = 151
-      Height = 43
+      Height = 82
       OnClickCheck = clbStdButtonsClickCheck
       IntegralHeight = True
       ItemHeight = 13
@@ -223,9 +222,9 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
     end
     object mmCustomButtons: TMemo
       Left = 175
-      Top = 35
+      Top = 36
       Width = 316
-      Height = 45
+      Height = 85
       Enabled = False
       Lines.Strings = (
         'Yes=mrYes'
@@ -245,7 +244,7 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
     end
     object cbDefaultButton: TComboBox
       Left = 60
-      Top = 85
+      Top = 133
       Width = 101
       Height = 21
       Style = csDropDownList
@@ -255,7 +254,7 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
     end
     object cbCancelButton: TComboBox
       Left = 225
-      Top = 85
+      Top = 133
       Width = 101
       Height = 21
       Style = csDropDownList
@@ -265,7 +264,7 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
     end
     object cbHelpButton: TComboBox
       Left = 390
-      Top = 85
+      Top = 133
       Width = 101
       Height = 21
       Style = csDropDownList
@@ -276,7 +275,7 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
   end
   object gbOther: TGroupBox
     Left = 5
-    Top = 245
+    Top = 293
     Width = 500
     Height = 116
     Caption = ' Other settings '
@@ -364,9 +363,9 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
   end
   object mmSource: TMemo
     Left = 65
-    Top = 370
+    Top = 418
     Width = 431
-    Height = 104
+    Height = 79
     ReadOnly = True
     ScrollBars = ssBoth
     TabOrder = 4
@@ -374,7 +373,7 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
   end
   object btnTest: TButton
     Left = 350
-    Top = 485
+    Top = 505
     Width = 75
     Height = 25
     Caption = 'Test'

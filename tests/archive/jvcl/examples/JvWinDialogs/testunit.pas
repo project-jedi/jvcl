@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvWinDialogs, JvComponent, JvBaseDlg, JvBrowseFolder;
+  StdCtrls, JvWinDialogs, JvComponent, JvSHFmt, JvBaseDlg, JvBrowseFolder;
 
 type
   TForm1 = class(TForm)
@@ -16,7 +16,7 @@ type
     ShellAboutDialog: TjvShellAboutDialog;
     OutOfMemoryDialog: TjvOutOfMemoryDialog;
     RunDialog: TjvRunDialog;
-    FormatDialog: TJvFormatDriveDialog;
+    FormatDialog: TJvFormatDrive;
     ComputerNameDialog: TjvComputerNameDialog;
     Button1: TButton;
     Button2: TButton;

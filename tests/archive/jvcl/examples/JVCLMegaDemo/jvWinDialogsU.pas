@@ -4,9 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvAddPrinter, JvWinDialogs,
-  JvConnectNetwork, JvBaseDlg, JvSelectDirectory, JvComponent,
-  JvBrowseFolder;
+  StdCtrls, JvAddPrinter, JvWinDialogs, JvConnectNetwork, JvBaseDlg,
+  JvSelectDirectory, JvComponent, JvBrowseFolder;
 
 type
   TJvWinDialogs = class(TFrame)
@@ -73,10 +72,6 @@ type
     procedure Button18Click(Sender: TObject);
     procedure Button17Click(Sender: TObject);
     procedure Button16Click(Sender: TObject);
-  private
-    { Private-Deklarationen }
-  public
-    { Public-Deklarationen }
   end;
 
 implementation

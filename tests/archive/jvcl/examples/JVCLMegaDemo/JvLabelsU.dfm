@@ -4,7 +4,15 @@ object JvLabelsFrm: TJvLabelsFrm
   Width = 621
   Height = 464
   HelpContext = 6
-  TabOrder = 0
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
   object JvHotLink1: TJvHotLink
     Left = 120
     Top = 48
@@ -115,7 +123,7 @@ object JvLabelsFrm: TJvLabelsFrm
   end
   object JvReversedLabel1: TJvReversedLabel
     Left = 168
-    Top = 184
+    Top = 176
     Width = 89
     Height = 13
     Caption = 'JvReversedLabel1'
@@ -128,10 +136,8 @@ object JvLabelsFrm: TJvLabelsFrm
   object Label12: TLabel
     Left = 32
     Top = 424
-    Width = 398
+    Width = 343
     Height = 13
-    Caption = 
-      'By the way: All Labels of the JVCL have OnMouseEnter and OnMouse' +
-      'Leave Events'
+    Caption = 'BTW all labels of the JVCL have OnMouseEnter/OnMouseLeave events'
   end
 end

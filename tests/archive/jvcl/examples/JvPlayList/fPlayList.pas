@@ -73,10 +73,6 @@ type
     procedure InvSelectExecute(Sender: TObject);
     procedure MoveUpExecute(Sender: TObject);
     procedure MoveDownExecute(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 var

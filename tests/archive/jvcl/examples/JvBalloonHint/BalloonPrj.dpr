@@ -1,13 +1,12 @@
 program BalloonPrj;
 
 uses
-  Forms,
-  MainDlg in 'MainDlg.pas' {frmMain};
-
+  Forms, JvBalloonHintMainFormU;
+  
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TJvBalloonHintMainForm, JvBalloonHintMainForm);
   Application.Run;
 end.

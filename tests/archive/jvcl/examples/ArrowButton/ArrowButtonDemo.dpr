@@ -2,12 +2,12 @@ program ArrowButtonDemo;
 
 uses
   Forms,
-  Unit1 in 'Unit1.pas' {Form1};
+  ArrowButtonMainFormU;
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TArrowButtonMainForm, ArrowButtonMainForm);
   Application.Run;
 end.

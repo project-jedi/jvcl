@@ -1,13 +1,12 @@
 program JvZLibMultipleDemo;
 
 uses
-  Forms,
-  ZLibMainFrm in 'ZLibMainFrm.pas' {frmMain};
+  Forms, JvZLibMultipleMainFormU;  
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TJvZLibMultipleMainForm, JvZLibMultipleMainForm);
   Application.Run;
 end.

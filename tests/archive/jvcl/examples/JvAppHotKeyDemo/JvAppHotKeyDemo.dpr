@@ -1,13 +1,12 @@
 program JvAppHotKeyDemo;
 
 uses
-  Forms,
-  MainFrm in 'MainFrm.pas' {frmMain};
+  Forms, JvAppHotKeyDemoMainFormU;
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TJvAppHotKeyDemoMainForm, JvAppHotKeyDemoMainForm);
   Application.Run;
 end.

@@ -1,13 +1,12 @@
 program CaptionButtonDemo;
 
 uses
-  Forms,
-  Unit1 in 'Unit1.pas' {Form1};
-
+  Forms, CaptionBtnMainFormU;
+  
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TCaptionBtnMainForm, CaptionBtnMainForm);
   Application.Run;
 end.

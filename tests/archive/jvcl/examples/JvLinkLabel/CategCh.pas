@@ -90,16 +90,8 @@ type
     property OnCatChange: TNotifyEvent read FCatChange write FCatChange;
   end;
 
-// procedure Register;
-
 implementation
 
-{
-procedure Register;
-begin
-  RegisterComponents('David Polberger', [TJvCategoryChooser]);
-end;
-}
 { TJvCategoryChooser }
 
 procedure TJvCategoryChooser.CMMouseLeave(var Message: TMessage);

@@ -35,8 +35,7 @@ uses
   StdCtrls, Buttons, ExtCtrls, JvComponent, JvCaptionPanel;
 
 type
-  TJvFormsFrm = class(TFrame)
-    JvCaptionPanel1: TJvCaptionPanel;
+  TJvFormsFrm = class(TForm)
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
@@ -61,14 +60,12 @@ type
     procedure BitBtn10Click(Sender: TObject);
     procedure BitBtn11Click(Sender: TObject);
     procedure BitBtn12Click(Sender: TObject);
-  private
-    { Private-Deklarationen }
   public
-    { Public-Deklarationen }
     TheForm : TForm;
   end;
 
 implementation
+
 uses
   jvWallpaperform,
   jvAnimatedTitelform,
@@ -87,84 +84,84 @@ uses
 
 procedure TJvFormsFrm.BitBtn1Click(Sender: TObject);
 begin
-  TheForm := TfrWallpaper.Create(NIL);
+  TheForm := TfrWallpaper.Create(nil);
   TheForm.showmodal;
   theForm.free;
 end;
 
 procedure TJvFormsFrm.BitBtn2Click(Sender: TObject);
 begin
-  TheForm := TfrAnimatedTitel.create(NIL);
+  TheForm := TfrAnimatedTitel.create(nil);
   theform.showmodal;
   theform.free;
 end;
 
 procedure TJvFormsFrm.BitBtn3Click(Sender: TObject);
 begin
-  TheForm := TfrPerforatedForm.create(NIL);
+  TheForm := TfrPerforatedForm.create(nil);
   theform.showmodal;
   theform.free;
 end;
 
 procedure TJvFormsFrm.BitBtn4Click(Sender: TObject);
 begin
-  TheForm := TfrTransparentForm.create(NIL);
+  TheForm := TfrTransparentForm.create(nil);
   theform.showmodal;
   theform.free;
 end;
 
 procedure TJvFormsFrm.BitBtn5Click(Sender: TObject);
 begin
-  TheForm := TfrTrayicon.create(NIL);
+  TheForm := TfrTrayicon.create(nil);
   theform.showmodal;
   theform.free;
 end;
 
 procedure TJvFormsFrm.BitBtn6Click(Sender: TObject);
 begin
-  TheForm := TfrAnimatedFormIcon.create(NIL);
+  TheForm := TfrAnimatedFormIcon.create(nil);
   theform.showmodal;
   theform.free;
 end;
 
 procedure TJvFormsFrm.BitBtn7Click(Sender: TObject);
 begin
-  TheForm := TfrAnimatedApplicationicon.create(NIL);
+  TheForm := TfrAnimatedApplicationicon.create(nil);
   theform.showmodal;
   theform.free;
 end;
 
 procedure TJvFormsFrm.BitBtn8Click(Sender: TObject);
 begin
-  TheForm := TfrFormplace.create(NIL);
+  TheForm := TfrFormplace.create(nil);
   theform.showmodal;
   theform.free;
 end;
 
 procedure TJvFormsFrm.BitBtn9Click(Sender: TObject);
 begin
-  TheForm := TfrFormAnimation.create(NIL);
+  TheForm := TfrFormAnimation.create(nil);
   theform.showmodal;
   theform.free;
 end;
 
 procedure TJvFormsFrm.BitBtn10Click(Sender: TObject);
 begin
-  TheForm := TfrAutosize.create(NIL);
+  TheForm := TfrAutosize.create(nil);
   theform.showmodal;
   theform.free;
 end;
 
 procedure TJvFormsFrm.BitBtn11Click(Sender: TObject);
 begin
-  TheForm := Tfrmagnet.create(NIL);
+  TheForm := Tfrmagnet.create(nil);
   theform.showmodal;
   theform.free;
 end;
 
 procedure TJvFormsFrm.BitBtn12Click(Sender: TObject);
 begin
-  TheForm := Tfrgradient.create(NIL);
+  TheForm := Tfrgradient.create(nil);
   theform.showmodal;
   theform.free;
 end;

@@ -56,8 +56,7 @@ procedure PreviewGIF(AImage: TJvGIFImage );
 
 implementation
 
-uses
-  ShellAPI, Math;
+uses ShellAPI, JvMaxMin;
 
 {$R *.DFM}
 

@@ -1,13 +1,12 @@
 program JvScreenCaptureProj;
 
 uses
-  Forms,
-  fScreenCapture in 'fScreenCapture.pas' {Form1};
+  Forms, JvScreenCaptureMainFormU; 
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvScreenCaptureMainForm, JvScreenCaptureMainForm);
   Application.Run;
 end.

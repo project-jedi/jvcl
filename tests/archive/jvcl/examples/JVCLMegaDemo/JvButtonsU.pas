@@ -8,7 +8,7 @@ uses
   JvTransBtn2, StdCtrls;
 
 type
-  TJvButtons = class(TFrame)
+  TJvButtons = class(TForm)
     JvTransparentButton21: TJvTransparentButton2;
     JvArrowButton1: TJvArrowButton;
     ListView1: TListView;
@@ -16,10 +16,6 @@ type
     JvImageJEDI: TJvImage;
     CheckBoxImage: TCheckBox;
     procedure CheckBoxImageClick(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 implementation
@@ -28,7 +24,6 @@ implementation
 
 procedure TJvButtons.CheckBoxImageClick(Sender: TObject);
 begin
-
  JvImageJEDI.visible := CheckBoxImage.Checked;
 end;
 

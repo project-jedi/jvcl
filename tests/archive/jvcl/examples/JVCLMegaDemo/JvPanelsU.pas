@@ -9,7 +9,7 @@ uses
   JvLookOut, ImgList, JvAnalogClock, JvPanel;
 
 type
-  TJvPanelsFrm = class(TFrame)
+  TJvPanelsFrm = class(TForm)
     ImageList1: TImageList;
     JvLookOut1: TJvLookOut;
     JvLookOutButton1: TJvLookOutButton;
@@ -22,10 +22,6 @@ type
     JvSizeablePanel1: TJvSizeablePanel;
     JvItemsPanel1: TJvItemsPanel;
     JvOutlookBar1: TJvOutlookBar;
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 implementation

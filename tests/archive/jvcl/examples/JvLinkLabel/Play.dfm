@@ -19,7 +19,7 @@ object frmPlay: TfrmPlay
     Left = 0
     Top = 0
     Width = 345
-    Height = 351
+    Height = 353
     Transparent = False
     LinkColor = clBlue
     LinkColorClicked = clRed
@@ -42,9 +42,7 @@ object frmPlay: TfrmPlay
   object Splitter1: TSplitter
     Left = 345
     Top = 0
-    Width = 3
-    Height = 351
-    Cursor = crHSplit
+    Height = 353
     Align = alRight
     Beveled = True
     ResizeStyle = rsUpdate
@@ -53,7 +51,7 @@ object frmPlay: TfrmPlay
     Left = 348
     Top = 0
     Width = 185
-    Height = 351
+    Height = 353
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 0
@@ -79,7 +77,7 @@ object frmPlay: TfrmPlay
       Left = 0
       Top = 41
       Width = 185
-      Height = 310
+      Height = 312
       Align = alClient
       Indent = 19
       TabOrder = 1
@@ -87,7 +85,7 @@ object frmPlay: TfrmPlay
   end
   object Panel2: TPanel
     Left = 0
-    Top = 351
+    Top = 353
     Width = 533
     Height = 41
     Align = alBottom

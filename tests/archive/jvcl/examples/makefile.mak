@@ -48,6 +48,7 @@ ImageWindowDemo.exe \
 Install2LabelDemo.exe \
 JvAniProj.exe \
 JvAppHotKeyDemo.exe \
+BalloonPrj.exe \
 JvBrowserFolder.exe \
 JvClipboardViewerProj.exe \
 JVCLDemo.exe \
@@ -77,6 +78,7 @@ DataPlugin.dll \
 DataPlugInDemo.exe \
 JvScreenCaptureProj.exe \
 JvSearchFileProj.exe \
+JvShellHookDemo.exe \
 ShFileOpDemo.exe \
 SpecialProgressTestPrj.exe \
 JvSystemPopupProj.exe \
@@ -241,6 +243,11 @@ JvAppHotKeyDemo.exe: JvAppHotKeyDemo\JvAppHotKeyDemo.dpr
   $(DCC) $&.dpr
   cd ..
 
+BalloonPrj.exe: JvBalloonHint\BalloonPrj.dpr
+  cd JvBalloonHint
+  $(DCC) $&.dpr
+  cd ..
+
 JvBrowserFolder.exe: JvBrowseFolder\JvBrowserFolder.dpr
   cd JvBrowseFolder
   $(DCC) $&.dpr
@@ -383,6 +390,11 @@ JvScreenCaptureProj.exe: JvScreenCapture\JvScreenCaptureProj.dpr
 
 JvSearchFileProj.exe: JvSearchFile\JvSearchFileProj.dpr
   cd JvSearchFile
+  $(DCC) $&.dpr
+  cd ..
+
+JvShellHookDemo.exe: JvShellHookDemo\JvShellHookDemo.dpr
+  cd JvShellHookDemo
   $(DCC) $&.dpr
   cd ..
 

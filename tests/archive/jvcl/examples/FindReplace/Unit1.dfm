@@ -20,7 +20,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 428
-    Height = 260
+    Height = 262
     Align = alClient
     Lines.Strings = (
       'LICENSE AGREEMENT'

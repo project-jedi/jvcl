@@ -9,7 +9,7 @@ uses
   JvControlPanel, JvFavoritesButton;
 
 type
-  TJvUtilsFrm = class(TFrame)
+  TJvUtilsFrm = class(TForm)
     JvDirectories1: TJvDirectories;
     Memo1: TMemo;
     Button1: TButton;
@@ -35,10 +35,6 @@ type
     procedure CheckBox2Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
-  private
-    { Private-Deklarationen }
-  public
-    { Public-Deklarationen }
   end;
 
 implementation
@@ -48,7 +44,7 @@ implementation
 procedure TJvUtilsFrm.Button1Click(Sender: TObject);
 begin
  with Memo1.Lines do
-  begin
+ begin
    Add('CurrentDirectory: ' + JvDirectories1.CurrentDirectory);
    Add('WindowsDirectory: ' + JvDirectories1.WindowsDirectory);
    Add('SystemDirectory:: ' + JvDirectories1.SystemDirectory);
@@ -88,17 +84,16 @@ begin
  LaunchCPL(JvDirectories1.SystemDirectory + 'DESK.CPL');
 end;
 
-
 procedure TJvUtilsFrm.Button6Click(Sender: TObject);
 begin
  case JvKeyboardStates1.tag of
-  0: begin
+  0: begin // start the flashing
        JvKeyboardStates1.Enabled := true;
        JvKeyboardStates1.tag := 1;
        Button6.Caption := 'Stop that!!';
      end;
 
-  1: begin
+  1: begin // stop the flashing
        JvKeyboardStates1.Enabled := false;
        JvKeyboardStates1.tag := 0;
        Button6.Caption := 'let me see this again because it was so beautiful';

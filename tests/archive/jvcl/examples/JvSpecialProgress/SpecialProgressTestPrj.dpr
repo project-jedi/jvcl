@@ -1,13 +1,12 @@
 program SpecialProgressTestPrj;
 
 uses
-  Forms,
-  SpecialProgressTest in 'SpecialProgressTest.pas' {Form1};
+  Forms, JvSpecialProgressMainFormU;  
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvSpecialProgressMainForm, JvSpecialProgressMainForm);
   Application.Run;
 end.

@@ -1,13 +1,12 @@
 program ShFileOpDemo;
 
 uses
-  Forms,
-  MainFrm in 'MainFrm.pas' {Form1};
+  Forms, JvShFileOperationMainFormU;  
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TJvShFileOperationMainForm, JvShFileOperationMainForm);
   Application.Run;
 end.

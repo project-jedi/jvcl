@@ -194,9 +194,8 @@ var
 
 implementation
 
-uses
-  Clipbrd, Math, GIFPrvw, GIFPal, About,
-  JvVCLUtils, JvAppUtils, JvProps, JvGraph, JvHints;
+uses Clipbrd, JvVCLUtils, JvAppUtils, JvMaxMin, JvProps, JvGraph, JvHints,
+  GIFPrvw, GIFPal, About;
 
 {$R *.DFM}
 
@@ -325,7 +324,7 @@ var
 begin
   with ImageScroll do begin
     Min := 0;
-    Max := Math.Max(0, FImage.Count - 1);
+    Max := JvMaxMin.Max(0, FImage.Count - 1);
     Enable := (Max > Min) and not FImage.Empty;
     if not Enable then ActiveControl := Pages;
     Enabled := Enable;

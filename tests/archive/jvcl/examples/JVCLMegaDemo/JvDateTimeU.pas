@@ -9,7 +9,7 @@ uses
   JvAnalogClock, JvClock;
 
 type
-  TJvDateTimeFrm = class(TFrame)
+  TJvDateTimeFrm = class(TForm)
     Label2: TLabel;
     Label3: TLabel;
     Label8: TLabel;
@@ -28,10 +28,6 @@ type
     JvxClock1: TJvxClock;
     ComboBox1: TComboBox;
     procedure ComboBox1Change(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 implementation

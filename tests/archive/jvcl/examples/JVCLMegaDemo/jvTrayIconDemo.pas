@@ -17,10 +17,6 @@ type
     procedure ShowTray1Click(Sender: TObject);
     procedure ShowForm1Click(Sender: TObject);
     procedure Close1Click(Sender: TObject);
-  private
-    { Private-Deklarationen }
-  public
-    { Public-Deklarationen }
   end;
 
 implementation

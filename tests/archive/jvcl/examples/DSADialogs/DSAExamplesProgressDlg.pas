@@ -22,8 +22,6 @@ type
   private
     { Private declarations }
     DoMessage: TMsgProgressCallback;
-  public
-    { Public declarations }
   end;
 
 procedure DoProgress(const MessageCallback: TMsgProgressCallback);
