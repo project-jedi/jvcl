@@ -2,11 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
 "POT-Creation-Date: 2004-08-07 13:01\n"
-"PO-Revision-Date: 2004-07-15 11:59+0100\n"
-"Last-Translator: Stefano Pessina <peste1@hotmail.com>\n"
+"PO-Revision-Date: 2004-08-22 16:20+0100\n"
+"Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #  FormMain..Caption
@@ -109,8 +109,8 @@ msgstr "Errore nella generazione dei template per la cartella %s"
 
 #  this must not be the doubt of the installer
 #  Programmer's name for it: RsErrorCompilingPackages
-#. this must not be the doubt of the installer
-#. Programmer's name for it: RsErrorCompilingPackages
+#  this must not be the doubt of the installer
+#  Programmer's name for it: RsErrorCompilingPackages
 #: Compile.pas:173
 msgid "An error occured while compiling the packages."
 msgstr ""
@@ -151,7 +151,7 @@ msgid ""
 "it to another package."
 msgstr ""
 "http://dxgettext.sourceforge.net|Scaricalo da <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
-"<c:red>La unit gnugettext.pas verr‡ aggiunta alla lista\n"
+"<c:red>La unit gnugettext.pas verr√† aggiunta alla lista\n"
 "di JvCore-R"
 
 #. FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage..Caption
@@ -417,7 +417,8 @@ msgstr "..."
 #. FrameInstall..LblTarget..Caption
 #. FramePackageSelection..LblTarget..Caption
 #. FrameUninstall..LblTarget..Caption
-#: Frames/FrmInstall.dfm:12 Frames/FrmPackageSelection.dfm:12
+#: Frames/FrmInstall.dfm:12
+#: Frames/FrmPackageSelection.dfm:12
 #: Frames/FrmUninstall.dfm:12
 msgid "LblTarget"
 msgstr "LblTarget"
@@ -604,7 +605,8 @@ msgstr ""
 #  Programmer's name for it: RsInstallerName
 #. FormMain..Caption
 #. Programmer's name for it: RsInstallerName
-#: InstallerConsts.pas:50 Main.dfm:6
+#: InstallerConsts.pas:50
+#: Main.dfm:6
 msgid "JVCL 3  Installation"
 msgstr "Installazione JVCL 3"
 
@@ -688,7 +690,8 @@ msgstr ""
 
 #. Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
-#: InstallerConsts.pas:85 JVCLData.pas:284
+#: InstallerConsts.pas:85
+#: JVCLData.pas:284
 msgid "Complete."
 msgstr ""
 
@@ -1029,7 +1032,7 @@ msgstr "TJv"
 #. Programmer's name for it: RsNoJVCLFound
 #: JVCLData.pas:277
 msgid "No JVCL directory found. Application terminated."
-msgstr "Nessuna cartella per JVCL trovata. L'applicazione verr‡ terminata."
+msgstr "Nessuna cartella per JVCL trovata. L'applicazione verr√† terminata."
 
 #  Programmer's name for it: RsJVCLInstaller
 #. Programmer's name for it: RsJVCLInstaller
@@ -1080,17 +1083,3 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Homepage Jedi Visual Component Library"
 
-#  FormJvclIncConfig..BtnClose..Caption
-#~ msgid "&Close"
-#~ msgstr "&Chiudi"
-
-#  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly..Caption
-#~ msgid "&Compile only"
-#~ msgstr "&Compila solamente"
-
-#~ msgid "&Details >"
-#~ msgstr "&Dettagli >"
-
-#  FormJvclIncConfig..TitlePanel..LabelTmp1..Caption
-#~ msgid "Assigned to runtime"
-#~ msgstr "Assegnato al runtime"
