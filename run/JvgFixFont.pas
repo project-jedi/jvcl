@@ -59,7 +59,16 @@ type
     property Font: TFont read FFont write FFont;
   end;
 
+{$IFNDEF USEJVCL}
+  {$UNDEF UNITVERSIONING}
+{$ENDIF ~USEJVCL}
+
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 type
   TControlAccessProtected = class(TControl);
@@ -97,6 +106,22 @@ begin
         TControlAccessProtected(Components[I]).Font.Assign(FFont);
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

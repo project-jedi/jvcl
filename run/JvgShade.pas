@@ -66,7 +66,16 @@ type
     property Width default 105;
   end;
 
+{$IFNDEF USEJVCL}
+  {$UNDEF UNITVERSIONING}
+{$ENDIF ~USEJVCL}
+
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 constructor TJvgShade.Create(AOwner: TComponent);
 begin
@@ -145,6 +154,22 @@ begin
   FNeedRebuildImage := True;
   Invalidate;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

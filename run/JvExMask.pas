@@ -83,7 +83,7 @@ type
   public
     procedure Dispatch(var Msg); override;
   protected
-   // IJvStdControlEvents
+   // IJvWinControlEvents
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -98,6 +98,7 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -107,22 +108,23 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+  private
+    InternalFontChanged: TNotifyEvent;
+    procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
+    procedure DoFontChanged(Sender: TObject); dynamic;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
-    procedure RecreateWnd;
-    procedure CreateWnd; dynamic;
-    procedure CreateWidget; override;	
-  private
-    FDoubleBuffered: Boolean;
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
-  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure ColorChanged; override;
-  published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
+    procedure PaintWindow(PaintDevice: QPaintDeviceH);
+    function WidgetFlags: integer; override;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;
+    procedure RecreateWnd;
+  public
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
@@ -196,6 +198,7 @@ type
     procedure SetBeepOnError(Value: Boolean); virtual;
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
   end;
+
   TJvExPubCustomMaskEdit = class(TJvExCustomMaskEdit)
   {$IFDEF VCL}
   published
@@ -236,7 +239,7 @@ type
   public
     procedure Dispatch(var Msg); override;
   protected
-   // IJvStdControlEvents
+   // IJvWinControlEvents
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -251,6 +254,7 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -260,22 +264,23 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+  private
+    InternalFontChanged: TNotifyEvent;
+    procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
+    procedure DoFontChanged(Sender: TObject); dynamic;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
-    procedure RecreateWnd;
-    procedure CreateWnd; dynamic;
-    procedure CreateWidget; override;	
-  private
-    FDoubleBuffered: Boolean;
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
-  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure ColorChanged; override;
-  published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
+    procedure PaintWindow(PaintDevice: QPaintDeviceH);
+    function WidgetFlags: integer; override;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;
+    procedure RecreateWnd;
+  public
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
@@ -349,6 +354,7 @@ type
     procedure SetBeepOnError(Value: Boolean); virtual;
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
   end;
+
   TJvExPubMaskEdit = class(TJvExMaskEdit)
   {$IFDEF VCL}
   published
@@ -364,6 +370,11 @@ type
   
 
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 { The CONSTRUCTOR_CODE macro is used to extend the constructor by the macro
   content. }
@@ -501,7 +512,7 @@ asm
     JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
-
+  
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvExCustomMaskEdit.MouseEnter(Control: TControl);
@@ -555,11 +566,27 @@ function TJvExCustomMaskEdit.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
+  
 function TJvExCustomMaskEdit.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
     inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvExCustomMaskEdit.OnFontChanged(Sender: TObject);
+var
+  FontChangedEvent: QEventH;
+begin
+  FontChangedEvent := QEvent_create(QEventType_FontChanged);
+  if FontChangedEvent <> nil then
+    QApplication_postEvent(Handle, FontChangedEvent);
+end;
+
+procedure TJvExCustomMaskEdit.DoFontChanged(Sender: TObject);
+begin
+  if Assigned(InternalFontChanged) then
+    InternalFontChanged(self);
 end;
 
 procedure TJvExCustomMaskEdit.BoundsChanged;
@@ -582,34 +609,30 @@ procedure TJvExCustomMaskEdit.CreateWnd;
 begin
   inherited CreateWidget;
 end;
-procedure TJvExCustomMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
+
+function TJvExCustomMaskEdit.WidgetFlags: integer;
 begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
+  Result := inherited WidgetFlags or
+    integer(WidgetFlags_WRepaintNoErase) or
+    integer(WidgetFlags_WMouseNoMask);
 end;
 
-procedure TJvExCustomMaskEdit.ColorChanged;
+function TJvExCustomMaskEdit.EventFilter(Sender: QObjectH; Event: QEventH): boolean;
 begin
-  TWidgetControl_ColorChanged(Self);
+  Result := inherited EventFilter(Sender, Event);
+  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
 end;
 
-function TJvExCustomMaskEdit.GetDoubleBuffered: Boolean;
+procedure TJvExCustomMaskEdit.PaintWindow(PaintDevice: QPaintDeviceH);
 begin
-  Result := FDoubleBuffered;
+  WidgetControl_PaintTo(self, PaintDevice, 0, 0);
 end;
 
-procedure TJvExCustomMaskEdit.SetDoubleBuffered(Value: Boolean);
+procedure TJvExCustomMaskEdit.PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
 begin
-  if Value <> FDoubleBuffered then
-  begin
-    if Value then
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
-    else
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
-    FDoubleBuffered := Value;
-    if not (csCreating in ControlState) then
-      Invalidate;
-  end;
+  WidgetControl_PaintTo(self, PaintDevice, X, Y);
 end;
+  
 {$ENDIF VisualCLX}
 procedure TJvExCustomMaskEdit.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -620,6 +643,7 @@ end;
 procedure TJvExCustomMaskEdit.DoFocusChanged(Control: TWinControl);
 begin
 end;
+  
 procedure TJvExCustomMaskEdit.DoBoundsChanged;
 begin
 end;
@@ -640,54 +664,39 @@ function TJvExCustomMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer):
 asm
   JMP   DefaultDoPaintBackground
 end;
-{$IFDEF VCL}
+  
 constructor TJvExCustomMaskEdit.Create(AOwner: TComponent);
 begin
   {$IFDEF VisualCLX}
   WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
   {$ENDIF VisualCLX}
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  FBeepOnError := True;
-  FClipboardCommands := [caCopy..caUndo];
-end;
-
-destructor TJvExCustomMaskEdit.Destroy;
-begin
-  
-  inherited Destroy;
-end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-constructor TJvExCustomMaskEdit.Create(AOwner: TComponent);
-begin
-  WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
-  inherited Create(AOwner);
+  {$IFDEF VisualCLX}
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  FBeepOnError := True;
-  FClipboardCommands := [caCopy..caUndo];
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged;
+  {$ENDIF VisualCLX}
+  FHintColor := Application.HintColor;
 end;
 
-destructor TJvExCustomMaskEdit.Destroy;
+{$IFDEF VisualCLX}
+procedure TJvExCustomMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  
-  FCanvas.Free;
-  inherited Destroy;
+  WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
 procedure TJvExCustomMaskEdit.Paint;
 begin
-  WidgetControl_DefaultPaint(Self, Canvas);
+  WidgetControl_DefaultPaint(self, Canvas);
 end;
-
 {$ENDIF VisualCLX}
+
+destructor TJvExCustomMaskEdit.Destroy;
+begin
+  inherited Destroy;
+end;
+  
 procedure TJvExCustomMaskEdit.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
@@ -904,7 +913,7 @@ asm
     JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
-
+  
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvExMaskEdit.MouseEnter(Control: TControl);
@@ -958,11 +967,27 @@ function TJvExMaskEdit.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
+  
 function TJvExMaskEdit.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
     inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvExMaskEdit.OnFontChanged(Sender: TObject);
+var
+  FontChangedEvent: QEventH;
+begin
+  FontChangedEvent := QEvent_create(QEventType_FontChanged);
+  if FontChangedEvent <> nil then
+    QApplication_postEvent(Handle, FontChangedEvent);
+end;
+
+procedure TJvExMaskEdit.DoFontChanged(Sender: TObject);
+begin
+  if Assigned(InternalFontChanged) then
+    InternalFontChanged(self);
 end;
 
 procedure TJvExMaskEdit.BoundsChanged;
@@ -985,34 +1010,30 @@ procedure TJvExMaskEdit.CreateWnd;
 begin
   inherited CreateWidget;
 end;
-procedure TJvExMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
+
+function TJvExMaskEdit.WidgetFlags: integer;
 begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
+  Result := inherited WidgetFlags or
+    integer(WidgetFlags_WRepaintNoErase) or
+    integer(WidgetFlags_WMouseNoMask);
 end;
 
-procedure TJvExMaskEdit.ColorChanged;
+function TJvExMaskEdit.EventFilter(Sender: QObjectH; Event: QEventH): boolean;
 begin
-  TWidgetControl_ColorChanged(Self);
+  Result := inherited EventFilter(Sender, Event);
+  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
 end;
 
-function TJvExMaskEdit.GetDoubleBuffered: Boolean;
+procedure TJvExMaskEdit.PaintWindow(PaintDevice: QPaintDeviceH);
 begin
-  Result := FDoubleBuffered;
+  WidgetControl_PaintTo(self, PaintDevice, 0, 0);
 end;
 
-procedure TJvExMaskEdit.SetDoubleBuffered(Value: Boolean);
+procedure TJvExMaskEdit.PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
 begin
-  if Value <> FDoubleBuffered then
-  begin
-    if Value then
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
-    else
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
-    FDoubleBuffered := Value;
-    if not (csCreating in ControlState) then
-      Invalidate;
-  end;
+  WidgetControl_PaintTo(self, PaintDevice, X, Y);
 end;
+  
 {$ENDIF VisualCLX}
 procedure TJvExMaskEdit.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -1023,6 +1044,7 @@ end;
 procedure TJvExMaskEdit.DoFocusChanged(Control: TWinControl);
 begin
 end;
+  
 procedure TJvExMaskEdit.DoBoundsChanged;
 begin
 end;
@@ -1043,54 +1065,39 @@ function TJvExMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boole
 asm
   JMP   DefaultDoPaintBackground
 end;
-{$IFDEF VCL}
+  
 constructor TJvExMaskEdit.Create(AOwner: TComponent);
 begin
   {$IFDEF VisualCLX}
   WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
   {$ENDIF VisualCLX}
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  FBeepOnError := True;
-  FClipboardCommands := [caCopy..caUndo];
-end;
-
-destructor TJvExMaskEdit.Destroy;
-begin
-  
-  inherited Destroy;
-end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-constructor TJvExMaskEdit.Create(AOwner: TComponent);
-begin
-  WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
-  inherited Create(AOwner);
+  {$IFDEF VisualCLX}
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  FBeepOnError := True;
-  FClipboardCommands := [caCopy..caUndo];
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged;
+  {$ENDIF VisualCLX}
+  FHintColor := Application.HintColor;
 end;
 
-destructor TJvExMaskEdit.Destroy;
+{$IFDEF VisualCLX}
+procedure TJvExMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  
-  FCanvas.Free;
-  inherited Destroy;
+  WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
 procedure TJvExMaskEdit.Paint;
 begin
-  WidgetControl_DefaultPaint(Self, Canvas);
+  WidgetControl_DefaultPaint(self, Canvas);
 end;
-
 {$ENDIF VisualCLX}
+
+destructor TJvExMaskEdit.Destroy;
+begin
+  inherited Destroy;
+end;
+  
 procedure TJvExMaskEdit.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
@@ -1178,4 +1185,20 @@ end;
 
 
 {$UNDEF CONSTRUCTOR_CODE} // undefine at file end
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
 end.

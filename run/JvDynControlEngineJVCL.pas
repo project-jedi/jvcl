@@ -502,6 +502,9 @@ function DynControlEngineJVCL: TJvDynControlEngine;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils,
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
@@ -2011,11 +2014,28 @@ begin
   RegisterControl(jctButtonEdit, TJvDynControlJVCLButtonEdit);
 end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
   IntDynControlEngineJVCL := TJvDynControlEngineJVCL.Create;
   SetDefaultDynControlEngine(IntDynControlEngineJVCL);
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   FreeAndNil(IntDynControlEngineJVCL);
 
 end.

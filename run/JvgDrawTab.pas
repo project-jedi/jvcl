@@ -38,6 +38,11 @@ procedure DrawOwnTab(DrawTabStr: TDRAWTABSTRUCT);
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 procedure DrawOwnTab(DrawTabStr: TDRAWTABSTRUCT);
 const
   cWordWrap: array [Boolean] of UINT = (DT_SINGLELINE, DT_WORDBREAK);
@@ -403,6 +408,22 @@ begin
       clBtnHighlight, clBtnShadow, nil, nil, Font_);
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

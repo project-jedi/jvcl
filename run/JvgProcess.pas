@@ -63,7 +63,16 @@ type
     property OnTerminated: TNotifyEvent read FOnTerminated write FOnTerminated;
   end;
 
+{$IFNDEF USEJVCL}
+  {$UNDEF UNITVERSIONING}
+{$ENDIF ~USEJVCL}
+
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 type
   TJvgProcessMonitorThread = class(TThread)
@@ -129,6 +138,22 @@ begin
   else
     Result := False;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

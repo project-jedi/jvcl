@@ -40,6 +40,11 @@ procedure SetDotNetFrameColors(FocusedColor, UnfocusedColor: TColor);
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 var
   InternalFocusedColor: TColor = TColor($00733800);
   InternalUnfocusedColor: TColor = clGray;
@@ -96,6 +101,22 @@ begin
     ReleaseDC(Control.Handle, DC);
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -68,6 +68,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvResources;
 
 constructor TJvWinHelp.Create(AOwner: TComponent);
@@ -183,6 +186,22 @@ function TJvWinHelp.ShowPartialKeyWord(Keyword: string): Boolean;
 begin
   Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_PARTIALKEY, Longint(PChar(Keyword)));
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

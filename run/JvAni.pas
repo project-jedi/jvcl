@@ -138,6 +138,9 @@ function LoadJvAniDialog: TJvAni;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils,
   Consts, Math,
   JvJVCLUtils, JvJCLUtils, JvIconList, JvConsts, JvResources;
@@ -1088,7 +1091,21 @@ end;
 
 {$ENDIF VisualCLX}
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
   {$IFDEF VCL}
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvAni, TControl);
@@ -1098,6 +1115,9 @@ initialization
   TPicture.RegisterFileFormat(RsAniExtension, RsAniFilterName, TJvAni);
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   TPicture.UnregisterGraphicClass(TJvAni);
 
 end.

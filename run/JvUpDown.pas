@@ -191,6 +191,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 const
   UDM_SETPOS32 = WM_USER + 113;
   UDM_GETPOS32 = WM_USER + 114;
@@ -542,6 +547,22 @@ function TJvCustomDomainUpDown.AcceptPosition(Value: Integer): Boolean;
 begin
   Result := (Value >= 0) and (Value < Items.Count);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -114,6 +114,9 @@ function UnlockDialogEx(const UserName: string; OnUnlock: TCheckUnlockEvent;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Graphics, Controls, Forms, DB, BDE,
   JvBDELists, 
   JvConsts, JvResources;
@@ -503,6 +506,22 @@ begin
     Dlg.Free;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -108,7 +108,16 @@ type
     property OnAfterPaint: TNotifyEvent read FOnAfterPaint write FOnAfterPaint;
   end;
 
+{$IFNDEF USEJVCL}
+  {$UNDEF UNITVERSIONING}
+{$ENDIF ~USEJVCL}
+
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 //{$R JvgShadow.res}
 
@@ -235,6 +244,22 @@ begin
     end;
   end;
 end;}
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

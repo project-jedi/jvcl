@@ -84,6 +84,9 @@ function CheckLinkControlEnabled(Enabled, Checked: Boolean; Options: TJvLinkedCo
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvResources;
 
 function CheckLinkControlEnabled(Enabled, Checked: Boolean; Options: TJvLinkedControlsOptions): Boolean;
@@ -263,6 +266,22 @@ begin
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

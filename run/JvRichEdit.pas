@@ -871,6 +871,9 @@ function BitmapToRTF2(ABitmap: TBitmap; AStream: TStream): Boolean;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   OleCtnrs,
   Printers, ComStrs, OleConst, OleDlg, Math, Registry, Contnrs,
   JvThemes, JvConsts, JvResources;
@@ -7163,7 +7166,21 @@ begin
   end;
 end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
   InitRichEditDll;
 
   CFEmbeddedObject := RegisterClipboardFormat(CF_EMBEDDEDOBJECT);
@@ -7172,6 +7189,9 @@ initialization
   CFRtfNoObjs := RegisterClipboardFormat(CF_RTFNOOBJS);
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   FinalizeUnit(sUnitName);
   FinalRichEditDll;
 end.

@@ -83,6 +83,9 @@ implementation
 
 {$IFDEF USEJVCL}
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvJCLUtils;
 {$ENDIF USEJVCL}
 
@@ -205,6 +208,22 @@ function TJvgFileIterator.GetPath: string;
 begin
   Result := PSearchData(FLSearchRecs[FLSearchRecs.Count - 1])^.Path;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

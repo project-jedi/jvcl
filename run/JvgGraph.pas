@@ -61,7 +61,16 @@ type
     property Width default 50;
   end;
 
+{$IFNDEF USEJVCL}
+  {$UNDEF UNITVERSIONING}
+{$ENDIF ~USEJVCL}
+
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 constructor TJvgGraph.Create(AOwner: TComponent);
 begin
@@ -120,6 +129,22 @@ begin
   Canvas.Pen.Color := Color;
   Canvas.Polyline(Slice(Points, DrawPointsCount + 1));
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

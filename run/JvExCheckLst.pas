@@ -39,10 +39,11 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, CheckLst,
+  Windows, Messages,
   {$ENDIF VCL}
+  Graphics, Controls, Forms, CheckLst,
   {$IFDEF VisualCLX}
-  Types, Qt, QGraphics, QControls, QForms, QCheckLst, QWindows,
+  Types, Qt, QWindows,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;
@@ -57,7 +58,7 @@ uses
 {$ENDIF VisualCLX}
 
 type
-  TJvExCheckListBox = class(TCheckListBox, IJvStdControlEvents, IJvControlEvents, IPerformControl)
+  TJvExCheckListBox = class(TCheckListBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
    // IJvControlEvents
@@ -83,7 +84,7 @@ type
   public
     procedure Dispatch(var Msg); override;
   protected
-   // IJvStdControlEvents
+   // IJvWinControlEvents
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -98,6 +99,7 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -107,13 +109,23 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+  private
+    InternalFontChanged: TNotifyEvent;
+    procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
+    procedure DoFontChanged(Sender: TObject); dynamic;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
-    procedure RecreateWnd;
+    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    procedure PaintWindow(PaintDevice: QPaintDeviceH);
+    function WidgetFlags: integer; override;
     procedure CreateWnd; dynamic;
     procedure CreateWidget; override;
+    procedure RecreateWnd;
+  public
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
@@ -150,11 +162,18 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+  {$IFDEF VisualCLX}
+  private
+    FCanvas: TCanvas;
+  protected
+    procedure Paint; virtual;
+    property Canvas: TCanvas read FCanvas;
+  {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
   TJvExPubCheckListBox = class(TJvExCheckListBox)
   {$IFDEF VCL}
   published
@@ -170,6 +189,11 @@ type
   
 
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 {$IFDEF VCL}
 procedure TJvExCheckListBox.Dispatch(var Msg);
@@ -300,6 +324,7 @@ asm
     JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
+  
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvExCheckListBox.MouseEnter(Control: TControl);
@@ -353,11 +378,27 @@ function TJvExCheckListBox.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
+  
 function TJvExCheckListBox.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
     inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvExCheckListBox.OnFontChanged(Sender: TObject);
+var
+  FontChangedEvent: QEventH;
+begin
+  FontChangedEvent := QEvent_create(QEventType_FontChanged);
+  if FontChangedEvent <> nil then
+    QApplication_postEvent(Handle, FontChangedEvent);
+end;
+
+procedure TJvExCheckListBox.DoFontChanged(Sender: TObject);
+begin
+  if Assigned(InternalFontChanged) then
+    InternalFontChanged(self);
 end;
 
 procedure TJvExCheckListBox.BoundsChanged;
@@ -380,6 +421,30 @@ procedure TJvExCheckListBox.CreateWnd;
 begin
   inherited CreateWidget;
 end;
+
+function TJvExCheckListBox.WidgetFlags: integer;
+begin
+  Result := inherited WidgetFlags or
+    integer(WidgetFlags_WRepaintNoErase) or
+    integer(WidgetFlags_WMouseNoMask);
+end;
+
+function TJvExCheckListBox.EventFilter(Sender: QObjectH; Event: QEventH): boolean;
+begin
+  Result := inherited EventFilter(Sender, Event);
+  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
+end;
+
+procedure TJvExCheckListBox.PaintWindow(PaintDevice: QPaintDeviceH);
+begin
+  WidgetControl_PaintTo(self, PaintDevice, 0, 0);
+end;
+
+procedure TJvExCheckListBox.PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
+begin
+  WidgetControl_PaintTo(self, PaintDevice, X, Y);
+end;
+  
 {$ENDIF VisualCLX}
 procedure TJvExCheckListBox.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -390,6 +455,7 @@ end;
 procedure TJvExCheckListBox.DoFocusChanged(Control: TWinControl);
 begin
 end;
+  
 procedure TJvExCheckListBox.DoBoundsChanged;
 begin
 end;
@@ -410,21 +476,54 @@ function TJvExCheckListBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): B
 asm
   JMP   DefaultDoPaintBackground
 end;
+  
 constructor TJvExCheckListBox.Create(AOwner: TComponent);
 begin
   {$IFDEF VisualCLX}
   WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
   {$ENDIF VisualCLX}
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
+  {$IFDEF VisualCLX}
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged;
+  {$ENDIF VisualCLX}
+  FHintColor := Application.HintColor;
 end;
+
+{$IFDEF VisualCLX}
+procedure TJvExCheckListBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
+
+procedure TJvExCheckListBox.Paint;
+begin
+  WidgetControl_DefaultPaint(self, Canvas);
+end;
+{$ENDIF VisualCLX}
 
 destructor TJvExCheckListBox.Destroy;
 begin
   inherited Destroy;
 end;
+  
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

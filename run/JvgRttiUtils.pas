@@ -40,6 +40,9 @@ procedure Assign(Source, Target: TObject; Recursive: Boolean);
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, SysUtils, TypInfo;
 
 function GetValueFromPropertyName(Component: TObject; const PropertyName: string): string;
@@ -211,6 +214,22 @@ begin
     FreeMem(Target_PropList);
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

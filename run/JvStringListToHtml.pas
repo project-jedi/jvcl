@@ -61,6 +61,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 procedure ConvertStringsToHTML(Source, Destination: TStrings; const HTMLTitle, HTMLLineBreak: string; IncludeHeader: Boolean);
 var
   I: Integer;
@@ -155,6 +160,22 @@ begin
   FStrings.Assign(Value);
   FHTML.Clear;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

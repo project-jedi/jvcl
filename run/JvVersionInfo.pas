@@ -28,7 +28,7 @@ unit JvVersionInfo;
 {$I windowsonly.inc}
 
 {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-{$WEAKPACKAGEUNIT ON}
+{$WEAKPACKAGEUNIT ON} // prevents this unit from UnitVersioning
 {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface

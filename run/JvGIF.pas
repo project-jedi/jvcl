@@ -249,6 +249,9 @@ procedure JvGif_Dummy;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Consts, Math,
   JvJCLUtils, JvJVCLUtils, JvAni, JvConsts, JvResources, JvTypes;
 
@@ -3009,7 +3012,21 @@ begin
   Progress(Self, Stage, PercentDone, False, Rect(0, 0, 0, 0), Msg);
 end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
   CF_GIF := RegisterClipboardFormat('GIF Image');
 
   {$IFDEF VCL}
@@ -3019,13 +3036,18 @@ initialization
   {$ENDIF COMPILER7_UP}
   RegisterClasses([TJvGIFFrame, TJvGIFImage]);
   {$ENDIF VCL}
-{$IFDEF USE_JV_GIF}
+  {$IFDEF USE_JV_GIF}
   TPicture.RegisterFileFormat('gif', RsGIFImage, TJvGIFImage);
   TPicture.RegisterClipboardFormat(CF_GIF, TJvGIFImage);
+  {$ENDIF USE_JV_GIF}
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+  {$IFDEF USE_JV_GIF}
   TPicture.UnRegisterGraphicClass(TJvGIFImage);
-{$ENDIF USE_JV_GIF}
+  {$ENDIF USE_JV_GIF}
 
 end.
 

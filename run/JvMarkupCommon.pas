@@ -89,6 +89,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 //=== { TJvHTMLElement } =====================================================
 
 procedure TJvHTMLElement.Breakup(ACanvas: TCanvas; Available: Integer);
@@ -220,5 +225,21 @@ procedure TJvHTMLElementStack.Push(Element: TJvHTMLElement);
 begin
   Add(Element);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -141,6 +141,9 @@ function ActionsToString(Actions: TJvChangeActions): string;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, 
   JvJCLUtils, JvResources, JvTypes;
   // JvJCLUtils for DirectoryExists
@@ -477,6 +480,22 @@ begin
   if Assigned(FNotify) then
     FNotify(Self, FIndex);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

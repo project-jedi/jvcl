@@ -60,6 +60,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvResources;
 
 procedure TJvPcx.LoadFromResourceName(Instance: THandle;
@@ -609,7 +612,21 @@ begin
 end;
 
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
   {$IFDEF VCL}
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvPcx, TControl);
@@ -619,6 +636,9 @@ initialization
   TPicture.RegisterFileFormat(RsPcxExtension, RsPcxFilterName, TJvPcx);
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   TPicture.UnregisterGraphicClass(TJvPcx);
 
 end.

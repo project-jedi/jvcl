@@ -34,7 +34,7 @@ interface
 
 uses
   SysUtils,
-  JvInterpreter, JvJCLUtils;
+  JvInterpreter;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 
@@ -43,10 +43,14 @@ function Var2SearchRec(const SearchRec: Variant): TSearchRec;
 
 implementation
 
-{$IFDEF UNIX}
 uses
-  Variants;
-{$ENDIF UNIX}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  JvJCLUtils;
 
 { TSearchRec }
 
@@ -2075,6 +2079,22 @@ begin
     { global variables are not supported by JvInterpreter :( }
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

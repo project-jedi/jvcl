@@ -149,6 +149,9 @@ implementation
 
 {$IFDEF USEJVCL}
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvResources, JvFinalize;
 {$ENDIF USEJVCL}
 
@@ -597,7 +600,7 @@ begin
   TerminateThreads;
   // wait for them to finish
   WaitThreads;
-  
+
   FThreadsChange.Acquire;
   try
     for I := 0 to FThreads.Count-1 do
@@ -817,12 +820,33 @@ begin
   SyncWindow := CreateWindowEx(WS_EX_TOOLWINDOW, SyncWindowClass.lpszClassName,
     '', WS_POPUP, 0, 0, 0, 0, 0, 0, HInstance, nil);
 end;
+{$ENDIF COMPILER5}
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
 
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
+  {$IFDEF COMPILER5}
   InitializeCriticalSection(ThreadSyncLock);
   CreateSyncWindow;
+  {$ENDIF COMPILER5}
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+  {$IFDEF COMPILER5}
   {$IFDEF USEJVCL}
   FinalizeUnit(sUnitName);
   {$ELSE}
@@ -830,7 +854,6 @@ finalization
   {$ENDIF USEJVCL}
   DeleteCriticalSection(ThreadSyncLock);
   DestroyWindow(SyncWindow);
-
-{$ENDIF COMPILER5}
+  {$ENDIF COMPILER5}
 
 end.

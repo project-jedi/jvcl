@@ -63,6 +63,11 @@ procedure SegmentedLEDDisplayMappingEditor(ADisplay: TJvCustomSegmentedLEDDispla
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 {$R *.dfm}
 
 procedure SegmentedLEDDisplayMappingEditor(ADisplay: TJvCustomSegmentedLEDDisplay;
@@ -135,5 +140,21 @@ procedure TfrmSLDMappingEditorDialog.FormCloseQuery(Sender: TObject;
 begin
   CanClose := EditorFrame.CanClose;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

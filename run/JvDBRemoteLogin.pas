@@ -80,12 +80,17 @@ type
 
 implementation
 
-{$IFDEF JV_MIDAS}
-
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   IniFiles,
+  {$IFDEF JV_MIDAS}
   MConnect,
+  {$ENDIF JV_MIDAS}
   JvJVCLUtils, JvResources;
+
+{$IFDEF JV_MIDAS}
 
 type
   TJvServer = class(TCustomRemoteServer);
@@ -293,6 +298,22 @@ begin
 end;
 
 {$ENDIF JV_MIDAS}
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

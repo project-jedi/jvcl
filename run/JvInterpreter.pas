@@ -1247,6 +1247,9 @@ const
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   TypInfo,
   {$IFDEF JvInterpreter_OLEAUTO}
   OleConst,
@@ -8069,12 +8072,29 @@ var
   OleInitialized: Boolean;
 {$ENDIF JvInterpreter_OLEAUTO}
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
   {$IFDEF JvInterpreter_OLEAUTO}
   OleInitialized := OleInitialize(nil) = S_OK;
   {$ENDIF JvInterpreter_OLEAUTO}
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   FinalizeUnit(sUnitName);
 
   {$IFDEF JvInterpreter_OLEAUTO}
