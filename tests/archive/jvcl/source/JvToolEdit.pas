@@ -164,6 +164,7 @@ type
   protected
     FPopup: TCustomControl;
     FDefNumGlyphs: TNumGlyphs;
+    procedure AdjustHeight;
     function GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap; virtual;
     procedure PopupDropDown(DisableEdit: Boolean); virtual;
     procedure PopupCloseUp(Sender: TObject; Accept: Boolean);
@@ -1394,6 +1395,7 @@ procedure TJvCustomComboEdit.SetEditRect;
 var
   Loc: TRect;
 begin
+  AdjustHeight;
   SetRect(Loc, 0, 0, ClientWidth - FBtnControl.Width - 2, ClientHeight + 1);
   SendMessage(Handle, EM_SETRECTNP, 0, LongInt(@Loc));
 end;
@@ -1456,6 +1458,32 @@ begin
   UpdateBtnBounds;
 end;
 
+procedure TJvCustomComboEdit.AdjustHeight;
+var
+  DC: HDC;
+  SaveFont: HFont;
+  I: Integer;
+  SysMetrics, Metrics: TTextMetric;
+begin
+  DC := GetDC(0);
+  GetTextMetrics(DC, SysMetrics);
+  SaveFont := SelectObject(DC, Font.Handle);
+  GetTextMetrics(DC, Metrics);
+  SelectObject(DC, SaveFont);
+  ReleaseDC(0, DC);
+  if NewStyleControls then
+  begin
+    if Ctl3D then I := 8 else I := 6;
+    I := GetSystemMetrics(SM_CYBORDER) * I;
+  end else
+  begin
+    I := SysMetrics.tmHeight;
+    if I > Metrics.tmHeight then I := Metrics.tmHeight;
+    I := I div 4 + GetSystemMetrics(SM_CYBORDER) * 4;
+  end;
+  Height := Metrics.tmHeight + I;
+end;
+
 function TJvCustomComboEdit.GetTextHeight: Integer;
 var
   DC: HDC;
@@ -1471,7 +1499,7 @@ begin
   finally
     ReleaseDC(0, DC);
   end;
-  Result := Min(SysMetrics.tmHeight, Metrics.tmHeight);
+  Result := Metrics.tmHeight;
 end;
 
 function TJvCustomComboEdit.GetMinHeight: Integer;
