@@ -1,9 +1,0 @@
-[Directories]
-OutputDir=..\..\packages
-UnitOutputDir=
-PackageDLLOutputDir=
-PackageDCPOutputDir=
-SearchPath=..\..\common;..\..\run
-[Parameters]
-RunParams=-IgnoreIDE
-
